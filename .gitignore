@@ -1,0 +1,44 @@
+# Windows 빌드 산출물
+Debug.win32/
+Release.win32/
+*.obj
+*.lib
+*.exe
+
+# Visual Studio 설정
+.vs/
+bin/
+obj/
+Debug/
+Release/
+x64/
+*.user
+*.suo
+*.sln.DotSettings
+*.vcxproj.filters
+
+# 주석 및 백업 제외 (선택사항)
+*.bak
+*.backup
+
+# 기타 큰 파일
+*.zip
+*.rar
+*.7z
+*.psd
+*.mp4
+*.exe
+*.pdb
+
+# 프로젝트 빌드 파일 (Classes와 Resources는 제외)
+proj.win32/Debug/
+proj.win32/Release/
+proj.win32/.vs/
+proj.win32/*.user
+
+# cocos2d 라이브러리 제외 (선택사항)
+cocos2d/
+
+# 필수 제외: Classes와 Resources는 반드시 포함
+!Classes/
+!Resources/
