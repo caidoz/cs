@@ -1,0 +1,403 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{76A39BB2-9B84-4C65-98A5-654D86B86F2A}</ProjectGuid>
+    <RootNamespace>test_win32</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0'">v120</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0'">v120</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v141_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2dx.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2d_headers.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2dx.props" />
+    <Import Project="..\cocos2d\cocos\2d\cocos2d_headers.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)external;$(EngineRoot)cocos\audio\include;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <CustomBuildStep>
+      <Command>
+				if not exist "$(OutDir)" mkdir "$(OutDir)"
+				xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
+			</Command>
+      <Outputs>$(TargetName).cab</Outputs>
+      <Inputs>$(TargetFileName)</Inputs>
+    </CustomBuildStep>
+    <ClCompile>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)external;$(EngineRoot)cocos\audio\include;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies);$(_COCOS_LIB_WIN32_BEGIN);$(_COCOS_LIB_WIN32_END)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories);$(_COCOS_LIB_PATH_WIN32_BEGIN);$(_COCOS_LIB_PATH_WIN32_END)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\Core.cpp" />
+    <ClCompile Include="..\Classes\Cmf\c0.h" />
+    <ClCompile Include="..\Classes\Cmf\c1.h" />
+    <ClCompile Include="..\Classes\Cmf\c10.h" />
+    <ClCompile Include="..\Classes\Cmf\c100.h" />
+    <ClCompile Include="..\Classes\Cmf\c101.h" />
+    <ClCompile Include="..\Classes\Cmf\c102.h" />
+    <ClCompile Include="..\Classes\Cmf\c103.h" />
+    <ClCompile Include="..\Classes\Cmf\c104.h" />
+    <ClCompile Include="..\Classes\Cmf\c105.h" />
+    <ClCompile Include="..\Classes\Cmf\c106.h" />
+    <ClCompile Include="..\Classes\Cmf\c107.h" />
+    <ClCompile Include="..\Classes\Cmf\c108.h" />
+    <ClCompile Include="..\Classes\Cmf\c109.h" />
+    <ClCompile Include="..\Classes\Cmf\c11.h" />
+    <ClCompile Include="..\Classes\Cmf\c110.h" />
+    <ClCompile Include="..\Classes\Cmf\c111.h" />
+    <ClCompile Include="..\Classes\Cmf\c112.h" />
+    <ClCompile Include="..\Classes\Cmf\c113.h" />
+    <ClCompile Include="..\Classes\Cmf\c114.h" />
+    <ClCompile Include="..\Classes\Cmf\c115.h" />
+    <ClCompile Include="..\Classes\Cmf\c116.h" />
+    <ClCompile Include="..\Classes\Cmf\c117.h" />
+    <ClCompile Include="..\Classes\Cmf\c118.h" />
+    <ClCompile Include="..\Classes\Cmf\c119.h" />
+    <ClCompile Include="..\Classes\Cmf\c12.h" />
+    <ClCompile Include="..\Classes\Cmf\c120.h" />
+    <ClCompile Include="..\Classes\Cmf\c121.h" />
+    <ClCompile Include="..\Classes\Cmf\c122.h" />
+    <ClCompile Include="..\Classes\Cmf\c13.h" />
+    <ClCompile Include="..\Classes\Cmf\c14.h" />
+    <ClCompile Include="..\Classes\Cmf\c15.h" />
+    <ClCompile Include="..\Classes\Cmf\c16.h" />
+    <ClCompile Include="..\Classes\Cmf\c17.h" />
+    <ClCompile Include="..\Classes\Cmf\c18.h" />
+    <ClCompile Include="..\Classes\Cmf\c19.h" />
+    <ClCompile Include="..\Classes\Cmf\c2.h" />
+    <ClCompile Include="..\Classes\Cmf\c20.h" />
+    <ClCompile Include="..\Classes\Cmf\c21.h" />
+    <ClCompile Include="..\Classes\Cmf\c22.h" />
+    <ClCompile Include="..\Classes\Cmf\c23.h" />
+    <ClCompile Include="..\Classes\Cmf\c24.h" />
+    <ClCompile Include="..\Classes\Cmf\c25.h" />
+    <ClCompile Include="..\Classes\Cmf\c26.h" />
+    <ClCompile Include="..\Classes\Cmf\c27.h" />
+    <ClCompile Include="..\Classes\Cmf\c28.h" />
+    <ClCompile Include="..\Classes\Cmf\c29.h" />
+    <ClCompile Include="..\Classes\Cmf\c3.h" />
+    <ClCompile Include="..\Classes\Cmf\c30.h" />
+    <ClCompile Include="..\Classes\Cmf\c31.h" />
+    <ClCompile Include="..\Classes\Cmf\c32.h" />
+    <ClCompile Include="..\Classes\Cmf\c33.h" />
+    <ClCompile Include="..\Classes\Cmf\c34.h" />
+    <ClCompile Include="..\Classes\Cmf\c35.h" />
+    <ClCompile Include="..\Classes\Cmf\c36.h" />
+    <ClCompile Include="..\Classes\Cmf\c37.h" />
+    <ClCompile Include="..\Classes\Cmf\c38.h" />
+    <ClCompile Include="..\Classes\Cmf\c39.h" />
+    <ClCompile Include="..\Classes\Cmf\c4.h" />
+    <ClCompile Include="..\Classes\Cmf\c40.h" />
+    <ClCompile Include="..\Classes\Cmf\c41.h" />
+    <ClCompile Include="..\Classes\Cmf\c42.h" />
+    <ClCompile Include="..\Classes\Cmf\c43.h" />
+    <ClCompile Include="..\Classes\Cmf\c44.h" />
+    <ClCompile Include="..\Classes\Cmf\c45.h" />
+    <ClCompile Include="..\Classes\Cmf\c46.h" />
+    <ClCompile Include="..\Classes\Cmf\c47.h" />
+    <ClCompile Include="..\Classes\Cmf\c48.h" />
+    <ClCompile Include="..\Classes\Cmf\c49.h" />
+    <ClCompile Include="..\Classes\Cmf\c5.h" />
+    <ClCompile Include="..\Classes\Cmf\c50.h" />
+    <ClCompile Include="..\Classes\Cmf\c51.h" />
+    <ClCompile Include="..\Classes\Cmf\c52.h" />
+    <ClCompile Include="..\Classes\Cmf\c53.h" />
+    <ClCompile Include="..\Classes\Cmf\c54.h" />
+    <ClCompile Include="..\Classes\Cmf\c55.h" />
+    <ClCompile Include="..\Classes\Cmf\c56.h" />
+    <ClCompile Include="..\Classes\Cmf\c57.h" />
+    <ClCompile Include="..\Classes\Cmf\c58.h" />
+    <ClCompile Include="..\Classes\Cmf\c59.h" />
+    <ClCompile Include="..\Classes\Cmf\c6.h" />
+    <ClCompile Include="..\Classes\Cmf\c60.h" />
+    <ClCompile Include="..\Classes\Cmf\c61.h" />
+    <ClCompile Include="..\Classes\Cmf\c62.h" />
+    <ClCompile Include="..\Classes\Cmf\c63.h" />
+    <ClCompile Include="..\Classes\Cmf\c64.h" />
+    <ClCompile Include="..\Classes\Cmf\c65.h" />
+    <ClCompile Include="..\Classes\Cmf\c66.h" />
+    <ClCompile Include="..\Classes\Cmf\c67.h" />
+    <ClCompile Include="..\Classes\Cmf\c68.h" />
+    <ClCompile Include="..\Classes\Cmf\c69.h" />
+    <ClCompile Include="..\Classes\Cmf\c7.h" />
+    <ClCompile Include="..\Classes\Cmf\c70.h" />
+    <ClCompile Include="..\Classes\Cmf\c71.h" />
+    <ClCompile Include="..\Classes\Cmf\c72.h" />
+    <ClCompile Include="..\Classes\Cmf\c73.h" />
+    <ClCompile Include="..\Classes\Cmf\c74.h" />
+    <ClCompile Include="..\Classes\Cmf\c75.h" />
+    <ClCompile Include="..\Classes\Cmf\c76.h" />
+    <ClCompile Include="..\Classes\Cmf\c77.h" />
+    <ClCompile Include="..\Classes\Cmf\c78.h" />
+    <ClCompile Include="..\Classes\Cmf\c79.h" />
+    <ClCompile Include="..\Classes\Cmf\c8.h" />
+    <ClCompile Include="..\Classes\Cmf\c80.h" />
+    <ClCompile Include="..\Classes\Cmf\c81.h" />
+    <ClCompile Include="..\Classes\Cmf\c82.h" />
+    <ClCompile Include="..\Classes\Cmf\c83.h" />
+    <ClCompile Include="..\Classes\Cmf\c84.h" />
+    <ClCompile Include="..\Classes\Cmf\c85.h" />
+    <ClCompile Include="..\Classes\Cmf\c86.h" />
+    <ClCompile Include="..\Classes\Cmf\c87.h" />
+    <ClCompile Include="..\Classes\Cmf\c88.h" />
+    <ClCompile Include="..\Classes\Cmf\c89.h" />
+    <ClCompile Include="..\Classes\Cmf\c9.h" />
+    <ClCompile Include="..\Classes\Cmf\c90.h" />
+    <ClCompile Include="..\Classes\Cmf\c91.h" />
+    <ClCompile Include="..\Classes\Cmf\c92.h" />
+    <ClCompile Include="..\Classes\Cmf\c93.h" />
+    <ClCompile Include="..\Classes\Cmf\c94.h" />
+    <ClCompile Include="..\Classes\Cmf\c95.h" />
+    <ClCompile Include="..\Classes\Cmf\c96.h" />
+    <ClCompile Include="..\Classes\Cmf\c97.h" />
+    <ClCompile Include="..\Classes\Cmf\c98.h" />
+    <ClCompile Include="..\Classes\Cmf\c99.h" />
+    <ClCompile Include="..\Classes\CoreGlobals.cpp" />
+    <ClCompile Include="..\Classes\Func_Bar.cpp" />
+    <ClCompile Include="..\Classes\Func_Battle.cpp" />
+    <ClCompile Include="..\Classes\Func_Cmf.cpp" />
+    <ClCompile Include="..\Classes\Func_Combat.cpp" />
+    <ClCompile Include="..\Classes\Func_Draw.cpp" />
+    <ClCompile Include="..\Classes\Func_Graphics.cpp" />
+    <ClCompile Include="..\Classes\Func_Input.cpp" />
+    <ClCompile Include="..\Classes\Func_Item.cpp" />
+    <ClCompile Include="..\Classes\Func_Map.cpp" />
+    <ClCompile Include="..\Classes\Func_Math.cpp" />
+    <ClCompile Include="..\Classes\Func_Menu.cpp" />
+    <ClCompile Include="..\Classes\Func_Movement.cpp" />
+    <ClCompile Include="..\Classes\Func_Object.cpp" />
+    <ClCompile Include="..\Classes\Func_Roulette.cpp" />
+    <ClCompile Include="..\Classes\Func_Sound.cpp" />
+    <ClCompile Include="..\Classes\Func_System.cpp" />
+    <ClCompile Include="..\Classes\Func_Text.cpp" />
+    <ClCompile Include="..\Classes\Func_Utility.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\Cmf.h" />
+    <ClInclude Include="..\Classes\Config\BuildConfig.h" />
+    <ClInclude Include="..\Classes\Config\FileConstants.h" />
+    <ClInclude Include="..\Classes\Config\GameConfig.h" />
+    <ClInclude Include="..\Classes\Config\GameConstants.h" />
+    <ClInclude Include="..\Classes\Config\RenderConstants.h" />
+    <ClInclude Include="..\Classes\Config\TimeConstants.h" />
+    <ClInclude Include="..\Classes\Core.h" />
+    <ClInclude Include="..\Classes\CoreClass.h" />
+    <ClInclude Include="..\Classes\Data.h" />
+    <ClInclude Include="..\Classes\Data\AlphaData.h" />
+    <ClInclude Include="..\Classes\Data\BattleData.h" />
+    <ClInclude Include="..\Classes\Data\CmfData.h" />
+    <ClInclude Include="..\Classes\Data\CollectionData.h" />
+    <ClInclude Include="..\Classes\Data\DemoData.h" />
+    <ClInclude Include="..\Classes\Data\DropData.h" />
+    <ClInclude Include="..\Classes\Data\EnemyData.h" />
+    <ClInclude Include="..\Classes\Data\FontData.h" />
+    <ClInclude Include="..\Classes\Data\GachaData.h" />
+    <ClInclude Include="..\Classes\Data\GameData.h" />
+    <ClInclude Include="..\Classes\Data\ImgData.h" />
+    <ClInclude Include="..\Classes\Data\ItemData.h" />
+    <ClInclude Include="..\Classes\Data\MapData.h" />
+    <ClInclude Include="..\Classes\Data\HeroData.h" />
+    <ClInclude Include="..\Classes\Data\ObjectData.h" />
+    <ClInclude Include="..\Classes\Data\QuestData.h" />
+    <ClInclude Include="..\Classes\Data\RewardData.h" />
+    <ClInclude Include="..\Classes\Data\RouletteData.h" />
+    <ClInclude Include="..\Classes\Data\ShopData.h" />
+    <ClInclude Include="..\Classes\Data\SkillData.h" />
+    <ClInclude Include="..\Classes\Data\TextData.h" />
+    <ClInclude Include="..\Classes\Data\UIData.h" />
+    <ClInclude Include="..\Classes\Data\WaveData.h" />
+    <ClInclude Include="..\Classes\Def.h" />
+    <ClInclude Include="..\Classes\Def\AlphaDef.h" />
+    <ClInclude Include="..\Classes\Def\AttackSequenceDef.h" />
+    <ClInclude Include="..\Classes\Def\CmfDef.h" />
+    <ClInclude Include="..\Classes\Def\ColorDef.h" />
+    <ClInclude Include="..\Classes\Def\CrewDef.h" />
+    <ClInclude Include="..\Classes\Def\DemoDef.h" />
+    <ClInclude Include="..\Classes\Def\EnemyDef.h" />
+    <ClInclude Include="..\Classes\Def\EventDef.h" />
+    <ClInclude Include="..\Classes\Def\HandlerDef.h" />
+    <ClInclude Include="..\Classes\Def\IconDef.h" />
+    <ClInclude Include="..\Classes\Def\ImgDef.h" />
+    <ClInclude Include="..\Classes\Def\ItemDef.h" />
+    <ClInclude Include="..\Classes\Def\MapDef.h" />
+    <ClInclude Include="..\Classes\Def\NumDef.h" />
+    <ClInclude Include="..\Classes\Def\ObjectDef.h" />
+    <ClInclude Include="..\Classes\Def\QuestDef.h" />
+    <ClInclude Include="..\Classes\Def\RouletteDef.h" />
+    <ClInclude Include="..\Classes\Def\SkillDef.h" />
+    <ClInclude Include="..\Classes\Def\SoundDef.h" />
+    <ClInclude Include="..\Classes\Def\StatDef.h" />
+    <ClInclude Include="..\Classes\Def\StatusDef.h" />
+    <ClInclude Include="..\Classes\Def\TextDef.h" />
+    <ClInclude Include="..\Classes\Def\TimeDef.h" />
+    <ClInclude Include="..\Classes\Def\TouchKeyDef.h" />
+    <ClInclude Include="..\Classes\Def\TutoralDef.h" />
+    <ClInclude Include="..\Classes\Def\UIDef.h" />
+    <ClInclude Include="..\Classes\Func.h" />
+    <ClInclude Include="..\Classes\Func_Bar.h" />
+    <ClInclude Include="..\Classes\Func_Battle.h" />
+    <ClInclude Include="..\Classes\Func_Cmf.h" />
+    <ClInclude Include="..\Classes\Func_Combat.h" />
+    <ClInclude Include="..\Classes\Func_Draw.h" />
+    <ClInclude Include="..\Classes\Func_Graphics.h" />
+    <ClInclude Include="..\Classes\Func_Input.h" />
+    <ClInclude Include="..\Classes\Func_Item.h" />
+    <ClInclude Include="..\Classes\Func_Map.h" />
+    <ClInclude Include="..\Classes\Func_Math.h" />
+    <ClInclude Include="..\Classes\Func_Menu.h" />
+    <ClInclude Include="..\Classes\Func_Movement.h" />
+    <ClInclude Include="..\Classes\Func_Object.h" />
+    <ClInclude Include="..\Classes\Func_Roulette.h" />
+    <ClInclude Include="..\Classes\Func_Sound.h" />
+    <ClInclude Include="..\Classes\Func_System.h" />
+    <ClInclude Include="..\Classes\Func_Text.h" />
+    <ClInclude Include="..\Classes\Func_Utility.h" />
+    <ClInclude Include="..\Classes\Text.h" />
+    <ClInclude Include="..\Classes\Write.h" />
+    <ClInclude Include="main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cocos2d\cocos\2d\libcocos2d.vcxproj">
+      <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\cocos2d\cocos\editor-support\spine\proj.win32\libSpine.vcxproj">
+      <Project>{b7c2a162-dec9-4418-972e-240ab3cbfcae}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

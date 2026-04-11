@@ -1,0 +1,1234 @@
+#pragma once
+
+#ifndef _DEF_ITEM_H_
+#define _DEF_ITEM_H_
+
+typedef enum _itemDef {
+	EQUIP_WEAPON = 0,	//무기 //동전, 동전주머니, 하트, 퀘스트 아이템, PVP 아이템의 획득량을 사용하트량도 있다.
+	EQUIP_HELM,				//투구 //액션카드 스킬에서 획득하는 동전을 %로 증가시켜준다.(소수점)
+	EQUIP_ARMOR,			//갑옷 //적 몬스터시 뺏기는 동전을 %로 감소시켜준다.(소수점)
+	EQUIP_PANTS,			//바지 //액션카드 히트에서 획득하는 동전을 %로 증가시켜준다.(소수점)
+	EQUIP_GLOVE,			//장갑 //액션카드 동전, 동전주머니에서 동전을 %로 증가시켜준다.(소수점)
+	EQUIP_BOOTS,			//신발 //레이드공격시 획득하는 동전을 %로 증가시켜준다.(소수점)
+	EQUIP_NECK,			//목걸이
+	EQUIP_RING,		//반지
+	TOTALEQUIP,
+
+	STAR1 = 0,
+	STAR2,
+	STAR3,
+	STAR4,
+	STAR5,
+	STAR6,
+	STAR7,
+	STAR8,
+	STAR9,
+	STAR10,
+
+	TOTALSTAR,
+
+	MAXSTAR = 7,
+
+	GRADE_NORMAL = 0,
+	GRADE_SUPERIOR,
+	GRADE_RARE,
+	GRADE_SET,
+	GRADE_EPIC,
+	GRADE_LEGEND,
+
+	TOTALGRADE,
+
+	ITEMMAXLEVEL = 5,
+	ITEMHAMMERCNT = 5,
+
+	TOTALCLOAK = 6,
+	TOTALHELM = 11,
+	TOTALARMOR = 11,
+	TOTALSHIELD = 6,
+	TOTALSWORD = 38,
+
+	ITEMPTR_INVEN = 0,
+	ITEMPTR_EMPTY = 1000,
+	ITEMPTR_SHOP = 2000,
+	ITEMPTR_EQUIP = 3000,
+	ITEMPTR_NEWITEM = 4000,
+	ITEMPTR_TEMPITEM = 60000,
+	ITEMPTR_RANKERITEM = 61000,
+	ITEMPTR_ARENAITEM = 62000,
+	ITEMPTR_HELPITEM = 63000,
+
+	MAXHELPITEM = 20,
+
+	ITEM_SWORD = 0,
+	ITEM_GUN,//1
+	ITEM_BOOMERANG,//2
+	ITEM_HELM,//3
+	ITEM_HAT,//4
+	ITEM_CAP,//5
+	ITEM_ARMOR,//6
+	ITEM_VEST,//7
+	ITEM_COAT,//8
+	ITEM_GUNTLET,//9
+	ITEM_ARMLET,//10
+	ITEM_GLOVE,//11
+	ITEM_KILT,//12
+	ITEM_SKIRT,//13
+	ITEM_PANTS,//14
+	ITEM_GREAVES,//15
+	ITEM_SHOES,//16
+	ITEM_BOOTS,//17
+	ITEM_NECK,//18
+	ITEM_RING,
+	ITEM_GEM,
+	ITEM_WASTE,
+	ITEM_IRON,
+	ITEM_LEATHER,
+	ITEM_CLOTH,
+	ITEM_WOOD,
+	ITEM_ESSENCE,
+	ITEM_RECIPE,
+	ITEM_QUEST,
+	ITEM_NETITEM,
+	ITEM_GOLD,
+	ITEM_KEY,
+	ITEM_STATUE,
+	ITEM_HEART,
+	ITEM_MEDAL,
+	ITEM_STAR,
+	ITEM_HAMMER,
+	ITEM_SHIELD,
+	ITEM_BOX,
+	ITEM_CREW,
+	ITEM_SKILL,
+
+	TOTALITEMTYPE,
+
+	BOX_RANDOM = 0,//모든 종류의 아이템이 다 나오는 BOX
+	BOX_EQUIP,//스페셜 장비만 나오는 
+	BOX_CREW,//캐릭터가 나오는
+	BOX_SKILL,//스킬이 나오는
+
+	//검 : ITEM_SWORD
+	ITEM_SWORD_STICK = 0,//1//연습용 몽둥이
+	ITEM_SWORD_LONG,//2//롱소드
+	ITEM_SWORD_CUTTER,//3//처형자의 검
+	ITEM_SWORD_RUIN,//4//파멸의 참마도
+	ITEM_SWORD_SEEKER,//5//추적자의 검
+	ITEM_SWORD_DOUBLE,//6//격노의 양날검
+	ITEM_SWORD_ELVEN,//7//수호자의 검
+	ITEM_SWORD_ROYAL,//8//왕가의 수호자
+	ITEM_SWORD_GHOST,//9//나찰의 검
+	ITEM_SWORD_GHOST2,//10//소울 크래셔
+	ITEM_SWORD_FRAME,//11//플레임소드
+	ITEM_SWORD_ICE,//12//아이스소드
+	ITEM_SWORD_THUNDER,//13//썬더소드
+	ITEM_SWORD_EARTH,//14//어스소드
+	ITEM_SWORD_LAEVATEINN,//15//레바테인
+	ITEM_SWORD_STORMBRINGER,//16//스톰브링거
+	ITEM_SWORD_CALADBOLG,//17//칼라드볼그
+	ITEM_SWORD_BALMUNG,//18//발뭉
+	ITEM_SWORD_HRUNTING,//19//흐룬팅
+	ITEM_SWORD_GIANT,//20//거인의 칼
+	ITEM_SWORD_MISTILTEINN,//21//미스틸테인
+	ITEM_SWORD_EXCALIBUR,//22//엑스칼리버
+	ITEM_SWORD_HOLY,//23//홀리소드
+	ITEM_SWORD_DARK,//24//다크소드
+	ITEM_SWORD_LEO,//25//레오소드
+	ITEM_SWORD_DEATH,//26//사신의 낫
+	ITEM_SWORD_DRAGONCLOW,//27//드래곤 클로우
+	ITEM_SWORD_DRAGONTOOTH,//28//황룡의 어금니
+	ITEM_SWORD_DRAGONGOD,//29//신룡마강검
+	ITEM_SWORD_DRAGONSLAYER,//30//드래곤 슬레이어
+	ITEM_SWORD_ULTIMATE,//31//얼티밋소드
+	ITEM_SWORD_DIMENSIONAL,//32//차원의 검
+	ITEM_SWORD_HEAVEN,//33//천공의 검
+	ITEM_SWORD_STARDUST,//34//스타더스트
+	ITEM_SWORD_KING,//35//패왕의 검
+	TOTAL_SWORD,
+
+	//총 : ITEM_GUN
+	ITEM_GUN_PISTOL = 0,//발화식 총
+	ITEM_GUN_REVOLVER,//리볼버 파이슨
+	ITEM_GUN_MAGNUM,//45구경 오토건 : 사일런트 킬러
+	ITEM_GUN_AUTOGUN45MM,//고져스 건 : 럭셔리 캐논
+	ITEM_GUN_JEWELGUN,//회천마도총 : 마도머신건
+	ITEM_GUN_EXPLOSION,//태양의 총 : 슈퍼노바
+	ITEM_GUN_CROSSFIRE,//헬파이어 건 : 인페르노 캐논 : 마룡열화포
+	ITEM_GUN_INFERNO,//크로스 파이어 : 테스타먼트 : 라그나로크
+	TOTAL_GUN,
+
+	//부메랑 : ITEM_BOOMERANG
+	ITEM_BOOMERANG_BOOMERANG = 0,//사냥용 부메랑
+	ITEM_BOOMERANG_VOYAGER,//슬라이서
+	ITEM_BOOMERANG_WINDWALKER,//강철 부메랑 : 윈드 슬래셔
+	ITEM_BOOMERANG_DOUBLECROSS,//트라이 엣지 : 헬 트라이앵글
+	ITEM_BOOMERANG_THUNDERMASTER,//라이트닝 엣지 : 한탄의 부메랑
+	ITEM_BOOMERANG_SOULCHASER,//소울 체이서 : 둠 슬레이어
+	ITEM_BOOMERANG_GRYPHONWING,//그리폰 윙 : 윙 오브 데스 : 드래곤 윙
+	ITEM_BOOMERANG_MEGATRIAL,//로커스트 헌트 : 제노사이드 윙 : 디재스터 엣지
+	TOTAL_BOOMERANG,
+
+	//헬멧 : ITEM_HELM
+	ITEM_HELM_BRONZE = 0,//1//헤드 가드
+	ITEM_HELM_BASINET,//2//바시넷
+	ITEM_HELM_DROW,//3//솔저헬름 : 센츄리온 헬멧
+	ITEM_HELM_SPIKEHEAD,//4//검투사의 투구 : 블러디 헬멧
+	ITEM_HELM_GLADITOR,//5//스파이크 헤드 : 귀신의 투구
+	ITEM_HELM_GIANT,//6//그랜드 헬름 : 성기사의 투구
+	ITEM_HELM_RUINED,//7//고대의 투구 : 환영의 투구 : 미라주 헬름
+	ITEM_HELM_TITANIUM,//8//용자의 투구 : 져지먼트 헬맷 : 오시리스 헬맷
+	TOTAL_HELM,
+
+	//모자 : ITEM_HAT
+	ITEM_HAT_COWBOY = 0,//카우보이 모자
+	ITEM_HAT_RIDINGGOGGLE,//산책용 보닛
+	ITEM_HAT_BERET,//레인저 햇 : 무법자의 모자
+	ITEM_HAT_WESTERNROMANCE,//서클릿 : 골드 블레스
+	ITEM_HAT_SCOUT,//올드 윌로우 : 엘븐 햇
+	ITEM_HAT_SNIPERGOGGLE,//스나이퍼 고글 : 어쌔신 스코프
+	ITEM_HAT_ELVENCAP,//혼란의 모자 : 카오스 솔져 : 나이트메어 햇
+	ITEM_HAT_DRAGONSKULL,//프리에스테스 : 발키리 서클렛 : 오딘 크라운
+	TOTAL_HAT,
+
+	//두건 : ITEM_CAP
+	ITEM_CAP_FEATHER = 0,//공작깃털 모자
+	ITEM_CAP_BEASTMANE,//귀족의 머리띠
+	ITEM_CAP_EXPLORERHAT,//거상의 모자 : 캐러벤 리더
+	ITEM_CAP_ACECAP,//사냥꾼 모자 : 로빈훗 캡
+	ITEM_CAP_LIONMANE,//투우사의 모자 : 미노타우르스
+	ITEM_CAP_GREAVE,//해적의 모자 : 졸리로져 캡
+	ITEM_CAP_DEATH,//에이스 캡 : 브레이브 캡 : 다이너스티 캡
+	ITEM_CAP_TROLLHEAD,//드래곤 레어캡 : 히드라 헤드 : 리바이어선 캡
+	TOTAL_CAP,
+
+	//갑옷 : ITEM_ARMOR
+	ITEM_ARMOR_BRONZE = 0,//1//헌터 튜닉
+	ITEM_ARMOR_SCALE,//2//미늘 갑옷
+	ITEM_ARMOR_BANDED,//3//하프 플레이트 : 밴디트 메일
+	ITEM_ARMOR_SKULL,//4//스컬 메일 : 마검사의 흉갑
+	ITEM_ARMOR_PLATE,//5//황금세공 갑옷 : 드워븐 아머
+	ITEM_ARMOR_RUNIC,//6//미스릴 아머 : 요정의 갑주
+	ITEM_ARMOR_MYTHRIL,//7//고대의 갑옷 : 불멸의 갑주 : 브리건딘
+	ITEM_ARMOR_DRAGONSKIN,//8//용비늘 갑옷 : 황룡의 갑옷 : 바하무트 아머
+	TOTAL_ARMOR,
+
+	//조끼 : ITEM_VEST
+	ITEM_VEST_WESTERN = 0,//카우보이 조끼
+	ITEM_VEST_LEOPARD,//실크 조끼
+	ITEM_VEST_SILK,//방랑자의 조끼 : 서바이벌 조끼
+	ITEM_VEST_PIRATE,//도적의 조끼 : 어쌔신 베스트
+	ITEM_VEST_BALL,//벨벳 셔츠 : 고딕 셔츠
+	ITEM_VEST_STAR,//귀족의 조끼 : 은사슬 조끼
+	ITEM_VEST_SPATIOTEMPORAL,//진홍빛 셔츠 : 불사의 셔츠 : 뱀파이어 로드
+	ITEM_VEST_QUEEN,//신관의 로브 : 세라핌 로브 : 루시펠 로브
+	TOTAL_VEST,
+
+	//코트 : ITEM_COAT
+	ITEM_COAT_SIMPLE = 0,//수수한 코트
+	ITEM_COAT_PADDING,//패딩 아머
+	ITEM_COAT_LEATHER,//털가죽 코트 : 그리즐리 스킨
+	ITEM_COAT_CUREBOIL,//큐어 보일 : 코아틀 스케일
+	ITEM_COAT_BEAST,//귀족의 코트 : 흑까마귀 코트
+	ITEM_COAT_GRIZZLY,//극지의 코트 : 블리자드 가드
+	ITEM_COAT_CROCODYLE,//윙 코트 : 가고일 코트 : 페가수스 코트
+	ITEM_COAT_HYDRASCALE,//바이스 코트 : 종말의 코트 : 카오스 엠페러
+	TOTAL_COAT,
+
+	//건틀렛 : ITEM_GUNTLET
+	ITEM_GUNTLET_IRON = 0,//1//핸드 가드
+	ITEM_GUNTLET_CHAIN,//2//청동 장갑
+	ITEM_GUNTLET_MONSTER,//3//체인 건틀렛 : 모험자의 장갑
+	ITEM_GUNTLET_KNIGHT,//4//나이트 글로브 : 명성의 장갑
+	ITEM_GUNTLET_EAGLECLAW,//5//비스트 핸드 : 오우거 건틀렛
+	ITEM_GUNTLET_SINE,//6//라이징 건틀렛 : 무쌍의 장갑
+	ITEM_GUNTLET_JUSTICEHAND,//7//광전사의 장갑 : 뇌격파수 : 시바의 손톱
+	ITEM_GUNTLET_HOLYHAND,//8//드래곤 핸드 : 백룡의 장갑 : 바하무트 핸드
+	TOTAL_GUNTLET,
+
+	//팔찌 : ITEM_ARMLET
+	ITEM_ARMLET_LEATHER = 0,//사제의 묵주
+	ITEM_ARMLET_DESERT,//여행자의 팔찌
+	ITEM_ARMLET_EXPLORER,//백금 브레스렛 : 연인의 팔찌
+	ITEM_ARMLET_RAIDERS,//전사의 암렛 : 임프 암렛
+	ITEM_ARMLET_NOBLESS,//에메랄드 팔찌 : 노블레스 암렛
+	ITEM_ARMLET_DEVIL,//이블 암렛 : 몽마의 팔찌
+	ITEM_ARMLET_DIGNITY,//위엄의 팔찌 : 지배자의 팔찌 : 엠프레스 암렛
+	ITEM_ARMLET_HERO,//영웅의 팔찌 : 소울 브레스렛 : 갓 핸드
+	TOTAL_ARMLET,
+
+	//장갑 : ITEM_GLOVE
+	ITEM_GLOVE_TRAVELER = 0,//여행자의 장갑
+	ITEM_GLOVE_DUALTIE,//이중매듭 장갑
+	ITEM_GLOVE_LINEN,//소매치기 장갑 : 섀도우 핸드
+	ITEM_GLOVE_RUNE,//실크 글로브 : 귀공자의 장갑
+	ITEM_GLOVE_FAIRY,//세공사의 장갑 : 마스터 글러브
+	ITEM_GLOVE_ROCKET,//마법문양 장갑 : 커스드 글로브
+	ITEM_GLOVE_LACEMITTEN,//심판의 손 : 구원의 손 : 이터널 져지
+	ITEM_GLOVE_GLORY,//성자의 장갑 : 팔라딘 글로브 : 홀리 핸드
+	TOTAL_GLOVE,
+
+	//킬트 : ITEM_KILT
+	ITEM_KILT_CHAIN = 0,//1//밴딩 킬트
+	ITEM_KILT_DUALCHAIN,//2//체인 킬트
+	ITEM_KILT_BATTLE,//3//나이트 킬트 : 배틀 킬트
+	ITEM_KILT_NIGHTMARE,//4//스컬 킬트 : 사령의 바지
+	ITEM_KILT_BATTLEFIELD,//5//수령의 바지 : 토르의 바지
+	ITEM_KILT_DWARVEN,//6//미스릴 킬트 : 페어리 킬트
+	ITEM_KILT_DURAHAN,//7//에인션트 킬트 : 이터널 킬트 : 언리밋 킬트
+	ITEM_KILT_EARTHQUAKE,//8//용수염 킬트 : 청룡의 킬트 : 용기사 바지
+	TOTAL_KILT,
+
+	//바지 : ITEM_SKIRT
+	ITEM_SKIRT_BROCADE = 0,//양단 스커트
+	ITEM_SKIRT_CARPSKIN,//빈티지 스커트
+	ITEM_SKIRT_VELVET,//단풍염색 치마 : 홍련의 스커트
+	ITEM_SKIRT_NOBLE,//벨벳 스커트 : 소공녀의 치마
+	ITEM_SKIRT_GENERAL,//폭풍의 스커트 : 무지개빛 치마
+	ITEM_SKIRT_GLORY,//금실의 치마 : 여제의 스커트
+	ITEM_SKIRT_CHAOS,//영광의 치마 : 현자의 치마 : 성령의 치마
+	ITEM_SKIRT_HERO,//사제의 스커트 : 비슈누 스커트 : 태양의 스커트
+	TOTAL_SKIRT,
+
+	//바지 : ITEM_PANTS
+	ITEM_PANTS_RIDING = 0,//승마용 바지
+	ITEM_PANTS_VINTAGEJEAN,//카프스킨 팬츠
+	ITEM_PANTS_BLAZE,//망령의 팬츠 : 머미 밴디지
+	ITEM_PANTS_ASSASSIN,//흑단의 바지 : 어쌔신 팬츠
+	ITEM_PANTS_TEMPEST,//세일러 팬츠 : 제독의 바지
+	ITEM_PANTS_SCARLETLEGGINGS,//데저트 팬츠 : 캐러밴 팬츠
+	ITEM_PANTS_HEAVEN,//카오틱 팬츠 : 침묵의 바지 : 아비스 팬츠
+	ITEM_PANTS_SATANIC,//가디안 팬츠 : 켈베로스 레더 : 아누비스 바지
+	TOTAL_PANTS,
+
+	//장화 : ITEM_GREAVES
+	ITEM_GREAVES_TRAINER = 0,//1//코퍼 그리브
+	ITEM_GREAVES_CHAIN,//2//밴디트 그리브
+	ITEM_GREAVES_KNIGHT,//3//체인 그리브 : 나이트 그리브
+	ITEM_GREAVES_FROZEN,//4//프로즌 그리브 : 만년설의 신발
+	ITEM_GREAVES_GOLEM,//5//플레이트 부츠 : 드워븐 그리브
+	ITEM_GREAVES_GIANT,//6//빅풋 그리브 : 골렘 그리브
+	ITEM_GREAVES_GHOST,//7//마검사의 신발 : 사령의 신발 : 종말의 발소리
+	ITEM_GREAVES_LEGEND,//8//드래곤 그리브 : 마룡의 발자국 : 가이아 그리브
+	TOTAL_GREAVES,
+
+	//신발 : ITEM_SHOES
+	ITEM_SHOES_CLEAN = 0,//웨스턴 슈즈
+	ITEM_SHOES_CHASER,//스웨이드 슈즈
+	ITEM_SHOES_LEATHER,//라이딩 슈즈 : 밀리터리 워커
+	ITEM_SHOES_ROCKY,//칠흑의 슈즈 : 마녀의 슈즈
+	ITEM_SHOES_CARVING,//귀부인의 신발 : 로얄 셀레브
+	ITEM_SHOES_NETHERWORLD,//리치 슈즈 : 팬텀 테일즈
+	ITEM_SHOES_INCARNATION,//프리즘 슈즈 : 미라클 슈즈 : 그라비티 슈즈
+	ITEM_SHOES_HEAVENS,//베이그란트 : 페이트 슈즈 : 데스티니 슈즈
+	TOTAL_SHOES,
+
+	//부츠 : ITEM_BOOTS
+	ITEM_BOOTS_SUEDE = 0,//스니커즈
+	ITEM_BOOTS_WESTERN,//스캐빈저 부츠
+	ITEM_BOOTS_RIDING,//천둥가죽 신발 : 낙뢰의 자국
+	ITEM_BOOTS_RICH,//가드너 부츠 : 토렌트 루트
+	ITEM_BOOTS_OGRE,//세일러 부츠 : 캡틴 부츠
+	ITEM_BOOTS_DARK,//저승의 신발 : 헬 스트라이더
+	ITEM_BOOTS_MIRACLE,//엘레멘탈 부츠 : 브리징 윈드 : 템페스트 부츠
+	ITEM_BOOTS_DESTINY,//에어워커 : 클라우드 부츠 : 헤븐리 부츠
+	TOTAL_BOOTS,
+
+	//목걸이 : ITEM_NECK
+	ITEM_NECK0 = 0,//명예의 펜던트(0)
+	ITEM_NECK1,//연옥의 브로치(1)
+	ITEM_NECK2,//찰나의 팔찌(2)
+	ITEM_NECK3,//황금 바늘(3)
+	ITEM_NECK4,//파열의 팔찌(4)
+	ITEM_NECK5,//메피스토 피리(5)
+	ITEM_NECK6,//사멸의 하프(6)
+	ITEM_NECK7,//인어의 머리핀(7)
+	ITEM_NECK8,//찬트의 펜던트(8)
+	ITEM_NECK9,//미래의 거울(9)
+	ITEM_NECK10,//피의 모래시계(10)
+	ITEM_NECK11,//지옥의 만화경(11)
+	ITEM_NECK12,//전능의 브로치(12)
+	ITEM_NECK13,//생명의 보옥(13)
+	ITEM_NECK14,//증식의 목걸이(14)
+	ITEM_NECK15,//천공의 목걸이(15)
+	ITEM_NECK16,//현자의 돌(16)
+	ITEM_NECK17,//꿈의 오카리나(17) X
+	ITEM_NECK18,//무한의 나침반(18) X
+	ITEM_NECK19,//기억의 오르골(19) X
+	ITEM_NECK20,//난쟁이의 공(20)
+	ITEM_NECK21,//탐욕의 항아리(21)
+	ITEM_NECK22,//팬더인형(22)
+	ITEM_NECK23,//스마일 브로치(23)
+	ITEM_NECK24,//토르테 악보(24)
+	ITEM_NECK25,//용자의 시계(25)
+	ITEM_NECK26,//악마의 뿔피리(26) X
+	ITEM_NECK27,//아만디움 달걀(27) X
+	TOTAL_NECK,
+
+	//목걸이 : ITEM_RING
+	ITEM_RING0 = 0,	//사신의 반지(28)
+	ITEM_RING1,	//통찰의 반지(29)
+	ITEM_RING2,	//시공의 반지(30)
+	ITEM_RING3,	//해방의 반지(31)//|e사용시|i%d%%|j확률로 상태이상제거
+	ITEM_RING4,	//산호석 반지(32)
+	ITEM_RING5,	//생환의 반지(33)//|e사용시 |jHP |i%d |j회복
+	ITEM_RING6,	//희생의 반지(34)//|e사용시 |i%d%%|j확률로 추가타격
+	ITEM_RING7,	//폭주의 반지(35)
+	ITEM_RING8,	//골렘의 반지(36)
+	ITEM_RING9,	//광대의 반지(37)//|e사용시 |j회피 |i%d%%|j증가
+	ITEM_RING10,	//원한의 반지(38)//|e사용시|j관통공격확률|i%d%%|j증가
+	ITEM_RING11,	//신념의 반지(39)
+	ITEM_RING12,	//광포의 반지(40)
+	ITEM_RING13,	//승자의 반지(41)
+	ITEM_RING14,	//궁극의 반지(42)
+	ITEM_RING15,	//차원의 반지(43)//|e사용시 |j적방어도감소 -|i%d
+	ITEM_RING16,	//영화의 반지(44)
+	ITEM_RING17,	//행운의 반지(45)
+	TOTAL_RING,
+
+	//보석 : ITEM_GEM
+	ITEM_GEM_RUBY = 0,	//루비(46)//PREFIX_FIRE_REGIST
+	ITEM_GEM_SAPPHIRE,	//사파이어(47)//PREFIX_FROST_REGIST
+	ITEM_GEM_AMETHYST,	//자수정(48)//PREFIX_THUNDER_REGIST
+	ITEM_GEM_DIAMOND,	//다이아몬드(49)//PREFIX_HOLY_REGIST
+	ITEM_GEM_PERL,	//진주(50)//PREFIX_DARK_REGIST
+	ITEM_GEM_EMERALD,	//에메랄드(51)//SUFFIX_ARMOR
+	TOTAL_GEM,
+
+	//소모아이템 : ITEM_WASTE
+	ITEM_WASTE_RETURN = 0,	//귀환서(24)
+	ITEM_WASTE_STAR,				//별의 씨앗(52)
+	ITEM_WASTE_MOON,				//달의 씨앗(53)
+	ITEM_WASTE_SUN,					//태양의 씨앗(54) //골드 2배 이벤트
+	ITEM_WASTE_SILVER,				//은빛 허브(55)
+	ITEM_WASTE_GOLD,				//금빛 허브(56)
+	ITEM_WASTE_SCARLET,			//진홍빛 허브(57)
+	ITEM_WASTE_WATER,			//세계수의 물(58)
+	ITEM_WASTE_FLUTE,				//풀피리(5)
+	ITEM_WASTE_EYEWASH,		//안약(60)
+	ITEM_WASTE_ANTIDOTE,		//해독제(59)
+	ITEM_WASTE_WING,				//릴의 날개(62)
+	ITEM_WASTE_HOLYWATER,	//성수(61)
+	ITEM_WASTE_FIRESTONE,		//불의 정령석(63)
+	ITEM_WASTE_FROSTSTONE,	//물의 정령석(64)
+	ITEM_WASTE_THUNDERSTONE,	//번개의 정령석(65)
+	ITEM_WASTE_HOLYSTONE,					//빛의 정령석(66)
+	ITEM_WASTE_DARKSTONE,					//어둠의 정령석(67)
+	ITEM_WASTE_FIREELEMENTAL,			//화염의 정령석(46)
+	ITEM_WASTE_FROSTELEMENTAL,			//얼음의 정령석(47)
+	ITEM_WASTE_THUNDERELEMENTAL,	//천둥의 정령석(48)
+	ITEM_WASTE_HOLYELEMENTAL,			//섬광의 정령석(49)
+	ITEM_WASTE_DARKELEMENTAL,			//칠흑의 정령석(50)
+	ITEM_WASTE_DAMAGE,			//|e강화의 비약(207)
+	ITEM_WASTE_DEFENSE,			//|e인내의 비약(208)
+	ITEM_WASTE_MAGIC,				//|e치유의 비약(210)
+	ITEM_WASTE_SKILL,				//|e마법의 비약(209)
+	TOTAL_WASTE,
+
+	//철계열 제작재료 : ITEM_IRON
+	ITEM_IRON_LV1 = 0,	//철광석(45개 : 68)
+	ITEM_IRON_LV2,	//은괴(39개 : 69)
+	ITEM_IRON_LV3,	//토륨 파편(39개 : 70)
+	ITEM_IRON_LV4,	//다마스커스(42개 : 71)
+	ITEM_IRON_LV5,	//아다만티움(39개 : 72)
+	ITEM_IRON_LV6,	//미스릴 결정(42개 : 73)
+	ITEM_IRON_LV7,	//오리하르콘(48개 : 74)
+	ITEM_IRON_LV8,	//이터늄 원석(30개 : 75)
+	TOTAL_IRON,
+
+	//가죽계열 제작재료 : ITEM_LEATHER
+	ITEM_LEATHER_LV1 = 0,	//얇은 가죽(45개 : 76)
+	ITEM_LEATHER_LV2,	//반짝이는 비늘(39개 : 77)
+	ITEM_LEATHER_LV3,	//무쇠 가죽(39개 : 78)
+	ITEM_LEATHER_LV4,	//돌연변이 비늘(42개 : 79)
+	ITEM_LEATHER_LV5,	//달빛 가죽(39개 : 80)
+	ITEM_LEATHER_LV6,	//바실리스크 비늘(42개 : 81)
+	ITEM_LEATHER_LV7,	//지옥사자 가죽(48개 : 82)
+	ITEM_LEATHER_LV8,	//붉은 용비늘(30개 : 83)
+	TOTAL_LEATHER,
+
+	//천계열 제작재료 : ITEM_CLOTH
+	ITEM_CLOTH_LV1 = 0,	//감색 실타래(44개 : 84)
+	ITEM_CLOTH_LV2,	//거미줄 옷감(41개 : 7)
+	ITEM_CLOTH_LV3,	//비단 실타래(40개 : 85)
+	ITEM_CLOTH_LV4,	//심연의 실타래(41개 : 86)
+	ITEM_CLOTH_LV5,	//은하수 옷감(40개 : 87)
+	ITEM_CLOTH_LV6,	//천고의 옷감(45개 : 88)
+	ITEM_CLOTH_LV7,	//공허의 실타래(45개 : 89)
+	ITEM_CLOTH_LV8,	//룬문자 옷감(28개 : 90)
+	TOTAL_CLOTH,
+
+	//나무계열 제작재료 : ITEM_WOOD
+	ITEM_WOOD_LV1 = 0,	//벼락맞은 가지(60개 : 91)
+	ITEM_WOOD_LV2,	//얼어붙은 가지(29개 : 92)
+	ITEM_WOOD_LV3,	//맨드레이 뿌리(44개 : 93)
+	ITEM_WOOD_LV4,	//거인의 뿌리(37개 : 94)
+	ITEM_WOOD_LV5,	//저주받은 뿌리(44개 : 95)
+	ITEM_WOOD_LV6,	//고대의 가지(37개 : 96)
+	ITEM_WOOD_LV7,	//지옥의 뿌리(53개 : 97)
+	ITEM_WOOD_LV8,	//세계수의 가지(20개 : 98)
+	TOTAL_WOOD,
+
+	//특수재료 : ITEM_ESSENCE
+	ITEM_ESSENCE0 = 0,	//단단한 껍질(9개 : 99)
+	ITEM_ESSENCE1,	//오염된 넝쿨(9개 : 100)
+	ITEM_ESSENCE2,	//심연의 눈동자(7개 : 20)
+	ITEM_ESSENCE3,	//저주받은 해골(11개 : 101)
+	ITEM_ESSENCE4,	//푸른 비늘(9개 : 102)
+	ITEM_ESSENCE5,	//반짝이는 심장(9개 : 103)
+	ITEM_ESSENCE6,	//야생의 돌(18개 : 104)
+	ITEM_ESSENCE7,	//갈라진 어금니(18개 : 105)
+	ITEM_ESSENCE8,	//염의 증류수(9개 : 21)
+	ITEM_ESSENCE9,	//빛의 깃털(9개 : 106)
+	ITEM_ESSENCE10,	//질풍의 조각(12개 : 107)
+	ITEM_ESSENCE11,	//눈의 결정(12개 : 8)
+	ITEM_ESSENCE12,	//결빙의 옥루(12개 : 108)
+	ITEM_ESSENCE13,	//우레 가루(6개 : 109)
+	ITEM_ESSENCE14,	//뇌문의 쐐기(6개 : 110)
+	ITEM_ESSENCE15,	//마력의 구슬(6개 : 13)
+	ITEM_ESSENCE16,	//요정의 눈물(27개 : 61)
+	ITEM_ESSENCE17,	//광휘의 염료(27개 : 111)
+	ITEM_ESSENCE18,	//용맹의 증표(9개 : 56)
+	ITEM_ESSENCE19,	//슬라임 윤활액(9개 : 59)
+	ITEM_ESSENCE20,	//혼미의 영석(9개 : 128)
+	ITEM_ESSENCE21,	//월석 파편(9개 : 113)
+	ITEM_ESSENCE22,	//영혼의 꼬리(9개 : 114)
+	ITEM_ESSENCE23,	//농염의 십자가(9개 : 115)
+	ITEM_ESSENCE24,	//황천의 보주(9개 : 0)
+	ITEM_ESSENCE25,	//유혹의 향료(9개 : 116)
+	ITEM_ESSENCE26,	//만고의 뿔(18개 : 117)
+	ITEM_ESSENCE27,	//전능의 수정(18개 : 16)
+	ITEM_ESSENCE28,	//은하수 날개(9개 : 118)
+	ITEM_ESSENCE29,	//뫼비우스의 띠(9개 : 119)
+	ITEM_ESSENCE30,	//영원의 상(9개 : 1)
+	ITEM_ESSENCE31,	//노스 제왕석(9개 : 27)
+	ITEM_ESSENCE32,	//포비든 스톤(18개 : 120)
+	ITEM_ESSENCE33,	//묘지의 반딧불(9개 : 121)
+	ITEM_ESSENCE34,	//지배의 삼지창(9개 : 122)
+	ITEM_ESSENCE35,	//엠페러 스톤(18개 : 123)
+	ITEM_ESSENCE36,	//볼케이노 잼(18개 : 124)
+	ITEM_ESSENCE37,	//프로즌 셸(18개 : 125)
+	ITEM_ESSENCE38,	//인피니티 볼트(18개 : 126)
+	ITEM_ESSENCE39,	//다즐링 램프(6개 : 18)
+	ITEM_ESSENCE40,	//가공된 마석(6개 : 17)
+	ITEM_ESSENCE41,	//황천의 닻(6개 : 127)
+	ITEM_ESSENCE42,	//금단의 과실(6개 : 128)
+	ITEM_ESSENCE43,	//적룡의 숨결(6개 : 129)
+	ITEM_ESSENCE44,	//원혼의 결정(6개 : 19)
+	TOTAL_ESSENCE,
+
+	//퀘스트 아이템 : ITEM_QUEST
+	ITEM_QUEST_MUSHROOM = 0,	//눅눅한 버섯(112)
+	ITEM_QUEST_GOLD,	//마일즈의 돈주머니(179)
+	ITEM_QUEST_ARMLET,	//마일즈의 팔찌(2)
+	ITEM_QUEST_DARKPIECE,	//어둠의 파편(159)
+	ITEM_QUEST_REEF,	//산호초(187)
+	ITEM_QUEST_GOLDBAR,	//황금(160)
+	ITEM_QUEST_AMULET,	//어둠의 아뮬렛(161)
+	ITEM_QUEST_GHOST,	//유령옷(188)
+	ITEM_QUEST_SCRIPT,	//리클루즈의 원고(24)
+	ITEM_QUEST_FUND,	//네이의 돈주머니(191)
+	ITEM_QUEST_FRUIT,	//홍염의 과실(189)
+	ITEM_QUEST_BIOGRAPHY,	//바리스 영웅전(190)
+	ITEM_QUEST_FANLETTER,	//펜레터(190)
+	ITEM_QUEST_NUMMARK,		//번호표(190)
+	ITEM_QUEST_LETTER,		//그을린 편지(191)
+	ITEM_QUEST_TRAINER,	//조련사의 편지(191)
+	ITEM_QUEST_COMPASS,	//시간의 나침반(197)
+	ITEM_QUEST_SECRET,	//기밀 문서(24)
+	ITEM_QUEST_SECRET2,	//크풀레의 밀서(191)
+	ITEM_QUEST_LETTER2,	//다리안의 편지(191)
+	ITEM_QUEST_INVITATION,	//초대장(191)
+	ITEM_QUEST_DRUID,	//드루이드의 편지(191)
+	ITEM_QUEST_GRANDMA,	//할머니의 편지(191)
+	ITEM_QUEST_KATHERINE,	//캐서린의 반지(28)
+	ITEM_QUEST_TREASUREMAP,	//보물지도(181)
+	ITEM_QUEST_REDHEART,	//작열의 소울(192)
+	ITEM_QUEST_BLUEHEART,	//결빙의 소울(193)
+	ITEM_QUEST_THUNDERHEART,	//전격의 소울(194)
+	ITEM_QUEST_HOLYHEART,	//위광의 소울(195)
+	ITEM_QUEST_DARKHEART,	//암흑의 소울(196)
+	ITEM_QUEST_FLOWER,	//꽃(198)
+	ITEM_QUEST_SNOWFLOWER,	//백설화 가지(92)
+	ITEM_QUEST_MAP_TOTALCOMPLETE,	//완벽한 지도(190)
+	ITEM_QUEST_MAP,	//지도(181)
+	ITEM_QUEST_MAP_COMPLETE,	//완성된 지도(182)
+	TOTAL_QUESTITEM,
+
+	//유료아이템 : ITEM_NETITEM
+	ITEM_NET_COUPON = 0,	//쿠폰(200)	//-1
+	ITEM_NET_TICKET,	//입장권(201)	//-1
+	ITEM_NET_ENCHANT,	//강화석(202)	//-1
+	ITEM_NET_PROTECT,	//보호석(203)	//-1
+	ITEM_NET_RECIPE,		//조합석(204)	//-1
+	ITEM_NET_RESOLUTION,	//분해석(205)	//-1
+	ITEM_NET_SOCKET,	//소켓석(206)	//-1
+	ITEM_NET_CHARACTER,	//캐릭터(167)	//-1
+	ITEM_NET_RESURRECTION,	//부활약(166)	//-1
+	ITEM_NET_BOX_WEAPON_HIGH, //고급무기상자(168)	//BOX_H2
+	ITEM_NET_BOX_WEAPON_MID, //중급무기상자(169)	//BOX_H1
+	ITEM_NET_BOX_WEAPON_LOW, //하급무기상자(170)	//BOX_H1
+	ITEM_NET_BOX_DEFENSE_HIGH, //고급방어구상자(171)	//BOX_H2
+	ITEM_NET_BOX_DEFENSE_MID, //중급방어구상자(172)	//BOX_H1
+	ITEM_NET_BOX_DEFENSE_LOW, //하급방어구상자(173)	//BOX_H1
+	ITEM_NET_BOX_ACCESSORY_HIGH, //고급악세사리상자(174)	//BOX_H2
+	ITEM_NET_BOX_ACCESSORY_MID, //중급악세사리상자(175)	//BOX_H1
+	ITEM_NET_BOX_ACCESSORY_LOW, //하급악세사리상자(176)	//BOX_H1
+	ITEM_NET_BOX_RANDOM,	//랜덤아이템상자(177)	//BOX_CHEST1//클릭하면 아이템이 나오는 상자. 골드 
+	ITEM_NET_BOX_GEM,	//고급보석(178)	//BOX_S5
+	ITEM_NET_SINGLEBAG,	//가방(162)	//-1
+	ITEM_NET_NETBAG,	//창고가방(163)	//-1
+	ITEM_NET_APRESET,	//AP초기화(164)	//-1
+	ITEM_NET_SPRESET,	//SP초기화(165)	//-1
+	ITEM_NET_PACKAGE_NEWBIE,	//초심자 스페셜(211)	//BOX_S1
+	ITEM_NET_PACKAGE_ENCHANT,	//슈퍼강화패키지(212)	//BOX_S2
+	ITEM_NET_PACKAGE_STONE,	//스톤패키지(213)	//BOX_S3
+	ITEM_NET_PACKAGE_ARENA,	//투기장 패키지(214)	//BOX_S4
+	ITEM_NET_PACKAGE_LUCK,	//행운 패키지(215)	//BOX_S5
+	ITEM_NET_EXPORB,	//EXP획득(180)	//-1
+
+	TOTAL_NETITEM,
+
+	//키아이템 : ITEM_KEY
+	ITEM_KEY0 = 0,	//금단의 계곡 열쇠(146)
+	ITEM_KEY1,	//어둠의 파편 열쇠(147)
+	ITEM_KEY2,	//푸른비늘 열쇠(148)
+	ITEM_KEY3,	//차원의 열쇠(149)
+	ITEM_KEY4,	//얼음의 정령 열쇠(150)
+	ITEM_KEY5,	//번개의 정령 열쇠(151)
+	ITEM_KEY6,	//빛의 정령 열쇠(152)
+	ITEM_KEY7,	//지하수로 열쇠(153)
+	ITEM_KEY8,	//골렘 열쇠(154)
+	ITEM_KEY9,	//어둠의 열쇠(155)
+	ITEM_KEY10,	//드래곤의 무덤 열쇠(156)
+	ITEM_KEY11,	//망자의 도시 열쇠(157)
+	ITEM_KEY12,	//마왕성의 열쇠(158)
+	ITEM_KEY13,	//왕가의 펜던트(15)
+	ITEM_KEY14,	//근성의 허리띠(183)
+	ITEM_KEY15,	//신기루의 목걸이(184)
+	ITEM_KEY16,	//오우거의 장갑(185)
+	TOTAL_KEYITEM,
+
+	TOTAL_KEY = ITEM_KEY12 + 1,
+
+	//상 : ITEM_STATUE
+	ITEM_STATUE_WIND = 0,	//질풍의 상(130)
+	ITEM_STATUE_DESTRUCT,	//파괴의 상(131)
+	ITEM_STATUE_POWER,		//완력의 상(132)
+	ITEM_STATUE_MERMAID,	//인어의 상(133)
+	ITEM_STATUE_FLAME,		//불꽃의 상(134)
+	ITEM_STATUE_PENGUIN,		//펭귄의 상(135)
+	ITEM_STATUE_ICE,				//얼음의 상(136)
+	ITEM_STATUE_THUNDER,	//번개의 상(137)
+	ITEM_STATUE_SUN,			//태양의 상(138)
+	ITEM_STATUE_RABBIT,		//토끼의 상(139)
+	ITEM_STATUE_GOLEM,		//골렘의 상(140)
+	ITEM_STATUE_DIMENSION,	//차원의 상(141)
+	ITEM_STATUE_EAGLE,		//독수리의 상(142)
+	ITEM_STATUE_SQUIRREL,	//다람쥐의 상(143)
+	ITEM_STATUE_DRAGON,		//드래곤의 상(144)
+	ITEM_STATUE_SPIRIT,		//진공의 상(145)
+	TOTAL_STATUE,
+
+
+	//상자아이템 : ITEM_BOX
+	//일단 고려해야 되는 것이 상점에서 파는 랜덤상자의 정체는?
+	//장비를 처음부터 다 깔아줄건가
+	//아니면 칼을 
+	BOX_INGAME = 0,//장비가 들어있는 박스
+	BOX_EQUIP_WOOD,
+	BOX_EQUIP_SILVER,
+	BOX_EQUIP_GOLD,
+	BOX_EQUIP_MAGIC,
+	BOX_EQUIP_HERO,
+	BOX_EQUIP_LEGEND,
+	BOX_CREW_SEBASTIAN,//몬스터가 들어 있는 박스
+	BOX_CREW_PRINCESS,
+	BOX_CREW_KING,
+	BOX_CREW_DEVIL,
+	BOX_ATTR_FIRE,//아이템이 들어 있는 박스
+	BOX_ATTR_FROST,
+	BOX_ATTR_EARTH,
+	BOX_ATTR_THUNDER,
+	BOX_ATTR_LIGHT,
+	BOX_ATTR_DARK,
+	TOTAL_BOX,
+
+	BOXDROP_COIN = 0,
+	BOXDROP_COINBAG,
+	BOXDROP_QUESTITEM,
+	BOXDROP_QUESTITEMBAG,
+	BOXDROP_HEART,
+	BOXDROP_EQUIP,
+	BOXDROP_BATTLE,
+	BOXDROP_RAID,
+	BOXDROP_SHIELD,
+	TOTAL_BOXDROP,
+
+	BOXRULE1 = 0,
+	BOXRULE2,
+	BOXRULE3,
+	BOXRULE4,
+	BOXRULE5,
+	BOXRULE6,
+	BOXRULE7,
+	BOXRULE8,
+	BOXRULE9,
+	BOXRULE10,
+
+	TOTALBOXRULE,
+
+	BOXSTATUS_APPEAR = 0,
+	BOXSTATUS_CLOSED,
+	BOXSTATUS_OPENING,
+	BOXSTATUS_OPENED,
+	BOXSTATUS_CLOSING,
+	BOXSTATUS_EMPTY,
+	BOXSTATUS_SHOWGOLD,
+
+	TOTALBOXSTATUS,
+
+	//동료들 : ITEM_CREW
+
+	////투기장 2 전용 아이템(나중에 프리미엄으로 주면 될듯)
+	////검 : ITEM_SWORD
+	//ITEM_SWORD2_HRUNTING,	//아케론 헬름
+	//ITEM_SWORD2_GRAM,	//세이렌 헬름
+	//ITEM_SWORD2_ASCALON,	//타이탄 헬름
+	//ITEM_SWORD2_STORMBRINGER,	//티폰 헬름
+	//TOTAL_SWORD2,
+
+	////총 : ITEM_GUN				
+	//ITEM_GUN2_GAEBOLG,	//가에보르그
+	//ITEM_GUN2_GUNGNIR,	//궁니르
+	//ITEM_GUN2_LONGINUS,	//롱기누스
+	//ITEM_GUN2_TAHULLOOM,	//마탄 타흘룸
+	//TOTAL_GUN2,
+
+	////부메랑 : ITEM_BOOMERANG				
+	//ITEM_BOOMERANG2_KALADBOLG,	//칼라드볼그
+	//ITEM_BOOMERANG2_GAEBOLG,	//게이볼그
+	//ITEM_BOOMERANG2_ANSWERER,	//프라가라흐
+	//ITEM_BOOMERANG2_MJOLNIR,	//묠니르
+	//TOTAL_BOOMERANG2,
+
+	////헬멧 : ITEM_HELM				
+	//ITEM_HELM2_ACHERON,	//아케론 헬름
+	//ITEM_HELM2_SEIREN,	//세이렌 헬름
+	//ITEM_HELM2_TITAN,	//타이탄 헬름
+	//ITEM_HELM2_TYPHON,	//티폰 헬름
+	//TOTAL_HELM2,
+
+	////모자 : ITEM_HAT				
+	//ITEM_HAT2_NEMESIS,	//네메시스 헷
+	//ITEM_HAT2_PSYCHE,	//프시케 헷
+	//ITEM_HAT2_ATALANTA,	//아탈란타 헷
+	//ITEM_HAT2_LETHE,	//레테 크라운
+	//TOTAL_HAT2,
+
+	////두건 : ITEM_CAP				
+	//ITEM_CAP2_PHLEGETHON,	//플레케톤 캡
+	//ITEM_CAP2_THANATUS,	//타나토스 캐
+	//ITEM_CAP2_MIDAS,	//미다스 캡
+	//ITEM_CAP2_EREBOS,	//에레보스 캡
+	//TOTAL_CAP2,
+
+	////갑옷 : ITEM_ARMOR				
+	//ITEM_ARMOR2_ACHERON,	//아케론 아머
+	//ITEM_ARMOR2_SEIREN,	//세이렌 아머
+	//ITEM_ARMOR2_TITAN,	//타이탄 아머
+	//ITEM_ARMOR2_TYPHON,	//티폰 아머
+	//TOTAL_ARMOR2,
+	//		
+	////조끼 : ITEM_VEST				
+	//ITEM_VEST2_NEMESIS,	//네메시스 로브
+	//ITEM_VEST2_PSYCHE,	//프시케 로브
+	//ITEM_VEST2_ATALANTA,	//아탈란타 로브
+	//ITEM_VEST2_LETHE,	//레테 로브
+	//TOTAL_VEST2,
+	//		
+	////코트 : ITEM_COAT				
+	//ITEM_COAT2_PHLEGETHON,	//플레케톤 코트
+	//ITEM_COAT2_THANATUS,	//타나토스 코트
+	//ITEM_COAT2_MIDAS,	//미다스 코트
+	//ITEM_COAT2_EREBOS,	//에레보스 코트
+	//TOTAL_COAT2,
+
+	////건틀렛 : ITEM_GUNTLET				
+	//ITEM_GUNTLET2_ACHERON,	//아케론 건틀렛
+	//ITEM_GUNTLET2_SEIREN,	//세이렌 건틀렛
+	//ITEM_GUNTLET2_TITAN,	//타이탄 건틀렛
+	//ITEM_GUNTLET2_TYPHON,	//티폰 건틀렛
+	//TOTAL_GUNTLET2,
+
+	////팔찌 : ITEM_ARMLET				
+	//ITEM_ARMLET2_NEMESIS,	//네메시스 암렛
+	//ITEM_ARMLET2_PSYCHE,	//프시케 암렛
+	//ITEM_ARMLET2_ATALANTA,	//아탈란타 암렛
+	//ITEM_ARMLET2_LETHE,	//레트 암렛
+	//TOTAL_ARMLET2,
+
+	////장갑 : ITEM_GLOVE				
+	//ITEM_GLOVE2_PHLEGETHON,	//플레케톤 핸드
+	//ITEM_GLOVE2_THANATUS,	//타나토스 핸드
+	//ITEM_GLOVE2_MIDAS,	//미다스 글러브
+	//ITEM_GLOVE2_EREBOS,	//에레보스 핸드
+	//TOTAL_GLOVE2,
+
+	////킬트 : ITEM_KILT				
+	//ITEM_KILT2_ACHERON,	//아케론 킬트
+	//ITEM_KILT2_SEIREN,	//세이렌 킬트
+	//ITEM_KILT2_TITAN,	//타이탄 킬트
+	//ITEM_KILT2_TYPHON,	//티폰 킬트
+	//TOTAL_KILT2,
+
+	////바지 : ITEM_SKIRT				
+	//ITEM_SKIRT2_NEMESIS,	//네메시스 치마
+	//ITEM_SKIRT2_PSYCHE,	//프시케 스커트
+	//ITEM_SKIRT2_ATALANTA,	//아탈란타 치마
+	//ITEM_SKIRT2_LETHE,	//레테 스커트
+	//TOTAL_SKIRT2,
+
+	////바지 : ITEM_PANTS				
+	//ITEM_PANTS2_PHLEGETHON,	//플레케톤 팬츠
+	//ITEM_PANTS2_THANATUS,	//타나토스 팬츠
+	//ITEM_PANTS2_MIDAS,	//미다스 팬츠
+	//ITEM_PANTS2_EREBOS,	//에레보스 팬츠
+	//TOTAL_PANTS2,
+
+	////장화 : ITEM_GREAVES				
+	//ITEM_GREAVES_ACHERON,	//아케론 그리브
+	//ITEM_GREAVES_SEIREN,	//세이렌 그리브
+	//ITEM_GREAVES_TITAN,	//타이탄 그리브
+	//ITEM_GREAVES_TYPHON,	//티폰 그리브
+	//TOTAL_GREAVES2,
+
+	////신발 : ITEM_SHOES				
+	//ITEM_SHOES_NEMESIS,	//네메시스 슈즈
+	//ITEM_SHOES_PSYCHE,	//프시케 슈즈
+	//ITEM_SHOES_ATALANTA,	//아탈란타 슈즈
+	//ITEM_SHOES_LETHE,	//레테 슈즈
+	//TOTAL_SHOES2,
+
+	////부츠 : ITEM_BOOTS				
+	//ITEM_BOOTS_PHLEGETHON,	//플레케톤 부츠
+	//ITEM_BOOTS_THANATUS,	//타나토스 부츠
+	//ITEM_BOOTS_MIDAS,	//미드사 부츠
+	//ITEM_BOOTS_EREBOS,	//에레보스 부츠
+	//TOTAL_BOOTS2,
+
+	////목걸이 : ITEM_NECK				
+	//ITEM_NECK28,	//키비시스 자루
+	//ITEM_NECK29,	//세이렌의 피리
+	//ITEM_NECK30,	//황혼의 성배
+	//ITEM_NECK31,	//재앙의 거울
+	//ITEM_NECK32,	//로젤린의 꽃
+	//ITEM_NECK33,	//영웅의 서사시
+	//ITEM_NECK34,	//유니콘의 뿔
+	//ITEM_NECK35,	//황금 조개
+	//ITEM_NECK36,	//천사의 날개
+	//ITEM_NECK37,	//금단의 과실
+	//ITEM_NECK38,	//죽음의 올가미
+	//ITEM_NECK39,	//조각난 영혼
+	//TOTAL_NECK2,
+
+	////목걸이 : ITEM_RING				
+	//ITEM_RING18,	//니벨룽겐 반지
+	//ITEM_RING19,	//황제의 반지
+	//ITEM_RING20,	//은하수 반지
+	//ITEM_RING21,	//충성의 반지
+	//ITEM_RING22,	//절대 반지
+	//ITEM_RING23,	//황금 반지
+	//ITEM_RING24,	//요정의 반지
+	//ITEM_RING25,	//흡마 반지
+	//ITEM_RING26,	//번뇌의 반지
+	//ITEM_RING27,	//불사의 반지
+	//ITEM_RING28,	//약속의 반지
+	//ITEM_RING29,	//봉인된 반지
+	//TOTAL_RING2,	//투기장 2 아이템 end
+
+	TOTALEQUIPINDEX = TOTAL_SWORD + TOTAL_GUN + TOTAL_BOOMERANG + TOTAL_HELM + TOTAL_HAT + TOTAL_CAP + TOTAL_ARMOR + TOTAL_VEST + TOTAL_COAT + TOTAL_GUNTLET + TOTAL_ARMLET + TOTAL_GLOVE + TOTAL_KILT + TOTAL_SKIRT + TOTAL_PANTS + TOTAL_GREAVES + TOTAL_SHOES + TOTAL_BOOTS + TOTAL_NECK + TOTAL_RING,
+	EQUIPINDEXHEIGHT = 48 * _2X,
+
+	ITEM_SWORD_START = 0,
+	ITEM_GUN_START = ITEM_SWORD_START + TOTAL_SWORD,
+	ITEM_BOOMERANG_START = ITEM_GUN_START + TOTAL_GUN,
+	ITEM_HELM_START = ITEM_BOOMERANG_START + TOTAL_BOOMERANG,
+	ITEM_HAT_START = ITEM_HELM_START + TOTAL_HELM,
+	ITEM_CAP_START = ITEM_HAT_START + TOTAL_HAT,
+	ITEM_ARMOR_START = ITEM_CAP_START + TOTAL_CAP,
+	ITEM_VEST_START = ITEM_ARMOR_START + TOTAL_ARMOR,
+	ITEM_COAT_START = ITEM_VEST_START + TOTAL_VEST,
+	ITEM_GUNTLET_START = ITEM_COAT_START + TOTAL_COAT,
+	ITEM_ARMLET_START = ITEM_GUNTLET_START + TOTAL_GUNTLET,
+	ITEM_GLOVE_START = ITEM_ARMLET_START + TOTAL_ARMLET,
+	ITEM_KILT_START = ITEM_GLOVE_START + TOTAL_GLOVE,
+	ITEM_SKIRT_START = ITEM_KILT_START + TOTAL_KILT,
+	ITEM_PANTS_START = ITEM_SKIRT_START + TOTAL_SKIRT,
+	ITEM_GREAVES_START = ITEM_PANTS_START + TOTAL_PANTS,
+	ITEM_SHOES_START = ITEM_GREAVES_START + TOTAL_GREAVES,
+	ITEM_BOOTS_START = ITEM_SHOES_START + TOTAL_SHOES,
+	ITEM_NECK_START = ITEM_BOOTS_START + TOTAL_BOOTS,
+	ITEM_RING_START = ITEM_NECK_START + TOTAL_NECK,
+	ITEM_GEM_START = ITEM_RING_START + TOTAL_RING,
+	ITEM_WASTES_START = ITEM_GEM_START + TOTAL_GEM,
+	ITEM_IRON_START = ITEM_WASTES_START + TOTAL_WASTE,
+	ITEM_LEATHER_START = ITEM_IRON_START + TOTAL_IRON,
+	ITEM_CLOTH_START = ITEM_LEATHER_START + TOTAL_LEATHER,
+	ITEM_WOOD_START = ITEM_CLOTH_START + TOTAL_CLOTH,
+	ITEM_ESSENCE_START = ITEM_WOOD_START + TOTAL_WOOD,
+	ITEM_RECIPE_START = ITEM_ESSENCE_START + TOTAL_ESSENCE,
+	ITEM_QUEST_START = ITEM_RECIPE_START + 1,
+	ITEM_NETITEM_START = ITEM_QUEST_START + TOTAL_QUESTITEM,
+	ITEM_GOLD_START = ITEM_NETITEM_START + TOTAL_NETITEM,
+	ITEM_KEY_START = ITEM_GOLD_START + 1,
+	ITEM_STATUE_START = ITEM_KEY_START + TOTAL_KEYITEM,
+	ITEM_HEART_START = ITEM_STATUE_START + TOTAL_STATUE,
+	ITEM_MEDAL_START = ITEM_HEART_START + 1,
+	ITEM_STAR_START = ITEM_MEDAL_START + 1,
+	ITEM_HAMMER_START = ITEM_STAR_START + 1,
+	ITEM_SHIELD_START = ITEM_HAMMER_START + 1,
+	ITEM_BOX_START = ITEM_SHIELD_START + 1,
+	ITEM_CREW_START = ITEM_BOX_START + TOTAL_BOX,
+	ITEM_SKILL_START = ITEM_CREW_START + TOTAL_CREW,
+
+
+	ITEM_SWORD_NAMESTART = 0,
+	ITEM_GUN_NAMESTART = ITEM_SWORD_NAMESTART + TOTAL_SWORD,
+	ITEM_BOOMERANG_NAMESTART = ITEM_GUN_NAMESTART + TOTAL_GUN,
+	ITEM_HELM_NAMESTART = ITEM_BOOMERANG_NAMESTART + TOTAL_BOOMERANG,
+	ITEM_HAT_NAMESTART = ITEM_HELM_NAMESTART + TOTAL_HELM,
+	ITEM_CAP_NAMESTART = ITEM_HAT_NAMESTART + TOTAL_HAT,
+	ITEM_ARMOR_NAMESTART = ITEM_CAP_NAMESTART + TOTAL_CAP,
+	ITEM_VEST_NAMESTART = ITEM_ARMOR_NAMESTART + TOTAL_ARMOR,
+	ITEM_COAT_NAMESTART = ITEM_VEST_NAMESTART + TOTAL_VEST,
+	ITEM_GUNTLET_NAMESTART = ITEM_COAT_NAMESTART + TOTAL_COAT,
+	ITEM_ARMLET_NAMESTART = ITEM_GUNTLET_NAMESTART + TOTAL_GLOVE,
+	ITEM_GLOVE_NAMESTART = ITEM_ARMLET_NAMESTART + TOTAL_GUNTLET,
+	ITEM_KILT_NAMESTART = ITEM_GLOVE_NAMESTART + TOTAL_ARMLET,
+	ITEM_PANTS_NAMESTART = ITEM_KILT_NAMESTART + TOTAL_KILT,
+	ITEM_SKIRT_NAMESTART = ITEM_PANTS_NAMESTART + TOTAL_PANTS,
+	ITEM_GREAVES_NAMESTART = ITEM_SKIRT_NAMESTART + TOTAL_SKIRT,
+	ITEM_BOOTS_NAMESTART = ITEM_GREAVES_NAMESTART + TOTAL_GREAVES,
+	ITEM_SHOES_NAMESTART = ITEM_BOOTS_NAMESTART + TOTAL_BOOTS,
+	ITEM_NECK_NAMESTART = ITEM_SHOES_NAMESTART + TOTAL_SHOES,
+	ITEM_RING_NAMESTART = ITEM_NECK_NAMESTART + TOTAL_NECK,
+	ITEM_GEM_NAMESTART = ITEM_RING_NAMESTART + TOTAL_RING,
+	ITEM_WASTES_NAMESTART = ITEM_GEM_NAMESTART + TOTAL_GEM,
+	ITEM_IRON_NAMESTART = ITEM_WASTES_NAMESTART + TOTAL_WASTE,
+	ITEM_LEATHER_NAMESTART = ITEM_IRON_NAMESTART + TOTAL_IRON,
+	ITEM_CLOTH_NAMESTART = ITEM_LEATHER_NAMESTART + TOTAL_LEATHER,
+	ITEM_WOOD_NAMESTART = ITEM_CLOTH_NAMESTART + TOTAL_CLOTH,
+	ITEM_ESSENCE_NAMESTART = ITEM_WOOD_NAMESTART + TOTAL_WOOD,
+	ITEM_RECIPE_NAMESTART = ITEM_ESSENCE_NAMESTART + TOTAL_ESSENCE,
+	ITEM_QUEST_NAMESTART = ITEM_RECIPE_NAMESTART + 1,
+	ITEM_NETITEM_NAMESTART = ITEM_QUEST_NAMESTART + TOTAL_QUESTITEM,
+	ITEM_GOLD_NAMESTART = ITEM_NETITEM_NAMESTART + TOTAL_NETITEM,
+	ITEM_KEY_NAMESTART = ITEM_GOLD_NAMESTART + 1,
+	ITEM_STATUE_NAMESTART = ITEM_KEY_NAMESTART + TOTAL_KEYITEM,
+	ITEM_HEART_NAMESTART = ITEM_STATUE_NAMESTART + TOTAL_STATUE,
+	ITEM_MEDAL_NAMESTART = ITEM_HEART_NAMESTART + 1,
+	ITEM_STAR_NAMESTART = ITEM_MEDAL_NAMESTART + 1,
+	ITEM_HAMMER_NAMESTART = ITEM_STAR_NAMESTART + 1,
+	ITEM_SHIELD_NAMESTART = ITEM_HAMMER_NAMESTART + 1,
+	ITEM_BOX_NAMESTART = ITEM_SHIELD_NAMESTART + 1,
+
+	NETINVENSTART = 48,
+	MAXNETINVEN = 52,
+	MAXNETSHOP = 48,
+
+
+	MAXSINGLESHOP = 13,
+
+	SINGLESHOP_SINDEX = 0,	//0
+	SINGLESHOP_SICON,	//1
+	SINGLESHOP_STYPE,	//2
+	SINGLESHOP_SDETAIL,	//3
+	SINGLESHOP_SBROKEN,	//4
+	SINGLESHOP_SCOUNT,	//5
+	SINGLESHOP_SVALUE,	//6
+	SINGLESHOPDATALENGTH,	//7
+
+	MAXSOCKET = 6,
+
+	TOTALGEMOPTION = 27,
+	TOTALITEMDETAIL = 8,
+
+	//세트 아이템 종류
+	SET_BEGINNER = 0,	//0 견습 기사
+	SET_KINGDOM,			//1 왕가의 수호자
+	SET_SPACE,				//2 시공의 균열
+	SET_HAWK,				//3 푸른매의 눈
+	SET_MAGICGUN,			//4 마도총술사
+	SET_SUN,					//5 태양의 탄흔
+	SET_WANTED,			//6 현상금 사냥꾼
+	SET_SOUL,					//7 소울 헌터
+	SET_MOBIUS,				//8 뫼비우스의 띠
+	SET_TRAINING,			//9 무사수행
+	SET_GUNMAN,			//10 떠돌이 총잡이
+	SET_ROOTLESS,			//11 사냥꾼
+	SET_CHALLENGER,		//12 도전자
+	SET_HUNTER,				//13 헌터
+	SET_MERCENARY,		//14 용병
+	SET_JUDEGMENT,		//15 심판의 손
+	SET_CARAVAN,			//16 캐러밴 상인
+	SET_MAPLE,				//17 단풍염색
+	SET_LOST,					//18 잊혀진 영웅
+	SET_DREAM,				//19 몽환의 감시자
+	SET_GENTLE,				//20 예의범절
+	SET_BRONZE,				//21 브론즈 나이트
+	SET_POET,				//22 음유시인
+	SET_GUARDIAN,			//23 불멸의 수호자
+	SET_IMMOTAL,			//24 무한의 마력
+	SET_MONARCH,			//25 해방의 군주
+	SET_CHASER,				//26 사멸의 추적자
+	SET_SMITH,				//27 세공사의 유품
+	SET_THIEF,				//28 위대한 도적
+	SET_PICNIC,				//29 피크닉
+	SET_GRAND,				//30 위대한 유산
+	SET_BULL,					//31 잔혹한 투우사
+	SET_DEVIL,				//32 사신의 저주
+	SET_ROYAL,				//33 왕실 기사
+	SET_OUTLAW,			//34 황야의 무법자
+	SET_SKULL,				//35 원한의 해골기사
+	SET_TREASURE,			//36 보물섬
+	SET_HELL,					//37 지옥의 묵시록
+	SET_LOCUST,				//38 사악한 약탈자
+	SET_VAGABOND,		//39 베가본드
+	SET_ELEMENTAL,		//40 정령의 가호
+	SET_ELITE,				//41 정예 스나이퍼
+	SET_CHAOS,				//42 혼돈의 제단
+	SET_COSTUME,			//43 가장무도회
+	SET_WING,				//44 천공의 날개
+	SET_NOBLE,				//45 태양의 귀족
+	SET_SMILE,				//46 스마일 라이더
+	SET_VICTORY,			//47 승자의 영광
+	SET_STRANGER,			//48 이국의 모험가
+	SET_GUILLOTINE,		//49 길로틴
+	SET_ANCIENT,			//50 고대의 유물
+	SET_ARTHUR,				//51 원탁의 기사
+	SET_DRAGON,			//52 드래곤의 무덤
+	SET_DEADMAN,			//53 신의 사자
+
+	//동굴 세트 대원
+	SET_RA1,	//로빈 동굴1메인//기사의 서약//54
+	SET_RA2,	//로빈 동굴1보조//바룩의 방패//55
+	SET_RB1,	//로빈 동굴2메인//죽음의 그림자//56
+	SET_RB2,	//로빈 동굴2보조//총명의 나무//57
+	SET_RC1,	//로빈 동굴3메인//하늘의 심판//58
+	SET_RC2,	//로빈 동굴3보조//아래스의 의지//59
+	SET_RD1,	//로빈 동굴4메인//악마의 유혹//60
+	SET_RD2,	//로빈 동굴4보조//몰렉의 제단//61
+
+	SET_DA1,	//디아나 동굴1메인//전장의 나팔//62
+	SET_DA2,	//디아나 동굴1보조//여신의 신발//63
+	SET_DB1,	//디아나 동굴2메인//망각의 눈물//64
+	SET_DB2,	//디아나 동굴2보조//지혜의 샘물//65
+	SET_DC1,	//디아나 동굴3메인//신들의 황혼//66
+	SET_DC2,	//디아나 동굴3보조//아테네의 축복//67
+	SET_DD1,	//디아나 동굴4메인//마녀의 입술//68
+	SET_DD2,	//디아나 동굴4보조//레판의 별//69
+
+	SET_MA1,	//맥스 동굴1메인//전사의 노래//70
+	SET_MA2,	//맥스 동굴1보조//마드룩의 갑옷//71
+	SET_MB1,	//맥스 동굴2메인//사바의 감시자//72
+	SET_MB2,	//맥스 동굴2보조//명철의 바위//73
+	SET_MC1,	//맥스 동굴3메인//영웅의 분노//74
+	SET_MC2,	//맥스 동굴3보조//파리스의 전의//75
+	SET_MD1,	//맥스 동굴4메인//지옥의 메아리//76
+	SET_MD2,	//맥스 동굴4보조//바알의 제물//77
+
+	TOTALSET,
+
+	TOTALPREFIXTEXT = 30,
+	TOTALSUFFIXTEXT = 31,
+	TOTALSUFFIXOPTION = 46,
+
+	//접두사 옵션
+	PREFIX_WEAPON_DMG = 0,	//공격력 증가
+	PREFIX_SWORD_DMG,			//검 공격력 증가
+	PREFIX_GUN_DMG,				//총 공격력 증가
+	PREFIX_BOOMERANG_DMG,	//부메랑 공격력 증가
+	PREFIX_CRITICAL,				//치명타율 증가
+	PREFIX_PIERCE,					//관통력 증가
+	PREFIX_EXTRA,					//추가타격 확률 증가
+	PREFIX_STR,						//힘 스탯 증가
+	PREFIX_AGI,						//민 스탯 증가
+	PREFIX_VIT,						//체 스탯 증가
+	PREFIX_INT,						//지 스탯 증가
+	PREFIX_SKILLDMG,				//스킬공격력 증가
+	PREFIX_DEFENSE,				//적 방어도 감소
+	PREFIX_ARMOR,					//방어력 증가
+	PREFIX_ABSORB,					//물리피해 감소
+	PREFIX_FIRE_REGIST,			//화염저항력 증가
+	PREFIX_FROST_REGIST,		//냉기저항력 증가
+	PREFIX_THUNDER_REGIST,	//번개저항력 증가
+	PREFIX_HOLY_REGIST,		//신성저항력 증가
+	PREFIX_DARK_REGIST,			//암흑저항력 증가
+	PREFIX_LUCK,						//행운 증가
+	PREFIX_GOLD,					//골드 획득
+	PREFIX_EXP,						//경험치 획득
+	PREFIX_HPRESTORE,			//HP10초당 X회복
+	PREFIX_MPRESTORE,			//MP10초당 X회복
+	PREFIX_POTION,					//물약류 효과 X증가
+	PREFIX_BUFF,						//버프지속시간 증가
+	PREFIX_MAGIC_REGIST,			//마법공격회피율
+	PREFIX_RESERVED2,
+	PREFIX_RESERVED3,
+
+	//접미사 옵션
+	SUFFIX_WEAPON_DMG,	//물리공격력 추가
+	SUFFIX_SWORD_DMG,		//검 추가
+	SUFFIX_GUN_DMG,			//총 추가
+	SUFFIX_BOOMERANG_DMG,	//부메랑 추가
+	SUFFIX_FIRE_ATTACK,		//화염속성 공격 확률
+	SUFFIX_FROST_ATTACK,	//냉기속성 공격 확률
+	SUFFIX_THUNDER_ATTACK,	//번개속성 공격 확률
+	SUFFIX_HOLY_ATTACK,	//신성속성 공격 확률
+	SUFFIX_DARK_ATTACK,	//암흑속성 공격 확률
+	SUFFIX_HIT,					//적중률 증가
+	SUFFIX_IGNORE,				//방어도 무시 공격확률 증가
+	SUFFIX_DELAY,				//스킬 재사용 대기시간 감소
+	SUFFIX_CRITICAL,			//치명타 피해 증가
+	SUFFIX_EVASION,			//회피율 증가
+	SUFFIX_STAT,				//모든 스탯 증가
+	SUFFIX_HP,					//생명력 증가
+	SUFFIX_MP,					//마나 증가
+	SUFFIX_HPDRAIN,			//체력흡수
+	SUFFIX_MPDRAIN,			//마나흡수
+	SUFFIX_ALLREGIST,			//모든 저항력 증가
+	SUFFIX_ARMOR,				//방어력 추가
+	SUFFIX_LUCK,					//행운 증가
+	SUFFIX_GOLD,				//처치시 골드 양 증가
+	SUFFIX_EXP,					//경헙치 획득량 증가
+	SUFFIX_REQUIRE,			//요구치 감소
+	SUFFIX_DEBUF,				//상태이상 지속시간 감소
+	SUFFIX_STUN,				//기절공격 확률
+	SUFFIX_SKILL,					//스킬레벨 증가
+	SUFFIX_RESERVED1,
+	SUFFIX_RESERVED2,
+	SUFFIX_RESERVED3,
+
+	SUFFIX_ENEMYREGEN,
+	SUFFIX_POISON_IMMUNE,	//추가옵션13: 독무효
+	SUFFIX_BLIND_IMMUNE,		//추가옵션16: 블라인드무효
+	SUFFIX_SLOW_IMMUNE,		//추가옵션15: 슬로우무효
+	SUFFIX_CURSE_IMMUNE,		//추가옵션17: 저주무효
+	SUFFIX_STUN_IMMUNE,		//추가옵션14: 기절무효
+	SUFFIX_ALWAYSCURSE,		//추가옵션17: 착용시 저주
+	SUFFIX_HPDECREASE,			//추가옵션1: HP 10초당 X감소
+	SUFFIX_MINUSARMOR,			//추가옵션2: 방어력감소
+	SUFFIX_MINUSDRAIN,			//추가옵션3: 공격시 적에게 준 데미지의 X%만큼 HP감소
+	SUFFIX_MINUSHP,				//추가옵션4: HP감소
+	SUFFIX_MINUSMP,				//추가옵션5: MP감소
+	SUFFIX_MINUSEVASION,		//추가옵션7: 회피감소
+	SUFFIX_MINUSHIT,				//추가옵션9: 적중감소
+	SUFFIX_MINUSREGIST,			//추가옵션10: 저항 감소
+	SUFFIX_MINUSINT,				//추가옵션11: INT감소
+	SUFFIX_MINUSSTR,				//추가옵션12: STR감소
+	SUFFIX_MINUSAGI,				//추가옵션13: AGI감소
+	SUFFIX_PLUSDEBUF,			//추가옵션14: 디버프 지속시간증가
+	SUFFIX_MINUSSKILL,			//추가옵션15: 모든 스킬레벨 감소
+	SUFFIX_MINUSSKILLDMG,		//추가옵션16: 스킬 공격력 감소
+
+	TOTALITEMOPTION,
+
+	//보석 옵션
+	GEM_STR = 0,			//힘2, 3, 5, 8
+	GEM_AGI,					//민2, 3, 5, 8
+	GEM_VIT,					//체2, 3, 5, 8
+	GEM_INT,					//지2, 3, 5, 8
+	GEM_STAT,				//모든 능력치 1, 2, 3
+	GEM_FIRE_REG,			//화염저항력 3, 5
+	GEM_FROST_REG,		//냉기저항력 3, 5
+	GEM_THUNDER_REG,	//자연저항력 3, 5
+	GEM_HOLY_REG,			//신성저항력 3, 5
+	GEM_DARK_REG,			//암흑저항력 3, 5
+	GEM_REG,					//모든저항력 1, 2, 3
+	GEM_CRITICAL,			//치명 1, 2%
+	GEM_EVASION,			//회피 1, 2%
+	GEM_HIT,					//적중 1, 2%
+	GEM_PIERCE,				//관통 1, 2%
+	GEM_STUN,				//기절공격 1, 2%
+	GEM_EXTRA,				//추가타 1, 2%
+	GEM_IGNORE,				//방어도무시 1, 2%
+	GEM_HPDRAIN,			//체력흡수 1, 2%
+	GEM_MPDRAIN,			//마나흡수 1, 2%
+	GEM_LUCK,					//행운증가 5, 10%
+	GEM_CRITICAL_DMG,	//치명타 피해증가3, 5%
+	GEM_GOLD,				//골드삥 5, 10%
+	GEM_EXP,					//경험치삥 5, 10%
+	GEM_REQUIRE,			//요구치감소 5, 10%
+	GEM_WEAPON_DMG,	//공격력 1, 2%
+	GEM_ADD_DMG,			//공격력추가 3, 5
+
+
+	//상점 관련
+	SHOPTYPE_CRAFT = 0,//장비강화
+	SHOPTYPE_QUICK,//유료아이템
+
+
+	CRAFT_ENCHANT = 0,//강화
+	CRAFT_RECIPE,//제작
+	CRAFT_SOCKET,//소켓장착
+
+	SHOPCOUNT_QUICK = 27,
+
+	TOTALINVENTORY = 10,//백업용으로 한개
+
+	STARTINVENTORY = TOTALINVENTORY,//120,//@@
+
+	//1. 초보검사 컬렉션
+	//2. 카우보이 컬렉션
+	//3. 여행자 컬렉션
+	//4. 베이비 컬렉션
+	//5. 귀족 컬렉션
+
+	//6. 금속 컬렉션
+	//7. 방랑자 컬렉션
+	//8. 방한 컬렉션
+	//9. 플레이트 컬렉션
+	//10. 도적 컬렉션
+
+	//11.사냥꾼 컬렉션
+	//12.검투사 컬렉션
+	//13.벨벳 컬렉션
+	//14.투우사 컬렉션
+	//15.스파이크 컬렉션
+
+	//16.스나이퍼 컬렉션
+	//17.해적 컬렉션
+	//18.그랜드 컬렉션
+	//19.혼란 컬렉션
+	//20.에이스 컬렉션
+
+	//21.고대 컬렉션
+	//22.프리스트 컬렉션
+	//23.드래곤 컬렉션
+	//24.용자 컬렉션
+
+	//25. 보석 컬렉션
+	//26. 속성 컬렉션
+	//27. 물약 컬렉션
+	//28. 쇠 컬렉션
+	//29. 가죽 컬렉션
+	//30. 천 컬렉션
+	//31. 나무 컬렉션
+	//32. 에센스 컬렉션
+	//33. 퀘스트 아이템 컬렉션
+	//34. 문서컬렉션
+	//35. 소울 컬렉션
+	//36. 열쇠 컬렉션(총 17개)
+	//37. 상 컬렉션(총 16개)
+	//38. 넷아이템
+
+
+	TOTAL_COLLECTIONS = 24,
+	COLLECTIONSITEMCNT = 6,
+	COLLECTIONSDATASIZE = 5,
+
+	COLLECTIONMENU_EQUIP = 0,
+	TOTAL_COLLECTIONMENU,
+
+} ITEMDEF;
+
+#endif
