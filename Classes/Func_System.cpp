@@ -881,11 +881,11 @@ void InitBar(int type)
 		//bar[BAR_BATTLECOIN].targetY = DY - GNBHEIGHT;
 		if (SCREENRATIO <= 150) {
 			switch (robin.stage) {
-			case CASTLE_ADELINE:
-				bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY / 2 + 108 * _2X;
-				break;
+			//case CASTLE_ADELINE:
+			//	bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY / 2 + 108 * _2X;
+			//	break;
 			default:
-				bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY - GNBHEIGHT;
+				bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY - GNBHEIGHT - 40 * _2X;
 				break;
 			}
 		}
@@ -3844,7 +3844,6 @@ void WhoIsNextTurn(void)
 	sequenceFrame = 0;
 	actionCardCnt = 0;
 	memset(&actionCardArr, false, sizeof(actionCardArr));
-
 }
 
 //일반 스테이지 진행일 때 다음 스테이지로 가는 함수

@@ -205,6 +205,8 @@ void Play(void)
 	if (ringFrame)
 		ringFrame--;
 
+	if (onceDmgUpdateFrame)
+		onceDmgUpdateFrame--;
 
 	if (bar[BAR_QUEST].enemyIcon > 1)
 		bar[BAR_QUEST].enemyIcon--;

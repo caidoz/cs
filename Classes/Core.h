@@ -382,7 +382,7 @@ typedef struct _bar {
 
 	signed long long count;//숫자(robin.gold, robin.heart...)
 	signed long long add;//더해야 되는 값(획득값)
-	signed long long max;                                                      
+	signed long long max;//더해야 되는 값을 합산한 한턴 합산값                                                   
 	
 	bool addView;
 

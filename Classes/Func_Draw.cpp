@@ -538,12 +538,13 @@ void TitleDraw(void)
 #else
 		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], gScreenBuffer, gScreenLayer, TITLE_IMG, false);
 
-		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 72 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 
 
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 64 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale - 0.1f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 84 * _2X, ALPHA_CASTLE, FONT_GOLD_LARGE, scale + 0.4f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 114 * _2X, ALPHA_HERO, FONT_GOLD_LARGE, scale + 1.5f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 64 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale - 0.1f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 84 * _2X, ALPHA_CASTLE, FONT_GOLD_LARGE, scale + 0.4f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 114 * _2X, ALPHA_HERO, FONT_GOLD_LARGE, scale + 1.5f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
 
 
 		/*

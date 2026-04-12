@@ -9,6 +9,7 @@ int PxlRight(OBJECT *);
 int PxlDown(OBJECT *);
 int GetObjIdxFromType(int type, int startIdx, int endIdx);
 int GetObjFromPtr(OBJECT *);
+int GetSonObjCnt(int mom);
 void GetTile(OBJECT *);
 int GetDistanceX(OBJECT *obj1, OBJECT *obj2);
 int GetDistance(OBJECT *, OBJECT *);

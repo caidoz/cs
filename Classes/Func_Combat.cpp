@@ -3071,9 +3071,10 @@ NEXT:
 		realAttacker = ao[realAttacker].target;
 
 
-	if (ao[realAttacker].attack >= ATTACK_SKILL) {
+	//if (ao[realAttacker].attack >= ATTACK_SKILL) {
 		ao[realAttacker].hitDmg += damage;
-	}
+		bar[BAR_BATTLECOIN].max = ao[realAttacker].hitDmg;
+	//}
 
 	ad = AttackObj2(attacker, dest, ad, attackerType);
 
@@ -5626,7 +5627,7 @@ int TargetEnemy(int obj)
 			}
 			//autoPlay
 			else if (ao[obj].x <= ao[obj].nx && ao[SOLDIER].active == false) {
-
+				/*
 				ao[obj].x = ao[obj].nx;
 				effect.color = effect.color2 = false;
 				ao[obj].turn++;
@@ -5682,6 +5683,7 @@ int TargetEnemy(int obj)
 				}
 
 				return true;
+				*/
 			}
 		}
 

@@ -54,6 +54,19 @@ int GetObjFromPtr(OBJECT* pObj)
 	return -1;
 }
 
+int GetSonObjCnt(int mom)
+{
+	int i;
+	int cnt = 0;
+	for (i = BULLET; i < ENEMY; i++) {
+		if (ao[i].active && !ao[i].dead) {
+			cnt++;
+		}
+	}
+
+	return cnt;
+}
+
 void GetTile(OBJECT* pObj)
 {
 	pObj->tileX1 = PxlLeft(pObj) / TSIZE;
@@ -2665,9 +2678,10 @@ chk:
 					GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, pObj->pDx));
 					pObj->x += pObj->dx;
 					pObj->y += pObj->dy;
-					pObj->motion = PO_C0_W0 + (pObj->frame / 2 % 4);
+					pObj->motion = PO_C0_W0 + walkFrame[pObj->frame / 2 % 4];
 					if (pObj->x + GetAttackRange(obj) >= ao[pObj->target].x) {
-						pObj->x = ao[pObj->target].x - GetAttackRange(obj);
+						pObj->x = Max(ao[pObj->target].x - GetAttackRange(obj), pObj->nx);
+						pObj->y = ao[pObj->target].y;
 						pObj->turnPosition = THERE;
 						pObj->attack = ATTACK_NORMAL;
 					}
@@ -2676,22 +2690,48 @@ chk:
 					GotoObjXY(pObj, pObj->nx, pObj->ny, Max(SPEED_MIN, pObj->pDx));
 					pObj->x += pObj->dx;
 					pObj->y += pObj->dy;
+					if (pObj->x < pObj->nx)
+						pObj->x = pObj->nx;
+					/*
 					if (pObj->x == pObj->nx && pObj->y != pObj->ny) {
 						pObj->y = pObj->ny;
 					}
 					else if (pObj->x != pObj->nx && pObj->y == pObj->ny) {
 						pObj->x = pObj->nx;
 					}
-					pObj->motion = PO_C0_W0 + (pObj->frame / 2 % 4);
+					*/
+					pObj->motion = PO_C0_W0 + walkFrame[pObj->frame % 4];
 					pObj->dirX = pObj->dirF = LEFT;
 					if (pObj->x == pObj->nx) {
-						pObj->turnPosition = HERE;
-						WhoIsNextTurn();
+						pObj->y = pObj->ny;
+						pObj->attack = false;
+						pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+						ReleasePlayer(pObj);
 						pObj->dirX = pObj->dirF = RIGHT;
+						
+						if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
+							pObj->turnPosition = DMGUPDATE;
+							onceDmgUpdateFrame = 2 * FPS;
+						}
+						
 					}
 					break;
-				default:
+				case DMGUPDATE:
+#ifndef SPEEDTURN
+					pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+					if (onceDmgUpdateFrame == 1) {
+						pObj->turnPosition = HERE;
+						WhoIsNextTurn();
+					}
+#endif
 					break;
+				default:
+					
+					break;
+				}
+				else {
+					pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+					pObj->dx = pObj->dy = 0;
 				}
 				//if (pObj->y != pObj->ny)
 				//TileCheckY(pObj);
@@ -3811,8 +3851,10 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			pObj->turnPosition = COMING;//다시 제위치로 복귀
 
 #ifdef SPEEDTURN
-			if (GetObjFromPtr(pObj) == turn)
+			if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
+				pObj->turnPosition = HERE;
 				WhoIsNextTurn();
+			}
 #endif
 
 			break;
@@ -8237,8 +8279,10 @@ void FollowMove(OBJECT* pObj)
 #ifndef SPEEDTURN
 		//여기서 총탄을 쏜 다음에 다음 턴으로 넘겨준다.
 		if (pObj->mom == turn) {
-			WhoIsNextTurn();
+			//WhoIsNextTurn();
 			controlMark[GetControlMark(pObj->mom)].alpha = 1;
+			ao[pObj->mom].turnPosition = DMGUPDATE;
+			onceDmgUpdateFrame = 2 * FPS;
 		}
 #endif
 		memset(pObj, 0, sizeof(OBJECT));
@@ -10139,11 +10183,18 @@ void EnemyMoveTurn(OBJECT* pObj)
 				pObj->dx = 0;
 				pObj->dy = 0;
 				pObj->dirX = pObj->dirF = LEFT;
+				if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
+					onceDmgUpdateFrame = 2 * FPS;
+					pObj->turnPosition = DMGUPDATE;
+				}
 
+			}
+			break;
+		case DMGUPDATE:
+			//#ifndef SPEEDTURN
+			if (onceDmgUpdateFrame == 1) {
+				WhoIsNextTurn();
 				pObj->coolTime = MC_knlCurrentTimeStamp();
-				//#ifndef SPEEDTURN
-				if (GetObjFromPtr(pObj) == turn)
-					WhoIsNextTurn();
 				//#endif
 				turnFrame = 0;
 				pObj->turnPosition = HERE;
@@ -10633,7 +10684,8 @@ void SummonMove(OBJECT* pObj)
 			pObj->moveHandler = VANISHMOVE;
 			pObj->drawHandler = VANISHDRAW;
 			pObj->frame = 0;
-
+			//CrewMove에서는 DMGUPDATE만 설정해주고 프레임 활성화는 여기서 해주고 1이 되면 다음턴으로 넘어간다.
+			onceDmgUpdateFrame = 2 * FPS;
 			//WhoIsNextTurn();
 
 			/*
@@ -13602,111 +13654,129 @@ void CrewMove(OBJECT* pObj)
 		case ATTACKSEQUENCE_ACTION:
 			//현재 얘가 움직이는 턴이면
 			if (obj == turn) {
-				if (pObj->frame % ret == 0 && pObj->turnPosition == HERE) {
-					pObj->target = NearEnemy(pObj);
-					pObj->turnPosition = GOING;
+				switch (pObj->turnPosition) {
+					case HERE:
+						if (pObj->frame % ret == 0) {
+							pObj->target = NearEnemy(pObj);
+							pObj->turnPosition = THERE;//바로 결과로.
 
-					for (i = 0; i < TOTALCONTROLMARK; i++) {
-						if (controlMark[i].owner == obj && controlMark[i].attackType == pObj->currentSkill) {
-							controlMark[i].alpha = 1;
-						}
-					}
+							for (i = 0; i < TOTALCONTROLMARK; i++) {
+								if (controlMark[i].owner == obj && controlMark[i].attackType == pObj->currentSkill) {
+									controlMark[i].alpha = 1;
+								}
+							}
 
-					attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
-					switch (attackType) {
-					case CREWBULLET:
+							attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
+							switch (attackType) {
+							case CREWBULLET:
 
-						for (i = BULLET; i < ENEMYUSEROBJ; i++) {
-							if (ao[i].active == false && pObj->target) {
+								for (i = BULLET; i < ENEMYUSEROBJ; i++) {
+									if (ao[i].active == false && pObj->target) {
 
-								AddObject(&ao[i], pObj, ADDOBJ_CREWBULLET);
-								ao[i].target = pObj->target;
-								//방향성 잡아주고
-								if (pObj->x > ao[ao[i].target].x)
-									ao[i].dirF = ao[i].dirX = LEFT;
-								else
-									ao[i].dirF = ao[i].dirX = RIGHT;
+										AddObject(&ao[i], pObj, ADDOBJ_CREWBULLET);
+										ao[i].target = pObj->target;
+										//방향성 잡아주고
+										if (pObj->x > ao[ao[i].target].x)
+											ao[i].dirF = ao[i].dirX = LEFT;
+										else
+											ao[i].dirF = ao[i].dirX = RIGHT;
 
 #ifdef SPEEDTURN
-								if (GetObjFromPtr(pObj) == turn)
-									WhoIsNextTurn();
+										if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0)
+											WhoIsNextTurn();
+#endif
+										break;
+									}
+								}
+								break;
+							case SUMMON:
+								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
+								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
+								objPtr->zoom = objPtr->defaultZoom = SUMMONZOOM;
+								SetEnemy(objPtr);
+								objPtr->moveHandler = REGENMOVE;
+								objPtr->drawHandler = REGENDRAW;
+								objPtr->nx = objPtr->x = DX / 2;//ao[ROBIN].x + TSIZE;
+								objPtr->ny = objPtr->y = ao[ROBIN].y + monXYGap[(objPtr->type - 3) * 2 + 1];
+
+								switch (objPtr->type) {
+								case ENEMY_FOGRA:
+								case ENEMY_FOGRA_RED:
+								case ENEMY_FOGRA_BLUE:
+								case ENEMY_FOGRA_PURPLE:
+								case ENEMY_FOGRA_GREEN:
+								case ENEMY_FOGRA_GOLD:
+								case ENEMY_FOGRA_BLACK:
+									objPtr->y += 88 * _2X;
+									break;
+								case ENEMY_BAHAMUT:
+								case ENEMY_BAHAMUT_RED:
+								case ENEMY_BAHAMUT_BLUE:
+								case ENEMY_BAHAMUT_PURPLE:
+								case ENEMY_BAHAMUT_GREEN:
+								case ENEMY_BAHAMUT_GOLD:
+								case ENEMY_BAHAMUT_BLACK:
+									objPtr->y -= 32 * _2X;
+									//objPtr->x += 80 * _2X;
+									//objPtr->nx = objPtr->x;
+									break;
+								case ENEMY_CASTLE_BOSS3:
+								case ENEMY_CASTLE_BOSS3_RED:
+								case ENEMY_CASTLE_BOSS3_BLUE:
+								case ENEMY_CASTLE_BOSS3_PURPLE:
+								case ENEMY_CASTLE_BOSS3_GREEN:
+								case ENEMY_CASTLE_BOSS3_GOLD:
+								case ENEMY_CASTLE_BOSS3_BLACK:
+									objPtr->y += 10 * _2X;
+									break;
+								}
+								objPtr->dx = objPtr->dy = 0;
+								switch (objPtr->type) {
+								case ENEMY_BAHAMUT:
+								case ENEMY_BAHAMUT_RED:
+								case ENEMY_BAHAMUT_BLUE:
+								case ENEMY_BAHAMUT_PURPLE:
+								case ENEMY_BAHAMUT_GREEN:
+								case ENEMY_BAHAMUT_GOLD:
+								case ENEMY_BAHAMUT_BLACK:
+									objPtr->dirX = objPtr->dirF = RIGHT;
+									break;
+								default:
+									objPtr->dirX = objPtr->dirF = RIGHT;
+									break;
+								}
+								objPtr->active = true;
+
+								objPtr->target = pObj->target;
+								objPtr->frame = 0;
+								pObj->turnPosition = DMGUPDATE;//바로 결과로.
+
+								break;
+							case HEROSKILL:
+								SetHotKey(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], HOTKEY_SKILL, skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO], 0);
+								HotKeyPress(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], 0);
+#ifdef SPEEDTURN
+								WhoIsNextTurn();
 #endif
 								break;
 							}
 						}
 						break;
-					case SUMMON:
-						objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
-						objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
-						objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
-						objPtr->zoom = objPtr->defaultZoom = SUMMONZOOM;
-						SetEnemy(objPtr);
-						objPtr->moveHandler = REGENMOVE;
-						objPtr->drawHandler = REGENDRAW;
-						objPtr->nx = objPtr->x = DX / 2;//ao[ROBIN].x + TSIZE;
-						objPtr->ny = objPtr->y = ao[ROBIN].y + monXYGap[(objPtr->type - 3) * 2 + 1];
-
-						switch (objPtr->type) {
-						case ENEMY_FOGRA:
-						case ENEMY_FOGRA_RED:
-						case ENEMY_FOGRA_BLUE:
-						case ENEMY_FOGRA_PURPLE:
-						case ENEMY_FOGRA_GREEN:
-						case ENEMY_FOGRA_GOLD:
-						case ENEMY_FOGRA_BLACK:
-							objPtr->y += 88 * _2X;
-							break;
-						case ENEMY_BAHAMUT:
-						case ENEMY_BAHAMUT_RED:
-						case ENEMY_BAHAMUT_BLUE:
-						case ENEMY_BAHAMUT_PURPLE:
-						case ENEMY_BAHAMUT_GREEN:
-						case ENEMY_BAHAMUT_GOLD:
-						case ENEMY_BAHAMUT_BLACK:
-							objPtr->y -= 32 * _2X;
-							//objPtr->x += 80 * _2X;
-							//objPtr->nx = objPtr->x;
-							break;
-						case ENEMY_CASTLE_BOSS3:
-						case ENEMY_CASTLE_BOSS3_RED:
-						case ENEMY_CASTLE_BOSS3_BLUE:
-						case ENEMY_CASTLE_BOSS3_PURPLE:
-						case ENEMY_CASTLE_BOSS3_GREEN:
-						case ENEMY_CASTLE_BOSS3_GOLD:
-						case ENEMY_CASTLE_BOSS3_BLACK:
-							objPtr->y += 10 * _2X;
-							break;
-						}
-						objPtr->dx = objPtr->dy = 0;
-						switch (objPtr->type) {
-						case ENEMY_BAHAMUT:
-						case ENEMY_BAHAMUT_RED:
-						case ENEMY_BAHAMUT_BLUE:
-						case ENEMY_BAHAMUT_PURPLE:
-						case ENEMY_BAHAMUT_GREEN:
-						case ENEMY_BAHAMUT_GOLD:
-						case ENEMY_BAHAMUT_BLACK:
-							objPtr->dirX = objPtr->dirF = RIGHT;
-							break;
-						default:
-							objPtr->dirX = objPtr->dirF = RIGHT;
-							break;
-						}
-						objPtr->active = true;
-
-						objPtr->target = pObj->target;
-						objPtr->frame = 0;
+					case GOING:
 						break;
-					case HEROSKILL:
-						SetHotKey(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], HOTKEY_SKILL, skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO], 0);
-						HotKeyPress(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], 0);
-#ifdef SPEEDTURN
-						WhoIsNextTurn();
-#endif
+					case THERE:
+
+						break;
+					case COMING:
+						break;
+					case DMGUPDATE:
+						if (onceDmgUpdateFrame == 1)
+							WhoIsNextTurn();
 						break;
 					}
+					
 				}
-			}
 
 			break;
 		}

@@ -67,7 +67,7 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		GoldBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
 
 		if (barP->addView)
-			DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(4 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
+			DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
 		break;
 	case BAR_CROWN:
 		ExpBarDraw(robin.lv, count, xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
@@ -193,7 +193,8 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		BattleCoinBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, 16, zoom, cvtDest, cvtLayer, buffering);
 
 		if (barP->addView)
-			DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(4 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
+			DrawNum2AutoSpaceing(barP->max, xOffset + barP->x + (float)(GOLDBARWIDTH - 6 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.25f * zoom, false, true, cvtDest, cvtLayer, buffering);
+		//DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(4 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
 
 		break;
 	case BAR_HERO:

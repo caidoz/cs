@@ -1472,8 +1472,8 @@ void PaintClet(int x, int y, int w, int h)
 				}
 				memset(&currencyMark[i], 0, sizeof(ICONMARK));
 				currencyMarkCnt--;
-				if (currencyMarkCnt == 0 && attackSequence == ATTACKSEQUENCE_ACTION)
-					WhoIsNextTurn();
+				//if (currencyMarkCnt == 0 && attackSequence == ATTACKSEQUENCE_ACTION)
+				//	WhoIsNextTurn();
 			}
 			else {
 				currencyMark[i].frame2++;
