@@ -31,6 +31,16 @@ long long GetStageAdmissionFee(void)
 	return betGold;
 }
 
+long long GetStageAdmissionHeart(int stage)
+{
+	long long betHeart;// = GetCharPrice(ROBIN);
+
+	//TEST
+	betHeart = 10 + stage;
+
+	return betHeart;
+}
+
 ITEM* GetItemPtr(int idx)
 {
 	//포인터 -> 인덱스 규칙

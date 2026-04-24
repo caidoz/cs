@@ -7,11 +7,11 @@
 // 기본 줌 상수
 #define HEROZOOM                   2.0f           // 히어로 줌
 #define CREWZOOM                   1.8f           // 크루 줌
-#define MONSTERZOOM                2.0f           // 몬스터 줌
+#define MONSTERZOOM                2.5f           // 몬스터 줌
 #define BOSSZOOM                   2.0f           // 보스 줌
-#define LOBBYZOOM                  1.0f           // 로비 줌
-#define BATTLEZOOM                 1.75f          // 배틀 줌
-#define SUMMONZOOM                 2.5f           // 소환 줌
+#define LOBBYZOOM                  1.5f           // 로비 줌
+#define BATTLEZOOM                 1.5f          // 배틀 줌
+#define SUMMONZOOM                 2.0f           // 소환 줌
 #define DROPITEMZOOM               2.0f           // 드롭 아이템 줌
 #define HOUSEZOOM                  1.25f          // 하우스 줌
 #define HOUSEPLAYERZOOM            1.0f           // 하우스 플레이어 줌
@@ -24,7 +24,7 @@
 #define CREWCASTLEZOOM             1.8f           // 크루 성 줌
 #define HITMARKZOOM                1.0f           // 히트마크 줌
 #define DIORAMAZOOM                0.63f          // 디오라마 줌
-#define DIORAMAZOOM_BATTLE         0.63f          // 디오라마 배틀 줌
+#define DIORAMAZOOM_BATTLE         0.63f//1.0f//          // 디오라마 배틀 줌
 #define DIORAMAZOOM_REMAINDER      1.5f           // 디오라마 나머지 줌
 #define BATTLEWEAPONZOOM           6.0f           // 배틀 무기 줌
 #define HITCOUNTZOOM               1.0f           // 히트 카운트 줌
@@ -68,6 +68,7 @@
 #define BAR_COMBATPOWERALL_ZOOM    1.0f           // 전투력 전체 바 줌
 #define BAR_COMBATPOWER_ZOOM       1.0f           // 전투력 바 줌
 #define BAR_STAGEPROGRESS_ZOOM     1.0f           // 스테이지 진행 바 줌
+#define BAR_REMAINEDTURN_ZOOM		3.0f           // 스테이지 진행 바 줌
 #define BAR_INVENTORY_ZOOM         0.6f           // 인벤토리 바 줌
 #define BAR_SKILL_ZOOM             1.0f           // 스킬 바 줌
 

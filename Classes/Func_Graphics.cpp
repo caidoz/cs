@@ -4286,8 +4286,21 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame,
 
 void DrawBattleButton(int x, int y, float zoom, bool ani, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawIcon(ICON_EVENT_2SWORD, x, y, zoom, (ani == true ? itemColor[robin.playtime % 10] : COLOR_BROWN), false, false, 1.0f, cvtDest, cvtLayer, buffering);
+	float heartZoom = 0.5f * zoom;
+	int heartX, heartY;
+
+	DrawIcon(ICON_EVENT_2SWORD, x, y, zoom, COLOR_BROWN/*(ani == true ? itemColor[robin.playtime % 10] : COLOR_BROWN)*/, false, false, 1.0f, cvtDest, cvtLayer, buffering);
 	CenterText(TEXT_ADVENTURE, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)(ITEMICONSIZE - 2 * _2X) * zoom, 0.5f * zoom, cvtDest, cvtLayer, buffering);
+	//¿‘¿Â∑·
+	//
+	if (frame % FPS < 15)
+		heartZoom += (float)(frame % FPS) * 0.02f;
+	
+	heartX = x + (float)14 * _2X * zoom + (float)8 * _2X * zoom;
+	heartY = y - (float)6 * _2X * zoom - (float)8 * _2X * zoom;
+	DrawIcon(ICON_HEART, heartX - (float)(heartZoom) * 16 * _2X / 2, heartY + (float)(heartZoom) * 16 * _2X / 2, heartZoom, COLOR_WHITE, false, false, 1 * _2X, cvtDest, cvtLayer, buffering);
+	DrawNumTTF(-GetStageAdmissionHeart(nearestIndex), heartX, heartY + (float)3 * _2X * zoom, FONT_LARGE, CENTER, 2, false, false, 0.35f * zoom, false, cvtDest, cvtLayer, buffering);
+
 	if (ani == true) {
 		DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 	}
@@ -4667,10 +4680,10 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, cocos2d::Rend
 	case SUMMON:
 		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
-		SetSectionClip(x + w / 2 - (float)(SKILLICONSIZE + 6 * _2X) * 2.0f / 2 * zoom, y - (float)3 * _2X * zoom, (float)(SKILLICONSIZE + 6 * _2X) * 2.0f * zoom, (float)(SKILLICONSIZE + 2 * _2X) * 2.0f * zoom, false);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y + (float)(-34 * _2X + 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+		SetSectionClip(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)(2 * _2X) * zoom, h - (float)(2 * _2X) * zoom, false);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y + (float)(-36 * _2X + 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
 
-		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + 0], enemyBigIconPos[3 * enemyIdx + 0], x + w / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 2 * _2X) * zoom, LEFT, zoom, false, false, cvtDest, cvtLayer, buffering);
+		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + 0], enemyBigIconPos[3 * enemyIdx + 0], x + w / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-36 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 2 * _2X) * zoom, LEFT, 1.2f * zoom, false, false, cvtDest, cvtLayer, buffering);
 
 		UnSectionClip(false);
 		break;

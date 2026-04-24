@@ -89,8 +89,8 @@ void Play(void)
 			//전투신 돌입시 줌이 작아질때
 			if (drawHandle == MD_BATTLE) {
 				dioramaZoom -= 0.5f;
-				if (dioramaZoom < DIORAMAZOOM_BATTLE)
-					dioramaZoom = DIORAMAZOOM_BATTLE;
+				if (dioramaZoom < DIORAMAZOOM_BATTLE + dioramaZoomGap)
+					dioramaZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
 			}
 		}
 
@@ -5169,6 +5169,8 @@ void SetScreenRatio(void)
 	POPUPPOSITION_Y = DY / 2;// Min(DY / 2, DY - GNBHEIGHT - POPUPWINDOWSIZE_Y / 2 + 16 * _2X);
 
 	bar[BAR_BOSSHP].y = bar[BAR_HEART].y + BOSSHPBARHEIGHT - 16 * _2X;
+	//dioramaZoomGap = (float)(220 - SCREENRATIO) / 100 / 2;
+
 }
 
 void SetHero(void)

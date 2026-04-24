@@ -51,4 +51,5 @@
 #define EFFECT_ONLY_PLAYER         false          // 플레이어만 이펙트 적용
 #define LOCALSAVE                      // 로컬 저장 활성화
 
+#define MAXTURN						3//전투시 맥스턴				
 // ---

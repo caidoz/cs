@@ -22,40 +22,40 @@ typedef enum _enemyDef {
 	ENEMY_SNOWMAN,	//스노우맨16
 	ENEMY_ICESUN,	//아이스마스크17
 	ENEMY_LIGHTNING,	//스파크18//
-	ENEMY_THUNDER,	//다크미스트19
-	ENEMY_CRYSTAL,	//스파크 플랜트20
-	ENEMY_FAIRY,	//라이트 스피릿21
+	ENEMY_THUNDER,	//다크미스트19 //버그 : (소환시)이동을 안함.
+	ENEMY_CRYSTAL,	//스파크 플랜트20 //버그 : (소환시)생성된 스파크가 아군을 공격함
+	ENEMY_FAIRY,	//라이트 스피릿21 //버그 : (소환시) 나를 공격함
 	ENEMY_CIRCLE,	//딜루젼 소울22
-	ENEMY_SPIDER,	//스트라이더23
+	ENEMY_SPIDER,	//스트라이더23 //버그 : (소환시) 레이저를 안쏨 혹은 안그려짐
 	ENEMY_GOLEM,	//주인잃은 골렘24
 	ENEMY_DARKGIANT,	//그레이트 아머25
-	ENEMY_DARKDRAGON,	//우로보로스26(x 예는 그냥 안됨)
-	ENEMY_DRAGON1,	//탐욕의 살육자27
-	ENEMY_DRAGON2,	//드래곤 좀비28
-	ENEMY_GHOST,	//떠도는 영혼29
+	ENEMY_DARKDRAGON,	//우로보로스26(x 예는 그냥 안됨, 그래도 살려보자.)
+	ENEMY_DRAGON1,	//탐욕의 살육자27 //(소환시) 공격모션은 주지만 실제 데미지가 안들어간다.
+	ENEMY_DRAGON2,	//드래곤 좀비28 //(소환시) 브레스가 안보인다.
+	ENEMY_GHOST,	//떠도는 영혼29 //
 	ENEMY_PUMPKIN,	//무혼의 기사30
-	ENEMY_CASTLE1,	//어둠의 마도사	//텔레포트공격하는놈31		//문제 : 사라지면 안돌아옴(?)
+	ENEMY_CASTLE1,	//어둠의 마도사	//텔레포트공격하는놈31		//문제 : 사라지면 안돌아옴(?) //(소환시) 총탄이 안나가고 데미지가 안들어감
 	ENEMY_CASTLE2,	//공허한 갑주	//큰 기사32
 	ENEMY_SPACE1,	//안드로볼33
-	ENEMY_SPACE2,	//메탈가우스34
-	ENEMY_FROG,	//토드뮤턴트35
+	ENEMY_SPACE2,	//메탈가우스34 //(소환시) 총탄은 쏘는데 우리편이 맞는다.
+	ENEMY_FROG,	//토드뮤턴트35 //(소환시) 혓바닥이 위치가 올라가고 데미지가 뜨지 않는다.
 	ENEMY_LARVA,	//아르곤36
 	ENEMY_SALAMANDER,	//카툼37
-	ENEMY_GIANT,	//고대의 수호자38
+	ENEMY_GIANT,	//고대의 수호자38 //(소환시)불렛이 나갈 때 아군을 공격함
 	ENEMY_IFRIT,	//이프리트39
 	ENEMY_MAMMOTH,	//프로스트40
-	ENEMY_MACHINE,	//라이오너41		(x)			//문제 : 모션이 기계 모션이 나옴
-	ENEMY_ANGEL,	//호루스42
+	ENEMY_MACHINE,	//라이오너41
+	ENEMY_ANGEL,	//호루스42 //(소환시)불렛이 나갈 때 아군도 공격함
 	ENEMY_KIMERA,	//마도합성수43
-	ENEMY_SHIP,	//고대의 방주44 (x)
-	ENEMY_FOGRA,	//아리만45
-	ENEMY_BAHAMUT,	//티어맷46 (x)
-	ENEMY_DEATH,	//사신47
-	ENEMY_CASTLE_BOSS1,	//데브리온48 (x)
+	ENEMY_SHIP,	//고대의 방주44 (x)//(소환시)에러발생
+	ENEMY_FOGRA,	//아리만45 //(소환시) 보조 구체가 사라지지 않고 레이저 쏠때는 적만 공격하는데 그 뒤에는 아군 공격
+	ENEMY_BAHAMUT,	//티어맷46 (x) (소환시) 등장할 때 몸통에 머리가 안붙어서 떨어져서 나오고 공격을 하지 않아서 그냥 계속 연타중
+	ENEMY_DEATH,	//사신47 //(소환시) 한번 공격을 한 뒤에 사라지지를 않는다.
+	ENEMY_CASTLE_BOSS1,	//데브리온48 (x) //(소환시) 피아를 가리지 않고 공격하고, 엄청나게 느려진다. 
 	ENEMY_CASTLE_BOSS2,	//엘케인맨티스49
-	ENEMY_CASTLE_BOSS3,	//쉐도우 테트라쿤50 -> 제외 (x)
-	ENEMY_CASTLE_BOSS4,	//다크나이트51						//문제 위에 떠서 나옴
-	ENEMY_LABETH,	//라베스 보스52 (x)
+	ENEMY_CASTLE_BOSS3,	//쉐도우 테트라쿤50 -> 제외 (x) //(소환시) 처음에 골조가 먼저 보이고 계속 연타를 때리다가 헤드가 사라져도 계속 남아있다.(레이저는 제대로 나감)
+	ENEMY_CASTLE_BOSS4,	//다크나이트51						//(소환시) 손이 등장하고 나중에 끝나도 남아있다.
+	ENEMY_LABETH,	//라베스 보스52 (x)//(소환시) 등장할 때 공격판정, 스킬 쓴 다음에 사라지지 않아서 계속 판정.
 	ENEMY_ELKEIN,	//엘케인 보스53				//문제 여기서부터 4개가 어딘가 화면을 깨지게 함
 
 	ENEMY_SNAIL_RED,	//가시껍질 달팽이

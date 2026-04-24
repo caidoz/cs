@@ -86,14 +86,13 @@ void DrawSlashNum(int min, int max, int x, int y, float width, float zoom, cocos
 float DrawNumTTF(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawNum2(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawNum(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawGoldNum(long long int, int, int, int, int, int, bool, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBigNumGold(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBigNum(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawNum2AutoSpaceing(long long int num, int x, int y, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed, bool bold, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBigNum2Bold(long long int num, int x, int y, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawScroll(int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawStarNum(int icon, int star, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, bool bigStar, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawShield(int x, int y, int cnt, int max, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

@@ -765,7 +765,7 @@ void PlayKey(int obj)
 			for (i = 0; i < TOTAL_COLLECTIONMENU; i++)
 				tabMenuFrame[i] = -1;
 			tabMenuFrame[menuCur] = 1;
-			SetPopUp(POPUPTYPE_COLLECTIONS, DX / 2, GetScrollDy(curMenu) - DY / 3 - GNBHEIGHT, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+			SetPopUp(POPUPTYPE_COLLECTIONS, DX / 2, GetScrollDy(curMenu) - 88 * _2X * 2 - GNBHEIGHT, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false);
@@ -1162,6 +1162,7 @@ void PlayKey(int obj)
 		case AVK_GOTOBATTLE:
 			battleStartFrame = BATTLESTARTFRAME;
 			touchDisable = true;
+			AddBar(&bar[BAR_HEART], -GetStageAdmissionHeart(robin.stage), BARFRAME);
 			//GotoBattle(); 
 			break;
 		case AVK_NEWGAME:
@@ -1577,7 +1578,7 @@ void PlayKey(int obj)
 			menuX = 0;
 			menuCur = 0;
 
-			SetPopUp(POPUPTYPE_CREWLIST, DX / 2, DY - GNBHEIGHT, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+			SetPopUp(POPUPTYPE_CREWLIST, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false);

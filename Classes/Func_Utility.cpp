@@ -149,6 +149,9 @@ void DrawPlayerCostume(
 
 	int x, int y, int dirX, int attackMotion, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
+	ao[SOLDIER].x = x;
+	ao[SOLDIER].y = y;
+
 	ao[SOLDIER].type = ao[SOLDIER].cmf = type;
 
 	if (weaponDetail == -1) {

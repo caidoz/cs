@@ -11061,7 +11061,7 @@ void RegenMove(OBJECT* pObj)
 			}
 			int startObj;
 
-			for (i = ENEMY; i < NEUTRAL; i++) {
+			for (i = BULLET; i < NEUTRAL; i++) {
 				if (ao[i].type == ENEMY_SHIP ||
 					ao[i].type == ENEMY_SHIP_RED ||
 					ao[i].type == ENEMY_SHIP_BLUE ||

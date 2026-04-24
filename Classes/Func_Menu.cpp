@@ -314,7 +314,7 @@ void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap, cocos2d::Ren
 }
 
 
-void HeroSelectButtonList(int x, int y, float zoom, int selected, int selectedFrame, bool horizontal, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
 
@@ -322,7 +322,7 @@ void HeroSelectButtonList(int x, int y, float zoom, int selected, int selectedFr
 		for (i = 0; i < TOTALCHAR; i++) {
 			DrawFrame(x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0), (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 			DrawPlayer(&ao[i], (i == selected ? frame / 4 % 4 : 0), x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom + (float)(HEROBUTTON_X / 2) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0) - (float)(HEROBUTTON_Y - 8 * _2X) * zoom, RIGHT, zoom, false, false, true, cvtDest, cvtLayer, buffering);
-			if (i != selected)
+			if (i != selected && touchActive == true)
 				SetRectPoint(x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0), (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, TOUCH_FUNC_SELECT_HERO + i);
 		}
 	}
@@ -330,7 +330,7 @@ void HeroSelectButtonList(int x, int y, float zoom, int selected, int selectedFr
 		for (i = 0; i < TOTALCHAR; i++) {
 			DrawFrame(x - (selected == i ? (float)4 * _2X * zoom : 0), y - i * (float)(HEROBUTTON_Y + 8 * _2X) * zoom, (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 			DrawPlayer(&ao[i], (i == selected ? frame / 4 % 4 : 0), x - (selected == i ? (float)4 * _2X * zoom : 0) + (float)(HEROBUTTON_X / 2) * zoom, y - i * (float)(HEROBUTTON_Y + 8 * _2X) * zoom - (float)(HEROBUTTON_Y - 8 * _2X) * zoom, LEFT, zoom, false, false, true, cvtDest, cvtLayer, buffering);
-			if (i != selected)
+			if (i != selected && touchActive == true)
 				SetRectPoint(x - (selected == i ? (float)4 * _2X * zoom : 0), y - i * (float)(HEROBUTTON_Y + 8 * _2X) * zoom, (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, TOUCH_FUNC_SELECT_HERO + i);
 		}
 	}
@@ -349,7 +349,7 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTexture
 
 	//BarDraw(&bar[BAR_GOLD], zoom, cvtDest, cvtLayer, buffering);
 
-	HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, false, true, cvtDest, cvtLayer, buffering);
+	HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true, cvtDest, cvtLayer, buffering);
 
 	BarDraw(&bar[BAR_COMBATPOWERALL], zoom, cvtDest, cvtLayer, buffering);
 
@@ -842,7 +842,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].detail : -1, pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].grade : 0,
 			pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].detail : -1, pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].grade : 0,
 
-			x + (float)(DX / 2) * zoom, y + (float)(DY / 2 + 160 * _2X) * zoom, RIGHT, true, zoom * HOUSEPLAYERZOOM, cvtDest, cvtLayer, buffering
+			x + (float)(DX / 2) * zoom, y + (float)(DY / 2 + 160 * _2X) * zoom, RIGHT, true, zoom * HEROZOOM, cvtDest, cvtLayer, buffering
 		);
 
 		icon = statIcon[itemEquipSlot[itemType]];
@@ -1266,30 +1266,50 @@ void StageProgressDraw(int x, int y, int current, int progress, float zoom, coco
 	//for (i = 0; i < )
 }
 
+void RemainedTurnDraw(int x, int y, int current, int progress, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	DrawGoldNum(remainedTurn, x, y, CENTER, 1, false, false, zoom, cvtDest, cvtLayer, buffering);
+	CenterTextStr("Remained", x, y - (float)20 * _2X * zoom, 0.3f * zoom, cvtDest, cvtLayer, buffering);
+	CenterTextStr("Turn", x, y - (float)24 * _2X * zoom, 0.3f * zoom, cvtDest, cvtLayer, buffering);
+}
 
 void CrewSetDraw(int stage, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
+	int stageCrewIdx;
+	int stageCrewType;
+	long long upgradePrice;
+	bool opened;
 
-	DrawGoldAlpha(x + (float)(CREWSET_WIDTH / 2) * zoom, y + (float)(20 * _2X) * zoom, ALPHA_LV, FONT_GOLD_LARGE, 0.7f * zoom, RIGHT, false, false, cvtDest, cvtLayer, buffering);
-	DrawGoldNum(stage + 1, x + (float)(CREWSET_WIDTH / 2 + 8 * _2X) * zoom, y + (float)(22 * _2X) * zoom, LEFT, false, false, false, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 
-	if (stage > robin.crewStage)
-		grayScale = 32;
+	DrawImage(512, 19, 2, 612, x + (float)(DX / 2) * zoom + (float)(-512 / 2) * zoom, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
+	CenterText(TEXT_MAPNAME + MAP_DIORAMA_CASTLE + stage, x + (float)(DX / 2) * zoom, y - (float)12 * _2X * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+	
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)4 * _2X * zoom, y - (float)8 * _2X * zoom, false, false, false, false, false, 0.08f * zoom, sprite[MAP_DIORAMA_IMG + dioramaMapImg[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + dioramaMapImg[stage], false);
+	//현재 최고 기록
+	DrawGoldAlpha(x + (float)52 * _2X * zoom, y - (float)(18 * _2X) * zoom, ALPHA_MAX, FONT_GOLD_LARGE, 0.6f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+	DrawGoldAlpha(x + (float)52 * _2X * zoom, y - (float)(34 * _2X) * zoom, ALPHA_STAGE, FONT_GOLD_LARGE, 0.6f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
-	DrawWindow2(x, y, (float)CREWSET_WIDTH, (float)CREWSET_HEIGHT, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
+	DrawGoldNum(299 - stage * 10, x + (float)(DX / 2) * zoom, y - (float)(32 * _2X) * zoom, CENTER, false, false, false, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 
 	grayScale = false;
 
-
 	for (i = 0; i < MAXCREW; i++) {
-		//DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(16 * _2X + CREWSET_XGAP * (i % MAXCREW) + ITEMICONSIZE - 25 * _2X * 0.8f) * zoom, y - (float)(8 * _2X) * zoom, false, false, false, false, false, 0.8f * zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_CASTLE, buffering);
-		//DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(16 * _2X + CREWSET_XGAP * (i % MAXCREW) + ITEMICONSIZE) * zoom, y - (float)(8 * _2X) * zoom, true, false, false, false, false, 0.8f * zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_CASTLE, buffering);
-		//ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + (float)(16 * _2X + CREWSET_XGAP * (i % MAXCREW) + ITEMICONSIZE - 25 * _2X * 0.8f) * zoom, y - (float)(8 * _2X + 16 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		//
+		stageCrewIdx = stage * MAXCREW + i + TOTALCHAR;//현재 인덱스
+		stageCrewType = crewData[stageCrewIdx * CREWDATASIZE];
+
+		curStar = robin.crewStar[stageCrewIdx];
+		curMaxStar = robin.crewMaxStar[stageCrewIdx];
+		maxStar = CREWMAXUPGRADELV;
+		if (curStar < curMaxStar)
+			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar] / CREWUPGRADEPER;
+		else
+			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar];
+
+
 		ao[NPC].cmf = ao[NPC].type = ROBIN;
-		ao[NPC].x = x + (float)(16 * _2X + CREWSET_XGAP * ((stage * MAXCREW + i) % MAXCREW) + ITEMICONSIZE) * zoom;
-		ao[NPC].y = y - (float)(8 * _2X + 46 * _2X) * zoom;
+		ao[NPC].x = x + (float)(8 * _2X + CREWSET_XGAP * ((stage * MAXCREW + i) % MAXCREW) + ITEMICONSIZE) * zoom;
+		ao[NPC].y = y - (float)(8 * _2X + 80 * _2X) * zoom;
 
 		DrawImage(32 * _2X, 12 * _2X, 107 * _2X, 48 * _2X, ao[NPC].x - (float)16 * _2X * zoom, ao[NPC].y + (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + 6], cvtDest, cvtLayer, MAP_OBJ_IMG + 6, buffering);
 
@@ -1297,17 +1317,18 @@ void CrewSetDraw(int stage, int x, int y, float zoom, cocos2d::RenderTexture* cv
 			DrawPlayer(&ao[NPC], 2000 - 1 + LEVELUP_BACK0 + stageUpgradeMotion[i], ao[NPC].x, ao[NPC].y, false, zoom, false, false, false, cvtDest, cvtLayer, buffering);
 		}
 
-		if (i / MAXCREW > robin.crewStage)
-			SetColor(COLOR_BLACK);//grayScale = 32;
-		else if (!robin.crewMaxStar[stage * MAXCREW + i])
-			grayScale = 32;
-		DrawCmfDetailShadow(enemyData[crewData[(stage * MAXCREW + i) * CREWDATASIZE] * ENEMYDATASIZE + 0], enemyIconPos[crewData[(stage * MAXCREW + i) * CREWDATASIZE] * 3 + 0], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[(stage * MAXCREW + i) * CREWDATASIZE]] * zoom, cvtDest, cvtLayer, buffering);
+		//if (i / MAXCREW > robin.crewStage)
+		//	SetColor(COLOR_BLACK);//grayScale = 32;
+		//else if (!robin.crewMaxStar[stage * MAXCREW + i])
+		//	grayScale = 32;
+		
+		DrawCmfDetailShadow(enemyData[crewData[stageCrewIdx * CREWDATASIZE] * ENEMYDATASIZE + 0], enemyIconPos[crewData[stageCrewIdx * CREWDATASIZE] * 3 + 0], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[stageCrewIdx * CREWDATASIZE]] * zoom, cvtDest, cvtLayer, buffering);
 		SetColor(false);
 		grayScale = 0;
 		//DrawIcon(GetItemIcon(ITEM_STATUE, i, false), x + (float)(36 * _2X + 72 * _2X * (i % 4)) * zoom, y - (float)(64 * _2X + 80 * _2X * (i / 4)), 2.0f * zoom, COLOR_BROWN, false, true, cvtDest, cvtLayer, buffering);
-		if (!robin.crewMaxStar[(stage * MAXCREW + i)])
-			DrawIcon(ICON_EVENT_LOCK, ao[NPC].x - (float)ITEMICONSIZE / 2 * zoom, ao[NPC].y - (float)2 * _2X * zoom, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
-		else
+		//if (!robin.crewMaxStar[(stage * MAXCREW + i)])
+		//	DrawIcon(ICON_EVENT_LOCK, ao[NPC].x - (float)ITEMICONSIZE / 2 * zoom, ao[NPC].y - (float)2 * _2X * zoom, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
+		//else
 			DrawStar(ICON_CROWN, ao[NPC].x, ao[NPC].y - (float)12 * _2X * zoom, robin.crewStar[(stage * MAXCREW + i)], robin.crewMaxStar[(stage * MAXCREW + i)], CREWMAXUPGRADELV, CENTER, true, 0.7f * zoom, cvtDest, cvtLayer, buffering);
 
 		if (robin.crewStar[(stage * MAXCREW + i)] < robin.crewMaxStar[(stage * MAXCREW + i)])
@@ -1328,6 +1349,30 @@ void CrewSetDraw(int stage, int x, int y, float zoom, cocos2d::RenderTexture* cv
 
 		if (stageUpgradeMotion[i] == 11)
 			stageUpgradeMotion[i] = 0;
+
+
+		//이후 데미지
+		
+		if (curStar < curMaxStar) {
+			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_RED, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
+			if (robin.gold >= upgradePrice) {
+				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
+			}
+		}
+		//아직 최대값에 도달하지 못하면
+		else if (curStar < maxStar) {
+			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_GREEN, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
+			if (robin.gold >= upgradePrice) {
+				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
+			}
+		}
+		//최대값에 도달하면
+
+		else {
+
+			DrawMaxButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+		}
+
 	}
 }
 
@@ -1491,7 +1536,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 	for (i = 0; i < (menuCur < EQUIP_NECK ? itemTypeCnt[menuCur * TOTALCHAR + curHero] : itemTypeCnt[menuCur - EQUIP_NECK + ITEM_NECK]); i++) {
 		ao[NPC].cmf = ao[NPC].type = curHero;
 		ao[NPC].x = x + (float)(16 * _2X + CREWSET_XGAP * ((i * MAXCREW + i) % MAXCREW) + ITEMICONSIZE) * zoom;
-		ao[NPC].y = y - (float)(80 * _2X) * (i / MAXCREW) * zoom;
+		ao[NPC].y = y - (float)(88 * _2X) * (i / MAXCREW) * zoom;
 
 		DrawImage(32 * _2X, 12 * _2X, 107 * _2X, 48 * _2X, ao[NPC].x - (float)16 * _2X * zoom, ao[NPC].y + (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + 6], cvtDest, cvtLayer, MAP_OBJ_IMG + 6, buffering);
 
@@ -1527,6 +1572,9 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 		//DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)22 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_RED, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 		DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)22 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, FRAME_GREEN, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 
+		if (menuDepth == 0) {
+			SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y + (float)32 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(80 * _2X) * zoom, TOUCH_FUNC_ITEMDETAIL + i);
+		}
 	}
 	//Top menu
 	//if (menuCur < EQUIP_NECK)
@@ -1535,7 +1583,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 	//BarDraw(&bar[BAR_COMBATPOWERALL], zoom, cvtDest, cvtLayer, buffering);
 
 	//HeroSelectButtonList(x + (float)(DX - HEROBUTTON_X - 1 * _2X) * zoom, DY - (float)48 * _2X * zoom, zoom, curHero, false, false, cvtDest, cvtLayer, buffering);
-	HeroSelectButtonList(x + 1 * _2X * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, false, true, cvtDest, cvtLayer, buffering);
+	HeroSelectButtonList(x + 1 * _2X * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true, cvtDest, cvtLayer, buffering);
 
 
 	//Bottom Menu
@@ -1559,11 +1607,30 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 			break;
 		}
 
-		if (menuCur != i) {
+		if (menuCur != i && menuDepth == 0) {
 			SetRectPoint((float)(2 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, (float)COLLECTIONMENU_X * zoom, (float)COLLECTIONMENU_Y * zoom, TOUCH_FUNC_COLLECTIONS_EQUIP + i);
 		}
 	}
 
+
+	switch (menuDepth) {
+		//상세보기
+		//menuItem 으로 하자.
+		//
+	case 1:
+		ScreenDarken(SCREENDARKEN);
+
+		menuItem = 1;
+
+		itemType = menuCur;
+		itemDetail = menuItem;
+		itemGrade = GRADE_NORMAL;
+		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+		EquipInfoDraw(&ao[menuCur].equip[EQUIP_WEAPON], x, y, itemType, itemDetail, itemGrade, /*menuDepth - 2*/0, menuX, 1.0f, cvtDest, cvtLayer, buffering);
+		
+		break;
+	}
 	return;
 
 	SetSectionClip(0, y - (float)32 * _2X * zoom, (float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y - 16 * _2X) * zoom, false);
@@ -1589,6 +1656,8 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 		break;
 		//스킬
 	}
+
+
 	UnSectionClip(false);
 
 	return;
@@ -2253,7 +2322,7 @@ int GetScrollDy(int menuIdx)
 		scrollDy = CREWSET_YGAP * (TOTAL_CREW / MAXCREW);
 		break;
 	case MENU_COLLECTIONS:
-		scrollDy = (float)80 * _2X * ((itemTypeCnt[menuCur < EQUIP_NECK ? itemSlotEquip[menuCur] + curHero : itemSlotEquip[menuCur]] + 1) / MAXCREW) + GNBHEIGHT + BOTTOMMENUHEIGHT;
+		scrollDy = (float)88 * _2X * ((itemTypeCnt[menuCur < EQUIP_NECK ? itemSlotEquip[menuCur] + curHero : itemSlotEquip[menuCur]] + 1) / MAXCREW) + GNBHEIGHT + BOTTOMMENUHEIGHT;
 		/*
 		switch (menuCur) {
 			case COLLECTIONMENU_EQUIP:
@@ -2927,10 +2996,933 @@ void NewCardDraw(void)
 
 void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	// TODO: 스테이지 정보 UI 구현
+	/**/
+	int i, j, k;
+	int type = ITEM_CREW;
+	int detail = stage;
+	int grade = 0;
+	int lv = 0;
+	int count = 1;
+	float cardZoom = 1.5f * zoom;
+	float goldZoom = 0.8f * zoom;
+	float width;
+	int enemyCrewY = 400 * _2X;
+	int beforeEnemyCrewY;
+	int stageCrewIdx;
+	int stageBossIdx = GetStageBossIdx();
+	int stageBossType = GetStageBossType();
+	int stageBossMaxHp = (robin.stage * TOTALROOM + robin.room + 1) * (100 + enemyData[stageBossType * ENEMYDATASIZE + 3]);
+	int itemType, itemDetail, itemGrade, itemCnt;
+	int rewardType, rewardDetail, rewardGrade, rewardCnt;
+	int curStar, maxStar;
+	float yGap = (float)-32 * _2X * zoom;
+
+	long long realValue;
+	float numWidth = ITEMICONSIZE;
+
+	int stageInfoCurFrame = stageInfoFrame;
+	int bFrame = 2;
+
+	float menuZoom;
+	float fontZoom = Max(1.2f, (float)(STAGECLEARDELAY_ALPHA - stageInfoCurFrame) * 0.2f / MOTIONDIV);
+	float roomZoom = 0.5f * zoom;
+
+	long long getGoldNum = 0;
+	long long getHeartNum = 0;
+	long long getMedalNum = 0;
+	long long getStarNum = 0;
+	long long getHammerNum = 0;
+
+	bool crewMenuDraw = false;
+	bool equipMenuDraw = false;
+
+	int doorY = 10 * TSIZE;
+	int totalStar = 0;
+	long long betCnt = bossGold[stage] * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
+
+	int mapIdx;
+	int price;
+
+	long long betGold = GetStageAdmissionFee();
+
+	int textPos = 0;
+	float textZoom = 1.0f;
+
+	if (cur == false)
+		stageInfoCurFrame = FPS * 10;
+
+	//ao[ENEMY].type = stageEnemy[robin.stage * TOTALROOM + robin.room];
+	SetEnemy(&ao[ENEMY]);
+	ao[ENEMY].active = false;
+	//보스
+
+	//robin.stage = 9;
+
+
+	switch (stageInfoDepth) {
+	case STAGEINFO_CREWDROP:
+		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, buffering);
+
+		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom + yGap, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
+		//보스 정보
+		DrawStageLabel(x + (float)(DX / 2) * zoom, y + (float)(8 * _2X) * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom, cvtDest, cvtLayer, buffering);
+
+		//웨이브 보스
+		//if (stageInfoCurFrame > 20)
+		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], frame / 2 % crewPos[stageBossType * CREWDATASIZE], x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom, cvtDest, cvtLayer, buffering);
+
+		//BossHpBarDraw(GetStageBossObjectIdx() == false ? stageBossMaxHp : ao[GetStageBossObjectIdx()].hp, stageBossMaxHp, x + (float)(DX / 2) * zoom, y - (float)116 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+		if (stageInfoCurFrame > 23)
+			DrawGoldAlpha(x + (float)92 * _2X * zoom, y - (float)(DIORAMASIZE_Y - 44 * _2X) * zoom + yGap, ALPHA_BOSS, FONT_GOLD_LARGE, 0.7f * zoom, LEFT, true, false, cvtDest, cvtLayer, buffering);
+
+		if (stageInfoCurFrame > 26) {
+			HpBarDraw(stageBossType, GetStageBossObjectIdx() == false ? stageBossMaxHp : ao[GetStageBossObjectIdx()].hp, stageBossMaxHp, x + (float)(DX / 2) * zoom, y - (float)152 * _2X * zoom + yGap, zoom, cvtDest, cvtLayer, buffering);
+		}
+
+		if (stageInfoCurFrame > 30) {
+			SetAlpha(28);
+			GradiationFrame(x + (float)(POPUPWINDOWSIZE_X - 280 * _2X) / 2 * zoom, y - (float)(192 * _2X) * zoom + yGap, (float)280 * _2X * zoom, (float)24 * _2X * zoom, 0, cvtDest, cvtLayer, buffering);
+			SetAlpha(32);
+		}
+
+		if (stageInfoCurFrame > 33)
+			CenterText(TEXT_CLEARREWARDS, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(192 * _2X + 7 * _2X) * zoom + yGap, zoom, cvtDest, cvtLayer, buffering);
+
+		if (stageInfoCurFrame > 36)
+			DrawBox(stageClearBox[robin.stage], x + (float)48 * _2X * zoom, y - (float)(200 * _2X + 88 * _2X) * zoom + yGap, LEFT, false, COLOR_WHITE, false, false, true, (float)BOXHOUSEZOOM * zoom, cvtDest, cvtLayer, buffering);
+
+		if (stageInfoCurFrame > 39) {
+			DrawFrame(x + (float)(88 * _2X) * zoom, y - (float)(200 * _2X + 26 * _2X) * zoom + yGap, (float)208 * _2X * zoom, (float)RAIDGOLDBARHEIGHT * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+		}
+
+		if (stageInfoCurFrame > 42) {
+			InitReward();
+
+			for (i = 0; i < BOX1MAXREWARDITEM; i++) {
+				itemType = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE];
+				itemDetail = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 1];
+				itemGrade = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 2];
+				itemCnt = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 3];
+
+				if (itemType != -1) {
+					rewardItem[rewardItemCnt].type = itemType;
+					rewardItem[rewardItemCnt].detail = itemDetail;
+					rewardItem[rewardItemCnt].grade = itemGrade;
+					rewardItem[rewardItemCnt].count = itemCnt;
+
+					rewardItemCnt++;
+				}
+			}
+			//웨이브 보상
+			for (i = 0; i < rewardItemCnt; i++) {
+				rewardType = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 0];
+				rewardDetail = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 1];
+				rewardGrade = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 2];
+				rewardCnt = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 3];
+
+				if (rewardType == ITEM_CREW) {
+					curStar = maxStar = crewData[rewardDetail * CREWDATASIZE + CREWDATASIZE - 1] + 1;
+				}
+				else {
+					curStar = maxStar = GetItemStar(rewardType, rewardDetail, rewardGrade);
+				}
+
+				DrawRewardCard(rewardType, rewardDetail, rewardGrade, 1, rewardCnt, x + (float)(DX / 2 - (rewardItemCnt) * (REWARDCARDSIZE_X + 4 * _2X) * 1.5f / 2 + i * (REWARDCARDSIZE_X + 2 * _2X) * 1.5f + 38 * _2X) * zoom, y - (float)(224 * _2X) * zoom + yGap, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+
+			}
+			//width = (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * goldZoom + GetBigNumGoldDx(betCnt, false, FONT_GOLD_LARGE, false, true, (float)(256 * _2X - 32 * _2X) * zoom, goldZoom);
+
+			//DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - width / 2, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, 1.5f * goldZoom, false, false, false, cvtDest, cvtLayer, buffering);
+
+			//DrawBigNumGold(betCnt, x + (float)POPUPWINDOWSIZE_X / 2 * zoom - width / 2 + (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * zoom, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, FONT_GOLD_LARGE, LEFT, false, false, (float)(240 * _2X - 32 * _2X) * goldZoom, true, goldZoom, cvtDest, cvtLayer, buffering);
+		}
+
+
+		break;
+	case STAGEINFO_CREWGACHA:
+
+
+		//SetAlpha(28);
+		//GradiationFrame(x + (float)(POPUPWINDOWSIZE_X - 280 * _2X) / 2 * zoom, y - (float)(200 * _2X) * zoom, (float)280 * _2X * zoom, (float)24 * _2X * zoom, 0, cvtDest, cvtLayer, buffering);
+		//SetAlpha(32);
+
+		//CenterText(TEXT_GOLDPOSSETION, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(200 * _2X + 7 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+		//DrawFrame(x + (float)(POPUPWINDOWSIZE_X - 240 * _2X) / 2 * zoom, y - (float)(200 * _2X + 26 * _2X) * zoom, (float)240 * _2X * zoom, (float)RAIDGOLDBARHEIGHT * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+
+		//width = (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * goldZoom + GetBigNumGoldDx(bossHp, false, FONT_GOLD_LARGE, false, true, (float)(240 * _2X - 32 * _2X) * zoom, goldZoom);
+
+		//DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - width / 2, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, 1.5f * goldZoom, false, false, false, cvtDest, cvtLayer, buffering);
+
+		//DrawBigNumGold(bossHp, x + (float)POPUPWINDOWSIZE_X / 2 * zoom - width / 2 + (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * zoom, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, FONT_GOLD_LARGE, LEFT, false, false, (float)(240 * _2X - 32 * _2X) * goldZoom, true, goldZoom, cvtDest, cvtLayer, buffering);
+		SetAlpha(Max(0, 32 - stageInfoFrame));
+		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, buffering);
+		SetAlpha(32);
+
+		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
+
+		//세입자
+		for (i = MAXCREW - 1; i >= 0; i--) {
+			if (enemyHouse.crew[i] != null) {
+				switch (stageInfoDepth) {
+				case STAGEINFO_CREWDROP:
+				case STAGEINFO_CREWGACHA:
+
+
+					if (stageInfoCurFrame < STAGECLEARDELAY_HAPPYTIME) {
+						beforeEnemyCrewY = enemyCrewY;
+
+						enemyCrewY -= stageInfoCurFrame * 16 * _2X * 2 / MOTIONDIV;
+
+						if (enemyCrewY < 0)
+							enemyCrewY = 0;
+
+						//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3] * zoom, y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_LEVITATION) {
+						beforeEnemyCrewY = enemyCrewY;
+
+						enemyCrewY = (stageInfoCurFrame - STAGECLEARDELAY_HAPPYTIME) * 1 * _2X * 2 / MOTIONDIV;
+
+						//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3] * zoom, y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_ROTATION) {
+						enemyCrewY = FPS * _2X;
+
+						//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom + points[(stageInfoCurFrame - STAGECLEARDELAY_LEVITATION + i * 10) % MAX_POINTS][0], y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom + points[(stageInfoCurFrame - STAGECLEARDELAY_LEVITATION + i * 10) % MAX_POINTS][1], stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+
+
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_TOGETHER) {
+						enemyCrewY = STAGECLEARDELAY_TOGETHER - stageInfoCurFrame;
+						//if (32 - (stageInfoCurFrame - STAGECLEARDELAY_ROTATION) / MOTIONDIV / 8 > 0) {
+						SetAlpha(32 - (stageInfoCurFrame - STAGECLEARDELAY_ROTATION) / MOTIONDIV / 8);
+						//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom + points[(STAGECLEARDELAY_TOGETHER - stageInfoCurFrame - FPS + i * 10) % MAX_POINTS][0], y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom + points[(STAGECLEARDELAY_TOGETHER - FPS - stageInfoCurFrame + i * 10) % MAX_POINTS][1], stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+						SetAlpha(32);
+						//}
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_SELECTEDCREW) {
+						enemyCrewY = 0;
+						if (i == selectedCrew) {
+							SetAlpha(Min(32, stageInfoCurFrame - STAGECLEARDELAY_TOGETHER));
+							//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * 1.5f * zoom, cvtDest, cvtLayer, buffering);
+							SetAlpha(32);
+							DrawCmfDetail(CMF_NPC_HEART, PO_C122_SPARK0 + stageInfoCurFrame / MOTIONDIV % 8, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom + (float)100 * _2X * zoom, LEFT, LOBBYZOOM, false, false, gScreenBuffer, gScreenLayer, false);
+						}
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_CREWAPPEAR) {
+						enemyCrewY = 0;
+						if (i == selectedCrew) {
+							//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * 1.5f * zoom, cvtDest, cvtLayer, buffering);
+						}
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_NEWCARD) {
+						enemyCrewY = 0;
+						if (i == selectedCrew) {
+							//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * 1.5f * zoom, cvtDest, cvtLayer, buffering);
+
+							if (stageInfoCurFrame == STAGECLEARDELAY_CREWAPPEAR)
+								SetRewardMark(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, DX / 2, DY / 2 + 148 * _2X, DX / 2, DY / 2 + 148 * _2X, 32 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, FPS, FPS, false, 30, 1,
+									ITEM_CREW, GetCrewIdxFromType(enemyHouse.crew[i]), GRADE_NORMAL, false, true, true, false, PLAYER, true, true, GetInvenIdx(ITEM_CREW, GetCrewIdxFromType(enemyHouse.crew[i]), GRADE_NORMAL) == -1 ? false : true, 0.2f / MOTIONDIV, 3.0f, 0.4f / MOTIONDIV, 3.0f, 2.5f, -0.2f / MOTIONDIV);
+
+							if (stageInfoCurFrame == STAGECLEARDELAY_NEWCARD - 2) {
+								stageInfoFrame = stageInfoCurFrame = STAGECLEARDELAY_NEWCARD - 3;
+								SetFontColor(itemColor[crewData[GetCrewIdxFromType(enemyHouse.crew[i]) * CREWDATASIZE + CREWDATASIZE - 1]]);
+								CenterText(TEXT_MONSTERNAME_START + enemyHouse.crew[i], DX / 2, DY / 2 + TABBUTTONGAP + 80 * _2X, 2.0f, gScreenBuffer, gScreenLayer, false);
+								SetFontColor(COLOR_WHITE);
+								CenterText(TEXT_STAGECLEARCREWGET, DX / 2, DY / 2 + TABBUTTONGAP + 48 * _2X, 1.5f, gScreenBuffer, gScreenLayer, false);
+								SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
+								DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, 1, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+								SetAlpha(32);
+
+								SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GETCREW);
+							}
+						}
+					}
+					else if (stageInfoCurFrame < STAGECLEARDELAY_GETCARD) {
+						enemyCrewY = 0;
+						if (i == selectedCrew) {
+							//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - DIORAMASIZE_Y / 2 + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+
+							if (stageInfoCurFrame == STAGECLEARDELAY_NEWCARD) {
+								rewardMark[0].targetX2 = xOffset + DX / 2 + 108 * _2X + 20 * _2X;
+								rewardMark[0].targetY2 = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X;
+								rewardMark[0].zoom2 = rewardMark[0].zoom;
+								rewardMark[0].zoomEnd2 = 1.0f;
+								rewardMark[0].zoomIncrement2 = -0.2f / MOTIONDIV;
+								rewardMark[0].speed2 = 2 * _2X / MOTIONDIV;
+								rewardMark[0].speedIncrement2 = 2 * _2X / MOTIONDIV;
+								rewardMark[0].frame2 = 1;
+
+								PlayMusic(M_CARDSPLIT);
+							}
+
+							if (stageInfoCurFrame - STAGECLEARDELAY_NEWCARD < 15)
+								menuZoom = Min(1.5f, (float)(stageInfoCurFrame - STAGECLEARDELAY_NEWCARD) / 10);
+							else if (stageInfoCurFrame - STAGECLEARDELAY_NEWCARD < 15 + 15)
+								menuZoom = 1.5f;
+							else if (stageInfoCurFrame - STAGECLEARDELAY_NEWCARD < 15 + 15 + 5)
+								menuZoom = Max(1.0f, 1.5f - (float)(stageInfoCurFrame - STAGECLEARDELAY_NEWCARD - 15 - 15) / 10);
+							else
+								menuZoom = 1.0f;
+
+							startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
+							startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
+
+							DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], gScreenBuffer, gScreenLayer, MENUICON_IMG, false);
+
+						}
+					}
+					break;
+
+				}
+			}
+
+		}
+
+		//1.성과 동료들을 앞으로 내 세운 상태에서
+		if (stageInfoCurFrame < STAGECLEARDELAY_APPEAR) {
+			UnSectionClip(true);
+			//DrawCmfDetail(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, RIGHT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * 0.6f + (float)stageInfoCurFrame * zoom * 0.01f + (float)stageInfoCurFrame * stageInfoCurFrame / 5 * zoom * 0.001f, false, false, cvtDest, cvtLayer, buffering);
+			UnSectionClip(false);
+		}
+		//2.보스가 날라가고
+		else if (stageInfoCurFrame < STAGECLEARDELAY_BOSSAWAY) {
+			UnSectionClip(true);
+			//DrawCmfDetail(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, RIGHT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * 0.6f + (float)stageInfoCurFrame * zoom * 0.01f + (float)stageInfoCurFrame * stageInfoCurFrame / 5 * zoom * 0.001f, (stageInfoCurFrame + (stageInfoCurFrame * stageInfoCurFrame) / (5 * MOTIONDIV)) % 360, false, cvtDest, cvtLayer, buffering);
+			UnSectionClip(false);
+		}
+		//3.세입자들이 웃는 모습이 나오고, 여기서 밑에 텍스트를 띄워주면서 룰렛 스타트를 사용자가 선택하게 시킨다.
+		else if (stageInfoCurFrame < STAGECLEARDELAY_HAPPYTIME) {
+
+			for (i = MAXCREW - 1; i >= 0; i--) {
+
+				//DrawArray(IMG_BALLOON0 + bFrame, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3] * zoom + (float)(balloonPos[bFrame * 2] + stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2] * 4 * _2X) * zoom, y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom - (float)balloonPos[bFrame * 2 + 1] * zoom, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+				//DrawEmoticon(EMOTICON_HAPPY, false, stageInfoCurFrame, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3] * zoom + (float)2 * _2X * stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2] * zoom, y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X * zoom + (float)enemyCrewY * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom + (float)43 * _2X * zoom, 0.9f, gScreenBuffer, gScreenLayer, false);
+			}
+		}
+
+		if (stageInfoCurFrame == STAGECLEARDELAY_GETCARD) {
+			GetItem(rewardMark[0].type, 1, rewardMark[0].detail, rewardMark[0].grade, 1, false);
+			//robin.crew[GetCrewIdxFromType(stageCrew[selectedCrew])] = true;
+			memset(&rewardMark[0], 0, sizeof(rewardMark[0]));
+			stageInfoDepth = STAGEINFO_STAGECLEAR;
+			stageInfoFrame = 0;
+		}
+		break;
+		//스테이지 클리어 보상
+	case STAGEINFO_STAGECLEAR:
+		SetAlpha(20);
+		MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
+		SetAlpha(32);
+
+		DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGECLEAR, FONT_GOLD_LARGE, fontZoom, CENTER, true, false, gScreenBuffer, gScreenLayer, false);
+
+		//스테이지 클리어 알파벳이 뜨고
+		if (stageInfoCurFrame < STAGECLEARDELAY_ALPHA) {
+
+		}
+		//상자가 뜨고
+		else if (stageInfoCurFrame < STAGECLEARDELAY_BOXDROP) {
+			if (stageInfoCurFrame == STAGECLEARDELAY_ALPHA) {
+				SetBoxMark(xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, STATUSWIN_Y + 16 * _2X, xOffset + DX / 2, STATUSWIN_Y + 16 * _2X, 16 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, FPS * 3, FPS * 3, 30, stageClearBox[robin.stage], GRADE_NORMAL, BOXZOOM, BOXZOOM, 0.2f / MOTIONDIV, BOXZOOM, BOXZOOM, 0.2f / MOTIONDIV);
+			}
+		}
+		//상자가 열리면서 내부 보상이 나오고, 상자는 사라지고
+		else if (stageInfoCurFrame < STAGECLEARDELAY_CLEARREWARD) {
+
+			int row = 1;
+			int col = 1;
+			float zoom = 1.0f;
+			int gap;
+			int itemType;
+			int itemDetail;
+			int itemGrade;
+			int itemCnt;
+
+			if (stageInfoCurFrame == STAGECLEARDELAY_BOXDROP) {
+				boxMark[0].jokboIcon = true;
+				InitReward();
+
+				for (i = 0; i < BOX1MAXREWARDITEM; i++) {
+					itemType = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE];
+					itemDetail = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 1];
+					itemGrade = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 2];
+					itemCnt = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 3];
+
+					if (itemType != -1) {
+						rewardItem[rewardItemCnt].type = itemType;
+						rewardItem[rewardItemCnt].detail = itemDetail;
+						rewardItem[rewardItemCnt].grade = itemGrade;
+						rewardItem[rewardItemCnt].count = itemCnt;
+
+						rewardItemCnt++;
+					}
+				}
+			}
+
+			switch (rewardItemCnt) {
+			case 1:
+				row = 1;
+				col = 1;
+				zoom = 2.5f;
+				gap = 0;
+				break;
+			case 2:
+				row = 2;
+				col = 1;
+				zoom = 2.0f;
+				gap = 16 * _2X;
+				break;
+			case 3:
+				row = 3;
+				col = 1;
+				zoom = 1.8f;
+				gap = 16 * _2X;
+				break;
+			case 4:
+				row = 2;
+				col = 2;
+				zoom = 1.8f;
+				gap = 16 * _2X;
+				break;
+			case 5:
+			case 6:
+				row = 3;
+				col = 2;
+				zoom = 1.8f;
+				gap = 16 * _2X;
+				break;
+			case 7:
+			case 8:
+				row = 4;
+				col = 2;
+				zoom = 1.5f;
+				gap = 16 * _2X;
+				break;
+			case 9:
+				row = 3;
+				col = 3;
+				zoom = 1.5f;
+				gap = 16 * _2X;
+				break;
+			case 10:
+			case 11:
+			case 12:
+				row = 4;
+				col = 3;
+				zoom = 1.5f;
+				gap = 16 * _2X;
+				break;
+			case 13:
+			case 14:
+			case 15:
+			case 16:
+				row = 4;
+				col = 3;
+				zoom = 1.5f;
+				gap = 16 * _2X;
+				break;
+			}
+
+			zoom = 1.5f;
+
+			if (stageInfoCurFrame % ROULETTEDIV == 0 && stageRewardIdx < rewardItemCnt) {
+				itemType = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + stageRewardIdx * REWARDDATASIZE];
+				itemDetail = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + stageRewardIdx * REWARDDATASIZE + 1];
+				itemGrade = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + stageRewardIdx * REWARDDATASIZE + 2];
+				itemCnt = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + stageRewardIdx * REWARDDATASIZE + 3];
+
+				startX = xOffset + DX / 2;
+				startY = STATUSWIN_Y - BOXSIZE_Y;
+
+				targetX = xOffset + DX / 2 - (float)(REWARDCARDSIZE_X * zoom * row + gap * (row - 1)) / 2 + (float)(REWARDCARDSIZE_X * zoom + gap) * (stageRewardIdx % row) + (float)(REWARDCARDSIZE_X * zoom) / 2;
+				targetY = DY / 2 + (float)REWARDCARDSIZE_Y * zoom * col - (float)(REWARDCARDSIZE_Y * zoom + gap) * (stageRewardIdx / row) - (float)(REWARDCARDSIZE_Y * zoom) / 2;
+
+				SetBoxCardMark(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, FPS, FPS, GetItemIcon(itemType, itemDetail, itemGrade), 30, itemCnt,
+					itemType, itemDetail, itemGrade, 1, false, true, false, PLAYER, true, itemType < ITEM_GEM || itemType == ITEM_CREW ? true : false, ((itemType < ITEM_GEM && GetInvenIdx(itemType, itemDetail, itemGrade) == -1) || (itemType == ITEM_CREW)) ? true : false, 0.2f / MOTIONDIV, zoom, 0.2f / MOTIONDIV, false, false, false);
+
+				stageRewardIdx++;
+			}
+		}
+		//보상을 탭하라는 메뉴가 나오고
+		else if (stageInfoCurFrame < STAGECLEARDELAY_TABREWARD) {
+			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
+			DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, 1, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+			SetAlpha(32);
+
+			SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_STAGEREWARD);
+
+			if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD - 2)
+				stageInfoFrame = stageInfoCurFrame = STAGECLEARDELAY_TABREWARD - 3;
+
+		}
+		else if (stageInfoCurFrame < STAGECLEARDELAY_GETREWARD) {
+			j = 0;
+			for (i = 0; i < rewardItemCnt; i++) {
+				startX = boxCardMark[i].x;
+				startY = boxCardMark[i].y;
+
+				switch (rewardItem[i].type) {
+				case ITEM_GOLD:
+					startX = boxCardMark[i].x + ITEMICONSIZE + 8 * _2X;
+
+					getGoldNum += rewardItem[i].count;
+
+					targetX = bar[BAR_GOLD].x + 8 * _2X + ITEMICONSIZE / 2;
+					targetY = bar[BAR_GOLD].y - 8 * _2X - ITEMICONSIZE / 2;
+
+					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
+						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, targetX, targetY, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, rewardItem[i].count, CURRENCY_GOLD, 2.0f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10);
+						j++;
+					}
+
+					BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom, cvtDest, cvtLayer, buffering);
+					break;
+				case ITEM_HEART:
+					startY = boxCardMark[i].y + ITEMICONSIZE;
+
+					getHeartNum += rewardItem[i].count;
+
+					targetX = xOffset + bar[BAR_HEART].x;
+					targetY = bar[BAR_HEART].y - TSIZE * 1 / 2;
+
+					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
+						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, targetX, targetY, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, FPS / 2, FPS / 2, ICON_HEART, 30, rewardItem[i].count, CURRENCY_HEART, 2.0f, 2.0f, 0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10);
+						j++;
+					}
+
+					BarDraw(&bar[BAR_HEART], bar[BAR_HEART].zoom, cvtDest, cvtLayer, buffering);
+					break;
+				case ITEM_MEDAL:
+					getMedalNum += rewardItem[i].count;
+
+					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
+					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
+						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_MEDAL, 30, rewardItem[i].count, CURRENCY_MEDAL, 2.0f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f, 10);
+						j++;
+					}
+
+					BarDraw(&bar[BAR_MEDAL], bar[BAR_MEDAL].zoom, cvtDest, cvtLayer, buffering);
+					break;
+				case ITEM_STAR:
+					getStarNum += rewardItem[i].count;
+
+					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
+					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
+						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_STAR, 30, rewardItem[i].count, CURRENCY_STAR, 2.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10);
+						j++;
+					}
+					break;
+				case ITEM_HAMMER:
+					getHammerNum += rewardItem[i].count;
+
+					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
+					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
+						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_HAMMER, 30, rewardItem[i].count, CURRENCY_HAMMER, 2.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10);
+						j++;
+					}
+					BarDraw(&bar[BAR_HAMMER], bar[BAR_HAMMER].zoom, cvtDest, cvtLayer, buffering);
+					break;
+				case ITEM_SWORD:
+				case ITEM_GUN:
+				case ITEM_BOOMERANG:
+				case ITEM_HELM:
+				case ITEM_HAT:
+				case ITEM_CAP:
+				case ITEM_ARMOR:
+				case ITEM_VEST:
+				case ITEM_COAT:
+				case ITEM_GUNTLET:
+				case ITEM_ARMLET:
+				case ITEM_GLOVE:
+				case ITEM_KILT:
+				case ITEM_SKIRT:
+				case ITEM_PANTS:
+				case ITEM_GREAVES:
+				case ITEM_SHOES:
+				case ITEM_BOOTS:
+				case ITEM_CREW:
+					if (stageInfoCurFrame - STAGECLEARDELAY_TABREWARD < 15)
+						menuZoom = Min(1.5f, (float)(stageInfoCurFrame - STAGECLEARDELAY_TABREWARD) / 10);
+					else if (stageInfoCurFrame - STAGECLEARDELAY_TABREWARD < 15 + 15)
+						menuZoom = 1.5f;
+					else if (stageInfoCurFrame - STAGECLEARDELAY_TABREWARD < 15 + 15 + 5)
+						menuZoom = Max(1.0f, 1.5f - (float)(stageInfoCurFrame - STAGECLEARDELAY_TABREWARD - 15 - 15) / 10);
+					else
+						menuZoom = 1.0f;
+
+					if (rewardItem[i].type == ITEM_CREW && crewMenuDraw == false) {
+						crewMenuDraw = true;
+
+						startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
+						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
+
+						DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], gScreenBuffer, gScreenLayer, MENUICON_IMG, false);
+
+					}
+					else if (equipMenuDraw == false) {
+						equipMenuDraw = true;
+
+						startX = xOffset + DX / 2 - 150 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
+						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
+
+						DrawImage(40 * _2X, 40 * _2X, 0 * _2X, 0 * _2X, startX, startY, false, false, false, false, false, menuZoom, sprite[MENUICON_IMG], gScreenBuffer, gScreenLayer, MENUICON_IMG, false);
+					}
+
+					if (stageInfoCurFrame == STAGECLEARDELAY_GETREWARD - 1) {
+						if (rewardItem[i].type == ITEM_CREW)
+							boxCardMark[i].targetX2 = xOffset + DX / 2 + 108 * _2X + 20 * _2X;
+						else
+							boxCardMark[i].targetX2 = xOffset + DX / 2 - 150 * _2X + 20 * _2X;
+
+						boxCardMark[i].targetY2 = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X;
+
+						boxCardMark[i].zoom2 = boxCardMark[i].zoom;
+						boxCardMark[i].zoomEnd2 = 1.0f;
+						boxCardMark[i].zoomIncrement2 = -0.2f / MOTIONDIV;
+						boxCardMark[i].speed2 = 2 * _2X / MOTIONDIV;
+						boxCardMark[i].speedIncrement2 = 2 * _2X / MOTIONDIV;
+						boxCardMark[i].frame2 = 1;
+
+						GetItem(rewardItem[i].type, rewardItem[i].cooldown, rewardItem[i].detail, rewardItem[i].grade, 1, false);
+						PlayMusic(M_CARDSPLIT);
+
+					}
+					break;
+				case ITEM_BOX:
+
+					break;
+					//	//여기서 스킬은 따로 신규 획득 혹은 레벨업을 해준다..
+				case ITEM_SKILL:
+
+					break;
+				}
+
+			}
+
+			if (getGoldNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
+				AddBar(&bar[BAR_GOLD], getGoldNum, BARFRAME);
+				GetItem(ITEM_GOLD, false, false, false, getGoldNum, false);
+			}
+
+
+			if (getHeartNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
+				AddBar(&bar[BAR_BOX], getHeartNum, BARFRAME);
+				GetItem(ITEM_HEART, false, false, false, getHeartNum, false);
+			}
+
+			if (getMedalNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
+				AddBar(&bar[BAR_MEDAL], getMedalNum, BARFRAME);
+				GetItem(ITEM_MEDAL, false, false, false, getMedalNum, false);
+			}
+
+			if (getStarNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
+				AddBar(&bar[BAR_CROWN], getStarNum, BARFRAME);
+				GetItem(ITEM_STAR, false, false, false, getStarNum, false);
+			}
+
+			if (getHammerNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
+				AddBar(&bar[BAR_HAMMER], getHammerNum, BARFRAME);
+				GetItem(ITEM_HAMMER, false, false, false, getHammerNum, false);
+			}
+
+			//획득된것은 제외하고 당겨준다.
+			if (stageInfoCurFrame == STAGECLEARDELAY_GETREWARD - 1) {
+
+				for (i = 0; i < rewardItemCnt; i++) {
+					switch (rewardItem[i].type) {
+					case ITEM_GOLD:
+					case ITEM_HEART:
+					case ITEM_MEDAL:
+					case ITEM_STAR:
+					case ITEM_HAMMER:
+
+					case ITEM_SWORD:
+					case ITEM_GUN:
+					case ITEM_BOOMERANG:
+					case ITEM_HELM:
+					case ITEM_HAT:
+					case ITEM_CAP:
+					case ITEM_ARMOR:
+					case ITEM_VEST:
+					case ITEM_COAT:
+					case ITEM_GUNTLET:
+					case ITEM_ARMLET:
+					case ITEM_GLOVE:
+					case ITEM_KILT:
+					case ITEM_SKIRT:
+					case ITEM_PANTS:
+					case ITEM_GREAVES:
+					case ITEM_SHOES:
+					case ITEM_BOOTS:
+					case ITEM_CREW:
+						memset(&rewardItem[i], 0, sizeof(ITEM));
+						memset(&boxCardMark[i], 0, sizeof(ICONMARK));
+						for (k = i; k < rewardItemCnt - 1; k++) {
+							memcpy(&rewardItem[k], &rewardItem[k + 1], sizeof(ITEM));
+							memcpy(&boxCardMark[k], &boxCardMark[k + 1], sizeof(ICONMARK));
+						}
+						memset(&rewardItem[rewardItemCnt - 1], 0, sizeof(ITEM));
+						memset(&boxCardMark[rewardItemCnt - 1], 0, sizeof(ICONMARK));
+						rewardItemCnt--;
+						i--;
+						break;
+					}
+				}
+
+				//rewardItemCnt 가 0보다 크다는 것은 상자가 있다는 것이므로 GotoGacha로 보낸다.
+				if (rewardItemCnt > 0)
+					GotoGacha();
+
+			}
+		}
+		else {
+			//stageInfoDepth = STAGEINFO_NEWSTAGE;
+			stageInfoFrame = 0;
+			robin.stage++;
+			robin.room = 0;
+			if (robin.stage > robin.maxStage[robin.stage]) {
+				robin.maxStage[robin.stage] = robin.stage;
+				robin.maxRoom[robin.stage] = 0;
+			}
+
+			//SetBossObj();
+
+			ClosePopUp();
+
+			memset(&currencyMarkArr_PopUp, 0, sizeof(currencyMarkArr_PopUp));
+			memset(&currencyMark_PopUp, 0, sizeof(currencyMark_PopUp));
+			memset(&rewardMark_PopUp, 0, sizeof(rewardMark_PopUp));
+			memset(&boxMark, 0, sizeof(boxMark));
+			memset(&boxCardMark, 0, sizeof(boxCardMark));
+
+			waveStatus = WAVESTATUS_READY;
+
+			SaveGame();
+		}
+		//가차가 있으면 해당 화면으로 보내주고
+
+		//다 끝나면 종료시켜주면서 다음 스테이지로 이동하고
+		break;
+
+	case STAGEINFO_NEWSTAGE:
+
+		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, buffering);
+
+		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
+
+		//세입자
+		for (i = MAXCREW - 1; i >= 0; i--) {
+			if (enemyHouse.crew[i] != null) {
+				switch (stageInfoDepth) {
+				case STAGEINFO_NEWSTAGE:
+					beforeEnemyCrewY = enemyCrewY;
+
+					enemyCrewY -= stageInfoCurFrame * 16 * _2X;
+
+					if (enemyCrewY < 0)
+						enemyCrewY = 0;
+
+					//DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3] * zoom, y + (float)stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 1] * zoom + (float)8 * _2X + enemyCrewY, stageEnemyPos[stageHouse.houseType * MAXCREW * 3 + i * 3 + 2], enemyZoom[enemyHouse.crew[i]] * dioramaZoom * zoom, cvtDest, cvtLayer, buffering);
+					break;
+				}
+			}
+
+		}
+
+		if (stageInfoCurFrame > 20) {
+#ifdef PVPWITHUSER
+			DrawPlayer(&ao[SOLDIER], frame / MOTIONDIV % 4, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom, LEFT, 2.0f * zoom * Max(1, FPS / 2 + 10 - stageInfoCurFrame) * 0.6f, false, false, true, cvtDest, cvtLayer, buffering);
+
+#else
+			DrawCmfDetailShadow(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X - 160 * _2X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom, LEFT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * Max(1, FPS / 2 + 10 - stageInfoCurFrame) * 0.6f, cvtDest, cvtLayer, buffering);
+#endif
+		}
+
+		if (stageInfoCurFrame > 23) {
+#ifdef PVPWITHUSER
+			DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 88 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X) * zoom, false, zoom, cvtDest, cvtLayer, buffering);
+			CenterText(TEXT_NICKNAME + 4, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 10 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+#else
+			//DrawImage(207, 33, 0, 953, x + (float)(POPUPWINDOWSIZE_X - 64 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 6 * _2X) * zoom, false, false, false, false, false, 1.5f * zoom, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+			//MemRect(x + (float)(POPUPWINDOWSIZE_X - 15 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 12 * _2X) * zoom, (float)(HPBARWIDTH * 1.5f / 2 * robin.bossObj.hp / robin.bossObj.maxhp)* zoom, (float)(HPBARHEIGHT * 1.5f / 2)* zoom, ENEMYHPBARCOLOR, cvtDest, cvtLayer, buffering);
+			//DrawNum(robin.bossObj.hp, x + (float)(POPUPWINDOWSIZE_X - 15 * _2X + (float)HPBARWIDTH * 1.5f - 8 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 12 * _2X) * zoom, NUM_FONT_NORMAL, RIGHT, 0, count >= 0 ? false : MINUS, true, zoom, cvtDest, cvtLayer, buffering);
+			//DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(POPUPWINDOWSIZE_X - 15 * _2X + (float)HPBARWIDTH * 1.5f - 8 * _2X) / 2 * zoom - GetNumDx(robin.bossObj.hp, 0, NUM_FONT_NORMAL, 0, true, zoom) - (float)(ITEMICONSIZE * 0.8f + 4 * _2X) * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 11 * _2X) * zoom, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
+			HpBarDraw(boss[robin.stage], robin.totalBossHp, robin.totalBossMaxHp, x + (float)(POPUPWINDOWSIZE_X - 16 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X + 10 * _2X) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+
+			DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 88 * _2X - 160 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X) * zoom, TEXT_STAGENAME + stage/*TEXT_MONSTERNAME_START + boss[stage]*/, zoom, cvtDest, cvtLayer, buffering);
+#endif
+		}
+
+		if (stageInfoCurFrame > 26) {
+#ifdef PVPWITHUSER
+			CenterAlpha(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X) * zoom, ALPHA_USERINFO, FONT_SMALL, false, zoom, cvtDest, cvtLayer, buffering);
+#else
+			CenterAlpha(x + (float)(POPUPWINDOWSIZE_X - 160 * _2X) / 2 * zoom, y - (float)(DIORAMASIZE_Y - 32 * _2X) * zoom, ALPHA_BOSS, FONT_SMALL, false, zoom, cvtDest, cvtLayer, buffering);
+
+#endif
+		}
+
+		if (stageInfoCurFrame > 30) {
+			SetAlpha(28);
+			GradiationFrame(x + (float)(POPUPWINDOWSIZE_X - 280 * _2X) / 2 * zoom, y - (float)(200 * _2X) * zoom, (float)280 * _2X * zoom, (float)24 * _2X * zoom, 0, cvtDest, cvtLayer, buffering);
+			SetAlpha(32);
+		}
+
+		if (stageInfoCurFrame > 33)
+			CenterText(TEXT_RAIDGOLD, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(200 * _2X + 7 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+		if (stageInfoCurFrame > 36)
+			DrawFrame(x + (float)(POPUPWINDOWSIZE_X - 256 * _2X) / 2 * zoom, y - (float)(200 * _2X + 26 * _2X) * zoom, (float)256 * _2X * zoom, (float)RAIDGOLDBARHEIGHT * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+
+		if (stageInfoCurFrame > 39) {
+
+			width = (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * goldZoom + GetBigNumGoldDx(betCnt, false, FONT_GOLD_LARGE, false, true, (float)(256 * _2X - 32 * _2X) * zoom, goldZoom);
+
+			DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - width / 2, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, 1.5f * goldZoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+
+			DrawBigNumGold(betCnt, x + (float)POPUPWINDOWSIZE_X / 2 * zoom - width / 2 + (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * zoom, y - (float)(200 * _2X + 24 * _2X) * zoom - (float)8 * _2X * zoom, FONT_GOLD_LARGE, LEFT, false, false, (float)(240 * _2X - 32 * _2X) * goldZoom, true, goldZoom, cvtDest, cvtLayer, buffering);
+		}
+
+		if (stageInfoCurFrame > 45) {
+			SetAlpha(28);
+			GradiationFrame(x + (float)(POPUPWINDOWSIZE_X - 280 * _2X) / 2 * zoom, y - (float)(260 * _2X) * zoom, (float)(280 * _2X) * zoom, (float)(24 * _2X) * zoom, 0, cvtDest, cvtLayer, buffering);
+			SetAlpha(32);
+		}
+
+		if (stageInfoCurFrame > 48)
+			CenterText(TEXT_RENT, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(260 * _2X + 7 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+		//if (stageInfoCurFrame > 51)
+		//	DrawWindow2(x + (float)(8 * _2X) * zoom, y - (float)(284 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 16 * _2X), (float)(188 * _2X), COLOR_WHITE, zoom, cvtDest, cvtLayer, buffering);
+
+
+		for (i = 0; i < MAXCREW; i++) {
+			if (enemyHouse.crew[i] != null) {
+				if (stageInfoCurFrame > 54 + i * 3) {
+
+					detail = enemyHouse.crew[i];
+
+					curStar = enemyHouse.crewCurStar[i];
+					curMaxStar = enemyHouse.crewMaxStar[i];
+					maxStar = crewData[detail * CREWDATASIZE + CREWDATASIZE - 1] + 1;
+					signed long long upgradePrice = crewStarUpgradeGold[stage * MAXCREW * CREWMAXUPGRADELV + i * (CREWMAXUPGRADELV)+curStar] / CREWUPGRADEPER;
+
+					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(14 * _2X) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * i * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, cvtDest, cvtLayer, buffering);
+
+					//DrawBuyButton(x + (float)(14 * _2X) * zoom + (float)50 * _2X * zoom, y - (float)(298 * _2X + 16 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * i * 1.2f * zoom, (float)(160 * _2X) * zoom, (float)(32 * _2X) * zoom, frame, false, 100000000, CURRENCY_GOLD, zoom, false, false, false, cvtDest, cvtLayer, buffering);
+
+					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(10 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * (i / 2) * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, cvtDest, cvtLayer, buffering);
+
+					if (stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
+						ao[NPC].cmf = ao[NPC].type = ROBIN;
+						ao[NPC].x = x + (float)(36 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom;
+						ao[NPC].y = y - (float)(336 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom;
+						DrawPlayer(&ao[NPC], 2000 - 1 + LEVELUP_BACK0 + stageUpgradeMotion[i], ao[NPC].x, ao[NPC].y, false, zoom, false, false, false, cvtDest, cvtLayer, buffering);
+
+					}
+					DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(36 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom, y - (float)(336 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, RIGHT, enemyZoom[enemyHouse.crew[i]] * zoom, cvtDest, cvtLayer, buffering);
+
+
+					DrawStar(ICON_CROWN, x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)90 * _2X * zoom, y - (float)(296 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, curStar, curMaxStar, maxStar, CENTER, true, zoom, cvtDest, cvtLayer, buffering);
+					//최대값에 도달하면
+					if (curStar == maxStar) {
+						DrawMaxButton(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, zoom, cvtDest, cvtLayer, buffering);
+					}
+					else {
+						DrawBuyButton(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? true : false, upgradePrice, CURRENCY_GOLD, zoom, false, false, false, cvtDest, cvtLayer, buffering);
+						if (robin.gold >= upgradePrice)
+							SetRectPoint(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWUPGRADE + i);
+					}
+
+					if (stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
+						DrawPlayer(&ao[NPC], 2000 - 1 + LEVELUP_FRONT0 + stageUpgradeMotion[i], ao[NPC].x, ao[NPC].y, false, zoom, false, false, false, cvtDest, cvtLayer, buffering);
+
+						DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (stageUpgradeMotion[i] < 11 ? stageUpgradeMotion[i] : Max(11, stageUpgradeMotion[i] - 5)), ao[NPC].x, ao[NPC].y - (float)(16 * _2X) * zoom, 0, false, 1.0f, cvtDest, cvtLayer, buffering);
+
+					}
+
+					if (stageUpgradeMotion[i] == 3)
+						PlayMusic(M_LEVELUP);
+
+					if (stageUpgradeMotion[i] > 0)
+						stageUpgradeMotion[i]++;
+
+					if (stageUpgradeMotion[i] == 11)
+						stageUpgradeMotion[i] = 0;
+
+				}
+
+			}
+		}
+
+		for (i = 0; i < MAXCREW; i++) {
+			if (enemyHouse.crew[i] != null) {
+				curStar = enemyHouse.crewCurStar[i];
+
+				totalStar += curStar;
+			}
+		}
+		if (stageInfoCurFrame > 54 + MAXCREW * 3) {
+			//성주와 일기토
+			DrawTextButton(x + (float)(DX / 2 - 0 * _2X) * zoom, y - (float)(416 * _2X) * zoom, (float)(120 * _2X) * zoom, (float)(48 * _2X) * zoom, frame, totalStar < 10 || robin.bossRoom == true ? true : false, 1.0f, false, TEXT_LORD_DUEL, cvtDest, cvtLayer, buffering);
+			//if (totalStar < MAXSTARPERHOUSE || robin.bossRoom == true)
+			//	grayScale = 32;
+			DrawGoldAlpha(x + (float)(DX / 2 - 0 * _2X + 120 * _2X / 2) * zoom, y - (float)(416 * _2X + 22 * _2X) * zoom, ALPHA_BOSSDUEL, FONT_GOLD_LARGE, (float)zoom * 0.7f, CENTER, false, false, cvtDest, cvtLayer, buffering);
+			grayScale = 0;
+			//if (totalStar == MAXSTARPERHOUSE && robin.bossRoom == false)
+			//	SetRectPoint(x + (float)(DX / 2 - 0 * _2X) * zoom, y - (float)(416 * _2X) * zoom, (float)(120 * _2X) * zoom, (float)(48 * _2X) * zoom, TOUCH_FUNC_GOTOSTAGEBOSS);
+		}
+
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom, cvtDest, cvtLayer, buffering);
+
+		//뉴스테이지에 대한 내용이 뜨고
+		fontZoom = Max(1.2f, (float)(54 + MAXCREW * 3 + FPS / 2 - stageInfoCurFrame) * 0.2f / MOTIONDIV);
+
+		if (stageInfoCurFrame > 54 + MAXCREW * 3)
+			DrawGoldAlpha(DX / 2, DY / 2 + 248 * _2X, ALPHA_NEWSTAGE, FONT_GOLD_LARGE, fontZoom, CENTER, true, false, gScreenBuffer, gScreenLayer, false);
+
+		//게임으로 돌아간다.
+
+		if (stageInfoCurFrame == 54 + MAXCREW * 3 + FPS * 3) {
+			robin.bossRoom = false;
+			memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
+			robinmap = dioramaMap[robin.stage];
+			GotoPlay();
+			initControlerFrame = 1;
+			for (i = 0; i < TOTALCONTROLMARK; i++)
+				controlerSpread[i] = true;
+		}
+		break;
+	}
+
+	switch (stageInfoDepth) {
+	case STAGEINFO_CREWDROP:
+		break;
+	case STAGEINFO_CREWGACHA:
+
+		break;
+	}
+
+
+	//현재 타겟팅되는 하우스
+
+
+	if (cur == true)
+		stageInfoFrame++;
 }
 
 void CrewListDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	// TODO: 크루 리스트 UI 구현
+	int i;
+
+	for (i = 0; i < TOTALCASTLE; i++)
+		CrewSetDraw(i, x, y + POPUPPOSITION_Y - GNBHEIGHT - CREWSET_YGAP * (i), zoom, cvtDest, cvtLayer, buffering);
+
+	DrawScroll((float)(DX - 8 * _2X * zoom), GNBHEIGHT, (float)8 * _2X * zoom, MENU_CREW, cvtDest, cvtLayer, buffering);
 }

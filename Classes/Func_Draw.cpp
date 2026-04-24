@@ -538,13 +538,13 @@ void TitleDraw(void)
 #else
 		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], gScreenBuffer, gScreenLayer, TITLE_IMG, false);
 
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 
 
-		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 64 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale - 0.1f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 84 * _2X, ALPHA_CASTLE, FONT_GOLD_LARGE, scale + 0.4f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 114 * _2X, ALPHA_HERO, FONT_GOLD_LARGE, scale + 1.5f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 64 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale - 0.1f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 84 * _2X, ALPHA_CASTLE, FONT_GOLD_LARGE, scale + 0.4f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 114 * _2X, ALPHA_HERO, FONT_GOLD_LARGE, scale + 1.5f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
 
 
 		/*
@@ -1770,73 +1770,6 @@ void GameOverDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		popUpCnt--;
 		PlayMusic(M_CLOSEWINDOW);
 	}
-}
-
-void CrewListDraw(int x, int y, float zoom, bool checkBox, int gap, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	OBJECT* pObj = &ao[PLAYER];
-	int enemyIdx;
-	int star;
-	int lv;
-	int crewPos[] = {
-		120 * _2X, 0 * _2X,
-		160 * _2X, 0 * _2X,
-		200 * _2X, 0 * _2X,
-		56 * _2X, 24 * _2X,
-		264 * _2X, 24 * _2X,
-	};
-
-	robin.crew[0] = NPC_GIRL;
-	robin.crew[1] = NPC_ALMA;
-	robin.crew[2] = NPC_BOY;
-	robin.crew[3] = NPC_MONICA;
-	robin.crew[4] = NPC_SEABOY;
-
-	for (i = 0; i < MAXCREW; i++) {
-		enemyIdx = robin.crew[i];
-		star = GetItemStar(ITEM_CREW, GetCrewIdxFromType(enemyIdx), false);
-		lv = robin.crewStar[i];
-
-		DrawCmfDetailShadow(enemyData[robin.crew[i] * ENEMYDATASIZE + 0], frame / 2 / MOTIONDIV % 4, x + crewPos[i * 2 + 0], y + crewPos[i * 2 + 1], RIGHT, zoom, cvtDest, cvtLayer, buffering);
-
-		//EnemyProfileDraw(x - (float)16 * _2X * zoom + (float)(0 * _2X + gap * i) * zoom, y - (float)24 * _2X * zoom, enemyIdx, drawHandle == MD_PLAY ? star : false, drawHandle == MD_PLAY ? lv : false, 1.0f * zoom, cvtDest, cvtLayer, buffering);
-		//DrawFrame(x - (float)16 * _2X * zoom + (float)(0 * _2X + gap * i) * zoom, y - (float)24 * _2X * zoom, (float)32 * _2X * zoom, (float)32 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-
-		//SetSectionClip(x - (float)16 * _2X * zoom + (float)(0 * _2X + gap * i) * zoom, y - (float)24 * _2X * zoom, (float)32 * _2X * zoom, (float)32 * _2X * zoom, false);
-
-		//enemyIdx = robin.crew[i];
-		//star = GetItemStar(ITEM_CREW, GetCrewIdxFromType(enemyIdx), false);
-		//lv = robin.crewStar[i];
-
-		//DrawCmfDetailShadow(enemyData[enemyIdx * ENEMYDATASIZE + 0], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(0 * _2X + gap * i) * zoom + (float)enemyIconPos[enemyIdx * 3 + 1] * zoom, y + (float)(-56 * _2X) * zoom + (float)enemyIconPos[enemyIdx * 3 + 2] * zoom, LEFT, enemyIconZoom[enemyIdx] * zoom, cvtDest, cvtLayer, buffering);
-
-		//UnSectionClip(false);
-
-		//DrawStar(x + (float)(0 * _2X + gap * i) * zoom, y - (float)60 * _2X * zoom/* + (float)32 * _2X * zoom + (float)(ITEMICONSIZE / 2 * starZoom[0] + ITEMICONSIZE * starZoom[star - 1] / 2) * zoom*/, star, star, CENTER, true, starZoom[star - 1] * zoom, cvtDest, cvtLayer, buffering);
-		//DrawLv(lv, x + (float)(0 * _2X + gap * i) * zoom, y - (float)56 * _2X * zoom, 1.0f * zoom, CENTER, cvtDest, cvtLayer, buffering);
-		/*
-		if (pObj->lv < getMonsterSlotLv[i]) {
-		//	DrawLock(getMonsterSlotLv[i], x + (float)(0 * _2X + gap * i) * zoom + (float)(-8 * _2X * 2.0f) * zoom, y + (float)(-56 * _2X + 16 * _2X * 2.0f) * zoom, 2.0f * zoom, cvtDest, cvtLayer, buffering);
-		}
-		//현재 장착가능하지만 몬스터가 장착되어 있지 않으면 +
-		else if (robin.crew[i] == false) {
-			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-			DrawImage(8 * _2X, 8 * _2X, 224 * _2X, 0 * _2X, x + (float)(4 * _2X + gap * i) * zoom + (float)(9 * _2X) * zoom, y - (float)16 * _2X * zoom - (float)8 * _2X * zoom, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
-			SetAlpha(32);
-		}
-		//현재 장착가능하지만 몬스터가 장착되어 있지 않으면 +
-		else {
-			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-			DrawImage(8 * _2X, 8 * _2X, 224 * _2X, 0 * _2X, x + (float)(0 * _2X + gap * i) * zoom + (float)(0 * _2X) * zoom, y - (float)16 * _2X * zoom - (float)-1 * _2X * zoom, false, false, false, false, false, 1.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
-			SetAlpha(32);
-		}
-		*/
-	}
-
-	//if (drawHandle == MD_PLAY)
-	//DrawLabel(x + (float)(DX / 2 - 40 * _2X * 1.0f) * zoom, y + (float)80 * _2X * zoom, TEXT_ALPHA_CREW, 1.0f * zoom, cvtDest, cvtLayer, buffering);
-
 }
 
 void ClosePopUp(void)

@@ -1010,6 +1010,8 @@ int subDmgIndex;
 
 long currentTimeStamp;
 
+int remainedTurn;
+
 //NEUTRAL	가만히 있을 때
 //PLAYER	주인공이 공격시
 //ENEMY		적에게 공격시
@@ -1282,8 +1284,8 @@ int cardCmf = -1;
 int cardAlpha = 0;
 
 // 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
-int  gRouletteStartAoOffset[TOTALREEL] = { -1, -1, -1 };
-int  gRouletteResultAoOffset[TOTALREEL] = { -1, -1, -1 };  // 최종 확정 3명 (aoOffset)
+int gRouletteStartAoOffset[TOTALREEL] = { -1, -1, -1 };
+int gRouletteResultAoOffset[TOTALREEL] = { -1, -1, -1 };  // 최종 확정 3명 (aoOffset)
 int gRouletteSkillIdx[TOTALREEL] = { -1, -1, -1 };
 int rouletteFrame;
 // 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
@@ -1357,6 +1359,7 @@ bool autoButtonText = true;
 // 화면
 float screenZoom = 1.0f;
 float dioramaZoom = DIORAMAZOOM;
+float dioramaZoomGap = 0.0f;
 float battleZoom = 1.0f;
 int screenDarken = 0;
 

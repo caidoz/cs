@@ -77,7 +77,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 //#define ATTACKEDINVINCIBLE
 //#define SPEEDTURN
 #define ENEMYHPBAR
-//#define GUIDELINE
+#define GUIDELINE
 
 //#define INVINCIBLE
 

@@ -283,6 +283,9 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 	case BAR_STAGEPROGRESS:
 		StageProgressDraw(xOffset + barP->x, barP->y, count, barP->countFrame, zoom, cvtDest, cvtLayer, buffering);
 		break;
+	case BAR_REMAINEDTURN:
+		RemainedTurnDraw(xOffset + barP->x, barP->y, count, barP->countFrame, zoom, cvtDest, cvtLayer, buffering);
+		break;
 	case BAR_INVENTORY:
 	case BAR_INVENTORY + 1:
 	case BAR_INVENTORY + 2:

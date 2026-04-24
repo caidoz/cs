@@ -34,6 +34,7 @@ int GetStageBossObjectIdx(void);
 int GetStageBossIdx(void);
 int GetStageBossType();
 long long GetStageAdmissionFee(void);
+long long GetStageAdmissionHeart(int stage);
 int GetItemPrice(ITEM * it);
 int GetCharPrice(int);
 int GetCharPow(OBJECT *);

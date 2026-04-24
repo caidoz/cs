@@ -159,7 +159,7 @@ void InitMenu(void)
 	InitBar(BAR_CREW);
 	InitBar(BAR_COLLECTIONS);
 	InitBar(BAR_MAINSHOP);
-
+	
 	//InitBar(BAR_ENEMYUSER);
 	//InitBar(BAR_ENEMYUSER_BOX);
 	//InitBar(BAR_DAILYQUEST);
@@ -848,6 +848,7 @@ void InitBar(int type)
 		bar[BAR_HEART].aniFrame = 0;
 
 		bar[BAR_HEART].x = DX / 2 - (HEARTBARWIDTH) / 2 + 1 * _2X;
+		//bar[BAR_HEART].y = DY / 2 - 168 * _2X; //STATUSWIN_Y - 28 * _2X;
 		bar[BAR_HEART].y = 48 * _2X + BOTTOMMENUHEIGHT; //STATUSWIN_Y - 28 * _2X;
 		//bar[BAR_HEART].y = STATUSWIN_Y + (rh - 4) * TSIZE - 128 * _2X - ry;
 		//bar[BAR_HEART].y = STATUSWIN_Y + (rh - 4) * TSIZE - BOXPOSITION_Y + 8 * _2X - ry;
@@ -1288,6 +1289,33 @@ void InitBar(int type)
 		bar[BAR_STAGEPROGRESS].drawFunc = BAR_STAGEPROGRESS;
 
 		bar[BAR_STAGEPROGRESS].zoom = BAR_STAGEPROGRESS_ZOOM;
+		break;
+	case BAR_REMAINEDTURN:
+		bar[BAR_REMAINEDTURN].active = true;
+		bar[BAR_REMAINEDTURN].type = BAR_REMAINEDTURN;
+
+		bar[BAR_REMAINEDTURN].count = 0;
+		bar[BAR_REMAINEDTURN].add = 0;
+		bar[BAR_REMAINEDTURN].countFrame = 0;
+
+		bar[BAR_REMAINEDTURN].icon = false;
+		bar[BAR_REMAINEDTURN].iconFrame = 0;
+
+		bar[BAR_REMAINEDTURN].frame = 0;
+		bar[BAR_REMAINEDTURN].frame2 = 0;
+		bar[BAR_REMAINEDTURN].aniFrame = 0;
+
+		bar[BAR_REMAINEDTURN].x = DX / 2 + HEARTBARWIDTH / 2 + 64 * _2X;
+		bar[BAR_REMAINEDTURN].y = bar[BAR_HEART].y + BOSSHPBARHEIGHT + 48 * _2X;
+
+		bar[BAR_REMAINEDTURN].targetX = 0;
+		bar[BAR_REMAINEDTURN].targetY = 0;
+
+		bar[BAR_REMAINEDTURN].front = true;
+
+		bar[BAR_REMAINEDTURN].drawFunc = BAR_REMAINEDTURN;
+
+		bar[BAR_REMAINEDTURN].zoom = BAR_REMAINEDTURN_ZOOM;
 		break;
 	case BAR_INVENTORY:
 	case BAR_INVENTORY + 1:
@@ -3498,7 +3526,8 @@ void GotoBattle(void)
 	drawHandle = MD_BATTLE;
 	keyHandle = MK_BATTLE;
 	InitBar(BAR_BOSSHP);
-
+	InitBar(BAR_REMAINEDTURN);
+	
 	robinmap = dioramaMap[robin.stage];
 	SetRoom();
 
@@ -3514,6 +3543,7 @@ void GotoBattle(void)
 	//여기서 공격슬롯 관련 정보를 초기화한다.
 
 	//레이드 회수를 초기화하고
+	remainedTurn = MAXTURN;
 	raidChance = TOTALBATTLECHANCE;
 
 	//joyStickAni = 0;
@@ -3834,6 +3864,10 @@ void WhoIsNextTurn(void)
 		turnListIdx = 0;
 		turn = 0;
 		attackSequence = ATTACKSEQUENCE_COIN;
+		//remainedTurn--;
+		//
+		if (remainedTurn == 0)
+			GotoPlay();//로비로 돌아간다.
 	}
 
 	turnFrame = 0;
