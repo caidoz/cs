@@ -3544,6 +3544,7 @@ void GotoBattle(void)
 
 	//레이드 회수를 초기화하고
 	remainedTurn = MAXTURN;
+	remainedTurnFrame = 0;
 	raidChance = TOTALBATTLECHANCE;
 
 	//joyStickAni = 0;

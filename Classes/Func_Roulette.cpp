@@ -262,6 +262,7 @@ void RouletteAttackStart(void)
 
 	InitRouletteJump();
 	remainedTurn--;
+	remainedTurnFrame = 1;
 }
 
 //현재 캐릭터 타입과 같은 개수를 구해라

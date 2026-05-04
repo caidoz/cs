@@ -1268,9 +1268,122 @@ void StageProgressDraw(int x, int y, int current, int progress, float zoom, coco
 
 void RemainedTurnDraw(int x, int y, int current, int progress, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawGoldNum(remainedTurn, x, y, CENTER, 1, false, false, zoom, cvtDest, cvtLayer, buffering);
+	float oldNumZoom = zoom;
+	float newNumZoom = zoom;
+	int oldAlpha = 32;
+	int newAlpha = 0;
+	float oldXOffset = 0.0f;
+	float oldYOffset = 0.0f;
+	float newXOffset = 0.0f;
+	float newYOffset = 0.0f;
+
+	if (remainedTurnFrame > 0)
+	{
+		float t = (float)remainedTurnFrame / FPS; // 0.0 ~ 1.0
+
+		// ===== 이전 숫자(3) 애니메이션 =====
+		// Phase 1: 쪼그라들기 (0.0 ~ 0.2)
+		if (t >= 0.0f && t < 0.2f)
+		{
+			float phase = t / 0.2f; // 0.0 ~ 1.0
+			float squashCurve = pow(phase, 2.0f);
+
+			oldYOffset = -10.0f * _2X * zoom * squashCurve;
+			oldNumZoom = zoom * (1.0f + 0.2f * squashCurve);
+			oldAlpha = 32;
+		}
+		// Phase 2: 작은 포물선으로 우측 이동 (0.2 ~ 0.5)
+		else if (t >= 0.2f && t < 0.5f)
+		{
+			float phase = (t - 0.2f) / 0.3f; // 0.0 ~ 1.0
+
+			oldXOffset = 30.0f * _2X * zoom * phase;
+
+			float verticalCurve = -4.0f * phase * (phase - 1.0f);
+			oldYOffset = -10.0f * _2X * zoom + 15.0f * _2X * zoom * verticalCurve;
+
+			if (phase < 0.3f)
+			{
+				oldNumZoom = zoom * (1.2f - 0.2f * (phase / 0.3f));
+			}
+			else
+			{
+				oldNumZoom = zoom;
+			}
+			oldAlpha = 32;
+		}
+		// Phase 3: 우측 끝에서 아래로 떨어지면서 페이드아웃 (0.5 ~ 0.8)
+		else if (t >= 0.5f && t < 0.8f)
+		{
+			float phase = (t - 0.5f) / 0.3f; // 0.0 ~ 1.0
+
+			oldXOffset = 30.0f * _2X * zoom + 10.0f * _2X * zoom * phase;
+
+			float fallCurve = pow(phase, 2.0f);
+			oldYOffset = 5.0f * _2X * zoom - 40.0f * _2X * zoom * fallCurve;
+
+			oldNumZoom = zoom * (1.0f - 0.5f * phase);
+			oldAlpha = 32 - (int)(32 * phase);
+		}
+		else
+		{
+			// Phase 3 이후에는 이전 숫자 안 그림
+			oldAlpha = 0;
+		}
+
+		// ===== 새 숫자(2) 애니메이션 =====
+		// Phase 4: 작게 나타나서 커지면서 정지 (0.85 ~ 0.95)
+		if (t >= 0.85f && t < 0.95f)
+		{
+			float phase = (t - 0.85f) / 0.1f; // 0.0 ~ 1.0
+
+			float riseCurve = 1.0f - pow(1.0f - phase, 3.0f);
+			newYOffset = -25.0f * _2X * zoom * (1.0f - riseCurve);
+
+			newNumZoom = zoom * (0.5f + 0.5f * riseCurve);
+
+			newAlpha = (int)(32 * Min(phase * 2.0f, 1.0f));
+		}
+		// Phase 5: 정지 후 살짝 내려오며 안착 (0.95 ~ 1.0)
+		else if (t >= 0.95f)
+		{
+			float phase = (t - 0.95f) / 0.05f; // 0.0 ~ 1.0
+
+			float settleCurve = pow(phase, 2.0f);
+			newYOffset = -3.0f * _2X * zoom * (1.0f - settleCurve);
+
+			newNumZoom = zoom;
+			newAlpha = 32;
+		}
+
+		// 이전 숫자(3) 그리기
+		if (oldAlpha > 0)
+		{
+			SetAlpha(oldAlpha);
+			DrawGoldNum(remainedTurn + 1, x + oldXOffset, y + oldYOffset, CENTER, 1, false, false, oldNumZoom, cvtDest, cvtLayer, buffering);
+			SetAlpha(32);
+		}
+
+		// 새 숫자(2) 그리기
+		if (newAlpha > 0)
+		{
+			SetAlpha(newAlpha);
+			DrawGoldNum(remainedTurn, x + newXOffset, y + newYOffset, CENTER, 1, false, false, newNumZoom, cvtDest, cvtLayer, buffering);
+			SetAlpha(32);
+		}
+	}
+	else
+	{
+		DrawGoldNum(remainedTurn, x, y, CENTER, 1, false, false, zoom, cvtDest, cvtLayer, buffering);
+	}
+
 	CenterTextStr("Remained", x, y - (float)20 * _2X * zoom, 0.3f * zoom, cvtDest, cvtLayer, buffering);
 	CenterTextStr("Turn", x, y - (float)24 * _2X * zoom, 0.3f * zoom, cvtDest, cvtLayer, buffering);
+
+	if (remainedTurnFrame > 0)
+		remainedTurnFrame++;
+	if (remainedTurnFrame == FPS)
+		remainedTurnFrame = 0;
 }
 
 void CrewSetDraw(int stage, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)

@@ -1011,7 +1011,7 @@ int subDmgIndex;
 long currentTimeStamp;
 
 int remainedTurn;
-
+int remainedTurnFrame;//애니메이션을 담당 1로 세팅하면 30까지 증가되면서 숫자가 좌우로 회전하면서 하나 빠지면서 바뀌면서 스탑
 //NEUTRAL	가만히 있을 때
 //PLAYER	주인공이 공격시
 //ENEMY		적에게 공격시

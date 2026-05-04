@@ -1948,6 +1948,7 @@ extern int subDmgIndex;
 extern long currentTimeStamp;
 
 extern int remainedTurn;
+extern int remainedTurnFrame;//
 //NEUTRAL	가만히 있을 때
 //PLAYER	주인공이 공격시
 //ENEMY		적에게 공격시
