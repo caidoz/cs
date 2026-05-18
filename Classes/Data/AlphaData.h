@@ -511,6 +511,7 @@ const unsigned char alphaData[TOTAL_ALPHA_OFF] = {
 
 	U, P,//ALPHA_UP
 	C, A, S, T, L, E,//ALPHA_CASTLE
+	H, I, T,//ALPHA_HIT
 
 	A,
 	B,

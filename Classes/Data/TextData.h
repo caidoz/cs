@@ -815,6 +815,7 @@ const unsigned short alphaOff[TOTAL_ALPHA_TEXT + 1] = {
 
 	ALPHA_UP_OFF,
 	ALPHA_CASTLE_OFF,
+	ALPHA_HIT_OFF,
 
 	ALPHA_NUM_A_OFF,
 	ALPHA_NUM_B_OFF,

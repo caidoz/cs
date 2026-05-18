@@ -76,7 +76,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #endif
 		
 		// Set the design resolution
-		glview->setFrameSize(640, 640 * 133 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 

@@ -1012,14 +1012,14 @@ void Play(void)
 
 	zoom = 1.0f;
 
-	if (waveStatus == WAVESTATUS_PLAY)
-		for (i = ROBIN; i < TOTALCHAR; i++) {
-			if (bar[BAR_SKILL + i].active == true) {
-				DrawHitCount(&ao[i], bar[BAR_SKILL + i].x + (float)(34 * _2X) * zoom, bar[BAR_SKILL + i].y - (float)SKILLHITCOUNTGAP_Y + (float)24 * _2X * hitNumZoom[ao[i].hitCountFrame] * zoom / 2, hitNumZoom[ao[i].hitCountFrame] * zoom, gScreenBuffer, gScreenLayer, false);
-				if (ao[i].hitDmg > 0)
-					DrawRouletteNumIcon(ao[i].hitDmg, ICON_GOLD, bar[BAR_SKILL + i].x + (float)(34 * _2X) * zoom, bar[BAR_SKILL + i].y - (float)SKILLHITDMGGAP_Y, true, CENTER, zoom, gScreenBuffer, gScreenLayer, false);
-			}
+	if (waveStatus == WAVESTATUS_PLAY && attackSequence == ATTACKSEQUENCE_ACTION) {
+		if (ao[turn].hitCount > 0) {
+			int hitCountPosX = bar[BAR_BATTLECOIN].x + 220 * _2X;
+			int hitCountPosY = bar[BAR_BATTLECOIN].y;
+			DrawGoldNum(ao[turn].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.4f * zoom, gScreenBuffer, gScreenLayer, false);
+			DrawGoldAlpha(hitCountPosX, hitCountPosY - 32 * _2X, ALPHA_HIT, zoom, FONT_GOLD_LARGE, RIGHT, false, false, gScreenBuffer, gScreenLayer, false);
 		}
+	}
 
 
 	if (attackDelay == 0 && menuResult == 0 && ((drawHandle == MD_PLAY && curMenu == MENU_PLAY) || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID || drawHandle == MD_BOSSRAID) && popUp[0].active == false) {

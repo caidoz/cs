@@ -261,8 +261,6 @@ void RouletteAttackStart(void)
 	actionCardCnt = 0;
 
 	InitRouletteJump();
-	remainedTurn--;
-	remainedTurnFrame = 1;
 }
 
 //현재 캐릭터 타입과 같은 개수를 구해라
@@ -1191,6 +1189,10 @@ void RouletteDraw(int x, int y, float zoom,
 		attackSequence = ATTACKSEQUENCE_ACTION;
 		turn = CREW + gRouletteResultAoOffset[0];
 		InitBar(BAR_BATTLECOIN);
+
+		//여기서 남은 턴을 줄여준다.
+		remainedTurn--;
+		remainedTurnFrame = 1;
 	}
 }
 

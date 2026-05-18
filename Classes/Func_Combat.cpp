@@ -4127,23 +4127,23 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 	}
 
 	if (attacker < ENEMY) {
-		int realAttacker = attacker;
+		int realAttacker = turn;
 
-		if (attacker >= BULLET && ao[attacker].target < TOTALCHAR)
-			realAttacker = ao[attacker].target;
+		//if (attacker >= BULLET && ao[attacker].target < TOTALCHAR)
+		//	realAttacker = ao[attacker].target;
 
 		if (ao[realAttacker].hitCountPlus == false) {
 			//hitCount++; hitCountFrame = VANISHFRAME_DMG;
 			ao[realAttacker].hitCountPlus = true;
 		}
 
-		if (ao[realAttacker].attack >= ATTACK_SKILL) {
+		//if (ao[realAttacker].attack >= ATTACK_SKILL) {
 			ao[realAttacker].hitCount++;
 			if (ao[realAttacker].hitCountFrame == 0)
 				ao[realAttacker].hitCountFrame = 1;
 			else if (ao[realAttacker].hitCountFrame >= 11)
 				ao[realAttacker].hitCountFrame = 11;
-		}
+		//}
 	}
 
 	for (i = 0; i < TOTALHITMARK; i++) {
