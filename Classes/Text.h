@@ -3164,6 +3164,14 @@ const char* const textId[] = {
 	"num2",//6
 
 	"slot",
+	"tree",
+	"flag",
+
+	"menu_crew",
+	"menu_equip",
+	"menu_castle",
+	"menu_shop",
+	"menu_setting",
 
 	"t0",
 	"bg0",
@@ -8549,7 +8557,7 @@ const char* const textId[] = {
 	"진화하는데 쓰일 재료장비를 선택해 주세요.",//TEXT_FILL_ENCHANTSLOT_FOR_RECIPE
 
 	"보석장착",//TEXT_SOCKET
-	"장비장착",//TEXT_EQUIP
+	"장착",//TEXT_EQUIP
 	"모두장착",//TEXT_EQUIPALL
 	"장비분해",//TEXT_DISASSEMBLE
 
@@ -8596,8 +8604,8 @@ const char* const textId[] = {
 	
 	"히어로",//TEXT_HERO
 	"히어로를 선택하세요.",//TEXT_HERO_SELECT
-	"국경수비대",//TEXT_BORDERGUARD
-	"5명의 국경수비대를 최대 레벨업하면 다음 등급의 국경수비대를 얻을 수 있습니다",//TEXT_BORDERGUARD_DESC
+	"동료",//TEXT_BORDERGUARD
+	"5명의 동료를 최대 레벨업하면 다음 등급의 동료를 얻을 수 있습니다",//TEXT_BORDERGUARD_DESC
 	"아직 오픈하지 않은 티어입니다.",//TEXT_NOTOPENED_TIER
 	"이전 티어를 클리어해 주세요.",//TEXT_CLEAR_PREVIOUS_TIER
 	"먼저 메달을 모아주세요.",//TEXT_GET_MEDAL
@@ -8962,7 +8970,7 @@ const char* const textId[] = {
 
 	"없음",//TEXT_NONE
 	"장비를 획득하면 메뉴가 오픈되고, 장비등급별로 첫 획득시 보상을 받을 수 있습니다.",//TEXT_GETEQUIP
-	"상세정보",//TEXT_DETAILINFO
+	"상세보기",//TEXT_DETAILINFO
 	"승급시험",//TEXT_EXAM
 
 	"레벨업효과",//TEXT_LEVELUP_EFFECT
@@ -9020,7 +9028,7 @@ const char* const textId[] = {
 	"오픈",//TEXT_OPEN
 	"상대방 동전획득",//TEXT_STEALGOLD
 
-	"국경수비대를 공격해서 무력화 시키고, 배틀 아이템을 획득하세요!",//TEXT_HELP_BATTLEMODE
+	"동료를 공격해서 무력화 시키고, 배틀 아이템을 획득하세요!",//TEXT_HELP_BATTLEMODE
 	"4개의 상자 중 동전이 든 3개의 상자를 열어보세요!",//TEXT_HELP_RAIDMODE
 	"동전을 사용해서 데미지를 주세요!",//TEXT_HELP_BOSSMODE
 
@@ -9788,7 +9796,7 @@ const char* const textId[] = {
 	"일일퀘스트",//TEXT_DAILYQUEST
 
 	"상자를 열어 장비를 획득하세요!",//TEXT_DAILYQUEST_OPEN_BOX_GETEQUIP
-	"국경수비대를 업그레이드 하세요!",//TEXT_DAILYQUEST_UPGRADE_CREW,
+	"동료를 업그레이드 하세요!",//TEXT_DAILYQUEST_UPGRADE_CREW,
 	"다른 소드마스터를 공격하세요!",//TEXT_DAILYQUEST_ATTACK_OTHERUSER
 	"골드를 모으세요!",//TEXT_DAILYQUEST_COLLECT_GOLD,
 	"몬스터의 공격을 방어하세요!",//TEXT_DAILYQUEST_STAGE_TRY
@@ -9930,6 +9938,15 @@ const char* const textId[] = {
 	"길드",//
 	"길드이벤트",//
 	"45/50명",//
+
+	"리스트 및 편성",//TEXT_CREW_LISTEDIT
+	"현재 편성",//TEXT_CREW_CURRENTLIST
+	"배치",//TEXT_SLOTSETTING
+	"배치중",//TEXT_SLOTSETALLEADY
+	"리스트 및 장착",//TEXT_EQUIP_LISTEDIT
+	"상품 구매",//TEXT_SHOP_BUY
+	"캐슬",//TEXT_CASTLE
+	"목록 및 선택",//TEXT_CASTLE_LISTSELECT
 	
 	//00//마을외관
 	"톨렘마을1",//TOLEM1 = 0,//00
@@ -10373,7 +10390,6 @@ const char* const textId[] = {
 
 	"빅보스",//BIGBOSS,//405
 
-
 	"아델라인 성",//CASTLE_ADELINE
 	"톨레아 습지",//CASTLE_SWAMP
 	"금단의 계곡",//CASTLE_VALLEY
@@ -10392,6 +10408,7 @@ const char* const textId[] = {
 	"우주공간",//CASTLE_SPACE
 	"투기장",//CASTLE_ARENA
 
+	
 	"WAVE",//
 
 	"A",
@@ -10421,11 +10438,6 @@ const char* const textId[] = {
 	"Y",
 	"Z",
 
-	"MAX",
-	":",
-	"/",
 	"@",
-	"ON",
-	"OFF",
 };
 #endif /* Text_h */

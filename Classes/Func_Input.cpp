@@ -273,48 +273,6 @@ void PlayKey(int obj)
 			*(boxReward + 5), *(boxReward + 6), *(boxReward + 7), *(boxReward + 8), *(boxReward + 9),
 			*(boxReward + 10), *(boxReward + 11), *(boxReward + 12), *(boxReward + 13), *(boxReward + 14));
 	}
-	//여기는 별 올려주는 곳
-	else if (systemKey >= AVK_CREWSTARUPGRADE && systemKey < AVK_CREWSTARUPGRADE + MAXCREW) {
-		int stageCrewIdx = robin.crewStage * MAXCREW + systemKey - AVK_CREWSTARUPGRADE;
-		int upgradePrice;
-		curStar = robin.crewStar[stageCrewIdx];
-		curMaxStar = robin.crewMaxStar[stageCrewIdx];
-		maxStar = CREWMAXUPGRADELV;
-		//리페어
-		if (curStar < curMaxStar)
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + robin.crewStar[stageCrewIdx]] / CREWREPAIRPER;
-		else
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + robin.crewStar[stageCrewIdx]];
-
-		robin.gold -= upgradePrice;
-		AddBar(&bar[BAR_GOLD], -upgradePrice, BARFRAME);
-		robin.crewStar[stageCrewIdx]++;
-		ao[CREW + stageCrewIdx % MAXCREW].curStar++;
-		if (robin.crewStar[stageCrewIdx] > robin.crewMaxStar[stageCrewIdx])
-			robin.crewMaxStar[stageCrewIdx]++;
-		ao[CREW + stageCrewIdx % MAXCREW].levelUpFrame = 1;
-		stageUpgradeMotion[systemKey - AVK_CREWSTARUPGRADE] = 1;
-
-		startX = xOffset + ao[CREW + stageCrewIdx % MAXCREW].x;
-		startY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[CREW + stageCrewIdx % MAXCREW].y - OBJIMGGAP) - ry;
-		targetX = DX / 2;
-		targetY = DY / 2;
-		targetX2 = bar[BAR_CROWN].x + ITEMICONSIZE * 1.5f / 2;
-		targetY2 = bar[BAR_CROWN].y - ITEMICONSIZE * 1.5f / 2;
-		robin.exps++;
-		SetCurrencyMark_PopUp(startX, startY, targetX, targetY, targetX2, targetY2, 32 * _2X, 2 * _2X, 32 * _2X, 2 * _2X, FPS / 2, FPS / 2, ICON_CROWN, 30, false, CURRENCY_EXP, 1.0f, 8.0f, 0.8f, 8.0f, 1.5f, -0.6f);
-		SaveGame();
-
-	}
-	//여기는 레벨 올려주는 곳
-	else if (systemKey >= AVK_CREWUPGRADE && systemKey < AVK_CREWUPGRADE + MAXCREW) {
-		int stageCrewIdx = robin.crewStage * MAXCREW + systemKey - AVK_CREWUPGRADE;
-		robin.gold -= crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + robin.crewStar[stageCrewIdx]] / CREWUPGRADEPER;
-		AddBar(&bar[BAR_GOLD], -crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + robin.crewStar[stageCrewIdx]] / CREWUPGRADEPER, BARFRAME);
-		ao[CREW + stageCrewIdx % MAXCREW].lv++;
-		ao[CREW + stageCrewIdx % MAXCREW].levelUpFrame = 1;
-		stageUpgradeMotion[systemKey - AVK_CREWUPGRADE] = 1;
-	}
 	else if (systemKey >= AVK_HIT_ATTACK && systemKey < AVK_HIT_ATTACK + MAXCREW) {
 		pObj->target = ENEMY + systemKey - AVK_HIT_ATTACK;
 		RouletteAttackStart();
@@ -346,13 +304,6 @@ void PlayKey(int obj)
 
 		winAniFrame = 1;
 	}
-	else if (systemKey >= AVK_EQUIPALL && systemKey < AVK_EQUIPALL + TOTAL_COLLECTIONS) {
-		for (i = 0; i < COLLECTIONSITEMCNT; i++) {
-			EquipItem(&ao[PLAYER], &robin.inven[GetInvenIdx(collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0], collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1], collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2])]);
-		}
-		winAniFrame = 1;
-		initControlerFrame = 1;
-	}
 	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + OPENEDMAXITEMCNT) {
 		menuItem = systemKey - AVK_ITEMDETAIL;
 		menuDepth = 1;
@@ -378,10 +329,10 @@ void PlayKey(int obj)
 		menuDepth = 1;
 		menuCur = systemKey - AVK_CREW_DETAIL;
 		memset(&ao[NPC], 0, sizeof(OBJECT));
-		ao[NPC].type = crewData[menuCur * CREWDATASIZE + 0];
+		ao[NPC].type = crewData[menuCur * CREWDATASIZE + CREWDATA_TYPE];
 		SetEnemy(&ao[NPC]);
 
-		ao[NPC].cmf = enemyData[crewData[menuCur * CREWDATASIZE + 0] * ENEMYDATASIZE];
+		ao[NPC].cmf = enemyData[crewData[menuCur * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
 		ao[NPC].moveHandler = CREWMOVE;
 		ao[NPC].active = true;
 		ao[NPC].x = DX / 2;
@@ -425,21 +376,21 @@ void PlayKey(int obj)
 				break;
 			case ITEM_MEDAL:
 				targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE;
-				targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
+				targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
 
 				AddBar(&bar[BAR_MEDAL], itemCnt, BARFRAME);
 				SetCurrencyMarkArr(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_MEDAL, 30, itemCnt, CURRENCY_MEDAL, 3.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10, BAR_MEDAL);
 				break;
 			case ITEM_STAR:
 				targetX = bar[BAR_CROWN].x + 6 * _2X + ITEMICONSIZE / 2;
-				targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
+				targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
 
 				AddBar(&bar[BAR_CROWN], itemCnt, BARFRAME);
 				SetCurrencyMarkArr(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_STAR, 30, itemCnt, CURRENCY_STAR, 3.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10, BAR_CROWN);
 				break;
 			case ITEM_HAMMER:
 				targetX = bar[BAR_HAMMER].x + 6 * _2X + ITEMICONSIZE / 2;
-				targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
+				targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - 6 * _2X - ITEMICONSIZE / 2;
 
 				AddBar(&bar[BAR_HAMMER], itemCnt, BARFRAME);
 				SetCurrencyMarkArr(startX, startY, targetX, targetY, false, false, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_HAMMER, 30, itemCnt, CURRENCY_HAMMER, 3.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10, BAR_HAMMER);
@@ -459,7 +410,7 @@ void PlayKey(int obj)
 			case ITEM_NECK:
 			case ITEM_RING:
 				targetX = xOffset + 2 * _2X + 164 * _2X;
-				targetY = 1 * ITEMICONSIZE + (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT);
+				targetY = 1 * ITEMICONSIZE + DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 				//rewardMark[]
 				break;
@@ -477,6 +428,21 @@ void PlayKey(int obj)
 	}
 	else if (systemKey >= AVK_COLLECTIONS_EQUIP && systemKey < AVK_COLLECTIONS_EQUIP + TOTALEQUIP) {
 		menuCur = systemKey - AVK_COLLECTIONS_EQUIP;
+	}
+	else if (systemKey >= AVK_MENUCUR_CREWSET && systemKey < AVK_MENUCUR_CREWSET + TOTAL_CREW) {
+		robin.slotCrew[menuCur] = crewData[(systemKey  - AVK_MENUCUR_CREWSET) *CREWDATASIZE + CREWDATA_TYPE];
+		SetBattleCrew();//다시 재설정.
+	}
+	else if (systemKey >= AVK_EQUIP_INVENTORY && systemKey < AVK_EQUIP_INVENTORY + TOTALINVENTORY) {
+		switch (robin.inven[systemKey - AVK_EQUIP_INVENTORY].type) {
+		case ITEM_CREW:
+			robin.slotCrew[menuCur] = crewData[(robin.inven[systemKey - AVK_EQUIP_INVENTORY].detail) * CREWDATASIZE + CREWDATA_TYPE];
+
+			break;
+		default:
+			EquipItem(&ao[ROBIN], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
+			break;
+		}
 	}
 	else {
 		//기본 움직임
@@ -650,6 +616,7 @@ void PlayKey(int obj)
 			case MD_PLAY:
 				switch (curMenu) {
 				case MENU_PLAY:
+					sequenceDelay = ATTACKDELAY_BATTLEREWARD_COIN_GET + 2;
 					break;
 				default:
 					if (menuDepth > 0)
@@ -756,20 +723,7 @@ void PlayKey(int obj)
 			curMenu = MENU_PLAY;
 			menuX = 0;
 			break;
-		case AVK_COLLECTIONS:
-			curMenuBack = curMenu;
-			curMenu = MENU_COLLECTIONS;
-			menuDepth = 0;
-			menuX = 0;
-			menuCur = 0;
-			for (i = 0; i < TOTAL_COLLECTIONMENU; i++)
-				tabMenuFrame[i] = -1;
-			tabMenuFrame[menuCur] = 1;
-			SetPopUp(POPUPTYPE_COLLECTIONS, DX / 2, GetScrollDy(curMenu) - 88 * _2X * 2 - GNBHEIGHT, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
-				false, false, false, false, false,
-				false, false, false, false, false,
-				false, false, false, false, false);
-			break;
+
 		case AVK_SHOP:
 			curMenuBack = curMenu;
 			curMenu = MENU_SHOP;
@@ -1022,6 +976,7 @@ void PlayKey(int obj)
 
 			touchDisable = true;
 			break;
+
 		case AVK_HEROCHECK_DIANA:
 			if (robin.heroesSetting[DIANA] == true)
 				robin.heroesSetting[DIANA] = false;
@@ -1046,46 +1001,6 @@ void PlayKey(int obj)
 				}
 			}
 			break;
-		case AVK_CREWCHECK_1:
-			if (robin.crewSetting[0] == true)
-				robin.crewSetting[0] = false;
-			//골드를 
-			else {
-				robin.crewSetting[0] = true;
-
-				if (robin.gold < GetStageAdmissionFee()) {
-					robin.crewSetting[0] = false;
-					//AddLog
-				}
-			}
-			break;
-		case AVK_CREWCHECK_2:
-			if (robin.crewSetting[1] == true)
-				robin.crewSetting[1] = false;
-			//골드를 
-			else {
-				robin.crewSetting[1] = true;
-
-				if (robin.gold < GetStageAdmissionFee()) {
-					robin.crewSetting[1] = false;
-					//AddLog
-				}
-			}
-			break;
-		case AVK_CREWCHECK_3:
-			if (robin.crewSetting[2] == true)
-				robin.crewSetting[2] = false;
-			//골드를 
-			else {
-				robin.crewSetting[2] = true;
-
-				if (robin.gold < GetStageAdmissionFee()) {
-					robin.crewSetting[2] = false;
-					//AddLog
-				}
-			}
-			break;
-
 		case AVK_UPGRADE:
 		case AVK_HAMMER:
 			menuDepth = 4;
@@ -1348,16 +1263,6 @@ void PlayKey(int obj)
 			//	questIcon = ICON_SUMMON + questInfo[robin.quest * QUESTINFODATASIZE + 0];
 			//InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_BOSSRAID, false, ICON_EVENT_BOSSRAID, 43200, TOUCH_FUNC_EVENT_BOSSRAID);
 
-			robin.crewStage = 9;
-			robin.crewStar[0] = 1;
-			robin.crewStar[1] = 1;
-			robin.crewStar[2] = 1;
-			robin.crewStar[3] = 1;
-			robin.crewStar[4] = 1;
-
-
-			memset(&robin.getCrews, true, sizeof(robin.getCrews));
-
 			robin.lv = 11;
 			robin.exps = 1000;
 			LevelUp(robin.exps);
@@ -1376,6 +1281,12 @@ void PlayKey(int obj)
 
 			//SetHero();
 			//SetCrew();
+			break;
+		case AVK_HEARTAMOUNT:
+			if (robin.heart > betHeart[bet + 1])
+				bet = (bet + 1) % MAXBET;
+			else
+				bet = 0;
 			break;
 		case AVK_ENEMYATTACK:
 			//if (ONLYATTACKMODE == true)
@@ -1583,6 +1494,32 @@ void PlayKey(int obj)
 				false, false, false, false, false,
 				false, false, false, false, false);
 			break;
+		case AVK_COLLECTIONS:
+			curMenuBack = curMenu;
+			curMenu = MENU_COLLECTIONS;
+			menuDepth = 0;
+			menuX = 0;
+			menuCur = 0;
+			for (i = 0; i < TOTAL_COLLECTIONMENU; i++)
+				tabMenuFrame[i] = -1;
+			tabMenuFrame[menuCur] = 1;
+			SetPopUp(POPUPTYPE_COLLECTIONS, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			break;
+		case AVK_POPUP_CASTLEMENU:
+			curMenuBack = curMenu;
+			curMenu = MENU_CASTLE;
+			menuDepth = 0;
+			menuX = 0;
+			menuCur = 0;
+
+			SetPopUp(POPUPTYPE_CASTLEMENU, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			break;
 		case AVK_POPUP_CLOSE:
 			ClosePopUp();
 			break;
@@ -1630,6 +1567,23 @@ void PlayKey(int obj)
 			if (IsMovingSkill(ao[systemKey - AVK_HOTKEYPRESS1].currentSkill) == false)
 				HotKeyPress(&ao[systemKey - AVK_HOTKEYPRESS1], 0);
 
+			break;
+		case AVK_MENUCUR_CREW1:
+		case AVK_MENUCUR_CREW2:
+		case AVK_MENUCUR_CREW3:
+		case AVK_MENUCUR_CREW4:
+		case AVK_MENUCUR_CREW5:
+		case AVK_MENUCUR_CREW6:
+			menuCur = systemKey - AVK_MENUCUR_CREW1;
+			break;
+		case AVK_MENUX_1:
+		case AVK_MENUX_2:
+		case AVK_MENUX_3:
+		case AVK_MENUX_4:
+		case AVK_MENUX_5:
+		case AVK_MENUX_6:
+			scY[MENU_COLLECTIONS] = 0;
+			menuX = systemKey - AVK_MENUX_1;
 			break;
 		}
 	}
@@ -2343,13 +2297,51 @@ void ResetSwipetPoint(void)
 
 void SetRectPoint(int rx, int ry, int width, int height, int func)
 {
-	touchRect[touchIndex][0] = rx;
-	touchRect[touchIndex][1] = ry;
-	touchRect[touchIndex][2] = width;
-	touchRect[touchIndex][3] = height;
+	// 터치 사각형 좌표
+	int rectX1 = rx;
+	int rectY1 = ry;
+	int rectX2 = rx + width;
+	int rectY2 = ry - height;
+
+	// 클리핑 영역과 교차 영역 계산
+	int clippedX1 = Max(rectX1, clipX);
+	int clippedY1 = Min(rectY1, clipY);
+	int clippedX2 = Min(rectX2, clipX2);
+	int clippedY2 = Max(rectY2, clipY2);
+
+	// 겹치는 영역이 없으면 터치 등록 안 함
+	if (clippedX1 >= clippedX2) return;
+	if (clippedY1 <= clippedY2) return;
+
+	touchRect[touchIndex][0] = clippedX1;
+	touchRect[touchIndex][1] = clippedY1;
+	touchRect[touchIndex][2] = clippedX2 - clippedX1;
+	touchRect[touchIndex][3] = clippedY1 - clippedY2;
 	touchRect[touchIndex][4] = func;
 
 	touchIndex++;
+}
+
+bool IsFullInSectionClip(float x, float y, float w, float h)
+{
+	float rectX1 = x;
+	float rectY1 = y;
+	float rectX2 = x + w;
+	float rectY2 = y - h;
+
+	if (rectX1 < clipX)
+		return false;
+
+	if (rectX2 > clipX2)
+		return false;
+
+	if (rectY1 > clipY)
+		return false;
+
+	if (rectY2 < clipY2)
+		return false;
+
+	return true;
 }
 
 void SetSwipePoint(int rx, int ry, int width, int height, int func)
@@ -2394,20 +2386,11 @@ void touchFunc(int func)
 	{
 		systemKey = AVK_BOSSRAID_REWARDINFO + (func - TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO);
 	}
-	else if (func >= TOUCH_FUNC_CREWSTARUPGRADE && func < TOUCH_FUNC_CREWSTARUPGRADE + MAXCREW) {
-		systemKey = AVK_CREWSTARUPGRADE + func - TOUCH_FUNC_CREWSTARUPGRADE;
-	}
-	else if (func >= TOUCH_FUNC_CREWUPGRADE && func < TOUCH_FUNC_CREWUPGRADE + MAXCREW) {
-		systemKey = AVK_CREWUPGRADE + func - TOUCH_FUNC_CREWUPGRADE;
-	}
 	else if (func >= TOUCH_FUNC_HIT_ATTACK && func < TOUCH_FUNC_HIT_ATTACK + MAXCREW) {
 		systemKey = AVK_HIT_ATTACK + func - TOUCH_FUNC_HIT_ATTACK;
 	}
 	else if (func >= TOUCH_FUNC_COLLECTIONS_REWARD && func < TOUCH_FUNC_COLLECTIONS_REWARD + TOTAL_COLLECTIONS) {
 		systemKey = AVK_COLLECTIONS_REWARD + func - TOUCH_FUNC_COLLECTIONS_REWARD;
-	}
-	else if (func >= TOUCH_FUNC_EQUIPALL && func < TOUCH_FUNC_EQUIPALL + TOTAL_COLLECTIONS) {
-		systemKey = AVK_EQUIPALL + func - TOUCH_FUNC_EQUIPALL;
 	}
 	else if (func >= TOUCH_FUNC_ITEMDETAIL && func < TOUCH_FUNC_ITEMDETAIL + OPENEDMAXITEMCNT) {
 		systemKey = AVK_ITEMDETAIL + func - TOUCH_FUNC_ITEMDETAIL;
@@ -2416,16 +2399,20 @@ void touchFunc(int func)
 		systemKey = AVK_EQUIPDETAIL + func - TOUCH_FUNC_EQUIPDETAIL;
 	}
 	else if (func >= TOUCH_FUNC_EQUIP_INVENTORY && func < TOUCH_FUNC_EQUIP_INVENTORY + TOTALINVENTORY) {
-		for (i = 0; i < TOTALITEMTYPE; i++)
-			if (func - TOUCH_FUNC_EQUIP_INVENTORY < itemStartCnt[i + 1]) {
-				itemType = i;
-				break;
-			}
+		//for (i = 0; i < TOTALITEMTYPE; i++)
+		//	if (func - TOUCH_FUNC_EQUIP_INVENTORY < itemStartCnt[i + 1]) {
+		//		itemType = i;
+		//		break;
+		//	}
 
-		itemDetail = ((func - TOUCH_FUNC_EQUIP_INVENTORY) - itemStartCnt[itemType]) / TOTALGRADE;
-		itemGrade = ((func - TOUCH_FUNC_EQUIP_INVENTORY) - itemStartCnt[itemType]) % TOTALGRADE;
+		//itemType = robin.inven[(func - TOUCH_FUNC_EQUIP_INVENTORY)].type;
+		//itemDetail = ((func - TOUCH_FUNC_EQUIP_INVENTORY) - itemStartCnt[itemType]);
+		//itemGrade = GRADE_NORMAL;
 
-		systemKey = AVK_INVENTORY_SELECTITEM + GetInvenIdx(itemType, itemDetail, itemGrade);
+		//itemDetail = ((func - TOUCH_FUNC_EQUIP_INVENTORY) - itemStartCnt[itemType]) / TOTALGRADE;
+		//itemGrade = ((func - TOUCH_FUNC_EQUIP_INVENTORY) - itemStartCnt[itemType]) % TOTALGRADE;
+
+		systemKey = AVK_EQUIP_INVENTORY + func - TOUCH_FUNC_EQUIP_INVENTORY;
 	}
 	else if (func >= TOUCH_FUNC_CREW_DETAIL && func < TOUCH_FUNC_CREW_DETAIL + TOTAL_CREW) {
 		systemKey = AVK_CREW_DETAIL + func - TOUCH_FUNC_CREW_DETAIL;
@@ -2441,6 +2428,9 @@ void touchFunc(int func)
 	}
 	else if (func >= TOUCH_FUNC_COLLECTIONS_EQUIP && func < TOUCH_FUNC_COLLECTIONS_EQUIP + TOTALEQUIP) {
 		systemKey = AVK_COLLECTIONS_EQUIP + func - TOUCH_FUNC_COLLECTIONS_EQUIP;
+	}
+	else if (func >= TOUCH_FUNC_MENUCUR_CREWSET && func < TOUCH_FUNC_MENUCUR_CREWSET + TOTAL_CREW) {
+		systemKey = AVK_MENUCUR_CREWSET + func - TOUCH_FUNC_MENUCUR_CREWSET;
 	}
 	else {
 		switch (func) {
@@ -2554,11 +2544,6 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_BUYHOME:
 			systemKey = AVK_BUYHOME;
-			break;
-
-
-		case TOUCH_FUNC_EQUIP_INVENTORY:
-			systemKey = AVK_ITEMEQUIP;
 			break;
 		case TOUCH_FUNC_EQUIP_ENCHANT:
 			systemKey = AVK_EQUIP_ENCHANT_SELECT;
@@ -2733,16 +2718,6 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_HEROCHECK_MAXX:
 			systemKey = AVK_HEROCHECK_MAXX;
-			break;
-
-		case TOUCH_FUNC_CREWCHECK_1:
-			systemKey = AVK_CREWCHECK_1;
-			break;
-		case TOUCH_FUNC_CREWCHECK_2:
-			systemKey = AVK_CREWCHECK_2;
-			break;
-		case TOUCH_FUNC_CREWCHECK_3:
-			systemKey = AVK_CREWCHECK_3;
 			break;
 
 		case TOUCH_FUNC_INGAME_CLOSEWINDOW:
@@ -2945,6 +2920,9 @@ void touchFunc(int func)
 		case TOUCH_FUNC_POPUP_CREWLIST:
 			systemKey = AVK_POPUP_CREWLIST;
 			break;
+		case TOUCH_FUNC_POPUP_CASTLEMENU:
+			systemKey = AVK_POPUP_CASTLEMENU;
+			break;
 		case TOUCH_FUNC_POPUP_CLOSE:
 			systemKey = AVK_POPUP_CLOSE;
 			break;
@@ -2973,6 +2951,22 @@ void touchFunc(int func)
 		case TOUCH_FUNC_HOTKEYPRESS2:
 		case TOUCH_FUNC_HOTKEYPRESS3:
 			systemKey = AVK_HOTKEYPRESS1 + func - TOUCH_FUNC_HOTKEYPRESS1;
+			break;
+		case TOUCH_FUNC_MENUCUR_CREW1:
+		case TOUCH_FUNC_MENUCUR_CREW2:
+		case TOUCH_FUNC_MENUCUR_CREW3:
+		case TOUCH_FUNC_MENUCUR_CREW4:
+		case TOUCH_FUNC_MENUCUR_CREW5:
+		case TOUCH_FUNC_MENUCUR_CREW6:
+			systemKey = AVK_MENUCUR_CREW1 + func - TOUCH_FUNC_MENUCUR_CREW1;
+			break;
+		case TOUCH_FUNC_MENUX_1:
+		case TOUCH_FUNC_MENUX_2:
+		case TOUCH_FUNC_MENUX_3:
+		case TOUCH_FUNC_MENUX_4:
+		case TOUCH_FUNC_MENUX_5:
+		case TOUCH_FUNC_MENUX_6:
+			systemKey = AVK_MENUX_1 + func - TOUCH_FUNC_MENUX_1;
 			break;
 		}
 	}

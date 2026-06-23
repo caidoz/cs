@@ -32,11 +32,11 @@ const unsigned char betCoin[] = {
 
 const unsigned char betHeart[] = {
 	1,//0
-	3,//1
-	5,//2
-	10,//3
-	20,//4
-	50,//5
+	2,//1
+	3,//2
+	5,//3
+	10,//4
+	30,//5
 	100,//6
 };
 

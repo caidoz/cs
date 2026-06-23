@@ -14,8 +14,8 @@ int GetUnitScore(OBJECT* pObj)
 		return -1000000;
 	}
 
-	int star = crewData[idx * CREWDATASIZE + CREWDATA_STAR];       // 1~9
-	int castle = crewData[idx * CREWDATASIZE + CREWDATA_CASTLEIDX];  // 0~TOTALCASTLE-1
+	int star = enemyData[crewData[idx * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];       // 1~9
+	int castle = crewData[crewData[idx * CREWDATASIZE + CREWDATA_CASTLEIDX] * ENEMYDATASIZE + ENEMYDATA_STAR];  // 0~TOTALCASTLE-1
 
 	// 별이 높을수록 우선, 별이 같으면 후반 지역(castle 큰 값) 우선
 	return star * 100 + castle;
@@ -24,8 +24,8 @@ int GetUnitScore(OBJECT* pObj)
 // crewDataKey -> 점수(별*100 + 지역)
 static inline int ScoreFromCrewKey(int key)
 {
-	int star = crewData[key * CREWDATASIZE + CREWDATA_STAR];
-	int region = crewData[key * CREWDATASIZE + CREWDATA_CASTLEIDX];
+	int star = enemyData[crewData[key * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];
+	int region = enemyData[crewData[key * CREWDATASIZE + CREWDATA_CASTLEIDX] * ENEMYDATASIZE + ENEMYDATA_STAR];
 	return star * 100 + region;
 }
 
@@ -57,15 +57,15 @@ void DecideRouletteResult(void)
 	if (crewCnt < MINCREW) return;
 
 	// -----------------------------
-	// 1) crewList[0..crewCnt-1]를 점수로 정렬 (오름차순)
+	// 1) robin.slotCrew[0..crewCnt-1]를 점수로 정렬 (오름차순)
 	// -----------------------------
 	std::vector<int> idx;
 	idx.reserve(crewCnt);
 	for (int i = 0; i < crewCnt; i++) idx.push_back(i);
 
 	std::sort(idx.begin(), idx.end(), [&](int a, int b) {
-		int keyA = crewList[a]; // crewDataKey
-		int keyB = crewList[b];
+		int keyA = robin.slotCrew[a]; // crewDataKey
+		int keyB = robin.slotCrew[b];
 		int sA = ScoreFromCrewKey(keyA);
 		int sB = ScoreFromCrewKey(keyB);
 		if (sA != sB) return sA < sB;
@@ -74,7 +74,7 @@ void DecideRouletteResult(void)
 		});
 
 	// -----------------------------
-	// 2) 정렬된 crewList 인덱스 -> 실제 aoOffset(k)로 매핑
+	// 2) 정렬된 robin.slotCrew 인덱스 -> 실제 aoOffset(k)로 매핑
 	// -----------------------------
 	// 룰렛 시스템은 gRouletteStartAoOffset / gRouletteResultAoOffset에
 	// "CREW 배열 내부의 offset(k)"를 넣어야 함.
@@ -83,7 +83,7 @@ void DecideRouletteResult(void)
 	auto MapCrewIndexToAoOffset = [&](int crewIndex)->int {
 		if (crewIndex < 0 || crewIndex >= crewCnt) return -1;
 
-		int type = crewList[crewIndex];   // ✅ crewList는 type
+		int type = robin.slotCrew[crewIndex];   // ✅ robin.slotCrew는 type
 		if (type < 0 || type >= TOTALENEMY) return -1;
 
 		int k = FindCrewAoOffsetByType(type, used, MAXCREW);
@@ -121,8 +121,8 @@ void DecideRouletteResult(void)
 
 	//TEST
 	gRouletteStartAoOffset[0] = 0;
-	gRouletteStartAoOffset[1] = 0;
-	gRouletteStartAoOffset[2] = 0;
+	gRouletteStartAoOffset[1] = 1;
+	gRouletteStartAoOffset[2] = 2;
 	//TEST
 	gRouletteResultAoOffset[0] = 0;
 	gRouletteResultAoOffset[1] = 1;
@@ -307,7 +307,7 @@ void RouletteDraw(int x, int y, float zoom,
 // [GUARD]
 // -----------------------------
 //if (!gRouletteResultValid) return;
-	if (crewCnt < MINCREW) return;
+	//if (crewCnt < MINCREW) return;
 
 	auto WrapCrew = [&](int v)->int {
 		v %= crewCnt;
@@ -426,6 +426,8 @@ void RouletteDraw(int x, int y, float zoom,
 					sIntroY = yDest;
 					touchDisable = false;
 
+					InitBar(BAR_HEARTBET);
+					InitBar(BAR_PLAY);
 				}
 			}
 		}

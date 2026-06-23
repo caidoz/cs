@@ -697,6 +697,13 @@ void SetRoom_Neutral(void)
 				pObj->drawHandler = NULL;
 			case OBJ_FLOWER:
 				break;
+			case OBJ_TREE:
+				pObj->motion = OBJ_TREE1;
+				pObj->zoom = 0.8f;
+				pObj->moveHandler = TREEMOVE;
+				break;
+			case OBJ_FLAG:
+				break;
 			}
 
 			if (pObj->active || pObj->type == OBJ_BRIDGE || pObj->type == OBJ_BOX)
@@ -780,12 +787,12 @@ void SetHouseCrew(long long userIdx, int house)
 			crewIdx = GetCrewIdxFromType(housePtr->crew[i]);
 
 			pObj->type = housePtr->crew[i];
-			pObj->x = castleCrewPostion[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 3 + 1];	//x위치
-			pObj->y = castleCrewPostion[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 3 + 2];	//y위치
+			pObj->x = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 2 + 0];	//x위치
+			pObj->y = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 2 + 1];	//y위치
 			pObj->dirX = pObj->dirF = crewData[crewIdx * CREWDATASIZE + 3];
 			pObj->curStar = housePtr->crewCurStar[i];
 			pObj->maxStar = housePtr->crewMaxStar[i];
-			pObj->maxHeart = crewData[crewIdx * CREWDATASIZE + CREWDATA_STAR] + 1;
+			pObj->maxHeart = enemyData[crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			pObj->curHeart = housePtr->crewCurStar[i];
 			pObj->zoom = enemyZoom[pObj->type] * HOUSEZOOM;
 			//if (pObj->type >= ENEMY_LABETH)
@@ -1240,7 +1247,6 @@ void WaveStart(void)
 	robin.curWaveIdx = 0;
 	memset(&robin.waveActive, 0, sizeof(robin.waveActive));
 	robin.waveTimeStamp = MC_knlCurrentTimeStamp();//여기서 웨이브 시작 시간을 정해주고
-
 	
 	//MainMenuOut();
 
@@ -1262,7 +1268,7 @@ void WaveStart(void)
 	//스테이지 보여주고
 
 	//적 체력바 보여주고
-	InitBar(BAR_BOSSHP);
+	
 	//스테이지
 	//SetGoldAlphaMark(DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, FPS, FPS, ALPHA_STAGE, false, false, FONT_GOLD_LARGE, 0.1f, 0.8f, 0.1f, 0.8f, 0.8f, 0.0f);
 
@@ -1291,8 +1297,8 @@ void WaveControler()
 	if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0] && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
 		pObj->type = wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
 		//pObj->type = ENEMY_SLIME_GOLD;
-		pObj->nx = pObj->x = positionX = setEnemyPos[robin.stage * MAXWAVEENEMY * 2 + robin.curWaveIdx * 2 + 0];
-		pObj->ny = pObj->y = positionY = setEnemyPos[robin.stage * MAXWAVEENEMY * 2 + robin.curWaveIdx * 2 + 1];
+		pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
+		pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
 		
 		switch (pObj->type) {
 		case ENEMY_FACE:
@@ -1448,11 +1454,7 @@ void WaveControler()
 		SetEnemy(pObj);
 		InitMotion(pObj);
 
-		//웨이브 총합은 놔두고, 현재값만 올려준다.
-		AddBar(&bar[BAR_BOSSHP], pObj->hp, BARFRAME);
-
-		BackUpEnemyObj();
-
+		
 		switch (pObj->type) {
 		case ENEMY_SHIP:
 		case ENEMY_SHIP_RED:
@@ -1504,6 +1506,12 @@ void WaveControler()
 			pObj->drawHandler = REGENDRAW;
 			break;
 		}
+		pObj->dead = true;
+		pObj->active = false;
+
+		//웨이브 총합은 놔두고, 현재값만 올려준다.
+		BackUpEnemyObj();
+		SaveGame();
 	}
 }
 
@@ -1517,7 +1525,7 @@ long long GetTotalWaveHp(int stage)
 	for (i = 0; i < MAXWAVEENEMY; i++) {
 		monType = wave[stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
 		if (monType != false) {
-			curHp = 100 * (stage + 10) * (100 + enemyData[monType * ENEMYDATASIZE + 3]) / 10;
+			curHp = 100 * (stage + 10) * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
 			if (wave[stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
 				curHp *= 5;
 			}
@@ -1565,8 +1573,8 @@ int SetEnemy(OBJECT *pObj)
 	case MD_RAID:
 		//pObj->maxhp = pObj->hp = (50 + pObj->lv * 23 + pObj->lv * pObj->lv * 12 / 10) * 10;
 		//TEST
-		pObj->maxhp = pObj->hp = 100 * (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + 3]) / 10;
-		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + 3]);
+		pObj->maxhp = pObj->hp = 100 * (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
+		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
 		if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
 			pObj->maxhp *= 5;
 			pObj->hp = pObj->maxhp;
@@ -1882,15 +1890,15 @@ int SetEnemy(OBJECT *pObj)
 
 void SetNpc(OBJECT *pObj)
 {
-	pObj->active = enemyData[pObj->type * ENEMYDATASIZE + 4];
+	pObj->active = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDEXP];
 	pObj->motion = crewPos[pObj->type * 5 + 0];
 
 	pObj->dirY = DOWN;
 	pObj->lv = mapData[13];
 	//if (pObj->type < NPC_CAPTAIN)
-	//	pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + 1];
+	//	pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];
 	//else
-	//	pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + 2];
+	//	pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_DRAWHANDLER];
 	pObj->moveHandler = NPCMOVE;
 
 	pObj->drawHandler = ENEMYDRAW;
@@ -1899,7 +1907,7 @@ void SetNpc(OBJECT *pObj)
 	pObj->maxhp = pObj->hp = 1;
 
 	//if (enemyData[pObj->type * ENEMYDATASIZE] < EMPTY)
-		pObj->cmf = enemyData[pObj->type * ENEMYDATASIZE];
+		pObj->cmf = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_CMF];
 	//else
 	//	pObj->drawHandler = null;
 
@@ -2077,7 +2085,7 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	pObj->dirX = pObj->dirF = pMom->dirF;
 	pObj->motion = *(scPtr + OBJDATA_MOTION);
 	if (tempIdx == ADDOBJ_CREWBULLET) {
-		pObj->cmf = enemyData[*(scPtr + OBJDATA_TYPE) * ENEMYDATASIZE + 0];
+		pObj->cmf = enemyData[*(scPtr + OBJDATA_TYPE) * ENEMYDATASIZE + ENEMYDATA_CMF];
 		pObj->type = GetTypeFromCmf(pObj->cmf);
 		pObj->zoom = enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
 	}
@@ -3356,33 +3364,41 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 	const unsigned short* bgPtr;
 	float dioramaZoomOnScreen = zoom * dioramaZoom;
 	int castleX, castleY;
-
+	
 	//for (i = 0; i < TOTALCASTLE; i++)
 	switch (drawHandle) {
 	case MD_PLAY:
 
+		SetScreenRatio();
 
-		//MemRect(x, y + (float)DY * zoom, (float)DX * zoom, (float)DY * zoom, COLOR_BLACK, cvtDest, cvtLayer, buffering);
-		robinmap = MAP_DIORAMA_SPACE;
-		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom, y / TSIZE + STATUSWIN_Y - (DIORAMA_GAPY - 16 * _2X), MAP_DIORAMA_SPACE, (float)DX * 2 / screenZoom * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom - (frame % DX), y / TSIZE + STATUSWIN_Y - (DIORAMA_GAPY - 0 * _2X) - (SCREENRATIO - 134), MAP_DIORAMA_SPACE, (float)DX * 2 / screenZoom * zoom, zoom, cvtDest, cvtLayer, buffering);
+		robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 
-		for (i = 0; i < TOTALCASTLE; i++) {
-			castleX = xOffset + x + (float)(-DIORAMASIZE_X / 2 * dioramaZoomOnScreen) + (float)castlePosition[2 * i + 0] * dioramaZoomOnScreen;
-			castleY = y + (float)(DIORAMASIZE_Y * dioramaZoomOnScreen + 32 * _2X * zoom) / 2 + (float)(DIORAMASIZE_Y * dioramaZoomOnScreen + 32 * _2X * zoom) * i + (float)16 * _2X * zoom;
-			//castleY = y + (float)(DIORAMASIZE_Y / 2 * dioramaZoom + 16 * _2X) * zoom + (float)castlePosition[2 * i + 1] * dioramaZoom * zoom;
-			//castleY = y + (float)(STATUSWIN_Y + DIORAMASIZE_Y * dioramaZoom - 52 * _2X) * zoom + (float)castlePosition[2 * i + 1] * dioramaZoom * zoom;
-
-			DrawDiorama(castleX, castleY, i, dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
-
-		}
-		break;
-	case MD_BATTLE:
+		// 사용
 		castleX = xOffset + (float)DX / 2 * zoom - (float)DIORAMASIZE_X / 2 * dioramaZoomOnScreen;
 		castleY = (float)(STATUSWIN_Y - 16 * _2X) * zoom + (float)DIORAMASIZE_Y * dioramaZoomOnScreen;
 
+		// 부유 효과 적용
+		floatOffsetY = GetDioramaFloatY(frame);
+		castleY += floatOffsetY * zoom;
+		//STATUSWIN_Y = STATUSWIN_Y_INIT;
+		STATUSWIN_Y += floatOffsetY * zoom;
+
+		robin.castle = 17;
+
+		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
+
+		break;
+	case MD_BATTLE:
+		castleX = xOffset + (float)DX / 2 * zoom - (float)DIORAMASIZE_X / 2 * dioramaZoomOnScreen;
+		castleY = (float)(STATUSWIN_Y - 48 * _2X) * zoom + (float)DIORAMASIZE_Y * dioramaZoomOnScreen;
+
 		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom, 0, robinmap, (float)DX * 2 / screenZoom * zoom, zoom, cvtDest, cvtLayer, buffering);
 
-		DrawDiorama(castleX, castleY, robin.stage, dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
+		floatOffsetY = GetDioramaFloatY(frame);
+		castleY += floatOffsetY * zoom;
+
+		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
 
 		break;
 	}
@@ -3449,4 +3465,52 @@ void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool
 
 	offX = tempOffX;
 	offX = tempOffY;
+}
+
+// Ease-In-Out 함수 (부드러운 시작과 끝)
+float EaseInOutSine(float t)
+{
+	return -(cos(3.141592f * t) - 1.0f) / 2.0f;
+}
+
+// 부드러운 상하 부유 (추천)
+float GetDioramaFloatY(int frame)
+{
+	const int MOVE_TIME = 5 * FPS;    // 5초 이동
+	const int PAUSE_TIME = 1 * FPS;   // 1초 정지
+	const float RANGE = 20.0f;        // ±20픽셀
+
+	const int TOTAL_CYCLE = (MOVE_TIME + PAUSE_TIME) * 2;  // 12초 주기
+	int currentFrame = frame % TOTAL_CYCLE;
+
+	// Ease-In-Out 함수 (부드러운 가속/감속)
+	auto EaseInOutSine = [](float t) -> float {
+		return -(cosf(3.141592f * t) - 1.0f) / 2.0f;
+		};
+
+	float offset = 0.0f;
+
+	if (currentFrame < MOVE_TIME) {
+		// 아래 → 위
+		float t = (float)currentFrame / (float)MOVE_TIME;
+		float eased = EaseInOutSine(t);
+		offset = -RANGE + (eased * RANGE * 2.0f);
+	}
+	else if (currentFrame < MOVE_TIME + PAUSE_TIME) {
+		// 최상단 정지
+		offset = RANGE;
+	}
+	else if (currentFrame < MOVE_TIME * 2 + PAUSE_TIME) {
+		// 위 → 아래
+		int moveFrame = currentFrame - (MOVE_TIME + PAUSE_TIME);
+		float t = (float)moveFrame / (float)MOVE_TIME;
+		float eased = EaseInOutSine(t);
+		offset = RANGE - (eased * RANGE * 2.0f);
+	}
+	else {
+		// 최하단 정지
+		offset = -RANGE;
+	}
+
+	return offset;
 }

@@ -1289,7 +1289,7 @@ const long long equipGetRewardHeart[] = {
 
 //0, 1, 2 : 아이템 데이터 type, detail, grade
 //4, 5 : 생산량, 생산텀(second)
-const unsigned long long crewReward[TOTAL_CREW * CREWREWARDDATASIZE] = {
+const unsigned long long crewReward[] = {
 
 	//HOUSE_SWAMP
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_BOY
@@ -1333,7 +1333,7 @@ const unsigned long long crewReward[TOTAL_CREW * CREWREWARDDATASIZE] = {
 
 };
 
-const unsigned int crewGetReward[TOTAL_CREW * REWARDITEMDATASIZE] = {
+const unsigned int crewGetReward[] = {
 	//0
 	ITEM_HEART, false, false, 100,
 	ITEM_HEART, false, false, 300,

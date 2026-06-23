@@ -147,6 +147,7 @@ typedef enum _handlerInfo {
 	WORMHOLEMOVE,
 	ITEMGOTOBOXMOVE,
 	FOLLOWMOVE,
+	TREEMOVE,
 
 	//드로우핸들러
 	PLAYERDRAW = 1,

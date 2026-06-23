@@ -37,5 +37,4 @@ void SetTalk_Movie(void);
 void SetTalk2(int);
 void SetScreenRatio(void);
 void SetHero(void);
-void SetCastleCrew(void);
 void SetBattleCrew(void);

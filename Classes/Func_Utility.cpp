@@ -248,7 +248,7 @@ void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 
 	int stageBossIdx = GetStageBossIdx();
 	int stageBossType = GetStageBossType();
-	int stageBossMaxHp = (robin.stage * TOTALROOM + robin.room + 1) * (100 + enemyData[stageBossType * ENEMYDATASIZE + 3]);
+	int stageBossMaxHp = (robin.stage * TOTALROOM + robin.room + 1) * (100 + enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
 
 
 	xGap = -4 * _2X;
@@ -257,10 +257,10 @@ void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 #ifdef CENTERDISPLAY
 
 	switch (drawHandle) {
-	case MD_PLAY:
-
-		break;
 	case MD_BATTLE:
+		break;
+	case MD_PLAY:
+	//case MD_BATTLE:
 
 		//스테이지 정보
 

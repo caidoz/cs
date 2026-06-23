@@ -44,4 +44,8 @@ void DrawTile(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bo
 void DrawForeMap(int, int, int, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void TheaterDraw(cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+
+float EaseInOutSine(float t);
+// 부드러운 상하 부유 효과
+float GetDioramaFloatY(int frame);
 #endif

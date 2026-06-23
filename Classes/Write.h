@@ -463,22 +463,24 @@ const unsigned char mapDatas[TOTALMAP][10] = {
 	{ RETURNTYPE_SPACE, 60, 47, MAPTYPE_SPACE, MAPTYPE_SPACE, M_TITLE/*M_DEVIL*/, 2, AREA_SPACE, 70, 0 },	//405
 	
 	//디오라마 맵
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_CASTLE, MAPTYPE_CASTLE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//406//CASTLE_ADELINE
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SWAMP, MAPTYPE_SWAMP, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//407//CASTLE_SWAMP
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_VALLEY, MAPTYPE_VALLEY, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//408//CASTLE_VALLEY
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_ATLANTICE, MAPTYPE_ATLANTICE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//409//CASTLE_ATLANTICE
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SEWAGE, MAPTYPE_SEWAGE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//410//CASTLE_SEWAGE
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_PLAIN, MAPTYPE_PLAIN, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//411//CASTLE_PLAIN
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_FLAME, MAPTYPE_FLAME, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//412//CASTLE_FLAME
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_FROST, MAPTYPE_FROST, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//413//CASTLE_FROST
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_THUNDER, MAPTYPE_THUNDER, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//414//CASTLE_THUNDER
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_LIGHT, MAPTYPE_LIGHT, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//415//CASTLE_LIGHT
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_GOLEMVALLEY, MAPTYPE_GOLEMVALLEY, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//416//CASTLE_GOLEMVALLEY
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DARKNESS, MAPTYPE_DARKNESS, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//417//CASTLE_DARKNESS
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DRAGON, MAPTYPE_DRAGON, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//418//CASTLE_DRAGON
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_GHOST, MAPTYPE_GHOST, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//419//CASTLE_GHOST
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DEVILCASTLE, MAPTYPE_DEVILCASTLE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//420//CASTLE_DEVILCASTLE
-	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SPACE, MAPTYPE_SPACE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//421//CASTLE_SPACE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_TOLEM, MAPTYPE_TOLEM, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//406//CASTLE_ADELINE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_TOLEMINSIDE, MAPTYPE_TOLEMINSIDE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//407//CASTLE_SWAMP
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SWAMP, MAPTYPE_SWAMP, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//408//CASTLE_VALLEY
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_VALLEY, MAPTYPE_VALLEY, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//409//CASTLE_ATLANTICE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_ATLANTICE, MAPTYPE_ATLANTICE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//410//CASTLE_SEWAGE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SEWAGE, MAPTYPE_SEWAGE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//411//CASTLE_PLAIN
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_CASTLE, MAPTYPE_CASTLE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//412//CASTLE_FLAME
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_PLAIN, MAPTYPE_PLAIN, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//413//CASTLE_FROST
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_ELF, MAPTYPE_ELF, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//414//CASTLE_THUNDER
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_FLAME, MAPTYPE_FLAME, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//415//CASTLE_LIGHT
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_FROST, MAPTYPE_FROST, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//416//CASTLE_GOLEMVALLEY
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_THUNDER, MAPTYPE_THUNDER, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//417//CASTLE_DARKNESS
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_LIGHT, MAPTYPE_LIGHT, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//418//CASTLE_DRAGON
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_GOLEMVALLEY, MAPTYPE_GOLEMVALLEY, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//419//CASTLE_GHOST
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DARKNESS, MAPTYPE_DARKNESS, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//420//CASTLE_DEVILCASTLE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DRAGON, MAPTYPE_DRAGON, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//421//CASTLE_SPACE
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_GHOST, MAPTYPE_GHOST, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//422//CASTLE_ARENA
+	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_DEVILCASTLE, MAPTYPE_DEVILCASTLE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//422//CASTLE_ARENA
 	{ RETURNTYPE_SPACE, 20, 21, MAPTYPE_SPACE, MAPTYPE_SPACE, M_TITLE/*M_TOLEASWAMP*/, false, MAPTYPE_SPACE/*AREA_SWAMP*/, 1, 0 },	//10//422//CASTLE_ARENA
 
 };
@@ -1082,8 +1084,8 @@ const signed short mo4[] = {
 //뉴트럴오브젝트
 const signed short mn4[] = {
 	0,
-	//OBJ_BOX, 2 * TSIZE, 9 * TSIZE, false,
-	//OBJ_BOX, 2 * TSIZE, 17 * TSIZE, false,
+	//OBJ_TREE, 2 * TSIZE, 17 * TSIZE, false,
+	//OBJ_TREE, 10 * TSIZE, 17 * TSIZE, false,
 	//OBJ_BOX, 15 * TSIZE, 12 * TSIZE, false,
 	//OBJ_BOX, 11 * TSIZE, 17 * TSIZE, false,
 };
@@ -36599,6 +36601,8 @@ const signed short mo364[] = {
 //뉴트럴오브젝트
 const signed short mn364[] = {
 	0,
+	//OBJ_TREE, 2 * TSIZE, 17 * TSIZE, false,
+	//OBJ_TREE, 10 * TSIZE, 17 * TSIZE, false,
 	//OBJ_BOX, 32 * _2X, 292 * _2X, BOX_EQUIP_LEGEND,
 	//OBJ_BOX, 160 * _2X, 292 * _2X, BOX_INGAME,
 };
@@ -40282,7 +40286,7 @@ const unsigned char mt405[] = {
 };
 
 //배경맵
-//MAPTYPE_CASTLE
+//MAP_DIORAMA_TOLEM
 const unsigned char mr406[] = {
 	0,
 };
@@ -40299,6 +40303,8 @@ const signed short mo406[] = {
 
 //뉴트럴오브젝트
 const signed short mn406[] = {
+	//OBJ_TREE, 4 * TSIZE, 19 * TSIZE, false,
+	//OBJ_TREE, 16 * TSIZE, 19 * TSIZE, false,
 	0,
 };
 
@@ -40356,7 +40362,7 @@ const unsigned char mt406[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_SWAMP
+//MAP_DIORAMA_ARENA
 const unsigned char mr407[] = {
 	0,
 };
@@ -40430,7 +40436,7 @@ const unsigned char mt407[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_VALLEY
+//MAP_DIORAMA_SWAMP
 const unsigned char mr408[] = {
 	0,
 };
@@ -40504,7 +40510,7 @@ const unsigned char mt408[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_ATLANTICE
+//MAP_DIORAMA_VALLEY
 const unsigned char mr409[] = {
 	0,
 };
@@ -40578,7 +40584,7 @@ const unsigned char mt409[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_SEWAGE
+//MAP_DIORAMA_ATALANTICE
 const unsigned char mr410[] = {
 	0,
 };
@@ -40652,7 +40658,7 @@ const unsigned char mt410[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_PLAIN
+//MAP_DIORAMA_SEWAGE
 const unsigned char mr411[] = {
 	0,
 };
@@ -40726,7 +40732,7 @@ const unsigned char mt411[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_FLAME
+//MAP_DIORAMA_ADELINE
 const unsigned char mr412[] = {
 	0,
 };
@@ -40800,7 +40806,7 @@ const unsigned char mt412[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_FROST
+//MAP_DIORAMA_PLAIN
 const unsigned char mr413[] = {
 	0,
 };
@@ -40874,7 +40880,7 @@ const unsigned char mt413[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_THUNDER
+//MAP_DIORAMA_ELF
 const unsigned char mr414[] = {
 	0,
 };
@@ -40948,7 +40954,7 @@ const unsigned char mt414[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_LIGHT
+//MAP_DIORAMA_FLAME
 const unsigned char mr415[] = {
 	0,
 };
@@ -41022,7 +41028,7 @@ const unsigned char mt415[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_GOLEMVALLEY
+//MAP_DIORAMA_FROST
 const unsigned char mr416[] = {
 	0,
 };
@@ -41096,7 +41102,7 @@ const unsigned char mt416[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_DARKNESS
+//MAP_DIORAMA_THUNDER
 const unsigned char mr417[] = {
 	0,
 };
@@ -41170,7 +41176,7 @@ const unsigned char mt417[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_DRAGON
+//MAP_DIORAMA_LIGHT
 const unsigned char mr418[] = {
 	0,
 };
@@ -41244,7 +41250,7 @@ const unsigned char mt418[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_GHOST
+//MAP_DIORAMA_GOLEMVALLEY
 const unsigned char mr419[] = {
 	0,
 };
@@ -41318,7 +41324,7 @@ const unsigned char mt419[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_DEVILCASTLE
+//MAP_DIORAMA_DARKNESS
 const unsigned char mr420[] = {
 	0,
 };
@@ -41392,7 +41398,7 @@ const unsigned char mt420[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_SPACE
+//MAP_DIORAMA_DRAGON
 const unsigned char mr421[] = {
 	0,
 };
@@ -41466,7 +41472,7 @@ const unsigned char mt421[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
-//MAPTYPE_ARENA
+//MAP_DIORAMA_GHOST
 const unsigned char mr422[] = {
 	0,
 };
@@ -41540,4 +41546,151 @@ const unsigned char mt422[] = {
 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
 };
 
+//MAP_DIORAMA_DEVILCASTLE
+const unsigned char mr423[] = {
+	0,
+};
+
+//후면배경
+const signed short mb423[] = {
+	0,
+};
+
+//전면배경(주인공앞)
+const signed short mo423[] = {
+	0,
+};
+
+//뉴트럴오브젝트
+const signed short mn423[] = {
+	0,
+};
+
+//캐릭터(적, NPC 등)
+const unsigned short me423[] = {
+	0,
+};
+
+//타일정보
+const unsigned char ma423[] = {
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//1
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//2
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//3
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//4
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//5
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//6
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//7
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//8
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//9
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//10
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//11
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//12
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//13
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//14
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//15
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//16
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//17
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//18
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//19
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//20
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
+};
+
+const unsigned char mt423[] = {
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//1
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//2
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//3
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//4
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//5
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//6
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//7
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//8
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//9
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//10
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//11
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//12
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//13
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//14
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//15
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//16
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//17
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//18
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//19
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//20
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
+};
+
+//MAP_DIORAMA_SPACE
+const unsigned char mr424[] = {
+	0,
+};
+
+//후면배경
+const signed short mb424[] = {
+	0,
+};
+
+//전면배경(주인공앞)
+const signed short mo424[] = {
+	0,
+};
+
+//뉴트럴오브젝트
+const signed short mn424[] = {
+	0,
+};
+
+//캐릭터(적, NPC 등)
+const unsigned short me424[] = {
+	0,
+};
+
+//타일정보
+const unsigned char ma424[] = {
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//1
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//2
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//3
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//4
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//5
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//6
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//7
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//8
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//9
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//10
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//11
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//12
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//13
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//14
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//15
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//16
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//17
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//18
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//19
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//20
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
+};
+
+const unsigned char mt424[] = {
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//1
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//2
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//3
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//4
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//5
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//6
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//7
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//8
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//9
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//10
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//11
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//12
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//13
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//14
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//15
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//16
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//17
+6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,//18
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//19
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//20
+6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,//21
+};
 #endif

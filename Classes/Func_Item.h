@@ -61,7 +61,7 @@ bool IsBossObjActive(void);
 void CopyBossObj(void);
 int GetBossMomObj(void);
 int GetSlotIdx(int type, int detail, int grade);
-int GetInvenIdx(int, int, int);
+int GetInvenIdx(int type, int detail, int grade);
 int CollectionCheck(void);
 int GetMaxCollectionIdxFromStage(int stage);
 int GetCollectionIdx(int type, int detail, int grade);

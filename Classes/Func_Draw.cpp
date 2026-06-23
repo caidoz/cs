@@ -337,8 +337,6 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_TILE]->setAnchorPoint(Vec2(0, 1.0f));
 			bufferTexture[BUFFER_TILE]->setPosition(0, DY);
 
-			//robinmap = SWAMP5;
-
 			//DrawTile(robinmap, 0, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
 		}
 		break;
@@ -373,7 +371,7 @@ void LogoDraw(void)
 	case 11:
 		break;
 	case 12:
-		robinmap = LOBBYMAP;
+		robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 		break;
 	case 13://MAPTYPE_TOLEM
 	case 14://MAPTYPE_TOLEMINSIDE
@@ -406,8 +404,6 @@ void LogoDraw(void)
 
 			sprite[BUFFER_CARDFRAME_IMG + frame - 13] = Sprite::createWithTexture(texture[BUFFER_CARDFRAME_IMG + frame - 13]);
 			//여기서 텍스쳐로부터 이미지를 만든다.
-
-			//robinmap = SWAMP5;
 
 			//DrawTile(robinmap, 0, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
 		}
@@ -538,8 +534,8 @@ void TitleDraw(void)
 #else
 		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], gScreenBuffer, gScreenLayer, TITLE_IMG, false);
 
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
-		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
+		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 64 * _2X, ALPHA_RANDOM, FONT_GOLD_LARGE, scale - 0.1f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 84 * _2X, ALPHA_CASTLE, FONT_GOLD_LARGE, scale + 0.4f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
@@ -597,9 +593,7 @@ void TitleDraw(void)
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-			//TEST
-			for (i = 0; i < TOTAL_CREW; i++)
-				robin.getCrews[i] = true;
+
 			break;
 			//case CURTAINFRAME - 1:
 			//case 23:
@@ -636,9 +630,13 @@ void TitleDraw(void)
 
 			//}
 			//else {
-			robinmap = MAP_DIORAMA_CASTLE;// chapterMap[robin.stage];
+			
+			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];// chapterMap[robin.stage];
+			
 			GotoPlay();
-
+			//GotoBattleLoading();
+			//GotoBattle();
+			
 			//curtainFrame = 0;
 
 			//crewInitializeFrame = 1;
@@ -683,6 +681,11 @@ void TitleDraw(void)
 			//ao[PLAYER + DIANA].active = true;
 			//ao[PLAYER + MAXX].active = true;
 		//}
+			for (i = 0; i < EQUIP_NECK; i++) {
+				for (j = 0; j < itemTypeCnt[i * TOTALCHAR]; j++)
+					GetItem(i, 1, j, GRADE_NORMAL, 1, false);
+				
+			}
 			break;
 		}
 
@@ -1322,13 +1325,13 @@ void MainMenuOut(void)
 	bar[BAR_ENEMYUSER].speedIncrement2 = bar[BAR_ENEMYUSER].speedIncrement = 1 * _2X;
 	bar[BAR_ENEMYUSER].frame = 1;
 
-	bar[BAR_DAILYQUEST].nx = bar[BAR_COLLECTIONS].x;
-	bar[BAR_COLLECTIONS].ny = bar[BAR_COLLECTIONS].y;
-	bar[BAR_COLLECTIONS].targetX2 = bar[BAR_COLLECTIONS].targetX = bar[BAR_COLLECTIONS].x + 128 * _2X;
-	bar[BAR_COLLECTIONS].targetY2 = bar[BAR_COLLECTIONS].targetY = bar[BAR_COLLECTIONS].y;
-	bar[BAR_COLLECTIONS].speed2 = bar[BAR_COLLECTIONS].speed = 8 * _2X;
-	bar[BAR_COLLECTIONS].speedIncrement2 = bar[BAR_COLLECTIONS].speedIncrement = 1 * _2X;
-	bar[BAR_COLLECTIONS].frame = 1;
+	bar[BAR_DAILYQUEST].nx = bar[BAR_EQUIP].x;
+	bar[BAR_EQUIP].ny = bar[BAR_EQUIP].y;
+	bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].x + 128 * _2X;
+	bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].y;
+	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
+	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
+	bar[BAR_EQUIP].frame = 1;
 
 	bar[BAR_MAINSHOP].nx = bar[BAR_MAINSHOP].x;
 	bar[BAR_MAINSHOP].ny = bar[BAR_MAINSHOP].y;
@@ -1346,13 +1349,13 @@ void MainMenuOut(void)
 	bar[BAR_DAILYQUEST].speedIncrement2 = bar[BAR_DAILYQUEST].speedIncrement = 1 * _2X;
 	bar[BAR_DAILYQUEST].frame = 1;
 
-	bar[BAR_COLLECTIONS].nx = bar[BAR_COLLECTIONS].x;
-	bar[BAR_COLLECTIONS].ny = bar[BAR_COLLECTIONS].y;
-	bar[BAR_COLLECTIONS].targetX2 = bar[BAR_COLLECTIONS].targetX = bar[BAR_COLLECTIONS].x - 128 * _2X;
-	bar[BAR_COLLECTIONS].targetY2 = bar[BAR_COLLECTIONS].targetY = bar[BAR_COLLECTIONS].y;
-	bar[BAR_COLLECTIONS].speed2 = bar[BAR_COLLECTIONS].speed = 8 * _2X;
-	bar[BAR_COLLECTIONS].speedIncrement2 = bar[BAR_COLLECTIONS].speedIncrement = 1 * _2X;
-	bar[BAR_COLLECTIONS].frame = 1;
+	bar[BAR_EQUIP].nx = bar[BAR_EQUIP].x;
+	bar[BAR_EQUIP].ny = bar[BAR_EQUIP].y;
+	bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].x - 128 * _2X;
+	bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].y;
+	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
+	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
+	bar[BAR_EQUIP].frame = 1;
 
 	bar[BAR_CREWUPGRADE].nx = bar[BAR_CREWUPGRADE].x;
 	bar[BAR_CREWUPGRADE].ny = bar[BAR_CREWUPGRADE].y;
@@ -1482,14 +1485,14 @@ void MainMenuIn(void)
 	bar[BAR_CREWUPGRADE].zoomEnd2 = bar[BAR_CREWUPGRADE].zoomEnd = bar[BAR_CREWUPGRADE].zoom;
 	bar[BAR_CREWUPGRADE].frame = 1;
 
-	bar[BAR_COLLECTIONS].targetX2 = bar[BAR_COLLECTIONS].targetX = bar[BAR_COLLECTIONS].nx;
-	bar[BAR_COLLECTIONS].targetY2 = bar[BAR_COLLECTIONS].targetY = bar[BAR_COLLECTIONS].ny;
-	bar[BAR_COLLECTIONS].speed2 = bar[BAR_COLLECTIONS].speed = 8 * _2X;
-	bar[BAR_COLLECTIONS].speedIncrement2 = bar[BAR_COLLECTIONS].speedIncrement = 1 * _2X;
-	bar[BAR_COLLECTIONS].zoom2 = bar[BAR_COLLECTIONS].zoom = BAR_COLLECTIONS_ZOOM;
-	bar[BAR_COLLECTIONS].zoomIncrement2 = bar[BAR_COLLECTIONS].zoomIncrement = 0.0f;
-	bar[BAR_COLLECTIONS].zoomEnd2 = bar[BAR_COLLECTIONS].zoomEnd = bar[BAR_COLLECTIONS].zoom;
-	bar[BAR_COLLECTIONS].frame = 1;
+	bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].nx;
+	bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].ny;
+	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
+	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
+	bar[BAR_EQUIP].zoom2 = bar[BAR_EQUIP].zoom = BAR_COLLECTIONS_ZOOM;
+	bar[BAR_EQUIP].zoomIncrement2 = bar[BAR_EQUIP].zoomIncrement = 0.0f;
+	bar[BAR_EQUIP].zoomEnd2 = bar[BAR_EQUIP].zoomEnd = bar[BAR_EQUIP].zoom;
+	bar[BAR_EQUIP].frame = 1;
 
 	bar[BAR_FRIENDS].targetX2 = bar[BAR_FRIENDS].targetX = bar[BAR_FRIENDS].nx;
 	bar[BAR_FRIENDS].targetY2 = bar[BAR_FRIENDS].targetY = bar[BAR_FRIENDS].ny;
@@ -1632,7 +1635,7 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 		DrawNeutral(EFFECT_CRAFT0 + (frame / 2 / MOTIONDIV) % 3, xOffset + gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, gEvent->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case EVENTTYPE_BOSSRAID:
-		DrawCmfDetailShadow(enemyData[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * ENEMYDATASIZE + 0], crewPos[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * 5 + 0], xOffset + gEvent->x, gEvent->y - (float)16 * _2X * gEvent->zoom, LEFT, gEvent->zoom * (float)goldQuestZoomData[gEvent->barStatus * 2 + 1], cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(enemyData[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * 5 + 0], xOffset + gEvent->x, gEvent->y - (float)16 * _2X * gEvent->zoom, LEFT, gEvent->zoom * (float)goldQuestZoomData[gEvent->barStatus * 2 + 1], cvtDest, cvtLayer, buffering);
 		break;
 	}
 
@@ -1712,7 +1715,7 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 		default:
 			DrawBox(goldQuestBox[(int)(gEvent->barStatus) * BOSSRAIDSIZE + (int)(i)], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom - (float)(BOXSIZE_X) * 2 / 3 * zoom / 2 * 2 / 3 + (i / 2 % 2 == 0 ? -(float)18 * _2X * zoom : (float)20 * _2X * zoom), y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)10 * _2X * zoom + (float)10 * _2X * zoom, LEFT, false, false, true, i >= i ? false : true, true, zoom * 2 / 3 * 2 / 3, cvtDest, cvtLayer, buffering);
 
-			DrawCmfDetailShadow(enemyData[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * ENEMYDATASIZE + 0], crewPos[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * 5 + 0], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom - (float)(24 * _2X) * zoom, i / 2 % 2 == 0 ? RIGHT : LEFT, LOBBYZOOM * zoom, cvtDest, cvtLayer, buffering);
+			DrawCmfDetailShadow(enemyData[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * 5 + 0], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom - (float)(24 * _2X) * zoom, i / 2 % 2 == 0 ? RIGHT : LEFT, LOBBYZOOM * zoom, cvtDest, cvtLayer, buffering);
 
 			break;
 		}
@@ -1792,14 +1795,20 @@ void ClosePopUp(void)
 
 	curMenu = MENU_PLAY;
 
-	if ((popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO || popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO)) {
-		if (popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO) {
+	if (menuDepth > 0)
+		menuDepth--;
+	else {
+
+		if ((popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO || popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO)) {
+			if (popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO) {
+			}
+			else if (popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO) {
+			}
 		}
-		else if (popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO) {
-		}
+		memset(&popUp[popUpCnt - 1], 0, sizeof(POPUP));
+		popUpCnt--;
+
 	}
-	memset(&popUp[popUpCnt - 1], 0, sizeof(POPUP));
-	popUpCnt--;
 
 	PlayMusic(M_CLOSEWINDOW);
 
@@ -1913,13 +1922,16 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 
 		break;
 	case POPUPTYPE_SHOPINFO:
-		ShopDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
+		break;
+	case POPUPTYPE_CASTLEMENU:
+		CastleMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_DAILYQUEST:
 		DailyQuestDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_EVENTSHOP:
-		ShopDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_NEWS:
 		NewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
@@ -1960,13 +1972,21 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_CREWUPGRADE:
-		CrewUpgradeMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		CrewMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_CREWLIST:
-		CrewListDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
+		//CrewListDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
+		CrewMenuDraw(
+			xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom,
+			DY - GNBHEIGHT,
+			p->zoom,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
 		break;
 	case POPUPTYPE_COLLECTIONS:
-		CollectionsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
+		CollectionsDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_FRIENDS:
 
@@ -1993,10 +2013,10 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 	//백버튼
 
 	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER)) {
-		float xMarkZoom = 0.5f;
-		DrawXMark((float)(DX / 2 + POPUPWINDOWSIZE_X / 2 - 159 * xMarkZoom) * p->zoom, Min((float)DY, (float)(DY / 2 + POPUPWINDOWSIZE_Y / 2 + 4 * _2X) * p->zoom), xMarkZoom * p->zoom, cvtDest, cvtLayer, buffering);
+		float xMarkZoom = 1.0f;
+		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom, cvtDest, cvtLayer, buffering);
 
-		SetRectPoint((float)(DX / 2 + POPUPWINDOWSIZE_X / 2 - 159 * xMarkZoom) * p->zoom, Min((float)DY, (float)(DY / 2 + POPUPWINDOWSIZE_Y / 2 + 4 * _2X) * p->zoom), (float)159 * xMarkZoom * p->zoom, (float)156 * xMarkZoom * p->zoom, TOUCH_FUNC_POPUP_CLOSE);
+		SetRectPoint((float)(18)* p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, (float)64 * xMarkZoom * p->zoom, (float)64 * xMarkZoom * p->zoom, TOUCH_FUNC_POPUP_CLOSE);
 	}
 
 	p->frame++;
@@ -2006,7 +2026,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 {
 	int i, j, motion;
 	//int dy = 29 * _2X;
-	int dy = GNBHEIGHT == GNB_INIT_HEIGHT ? (DY - 16 * _2X) / TOTAL_OPENEDMENU : (DY - 16 * _2X - NORCH_HEIGHT * 2) / TOTAL_OPENEDMENU;
+	int dy =  (DY - 16 * _2X - (GNBHEIGHT - GNB_INIT_HEIGHT)) / TOTAL_OPENEDMENU;
 	int w = GAMEMENUWIN_X;
 	ITEM* it;
 	int tempX, tempY;
@@ -2019,7 +2039,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 	DrawFrame(x, y, w, DY, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 
-	y = DY - 28 * _2X - (GNBHEIGHT == GNB_INIT_HEIGHT ? 0 : NORCH_HEIGHT);
+	y = DY - 28 * _2X - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 	j = 0;
 
@@ -2049,13 +2069,13 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				DrawImage(40 * _2X, 40 * _2X, 40 * _2X, 0 * _2X, x + 10 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
 				break;
 			case MENU_HERO:
-				DrawBarIcon(BAR_HERO, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_CASTLE, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 				break;
 			case MENU_CREW:
 				DrawBarIcon(BAR_CREW, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 				break;
 			case MENU_COLLECTIONS:
-				DrawBarIcon(BAR_COLLECTIONS, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_EQUIP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 				break;
 			case MENU_SHOP:
 				DrawBarIcon(BAR_MAINSHOP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);

@@ -33,7 +33,7 @@ const unsigned char* const mapPtr[TOTALMAP] = {
 	ma385, ma386, ma387, ma388, ma389, ma390, ma391, ma392, ma393, ma394,
 	ma395, ma396, ma397, ma398, ma399, ma400, ma401, ma402, ma403, ma404,
 	ma405,
-	ma406, ma407, ma408, ma409, ma410, ma411, ma412, ma413, ma414, ma415, ma416, ma417, ma418, ma419, ma420, ma421, ma422,
+	ma406, ma407, ma408, ma409, ma410, ma411, ma412, ma413, ma414, ma415, ma416, ma417, ma418, ma419, ma420, ma421, ma422, ma423, ma424,
 
 };
 
@@ -65,7 +65,7 @@ const unsigned char* const mapTilePtr[TOTALMAP] = {
 	mt385, mt386, mt387, mt388, mt389, mt390, mt391, mt392, mt393, mt394,
 	mt395, mt396, mt397, mt398, mt399, mt400, mt401, mt402, mt403, mt404,
 	mt405,
-	mt406, mt407, mt408, mt409, mt410, mt411, mt412, mt413, mt414, mt415, mt416, mt417, mt418, mt419, mt420, mt421, mt422,
+	mt406, mt407, mt408, mt409, mt410, mt411, mt412, mt413, mt414, mt415, mt416, mt417, mt418, mt419, mt420, mt421, mt422, mt423, mt424,
 
 };
 
@@ -97,7 +97,7 @@ const unsigned char* const mapRectPtr[TOTALMAP] = {
 	mr385, mr386, mr387, mr388, mr389, mr390, mr391, mr392, mr393, mr394,
 	mr395, mr396, mr397, mr398, mr399, mr400, mr401, mr402, mr403, mr404,
 	mr405,
-	mr406, mr407, mr408, mr409, mr410, mr411, mr412, mr413, mr414, mr415, mr416, mr417, mr418, mr419, mr420, mr421, mr422,
+	mr406, mr407, mr408, mr409, mr410, mr411, mr412, mr413, mr414, mr415, mr416, mr417, mr418, mr419, mr420, mr421, mr422, mr423, mr424,
 };
 
 const unsigned int mapRectSize[TOTALMAP] = {
@@ -128,7 +128,7 @@ const unsigned int mapRectSize[TOTALMAP] = {
 	sizeof(mr385) / 5, sizeof(mr386) / 5, sizeof(mr387) / 5, sizeof(mr388) / 5, sizeof(mr389) / 5, sizeof(mr390) / 5, sizeof(mr391) / 5, sizeof(mr392) / 5, sizeof(mr393) / 5, sizeof(mr394) / 5,
 	sizeof(mr395) / 5, sizeof(mr396) / 5, sizeof(mr397) / 5, sizeof(mr398) / 5, sizeof(mr399) / 5, sizeof(mr400) / 5, sizeof(mr401) / 5, sizeof(mr402) / 5, sizeof(mr403) / 5, sizeof(mr404) / 5,
 	sizeof(mr405) / 5,
-	sizeof(mr406) / 5, sizeof(mr407) / 5, sizeof(mr408) / 5, sizeof(mr409) / 5, sizeof(mr410) / 5, sizeof(mr411) / 5, sizeof(mr412) / 5, sizeof(mr413) / 5, sizeof(mr414) / 5, sizeof(mr415) / 5, sizeof(mr416) / 5, sizeof(mr417) / 5, sizeof(mr418) / 5, sizeof(mr419) / 5, sizeof(mr420) / 5, sizeof(mr421) / 5, sizeof(mr422) / 5,
+	sizeof(mr406) / 5, sizeof(mr407) / 5, sizeof(mr408) / 5, sizeof(mr409) / 5, sizeof(mr410) / 5, sizeof(mr411) / 5, sizeof(mr412) / 5, sizeof(mr413) / 5, sizeof(mr414) / 5, sizeof(mr415) / 5, sizeof(mr416) / 5, sizeof(mr417) / 5, sizeof(mr418) / 5, sizeof(mr419) / 5, sizeof(mr420) / 5, sizeof(mr421) / 5, sizeof(mr422) / 5, sizeof(mr423) / 5, sizeof(mr424) / 5,
 };
 
 const signed short* const mapBackPtr[TOTALMAP] = {
@@ -159,7 +159,7 @@ const signed short* const mapBackPtr[TOTALMAP] = {
 	mb385, mb386, mb387, mb388, mb389, mb390, mb391, mb392, mb393, mb394,
 	mb395, mb396, mb397, mb398, mb399, mb400, mb401, mb402, mb403, mb404,
 	mb405,
-	mb406, mb407, mb408, mb409, mb410, mb411, mb412, mb413, mb414, mb415, mb416, mb417, mb418, mb419, mb420, mb421, mb422,
+	mb406, mb407, mb408, mb409, mb410, mb411, mb412, mb413, mb414, mb415, mb416, mb417, mb418, mb419, mb420, mb421, mb422, mb423, mb424,
 };
 
 const unsigned int mapBackSize[TOTALMAP] = {
@@ -190,7 +190,7 @@ const unsigned int mapBackSize[TOTALMAP] = {
 	sizeof(mb385) / 6, sizeof(mb386) / 6, sizeof(mb387) / 6, sizeof(mb388) / 6, sizeof(mb389) / 6, sizeof(mb390) / 6, sizeof(mb391) / 6, sizeof(mb392) / 6, sizeof(mb393) / 6, sizeof(mb394) / 6,
 	sizeof(mb395) / 6, sizeof(mb396) / 6, sizeof(mb397) / 6, sizeof(mb398) / 6, sizeof(mb399) / 6, sizeof(mb400) / 6, sizeof(mb401) / 6, sizeof(mb402) / 6, sizeof(mb403) / 6, sizeof(mb404) / 6,
 	sizeof(mb405) / 6,
-	sizeof(mb406) / 6, sizeof(mb407) / 6, sizeof(mb408) / 6, sizeof(mb409) / 6, sizeof(mb410) / 6, sizeof(mb411) / 6, sizeof(mb412) / 6, sizeof(mb413) / 6, sizeof(mb414) / 6, sizeof(mb415) / 6, sizeof(mb416) / 6, sizeof(mb417) / 6, sizeof(mb418) / 6, sizeof(mb419) / 6, sizeof(mb420) / 6, sizeof(mb421) / 6, sizeof(mb422) / 6,
+	sizeof(mb406) / 6, sizeof(mb407) / 6, sizeof(mb408) / 6, sizeof(mb409) / 6, sizeof(mb410) / 6, sizeof(mb411) / 6, sizeof(mb412) / 6, sizeof(mb413) / 6, sizeof(mb414) / 6, sizeof(mb415) / 6, sizeof(mb416) / 6, sizeof(mb417) / 6, sizeof(mb418) / 6, sizeof(mb419) / 6, sizeof(mb420) / 6, sizeof(mb421) / 6, sizeof(mb422) / 6, sizeof(mb423) / 6, sizeof(mb424) / 6,
 };
 
 const signed short* const mapObjPtr[TOTALMAP] = {
@@ -221,7 +221,7 @@ const signed short* const mapObjPtr[TOTALMAP] = {
 	mo385, mo386, mo387, mo388, mo389, mo390, mo391, mo392, mo393, mo394,
 	mo395, mo396, mo397, mo398, mo399, mo400, mo401, mo402, mo403, mo404,
 	mo405,
-	mo406, mo407, mo408, mo409, mo410, mo411, mo412, mo413, mo414, mo415, mo416, mo417, mo418, mo419, mo420, mo421, mo422,
+	mo406, mo407, mo408, mo409, mo410, mo411, mo412, mo413, mo414, mo415, mo416, mo417, mo418, mo419, mo420, mo421, mo422, mo423, mo424,
 };
 
 const unsigned int mapObjSize[TOTALMAP] = {
@@ -252,7 +252,7 @@ const unsigned int mapObjSize[TOTALMAP] = {
 	sizeof(mo385) / 6, sizeof(mo386) / 6, sizeof(mo387) / 6, sizeof(mo388) / 6, sizeof(mo389) / 6, sizeof(mo390) / 6, sizeof(mo391) / 6, sizeof(mo392) / 6, sizeof(mo393) / 6, sizeof(mo394) / 6,
 	sizeof(mo395) / 6, sizeof(mo396) / 6, sizeof(mo397) / 6, sizeof(mo398) / 6, sizeof(mo399) / 6, sizeof(mo400) / 6, sizeof(mo401) / 6, sizeof(mo402) / 6, sizeof(mo403) / 6, sizeof(mo404) / 6,
 	sizeof(mo405) / 6,
-	sizeof(mo406) / 6, sizeof(mo407) / 6, sizeof(mo408) / 6, sizeof(mo409) / 6, sizeof(mo410) / 6, sizeof(mo411) / 6, sizeof(mo412) / 6, sizeof(mo413) / 6, sizeof(mo414) / 6, sizeof(mo415) / 6, sizeof(mo416) / 6, sizeof(mo417) / 6, sizeof(mo418) / 6, sizeof(mo419) / 6, sizeof(mo420) / 6, sizeof(mo421) / 6, sizeof(mo422) / 6,
+	sizeof(mo406) / 6, sizeof(mo407) / 6, sizeof(mo408) / 6, sizeof(mo409) / 6, sizeof(mo410) / 6, sizeof(mo411) / 6, sizeof(mo412) / 6, sizeof(mo413) / 6, sizeof(mo414) / 6, sizeof(mo415) / 6, sizeof(mo416) / 6, sizeof(mo417) / 6, sizeof(mo418) / 6, sizeof(mo419) / 6, sizeof(mo420) / 6, sizeof(mo421) / 6, sizeof(mo422) / 6, sizeof(mo423) / 6, sizeof(mo424) / 6,
 };
 
 const signed short* const mapNeutralPtr[TOTALMAP] = {
@@ -283,7 +283,7 @@ const signed short* const mapNeutralPtr[TOTALMAP] = {
 	mn385, mn386, mn387, mn388, mn389, mn390, mn391, mn392, mn393, mn394,
 	mn395, mn396, mn397, mn398, mn399, mn400, mn401, mn402, mn403, mn404,
 	mn405,
-	mn406, mn407, mn408, mn409, mn410, mn411, mn412, mn413, mn414, mn415, mn416, mn417, mn418, mn419, mn420, mn421, mn422,
+	mn406, mn407, mn408, mn409, mn410, mn411, mn412, mn413, mn414, mn415, mn416, mn417, mn418, mn419, mn420, mn421, mn422, mn423, mn424,
 };
 
 const unsigned int mapNeutralSize[TOTALMAP] = {
@@ -314,7 +314,7 @@ const unsigned int mapNeutralSize[TOTALMAP] = {
 	sizeof(mn385) / 8, sizeof(mn386) / 8, sizeof(mn387) / 8, sizeof(mn388) / 8, sizeof(mn389) / 8, sizeof(mn390) / 8, sizeof(mn391) / 8, sizeof(mn392) / 8, sizeof(mn393) / 8, sizeof(mn394) / 8,
 	sizeof(mn395) / 8, sizeof(mn396) / 8, sizeof(mn397) / 8, sizeof(mn398) / 8, sizeof(mn399) / 8, sizeof(mn400) / 8, sizeof(mn401) / 8, sizeof(mn402) / 8, sizeof(mn403) / 8, sizeof(mn404) / 8,
 	sizeof(mn405) / 8,
-	sizeof(mn406) / 8, sizeof(mn407) / 8, sizeof(mn408) / 8, sizeof(mn409) / 8, sizeof(mn410) / 8, sizeof(mn411) / 8, sizeof(mn412) / 8, sizeof(mn413) / 8, sizeof(mn414) / 8, sizeof(mn415) / 8, sizeof(mn416) / 8, sizeof(mn417) / 8, sizeof(mn418) / 8, sizeof(mn419) / 8, sizeof(mn420) / 8, sizeof(mn421) / 8, sizeof(mn422) / 8,
+	sizeof(mn406) / 8, sizeof(mn407) / 8, sizeof(mn408) / 8, sizeof(mn409) / 8, sizeof(mn410) / 8, sizeof(mn411) / 8, sizeof(mn412) / 8, sizeof(mn413) / 8, sizeof(mn414) / 8, sizeof(mn415) / 8, sizeof(mn416) / 8, sizeof(mn417) / 8, sizeof(mn418) / 8, sizeof(mn419) / 8, sizeof(mn420) / 8, sizeof(mn421) / 8, sizeof(mn422) / 8, sizeof(mn423) / 8, sizeof(mn424) / 8,
 };
 
 const unsigned short* const mapEnemyPtr[TOTALMAP] = {
@@ -345,7 +345,7 @@ const unsigned short* const mapEnemyPtr[TOTALMAP] = {
 	me385, me386, me387, me388, me389, me390, me391, me392, me393, me394,
 	me395, me396, me397, me398, me399, me400, me401, me402, me403, me404,
 	me405,
-	me406, me407, me408, me409, me410, me411, me412, me413, me414, me415, me416, me417, me418, me419, me420, me421, me422,
+	me406, me407, me408, me409, me410, me411, me412, me413, me414, me415, me416, me417, me418, me419, me420, me421, me422, me423, me424,
 };
 
 const unsigned int mapEnemySize[TOTALMAP] = {
@@ -376,7 +376,7 @@ const unsigned int mapEnemySize[TOTALMAP] = {
 	sizeof(me385) / 8, sizeof(me386) / 8, sizeof(me387) / 8, sizeof(me388) / 8, sizeof(me389) / 8, sizeof(me390) / 8, sizeof(me391) / 8, sizeof(me392) / 8, sizeof(me393) / 8, sizeof(me394) / 8,
 	sizeof(me395) / 8, sizeof(me396) / 8, sizeof(me397) / 8, sizeof(me398) / 8, sizeof(me399) / 8, sizeof(me400) / 8, sizeof(me401) / 8, sizeof(me402) / 8, sizeof(me403) / 8, sizeof(me404) / 8,
 	sizeof(me405) / 8,
-	sizeof(me406) / 8, sizeof(me407) / 8, sizeof(me408) / 8, sizeof(me409) / 8, sizeof(me410) / 8, sizeof(me411) / 8, sizeof(me412) / 8, sizeof(me413) / 8, sizeof(me414) / 8, sizeof(me415) / 8, sizeof(me416) / 8, sizeof(me417) / 8, sizeof(me418) / 8, sizeof(me419) / 8, sizeof(me420) / 8, sizeof(me421) / 8, sizeof(me422) / 8,
+	sizeof(me406) / 8, sizeof(me407) / 8, sizeof(me408) / 8, sizeof(me409) / 8, sizeof(me410) / 8, sizeof(me411) / 8, sizeof(me412) / 8, sizeof(me413) / 8, sizeof(me414) / 8, sizeof(me415) / 8, sizeof(me416) / 8, sizeof(me417) / 8, sizeof(me418) / 8, sizeof(me419) / 8, sizeof(me420) / 8, sizeof(me421) / 8, sizeof(me422) / 8, sizeof(me423) / 8, sizeof(me424) / 8,
 };
 
 
@@ -2697,6 +2697,10 @@ const signed short neutralData[TOTALNEUTRAL * NEUTRALDATASIZE] = {
 
 	false, 1, 0 * _2X, 0 * _2X, -8 * _2X, -16 * _2X, TSIZE, TSIZE, 0, NULL, NULL,	//OBJ_FLOWER
 	false, 1, 0 * _2X, 0 * _2X, -8 * _2X, -16 * _2X, TSIZE, TSIZE, 0, NULL, NULL,	//OBJ_GOLD
+
+	false, 1, 0 * _2X, 0 * _2X, -8 * _2X, -16 * _2X, TSIZE, TSIZE, 0, NULL, NULL,	//OBJ_TREE
+	false, 1, 0 * _2X, 0 * _2X, -8 * _2X, -16 * _2X, TSIZE, TSIZE, 0, NULL, NULL,	//OBJ_FLAG
+
 };
 
 

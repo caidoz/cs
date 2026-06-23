@@ -314,8 +314,8 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 
 
 #ifdef CLIPPING
-	//if (x + w < clipX || x > clipX2 || y > clipY || y < clipY2)
-	//	return false;
+	if (x + w < clipX || x > clipX2 || y > clipY || y < clipY2)
+		return false;
 #endif
 
 	//y += 2 * zoom * _2X;

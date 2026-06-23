@@ -99,7 +99,7 @@ void DailyQuestDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 				DrawImage(32 * _2X, 12 * _2X, 107 * _2X, 48 * _2X, ao[NPC].x - (float)16 * _2X * NPCZOOM * zoom, ao[NPC].y + (float)(2 * _2X) * NPCZOOM * zoom, false, false, false, false, false, NPCZOOM * zoom, sprite[MAP_OBJ_IMG + 6], cvtDest, cvtLayer, MAP_OBJ_IMG + 6, buffering);
 
-				DrawCmfDetailShadow(enemyData[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE] * ENEMYDATASIZE + 0], enemyIconPos[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE] * 3 + 0], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE]] * NPCZOOM * zoom, cvtDest, cvtLayer, buffering);
+				DrawCmfDetailShadow(enemyData[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyIconPos[enemyData[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF]], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE]] * NPCZOOM * zoom, cvtDest, cvtLayer, buffering);
 				break;
 				//다른 유저를 공격해라
 			case DAILYQUEST_ATTACK_OTHERUSER:
@@ -160,114 +160,6 @@ void ShopDraw_Back(int x, int y, cocos2d::RenderTexture* cvtDest, cocos2d::Layer
 	}
 }
 
-void ShopDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i, tempIdx, mul = 1;
-
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y - (float)(POPUPSTORE_Y + 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], gScreenBuffer, gScreenLayer, UI_PAPER_POPUP_IMG, false);
-
-	switch (menuDepth) {
-	case 0:
-		switch (menuIdx) {
-		default:
-			//상단의 팝업스토어
-			for (i = 0; i < TOTALPOPUPSTORE; i++) {
-				DrawFrame(x + (float)32 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y, (float)(DX - 64 * _2X) * zoom, (float)POPUPSTORE_Y * zoom, FRAME_SHOPBALLOON, gScreenBuffer, gScreenLayer, false);
-				DrawNumTTF(i + 1, x + (float)34 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y - (float)2 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, false, 1.0f, false, gScreenBuffer, gScreenLayer, false);
-			}
-
-			for (i = 0; i < TOTALPOPUPSTORE; i++) {
-				if (i == TOTALPOPUPSTORE - 1) {
-					if ((long)(currentTimeStamp - robin.freeRewardTimeStamp) >= FREEITEMTIME) {
-						SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-						SetColor(COLOR_REALRED);
-					}
-					else
-						SetColor(COLOR_RED);
-				}
-
-				DrawImage(9 * _2X, 9 * _2X, (menuX == i ? 145 * _2X : 154 * _2X), 0 * _2X, x + (float)((DX / 2 - (16 * 4 + 9) * _2X / 2) + i * 16 * _2X) * zoom, y - (float)POPUPSTORE_Y * zoom - (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], gScreenBuffer, gScreenLayer, COMMON_IMG, false);
-				SetColor(false);
-				SetAlpha(32);
-			}
-
-			return;
-			//하트상품 6개
-			//y -= GNBHEIGHT;
-
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_SHOP_HEART_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
-
-			for (i = 0; i < 6; i++) {
-
-				//if (zoom == 1)
-				//	SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, (float)SHOPMENUCARD_WIDTH * zoom, (float)SHOPMENUCARD_HEIGHT * zoom, TOUCH_FUNC_EQUIP_INVENTORY + i);
-
-				DrawImage(72 * _2X, 64 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 72 * _2X) / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 88 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[HEART_0_IMG + i], gScreenBuffer, gScreenLayer, HEART_0_IMG + i, false);
-
-				//하트수량
-				DrawNum(currencyShop[0 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT) * (i / 3)) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true, gScreenBuffer, gScreenLayer, false);
-
-				if (currencyShop[0 * 7 + i * 7 + 2]) {
-					memset(tempStr, 0, sizeof(tempStr));
-					sprintf(tempStr, "+%d%%", currencyShop[0 * 7 + i * 7 + 2]);
-					//보너스 숫자
-					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 36 * _2X) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
-				}
-				//아이콘
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 34 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[0 * 7 + i * 7 + 6], currencyShop[0 * 7 + i * 7 + 5], zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-			}
-
-			y -= (float)(208 * _2X) * zoom;
-
-			//장비뽑기 3종
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_GACHA_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
-
-			for (i = 0; i < 3; i++) {
-				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 46 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom, gScreenBuffer, gScreenLayer, false);
-				DrawBoxSpecial(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X + 20 * _2X - (BOXSIZE_X / 2)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 50 * _2X + BOXSIZE_Y) * zoom, LEFT, BOX_EQUIP_SILVER + i, (float)1.0f * zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-				CenterText(TEXT_ITEMNAME_BOX + BOX_EQUIP_SILVER + i, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y +(float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL), GetBoxCurrency(BOX_EQUIP_SILVER + i, GRADE_NORMAL), zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-				if (robin.gold >= GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL))
-					SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, TOUCH_FUNC_SHOP_BUYBOX1 + i);
-			}
-
-			y -= (float)(128 * _2X) * zoom;
-
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_COIN_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
-
-			for (i = 0; i < 3; i++) {
-				DrawImage(64 * _2X, 52 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 64 * _2X) / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 52 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[COIN_0_IMG + 3 + i], gScreenBuffer, gScreenLayer, COIN_0_IMG + 3 + i, false);
-
-				//코인수량
-				DrawNum(currencyShop[9 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 8 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true, gScreenBuffer, gScreenLayer, false);
-
-				if (currencyShop[9 * 7 + i * 7 + 2]) {
-					memset(tempStr, 0, sizeof(tempStr));
-					sprintf(tempStr, "+%d%%", currencyShop[9 * 7 + i * 7 + 2]);
-					//보너스 숫자
-					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
-				}
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[9 * 7 + i * 7 + 6], currencyShop[9 * 7 + i * 7 + 5], zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-			}
-
-			break;
-		}
-		break;
-	case 1:
-		break;
-	case 2:
-		break;
-	}
-}
 //별 드로우
 void StarShopDraw(int x, int y)
 {
@@ -358,7 +250,7 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTexture
 	//DrawCombatPower(GetCombatPower(pObj), ICON_EVENT_2SWORD, x + (float)220 * _2X * zoom, y - (float)32 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 	//InventoryDraw(x + (float)12 * _2X * zoom, y - (float)72 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-	DrawEquipSlot(x + plusX, y + plusY, zoom, cvtDest, cvtLayer, buffering);
+	//DrawItemCard(x + plusX, y + plusY, zoom, cvtDest, cvtLayer, buffering);
 
 	for (i = TOTALEQUIP - 1; i >= 0; i--) {
 		usPtr = &equipSlotPos2[i * 4];
@@ -1258,6 +1150,20 @@ void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoo
 
 }
 
+void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_SMALL, BARCOLOR_PURPLE, alpha, 0.5f * zoom, cvtDest, cvtLayer, buffering);
+
+	DrawIcon(icon, x + (float)(5 * _2X) * zoom, y - (float)5 * _2X * zoom, 1.4f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
+#ifdef NUMTTF
+	DrawBigNumTTF(pow, x + (float)(COMBATPOWBARWIDTH - 10 * _2X) * zoom, y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE - 8 * _2X * 2) * zoom, true, zoom, true, cvtDest, cvtLayer, buffering);
+#else
+	DrawBigNum2Bold(pow, x + (float)(COMBATPOWBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
+
+#endif
+
+}
+
 void StageProgressDraw(int x, int y, int current, int progress, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
@@ -1386,186 +1292,6 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom, cocos
 		remainedTurnFrame = 0;
 }
 
-void CrewSetDraw(int stage, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	int stageCrewIdx;
-	int stageCrewType;
-	long long upgradePrice;
-	bool opened;
-
-
-	DrawImage(512, 19, 2, 612, x + (float)(DX / 2) * zoom + (float)(-512 / 2) * zoom, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
-	CenterText(TEXT_MAPNAME + MAP_DIORAMA_CASTLE + stage, x + (float)(DX / 2) * zoom, y - (float)12 * _2X * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
-	
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)4 * _2X * zoom, y - (float)8 * _2X * zoom, false, false, false, false, false, 0.08f * zoom, sprite[MAP_DIORAMA_IMG + dioramaMapImg[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + dioramaMapImg[stage], false);
-	//현재 최고 기록
-	DrawGoldAlpha(x + (float)52 * _2X * zoom, y - (float)(18 * _2X) * zoom, ALPHA_MAX, FONT_GOLD_LARGE, 0.6f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
-	DrawGoldAlpha(x + (float)52 * _2X * zoom, y - (float)(34 * _2X) * zoom, ALPHA_STAGE, FONT_GOLD_LARGE, 0.6f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
-
-	DrawGoldNum(299 - stage * 10, x + (float)(DX / 2) * zoom, y - (float)(32 * _2X) * zoom, CENTER, false, false, false, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-
-	grayScale = false;
-
-	for (i = 0; i < MAXCREW; i++) {
-		stageCrewIdx = stage * MAXCREW + i + TOTALCHAR;//현재 인덱스
-		stageCrewType = crewData[stageCrewIdx * CREWDATASIZE];
-
-		curStar = robin.crewStar[stageCrewIdx];
-		curMaxStar = robin.crewMaxStar[stageCrewIdx];
-		maxStar = CREWMAXUPGRADELV;
-		if (curStar < curMaxStar)
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar] / CREWUPGRADEPER;
-		else
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar];
-
-
-		ao[NPC].cmf = ao[NPC].type = ROBIN;
-		ao[NPC].x = x + (float)(8 * _2X + CREWSET_XGAP * ((stage * MAXCREW + i) % MAXCREW) + ITEMICONSIZE) * zoom;
-		ao[NPC].y = y - (float)(8 * _2X + 80 * _2X) * zoom;
-
-		DrawImage(32 * _2X, 12 * _2X, 107 * _2X, 48 * _2X, ao[NPC].x - (float)16 * _2X * zoom, ao[NPC].y + (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + 6], cvtDest, cvtLayer, MAP_OBJ_IMG + 6, buffering);
-
-		if (stage == robin.crewStage && stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
-			DrawPlayer(&ao[NPC], 2000 - 1 + LEVELUP_BACK0 + stageUpgradeMotion[i], ao[NPC].x, ao[NPC].y, false, zoom, false, false, false, cvtDest, cvtLayer, buffering);
-		}
-
-		//if (i / MAXCREW > robin.crewStage)
-		//	SetColor(COLOR_BLACK);//grayScale = 32;
-		//else if (!robin.crewMaxStar[stage * MAXCREW + i])
-		//	grayScale = 32;
-		
-		DrawCmfDetailShadow(enemyData[crewData[stageCrewIdx * CREWDATASIZE] * ENEMYDATASIZE + 0], enemyIconPos[crewData[stageCrewIdx * CREWDATASIZE] * 3 + 0], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[stageCrewIdx * CREWDATASIZE]] * zoom, cvtDest, cvtLayer, buffering);
-		SetColor(false);
-		grayScale = 0;
-		//DrawIcon(GetItemIcon(ITEM_STATUE, i, false), x + (float)(36 * _2X + 72 * _2X * (i % 4)) * zoom, y - (float)(64 * _2X + 80 * _2X * (i / 4)), 2.0f * zoom, COLOR_BROWN, false, true, cvtDest, cvtLayer, buffering);
-		//if (!robin.crewMaxStar[(stage * MAXCREW + i)])
-		//	DrawIcon(ICON_EVENT_LOCK, ao[NPC].x - (float)ITEMICONSIZE / 2 * zoom, ao[NPC].y - (float)2 * _2X * zoom, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
-		//else
-			DrawStar(ICON_CROWN, ao[NPC].x, ao[NPC].y - (float)12 * _2X * zoom, robin.crewStar[(stage * MAXCREW + i)], robin.crewMaxStar[(stage * MAXCREW + i)], CREWMAXUPGRADELV, CENTER, true, 0.7f * zoom, cvtDest, cvtLayer, buffering);
-
-		if (robin.crewStar[(stage * MAXCREW + i)] < robin.crewMaxStar[(stage * MAXCREW + i)])
-			DrawEffect(DEBUF_STUN0 + frame % 6, ao[NPC].x, ao[NPC].y + (float)6 * _2X * zoom, RIGHT, false, zoom, cvtDest, cvtLayer, buffering);
-
-		if (stage == robin.crewStage && stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
-			DrawPlayer(&ao[NPC], 2000 - 1 + LEVELUP_FRONT0 + stageUpgradeMotion[i], ao[NPC].x, ao[NPC].y, false, zoom, false, false, false, cvtDest, cvtLayer, buffering);
-
-			DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (stageUpgradeMotion[i] < 11 ? stageUpgradeMotion[i] : Max(11, stageUpgradeMotion[i] - 5)), ao[NPC].x, ao[NPC].y - (float)(16 * _2X) * zoom, 0, false, zoom, cvtDest, cvtLayer, buffering);
-
-		}
-
-		if (stageUpgradeMotion[i] == 3)
-			PlayMusic(M_LEVELUP);
-
-		if (stageUpgradeMotion[i] > 0)
-			stageUpgradeMotion[i]++;
-
-		if (stageUpgradeMotion[i] == 11)
-			stageUpgradeMotion[i] = 0;
-
-
-		//이후 데미지
-		
-		if (curStar < curMaxStar) {
-			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_RED, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-			if (robin.gold >= upgradePrice) {
-				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
-			}
-		}
-		//아직 최대값에 도달하지 못하면
-		else if (curStar < maxStar) {
-			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_GREEN, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-			if (robin.gold >= upgradePrice) {
-				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
-			}
-		}
-		//최대값에 도달하면
-
-		else {
-
-			DrawMaxButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)24 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-		}
-
-	}
-}
-
-void CrewUpgradeMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	int stageCrewIdx;
-	int stageCrewType;
-	int stageInfoCurFrame = stageInfoFrame;
-	int detail;
-	float yGap = REWARDCARDSIZE_Y + 8 * _2X;
-	float buttonGap = 120 * _2X * zoom;
-	long long upgradePrice;
-
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
-
-	DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 88 * _2X) / 2 * zoom, y - (float)0 * _2X * zoom, TEXT_BORDERGUARD, zoom, cvtDest, cvtLayer, buffering);
-
-	CrewSetDraw(robin.crewStage, x + (float)(16 * _2X) * zoom, y - (float)(60 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-	for (i = 0; i < MAXCREW; i++) {
-		stageCrewIdx = robin.crewStage * MAXCREW + i;//현재 인덱스
-		stageCrewType = crewData[stageCrewIdx * CREWDATASIZE];
-
-		curStar = robin.crewStar[stageCrewIdx];
-		curMaxStar = robin.crewMaxStar[stageCrewIdx];
-		maxStar = CREWMAXUPGRADELV;
-		if (curStar < curMaxStar)
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar] / CREWUPGRADEPER;
-		else
-			upgradePrice = crewStarUpgradeGold[stageCrewIdx * CREWMAXUPGRADELV + curStar];
-
-		ao[NPC].cmf = ao[NPC].type = ROBIN;
-		ao[NPC].x = x + (float)(16 * _2X) * zoom + (float)(16 * _2X + CREWSET_XGAP * (i % MAXCREW) + ITEMICONSIZE) * zoom;
-		ao[NPC].y = y - (float)(52 * _2X) * zoom - (float)(64 * _2X) * zoom;
-
-
-		CenterText(TEXT_HERO_PARAM_DMG, ao[NPC].x, ao[NPC].y - (float)24 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-		//현재 데미지
-		DrawNumTTF(GetCrewDmg(stageCrewIdx, robin.crewStar[stageCrewIdx]), ao[NPC].x, ao[NPC].y - (float)40 * _2X * zoom, NUM_FONT_NORMAL, CENTER, false, false, true, zoom, false, cvtDest, cvtLayer, buffering);
-
-		//이후 데미지
-		if (curStar < maxStar) {
-			DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - frame % 8), ao[NPC].x + (float)16 * _2X, ao[NPC].y - (float)64 * _2X * zoom, 0, 180, 1.5f * zoom, cvtDest, cvtLayer, buffering);
-
-			DrawNumTTF(GetCrewDmg(stageCrewIdx, robin.crewStar[stageCrewIdx] + 1), ao[NPC].x, ao[NPC].y - (float)88 * _2X * zoom, NUM_FONT_NORMAL, CENTER, false, false, true, zoom, false, cvtDest, cvtLayer, buffering);
-		}
-
-		if (curStar < curMaxStar) {
-			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)102 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_RED, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-			if (robin.gold >= upgradePrice) {
-				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)102 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
-			}
-		}
-		//아직 최대값에 도달하지 못하면
-		else if (curStar < maxStar) {
-			DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)102 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_GREEN, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-			if (robin.gold >= upgradePrice) {
-				SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)102 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWSTARUPGRADE + i);
-			}
-		}
-		//최대값에 도달하면
-
-		else {
-
-			DrawMaxButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)102 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-		}
-
-	}
-
-	//for (i = 0; i < (TOTAL_CREW + MAXCREW - 1) / MAXCREW; i++) {
-	//	CrewSetDraw(i, x + (float)(32 * _2X) * zoom, y + scY[MENU_COLLECTIONS] - (float)(32 * _2X + 24 * _2X + COLLECTION_YGAP * i) * zoom, zoom, cvtDest, cvtLayer, buffering);
-	//}
-
-	LineText(TEXT_BORDERGUARD_DESC, x + (float)32 * _2X * zoom, y - (float)260 * _2X * zoom, (float)(POPUPWINDOWSIZE_X - 64 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-	CrewSetDraw(robin.crewStage + 1, x + (float)(16 * _2X) * zoom, y - (float)(312 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-}
-
 void HowToGetHeroesDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
@@ -1620,390 +1346,6 @@ int GetItemCntUpgradePossible(void)
 	}
 
 	return itemCnt;
-}
-
-void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i, j;
-	int w = COLLECTIONCARDSIZE_X;
-	int h = COLLECTIONCARDSIZE_Y;
-	int star = 1;
-	int width;
-	int repItem = 0;
-	int setItemCnt = 0;
-	int rewardIcon;
-	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon;
-	ITEM* it;
-	OBJECT* pObj = &ao[curHero];
-	int starCnt;
-	long long realValue;
-	float numWidth = (float)(32 * _2X) * zoom;
-	int actionCardIdx;
-	int skillIdx;
-	int swordSkillIdx;
-	int collectionIdx;
-	int menuText[] = { TEXT_EQUIPMENT, TEXT_SKILL };
-	int charType = ROBIN;
-	long long upgradePrice;
-
-	for (i = 0; i < (menuCur < EQUIP_NECK ? itemTypeCnt[menuCur * TOTALCHAR + curHero] : itemTypeCnt[menuCur - EQUIP_NECK + ITEM_NECK]); i++) {
-		ao[NPC].cmf = ao[NPC].type = curHero;
-		ao[NPC].x = x + (float)(16 * _2X + CREWSET_XGAP * ((i * MAXCREW + i) % MAXCREW) + ITEMICONSIZE) * zoom;
-		ao[NPC].y = y - (float)(88 * _2X) * (i / MAXCREW) * zoom;
-
-		DrawImage(32 * _2X, 12 * _2X, 107 * _2X, 48 * _2X, ao[NPC].x - (float)16 * _2X * zoom, ao[NPC].y + (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + 6], cvtDest, cvtLayer, MAP_OBJ_IMG + 6, buffering);
-
-		//if (robin.getCrews[i] == false)
-		//	grayScale = 32;
-		//DrawCmfDetailShadow(enemyData[crewData[i * CREWDATASIZE] * ENEMYDATASIZE + 0], enemyIconPos[crewData[i * CREWDATASIZE] * 3 + 0], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[i * CREWDATASIZE]] * zoom, cvtDest, cvtLayer, buffering);
-		switch (menuCur) {
-		case EQUIP_NECK:
-			itemType = ITEM_NECK;
-			break;
-		case EQUIP_RING:
-			itemType = ITEM_RING;
-			break;
-		default:
-			itemType = TOTALCHAR * menuCur + curHero;
-			break;
-		}
-		itemDetail = i;
-		itemGrade = GRADE_NORMAL;
-		//if (robin.inven[i].count == 0)
-		//	grayScale = 32;
-		DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), ao[NPC].x - (float)ITEMICONSIZE * zoom, ao[NPC].y + (float)(2 * ITEMICONSIZE - 4 * _2X) * zoom, 1.8f * zoom, COLOR_BROWN, false, true, (float)1 * _2X * zoom, cvtDest, cvtLayer, buffering);
-		SetColor(false);
-		grayScale = 0;
-
-		//if (robin.inven[i].count == 0)
-		//	DrawIcon(ICON_EVENT_LOCK, ao[NPC].x - (float)ITEMICONSIZE / 2 * zoom, ao[NPC].y - (float)2 * _2X * zoom, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
-		//else
-			DrawStar(ICON_CROWN, ao[NPC].x, ao[NPC].y - (float)12 * _2X * zoom, robin.crewStar[i], robin.crewMaxStar[i], CREWMAXUPGRADELV, CENTER, true, 0.7f * zoom, cvtDest, cvtLayer, buffering);
-
-		upgradePrice = itemPrice[itemStartCnt[itemType] + itemDetail];
-
-		//DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)22 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? FRAME_GREY : FRAME_RED, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-		DrawBuyButton(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y - (float)22 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(32 * _2X) * zoom, frame, FRAME_GREEN, upgradePrice, CURRENCY_GOLD, 0.8f * zoom, false, false, false, cvtDest, cvtLayer, buffering);
-
-		if (menuDepth == 0) {
-			SetRectPoint(ao[NPC].x - (float)CREWSET_UPGRADEBUTTON_X / 2 * zoom, ao[NPC].y + (float)32 * _2X * zoom, (float)CREWSET_UPGRADEBUTTON_X * zoom, (float)(80 * _2X) * zoom, TOUCH_FUNC_ITEMDETAIL + i);
-		}
-	}
-	//Top menu
-	//if (menuCur < EQUIP_NECK)
-	
-	//BarDraw(&bar[BAR_GOLD], zoom, cvtDest, cvtLayer, buffering);
-	//BarDraw(&bar[BAR_COMBATPOWERALL], zoom, cvtDest, cvtLayer, buffering);
-
-	//HeroSelectButtonList(x + (float)(DX - HEROBUTTON_X - 1 * _2X) * zoom, DY - (float)48 * _2X * zoom, zoom, curHero, false, false, cvtDest, cvtLayer, buffering);
-	HeroSelectButtonList(x + 1 * _2X * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true, cvtDest, cvtLayer, buffering);
-
-
-	//Bottom Menu
-	for (i = 0; i < TOTALEQUIP; i++) {
-		DrawFrame((float)(2 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, (float)COLLECTIONMENU_X * zoom, (float)COLLECTIONMENU_Y * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-		itemType = itemSlotEquip[i] + (i < EQUIP_NECK ? curHero : 0);
-		itemDetail = STAR1;
-		itemGrade = GRADE_NORMAL;
-
-		switch (i) {
-		default:
-			//case EQUIP_WEAPON:
-			//case EQUIP_HELM:
-			//case EQUIP_ARMOR:
-			//case EQUIP_PANTS:
-			//case EQUIP_GLOVE:
-			//case EQUIP_BOOTS:
-			//case EQUIP_NECK:
-			//case EQUIP_RING:
-			DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), (float)(6 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X - 4 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, 1.7f * zoom, COLOR_BROWN, false, false, 1.0f * zoom, cvtDest, cvtLayer, buffering);
-			break;
-		}
-
-		if (menuCur != i && menuDepth == 0) {
-			SetRectPoint((float)(2 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, (float)COLLECTIONMENU_X * zoom, (float)COLLECTIONMENU_Y * zoom, TOUCH_FUNC_COLLECTIONS_EQUIP + i);
-		}
-	}
-
-
-	switch (menuDepth) {
-		//상세보기
-		//menuItem 으로 하자.
-		//
-	case 1:
-		ScreenDarken(SCREENDARKEN);
-
-		menuItem = 1;
-
-		itemType = menuCur;
-		itemDetail = menuItem;
-		itemGrade = GRADE_NORMAL;
-		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-		EquipInfoDraw(&ao[menuCur].equip[EQUIP_WEAPON], x, y, itemType, itemDetail, itemGrade, /*menuDepth - 2*/0, menuX, 1.0f, cvtDest, cvtLayer, buffering);
-		
-		break;
-	}
-	return;
-
-	SetSectionClip(0, y - (float)32 * _2X * zoom, (float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y - 16 * _2X) * zoom, false);
-
-	for (i = 0; i < TOTALCHAR; i++) {
-		EnemyProfileDraw(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, i, false, false, zoom, cvtDest, cvtLayer, buffering);
-		SetRectPoint(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, TOUCH_FUNC_TABMENUX_1 + i);
-		CenterText(TEXT_MONSTERNAME_START + i, x + (float)(28 * _2X + 92 * _2X * i + 52 * _2X) * zoom, y - (float)(48 * _2X + 12 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-		//DrawFrame(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-		//DrawPlayer(&ao[i], (menuX == i ? frame / 2 % 4 : 0), x + (float)(44 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X + 20 * _2X) * zoom, RIGHT, zoom, false, false, true, cvtDest, cvtLayer, buffering);
-		//CenterText(TEXT_MONSTERNAME_START + i, x + (float)(28 * _2X + 92 * _2X * i + 52 * _2X) * zoom, y - (float)(48 * _2X + 12 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-		//SetRectPoint(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, TOUCH_FUNC_TABMENUX_1 + i);
-
-	}
-
-	switch (menuCur) {
-		//히어로
-	case COLLECTIONMENU_EQUIP:
-
-		HeroStatDraw(&ao[curHero], x + (float)0 * _2X * zoom, y + scY[MENU_COLLECTIONS] - (float)52 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-		break;
-		//스킬
-	}
-
-
-	UnSectionClip(false);
-
-	return;
-	switch (menuDepth) {
-	case 0:
-		for (i = 0; i < TOTAL_COLLECTIONS; i++) {
-			repItem = GetHighestCollections(i);
-
-			itemType = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 0];
-			itemDetail = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 1];
-			itemGrade = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 2];
-			itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-			itemSlot = GetEquipSlot(itemType, itemDetail, itemGrade);
-
-			setItemCnt = 0;
-
-			for (j = 0; j < COLLECTIONSITEMCNT; j++) {
-				if (GetInvenIdx(collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 0], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 1], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 2]) != -1) {
-					setItemCnt++;
-				}
-			}
-
-			DrawImage(32 * _2X, 48 * _2X, 32 * _2X, 0 * _2X, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2, false, false, false, false, false, 2.0f, sprite[MAP_OBJ_IMG + 17], gScreenBuffer, gScreenLayer, MAP_OBJ_IMG + 17, false);
-			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 16 * _2X, SHADOW_IMG, 2.0f, gScreenBuffer, gScreenLayer, false);
-
-			if (setItemCnt == 0)
-				SetColor(COLOR_BLACK);
-
-			DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X + (setItemCnt == COLLECTIONSITEMCNT ? -Abs((frame + i) / 2 % 32 - 16) : 0), 2.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-
-			SetColor(false);
-
-			if (setItemCnt > 0)
-				for (j = 0; j < COLLECTIONSITEMCNT; j++) {
-					itemType = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 0];
-					itemDetail = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 1];
-					itemGrade = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 2];
-					itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-					itemSlot = GetEquipSlot(itemType, itemDetail, itemGrade);
-
-					if (GetInvenIdx(itemType, itemDetail, itemGrade) == -1/* || robin.inven[GetInvenIdx(itemType, itemDetail, itemGrade)].count == 0*/) {
-						SetColor(COLOR_BLACK);
-						DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-					}
-					else {
-						if (itemSlot == -1)
-							grayScale = 32;
-						DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, COLOR_BROWN, false, false, true, gScreenBuffer, gScreenLayer, false);
-
-					}
-
-					grayScale = 0;
-					SetColor(false);
-				}
-
-
-			//몇분의 몇을 모았는지를 보여주는 
-			if (setItemCnt > 0) {
-				DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-				DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-				DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-			}
-			//6개가 다 장착되어 있어서 스킬이 활성화 되어 있으면
-			if (GetFullEquipedCollectionIdx() == i)
-				DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
-			//만약 6개가 다 모여만 있으면
-			else if (setItemCnt == COLLECTIONSITEMCNT) {
-				//아무것도 하지 않는다.
-			}
-			else if (setItemCnt > 0) {
-				//아무것도 하지 않는다.
-			}
-			//아무것도 없으면
-			else
-				DrawIcon(ICON_EVENT_LOCK, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X - 12 * _2X - 52 * _2X, 2.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-
-			DrawLabel(x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 8 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - 88 * _2X - TSIZE * 2, TEXT_COLLECTIONS + i, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-			if (JoyStickPressPossible() == true && setItemCnt > 0)
-				SetRectPoint(x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - 32 * _2X, COLLECTIONCARDSIZE_X - 36 * _2X, COLLECTIONCARDSIZE_Y - 16 * _2X, TOUCH_FUNC_COLLECTIONS_DETAIL + i);
-
-		}
-		break;
-	case 1:
-		y = DY / 2 + 236 * _2X;
-
-		collectionIdx = menuCur;
-
-		for (j = 0; j < COLLECTIONSITEMCNT; j++) {
-			itemType = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 0];
-			itemDetail = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 1];
-			itemGrade = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 2];
-		}
-
-		CollectionDetailListDraw(xOffset, y, menuCur, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-		SetAlpha(28);
-		GradiationFrame(x + DX / 2 - 160 * _2X, y - 316 * _2X, 320 * _2X, 24 * _2X, 0, gScreenBuffer, gScreenLayer, false);
-		SetAlpha(32);
-		CenterText(TEXT_ACTIONCARDINFO, x + DX / 2, y - 316 * _2X - 8 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-		SetAlpha(28);
-		GradiationFrame(x + DX / 2 - 160 * _2X, y - 400 * _2X, 320 * _2X, 24 * _2X, 0, gScreenBuffer, gScreenLayer, false);
-		SetAlpha(32);
-		CenterText(TEXT_COLLECTIONREWARD, x + DX / 2, y - 400 * _2X - 8 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-		//if (robin.collectionRewardGet[menuCur] == true)
-		//	grayScale = 32;
-		DrawIcon(GetItemIcon(collectionReward[menuCur * 4 + 0], collectionReward[menuCur * 4 + 1], collectionReward[menuCur * 4 + 2]), x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2, (y - 400 * _2X - 26 * _2X) * zoom / 2, zoom, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-		DrawNum(collectionReward[menuCur * 4 + 3], x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2 + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom, (y - 400 * _2X - 26 * _2X) * zoom / 2, NUM_FONT_LARGE, LEFT, 0, false, true, 1.5f * zoom / 2, true, gScreenBuffer, gScreenLayer, false);
-		grayScale = 0;
-
-		//모두 장착
-		//아직 장착되지 않고 
-		if (GetFullEquipedCollectionIdx() != menuCur && IsCollectionFull(menuCur) == true) {
-			DrawTextButton(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, 0, false, 1, false, TEXT_EQUIPALL, gScreenBuffer, gScreenLayer, false);
-			SetRectPoint(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, TOUCH_FUNC_EQUIPALL + menuCur);
-		}
-		else
-			DrawTextButton(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, 0, 32, 1, false, TEXT_EQUIPALL, gScreenBuffer, gScreenLayer, false);
-
-		if (winAniFrame > 0) {
-			winAniFrame++;
-
-			DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 64 * _2X, y - 410 * _2X - 46 * _2X - 32 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-			if (winAniFrame == FPS)
-				winAniFrame = 0;
-		}
-
-		//if (x < 10000)
-		//	return;
-
-		DrawPlayerCostume(
-			ROBIN,
-			pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].detail : -1, pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].grade : 0,
-			pObj->equip[EQUIP_GLOVE].type != EMPTY ? pObj->equip[EQUIP_GLOVE].detail : -1, pObj->equip[EQUIP_GLOVE].type != EMPTY ? pObj->equip[EQUIP_GLOVE].grade : 0,
-			pObj->equip[EQUIP_HELM].type != EMPTY ? pObj->equip[EQUIP_HELM].detail : -1, pObj->equip[EQUIP_HELM].type != EMPTY ? pObj->equip[EQUIP_HELM].grade : 0,
-			pObj->equip[EQUIP_ARMOR].type != EMPTY ? pObj->equip[EQUIP_ARMOR].detail : -1, pObj->equip[EQUIP_ARMOR].type != EMPTY ? pObj->equip[EQUIP_ARMOR].grade : 0,
-			pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].detail : -1, pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].grade : 0,
-			pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].detail : -1, pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].grade : 0,
-
-			x + 64 * _2X, DY / 2 - 252 * _2X, RIGHT, false, HOUSEPLAYERZOOM, gScreenBuffer, gScreenLayer, false
-		);
-
-
-		break;
-
-	case 2:
-	case 3:
-	case 4:
-
-		itemType = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 0];
-		itemDetail = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 1];
-		itemGrade = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 2];
-		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-		EquipInfoDraw(&ao[PLAYER].equip[EQUIP_WEAPON], x, y, itemType, itemDetail, itemGrade, menuDepth - 2, menuX, 1.0f, gScreenBuffer, gScreenLayer, false);
-		break;
-	}
-
-}
-
-void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon;
-	float iconZoom = EQUIPZOOM;
-	float width;
-	ITEM* it;
-	int setItemCnt = 0;
-
-	DrawLabel(x + (float)(DX / 2 - 40 * _2X) * zoom, y, TEXT_COLLECTIONS + collectionIdx, zoom, cvtDest, cvtLayer, buffering);
-
-	for (i = 0; i < COLLECTIONSITEMCNT; i++) {
-		itemIdx = GetInvenIdx(collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 0], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 1], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 2]);
-
-		itemType = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0];
-		itemDetail = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1];
-		itemGrade = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2];
-		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-		if (itemIdx == -1)
-			itemCnt = 0;
-		else
-			itemCnt = GetItemCount(itemType, itemDetail, itemGrade);
-
-
-		if (itemIdx != -1) {
-			it = GetItemPtr(ITEMPTR_INVEN + itemIdx);
-			setItemCnt++;
-			//SetRectPoint(x + (float)(12 * _2X + (i % COLLECTION_XCOUNT) * (REWARDCARDSIZE_X * 2 + 16 * _2X)) * iconZoom / 2, y + (float)(-(i / COLLECTION_XCOUNT) * (REWARDCARDSIZE_Y * 2 + 16 * _2X) - TSIZE * 3 - 4 * _2X) * iconZoom / 2, REWARDCARDSIZE_X * 2, REWARDCARDSIZE_Y * 2, TOUCH_FUNC_COLLECTIONS_ITEMDETAIL + i);
-
-			if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
-				SetRectPoint(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X) * zoom, (float)(32 * _2X * 2) * zoom, (float)(48 * _2X * 2) * zoom, TOUCH_FUNC_COLLECTIONS_ITEMDETAIL + i);
-		}
-
-		DrawImage(32 * _2X, 48 * _2X, 32 * _2X, 0 * _2X, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X) * zoom, false, false, false, false, false, iconZoom * zoom, sprite[MAP_OBJ_IMG + 17], cvtDest, cvtLayer, MAP_OBJ_IMG + 17, buffering);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X - 24 * _2X) * zoom, SHADOW_IMG, iconZoom / 2 * zoom, cvtDest, cvtLayer, buffering);
-
-		if (itemIdx == -1)
-			SetColor(COLOR_BLACK);
-
-		DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X - 24 * _2X + 32 * _2X - Abs((frame + i) / 2 % 32 - 16)) * zoom, 2.0f * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
-
-		SetColor(false);
-
-		DrawStar(ICON_STAR, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + COLLECTIONCARDSIZE_X / 2) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 2) * zoom, itemLv, ITEMMAXLEVEL, ITEMMAXLEVEL, CENTER, true, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-
-		if (itemIdx == -1)
-			DrawIcon(ICON_EVENT_LOCK, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 8 * _2X) * zoom, iconZoom * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
-
-		DrawItemValue(itemType, itemDetail, itemGrade, itemLv, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 32 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - COLLECTIONCARDSIZE_Y) * zoom, CENTER, false, iconZoom / 2 * zoom, 32 * _2X * iconZoom * zoom, cvtDest, cvtLayer, buffering);
-
-		if (itemIdx == -1) {
-			sprintf(tempStr, "%s", TEXTPTR(TEXT_NOTACQUIRED));
-		}
-		else {
-			//레벨표시
-			sprintf(tempStr, TEXTPTR(TEXT_ALPHA_LV), itemLv + 1);
-		}
-		//DrawText(TEXT_LV, x + w / 2 - 24 * _2X, y - REWARDCARDSIZE_Y + 32 * _2X, cvtDest, cvtLayer, buffering);
-		CenterTextStr(tempStr, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 32 * _2X + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - COLLECTIONCARDSIZE_Y - TSIZE * 1 - 8 * _2X) * zoom, iconZoom / 2 * zoom, cvtDest, cvtLayer, buffering);
-
-		DrawLabel(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 8 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - 88 * _2X - TSIZE * 3 - 4 * _2X) * zoom, itemIdx == -1 ? TEXT_QUESTION : TEXT_ITEMNAME_START + GetItemName(itemType, itemDetail, itemGrade), zoom, cvtDest, cvtLayer, buffering);
-	}
-
-	//컬렉션 기능 그리기
-	//세트스킬은 별도로 표시해두지 않는다.
-
-
 }
 
 void CalendarDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -2411,11 +1753,24 @@ int GetBoxPrice(int detail, int grade)
 	}
 }
 
+int GetItemCategoryCnt(int category) {
+	int i;
+	int j = 0;
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		if (robin.inven[i].type == category) {
+			j++;
+		}
+	}
+
+	return j;
+}
+
 int GetScrollDy(int menuIdx)
 {
 	int i, j;
 	int scrollDy = 0;
 	int gapY = 0;
+	int itemCategoryCnt;
 
 	switch (menuIdx) {
 	case MENU_PLAY:
@@ -2432,20 +1787,20 @@ int GetScrollDy(int menuIdx)
 		scrollDy = 1050 * _2X + GNBHEIGHT + BOTTOMMENUHEIGHT;
 		break;
 	case MENU_CREW:
-		scrollDy = CREWSET_YGAP * (TOTAL_CREW / MAXCREW);
+		itemCategoryCnt = GetItemCategoryCnt(ITEM_CREW);
+
+		scrollDy = (float)(CREW_GAP_Y) * (itemCategoryCnt / INVEN_HCNT + 1 - (itemCategoryCnt % INVEN_HCNT == 0 ? 1 : 0)) - 16;
 		break;
 	case MENU_COLLECTIONS:
-		scrollDy = (float)88 * _2X * ((itemTypeCnt[menuCur < EQUIP_NECK ? itemSlotEquip[menuCur] + curHero : itemSlotEquip[menuCur]] + 1) / MAXCREW) + GNBHEIGHT + BOTTOMMENUHEIGHT;
-		/*
-		switch (menuCur) {
-			case COLLECTIONMENU_EQUIP:
-				scrollDy = POPUPWINDOWSIZE_Y;
-				break;
-			case COLLECTIONMENU_SKILL:
-				scrollDy = (120 * _2X) + COLLECTION_YGAP * ((TOTAL_CREW + 3) / 4);
-				break;
-		}
-		*/
+		//현재 스크롤 기준으로 아이템이 몇개인지 확인
+		itemCategoryCnt = GetItemCategoryCnt(menuX * TOTALCHAR + curHero);
+
+		scrollDy = (float)(INVENTORY_GAP_Y) * (itemCategoryCnt / INVEN_HCNT + 1 - (itemCategoryCnt % INVEN_HCNT == 0 ? 1 : 0));
+		break;
+	case MENU_CASTLE:
+
+		scrollDy = (float)(CASTLE_GAP_Y) * (TOTALCASTLE - 1);
+
 		break;
 	case MENU_LEADERBOARD:
 	case MENU_FRIENDS:
@@ -3612,7 +2967,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					getMedalNum += rewardItem[i].count;
 
 					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
-					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - ITEMICONSIZE / 2;
 					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
 						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_MEDAL, 30, rewardItem[i].count, CURRENCY_MEDAL, 2.0f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f, 10);
 						j++;
@@ -3624,7 +2979,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					getStarNum += rewardItem[i].count;
 
 					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
-					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - ITEMICONSIZE / 2;
 					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
 						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 16 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_STAR, 30, rewardItem[i].count, CURRENCY_STAR, 2.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10);
 						j++;
@@ -3634,7 +2989,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					getHammerNum += rewardItem[i].count;
 
 					targetX = xOffset + 4 * _2X + 164 * _2X + ITEMICONSIZE / 2;
-					targetY = (GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT) - ITEMICONSIZE / 2;
+					targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - ITEMICONSIZE / 2;
 					if (stageInfoCurFrame == STAGECLEARDELAY_TABREWARD) {
 						SetCurrencyMarkArr_PopUp(startX, startY, targetX, targetY, false, false, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, CURRENCYWAITINGFRAMEMAX, 0, ICON_HAMMER, 30, rewardItem[i].count, CURRENCY_HAMMER, 2.0f, 1.0f, -0.2f / MOTIONDIV, false, false, false, 10);
 						j++;
@@ -3942,15 +3297,15 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					DrawCmfDetailShadow(enemyData[enemyHouse.crew[i] * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[enemyHouse.crew[i] * 3 + 0], x + (float)(36 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom, y - (float)(336 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, RIGHT, enemyZoom[enemyHouse.crew[i]] * zoom, cvtDest, cvtLayer, buffering);
 
 
-					DrawStar(ICON_CROWN, x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)90 * _2X * zoom, y - (float)(296 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, curStar, curMaxStar, maxStar, CENTER, true, zoom, cvtDest, cvtLayer, buffering);
+					DrawStar(ICON_STAR, x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)90 * _2X * zoom, y - (float)(296 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, curStar, curMaxStar, maxStar, CENTER, true, zoom, cvtDest, cvtLayer, buffering);
 					//최대값에 도달하면
 					if (curStar == maxStar) {
 						DrawMaxButton(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, zoom, cvtDest, cvtLayer, buffering);
 					}
 					else {
 						DrawBuyButton(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, frame, robin.gold < upgradePrice ? true : false, upgradePrice, CURRENCY_GOLD, zoom, false, false, false, cvtDest, cvtLayer, buffering);
-						if (robin.gold >= upgradePrice)
-							SetRectPoint(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWUPGRADE + i);
+						//if (robin.gold >= upgradePrice)
+						//	SetRectPoint(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_CREWUPGRADE + i);
 					}
 
 					if (stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
@@ -4005,7 +3360,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 		if (stageInfoCurFrame == 54 + MAXCREW * 3 + FPS * 3) {
 			robin.bossRoom = false;
 			memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
-			robinmap = dioramaMap[robin.stage];
+			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 			GotoPlay();
 			initControlerFrame = 1;
 			for (i = 0; i < TOTALCONTROLMARK; i++)
@@ -4030,12 +3385,1120 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 		stageInfoFrame++;
 }
 
-void CrewListDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+// 최종 그리기 함수
+void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i, j;
+	float OUTTHICK = (float)5 * zoom;
+	float INTTHICK = (float)5 * zoom;
+	float WINX = (float)DX * zoom;
+	float WINY = (float)(DY - (GNBHEIGHT) - (BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	int itemType, itemDetail, itemGrade, itemLv;
+	
+	//SetAlpha(24);
+	MemRect(x, y, WINX, WINY, 0xD8D6FB, cvtDest, cvtLayer, buffering);
+	//SetAlpha(32);
+
+	
+	// 1. 배경 및 큰 UI
+	for (i = 0; i < 2; i++)
+		DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], cvtDest, cvtLayer, crewMenuUiData[i * MENUUIDATACNT + 6], buffering);
+
+	CenterText(TEXT_BORDERGUARD, x + (float)160 * _2X * zoom, y - (float)40 * zoom, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_CREW_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+	
+	//성과 맥스 별
+	SetColor(COLOR_BROWN);
+	for (i = 0; i < 4; i++) {
+		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(500) * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(12) * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.1f * zoom, sprite[MAP_DIORAMA_IMG + CASTLE_ADELINE], cvtDest, cvtLayer, MAP_DIORAMA_IMG + CASTLE_ADELINE, false);
+	}
+	SetColor(false);
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(500) * zoom, y - (float)(12) * zoom, false, false, false, false, false, 0.1f * zoom, sprite[MAP_DIORAMA_IMG + CASTLE_ADELINE], cvtDest, cvtLayer, MAP_DIORAMA_IMG + CASTLE_ADELINE, false);
+	StarBarDraw(castleStarLimit[robin.castle], ICON_STAR, x + (float)(510) * zoom, y - (float)(92) * zoom, false, 0.6f * zoom, cvtDest, cvtLayer, buffering);
+
+	//DrawImageScale(128, 128, 716, 609, x + (float)20 * zoom, y - (float)132 * zoom, false, false, false, false, false, 4.67f * zoom, 2.54f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	
+	DrawImageScale(176, 40, 1, 679, x + (float)(232) * zoom, y - (float)120 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	CenterText(TEXT_CREW_CURRENTLIST, x + (float)320 * zoom, y - (float)130 * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+	int curTeamCnt = 0;
+	for (i = 0; i < MAXCREW; i++)
+		if (robin.slotCrew[i] > 0)
+			curTeamCnt++;
+
+	DrawImageScale(176, 40, 1, 679, x + (float)(528) * zoom, y - (float)134 * zoom, false, false, false, false, false, 0.35f * zoom, 0.7f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%d/%d", curTeamCnt, MAXCREW);
+	CenterTextStr(tempStr, x + (float)280 * _2X * zoom, y - (float)138 * zoom, 0.9f * zoom, cvtDest, cvtLayer, buffering);
+
+	//슬롯 6개짜리 이미지를 그려준다.
+	
+	DrawImage(1024, 220, 0, 217,
+		x + WINX / 2 - (float)1024 / 2 * 0.61f * zoom, y - (float)168 * zoom,
+		false, false, false, false, false,
+		0.61f * zoom, sprite[SLOT_IMG], cvtDest, cvtLayer, SLOT_IMG, buffering);
+
+	//현재 선택되어 있는 캐릭터 6개
+	for (i = 0; i < MAXCREW; i++) {
+		int slotX = x + (float)(16 + 102 * (i % MAXCREW)) * zoom;
+		int slotY = y - (float)(172 + 180 * (i / MAXCREW)) * zoom;
+
+		//DrawButton(slotX + (float)(40) * zoom, slotY + (float)(24) * zoom, BUTTON_COLOR_BROWN, 64, false, TEXT_CATEGORY_ITEM_SWORD + i * 3, false, 0.4f * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+		memset(&tempStr, 0, sizeof(tempStr));
+
+		if (robin.slotCrew[i] == -1) {
+			DrawItemCard(
+				EMPTY,
+				0,
+				0,
+				0,
+				true,
+				slotX,
+				slotY,
+				TEXT_EQUIP,
+				0.72f * zoom,
+				true,
+				false,
+				menuCur != i ? (TOUCH_FUNC_MENUCUR_CREW1 + i) : false,
+				menuCur == i ? itemColor[frame % 6] : false,
+				cvtDest,
+				cvtLayer,
+				buffering
+			);
+
+		}
+		else {
+			itemType = ITEM_CREW;
+			itemDetail = GetCrewIdxFromType(robin.slotCrew[i]) - TOTALCHAR;
+			itemGrade = GRADE_NORMAL;
+			itemLv = robin.inven[GetInvenIdx(itemType, itemDetail, itemGrade)].lv;
+
+			DrawItemCard(
+				itemType,
+				itemDetail,
+				itemGrade,
+				itemLv,
+				false,
+				slotX,
+				slotY,
+				TEXT_SOCKETING,
+				0.72f * zoom,
+				true,
+				false,
+				TOUCH_FUNC_MENUCUR_CREW1 + i,
+				menuCur == i ? itemColor[frame % 6] : false,
+				cvtDest,
+				cvtLayer,
+				buffering
+			);
+		}
+	}
+	
+	SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
+	DrawImage(174, 138, 293, 870, x + (float)(50 + (182 * (menuCur % 3))) * zoom, y - (float)(160 + 136 * (menuCur / 3)) * zoom, false, false, false, false, false, 1.0f * zoom, sprite[MENU_CREW_IMG], cvtDest, cvtLayer, MENU_CREW_IMG, buffering);
+	SetAlpha(32);
+
+	// 2. 크루 리스트
+	SetSectionClip(0, y - (float)320 * zoom, DX, WINY - (float)340 * zoom, false);
+
+	curHero = ROBIN;
+
+	int itemInvenIdxList[TOTALINVENTORY];
+
+	j = 0;
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		if (robin.inven[i].type == ITEM_CREW) {
+			itemInvenIdxList[j] = i;
+			j++;
+		}
+	}
+
+	int INVENTORY_COL_CNT = 4;
+
+	for (i = 0; i < j; i++) {
+		int col = i % INVENTORY_COL_CNT;
+		int row = i / INVENTORY_COL_CNT;
+
+		int cardX = x + (float)(INVENTORY_X + INVENTORY_GAP_X * col) * zoom;
+		int cardY = y - (float)(340 + (CREW_GAP_Y) * row - scY[MENU_CREW]) * zoom;
+
+		itemType = robin.inven[itemInvenIdxList[i]].type;
+		itemDetail = robin.inven[itemInvenIdxList[i]].detail;
+		itemGrade = robin.inven[itemInvenIdxList[i]].grade;
+		itemLv = robin.inven[itemInvenIdxList[i]].lv;
+		
+		DrawItemCard(
+			itemType,
+			itemDetail,
+			itemGrade,
+			itemLv,
+			false,
+			cardX,
+			cardY,
+			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
+			0.9f * zoom,
+			false,
+			itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
+			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] + i : false,
+			false,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+	}
+
+	int scrollH = WINY - (float)340 * zoom;
+
+	DrawScroll(
+		x + (float)612 * zoom,
+		y - (float)320 * zoom,
+		scrollH,
+		MENU_CREW,
+		cvtDest,
+		cvtLayer,
+		buffering
+	);
+
+	UnSectionClip(false);
+
+	//최외각 테두리
+	MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK * zoom, cvtDest, cvtLayer, buffering);
+	//그안에 테두리
+	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x7653D3, INTTHICK, cvtDest, cvtLayer, buffering);
+
+	BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom, cvtDest, cvtLayer, buffering);
+	//BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom, cvtDest, cvtLayer, buffering);
+
+}
+
+void CrewPannelDraw(int crewIdx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	SetRectPoint(x + (float)120 * zoom, y - (float)60 * zoom, (float)179 * zoom, (float)48 * zoom, TOUCH_FUNC_MENUCUR_CREWSET + crewIdx);
+
+}
+
+bool IsCrewSet(int crewIdx)
 {
 	int i;
+	for (i = 0; i < MAXCREW; i++) {
+		if (robin.slotCrew[i] == crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE])
+			return true;
+	}
+	return false;
+}
 
-	for (i = 0; i < TOTALCASTLE; i++)
-		CrewSetDraw(i, x, y + POPUPPOSITION_Y - GNBHEIGHT - CREWSET_YGAP * (i), zoom, cvtDest, cvtLayer, buffering);
+void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	float zoom = zoomY;
+	//패널 그리기
+	//DrawImage(buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 0], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 1], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 2], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 3], x, y, false, false, false, false, false, zoom, sprite[buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 4]], cvtDest, cvtLayer, buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 4], buffering);
+	DrawImageScale(buttonImgData[color * 5 + 0], buttonImgData[color * 5 + 1], buttonImgData[color * 5 + 2], buttonImgData[color * 5 + 3], x, y, false, false, false, false, false, zoomX, zoomY, sprite[buttonImgData[color * 5 + 4]], cvtDest, cvtLayer, buttonImgData[color * 5 + 4], buffering);
 
-	DrawScroll((float)(DX - 8 * _2X * zoom), GNBHEIGHT, (float)8 * _2X * zoom, MENU_CREW, cvtDest, cvtLayer, buffering);
+	//아이콘 그리기(일단 생략)
+
+	//텍스트 그리기
+	if (text > 0) {
+		SetFontColor(COLOR_WHITE);
+		CenterText(text, x + (float)buttonImgData[color * 5 + 0] / 2 * zoomX, y - (float)3 * _2X * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+	}
+}
+
+void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i;
+	int star = GetItemStar(itemType, itemDetail, itemGrade);
+	int width;
+	int repItem = 0;
+	int setItemCnt = 0;
+	int rewardIcon;
+	ITEM* it;
+	OBJECT* pObj = &ao[curHero];
+	long long realValue;
+	float numWidth = (float)(32 * _2X) * zoom;
+	DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x, y, false, zoom, true, false, true, star, star, star, cvtDest, cvtLayer, buffering);
+}
+
+void DrawItemCard(
+	int itemType,
+	int itemDetail,
+	int itemGrade,
+	int itemLv,
+	bool empty,
+	int x,
+	int y,
+	int text,
+	float zoom,
+	bool ani,
+	int buttonTouchFunc,
+	int cardTouchFunc,
+	int selectedFrame,
+	cocos2d::RenderTexture* cvtDest,
+	cocos2d::Layer* cvtLayer,
+	bool buffering
+)
+{
+	int itemStar = 1;
+
+	if (empty == false)
+		itemStar = GetItemStar(itemType, itemDetail, itemGrade);
+
+	DrawImageScale(
+		equipBgData[(itemStar - 1) * 6 + 0],
+		equipBgData[(itemStar - 1) * 6 + 1],
+		equipBgData[(itemStar - 1) * 6 + 2],
+		equipBgData[(itemStar - 1) * 6 + 3],
+		x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.6f * zoom,
+		y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.45f * zoom,
+		false, false, false, false, false,
+		0.6f * zoom,
+		0.45f * zoom,
+		sprite[MENU_EQUIP_IMG],
+		cvtDest,
+		cvtLayer,
+		MENU_EQUIP_IMG,
+		buffering
+	);
+
+	SetColor(false);
+
+	if (selectedFrame) {
+		MemRectFrameThick(
+			x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.6f * zoom,
+			y - (float)(equipBgData[(itemStar - 1) * 6 + 5] + 8) * 0.45f * zoom,
+			equipBgData[(itemStar - 1) * 6 + 0] * 0.6f * zoom,
+			(equipBgData[(itemStar - 1) * 6 + 1] - 8) * 0.45f * zoom,
+			selectedFrame,
+			1 * _2X,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+	}
+
+	if (empty) {
+		DrawPlusMark(
+			x + (float)48 * zoom,
+			y - (float)24 * zoom,
+			0.8f * zoom,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+	}
+	else {
+		if (itemLv == 0)
+			grayScale = 32;
+
+		if (itemType == ITEM_CREW) {
+			int crewCmf = enemyData[crewData[(TOTALCHAR + itemDetail) * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
+			int crewType = crewData[(TOTALCHAR + itemDetail) * CREWDATASIZE + CREWDATA_TYPE];
+			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (ani == true ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
+				x + (float)72 * zoom,
+				y - (float)64 * zoom, 
+				RIGHT, enemyZoom[crewType] * 1.2f * zoom, cvtDest, cvtLayer, buffering);
+		}
+		else {
+			DrawIcon(
+				GetItemIcon(itemType, itemDetail, itemGrade),
+				x + (float)52 * zoom,
+				y - (float)24 * zoom,
+				1.5f * zoom,
+				COLOR_BROWN,
+				false,
+				true,
+				(float)1 * zoom,
+				cvtDest,
+				cvtLayer,
+				buffering
+			);
+		}
+
+		SetColor(false);
+		grayScale = 0;
+
+		DrawStar(
+			ICON_STAR,
+			x + (float)76 * zoom,
+			y - (float)104 * zoom,
+			GetItemStar(itemType, itemDetail, itemGrade),
+			GetItemStar(itemType, itemDetail, itemGrade),
+			GetItemStar(itemType, itemDetail, itemGrade),
+			CENTER,
+			false,
+			0.7f * zoom,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+	}
+
+	CenterText(text, x + (float)72 * zoom, y - (float)132 * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+	if (cardTouchFunc) {
+		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.6f * zoom,
+			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.45f * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 0] * 0.6f * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 1] * 0.45f * zoom,
+			cardTouchFunc);
+	}
+	if (buttonTouchFunc) {
+		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.6f * zoom,
+			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.45f * zoom - (float)equipBgData[(itemStar - 1) * 6 + 1] * 0.45f * zoom * 3 / 4,
+			(float)equipBgData[(itemStar - 1) * 6 + 0] * 0.6f * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 1] * 0.45f * zoom / 4,
+			buttonTouchFunc);
+	}
+}
+
+void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i, j;
+	float OUTTHICK = (float)5 * zoom;
+	float INTTHICK = (float)5 * zoom;
+	float WINX = (float)DX * zoom;
+	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	
+	int w = COLLECTIONCARDSIZE_X;
+	int h = COLLECTIONCARDSIZE_Y;
+	int star = 1;
+	int width;
+	int repItem = 0;
+	int setItemCnt = 0;
+	int rewardIcon;
+	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon, itemStar;
+	ITEM* it;
+	OBJECT* pObj = &ao[curHero];
+	int starCnt;
+	long long realValue;
+	float numWidth = (float)(32 * _2X) * zoom;
+	int actionCardIdx;
+	int skillIdx;
+	int swordSkillIdx;
+	int collectionIdx;
+	int menuText[] = { TEXT_EQUIPMENT, TEXT_SKILL };
+	int charType = ROBIN;
+	long long upgradePrice;
+
+	MemRect(x, y, WINX, WINY, 0x3B2513, cvtDest, cvtLayer, buffering);
+
+	for (i = 0; i < 2; i++)
+		DrawImage(equipMenuUiData[i * MENUUIDATACNT + 0], equipMenuUiData[i * MENUUIDATACNT + 1], equipMenuUiData[i * MENUUIDATACNT + 2], equipMenuUiData[i * MENUUIDATACNT + 3], x + (float)equipMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(equipMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[equipMenuUiData[i * MENUUIDATACNT + 6]], cvtDest, cvtLayer, equipMenuUiData[i * MENUUIDATACNT + 6], buffering);
+
+	CenterText(TEXT_EQUIPMENT, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_EQUIP_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
+	//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+
+	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)124 * zoom, false, false, false, false, false, (float)(WINX - 16) / 128 * zoom, (float)(WINY - 132) / 128 * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+	DrawImageScale(128, 128, 587, 608, x + (float)32 * zoom, y - (float)142 * zoom, false, false, false, false, false, (float)3.4f * zoom, (float)2.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+	for (i = 0; i < EQUIP_NECK; i++) {
+		int slotX = x + (float)(32 + 144 * (i % 3)) * zoom;
+		int slotY = y - (float)(148 + 8 + 180 * (i / 3)) * zoom;
+
+		memset(&tempStr, 0, sizeof(tempStr));
+
+		DrawButton(slotX + (float)(40) * zoom, slotY + (float)(24) * zoom, BUTTON_COLOR_BROWN, 64, false, TEXT_CATEGORY_ITEM_SWORD + i * 3, false, 0.4f * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+
+		if (ao[ROBIN].equip[i].type == EMPTY) {
+			DrawItemCard(
+				EMPTY,
+				0,
+				0,
+				0,
+				true,
+				slotX,
+				slotY,
+				TEXT_NOTACQUIRED,
+				zoom,
+				false,
+				false,
+				menuX != i ? TOUCH_FUNC_MENUX_1 + i : 0,
+				menuX == i ? itemColor[frame % 6] : false,
+				cvtDest,
+				cvtLayer,
+				buffering
+			);
+		}
+		else {
+			itemType = i * 3;
+			itemDetail = ao[ROBIN].equip[i].detail;
+			itemGrade = ao[ROBIN].equip[i].grade;
+			itemLv = ao[ROBIN].equip[i].lv;
+
+			DrawItemCard(
+				itemType,
+				itemDetail,
+				itemGrade,
+				itemLv,
+				false,
+				slotX,
+				slotY,
+				TEXT_SOCKETING,
+				zoom,
+				false,
+				false,
+				TOUCH_FUNC_ITEMDETAIL + GetInvenIdx(itemType, itemDetail, itemGrade),
+				menuX == i ? itemColor[frame % 6] : false,
+				cvtDest,
+				cvtLayer,
+				buffering
+			);
+		}
+
+		
+	}
+
+	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)142 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	DrawPlayer(&ao[ROBIN], 0, x + (float)(476 + 128 / 2) * zoom, y - (float)242 * zoom, LEFT, 1.5f * zoom, false, false, true, cvtDest, cvtLayer, buffering);
+
+	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)280 * zoom, false, false, false, false, false, 1.0f * zoom, 1.7f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+	//공격력
+	itemType = ITEM_SWORD;
+	itemDetail = ao[ROBIN].equip[EQUIP_WEAPON].detail;
+	itemGrade = ao[ROBIN].equip[EQUIP_WEAPON].grade;
+	DrawImageScale(64, 64, 455, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	//DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(476 + 8) * zoom, y - (float)(220 + 12 + 70) * zoom, 1.2f * zoom, false, false, true, (float)1.0f * zoom, cvtDest, cvtLayer, buffering);
+	
+	SetFontColor(COLOR_GREY);
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%s@+%d", textId[TEXT_ATK], ao[ROBIN].ps[PS_DMG]);
+	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70) * zoom, (float)108 * zoom, -1, -1, zoom, cvtDest, cvtLayer, buffering);
+	SetFontColor(COLOR_WHITE);
+	//방어력
+	itemType = ITEM_ARMOR;
+	itemDetail = ao[ROBIN].equip[EQUIP_ARMOR].detail;
+	itemGrade = ao[ROBIN].equip[EQUIP_ARMOR].grade;
+	DrawImageScale(64, 64, 520, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 2) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	//DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(476 + 8) * zoom, y - (float)(220 + 12 + 70 * 2) * zoom, 1.2f * zoom, false, false, true, (float)1.0f * zoom, cvtDest, cvtLayer, buffering);
+
+	SetFontColor(COLOR_GREY);
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%s@+%d", textId[TEXT_DEF], ao[ROBIN].ps[PS_ARMOR]);
+	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 2) * zoom, (float)108 * zoom, -1, -1, zoom, cvtDest, cvtLayer, buffering);
+	SetFontColor(COLOR_WHITE);
+	//체력
+	DrawImageScale(64, 64, 390, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 3) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	//DrawIcon(ICON_HEART, x + (float)(476 + 8) * zoom, y - (float)(220 + 12 + 70 * 3) * zoom, 1.2f * zoom, false, false, true, (float)1.0f * zoom, cvtDest, cvtLayer, buffering);
+	
+	SetFontColor(COLOR_GREY);
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%s@+%d", textId[TEXT_HERO_PARAM_HP], ao[ROBIN].ps[PS_HP]);
+	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 3) * zoom, (float)108 * zoom, -1, -1, zoom, cvtDest, cvtLayer, buffering);
+	SetFontColor(COLOR_WHITE);
+
+	// 2. 아이템 카테고리 리스트
+	
+	for (i = 0; i < EQUIP_NECK; i++) {
+		itemType = ITEM_SWORD + i * 3;
+		itemDetail = ao[ROBIN].equip[i].detail;
+		itemGrade = ao[ROBIN].equip[i].grade;
+
+		DrawButton(x + (float)(34 + i * 96) * zoom, y - (float)(508) * zoom, menuX == i ? BUTTON_COLOR_PURPLE : BUTTON_COLOR_BROWN, 64, GetItemIcon(itemType, itemGrade, itemDetail), TEXT_CATEGORY_ITEM_SWORD + itemType, false, 0.5f * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+		if (menuX != i)
+			SetRectPoint(x + (float)(34 + i * 96) * zoom, y - (float)(508) * zoom, (float)80 * zoom, (float)48 * zoom, TOUCH_FUNC_MENUX_1 + i);
+	}
+
+	// 3. 장비 리스트
+	SetSectionClip(0, y - (float)560 * zoom, DX, WINY - (float)600 * zoom, false);
+
+	curHero = ROBIN;
+
+	int itemInvenIdxList[TOTALINVENTORY];
+
+
+	j = 0;
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		if (robin.inven[i].type == menuX * TOTALCHAR) {
+			itemInvenIdxList[j] = i;
+			j++;
+		}
+	}
+
+	int INVENTORY_COL_CNT = 4;
+
+	for (i = 0; i < j; i++) {
+		int col = i % INVENTORY_COL_CNT;
+		int row = i / INVENTORY_COL_CNT;
+
+		int cardX = x + (float)(INVENTORY_X + INVENTORY_GAP_X * col) * zoom;
+		int cardY = y - (float)(560 + INVENTORY_GAP_Y * row - scY[MENU_COLLECTIONS]) * zoom;
+
+		itemType = robin.inven[itemInvenIdxList[i]].type;
+		itemDetail = robin.inven[itemInvenIdxList[i]].detail;
+		itemGrade = robin.inven[itemInvenIdxList[i]].grade;
+		itemLv = robin.inven[itemInvenIdxList[i]].lv;
+
+		DrawItemCard(
+			itemType,
+			itemDetail,
+			itemGrade,
+			itemLv,
+			false,
+			cardX,
+			cardY,
+			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
+			0.9f * zoom,
+			false,
+			itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
+			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
+			false,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+	}
+
+	int scrollH = WINY - (float)580 * zoom;
+
+	DrawScroll(
+		x + (float)612 * zoom,
+		y - (float)560 * zoom,
+		scrollH,
+		MENU_COLLECTIONS,
+		cvtDest,
+		cvtLayer,
+		buffering
+	);
+
+	UnSectionClip(false);
+
+	//최외각 테두리
+	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom, cvtDest, cvtLayer, buffering);
+	//그안에 테두리
+	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK, cvtDest, cvtLayer, buffering);
+
+	switch (menuDepth) {
+		case 1:
+			ResetRectPoint();
+			ScreenDarken(SCREENDARKEN);
+
+			ItemDetailDraw(&robin.inven[menuItem], x, y, zoom, false, false, cvtDest, cvtLayer, buffering);	
+			
+			//EquipInfoDraw(&ao[curHero].equip[menuX], x, y - 500, robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade, /*menuDepth - 2*/0, menuX, 1.0f, cvtDest, cvtLayer, buffering);
+
+			break;
+	}
+	return;
+	
+	//Top menu
+	//if (menuCur < EQUIP_NECK)
+
+	//BarDraw(&bar[BAR_GOLD], zoom, cvtDest, cvtLayer, buffering);
+	//BarDraw(&bar[BAR_COMBATPOWERALL], zoom, cvtDest, cvtLayer, buffering);
+
+	//HeroSelectButtonList(x + (float)(DX - HEROBUTTON_X - 1 * _2X) * zoom, DY - (float)48 * _2X * zoom, zoom, curHero, false, false, cvtDest, cvtLayer, buffering);
+	HeroSelectButtonList(x + 1 * _2X * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true, cvtDest, cvtLayer, buffering);
+
+
+	//Bottom Menu
+	for (i = 0; i < TOTALEQUIP; i++) {
+		DrawFrame((float)(2 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, (float)COLLECTIONMENU_X * zoom, (float)COLLECTIONMENU_Y * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+		itemType = itemSlotEquip[i] + (i < EQUIP_NECK ? curHero : 0);
+		itemDetail = STAR1;
+		itemGrade = GRADE_NORMAL;
+
+		switch (i) {
+		default:
+			//case EQUIP_WEAPON:
+			//case EQUIP_HELM:
+			//case EQUIP_ARMOR:
+			//case EQUIP_PANTS:
+			//case EQUIP_GLOVE:
+			//case EQUIP_BOOTS:
+			//case EQUIP_NECK:
+			//case EQUIP_RING:
+			DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), (float)(6 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X - 4 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, 1.7f * zoom, COLOR_BROWN, false, false, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+			break;
+		}
+
+		if (menuCur != i && menuDepth == 0) {
+			SetRectPoint((float)(2 * _2X + i * (COLLECTIONMENU_X + 4 * _2X)) * zoom, (float)(COLLECTIONMENU_Y + 2 * _2X + BOTTOMMENUHEIGHT + (menuCur == i ? 8 * _2X : 0 * _2X)) * zoom, (float)COLLECTIONMENU_X * zoom, (float)COLLECTIONMENU_Y * zoom, TOUCH_FUNC_COLLECTIONS_EQUIP + i);
+		}
+	}
+
+
+	switch (menuDepth) {
+		//상세보기
+		//menuItem 으로 하자.
+		//
+	case 1:
+		ScreenDarken(SCREENDARKEN);
+
+		menuItem = 1;
+
+		itemType = menuCur;
+		itemDetail = menuItem;
+		itemGrade = GRADE_NORMAL;
+		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+		EquipInfoDraw(&ao[menuCur].equip[EQUIP_WEAPON], x, y, itemType, itemDetail, itemGrade, /*menuDepth - 2*/0, menuX, 1.0f, cvtDest, cvtLayer, buffering);
+
+		break;
+	}
+	return;
+
+	SetSectionClip(0, y - (float)32 * _2X * zoom, (float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y - 16 * _2X) * zoom, false);
+
+	for (i = 0; i < TOTALCHAR; i++) {
+		EnemyProfileDraw(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, i, false, false, zoom, cvtDest, cvtLayer, buffering);
+		SetRectPoint(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, TOUCH_FUNC_TABMENUX_1 + i);
+		CenterText(TEXT_MONSTERNAME_START + i, x + (float)(28 * _2X + 92 * _2X * i + 52 * _2X) * zoom, y - (float)(48 * _2X + 12 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+		//DrawFrame(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+		//DrawPlayer(&ao[i], (menuX == i ? frame / 2 % 4 : 0), x + (float)(44 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X + 20 * _2X) * zoom, RIGHT, zoom, false, false, true, cvtDest, cvtLayer, buffering);
+		//CenterText(TEXT_MONSTERNAME_START + i, x + (float)(28 * _2X + 92 * _2X * i + 52 * _2X) * zoom, y - (float)(48 * _2X + 12 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+		//SetRectPoint(x + (float)(28 * _2X + 92 * _2X * i) * zoom, y - (float)(48 * _2X) * zoom, (float)80 * _2X * zoom, (float)32 * _2X * zoom, TOUCH_FUNC_TABMENUX_1 + i);
+
+	}
+
+	switch (menuCur) {
+		//히어로
+	case COLLECTIONMENU_EQUIP:
+
+		HeroStatDraw(&ao[curHero], x + (float)0 * _2X * zoom, y + scY[MENU_COLLECTIONS] - (float)52 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+
+		break;
+		//스킬
+	}
+
+
+	UnSectionClip(false);
+
+	return;
+	switch (menuDepth) {
+	case 0:
+		for (i = 0; i < TOTAL_COLLECTIONS; i++) {
+			repItem = GetHighestCollections(i);
+
+			itemType = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 0];
+			itemDetail = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 1];
+			itemGrade = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + repItem * COLLECTIONSDATASIZE + 2];
+			itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+			itemSlot = GetEquipSlot(itemType, itemDetail, itemGrade);
+
+			setItemCnt = 0;
+
+			for (j = 0; j < COLLECTIONSITEMCNT; j++) {
+				if (GetInvenIdx(collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 0], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 1], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 2]) != -1) {
+					setItemCnt++;
+				}
+			}
+
+			DrawImage(32 * _2X, 48 * _2X, 32 * _2X, 0 * _2X, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2, false, false, false, false, false, 2.0f, sprite[MAP_OBJ_IMG + 17], gScreenBuffer, gScreenLayer, MAP_OBJ_IMG + 17, false);
+			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 16 * _2X, SHADOW_IMG, 2.0f, gScreenBuffer, gScreenLayer, false);
+
+			if (setItemCnt == 0)
+				SetColor(COLOR_BLACK);
+
+			DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X + (setItemCnt == COLLECTIONSITEMCNT ? -Abs((frame + i) / 2 % 32 - 16) : 0), 2.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
+
+			SetColor(false);
+
+			if (setItemCnt > 0)
+				for (j = 0; j < COLLECTIONSITEMCNT; j++) {
+					itemType = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 0];
+					itemDetail = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 1];
+					itemGrade = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 2];
+					itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+					itemSlot = GetEquipSlot(itemType, itemDetail, itemGrade);
+
+					if (GetInvenIdx(itemType, itemDetail, itemGrade) == -1/* || robin.inven[GetInvenIdx(itemType, itemDetail, itemGrade)].count == 0*/) {
+						SetColor(COLOR_BLACK);
+						DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
+					}
+					else {
+						if (itemSlot == -1)
+							grayScale = 32;
+						DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, COLOR_BROWN, false, false, true, gScreenBuffer, gScreenLayer, false);
+
+					}
+
+					grayScale = 0;
+					SetColor(false);
+				}
+
+
+			//몇분의 몇을 모았는지를 보여주는 
+			if (setItemCnt > 0) {
+				DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
+				DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
+				DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
+			}
+			//6개가 다 장착되어 있어서 스킬이 활성화 되어 있으면
+			if (GetFullEquipedCollectionIdx() == i)
+				DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+			//만약 6개가 다 모여만 있으면
+			else if (setItemCnt == COLLECTIONSITEMCNT) {
+				//아무것도 하지 않는다.
+			}
+			else if (setItemCnt > 0) {
+				//아무것도 하지 않는다.
+			}
+			//아무것도 없으면
+			else
+				DrawIcon(ICON_EVENT_LOCK, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X - 12 * _2X - 52 * _2X, 2.0f, false, false, false, true, gScreenBuffer, gScreenLayer, false);
+
+			DrawLabel(x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 8 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - 88 * _2X - TSIZE * 2, TEXT_COLLECTIONS + i, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+			if (JoyStickPressPossible() == true && setItemCnt > 0)
+				SetRectPoint(x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - 32 * _2X, COLLECTIONCARDSIZE_X - 36 * _2X, COLLECTIONCARDSIZE_Y - 16 * _2X, TOUCH_FUNC_COLLECTIONS_DETAIL + i);
+
+		}
+		break;
+	case 1:
+		y = DY / 2 + 236 * _2X;
+
+		collectionIdx = menuCur;
+
+		for (j = 0; j < COLLECTIONSITEMCNT; j++) {
+			itemType = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 0];
+			itemDetail = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 1];
+			itemGrade = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 2];
+		}
+
+		CollectionDetailListDraw(xOffset, y, menuCur, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+		SetAlpha(28);
+		GradiationFrame(x + DX / 2 - 160 * _2X, y - 316 * _2X, 320 * _2X, 24 * _2X, 0, gScreenBuffer, gScreenLayer, false);
+		SetAlpha(32);
+		CenterText(TEXT_ACTIONCARDINFO, x + DX / 2, y - 316 * _2X - 8 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+		SetAlpha(28);
+		GradiationFrame(x + DX / 2 - 160 * _2X, y - 400 * _2X, 320 * _2X, 24 * _2X, 0, gScreenBuffer, gScreenLayer, false);
+		SetAlpha(32);
+		CenterText(TEXT_COLLECTIONREWARD, x + DX / 2, y - 400 * _2X - 8 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+		//if (robin.collectionRewardGet[menuCur] == true)
+		//	grayScale = 32;
+		DrawIcon(GetItemIcon(collectionReward[menuCur * 4 + 0], collectionReward[menuCur * 4 + 1], collectionReward[menuCur * 4 + 2]), x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2, (y - 400 * _2X - 26 * _2X) * zoom / 2, zoom, false, false, false, true, gScreenBuffer, gScreenLayer, false);
+		DrawNum(collectionReward[menuCur * 4 + 3], x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2 + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom, (y - 400 * _2X - 26 * _2X) * zoom / 2, NUM_FONT_LARGE, LEFT, 0, false, true, 1.5f * zoom / 2, true, gScreenBuffer, gScreenLayer, false);
+		grayScale = 0;
+
+		//모두 장착
+		//아직 장착되지 않고 
+		if (GetFullEquipedCollectionIdx() != menuCur && IsCollectionFull(menuCur) == true) {
+			DrawTextButton(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, 0, false, 1, false, TEXT_EQUIPALL, gScreenBuffer, gScreenLayer, false);
+			SetRectPoint(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, TOUCH_FUNC_EQUIPALL + menuCur);
+		}
+		else
+			DrawTextButton(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, 0, 32, 1, false, TEXT_EQUIPALL, gScreenBuffer, gScreenLayer, false);
+
+		if (winAniFrame > 0) {
+			winAniFrame++;
+
+			DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 64 * _2X, y - 410 * _2X - 46 * _2X - 32 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+			if (winAniFrame == FPS)
+				winAniFrame = 0;
+		}
+
+		//if (x < 10000)
+		//	return;
+
+		DrawPlayerCostume(
+			ROBIN,
+			pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].detail : -1, pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].grade : 0,
+			pObj->equip[EQUIP_GLOVE].type != EMPTY ? pObj->equip[EQUIP_GLOVE].detail : -1, pObj->equip[EQUIP_GLOVE].type != EMPTY ? pObj->equip[EQUIP_GLOVE].grade : 0,
+			pObj->equip[EQUIP_HELM].type != EMPTY ? pObj->equip[EQUIP_HELM].detail : -1, pObj->equip[EQUIP_HELM].type != EMPTY ? pObj->equip[EQUIP_HELM].grade : 0,
+			pObj->equip[EQUIP_ARMOR].type != EMPTY ? pObj->equip[EQUIP_ARMOR].detail : -1, pObj->equip[EQUIP_ARMOR].type != EMPTY ? pObj->equip[EQUIP_ARMOR].grade : 0,
+			pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].detail : -1, pObj->equip[EQUIP_PANTS].type != EMPTY ? pObj->equip[EQUIP_PANTS].grade : 0,
+			pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].detail : -1, pObj->equip[EQUIP_BOOTS].type != EMPTY ? pObj->equip[EQUIP_BOOTS].grade : 0,
+
+			x + 64 * _2X, DY / 2 - 252 * _2X, RIGHT, false, HOUSEPLAYERZOOM, gScreenBuffer, gScreenLayer, false
+		);
+
+
+		break;
+
+	case 2:
+	case 3:
+	case 4:
+
+		itemType = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 0];
+		itemDetail = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 1];
+		itemGrade = collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + menuItem * COLLECTIONSDATASIZE + 2];
+		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+		EquipInfoDraw(&ao[PLAYER].equip[EQUIP_WEAPON], x, y, itemType, itemDetail, itemGrade, menuDepth - 2, menuX, 1.0f, gScreenBuffer, gScreenLayer, false);
+		break;
+	}
+
+}
+
+void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i;
+	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon;
+	float iconZoom = EQUIPZOOM;
+	float width;
+	ITEM* it;
+	int setItemCnt = 0;
+
+	DrawLabel(x + (float)(DX / 2 - 40 * _2X) * zoom, y, TEXT_COLLECTIONS + collectionIdx, zoom, cvtDest, cvtLayer, buffering);
+
+	for (i = 0; i < COLLECTIONSITEMCNT; i++) {
+		itemIdx = GetInvenIdx(collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 0], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 1], collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * collectionIdx + i * COLLECTIONSDATASIZE + 2]);
+
+		itemType = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0];
+		itemDetail = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1];
+		itemGrade = collectionData[collectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2];
+		itemLv = GetItemLv(itemType, itemDetail, itemGrade);
+
+		if (itemIdx == -1)
+			itemCnt = 0;
+		else
+			itemCnt = GetItemCount(itemType, itemDetail, itemGrade);
+
+
+		if (itemIdx != -1) {
+			it = GetItemPtr(ITEMPTR_INVEN + itemIdx);
+			setItemCnt++;
+			//SetRectPoint(x + (float)(12 * _2X + (i % COLLECTION_XCOUNT) * (REWARDCARDSIZE_X * 2 + 16 * _2X)) * iconZoom / 2, y + (float)(-(i / COLLECTION_XCOUNT) * (REWARDCARDSIZE_Y * 2 + 16 * _2X) - TSIZE * 3 - 4 * _2X) * iconZoom / 2, REWARDCARDSIZE_X * 2, REWARDCARDSIZE_Y * 2, TOUCH_FUNC_COLLECTIONS_ITEMDETAIL + i);
+
+			if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
+				SetRectPoint(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X) * zoom, (float)(32 * _2X * 2) * zoom, (float)(48 * _2X * 2) * zoom, TOUCH_FUNC_COLLECTIONS_ITEMDETAIL + i);
+		}
+
+		DrawImage(32 * _2X, 48 * _2X, 32 * _2X, 0 * _2X, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X) * zoom, false, false, false, false, false, iconZoom * zoom, sprite[MAP_OBJ_IMG + 17], cvtDest, cvtLayer, MAP_OBJ_IMG + 17, buffering);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X - 24 * _2X) * zoom, SHADOW_IMG, iconZoom / 2 * zoom, cvtDest, cvtLayer, buffering);
+
+		if (itemIdx == -1)
+			SetColor(COLOR_BLACK);
+
+		DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 4 * _2X - 24 * _2X + 32 * _2X - Abs((frame + i) / 2 % 32 - 16)) * zoom, 2.0f * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+
+		SetColor(false);
+
+		DrawStar(ICON_STAR, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + COLLECTIONCARDSIZE_X / 2) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 2) * zoom, itemLv, ITEMMAXLEVEL, ITEMMAXLEVEL, CENTER, true, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+
+		if (itemIdx == -1)
+			DrawIcon(ICON_EVENT_LOCK, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - TSIZE * 3 - 8 * _2X) * zoom, iconZoom * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+
+		DrawItemValue(itemType, itemDetail, itemGrade, itemLv, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 32 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - COLLECTIONCARDSIZE_Y) * zoom, CENTER, false, iconZoom / 2 * zoom, 32 * _2X * iconZoom * zoom, cvtDest, cvtLayer, buffering);
+
+		if (itemIdx == -1) {
+			sprintf(tempStr, "%s", TEXTPTR(TEXT_NOTACQUIRED));
+		}
+		else {
+			//레벨표시
+			sprintf(tempStr, TEXTPTR(TEXT_ALPHA_LV), itemLv + 1);
+		}
+		//DrawText(TEXT_LV, x + w / 2 - 24 * _2X, y - REWARDCARDSIZE_Y + 32 * _2X, cvtDest, cvtLayer, buffering);
+		CenterTextStr(tempStr, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 32 * _2X + 2 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - COLLECTIONCARDSIZE_Y - TSIZE * 1 - 8 * _2X) * zoom, iconZoom / 2 * zoom, cvtDest, cvtLayer, buffering);
+
+		DrawLabel(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 8 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - 88 * _2X - TSIZE * 3 - 4 * _2X) * zoom, itemIdx == -1 ? TEXT_QUESTION : TEXT_ITEMNAME_START + GetItemName(itemType, itemDetail, itemGrade), zoom, cvtDest, cvtLayer, buffering);
+	}
+
+	//컬렉션 기능 그리기
+	//세트스킬은 별도로 표시해두지 않는다.
+
+
+}
+
+
+void ShopDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i, j;
+	float OUTTHICK = (float)5 * zoom;
+	float INTTHICK = (float)5 * zoom;
+	float WINX = (float)DX * zoom;
+	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+
+	int tempIdx, mul = 1;
+
+	MemRect(x, y, WINX, WINY, 0x3B2513, cvtDest, cvtLayer, buffering);
+
+	for (i = 0; i < 2; i++)
+		DrawImage(shopMenuUiData[i * MENUUIDATACNT + 0], shopMenuUiData[i * MENUUIDATACNT + 1], shopMenuUiData[i * MENUUIDATACNT + 2], shopMenuUiData[i * MENUUIDATACNT + 3], x + (float)shopMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(shopMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[shopMenuUiData[i * MENUUIDATACNT + 6]], cvtDest, cvtLayer, shopMenuUiData[i * MENUUIDATACNT + 6], buffering);
+
+	CenterText(TEXT_MENU_SHOP, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_SHOP_BUY, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
+	//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+
+	//최외각 테두리
+	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom, cvtDest, cvtLayer, buffering);
+	//그안에 테두리
+	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK, cvtDest, cvtLayer, buffering);
+
+	return;
+
+	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y - (float)(POPUPSTORE_Y + 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], gScreenBuffer, gScreenLayer, UI_PAPER_POPUP_IMG, false);
+
+	switch (menuDepth) {
+	case 0:
+		switch (menuIdx) {
+		default:
+			//상단의 팝업스토어
+			for (i = 0; i < TOTALPOPUPSTORE; i++) {
+				DrawFrame(x + (float)32 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y, (float)(DX - 64 * _2X) * zoom, (float)POPUPSTORE_Y * zoom, FRAME_SHOPBALLOON, gScreenBuffer, gScreenLayer, false);
+				DrawNumTTF(i + 1, x + (float)34 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y - (float)2 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, false, 1.0f, false, gScreenBuffer, gScreenLayer, false);
+			}
+
+			for (i = 0; i < TOTALPOPUPSTORE; i++) {
+				if (i == TOTALPOPUPSTORE - 1) {
+					if ((long)(currentTimeStamp - robin.freeRewardTimeStamp) >= FREEITEMTIME) {
+						SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
+						SetColor(COLOR_REALRED);
+					}
+					else
+						SetColor(COLOR_RED);
+				}
+
+				DrawImage(9 * _2X, 9 * _2X, (menuX == i ? 145 * _2X : 154 * _2X), 0 * _2X, x + (float)((DX / 2 - (16 * 4 + 9) * _2X / 2) + i * 16 * _2X) * zoom, y - (float)POPUPSTORE_Y * zoom - (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], gScreenBuffer, gScreenLayer, COMMON_IMG, false);
+				SetColor(false);
+				SetAlpha(32);
+			}
+
+			return;
+			//하트상품 6개
+			//y -= GNBHEIGHT;
+
+			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_SHOP_HEART_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
+
+			for (i = 0; i < 6; i++) {
+
+				//if (zoom == 1)
+				//	SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, (float)SHOPMENUCARD_WIDTH * zoom, (float)SHOPMENUCARD_HEIGHT * zoom, TOUCH_FUNC_EQUIP_INVENTORY + i);
+
+				DrawImage(72 * _2X, 64 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 72 * _2X) / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 88 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[HEART_0_IMG + i], gScreenBuffer, gScreenLayer, HEART_0_IMG + i, false);
+
+				//하트수량
+				DrawNum(currencyShop[0 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT) * (i / 3)) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true, gScreenBuffer, gScreenLayer, false);
+
+				if (currencyShop[0 * 7 + i * 7 + 2]) {
+					memset(tempStr, 0, sizeof(tempStr));
+					sprintf(tempStr, "+%d%%", currencyShop[0 * 7 + i * 7 + 2]);
+					//보너스 숫자
+					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 36 * _2X) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				}
+				//아이콘
+
+				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
+
+				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 34 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[0 * 7 + i * 7 + 6], currencyShop[0 * 7 + i * 7 + 5], zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+			}
+
+			y -= (float)(208 * _2X) * zoom;
+
+			//장비뽑기 3종
+			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_GACHA_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
+
+			for (i = 0; i < 3; i++) {
+				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 46 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom, gScreenBuffer, gScreenLayer, false);
+				DrawBoxSpecial(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X + 20 * _2X - (BOXSIZE_X / 2)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 50 * _2X + BOXSIZE_Y) * zoom, LEFT, BOX_EQUIP_SILVER + i, (float)1.0f * zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+				CenterText(TEXT_ITEMNAME_BOX + BOX_EQUIP_SILVER + i, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+
+				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y +(float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
+
+				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL), GetBoxCurrency(BOX_EQUIP_SILVER + i, GRADE_NORMAL), zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+				if (robin.gold >= GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL))
+					SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, TOUCH_FUNC_SHOP_BUYBOX1 + i);
+			}
+
+			y -= (float)(128 * _2X) * zoom;
+
+			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_COIN_TITLE, zoom, gScreenBuffer, gScreenLayer, false);
+
+			for (i = 0; i < 3; i++) {
+				DrawImage(64 * _2X, 52 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 64 * _2X) / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 52 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[COIN_0_IMG + 3 + i], gScreenBuffer, gScreenLayer, COIN_0_IMG + 3 + i, false);
+
+				//코인수량
+				DrawNum(currencyShop[9 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 8 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true, gScreenBuffer, gScreenLayer, false);
+
+				if (currencyShop[9 * 7 + i * 7 + 2]) {
+					memset(tempStr, 0, sizeof(tempStr));
+					sprintf(tempStr, "+%d%%", currencyShop[9 * 7 + i * 7 + 2]);
+					//보너스 숫자
+					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				}
+
+				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
+
+				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[9 * 7 + i * 7 + 6], currencyShop[9 * 7 + i * 7 + 5], zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+			}
+
+			break;
+		}
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	}
+}
+
+void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i, j;
+	float OUTTHICK = (float)5 * zoom;
+	float INTTHICK = (float)5 * zoom;
+	float WINX = (float)DX * zoom;
+	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+
+	int tempIdx, mul = 1;
+
+	MemRect(x, y, WINX, WINY, 0xB4D4F2, cvtDest, cvtLayer, buffering);
+
+	for (i = 0; i < 2; i++)
+		DrawImage(castleMenuUiData[i * MENUUIDATACNT + 0], castleMenuUiData[i * MENUUIDATACNT + 1], castleMenuUiData[i * MENUUIDATACNT + 2], castleMenuUiData[i * MENUUIDATACNT + 3], x + (float)castleMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(castleMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[castleMenuUiData[i * MENUUIDATACNT + 6]], cvtDest, cvtLayer, castleMenuUiData[i * MENUUIDATACNT + 6], buffering);
+
+	CenterText(TEXT_CASTLE, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_CASTLE_LISTSELECT, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
+	//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+	//현재 성
+	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)(132) * zoom, false, false, false, false, false, 4.9f * zoom, 2.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+
+	//리스트의 성
+	int slotX;
+	int slotY = y - (float)(400 + CASTLE_GAP_Y * 0) * zoom;
+
+	SetSectionClip(0, slotY, DX, WINY - slotY, false);
+
+	for (i = 0; i < TOTALCASTLE; i++) {
+		slotX = x + (float)12 * zoom;
+		slotY = y - (float)(400 + CASTLE_GAP_Y * i - scY[MENU_CASTLE]) * zoom;
+
+		DrawImageScale(128, 128, 716, 609, slotX, slotY, false, false, false, false, false, 4.7f * zoom, 1.1f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+		DrawImageScale(128, 128, 587, 737, slotX + (float)8 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
+		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, slotX + (float)16 * zoom, slotY - (float)16 * zoom, false, false, false, false, false, 0.11f * zoom, sprite[MAP_DIORAMA_IMG + castleOrder[i]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + castleOrder[i], buffering);
+		
+		//SetFontColor(COLOR_DARKGREY);
+		DrawImageScale(176, 40, 1, 679, slotX + (float)152 * zoom, slotY - (float)12 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+		CenterText(TEXT_HOUSE_TOLEM + castleOrder[i], slotX + (float)240 * zoom, slotY - (float)20 * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+		//SetFontColor(COLOR_WHITE);
+
+		//최대 동료 별
+		DrawIcon(ICON_STAR, slotX + (float)152 * zoom, slotY - (float)60 * zoom, 1.0f * zoom, COLOR_BROWN, false, false, 1 * _2X, cvtDest, cvtLayer, buffering);
+		DrawNum2AutoSpaceing(castleStarLimit[i], slotX + (float)200 * zoom, slotY - (float)64 * zoom, LEFT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.5f * zoom, true, true, cvtDest, cvtLayer, buffering);
+
+	}
+
+	int scrollH = WINY - (float)(420 + 184 * 0) * zoom;
+
+	DrawScroll(
+		x + (float)616 * zoom,
+		y - (float)(400 + 184 * 0) * zoom,
+		scrollH,
+		MENU_CASTLE,
+		cvtDest,
+		cvtLayer,
+		buffering
+	);
+
+	UnSectionClip(false);
+
+	//최외각 테두리
+	MemRectFrameThick(x, y, WINX, WINY, 0x052F6C, (float)OUTTHICK * zoom, cvtDest, cvtLayer, buffering);
+	//그안에 테두리
+	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x0C459B, INTTHICK, cvtDest, cvtLayer, buffering);
+
+	return;
 }

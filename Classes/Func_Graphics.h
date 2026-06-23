@@ -20,6 +20,7 @@ void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture*);
 void DrawArray(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite * src, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, int srcIdx, bool buffering);
 void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoom, cocos2d::Sprite * src, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, int srcIdx, bool buffering);
+void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoomX, float zoomY, cocos2d::Sprite* src, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, int srcIdx, bool buffering);
 void BrightImage(int, int, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void ShadowImage(int, int, int, int, int, int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void ProcessWave(void);
@@ -45,7 +46,6 @@ void DrawEquipFrame(int, int, int, int, int, int, cocos2d::RenderTexture*, cocos
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawWindow4(int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawWindow3(int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawEquipSlot(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawRoundBar(int x, int y, float percent, int type, int color, int alpha, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawGuage(int x, int y, int w, int h, long cur, long max, int bgCol, int fullCol, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawRouletteNum(long long, int, int, int, bool, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
@@ -152,7 +152,7 @@ void DrawDate(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer
 void DrawDateText(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawHand(int, int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawScroll(int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawScroll(int x, int y, int h, int type, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void YesNoDraw(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void AccountDraw(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void PolicyDraw(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);

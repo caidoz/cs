@@ -18,6 +18,7 @@
 #include "Def/TimeDef.h"
 #include "Def/AlphaDef.h"
 #include "Def/AttackSequenceDef.h"
+#include "Def/CastleDef.h"
 #include "Def/CmfDef.h"
 #include "Def/ColorDef.h"
 #include "Def/CrewDef.h"
@@ -77,7 +78,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 //#define ATTACKEDINVINCIBLE
 //#define SPEEDTURN
 #define ENEMYHPBAR
-#define GUIDELINE
+//#define GUIDELINE
 
 //#define INVINCIBLE
 
@@ -90,7 +91,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 #define NEWITEMMARKSHOW
 #define COINPER	10
 #define QUESTPER	5
-#define MAXBET	7
+#define MAXBET	5
 #define MAXCOINBET	5
 
 #define MAXNUM	2147483647
@@ -450,6 +451,52 @@ typedef enum _gameDef {
 	SUMMON,//소환
 	HEROSKILL,//히어로 공격스킬
 
+	//크류타입
+	// 
+	//일반
+	//크리티컬(데미지 2배)
+	//관통공격(뒤에적까지 공격)
+	//추가타격(데미지)
+	
+	//상대방 스턴(1턴)
+	//중독걸기(3턴간 중독 데미지)
+	//석화(1턴, 멈추되 1턴 동안 공격을 받지 않음 즉 이럴때는 버프류로 돌리는게 좋음) 
+	
+	//화염저항력(세개 뜨면 데미지 1)
+	//냉기저항력(세개 뜨면 데미지 1)
+	//번개저항력(세개 뜨면 데미지 1)
+	//신성저항력(세개 뜨면 데미지 1)
+	//암흑저항력(세개 뜨면 데미지 1)
+
+	//골드획득 증가(획득 골드 2배 케이스와 획득 골드 +1000 등)
+	//검 공격력 추가
+	//화염공격력(세개 뜨면 데미지 두배)
+	//냉기공격력(세개 뜨면 데미지 두배)
+	//번개공격력(세개 뜨면 데미지 두배)
+	//신성공격력(세개 뜨면 데미지 두배)
+	//암흑공격력(세개 뜨면 데미지 두배)
+	//방어력 무시 공격(방어력이 엄청 강한 몬스터를 데미지를 줘서 한방에 죽임)
+	//회피(한턴동안 데미지를 받지 않는다.)
+	//독면역(3턴동안 독공격에 걸리지 않는다.)
+	//스턴면역(3턴동안 스턴에 걸리지 않는다.)
+
+	//로빈스킬-에어크래쉬 : 공중적에게 데미지 2배
+	//로빈스킬-마구찌르기
+	//로빈스킬-부스트슬래시 : 기절(100% 기절)
+	//로빈스킬-하이퍼차지 : 돌격공격(적을 뒤로 날린다가 무슨 의미가 있지?
+	//로빈스킬-소울크래시 : 이것도 기절이야?
+	//로빈스킬-앱솔루트피어스 : 찔러서 회전
+	//로빈스킬-멸살연참 : 최강데미지
+	//로빈스킬-방어태세 : HP를 순간적으로 부풀려서 큰 데미지를 받는다. 
+
+	CREWTYPE_NORMAL = 0,
+	CREWTYPE_ATTACKSKILL,
+	CREWTYPE_BUFFSKILL,
+	CREWTYPE_SUMMON,
+	CREWTYPE_HEART,
+
+	TOTAL_CREWTYPE,
+
 	MAXHOTKEY = 3,//
 	QUICKSLOTGAP = 80 * _2X,
 
@@ -620,7 +667,7 @@ typedef enum _gameDef {
 	ARENAANIMATIONFRAME = 8,
 
 	CREWDATA_TYPE = 0,
-	CREWDATA_STAR,
+	CREWDATA_DETAILTYPE,
 	CREWDATA_SKILL1,
 	CREWDATA_SKILL2,
 	CREWDATA_SKILL3,
@@ -651,6 +698,7 @@ typedef enum _gameDef {
 	MENU_HERO,
 	MENU_CREW,
 	MENU_COLLECTIONS,//장비, 소환수, 기타
+	MENU_CASTLE,//성메뉴
 	MENU_SHOP,//상점메뉴 : 소환(무기, 방어구, 악세사리, 스킬카드,  ), 패키지(), 재화(), 황금열쇠()  
 	MENU_STARSHOP,
 	MENU_FRIENDS,

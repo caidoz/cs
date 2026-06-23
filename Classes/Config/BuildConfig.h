@@ -92,6 +92,6 @@
 #define REWARDZOOM                 2        // ∫∏ªÛ ¡‹
 #define EQUIPREWARDZOOM            2        // ¿Â∫Ò ∫∏ªÛ ¡‹
 #define ROULETTEZOOM               0.5f     // ∑Í∑ø ¡‹
-#define SLOTINITZOOM               0.45f    // ΩΩ∑‘ √ ±‚ ¡‹
-#define SLOTZOOM                   0.45f    // ΩΩ∑‘ ¡‹
+#define SLOTINITZOOM               0.5f    // ΩΩ∑‘ √ ±‚ ¡‹
+#define SLOTZOOM                   0.6f    // ΩΩ∑‘ ¡‹
 #define JOYSTICKZOOM               2.0f     // ¡∂¿ÃΩ∫∆Ω ¡‹

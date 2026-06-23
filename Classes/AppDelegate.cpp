@@ -74,9 +74,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #else
 		glview = GLViewImpl::create("CoinSword");
 #endif
-		
+
 		// Set the design resolution
-		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 2622 / 1206);//WINDOWS
+		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 

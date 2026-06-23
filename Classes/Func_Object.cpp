@@ -130,12 +130,12 @@ void DrawObj(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 	case CREWDRAW:
 
 		//아직 레벨업이 안되어 있거나 공격받은 상태면
-		if (pObj->curStar < pObj->maxStar || !pObj->maxStar)
-		{
-			grayScale = 32;
-		}
+		//if (pObj->curStar < pObj->maxStar || !pObj->maxStar)
+		//{
+		//	grayScale = 32;
+		//}
 		EnemyDraw(pObj, cvtDest, cvtLayer, buffering);
-		grayScale = 0;
+		//grayScale = 0;
 
 		if (pObj->curStar < pObj->maxStar)
 		{
@@ -1120,6 +1120,123 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 	} while (i > 0);
 }
 
+
+void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX, float zoomY, float rotation, bool center, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i, fixedImg, j;
+	int type;
+	int imgFile = 0;
+	int dx;
+	int centerX = 0;
+	int centerY = 0;
+	float zoom = zoomX;
+
+	const signed short* cPtr;
+
+	//cmf 가 작으면 
+	if (cmf < TOTALCHAR) {
+		DrawPlayer(&ao[cmf], motion, x, y, ao[cmf].dirF, zoom, rotation, center, false, cvtDest, cvtLayer, buffering);
+		return;
+	}
+
+	i = cmd_m_cnt[cmf][motion * 2 + 1];
+	cPtr = &cmd_m_img[cmf][cmd_m_cnt[cmf][motion * 2] * 4];
+
+	if (center == true) {
+		centerX = -(cmfMotionImgSize[cmf][motion * 4 + 0] + (cmfMotionImgSize[cmf][motion * 4 + 2] / 2));
+		centerY = -(cmfMotionImgSize[cmf][motion * 4 + 1] + (cmfMotionImgSize[cmf][motion * 4 + 3] / 2));
+	}
+
+	do {
+		int imgOffsetX = 0;
+		int imgOffsetY = 0;
+		float magnify;
+		int dirX;
+		int tempAlpha = m_lgrpAlpha;
+		int tempAlpha2 = m_lgrpAlpha;
+		int pxl;
+		int partsRotation = 0;
+
+
+		fixedImg = *cPtr;
+		type = *(cPtr + 3);
+
+		//실제 줌
+		magnify = ((type >> 6) + 1) * zoom;
+
+		//방향
+		dirX = (dirF + type) % 2;
+		//이펙트 여부
+
+		//반투명 값
+		//투명도 상대조절
+		if (type & 0x30) {
+			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
+		}
+
+		//완전투명인 경우 그릴필요 없음
+		if (!tempAlpha) {
+		}
+		else {
+			//라이튼 효과인지 추출
+			if (type & 0x08)
+				pxl = 1;
+			else
+				pxl = 0;
+
+			imgFile = COMMON_CMF_IMG;
+			j = 0;
+
+			while (j < 3 && fixedImg >= cmf_i_div[cmf][j * 2]) {
+				imgFile = cmf_i_div[cmf][j * 2 + 1];
+				j++;
+			}
+
+			dx = cmd_i_offset[cmf][fixedImg * 4 + 2];
+
+			switch (type & 0x06) {
+			case _00:
+				partsRotation = 0;
+				break;
+			case _09:
+				partsRotation = 90;
+				if (dirF == RIGHT) {
+					dx = cmd_i_offset[cmf][fixedImg * 4 + 3];
+				}
+				break;
+			case _18:
+				partsRotation = 180;
+				break;
+			case _27:
+				partsRotation = 270;
+				if (dirF == RIGHT) {
+					dx = cmd_i_offset[cmf][fixedImg * 4 + 3];
+				}
+				break;
+			}
+
+			if (dirF == LEFT)
+				DrawImage(
+					cmd_i_offset[cmf][fixedImg * 4 + 2], cmd_i_offset[cmf][fixedImg * 4 + 3], cmd_i_offset[cmf][fixedImg * 4], cmd_i_offset[cmf][fixedImg * 4 + 1],
+					x + ((float)(*(cPtr + 1) + centerX) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation)) - (float)(*(cPtr + 2) + centerY) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetX,
+					y - ((float)(*(cPtr + 1) + centerX) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation)) + (float)(*(cPtr + 2) + centerY) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetY,
+					dirX, partsRotation, rotation, pxl, tempAlpha, magnify, sprite[imgFile], cvtDest, cvtLayer
+					, imgFile, buffering);
+			else
+				DrawImage(
+					cmd_i_offset[cmf][fixedImg * 4 + 2], cmd_i_offset[cmf][fixedImg * 4 + 3], cmd_i_offset[cmf][fixedImg * 4], cmd_i_offset[cmf][fixedImg * 4 + 1],
+					x + ((float)(-(*(cPtr + 1) + centerX) - dx * ((type >> 6) + 1)) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation)) - (float)(*(cPtr + 2) + centerY) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetX,
+					y - ((float)(-(*(cPtr + 1) + centerX) - dx * ((type >> 6) + 1)) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation)) + (float)(*(cPtr + 2) + centerY) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetY,
+					dirX, partsRotation, rotation, pxl, tempAlpha, magnify, sprite[imgFile], cvtDest, cvtLayer
+					, imgFile, buffering);
+
+		}
+		cPtr += 4;
+		i--;
+	} while (i > 0);
+}
+
+
 void DrawCommonShadow(int cmf, int x, int y, int dirF, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	SetAlpha(24);
@@ -1357,8 +1474,13 @@ void DrawNeutral(int idx, int x, int y, int dirF, float zoom, cocos2d::RenderTex
 			imgFile = MAP_OBJ_IMG + 14;//bg14
 		else if (*cPtr < IMG_OBJ_179)
 			imgFile = MAP_OBJ_IMG + 15;//bg15
-		else
+		else if (*cPtr < IMG_OBJ_192)
 			imgFile = MAP_OBJ_IMG + 18;//bg18
+		else if (*cPtr < IMG_OBJ_222)
+			imgFile = TREE_IMG;
+		else 
+			imgFile = FLAG_IMG;
+
 
 		//type = *(cPtr + 3) & 0xFF;
 		type = *(cPtr + 3);
@@ -1998,7 +2120,7 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom, 
 	//DrawCmfDetailShadow(enemyIdx, enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, RIGHT, zoom, cvtDest, cvtLayer, buffering);
 	//DrawPlayer(&ao[enemyIdx], false, x + (float)(36 * _2X / 2) * zoom, y + (float)(-32 * _2X) * zoom, RIGHT, HOUSEZOOM * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 	else
-		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + 0], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, LEFT, zoom, false, false, cvtDest, cvtLayer, buffering);
+		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, LEFT, zoom, false, false, cvtDest, cvtLayer, buffering);
 
 	UnSectionClip(false);
 
@@ -2793,7 +2915,7 @@ int GetTypeFromCmf(int cmf)
 {
 	int i;
 	for (i = 0; i < TOTALENEMY; i++) {
-		if (enemyData[i * ENEMYDATASIZE + 0] == cmf)
+		if (enemyData[i * ENEMYDATASIZE + ENEMYDATA_CMF] == cmf)
 			return i;
 	}
 }

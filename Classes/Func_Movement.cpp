@@ -1257,7 +1257,7 @@ void MoveObj(OBJECT* pObj)
 	case PLAYERMOVE:
 
 		//AI캐릭터
-		if (pObj->dead == false && drawHandle == MD_BATTLE && waveStatus == WAVESTATUS_PLAY)
+		if (pObj->dead == false && drawHandle == MD_PLAY && waveStatus == WAVESTATUS_PLAY)
 			TargetEnemy(obj);
 		else
 			pObj->pressedKey[0] = NULL;
@@ -1577,6 +1577,9 @@ void MoveObj(OBJECT* pObj)
 		break;
 	case FOLLOWMOVE:
 		FollowMove(pObj);
+		break;
+	case TREEMOVE:
+		//pObj->motion = OBJ_TREE0 + (frame % FPS);
 		break;
 	}
 
@@ -2668,6 +2671,7 @@ chk:
 				TileCheckX(pObj);
 				TileCheckY(pObj);
 				break;
+			case MD_PLAY:
 			case MD_BATTLE:
 				if (attackSequence == ATTACKSEQUENCE_ACTION && obj == turn)
 				switch (pObj->turnPosition) {
@@ -10612,8 +10616,6 @@ void SummonMove(OBJECT* pObj)
 			pObj->etc = enemyAttackPattern[pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + pObj->currentSkill * ATTACKPATTERNDATASIZE + pObj->turnPosition];
 			pObj->turnPosition = COMING;
 
-			BackUpEnemyObj();
-			SaveGame();
 #ifndef WARIGARI
 			if (autoPlay == true && drawHandle == MD_PLAY) {
 				BoxOpen();
@@ -10929,7 +10931,7 @@ void VanishMove(OBJECT* pObj)
 
 void RegenMove(OBJECT* pObj)
 {
-	int i;
+	int i, j;
 	int obj = GetObjFromPtr(pObj);
 
 	pObj->frame++;
@@ -11042,8 +11044,31 @@ void RegenMove(OBJECT* pObj)
 				//pObj->hp = pObj->ps[PS_HP];
 				pObj->moveHandler = PLAYERMOVE;
 				pObj->drawHandler = PLAYERDRAW;
-				if (drawHandle == MD_BATTLE)
+				if (drawHandle == MD_PLAY) {
 					waveStatus = WAVESTATUS_PLAY;
+					j = 0;
+					for (i = 0; i < MAXENEMY * MAXENEMYOBJ; i++) {
+						if (robin.enemyObj[i].active == true)
+							j++;
+					}
+
+					if (obj == ROBIN && j > 0) {
+						CopyEnemyObj();
+						InitBar(BAR_BOSSHP);
+
+						for (i = 0; i < MAXENEMY * MAXENEMYOBJ; i++) {
+							//일단 리젠무브로 바꾸고
+							if (ao[ENEMY + i].active == true && ao[ENEMY + i].mom == ENEMY + i) {
+								ao[ENEMY + i].moveHandler = REGENMOVE;
+								ao[ENEMY + i].drawHandler = REGENDRAW;
+								//AddBar(&bar[BAR_BOSSHP], ao[ENEMY + i].hp, BARFRAME);
+							}
+						}
+					}
+				}
+
+				if (bar[BAR_BOSSHP].active == false)
+					InitBar(BAR_BOSSHP);
 			}
 			else if (obj < PLAYERALL) {
 				pObj->moveHandler = CREWMOVE;
@@ -11056,8 +11081,9 @@ void RegenMove(OBJECT* pObj)
 			}
 			else {
 				pObj->hp = pObj->maxhp;
-				pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + 1];
-				pObj->drawHandler = enemyData[pObj->type * ENEMYDATASIZE + 2];
+				pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];
+				pObj->drawHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_DRAWHANDLER];
+				AddBar(&bar[BAR_BOSSHP], pObj->hp, BARFRAME);
 			}
 			int startObj;
 
@@ -11136,6 +11162,7 @@ void RegenMove(OBJECT* pObj)
 				}
 
 				BackUpEnemyObj();
+				SaveGame();
 			}
 		}
 
@@ -11980,7 +12007,7 @@ void ItemMove(OBJECT* pObj)
 				break;
 			case ITEM_NETITEM:
 				targetX = 8 * _2X;
-				targetY = GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT;
+				targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 				break;
 				//장비가 떨어졌을 떄
@@ -11994,7 +12021,7 @@ void ItemMove(OBJECT* pObj)
 				default:
 					//pObj->def 가 ITEM_SWORD 가 아닌 경우				
 					targetX = 8 * _2X;
-					targetY = (SCREENRATIO > 200 ? NORCH_HEIGHT : 4 * _2X) + ITEMICONSIZE * 2;
+					targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - ITEMICONSIZE;
 					break;
 				}
 
@@ -12005,7 +12032,7 @@ void ItemMove(OBJECT* pObj)
 			if (pObj->def < ITEM_GEM) {
 				attackDelay = FPS / 2;
 				effect.color = COLOR_BLACK;
-				focusItem = GetObjFromPtr(pObj);
+				//focusItem = GetObjFromPtr(pObj);
 				itemFrame = INFOFRAME;
 
 				if (option.voice == false) voiceType = VOICE_NOVOICE;
@@ -12129,7 +12156,7 @@ void WarpMove(OBJECT* pObj)
 
 			oldMap = robinmap;
 
-			robinmap = dioramaMap[robin.stage];
+			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 
 			pPlayer->x = pObj->str + (pPlayer->x - pObj->x);
 			pPlayer->y = pObj->def + (pPlayer->y - pObj->y);
@@ -13645,6 +13672,7 @@ void CrewMove(OBJECT* pObj)
 	pObj->motion = *tPtr;
 
 	switch (drawHandle) {
+	case MD_PLAY:
 	case MD_BATTLE:
 		switch (attackSequence) {
 		case ATTACKSEQUENCE_READY:

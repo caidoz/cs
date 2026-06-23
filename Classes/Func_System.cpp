@@ -150,15 +150,20 @@ void InitMenu(void)
 	//TEST
 	//InitBar(BAR_QUEST);
 	InitBar(BAR_SHIELD);
-	InitBar(BAR_COMBATPOWERALL);
+	//InitBar(BAR_COMBATPOWERALL);
+	InitBar(BAR_STAR);
+	InitBar(BAR_DAY);
+	//InitBar(BAR_LIFE);
 
 
 	InitBar(BAR_COIN);
 	InitBar(BAR_ITEM);
-	InitBar(BAR_HERO);
+	InitBar(BAR_CASTLE);
 	InitBar(BAR_CREW);
-	InitBar(BAR_COLLECTIONS);
+	InitBar(BAR_EQUIP);
 	InitBar(BAR_MAINSHOP);
+
+	InitBar(BAR_ROULETTE);
 	
 	//InitBar(BAR_ENEMYUSER);
 	//InitBar(BAR_ENEMYUSER_BOX);
@@ -491,7 +496,7 @@ void InitBar(int type)
 		bar[BAR_GOLD].aniFrame = 0;
 
 		bar[BAR_GOLD].x = CROWNBARWIDTH + 2 * _2X;
-		bar[BAR_GOLD].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT;
+		bar[BAR_GOLD].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 		bar[BAR_GOLD].targetX = 0;
 		bar[BAR_GOLD].targetY = 0;
@@ -518,7 +523,7 @@ void InitBar(int type)
 		bar[BAR_CROWN].aniFrame = 0;
 
 		bar[BAR_CROWN].x = 0;
-		bar[BAR_CROWN].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT;
+		bar[BAR_CROWN].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 		bar[BAR_CROWN].targetX = 0;
 		bar[BAR_CROWN].targetY = 0;
@@ -545,7 +550,7 @@ void InitBar(int type)
 		bar[BAR_HAMMER].aniFrame = 0;
 
 		bar[BAR_HAMMER].x = GOLDBARWIDTH + CROWNBARWIDTH;
-		bar[BAR_HAMMER].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY - 2 * _2X : DY - NORCH_HEIGHT - 2 * _2X;
+		bar[BAR_HAMMER].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - 2 * _2X;
 
 		bar[BAR_HAMMER].targetX = 0;
 		bar[BAR_HAMMER].targetY = 0;
@@ -572,7 +577,7 @@ void InitBar(int type)
 		bar[BAR_SHIELD].aniFrame = 0;
 
 		bar[BAR_SHIELD].x = CROWNBARWIDTH + 2 * _2X + GOLDBARWIDTH + 2 * _2X + COMBATPOWBARWIDTH + 1 * _2X;// +10 * _2X;
-		bar[BAR_SHIELD].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY - 2 * _2X : DY - NORCH_HEIGHT - 2 * _2X;
+		bar[BAR_SHIELD].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT) - 2 * _2X;
 
 		bar[BAR_SHIELD].targetX = 0;
 		bar[BAR_SHIELD].targetY = 0;
@@ -684,12 +689,26 @@ void InitBar(int type)
 		bar[BAR_BOSSHP].aniFrame = 0;
 
 		bar[BAR_BOSSHP].zoom = BAR_BOSSHP_ZOOM;
+		bar[BAR_BOSSHP].zoom2 = BAR_BOSSHP_ZOOM;
 
-		bar[BAR_BOSSHP].x = DX / 2;
-		bar[BAR_BOSSHP].y = bar[BAR_HEART].y + BOSSHPBARHEIGHT - 16 * _2X;//STATUSWIN_Y - 28 * _2X;// +BOSSHPBARHEIGHT;
+		bar[BAR_BOSSHP].x = DX + 32 * _2X;
+		bar[BAR_BOSSHP].y = BOTTOMMENUHEIGHT + (float)SLOTSIZE_Y * SLOTINITZOOM;//STATUSWIN_Y - 28 * _2X;// +BOSSHPBARHEIGHT;
 
-		bar[BAR_BOSSHP].targetX = 0;
-		bar[BAR_BOSSHP].targetY = 0;
+		bar[BAR_BOSSHP].targetX = DX / 2 - 32 * _2X;
+		bar[BAR_BOSSHP].targetY = BOTTOMMENUHEIGHT + (float)SLOTSIZE_Y * SLOTINITZOOM;
+
+		bar[BAR_BOSSHP].zoomEnd = bar[BAR_BOSSHP].zoom;
+		bar[BAR_BOSSHP].speed = 8 * _2X;
+		bar[BAR_BOSSHP].speedIncrement = 1 * _2X;
+
+		bar[BAR_BOSSHP].targetX2 = DX / 2;
+		bar[BAR_BOSSHP].targetY2 = BOTTOMMENUHEIGHT + (float)SLOTSIZE_Y * SLOTINITZOOM;
+
+		bar[BAR_BOSSHP].zoomEnd2 = bar[BAR_BOSSHP].zoom2;
+		bar[BAR_BOSSHP].speed2 = 8 * _2X;
+		bar[BAR_BOSSHP].speedIncrement2 = 1 * _2X;
+
+		bar[BAR_BOSSHP].frame = 1;
 
 		bar[BAR_BOSSHP].front = false;
 
@@ -750,33 +769,7 @@ void InitBar(int type)
 
 		bar[BAR_ITEM].zoom = BAR_ITEM_ZOOM;
 		break;
-	case BAR_HERO:
-		bar[BAR_HERO].active = true;
-		bar[BAR_HERO].type = BAR_HERO;
-
-		bar[BAR_HERO].count = 0;
-		bar[BAR_HERO].add = 0;
-		bar[BAR_HERO].countFrame = 0;
-
-		bar[BAR_HERO].icon = 0;
-		bar[BAR_HERO].iconFrame = 0;
-
-		bar[BAR_HERO].frame = 0;
-		bar[BAR_HERO].frame2 = 0;
-		bar[BAR_HERO].aniFrame = 0;
-
-		bar[BAR_HERO].x = MAINMENU_X / 2;
-		bar[BAR_HERO].y = (MAINMENU_Y / 2) + BOTTOMMENUHEIGHT;
-
-		bar[BAR_HERO].targetX = 0;
-		bar[BAR_HERO].targetY = 0;
-
-		bar[BAR_HERO].front = false;
-
-		bar[BAR_HERO].drawFunc = BAR_HERO;
-
-		bar[BAR_HERO].zoom = BAR_HERO_ZOOM;
-		break;
+	
 	case BAR_CREW:
 		bar[BAR_CREW].active = true;
 		bar[BAR_CREW].type = BAR_CREW;
@@ -792,8 +785,8 @@ void InitBar(int type)
 		bar[BAR_CREW].frame2 = 0;
 		bar[BAR_CREW].aniFrame = 0;
 
-		bar[BAR_CREW].x = MAINMENU_X / 2 + (MAINMENU_X + 2 * _2X);
-		bar[BAR_CREW].y = (MAINMENU_Y / 2) + BOTTOMMENUHEIGHT;
+		bar[BAR_CREW].x = MAINMENU_X / 2;
+		bar[BAR_CREW].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
 		bar[BAR_CREW].targetX = 0;
 		bar[BAR_CREW].targetY = 0;
@@ -804,32 +797,32 @@ void InitBar(int type)
 
 		bar[BAR_CREW].zoom = BAR_CREW_ZOOM;
 		break;
-	case BAR_COLLECTIONS:
-		bar[BAR_COLLECTIONS].active = true;
-		bar[BAR_COLLECTIONS].type = BAR_COLLECTIONS;
+	case BAR_EQUIP:
+		bar[BAR_EQUIP].active = true;
+		bar[BAR_EQUIP].type = BAR_EQUIP;
 
-		bar[BAR_COLLECTIONS].count = enemyHouse.gold;
-		bar[BAR_COLLECTIONS].add = 0;
-		bar[BAR_COLLECTIONS].countFrame = 0;
+		bar[BAR_EQUIP].count = enemyHouse.gold;
+		bar[BAR_EQUIP].add = 0;
+		bar[BAR_EQUIP].countFrame = 0;
 
-		bar[BAR_COLLECTIONS].icon = ICON_GOLD;
-		bar[BAR_COLLECTIONS].iconFrame = 0;
+		bar[BAR_EQUIP].icon = ICON_GOLD;
+		bar[BAR_EQUIP].iconFrame = 0;
 
-		bar[BAR_COLLECTIONS].frame = 0;
-		bar[BAR_COLLECTIONS].frame2 = 0;
-		bar[BAR_COLLECTIONS].aniFrame = 0;
+		bar[BAR_EQUIP].frame = 0;
+		bar[BAR_EQUIP].frame2 = 0;
+		bar[BAR_EQUIP].aniFrame = 0;
 
-		bar[BAR_COLLECTIONS].zoom = BAR_COLLECTIONS_ZOOM;
+		bar[BAR_EQUIP].zoom = BAR_COLLECTIONS_ZOOM;
 
-		bar[BAR_COLLECTIONS].x = DX - (MAINMENU_X / 2) - MAINMENU_X;
-		bar[BAR_COLLECTIONS].y = (MAINMENU_Y / 2) + BOTTOMMENUHEIGHT;
+		bar[BAR_EQUIP].x = MAINMENU_X + (MAINMENU_X / 2);
+		bar[BAR_EQUIP].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
-		bar[BAR_COLLECTIONS].targetX = 0;
-		bar[BAR_COLLECTIONS].targetY = 0;
+		bar[BAR_EQUIP].targetX = 0;
+		bar[BAR_EQUIP].targetY = 0;
 
-		bar[BAR_COLLECTIONS].front = false;
+		bar[BAR_EQUIP].front = false;
 
-		bar[BAR_COLLECTIONS].drawFunc = BAR_COLLECTIONS;
+		bar[BAR_EQUIP].drawFunc = BAR_EQUIP;
 
 		break;
 	case BAR_HEART:
@@ -843,24 +836,96 @@ void InitBar(int type)
 		bar[BAR_HEART].icon = ICON_HEART;
 		bar[BAR_HEART].iconFrame = 0;
 
-		bar[BAR_HEART].frame = 0;
+		bar[BAR_HEART].frame = 1;
 		bar[BAR_HEART].frame2 = 0;
 		bar[BAR_HEART].aniFrame = 0;
 
-		bar[BAR_HEART].x = DX / 2 - (HEARTBARWIDTH) / 2 + 1 * _2X;
-		//bar[BAR_HEART].y = DY / 2 - 168 * _2X; //STATUSWIN_Y - 28 * _2X;
-		bar[BAR_HEART].y = 48 * _2X + BOTTOMMENUHEIGHT; //STATUSWIN_Y - 28 * _2X;
-		//bar[BAR_HEART].y = STATUSWIN_Y + (rh - 4) * TSIZE - 128 * _2X - ry;
-		//bar[BAR_HEART].y = STATUSWIN_Y + (rh - 4) * TSIZE - BOXPOSITION_Y + 8 * _2X - ry;
+		bar[BAR_HEART].x = DX / 2;
+		bar[BAR_HEART].y = -64 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+		
+		bar[BAR_HEART].targetX = bar[BAR_HEART].targetX2 = DX / 2;
+		bar[BAR_HEART].targetY = bar[BAR_HEART].targetY2 = BOTTOMMENUHEIGHT - 2 * _2X;
 
-		bar[BAR_HEART].targetX = 0;
-		bar[BAR_HEART].targetY = 0;
+		bar[BAR_HEART].speed2 = bar[BAR_HEART].speed = 8 * _2X;
+		bar[BAR_HEART].waitingFrame = bar[BAR_HEART].waitingFrame2 = FPS;
+		bar[BAR_HEART].zoomIncrement = bar[BAR_HEART].zoomIncrement2 = 0;
+		bar[BAR_HEART].zoomEnd = bar[BAR_HEART].zoomEnd2 = BAR_HEART_ZOOM;
 
 		bar[BAR_HEART].front = false;
 
 		bar[BAR_HEART].drawFunc = BAR_HEART;
 
 		bar[BAR_HEART].zoom = BAR_HEART_ZOOM;
+		break;
+	case BAR_ROULETTE:
+		bar[BAR_ROULETTE].active = true;
+		bar[BAR_ROULETTE].type = BAR_ROULETTE;
+
+		bar[BAR_ROULETTE].frame = 0;
+		bar[BAR_ROULETTE].frame2 = 0;
+		bar[BAR_ROULETTE].aniFrame = 0;
+
+		bar[BAR_ROULETTE].x = DX / 2;
+		bar[BAR_ROULETTE].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+
+		bar[BAR_ROULETTE].targetX = 0;
+		bar[BAR_ROULETTE].targetY = 0;
+
+		bar[BAR_ROULETTE].front = false;
+
+		bar[BAR_ROULETTE].drawFunc = BAR_ROULETTE;
+
+		bar[BAR_ROULETTE].zoom = BAR_ROULETTE_ZOOM;
+		break;
+	case BAR_HEARTBET:
+		bar[BAR_HEARTBET].active = true;
+		bar[BAR_HEARTBET].type = BAR_HEARTBET;
+
+		bar[BAR_HEARTBET].frame = 1;
+		bar[BAR_HEARTBET].frame2 = 0;
+		bar[BAR_HEARTBET].aniFrame = 0;
+
+		bar[BAR_HEARTBET].x = -128 * _2X;
+		bar[BAR_HEARTBET].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+
+		bar[BAR_HEARTBET].targetX = bar[BAR_HEARTBET].targetX2 = 4 * _2X;
+		bar[BAR_HEARTBET].targetY = bar[BAR_HEARTBET].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X;
+
+		bar[BAR_HEARTBET].speed2 = bar[BAR_HEARTBET].speed = 8 * _2X;
+		bar[BAR_HEARTBET].waitingFrame = bar[BAR_HEARTBET].waitingFrame2 = FPS;
+		bar[BAR_HEARTBET].zoomIncrement = bar[BAR_HEARTBET].zoomIncrement2 = 0;
+		bar[BAR_HEARTBET].zoomEnd = bar[BAR_HEARTBET].zoomEnd2 = BAR_HEARTBET_ZOOM;
+
+		bar[BAR_HEARTBET].front = false;
+
+		bar[BAR_HEARTBET].drawFunc = BAR_HEARTBET;
+
+		bar[BAR_HEARTBET].zoom = BAR_HEARTBET_ZOOM;
+		break;
+	case BAR_PLAY:
+		bar[BAR_PLAY].active = true;
+		bar[BAR_PLAY].type = BAR_PLAY;
+
+		bar[BAR_PLAY].frame = 1;
+		bar[BAR_PLAY].frame2 = 0;
+		bar[BAR_PLAY].aniFrame = 0;
+
+		bar[BAR_PLAY].x = DX + 128 * _2X;
+		bar[BAR_PLAY].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+
+		bar[BAR_PLAY].targetX = bar[BAR_PLAY].targetX2 = DX - 68 * _2X;
+		bar[BAR_PLAY].targetY = bar[BAR_PLAY].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X;
+
+		bar[BAR_PLAY].speed2 = bar[BAR_PLAY].speed = 8 * _2X;
+		bar[BAR_PLAY].waitingFrame = bar[BAR_PLAY].waitingFrame2 = FPS;
+		bar[BAR_PLAY].zoomIncrement = bar[BAR_PLAY].zoomIncrement2 = 0;
+		bar[BAR_PLAY].zoomEnd = bar[BAR_PLAY].zoomEnd2 = BAR_PLAY_ZOOM;
+
+		bar[BAR_PLAY].front = false;
+
+		bar[BAR_PLAY].drawFunc = BAR_PLAY;
+
+		bar[BAR_PLAY].zoom = BAR_PLAY_ZOOM;
 		break;
 	case BAR_BATTLECOIN:
 		bar[BAR_BATTLECOIN].active = true;
@@ -875,7 +940,7 @@ void InitBar(int type)
 
 		bar[BAR_BATTLECOIN].aniFrame = 0;
 
-		bar[BAR_BATTLECOIN].x = DX / 2 - (float)GOLDBARWIDTH * BAR_BATTLECOIN_ZOOM / 2;
+		bar[BAR_BATTLECOIN].x = (float)GOLDBARWIDTH * BAR_BATTLECOIN_ZOOM / 2 - 56 * _2X;
 		bar[BAR_BATTLECOIN].y = DY + 64 * _2X;
 
 		bar[BAR_BATTLECOIN].targetX = bar[BAR_BATTLECOIN].targetX2 = bar[BAR_BATTLECOIN].x;
@@ -886,12 +951,12 @@ void InitBar(int type)
 			//	bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY / 2 + 108 * _2X;
 			//	break;
 			default:
-				bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY - GNBHEIGHT - 40 * _2X;
+				bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].y + TSIZE * 4;
 				break;
 			}
 		}
 		else
-			bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = DY - GNBHEIGHT;
+			bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].y + TSIZE * 4;
 
 		bar[BAR_BATTLECOIN].speed = 8 * _2X;
 		bar[BAR_BATTLECOIN].speedIncrement = 1 * _2X;
@@ -988,6 +1053,33 @@ void InitBar(int type)
 		bar[BAR_ENEMYUSER_BOX].drawFunc = BAR_ENEMYUSER_BOX;
 
 		break;
+	case BAR_CASTLE:
+		bar[BAR_CASTLE].active = true;
+		bar[BAR_CASTLE].type = BAR_CASTLE;
+
+		bar[BAR_CASTLE].count = 0;
+		bar[BAR_CASTLE].add = 0;
+		bar[BAR_CASTLE].countFrame = 0;
+
+		bar[BAR_CASTLE].icon = 0;
+		bar[BAR_CASTLE].iconFrame = 0;
+
+		bar[BAR_CASTLE].frame = 0;
+		bar[BAR_CASTLE].frame2 = 0;
+		bar[BAR_CASTLE].aniFrame = 0;
+
+		bar[BAR_CASTLE].x = DX - MAINMENU_X - (MAINMENU_X / 2);//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_MAINSHOP].zoom / 2;
+		bar[BAR_CASTLE].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
+
+		bar[BAR_CASTLE].targetX = 0;
+		bar[BAR_CASTLE].targetY = 0;
+
+		bar[BAR_CASTLE].front = false;
+
+		bar[BAR_CASTLE].drawFunc = BAR_CASTLE;
+
+		bar[BAR_CASTLE].zoom = BAR_HERO_ZOOM;
+		break;
 	case BAR_MAINSHOP:
 		bar[BAR_MAINSHOP].active = true;
 		bar[BAR_MAINSHOP].type = BAR_MAINSHOP;
@@ -1005,8 +1097,8 @@ void InitBar(int type)
 
 		bar[BAR_MAINSHOP].zoom = BAR_MAINSHOP_ZOOM;
 
-		bar[BAR_MAINSHOP].x = xOffset + DX - (float)(MAINMENU_X)*bar[BAR_MAINSHOP].zoom / 2;//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_MAINSHOP].zoom / 2;
-		bar[BAR_MAINSHOP].y = (MAINMENU_Y / 2) + BOTTOMMENUHEIGHT;
+		bar[BAR_MAINSHOP].x = DX - MAINMENU_X / 2;
+		bar[BAR_MAINSHOP].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
 		bar[BAR_MAINSHOP].targetX = 0;
 		bar[BAR_MAINSHOP].targetY = 0;
@@ -1016,6 +1108,7 @@ void InitBar(int type)
 		bar[BAR_MAINSHOP].drawFunc = BAR_MAINSHOP;
 
 		break;
+
 	case BAR_DAILYQUEST:
 		bar[BAR_DAILYQUEST].active = true;
 		bar[BAR_DAILYQUEST].type = BAR_DAILYQUEST;
@@ -1062,7 +1155,7 @@ void InitBar(int type)
 		bar[BAR_CREWUPGRADE].zoom = BAR_CREWUPGRADE_ZOOM;
 
 		//bar[BAR_CREWUPGRADE].x = xOffset + (MAINMENU_X + 4 * _2X) + (float)(MAINMENU_X + 4 * _2X) * bar[BAR_CREWUPGRADE].zoom / 2;//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_CREWUPGRADE].zoom / 2;
-		bar[BAR_CREWUPGRADE].x = xOffset + DX - (MAINMENU_X + 4 * _2X) - (float)(MAINMENU_X)*bar[BAR_CREWUPGRADE].zoom / 2;//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_COLLECTIONS].zoom / 2;
+		bar[BAR_CREWUPGRADE].x = xOffset + DX - (MAINMENU_X + 4 * _2X) - (float)(MAINMENU_X)*bar[BAR_CREWUPGRADE].zoom / 2;//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_EQUIP].zoom / 2;
 		bar[BAR_CREWUPGRADE].y = STATUSWIN_Y - 100 * _2X + BAR_BOTTOMMENUGAP;
 
 		bar[BAR_CREWUPGRADE].targetX = 0;
@@ -1203,6 +1296,36 @@ void InitBar(int type)
 
 		bar[BAR_RAIDCOIN].zoom = 1.2f;
 		break;
+	case BAR_STAR:
+		bar[BAR_STAR].active = true;
+		bar[BAR_STAR].type = BAR_STAR;
+
+		bar[BAR_STAR].count = 0;
+		bar[BAR_STAR].add = 0;
+		bar[BAR_STAR].countFrame = 0;
+
+		bar[BAR_STAR].icon = ICON_STAR;
+		bar[BAR_STAR].iconFrame = 0;
+
+		bar[BAR_STAR].frame = 0;
+		bar[BAR_STAR].frame2 = 0;
+		bar[BAR_STAR].aniFrame = 0;
+
+		bar[BAR_STAR].x = CROWNBARWIDTH + 2 * _2X + GOLDBARWIDTH + 2 * _2X;
+		bar[BAR_STAR].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
+
+		//bar[BAR_STAR].x = DX / 2;
+		//bar[BAR_STAR].y = DY / 2 + DIORAMASIZE_Y / 2 * DEFAULTZOOM - DIORAMASIZE_Y * DEFAULTZOOM + 87 * _2X;
+
+		bar[BAR_STAR].targetX = 0;
+		bar[BAR_STAR].targetY = 0;
+
+		bar[BAR_STAR].front = true;
+
+		bar[BAR_STAR].drawFunc = BAR_STAR;
+
+		bar[BAR_STAR].zoom = BAR_STAR_ZOOM;
+		break;
 	case BAR_COMBATPOWERALL:
 		bar[BAR_COMBATPOWERALL].active = true;
 		bar[BAR_COMBATPOWERALL].type = BAR_COMBATPOWERALL;
@@ -1219,7 +1342,7 @@ void InitBar(int type)
 		bar[BAR_COMBATPOWERALL].aniFrame = 0;
 
 		bar[BAR_COMBATPOWERALL].x = CROWNBARWIDTH + 2 * _2X + GOLDBARWIDTH + 2 * _2X;
-		bar[BAR_COMBATPOWERALL].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT;
+		bar[BAR_COMBATPOWERALL].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 		//bar[BAR_COMBATPOWERALL].x = DX / 2;
 		//bar[BAR_COMBATPOWERALL].y = DY / 2 + DIORAMASIZE_Y / 2 * DEFAULTZOOM - DIORAMASIZE_Y * DEFAULTZOOM + 87 * _2X;
@@ -1249,7 +1372,7 @@ void InitBar(int type)
 		bar[BAR_COMBATPOWER].aniFrame = 0;
 
 		bar[BAR_COMBATPOWER].x = CROWNBARWIDTH + GOLDBARWIDTH + 4 * _2X;
-		bar[BAR_COMBATPOWER].y = GNBHEIGHT == GNB_INIT_HEIGHT ? DY : DY - NORCH_HEIGHT;
+		bar[BAR_COMBATPOWER].y = GNBHEIGHT - GNB_INIT_HEIGHT;
 
 		//bar[BAR_COMBATPOWER].x = DX / 2;
 		//bar[BAR_COMBATPOWER].y = DY / 2 + DIORAMASIZE_Y / 2 * DEFAULTZOOM - DIORAMASIZE_Y * DEFAULTZOOM + 87 * _2X;
@@ -1399,6 +1522,48 @@ void InitBar(int type)
 
 		bar[type].drawFunc = type;
 		bar[type].owner = type - BAR_SKILL;
+		break;
+	case BAR_DAY:
+		bar[type].active = true;
+		bar[type].x = DX / 2;  // 왕관 옆
+		bar[type].y = DY - GNBHEIGHT + 4 * _2X;
+		bar[type].count = robin.currentDay;
+		bar[type].drawFunc = BAR_DAY;
+		bar[type].front = true;
+		bar[type].zoom = 2.0f;
+		bar[type].zoom2 = 1.0f;
+
+		bar[type].targetX2 = bar[type].targetX = bar[type].x;
+		bar[type].targetY2 = bar[type].targetY = bar[type].y;
+
+		bar[type].zoomEnd = 1.0f;
+		bar[type].zoomEnd2 = 0.6f;
+
+		bar[type].speedIncrement = 0.1f;
+		bar[type].speedIncrement2 = 0.1f;
+
+		bar[type].zoomIncrement = -0.1f;
+		bar[type].zoomIncrement2 = -0.01f;
+
+		bar[type].waitingFrame = FPS;
+		bar[type].waitingFrame2 = FPS;
+
+		bar[type].frame = 1;
+
+		bar[type].front = false;
+
+		break;
+	case BAR_LIFE:
+		bar[type].active = true;
+		bar[type].x = CROWNBARWIDTH + 2 * _2X + GOLDBARWIDTH + 2 * _2X;
+		bar[type].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
+		bar[type].count = robin.lifeRemaining;
+		bar[type].max = 3;  // 최대 3일
+		bar[type].drawFunc = BAR_LIFE;
+		bar[type].front = true;
+		bar[type].zoom = 1.0f;
+
+		bar[type].front = false;
 		break;
 
 	}
@@ -1705,7 +1870,22 @@ void NewGame(void)
 			robin.inven[i].socket[j] = EMPTYINT;
 	}
 
-	//
+	k = 0;
+	for (i = 0; i < EQUIP_NECK; i++) {
+		for (j = 0; j < (itemStartCnt[i * TOTALCHAR + 1] - itemStartCnt[i * TOTALCHAR]); j++) {
+			MakeItem(&robin.inven[robin.count], i * TOTALCHAR, 0, 0, j, false);
+			robin.inven[robin.count].count = 1;
+			robin.inven[robin.count].lv = 1;
+			robin.count++;
+		}
+	}
+
+	for (i = 0; i < TOTAL_CREW; i++) {
+		MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, i, false);
+		robin.inven[robin.count].count = 1;
+		robin.inven[robin.count].lv = 1;
+		robin.count++;
+	}
 
 	//무기하나 주기
 	//MakeItem(&robin.inven[0], ITEM_SWORD, 0, 0, 0, false);
@@ -1732,13 +1912,19 @@ void NewGame(void)
 
 		switch (i) {
 		case ROBIN:
-			MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_SWORD, 1, GRADE_NORMAL, ITEM_SWORD_STICK, 0);
+			robin.inven[GetInvenIdx(ITEM_SWORD, ITEM_SWORD_STICK, GRADE_NORMAL)].lv = 1;
+			EquipItem(&ao[i], &robin.inven[GetInvenIdx(ITEM_SWORD, ITEM_SWORD_STICK, GRADE_NORMAL)]);
+			//MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_SWORD, 1, GRADE_NORMAL, ITEM_SWORD_STICK, 0);
 			break;
 		case DIANA:
-			MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_PISTOL, 0);
+			robin.inven[GetInvenIdx(ITEM_GUN, ITEM_GUN_PISTOL, GRADE_NORMAL)].lv = 1;
+			EquipItem(&ao[i], &robin.inven[GetInvenIdx(ITEM_GUN, ITEM_GUN_PISTOL, GRADE_NORMAL)]);
+			//MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_PISTOL, 0);
 			break;
 		case MAXX:
-			MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_BOOMERANG, 1, GRADE_NORMAL, ITEM_BOOMERANG_BOOMERANG, 0);
+			robin.inven[GetInvenIdx(ITEM_BOOMERANG, ITEM_BOOMERANG_BOOMERANG, GRADE_NORMAL)].lv = 1;
+			EquipItem(&ao[i], &robin.inven[GetInvenIdx(ITEM_BOOMERANG, ITEM_BOOMERANG_BOOMERANG, GRADE_NORMAL)]);
+			//MakeItem(&ao[i].equip[EQUIP_WEAPON], ITEM_BOOMERANG, 1, GRADE_NORMAL, ITEM_BOOMERANG_BOOMERANG, 0);
 			break;
 		}
 
@@ -1875,12 +2061,28 @@ void NewGame(void)
 
 
 	option.gameControl = CONTROL_MANUAL;
-
-	robinmap = dioramaMap[robin.stage];
+	robin.castle = 0;
+	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 #ifdef GAMEDEBUG
 	//robin.gold = 1000000;
 	robin.gold = 0;
+
 #endif
+	// NewGame() 또는 InitRobin() 함수 내부에 추가
+	robin.currentDay = 1;           // Day 1부터 시작
+	robin.lifeRemaining = 3;        // 3일의 수명
+
+	//crewCnt = MAXCREW;
+
+	for (i = 0; i < crewCnt; i++)
+		robin.slotCrew[i] = -1;
+	
+	robin.slotCrew[0] = NPC_GIRL;
+	robin.slotCrew[1] = NPC_UNCLE;
+	robin.slotCrew[2] = NPC_AUNT;
+	robin.slotCrew[3] = NPC_ADELKNIGHT;
+	robin.slotCrew[4] = NPC_NOBLEMAN;
+	robin.slotCrew[5] = NPC_SEBASTIAN;
 
 #ifdef TESTINVINCIBLE
 	robin.exps = 31000000;
@@ -2106,10 +2308,6 @@ void GotoPlay(void)
 	robin.stage = 0;
 
 	//memset(&ao[NPC], 0, sizeof(OBJECT));
-	if (drawHandle == MD_BATTLE)
-		ao[PLAYER].zoom = BATTLEZOOM;
-	else
-		ao[PLAYER].zoom = LOBBYZOOM;
 	ao[NPC].active = false;
 
 	drawHandle = MD_PLAY;
@@ -2119,16 +2317,11 @@ void GotoPlay(void)
 	loadedMap = -1;
 
 	oldMap = robinmap;
-	if (bossRaidMode == true)
-		robinmap = BOSSRAIDROOM;
-	else if (robin.bossRoom == true)
-		robinmap = BOSSROOM;
-	else
-		robinmap = dioramaMap[robin.stage];
+	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 
 	//robinmap = TOLEMHOUSE2;
 
-	SetRoom();
+	//SetRoom();
 
 	if (doubleBuffer) {
 		if (oldMap != robinmap)
@@ -2156,6 +2349,8 @@ void GotoPlay(void)
 	//TEST
 	//SetBossObj();
 #endif
+
+	/*
 	if (robin.bossRoom == true) {
 		SetBossEnemy();
 		for (i = ENEMY; i < NEUTRAL; i++) {
@@ -2174,62 +2369,15 @@ void GotoPlay(void)
 		}
 	}
 	else {
-		if (drawHandle == MD_BATTLE) {
+		if (drawHandle == MD_PLAY ||drawHandle == MD_BATTLE) {
 			if (isEnemyObjActive()) {
 				CopyEnemyObj();
-				/*
-				for (j = ENEMY; j < NEUTRAL; j++) {
-					switch (ao[j].type) {
-					case ENEMY_BAHAMUT:
-					case ENEMY_BAHAMUT_RED:
-					case ENEMY_BAHAMUT_BLUE:
-					case ENEMY_BAHAMUT_PURPLE:
-					case ENEMY_BAHAMUT_GREEN:
-					case ENEMY_BAHAMUT_GOLD:
-					case ENEMY_BAHAMUT_BLACK:
-						BahamutReady(&ao[j]);
-						break;
-					case ENEMY_CASTLE_BOSS1:
-					case ENEMY_CASTLE_BOSS1_RED:
-					case ENEMY_CASTLE_BOSS1_BLUE:
-					case ENEMY_CASTLE_BOSS1_PURPLE:
-					case ENEMY_CASTLE_BOSS1_GREEN:
-					case ENEMY_CASTLE_BOSS1_GOLD:
-					case ENEMY_CASTLE_BOSS1_BLACK:
-						pObj = &ao[j];
-						for (i = ENEMY; i < NEUTRAL; i++) {
-							if (ao[i].active == false) {
-								memcpy(&ao[i], pObj, sizeof(OBJECT));
-								ao[i].etc = pObj->tileX2 < 2 ? CASTLEBOSS1_UARM_NEUTRAL : CASTLEBOSS1_DARM_NEUTRAL;
-								ao[i].dirF = ao[i].dirX = pObj->tileX2 % 2 == 0 ? LEFT : RIGHT;
-								ao[i].moveHandler = DEBRIONARMMOVE;
-								ao[i].mom = GetObjFromPtr(pObj);
-								MoveObj(&ao[i]);
-								InitMotion(&ao[i]);
-								pObj->tileX2++;
-
-								if (pObj->tileX2 == 4)
-									break;
-							}
-						}
-						break;
-					}
-
-					if (ao[j].hp == 0) {
-						ao[j].drawHandler = VANISHDRAW;
-						ao[j].moveHandler = VANISHMOVE;
-					}
-					else if (j == GetEnemyMomObj(j))
-						bar[BAR_ENEMYHP + GetEnemyMomObj(j) - ENEMY].active = true;
-				}
-				*/
+		
 			}
 			//
 			else {
 				memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
 				memset(&ao[ENEMY], 0, sizeof(robin.enemyObj));
-				//SetSimpleEnemy();
-				//memcpy(&robin.enemyObj, &ao[ENEMY], sizeof(robin.enemyObj));
 			}
 			//여기서 몬스터 HP바 초기화
 			for (i = 0; i < MAXENEMY; i++) {
@@ -2239,6 +2387,7 @@ void GotoPlay(void)
 			}
 		}
 	}
+	*/
 
 #ifdef ENEMYHPBAR
 	LoadEnemyHpBar();
@@ -2254,9 +2403,18 @@ void GotoPlay(void)
 
 	curMenu = MENU_PLAY;
 
+	effect.color = effect.color2 = false;
+
+	memset(&ao[SOLDIER], 0, sizeof(OBJECT));
+	oldMap = robinmap;
+	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
+	SetRoom();
+
+	areaFrame = INFOFRAME;
 
 	SetHero();
-	SetCastleCrew();
+	SetBattleCrew();
+	DecideRouletteResult();
 
 	sequenceFrame = false;
 	screenDarken = false;
@@ -2264,6 +2422,9 @@ void GotoPlay(void)
 	memset(&cardMark, 0, sizeof(cardMark));
 	memset(&rewardMark, 0, sizeof(rewardMark));
 	memset(&boxMark, 0, sizeof(boxMark));
+
+	//상자 박스를 만들어준다.
+	//SetBox(&ao[ITEMBOX], 0);
 
 	pvpRewardIndex = 0;
 
@@ -2275,7 +2436,22 @@ void GotoPlay(void)
 		PlayMusic(M_TITLE);
 
 	attackSequence = ATTACKSEQUENCE_READY;
+	arenaStatus = STATUS_READY;
 	currencyMarkCnt = 0;
+
+	turn = PLAYER;
+	turnFrame = 0;
+	turnPosition = HERE;
+
+	for (i = 0; i < TOTALOBJECT; i++) {
+		ao[i].turn = 0;
+		ao[i].turnPosition = HERE;
+	}
+
+	arenaStatus = STATUS_PLAY;
+	touchDisable = true;
+	battleStartFrame = BATTLESTARTFRAME;
+
 }
 
 void BackToReward(void)
@@ -2527,7 +2703,6 @@ void OutOfHouse(void)
 
 static int CrewIdToCrewDataKey(int crewId)
 {
-	//int dataId = (crewId + TOTALCHAR);
 	int dataId = crewId;
 	return crewData[dataId * CREWDATASIZE];
 }
@@ -2535,18 +2710,6 @@ static int CrewIdToCrewDataKey(int crewId)
 static int CrewDataKeyToCmf(int crewDataKey)
 {
 	return enemyData[crewDataKey * ENEMYDATASIZE + ENEMYDATA_CMF];
-}
-
-static int BuildOwnedCrewIds(int* out, int outMax)
-{
-	int cnt = 0;
-	for (int i = 0; i < TOTAL_CREW; i++) {
-		if (robin.getCrews[i] == true) {
-			if (cnt < outMax) out[cnt] = i;
-			cnt++;
-		}
-	}
-	return cnt;
 }
 
 static int RemoveIdFromArray(int* arr, int n, int removeId)
@@ -2578,13 +2741,6 @@ static int GetBgFrameForCrewKey(int crewDataKey)
 	return 0;
 }
 
-static int GetSelectedLeaderCrewId(void)
-{
-	//TEST
-	robin.crewReader = 3;
-	return robin.crewReader;
-}
-
 static inline int GetCrewKeyFromCrewId(int crewId)
 {
 	return CrewIdToCrewDataKey(crewId); // crewData의 인덱스(=key)
@@ -2594,7 +2750,7 @@ static inline int GetCrewKeyFromCrewId(int crewId)
 static int GetCrewStar(int crewId)
 {
 	int key = GetCrewKeyFromCrewId(crewId);
-	return crewData[key * CREWDATASIZE + CREWDATA_STAR];
+	return enemyData[crewData[key * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];
 }
 
 static int GetRegionCount(void)
@@ -2677,7 +2833,7 @@ static void DrawCrewGridBackground(void)
 				if (crewIdNoHero < 0) crewIdNoHero = 0;    // 방어(정상적이면 음수 안 나옴)
 
 				cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
-				owned = robin.getCrews[crewIdNoHero];
+				//owned = robin.getCrews[crewIdNoHero];
 			}
 
 			// ------------------------------------------------------------
@@ -2906,7 +3062,7 @@ void BattleLoadingDraw(void)
 				break;
 			default:
 				//이름과 별
-				DrawStar(ICON_STAR, summonX, summonY - (float)12 * _2X * summonScale * typeZoom * 0.5f, crewData[index * CREWDATASIZE + CREWDATA_STAR] + 1, crewData[index * CREWDATASIZE + CREWDATA_STAR] + 1, crewData[index * CREWDATASIZE + CREWDATA_STAR] + 1, CENTER, true, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
+				DrawStar(ICON_STAR, summonX, summonY - (float)12 * _2X * summonScale * typeZoom * 0.5f, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, CENTER, true, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
 				CenterText(ao[CREW + crewSummonIdx].name, summonX, summonY - (float)16 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
 				break;
 			}
@@ -2958,7 +3114,7 @@ void BattleLoadingDraw(void)
 		else {
 			// 크루
 			int crewIdx = i - ownedHeroCnt;
-			int key = crewList[crewIdx];
+			int key = robin.slotCrew[crewIdx];
 			int cmf = enemyData[key * ENEMYDATASIZE + ENEMYDATA_CMF];
 
 			DrawCmfDetailShadow(
@@ -3014,7 +3170,7 @@ static inline int ScoreFromCrewId(int crewId)
 {
 	// 네가 정의한 기준(별*100 + 지역)과 동일하게 맞추려면:
 	int key = CrewIdToCrewDataKey(crewId);
-	int star = crewData[key * CREWDATASIZE + CREWDATA_STAR];
+	int star = enemyData[crewData[key * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];
 	int region = GetCrewRegionSafeByCrewId(crewId); // 0..TOTALCASTLE-1
 	if (region < 0) region = 0;
 	return star * 100 + region;
@@ -3051,7 +3207,7 @@ void PickBattleCrew(
 	// ==============================
 	std::vector<int> starPool[10];
 	for (int crewId = 0; crewId < TOTAL_CREW; crewId++) {
-		if (!robin.getCrews[crewId]) continue;
+		//if (!robin.getCrews[crewId]) continue;
 		if (picked[crewId]) continue;
 
 		int key = CrewIdToCrewDataKey(crewId);
@@ -3202,20 +3358,16 @@ void GotoBattleLoading(void)
 {
 	int i;
 
-	drawHandle = MD_BATTLELOADING;
+	//drawHandle = MD_BATTLELOADING;
 	frame = 0;
 	sequenceFrame = false;
 	screenDarken = false;
 
 	heroCnt = 0;
-	crewCnt = 0;
+	crewCnt = MAXCREW;
 	showCrewCnt = 0;
 	cardCmf = -1;
 	cardAlpha = 0;
-	for (i = 0; i < MAXCREW; i++) {
-		crewList[i] = -1;
-		crewIdList[i] = -1;
-	}
 
 	// HERO 카운트
 	for (i = 0; i < TOTALCHAR; i++) {
@@ -3227,12 +3379,12 @@ void GotoBattleLoading(void)
 	// ------------------------------
 	// 리더: 0번 고정
 	// ------------------------------
-	int leaderCrewId = GetSelectedLeaderCrewId();
+	int leaderCrewId = robin.slotCrew[0];
 	bool hasLeader = false;
-	if (leaderCrewId >= 0 && leaderCrewId < TOTAL_CREW && robin.getCrews[leaderCrewId] == true) {
+	if (leaderCrewId >= 0 && leaderCrewId < TOTAL_CREW/* && robin.getCrews[leaderCrewId] == true*/) {
 		hasLeader = true;
 		crewIdList[0] = leaderCrewId;
-		crewList[0] = CrewIdToCrewDataKey(leaderCrewId);
+		robin.slotCrew[0] = CrewIdToCrewDataKey(leaderCrewId);
 		crewCnt = 1;
 	}
 
@@ -3250,7 +3402,7 @@ void GotoBattleLoading(void)
 	// ------------------------------
 	PickBattleCrew(
 		crewIdList,
-		crewList,
+		robin.slotCrew,
 		crewCnt,
 		MAXCREW,
 		hasLeader,
@@ -3258,12 +3410,14 @@ void GotoBattleLoading(void)
 	);
 
 	//TEST
-	crewList[0] = NPC_GIRL;
-	crewList[1] = NPC_UNCLE;
-	crewList[2] = NPC_AUNT;
-	crewList[3] = NPC_ADELKNIGHT;
-	crewList[4] = NPC_MAID;
-	crewList[5] = NPC_NOBLEMAN;
+	//crewCnt = MAXCREW;
+
+	//robin.slotCrew[0] = NPC_GIRL;
+	//robin.slotCrew[1] = NPC_UNCLE;
+	//robin.slotCrew[2] = NPC_AUNT;
+	//robin.slotCrew[3] = NPC_ADELKNIGHT;
+	//robin.slotCrew[4] = NPC_NOBLEMAN;
+	//robin.slotCrew[5] = NPC_SEBASTIAN;
 
 	// ---- 로딩 연출 초기화 ----
 	blState = BL_REVEAL;
@@ -3283,11 +3437,11 @@ void GotoBattleLoading(void)
 	SetHero();
 	SetBattleCrew();
 
-	bar[BAR_COMBATPOWERALL].front = true;
-	bar[BAR_COMBATPOWERALL].count = 0;
-	bar[BAR_COMBATPOWERALL].countFrame = 0;
-	bar[BAR_COMBATPOWERALL].add = 0;
-	bar[BAR_COMBATPOWERALL].max = 0;
+	//bar[BAR_COMBATPOWERALL].front = true;
+	//bar[BAR_COMBATPOWERALL].count = 0;
+	//bar[BAR_COMBATPOWERALL].countFrame = 0;
+	//bar[BAR_COMBATPOWERALL].add = 0;
+	//bar[BAR_COMBATPOWERALL].max = 0;
 	//for (i = 0; i < TOTALCHAR; i++) {
 	//	if (IsGetHero(i))
 	//		AddBar(&bar[BAR_COMBATPOWERALL], GetCombatPower(&ao[i]), BARFRAME);
@@ -3348,7 +3502,7 @@ void BattleLoadingUpdate(void)
 			}
 			else {
 				int crewIdx = nextIdx - ownedHeroCnt; // 0~crewCnt-1
-				summonType = crewList[crewIdx];       // 크루 type(key)
+				summonType = robin.slotCrew[crewIdx];       // 크루 type(key)
 				summonCmf = enemyData[summonType * ENEMYDATASIZE + ENEMYDATA_CMF];
 
 				// 기존 로직 유지(전투력바 등): crewIdx 기준
@@ -3497,10 +3651,10 @@ void BattleLoadingUpdate(void)
 void GotoBattle(void)
 {
 	int i;
-	int doorY = 10 * TSIZE;
 	int count;
 	OBJECT* pObj = &ao[PLAYER];
 	OBJECT* eObj = &ao[ENEMY];
+
 
 	if (touch) {
 		touchMode = TOUCH_PLAY;
@@ -3509,78 +3663,12 @@ void GotoBattle(void)
 		swipeIndex = 0;
 	}
 
-	//memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
-	//memcpy(&robin.enemyObj, eObj, sizeof(robin.enemyObj));
-	robin.stage = nearestIndex;
-
 	effect.color = effect.color2 = false;
 
-	//for (i = ENEMY; i < NEUTRAL; i++)
-	//	robin.enemyObj[i - ENEMY].active = false;
-
-
-	memset(&ao[SOLDIER], 0, sizeof(OBJECT) * MAXENEMYOBJ);
-	memcpy(&ao[SOLDIER], &ao[PLAYER], sizeof(OBJECT));
-	ao[SOLDIER].active = false;
-
-	drawHandle = MD_BATTLE;
-	keyHandle = MK_BATTLE;
-	InitBar(BAR_BOSSHP);
-	InitBar(BAR_REMAINEDTURN);
-	
-	robinmap = dioramaMap[robin.stage];
+	memset(&ao[SOLDIER], 0, sizeof(OBJECT));
+	oldMap = robinmap;
+	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 	SetRoom();
-
-	robin.curWaveIdx = 0;
-	memset(&robin.waveActive, 0, sizeof(robin.waveActive));
-	robin.waveTimeStamp = MC_knlCurrentTimeStamp();//여기서 웨이브 시작 시간을 정해주고
-
-	//히어로와 몬스터도 세팅해 준다.
-
-#ifdef GAMEDEBUG
-
-#endif
-	//여기서 공격슬롯 관련 정보를 초기화한다.
-
-	//레이드 회수를 초기화하고
-	remainedTurn = MAXTURN;
-	remainedTurnFrame = 0;
-	raidChance = TOTALBATTLECHANCE;
-
-	//joyStickAni = 0;
-	//joyStickDir = LEFT;
-	//attackSequence = -1;
-
-	//autoPlay = false;
-
-	//for (i = ENEMY; i < NEUTRAL; i++) {
-	//	if (i < ENEMY + 4) {
-	//		ao[i].dead = true;
-	//	}
-	//}
-	//pObj->active = false;
-
-	//pObj->zoom = HOUSEPLAYERZOOM;
-	//pObj->x = DX / 2;
-	//pObj->x = 42 * _2X;
-#ifdef ENEMYUSER
-	//pObj->y = houseInfo[enemyHouse.houseType * HOUSEINFODATASIZE + 3] + 38 * TSIZE + TSIZE / 2;
-	//pObj->y = houseInfo[enemyHouse.houseType * HOUSEINFODATASIZE + 3] + 23 * TSIZE + TSIZE / 2;
-#else
-	pObj->y = houseInfo[stageHouseType[robin.stage] * HOUSEINFODATASIZE + 3] + 36 * TSIZE + TSIZE / 2 + 48 * _2X;
-#endif
-	//pObj->dirF = pObj->dirX = RIGHT;
-	//pObj->dx = 0;
-
-#ifdef ENEMYUSER
-	//SetHouseCrew(robin.enemyUserIdx, false);
-#else
-	SetBossCrew(robin.stage);
-#endif
-
-	//turn = NEUTRAL;
-
-	//InitBar(BAR_ENEMYHP);
 
 	bar[BAR_BOX].active = false;
 	//bar[BAR_GOLD].active = false;
@@ -3592,19 +3680,17 @@ void GotoBattle(void)
 	//bar[BAR_HEART].active = false;
 	//bar[BAR_]
 	//InitBar(BAR_STAGEPROGRESS);
-	bar[BAR_HERO].active = false;
-	bar[BAR_CREW].active = false;
-	bar[BAR_MAINSHOP].active = false;
-	bar[BAR_COLLECTIONS].active = false;
-	bar[BAR_CROWN].active = false;
-	bar[BAR_SHIELD].active = false;
+	//bar[BAR_CASTLE].active = false;
+	//bar[BAR_CREW].active = false;
+	//bar[BAR_MAINSHOP].active = false;
+	//bar[BAR_EQUIP].active = false;
+	//bar[BAR_CROWN].active = false;
+	//bar[BAR_SHIELD].active = false;
 
 	//한 턴 기준으로 획득할 
 	//bar[BAR_RAIDCOIN].active = true;
 
 	areaFrame = INFOFRAME;
-
-	DecideRouletteResult();
 
 	//for (i = 0; i < MAXCREW; i++) {
 	//	ao[ENEMY + i].coolTime = enemyHouse.crewTime[i];
@@ -3650,7 +3736,13 @@ void GotoBattle(void)
 	//dioramaZoom = DIORAMAZOOM_BATTLE;
 	//wheelAngle = 0;
 	//wheelSpeed = 0;
-	SetHero();
+	//SetHero();
+	//SetBattleCrew();
+
+	battleStartFrame = BATTLESTARTFRAME;
+
+	drawHandle = MD_BATTLE;
+	keyHandle = MK_BATTLE;
 }
 
 void SetRaidBox(bool activeVal)
@@ -3867,8 +3959,8 @@ void WhoIsNextTurn(void)
 		attackSequence = ATTACKSEQUENCE_COIN;
 		//remainedTurn--;
 		//
-		if (remainedTurn == 0)
-			GotoPlay();//로비로 돌아간다.
+		//if (remainedTurn == 0)
+		//	GotoPlay();//로비로 돌아간다.
 	}
 
 	turnFrame = 0;

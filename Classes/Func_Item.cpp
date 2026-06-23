@@ -21,13 +21,7 @@ long long GetStageAdmissionFee(void)
 		betGold += GetCharPrice(DIANA);
 	if (robin.heroesSetting[MAXX])
 		betGold += GetCharPrice(MAXX);
-	if (robin.crewSetting[0])
-		betGold += GetCrewPrice(GetCrewIdxFromType(robin.crew[0]));
-	if (robin.crewSetting[1])
-		betGold += GetCrewPrice(GetCrewIdxFromType(robin.crew[1]));
-	if (robin.crewSetting[2])
-		betGold += GetCrewPrice(GetCrewIdxFromType(robin.crew[2]));
-
+	
 	return betGold;
 }
 
@@ -1981,7 +1975,7 @@ int GetItemStar(int type, int detail, int grade)
 	int i;
 	int idx;
 
-	return itemStar[itemStartCnt[type] + detail];
+	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {
 	//	if (collectionData[i * COLLECTIONSDATASIZE + 0] == type && collectionData[i * COLLECTIONSDATASIZE + 1] == detail && collectionData[i * COLLECTIONSDATASIZE + 2] == grade)
 	//		return collectionData[i * COLLECTIONSDATASIZE + 3] + 1;
@@ -2146,7 +2140,18 @@ void BackUpEnemyObj(void)
 
 void CopyEnemyObj(void)
 {
+	int i;
 	memcpy(&ao[ENEMY], &robin.enemyObj, sizeof(OBJECT) * MAXENEMY * MAXENEMYOBJ);
+	for (i = 0; i < MAXENEMY * MAXENEMYOBJ; i++) {
+		if (ao[ENEMY + i].active == true) {
+			ao[ENEMY + i].x = ao[ENEMY + i].nx;
+			ao[ENEMY + i].y = ao[ENEMY + i].ny;
+			ao[ENEMY + i].turn = 0;
+			ao[ENEMY + i].turnPosition = HERE;
+			ao[ENEMY + i].frame = ao[ENEMY + i].jumpFrame = ao[ENEMY + i].mainFrame = ao[ENEMY + i].attackedFrame = 0;
+			
+		}
+	}
 }
 
 int RemainMonstersCnt(void)
@@ -2518,41 +2523,63 @@ void EraseNetItem(ITEM* it)
 void ArrangeInven(void)
 {
 	int i, j;
+	int writeIdx = 0;
 
-	robin.count = 0;
+	ITEM tempInven[TOTALINVENTORY];
 
-	//인벤토리를 정렬한다.
-	//for (i = 0; i < robin.maxInven; i++) {
+	// 전체 초기화
 	for (i = 0; i < TOTALINVENTORY; i++) {
-		if (robin.inven[i].type == EMPTY) {
-			//if (i < robin.maxInven - 1)
-			if (i < TOTALINVENTORY - 1)
-				//memcpy(&robin.inven[i], &robin.inven[i + 1], sizeof(ITEM) * (robin.maxInven - i - 1));
-				memcpy(&robin.inven[i], &robin.inven[i + 1], sizeof(ITEM) * (TOTALINVENTORY - i - 1));
+		memset(&tempInven[i], 0, sizeof(ITEM));
 
-			//확장된 인벤토리 초기화
-			//memset(&robin.inven[robin.maxInven - 1], 0, sizeof(ITEM));
-			memset(&robin.inven[TOTALINVENTORY - 1], 0, sizeof(ITEM));
+		tempInven[i].type = EMPTY;
 
-			//robin.inven[robin.maxInven - 1].type = EMPTY;
-			robin.inven[TOTALINVENTORY - 1].type = EMPTY;
+		for (j = 0; j < 12; j++)
+			tempInven[i].option[j][0] = EMPTYINT;
 
-			for (j = 0; j < 12; j++)
-				//robin.inven[robin.maxInven - 1].option[j][0] = EMPTYINT;
-				robin.inven[TOTALINVENTORY - 1].option[j][0] = EMPTYINT;
-			for (j = 0; j < 6; j++)
-				//robin.inven[robin.maxInven - 1].socket[j] = EMPTYINT;
-				robin.inven[TOTALINVENTORY - 1].socket[j] = EMPTYINT;
+		for (j = 0; j < 6; j++)
+			tempInven[i].socket[j] = EMPTYINT;
+	}
+
+	// EMPTY가 아닌 아이템만 앞으로 복사
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		if (robin.inven[i].type != EMPTY) {
+			memcpy(&tempInven[writeIdx], &robin.inven[i], sizeof(ITEM));
+			writeIdx++;
 		}
 	}
 
-	//for (i = 0; i < robin.maxInven; i++) {
-	for (i = 0; i < TOTALINVENTORY; i++) {
-		if (robin.inven[i].type == EMPTY)
-			break;
+	robin.count = writeIdx;
+
+	// 정렬: type -> detail -> grade
+	for (i = 0; i < robin.count - 1; i++) {
+		for (j = i + 1; j < robin.count; j++) {
+
+			bool swapFlag = false;
+
+			if (tempInven[i].type > tempInven[j].type)
+				swapFlag = true;
+			else if (tempInven[i].type == tempInven[j].type) {
+				if (tempInven[i].detail > tempInven[j].detail)
+					swapFlag = true;
+				else if (tempInven[i].detail == tempInven[j].detail) {
+					if (tempInven[i].grade > tempInven[j].grade)
+						swapFlag = true;
+				}
+			}
+
+			if (swapFlag) {
+				ITEM temp;
+				memcpy(&temp, &tempInven[i], sizeof(ITEM));
+				memcpy(&tempInven[i], &tempInven[j], sizeof(ITEM));
+				memcpy(&tempInven[j], &temp, sizeof(ITEM));
+			}
+		}
 	}
 
-	robin.count = i;
+	// 다시 robin.inven에 반영
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		memcpy(&robin.inven[i], &tempInven[i], sizeof(ITEM));
+	}
 }
 /*
 void ArrangeNetInven(void)
@@ -2858,8 +2885,8 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 	//인벤토리에 아이템이 고정이기 때문에 그냥 복사해준다.
 	//업그레이드를 하면 인벤토리를 업그레이드 시키고, 만약 이 아이템이 현재 장착되어 있는 거라면 장비장착을 한번 더 해준다.
 
-	//memcpy(&pObj->equip[tEquip], it, sizeof(ITEM));	//임시저장소에 있는것을 장비해준다.
-
+	memcpy(&pObj->equip[tEquip], it, sizeof(ITEM));	//임시저장소에 있는것을 장비해준다.
+	/*
 	if (pObj->equip[tEquip].type == EMPTY) {
 		//비어있으면 그냥 넣는다
 		memcpy(&pObj->equip[tEquip], it, sizeof(ITEM));	//임시저장소에 있는것을 장비해준다.
@@ -2874,7 +2901,6 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 			it->socket[i] = EMPTYINT;
 
 		robin.count--;
-		ArrangeInven();
 	}
 	else {
 		//차있으면 교체한다
@@ -2882,6 +2908,7 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 		memcpy(it, &pObj->equip[tEquip], sizeof(ITEM));	//장비되어 있는것을 인벤으로 넣고
 		memcpy(&pObj->equip[tEquip], &tempItem, sizeof(ITEM));	//임시저장소에 있는것을 장비해준다.
 	}
+	*/
 
 	SetNpcEquip(it);
 
@@ -2897,6 +2924,8 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 
 	if (GetObjFromPtr(pObj) == PLAYER)
 		AddBar(&bar[BAR_COMBATPOWER], GetCombatPower(pObj) - (bar[BAR_COMBATPOWER].count + bar[BAR_COMBATPOWER].add), BARFRAME);
+
+	ArrangeInven();
 
 	SaveGame();
 

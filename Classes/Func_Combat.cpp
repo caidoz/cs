@@ -1972,7 +1972,11 @@ void AttackRobin(int obj, int dest)
 		ao[dest].frame = 0;
 	}
 
+	BackUpEnemyObj();
+	//for (i = ENEMY; i < NEUTRAL; i++)
+	//	robin.enemyObj[i - ENEMY].x = ao[i].nx;
 
+	SaveGame();
 }
 
 int AttackRobin_Back(int obj, int dest)

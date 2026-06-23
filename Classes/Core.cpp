@@ -197,7 +197,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 			else {
 				isTouchKey = TOUCH_DRAG;
 
-				if (keyHandle == MK_PLAY && swipeLock == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_PLAY)) {
+				if (keyHandle == MK_PLAY && swipeLock == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
 					touchFrame = FPS;
 
 					if (scDir == SCROLL_NOTHING) {
@@ -206,6 +206,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 						case MENU_COLLECTIONS:
 						case MENU_SHOP:
 						case MENU_CREW:
+						case MENU_CASTLE:
 							//x축 이동값이 크면
 							if (Abs(touchPressedKey[0][0] - touchPressedKey[1][0]) - Abs(touchPressedKey[0][1] - touchPressedKey[1][1]) > 0)
 								scDir = SCROLL_HORIZONTAL;
@@ -414,8 +415,9 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 
 				
 				//curMenu == MENU_PLAY
-				if (curMenu == MENU_COLLECTIONS ||
-					curMenu == MENU_CREW ||
+				if (curMenu == MENU_CREW ||
+					curMenu == MENU_COLLECTIONS ||
+					curMenu == MENU_CASTLE ||
 					curMenu == MENU_SHOP ||
 					curMenu == MENU_STARSHOP ||
 					curMenu == MENU_PLAY
@@ -445,7 +447,20 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 							}
 						}
 					}
-					scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT;
+					switch (curMenu) {
+					default:
+						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT;
+						break;
+					case MENU_CREW:
+						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 406 - 112;
+						break;
+					case MENU_COLLECTIONS:
+						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
+						break;
+					case MENU_CASTLE:
+						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
+						break;
+					}
 					switch (curMenu) {
 					default:
 						if (scY[curMenu] < 0 || scY[curMenu] > scT[curMenu]) {
@@ -1352,7 +1367,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (rewardMark[i].type == ITEM_CREW) {
-				curStar = maxStar = crewData[rewardMark[i].detail * CREWDATASIZE + CREWDATA_STAR] + 1;
+				curStar = maxStar = enemyData[crewData[rewardMark[i].detail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			}
 			else {
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
@@ -1405,7 +1420,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (rewardMark[i].type == ITEM_CREW) {
-				curStar = maxStar = crewData[rewardMark[i].detail * CREWDATASIZE + CREWDATA_STAR] + 1;
+				curStar = maxStar = enemyData[crewData[rewardMark[i].detail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			}
 			else {
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
@@ -1458,6 +1473,7 @@ void PaintClet(int x, int y, int w, int h)
 					default:
 						AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
 						break;
+					case MD_PLAY:
 					case MD_BATTLE:
 						switch (currencyMark[i].bar) {
 						case BAR_GOLD:
@@ -1693,7 +1709,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (boxCardMark[i].type == ITEM_CREW) {
-				curStar = maxStar = crewData[boxCardMark[i].detail * CREWDATASIZE + CREWDATA_STAR] + 1;
+				curStar = maxStar = enemyData[crewData[boxCardMark[i].detail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			}
 			else {
 				//curStar = maxStar = GetItemStar(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade);
@@ -1749,7 +1765,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (boxCardMark[i].type == ITEM_CREW) {
-				curStar = maxStar = crewData[boxCardMark[i].detail * CREWDATASIZE + CREWDATA_STAR] + 1;
+				curStar = maxStar = enemyData[crewData[boxCardMark[i].detail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			}
 			else {
 				//curStar = maxStar = GetItemStar(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade);

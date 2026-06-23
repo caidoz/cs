@@ -239,6 +239,7 @@ signed int clipX4;
 signed int clipY4;
 ClippingNode* clipNode;
 signed short STATUSWIN_Y;//전투를 위한 
+signed short STATUSWIN_Y_INIT;//초기값
 signed short STATUSWIN_Y2;
 signed short PLAYAREA_X = 20 * TSIZE;
 signed short PLAYAREA_Y = 20 * TSIZE;
@@ -547,7 +548,7 @@ unsigned char nInvenMax, nInvenCnt, nShopCnt;
 //int needErase[10];
 int shopDesc[MAXNETSHOP];
 int cItem;
-int focusItem;
+ITEM focusItem;
 int boxNeutral;
 int cNeutral;
 int progress;
@@ -638,7 +639,9 @@ unsigned short charInfoPage;
 int INVEN_VCNT = 4;//인벤토리 세로 몇개인가
 int INVEN_TCNT = INVEN_HCNT * INVEN_VCNT;
 int GNBHEIGHT = GNB_INIT_HEIGHT;
-int BOTTOMMENUHEIGHT = 40 * _2X;
+int BOTTOMMENUHEIGHT = BOTTOMMENU_INIT_HEIGHT;
+int NORCH_HEIGHT = 94;
+int HOMEBAR_HEIGHT = 54;
 
 REPORTVAR rpVar;
 REPORTVAR2 rpVar2;
@@ -1269,9 +1272,8 @@ int turnListIdx;
 int enemyTurnStartIdx;
 int totalTurn;
 int turnList[PLAYERALL + MAXWAVEENEMY];
-int crewList[MAXCREW] = { -1, -1, -1, -1, -1, -1 };
 int crewIdList[MAXCREW] = { -1, -1, -1, -1, -1, -1 };
-int crewCnt = 0;
+int crewCnt = MAXCREW;
 int heroCnt = 0;
 int showCrewCnt = 0; // 로딩 화면에서 현재까지 "공개/합류 연출로 보여줄" 크루 수(0..crewCnt)
 int showHeroCnt = 0;
@@ -1279,7 +1281,7 @@ int showHeroCnt = 0;
 int leaderCrewId = -1;   // 0..TOTAL_CREW-1 or -1
 bool hasLeader = false;
 
-// 중앙 카드에 표시할 현재 공개 캐릭터(crewList[showCrewCnt]를 기반으로)
+// 중앙 카드에 표시할 현재 공개 캐릭터(robin.slotCrew[showCrewCnt]를 기반으로)
 int cardCmf = -1;
 int cardAlpha = 0;
 
@@ -1370,3 +1372,5 @@ int levelUpStatus = 0;
 int maxUserLv = 0;
 bool bossOn = false;
 int touchDisable = 3 * FPS;
+
+int floatOffsetY;

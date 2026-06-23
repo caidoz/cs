@@ -314,6 +314,7 @@
     <ClInclude Include="..\Classes\Data.h" />
     <ClInclude Include="..\Classes\Data\AlphaData.h" />
     <ClInclude Include="..\Classes\Data\BattleData.h" />
+    <ClInclude Include="..\Classes\Data\CastleData.h" />
     <ClInclude Include="..\Classes\Data\CmfData.h" />
     <ClInclude Include="..\Classes\Data\CollectionData.h" />
     <ClInclude Include="..\Classes\Data\DemoData.h" />
@@ -338,6 +339,7 @@
     <ClInclude Include="..\Classes\Def.h" />
     <ClInclude Include="..\Classes\Def\AlphaDef.h" />
     <ClInclude Include="..\Classes\Def\AttackSequenceDef.h" />
+    <ClInclude Include="..\Classes\Def\CastleDef.h" />
     <ClInclude Include="..\Classes\Def\CmfDef.h" />
     <ClInclude Include="..\Classes\Def\ColorDef.h" />
     <ClInclude Include="..\Classes\Def\CrewDef.h" />

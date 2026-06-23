@@ -84,7 +84,8 @@ typedef struct _button {
 	int visualState;
 	int buttonEventListener;//
 	int x, y, w, h;//버튼의 위치 크기 정보
-	float zoom;//버튼의 
+	float zoomX;//버튼의
+
 } BUTTON;
 
 typedef struct _popUp {
@@ -175,6 +176,7 @@ typedef struct _item {
 
 //Structure
 typedef struct _obj {
+	signed char active;
 	int jumpFrame, attackFrame, mainFrame, frame, attackedFrame, levelUpFrame, delayFrame, statUpFrame;
 	int turn;//캐릭터가 몇번째 공격을 하고 있는지 보여주는 변수
 	int x, y;
@@ -208,7 +210,6 @@ typedef struct _obj {
 	unsigned char drawHandler;
 	//signed char ipx, ipy, ix, iy;
 	signed short dx, dy;
-	signed char active;
 	signed char dead;
 	signed short attack;
 	signed char attacked;
@@ -307,7 +308,7 @@ typedef struct _obj {
 	int ringValue[TOTAL_RING];
 	long long int id;
 
-	int house;
+	int castle;
 
 	std::string nickname;
 
@@ -463,7 +464,7 @@ typedef struct _log {
 	float speed2;//이동속도2
 	float speedIncrement2;//이동속도 증가량
 	int waitingFrame;//시작했을 때 머무르는 프레임
-	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무르는 프레임
 	int frame;//현재 프레임
 	int frame2;//
 
@@ -630,17 +631,16 @@ typedef struct _robin {
 
 	bool heroesSetting[TOTALCHAR];//장착이 되어 있는지
 	//몇번 캐릭터를 하는지
-	bool getCrews[TOTAL_CREW];
-	int crewStar[TOTAL_CREW];
-	int crewMaxStar[TOTAL_CREW];
-	int crew[MAXCREW];
-	int crewStage;
-	bool crewSetting[MAXCREW];//현재 장착이 되어 있는지
-	int crewReader;//크류리더가 누군지.
+	int slotCrew[MAXCREW];
 
 	int lv;
 	int exps;
 
+	// 새로운 룰렛 시스템 변수
+	int currentDay;           // 현재 Day
+	int lifeRemaining;        // 남은 수명
+	
+	int castle;
 	template <class Archive>
 	void serialize(Archive & ar)
 	{
@@ -713,6 +713,11 @@ typedef struct _robin {
 
 			boxObj,
 
+			lv,
+			exps,
+
+			currentDay,
+			lifeRemaining,
 		);
 	}
 } ROBINDATA;
@@ -1026,6 +1031,30 @@ typedef struct _reportVar2 {
 	signed char itemRing[TOTAL_RING];
 } REPORTVAR2;
 
+// UI 파트 구조체
+struct UiImagePart
+{
+	const char* name;
+	int srcIdx;          // 이미지 인덱스 (sprite 배열)
+
+	// source rect
+	int xs;
+	int ys;
+	int w;
+	int h;
+
+	// destination position
+	int x;
+	int y;
+
+	bool flipX;
+	int cmfRotation;
+	float rotation;
+	int effect;
+	int alpha;
+	float zoom;
+};
+
 // =========================
 // Jump Roulette State
 // =========================
@@ -1201,6 +1230,7 @@ extern signed int clipX4;
 extern signed int clipY4;
 extern ClippingNode * clipNode;
 extern signed short STATUSWIN_Y;//전투를 위한 
+extern signed short STATUSWIN_Y_INIT;//전투를 위한
 extern signed short STATUSWIN_Y2;
 extern signed short PLAYAREA_X;
 extern signed short PLAYAREA_Y;
@@ -1509,7 +1539,7 @@ extern unsigned char nInvenMax, nInvenCnt, nShopCnt;
 //int needErase[10];
 extern int shopDesc[MAXNETSHOP];
 extern int cItem;
-extern int focusItem;
+extern ITEM focusItem;
 extern int boxNeutral;
 extern int cNeutral;
 extern int progress;
@@ -1599,8 +1629,10 @@ extern unsigned short charInfoPage;
 
 extern int INVEN_VCNT;//인벤토리 세로 몇개인가
 extern int INVEN_TCNT;
-extern int GNBHEIGHT;
+extern int GNBHEIGHT;//요거는 
 extern int BOTTOMMENUHEIGHT;
+extern int NORCH_HEIGHT;
+extern int HOMEBAR_HEIGHT;
 
 extern REPORTVAR rpVar;
 extern REPORTVAR2 rpVar2;
@@ -2206,7 +2238,7 @@ extern int turnListIdx;
 extern int enemyTurnStartIdx;
 extern int totalTurn;
 extern int turnList[PLAYERALL + MAXWAVEENEMY];
-extern int crewList[MAXCREW];
+extern int slotCrew[MAXCREW];
 extern int crewIdList[MAXCREW];
 extern int crewCnt;
 extern int heroCnt;
@@ -2216,7 +2248,7 @@ extern int showHeroCnt;
 extern int leaderCrewId;   // 0..TOTAL_CREW-1 or -1
 extern bool hasLeader;
 
-// 중앙 카드에 표시할 현재 공개 캐릭터(crewList[showCrewCnt]를 기반으로)
+// 중앙 카드에 표시할 현재 공개 캐릭터(robin.slotCrew[showCrewCnt]를 기반으로)
 extern int cardCmf;
 extern int cardAlpha;
 
@@ -2307,5 +2339,8 @@ extern int levelUpStatus;
 extern int maxUserLv;
 extern bool bossOn;
 extern int touchDisable;
+
+
+extern int floatOffsetY;
 
 #endif
