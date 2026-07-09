@@ -1,4 +1,7 @@
 #pragma once
+#define BOX_OPEN_FRAME           10
+#define BOX_OPEN_CHANGE_FRAME     6
+#define BOX_CLOSE_FRAME           8
 
 // Image Handling & Drawing
 void NewGameImgLoad(void);
@@ -103,6 +106,8 @@ void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, 
 void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBattleButton(int x, int y, float zoom, bool ani, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawAttackButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void JoyStickDraw(int cnt, int x, int y, float joyDx, float joyDy, float joyPower, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawJumpButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 int GetMaxShield(void);
 int GetInitHeart(void);
 int GetHeartAmount(void);
@@ -147,6 +152,7 @@ void DrawSocket(int, int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, 
 void DrawCycle(int x, int y, int w, int h, int cycle, int full, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawSelect(int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawTime(int x, int y, int atime, int type, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawDate(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawDateText(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
@@ -161,5 +167,10 @@ void DrawSelectBox(int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*,
 void DrawEmptyBox(int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void BoxInfoDraw(int boxType, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool ani, bool opened, bool shadow, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void OpenBox(OBJECT* pObj);
+void CloseBox(OBJECT* pObj);
+float EaseOutBack(float t);
+float Clamp01(float v);
+void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBoxSpecial(int x, int y, int dirX, int idx, float zoom, int solid, bool ani, bool opened, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

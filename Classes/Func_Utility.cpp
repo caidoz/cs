@@ -983,3 +983,12 @@ void InitBanner(void)
 	sprintf(szID1, "ca-app-pub-ID");   //전면광고
 	sprintf(szID2, "ca-app-pub-ID");   //배너광고
 }
+
+long long GetCurrentTimeMs()
+{
+	using namespace std::chrono;
+
+	return duration_cast<milliseconds>(
+		system_clock::now().time_since_epoch()
+	).count();
+}

@@ -43,11 +43,11 @@
 #include "Def/TutoralDef.h"
 #include "Def/UIDef.h"
 
-#ifdef NULL
-#undef NULL
-#endif
+//#ifdef NULL
+//#undef NULL
+//#endif
 
-#define NULL 0
+//#define NULL 0
 
 
 //매크로
@@ -79,6 +79,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 //#define SPEEDTURN
 #define ENEMYHPBAR
 //#define GUIDELINE
+//#define MAPTEST
 
 //#define INVINCIBLE
 
@@ -118,6 +119,9 @@ int hexcolor = (r << 16) + (g << 8) + b;
 #define NOMISS
 //GotoObj or GotoObjXY가 작동하기 위한 최소값
 #define SPEED_MIN	4
+#define DAYS3 3 * 24 * 60 * 60 * 1000 // 3일을 밀리초로 변환
+#define JOYKNOBMAX	42 * _2X
+
 //#define NUMTTF
 //#define INITPOPUP
 
@@ -764,9 +768,6 @@ typedef enum _gameDef {
 
 	TOTAL_CURRENCY,
 
-	CURRENCYICON_STARTSIZE = 1,
-	CURRENCYICON_ENDSIZE = 3,
-	CURRENCYICON_ENDSIZE2 = 4,
 
 	COINSCATTERINFOSIZE = 16,
 
@@ -808,6 +809,11 @@ typedef enum _gameDef {
 
 	END_GAMEDEF
 } GAMEDEF;
+
+
+#define CURRENCYICON_STARTSIZE 1.0f
+#define CURRENCYICON_ENDSIZE 1.5f
+#define CURRENCYICON_ENDSIZE2 2.0f
 /*
 //달성도 관련 디파인
 typedef enum _reportDef {

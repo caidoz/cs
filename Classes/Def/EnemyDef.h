@@ -6,27 +6,27 @@
 typedef enum _enemyDef {
 
 	//ëª¬ìŠ¤???”íŒŒ??
-	ENEMY_SNAIL = 3,	//ê°€?œê»ì§??¬íŒ½??
-	ENEMY_TREE,	//?ªì˜ ì£¼ì¸ 4
-	ENEMY_ONEEYE,	//?„ì´ë³?5
-	ENEMY_SKELETON,	//ì¹ í‘??ê¸°ì‚¬ 6 
-	ENEMY_LIZARD,	//?¬í•˜ê¸?ë³‘ì‚¬ 7
-	ENEMY_JELLYFISH,	//ë§¹ë… ?´íŒŒë¦?
-	ENEMY_KNIGHT,	//?€?½í•œ ê¸°ì‚¬ 9
-	ENEMY_SLIME,	//?¬ë¼??10
-	ENEMY_SLING,	//?‰ì›???„ì  11
-	ENEMY_BOAR,	//ê±°ì¹œë°?ë©§ë¼ì§€ 12
-	ENEMY_FLAME,	//ë¶„ë…¸???•ë ¹ 13
-	ENEMY_PHOENIX,	//ë§ˆì„±??ë¶ˆìƒˆ14
-	ENEMY_FACE,	//ê²°ë¹™???ìƒ15
-	ENEMY_SNOWMAN,	//?¤ë…¸?°ë§¨16
-	ENEMY_ICESUN,	//?„ì´?¤ë§ˆ?¤í¬17
-	ENEMY_LIGHTNING,	//?¤íŒŒ??8//
-	ENEMY_THUNDER,	//?¤í¬ë¯¸ìŠ¤??9 //ë²„ê·¸ : (?Œí™˜???´ë™???ˆí•¨.
-	ENEMY_CRYSTAL,	//?¤íŒŒ???Œëžœ??0 //ë²„ê·¸ : (?Œí™˜???ì„±???¤íŒŒ?¬ê? ?„êµ°??ê³µê²©??
-	ENEMY_FAIRY,	//?¼ì´???¤í”¼ë¦?1 //ë²„ê·¸ : (?Œí™˜?? ?˜ë? ê³µê²©??
-	ENEMY_CIRCLE,	//?œë£¨???Œìš¸22
-	ENEMY_SPIDER,	//?¤íŠ¸?¼ì´??3 //ë²„ê·¸ : (?Œí™˜?? ?ˆì´?€ë¥??ˆì¨ ?¹ì? ?ˆê·¸?¤ì§
+	ENEMY_SNAIL = 3,	//°¡½Ã²®Áú´ÞÆØÀÌ
+	ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
+	ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_LIZARD,	//»çÇÏ±äº´»ç 7
+	ENEMY_JELLYFISH,	//¸Íµ¶ÇØÆÄ¸® 8
+	ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_SLIME,	//½½¶óÀÓ 10
+	ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_BOAR,	//°ÅÄ£¹ß¸äµÅÁö 12
+	ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ 14
+	ENEMY_FACE,	//°áºùÀÇ ¼®»ó 15
+	ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç 16
+	ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ© 17
+	ENEMY_LIGHTNING,	//½ºÆÄÅ© 18
+	ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ® 19
+	ENEMY_CRYSTAL,	//½ºÆÄÅ©ÇÃ·£Æ® 20
+	ENEMY_FAIRY,	//¶óÀÌÆ®½ºÇÇ¸´ 21
+	ENEMY_CIRCLE,	//µô·çÀü¼Ò¿ï 22
+	ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ 23
 	ENEMY_GOLEM,	//ì£¼ì¸?ƒì? ê³¨ë ˜24
 	ENEMY_DARKGIANT,	//ê·¸ë ˆ?´íŠ¸ ?„ë¨¸25
 	ENEMY_DARKDRAGON,	//?°ë¡œë³´ë¡œ??6(x ?ˆëŠ” ê·¸ëƒ¥ ?ˆë¨, ê·¸ëž˜???´ë ¤ë³´ìž.)

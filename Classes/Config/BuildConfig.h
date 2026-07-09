@@ -14,7 +14,8 @@
 // ---
 #define GAMEDEBUG                      // 게임 전체 디버그
 #define DEBUGMENU                      // 디버그 메뉴 표시
-#define TURNRPG                        // 턴제 RPG 모드
+#define TURNRPG			0                   // 턴제 RPG 모드
+#define ACTIONRPG		1					// 액션 RPG
 #define INFINITEMODE                   // 무한 모드
 #define NOIAP                          // 인앱결제 비활성화
 

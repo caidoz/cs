@@ -1580,6 +1580,7 @@ void AttackRobin(int obj, int dest)
 	long long int* attackerPs = ao[dest].ps;
 	int attackerType = ao[dest].type;
 	int defenseAttr = 0;
+	long long recoverHp;
 
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[obj].equip[EQUIP_ARMOR];
@@ -1895,7 +1896,16 @@ void AttackRobin(int obj, int dest)
 		ao[dest].invincible = ATTACKEDFRAME;
 #endif	
 		AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
+		
 		ao[dest].hp -= damage;
+
+		recoverHp = Min(damage, ao[obj].maxhp - ao[obj].hp);
+
+		if (recoverHp > 0) {
+			ao[obj].hp += recoverHp;
+			AddBar(&bar[ENEMYHPBAR + GetEnemyBarIdx(obj)], recoverHp, BARFRAME);
+			AddBar(&bar[BAR_BOSSHP], recoverHp, BARFRAME);
+		}
 
 		ao[dest].attr = attackAttr;
 
@@ -1912,13 +1922,33 @@ void AttackRobin(int obj, int dest)
 		SetHitMark(ao[dest].x, ao[dest].y, RIGHT, HITMARK_SMALL, 0, obj, HITMARKZOOM/*ao[obj].zoom*/);
 		curPlayer = dest;
 
-		SetDmgNum(obj, dest, damage, 0, attackType, DMGNUMZOOM);
+		SetDmgNum(obj, dest, damage, 1, attackType, DMGNUMZOOM);
 
 		if (dest < PLAYERALL && robin.gold < damage)
 			damage = robin.gold;
 
 		if (damage > 0) {
+			int str;
+
+			if (damage < 10)
+				str = 0;
+			else if (damage < 100)
+				str = 1;
+			else if (damage < 1000)
+				str = 2;
+			else if (damage < 10000)
+				str = 3;
+			else if (damage < 100000)
+				str = 4;
+			else if (damage < 1000000)
+				str = 5;
+			else
+				str = 6;
+			//for (i = 0; i < 3; i++)
+			
 			i = DropItem(&ao[dest], ITEM_GOLD);
+
+			ao[i].defaultZoom = ao[i].zoom = 1.5f + str * 0.5f;
 
 			if (dest < ENEMY) {
 				ao[i].target = obj;
@@ -4085,7 +4115,6 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 		critical = 1;
 		extra = true;
 	}
-
 	switch (drawHandle) {
 	case MD_PLAY:
 	case MD_BATTLE:
@@ -4097,6 +4126,7 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 			//targetX = bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2;
 			//targetY = bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2;
 			//SetCurrencyMarkArr(startX, startY, targetX, targetY, targetX, targetY, 16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, dmg, CURRENCY_GOLD, 3.0f, 2.0f, -0.1f, 2.0f, 1.0f, -0.1f, 10);
+			
 			if (dmg < 10)
 				str = 0;
 			else if (dmg < 100)
@@ -4113,6 +4143,7 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 				str = 6;
 			//for (i = 0; i < 3; i++)
 			currencyObj = DropItem(&ao[obj], ITEM_GOLD);
+			ao[currencyObj].defaultZoom = ao[currencyObj].zoom = 1.5f + str * 0.5f;
 			ao[currencyObj].target = attacker;
 			if (obj < PLAYERALL)
 				ao[currencyObj].ax = -dmg;
@@ -4191,22 +4222,21 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 				if (j != i && dmgInfo[j].pos == obj)
 					dmgInfo[j].y += (16 - dmgInfo[j].frame);
 			}
-			/*
+			
 			switch (ao[attacker].cmf) {
-				//case ROBIN:
-					//dmgInfo[i].color = 0xFFF4C6;
-					//break;
-			case DIANA:
-				dmgInfo[i].color = 0xF7BEFE;
-				break;
-			case MAXX:
-				dmgInfo[i].color = 0xBADCD1;
-				break;
-			default:
-				dmgInfo[i].color = null;
-				break;
+				case ROBIN:
+					dmgInfo[i].color = 0xFFF4C6;
+					break;
+				case DIANA:
+					dmgInfo[i].color = 0xF7BEFE;
+					break;
+				case MAXX:
+					dmgInfo[i].color = 0xBADCD1;
+					break;
+				default:
+					dmgInfo[i].color = null;
+					break;
 			}
-			*/
 			break;
 		}
 	}
@@ -5105,10 +5135,36 @@ void SetBox(OBJECT* pObj, int etc)
 	pObj->type = OBJ_BOX;
 	pObj->x = BOXPOSITION_X;
 	pObj->y = BOXPOSITION_Y;
-	pObj->etc = BOX_INGAME;// bet;//BOX_INGAME;
+	pObj->etc = etc;// bet;//BOX_INGAME;
 	pObj->drawHandler = NEUTRALDRAW;
 	pObj->cmf = -1;
-	pObj->zoom = BOXZOOM;
+	switch (pObj->etc) {
+	case BOX_CASTLE0:
+	case BOX_CASTLE1:
+	case BOX_CASTLE2:
+	case BOX_CASTLE3:
+	case BOX_CASTLE4:
+	case BOX_CASTLE5:
+	case BOX_CASTLE6:
+	case BOX_CASTLE7:
+	case BOX_CASTLE8:
+	case BOX_CASTLE9:
+	case BOX_CASTLE10:
+	case BOX_CASTLE11:
+	case BOX_CASTLE12:
+	case BOX_CASTLE13:
+	case BOX_CASTLE14:
+	case BOX_CASTLE15:
+	case BOX_CASTLE16:
+	case BOX_CASTLE17:
+	case BOX_CASTLE18:
+		pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
+		break;
+	default:
+	//case BOX_INGAME:
+		pObj->zoom = BOXZOOM;
+		break;
+	}
 
 	sPtr = &neutralData[pObj->type * NEUTRALDATASIZE];
 
@@ -5519,7 +5575,6 @@ int TargetPlayer(int obj)
 }
 
 // ao[obj].target == PLAYER면 무조건 실행
-#ifdef TURNRPG
 int TargetEnemy(int obj)
 {
 	int i, j, distance = rw * TSIZE, tempDis;
@@ -5529,15 +5584,7 @@ int TargetEnemy(int obj)
 	ITEM* it = &pObj->equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
-	switch (drawHandle) {
-	case MD_PLAY:
-	case MD_BATTLE:
-		//if (obj != PLAYER)
-		//	return false;
-		break;
-	default:
-		break;
-	}
+	if (drawHandle == MD_PLAY) {
 
 	switch (arenaStatus) {
 	case STATUS_READY:
@@ -5646,7 +5693,7 @@ int TargetEnemy(int obj)
 #endif
 				bar[BAR_COIN].add = bar[BAR_COIN].count = 0;
 
-				//여기서 적을 
+				//여기서 적을
 				//for (i = ENEMY; i < NEUTRAL; i++) {
 				//	if (ao[i].dead == false && ao[i].active == true)
 				//		MoveObj(&ao[i]);
@@ -6064,17 +6111,10 @@ int TargetEnemy(int obj)
 		break;
 	}
 
-
 	return distance;
 
 }
-#else
-int TargetEnemy(int obj)
-{
-	int i, j, distance = rw * TSIZE, tempDis;
-	int range;
-	OBJECT* pObj = &ao[obj];
-
+else {
 	switch (arenaStatus) {
 	case STATUS_READY:
 
@@ -6089,7 +6129,7 @@ int TargetEnemy(int obj)
 
 			// 타겟인 적이 가까이 있다면, 그적을 계속 공격함
 			if (ao[obj].target >= ENEMY && ao[ao[obj].target].active && GetDistance(&ao[ao[obj].target], &ao[obj]) < range && ao[ao[obj].target].cx > 0)
-				goto ACTION;
+				goto ACTION2;
 
 			for (i = ENEMY; i < NEUTRAL; i++) {
 				if (ao[i].active && ao[i].hp > 0) {
@@ -6113,7 +6153,7 @@ int TargetEnemy(int obj)
 
 			// 캐릭터들이 어떤행동을 할지 결정
 			if (range >= distance) {
-			ACTION:
+			ACTION2:
 				if (!ao[obj].attack) {
 					if (ao[obj].y - ao[ao[obj].target].y > TSIZE) {
 						ao[obj].pressedKey[2] = ao[obj].pressedKey[1];
@@ -6150,7 +6190,7 @@ int TargetEnemy(int obj)
 							//}
 							//else
 							goto PRESSATTACK;
-						USERING:
+						USERING2:
 							if (ao[obj].equip[EQUIP_RING].type != EMPTY && (((keyHandle == MK_PLAY || keyHandle == MK_BATTLE || keyHandle == MK_RAID || keyHandle == MK_BOSSRAID) && (obj != raidPlayer || option.gameControl == CONTROL_AI)) || (keyHandle == MK_RAID && obj != raidPlayer)) && ao[obj].hotKey[RINGKEY].frame == 0) {
 								//ao[obj].dirX = ao[obj].dirF = ao[ao[obj].target].x > ao[obj].x ? RIGHT : LEFT;
 
@@ -6235,12 +6275,12 @@ int TargetEnemy(int obj)
 								if (ao[obj].currentSkill == -1 || IsMovingSkill(ao[obj].currentSkill) == false)
 									goto HOTKEYPRESS;
 								else
-									goto PRESSATTACK;
+									goto PRESSATTACK2;
 							}
 							else
-								goto HOTKEYPRESS;
+								goto HOTKEYPRESS2;
 
-						HOTKEYPRESS:
+						HOTKEYPRESS2:
 							//for (i = 0; i < TOTALCHARSKILL; i++) {
 							//	if ((((keyHandle == MK_PLAY || keyHandle == MK_BATTLE || keyHandle == MK_RAID || keyHandle == MK_BOSSRAID))) && ao[obj].hotKey[i].type == HOTKEY_SKILL && ao[obj].hotKey[i].frame == 0 && autoSkill == true) {
 							//		//ao[obj].dirX = ao[obj].dirF = ao[ao[obj].target].x > ao[obj].x ? RIGHT : LEFT;
@@ -6250,7 +6290,7 @@ int TargetEnemy(int obj)
 							//}
 
 
-						PRESSATTACK:
+						PRESSATTACK2:
 							ao[obj].pressedKey[2] = ao[obj].pressedKey[1];
 							ao[obj].pressedKey[1] = ao[obj].pressedKey[0];
 							ao[obj].pressedKey[0] = AVK_5;
@@ -6266,7 +6306,7 @@ int TargetEnemy(int obj)
 			else {
 				if ((option.gameControl == CONTROL_MANUAL &&
 					(((keyHandle == MK_PLAY || keyHandle == MK_BATTLE || keyHandle == MK_RAID || keyHandle == MK_BOSSRAID) && obj != raidPlayer)))
-					|| ((option.gameControl == CONTROL_AUTO || option.gameControl == CONTROL_AI) && attackSequence == ATTACKSEQUENCE_ROULETTE)) {
+					|| ((option.gameControl == CONTROL_AUTO || option.gameControl == CONTROL_AI))) {
 					if (!ao[obj].attack) {
 
 						//일단 레인지 범위까지 이동하고
@@ -6485,9 +6525,9 @@ int TargetEnemy(int obj)
 
 
 	return distance;
+	}
 
 }
-#endif
 
 long long GetCombatPowerAll(int who)
 {

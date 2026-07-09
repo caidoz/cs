@@ -371,6 +371,7 @@ void LogoDraw(void)
 	case 11:
 		break;
 	case 12:
+		robin.castle = 0;
 		robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 		break;
 	case 13://MAPTYPE_TOLEM
@@ -554,8 +555,7 @@ void TitleDraw(void)
 		DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.3f, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
 		*/
 
-		LoadingBarDraw(xOffset + DX / 2 - 525 * _2X / 2 + 180 * _2X, 40 * _2X, frame, gScreenBuffer, gScreenLayer, false);
-
+		
 		switch (frame) {
 		case 0:
 		case 1:
@@ -579,7 +579,7 @@ void TitleDraw(void)
 		case 19:
 		case 20:
 		case 21:
-			break;
+		//	break;
 		case 22:
 			//frame = 21;
 
@@ -593,21 +593,17 @@ void TitleDraw(void)
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-
+			LoadingBarDraw(xOffset + DX / 2 - 525 * _2X / 2 + 180 * _2X, 40 * _2X, frame, gScreenBuffer, gScreenLayer, false);
 			break;
 			//case CURTAINFRAME - 1:
 			//case 23:
 		default:
 
-			option.gameControl = CONTROL_MANUAL;
+			touchDisable = false;
 
-			//DrawCmfDetailShadow(CMF_NPC_LORA, 0, DX / 2 + 64 * _2X, DY / 2 - 256 * _2X, LEFT, 2, gScreenBuffer, gScreenLayer, false);
-			//DrawHand(xOffset + DX / 2 + 64 * _2X - 32 * _2X, DY / 2 - 256 * _2X + 100 * _2X - 16 * _2X, frame / 2, 2.0f, gScreenBuffer, gScreenLayer, false);
-
-			//MemRectBoth(xOffset + DX / 2 + 64 * _2X - 20 * _2X, DY / 2 - 256 * _2X + 24 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
-			//CenterAlpha(xOffset + DX / 2 + 64 * _2X + 4 * _2X, DY / 2 - 256 * _2X + 24 * _2X - 2 * _2X, ALPHA_STAGE, FONT_SMALL, false, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-			//SetRectPoint(xOffset + DX / 2 + 64 * _2X - 32 * _2X, DY / 2 - 256 * _2X + 100 * _2X + 32 * _2X, 64 * _2X, 128 * _2X, TOUCH_FUNC_GOTOPLAY);
+			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 1.0f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, gScreenBuffer, gScreenLayer, false);
+			
+			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 1.0f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, gScreenBuffer, gScreenLayer, false);
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
 
@@ -631,61 +627,11 @@ void TitleDraw(void)
 			//}
 			//else {
 			
-			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];// chapterMap[robin.stage];
-			
-			GotoPlay();
-			//GotoBattleLoading();
-			//GotoBattle();
-			
-			//curtainFrame = 0;
-
-			//crewInitializeFrame = 1;
-			//for (i = 0; i < TOTALCONTROLMARK; i++)
-			//	controlerSpread[i] = true;
-
-			arenaStatus = STATUS_PLAY;
-
-			//if (robin.boxObj.type == OBJ_BOX)
-			//	memcpy(&ao[ITEMBOX], &robin.boxObj, sizeof(OBJECT));
-			//else
-			//	SetBox(&ao[ITEMBOX], bet);
-
-			AddBar(&bar[BAR_COMBATPOWERALL], GetCombatPowerAll(PLAYER), BARFRAME);
-
-			//AddBar(&bar[BAR_COMBATPOWER], GetCombatPower(&ao[PLAYER]) - (bar[BAR_COMBATPOWER].count + bar[BAR_COMBATPOWER].add), BARFRAME);
-
-			SetEnemyUser();
-			//SetStageEnemy(robin.stage, robin.room);
-			//WaveStart();
-
-			//TEST
-			//SetHotKey(&ao[PLAYER], HOTKEY_SKILL, SKILL_ROBIN6, 0);
-			//SetHotKey(&ao[PLAYER], HOTKEY_SKILL, SKILL_ROBIN7, 1);
-			//SetHotKey(&ao[PLAYER], HOTKEY_SKILL, SKILL_ROBIN8, 2);
-
-			//SetTestHotKey();
-			//TEST
-
-			for (i = 0; i < robin.eventCnt; i++)
-				InitEventPos(&robin.gameEvent[i], GetEventMenuPosX(robin.gameEvent[i].type, EVENT_OPEN), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_OPEN), GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING), 16 * _2X, -1 * _2X, 1 * _2X, 1 * _2X, FPS, FPS, false, false, false,
-					1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-
-			//GetProperHeartBet
-			bet = 0;//만약
-			robin.heart = GetInitHeart();
-
-			maxRouletteCnt = swordSkillCnt[0];
-			touchDisable = false;
-
-			//ao[PLAYER + ROBIN].active = true;
-			//ao[PLAYER + DIANA].active = true;
-			//ao[PLAYER + MAXX].active = true;
-		//}
-			for (i = 0; i < EQUIP_NECK; i++) {
-				for (j = 0; j < itemTypeCnt[i * TOTALCHAR]; j++)
-					GetItem(i, 1, j, GRADE_NORMAL, 1, false);
-				
-			}
+			//option.gameControl = CONTROL_MANUAL;
+			//drawHandle = MD_OPENING;
+			//keyHandle = MK_TALK;
+			//openingTextPage = 0;
+			//SetFrameText(TEXT_OPENING_0_0, DX - 32 * _2X, 3, 1.4f);
 			break;
 		}
 
@@ -711,25 +657,78 @@ void TitleDraw(void)
 
 }
 
+void OpeningDraw(void)
+{
+	int imgW = 765;
+	int imgH = 1024;
+	int imgX = DX / 2 - imgW / 2;
+	int imgY = DY / 2 + imgH / 2;
+
+	int textX = 32 * _2X;
+	int textY = 80 * _2X;
+	int textW = DX - 64 * _2X;
+	float textZoom = 1.4f;
+
+	int openingScene = openingTextPage / OPENING_TEXT_PER_SCENE;
+	int textIndex = TEXT_OPENING_0_0 + openingTextPage;
+
+	MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+
+	DrawImage(
+		imgW, imgH,
+		0, 0,
+		imgX, imgY,
+		false, false, false, false, false,
+		1.0f,
+		sprite[OP0_IMG + openingScene],
+		gScreenBuffer,
+		gScreenLayer,
+		OP0_IMG + openingScene,
+		false
+	);
+
+	FrameText(
+		TEXTPTR(textIndex),
+		textX,
+		textY,
+		textW,
+		textLines,
+		0,
+		textZoom,
+		gScreenBuffer,
+		gScreenLayer,
+		false
+	);
+}
+
 void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
+	//DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
+	SetAlpha(24);
+	MemRect(x, y, dx, dy, 0x2A2A3A, cvtDest, cvtLayer, buffering);
+	SetAlpha(32);
+
+	// "DAY" 텍스트 (간단하게 표시)
+	//char dayText[32];
+	//sprintf(dayText, "DAY %d", day);
+	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
+	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)(dy - 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
 
 	if (popUpFrame > startFrame + 1) {
 		if (popUpFrame == startFrame + 2)
 			PlayMusic(M_JUMP);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(40 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(40 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, RIGHT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
 	}
 
 	if (textIdx) {
-		if (popUpFrame == startFrame + 2)
-			SetFrameText(textIdx, textDx, line, zoom);
+		//if (popUpFrame == startFrame + 2)
+		//	SetFrameText(textIdx, textDx, line, zoom);
 
 		if (popUpFrame > startFrame + 2) {
-			SetFontColor(0x333333);
-			FrameText(TEXTPTR(textIdx), x + (float)(60 * _2X) * zoom, y - (float)(8 * _2X) * zoom, textDx, textLines, textCurPage, zoom, cvtDest, cvtLayer, buffering);
 			SetFontColor(COLOR_WHITE);
+			FrameText(TEXTPTR(textIdx), x + (float)((DX - 512) / 2) * zoom, y - (float)(16 * _2X) * zoom, 1.4f * textDx, textLines, textCurPage, 1.4f * zoom, cvtDest, cvtLayer, buffering);
+			//SetFontColor(COLOR_WHITE);
 		}
 	}
 
@@ -1779,25 +1778,25 @@ void ClosePopUp(void)
 	//it = &ao[PLAYER].equip[EQUIP_WEAPON];
 			//collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 			//현재 팝업이 마지막인데 PVP퀘스트나 일반퀘스트가 있으면 조이스틱 리스트를 만들어 준다. 
-	switch (popUp[popUpCnt - 1].type) {
-	case MENU_PLAY:
-	case MENU_COLLECTIONS:
-	case MENU_SHOP:
-	case MENU_STARSHOP:
-	case MENU_NEWS:
-	case MENU_GIFTS:
-	case MENU_LEADERBOARD:
-	case MENU_INVITEFREINDS:
-	case MENU_CALENDAR:
-		curMenu = MENU_PLAY;
-		break;
-	}
-
-	curMenu = MENU_PLAY;
-
-	if (menuDepth > 0)
+	
+	if (menuDepth > 0) {
 		menuDepth--;
+	}
 	else {
+
+		switch (popUp[popUpCnt - 1].type) {
+		case MENU_PLAY:
+		case MENU_COLLECTIONS:
+		case MENU_SHOP:
+		case MENU_STARSHOP:
+		case MENU_NEWS:
+		case MENU_GIFTS:
+		case MENU_LEADERBOARD:
+		case MENU_INVITEFREINDS:
+		case MENU_CALENDAR:
+			curMenu = MENU_PLAY;
+			break;
+		}
 
 		if ((popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO || popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO)) {
 			if (popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO) {
@@ -1958,11 +1957,11 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 		DoubleGoldDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_ITEMCOMPARE:
-		ItemDetailDraw(&ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]], xOffset + DX / 2 - (float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y + ITEMDETAILWINDOWSIZE_Y / 2 + 0 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, true, false, cvtDest, cvtLayer, buffering);
-		ItemDetailDraw(&robin.newItem, xOffset + DX / 2 - (float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y - ITEMDETAILWINDOWSIZE_Y / 2 + 40 * _2X - 64 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, cvtDest, false, false, cvtLayer, buffering);
+		ItemDetailDraw(&ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y + ITEMDETAILWINDOWSIZE_Y / 2 + 0 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, true, false, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&robin.newItem, xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y - ITEMDETAILWINDOWSIZE_Y / 2 + 40 * _2X - 64 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, false, false, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_ITEMDETAIL:
-		ItemDetailDraw(&ao[PLAYER].equip[itemEquipSlot[p->itemType]], xOffset + DX / 2 - (float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y, p->zoom, false, true, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&ao[PLAYER].equip[itemEquipSlot[p->itemType]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y, p->zoom, false, true, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_LEVELUP:
 		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);

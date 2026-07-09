@@ -1801,17 +1801,117 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], cvtDest, cvtLayer, MAP_DIORAMA_IMG + type, buffering);
+	
+#ifdef MAPTEST
+	SetAlpha(8);
+	SetSectionClip(xOffset, DY, DX - 2 * xOffset, DY - STATUSWIN_Y, false);
+
+	if (effect.color == 0x9900FF) {
+		DrawBackMap(xOffset, STATUSWIN_Y, robinmap, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+		//테트라쿤 검은 안개 뿌리기
+		if (frame / MOTIONDIV % 4 == 0)
+			demoFrame++;
+
+		//SetAlpha(Min(demoFrame, 8));
+		MemRect(xOffset, STATUSWIN_Y, DX - 2 * xOffset, REALDY, 0x7B48AE, gScreenBuffer, gScreenLayer, false);
+
+		for (i = -64 * _2X; i < rw * TSIZE + 64 * _2X; i += 64 * _2X) {
+			//큰안개
+			SetAlpha(Min(demoFrame, 16));
+			//c51.bmp
+			DrawImage(64 * _2X, 48 * _2X, 194 * _2X, 0 * _2X, xOffset + i - rx - (demoFrame % 64), STATUSWIN_Y + 128 * _2X - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], gScreenBuffer, gScreenLayer, MONSTER_IMG + CMF_CASTLE_BOSS4, false);
+			DrawImage(64 * _2X, 48 * _2X, 194 * _2X, 0 * _2X, xOffset + i - rx + (demoFrame % 64), STATUSWIN_Y + 88 * _2X - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], gScreenBuffer, gScreenLayer, MONSTER_IMG + CMF_CASTLE_BOSS4, false);
+
+			//작은안개
+			//c51.bmp
+			//작은 - 큰안개
+			DrawImage(80 * _2X, 16 * _2X, 76 * _2X, 140 * _2X, xOffset + i - 28 * _2X - rx - (demoFrame % 64) * _2X, STATUSWIN_Y + (96 * _2X - (21 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], gScreenBuffer, gScreenLayer, MONSTER_IMG + CMF_CASTLE_BOSS4, false);
+			//작은 - 중간안개
+			DrawImage(32 * _2X, 6 * _2X, 156 * _2X, 147 * _2X, xOffset + i - 22 * _2X - rx + (demoFrame % 32) * _2X, STATUSWIN_Y + (78 * _2X - (19 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], gScreenBuffer, gScreenLayer, MONSTER_IMG + CMF_CASTLE_BOSS4, false);
+			//작은 - 작은안개
+			DrawImage(26 * _2X, 4 * _2X, 61 * _2X, 78 * _2X, xOffset + i + 23 * _2X - rx - (demoFrame % 26) * _2X, STATUSWIN_Y + (69 * _2X - (20 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], gScreenBuffer, gScreenLayer, MONSTER_IMG + CMF_CASTLE_BOSS4, false);
+
+		}
+
+		SetAlpha(32);
+	}
+	else {
+		if (doubleBuffer) {
+			switch (drawHandle) {
+			default:
+				switch (drawHandle) {
+				case MD_PLAY:
+				case MD_DEMO:
+				case MD_BATTLE:
+				case MD_RAID:
+				case MD_BOSSRAID:
+					DrawBuffer(xOffset, DY, DX, DY, bufferTexture[BUFFER_PLAY]);
+
+					SetSectionClip(xOffset, STATUSWIN_Y + (rh - 4) * TSIZE, DX - 2 * xOffset, (rh - 4) * TSIZE, false);
+
+					DrawBackMapFar(xOffset - rx / TSIZE, STATUSWIN_Y, robinmap, rw * TSIZE, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+					//여기에 
+					UnSectionClip(false);
+					break;
+				}
+
+
+				DrawBuffer(xOffset - rx + offX, -ry + offY + STATUSWIN_Y + TILEDY, (rw - 4) * TSIZE, (rh - 4) * TSIZE, bufferTexture[BUFFER_TILE]);
+
+				//근경 파트1
+				DrawBackMapFront(xOffset - rx + offX, -ry + offY + STATUSWIN_Y, robinmap, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+				//if (attackDelay) {
+				//	SetAlpha(24);
+				//	MemRect(xOffset, STATUSWIN_Y + TILEDY, DX - 2 * xOffset, TILEDY, effect.color, gScreenBuffer, gScreenLayer, false);
+				//	SetAlpha(32);
+				//}
+#ifdef CURTAIN
+				tempCurtainFrame = curtainFrame;
+				curtainFrame = 0;
+				TheaterDraw(gScreenBuffer, gScreenLayer, false);
+				curtainFrame = tempCurtainFrame;
+#endif
+				break;
+			}
+		}
+		else {
+			DrawBackMap(xOffset, STATUSWIN_Y, robinmap, 1.0f, gScreenBuffer, gScreenLayer, false);
+		}
+	}
+
+	if (effect.color) {
+		SetAlpha(24);
+		MemRect(xOffset, STATUSWIN_Y + TILEDY, DX - 2 * xOffset, TILEDY, effect.color, gScreenBuffer, gScreenLayer, false);
+		SetAlpha(32);
+	}
+
+	UnSectionClip(false);
+
+	//#ifdef CENTERDISPLAY
+	//	SetSectionClip(xOffset, DY, DX - 2 * xOffset, DY - STATUSWIN_Y, false);
+	//#endif
+	SetAlpha(32);
+#endif
+
 	//if (drawHandle == MD_PLAY)
 	//	DrawLabel(x + (float)(DIORAMASIZE_X / 2 - 48 * _2X) * zoom, y, TEXT_MAPNAME + dioramaMap[type], zoom * 1.5f, cvtDest, cvtLayer, buffering);
 	switch (drawHandle) {
+	case MD_DEMO:
 	case MD_PLAY:
+	case MD_BATTLE:
 		
 		if (!effect.color)
 			for (i = NEUTRAL; i < ITEMOBJ; i++) {
 				if (ao[i].active && ao[i].attr) {
 					zoomBefore = ao[i].zoom;
 					ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
-					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom, cvtDest, cvtLayer, buffering);
+					if (ao[i].type == OBJ_BOX)
+						ShadowImage(40 * _2X, 16 * _2X, 25 * _2X, 1 * _2X, ao[i].x - (float)20 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom, cvtDest, cvtLayer, buffering);
+					else
+						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom, cvtDest, cvtLayer, buffering);
 					//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 					ao[i].zoom = zoomBefore;
 				}
@@ -2195,6 +2295,31 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 			}
 		}
 
+		//동료그리기
+		for (i = BULLET; i >= CREW; i--) {
+			if (ao[i].active && ao[i].type != NPC_SHIP) {
+
+				if (playerHeadZoom) {
+					ao[i].head = true;
+				}
+
+				ao[i].zoom *= dioramaZoom;
+				DrawObj(&ao[i], cvtDest, cvtLayer, buffering);
+				ao[i].zoom /= dioramaZoom;
+
+				ao[i].head = false;
+
+				//if (ao[i].attack == ATTACK_NORMAL && ao[i].attackFrame <= attackDelayFrame[ao[i].type]) {
+				//	MemRect(ao[i].x - 12 * _2X - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - ao[i].y - 1 * _2X, 24 * _2X * ao[i].attackFrame / attackDelayFrame[ao[i].type], 2 * _2X, COLOR_REALRED, gScreenBuffer, gScreenLayer, false);
+				//}
+
+				grayScale = 0;
+				SetColor(false);
+
+
+			}
+		}
+
 		//적 그리기
 		for (i = ENEMY; i < NEUTRAL; i++) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
@@ -2255,7 +2380,32 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 		}
 
 		//플레이어 그리기
-		for (i = ENEMY - 1; i >= 0; i--) {
+		for (i = CREW - 1; i >= 0; i--) {
+			if (ao[i].active && ao[i].type != NPC_SHIP) {
+
+				if (playerHeadZoom) {
+					ao[i].head = true;
+				}
+
+				ao[i].zoom *= dioramaZoom;
+				DrawObj(&ao[i], cvtDest, cvtLayer, buffering);
+				ao[i].zoom /= dioramaZoom;
+
+				ao[i].head = false;
+
+				//if (ao[i].attack == ATTACK_NORMAL && ao[i].attackFrame <= attackDelayFrame[ao[i].type]) {
+				//	MemRect(ao[i].x - 12 * _2X - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - ao[i].y - 1 * _2X, 24 * _2X * ao[i].attackFrame / attackDelayFrame[ao[i].type], 2 * _2X, COLOR_REALRED, gScreenBuffer, gScreenLayer, false);
+				//}
+
+				grayScale = 0;
+				SetColor(false);
+
+
+			}
+		}
+
+		//탄환 그리기
+		for (i = ENEMYUSEROBJ - 1; i >= BULLET; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 
 				if (playerHeadZoom) {
@@ -2298,6 +2448,23 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 					SimpleHpBarDraw(ao[i].hp, i < TOTALCHAR ? ao[i].ps[PS_HP] : ao[i].maxhp, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X, ao[i].zoom, i >= ENEMY ? ENEMYHPBARCOLOR : PLAYERHPBARCOLOR, cvtDest, cvtLayer, buffering);
 					break;
 				}
+				/*
+				switch (i) {
+				case ROBIN:
+				case DIANA:
+				case MAXX:
+					if (bar[BAR_PLAYERHP + i].addView)
+						DrawNum2AutoSpaceing(bar[BAR_PLAYERHP + i].add, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2 + (float)(SIMPLEHPBARWIDTH), STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X + (float)8 * _2X, RIGHT, false, bar[BAR_PLAYERHP + i].add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * ao[i].zoom, false, true, cvtDest, cvtLayer, buffering);
+					break;
+				default:
+					if (i >= ENEMY && i < NEUTRAL) {
+						if (ao[i].mom == i && bar[BAR_ENEMYHP + GetEnemyBarIdx(i)].addView) {
+							DrawNum2AutoSpaceing(bar[BAR_PLAYERHP + i].add, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2 + (float)(SIMPLEHPBARWIDTH), STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X + (float)8 * _2X, RIGHT, false, bar[BAR_ENEMYHP + i].add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * ao[i].zoom, false, true, cvtDest, cvtLayer, buffering);
+						}
+					}
+					break;
+				}
+				*/
 				ao[i].zoom = zoomBefore;
 			}
 		}
@@ -2436,6 +2603,18 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 
 		}
 
+		for (i = 0; i < TOTALHITMARK; i++) {
+			if (dmgInfo[i].frame > 0) {
+				SetColor(dmgInfo[i].color);
+				DrawNum2(dmgInfo[i].dmg, dmgInfo[i].x, dmgInfo[i].y, CENTER, false, MINUS, true, dmgInfo[i].zoom, false, cvtDest, cvtLayer, buffering);
+				SetColor(false);
+
+				dmgInfo[i].frame++;
+
+				if (dmgInfo[i].frame == FPS)
+					memset(&dmgInfo[i], 0, sizeof(dmgInfo));
+			}
+		}
 		//DrawImage(640, 640, 0, 0, 0, DY, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
 		//DrawImage(160, 201, (1 % 30) % 6 * 161, (1 % 30) / 6 * 201, DX / 2, DY / 2, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
 		break;
@@ -3457,10 +3636,10 @@ void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign
 			x -= (float)16 * zoom;
 			SetColor(COLOR_BROWN);
 			for (j = 0; j < 4; j++) {
-				DrawImage(18, 24, 211, 348, x + solidPosition[2 * j + 0] * zoom, y + solidPosition[2 * j + 1] * zoom - (float)30 * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+				DrawImage(17, 21, 191, 381, x + solidPosition[2 * j + 0] * zoom, y + solidPosition[2 * j + 1] * zoom - (float)30 * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
 			}
 			SetColor(false);
-			DrawImage(18, 24, 211, 348, x, y - (float)30 * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawImage(17, 21, 191, 381, x, y - (float)30 * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
 		}
 		else {
 			x -= (float)(goldNumData[num % 10] - 1 * _2X) * zoom;
@@ -4352,6 +4531,99 @@ void DrawBattleButton(int x, int y, float zoom, bool ani, cocos2d::RenderTexture
 	}
 }
 
+
+void JoyStickDraw(int cnt, int x, int y, float joyDx, float joyDy, float joyPower, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int baseW = 108;
+	int baseH = 93;
+
+	int knobW = 65;
+	int knobH = 66;
+
+	int ringW = 82;
+	int ringH = 48;
+
+	float knobX = x + joyDx;
+	float knobY = y + joyDy + (float)16 * zoom;
+
+	// 1. 노란 베이스
+	DrawImageScale(
+		baseW, baseH,
+		0, 140,
+		x - baseW * zoom / 2,
+		y + baseH * zoom / 2,
+		false, false, false, false, false,
+		zoom, zoom,
+		sprite[PLAYBUTTON_IMG],
+		cvtDest, cvtLayer,
+		PLAYBUTTON_IMG,
+		buffering
+	);
+
+	// 2. 회색 가이드 링
+	DrawImageScale(
+		ringW, ringH,
+		109, 208,
+		x - ringW * zoom / 2,
+		y + ringH * zoom / 2,
+		false, false, false, false, false,
+		zoom, zoom,
+		sprite[PLAYBUTTON_IMG],
+		cvtDest, cvtLayer,
+		PLAYBUTTON_IMG,
+		buffering
+	);
+	// 4. 노란 손잡이
+	DrawImageScale(
+		knobW, knobH,
+		109, 141,
+		knobX - knobW * zoom / 2,
+		knobY + knobH * zoom / 2,
+		false, false, false, false, false,
+		zoom, zoom,
+		sprite[PLAYBUTTON_IMG],
+		cvtDest, cvtLayer,
+		PLAYBUTTON_IMG,
+		buffering
+	);
+}
+
+void DrawJumpButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	float GOLDALPHAZOOM = 0.4f;
+	int MAXPUSHDOWN = 12;
+	int i;
+
+	//하트버튼
+	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
+
+	if (ani == true) {
+		SetColor(itemColor[frame % 10]);
+
+		for (i = 0; i < 4; i++) {
+			DrawImage(192 / 2, 69, 0, 70, x + (float)solidPosition[2 * i + 0] * zoom, y + (float)solidPosition[2 * i + 1] * zoom - (float)Min(MAXPUSHDOWN, downFrame) * zoom * 0.8f, false, false, false, false, false, 0.8f * zoom, sprite[PLAYBUTTON_IMG], cvtDest, cvtLayer, PLAYBUTTON_IMG, buffering);
+			DrawImage(192 / 2, 69, 192 / 2, 70, x + (float)solidPosition[2 * i + 0] * zoom, y + (float)solidPosition[2 * i + 1] * zoom, false, false, false, false, false, 0.8f * zoom, sprite[PLAYBUTTON_IMG], cvtDest, cvtLayer, PLAYBUTTON_IMG, buffering);
+
+		}
+
+		SetColor(false);
+	}
+	DrawImage(192 / 2, 69, 0, 70, x, y - (float)Min(MAXPUSHDOWN, downFrame) * zoom * 0.8f, false, false, false, false, false, 0.8f * zoom, sprite[PLAYBUTTON_IMG], cvtDest, cvtLayer, PLAYBUTTON_IMG, buffering);
+	DrawImage(192 / 2, 69, 192 / 2, 70, x, y, false, false, false, false, false, 0.8f * zoom, sprite[PLAYBUTTON_IMG], cvtDest, cvtLayer, PLAYBUTTON_IMG, buffering);
+
+	ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + (float)(192 / 2 * 0.8f - 24 * _2X) / 2 * zoom, y - (float)2.0f * zoom - (float)Min(MAXPUSHDOWN, downFrame) * zoom * 0.8f, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+	
+	if (ao[PLAYER].equip[EQUIP_BOOTS].type)
+		DrawIcon(GetItemIcon(ao[PLAYER].equip[EQUIP_BOOTS].type, ao[PLAYER].equip[EQUIP_BOOTS].detail, ao[PLAYER].equip[EQUIP_BOOTS].grade), x + (float)(192 / 2 * 0.8f - ITEMICONSIZE * 0.8f) / 2 * zoom, y - (float)2.0f * zoom - (float)Min(MAXPUSHDOWN, downFrame) * zoom * 0.8f, 0.8f * zoom, COLOR_BROWN, false, false, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+	else
+		DrawIcon(GetItemIcon(ITEM_BOOTS, 0, GRADE_NORMAL), x + (float)(192 / 2 * 0.8f - ITEMICONSIZE * 0.8f) / 2 * zoom, y - (float)2.0f * zoom - (float)Min(MAXPUSHDOWN, downFrame) * zoom * 0.8f, 0.8f * zoom, COLOR_BROWN, false, false, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+
+	if (ani == true) {
+		DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+	}
+
+}
+
 void DrawAttackButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, int downFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	float GOLDALPHAZOOM = 0.4f;
@@ -4436,6 +4708,8 @@ void DrawCheckButton(int x, int y, int w, int h, int gray, bool checked, int cur
 void DrawButtonFrame(int x, int y, int w, int h, int frameColor, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
+
+	/*
 	//왼쪽
 	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (frameColor - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], cvtDest, cvtLayer, BUTTON_IMG, buffering);
 
@@ -4444,7 +4718,7 @@ void DrawButtonFrame(int x, int y, int w, int h, int frameColor, float zoom, coc
 
 	//오른쪽
 	DrawImage(16 * _2X, BUYBUTTON_Y, 137, 1 + (frameColor - FRAME_GREEN) * 63, x + w - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], cvtDest, cvtLayer, BUTTON_IMG, buffering);
-
+	*/
 }
 
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -4456,7 +4730,7 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 	int tempAlpha = m_lgrpAlpha;
 	int i;
 
-	DrawButtonFrame(x, y, w, h, frameColor, zoom, cvtDest, cvtLayer, buffering);
+	//DrawButtonFrame(x, y, w, h, frameColor, zoom, cvtDest, cvtLayer, buffering);
 	/*
 	//왼쪽
 	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], cvtDest, cvtLayer, BUTTON_IMG, buffering);
@@ -4468,6 +4742,9 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 	DrawImage(16 * _2X, BUYBUTTON_Y, 137, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x + w - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], cvtDest, cvtLayer, BUTTON_IMG, buffering);
 	*/
 	grayScale = curGray;
+
+	DrawImageScale(176, 40, 1, 679, x, y, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+
 	//무료
 	if (amount == 0) {
 		CenterText(TEXT_FREE, x + (float)w / 2, y - (float)8 * _2X * zoom, BUYBUTTONZOOM * zoom, cvtDest, cvtLayer, buffering);
@@ -4565,7 +4842,7 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 
 
 	//SetFontColor(COLOR_BROWN);
-	DrawTextStr(text, x + ((float)w * zoom - StringWidth(text, zoom)) / 2 + (float)(1 * _2X) * zoom, y - ((float)h * zoom - (float)(11 * _2X) * zoom) / 2, zoom, cvtDest, cvtLayer, buffering);
+	DrawTextStr(text, x + ((float)w * zoom - StringWidth(text, zoom)) / 2 + (float)(1 * _2X) * zoom, y - ((float)h * zoom - (float)(12 * _2X) * zoom) / 2, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 	//SetFontColor(COLOR_WHITE);
 	if (func)
 		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
@@ -5629,6 +5906,43 @@ void DrawTime(int x, int y, int atime, int type, int align, float zoom, cocos2d:
 	DrawTextStr(tempStr, x, y, zoom, cvtDest, cvtLayer, buffering);
 }
 
+void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	if (remainSec < 0) remainSec = 0;
+
+	long long totalSec = remainSec / 1000;
+
+	int day = totalSec / 86400;
+	int hour = (totalSec / 3600) % 24;
+	int min = (totalSec / 60) % 60;
+	int sec = totalSec % 60;
+	int ms = remainSec % 1000;
+
+	char str[32];
+
+	if (day > 0)
+	{
+		sprintf(str, "%dD:%2dH", day, hour);
+	}
+	else if (hour > 0)
+	{
+		sprintf(str, "%2dH:%2dM", hour, min);
+	}
+	else if (min > 0)
+	{
+		sprintf(str, "%2dM:%2dS", min, sec);
+	}
+	else if (sec > 0)
+	{
+		sprintf(str, "%2dS:%2d", sec, ms);
+	}
+	else {
+		sprintf(str, "%2d", ms);
+	}
+
+	DrawTextStrSystem(str, x, y, zoom, align, true, cvtDest, cvtLayer, buffering);
+}
+
 void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	//atime은 초다.
@@ -5637,8 +5951,58 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 	//atime * 144000 = 1d
 	//1일 이상이면 xx d:yy h:zz m
 	float width;
-	//SetAlpha(16);
 
+	//x = x + (float)30 * _2X * zoom;
+
+	switch (font) {
+	default:
+		if (atime >= 144000) {
+			//00d:00h:00m
+			DrawGoldNum(atime / 144000, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_D, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawGoldNum((atime % 144000) / 3600, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawGoldNum((atime % 3600) / 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			//DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+
+		}
+		else if (atime >= 3600) {
+			//00h:00m:00s
+			DrawGoldNum(atime / 3600, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawGoldNum((atime % 3600) / 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawGoldNum(atime % 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			//DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+
+		}
+		else {
+			//00m:00s:00
+			DrawGoldNum(atime / 60, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			DrawGoldNum(atime % 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
+			//DrawGoldNum(frame % FPS, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
+			
+			//DrawGoldAlpha(x + (float)177 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
+
+		}
+		break;
+	}
+	//SetAlpha(16);
+	/*
 	switch (font) {
 	default:
 		if (atime >= 144000) {
@@ -5683,35 +6047,9 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 			//DrawGoldAlpha(x + (float)177 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
 		}
-		/*
-		//if (atime > 3600) {
-		width = GetGoldNumDx(((atime - (atime / 3600) * 3600) / FPS), false, false, false, zoom) + (float)(5 * _2X) * zoom + GetGoldNumDx(atime % FPS, false, false, false, zoom) + (float)(5 * _2X) * zoom + GetGoldNumDx(60 - (frame % FPS) * 2, false, false, false, zoom);
-
-		if (align == CENTER)
-			x -= width / 2;
-		else if (align == RIGHT)
-			x -= width;
-
-		MemRect(x - (float)(2 * _2X) * zoom, y + (float)(2 * _2X) * zoom, width + (float)(4 * _2X) * zoom, (float)(12 * _2X) * zoom + (font == NUM_FONT_NORMAL ? (float)(4 * _2X) * zoom : 0), COLOR_NAVY, cvtDest, cvtLayer, buffering);
-		SetAlpha(32);
-
-
-		DrawGoldNum(((atime - (atime / 3600) * 3600) / FPS), x, y, LEFT, false, false, false, zoom, cvtDest, cvtLayer, buffering);//시
-		x += GetGoldNumDx(((atime - (atime / 3600) * 3600) / FPS), false, false, false, zoom) + (float)(1 * _2X) * zoom;
-		//DrawAlpha(x, y - (float)(font * 3 * _2X) * zoom, ALPHA_COLON, FONT_SMALL, zoom, false, cvtDest, cvtLayer, buffering);
-		DrawImage(17, 16, 212, 329, x, y - (float)(3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-		DrawImage(17, 16, 212, 329, x, y - (float)(3 * _2X + 16 + 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-
-		x += (float)(17 + 1 * _2X) * zoom;
-		DrawGoldNum(atime % FPS, x, y, LEFT, false, false, false, zoom, cvtDest, cvtLayer, buffering);//분
-		x += GetGoldNumDx(atime % FPS, false, false, false, zoom) + (float)(1 * _2X) * zoom;
-		DrawImage(17, 16, 212, 329, x, y - (float)(3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-		DrawImage(17, 16, 212, 329, x, y - (float)(3 * _2X + 16 + 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-		x += (float)(17 + 1 * _2X) * zoom;
-		DrawGoldNum(60 - (frame % FPS) * 2, x, y, LEFT, false, false, false, zoom, cvtDest, cvtLayer, buffering);//초
-		*/
 		break;
 	}
+	*/
 }
 
 void DrawDate(int x, int y, int atime, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -5913,12 +6251,59 @@ void BoxInfoDraw(int boxType, int x, int y, float zoom, cocos2d::RenderTexture* 
 
 void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool ani, bool opened, bool shadow, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	if (shadow)
-		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x - (float)24 * _2X / 2 * zoom, y + (float)12 * _2X * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+	if (shadow) {
+		switch (boxType) {
+		default:
+			ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x - (float)40 * _2X / 2 * zoom, y + (float)12 * _2X * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+			break;
+		case BOX_CASTLE0:
+		case BOX_CASTLE1:
+		case BOX_CASTLE2:
+		case BOX_CASTLE3:
+		case BOX_CASTLE4:
+		case BOX_CASTLE5:
+		case BOX_CASTLE6:
+		case BOX_CASTLE7:
+		case BOX_CASTLE8:
+		case BOX_CASTLE9:
+		case BOX_CASTLE10:
+		case BOX_CASTLE11:
+		case BOX_CASTLE12:
+		case BOX_CASTLE13:
+		case BOX_CASTLE14:
+		case BOX_CASTLE15:
+		case BOX_CASTLE16:
+		case BOX_CASTLE17:
+		case BOX_CASTLE18:
+			ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x - (float)40 * _2X / 2 * zoom, y + (float)12 * _2X * zoom, SHADOW_IMG, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+			break;
+		}
+	}
 
 	switch (boxType) {
 	case BOX_INGAME:
 		DrawNeutral(OBJ_BOX0 + motion, x, y, dirX, zoom, cvtDest, cvtLayer, buffering);
+		break;
+	case BOX_CASTLE0:
+	case BOX_CASTLE1:
+	case BOX_CASTLE2:
+	case BOX_CASTLE3:
+	case BOX_CASTLE4:
+	case BOX_CASTLE5:
+	case BOX_CASTLE6:
+	case BOX_CASTLE7:
+	case BOX_CASTLE8:
+	case BOX_CASTLE9:
+	case BOX_CASTLE10:
+	case BOX_CASTLE11:
+	case BOX_CASTLE12:
+	case BOX_CASTLE13:
+	case BOX_CASTLE14:
+	case BOX_CASTLE15:
+	case BOX_CASTLE16:
+	case BOX_CASTLE17:
+	case BOX_CASTLE18:
+		DrawImage(512, 512, motion == BOXSTATUS_OPENED > 0 ? 512 : 0, 0, x, y, false, false, false, false, false, zoom, sprite[BOX0_IMG + boxType - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + boxType - BOX_CASTLE0, buffering);
 		break;
 	default:
 		DrawBoxSpecial(x, y, dirX, boxType, zoom / 2, solid, ani, opened, cvtDest, cvtLayer, buffering);
@@ -5926,11 +6311,251 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 	}
 }
 
+void OpenBox(OBJECT* pObj)
+{
+	if (pObj->status == BOXSTATUS_CLOSED)
+	{
+		pObj->status = BOXSTATUS_OPENING;
+		pObj->frame = 0;
+	}
+}
+
+void CloseBox(OBJECT* pObj)
+{
+	if (pObj->status == BOXSTATUS_OPENED)
+	{
+		pObj->status = BOXSTATUS_CLOSING;
+		pObj->frame = 0;
+	}
+}
+
+float EaseOutBack(float t)
+{
+	float c1 = 1.70158f;
+	float c3 = c1 + 1.0f;
+
+	t = t - 1.0f;
+	return 1.0f + c3 * t * t * t + c1 * t * t;
+}
+
+float Clamp01(float v)
+{
+	if (v < 0.0f) return 0.0f;
+	if (v > 1.0f) return 1.0f;
+	return v;
+}
+
+void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i;
+	int img = BOX0_IMG + pObj->etc - BOX_CASTLE0;
+
+	bool openedImage = false;
+
+	float drawZoom = pObj->zoom;
+	int shakeX = 0;
+	int shakeY = 0;
+
+	switch (pObj->status)
+	{
+	case BOXSTATUS_OPENED:
+		openedImage = true;
+		break;
+
+	case BOXSTATUS_OPENING:
+		if (pObj->frame < 3)
+		{
+			openedImage = false;
+			shakeX = ((pObj->frame & 1) ? 3 : -3) * _2X;
+		}
+		else if (pObj->frame < BOX_OPEN_CHANGE_FRAME)
+		{
+			openedImage = false;
+
+			float t = (float)(pObj->frame - 3) / (float)(BOX_OPEN_CHANGE_FRAME - 3);
+			drawZoom = pObj->zoom * (1.0f + 0.08f * t);
+		}
+		else
+		{
+			openedImage = true;
+
+			float t = (float)(pObj->frame - BOX_OPEN_CHANGE_FRAME) / (float)(BOX_OPEN_FRAME - BOX_OPEN_CHANGE_FRAME);
+			drawZoom = pObj->zoom * (1.08f - 0.08f * t);
+		}
+		break;
+
+	case BOXSTATUS_CLOSING:
+		if (pObj->frame < BOX_CLOSE_FRAME / 2)
+		{
+			openedImage = true;
+
+			float t = (float)pObj->frame / (float)(BOX_CLOSE_FRAME / 2);
+			drawZoom = pObj->zoom * (1.0f + 0.04f * t);
+		}
+		else
+		{
+			openedImage = false;
+
+			float t = (float)(pObj->frame - BOX_CLOSE_FRAME / 2) / (float)(BOX_CLOSE_FRAME / 2);
+			drawZoom = pObj->zoom * (1.04f - 0.04f * t);
+		}
+		break;
+
+	case BOXSTATUS_APPEAR:
+	case BOXSTATUS_CLOSED:
+	default:
+		openedImage = false;
+		break;
+	}
+
+	float drawX =
+		xOffset + pObj->x
+		- (float)512 / 2 * drawZoom
+		- rx
+		+ shakeX;
+
+	float drawY =
+		STATUSWIN_Y + (rh - 4) * TSIZE
+		- ry
+		- (pObj->y - (float)512 * drawZoom - OBJIMGGAP + 16)
+		+ shakeY;
+
+	switch (pObj->etc)
+	{
+	default:
+		SetColor(castleBoxColor[castleOrder[robin.castle]]);
+		break;
+
+	case BOX_CASTLE15:
+	case BOX_CASTLE16:
+	case BOX_CASTLE17:
+	case BOX_CASTLE18:
+		SetColor(itemColor[frame % 10]);
+		break;
+	}
+
+	SetAlpha(32 - Abs(frame / 2 % 32 - 16));
+
+	for (i = 0; i < 4; i++)
+	{
+		DrawImage(
+			512,
+			512,
+			openedImage ? 512 : 0,
+			0,
+			drawX + solidPosition[i * 2 + 0] * 3,
+			drawY + solidPosition[i * 2 + 1] * 3,
+			false,
+			false,
+			false,
+			false,
+			false,
+			drawZoom,
+			sprite[img],
+			cvtDest,
+			cvtLayer,
+			img,
+			buffering
+		);
+	}
+
+	SetAlpha(32);
+	SetColor(false);
+
+	DrawImage(
+		512,
+		512,
+		openedImage ? 512 : 0,
+		0,
+		drawX,
+		drawY,
+		false,
+		false,
+		false,
+		false,
+		false,
+		drawZoom,
+		sprite[img],
+		cvtDest,
+		cvtLayer,
+		img,
+		buffering
+	);
+
+	if (pObj->status == BOXSTATUS_OPENING)
+	{
+		pObj->frame++;
+
+		if (pObj->frame >= BOX_OPEN_FRAME)
+		{
+			pObj->frame = 0;
+			pObj->status = BOXSTATUS_OPENED;
+		}
+	}
+	else if (pObj->status == BOXSTATUS_CLOSING)
+	{
+		pObj->frame++;
+
+		if (pObj->frame >= BOX_CLOSE_FRAME)
+		{
+			pObj->frame = 0;
+			pObj->status = BOXSTATUS_CLOSED;
+		}
+	}
+}
+
 void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
+	int i;
 	switch (pObj->etc) {
 	case BOX_INGAME:
-		DrawNeutral(pObj->motion, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->zoom, cvtDest, cvtLayer, buffering);
+		DrawNeutral(OBJ_BOX0 + pObj->motion, xOffset + pObj->x, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->zoom, cvtDest, cvtLayer, buffering);
+		break;
+	case BOX_CASTLE0:
+	case BOX_CASTLE1:
+	case BOX_CASTLE2:
+	case BOX_CASTLE3:
+	case BOX_CASTLE4:
+	case BOX_CASTLE5:
+	case BOX_CASTLE6:
+	case BOX_CASTLE7:
+	case BOX_CASTLE8:
+	case BOX_CASTLE9:
+	case BOX_CASTLE10:
+	case BOX_CASTLE11:
+	case BOX_CASTLE12:
+	case BOX_CASTLE13:
+	case BOX_CASTLE14:
+	case BOX_CASTLE15:
+	case BOX_CASTLE16:
+	case BOX_CASTLE17:
+	case BOX_CASTLE18:
+		DrawCastleBox(pObj, cvtDest, cvtLayer, buffering);
+		/*
+		//pObj->status = frame / 8 % 2 == 0 ? BOXSTATUS_OPENED : 0;
+		switch (pObj->etc) {
+		default:
+			SetColor(castleBoxColor[castleOrder[robin.castle]]);
+			break;
+		case BOX_CASTLE15:
+		case BOX_CASTLE16:
+		case BOX_CASTLE17:
+		case BOX_CASTLE18:
+			SetColor(itemColor[frame % 10]);
+			break;
+		}
+		SetAlpha(32 - Abs(frame / 2 % 32 - 16));
+
+		for (i = 0; i < 4; i++) {
+			DrawImage(512, 512, pObj->status == BOXSTATUS_OPENED ? 512 : 0, 0, xOffset + pObj->x - (float)512 / 2 * pObj->zoom - rx + solidPosition[i * 2 + 0] * 3, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)512 * pObj->zoom - OBJIMGGAP + 16) + solidPosition[i * 2 + 1] * 3, false, false, false, false, false, pObj->zoom, sprite[BOX0_IMG + pObj->etc - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + pObj->etc - BOX_CASTLE0, buffering);
+			
+		}
+
+		SetAlpha(32);
+		SetColor(false);
+
+		DrawImage(512, 512, pObj->status == BOXSTATUS_OPENED ? 512 : 0, 0, xOffset + pObj->x - (float)512 / 2 * pObj->zoom - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)512 * pObj->zoom - OBJIMGGAP + 16), false, false, false, false, false, pObj->zoom, sprite[BOX0_IMG + pObj->etc - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + pObj->etc - BOX_CASTLE0, buffering);
+		*/
 		break;
 	default:
 		DrawBoxSpecial(xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->etc, pObj->zoom / 2, true, false, pObj->status == BOXSTATUS_OPENED ? true : false, cvtDest, cvtLayer, buffering);

@@ -26,4 +26,5 @@ void EffectDrawOnlyBg(int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*,
 void EffectDraw(int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawTouchPoint(void);
 void InitBanner(void);
+long long GetCurrentTimeMs();
 #endif

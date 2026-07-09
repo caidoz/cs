@@ -18,7 +18,7 @@ void ShieldBarDraw(long long count, long long max, int x, int y, float zoom, int
 void SimpleHpBarDraw(long long count, long long max, int x, int y, float zoom, int hpColor, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void HpBarDraw(int type, long long count, long long max, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DayBarDraw(int day, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void LifeBarDraw(int life, int maxLife, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-
+void WaveBarDraw(int life, int maxLife, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void BarAddStop(BAR* barP);
 
 #endif

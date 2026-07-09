@@ -4,10 +4,31 @@
 #ifndef _DATA_WAVE_H_
 #define _DATA_WAVE_H_
 
+//robin.
+const int boss[] = {
+	ENEMY_CASTLE_BOSS4,//ENEMY_FROG,
+	ENEMY_LARVA,
+	ENEMY_SALAMANDER,
+	ENEMY_GIANT,
+	ENEMY_IFRIT,
+	ENEMY_MAMMOTH,
+	ENEMY_ANGEL,
+	ENEMY_KIMERA,
+	ENEMY_SHIP,
+	ENEMY_FOGRA,
+	ENEMY_BAHAMUT,
+	ENEMY_DEATH,
+	ENEMY_CASTLE_BOSS1,
+	ENEMY_CASTLE_BOSS2,
+	ENEMY_CASTLE_BOSS3,
+	ENEMY_CASTLE_BOSS4,
+	ENEMY_LABETH,
+	ENEMY_ELKEIN,
+};
 //0: 어떤 몬스터가 등장하는지
 //1: 등장 타이밍
 //2: 체력
-const long long wave[] = {
+const int wave[] = {
 	//여기서 패턴을 잡아준다.
 	//몬스터를 그냥 잡는거
 	//아델라인성 -  1
@@ -5214,7 +5235,6 @@ const long long wave[] = {
 
 
 };
-
 
 const long long stageGold[] = {
 100,

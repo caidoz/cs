@@ -1674,7 +1674,7 @@ int GetItemName(int type, int detail, int grade)
 		tName = 0;
 		break;
 	case ITEM_CREW:
-		return TEXT_MONSTERNAME_START + detail;
+		return TEXT_MONSTERNAME_START + crewData[detail * CREWDATASIZE + CREWDATA_TYPE];
 	case ITEM_SKILL:
 		return TEXT_SKILLNAME_COMMON_ROBIN1 + detail;
 	case ITEM_KEY:
@@ -2915,7 +2915,7 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 	//if (menuResult == 0 && drawHandle == MD_GAMEMENU) {
 	menuAni = 12;
 	hotKeyFrame = 100 + 7 + tEquip * 10;
-	pObj->statUpFrame = 1;
+	//pObj->statUpFrame = 1;
 	//pObj->buff[ = 1;
 	PlayMusic(M_BUTTON);
 	//}

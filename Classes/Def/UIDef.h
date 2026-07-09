@@ -60,8 +60,6 @@ typedef enum _uiDef {
 	BAR_CREW,
 	BAR_HEART,
 	BAR_HEARTBET,//하트베팅 버튼
-	BAR_ROULETTE,//룰렛
-	BAR_PLAY,//플레이 버튼
 	BAR_BATTLECOIN,
 	BAR_HAMMER,
 	BAR_SHIELD,
@@ -87,7 +85,11 @@ typedef enum _uiDef {
 	BAR_STAGEPROGRESS,
 	BAR_REMAINEDTURN,
 	BAR_DAY,              // Day 표시만
-	BAR_LIFE,             // Life 표시만
+	BAR_WAVE,             // Life 표시만
+	BAR_ROULETTE,//룰렛
+	BAR_PLAY,//플레이 버튼
+	BAR_JOYSTICK,//움직임 컨트롤러
+	BAR_JUMP,//점프버튼
 
 	TOTAL_BAR,
 
@@ -175,10 +177,10 @@ typedef enum _uiDef {
 	
 	INVENTORY_X = 24,
 	INVENTORY_GAP_X = 148,
-	INVENTORY_GAP_Y = 160,
+	INVENTORY_GAP_Y = 180,
 
-	CREW_GAP_Y = 168,
-	CASTLE_GAP_Y = 152,
+	CREW_GAP_Y = 180,
+	CASTLE_GAP_Y = 160,
 
 	BUYBUTTON_X = 84 * _2X,
 	BUYBUTTON_Y = 31 * _2X,
@@ -190,6 +192,9 @@ typedef enum _uiDef {
 
 	CREWUPGRADEBUTTONSIZE_X = 84 * _2X,
 	CREWUPGRADEBUTTONSIZE_Y = 31 * _2X,
+
+	CARDSIZE_X = 242,
+	CARDSIZE_Y = 340,
 
 	ITEMCARDSIZE_X = 76 * _2X,
 	ITEMCARDSIZE_Y = 80 * _2X,
@@ -252,8 +257,8 @@ typedef enum _uiDef {
 	POPUPWINDOWSIZE_X = 320 * _2X,
 	POPUPWINDOWSIZE_Y = 420 * _2X,
 
-	ITEMDETAILWINDOWSIZE_X = 288 * _2X,
-	ITEMDETAILWINDOWSIZE_Y = 188 * _2X,
+	ITEMDETAILWINDOWSIZE_X = 640 - 32,
+	ITEMDETAILWINDOWSIZE_Y = 620,
 
 	POPUPSTORE_Y = 64 * _2X,
 

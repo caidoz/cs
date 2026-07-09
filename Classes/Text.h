@@ -16,7 +16,7 @@ const char* const textId[] = {
 	"게임에 필요한 추가 파일을 |c다운로드|b 하시겠습니까? (네트워크 상태에 따라 수분의 시간이 걸릴 수도 있습니다.)@[*네트워크 접속시 통화료가 부과될 수 있습니다.]",//TEXT_DOWNLOAD
 	"다운로드가 |c완료|b되었습니다.",//TEXT_DOWNLOAD_END
 	"사용자 정보 인증중입니다.",//TEXT_USERCHECK_NOW
-	"100 FGT에 참여해주셔서 감사합니다.@@즐거운 시간 되세요~~!",//TEXT_USERCHECK_SUCCESS
+	"FGT에 참여해주셔서 감사합니다.@@즐거운 시간 되세요~~!",//TEXT_USERCHECK_SUCCESS
 	"등록되지 않은 사용자입니다.",//TEXT_USERCHECK_FAIL
 	"FGT 기간이 만료되었습니다.",//TEXT_USERCHECK_EXPIRE
 	"확인키를 누르시면 게임이 종료됩니다.",//TEXT_USERCHECK_GAMEEND
@@ -1123,6 +1123,26 @@ const char* const textId[] = {
 	"|g빛의 상자",
 	"|h어둠의 상자",
 
+	"박스0",
+	"박스1",
+	"박스2",
+	"박스3",
+	"박스4",
+	"박스5",
+	"박스6",
+	"박스7",
+	"박스8",
+	"박스9",
+	"박스10",
+	"박스11",
+	"박스12",
+	"박스13",
+	"박스14",
+	"박스15",
+	"박스16",
+	"박스17",
+	"박스18",
+
 	////투기장 2 전용 아이템(나중에 프리미엄으로 주면 될듯)
 	////검 : ITEM_SWORD	
 	//"아케론 헬름",//ITEM_SWORD2_HRUNTING
@@ -1726,6 +1746,26 @@ const char* const textId[] = {
 	"다양한 재화가 들어있는 빛의 상자",
 	"다양한 재화가 들어있는 어둠의 상자",
 	"전투중에 획득하는 무엇이 들어있는지 모르는 상자",
+
+	"박스0설명",
+	"박스1설명",
+	"박스2설명",
+	"박스3설명",
+	"박스4설명",
+	"박스5설명",
+	"박스6설명",
+	"박스7설명",
+	"박스8설명",
+	"박스9설명",
+	"박스10설명",
+	"박스11설명",
+	"박스12설명",
+	"박스13설명",
+	"박스14설명",
+	"박스15설명",
+	"박스16설명",
+	"박스17설명",
+	"박스18설명",
 
 	"견습 기사",//TEXT_SETNAME_START
 	"왕가의 수호자",
@@ -3154,6 +3194,26 @@ const char* const textId[] = {
 	"menuIcon",
 	"box",
 
+	"box0",
+	"box1",
+	"box2",
+	"box3",
+	"box4",
+	"box5",
+	"box6",
+	"box7",
+	"box8",
+	"box9",
+	"box10",
+	"box11",
+	"box12",
+	"box13",
+	"box14",
+	"box15",
+	"box16",
+	"box17",
+	"box18",
+
 	"theater",
 	"goldFont",
 	"button",
@@ -3172,6 +3232,12 @@ const char* const textId[] = {
 	"menu_castle",
 	"menu_shop",
 	"menu_setting",
+
+	"op0",
+	"op1",
+	"op2",
+	"op3",
+	"op4",
 
 	"t0",
 	"bg0",
@@ -8740,24 +8806,28 @@ const char* const textId[] = {
 	"정기 점검 보상을 드립니다.",//TEXT_MAILSAMPLE_BODY2
 	"출석 보상을 드립니다.",//TEXT_MAILSAMPLE_BODY3
 
-	"옛날 옛적에 검이 곧 부의 상징이었던 시절이 있었습니다.",//TEXT_OPENING_0_0
-	"거대한 검을 가진 왕국 최고의 부자 기사님은 공주와 미래를 약속한 사이였습니다.",//TEXT_OPENING_0_1
+	"옛날 어느 왕국에는 모두가 행복하게 살아가고 있었답니다.",//TEXT_OPENING_0_0
+	"성에는 웃음소리가 끊이지 않았고,",//TEXT_OPENING_0_1
+	"백성들은 평화로운 나날을 보내고 있었지요.",//TEXT_OPENING_0_2
+	
+	"그러던 어느 날...",//TEXT_OPENING_1_0
+	"검은 구름과 함께 무시무시한 마왕이 모습을 드러냈답니다.",//TEXT_OPENING_1_1
+	"왕국은 순식간에 공포에 휩싸이고 말았지요.",//TEXT_OPENING_1_2
+	
+	"마왕의 군대는 왕국의 보물을 모조리 빼앗아 갔답니다.",//TEXT_OPENING_2_0
+	"금화도, 별도, 하트도...",//TEXT_OPENING_2_2
+	"그리고 소중한 백성들까지 모두 끌려가고 말았지요.",//TEXT_OPENING_2_2
+	
+	"그러고는 마왕이 차가운 목소리로 말했답니다.",//TEXT_OPENING_3_0
+	"'잘 들어라. 앞으로 |c3일|b마다 내 군단장이 이곳을 찾아올 것이다.'",//TEXT_OPENING_3_1
+	"'그때마다 너희의 모든 재화를 가져가겠다. 막을 수 있다면 어디 한번 막아 보아라.'",//TEXT_OPENING_3_2
 
-	"그러던 어느날 다크소드를 통해 엄청난 부자가 된 암흑기사가 공주에게 청혼하기 위해 국왕폐하를 알현하였습니다.",//TEXT_OPENING_1_0
-	"사실 암흑기사의 목적은 전 왕국의 재화를 빨아들여 모든 왕국의 사람들을 모두 빚지게 만들어 자신의 노예가 되게 만드는 것이었어요!",//TEXT_OPENING_1_1
+	"그렇게 마왕은 어둠 속으로 사라졌답니다.",//TEXT_OPENING_4_0,
+	"폐허가 된 왕국에는 슬픔만이 남았지요.",//TEXT_OPENING_4_1
+	"하지만 끝까지 희망을 포기하지 않은 기사 한 사람이 있었답니다. 그가 바로 당신이랍니다.",//TEXT_OPENING_4_2
 
-	"빈털터리가 된 기사님은 슬픔에 젖어 힘들게 지내고 있었습니다.",//TEXT_OPENING_2_0
-	"그러던 어느날.. ",//TEXT_OPENING_2_1
-
-	"기사님은 배고픔에 늪지대에서 버섯을 줍고 있었습니다.",//TEXT_OPENING_3_0
-	"그런데 이상하게 생긴 물체가 기사님에게 연습용 몽둥이를 주고 다시 한번 부자가 되어보라는 메시지를 전하는것 아니겠습니까!",//TEXT_OPENING_3_1
-	"때마침 달팽이가 나타났군요!@자 용사님, 그럼 동전을 벌어봅시다!!@레버를 당겨주세요!!!",//TEXT_OPENING_3_2
-
-	"용사님! 잠깐 기다리세요!!",//TEXT_OPENING_4_0
-	"헥헥.. 이제 제가 왔으니 걱정 마시고, 제가 시키는데로 한번 해보세요. 일단은 화면 하단의 조이스틱을 한번 터치해 보세요.",//TEXT_OPENING_4_1
-
-	"그리고 1년이 흘렀습니다.",//TEXT_OPENING_5_0
-	"아이들은 지겨움과 외로움에 지쳐서 다시 사람들이 보고 싶었답니다.",//TEXT_OPENING_5_1
+	"용사님. 대신 세바스찬입니다. 이제부터 왕국을 재건하고, 백성들을 구출하기 위해 어떻게 할건지 말씀드리겠습니다.",//TEXT_OPENING_5_0
+	"때마침 몬스터가 나타났네요! 공격버튼을 눌러주세요!!",//TEXT_OPENING_5_0
 
 	"그래서 이번에는 마왕에게 사람들을 돌려달라고 기도를 했습니다.",//TEXT_OPENING_6_0
 	"그러나 마왕은 어떤 응답도 하지 않았습니다.",//TEXT_OPENING_6_1
@@ -8817,38 +8887,26 @@ const char* const textId[] = {
 
 	"티어",
 
-	"슈퍼듀플렉스",//TEXT_HOUSE_TOLEM//0
-	"길드하우스",//TEXT_HOUSE_TOLEMINSIDE//1
-	"늪지대하우스",//TEXT_HOUSE_SWAMP//2
-	"계곡앞 집",//TEXT_HOUSE_VALLEY//3
-	"수영장하우스",//TEXT_HOUSE_ATLANTICE//4
-	"하수처리장",//TEXT_HOUSE_SEWAGE//5
-	"왕의 대저택",//TEXT_HOUSE_CASTLE//6
-	"마녀의 집",//TEXT_HOUSE_PLAIN//7
-	"엘프의 집",//TEXT_HOUSE_ELF//8
-	"불꽃하우스",//TEXT_HOUSE_FLAME//9
-	"얼음궁전",//TEXT_HOUSE_FROST//10
-	"벼락부자저택",//TEXT_HOUSE_THUNDER//11
-	"라이트하우스",//TEXT_HOUSE_LIGHT//12
-	"골렘의 정원",//TEXT_HOUSE_GOLEM//13
-	"얼론인더다크니스",//TEXT_HOUSE_DARK//14
-	"쥬라기 파크",//TEXT_HOUSE_DRAGON//15
-	"귀신의 집",//TEXT_HOUSE_GHOST//16
-	"마왕성",//TEXT_HOUSE_DEVILCASTLE//17
-	"더 펜트하우스",//TEXT_HOUSE_SPACE//18
+	"개척자 영지",//TEXT_CASTLE_TOLEM//0
+	"영광의 콜로세움",//TEXT_CASTLE_ARENA//1
+	"독안개 성채",//TEXT_CASTLE_SWAMP//2
+	"바위협곡 성채",//TEXT_CASTLE_VALLEY//3
+	"아틀란티스 궁성",//TEXT_CASTLE_ATLANTICE//4
+	"배수관 요새",//TEXT_CASTLE_SEWAGE//5
+	"찬란한 왕도",//TEXT_CASTLE_ADELINE//6
+	"평원의 관문",//TEXT_CASTLE_PLAIN//7
+	"엘프의 성역",//TEXT_CASTLE_ELF//8
+	"홍련화염성",//TEXT_CASTLE_FLAME//9
+	"얼음궁전",//TEXT_CASTLE_FROST//10
+	"마도뇌전성",//TEXT_CASTLE_THUNDER//11
+	"빛의 궁전",//TEXT_CASTLE_LIGHT//12
+	"골렘성",//TEXT_CASTLE_GOLEMVALLEY//13
+	"심연의 성채",//TEXT_CASTLE_DARKNESS//14
+	"흑룡의 성채",//TEXT_CASTLE_DRAGON//15
+	"할로윈 하우스",//TEXT_CASTLE_GHOST//16
+	"마왕성",//TEXT_CASTLE_DEVILCASTLE//17
+	"우주정거장",//TEXT_CASTLE_SPACE//18
 
-/*
-	"아델라인 성",
-	"지하도",
-	"늪지대",
-	"금단의 계곡",
-	"홍염의 대지",
-	"유구한 빙원",
-	"뇌전의 공방",
-	"황혼의 성역",
-	"칠흑의 심연",
-	"마왕성",
-*/
 	"|q축하합니다!",
 	"새로운 티어가 오픈되었습니다!!",
 
@@ -9917,6 +9975,8 @@ const char* const textId[] = {
 	"SPIN",//TEXT_ALPHA_SPIN
 	"STOP",//TEXT_ALPHA_STOP
 	"CREW",//TEXT_ALPHA_CREW
+	"BEFORE",//TEXT_ALPHA_BEFORE
+	"AFTER",//TEXT_ALPHA_AFTER
 
 	"액션카드를 선택하세요!",//TEXT_SELECTCONTROL_HELP
 

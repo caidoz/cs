@@ -3,6 +3,17 @@
 #include "Func.h"
 #include "Text.h"
 
+#ifndef _WIN32
+#include <sys/time.h>
+
+static unsigned long GetTickCount()
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (unsigned long)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+#endif
+
 // Initialize and Setting
 void InitMotion(OBJECT* pObj)
 {
@@ -153,7 +164,7 @@ void InitMenu(void)
 	//InitBar(BAR_COMBATPOWERALL);
 	InitBar(BAR_STAR);
 	InitBar(BAR_DAY);
-	//InitBar(BAR_LIFE);
+	//InitBar(BAR_WAVE);
 
 
 	InitBar(BAR_COIN);
@@ -393,12 +404,22 @@ void AddBar(BAR* barP, signed long long add, int countFrame)
 		barP->count += barP->add;
 	}
 	barP->add = add;
+	
+	if (barP->addView == false)
+	{
+		barP->addViewSum = add;
+	}
+	else
+	{
+		barP->addViewSum += add;
+	}
+
 	barP->addView = true;
 
 	barP->aniFrame = 1;
 	barP->countFrame = countFrame;
 
-	barP->front = true;
+	//barP->front = true;
 
 	//어떤 바도 마이너스가 되지는 않는다.
 	//if (bar->count < 0)
@@ -886,10 +907,10 @@ void InitBar(int type)
 		bar[BAR_HEARTBET].aniFrame = 0;
 
 		bar[BAR_HEARTBET].x = -128 * _2X;
-		bar[BAR_HEARTBET].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+		bar[BAR_HEARTBET].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + 8 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
 
 		bar[BAR_HEARTBET].targetX = bar[BAR_HEARTBET].targetX2 = 4 * _2X;
-		bar[BAR_HEARTBET].targetY = bar[BAR_HEARTBET].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X;
+		bar[BAR_HEARTBET].targetY = bar[BAR_HEARTBET].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + 8 * _2X;
 
 		bar[BAR_HEARTBET].speed2 = bar[BAR_HEARTBET].speed = 8 * _2X;
 		bar[BAR_HEARTBET].waitingFrame = bar[BAR_HEARTBET].waitingFrame2 = FPS;
@@ -911,10 +932,10 @@ void InitBar(int type)
 		bar[BAR_PLAY].aniFrame = 0;
 
 		bar[BAR_PLAY].x = DX + 128 * _2X;
-		bar[BAR_PLAY].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+		bar[BAR_PLAY].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + 12 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
 
-		bar[BAR_PLAY].targetX = bar[BAR_PLAY].targetX2 = DX - 68 * _2X;
-		bar[BAR_PLAY].targetY = bar[BAR_PLAY].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X;
+		bar[BAR_PLAY].targetX = bar[BAR_PLAY].targetX2 = DX - 72 * _2X;
+		bar[BAR_PLAY].targetY = bar[BAR_PLAY].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + 12 * _2X;
 
 		bar[BAR_PLAY].speed2 = bar[BAR_PLAY].speed = 8 * _2X;
 		bar[BAR_PLAY].waitingFrame = bar[BAR_PLAY].waitingFrame2 = FPS;
@@ -926,6 +947,56 @@ void InitBar(int type)
 		bar[BAR_PLAY].drawFunc = BAR_PLAY;
 
 		bar[BAR_PLAY].zoom = BAR_PLAY_ZOOM;
+		break;
+	case BAR_JOYSTICK:
+		bar[BAR_JOYSTICK].active = true;
+		bar[BAR_JOYSTICK].type = BAR_JOYSTICK;
+
+		bar[BAR_JOYSTICK].frame = 1;
+		bar[BAR_JOYSTICK].frame2 = 0;
+		bar[BAR_JOYSTICK].aniFrame = 0;
+
+		bar[BAR_JOYSTICK].x = -68 * _2X;
+		bar[BAR_JOYSTICK].y = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X - 128; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+
+		bar[BAR_JOYSTICK].targetX = bar[BAR_JOYSTICK].targetX2 = 48 * _2X;
+		bar[BAR_JOYSTICK].targetY = bar[BAR_JOYSTICK].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT - 2 * _2X - 128;
+
+		bar[BAR_JOYSTICK].speed2 = bar[BAR_JOYSTICK].speed = 8 * _2X;
+		bar[BAR_JOYSTICK].waitingFrame = bar[BAR_JOYSTICK].waitingFrame2 = FPS;
+		bar[BAR_JOYSTICK].zoomIncrement = bar[BAR_JOYSTICK].zoomIncrement2 = 0;
+		bar[BAR_JOYSTICK].zoomEnd = bar[BAR_JOYSTICK].zoomEnd2 = BAR_CONTROLER_ZOOM;
+
+		bar[BAR_JOYSTICK].front = false;
+
+		bar[BAR_JOYSTICK].drawFunc = BAR_JOYSTICK;
+
+		bar[BAR_JOYSTICK].zoom = BAR_CONTROLER_ZOOM;
+		break;
+	case BAR_JUMP:
+		bar[BAR_JUMP].active = true;
+		bar[BAR_JUMP].type = BAR_JUMP;
+
+		bar[BAR_JUMP].frame = 1;
+		bar[BAR_JUMP].frame2 = 0;
+		bar[BAR_JUMP].aniFrame = 0;
+
+		bar[BAR_JUMP].x = DX - 100 * _2X;
+		bar[BAR_JUMP].y =  - 80 * _2X; //HEARTBARHEIGHT + STATUSWIN_Y - 28 * _2X;
+
+		bar[BAR_JUMP].targetX = bar[BAR_JUMP].targetX2 = DX - 100 * _2X;
+		bar[BAR_JUMP].targetY = bar[BAR_JUMP].targetY2 = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + 12 * _2X - 60 * _2X;
+		
+		bar[BAR_JUMP].speed2 = bar[BAR_JUMP].speed = 8 * _2X;
+		bar[BAR_JUMP].waitingFrame = bar[BAR_JUMP].waitingFrame2 = FPS;
+		bar[BAR_JUMP].zoomIncrement = bar[BAR_JUMP].zoomIncrement2 = 0;
+		bar[BAR_JUMP].zoomEnd = bar[BAR_JUMP].zoomEnd2 = BAR_JUMP_ZOOM;
+
+		bar[BAR_JUMP].front = false;
+
+		bar[BAR_JUMP].drawFunc = BAR_JUMP;
+
+		bar[BAR_JUMP].zoom = BAR_JUMP_ZOOM;
 		break;
 	case BAR_BATTLECOIN:
 		bar[BAR_BATTLECOIN].active = true;
@@ -940,11 +1011,12 @@ void InitBar(int type)
 
 		bar[BAR_BATTLECOIN].aniFrame = 0;
 
-		bar[BAR_BATTLECOIN].x = (float)GOLDBARWIDTH * BAR_BATTLECOIN_ZOOM / 2 - 56 * _2X;
-		bar[BAR_BATTLECOIN].y = DY + 64 * _2X;
+		bar[BAR_BATTLECOIN].x = ao[NEUTRAL].x;
+		bar[BAR_BATTLECOIN].y = STATUSWIN_Y + (rh - 4) * TSIZE - ao[NEUTRAL].y - TSIZE / 4;
 
-		bar[BAR_BATTLECOIN].targetX = bar[BAR_BATTLECOIN].targetX2 = bar[BAR_BATTLECOIN].x;
+		//bar[BAR_BATTLECOIN].targetX = bar[BAR_BATTLECOIN].targetX2 = bar[BAR_BATTLECOIN].x;
 		//bar[BAR_BATTLECOIN].targetY = DY - GNBHEIGHT;
+		/*
 		if (SCREENRATIO <= 150) {
 			switch (robin.stage) {
 			//case CASTLE_ADELINE:
@@ -957,11 +1029,11 @@ void InitBar(int type)
 		}
 		else
 			bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].targetY2 = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].y + TSIZE * 4;
+		*/
+		//bar[BAR_BATTLECOIN].speed = 8 * _2X;
+		//bar[BAR_BATTLECOIN].speedIncrement = 1 * _2X;
 
-		bar[BAR_BATTLECOIN].speed = 8 * _2X;
-		bar[BAR_BATTLECOIN].speedIncrement = 1 * _2X;
-
-		bar[BAR_BATTLECOIN].frame = 1;
+		bar[BAR_BATTLECOIN].frame = 0;
 		bar[BAR_BATTLECOIN].frame2 = 0;
 
 		bar[BAR_BATTLECOIN].front = false;
@@ -1320,7 +1392,7 @@ void InitBar(int type)
 		bar[BAR_STAR].targetX = 0;
 		bar[BAR_STAR].targetY = 0;
 
-		bar[BAR_STAR].front = true;
+		bar[BAR_STAR].front = false;
 
 		bar[BAR_STAR].drawFunc = BAR_STAR;
 
@@ -1350,7 +1422,7 @@ void InitBar(int type)
 		bar[BAR_COMBATPOWERALL].targetX = 0;
 		bar[BAR_COMBATPOWERALL].targetY = 0;
 
-		bar[BAR_COMBATPOWERALL].front = true;
+		bar[BAR_COMBATPOWERALL].front = false;
 
 		bar[BAR_COMBATPOWERALL].drawFunc = BAR_COMBATPOWERALL;
 
@@ -1525,19 +1597,27 @@ void InitBar(int type)
 		break;
 	case BAR_DAY:
 		bar[type].active = true;
-		bar[type].x = DX / 2;  // 왕관 옆
-		bar[type].y = DY - GNBHEIGHT + 4 * _2X;
+		bar[type].x = DX + 32 * _2X;  // 왕관 옆
+		bar[type].y = STATUSWIN_Y;
 		bar[type].count = robin.currentDay;
 		bar[type].drawFunc = BAR_DAY;
 		bar[type].front = true;
-		bar[type].zoom = 2.0f;
-		bar[type].zoom2 = 1.0f;
+		bar[type].zoom = 0.5f;
+		bar[type].zoom2 = 0.5f;
 
-		bar[type].targetX2 = bar[type].targetX = bar[type].x;
+		//bar[type].zoom = 2.0f;
+		//bar[type].zoom2 = 1.0f;
+
+		bar[type].targetX2 = bar[type].targetX = DX - 32 * _2X;
 		bar[type].targetY2 = bar[type].targetY = bar[type].y;
 
-		bar[type].zoomEnd = 1.0f;
-		bar[type].zoomEnd2 = 0.6f;
+		//bar[type].zoomEnd = 1.0f;
+		//bar[type].zoomEnd2 = 0.6f;
+		bar[type].zoomEnd = 0.5f;
+		bar[type].zoomEnd2 = 0.5f;
+
+		bar[type].speed = 8 * _2X;
+		bar[type].speed2 = 16 * _2X;
 
 		bar[type].speedIncrement = 0.1f;
 		bar[type].speedIncrement2 = 0.1f;
@@ -1553,15 +1633,40 @@ void InitBar(int type)
 		bar[type].front = false;
 
 		break;
-	case BAR_LIFE:
+	case BAR_WAVE:
 		bar[type].active = true;
-		bar[type].x = CROWNBARWIDTH + 2 * _2X + GOLDBARWIDTH + 2 * _2X;
-		bar[type].y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
-		bar[type].count = robin.lifeRemaining;
-		bar[type].max = 3;  // 최대 3일
-		bar[type].drawFunc = BAR_LIFE;
+		bar[type].x = DX + 32 * _2X;  // 왕관 옆
+		bar[type].y = DY - GNBHEIGHT - 32 * _2X;
+		bar[type].count = robin.curWaveIdx;
+		bar[type].drawFunc = BAR_WAVE;
 		bar[type].front = true;
-		bar[type].zoom = 1.0f;
+		bar[type].zoom = 0.5f;
+		bar[type].zoom2 = 0.5f;
+
+		//bar[type].zoom = 2.0f;
+		//bar[type].zoom2 = 1.0f;
+
+		bar[type].targetX2 = bar[type].targetX = DX - 32 * _2X;
+		bar[type].targetY2 = bar[type].targetY = bar[type].y;
+
+		//bar[type].zoomEnd = 1.0f;
+		//bar[type].zoomEnd2 = 0.6f;
+		bar[type].zoomEnd = 0.5f;
+		bar[type].zoomEnd2 = 0.5f;
+
+		bar[type].speed = 8 * _2X;
+		bar[type].speed2 = 16 * _2X;
+
+		bar[type].speedIncrement = 0.1f;
+		bar[type].speedIncrement2 = 0.1f;
+
+		bar[type].zoomIncrement = -0.1f;
+		bar[type].zoomIncrement2 = -0.01f;
+
+		bar[type].waitingFrame = FPS;
+		bar[type].waitingFrame2 = FPS;
+
+		bar[type].frame = 1;
 
 		bar[type].front = false;
 		break;
@@ -1852,6 +1957,8 @@ void NewGame(void)
 
 	memset(&robin, 0, sizeof(ROBINDATA));
 
+	robin.startTime = GetCurrentTimeMs();
+
 	robin.stage = 0;
 	robin.room = 0;
 
@@ -1969,8 +2076,6 @@ void NewGame(void)
 	robin.heroesSetting[DIANA] = false;
 	robin.heroesSetting[MAXX] = false;
 
-	SetRoom_Neutral();
-
 	robin.heart = GetInitHeart();
 	robin.heartTimeStamp = MC_knlCurrentTimeStamp();
 
@@ -2077,12 +2182,13 @@ void NewGame(void)
 	for (i = 0; i < crewCnt; i++)
 		robin.slotCrew[i] = -1;
 	
-	robin.slotCrew[0] = NPC_GIRL;
-	robin.slotCrew[1] = NPC_UNCLE;
-	robin.slotCrew[2] = NPC_AUNT;
-	robin.slotCrew[3] = NPC_ADELKNIGHT;
-	robin.slotCrew[4] = NPC_NOBLEMAN;
-	robin.slotCrew[5] = NPC_SEBASTIAN;
+	robin.slotCrew[0] = NPC_SEBASTIAN;
+
+	//robin.slotCrew[1] = NPC_UNCLE;
+	//robin.slotCrew[2] = NPC_AUNT;
+	//robin.slotCrew[3] = NPC_ADELKNIGHT;
+	//robin.slotCrew[4] = NPC_NOBLEMAN;
+	//robin.slotCrew[5] = NPC_SEBASTIAN;
 
 #ifdef TESTINVINCIBLE
 	robin.exps = 31000000;
@@ -2321,7 +2427,7 @@ void GotoPlay(void)
 
 	//robinmap = TOLEMHOUSE2;
 
-	//SetRoom();
+	SetRoom();
 
 	if (doubleBuffer) {
 		if (oldMap != robinmap)
@@ -2337,7 +2443,7 @@ void GotoPlay(void)
 	arenaStatus = STATUS_READY;
 
 	raidPlayer = focus = PLAYER;
-#ifdef TURNRPG
+
 	turn = PLAYER;
 	turnFrame = 0;
 	turnPosition = HERE;
@@ -2345,49 +2451,6 @@ void GotoPlay(void)
 		ao[i].turn = 0;
 		ao[i].turnPosition = HERE;
 	}
-
-	//TEST
-	//SetBossObj();
-#endif
-
-	/*
-	if (robin.bossRoom == true) {
-		SetBossEnemy();
-		for (i = ENEMY; i < NEUTRAL; i++) {
-			if (ao[i].type) {
-				ao[i].active = true;
-				if (ao[i].hp == 0 && i == GetEnemyMomObj(i)) {
-					ao[i].drawHandler = VANISHDRAW;
-					ao[i].moveHandler = VANISHMOVE;
-					ao[i].frame = 0;
-				}
-#ifdef ENEMYHPBAR
-				else if (i == GetEnemyMomObj(i))
-					bar[BAR_ENEMYHP + GetEnemyMomObj(i) - ENEMY].active = true;
-#endif
-			}
-		}
-	}
-	else {
-		if (drawHandle == MD_PLAY ||drawHandle == MD_BATTLE) {
-			if (isEnemyObjActive()) {
-				CopyEnemyObj();
-		
-			}
-			//
-			else {
-				memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
-				memset(&ao[ENEMY], 0, sizeof(robin.enemyObj));
-			}
-			//여기서 몬스터 HP바 초기화
-			for (i = 0; i < MAXENEMY; i++) {
-				if (ao[ENEMY + i].mom == ENEMY + i) {
-					InitBar(BAR_ENEMYHP + GetEnemyBarIdx(ENEMY + i));
-				}
-			}
-		}
-	}
-	*/
 
 #ifdef ENEMYHPBAR
 	LoadEnemyHpBar();
@@ -2636,7 +2699,7 @@ void OutOfBattle(void)
 
 	bar[BAR_ENEMYUSER].front = false;
 	bar[BAR_CROWN].front = false;
-	bar[BAR_GOLD].front = true;
+	bar[BAR_GOLD].front = false;
 
 	bar[BAR_RAIDGOLD].active = false;
 	bar[BAR_RAIDGOLD].front = false;
@@ -3652,8 +3715,6 @@ void GotoBattle(void)
 {
 	int i;
 	int count;
-	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
 
 
 	if (touch) {
@@ -3670,23 +3731,102 @@ void GotoBattle(void)
 	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 	SetRoom();
 
-	bar[BAR_BOX].active = false;
+	//bar[BAR_BOX].active = false;
 	//bar[BAR_GOLD].active = false;
 	//bar[BAR_CROWN].active = false;
-	bar[BAR_QUEST].active = false;
+	//bar[BAR_QUEST].active = false;
 	//bar[BAR_HAMMER].active = false;
 	//bar[BAR_SHIELD].active = false;
 	//bar[BAR_COMBATPOWER].active = false;
 	//bar[BAR_HEART].active = false;
 	//bar[BAR_]
 	//InitBar(BAR_STAGEPROGRESS);
+
 	//bar[BAR_CASTLE].active = false;
+	bar[BAR_CASTLE].targetX = bar[BAR_CASTLE].targetX2 = bar[BAR_CASTLE].x;
+	bar[BAR_CASTLE].targetY = bar[BAR_CASTLE].targetY2 = bar[BAR_CASTLE].y - 120 * _2X;
+	bar[BAR_CASTLE].speed2 = bar[BAR_CASTLE].speed = 8 * _2X;
+	bar[BAR_CASTLE].speedIncrement2 = bar[BAR_CASTLE].speedIncrement = 1 * _2X;
+	bar[BAR_CASTLE].frame = 1;
+
 	//bar[BAR_CREW].active = false;
+	bar[BAR_CREW].targetX = bar[BAR_CREW].targetX2 = bar[BAR_CREW].x;
+	bar[BAR_CREW].targetY = bar[BAR_CREW].targetY2 = bar[BAR_CREW].y - 120 * _2X;
+	bar[BAR_CREW].speed2 = bar[BAR_CREW].speed = 8 * _2X;
+	bar[BAR_CREW].speedIncrement2 = bar[BAR_CREW].speedIncrement = 1 * _2X;
+	bar[BAR_CREW].frame = 1;
+
 	//bar[BAR_MAINSHOP].active = false;
+	bar[BAR_MAINSHOP].targetX = bar[BAR_MAINSHOP].targetX2 = bar[BAR_MAINSHOP].x;
+	bar[BAR_MAINSHOP].targetY = bar[BAR_MAINSHOP].targetY2 = bar[BAR_MAINSHOP].y - 120 * _2X;
+	bar[BAR_MAINSHOP].speed2 = bar[BAR_MAINSHOP].speed = 8 * _2X;
+	bar[BAR_MAINSHOP].speedIncrement2 = bar[BAR_MAINSHOP].speedIncrement = 1 * _2X;
+	bar[BAR_MAINSHOP].frame = 1;
+
 	//bar[BAR_EQUIP].active = false;
+	bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].x;
+	bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].y - 120 * _2X;
+	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
+	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
+	bar[BAR_EQUIP].frame = 1;
+
+	//bar[BAR_ROULETTE].active = false;
+	bar[BAR_ROULETTE].targetX = bar[BAR_ROULETTE].targetX2 = bar[BAR_ROULETTE].x;
+	bar[BAR_ROULETTE].targetY = bar[BAR_ROULETTE].targetY2 = bar[BAR_ROULETTE].y - 120 * _2X;
+	bar[BAR_ROULETTE].speed2 = bar[BAR_ROULETTE].speed = 8 * _2X;
+	bar[BAR_ROULETTE].speedIncrement2 = bar[BAR_ROULETTE].speedIncrement = 1 * _2X;
+	bar[BAR_ROULETTE].frame = 1;
+
+	//bar[BAR_HEARTBET].active = false;
+	bar[BAR_HEARTBET].targetX = bar[BAR_HEARTBET].targetX2 = bar[BAR_HEARTBET].x - 80 * _2X;
+	bar[BAR_HEARTBET].targetY = bar[BAR_HEARTBET].targetY2 = bar[BAR_HEARTBET].y;
+	bar[BAR_HEARTBET].speed2 = bar[BAR_HEARTBET].speed = 8 * _2X;
+	bar[BAR_HEARTBET].speedIncrement2 = bar[BAR_HEARTBET].speedIncrement = 1 * _2X;
+	bar[BAR_HEARTBET].frame = 1;
+
+	//bar[BAR_HEART].active = false;
+	//bar[BAR_HEART].targetX = bar[BAR_HEART].targetX2 = bar[BAR_HEART].x;
+	//bar[BAR_HEART].targetY = bar[BAR_HEART].targetY2 = bar[BAR_HEART].y - 128 * _2X;
+	//bar[BAR_HEART].speed2 = bar[BAR_HEART].speed = 8 * _2X;
+	//bar[BAR_HEART].speedIncrement2 = bar[BAR_HEART].speedIncrement = 1 * _2X;
+	//bar[BAR_HEART].frame = 1;
+
+	//bar[BAR_PLAY].active = false;
+	//bar[BAR_PLAY].targetX = bar[BAR_PLAY].targetX2 = bar[BAR_PLAY].x;
+	//bar[BAR_PLAY].targetY = bar[BAR_PLAY].targetY2 = bar[BAR_PLAY].y - 48 * _2X;
+	//bar[BAR_PLAY].speed2 = bar[BAR_PLAY].speed = 8 * _2X;
+	//bar[BAR_PLAY].speedIncrement2 = bar[BAR_PLAY].speedIncrement = 1 * _2X;
+	//bar[BAR_PLAY].frame = 1;
+
+	//bar[BAR_BOSSHP].active = false;
+	bar[BAR_BOSSHP].targetX = bar[BAR_BOSSHP].targetX2 = bar[BAR_BOSSHP].x;
+	bar[BAR_BOSSHP].targetY = bar[BAR_BOSSHP].targetY2 = bar[BAR_BOSSHP].y - 40 * _2X;
+	bar[BAR_BOSSHP].speed2 = bar[BAR_BOSSHP].speed = 8 * _2X;
+	bar[BAR_BOSSHP].speedIncrement2 = bar[BAR_BOSSHP].speedIncrement = 1 * _2X;
+	bar[BAR_BOSSHP].frame = 1;
+	bar[BAR_BOSSHP].count = 0;
+	bar[BAR_BOSSHP].add = 0;
+	bar[BAR_BOSSHP].countFrame = 0;
+	bar[BAR_BOSSHP].max = 0;
+	bar[BAR_BOSSHP].addView = false;
+	bar[BAR_BOSSHP].addViewSum = 0;
+
+	//bar[BAR_DAY].active = false;
+	bar[BAR_DAY].targetX = bar[BAR_DAY].targetX2 = bar[BAR_DAY].x;
+	bar[BAR_DAY].targetY = bar[BAR_DAY].targetY2 = bar[BAR_DAY].y;
+	bar[BAR_DAY].zoomEnd = bar[BAR_DAY].zoom * 8;//커졌다가 줄면서
+	bar[BAR_DAY].zoomEnd2 = 0;//완전히 사라지면
+	bar[BAR_DAY].zoomIncrement = 0.5f;
+	bar[BAR_DAY].zoomIncrement2 = 1.0f;
+	bar[BAR_DAY].speed2 = bar[BAR_DAY].speed = 8 * _2X;
+	bar[BAR_DAY].speedIncrement2 = bar[BAR_DAY].speedIncrement = 0.1f;
+	bar[BAR_DAY].frame = 1;
+
+
+
 	//bar[BAR_CROWN].active = false;
 	//bar[BAR_SHIELD].active = false;
-
+	
 	//한 턴 기준으로 획득할 
 	//bar[BAR_RAIDCOIN].active = true;
 
@@ -3732,7 +3872,7 @@ void GotoBattle(void)
 
 	arenaStatus = STATUS_PLAY;
 
-	touchDisable = true;
+	touchDisable = false;
 	//dioramaZoom = DIORAMAZOOM_BATTLE;
 	//wheelAngle = 0;
 	//wheelSpeed = 0;
@@ -3743,6 +3883,17 @@ void GotoBattle(void)
 
 	drawHandle = MD_BATTLE;
 	keyHandle = MK_BATTLE;
+
+	option.gameMode = ACTIONRPG;
+	//보스를 한번 생성
+	WaveControler();
+	bar[BAR_BOSSHP].max = GetTotalEnemyHp(robin.stage);
+	InitBar(BAR_JUMP);
+	InitBar(BAR_BATTLECOIN);
+	InitBar(BAR_JOYSTICK);
+
+	joyPressed = false;
+	joyDir = -1;
 }
 
 void SetRaidBox(bool activeVal)
@@ -3867,7 +4018,7 @@ void GotoRaid(void)
 	bar[BAR_HAMMER].active = false;
 	bar[BAR_SHIELD].active = false;
 	bar[BAR_CROWN].active = false;
-	bar[BAR_GOLD].front = true;
+	bar[BAR_GOLD].front = false;
 
 	pObj->active = false;
 
@@ -3933,6 +4084,8 @@ void GotoRaid(void)
 void WhoIsNextTurn(void)
 {
 	int crewIdx;
+	int i;
+
 	turnListIdx++;
 	//이러면 전투 속행이고
 	if (turnListIdx < totalTurn) {
@@ -3957,6 +4110,10 @@ void WhoIsNextTurn(void)
 		turnListIdx = 0;
 		turn = 0;
 		attackSequence = ATTACKSEQUENCE_COIN;
+
+		//여기서 hitCount 초기화
+		for (i = 0; i < NEUTRAL; i++)
+			ao[i].hitCount = 0;
 		//remainedTurn--;
 		//
 		//if (remainedTurn == 0)
@@ -3971,6 +4128,14 @@ void WhoIsNextTurn(void)
 	sequenceFrame = 0;
 	actionCardCnt = 0;
 	memset(&actionCardArr, false, sizeof(actionCardArr));
+
+	BarAddStop(&bar[BAR_BOSSHP]);
+	//BarAddStop(&bar[BAR_BATTLECOIN]);
+	for (i = 0; i < TOTALCHAR; i++)
+		BarAddStop(&bar[BAR_PLAYERHP + i]);
+	for (i = 0; i < MAXENEMY; i++)
+		BarAddStop(&bar[BAR_ENEMYHP + i]);
+
 }
 
 //일반 스테이지 진행일 때 다음 스테이지로 가는 함수

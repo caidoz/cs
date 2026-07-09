@@ -29,14 +29,14 @@ float CenterText(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::La
 float CenterTextSolid(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 float CenterTextStr(const char*, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 float CenterTextStrSolid(const char*, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void FrameText(const char*, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void FrameText(const char* str, int x, int y, int dx, int line, int page, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 int ParseText(char);
 int LineText(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 int LineTextSolid(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 int LineTextStr(const char*, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 int LineTextStrSolid(const char*, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 int CenterLineText(const char*, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void SetFrameText(int, int, int, float zoom);
+void SetFrameText(int index, int dx, int line, float zoom);
 void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCol);
 
 // File Handling

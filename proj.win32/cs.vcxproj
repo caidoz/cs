@@ -284,6 +284,7 @@
     <ClCompile Include="..\Classes\Func_Battle.cpp" />
     <ClCompile Include="..\Classes\Func_Cmf.cpp" />
     <ClCompile Include="..\Classes\Func_Combat.cpp" />
+    <ClCompile Include="..\Classes\Func_Demo.cpp" />
     <ClCompile Include="..\Classes\Func_Draw.cpp" />
     <ClCompile Include="..\Classes\Func_Graphics.cpp" />
     <ClCompile Include="..\Classes\Func_Input.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="..\Classes\Func_Battle.h" />
     <ClInclude Include="..\Classes\Func_Cmf.h" />
     <ClInclude Include="..\Classes\Func_Combat.h" />
+    <ClInclude Include="..\Classes\Func_Demo.h" />
     <ClInclude Include="..\Classes\Func_Draw.h" />
     <ClInclude Include="..\Classes\Func_Graphics.h" />
     <ClInclude Include="..\Classes\Func_Input.h" />

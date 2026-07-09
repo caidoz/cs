@@ -8,7 +8,7 @@
 #define HEROZOOM                   1.5f           // 히어로 줌
 #define CREWZOOM                   1.5f           // 크루 줌
 #define MONSTERZOOM                1.5f           // 몬스터 줌
-#define BOSSZOOM                   1.5f           // 보스 줌
+#define BOSSZOOM                   2.5f           // 보스 줌
 #define LOBBYZOOM                  1.2f           // 로비 줌
 #define BATTLEZOOM                 1.5f          // 배틀 줌
 #define SUMMONZOOM                 1.5f           // 소환 줌
@@ -16,7 +16,7 @@
 #define HOUSEZOOM                  1.25f          // 하우스 줌
 #define HOUSEPLAYERZOOM            1.0f           // 하우스 플레이어 줌
 #define BOXZOOM                    2.5f           // 박스 줌
-#define BOXHOUSEZOOM               1.5f           // 박스 하우스 줌
+#define BOXCASTLEZOOM              0.25f           // 박스 하우스 줌
 
 // ---
 #define REWARDICONZOOM             1.5f           // 보상 아이콘 줌
@@ -54,8 +54,10 @@
 #define BAR_CREW_ZOOM              0.95f           // 크루 바 줌
 #define BAR_HEART_ZOOM             1.0f           // 하트 바 줌
 #define BAR_ROULETTE_ZOOM             0.5f           // 하트 바 줌
-#define BAR_HEARTBET_ZOOM             1.4f           // 하트 바 줌
-#define BAR_PLAY_ZOOM             1.5f           // 하트 바 줌
+#define BAR_HEARTBET_ZOOM             1.6f           // 하트 바 줌
+#define BAR_PLAY_ZOOM             1.8f           // 하트 바 줌
+#define BAR_CONTROLER_ZOOM			1.5f		//공격버튼
+#define BAR_JUMP_ZOOM			1.8f		//공격버튼
 #define BAR_BATTLECOIN_ZOOM        1.0f          // 배틀 코인 바 줌
 #define BAR_MEDAL_ZOOM             1.0f           // 메달 바 줌
 #define BAR_ENEMYUSER_ZOOM         1.0f           // 적 유저 바 줌
@@ -80,7 +82,7 @@
 #define EQUIPZOOM                  2.0f           // 장비 줌
 #define SKILLICONZOOM              2.0f           // 스킬 아이콘 줌
 #define IMGTEXTZOOM                2.0f           // 이미지 텍스트 줌
-#define DMGNUMZOOM                 2.5f           // 데미지 숫자 줌
+#define DMGNUMZOOM                 0.5f           // 데미지 숫자 줌
 #define XNUMZOOM                   1.4f           // X 숫자 줌
 #define ENEMYICONZOOM              0.6f           // 적 아이콘 줌
 #define EQUIPICON_X                0              // 장비 아이콘 X

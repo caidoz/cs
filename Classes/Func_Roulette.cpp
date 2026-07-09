@@ -124,9 +124,9 @@ void DecideRouletteResult(void)
 	gRouletteStartAoOffset[1] = 1;
 	gRouletteStartAoOffset[2] = 2;
 	//TEST
-	gRouletteResultAoOffset[0] = 0;
-	gRouletteResultAoOffset[1] = 1;
-	gRouletteResultAoOffset[2] = 2;
+	//gRouletteResultAoOffset[0] = 0;
+	//gRouletteResultAoOffset[1] = 1;
+	//gRouletteResultAoOffset[2] = 2;
 }
 
 void InitRouletteJump(void)
@@ -185,6 +185,7 @@ void RouletteAttackStart(void)
 	else if (crewCnt < MINCREW)
 	{
 		attackSequence = ATTACKSEQUENCE_ACTION;
+		//ao[NEUTRAL].status = BOXSTATUS_OPENED;
 		InitBar(BAR_BATTLECOIN);
 		//그 다음에는 전체 순서를 정해준다.
 		//일단 크류를 배치했고
@@ -441,6 +442,7 @@ void RouletteDraw(int x, int y, float zoom,
 	// -----------------------------
 	if (attackSequence == ATTACKSEQUENCE_SLOT) {
 		ScreenDarken(SCREENDARKEN);
+		bar[BAR_ROULETTE].front = true;
 		slotFrame++;
 	}
 
@@ -819,7 +821,7 @@ void RouletteDraw(int x, int y, float zoom,
 		if (shouldAnimate && rs.jumpY > 0.01f) drawDir = rs.flipLR ? LEFT : RIGHT;
 
 		DrawCmfDetail(u->cmf,
-			enemyBigIconPos[u->type * 3 + 0],
+			crewPos[u->type * 5 + 0],
 			centerX, yPos,
 			drawDir, drawScale,
 			false, false, cvtDest, cvtLayer, buffering);
@@ -1195,6 +1197,10 @@ void RouletteDraw(int x, int y, float zoom,
 		//여기서 남은 턴을 줄여준다.
 		remainedTurn--;
 		remainedTurnFrame = 1;
+
+		bar[BAR_ROULETTE].front = false;
+
+		ao[NEUTRAL].status = BOXSTATUS_OPENING;
 	}
 }
 
@@ -1219,7 +1225,7 @@ int GetCrewDmg(int crewIdx, int lv)
 int GetCrewIdxFromType(int type)
 {
 	// hero 3개는 로비 편의 데이터라, 크루 검색에서 제외하려면 3부터 시작
-	const int START_KEY = 3;
+	const int START_KEY = 0;
 
 	// TOTAL_CREW_DATA_KEY 같은 총 엔트리 수가 있다면 그걸 쓰고,
 	// 없으면 기존 TOTALCREWKEY / TOTALENEMYKEY 등 "crewData 엔트리 개수"로 돌려야 함.

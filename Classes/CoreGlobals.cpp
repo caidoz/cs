@@ -1374,3 +1374,21 @@ bool bossOn = false;
 int touchDisable = 3 * FPS;
 
 int floatOffsetY;
+
+int openingScene;
+int openingText;
+int openingWaitFrame;
+int openingState;
+int openingPrevTextPage;
+int openingTextPage;
+bool openingSceneWait;
+
+float joyStartX;
+float joyStartY;
+float joyDx;
+float joyDy;
+float joyPower;
+int joyDir;
+bool joyPressed;
+bool joyReturning;
+float joyReturnSpeed;

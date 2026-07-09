@@ -75,39 +75,39 @@ typedef enum _textDef {
 	JONGSUNG_HEIGHT = 7 * _2X,		// 한글 종성 HEIGHT
 
 	TEXT_DOWNLOAD = 0,//게임에 필요한 추가 파일을 |c다운로드|b 하시겠습니까? (네트워크 상태에 따라 수분의 시간이 걸릴 수도 있습니다.)@[*네트워크 접속시 통화료가 부과됩니다.]
-	TEXT_DOWNLOAD_END,//다운로드가 |c완료|b되었습니다.
-	TEXT_USERCHECK_NOW,	//사용자 정보 인증중입니다.
-	TEXT_USERCHECK_SUCCESS,	//100 FGT에 참여해주셔서 감사합니다.@@즐거운 시간 되세요~~!
-	TEXT_USERCHECK_FAIL,	//등록되지 않은 사용자입니다.
-	TEXT_USERCHECK_EXPIRE,	//FGT 기간이 만료되었습니다.
-	TEXT_USERCHECK_GAMEEND,	//확인키를 누르시면 게임이 종료됩니다.
-	TEXT_TESTBAN,//평가버전에서는 지원되지 않는 기능입니다.
-	TEXT_EXIT,//게임을 종료하시겠습니까?
-	TEXT_EQUIPWARNING,//해당 장비를 교체한 뒤 전투력이 감소하며 기존 장비가 분해됩니다. 교체하시겠습니까?
+	TEXT_DOWNLOAD_END,//1//다운로드가 |c완료|b되었습니다.
+	TEXT_USERCHECK_NOW,//2	//사용자 정보 인증중입니다.
+	TEXT_USERCHECK_SUCCESS,//3	//100 FGT에 참여해주셔서 감사합니다.@@즐거운 시간 되세요~~!
+	TEXT_USERCHECK_FAIL,//4	//등록되지 않은 사용자입니다.
+	TEXT_USERCHECK_EXPIRE,//5	//FGT 기간이 만료되었습니다.
+	TEXT_USERCHECK_GAMEEND,//6	//확인키를 누르시면 게임이 종료됩니다.
+	TEXT_TESTBAN,//7//평가버전에서는 지원되지 않는 기능입니다.
+	TEXT_EXIT,//8//게임을 종료하시겠습니까?
+	TEXT_EQUIPWARNING,//9//해당 장비를 교체한 뒤 전투력이 감소하며 기존 장비가 분해됩니다. 교체하시겠습니까?
 
-	TEXT_VERSION,//버전 00.00.01
+	TEXT_VERSION,//10//버전 00.00.01
 
-	TEXT_NOGOLD,	//골드가 부족합니다.
-	TEXT_NOCOIN,	//코인이 부족합니다.
-	TEXT_NOMEDAL,	//메달이 부족합니다.
-	TEXT_INVENTORYFULL,//인벤토리가 가득 찼습니다.
-	TEXT_NOSOCKET,	//소켓이 없는 장비입니다.
-	TEXT_CANNOTSELLITEM,	//판매할 수 없는 아이템입니다.
-	TEXT_ITEMLIMIT,//해당 아이템을 더이상 소지할 수 없습니다.
-	TEXT_NOORE,	//재료가 부족합니다.
-	TEXT_NOMOREENCHANT,	//더이상 강화하실 수 없습니다.
-	TEXT_NOENCHANTITEM,//강화할 수 있는 아이템이 없습니다.
-	TEXT_NORECIPE,	//조합서를 가지고 있지 않습니다.
-	TEXT_NOGEM,//장비에 장착할 수 있는 보석이 없습니다.
-	TEXT_NOGEMITEM,//보석을 장착할 수 있는 장비가 없습니다.
-	TEXT_BROKENITEM,	//부서진 아이템은 강화하실 수 없습니다.
-	TEXT_ENCHANTSUCCESS,	//강화에 성공하였습니다.
-	TEXT_RECIPESUCCESS,	//새로운 아이템이 생성되었습니다.
-	TEXT_SOCKETSUCCESS,	//새로운 아이템이 생성되었습니다.
-	TEXT_NOPROTECT,	//평가버전에서는 지원되지 않는 기능입니다.
-	TEXT_ENCHANTFAILURE,	//강화에 실패하여 장비가 파괴되었습니다.
-	TEXT_ENCHANTFAILURE2,//강화에 실패하였습니다.
-	TEXT_BUYOK,	//구입하시겠습니까?
+	TEXT_NOGOLD,//11	//골드가 부족합니다.
+	TEXT_NOCOIN,//12	//코인이 부족합니다.
+	TEXT_NOMEDAL,//13	//메달이 부족합니다.
+	TEXT_INVENTORYFULL,//14//인벤토리가 가득 찼습니다.
+	TEXT_NOSOCKET,//15	//소켓이 없는 장비입니다.
+	TEXT_CANNOTSELLITEM,//16	//판매할 수 없는 아이템입니다.
+	TEXT_ITEMLIMIT,//17//해당 아이템을 더이상 소지할 수 없습니다.
+	TEXT_NOORE,//18	//재료가 부족합니다.
+	TEXT_NOMOREENCHANT,//19	//더이상 강화하실 수 없습니다.
+	TEXT_NOENCHANTITEM,//20//강화할 수 있는 아이템이 없습니다.
+	TEXT_NORECIPE,//21	//조합서를 가지고 있지 않습니다.
+	TEXT_NOGEM,//22//장비에 장착할 수 있는 보석이 없습니다.
+	TEXT_NOGEMITEM,//23//보석을 장착할 수 있는 장비가 없습니다.
+	TEXT_BROKENITEM,//24	//부서진 아이템은 강화하실 수 없습니다.
+	TEXT_ENCHANTSUCCESS,//25	//강화에 성공하였습니다.
+	TEXT_RECIPESUCCESS,//26	//새로운 아이템이 생성되었습니다.
+	TEXT_SOCKETSUCCESS,//27	//새로운 아이템이 생성되었습니다.
+	TEXT_NOPROTECT,//28	//평가버전에서는 지원되지 않는 기능입니다.
+	TEXT_ENCHANTFAILURE,//29	//강화에 실패하여 장비가 파괴되었습니다.
+	TEXT_ENCHANTFAILURE2,//30//강화에 실패하였습니다.
+	TEXT_BUYOK,//31	//구입하시겠습니까?
 	TEXT_SELLOK,	//판매하시겠습니까?
 	TEXT_QUESTSTART,	//퀘스트 진행중
 	TEXT_QUESTEND,	//퀘스트 완료
@@ -5704,12 +5704,15 @@ typedef enum _textDef {
 
 	TEXT_OPENING_0_0,//
 	TEXT_OPENING_0_1,
+	TEXT_OPENING_0_2,
 
 	TEXT_OPENING_1_0,
 	TEXT_OPENING_1_1,
+	TEXT_OPENING_1_2,
 
 	TEXT_OPENING_2_0,
 	TEXT_OPENING_2_1,
+	TEXT_OPENING_2_2,
 
 	TEXT_OPENING_3_0,
 	TEXT_OPENING_3_1,
@@ -5717,6 +5720,7 @@ typedef enum _textDef {
 
 	TEXT_OPENING_4_0,
 	TEXT_OPENING_4_1,
+	TEXT_OPENING_4_2,
 
 	TEXT_OPENING_5_0,
 	TEXT_OPENING_5_1,
@@ -5776,26 +5780,26 @@ typedef enum _textDef {
 	TEXT_GRANDCHAMPION_TIER,
 
 	TEXT_TIER,
-
-	TEXT_HOUSE_TOLEM,
-	TEXT_HOUSE_TOLEMINSIDE,
-	TEXT_HOUSE_SWAMP,
-	TEXT_HOUSE_VALLEY,
-	TEXT_HOUSE_ATLANTICE,
-	TEXT_HOUSE_SEWAGE,
-	TEXT_HOUSE_CASTLE,
-	TEXT_HOUSE_PLAIN,
-	TEXT_HOUSE_ELF,
-	TEXT_HOUSE_FLAME,
-	TEXT_HOUSE_FROST,
-	TEXT_HOUSE_THUNDER,
-	TEXT_HOUSE_LIGHT,
-	TEXT_HOUSE_GOLEM,
-	TEXT_HOUSE_DARK,
-	TEXT_HOUSE_DRAGON,
-	TEXT_HOUSE_GHOST,
-	TEXT_HOUSE_DEVILCASTLE,
-	TEXT_HOUSE_SPACE,
+	
+	TEXT_CASTLE_TOLEM,//0
+	TEXT_CASTLE_ARENA,//1
+	TEXT_CASTLE_SWAMP,//2
+	TEXT_CASTLE_VALLEY,//3
+	TEXT_CASTLE_ATLANTICE,//4
+	TEXT_CASTLE_SEWAGE,//5
+	TEXT_CASTLE_ADELINE,//6
+	TEXT_CASTLE_PLAIN,//7
+	TEXT_CASTLE_ELF,//8
+	TEXT_CASTLE_FLAME,//9
+	TEXT_CASTLE_FROST,//10
+	TEXT_CASTLE_THUNDER,//11
+	TEXT_CASTLE_LIGHT,//12
+	TEXT_CASTLE_GOLEMVALLEY,//13
+	TEXT_CASTLE_DARKNESS,//14
+	TEXT_CASTLE_DRAGON,//15
+	TEXT_CASTLE_GHOST,//16
+	TEXT_CASTLE_DEVILCASTLE,//17
+	TEXT_CASTLE_SPACE,//18
 
 	TEXT_CONGRATULATIONS,
 	TEXT_TIEROPEN,
@@ -6155,6 +6159,8 @@ typedef enum _textDef {
 	TEXT_ALPHA_SPIN,
 	TEXT_ALPHA_STOP,
 	TEXT_ALPHA_CREW,
+	TEXT_ALPHA_BEFORE,
+	TEXT_ALPHA_AFTER,
 
 	TEXT_SELECTCONTROL_HELP,
 	TEXT_INCOME,

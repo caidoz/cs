@@ -1255,19 +1255,19 @@ void MoveObj(OBJECT* pObj)
 
 	switch (pObj->moveHandler) {
 	case PLAYERMOVE:
+		if (drawHandle == MD_PLAY) {
+			//AI캐릭터
+			if (pObj->dead == false && waveStatus == WAVESTATUS_PLAY)
+				TargetEnemy(obj);
+			else
+				pObj->pressedKey[0] = NULL;
 
-		//AI캐릭터
-		if (pObj->dead == false && drawHandle == MD_PLAY && waveStatus == WAVESTATUS_PLAY)
-			TargetEnemy(obj);
-		else
-			pObj->pressedKey[0] = NULL;
+			systemKey = pObj->pressedKey[0];
+			key_released = pObj->released;
 
-		systemKey = pObj->pressedKey[0];
-		key_released = pObj->released;
-
-		if (systemKey)
-			key_released = false;
-
+			if (systemKey)
+				key_released = false;
+		}
 
 		PlayerMove(pObj);
 
@@ -1644,15 +1644,15 @@ void MoveObj(OBJECT* pObj)
 	if (obj >= ENEMY && obj < NEUTRAL && AlivePlayerCnt() == false) {
 		AttackBoxCheck(pObj);
 	}
-#ifdef TURNRPG
-	if (obj == turn)
-	{
-		if (pObj->moveHandler == ENEMYPLAYERMOVE) {
-			SetPlayerMotion(pObj);
-			AttackObj(obj, pObj->target);
+	if (drawHandle == MD_PLAY) {
+		if (obj == turn)
+		{
+			if (pObj->moveHandler == ENEMYPLAYERMOVE) {
+				SetPlayerMotion(pObj);
+				AttackObj(obj, pObj->target);
+			}
 		}
 	}
-#endif
 NEXT:
 	if (obj < NEUTRAL) {
 		//아이콘 프레임
@@ -1731,38 +1731,40 @@ void PlayerMove(OBJECT* pObj)
 		pObj->playerRun = false;
 	}
 
-	if (pObj->flamer) {
-		pObj->flamer--;
+	if (drawHandle == MD_PLAY) {
+		if (pObj->flamer) {
+			pObj->flamer--;
 
-		if (pObj->flamer == 0) {
-			if (skillInfoFrame > SKILLREMAINEDFRAME)
-				skillInfoFrame = SKILLREMAINEDFRAME;
-			if (skillUsed > SKILLREMAINEDFRAME)
-				skillUsed = SKILLREMAINEDFRAME;
+			if (pObj->flamer == 0) {
+				if (skillInfoFrame > SKILLREMAINEDFRAME)
+					skillInfoFrame = SKILLREMAINEDFRAME;
+				if (skillUsed > SKILLREMAINEDFRAME)
+					skillUsed = SKILLREMAINEDFRAME;
 
-			if (attackType == ROULETTE_SKILL) {
-				attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
-				attackDelay = attackDelayPerType[attackType];
-				screenDarken = false;
+				if (attackType == ROULETTE_SKILL) {
+					attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
+					attackDelay = attackDelayPerType[attackType];
+					screenDarken = false;
 
 
-				//로빈의 스킬이면
-				if (curSkill < SKILL_COMMON_DIANA1) {
+					//로빈의 스킬이면
+					if (curSkill < SKILL_COMMON_DIANA1) {
+					}
+					//디아나의 스킬이면
+					//디아나의 공격을 일단 멈춰준다.
+					else if (curSkill < SKILL_COMMON_MAXX1) {
+						ao[DIANA].attack = false;
+						ReleasePlayer(&ao[DIANA]);
+					}
+					//맥스의 스킬이면
+					//맥스의 공격을 일단 멈춰준다.
+					else {
+						ao[MAXX].attack = false;
+						ReleasePlayer(&ao[MAXX]);
+					}
+
+					focus = ROBIN;
 				}
-				//디아나의 스킬이면
-				//디아나의 공격을 일단 멈춰준다.
-				else if (curSkill < SKILL_COMMON_MAXX1) {
-					ao[DIANA].attack = false;
-					ReleasePlayer(&ao[DIANA]);
-				}
-				//맥스의 스킬이면
-				//맥스의 공격을 일단 멈춰준다.
-				else {
-					ao[MAXX].attack = false;
-					ReleasePlayer(&ao[MAXX]);
-				}
-
-				focus = ROBIN;
 			}
 		}
 	}
@@ -1771,14 +1773,16 @@ void PlayerMove(OBJECT* pObj)
 		effect.alpha = 0;
 		pObj->attack = false;
 
-		if (turn < PLAYERALL) {
-			pObj->turnPosition = COMING;
+		if (drawHandle == MD_PLAY) {
+			if (turn < PLAYERALL) {
+				pObj->turnPosition = COMING;
 #ifndef WARIGARI
-			if (autoPlay == true && drawHandle == MD_PLAY && JoyStickPressPossible() == true) {
-				BoxOpen();
+				if (autoPlay == true && drawHandle == MD_PLAY && JoyStickPressPossible() == true) {
+					BoxOpen();
 
-			}
+				}
 #endif
+			}
 		}
 
 		pObj->concentrate = 0;
@@ -1855,7 +1859,7 @@ void PlayerMove(OBJECT* pObj)
 	}
 	else {
 		if (obj < TOTALCHAR) {
-			if (IsMovingSkill(pObj->currentSkill) == true) {
+			if (drawHandle == MD_PLAY && IsMovingSkill(pObj->currentSkill) == true) {
 				//적의 발생지역보다 작으면
 				//다시 복귀해라
 				if (pObj->x > pObj->nx) {
@@ -2672,7 +2676,6 @@ chk:
 				TileCheckY(pObj);
 				break;
 			case MD_PLAY:
-			case MD_BATTLE:
 				if (attackSequence == ATTACKSEQUENCE_ACTION && obj == turn)
 				switch (pObj->turnPosition) {
 				case HERE:
@@ -5538,7 +5541,7 @@ void SlimeMove(OBJECT* pObj, int speed)
 		endObj = NEUTRAL;
 	}
 
-#ifdef TURNRPG
+if (drawHandle == MD_PLAY) {
 	if (turn == obj)
 		switch (pObj->turnPosition) {
 		case HERE:
@@ -5558,7 +5561,7 @@ void SlimeMove(OBJECT* pObj, int speed)
 		pObj->etc = 0;
 		pObj->motion = pObj->frame % *cmf_status_data[pObj->cmf][pObj->etc];
 	}
-#endif
+}
 
 	if (pObj->attackFrame == 0) {
 		//pObj->dirF = LEFT;
@@ -11081,7 +11084,10 @@ void RegenMove(OBJECT* pObj)
 			}
 			else {
 				pObj->hp = pObj->maxhp;
-				pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];
+				if (drawHandle == MD_PLAY)
+					pObj->moveHandler = ENEMYMOVETURN;
+				else
+					pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];
 				pObj->drawHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_DRAWHANDLER];
 				AddBar(&bar[BAR_BOSSHP], pObj->hp, BARFRAME);
 			}
@@ -11986,8 +11992,11 @@ void ItemMove(OBJECT* pObj)
 				startY = STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP;
 				//플레이어가 골드를 획득하는 것
 				if (pObj->target < ENEMY) {
-					targetX = targetX2 = bar[barName].x + (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM;
-					targetY = targetY2 = bar[barName].y - (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM;
+					//targetX = targetX2 = bar[barName].x + (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM;
+					//targetY = targetY2 = bar[barName].y - (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM;
+
+					targetX = targetX2 = xOffset + ao[NEUTRAL].x;
+					targetY = targetY2 = STATUSWIN_Y + (rh - 4) * TSIZE - ao[NEUTRAL].y - ry + OBJIMGGAP + 4 * _2X + robin.castle * 4;
 
 				}
 				//적이 골드를 획득하는 것
@@ -11998,7 +12007,7 @@ void ItemMove(OBJECT* pObj)
 
 				}
 
-				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2, 8 * _2X * 2, 2 * _2X * 2, 8 * _2X * 2, 2 * _2X * 2, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD, CURRENCYICON_STARTSIZE, CURRENCYICON_ENDSIZE2, 0.3f, CURRENCYICON_ENDSIZE2, CURRENCYICON_STARTSIZE, -0.2f, barName);
+				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2, 8 * _2X * 2, 2 * _2X * 2, 8 * _2X * 2, 2 * _2X * 2, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD, pObj->zoom * CURRENCYICON_STARTSIZE, pObj->zoom * CURRENCYICON_ENDSIZE2, 0.3f, pObj->zoom * CURRENCYICON_ENDSIZE2, pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, barName);
 #else
 				targetX = DX / 2 - (GetNumDx(robin.gold, false, NUM_FONT_NORMAL, false) + 32 * _2X + 8 * _2X) / 2;
 				targetY = DY - GNBHEIGHT - 8 * _2X;
@@ -12390,7 +12399,7 @@ void BoxMove(OBJECT* pObj)
 		case BOXSTATUS_OPENING:
 			pObj->motion = Min(OBJ_BOX5, OBJ_BOX0 + pObj->frame / 2 / MOTIONDIV);
 			if (pObj->motion == OBJ_BOX5 && pObj->frame == 2 * (OBJ_BOX5 - OBJ_BOX0 + 1))
-				pObj->status = BOXSTATUS_OPENED;
+				OpenBox(pObj);
 			break;
 		case BOXSTATUS_OPENED:
 			pObj->motion = OBJ_BOX6;
@@ -12415,7 +12424,7 @@ void BoxMove(OBJECT* pObj)
 		case BOXSTATUS_OPENING:
 			pObj->motion = Min(OBJ_BOX5, OBJ_BOX0 + pObj->frame / 2 / MOTIONDIV);
 			if (pObj->motion == OBJ_BOX5 && pObj->frame == 2 * (OBJ_BOX5 - OBJ_BOX0 + 1)) {
-				pObj->status = BOXSTATUS_OPENED;
+				OpenBox(pObj);
 				SetPopUp(POPUPTYPE_GAMEOVER, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 					false, false, false, false, false,
 					false, false, false, false, false,
@@ -13673,7 +13682,6 @@ void CrewMove(OBJECT* pObj)
 
 	switch (drawHandle) {
 	case MD_PLAY:
-	case MD_BATTLE:
 		switch (attackSequence) {
 		case ATTACKSEQUENCE_READY:
 		case ATTACKSEQUENCE_COIN:
@@ -13807,6 +13815,31 @@ void CrewMove(OBJECT* pObj)
 				}
 
 			break;
+		}
+		break;
+	case MD_BATTLE:
+		if (pObj->frame % (FPS * 3 + ret) == 0) {
+			for (i = BULLET; i < ENEMYUSEROBJ; i++) {
+				pObj->target = NearEnemy(pObj);
+				pObj->currentSkill = NPC_GIRL_SKILL2;
+
+				if (ao[i].active == false && pObj->target >= ENEMY && pObj->target < NEUTRAL) {
+
+					AddObject(&ao[i], pObj, ADDOBJ_CREWBULLET);
+					ao[i].target = pObj->target;
+					//방향성 잡아주고
+					if (pObj->x > ao[ao[i].target].x)
+						ao[i].dirF = ao[i].dirX = LEFT;
+					else
+						ao[i].dirF = ao[i].dirX = RIGHT;
+
+	#ifdef SPEEDTURN
+					if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0)
+						WhoIsNextTurn();
+	#endif
+					break;
+				}
+			}
 		}
 		break;
 	}
@@ -13991,6 +14024,7 @@ void TileCheckY(OBJECT* pObj)
 	int dx_block;
 	int oy = pObj->y;
 
+	if (drawHandle == MD_PLAY)
 	return;
 	//if ((drawHandle == MD_BATTLE || drawHandle == MD_RAID) && (GetObjFromPtr(pObj) == PLAYER || GetObjFromPtr(pObj) == ENEMY))
 	//	return;

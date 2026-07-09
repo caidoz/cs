@@ -427,9 +427,9 @@ void DrawSubText(const char* src, int offset, int length, int x, int y, float zo
 {
 	int i, byte_len, wide = 0;
 	int start = 0, end;
-	char subtext[100];
+	char subtext[200];
 
-	memset(subtext, 0, 100);
+	memset(subtext, 0, 200);
 
 	for (i = 0; i < offset; i++, start++) {
 		if (src[start] < 0 || src[start] > 127) {
@@ -557,7 +557,7 @@ void FrameText(const char* str, int x, int y, int dx, int line, int page, float 
 	for (i = 0, cnt = 0, ofs = 0; i < len; i++) {
 		if (SubstringWidth(str, ofs, i - ofs, zoom) > dx - (float)(cnt % 3 == 2 ? 18 * _2X : 9 * _2X) * zoom || strcmp(str, "@") == 0) {
 			if (cnt < line)
-				DrawSubText(str, ofs, i - ofs, x, y + (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawSubText(str, ofs, i - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 			ofs = i;
 			cnt++;
@@ -570,14 +570,19 @@ void FrameText(const char* str, int x, int y, int dx, int line, int page, float 
 				ofs++;
 		}
 
-		if (str[+wide] < 0 || str[i + wide] > 127)
+		if (str[i + wide] < 0 || str[i + wide] > 127)
 			wide++;
 	}
 
 	if (cnt < line)
-		DrawSubText(str, ofs, len - ofs, x, y + (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawSubText(str, ofs, len - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 
-	if (textFrame < textStringLength[page]) {
+	int endPage = page + line - 1;
+
+	if (endPage >= textPage)
+		endPage = textPage - 1;
+
+	if (textFrame < textStringLength[endPage]) {
 		textFrame++;
 	}
 }

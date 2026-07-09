@@ -77,12 +77,12 @@ const int buttonImgData[] = {
 };
 
 const int equipBgData[] = {
-	226, 361, 0, 0, 5, 0,
-	221, 362, 229, 0, 7, 0,
-	219, 361, 451, 0, 8, 0,
-	223, 361, 0, 363, 6, 0,
-	230, 362, 226, 364, 3, 0,
-	236, 362, 458, 364, 0, 0,
+	242, 340, 0, 0, 0, 0,
+	242, 340, 243, 0, 0, 0,
+	242, 340, 486, 0, 0, 0,
+	242, 340, 0, 341, 0, 0,
+	242, 340, 243, 341, 0, 0,
+	242, 340, 486, 341, 0, 0,
 	
 };
 
@@ -161,6 +161,7 @@ void DrawItemCard(
 	bool buffering
 );
 
+int GetCrewInventoryIdx(int type);
 void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void CrewPannelDraw(int crewIdx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 bool IsCrewSet(int crewIdx);

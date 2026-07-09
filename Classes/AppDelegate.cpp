@@ -1,3 +1,7 @@
+//cd C:\Users\polyp\Desktop\CP\cs\proj.android
+//gradlew.bat :cs:assembleDebug 2>&1 | findstr /i "error: error failed failure fatal exception"
+
+
 #include "AppDelegate.h"
 #include "CoreClass.h"
 //#define SDKBOX_ENABLED
@@ -22,9 +26,9 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 //static cocos2d::Size designResolutionSize = cocos2d::Size(320, 480);
-static cocos2d::Size designResolutionSize = cocos2d::Size(640, 640 * 167 / 100);
-//static cocos2d::Size designResolutionSize = cocos2d::Size(800, 800 * 1.34);
-//static cocos2d::Size designResolutionSize = cocos2d::Size(480, 640);
+static cocos2d::Size designResolutionSize = cocos2d::Size(640, 640 * 134 / 100);
+//static cocos2d::Size designResolutionSize = cocos2d::Size(1080, 2340);
+//static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 2048);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(320, 480);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(768, 1024);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(1536, 2048);
@@ -70,21 +74,30 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	auto glview = director->getOpenGLView();
 	if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-		glview = GLViewImpl::createWithRect("CoinSword", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
-#else
-		glview = GLViewImpl::create("CoinSword");
-#endif
-
+		glview = GLViewImpl::createWithRect("인삼남:인생이 삼일 남았다!", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
-		//glview->setFrameSize(640, 640 * 2622 / 1206);//WINDOWS
-		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 
-		glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_WIDTH);
+#else
+		glview = GLViewImpl::create("인삼남:인생이 삼일 남았다!");
+#endif
+
+		
 		director->setOpenGLView(glview);
 	}
 	
+	auto frameSize = glview->getFrameSize();
+	float designW = 640.0f;
+	float designH = designW * frameSize.height / frameSize.width;
+
+	glview->setDesignResolutionSize(
+		designW,
+		designH,
+		ResolutionPolicy::FIXED_WIDTH
+	);
 
 	// turn on display FPS
 	//director->setDisplayStats(true);

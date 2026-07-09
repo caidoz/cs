@@ -14,7 +14,7 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 void DrawCommonShadow(int cmf, int x, int y, int dirF, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawCmfDetailShadow(int cmf, int motion, int x, int y, int dirF, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawEffect(int, int, int, int, float rotation, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawNeutral(int, int, int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawNeutral(int idx, int x, int y, int dirF, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawBgEffect(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawBgEffectDetail(int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawEmoticon(int type, int icon, int frame, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

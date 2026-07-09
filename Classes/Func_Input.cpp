@@ -66,7 +66,7 @@ void KeyCore(void)
 
 void TitleKey(void)
 {
-	int i, j;
+	int i, j, k;
 	int doorY;
 	switch (curMenu) {
 	case MENU_LOADING://맨 처음에 100 박히는 화면연출
@@ -75,6 +75,154 @@ void TitleKey(void)
 			memset(&scY, 0, sizeof(scY));
 
 			PlayMusic(M_SELECT);
+			break;
+		case AVK_MAXGAME:
+
+			int stage;
+			int questIcon;
+
+			//TEST
+			stage = robin.stage;
+			robin.maxStatusCnt = ++robin.maxStatusCnt % TOTAL_SWORD;
+			i = robin.maxStatusCnt;
+			NewGame();
+
+			robin.castle = 16;
+
+			//SetRoom_Neutral();
+
+			robin.stage = stage;
+			robin.maxStatusCnt = i;
+
+			option.gameControl = CONTROL_MANUAL;
+
+			AddBar(&bar[BAR_GOLD], 10000000, BARFRAME);
+			GetItem(ITEM_GOLD, false, false, false, 10000000, false);
+			AddBar(&bar[BAR_HEART], 9999, BARFRAME);
+			GetItem(ITEM_HEART, false, false, false, 9999, false);
+			AddBar(&bar[BAR_HAMMER], 9999, BARFRAME);
+			GetItem(ITEM_HAMMER, false, false, false, 9999, false);
+			//robin.gold = 10000000;//코인
+			//robin.medal = 100000;//PVP 아이템
+			//robin.coin = 100000;//코인
+			//robin.star = 100000;//스타(합성석)
+			//robin.hammer = 100000;//합성석
+			//robin.heart = 9999;
+
+			for (i = ROBIN; i < 1; i++) {
+				for (j = 0; j < TOTALEQUIP; j++) {
+					ao[i].equip[j].type = EMPTY;
+					for (k = 0; k < 12; k++)
+						ao[i].equip[i].option[j][0] = EMPTYINT;
+					for (k = 0; k < 6; k++)
+						ao[i].equip[i].socket[j] = EMPTYINT;
+				}
+			}
+
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_SWORD, ITEM_SWORD_CALADBOLG, GRADE_NORMAL)]);
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_HELM, ITEM_HELM_TITANIUM, GRADE_NORMAL)]);
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_ARMOR, ITEM_ARMOR_DRAGONSKIN, GRADE_NORMAL)]);
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_GUNTLET, ITEM_GUNTLET_HOLYHAND, GRADE_NORMAL)]);
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_KILT, ITEM_KILT_EARTHQUAKE, GRADE_NORMAL)]);
+			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_GREAVES, ITEM_GREAVES_LEGEND, GRADE_NORMAL)]);
+
+			//EquipItem(&ao[ROBIN].equip[EQUIP_WEAPON], ITEM_SWORD, 1, GRADE_NORMAL, ITEM_SWORD_KING, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_HELM], ITEM_HELM, 1, GRADE_NORMAL, ITEM_HELM_TITANIUM, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_ARMOR], ITEM_ARMOR, 1, GRADE_NORMAL, ITEM_ARMOR_DRAGONSKIN, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_PANTS], ITEM_KILT, 1, GRADE_NORMAL, ITEM_KILT_EARTHQUAKE, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_GLOVE], ITEM_GUNTLET, 1, GRADE_NORMAL, ITEM_GUNTLET_HOLYHAND, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_BOOTS], ITEM_GREAVES, 1, GRADE_NORMAL, ITEM_GREAVES_LEGEND, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
+			//MakeItem(&ao[ROBIN].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
+
+			RefreshStat(&ao[ROBIN]);
+
+			//MakeItem(&ao[DIANA].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_INFERNO, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_HELM], ITEM_HAT, 1, GRADE_NORMAL, ITEM_HAT_DRAGONSKULL, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_ARMOR], ITEM_VEST, 1, GRADE_NORMAL, ITEM_VEST_QUEEN, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_PANTS], ITEM_SKIRT, 1, GRADE_NORMAL, ITEM_SKIRT_HERO, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_GLOVE], ITEM_ARMLET, 1, GRADE_NORMAL, ITEM_ARMLET_HERO, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_BOOTS], ITEM_SHOES, 1, GRADE_NORMAL, ITEM_SHOES_HEAVENS, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
+			//MakeItem(&ao[DIANA].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
+
+			//RefreshStat(&ao[DIANA]);
+
+			//MakeItem(&ao[MAXX].equip[EQUIP_WEAPON], ITEM_BOOMERANG, 1, GRADE_NORMAL, ITEM_BOOMERANG_MEGATRIAL, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_HELM], ITEM_CAP, 1, GRADE_NORMAL, ITEM_CAP_TROLLHEAD, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_ARMOR], ITEM_COAT, 1, GRADE_NORMAL, ITEM_COAT_HYDRASCALE, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_PANTS], ITEM_PANTS, 1, GRADE_NORMAL, ITEM_PANTS_SATANIC, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_GLOVE], ITEM_GLOVE, 1, GRADE_NORMAL, ITEM_GLOVE_GLORY, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_BOOTS], ITEM_BOOTS, 1, GRADE_NORMAL, ITEM_BOOTS_DESTINY, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
+			//MakeItem(&ao[MAXX].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
+
+			//RefreshStat(&ao[MAXX]);
+			//for (i = 0; i < COLLECTIONSITEMCNT; i++) {
+			//	EquipItem(&ao[PLAYER], GetInvenIdx(collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0], collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1], collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2]));
+			//}
+
+			//GetItem(ITEM_NECK, 0, robin.maxStatusCnt % TOTAL_NECK, false, 1, false);
+			//EquipItem(&ao[PLAYER], robin.count);
+
+			//GetItem(ITEM_RING, 0, robin.maxStatusCnt % TOTAL_RING, false, 1, false);
+			//EquipItem(&ao[PLAYER], i);
+
+			//TEST
+			//TEST
+			//여기서 스킬세팅
+			//TEST
+			robin.count = 0;
+
+			for (i = ROBIN; i < TOTALPLAYER; i++)
+				memcpy(&ao[PLAYER + i], &ao[i], sizeof(OBJECT));
+
+			loadedMap = -1;
+
+			PlayMusic(M_POWERUP);
+
+			SaveOption();
+
+			option.gameControl = CONTROL_MANUAL;
+			questIcon = GetItemIcon(questRequestItem[robin.quest * 3 + 0], questRequestItem[robin.quest * 3 + 1], questRequestItem[robin.quest * 3 + 2]);
+			if (questInfo[robin.quest * QUESTINFODATASIZE + 1] == QUESTTYPE_RAID)
+				questIcon = ICON_RAID;
+			else if (questInfo[robin.quest * QUESTINFODATASIZE + 1] == QUESTTYPE_BATTLE)
+				questIcon = ICON_BATTLE;
+			//else
+			//	questIcon = ICON_SUMMON + questInfo[robin.quest * QUESTINFODATASIZE + 0];
+			//InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_BOSSRAID, false, ICON_EVENT_BOSSRAID, 43200, TOUCH_FUNC_EVENT_BOSSRAID);
+
+			robin.lv = 11;
+			robin.exps = 1000;
+			LevelUp(robin.exps);
+
+			robin.slotCrew[0] = NPC_GIRL;
+			robin.slotCrew[1] = NPC_UNCLE;
+			robin.slotCrew[2] = NPC_AUNT;
+			robin.slotCrew[3] = NPC_ADELKNIGHT;
+			robin.slotCrew[4] = NPC_NOBLEMAN;
+			robin.slotCrew[5] = NPC_SEBASTIAN;
+
+			//SetRoom();
+			GotoPlay();
+
+			SaveGame();
+
+			//ao[NEUTRAL].etc = robin.castle;
+			ao[NEUTRAL].zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
+			//SetBox(&ao[ITEMBOX], bet);
+			arenaStatus = STATUS_PLAY;
+
+			waveStatus = WAVESTATUS_READY;
+			break;
+		case AVK_GOTOPLAY:
+			GotoPlay();
+			break;
+		case AVK_NEWGAME:
+			NewGame();
+			GotoPlay();
+			SetDemo(0);
 			break;
 		case AVK_GOTODEMO:
 			NewGame();
@@ -98,7 +246,7 @@ void TitleKey(void)
 
 			SetRoom();
 			areaFrame = 0;
-			SetDemo(DEMO_OPENING_PRINCESS);
+			SetDemo(DEMO_OPENING_PEACEFUL);
 			break;
 		}
 		break;
@@ -127,6 +275,76 @@ void TitleKey(void)
 		case AVK_5:
 			PlayMusic(M_SELECT);
 			break;
+		}
+		break;
+	}
+}
+
+void TalkKey(void)
+{
+	int i, j;
+	
+	switch (drawHandle) {
+	case MD_OPENING:
+		if (textFrame < textStringLength[textPage - 1])	//만약 프레임이 다 안넘어갔으면
+			textFrame = textStringLength[textPage - 1] + 1;
+		else if (openingTextPage < OPENING_TOTAL_TEXT - 1) {//만약 프레임은 다 넘어갔는데 페이지가 다 안넘어갔으면
+			openingTextPage++;
+			SetFrameText(TEXT_OPENING_0_0 + openingTextPage, 512, TEXTLINEPERPAGE, 1.4f);
+			//textFrame = 0;
+		}
+		else {
+			textFrame = 0;
+			textCurPage = 0;
+			openingTextPage = 0;
+
+			robin.castle = 18;
+			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
+
+			GotoPlay();
+
+			arenaStatus = STATUS_PLAY;
+
+			AddBar(&bar[BAR_COMBATPOWERALL], GetCombatPowerAll(PLAYER), BARFRAME);
+			SetEnemyUser();
+
+			for (i = 0; i < robin.eventCnt; i++) {
+				InitEventPos(
+					&robin.gameEvent[i],
+					GetEventMenuPosX(robin.gameEvent[i].type, EVENT_OPEN),
+					GetEventMenuPosY(robin.gameEvent[i].type, EVENT_OPEN),
+					GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING),
+					GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING),
+					GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING),
+					GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING),
+					16 * _2X, -1 * _2X, 1 * _2X, 1 * _2X,
+					FPS, FPS,
+					false, false, false,
+					1.0f, 1.0f, 0.0f,
+					1.0f, 1.0f, 0.0f
+				);
+			}
+
+			bet = 0;
+			robin.heart = GetInitHeart();
+
+			maxRouletteCnt = swordSkillCnt[0];
+			touchDisable = false;
+
+			for (i = 0; i < EQUIP_NECK; i++) {
+				for (j = 0; j < itemTypeCnt[i * TOTALCHAR]; j++) {
+					GetItem(i, 1, j, GRADE_NORMAL, 1, false);
+				}
+			}
+		}
+		break;
+	case MD_DEMO:
+		if (textFrame < textStringLength[textPage - 1])	//만약 프레임이 다 안넘어갔으면
+			textFrame = textStringLength[textPage - 1] + 1;
+		else {
+			movie.type = MOVIE_MOVE;
+			movie.frame++;
+			movie.start++;
 		}
 		break;
 	}
@@ -304,7 +522,7 @@ void PlayKey(int obj)
 
 		winAniFrame = 1;
 	}
-	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + OPENEDMAXITEMCNT) {
+	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + TOTALINVENTORY) {
 		menuItem = systemKey - AVK_ITEMDETAIL;
 		menuDepth = 1;
 		ao[NPC].frame = 0;
@@ -436,8 +654,8 @@ void PlayKey(int obj)
 	else if (systemKey >= AVK_EQUIP_INVENTORY && systemKey < AVK_EQUIP_INVENTORY + TOTALINVENTORY) {
 		switch (robin.inven[systemKey - AVK_EQUIP_INVENTORY].type) {
 		case ITEM_CREW:
-			robin.slotCrew[menuCur] = crewData[(robin.inven[systemKey - AVK_EQUIP_INVENTORY].detail) * CREWDATASIZE + CREWDATA_TYPE];
-
+			robin.slotCrew[menuX] = crewData[robin.inven[systemKey - AVK_EQUIP_INVENTORY].detail * CREWDATASIZE + CREWDATA_TYPE];
+			menuDepth--;
 			break;
 		default:
 			EquipItem(&ao[ROBIN], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
@@ -972,9 +1190,16 @@ void PlayKey(int obj)
 			bar[BAR_COMBATPOWER].front = false;
 			break;
 		case AVK_ATTACK:
-			RouletteAttackStart();
-
-			touchDisable = true;
+			if (drawHandle == MD_PLAY) {
+				RouletteAttackStart();
+				bar[BAR_PLAY].aniFrame = 1;
+				touchDisable = true;
+			}
+			break;
+		case AVK_MOVE:
+			break;
+		case AVK_JUMP:
+			systemKey = AVK_2;
 			break;
 
 		case AVK_HEROCHECK_DIANA:
@@ -1018,7 +1243,7 @@ void PlayKey(int obj)
 		case AVK_NEXTREWARD:
 			break;
 		case AVK_GOTOPLAY:
-
+			GotoPlay();
 			break;
 		case AVK_GOTOGACHA:
 			GotoGacha();
@@ -1078,7 +1303,7 @@ void PlayKey(int obj)
 			battleStartFrame = BATTLESTARTFRAME;
 			touchDisable = true;
 			AddBar(&bar[BAR_HEART], -GetStageAdmissionHeart(robin.stage), BARFRAME);
-			//GotoBattle(); 
+			GotoBattle(); 
 			break;
 		case AVK_NEWGAME:
 			NewGame();
@@ -1086,201 +1311,7 @@ void PlayKey(int obj)
 			PlayMusic(M_POWERUP);
 
 			GotoPlay();
-
-			robin.heart = GetInitHeart();
-
-			arenaStatus = STATUS_PLAY;
-
-			AddBar(&bar[BAR_COMBATPOWER], GetCombatPower(&ao[PLAYER]) - (bar[BAR_COMBATPOWER].count + bar[BAR_COMBATPOWER].add), BARFRAME);
-			effect.color2 = false;
-
-			waveStatus = WAVESTATUS_READY;
-			//TEST
-			//SetTestHotKey();
-			//TEST
-			bar[BAR_INVENTORY + 1].active = false;
-			bar[BAR_INVENTORY + 2].active = false;
-			bar[BAR_SKILL + 1].active = false;
-			bar[BAR_SKILL + 2].active = false;
-
-			robin.gold = 1000000;
-			AddBar(&bar[BAR_GOLD], robin.gold, BARFRAME);
-
-			SaveGame();
-			for (i = 0; i < robin.eventCnt; i++)
-				InitEventPos(&robin.gameEvent[i], GetEventMenuPosX(robin.gameEvent[i].type, EVENT_OPEN), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_OPEN), GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosX(robin.gameEvent[i].type, EVENT_DOING), GetEventMenuPosY(robin.gameEvent[i].type, EVENT_DOING), 16 * _2X, -1 * _2X, 1 * _2X, 1 * _2X, FPS, FPS, false, false, false,
-					1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-
-			//TEST
-			//여기서 스킬세팅
-			/*
-			robin.charData[ROBIN].getSkillList[0] = SKILL_ROBIN8;//ROBIN_SKILL_BOOSTSLASH
-			robin.charData[ROBIN].getSkillList[1] = SKILL_ROBIN6;//ROBIN_SKILL_AIRCRASH
-			robin.charData[ROBIN].getSkillList[2] = SKILL_ROBIN9;//ROBIN_SKILL_HYPERCHARGE
-			robin.charData[ROBIN].getSkillList[3] = SKILL_ROBIN10;//ROBIN_SKILL_SOULCRASH
-			robin.charData[ROBIN].getSkillList[4] = SKILL_ROBIN7;//ROBIN_SKILL_STAB
-			robin.charData[ROBIN].getSkillList[5] = SKILL_ROBIN11;//ROBIN_SKILL_ABSOLUTEPIERCE
-			robin.charData[ROBIN].getSkillList[6] = SKILL_ROBIN12;//ROBIN_SKILL_KILLALL
-			*/
-			SaveGame();
-			break;
-		case AVK_MAXGAME:
-
-			int stage;
-			int questIcon;
-
-			//TEST
-			robin.stage = 1;
-			//TEST
-			stage = robin.stage;
-			robin.maxStatusCnt = ++robin.maxStatusCnt % TOTAL_SWORD;
-			i = robin.maxStatusCnt;
-			NewGame();
-
-			robin.stage = stage;
-			robin.maxStatusCnt = i;
-
-
-			option.gameControl = CONTROL_MANUAL;
-
-			AddBar(&bar[BAR_GOLD], 10000000, BARFRAME);
-			GetItem(ITEM_GOLD, false, false, false, 10000000, false);
-			AddBar(&bar[BAR_BOX], 9999, BARFRAME);
-			GetItem(ITEM_HEART, false, false, false, 9999, false);
-			AddBar(&bar[BAR_HAMMER], 9999, BARFRAME);
-			GetItem(ITEM_HAMMER, false, false, false, 9999, false);
-			//robin.gold = 10000000;//코인
-			//robin.medal = 100000;//PVP 아이템
-			//robin.coin = 100000;//코인
-			//robin.star = 100000;//스타(합성석)
-			//robin.hammer = 100000;//합성석
-			//robin.heart = 9999;
-
-			detail = DEBUG_STAR;
-
-			for (i = ROBIN; i < 1; i++) {
-				for (j = 0; j < TOTALEQUIP; j++) {
-					ao[i].equip[j].type = EMPTY;
-					for (k = 0; k < 12; k++)
-						ao[i].equip[i].option[j][0] = EMPTYINT;
-					for (k = 0; k < 6; k++)
-						ao[i].equip[i].socket[j] = EMPTYINT;
-				}
-			}
-
-			MakeItem(&ao[ROBIN].equip[EQUIP_WEAPON], ITEM_SWORD, 1, GRADE_NORMAL, ITEM_SWORD_KING, 0);
-			MakeItem(&ao[ROBIN].equip[EQUIP_HELM], ITEM_HELM, 1, GRADE_NORMAL, ITEM_HELM_TITANIUM, 0);
-			MakeItem(&ao[ROBIN].equip[EQUIP_ARMOR], ITEM_ARMOR, 1, GRADE_NORMAL, ITEM_ARMOR_DRAGONSKIN, 0);
-			MakeItem(&ao[ROBIN].equip[EQUIP_PANTS], ITEM_KILT, 1, GRADE_NORMAL, ITEM_KILT_EARTHQUAKE, 0);
-			MakeItem(&ao[ROBIN].equip[EQUIP_GLOVE], ITEM_GUNTLET, 1, GRADE_NORMAL, ITEM_GUNTLET_HOLYHAND, 0);
-			MakeItem(&ao[ROBIN].equip[EQUIP_BOOTS], ITEM_GREAVES, 1, GRADE_NORMAL, ITEM_GREAVES_LEGEND, 0);
-			//MakeItem(&ao[ROBIN].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
-			//MakeItem(&ao[ROBIN].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
-
-			RefreshStat(&ao[ROBIN]);
-
-			MakeItem(&ao[DIANA].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_INFERNO, 0);
-			MakeItem(&ao[DIANA].equip[EQUIP_HELM], ITEM_HAT, 1, GRADE_NORMAL, ITEM_HAT_DRAGONSKULL, 0);
-			MakeItem(&ao[DIANA].equip[EQUIP_ARMOR], ITEM_VEST, 1, GRADE_NORMAL, ITEM_VEST_QUEEN, 0);
-			MakeItem(&ao[DIANA].equip[EQUIP_PANTS], ITEM_SKIRT, 1, GRADE_NORMAL, ITEM_SKIRT_HERO, 0);
-			MakeItem(&ao[DIANA].equip[EQUIP_GLOVE], ITEM_ARMLET, 1, GRADE_NORMAL, ITEM_ARMLET_HERO, 0);
-			MakeItem(&ao[DIANA].equip[EQUIP_BOOTS], ITEM_SHOES, 1, GRADE_NORMAL, ITEM_SHOES_HEAVENS, 0);
-			//MakeItem(&ao[DIANA].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
-			//MakeItem(&ao[DIANA].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
-
-			RefreshStat(&ao[DIANA]);
-
-			MakeItem(&ao[MAXX].equip[EQUIP_WEAPON], ITEM_BOOMERANG, 1, GRADE_NORMAL, ITEM_BOOMERANG_MEGATRIAL, 0);
-			MakeItem(&ao[MAXX].equip[EQUIP_HELM], ITEM_CAP, 1, GRADE_NORMAL, ITEM_CAP_TROLLHEAD, 0);
-			MakeItem(&ao[MAXX].equip[EQUIP_ARMOR], ITEM_COAT, 1, GRADE_NORMAL, ITEM_COAT_HYDRASCALE, 0);
-			MakeItem(&ao[MAXX].equip[EQUIP_PANTS], ITEM_PANTS, 1, GRADE_NORMAL, ITEM_PANTS_SATANIC, 0);
-			MakeItem(&ao[MAXX].equip[EQUIP_GLOVE], ITEM_GLOVE, 1, GRADE_NORMAL, ITEM_GLOVE_GLORY, 0);
-			MakeItem(&ao[MAXX].equip[EQUIP_BOOTS], ITEM_BOOTS, 1, GRADE_NORMAL, ITEM_BOOTS_DESTINY, 0);
-			//MakeItem(&ao[MAXX].equip[EQUIP_NECK], ITEM_NECK, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_NECK, 0);
-			//MakeItem(&ao[MAXX].equip[EQUIP_RING], ITEM_RING, 1, GRADE_NORMAL, robin.maxStatusCnt % TOTAL_RING, 0);
-
-			RefreshStat(&ao[MAXX]);
-			//for (i = 0; i < COLLECTIONSITEMCNT; i++) {
-			//	EquipItem(&ao[PLAYER], GetInvenIdx(collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0], collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1], collectionData[robin.maxStatusCnt * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2]));
-			//}
-
-			//GetItem(ITEM_NECK, 0, robin.maxStatusCnt % TOTAL_NECK, false, 1, false);
-			//EquipItem(&ao[PLAYER], robin.count);
-
-			//GetItem(ITEM_RING, 0, robin.maxStatusCnt % TOTAL_RING, false, 1, false);
-			//EquipItem(&ao[PLAYER], i);
-
-			//TEST
-			//TEST
-			//여기서 스킬세팅
-			ao[ROBIN].getSkillList[0] = robin.charData[ROBIN].getSkillList[0] = SKILL_ROBIN8;
-			ao[ROBIN].getSkillList[1] = robin.charData[ROBIN].getSkillList[1] = SKILL_ROBIN6;
-			ao[ROBIN].getSkillList[2] = robin.charData[ROBIN].getSkillList[2] = SKILL_ROBIN9;
-			ao[ROBIN].getSkillList[3] = robin.charData[ROBIN].getSkillList[3] = SKILL_ROBIN10;
-			ao[ROBIN].getSkillList[4] = robin.charData[ROBIN].getSkillList[4] = SKILL_ROBIN7;
-			ao[ROBIN].getSkillList[5] = robin.charData[ROBIN].getSkillList[5] = SKILL_ROBIN11;
-			ao[ROBIN].getSkillList[6] = robin.charData[ROBIN].getSkillList[6] = SKILL_ROBIN12;
-
-			ao[DIANA].getSkillList[0] = robin.charData[DIANA].getSkillList[0] = SKILL_DIANA6;
-			ao[DIANA].getSkillList[1] = robin.charData[DIANA].getSkillList[1] = SKILL_DIANA7;
-			ao[DIANA].getSkillList[2] = robin.charData[DIANA].getSkillList[2] = SKILL_DIANA8;
-			ao[DIANA].getSkillList[3] = robin.charData[DIANA].getSkillList[3] = SKILL_DIANA9;
-			ao[DIANA].getSkillList[4] = robin.charData[DIANA].getSkillList[4] = SKILL_DIANA10;
-			ao[DIANA].getSkillList[5] = robin.charData[DIANA].getSkillList[5] = SKILL_DIANA11;
-			ao[DIANA].getSkillList[6] = robin.charData[DIANA].getSkillList[6] = SKILL_DIANA12;
-
-			ao[MAXX].getSkillList[0] = robin.charData[MAXX].getSkillList[0] = SKILL_MAXX7;
-			ao[MAXX].getSkillList[1] = robin.charData[MAXX].getSkillList[1] = SKILL_MAXX8;
-			ao[MAXX].getSkillList[2] = robin.charData[MAXX].getSkillList[2] = SKILL_MAXX9;
-			ao[MAXX].getSkillList[3] = robin.charData[MAXX].getSkillList[3] = SKILL_MAXX10;
-			ao[MAXX].getSkillList[4] = robin.charData[MAXX].getSkillList[4] = SKILL_MAXX11;
-			ao[MAXX].getSkillList[5] = robin.charData[MAXX].getSkillList[5] = SKILL_MAXX12;
-			ao[MAXX].getSkillList[6] = robin.charData[MAXX].getSkillList[6] = SKILL_MAXX13;
-
-			SetHotKey(&ao[PLAYER], HOTKEY_SKILL, SKILL_ROBIN12, 0);
-			SetHotKey(&ao[DIANA], HOTKEY_SKILL, SKILL_DIANA12, 1);
-			SetHotKey(&ao[MAXX], HOTKEY_SKILL, SKILL_MAXX13, 2);
-			//TEST
-			robin.count = 0;
-
-
-			for (i = ROBIN; i < TOTALPLAYER; i++)
-				memcpy(&ao[PLAYER + i], &ao[i], sizeof(OBJECT));
-
-			loadedMap = -1;
-
-			PlayMusic(M_POWERUP);
-
-			SaveOption();
-
-			option.gameControl = CONTROL_MANUAL;
-			questIcon = GetItemIcon(questRequestItem[robin.quest * 3 + 0], questRequestItem[robin.quest * 3 + 1], questRequestItem[robin.quest * 3 + 2]);
-			if (questInfo[robin.quest * QUESTINFODATASIZE + 1] == QUESTTYPE_RAID)
-				questIcon = ICON_RAID;
-			else if (questInfo[robin.quest * QUESTINFODATASIZE + 1] == QUESTTYPE_BATTLE)
-				questIcon = ICON_BATTLE;
-			//else
-			//	questIcon = ICON_SUMMON + questInfo[robin.quest * QUESTINFODATASIZE + 0];
-			//InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_BOSSRAID, false, ICON_EVENT_BOSSRAID, 43200, TOUCH_FUNC_EVENT_BOSSRAID);
-
-			robin.lv = 11;
-			robin.exps = 1000;
-			LevelUp(robin.exps);
-
-			GotoPlay();
-
-			SaveGame();
-
-			//SetBox(&ao[ITEMBOX], bet);
-			arenaStatus = STATUS_PLAY;
-
-			AddBar(&bar[BAR_COMBATPOWER], GetCombatPower(&ao[PLAYER]) - (bar[BAR_COMBATPOWER].count + bar[BAR_COMBATPOWER].add), BARFRAME);
-			effect.color2 = false;
-
-			waveStatus = WAVESTATUS_READY;
-
-			//SetHero();
-			//SetCrew();
+			SetDemo(0);
 			break;
 		case AVK_HEARTAMOUNT:
 			if (robin.heart > betHeart[bet + 1])
@@ -2035,6 +2066,9 @@ void ReleaseCore(void)
 		TitleKey();
 #endif
 		break;
+	case MK_TALK:
+		TalkKey();
+		break;
 	case MK_ALERT:
 		AlertKey();
 		break;
@@ -2392,7 +2426,7 @@ void touchFunc(int func)
 	else if (func >= TOUCH_FUNC_COLLECTIONS_REWARD && func < TOUCH_FUNC_COLLECTIONS_REWARD + TOTAL_COLLECTIONS) {
 		systemKey = AVK_COLLECTIONS_REWARD + func - TOUCH_FUNC_COLLECTIONS_REWARD;
 	}
-	else if (func >= TOUCH_FUNC_ITEMDETAIL && func < TOUCH_FUNC_ITEMDETAIL + OPENEDMAXITEMCNT) {
+	else if (func >= TOUCH_FUNC_ITEMDETAIL && func < TOUCH_FUNC_ITEMDETAIL + TOTALINVENTORY) {
 		systemKey = AVK_ITEMDETAIL + func - TOUCH_FUNC_ITEMDETAIL;
 	}
 	else if (func >= TOUCH_FUNC_EQUIPDETAIL && func < TOUCH_FUNC_EQUIPDETAIL + TOTALEQUIP) {
@@ -2711,7 +2745,24 @@ void touchFunc(int func)
 			systemKey = AVK_TARGETENEMY5;
 			break;
 		case TOUCH_FUNC_ATTACK:
-			systemKey = AVK_ATTACK;
+			if (option.gameMode == TURNRPG)
+				systemKey = AVK_ATTACK;
+			else
+				systemKey = AVK_5;
+			break;
+		case TOUCH_FUNC_MOVE:
+			joyPressed = true;
+			joyReturning = false;
+
+			joyStartX = bar[BAR_JOYSTICK].x;
+			joyStartY = bar[BAR_JOYSTICK].y;
+			joyDx = 0;
+			joyDy = 0;
+			joyPower = 0;
+			joyDir = -1;
+			break;
+		case TOUCH_FUNC_JUMP:
+			systemKey = AVK_2;
 			break;
 		case TOUCH_FUNC_HEROCHECK_DIANA:
 			systemKey = AVK_HEROCHECK_DIANA;
@@ -2833,7 +2884,6 @@ void touchFunc(int func)
 
 		case TOUCH_FUNC_GOTODEMO:
 			systemKey = AVK_GOTODEMO;
-
 			break;
 		case TOUCH_FUNC_GOTOPLAY:
 			systemKey = AVK_GOTOPLAY;

@@ -22,6 +22,7 @@ void ObjectSkillSetting(OBJECT * pObj);
 void WaveStart(void);
 void WaveControler(void);
 long long GetTotalWaveHp(int stage);
+long long GetTotalEnemyHp(int stage);
 int SetEnemy(OBJECT *);
 void SetNpc(OBJECT *);
 void SetRaid(void);
@@ -40,7 +41,7 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rend
 void DrawBackMap(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawBg(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawTile(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawForeMap(int, int, int, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void TheaterDraw(cocos2d::RenderTexture*, cocos2d::Layer*, bool);

@@ -1377,9 +1377,6 @@ const int crewBulletLvUpDmgPercent[] = {
 //2 DMG
 //3 DATA_SLING
 const int crewData[] = {
-	ROBIN, CREWTYPE_NORMAL, false, false, false, CASTLE_ROBIN_POS,
-	DIANA, CREWTYPE_NORMAL, false, false, false, CASTLE_DIANA_POS,
-	MAXX, CREWTYPE_NORMAL, false, false, false, CASTLE_MAXX_POS,
 	//6명씩 패키징을 해야 되
 	//초심자 시리즈
 	//아델라인(톨렘마을)(6)

@@ -7,6 +7,7 @@ typedef enum _handlerInfo {
 	//드로우 핸들
 	MD_LOGO = 1,//빅픽셀 로고 그리기
 	MD_TITLE,//타이틀화면, 
+	MD_OPENING,//오프닝
 	MD_PLAY,//메인진행
 	MD_BATTLE,//장비공격
 	MD_RAID,//레이드

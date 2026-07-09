@@ -471,9 +471,9 @@ void SetRoom_Neutral(void)
 				pObj->zoom = 1.0f;
 			else if (pObj->type == OBJ_BOX) {
 				if (GetObjFromPtr(pObj) == ITEMBOX)
-					pObj->zoom = BOXHOUSEZOOM;// BOXZOOM;
+					pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);// BOXZOOM;
 				else
-					pObj->zoom = dioramaZoom;
+					pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);//dioramaZoom
 			}
 			else {
 				if (drawHandle == MD_BATTLE)
@@ -557,12 +557,11 @@ void SetRoom_Neutral(void)
 				//}
 				pObj->drawHandler = BOXDRAW;
 
+				pObj->etc = BOX_CASTLE0 + castleOrder[robin.castle];//BOX_INGAME;
+
 				if (GetObjFromPtr(pObj) == ITEMBOX) {
-
-					pObj->etc = BOX_INGAME;
-
 					pObj->status = BOXSTATUS_APPEAR;
-					pObj->y -= 16 * TSIZE;
+					//pObj->y -= 16 * TSIZE;
 				}
 				else
 					pObj->status = BOXSTATUS_CLOSED;
@@ -571,6 +570,34 @@ void SetRoom_Neutral(void)
 					pObj->dirX = pObj->dirF = RIGHT;
 				else
 					pObj->dirX = pObj->dirF = LEFT;
+
+				switch (pObj->etc) {
+					case BOX_CASTLE0:
+					case BOX_CASTLE1:
+					case BOX_CASTLE2:
+					case BOX_CASTLE3:
+					case BOX_CASTLE4:
+					case BOX_CASTLE5:
+					case BOX_CASTLE6:
+					case BOX_CASTLE7:
+					case BOX_CASTLE8:
+					case BOX_CASTLE9:
+					case BOX_CASTLE10:
+					case BOX_CASTLE11:
+					case BOX_CASTLE12:
+					case BOX_CASTLE13:
+					case BOX_CASTLE14:
+					case BOX_CASTLE15:
+					case BOX_CASTLE16:
+					case BOX_CASTLE17:
+					case BOX_CASTLE18:
+						pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
+						break;
+					default:
+						//case BOX_INGAME:
+						pObj->zoom = BOXZOOM;
+						break;
+				}
 				break;
 			case OBJ_ITEM:
 				pObj->active = false;
@@ -1294,224 +1321,451 @@ void WaveControler()
 		}
 	}
 
-	if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0] && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
-		pObj->type = wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
-		//pObj->type = ENEMY_SLIME_GOLD;
-		pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
-		pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
-		
-		switch (pObj->type) {
-		case ENEMY_FACE:
-		case ENEMY_FACE_RED:
-		case ENEMY_FACE_BLUE:
-		case ENEMY_FACE_PURPLE:
-		case ENEMY_FACE_GREEN:
-		case ENEMY_FACE_GOLD:
-		case ENEMY_FACE_BLACK:
-		case ENEMY_ICESUN:
-		case ENEMY_ICESUN_RED:
-		case ENEMY_ICESUN_BLUE:
-		case ENEMY_ICESUN_PURPLE:
-		case ENEMY_ICESUN_GREEN:
-		case ENEMY_ICESUN_GOLD:
-		case ENEMY_ICESUN_BLACK:
-		case ENEMY_LARVA:
-		case ENEMY_LARVA_RED:
-		case ENEMY_LARVA_BLUE:
-		case ENEMY_LARVA_PURPLE:
-		case ENEMY_LARVA_GREEN:
-		case ENEMY_LARVA_GOLD:
-		case ENEMY_LARVA_BLACK:
-			positionX -= 2 * TSIZE;
-			break;
-		case ENEMY_ONEEYE:
-		case ENEMY_ONEEYE_RED:
-		case ENEMY_ONEEYE_BLUE:
-		case ENEMY_ONEEYE_PURPLE:
-		case ENEMY_ONEEYE_GREEN:
-		case ENEMY_ONEEYE_GOLD:
-		case ENEMY_ONEEYE_BLACK:
-		case ENEMY_PHOENIX:
-		case ENEMY_PHOENIX_RED:
-		case ENEMY_PHOENIX_BLUE:
-		case ENEMY_PHOENIX_PURPLE:
-		case ENEMY_PHOENIX_GREEN:
-		case ENEMY_PHOENIX_GOLD:
-		case ENEMY_PHOENIX_BLACK:
-		case ENEMY_THUNDER:
-		case ENEMY_THUNDER_RED:
-		case ENEMY_THUNDER_BLUE:
-		case ENEMY_THUNDER_PURPLE:
-		case ENEMY_THUNDER_GREEN:
-		case ENEMY_THUNDER_GOLD:
-		case ENEMY_THUNDER_BLACK:
-		case ENEMY_FAIRY:
-		case ENEMY_FAIRY_RED:
-		case ENEMY_FAIRY_BLUE:
-		case ENEMY_FAIRY_PURPLE:
-		case ENEMY_FAIRY_GREEN:
-		case ENEMY_FAIRY_GOLD:
-		case ENEMY_FAIRY_BLACK:
-		case ENEMY_CIRCLE:
-		case ENEMY_CIRCLE_RED:
-		case ENEMY_CIRCLE_BLUE:
-		case ENEMY_CIRCLE_PURPLE:
-		case ENEMY_CIRCLE_GREEN:
-		case ENEMY_CIRCLE_GOLD:
-		case ENEMY_CIRCLE_BLACK:
-		case ENEMY_GHOST:
-		case ENEMY_GHOST_RED:
-		case ENEMY_GHOST_BLUE:
-		case ENEMY_GHOST_PURPLE:
-		case ENEMY_GHOST_GREEN:
-		case ENEMY_GHOST_GOLD:
-		case ENEMY_GHOST_BLACK:
-		//case ENEMY_SPACE1:
-		//case ENEMY_SPACE1_RED:
-		//case ENEMY_SPACE1_BLUE:
-		//case ENEMY_SPACE1_PURPLE:
-		//case ENEMY_SPACE1_GREEN:
-		//case ENEMY_SPACE1_GOLD:
-		//case ENEMY_SPACE1_BLACK:
-			pObj->ny = pObj->y -= 2 * TSIZE;
-			break;
-		case ENEMY_SHIP:
-		case ENEMY_SHIP_RED:
-		case ENEMY_SHIP_BLUE:
-		case ENEMY_SHIP_PURPLE:
-		case ENEMY_SHIP_GREEN:
-		case ENEMY_SHIP_GOLD:
-		case ENEMY_SHIP_BLACK:
-			positionX -= 2 * TSIZE;
-			pObj->ny = pObj->y -= 2 * TSIZE;
-			break;
-		case ENEMY_FOGRA:
-		case ENEMY_FOGRA_RED:
-		case ENEMY_FOGRA_BLUE:
-		case ENEMY_FOGRA_PURPLE:
-		case ENEMY_FOGRA_GREEN:
-		case ENEMY_FOGRA_GOLD:
-		case ENEMY_FOGRA_BLACK:
-			positionX -= 2 * TSIZE;
-			pObj->ny = pObj->y -= 2 * TSIZE;
-			break;
-		case ENEMY_DEATH:
-		case ENEMY_DEATH_RED:
-		case ENEMY_DEATH_BLUE:
-		case ENEMY_DEATH_PURPLE:
-		case ENEMY_DEATH_GREEN:
-		case ENEMY_DEATH_GOLD:
-		case ENEMY_DEATH_BLACK:
-			//position -= 2 * TSIZE;
-			//pObj->ny = pObj->y -= 1 * TSIZE;
-			break;
-		case ENEMY_CASTLE_BOSS1:
-		case ENEMY_CASTLE_BOSS1_RED:
-		case ENEMY_CASTLE_BOSS1_BLUE:
-		case ENEMY_CASTLE_BOSS1_PURPLE:
-		case ENEMY_CASTLE_BOSS1_GREEN:
-		case ENEMY_CASTLE_BOSS1_GOLD:
-		case ENEMY_CASTLE_BOSS1_BLACK:
-			positionX -= 0 * TSIZE;
-			pObj->ny = pObj->y -= 3 * TSIZE;
-			break;
-		case ENEMY_DARKDRAGON:
-		case ENEMY_DARKDRAGON_RED:
-		case ENEMY_DARKDRAGON_BLUE:
-		case ENEMY_DARKDRAGON_PURPLE:
-		case ENEMY_DARKDRAGON_GREEN:
-		case ENEMY_DARKDRAGON_GOLD:
-		case ENEMY_DARKDRAGON_BLACK:
-			positionX -= 2 * TSIZE;
-			pObj->ny = pObj->y -= 1 * TSIZE;
-			break;
-		case ENEMY_ANGEL:
-		case ENEMY_ANGEL_RED:
-		case ENEMY_ANGEL_BLUE:
-		case ENEMY_ANGEL_PURPLE:
-		case ENEMY_ANGEL_GREEN:
-		case ENEMY_ANGEL_GOLD:
-		case ENEMY_ANGEL_BLACK:
-			positionX -= 4 * TSIZE + TSIZE / 2;
-			pObj->ny = pObj->y -= 2 * TSIZE;
-			break;
-		//case ENEMY_CASTLE_BOSS3:
-		//case ENEMY_CASTLE_BOSS3_RED:
-		//case ENEMY_CASTLE_BOSS3_BLUE:
-		//case ENEMY_CASTLE_BOSS3_PURPLE:
-		//case ENEMY_CASTLE_BOSS3_GREEN:
-		//case ENEMY_CASTLE_BOSS3_GOLD:
-		//case ENEMY_CASTLE_BOSS3_BLACK:
-			//positionX -= -1 * TSIZE;
-			//pObj->ny = pObj->y += 1 * TSIZE;
-			//break;
+	switch (drawHandle) {
+	case MD_DEMO:
+	case MD_PLAY:
+		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0] && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
+			pObj->type = wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
+			//pObj->type = ENEMY_SLIME_GOLD;
+			pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
+			pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
+
+			switch (pObj->type) {
+			case ENEMY_FACE:
+			case ENEMY_FACE_RED:
+			case ENEMY_FACE_BLUE:
+			case ENEMY_FACE_PURPLE:
+			case ENEMY_FACE_GREEN:
+			case ENEMY_FACE_GOLD:
+			case ENEMY_FACE_BLACK:
+			case ENEMY_ICESUN:
+			case ENEMY_ICESUN_RED:
+			case ENEMY_ICESUN_BLUE:
+			case ENEMY_ICESUN_PURPLE:
+			case ENEMY_ICESUN_GREEN:
+			case ENEMY_ICESUN_GOLD:
+			case ENEMY_ICESUN_BLACK:
+			case ENEMY_LARVA:
+			case ENEMY_LARVA_RED:
+			case ENEMY_LARVA_BLUE:
+			case ENEMY_LARVA_PURPLE:
+			case ENEMY_LARVA_GREEN:
+			case ENEMY_LARVA_GOLD:
+			case ENEMY_LARVA_BLACK:
+				positionX -= 2 * TSIZE;
+				break;
+			case ENEMY_ONEEYE:
+			case ENEMY_ONEEYE_RED:
+			case ENEMY_ONEEYE_BLUE:
+			case ENEMY_ONEEYE_PURPLE:
+			case ENEMY_ONEEYE_GREEN:
+			case ENEMY_ONEEYE_GOLD:
+			case ENEMY_ONEEYE_BLACK:
+			case ENEMY_PHOENIX:
+			case ENEMY_PHOENIX_RED:
+			case ENEMY_PHOENIX_BLUE:
+			case ENEMY_PHOENIX_PURPLE:
+			case ENEMY_PHOENIX_GREEN:
+			case ENEMY_PHOENIX_GOLD:
+			case ENEMY_PHOENIX_BLACK:
+			case ENEMY_THUNDER:
+			case ENEMY_THUNDER_RED:
+			case ENEMY_THUNDER_BLUE:
+			case ENEMY_THUNDER_PURPLE:
+			case ENEMY_THUNDER_GREEN:
+			case ENEMY_THUNDER_GOLD:
+			case ENEMY_THUNDER_BLACK:
+			case ENEMY_FAIRY:
+			case ENEMY_FAIRY_RED:
+			case ENEMY_FAIRY_BLUE:
+			case ENEMY_FAIRY_PURPLE:
+			case ENEMY_FAIRY_GREEN:
+			case ENEMY_FAIRY_GOLD:
+			case ENEMY_FAIRY_BLACK:
+			case ENEMY_CIRCLE:
+			case ENEMY_CIRCLE_RED:
+			case ENEMY_CIRCLE_BLUE:
+			case ENEMY_CIRCLE_PURPLE:
+			case ENEMY_CIRCLE_GREEN:
+			case ENEMY_CIRCLE_GOLD:
+			case ENEMY_CIRCLE_BLACK:
+			case ENEMY_GHOST:
+			case ENEMY_GHOST_RED:
+			case ENEMY_GHOST_BLUE:
+			case ENEMY_GHOST_PURPLE:
+			case ENEMY_GHOST_GREEN:
+			case ENEMY_GHOST_GOLD:
+			case ENEMY_GHOST_BLACK:
+				//case ENEMY_SPACE1:
+				//case ENEMY_SPACE1_RED:
+				//case ENEMY_SPACE1_BLUE:
+				//case ENEMY_SPACE1_PURPLE:
+				//case ENEMY_SPACE1_GREEN:
+				//case ENEMY_SPACE1_GOLD:
+				//case ENEMY_SPACE1_BLACK:
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_SHIP:
+			case ENEMY_SHIP_RED:
+			case ENEMY_SHIP_BLUE:
+			case ENEMY_SHIP_PURPLE:
+			case ENEMY_SHIP_GREEN:
+			case ENEMY_SHIP_GOLD:
+			case ENEMY_SHIP_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_FOGRA:
+			case ENEMY_FOGRA_RED:
+			case ENEMY_FOGRA_BLUE:
+			case ENEMY_FOGRA_PURPLE:
+			case ENEMY_FOGRA_GREEN:
+			case ENEMY_FOGRA_GOLD:
+			case ENEMY_FOGRA_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_DEATH:
+			case ENEMY_DEATH_RED:
+			case ENEMY_DEATH_BLUE:
+			case ENEMY_DEATH_PURPLE:
+			case ENEMY_DEATH_GREEN:
+			case ENEMY_DEATH_GOLD:
+			case ENEMY_DEATH_BLACK:
+				//position -= 2 * TSIZE;
+				//pObj->ny = pObj->y -= 1 * TSIZE;
+				break;
+			case ENEMY_CASTLE_BOSS1:
+			case ENEMY_CASTLE_BOSS1_RED:
+			case ENEMY_CASTLE_BOSS1_BLUE:
+			case ENEMY_CASTLE_BOSS1_PURPLE:
+			case ENEMY_CASTLE_BOSS1_GREEN:
+			case ENEMY_CASTLE_BOSS1_GOLD:
+			case ENEMY_CASTLE_BOSS1_BLACK:
+				positionX -= 0 * TSIZE;
+				pObj->ny = pObj->y -= 3 * TSIZE;
+				break;
+			case ENEMY_DARKDRAGON:
+			case ENEMY_DARKDRAGON_RED:
+			case ENEMY_DARKDRAGON_BLUE:
+			case ENEMY_DARKDRAGON_PURPLE:
+			case ENEMY_DARKDRAGON_GREEN:
+			case ENEMY_DARKDRAGON_GOLD:
+			case ENEMY_DARKDRAGON_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 1 * TSIZE;
+				break;
+			case ENEMY_ANGEL:
+			case ENEMY_ANGEL_RED:
+			case ENEMY_ANGEL_BLUE:
+			case ENEMY_ANGEL_PURPLE:
+			case ENEMY_ANGEL_GREEN:
+			case ENEMY_ANGEL_GOLD:
+			case ENEMY_ANGEL_BLACK:
+				positionX -= 4 * TSIZE + TSIZE / 2;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+				//case ENEMY_CASTLE_BOSS3:
+				//case ENEMY_CASTLE_BOSS3_RED:
+				//case ENEMY_CASTLE_BOSS3_BLUE:
+				//case ENEMY_CASTLE_BOSS3_PURPLE:
+				//case ENEMY_CASTLE_BOSS3_GREEN:
+				//case ENEMY_CASTLE_BOSS3_GOLD:
+				//case ENEMY_CASTLE_BOSS3_BLACK:
+					//positionX -= -1 * TSIZE;
+					//pObj->ny = pObj->y += 1 * TSIZE;
+					//break;
+			}
+
+			pObj->dirX = pObj->dirF = LEFT;
+			pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
+			pObj->mom = obj;
+
+			SetEnemy(pObj);
+			InitMotion(pObj);
+
+
+			switch (pObj->type) {
+			case ENEMY_SHIP:
+			case ENEMY_SHIP_RED:
+			case ENEMY_SHIP_BLUE:
+			case ENEMY_SHIP_PURPLE:
+			case ENEMY_SHIP_GREEN:
+			case ENEMY_SHIP_GOLD:
+			case ENEMY_SHIP_BLACK:
+				break;
+			default:
+				InitBar(BAR_ENEMYHP + GetEnemyBarIdx(obj));
+				break;
+			}
+
+			InitMotion(pObj);
+
+			robin.waveActive[robin.curWaveIdx] = true;
+			//현재 보스면
+			if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
+				arenaFrame = INFOFRAME * 2;
+				bossOn = true;
+			}
+
+			robin.curWaveIdx++;
+
+			//if (robin.curWaveIdx == GetMaxWaveCnt()) {
+			//	arenaFrame = INFOFRAME * 2;
+			//	//robin.bossRoom = true;
+			//}
+
+			//curEnemy = ENEMY;
+			//LoadEnemyHpBar();
+
+			SaveGame();
+
+			switch (pObj->type) {
+			case ENEMY_CASTLE_BOSS1:
+			case ENEMY_CASTLE_BOSS1_RED:
+			case ENEMY_CASTLE_BOSS1_BLUE:
+			case ENEMY_CASTLE_BOSS1_PURPLE:
+			case ENEMY_CASTLE_BOSS1_GREEN:
+			case ENEMY_CASTLE_BOSS1_GOLD:
+			case ENEMY_CASTLE_BOSS1_BLACK:
+				pObj->moveHandler = REGENMOVE;
+				pObj->drawHandler = REGENDRAW;
+				break;
+			default:
+				pObj->moveHandler = REGENMOVE;
+				pObj->drawHandler = REGENDRAW;
+				break;
+			}
+			pObj->dead = true;
+			pObj->active = false;
+
+			//웨이브 총합은 놔두고, 현재값만 올려준다.
+			BackUpEnemyObj();
+			SaveGame();
 		}
+		break;
+	case MD_BATTLE:
+		//현재 적이 없으면 보스를 만들어라.
+		if (robin.bossRoom == false) {
+			pObj->type = boss[robin.stage];
+			//pObj->type = ENEMY_SLIME_GOLD;
+			pObj->nx = pObj->x = positionX = BATTLEPOSITION_ENEMY_X + (TSIZE + TSIZE / 3) * 4;
+			pObj->ny = pObj->y = positionY = TSIZE * 17;
 
-		pObj->dirX = pObj->dirF = LEFT;
-		pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
-		pObj->mom = obj;
+			switch (pObj->type) {
+			case ENEMY_FACE:
+			case ENEMY_FACE_RED:
+			case ENEMY_FACE_BLUE:
+			case ENEMY_FACE_PURPLE:
+			case ENEMY_FACE_GREEN:
+			case ENEMY_FACE_GOLD:
+			case ENEMY_FACE_BLACK:
+			case ENEMY_ICESUN:
+			case ENEMY_ICESUN_RED:
+			case ENEMY_ICESUN_BLUE:
+			case ENEMY_ICESUN_PURPLE:
+			case ENEMY_ICESUN_GREEN:
+			case ENEMY_ICESUN_GOLD:
+			case ENEMY_ICESUN_BLACK:
+			case ENEMY_LARVA:
+			case ENEMY_LARVA_RED:
+			case ENEMY_LARVA_BLUE:
+			case ENEMY_LARVA_PURPLE:
+			case ENEMY_LARVA_GREEN:
+			case ENEMY_LARVA_GOLD:
+			case ENEMY_LARVA_BLACK:
+				positionX -= 2 * TSIZE;
+				break;
+			case ENEMY_ONEEYE:
+			case ENEMY_ONEEYE_RED:
+			case ENEMY_ONEEYE_BLUE:
+			case ENEMY_ONEEYE_PURPLE:
+			case ENEMY_ONEEYE_GREEN:
+			case ENEMY_ONEEYE_GOLD:
+			case ENEMY_ONEEYE_BLACK:
+			case ENEMY_PHOENIX:
+			case ENEMY_PHOENIX_RED:
+			case ENEMY_PHOENIX_BLUE:
+			case ENEMY_PHOENIX_PURPLE:
+			case ENEMY_PHOENIX_GREEN:
+			case ENEMY_PHOENIX_GOLD:
+			case ENEMY_PHOENIX_BLACK:
+			case ENEMY_THUNDER:
+			case ENEMY_THUNDER_RED:
+			case ENEMY_THUNDER_BLUE:
+			case ENEMY_THUNDER_PURPLE:
+			case ENEMY_THUNDER_GREEN:
+			case ENEMY_THUNDER_GOLD:
+			case ENEMY_THUNDER_BLACK:
+			case ENEMY_FAIRY:
+			case ENEMY_FAIRY_RED:
+			case ENEMY_FAIRY_BLUE:
+			case ENEMY_FAIRY_PURPLE:
+			case ENEMY_FAIRY_GREEN:
+			case ENEMY_FAIRY_GOLD:
+			case ENEMY_FAIRY_BLACK:
+			case ENEMY_CIRCLE:
+			case ENEMY_CIRCLE_RED:
+			case ENEMY_CIRCLE_BLUE:
+			case ENEMY_CIRCLE_PURPLE:
+			case ENEMY_CIRCLE_GREEN:
+			case ENEMY_CIRCLE_GOLD:
+			case ENEMY_CIRCLE_BLACK:
+			case ENEMY_GHOST:
+			case ENEMY_GHOST_RED:
+			case ENEMY_GHOST_BLUE:
+			case ENEMY_GHOST_PURPLE:
+			case ENEMY_GHOST_GREEN:
+			case ENEMY_GHOST_GOLD:
+			case ENEMY_GHOST_BLACK:
+				//case ENEMY_SPACE1:
+				//case ENEMY_SPACE1_RED:
+				//case ENEMY_SPACE1_BLUE:
+				//case ENEMY_SPACE1_PURPLE:
+				//case ENEMY_SPACE1_GREEN:
+				//case ENEMY_SPACE1_GOLD:
+				//case ENEMY_SPACE1_BLACK:
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_SHIP:
+			case ENEMY_SHIP_RED:
+			case ENEMY_SHIP_BLUE:
+			case ENEMY_SHIP_PURPLE:
+			case ENEMY_SHIP_GREEN:
+			case ENEMY_SHIP_GOLD:
+			case ENEMY_SHIP_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_FOGRA:
+			case ENEMY_FOGRA_RED:
+			case ENEMY_FOGRA_BLUE:
+			case ENEMY_FOGRA_PURPLE:
+			case ENEMY_FOGRA_GREEN:
+			case ENEMY_FOGRA_GOLD:
+			case ENEMY_FOGRA_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+			case ENEMY_DEATH:
+			case ENEMY_DEATH_RED:
+			case ENEMY_DEATH_BLUE:
+			case ENEMY_DEATH_PURPLE:
+			case ENEMY_DEATH_GREEN:
+			case ENEMY_DEATH_GOLD:
+			case ENEMY_DEATH_BLACK:
+				//position -= 2 * TSIZE;
+				//pObj->ny = pObj->y -= 1 * TSIZE;
+				break;
+			case ENEMY_CASTLE_BOSS1:
+			case ENEMY_CASTLE_BOSS1_RED:
+			case ENEMY_CASTLE_BOSS1_BLUE:
+			case ENEMY_CASTLE_BOSS1_PURPLE:
+			case ENEMY_CASTLE_BOSS1_GREEN:
+			case ENEMY_CASTLE_BOSS1_GOLD:
+			case ENEMY_CASTLE_BOSS1_BLACK:
+				positionX -= 0 * TSIZE;
+				pObj->ny = pObj->y -= 3 * TSIZE;
+				break;
+			case ENEMY_DARKDRAGON:
+			case ENEMY_DARKDRAGON_RED:
+			case ENEMY_DARKDRAGON_BLUE:
+			case ENEMY_DARKDRAGON_PURPLE:
+			case ENEMY_DARKDRAGON_GREEN:
+			case ENEMY_DARKDRAGON_GOLD:
+			case ENEMY_DARKDRAGON_BLACK:
+				positionX -= 2 * TSIZE;
+				pObj->ny = pObj->y -= 1 * TSIZE;
+				break;
+			case ENEMY_ANGEL:
+			case ENEMY_ANGEL_RED:
+			case ENEMY_ANGEL_BLUE:
+			case ENEMY_ANGEL_PURPLE:
+			case ENEMY_ANGEL_GREEN:
+			case ENEMY_ANGEL_GOLD:
+			case ENEMY_ANGEL_BLACK:
+				positionX -= 4 * TSIZE + TSIZE / 2;
+				pObj->ny = pObj->y -= 2 * TSIZE;
+				break;
+				//case ENEMY_CASTLE_BOSS3:
+				//case ENEMY_CASTLE_BOSS3_RED:
+				//case ENEMY_CASTLE_BOSS3_BLUE:
+				//case ENEMY_CASTLE_BOSS3_PURPLE:
+				//case ENEMY_CASTLE_BOSS3_GREEN:
+				//case ENEMY_CASTLE_BOSS3_GOLD:
+				//case ENEMY_CASTLE_BOSS3_BLACK:
+					//positionX -= -1 * TSIZE;
+					//pObj->ny = pObj->y += 1 * TSIZE;
+					//break;
+			}
 
-		SetEnemy(pObj);
-		InitMotion(pObj);
+			pObj->dirX = pObj->dirF = LEFT;
+			pObj->defaultZoom = pObj->zoom = BOSSZOOM;
+			pObj->mom = obj;
 
-		
-		switch (pObj->type) {
-		case ENEMY_SHIP:
-		case ENEMY_SHIP_RED:
-		case ENEMY_SHIP_BLUE:
-		case ENEMY_SHIP_PURPLE:
-		case ENEMY_SHIP_GREEN:
-		case ENEMY_SHIP_GOLD:
-		case ENEMY_SHIP_BLACK:
-			break;
-		default:
-			InitBar(BAR_ENEMYHP + GetEnemyBarIdx(obj));
-			break;
-		}
-		
-		InitMotion(pObj);
+			SetEnemy(pObj);
+			InitMotion(pObj);
 
-		robin.waveActive[robin.curWaveIdx] = true;
-		//현재 보스면
-		if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
+
+			switch (pObj->type) {
+			case ENEMY_SHIP:
+			case ENEMY_SHIP_RED:
+			case ENEMY_SHIP_BLUE:
+			case ENEMY_SHIP_PURPLE:
+			case ENEMY_SHIP_GREEN:
+			case ENEMY_SHIP_GOLD:
+			case ENEMY_SHIP_BLACK:
+				break;
+			default:
+				InitBar(BAR_ENEMYHP + GetEnemyBarIdx(obj));
+				break;
+			}
+
+			InitMotion(pObj);
+
+			//현재 보스면
 			arenaFrame = INFOFRAME * 2;
 			bossOn = true;
+
+			//robin.curWaveIdx++;
+
+			//if (robin.curWaveIdx == GetMaxWaveCnt()) {
+			//	arenaFrame = INFOFRAME * 2;
+			//	//robin.bossRoom = true;
+			//}
+
+			//curEnemy = ENEMY;
+			//LoadEnemyHpBar();
+
+			SaveGame();
+
+			switch (pObj->type) {
+			case ENEMY_CASTLE_BOSS1:
+			case ENEMY_CASTLE_BOSS1_RED:
+			case ENEMY_CASTLE_BOSS1_BLUE:
+			case ENEMY_CASTLE_BOSS1_PURPLE:
+			case ENEMY_CASTLE_BOSS1_GREEN:
+			case ENEMY_CASTLE_BOSS1_GOLD:
+			case ENEMY_CASTLE_BOSS1_BLACK:
+				pObj->moveHandler = REGENMOVE;
+				pObj->drawHandler = REGENDRAW;
+				break;
+			default:
+				pObj->moveHandler = REGENMOVE;
+				pObj->drawHandler = REGENDRAW;
+				break;
+			}
+			pObj->dead = true;
+			pObj->active = false;
+
+			//웨이브 총합은 놔두고, 현재값만 올려준다.
+			//BackUpEnemyObj();
+			//SaveGame();
+
+			robin.bossRoom = true;
+			bar[BAR_DAY].active = false;
 		}
-
-		robin.curWaveIdx++;
-
-		//if (robin.curWaveIdx == GetMaxWaveCnt()) {
-		//	arenaFrame = INFOFRAME * 2;
-		//	//robin.bossRoom = true;
-		//}
-
-		//curEnemy = ENEMY;
-		//LoadEnemyHpBar();
-
-		SaveGame();
-
-		switch (pObj->type) {
-		case ENEMY_CASTLE_BOSS1:
-		case ENEMY_CASTLE_BOSS1_RED:
-		case ENEMY_CASTLE_BOSS1_BLUE:
-		case ENEMY_CASTLE_BOSS1_PURPLE:
-		case ENEMY_CASTLE_BOSS1_GREEN:
-		case ENEMY_CASTLE_BOSS1_GOLD:
-		case ENEMY_CASTLE_BOSS1_BLACK:
-			pObj->moveHandler = REGENMOVE;
-			pObj->drawHandler = REGENDRAW;
-			break;
-		default:
-			pObj->moveHandler = REGENMOVE;
-			pObj->drawHandler = REGENDRAW;
-			break;
-		}
-		pObj->dead = true;
-		pObj->active = false;
-
-		//웨이브 총합은 놔두고, 현재값만 올려준다.
-		BackUpEnemyObj();
-		SaveGame();
+		break;
 	}
 }
 
@@ -1531,6 +1785,21 @@ long long GetTotalWaveHp(int stage)
 			}
 
 			totalHp += curHp;
+		}
+	}
+
+	return totalHp;
+}
+
+
+long long GetTotalEnemyHp(int stage)
+{
+	int i;
+	long long totalHp = 0;
+
+	for (i = ENEMY; i < NEUTRAL; i++) {
+		if ((ao[i].active == true || ao[i].moveHandler == REGENMOVE) && ao[i].mom == i) {
+			totalHp += ao[i].maxhp;
 		}
 	}
 
@@ -1558,7 +1827,10 @@ int SetEnemy(OBJECT *pObj)
 	pObj->cmf = *uPtr;
 
 	//MoveHandler
-	pObj->moveHandler = *(uPtr + 1);
+	if (drawHandle == MD_PLAY)
+		pObj->moveHandler = ENEMYMOVETURN;
+	else
+		pObj->moveHandler = *(uPtr + 1);
 	//DrawHandler
 	if (pObj->type < NPC_CAPTAIN)
 		pObj->drawHandler = *(uPtr + 2);
@@ -1621,6 +1893,7 @@ int SetEnemy(OBJECT *pObj)
 		//tileX1 : 서로 손의 obj번호를 알고있음.
 		for (i = GetObjFromPtr(pObj) + 1, cnt = 0; cnt < 2; i++) {
 			if (ao[i].active == false && ao[i].type == 0) {
+				pObj->drawHandler = ENEMYDRAW;
 				memcpy(&ao[i], pObj, sizeof(OBJECT));
 				ao[i].etc = CASTLEBOSS4_HAND_NEUTRAL;
 				ao[i].moveHandler = HANDMOVE;
@@ -3367,7 +3640,9 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 	
 	//for (i = 0; i < TOTALCASTLE; i++)
 	switch (drawHandle) {
+	case MD_DEMO:
 	case MD_PLAY:
+	case MD_BATTLE:
 
 		SetScreenRatio();
 
@@ -3384,19 +3659,7 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 		//STATUSWIN_Y = STATUSWIN_Y_INIT;
 		STATUSWIN_Y += floatOffsetY * zoom;
 
-		robin.castle = 17;
-
-		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
-
-		break;
-	case MD_BATTLE:
-		castleX = xOffset + (float)DX / 2 * zoom - (float)DIORAMASIZE_X / 2 * dioramaZoomOnScreen;
-		castleY = (float)(STATUSWIN_Y - 48 * _2X) * zoom + (float)DIORAMASIZE_Y * dioramaZoomOnScreen;
-
-		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom, 0, robinmap, (float)DX * 2 / screenZoom * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-		floatOffsetY = GetDioramaFloatY(frame);
-		castleY += floatOffsetY * zoom;
+		//robin.castle = 1;
 
 		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
 

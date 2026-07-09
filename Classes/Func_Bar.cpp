@@ -82,11 +82,14 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		GoldBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
 
 		if (barP->addView)
-			DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
+			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
 		break;
 	case BAR_CROWN:
 		ExpBarDraw(robin.lv, count, xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
 		SetRectPoint(xOffset + barP->x, barP->y, (float)CROWNBARWIDTH * zoom, (float)CROWNBARHEIGHT * zoom, TOUCH_FUNC_POPUP_LVUPREWARD);
+
+		if (barP->addView)
+			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(CROWNBARWIDTH - 4 * _2X) * zoom, barP->y - (float)CROWNBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
 
 		break;
 	case BAR_HAMMER:
@@ -147,6 +150,10 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 
 	case BAR_BOSSHP:
 		BossHpBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom, cvtDest, cvtLayer, buffering);
+		
+		if (barP->addView)
+			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(BOSSHPBARWIDTH + 32 * _2X) * 0.5f * zoom, barP->y + (float)BOSSHPBARHEIGHT * zoom / 2 + (float)(20 * _2X) * 0.5f * zoom, LEFT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
+
 		break;
 	case BAR_COIN:
 		if (count != 0) {
@@ -159,22 +166,23 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 	case BAR_HEART:
 		HeartBarDraw(count, GetInitHeart(), xOffset + barP->x - (float)HEARTBARWIDTH / 2 * barP->zoom, barP->y, false, barP->zoom, cvtDest, cvtLayer, buffering);
 
+		SetFontColor(COLOR_WHITE);
+
 		if (count >= GetInitHeart()) {
-			SetFontColor(COLOR_WHITE);
 			CenterText(TEXT_HEARTISFULL, xOffset + barP->x, barP->y - (float)(HEARTBARHEIGHT + 2 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
 			//SetFontColor(false);
 		}
 		//만약 모자라면 얼마 뒤에 스핀을 획득하는지 보여준다.
 		else {
-			DrawIcon(barP->icon, xOffset + barP->x + (float)(-1 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+			DrawIcon(barP->icon, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 0 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 0 * _2X) * barP->zoom, barP->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
 
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "+%d", GetHeartAmount());
-			DrawTextStr(tempStr, xOffset + barP->x + (float)(19 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 4 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
+			DrawTextStr(tempStr, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 18 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
 
-			DrawText(TEXT_AFTER, xOffset + barP->x + (float)(43 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 4 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
+			DrawText(TEXT_AFTER, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 42 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
 
-			DrawTime(xOffset + barP->x + (float)(79 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 4 * _2X) * zoom, HEARTTIME - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom, cvtDest, cvtLayer, buffering);
+			DrawTime(xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 78 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * zoom, HEARTTIME - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom, cvtDest, cvtLayer, buffering);
 
 		}
 		break;
@@ -192,14 +200,35 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_ATTACK);
 
 		break;
+	case BAR_JOYSTICK:
+		if (joyReturning) {
+			joyDx += (0.0f - joyDx) * joyReturnSpeed;
+			joyDy += (0.0f - joyDy) * joyReturnSpeed;
+
+			if (Abs(joyDx) < 0.5f && Abs(joyDy) < 0.5f) {
+				joyDx = 0;
+				joyDy = 0;
+				joyReturning = false;
+			}
+		}
+
+		JoyStickDraw(count, xOffset + barP->x, barP->y, joyDx, joyDy, joyPower, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame, cvtDest, cvtLayer, buffering);
+		if (touchDisable == false)
+			SetRectPoint(xOffset + barP->x - (float)(108 / 2) * barP->zoom, barP->y + (float)(93 / 2) * barP->zoom, (float)108 * barP->zoom, (float)93 * barP->zoom, TOUCH_FUNC_MOVE);
+		break;
+	case BAR_JUMP:
+		DrawJumpButton(count, xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame, cvtDest, cvtLayer, buffering);
+		if (touchDisable == false)
+			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_JUMP);
+		break;
 	case BAR_BATTLECOIN:
 		if (count < 0)
 			count = 0;
-
-		BattleCoinBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
-
-		if (barP->addView)
-			DrawNum2AutoSpaceing(barP->max, xOffset + barP->x + (float)(GOLDBARWIDTH - 6 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.25f * zoom, false, true, cvtDest, cvtLayer, buffering);
+		if (count > 0) {
+			BattleCoinBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
+		}
+//		if (barP->addView)
+//			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 6 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.25f * zoom, false, true, cvtDest, cvtLayer, buffering);
 		//DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(4 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
 
 		break;
@@ -293,7 +322,7 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		StarBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, cvtDest, cvtLayer, buffering);
 
 		if (barP->addView)
-			DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
+			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
 		break;
 	case BAR_STAGEPROGRESS:
 		StageProgressDraw(xOffset + barP->x, barP->y, count, barP->countFrame, zoom, cvtDest, cvtLayer, buffering);
@@ -304,11 +333,11 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		
 	// 새로운 룰렛 시스템 UI
 	case BAR_DAY:
-		DayBarDraw(count, xOffset + barP->x, barP->y, zoom, cvtDest, cvtLayer, buffering);
+		DayBarDraw(DAYS3 - (GetCurrentTimeMs() - robin.startTime), xOffset + barP->x, barP->y, zoom, cvtDest, cvtLayer, buffering);
+		SetRectPoint(xOffset + barP->x - 32 * _2X, STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].ny - ry + 40 * _2X, 64 * _2X, 64 * _2X, TOUCH_FUNC_GOTOBATTLE);
 		break;
-		
-	case BAR_LIFE:
-		LifeBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom, cvtDest, cvtLayer, buffering);
+	case BAR_WAVE:
+		WaveBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom, cvtDest, cvtLayer, buffering);
 		break;
 		
 	case BAR_INVENTORY:
@@ -326,36 +355,44 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 
 	if (barP->aniFrame > 0) {
 		if (barP->aniFrame == barP->countFrame) {
-			barP->aniFrame = barP->countFrame = 0;
-			barP->count += barP->add;
-			barP->add = 0;
-			barP->addView = false;
-
-			if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE) {
-				switch (barP->type) {
-				case BAR_COIN:
-					//case BAR_BOSSHP:
-					barP->count = 0;
-					barP->front = false;
-					break;
-				case BAR_MEDAL:
-				case BAR_ITEM:
-					barP->active = false;
-					barP->count = 0;
-					barP->front = false;
-					break;
-				case BAR_BOX:
-				case BAR_GOLD:
-				case BAR_BOSSHP:
-					barP->front = false;
-					break;
-
-				}
-			}
+			BarAddStop(barP);
 		}
 		else
 			barP->aniFrame++;
 	}
+}
+
+void BarAddStop(BAR * barP)
+{
+	barP->aniFrame = barP->countFrame = 0;
+	barP->count += barP->add;
+	barP->add = 0;
+	barP->addView = false;
+	barP->addViewSum = 0;
+
+	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE) {
+		switch (barP->type) {
+		case BAR_COIN:
+			//case BAR_BOSSHP:
+			barP->count = 0;
+			barP->front = false;
+			break;
+		case BAR_MEDAL:
+		case BAR_ITEM:
+			barP->active = false;
+			barP->count = 0;
+			barP->front = false;
+			break;
+		case BAR_BOX:
+		case BAR_GOLD:
+		case BAR_BOSSHP:
+			barP->front = false;
+			break;
+
+		}
+	}
+
+	ao[NEUTRAL].status = BOXSTATUS_CLOSED;
 }
 
 void HammerBarDraw(int x, int y, long long amount, bool ani, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -607,12 +644,13 @@ void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom,
 
 void BattleCoinBarDraw(long long count, int icon, int x, int y, int alpha, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom, cvtDest, cvtLayer, buffering);
-	DrawIcon(icon, x + (float)(6 * _2X) * zoom, y - (float)(6 * _2X) * zoom, 1.2f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
+	//DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom, cvtDest, cvtLayer, buffering);
+	//DrawIcon(icon, x + (float)(6 * _2X) * zoom, y - (float)(6 * _2X) * zoom, 1.2f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
 #ifdef NUMTTF
 	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - 0 * _2X) * zoom, true, zoom, true, cvtDest, cvtLayer, buffering);
 #else
-	DrawNum2AutoSpaceing(count, x + (float)(GOLDBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true, cvtDest, cvtLayer, buffering);
+	DrawGoldNum(count, x, y, CENTER, false, PLUS, true, zoom, cvtDest, cvtLayer, buffering);
+	//DrawNum2AutoSpaceing(count, x/* + (float)(GOLDBARWIDTH - 7 * _2X) * zoom*/, y - (float)(10 * _2X) * zoom, CENTER, false, false, (float)(GOLDBARWIDTH) * zoom, true, 1.0f * zoom, true, true, cvtDest, cvtLayer, buffering);
 	//DrawBigNum2Bold(count, x + (float)(0.5f * GOLDBARWIDTH - 8 * _2X) * zoom, y - (float)(11 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH * 0.55f - ITEMICONSIZE * 1.2f - 12 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
 #endif
 }
@@ -751,6 +789,20 @@ void HpBarDraw(int type, long long count, long long max, int x, int y, float zoo
 // ============================================================================
 void DayBarDraw(int day, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
+	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
+	//emphasisScale = 1.3f * zoom;
+
+	y = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].ny - ry;
+
+	DrawNeutral(OBJ_BLACKHOLE0 + Abs(15 - frame) % 15, x, y + (float)20 * zoom, 0, emphasisScale * 2.0f, cvtDest, cvtLayer, buffering);
+
+	DrawCmfDetailShadow(enemyData[boss[robin.stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[robin.stage] * 5 + 0] + (frame / 4 % crewPos[boss[robin.stage] * 5 + 1]), x, y, LEFT, emphasisScale, cvtDest, cvtLayer, buffering);
+	DrawRemainTime(x, y - (float)8 * _2X * zoom, day, CENTER, emphasisScale * 2.0f, cvtDest, cvtLayer, buffering);
+	
+	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_BOSS, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
+	//DrawDetailTimeGold(x - (float)16 * _2X, y - (float)8 * _2X, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
+
+	/*
 	// 강조 효과 (살짝 커졌다 작아지는 펄스)
 	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
 	emphasisScale = 1.2f * zoom;
@@ -776,21 +828,25 @@ void DayBarDraw(int day, int x, int y, float zoom, cocos2d::RenderTexture* cvtDe
 
 	// 숫자 크게 강조
 	DrawDetailTimeGold(x - (float)124 * _2X * zoom * 0.9f, y - (float)36 * _2X * zoom, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
-	
+	*/
 }
 
 // ============================================================================
 // Life(수명) 표시 함수 - 하트 아이콘
 // ============================================================================
-void LifeBarDraw(int life, int maxLife, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void WaveBarDraw(int life, int maxLife, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_SMALL, BARCOLOR_PURPLE, 32, 0.5f * zoom, cvtDest, cvtLayer, buffering);
+	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
+	//emphasisScale = 1.3f * zoom;
 
-	DrawIcon(ICON_HEART, x + (float)(5 * _2X) * zoom, y - (float)4 * _2X * zoom, 1.4f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
-#ifdef NUMTTF
-	DrawBigNumTTF(pow, x + (float)(COMBATPOWBARWIDTH - 10 * _2X) * zoom, y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE - 8 * _2X * 2) * zoom, true, zoom, true, cvtDest, cvtLayer, buffering);
-#else
-	//DrawBigNum2Bold(life, x + (float)(COMBATPOWBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
-	DrawGoldNum(life, x + (float)(COMBATPOWBARWIDTH - 6 * _2X) * zoom, y - (float)(8 * _2X) * zoom, RIGHT, false, PLUS, false, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-#endif
+	//y = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].ny - ry;
+
+	DrawNeutral(OBJ_WORMHOLE0 + Abs(3 - frame) % 3, x, y + (float)20 * zoom, 0, emphasisScale * 2.0f, cvtDest, cvtLayer, buffering);
+
+	DrawCmfDetailShadow(enemyData[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY +  0] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY + 0] * 5 + 0] + (frame / 4 % crewPos[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY + 0] * 5 + 1]), x, y, LEFT, emphasisScale, cvtDest, cvtLayer, buffering);
+	
+	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_STAGE, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
+	DrawGoldNum(robin.curWaveIdx + 1, x, y + (float)108 * zoom, CENTER, false, false, false, 0.5f * zoom, cvtDest, cvtLayer, buffering);
+	//DrawDetailTimeGold(x - (float)16 * _2X, y - (float)8 * _2X, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
+
 }

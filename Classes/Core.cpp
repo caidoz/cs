@@ -164,6 +164,78 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 		touchY = touchPoint.y;
 	}
 
+	if (joyPressed) {
+		float dx = touchPoint.x - joyStartX;
+		float dy = touchPoint.y - joyStartY;
+
+		float len = sqrtf(dx * dx + dy * dy);
+
+		if (len > JOYKNOBMAX) {
+			dx = dx / len * JOYKNOBMAX;
+			dy = dy / len * JOYKNOBMAX;
+			len = JOYKNOBMAX;
+		}
+
+		joyDx = dx;
+		joyDy = dy * 0.75;
+		joyPower = len / JOYKNOBMAX;
+
+		float angle = atan2f(dy, dx);
+
+		// 8방향
+		if (joyPower < 0.2f) joyDir = -1;
+		// 오른쪽
+		else if (angle >= -0.392f && angle < 0.392f) {
+			joyDir = 0;
+			systemKey = AVK_6;
+		}
+		// 위오른쪽
+		else if (angle >= 0.392f && angle < 1.178f)
+		{
+			joyDir = 1;
+			systemKey = AVK_3;
+		}
+		// 위
+		else if (angle >= 1.178f && angle < 1.963f)
+		{
+			joyDir = 2;
+			systemKey = AVK_2;
+		}
+		// 위왼쪽
+		else if (angle >= 1.963f && angle < 2.748f)
+		{
+			joyDir = 3;
+			systemKey = AVK_1;
+		}
+		// 왼쪽
+		else if (angle >= 2.748f || angle < -2.748f)
+		{
+			joyDir = 4;
+			systemKey = AVK_4;
+		}
+		// 아래왼쪽
+		else if (angle >= -2.748f && angle < -1.963f)
+		{
+			joyDir = 5;
+			systemKey = AVK_7;
+		}
+		// 아래
+		else if (angle >= -1.963f && angle < -1.178f)
+		{
+			joyDir = 6;
+			systemKey = AVK_8;
+		}
+		// 아래오른쪽
+		else if (angle >= -1.178f && angle < -0.392f)
+		{
+			joyDir = 7;
+			systemKey = AVK_9;
+		}
+
+		isTouchKey = TOUCH_DRAG;
+		return;
+	}
+
 	if (touch && touchModeOld == NULL && autoScroll == false) {
 		touchIdleFrame = 0;
 		if (touchIdleFrame > TOUCHIDLEFRAME)
@@ -359,6 +431,13 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 			is_key_released = true;
 			is_release_finished = false;
 
+			joyPressed = false;
+			joyReturning = true;
+
+			joyReturnSpeed = 0.22f;
+			joyPower = 0;
+			joyDir = -1;
+
 			systemRelease = systemKey;
 
 		}
@@ -484,6 +563,14 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 			isTouchKey = TOUCH_RELEASE;
 			is_key_released = true;
 			is_release_finished = false;
+
+			joyPressed = false;
+			joyReturning = true;
+
+			joyReturnSpeed = 0.22f;
+			joyPower = 0;
+			joyDir = -1;
+
 			systemRelease = systemKey;
 		}
 	}
@@ -1089,6 +1176,9 @@ void PaintClet(int x, int y, int w, int h)
 			case MD_TITLE:
 				TitleDraw();
 				break;
+			case MD_OPENING:
+				OpeningDraw();
+				break;
 			case MD_PLAY:
 			case MD_BATTLE:
 				Play();
@@ -1469,22 +1559,7 @@ void PaintClet(int x, int y, int w, int h)
 				if (currencyMark[i].type == CURRENCY_EXP)
 					AddBar(&bar[BAR_CROWN], 1, BARFRAME);
 				else if (currencyMark[i].type == CURRENCY_GOLD) {
-					switch (drawHandle) {
-					default:
-						AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
-						break;
-					case MD_PLAY:
-					case MD_BATTLE:
-						switch (currencyMark[i].bar) {
-						case BAR_GOLD:
-							AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
-							break;
-						case BAR_BATTLECOIN:
-							AddBar(&bar[BAR_BATTLECOIN], currencyMark[i].amount, BARFRAME);
-							break;
-						}
-						break;
-					}
+					
 				}
 				memset(&currencyMark[i], 0, sizeof(ICONMARK));
 				currencyMarkCnt--;
@@ -1532,6 +1607,25 @@ void PaintClet(int x, int y, int w, int h)
 					//두번째 세팅이 있으면 
 				if (currencyMark[i].targetX2 != 0 || currencyMark[i].targetY2 != 0) {
 					currencyMark[i].frame2 = 1;
+					switch (drawHandle) {
+					default:
+						AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
+						break;
+					case MD_PLAY:
+					case MD_BATTLE:
+						switch (currencyMark[i].bar) {
+						case BAR_GOLD:
+							AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
+							break;
+						case BAR_BATTLECOIN:
+							//ao[NEUTRAL].status = BOXSTATUS_OPENED;
+							if (currencyMark[i].amount > 0)
+								OpenBox(&ao[NEUTRAL]);
+							AddBar(&bar[BAR_BATTLECOIN], currencyMark[i].amount, BARFRAME);
+							break;
+						}
+						break;
+					}
 				}
 				else {
 					currencyEffect[currencyMark[i].type].iconFrame += CURRENCYMARKEFFECTFRAME;

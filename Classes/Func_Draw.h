@@ -1,5 +1,25 @@
 #pragma once
 
+#define OPENING_SCENE_COUNT 5
+#define OPENING_TEXT_PER_SCENE 3
+#define OPENING_TOTAL_TEXT (OPENING_SCENE_COUNT * OPENING_TEXT_PER_SCENE)
+
+enum OpeningState
+{
+	OPENING_STATE_TEXT,
+	OPENING_STATE_TEXT_WAIT,
+	OPENING_STATE_SCENE_WAIT,
+	OPENING_STATE_END
+};
+
+const int openingTextId[] =
+{
+	TEXT_OPENING_0_0,
+	TEXT_OPENING_1_0,
+	TEXT_OPENING_2_0,
+	TEXT_OPENING_3_0,
+	TEXT_OPENING_4_0
+};
 // DrawÇÚµé
 void DrawWindow2(int x, int y, int w, int h, int color, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
@@ -11,7 +31,7 @@ void NoSpaceDraw(void);
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
-
+void OpeningDraw(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void GNBDraw(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void ActiveHelpDraw(cocos2d::RenderTexture*, cocos2d::Layer*, bool);
