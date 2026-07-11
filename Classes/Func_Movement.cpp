@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -14733,7 +14733,7 @@ void TileCheckY2(OBJECT* pObj)
 		}
 		else if (pObj->status == WALK)
 			pObj->status = FALL;
-	} while (Abs(wy > 0));
+	} while (Abs(wy) > 0);
 
 	switch (pObj->type) {
 	default:

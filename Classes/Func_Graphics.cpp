@@ -367,7 +367,7 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	//라이튼효과
 	if (effect) {
 		renderSprite[getSpriteIdx]->setBlendFunc(BLEND_LIGHTEN);
-		glBlendEquation(GL_MAX);
+		glBlendEquation(GL_MAX_EXT);
 		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
 	}
 	renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
@@ -627,7 +627,7 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 
 		if (effect) {
 			src->setBlendFunc(BLEND_LIGHTEN);
-			glBlendEquation(GL_MAX);
+			glBlendEquation(GL_MAX_EXT);
 			SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
 		}
 
@@ -696,7 +696,7 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 
 		if (effect) {
 			renderSprite[getSpriteIdx]->setBlendFunc(BLEND_LIGHTEN);
-			glBlendEquation(GL_MAX);
+			glBlendEquation(GL_MAX_EXT);
 			SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
 		}
 
@@ -808,7 +808,7 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
 		src->setBlendFunc(BLEND_LIGHTEN);
-		glBlendEquation(GL_MAX);
+		glBlendEquation(GL_MAX_EXT);
 		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
 		src->setScale(zoom);
 		src->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
@@ -844,7 +844,7 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
 		src->setBlendFunc(BLEND_LIGHTEN);
-		glBlendEquation(GL_MAX);
+		glBlendEquation(GL_MAX_EXT);
 		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
 		src->setTextureRect(Rect(xs, ys, w, h));
 		src->setPosition(Vec2(x, y));
