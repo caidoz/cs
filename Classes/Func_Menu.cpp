@@ -4736,7 +4736,7 @@ void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 	int slotX;
 	int slotY = y - (float)(400 + CASTLE_GAP_Y * 0) * zoom;
 
-	SetSectionClip(0, slotY, DX, WINY - slotY, false);
+	SetSectionClip(0, slotY, DX, slotY - (HOMEBAR_HEIGHT + 8 * _2X) * zoom, false);
 
 	for (i = 0; i < TOTALCASTLE; i++) {
 		slotX = x + (float)12 * zoom;

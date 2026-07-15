@@ -541,6 +541,8 @@ typedef enum _imgDef {
 	OP3_IMG,
 	OP4_IMG,
 
+	CREWBULLET_IMG,
+
 	GTILE_IMG,
 	GBACK_IMG,
 	MEMRECT_IMG,

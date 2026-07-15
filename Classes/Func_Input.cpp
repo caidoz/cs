@@ -87,7 +87,7 @@ void TitleKey(void)
 			i = robin.maxStatusCnt;
 			NewGame();
 
-			robin.castle = 16;
+			robin.castle = 18;
 
 			//SetRoom_Neutral();
 
@@ -1930,9 +1930,10 @@ void HotKeyPress(OBJECT* pObj, int idx)
 		if (pObj->type == DIANA && pObj->attack == DIANA_SKILL_FLAMER) {
 			pObj->attack = false;
 			//pObj->flamer = 1 - pObj->flamer;
-			pObj->flamer = FPS;// FLAMER_START_FRAME;
+			pObj->flamer = FLAMER_START_FRAME;
 			pObj->hotKey[idx].frame = pObj->hotKey[idx].inven;
 			pObj->currentSkill = pObj->hotKey[idx].idx;
+			//pObj->attack = DIANA_SKILL_FLAMER;
 
 			PlayMusic(M_FIRE);
 

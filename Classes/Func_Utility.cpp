@@ -930,7 +930,6 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 		}
 	}
 
-
 	if (fadeFrame) {
 		//어두워짐
 		if (fadeFrame > 0)
@@ -941,7 +940,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 		//MemRect(xOffset, DY, DX - 2 * xOffset, DY, fadeColor, cvtDest, cvtLayer, buffering);
 		//MemRect((float)(xOffset) * zoom, (float)(DY) * zoom, (float)(DX) * zoom, (float)(DY - STATUSWIN_Y) * zoom, fadeColor, cvtDest, cvtLayer, buffering);
-		MemRect((float)(xOffset)*zoom, (float)(DY)*zoom, (float)(DX)*zoom, (float)(DY)*zoom, fadeColor, cvtDest, cvtLayer, buffering);
+		MemRect(0, DY, DX, DY, fadeColor, cvtDest, cvtLayer, buffering);
 
 		SetAlpha(32);
 	}

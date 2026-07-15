@@ -1179,7 +1179,7 @@ int GetAttackRange(int obj)
 	OBJECT* pObj = &ao[obj];
 	ITEM* it;
 
-	if (obj < TOTALCHAR)
+	if (pObj->type < TOTALCHAR)
 		it = &pObj->equip[EQUIP_WEAPON];
 
 	//몬스터의 사정거리도 따져준다.
@@ -2696,7 +2696,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 			pAttack->attackFrame += 4;
 			SetImgText(attackerObj, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2708,7 +2708,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2719,7 +2719,7 @@ int AttackObj(long long int attacker, int dest)
 
 			ad += 1 << ATTACK_PIERCE;
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.shake = 4;
@@ -4346,7 +4346,7 @@ int SetImgText(int obj, int type, float zoom)
 						textObj = ao[obj].target;
 					//imgText[i].x = DX - 5;
 					//imgText[i].y = DY / 2;
-					/*
+					
 					switch (type) {
 						case EFFECT_TEXT_CRITICAL:
 							gap = 88 * _2X  / 2;
@@ -4362,19 +4362,19 @@ int SetImgText(int obj, int type, float zoom)
 							break;
 
 					}
-					*/
 					//imgText[i].x = ao[textObj].x + gap;
 					//imgText[i].y = ao[textObj].y + ao[textObj].cpy - 18 * _2X;
 
-					imgText[i].x = PLAYAREA_X / 2;
+					//imgText[i].x = PLAYAREA_X / 2;
 
 					//if (SCREENRATIO <= 150)
 					//	imgText[i].y = 160 * _2X;
 					//else
 					//	imgText[i].y = DY - GNBHEIGHT - 160 * _2X;
 					//imgText[i].y = DY / 2 + MINDY / 2 - 240 * _2X;
-					//imgText[i].y = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[obj].y - 64 * _2X) - ry;// - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;// 56 * _2X;
-					imgText[i].y = STATUSWIN_Y + IMGTEXT_Y;// - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;// 56 * _2X;
+					imgText[i].x = ao[textObj].x + gap;
+					imgText[i].y = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[textObj].y - 120 * _2X) - ry;// - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;// 56 * _2X;
+					//imgText[i].y = STATUSWIN_Y + IMGTEXT_Y;// - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;// 56 * _2X;
 
 
 					//for (j = 0; j < TOTALHITMARK; j++) {

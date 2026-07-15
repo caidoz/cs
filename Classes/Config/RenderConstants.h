@@ -22,7 +22,7 @@
 #define REWARDICONZOOM             1.5f           // 보상 아이콘 줌
 #define HEROCASTLEZOOM             1.5f           // 영웅 성 줌
 #define CREWCASTLEZOOM             1.2f           // 크루 성 줌
-#define HITMARKZOOM                1.0f           // 히트마크 줌
+#define HITMARKZOOM                0.5f           // 히트마크 줌
 #define DIORAMAZOOM                0.77f          // 디오라마 줌
 #define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // 디오라마 배틀 줌
 #define DIORAMAZOOM_REMAINDER      1.5f           // 디오라마 나머지 줌
@@ -84,7 +84,7 @@
 #define IMGTEXTZOOM                2.0f           // 이미지 텍스트 줌
 #define DMGNUMZOOM                 0.5f           // 데미지 숫자 줌
 #define XNUMZOOM                   1.4f           // X 숫자 줌
-#define ENEMYICONZOOM              0.6f           // 적 아이콘 줌
+#define ENEMYICONZOOM              0.5f           // 적 아이콘 줌
 #define EQUIPICON_X                0              // 장비 아이콘 X
 #define EQUIPICON_Y                -40 * _2X                // 장비 아이콘 Y
 

@@ -1734,8 +1734,8 @@ void PlayerMove(OBJECT* pObj)
 	if (drawHandle == MD_PLAY) {
 		if (pObj->flamer) {
 			pObj->flamer--;
-
 			if (pObj->flamer == 0) {
+				/*
 				if (skillInfoFrame > SKILLREMAINEDFRAME)
 					skillInfoFrame = SKILLREMAINEDFRAME;
 				if (skillUsed > SKILLREMAINEDFRAME)
@@ -1765,6 +1765,10 @@ void PlayerMove(OBJECT* pObj)
 
 					focus = ROBIN;
 				}
+				*/
+				pObj->moveHandler = VANISHMOVE;
+				pObj->drawHandler = VANISHDRAW;
+				//WhoIsNextTurn();
 			}
 		}
 	}
@@ -2193,13 +2197,13 @@ void PlayerMove(OBJECT* pObj)
 							break;
 						}
 					}
-
-					if (pObj->dx != 0) {
+					//제자리에서도 flamer가 있으면 불로 해준다.
+					//if (pObj->dx != 0) {
 						if (pObj->flamer == 0)
 							motion = (pObj->playerRun == true) ? PO_C0_R0 : PO_C0_W0;
 						else
 							motion = PO_C1_FIREW0;
-					}
+					//}
 					break;
 				case WATER:
 					////	//////X축 이동 조정////	///	//
@@ -2737,6 +2741,7 @@ chk:
 					break;
 				}
 				else {
+					if (!pObj->flamer)
 					pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
 					pObj->dx = pObj->dy = 0;
 				}
@@ -3856,7 +3861,12 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			pObj->attack = false;
 			pObj->attackFrame = 0;
 			pObj->turnPosition = COMING;//다시 제위치로 복귀
-
+			//만약 소환이면
+			if (GetObjFromPtr(pObj) == SOLDIER) {
+				pObj->moveHandler = VANISHMOVE;
+				pObj->drawHandler = VANISHDRAW;
+				pObj->frame = 0;
+			}
 #ifdef SPEEDTURN
 			if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
 				pObj->turnPosition = HERE;
@@ -10728,11 +10738,37 @@ void VanishMove(OBJECT* pObj)
 		startObj = BULLET;
 		endObj = ENEMYUSEROBJ;
 	}
+	//솔져면
+	else if (obj == SOLDIER) {
+		startObj = SOLDIER;
+		endObj = SOLDIER;
+	}
 	else {
 		startObj = ENEMY;
 		endObj = NEUTRAL;
 	}
+
 	pObj->frame++;
+
+	//솔져
+	if (obj == SOLDIER) {
+		if (pObj->frame > 3 * FPS) {
+			pObj->active = false;
+			switch (pObj->type) {
+			case MAXX:
+				for (i = BULLET; i < ENEMYUSEROBJ; i++) {
+					if (ao[i].active == true)
+						ao[i].active = false;
+				}
+				break;
+			default:
+				break;
+
+			}
+			WhoIsNextTurn();
+		}
+		return;
+	}
 
 	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID) {
 		switch (pObj->frame) {
@@ -11042,8 +11078,7 @@ void RegenMove(OBJECT* pObj)
 			pObj->x = pObj->nx;
 			pObj->y = pObj->ny;
 			pObj->dirX = pObj->dirF = RIGHT;
-			pObj->currentSkill = 0;
-			if (obj < TOTALCHAR) {
+			if (pObj->cmf < TOTALCHAR) {
 				//pObj->hp = pObj->ps[PS_HP];
 				pObj->moveHandler = PLAYERMOVE;
 				pObj->drawHandler = PLAYERDRAW;
@@ -11070,8 +11105,21 @@ void RegenMove(OBJECT* pObj)
 					}
 				}
 
+				//솔져면 스킬이야.
+				if (obj == SOLDIER) {
+					SetHotKey(&ao[obj], HOTKEY_SKILL, pObj->currentSkill, 0);
+					HotKeyPress(&ao[obj], 0);
+					switch (pObj->currentSkill) {
+					case SKILL_DIANA8://플레임
+						pObj->flamer = FPS * 2;
+						break;
+					}
+				}
+
 				if (bar[BAR_BOSSHP].active == false)
 					InitBar(BAR_BOSSHP);
+
+				//pObj->currentSkill = 0;
 			}
 			else if (obj < PLAYERALL) {
 				pObj->moveHandler = CREWMOVE;
@@ -13789,9 +13837,35 @@ void CrewMove(OBJECT* pObj)
 								pObj->turnPosition = DMGUPDATE;//바로 결과로.
 
 								break;
-							case HEROSKILL:
-								SetHotKey(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], HOTKEY_SKILL, skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO], 0);
-								HotKeyPress(&ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]], 0);
+							case SUMMONHERO:
+								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
+								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
+								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+								objPtr->zoom = objPtr->defaultZoom = ao[PLAYER].zoom;
+								objPtr->moveHandler = REGENMOVE;
+								objPtr->drawHandler = REGENDRAW;
+								objPtr->nx = objPtr->x = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1];
+								objPtr->ny = objPtr->y = ao[ROBIN].y;
+
+								objPtr->dx = objPtr->dy = 0;
+								
+								objPtr->active = true;
+
+								objPtr->target = pObj->target;
+								objPtr->frame = 0;
+								pObj->turnPosition = DMGUPDATE;//바로 결과로.
+								//임시장비세팅
+								for (i = EQUIP_WEAPON; i < EQUIP_BOOTS; i++) {
+									memset(&tempItem, 0, sizeof(tempItem));
+									tempItem.type = 3 * i + objPtr->type;
+									tempItem.detail = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED3 + i];
+									tempItem.grade = GRADE_NORMAL;
+									tempItem.lv = 1;
+									tempItem.count = 1;
+									EquipItem(objPtr, &tempItem);
+								}
+
 #ifdef SPEEDTURN
 								WhoIsNextTurn();
 #endif

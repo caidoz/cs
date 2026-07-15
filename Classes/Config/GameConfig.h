@@ -90,70 +90,76 @@ typedef enum _gameConfig {
 	TOTALMENUOPTION = 27,
 	CHARINFOPAGELINE = 10,
 
-	CREW_BOY = 0,
-	CREW_GIRL,
-	CREW_MAID,
-	CREW_SCHOLAR,
-	CREW_GRANDMA,
-	CREW_GRANDFA,
-	CREW_MAN,
-	CREW_WOMAN,
-	CREW_UNCLE,
-	CREW_AUNT,
-	CREW_SEAUNCLE,
-	CREW_SEASOLDIER,
-	CREW_MILESE,
-	CREW_ALMA,
-	CREW_GALLAND,
-	CREW_ELFUNCLE,
-	CREW_ELFAUNT,
-	CREW_ELFBOY,
-	CREW_ELFGIRL,
-	CREW_NOBLEMAN,
-	CREW_MONICA,
-	CREW_FATMAN,
-	CREW_SEABOY,
-	CREW_LUISE,
-	CREW_DOBEL,
-	CREW_GAGEL,
-	CREW_ADELKNIGHT,
-	CREW_DOG,
-	CREW_WITCH,
-	CREW_BISTRO,
-	CREW_CRAFTMAN,
-	CREW_FISHING,
-	CREW_ELFWOMAN,
-	CREW_ELFMAN,
-	CREW_FRAUD,
-	CREW_ELFGRANDFA,
-	CREW_ELFMAGIC,
-	CREW_ELFDANCER,
-	CREW_DARIAN,
-	CREW_CREW,
-	CREW_TRAVEL,
-	CREW_ITEM,
-	CREW_DONALD,
-	CREW_DURAK,
-	CREW_MAP,
-	CREW_ELFDARK,
-	CREW_BUNNYGIRL,
-	CREW_NEZAR,
-	CREW_KNIGHT,
-	CREW_WOMANGHOST,
-	CREW_MANGHOST,
-	CREW_AUSTIN,
-	CREW_ELEIN,
-	CREW_USERQUEST,
-	CREW_NETITEM,
-	CREW_CHEF,
-	CREW_CAPTAIN,
-	CREW_ELKEIN,
-	CREW_DELPIOS,
-	CREW_LABETH,
-	CREW_SEBASTIAN,
-	CREW_EVAN,
-	CREW_LORA,
-	CREW_KING,
+	//장르
+	//1.투척
+	//2.몬스터소환
+	//3.버프(공격)
+	//4.버프(방어)
+	//5.히어로스킬(로빈)
+	//6.히어로스킬소환(디아나)
+	//7.히어로스킬소환(맥스)
+	CREW_BOY = 0,//★투척
+	CREW_GIRL,//★투척
+	CREW_GRANDFA,//★레드달팽이 소환
+	CREW_GRANDMA,//★
+	CREW_MAN,//★
+	CREW_WOMAN,//★
+	CREW_UNCLE,//★
+	CREW_AUNT,//★
+	CREW_SEAUNCLE,//★★
+	CREW_SEASOLDIER,//★★
+	CREW_MILESE,//★★
+	CREW_ALMA,//★★
+	CREW_CREW,//★★
+	CREW_TRAVEL,//★★
+	CREW_ITEM,//★★
+	CREW_ELFBOY,//★★
+	CREW_ELFGIRL,//★★
+	CREW_ELFUNCLE,//★★
+	CREW_ELFAUNT,//★★
+	CREW_ADELKNIGHT,//★★
+	CREW_OWL,//★★★//로빈스킬(에어크래쉬)
+	CREW_MAID,//★★★
+	CREW_BUNNYGIRL,//★★★
+	CREW_MAP,//★★★
+	CREW_MONICA,//★★★
+	CREW_SEABOY,//★★★
+	CREW_DOBEL,//★★★
+	CREW_GAGEL,//★★★
+	CREW_ELFGRANDFA,//★★★
+	CREW_ELFWOMAN,//★★★
+	CREW_ELFMAN,//★★★
+	CREW_ELFDANCER,//★★★
+	CREW_NOBLEMAN,//★★★
+	CREW_SCHOLAR,//★★★
+	CREW_NETITEM,//★★★//디아나스킬(유도미사일)
+	CREW_FATMAN,//★★★★
+	CREW_CRAFTMAN,//★★★★//로빈스킬(소울클래쉬)
+	CREW_LUISE,//★★★★
+	CREW_DOG,//★★★★//로빈스킬(하이퍼차지)
+	CREW_KNIGHT,//★★★★
+	CREW_WITCH,//★★★★//몬스터 소환(1, 2, 3 단계 다 다름)
+	CREW_BISTRO,//★★★★//
+	CREW_SEBASTIAN,//★★★★//로빈스킬(부스트슬래쉬)
+	CREW_FISHING,//★★★★★//
+	CREW_FRAUD,//★★★★★
+	CREW_DARIAN,//★★★★
+	CREW_DONALD,//★★★★//로빈스킬(마구찌르기)
+	CREW_ELFDARK,//★★★★//디아나스킬(난사)
+	CREW_NEZAR,//★★★★//소환
+	CREW_WOMANGHOST,//★★★★
+	CREW_MANGHOST,//★★★★
+	CREW_AUSTIN,//★★★★
+	CREW_ELEIN,//★★★★★//로빈스킬(필살연참)
+	CREW_USERQUEST,//★★★★//디아나스킬(위성레이저)//스튜어디스
+	CREW_CHEF,//★★★★★//
+	CREW_CAPTAIN,//★★★★★//맥스스킬(메가헌트)
+	CREW_ELKEIN,//★★★★★//CASTLEBOSS2 소환
+	CREW_DELPIOS,//★★★★★//
+	CREW_LABETH,//★★★★★//라베스 스킬
+	CREW_EVAN,//★★★★★★//로빈스킬(필살연참)
+	CREW_LORA,//★★★★★★//하트 1개, 2개, 5개 회득.
+	CREW_KING,//★★★★★★//소환(마왕의 레드버전)
 
 	TOTAL_CREW,
 

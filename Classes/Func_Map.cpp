@@ -2352,6 +2352,8 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	if (tempIdx == ADDOBJ_CREWBULLET) {
 		idx = skillData[pMom->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
 		scPtr = &objectData[idx * OBJDATA_SIZE];
+		//TEST
+		pObj->icon = Random(42);
 	}
 
 	pObj->active = true;
@@ -2360,7 +2362,8 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	if (tempIdx == ADDOBJ_CREWBULLET) {
 		pObj->cmf = enemyData[*(scPtr + OBJDATA_TYPE) * ENEMYDATASIZE + ENEMYDATA_CMF];
 		pObj->type = GetTypeFromCmf(pObj->cmf);
-		pObj->zoom = enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
+		pObj->zoom = ENEMYICONZOOM + (float)0.25f * ENEMYICONZOOM * (pObj->icon % 3);// 1.0f;// enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
+
 	}
 	else {
 		pObj->cmf = pMom->cmf;
@@ -2406,9 +2409,9 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 		pObj->x = pMom->x;
 		pObj->y = pMom->y;
 
-		pObj->drawHandler = ENEMYDRAW;
+		pObj->drawHandler = BULLETCREWDRAW;
 		pObj->moveHandler = FOLLOWMOVE;
-
+		
 		switch (idx) {
 		case ADDOBJ_GIANT:
 			pObj->motion = PO_C14_SHOT2;

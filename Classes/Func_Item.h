@@ -94,7 +94,7 @@ void UseStatue(OBJECT *, int);
 void UseRing(OBJECT *, int);
 void UseItemBox(ITEM * it);
 void SetTestHotKey(void);
-void SetHotKey(OBJECT *, int, int, int);
+void SetHotKey(OBJECT* pObj, int type, int idx, int where);
 void FreeHotKey(OBJECT *, int);
 int GetItemValue(ITEM * it);
 void SetItemString(ITEM * it, int addDetail, int addCool);

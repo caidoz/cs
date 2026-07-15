@@ -3239,6 +3239,8 @@ const char* const textId[] = {
 	"op3",
 	"op4",
 
+	"crewBullet",
+
 	"t0",
 	"bg0",
 	"dot",

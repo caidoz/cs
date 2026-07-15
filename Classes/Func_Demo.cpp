@@ -71,6 +71,7 @@ void Demo(void)
 	case DEMO_OPENING_PLUNDER:
 	case DEMO_OPENING_WARNNING:
 	case DEMO_OPENING_END:
+		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
 		DrawImage(
 			imgW, imgH,
 			0, 0,

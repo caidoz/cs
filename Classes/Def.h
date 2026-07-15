@@ -454,6 +454,7 @@ typedef enum _gameDef {
 	CREWBULLET,//크류의 공격
 	SUMMON,//소환
 	HEROSKILL,//히어로 공격스킬
+	SUMMONHERO,//히어로 소환
 
 	//크류타입
 	// 

@@ -2297,7 +2297,7 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 
 		//동료그리기
 		for (i = BULLET; i >= CREW; i--) {
-			if (ao[i].active && ao[i].type != NPC_SHIP) {
+			if (ao[i].active && ao[i].type != NPC_SHIP && i != SOLDIER) {
 
 				if (playerHeadZoom) {
 					ao[i].head = true;
@@ -2379,9 +2379,35 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 			}
 		}
 
-		//플레이어 그리기
+		
+		//솔져 그리기
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
+
+				if (playerHeadZoom) {
+					ao[i].head = true;
+				}
+
+				ao[i].zoom *= dioramaZoom;
+				DrawObj(&ao[i], cvtDest, cvtLayer, buffering);
+				ao[i].zoom /= dioramaZoom;
+
+				ao[i].head = false;
+
+				//if (ao[i].attack == ATTACK_NORMAL && ao[i].attackFrame <= attackDelayFrame[ao[i].type]) {
+				//	MemRect(ao[i].x - 12 * _2X - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - ao[i].y - 1 * _2X, 24 * _2X * ao[i].attackFrame / attackDelayFrame[ao[i].type], 2 * _2X, COLOR_REALRED, gScreenBuffer, gScreenLayer, false);
+				//}
+
+				grayScale = 0;
+				SetColor(false);
+
+
+			}
+		}
+
+		//플레이어 그리기
+		for (i = SOLDIER + MAXENEMYOBJ - 1; i >= SOLDIER; i--) {
+			if (ao[i].active) {
 
 				if (playerHeadZoom) {
 					ao[i].head = true;
@@ -2503,8 +2529,6 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 
 		UnSectionClip(false);
 
-		//if (!effect.color2)
-		//	EffectDraw(x + (float)STATUSWIN_Y, zoom, cvtDest, cvtLayer, buffering);
 
 		if (buffItemUsed > 0 && attackDelay == 0) {
 			for (i = 0; i < TOTALBUFF; i++) {
@@ -2615,6 +2639,10 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 					memset(&dmgInfo[i], 0, sizeof(dmgInfo));
 			}
 		}
+
+		if (!effect.color2)
+			EffectDraw(x + (float)STATUSWIN_Y, zoom, cvtDest, cvtLayer, buffering);
+
 		//DrawImage(640, 640, 0, 0, 0, DY, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
 		//DrawImage(160, 201, (1 % 30) % 6 * 161, (1 % 30) / 6 * 201, DX / 2, DY / 2, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
 		break;
@@ -4971,6 +4999,11 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 void DrawSkillIcon(int idx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	DrawImage(SKILLICONSIZE, SKILLICONSIZE, (idx & 0x07) * SKILLICONSIZE, ((idx & 0x3F) >> 3) * 16 * _2X, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[SICON_IMG], cvtDest, cvtLayer, SICON_IMG, buffering);
+}
+
+void DrawCrewBulletIcon(int idx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx & 0x07) * CREWBULLETICONSIZE, ((idx & 0x3F) >> 3) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], cvtDest, cvtLayer, CREWBULLET_IMG, buffering);
 }
 
 //일단 액티브 스킬의 경우에만 사용한다.

@@ -127,6 +127,9 @@ void DrawObj(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 	case BULLETITEMDRAW:
 		BulletItemDraw(pObj, cvtDest, cvtLayer, buffering);
 		break;
+	case BULLETCREWDRAW:
+		BulletCrewDraw(pObj, cvtDest, cvtLayer, buffering);
+		break;
 	case CREWDRAW:
 
 		//아직 레벨업이 안되어 있거나 공격받은 상태면
@@ -2089,6 +2092,32 @@ void BulletItemDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Laye
 
 	if (pObj->status == 0)
 		DrawIcon(pObj->icon, xOffset - rx + pObj->x - (float)(8 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP + 8 * _2X) - ry, pObj->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+	else
+		DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
+}
+
+void BulletCrewDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	//SetAlpha(10);
+	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->jumpFrame * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y +  - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	//SetAlpha(21);
+	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->hp * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	//SetAlpha(32);
+
+	//if (pObj->status == 0)
+		DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	//else
+	//	DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
+
+	return;
+	SetAlpha(10);
+	DrawCrewBulletIcon(pObj->icon, xOffset - rx + (float)(pObj->jumpFrame * _2X - 8 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->attackFrame * _2X - OBJIMGGAP - 8 * _2X) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	SetAlpha(21);
+	DrawCrewBulletIcon(pObj->icon, xOffset - rx + (float)(pObj->hp * _2X - 8 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->maxhp * _2X - OBJIMGGAP - 8 * _2X) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	SetAlpha(32);
+
+	if (pObj->status == 0)
+		DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(8 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP + 8 * _2X) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	else
 		DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 }

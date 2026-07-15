@@ -26,6 +26,7 @@ void BulletSateliteDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool
 void BulletHealDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void BulletBoomerangDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void BulletItemDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void BulletCrewDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void EnemyDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void CloudDraw(OBJECT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);

@@ -129,6 +129,7 @@ void DrawInfoMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 // Item Showing
 void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shadow, float thickness, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawSkillIcon(int, int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawCrewBulletIcon(int idx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawLock(int lv, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawPercent(float num, int x, int y, float zoom, int align, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

@@ -182,21 +182,21 @@ void RouletteAttackStart(void)
 		InitBar(BAR_BATTLECOIN);
 	}
 	//CREW가 있지만 3마리 이하라서 룰렛을 안돌리면 그냥 공격을 해준다.
-	else if (crewCnt < MINCREW)
+	else if (crewCnt < MAXCREW)
 	{
 		attackSequence = ATTACKSEQUENCE_ACTION;
 		//ao[NEUTRAL].status = BOXSTATUS_OPENED;
 		InitBar(BAR_BATTLECOIN);
 		//그 다음에는 전체 순서를 정해준다.
 		//일단 크류를 배치했고
-		for (i = 0; i < MINCREW; i++) {
+		for (i = 0; i < MAXCREW; i++) {
 			if (ao[CREW + i].active) {
 				turnList[j] = CREW + i;
 				j++;
 			}
 		}
 	}
-	//CREW가 3마리 이상이면 룰렛을 돌리고 공격해준다.
+	//CREW가 6마리 이상이면 룰렛을 돌리고 공격해준다.
 	else {
 		attackSequence = ATTACKSEQUENCE_SLOT;
 		//여기서 어떤 CREW를 뽑을건지 결정한다.
@@ -262,6 +262,8 @@ void RouletteAttackStart(void)
 	actionCardCnt = 0;
 
 	InitRouletteJump();
+
+	AddBar(&bar[BAR_HEART], -betHeart[bet], BARFRAME);
 }
 
 //현재 캐릭터 타입과 같은 개수를 구해라
