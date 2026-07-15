@@ -2450,7 +2450,7 @@ void RegenDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cv
 {
 	int obj = GetObjFromPtr(pObj);
 	//전투신 처음의 등장신에서는 
-	if (obj < PLAYERALL) {
+	if (obj < SOLDIER + 1) {
 		//여기서 후면에 그려주는 이펙트가 있으면 그려주고
 	}
 	else {
@@ -2458,11 +2458,11 @@ void RegenDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cv
 		SetBlend(32 - pObj->frame, 0x000000);
 		SetAlpha(pObj->frame);
 	}
-	if (obj < TOTALCHAR)
+	if (pObj->type < TOTALCHAR)
 		PlayerDraw(pObj, cvtDest, cvtLayer, buffering);
 	else
 		DrawCmf(pObj, false, pObj->zoom, false, cvtDest, cvtLayer, buffering);
-	if (obj < PLAYERALL) {
+	if (obj < SOLDIER + 1) {
 		//여기서 전면에 캐릭터가 있으면 그려준다.
 	}
 	else {

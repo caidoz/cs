@@ -1768,6 +1768,7 @@ void PlayerMove(OBJECT* pObj)
 				*/
 				pObj->moveHandler = VANISHMOVE;
 				pObj->drawHandler = VANISHDRAW;
+				onceDmgUpdateFrame = 2 * FPS;
 				//WhoIsNextTurn();
 			}
 		}
@@ -3863,9 +3864,22 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			pObj->turnPosition = COMING;//다시 제위치로 복귀
 			//만약 소환이면
 			if (GetObjFromPtr(pObj) == SOLDIER) {
-				pObj->moveHandler = VANISHMOVE;
-				pObj->drawHandler = VANISHDRAW;
-				pObj->frame = 0;
+				//솔져
+				j = 0;
+				if (pObj->type == MAXX) {
+					for (i = BULLET; i < ENEMYUSEROBJ; i++) {
+						if (ao[i].active == true)
+							j++;
+					}
+
+					if (j == 0) {
+						pObj->drawHandler = VANISHDRAW;
+						pObj->moveHandler = VANISHMOVE;
+						onceDmgUpdateFrame = 2 * FPS;
+						pObj->frame = 0;
+					}
+					return;
+				}
 			}
 #ifdef SPEEDTURN
 			if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
@@ -8214,8 +8228,8 @@ void BulletBoomerangMove(OBJECT* pObj)
 		InitMotion(pObj);
 
 		//for (i = PLAYER; i < PLAYERALL; i++) {
-		for (i = ROBIN; i < TOTALCHAR; i++) {
-			if (i == pObj->target) {
+		for (i = ROBIN; i < SOLDIER + 1; i++) {
+			if (pObj->target == i) {
 				if (ObjCrash(&ao[i], pObj)) {
 					pObj->active = false;
 					boomerangAway[pObj->target] = false;
@@ -8231,7 +8245,23 @@ void BulletBoomerangMove(OBJECT* pObj)
 				}
 			}
 		}
+		/*
+		if (pObj->target == SOLDIER) {
+			if (ObjCrash(&ao[SOLDIER], pObj)) {
+				pObj->active = false;
+				boomerangAway[pObj->target] = false;
 
+				//부메랑을 받을때, 다람쥐로 변신한 상태라면 스탑모션을 하지 않는다.
+				if (ao[SOLDIER].attack == 0) {
+					ao[SOLDIER].attack = 1;
+					ao[SOLDIER].attackFrame = 5 + MAXX_ATTACK_DELAY;
+					ao[SOLDIER].motion = PO_C2_STOP0;
+				}
+
+				//memset(pObj, 0, sizeof(OBJECT));
+			}
+		}
+		*/
 		pObj->frame++;
 		break;
 	}
@@ -10728,7 +10758,7 @@ END:
 }
 void VanishMove(OBJECT* pObj)
 {
-	int i, totalItemObjCnt = 1, tempX, tempY;
+	int i, totalItemObjCnt = 1, tempX, tempY, j = 0;
 	int itemObj;
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
@@ -10749,26 +10779,6 @@ void VanishMove(OBJECT* pObj)
 	}
 
 	pObj->frame++;
-
-	//솔져
-	if (obj == SOLDIER) {
-		if (pObj->frame > 3 * FPS) {
-			pObj->active = false;
-			switch (pObj->type) {
-			case MAXX:
-				for (i = BULLET; i < ENEMYUSEROBJ; i++) {
-					if (ao[i].active == true)
-						ao[i].active = false;
-				}
-				break;
-			default:
-				break;
-
-			}
-			WhoIsNextTurn();
-		}
-		return;
-	}
 
 	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID) {
 		switch (pObj->frame) {
@@ -10955,6 +10965,8 @@ void VanishMove(OBJECT* pObj)
 		// 투기장에서 몬스터를 다 죽이면 다음 방으로 넘겨준다.
 		//몬스터들을 다 죽였는지 체크
 		pObj->active = false;
+		//if (obj == SOLDIER && pObj->type == MAXX)
+		//	WhoIsNextTurn();
 #ifdef ENEMYHPBAR
 		ArrangeEnemyHpBar();
 #endif

@@ -1514,8 +1514,8 @@ extern unsigned char ringUsed;
 extern unsigned char ringUser;
 
 extern ESCORT escort;
-extern signed char demoPlayerX[PLAYERALL];
-extern signed char boomerangAway[PLAYERALL];
+extern signed char demoPlayerX[SOLDIER + 1];
+extern signed char boomerangAway[SOLDIER + 1];
 extern signed short pDx, pDy;
 extern unsigned char currentQuest;
 extern unsigned char currentTimeQuest; //?„ìž¬ ?€?„í€˜ìŠ¤???€??

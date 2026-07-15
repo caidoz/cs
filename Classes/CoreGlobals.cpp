@@ -523,8 +523,8 @@ unsigned char ringUsed;
 unsigned char ringUser;
 
 ESCORT escort;
-signed char demoPlayerX[PLAYERALL];
-signed char boomerangAway[PLAYERALL];
+signed char demoPlayerX[SOLDIER + 1];
+signed char boomerangAway[SOLDIER + 1];
 signed short pDx, pDy;
 unsigned char currentQuest;
 unsigned char currentTimeQuest; //현재 타임퀘스트 저장.
