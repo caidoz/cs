@@ -593,6 +593,16 @@ void SetRoom_Neutral(void)
 					case BOX_CASTLE18:
 						pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
 						break;
+					case BOX_REWARD0:
+					case BOX_REWARD1:
+					case BOX_REWARD2:
+					case BOX_REWARD3:
+					case BOX_REWARD4:
+					case BOX_REWARD5:
+					case BOX_REWARD6:
+					case BOX_REWARD7:
+						pObj->zoom = BOXCASTLEZOOM * (0.3f + (float)0.02f * (pObj->etc - BOX_REWARD0));
+						break;
 					default:
 						//case BOX_INGAME:
 						pObj->zoom = BOXZOOM;
@@ -2362,7 +2372,7 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	if (tempIdx == ADDOBJ_CREWBULLET) {
 		pObj->cmf = enemyData[*(scPtr + OBJDATA_TYPE) * ENEMYDATASIZE + ENEMYDATA_CMF];
 		pObj->type = GetTypeFromCmf(pObj->cmf);
-		pObj->zoom = ENEMYICONZOOM + (float)0.25f * ENEMYICONZOOM * (pObj->icon % 3);// 1.0f;// enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
+		pObj->zoom = CREWBULLETZOOM + (float)0.25f * CREWBULLETZOOM * (pObj->icon % 3);// 1.0f;// enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
 
 	}
 	else {
@@ -3646,6 +3656,7 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 	case MD_DEMO:
 	case MD_PLAY:
 	case MD_BATTLE:
+	case MD_GACHA:
 
 		SetScreenRatio();
 

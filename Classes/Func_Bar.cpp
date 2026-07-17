@@ -27,11 +27,6 @@ void DrawBarIcon(int type, int x, int y, float zoom, cocos2d::RenderTexture* cvt
 	case BAR_EQUIP:
 		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 		DrawImage(128, 128, 128 * 0, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-
-		//DrawImage(108, 108, 266, 150, x + (float)(MAINMENU_X / 2) * zoom - (float)(108 / 2) * 0.8f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(108 / 2) * 0.8f * zoom + (float)(12 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[BOX_IMG], cvtDest, cvtLayer, BOX_IMG, buffering);
-		//SetFontColor(fontColor);
-		//CenterTextSolid(TEXT_MENU_COLLECTIONS, x + (float)(MAINMENU_X / 2) * zoom, y - (float)(32 * _2X) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
-		//SetFontColor(COLOR_WHITE);
 		break;
 	case BAR_MAINSHOP:
 		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);

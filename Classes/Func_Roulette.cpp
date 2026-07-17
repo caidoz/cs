@@ -1202,7 +1202,7 @@ void RouletteDraw(int x, int y, float zoom,
 
 		bar[BAR_ROULETTE].front = false;
 
-		ao[NEUTRAL].status = BOXSTATUS_OPENING;
+		ao[NEUTRAL].motion = BOXSTATUS_OPENING;
 	}
 }
 

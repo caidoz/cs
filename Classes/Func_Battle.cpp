@@ -2426,7 +2426,7 @@ void RaidSequenceDraw(void)
 
 			raidFrame = GetRaidAttackFrameCnt(attackType);
 			sequenceFrame = 0;
-			ao[pObj->target].status = BOXSTATUS_OPENING;
+			ao[pObj->target].motion = BOXSTATUS_OPENING;
 			ao[pObj->target].frame = 0;
 		}
 
@@ -3365,7 +3365,7 @@ void RaidBoxDraw(int x, int y, float zoom, bool touch, bool shadow, cocos2d::Ren
 	int j = 0;
 
 	for (i = 0; i < TOTALRAIDBOX; i++) {
-		switch (raidBox[i].status) {
+		switch (raidBox[i].motion) {
 		case BOXSTATUS_APPEAR:
 			if (curtainFrame == 0) {
 				raidBox[i].motion = OBJ_BOX0;
@@ -3601,7 +3601,7 @@ void SetBattleCrew()
 		SetNpc(&ao[CREW + i]);
 		//ao[CREW + i].ps[PS_DMG] = ao[CREW + i].str = crewData[stageCrewIdx * CREWDATASIZE + CREWDATA_DMG] * crewBulletLvUpDmgPercent[robin.crewStar[stageCrewIdx]] / 100;
 		ao[CREW + i].defaultZoom = ao[CREW + i].zoom = (float)enemyIconZoom[ao[CREW + i].type] * CREWZOOM;
-		RefreshStat(&ao[CREW + i]);
+		//RefreshStat(&ao[CREW + i]);
 		ao[CREW + i].active = false;
 		ao[CREW + i].dead = true;
 		ao[CREW + i].frame = -i * FPS / 3;
@@ -3616,6 +3616,7 @@ void SetBattleCrew()
 		ao[CREW + i].ny = ao[CREW + i].y = (float)castleCrewPosition[castleOrder[robin.castle] * MAXCREW * 2 + i * 2 + 1];
 		ao[CREW + i].dirF = ao[CREW + i].dirX = RIGHT;
 
+		ao[CREW + i].ps[PS_DMG] = ao[CREW + i].str = crewData[GetCrewIdxFromType(ao[CREW + i].type) * CREWDATASIZE + CREWDATA_STR];
 		//ao[CREW + i].y -= 1024 * _2X;
 
 		//ao[CREW + i].curStar = robin.crewStar[i];
@@ -3629,6 +3630,7 @@ void SetBattleCrew()
 			ao[CREW + i].getSkillList[j] = crewData[GetCrewIdxFromType(ao[CREW + i].type) * CREWDATASIZE + CREWDATA_SKILL1 + j];
 
 		}
+
 		//TESTEND
 		//if (ao[CREW + i].curStar != ao[CREW + i].maxStar || ao[CREW + i].maxStar == 0)
 		//	ao[CREW + i].dead = true;

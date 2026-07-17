@@ -2199,12 +2199,16 @@ void PlayerMove(OBJECT* pObj)
 						}
 					}
 					//제자리에서도 flamer가 있으면 불로 해준다.
-					//if (pObj->dx != 0) {
+					if (pObj->dx != 0) {
 						if (pObj->flamer == 0)
 							motion = (pObj->playerRun == true) ? PO_C0_R0 : PO_C0_W0;
 						else
 							motion = PO_C1_FIREW0;
-					//}
+					}
+					else {
+						if (pObj->flamer)
+							motion = PO_C1_FIREW0;
+					}
 					break;
 				case WATER:
 					////	//////X축 이동 조정////	///	//
@@ -3901,9 +3905,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		}
 		break;
 	case _ADDBUFF:
-		pObj->attack = false;
-
-		pObj->turnPosition = COMING;
+		
 #ifndef WARIGARI
 		if (autoPlay == true && drawHandle == MD_PLAY) {
 			BoxOpen();
@@ -3919,8 +3921,16 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			}
 		}
 
-		attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
-		attackDelay = attackDelayPerType[attackType];
+		pObj->concentrate = 0;
+
+		pObj->attack = false;
+		pObj->attackFrame = 0;
+
+		pObj->turnPosition = HERE;
+		WhoIsNextTurn();
+
+		//attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
+		//attackDelay = attackDelayPerType[attackType];
 		break;
 	case _CONTINUE:
 		pObj->concentrate = 0;
@@ -4142,7 +4152,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		}
 
 		boomerangAway[objPtr->target] = cnt;
-
+		objPtr->ps[PS_DMG] = objPtr->ps[PS_STR] = ao[objPtr->target].ps[PS_DMG];
 		break;
 	case _USERING:
 		UseRing(pObj, ITEMPTR_EQUIP + GetObjFromPtr(pObj) * TOTALEQUIP + EQUIP_RING);
@@ -8043,9 +8053,7 @@ void BulletHealMove(OBJECT* pObj)
 void BulletBoomerangMove(OBJECT* pObj)
 {
 	int i, rt;
-	ITEM* it = &pObj->equip[EQUIP_WEAPON];
-	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
-
+	
 	if (!pObj->motion) {
 		boomerangAway[pObj->target] = false;
 		memset(pObj, 0, sizeof(OBJECT));
@@ -8315,7 +8323,7 @@ void FollowMove(OBJECT* pObj)
 {
 	int rt = 0;
 
-	GotoObj(&ao[pObj->target], pObj, 8 * _2X);
+	GotoObj(&ao[pObj->target], pObj, 6 * _2X);
 	pObj->x += pObj->dx;
 	pObj->y += pObj->dy;
 	InitMotion(pObj);
@@ -10957,7 +10965,6 @@ void VanishMove(OBJECT* pObj)
 				if (AliveEnemyCnt() == true/* && robin.bossRoom == true*/)
 					goto DROP;
 			DROP:
-
 				break;
 			}
 
@@ -10974,8 +10981,12 @@ void VanishMove(OBJECT* pObj)
 		ArrangeEnemyTarget();
 		arenaKill++;
 
+		//SetBox(pObj, BOX_CASTLE0 + castleOrder[robin.castle]);
+
 		if (robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0) {
-			GotoStageClear();
+			DropItem(pObj, ITEM_BOX);
+
+			//GotoStageClear();
 		}
 	}
 }
@@ -12079,6 +12090,18 @@ void ItemMove(OBJECT* pObj)
 				targetY = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
 				break;
+			case ITEM_BOX:
+				//팝업창이 안열려있으면
+				if (popUpCnt == 0) {
+					boxMark[0].type = ao[ITEMOBJ].def;
+					boxMark[0].detail = ao[ITEMOBJ].etc;
+					boxMark[0].grade = GRADE_NORMAL;
+
+					GotoGacha();
+
+					//memset(&ao[ITEMOBJ], 0, sizeof(OBJECT));
+				}
+				return;
 				//장비가 떨어졌을 떄
 			default:
 				switch (pObj->def) {
@@ -13849,6 +13872,12 @@ void CrewMove(OBJECT* pObj)
 								pObj->turnPosition = DMGUPDATE;//바로 결과로.
 
 								break;
+							case HEROSKILL:
+								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
+								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								SetHotKey(objPtr, HOTKEY_SKILL, objPtr->currentSkill, 0);
+								HotKeyPress(objPtr, 0);
+								break;
 							case SUMMONHERO:
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
 								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
@@ -13877,6 +13906,7 @@ void CrewMove(OBJECT* pObj)
 									tempItem.count = 1;
 									EquipItem(objPtr, &tempItem);
 								}
+								objPtr->ps[PS_DMG] = objPtr->ps[PS_STR] = pObj->ps[PS_DMG];
 
 #ifdef SPEEDTURN
 								WhoIsNextTurn();
@@ -14883,7 +14913,7 @@ bool IsHitPossible(OBJECT* pObj, OBJECT* mObj)
 	switch (pObj->attack) {
 
 	}
-	if (pObj->hitCount < skillData[mObj->currentSkill * SKILLDATASIZE + SKILLDATASIZE - 1])
+	if (ao[turn].hitCount < skillData[mObj->currentSkill * SKILLDATASIZE + 1])
 		return true;
 
 	return false;

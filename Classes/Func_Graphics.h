@@ -172,6 +172,6 @@ void OpenBox(OBJECT* pObj);
 void CloseBox(OBJECT* pObj);
 float EaseOutBack(float t);
 float Clamp01(float v);
+void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawBoxSpecial(int x, int y, int dirX, int idx, float zoom, int solid, bool ani, bool opened, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

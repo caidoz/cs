@@ -1942,7 +1942,7 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 		//SetAlpha(20);
 		//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 		//SetAlpha(32);
-		//StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_BOSSRAID:
 		GoldQuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);

@@ -494,7 +494,6 @@ typedef enum _imgDef {
 
 
 	MENUICON_IMG,
-	BOX_IMG,
 
 	BOX0_IMG,
 	BOX1_IMG,
@@ -515,6 +514,15 @@ typedef enum _imgDef {
 	BOX16_IMG,
 	BOX17_IMG,
 	BOX18_IMG,
+
+	BOX19_IMG,
+	BOX20_IMG,
+	BOX21_IMG,
+	BOX22_IMG,
+	BOX23_IMG,
+	BOX24_IMG,
+	BOX25_IMG,
+	BOX26_IMG,
 
 	THEATER_IMG,
 	GOLDFONT_IMG,
@@ -542,6 +550,7 @@ typedef enum _imgDef {
 	OP4_IMG,
 
 	CREWBULLET_IMG,
+	GACHA_IMG,
 
 	GTILE_IMG,
 	GBACK_IMG,

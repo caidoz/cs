@@ -2551,6 +2551,8 @@ void OutOfGacha(void)
 	DoubleBuffering(drawHandle);
 
 	PlayMusic(M_SELECT);
+	for (i = ITEMOBJ; i < TOTALOBJECT; i++)
+		memset(&ao[i], 0, sizeof(OBJECT));
 
 	switch (drawHandle) {
 	case MD_PLAY:
@@ -4234,7 +4236,7 @@ void GotoGacha()
 
 	//연출용 효과를 초기화하고
 	for (i = 0; i < TOTALCARDMARK; i++) {
-		memset(&boxMark[i], 0, sizeof(ICONMARK));//박스
+		//memset(&boxMark[i], 0, sizeof(ICONMARK));//박스
 		memset(&boxCardMark[i], 0, sizeof(ICONMARK));//박스에서 나온 카드
 	}
 
@@ -4391,9 +4393,9 @@ void GotoStageClear(void)
 	//before_KeyHandle_StageClear = keyHandle;
 	//drawHandle = MD_STAGECLEAR;
 	//keyHandle = MK_STAGECLEAR;
-	MainMenuIn();
+	//MainMenuIn();
 
-	SetPopUp(POPUPTYPE_STAGE, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+	SetPopUp(POPUPTYPE_BOXREWARD, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 		false, false, false, false, false,
 		false, false, false, false, false,
 		false, false, false, false, false);

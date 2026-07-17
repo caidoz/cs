@@ -1577,11 +1577,11 @@ void PlayKey(int obj)
 		case AVK_SHOP_BUYBOX1:
 		case AVK_SHOP_BUYBOX2:
 		case AVK_SHOP_BUYBOX3:
-			robin.gold -= GetBoxPrice(BOX_EQUIP_SILVER + systemKey - AVK_SHOP_BUYBOX1, GRADE_NORMAL);
+			robin.gold -= GetBoxPrice(BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1, GRADE_NORMAL);
 			memset(&rewardItem, 0, sizeof(rewardItem));
 			memset(&rewardMark, 0, sizeof(rewardMark));
 			rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
-			rewardMark[0].detail = BOX_EQUIP_SILVER + systemKey - AVK_SHOP_BUYBOX1;
+			rewardMark[0].detail = BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1;
 			rewardMark[0].grade = GRADE_NORMAL;
 			rewardItemCnt = 1;
 			boxCnt = 0;
@@ -2008,10 +2008,6 @@ void HotKeyPress(OBJECT* pObj, int idx)
 	}
 }
 
-void GachaKey(void)
-{
-	PlayKey(PLAYER);
-}
 
 void NewSkillKey(void)
 {
@@ -3314,7 +3310,7 @@ void BoxOpen(void)
 
 	attackSequence = ATTACKSEQUENCE_ATTACKRESULT;// ATTACKSEQUENCE_ROULETTE;
 	sequenceDelay = attackDelayPerType[attackType];
-	ao[ITEMBOX].status = BOXSTATUS_OPENING;
+	ao[ITEMBOX].motion = BOXSTATUS_OPENING;
 	ao[ITEMBOX].frame = 0;
 	ao[ITEMBOX].attacked = true;
 	ao[ITEMBOX].attackedFrame = BOXATTACKEDFRAME;

@@ -8,6 +8,7 @@
 #include "Func_Cmf.h"
 #include "Func_Combat.h"
 #include "Func_Draw.h"
+#include "Func_Gacha.h"
 #include "Func_Graphics.h"
 #include "Func_Input.h"
 #include "Func_Item.h"

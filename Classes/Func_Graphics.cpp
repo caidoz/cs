@@ -1902,6 +1902,7 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 	case MD_DEMO:
 	case MD_PLAY:
 	case MD_BATTLE:
+	case MD_GACHA:
 		
 		if (!effect.color)
 			for (i = NEUTRAL; i < ITEMOBJ; i++) {
@@ -2199,7 +2200,7 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 		if (skillUsed == false && buffItemUsed == false)
 			//아이템 그림자
 			for (i = ITEMOBJ; i < TOTALOBJECT; i++) {
-				if (ao[i].active && ao[i].status == WALK) {
+				if (ao[i].active/* && ao[i].status == WALK*/) {
 					int pxl;
 
 					switch (ao[i].mainFrame % 9) {
@@ -2221,7 +2222,24 @@ void DrawDiorama(int x, int y, int type, float zoom, cocos2d::RenderTexture* cvt
 					//c.bmp
 					zoomBefore = ao[i].zoom;
 					ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
-					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom, cvtDest, cvtLayer, buffering);
+					
+					float jumpHeight = ao[i].ny - ao[i].y;
+
+					if (jumpHeight < 0.0f)
+						jumpHeight = 0.0f;
+
+					float maxJumpHeight = 40.0f * _2X;
+
+					// 0.0 ~ 1.0
+					float jumpRatio = jumpHeight / maxJumpHeight;
+
+					if (jumpRatio > 1.0f)
+						jumpRatio = 1.0f;
+
+					// 최고점에서 원래 크기의 55%까지 축소
+					float shadowJumpScale = 1.0f - jumpRatio * 0.45f;
+
+					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom * shadowJumpScale, objStartY - (ao[i].ny - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom * shadowJumpScale, SHADOW_IMG, ao[i].zoom * shadowJumpScale, cvtDest, cvtLayer, buffering);
 					//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 					ao[i].zoom = zoomBefore;
 				}
@@ -3528,7 +3546,7 @@ void DrawNum(long long int num, int x, int y, int font, int align, int digit, bo
 	long long int tempNum = num;
 	int numbers = 1;
 
-	switch (align) {
+ 	switch (align) {
 	case CENTER:
 		//가운데정렬
 		x += GetNumDx(num, sign, font, digit, comma, zoom, fixed) / 2;
@@ -5321,7 +5339,7 @@ void DrawLevelUpCard(int type, int lv, bool locked, int x, int y, float zoom, co
 		break;
 	case LVUPREWARD_STARBOX:
 		//DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], x + (float)(34 * _2X) * zoom, y - (float)(80 * _2X) * zoom, LEFT, 2.0f * zoom, cvtDest, cvtLayer, buffering);
-		DrawBox(BOX_CREW_PRINCESS, x + (float)(32 * _2X) * zoom, y - (float)(72 * _2X) * zoom, LEFT, false, COLOR_WHITE, locked == false ? true : false, false, false, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+		DrawBox(BOX_REWARD0, x + (float)(32 * _2X) * zoom, y - (float)(72 * _2X) * zoom, LEFT, false, COLOR_WHITE, locked == false ? true : false, false, false, 2.0f * zoom, cvtDest, cvtLayer, buffering);
 		DrawIcon(ICON_STAR, x + (float)(32 * _2X) * zoom, y - (float)(36 * _2X) * zoom, 1.0f * zoom, COLOR_WHITE, locked == false ? true : false, false, true, cvtDest, cvtLayer, buffering);
 		break;
 	case LVUPREWARD_HEART:
@@ -5362,11 +5380,11 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 	switch (type) {
 	case BOX_EQUIP:
 		//장비가 들어있는 박스
-		if (detail <= BOX_EQUIP_LEGEND) {
+		if (detail <= BOX_REWARD0) {
 			icon = GetItemIcon(boxEquipType[frame % 8], frame % itemTypeCnt[boxEquipType[frame % 8]], GRADE_NORMAL);
 		}
 		//몬스터가 들어있는 박스
-		else if (detail <= BOX_CREW_DEVIL) {
+		else if (detail <= BOX_REWARD1) {
 			icon = ICON_SUMMON + crewData[(frame % TOTAL_CREW) * CREWDATASIZE];
 		}
 		//기타 박스
@@ -6161,21 +6179,6 @@ void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool auto
 			CenterTextSolid(TEXT_STOP, x + (float)0 * zoom, y - (float)16 * _2X * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 			SetAlpha(32);
 		}
-
-	//UnSectionClip(false);
-
-	/*
-	ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)64 * _2X * zoom - (float)40 * _2X / 2 * INFOZOOM * zoom, y + (float)(32 * _2X) * INFOZOOM * zoom, SHADOW_IMG, INFOZOOM * zoom, cvtDest, cvtLayer, buffering);
-
-	switch (betType) {
-	case 0://기본베팅
-		DrawNeutral(OBJ_BOX0 + motion, x + (float)64 * _2X * zoom, y + (float)(24 * _2X) * INFOZOOM * zoom, LEFT, INFOZOOM * 1.5f * zoom, cvtDest, cvtLayer, buffering);
-		break;
-	default:
-		DrawBoxSpecial(x + (float)64 * _2X * zoom, y + (float)(24 * _2X) * INFOZOOM * zoom, bet, INFOZOOM * 0.5f * zoom, COLOR_BROWN, false, false, cvtDest, cvtLayer, buffering);
-		break;
-	}
-	*/
 }
 
 void DrawHand(int x, int y, int hFrame, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -6308,6 +6311,15 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 		case BOX_CASTLE16:
 		case BOX_CASTLE17:
 		case BOX_CASTLE18:
+
+		case BOX_REWARD0:
+		case BOX_REWARD1:
+		case BOX_REWARD2:
+		case BOX_REWARD3:
+		case BOX_REWARD4:
+		case BOX_REWARD5:
+		case BOX_REWARD6:
+		case BOX_REWARD7:
 			ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x - (float)40 * _2X / 2 * zoom, y + (float)12 * _2X * zoom, SHADOW_IMG, 2.0f * zoom, cvtDest, cvtLayer, buffering);
 			break;
 		}
@@ -6317,6 +6329,8 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 	case BOX_INGAME:
 		DrawNeutral(OBJ_BOX0 + motion, x, y, dirX, zoom, cvtDest, cvtLayer, buffering);
 		break;
+	default:
+		/*
 	case BOX_CASTLE0:
 	case BOX_CASTLE1:
 	case BOX_CASTLE2:
@@ -6336,19 +6350,26 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 	case BOX_CASTLE16:
 	case BOX_CASTLE17:
 	case BOX_CASTLE18:
-		DrawImage(512, 512, motion == BOXSTATUS_OPENED > 0 ? 512 : 0, 0, x, y, false, false, false, false, false, zoom, sprite[BOX0_IMG + boxType - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + boxType - BOX_CASTLE0, buffering);
-		break;
-	default:
-		DrawBoxSpecial(x, y, dirX, boxType, zoom / 2, solid, ani, opened, cvtDest, cvtLayer, buffering);
+
+	case BOX_REWARD0:
+	case BOX_REWARD1:
+	case BOX_REWARD2:
+	case BOX_REWARD3:
+	case BOX_REWARD4:
+	case BOX_REWARD5:
+	case BOX_REWARD6:
+	case BOX_REWARD7:
+	*/
+		DrawCastleBoxXY(boxType, motion == BOXSTATUS_OPENED ? true : false, dirX, x - (float)512 * zoom / 2, y + (float)512 * zoom, itemColor[frame % 6], zoom, cvtDest, cvtLayer, buffering);
 		break;
 	}
 }
 
 void OpenBox(OBJECT* pObj)
 {
-	if (pObj->status == BOXSTATUS_CLOSED)
+	if (pObj->motion == BOXSTATUS_CLOSED)
 	{
-		pObj->status = BOXSTATUS_OPENING;
+		pObj->motion = BOXSTATUS_OPENING;
 		pObj->frame = 0;
 	}
 }
@@ -6378,6 +6399,62 @@ float Clamp01(float v)
 	return v;
 }
 
+void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+{
+	int i;
+	int img = BOX0_IMG + index - BOX_CASTLE0;
+
+	SetAlpha(32 - Abs(frame / 2 % 32 - 16));
+	SetColor(color);
+
+	for (i = 0; i < 4; i++)
+	{
+		DrawImage(
+			512,
+			512,
+			opened == true ? 512 : 0,
+			0,
+			x + solidPosition[i * 2 + 0] * 3,
+			y + solidPosition[i * 2 + 1] * 3,
+			1 - dirX,
+			false,
+			false,
+			false,
+			false,
+			zoom,
+			sprite[img],
+			cvtDest,
+			cvtLayer,
+			img,
+			buffering
+		);
+	}
+
+	SetAlpha(32);
+	SetColor(false);
+
+	DrawImage(
+		512,
+		512,
+		opened == true ? 512 : 0,
+		0,
+		x,
+		y,
+		1 - dirX,
+		false,
+		false,
+		false,
+		false,
+		zoom,
+		sprite[img],
+		cvtDest,
+		cvtLayer,
+		img,
+		buffering
+	);
+
+}
+
 void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
@@ -6386,10 +6463,11 @@ void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer
 	bool openedImage = false;
 
 	float drawZoom = pObj->zoom;
-	int shakeX = 0;
-	int shakeY = 0;
+	float shakeX = 0;
+	float shakeY = 0;
+	int color;
 
-	switch (pObj->status)
+	switch (pObj->motion)
 	{
 	case BOXSTATUS_OPENED:
 		openedImage = true;
@@ -6456,85 +6534,49 @@ void DrawCastleBox(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer
 	switch (pObj->etc)
 	{
 	default:
-		SetColor(castleBoxColor[castleOrder[robin.castle]]);
+		color = castleBoxColor[castleOrder[robin.castle]];
 		break;
 
 	case BOX_CASTLE15:
 	case BOX_CASTLE16:
 	case BOX_CASTLE17:
 	case BOX_CASTLE18:
-		SetColor(itemColor[frame % 10]);
+
+	case BOX_REWARD0:
+	case BOX_REWARD1:
+	case BOX_REWARD2:
+	case BOX_REWARD3:
+	case BOX_REWARD4:
+	case BOX_REWARD5:
+	case BOX_REWARD6:
+	case BOX_REWARD7:
+		color = itemColor[frame % 10];
 		break;
 	}
 
-	SetAlpha(32 - Abs(frame / 2 % 32 - 16));
-
-	for (i = 0; i < 4; i++)
-	{
-		DrawImage(
-			512,
-			512,
-			openedImage ? 512 : 0,
-			0,
-			drawX + solidPosition[i * 2 + 0] * 3,
-			drawY + solidPosition[i * 2 + 1] * 3,
-			false,
-			false,
-			false,
-			false,
-			false,
-			drawZoom,
-			sprite[img],
-			cvtDest,
-			cvtLayer,
-			img,
-			buffering
-		);
-	}
-
-	SetAlpha(32);
-	SetColor(false);
-
-	DrawImage(
-		512,
-		512,
-		openedImage ? 512 : 0,
-		0,
-		drawX,
-		drawY,
-		false,
-		false,
-		false,
-		false,
-		false,
-		drawZoom,
-		sprite[img],
-		cvtDest,
-		cvtLayer,
-		img,
-		buffering
-	);
-
-	if (pObj->status == BOXSTATUS_OPENING)
+	
+	if (pObj->motion == BOXSTATUS_OPENING)
 	{
 		pObj->frame++;
 
 		if (pObj->frame >= BOX_OPEN_FRAME)
 		{
 			pObj->frame = 0;
-			pObj->status = BOXSTATUS_OPENED;
+			pObj->motion = BOXSTATUS_OPENED;
 		}
 	}
-	else if (pObj->status == BOXSTATUS_CLOSING)
+	else if (pObj->motion == BOXSTATUS_CLOSING)
 	{
 		pObj->frame++;
 
 		if (pObj->frame >= BOX_CLOSE_FRAME)
 		{
 			pObj->frame = 0;
-			pObj->status = BOXSTATUS_CLOSED;
+			pObj->motion = BOXSTATUS_CLOSED;
 		}
 	}
+
+	DrawCastleBoxXY(pObj->etc, openedImage, pObj->dirX, drawX, drawY, color, pObj->zoom, cvtDest, cvtLayer, buffering);
 }
 
 void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -6544,6 +6586,8 @@ void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 	case BOX_INGAME:
 		DrawNeutral(OBJ_BOX0 + pObj->motion, xOffset + pObj->x, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->zoom, cvtDest, cvtLayer, buffering);
 		break;
+	default:
+	/*
 	case BOX_CASTLE0:
 	case BOX_CASTLE1:
 	case BOX_CASTLE2:
@@ -6563,56 +6607,17 @@ void BoxDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 	case BOX_CASTLE16:
 	case BOX_CASTLE17:
 	case BOX_CASTLE18:
+
+	case BOX_REWARD0:
+	case BOX_REWARD1:
+	case BOX_REWARD2:
+	case BOX_REWARD3:
+	case BOX_REWARD4:
+	case BOX_REWARD5:
+	case BOX_REWARD6:
+	case BOX_REWARD7:
+	*/
 		DrawCastleBox(pObj, cvtDest, cvtLayer, buffering);
-		/*
-		//pObj->status = frame / 8 % 2 == 0 ? BOXSTATUS_OPENED : 0;
-		switch (pObj->etc) {
-		default:
-			SetColor(castleBoxColor[castleOrder[robin.castle]]);
-			break;
-		case BOX_CASTLE15:
-		case BOX_CASTLE16:
-		case BOX_CASTLE17:
-		case BOX_CASTLE18:
-			SetColor(itemColor[frame % 10]);
-			break;
-		}
-		SetAlpha(32 - Abs(frame / 2 % 32 - 16));
-
-		for (i = 0; i < 4; i++) {
-			DrawImage(512, 512, pObj->status == BOXSTATUS_OPENED ? 512 : 0, 0, xOffset + pObj->x - (float)512 / 2 * pObj->zoom - rx + solidPosition[i * 2 + 0] * 3, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)512 * pObj->zoom - OBJIMGGAP + 16) + solidPosition[i * 2 + 1] * 3, false, false, false, false, false, pObj->zoom, sprite[BOX0_IMG + pObj->etc - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + pObj->etc - BOX_CASTLE0, buffering);
-			
-		}
-
-		SetAlpha(32);
-		SetColor(false);
-
-		DrawImage(512, 512, pObj->status == BOXSTATUS_OPENED ? 512 : 0, 0, xOffset + pObj->x - (float)512 / 2 * pObj->zoom - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)512 * pObj->zoom - OBJIMGGAP + 16), false, false, false, false, false, pObj->zoom, sprite[BOX0_IMG + pObj->etc - BOX_CASTLE0], cvtDest, cvtLayer, BOX0_IMG + pObj->etc - BOX_CASTLE0, buffering);
-		*/
-		break;
-	default:
-		DrawBoxSpecial(xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->etc, pObj->zoom / 2, true, false, pObj->status == BOXSTATUS_OPENED ? true : false, cvtDest, cvtLayer, buffering);
 		break;
 	}
-}
-
-void DrawBoxSpecial(int x, int y, int dirX, int idx, float zoom, int solid, bool ani, bool opened, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	float tempZoom = zoom;
-	ani = true;
-	if (solid) {
-		if (ani == true) {
-			//zoom = tempZoom + (float)Abs(FPS / 2 - (robin.playtime) % FPS) / 100;
-			SetColor(itemColor[frame % 6]);
-		}
-		else
-			SetColor(solid);
-		for (i = 0; i < 4; i++)
-			DrawImage(BOXSIZE_X, BOXSIZE_Y, BOXSIZE_X * ((idx - BOX_EQUIP_WOOD) % BOXRESCNT) * 2 + BOXSIZE_X * (opened == true ? 1 : 0), BOXSIZE_Y * ((idx - BOX_EQUIP_WOOD) / BOXRESCNT), x - (float)(BOXSIZE_X / 2 - 2 * _2X) * zoom + (float)solidPosition[2 * i + 0] * zoom, y + (float)(BOXSIZE_Y * zoom) + (float)solidPosition[2 * i + 1] * zoom, dirX == LEFT ? false : true, false, false, false, false, zoom, sprite[BOX_IMG], cvtDest, cvtLayer, BOX_IMG, buffering);
-
-		SetColor(false);
-	}
-	DrawImage(BOXSIZE_X, BOXSIZE_Y, BOXSIZE_X * ((idx - BOX_EQUIP_WOOD) % BOXRESCNT) * 2 + BOXSIZE_X * (opened == true ? 1 : 0), BOXSIZE_Y * ((idx - BOX_EQUIP_WOOD) / BOXRESCNT), x - (float)(BOXSIZE_X / 2 - 2 * _2X) * zoom, y + (float)(BOXSIZE_Y * zoom), dirX == LEFT ? false : true, false, false, false, false, zoom, sprite[BOX_IMG], cvtDest, cvtLayer, BOX_IMG, buffering);
-
 }

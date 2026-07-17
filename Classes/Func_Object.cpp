@@ -1854,7 +1854,7 @@ void DrawEmoticon(int type, int icon, int frame, int x, int y, float zoom, cocos
 				DrawIcon(icon, x - (float)(ITEMICONSIZE / 2) * zoom, y + (float)(ITEMICONSIZE / 2) * zoom, 0.9f * zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
 				break;
 			case EMOTICON_REWARDBOX:
-				DrawBoxSpecial(x, y - (float)(ITEMICONSIZE / 2) * zoom / 2, LEFT, icon - ICON_BOX, zoom / 2, false, false, false, cvtDest, cvtLayer, buffering);
+				//DrawBoxSpecial(x, y - (float)(ITEMICONSIZE / 2) * zoom / 2, LEFT, icon - ICON_BOX, zoom / 2, false, false, false, cvtDest, cvtLayer, buffering);
 				break;
 			}
 		}
@@ -2098,6 +2098,7 @@ void BulletItemDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Laye
 
 void BulletCrewDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
+	int i;
 	//SetAlpha(10);
 	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->jumpFrame * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y +  - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(21);
@@ -2105,7 +2106,15 @@ void BulletCrewDraw(OBJECT* pObj, cocos2d::RenderTexture* cvtDest, cocos2d::Laye
 	//SetAlpha(32);
 
 	//if (pObj->status == 0)
-		DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
+	SetColor(itemColor[frame / 2 % 6]);
+	
+	for (i = 0; i < 4; i++) {
+		DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom + (float)solidPosition[2 * i + 0] * 8 * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry + (float)solidPosition[2 * i + 1] * 8 * pObj->zoom, pObj->zoom, cvtDest, cvtLayer, buffering);
+	}
+
+	SetColor(false);
+
+	DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//else
 	//	DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 

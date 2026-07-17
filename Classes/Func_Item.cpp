@@ -104,205 +104,211 @@ int DropItem(OBJECT* pObj, int type)
 			pNew->ax = 1;
 			pNew->mom = 1;
 
-			//라이트닝 || 슬라임 || 거미 는 아이템을 바로 아래로 떨어뜨린다.(벽에걸림)
-			if (robinmap == GACHAROOM) {
-				//pNew->y = pObj->y;
-				//pNew->jumpFrame = 0;
-				pNew->y -= (float)64 * _2X * pNew->zoom;
-				pNew->jumpFrame = 3;
-				pNew->dx = (float)(-12 * _2X + Random(24) * _2X) * pNew->zoom;
+			if (type == ITEM_BOX) {
+				pNew->etc = BOX_REWARD0 + Random(7);
+				pNew->drawHandler = BOXDRAW;
+				pNew->zoom = 0.2f + 0.02f * (pNew->etc - BOX_REWARD0);
 			}
-			else if (drawHandle == MD_DEMO) {
-				if (type == ITEM_GOLD) {
-					pNew->y -= (float)(64 * _2X) * pNew->zoom;
+			else {
+				//라이트닝 || 슬라임 || 거미 는 아이템을 바로 아래로 떨어뜨린다.(벽에걸림)
+				if (robinmap == GACHAROOM) {
+					//pNew->y = pObj->y;
+					//pNew->jumpFrame = 0;
+					pNew->y -= (float)64 * _2X * pNew->zoom;
 					pNew->jumpFrame = 3;
 					pNew->dx = (float)(-12 * _2X + Random(24) * _2X) * pNew->zoom;
 				}
-			}
-			else {
-				pNew->y -= (float)(32 * _2X) * pNew->zoom;
-				pNew->jumpFrame = 3;
-				pNew->dx = (float)(-2 * _2X + Random(4 * _2X)) * pNew->zoom;
-			}
-
-			if (type >= 2000) {		//가챠
-				rand = Random(10000);
-
-				pNew->def = type - 2000;
-
-
-				// 장비일경우 레벨 맞추기
-				int k, randSum = 0;
-
-				for (k = 0; k < 8; k++) {
-					if (rand < gachaRate[k]) {
-						pNew->lv = (k + 1) * 10 + Random(10);
-						break;
+				else if (drawHandle == MD_DEMO) {
+					if (type == ITEM_GOLD) {
+						pNew->y -= (float)(64 * _2X) * pNew->zoom;
+						pNew->jumpFrame = 3;
+						pNew->dx = (float)(-12 * _2X + Random(24) * _2X) * pNew->zoom;
 					}
 				}
-
-				if (drawHandle == MD_DEMO) {
-					pNew->apx = itemArray[pObj->etc * 3 + 1];
-					pNew->apy = itemArray[pObj->etc * 3 + 2];
-				}
 				else {
-					//detail 결정
-					if (pNew->def == ITEM_NECK || pNew->def == ITEM_RING)
-						pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
+					pNew->y -= (float)(32 * _2X) * pNew->zoom;
+					pNew->jumpFrame = 3;
+					pNew->dx = (float)(-2 * _2X + Random(4 * _2X)) * pNew->zoom;
+				}
+
+				if (type >= 2000) {		//가챠
+					rand = Random(10000);
+
+					pNew->def = type - 2000;
+
+
+					// 장비일경우 레벨 맞추기
+					int k, randSum = 0;
+
+					for (k = 0; k < 8; k++) {
+						if (rand < gachaRate[k]) {
+							pNew->lv = (k + 1) * 10 + Random(10);
+							break;
+						}
+					}
+
+					if (drawHandle == MD_DEMO) {
+						pNew->apx = itemArray[pObj->etc * 3 + 1];
+						pNew->apy = itemArray[pObj->etc * 3 + 2];
+					}
 					else {
-						for (k = 0; k < 8; k++) {
-							if (rand < gachaRate[k]) {
-								pNew->apx = k;
-								//if (pNew->apx == GRADE_SET)
-								//	pNew->apx--;
-								break;
+						//detail 결정
+						if (pNew->def == ITEM_NECK || pNew->def == ITEM_RING)
+							pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
+						else {
+							for (k = 0; k < 8; k++) {
+								if (rand < gachaRate[k]) {
+									pNew->apx = k;
+									//if (pNew->apx == GRADE_SET)
+									//	pNew->apx--;
+									break;
+								}
 							}
 						}
+						//type과 lv, detail로 grade 결정
+						pNew->apy = MakeItemGrade(pNew->def, pNew->lv, pNew->apx);
 					}
-					//type과 lv, detail로 grade 결정
-					pNew->apy = MakeItemGrade(pNew->def, pNew->lv, pNew->apx);
+					//위의 결정사항을 통해 아이콘을 결정
+					pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
+					//아이템 이름
+					pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
+
+					//별 4개 이상이면 화면을 세워주자
 				}
-				//위의 결정사항을 통해 아이콘을 결정
-				pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
-				//아이템 이름
-				pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
+				else if (type >= 1000) {
+					pNew->def = type - 1000;
 
-				//별 4개 이상이면 화면을 세워주자
-			}
-			else if (type >= 1000) {
-				pNew->def = type - 1000;
-
-				if (pNew->def == ITEM_GOLD) {
-					pNew->apy = GRADE_NORMAL;
-					//
-					pNew->apx = RoundDiv(((4 + pObj->lv) * 2 + Random(pObj->lv + 1)) * (100 + pObj->ps[PS_GOLDMOD]), 40);
-					pNew->name = -1;
-					pNew->ay = ICON_GOLD;
-				}
-				else {
-					if (pNew->def <= ITEM_GEM) {
-						//대원 동굴 드랍
-						rand = Random(10000);
-						//rand = 9999;
-						caveItemGrade = false;
-
-						if (rand <= caveItemPer[caveMap - 1][caveMapData * 4])
-							pNew->apy = GRADE_NORMAL;
-						else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 1])
-							pNew->apy = GRADE_SUPERIOR;
-						else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 2])
-							pNew->apy = GRADE_RARE;
-						else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 3]) {
-
-							pNew->apy = GRADE_SET;
-
-							caveItemGrade = true;
-							caveItemText = caveItemType * 4;
-						}
-					}
-					caveItemDetail = caveMap - 1;
-
-					//detail 결정
-					//장비
-					if (pNew->def < ITEM_NECK) {
-
-						pNew->lv = MakeItemLevel(pNew->def, pObj->lv) + (caveItemGrade == true && pNew->apy == GRADE_SET ? Random(20) : 0);
-						pNew->apx = (caveItemGrade == true && pNew->apy == GRADE_SET ? caveMap - 1 + 4 : MakeItemDetail(pNew->def, pObj->lv));
-
-					}
-					else if (pNew->def == ITEM_RING || pNew->def == ITEM_NECK) {
-
-						pNew->lv = MakeItemLevel(pNew->def, 30 + (pNew->apy == GRADE_SET ? 50 + Random(20) : Random(30)));
-						if (pNew->apy != GRADE_SET)
-							pNew->apx = MakeItemDetail(pNew->def, pObj->lv);
-						else if (pNew->apy == GRADE_SET)
-							pNew->apx = (Random(3) * 4) + caveItemDetail + (caveItemType == ITEM_RING ? 12 : 0);
-
-					}
-					else if (pNew->def == ITEM_GEM) {
-						rand = Random(1000);
-						if (rand < 200)
-							pNew->apy = GRADE_NORMAL;
-						else if (rand < 600)
-							pNew->apy = GRADE_SUPERIOR;
-						else if (rand < 900)
-							pNew->apy = GRADE_RARE;
-						else if (rand <= 1000)
-							pNew->apy = GRADE_EPIC;
-
-						caveItemGrade = false;
-
-						pNew->apx = ITEM_GEM_RUBY + Random(6);
-					}
-
-
-					if ((pNew->def == ITEM_NECK || pNew->def == ITEM_RING) && pNew->apy == GRADE_SET) {
-						pNew->ay = caveItemAcc[pNew->apx] + (caveItemType == ITEM_RING ? 28 : 0);
-						pNew->name = TEXT_RA1_NECK + pNew->apx;
+					if (pNew->def == ITEM_GOLD) {
+						pNew->apy = GRADE_NORMAL;
+						//
+						pNew->apx = RoundDiv(((4 + pObj->lv) * 2 + Random(pObj->lv + 1)) * (100 + pObj->ps[PS_GOLDMOD]), 40);
+						pNew->name = -1;
+						pNew->ay = ICON_GOLD;
 					}
 					else {
+						if (pNew->def <= ITEM_GEM) {
+							//대원 동굴 드랍
+							rand = Random(10000);
+							//rand = 9999;
+							caveItemGrade = false;
 
-						//위의 결정사항을 통해 아이콘을 결정
-						pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
-						//아이템 이름
-						pNew->name = TEXT_ITEMNAME_START + (caveItemGrade == true ? (pNew->def * 4) + TEXT_RA1_SWORD - TEXT_ITEMNAME_START + caveItemDetail : GetItemName(pNew->def, pNew->apx, pNew->apy));
+							if (rand <= caveItemPer[caveMap - 1][caveMapData * 4])
+								pNew->apy = GRADE_NORMAL;
+							else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 1])
+								pNew->apy = GRADE_SUPERIOR;
+							else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 2])
+								pNew->apy = GRADE_RARE;
+							else if (rand <= caveItemPer[caveMap - 1][caveMapData * 4 + 3]) {
+
+								pNew->apy = GRADE_SET;
+
+								caveItemGrade = true;
+								caveItemText = caveItemType * 4;
+							}
+						}
+						caveItemDetail = caveMap - 1;
+
+						//detail 결정
+						//장비
+						if (pNew->def < ITEM_NECK) {
+
+							pNew->lv = MakeItemLevel(pNew->def, pObj->lv) + (caveItemGrade == true && pNew->apy == GRADE_SET ? Random(20) : 0);
+							pNew->apx = (caveItemGrade == true && pNew->apy == GRADE_SET ? caveMap - 1 + 4 : MakeItemDetail(pNew->def, pObj->lv));
+
+						}
+						else if (pNew->def == ITEM_RING || pNew->def == ITEM_NECK) {
+
+							pNew->lv = MakeItemLevel(pNew->def, 30 + (pNew->apy == GRADE_SET ? 50 + Random(20) : Random(30)));
+							if (pNew->apy != GRADE_SET)
+								pNew->apx = MakeItemDetail(pNew->def, pObj->lv);
+							else if (pNew->apy == GRADE_SET)
+								pNew->apx = (Random(3) * 4) + caveItemDetail + (caveItemType == ITEM_RING ? 12 : 0);
+
+						}
+						else if (pNew->def == ITEM_GEM) {
+							rand = Random(1000);
+							if (rand < 200)
+								pNew->apy = GRADE_NORMAL;
+							else if (rand < 600)
+								pNew->apy = GRADE_SUPERIOR;
+							else if (rand < 900)
+								pNew->apy = GRADE_RARE;
+							else if (rand <= 1000)
+								pNew->apy = GRADE_EPIC;
+
+							caveItemGrade = false;
+
+							pNew->apx = ITEM_GEM_RUBY + Random(6);
+						}
+
+
+						if ((pNew->def == ITEM_NECK || pNew->def == ITEM_RING) && pNew->apy == GRADE_SET) {
+							pNew->ay = caveItemAcc[pNew->apx] + (caveItemType == ITEM_RING ? 28 : 0);
+							pNew->name = TEXT_RA1_NECK + pNew->apx;
+						}
+						else {
+
+							//위의 결정사항을 통해 아이콘을 결정
+							pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
+							//아이템 이름
+							pNew->name = TEXT_ITEMNAME_START + (caveItemGrade == true ? (pNew->def * 4) + TEXT_RA1_SWORD - TEXT_ITEMNAME_START + caveItemDetail : GetItemName(pNew->def, pNew->apx, pNew->apy));
+
+						}
 
 					}
-
 				}
+				// 투기장에서의 드랍템
+				else if (type >= 300) {
+					rand = Random(10000);
+
+					pNew->def = type - 300;
+
+					if (pNew->def == ITEM_GOLD) {
+						pNew->apy = GRADE_NORMAL;
+						pNew->apx = RoundDiv(((4 + pObj->lv) * 2 + Random(pObj->lv + 1)) * (100 + pObj->ps[PS_GOLDMOD]), 40);
+						pNew->name = -1;
+						pNew->ay = ICON_GOLD;
+					}
+					// 보석일경우 어떤보석인지
+					else if (pNew->def == ITEM_GEM) {
+						//보석의 등급
+						//고급 : 80%
+						//희귀 : 18% : 30레벨 이상 몬스터 드랍
+						//영웅 : 2% : 60레벨 이상 몬스터 드랍
+						pNew->apy = MakeItemGrade(pNew->def, pObj->lv, MakeItemDetail(pNew->def, pObj->lv));
+
+						if (pNew->apy == GRADE_SET || pNew->apy == GRADE_LEGEND)
+							pNew->apy--;
+						pNew->apx = ITEM_GEM_RUBY + Random(6);
+					}
+					else if (pNew->def == ITEM_RING || pNew->def == ITEM_NECK) {
+						pNew->lv = MakeItemLevel(pNew->def, pObj->lv);
+
+						//detail 결정
+						pNew->apx = MakeItemDetail(pNew->def, pObj->lv);
+						//type과 lv, detail로 grade 결정
+						pNew->apy = MakeItemGrade(pNew->def, pObj->lv, pNew->apx);
+					}
+					// 장비일경우 레벨 맞추기
+					else {
+						int k, randSum = 0;
+						pNew->lv = pObj->lv;
+
+						if (pNew->apy == GRADE_LEGEND)
+							pNew->apx = 6 + Random(2);
+						else if (pNew->apy == GRADE_EPIC)
+							pNew->apx = 3 + Random(4);
+						else
+							pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
+					}
+
+					pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
+					pNew->apy = MakeItemGrade(pNew->def, pNew->lv, pNew->apx);
+				}
+
+				pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
+				pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
 			}
-			// 투기장에서의 드랍템
-			else if (type >= 300) {
-				rand = Random(10000);
-
-				pNew->def = type - 300;
-
-				if (pNew->def == ITEM_GOLD) {
-					pNew->apy = GRADE_NORMAL;
-					pNew->apx = RoundDiv(((4 + pObj->lv) * 2 + Random(pObj->lv + 1)) * (100 + pObj->ps[PS_GOLDMOD]), 40);
-					pNew->name = -1;
-					pNew->ay = ICON_GOLD;
-				}
-				// 보석일경우 어떤보석인지
-				else if (pNew->def == ITEM_GEM) {
-					//보석의 등급
-					//고급 : 80%
-					//희귀 : 18% : 30레벨 이상 몬스터 드랍
-					//영웅 : 2% : 60레벨 이상 몬스터 드랍
-					pNew->apy = MakeItemGrade(pNew->def, pObj->lv, MakeItemDetail(pNew->def, pObj->lv));
-
-					if (pNew->apy == GRADE_SET || pNew->apy == GRADE_LEGEND)
-						pNew->apy--;
-					pNew->apx = ITEM_GEM_RUBY + Random(6);
-				}
-				else if (pNew->def == ITEM_RING || pNew->def == ITEM_NECK) {
-					pNew->lv = MakeItemLevel(pNew->def, pObj->lv);
-
-					//detail 결정
-					pNew->apx = MakeItemDetail(pNew->def, pObj->lv);
-					//type과 lv, detail로 grade 결정
-					pNew->apy = MakeItemGrade(pNew->def, pObj->lv, pNew->apx);
-				}
-				// 장비일경우 레벨 맞추기
-				else {
-					int k, randSum = 0;
-					pNew->lv = pObj->lv;
-
-					if (pNew->apy == GRADE_LEGEND)
-						pNew->apx = 6 + Random(2);
-					else if (pNew->apy == GRADE_EPIC)
-						pNew->apx = 3 + Random(4);
-					else
-						pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
-				}
-
-				pNew->apx = MakeItemDetail(pNew->def, pNew->lv);
-				pNew->apy = MakeItemGrade(pNew->def, pNew->lv, pNew->apx);
-			}
-
-			pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
-			pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
-
 			return i;
 		}
 	}

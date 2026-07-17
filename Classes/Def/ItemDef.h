@@ -630,28 +630,9 @@ typedef enum _itemDef {
 	TOTAL_STATUE,
 
 
-	//?�자?�이??: ITEM_BOX
-	//?�단 고려?�야 ?�는 것이 ?�점?�서 ?�는 ?�덤?�자???�체??
-	//?�비�?처음부????깔아줄건가
-	//?�니�?칼을 
+	//ITEM_BOX
 	BOX_INGAME = 0,//?�비가 ?�어?�는 박스
-	BOX_EQUIP_WOOD,
-	BOX_EQUIP_SILVER,
-	BOX_EQUIP_GOLD,
-	BOX_EQUIP_MAGIC,
-	BOX_EQUIP_HERO,
-	BOX_EQUIP_LEGEND,
-	BOX_CREW_SEBASTIAN,//몬스?��? ?�어 ?�는 박스
-	BOX_CREW_PRINCESS,
-	BOX_CREW_KING,
-	BOX_CREW_DEVIL,
-	BOX_ATTR_FIRE,//?�이?�이 ?�어 ?�는 박스
-	BOX_ATTR_FROST,
-	BOX_ATTR_EARTH,
-	BOX_ATTR_THUNDER,
-	BOX_ATTR_LIGHT,
-	BOX_ATTR_DARK,
-
+	
 	BOX_CASTLE0,
 	BOX_CASTLE1,
 	BOX_CASTLE2,
@@ -671,6 +652,15 @@ typedef enum _itemDef {
 	BOX_CASTLE16,
 	BOX_CASTLE17,
 	BOX_CASTLE18,
+
+	BOX_REWARD0,
+	BOX_REWARD1,
+	BOX_REWARD2,
+	BOX_REWARD3,
+	BOX_REWARD4,
+	BOX_REWARD5,
+	BOX_REWARD6,
+	BOX_REWARD7,
 
 	TOTAL_BOX,
 

@@ -85,6 +85,7 @@
 #define DMGNUMZOOM                 0.5f           // 데미지 숫자 줌
 #define XNUMZOOM                   1.4f           // X 숫자 줌
 #define ENEMYICONZOOM              0.5f           // 적 아이콘 줌
+#define CREWBULLETZOOM				0.3f
 #define EQUIPICON_X                0              // 장비 아이콘 X
 #define EQUIPICON_Y                -40 * _2X                // 장비 아이콘 Y
 

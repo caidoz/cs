@@ -219,57 +219,57 @@ const int raidRewardMedal[] = {
 
 
 const long long stageClearBox[] = {//TOTALSTAGE
-	BOX_INGAME,//1
-	BOX_INGAME,//2
-	BOX_INGAME,//3
-	BOX_INGAME,//4
-	BOX_INGAME,//5
-	BOX_INGAME,//6
-	BOX_INGAME,//7
-	BOX_INGAME,//8
-	BOX_INGAME,//9
-	BOX_INGAME,//10
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_INGAME,//11
-	BOX_EQUIP_WOOD,//2
-	BOX_EQUIP_SILVER,//3
-	BOX_EQUIP_GOLD,//4
-	BOX_EQUIP_MAGIC,//5
-	BOX_EQUIP_HERO,//6
+	BOX_REWARD0,//1
+	BOX_REWARD0,//2
+	BOX_REWARD0,//3
+	BOX_REWARD0,//4
+	BOX_REWARD0,//5
+	BOX_REWARD0,//6
+	BOX_REWARD0,//7
+	BOX_REWARD0,//8
+	BOX_REWARD0,//9
+	BOX_REWARD0,//10
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD0,//11
+	BOX_REWARD1,//2
+	BOX_REWARD2,//3
+	BOX_REWARD3,//4
+	BOX_REWARD4,//5
+	BOX_REWARD5,//6
 
 };
 
@@ -1294,42 +1294,42 @@ const unsigned long long crewReward[] = {
 	//HOUSE_SWAMP
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_BOY
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_GIRL
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//ENEMY_SNAIL
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//ENEMY_SNAIL
 	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_GRANDFA
 	ITEM_HEART, false, false, 100, 86400 * 5,//ENEMY_TREE
 
 	//HOUSE_VALLEY
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_WOMAN
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_MAN
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//ENEMY_ONEEYE
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//ENEMY_ONEEYE
 	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_MONICA
 	ITEM_HEART, false, false, 100, 86400 * 5,//ENEMY_SKELETON
 
 	//HOUSE_ATLANTICE
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_SEASOLDIER
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_LUISE
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//NPC_DARIAN
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DARIAN
 	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_FRAUD
 	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_FISHING
 
 	//HOUSE_SEWAGE
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_CREW
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//ENEMY_SLIME
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//NPC_DOBEL
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DOBEL
 	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_GAGEL
 	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_CAPTAIN
 
 	//HOUSE_CASTLE
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_ADELKNIGHT
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_MAID
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//NPC_SEBASTIAN
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_SEBASTIAN
 	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_LORA
 	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_KING
 
 	//HOUSE_PLAIN
 	ITEM_GOLD, false, false, 10000, 86400 * 1,//ENEMY_SLING
 	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_GALLAND
-	ITEM_BOX, BOX_EQUIP_GOLD, false, 1, 86400 * 3,//NPC_DURAK
+	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DURAK
 
 };
 
@@ -1485,7 +1485,7 @@ const long long bossReward[] = {//TOTALSTAGE * MONSTERREWARDDATASIZE
 	ITEM_GOLD, null, null, 100000,//99
 };
 
-const long long rewardBoxData[TOTAL_BOX * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE] = {
+const long long rewardBoxData[TOTAL_BOX * TOTALGRADE * REWARDITEMDATASIZE] = {
 	//BOX_CREW_SEBASTIAN
 	//GRADE_NORMAL
 	//박스인 경우, 어떤 카드가 나오냐를 정하면 필요한 정보가
@@ -1495,82 +1495,119 @@ const long long rewardBoxData[TOTAL_BOX * TOTALGRADE * BOX1MAXREWARDITEM * REWAR
 	//
 	//ITEM_GEM 은 랜덤하게 아이템을 빼네오는 것을 말한다.
 	//ITEM_CREW
-	//BOX_INGAME
+	//BOX_INGAME = 0,
 	BOX_EQUIP, 0, 4 - 1, 1, 1,
 	ITEM_HEART, false, false, 1000, 10000,
 	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
+	//BOX_CASTLE0,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE1,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE2,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE3,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE4,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE5,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE6,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE7,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE8,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE9,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE10,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE11,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE12,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE13,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE14,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE15,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE16,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE17,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_CASTLE18,
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+
+	//BOX_REWARD0
+	BOX_EQUIP, 0, 4 - 1, 1, 1,
+	ITEM_HEART, false, false, 1000, 10000,
+	ITEM_GOLD, false, false, 10000, 100000,
+	//BOX_REWARD1
 	BOX_EQUIP, 0, 5, 1, 1,
 	ITEM_HEART, false, false, 1000, 10000,
 	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_RARE
+	//BOX_REWARD2
 	BOX_EQUIP, 2, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-	//GRADE_SET
+	//BOX_REWARD3
 	BOX_EQUIP, 3, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-	//GRADE_EPIC
+	//BOX_REWARD4
 	BOX_EQUIP, 4, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-	//GRADE_LEGEND
+	//BOX_REWARD5
 	BOX_EQUIP, 5, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-
-	//BOX_EQUIP_WOOD
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_RARE
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SET
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_EPIC
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_LEGEND
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-
-	//BOX_EQUIP_SILVER
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_RARE
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SET
-	BOX_EQUIP, 0, 1, 1, 1,
+	//BOX_REWARD6
+	BOX_EQUIP, 5, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-	//GRADE_EPIC
-	BOX_EQUIP, 0, 2, 1, 1,
+	//BOX_REWARD7
+	BOX_EQUIP, 5, 0, 1, 1,
 	-1, false, false, false, false,
 	-1, false, false, false, false,
-	//GRADE_LEGEND
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
 
 	//1,//연습용 몽둥이
 	//2,//롱소드
@@ -1589,371 +1626,6 @@ const long long rewardBoxData[TOTAL_BOX * TOTALGRADE * BOX1MAXREWARDITEM * REWAR
 	//150,//썬더소드
 	//200,//어스소드
 	//250,//레바테인
-
-
-	//BOX_EQUIP_GOLD
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_RARE
-	BOX_EQUIP, 1, 0, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-	BOX_EQUIP, 1, 0, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-	BOX_EQUIP, 0, 16 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-	BOX_EQUIP, 0, 20 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_EQUIP_MAGIC
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 4 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 8 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-	BOX_EQUIP, 0, 12 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-	BOX_EQUIP, 0, 12 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-	BOX_EQUIP, 0, 16 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-	BOX_EQUIP, 0, 20 - 1, 4, 4,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_EQUIP_HERO
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 8 - 1, 6, 6,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-		BOX_EQUIP, 0, 12 - 1, 6, 6,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-		BOX_EQUIP, 0, 12 - 1, 6, 6,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-		BOX_EQUIP, 0, 16 - 1, 6, 6,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-		BOX_EQUIP, 0, 20 - 1, 6, 6,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_EQUIP_LEGEND
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_RARE
-		BOX_EQUIP, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-		BOX_EQUIP, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-		BOX_EQUIP, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-		BOX_EQUIP, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_CREW_SEBASTIAN
-	//GRADE_NORMAL
-	BOX_EQUIP, 0, 5, 1, 1,
-	ITEM_HEART, false, false, 1000, 10000,
-	ITEM_GOLD, false, false, 10000, 100000,
-	//GRADE_SUPERIOR
-		BOX_CREW, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-		BOX_CREW, 0, 6 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-		BOX_CREW, 0, 6 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-		BOX_CREW, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-		BOX_CREW, 0, 10 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_CREW_PRINCESS
-	//GRADE_NORMAL
-		BOX_CREW, 0, 2 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-		BOX_CREW, 0, 4 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-		BOX_CREW, 0, 6 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-		BOX_CREW, 0, 6 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-		BOX_CREW, 0, 8 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-		BOX_CREW, 0, 10 - 1, 2, 2,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_CREW_KING
-	//GRADE_NORMAL
-		BOX_CREW, 0, 2 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-			BOX_CREW, 0, 4 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-			BOX_CREW, 0, 6 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-			BOX_CREW, 0, 6 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-			BOX_CREW, 0, 8 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-			BOX_CREW, 0, 10 - 1, 3, 3,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_CREW_DEVIL
-	//GRADE_NORMAL
-			BOX_CREW, 0, 2 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-			BOX_CREW, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-			BOX_CREW, 0, 6 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-			BOX_CREW, 0, 6 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-			BOX_CREW, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-			BOX_CREW, 0, 10 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_FIRE
-	//GRADE_NORMAL
-			BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-			BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-			BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-			BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-			BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-			BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_FROST
-	//GRADE_NORMAL
-			BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-			BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-			BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-			BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-			BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-			BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_EARTH
-	//GRADE_NORMAL
-				BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-				BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-				BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-				BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_THUNDER
-	//GRADE_NORMAL
-				BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-				BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-				BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-				BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_LIGHT
-	//GRADE_NORMAL
-				BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-				BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-				BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-				BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-
-	//BOX_ATTR_DARK
-	//GRADE_NORMAL
-				BOX_SKILL, 0, 4 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SUPERIOR
-				BOX_SKILL, 0, 8 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_RARE
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_SET
-				BOX_SKILL, 0, 12 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_EPIC
-				BOX_SKILL, 0, 16 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
-	//GRADE_LEGEND
-					BOX_SKILL, 0, 20 - 1, 1, 1,
-	-1, false, false, false, false,
-	-1, false, false, false, false,
 };
 
 const int calendarPos[] = {
@@ -1983,103 +1655,103 @@ const int calendarMonthlyRewardDay[] = {
 const long long calendarInfo1Month[] = {
 	//chapter1
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter2
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter3
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter4
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter5
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter6
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter7
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter8
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter9
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 	//chapter10
 	//8일차 보상
-	ITEM_BOX, BOX_EQUIP_WOOD, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD2, GRADE_NORMAL,
 	//15일차 보상
-	ITEM_BOX, BOX_CREW_SEBASTIAN, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD3, GRADE_NORMAL,
 	//22일차 보상
-	ITEM_BOX, BOX_ATTR_FIRE, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD4, GRADE_NORMAL,
 	//30일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, GRADE_NORMAL,
+	ITEM_BOX, BOX_REWARD5, GRADE_NORMAL,
 
 };
 
@@ -2089,14 +1761,14 @@ const long long calendarInfo1Week[] = {
 	//chapter1
 	ITEM_GOLD, null, null, 10000, //1일차 보상
 	ITEM_HEART, null, null, 50, //2일차 보상
-	ITEM_BOX, BOX_EQUIP_SILVER, null, 1, //3일차 보상
+	ITEM_BOX, BOX_REWARD0, null, 1, //3일차 보상
 	ITEM_GOLD, null, null, 20000, //4일차 보상
 	ITEM_HEART, null, null, 100, //5일차 보상
-	ITEM_BOX, BOX_EQUIP_GOLD, null, 1, //6일차 보상
-	ITEM_BOX, BOX_EQUIP_MAGIC, null, 1, //7일차 보상
+	ITEM_BOX, BOX_REWARD0, null, 1, //6일차 보상
+	ITEM_BOX, BOX_REWARD0, null, 1, //7일차 보상
 	ITEM_GOLD, null, null, 1000,
 	ITEM_HEART, null, null, 1000,
-	ITEM_BOX, BOX_EQUIP_MAGIC, null, 1,
+	ITEM_BOX, BOX_REWARD0, null, 1,
 
 	//chapter2
 	//1일차 보상

@@ -1800,24 +1800,24 @@ void LimitScrollY(void)
 int GetBoxCurrency(int detail, int grade)
 {
 	switch (detail) {
-	case BOX_EQUIP_WOOD:
-	case BOX_EQUIP_SILVER:
-	case BOX_EQUIP_GOLD:
-	case BOX_EQUIP_MAGIC:
-	case BOX_CREW_SEBASTIAN:
-	case BOX_CREW_PRINCESS:
+	case BOX_CASTLE0:
+	case BOX_CASTLE1:
+	case BOX_CASTLE2:
+	case BOX_CASTLE3:
+	case BOX_CASTLE4:
+	case BOX_CASTLE5:
 		return CURRENCY_GOLD;
-	case BOX_EQUIP_HERO:
-	case BOX_EQUIP_LEGEND:
-	case BOX_CREW_KING:
-	case BOX_CREW_DEVIL:
+	case BOX_CASTLE6:
+	case BOX_CASTLE7:
+	case BOX_CASTLE8:
+	case BOX_CASTLE9:
 		return CURRENCY_STAR;
-	case BOX_ATTR_FIRE:
-	case BOX_ATTR_FROST:
-	case BOX_ATTR_EARTH:
-	case BOX_ATTR_THUNDER:
-	case BOX_ATTR_LIGHT:
-	case BOX_ATTR_DARK:
+	case BOX_CASTLE10:
+	case BOX_CASTLE11:
+	case BOX_CASTLE12:
+	case BOX_CASTLE13:
+	case BOX_CASTLE14:
+	case BOX_CASTLE15:
 		return CURRENCY_GOLD;
 	}
 }
@@ -1841,37 +1841,21 @@ int GetBoxHeartItem(int boxType)
 int GetBoxPrice(int detail, int grade)
 {
 	switch (detail) {
-	case BOX_EQUIP_WOOD:
+	case BOX_REWARD0:
 		return 10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000;
-	case BOX_EQUIP_SILVER:	//카드 한장	//BOX_CHEST1
+	case BOX_REWARD1:	//카드 한장	//BOX_CHEST1
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000);
-	case BOX_EQUIP_GOLD:	//카드 두장	//BOX_CHEST2
+	case BOX_REWARD2:	//카드 두장	//BOX_CHEST2
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 10;
-	case BOX_EQUIP_MAGIC:	//카드 세장	//BOX_CHEST3
+	case BOX_REWARD3:	//카드 세장	//BOX_CHEST3
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_EQUIP_HERO:
+	case BOX_REWARD4:
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 1000;
-	case BOX_EQUIP_LEGEND:
+	case BOX_REWARD5:
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 10000;
-	case BOX_CREW_SEBASTIAN:
+	case BOX_REWARD6:
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_CREW_PRINCESS:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_CREW_KING:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_CREW_DEVIL:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_FIRE:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_FROST:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_EARTH:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_THUNDER:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_LIGHT:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
-	case BOX_ATTR_DARK:
+	case BOX_REWARD7:
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
 	}
 }
@@ -1986,6 +1970,8 @@ void DrawHandleExec(int drawIdx)
 	case MD_BOSSRAID:
 		Play();
 		break;
+	case MD_GACHA:
+		break;
 	}
 
 	before_DrawHandle = drawHandle;
@@ -2060,288 +2046,6 @@ void AlertDraw(void)
 	}
 
 	winAniFrame++;
-}
-
-void GachaDraw(void)
-{
-	int i, j, speed, count = -1;
-	int row = 2;//가로로 몇개인지
-	int col = 2;//세로로 몇줄인지
-	float zoom = 1.5f;
-	int gap = 8 * _2X;
-	bool crewMenuDraw = false;
-	bool equipMenuDraw = false;
-	float menuZoom = 1.0f;
-	float width;
-	int remainBoxCnt;
-
-	switch (boxCardItemCnt[gachaIndex]) {
-	case 1:
-		row = 1;
-		col = 1;
-		zoom = 2.5f;
-		gap = 0;
-		break;
-	case 2:
-		row = 2;
-		col = 1;
-		zoom = 2.0f;
-		gap = 16 * _2X;
-		break;
-	case 3:
-		row = 3;
-		col = 1;
-		zoom = 1.8f;
-		gap = 16 * _2X;
-		break;
-	case 4:
-		row = 2;
-		col = 2;
-		zoom = 1.8f;
-		gap = 16 * _2X;
-		break;
-	case 5:
-	case 6:
-		row = 3;
-		col = 2;
-		zoom = 1.8f;
-		gap = 16 * _2X;
-		break;
-	case 7:
-	case 8:
-		row = 4;
-		col = 2;
-		zoom = 1.5f;
-		gap = 16 * _2X;
-		break;
-	case 9:
-		row = 3;
-		col = 3;
-		zoom = 1.5f;
-		gap = 16 * _2X;
-		break;
-	case 10:
-	case 11:
-	case 12:
-		row = 4;
-		col = 3;
-		zoom = 1.5f;
-		gap = 16 * _2X;
-		break;
-	case 13:
-	case 14:
-	case 15:
-	case 16:
-		row = 4;
-		col = 3;
-		zoom = 1.5f;
-		gap = 16 * _2X;
-		break;
-	}
-
-	MemRect(0, DY, DX, DY, mapColor[MAPTYPE_SPACE], gScreenBuffer, gScreenLayer, false);
-
-	if (gachaFrame < GACHADELAY_OPENPLACE && gachaDepth == 0) {
-		zoom = (float)(GACHADELAY_OPENPLACE - gachaFrame) * 0.2f * 2 / MOTIONDIV + 0.8f;
-		for (i = 0; i < DX / 128 * _2X + 1; i++) {
-			DrawImage(128 * _2X, 208 * _2X, 0 * _2X, 0 * _2X, xOffset + i * (float)128 * _2X * zoom, STATUSWIN_Y2 + (float)(208 * _2X) * zoom / 2, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + MAPTYPE_SPACE], gScreenBuffer, gScreenLayer, MAP_BG_IMG + MAPTYPE_SPACE, false);
-		}
-
-		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, xOffset + DX / 2 - (float)(DIORAMASIZE_X / 2) * zoom, STATUSWIN_Y2 + (float)(DIORAMASIZE_Y / 2) * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE, false);
-
-	}
-	else {
-		for (i = 0; i < DX / 128 * _2X + 1; i++)
-			DrawImage(128 * _2X, 208 * _2X, 0 * _2X, 0 * _2X, xOffset + i * 128 * _2X, STATUSWIN_Y2 + 208 * _2X / 2, false, false, false, false, false, 1.0f, sprite[MAP_BG_IMG + MAPTYPE_SPACE], gScreenBuffer, gScreenLayer, MAP_BG_IMG + MAPTYPE_SPACE, false);
-
-		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, xOffset + DX / 2 - DIORAMASIZE_X / 2, STATUSWIN_Y2 + DIORAMASIZE_Y / 2, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE, false);
-	}
-	//가차화면
-	switch (gachaDepth) {
-		//상자에서 아이템이 나오는 부분
-	case 0:
-
-		//박스가 떨어지는 화면
-		if (gachaFrame < GACHADELAY_OPENPLACE) {
-			if (gachaFrame == GACHADELAY_OPENPLACE - 1)
-				boxMark[0].frame2 = 1;
-		}
-		else if (gachaFrame < GACHADELAY_BOXDROP) {
-			//if (boxMark[gachaIndex].y > STATUSWIN_Y)
-			//	boxMark[gachaIndex].y -= TSIZE;
-
-			//if (boxMark[gachaIndex].y < STATUSWIN_Y)
-			//	boxMark[gachaIndex].y = STATUSWIN_Y;
-		}
-		//박스가 열리는 화면
-		else if (gachaFrame < GACHADELAY_BOXOPEN) {
-			if (gachaFrame == GACHADELAY_BOXDROP) {
-				boxMark[0].jokboIcon = true;
-				PlayMusic(M_OPENDOOR);
-			}
-		}
-		else if (gachaFrame < GACHADELAY_ITEMDROP) {
-			//스테이터스 창의 카드들
-			startX = xOffset + DX / 2;
-			startY = STATUSWIN_Y2;
-
-			if (gachaFrame % ROULETTEDIV == 0 && gachaCardIdx < boxCardItemCnt[gachaIndex]) {
-				//센터에 왔을 때 카드들
-				targetX = xOffset + DX / 2 - (float)(REWARDCARDSIZE_X * zoom * row + gap * (row - 1)) / 2 + (float)(REWARDCARDSIZE_X * zoom + gap) * (gachaCardIdx % row) + (float)(REWARDCARDSIZE_X * zoom) / 2;
-				targetY = DY / 2 + (float)REWARDCARDSIZE_Y * zoom * col - (float)(REWARDCARDSIZE_Y * zoom + gap) * (gachaCardIdx / row) - (float)(REWARDCARDSIZE_Y * zoom) / 2;
-
-				switch (boxCardItem[gachaIndex][gachaCardIdx].type) {
-				default:
-					SetBoxCardMark(startX, startY, targetX, targetY, false, false, 32 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, false, false, FPS, FPS, GetItemIcon(boxCardItem[gachaIndex][gachaCardIdx].type, boxCardItem[gachaIndex][gachaCardIdx].detail, boxCardItem[gachaIndex][gachaCardIdx].grade), 0,
-						boxCardItem[gachaIndex][gachaCardIdx].count, boxCardItem[gachaIndex][gachaCardIdx].type, boxCardItem[gachaIndex][gachaCardIdx].detail, boxCardItem[gachaIndex][gachaCardIdx].grade, boxCardItem[gachaIndex][gachaCardIdx].cooldown, false, true, true, PLAYER, false, 0.2f / MOTIONDIV, zoom, 0.8f / MOTIONDIV, false, false, false, false, boxCardItem[gachaIndex][gachaCardIdx].seen == false ? true : false);
-					break;
-				}
-
-				gachaCardIdx++;
-			}
-			//여기서 뉴카드가 있는지 확인하고 GotoNewCard로 넘겨준다.
-			//if (gachaFrame == GACHADELAY_ITEMDROP - 1) {
-			//	newItemCnt = 0;
-			//	curNewItemIdx = 0;
-			//	for (i = 0; i < gachaCardIdx; i++) {
-			//		if (GetInvenIdx(boxCardItem[gachaIndex][i].type, boxCardItem[gachaIndex][i].detail, boxCardItem[gachaIndex][i].grade) == -1) {
-			//			newItemType[newItemCnt] = boxCardItem[gachaIndex][i].type;
-			//			newItemDetail[newItemCnt] = boxCardItem[gachaIndex][i].detail;
-			//			newItemGrade[newItemCnt] = boxCardItem[gachaIndex][i].grade;
-			//			newItemCnt++;
-			//		}
-			//	}
-
-			//	if (newItemCnt > 0)
-			//		GotoNewCard();
-			//}
-		}
-		else {
-
-			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-			DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, 1, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-			SetAlpha(32);
-			CenterText(TEXT_AUTOEQUIP, xOffset + DX / 2, DY / 2 + TABBUTTONGAP + 16 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-			SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GETGACHACARD);
-		}
-		break;
-	case 1:
-		//
-		if (gachaFrame < GACHADELAY_GETITEM) {
-			if (gachaFrame == FPS / 2) {
-				//여기서 장비인지 크류인지 확인하고 해당쪽으로 보내준다.
-				for (i = 0; i < boxCardItemCnt[gachaIndex]; i++) {
-					if (boxCardItem[gachaIndex][i].type == ITEM_CREW) {
-						boxCardMark[i].targetX2 = xOffset + DX / 2 + 108 * _2X + 20 * _2X;
-					}
-					else {
-						boxCardMark[i].targetX2 = xOffset + DX / 2 - 150 * _2X + 20 * _2X;
-					}
-					boxCardMark[i].targetY2 = STATUSWIN_Y2 + JOYSTICKGAP + 83 * _2X;
-					boxCardMark[i].zoom2 = boxCardMark[i].zoom;
-					boxCardMark[i].zoomEnd2 = 1.0f;
-					boxCardMark[i].zoomIncrement2 = -0.2f / MOTIONDIV;
-					boxCardMark[i].speed2 = 32 * _2X / MOTIONDIV;
-					boxCardMark[i].speedIncrement2 = 4 * _2X / MOTIONDIV;
-					boxCardMark[i].frame2 = 1;
-
-					PlayMusic(M_CARDSPLIT);
-				}
-
-				//하단의 내용을 터치시로 변경해 준다.
-				////가챠에서 나온 카드들을 인벤토리에 넣어준다.
-				//for (i = 0; i < boxCardItemCnt[gachaIndex]; i++) {
-				//	GetItem(boxCardItem[gachaIndex][i].type, boxCardItem[gachaIndex][i].lv, boxCardItem[gachaIndex][i].detail, boxCardItem[gachaIndex][i].grade, 1, false);
-				//	SetStrongestEquip(boxCardItem[gachaIndex][i].type, boxCardItem[gachaIndex][i].detail, boxCardItem[gachaIndex][i].grade);
-				//}
-			}
-
-			//여기서 장비인지 크류인지 확인하고 해당쪽으로 보내준다.
-			for (i = 0; i < boxCardItemCnt[gachaIndex]; i++) {
-				if (gachaFrame < 6 * MOTIONDIV)
-					menuZoom = Min(1.5f, (float)(gachaFrame) * 2 / MOTIONDIV / 10);
-				else if (gachaFrame < 6 * MOTIONDIV + 6 * MOTIONDIV)
-					menuZoom = 1.5f;
-				else if (gachaFrame < 6 * MOTIONDIV + 6 * MOTIONDIV + 2 * MOTIONDIV)
-					menuZoom = Max(1.0f, 1.5f - (float)(gachaFrame - 6 * MOTIONDIV - 6 * MOTIONDIV) / 10);
-				else
-					menuZoom = 1.0f;
-
-				if (boxCardItem[gachaIndex][i].type == ITEM_CREW && crewMenuDraw == false) {
-					crewMenuDraw = true;
-
-					startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
-					startY = STATUSWIN_Y2 + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
-
-					DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], gScreenBuffer, gScreenLayer, MENUICON_IMG, false);
-
-				}
-				else if (equipMenuDraw == false) {
-					equipMenuDraw = true;
-
-					startX = xOffset + DX / 2 - 150 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
-					startY = STATUSWIN_Y2 + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
-
-					DrawImage(40 * _2X, 40 * _2X, 0 * _2X, 0 * _2X, startX, startY, false, false, false, false, false, menuZoom, sprite[MENUICON_IMG], gScreenBuffer, gScreenLayer, MENUICON_IMG, false);
-				}
-
-				if (gachaFrame == 1 * FPS) {
-					boxCardMark[i].zoomEnd2 = 0.2f / MOTIONDIV;
-					boxCardMark[i].zoomIncrement2 = -0.2f / MOTIONDIV;
-				}
-
-				if (gachaFrame == 1 * FPS + 5 * MOTIONDIV) {
-					memset(&boxCardMark[i], 0, sizeof(boxCardMark[i]));
-					PlayMusic(M_ITEM);
-				}
-			}
-		}
-		else {
-			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-			DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, 1, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
-			SetAlpha(32);
-			CenterText(TEXT_AUTOEQUIP, xOffset + DX / 2, DY / 2 + TABBUTTONGAP - 32 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-			//박스가 아직 남아있으면 다시 가챠드로우로 보내준다.
-			if (boxCnt - (gachaIndex + 1) > 0) {
-				gachaIndex++;
-				memset(&boxMark, 0, sizeof(boxMark));
-				memset(&boxCardMark, 0, sizeof(boxCardMark));
-				SetBoxMark(xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, STATUSWIN_Y, 4 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, 32 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, FPS * 3, FPS * 3, 30, rewardMark[gachaIndex].detail, rewardMark[gachaIndex].grade, 2.0f * 2 / 3, 2.0f * 2 / 3, 0.2f / MOTIONDIV, 2.0f * 2 / 3, 2.0f * 2 / 3, 0.2f / MOTIONDIV);
-				gachaDepth = 0;
-				gachaFrame = 0;
-				gachaCardIdx = 0;
-			}
-			else {
-				OutOfGacha();
-				//GotoPlay();
-				//attackSequence = ATTACKSEQUENCE_REWARD;
-				//sequenceDelay = ATTACKDELAY_REWARD_COLLECTING;
-
-			}
-		}
-
-		break;
-	}
-
-	if (boxCnt > 1) {
-
-		DrawFrame(xOffset + DX / 2 - 152 * _2X, STATUSWIN_Y2 - 80 * _2X, 304 * _2X, 48 * _2X, FRAME_SHOPBALLOON, gScreenBuffer, gScreenLayer, false);
-		remainBoxCnt = (boxCnt - gachaIndex);
-		width = (float)(BOXSIZE_X * 0.7f + 4 * _2X) * Min(6, remainBoxCnt) - 4 * _2X;
-
-		for (i = gachaIndex; i < gachaIndex + Min(6, remainBoxCnt); i++) {
-			DrawBox(rewardMark[i].detail, xOffset + DX / 2 - width / 2 + (float)(BOXSIZE_X * 0.7f + 4 * _2X) * (i - gachaIndex), STATUSWIN_Y2 - 78 * _2X, LEFT, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], false, true, false, true, 0.7f, gScreenBuffer, gScreenLayer, false);
-		}
-
-		DrawNum(remainBoxCnt, DX / 2 - 8 * _2X, STATUSWIN_Y2 - 78 * _2X - 52 * _2X, NUM_FONT_NORMAL, RIGHT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-		CenterText(TEXT_SLASH, DX / 2, STATUSWIN_Y2 - 78 * _2X - 54 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-		DrawNum(boxCnt, DX / 2 + 8 * _2X, STATUSWIN_Y2 - 78 * _2X - 52 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-
-	}
-
-	gachaFrame++;
 }
 
 void NewCollectionDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -2550,7 +2254,6 @@ void NewCardDraw(void)
 		width = (float)(BOXSIZE_X * 0.7f + 4 * _2X) * Min(6, remainNewItemCnt) - 4 * _2X;
 
 		for (i = curNewItemIdx; i < curNewItemIdx + Min(6, remainNewItemCnt); i++) {
-			//DrawBoxSpecial(xOffset + DX / 2 - width / 2 + (float)(BOXSIZE_X * 0.7f + 4 * _2X) * (i - curNewItemIdx), STATUSWIN_Y - 78 * _2X, rewardMark[i].detail, 0.7f, false, false, false, gScreenBuffer, gScreenLayer, false);
 			if (newItemType[i] == ITEM_CREW) {
 				curStar = maxStar = crewData[newItemDetail[i] * CREWDATASIZE + CREWDATASIZE - 1] + 1;
 			}
@@ -4665,13 +4368,13 @@ void ShopDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d
 
 			for (i = 0; i < 3; i++) {
 				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 46 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom, gScreenBuffer, gScreenLayer, false);
-				DrawBoxSpecial(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X + 20 * _2X - (BOXSIZE_X / 2)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 50 * _2X + BOXSIZE_Y) * zoom, LEFT, BOX_EQUIP_SILVER + i, (float)1.0f * zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-				CenterText(TEXT_ITEMNAME_BOX + BOX_EQUIP_SILVER + i, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				DrawCastleBoxXY(BOX_REWARD2 + i, false, LEFT, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X + 20 * _2X - (BOXSIZE_X / 2)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 50 * _2X + BOXSIZE_Y) * zoom, itemColor[frame % 6], zoom, cvtDest, cvtLayer, buffering);
+				CenterText(TEXT_ITEMNAME_BOX + BOX_REWARD2 + i, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
 
 				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y +(float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
 
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL), GetBoxCurrency(BOX_EQUIP_SILVER + i, GRADE_NORMAL), zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-				if (robin.gold >= GetBoxPrice(BOX_EQUIP_SILVER + i, GRADE_NORMAL))
+				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, GetBoxPrice(BOX_REWARD2 + i, GRADE_NORMAL), GetBoxCurrency(BOX_REWARD2 + i, GRADE_NORMAL), zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+				if (robin.gold >= GetBoxPrice(BOX_REWARD2 + i, GRADE_NORMAL))
 					SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, TOUCH_FUNC_SHOP_BUYBOX1 + i);
 			}
 

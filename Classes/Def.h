@@ -5,7 +5,7 @@
 
 
 // ================================
-// 분리된 설정 파일들 include
+// 분리???�정 ?�일??include
 // ================================
 #include "Config/BuildConfig.h"
 #include "Config/GameConstants.h"
@@ -50,7 +50,7 @@
 //#define NULL 0
 
 
-//매크로
+//매크�?
 
 /*
 hexcolor to rgb & rgb to hexcolor
@@ -87,7 +87,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 //#define COSTUMETEST
 
 
-//30분 기준(하트 하나당 30분마다 하나씩 찬다고 보면 됨)
+//30�?기�?(?�트 ?�나??30분마???�나??찬다�?보면 ??
 #define HEARTPER	10
 #define NEWITEMMARKSHOW
 #define COINPER	10
@@ -117,9 +117,9 @@ int hexcolor = (r << 16) + (g << 8) + b;
 #define EQUIPSKILL
 
 #define NOMISS
-//GotoObj or GotoObjXY가 작동하기 위한 최소값
+//GotoObj or GotoObjXY가 ?�동?�기 ?�한 최소�?
 #define SPEED_MIN	4
-#define DAYS3 3 * 24 * 60 * 60 * 1000 // 3일을 밀리초로 변환
+#define DAYS3 3 * 24 * 60 * 60 * 1000 // 3?�을 밀리초�?변??
 #define JOYKNOBMAX	42 * _2X
 
 //#define NUMTTF
@@ -132,18 +132,18 @@ typedef enum _reel {
 	REELSIZE_X = 156,
 	REELSIZE_Y = 290,
 
-	REEL_BG_NORMAL = 0,   // 일반(정지/저속/확정)
-	REEL_BG_MASK = 1,   // 가림(중속/감속B)
+	REEL_BG_NORMAL = 0,   // ?�반(?��?/?�???�정)
+	REEL_BG_MASK = 1,   // 가�?중속/감속B)
 	REEL_BG_FAST = 2,    // 고속(고속/감속A)
 
 	REEL_TOTAL_FRAME = 120,
 
-	REEL_STATE_IDLE = 0,   // 정지(시작 전/정지 유지)
-	REEL_STATE_SLOW,       // 저속(가속 초반)
+	REEL_STATE_IDLE = 0,   // ?��?(?�작 ???��? ?��?)
+	REEL_STATE_SLOW,       // ?�??가??초반)
 	REEL_STATE_MID,        // 중속
-	REEL_STATE_FAST,       // 고속(전기 효과 ON)
+	REEL_STATE_FAST,       // 고속(?�기 ?�과 ON)
 	REEL_STATE_DECEL,      // 감속
-	REEL_STATE_SNAP        // 확정 스냅 프레임
+	REEL_STATE_SNAP        // ?�정 ?�냅 ?�레??
 } REEL;
 
 typedef enum _stageInfo {
@@ -206,9 +206,9 @@ typedef enum _rewardType {
 
 //#define ENGLISHOPTION
 typedef enum _language {
-	LANGUAGE_KOREAN = 0,//한국어
-	LANGUAGE_ENGLISH,//영어
-	LANGUAGE_JAPAN,//일어
+	LANGUAGE_KOREAN = 0,//?�국??
+	LANGUAGE_ENGLISH,//?�어
+	LANGUAGE_JAPAN,//?�어
 
 	TOTAL_LANGUAGE,
 } LANGUAGE;
@@ -223,7 +223,7 @@ typedef enum _login {
 } LOGIN;
 
 typedef enum _tip {
-	TIP_INTRODUCE = 0,//소개
+	TIP_INTRODUCE = 0,//?�개
 	TIP_GAMEPLAY,
 	TIP_STAGEREWARD,
 	TIP_SKILL,
@@ -318,9 +318,9 @@ typedef enum _gameDef {
 	TOUCH_PRESS,
 	TOUCH_DRAG,
 
-	SCREEN1 = 0,    //1사분면
-	SCREEN2,        //2사분면
-	SCREEN3,        //3사분면
+	SCREEN1 = 0,    //1?�분�?
+	SCREEN2,        //2?�분�?
+	SCREEN3,        //3?�분�?
 
 	SCREENDARKEN = 24,
 
@@ -330,7 +330,7 @@ typedef enum _gameDef {
 	ACCEMAXLEVEL = 50,
 	TOTALACCESTATTYPE = 6,
 
-	//공격상태
+	//공격?�태
 	ATTACK_CRITICAL = 0,
 	ATTACK_EXTRA,
 	ATTACK_STUN,
@@ -341,13 +341,13 @@ typedef enum _gameDef {
 	ATTACK_BLOCK,
 	ATTACK_DODGE,
 
-	//상태이상
-	SLOW = 0,	//슬로우->공격타이밍이 2배로 늘어짐
-	BLIND,	//블라인드(미스가 많이 남)->미스 100% 걸림
-	POISON,	//독->시간이 지나면 독데미지를 받음
-	STUN,	//기절->일정시간 공격을 못함
-	CURSE,	//저주(MP를 사용못함)->공격을 못함
-	KNOCKBACK,	//밀어내기
+	//?�태?�상
+	SLOW = 0,	//?�로??>공격?�?�밍??2배로 ?�어�?
+	BLIND,	//블라?�드(미스가 많이 ??->미스 100% 걸림
+	POISON,	//??>?�간??지?�면 ?�데미�?�?받음
+	STUN,	//기절->?�정?�간 공격??못함
+	CURSE,	//?��?MP�??�용못함)->공격??못함
+	KNOCKBACK,	//밀?�내�?
 	TOTALDEBUF,
 
 	ATTRWORD = 101,
@@ -359,49 +359,49 @@ typedef enum _gameDef {
 	DARKDMGPER = 5,
 	PROCPER = 100,
 
-	//강화효과
+	//강화?�과
 	//로빈
-	INC_VIT = 0,//INC_VIT	= 0,	//방어태세 : 일정시간 VIT 상승->선택된 적의 데미지를 감소->적 방어력 감소 
-	BARRIER,	//정신소모 : MP 소모하여 데미지 경감->아군 방어력 증가
+	INC_VIT = 0,//INC_VIT	= 0,	//방어?�세 : ?�정?�간 VIT ?�승->?�택???�의 ?��?지�?감소->??방어??감소 
+	BARRIER,	//?�신?�모 : MP ?�모?�여 ?��?지 경감->?�군 방어??증�?
 #ifdef SKILL_ROBIN15_DAMAGExN
-	DAMAGExN,	//데미지N배
+	DAMAGExN,	//?��?지N�?
 #else
-	HPRESTORE,//,	//여유포착 : 적 공격 회피시 HP 상승->일정기간동안 적 공격회피
+	HPRESTORE,//,	//?�유?�착 : ??공격 ?�피??HP ?�승->?�정기간?�안 ??공격?�피
 #endif	
-	MPRESTORE,	//냉정침착 : 데미지 입으면 MP 회복
-	REFLECTION,	//리플렉션 : 확률로데미지 반사
+	MPRESTORE,	//?�정침착 : ?��?지 ?�으�?MP ?�복
+	REFLECTION,	//리플?�션 : ?�률로데미�? 반사
 
-	//디아나
-	BERSERK,	//흥분고조 : 방어력 저하 공격력 상승
-	MPDRAIN,	//흡마의마탄 : 공격시 MP 흡수->HP 흡수로 변경
-	INC_CRITICAL,	//필살집중 : 크리 상승
-	INC_IGNORE,	//파마의직격 : 일정시간 적 방어 무시
+	//?�아??
+	BERSERK,	//?�분고조 : 방어???�??공격???�승
+	MPDRAIN,	//?�마?�마??: 공격??MP ?�수->HP ?�수�?변�?
+	INC_CRITICAL,	//?�살집중 : ?�리 ?�승
+	INC_IGNORE,	//?�마?�직�?: ?�정?�간 ??방어 무시
 
 	//맥스
-	HPDRAIN,	//블러드헌트 : 적 공격시 HP 회복
-	INC_EVASION,	//현란무도 : 일정시간 회피율 증가
+	HPDRAIN,	//블러?�헌??: ??공격??HP ?�복
+	INC_EVASION,	//?��?무도 : ?�정?�간 ?�피??증�?
 #ifdef SKILL_MAXX16_ERASEALLDEBUF 
-	EVASIONTOHP,	//안도의한숨 : 적 공격 회피시 HP 회복
+	EVASIONTOHP,	//?�도?�한??: ??공격 ?�피??HP ?�복
 #else
-	EVASIONTOMP,	//안도의한숨 : 적 공격 회피시 MP 회복
+	EVASIONTOMP,	//?�도?�한??: ??공격 ?�피??MP ?�복
 #endif
-	INC_STUN,	//혼신분리 : 기절 확률 상승
+	INC_STUN,	//?�신분리 : 기절 ?�률 ?�승
 
 	TOTALPLAYERBUFF,
 
-	//반지
-	INC_DAMAGE_RING = TOTALPLAYERBUFF,	//공격력 증가 : 폭주의 반지
-	INC_DEFENSE_RING,	//방어도 증가 : 골렘의 반지
-	INC_EVASION_RING,	//회피 증가 : 광대의 반지
-	INC_PIERCE_RING,	//관통 증가 : 원한의 반지
-	INC_HIT_RING,	//적중 증가 : 신념의 반지
-	INC_STUN_RING,	//기절공격 증가 : 광포의 반지
-	INC_CRITICAL_RING,	//치명타 증가 : 승자의 반지
-	INC_CRITDMG_RING,	//치명타 데미지 증가 : 궁극의 반지
-	INC_IGNORE_RING,	//적 방어도 무시 증가 : 차원의 반지
-	INC_EXP_RING,	//경험치 획득 증가 : 행운의 반지(사용안함)
-	INC_EXTRA_RING,	//추가타 증가 : 행운의 반지(사용)
-	INC_ABSORB_RING,	//물리데미지 흡수 증가 : 회생의 반지(사용)
+	//반�?
+	INC_DAMAGE_RING = TOTALPLAYERBUFF,	//공격??증�? : ??��??반�?
+	INC_DEFENSE_RING,	//방어??증�? : 골렘??반�?
+	INC_EVASION_RING,	//?�피 증�? : 광�???반�?
+	INC_PIERCE_RING,	//관??증�? : ?�한??반�?
+	INC_HIT_RING,	//?�중 증�? : ?�념??반�?
+	INC_STUN_RING,	//기절공격 증�? : 광포??반�?
+	INC_CRITICAL_RING,	//치명?� 증�? : ?�자??반�?
+	INC_CRITDMG_RING,	//치명?� ?��?지 증�? : 궁극??반�?
+	INC_IGNORE_RING,	//??방어??무시 증�? : 차원??반�?
+	INC_EXP_RING,	//경험�??�득 증�? : ?�운??반�?(?�용?�함)
+	INC_EXTRA_RING,	//추�??� 증�? : ?�운??반�?(?�용)
+	INC_ABSORB_RING,	//물리?��?지 ?�수 증�? : ?�생??반�?(?�용)
 
 	//비약
 	INC_DAMAGE_ARENA,
@@ -411,7 +411,7 @@ typedef enum _gameDef {
 
 	TOTALBUFF,
 
-	//히트마크
+	//?�트마크
 	HITMARK_SMALL = 0,
 	HITMARK_MEDIUM,
 	HITMARK_LARGE,
@@ -434,13 +434,13 @@ typedef enum _gameDef {
 
 	TOTALICONMARKTYPE,
 
-	//재화
+	//?�화
 	TOTALCURRENCYMARKARR = 10,
 	TOTALCURRENCYMARK = 100,
 	CURRENCYMOVESPEED = 16 * _2X,
 	CURRENCYMARKEFFECTFRAME = FPS / 2,
 	CURRENCYDONTERASE = 10000,
-	//아이템
+	//?�이??
 	TOTALITEMMARK = 30,
 
 	SKILLPERSWORD = 12,
@@ -448,51 +448,51 @@ typedef enum _gameDef {
 	SWORDSKILLINFODATASIZE = 3,
 
 
-	//스킬관련 정의
-	PASSIVE = 0,//패시브에서는 아무것도 없다.
-	ACTIVE,//일반공격 혹은 버프
-	CREWBULLET,//크류의 공격
-	SUMMON,//소환
-	HEROSKILL,//히어로 공격스킬
-	SUMMONHERO,//히어로 소환
+	//��ųŸ��
+	PASSIVE = 0,//�Ϲ� �нú� ��ų(����� �Ⱦ���)
+	ACTIVE,//�Ϲ� ��Ƽ�� ��ų(����� �Ⱦ���)
+	CREWBULLET,//��ź ����
+	SUMMON,//��ȯ
+	HEROSKILL,//������� ��ų�� ȣ��
+	SUMMONHERO,//���ΰ� ���� �ٸ� ����� ��ȯ
 
-	//크류타입
+	//?�류?�??
 	// 
-	//일반
-	//크리티컬(데미지 2배)
-	//관통공격(뒤에적까지 공격)
-	//추가타격(데미지)
+	//?�반
+	//?�리?�컬(?��?지 2�?
+	//관?�공�??�에?�까지 공격)
+	//추�??��??��?지)
 	
-	//상대방 스턴(1턴)
-	//중독걸기(3턴간 중독 데미지)
-	//석화(1턴, 멈추되 1턴 동안 공격을 받지 않음 즉 이럴때는 버프류로 돌리는게 좋음) 
+	//?��?�??�턴(1??
+	//중독걸기(3?�간 중독 ?��?지)
+	//?�화(1?? 멈추??1???�안 공격??받�? ?�음 �??�럴?�는 버프류로 ?�리?�게 좋음) 
 	
-	//화염저항력(세개 뜨면 데미지 1)
-	//냉기저항력(세개 뜨면 데미지 1)
-	//번개저항력(세개 뜨면 데미지 1)
-	//신성저항력(세개 뜨면 데미지 1)
-	//암흑저항력(세개 뜨면 데미지 1)
+	//?�염?�??��(?�개 ?�면 ?��?지 1)
+	//?�기?�??��(?�개 ?�면 ?��?지 1)
+	//번개?�??��(?�개 ?�면 ?��?지 1)
+	//?�성?�??��(?�개 ?�면 ?��?지 1)
+	//?�흑?�??��(?�개 ?�면 ?��?지 1)
 
-	//골드획득 증가(획득 골드 2배 케이스와 획득 골드 +1000 등)
-	//검 공격력 추가
-	//화염공격력(세개 뜨면 데미지 두배)
-	//냉기공격력(세개 뜨면 데미지 두배)
-	//번개공격력(세개 뜨면 데미지 두배)
-	//신성공격력(세개 뜨면 데미지 두배)
-	//암흑공격력(세개 뜨면 데미지 두배)
-	//방어력 무시 공격(방어력이 엄청 강한 몬스터를 데미지를 줘서 한방에 죽임)
-	//회피(한턴동안 데미지를 받지 않는다.)
-	//독면역(3턴동안 독공격에 걸리지 않는다.)
-	//스턴면역(3턴동안 스턴에 걸리지 않는다.)
+	//골드?�득 증�?(?�득 골드 2�?케?�스?� ?�득 골드 +1000 ??
+	//검 공격??추�?
+	//?�염공격???�개 ?�면 ?��?지 ?�배)
+	//?�기공격???�개 ?�면 ?��?지 ?�배)
+	//번개공격???�개 ?�면 ?��?지 ?�배)
+	//?�성공격???�개 ?�면 ?��?지 ?�배)
+	//?�흑공격???�개 ?�면 ?��?지 ?�배)
+	//방어??무시 공격(방어?�이 ?�청 강한 몬스?��? ?��?지�?줘서 ?�방??죽임)
+	//?�피(?�턴?�안 ?��?지�?받�? ?�는??)
+	//?�면??3?�동???�공격에 걸리지 ?�는??)
+	//?�턴면역(3?�동???�턴??걸리지 ?�는??)
 
-	//로빈스킬-에어크래쉬 : 공중적에게 데미지 2배
-	//로빈스킬-마구찌르기
-	//로빈스킬-부스트슬래시 : 기절(100% 기절)
-	//로빈스킬-하이퍼차지 : 돌격공격(적을 뒤로 날린다가 무슨 의미가 있지?
-	//로빈스킬-소울크래시 : 이것도 기절이야?
-	//로빈스킬-앱솔루트피어스 : 찔러서 회전
-	//로빈스킬-멸살연참 : 최강데미지
-	//로빈스킬-방어태세 : HP를 순간적으로 부풀려서 큰 데미지를 받는다. 
+	//로빈?�킬-?�어?�래??: 공중?�에�??��?지 2�?
+	//로빈?�킬-마구찌르�?
+	//로빈?�킬-부?�트?�래??: 기절(100% 기절)
+	//로빈?�킬-?�이?�차지 : ?�격공격(?�을 ?�로 ?�린?��? 무슨 ?��?가 ?��??
+	//로빈?�킬-?�울?�래??: ?�것??기절?�야?
+	//로빈?�킬-?�솔루트?�어??: 찔러???�전
+	//로빈?�킬-멸살?�참 : 최강?��?지
+	//로빈?�킬-방어?�세 : HP�??�간?�으�?부?�?�서 ???��?지�?받는?? 
 
 	CREWTYPE_NORMAL = 0,
 	CREWTYPE_ATTACKSKILL,
@@ -507,29 +507,29 @@ typedef enum _gameDef {
 
 	RINGKEY = MAXHOTKEY,
 
-	//방 디파인
+	//�??�파??
 	NORMALROOM = 0,
 	ENEMYROOM,
 
-	//맵관련
+	//맵�???
 
 	MAXMAPSIZE_X = 100 * TSIZE,
 	MAXMAPSIZE_Y = 42 * TSIZE,
 
 	MAXTILECOUNT = 88,
 
-	//배경Rect숫자
+	//배경Rect?�자
 	MAXRECT = 8,
-	//원경오브젝트
+	//?�경?�브?�트
 	MAXBACKOBJ = 65,
 	//근경
 	MAXFOREOBJ = 51,
-	//중립 오브젝트
+	//중립 ?�브?�트
 	MAXNEUTRALOBJ = 18,
-	//움직이는 배경 오브젝트
+	//?�직이??배경 ?�브?�트
 	MAXBGOBJECT = 32,
 
-	//타일 충돌 관련
+	//?�??충돌 관??
 	TILE_VOID = 0,
 	TILE_SPACE,
 	TILE_WATER,
@@ -623,10 +623,10 @@ typedef enum _gameDef {
 	//AREA_DEVILCASTLE
 	//AREA_SPACE
 
-	//토탈 스테이지
+	//?�탈 ?�테?��?
 
 	STAGELIST_Y = DIORAMASIZE_Y * 2 / 3,
-	//스테이지 마다 방개수는 5개
+	//?�테?��? 마다 방개?�는 5�?
 	TOTALROOM = 5,
 
 	WAVESTATUS_READY = 0,
@@ -663,8 +663,8 @@ typedef enum _gameDef {
 	TOTALDMGQUEST = 100,
 	ONCEDMGQUEST = 100,
 
-	ARENAITEMFRAME = FPS * 10,//투기장에서 보스몹잡았을때 아이템이 드랍되는 최대 프레임
-	ARENALIMITTIME = 60 * 60 * 24 * 3,//보스전은 10초안에 클리어 되야 된다.
+	ARENAITEMFRAME = FPS * 10,//?�기?�에??보스몹잡?�을???�이?�이 ?�랍?�는 최�? ?�레??
+	ARENALIMITTIME = 60 * 60 * 24 * 3,//보스?��? 10초안???�리???�야 ?�다.
 	ARENABUFFTIME = FPS * 100,
 
 	MINUTES = FPS * 60,
@@ -672,7 +672,7 @@ typedef enum _gameDef {
 	ARENAANIMATIONFRAME = 8,
 
 	CREWDATA_TYPE = 0,
-	CREWDATA_DETAILTYPE,
+	CREWDATA_STR,
 	CREWDATA_SKILL1,
 	CREWDATA_SKILL2,
 	CREWDATA_SKILL3,
@@ -681,35 +681,35 @@ typedef enum _gameDef {
 	//TYPE, STAR, PRICE, BULLETDATA
 	CMFFRAMEPOSITIONDATASIZE = 6,
 
-	CREW_MENU = 0,//메뉴를 올려주는 서포터
-	CREW_GOODS,//재화를 생산하는 서포터
-	CREW_ABILITY,//어빌리티를 올려주는 서포터
-	CREW_EQUIP,//장비를 생산하는 서포터
+	CREW_MENU = 0,//메뉴�??�려주는 ?�포??
+	CREW_GOODS,//?�화�??�산?�는 ?�포??
+	CREW_ABILITY,//?�빌리티�??�려주는 ?�포??
+	CREW_EQUIP,//?�비�??�산?�는 ?�포??
 
-	//MP를 붙이자
-	//MP를 사용해서 스킬을 사용. 
+	//MP�?붙이??
+	//MP�??�용?�서 ?�킬???�용. 
 
-	//재화
-	//다이아몬드(캐시) -> 소환,  
-	//에메랄드 -> 스킬슬롯, 장비개수 등
-	//골드()->레벨업
-	//강화석()->강화
-	//스킬카드()
-	//황금열쇠(구매를 하면 쌓이는 특별)
+	//?�화
+	//?�이?�몬??캐시) -> ?�환,  
+	//?�메?�드 -> ?�킬?�롯, ?�비개수 ??
+	//골드()->?�벨??
+	//강화??)->강화
+	//?�킬카드()
+	//?�금?�쇠(구매�??�면 ?�이???�별)
 	//
-	//적을 공격하면 기본적으로 골드와 경험치만 나온다.
+	//?�을 공격?�면 기본?�으�?골드?� 경험치만 ?�온??
 
-	MENU_PLAY = 0,//캐릭터메뉴 : 캐릭터를 레벨업하고 스탯(STAT_STR, STAT_VIT, STAT_AGI, STAT_INT)을 찍는 부분
+	MENU_PLAY = 0,//캐릭?�메??: 캐릭?��? ?�벨?�하�??�탯(STAT_STR, STAT_VIT, STAT_AGI, STAT_INT)??찍는 부�?
 	MENU_HERO,
 	MENU_CREW,
-	MENU_COLLECTIONS,//장비, 소환수, 기타
-	MENU_CASTLE,//성메뉴
-	MENU_SHOP,//상점메뉴 : 소환(무기, 방어구, 악세사리, 스킬카드,  ), 패키지(), 재화(), 황금열쇠()  
+	MENU_COLLECTIONS,//?�비, ?�환?? 기�?
+	MENU_CASTLE,//?�메??
+	MENU_SHOP,//?�점메뉴 : ?�환(무기, 방어�? ?�세?�리, ?�킬카드,  ), ?�키지(), ?�화(), ?�금?�쇠()  
 	MENU_STARSHOP,
 	MENU_FRIENDS,
 	MENU_NEWS,
 	MENU_GIFTS,
-	MENU_LEADERBOARD,//가장 스테이지를 많이 진행한 유저 
+	MENU_LEADERBOARD,//가???�테?��?�?많이 진행???��? 
 	MENU_INVITEFREINDS,
 	MENU_CALENDAR,
 	MENU_SETTING,
@@ -720,10 +720,10 @@ typedef enum _gameDef {
 	MENU_BOSSRAID,
 	MENU_STAGEINFO,
 
-	MENU_BATTLE,//여기서는 일반 몹과 싸우는것으로
+	MENU_BATTLE,//?�기?�는 ?�반 몹과 ?�우?�것?�로
 	MENU_RAID,
 
-	MENU_GAMERESET,//게임초기화
+	MENU_GAMERESET,//게임초기??
 
 	TOTAL_MENU,
 
@@ -756,8 +756,8 @@ typedef enum _gameDef {
 
 	CURRENCY_EXP = 0,
 	CURRENCY_GOLD,//기본코인
-	CURRENCY_MEDAL,//전투에서 승리하면 받는 포인트는 메달 
-	CURRENCY_COIN,//뽑기에 주로 사용되고, 
+	CURRENCY_MEDAL,//?�투?�서 ?�리?�면 받는 ?�인?�는 메달 
+	CURRENCY_COIN,//뽑기??주로 ?�용?�고, 
 	CURRENCY_CASH,
 	CURRENCY_HAMMER,
 	CURRENCY_SHIELD,
@@ -778,20 +778,20 @@ typedef enum _gameDef {
 	CURRENCYWAITINGFRAMEMAX2 = FPS * 2,
 
 
-	LOG_EVENT_QUESTSTART = 0,//이벤트 오픈
-	//퀘스트 아이콘 + 퀘스트 이름 + 퀘스트가 활성화되었습니다
+	LOG_EVENT_QUESTSTART = 0,//?�벤???�픈
+	//?�스???�이�?+ ?�스???�름 + ?�스?��? ?�성?�되?�습?�다
 	LOG_EVENT_BATTLESTART,
-	//배틀 아이콘 + 배틀이 활성화 되었습니다!
+	//배�? ?�이�?+ 배�????�성???�었?�니??
 	LOG_EVENT_RAIDSTART,
-	//레이드 아이콘 + 레이드가 활성화 되었습니다!
-	LOG_RAID,//적 보스의 침공
-	//적 보스 cmf + 털어가는 골드 + 털어갔습니다.
-	LOG_BATTLE,//적 보스의 동료 무력화
-	//적 보스 cmf + 침공해서 + 무력화된 내 동료 아이콘이 무력화 되었습니다.
-	LOG_BOSSGETCOIN,//보스 힐
-	//적 보스 cmf + 적 동료를 통해서 + 골드아이콘 + 금액 + 회복했습니다.
-	LOG_SKILL,//스킬
-	LOG_BETHEART,//하트 증가
+	//?�이???�이�?+ ?�이?��? ?�성???�었?�니??
+	LOG_RAID,//??보스??침공
+	//??보스 cmf + ?�어가??골드 + ?�어갔습?�다.
+	LOG_BATTLE,//??보스???�료 무력??
+	//??보스 cmf + 침공?�서 + 무력?�된 ???�료 ?�이콘이 무력???�었?�니??
+	LOG_BOSSGETCOIN,//보스 ??
+	//??보스 cmf + ???�료�??�해??+ 골드?�이�?+ 금액 + ?�복?�습?�다.
+	LOG_SKILL,//?�킬
+	LOG_BETHEART,//?�트 증�?
 	LOG_BETCOIN,
 
 	TOTAL_LOG,
@@ -803,7 +803,7 @@ typedef enum _gameDef {
 	TOTALMEDALSHOP = 3,
 	MEDALSHOPDATASIZE = 5,
 
-	//시간은
+	//?�간?�
 	OXYGEN = 200,
 
 	TOTALOPTION = 12,
@@ -816,7 +816,7 @@ typedef enum _gameDef {
 #define CURRENCYICON_ENDSIZE 1.5f
 #define CURRENCYICON_ENDSIZE2 2.0f
 /*
-//달성도 관련 디파인
+//?�성??관???�파??
 typedef enum _reportDef {
 	REPORT_ARENA = 0,
 	REPORT_VILLAGE,
@@ -829,7 +829,7 @@ typedef enum _reportDef {
 
 	TOTAL_REPORT_CATEGORY,
 
-	//카테고리별 갯수
+	//카테고리�?�?��
 	REPORT_ARENA_COUNT = 9,
 	REPORT_VILLAGE_COUNT = 9,
 	REPORT_AREA_COUNT = 8,
@@ -839,7 +839,7 @@ typedef enum _reportDef {
 	REPORT_STAT_COUNT = 15,
 	REPORT_ETC_COUNT = 10,
 
-	//카테고리별 시작 인덱스
+	//카테고리�??�작 ?�덱??
 	REPORT_ARENA_START = 0,
 	REPORT_VILLAGE_START = REPORT_ARENA_START + REPORT_ARENA_COUNT,
 	REPORT_AREA_START = REPORT_VILLAGE_START + REPORT_VILLAGE_COUNT,
@@ -849,150 +849,150 @@ typedef enum _reportDef {
 	REPORT_STAT_START = REPORT_COMBAT_START + REPORT_COMBAT_COUNT,
 	REPORT_ETC_START = REPORT_STAT_START + REPORT_STAT_COUNT,
 
-	//투기장 및 길드
-	REPORT_ARENA0 = 0,	//강자의 길(투기장 입장 횟수)
-	REPORT_ARENA1,	//지옥의 길(헬투기장 입장 횟수)
-	REPORT_ARENA2,	//강자의 명성(투기장 100층 도달)
-	REPORT_ARENA3,	//지옥의 명성(헬투기장 100층 도달)
-	REPORT_ARENA4,	//적극적인 참여(길드전 참여 횟수)
-	REPORT_ARENA5,	//투기장의 지배자(투기장에서 죽인 적 숫자)
-	REPORT_ARENA6,	//지옥의 지배자(헬투기장에서 죽인 적 숫자)
-	REPORT_ARENA7,	//매일 매일 꾸준히(데일리 퀘스트 수행 횟수)
-	REPORT_ARENA8,	//거인 퇴치(투기장에서 NPC 퇴치 횟수)
+	//?�기??�?길드
+	REPORT_ARENA0 = 0,	//강자??�??�기???�장 ?�수)
+	REPORT_ARENA1,	//지?�의 �??�투기장 ?�장 ?�수)
+	REPORT_ARENA2,	//강자??명성(?�기??100�??�달)
+	REPORT_ARENA3,	//지?�의 명성(?�투기장 100�??�달)
+	REPORT_ARENA4,	//?�극?�인 참여(길드??참여 ?�수)
+	REPORT_ARENA5,	//?�기?�의 지배자(?�기?�에??죽인 ???�자)
+	REPORT_ARENA6,	//지?�의 지배자(?�투기장?�서 죽인 ???�자)
+	REPORT_ARENA7,	//매일 매일 꾸�????�일�??�스???�행 ?�수)
+	REPORT_ARENA8,	//거인 ?�치(?�기?�에??NPC ?�치 ?�수)
 
 	//마을
-	REPORT_VILLAGE0,		//잠꾸러기(여관을 이용한 횟수)
-	REPORT_VILLAGE1,		//단골손님(상인들 중 1명에게서 아이템 구입한 수)
-	REPORT_VILLAGE2,		//강한 장비를 위하여(강화 횟수)
-	REPORT_VILLAGE3,		//불굴의 강화(강화 실패 횟수)
-	REPORT_VILLAGE4,		//블랙스미스(장비 제작 횟수)
-	REPORT_VILLAGE5,		//럭셔리마스터(보석 장착 횟수)
-	REPORT_VILLAGE6,		//알뜰한 모험자(상점에다가 아이템을 판매한 횟수)
-	REPORT_VILLAGE7,		//공간을 달리는 자(귀환서 사용한 횟수)
-	REPORT_VILLAGE8,		//이웃사촌(사람들에게 말을 건 횟수)
+	REPORT_VILLAGE0,		//?�꾸?�기(?��????�용???�수)
+	REPORT_VILLAGE1,		//?�골?�님(?�인??�?1명에게서 ?�이??구입????
+	REPORT_VILLAGE2,		//강한 ?�비�??�하??강화 ?�수)
+	REPORT_VILLAGE3,		//불굴??강화(강화 ?�패 ?�수)
+	REPORT_VILLAGE4,		//블랙?��????�비 ?�작 ?�수)
+	REPORT_VILLAGE5,		//??��리마?�터(보석 ?�착 ?�수)
+	REPORT_VILLAGE6,		//?�뜰??모험???�점?�다가 ?�이?�을 ?�매???�수)
+	REPORT_VILLAGE7,		//공간???�리????귀?�서 ?�용???�수)
+	REPORT_VILLAGE8,		//?�웃?�촌(?�람?�에�?말을 �??�수)
 
-	//지역
-	REPORT_AREA0,	//위험을 추구하는 자(모든 강적 지역 방 들어가면)
-	REPORT_AREA1,	//세상을 탐험하는 자(미니맵 100%)
-	REPORT_AREA2,	//파괴의 달인(찍기 블록 모두 파괴시)
-	REPORT_AREA3,	//태양을 파괴하는 자(SUN 블록 모두 파괴시)
-	REPORT_AREA4,	//순간 이동의 달인(모든 워프블록 이용시)
-	REPORT_AREA5,	//어디에 있을까?(필드에 숨겨진 아이템 모두 찾으면)
-	REPORT_AREA6,	//트레져 헌터(타 캐릭터용 상자를 제외한 모든 보물상자 획득)
-	REPORT_AREA7,	//여행자의 안내서(모든 표지판을 읽으면)
+	//지??
+	REPORT_AREA0,	//?�험??추구?�는 ??모든 강적 지??�??�어가�?
+	REPORT_AREA1,	//?�상???�험?�는 ??미니�?100%)
+	REPORT_AREA2,	//?�괴???�인(찍기 블록 모두 ?�괴??
+	REPORT_AREA3,	//?�양???�괴?�는 ??SUN 블록 모두 ?�괴??
+	REPORT_AREA4,	//?�간 ?�동???�인(모든 ?�프블록 ?�용??
+	REPORT_AREA5,	//?�디???�을�?(?�드???�겨�??�이??모두 찾으�?
+	REPORT_AREA6,	//?�레???�터(?� 캐릭?�용 ?�자�??�외??모든 보물?�자 ?�득)
+	REPORT_AREA7,	//?�행?�의 ?�내??모든 ?��??�을 ?�으�?
 
-	//아이템
-	REPORT_ITEM0,		//목걸이 수집가(등급에 관계없이 모든 목걸이가 인벤토리에 있을 때)
-	REPORT_ITEM1,		//반지의 제왕(등급 관계없이 모든 반지를 인벤토리에 가지고 있으면)
-	REPORT_ITEM2,		//무기 수집가(모든 무기(등급 상관 없음)를 인벤토리에 가지고 있으면)
-	REPORT_ITEM3,		//갑옷 수집가(모든 갑옷(등급 상관 없음) 인벤토리에 가지고 있으면)
-	REPORT_ITEM4,		//바지 수집가(모든 바지(등급 상관 없음) 인벤토리에 가지고 있으면)
-	REPORT_ITEM5,		//모자 수집가(모든 모자(등급 상관 없음) 인벤토리에 가지고 있으면)
-	REPORT_ITEM6,		//장갑 수집가(모든 장갑(등급 상관 없음) 인벤토리에 가지고 있으면)
-	REPORT_ITEM7,		//신발 수집가(모든 신발(등급 상관 없음) 인벤토리에 가지고 있으면)
+	//?�이??
+	REPORT_ITEM0,		//목걸???�집가(?�급??관계없??모든 목걸?��? ?�벤?�리???�을 ??
+	REPORT_ITEM1,		//반�????�왕(?�급 관계없??모든 반�?�??�벤?�리??가지�??�으�?
+	REPORT_ITEM2,		//무기 ?�집가(모든 무기(?�급 ?��? ?�음)�??�벤?�리??가지�??�으�?
+	REPORT_ITEM3,		//갑옷 ?�집가(모든 갑옷(?�급 ?��? ?�음) ?�벤?�리??가지�??�으�?
+	REPORT_ITEM4,		//바�? ?�집가(모든 바�?(?�급 ?��? ?�음) ?�벤?�리??가지�??�으�?
+	REPORT_ITEM5,		//모자 ?�집가(모든 모자(?�급 ?��? ?�음) ?�벤?�리??가지�??�으�?
+	REPORT_ITEM6,		//?�갑 ?�집가(모든 ?�갑(?�급 ?��? ?�음) ?�벤?�리??가지�??�으�?
+	REPORT_ITEM7,		//?�발 ?�집가(모든 ?�발(?�급 ?��? ?�음) ?�벤?�리??가지�??�으�?
 
-	//몬스터
-	REPORT_MONSTER0,	//습지의 사냥꾼(톨레아 습지에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER1,	//계곡의 사냥꾼(금단의 계곡에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER2,	//바다의 사냥꾼(아틀란티스에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER3,	//지하의 사냥꾼(지하도에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER4,	//평원의 사냥꾼(아델 평원에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER5,	//불꽃의 사냥꾼(홍염의 대지에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER6,	//얼음의 사냥꾼(유구한 빙원에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER7,	//번개의 사냥꾼(전뇌의 공방에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER8,	//황혼의 사냥꾼(황혼의 성역에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER9,	//협곡의 사냥꾼(골렘의 협곡에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER10,	//심연의 사냥꾼(칠흑의 심연에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER11,	//명계의 사냥꾼(망자의 도시에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER12,	//드래곤 슬레이어(드래곤의 무덤에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER13,	//캐슬 크래셔(마왕성에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER14,	//스페이스 마린(우주에서 퇴치한 몬스터 마릿수)
-	REPORT_MONSTER15,	//습지의 전장(토드 뮤턴트를 퇴치한 횟수)
-	REPORT_MONSTER16,	//계곡의 전장(아르곤을 퇴치한 횟수)
-	REPORT_MONSTER17,	//해저 전장(카툼을 퇴치한 횟수)
-	REPORT_MONSTER18,	//고대 전장(고대의 수호자를 퇴치한 횟수)
-	REPORT_MONSTER19,	//불꽃 전장(이프리트를 퇴치한 횟수)
-	REPORT_MONSTER20,	//얼음 전장(프로스트를 퇴치한 횟수)
-	REPORT_MONSTER21,	//번개 전장(라이오너를 퇴치한 횟수)
-	REPORT_MONSTER22,	//빛의 전장(호루스를 퇴치한 횟수)
-	REPORT_MONSTER23,	//지하도의 전장(마도합성수를 퇴치한 횟수)
-	REPORT_MONSTER24,	//협곡의 전장(고대의 방주를 퇴치한 횟수)
-	REPORT_MONSTER25,	//어둠의 전장(아리만을 퇴치한 횟수)
-	REPORT_MONSTER26,	//암흑룡의 전장(티어맷을 퇴치한 횟수)
-	REPORT_MONSTER27,	//명계의 전장(죽음의 신을 퇴치한 횟수)
+	//몬스??
+	REPORT_MONSTER0,	//?��????�냥�??�레???��??�서 ?�치??몬스??마릿??
+	REPORT_MONSTER1,	//계곡???�냥�?금단??계곡?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER2,	//바다???�냥�??��??�?�스?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER3,	//지?�의 ?�냥�?지?�도?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER4,	//?�원???�냥�??�델 ?�원?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER5,	//불꽃???�냥�??�염???�지?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER6,	//?�음???�냥�??�구??빙원?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER7,	//번개???�냥�??�뇌??공방?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER8,	//?�혼???�냥�??�혼???�역?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER9,	//?�곡???�냥�?골렘???�곡?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER10,	//?�연???�냥�?칠흑???�연?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER11,	//명계???�냥�?망자???�시?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER12,	//?�래�??�레?�어(?�래곤의 무덤?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER13,	//캐슬 ?�래??마왕?�에???�치??몬스??마릿??
+	REPORT_MONSTER14,	//?�페?�스 마린(?�주?�서 ?�치??몬스??마릿??
+	REPORT_MONSTER15,	//?��????�장(?�드 뮤턴?��? ?�치???�수)
+	REPORT_MONSTER16,	//계곡???�장(?�르곤을 ?�치???�수)
+	REPORT_MONSTER17,	//?��? ?�장(카툼???�치???�수)
+	REPORT_MONSTER18,	//고�? ?�장(고�????�호?��? ?�치???�수)
+	REPORT_MONSTER19,	//불꽃 ?�장(?�프리트�??�치???�수)
+	REPORT_MONSTER20,	//?�음 ?�장(?�로?�트�??�치???�수)
+	REPORT_MONSTER21,	//번개 ?�장(?�이?�너�??�치???�수)
+	REPORT_MONSTER22,	//빛의 ?�장(?�루?��? ?�치???�수)
+	REPORT_MONSTER23,	//지?�도???�장(마도?�성?��? ?�치???�수)
+	REPORT_MONSTER24,	//?�곡???�장(고�???방주�??�치???�수)
+	REPORT_MONSTER25,	//?�둠???�장(?�리만을 ?�치???�수)
+	REPORT_MONSTER26,	//?�흑룡의 ?�장(?�어맷을 ?�치???�수)
+	REPORT_MONSTER27,	//명계???�장(죽음???�을 ?�치???�수)
 
-	//전투
-	REPORT_COMBAT0,		//이길수 있는 싸움(캐릭터보다 레벨이 10이상 낮은 몬스터를 죽인 횟수)
-	REPORT_COMBAT1,		//끊임없는 공격(적에게 입힌 데미지의 누적총합)
-	REPORT_COMBAT2,		//맷집의 한계(적에게 받은 피해의 누적총합)
-	REPORT_COMBAT3,		//이 땅을 지켜라(방을 옮기지 않고 잡은 몬스터 마릿수)
-	REPORT_COMBAT4,		//진정한 영웅(HP가 1인 상태에서 연속으로 몬스터 잡은 횟수)
-	REPORT_COMBAT5,		//버프마스터(버프 사용 횟수)
-	REPORT_COMBAT6,		//종합병원(상태이상 걸린 횟수)
-	REPORT_COMBAT7,		//화려한 기술(버프 이외의스킬 사용 횟수)
-	REPORT_COMBAT8,		//좀비(부활약을 먹은 횟수)
-	REPORT_COMBAT9,		//성인(적을 공격하지 않고 연속으로 죽은 횟수)
+	//?�투
+	REPORT_COMBAT0,		//?�길???�는 ?��?(캐릭?�보???�벨??10?�상 ??? 몬스?��? 죽인 ?�수)
+	REPORT_COMBAT1,		//?�임?�는 공격(?�에�??�힌 ?��?지???�적총합)
+	REPORT_COMBAT2,		//맷집???�계(?�에�?받�? ?�해???�적총합)
+	REPORT_COMBAT3,		//???�을 지켜라(방을 ??��지 ?�고 ?��? 몬스??마릿??
+	REPORT_COMBAT4,		//진정???�웅(HP가 1???�태?�서 ?�속?�로 몬스???��? ?�수)
+	REPORT_COMBAT5,		//버프마스??버프 ?�용 ?�수)
+	REPORT_COMBAT6,		//종합병원(?�태?�상 걸린 ?�수)
+	REPORT_COMBAT7,		//?�려??기술(버프 ?�외?�스???�용 ?�수)
+	REPORT_COMBAT8,		//좀�?부?�약??먹�? ?�수)
+	REPORT_COMBAT9,		//?�인(?�을 공격?��? ?�고 ?�속?�로 죽�? ?�수)
 
-	//능력치
-	REPORT_STAT0,		//의미없는 레벨업(사용하지 않은 AP의 합)
-	REPORT_STAT1,		//스킬없이 싸운다(사용하지 않은 SP의 합)
-	REPORT_STAT2,		//최강의 공격력(공격력 총합)
-	REPORT_STAT3,		//최강의 방어력(방어력 총합)
-	REPORT_STAT4,		//정확한 공격(명중률 %)
-	REPORT_STAT5,		//재빠른 회피(회피 %)
-	REPORT_STAT6,		//필살의 일격(크리티컬 확률 %)
-	REPORT_STAT7,		//연속되는 공격(추가타 확률)
-	REPORT_STAT8,		//꿰뚫는 공격(관통공격 확률)
-	REPORT_STAT9,		//충격적인 공격(기절 %)
-	REPORT_STAT10,	//막을 수 없는 공격(방어도 무시 공격 확률)
-	REPORT_STAT11,	//럭키가이(행운 증가 %)
-	REPORT_STAT12,	//금전운(골드 획득 %)
-	REPORT_STAT13,	//경험의 부적(경험치 획득 %)
-	REPORT_STAT14,	//상인의 주머니(지금까지 얻은 돈 총합)
+	//?�력�?
+	REPORT_STAT0,		//?��??�는 ?�벨???�용?��? ?��? AP????
+	REPORT_STAT1,		//?�킬?�이 ?�운???�용?��? ?��? SP????
+	REPORT_STAT2,		//최강??공격??공격??총합)
+	REPORT_STAT3,		//최강??방어??방어??총합)
+	REPORT_STAT4,		//?�확??공격(명중�?%)
+	REPORT_STAT5,		//?�빠�??�피(?�피 %)
+	REPORT_STAT6,		//?�살???�격(?�리?�컬 ?�률 %)
+	REPORT_STAT7,		//?�속?�는 공격(추�??� ?�률)
+	REPORT_STAT8,		//꿰뚫??공격(관?�공�??�률)
+	REPORT_STAT9,		//충격?�인 공격(기절 %)
+	REPORT_STAT10,	//막을 ???�는 공격(방어??무시 공격 ?�률)
+	REPORT_STAT11,	//??��가???�운 증�? %)
+	REPORT_STAT12,	//금전??골드 ?�득 %)
+	REPORT_STAT13,	//경험??부??경험�??�득 %)
+	REPORT_STAT14,	//?�인??주머??지금까지 ?��? ??총합)
 
-	//기타
-	REPORT_ETC0,	//위대한 업적(모든 서브 퀘스트))
-	REPORT_ETC1,	//네버엔딩 스토리(플레이 타임)
-	REPORT_ETC2,	//잠수부(수중에 한 번 들어가서 있는 시간)
-	REPORT_ETC3,	//멀미유발(어둠의 파편을 탄 시간(누적))
-	REPORT_ETC4,	//글라이더처럼(활강 합계시간)
-	REPORT_ETC5,	//저축 습관(인벤토리에 있는 돈)
-	REPORT_ETC6,	//방구석 페인(한 방에서 아무것도 하지 않고 있는 시간)
-	REPORT_ETC7,	//지평선 너머(옆으로 이동한 거리 (수평으로 타일수 측정))
-	REPORT_ETC8,	//하늘 끝까지(위로 올라간 거리 (수직으로 타일수 측정))
-	REPORT_ETC9,	//블랙 & 화이트(블랙홀 통과 횟수(누적))
+	//기�?
+	REPORT_ETC0,	//?��????�적(모든 ?�브 ?�스??)
+	REPORT_ETC1,	//?�버?�딩 ?�토�??�레???�??
+	REPORT_ETC2,	//?�수부(?�중????�??�어가???�는 ?�간)
+	REPORT_ETC3,	//멀미유�??�둠???�편?????�간(?�적))
+	REPORT_ETC4,	//글?�이?�처???�강 ?�계?�간)
+	REPORT_ETC5,	//?��??��?(?�벤?�리???�는 ??
+	REPORT_ETC6,	//방구???�인(??방에???�무것도 ?��? ?�고 ?�는 ?�간)
+	REPORT_ETC7,	//지?�선 ?�머(?�으�??�동??거리 (?�평?�로 ?�?�수 측정))
+	REPORT_ETC8,	//?�늘 ?�까지(?�로 ?�라�?거리 (?�직?�로 ?�?�수 측정))
+	REPORT_ETC9,	//블랙 & ?�이??블랙?� ?�과 ?�수(?�적))
 
-	//호칭
-	PLAYER_TITLE0,		//길드의 일등공신(길드전에서 1등)
-	PLAYER_TITLE1,		//신중한 모험자(악세서리를 포함한 모든 장비를 갖춰입었을때)
-	PLAYER_TITLE2,		//음속의 암살자(60초 안에 적 15마리를 퇴치한다.)
-	PLAYER_TITLE3,		//스트라이커(정령석을 던져서 한 번에 3마리를 해치운다.)
-	PLAYER_TITLE4,		//돌격대장(대쉬어택으로 몬스터를 777마리 격파)
-	PLAYER_TITLE5,		//투기장마스터(투기장을 1회 끝까지 돌파한다.)
-	PLAYER_TITLE6,		//보석애호가(소켓이 3개이상인 장비에 모두 보석을 박으면)
-	PLAYER_TITLE7,		//주제를 모르는 자(적의 공격 한 방에 내 피가 반 이상 깍인 횟수)
-	PLAYER_TITLE8,		//돌아이(천정에 머리를 부딪힌 횟수가 500회(점프높이가 천정에 머리가 닿는 이상 올라갈수있을때 로 판정))
-	PLAYER_TITLE9,		//벌거벗은 사냥꾼(무기만 장비하고 몬스터를 해치운 마릿수가 100마리)
-	PLAYER_TITLE10,	//대인배(아이템이 방안에 5개이상 나와있는데 먹지않고 다음방으로 넘어간다.)
-	PLAYER_TITLE11,	//인생을 역전한 자(인벤에 있는 돈이 7777)
-	PLAYER_TITLE12,	//진정한 갑부(유료 아이템 구입 개수가 20개)
-	PLAYER_TITLE13,	//스카이다이버(드래곤의 상 먹으러 뛰어내릴때 걸림없이 바닥까지 간다.)
-	PLAYER_TITLE14,	//평화의 사자 간디(적을 죽이지 않고 연속으로 20개의 방을 이동(마을내부에선 무효. 마을에 들어가면 카운트리셋))
-	PLAYER_TITLE15,	//약물중독자(사용한 포션횟수(씨앗,허브)가 누적 100개에 도달)
-	PLAYER_TITLE16,	//롤링마스터(어둠의 파편 사이를 떨어지지 않고 왔다갔다 한 횟수 누적 100번)
-	PLAYER_TITLE17,	//건망증 황제(완료하지 않은 퀘스트가 10개 이상누적)
-	PLAYER_TITLE18,	//기본기의 달인(스킬 사용하지 않고 네임드몬스터를 퇴치한 횟수(기본 공격, 찍기, 대쉬 공격))
-	PLAYER_TITLE19,	//4번 타자(내 공격 한 방에 적의 체력이 반 이상 깍인 횟수 누적 500번)
-	PLAYER_TITLE20,	//구제불능 방향치((톨렘, 벨로네에서)집에 들어가서 아무에게도 말을 걸지않고 다시 나간 횟수누적 100회)
-	PLAYER_TITLE21,	//독서광(아델라인 도서관에 방문한 횟수)
-	PLAYER_TITLE22,	//회피의 달인(HP가 최대HP의 10% 이하일때 귀환서를 사용한 횟수 누적)
-	PLAYER_TITLE23,	//탱커(최대 HP가 1000돌파)
-	PLAYER_TITLE24,	//코스튬플레이어(무기제외하고 다른 주인공의 장비를 통일해서 입는다.)
-	PLAYER_TITLE25,	//전설의 대장장이(강화를 10단계까지 성공한다.)
-	PLAYER_TITLE26,	//근성넘치는 강자(투기장에서 회복하지않고 죽인 적 수가 50마리 이상)
-	PLAYER_TITLE27,	//신성한 사제(물약으로 디버프 회복한 횟수)
-	PLAYER_TITLE28,	//도전과제의 수행자(모든 달성도 완료)
-	PLAYER_TITLE29,	//우주적 유명인사(이것을 제외한 모든 호칭 입수)
+	//?�칭
+	PLAYER_TITLE0,		//길드???�등공신(길드?�에??1??
+	PLAYER_TITLE1,		//?�중??모험???�세?�리�??�함??모든 ?�비�?갖춰?�었?�때)
+	PLAYER_TITLE2,		//?�속???�살??60�??�에 ??15마리�??�치?�다.)
+	PLAYER_TITLE3,		//?�트?�이�??�령?�을 ?�져????번에 3마리�??�치?�다.)
+	PLAYER_TITLE4,		//?�격?�???�?�어?�으�?몬스?��? 777마리 격파)
+	PLAYER_TITLE5,		//?�기?�마?�터(?�기?�을 1???�까지 ?�파?�다.)
+	PLAYER_TITLE6,		//보석?�호가(?�켓??3개이?�인 ?�비??모두 보석??박으�?
+	PLAYER_TITLE7,		//주제�?모르?????�의 공격 ??방에 ???��? �??�상 깍인 ?�수)
+	PLAYER_TITLE8,		//?�아??천정??머리�?부?�힌 ?�수가 500???�프?�이가 천정??머리가 ?�는 ?�상 ?�라갈수?�을??�??�정))
+	PLAYER_TITLE9,		//벌거벗�? ?�냥�?무기�??�비?�고 몬스?��? ?�치??마릿?��? 100마리)
+	PLAYER_TITLE10,	//?�?�배(?�이?�이 방안??5개이???��??�는??먹�??�고 ?�음방으�??�어간다.)
+	PLAYER_TITLE11,	//?�생????��?????�벤???�는 ?�이 7777)
+	PLAYER_TITLE12,	//진정??갑�?(?�료 ?�이??구입 개수가 20�?
+	PLAYER_TITLE13,	//?�카?�다?�버(?�래곤의 ??먹으???�어?�릴??걸림?�이 바닥까�? 간다.)
+	PLAYER_TITLE14,	//?�화???�자 간디(?�을 죽이지 ?�고 ?�속?�로 20개의 방을 ?�동(마을?��??�선 무효. 마을???�어가�?카운?�리??)
+	PLAYER_TITLE15,	//?�물중독???�용???�션?�수(?�앗,?�브)가 ?�적 100개에 ?�달)
+	PLAYER_TITLE16,	//롤링마스???�둠???�편 ?�이�??�어지지 ?�고 ?�다갔다 ???�수 ?�적 100�?
+	PLAYER_TITLE17,	//건망�??�제(?�료?��? ?��? ?�스?��? 10�??�상?�적)
+	PLAYER_TITLE18,	//기본기의 ?�인(?�킬 ?�용?��? ?�고 ?�임?�몬?�터�??�치???�수(기본 공격, 찍기, ?�??공격))
+	PLAYER_TITLE19,	//4�??�????공격 ??방에 ?�의 체력??�??�상 깍인 ?�수 ?�적 500�?
+	PLAYER_TITLE20,	//구제불능 방향�?(?�렘, 벨로?�에??집에 ?�어가???�무?�게??말을 걸�??�고 ?�시 ?�간 ?�수?�적 100??
+	PLAYER_TITLE21,	//?�서�??�델?�인 ?�서관??방문???�수)
+	PLAYER_TITLE22,	//?�피???�인(HP가 최�?HP??10% ?�하?�때 귀?�서�??�용???�수 ?�적)
+	PLAYER_TITLE23,	//?�커(최�? HP가 1000?�파)
+	PLAYER_TITLE24,	//코스?�플?�이??무기?�외?�고 ?�른 주인공의 ?�비�??�일?�서 ?�는??)
+	PLAYER_TITLE25,	//?�설???�?�장??강화�?10?�계까�? ?�공?�다.)
+	PLAYER_TITLE26,	//근성?�치??강자(?�기?�에???�복?��??�고 죽인 ???��? 50마리 ?�상)
+	PLAYER_TITLE27,	//?�성???�제(물약?�로 ?�버???�복???�수)
+	PLAYER_TITLE28,	//?�전과제???�행??모든 ?�성???�료)
+	PLAYER_TITLE29,	//?�주???�명?�사(?�것???�외??모든 ?�칭 ?�수)
 
 	TOTAL_REPORT,
 
@@ -1003,7 +1003,7 @@ typedef enum _reportDef {
 */
 
 typedef enum _prgDef {
-	//Data.h 배열별 기준 크기
+	//Data.h 배열�?기�? ?�기
 	SETITEMDATASIZE = 3,
 	SETOPTIONDATASIZE = 18,
 	LEGENDITEMDATASIZE = 18,
@@ -1036,7 +1036,7 @@ typedef enum _prgDef {
 	MONSTERREWARDDATASIZE = 4,
 	REWARDDATASIZE = 4,
 
-	//각종프레임
+	//각종?�레??
 	AREAFRAME = 24 * MOTIONDIV,
 	INFOFRAME = 24 * MOTIONDIV,
 	BATTLESTARTFRAME = FPS,
@@ -1091,8 +1091,8 @@ typedef enum _prgDef {
 	EMOTICONFRAME = 10,
 
 	
-	MAXCMF = TOTALCMF,//@@ 나중에 계산해보고 줄여줄것
-	REALMAXCMF = TOTALCMF,	//퀘스트 클라이언트용 CMF
+	MAXCMF = TOTALCMF,//@@ ?�중??계산?�보�?줄여줄것
+	REALMAXCMF = TOTALCMF,	//?�스???�라?�언?�용 CMF
 	CLIENTCMF = REALMAXCMF,
 
 	
@@ -1100,18 +1100,18 @@ typedef enum _prgDef {
 	AIRETRYCOUNT = 100,
 
 	
-	HERO_PARAM_DMG = 0,//데미지
-	HERO_PARAM_SDMG,//스킬데미지
-	HERO_PARAM_ASPD,//공격속도
-	HERO_PARAM_MSPD,//이동속도
+	HERO_PARAM_DMG = 0,//?��?지
+	HERO_PARAM_SDMG,//?�킬?��?지
+	HERO_PARAM_ASPD,//공격?�도
+	HERO_PARAM_MSPD,//?�동?�도
 	HERO_PARAM_HP,//체력
-	HERO_PARAM_DEF,//방어력
+	HERO_PARAM_DEF,//방어??
 
 	TOTAL_HERO_PARAM,
 
 	DIANAACTIVELEVEL = 5,
 	MAXXACTIVELEVEL = 10,
-	//움직임 상태
+	//?�직임 ?�태
 	MODE_NORMAL = 0,
 	MODE_GOLEM,
 	MODE_SQUIRREL,
@@ -1156,9 +1156,9 @@ typedef enum _prgDef {
 
 	BUYMULTINUM = 1,
 
-	ADTYPE_SOLDIER = 0,//용병광고(터치하면 용병메뉴로 가지만 아직 용병메뉴가 오픈되지 않았으면 갈수 없다는 메시지만 띄워준다.)
-	ADTYPE_GOODS,//현금 다이렉트 구매상품(터치하면 구매팝업으로)
-	ADTYPE_ITEMS,//다른 유저가 6성이상 무기를 얻거나 전설등급무기를 얻었을 때
+	ADTYPE_SOLDIER = 0,//?�병광고(?�치?�면 ?�병메뉴�?가지�??�직 ?�병메뉴가 ?�픈?��? ?�았?�면 갈수 ?�다??메시지�??�워준??)
+	ADTYPE_GOODS,//?�금 ?�이?�트 구매?�품(?�치?�면 구매?�업?�로)
+	ADTYPE_ITEMS,//?�른 ?��?가 6?�이??무기�??�거???�설?�급무기�??�었????
 
 
 	
@@ -1211,13 +1211,13 @@ typedef enum _levelUpReward {
 
 	LVUPREWARD_DAILYQUEST,
 
-	//50은 기본
+	//50?� 기본
 	LVUPREWARD_HEARTMAX,
 
-	//하트 생성량
+	//?�트 ?�성??
 	LVUPREWARD_HEARTPERHOUR,
 
-	//방패 최대량
+	//방패 최�???
 	LVUPREWARD_SHILED,
 
 	LVUPREWARD_GETHERO,
@@ -1244,11 +1244,11 @@ typedef enum _dailyQuest {
 	//Complete a Shutdown
 	//Land on Chance
 
-	DAILYQUEST_OPEN_BOX_GETEQUIP = 0,//상자를 열어 장비를 3번 얻으면
-	DAILYQUEST_UPGRADE_CREW,//3개를 업그레이드하면 되는것
-	DAILYQUEST_ATTACK_OTHERUSER,//Battle, Raid 포함
-	DAILYQUEST_COLLECT_GOLD,//일정금액의 돈을 모으면
-	DAILYQUEST_STAGE_TRY,//스테이지 전투 
+	DAILYQUEST_OPEN_BOX_GETEQUIP = 0,//?�자�??�어 ?�비�?3�??�으�?
+	DAILYQUEST_UPGRADE_CREW,//3개�? ?�그?�이?�하�??�는�?
+	DAILYQUEST_ATTACK_OTHERUSER,//Battle, Raid ?�함
+	DAILYQUEST_COLLECT_GOLD,//?�정금액???�을 모으�?
+	DAILYQUEST_STAGE_TRY,//?�테?��? ?�투 
 
 	TOTAL_DAILYQUEST_TYPE,
 
@@ -1258,20 +1258,20 @@ typedef enum _dailyQuest {
 } DAILYQUEST;
 
 enum JumpState {
-	JS_IDLE = 0,     // 정지(서있음)
-	JS_SPINNING,     // 점프 중 + 공중에서 계속 교체
-	JS_LANDING,      // 착지 구간(공중에서 교체하다가 착지 순간 target 확정)
-	JS_HOLD,     // 착지 후 연출 대기(슬로우)
-	JS_DONE          // 확정 후 고정
+	JS_IDLE = 0,     // ?��?(?�있??
+	JS_SPINNING,     // ?�프 �?+ 공중?�서 계속 교체
+	JS_LANDING,      // 착�? 구간(공중?�서 교체?�다가 착�? ?�간 target ?�정)
+	JS_HOLD,     // 착�? ???�출 ?��??�로??
+	JS_DONE          // ?�정 ??고정
 };
 
 #define ITEMTYPESEED 1000
 #define ITEMDETAILSEED 10000
-#define MAX_POINTS 500 * MOTIONDIV // 최대 좌표 개수
-#define MAX_RADIUS 256 // 최대 반경
+#define MAX_POINTS 500 * MOTIONDIV // 최�? 좌표 개수
+#define MAX_RADIUS 256 // 최�? 반경
 #define MAX_BOXRADIUS	128
 
-#define BOSSROOMTIME	60 * 10//10분	
+#define BOSSROOMTIME	60 * 10//10�?
 
 #define INFO_Y	
 #ifdef TUTORIAL

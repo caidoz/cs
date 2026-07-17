@@ -751,7 +751,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 	UnSectionClip(false);
 
-
+	/*
 	//대미지 숫자
 	for (i = 0; i < TOTALHITMARK; i++) {
 		if (dmgInfo[i].type > 0) {
@@ -813,7 +813,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 			UnSetBlend();
 		}
 	}
-
+	*/
 
 	y = STATUSWIN_Y + ROULETTECARDSIZE_Y + TSIZE;
 

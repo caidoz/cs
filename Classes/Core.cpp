@@ -1204,6 +1204,7 @@ void PaintClet(int x, int y, int w, int h)
 				AlertDraw();
 				break;
 			case MD_GACHA:
+				Play();
 				GachaDraw();
 				break;
 			case MD_STAGECLEAR:
@@ -1708,10 +1709,12 @@ void PaintClet(int x, int y, int w, int h)
 				boxMark[i].jokboIcon++;
 			}
 
-			if (boxMark[i].detail == BOX_INGAME)
-				DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, LEFT, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
-			else
-				DrawBoxSpecial(xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, LEFT, boxMark[i].detail, boxMark[i].zoom2, true, false, boxMark[i].jokboIcon, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, false, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+
+			//if (boxMark[i].detail == BOX_INGAME)
+			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, LEFT, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
+			//else
+			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, itemColor[frame % 6], boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 
 			if (boxMark[i].jokboIcon == true && boxMark[i].detail != BOX_INGAME)
 				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom2, LEFT, false, 1.2f * boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
@@ -1767,10 +1770,12 @@ void PaintClet(int x, int y, int w, int h)
 				boxMark[i].jokboIcon++;
 			}
 
-			if (boxMark[i].detail == BOX_INGAME)
-				DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, LEFT, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
-			else
-				DrawBoxSpecial(xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, LEFT, boxMark[i].detail, boxMark[i].zoom, true, false, boxMark[i].jokboIcon, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, false, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+
+			//if (boxMark[i].detail == BOX_INGAME)
+			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, LEFT, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+			//else
+			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, itemColor[frame % 6], boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 
 			if (boxMark[i].jokboIcon == true && boxMark[i].detail != BOX_INGAME)
 				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom, LEFT, false, 1.2f * boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);

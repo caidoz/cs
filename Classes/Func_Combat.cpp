@@ -3987,7 +3987,7 @@ void AttackBoxCheck(OBJECT* pObj)
 	int i, j;
 
 	if (AttackCrash(pObj, &ao[NEUTRAL]) && ao[NEUTRAL].status == BOXSTATUS_CLOSED) {
-		ao[NEUTRAL].status = BOXSTATUS_OPENING;
+		ao[NEUTRAL].motion = BOXSTATUS_OPENING;
 		ao[NEUTRAL].frame = 0;
 	}
 }
@@ -4228,13 +4228,13 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 					dmgInfo[i].color = 0xFFF4C6;
 					break;
 				case DIANA:
-					dmgInfo[i].color = 0xF7BEFE;
+					dmgInfo[i].color = 0xFFF4C6;// 0xF7BEFE;
 					break;
 				case MAXX:
-					dmgInfo[i].color = 0xBADCD1;
+					dmgInfo[i].color = 0xFFF4C6;// 0xBADCD1;
 					break;
 				default:
-					dmgInfo[i].color = null;
+					dmgInfo[i].color = 0xFFF4C6;// null;
 					break;
 			}
 			break;
@@ -5159,6 +5159,16 @@ void SetBox(OBJECT* pObj, int etc)
 	case BOX_CASTLE17:
 	case BOX_CASTLE18:
 		pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
+		break;
+	case BOX_REWARD0:
+	case BOX_REWARD1:
+	case BOX_REWARD2:
+	case BOX_REWARD3:
+	case BOX_REWARD4:
+	case BOX_REWARD5:
+	case BOX_REWARD6:
+	case BOX_REWARD7:
+		pObj->zoom = BOXCASTLEZOOM * (0.2f + (float)0.02f * (pObj->etc - BOX_REWARD0));
 		break;
 	default:
 	//case BOX_INGAME:
