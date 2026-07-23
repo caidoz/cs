@@ -3151,7 +3151,7 @@ const char* const textId[] = {
 	"l2_8",
 
 	"etc",
-	"window",
+	"card",
 	"win",
 
 	"ui_card_large_back",

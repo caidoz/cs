@@ -3153,8 +3153,6 @@ void CrewInfoDraw(int crewIdx, int x, int y, float zoom, cocos2d::RenderTexture*
 
 	DrawTextStr(tempStr, x + (float)(32 * _2X) * zoom, y - (float)(226 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
-	DrawWindow2(x + (float)(20 * _2X) * zoom, y - (float)(240 * _2X) * zoom, 256 * _2X, 48 * _2X, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
-
 	if (crewRewardType == ITEM_BOX) {
 		DrawBox(crewRewardDetail, x + (float)(POPUPWINDOWSIZE_X / 2 - (float)BOXSIZE_X * 0.5f / 2) * zoom, y - (float)(228 * _2X + ITEMICONSIZE) * zoom, LEFT, false, false, true, false, true, zoom * 0.5f, cvtDest, cvtLayer, buffering);
 	}
@@ -3183,7 +3181,6 @@ void DiscountMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest,
 	ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X * 2 / 2) * zoom, y + (float)(-160 * _2X + 8 * _2X * 3) * zoom, SHADOW_IMG, 2 * zoom, gScreenBuffer, gScreenLayer, false);
 	DrawNeutral(EFFECT_CRAFT0 + (frame / 2) % 3, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(160 * _2X) * zoom, 0, 4 * zoom, gScreenBuffer, gScreenLayer, false);
 
-	DrawWindow2(x + (float)(POPUPWINDOWSIZE_X / 2 - (POPUPWINDOWSIZE_X / 2) / 2) * zoom, y + (float)(8 * _2X) * zoom, POPUPWINDOWSIZE_X / 2, 32 * _2X, false, zoom, cvtDest, cvtLayer, buffering);
 	CenterText(TEXT_EVENT_DISCOUNT, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 
@@ -3213,7 +3210,6 @@ void PvpQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest,
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, buffering);
 
-	DrawWindow2(x + (float)(POPUPWINDOWSIZE_X / 2 - 160 * _2X / 2) * zoom, y + (float)(8 * _2X - 8 * _2X) * zoom, 160 * _2X, 32 * _2X, false, zoom, cvtDest, cvtLayer, buffering);
 	CenterText(TEXT_PVPQUESTNAME0 + robin.pvpQuest, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X + 8 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 	PvpEventBarDraw(gEvent, x + (float)(POPUPWINDOWSIZE_X / 2 - PVPQUESTBARWIDTH / 2 * pvpBarZoom + 8 * _2X * pvpBarZoom) * zoom, y - (float)(36 * _2X) * zoom, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], robin.pvpQuestCnt, pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + TOTALPVPDETAILREQUEST - 1], false, true, zoom * pvpBarZoom, cvtDest, cvtLayer, buffering);
@@ -3259,7 +3255,6 @@ void QuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, co
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 
-	DrawWindow2(x + (float)(POPUPWINDOWSIZE_X / 2 - (POPUPWINDOWSIZE_X / 2) / 2) * zoom, y - (float)(16 * _2X - 16 * _2X) * zoom, POPUPWINDOWSIZE_X / 2, 32 * _2X, false, zoom, cvtDest, cvtLayer, buffering);
 	CenterText(TEXT_QUESTNAME0 + robin.quest, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(28 * _2X - 16 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 	DrawWindow4(x + (float)(16 * _2X) * zoom, y - (float)(80 * _2X - 24 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 80 * _2X) * zoom, MAPTYPE_SWAMP, 1.0f * zoom, cvtDest, cvtLayer, buffering);
@@ -3285,7 +3280,7 @@ void QuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, co
 		curStar = maxStar = GetItemStar(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 2]);
 	}
 
-	DrawRewardCard(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 2], 1, questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 3], x + (float)(POPUPWINDOWSIZE_X / 2 - REWARDCARDSIZE_X * 1.5f / 2) * zoom, y - (float)(96 * _2X - 40 * _2X) * zoom, false, zoom * 1.5f, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+	DrawRewardCard(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 2], 1, questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuestCnt[robin.quest] - 1) * QUESTREWARDDATASIZE + 3], x + (float)(POPUPWINDOWSIZE_X / 2 - REWARDCARDSIZE_X * 1.5f / 2) * zoom, y - (float)(96 * _2X - 40 * _2X) * zoom, false, zoom * 1.5f, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 	DrawNeutral(OBJ_ITEM0 + frame % 4, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y + (-108 * _2X + 40 * _2X - ITEMICONSIZE * 2) * zoom, 0, 2 * zoom, cvtDest, cvtLayer, buffering);
 
@@ -3304,7 +3299,7 @@ void QuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, co
 			curStar = maxStar = GetItemStar(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 2]);
 		}
 
-		DrawRewardCard(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 2], 1, questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 3], x + (float)(POPUPWINDOWSIZE_X / 2 - REWARDCARDSIZE_X * 1.2f / 2) * zoom, y + (float)(-368 * _2X + 44 * _2X + (REWARDCARDSIZE_Y * 0.9f) * i + 4 * _2X) * zoom, false, zoom * 1.2f, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+		DrawRewardCard(questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 0], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 1], questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 2], 1, questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (robin.subQuest + i) * QUESTREWARDDATASIZE + 3], x + (float)(POPUPWINDOWSIZE_X / 2 - REWARDCARDSIZE_X * 1.2f / 2) * zoom, y + (float)(-368 * _2X + 44 * _2X + (REWARDCARDSIZE_Y * 0.9f) * i + 4 * _2X) * zoom, false, zoom * 1.2f, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 	}
 
 	//남은 시간
@@ -3351,7 +3346,7 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 			curStar = maxStar = GetItemStar(rewardType, rewardDetail, rewardGrade);
 		}
 
-		DrawRewardCard(rewardType, rewardDetail, rewardGrade, 1, rewardCnt, x + w - (float)(rewardType == ITEM_BOX ? 8 * _2X : 8 * _2X) * zoom, y + (float)8 * _2X * zoom, false, 1.2f * zoom, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+		DrawRewardCard(rewardType, rewardDetail, rewardGrade, 1, rewardCnt, x + w - (float)(rewardType == ITEM_BOX ? 8 * _2X : 8 * _2X) * zoom, y + (float)8 * _2X * zoom, false, 1.2f * zoom, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 	}
 
 	if (menuPressPossible())

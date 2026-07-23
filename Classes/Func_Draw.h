@@ -21,7 +21,6 @@ const int openingTextId[] =
 	TEXT_OPENING_4_0
 };
 // DrawÇÚµé
-void DrawWindow2(int x, int y, int w, int h, int color, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

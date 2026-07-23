@@ -292,8 +292,6 @@ void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 
 		break;
 	case MD_RAID:
-		//DrawWindow2(xOffset + DX / 2 - DRAWROULETTENUM_SUB_WIDTH / 2, STATUSWIN_Y + DRAWRAIDNUMGAP + 12 * _2X, DRAWROULETTENUM_SUB_WIDTH, DRAWROULETTENUM_SUB_HEIGHT, COLOR_NAVY, 1.0f, cvtDest, cvtLayer, buffering);
-
 		//EnemyUserProfileDraw(robin.enemyUserIdx, robin.stage, robin.room, xOffset + DX / 2 - RAIDGOLDBARWIDTH / 2/*100 * _2X*/, yPos + ENEMYUSERINFOGAP, 1.0f, cvtDest, cvtLayer, buffering);
 
 

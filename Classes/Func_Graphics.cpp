@@ -1656,8 +1656,7 @@ void DrawGuage(int x, int y, int w, int h, long cur, long max, int bgCol, int fu
 void DrawRouletteNum(long long num, int icon, int x, int y, bool ani, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	float width = GetNumDx(num, false, NUM_FONT_LARGE, false, true, zoom, false) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom;
-	DrawWindow2(x - (float)(DRAWROULETTENUM_WIDTH / 2) * zoom, y + (float)(12 * _2X) * zoom, DRAWROULETTENUM_WIDTH, DRAWROULETTENUM_SUB_HEIGHT, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
-
+	
 	//일반숫자 2배수
 	DrawIcon(icon, x - width / 2, y, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
 	DrawNum(num, x - width / 2 + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y + (float)(1 * _2X), NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false, cvtDest, cvtLayer, buffering);
@@ -4744,7 +4743,6 @@ void DrawCheckButton(int x, int y, int w, int h, int gray, bool checked, int cur
 
 	float width = numWidth + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
 	DrawButtonFrame(x, y, w, h, gray, zoom, cvtDest, cvtLayer, buffering);
-	//DrawWindow2(x, y, w, h, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering)
 	DrawCheckBox(x + (float)4 * _2X * zoom, y - (float)9 * _2X * zoom, (float)18 * _2X, (float)18 * _2X, checked, 0.65f * zoom, cvtDest, cvtLayer, buffering);
 	DrawIcon(currencyIcon[currency] == ICON_GOLD ? currencyIcon[currency] + frame % GOLDICONFRAME : currencyIcon[currency], x + w - (float)(4 * _2X) * zoom - width, y - (float)7 * _2X * zoom, zoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
 
@@ -4910,13 +4908,6 @@ void DrawPlusMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 {
 	DrawImage(64, 64, 521, 640, x, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 	//DrawImage(27 * _2X, 27 * _2X, 65 * _2X, 0 * _2X, x, y, false, false, false, false, false, zoom, sprite[ETC_IMG], cvtDest, cvtLayer, ETC_IMG, buffering);
-}
-//캐릭터같은것이 빈자리면 이걸 쓴다.
-void DrawEmptySlot(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	//SetAlpha(30);
-	DrawImage(64 * _2X, 64 * _2X, 0 * _2X, 0 * _2X, x, y, false, false, false, false, false, 0.7f * zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, ETC_IMG, buffering);
-	//SetAlpha(32);
 }
 
 void DrawXMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -5217,7 +5208,6 @@ void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, in
 	else if (attackTypeIdx == ROULETTE_RAID)
 		value = raidRewardMedal[str] * GetBetHeart(it->detail, it->grade, bet);
 
-	DrawWindow2(x, y, w, h, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 	DrawGoldAlpha(x + (float)(12 * _2X) * zoom, y - (float)(12 * _2X) * zoom, attackTypeIdx == ROULETTE_BATTLE ? hitAlpha[str] : raidAlpha[str], FONT_GOLD_LARGE, zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
 	DrawIcon(icon, x + (float)(160 * _2X) * zoom, y + (float)(-10 * _2X) * zoom, 1.5f * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
@@ -5374,7 +5364,7 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 
 	}
 
-	//DrawRewardCard(type, detail, grade, 0, startCnt, x, y, false, zoom, true, false, true, GetItemStar(type, detail, grade) + 1, GetItemStar(type, detail, grade) + 1, true, cvtDest, cvtLayer, buffering);
+	//DrawRewardCard(type, detail, grade, 0, startCnt, x, y, false, zoom, true, false, true, GetItemStar(type, detail, grade) + 1, GetItemStar(type, detail, grade) + 1, true, 0, cvtDest, cvtLayer, buffering);
 	ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + w / 2 - (float)24 * _2X * zoom, y + (float)(-ITEMCARDSIZE_Y + ITEMICONSIZE * 4 + 8 * _2X) * zoom, SHADOW_IMG, zoom * 2, cvtDest, cvtLayer, buffering);
 
 	switch (type) {
@@ -5426,7 +5416,7 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 }
 
 //보상을 표현하기 
-void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, int openFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i, j;
 	float width;
@@ -5440,6 +5430,8 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 
 	ITEM* it;
 
+	DrawItemCard(type, detail, grade, lv, false, x, y, false, zoom, false, false, false, true, openFrame, cvtDest, cvtLayer, buffering);
+	return;
 	//type = ITEM_BOX;
 	//detail = 2;
 	//grade = 0;

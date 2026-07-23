@@ -283,7 +283,7 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 
 		if (attackSequence != ATTACKSEQUENCE_REWARD) {
 
-			DrawRewardCard(ITEM_BOX, goldQuestBox[robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barStatus * BOSSRAIDSIZE + robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barFrame], false, 1, 1, xOffset + barP->x + (float)(HPBARWIDTH + 32 * _2X) * zoom, barP->y - (float)(8 * _2X) * zoom, false, zoom, false, false, true, false, false, true, cvtDest, cvtLayer, buffering);
+			DrawRewardCard(ITEM_BOX, goldQuestBox[robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barStatus * BOSSRAIDSIZE + robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barFrame], false, 1, 1, xOffset + barP->x + (float)(HPBARWIDTH + 32 * _2X) * zoom, barP->y - (float)(8 * _2X) * zoom, false, zoom, false, false, true, false, false, true, 0, cvtDest, cvtLayer, buffering);
 			//type이 상자면 상세값을 확인할 수 있는 세부창을 띄워줄 수 있도록 한다.
 			if (JoyStickPressPossible() == true)
 				SetRectPoint(xOffset + barP->x + (float)(HPBARWIDTH + 32 * _2X) * zoom, barP->y - 8 * _2X, REWARDCARDSIZE_X * zoom, REWARDCARDSIZE_Y * zoom, TOUCH_FUNC_POPUP_STAGEREWARD);
@@ -396,8 +396,6 @@ void HammerBarDraw(int x, int y, long long amount, bool ani, float zoom, cocos2d
 		MemRect(x - (float)(2 * _2X) * zoom, y + 2 * _2X, CROWNBARWIDTH + 4 * _2X, CROWNBARHEIGHT + 4 * _2X, itemColor[frame % 6], cvtDest, cvtLayer, buffering);
 	}
 
-	DrawWindow2(x, y, (TSIZE * 6), (TSIZE * 2), COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
-
 	if (ironFrame > 0 && ironFrame % 2 == 0 && ani == true)
 		DrawIcon(ICON_HAMMER, x, y + (float)(1 * _2X) * zoom, 2 * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
 	else
@@ -443,8 +441,6 @@ void MedalBarDraw(int x, int y, long long amount, bool ani, float zoom, cocos2d:
 	if (ani) {
 		MemRect(x - (float)(2 * _2X) * zoom, y + (float)(2 * _2X) * zoom, (float)(MEDALBARWIDTH + 4 * _2X) * zoom, (float)(MEDALBARHEIGHT + 4 * _2X) * zoom, itemColor[frame % 6], cvtDest, cvtLayer, buffering);
 	}
-
-	DrawWindow2(x, y, MEDALBARWIDTH, MEDALBARHEIGHT, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 
 	if (medalFrame > 0 && medalFrame % 2 == 0 && ani == true)
 		DrawIcon(ICON_MEDAL, x, y + (float)(1 * _2X) * zoom, (float)2 * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
@@ -527,8 +523,6 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 	if (animation)
 		MemRect(x - (float)(2 * _2X) * zoom, y + (float)(2 * _2X) * zoom, w + (float)(4 * _2X) * zoom, h + (float)(4 * _2X) * zoom, itemColor[frame % 6], cvtDest, cvtLayer, buffering);
 
-	DrawWindow2(x, y, PVPQUESTBARWIDTH, PVPQUESTBARHEIGHT, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
-
 	//TEST
 	//count = 70;
 	//max = 100;
@@ -563,7 +557,7 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 				xPos = (float)(6 * _2X + (PVPQUESTBARWIDTH - 12 * _2X) * (pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i] - pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + (robin.pvpSubQuest - 1) * TOTALPVPDETAILREQUEST + 2]) / (pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + 2] - pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + (robin.pvpSubQuest - 1) * TOTALPVPDETAILREQUEST + 2])) * zoom;
 
 			if (i >= robin.pvpDetailQuest) {
-				DrawRewardCard(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2], 0, pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 3], x + xPos - (float)REWARDCARDSIZE_X / 2 * zoom * iconZoom * 0.6f, y + (float)8 * _2X * zoom, false, 0.6f * zoom * iconZoom, false, false, true, false, false, true, cvtDest, cvtLayer, buffering);
+				DrawRewardCard(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2], 0, pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 3], x + xPos - (float)REWARDCARDSIZE_X / 2 * zoom * iconZoom * 0.6f, y + (float)8 * _2X * zoom, false, 0.6f * zoom * iconZoom, false, false, true, false, false, true, 0, cvtDest, cvtLayer, buffering);
 				pvpRewardPosition[i][0] = x + xPos + (float)(ITEMICONSIZE / 2) * 0.6f * zoom * iconZoom;
 				pvpRewardPosition[i][1] = y - (float)(2 * _2X) * zoom * iconZoom - (float)(ITEMICONSIZE / 2) * zoom * iconZoom;
 
@@ -582,7 +576,7 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 
 			if (i >= robin.pvpDetailQuest) {
 				//DrawIcon(GetItemIcon(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2]), x + xPos, y - (float)(2 * _2X) * zoom, zoom, COLOR_BROWN, false, false, cvtDest, cvtLayer, buffering);
-				DrawRewardCard(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2], 0, pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 3], x + xPos - (float)REWARDCARDSIZE_X / 2 * zoom * iconZoom * 0.6f, y + (float)8 * _2X * zoom, false, 0.6f * zoom * iconZoom, false, false, true, false, false, true, cvtDest, cvtLayer, buffering);
+				DrawRewardCard(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2], 0, pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 3], x + xPos - (float)REWARDCARDSIZE_X / 2 * zoom * iconZoom * 0.6f, y + (float)8 * _2X * zoom, false, 0.6f * zoom * iconZoom, false, false, true, false, false, true, 0, cvtDest, cvtLayer, buffering);
 
 				pvpRewardPosition[i][0] = x + xPos + (float)(ITEMICONSIZE / 2) * 0.6f * zoom * iconZoom;
 				pvpRewardPosition[i][1] = y - (float)(2 * _2X) * zoom * iconZoom - (float)(ITEMICONSIZE / 2) * zoom * iconZoom;
@@ -656,8 +650,6 @@ void ExpBarWideDraw(int lv, long long count, int x, int y, float zoom, cocos2d::
 	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2) * zoom, y - (float)(2 * _2X) * zoom, (float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE + 4 * _2X) * zoom, (float)(CROWNBARHEIGHT + 4 * _2X) * zoom, COLOR_BROWN, cvtDest, cvtLayer, buffering);
 	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2 + 2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, (float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE) * zoom, (float)(CROWNBARHEIGHT)* zoom, COLOR_NAVY, cvtDest, cvtLayer, buffering);
 	//count = 33960000;
-
-	DrawWindow2(x + (float)(ITEMICONSIZE * 1.5f + 2 * _2X) * zoom, y, (float)(CROWNBARWIDTH_WIDE - 1.5f * ITEMICONSIZE - 28 * _2X), (float)(CROWNBARHEIGHT), COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 
 	MemRect(x + (float)(ITEMICONSIZE * 1.5f + 2 * _2X + 6 * _2X) * zoom, y - (float)(7 * _2X) * zoom, Min((float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE - 28 * _2X) * zoom, (float)(CROWNBARWIDTH_WIDE - 1.5f * ITEMICONSIZE - 28 * _2X) * ((float)(count - NextExp(lv - 1)) / (float)(NextExp(lv) - NextExp(lv - 1))) * zoom), (float)(CROWNBARHEIGHT - 14 * _2X) * zoom, COLOR_REALYELLOW, cvtDest, cvtLayer, buffering);
 	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2 + 8 * _2X) * zoom, y - (float)(8 * _2X) * zoom, (float)100, (float)(CROWNBARHEIGHT - 16 * _2X)* zoom, COLOR_REALYELLOW, cvtDest, cvtLayer, buffering);

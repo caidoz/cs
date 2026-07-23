@@ -418,11 +418,11 @@ typedef enum _skillDef {
 	SKILL_ROBIN10,	//소울크래쉬 : 기절
 	SKILL_ROBIN11,	//앱솔루트피어스 : 찔러서회전
 	SKILL_ROBIN12,	//멸살연참 : 연속기
-	SKILL_ROBIN13,	//방어태세 : 일정시간 VIT 상승
-	SKILL_ROBIN14,	//정신소모 : MP 소모하여 데미지 경감
-	SKILL_ROBIN15,	//여유포착 : 적 공격 회피시 HP 상승
-	SKILL_ROBIN16,	//냉정침착 : 데미지 입으면 MP 회복
-	SKILL_ROBIN17,	//리플렉션 : 확률로데미지 반사
+	SKILL_ROBIN13,	//방어태세 : //방어력 올려서 데미지 줄이는것으로 변경//일정시간 VIT 상승
+	SKILL_ROBIN14,	//정신소모 : //방어력 올려서 데미지 줄이는것으로 변경//MP 소모하여 데미지 경감
+	SKILL_ROBIN15,	//여유포착 : 적 공격 회피시 HP 상승//데미지 2배 상승
+	SKILL_ROBIN16,	//냉정침착 : 데미지 입으면 MP 회복//HP회복
+	SKILL_ROBIN17,	//리플렉션 : 확률로데미지 반사//반사
 
 	SKILL_COMMON_DIANA1,	//힘단련 : STR 상승
 	SKILL_COMMON_DIANA2,	//체력단련 : VIT 상승

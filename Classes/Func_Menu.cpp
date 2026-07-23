@@ -119,10 +119,9 @@ void DailyQuestDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 			}
 			//DrawFrame(x + (float)(32 * _2X + 28 * _2X + 48 * _2X) * zoom, y - (float)(64 * _2X + 32 * _2X + 72 * _2X * i) * zoom, float(DAILYQUESTBARWIDTH) * zoom, float(DAILYQUESTBARHEIGHT) * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-			//DrawWindow2(x + (float)(32 * _2X + 20 * _2X + 48 * _2X) * zoom, y - (float)(64 * _2X + 16 * _2X + 72 * _2X * i) * zoom, float(DAILYQUESTBARWIDTH), float(DAILYQUESTBARHEIGHT), COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 			DrawText(TEXT_DAILYQUEST_OPEN_BOX_GETEQUIP + i, x + (float)(20 * _2X + 32 * _2X + 40 * _2X) * zoom, y - (float)(64 * _2X + 12 * _2X + 72 * _2X * i) * zoom, zoom, cvtDest, cvtLayer, buffering);
 			DrawGuage(x + (float)(20 * _2X + 28 * _2X + 40 * _2X) * zoom, y - (float)(64 * _2X + 32 * _2X + 72 * _2X * i) * zoom, float(DAILYQUESTBARWIDTH) * zoom, float(DAILYQUESTBARHEIGHT) * zoom, 10, 30, COLOR_NAVY, COLOR_HEARTBAR, zoom, cvtDest, cvtLayer, buffering);
-			DrawRewardCard(i, i, i, false, 1, x + (float)(20 * _2X + 28 * _2X + 204 * _2X) * zoom, y - (float)(64 * _2X + 4 * _2X + 72 * _2X * i) * zoom, false, zoom, true, false, true, GetItemStar(i, i, i), GetItemStar(i, i, i), true, cvtDest, cvtLayer, buffering);
+			DrawRewardCard(i, i, i, false, 1, x + (float)(20 * _2X + 28 * _2X + 204 * _2X) * zoom, y - (float)(64 * _2X + 4 * _2X + 72 * _2X * i) * zoom, false, zoom, true, false, true, GetItemStar(i, i, i), GetItemStar(i, i, i), true, 0, cvtDest, cvtLayer, buffering);
 		}
 	case 1:
 		//여기서 각종 획득 이펙트를 그려준다.
@@ -373,12 +372,13 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			false,
 			false,
 			false,
+			0,
 			cvtDest,
 			cvtLayer,
 			buffering
 		);
 
-		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(it->type, it->detail, it->grade), FRAME_GREEN, zoom, cvtDest, cvtLayer, buffering);
+		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(it->type, it->detail, it->grade), FRAME_GREEN, zoom / CARDDEFAULTZOOM, cvtDest, cvtLayer, buffering);
 
 		break;
 		//동료
@@ -405,6 +405,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			false,
 			false,
 			false,
+			0,
 			cvtDest,
 			cvtLayer,
 			buffering
@@ -484,7 +485,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		DrawNum(combatPowerGap, x + (float)280 * _2X * zoom, y + (float)-18 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, combatPowerGap > 0 ? PLUS : MINUS, true, zoom, false, cvtDest, cvtLayer, buffering);
 		SetColor(false);
 	}
-	//DrawRewardCard(it->type, it->detail, it->grade, it->cooldown, it->count, x + (float)0 * _2X * zoom, y - (float)0 * _2X * zoom, false, zoom * DEFAULTZOOM, false, false, true, GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), true, cvtDest, cvtLayer, buffering);
+	//DrawRewardCard(it->type, it->detail, it->grade, it->cooldown, it->count, x + (float)0 * _2X * zoom, y - (float)0 * _2X * zoom, false, zoom * DEFAULTZOOM, false, false, true, GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), true, 0, cvtDest, cvtLayer, buffering);
 
 	//DrawIcon(GetItemIcon(it->type, it->detail, it->grade), x + (float)(8 * _2X) * zoom, y - (float)8 * _2X * zoom, zoom * DEFAULTZOOM, false, false, true, cvtDest, cvtLayer, buffering);
 
@@ -879,7 +880,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			curStar = maxStar = GetItemStar(itemType, itemDetail, itemGrade);
 		}
 
-		DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (float)(DY / 2 + 148 * _2X) * zoom, true, (float)2 * zoom, true, false, true, itemLv, ITEMMAXLEVEL, true, cvtDest, cvtLayer, buffering);
+		DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (float)(DY / 2 + 148 * _2X) * zoom, true, (float)2 * zoom, true, false, true, itemLv, ITEMMAXLEVEL, true, 0, cvtDest, cvtLayer, buffering);
 		//개별 장착이 되지 않는다면
 		//만약 장착이 되어 있지 않으면
 		if (GetEquipSlot(itemType, itemDetail, itemGrade) == -1) {
@@ -890,7 +891,6 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			DrawTextButton(x + (float)(DX / 2 - 40 * _2X) * zoom, y + (float)(DY / 2 + 148 * _2X - REWARDCARDSIZE_Y * 2 - 8 * _2X) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, 0, 32, zoom, false, TEXT_SOCKETING, cvtDest, cvtLayer, buffering);
 
 
-		DrawWindow2(x + (float)(DX / 2 - 158 * _2X) * zoom, y + (float)(DY / 2 - 10 * _2X) * zoom, 316 * _2X, 60 * _2X, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 		//골드 / 골드백 / 하트 / 퀘스트 아이템
 		switch (itemType) {
 		default:
@@ -954,8 +954,6 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 
 			SetRectPoint(x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP) * zoom, (float)(128 * _2X) * zoom, (float)(32 * _2X) * zoom, TOUCH_FUNC_EQUIP_ENCHANT + i);
 		}
-
-		DrawWindow2(x + (float)(DX / 2 - 136 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X + YGAP) * zoom, 272 * _2X, MINDY_MIN + 16 * _2X - 240 * _2X - 4 * _2X + YGAP, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 
 		switch (menuX) {
 		case 0:
@@ -1060,10 +1058,10 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 						curStar = maxStar = GetItemStar(itemType, itemDetail, itemGrade);
 					}
 
-					DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (float)(DY / 2 + 148 * _2X) * zoom, false, (float)2 * zoom, true, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+					DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (float)(DY / 2 + 148 * _2X) * zoom, false, (float)2 * zoom, true, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 					if (menuFrame > FPS * 2 / 3) {
-						DrawRewardCard(itemType, itemDetail, itemGrade, itemLv + 1, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X - (FPS - menuFrame) * REWARDCARDSIZE_X / 2) * zoom, y + (float)(DY / 2 + 148 * _2X + (FPS - menuFrame) * REWARDCARDSIZE_Y / 2) * zoom, false, (float)(2 + FPS - menuFrame) * zoom, true, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+						DrawRewardCard(itemType, itemDetail, itemGrade, itemLv + 1, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X - (FPS - menuFrame) * REWARDCARDSIZE_X / 2) * zoom, y + (float)(DY / 2 + 148 * _2X + (FPS - menuFrame) * REWARDCARDSIZE_Y / 2) * zoom, false, (float)(2 + FPS - menuFrame) * zoom, true, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 					}
 					else if (menuFrame >= FPS * 1 / 3) {
 						DrawEffect(EFFECT_HOLY0 + (menuFrame % 10), x + (float)(DX / 2) * zoom, y + (float)(DY / 2 + 148 * _2X - REWARDCARDSIZE_Y) * zoom, LEFT, false, 2.0f * zoom, cvtDest, cvtLayer, buffering);
@@ -1118,7 +1116,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 
 					}
 
-					DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (DY / 2 + 148 * _2X) * zoom, false, (float)2 * zoom, true, true, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+					DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (DY / 2 + 148 * _2X) * zoom, false, (float)2 * zoom, true, true, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 					DrawEffect(EFFECT_LEVELUP_TEXT0 + (frame / 2) % 14, x + (float)(DX / 2) * zoom, y + (float)(DY / 2 + 128 * _2X + 32 * _2X) * zoom, 0, false, (float)3 * zoom, cvtDest, cvtLayer, buffering);
 
@@ -1182,7 +1180,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 							curStar = maxStar = GetItemStar(itemTypeNext, itemDetailNext, itemGradeNext);
 						}
 
-						DrawRewardCard(itemTypeNext, itemDetailNext, itemGradeNext, itemLv, itemCnt, x + DX / 2 - ITEMCARDSIZE_X / 2, y + DY / 2 + (menuFrame - (10 * 3 + 10 * 2 + 10 * 1 + 5 * 2 + 8 * 2 + 8 * 2 * 2)) * 8 * _2X, false, 2, true, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+						DrawRewardCard(itemTypeNext, itemDetailNext, itemGradeNext, itemLv, itemCnt, x + DX / 2 - ITEMCARDSIZE_X / 2, y + DY / 2 + (menuFrame - (10 * 3 + 10 * 2 + 10 * 1 + 5 * 2 + 8 * 2 + 8 * 2 * 2)) * 8 * _2X, false, 2, true, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 					}
 
 					if (menuFrame / 2 % 3 == 2)
@@ -1227,7 +1225,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 						curStar = maxStar = GetItemStar(itemTypeNext, itemDetailNext, itemGradeNext);
 					}
 
-					DrawRewardCard(itemTypeNext, itemDetailNext, itemGradeNext, itemLv, itemCnt, x + DX / 2 - ITEMCARDSIZE_X / 2, y + DY / 2 + 108 * _2X, false, 2.0f, true, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+					DrawRewardCard(itemTypeNext, itemDetailNext, itemGradeNext, itemLv, itemCnt, x + DX / 2 - ITEMCARDSIZE_X / 2, y + DY / 2 + 108 * _2X, false, 2.0f, true, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 					//강화성공시
 					DrawEffect(EFFECT_LEVELUP_TEXT0 + (frame / 2) % 14, x + DX / 2, y + DY / 2 + 108 * _2X + 32 * _2X, 0, false, 3.0f, cvtDest, cvtLayer, buffering);
@@ -1520,7 +1518,7 @@ void CalendarDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				curStar = maxStar = GetItemStar(calendarInfo1Week[week * 4 * 10 + i * 4 + 0], calendarInfo1Week[week * 4 * 10 + i * 4 + 1], calendarInfo1Week[week * 4 * 10 + i * 4 + 2]);
 			}
 
-			DrawRewardCard(calendarInfo1Week[week * 4 * 10 + i * 4 + 0], calendarInfo1Week[week * 4 * 10 + i * 4 + 1], calendarInfo1Week[week * 4 * 10 + i * 4 + 2], 1, calendarInfo1Week[week * 4 * 10 + i * 4 + 3], x + (float)(calendarPos[4 * i + 0]) * zoom, y + (float)(calendarPos[4 * i + 1]) * zoom, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+			DrawRewardCard(calendarInfo1Week[week * 4 * 10 + i * 4 + 0], calendarInfo1Week[week * 4 * 10 + i * 4 + 1], calendarInfo1Week[week * 4 * 10 + i * 4 + 2], 1, calendarInfo1Week[week * 4 * 10 + i * 4 + 3], x + (float)(calendarPos[4 * i + 0]) * zoom, y + (float)(calendarPos[4 * i + 1]) * zoom, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 			//DrawLabel(x + (float)(calendarPos[4 * i + 0] - 2 * _2X) * zoom, y + (float)(calendarPos[4 * i + 1] + 25 * _2X) * zoom, TEXT_CALENDAR_DAY1 + i - 1, zoom, cvtDest, cvtLayer, buffering);
 			//DrawTextButton(x + (float)(calendarPos[4 * i + 0] + 0 * _2X) * zoom, y + (float)(calendarPos[4 * i + 1] + 25 * _2X) * zoom, (float)(64 * _2X) * zoom, (float)(28 * _2X) * zoom, false, robin.calendarDayStatus[i - 1] == CALENDAR_REWARDSTATUS_REWARDGET ? 32 : 0, zoom, false, TEXT_CALENDAR_DAY1 + i - 1, cvtDest, cvtLayer, buffering);
@@ -1544,7 +1542,7 @@ void CalendarDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 					curStar = maxStar = GetItemStar(calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 0], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 1], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 2]);
 				}
 
-				DrawRewardCard(calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 0], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 1], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 2], 1, calendarInfo1Week[week * 4 * 10 + i * 4 + 3], x + (float)(calendarPos[4 * i + 0] + 24 * _2X + j * (76 * _2X)) * zoom, y + (float)(calendarPos[4 * i + 1]) * zoom, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+				DrawRewardCard(calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 0], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 1], calendarInfo1Week[week * 4 * 10 + (i + j) * 4 + 2], 1, calendarInfo1Week[week * 4 * 10 + i * 4 + 3], x + (float)(calendarPos[4 * i + 0] + 24 * _2X + j * (76 * _2X)) * zoom, y + (float)(calendarPos[4 * i + 1]) * zoom, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 			}
 
 			//DrawLabel(x + (float)(calendarPos[4 * i + 0] + calendarPos[4 * i + 2] / 2 - ITEMCARDSIZE_X / 2 - 2 * _2X) * zoom, y + (float)(calendarPos[4 * i + 1] + 25 * _2X) * zoom, TEXT_CALENDAR_DAY1 + i - 1, zoom, cvtDest, cvtLayer, buffering);
@@ -2184,7 +2182,7 @@ void NewCardDraw(void)
 
 	if (newCardFrame >= GACHADELAY_BOXDROP) {
 		zoom = Min(2.5f, 0.3f * (newCardFrame - GACHADELAY_BOXDROP));
-		DrawRewardCard(newItemType[curNewItemIdx], newItemDetail[curNewItemIdx], newItemGrade[curNewItemIdx], 0, false, DX / 2 - (float)REWARDCARDSIZE_X / 2 * zoom, STATUSWIN_Y + Min(200 * _2X, 20 * _2X * (newCardFrame - GACHADELAY_BOXDROP)) + (float)REWARDCARDSIZE_Y / 2 * zoom, true, zoom, true, true, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+		DrawRewardCard(newItemType[curNewItemIdx], newItemDetail[curNewItemIdx], newItemGrade[curNewItemIdx], 0, false, DX / 2 - (float)REWARDCARDSIZE_X / 2 * zoom, STATUSWIN_Y + Min(200 * _2X, 20 * _2X * (newCardFrame - GACHADELAY_BOXDROP)) + (float)REWARDCARDSIZE_Y / 2 * zoom, true, zoom, true, true, true, curStar, maxStar, true, 0, gScreenBuffer, gScreenLayer, false);
 	}
 
 	if (newCardFrame >= GACHADELAY_BOXOPEN) {
@@ -2261,7 +2259,7 @@ void NewCardDraw(void)
 				curStar = maxStar = GetItemStar(newItemType[i], newItemDetail[i], newItemGrade[i]);
 			}
 
-			DrawRewardCard(newItemType[i], newItemDetail[i], newItemGrade[i], 0, false, xOffset + DX / 2 - width / 2 + (float)(BOXSIZE_X * 0.7f + 4 * _2X) * (i - curNewItemIdx), STATUSWIN_Y - 4 * _2X, true, 0.7f, true, true, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(newItemType[i], newItemDetail[i], newItemGrade[i], 0, false, xOffset + DX / 2 - width / 2 + (float)(BOXSIZE_X * 0.7f + 4 * _2X) * (i - curNewItemIdx), STATUSWIN_Y - 4 * _2X, true, 0.7f, true, true, true, curStar, maxStar, true, 0, gScreenBuffer, gScreenLayer, false);
 		}
 
 		DrawNum(remainNewItemCnt, DX / 2 - 8 * _2X, STATUSWIN_Y - 52 * _2X, NUM_FONT_NORMAL, RIGHT, false, false, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
@@ -2424,7 +2422,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					curStar = maxStar = GetItemStar(rewardType, rewardDetail, rewardGrade);
 				}
 
-				DrawRewardCard(rewardType, rewardDetail, rewardGrade, 1, rewardCnt, x + (float)(DX / 2 - (rewardItemCnt) * (REWARDCARDSIZE_X + 4 * _2X) * 1.5f / 2 + i * (REWARDCARDSIZE_X + 2 * _2X) * 1.5f + 38 * _2X) * zoom, y - (float)(224 * _2X) * zoom + yGap, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, cvtDest, cvtLayer, buffering);
+				DrawRewardCard(rewardType, rewardDetail, rewardGrade, 1, rewardCnt, x + (float)(DX / 2 - (rewardItemCnt) * (REWARDCARDSIZE_X + 4 * _2X) * 1.5f / 2 + i * (REWARDCARDSIZE_X + 2 * _2X) * 1.5f + 38 * _2X) * zoom, y - (float)(224 * _2X) * zoom + yGap, false, 1.5f * zoom, false, false, true, curStar, maxStar, true, 0, cvtDest, cvtLayer, buffering);
 
 			}
 			//width = (float)(ITEMICONSIZE * 1.5f + 4 * _2X) * goldZoom + GetBigNumGoldDx(betCnt, false, FONT_GOLD_LARGE, false, true, (float)(256 * _2X - 32 * _2X) * zoom, goldZoom);
@@ -2639,7 +2637,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 			int itemCnt;
 
 			if (stageInfoCurFrame == STAGECLEARDELAY_BOXDROP) {
-				boxMark[0].jokboIcon = true;
+				boxMark[0].openFrame = true;
 				InitReward();
 
 				for (i = 0; i < BOX1MAXREWARDITEM; i++) {
@@ -3110,11 +3108,11 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					maxStar = crewData[detail * CREWDATASIZE + CREWDATASIZE - 1] + 1;
 					signed long long upgradePrice = crewStarUpgradeGold[stage * MAXCREW * CREWMAXUPGRADELV + i * (CREWMAXUPGRADELV)+curStar] / CREWUPGRADEPER;
 
-					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(14 * _2X) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * i * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, cvtDest, cvtLayer, buffering);
+					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(14 * _2X) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * i * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, 0, cvtDest, cvtLayer, buffering);
 
 					//DrawBuyButton(x + (float)(14 * _2X) * zoom + (float)50 * _2X * zoom, y - (float)(298 * _2X + 16 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * i * 1.2f * zoom, (float)(160 * _2X) * zoom, (float)(32 * _2X) * zoom, frame, false, 100000000, CURRENCY_GOLD, zoom, false, false, false, cvtDest, cvtLayer, buffering);
 
-					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(10 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * (i / 2) * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, cvtDest, cvtLayer, buffering);
+					//DrawRewardCard(ITEM_CREW, detail, GRADE_NORMAL, 1, 1, x + (float)(10 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom, y - (float)(298 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 8 * _2X) * (i / 2) * 1.2f * zoom, false, 1.2f * zoom, false, false, false, curStar, maxStar, 0, cvtDest, cvtLayer, buffering);
 
 					if (stageUpgradeMotion[i] > 0 && stageUpgradeMotion[i] < 11) {
 						ao[NPC].cmf = ao[NPC].type = ROBIN;
@@ -3312,6 +3310,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				false,
 				menuCur != i ? (TOUCH_FUNC_MENUCUR_CREW1 + i) : false,
 				menuCur == i ? itemColor[frame % 6] : false,
+				0,
 				cvtDest,
 				cvtLayer,
 				buffering
@@ -3357,6 +3356,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				false,
 				TOUCH_FUNC_MENUCUR_CREW1 + i,
 				menuCur == i ? itemColor[frame % 6] : false,
+				0,
 				cvtDest,
 				cvtLayer,
 				buffering
@@ -3390,9 +3390,9 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	
 
 
-	SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-	DrawImage(174, 138, 293, 870, x + (float)(50 + (182 * (menuCur % 3))) * zoom, y - (float)(160 + 136 * (menuCur / 3)) * zoom, false, false, false, false, false, 1.0f * zoom, sprite[MENU_CREW_IMG], cvtDest, cvtLayer, MENU_CREW_IMG, buffering);
-	SetAlpha(32);
+	//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
+	//DrawImage(174, 138, 293, 870, x + (float)(50 + (182 * (menuCur % 3))) * zoom, y - (float)(160 + 136 * (menuCur / 3)) * zoom, false, false, false, false, false, 1.0f * zoom, sprite[MENU_CREW_IMG], cvtDest, cvtLayer, MENU_CREW_IMG, buffering);
+	//SetAlpha(32);
 
 	// 2. 크루 리스트
 	SetSectionClip(0, y - (float)320 * zoom, DX, WINY - (float)340 * zoom, false);
@@ -3432,13 +3432,14 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			cardX,
 			cardY,
 			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
-			1.0f * zoom,
+			CARDDEFAULTZOOM* zoom,
 			false,
 			false,
 			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
 			//itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
 			//menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] + i : false,
 			false,
+			0,
 			cvtDest,
 			cvtLayer,
 			buffering
@@ -3479,7 +3480,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		//CenterText(TEXT_CREW_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
 		//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
-		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, 1.0f * zoom, false, false, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.0f * zoom, false, false, cvtDest, cvtLayer, buffering);
 		
 		//최외각 테두리
 		MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK* zoom, cvtDest, cvtLayer, buffering);
@@ -3537,7 +3538,91 @@ void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, 
 	OBJECT* pObj = &ao[curHero];
 	long long realValue;
 	float numWidth = (float)(32 * _2X) * zoom;
-	DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x, y, false, zoom, true, false, true, star, star, star, cvtDest, cvtLayer, buffering);
+	DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x, y, false, zoom, true, false, true, star, star, star, 0, cvtDest, cvtLayer, buffering);
+}
+
+void DrawItemCardBack(
+	int itemStar,
+	int x,
+	int y,
+	float zoom,
+	int backFrame,
+	cocos2d::RenderTexture* cvtDest,
+	cocos2d::Layer* cvtLayer,
+	bool buffering
+)
+{
+	const int CARD_BACK_W = 240;
+	const int CARD_BACK_H = 332;
+	const int CARD_BACK_COL = 4;
+
+	int frameIdx =
+		backFrame - 1;
+
+	int xs =
+		(frameIdx % CARD_BACK_COL) *
+		CARD_BACK_W;
+
+	int ys =
+		(frameIdx / CARD_BACK_COL) *
+		CARD_BACK_H;
+
+	float frontX =
+		x +
+		(float)equipBgData[
+			(itemStar - 1) * 6 + 4
+		] * zoom;
+
+	float frontY =
+		y -
+		(float)equipBgData[
+			(itemStar - 1) * 6 + 5
+		] * zoom;
+
+	float frontW =
+		(float)equipBgData[
+			(itemStar - 1) * 6 + 0
+		] * zoom;
+
+	float frontH =
+		(float)equipBgData[
+			(itemStar - 1) * 6 + 1
+		] * zoom;
+
+	float scaleX =
+		frontW /
+		(float)CARD_BACK_W;
+
+	float scaleY =
+		frontH /
+		(float)CARD_BACK_H;
+
+	DrawImageScale(
+		CARD_BACK_W,
+		CARD_BACK_H,
+		xs,
+		ys,
+
+		frontX,
+		frontY,
+
+		false,
+		false,
+		false,
+		false,
+		false,
+
+		scaleX,
+		scaleY,
+
+		sprite[CARD_IMG],
+
+		cvtDest,
+		cvtLayer,
+
+		CARD_IMG,
+		buffering
+	);
 }
 
 void DrawItemCard(
@@ -3554,6 +3639,7 @@ void DrawItemCard(
 	int buttonTouchFunc,
 	int cardTouchFunc,
 	int selectedFrame,
+	int backFrame,	// 0: 앞면, 1~7: 카드 뒷면 프레임
 	cocos2d::RenderTexture* cvtDest,
 	cocos2d::Layer* cvtLayer,
 	bool buffering
@@ -3562,6 +3648,29 @@ void DrawItemCard(
 	int i;
 	int itemStar = 1;
 	int invenIdx = 0;
+
+	//--------------------------------------------------------
+	// 카드 뒷면 공개 애니메이션
+	//
+	// backFrame
+	// 0   : 기존 카드 앞면
+	// 1~7 : CARD_IMG의 0~6번 뒷면 이미지
+	//--------------------------------------------------------
+	if (backFrame >= 1 && backFrame <= 7)
+	{
+		DrawItemCardBack(
+			itemStar,
+			x,
+			y,
+			zoom,
+			backFrame,
+			cvtDest,
+			cvtLayer,
+			buffering
+		);
+
+		return;
+	}
 
 	if (empty == false)
 		itemStar = GetItemStar(itemType, itemDetail, itemGrade);
@@ -3573,11 +3682,11 @@ void DrawItemCard(
 		equipBgData[(itemStar - 1) * 6 + 1],
 		equipBgData[(itemStar - 1) * 6 + 2],
 		equipBgData[(itemStar - 1) * 6 + 3],
-		x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.55f * zoom,
-		y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.55f * zoom,
+		x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
+		y - (float)equipBgData[(itemStar - 1) * 6 + 5] * zoom,
 		false, false, false, false, false,
-		0.55f * zoom,
-		0.55f * zoom,
+		zoom,
+		zoom,
 		sprite[MENU_EQUIP_IMG],
 		cvtDest,
 		cvtLayer,
@@ -3589,10 +3698,10 @@ void DrawItemCard(
 
 	if (selectedFrame) {
 		MemRectFrameThick(
-			x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.55f * zoom,
-			y - (float)(equipBgData[(itemStar - 1) * 6 + 5] + 8) * 0.55f * zoom,
-			equipBgData[(itemStar - 1) * 6 + 0] * 0.55f * zoom,
-			(equipBgData[(itemStar - 1) * 6 + 1] - 8) * 0.55f * zoom,
+			x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
+			y - (float)(equipBgData[(itemStar - 1) * 6 + 5] + 8) * zoom,
+			equipBgData[(itemStar - 1) * 6 + 0] * zoom,
+			(equipBgData[(itemStar - 1) * 6 + 1] - 8) * zoom,
 			selectedFrame,
 			1 * _2X,
 			cvtDest,
@@ -3603,9 +3712,9 @@ void DrawItemCard(
 
 	if (empty) {
 		DrawPlusMark(
-			x + (float)48 * zoom,
-			y - (float)24 * zoom,
-			0.8f * zoom,
+			x + (float)88 * zoom,
+			y - (float)44 * zoom,
+			1.45f * zoom,
 			cvtDest,
 			cvtLayer,
 			buffering
@@ -3620,16 +3729,16 @@ void DrawItemCard(
 			int crewCmf = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
 			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
 			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (ani == true ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
-				x + (float)66 * zoom,
-				y - (float)110 * zoom, 
-				RIGHT, enemyZoom[crewType] * 1.2f * zoom, cvtDest, cvtLayer, buffering);
+				x + (float)120 * zoom,
+				y - (float)200 * zoom, 
+				RIGHT, enemyZoom[crewType] * 2.2f * zoom, cvtDest, cvtLayer, buffering);
 		}
 		else {
 			DrawIcon(
 				GetItemIcon(itemType, itemDetail, itemGrade),
-				x + (float)40 * zoom,
-				y - (float)52 * zoom,
-				1.8f * zoom,
+				x + (float)72 * zoom,
+				y - (float)94 * zoom,
+				3.3f * zoom,
 				COLOR_BROWN,
 				false,
 				true,
@@ -3644,32 +3753,32 @@ void DrawItemCard(
 		grayScale = 0;
 
 		if (itemLv == 0) {
-			CenterTextStr("?", x + (float)(66) * zoom, y - (float)(80) * zoom, 1.5f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom, cvtDest, cvtLayer, buffering);
 		
 			//SetAlpha(24);
 			//MemRect(x + (float)4 * zoom, y - (float)128 * zoom, (float)120 * zoom, (float)24 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
 			//SetAlpha(32);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%s", textId[GetItemName(itemType, itemDetail, itemGrade)]);
-			CenterTextStr(tempStr, x + (float)(66) * zoom, y - (float)(158) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(284) * zoom, 1.6f * zoom, cvtDest, cvtLayer, buffering);
 
 		}
 		else {
 			SetAlpha(24);
-			MemRect(x + (float)4 * zoom, y - (float)128 * zoom, (float)120 * zoom, (float)24 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
+			MemRect(x + (float)12 * zoom, y - (float)234 * zoom, (float)220 * zoom, (float)44 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
 			SetAlpha(32);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "LV %d", itemLv);
-			CenterTextStr(tempStr, x + (float)(66) * zoom, y - (float)(132) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(240) * zoom, 1.45f * zoom, cvtDest, cvtLayer, buffering);
 
 			//CenterText(text, x + (float)72 * zoom, y - (float)132 * zoom, zoom, cvtDest, cvtLayer, buffering);
 	//DrawRoundBar(x + (float)8 * zoom, y - (float)132 * zoom, 0.25f, ROUNDBAR_BIG, BARCOLOR_YELLOW, false, 0.25f * zoom, cvtDest, cvtLayer, buffering);
 	//DrawImageScale(176, 40, 1, 679, x + (float)200 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-			DrawImageScale(235, 37, 1, 684, x + (float)8 * zoom, y - (float)(152) * zoom, false, false, false, false, false, 0.5f * zoom, 0.8f * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+			DrawImageScale(235, 37, 1, 684, x + (float)16 * zoom, y - (float)(276) * zoom, false, false, false, false, false, 0.5f / 0.55f * zoom, 0.8f / 0.55f * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
-			CenterTextStr(tempStr, x + (float)66 * zoom, y - (float)158 * zoom, zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)284 * zoom, 1.6f * zoom, cvtDest, cvtLayer, buffering);
 
 			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
 
@@ -3678,23 +3787,23 @@ void DrawItemCard(
 
 			SetColor(COLOR_BLACK);
 			for (i = 0; i < 4; i++) {
-				DrawImageScale(56, 55, 1, 722, x - (float)8 * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(180 - 55 * 0.5f * yScale) * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.6f * zoom, 0.5f * yScale * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+				DrawImageScale(56, 55, 1, 722, x - (float)1 * _2X * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(180 - 55 * 0.5f * yScale) / 0.55f * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.6f / 0.55f * zoom, 0.5f / 0.55f * yScale * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
 			}
 			SetColor(false);
-			DrawImageScale(56, 55, 1, 722, x - (float)8 * zoom, y - (float)(180 - 55 * 0.5f * yScale) * zoom, false, false, false, false, false, 0.6f * zoom, 0.5f * yScale * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+			DrawImageScale(56, 55, 1, 722, x - (float)1 * _2X * zoom, y - (float)(180 - 55 * 0.5f * yScale) / 0.55f * zoom, false, false, false, false, false, 0.6f / 0.55f * zoom, 0.5f * yScale / 0.55f * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
 
 		}
 
 		DrawStar(
 			ICON_STAR,
-			x + (float)68 * zoom,
-			y - (float)12 * zoom,
+			x + (float)122 * zoom,
+			y - (float)24 * zoom,
 			GetItemStar(itemType, itemDetail, itemGrade),
 			GetItemStar(itemType, itemDetail, itemGrade),
 			GetItemStar(itemType, itemDetail, itemGrade),
 			CENTER,
 			false,
-			0.7f * zoom,
+			1.27f * zoom,
 			cvtDest,
 			cvtLayer,
 			buffering
@@ -3703,17 +3812,17 @@ void DrawItemCard(
 
 	
 	if (cardTouchFunc) {
-		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.55f * zoom,
-			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.55f * zoom,
-			(float)equipBgData[(itemStar - 1) * 6 + 0] * 0.55f * zoom,
-			(float)equipBgData[(itemStar - 1) * 6 + 1] * 0.55f * zoom,
+		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
+			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 0] * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 1] * zoom,
 			cardTouchFunc);
 	}
 	if (buttonTouchFunc) {
-		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * 0.55f * zoom,
-			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * 0.55f * zoom - (float)equipBgData[(itemStar - 1) * 6 + 1] * 0.55f * zoom * 3 / 4,
-			(float)equipBgData[(itemStar - 1) * 6 + 0] * 0.55f * zoom,
-			(float)equipBgData[(itemStar - 1) * 6 + 1] * 0.55f * zoom / 4,
+		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
+			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * zoom - (float)equipBgData[(itemStar - 1) * 6 + 1] * zoom * 3 / 4,
+			(float)equipBgData[(itemStar - 1) * 6 + 0] * zoom,
+			(float)equipBgData[(itemStar - 1) * 6 + 1] * zoom / 4,
 			buttonTouchFunc);
 	}
 }
@@ -3778,11 +3887,12 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 				slotX,
 				slotY,
 				TEXT_NOTACQUIRED,
-				zoom,
+				CARDDEFAULTZOOM * 0.8f * zoom,
 				false,
 				false,
 				menuX != i ? TOUCH_FUNC_MENUX_1 + i : 0,
 				menuX == i ? itemColor[frame % 6] : false,
+				0,
 				cvtDest,
 				cvtLayer,
 				buffering
@@ -3803,11 +3913,12 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 				slotX,
 				slotY,
 				TEXT_SOCKETING,
-				0.8f * zoom,
+				CARDDEFAULTZOOM * 0.8f * zoom,
 				false,
 				false,
 				TOUCH_FUNC_ITEMDETAIL + GetInvenIdx(itemType, itemDetail, itemGrade),
 				menuX == i ? itemColor[frame % 6] : false,
+				0,
 				cvtDest,
 				cvtLayer,
 				buffering
@@ -3907,11 +4018,12 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 			cardX,
 			cardY,
 			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
-			0.9f * zoom,
+			CARDDEFAULTZOOM * 0.9f * zoom,
 			false,
 			itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
 			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
 			false,
+			0,
 			cvtDest,
 			cvtLayer,
 			buffering
@@ -4462,12 +4574,12 @@ void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 		//상자
 		DrawImageScale(128, 128, 587, 737, slotX + (float)350 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-		DrawBox(BOX_CASTLE0 + i, slotX + (float)342 * zoom, slotY + (float)8 * zoom, LEFT, 0, false, false, false, false, BOXCASTLEZOOM * 0.9f, cvtDest, cvtLayer, buffering);
+		DrawBox(BOX_CASTLE0 + i, slotX + (float)400 * zoom, slotY + (float)56 * zoom, LEFT, 0, false, false, false, false, BOXCASTLEZOOM * 0.9f, cvtDest, cvtLayer, buffering);
 
 		GoldBarDraw(castleBoxGold[castleOrder[i]], ICON_GOLD, slotX + (float)332 * zoom, slotY - (float)108 * zoom, false, 0.6f * zoom, cvtDest, cvtLayer, buffering);
 		//획득시 캐릭터
 		//DrawImageScale(128, 128, 587, 737, slotX + (float)480 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-		DrawItemCard(ITEM_CREW, i * 2, GRADE_NORMAL, 1, false, slotX + (float)480 * zoom, slotY + (float)8 * zoom, TEXT_ALPHA_REWARD, 0.8f * zoom, false, false, false, false, cvtDest, cvtLayer, buffering);
+		DrawItemCard(ITEM_CREW, i * 2, GRADE_NORMAL, 1, false, slotX + (float)480 * zoom, slotY + (float)8 * zoom, TEXT_ALPHA_REWARD, CARDDEFAULTZOOM * 0.8f * zoom, false, false, false, false, 0, cvtDest, cvtLayer, buffering);
 	}
 
 	int scrollH = WINY - (float)(420 + 184 * 0) * zoom;

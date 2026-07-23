@@ -3,36 +3,6 @@
 #include "Func.h"
 #include "Text.h"
 
-void DrawWindow2(int x, int y, int w, int h, int color, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
-{
-	int i;
-	int cnt;
-
-	MemRect(x, y, (float)w * zoom, (float)h * zoom, color, cvtDest, cvtLayer, buffering);
-
-	//°¡·Î
-	cnt = (w - 32 * _2X) / (16 * _2X) + ((w - 32 * _2X) % (16 * _2X) == 0 ? 0 : 1);
-
-	for (i = 0; i < cnt; i++) {
-		DrawImage(16 * _2X, 7 * _2X, 0 * _2X, 106 * _2X, x + (float)(16 * _2X + i * 16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-		DrawImage(16 * _2X, 7 * _2X, 0 * _2X, 113 * _2X, x + (float)(16 * _2X + i * 16 * _2X) * zoom, y - (float)h * zoom + (float)7 * _2X * zoom, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-	}
-
-	//¼¼·Î
-	cnt = (h - 32 * _2X) / (16 * _2X) + ((h - 32 * _2X) % (16 * _2X) == 0 ? 0 : 1);
-
-	for (i = 0; i < cnt; i++) {
-		DrawImage(6 * _2X, 16 * _2X, 16 * _2X, 106 * _2X, x, y + (float)(-16 * _2X - i * 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-		DrawImage(7 * _2X, 16 * _2X, 22 * _2X, 106 * _2X, x + (float)w * zoom - (float)(7 * _2X) * zoom, y + (float)(-16 * _2X - i * 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-	}
-
-	//4±ÍÅüÀÌ
-	DrawImage(16 * _2X, 16 * _2X, 0 * _2X, 90 * _2X, x, y, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-	DrawImage(16 * _2X, 16 * _2X, 16 * _2X, 90 * _2X, x + (float)w * zoom - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-	DrawImage(16 * _2X, 16 * _2X, 32 * _2X, 90 * _2X, x, y - (float)h * zoom + (float)(16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-	DrawImage(16 * _2X, 16 * _2X, 48 * _2X, 90 * _2X, x + (float)w * zoom - (float)(16 * _2X) * zoom, y - (float)h * zoom + (float)(16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WINDOW_IMG], cvtDest, cvtLayer, WINDOW_IMG, buffering);
-
-}
 
 //¹è°æ
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
@@ -601,9 +571,9 @@ void TitleDraw(void)
 
 			touchDisable = false;
 
-			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 1.0f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0, gScreenBuffer, gScreenLayer, false);
 			
-			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 1.0f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0, gScreenBuffer, gScreenLayer, false);
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
 
@@ -620,7 +590,7 @@ void TitleDraw(void)
 			//DrawTextButton(DX / 2 - 32 * _2X, DY / 2 - 208 * _2X, 64 * _2X, 28 * _2X, frame, false, 1.0f, false, TEXT_CONTINUE, gScreenBuffer, gScreenLayer, false);
 			//SetRectPoint(DX / 2 - 32 * _2X - 8 * _2X, DY / 2 - 208 * _2X + 8 * _2X, 64 * _2X + 16 * _2X, 28 * _2X + 16 * _2X, TOUCH_FUNC_GOTOPLAY);
 
-			//DrawRewardCard(ITEM_SWORD, 1, GRADE_NORMAL, 1, 1, DX / 2, DY / 2, false, 2.0f, true, false, true, STAR3 + 1, STAR3 + 1, true, gScreenBuffer, gScreenLayer, false);
+			//DrawRewardCard(ITEM_SWORD, 1, GRADE_NORMAL, 1, 1, DX / 2, DY / 2, false, 2.0f, true, false, true, STAR3 + 1, STAR3 + 1, true, 0, gScreenBuffer, gScreenLayer, false);
 			//if (robin.bossRoom == true) {
 			//	GotoBoss();
 
@@ -1683,7 +1653,6 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 
 	//DrawWindow5(x + (float)(16 * _2X) * zoom, y - (float)(124 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 152 * _2X) * zoom, CASTLE3, zoom, cvtDest, cvtLayer, buffering);
 
-	DrawWindow2(x + (float)(POPUPWINDOWSIZE_X / 2 - (POPUPWINDOWSIZE_X / 2) / 2) * zoom, y + (float)(8 * _2X) * zoom, POPUPWINDOWSIZE_X / 2, 32 * _2X, COLOR_NAVY, zoom, cvtDest, cvtLayer, buffering);
 	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
 	for (i = BOSSRAIDSIZE - 1; i >= 0; i--) {

@@ -49,7 +49,7 @@ const int solidPosition[] = {
     0 * _2X, -1 * _2X,
 };
 
-const int jokboIcon[] = {
+const int openFrame[] = {
     ICON_GOLD,
     ICON_GOLDBAG,
     ICON_HEART,

@@ -879,12 +879,15 @@ typedef struct _iconMark {
 	bool ani;
 
 	int owner;//ao???¸ë±??
-	int jokboIcon;//ë°•ìŠ¤??ê²½ìš°?ëŠ” ?¸ë£¨
+	int openFrame;//ë°•ìŠ¤??ê²½ìš°?ëŠ” ?¸ë£¨
 	bool star;
 	bool cardFrame;
 	bool newItem;
 
 	int bar;//?´ë–¤ ë°”ë? ?¥í•´ ê°€???˜ëŠ”ì§€.
+	bool manual;
+	int motion;
+	int motionFrame;
 } ICONMARK;
 
 typedef struct _iconMarkArr {
@@ -929,7 +932,7 @@ typedef struct _iconMarkArr {
 	bool ani;
 
 	int owner;//ao???¸ë±??
-	bool jokboIcon;//ë°•ìŠ¤??ê²½ìš°?ëŠ” ?¸ë£¨
+	bool openFrame;//ë°•ìŠ¤??ê²½ìš°?ëŠ” ?¸ë£¨
 	bool star;
 	bool cardFrame;
 
@@ -2361,4 +2364,5 @@ extern int joyDir;
 extern bool joyPressed;
 extern bool joyReturning;
 extern float joyReturnSpeed; // ³ôÀ»¼ö·Ï ºü¸£°Ô º¹±Í
+
 #endif

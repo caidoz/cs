@@ -1464,7 +1464,7 @@ void PaintClet(int x, int y, int w, int h)
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
 			}
 
-			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom2, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom2, false, rewardMark[i].zoom2, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom2, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom2, false, rewardMark[i].zoom2, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
 
 		}
 		else if (rewardMark[i].frame > 0) {
@@ -1517,7 +1517,7 @@ void PaintClet(int x, int y, int w, int h)
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
 			}
 
-			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom, false, rewardMark[i].zoom, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom, false, rewardMark[i].zoom, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
 
 
 		}
@@ -1703,20 +1703,20 @@ void PaintClet(int x, int y, int w, int h)
 				boxMark[i].frame2++;
 			}
 
-			if (boxMark[i].jokboIcon > 0) {
-				boxMotion = OBJ_BOX0 + Min(3 + (boxMark[i].jokboIcon / MOTIONDIV / MOTIONDIV) % 4, (boxMark[i].jokboIcon / MOTIONDIV));
+			//if (boxMark[i].openFrame > 0) {
+			//	boxMotion = OBJ_BOX0 + Min(3 + (boxMark[i].openFrame / MOTIONDIV / MOTIONDIV) % 4, (boxMark[i].openFrame / MOTIONDIV));
 
-				boxMark[i].jokboIcon++;
-			}
+			//	boxMark[i].openFrame++;
+			//}
 
-			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, false, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, boxMark[i].motion, itemColor[frame % 6], true, boxMark[i].openFrame, false, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 
 			//if (boxMark[i].detail == BOX_INGAME)
 			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, LEFT, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 			//else
 			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, itemColor[frame % 6], boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 
-			if (boxMark[i].jokboIcon == true && boxMark[i].detail != BOX_INGAME)
+			if (boxMark[i].openFrame == true && boxMark[i].detail != BOX_INGAME)
 				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom2, LEFT, false, 1.2f * boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 
 		}
@@ -1764,20 +1764,20 @@ void PaintClet(int x, int y, int w, int h)
 				boxMark[i].frame++;
 			}
 
-			if (boxMark[i].jokboIcon > 0) {
-				boxMotion = OBJ_BOX0 + Min(3 + (boxMark[i].jokboIcon / MOTIONDIV / MOTIONDIV) % 4, (boxMark[i].jokboIcon / MOTIONDIV));
+			//if (boxMark[i].openFrame > 0) {
+			//	boxMotion = OBJ_BOX0 + Min(3 + (boxMark[i].openFrame / MOTIONDIV / MOTIONDIV) % 4, (boxMark[i].openFrame / MOTIONDIV));
 
-				boxMark[i].jokboIcon++;
-			}
+			//	boxMark[i].openFrame++;
+			//}
 
-			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, false, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, boxMark[i].motion, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 
 			//if (boxMark[i].detail == BOX_INGAME)
 			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, LEFT, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 			//else
 			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, itemColor[frame % 6], boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 
-			if (boxMark[i].jokboIcon == true && boxMark[i].detail != BOX_INGAME)
+			if (boxMark[i].openFrame == true && boxMark[i].detail != BOX_INGAME)
 				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom, LEFT, false, 1.2f * boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 
 
@@ -1787,26 +1787,27 @@ void PaintClet(int x, int y, int w, int h)
 	//박스가 나오면
 	for (i = 0; i < TOTALCARDMARK; i++) {
 		if (boxCardMark[i].frame2 > 0) {
-			GotoPosition(boxCardMark[i].targetX2, boxCardMark[i].targetY2, i, boxCardMark[i].speed2, ICONMARK_BOXCARD);
-			boxCardMark[i].speed2 += boxCardMark[i].speedIncrement2;
-			boxCardMark[i].zoom2 += boxCardMark[i].zoomIncrement2;
+			if (boxCardMark[i].manual == false) {
+				GotoPosition(boxCardMark[i].targetX2, boxCardMark[i].targetY2, i, boxCardMark[i].speed2, ICONMARK_BOXCARD);
+				boxCardMark[i].speed2 += boxCardMark[i].speedIncrement2;
+				boxCardMark[i].zoom2 += boxCardMark[i].zoomIncrement2;
 
 
-			//만약 증가량이 0보다 크면
-			//end보다 크면 end에서 멈춘다.
-			if (boxCardMark[i].zoomIncrement2 > 0 && boxCardMark[i].zoom2 > boxCardMark[i].zoomEnd2)
-				boxCardMark[i].zoom2 = boxCardMark[i].zoomEnd2;
-			if (boxCardMark[i].zoomIncrement2 < 0 && boxCardMark[i].zoom2 < boxCardMark[i].zoomEnd2)
-				boxCardMark[i].zoom2 = boxCardMark[i].zoomEnd2;
+				//만약 증가량이 0보다 크면
+				//end보다 크면 end에서 멈춘다.
+				if (boxCardMark[i].zoomIncrement2 > 0 && boxCardMark[i].zoom2 > boxCardMark[i].zoomEnd2)
+					boxCardMark[i].zoom2 = boxCardMark[i].zoomEnd2;
+				if (boxCardMark[i].zoomIncrement2 < 0 && boxCardMark[i].zoom2 < boxCardMark[i].zoomEnd2)
+					boxCardMark[i].zoom2 = boxCardMark[i].zoomEnd2;
 
-			if ((boxCardMark[i].targetX2 - boxCardMark[i].x) * (boxCardMark[i].targetX2 - boxCardMark[i].x) + (boxCardMark[i].targetY2 - boxCardMark[i].y) * (boxCardMark[i].targetY2 - boxCardMark[i].y) < 2 * boxCardMark[i].speed2 * boxCardMark[i].speed2 && boxCardMark[i].frame2 >= boxCardMark[i].waitingFrame2) {
-				boxCardMark[i].x = boxCardMark[i].targetX2;
-				boxCardMark[i].y = boxCardMark[i].targetY2;
+				if ((boxCardMark[i].targetX2 - boxCardMark[i].x) * (boxCardMark[i].targetX2 - boxCardMark[i].x) + (boxCardMark[i].targetY2 - boxCardMark[i].y) * (boxCardMark[i].targetY2 - boxCardMark[i].y) < 2 * boxCardMark[i].speed2 * boxCardMark[i].speed2 && boxCardMark[i].frame2 >= boxCardMark[i].waitingFrame2) {
+					boxCardMark[i].x = boxCardMark[i].targetX2;
+					boxCardMark[i].y = boxCardMark[i].targetY2;
+				}
+				else {
+					boxCardMark[i].frame2++;
+				}
 			}
-			else {
-				boxCardMark[i].frame2++;
-			}
-
 			if (boxCardMark[i].type == ITEM_CREW) {
 				curStar = maxStar = enemyData[crewData[boxCardMark[i].detail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
 			}
@@ -1816,51 +1817,53 @@ void PaintClet(int x, int y, int w, int h)
 				maxStar = ITEMMAXLEVEL;
 			}
 
-			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom2, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom2, false, boxCardMark[i].zoom2, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom2, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom2, false, boxCardMark[i].zoom2, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, boxCardMark[i].openFrame, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
 
 		}
 		else if (boxCardMark[i].frame > 0) {
-			GotoPosition(boxCardMark[i].targetX, boxCardMark[i].targetY, i, boxCardMark[i].speed, ICONMARK_BOXCARD);
+			if (boxCardMark[i].manual == false) {
+				GotoPosition(boxCardMark[i].targetX, boxCardMark[i].targetY, i, boxCardMark[i].speed, ICONMARK_BOXCARD);
 
-			boxCardMark[i].speed += boxCardMark[i].speedIncrement;
-			boxCardMark[i].zoom += boxCardMark[i].zoomIncrement;
+				boxCardMark[i].speed += boxCardMark[i].speedIncrement;
+				boxCardMark[i].zoom += boxCardMark[i].zoomIncrement;
 
-			//만약 증가량이 0보다 크면
-			//end보다 크면 end에서 멈춘다.
-			if (boxCardMark[i].zoomIncrement > 0 && boxCardMark[i].zoom > boxCardMark[i].zoomEnd)
-				boxCardMark[i].zoom = boxCardMark[i].zoomEnd;
-			if (boxCardMark[i].zoomIncrement < 0 && boxCardMark[i].zoom < boxCardMark[i].zoomEnd)
-				boxCardMark[i].zoom = boxCardMark[i].zoomEnd;
+				//만약 증가량이 0보다 크면
+				//end보다 크면 end에서 멈춘다.
+				if (boxCardMark[i].zoomIncrement > 0 && boxCardMark[i].zoom > boxCardMark[i].zoomEnd)
+					boxCardMark[i].zoom = boxCardMark[i].zoomEnd;
+				if (boxCardMark[i].zoomIncrement < 0 && boxCardMark[i].zoom < boxCardMark[i].zoomEnd)
+					boxCardMark[i].zoom = boxCardMark[i].zoomEnd;
 
-			if ((boxCardMark[i].targetX - boxCardMark[i].x) * (boxCardMark[i].targetX - boxCardMark[i].x) + (boxCardMark[i].targetY - boxCardMark[i].y) * (boxCardMark[i].targetY - boxCardMark[i].y) < 2 * boxCardMark[i].speed * boxCardMark[i].speed && boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
-				//if (boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
-					//PlayMusic(M_COIN);
-					//두번째 세팅이 있으면 
-				boxCardMark[i].x = boxCardMark[i].targetX;
-				boxCardMark[i].y = boxCardMark[i].targetY;
+				if ((boxCardMark[i].targetX - boxCardMark[i].x) * (boxCardMark[i].targetX - boxCardMark[i].x) + (boxCardMark[i].targetY - boxCardMark[i].y) * (boxCardMark[i].targetY - boxCardMark[i].y) < 2 * boxCardMark[i].speed * boxCardMark[i].speed && boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
+					//if (boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
+						//PlayMusic(M_COIN);
+						//두번째 세팅이 있으면 
+					boxCardMark[i].x = boxCardMark[i].targetX;
+					boxCardMark[i].y = boxCardMark[i].targetY;
 
-				if (boxCardMark[i].targetX2 != 0 || boxCardMark[i].targetY2 != 0) {
-					boxCardMark[i].frame2 = 1;
+					if (boxCardMark[i].targetX2 != 0 || boxCardMark[i].targetY2 != 0) {
+						boxCardMark[i].frame2 = 1;
+					}
+					else {
+						currencyEffect[boxCardMark[i].type].iconFrame += CURRENCYMARKEFFECTFRAME;
+
+						if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 10)
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = 1;
+						else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 100)
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS;
+						else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 1000)
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 2;
+						else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 10000)
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 3;
+						else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 100000)
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 4;
+						else
+							currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 5;
+					}
 				}
 				else {
-					currencyEffect[boxCardMark[i].type].iconFrame += CURRENCYMARKEFFECTFRAME;
-
-					if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 10)
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = 1;
-					else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 100)
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS;
-					else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 1000)
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 2;
-					else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 10000)
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 3;
-					else if (currencyEffect[boxCardMark[i].type].endValue - currencyEffect[boxCardMark[i].type].startValue <= 100000)
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 4;
-					else
-						currencyEffect[boxCardMark[i].type].totalFrame = currencyEffect[boxCardMark[i].type].frame = FPS * 5;
+					boxCardMark[i].frame++;
 				}
-			}
-			else {
-				boxCardMark[i].frame++;
 			}
 
 			if (boxCardMark[i].type == ITEM_CREW) {
@@ -1872,7 +1875,7 @@ void PaintClet(int x, int y, int w, int h)
 				maxStar = ITEMMAXLEVEL;
 			}
 
-			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom, false, boxCardMark[i].zoom, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom, false, boxCardMark[i].zoom, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, curStar, maxStar, true, boxCardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
 
 		}
 	}

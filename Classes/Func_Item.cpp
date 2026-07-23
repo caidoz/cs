@@ -980,8 +980,7 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 
 	//프레임 잡아주기
 	DrawFrame(x + (float)1.5f * 36 * _2X * zoom, y + (float)0 * _2X * zoom, (float)(34 * 3 * _2X + 20 * _2X) * zoom, (float)(yGap * 2 + 0 * _2X) * zoom, FRAME_NORMAL, cvtDest, cvtLayer, buffering);
-	//DrawWindow2()
-
+	
 	//현재 장비
 	//DrawLabel(x - (float)(6 * _2X) * zoom, y + (float)8 * _2X * zoom, TEXT_ALPHA_EQUIP, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 

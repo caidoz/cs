@@ -122,7 +122,6 @@ void DrawTouchButton(int, int, const char*, int, cocos2d::RenderTexture*, cocos2
 void DrawTouchLargeButton(int, int, int, int, const char*, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void DrawAlarmMark(int x, int y, int count, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawPlusMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawEmptySlot(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawXMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawInfoMark(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 
@@ -142,7 +141,7 @@ void DrawRedDot(int x, int y, int color, int num, float zoom, cocos2d::RenderTex
 int GetUpgradeLv(int type);
 void DrawLevelUpCard(int type, int lv, bool locked, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawRewardCardRange(int type, int grade, int detail, long long startCnt, long long endCnt, int x, int y, float zoom, bool cardFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, int openFrame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 float GetEquipIconWidth(int itemType, int itemDetail, int itemGrade, float zoom);
 void DrawEquipIcon(int itemType, int itemDetail, int itemGrade, int x, int y, float zoom, bool iconAni, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void DrawItemValue(int itemType, int itemDetail, int itemGrade, int itemLv, int x, int y, int align, int plusLv, float zoom, float numWidth, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);

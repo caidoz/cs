@@ -5014,7 +5014,7 @@ int SetControlMark(
 	int alpha,
 	bool text, bool value, bool ani,
 	int owner,
-	bool jokboIcon)
+	bool openFrame)
 {
 	int i;
 
@@ -5055,7 +5055,7 @@ int SetControlMark(
 			controlMark[i].value = value;
 			controlMark[i].ani = false; //controlMark[i].ani = ani;
 			controlMark[i].owner = owner;
-			controlMark[i].jokboIcon = jokboIcon;
+			controlMark[i].openFrame = openFrame;
 
 			PlayMusic(M_CARDSPLIT);
 
@@ -5077,7 +5077,7 @@ int GetCardMarkCnt(void)
 }
 
 int SetCardMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
-	int attackType, int attackStr, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int alpha, bool text, bool value, bool ani, int owner, bool jokboIcon)
+	int attackType, int attackStr, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int alpha, bool text, bool value, bool ani, int owner, bool openFrame)
 {
 	int i;
 
@@ -5118,7 +5118,7 @@ int SetCardMark(int startPosX, int startPosY, int targetX, int targetY, int targ
 			cardMark[i].value = value;
 			cardMark[i].ani = false; //cardMark[i].ani = ani;
 			cardMark[i].owner = owner;
-			cardMark[i].jokboIcon = jokboIcon;
+			cardMark[i].openFrame = openFrame;
 
 			PlayMusic(M_CARDSPLIT);
 
@@ -5238,7 +5238,7 @@ int SetBoxMark(int startPosX, int startPosY, int targetX, int targetY, int targe
 			boxMark[i].zoomEnd2 = zoomEnd2;
 			boxMark[i].zoomIncrement2 = zoomIncrement2;
 			boxMark[i].alpha = 0;
-			boxMark[i].jokboIcon = false;
+			boxMark[i].openFrame = false;
 			PlayMusic(M_SELECT);
 
 			return i;
@@ -5299,6 +5299,7 @@ int SetBoxCardMark(int startPosX, int startPosY, int targetX, int targetY, int t
 
 			boxCardMark[i].cardFrame = cardFrame;
 			boxCardMark[i].newItem = newItem;
+			boxCardMark[i].openFrame = 1;
 
 			PlayMusic(M_CARDSPLIT);
 

@@ -141,6 +141,17 @@ void GachaDraw(void);
 void NewCollectionDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void NewCardDraw(void);
 
+void DrawItemCardBack(
+	int itemStar,
+	int x,
+	int y,
+	float zoom,
+	int backFrame,
+	cocos2d::RenderTexture* cvtDest,
+	cocos2d::Layer* cvtLayer,
+	bool buffering
+);
+
 // 동료 편성 메뉴 그리기
 void DrawItemCard(
 	int itemType,
@@ -156,6 +167,7 @@ void DrawItemCard(
 	int buttonTouchFunc,
 	int cardTouchFunc,
 	int selectedFrame,
+	int backFrame,	// 0: 앞면, 1~7: 카드 뒷면 프레임
 	cocos2d::RenderTexture* cvtDest,
 	cocos2d::Layer* cvtLayer,
 	bool buffering
