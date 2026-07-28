@@ -824,8 +824,8 @@ void SetHouseCrew(long long userIdx, int house)
 			crewIdx = GetCrewIdxFromType(housePtr->crew[i]);
 
 			pObj->type = housePtr->crew[i];
-			pObj->x = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 2 + 0];	//x위치
-			pObj->y = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CASTLEIDX] * 2 + 1];	//y위치
+			pObj->x = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CARDBG] * 2 + 0];	//x위치
+			pObj->y = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CARDBG] * 2 + 1];	//y위치
 			pObj->dirX = pObj->dirF = crewData[crewIdx * CREWDATASIZE + 3];
 			pObj->curStar = housePtr->crewCurStar[i];
 			pObj->maxStar = housePtr->crewMaxStar[i];

@@ -3227,7 +3227,7 @@ static inline void BL_SeedRng(uint32_t seed)
 static inline int GetCrewRegionSafeByCrewId(int crewId)
 {
 	int key = CrewIdToCrewDataKey(crewId);      // crewData 인덱스
-	int castlePos = crewData[key * CREWDATASIZE + CREWDATA_CASTLEIDX];
+	int castlePos = crewData[key * CREWDATASIZE + CREWDATA_CARDBG];
 	return RegionFromCastlePos(castlePos);
 }
 

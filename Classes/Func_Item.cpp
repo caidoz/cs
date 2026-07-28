@@ -313,6 +313,12 @@ int DropItem(OBJECT* pObj, int type)
 		}
 	}
 
+	switch (type) {
+	case ITEM_GOLD:
+		PlayMusic(M_COIN);
+		break;
+	}
+
 	return -1;
 }
 

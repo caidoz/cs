@@ -348,7 +348,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 	long long combatPowerGap = CompareCombatPower(&robin.newItem, &ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]]);
 
 	int arrowDirY = DOWN;
-
+	
 	if (combatPowerGap >= 0)
 		arrowDirY = UP;
 
@@ -411,7 +411,37 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			buffering
 		);
 
-		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, crewGrade), FRAME_GREEN, zoom, cvtDest, cvtLayer, buffering);
+		float slotZoom = 0.5f;
+		for (i = 0; i < 3; i++) {
+			float startX = x + (float)16 * zoom;
+			float startY = y - (float)(400 + SLOTSIZE_Y * slotZoom * i) * zoom;
+			
+			DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
+				startX, startY,
+				false, false, false, false, false,
+				slotZoom * zoom, sprite[SLOT_IMG], cvtDest, cvtLayer, SLOT_IMG, buffering);
+
+			for (int j = 0; j < i + 1; j++)
+			{
+				float centerX = startX + (float)24 * j * slotZoom * zoom + (float)reelPostion[j * 2 + 0] * slotZoom * zoom;
+				float centerY = startY + (float)reelPostion[j * 2 + 1] * slotZoom * zoom;
+
+				float baseScale = 2.5f * slotZoom * zoom * enemyIconZoom[crewType];
+
+				ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+					centerX - (float)12 * _2X * 2.5f * slotZoom * zoom,
+					centerY + (float)8 * _2X * 2.5f * slotZoom * zoom,
+					SHADOW_IMG, 2.5f * slotZoom * zoom, cvtDest, cvtLayer, buffering);
+
+				DrawCmfDetail(enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF],
+					crewPos[crewType * 5 + 0],
+					centerX, centerY,
+					RIGHT, baseScale,
+					false, false, cvtDest, cvtLayer, buffering);
+			}
+		}
+
+		DrawTouchLargeButton(x + (float)(200) * zoom, y - (float)(800) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, crewGrade), FRAME_GREEN, 1.5f * zoom, cvtDest, cvtLayer, buffering);
 
 		return;
 		/*
@@ -3480,7 +3510,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		//CenterText(TEXT_CREW_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom, cvtDest, cvtLayer, buffering);
 		//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
-		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.0f * zoom, false, false, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.2f * zoom, false, false, cvtDest, cvtLayer, buffering);
 		
 		//최외각 테두리
 		MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK* zoom, cvtDest, cvtLayer, buffering);
@@ -3615,12 +3645,12 @@ void DrawItemCardBack(
 		scaleX,
 		scaleY,
 
-		sprite[CARD_IMG],
+		sprite[CARDBACK_IMG],
 
 		cvtDest,
 		cvtLayer,
 
-		CARD_IMG,
+		CARDBACK_IMG,
 		buffering
 	);
 }
@@ -3648,6 +3678,8 @@ void DrawItemCard(
 	int i;
 	int itemStar = 1;
 	int invenIdx = 0;
+	int bgIndex = crewData[itemDetail * CREWDATASIZE + CREWDATA_CARDBG];
+
 
 	//--------------------------------------------------------
 	// 카드 뒷면 공개 애니메이션
@@ -3678,6 +3710,23 @@ void DrawItemCard(
 	invenIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
 
 	DrawImageScale(
+		198,
+		288,
+		198 * (bgIndex % 5),
+		288 * (bgIndex / 5),
+		x + (float)18 * zoom,
+		y - (float)22 * zoom,
+		false, false, false, false, false,
+		1.02f * zoom,
+		zoom,
+		sprite[CARDBG_IMG],
+		cvtDest,
+		cvtLayer,
+		CARDBG_IMG,
+		buffering
+	);
+
+	DrawImageScale(
 		equipBgData[(itemStar - 1) * 6 + 0],
 		equipBgData[(itemStar - 1) * 6 + 1],
 		equipBgData[(itemStar - 1) * 6 + 2],
@@ -3687,10 +3736,10 @@ void DrawItemCard(
 		false, false, false, false, false,
 		zoom,
 		zoom,
-		sprite[MENU_EQUIP_IMG],
+		sprite[CARD_IMG],
 		cvtDest,
 		cvtLayer,
-		MENU_EQUIP_IMG,
+		CARD_IMG,
 		buffering
 	);
 
@@ -3713,7 +3762,7 @@ void DrawItemCard(
 	if (empty) {
 		DrawPlusMark(
 			x + (float)88 * zoom,
-			y - (float)44 * zoom,
+			y - (float)72 * zoom,
 			1.45f * zoom,
 			cvtDest,
 			cvtLayer,
@@ -3730,14 +3779,14 @@ void DrawItemCard(
 			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
 			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (ani == true ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
 				x + (float)120 * zoom,
-				y - (float)200 * zoom, 
+				y - (float)240 * zoom, 
 				RIGHT, enemyZoom[crewType] * 2.2f * zoom, cvtDest, cvtLayer, buffering);
 		}
 		else {
 			DrawIcon(
 				GetItemIcon(itemType, itemDetail, itemGrade),
 				x + (float)72 * zoom,
-				y - (float)94 * zoom,
+				y - (float)122 * zoom,
 				3.3f * zoom,
 				COLOR_BROWN,
 				false,
@@ -3764,21 +3813,21 @@ void DrawItemCard(
 
 		}
 		else {
-			SetAlpha(24);
-			MemRect(x + (float)12 * zoom, y - (float)234 * zoom, (float)220 * zoom, (float)44 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
-			SetAlpha(32);
-			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "LV %d", itemLv);
-			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(240) * zoom, 1.45f * zoom, cvtDest, cvtLayer, buffering);
+			//SetAlpha(24);
+			//MemRect(x + (float)16 * zoom, y - (float)234 * zoom, (float)108 * zoom, (float)32 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
+			//SetAlpha(32);
+			//memset(&tempStr, 0, sizeof(tempStr));
+			//sprintf(tempStr, "LV %d", itemLv);
+			//CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(240) * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
-			//CenterText(text, x + (float)72 * zoom, y - (float)132 * zoom, zoom, cvtDest, cvtLayer, buffering);
-	//DrawRoundBar(x + (float)8 * zoom, y - (float)132 * zoom, 0.25f, ROUNDBAR_BIG, BARCOLOR_YELLOW, false, 0.25f * zoom, cvtDest, cvtLayer, buffering);
-	//DrawImageScale(176, 40, 1, 679, x + (float)200 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-			DrawImageScale(235, 37, 1, 684, x + (float)16 * zoom, y - (float)(276) * zoom, false, false, false, false, false, 0.5f / 0.55f * zoom, 0.8f / 0.55f * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+			////CenterText(text, x + (float)72 * zoom, y - (float)132 * zoom, zoom, cvtDest, cvtLayer, buffering);
+			////DrawRoundBar(x + (float)8 * zoom, y - (float)132 * zoom, 0.25f, ROUNDBAR_BIG, BARCOLOR_YELLOW, false, 0.25f * zoom, cvtDest, cvtLayer, buffering);
+			////DrawImageScale(176, 40, 1, 679, x + (float)200 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+			DrawImageScale(222, 46, 0, 664 + 46 * (itemStar - 1), x + (float)24 * zoom, y - (float)(268) * zoom, false, false, false, false, false, 0.9f * zoom, 0.9f * zoom, sprite[CARD_IMG], cvtDest, cvtLayer, CARD_IMG, buffering);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
-			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)284 * zoom, 1.6f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)275 * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 
 			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
 
@@ -3787,23 +3836,23 @@ void DrawItemCard(
 
 			SetColor(COLOR_BLACK);
 			for (i = 0; i < 4; i++) {
-				DrawImageScale(56, 55, 1, 722, x - (float)1 * _2X * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(180 - 55 * 0.5f * yScale) / 0.55f * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.6f / 0.55f * zoom, 0.5f / 0.55f * yScale * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+				DrawImageScale(56, 70, 223 + (itemStar - 1) * 56, 731, x + (float)4 * _2X * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(174 - 55 * 0.5f * yScale) / 0.55f * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.7f * zoom, 0.6f * yScale * zoom, sprite[CARD_IMG], cvtDest, cvtLayer, CARD_IMG, buffering);
 			}
 			SetColor(false);
-			DrawImageScale(56, 55, 1, 722, x - (float)1 * _2X * zoom, y - (float)(180 - 55 * 0.5f * yScale) / 0.55f * zoom, false, false, false, false, false, 0.6f / 0.55f * zoom, 0.5f * yScale / 0.55f * zoom, sprite[MENU_EQUIP_IMG], cvtDest, cvtLayer, MENU_EQUIP_IMG, buffering);
+			DrawImageScale(56, 70, 223 + (itemStar - 1) * 56, 731, x + (float)4 * _2X * zoom, y - (float)(174 - 55 * 0.5f * yScale) / 0.55f * zoom, false, false, false, false, false, 0.7f * zoom, 0.6f * yScale * zoom, sprite[CARD_IMG], cvtDest, cvtLayer, CARD_IMG, buffering);
 
 		}
 
 		DrawStar(
 			ICON_STAR,
-			x + (float)122 * zoom,
-			y - (float)24 * zoom,
+			x + (float)120 * zoom,
+			y - (float)50 * zoom,
 			GetItemStar(itemType, itemDetail, itemGrade),
 			GetItemStar(itemType, itemDetail, itemGrade),
 			GetItemStar(itemType, itemDetail, itemGrade),
 			CENTER,
 			false,
-			1.27f * zoom,
+			1.0f * zoom,
 			cvtDest,
 			cvtLayer,
 			buffering

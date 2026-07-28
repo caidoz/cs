@@ -15,7 +15,7 @@ int GetUnitScore(OBJECT* pObj)
 	}
 
 	int star = enemyData[crewData[idx * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];       // 1~9
-	int castle = crewData[crewData[idx * CREWDATASIZE + CREWDATA_CASTLEIDX] * ENEMYDATASIZE + ENEMYDATA_STAR];  // 0~TOTALCASTLE-1
+	int castle = crewData[crewData[idx * CREWDATASIZE + CREWDATA_CARDBG] * ENEMYDATASIZE + ENEMYDATA_STAR];  // 0~TOTALCASTLE-1
 
 	// 별이 높을수록 우선, 별이 같으면 후반 지역(castle 큰 값) 우선
 	return star * 100 + castle;
@@ -25,7 +25,7 @@ int GetUnitScore(OBJECT* pObj)
 static inline int ScoreFromCrewKey(int key)
 {
 	int star = enemyData[crewData[key * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR];
-	int region = enemyData[crewData[key * CREWDATASIZE + CREWDATA_CASTLEIDX] * ENEMYDATASIZE + ENEMYDATA_STAR];
+	int region = enemyData[crewData[key * CREWDATASIZE + CREWDATA_CARDBG] * ENEMYDATASIZE + ENEMYDATA_STAR];
 	return star * 100 + region;
 }
 

@@ -100,8 +100,8 @@ typedef enum _gameConfig {
 	//7.히어로스킬소환(맥스)
 	CREW_BOY = 0,//★투척
 	CREW_GIRL,//★투척
-	CREW_GRANDFA,//★레드달팽이 소환
 	CREW_GRANDMA,//★
+	CREW_GRANDFA,//★레드달팽이 소환
 	CREW_MAN,//★
 	CREW_WOMAN,//★
 	CREW_UNCLE,//★
@@ -112,9 +112,9 @@ typedef enum _gameConfig {
 	CREW_ALMA,//★★
 	CREW_CREW,//★★
 	CREW_TRAVEL,//★★
-	CREW_ITEM,//★★
 	CREW_ELFBOY,//★★
 	CREW_ELFGIRL,//★★
+	CREW_ITEM,//★★
 	CREW_ELFUNCLE,//★★
 	CREW_ELFAUNT,//★★
 	CREW_ADELKNIGHT,//★★
@@ -143,10 +143,12 @@ typedef enum _gameConfig {
 	CREW_SEBASTIAN,//★★★★//로빈스킬(부스트슬래쉬)
 	CREW_FISHING,//★★★★★//
 	CREW_FRAUD,//★★★★★
+	CREW_ELFMAGIC,//★★★★
 	CREW_DARIAN,//★★★★
 	CREW_DONALD,//★★★★//로빈스킬(마구찌르기)
 	CREW_ELFDARK,//★★★★//디아나스킬(난사)
 	CREW_NEZAR,//★★★★//소환
+	CREW_DURAK,//★★★★
 	CREW_WOMANGHOST,//★★★★
 	CREW_MANGHOST,//★★★★
 	CREW_AUSTIN,//★★★★

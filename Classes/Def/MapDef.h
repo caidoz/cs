@@ -738,6 +738,8 @@ typedef enum _mapDef {
 
 	TOTAL_HOUSE,
 
+
+
 	TOTAL_STAGE = 10,
 
 	TOTALOPENDHOUSE = 10,

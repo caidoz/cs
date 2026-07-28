@@ -12041,6 +12041,7 @@ void ItemMove(OBJECT* pObj)
 	int objX, objY;
 #endif
 	int barName = BAR_BATTLECOIN;
+	int itemStatusFrame;
 	// 아이템 떨구기
 	// 우주에서는 둥실둥실 떠있음
 
@@ -12050,8 +12051,16 @@ void ItemMove(OBJECT* pObj)
 
 	pObj->mainFrame++;
 
+	switch (pObj->def) {
+	default:
+		itemStatusFrame = FPS;
+		break;
+	case ITEM_BOX:
+		itemStatusFrame = 1 * FPS;
+		break;
+	}
 #ifdef GETITEMAUTO
-	if (pObj->mainFrame > (drawHandle == MD_PLAY || drawHandle == MD_BATTLE ? FPS * 1 : FPS * 3)) {
+	if (pObj->mainFrame > itemStatusFrame) {
 		switch (drawHandle) {
 		case MD_PLAY:
 		case MD_BATTLE:
@@ -12093,12 +12102,18 @@ void ItemMove(OBJECT* pObj)
 			case ITEM_BOX:
 				//팝업창이 안열려있으면
 				if (popUpCnt == 0) {
-					boxMark[0].type = ao[ITEMOBJ].def;
-					boxMark[0].detail = ao[ITEMOBJ].etc;
-					boxMark[0].grade = GRADE_NORMAL;
 
-					GotoGacha();
+					if (pObj->mainFrame > 3 * FPS) {
+						boxMark[0].type = ao[ITEMOBJ].def;
+						boxMark[0].detail = ao[ITEMOBJ].etc;
+						boxMark[0].grade = GRADE_NORMAL;
 
+						GotoGacha();
+					}
+					else if (pObj->mainFrame == FPS / 2 && bar[BAR_BATTLECOIN].y < DY) {
+						bar[BAR_BATTLECOIN].targetY = DY + 32 * _2X;
+
+					}
 					//memset(&ao[ITEMOBJ], 0, sizeof(OBJECT));
 				}
 				return;

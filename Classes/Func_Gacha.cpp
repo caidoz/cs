@@ -8,25 +8,26 @@
 
 enum GACHA_DEPTH
 {
-	GACHA_DEPTH_BOX = 0,       // »óÀÚ ³«ÇÏ ¹× ¿ÀÇÂ
-	GACHA_DEPTH_CARD,          // º¸»ó ÇÑ Àå¾¿ °ø°³
-	GACHA_DEPTH_SUMMARY,       // ÃÖÁ¾ º¸»ó ¿ä¾à
-	GACHA_DEPTH_GETITEM        // ÀÎº¥Åä¸® ¹İ¿µ ÈÄ Á¾·á
+	GACHA_DEPTH_BOX = 0,       // ìƒì ë‚™í•˜ ë° ì˜¤í”ˆ
+	GACHA_DEPTH_CARD,          // ë³´ìƒ í•œ ì¥ì”© ê³µê°œ
+	GACHA_DEPTH_SUMMARY,       // ìµœì¢… ë³´ìƒ ìš”ì•½
+	GACHA_DEPTH_GETITEM        // ì¸ë²¤í† ë¦¬ ë°˜ì˜ í›„ ì¢…ë£Œ
 };
 
 static bool gachaPrepared = false;
 
-// ÇöÀç Àû¿¡°Ô¼­ È¹µæÇÑ »óÀÚ Á¤º¸
+
+// í˜„ì¬ ì ì—ê²Œì„œ íšë“í•œ ìƒì ì •ë³´
 static int gachaBoxDetail = 0;
 static int gachaBoxGrade = 0;
 
-// Ä«µå ÇÑ Àå¾¿ °ø°³ÇÒ ¶§ »ç¿ëÇÏ´Â ÀÎµ¦½º
+// ì¹´ë“œ í•œ ì¥ì”© ê³µê°œí•  ë•Œ ì‚¬ìš©í•˜ëŠ” ì¸ë±ìŠ¤
 static int gachaOpenCardIdx = 0;
 
-// ÇöÀç Ä«µåÀÇ µîÀå ¿Ï·á ¿©ºÎ
+// í˜„ì¬ ì¹´ë“œì˜ ë“±ì¥ ì™„ë£Œ ì—¬ë¶€
 static bool gachaCurrentCardReady = false;
 
-// º¸»óÀ» ½ÇÁ¦ ÀÎº¥Åä¸®¿¡ ³Ö¾ú´ÂÁö
+// ë³´ìƒì„ ì‹¤ì œ ì¸ë²¤í† ë¦¬ì— ë„£ì—ˆëŠ”ì§€
 static bool gachaRewardReceived = false;
 
 int MakeGachaRewardItems(
@@ -41,12 +42,12 @@ int MakeGachaRewardItems(
 	int count = 0;
 
 	//--------------------------------------------------------
-	// ½ÇÁ¦ ÇÁ·ÎÁ§Æ®ÀÇ »óÀÚ º¸»ó »ı¼º ÇÔ¼ö°¡ ÀÖ´Ù¸é
-	// ÀÌ ºÎºĞ¸¸ ±³Ã¼
+	// ì‹¤ì œ í”„ë¡œì íŠ¸ì˜ ìƒì ë³´ìƒ ìƒì„± í•¨ìˆ˜ê°€ ìˆë‹¤ë©´
+	// ì´ ë¶€ë¶„ë§Œ êµì²´
 	//--------------------------------------------------------
 
 	/*
-	¿¹½Ã:
+	ì˜ˆì‹œ:
 
 	count = GetBoxReward(
 		boxDetail,
@@ -56,10 +57,10 @@ int MakeGachaRewardItems(
 	*/
 
 	//--------------------------------------------------------
-	// ÀÓ½Ã »ùÇÃ
+	// ì„ì‹œ ìƒ˜í”Œ
 	//--------------------------------------------------------
 
-	// °ñµå
+	// ê³¨ë“œ
 	if (count < maxCount)
 	{
 		memset(&result[count], 0, sizeof(ITEM));
@@ -75,7 +76,7 @@ int MakeGachaRewardItems(
 		count++;
 	}
 
-	// µ¿·á
+	// ë™ë£Œ
 	if (count < maxCount)
 	{
 		memset(&result[count], 0, sizeof(ITEM));
@@ -87,7 +88,7 @@ int MakeGachaRewardItems(
 		result[count].lv = 1;
 		result[count].cooldown = 0;
 
-		// ±âÁ¸ º¸À¯ ¿©ºÎ¿¡ µû¶ó NEW
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ NEW
 		result[count].seen =
 			GetInvenIdx(
 				result[count].type,
@@ -97,7 +98,7 @@ int MakeGachaRewardItems(
 		count++;
 	}
 
-	// Àåºñ
+	// ì¥ë¹„
 	if (count < maxCount)
 	{
 		memset(&result[count], 0, sizeof(ITEM));
@@ -137,7 +138,7 @@ void PrepareEnemyGacha(void)
 	boxCnt = 1;
 
 	//--------------------------------------------------------
-	// ITEM ±¸Á¶Ã¼ ÇüÅÂ·Î ½ÇÁ¦ º¸»ó »ı¼º
+	// ITEM êµ¬ì¡°ì²´ í˜•íƒœë¡œ ì‹¤ì œ ë³´ìƒ ìƒì„±
 	//--------------------------------------------------------
 	boxCardItemCnt[0] =
 		MakeGachaRewardItems(
@@ -147,7 +148,7 @@ void PrepareEnemyGacha(void)
 			GACHA_REWARD_MAX);
 
 	//--------------------------------------------------------
-	// »óÀÚ ¸¶Å© »ı¼º
+	// ìƒì ë§ˆí¬ ìƒì„±
 	//--------------------------------------------------------
 	SetBoxMark(
 		xOffset + DX / 2,
@@ -199,7 +200,7 @@ void GotoEnemyGacha(void)
 	gachaPrepared = false;
 	PrepareEnemyGacha();
 
-	// ±âÁ¸ »óÅÂ ÀüÈ¯ »ç¿ë
+	// ê¸°ì¡´ ìƒíƒœ ì „í™˜ ì‚¬ìš©
 	// status = STATUS_GACHA;
 }
 
@@ -208,21 +209,16 @@ void GachaDraw(void)
 	static int manualCardMarkIdx = -1;
 
 	//--------------------------------------------------------
-	// °¢ È­¸é Àü¿ë ÇÁ·¹ÀÓ
+	// ê° í™”ë©´ ì „ìš© í”„ë ˆì„
 	//--------------------------------------------------------
 	static int previousGachaDepth = -1;
 	static int summaryFrame = 0;
 	static int getItemFrame = 0;
 
 	int i;
-	int row = 2;
-	int col = 2;
-
-	float summaryZoom = 1.5f;
-	int summaryGap = 8 * _2X;
 
 	//--------------------------------------------------------
-	// ÃÖÃÊ ÁØºñ
+	// ìµœì´ˆ ì¤€ë¹„
 	//--------------------------------------------------------
 	if (gachaPrepared == false)
 	{
@@ -231,7 +227,7 @@ void GachaDraw(void)
 		manualCardMarkIdx = -1;
 
 		//----------------------------------------------------
-		// ±âÁ¸ »óÀÚ ³«ÇÏ°¡ ¾ÆÁ÷ ³¡³ªÁö ¾ÊÀº »óÅÂ
+		// ê¸°ì¡´ ìƒì ë‚™í•˜ê°€ ì•„ì§ ëë‚˜ì§€ ì•Šì€ ìƒíƒœ
 		//----------------------------------------------------
 		boxMark[0].motionFrame = -1;
 
@@ -241,7 +237,7 @@ void GachaDraw(void)
 	}
 
 	//--------------------------------------------------------
-	// °¡Ã­ ´Ü°è º¯°æ È®ÀÎ
+	// ê°€ì±  ë‹¨ê³„ ë³€ê²½ í™•ì¸
 	//--------------------------------------------------------
 	if (previousGachaDepth != gachaDepth)
 	{
@@ -259,69 +255,12 @@ void GachaDraw(void)
 		previousGachaDepth = gachaDepth;
 	}
 
-	//--------------------------------------------------------
-	// ¿ä¾à È­¸é Ä«µå ¹èÄ¡
-	//--------------------------------------------------------
-	switch (boxCardItemCnt[0])
-	{
-	case 1:
-		row = 1;
-		col = 1;
-		summaryZoom = 2.5f;
-		summaryGap = 0;
-		break;
-
-	case 2:
-		row = 2;
-		col = 1;
-		summaryZoom = 2.0f;
-		summaryGap = 16 * _2X;
-		break;
-
-	case 3:
-		row = 3;
-		col = 1;
-		summaryZoom = 1.8f;
-		summaryGap = 16 * _2X;
-		break;
-
-	case 4:
-		row = 2;
-		col = 2;
-		summaryZoom = 1.8f;
-		summaryGap = 16 * _2X;
-		break;
-
-	case 5:
-	case 6:
-		row = 3;
-		col = 2;
-		summaryZoom = 1.8f;
-		summaryGap = 16 * _2X;
-		break;
-
-	case 7:
-	case 8:
-		row = 4;
-		col = 2;
-		summaryZoom = 1.5f;
-		summaryGap = 16 * _2X;
-		break;
-
-	default:
-		row = 4;
-		col = 3;
-		summaryZoom = 1.5f;
-		summaryGap = 16 * _2X;
-		break;
-	}
-
 	ScreenDarken(SCREENDARKEN);
 
 	switch (gachaDepth)
 	{
 		//--------------------------------------------------------
-		// »óÀÚ µîÀå ¹× ¿ÀÇÂ
+		// ìƒì ë“±ì¥ ë° ì˜¤í”ˆ
 		//--------------------------------------------------------
 	case GACHA_DEPTH_BOX:
 	{
@@ -334,7 +273,7 @@ void GachaDraw(void)
 		const int FINISH_END = 43;
 
 		//----------------------------------------------------
-		// »óÀÚ ÃÖÇÏ´Ü À§Ä¡
+		// ìƒì ìµœí•˜ë‹¨ ìœ„ì¹˜
 		//----------------------------------------------------
 		const float baseY =
 			BOTTOMMENUHEIGHT +
@@ -357,7 +296,7 @@ void GachaDraw(void)
 			baseZoom;
 
 		//----------------------------------------------------
-		// ±âÁ¸ »óÀÚ ³«ÇÏ ¿Ï·á È®ÀÎ
+		// ê¸°ì¡´ ìƒì ë‚™í•˜ ì™„ë£Œ í™•ì¸
 		//----------------------------------------------------
 		if (boxMark[0].motionFrame < 0)
 		{
@@ -410,7 +349,7 @@ void GachaDraw(void)
 		}
 
 		//----------------------------------------------------
-		// »óÀÚ ¹Ù¿î½º ¹× ¿ÀÇÂ
+		// ìƒì ë°”ìš´ìŠ¤ ë° ì˜¤í”ˆ
 		//----------------------------------------------------
 		if (boxMark[0].motionFrame >= 0)
 		{
@@ -430,7 +369,7 @@ void GachaDraw(void)
 				baseZoom;
 
 			//------------------------------------------------
-			// ¹Ù´Ú ´ë±â
+			// ë°”ë‹¥ ëŒ€ê¸°
 			//------------------------------------------------
 			if (animFrame < WAIT_END)
 			{
@@ -442,7 +381,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// Á¡ÇÁ Àü ¿õÅ©¸®±â
+			// ì í”„ ì „ ì›…í¬ë¦¬ê¸°
 			//------------------------------------------------
 			else if (animFrame < SQUASH_END)
 			{
@@ -471,8 +410,8 @@ void GachaDraw(void)
 						curve);
 			}
 
-			//------------------------------------------------
-			// ºü¸£°Ô »ó½Â
+			// ------------------------------------------------
+			// ë¹ ë¥´ê²Œ ìƒìŠ¹
 			//------------------------------------------------
 			else if (animFrame < RISE_END)
 			{
@@ -505,7 +444,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// ÃÖ°íÁ¡¿¡¼­ »óÀÚ ¿ÀÇÂ
+			// ìµœê³ ì ì—ì„œ ìƒì ì˜¤í”ˆ
 			//------------------------------------------------
 			else if (animFrame < APEX_END)
 			{
@@ -525,7 +464,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// ±Ş°­ÇÏ
+			// ê¸‰ê°•í•˜
 			//------------------------------------------------
 			else if (animFrame < FALL_END)
 			{
@@ -553,7 +492,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// ÂøÁö Ãæ°İ
+			// ì°©ì§€ ì¶©ê²©
 			//------------------------------------------------
 			else if (animFrame < LAND_END)
 			{
@@ -581,10 +520,15 @@ void GachaDraw(void)
 					(1.0f -
 						0.045f *
 						curve);
+
+				if (animFrame < LAND_END - 1)
+				{
+					PlayMusic(M_KUNG);
+				}
 			}
 
 			//------------------------------------------------
-			// ¿­¸° »óÅÂ·Î ´ë±â
+			// ì—´ë¦° ìƒíƒœë¡œ ëŒ€ê¸°
 			//------------------------------------------------
 			else
 			{
@@ -608,7 +552,7 @@ void GachaDraw(void)
 				0.0f;
 
 			//------------------------------------------------
-			// »óÀÚ ¿¬Ãâ ¿Ï·á
+			// ìƒì ì—°ì¶œ ì™„ë£Œ
 			//------------------------------------------------
 			if (animFrame >= FINISH_END)
 			{
@@ -643,12 +587,12 @@ void GachaDraw(void)
 	}
 
 	//--------------------------------------------------------
-	// Ä«µå ÇÑ Àå¾¿ °ø°³
+	// ì¹´ë“œ í•œ ì¥ì”© ê³µê°œ
 	//--------------------------------------------------------
 	case GACHA_DEPTH_CARD:
 	{
 		//----------------------------------------------------
-		// Ä«µå ¿¬Ãâ ÇÁ·¹ÀÓ
+		// ì¹´ë“œ ì—°ì¶œ í”„ë ˆì„
 		//----------------------------------------------------
 		const int CARD_RISE_FRAME =
 			8 * MOTIONDIV;
@@ -692,7 +636,7 @@ void GachaDraw(void)
 			FPS / 6;
 
 		//----------------------------------------------------
-		// Ä«µå È®´ëÀ²
+		// ì¹´ë“œ í™•ëŒ€ìœ¨
 		//----------------------------------------------------
 		const float CARD_START_ZOOM =
 			0.38f;
@@ -707,15 +651,15 @@ void GachaDraw(void)
 			0.90f;
 
 		//----------------------------------------------------
-		// »óÀÚ ±âÁØ Ä«µå À§Ä¡
+		// ìƒì ê¸°ì¤€ ì¹´ë“œ ìœ„ì¹˜
 		//
-		// ½ÃÀÛ À§Ä¡:
-		// »óÀÚ Áß½É¿¡¼­ 120¸¸Å­ À§
+		// ì‹œì‘ ìœ„ì¹˜:
+		// ìƒì ì¤‘ì‹¬ì—ì„œ 120ë§Œí¼ ìœ„
 		//
-		// ÃÖÁ¾ À§Ä¡:
-		// »óÀÚ Áß½É¿¡¼­ 360¸¸Å­ À§
+		// ìµœì¢… ìœ„ì¹˜:
+		// ìƒì ì¤‘ì‹¬ì—ì„œ 360ë§Œí¼ ìœ„
 		//
-		// ½ÇÁ¦ »ó½Â °Å¸®:
+		// ì‹¤ì œ ìƒìŠ¹ ê±°ë¦¬:
 		// 360 - 120 = 240
 		//----------------------------------------------------
 		const float CARD_START_OFFSET_Y =
@@ -725,7 +669,7 @@ void GachaDraw(void)
 			240.0f * _2X;
 
 		//----------------------------------------------------
-		// X¿Í Y ¸ğµÎ »óÀÚ ÁÂÇ¥ ±âÁØ
+		// Xì™€ Y ëª¨ë‘ ìƒì ì¢Œí‘œ ê¸°ì¤€
 		//----------------------------------------------------
 		const float CARD_CENTER_X =
 			boxMark[0].x;
@@ -739,7 +683,7 @@ void GachaDraw(void)
 			CARD_END_OFFSET_Y;
 
 		//----------------------------------------------------
-		// ¾ÆÁ÷ Ã¹ ÅÇ Àü
+		// ï¿½ï¿½ï¿½ï¿½ Ã¹ ï¿½ï¿½ ï¿½ï¿½
 		//----------------------------------------------------
 		if (gachaOpenCardIdx < 0)
 		{
@@ -777,7 +721,7 @@ void GachaDraw(void)
 		}
 
 		//----------------------------------------------------
-		// ¸ğµç º¸»ó °ø°³ ¿Ï·á
+		// ëª¨ë“  ë³´ìƒ ê³µê°œ ì™„ë£Œ
 		//----------------------------------------------------
 		if (gachaOpenCardIdx >=
 			boxCardItemCnt[0])
@@ -808,12 +752,12 @@ void GachaDraw(void)
 				gachaOpenCardIdx];
 
 		//----------------------------------------------------
-		// ÇöÀç Ä«µå »ı¼º
+		// í˜„ì¬ ì¹´ë“œ ìƒì„±
 		//----------------------------------------------------
 		if (gachaCurrentCardReady == false)
 		{
 			//------------------------------------------------
-			// ÀÌÀü Ä«µå Á¦°Å
+			// ì´ì „ ì¹´ë“œ ì œê±°
 			//------------------------------------------------
 			if (manualCardMarkIdx >= 0)
 			{
@@ -873,7 +817,7 @@ void GachaDraw(void)
 					PLAYER,
 
 					//------------------------------------------------
-					// Ä«µå µŞ¸é 1¹ø
+					// ì¹´ë“œ ë’·ë©´ 1ë²ˆ
 					//------------------------------------------------
 					1,
 
@@ -968,7 +912,7 @@ void GachaDraw(void)
 		}
 
 		//----------------------------------------------------
-		// ÇöÀç Ä«µå ¼öµ¿ ¾Ö´Ï¸ŞÀÌ¼Ç
+		// í˜„ì¬ ì¹´ë“œ ìˆ˜ë™ ì• ë‹ˆë©”ì´ì…˜
 		//----------------------------------------------------
 		if (manualCardMarkIdx >= 0)
 		{
@@ -995,7 +939,7 @@ void GachaDraw(void)
 				0.0f;
 
 			//------------------------------------------------
-			// 1. »óÀÚ¿¡¼­ À§·Î »ó½Â
+			// 1. ìƒìì—ì„œ ìœ„ë¡œ ìƒìŠ¹
 			//------------------------------------------------
 			if (cardAnimFrame <
 				CARD_RISE_END)
@@ -1037,7 +981,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// 2. µµÂø Ãæ°İÀ¸·Î »ìÂ¦ Ãà¼Ò
+			// 2. ë„ì°© ì¶©ê²©ìœ¼ë¡œ ì‚´ì§ ì¶•ì†Œ
 			//------------------------------------------------
 			else if (cardAnimFrame <
 				CARD_IMPACT_END)
@@ -1071,7 +1015,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// 3. ÃÖÁ¾ Å©±â·Î º¹¿ø
+			// 3. ìµœì¢… í¬ê¸°ë¡œ ë³µì›
 			//------------------------------------------------
 			else if (cardAnimFrame <
 				CARD_RECOVER_END)
@@ -1110,7 +1054,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// 4. Ä«µå µŞ¸éÀ¸·Î Àá½Ã Á¤Áö
+			// 4. ì¹´ë“œ ë’·ë©´ìœ¼ë¡œ ì ì‹œ ì •ì§€
 			//------------------------------------------------
 			else if (cardAnimFrame <
 				CARD_HOLD_END)
@@ -1129,7 +1073,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// 5. µŞ¸é ¾Ö´Ï¸ŞÀÌ¼Ç 1~7
+			// 5. ë’·ë©´ ì• ë‹ˆë©”ì´ì…˜ 1~7
 			//------------------------------------------------
 			else if (cardAnimFrame <
 				CARD_FLIP_END)
@@ -1143,8 +1087,14 @@ void GachaDraw(void)
 					CARD_FLIP_INTERVAL +
 					1;
 
-				if (backFrame < 1)
+				if (backFrame < 1) {
 					backFrame = 1;
+				}
+				
+				if (backFrame == CARD_BACK_FRAME_COUNT - 1)
+				{
+					PlayMusic(M_CARDSPLIT);
+				}
 
 				if (backFrame >
 					CARD_BACK_FRAME_COUNT)
@@ -1167,7 +1117,7 @@ void GachaDraw(void)
 			}
 
 			//------------------------------------------------
-			// 6. ¾Õ¸é °ø°³
+			// 6. ì•ë©´ ê³µê°œ
 			//------------------------------------------------
 			else
 			{
@@ -1209,7 +1159,7 @@ void GachaDraw(void)
 		}
 
 		//----------------------------------------------------
-		// ¾Õ¸é °ø°³ ÀÌÈÄ ´ÙÀ½ ÅÇ Çã¿ë
+		// ì•ë©´ ê³µê°œ ì´í›„ ë‹¤ìŒ íƒ­ í—ˆìš©
 		//----------------------------------------------------
 		if (manualCardMarkIdx >= 0)
 		{
@@ -1257,193 +1207,169 @@ void GachaDraw(void)
 	}
 
 	//--------------------------------------------------------
-	// ¸ğµç º¸»ó ¿ä¾à È­¸é
+	// ëª¨ë“  ë³´ìƒ ìš”ì•½ í™”ë©´
 	//--------------------------------------------------------
 	case GACHA_DEPTH_SUMMARY:
 	{
-		float panelX =
-			xOffset +
-			DX / 2.0f;
+		// MENU_IMG ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+		const int PANEL_SRC_X = 0;
+		const int PANEL_SRC_Y = 606;
+		const int PANEL_SRC_W = 400;
+		const int PANEL_SRC_H = 409;
 
-		float panelY =
-			DY / 2.0f +
-			120.0f * _2X;
+		// MENU_IMG ï¿½ï¿½ï¿½ì½º ï¿½ï¿½Ä¡
+		const int BTN_SRC_X = 401;
+		const int BTN_SRC_Y = 606;
+		const int BTN_SRC_W = 216;
+		const int BTN_SRC_H = 68;
 
-		int panelW =
-			304 * _2X;
+		// ï¿½ï¿½ï¿½ È­ï¿½ï¿½ Ç¥ï¿½ï¿½ Å©ï¿½ï¿½
+		float panelDisplayW = 400;
+		float panelZoom = 1.0f;
+		float panelDisplayH = PANEL_SRC_H * panelZoom;
 
-		int panelH =
-			360 * _2X;
-
-		DrawFrame(
-			(int)(
-				panelX -
-				panelW / 2),
-			(int)(
-				panelY -
-				panelH / 2),
-			panelW,
-			panelH,
-			FRAME_SHOPBALLOON,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
+		// ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½ß½ï¿½ ï¿½ï¿½Ä¡
+		float panelCX = xOffset + DX / 2.0f;
+		float panelCY = DY / 2.0f + panelDisplayH * 0.05f;
 
 		//----------------------------------------------------
-		// ¿ä¾à Ä«µå ÃÖÃÊ »ı¼º
+		// ï¿½ï¿½Ã¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (summaryFrame == 0)
 		//----------------------------------------------------
 		if (summaryFrame == 0)
 		{
-			manualCardMarkIdx =
-				-1;
-
-			gachaCurrentCardReady =
-				false;
-
-			memset(
-				boxCardMark,
-				0,
-				sizeof(boxCardMark));
-
-			for (i = 0;
-				i < boxCardItemCnt[0];
-				i++)
-			{
-				int itemRow =
-					i / row;
-
-				int itemCol =
-					i % row;
-
-				float contentWidth =
-					(float)(
-						REWARDCARDSIZE_X *
-						summaryZoom *
-						row +
-						summaryGap *
-						(row - 1));
-
-				float itemX =
-					panelX -
-					contentWidth / 2.0f +
-					(float)(
-						REWARDCARDSIZE_X *
-						summaryZoom +
-						summaryGap) *
-					itemCol +
-					(float)(
-						REWARDCARDSIZE_X *
-						summaryZoom) /
-					2.0f;
-
-				float itemY =
-					panelY +
-					(float)(
-						REWARDCARDSIZE_Y *
-						summaryZoom *
-						(col - 1)) /
-					2.0f -
-					(float)(
-						REWARDCARDSIZE_Y *
-						summaryZoom +
-						summaryGap) *
-					itemRow;
-
-				ITEM* item =
-					&boxCardItem[0][i];
-
-				float markStartX =
-					panelX -
-					xOffset;
-
-				float markTargetX =
-					itemX -
-					xOffset;
-
-				SetBoxCardMark(
-					markStartX,
-					panelY,
-
-					markTargetX,
-					itemY,
-
-					0,
-					0,
-
-					32 *
-					_2X /
-					MOTIONDIV,
-
-					4 *
-					_2X /
-					MOTIONDIV,
-
-					0,
-					0,
-
-					FPS,
-					FPS,
-
-					GetItemIcon(
-						item->type,
-						item->detail,
-						item->grade),
-
-					0,
-
-					item->count,
-					item->type,
-					item->detail,
-					item->grade,
-					item->cooldown,
-
-					false,
-					true,
-					true,
-
-					PLAYER,
-
-					0,
-
-					0.2f /
-					MOTIONDIV,
-
-					summaryZoom,
-
-					0.8f /
-					MOTIONDIV,
-
-					0,
-					0,
-					0,
-
-					false,
-
-					item->seen == false);
-			}
-
+			manualCardMarkIdx = -1;
+			gachaCurrentCardReady = false;
+			memset(boxCardMark, 0, sizeof(boxCardMark));
 			PlayMusic(M_CARDSPLIT);
 		}
 
 		//----------------------------------------------------
-		// ¿ä¾à È­¸é ÅÇ
+		// ï¿½ï¿½ï¿½ È­ï¿½é¿¡ Ä«ï¿½ï¿½ Ä«ï¿½å¸¦ DrawImageï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
+		//----------------------------------------------------
+		DrawImage(
+			PANEL_SRC_W, PANEL_SRC_H,
+			PANEL_SRC_X, PANEL_SRC_Y,
+			panelCX - panelDisplayW / 2.0f,
+			panelCY - panelDisplayH / 2.0f,
+			false, false, false, false, false,
+			panelZoom,
+			sprite[MENU_IMG],
+			gScreenBuffer, gScreenLayer, MENU_IMG, false);
+
+		//----------------------------------------------------
+		// Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¾Æ¿ï¿½ ï¿½ï¿½ï¿½
+		//----------------------------------------------------
+		int count = boxCardItemCnt[0];
+		int numCols, numRows;
+
+		if (count <= 1)       numCols = 1;
+		else if (count <= 4)  numCols = 2;
+		else                  numCols = 3;
+
+		numRows = (count + numCols - 1) / numCols;
+
+		float cardGap = 4.0f * _2X;
+		float innerW = panelDisplayW * 0.84f;
+		float cardZoom =
+			(innerW - cardGap * (numCols - 1)) /
+			(numCols * 240.0f);
+
+		float cardW = 240.0f * cardZoom;
+		float cardH = 332.0f * cardZoom;
+		float gridW = numCols * cardW + (numCols - 1) * cardGap;
+		float gridH = numRows * cardH + (numRows - 1) * cardGap;
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½(72px ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Ì¿ï¿½ Æ° ï¿½ï¿½ï¿½(40*_2X) È®ï¿½Ğ±ï¿½ ï¿½ï¿½ï¿½ï¿½
+		float ribbonH = 72.0f * panelZoom;
+		float btnAreaH = 40.0f * _2X;
+		float contentTop =
+			panelCY + panelDisplayH / 2.0f - ribbonH;
+		float contentBottom =
+			panelCY - panelDisplayH / 2.0f + btnAreaH;
+		float gridCY = (contentTop + contentBottom) / 2.0f;
+
+		// Ã¹ ï¿½ï¿½Â° Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ï¿½) Y ï¿½ï¿½Ä¡
+		float row0Bottom =
+			gridCY + gridH / 2.0f - cardH;
+
+		float gridStartX =
+			panelCX - gridW / 2.0f;
+
+		//----------------------------------------------------
+		// DrawItemCardï¿½ï¿½ Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//----------------------------------------------------
+		for (i = 0; i < count; i++)
+		{
+			int itemCol = i % numCols;
+			int itemRow = i / numCols;
+
+			ITEM* item = &boxCardItem[0][i];
+
+			float cx =
+				gridStartX +
+				itemCol * (cardW + cardGap);
+
+			float cy =
+				row0Bottom -
+				itemRow * (cardH + cardGap);
+
+			DrawItemCard(
+				item->type,
+				item->detail,
+				item->grade,
+				item->lv,
+				false,
+				(int)cx,
+				(int)cy,
+				false,
+				cardZoom,
+				false,
+				0,
+				0,
+				true,
+				0,
+				gScreenBuffer,
+				gScreenLayer,
+				false);
+		}
+
+		//----------------------------------------------------
+		// ìš”ì•½ í™”ë©´ íƒ­
 		//----------------------------------------------------
 		if (summaryFrame > FPS / 2)
 		{
+			// ï¿½ï¿½ï¿½ì½º Æ°
+			float btnZoom =
+				(100.0f * _2X) / BTN_SRC_W;
+			float btnDisplayW = BTN_SRC_W * btnZoom;
+			float btnDisplayH = BTN_SRC_H * btnZoom;
+
+			float btnX =
+				panelCX - btnDisplayW / 2.0f;
+			float btnY =
+				panelCY -
+				panelDisplayH / 2.0f +
+				8.0f * _2X;
+
+			DrawImage(
+				BTN_SRC_W, BTN_SRC_H,
+				BTN_SRC_X, BTN_SRC_Y,
+				btnX, btnY,
+				false, false, false, false, false,
+				btnZoom,
+				sprite[MENU_IMG],
+				gScreenBuffer, gScreenLayer, MENU_IMG, false);
+
+			//----------------------------------------------------
+			// ìš”ì•½ í™”ë©´ íƒ­
+			//----------------------------------------------------
 			SetAlpha(
 				32 -
-				Abs(
-					frame /
-					MOTIONDIV %
-					32 -
-					16));
+				Abs(frame / MOTIONDIV % 32 - 16));
 
 			DrawGoldAlpha(
-				(int)panelX,
-				(int)(
-					panelY -
-					panelH / 2 +
-					32 * _2X),
+				(int)panelCX,
+				(int)(btnY + btnDisplayH / 2.0f),
 				ALPHA_TABTOCOLLECT,
 				FONT_GOLD_LARGE,
 				1,
@@ -1470,7 +1396,7 @@ void GachaDraw(void)
 	}
 
 	//--------------------------------------------------------
-	// º¸»ó ½ÇÁ¦ Áö±Ş
+	// ë³´ìƒ ì‹¤ì œ ì§€ê¸‰
 	//--------------------------------------------------------
 	case GACHA_DEPTH_GETITEM:
 	{
@@ -1558,7 +1484,7 @@ bool IsGachaBigReward(const ITEM* item)
 		return item->grade >= 4;
 
 	default:
-		// Àåºñ ¾ÆÀÌÅÛ ¹üÀ§´Â ÇÁ·ÎÁ§Æ® »ó¼ö¿¡ ¸Â°Ô Á¶Á¤
+		// ì¥ë¹„ ì•„ì´í…œ ë²”ìœ„ëŠ” í”„ë¡œì íŠ¸ ìƒìˆ˜ì— ë§ê²Œ ì¡°ì •
 		if (item->type >= ITEM_SWORD &&
 			item->grade >= 4)
 		{
@@ -1606,7 +1532,7 @@ void DrawGachaItemEffect(
 	}
 
 	//--------------------------------------------------------
-	// Ä«µå µÚ ¹æ»çÇü ºû
+	// ì¹´ë“œ ë’¤ ë°©ì‚¬í˜• ë¹›
 	//--------------------------------------------------------
 	DrawImage(
 		512,
@@ -1633,7 +1559,7 @@ void DrawGachaItemEffect(
 		false);
 
 	//--------------------------------------------------------
-	// °í°¡Ä¡ º¸»ó Å×µÎ¸® È¿°ú
+	// ê³ ê°€ì¹˜ ë³´ìƒ í…Œë‘ë¦¬ íš¨ê³¼
 	//--------------------------------------------------------
 	if (bigReward)
 	{
@@ -1676,7 +1602,7 @@ void DrawGachaItemEffect(
 	}
 
 	//--------------------------------------------------------
-	// NEW´Â SetBoxCardMark ¸¶Áö¸· ÀÎÀÚ·Î ÀÌ¹Ì Àü´Ş
+	// NEWëŠ” SetBoxCardMark ë§ˆì§€ë§‰ ì¸ìë¡œ ì´ë¯¸ ì „ë‹¬
 	//--------------------------------------------------------
 }
 
@@ -1688,7 +1614,7 @@ void GachaKey(void)
 	//if (touchFunc != TOUCH_FUNC_GETGACHACARD)
 	//	return;
 
-	// ½ÇÁ¦ ÇÁ·ÎÁ§Æ®ÀÇ ÅÍÄ¡ ¾÷ Á¶°Ç »ç¿ë
+	// ì‹¤ì œ í”„ë¡œì íŠ¸ì˜ í„°ì¹˜ ì—… ì¡°ê±´ ì‚¬ìš©
 	//if (touchUp == false)
 	//	return;	
 
@@ -1698,7 +1624,7 @@ void GachaKey(void)
 	{
 	case GACHA_DEPTH_CARD:
 		//----------------------------------------------------
-		// ÇöÀç Ä«µå Á¦°Å
+		// í˜„ì¬ ì¹´ë“œ ì œê±°
 		//----------------------------------------------------
 		if (gachaOpenCardIdx <
 			boxCardItemCnt[0])

@@ -3152,6 +3152,8 @@ const char* const textId[] = {
 
 	"etc",
 	"card",
+	"cardBack",
+	"cardBg",
 	"win",
 
 	"ui_card_large_back",
@@ -3222,11 +3224,7 @@ const char* const textId[] = {
 	"tree",
 	"flag",
 
-	"menu_crew",
-	"menu_equip",
-	"menu_castle",
-	"menu_shop",
-	"menu_setting",
+	"menu",
 
 	"op0",
 	"op1",
