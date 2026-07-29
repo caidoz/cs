@@ -1,20 +1,20 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _CORE_H_
 #define _CORE_H_
 
-// ??===== 1?�계: Windows ?�더 (가??먼�?) =====
+// ✅ ===== 1단계: Windows 헤더 (가장 먼저) =====
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
-// WinSock2�??�용?�는 코드가 ?�으므�??�바�??�서�??�함
+// WinSock2를 사용하는 코드가 있으므로 올바른 순서로 포함
 #include <WinSock2.h>
 #include <Windows.h>
 #pragma comment(lib, "ws2_32.lib")
 #endif
 
-// ===== 3?�계: cocos2d (기본 ?�이브러�? =====
+// ===== 3단계: cocos2d (기본 라이브러리) =====
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "Def.h"
@@ -57,9 +57,9 @@ using namespace CocosDenshion;
 #define GL_BLEND_LINEARDODGEMODE { GL_ONE, GL_ONE }
 #define GL_BLEND_DARKEN { GL_ONE, GL_ONE }
 
-//Shader 관??
+//Shader 愿??
 
-// Shader 문자??- extern ?�언
+// Shader 臾몄옄??- extern ?좎뼵
 extern const char* vsh_gray;
 extern const char* fsh_gray;
 extern const char* vsh_white;
@@ -83,8 +83,8 @@ extern BlendFunc BLEND_SHADOW;
 typedef struct _button {
 	int visualState;
 	int buttonEventListener;//
-	int x, y, w, h;//버튼???�치 ?�기 ?�보
-	float zoomX;//버튼??
+	int x, y, w, h;//버튼의 위치 크기 정보
+	float zoomX;//버튼의 
 
 } BUTTON;
 
@@ -93,7 +93,7 @@ typedef struct _popUp {
 	int type;
 	int x, y, w, h;
 
-	int itemType;//?�업???�장?�는 ?�??
+	int itemType;//팝업에 등장하는 타입
 	int itemDetail;
 	int itemGrade;
 
@@ -117,38 +117,38 @@ typedef struct _currencyEffect {
 } CURRENCYEFFECT;
 
 typedef struct _hotKey {
-	signed short frame;    //?�키�??�착???�킬???�수 ?�을??
+	signed short frame;    //핫키로 장착된 스킬을 쓸수 있을때
 	signed short inven;
-	signed short idx;    //?�킬??경우???�킬?�덱?? ?�이?�일 경우?�는 주인�??�벤?�리?�의 ?�덱?? ?�이�??�종�? 반�?�?반�???종류
-	signed short type;    //0?�면 ?�당?�게 ?�음, 1?�면 ?�킬, 2?�면 ?�이?? 3?�면 ?? 4�?반�?
-	bool random;//true �??�리�??�는거고 false �??�정
-	signed short randomFrame;//?�덤??값이 결정???�까지 
-	signed char randomCnt;//?�리??카운??
+	signed short idx;    //스킬일 경우는 스킬인덱스, 아이템일 경우에는 주인공 인벤토리내의 인덱스, 상이면 상종류, 반지면 반지의 종류
+	signed short type;    //0이면 할당된게 없음, 1이면 스킬, 2이면 아이템, 3이면 상, 4면 반지
+	bool random;//true 면 돌리고 있는거고 false 면 확정
+	signed short randomFrame;//랜덤한 값이 결정될 때까지
+	signed char randomCnt;//돌리는 카운트
 } HOTKEY;
 
 typedef struct _item {
 	long long id;
-	int value;    //?�?�값(무기-공격?? 방어�?방어???�등
-	int subValueType;//?�번�??�?�값??종류(목걸?? 반�???지?�되??�?
-	int subValue;    //?�번�??�?�값(목걸?? 반�???지?�되??�?
-	unsigned short icon;        //?�이�?
-	unsigned int count;    //�?��(?�비??경우???�켓???�자)
-	unsigned int gold;    //가�?
-	unsigned short cooldown;    //?�용?�과가 ?�는 ?�이?�의 쿨다???�비??경우 강화?�벨)
-	unsigned char lv;    //?�벨
-	unsigned char type;        //?�??
-	unsigned char detail;    //?��?
-	unsigned char grade;    //?�급
-	bool broken;    //?�괴?�었?��?
-	long set;    //?�떤 ?�트?��? //?�킬??발동?�면 ??set???�도�??�자
-	int socket[6];    //?�켓
+	int value;    //대표값(무기-공격력, 방어구-방어도 등등
+	int subValueType;//두번째 대표값의 종류(목걸이, 반지에 지정되는 값)
+	int subValue;    //두번째 대표값(목걸이, 반지에 지정되는 값)
+	unsigned short icon;        //아이콘
+	unsigned int count;    //갯수(장비인 경우는 소켓의 숫자)
+	unsigned int gold;    //가격
+	unsigned short cooldown;    //사용효과가 있는 아이템의 쿨다운(장비의 경우 강화레벨)
+	unsigned char lv;    //레벨
+	unsigned char type;        //타입
+	unsigned char detail;    //세부
+	unsigned char grade;    //등급
+	bool broken;    //파괴되었는지
+	long set;    //어떤 세트인지 //스킬이 발동되면 이 set을 쓰도록 하자
+	int socket[6];    //소켓
 	int option[12][2];
 	char name[40];
-	int exp;//?�재 ?�적??경험�?
-	bool seen;//?�세?�보�??�인?�는지
+	int exp;//현재 누적된 경험치
+	bool seen;//상세정보를 확인했는지
 
 	template <class Archive>
-	void serialize(Archive & ar)
+	void serialize(Archive& ar)
 	{
 		ar(
 			id,
@@ -178,9 +178,9 @@ typedef struct _item {
 typedef struct _obj {
 	signed char active;
 	int jumpFrame, attackFrame, mainFrame, frame, attackedFrame, levelUpFrame, delayFrame, statUpFrame;
-	int turn;//캐릭?��? 몇번�?공격???�고 ?�는지 보여주는 변??
+	int turn;//캐릭터가 몇번째 공격을 하고 있는지 보여주는 변수
 	int x, y;
-	int nx, ny;//게임?�작???�치, 공격???�에 ?�시 ?�아가???�치
+	int nx, ny;//게임시작시 위치, 공격한 뒤에 다시 돌아가는 위치
 	int type;
 	int etc;
 	int apx;
@@ -202,7 +202,7 @@ typedef struct _obj {
 	unsigned short icon;
 	unsigned short iconFrame;
 	long long int str, def;
-	signed short name;	//?�름
+	signed short name;	//?대쫫
 	int lv;
 	unsigned short motion;
 	unsigned char tileX1, tileX2, tileY1, tileY2;
@@ -225,8 +225,8 @@ typedef struct _obj {
 	
 	int pressedKey[3];
 	int released;
-	HOTKEY hotKey[MAXHOTKEY];//?�게?�에???�득?�는
-	ITEM equip[TOTALEQUIP];//?�재 ?�착???�비??3�?캐릭??로빈, ?�아?? 맥스별로 ?�다.
+	HOTKEY hotKey[MAXHOTKEY];//인게임에서 획득하는
+	ITEM equip[TOTALEQUIP];//현재 장착된 장비는 3개 캐릭터 로빈, 디아나, 맥스별로 있다.
 	unsigned char equipImg[TOTALEQUIP];
 	unsigned char equipped[TOTALEQUIP];
 	signed char immune[TOTALDEBUF];
@@ -237,7 +237,7 @@ typedef struct _obj {
 	unsigned char hpRestore, mpRestore, statusRestore;
 	unsigned char hpDrain, mpDrain;
 	
-	//?�과 관?�된 변??
+	//상과 관련된 변수
 	unsigned char canRun;
 	unsigned char canDown;
 	unsigned char canPush;
@@ -312,9 +312,9 @@ typedef struct _obj {
 
 	std::string nickname;
 
-	long coolTime;//???�킬 발동?�간
+	long coolTime;//적 스킬 발동시간
 
-	float rotation;//?�전�?
+	float rotation;//회전각
 
 	int hitCount;
 	int hitCountFrame;
@@ -329,45 +329,45 @@ typedef struct _obj {
 typedef struct _gameEvent {
 	unsigned char type;//EVENTTYPE_QUEST, EVENTTYPE_PVP, EVENTTYPE_SHOP
 	unsigned char subType;//
-	short icon;//?�이�??�덱??
-	long timeStamp;//?�작???�간
-	long limitTime;//몇시간짜�??�벤?�인지
+	short icon;//아이콘 인덱스
+	long timeStamp;//시작된 시간
+	long limitTime;//몇시간짜리 이벤트인지
 
 	int barFrame;
 	//EVENT_OPEN
 	//EVENT_DOING
 	//EVENT_CLOSE
-	unsigned char status;//?�성, 진행�? ?�멸 ?��?지 ?�테?�터??
-	//PVP ?�이???�득???�처??바�? ?�?�나?�??거기�??�이?��? ?�라가??경우
+	unsigned char status;//생성, 진행중, 소멸 세가지 스테이터스
+	//PVP 아이템 획득할 때처럼 바가 튀어나와서 거기로 데이터가 날라가는 경우
 	//EVENT_BAR_NEW
 	//EVENT_BAR_ITEMGET
 	//EVENT_BAR_REWARDGET
 	//EVENT_BAR_NEXT
 	//EVENT_BAR_CLOSE
-	unsigned char barStatus;//?�성, ?�득�? 보상, ?�스?�바, 종료 4가지 ?�테?�터??
-	
-	int x;//?�쪽 ?�른�??�덱??
-	int y;//?�에??부??몇번�??�덱??
+	unsigned char barStatus;//생성, 획득중, 보상, 넥스트바, 종료 4가지 스테이터스
+
+	int x;//왼쪽 오른쪽 인덱스
+	int y;//위에서 부터 몇번째 인덱스
 	int dirX;
 	int dirY;
 	int nx;
 	int ny;
 	int targetX, targetY;//목적지 XY 
 	int targetX2, targetY2;//목적지 XY 
-	float dx, dy;//x, y�??�동거리
-	float speed;//?�동?�도
-	float speedIncrement;//?�동?�도 증�???
-	float speed2;//?�동?�도2
-	float speedIncrement2;//?�동?�도 증�???
-	int waitingFrame;//?�작?�을 ??머무르는 ?�레??
-	int waitingFrame2;//중간???�동?�도 체인지 ?�을 ??머무???�레??
-	int frame;//?�재 ?�레??
+	float dx, dy;//x, y축 이동거리
+	float speed;//이동속도
+	float speedIncrement;//이동속도 증가량
+	float speed2;//이동속도2
+	float speedIncrement2;//이동속도 증가량
+	int waitingFrame;//시작했을 때 머무르는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무는 프레임
+	int frame;//현재 프레임
 	int frame2;//
 	float zoom;
-	float zoomEnd;//�?
+	float zoomEnd;
 	float zoomIncrement;
 	float zoom2;
-	float zoomEnd2;//�?
+	float zoomEnd2;
 	float zoomIncrement2;
 
 	int touchFunc;
@@ -381,46 +381,46 @@ typedef struct _bar {
 	bool active;
 	unsigned char type;//BAR_GOLD, BAR_STAR, BAR_HEART, BAR_QUEST, BAR_ENEMYHP
 
-	signed long long count;//?�자(robin.gold, robin.heart...)
-	signed long long add;//?�해???�는 �??�득�?
-	signed long long max;//?�해???�는 값을 ?�산???�턴 ?�산�?                                                  
+	signed long long count;//현재 수치(robin.gold, robin.heart...)
+	signed long long add;//증가할 수치
+	signed long long max;//증가할 수치의 최대값                                                  
 	
 	bool addView;
-	signed long long addViewSum;//?�레?�이 ?�나지 ?�으�?
+	signed long long addViewSum;//증가할 수치의 합계
 
-	int countFrame;//카운???�해지???�안 ?�라가???�레??
+	int countFrame;//현재 수치가 변하는 프레임
 
-	short icon;//?�이�??�덱??
-	int iconFrame;//???�레?�에 0보다 ?�면 ?�이콘이 ?�직인??
+	short icon;//아이콘 인덱스
+	int iconFrame;//아이콘 프레임, 0부터 시작, 아이콘 애니메이션용
 
-	//보상 ?�이콘이 ?�시?��?
-	//false �??�보?�주?�거�?
-	//값이 ?�으�?1?�면 그냥 보여주는 건데
-	//값이 1보다 ?�면 보상 ?�이?�이 ?��?->축소�??�직이면서 보상???�팅?�는 것을 보여준??
+	//보상 아이콘이 표시여부
+	//false 면 안보여주는거고
+	//값이 있으면 1이면 그냥 보여주는 건데
+	//값이 1보다 크면 보상 아이템이 확대->축소로 움직이면서 보상이 셋팅되는 것을 보여준다.
 	float enemyIcon;
 	float rewardIcon;
-	bool bonusRewardIcon;//보너???�이�?
-	long bonusRewardTimeStamp;//보너???�?�스?�프
+	bool bonusRewardIcon;//보너스 아이콘
+	long bonusRewardTimeStamp;//보너스 타임스탬프
 
-	int x;//x?�치
-	int y;//y?�치
+	int x;//x위치
+	int y;//y위치
 
-	int nx;//?�동??x?�치
-	int ny;//?�동??y?�치
+	int nx;//이동전 x위치
+	int ny;//이동전 y위치
 
 	int targetX, targetY;//목적지 XY 
 	int targetX2, targetY2;//목적지 XY 
-	float speed;//?�동?�도
-	float speedIncrement;//?�동?�도 증�???
-	float speed2;//?�동?�도2
-	float speedIncrement2;//?�동?�도 증�???
-	int waitingFrame;//?�작?�을 ??머무르는 ?�레??
-	int waitingFrame2;//중간???�동?�도 체인지 ?�을 ??머무???�레??
-	int frame;//?�재 ?�레??
+	float speed;//이동속도
+	float speedIncrement;//이동속도 증가량
+	float speed2;//이동속도2
+	float speedIncrement2;//이동속도 증가량
+	int waitingFrame;//시작했을 때 머무르는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무는 프레임
+	int frame;//현재 프레임
 	int frame2;//
 	int aniFrame;
 
-	bool front;//true�?attackSequenceDraw 같�??�서 그려준??
+	bool front;//true면 attackSequenceDraw 같은데서 그려준다.
 
 	int drawFunc;
 
@@ -446,27 +446,27 @@ typedef struct _log {
 	bool active;
 	unsigned char type;//LOG_EVENTSTART, LOG_JOKBOOPEN, LOG_RAID, LOG_BATTLE, LOG_BOSSHEAL
 
-	unsigned short cmf;//?��? ?�냐. 보스�?cmf 가, ?�스?�면 족보 ?�덱?��? ?�다.
-	unsigned short cmf2;//?�이 ?�리??npc�??�면
+	unsigned short cmf;//누가 했냐. 보스면 cmf 가, 퀘스트면 족보 인덱스가 뜬다.
+	unsigned short cmf2;//적이 우리편 npc를 털면
 
-	unsigned short icon;//?�이�?
-	long long count;//?�자 ?�보가 ?�요??경우
+	unsigned short icon;//아이콘
+	long long count;//숫자 정보가 필요한 경우
 
-	int x;//x?�치
-	int y;//y?�치
+	int x;//x위치
+	int y;//y위치
 
 	signed char dirX, dirY;//방향
-	float dx, dy;//x, y�??�동거리
+	float dx, dy;//x, y축 이동거리
 
 	int targetX, targetY;//목적지 XY 
 	int targetX2, targetY2;//목적지 XY 
-	float speed;//?�동?�도
-	float speedIncrement;//?�동?�도 증�???
-	float speed2;//?�동?�도2
-	float speedIncrement2;//?�동?�도 증�???
-	int waitingFrame;//?�작?�을 ??머무르는 ?�레??
-	int waitingFrame2;//중간???�동?�도 체인지 ?�을 ??머무르는 ?�레??
-	int frame;//?�재 ?�레??
+	float speed;//이동속도
+	float speedIncrement;//이동속도 증가량
+	float speed2;//이동속도2
+	float speedIncrement2;//이동속도 증가량
+	int waitingFrame;//시작했을 때 머무르는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무르는 프레임
+	int frame;//현재 프레임
 	int frame2;//
 
 	float zoom;
@@ -478,22 +478,22 @@ typedef struct _log {
 
 	char text[256];
 } LOG;
-//?�투창에??보여�?부�?
+//전투창에서 보여줄 부분
 typedef struct _battleLog {
 	unsigned char type;//LOG_EVENTSTART, LOG_JOKBOOPEN, LOG_RAID, LOG_BATTLE, LOG_BOSSHEAL
 
-	unsigned short who;//?��? ?�냐. 보스�?cmf 가, ?�스?�면 족보 ?�덱?��? ?�다.
+	unsigned short who;//누가 했냐. 보스면 cmf 가, 퀘스트면 족보 인덱스가 뜬다.
 
-	unsigned short icon;//?�이�?
-	long long count;//?�자 ?�보가 ?�요??경우
+	unsigned short icon;//아이콘
+	long long count;//숫자 정보가 필요한 경우
 
 	std::string text;
 } BATTLELOG;
 
 typedef struct _charData {
-	ITEM equip[TOTALEQUIP];//캐릭??3명에 ?�?�서??
-	HOTKEY hotKey[MAXHOTKEY];//?�팅?�어 ?�는 ?�킬(1�??� ?�환??1�??� ?�료(1�?�??�덤?�게 ?�려??출동?�킨??
-	int exps;//?�게 ?�으�???���?stat?� ?�팅?????�다.
+	ITEM equip[TOTALEQUIP];//캐릭터 3명에 대해서는
+	HOTKEY hotKey[MAXHOTKEY];//세팅되어 있는 스킬(1개)와 소환수(1개)와 동료(1개)를 랜덤하게 돌려서 출동시킨다.
+	int exps;//이게 있으면 역으로 stat은 세팅할 수 있다.
 	long long int hp;
 	int mp;
 	unsigned short ap;
@@ -502,61 +502,63 @@ typedef struct _charData {
 	signed char skillLv[TOTAL_SKILL];
 	unsigned char getSkillList[MAXCHARSKILL];
 
-	//?�래계열?��? RefreshStat?�번 ?�면 ?�동?�로 값이 ?�당?�거???�투�??�시 값이므�??�스
+	//아래계열들은 RefreshStat한번 하면 자동으로 값이 할당되거나 전투중 임시 값이므로 패스
 	//signed short buff[TOTALBUFF];
 	//signed int debuf[TOTALDEBUF];
 	//signed char immune[TOTALDEBUF];
 
 	template <class Archive>
-	void serialize(Archive & ar)
+	void serialize(Archive& ar)
 	{
 		ar(
+			type,
+			mapSeenCount,
 			equip[TOTALEQUIP]
 		);
 	}
 } CHARDATA;
 
-//PVP ?�이??
-//?�단 ?��?번호가 ?�고
+//PVP 데이터
+//일단 유저번호가 있고
 typedef struct _house {
-	long long idx;//�??�덱??
-	long long userId;//??집의 ?�유주인 ?�버?�의 ?��? ?�이??
-	long long userProfileImgIdx;//?��??�로???��?지 ?�덱??
-	long long userName;//?��? ?�름
-	unsigned char equipImg[TOTALCHAR][TOTALEQUIP];//??�??�유주의 코스?�이미�?
-	long long gold;//??�??�유주의 ?�투???�득?????�는 골드
-	unsigned char houseType;//??�??�유주의 �??�덱??
-	unsigned short crew[MAXCREW];//?�류???�덱??
-	unsigned char crewMaxStar[MAXCREW];//?�류??최�? ?�벨
-	unsigned char crewCurStar[MAXCREW];//?�류???�재 ?�벨
+	long long idx;//집 인덱스
+	long long userId;//이 집의 소유주인 서버상의 유저 아이디
+	long long userProfileImgIdx;//유저프로필 이미지 인덱스
+	long long userName;//유저 이름
+	unsigned char equipImg[TOTALCHAR][TOTALEQUIP];//이 집 소유주의 코스튬이미지
+	long long gold;//이 집 소유주의 전투시 획득할 수 있는 골드
+	unsigned char houseType;//이 집 소유주의 집 인덱스
+	unsigned short crew[MAXCREW];//크류의 인덱스.
+	unsigned char crewMaxStar[MAXCREW];//크류의 최대 레벨
+	unsigned char crewCurStar[MAXCREW];//크류의 현재 레벨
 } HOUSE;
 
-//로빈구조체는 게임 ?�체???�???�?�소?�다.
+//로빈구조체는 게임 전체에 대한 저장소이다.
 //
-//?�기???�?�되???�이?�만
+//여기는 저장되는 데이터만
 typedef struct _robin {
-	CHARDATA charData[TOTALPLAYER];//?�버???�?�되??로빈???�???�이??/차후???��?�??��?가 
-	ITEM inven[TOTALINVENTORY];//?�벤?�리??공유?�다.
+	CHARDATA charData[TOTALPLAYER];//서버에 저장되는 로빈에 대한 데이터//차후에 상대방 유저가 
+	ITEM inven[TOTALINVENTORY];//인벤토리는 공유한다.
 	ITEM newItem;
-	//?�에?�는 ?�재 ?�득???�류?�이 ?�유?�럽�??�아?�니??것이 ?�니?? ?�해�??�치??박�????�오?�것?�로 ?�자.
+	//성에서는 현재 획득한 크류들이 자유스럽게 돌아다니는 것이 아니라, 정해진 위치에 박혀서 나오는것으로 하자.
 	//
-	int curCrew[MAXCREW];//?�재 몇번 crew가 ?�팅?�어 ?�는지
+	int curCrew[MAXCREW];//현재 몇번 crew가 세팅되어 있는지
 
 	int stage;
 	int room; 
-	int maxStage[TOTALCASTLE];//?�재 ?�디까�? 갔는지.
+	int maxStage[TOTALCASTLE];//현재 어디까지 갔는지.
 	int maxRoom[TOTALCASTLE];
 
 	bool demoSeen[TOTALDEMO];
 
-	unsigned short count;//?�벤?�리?�에 ?�는 ?�이?�의 개수
-	unsigned short maxInven;//?�벤?�리?�에 ?�는 ?�이?�의 개수
+	unsigned short count;//인벤토리안에 있는 아이템의 개수
+	unsigned short maxInven;//인벤토리안에 있는 아이템의 개수
 
 	long long gold;//골드
-	long long heart;//?�트
-	long long medal;//PVP ?�용 카운??
+	long long heart;//하트
+	long long medal;//PVP 전용 카운트
 	long long star;//
-	long long hammer;//?�성??
+	long long hammer;//합성용
 	int shield;//방어
 	long long coin;//블록체인 코인
 
@@ -565,7 +567,7 @@ typedef struct _robin {
 	int buffItem[TOTAL_WASTE];
 	unsigned short medalShop[TOTALMEDALSHOP * MEDALSHOPDATASIZE];
 
-	int playtime;//?�레?��???
+	int playtime;//플레이타임
 
 	bool statue[TOTAL_STATUE];
 	std::string nickname;
@@ -574,11 +576,11 @@ typedef struct _robin {
 
 	int maxStatusCnt;
 
-	int enemyUserIdx;//?�재 ?�팅?�어 ?�는 ?��?�?
+	int enemyUserIdx;//현재 세팅되어 있는 상대방
 
-	int quest;//?�재 ?�스??
+	int quest;//현재 퀘스트
 	int subQuest;//
-	int questCnt;//?�재 ?�스??카운??
+	int questCnt;//현재 퀘스트 카운트
 
 	long questTimeStamp;
 	long long remainQuestItem;
@@ -604,40 +606,40 @@ typedef struct _robin {
 	int eventCnt;
 
 	signed char bossRoom;//
-	//false �??�반�?
-	//true �?보스�?
-	//2 �?골드?�벤??
+	//false 면 일반방
+	//true 면 보스방
+	//2 면 골드이벤트
 
-	//?�일 보상
+	//일일 보상
 	long calendarTimeStamp;
-	//캘린?�의 ?�별 ?�테?�터?�로 
-	//0?�면 
+	//캘린더의 일별 스테이터스로 
+	//0이면
 	int calendarDayStatus[WEEK];
 	int calendarMonthDay;
 
-	int waveIdx;//몇번�??�이브인지
-	int curWaveIdx;//?�재까�? 몇개???�이 ?�장?�는지 보여주는 
-	bool waveActive[MAXENEMY];//최�? ?�네�?
+	int waveIdx;//몇번째 웨이브인지
+	int curWaveIdx;//현재까지 몇개의 적이 등장했는지 보여주는 
+	bool waveActive[MAXENEMY];//최대 에네미
 	long waveTimeStamp;
 
 	OBJECT boxObj;
-	//?�재 족보가 ?�떻�??�었?��?�?
-	//1000번마??최�? 2번이 ?�올 ???�다.
+	//현재 족보가 어떻게 되었는지를 
+	//1000번마다 최대 2번이 나올 수 있다.
 	int rouletteLog[MAXROULETTELOG];
-	int rouletteLogIdx;//?�재 몇번�??�덱?��? ?�고 ?�는지
-	int rouletteLog_HeartCnt;//?�재 ?�트가 MAXROULETTELOG 기�??�로 몇번 ?��? ?�는지
-	int rouletteLog_RaidCnt;//?�재 ?�이?��? MAXROULETTELOG 기�??�로 몇번 ?��? ?�는지
+	int rouletteLogIdx;//현재 몇번째 인덱스를 쓰고 있는지
+	int rouletteLog_HeartCnt;//현재 하트가 MAXROULETTELOG 기준으로 몇번 나와 있는지
+	int rouletteLog_RaidCnt;//현재 레이드가 MAXROULETTELOG 기준으로 몇번 나와 있는지
 
-	bool heroesSetting[TOTALCHAR];//?�착???�어 ?�는지
-	//몇번 캐릭?��? ?�는지
+	bool heroesSetting[TOTALCHAR];//장착이 되어 있는지
+	//몇번 캐릭터를 하는지
 	int slotCrew[MAXCREW];
 
 	int lv;
 	int exps;
 
-	// ?�로??룰렛 ?�스??변??
-	int currentDay;           // ?�재 Day
-	int lifeRemaining;        // ?��? ?�명
+	// 새로운 룰렛 시스템 변수
+	int currentDay;          // 현재 Day
+	int lifeRemaining;        // 남은 수명
 	
 	int castle;
 
@@ -784,7 +786,7 @@ typedef struct _efffect {
 	signed char shake;
 	signed char type;
 	int hpShake;
-	int color2;//바나?�기
+	int color2;//바나오기
 } EFFECT;
 
 typedef struct _movie {
@@ -831,87 +833,34 @@ typedef struct _dmgInfo {
 	int frame;
 	signed char type;
 	signed short pos;
-	unsigned short owner;//?��?지�?준 ?��? ?�군지
-	unsigned short target;//?��?지�?받�? ?��? ?�군지
+	unsigned short owner;//데미지를 준 자가 누군지
+	unsigned short target;//데미지를 받은 자가 누군지
 	int color;
 
 	float zoom;
 } DMGINFO;
 
 typedef struct _iconMark {
-	int imageOffX, imageOffY; //?��?지 ?�프??X, Y
-	int imageDx, imageDy; //?��?지 면적 dx, dy
-	int resNum;//?��?지 ?�덱??
-	int x, y;//?�재 x, y?�치
+	int imageOffX, imageOffY; //이미지 오프셋 X, Y
+	int imageDx, imageDy; //이미지 면적 dx, dy
+	int resNum;//이미지 인덱스
+	int x, y;//현재 x, y위치
 	int targetX, targetY;//목적지 XY 
 	int targetX2, targetY2;//목적지 XY 
 	signed char dirX, dirY;//방향
-	float dx, dy;//x, y�??�동거리
-	float speed;//?�동?�도
-	float speedIncrement;//?�동?�도 증�???
-	float speed2;//?�동?�도2
-	float speedIncrement2;//?�동?�도 증�???
-	int waitingFrame;//?�작?�을 ??머무르는 ?�레??
-	int waitingFrame2;//중간???�동?�도 체인지 ?�을 ??머무???�레??
-	int frame;//?�재 ?�레??
+	float dx, dy;//x, y축 이동거리
+	float speed;//이동속도
+	float speedIncrement;//이동속도 증가량
+	float speed2;//이동속도2
+	float speedIncrement2;//이동속도 증가량
+	int waitingFrame;//시작했을 때 머무르는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무는 프레임
+	int frame;//현재 프레임
 	int frame2;//
-	int lockOpenFrame;//?��????�리???�레??
+	int lockOpenFrame;//잠김이 열리는 프레임
 	int moveAngle;
 	int amount;
-	int type;//카드?�서???�택?�??
-	int detail;
-	int grade;
-	int cooldown;
-	int icon;
-
-	int attackType;
-	int attackStr;
-
-	float zoom;
-	float zoomEnd;//�?
-	float zoomIncrement;
-	float zoom2;
-	float zoomEnd2;//�?
-	float zoomIncrement2;
-	int alpha;
-	bool text;
-	bool value;
-	bool ani;
-
-	int owner;//ao???�덱??
-	int openFrame;//박스??경우?�는 ?�루
-	bool star;
-	bool cardFrame;
-	bool newItem;
-
-	int bar;//?�떤 바�? ?�해 가???�는지.
-	bool manual;
-	int motion;
-	int motionFrame;
-} ICONMARK;
-
-typedef struct _iconMarkArr {
-	int imageOffX, imageOffY; //?��?지 ?�프??X, Y
-	int imageDx, imageDy; //?��?지 면적 dx, dy
-	int resNum;//?��?지 ?�덱??
-	int x, y;//?�재 x, y?�치
-	int targetX, targetY;//목적지 XY
-	int targetX2, targetY2;//목적지 XY 
-	signed char dirX, dirY;//방향
-	float dx, dy;//x, y�??�동거리
-	float speed;//?�동?�도
-	float speedIncrement;//?�동?�도 증�???
-	float speed2;//?�동?�도2
-	float speedIncrement2;//?�동?�도 증�???
-	int waitingFrame;//?�작?�을 ??머무르는 ?�레??
-	int waitingFrame2;//중간???�동?�도 체인지 ?�을 ??머무???�레??
-	int frame;//?�재 ?�레??
-	int frame2;//?�재 ?�레??
-	int endFrame;//종료 ?�레??
-	int endFrame2;//종료 ?�레??
-	int moveAngle;
-	int amount;
-	int type;//카드?�서???�택?�??
+	int type;//카드에서는 어택타입
 	int detail;
 	int grade;
 	int cooldown;
@@ -924,19 +873,72 @@ typedef struct _iconMarkArr {
 	float zoomEnd;
 	float zoomIncrement;
 	float zoom2;
-	float zoomEnd2;//�?
+	float zoomEnd2;
 	float zoomIncrement2;
 	int alpha;
 	bool text;
 	bool value;
 	bool ani;
 
-	int owner;//ao???�덱??
-	bool openFrame;//박스??경우?�는 ?�루
+	int owner;//ao의 인덱스
+	int openFrame;//박스의 경우에는 트루
+	bool star;
+	bool cardFrame;
+	bool newItem;
+
+	int bar;//어떤 바를 향해 가야 하는지.
+	bool manual;
+	int motion;
+	int motionFrame;
+} ICONMARK;
+
+typedef struct _iconMarkArr {
+	int imageOffX, imageOffY; //이미지 오프셋 X, Y
+	int imageDx, imageDy; //이미지 면적 dx, dy
+	int resNum;//이미지 인덱스
+	int x, y;//현재 x, y위치
+	int targetX, targetY;//목적지 XY
+	int targetX2, targetY2;//목적지 XY 
+	signed char dirX, dirY;//방향
+	float dx, dy;//x, y축 이동거리
+	float speed;//이동속도
+	float speedIncrement;//이동속도 증가량
+	float speed2;//이동속도2
+	float speedIncrement2;//이동속도 증가량
+	int waitingFrame;//시작했을 때 머무르는 프레임
+	int waitingFrame2;//중간에 이동속도 체인지 했을 때 머무는 프레임
+	int frame;//현재 프레임
+	int frame2;//현재 프레임
+	int endFrame;//종료 프레임
+	int endFrame2;//종료 프레임
+	int moveAngle;
+	int amount;
+	int type;//카드에서는 어택타입
+	int detail;
+	int grade;
+	int cooldown;
+	int icon;
+
+	int attackType;
+	int attackStr;
+
+	float zoom;
+	float zoomEnd;
+	float zoomIncrement;
+	float zoom2;
+	float zoomEnd2;//줌
+	float zoomIncrement2;
+	int alpha;
+	bool text;
+	bool value;
+	bool ani;
+
+	int owner;//ao의 인덱스
+	bool jokboIcon;//박스의 경우에는 트루
 	bool star;
 	bool cardFrame;
 
-	int iconMarkCnt;//?�마???�이콘마?��? ?�성?�야 ?�는지 
+	int iconMarkCnt;//얼마나 아이콘마크를 생성해야 되는지 
 	float gap;
 
 	int collectionIdx;
@@ -971,24 +973,24 @@ typedef struct _escort {
 } ESCORT;
 
 typedef struct _gameData {
-	//몬스?��? ?��? ?�수
+	//몬스터를 잡은 횟수
 	unsigned int monsterKill[NPC_CAPTAIN * 3];
 	unsigned int monsterKill2[TOTALMAPTYPE];
 
-	//몬스?�한??죽�? ?�수
+	//몬스터한테 죽은 횟수
 	unsigned short monsterVictim[NPC_CAPTAIN * 3];
 
-	//몬스?�한??걸려�??�버??
+	//몬스터한테 걸려본 디버프
 	signed char monsterDebuf[NPC_CAPTAIN];
 
-	//몬스?�에게서 ?�어�??�료
+	//몬스터에게서 얻어본 재료
 	signed char monsterMaterial[NPC_CAPTAIN];
 
 	unsigned char currentTitle;
 
 	unsigned char shopCount[3];
 
-	// 길드??관??변??
+	// 길드전 관련 변수
 	int guildTime;
 	int guildLength;
 } GAMEDATA;
@@ -1005,7 +1007,7 @@ typedef struct _tempSave {
 	unsigned char playMode;
 } TEMPSAVE;
 
-//SetRoom ??초기???�킬변?�들
+//SetRoom 때 초기화 시킬변수들
 typedef struct _reportVar {
 	unsigned short stayMonster;
 	signed char isTalked;
@@ -1013,12 +1015,12 @@ typedef struct _reportVar {
 	signed char activeItem;
 } REPORTVAR;
 
-//NewGame??초기???�킬변?�들
+//NewGame시 초기화 시킬변수들
 typedef struct _reportVar2 {
 	int roomFrame;
 	int gandhi;
 	int darkStone;
-	unsigned short noPotion;	//검?�한 강자(?�션???�용?��? ?�고 ?��? 몬스??마릿??
+	unsigned short noPotion;	//검소한 강자(포션을 사용하지 않고 잡은 몬스터 마릿수)
 	unsigned short saint;
 	unsigned short diver;
 	unsigned short fallHeight;
@@ -1034,11 +1036,11 @@ typedef struct _reportVar2 {
 	signed char itemRing[TOTAL_RING];
 } REPORTVAR2;
 
-// UI ?�트 구조�?
+// UI 파트 구조체
 struct UiImagePart
 {
 	const char* name;
-	int srcIdx;          // ?��?지 ?�덱??(sprite 배열)
+	int srcIdx;          // 이미지 인덱스 (sprite 배열)
 
 	// source rect
 	int xs;
@@ -1064,61 +1066,61 @@ struct UiImagePart
 
 struct ReelJumpState {
 	JumpState state;
-	float jumpY;        // ?�재 ?�프 ?�이(px)
-	float jumpV;        // ?�프 ?�도(px/frame)
+	float jumpY;        // 현재 점프 높이(px)
+	float jumpV;        // 점프 속도(px/frame)
 
-	float maxJumpY;     // 그림???�출??최�? ?�이)
-	int curShowPos;     // ?�재 보여주는 alivePos
-	int landedPos;      // 착�? ?�정 alivePos
-	int lastSwapF;      // 마�?�?교체 ?�레??
+	float maxJumpY;     // 그림자 연출용(최대 높이)
+	int curShowPos;     // 현재 보여주는 alivePos
+	int landedPos;      // 착지 확정 alivePos
+	int lastSwapF;      // 마지막 교체 프레임
 
-	bool started;     // ?�번 ?�롯 ?�출?�서 ?�당 릴이 ?�작?�는지
-	int holdEndFrame;   // slotFrame 기�?, ?�기까�? JS_HOLD ?��?
+	bool started;     // 이번 슬롯 연출에서 해당 릴이 시작했는지
+	int holdEndFrame;   // slotFrame 기준, 여기까지 JS_HOLD 유지
 
-	// --- 추�? ---
-	bool  flipLR;         // �????��?(?�전 ?�낌)
-	int   lastFlipF;      // 마�?�??��? ?�레??
-	int   flashEndF;         // 반짝 FX 종료 ?�레??
-	int   vortexEndF;        // ?�오�?FX 종료 ?�레??
+	// --- 추가 ---
+	bool  flipLR;         // 좌/우 토글(회전 느낌)
+	int   lastFlipF;      // 마지막 토글 프레임
+	int   flashEndF;         // 반짝 FX 종료 프레임
+	int   vortexEndF;        // 회오리 FX 종료 프레임
 
-	// [MOD-R1] ?�집�??�전) ?�쿼???�출??
-	int   flipSquashEndF;   // ???�레?�까지 ?�쿼???�용
-	int   flipSquashLen;    // 지???�레??2~4 추천)
+	// [MOD-R1] 뒤집기(회전) 스쿼시 연출용
+	int   flipSquashEndF;   // 이 프레임까지 스쿼시 적용
+	int   flipSquashLen;    // 지속 프레임(2~4 추천)
 
-	int bounceLeft; // 1?�면 착�? ??미니바운??1�?
+	int bounceLeft; // 1이면 착지 후 미니바운스 1번
 };
 
 extern ReelJumpState gReelJump[TOTALREEL];
-// [MOD-G] ??�??�정 ??종료 ?�레?��?카운??
+// [MOD-G] “3개 확정 후 종료 딜레이” 카운터
 extern int sEndDelayLeft;
 
 extern int logIndex;
 
-//?�스??
+//시스템
 extern cocos2d::Sprite* sprite[TOTALIMG];
 extern cocos2d::Texture2D* texture[TOTALIMG];
-//?�으�??��?지 추�?(?�다??기�??� rendeSpriteIndex == -1 ?�면
-extern cocos2d::Sprite* renderSprite[MAXRENDERCNT];//?��?지 ?�규?�성???�용
-extern int renderSpriteIndex[MAXRENDERCNT];//?��?지 ?�규?�성???�용 - ?�더?�프?�이?��? TOTALIMG 중에 몇번???�았?��?
-//0값이 기본?�고 ?��?지가 ?�성?�면 카운?��? ?�나 ?�어?�는거�?
-extern int sameRenderSpriteMax[TOTALIMG];//?�재 최�? 몇개까�? 추�??�었?��?
-//?�재 sameRenderSpriteMax???�달?��? ?�았?��?�??�단?�서 기존것을 ?�용?�고 ?�나??카운?��? 증�??�키?�거지
-extern int sameRenderSpriteCur[TOTALIMG];//?�번 ?�로?�에 몇개까�? ?�고 ?�는가.(?�레?�마??초기?�됨)
-extern int sameRenderSpriteArr[TOTALIMG][3000];//배열???�정?�덱?�의 ?��?지�??�더?�프?�이??몇번???�어가?�는지�??�?�하??배열
+//없으면 이미지 추가(없다는 기준은 rendeSpriteIndex == -1 이면
+extern cocos2d::Sprite* renderSprite[MAXRENDERCNT];//이미지 신규생성시 사용
+extern int renderSpriteIndex[MAXRENDERCNT];//이미지 신규생성시 사용 - 렌더스프라이트가 TOTALIMG 중에 몇번을 담았는가
+//0값이 기본이고 이미지가 생성되면 카운트가 하나 늘어나는거지
+extern int sameRenderSpriteMax[TOTALIMG];//현재 최대 몇개까지 추가되었는가
+//현재 sameRenderSpriteMax에 도달하지 않았는지를 판단해서 기존것을 사용하고 하나씩 카운트를 증가시키는거지
+extern int sameRenderSpriteCur[TOTALIMG];//이번 드로우에 몇개까지 쓰고 있는가.(프레임마다 초기화됨)
+extern int sameRenderSpriteArr[TOTALIMG][3000];//배열에 특정인덱스의 이미지를 렌더스프라이트 몇번에 들어가있는지를 저장하는 배열
 extern int curRenderSpriteArr[MAXRENDERCNT];
 extern int getSpriteIdx;
 extern int getSpriteTexture;
-extern int totalRenderCnt;//?�재 그려???�는 �?개수
-extern int curRenderCnt;//?�재 그려???�는 �?개수
+extern int totalRenderCnt;//현재 그려야 하는 총 개수
+extern int curRenderCnt;//현재 그려야 하는 총 개수
 
-//?�으�??��?지 추�?(?�다??기�??� rendeSpriteIndex == -1 ?�면
-extern cocos2d::Sprite* bufferSprite[MAXBUFFERSPRITECNT];//?��?지 ?�규?�성???�용
-extern int bufferSpriteIndex[MAXBUFFERSPRITECNT];//?��?지 ?�규?�성???�용 - ?�더?�프?�이?��? TOTALIMG 중에 몇번???�았?��?
-//0값이 기본?�고 ?��?지가 ?�성?�면 카운?��? ?�나 ?�어?�는거�?
-extern int sameBufferSpriteMax[TOTALIMG];//?�재 최�? 몇개까�? 추�??�었?��?
-//?�재 sameRenderSpriteMax???�달?��? ?�았?��?�??�단?�서 기존것을 ?�용?�고 ?�나??카운?��? 증�??�키?�거지
-extern int sameBufferSpriteCur[TOTALIMG];//?�번 ?�로?�에 몇개까�? ?�고 ?�는가.(?�레?�마??초기?�됨)
-extern int sameBufferSpriteArr[TOTALIMG][60 * 47];//배열???�정?�덱?�의 ?��?지�??�더?�프?�이??몇번???�어가?�는지�??�?�하??배열
+//없으면 이미지 추가(없다는 기준은 rendeSpriteIndex == -1 이면
+extern cocos2d::Sprite* bufferSprite[MAXBUFFERSPRITECNT];//이미지 신규생성시 사용
+extern int bufferSpriteIndex[MAXBUFFERSPRITECNT];//이미지 신규생성시 사용 - 렌더스프라이트가 TOTALIMG 중에 몇번을 담았는가
+//0값이 기본이고 이미지가 생성되면 카운트가 하나 늘어나는거지
+extern int sameBufferSpriteMax[TOTALIMG];//현재 최대 몇개까지 추가되었는가
+//현재 sameRenderSpriteMax에 도달하지 않았는지를 판단해서 기존것을 사용하고 하나씩 카운트를 증가시키는거지
+extern int sameBufferSpriteCur[TOTALIMG];//이번 드로우에 몇개까지 쓰고 있는가.(프레임마다 초기화됨)
+extern int sameBufferSpriteArr[TOTALIMG][60 * 47];//배열에 특정인덱스의 이미지를 렌더스프라이트 몇번에 들어가있는지를 저장하는 배열
 extern int curBufferSpriteArr[MAXBUFFERSPRITECNT];
 extern int getBufferSpriteIdx;
 extern int getBufferSpriteTexture;
@@ -1135,14 +1137,14 @@ extern std::string compareString;
 extern std::string labelString;
 
 extern TTFConfig ttfconfig;
-extern cocos2d::Label* fontLabelWidth;//?�트 ?�이???�이
-extern cocos2d::Label* fontLabel[MAXFONTLABELCNT];//?�벨 ?�규?�성???�용
-extern int fontLabelIndex[MAXFONTLABELCNT];//?�벨 ?�규?�성???�용 - ?�스?�라벨이 ?�트?�벨 �?몇번???�았?��?
-extern int fontLabelMotherIndex[MAXFONTLABELCNT];//만약 복제가 ?�는 경우 몇번??복제??것인가
-extern int sameFontLabelMax[TEXT_LENGTH];//?�재 최�? 몇개까�? 추�??�었?��?
-extern int sameFontLabelCur[TEXT_LENGTH];//?�번 ?�로?�에 몇개까�? ?�고 ?�는가.(?�레?�마??초기?�됨)
-extern int sameFontLabelArr[TEXT_LENGTH][100];//배열???�정?�덱?�의 ?�벨???�더?�프?�이??몇번???�어가?�는지�??�?�하??배열
-extern int curFontLabelArr[MAXFONTLABELCNT];//?�나 추�??�때마다 ?�덱?��? 추�??�다
+extern cocos2d::Label* fontLabelWidth;//폰트 넓이용 넓이
+extern cocos2d::Label* fontLabel[MAXFONTLABELCNT];//라벨 신규생성시 사용
+extern int fontLabelIndex[MAXFONTLABELCNT];//라벨 신규생성시 사용 - 텍스트라벨이 폰트라벨 중 몇번을 담았는가
+extern int fontLabelMotherIndex[MAXFONTLABELCNT];//만약 복제가 되는 경우 몇번을 복제한 것인가
+extern int sameFontLabelMax[TEXT_LENGTH];//현재 최대 몇개까지 추가되었는가
+extern int sameFontLabelCur[TEXT_LENGTH];//이번 드로우에 몇개까지 쓰고 있는가.(프레임마다 초기화됨)
+extern int sameFontLabelArr[TEXT_LENGTH][100];//배열에 특정인덱스의 라벨을 렌더스프라이트 몇번에 들어가있는지를 저장하는 배열
+extern int curFontLabelArr[MAXFONTLABELCNT];//하나 추가될때마다 인덱스를 추가한다
 
 extern int getFontLabelIdx;
 extern int getFontLabelTexture;
@@ -1155,12 +1157,12 @@ extern cocos2d::LabelBMFont* textLabel[MAXLABELCNT];
 extern cocos2d::Label* textLabel[MAXLABELCNT];
 #endif
 
-extern int textLabelIndex[MAXLABELCNT];//?�벨 ?�규?�성???�용 - ?�스?�라벨이 TOTALIMG 중에 몇번???�았?��?
-//0값이 기본?�고 ?��?지가 ?�성?�면 카운?��? ?�나 ?�어?�는거�?
-extern int sameTextLabelMax[TEXT_LENGTH];//?�재 최�? 몇개까�? 추�??�었?��?
-//?�재 sameRenderSpriteMax???�달?��? ?�았?��?�??�단?�서 기존것을 ?�용?�고 ?�나??카운?��? 증�??�키?�거지
-extern int sameTextLabelCur[TEXT_LENGTH];//?�번 ?�로?�에 몇개까�? ?�고 ?�는가.(?�레?�마??초기?�됨)
-extern int sameTextLabelArr[TEXT_LENGTH][100];//배열???�정?�덱?�의 ?��?지�??�더?�프?�이??몇번???�어가?�는지�??�?�하??배열
+extern int textLabelIndex[MAXLABELCNT];//라벨 신규생성시 사용 - 텍스트라벨이 TOTALIMG 중에 몇번을 담았는가
+//0값이 기본이고 이미지가 생성되면 카운트가 하나 늘어나는거지
+extern int sameTextLabelMax[TEXT_LENGTH];//현재 최대 몇개까지 추가되었는가
+//현재 sameRenderSpriteMax에 도달하지 않았는지를 판단해서 기존것을 사용하고 하나씩 카운트를 증가시키는거지
+extern int sameTextLabelCur[TEXT_LENGTH];//이번 드로우에 몇개까지 쓰고 있는가.(프레임마다 초기화됨)
+extern int sameTextLabelArr[TEXT_LENGTH][100];//배열에 특정인덱스의 이미지를 렌더스프라이트 몇번에 들어가있는지를 저장하는 배열
 extern int curTextLabelArr[MAXLABELCNT];
 extern int getTextLabelIdx;
 extern int getTextLabelTexture;
@@ -1185,12 +1187,12 @@ extern int fontImageHeight;
 extern long fontImageDataLen;
 
 //cocos2d::Sprite* fontImageSolid;
-extern unsigned char *fontImageData;
+extern unsigned char* fontImageData;
 
 
-extern int *gScreenPtr, *gImagePtr;
+extern int* gScreenPtr, * gImagePtr;
 extern cocos2d::Sprite* atlas;
-extern cocos2d::SpriteFrameCache  *Cache;
+extern cocos2d::SpriteFrameCache* Cache;
 
 extern int fontColorIdx[MAXFONTCOLOR];
 extern float global_z;
@@ -1231,9 +1233,9 @@ extern signed int clipX3;
 extern signed int clipY3;
 extern signed int clipX4;
 extern signed int clipY4;
-extern ClippingNode * clipNode;
-extern signed short STATUSWIN_Y;//?�투�??�한 
-extern signed short STATUSWIN_Y_INIT;//?�투�??�한
+extern ClippingNode* clipNode;
+extern signed short STATUSWIN_Y;//전투를 위한 
+extern signed short STATUSWIN_Y_INIT;//전투를 위한
 extern signed short STATUSWIN_Y2;
 extern signed short PLAYAREA_X;
 extern signed short PLAYAREA_Y;
@@ -1242,24 +1244,24 @@ extern signed char buy_Mode;
 
 extern unsigned char imgLoaded;
 
-//추�? ?�운로드 변??
+//추가 다운로드 변수
 #ifdef DOWNLOAD
-extern signed char isDown;	//추�??�운 받았?��? ?��?//startCelt?�서 검??
-extern signed char oldDraw;	//?�드변?��? ?�?�하고있?��?, ?�운로드 ?�료???�당 ?�태�??�려준??
+extern signed char isDown;	//추가다운 받았는지 여부//startCelt에서 검색
+extern signed char oldDraw;	//올드변수를 저장하고있다가, 다운로드 완료시 해당 상태로 돌려준다.
 #endif
 
 extern int thickColor;
 extern int fontColor, oldColor;
 extern int baseColor;
 
-extern const char* textString;	//?�레?�텍?�트???�트�?
+extern const char* textString;	//프레임텍스트용 스트링
 extern unsigned short textStringLength[50];
 extern unsigned short textStringOffset[50];
 extern unsigned char textStartColor[50];
-extern unsigned short textFrame;	//?�레?�따???�점 찍힐???�용
-extern unsigned char textPage;	//?�래 길이가 몇페?��? 짜리?��? ?�용
-extern unsigned char textCurPage;	//?�재 몇번�??�이지?��?
-extern unsigned char textLines;	//몇줄짜리??
+extern unsigned short textFrame;	//프레임따라 점점 찍힐때 사용
+extern unsigned char textPage;	//원래 길이가 몇페이지 짜리인지 사용
+extern unsigned char textCurPage;	//현재 몇번째 페이지인가
+extern unsigned char textLines;	//몇줄짜리냐
 extern unsigned char textBalloonFrame;
 
 extern int popUpFrame;
@@ -1281,7 +1283,7 @@ extern unsigned char mustRefresh;
 extern signed char running;
 extern signed char resumeFlag;
 
-//?�조??
+//키조작
 extern int systemKey;
 extern int systemRelease;
 extern int lastPressedKey;
@@ -1343,9 +1345,9 @@ extern unsigned char totalDmgUpdateFrame;
 extern unsigned char onceDmgUpdateFrame;
 extern unsigned char nameFrame, nameObj;
 extern signed char warpFrame, returnFrame;
-extern unsigned char curEnemyFrame;	//?�재 ???�름??몇프?�임?�안 ???�나
-extern signed int curEnemy;	//?�재 공격중인 몬스?��? ?�구??
-extern signed int curPlayer;	//?�재 공격받고 ?�는 주인공�? ?�구??
+extern unsigned char curEnemyFrame;	//현재 적 이름이 몇프레임동안 떠 있나
+extern signed int curEnemy;	//현재 공격중인 몬스터가 누구냐
+extern signed int curPlayer;	//현재 공격받고 있는 주인공은 누구냐
 extern signed char newStart;
 extern signed int gameOverFrame;
 extern signed int questFrame;
@@ -1366,10 +1368,10 @@ extern char labelStr2[256];
 extern char labelStr3[256];
 extern char skillStr[256];
 extern char ringStr[256];
-extern char skillStr2[256];//?�킬?�세?�명
+extern char skillStr2[256];//스킬상세설명
 extern char ringStr2[256];
-extern char skillStr3[256];//?�킬?�름
-extern char skillToolTips[256];//?�킬?�름
+extern char skillStr3[256];//스킬이름
+extern char skillToolTips[256];//스킬이름
 extern char skillBodyStr[256];
 extern char buffItemStr[256];
 extern char buffItemStr2[256];
@@ -1397,10 +1399,10 @@ extern int robinRes;
 extern int gameRes;
 extern int ac;
 
-extern DATA *d;
-extern ROBINDATA *robin;
-extern GAMEDATA *game;
-extern ALLOCED *a;
+extern DATA* d;
+extern ROBINDATA* robin;
+extern GAMEDATA* game;
+extern ALLOCED* a;
 #else
 extern DATA d;
 extern ROBINDATA robin;
@@ -1436,19 +1438,19 @@ extern ICONMARK controlMarkBack[TOTALCONTROLMARK];
 extern bool controlerSpread[TOTALCONTROLMARK];
 extern ICONMARK cardMark[TOTALCARDMARK];
 extern ICONMARK cardMarkBack[TOTALCARDMARK];
-//메인보상리스???�기???�번 받는 모든 보상 ?�퀀??1depth가 ?�어간다.)
+//메인보상리스트(여기에 한번 받는 모든 보상 시퀀스 1depth가 들어간다.)
 extern ICONMARK rewardMark[TOTALREWARDMARK];
 extern ICONMARK rewardMarkBack[TOTALREWARDMARK];
 extern ICONMARK rewardMark_PopUp[TOTALREWARDMARK];
-//가챠용 박스마크. (가챠�? ?�어갔을 ???�러개의 박스가 ?�으�?모두 ?�기 ?�어간다.)
+//가챠용 박스마크. (가챠를 들어갔을 때 여러개의 박스가 있으면 모두 여기 들어간다.)
 extern ICONMARK boxMark[TOTALBOXMARK];
-//박스?�서 카드�?�????�오??것들
-extern ICONMARK boxCardMark[TOTALCARDMARK];//보조박스?�서 ?�온 리워?�마??
-//?�울마크
+//박스에서 카드를 깔 때 나오는 것들
+extern ICONMARK boxCardMark[TOTALCARDMARK];//보조박스에서 나온 리워드마크
+//소울마크
 extern ICONMARK soulMark;
 extern ICONMARK goldAlphaMark[TOTALGOLDALPHAMARK];
 
-//배�??�서 ?�이???�투
+//배틀에서 쓰이는 전투
 extern OBJECT ao[TOTALOBJECT];
 extern BAR bar[TOTAL_BAR];
 
@@ -1459,7 +1461,7 @@ extern signed short crX, crY, crW, crH;
 extern char saveMem[sizeof(ROBINDATA)];
 extern char backupMem[sizeof(ROBINDATA)];
 
-//�?관??변??
+//맵 관련 변수
 extern unsigned short focus;
 extern signed short loadedMap;
 extern unsigned char mapData[15];
@@ -1482,31 +1484,31 @@ extern POSITION splash;
 extern BGOBJ bgObj[MAXBGOBJECT];
 extern unsigned char splashType;
 
-//TALK 관??변??
+//TALK 관련 변수
 extern unsigned char talkShakeFrame;
 
 extern int touchCount;
 
-//cmf 관??변??
+//cmf 관련 변수
 extern unsigned char costumeImg[MAXPLAYER];
 extern signed short cmfLoaded[REALMAXCMF];	//Loaded Cmf Num
 extern unsigned short cmf_m_cnt[REALMAXCMF];	//Motion Count
 extern unsigned short cmf_i_cnt[REALMAXCMF];	//Image Count
 extern unsigned short cmf_v_cnt[REALMAXCMF];	//Variable Array Length
 extern signed short cmf_i_div[REALMAXCMF][6];	//Image Sprite Relation Info
-extern signed short *old_cmf_ptr[REALMAXCMF];
+extern signed short* old_cmf_ptr[REALMAXCMF];
 const extern unsigned short* cmd_i_offset[REALMAXCMF];	//Image Offset
 const extern unsigned short* cmd_m_cnt[REALMAXCMF];	//Image Count Per Motion
 const extern signed short* cmd_m_crash[REALMAXCMF];	//Crash Area Per Motion
 const extern signed short* cmd_m_img[REALMAXCMF];	//Part Image Num And Offset
 
 extern signed short cmf_status_data[REALMAXCMF][MAXSTATUS][1024];
-const extern signed short * cmf_change_data[REALMAXCMF];
+const extern signed short* cmf_change_data[REALMAXCMF];
 
-//?�레?�어 ?�직임 관??변??
+//플레이어 움직임 관련 변수
 const extern unsigned short* skillStartFrame;
 const extern unsigned short* skillClosingFrame;
-const extern unsigned char * skillMotion;
+const extern unsigned char* skillMotion;
 extern unsigned char whichPlayer;
 extern unsigned char isDemo;
 extern unsigned short attackDelay;
@@ -1517,25 +1519,25 @@ extern unsigned char ringUsed;
 extern unsigned char ringUser;
 
 extern ESCORT escort;
-extern signed char demoPlayerX[SOLDIER + 1];
-extern signed char boomerangAway[SOLDIER + 1];
+extern signed char demoPlayerX[PLAYERALL];
+extern signed char boomerangAway[PLAYERALL];
 extern signed short pDx, pDy;
 extern unsigned char currentQuest;
-extern unsigned char currentTimeQuest; //?�재 ?�?�퀘스???�??
-extern unsigned short TimeFailDemo;    // ?�?�퀘스???�패???�작?�야?�는 ?�모???�??
+extern unsigned char currentTimeQuest; //현재 타임퀘스트 저장.
+extern unsigned short TimeFailDemo;    // 타임퀘스트 실패시 동작해야하는 데모신 저장
 extern unsigned char darkStone;
 extern unsigned char npcdarkStone;
 
-//?�레?�어 ?��?지 관??변??
+//플레이어 이미지 관련 변수
 
-//�??��?지 관??변??
+//문 이미지 관련 변수
 extern unsigned char doorCmf[MAXDOOR];
 extern unsigned char doorCnt;
 
-//?�이??관??변??
+//아이템 관련 변수
 extern ITEM tempItem;
 extern ITEM helpItem[MAXHELPITEM];
-extern int tempItemIdx;//?�벤?�리??몇번?��?
+extern int tempItemIdx;//인벤토리의 몇번인지
 extern signed short itemObj;
 extern unsigned char tempFishItem;
 extern unsigned char nInvenMax, nInvenCnt, nShopCnt;
@@ -1549,7 +1551,7 @@ extern int progress;
 extern unsigned char extraArmor;
 extern int shopGachaItemCnt;
 
-//메뉴관??변??
+//메뉴관련 변수
 extern signed char yesNo;
 extern signed char menuDepth;
 extern signed char rewardDepth;
@@ -1557,17 +1559,17 @@ extern signed char gachaDepth;
 extern signed char newCardDepth;
 extern signed char newCollectionDepth;
 extern signed char stageInfoDepth;
-extern signed int curMenu;//?�?��?메뉴, 게임메뉴??메인�?
-extern signed int curHouse;//?�재 ?�택?�어 ?�는 �?
-extern signed int curHero;//?�재 ?�어�?
+extern signed int curMenu;//타이틀메뉴, 게임메뉴의 메인값
+extern signed int curHouse;//현재 선택되어 있는 집
+extern signed int curHero;//현재 히어로
 extern signed int curMenuBack;
-extern signed int curEventIdx;//?�재 ?�벤??
-extern int menuFrame;//메뉴 ?�레??
-extern int menuTalkFrame;//메뉴 ?�레??보조
-extern int menuWinFrame;//메뉴 ?�도???�레??
-extern int menuPage, menuPage2;//메뉴?�이지
-extern int menuCur;	//?�아?�로 ?�기??메뉴?�서 ?�용
-extern int menuX, menuY;//x, y�??�동?�는 메뉴?�서 ?�용
+extern signed int curEventIdx;//현재 이벤트
+extern int menuFrame;//메뉴 프레임
+extern int menuTalkFrame;//메뉴 프레임 보조
+extern int menuWinFrame;//메뉴 윈도우 프레임
+extern int menuPage, menuPage2;//메뉴페이지
+extern int menuCur;	//위아래로 넘기는 메뉴에서 사용
+extern int menuX, menuY;//x, y로 이동하는 메뉴에서 사용
 extern int menuResult;
 extern int hotKeyFrame;
 extern int menuAni;
@@ -1578,7 +1580,7 @@ extern int gachaFrame;
 extern int newCardFrame;
 extern int newCollectionFrame;
 extern int stageInfoFrame;
-extern int gachaIndex;//?�재 뽑고 ?�는 ?�자???�덱??
+extern int gachaIndex;//현재 뽑고 있는 상자의 인덱스
 extern int gachaCardIdx;
 extern int stageRewardIdx;
 extern int helpPage;
@@ -1587,27 +1589,27 @@ extern int helpFrame;
 extern unsigned char enchantResult;
 extern unsigned char shopType;
 
-extern int menuIdx, menuIdx2;	//�??�단 ?�이지
-extern int menuFocus, menuFocus2;	//?�재 ?�디??
-extern int menuInfo, menuWindow;	//?�보창을 ?�울 경우
-extern int menuMessage;//?��? �?0?�면 off
+extern int menuIdx, menuIdx2;	//맨 상단 페이지
+extern int menuFocus, menuFocus2;	//현재 어디냐
+extern int menuInfo, menuWindow;	//정보창을 띄울 경우
+extern int menuMessage;//작은 창 0이면 off
 extern int menuItem, menuItem2, menuItem3, menuItem4;
 extern int menuCount;
 extern int menuType;
-extern int menuCountCursor;	//?�점?�서 ?�고 ?�때 �?�� ?�하?�거
-extern int menuItemCount;	//?�점?�서 ?�시?�는 �?��
+extern int menuCountCursor;	//상점에서 사고 팔때 갯수 정하는거
+extern int menuItemCount;	//상점에서 표시되는 갯수
 extern int menuIcon;
-extern signed short invenRecipe[TOTALINVENTORY];	//?�벤?�리???�시??
-extern signed short invenRecipeCnt;	//?�벤?�리??�?몇개가 ?�는지
+extern signed short invenRecipe[TOTALINVENTORY];	//인벤토리에 레시피
+extern signed short invenRecipeCnt;	//인벤토리에 총 몇개가 있는지
 extern int enchantSlot[INVEN_HCNT];
 extern int enchatSlotCnt;
 extern signed short invenGemCnt;
 
-//?�크�?관??변??
-//scS, scE, scT, scC, scP (?�벤?�리)
-//scS2, scE2, scT2, scC2, scP2 (?�벤?�리)
+//스크롤 관련 변수
+//scS, scE, scT, scC, scP (인벤토리)
+//scS2, scE2, scT2, scC2, scP2 (인벤토리)
 
-//?�크롤이 ?�요??메뉴
+//스크롤이 필요한 메뉴
 
 extern signed int scS[TOTAL_MENU];
 extern signed int scE[TOTAL_MENU];
@@ -1616,41 +1618,41 @@ extern signed int scC[TOTAL_MENU];
 extern signed int scP[TOTAL_MENU];
 
 extern signed int isS, isT, isE, isC;
-//scY??추�? ?��?지???�나??
-extern signed int scX, scY[TOTAL_MENU], snapTargetY[TOTAL_MENU];//x, y ?�크�?
+//scY의 추가 두가지는 하나는 
+extern signed int scX, scY[TOTAL_MENU], snapTargetY[TOTAL_MENU];//x, y 스크롤
 extern signed int scY_Log, scT_Log;
 
-extern unsigned char scDir;//0?�면 ?�크롤이 ?�는거고, 1?�면 ?�평, 2�??�직?�다.
+extern unsigned char scDir;//0이면 스크롤이 없는거고, 1이면 수평, 2명 수직이다.
 extern signed short scRecoveryFrameX, scRecoveryFrameY, scAccelY;//복구
-extern int autoScroll;//?�동?�로 ?�크롤을 ?�킬건�?
-extern int autoScrollGap;//?�당 ?�레?�에 진행???�크�??�기
+extern int autoScroll;//자동으로 스크롤을 시킬건지
+extern int autoScrollGap;//해당 프레임에 진행할 스크롤 크기
 
 extern bool keyCoreDisable;
 extern unsigned char vibLevel;
 extern unsigned char stoneWhere;
 extern unsigned short charInfoPage;
 
-extern int INVEN_VCNT;//?�벤?�리 ?�로 몇개?��?
+extern int INVEN_VCNT;//인벤토리 세로 몇개인가
 extern int INVEN_TCNT;
-extern int GNBHEIGHT;//?�거??
+extern int GNBHEIGHT;//요거는 
 extern int BOTTOMMENUHEIGHT;
 extern int NORCH_HEIGHT;
 extern int HOMEBAR_HEIGHT;
 
 extern REPORTVAR rpVar;
 extern REPORTVAR2 rpVar2;
-extern signed char *rpPtr;
+extern signed char* rpPtr;
 
-//?�기??& ?�이??관??변??
-extern unsigned char startFrame;	//게임?�체가 로드가 ?�서 ?�작?????�는 ?�레??
-extern unsigned char startPageCur;	//?�재 몇번�??�이지�?가르키�??�는지
-extern unsigned char startPageMax;	//최�? 보여줘야 ?�는 ?��????�이지?�이 몇장?��? 보여주는 ?�레??
+//투기장 & 레이드 관련 변수
+extern unsigned char startFrame;	//게임자체가 로드가 되서 시작할 때 쓰는 프레임
+extern unsigned char startPageCur;	//현재 몇번째 페이지를 가르키고 있는지
+extern unsigned char startPageMax;	//최대 보여줘야 되는 스타트 페이지들이 몇장인지 보여주는 프레임
 extern unsigned char startPage[MAXSTARTPAGE];
 
-extern unsigned char arenaFrame;	//?�기???�작, ?��? ?�레??
-extern unsigned char arenaFloorTime;	//?�리 ?�리???�간
-extern int arenaLimitTime;	//?�기???��? ?�간
-extern long arenaTotalTime;	//?�기???�??(?�재 1800�?30�?�??�정?? 변경시 ArenaResult ?�요?�간 ?�정?�야??
+extern unsigned char arenaFrame;	//투기장 시작, 정지 프레임
+extern unsigned char arenaFloorTime;	//다리 열리는 시간
+extern int arenaLimitTime;	//투기장 남은 시간
+extern long arenaTotalTime;	//투기장 타임 (현재 1800초(30분)로 설정됨. 변경시 ArenaResult 소요시간 수정해야함.
 extern unsigned char arenaNpcCnt;
 extern unsigned char arenaResultMember[2];
 extern int arenaGold;
@@ -1662,25 +1664,25 @@ extern unsigned short oldMap;
 extern unsigned short oldX, oldY;
 extern unsigned char oldO2;
 
-extern int raidInfo[TOTALRAIDSELECTED * RAIDARRAYDATASIZE];//?�떤 보스�??�보?�고, ?�떤 보상??줄�? 결정(보상?� ?�?? ?�테?? ?�급 ?��?지�?결정)
+extern int raidInfo[TOTALRAIDSELECTED * RAIDARRAYDATASIZE];//어떤 보스를 내보내고, 어떤 보상을 줄지 결정(보상은 타입, 디테일, 등급 세가지로 결정)
 
 
-extern unsigned short arenaFloor;//?�재 몇층?��?(지??층�???~)
+extern unsigned short arenaFloor;//현재 몇층인지(지하1층부터~~)
 extern signed short arenaScore;
-extern unsigned short arenaKill;	//??죽인 �?��
-extern signed short arenaItemFrame;	//?�재 ?��? ?�레??
-extern signed short arenaDebuf[TOTALDEBUF];	//?�기???�어가기전 ?�태?�??
-extern unsigned char arenaRewardType, arenaRewardLv, arenaRewardDetail, arenaRewardGrade, arenaRewardCnt;	//보상 ?�이콘을 그려주기 ?�한 ?�이??
-extern unsigned char arenaStatus;//0?�면 ?�작?? 1?�면 ?�투�? 2�??�리??
+extern unsigned short arenaKill;	//적 죽인 갯수
+extern signed short arenaItemFrame;	//현재 남은 프레임
+extern signed short arenaDebuf[TOTALDEBUF];	//투기장 들어가기전 상태저장
+extern unsigned char arenaRewardType, arenaRewardLv, arenaRewardDetail, arenaRewardGrade, arenaRewardCnt;	//보상 아이콘을 그려주기 위한 데이터
+extern unsigned char arenaStatus;//0이면 시작전, 1이면 전투중, 2면 클리어
 
-extern long long int dmg[MAXPLAYER];//?�재 ?�레?�어???�탈?��?지�??�력?�는 �?
-extern long long int dmgOrder[MAXPLAYER];//그에 ?�른 ?�위
+extern long long int dmg[MAXPLAYER];//현재 플레이어의 토탈데미지를 입력하는 곳
+extern long long int dmgOrder[MAXPLAYER];//그에 따른 순위
 
 extern unsigned short arenaMotion[MAXPLAYER];
 
-extern long long int arenaItemPrice[MAXARENAITEM];//?�재 ?�레??보상 ?�이?�의 가격을 ?��???�?
-extern long long int arenaItemOrder[MAXARENAITEM];//가격에 ?�른 ?�서�?조정??�?
-extern unsigned short arenaItemEffectFrame[MAXARENAITEM];//?�재 ?�이?�을 보여주기 ?�한 ?�레??
+extern long long int arenaItemPrice[MAXARENAITEM];//현재 아레나 보상 아이템의 가격을 평가한 것
+extern long long int arenaItemOrder[MAXARENAITEM];//가격에 따른 순서를 조정한 것
+extern unsigned short arenaItemEffectFrame[MAXARENAITEM];//현재 아이템을 보여주기 위한 프레임
 
 extern unsigned short startItemIdx;
 extern unsigned short totalItemCnt;
@@ -1690,39 +1692,39 @@ extern unsigned short arenaDeadCount;
 extern unsigned short arenaItemCount;
 extern unsigned short arenaHitCount;
 
-//0 ?�들 ?�장
-//1 ?�위 ?��? ?�장
-//2 1??캐릭??즐거?�하??모습
-//3 1??캐릭?�에�??�이???�달
-//4 1??캐릭???�이??받고 즐거?�하??모습
-//5 2??캐릭?�에�??�이???�달
-//6 3??캐릭?�에�??�이???�달
-//7 4??캐릭?�에�??�이???�달
-//8 5??캐릭?�에�??�이???�달
-//9 6??캐릭?�에�??�이???�달
-//10 7??캐릭?�에�??�이???�달
-//11 8??캐릭?�에�??�이???�달
-//12 9??캐릭?�에�??�이???�달
-//13 10??캐릭?�에�??�이???�달
-//14 ?��? 보상 박기
-//15 ?�이??리스??박기
+//0 애들 등장
+//1 순위 왕관 등장
+//2 1등 캐릭터 즐거워하는 모습
+//3 1등 캐릭터에게 아이템 전달
+//4 1등 캐릭터 아이템 받고 즐거워하는 모습
+//5 2등 캐릭터에게 아이템 전달
+//6 3등 캐릭터에게 아이템 전달
+//7 4등 캐릭터에게 아이템 전달
+//8 5등 캐릭터에게 아이템 전달
+//9 6등 캐릭터에게 아이템 전달
+//10 7등 캐릭터에게 아이템 전달
+//11 8등 캐릭터에게 아이템 전달
+//12 9등 캐릭터에게 아이템 전달
+//13 10등 캐릭터에게 아이템 전달
+//14 유저 보상 박기
+//15 아이템 리스트 박기
 
-extern unsigned char playResultStatus; 
+extern unsigned char playResultStatus;
 extern unsigned char raidPlayer;
 
 extern unsigned char skillSlot[RAIDSKILLSLOT];
 
 
-//길드??관??변??
-extern unsigned char guildTimeStr[20];	//?��??�간 ?�시 변??
-extern unsigned int guildTotalScore;	//길드???�적 ?�수
+//길드전 관련 변수
+extern unsigned char guildTimeStr[20];	//남은시간 표시 변수
+extern unsigned int guildTotalScore;	//길드전 누적 점수
 extern int curTime;
-extern signed int rankRecord[16];	//그래???�시??�??�?��???
-extern signed int rankWeek;		//몇주�??��?
-extern char rankScore[4][15];	//?�수 ?�??변??|길드?�현??>?�재길드?�스코어
-extern unsigned char guildCur;		//그래?�에??커서?�동???�용
+extern signed int rankRecord[16];	//그래프 표시할 것 저장변수
+extern signed int rankWeek;		//몇주차 인지
+extern char rankScore[4][15];	//점수 저장 변수||길드전현황->현재길드전스코어
+extern unsigned char guildCur;		//그래프에서 커서이동때 사용
 extern signed char guildWinner;
-extern unsigned char guildReward[5];		//0 : type, 1:lv, 2:detail, 3:grade, 4:count, 5:첫번째보?�골?�금??1천단??
+extern unsigned char guildReward[5];		//0 : type, 1:lv, 2:detail, 3:grade, 4:count, 5:첫번째보상골드금액(1천단위)
 extern int goldReward;
 extern unsigned char guildRewardReceive;
 
@@ -1737,12 +1739,12 @@ extern int temp;
 extern int tempHint;
 
 extern unsigned char netLock;
-//복제방�?
+//복제방지
 extern char phoneMatch;
 extern char isScreenShot;
 
-extern char isDragging;//?�면??무언가가 ?�르�??�다??변???�래깅중?�라?�것)
-extern int pointed;//?�른곳이 ?�떤 ?�역?��????�당?�는 변??
+extern char isDragging;//화면을 무언가가 누르고 있다는 변수(드래깅중이라는것)
+extern int pointed;//누른곳이 어떤 영역인가에 해당하는 변수
 
 extern unsigned char saveFlag[3];//0:SaveGame, 1:SaveOption, 2:SaveEtc
 extern unsigned char soundLoad;
@@ -1770,7 +1772,7 @@ extern int temp10;
 extern int freeMemory;
 
 extern int dMoveCnt;
-extern M_Uint32 *dMove;
+extern M_Uint32* dMove;
 #endif
 
 #ifdef DEBUG
@@ -1791,13 +1793,13 @@ extern M_Boolean yesno_Draw;
 extern M_Boolean buy_Confirm;
 #endif
 
-//추�????�기??관??변??
-extern unsigned short caveMap;			//?�재 ?�디 ?�기?�인지.
+//추가된 투기장 관련 변수
+extern unsigned short caveMap;			//현재 어디 투기장인지.
 extern unsigned short caveEnemyAlive[159 * 2];
 
 extern unsigned short caveCountEmy;
 extern unsigned short caveCountEmy2;
-extern unsigned short caveKill;		//?�기??몬스???�치??(?�규 ?�기?��? 몬스?��? 모두 ?�으�??�남)
+extern unsigned short caveKill;		//투기장 몬스터 퇴치수.(신규 투기장은 몬스터를 모두 잡으면 끝남)
 extern unsigned short caveItemType;
 extern unsigned short caveItemText;
 extern unsigned short caveItemDetail;
@@ -1820,46 +1822,46 @@ extern unsigned short caveItemPer[4][16];
 extern unsigned char caveItemAcc[24];
 
 
-//?�비?�스 ?�루	: 미래??거울 / 9
-//?�이?�의 ?�리	: ?�자???�계 / 25
-//?�혼???�배	: 메피?�토 ?�리 / 5
-//로젤린의 �?: ?�쟁?�의 �?/ 20
+//키비시스 자루	: 미래의 거울 / 9
+//세이렌의 피리	: 용자의 시계 / 25
+//황혼의 성배	: 메피스토 피리 / 5
+//로젤린의 꽃	: 난쟁이의 공 / 20
 
-//?�앙??거울	: 미래??거울 / 9
-//?�웅???�사??: ?�자???�계 / 25
-//?�니콘의 �?: 메피?�토 ?�리 / 5
-//?�금 조개		: ?�쟁?�의 �?/ 20
+//재앙의 거울	: 미래의 거울 / 9
+//영웅의 서사시	: 용자의 시계 / 25
+//유니콘의 뿔	: 메피스토 피리 / 5
+//황금 조개		: 난쟁이의 공 / 20
 
-//천사???�개	: 미래??거울 / 9
-//금단??과실	: ?�자???�계 / 25
-//죽음???��?�?: 메피?�토 ?�리 / 5
-//조각???�혼	: ?�쟁?�의 �?/ 20
+//천사의 날개	: 미래의 거울 / 9
+//금단의 과실	: 용자의 시계 / 25
+//죽음의 올가미	: 메피스토 피리 / 5
+//조각난 영혼	: 난쟁이의 공 / 20
 //
-//충성??반�?	: ?�자??반�? / 13
-//?�제??반�?	: 궁극??반�? / 14
-//?��? 반�?		: ??��??반�? / 7
-//?�벨룽겐 반�?	: ?�념??반�? / 11
+//충성의 반지	: 승자의 반지 / 13
+//황제의 반지	: 궁극의 반지 / 14
+//절대 반지		: 폭주의 반지 / 7
+//니벨룽겐 반지	: 신념의 반지 / 11
 
-//?�?�수 반�?	: ?�자??반�? / 13
-//?�속??반�?	: 궁극??반�? / 14
-//?�정??반�?	: ??��??반�? / 7
-//?�마 반�?		: ?�념??반�? / 11
+//은하수 반지	: 승자의 반지 / 13
+//약속의 반지	: 궁극의 반지 / 14
+//요정의 반지	: 폭주의 반지 / 7
+//흡마 반지		: 신념의 반지 / 11
 
-//번뇌??반�?	: ?�자??반�? / 13
-//불사??반�?	: 궁극??반�? / 14
-//?�금 반�?		: ??��??반�? / 7
-//봉인??반�?	: ?�념??반�? / 11
+//번뇌의 반지	: 승자의 반지 / 13
+//불사의 반지	: 궁극의 반지 / 14
+//황금 반지		: 폭주의 반지 / 7
+//봉인된 반지	: 신념의 반지 / 11
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-extern experimental::ui::WebView       *_webView;
+extern experimental::ui::WebView* _webView;
 #endif
 
 
 
-extern int adX; //광고??x?��???
-extern int adY; //광고??y?��???
-extern int adFrame;//광고???�레??
-extern int adType;//광고???�??
-extern int adProfile;//광고???�로???�진
+extern int adX; //광고의 x포지션
+extern int adY; //광고의 y포지션
+extern int adFrame;//광고의 프레임
+extern int adType;//광고의 타입
+extern int adProfile;//광고의 프로필 사진
 extern int adHero;
 
 extern int tipIndex;
@@ -1870,7 +1872,7 @@ extern int mapSeenCountHelp;
 extern int boxOpenFrame;
 extern unsigned char voiceType;
 
-extern cocos2d::Scene * curScene;
+extern cocos2d::Scene* curScene;
 
 extern int wholeFrame;
 
@@ -1879,7 +1881,7 @@ extern bool doubleBuffer;
 
 extern signed short robinmap;
 extern signed short playmap;
-extern signed short dioramaType;//?�재 ?�오?�마
+extern signed short dioramaType;//현재 디오라마
 
 
 //CCLabelTTF * textLabel;
@@ -1894,13 +1896,13 @@ extern int skillSelectTime;
 extern int macroTimes;
 
 extern Mat4 parentTransform;
-extern Renderer * renderer;
+extern Renderer* renderer;
 
 extern std::random_device rd;
 
 extern int touchIdleFrame;
 extern int idleHelpCnt;
-extern int idleHelpType;//?�동???�킬지, 공격???�라�??��?
+extern int idleHelpType;//이동을 시킬지, 공격을 하라고 할지
 extern int idleHelpObj;
 
 extern int MINDY;
@@ -1975,7 +1977,7 @@ extern int joyStickFrame;
 extern int joyStickAni;
 extern int joyStickDir;
 
-extern int raidChance;//처음??5번을 주고 ?�번 ?�울?�마??
+extern int raidChance;//처음에 5번을 주고 한번 싸울때마다 
 
 extern int dmgIndex;
 extern int subDmgIndex;
@@ -1984,19 +1986,19 @@ extern long currentTimeStamp;
 
 extern int remainedTurn;
 extern int remainedTurnFrame;//
-//NEUTRAL	가만히 ?�을 ??
-//PLAYER	주인공이 공격??
-//ENEMY		?�에�?공격??
-//공격??
+//NEUTRAL	가만히 있을 때
+//PLAYER	주인공이 공격시
+//ENEMY		적에게 공격시
+//공격시 
 extern int turn;
 extern int turnFrame;
 extern int turnPosition;
 
 extern int rouletteSequence;
-extern int curRouletteStart;//몇번�?부???�작?�는건�?
-extern int totalRouletteCnt;//최종?�으�??��????�는 룰렛개수//?�재 ?�에 ?�라가 ?�는 룰렛 개수
+extern int curRouletteStart;//몇번째 부터 시작하는건지
+extern int totalRouletteCnt;//최종적으로 나와야 되는 룰렛개수//현재 위에 올라가 있는 룰렛 개수
 
-//공격?�출관??
+//공격연출관련
 extern int attackSequence;//
 extern int attackSequenceBack;
 extern int attackType;//
@@ -2009,20 +2011,20 @@ extern int boxDropItemType;
 
 extern int attackSequenceBefore;
 
-//?�기?��????�재 룰렛???�떤�??�왔?��? ?�이?? ???�이?��? 기반?�로 ?�떤것을 ?�보?�는지 ?�한??
+//여기서부터 현재 룰렛이 어떤게 나왔는지 데이터. 이 데이터를 기반으로 어떤것을 내보내는지 정한다
 //extern unsigned char roulette
 extern int actionCardArr[TOTALCONTROLMARK];
 extern int actionCardCnt;
 
 extern int curtainFrame;
 
-extern int subAttackType;//추�??�?�던가 ?�런것들
+extern int subAttackType;//추가타라던가 이런것들
 extern int subAttackStr;
 extern int subAttackIcon;
-//?�재 카드메뉴가 ?�면???�출?�었?��?
+//현재 카드메뉴가 뒷면이 노출되었는지
 extern char cardMenuBack[TOTALEQUIP];
-//+�??�히???�태�?1??빼주면서 0?�로 간다.
-//-�??�리???�태�?1???�해주면??0?�로 간다.
+//+면 닫히는 상태로 1씩 빼주면서 0으로 간다.
+//-면 열리는 상태로 1씩 더해주면서 0으로 간다.
 
 extern int totalProb;
 extern int probSum[TOTALJOKBO];
@@ -2047,17 +2049,17 @@ extern long long rouletteNum_before;
 
 extern int debugAttack;
 
-extern ITEM rewardItem[MAXREWARDITEM];//메인 리워???�이??
+extern ITEM rewardItem[MAXREWARDITEM];//메인 리워드 아이템
 extern ITEM rewardItemBack[MAXREWARDITEM];//백업
-extern int rewardItemCnt;//?�재 ?�득???�이??
-extern int curRewardItem;//?�재 ?�득진행중에 ?�는 ?�이??
-extern int focusedItem;//메인리스?�에??
-extern int focusedSubItem;//?�브리스??
+extern int rewardItemCnt;//현재 획득된 아이템
+extern int curRewardItem;//현재 획득진행중에 있는 아이템
+extern int focusedItem;//메인리스트에서
+extern int focusedSubItem;//서브리스트
 extern bool newItem;
 
-extern int boxCnt;//?�탈 박스 카운??
-extern int newCollectionCnt;//?�번???�로??컬렉?�이 ?�성??카운??
-extern int newCardCnt;//?�로??카드 카운??
+extern int boxCnt;//토탈 박스 카운트
+extern int newCollectionCnt;//이번에 새로운 컬렉션이 완성된 카운트
+extern int newCardCnt;//새로운 카드 카운트
 extern int curBox;
 
 extern ITEM boxCardItem[TOTALBOXMARK][MAXCARDREWARDITEM];
@@ -2090,7 +2092,7 @@ extern int ROULETTESELECTTIME;
 extern int TOTAL_OPENEDMENU;
 
 
-//?��??�치
+//상대위치
 
 #ifdef MYKING
 extern int DRAWROULETTENUMGAP;
@@ -2161,7 +2163,7 @@ extern int totalHouse;
 extern int popUpCnt;
 
 
-extern int points[MAX_POINTS][2]; // 좌표�??�?�할 배열 (x, y 각각??1차원 배열�??�??
+extern int points[MAX_POINTS][2]; // 좌표를 저장할 배열 (x, y 각각을 1차원 배열로 저장)
 extern int boxPoints[MAX_POINTS][2];
 
 extern int selectedCrew;
@@ -2170,27 +2172,27 @@ extern bool rouletteOpen[SKILLPERSWORD];
 extern bool loadRoulette;
 extern int newCollection;
 
-extern int attackedCrewIdx;//공격?�한 ?�덱??
-extern int bossGetCoinCrewIdx;//보스?�게 ?��???준 ?�덱??
+extern int attackedCrewIdx;//공격당한 인덱스
+extern int bossGetCoinCrewIdx;//보스에게 도움을 준 인덱스
 
-//?�테?��??�서 빚갚?�주�??�니메이???�는�?
+//스테이지에서 빚갚아주면 애니메이션 하는거
 extern int stageUpgradeMotion[MAXCREW];
 
-extern int bossRaidMode;//그냥 ?�반보스??bossRoom?� true?�고,	보스?�이?�는 ??변?��? ?�다. 
+extern int bossRaidMode;//그냥 일반보스는 bossRoom은 true이고,	보스레이드는 이 변수를 쓴다. 
 
 extern int subQuestCnt[TOTALQUEST];
 
-extern GAMEEVENT * gEvent;
+extern GAMEEVENT* gEvent;
 
-extern int swordSkillCnt[TOTAL_COLLECTIONS];//검�??�킬 개수
-extern int swordSkillProb[TOTAL_COLLECTIONS * SKILLPERSWORD];//컬렉???�률 
+extern int swordSkillCnt[TOTAL_COLLECTIONS];//검별 스킬 개수
+extern int swordSkillProb[TOTAL_COLLECTIONS * SKILLPERSWORD];//컬렉션 확률 
 
-//?�기???�버로�???로딩???�는 것인???�단 로컬???�?�한�?불러?�는 ?�식?�로 ?�자.
+//여기는 서버로부터 로딩해 오는 것인데 일단 로컬에 저장한걸 불러오는 형식으로 하자.
 extern HOUSE enemyHouse;
 extern HOUSE stageHouse;//
-//?�시?�버?�이??
-extern HOUSE aiUserHouse[TOTALAI];//?�버 교신???�는 ?�태?�서??AI
-extern HOUSE * selectedHouse;//?�재 ?�택???�우??
+//임시서버데이터
+extern HOUSE aiUserHouse[TOTALAI];//서버 교신이 없는 상태에서의 AI
+extern HOUSE* selectedHouse;//현재 선택된 하우스
 extern HOUSE tempHouse;
 
 extern int curCardMark;
@@ -2207,8 +2209,8 @@ extern int WHEELMAXSPEED;
 extern int WHEELINITSPEED;
 extern int WHEELINITACCEL;
 
-//배�???걸렸?????�보
-extern int battleTarget;//?�재 ?�의 crew ?�덱?�로 null?�거???�니거나 ?��??�이 ?�택??crew[i]??i�??��??�다.
+//배틀이 걸렸을 때 정보
+extern int battleTarget;//현재 적의 crew 인덱스로 null이거나 아니거나 상관없이 선택된 crew[i]의 i를 의미한다.
 extern bool battleShield;
 extern long long battleGold;
 
@@ -2245,23 +2247,23 @@ extern int slotCrew[MAXCREW];
 extern int crewIdList[MAXCREW];
 extern int crewCnt;
 extern int heroCnt;
-extern int showCrewCnt; // 로딩 ?�면?�서 ?�재까�? "공개/?�류 ?�출�?보여�? ?�루 ??0..crewCnt)
+extern int showCrewCnt; // 로딩 화면에서 현재까지 "공개/합류 연출로 보여줄" 크루 수(0..crewCnt)
 extern int showHeroCnt;
 
 extern int leaderCrewId;   // 0..TOTAL_CREW-1 or -1
 extern bool hasLeader;
 
-// 중앙 카드???�시???�재 공개 캐릭??robin.slotCrew[showCrewCnt]�?기반?�로)
+// 중앙 카드에 표시할 현재 공개 캐릭터(robin.slotCrew[showCrewCnt]를 기반으로)
 extern int cardCmf;
 extern int cardAlpha;
 
-// 1) ?��?결과 (?�시) : aoOffset(0~8)�?받는?�고 가??
+// 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
 extern int  gRouletteStartAoOffset[TOTALREEL];
-extern int  gRouletteResultAoOffset[TOTALREEL];  // 최종 ?�정 3�?(aoOffset)
+extern int  gRouletteResultAoOffset[TOTALREEL];  // 최종 확정 3명 (aoOffset)
 extern int gRouletteSkillIdx[TOTALREEL];
 extern int rouletteFrame;
-// 3�????�정 ??"??번만" ?�성/?�동 ?�출 ?�리�?
-extern bool gRouletteSkillDispatchStarted ;
+// 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
+extern bool gRouletteSkillDispatchStarted;
 
 extern bool gRouletteResultValid;
 
@@ -2274,7 +2276,7 @@ extern int finishOffsetX;
 extern int bgScrollX;
 extern int bgScrollY;
 
-// ===== ?�환 ?�출 =====
+// ===== 소환 연출 =====
 extern int summonCrewId;
 extern int summonCmf;
 extern int summonFromX, summonFromY;
@@ -2282,10 +2284,10 @@ extern int summonX, summonY;
 extern int summonToX, summonToY;
 extern int summonMidX, summonMidY;
 extern float summonScale;
-extern int summonHold;          // ?�터 박히???�???�레??카운???�션)
-extern int summonStar;          // ?�재 ?�환 ?�루??별등�?1~9)
-extern int celebFlash;          // 축하 ?�래??0?�면 ?�음)
-extern int shake;               // ?�면 ?�들�?강도(0?�면 ?�음)
+extern int summonHold;          // 센터 박히는 홀드 프레임 카운터(옵션)
+extern int summonStar;          // 현재 소환 크루의 별등급(1~9)
+extern int celebFlash;          // 축하 플래시(0이면 없음)
+extern int shake;               // 화면 흔들림 강도(0이면 없음)
 extern int joinFromX;
 extern int joinFromY;
 
@@ -2295,22 +2297,22 @@ extern bool hideSummonBgTile;
 extern int  hideBgCmf;
 extern int summonType;
 
-// 로딩�?진행�??�등???�계??기반)
+// 로딩바 진행률(“등장 단계” 기반)
 extern int loadPct;
 
-// ---------- pity ?�태 ----------
-extern int gNoHighStarCount; // STAR7+ ???�온 ?�속 ?�수
+// ---------- pity 상태 ----------
+extern int gNoHighStarCount; // STAR7+ 안 나온 연속 횟수
 
-// ---------- ?�프??분산 ?�태 ----------
-extern int gRecentRegionCount[TOTALCASTLE]; // 최근 ?�장 ?�수
-extern int gRecentStarCount[10];            // STAR ?�속 ?�널??
+// ---------- 소프트 분산 상태 ----------
+extern int gRecentRegionCount[TOTALCASTLE]; // 최근 등장 횟수
+extern int gRecentStarCount[10];            // STAR 연속 패널티
 
 // ================================
-// 게임 ?�태 ?�역 변???�언 (extern)
-// ?�제 ?�의??GameState.cpp???�음
+// 게임 상태 전역 변수 선언 (extern)
+// 실제 정의는 GameState.cpp에 있음
 // ================================
 
-// ?�투 관??
+// 전투 관련
 extern int attackDelayBefore;
 extern int attackTypeBefore;
 extern int attackStrBefore;
@@ -2321,21 +2323,21 @@ extern int raidFrame;
 extern int continuousAttackFrame;
 extern int raidCnt;
 
-// ?�동 ?�레??
+// 자동 플레이
 extern bool autoPlay;
 extern bool autoSelect;
 extern bool autoSkill;
 extern int autoFrame;
 extern bool autoButtonText;
 
-// ?�면
+// 화면
 extern float screenZoom;
 extern float dioramaZoom;
 extern float dioramaZoomGap;
 extern float battleZoom;
 extern int screenDarken;
 
-// 게임 ?�태
+// 게임 상태
 extern int waveStatus;
 extern int levelUpFrame;
 extern int levelUpStatus;
@@ -2363,6 +2365,6 @@ extern float joyPower;
 extern int joyDir;
 extern bool joyPressed;
 extern bool joyReturning;
-extern float joyReturnSpeed; // �������� ������ ����
+extern float joyReturnSpeed; // 높을수록 빠르게 복귀
 
 #endif

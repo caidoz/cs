@@ -830,7 +830,7 @@ void WaveBarDraw(int life, int maxLife, int x, int y, float zoom, cocos2d::Rende
 
 	DrawNeutral(OBJ_WORMHOLE0 + Abs(3 - frame) % 3, x, y + (float)20 * zoom, 0, emphasisScale * 2.0f, cvtDest, cvtLayer, buffering);
 
-	DrawCmfDetailShadow(enemyData[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY +  0] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY + 0] * 5 + 0] + (frame / 4 % crewPos[wave[robin.curWaveIdx * WAVEDATASIZE * MAXWAVEENEMY + 0] * 5 + 1]), x, y, LEFT, emphasisScale, cvtDest, cvtLayer, buffering);
+	DrawCmfDetailShadow(enemyData[wave[robin.waveIdx * WAVEDATASIZE * MAXWAVEENEMY + robin.curWaveIdx * WAVEDATASIZE + 0] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[wave[robin.waveIdx * WAVEDATASIZE * MAXWAVEENEMY + robin.curWaveIdx * WAVEDATASIZE + 0] * 5 + 0] + (frame / 4 % crewPos[wave[robin.waveIdx * WAVEDATASIZE * MAXWAVEENEMY + robin.curWaveIdx * WAVEDATASIZE + 0] * 5 + 1]), x, y, LEFT, emphasisScale, cvtDest, cvtLayer, buffering);
 	
 	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_STAGE, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
 	DrawGoldNum(robin.curWaveIdx + 1, x, y + (float)108 * zoom, CENTER, false, false, false, 0.5f * zoom, cvtDest, cvtLayer, buffering);

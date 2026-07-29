@@ -2569,7 +2569,20 @@ void OutOfGacha(void)
 				memcpy(&rewardMark, &rewardMarkBack, sizeof(rewardMark));
 				memcpy(&rewardItem, &rewardItemBack, sizeof(rewardItem));
 
+				memset(
+					boxMark,
+					0,
+					sizeof(boxMark));
+
+				memset(
+					boxCardMark,
+					0,
+					sizeof(boxCardMark));
+
 				attackSequenceBefore = attackTypeBefore = attackStrBefore = attackDelayBefore = false;
+
+				//robin.curWaveIdx++;
+				waveStatus = WAVESTATUS_PLAY;
 			}
 			else {
 				attackSequence = ATTACKSEQUENCE_READY;
@@ -2585,6 +2598,7 @@ void OutOfGacha(void)
 
 				effect.color2 = false;
 				effect.color = false;
+
 			}
 
 			ao[PLAYER].attack = false;

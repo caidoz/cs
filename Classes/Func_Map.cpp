@@ -1334,8 +1334,8 @@ void WaveControler()
 	switch (drawHandle) {
 	case MD_DEMO:
 	case MD_PLAY:
-		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0] && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
-			pObj->type = wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
+		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
+			pObj->type = wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
 			//pObj->type = ENEMY_SLIME_GOLD;
 			pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
 			pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
@@ -1512,21 +1512,8 @@ void WaveControler()
 			InitMotion(pObj);
 
 			robin.waveActive[robin.curWaveIdx] = true;
-			//현재 보스면
-			if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
-				arenaFrame = INFOFRAME * 2;
-				bossOn = true;
-			}
 
 			robin.curWaveIdx++;
-
-			//if (robin.curWaveIdx == GetMaxWaveCnt()) {
-			//	arenaFrame = INFOFRAME * 2;
-			//	//robin.bossRoom = true;
-			//}
-
-			//curEnemy = ENEMY;
-			//LoadEnemyHpBar();
 
 			SaveGame();
 
@@ -1737,16 +1724,6 @@ void WaveControler()
 			arenaFrame = INFOFRAME * 2;
 			bossOn = true;
 
-			//robin.curWaveIdx++;
-
-			//if (robin.curWaveIdx == GetMaxWaveCnt()) {
-			//	arenaFrame = INFOFRAME * 2;
-			//	//robin.bossRoom = true;
-			//}
-
-			//curEnemy = ENEMY;
-			//LoadEnemyHpBar();
-
 			SaveGame();
 
 			switch (pObj->type) {
@@ -1857,7 +1834,7 @@ int SetEnemy(OBJECT *pObj)
 		//TEST
 		pObj->maxhp = pObj->hp = 100 * (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
 		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
-		if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
+		if (wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
 			pObj->maxhp *= 5;
 			pObj->hp = pObj->maxhp;
 		}

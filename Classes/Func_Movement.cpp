@@ -3885,6 +3885,11 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 					return;
 				}
 			}
+			//만약 주인공이고 동료들에 의해 스킬이 발동되었다면
+			else if (GetObjFromPtr(pObj) != turn && GetObjFromPtr(pObj) < TOTALCHAR && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
+				pObj->turnPosition = HERE;
+				WhoIsNextTurn();
+			}
 #ifdef SPEEDTURN
 			if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
 				pObj->turnPosition = HERE;
@@ -10984,8 +10989,14 @@ void VanishMove(OBJECT* pObj)
 		//SetBox(pObj, BOX_CASTLE0 + castleOrder[robin.castle]);
 
 		if (robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0) {
+			//여기서 획득한 
+			
 			DropItem(pObj, ITEM_BOX);
-
+			//여기서 코인은 획득하게 해준다.
+			turnListIdx = 0;
+			turn = 0;
+			turnFrame = 1;
+			attackSequence = ATTACKSEQUENCE_COIN;
 			//GotoStageClear();
 		}
 	}
@@ -12104,6 +12115,8 @@ void ItemMove(OBJECT* pObj)
 				if (popUpCnt == 0) {
 
 					if (pObj->mainFrame > 3 * FPS) {
+						//여기서 처리
+
 						boxMark[0].type = ao[ITEMOBJ].def;
 						boxMark[0].detail = ao[ITEMOBJ].etc;
 						boxMark[0].grade = GRADE_NORMAL;
