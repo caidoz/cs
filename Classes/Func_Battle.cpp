@@ -1393,8 +1393,20 @@ void AttackSequenceDraw(void)
 	case ATTACKSEQUENCE_COIN:
 		if (turnFrame == 2 * FPS) {
 			//BAR_BATTLECOIN에서 BAR_GOLD로 이동하게 수정
+			ao[NEUTRAL].motion = BOXSTATUS_OPENED;
+			SetCurrencyMarkArr(
+				ao[NEUTRAL].x, 
+				STATUSWIN_Y + (rh - 4) * TSIZE - ao[NEUTRAL].y + (float)(256) * ao[NEUTRAL].zoom, 
+				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2, 
+				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2, 
+				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2,
+				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2,
+				16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, (bar[BAR_BATTLECOIN].count + bar[BAR_BATTLECOIN].add) / 10, CURRENCY_GOLD, 3.0f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10, BAR_GOLD);
+
+			/*
 			SetCurrencyMark(
-				bar[BAR_BATTLECOIN].x + (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM, bar[BAR_BATTLECOIN].y - (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM,
+				//bar[BAR_BATTLECOIN].x + (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM, bar[BAR_BATTLECOIN].y - (float)(6 * _2X + ITEMICONSIZE * 1.5f / 2) * BAR_BATTLECOIN_ZOOM,
+				ao[NEUTRAL].x, ao[NEUTRAL].y + (float)(256) * ao[NEUTRAL].zoom,
 				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2, bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2,
 				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2, bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2,
 				8 * _2X, 1 * _2X,
@@ -1408,6 +1420,7 @@ void AttackSequenceDraw(void)
 				CURRENCYICON_ENDSIZE2, CURRENCYICON_STARTSIZE, -0.2f,
 				BAR_GOLD
 			);
+			*/
 		}
 		else if (turnFrame == 3 * FPS) {
 			bar[BAR_BATTLECOIN].targetX = bar[BAR_BATTLECOIN].targetX2 = bar[BAR_BATTLECOIN].x;
@@ -1421,6 +1434,8 @@ void AttackSequenceDraw(void)
 			bar[BAR_BATTLECOIN].frame2 = 0;
 			bar[BAR_BATTLECOIN].zoom2 = bar[BAR_BATTLECOIN].zoom;
 			bar[BAR_BATTLECOIN].zoomIncrement2 = bar[BAR_BATTLECOIN].zoomIncrement;
+
+			ao[NEUTRAL].motion = BOXSTATUS_CLOSED;
 		}
 		else if (turnFrame == 4 * FPS) {
 			attackSequence = ATTACKSEQUENCE_READY;

@@ -4,31 +4,6 @@
 #include "Text.h"
 #include "Data.h"
 
-enum GACHA_DEPTH
-{
-	GACHA_DEPTH_BOX = 0,       // 상자 낙하 및 오픈
-	GACHA_DEPTH_CARD,          // 보상 한 장씩 공개
-	GACHA_DEPTH_SUMMARY,       // 최종 보상 요약
-	GACHA_DEPTH_FLYTOBAR,		//요약카드가 각 버튼으로 날라가는 것.
-	GACHA_DEPTH_GETITEM        // 인벤토리 반영 후 종료
-};
-
-static bool gachaPrepared = false;
-
-
-// 현재 적에게서 획득한 상자 정보
-static int gachaBoxDetail = 0;
-static int gachaBoxGrade = 0;
-
-// 카드 한 장씩 공개할 때 사용하는 인덱스
-static int gachaOpenCardIdx = 0;
-
-// 현재 카드의 등장 완료 여부
-static bool gachaCurrentCardReady = false;
-
-// 보상을 실제 인벤토리에 넣었는지
-static bool gachaRewardReceived = false;
-
 static float GachaClamp01(float value)
 {
 	if (value < 0.0f)
@@ -90,253 +65,901 @@ static float GachaLerp(
 		progress;
 }
 
-int MakeGachaRewardItems(
-	int boxDetail,
-	int boxGrade,
-	ITEM* result,
-	int maxCount)
+int GetRewardBoxIndex(int boxDetail)
 {
-	if (result == NULL || maxCount <= 0)
-		return 0;
-
-	int count = 0;
-
-	//--------------------------------------------------------
-	// 실제 프로젝트의 상자 보상 생성 함수가 있다면
-	// 이 부분만 교체
-	//--------------------------------------------------------
-
-	/*
-	예시:
-
-	count = GetBoxReward(
-		boxDetail,
-		boxGrade,
-		result,
-		maxCount);
-	*/
-
-	//--------------------------------------------------------
-	// 임시 샘플
-	//--------------------------------------------------------
-
-	// 골드
-	if (count < maxCount)
+	switch (boxDetail)
 	{
-		memset(&result[count], 0, sizeof(ITEM));
-
-		result[count].type = ITEM_GOLD;
-		result[count].detail = 0;
-		result[count].grade = 0;
-		result[count].count = 200000;
-		result[count].lv = 0;
-		result[count].cooldown = 0;
-		result[count].seen = true;
-
-		count++;
+	case BOX_REWARD0:		return 0;
+	case BOX_REWARD1:		return 1;
+	case BOX_REWARD2:		return 2;
+	case BOX_REWARD3:		return 3;
+	case BOX_REWARD4:		return 4;
+	case BOX_REWARD5:		return 5;
+	case BOX_REWARD6:		return 6;
+	case BOX_REWARD7:		return 7;
 	}
 
-	// 동료
-	if (count < maxCount)
-	{
-		memset(&result[count], 0, sizeof(ITEM));
-
-		result[count].type = ITEM_CREW;
-		result[count].detail = 3;
-		result[count].grade = 4;
-		result[count].count = 1;
-		result[count].lv = 1;
-		result[count].cooldown = 0;
-
-		// ���� ���� ���ο� ���� NEW
-		result[count].seen =
-			GetInvenIdx(
-				result[count].type,
-				result[count].detail,
-				result[count].grade) != -1;
-
-		count++;
-	}
-
-	// 장비
-	if (count < maxCount)
-	{
-		memset(&result[count], 0, sizeof(ITEM));
-
-		result[count].type = ITEM_SWORD;
-		result[count].detail = 2;
-		result[count].grade = 5;
-		result[count].count = 1;
-		result[count].lv = 1;
-		result[count].cooldown = 0;
-
-		result[count].seen =
-			GetInvenIdx(
-				result[count].type,
-				result[count].detail,
-				result[count].grade) != -1;
-
-		count++;
-	}
-
-	return count;
+	return -1;
 }
 
-void PrepareEnemyGacha(void)
+int BoxRandomRange(int minValue, int maxValue)
 {
-	int i;
-	float boxZoom = 0.3f + 0.01 * boxMark[0].detail;
+	if (maxValue <= minValue)
+		return minValue;
 
-	gachaBoxDetail = boxMark[0].detail;
-	gachaBoxGrade = boxMark[0].grade;
-	
-	memset(&boxMark, 0, sizeof(boxMark));
-	memset(&boxCardMark, 0, sizeof(boxCardMark));
-	memset(&boxCardItem, 0, sizeof(boxCardItem));
+	return minValue +
+		Random(maxValue - minValue + 1);
+}
 
-	gachaIndex = 0;
-	boxCnt = 1;
+int RoundBoxCurrency(int itemType, int value)
+{
+	int unit = 1;
 
-	//--------------------------------------------------------
-	// ITEM 구조체 형태로 실제 보상 생성
-	//--------------------------------------------------------
+	if (itemType == ITEM_HEART)
+	{
+		if (value >= 1000)
+			unit = 100;
+		else if (value >= 100)
+			unit = 10;
+	}
+	else if (itemType == ITEM_GOLD)
+	{
+		if (value >= 100000)
+			unit = 10000;
+		else if (value >= 10000)
+			unit = 1000;
+		else
+			unit = 100;
+	}
+
+	return value / unit * unit;
+}
+
+int RollBoxGrade(
+	const int gradeRate[BOX_GRADE_COUNT],
+	int* highGradeMissCount)
+{
+	int weight[BOX_GRADE_COUNT];
+
+	for (int i = 0;
+		i < BOX_GRADE_COUNT;
+		i++)
+	{
+		weight[i] =
+			gradeRate[i];
+	}
+
+	//----------------------------------------------------
+	// 30번 연속으로 5성 이상이 나오지 않은 경우
+	//----------------------------------------------------
+	if (*highGradeMissCount >= 30)
+	{
+		int pityBonus =
+			*highGradeMissCount - 29;
+
+		//------------------------------------------------
+		// 5성 가중치만 증가
+		//------------------------------------------------
+		weight[4] += pityBonus;
+	}
+
+	int totalWeight = 0;
+
+	for (int i = 0;
+		i < BOX_GRADE_COUNT;
+		i++)
+	{
+		totalWeight +=
+			weight[i];
+	}
+
+	if (totalWeight <= 0)
+		return GRADE_NORMAL;
+
+	int randomValue =
+		Random(totalWeight);
+
+	int selectedGrade =
+		0;
+
+	for (int i = 0;
+		i < BOX_GRADE_COUNT;
+		i++)
+	{
+		if (randomValue <
+			weight[i])
+		{
+			selectedGrade =
+				i;
+
+			break;
+		}
+
+		randomValue -=
+			weight[i];
+	}
+
+	//----------------------------------------------------
+	// 5성 이상이면 천장 초기화
+	//----------------------------------------------------
+	if (selectedGrade >= 4)
+	{
+		*highGradeMissCount =
+			0;
+	}
+	else
+	{
+		(*highGradeMissCount)++;
+	}
+
+	//----------------------------------------------------
+	// GRADE_NORMAL이 0이고 등급이 연속이라는 전제
+	//----------------------------------------------------
+	return GRADE_NORMAL +
+		selectedGrade;
+}
+
+bool IsDuplicateBoxCard(
+	int cardCount,
+	int type,
+	int detail)
+{
+	for (int i = 0; i < cardCount; i++)
+	{
+		if (boxCardItem[0][i].type == type &&
+			boxCardItem[0][i].detail == detail)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+int MakeBoxEquipType()
+{
+	static const int equipType[6] =
+	{
+		ITEM_SWORD,
+		ITEM_HELM,
+		ITEM_ARMOR,
+		ITEM_GUNTLET,
+		ITEM_KILT,
+		ITEM_GREAVES
+	};
+
+	return equipType[
+		Random(6)];
+}
+
+void MakeBoxCrewReward(
+	int cardIndex,
+	int boxIndex)
+{
+	const REWARD_BOX_DATA* boxData =
+		&rewardBoxData[boxIndex];
+
+	//----------------------------------------------------
+	// 해당 카드 슬롯 초기화
+	//----------------------------------------------------
+	memset(
+		&boxCardItem[0][cardIndex],
+		0,
+		sizeof(ITEM));
+
+	int grade =
+		RollBoxGrade(
+			boxData->crewGradeRate,
+			&robin.crewHighGradeMissCount);
+
+	int detail =
+		0;
+
+	int retryCount =
+		0;
+
+	do
+	{
+		detail =
+			MakeItemDetail(
+				ITEM_CREW,
+				robin.lv +
+				boxIndex);
+
+		retryCount++;
+
+	} while (
+		IsDuplicateBoxCard(
+			cardIndex,
+			ITEM_CREW,
+			detail) &&
+		retryCount < 100);
+
+	ITEM* item =
+		&boxCardItem[0][cardIndex];
+
+	item->type =
+		ITEM_CREW;
+
+	item->detail =
+		detail;
+
+	item->grade =
+		grade;
+
+	item->count =
+		1;
+
+	item->lv =
+		1;
+
+	item->cooldown =
+		0;
+}
+
+void MakeBoxEquipReward(
+	int cardIndex,
+	int boxIndex)
+{
+	const REWARD_BOX_DATA* boxData =
+		&rewardBoxData[boxIndex];
+
+	memset(
+		&boxCardItem[0][cardIndex],
+		0,
+		sizeof(ITEM));
+
+	int grade =
+		RollBoxGrade(
+			boxData->equipGradeRate,
+			&robin.equipHighGradeMissCount);
+
+	int type =
+		ITEM_SWORD;
+
+	int detail =
+		0;
+
+	int retryCount =
+		0;
+
+	do
+	{
+		type =
+			MakeBoxEquipType();
+
+		detail =
+			MakeItemDetail(
+				type,
+				robin.lv +
+				boxIndex);
+
+		retryCount++;
+
+	} while (
+		IsDuplicateBoxCard(
+			cardIndex,
+			type,
+			detail) &&
+		retryCount < 100);
+
+	ITEM* item =
+		&boxCardItem[0][cardIndex];
+
+	item->type =
+		type;
+
+	item->detail =
+		detail;
+
+	item->grade =
+		grade;
+
+	item->count =
+		1;
+
+	item->lv =
+		1;
+
+	item->cooldown =
+		0;
+}
+
+void MakeBoxHeartReward(
+	int writeIndex,
+	const REWARD_BOX_DATA* boxData,
+	bool lucky)
+{
+	ITEM* item =
+		&boxCardItem[0][
+			writeIndex];
+
+	memset(
+		item,
+		0,
+		sizeof(ITEM));
+
+	item->type =
+		ITEM_HEART;
+
+	item->detail =
+		0;
+
+	item->grade =
+		GRADE_NORMAL;
+
+	item->count =
+		GetWeightedNormalizedReward(
+			boxData->heartMin,
+			boxData->heartMax);
+
+	//----------------------------------------------------
+	// 럭키 보너스를 수량에 적용한다면 여기서 처리
+	//----------------------------------------------------
+	if (lucky)
+	{
+		// 예: 20% 증가 후 지급 단위 재정규화
+		// 현재는 카드 추가 및 승급만 적용하므로 생략 가능
+	}
+
+	item->seen =
+		true;
+}
+
+void MakeBoxGoldReward(
+	int writeIndex,
+	const REWARD_BOX_DATA* boxData,
+	bool lucky)
+{
+	ITEM* item =
+		&boxCardItem[0][
+			writeIndex];
+
+	memset(
+		item,
+		0,
+		sizeof(ITEM));
+
+	item->type =
+		ITEM_GOLD;
+
+	item->detail =
+		0;
+
+	item->grade =
+		GRADE_NORMAL;
+
+	item->count =
+		GetWeightedNormalizedReward(
+			boxData->goldMin,
+			boxData->goldMax);
+
+	if (lucky)
+	{
+		// 현재 럭키 효과를 카드 추가와 승급으로만 쓸 경우
+		// 별도 수량 보너스는 주지 않는다.
+	}
+
+	item->seen =
+		true;
+}
+
+void UpgradeLuckyBoxCard(
+	int cardCount)
+{
+	int candidate[
+		GACHA_MAX_REWARD_CARD];
+
+	int candidateCount = 0;
+
+	for (int i = 0;
+		i < cardCount;
+		i++)
+	{
+		int type =
+			boxCardItem[0][i].type;
+
+		if (type == ITEM_CREW ||
+			type == ITEM_SWORD ||
+			type == ITEM_HELM ||
+			type == ITEM_ARMOR ||
+			type == ITEM_GUNTLET ||
+			type == ITEM_KILT ||
+			type == ITEM_GREAVES)
+		{
+			//------------------------------------------------
+			// 이미 6성이면 승급 대상에서 제외
+			//------------------------------------------------
+			if (boxCardItem[0][i].grade <
+				GRADE_NORMAL + 5)
+			{
+				candidate[candidateCount] =
+					i;
+
+				candidateCount++;
+			}
+		}
+	}
+
+	if (candidateCount <= 0)
+		return;
+
+	int selectedIndex =
+		candidate[
+			Random(candidateCount)];
+
+	boxCardItem[0][selectedIndex].grade++;
+
+	if (boxCardItem[0][selectedIndex].grade >=
+		GRADE_NORMAL + 4)
+	{
+		if (boxCardItem[0][selectedIndex].type ==
+			ITEM_CREW)
+		{
+			robin.crewHighGradeMissCount =
+				0;
+		}
+		else
+		{
+			robin.equipHighGradeMissCount =
+				0;
+		}
+	}
+}
+
+void ShuffleBoxReward(
+	int cardCount)
+{
+	for (int i = cardCount - 1;
+		i > 0;
+		i--)
+	{
+		int target =
+			Random(i + 1);
+
+		if (target == i)
+			continue;
+
+		ITEM tempItem;
+
+		memcpy(
+			&tempItem,
+			&boxCardItem[0][i],
+			sizeof(ITEM));
+
+		memcpy(
+			&boxCardItem[0][i],
+			&boxCardItem[0][target],
+			sizeof(ITEM));
+
+		memcpy(
+			&boxCardItem[0][target],
+			&tempItem,
+			sizeof(ITEM));
+	}
+}
+
+void CheckNewBoxReward(
+	int cardCount)
+{
+	for (int i = 0;
+		i < cardCount;
+		i++)
+	{
+		int type =
+			boxCardItem[0][i].type;
+
+		//------------------------------------------------
+		// 재화는 신규 아이템이 아님
+		//------------------------------------------------
+		if (type == ITEM_HEART ||
+			type == ITEM_GOLD)
+		{
+			boxCardItem[0][i].seen =
+				true;
+
+			continue;
+		}
+
+		if (GetInvenIdx(
+			boxCardItem[0][i].type,
+			boxCardItem[0][i].detail,
+			boxCardItem[0][i].grade) == -1)
+		{
+			boxCardItem[0][i].seen =
+				false;
+
+			newItemCnt++;
+		}
+		else
+		{
+			boxCardItem[0][i].seen =
+				true;
+		}
+	}
+}
+
+bool GenerateCastleBoxReward(
+	int boxDetail)
+{
+	int boxIndex =
+		GetRewardBoxIndex(
+			boxDetail);
+
+	if (boxIndex < 0 ||
+		boxIndex >=
+		REWARD_BOX_COUNT)
+	{
+		CCLOG(
+			"GenerateCastleBoxReward FAILED: boxDetail=%d boxIndex=%d",
+			boxDetail,
+			boxIndex);
+
+		return false;
+	}
+
+	const REWARD_BOX_DATA*
+		boxData =
+		&rewardBoxData[boxIndex];
+
+	//----------------------------------------------------
+	// 럭키 상자 판정
+	//----------------------------------------------------
+	gachaLuckyBox =
+		Random(100) <
+		boxData->luckyRate;
+
+	//----------------------------------------------------
+	// 기본 카드 수
+	//----------------------------------------------------
+	int cardCount =
+		BoxRandomRange(
+			boxData->minCard,
+			boxData->maxCard);
+
+	//----------------------------------------------------
+	// 럭키 시 카드 한 장 추가
+	//----------------------------------------------------
+	if (gachaLuckyBox)
+	{
+		cardCount =
+			Min(
+				GACHA_MAX_REWARD_CARD,
+				cardCount + 1);
+	}
+
+	cardCount =
+		Min(
+			cardCount,
+			GACHA_MAX_REWARD_CARD);
+
+	//----------------------------------------------------
+	// 골드 등장 여부
+	//----------------------------------------------------
+	bool makeGold =
+		boxData->goldMax > 0 &&
+		Random(100) <
+		boxData->goldRate;
+
+	//----------------------------------------------------
+	// 카드가 2장인데 골드가 나오면
+	// 하트 + 골드만 남으므로 최소 3장으로 보정
+	//----------------------------------------------------
+	if (makeGold &&
+		cardCount < 3)
+	{
+		cardCount =
+			Min(
+				3,
+				GACHA_MAX_REWARD_CARD);
+	}
+
+	//----------------------------------------------------
+	// 기존 보상 초기화
+	//----------------------------------------------------
+	memset(
+		&boxCardItem[0],
+		0,
+		sizeof(boxCardItem[0]));
+
 	boxCardItemCnt[0] =
-		MakeGachaRewardItems(
-			gachaBoxDetail,
-			gachaBoxGrade,
-			boxCardItem[0],
-			GACHA_REWARD_MAX);
+		0;
 
-	//--------------------------------------------------------
-	// 상자 마크 생성
-	//--------------------------------------------------------
-	SetBoxMark(
-		xOffset + DX / 2,
-		DY + 64 * _2X,
+	int writeIndex =
+		0;
 
-		xOffset + DX / 2,
-		BOTTOMMENUHEIGHT + 32 * _2X,
+	//----------------------------------------------------
+	// 하트는 항상 한 장
+	//----------------------------------------------------
+	if (writeIndex <
+		cardCount)
+	{
+		MakeBoxHeartReward(
+			writeIndex,
+			boxData,
+			gachaLuckyBox);
 
-		xOffset + DX / 2,
-		BOTTOMMENUHEIGHT + 32 * _2X,
+		writeIndex++;
+	}
 
-		16 * _2X / MOTIONDIV,
-		4 * _2X / MOTIONDIV,
+	//----------------------------------------------------
+	// 골드는 goldRate 확률로 한 장
+	//----------------------------------------------------
+	if (makeGold &&
+		writeIndex <
+		cardCount)
+	{
+		MakeBoxGoldReward(
+			writeIndex,
+			boxData,
+			gachaLuckyBox);
 
-		16 * _2X / MOTIONDIV,
-		4 * _2X / MOTIONDIV,
+		writeIndex++;
+	}
 
-		FPS / 2,
-		FPS / 2,
+	//----------------------------------------------------
+	// 나머지는 동료 또는 장비
+	//----------------------------------------------------
+	while (writeIndex <
+		cardCount)
+	{
+		int totalTypeRate =
+			boxData->crewRate +
+			boxData->equipRate;
 
-		30,
+		//------------------------------------------------
+		// 비정상 데이터 방어
+		//------------------------------------------------
+		if (totalTypeRate <= 0)
+		{
+			CCLOG(
+				"GenerateCastleBoxReward FAILED: invalid type rate boxIndex=%d",
+				boxIndex);
 
-		gachaBoxDetail,
-		gachaBoxGrade,
+			return false;
+		}
 
-		boxZoom,
-		boxZoom,
-		0.01f / MOTIONDIV,
+		int typeRoll =
+			Random(
+				totalTypeRate);
 
-		boxZoom,
-		boxZoom,
-		0.01f / MOTIONDIV);
+		if (typeRoll <
+			boxData->crewRate)
+		{
+			MakeBoxCrewReward(
+				writeIndex,
+				boxIndex);
+		}
+		else
+		{
+			MakeBoxEquipReward(
+				writeIndex,
+				boxIndex);
+		}
 
-	gachaDepth = GACHA_DEPTH_BOX;
-	gachaFrame = 0;
-	gachaCardIdx = 0;
-	gachaOpenCardIdx = 0;
+		writeIndex++;
+	}
 
-	gachaCurrentCardReady = false;
-	gachaRewardReceived = false;
-	gachaPrepared = true;
+	boxCardItemCnt[0] =
+		writeIndex;
 
-	for (i = 0; i < GACHA_REWARD_MAX; i++)
-		memset(&boxCardMark[i], 0, sizeof(boxCardMark[i]));
+	//----------------------------------------------------
+	// 럭키 카드 한 장 승급
+	//----------------------------------------------------
+	if (gachaLuckyBox)
+	{
+		UpgradeLuckyBoxCard(
+			boxCardItemCnt[0]);
+	}
+
+	//----------------------------------------------------
+	// 표시 순서 섞기
+	//----------------------------------------------------
+	ShuffleBoxReward(
+		boxCardItemCnt[0]);
+
+	//----------------------------------------------------
+	// 신규 카드 확인
+	//----------------------------------------------------
+	CheckNewBoxReward(
+		boxCardItemCnt[0]);
+
+	//----------------------------------------------------
+	// 확인 로그
+	//----------------------------------------------------
+	CCLOG(
+		"GenerateCastleBoxReward: detail=%d boxIndex=%d lucky=%d cards=%d gold=%d",
+		boxDetail,
+		boxIndex,
+		gachaLuckyBox,
+		boxCardItemCnt[0],
+		makeGold);
+
+	return boxCardItemCnt[0] > 0;
 }
 
-void GotoEnemyGacha(void)
+static int GetWeightedNormalizedReward(
+	int minValue,
+	int maxValue)
 {
-	gachaPrepared = false;
-	PrepareEnemyGacha();
+	if (minValue <= 0)
+	{
+		return 0;
+	}
 
-	// 기존 상태 전환 사용
-	// status = STATUS_GACHA;
+	if (maxValue <= minValue)
+	{
+		return minValue;
+	}
+
+	//----------------------------------------------------
+	// 시작값의 1/10 단위
+	//----------------------------------------------------
+	int unit =
+		minValue / 10;
+
+	if (unit <= 0)
+	{
+		unit =
+			1;
+	}
+
+	//----------------------------------------------------
+	// 최대값을 지급 단위에 맞춰 내림
+	//----------------------------------------------------
+	int normalizedMax =
+		(maxValue / unit) *
+		unit;
+
+	if (normalizedMax <
+		minValue)
+	{
+		normalizedMax =
+			minValue;
+	}
+
+	int levelCount =
+		(normalizedMax -
+			minValue) /
+		unit +
+		1;
+
+	if (levelCount <= 1)
+	{
+		return minValue;
+	}
+
+	//----------------------------------------------------
+	// 낮은 금액일수록 높은 가중치
+	//----------------------------------------------------
+	int totalWeight =
+		levelCount *
+		(levelCount + 1) /
+		2;
+
+	int roll =
+		Random(
+			totalWeight);
+
+	int accumulatedWeight =
+		0;
+
+	for (int i = 0;
+		i < levelCount;
+		i++)
+	{
+		int weight =
+			levelCount -
+			i;
+
+		accumulatedWeight +=
+			weight;
+
+		if (roll <
+			accumulatedWeight)
+		{
+			return minValue +
+				i *
+				unit;
+		}
+	}
+
+	return minValue;
 }
 
 void GachaDraw(void)
 {
-	static int manualCardMarkIdx = -1;
-
-	//--------------------------------------------------------
-	// 카드 정렬 연출 상태
-	//--------------------------------------------------------
-	static int previousOpenCardIdx = -1;
-	static int trayCardCount = 0;
-	static bool waitingForTrayComplete = false;
-
-	//--------------------------------------------------------
-	// 각 화면 전용 프레임
-	//--------------------------------------------------------
-	static int previousGachaDepth = -1;
-	static int summaryFrame = 0;
-	static int flyToBarFrame = 0;
-	static int getItemFrame = 0;
-
 	int i;
 
 	//--------------------------------------------------------
-	// 최초 준비
+	// GotoGacha에서 생성 완료되지 않았으면 처리하지 않음
 	//--------------------------------------------------------
 	if (gachaPrepared == false)
 	{
-		PrepareEnemyGacha();
+		return;
+	}
 
-		manualCardMarkIdx = -1;
+	//--------------------------------------------------------
+	// 상자 또는 보상 생성 실패 방어
+	//--------------------------------------------------------
+	if (boxCnt <= 0 ||
+		boxCardItemCnt[0] <= 0)
+	{
+		CCLOG(
+			"GachaDraw INVALID: boxCnt=%d cardCnt=%d",
+			boxCnt,
+			boxCardItemCnt[0]);
 
-		boxMark[0].motionFrame = -1;
-
-		previousGachaDepth = -1;
-		previousOpenCardIdx = -1;
-
-		summaryFrame = 0;
-		flyToBarFrame = 0;
-		getItemFrame = 0;
-
-		trayCardCount = 0;
-		waitingForTrayComplete = false;
-
-		gachaCardCanAdvance = false;
-		gachaConfirmReady = false;
-		
-		memset(
-			gachaRewardCardAnim,
-			0,
-			sizeof(gachaRewardCardAnim));
+		return;
 	}
 
 	//--------------------------------------------------------
 	// 가챠 단계 변경 확인
 	//--------------------------------------------------------
-	if (previousGachaDepth != gachaDepth)
+	if (previousGachaDepth !=
+		gachaDepth)
 	{
 		switch (gachaDepth)
 		{
 		case GACHA_DEPTH_SUMMARY:
-			summaryFrame = 0;
+			summaryFrame =
+				0;
 			break;
+
 		case GACHA_DEPTH_FLYTOBAR:
-			flyToBarFrame = 0;
+			flyToBarFrame =
+				0;
 			break;
+
 		case GACHA_DEPTH_GETITEM:
-			getItemFrame = 0;
+			getItemFrame =
+				0;
 			break;
 		}
 
-		previousGachaDepth = gachaDepth;
+		previousGachaDepth =
+			gachaDepth;
 	}
 
-	ScreenDarken(SCREENDARKEN);
+	//--------------------------------------------------------
+	// 가챠 배경 어둡기
+	//
+	// 카드가 메뉴로 날아가는 동안에는
+	// 어두운 오버레이를 서서히 제거한다.
+	//--------------------------------------------------------
+	int gachaScreenDarken =
+		SCREENDARKEN;
+
+	if (gachaDepth ==
+		GACHA_DEPTH_FLYTOBAR)
+	{
+		const int BRIGHTEN_FRAME =
+			12 * MOTIONDIV;
+
+		float brightenProgress =
+			(float)flyToBarFrame /
+			(float)BRIGHTEN_FRAME;
+
+		brightenProgress =
+			GachaClamp01(
+				brightenProgress);
+
+		//----------------------------------------------------
+		// 초반에는 천천히, 후반에는 빠르게 밝아짐
+		//----------------------------------------------------
+		float brightenCurve =
+			GachaEaseInOutCubic(
+				brightenProgress);
+
+		gachaScreenDarken =
+			(int)GachaLerp(
+				(float)SCREENDARKEN,
+				0.0f,
+				brightenCurve);
+	}
+
+	ScreenDarken(
+		gachaScreenDarken);
 
 	switch (gachaDepth)
 	{
@@ -653,7 +1276,7 @@ void GachaDraw(void)
 					-1;
 
 				gachaCurrentCardReady =
-					true;
+					false;
 
 				manualCardMarkIdx =
 					-1;
@@ -1129,8 +1752,8 @@ case GACHA_DEPTH_CARD:
 			gachaOpenCardIdx];
 
 	//----------------------------------------------------
-	// 현재 공개 카드 생성
-	//----------------------------------------------------
+// 현재 공개 카드 생성
+//----------------------------------------------------
 	if (gachaCurrentCardReady == false)
 	{
 		float startCenterX =
@@ -1267,10 +1890,24 @@ case GACHA_DEPTH_CARD:
 			gachaCurrentCardReady =
 				true;
 
+			gachaCardCanAdvance =
+				false;
+
 			PlayMusic(M_ITEM);
 		}
-	}
+		else
+		{
+			gachaCurrentCardReady =
+				false;
 
+			manualCardMarkIdx =
+				-1;
+
+			CCLOG(
+				"SetBoxCardMark FAILED: openCardIdx=%d",
+				gachaOpenCardIdx);
+		}
+	}
 	//----------------------------------------------------
 	// 현재 카드 수동 공개 애니메이션
 	//----------------------------------------------------
@@ -2094,19 +2731,22 @@ case GACHA_DEPTH_FLYTOBAR:
 	// 연출 시간
 	//----------------------------------------------------
 	const int PANEL_CLOSE_FRAME =
-		8 * MOTIONDIV;
+		FPS / 2;
 
 	const int CARD_FLY_FRAME =
-		14 * MOTIONDIV;
+		FPS;
 
-	const int CARD_HOLD_FRAME =
-		5 * MOTIONDIV;
+	const int CARD_GLOW_HOLD_FRAME =
+		FPS;
+
+	const int CARD_FADE_FRAME =
+		FPS / 2;
 
 	//----------------------------------------------------
 	// 카드마다 약간씩 순차 출발
 	//----------------------------------------------------
 	const int CARD_START_INTERVAL =
-		1 * MOTIONDIV;
+		FPS / 6;
 
 	//----------------------------------------------------
 	// 도착했을 때 크기
@@ -2114,7 +2754,7 @@ case GACHA_DEPTH_FLYTOBAR:
 	// 팝업에서 보이던 크기의 20%
 	//----------------------------------------------------
 	const float CARD_TARGET_ZOOM_RATE =
-		0.20f;
+		0.35f;
 
 	//----------------------------------------------------
 	// 팝업 정보
@@ -2261,7 +2901,7 @@ case GACHA_DEPTH_FLYTOBAR:
 				2.0f;
 
 			anim->barTargetY =
-				destinationCY -
+				destinationCY +
 				332.0f *
 				anim->barTargetZoom /
 				2.0f;
@@ -2458,7 +3098,7 @@ case GACHA_DEPTH_FLYTOBAR:
 					anim->barTargetZoom;
 
 				//------------------------------------------------
-				// 목적지에 도착했을 때 효과음
+				// 메뉴에 들어가는 느낌을 주는 도착 효과음
 				//------------------------------------------------
 				PlayMusic(M_ITEM);
 			}
@@ -2470,6 +3110,9 @@ case GACHA_DEPTH_FLYTOBAR:
 		//------------------------------------------------
 		// 해당 바 위에서 잠시 정지
 		//------------------------------------------------
+		//------------------------------------------------
+// 해당 바 위에서 글로우와 함께 잠시 정지
+//------------------------------------------------
 		else if (anim->arrivedBar)
 		{
 			drawX =
@@ -2481,10 +3124,75 @@ case GACHA_DEPTH_FLYTOBAR:
 			drawZoom =
 				anim->barTargetZoom;
 
-			anim->barHoldFrame++;
+			int totalFinishFrame =
+				CARD_GLOW_HOLD_FRAME +
+				CARD_FADE_FRAME;
 
-			if (anim->barHoldFrame >=
-				CARD_HOLD_FRAME)
+			//------------------------------------------------
+			// 1단계: 메뉴 위에서 글로우 유지
+			//------------------------------------------------
+			if (anim->barHoldFrame <
+				CARD_GLOW_HOLD_FRAME)
+			{
+				//------------------------------------------------
+				// 도착 직후 살짝 커졌다 돌아오는 팝 효과
+				//------------------------------------------------
+				float holdProgress =
+					(float)anim->barHoldFrame /
+					(float)CARD_GLOW_HOLD_FRAME;
+
+				holdProgress =
+					GachaClamp01(
+						holdProgress);
+
+				float popScale =
+					sinf(
+						holdProgress *
+						3.141592f) *
+					0.15f;
+
+				drawZoom =
+					anim->barTargetZoom *
+					(1.0f + popScale);
+
+				allCardsFinished =
+					false;
+			}
+
+			//------------------------------------------------
+			// 2단계: 잠시 머문 뒤 페이드아웃
+			//------------------------------------------------
+			else if (anim->barHoldFrame <
+				totalFinishFrame)
+			{
+				float fadeProgress =
+					(float)(
+						anim->barHoldFrame -
+						CARD_GLOW_HOLD_FRAME) /
+					(float)CARD_FADE_FRAME;
+
+				fadeProgress =
+					GachaClamp01(
+						fadeProgress);
+
+				//------------------------------------------------
+				// 사라질 때 조금 더 작아짐
+				//------------------------------------------------
+				drawZoom =
+					GachaLerp(
+						anim->barTargetZoom,
+						anim->barTargetZoom *
+						0.65f,
+						fadeProgress);
+
+				allCardsFinished =
+					false;
+			}
+
+			//------------------------------------------------
+			// 3단계: 완전히 제거
+			//------------------------------------------------
+			else
 			{
 				anim->arrivedBar =
 					false;
@@ -2492,37 +3200,192 @@ case GACHA_DEPTH_FLYTOBAR:
 				anim->finishedBar =
 					true;
 			}
-			else
-			{
-				allCardsFinished =
-					false;
-			}
+
+			anim->barHoldFrame++;
 		}
 
 		//------------------------------------------------
-		// 아직 사라지지 않은 카드만 출력
+// 아직 사라지지 않은 카드만 출력
+//------------------------------------------------
+if (anim->finishedBar == false)
+{
+	int cardAlpha =
+		32;
+
+	bool drawGlow =
+		false;
+
+	float glowZoom =
+		drawZoom;
+
+	//------------------------------------------------
+	// 도착 후의 진행 상황
+	//------------------------------------------------
+	if (anim->arrivedBar)
+	{
 		//------------------------------------------------
-		if (anim->finishedBar == false)
+		// 글로우 유지 구간
+		//------------------------------------------------
+		if (anim->barHoldFrame <
+			CARD_GLOW_HOLD_FRAME)
 		{
-			DrawItemCard(
-				item->type,
-				item->detail,
-				item->grade,
-				item->lv,
-				false,
-				(int)drawX,
-				(int)drawY,
-				false,
-				drawZoom,
-				false,
-				0,
-				0,
-				true,
-				0,
-				gScreenBuffer,
-				gScreenLayer,
-				false);
+			drawGlow =
+				true;
+
+			//------------------------------------------------
+			// 글로우 맥동
+			//------------------------------------------------
+			float glowPulse =
+				0.5f +
+				0.5f *
+				sinf(
+					(float)anim->barHoldFrame *
+					0.45f);
+
+			glowZoom =
+				drawZoom *
+				(1.12f +
+					0.08f *
+					glowPulse);
 		}
+		//------------------------------------------------
+		// 페이드아웃 구간
+		//------------------------------------------------
+		else
+		{
+			float fadeProgress =
+				(float)(
+					anim->barHoldFrame -
+					CARD_GLOW_HOLD_FRAME) /
+				(float)CARD_FADE_FRAME;
+
+			fadeProgress =
+				GachaClamp01(
+					fadeProgress);
+
+			cardAlpha =
+				(int)GachaLerp(
+					32.0f,
+					0.0f,
+					fadeProgress);
+
+			//------------------------------------------------
+			// 페이드 초반까지는 글로우 유지
+			//------------------------------------------------
+			if (fadeProgress <
+				0.65f)
+			{
+				drawGlow =
+					true;
+
+				glowZoom =
+					drawZoom *
+					1.14f;
+			}
+		}
+	}
+
+	//------------------------------------------------
+	// 카드 뒤쪽 글로우
+	//
+	// 전용 글로우 이미지가 없으므로
+	// 반투명 확대 카드를 여러 방향으로 겹쳐 표현
+	//------------------------------------------------
+	if (drawGlow)
+	{
+		SetAlpha(5);
+
+		const float GLOW_OFFSET =
+			1.5f * _2X;
+
+		DrawItemCard(
+			item->type,
+			item->detail,
+			item->grade,
+			item->lv,
+			false,
+			(int)(drawX -
+				GLOW_OFFSET),
+			(int)drawY,
+			false,
+			glowZoom,
+			false,
+			0,
+			0,
+			true,
+			0,
+			gScreenBuffer,
+			gScreenLayer,
+			false);
+
+		DrawItemCard(
+			item->type,
+			item->detail,
+			item->grade,
+			item->lv,
+			false,
+			(int)(drawX +
+				GLOW_OFFSET),
+			(int)drawY,
+			false,
+			glowZoom,
+			false,
+			0,
+			0,
+			true,
+			0,
+			gScreenBuffer,
+			gScreenLayer,
+			false);
+
+		DrawItemCard(
+			item->type,
+			item->detail,
+			item->grade,
+			item->lv,
+			false,
+			(int)drawX,
+			(int)(drawY +
+				GLOW_OFFSET),
+			false,
+			glowZoom,
+			false,
+			0,
+			0,
+			true,
+			0,
+			gScreenBuffer,
+			gScreenLayer,
+			false);
+	}
+
+	//------------------------------------------------
+	// 실제 카드
+	//------------------------------------------------
+	SetAlpha(
+		cardAlpha);
+
+	DrawItemCard(
+		item->type,
+		item->detail,
+		item->grade,
+		item->lv,
+		false,
+		(int)drawX,
+		(int)drawY,
+		false,
+		drawZoom,
+		false,
+		0,
+		0,
+		true,
+		0,
+		gScreenBuffer,
+		gScreenLayer,
+		false);
+
+	SetAlpha(32);
+}
 	}
 
 	//----------------------------------------------------

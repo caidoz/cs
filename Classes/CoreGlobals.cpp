@@ -1392,3 +1392,36 @@ int joyDir;
 bool joyPressed;
 bool joyReturning;
 float joyReturnSpeed;
+
+bool gachaLuckyBox;
+
+bool gachaPrepared;
+
+// 현재 적에게서 획득한 상자 정보
+int gachaBoxDetail;
+int gachaBoxGrade;
+
+// 카드 한 장씩 공개할 때 사용하는 인덱스
+int gachaOpenCardIdx;
+
+// 현재 카드의 등장 완료 여부
+bool gachaCurrentCardReady;
+
+// 보상을 실제 인벤토리에 넣었는지
+bool gachaRewardReceived;
+
+int manualCardMarkIdx;
+
+int previousOpenCardIdx;
+
+int trayCardCount;
+
+bool waitingForTrayComplete;
+
+int previousGachaDepth;
+
+int summaryFrame;
+
+int flyToBarFrame;
+
+int getItemFrame;

@@ -1468,7 +1468,7 @@ void PlayKey(int obj)
 			rewardBoxDetail = stageClearBox[robin.stage];
 			rewardBoxGrade = GRADE_NORMAL;
 
-			boxReward = &rewardBoxData[rewardBoxDetail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardBoxGrade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE];
+			//boxReward = &rewardBoxData[rewardBoxDetail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardBoxGrade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE];
 
 			itemCnt = 0;
 			for (i = 0; i < BOX1MAXREWARDITEM; i++) {

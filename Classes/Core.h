@@ -645,6 +645,12 @@ typedef struct _robin {
 
 	long long startTime;
 
+	//--------------------------------------------------------
+	// 5성 이상이 나오지 않은 카드 수
+	//--------------------------------------------------------
+	int crewHighGradeMissCount = 0;
+	int equipHighGradeMissCount = 0;
+
 	template <class Archive>
 	void serialize(Archive & ar)
 	{
@@ -2367,4 +2373,41 @@ extern bool joyPressed;
 extern bool joyReturning;
 extern float joyReturnSpeed; // 높을수록 빠르게 복귀
 
+//--------------------------------------------------------
+// 현재 상자가 럭키 상자인지 여부
+//--------------------------------------------------------
+extern bool gachaLuckyBox;
+
+
+extern bool gachaPrepared;
+
+
+// 현재 적에게서 획득한 상자 정보
+extern int gachaBoxDetail;
+extern int gachaBoxGrade;
+
+// 카드 한 장씩 공개할 때 사용하는 인덱스
+extern int gachaOpenCardIdx;
+
+// 현재 카드의 등장 완료 여부
+extern bool gachaCurrentCardReady;
+
+// 보상을 실제 인벤토리에 넣었는지
+extern bool gachaRewardReceived;
+
+extern int manualCardMarkIdx;
+
+extern int previousOpenCardIdx;
+
+extern int trayCardCount;
+
+extern bool waitingForTrayComplete;
+
+extern int previousGachaDepth;
+
+extern int summaryFrame;
+
+extern int flyToBarFrame;
+
+extern int getItemFrame;
 #endif

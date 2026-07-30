@@ -2532,9 +2532,7 @@ void BackToReward(void)
 	//rewardItemCnt--;
 	focusedItem++;
 
-	memset(&rewardMark, 0, sizeof(rewardMark));
-	memset(&boxMark, 0, sizeof(boxMark));
-
+	
 	GotoGacha();
 }
 
@@ -4219,150 +4217,327 @@ void GotoCurrentStage(void)
 //3.
 void GotoGacha()
 {
-	int i, j = 0, k = 0, l = 0;
-	int boxRewardCnt = 0;
-	int boxCardCnt = 0;
-	int collectionIdx;
-	int houseIdx;
-	int tempValue;
-	bool sameItem = false;
+	int i;
 
-	before_DrawHandle_Gacha = drawHandle;
-	before_KeyHandle_Gacha = keyHandle;
-	before_CurMenu_Gacha = curMenu;
+	//--------------------------------------------------------
+	// 가챠 호출 전에 boxMark[0]에 넣어둔 상자 정보 보관
+	//--------------------------------------------------------
+	const int rewardBoxType =
+		boxMark[0].type;
 
-	attackSequenceBefore = attackSequence;
-	attackTypeBefore = attackType;
-	attackStrBefore = attackStr;
-	attackDelayBefore = attackDelay;
-	rewardItemCntBefore = rewardItemCnt;
+	const int rewardBoxDetail =
+		boxMark[0].detail;
 
-	drawHandle = MD_GACHA;
-	keyHandle = MK_GACHA;
+	const int rewardBoxGrade =
+		boxMark[0].grade;
 
-	playmap = robinmap;
+	const bool hasCastleBox =
+		rewardBoxType == ITEM_BOX &&
+		GetRewardBoxIndex(
+			rewardBoxDetail) >= 0;
 
-	gachaIndex = 0;
+	//--------------------------------------------------------
+	// 잘못된 상자는 가챠로 진입하지 않음
+	//--------------------------------------------------------
+	if (hasCastleBox == false)
+	{
+		CCLOG(
+			"GotoGacha FAILED: invalid box type=%d detail=%d grade=%d",
+			rewardBoxType,
+			rewardBoxDetail,
+			rewardBoxGrade);
 
-	//박스에서 카드 보상
-	memset(&boxCardItemCnt, 0, sizeof(boxCardItemCnt));
-	memset(&boxCardItem, 0, sizeof(boxCardItem));
-
-	//연출용 효과를 초기화하고
-	for (i = 0; i < TOTALCARDMARK; i++) {
-		//memset(&boxMark[i], 0, sizeof(ICONMARK));//박스
-		memset(&boxCardMark[i], 0, sizeof(ICONMARK));//박스에서 나온 카드
+		return;
 	}
 
-	newItemCnt = 0;
-	curNewItemIdx = -1;
+	gachaPrepared =
+		false;
 
-	//총 박스 카운트를 확인하고
-	for (i = 0; i < TOTALREWARDMARK; i++) {
-		if (rewardMark[i].type == ITEM_BOX) {
-			for (j = 0; j < BOX1MAXREWARDITEM; j++) {
-				switch (rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE]) {
-				case -1:
-					break;
-				case BOX_EQUIP:
-				case BOX_RANDOM:
-				case BOX_CREW:
-					boxCardItemCnt[boxCnt] = rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 3];
+	//--------------------------------------------------------
+	// 이전 화면 상태 보관
+	//--------------------------------------------------------
+	before_DrawHandle_Gacha =
+		drawHandle;
 
-					//일단 아이템을 보상아이템에 할당한다.
-					for (k = 0; k < boxCardItemCnt[boxCnt]; k++) {
-						do {
-							if (rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE] != BOX_CREW) {
-								boxCardItem[boxCnt][k].type = MakeItemType(Random(ITEMTYPESEED));
-							}
-							//크류면
-							else {
-								boxCardItem[boxCnt][k].type = ITEM_CREW;
-							}
+	before_KeyHandle_Gacha =
+		keyHandle;
 
-							boxCardItem[boxCnt][k].detail = MakeItemDetail(boxCardItem[boxCnt][k].type, robin.lv + rewardMark[i].detail);
-							boxCardItem[boxCnt][k].grade = MakeItemGrade(boxCardItem[boxCnt][k].type, robin.lv + rewardMark[i].detail, boxCardItem[boxCnt][k].detail);
-							boxCardItem[boxCnt][k].count = 1;
+	before_CurMenu_Gacha =
+		curMenu;
 
-							sameItem = false;
+	attackSequenceBefore =
+		attackSequence;
 
-							for (l = 0; l < k; l++) {
-								if (boxCardItem[boxCnt][l].type == boxCardItem[boxCnt][k].type && boxCardItem[boxCnt][l].detail == boxCardItem[boxCnt][k].detail && boxCardItem[boxCnt][l].grade == boxCardItem[boxCnt][k].grade) {
-									sameItem = true;
-								}
-							}
-						} while (sameItem == true);
+	attackTypeBefore =
+		attackType;
 
-						if (GetInvenIdx(boxCardItem[boxCnt][j].type, boxCardItem[boxCnt][j].detail, boxCardItem[boxCnt][j].grade) == -1) {
-							boxCardItem[boxCnt][j].seen = false;
-							newItemCnt++;
-							//curNewItemIdx = j;
-						}
-						else
-							boxCardItem[boxCnt][j].seen = true;
-						//TEST
-						//boxCardItem[boxCnt][j].seen = false;
-					}
+	attackStrBefore =
+		attackStr;
 
+	attackDelayBefore =
+		attackDelay;
 
-					break;
-				default:
-					boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].type = rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE];
-					boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].detail = rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 1];
-					boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].grade = rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 2];
+	rewardItemCntBefore =
+		rewardItemCnt;
 
-					boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].count = rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 3] + Random(rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 4] - rewardBoxData[rewardMark[i].detail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardMark[i].grade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + j * REWARDITEMDATASIZE + 3]);
+	//--------------------------------------------------------
+	// 가챠 화면으로 전환
+	//--------------------------------------------------------
+	drawHandle =
+		MD_GACHA;
 
-					tempValue = pow(10, Max(0, GetNumFigure(boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].count) - 2));
+	keyHandle =
+		MK_GACHA;
 
-					boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].count = boxCardItem[boxCnt][boxCardItemCnt[boxCnt]].count / tempValue * tempValue;
+	playmap =
+		robinmap;
 
-					boxCardItemCnt[boxCnt]++;
-					break;
-				}
+	//--------------------------------------------------------
+	// 이번 가챠 상자 정보
+	//
+	// 반드시 SetBoxMark 전에 넣어야 한다.
+	//--------------------------------------------------------
+	gachaBoxDetail =
+		rewardBoxDetail;
 
-			}
-			//첫박스만 표시해 준다.
-			if (boxCnt == 0)
-				SetBoxMark(xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, STATUSWIN_Y2, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 32 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, FPS * 3, FPS * 3, 30, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].detail == BOX_INGAME ? 3.0f : 2.0f * 2 / 3, rewardMark[i].detail == BOX_INGAME ? 3.0f : 2.0f * 2 / 3, 0.2f / MOTIONDIV, rewardMark[i].detail == BOX_INGAME ? 3.0f : 2.0f * 2 / 3, rewardMark[i].detail == BOX_INGAME ? 3.0f : 2.0f * 2 / 3, 0.2f / MOTIONDIV);
+	gachaBoxGrade =
+		rewardBoxGrade;
 
-			boxCnt++;
+	//--------------------------------------------------------
+	// 가챠 데이터 초기화
+	//--------------------------------------------------------
+	gachaIndex =
+		0;
 
-			memcpy(&rewardItem[i], &rewardItem[i + 1], (MAXREWARDITEM - (i + 1)) * sizeof(ITEM));
+	boxCnt =
+		0;
 
-			memcpy(&rewardMark[i], &rewardMark[i + 1], (TOTALREWARDMARK - (i + 1)) * sizeof(ICONMARK));
-			rewardItemCnt--;
-		}
+	gachaLuckyBox =
+		false;
+
+	memset(
+		boxMark,
+		0,
+		sizeof(boxMark));
+
+	memset(
+		boxCardMark,
+		0,
+		sizeof(boxCardMark));
+
+	memset(
+		boxCardItemCnt,
+		0,
+		sizeof(boxCardItemCnt));
+
+	memset(
+		boxCardItem,
+		0,
+		sizeof(boxCardItem));
+
+	memset(
+		gachaRewardCardAnim,
+		0,
+		sizeof(gachaRewardCardAnim));
+
+	newItemCnt =
+		0;
+
+	curNewItemIdx =
+		-1;
+
+	//--------------------------------------------------------
+	// 가챠 진행 상태 초기화
+	//--------------------------------------------------------
+	gachaDepth =
+		GACHA_DEPTH_BOX;
+
+	gachaFrame =
+		0;
+
+	gachaIndex =
+		0;
+
+	gachaCardIdx =
+		0;
+
+	gachaOpenCardIdx =
+		-1;
+
+	gachaCurrentCardReady =
+		false;
+
+	gachaRewardReceived =
+		false;
+
+	gachaCardCanAdvance =
+		false;
+
+	gachaConfirmReady =
+		false;
+
+	//--------------------------------------------------------
+	// GachaDraw 연출용 전역변수 초기화
+	//--------------------------------------------------------
+	manualCardMarkIdx =
+		-1;
+
+	previousOpenCardIdx =
+		-1;
+
+	trayCardCount =
+		0;
+
+	waitingForTrayComplete =
+		false;
+
+	previousGachaDepth =
+		-1;
+
+	summaryFrame =
+		0;
+
+	flyToBarFrame =
+		0;
+
+	getItemFrame =
+		0;
+
+	//--------------------------------------------------------
+	// 실제 성 상자 보상 생성
+	//--------------------------------------------------------
+	if (GenerateCastleBoxReward(
+		gachaBoxDetail) == false)
+	{
+		CCLOG(
+			"GotoGacha FAILED: GenerateCastleBoxReward detail=%d",
+			gachaBoxDetail);
+
+		return;
 	}
 
-	memcpy(&rewardMarkBack, &rewardMark, sizeof(rewardMark));
-	memcpy(&rewardItemBack, &rewardItem, sizeof(rewardItem));
+	//--------------------------------------------------------
+	// 상자 크기
+	//--------------------------------------------------------
+	float boxZoom =
+		0.3f +
+		0.01f *
+		gachaBoxDetail;
 
-	rewardItemCntBefore = rewardItemCnt;
+	//--------------------------------------------------------
+	// 상자 생성
+	//
+	// SetBoxMark는 여기서 단 한 번만 호출한다.
+	//--------------------------------------------------------
+	SetBoxMark(
+		xOffset + DX / 2,
+		DY + 64 * _2X,
 
-	for (i = 0; i < TOTALREWARDMARK; i++) {
-		rewardMark[i].frame = 0;
+		xOffset + DX / 2,
+		BOTTOMMENUHEIGHT + 32 * _2X,
+
+		xOffset + DX / 2,
+		BOTTOMMENUHEIGHT + 32 * _2X,
+
+		16 * _2X / MOTIONDIV,
+		4 * _2X / MOTIONDIV,
+
+		16 * _2X / MOTIONDIV,
+		4 * _2X / MOTIONDIV,
+
+		FPS / 2,
+		FPS / 2,
+
+		30,
+
+		gachaBoxDetail,
+		gachaBoxGrade,
+
+		boxZoom,
+		boxZoom,
+		0.01f / MOTIONDIV,
+
+		boxZoom,
+		boxZoom,
+		0.01f / MOTIONDIV);
+
+	//--------------------------------------------------------
+	// SetBoxMark 이후에 설정해야 한다.
+	//
+	// SetBoxMark 내부에서 motionFrame을 덮을 수 있기 때문
+	//--------------------------------------------------------
+	boxMark[0].motionFrame =
+		-1;
+
+	//--------------------------------------------------------
+	// 외부 Draw 루프는 frame 또는 frame2가 양수여야 그린다.
+	//--------------------------------------------------------
+	if (boxMark[0].frame <= 0 &&
+		boxMark[0].frame2 <= 0)
+	{
+		boxMark[0].frame =
+			1;
 	}
 
-	gachaDepth = 0;
-	gachaFrame = 0;
-	gachaIndex = 0;
-	gachaCardIdx = 0;
+	boxCnt =
+		1;
 
-	//oldMap = robinmap;
-	//robinmap = CASTLE3;
-	//SetRoom();
+	//--------------------------------------------------------
+	// 기타 화면 상태
+	//--------------------------------------------------------
+	bar[BAR_HEART].front =
+		false;
 
-	//ao[PLAYER].active = false;
-	//for (i = ENEMY; i < NEUTRAL; i++)
-	//	ao[i].active = false;
-	bar[BAR_HEART].front = false;
+	attackDelay =
+		0;
 
-	attackDelay = 0;
+	//--------------------------------------------------------
+	// 모든 생성이 끝난 뒤 활성화
+	//--------------------------------------------------------
+	gachaPrepared =
+		true;
 
-	//rewardMark[curRewardBoxIdx].y = DY;
-	//rewardMark[curRewardBoxIdx].targetY = STATUSWIN_Y;
+	//--------------------------------------------------------
+	// 확인 로그
+	//--------------------------------------------------------
+	CCLOG(
+		"GOTO GACHA: type=%d detail=%d grade=%d boxCnt=%d cardCnt=%d",
+		rewardBoxType,
+		gachaBoxDetail,
+		gachaBoxGrade,
+		boxCnt,
+		boxCardItemCnt[0]);
 
+	CCLOG(
+		"BOXMARK: frame=%d frame2=%d motionFrame=%d detail=%d grade=%d "
+		"x=%.2f y=%.2f target=(%.2f, %.2f) target2=(%.2f, %.2f) "
+		"zoom=%.3f zoom2=%.3f",
+		boxMark[0].frame,
+		boxMark[0].frame2,
+		boxMark[0].motionFrame,
+		boxMark[0].detail,
+		boxMark[0].grade,
+		boxMark[0].x,
+		boxMark[0].y,
+		boxMark[0].targetX,
+		boxMark[0].targetY,
+		boxMark[0].targetX2,
+		boxMark[0].targetY2,
+		boxMark[0].zoom,
+		boxMark[0].zoom2);
+
+	for (i = 0;
+		i < boxCardItemCnt[0];
+		i++)
+	{
+		CCLOG(
+			"CARD[%d] type=%d detail=%d grade=%d count=%d",
+			i,
+			boxCardItem[0][i].type,
+			boxCardItem[0][i].detail,
+			boxCardItem[0][i].grade,
+			boxCardItem[0][i].count);
+	}
 }
 
 void GotoNewCollection(void)
