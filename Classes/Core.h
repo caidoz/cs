@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef _CORE_H_
 #define _CORE_H_
@@ -511,8 +511,6 @@ typedef struct _charData {
 	void serialize(Archive& ar)
 	{
 		ar(
-			type,
-			mapSeenCount,
 			equip[TOTALEQUIP]
 		);
 	}

@@ -778,7 +778,7 @@ bool GenerateCastleBoxReward(
 	return boxCardItemCnt[0] > 0;
 }
 
-static int GetWeightedNormalizedReward(
+int GetWeightedNormalizedReward(
 	int minValue,
 	int maxValue)
 {
