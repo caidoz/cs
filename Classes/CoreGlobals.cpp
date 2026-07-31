@@ -989,7 +989,7 @@ int oneSkillTest = ONESKILLTEST;
 #endif
 
 float VOLUME_BGM = 0.2f;
-float VOLUME_SE = 0.25f;
+float VOLUME_SE = 0.3f;
 float VOLUME_BGM_MUTE = 0.1f;
 
 int ironFrame;

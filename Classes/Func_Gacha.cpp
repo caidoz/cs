@@ -231,40 +231,174 @@ int MakeBoxEquipType()
 	return equipType[
 		Random(6)];
 }
+//--------------------------------------------------------
+// 지정한 별 개수에 해당하는 detail 중 무작위 선택
+//
+// detailCount는 해당 itemType의 전체 종류 개수
+//--------------------------------------------------------
+static int GetRandomBoxDetailByStar(
+	int itemType,
+	int itemGrade,
+	int targetStar,
+	int detailCount)
+{
+	if (detailCount <= 0)
+	{
+		return -1;
+	}
+
+	//----------------------------------------------------
+	// detail 개수가 지나치게 커질 가능성이 없다면
+	// 프로젝트 최대 종류 수에 맞춰 고정 배열 사용
+	//----------------------------------------------------
+	int candidate[256];
+
+	int candidateCount =
+		0;
+
+	for (int detailType = 0;
+		detailType < detailCount;
+		detailType++)
+	{
+		int star =
+			GetItemStar(
+				itemType,
+				detailType,
+				itemGrade);
+
+		if (star != targetStar)
+		{
+			continue;
+		}
+
+		if (candidateCount >= 256)
+		{
+			break;
+		}
+
+		candidate[
+			candidateCount] =
+			detailType;
+
+			candidateCount++;
+	}
+
+	if (candidateCount <= 0)
+	{
+		CCLOG(
+			"GetRandomBoxDetailByStar FAILED: "
+			"type=%d grade=%d star=%d count=%d",
+			itemType,
+			itemGrade,
+			targetStar,
+			detailCount);
+
+		return -1;
+	}
+
+	return candidate[
+		Random(candidateCount)];
+}
+
+//--------------------------------------------------------
+// 아이템 타입별 실제 detail 개수
+//
+// 아래 상수명은 프로젝트에 존재하는 실제 개수 상수로
+// 반드시 교체해야 한다.
+//--------------------------------------------------------
+static int GetBoxDetailCount(
+	int itemType)
+{
+	switch (itemType)
+	{
+	case ITEM_CREW:
+		return TOTAL_CREW;
+
+	case ITEM_SWORD:
+		return TOTAL_SWORD;
+
+	case ITEM_HELM:
+		return TOTAL_HELM;
+
+	case ITEM_ARMOR:
+		return TOTAL_ARMOR;
+
+	case ITEM_GUNTLET:
+		return TOTAL_GUNTLET;
+
+	case ITEM_PANTS:
+		return TOTAL_PANTS;
+
+	case ITEM_BOOTS:
+		return TOTAL_BOOTS;
+	}
+
+	return 0;
+}
 
 void MakeBoxCrewReward(
 	int cardIndex,
 	int boxIndex)
 {
 	const REWARD_BOX_DATA* boxData =
-		&rewardBoxData[boxIndex];
+		&rewardBoxData[
+			boxIndex];
 
 	//----------------------------------------------------
 	// 해당 카드 슬롯 초기화
 	//----------------------------------------------------
 	memset(
-		&boxCardItem[0][cardIndex],
-		0,
-		sizeof(ITEM));
+		&boxCardItem[0][
+			cardIndex],
+			0,
+			sizeof(ITEM));
 
+	//----------------------------------------------------
+	// 상자 확률을 이용한 카드 등급 선택
+	//----------------------------------------------------
 	int grade =
 		RollBoxGrade(
-			boxData->crewGradeRate,
-			&robin.crewHighGradeMissCount);
+			boxData->
+			crewGradeRate,
+			&robin.
+			crewHighGradeMissCount);
+
+	//----------------------------------------------------
+	// [수정]
+	// RollBoxGrade가 0~5를 반환한다는 전제로
+	// 실제 별 개수는 1~6으로 변환
+	//----------------------------------------------------
+	int targetStar =
+		grade + 1;
 
 	int detail =
-		0;
+		-1;
 
 	int retryCount =
 		0;
 
+	int detailCount =
+		GetBoxDetailCount(
+			ITEM_CREW);
+
 	do
 	{
+		//------------------------------------------------
+		// [수정]
+		// MakeItemDetail을 사용하지 않고,
+		// 해당 별의 모든 동료 중 하나를 선택
+		//------------------------------------------------
 		detail =
-			MakeItemDetail(
+			GetRandomBoxDetailByStar(
 				ITEM_CREW,
-				robin.lv +
-				boxIndex);
+				grade,
+				targetStar,
+				detailCount);
+
+		if (detail < 0)
+		{
+			break;
+		}
 
 		retryCount++;
 
@@ -275,12 +409,37 @@ void MakeBoxCrewReward(
 			detail) &&
 		retryCount < 100);
 
+	//----------------------------------------------------
+	// 해당 등급 후보가 전혀 없는 경우 방어
+	//----------------------------------------------------
+	if (detail < 0)
+	{
+		CCLOG(
+			"MakeBoxCrewReward FAILED: "
+			"grade=%d star=%d",
+			grade,
+			targetStar);
+
+		//------------------------------------------------
+		// 최종 방어용 기존 선택
+		//------------------------------------------------
+		detail =
+			MakeItemDetail(
+				ITEM_CREW,
+				robin.lv +
+				boxIndex);
+	}
+
 	ITEM* item =
-		&boxCardItem[0][cardIndex];
+		&boxCardItem[0][
+			cardIndex];
 
 	item->type =
 		ITEM_CREW;
 
+	//----------------------------------------------------
+	// 실제 캐릭터 종류
+	//----------------------------------------------------
 	item->detail =
 		detail;
 
@@ -295,6 +454,15 @@ void MakeBoxCrewReward(
 
 	item->cooldown =
 		0;
+
+	//----------------------------------------------------
+	// 신규 여부 저장
+	//----------------------------------------------------
+	item->seen =
+		GetInvenIdx(
+			item->type,
+			item->detail,
+			item->grade) >= 0;
 }
 
 void MakeBoxEquipReward(
@@ -302,29 +470,99 @@ void MakeBoxEquipReward(
 	int boxIndex)
 {
 	const REWARD_BOX_DATA* boxData =
-		&rewardBoxData[boxIndex];
+		&rewardBoxData[
+			boxIndex];
 
 	memset(
-		&boxCardItem[0][cardIndex],
-		0,
-		sizeof(ITEM));
+		&boxCardItem[0][
+			cardIndex],
+			0,
+			sizeof(ITEM));
 
+	//----------------------------------------------------
+	// 장비 카드 등급 선택
+	//----------------------------------------------------
 	int grade =
 		RollBoxGrade(
-			boxData->equipGradeRate,
-			&robin.equipHighGradeMissCount);
+			boxData->
+			equipGradeRate,
+			&robin.
+			equipHighGradeMissCount);
+
+	//----------------------------------------------------
+	// [수정]
+	// grade가 0~5라면 실제 별은 1~6
+	//----------------------------------------------------
+	int targetStar =
+		grade + 1;
 
 	int type =
 		ITEM_SWORD;
 
 	int detail =
-		0;
+		-1;
 
 	int retryCount =
 		0;
 
 	do
 	{
+		//------------------------------------------------
+		// 장비 카테고리 선택
+		//------------------------------------------------
+		type =
+			MakeBoxEquipType();
+
+		int detailCount =
+			GetBoxDetailCount(
+				type);
+
+		//------------------------------------------------
+		// [수정]
+		// 선택된 장비 타입 안에서
+		// 해당 별의 detail을 무작위 선택
+		//------------------------------------------------
+		detail =
+			GetRandomBoxDetailByStar(
+				type,
+				grade,
+				targetStar,
+				detailCount);
+
+		retryCount++;
+
+		//------------------------------------------------
+		// 선택된 장비 타입에 해당 별 장비가 없으면
+		// 다른 장비 타입을 다시 선택
+		//------------------------------------------------
+		if (detail < 0)
+		{
+			continue;
+		}
+
+		if (IsDuplicateBoxCard(
+			cardIndex,
+			type,
+			detail) ==
+			false)
+		{
+			break;
+		}
+
+	} while (
+		retryCount < 100);
+
+	//----------------------------------------------------
+	// 선택 실패 방어
+	//----------------------------------------------------
+	if (detail < 0)
+	{
+		CCLOG(
+			"MakeBoxEquipReward FAILED: "
+			"grade=%d star=%d",
+			grade,
+			targetStar);
+
 		type =
 			MakeBoxEquipType();
 
@@ -333,22 +571,18 @@ void MakeBoxEquipReward(
 				type,
 				robin.lv +
 				boxIndex);
-
-		retryCount++;
-
-	} while (
-		IsDuplicateBoxCard(
-			cardIndex,
-			type,
-			detail) &&
-		retryCount < 100);
+	}
 
 	ITEM* item =
-		&boxCardItem[0][cardIndex];
+		&boxCardItem[0][
+			cardIndex];
 
 	item->type =
 		type;
 
+	//----------------------------------------------------
+	// 실제 무기 또는 장비 종류
+	//----------------------------------------------------
 	item->detail =
 		detail;
 
@@ -363,6 +597,12 @@ void MakeBoxEquipReward(
 
 	item->cooldown =
 		0;
+
+	item->seen =
+		GetInvenIdx(
+			item->type,
+			item->detail,
+			item->grade) >= 0;
 }
 
 void MakeBoxHeartReward(
@@ -577,6 +817,54 @@ void CheckNewBoxReward(
 				true;
 		}
 	}
+}
+
+
+int SelectCastleRewardBox(
+	int castleIndex)
+{
+	if (castleIndex < 0)
+		castleIndex = 0;
+
+	if (castleIndex >= TOTALCASTLE)
+		castleIndex = TOTALCASTLE - 1;
+
+	int totalRate = 0;
+
+	for (int i = 0;
+		i < REWARD_BOX_COUNT;
+		i++)
+	{
+		totalRate +=
+			castleRewardBoxRate
+			[castleIndex][i];
+	}
+
+	if (totalRate <= 0)
+	{
+		return BOX_REWARD0;
+	}
+
+	int roll =
+		Random(totalRate);
+
+	int sum = 0;
+
+	for (int i = 0;
+		i < REWARD_BOX_COUNT;
+		i++)
+	{
+		sum +=
+			castleRewardBoxRate
+			[castleIndex][i];
+
+		if (roll < sum)
+		{
+			return BOX_REWARD0 + i;
+		}
+	}
+
+	return BOX_REWARD0;
 }
 
 bool GenerateCastleBoxReward(
@@ -1296,814 +1584,395 @@ void GachaDraw(void)
 	//--------------------------------------------------------
 // 카드 한 장씩 공개
 //--------------------------------------------------------
-case GACHA_DEPTH_CARD:
-{
-	//----------------------------------------------------
-	// 카드 공개 연출 프레임
-	//----------------------------------------------------
-	const int CARD_RISE_FRAME =
-		8 * MOTIONDIV;
-
-	const int CARD_IMPACT_FRAME =
-		2 * MOTIONDIV;
-
-	const int CARD_RECOVER_FRAME =
-		3 * MOTIONDIV;
-
-	const int CARD_HOLD_FRAME =
-		4 * MOTIONDIV;
-
-	const int CARD_FLIP_INTERVAL =
-		2 * MOTIONDIV;
-
-	const int CARD_BACK_FRAME_COUNT =
-		7;
-
-	const int CARD_RISE_END =
-		CARD_RISE_FRAME;
-
-	const int CARD_IMPACT_END =
-		CARD_RISE_END +
-		CARD_IMPACT_FRAME;
-
-	const int CARD_RECOVER_END =
-		CARD_IMPACT_END +
-		CARD_RECOVER_FRAME;
-
-	const int CARD_HOLD_END =
-		CARD_RECOVER_END +
-		CARD_HOLD_FRAME;
-
-	const int CARD_FLIP_END =
-		CARD_HOLD_END +
-		CARD_FLIP_INTERVAL *
-		CARD_BACK_FRAME_COUNT;
-
-	const int CARD_TOUCH_DELAY =
-		FPS / 6;
-
-	//----------------------------------------------------
-	// 공개 카드 크기
-	//----------------------------------------------------
-	const float CARD_START_ZOOM =
-		0.38f;
-
-	const float CARD_FINAL_ZOOM =
-		0.95f;
-
-	const float CARD_OVERSHOOT_ZOOM =
-		1.02f;
-
-	const float CARD_PRESSED_ZOOM =
-		0.90f;
-
-	//----------------------------------------------------
-	// 하단으로 이동하는 연출
-	//----------------------------------------------------
-	const int CARD_TO_TRAY_FRAME =
-		10 * MOTIONDIV;
-
-	const float TRAY_CARD_ZOOM =
-		0.25f;
-
-	const float TRAY_GAP =
-		4.0f * _2X;
-
-	//----------------------------------------------------
-	// 공개 카드 위치
-	//----------------------------------------------------
-	const float CARD_START_OFFSET_Y =
-		120.0f * _2X;
-
-	const float CARD_END_OFFSET_Y =
-		240.0f * _2X;
-
-	const float CARD_CENTER_X =
-		boxMark[0].x;
-
-	const float CARD_START_Y =
-		boxMark[0].y +
-		CARD_START_OFFSET_Y;
-
-	const float CARD_END_Y =
-		boxMark[0].y +
-		CARD_END_OFFSET_Y;
-
-	int rewardCount =
-		boxCardItemCnt[0];
-
-	if (rewardCount >
-		GACHA_MAX_REWARD_CARD)
+	case GACHA_DEPTH_CARD:
 	{
-		rewardCount =
-			GACHA_MAX_REWARD_CARD;
-	}
-
-	//----------------------------------------------------
-	// 하단 카드 정렬 위치 계산
-	//
-	// 최대 12개를 한 줄로 정렬한다.
-	//----------------------------------------------------
-	float trayCardW =
-		240.0f *
-		TRAY_CARD_ZOOM;
-
-	float trayCardH =
-		332.0f *
-		TRAY_CARD_ZOOM;
-
-	float trayTotalW =
-		rewardCount *
-		trayCardW +
-		(rewardCount - 1) *
-		TRAY_GAP;
-
-	float trayStartX =
-		xOffset +
-		DX / 2.0f -
-		trayTotalW / 2.0f;
-
-	float trayY =
-		BOTTOMMENUHEIGHT +
-		12.0f * _2X;
-
-	//----------------------------------------------------
-	// 모든 카드의 하단 목표 위치 갱신
-	//----------------------------------------------------
-	for (i = 0;
-		i < rewardCount;
-		i++)
-	{
-		gachaRewardCardAnim[i].trayX =
-			trayStartX +
-			i *
-			(trayCardW + TRAY_GAP);
-
-		gachaRewardCardAnim[i].trayY =
-			trayY;
-
-		gachaRewardCardAnim[i].trayZoom =
-			TRAY_CARD_ZOOM;
-	}
-
-	//----------------------------------------------------
-	// 카드 번호가 변경됨
-	//
-	// 이전 카드가 선택 완료된 것이므로
-	// 현재 위치에서 하단 정렬 위치로 날려 보낸다.
-	//----------------------------------------------------
-	if (previousOpenCardIdx !=
-		gachaOpenCardIdx)
-	{
-		if (previousOpenCardIdx >= 0 &&
-			previousOpenCardIdx <
-			rewardCount)
+		//----------------------------------------------------
+		// [특수연출 수정 1]
+		// 카드 공개 특수 연출 단계
+		//----------------------------------------------------
+		enum
 		{
-			GACHA_REWARD_CARD_ANIM* anim =
-				&gachaRewardCardAnim[
-					previousOpenCardIdx];
+			GACHA_SPECIAL_NORMAL,
+			GACHA_SPECIAL_GOOD,
+			GACHA_SPECIAL_RARE,
+			GACHA_SPECIAL_JACKPOT
+		};
 
-			anim->active =
-				true;
+		//----------------------------------------------------
+		// 카드 공개 연출 프레임
+		//----------------------------------------------------
+		const int CARD_RISE_FRAME =
+			8 * MOTIONDIV;
 
-			anim->movingToTray =
-				true;
+		const int CARD_IMPACT_FRAME =
+			2 * MOTIONDIV;
 
-			anim->arrivedTray =
-				false;
+		const int CARD_RECOVER_FRAME =
+			3 * MOTIONDIV;
 
-			anim->movingToPopup =
-				false;
+		const int CARD_HOLD_FRAME =
+			4 * MOTIONDIV;
 
-			anim->arrivedPopup =
-				false;
+		const int CARD_FLIP_INTERVAL =
+			2 * MOTIONDIV;
 
-			anim->moveFrame =
-				0;
+		const int CARD_BACK_FRAME_COUNT =
+			7;
 
-			//------------------------------------------------
-			// 현재 공개 카드 위치에서 출발
-			//------------------------------------------------
-			if (manualCardMarkIdx >= 0)
-			{
-				ICONMARK* previousCard =
-					&boxCardMark[
-						manualCardMarkIdx];
+		const int CARD_RISE_END =
+			CARD_RISE_FRAME;
 
-				anim->startX =
-					previousCard->x;
+		const int CARD_IMPACT_END =
+			CARD_RISE_END +
+			CARD_IMPACT_FRAME;
 
-				anim->startY =
-					previousCard->y;
+		const int CARD_RECOVER_END =
+			CARD_IMPACT_END +
+			CARD_RECOVER_FRAME;
 
-				anim->startZoom =
-					previousCard->zoom;
+		const int CARD_HOLD_END =
+			CARD_RECOVER_END +
+			CARD_HOLD_FRAME;
 
-				memset(
-					previousCard,
-					0,
-					sizeof(ICONMARK));
+		const int CARD_FLIP_END =
+			CARD_HOLD_END +
+			CARD_FLIP_INTERVAL *
+			CARD_BACK_FRAME_COUNT;
 
-				manualCardMarkIdx =
-					-1;
-			}
-			else
-			{
-				anim->startX =
-					CARD_CENTER_X -
-					240.0f *
-					CARD_FINAL_ZOOM /
-					2.0f;
+		const int CARD_TOUCH_DELAY =
+			FPS / 6;
 
-				anim->startY =
-					CARD_END_Y;
+		//----------------------------------------------------
+		// 공개 카드 크기
+		//----------------------------------------------------
+		const float CARD_START_ZOOM =
+			0.38f;
 
-				anim->startZoom =
-					CARD_FINAL_ZOOM;
-			}
+		const float CARD_FINAL_ZOOM =
+			0.95f;
 
-			trayCardCount =
-				previousOpenCardIdx +
-				1;
+		const float CARD_OVERSHOOT_ZOOM =
+			1.02f;
 
-			PlayMusic(M_ITEM);
+		const float CARD_PRESSED_ZOOM =
+			0.90f;
+
+		//----------------------------------------------------
+		// 하단으로 이동하는 연출
+		//----------------------------------------------------
+		const int CARD_TO_TRAY_FRAME =
+			10 * MOTIONDIV;
+
+		const float TRAY_CARD_ZOOM =
+			0.25f;
+
+		const float TRAY_GAP =
+			4.0f * _2X;
+
+		//----------------------------------------------------
+		// 공개 카드 위치
+		//----------------------------------------------------
+		const float CARD_START_OFFSET_Y =
+			120.0f * _2X;
+
+		const float CARD_END_OFFSET_Y =
+			240.0f * _2X;
+
+		const float CARD_CENTER_X =
+			boxMark[0].x;
+
+		const float CARD_START_Y =
+			boxMark[0].y +
+			CARD_START_OFFSET_Y;
+
+		const float CARD_END_Y =
+			boxMark[0].y +
+			CARD_END_OFFSET_Y;
+
+		int rewardCount =
+			boxCardItemCnt[0];
+
+		if (rewardCount >
+			GACHA_MAX_REWARD_CARD)
+		{
+			rewardCount =
+				GACHA_MAX_REWARD_CARD;
 		}
 
-		previousOpenCardIdx =
-			gachaOpenCardIdx;
+		//----------------------------------------------------
+		// 하단 카드 정렬 위치 계산
+		//
+		// 최대 12개를 한 줄로 정렬한다.
+		//----------------------------------------------------
+		float trayCardW =
+			240.0f *
+			TRAY_CARD_ZOOM;
 
-		gachaCurrentCardReady =
-			false;
+		float trayCardH =
+			332.0f *
+			TRAY_CARD_ZOOM;
 
-		gachaCardCanAdvance =
-			false;
-	}
+		float trayTotalW =
+			rewardCount *
+			trayCardW +
+			(rewardCount - 1) *
+			TRAY_GAP;
 
-	//----------------------------------------------------
-	// 하단으로 이동 중인 카드와 도착한 카드 출력
-	//----------------------------------------------------
-	bool allTrayCardsArrived =
-		true;
+		float trayStartX =
+			xOffset +
+			DX / 2.0f -
+			trayTotalW / 2.0f;
 
-	for (i = 0;
-		i < trayCardCount &&
-		i < rewardCount;
-		i++)
-	{
-		GACHA_REWARD_CARD_ANIM* anim =
-			&gachaRewardCardAnim[i];
+		float trayY =
+			BOTTOMMENUHEIGHT +
+			12.0f * _2X;
 
-		if (anim->active == false)
-			continue;
-
-		float drawX =
-			anim->trayX;
-
-		float drawY =
-			anim->trayY;
-
-		float drawZoom =
-			anim->trayZoom;
-
-		if (anim->movingToTray)
+		//----------------------------------------------------
+		// 모든 카드의 하단 목표 위치 갱신
+		//----------------------------------------------------
+		for (i = 0;
+			i < rewardCount;
+			i++)
 		{
-			float progress =
-				(float)anim->moveFrame /
-				(float)CARD_TO_TRAY_FRAME;
+			gachaRewardCardAnim[i].trayX =
+				trayStartX +
+				i *
+				(trayCardW + TRAY_GAP);
 
-			progress =
-				GachaClamp01(progress);
+			gachaRewardCardAnim[i].trayY =
+				trayY;
 
-			float moveCurve =
-				GachaEaseInOutCubic(
-					progress);
+			gachaRewardCardAnim[i].trayZoom =
+				TRAY_CARD_ZOOM;
+		}
 
-			float zoomCurve =
-				GachaEaseOutCubic(
-					progress);
-
-			drawX =
-				GachaLerp(
-					anim->startX,
-					anim->trayX,
-					moveCurve);
-
-			//------------------------------------------------
-			// 직선 이동보다 약간 위로 솟는 곡선
-			//------------------------------------------------
-			float linearY =
-				GachaLerp(
-					anim->startY,
-					anim->trayY,
-					moveCurve);
-
-			float arcY =
-				sinf(
-					progress *
-					3.141592f) *
-				32.0f *
-				_2X;
-
-			drawY =
-				linearY +
-				arcY;
-
-			drawZoom =
-				GachaLerp(
-					anim->startZoom,
-					anim->trayZoom,
-					zoomCurve);
-
-			anim->moveFrame++;
-
-			if (anim->moveFrame >=
-				CARD_TO_TRAY_FRAME)
+		//----------------------------------------------------
+		// 카드 번호가 변경됨
+		//
+		// 이전 카드가 선택 완료된 것이므로
+		// 현재 위치에서 하단 정렬 위치로 날려 보낸다.
+		//----------------------------------------------------
+		if (previousOpenCardIdx !=
+			gachaOpenCardIdx)
+		{
+			if (previousOpenCardIdx >= 0 &&
+				previousOpenCardIdx <
+				rewardCount)
 			{
+				GACHA_REWARD_CARD_ANIM* anim =
+					&gachaRewardCardAnim[
+						previousOpenCardIdx];
+
+				anim->active =
+					true;
+
 				anim->movingToTray =
-					false;
+					true;
 
 				anim->arrivedTray =
-					true;
+					false;
+
+				anim->movingToPopup =
+					false;
+
+				anim->arrivedPopup =
+					false;
 
 				anim->moveFrame =
 					0;
 
+				//------------------------------------------------
+				// 현재 공개 카드 위치에서 출발
+				//------------------------------------------------
+				if (manualCardMarkIdx >= 0)
+				{
+					ICONMARK* previousCard =
+						&boxCardMark[
+							manualCardMarkIdx];
+
+					anim->startX =
+						previousCard->x;
+
+					anim->startY =
+						previousCard->y;
+
+					anim->startZoom =
+						previousCard->zoom;
+
+					memset(
+						previousCard,
+						0,
+						sizeof(ICONMARK));
+
+					manualCardMarkIdx =
+						-1;
+				}
+				else
+				{
+					anim->startX =
+						CARD_CENTER_X -
+						240.0f *
+						CARD_FINAL_ZOOM /
+						2.0f;
+
+					anim->startY =
+						CARD_END_Y;
+
+					anim->startZoom =
+						CARD_FINAL_ZOOM;
+				}
+
+				trayCardCount =
+					previousOpenCardIdx +
+					1;
+
+				PlayMusic(M_ITEM);
+			}
+
+			previousOpenCardIdx =
+				gachaOpenCardIdx;
+
+			gachaCurrentCardReady =
+				false;
+
+			gachaCardCanAdvance =
+				false;
+		}
+
+		//----------------------------------------------------
+		// 하단으로 이동 중인 카드와 도착한 카드 출력
+		//----------------------------------------------------
+		bool allTrayCardsArrived =
+			true;
+
+		for (i = 0;
+			i < trayCardCount &&
+			i < rewardCount;
+			i++)
+		{
+			GACHA_REWARD_CARD_ANIM* anim =
+				&gachaRewardCardAnim[i];
+
+			if (anim->active == false)
+				continue;
+
+			float drawX =
+				anim->trayX;
+
+			float drawY =
+				anim->trayY;
+
+			float drawZoom =
+				anim->trayZoom;
+
+			if (anim->movingToTray)
+			{
+				float progress =
+					(float)anim->moveFrame /
+					(float)CARD_TO_TRAY_FRAME;
+
+				progress =
+					GachaClamp01(progress);
+
+				float moveCurve =
+					GachaEaseInOutCubic(
+						progress);
+
+				float zoomCurve =
+					GachaEaseOutCubic(
+						progress);
+
 				drawX =
-					anim->trayX;
+					GachaLerp(
+						anim->startX,
+						anim->trayX,
+						moveCurve);
+
+				//------------------------------------------------
+				// 직선 이동보다 약간 위로 솟는 곡선
+				//------------------------------------------------
+				float linearY =
+					GachaLerp(
+						anim->startY,
+						anim->trayY,
+						moveCurve);
+
+				float arcY =
+					sinf(
+						progress *
+						3.141592f) *
+					32.0f *
+					_2X;
 
 				drawY =
-					anim->trayY;
+					linearY +
+					arcY;
 
 				drawZoom =
-					anim->trayZoom;
+					GachaLerp(
+						anim->startZoom,
+						anim->trayZoom,
+						zoomCurve);
+
+				anim->moveFrame++;
+
+				if (anim->moveFrame >=
+					CARD_TO_TRAY_FRAME)
+				{
+					anim->movingToTray =
+						false;
+
+					anim->arrivedTray =
+						true;
+
+					anim->moveFrame =
+						0;
+
+					drawX =
+						anim->trayX;
+
+					drawY =
+						anim->trayY;
+
+					drawZoom =
+						anim->trayZoom;
+				}
 			}
-		}
 
-		if (anim->arrivedTray == false)
-		{
-			allTrayCardsArrived =
-				false;
-		}
+			if (anim->arrivedTray == false)
+			{
+				allTrayCardsArrived =
+					false;
+			}
 
-		ITEM* trayItem =
-			&boxCardItem[0][i];
+			ITEM* trayItem =
+				&boxCardItem[0][i];
 
-		DrawItemCard(
-			trayItem->type,
-			trayItem->detail,
-			trayItem->grade,
-			trayItem->lv,
-			false,
-			(int)drawX,
-			(int)drawY,
-			false,
-			drawZoom,
-			false,
-			0,
-			0,
-			true,
-			0,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-	}
-
-	//----------------------------------------------------
-	// 아직 첫 카드를 뽑기 전
-	//----------------------------------------------------
-	if (gachaOpenCardIdx < 0)
-	{
-		SetAlpha(
-			32 -
-			Abs(
-				frame /
-				MOTIONDIV %
-				32 -
-				16));
-
-		DrawGoldAlpha(
-			xOffset + DX / 2,
-			BOTTOMMENUHEIGHT,
-			ALPHA_TABTOCOLLECT,
-			FONT_GOLD_LARGE,
-			1,
-			CENTER,
-			false,
-			false,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-
-		SetAlpha(32);
-
-		gachaCardCanAdvance =
-			true;
-
-		SetRectPoint(
-			0,
-			DY,
-			DX,
-			DY,
-			TOUCH_FUNC_GETGACHACARD);
-
-		break;
-	}
-
-	//----------------------------------------------------
-	// 모든 카드 선택 완료
-	//----------------------------------------------------
-	if (gachaOpenCardIdx >=
-		rewardCount)
-	{
-		waitingForTrayComplete =
-			true;
-
-		gachaCurrentCardReady =
-			false;
-
-		gachaCardCanAdvance =
-			false;
-
-		//------------------------------------------------
-		// 마지막 카드까지 하단에 도착하면 요약 화면
-		//------------------------------------------------
-		if (waitingForTrayComplete &&
-			trayCardCount >= rewardCount &&
-			allTrayCardsArrived)
-		{
-			waitingForTrayComplete =
-				false;
-
-			gachaDepth =
-				GACHA_DEPTH_SUMMARY;
-
-			summaryFrame =
-				0;
-
-			previousGachaDepth =
-				GACHA_DEPTH_CARD;
-		}
-
-		break;
-	}
-
-	ITEM* item =
-		&boxCardItem[0][
-			gachaOpenCardIdx];
-
-	//----------------------------------------------------
-// 현재 공개 카드 생성
-//----------------------------------------------------
-	if (gachaCurrentCardReady == false)
-	{
-		float startCenterX =
-			CARD_CENTER_X;
-
-		float startCenterY =
-			CARD_START_Y;
-
-		int markIdx =
-			SetBoxCardMark(
-				startCenterX,
-				startCenterY,
-
-				CARD_CENTER_X,
-				CARD_END_Y,
-
-				0,
-				0,
-
-				0,
-				0,
-
-				0,
-				0,
-
-				FPS,
-				FPS,
-
-				GetItemIcon(
-					item->type,
-					item->detail,
-					item->grade),
-
-				0,
-
-				item->count,
-				item->type,
-				item->detail,
-				item->grade,
-				item->cooldown,
-
+			DrawItemCard(
+				trayItem->type,
+				trayItem->detail,
+				trayItem->grade,
+				trayItem->lv,
 				false,
-				true,
-				true,
-
-				PLAYER,
-
-				1,
-
-				CARD_START_ZOOM,
-				CARD_FINAL_ZOOM,
-				0.0f,
-
-				CARD_FINAL_ZOOM,
-				CARD_FINAL_ZOOM,
-				0.0f,
-
+				(int)drawX,
+				(int)drawY,
 				false,
-
-				item->seen == false);
-
-		if (markIdx >= 0)
-		{
-			ICONMARK* card =
-				&boxCardMark[
-					markIdx];
-
-			manualCardMarkIdx =
-				markIdx;
-
-			card->manual =
-				true;
-
-			card->frame =
-				1;
-
-			card->frame2 =
-				0;
-
-			card->motionFrame =
-				0;
-
-			card->openFrame =
-				1;
-
-			card->x =
-				startCenterX;
-
-			card->y =
-				startCenterY;
-
-			card->targetX =
-				CARD_CENTER_X;
-
-			card->targetY =
-				CARD_END_Y;
-
-			card->targetX2 =
-				0.0f;
-
-			card->targetY2 =
-				0.0f;
-
-			card->zoom =
-				CARD_START_ZOOM;
-
-			card->zoom2 =
-				CARD_START_ZOOM;
-
-			card->zoomEnd =
-				CARD_FINAL_ZOOM;
-
-			card->zoomEnd2 =
-				CARD_FINAL_ZOOM;
-
-			card->zoomIncrement =
-				0.0f;
-
-			card->zoomIncrement2 =
-				0.0f;
-
-			card->speed =
-				0.0f;
-
-			card->speed2 =
-				0.0f;
-
-			card->speedIncrement =
-				0.0f;
-
-			card->speedIncrement2 =
-				0.0f;
-
-			gachaCurrentCardReady =
-				true;
-
-			gachaCardCanAdvance =
-				false;
-
-			PlayMusic(M_ITEM);
-		}
-		else
-		{
-			gachaCurrentCardReady =
-				false;
-
-			manualCardMarkIdx =
-				-1;
-
-			CCLOG(
-				"SetBoxCardMark FAILED: openCardIdx=%d",
-				gachaOpenCardIdx);
-		}
-	}
-	//----------------------------------------------------
-	// 현재 카드 수동 공개 애니메이션
-	//----------------------------------------------------
-	if (manualCardMarkIdx >= 0)
-	{
-		ICONMARK* card =
-			&boxCardMark[
-				manualCardMarkIdx];
-
-		int cardAnimFrame =
-			card->motionFrame;
-
-		float drawCenterX =
-			CARD_CENTER_X;
-
-		float drawCenterY =
-			CARD_END_Y;
-
-		float drawZoom =
-			CARD_FINAL_ZOOM;
-
-		float progress =
-			0.0f;
-
-		float curve =
-			0.0f;
-
-		if (cardAnimFrame <
-			CARD_RISE_END)
-		{
-			progress =
-				(float)cardAnimFrame /
-				(float)CARD_RISE_FRAME;
-
-			progress =
-				GachaClamp01(
-					progress);
-
-			curve =
-				GachaEaseOutCubic(
-					progress);
-
-			drawCenterY =
-				CARD_START_Y +
-				(CARD_END_Y -
-					CARD_START_Y) *
-				curve;
-
-			drawZoom =
-				CARD_START_ZOOM +
-				(CARD_OVERSHOOT_ZOOM -
-					CARD_START_ZOOM) *
-				curve;
-
-			card->openFrame =
-				1;
-		}
-		else if (cardAnimFrame <
-			CARD_IMPACT_END)
-		{
-			progress =
-				(float)(
-					cardAnimFrame -
-					CARD_RISE_END) /
-				(float)CARD_IMPACT_FRAME;
-
-			progress =
-				GachaClamp01(
-					progress);
-
-			drawZoom =
-				CARD_OVERSHOOT_ZOOM +
-				(CARD_PRESSED_ZOOM -
-					CARD_OVERSHOOT_ZOOM) *
-				progress;
-
-			card->openFrame =
-				1;
-		}
-		else if (cardAnimFrame <
-			CARD_RECOVER_END)
-		{
-			progress =
-				(float)(
-					cardAnimFrame -
-					CARD_IMPACT_END) /
-				(float)CARD_RECOVER_FRAME;
-
-			progress =
-				GachaClamp01(
-					progress);
-
-			curve =
-				1.0f -
-				(1.0f - progress) *
-				(1.0f - progress);
-
-			drawZoom =
-				CARD_PRESSED_ZOOM +
-				(CARD_FINAL_ZOOM -
-					CARD_PRESSED_ZOOM) *
-				curve;
-
-			card->openFrame =
-				1;
-		}
-		else if (cardAnimFrame <
-			CARD_HOLD_END)
-		{
-			card->openFrame =
-				1;
-		}
-		else if (cardAnimFrame <
-			CARD_FLIP_END)
-		{
-			int flipElapsed =
-				cardAnimFrame -
-				CARD_HOLD_END;
-
-			int backFrame =
-				flipElapsed /
-				CARD_FLIP_INTERVAL +
-				1;
-
-			if (backFrame < 1)
-			{
-				backFrame =
-					1;
-			}
-
-			if (backFrame ==
-				CARD_BACK_FRAME_COUNT - 1 &&
-				flipElapsed %
-				CARD_FLIP_INTERVAL ==
-				0)
-			{
-				PlayMusic(
-					M_CARDSPLIT);
-			}
-
-			if (backFrame >
-				CARD_BACK_FRAME_COUNT)
-			{
-				backFrame =
-					CARD_BACK_FRAME_COUNT;
-			}
-
-			card->openFrame =
-				backFrame;
-		}
-		else
-		{
-			card->openFrame =
-				0;
+				drawZoom,
+				false,
+				0,
+				0,
+				true,
+				0,
+				gScreenBuffer,
+				gScreenLayer,
+				false);
 		}
 
-		card->x =
-			drawCenterX;
-
-		card->y =
-			drawCenterY;
-
-		card->zoom =
-			drawZoom;
-
-		card->zoom2 =
-			drawZoom;
-
-		card->manual =
-			true;
-
-		card->frame =
-			1;
-
-		card->frame2 =
-			0;
-
-		card->motionFrame++;
-	}
-
-	//----------------------------------------------------
-	// 앞면 공개 완료 후 다음 카드 허용
-	//----------------------------------------------------
-	if (manualCardMarkIdx >= 0)
-	{
-		ICONMARK* card =
-			&boxCardMark[
-				manualCardMarkIdx];
-
-		if (card->motionFrame >
-			CARD_FLIP_END +
-			CARD_TOUCH_DELAY)
+		//----------------------------------------------------
+		// 아직 첫 카드를 뽑기 전
+		//----------------------------------------------------
+		if (gachaOpenCardIdx < 0)
 		{
-			gachaCardCanAdvance =
-				true;
-
 			SetAlpha(
 				32 -
 				Abs(
@@ -2127,815 +1996,848 @@ case GACHA_DEPTH_CARD:
 
 			SetAlpha(32);
 
+			gachaCardCanAdvance =
+				true;
+
 			SetRectPoint(
 				0,
 				DY,
 				DX,
 				DY,
 				TOUCH_FUNC_GETGACHACARD);
-		}
-	}
 
-	break;
-}
+			break;
+		}
+
+		//----------------------------------------------------
+		// 모든 카드 선택 완료
+		//----------------------------------------------------
+		if (gachaOpenCardIdx >=
+			rewardCount)
+		{
+			waitingForTrayComplete =
+				true;
+
+			gachaCurrentCardReady =
+				false;
+
+			gachaCardCanAdvance =
+				false;
+
+			//------------------------------------------------
+			// 마지막 카드까지 하단에 도착하면 요약 화면
+			//------------------------------------------------
+			if (waitingForTrayComplete &&
+				trayCardCount >= rewardCount &&
+				allTrayCardsArrived)
+			{
+				waitingForTrayComplete =
+					false;
+
+				gachaDepth =
+					GACHA_DEPTH_SUMMARY;
+
+				summaryFrame =
+					0;
+
+				previousGachaDepth =
+					GACHA_DEPTH_CARD;
+			}
+
+			break;
+		}
+
+		ITEM* item =
+			&boxCardItem[0][
+				gachaOpenCardIdx];
+
+		//----------------------------------------------------
+		// [특수연출 수정 2]
+		// 현재 보상의 신규 / 별 / 대박 재화 판정
+		//----------------------------------------------------
+		bool isCrew =
+			item->type ==
+			ITEM_CREW;
+
+		bool isHeart =
+			item->type ==
+			ITEM_HEART;
+
+		bool isGold =
+			item->type ==
+			ITEM_GOLD;
+
+		//----------------------------------------------------
+		// 기존 코드의 장비 분류 기준을 그대로 사용한다.
+		//----------------------------------------------------
+		bool isEquip =
+			item->type != ITEM_CREW &&
+			item->type != ITEM_HEART &&
+			item->type != ITEM_GOLD &&
+			item->type != ITEM_STAR &&
+			item->type < ITEM_NETITEM;
+
+		bool isStarCard =
+			isCrew ||
+			isEquip;
+
+		//----------------------------------------------------
+		// 동료 / 장비만 GetItemStar를 호출한다.
+		// 반환값: 1 ~ 6성
+		//----------------------------------------------------
+		int itemStar =
+			0;
+
+		if (isStarCard)
+		{
+			itemStar =
+				GetItemStar(
+					item->type,
+					item->detail,
+					item->grade);
+		}
+
+		//----------------------------------------------------
+		// 신규 카드는 인벤토리에 같은 카드가 없을 때이다.
+		//----------------------------------------------------
+		bool isNewCard =
+			false;
+
+		if (isStarCard)
+		{
+			isNewCard =
+				GetInvenIdx(
+					item->type,
+					item->detail,
+					item->grade) < 0;
+
+			//------------------------------------------------
+			// 같은 상자 안에 동일 신규 카드가 여러 장이면
+			// 첫 번째 카드에만 NEW 연출을 적용한다.
+			//------------------------------------------------
+			if (isNewCard)
+			{
+				for (int checkIdx = 0;
+					checkIdx < gachaOpenCardIdx;
+					checkIdx++)
+				{
+					ITEM* previousItem =
+						&boxCardItem[0][
+							checkIdx];
+
+					if (previousItem->type ==
+						item->type &&
+						previousItem->detail ==
+						item->detail &&
+						previousItem->grade ==
+						item->grade)
+					{
+						isNewCard =
+							false;
+
+						break;
+					}
+				}
+			}
+		}
+
+		bool isHighGrade =
+			isStarCard &&
+			itemStar >= 4;
+
+		bool isVeryHighGrade =
+			isStarCard &&
+			itemStar >= 5;
+
+		bool isMaxGrade =
+			isStarCard &&
+			itemStar >= 6;
+
+		//----------------------------------------------------
+		// 재화는 별이 없으므로 획득량으로 판정한다.
+		//
+		// 현재 전체 상자 최대값 기준:
+		// 하트 800 이상 강조, 950 이상 대박
+		// 골드 800,000 이상 강조, 950,000 이상 대박
+		//----------------------------------------------------
+		bool isBigResource =
+			(isHeart &&
+				item->count >= 800) ||
+			(isGold &&
+				item->count >= 800000);
+
+		bool isJackpotResource =
+			(isHeart &&
+				item->count >= 950) ||
+			(isGold &&
+				item->count >= 950000);
+
+		int specialLevel =
+			GACHA_SPECIAL_NORMAL;
+
+		//----------------------------------------------------
+		// 여러 조건이 겹치면 가장 높은 연출 하나만 사용한다.
+		//----------------------------------------------------
+		if (isJackpotResource ||
+			isMaxGrade ||
+			(isNewCard &&
+				isVeryHighGrade) ||
+			isVeryHighGrade ||
+			(isNewCard &&
+				isHighGrade))
+		{
+			specialLevel =
+				GACHA_SPECIAL_JACKPOT;
+		}
+		else if (isNewCard ||
+			isHighGrade)
+		{
+			specialLevel =
+				GACHA_SPECIAL_RARE;
+		}
+		else if (isBigResource)
+		{
+			specialLevel =
+				GACHA_SPECIAL_GOOD;
+		}
+
+		int specialHoldFrame =
+			0;
+
+		switch (specialLevel)
+		{
+		case GACHA_SPECIAL_GOOD:
+			specialHoldFrame =
+				FPS * 20 / 30;
+			break;
+
+		case GACHA_SPECIAL_RARE:
+			specialHoldFrame =
+				FPS;
+			break;
+
+		case GACHA_SPECIAL_JACKPOT:
+			specialHoldFrame =
+				FPS * 3 / 2;
+			break;
+		}
+
+		//----------------------------------------------------
+	// 현재 공개 카드 생성
+	//----------------------------------------------------
+		if (gachaCurrentCardReady == false)
+		{
+			float startCenterX =
+				CARD_CENTER_X;
+
+			float startCenterY =
+				CARD_START_Y;
+
+			int markIdx =
+				SetBoxCardMark(
+					startCenterX,
+					startCenterY,
+
+					CARD_CENTER_X,
+					CARD_END_Y,
+
+					0,
+					0,
+
+					0,
+					0,
+
+					0,
+					0,
+
+					FPS,
+					FPS,
+
+					GetItemIcon(
+						item->type,
+						item->detail,
+						item->grade),
+
+					0,
+
+					item->count,
+					item->type,
+					item->detail,
+					item->grade,
+					item->cooldown,
+
+					false,
+					true,
+					true,
+
+					PLAYER,
+
+					1,
+
+					CARD_START_ZOOM,
+					CARD_FINAL_ZOOM,
+					0.0f,
+
+					CARD_FINAL_ZOOM,
+					CARD_FINAL_ZOOM,
+					0.0f,
+
+					false,
+
+					item->seen == false);
+
+			if (markIdx >= 0)
+			{
+				ICONMARK* card =
+					&boxCardMark[
+						markIdx];
+
+				manualCardMarkIdx =
+					markIdx;
+
+				card->manual =
+					true;
+
+				card->frame =
+					1;
+
+				card->frame2 =
+					0;
+
+				card->motionFrame =
+					0;
+
+				card->openFrame =
+					1;
+
+				card->x =
+					startCenterX;
+
+				card->y =
+					startCenterY;
+
+				card->targetX =
+					CARD_CENTER_X;
+
+				card->targetY =
+					CARD_END_Y;
+
+				card->targetX2 =
+					0.0f;
+
+				card->targetY2 =
+					0.0f;
+
+				card->zoom =
+					CARD_START_ZOOM;
+
+				card->zoom2 =
+					CARD_START_ZOOM;
+
+				card->zoomEnd =
+					CARD_FINAL_ZOOM;
+
+				card->zoomEnd2 =
+					CARD_FINAL_ZOOM;
+
+				card->zoomIncrement =
+					0.0f;
+
+				card->zoomIncrement2 =
+					0.0f;
+
+				card->speed =
+					0.0f;
+
+				card->speed2 =
+					0.0f;
+
+				card->speedIncrement =
+					0.0f;
+
+				card->speedIncrement2 =
+					0.0f;
+
+				gachaCurrentCardReady =
+					true;
+
+				gachaCardCanAdvance =
+					false;
+
+				PlayMusic(M_ITEM);
+			}
+			else
+			{
+				gachaCurrentCardReady =
+					false;
+
+				manualCardMarkIdx =
+					-1;
+
+				CCLOG(
+					"SetBoxCardMark FAILED: openCardIdx=%d",
+					gachaOpenCardIdx);
+			}
+		}
+		//----------------------------------------------------
+		// 현재 카드 수동 공개 애니메이션
+		//----------------------------------------------------
+		if (manualCardMarkIdx >= 0)
+		{
+			ICONMARK* card =
+				&boxCardMark[
+					manualCardMarkIdx];
+
+			int cardAnimFrame =
+				card->motionFrame;
+
+			float drawCenterX =
+				CARD_CENTER_X;
+
+			float drawCenterY =
+				CARD_END_Y;
+
+			float drawZoom =
+				CARD_FINAL_ZOOM;
+
+			float progress =
+				0.0f;
+
+			float curve =
+				0.0f;
+
+			if (cardAnimFrame <
+				CARD_RISE_END)
+			{
+				progress =
+					(float)cardAnimFrame /
+					(float)CARD_RISE_FRAME;
+
+				progress =
+					GachaClamp01(
+						progress);
+
+				curve =
+					GachaEaseOutCubic(
+						progress);
+
+				drawCenterY =
+					CARD_START_Y +
+					(CARD_END_Y -
+						CARD_START_Y) *
+					curve;
+
+				drawZoom =
+					CARD_START_ZOOM +
+					(CARD_OVERSHOOT_ZOOM -
+						CARD_START_ZOOM) *
+					curve;
+
+				card->openFrame =
+					1;
+			}
+			else if (cardAnimFrame <
+				CARD_IMPACT_END)
+			{
+				progress =
+					(float)(
+						cardAnimFrame -
+						CARD_RISE_END) /
+					(float)CARD_IMPACT_FRAME;
+
+				progress =
+					GachaClamp01(
+						progress);
+
+				drawZoom =
+					CARD_OVERSHOOT_ZOOM +
+					(CARD_PRESSED_ZOOM -
+						CARD_OVERSHOOT_ZOOM) *
+					progress;
+
+				card->openFrame =
+					1;
+			}
+			else if (cardAnimFrame <
+				CARD_RECOVER_END)
+			{
+				progress =
+					(float)(
+						cardAnimFrame -
+						CARD_IMPACT_END) /
+					(float)CARD_RECOVER_FRAME;
+
+				progress =
+					GachaClamp01(
+						progress);
+
+				curve =
+					1.0f -
+					(1.0f - progress) *
+					(1.0f - progress);
+
+				drawZoom =
+					CARD_PRESSED_ZOOM +
+					(CARD_FINAL_ZOOM -
+						CARD_PRESSED_ZOOM) *
+					curve;
+
+				card->openFrame =
+					1;
+			}
+			else if (cardAnimFrame <
+				CARD_HOLD_END)
+			{
+				card->openFrame =
+					1;
+			}
+			else if (cardAnimFrame <
+				CARD_FLIP_END)
+			{
+				int flipElapsed =
+					cardAnimFrame -
+					CARD_HOLD_END;
+
+				int backFrame =
+					flipElapsed /
+					CARD_FLIP_INTERVAL +
+					1;
+
+				if (backFrame < 1)
+				{
+					backFrame =
+						1;
+				}
+
+				if (backFrame ==
+					CARD_BACK_FRAME_COUNT - 1 &&
+					flipElapsed %
+					CARD_FLIP_INTERVAL ==
+					0)
+				{
+					PlayMusic(
+						M_CARDSPLIT);
+				}
+
+				if (backFrame >
+					CARD_BACK_FRAME_COUNT)
+				{
+					backFrame =
+						CARD_BACK_FRAME_COUNT;
+				}
+
+				card->openFrame =
+					backFrame;
+			}
+			else
+			{
+				card->openFrame =
+					0;
+
+				//------------------------------------------------
+				// [특수연출 수정 3]
+				// 앞면 공개 직후 특수 보상은 잠시 정지하면서
+				// 카드가 한 번 팝업되도록 한다.
+				//------------------------------------------------
+				int specialElapsed =
+					cardAnimFrame -
+					CARD_FLIP_END;
+
+				if (specialLevel !=
+					GACHA_SPECIAL_NORMAL &&
+					specialElapsed >= 0 &&
+					specialElapsed <
+					specialHoldFrame)
+				{
+					float specialProgress =
+						(float)specialElapsed /
+						(float)specialHoldFrame;
+
+					specialProgress =
+						GachaClamp01(
+							specialProgress);
+
+					float popPower =
+						0.04f;
+
+					if (specialLevel ==
+						GACHA_SPECIAL_RARE)
+					{
+						popPower =
+							0.07f;
+					}
+					else if (specialLevel ==
+						GACHA_SPECIAL_JACKPOT)
+					{
+						popPower =
+							0.11f;
+					}
+
+					drawZoom =
+						CARD_FINAL_ZOOM *
+						(1.0f +
+							sinf(
+								specialProgress *
+								3.141592f) *
+							popPower);
+
+					//------------------------------------------------
+					// 특수 연출 시작 효과음은 한 번만 재생
+					//------------------------------------------------
+					if (specialElapsed == 0)
+					{
+						if (specialLevel ==
+							GACHA_SPECIAL_JACKPOT)
+						{
+							PlayMusic(
+								M_KUNG);
+
+							PlayMusic(
+								M_CARDSPLIT);
+						}
+						else
+						{
+							PlayMusic(
+								M_ITEM);
+						}
+					}
+				}
+			}
+
+			card->x =
+				drawCenterX;
+
+			card->y =
+				drawCenterY;
+
+			card->zoom =
+				drawZoom;
+
+			card->zoom2 =
+				drawZoom;
+
+			card->manual =
+				true;
+
+			card->frame =
+				1;
+
+			card->frame2 =
+				0;
+
+			card->motionFrame++;
+		}
+
+		//----------------------------------------------------
+		// 앞면 공개 완료 후 다음 카드 허용
+		//----------------------------------------------------
+		if (manualCardMarkIdx >= 0)
+		{
+			ICONMARK* card =
+				&boxCardMark[
+					manualCardMarkIdx];
+
+			//------------------------------------------------
+			// [특수연출 수정 4]
+			// 특수 연출이 끝난 뒤에만 다음 카드 터치를 허용
+			//------------------------------------------------
+			if (card->motionFrame >
+				CARD_FLIP_END +
+				specialHoldFrame +
+				CARD_TOUCH_DELAY)
+			{
+				gachaCardCanAdvance =
+					true;
+
+				SetAlpha(
+					32 -
+					Abs(
+						frame /
+						MOTIONDIV %
+						32 -
+						16));
+
+				DrawGoldAlpha(
+					xOffset + DX / 2,
+					BOTTOMMENUHEIGHT,
+					ALPHA_TABTOCOLLECT,
+					FONT_GOLD_LARGE,
+					1,
+					CENTER,
+					false,
+					false,
+					gScreenBuffer,
+					gScreenLayer,
+					false);
+
+				SetAlpha(32);
+
+				SetRectPoint(
+					0,
+					DY,
+					DX,
+					DY,
+					TOUCH_FUNC_GETGACHACARD);
+			}
+		}
+
+		break;
+	}
 
 	//--------------------------------------------------------
 // 모든 보상 요약 화면
 //--------------------------------------------------------
-case GACHA_DEPTH_SUMMARY:
-{
-	//----------------------------------------------------
-	// MENU_IMG 창
-	//----------------------------------------------------
-	const int PANEL_SRC_X =
-		0;
-
-	const int PANEL_SRC_Y =
-		606;
-
-	const int PANEL_SRC_W =
-		400;
-
-	const int PANEL_SRC_H =
-		409;
-
-	//----------------------------------------------------
-	// MENU_IMG 확인 버튼
-	//----------------------------------------------------
-	const int BTN_SRC_X =
-		401;
-
-	const int BTN_SRC_Y =
-		606;
-
-	const int BTN_SRC_W =
-		216;
-
-	const int BTN_SRC_H =
-		68;
-
-	//----------------------------------------------------
-	// 연출 프레임
-	//----------------------------------------------------
-	const int SUMMARY_ENTER_FRAME =
-		14 * MOTIONDIV;
-
-	const int SUMMARY_CARD_FRAME =
-		16 * MOTIONDIV;
-
-	const int SUMMARY_BUTTON_DELAY =
-		4 * MOTIONDIV;
-
-	const float PANEL_FINAL_ZOOM =
-		1.5f;
-
-	const float PANEL_START_ZOOM =
-		0.20f;
-
-	int rewardCount =
-		boxCardItemCnt[0];
-
-	if (rewardCount >
-		GACHA_MAX_REWARD_CARD)
+	case GACHA_DEPTH_SUMMARY:
 	{
-		rewardCount =
-			GACHA_MAX_REWARD_CARD;
-	}
+		//----------------------------------------------------
+		// MENU_IMG 창
+		//----------------------------------------------------
+		const int PANEL_SRC_X =
+			0;
 
-	//----------------------------------------------------
-	// 요약 화면 최초 진입
-	//----------------------------------------------------
-	if (summaryFrame == 0)
-	{
-		manualCardMarkIdx =
-			-1;
+		const int PANEL_SRC_Y =
+			606;
 
-		gachaCurrentCardReady =
-			false;
+		const int PANEL_SRC_W =
+			400;
 
-		gachaCardCanAdvance =
-			false;
+		const int PANEL_SRC_H =
+			409;
 
-		gachaConfirmReady =
-			false;
+		//----------------------------------------------------
+		// MENU_IMG 확인 버튼
+		//----------------------------------------------------
+		const int BTN_SRC_X =
+			401;
 
-		memset(
-			boxCardMark,
-			0,
-			sizeof(boxCardMark));
+		const int BTN_SRC_Y =
+			606;
 
-		for (i = 0;
-			i < rewardCount;
-			i++)
+		const int BTN_SRC_W =
+			216;
+
+		const int BTN_SRC_H =
+			68;
+
+		//----------------------------------------------------
+		// 연출 프레임
+		//----------------------------------------------------
+		const int SUMMARY_ENTER_FRAME =
+			14 * MOTIONDIV;
+
+		const int SUMMARY_CARD_FRAME =
+			16 * MOTIONDIV;
+
+		const int SUMMARY_BUTTON_DELAY =
+			4 * MOTIONDIV;
+
+		const float PANEL_FINAL_ZOOM =
+			1.5f;
+
+		const float PANEL_START_ZOOM =
+			0.20f;
+
+		int rewardCount =
+			boxCardItemCnt[0];
+
+		if (rewardCount >
+			GACHA_MAX_REWARD_CARD)
 		{
-			gachaRewardCardAnim[i].
-				movingToPopup =
-				true;
-
-			gachaRewardCardAnim[i].
-				arrivedPopup =
-				false;
-
-			gachaRewardCardAnim[i].
-				moveFrame =
-				0;
+			rewardCount =
+				GACHA_MAX_REWARD_CARD;
 		}
 
-		PlayMusic(M_CARDSPLIT);
-	}
-
-	//----------------------------------------------------
-	// 팝업 확대율
-	//----------------------------------------------------
-	float panelProgress =
-		(float)summaryFrame /
-		(float)SUMMARY_ENTER_FRAME;
-
-	panelProgress =
-		GachaClamp01(
-			panelProgress);
-
-	float panelCurve =
-		GachaEaseOutCubic(
-			panelProgress);
-
-	//----------------------------------------------------
-	// 처음 약간 크게 넘어갔다가 복원
-	//----------------------------------------------------
-	float panelZoom;
-
-	if (panelProgress < 0.75f)
-	{
-		float firstProgress =
-			panelProgress /
-			0.75f;
-
-		panelZoom =
-			GachaLerp(
-				PANEL_START_ZOOM,
-				PANEL_FINAL_ZOOM *
-				1.05f,
-				GachaEaseOutCubic(
-					firstProgress));
-	}
-	else
-	{
-		float recoverProgress =
-			(panelProgress -
-				0.75f) /
-			0.25f;
-
-		panelZoom =
-			GachaLerp(
-				PANEL_FINAL_ZOOM *
-				1.05f,
-				PANEL_FINAL_ZOOM,
-				recoverProgress);
-	}
-
-	float panelDisplayW =
-		PANEL_SRC_W *
-		panelZoom;
-
-	float panelDisplayH =
-		PANEL_SRC_H *
-		panelZoom;
-
-	float panelCX =
-		xOffset +
-		DX / 2.0f;
-
-	float panelCY =
-		DY / 2.0f;
-
-	//----------------------------------------------------
-	// 상자가 아래로 빠지는 연출
-	//----------------------------------------------------
-	float boxExitProgress =
-		GachaEaseInOutCubic(
-			panelProgress);
-
-	float boxExitY =
-		GachaLerp(
-			BOTTOMMENUHEIGHT +
-			32.0f * _2X,
-			-300.0f * _2X,
-			boxExitProgress);
-
-	boxMark[0].y =
-		boxExitY;
-
-	boxMark[0].targetY2 =
-		boxExitY;
-
-	//----------------------------------------------------
-	// 팝업 출력
-	//----------------------------------------------------
-	DrawImage(
-		PANEL_SRC_W,
-		PANEL_SRC_H,
-		PANEL_SRC_X,
-		PANEL_SRC_Y,
-
-		panelCX -
-		panelDisplayW /
-		2.0f,
-
-		panelCY +
-		panelDisplayH /
-		2.0f,
-
-		false,
-		false,
-		false,
-		false,
-		false,
-
-		panelZoom,
-
-		sprite[MENU_IMG],
-		gScreenBuffer,
-		gScreenLayer,
-		MENU_IMG,
-		false);
-
-	//----------------------------------------------------
-	// 카드 배치
-	//
-	// 최대 4열 × 3행 = 12장
-	//----------------------------------------------------
-	int numCols;
-
-	if (rewardCount <= 1)
-		numCols = 1;
-	else if (rewardCount == 2)
-		numCols = 2;
-	else if (rewardCount == 3)
-		numCols = 3;
-	else
-		numCols = 4;
-
-	int numRows =
-		(rewardCount +
-			numCols -
-			1) /
-		numCols;
-
-	//----------------------------------------------------
-	// 팝업 최종 크기를 기준으로 카드 크기 계산
-	//----------------------------------------------------
-	float finalPanelW =
-		PANEL_SRC_W *
-		PANEL_FINAL_ZOOM;
-
-	float finalPanelH =
-		PANEL_SRC_H *
-		PANEL_FINAL_ZOOM;
-
-	float popupGapX =
-		4.0f * _2X;
-
-	float popupGapY =
-		4.0f * _2X;
-
-	float popupInnerW =
-		finalPanelW *
-		0.84f;
-
-	float popupInnerH =
-		finalPanelH *
-		0.66f;
-
-	float popupCardZoomByW =
-		(popupInnerW -
-			popupGapX *
-			(numCols - 1)) /
-		(numCols *
-			240.0f);
-
-	float popupCardZoomByH =
-		(popupInnerH -
-			popupGapY *
-			(numRows - 1)) /
-		(numRows *
-			332.0f);
-
-	float popupCardZoom =
-		popupCardZoomByW;
-
-	if (popupCardZoom >
-		popupCardZoomByH)
-	{
-		popupCardZoom =
-			popupCardZoomByH;
-	}
-
-	float popupCardW =
-		240.0f *
-		popupCardZoom;
-
-	float popupCardH =
-		332.0f *
-		popupCardZoom;
-
-	float popupGridW =
-		numCols *
-		popupCardW +
-		(numCols - 1) *
-		popupGapX;
-
-	float popupGridH =
-		numRows *
-		popupCardH +
-		(numRows - 1) *
-		popupGapY;
-
-	float popupGridStartX =
-		panelCX -
-		popupGridW /
-		2.0f;
-
-	//----------------------------------------------------
-	// 팝업 중앙보다 약간 위에 카드 배치
-	//----------------------------------------------------
-	float popupGridTop =
-		panelCY +
-		finalPanelH *
-		0.30f;
-
-	bool allPopupCardsArrived =
-		true;
-
-	//----------------------------------------------------
-	// 카드 이동 및 출력
-	//----------------------------------------------------
-	for (i = 0;
-		i < rewardCount;
-		i++)
-	{
-		int col =
-			i %
-			numCols;
-
-		int row =
-			i /
-			numCols;
-
-		float targetX =
-			popupGridStartX +
-			col *
-			(popupCardW +
-				popupGapX);
-
-		float targetY =
-			popupGridTop -
-			row *
-			(popupCardH +
-				popupGapY);
-
-		GACHA_REWARD_CARD_ANIM* anim =
-			&gachaRewardCardAnim[i];
-
-		anim->popupX =
-			targetX;
-
-		anim->popupY =
-			targetY;
-
-		anim->popupZoom =
-			popupCardZoom;
-
-		float drawX =
-			targetX;
-
-		float drawY =
-			targetY;
-
-		float drawZoom =
-			popupCardZoom;
-
-		if (anim->movingToPopup)
+		//----------------------------------------------------
+		// 요약 화면 최초 진입
+		//----------------------------------------------------
+		if (summaryFrame == 0)
 		{
-			//------------------------------------------------
-			// 팝업 자체가 어느 정도 보인 뒤 카드가 이동
-			//------------------------------------------------
-			int cardStartDelay =
-				i *
-				MOTIONDIV /
-				2;
+			manualCardMarkIdx =
+				-1;
 
-			int cardElapsed =
-				summaryFrame -
-				cardStartDelay;
+			gachaCurrentCardReady =
+				false;
 
-			if (cardElapsed < 0)
+			gachaCardCanAdvance =
+				false;
+
+			gachaConfirmReady =
+				false;
+
+			memset(
+				boxCardMark,
+				0,
+				sizeof(boxCardMark));
+
+			for (i = 0;
+				i < rewardCount;
+				i++)
 			{
-				cardElapsed =
+				gachaRewardCardAnim[i].
+					movingToPopup =
+					true;
+
+				gachaRewardCardAnim[i].
+					arrivedPopup =
+					false;
+
+				gachaRewardCardAnim[i].
+					moveFrame =
 					0;
 			}
 
-			float cardProgress =
-				(float)cardElapsed /
-				(float)SUMMARY_CARD_FRAME;
+			PlayMusic(M_CARDSPLIT);
+		}
 
-			cardProgress =
-				GachaClamp01(
-					cardProgress);
+		//----------------------------------------------------
+		// 팝업 확대율
+		//----------------------------------------------------
+		float panelProgress =
+			(float)summaryFrame /
+			(float)SUMMARY_ENTER_FRAME;
 
-			float cardCurve =
-				GachaEaseInOutCubic(
-					cardProgress);
+		panelProgress =
+			GachaClamp01(
+				panelProgress);
 
-			drawX =
+		float panelCurve =
+			GachaEaseOutCubic(
+				panelProgress);
+
+		//----------------------------------------------------
+		// 처음 약간 크게 넘어갔다가 복원
+		//----------------------------------------------------
+		float panelZoom;
+
+		if (panelProgress < 0.75f)
+		{
+			float firstProgress =
+				panelProgress /
+				0.75f;
+
+			panelZoom =
 				GachaLerp(
-					anim->trayX,
-					targetX,
-					cardCurve);
-
-			float linearY =
-				GachaLerp(
-					anim->trayY,
-					targetY,
-					cardCurve);
-
-			float arcY =
-				sinf(
-					cardProgress *
-					3.141592f) *
-				38.0f *
-				_2X;
-
-			drawY =
-				linearY +
-				arcY;
-
-			drawZoom =
-				GachaLerp(
-					anim->trayZoom,
-					popupCardZoom,
+					PANEL_START_ZOOM,
+					PANEL_FINAL_ZOOM *
+					1.05f,
 					GachaEaseOutCubic(
-						cardProgress));
-
-			if (cardProgress >=
-				1.0f)
-			{
-				anim->movingToPopup =
-					false;
-
-				anim->arrivedPopup =
-					true;
-
-				drawX =
-					targetX;
-
-				drawY =
-					targetY;
-
-				drawZoom =
-					popupCardZoom;
-			}
+						firstProgress));
 		}
-
-		if (anim->arrivedPopup == false)
+		else
 		{
-			allPopupCardsArrived =
-				false;
+			float recoverProgress =
+				(panelProgress -
+					0.75f) /
+				0.25f;
+
+			panelZoom =
+				GachaLerp(
+					PANEL_FINAL_ZOOM *
+					1.05f,
+					PANEL_FINAL_ZOOM,
+					recoverProgress);
 		}
 
-		ITEM* item =
-			&boxCardItem[0][i];
-
-		DrawItemCard(
-			item->type,
-			item->detail,
-			item->grade,
-			item->lv,
-			false,
-			(int)drawX,
-			(int)drawY,
-			false,
-			drawZoom,
-			false,
-			0,
-			0,
-			true,
-			0,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-	}
-
-	//----------------------------------------------------
-	// 모든 카드가 박힌 후 확인 버튼 활성화
-	//----------------------------------------------------
-	if (allPopupCardsArrived &&
-		summaryFrame >
-		SUMMARY_CARD_FRAME +
-		SUMMARY_BUTTON_DELAY)
-	{
-		gachaConfirmReady =
-			true;
-
-		float btnZoom =
-			(100.0f * _2X) /
-			BTN_SRC_W;
-
-		float btnDisplayW =
-			BTN_SRC_W *
-			btnZoom;
-
-		float btnDisplayH =
-			BTN_SRC_H *
-			btnZoom;
-
-		float btnX =
-			panelCX -
-			btnDisplayW /
-			2.0f;
-
-		float btnY =
-			panelCY -
-			finalPanelH /
-			2.0f + btnDisplayH 
-			+ 16.0f *
-			_2X;
-
-		DrawImage(
-			BTN_SRC_W,
-			BTN_SRC_H,
-			BTN_SRC_X,
-			BTN_SRC_Y,
-			btnX,
-			btnY,
-			false,
-			false,
-			false,
-			false,
-			false,
-			btnZoom,
-			sprite[MENU_IMG],
-			gScreenBuffer,
-			gScreenLayer,
-			MENU_IMG,
-			false);
-
-		SetAlpha(
-			32 -
-			Abs(
-				frame /
-				MOTIONDIV %
-				32 -
-				16));
-
-		DrawGoldAlpha(
-			(int)panelCX,
-			BOTTOMMENUHEIGHT,
-			ALPHA_TABTOCOLLECT,
-			FONT_GOLD_LARGE,
-			1,
-			CENTER,
-			false,
-			false,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-
-		SetAlpha(32);
-
-		//------------------------------------------------
-		// 화면 전체가 아니라 확인 버튼만 터치
-		//------------------------------------------------
-		SetRectPoint(
-			(int)btnX,
-			(int)(
-				btnY +
-				btnDisplayH),
-			(int)(
-				btnX +
-				btnDisplayW),
-			(int)btnY,
-			TOUCH_FUNC_GETGACHACARD);
-	}
-
-	summaryFrame++;
-
-	break;
-}
-
-//--------------------------------------------------------
-// 요약 카드가 하단 메뉴로 날아가는 연출
-//--------------------------------------------------------
-case GACHA_DEPTH_FLYTOBAR:
-{
-	//----------------------------------------------------
-	// 연출 시간
-	//----------------------------------------------------
-	const int PANEL_CLOSE_FRAME =
-		FPS / 2;
-
-	const int CARD_FLY_FRAME =
-		FPS;
-
-	const int CARD_GLOW_HOLD_FRAME =
-		FPS;
-
-	const int CARD_FADE_FRAME =
-		FPS / 2;
-
-	//----------------------------------------------------
-	// 카드마다 약간씩 순차 출발
-	//----------------------------------------------------
-	const int CARD_START_INTERVAL =
-		FPS / 6;
-
-	//----------------------------------------------------
-	// 도착했을 때 크기
-	//
-	// 팝업에서 보이던 크기의 20%
-	//----------------------------------------------------
-	const float CARD_TARGET_ZOOM_RATE =
-		0.35f;
-
-	//----------------------------------------------------
-	// 팝업 정보
-	//----------------------------------------------------
-	const int PANEL_SRC_X =
-		0;
-
-	const int PANEL_SRC_Y =
-		606;
-
-	const int PANEL_SRC_W =
-		400;
-
-	const int PANEL_SRC_H =
-		409;
-
-	const float PANEL_FINAL_ZOOM =
-		1.5f;
-
-	float panelCX =
-		xOffset +
-		DX / 2.0f;
-
-	float panelCY =
-		DY / 2.0f;
-
-	int rewardCount =
-		boxCardItemCnt[0];
-
-	if (rewardCount >
-		GACHA_MAX_REWARD_CARD)
-	{
-		rewardCount =
-			GACHA_MAX_REWARD_CARD;
-	}
-
-	//----------------------------------------------------
-	// 최초 진입
-	//----------------------------------------------------
-	if (flyToBarFrame == 0)
-	{
-		gachaConfirmReady =
-			false;
-
-		for (i = 0;
-			i < rewardCount;
-			i++)
-		{
-			GACHA_REWARD_CARD_ANIM* anim =
-				&gachaRewardCardAnim[i];
-
-			ITEM* item =
-				&boxCardItem[0][i];
-
-			anim->movingToBar =
-				true;
-
-			anim->arrivedBar =
-				false;
-
-			anim->finishedBar =
-				false;
-
-			anim->barMoveFrame =
-				0;
-
-			anim->barHoldFrame =
-				0;
-
-			//------------------------------------------------
-			// 팝업 안에 박혀 있던 위치에서 출발
-			//------------------------------------------------
-			anim->barStartX =
-				anim->popupX;
-
-			anim->barStartY =
-				anim->popupY;
-
-			anim->barStartZoom =
-				anim->popupZoom;
-
-			//------------------------------------------------
-			// 카드 종류별 도착 바 위치
-			//------------------------------------------------
-			float destinationCX =
-				panelCX;
-
-			float destinationCY =
-				BOTTOMMENUHEIGHT;
-
-			if (item->type ==
-				ITEM_CREW)
-			{
-				destinationCX =
-					bar[BAR_CREW].x;
-
-				destinationCY =
-					bar[BAR_CREW].y;
-			}
-			else if (item->type ==
-				ITEM_HEART)
-			{
-				destinationCX =
-					bar[BAR_HEART].x;
-
-				destinationCY =
-					bar[BAR_HEART].y;
-			}
-			else if (item->type ==
-				ITEM_GOLD)
-			{
-				destinationCX =
-					bar[BAR_GOLD].x;
-
-				destinationCY =
-					bar[BAR_GOLD].y;
-			}
-			else if (item->type <
-				ITEM_NETITEM)
-			{
-				destinationCX =
-					bar[BAR_EQUIP].x;
-
-				destinationCY =
-					bar[BAR_EQUIP].y;
-			}
-
-			//------------------------------------------------
-			// 최종 카드 크기
-			//------------------------------------------------
-			anim->barTargetZoom =
-				anim->barStartZoom *
-				CARD_TARGET_ZOOM_RATE;
-
-			//------------------------------------------------
-			// DrawItemCard 좌표는 카드의 좌측 하단 기준
-			//
-			// bar 좌표는 중심점으로 보고 보정
-			//------------------------------------------------
-			anim->barTargetX =
-				destinationCX -
-				240.0f *
-				anim->barTargetZoom /
-				2.0f;
-
-			anim->barTargetY =
-				destinationCY +
-				332.0f *
-				anim->barTargetZoom /
-				2.0f;
-		}
-
-		PlayMusic(M_ITEM);
-	}
-
-	//----------------------------------------------------
-	// 팝업 닫힘 연출
-	//----------------------------------------------------
-	float panelCloseProgress =
-		(float)flyToBarFrame /
-		(float)PANEL_CLOSE_FRAME;
-
-	panelCloseProgress =
-		GachaClamp01(
-			panelCloseProgress);
-
-	float panelCloseCurve =
-		GachaEaseInOutCubic(
-			panelCloseProgress);
-
-	float panelZoom =
-		GachaLerp(
-			PANEL_FINAL_ZOOM,
-			0.0f,
-			panelCloseCurve);
-
-	//----------------------------------------------------
-	// 팝업이 작아지는 동안만 출력
-	//----------------------------------------------------
-	if (panelZoom > 0.03f)
-	{
 		float panelDisplayW =
 			PANEL_SRC_W *
 			panelZoom;
@@ -2944,6 +2846,36 @@ case GACHA_DEPTH_FLYTOBAR:
 			PANEL_SRC_H *
 			panelZoom;
 
+		float panelCX =
+			xOffset +
+			DX / 2.0f;
+
+		float panelCY =
+			DY / 2.0f;
+
+		//----------------------------------------------------
+		// 상자가 아래로 빠지는 연출
+		//----------------------------------------------------
+		float boxExitProgress =
+			GachaEaseInOutCubic(
+				panelProgress);
+
+		float boxExitY =
+			GachaLerp(
+				BOTTOMMENUHEIGHT +
+				32.0f * _2X,
+				-300.0f * _2X,
+				boxExitProgress);
+
+		boxMark[0].y =
+			boxExitY;
+
+		boxMark[0].targetY2 =
+			boxExitY;
+
+		//----------------------------------------------------
+		// 팝업 출력
+		//----------------------------------------------------
 		DrawImage(
 			PANEL_SRC_W,
 			PANEL_SRC_H,
@@ -2971,123 +2903,763 @@ case GACHA_DEPTH_FLYTOBAR:
 			gScreenLayer,
 			MENU_IMG,
 			false);
-	}
 
-	//----------------------------------------------------
-	// 모든 카드의 최종 연출 완료 여부
-	//----------------------------------------------------
-	bool allCardsFinished =
-		true;
+		//----------------------------------------------------
+		// 카드 배치
+		//
+		// 최대 4열 × 3행 = 12장
+		//----------------------------------------------------
+		int numCols;
 
-	for (i = 0;
-		i < rewardCount;
-		i++)
-	{
-		GACHA_REWARD_CARD_ANIM* anim =
-			&gachaRewardCardAnim[i];
+		if (rewardCount <= 1)
+			numCols = 1;
+		else if (rewardCount == 2)
+			numCols = 2;
+		else if (rewardCount == 3)
+			numCols = 3;
+		else
+			numCols = 4;
 
-		ITEM* item =
-			&boxCardItem[0][i];
+		int numRows =
+			(rewardCount +
+				numCols -
+				1) /
+			numCols;
 
-		//------------------------------------------------
-		// 카드별 출발 지연
-		//------------------------------------------------
-		int startDelay =
-			i *
-			CARD_START_INTERVAL;
+		//----------------------------------------------------
+		// 팝업 최종 크기를 기준으로 카드 크기 계산
+		//----------------------------------------------------
+		float finalPanelW =
+			PANEL_SRC_W *
+			PANEL_FINAL_ZOOM;
 
-		int elapsedFrame =
-			flyToBarFrame -
-			startDelay;
+		float finalPanelH =
+			PANEL_SRC_H *
+			PANEL_FINAL_ZOOM;
 
-		float drawX =
-			anim->barStartX;
+		float popupGapX =
+			4.0f * _2X;
 
-		float drawY =
-			anim->barStartY;
+		float popupGapY =
+			4.0f * _2X;
 
-		float drawZoom =
-			anim->barStartZoom;
+		float popupInnerW =
+			finalPanelW *
+			0.84f;
 
-		//------------------------------------------------
-		// 아직 출발 전
-		//------------------------------------------------
-		if (elapsedFrame < 0)
+		float popupInnerH =
+			finalPanelH *
+			0.66f;
+
+		float popupCardZoomByW =
+			(popupInnerW -
+				popupGapX *
+				(numCols - 1)) /
+			(numCols *
+				240.0f);
+
+		float popupCardZoomByH =
+			(popupInnerH -
+				popupGapY *
+				(numRows - 1)) /
+			(numRows *
+				332.0f);
+
+		float popupCardZoom =
+			popupCardZoomByW;
+
+		if (popupCardZoom >
+			popupCardZoomByH)
 		{
-			allCardsFinished =
-				false;
+			popupCardZoom =
+				popupCardZoomByH;
 		}
 
-		//------------------------------------------------
-		// 하단 바로 날아가는 중
-		//------------------------------------------------
-		else if (anim->movingToBar)
+		float popupCardW =
+			240.0f *
+			popupCardZoom;
+
+		float popupCardH =
+			332.0f *
+			popupCardZoom;
+
+		float popupGridW =
+			numCols *
+			popupCardW +
+			(numCols - 1) *
+			popupGapX;
+
+		float popupGridH =
+			numRows *
+			popupCardH +
+			(numRows - 1) *
+			popupGapY;
+
+		float popupGridStartX =
+			panelCX -
+			popupGridW /
+			2.0f;
+
+		//----------------------------------------------------
+		// 팝업 중앙보다 약간 위에 카드 배치
+		//----------------------------------------------------
+		float popupGridTop =
+			panelCY +
+			finalPanelH *
+			0.30f;
+
+		bool allPopupCardsArrived =
+			true;
+
+		//----------------------------------------------------
+		// 카드 이동 및 출력
+		//----------------------------------------------------
+		for (i = 0;
+			i < rewardCount;
+			i++)
 		{
-			float progress =
-				(float)elapsedFrame /
-				(float)CARD_FLY_FRAME;
+			int col =
+				i %
+				numCols;
 
-			progress =
-				GachaClamp01(
-					progress);
+			int row =
+				i /
+				numCols;
 
-			float moveCurve =
-				GachaEaseInOutCubic(
-					progress);
+			float targetX =
+				popupGridStartX +
+				col *
+				(popupCardW +
+					popupGapX);
 
-			float zoomCurve =
-				GachaEaseOutCubic(
-					progress);
+			float targetY =
+				popupGridTop -
+				row *
+				(popupCardH +
+					popupGapY);
 
-			drawX =
-				GachaLerp(
-					anim->barStartX,
-					anim->barTargetX,
-					moveCurve);
+			GACHA_REWARD_CARD_ANIM* anim =
+				&gachaRewardCardAnim[i];
 
-			//------------------------------------------------
-			// 기본 Y 이동
-			//------------------------------------------------
-			float linearY =
-				GachaLerp(
-					anim->barStartY,
-					anim->barTargetY,
-					moveCurve);
+			anim->popupX =
+				targetX;
 
-			//------------------------------------------------
-			// 이동 중 살짝 위로 솟는 포물선
-			//------------------------------------------------
-			float arcY =
-				sinf(
-					progress *
-					3.141592f) *
-				48.0f *
+			anim->popupY =
+				targetY;
+
+			anim->popupZoom =
+				popupCardZoom;
+
+			float drawX =
+				targetX;
+
+			float drawY =
+				targetY;
+
+			float drawZoom =
+				popupCardZoom;
+
+			if (anim->movingToPopup)
+			{
+				//------------------------------------------------
+				// 팝업 자체가 어느 정도 보인 뒤 카드가 이동
+				//------------------------------------------------
+				int cardStartDelay =
+					i *
+					MOTIONDIV /
+					2;
+
+				int cardElapsed =
+					summaryFrame -
+					cardStartDelay;
+
+				if (cardElapsed < 0)
+				{
+					cardElapsed =
+						0;
+				}
+
+				float cardProgress =
+					(float)cardElapsed /
+					(float)SUMMARY_CARD_FRAME;
+
+				cardProgress =
+					GachaClamp01(
+						cardProgress);
+
+				float cardCurve =
+					GachaEaseInOutCubic(
+						cardProgress);
+
+				drawX =
+					GachaLerp(
+						anim->trayX,
+						targetX,
+						cardCurve);
+
+				float linearY =
+					GachaLerp(
+						anim->trayY,
+						targetY,
+						cardCurve);
+
+				float arcY =
+					sinf(
+						cardProgress *
+						3.141592f) *
+					38.0f *
+					_2X;
+
+				drawY =
+					linearY +
+					arcY;
+
+				drawZoom =
+					GachaLerp(
+						anim->trayZoom,
+						popupCardZoom,
+						GachaEaseOutCubic(
+							cardProgress));
+
+				if (cardProgress >=
+					1.0f)
+				{
+					anim->movingToPopup =
+						false;
+
+					anim->arrivedPopup =
+						true;
+
+					drawX =
+						targetX;
+
+					drawY =
+						targetY;
+
+					drawZoom =
+						popupCardZoom;
+				}
+			}
+
+			if (anim->arrivedPopup == false)
+			{
+				allPopupCardsArrived =
+					false;
+			}
+
+			ITEM* item =
+				&boxCardItem[0][i];
+
+			DrawItemCard(
+				item->type,
+				item->detail,
+				item->grade,
+				item->lv,
+				false,
+				(int)drawX,
+				(int)drawY,
+				false,
+				drawZoom,
+				false,
+				0,
+				0,
+				true,
+				0,
+				gScreenBuffer,
+				gScreenLayer,
+				false);
+		}
+
+		//----------------------------------------------------
+		// 모든 카드가 박힌 후 확인 버튼 활성화
+		//----------------------------------------------------
+		if (allPopupCardsArrived &&
+			summaryFrame >
+			SUMMARY_CARD_FRAME +
+			SUMMARY_BUTTON_DELAY)
+		{
+			gachaConfirmReady =
+				true;
+
+			float btnZoom =
+				(100.0f * _2X) /
+				BTN_SRC_W;
+
+			float btnDisplayW =
+				BTN_SRC_W *
+				btnZoom;
+
+			float btnDisplayH =
+				BTN_SRC_H *
+				btnZoom;
+
+			float btnX =
+				panelCX -
+				btnDisplayW /
+				2.0f;
+
+			float btnY =
+				panelCY -
+				finalPanelH /
+				2.0f + btnDisplayH
+				+ 16.0f *
 				_2X;
 
-			drawY =
-				linearY +
-				arcY;
+			DrawImage(
+				BTN_SRC_W,
+				BTN_SRC_H,
+				BTN_SRC_X,
+				BTN_SRC_Y,
+				btnX,
+				btnY,
+				false,
+				false,
+				false,
+				false,
+				false,
+				btnZoom,
+				sprite[MENU_IMG],
+				gScreenBuffer,
+				gScreenLayer,
+				MENU_IMG,
+				false);
 
-			drawZoom =
-				GachaLerp(
-					anim->barStartZoom,
-					anim->barTargetZoom,
-					zoomCurve);
+			SetAlpha(
+				32 -
+				Abs(
+					frame /
+					MOTIONDIV %
+					32 -
+					16));
+
+			DrawGoldAlpha(
+				(int)panelCX,
+				BOTTOMMENUHEIGHT,
+				ALPHA_TABTOCOLLECT,
+				FONT_GOLD_LARGE,
+				1,
+				CENTER,
+				false,
+				false,
+				gScreenBuffer,
+				gScreenLayer,
+				false);
+
+			SetAlpha(32);
 
 			//------------------------------------------------
-			// 목적지 도착
+			// 화면 전체가 아니라 확인 버튼만 터치
 			//------------------------------------------------
-			if (progress >= 1.0f)
+			SetRectPoint(
+				(int)btnX,
+				(int)(
+					btnY +
+					btnDisplayH),
+				(int)(
+					btnX +
+					btnDisplayW),
+				(int)btnY,
+				TOUCH_FUNC_GETGACHACARD);
+		}
+
+		summaryFrame++;
+
+		break;
+	}
+
+	//--------------------------------------------------------
+	// 요약 카드가 하단 메뉴로 날아가는 연출
+	//--------------------------------------------------------
+	case GACHA_DEPTH_FLYTOBAR:
+	{
+		//----------------------------------------------------
+		// 연출 시간
+		//----------------------------------------------------
+		const int PANEL_CLOSE_FRAME =
+			FPS / 2;
+
+		const int CARD_FLY_FRAME =
+			FPS;
+
+		const int CARD_GLOW_HOLD_FRAME =
+			FPS;
+
+		const int CARD_FADE_FRAME =
+			FPS / 2;
+
+		//----------------------------------------------------
+		// 카드마다 약간씩 순차 출발
+		//----------------------------------------------------
+		const int CARD_START_INTERVAL =
+			FPS / 6;
+
+		//----------------------------------------------------
+		// 도착했을 때 크기
+		//
+		// 팝업에서 보이던 크기의 20%
+		//----------------------------------------------------
+		const float CARD_TARGET_ZOOM_RATE =
+			0.35f;
+
+		//----------------------------------------------------
+		// 팝업 정보
+		//----------------------------------------------------
+		const int PANEL_SRC_X =
+			0;
+
+		const int PANEL_SRC_Y =
+			606;
+
+		const int PANEL_SRC_W =
+			400;
+
+		const int PANEL_SRC_H =
+			409;
+
+		const float PANEL_FINAL_ZOOM =
+			1.5f;
+
+		float panelCX =
+			xOffset +
+			DX / 2.0f;
+
+		float panelCY =
+			DY / 2.0f;
+
+		int rewardCount =
+			boxCardItemCnt[0];
+
+		if (rewardCount >
+			GACHA_MAX_REWARD_CARD)
+		{
+			rewardCount =
+				GACHA_MAX_REWARD_CARD;
+		}
+
+		//----------------------------------------------------
+		// 최초 진입
+		//----------------------------------------------------
+		if (flyToBarFrame == 0)
+		{
+			gachaConfirmReady =
+				false;
+
+			for (i = 0;
+				i < rewardCount;
+				i++)
 			{
+				GACHA_REWARD_CARD_ANIM* anim =
+					&gachaRewardCardAnim[i];
+
+				ITEM* item =
+					&boxCardItem[0][i];
+
 				anim->movingToBar =
-					false;
+					true;
 
 				anim->arrivedBar =
-					true;
+					false;
+
+				anim->finishedBar =
+					false;
+
+				anim->barMoveFrame =
+					0;
 
 				anim->barHoldFrame =
 					0;
 
+				//------------------------------------------------
+				// 팝업 안에 박혀 있던 위치에서 출발
+				//------------------------------------------------
+				anim->barStartX =
+					anim->popupX;
+
+				anim->barStartY =
+					anim->popupY;
+
+				anim->barStartZoom =
+					anim->popupZoom;
+
+				//------------------------------------------------
+				// 카드 종류별 도착 바 위치
+				//------------------------------------------------
+				float destinationCX =
+					panelCX;
+
+				float destinationCY =
+					BOTTOMMENUHEIGHT;
+
+				if (item->type ==
+					ITEM_CREW)
+				{
+					destinationCX =
+						bar[BAR_CREW].x;
+
+					destinationCY =
+						bar[BAR_CREW].y;
+				}
+				else if (item->type ==
+					ITEM_HEART)
+				{
+					destinationCX =
+						bar[BAR_HEART].x;
+
+					destinationCY =
+						bar[BAR_HEART].y;
+				}
+				else if (item->type ==
+					ITEM_GOLD)
+				{
+					destinationCX =
+						bar[BAR_GOLD].x;
+
+					destinationCY =
+						bar[BAR_GOLD].y;
+				}
+				else if (item->type <
+					ITEM_NETITEM)
+				{
+					destinationCX =
+						bar[BAR_EQUIP].x;
+
+					destinationCY =
+						bar[BAR_EQUIP].y;
+				}
+
+				//------------------------------------------------
+				// 최종 카드 크기
+				//------------------------------------------------
+				anim->barTargetZoom =
+					anim->barStartZoom *
+					CARD_TARGET_ZOOM_RATE;
+
+				//------------------------------------------------
+				// DrawItemCard 좌표는 카드의 좌측 하단 기준
+				//
+				// bar 좌표는 중심점으로 보고 보정
+				//------------------------------------------------
+				anim->barTargetX =
+					destinationCX -
+					240.0f *
+					anim->barTargetZoom /
+					2.0f;
+
+				anim->barTargetY =
+					destinationCY +
+					332.0f *
+					anim->barTargetZoom /
+					2.0f;
+			}
+
+			PlayMusic(M_ITEM);
+		}
+
+		//----------------------------------------------------
+		// 팝업 닫힘 연출
+		//----------------------------------------------------
+		float panelCloseProgress =
+			(float)flyToBarFrame /
+			(float)PANEL_CLOSE_FRAME;
+
+		panelCloseProgress =
+			GachaClamp01(
+				panelCloseProgress);
+
+		float panelCloseCurve =
+			GachaEaseInOutCubic(
+				panelCloseProgress);
+
+		float panelZoom =
+			GachaLerp(
+				PANEL_FINAL_ZOOM,
+				0.0f,
+				panelCloseCurve);
+
+		//----------------------------------------------------
+		// 팝업이 작아지는 동안만 출력
+		//----------------------------------------------------
+		if (panelZoom > 0.03f)
+		{
+			float panelDisplayW =
+				PANEL_SRC_W *
+				panelZoom;
+
+			float panelDisplayH =
+				PANEL_SRC_H *
+				panelZoom;
+
+			DrawImage(
+				PANEL_SRC_W,
+				PANEL_SRC_H,
+				PANEL_SRC_X,
+				PANEL_SRC_Y,
+
+				panelCX -
+				panelDisplayW /
+				2.0f,
+
+				panelCY +
+				panelDisplayH /
+				2.0f,
+
+				false,
+				false,
+				false,
+				false,
+				false,
+
+				panelZoom,
+
+				sprite[MENU_IMG],
+				gScreenBuffer,
+				gScreenLayer,
+				MENU_IMG,
+				false);
+		}
+
+		//----------------------------------------------------
+		// 모든 카드의 최종 연출 완료 여부
+		//----------------------------------------------------
+		bool allCardsFinished =
+			true;
+
+		for (i = 0;
+			i < rewardCount;
+			i++)
+		{
+			GACHA_REWARD_CARD_ANIM* anim =
+				&gachaRewardCardAnim[i];
+
+			ITEM* item =
+				&boxCardItem[0][i];
+
+			//------------------------------------------------
+			// 카드별 출발 지연
+			//------------------------------------------------
+			int startDelay =
+				i *
+				CARD_START_INTERVAL;
+
+			int elapsedFrame =
+				flyToBarFrame -
+				startDelay;
+
+			float drawX =
+				anim->barStartX;
+
+			float drawY =
+				anim->barStartY;
+
+			float drawZoom =
+				anim->barStartZoom;
+
+			//------------------------------------------------
+			// 아직 출발 전
+			//------------------------------------------------
+			if (elapsedFrame < 0)
+			{
+				allCardsFinished =
+					false;
+			}
+
+			//------------------------------------------------
+			// 하단 바로 날아가는 중
+			//------------------------------------------------
+			else if (anim->movingToBar)
+			{
+				float progress =
+					(float)elapsedFrame /
+					(float)CARD_FLY_FRAME;
+
+				progress =
+					GachaClamp01(
+						progress);
+
+				float moveCurve =
+					GachaEaseInOutCubic(
+						progress);
+
+				float zoomCurve =
+					GachaEaseOutCubic(
+						progress);
+
+				drawX =
+					GachaLerp(
+						anim->barStartX,
+						anim->barTargetX,
+						moveCurve);
+
+				//------------------------------------------------
+				// 기본 Y 이동
+				//------------------------------------------------
+				float linearY =
+					GachaLerp(
+						anim->barStartY,
+						anim->barTargetY,
+						moveCurve);
+
+				//------------------------------------------------
+				// 이동 중 살짝 위로 솟는 포물선
+				//------------------------------------------------
+				float arcY =
+					sinf(
+						progress *
+						3.141592f) *
+					48.0f *
+					_2X;
+
+				drawY =
+					linearY +
+					arcY;
+
+				drawZoom =
+					GachaLerp(
+						anim->barStartZoom,
+						anim->barTargetZoom,
+						zoomCurve);
+
+				//------------------------------------------------
+				// 목적지 도착
+				//------------------------------------------------
+				if (progress >= 1.0f)
+				{
+					anim->movingToBar =
+						false;
+
+					anim->arrivedBar =
+						true;
+
+					anim->barHoldFrame =
+						0;
+
+					drawX =
+						anim->barTargetX;
+
+					drawY =
+						anim->barTargetY;
+
+					drawZoom =
+						anim->barTargetZoom;
+
+					//------------------------------------------------
+					// 메뉴에 들어가는 느낌을 주는 도착 효과음
+					//------------------------------------------------
+					PlayMusic(M_ITEM);
+				}
+
+				allCardsFinished =
+					false;
+			}
+
+			//------------------------------------------------
+			// 해당 바 위에서 잠시 정지
+			//------------------------------------------------
+			//------------------------------------------------
+	// 해당 바 위에서 글로우와 함께 잠시 정지
+	//------------------------------------------------
+			else if (anim->arrivedBar)
+			{
 				drawX =
 					anim->barTargetX;
 
@@ -3097,316 +3669,289 @@ case GACHA_DEPTH_FLYTOBAR:
 				drawZoom =
 					anim->barTargetZoom;
 
-				//------------------------------------------------
-				// 메뉴에 들어가는 느낌을 주는 도착 효과음
-				//------------------------------------------------
-				PlayMusic(M_ITEM);
-			}
-
-			allCardsFinished =
-				false;
-		}
-
-		//------------------------------------------------
-		// 해당 바 위에서 잠시 정지
-		//------------------------------------------------
-		//------------------------------------------------
-// 해당 바 위에서 글로우와 함께 잠시 정지
-//------------------------------------------------
-		else if (anim->arrivedBar)
-		{
-			drawX =
-				anim->barTargetX;
-
-			drawY =
-				anim->barTargetY;
-
-			drawZoom =
-				anim->barTargetZoom;
-
-			int totalFinishFrame =
-				CARD_GLOW_HOLD_FRAME +
-				CARD_FADE_FRAME;
-
-			//------------------------------------------------
-			// 1단계: 메뉴 위에서 글로우 유지
-			//------------------------------------------------
-			if (anim->barHoldFrame <
-				CARD_GLOW_HOLD_FRAME)
-			{
-				//------------------------------------------------
-				// 도착 직후 살짝 커졌다 돌아오는 팝 효과
-				//------------------------------------------------
-				float holdProgress =
-					(float)anim->barHoldFrame /
-					(float)CARD_GLOW_HOLD_FRAME;
-
-				holdProgress =
-					GachaClamp01(
-						holdProgress);
-
-				float popScale =
-					sinf(
-						holdProgress *
-						3.141592f) *
-					0.15f;
-
-				drawZoom =
-					anim->barTargetZoom *
-					(1.0f + popScale);
-
-				allCardsFinished =
-					false;
-			}
-
-			//------------------------------------------------
-			// 2단계: 잠시 머문 뒤 페이드아웃
-			//------------------------------------------------
-			else if (anim->barHoldFrame <
-				totalFinishFrame)
-			{
-				float fadeProgress =
-					(float)(
-						anim->barHoldFrame -
-						CARD_GLOW_HOLD_FRAME) /
-					(float)CARD_FADE_FRAME;
-
-				fadeProgress =
-					GachaClamp01(
-						fadeProgress);
+				int totalFinishFrame =
+					CARD_GLOW_HOLD_FRAME +
+					CARD_FADE_FRAME;
 
 				//------------------------------------------------
-				// 사라질 때 조금 더 작아짐
+				// 1단계: 메뉴 위에서 글로우 유지
 				//------------------------------------------------
-				drawZoom =
-					GachaLerp(
-						anim->barTargetZoom,
+				if (anim->barHoldFrame <
+					CARD_GLOW_HOLD_FRAME)
+				{
+					//------------------------------------------------
+					// 도착 직후 살짝 커졌다 돌아오는 팝 효과
+					//------------------------------------------------
+					float holdProgress =
+						(float)anim->barHoldFrame /
+						(float)CARD_GLOW_HOLD_FRAME;
+
+					holdProgress =
+						GachaClamp01(
+							holdProgress);
+
+					float popScale =
+						sinf(
+							holdProgress *
+							3.141592f) *
+						0.15f;
+
+					drawZoom =
 						anim->barTargetZoom *
-						0.65f,
-						fadeProgress);
+						(1.0f + popScale);
 
-				allCardsFinished =
-					false;
+					allCardsFinished =
+						false;
+				}
+
+				//------------------------------------------------
+				// 2단계: 잠시 머문 뒤 페이드아웃
+				//------------------------------------------------
+				else if (anim->barHoldFrame <
+					totalFinishFrame)
+				{
+					float fadeProgress =
+						(float)(
+							anim->barHoldFrame -
+							CARD_GLOW_HOLD_FRAME) /
+						(float)CARD_FADE_FRAME;
+
+					fadeProgress =
+						GachaClamp01(
+							fadeProgress);
+
+					//------------------------------------------------
+					// 사라질 때 조금 더 작아짐
+					//------------------------------------------------
+					drawZoom =
+						GachaLerp(
+							anim->barTargetZoom,
+							anim->barTargetZoom *
+							0.65f,
+							fadeProgress);
+
+					allCardsFinished =
+						false;
+				}
+
+				//------------------------------------------------
+				// 3단계: 완전히 제거
+				//------------------------------------------------
+				else
+				{
+					anim->arrivedBar =
+						false;
+
+					anim->finishedBar =
+						true;
+				}
+
+				anim->barHoldFrame++;
 			}
 
 			//------------------------------------------------
-			// 3단계: 완전히 제거
-			//------------------------------------------------
-			else
+	// 아직 사라지지 않은 카드만 출력
+	//------------------------------------------------
+			if (anim->finishedBar == false)
 			{
-				anim->arrivedBar =
+				int cardAlpha =
+					32;
+
+				bool drawGlow =
 					false;
 
-				anim->finishedBar =
-					true;
+				float glowZoom =
+					drawZoom;
+
+				//------------------------------------------------
+				// 도착 후의 진행 상황
+				//------------------------------------------------
+				if (anim->arrivedBar)
+				{
+					//------------------------------------------------
+					// 글로우 유지 구간
+					//------------------------------------------------
+					if (anim->barHoldFrame <
+						CARD_GLOW_HOLD_FRAME)
+					{
+						drawGlow =
+							true;
+
+						//------------------------------------------------
+						// 글로우 맥동
+						//------------------------------------------------
+						float glowPulse =
+							0.5f +
+							0.5f *
+							sinf(
+								(float)anim->barHoldFrame *
+								0.45f);
+
+						glowZoom =
+							drawZoom *
+							(1.12f +
+								0.08f *
+								glowPulse);
+					}
+					//------------------------------------------------
+					// 페이드아웃 구간
+					//------------------------------------------------
+					else
+					{
+						float fadeProgress =
+							(float)(
+								anim->barHoldFrame -
+								CARD_GLOW_HOLD_FRAME) /
+							(float)CARD_FADE_FRAME;
+
+						fadeProgress =
+							GachaClamp01(
+								fadeProgress);
+
+						cardAlpha =
+							(int)GachaLerp(
+								32.0f,
+								0.0f,
+								fadeProgress);
+
+						//------------------------------------------------
+						// 페이드 초반까지는 글로우 유지
+						//------------------------------------------------
+						if (fadeProgress <
+							0.65f)
+						{
+							drawGlow =
+								true;
+
+							glowZoom =
+								drawZoom *
+								1.14f;
+						}
+					}
+				}
+
+				//------------------------------------------------
+				// 카드 뒤쪽 글로우
+				//
+				// 전용 글로우 이미지가 없으므로
+				// 반투명 확대 카드를 여러 방향으로 겹쳐 표현
+				//------------------------------------------------
+				if (drawGlow)
+				{
+					SetAlpha(5);
+
+					const float GLOW_OFFSET =
+						1.5f * _2X;
+
+					DrawItemCard(
+						item->type,
+						item->detail,
+						item->grade,
+						item->lv,
+						false,
+						(int)(drawX -
+							GLOW_OFFSET),
+						(int)drawY,
+						false,
+						glowZoom,
+						false,
+						0,
+						0,
+						true,
+						0,
+						gScreenBuffer,
+						gScreenLayer,
+						false);
+
+					DrawItemCard(
+						item->type,
+						item->detail,
+						item->grade,
+						item->lv,
+						false,
+						(int)(drawX +
+							GLOW_OFFSET),
+						(int)drawY,
+						false,
+						glowZoom,
+						false,
+						0,
+						0,
+						true,
+						0,
+						gScreenBuffer,
+						gScreenLayer,
+						false);
+
+					DrawItemCard(
+						item->type,
+						item->detail,
+						item->grade,
+						item->lv,
+						false,
+						(int)drawX,
+						(int)(drawY +
+							GLOW_OFFSET),
+						false,
+						glowZoom,
+						false,
+						0,
+						0,
+						true,
+						0,
+						gScreenBuffer,
+						gScreenLayer,
+						false);
+				}
+
+				//------------------------------------------------
+				// 실제 카드
+				//------------------------------------------------
+				SetAlpha(
+					cardAlpha);
+
+				DrawItemCard(
+					item->type,
+					item->detail,
+					item->grade,
+					item->lv,
+					false,
+					(int)drawX,
+					(int)drawY,
+					false,
+					drawZoom,
+					false,
+					0,
+					0,
+					true,
+					0,
+					gScreenBuffer,
+					gScreenLayer,
+					false);
+
+				SetAlpha(32);
 			}
-
-			anim->barHoldFrame++;
 		}
 
-		//------------------------------------------------
-// 아직 사라지지 않은 카드만 출력
-//------------------------------------------------
-if (anim->finishedBar == false)
-{
-	int cardAlpha =
-		32;
-
-	bool drawGlow =
-		false;
-
-	float glowZoom =
-		drawZoom;
-
-	//------------------------------------------------
-	// 도착 후의 진행 상황
-	//------------------------------------------------
-	if (anim->arrivedBar)
-	{
-		//------------------------------------------------
-		// 글로우 유지 구간
-		//------------------------------------------------
-		if (anim->barHoldFrame <
-			CARD_GLOW_HOLD_FRAME)
+		//----------------------------------------------------
+		// 모든 카드가 목적지에서 잠시 머문 후 사라짐
+		//----------------------------------------------------
+		if (allCardsFinished)
 		{
-			drawGlow =
-				true;
+			gachaDepth =
+				GACHA_DEPTH_GETITEM;
 
-			//------------------------------------------------
-			// 글로우 맥동
-			//------------------------------------------------
-			float glowPulse =
-				0.5f +
-				0.5f *
-				sinf(
-					(float)anim->barHoldFrame *
-					0.45f);
+			getItemFrame =
+				0;
 
-			glowZoom =
-				drawZoom *
-				(1.12f +
-					0.08f *
-					glowPulse);
+			previousGachaDepth =
+				GACHA_DEPTH_FLYTOBAR;
 		}
-		//------------------------------------------------
-		// 페이드아웃 구간
-		//------------------------------------------------
-		else
-		{
-			float fadeProgress =
-				(float)(
-					anim->barHoldFrame -
-					CARD_GLOW_HOLD_FRAME) /
-				(float)CARD_FADE_FRAME;
 
-			fadeProgress =
-				GachaClamp01(
-					fadeProgress);
+		flyToBarFrame++;
 
-			cardAlpha =
-				(int)GachaLerp(
-					32.0f,
-					0.0f,
-					fadeProgress);
-
-			//------------------------------------------------
-			// 페이드 초반까지는 글로우 유지
-			//------------------------------------------------
-			if (fadeProgress <
-				0.65f)
-			{
-				drawGlow =
-					true;
-
-				glowZoom =
-					drawZoom *
-					1.14f;
-			}
-		}
+		break;
 	}
-
-	//------------------------------------------------
-	// 카드 뒤쪽 글로우
-	//
-	// 전용 글로우 이미지가 없으므로
-	// 반투명 확대 카드를 여러 방향으로 겹쳐 표현
-	//------------------------------------------------
-	if (drawGlow)
-	{
-		SetAlpha(5);
-
-		const float GLOW_OFFSET =
-			1.5f * _2X;
-
-		DrawItemCard(
-			item->type,
-			item->detail,
-			item->grade,
-			item->lv,
-			false,
-			(int)(drawX -
-				GLOW_OFFSET),
-			(int)drawY,
-			false,
-			glowZoom,
-			false,
-			0,
-			0,
-			true,
-			0,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-
-		DrawItemCard(
-			item->type,
-			item->detail,
-			item->grade,
-			item->lv,
-			false,
-			(int)(drawX +
-				GLOW_OFFSET),
-			(int)drawY,
-			false,
-			glowZoom,
-			false,
-			0,
-			0,
-			true,
-			0,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-
-		DrawItemCard(
-			item->type,
-			item->detail,
-			item->grade,
-			item->lv,
-			false,
-			(int)drawX,
-			(int)(drawY +
-				GLOW_OFFSET),
-			false,
-			glowZoom,
-			false,
-			0,
-			0,
-			true,
-			0,
-			gScreenBuffer,
-			gScreenLayer,
-			false);
-	}
-
-	//------------------------------------------------
-	// 실제 카드
-	//------------------------------------------------
-	SetAlpha(
-		cardAlpha);
-
-	DrawItemCard(
-		item->type,
-		item->detail,
-		item->grade,
-		item->lv,
-		false,
-		(int)drawX,
-		(int)drawY,
-		false,
-		drawZoom,
-		false,
-		0,
-		0,
-		true,
-		0,
-		gScreenBuffer,
-		gScreenLayer,
-		false);
-
-	SetAlpha(32);
-}
-	}
-
-	//----------------------------------------------------
-	// 모든 카드가 목적지에서 잠시 머문 후 사라짐
-	//----------------------------------------------------
-	if (allCardsFinished)
-	{
-		gachaDepth =
-			GACHA_DEPTH_GETITEM;
-
-		getItemFrame =
-			0;
-
-		previousGachaDepth =
-			GACHA_DEPTH_FLYTOBAR;
-	}
-
-	flyToBarFrame++;
-
-	break;
-}
 
 	//--------------------------------------------------------
 	// 보상 실제 지급
@@ -3499,6 +4044,7 @@ if (anim->finishedBar == false)
 
 	gachaFrame++;
 }
+
 
 
 bool IsGachaBigReward(const ITEM* item)

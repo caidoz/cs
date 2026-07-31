@@ -109,7 +109,7 @@ void EffectSound(int music)
 	if (music == M_ERROR)
 		AudioEngine::setVolume(audioID[music], VOLUME_BGM);
 	else
-		AudioEngine::setVolume(audioID[music], option.voice == true && VOLUME_SE);
+		AudioEngine::setVolume(audioID[music], VOLUME_SE);
 
 }
 

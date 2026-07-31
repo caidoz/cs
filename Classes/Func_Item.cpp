@@ -105,7 +105,8 @@ int DropItem(OBJECT* pObj, int type)
 			pNew->mom = 1;
 
 			if (type == ITEM_BOX) {
-				pNew->etc = BOX_REWARD0 + Random(8);
+				pNew->etc = SelectCastleRewardBox(
+					robin.castle);
 				pNew->drawHandler = BOXDRAW;
 				pNew->zoom = 0.2f + 0.02f * (pNew->etc - BOX_REWARD0);
 			}

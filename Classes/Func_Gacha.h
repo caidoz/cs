@@ -263,6 +263,31 @@ static const REWARD_BOX_DATA rewardBoxData[8] =
 	}
 };
 
+const int castleRewardBoxRate[TOTALCASTLE][REWARD_BOX_COUNT] =
+{
+	// B0 B1 B2 B3 B4 B5 B6 B7
+
+	{100,  0,  0,  0,  0,  0,  0,  0}, // 0
+	{ 80, 20,  0,  0,  0,  0,  0,  0}, // 1
+	{ 60, 35,  5,  0,  0,  0,  0,  0}, // 2
+	{ 45, 40, 15,  0,  0,  0,  0,  0}, // 3
+	{ 30, 40, 25,  5,  0,  0,  0,  0}, // 4
+	{ 20, 35, 30, 15,  0,  0,  0,  0}, // 5
+	{ 10, 25, 35, 25,  5,  0,  0,  0}, // 6
+	{  5, 20, 35, 25, 15,  0,  0,  0}, // 7
+	{  0, 15, 35, 30, 15,  5,  0,  0}, // 8
+	{  0, 10, 30, 30, 20, 10,  0,  0}, // 9
+	{  0,  5, 25, 30, 25, 15,  0,  0}, // 10
+	{  0,  0, 20, 30, 30, 15,  5,  0}, // 11
+	{  0,  0, 15, 25, 30, 20, 10,  0}, // 12
+	{  0,  0, 10, 20, 30, 25, 15,  0}, // 13
+	{  0,  0,  5, 15, 30, 30, 20,  0}, // 14
+	{  0,  0,  0, 10, 25, 30, 25, 10}, // 15
+	{  0,  0,  0,  5, 20, 30, 30, 15}, // 16
+	{  0,  0,  0,  0, 15, 30, 35, 20}, // 17
+	{  0,  0,  0,  0, 10, 25, 35, 30}, // 18
+};
+
 int GetRewardBoxIndex(int boxDetail);
 int BoxRandomRange(int minValue, int maxValue);
 int RoundBoxCurrency(int itemType, int value);
@@ -274,6 +299,13 @@ bool IsDuplicateBoxCard(
 	int type,
 	int detail);
 int MakeBoxEquipType();
+static int GetRandomBoxDetailByStar(
+	int itemType,
+	int itemGrade,
+	int targetStar,
+	int detailCount);
+static int GetBoxDetailCount(
+	int itemType);
 void MakeBoxCrewReward(
 	int cardIndex,
 	int boxIndex);
@@ -294,6 +326,8 @@ void ShuffleBoxReward(
 	int cardCount);
 void CheckNewBoxReward(
 	int cardCount);
+int SelectCastleRewardBox(
+	int castleIndex);
 bool GenerateCastleBoxReward(
 	int boxDetail);
 int GetWeightedNormalizedReward(

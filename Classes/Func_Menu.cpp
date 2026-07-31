@@ -3770,7 +3770,8 @@ void DrawItemCard(
 		);
 	}
 	else {
-		if (itemLv == 0)
+		//현재 플레이메뉴면 까맣게, 아니면 획득창이니까 보여준다.
+		if (itemLv == 0 && drawHandle == MD_PLAY)
 			SetColor(COLOR_BLACK);
 			//grayScale = 32;
 
@@ -3802,14 +3803,18 @@ void DrawItemCard(
 		grayScale = 0;
 
 		if (itemLv == 0) {
-			CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom, cvtDest, cvtLayer, buffering);
+			if (drawHandle == MD_PLAY)
+				CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom, cvtDest, cvtLayer, buffering);
 		
 			//SetAlpha(24);
 			//MemRect(x + (float)4 * zoom, y - (float)128 * zoom, (float)120 * zoom, (float)24 * zoom, 0x333333, cvtDest, cvtLayer, buffering);
 			//SetAlpha(32);
 			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "%s", textId[GetItemName(itemType, itemDetail, itemGrade)]);
-			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(284) * zoom, 1.6f * zoom, cvtDest, cvtLayer, buffering);
+			if (itemType == ITEM_CREW)
+				sprintf(tempStr, "%s", textId[TEXT_MONSTERNAME_START + crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE]]);
+			else
+				sprintf(tempStr, "%s", textId[TEXT_ITEMNAME_START + GetItemName(itemType, itemDetail, itemGrade)]);
+			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(272) * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
 		}
 		else {
