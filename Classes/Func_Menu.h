@@ -158,6 +158,7 @@ void DrawItemCard(
 	int itemDetail,
 	int itemGrade,
 	int itemLv,
+	long itemCnt,
 	bool empty,
 	int x,
 	int y,

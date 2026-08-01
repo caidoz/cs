@@ -244,13 +244,6 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTexture
 
 	BarDraw(&bar[BAR_COMBATPOWERALL], zoom, cvtDest, cvtLayer, buffering);
 
-	//ExpBarDraw(pObj->lv, pObj->exps, x + (float)52 * _2X * zoom + (float)8 * _2X * zoom, y - (float)32 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-	//DrawCombatPower(GetCombatPower(pObj), ICON_EVENT_2SWORD, x + (float)220 * _2X * zoom, y - (float)32 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-
-	//InventoryDraw(x + (float)12 * _2X * zoom, y - (float)72 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
-	//DrawItemCard(x + plusX, y + plusY, zoom, cvtDest, cvtLayer, buffering);
-
 	for (i = TOTALEQUIP - 1; i >= 0; i--) {
 		usPtr = &equipSlotPos2[i * 4];
 
@@ -363,6 +356,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			it->detail,
 			it->grade,
 			it->lv,
+			it->count,
 			false,
 			x,
 			y,
@@ -396,6 +390,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			crewDetail,
 			crewGrade,
 			it->lv,
+			it->count,
 			false,
 			x,
 			y,
@@ -3263,6 +3258,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	float WINX = (float)DX * zoom;
 	float WINY = (float)(DY - (GNBHEIGHT) - (BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
 	int itemType, itemDetail, itemGrade, itemLv, itemStar;
+	long itemCnt;
 	
 	//SetAlpha(24);
 	MemRect(x, y, WINX, WINY, 0xD8D6FB, cvtDest, cvtLayer, buffering);
@@ -3325,27 +3321,7 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		memset(&tempStr, 0, sizeof(tempStr));
 
 		if (robin.slotCrew[i] == -1) {
-			/*
-			DrawItemCard(
-				EMPTY,
-				0,
-				0,
-				0,
-				true,
-				slotX,
-				slotY,
-				TEXT_EQUIP,
-				0.70f * zoom,
-				true,
-				false,
-				menuCur != i ? (TOUCH_FUNC_MENUCUR_CREW1 + i) : false,
-				menuCur == i ? itemColor[frame % 6] : false,
-				0,
-				cvtDest,
-				cvtLayer,
-				buffering
-			);
-			*/
+			
 			float emphasisScale = (0.8f + sinf(frame * 0.05f) * 0.05f) * zoom;
 
 			DrawPlusMark(
@@ -3452,12 +3428,14 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		itemDetail = robin.inven[itemInvenIdxList[i]].detail;
 		itemGrade = robin.inven[itemInvenIdxList[i]].grade;
 		itemLv = robin.inven[itemInvenIdxList[i]].lv;
+		itemCnt = robin.inven[itemInvenIdxList[i]].count;
 		
 		DrawItemCard(
 			itemType,
 			itemDetail,
 			itemGrade,
 			itemLv,
+			itemCnt,
 			false,
 			cardX,
 			cardY,
@@ -3660,6 +3638,7 @@ void DrawItemCard(
 	int itemDetail,
 	int itemGrade,
 	int itemLv,
+	long itemCnt,
 	bool empty,
 	int x,
 	int y,
@@ -3814,7 +3793,7 @@ void DrawItemCard(
 				sprintf(tempStr, "%s", textId[TEXT_MONSTERNAME_START + crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE]]);
 			else
 				sprintf(tempStr, "%s", textId[TEXT_ITEMNAME_START + GetItemName(itemType, itemDetail, itemGrade)]);
-			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(272) * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(268) * zoom, 1.3f * zoom, cvtDest, cvtLayer, buffering);
 
 		}
 		else {
@@ -3832,7 +3811,7 @@ void DrawItemCard(
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
-			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)275 * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)268 * zoom, 1.3f * zoom, cvtDest, cvtLayer, buffering);
 
 			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
 
@@ -3848,20 +3827,63 @@ void DrawItemCard(
 
 		}
 
-		DrawStar(
-			ICON_STAR,
-			x + (float)120 * zoom,
-			y - (float)50 * zoom,
-			GetItemStar(itemType, itemDetail, itemGrade),
-			GetItemStar(itemType, itemDetail, itemGrade),
-			GetItemStar(itemType, itemDetail, itemGrade),
-			CENTER,
-			false,
-			1.0f * zoom,
-			cvtDest,
-			cvtLayer,
-			buffering
-		);
+		switch (itemType) {
+			case ITEM_SWORD:
+			case ITEM_GUN:
+			case ITEM_BOOMERANG:
+			case ITEM_HELM:
+			case ITEM_HAT:
+			case ITEM_CAP:
+			case ITEM_ARMOR:
+			case ITEM_VEST:
+			case ITEM_COAT:
+			case ITEM_GUNTLET:
+			case ITEM_ARMLET:
+			case ITEM_GLOVE:
+			case ITEM_KILT:
+			case ITEM_SKIRT:
+			case ITEM_PANTS:
+			case ITEM_GREAVES:
+			case ITEM_SHOES:
+			case ITEM_BOOTS:
+			case ITEM_CREW:
+				DrawStar(
+					ICON_STAR,
+					x + (float)120 * zoom,
+					y - (float)50 * zoom,
+					GetItemStar(itemType, itemDetail, itemGrade),
+					GetItemStar(itemType, itemDetail, itemGrade),
+					GetItemStar(itemType, itemDetail, itemGrade),
+					CENTER,
+					false,
+					1.0f * zoom,
+					cvtDest,
+					cvtLayer,
+					buffering
+				);
+				break;
+			default:
+				//------------------------------------------------
+		// 하트 수량
+		//------------------------------------------------
+				DrawGoldNum(
+					itemCnt,  // 아래 설명 참고
+
+					x + (float)120 * zoom,
+					y - (float)50 * zoom,
+
+					CENTER,
+					false,
+					false,
+					true,
+					1.0f * zoom,
+
+					cvtDest,
+					cvtLayer,
+					buffering);
+				break;
+		}
+		
 	}
 
 	
@@ -3937,6 +3959,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 				0,
 				0,
 				0,
+				0,
 				true,
 				slotX,
 				slotY,
@@ -3963,6 +3986,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 				itemDetail,
 				itemGrade,
 				itemLv,
+				itemCnt,
 				false,
 				slotX,
 				slotY,
@@ -4068,6 +4092,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 			itemDetail,
 			itemGrade,
 			itemLv,
+			itemCnt,
 			false,
 			cardX,
 			cardY,
@@ -4633,7 +4658,7 @@ void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 		GoldBarDraw(castleBoxGold[castleOrder[i]], ICON_GOLD, slotX + (float)332 * zoom, slotY - (float)108 * zoom, false, 0.6f * zoom, cvtDest, cvtLayer, buffering);
 		//획득시 캐릭터
 		//DrawImageScale(128, 128, 587, 737, slotX + (float)480 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-		DrawItemCard(ITEM_CREW, i * 2, GRADE_NORMAL, 1, false, slotX + (float)480 * zoom, slotY + (float)8 * zoom, TEXT_ALPHA_REWARD, CARDDEFAULTZOOM * 0.8f * zoom, false, false, false, false, 0, cvtDest, cvtLayer, buffering);
+		DrawItemCard(ITEM_CREW, i * 2, GRADE_NORMAL, 1, 1, false, slotX + (float)480 * zoom, slotY + (float)8 * zoom, TEXT_ALPHA_REWARD, CARDDEFAULTZOOM * 0.8f * zoom, false, false, false, false, 0, cvtDest, cvtLayer, buffering);
 	}
 
 	int scrollH = WINY - (float)(420 + 184 * 0) * zoom;

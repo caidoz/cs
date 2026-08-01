@@ -571,9 +571,9 @@ void TitleDraw(void)
 
 			touchDisable = false;
 
-			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0, gScreenBuffer, gScreenLayer, false);
 			
-			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0, gScreenBuffer, gScreenLayer, false);
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
 

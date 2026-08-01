@@ -1953,6 +1953,7 @@ void GachaDraw(void)
 				trayItem->detail,
 				trayItem->grade,
 				trayItem->lv,
+				trayItem->count,
 				false,
 				(int)drawX,
 				(int)drawY,
@@ -3155,6 +3156,7 @@ void GachaDraw(void)
 				item->detail,
 				item->grade,
 				item->lv,
+				item->count,
 				false,
 				(int)drawX,
 				(int)drawY,
@@ -3848,6 +3850,7 @@ void GachaDraw(void)
 						item->detail,
 						item->grade,
 						item->lv,
+						item->count,
 						false,
 						(int)(drawX -
 							GLOW_OFFSET),
@@ -3868,6 +3871,7 @@ void GachaDraw(void)
 						item->detail,
 						item->grade,
 						item->lv,
+						item->count,
 						false,
 						(int)(drawX +
 							GLOW_OFFSET),
@@ -3888,6 +3892,7 @@ void GachaDraw(void)
 						item->detail,
 						item->grade,
 						item->lv,
+						item->count,
 						false,
 						(int)drawX,
 						(int)(drawY +
@@ -3915,6 +3920,7 @@ void GachaDraw(void)
 					item->detail,
 					item->grade,
 					item->lv,
+					item->count,
 					false,
 					(int)drawX,
 					(int)drawY,

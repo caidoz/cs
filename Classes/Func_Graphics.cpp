@@ -5430,7 +5430,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 
 	ITEM* it;
 
-	DrawItemCard(type, detail, grade, lv, false, x, y, false, zoom, false, false, false, true, openFrame, cvtDest, cvtLayer, buffering);
+	DrawItemCard(type, detail, grade, lv, count, false, x, y, false, zoom, false, false, false, true, openFrame, cvtDest, cvtLayer, buffering);
 	return;
 	//type = ITEM_BOX;
 	//detail = 2;
