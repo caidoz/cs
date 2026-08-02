@@ -2733,7 +2733,7 @@ void GachaDraw(void)
 			4 * MOTIONDIV;
 
 		const float PANEL_FINAL_ZOOM =
-			1.5f;
+			1.6f;
 
 		const float PANEL_START_ZOOM =
 			0.20f;
@@ -2845,14 +2845,14 @@ void GachaDraw(void)
 
 		float panelDisplayH =
 			PANEL_SRC_H *
-			panelZoom;
+			panelZoom * 1.15f;
 
 		float panelCX =
 			xOffset +
 			DX / 2.0f;
 
 		float panelCY =
-			DY / 2.0f;
+			DY / 2.0f + 24 * _2X;
 
 		//----------------------------------------------------
 		// 상자가 아래로 빠지는 연출
@@ -2877,7 +2877,7 @@ void GachaDraw(void)
 		//----------------------------------------------------
 		// 팝업 출력
 		//----------------------------------------------------
-		DrawImage(
+		DrawImageScale(
 			PANEL_SRC_W,
 			PANEL_SRC_H,
 			PANEL_SRC_X,
@@ -2898,6 +2898,7 @@ void GachaDraw(void)
 			false,
 
 			panelZoom,
+			panelZoom * 1.15f,
 
 			sprite[MENU_IMG],
 			gScreenBuffer,
@@ -2939,18 +2940,18 @@ void GachaDraw(void)
 			PANEL_FINAL_ZOOM;
 
 		float popupGapX =
-			4.0f * _2X;
+			2.0f * _2X;
 
 		float popupGapY =
-			4.0f * _2X;
+			2.0f * _2X;
 
 		float popupInnerW =
 			finalPanelW *
-			0.84f;
+			0.88f;
 
 		float popupInnerH =
 			finalPanelH *
-			0.66f;
+			0.8f;
 
 		float popupCardZoomByW =
 			(popupInnerW -
@@ -3007,7 +3008,7 @@ void GachaDraw(void)
 		float popupGridTop =
 			panelCY +
 			finalPanelH *
-			0.30f;
+			0.4f;
 
 		bool allPopupCardsArrived =
 			true;
@@ -3204,7 +3205,7 @@ void GachaDraw(void)
 				panelCY -
 				finalPanelH /
 				2.0f + btnDisplayH
-				+ 16.0f *
+				- 4.0f *
 				_2X;
 
 			DrawImage(
@@ -3225,6 +3226,8 @@ void GachaDraw(void)
 				gScreenLayer,
 				MENU_IMG,
 				false);
+
+			CenterText(TEXT_CONFIRM, btnX + (float)BTN_SRC_W * btnZoom / 2, btnY - (float)BTN_SRC_H * btnZoom / 2 + (float)8 * _2X * btnZoom, 1.5f * btnZoom, gScreenBuffer, gScreenLayer, false);
 
 			SetAlpha(
 				32 -
@@ -3671,6 +3674,65 @@ void GachaDraw(void)
 				drawZoom =
 					anim->barTargetZoom;
 
+				//------------------------------------------------
+	// [추가]
+	// 바에 도착해서 머무르기 시작하는 첫 프레임에
+	// 해당 카드 보상을 실제 지급한다.
+	//
+	// barHoldFrame은 도착 직후 0이며,
+	// 아래에서 매 프레임 증가하므로 정확히 한 번만 실행된다.
+	//------------------------------------------------
+				if (anim->barHoldFrame == 0)
+				{
+					GetItem(
+						item->type,
+						item->lv,
+						item->detail,
+						item->grade,
+						item->count,
+						false);
+
+					//------------------------------------------------
+					// 골드 및 하트 표시값 갱신
+					//
+					// 중요:
+					// GetItem()이 이미 robin.gold/heart를 증가시키고
+					// AddBar()는 표시 연출만 시작하는 구조여야 한다.
+					//------------------------------------------------
+					if (item->type == ITEM_GOLD)
+					{
+						AddBar(
+							&bar[BAR_GOLD],
+							item->count, BARFRAME);
+					}
+					else if (item->type == ITEM_HEART)
+					{
+						AddBar(
+							&bar[BAR_HEART],
+							item->count, BARFRAME);
+					}
+
+					//------------------------------------------------
+					// 장비 획득 직후 가장 강한 장비 갱신
+					//------------------------------------------------
+					if (item->type != ITEM_CREW &&
+						item->type != ITEM_GOLD &&
+						item->type != ITEM_HEART &&
+						item->type != ITEM_STAR &&
+						item->type < ITEM_NETITEM)
+					{
+						//SetStrongestEquip(
+						//	item->type,
+						//	item->detail,
+						//	item->grade);
+					}
+
+					//------------------------------------------------
+					// 카드가 바에 흡수되는 순간의 효과음
+					//------------------------------------------------
+					PlayMusic(M_ITEM);
+				}
+
 				int totalFinishFrame =
 					CARD_GLOW_HOLD_FRAME +
 					CARD_FADE_FRAME;
@@ -4039,6 +4101,7 @@ void GachaDraw(void)
 			robin.waveIdx++;
 			robin.curWaveIdx = 0;
 			memset(&robin.waveActive, 0, sizeof(robin.waveActive));
+			bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 			return;
 		}
 

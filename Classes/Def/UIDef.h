@@ -12,24 +12,24 @@ typedef enum _uiDef {
 
 	FRAME_NORMAL = 0,
 	FRAME_MONSTER,
-	FRAME_MENUWIN,//메뉴창 처음
-	FRAME_MENUWIN_QUICK,//메뉴창 하단에 퀵아이템이 있는경우
-	FRAME_MENUWIN_INFO,//메뉴창 중간에 막대바로 가로 막는 경우
-	FRAME_BUTTON,//판자때기
-	FRAME_CHOICEBUTTON,//선택버튼
-	FRAME_CHOICEBUTTON2,//선택버튼 옅은색
-	FRAME_CHOICEBUTTON_BEIGE,//브라운 판자때기
-	FRAME_TALKWIN,//대화신
-	FRAME_SHOPBALLOON,//상점등에서
-	FRAME_ANIINFO,//애니메이션으로 커지는 창
+	FRAME_MENUWIN,//메뉴�?처음
+	FRAME_MENUWIN_QUICK,//메뉴�??�단???�아?�템???�는경우
+	FRAME_MENUWIN_INFO,//메뉴�?중간??막�?바로 가�?막는 경우
+	FRAME_BUTTON,//?�자?�기
+	FRAME_CHOICEBUTTON,//?�택버튼
+	FRAME_CHOICEBUTTON2,//?�택버튼 ?��???
+	FRAME_CHOICEBUTTON_BEIGE,//브라???�자?�기
+	FRAME_TALKWIN,//?�?�신
+	FRAME_SHOPBALLOON,//?�점?�에??
+	FRAME_ANIINFO,//?�니메이?�으�?커�???�?
 	FRAME_MENUDAILY,
 	FRAME_GAMEOVER,
 	FRAME_NOFRAME,
-	FRAME_GREEN,//초록색
-	FRAME_RED,//빨간색
-	FRAME_BLUE,//하늘색
-	FRAME_GREY,//회색
-	FRAME_GNB,//일반적인 노멀한 
+	FRAME_GREEN,//초록??
+	FRAME_RED,//빨간??
+	FRAME_BLUE,//?�늘??
+	FRAME_GREY,//?�색
+	FRAME_GNB,//?�반?�인 ?��???
 	FRAME_GREEN_OPTION,
 	FRAME_RED_OPTION,
 	FRAME_BLUE_OPTION,
@@ -38,7 +38,7 @@ typedef enum _uiDef {
 	FRAME_GREY_STAGE,
 	FRAME_WHITEROUND,
 
-	//데모 관련
+	//?�모 관??
 	TEXTLINEPERPAGE = 3,
 
 	INFOTYPE_GETITEM = 0,
@@ -59,24 +59,24 @@ typedef enum _uiDef {
 	BAR_CASTLE,
 	BAR_CREW,
 	BAR_HEART,
-	BAR_HEARTBET,//하트베팅 버튼
+	BAR_HEARTBET,//?�트베팅 버튼
 	BAR_BATTLECOIN,
 	BAR_HAMMER,
 	BAR_SHIELD,
 	BAR_MEDAL,
 	BAR_INVENTORY,
 	BAR_SKILL = BAR_INVENTORY + TOTALCHAR,
-	BAR_ENEMYUSER = BAR_SKILL + TOTALCHAR,//상대방 유저
-	BAR_ENEMYUSER_BOX,//박스에서 튀어나오는 상대방 유저
-	BAR_MAINSHOP,//메인샵
-	BAR_DAILYQUEST,//일일퀘스트
-	BAR_CREWUPGRADE,//크류(여기는 동료들을 업그레이드 해주는곳)
-	BAR_EQUIP,//컬렉션(히어로별 장비, 스킬, 별상점)
+	BAR_ENEMYUSER = BAR_SKILL + TOTALCHAR,//?��?�??��?
+	BAR_ENEMYUSER_BOX,//박스?�서 ?�?�나?�는 ?��?�??��?
+	BAR_MAINSHOP,//메인??
+	BAR_DAILYQUEST,//?�일?�스??
+	BAR_CREWUPGRADE,//?�류(?�기???�료?�을 ?�그?�이???�주?�곳)
+	BAR_EQUIP,//컬렉???�어로별 ?�비, ?�킬, 별상??
 	BAR_FRIENDS,//친구
 	BAR_QUEST,
 	BAR_NPC,
 	BAR_RAIDGOLD,//
-	BAR_RAIDCOIN,//배틀에서 쓰일 이번턴(내턴 + 적턴) 획득량
+	BAR_RAIDCOIN,//배�??�서 ?�일 ?�번???�턴 + ?�턴) ?�득??
 	BAR_BOSSHP,//보스 HP
 	BAR_HITCOUNT,
 	BAR_COMBATPOWER,
@@ -84,12 +84,12 @@ typedef enum _uiDef {
 	BAR_STAR,
 	BAR_STAGEPROGRESS,
 	BAR_REMAINEDTURN,
-	BAR_DAY,              // Day 표시만
-	BAR_WAVE,             // Life 표시만
+	BAR_DAY,              // Day ?�시�?
+	BAR_WAVE,             // Life ?�시�?
 	BAR_ROULETTE,//룰렛
-	BAR_PLAY,//플레이 버튼
-	BAR_JOYSTICK,//움직임 컨트롤러
-	BAR_JUMP,//점프버튼
+	BAR_PLAY,//?�레??버튼
+	BAR_JOYSTICK,//?�직임 컨트롤러
+	BAR_JUMP,//?�프버튼
 
 	TOTAL_BAR,
 
@@ -106,21 +106,21 @@ typedef enum _uiDef {
 	BARCOLOR_PURPLE,
 
 	//menuResult
-	RESULT_NOGOLD = 1,	//골드가 부족합니다.
-	RESULT_INVENTORYFULL,//인벤토리가 가득 찼습니다.
-	RESULT_NOSOCKET,	//소켓이 없는 장비입니다.
-	RESULT_CANNOTSELLITEM,	//판매할 수 없는 아이템입니다.
-	RESULT_ITEMLIMIT,//해당 아이템을 더이상 소지할 수 없습니다.
-	RESULT_NOORE,	//재료가 부족합니다.
-	RESULT_NOMOREENCHANT,	//더이상 강화하실 수 없습니다.
-	RESULT_NOENCHANTITEM,//강화할 수 있는 아이템이 없습니다.
-	RESULT_NORECIPE,	//제작가능한 조합서를 가지고 있지 않습니다.
+	RESULT_NOGOLD = 1,	//골드가 부족합?�다.
+	RESULT_INVENTORYFULL,//?�벤?�리가 가??찼습?�다.
+	RESULT_NOSOCKET,	//?�켓???�는 ?�비?�니??
+	RESULT_CANNOTSELLITEM,	//?�매?????�는 ?�이?�입?�다.
+	RESULT_ITEMLIMIT,//?�당 ?�이?�을 ?�이???��??????�습?�다.
+	RESULT_NOORE,	//?�료가 부족합?�다.
+	RESULT_NOMOREENCHANT,	//?�이??강화?�실 ???�습?�다.
+	RESULT_NOENCHANTITEM,//강화?????�는 ?�이?�이 ?�습?�다.
+	RESULT_NORECIPE,	//?�작가?�한 조합?��? 가지�??��? ?�습?�다.
 	RESULT_NOGEM,
-	RESULT_NOGEMITEM,//보석을 장착할 수 있는 장비가 없습니다.
-	RESULT_BROKENITEM,	//부서진 아이템은 강화하실 수 없습니다.
-	RESULT_ENCHANTSUCCESS,	//강화에 성공하였습니다.
-	RESULT_RECIPESUCCESS,	//새로운 아이템이 생성되었습니다.
-	RESULT_SOCKETSUCCESS,	//보석 장착에 성공하였습니다.
+	RESULT_NOGEMITEM,//보석???�착?????�는 ?�비가 ?�습?�다.
+	RESULT_BROKENITEM,	//부?�진 ?�이?��? 강화?�실 ???�습?�다.
+	RESULT_ENCHANTSUCCESS,	//강화???�공?��??�니??
+	RESULT_RECIPESUCCESS,	//?�로???�이?�이 ?�성?�었?�니??
+	RESULT_SOCKETSUCCESS,	//보석 ?�착???�공?��??�니??
 	RESULT_NOSTONE,
 	RESULT_ENCHANTFAILURE,
 	RESULT_ENCHANTFAILURE2,
@@ -163,7 +163,7 @@ typedef enum _uiDef {
 	MAXPOPUP = 10,
 
 	INVEN_HCNT = 4,
-	INVEN_HCNT_2X = 5,//인벤토리 가로 몇개인가
+	INVEN_HCNT_2X = 5,//?�벤?�리 가�?몇개?��?
 	INVEN_VCNT_MIN = 5,
 	INVEN_VCNT_MIN_2X = 4,
 
@@ -175,11 +175,11 @@ typedef enum _uiDef {
 	INVEN_ICON_HGAP = 8,
 	INVEN_ICON_VGAP = 24,
 	
-	INVENTORY_X = 24,
+	INVENTORY_X = 16,
 	INVENTORY_GAP_X = 148,
 	INVENTORY_GAP_Y = 180,
 
-	CREW_GAP_Y = 180,
+	CREW_GAP_Y = 208,
 	CASTLE_GAP_Y = 160,
 
 	BUYBUTTON_X = 84 * _2X,

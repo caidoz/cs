@@ -163,22 +163,27 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 
 		SetFontColor(COLOR_WHITE);
 
-		if (count >= GetInitHeart()) {
-			CenterText(TEXT_HEARTISFULL, xOffset + barP->x, barP->y - (float)(HEARTBARHEIGHT + 2 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
-			//SetFontColor(false);
-		}
-		//만약 모자라면 얼마 뒤에 스핀을 획득하는지 보여준다.
+		if (barP->addView)
+			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(HEARTBARWIDTH / 2 - 16 * _2X) * zoom, barP->y - (float)HEARTBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, HEARTBARWIDTH, true, 0.3f * zoom, false, true, cvtDest, cvtLayer, buffering);
 		else {
-			DrawIcon(barP->icon, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 0 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 0 * _2X) * barP->zoom, barP->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+			
+			if (count >= GetInitHeart()) {
+				CenterText(TEXT_HEARTISFULL, xOffset + barP->x, barP->y - (float)(HEARTBARHEIGHT + 2 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
+				//SetFontColor(false);
+			}
+			//만약 모자라면 얼마 뒤에 스핀을 획득하는지 보여준다.
+			else {
+				DrawIcon(barP->icon, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 0 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 0 * _2X) * barP->zoom, barP->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
 
-			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "+%d", GetHeartAmount());
-			DrawTextStr(tempStr, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 18 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
+				memset(&tempStr, 0, sizeof(tempStr));
+				sprintf(tempStr, "+%d", GetHeartAmount());
+				DrawTextStr(tempStr, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 18 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
 
-			DrawText(TEXT_AFTER, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 42 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
+				DrawText(TEXT_AFTER, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 42 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom, cvtDest, cvtLayer, buffering);
 
-			DrawTime(xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 78 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * zoom, HEARTTIME - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom, cvtDest, cvtLayer, buffering);
+				DrawTime(xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 78 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * zoom, HEARTTIME - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom, cvtDest, cvtLayer, buffering);
 
+			}
 		}
 		break;
 	case BAR_ROULETTE://룰렛

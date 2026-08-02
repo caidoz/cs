@@ -2679,7 +2679,8 @@ const unsigned short itemStar[] = {
 	//TOTAL_STATUE,
 
 	500,//ITEM_HEART
-	700,//ITEM_STAR
+	500,//ITEM_MEDAL
+	500,//ITEM_STAR
 	300,//ITEM_HAMMER
 	200,//ITEM_SHIELD
 

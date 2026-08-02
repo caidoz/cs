@@ -1756,21 +1756,18 @@ void WaveControler()
 	}
 }
 
-long long GetTotalWaveHp(int stage)
+long long GetTotalWaveHp(int waveIdx)
 {
 	int i;
-	int monType;
 	long long curHp;
 	long long totalHp = 0;
+	int monType;
 
 	for (i = 0; i < MAXWAVEENEMY; i++) {
-		monType = wave[stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
+		monType = wave[waveIdx * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
 		if (monType != false) {
-			curHp = 100 * (stage + 10) * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
-			if (wave[stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
-				curHp *= 5;
-			}
-
+			curHp = GetWaveHp(waveIdx, i); 
+			
 			totalHp += curHp;
 		}
 	}
@@ -1791,6 +1788,13 @@ long long GetTotalEnemyHp(int stage)
 	}
 
 	return totalHp;
+}
+
+long long GetWaveHp(int waveIdx, int curWave)
+{
+	int monType = wave[waveIdx * WAVEDATASIZE * MAXENEMY + curWave * WAVEDATASIZE + 0];
+
+	return 100 * (waveIdx + 10) * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
 }
 
 int SetEnemy(OBJECT *pObj)
@@ -1832,12 +1836,12 @@ int SetEnemy(OBJECT *pObj)
 	case MD_RAID:
 		//pObj->maxhp = pObj->hp = (50 + pObj->lv * 23 + pObj->lv * pObj->lv * 12 / 10) * 10;
 		//TEST
-		pObj->maxhp = pObj->hp = 100 * (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
+		pObj->maxhp = pObj->hp = GetWaveHp(robin.waveIdx, robin.curWaveIdx);
 		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
-		if (wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
-			pObj->maxhp *= 5;
-			pObj->hp = pObj->maxhp;
-		}
+		//if (wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
+		//	pObj->maxhp *= 5;
+		//	pObj->hp = pObj->maxhp;
+		//}
 #ifdef ENEMYHPDISCOUNT
 		pObj->maxhp = pObj->hp = ENEMYHPDISCOUNT;
 #endif

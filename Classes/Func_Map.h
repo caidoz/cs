@@ -23,6 +23,7 @@ void WaveStart(void);
 void WaveControler(void);
 long long GetTotalWaveHp(int stage);
 long long GetTotalEnemyHp(int stage);
+long long GetWaveHp(int waveIdx, int curWave);
 int SetEnemy(OBJECT *);
 void SetNpc(OBJECT *);
 void SetRaid(void);

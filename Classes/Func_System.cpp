@@ -698,7 +698,7 @@ void InitBar(int type)
 		bar[BAR_BOSSHP].active = true;
 		bar[BAR_BOSSHP].type = BAR_BOSSHP;
 
-		bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.stage);
+		bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 		bar[BAR_BOSSHP].add = 0;
 		bar[BAR_BOSSHP].countFrame = 0;
 
@@ -2581,6 +2581,8 @@ void OutOfGacha(void)
 
 				//robin.curWaveIdx++;
 				waveStatus = WAVESTATUS_PLAY;
+
+				
 			}
 			else {
 				attackSequence = ATTACKSEQUENCE_READY;

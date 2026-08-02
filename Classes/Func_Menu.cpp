@@ -3811,7 +3811,7 @@ void DrawItemCard(
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
-			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)268 * zoom, 1.3f * zoom, cvtDest, cvtLayer, buffering);
+			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)(268 + 4) * zoom, 1.3f * zoom, cvtDest, cvtLayer, buffering);
 
 			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
 

@@ -122,7 +122,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 #define DAYS3 3 * 24 * 60 * 60 * 1000 // 3ÀÏ
 #define JOYKNOBMAX	42 * _2X
 
-#define CARDDEFAULTZOOM		0.55f
+#define CARDDEFAULTZOOM		0.6f
 //#define NUMTTF
 //#define INITPOPUP
 
