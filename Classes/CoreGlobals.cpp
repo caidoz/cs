@@ -1425,3 +1425,5 @@ int summaryFrame;
 int flyToBarFrame;
 
 int getItemFrame;
+
+bool gachaCardSkipRequested;

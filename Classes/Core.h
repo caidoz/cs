@@ -2408,4 +2408,6 @@ extern int summaryFrame;
 extern int flyToBarFrame;
 
 extern int getItemFrame;
+
+extern bool gachaCardSkipRequested;
 #endif

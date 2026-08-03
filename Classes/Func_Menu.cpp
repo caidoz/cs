@@ -418,25 +418,24 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 
 			for (int j = 0; j < i + 1; j++)
 			{
-				float centerX = startX + (float)24 * j * slotZoom * zoom + (float)reelPostion[j * 2 + 0] * slotZoom * zoom;
+				float centerX = startX + (float)4 * slotZoom * zoom + (float)reelPostion[j * 2 + 0] * slotZoom * zoom;
 				float centerY = startY + (float)reelPostion[j * 2 + 1] * slotZoom * zoom;
 
 				float baseScale = 2.5f * slotZoom * zoom * enemyIconZoom[crewType];
-
+				/*
 				ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
 					centerX - (float)12 * _2X * 2.5f * slotZoom * zoom,
 					centerY + (float)8 * _2X * 2.5f * slotZoom * zoom,
 					SHADOW_IMG, 2.5f * slotZoom * zoom, cvtDest, cvtLayer, buffering);
+				*/
 
-				DrawCmfDetail(enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF],
+				DrawCmfDetailShadow(enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF],
 					crewPos[crewType * 5 + 0],
 					centerX, centerY,
 					RIGHT, baseScale,
-					false, false, cvtDest, cvtLayer, buffering);
+					cvtDest, cvtLayer, buffering);
 			}
 		}
-
-		DrawTouchLargeButton(x + (float)(200) * zoom, y - (float)(800) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, crewGrade), FRAME_GREEN, 1.5f * zoom, cvtDest, cvtLayer, buffering);
 
 		return;
 		/*
@@ -3490,6 +3489,8 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.2f * zoom, false, false, cvtDest, cvtLayer, buffering);
 		
+		DrawTouchLargeButton(x + (float)(200) * zoom, y - (float)(480) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_GREEN, 1.5f * zoom, cvtDest, cvtLayer, buffering);
+
 		//최외각 테두리
 		MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK* zoom, cvtDest, cvtLayer, buffering);
 		//그안에 테두리
@@ -3811,6 +3812,7 @@ void DrawItemCard(
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
+			SetFontColor(COLOR_WHITE);
 			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)(268 + 4) * zoom, 1.3f * zoom, cvtDest, cvtLayer, buffering);
 
 			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
@@ -3980,6 +3982,7 @@ void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, 
 			itemDetail = ao[ROBIN].equip[i].detail;
 			itemGrade = ao[ROBIN].equip[i].grade;
 			itemLv = ao[ROBIN].equip[i].lv;
+			itemCnt = 1;
 
 			DrawItemCard(
 				itemType,
@@ -4622,8 +4625,8 @@ void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 	//현재 성
 	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)(132) * zoom, false, false, false, false, false, 4.9f * zoom, 2.0f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)16 * zoom, y - (float)124 * zoom, false, false, false, false, false, 0.25f * zoom, sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + castleOrder[robin.castle], buffering);
-	DrawImageScale(176, 40, 1, 679, x + (float)200 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-	CenterText(TEXT_CASTLE_TOLEM + castleOrder[robin.castle], x + (float)200 * zoom + (float)106 * zoom, y - (float)(132 + 20) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+	DrawImageScale(176, 40, 1, 679, x + (float)280 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
+	CenterText(TEXT_CASTLE_TOLEM + castleOrder[robin.castle], x + (float)280 * zoom + (float)106 * zoom, y - (float)(132 + 20) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 
 
 	//리스트의 성
@@ -4653,7 +4656,7 @@ void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 		//상자
 		DrawImageScale(128, 128, 587, 737, slotX + (float)350 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
-		DrawBox(BOX_CASTLE0 + i, slotX + (float)400 * zoom, slotY + (float)56 * zoom, LEFT, 0, false, false, false, false, BOXCASTLEZOOM * 0.9f, cvtDest, cvtLayer, buffering);
+		DrawBox(BOX_CASTLE0 + castleOrder[i], slotX + (float)400 * zoom, slotY - (float)108 * zoom, LEFT, 0, false, false, false, false, BOXCASTLEZOOM * 0.9f, cvtDest, cvtLayer, buffering);
 
 		GoldBarDraw(castleBoxGold[castleOrder[i]], ICON_GOLD, slotX + (float)332 * zoom, slotY - (float)108 * zoom, false, 0.6f * zoom, cvtDest, cvtLayer, buffering);
 		//획득시 캐릭터

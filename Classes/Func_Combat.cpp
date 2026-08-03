@@ -1919,7 +1919,7 @@ void AttackRobin(int obj, int dest)
 	}
 
 	if (damage > 0) {
-		SetHitMark(ao[dest].x, ao[dest].y, RIGHT, HITMARK_SMALL, 0, obj, HITMARKZOOM/*ao[obj].zoom*/);
+		SetHitMark(ao[dest].x, STATUSWIN_Y + (rh - 4) * TSIZE - ao[dest].y, RIGHT, HITMARK_SMALL, 0, obj, HITMARKZOOM/*ao[obj].zoom*/);
 		curPlayer = dest;
 
 		SetDmgNum(obj, dest, damage, 1, attackType, DMGNUMZOOM);
@@ -2660,7 +2660,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_EXTRA;
 			pAttack->attackFrame += 4;
 			SetImgText(attackerObj, EFFECT_TEXT_EXTRA, IMGTEXTZOOM);
-			//SetHitMark(pDest->x, pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_EXTRA, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, pDest->zoom);
+			//SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_EXTRA, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, pDest->zoom);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			//ao[i].ax = damage;
@@ -2696,7 +2696,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 			pAttack->attackFrame += 4;
 			SetImgText(attackerObj, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2708,7 +2708,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2719,7 +2719,7 @@ int AttackObj(long long int attacker, int dest)
 
 			ad += 1 << ATTACK_PIERCE;
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.shake = 4;

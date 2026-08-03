@@ -2389,6 +2389,120 @@ void GachaDraw(void)
 				&boxCardMark[
 					manualCardMarkIdx];
 
+			//----------------------------------------------------
+	// [추가]
+	// 터치가 들어오면 현재 애니메이션 단계의
+	// 마지막 프레임으로 즉시 이동한다.
+	//----------------------------------------------------
+			if (gachaCardSkipRequested)
+			{
+				gachaCardSkipRequested =
+					false;
+
+				//------------------------------------------------
+				// 1단계
+				// 카드 상승·충격·복원 중
+				//
+				// 중앙에 완전히 올라온 뒷면 상태로 이동한다.
+				//------------------------------------------------
+				if (card->motionFrame <
+					CARD_HOLD_END)
+				{
+					card->motionFrame =
+						CARD_HOLD_END;
+
+					card->x =
+						CARD_CENTER_X;
+
+					card->y =
+						CARD_END_Y;
+
+					card->zoom =
+						CARD_FINAL_ZOOM;
+
+					card->zoom2 =
+						CARD_FINAL_ZOOM;
+
+					card->openFrame =
+						1;
+				}
+
+				//------------------------------------------------
+				// 2단계
+				// 카드 뒷면 정지 또는 회전 중
+				//
+				// 즉시 앞면으로 이동한다.
+				//------------------------------------------------
+				else if (card->motionFrame <
+					CARD_FLIP_END)
+				{
+					card->motionFrame =
+						CARD_FLIP_END;
+
+					card->x =
+						CARD_CENTER_X;
+
+					card->y =
+						CARD_END_Y;
+
+					card->zoom =
+						CARD_FINAL_ZOOM;
+
+					card->zoom2 =
+						CARD_FINAL_ZOOM;
+
+					card->openFrame =
+						0;
+
+					//------------------------------------------------
+					// 회전 완료 효과음을 한 번 재생
+					//------------------------------------------------
+					PlayMusic(
+						M_CARDSPLIT);
+				}
+
+				//------------------------------------------------
+				// 3단계
+				// 앞면 공개 후 특수 연출 또는 강제 대기 중
+				//
+				// 특수 연출과 터치 지연을 끝낸다.
+				// 이번 터치로 바로 하단 이동까지 하지는 않는다.
+				//------------------------------------------------
+				else if (card->motionFrame <
+					CARD_FLIP_END +
+					specialHoldFrame +
+					CARD_TOUCH_DELAY +
+					1)
+				{
+					card->motionFrame =
+						CARD_FLIP_END +
+						specialHoldFrame +
+						CARD_TOUCH_DELAY +
+						1;
+
+					card->x =
+						CARD_CENTER_X;
+
+					card->y =
+						CARD_END_Y;
+
+					card->zoom =
+						CARD_FINAL_ZOOM;
+
+					card->zoom2 =
+						CARD_FINAL_ZOOM;
+
+					card->openFrame =
+						0;
+
+					//------------------------------------------------
+					// 다음 터치부터 하단 이동 가능
+					//------------------------------------------------
+					gachaCardCanAdvance =
+						true;
+				}
+			}
+
 			int cardAnimFrame =
 				card->motionFrame;
 
@@ -2680,6 +2794,22 @@ void GachaDraw(void)
 					DY,
 					TOUCH_FUNC_GETGACHACARD);
 			}
+		}
+
+
+		//----------------------------------------------------
+	// 카드 진행 중에도 터치 입력 등록
+	//----------------------------------------------------
+		if (manualCardMarkIdx >= 0 &&
+			gachaOpenCardIdx >= 0 &&
+			gachaOpenCardIdx < rewardCount)
+		{
+			SetRectPoint(
+				0,
+				DY,
+				DX,
+				DY,
+				TOUCH_FUNC_GETGACHACARD);
 		}
 
 		break;
@@ -4278,39 +4408,73 @@ void GachaKey(void)
 		//--------------------------------------------------------
 	case GACHA_DEPTH_CARD:
 	{
-		if (gachaCardCanAdvance == false)
-			break;
-
-		gachaCardCanAdvance =
-			false;
-
-		//------------------------------------------------
-		// 첫 번째 탭:
-		// 첫 번째 카드를 상자에서 꺼냄
-		//------------------------------------------------
+		//----------------------------------------------------
+		// 아직 첫 카드를 꺼내기 전
+		//----------------------------------------------------
 		if (gachaOpenCardIdx < 0)
 		{
+			if (gachaCardCanAdvance == false)
+				break;
+
+			gachaCardCanAdvance =
+				false;
+
 			gachaOpenCardIdx =
 				0;
 
 			gachaCurrentCardReady =
 				false;
-		}
-		//------------------------------------------------
-		// 이후 탭:
-		// 현재 카드는 하단 정렬 위치로 이동시키고
-		// 다음 카드 번호로 진행
-		//------------------------------------------------
-		else
-		{
-			gachaOpenCardIdx++;
 
-			gachaCurrentCardReady =
+			gachaCardSkipRequested =
 				false;
+
+			break;
 		}
+
+		//----------------------------------------------------
+		// 모든 카드 공개가 이미 끝난 상태
+		//----------------------------------------------------
+		if (gachaOpenCardIdx >=
+			boxCardItemCnt[0])
+		{
+			break;
+		}
+
+		//----------------------------------------------------
+		// 현재 카드 애니메이션이 진행 중이면
+		// 다음 단계 끝으로 이동하도록 요청
+		//----------------------------------------------------
+		if (gachaCardCanAdvance == false)
+		{
+			if (manualCardMarkIdx >= 0)
+			{
+				gachaCardSkipRequested =
+					true;
+			}
+
+			break;
+		}
+
+		//----------------------------------------------------
+		// 앞면 공개와 특수 연출까지 끝난 상태
+		//
+		// 이번 터치로 현재 카드를 하단으로 보내고
+		// 다음 카드를 준비한다.
+		//----------------------------------------------------
+		gachaCardCanAdvance =
+			false;
+
+		gachaCardSkipRequested =
+			false;
+
+		gachaOpenCardIdx++;
+
+		gachaCurrentCardReady =
+			false;
 
 		break;
 	}
+
 
 	//--------------------------------------------------------
 	// 최종 보상 팝업

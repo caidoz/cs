@@ -1485,7 +1485,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 
 		//같은종류가 있으면 수량을 더해준다.
 		for (i = 0; i < robin.maxInven; i++) {
-			if (robin.inven[i].type == type && robin.inven[i].detail == detail && robin.inven[i].grade == grade) {
+			if (robin.inven[i].type == type && robin.inven[i].detail == detail/* && robin.inven[i].grade == grade*/) {
 				//수량을 더해준다.
 				if (robin.inven[i].count + count < MAXNUM) {
 					robin.inven[i].count += count;
