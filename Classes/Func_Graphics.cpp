@@ -4886,7 +4886,7 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 
 
 	//SetFontColor(COLOR_BROWN);
-	DrawTextStr(text, x + ((float)w * zoom - StringWidth(text, zoom)) / 2 + (float)(1 * _2X) * zoom, y - ((float)h * zoom - (float)(12 * _2X) * zoom) / 2, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+	DrawTextStr(text, x + ((float)w * zoom - StringWidth(text, zoom)) / 2, y - ((float)h / 2 * zoom + (float)(12) * zoom) / 2, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 	//SetFontColor(COLOR_WHITE);
 	if (func)
 		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
@@ -5012,7 +5012,7 @@ void DrawSkillIcon(int idx, int x, int y, float zoom, cocos2d::RenderTexture* cv
 
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
-	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx & 0x07) * CREWBULLETICONSIZE, ((idx & 0x3F) >> 3) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], cvtDest, cvtLayer, CREWBULLET_IMG, buffering);
+	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx % 16) * CREWBULLETICONSIZE, (idx / 16) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], cvtDest, cvtLayer, CREWBULLET_IMG, buffering);
 }
 
 //일단 액티브 스킬의 경우에만 사용한다.

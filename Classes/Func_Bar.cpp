@@ -188,11 +188,21 @@ void BarDraw(BAR* barP, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::La
 		break;
 	case BAR_ROULETTE://룰렛
 		RouletteDraw(xOffset + barP->x, barP->y, barP->zoom, cvtDest, cvtLayer, buffering);
+		if (touchDisable == false)
+			SetRectPoint(xOffset + barP->x - (float)SLOTSIZE_X / 2 * barP->zoom, barP->y, (float)SLOTSIZE_X * barP->zoom, (float)SLOTSIZE_Y * barP->zoom, TOUCH_FUNC_POPUP_CREWLIST);
 		break;
 	case BAR_HEARTBET://하트베팅 버튼
 		DrawHeartButton(betHeart[bet], xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false ? true : false), true, cvtDest, cvtLayer, buffering);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)HEARTBUTTONWIDTH * barP->zoom, (float)HEARTBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_HEARTAMOUNT);
+
+		//인터랙티브 전투 튜토리얼: 하트 베팅 설명 이후 룰렛이 열리기 전까지 베팅 버튼을 강조해준다.
+		if (robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE]) {
+			float pulse = 0.9f + sinf((float)frame * 0.1f) * 0.1f;
+			float hlW = (float)HEARTBUTTONWIDTH * barP->zoom * pulse;
+			float hlH = (float)HEARTBUTTONHEIGHT * barP->zoom * pulse;
+			MemRectFrameThick(xOffset + barP->x - (hlW - (float)HEARTBUTTONWIDTH * barP->zoom) / 2, barP->y - (hlH - (float)HEARTBUTTONHEIGHT * barP->zoom) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X), cvtDest, cvtLayer, buffering);
+		}
 		break;
 	case BAR_PLAY://플레이 버튼
 		DrawAttackButton(count, xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame, cvtDest, cvtLayer, buffering);

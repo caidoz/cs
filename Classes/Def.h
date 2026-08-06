@@ -78,7 +78,7 @@ int hexcolor = (r << 16) + (g << 8) + b;
 //#define ATTACKEDINVINCIBLE
 //#define SPEEDTURN
 #define ENEMYHPBAR
-//#define GUIDELINE
+#define GUIDELINE
 //#define MAPTEST
 
 //#define INVINCIBLE
@@ -129,6 +129,11 @@ int hexcolor = (r << 16) + (g << 8) + b;
 typedef enum _reel {
 	SLOTSIZE_X = 512,
 	SLOTSIZE_Y = 218,
+
+	CHAINLOCK_W = 479,
+	CHAINLOCK_H	= 215,
+	LOCK_W = 145,
+	LOCK_H = 169,
 
 	REELSIZE_X = 156,
 	REELSIZE_Y = 290,

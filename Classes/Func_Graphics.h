@@ -37,7 +37,7 @@ void SetColor(int);
 void SetFontColor(int);
 void ScreenDarken(int);
 void MemRectFrameThick(int, int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void MemRect(int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void MemRect(int x, int y, int w, int h, int fillCol, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
 void MemRectFrame(int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void MemRectBoth(int, int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void MemRectBothThick(int, int, int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);

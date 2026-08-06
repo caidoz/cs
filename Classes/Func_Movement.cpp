@@ -11150,7 +11150,7 @@ void RegenMove(OBJECT* pObj)
 					}
 				}
 
-				if (bar[BAR_BOSSHP].active == false)
+				if (bar[BAR_BOSSHP].active == false && drawHandle != MD_DEMO)
 					InitBar(BAR_BOSSHP);
 
 				//pObj->currentSkill = 0;

@@ -687,8 +687,11 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 	if (popUpFrame > startFrame + 1) {
 		if (popUpFrame == startFrame + 2)
 			PlayMusic(M_JUMP);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+		//DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
+		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+
 	}
 
 	if (textIdx) {
@@ -697,7 +700,7 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 
 		if (popUpFrame > startFrame + 2) {
 			SetFontColor(COLOR_WHITE);
-			FrameText(TEXTPTR(textIdx), x + (float)((DX - 512) / 2) * zoom, y - (float)(16 * _2X) * zoom, 1.4f * textDx, textLines, textCurPage, 1.4f * zoom, cvtDest, cvtLayer, buffering);
+			FrameText(TEXTPTR(textIdx), x + (float)((DX - 512) / 2 + 40 * _2X) * zoom, y - (float)(16 * _2X) * zoom, 1.2f * textDx, textLines, textCurPage, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 			//SetFontColor(COLOR_WHITE);
 		}
 	}

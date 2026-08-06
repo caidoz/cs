@@ -104,6 +104,22 @@ void DecideRouletteResult(void)
 		return -1;
 		};
 
+	// 인터랙티브 전투 튜토리얼: 보스전에서는 룰렛 결과 3칸을 전부 가장 센 동료로 고정해
+	// 트리플 매치(GetSameRouletteCnt==3 -> CREWDATA_SKILL1+2, 즉 그 동료의 3번째 스킬)를
+	// 강제로 띄운다. 실제 전투 시스템(AttackEnemyCheck 등)이 그대로 스킬 데미지를 계산하므로
+	// 별도 데미지 계산 로직은 필요 없다.
+	if (robinmap == MAP_DIORAMA_TOLEM && robin.demoSeen[DEMO_TUTORIAL_BOSS] && ao[ENEMY].type == ENEMY_CASTLE_BOSS4) {
+		int strongestCrewIndex = idx[crewCnt - 1];
+
+		for (int r = 0; r < TOTALREEL; r++) {
+			gRouletteStartAoOffset[r] = idx[r];
+			gRouletteResultAoOffset[r] = strongestCrewIndex;
+		}
+
+		gRouletteResultValid = true;
+		return;
+	}
+
 	// 시작 3명 = 최약 3개 (crewIndex 저장)
 	for (int r = 0; r < TOTALREEL; r++) {
 		gRouletteStartAoOffset[r] = idx[r]; // <-- crewIndex
@@ -284,6 +300,154 @@ int GetSameRouletteCnt(int objIdx)
 int UpgradeSkillIdx(int reelIdx, int count)
 {
 	return crewData[GetCrewIdxFromType(ao[(CREW + gRouletteResultAoOffset[reelIdx])].type) * CREWDATASIZE + CREWDATA_SKILL1 + count - 1];
+}
+
+//------------------------------------------------------------
+// 룰렛 미리보기(애니메이션 없음)
+// slotCrewIdx : 슬롯에 들어갈 동료 offset
+// totalCrewCount : 현재 보유 동료 수
+//------------------------------------------------------------
+void RouletteDrawSimple3Slots(
+	int x,
+	int y,
+	float zoom,
+	const int slotCrewIdx[3],
+	int totalCrewCount,
+	cocos2d::RenderTexture* cvtDest,
+	cocos2d::Layer* cvtLayer,
+	bool buffering)
+{
+	const bool rouletteLocked = (totalCrewCount < 6);
+
+	//---------------------------------------
+	// 슬롯 프레임
+	//---------------------------------------
+	DrawImage(
+		SLOTSIZE_X,
+		SLOTSIZE_Y,
+		0, 0,
+		x - (float)SLOTSIZE_X / 2 * zoom,
+		y,
+		false, false, false, false, false,
+		zoom,
+		sprite[SLOT_IMG],
+		cvtDest,
+		cvtLayer,
+		SLOT_IMG,
+		buffering);
+
+	//---------------------------------------
+	// 기존 GrayScale 저장
+	//---------------------------------------
+	int oldGray = grayScale;
+
+	if (rouletteLocked)
+		grayScale = 32;
+
+	//---------------------------------------
+	// 슬롯 3개
+	//---------------------------------------
+	for (int i = 0; i < 3; i++)
+	{
+		float centerX =
+			x - (float)SLOTSIZE_X * zoom / 2
+			+ reelPostion[i * 2 + 0] * zoom;
+
+		float centerY =
+			y + reelPostion[i * 2 + 1] * zoom;
+
+		//-----------------------------------
+		// 빈 슬롯
+		//-----------------------------------
+		if (slotCrewIdx[i] < 0)
+		{
+			DrawImage(
+				LOCK_W,
+				LOCK_H,
+				1, 438,
+				centerX - LOCK_W * zoom / 2,
+				centerY - LOCK_H * zoom / 2,
+				false, false, false, false, false,
+				zoom,
+				sprite[SLOT_IMG],
+				cvtDest,
+				cvtLayer,
+				SLOT_IMG,
+				buffering);
+
+			continue;
+		}
+
+		//-----------------------------------
+		// 캐릭터
+		//-----------------------------------
+		OBJECT* u = &ao[CREW + slotCrewIdx[i]];
+
+		ShadowImage(
+			24 * _2X,
+			16 * _2X,
+			1 * _2X,
+			1 * _2X,
+			centerX - 12 * _2X * 2.5f * zoom,
+			centerY + 8 * _2X * 2.5f * zoom,
+			SHADOW_IMG,
+			2.5f * zoom,
+			cvtDest,
+			cvtLayer,
+			buffering);
+
+		DrawCmfDetail(
+			u->cmf,
+			crewPos[u->type * 5 + 0],
+			centerX,
+			centerY,
+			RIGHT,
+			2.5f * zoom * enemyIconZoom[u->type],
+			false,
+			false,
+			cvtDest,
+			cvtLayer,
+			buffering);
+	}
+
+	grayScale = oldGray;
+
+	//---------------------------------------
+	// 전체 잠금
+	//---------------------------------------
+	if (rouletteLocked && totalCrewCount >= 3)
+	{
+		//-----------------------------------
+		// 어둡게
+		//-----------------------------------
+		SetAlpha(24);
+		MemRect(
+			x - SLOTSIZE_X * zoom / 2,
+			y,
+			SLOTSIZE_X * zoom,
+			SLOTSIZE_Y * zoom,
+			COLOR_BLACK,
+			cvtDest,
+			cvtLayer,
+			buffering);
+		SetAlpha(32);
+		//-----------------------------------
+		// 큰 자물쇠
+		//-----------------------------------
+		DrawImage(
+			CHAINLOCK_W,
+			CHAINLOCK_H,
+			147, 438,
+			x - CHAINLOCK_W * zoom / 2,
+			y + SLOTSIZE_Y * zoom / 2 - CHAINLOCK_H * zoom / 2,
+			false, false, false, false, false,
+			zoom,
+			sprite[SLOT_IMG],
+			cvtDest,
+			cvtLayer,
+			SLOT_IMG,
+			buffering);
+	}
 }
 
 void RouletteDraw(int x, int y, float zoom,

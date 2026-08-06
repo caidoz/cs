@@ -3428,6 +3428,41 @@ NEXT:
 		pDest->dead = true;
 		memset(&robin.enemyObj, 0, sizeof(OBJECT));
 		pDest->frame = 0;
+
+		//인터랙티브 전투 튜토리얼: 다이오라마방에서 몬스터가 죽을 때마다 다음 안 본 튜토리얼 컷씬을 재생한다.
+		//순서는 AfterDemo()의 GotoPlay() 핸드오프 지점과 1:1로 맞물려 있어 항상 올바른 다음 단계만 걸린다.
+		if (drawHandle == MD_PLAY && robinmap == MAP_DIORAMA_TOLEM) {
+			int nextTutorialDemo = -1;
+
+			if (!robin.demoSeen[DEMO_TUTORIAL_FIRSTKILL])
+				nextTutorialDemo = DEMO_TUTORIAL_FIRSTKILL;
+			else if (!robin.demoSeen[DEMO_TUTORIAL_SECONDKILL])
+				nextTutorialDemo = DEMO_TUTORIAL_SECONDKILL;
+			else if (!robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
+				nextTutorialDemo = DEMO_TUTORIAL_ROULETTE;
+			else if (!robin.demoSeen[DEMO_TUTORIAL_BOSS])
+				nextTutorialDemo = DEMO_TUTORIAL_BOSS;
+
+			if (nextTutorialDemo != -1)
+				SetDemo(nextTutorialDemo);
+			//보스(ENEMY_CASTLE_BOSS4)를 잡으면 튜토리얼 에필로그: 골드 대량 지급 + 성 메뉴 강제 오픈.
+			//DEMO_TUTORIAL_END는 실제 데모 컨텐츠 없이 "에필로그 지급 완료" 1회성 플래그로만 사용한다.
+			else if (pDest->type == ENEMY_CASTLE_BOSS4 && robin.demoSeen[DEMO_TUTORIAL_BOSS] && !robin.demoSeen[DEMO_TUTORIAL_END]) {
+				GetItem(ITEM_GOLD, 1, 0, 0, 1000000, false);	//TODO: 실제 지급량 밸런스 확인
+				robin.demoSeen[DEMO_TUTORIAL_END] = true;
+
+				curMenuBack = curMenu;
+				curMenu = MENU_CASTLE;
+				menuDepth = 0;
+				menuX = 0;
+				menuCur = 0;
+
+				SetPopUp(POPUPTYPE_CASTLEMENU, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+					false, false, false, false, false,
+					false, false, false, false, false,
+					false, false, false, false, false);
+			}
+		}
 		//EffectSound(M_ENEMYDEAD);
 		PlayMusic(M_ENEMYDEAD);
 		//PlayMusic(M_BANG);

@@ -48,6 +48,8 @@ void Demo(void)
 
 		if (ao[i].active)
 			MoveObj(&ao[i]);
+		else if (ao[i].dead == true && ao[i].moveHandler == REGENMOVE)
+			RegenMove(&ao[i]);
 	} while (i > 0);
 
 	SetCamera();
@@ -57,260 +59,9 @@ void Demo(void)
 #endif
 	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom, gScreenBuffer, gScreenLayer, false);
 
-	//여기에 이야기하는 화자가 나온다.
+	//HUD(StatusDraw/InfoDraw/카드마크 등)를 대화신/캐릭터 초상화보다 먼저 그려서, 나레이션/TALK 창이
+	//항상 HUD 위(가장 바깥 레이어)에 보이도록 한다.
 
-	int talkerZoom = 2;
-	int imgW = 765;
-	int imgH = 1024;
-	int imgX = DX / 2 - imgW / 2;
-	int imgY = DY / 2 + imgH / 2;
-
-	switch (movie.index) {
-	case DEMO_OPENING_PEACEFUL:
-	case DEMO_OPENING_DARKKNIGHT:
-	case DEMO_OPENING_PLUNDER:
-	case DEMO_OPENING_WARNNING:
-	case DEMO_OPENING_END:
-		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
-		DrawImage(
-			imgW, imgH,
-			0, 0,
-			imgX, imgY,
-			false, false, false, false, false,
-			1.0f,
-			sprite[OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL],
-			gScreenBuffer,
-			gScreenLayer,
-			OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL,
-			false
-		);
-		break;
-	case DEMO_OPENING_BEGGAR:
-		if (curtainFrame > 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
-		else if (curtainFrame < 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X + curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
-		else {
-			DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
-			SetRectPoint(xOffset + HELPER_DEMO_GAP_X - 2 * ITEMICONSIZE, STATUSWIN_Y2 + HELPERGAP_Y + 3 * ITEMICONSIZE, ITEMICONSIZE * 4, ITEMICONSIZE * 4, TOUCH_FUNC_SKIPDEMO);
-
-			//SKIP MARK
-			MemRectBoth(xOffset + HELPER_DEMO_GAP_X - 24 * _2X, STATUSWIN_Y2 + HELPERGAP_Y - 8 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
-			CenterAlpha(xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y - 10 * _2X, ALPHA_SKIP, FONT_SMALL, false, 1.0f, gScreenBuffer, gScreenLayer, false);
-		}
-
-		break;
-	case DEMO_TUTORIAL_SEBASTIAN:
-		switch (movie.start) {
-		case DEMO_TUTORIAL_SEBASTIAN_FRAME0:
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
-			break;
-		}
-		break;
-	case DEMO_TUTORIAL_PLAYER:	//내 캐릭터를 보여주고
-	case DEMO_TUTORIAL_ENEMY:		//적의 등장 및 적 체력 게이지와 남은 시간에 대한 설명
-	case DEMO_TUTORIAL_JOYSTICK:		//조이스틱을 터치해서 공격해보라는것(조이스틱을 슬라이드로 땡기면 자동으로 공격됩니다.)
-	case DEMO_TUTORIAL_JOKBO_COIN:	//족보중 코인에 대해
-	case DEMO_TUTORIAL_JOKBO_COINBAG:	//족보중 코인백에 대해
-	case DEMO_TUTORIAL_JOKBO_HEART:	//족보중 하트에 대해
-	case DEMO_TUTORIAL_JOKBO_QUEST:	//족보중 퀘스트 아이템에 대해
-	case DEMO_TUTORIAL_BOSS:
-	case DEMO_TUTORIAL_JOKBO_BATTLE:	//족보중 히트(주먹)에 대해
-	case DEMO_TUTORIAL_JOKBO_RAID:	//족보중 히트(주먹)에 대해
-	case DEMO_TUTORIAL_JOKBO_SKILL:
-	case DEMO_TUTORIAL_GETWEAPON:		//보상받는 화면을 알려준다.
-		DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + 32 * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
-		break;
-	}
-
-	if (movie.type >= MOVIE_MENU) {
-
-		menuFrame++;
-		menuWinFrame++;
-	}
-
-	if (movie.start == movie.end) {
-		talk.obj = talk.clr = talk.temp = null;
-		AfterDemo();
-
-		return;
-	}
-
-	if (effect.gray)
-		GammaImage(32, 6, 1.0f, gScreenBuffer, gScreenLayer, false);
-
-	//텍스트 뒤 프레임
-	switch (movie.type) {
-	case MOVIE_MOVE:
-		if (frame % MOTIONDIV == 0)
-			movie.frame++;
-		break;
-	case MOVIE_TALK:
-	case MOVIE_MENUTALK:
-		Demo_Talk();
-		break;
-	case MOVIE_WIN:
-		Demo_Win();
-		break;
-	case MOVIE_ALPHA:
-		Demo_Alpha();
-		break;
-	case MOVIE_NARRATION:
-		Demo_Narration();
-		break;
-	case MOVIE_SPREAD_MDR:
-		SpreadPlayer(MAXX, DIANA, ROBIN);
-		break;
-	case MOVIE_SPREAD_MRD:
-		SpreadPlayer(MAXX, ROBIN, DIANA);
-		break;
-	case MOVIE_SPREAD_DRM:
-		SpreadPlayer(DIANA, ROBIN, MAXX);
-		break;
-	case MOVIE_SPREAD_DMR:
-		SpreadPlayer(DIANA, MAXX, ROBIN);
-		break;
-	case MOVIE_SPREAD_RMD:
-		SpreadPlayer(ROBIN, MAXX, DIANA);
-		break;
-	case MOVIE_SPREAD_RDM:
-		SpreadPlayer(ROBIN, DIANA, MAXX);
-		break;
-	case MOVIE_GATHER_PLAYER:
-		if (GatherPlayer())
-			movie.type = MOVIE_MOVE;
-		else {
-			if (frame % MOTIONDIV == 0)
-				demoFrame++;
-		}
-
-		focus = PLAYER;
-		break;
-	case MOVIE_WAITDARKSTONE:
-		if (ao[talk.obj].x == 195 * _2X) {
-			npcdarkStone = 0;
-			ao[talk.obj].status = FALL;
-			ao[talk.obj].etc = 2;
-			movie.type = MOVIE_MOVE;
-			if (frame % MOTIONDIV == 0)
-				movie.frame++;
-			movie.start++;
-		}
-		break;
-	case MOVIE_SETQUEST_PLAYER:
-		Demo_SetQuestPlayer();
-		break;
-	case MOVIE_OBJSHAKE:
-		ao[talk.obj].dx = ao[talk.obj].dy = 0;
-		ao[talk.obj].x += demoFrame % 2 == 0 ? -2 * _2X : 2 * _2X;
-
-		if (frame % MOTIONDIV == 0)
-			demoFrame++;
-
-		if (demoFrame > 9)
-			movie.type = MOVIE_MOVE;
-		break;
-	case MOVIE_WARPIN:
-	case MOVIE_WARPOUT:
-		if (demoFrame < 10) {
-			ao[focus].active = false;
-			SetAlpha(movie.type == MOVIE_WARPIN ? demoFrame * 3 : 32 - demoFrame * 3);
-			DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
-			SetAlpha(32);
-			DrawPlayer(&ao[raidPlayer], 2000 + LEVELUP_FRONT0 + demoFrame, ao[focus].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[focus].y - ry + OBJIMGGAP, ao[focus].dirF, ao[focus].zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
-			if (frame % MOTIONDIV == 0)
-				demoFrame++;
-		}
-		else {
-			ao[focus].active = movie.type == MOVIE_WARPIN ? true : false;
-			movie.type = MOVIE_MOVE;
-		}
-		break;
-	case MOVIE_APPEAROBJ:
-	case MOVIE_DISAPPEAROBJ:
-		ao[focus].active = false;
-
-		if (focus >= ITEMOBJ)
-			ItemMove(&ao[focus]);
-		else if (focus >= NEUTRAL) {
-			MoveObj(&ao[focus]);
-		}
-		else if (ao[focus].moveHandler != MACHINEBOSSMOVE)
-			DemoMove(&ao[focus]);
-
-		SetAlpha(movie.type == MOVIE_APPEAROBJ ? demoFrame : 32 - demoFrame);
-		DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
-		SetAlpha(32);
-		if (frame % MOTIONDIV == 0)
-			demoFrame++;
-		//demoFrame += 3;
-
-		if (demoFrame >= FPS) {
-			ao[focus].active = movie.type == MOVIE_APPEAROBJ ? true : false;
-			movie.type = MOVIE_MOVE;
-			break;
-		}
-		break;
-	case MOVIE_FRAMEUNSETBLEND:
-		if (ao[focus].mainFrame == 0) {
-			movie.type = MOVIE_MOVE;
-			break;
-		}
-
-		ao[focus].mainFrame--;
-		break;
-		//두리번 효과
-	case MOVIE_GAZEAROUND:
-		if ((demoFrame % 6) == 0) {
-			if (talk.obj == PLAYERALL) {
-				int k;
-				for (k = PLAYER; k < PLAYERALL; k++)
-					ao[k].dirF = ao[k].dirX = 1 - ao[k].dirF;
-			}
-			else
-				ao[talk.obj].dirF = ao[talk.obj].dirX = 1 - ao[talk.obj].dirF;
-		}
-
-		if (demoFrame > 30)
-			movie.type = MOVIE_MOVE;
-
-		if (frame % MOTIONDIV == 0)
-			demoFrame++;
-		break;
-	case MOVIE_MENU:
-		if (demoFrame > 4)
-			goto MOVEOUT;
-
-		if (frame % MOTIONDIV == 0)
-			demoFrame++;
-		break;
-	case MOVIE_MENUMOVE:
-		switch (movie.text) {
-		default:
-			//if (menuDepth == 1 && ao[pObj->type].equip[EQUIP_ARMOR].type != 255)
-			//if (menuDepth == 1 && curMenu == 1)
-			goto MOVEOUT;
-			break;
-		}
-
-		if (demoFrame > 100) {
-			movie.text--;
-			movie.frame -= 2;
-			goto MOVEOUT;
-		}
-
-		if (frame % MOTIONDIV == 0)
-			demoFrame++;
-		break;
-	MOVEOUT:
-		movie.text++;
-		movie.talker = ENEMY;
-		SetFrameText(movie.text, 512, TEXTLINEPERPAGE, 1.0f);
-
-		movie.type = MOVIE_MENUTALK;
-		break;
-	}
-	/*
 	switch (movie.index) {
 	case DEMO_OPENING_PEACEFUL:
 	case DEMO_OPENING_DARKKNIGHT:
@@ -321,6 +72,8 @@ void Demo(void)
 	default:
 
 		StatusDraw(xOffset, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+		InfoDraw();
 
 		//카드가 나오면
 		for (i = 0; i < TOTALCARDMARK; i++) {
@@ -600,6 +353,11 @@ void Demo(void)
 		if (curMenu == MENU_PLAY && JoyStickPressPossible() == true)
 			EventScheduler();
 
+		if (turn >= ENEMY && turn < NEUTRAL)
+			EnemySequenceDraw();
+		else
+			AttackSequenceDraw();
+
 		for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
 			if (bar[i].active == true && bar[i].front == true) {
 				if (bar[i].frame2 > 0) {
@@ -853,6 +611,15 @@ void Demo(void)
 			}
 		}
 
+		if (attackDelay == 0 && menuResult == 0 && ((drawHandle == MD_PLAY && curMenu == MENU_PLAY) || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID || drawHandle == MD_BOSSRAID || drawHandle == MD_DEMO) && popUp[0].active == false) {
+			robin.playtime++;
+			arenaItemFrame++;
+			turnFrame++;
+		}
+		else {
+			robin.playtime++;
+		}
+
 		//popMenu
 		if (drawHandle != MD_NEWCOLLECTION && drawHandle != MD_NEWCARD) {
 			if (popUpFrame == 0)
@@ -945,8 +712,275 @@ void Demo(void)
 		break;
 
 	}
-	*/
-	robin.playtime++;
+
+	//여기에 이야기하는 화자가 나온다.
+
+	int talkerZoom = 2;
+	int imgW = 765;
+	int imgH = 1024;
+	int imgX = DX / 2 - imgW / 2;
+	int imgY = DY / 2 + imgH / 2;
+
+	switch (movie.index) {
+	case DEMO_OPENING_PEACEFUL:
+	case DEMO_OPENING_DARKKNIGHT:
+	case DEMO_OPENING_PLUNDER:
+	case DEMO_OPENING_WARNNING:
+	case DEMO_OPENING_END:
+		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+		DrawImage(
+			imgW, imgH,
+			0, 0,
+			imgX, imgY,
+			false, false, false, false, false,
+			1.0f,
+			sprite[OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL],
+			gScreenBuffer,
+			gScreenLayer,
+			OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL,
+			false
+		);
+		break;
+	case DEMO_TUTORIAL_INIT:
+		if (curtainFrame > 0)
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+		else if (curtainFrame < 0)
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X + curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+		else {
+			DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			SetRectPoint(xOffset + HELPER_DEMO_GAP_X - 2 * ITEMICONSIZE, STATUSWIN_Y2 + HELPERGAP_Y + 3 * ITEMICONSIZE, ITEMICONSIZE * 4, ITEMICONSIZE * 4, TOUCH_FUNC_SKIPDEMO);
+
+			//SKIP MARK
+			MemRectBoth(xOffset + HELPER_DEMO_GAP_X - 24 * _2X, STATUSWIN_Y2 + HELPERGAP_Y - 8 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
+			CenterAlpha(xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y - 10 * _2X, ALPHA_SKIP, FONT_SMALL, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+		}
+
+		break;
+	case DEMO_TUTORIAL_SEBASTIAN:
+		switch (movie.start) {
+		case DEMO_TUTORIAL_SEBASTIAN_FRAME0:
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			break;
+		}
+		break;
+	case DEMO_TUTORIAL_FIRSTKILL:	//2:첫 처치 보상(상자/하트/동료) 설명
+	case DEMO_TUTORIAL_CREWMENU:	//3:동료 메뉴 장착 안내
+	case DEMO_TUTORIAL_SECONDKILL:	//4:재공격 보상(하트/동료/장비) 설명
+	case DEMO_TUTORIAL_EQUIP:		//5:동료 자동장착+장비 수동장착 안내
+	case DEMO_TUTORIAL_HEARTBET:	//6:하트 베팅/3배공격 설명
+	case DEMO_TUTORIAL_ROULETTE:	//7:룰렛 개방 연출/설명
+	case DEMO_TUTORIAL_ROULETTE_LIVE:	//8:룰렛 실전 관전 안내
+	case DEMO_TUTORIAL_BOSS:		//9:보스전 안내
+		DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + 32 * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+		break;
+	}
+
+	if (movie.type >= MOVIE_MENU) {
+
+		menuFrame++;
+		menuWinFrame++;
+	}
+
+	if (movie.start == movie.end) {
+		talk.obj = talk.clr = talk.temp = null;
+		AfterDemo();
+
+		return;
+	}
+
+	if (effect.gray)
+		GammaImage(32, 6, 1.0f, gScreenBuffer, gScreenLayer, false);
+
+	//텍스트 뒤 프레임
+	switch (movie.type) {
+	case MOVIE_MOVE:
+		if (frame % MOTIONDIV == 0)
+			movie.frame++;
+		break;
+	case MOVIE_TALK:
+	case MOVIE_MENUTALK:
+		Demo_Talk();
+		break;
+	case MOVIE_WIN:
+		Demo_Win();
+		break;
+	case MOVIE_ALPHA:
+		Demo_Alpha();
+		break;
+	case MOVIE_NARRATION:
+		Demo_Narration();
+		break;
+	case MOVIE_SPREAD_MDR:
+		SpreadPlayer(MAXX, DIANA, ROBIN);
+		break;
+	case MOVIE_SPREAD_MRD:
+		SpreadPlayer(MAXX, ROBIN, DIANA);
+		break;
+	case MOVIE_SPREAD_DRM:
+		SpreadPlayer(DIANA, ROBIN, MAXX);
+		break;
+	case MOVIE_SPREAD_DMR:
+		SpreadPlayer(DIANA, MAXX, ROBIN);
+		break;
+	case MOVIE_SPREAD_RMD:
+		SpreadPlayer(ROBIN, MAXX, DIANA);
+		break;
+	case MOVIE_SPREAD_RDM:
+		SpreadPlayer(ROBIN, DIANA, MAXX);
+		break;
+	case MOVIE_GATHER_PLAYER:
+		if (GatherPlayer())
+			movie.type = MOVIE_MOVE;
+		else {
+			if (frame % MOTIONDIV == 0)
+				demoFrame++;
+		}
+
+		focus = PLAYER;
+		break;
+	case MOVIE_WAITDARKSTONE:
+		if (ao[talk.obj].x == 195 * _2X) {
+			npcdarkStone = 0;
+			ao[talk.obj].status = FALL;
+			ao[talk.obj].etc = 2;
+			movie.type = MOVIE_MOVE;
+			if (frame % MOTIONDIV == 0)
+				movie.frame++;
+			movie.start++;
+		}
+		break;
+	case MOVIE_SETQUEST_PLAYER:
+		Demo_SetQuestPlayer();
+		break;
+	case MOVIE_OBJSHAKE:
+		ao[talk.obj].dx = ao[talk.obj].dy = 0;
+		ao[talk.obj].x += demoFrame % 2 == 0 ? -2 * _2X : 2 * _2X;
+
+		if (frame % MOTIONDIV == 0)
+			demoFrame++;
+
+		if (demoFrame > 9)
+			movie.type = MOVIE_MOVE;
+		break;
+	case MOVIE_WARPIN:
+	case MOVIE_WARPOUT:
+		if (demoFrame < 10) {
+			ao[focus].active = false;
+			SetAlpha(movie.type == MOVIE_WARPIN ? demoFrame * 3 : 32 - demoFrame * 3);
+			DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
+			SetAlpha(32);
+			DrawPlayer(&ao[raidPlayer], 2000 + LEVELUP_FRONT0 + demoFrame, ao[focus].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[focus].y - ry + OBJIMGGAP, ao[focus].dirF, ao[focus].zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+			if (frame % MOTIONDIV == 0)
+				demoFrame++;
+		}
+		else {
+			ao[focus].active = movie.type == MOVIE_WARPIN ? true : false;
+			movie.type = MOVIE_MOVE;
+		}
+		break;
+	case MOVIE_APPEAROBJ:
+	case MOVIE_DISAPPEAROBJ:
+		ao[focus].active = false;
+
+		if (focus >= ITEMOBJ)
+			ItemMove(&ao[focus]);
+		else if (focus >= NEUTRAL) {
+			MoveObj(&ao[focus]);
+		}
+		else if (ao[focus].moveHandler != MACHINEBOSSMOVE)
+			DemoMove(&ao[focus]);
+
+		SetAlpha(movie.type == MOVIE_APPEAROBJ ? demoFrame : 32 - demoFrame);
+		DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
+		SetAlpha(32);
+		if (frame % MOTIONDIV == 0)
+			demoFrame++;
+		//demoFrame += 3;
+
+		if (demoFrame >= FPS) {
+			ao[focus].active = movie.type == MOVIE_APPEAROBJ ? true : false;
+			movie.type = MOVIE_MOVE;
+			break;
+		}
+		break;
+	case MOVIE_FRAMEUNSETBLEND:
+		if (ao[focus].mainFrame == 0) {
+			movie.type = MOVIE_MOVE;
+			break;
+		}
+
+		ao[focus].mainFrame--;
+		break;
+		//두리번 효과
+	case MOVIE_GAZEAROUND:
+		if ((demoFrame % 6) == 0) {
+			if (talk.obj == PLAYERALL) {
+				int k;
+				for (k = PLAYER; k < PLAYERALL; k++)
+					ao[k].dirF = ao[k].dirX = 1 - ao[k].dirF;
+			}
+			else
+				ao[talk.obj].dirF = ao[talk.obj].dirX = 1 - ao[talk.obj].dirF;
+		}
+
+		if (demoFrame > 30)
+			movie.type = MOVIE_MOVE;
+
+		if (frame % MOTIONDIV == 0)
+			demoFrame++;
+		break;
+	case MOVIE_MENU:
+		if (demoFrame > 4)
+			goto MOVEOUT;
+
+		if (frame % MOTIONDIV == 0)
+			demoFrame++;
+		break;
+	case MOVIE_MENUMOVE:
+		switch (movie.text) {
+		default:
+			//if (menuDepth == 1 && ao[pObj->type].equip[EQUIP_ARMOR].type != 255)
+			//if (menuDepth == 1 && curMenu == 1)
+			goto MOVEOUT;
+			break;
+		}
+
+		if (demoFrame > 100) {
+			movie.text--;
+			movie.frame -= 2;
+			goto MOVEOUT;
+		}
+
+		if (frame % MOTIONDIV == 0)
+			demoFrame++;
+		break;
+	MOVEOUT:
+		movie.text++;
+		movie.talker = ENEMY;
+		SetFrameText(movie.text, 512, TEXTLINEPERPAGE, 1.0f);
+
+		movie.type = MOVIE_MENUTALK;
+		break;
+	}
+
+	bool back = false;
+	battleZoom = 1.0f;
+
+	if (battleStartFrame > 0) {
+		//battleZoom = 1.0f * (bar[BAR_HEART].zoom + battleFrameZoom[(BATTLESTARTFRAME - battleStartFrame)]);
+
+		//ResetRectPoint();
+		//SetAlpha((int)(BATTLESTARTFRAME - battleStartFrame));
+		//MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+		//SetAlpha(32);
+		battleStartFrame--;
+		//dioramaZoom += battleZoom / 30;
+
+		//if (battleStartFrame == 0)
+		//	GotoBattleLoading();
+	}
+
+	//robin.playtime++;
 
 #ifdef DEBUG
 	//memset(debugStr, 0, sizeof(debugStr));
@@ -978,7 +1012,7 @@ void Demo_Talk(void)
 	if (!effect.color)
 		DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - frame % 8), ao[i].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry + OBJIMGGAP, 0, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 
-	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, 88 * _2X + HOMEBAR_HEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 
 	if (talkShakeFrame)
 		talkShakeFrame--;
@@ -1366,19 +1400,15 @@ void AfterDemo(void)
 	case DEMO_OPENING_WARNNING:
 	case DEMO_OPENING_END:
 
-	case DEMO_OPENING_BEGGAR:
+	case DEMO_TUTORIAL_INIT:
 
-	case DEMO_TUTORIAL_SEBASTIAN:
-	case DEMO_TUTORIAL_PLAYER:
-	case DEMO_TUTORIAL_ENEMY:
-	case DEMO_TUTORIAL_JOYSTICK:
-	case DEMO_TUTORIAL_JOKBO_COIN:
-	case DEMO_TUTORIAL_JOKBO_COINBAG:
-	case DEMO_TUTORIAL_JOKBO_HEART:
-	case DEMO_TUTORIAL_JOKBO_QUEST:
-	case DEMO_TUTORIAL_BOSS:
-	case DEMO_TUTORIAL_JOKBO_BATTLE:
-	case DEMO_TUTORIAL_JOKBO_RAID:
+	//DEMO_TUTORIAL_FIRSTKILL/SECONDKILL/ROULETTE는 보상 설명 뒤 바로 다음 안내 컷씬으로 이어진다.
+	//DEMO_TUTORIAL_SEBASTIAN과 나머지(CREWMENU/EQUIP/HEARTBET/ROULETTE_LIVE/BOSS)는 실전투/실메뉴 조작으로
+	//넘겨야 하므로 default(GotoPlay/ResumeTutorialPlay) 경로를 타도록 이 목록에서 제외한다 - 실전투 중
+	//다음 컷씬 복귀는 robin.demoSeen[]을 확인하는 별도 트리거(Func_Combat.cpp 사망 훅, Func_Input.cpp 장착 훅)가 담당한다.
+	case DEMO_TUTORIAL_FIRSTKILL:
+	case DEMO_TUTORIAL_SECONDKILL:
+	case DEMO_TUTORIAL_ROULETTE:
 
 
 
@@ -1394,23 +1424,120 @@ void AfterDemo(void)
 		//아이템을 먹여준다.
 
 		SetDemo(movie.index + 1);
-		switch (movie.index) {
-		case DEMO_TUTORIAL_GETWEAPON:
-
-			break;
-		}
 		break;
 	default:
 		switch (movie.index) {
-		case DEMO_OPENING_BEGGAR:
+		case DEMO_TUTORIAL_INIT:
 			NewGame();
 
 			break;
 		}
 
-		GotoPlay();
+		//인터랙티브 전투 튜토리얼: 실제 GotoPlay()는 room을 통째로 리로드하며 ao[](몬스터 포함)를
+		//전부 memset하므로, 같은 세션 안에서 반복되는 튜토리얼 핸드오프마다 다시 부르면 직전에
+		//스폰한 몬스터가 사라진다. 최초 1회(DEMO_TUTORIAL_SEBASTIAN)만 정식 GotoPlay()로 방에 진입하고,
+		//그 이후의 튜토리얼 복귀는 ResumeTutorialPlay()로 가볍게 처리한다.
+		if (movie.index == DEMO_TUTORIAL_SEBASTIAN)
+			GotoPlay();
+		else
+			ResumeTutorialPlay();
+
+		//실제 stage 0 wave[] 테이블은 모든 유저 공용 데이터라 건드리지 않고, 몬스터는 완전히
+		//별도로 관리한다. HP 값은 임시 튜닝값이며 실제 플레이 테스트 후 조정이 필요하다.
+		//몬스터를 스폰하는 단계는 touchDisable을 true로 유지하고, RegenMove() 점프 연출이 끝나
+		//moveHandler가 ENEMYMOVETURN이 될 때(WaveControler()에서 매 프레임 확인)까지 터치를 막는다 -
+		//그 전에 공격하면 몬스터가 아직 active 상태가 아니라서 공격이 안 먹는다.
+		switch (movie.index) {
+		case DEMO_TUTORIAL_SEBASTIAN:
+			InitBar(BAR_HEART);
+			InitBar(BAR_HEARTBET);
+			InitBar(BAR_PLAY);
+			InitBar(BAR_ROULETTE);
+
+			return; //TEMP DEBUG: InitBar 애니메이션 확인용 임시 정지 - 확인 끝나면 제거
+
+			//진짜 WaveControler()가 robin.stage=0/robin.room=0의 실제 wave[] 데이터로 자기 몬스터를
+			//따로 스폰해버려서(체력/moveHandler가 튜토리얼용과 다르고, 같은 자리에 겹쳐 보임) 튜토리얼
+			//전용 스폰과 충돌한다. curWaveIdx를 끝까지 밀어서 실제 웨이브 스폰을 완전히 막는다.
+			robin.curWaveIdx = GetMaxWaveCnt();
+			for (i = 0; i < MAXWAVEENEMY; i++)
+				robin.waveActive[i] = true;
+
+			touchDisable = true;
+			SpawnTutorialEnemy(ENEMY_SNAIL, 1);	//TODO: 밸런스 확인, 한방컷 목적
+			break;
+		case DEMO_TUTORIAL_CREWMENU:
+			touchDisable = true;
+			SpawnTutorialEnemy(ENEMY_SNAIL, 1);	//TODO: 밸런스 확인, 한방컷 목적
+			break;
+		case DEMO_TUTORIAL_HEARTBET:
+			touchDisable = true;
+			SpawnTutorialEnemy(ENEMY_ONEEYE, 100);	//TODO: 3배 하트베팅 공격에만 죽도록 밸런스 확인
+			break;
+		case DEMO_TUTORIAL_ROULETTE_LIVE:
+			touchDisable = true;
+			SpawnTutorialEnemy(ENEMY_SKELETON, 100);	//TODO: 룰렛 3인 공격으로 죽도록 밸런스 확인
+			break;
+		case DEMO_TUTORIAL_BOSS:
+			touchDisable = true;
+			SpawnTutorialEnemy(ENEMY_CASTLE_BOSS4, 5000);	//TODO: 강제 룰렛 결과(가장 센 동료 스킬)로 한방킷 되도록 밸런스 확인
+			break;
+		default:
+			//몬스터를 스폰하지 않는 단계(EQUIP)는 기다릴 이유가 없으니 바로 터치를 풀어준다.
+			touchDisable = false;
+			break;
+		}
 		break;
 	}
+}
+
+void ResumeTutorialPlay(void)
+{
+	//정식 GotoPlay()는 room을 리로드하며 ao[]를 통째로 초기화하기 때문에, 같은 플레이 세션 안에서
+	//반복되는 튜토리얼 컷씬->실전투 복귀에는 쓸 수 없다(직전에 스폰한 몬스터가 사라짐). 여기서는
+	//실전투로 되돌아가는 데 필요한 최소한(모드 전환)만 처리한다.
+	drawHandle = MD_PLAY;
+	keyHandle = MK_PLAY;
+	arenaStatus = STATUS_PLAY;
+}
+
+void SpawnTutorialEnemy(int enemyType, long long hp)
+{
+	//WaveControler()(Func_Map.cpp)를 참고해서 만들었다. 실제 웨이브 몬스터와 똑같이
+	//RegenEnemy()로 스폰해서 RegenMove()의 점프-등장 연출(붕 뜨면서 커졌다가 착지)을 그대로 타게 하고,
+	//착지 시점(frame==FPS/2)에 RegenMove가 자동으로 moveHandler를 ENEMYMOVETURN(MD_PLAY 기준)으로
+	//바꿔주므로 별도로 강제할 필요가 없다. 직접 SetEnemy+active=true로 즉석 배치하던 이전 방식은
+	//점프 연출이 전혀 없어서 몬스터가 "그냥 나타나는" 것처럼 보였다.
+	int i;
+	OBJECT* pObj = nullptr;
+
+	for (i = ENEMY; i < NEUTRAL; i++) {
+		if (!ao[i].type && ao[i].active == false) {
+			pObj = &ao[i];
+			break;
+		}
+	}
+
+	if (pObj == nullptr)
+		return;
+
+	int x = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 0];
+	int y = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 1];
+
+	RegenEnemy(pObj, enemyType, x, y, LEFT);
+
+	pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
+	pObj->mom = GetObjFromPtr(pObj);
+
+	//RegenMove()가 착지 시점에 pObj->hp = pObj->maxhp로 재설정하므로 maxhp만 정확히 맞춰두면 된다.
+	pObj->maxhp = pObj->hp = hp;
+
+	//WaveControler()가 스폰 마지막에 하는 것과 동일하게 dead=true/active=false로 둬야 한다.
+	//매 프레임 오브젝트 갱신 루프(Func_Battle.cpp의 "else if (dead==true && moveHandler==REGENMOVE) RegenMove(...)")
+	//가 이 조건을 보고서야 RegenMove()를 틱해준다 - 이게 없으면 점프 연출이 아예 시작되지 않고
+	//오브젝트가 가만히 멈춰있기만 한다("생성될 때까지 타이밍을 기다리는" 부분이 여기서 처리된다).
+	pObj->dead = true;
+	pObj->active = false;
 }
 
 void DemoCore(void)
@@ -1622,6 +1749,9 @@ void DemoCore(void)
 			case EFFECT_FAILQUEST:
 			case EFFECT_CLEARQUEST:
 				DemoCore_Effect_GetItem(ssPtr);
+				break;
+			case EFFECT_TUTORIAL_REWARD:
+				DemoCore_Effect_TutorialReward(ssPtr);
 				break;
 				//case EFFECT_STOPMUSIC:
 				//	Stop();
@@ -2158,6 +2288,20 @@ void DemoCore_Effect_GetItem(const signed short* ssPtr)
 }
 
 
+void DemoCore_Effect_TutorialReward(const signed short* ssPtr)
+{
+	//demoItem[]의 한 행(NPC, type, detail, grade, count)을 그대로 GetItem()에 넘겨 확정 보상을 지급한다.
+	//랜덤 상자 오픈 연출(Demo_Win, boxCardItem 계열)을 타지 않으므로 튜토리얼처럼 결과가 항상 같아야 하는
+	//구간에서 사용한다.
+	int idx = *(ssPtr + 2);
+	int type = demoItem[idx * 5 + 1];
+	int detail = demoItem[idx * 5 + 2];
+	int grade = demoItem[idx * 5 + 3];
+	int count = demoItem[idx * 5 + 4];
+
+	GetItem(type, 1, detail, grade, count, false);
+}
+
 void SetDemoEquip(OBJECT* pObj, int type, int detail, int grade)
 {
 	EquipItem(pObj, &robin.inven[itemStartCnt[type] + detail * TOTALGRADE + grade]);
@@ -2249,14 +2393,23 @@ void SetDemo(int index)
 	memset(&imgText, 0, sizeof(imgText));
 
 	switch (index) {
-	case DEMO_OPENING_BEGGAR:
+	case DEMO_TUTORIAL_INIT:
 		//pObj->x = 260 * _2X;
 		//pObj->y = 288 * _2X;
 		SetHero();
 		SetBattleCrew();
 		//InitMenu();
+
+		//인터랙티브 전투 튜토리얼: StatusDraw()가 DEMO_OPENING_* 이후 모든 데모 단계에서 그려지므로,
+		//튜토리얼의 첫 데모 단계(INIT) 시작 시점에 미리 HUD 바를 초기화해둬야 한다. 안 그러면
+		//SEBASTIAN 대사가 나오기도 전에 초기화 안 된 바가 그대로 화면에 튀어나온다.
+		//InitBar(BAR_HEART);
+		//InitBar(BAR_HEARTBET);
+		//InitBar(BAR_PLAY);
+		//InitBar(BAR_ROULETTE);
 		break;
 	}
+
 #ifdef DEBUG
 	//demoSkip = false;
 

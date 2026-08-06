@@ -1590,8 +1590,27 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 			robin.shield = GetMaxShield();
 		shieldFrame = FPS;
 		break;
-	case ITEM_CREW:
-		break;
+	}
+
+	//ITEM_CREW falls through to the default inventory-grant path above; auto-assign to an empty crew slot here.
+	if (type == ITEM_CREW) {
+		int crewType = crewData[detail * CREWDATASIZE + CREWDATA_TYPE];
+		int emptySlot = -1;
+		bool alreadySet = false;
+
+		for (i = 0; i < MAXCREW; i++) {
+			if (robin.slotCrew[i] == crewType) {
+				alreadySet = true;
+				break;
+			}
+			if (emptySlot == -1 && robin.slotCrew[i] == -1)
+				emptySlot = i;
+		}
+
+		if (!alreadySet && emptySlot != -1) {
+			robin.slotCrew[emptySlot] = crewType;
+			SetBattleCrew();
+		}
 	}
 
 	arenaRewardType = type;

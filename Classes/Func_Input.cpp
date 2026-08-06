@@ -222,6 +222,8 @@ void TitleKey(void)
 		case AVK_NEWGAME:
 			NewGame();
 			GotoPlay();
+			for (i = 0; i < TOTAL_BAR; i++)
+				bar[i].active = false;
 			SetDemo(0);
 			break;
 		case AVK_GOTODEMO:
@@ -659,6 +661,11 @@ void PlayKey(int obj)
 			break;
 		default:
 			EquipItem(&ao[ROBIN], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
+
+			//Tutorial: after the player manually equips gear following the EQUIP step's guidance,
+			//advance to the next tutorial demo (heart betting explanation).
+			if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && robin.demoSeen[DEMO_TUTORIAL_EQUIP])
+				SetDemo(DEMO_TUTORIAL_HEARTBET);
 			break;
 		}
 	}

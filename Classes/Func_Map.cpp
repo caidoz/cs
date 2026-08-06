@@ -1323,6 +1323,23 @@ void WaveControler()
 	int obj;
 	int positionX, positionY;
 
+	//인터랙티브 전투 튜토리얼: 스폰한 몬스터가 RegenMove() 점프 연출을 다 마치고 moveHandler가
+	//ENEMYMOVETURN이 될 때까지 touchDisable을 true로 묶어둔다. 그 전에 공격하면 몬스터가 아직
+	//active 상태가 아니라서 공격이 제대로 안 먹는다("생성될 때까지 타이밍을 기다리는" 부분).
+	if (touchDisable == true && robinmap == MAP_DIORAMA_TOLEM && (drawHandle == MD_PLAY || drawHandle == MD_DEMO)) {
+		bool stillSpawning = false;
+
+		for (i = ENEMY; i < NEUTRAL; i++) {
+			if (ao[i].type != 0 && ao[i].moveHandler != ENEMYMOVETURN) {
+				stillSpawning = true;
+				break;
+			}
+		}
+
+		if (!stillSpawning)
+			touchDisable = false;
+	}
+
 	for (i = ENEMY; i < NEUTRAL; i++) {
 		if (!ao[i].type && ao[i].active == false) {
 			obj = i;
@@ -2344,7 +2361,7 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 		idx = skillData[pMom->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
 		scPtr = &objectData[idx * OBJDATA_SIZE];
 		//TEST
-		pObj->icon = Random(42);
+		pObj->icon = skillData[pMom->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET];
 	}
 
 	pObj->active = true;

@@ -3489,7 +3489,16 @@ void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.2f * zoom, false, false, cvtDest, cvtLayer, buffering);
 		
-		DrawTouchLargeButton(x + (float)(200) * zoom, y - (float)(480) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_GREEN, 1.5f * zoom, cvtDest, cvtLayer, buffering);
+		DrawTouchLargeButton(x + (float)(80) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_GREEN, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+		DrawTouchLargeButton(x + (float)(380) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_UPGRADE], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_RED, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+
+		//Tutorial: pulse a highlight around the EQUIP button while the EQUIP step is guiding the player to tap it.
+		if (robin.demoSeen[DEMO_TUTORIAL_EQUIP] && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET]) {
+			float pulse = 0.9f + sinf((float)frame * 0.1f) * 0.1f;
+			float hlW = (float)BUYBUTTON_X * zoom * pulse;
+			float hlH = (float)BUYBUTTON_Y * zoom * pulse;
+			MemRectFrameThick(x + (float)(80) * zoom - (hlW - (float)BUYBUTTON_X * zoom) / 2, y - (float)(694) * zoom - (hlH - (float)BUYBUTTON_Y * zoom) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X), cvtDest, cvtLayer, buffering);
+		}
 
 		//최외각 테두리
 		MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK* zoom, cvtDest, cvtLayer, buffering);

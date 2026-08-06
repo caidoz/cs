@@ -8823,7 +8823,7 @@ const char* const textId[] = {
 	"하지만 끝까지 희망을 포기하지 않은 기사 한 사람이 있었답니다. 그가 바로 당신이랍니다.",//TEXT_OPENING_4_2
 
 	"용사님. 대신 세바스찬입니다. 이제부터 왕국을 재건하고, 백성들을 구출하기 위해 어떻게 할건지 말씀드리겠습니다.",//TEXT_OPENING_5_0
-	"때마침 몬스터가 나타났네요! 공격버튼을 눌러주세요!!",//TEXT_OPENING_5_0
+	"때마침 몬스터가 나타났네요! 공격버튼을 눌러주세요!!",//TEXT_OPENING_5_1
 
 	"그래서 이번에는 마왕에게 사람들을 돌려달라고 기도를 했습니다.",//TEXT_OPENING_6_0
 	"그러나 마왕은 어떤 응답도 하지 않았습니다.",//TEXT_OPENING_6_1
@@ -10495,5 +10495,15 @@ const char* const textId[] = {
 	"Z",
 
 	"@",
+
+	"몬스터가 나타났다! 공격 버튼을 눌러 공격해보자!",//TEXT_TUTORIAL_ATTACK
+	"몬스터를 쓰러뜨리고 상자와 하트, 새로운 동료를 얻었다!",//TEXT_TUTORIAL_FIRSTKILL
+	"동료 메뉴를 열어 새로 얻은 동료를 확인해보자. 동료는 자동으로 전투에 배치된다!",//TEXT_TUTORIAL_CREWMENU
+	"다시 공격해보자! 이번엔 하트와 동료, 장비를 얻을 수 있다.",//TEXT_TUTORIAL_SECONDKILL
+	"동료는 알아서 장착되지만, 장비는 직접 장착해줘야 한다. 장비창의 장착 버튼을 눌러보자!",//TEXT_TUTORIAL_EQUIP
+	"강한 몬스터가 나타났다! 하트를 베팅하면 더 강하게 공격할 수 있다. 베팅을 올리고 공격해보자!",//TEXT_TUTORIAL_HEARTBET
+	"동료가 6명이 모이자 룰렛이 열렸다! 룰렛을 돌리면 동료 중 3명이 선택되어 함께 공격한다.",//TEXT_TUTORIAL_ROULETTE
+	"이제 공격해서 룰렛을 돌려보자! 선택된 동료들이 함께 몬스터를 공격할 것이다.",//TEXT_TUTORIAL_ROULETTE_LIVE
+	"강력한 보스가 나타났다! 하트를 최대로 베팅하고 공격해서 보스를 단숨에 쓰러뜨려보자!",//TEXT_TUTORIAL_BOSS
 };
 #endif /* Text_h */

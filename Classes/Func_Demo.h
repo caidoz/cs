@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 
-// Demo °ü·Ã ÇÔ¼ö
+// Demo ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 void Demo(void);
 void Demo_Talk(void);
 void Demo_Win(void);
@@ -15,6 +15,9 @@ void DemoCore(void);
 void DemoCore2(OBJECT *, int);
 void DemoCore_Default(OBJECT *, int, int);
 void DemoCore_Effect_GetItem(const signed short *);
+void DemoCore_Effect_TutorialReward(const signed short *);
+void SpawnTutorialEnemy(int enemyType, long long hp);
+void ResumeTutorialPlay(void);
 void SetDemoEquip(OBJECT *, int, int, int);
 void SetDemo(int);
 void SetTalk(void);
