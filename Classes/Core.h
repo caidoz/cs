@@ -1178,6 +1178,12 @@ extern int curTextLabelCnt;
 extern cocos2d::RenderTexture* gScreenBuffer;//Screen Buffer
 extern cocos2d::Layer* gScreenLayer;//Screen Buffer
 
+//현재 렌더 타겟. nullptr이면 curScene에 직접 addChild하는 레거시 경로,
+//nullptr이 아니면 이미 begin()된 렌더텍스처에 visit()으로 기록한다.
+//드로우 함수의 (cvtDest, cvtLayer, buffering) 3인자를 대체하는 상태값이다.
+extern cocos2d::RenderTexture* gRenderTarget;
+extern cocos2d::Layer* gRenderLayer;
+
 extern cocos2d::Layer* bufferLayer[TOTALBUFFER];
 extern cocos2d::RenderTexture* bufferTexture[TOTALBUFFER];
 
@@ -2263,7 +2269,9 @@ extern int cardAlpha;
 
 // 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
 extern int  gRouletteStartAoOffset[TOTALREEL];
-extern int  gRouletteResultAoOffset[TOTALREEL];  // 최종 확정 3명 (aoOffset)
+extern int  gRouletteResultAoOffset[TOTALREEL];  // 최종 확정 3명 (aoOffset). 비어있는 릴은 -1
+extern int  gRouletteResultCnt;                  // 이번 판에 실제로 사용하는 릴 수(= Min(crewCnt, TOTALREEL))
+extern bool gRouletteNewSpin;                    // InitRouletteJump()가 세운다. RouletteDraw()의 내부 static 상태머신을 새 판 기준으로 강제 초기화하는 신호
 extern int gRouletteSkillIdx[TOTALREEL];
 extern int rouletteFrame;
 // 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
@@ -2348,6 +2356,17 @@ extern int levelUpStatus;
 extern int maxUserLv;
 extern bool bossOn;
 extern int touchDisable;
+extern bool tutorialWaitingEnemyLand;//인터랙티브 전투 튜토리얼: 스폰한 몬스터의 착지 연출을 기다리는 중인지(WaveControler()의 touchDisable 자동 해제 조건 전용, 공격 후 쿨다운 touchDisable과 혼동되면 안 됨)
+extern bool tutorialAttackPending;//인터랙티브 전투 튜토리얼: 세바스찬 안내 대사를 닫는 데 쓰인 공격버튼 입력을, 전투 준비가 끝나면 실제 첫 공격으로 실행하기 위한 예약 플래그
+extern int tutorialPendingDemo;
+
+//DEBUG: SetRoom()이 리로드 분기(loadedMap != robinmap)를 타는 원인을 추적하기 위한 임시 진단용 전역.
+//원인 확인되면 제거.
+extern int gDebugSetRoomReloadCount;
+extern int gDebugSetRoomReloadFrame;
+extern int gDebugSetRoomReloadAttackSeq;
+extern int gDebugSetRoomReloadArenaStatus;
+extern int gDebugSetRoomReloadWaveStatus;
 
 
 extern int floatOffsetY;

@@ -378,19 +378,15 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 		}
 	}
 
-	if (buffering) {
-		if (getFontLabelIdx == totalFontLabelCnt)
-			cvtLayer->addChild(src);
-		cvtDest->begin();
-
-		src->visit(renderer, parentTransform, true);
-		cvtDest->end();
-
-		renderer->render();
+	//AfterSpriting() 과 같은 규약: 렌더 타겟이 열려 있으면 그 타겟에 바로 기록하고,
+	//없으면 씬에 붙이는 레거시 경로를 쓴다.
+	if (gRenderTarget) {
+		//Label 은 3인자 visit 오버로드가 0인자 Node::visit() 을 가리므로 Node* 로 받아 호출한다.
+		cocos2d::Node* node = src;
+		node->visit();
 	}
-	else {
+	else
 		curScene->addChild(src);
-	}
 
 	glBlendEquation(GL_FUNC_ADD);
 

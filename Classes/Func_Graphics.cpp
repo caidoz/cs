@@ -113,24 +113,26 @@ void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
 	curBufferCnt++;
 }
 
+//드로우의 마지막 단계. 현재 렌더 타겟에 따라 기록 방식이 갈린다.
+//gRenderTarget 이 열려 있으면(BeginScreenBuffer/PushRenderTarget) 이미 begin() 된 타겟에
+//즉시 visit() 으로 그린다. 타겟은 프레임/버퍼 단위로 한 번만 begin/end 하므로
+//드로우 콜마다 렌더타겟을 바인딩하거나 renderer->render() 로 플러시하지 않는다.
+//gRenderTarget 이 nullptr 이면 스프라이트를 씬에 붙이는 레거시 경로를 쓴다.
 void AfterSpriting(cocos2d::Sprite* src) {
 
-	curScene->addChild(src);
+	if (gRenderTarget)
+		src->visit();
+	else
+		curScene->addChild(src);
+
+	//어느 경로든 이번 프레임에 쓴 풀 스프라이트는 기록해 둔다.
+	//Core::Run 의 프레임 정리에서 스프라이트 상태를 되돌리는 데 쓰인다.
 	curRenderSpriteArr[curRenderCnt] = getSpriteIdx;
 	curRenderCnt++;
 
 	glBlendEquation(GL_FUNC_ADD);
 }
 
-void AfterBuffering(cocos2d::Sprite* src) {
-	renderer->render();
-
-	//src->setOpacity(EMPTY);
-	//src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-	//src->setBlendFunc(BLEND_ORIGIN);
-
-	glBlendEquation(GL_FUNC_ADD);
-}
 
 //현재 기로딩되어 있는것 포함해서 몇번 인덱스를 써야 되는지 
 int GetSpriteIndex(int index)
@@ -289,10 +291,19 @@ int GetTypeByZoom(int type, int zoom)
 void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
 {
 	if (doubleBuffer) {
-		curScene->addChild(cvtDest);
 		cvtDest->setPosition(Vec2(x, y));
 		//cvtDest->setAnchorPoint(Vec2(0.0f, 1.0f));
 		cvtDest->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
+
+		//미리 그려 둔 오프스크린 버퍼를 현재 타겟(화면버퍼)에 합성한다.
+		if (gRenderTarget) {
+			//RenderTexture 는 3인자 visit 오버로드가 0인자 Node::visit() 을 가리므로
+			//Node* 로 받아서 호출한다. 내부에서 RenderTexture 의 오버라이드로 가상 디스패치된다.
+			cocos2d::Node* node = cvtDest;
+			node->visit();
+		}
+		else
+			curScene->addChild(cvtDest);
 	}
 }
 
@@ -606,167 +617,110 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 		SetAlpha(alpha);
 	}
 
-	if (buffering) {
-		LoadBuffSpriteFromTexture(srcIdx, cvtLayer);
-		src = bufferSprite[getBufferSpriteIdx];
+	GetSpriteIndex(srcIdx);
 
-		cvtDest->begin();
+	if (getSpriteIdx == totalRenderCnt) {
+		renderSprite[getSpriteIdx] = Sprite::createWithSpriteFrame(src->getSpriteFrame());
+		renderSprite[getSpriteIdx]->retain();
+		renderSpriteIndex[getSpriteIdx] = getSpriteTexture;
 
-		if (grayScale) {
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
-		}
-		else {
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(
-				GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
-			));
-		}
+		sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
+		sameRenderSpriteMax[srcIdx]++;
+		sameRenderSpriteCur[srcIdx]++;
+		totalRenderCnt++;
+	}
 
-		if (blendDepth) {
-			src->setBlendFunc(BLEND_BLENDMODE);
-		}
+	renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
 
-		if (effect) {
-			src->setBlendFunc(BLEND_LIGHTEN);
-			glBlendEquation(GL_MAX_EXT);
-			SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
-		}
-
-		src->setScaleX(zoomX);
-		src->setScaleY(zoomY);
-		src->setRotation(rotation);
-		src->setFlippedX(flipX);
-		src->setTextureRect(Rect(xs, ys, w, h));
-		src->setPosition(Vec2(x, y));
-
-		if (baseColor) {
-			if (baseColor == 0xFFFFFF && !grayScale) {
-				src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-			}
-			else {
-				src->setColor(Color3B(
-					(baseColor >> 16) & 0xFF,
-					(baseColor >> 8) & 0xFF,
-					baseColor & 0xFF
-				));
-			}
-		}
-		else if (!grayScale) {
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(
-				GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
-			));
-		}
-
-		src->visit();
-		cvtDest->end();
-
-		AfterBuffering(src);
+	if (grayScale) {
+		renderSprite[getSpriteIdx]->setGLProgram(
+			GLProgramCache::getInstance()->getGLProgram("grayscale")
+		);
 	}
 	else {
-		GetSpriteIndex(srcIdx);
+		renderSprite[getSpriteIdx]->setGLProgram(
+			GLProgramCache::getInstance()->getGLProgram(
+				GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
+			)
+		);
+	}
 
-		if (getSpriteIdx == totalRenderCnt) {
-			renderSprite[getSpriteIdx] = Sprite::createWithSpriteFrame(src->getSpriteFrame());
-			renderSprite[getSpriteIdx]->retain();
-			renderSpriteIndex[getSpriteIdx] = getSpriteTexture;
+	if (blendDepth) {
+		renderSprite[getSpriteIdx]->setBlendFunc(BLEND_BLENDMODE);
+	}
 
-			sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
-			sameRenderSpriteMax[srcIdx]++;
-			sameRenderSpriteCur[srcIdx]++;
-			totalRenderCnt++;
+	if (effect) {
+		renderSprite[getSpriteIdx]->setBlendFunc(BLEND_LIGHTEN);
+		glBlendEquation(GL_MAX_EXT);
+		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
+	}
+
+	renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
+	renderSprite[getSpriteIdx]->setFlippedX(flipX);
+
+	renderSprite[getSpriteIdx]->setScaleX(zoomX);
+	renderSprite[getSpriteIdx]->setScaleY(zoomY);
+
+	switch (cmfRotation) {
+	case 0:
+		renderSprite[getSpriteIdx]->setRotation(rotation);
+		renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 1.0f));
+		break;
+
+	case 90:
+		if (flipX == true) {
+			renderSprite[getSpriteIdx]->setRotation(rotation + 270);
+			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 1.0f));
 		}
+		else {
+			renderSprite[getSpriteIdx]->setRotation(rotation + 90);
+			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 0.0f));
+		}
+		break;
 
-		renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
+	case 180:
+		renderSprite[getSpriteIdx]->setRotation(rotation + 180);
+		renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 0.0f));
+		break;
 
-		if (grayScale) {
+	case 270:
+		if (flipX == true) {
+			renderSprite[getSpriteIdx]->setRotation(rotation + 90);
+			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 0.0f));
+		}
+		else {
+			renderSprite[getSpriteIdx]->setRotation(rotation + 270);
+			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 1.0f));
+		}
+		break;
+	}
+
+	renderSprite[getSpriteIdx]->setTextureRect(Rect(xs, ys, w, h));
+	renderSprite[getSpriteIdx]->setPosition(Vec2(x, y));
+
+	if (baseColor) {
+		if (baseColor == 0xFFFFFF && !grayScale) {
 			renderSprite[getSpriteIdx]->setGLProgram(
-				GLProgramCache::getInstance()->getGLProgram("grayscale")
+				GLProgramCache::getInstance()->getGLProgram("whitescale")
 			);
 		}
 		else {
-			renderSprite[getSpriteIdx]->setGLProgram(
-				GLProgramCache::getInstance()->getGLProgram(
-					GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
-				)
-			);
+			renderSprite[getSpriteIdx]->setColor(Color3B(
+				(baseColor >> 16) & 0xFF,
+				(baseColor >> 8) & 0xFF,
+				baseColor & 0xFF
+			));
 		}
-
-		if (blendDepth) {
-			renderSprite[getSpriteIdx]->setBlendFunc(BLEND_BLENDMODE);
-		}
-
-		if (effect) {
-			renderSprite[getSpriteIdx]->setBlendFunc(BLEND_LIGHTEN);
-			glBlendEquation(GL_MAX_EXT);
-			SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
-		}
-
-		renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
-		renderSprite[getSpriteIdx]->setFlippedX(flipX);
-
-		renderSprite[getSpriteIdx]->setScaleX(zoomX);
-		renderSprite[getSpriteIdx]->setScaleY(zoomY);
-
-		switch (cmfRotation) {
-		case 0:
-			renderSprite[getSpriteIdx]->setRotation(rotation);
-			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 1.0f));
-			break;
-
-		case 90:
-			if (flipX == true) {
-				renderSprite[getSpriteIdx]->setRotation(rotation + 270);
-				renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 1.0f));
-			}
-			else {
-				renderSprite[getSpriteIdx]->setRotation(rotation + 90);
-				renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 0.0f));
-			}
-			break;
-
-		case 180:
-			renderSprite[getSpriteIdx]->setRotation(rotation + 180);
-			renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 0.0f));
-			break;
-
-		case 270:
-			if (flipX == true) {
-				renderSprite[getSpriteIdx]->setRotation(rotation + 90);
-				renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(0.0f, 0.0f));
-			}
-			else {
-				renderSprite[getSpriteIdx]->setRotation(rotation + 270);
-				renderSprite[getSpriteIdx]->setAnchorPoint(Vec2(1.0f, 1.0f));
-			}
-			break;
-		}
-
-		renderSprite[getSpriteIdx]->setTextureRect(Rect(xs, ys, w, h));
-		renderSprite[getSpriteIdx]->setPosition(Vec2(x, y));
-
-		if (baseColor) {
-			if (baseColor == 0xFFFFFF && !grayScale) {
-				renderSprite[getSpriteIdx]->setGLProgram(
-					GLProgramCache::getInstance()->getGLProgram("whitescale")
-				);
-			}
-			else {
-				renderSprite[getSpriteIdx]->setColor(Color3B(
-					(baseColor >> 16) & 0xFF,
-					(baseColor >> 8) & 0xFF,
-					baseColor & 0xFF
-				));
-			}
-		}
-		else if (!grayScale) {
-			renderSprite[getSpriteIdx]->setGLProgram(
-				GLProgramCache::getInstance()->getGLProgram(
-					GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
-				)
-			);
-		}
-
-		AfterSpriting(renderSprite[getSpriteIdx]);
 	}
+	else if (!grayScale) {
+		renderSprite[getSpriteIdx]->setGLProgram(
+			GLProgramCache::getInstance()->getGLProgram(
+				GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP
+			)
+		);
+	}
+
+	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
 }
@@ -792,75 +746,35 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 	if (!sprite[res])
 		LoadImg(res);
 
-	if (buffering) {
-		LoadBuffSpriteFromTexture(res, cvtLayer);
-		src = bufferSprite[getBufferSpriteIdx];
+	LoadSpriteFromTexture(res);
+	src = renderSprite[getSpriteIdx];
 
-		cvtDest->begin();
+	if (grayScale) {
+		if (grayScale != 32) {
 
-		if (grayScale) {
-			if (grayScale != 32) {
-
-			}
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
 		}
-		else
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-		src->setBlendFunc(BLEND_LIGHTEN);
-		glBlendEquation(GL_MAX_EXT);
-		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
-		src->setScale(zoom);
-		src->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
-		src->setTextureRect(Rect(xs, ys, w, h));
-		src->setPosition(Vec2(x, y));
-		if (baseColor)//if (baseColor != 0x000000 && !baseColor)
-		{
-			if (baseColor == 0xFFFFFF && !grayScale)
-				src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-			else
-				src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-		}
-		else if (!grayScale)
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-
-		src->visit();
-		cvtDest->end();
-
-		AfterBuffering(src);
+		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
 	}
-	else {
-		LoadSpriteFromTexture(res);
-		src = renderSprite[getSpriteIdx];
+	else
+		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
-		if (grayScale) {
-			if (grayScale != 32) {
-
-			}
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
-		}
+	src->setBlendFunc(BLEND_LIGHTEN);
+	glBlendEquation(GL_MAX_EXT);
+	SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
+	src->setTextureRect(Rect(xs, ys, w, h));
+	src->setPosition(Vec2(x, y));
+	if (baseColor)//if (baseColor != 0x000000 && !baseColor)
+	{
+		if (baseColor == 0xFFFFFF && !grayScale)
+			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
 		else
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-		src->setBlendFunc(BLEND_LIGHTEN);
-		glBlendEquation(GL_MAX_EXT);
-		SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
-		src->setTextureRect(Rect(xs, ys, w, h));
-		src->setPosition(Vec2(x, y));
-		if (baseColor)//if (baseColor != 0x000000 && !baseColor)
-		{
-			if (baseColor == 0xFFFFFF && !grayScale)
-				src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-			else
-				src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-		}
-		else if (!grayScale)
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-
-		AfterSpriting(src);
+			src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
 	}
+	else if (!grayScale)
+		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+
+
+	AfterSpriting(src);
 
 	SetAlpha(m_lgrpAlpha + LIGHTENALPHA);
 }
@@ -886,53 +800,25 @@ void ShadowImage(int w, int h, int xs, int ys, int x, int y, int res, float magn
 	if (!sprite[res])
 		LoadImg(res);
 
-	if (buffering) {
-		LoadBuffSpriteFromTexture(res, cvtLayer);
-		src = bufferSprite[getBufferSpriteIdx];
+	LoadSpriteFromTexture(res);
+	src = renderSprite[getSpriteIdx];
 
-		cvtDest->begin();
-
-		src->setBlendFunc(BLEND_SHADOW);
-		src->setScale(magnify);
-		src->setTextureRect(Rect(xs, ys, w, h));
-		src->setPosition(Vec2(x, y));
-		if (baseColor)//if (baseColor != 0x000000 && !baseColor)
-		{
-			if (baseColor == 0xFFFFFF)
-				src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-			else
-				src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-		}
+	src->setBlendFunc(BLEND_SHADOW);
+	src->setScale(magnify);
+	src->setTextureRect(Rect(xs, ys, w, h));
+	src->setPosition(Vec2(x, y));
+	if (baseColor)//if (baseColor != 0x000000 && !baseColor)
+	{
+		if (baseColor == 0xFFFFFF)
+			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
 		else
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-
-		src->visit();
-		cvtDest->end();
-
-		AfterBuffering(src);
+			src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
 	}
-	else {
-		LoadSpriteFromTexture(res);
-		src = renderSprite[getSpriteIdx];
-
-		src->setBlendFunc(BLEND_SHADOW);
-		src->setScale(magnify);
-		src->setTextureRect(Rect(xs, ys, w, h));
-		src->setPosition(Vec2(x, y));
-		if (baseColor)//if (baseColor != 0x000000 && !baseColor)
-		{
-			if (baseColor == 0xFFFFFF)
-				src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-			else
-				src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-		}
-		else
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+	else
+		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
 
-		AfterSpriting(src);
-	}
+	AfterSpriting(src);
 }
 
 
@@ -1069,6 +955,96 @@ void InitContext(void)
 	m_lgrpAlpha = 32;
 }
 
+/*----------------------------------------------------------------------------
+**			SCREEN BUFFER / RENDER TARGET
+**--------------------------------------------------------------------------*/
+
+//화면버퍼를 실제로 생성한다. DX/DY 가 확정된 뒤(Core::init)에 한 번만 호출해야 한다.
+void InitScreenBuffer(void)
+{
+	if (gScreenBuffer)
+		return;
+
+	gScreenLayer = cocos2d::Layer::create();
+	gScreenLayer->retain();
+
+	gScreenBuffer = cocos2d::RenderTexture::create(DX, DY);
+	gScreenBuffer->retain();
+	//DrawBuffer() 와 같은 좌표 규약: 좌상단 기준(anchor 0,1)에 위치는 (0, DY)
+	gScreenBuffer->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
+	gScreenBuffer->setPosition(Vec2(0, DY));
+}
+
+//프레임 시작. 이후의 모든 드로우는 화면버퍼에 쌓인다.
+void BeginScreenBuffer(void)
+{
+	if (!screenBuffer || !gScreenBuffer)
+		return;
+
+	gScreenBuffer->beginWithClear(0, 0, 0, 0);
+
+	gRenderTarget = gScreenBuffer;
+	gRenderLayer = gScreenLayer;
+}
+
+//프레임 종료. 화면버퍼를 닫고, 씬에 한 번만 붙여 화면에 표시한다.
+void EndScreenBuffer(void)
+{
+	if (!screenBuffer || !gScreenBuffer)
+		return;
+
+	gScreenBuffer->end();
+
+	gRenderTarget = nullptr;
+	gRenderLayer = nullptr;
+
+	//씬에 붙은 화면버퍼는 매 프레임 갱신되므로 떼었다 붙일 필요가 없다.
+	if (gScreenBuffer->getParent() == nullptr)
+		curScene->addChild(gScreenBuffer);
+}
+
+//오프스크린 버퍼(bufferTexture[BUFFER_*])로 렌더 타겟을 전환한다.
+//렌더텍스처는 중첩 begin 이 안 되므로 열려 있던 상위 타겟을 닫아 두고 Pop 에서 되살린다.
+static cocos2d::RenderTexture* savedRenderTarget = nullptr;
+static cocos2d::Layer* savedRenderLayer = nullptr;
+
+void PushRenderTarget(cocos2d::RenderTexture* dest, cocos2d::Layer* layer, bool clear)
+{
+	if (!dest)
+		return;
+
+	savedRenderTarget = gRenderTarget;
+	savedRenderLayer = gRenderLayer;
+
+	if (savedRenderTarget)
+		savedRenderTarget->end();
+
+	if (clear)
+		dest->beginWithClear(0, 0, 0, 0);
+	else
+		dest->begin();
+
+	gRenderTarget = dest;
+	gRenderLayer = layer;
+}
+
+void PopRenderTarget(void)
+{
+	if (gRenderTarget)
+		gRenderTarget->end();
+
+	//닫아 두었던 상위 타겟을 다시 연다. beginWithClear 가 아니라 begin 이어야
+	//이미 그려 둔 내용이 지워지지 않는다.
+	if (savedRenderTarget)
+		savedRenderTarget->begin();
+
+	gRenderTarget = savedRenderTarget;
+	gRenderLayer = savedRenderLayer;
+
+	savedRenderTarget = nullptr;
+	savedRenderLayer = nullptr;
+}
+
 void SetSectionClip(int x, int y, int w, int h, bool outScreen)
 {
 	if (outScreen) {
@@ -1160,37 +1136,14 @@ void MemRect(int x, int y, int w, int h, int fillCol, cocos2d::RenderTexture* cv
 		return;
 #endif
 
-	if (buffering) {
-		LoadBuffSpriteFromTexture(MEMRECT_IMG, cvtLayer);
-		src = bufferSprite[getBufferSpriteIdx];
 
-		cvtDest->begin();
+	LoadSpriteFromTexture(MEMRECT_IMG);
+	src = renderSprite[getSpriteIdx];
 
-		src->setPosition(Vec2(x, y));
-		src->setTextureRect(Rect(0, 0, w, h));
-		//if (baseColor)
-		//	sprite[MEMRECT_IMG]->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-		//else
-		src->setColor(Color3B((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF));
-
-		//if (grayScale)
-		//	sprite[MEMRECT_IMG]->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
-
-		src->visit();
-		cvtDest->end();
-
-		AfterBuffering(src);
-	}
-	else {
-
-		LoadSpriteFromTexture(MEMRECT_IMG);
-		src = renderSprite[getSpriteIdx];
-
-		src->setPosition(Vec2(x, y));
-		src->setTextureRect(Rect(0, 0, w, h));
-		renderSprite[getSpriteIdx]->setColor(Color3B((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF));
-		AfterSpriting(src);
-	}
+	src->setPosition(Vec2(x, y));
+	src->setTextureRect(Rect(0, 0, w, h));
+	renderSprite[getSpriteIdx]->setColor(Color3B((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF));
+	AfterSpriting(src);
 }
 
 void MemRectFrame(int x, int y, int w, int h, int frameCol, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)

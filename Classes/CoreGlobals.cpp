@@ -178,6 +178,9 @@ int curTextLabelCnt = 0;
 cocos2d::RenderTexture* gScreenBuffer;//Screen Buffer
 cocos2d::Layer* gScreenLayer;//Screen Buffer
 
+cocos2d::RenderTexture* gRenderTarget = nullptr;
+cocos2d::Layer* gRenderLayer = nullptr;
+
 cocos2d::Layer* bufferLayer[TOTALBUFFER];
 cocos2d::RenderTexture* bufferTexture[TOTALBUFFER];
 
@@ -1273,7 +1276,7 @@ int enemyTurnStartIdx;
 int totalTurn;
 int turnList[PLAYERALL + MAXWAVEENEMY];
 int crewIdList[MAXCREW] = { -1, -1, -1, -1, -1, -1 };
-int crewCnt = MAXCREW;
+int crewCnt = 0;
 int heroCnt = 0;
 int showCrewCnt = 0; // 로딩 화면에서 현재까지 "공개/합류 연출로 보여줄" 크루 수(0..crewCnt)
 int showHeroCnt = 0;
@@ -1287,7 +1290,9 @@ int cardAlpha = 0;
 
 // 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
 int gRouletteStartAoOffset[TOTALREEL] = { -1, -1, -1 };
-int gRouletteResultAoOffset[TOTALREEL] = { -1, -1, -1 };  // 최종 확정 3명 (aoOffset)
+int gRouletteResultAoOffset[TOTALREEL] = { -1, -1, -1 };  // 최종 확정 3명 (aoOffset). 비어있는 릴은 -1
+int gRouletteResultCnt = 0;                               // 이번 판에 실제로 사용하는 릴 수
+bool gRouletteNewSpin = false;                            // 새 판 시작 신호(RouletteDraw()의 static 상태머신 강제 초기화)
 int gRouletteSkillIdx[TOTALREEL] = { -1, -1, -1 };
 int rouletteFrame;
 // 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
@@ -1372,6 +1377,16 @@ int levelUpStatus = 0;
 int maxUserLv = 0;
 bool bossOn = false;
 int touchDisable = 3 * FPS;
+bool tutorialWaitingEnemyLand = false;
+bool tutorialAttackPending = false;
+int tutorialPendingDemo = -1;
+
+//DEBUG: SetRoom() 리로드 원인 추적용 임시 진단 전역. 원인 확인되면 제거.
+int gDebugSetRoomReloadCount = 0;
+int gDebugSetRoomReloadFrame = -1;
+int gDebugSetRoomReloadAttackSeq = -1;
+int gDebugSetRoomReloadArenaStatus = -1;
+int gDebugSetRoomReloadWaveStatus = -1;
 
 int floatOffsetY;
 

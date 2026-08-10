@@ -694,7 +694,8 @@ bool Core::init()
 	STATUSWIN_Y = DY - REALDY;
 	xOffset = (DX - PLAYAREA_X) / 2;
 
-	screenBuffer = false;
+	//화면버퍼 렌더링. 모든 드로우를 gScreenBuffer에 모아 프레임당 한 번 화면에 표시한다.
+	screenBuffer = true;
 
 #ifdef DOUBLEBUFFERING
 	doubleBuffer = true;
@@ -717,6 +718,7 @@ bool Core::init()
 	tipIndex = -1;
 
 	InitContext();
+	InitScreenBuffer();//DX/DY가 확정된 뒤에 호출해야 한다.
 	InitGraphics();
 
 	touch = true;
@@ -886,14 +888,15 @@ void Core::Run(float delta) {
 	currentTimeStamp = MC_knlCurrentTimeStamp();
 
 	if (wholeFrame % FRAMEPER == 0) {
-		if (!screenBuffer) {
-
-			for (i = 0; i < TOTALBUFFER; i++) {
-				curScene->removeChild(bufferTexture[BUFFER_PLAY + i]);
-			}
-
-			for (i = 0; i < curBufferCnt; i++) {
-
+		//프레임 정리.
+		//풀 커서 초기화와 스프라이트 상태 복원은 렌더 방식과 무관하게 항상 해야 한다.
+		//씬에서 떼어내는 작업(removeChild)만 레거시 직접 렌더일 때 필요하다.
+		//화면버퍼 모드에서는 애초에 씬에 붙이지 않고 visit()으로 타겟에 기록하기 때문이다.
+		{
+			if (!screenBuffer) {
+				for (i = 0; i < TOTALBUFFER; i++) {
+					curScene->removeChild(bufferTexture[BUFFER_PLAY + i]);
+				}
 			}
 
 			curBufferCnt = 0;
@@ -901,16 +904,20 @@ void Core::Run(float delta) {
 			memset(&sameBufferSpriteCur, 0, sizeof(sameBufferSpriteCur));
 			memset(&sameBufferSpriteArr, 0, sizeof(sameBufferSpriteArr));
 
-			for (i = 0; i < totalFontLabelCnt; i++) {
-				curScene->removeChild(fontLabel[i]);
+			if (!screenBuffer) {
+				for (i = 0; i < totalFontLabelCnt; i++) {
+					curScene->removeChild(fontLabel[i]);
+				}
 			}
 			curFontLabelCnt = 0;
 			memset(&curFontLabelArr, 0, sizeof(curFontLabelArr));
 			memset(&sameFontLabelCur, 0, sizeof(sameFontLabelCur));
 			memset(&sameFontLabelArr, 0, sizeof(sameFontLabelArr));
 
-			for (i = 0; i < curTextLabelCnt; i++) {
-				curScene->removeChild(textLabel[curTextLabelArr[i]]);
+			if (!screenBuffer) {
+				for (i = 0; i < curTextLabelCnt; i++) {
+					curScene->removeChild(textLabel[curTextLabelArr[i]]);
+				}
 			}
 			curTextLabelCnt = 0;
 			memset(&curTextLabelArr, 0, sizeof(curTextLabelArr));
@@ -919,7 +926,8 @@ void Core::Run(float delta) {
 
 			for (i = 0; i < curRenderCnt; i++) {
 
-				curScene->removeChild(renderSprite[curRenderSpriteArr[i]], false);
+				if (!screenBuffer)
+					curScene->removeChild(renderSprite[curRenderSpriteArr[i]], false);
 
 				renderSprite[curRenderSpriteArr[i]]->setScale(1.0f);
 				renderSprite[curRenderSpriteArr[i]]->setFlippedX(false);
@@ -957,7 +965,10 @@ void Core::Run(float delta) {
 		RefreshEnemyTime();
 
 		if (running == true) {
+			//한 프레임의 모든 드로우를 화면버퍼에 모은 뒤 한 번만 화면에 표시한다.
+			BeginScreenBuffer();
 			PaintClet(0, DY, DX, DY);
+			EndScreenBuffer();
 		}
 
 	}
@@ -976,12 +987,22 @@ void DoubleBuffering(int drawHandleIdx)
 
 	LoadingDraw();
 
-	bufferTexture[BUFFER_PLAY]->beginWithClear(0, 0, 0, 0);
-	bufferTexture[BUFFER_PLAY]->end();
+	//배경/타일을 오프스크린 버퍼에 미리 그려 둔다.
+	//화면버퍼가 열려 있는 중에 호출되므로 PushRenderTarget이 상위 타겟을 저장·복원한다.
+	//doubleBuffer가 꺼진 빌드에서는 기존처럼 현재 타겟(화면)에 바로 그린다.
+	if (doubleBuffer) {
+		PushRenderTarget(bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], true);
+		DrawBg(robinmap, STATUSWIN_Y, 1.0f, bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], doubleBuffer);
+		PopRenderTarget();
 
-	DrawBg(robinmap, STATUSWIN_Y, 1.0f, bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], doubleBuffer);
-
-	DrawTile(robinmap, 0, 1.0f, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
+		PushRenderTarget(bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], true);
+		DrawTile(robinmap, 0, 1.0f, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
+		PopRenderTarget();
+	}
+	else {
+		DrawBg(robinmap, STATUSWIN_Y, 1.0f, bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], doubleBuffer);
+		DrawTile(robinmap, 0, 1.0f, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
+	}
 
 	SetSectionClip(0, STATUSWIN_Y, DX, STATUSWIN_Y - STATUSWIN_Y2, false);
 	rx = 0;

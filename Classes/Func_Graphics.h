@@ -11,7 +11,6 @@ void LoadSpriteFromTexture(int);
 void LoadBuffSpriteFromTexture(int, cocos2d::Layer*);
 void LoadFontLabelFromString(std::string);
 void AfterSpriting(cocos2d::Sprite*);
-void AfterBuffering(cocos2d::Sprite*);
 int GetSpriteIndex(int);
 int GetBufferSpriteIndex(int, cocos2d::Layer*);
 int GetTextLabelIndex(int);
@@ -31,6 +30,14 @@ void Waterize(int, int, int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool
 void ZoomImage(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, int, bool);
 void GammaImage(int, int, float, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
 void InitContext(void);
+
+// Screen Buffer / Render Target
+void InitScreenBuffer(void);
+void BeginScreenBuffer(void);
+void EndScreenBuffer(void);
+void PushRenderTarget(cocos2d::RenderTexture* dest, cocos2d::Layer* layer, bool clear = false);
+void PopRenderTarget(void);
+
 void SetSectionClip(int, int, int, int, bool);
 void UnSectionClip(bool);
 void SetColor(int);

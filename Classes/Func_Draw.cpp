@@ -4,7 +4,7 @@
 #include "Text.h"
 
 
-//¹è°æ
+//ï¿½ï¿½ï¿½
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
@@ -79,7 +79,7 @@ void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 }
 
 
-//¹è°æ
+//ï¿½ï¿½ï¿½
 void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
@@ -144,7 +144,7 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 	}
 }
 
-//¹è°æ
+//ï¿½ï¿½ï¿½
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
 {
 	int i;
@@ -207,7 +207,7 @@ void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffs
 	UnSectionClip(false);
 }
 
-// DrawÇÚµé
+// Drawï¿½Úµï¿½
 void VersionDraw(void)
 {
 	int y;
@@ -234,7 +234,7 @@ void VersionDraw(void)
 void NoSpaceDraw(void)
 {
 	MemRect(0, 0, DX, DY, 0x000000, gScreenBuffer, gScreenLayer, false);
-	//ÀúÀå°ø°£ÀÌ ºÎÁ·ÇÕ´Ï´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 	LineTextStr(tempStr, DX / 2 - 70, DY / 2 - 40, 140, -1, -1, 1.0f, gScreenBuffer, gScreenLayer, false);
 }
 
@@ -288,8 +288,10 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_SHOP]->setAnchorPoint(Vec2(0, 1.0f));
 			bufferTexture[BUFFER_SHOP]->setPosition(0, DY);
 
+			PushRenderTarget(bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP]);
 			DrawImage(640 * _2X, 512 * _2X, 0 * _2X, 0 * _2X, xOffset, DY, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_UP_IMG], bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP], UI_PAPER_BG_UP_IMG, true);
 			DrawImage(640 * _2X, 362 * _2X, 0 * _2X, 0 * _2X, xOffset, DY - 512 * _2X, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_DOWN_IMG], bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP], UI_PAPER_BG_DOWN_IMG, true);
+			PopRenderTarget();
 
 
 			//DrawBg(TOLEM1, STATUSWIN_Y, bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP], true);
@@ -369,12 +371,14 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_CARDFRAME + frame - 13]->setAnchorPoint(Vec2(0, 1.0f));
 			bufferTexture[BUFFER_CARDFRAME + frame - 13]->setPosition(0, DY);
 
+			PushRenderTarget(bufferTexture[BUFFER_CARDFRAME + frame - 13], bufferLayer[BUFFER_CARDFRAME + frame - 13]);
 			DrawWindow3(0, ITEMCARDSIZE_Y, ITEMCARDSIZE_X, ITEMCARDSIZE_Y, (frame - 13), 1.0f, bufferTexture[BUFFER_CARDFRAME + frame - 13], bufferLayer[BUFFER_CARDFRAME + frame - 13], doubleBuffer);
+			PopRenderTarget();
 
 			texture[BUFFER_CARDFRAME_IMG + frame - 13] = bufferTexture[BUFFER_CARDFRAME + frame - 13]->getSprite()->getTexture();
 
 			sprite[BUFFER_CARDFRAME_IMG + frame - 13] = Sprite::createWithTexture(texture[BUFFER_CARDFRAME_IMG + frame - 13]);
-			//¿©±â¼­ ÅØ½ºÃÄ·ÎºÎÅÍ ÀÌ¹ÌÁö¸¦ ¸¸µç´Ù.
+			//ï¿½ï¿½ï¿½â¼­ ï¿½Ø½ï¿½ï¿½Ä·Îºï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
 
 			//DrawTile(robinmap, 0, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
 		}
@@ -389,7 +393,9 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32]->setAnchorPoint(Vec2(0, 1.0f));
 			bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32]->setPosition(0, DY);
 
+			PushRenderTarget(bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32], bufferLayer[BUFFER_OPTIONBUTTON_GREEN + frame - 32]);
 			DrawFrame(0, OPTIONBUTTONSIZE_Y, OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, FRAME_GREEN + frame - 32, bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32], bufferLayer[BUFFER_OPTIONBUTTON_GREEN + frame - 32], doubleBuffer);
+			PopRenderTarget();
 
 			texture[BUFFER_OPTIONBUTTON_GREEN_IMG + frame - 32] = bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32]->getSprite()->getTexture();
 
@@ -405,7 +411,9 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]->setAnchorPoint(Vec2(0, 1.0f));
 			bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]->setPosition(0, DY);
 
+			PushRenderTarget(bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], bufferLayer[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]);
 			DrawFrame(0, CREWUPGRADEBUTTONSIZE_Y, CREWUPGRADEBUTTONSIZE_X, CREWUPGRADEBUTTONSIZE_Y, frame == 36 ? FRAME_GREEN : FRAME_GREY, bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], bufferLayer[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], doubleBuffer);
+			PopRenderTarget();
 
 			texture[BUFFER_CREWUPGRADEBUTTON_GREEN_IMG + frame - 36] = bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]->getSprite()->getTexture();
 
@@ -458,7 +466,7 @@ void TitleDraw(void)
 	int itemGrade = questRequestItem[questRequest * 3 + 2];
 
 	switch (curMenu) {
-	case MENU_LOADING://¸Ç Ã³À½¿¡ 100 ¹ÚÈ÷´Â È­¸é¿¬Ãâ
+	case MENU_LOADING://ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ 100 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È­ï¿½é¿¬ï¿½ï¿½
 #ifdef COSTUMETEST
 		if (frame == 1) {
 
@@ -607,7 +615,7 @@ void TitleDraw(void)
 
 #endif
 		break;
-		//·Î±×ÀÎ ÀÌ·ÂÀÌ ¾øÀ¸¸é ·Î±×ÀÎ ¼±ÅÃ
+		//ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	case MENU_LOGIN:
 		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
 		for (i = 0; i < TOTAL_LOGIN; i++) {
@@ -618,7 +626,7 @@ void TitleDraw(void)
 			SetRectPoint(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, TOUCH_FUNC_TITLE_LOGIN_FACEBOOK + i);
 		}
 		break;
-		//¾à°üµ¿ÀÇ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	case MENU_POLICY:
 		SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_TITLE);
 		break;
@@ -671,14 +679,14 @@ void OpeningDraw(void)
 	);
 }
 
-void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering, int dir)
 {
 	//DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 	SetAlpha(24);
 	MemRect(x, y, dx, dy, 0x2A2A3A, cvtDest, cvtLayer, buffering);
 	SetAlpha(32);
 
-	// "DAY" ÅØ½ºÆ® (°£´ÜÇÏ°Ô Ç¥½Ã)
+	// "DAY" ï¿½Ø½ï¿½Æ® (ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Ç¥ï¿½ï¿½)
 	//char dayText[32];
 	//sprintf(dayText, "DAY %d", day);
 	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
@@ -690,7 +698,7 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
 		//DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
 		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, dir, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
 
 	}
 
@@ -712,12 +720,12 @@ void GNBDraw(int x, int y, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 {
 	int i;
 
-	//¸Þ´º¹öÆ°
+	//ï¿½Þ´ï¿½ï¿½ï¿½Æ°
 	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
 	switch (drawHandle) {
 	default:
 		if (curMenu == MENU_PLAY) {
-			if (xOffset != 0)//È­¸éÀÌ 
+			if (xOffset != 0)//È­ï¿½ï¿½ï¿½ï¿½ 
 				SetRectPoint(x, y, DX, DY, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
 			else
 				SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
@@ -824,7 +832,7 @@ void LogDraw(LOG* g, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, 
 		SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_BETHEART:
-		//»óÀÚ¸¦ ¿­¾îÁÖ°í
+		//ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½
 		PushButtonDraw(g->cmf, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, false, g->zoom, false, cvtDest, cvtLayer, buffering);
 		DrawBox(ao[ITEMBOX].etc, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, LEFT, false, false, false, false, true, g->zoom * 2.0f, cvtDest, cvtLayer, buffering);
 		DrawHeartButton(g->count, g->x - (float)(0 * _2X) * g->zoom/* + (float)(2 * _2X) * g->zoom*/, g->y + (float)(LOG_Y / 2) * g->zoom + (float)(-0 * _2X) * g->zoom, g->zoom * 1.0f, false, false, cvtDest, cvtLayer, buffering);
@@ -966,10 +974,10 @@ int GetEventMenuPosY(int eventType, int eventStatus)
 	}
 }
 
-//¸ðµç ÀÌº¥Æ® »óÈ²À» ÄÁÆ®·ÑÇÏ´Â ÇÔ¼ö
-//ÀÌº¥Æ®´Â Å©°Ô ¿ìÃø¿¡ ¹ß»ýÇÏ´Â ¾ÆÀÌÄÜÇü ÀÌº¥Æ®¿Í
-//ÇöÀç Äù½ºÆ®¿¡ ºÙ´Â ºÎ°¡ Äù½ºÆ®¸¦ È®ÀÎÇÒ ¼ö ÀÖ´Ù.
-//ÇØ´ç ÇÔ¼ö¿¡¼­ ´Ù¾çÇÑ 
+//ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
+//ï¿½Ìºï¿½Æ®ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù´ï¿½ ï¿½Î°ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+//ï¿½Ø´ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ 
 void EventScheduler(void)
 {
 	int i;
@@ -987,11 +995,11 @@ void EventScheduler(void)
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 	//TEST
 	return;
-	//ÇöÀç °ÔÀÓÀ» ·ÎµùÁßÀÌ¸é ¶ç¿ìÁö ¾Ê´Â´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 	if ((curtainFrame || infoFrame || areaFrame))
 		return;
 
-	//¸¸¾à »óÁ¡ÀÌ ¿­·ÁÀÖÁö ¾Ê´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Ù¸ï¿½
 
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
@@ -1001,7 +1009,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¸ÞÀÎÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_SHOP]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_SHOP]) % TOTALROOM) {
 		InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_SHOP, false, ICON_EVENT_BOX, FREEITEMTIME, TOUCH_FUNC_EVENT_SHOP);
 		//SetPopUp(POPUPTYPE_QUESTINFO, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
@@ -1013,7 +1021,7 @@ void EventScheduler(void)
 
 	eventIdx = -1;
 
-	//¸¸¾à ÇöÀç ¸ÞÀÎ Äù½ºÆ®°¡ ¾ø´Ù¸é ¸ÞÀÎÄù½ºÆ®¸¦ ¿Ã·Áº¸³»°í
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
@@ -1023,7 +1031,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¸ÞÀÎÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_QUEST]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_QUEST]) % TOTALROOM) {
 		questIcon = GetItemIcon(questRequestItem[robin.quest * 3 + 0], questRequestItem[robin.quest * 3 + 1], questRequestItem[robin.quest * 3 + 2]);
 		if (questInfo[robin.quest * QUESTINFODATASIZE + 1] == QUESTTYPE_RAID)
@@ -1046,7 +1054,7 @@ void EventScheduler(void)
 
 	eventIdx = -1;
 
-	//¸¸¾à ÇöÀç PVP Äù½ºÆ®°¡ ¾ø´Ù¸é PVP Äù½ºÆ®¸¦ ¿Ã·Áº¸³½´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ PVP ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ PVP ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
 		case EVENTTYPE_PVP:
@@ -1055,7 +1063,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¼­ºêÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) % TOTALROOM) {
 		//if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1) {
 		InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_PVP, false, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 1], TOUCH_FUNC_EVENT_PVP);
@@ -1070,7 +1078,7 @@ void EventScheduler(void)
 
 	eventIdx = -1;
 
-	//¸¸¾à ºúÅÁ°¨ ÀÌº¥Æ®°¡ ¾øÀ¸¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
@@ -1092,7 +1100,7 @@ void EventScheduler(void)
 
 	eventIdx = -1;
 
-	//¸¸¾à ´õºí ÀÌº¥Æ®°¡ ¾øÀ¸¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
@@ -1114,7 +1122,7 @@ void EventScheduler(void)
 #ifdef GAMEDEBUG
 	eventIdx = -1;
 
-	//¸¸¾à ÇöÀç »óÁ¡ÀÌ ¾ø´Ù¸é »óÁ¡À» ¿Ã·Áº¸³½´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	for (i = 0; i < MAXGAMEEVENT; i++) {
 		switch (robin.gameEvent[i].type) {
 		case EVENTTYPE_SHOP:
@@ -1123,7 +1131,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¼­ºêÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) % TOTALROOM)
 		InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_SHOP, false, ICON_EVENT_BOX, SHOPEVENTTIME, TOUCH_FUNC_SHOP);
 
@@ -1138,7 +1146,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¼­ºêÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_DEBUG_NEWGAME]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_DEBUG_NEWGAME]) % TOTALROOM)
 		InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_DEBUG_NEWGAME, false, ICON_EVENT_BLUEFLAG, INFINITETIME, TOUCH_FUNC_DEBUG_RESETGAME);
 
@@ -1153,7 +1161,7 @@ void EventScheduler(void)
 		}
 	}
 
-	//¸¸¾à ¼­ºêÀÌº¥Æ®°¡ ÇÏ³ªµµ ¾ø´Ù¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 	if (eventIdx == -1 && robin.eventCnt < MAXGAMEEVENT - 1 && robin.maxStage[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) / TOTALROOM && robin.maxRoom[robin.stage] >= (gameEventOpenStage[EVENTTYPE_PVP]) % TOTALROOM)
 		InitEventMenu(&robin.gameEvent[robin.eventCnt], EVENTTYPE_DEBUG_MAXGAME, false, ICON_EVENT_BLUEFLAG, INFINITETIME, TOUCH_FUNC_DEBUG_MAXSTATUS);
 
@@ -1199,7 +1207,7 @@ void DeleteEventMenu(int eventIdx)
 	}
 }
 
-//ÀÌº¥Æ®¸Þ´º¸¦ ÃÊ±âÈ­ÇÏ´Â °Å
+//ï¿½Ìºï¿½Æ®ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ï´ï¿½ ï¿½ï¿½
 void InitEventMenu(GAMEEVENT* gEvent, unsigned char type, unsigned char subType, short icon, long limitTime, int touchFunc)
 {
 	gEvent->type = type;
@@ -1228,7 +1236,7 @@ void InitEventMenu(GAMEEVENT* gEvent, unsigned char type, unsigned char subType,
 
 		break;
 	case EVENTTYPE_DEBTDISCOUNT:
-		//ÇÒÀÎÀÌº¥Æ®¿¡¼­ °ª Àâ¾ÆÁÖ±â
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
 		gEvent->value = 20.0f;
 		gEvent->icon = icon;
 		break;
@@ -1236,9 +1244,9 @@ void InitEventMenu(GAMEEVENT* gEvent, unsigned char type, unsigned char subType,
 		gEvent->icon = icon;
 		break;
 	case EVENTTYPE_BOSSRAID:
-		gEvent->barStatus = BOSSRAID_ROYALFAMILY;//¾î¶² º¸½º¼ÂÀÎ°¡
-		gEvent->barFrame = 0;//¸î¹øÂ° ½ºÅÜÀÎ°¡
-		gEvent->value = 0;//¸ó½ºÅÍ Ã¼·Â ¼¼ÆÃ
+		gEvent->barStatus = BOSSRAID_ROYALFAMILY;//ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½
+		gEvent->barFrame = 0;//ï¿½ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½
+		gEvent->value = 0;//ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//InitBar(BAR_ENEMYUSER);
 		break;
@@ -1272,7 +1280,7 @@ void sortArray(int arr[], int index[], int n) {
 void MainMenuOut(void)
 {
 	int i;
-	//¿©±â¼­ ¸ðµç ¸Þ´º¸¦ ¿òÁ÷ÀÌ°í
+	//ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½
 	bar[BAR_HEART].nx = bar[BAR_HEART].x;
 	bar[BAR_HEART].ny = bar[BAR_HEART].y;
 	bar[BAR_HEART].targetX2 = bar[BAR_HEART].targetX = bar[BAR_HEART].x;
@@ -1377,7 +1385,7 @@ void MainMenuOut(void)
 		bar[BAR_SKILL + i].frame = 1;
 	}
 
-	//¿©±â¼­ºÎÅÍ ÀÌº¥Æ®¸Þ´º ¿Ü°¢À¸·Î º¸³»±â
+	//ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½Þ´ï¿½ ï¿½Ü°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (i = 0; i < robin.eventCnt; i++) {
 		robin.gameEvent[i].nx = robin.gameEvent[i].x;
 		robin.gameEvent[i].ny = robin.gameEvent[i].y;
@@ -1504,7 +1512,7 @@ void MainMenuIn(void)
 		bar[BAR_SKILL + i].frame = 1;
 	}
 
-	//¿©±â¼­ºÎÅÍ ÀÌº¥Æ®¸Þ´º ´Ù½Ã µé¿©º¸³»±â
+	//ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½Þ´ï¿½ ï¿½Ù½ï¿½ ï¿½é¿©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (i = 0; i < robin.eventCnt; i++) {
 		robin.gameEvent[i].targetX2 = robin.gameEvent[i].targetX = robin.gameEvent[i].nx;
 		robin.gameEvent[i].targetY2 = robin.gameEvent[i].targetY = robin.gameEvent[i].ny;
@@ -1534,9 +1542,9 @@ void ArrangeEventMenu(void)
 	int indexArr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 	//int nextArr[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	//Á¤ÀÇ°ª ¼ø¼­´ë·Î(¼ýÀÚ°¡ ³·Àº ¼ø¼­´ë·Î) ´Ù½Ã Àç¹è¿­ÇÏ´Â
+	//ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Ù½ï¿½ ï¿½ï¿½è¿­ï¿½Ï´ï¿½
 	for (i = 0; i < MAXGAMEEVENT; i++) {
-		//È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é
+		//È°ï¿½ï¿½È­ ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (robin.gameEvent[i].type > EVENTTYPE_NONE) {
 			curArr[j] = robin.gameEvent[i].type;
 			j++;
@@ -1613,7 +1621,7 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 	switch (gEvent->type) {
 	case EVENTTYPE_SHOP:
-		//¾ÆÀÌÅÛÀ» È¹µæÇÒ ¼ö ÀÖ´Â Å¸ÀÌ¹ÖÀÌ µÇ¸é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ Å¸ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ç¸ï¿½
 		if (remainTime > 3600)
 			DrawTime(xOffset + gEvent->x, gEvent->y - (float)32 * _2X * gEvent->zoom / 2, remainTime, TIME_HOUR_MINUTE, CENTER, gEvent->zoom * 0.8f, cvtDest, cvtLayer, buffering);
 		else {
@@ -1664,7 +1672,7 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
 				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + (float)17 * _2X * zoom / 2, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
 
-				//Å¬¸®¾îÇÏ¸é ¿Àºê¸¦ ÄÑÁØ´Ù.
+				//Å¬ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ê¸¦ ï¿½ï¿½ï¿½Ø´ï¿½.
 				if ((int)(gEvent->barStatus) > i) {
 					SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
 					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)10 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
@@ -1749,7 +1757,7 @@ void ClosePopUp(void)
 {
 	//it = &ao[PLAYER].equip[EQUIP_WEAPON];
 			//collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
-			//ÇöÀç ÆË¾÷ÀÌ ¸¶Áö¸·ÀÎµ¥ PVPÄù½ºÆ®³ª ÀÏ¹ÝÄù½ºÆ®°¡ ÀÖÀ¸¸é Á¶ÀÌ½ºÆ½ ¸®½ºÆ®¸¦ ¸¸µé¾î ÁØ´Ù. 
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ PVPï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì½ï¿½Æ½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½. 
 	
 	if (menuDepth > 0) {
 		menuDepth--;
@@ -1827,7 +1835,7 @@ void SetPopUp(int type, int x, int y, int w, int h,
 	popUp[popUpCnt].popUpFrame = 1;
 	popUpCnt++;
 
-	//¸ð¼Ç ÃÊ±âÈ­
+	//ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	if (type == POPUPTYPE_STAGE)
 		memset(&stageUpgradeMotion, 0, sizeof(stageUpgradeMotion));
 
@@ -1863,7 +1871,7 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 
 		break;
 	case POPUPTYPE_BOXREWARD:
-		//ÇÁ·¹ÀÓÀÌ Ä¿Áö°í
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½
 		DrawFrame(p->x - (float)p->w * p->zoom / 2, p->y + plusY + (float)p->h * p->zoom / 2, (float)p->w * p->zoom, (float)p->h * p->zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 
 		if (p->frame > POPUPFRAME)
@@ -1973,15 +1981,15 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 		GameOverDraw(0, DY, 1.0f, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_HOWTOGETHEROES:
-		//¿©±â¿¡ È÷¾î·Î¸¦ ¾î¶»°Ô ¾ò´ÂÁö ±×·ÁÁØ´Ù.
+		//ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½Ø´ï¿½.
 		HowToGetHeroesDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	case POPUPTYPE_HOWTOGETCREWS:
-		//¿©±â¿¡ ±¹°æ¼öºñ´ë¸¦ ¾î¶»°Ô ¾ò´ÂÁö ±×·ÁÁØ´Ù.
+		//ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¸¦ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½Ø´ï¿½.
 		HowToGetCrewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		break;
 	}
-	//¹é¹öÆ°
+	//ï¿½ï¿½ï¿½Æ°
 
 	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER)) {
 		float xMarkZoom = 1.0f;
@@ -2021,14 +2029,14 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, SHADOW_IMG, 1.0f, cvtDest, cvtLayer, buffering);
 
 
-			//Àá°ÜÀÖÀ¸¸é
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			//if (robin.openedMenu[i] == CLOSE) {
 			//	DrawIcon(ICON_EVENT_LOCK, x + 12 * _2X, y - dy * (j)-dy / 2 + 6 * _2X + ITEMICONSIZE, 2, false, false, false, cvtDest, cvtLayer, buffering);
 
 			//}
 			//else
 			switch (i) {
-			case MENU_PLAY://Ä³¸¯ÅÍ¸Þ´º : Ä³¸¯ÅÍ¸¦ ·¹º§¾÷ÇÏ°í ½ºÅÈ(STAT_STR, STAT_VIT, STAT_AGI, STAT_INT)À» Âï´Â ºÎºÐ
+			case MENU_PLAY://Ä³ï¿½ï¿½ï¿½Í¸Þ´ï¿½ : Ä³ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½(STAT_STR, STAT_VIT, STAT_AGI, STAT_INT)ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Îºï¿½
 				//DrawNeutral(OBJ_LEVER0, x + 28 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, LEFT, 2, gScreenBuffer, gScreenLayer, false);
 				DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], x + 28 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 32 * _2X, LEFT, 2.0f * zoom, cvtDest, cvtLayer, buffering);
 				break;
@@ -2064,7 +2072,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 8, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
 				break;
 			case MENU_GAMERESET:
-				//»èÁ¦ÀÌ±â ¶§¹®¿¡ ±×³É ÅØ½ºÆ®¸¸ ¶ç¿öÁØ´Ù.
+				//ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 				break;
 			}
 
@@ -2080,7 +2088,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		}
 
 	}
-	//ÇöÀç ¸®½ºÆ®°¡ ¿­¸° »óÅÂ¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½
 	if (curMenu == MENU_LIST && xOffset == -GAMEMENUWIN_X) {
 		SetRectPoint(0, DY, x, DY, TOUCH_FUNC_GAMEMENU_OUT);
 	}
