@@ -1002,7 +1002,11 @@ void Demo(void)
 //ì¸í„°ëž™í‹°ë¸Œ ì „íˆ¬ íŠœí† ë¦¬ì–¼ì´ ì§„í–‰ ì¤‘ì¸ì§€(íŠœí† ë¦¬ì–¼ ë°©ì—ì„œ ì•„ì§ ëë‚˜ì§€ ì•Šì•˜ëŠ”ì§€).
 bool IsTutorialPlaying(void)
 {
-	return robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END];
+	//Ã¹ ¼ºÀÌ °ð MAP_DIORAMA_TOLEMÀÌ¶ó ¸Ê¸¸ º¸¸é ÀÏ¹Ý ÇÃ·¹ÀÌµµ °É¸°´Ù.
+	//DEMO_TUTORIAL_INITÀ» º» ÀûÀÌ ÀÖ´ÂÁö±îÁö È®ÀÎÇØ¾ß "Æ©Åä¸®¾ó ÁøÇà Áß"ÀÌ µÈ´Ù.
+	return robinmap == MAP_DIORAMA_TOLEM
+		&& robin.demoSeen[DEMO_TUTORIAL_INIT]
+		&& !robin.demoSeen[DEMO_TUTORIAL_END];
 }
 
 //ëŒ€ì‚¬ë¥¼ ë„ì›Œë‘” ì±„ í”Œë ˆì´ì–´ê°€ íŠ¹ì • ë²„íŠ¼ì„ ì§ì ‘ ëˆŒëŸ¬ì•¼ ë‹¤ìŒìœ¼ë¡œ ë„˜ì–´ê°€ëŠ” íŠœí† ë¦¬ì–¼ ì•ˆë‚´ ëŒ€ì‚¬ì¸ì§€.
@@ -1076,7 +1080,9 @@ int GetTutorialCrewCardTouchFunc(void)
 	if (IsTutorialPlaying() == false)
 		return 0;
 
-	if (robin.demoSeen[DEMO_TUTORIAL_CREWMENU])
+	//¾È³» ´ë»ç¿¡¼­ µ¿·á ¹Ù¸¦ ´­·¯ ¸Þ´º¸¦ ¿¬ ±× ¼ø°£¿¡¸¸ ÄÑÁø´Ù.
+	//ÀúÀåµÇ´Â ÇÃ·¡±×·Î ÆÇÁ¤ÇÏ¸é ÀÏ¹Ý ÇÃ·¹ÀÌ¿¡¼­ µ¿·á ¸Þ´º¸¦ ¿­ ¶§µµ °É¸°´Ù.
+	if (tutorialCrewGuide == false)
 		return 0;
 
 	//ë™ë£Œ ë¦¬ìŠ¤íŠ¸ê°€ ì—´ë ¤ ìžˆê³  ì•„ì§ ìƒì„¸ë³´ê¸°ë¡œ ë“¤ì–´ê°€ì§€ ì•Šì€ ìƒíƒœì—ì„œë§Œ

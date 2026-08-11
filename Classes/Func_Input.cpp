@@ -597,6 +597,8 @@ void PlayKey(int obj)
 		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + (systemKey - AVK_ITEMDETAIL))
 			robin.demoSeen[DEMO_TUTORIAL_CREWMENU] = true;
 
+		tutorialCrewGuide = false;
+
 		menuItem = systemKey - AVK_ITEMDETAIL;
 		menuDepth = 1;
 		ao[NPC].frame = 0;

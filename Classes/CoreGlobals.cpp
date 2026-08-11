@@ -261,6 +261,10 @@ float gSpotlightDarkness = 0.0f;
 //ëˆŒë¦° í„°ì¹˜ê¸°ëŠ¥ì„ ë‹´ì•„ë‘ë©´ Play()ê°€ í”Œë ˆì´ë¡œ ëŒì•„ì˜¨ ë’¤ ê·¸ëŒ€ë¡œ ì²˜ë¦¬í•œë‹¤. 0ì´ë©´ ì˜ˆì•½ ì—†ìŒ.
 int tutorialPendingTouchFunc = 0;
 
+//Æ©Åä¸®¾ó ¾È³»·Î µ¿·á ¸Þ´º¸¦ ¿¬ Á÷ÈÄ, »õ µ¿·á Ä«µå¸¦ ´­·¯ »ó¼¼º¸±â·Î µé¾î°¥ ¶§±îÁö¸¸ Âü.
+//ÀúÀåÇÏÁö ¾Ê´Â´Ù - ±× ÀÚ¸®¿¡¼­¸¸ µµ´Â ¾È³»¶ó ¼¼ÀÌºê¿¡ ³²À¸¸é ÀÏ¹Ý ÇÃ·¹ÀÌ±îÁö ¹°µç´Ù.
+bool tutorialCrewGuide = false;
+
 int gTutorialTouchFunc = TUTORIAL_TOUCH_FREE;
 int gTouchHitFunc = TUTORIAL_TOUCH_NONE;
 

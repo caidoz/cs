@@ -61,6 +61,10 @@ void Play(void)
 
 		tutorialPendingTouchFunc = 0;
 
+		//동료 메뉴를 여는 안내였다면, 새 동료 카드를 누를 때까지 안내를 이어간다.
+		if (pendingFunc == TOUCH_FUNC_POPUP_CREWLIST)
+			tutorialCrewGuide = true;
+
 		touchFunc(pendingFunc);
 		PlayKey(raidPlayer);
 		systemKey = null;
