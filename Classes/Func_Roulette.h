@@ -20,12 +20,9 @@ void RouletteDrawSimple3Slots(
 	int y,
 	float zoom,
 	const int slotCrewIdx[3],
-	int totalCrewCount,
-	cocos2d::RenderTexture* cvtDest,
-	cocos2d::Layer* cvtLayer,
-	bool buffering);
+	int totalCrewCount);
 
-void RouletteDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void RouletteDraw(int x, int y, float zoom);
 
 // Crew ฐüทร
 int GetHouseFromCrewIdx(int);

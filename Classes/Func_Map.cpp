@@ -114,6 +114,15 @@ void SetRoom(void)
 	SetScreenRatio();
 
 	if (loadedMap != robinmap) {
+		//DEBUG: 튜토리얼 중 SetRoom() 리로드가 왜 다시 도는지 추적. 원인 확인되면 제거.
+		if (robinmap == MAP_DIORAMA_TOLEM) {
+			gDebugSetRoomReloadCount++;
+			gDebugSetRoomReloadFrame = frame;
+			gDebugSetRoomReloadAttackSeq = attackSequence;
+			gDebugSetRoomReloadArenaStatus = arenaStatus;
+			gDebugSetRoomReloadWaveStatus = waveStatus;
+		}
+
 		ReadMap(robinmap);
 		DoubleBuffering(drawHandle);
 
@@ -1138,6 +1147,15 @@ void SetEnemyUser()
 int GetMaxWaveCnt(void)
 {
 	int i;
+
+	//인터랙티브 전투 튜토리얼: 단계마다 몬스터를 딱 한 마리만 상대하게 한다.
+	//이 값은 WaveControler()의 스폰 상한이면서 동시에 VanishMove()의 상자 드롭 조건
+	//(robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0)과 Func_Combat.cpp의
+	//waveStatus = WAVESTATUS_END 조건으로도 쓰인다. 여기서 1로 고정해야 한 마리만 스폰되고,
+	//그 한 마리를 잡았을 때 정상적으로 상자가 떨어지면서 가챠까지 이어진다.
+	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])
+		return 1;
+
 	for (i = 0; i < MAXWAVEENEMY; i++) {
 		if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0] == false)
 			return i;
@@ -1319,14 +1337,18 @@ void WaveStart(void)
 void WaveControler()
 {
 	int i;
-	OBJECT * pObj;
-	int obj;
+	OBJECT * pObj = nullptr;
+	int obj = 0;
 	int positionX, positionY;
 
 	//인터랙티브 전투 튜토리얼: 스폰한 몬스터가 RegenMove() 점프 연출을 다 마치고 moveHandler가
 	//ENEMYMOVETURN이 될 때까지 touchDisable을 true로 묶어둔다. 그 전에 공격하면 몬스터가 아직
 	//active 상태가 아니라서 공격이 제대로 안 먹는다("생성될 때까지 타이밍을 기다리는" 부분).
-	if (touchDisable == true && robinmap == MAP_DIORAMA_TOLEM && (drawHandle == MD_PLAY || drawHandle == MD_DEMO)) {
+	//반드시 tutorialWaitingEnemyLand 전용 플래그로만 판단해야 한다 - touchDisable==true를 직접 보면
+	//공격 직후 쿨다운으로 touchDisable이 true가 될 때도 이 블록이 매 프레임 돌면서, 피격/사망으로
+	//moveHandler가 ENEMYMOVETURN을 벗어난 적을 "아직 스폰 중"으로 오인해 touchDisable을 영원히
+	//풀어주지 못하는 버그가 있었다(공격 버튼을 누르면 그대로 멈추는 현상의 원인).
+	if (tutorialWaitingEnemyLand && robinmap == MAP_DIORAMA_TOLEM && (drawHandle == MD_PLAY || drawHandle == MD_DEMO)) {
 		bool stillSpawning = false;
 
 		for (i = ENEMY; i < NEUTRAL; i++) {
@@ -1336,8 +1358,67 @@ void WaveControler()
 			}
 		}
 
-		if (!stillSpawning)
+		if (!stillSpawning) {
 			touchDisable = false;
+			tutorialWaitingEnemyLand = false;
+		}
+	}
+
+	//인터랙티브 전투 튜토리얼: 세바스찬의 "공격버튼을 눌러주세요" 대사에서 누른 입력은 컷씬을
+	//닫는 데 소비됐으므로, 전투 준비가 끝나는 첫 프레임에 그 입력을 실제 공격으로 실행해준다.
+	//AfterDemo() -> GotoPlay()가 SetHero()/SetBattleCrew()로 주인공과 크루를 다시 등장 연출
+	//(REGENMOVE)에 태우기 때문에, 핸드오프 직후에 바로 부르면 RouletteAttackStart()가 turnList[]를
+	//만들 때 아직 active가 아닌 캐릭터가 빠진다. 특히 크루가 빠지면 "세바스찬만 공격하지 않는"
+	//증상이 되고, 디버거로 지연시키면 그 사이 등장 연출이 끝나 우연히 동작하는 타이밍 레이스가 된다.
+	//그래서 주인공/크루/몬스터가 전부 제자리에 선 뒤에만 실행한다.
+	if (tutorialAttackPending && drawHandle == MD_PLAY && arenaStatus == STATUS_PLAY
+		&& attackSequence == ATTACKSEQUENCE_READY && !attackDelay
+		&& ao[PLAYER].active == true && ao[PLAYER].dead == false && ao[PLAYER].moveHandler == PLAYERMOVE) {
+		bool everyoneReady = true;
+
+		//크루(세바스찬)가 등장 연출을 마치고 CREWMOVE로 바뀌어 있어야 turnList에 포함된다.
+		for (i = CREW; i < CREW + crewCnt; i++) {
+			if (ao[i].active == false || ao[i].moveHandler == REGENMOVE) {
+				everyoneReady = false;
+				break;
+			}
+		}
+
+		//몬스터는 최소 한 마리가 착지(ENEMYMOVETURN)해 있어야 한다.
+		if (everyoneReady) {
+			bool enemyReady = false;
+
+			for (i = ENEMY; i < NEUTRAL; i++) {
+				if (ao[i].type == 0)
+					continue;
+
+				if (ao[i].active == true && ao[i].moveHandler == ENEMYMOVETURN)
+					enemyReady = true;
+				else {
+					//아직 등장 연출 중인 몬스터가 하나라도 있으면 더 기다린다.
+					enemyReady = false;
+					break;
+				}
+			}
+
+			everyoneReady = enemyReady;
+		}
+
+		if (everyoneReady) {
+			tutorialWaitingEnemyLand = false;
+
+			RouletteAttackStart();
+
+			//RouletteAttackStart()는 attackDelay가 남아있으면 아무 것도 하지 않고 그냥 return한다.
+			//그때 예약을 소진하고 touchDisable까지 걸어버리면 공격도 안 되고 다시 누를 수도 없는
+			//교착이 된다. 실제로 시퀀스가 시작됐을 때만 예약을 소진한다.
+			if (attackSequence != ATTACKSEQUENCE_READY) {
+				tutorialAttackPending = false;
+
+				bar[BAR_PLAY].aniFrame = 1;
+				touchDisable = true;
+			}
+		}
 	}
 
 	for (i = ENEMY; i < NEUTRAL; i++) {
@@ -1347,6 +1428,10 @@ void WaveControler()
 			break;
 		}
 	}
+
+	//빈 슬롯이 하나도 없으면 아래에서 초기화되지 않은 pObj를 그대로 역참조하게 된다.
+	if (pObj == nullptr)
+		return;
 
 	switch (drawHandle) {
 	case MD_DEMO:
@@ -1870,6 +1955,33 @@ int SetEnemy(OBJECT *pObj)
 		pObj->maxhp = pObj->hp = goldQuestNpc[robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barStatus * BOSSRAIDSIZE + 3 + robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)].barFrame * 15];
 		break;
 	}
+
+	//인터랙티브 전투 튜토리얼: 몬스터 타입/스폰 타이밍은 정식 wave[] 데이터를 그대로 쓰되, 체력만
+	//여기서 튜토리얼 난이도로 낮춘다. drawHandle과 무관하게(EFFECT_WAVE로 MD_DEMO 중에 스폰되는
+	//경우도 포함) 항상 적용되어야 하므로 위 switch(drawHandle) 밖에서 robin.waveIdx로 분기한다.
+	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END]) {
+		switch (robin.waveIdx) {
+		case 0:		//SEBASTIAN/CREWMENU: SNAIL
+			//첫 몬스터(SEBASTIAN 단계)는 "세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를
+			//보여줘야 하므로 최소 2는 있어야 한다. 크루의 공격이 마지막 1을 못 깎게 막는 처리는
+			//Func_Combat.cpp의 AttackObj()에 있다.
+			pObj->maxhp = pObj->hp = 2;
+			break;
+		case 5:		//HEARTBET: ONEEYE, 3배 하트베팅 공격에만 죽도록
+			pObj->maxhp = pObj->hp = 100;
+			break;
+		case 6:		//ROULETTE_LIVE: SKELETON, 룰렛 3인 공격으로 죽도록
+			pObj->maxhp = pObj->hp = 100;
+			break;
+		}
+
+		//빨간 HP바(BAR_BOSSHP)의 분모.
+		//DemoCore_Effect_TutorialInitBar()가 max를 0으로 밀어놓고 실제 스폰 체력을 더하는 방식인데,
+		//그 덧셈이 SpawnTutorialEnemy()에만 있어서 SetTutorialWave()+WaveControler() 경로로 스폰하면
+		//max가 0으로 남는다. BossHpBarDraw()가 count/max를 클램프 없이 넘겨서 percent가 inf가 된다.
+		bar[BAR_BOSSHP].max += pObj->maxhp;
+	}
+
 	//Str
 	//Armor
 	pObj->ps[PS_ARMOR] = enemyStatInfo[pObj->type * 3 + 2];
@@ -2516,7 +2628,7 @@ void PopTalk(void)
 
 
 
-void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom)
 {
 	int i = 0, j, y, t;
 	int jStart, jEnd;
@@ -2531,34 +2643,34 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
 
 	if (mapIdx != CASTLE11)
-		MemRect(0, DY, dx, DY, mapColor[mapData[3]], cvtDest, cvtLayer, buffering);
+		MemRect(0, DY, dx, DY, mapColor[mapData[3]]);
 
 	if (*(bgPtr + 3) > 0) {
 		switch (mapData[7]) {
 		case MAPTYPE_VALLEY:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x5F3B2D, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x5F3B2D);
 			break;
 		case MAPTYPE_ELF:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x242B31, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x242B31);
 			break;
 		case MAPTYPE_GOLEMVALLEY:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x0A0208, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x0A0208);
 			break;
 		case MAPTYPE_DRAGON:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x170805, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x170805);
 			break;
 		case MAPTYPE_DARKNESS:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x0A2F3D, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x0A2F3D);
 			break;
 		case MAPTYPE_GHOST:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x2B2F20, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x2B2F20);
 			break;
 		case MAPTYPE_DEVILCASTLE:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x182429, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, 0x182429);
 			break;
 		default:
 			if (mapIdx != CASTLE11)
-				MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, mapColor[mapData[3]], cvtDest, cvtLayer, buffering);
+				MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)dx * zoom, (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, mapColor[mapData[3]]);
 			break;
 		}
 	}
@@ -2567,10 +2679,10 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 		do {
 			int x = i * *(bgPtr + 2) - rx / TSIZE * _2X;
 
-			DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, xPos + (float)x * zoom, y - (float)TSIZE * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+			DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, xPos + (float)x * zoom, y - (float)TSIZE * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 
 			if (*bgPtr != *(bgPtr + 2))
-				DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, xPos + (float)(x + *bgPtr) * zoom, y - (float)TSIZE * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+				DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, xPos + (float)(x + *bgPtr) * zoom, y - (float)TSIZE * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 
 			switch (mapData[7]) {
 			case MAPTYPE_TOLEM:
@@ -2580,11 +2692,11 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 					j++;
 
 					//b0.bmp
-					DrawImage(48 * _2X, 25 * _2X, 0, 230 * _2X, xPos + (float)x * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
-					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, xPos + (float)(x + *bgPtr) * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+					DrawImage(48 * _2X, 25 * _2X, 0, 230 * _2X, xPos + (float)x * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
+					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, xPos + (float)(x + *bgPtr) * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 				} while (y - *(bgPtr + 1) - 25 * j * _2X > 0);
 
-				DrawBgEffect((i + robin.playtime) % 5 + BG0_WATER0, xPos + (float)(x + *bgPtr) * zoom, y + (float)(-152 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect((i + robin.playtime) % 5 + BG0_WATER0, xPos + (float)(x + *bgPtr) * zoom, y + (float)(-152 * _2X) * zoom, 0, zoom);
 
 				if (robin.playtime % 1000 < 256) {
 					if (robin.playtime % 1000 < 4)
@@ -2594,28 +2706,28 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 					else
 						j = robin.playtime % 4 + BG0_WATER_SIDE4;
 
-					DrawBgEffect(j, xPos + (float)(x + *bgPtr) * zoom, y - (float)152 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
-					DrawBgEffect(j, xPos + (float)(x + *bgPtr) * zoom, y - (float)152 * _2X * zoom, 1, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(j, xPos + (float)(x + *bgPtr) * zoom, y - (float)152 * _2X * zoom, 0, zoom);
+					DrawBgEffect(j, xPos + (float)(x + *bgPtr) * zoom, y - (float)152 * _2X * zoom, 1, zoom);
 				}
 
 				break;
 			case MAPTYPE_ATLANTICE:
-				DrawBgEffect(BG4_AQUA0 + robin.playtime / 2 % 4, xPos + (float)(x + 64 * _2X) * zoom, y - (float)80 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG4_AQUA0 + robin.playtime / 2 % 4, xPos + (float)(x + 64 * _2X) * zoom, y - (float)80 * _2X * zoom, 0, zoom);
 				break;
 			case MAPTYPE_FLAME:
 				//왼쪽 바위부분
 				SetAlpha(Abs(16 - ((robin.playtime + i * 8) % 32)) * 2);
 				//bg.bmp
-				DrawImage(17 * _2X, 36 * _2X, 102 * _2X, 38 * _2X, xPos + (float)(x + 4 * _2X) * zoom, y - (float)92 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(17 * _2X, 36 * _2X, 102 * _2X, 38 * _2X, xPos + (float)(x + 4 * _2X) * zoom, y - (float)92 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
 				//아래쪽 용암
 				j = Abs(16 - ((robin.playtime + 16 + i * 8) % 32)) * 2;
 				SetAlpha(j);
-				DrawBgEffect(BG9_MAGMA, xPos + (float)x * zoom, y - (float)208 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG9_MAGMA, xPos + (float)x * zoom, y - (float)208 * _2X * zoom, 0, zoom);
 
 				//불꽃1
 				SetAlpha(32 - j);
-				DrawBgEffect(BG9_MAGMA_FIRE0, xPos + (float)(x + 48 * _2X) * zoom, y + (float)(-208 * _2X + (32 - j) / 2 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG9_MAGMA_FIRE0, xPos + (float)(x + 48 * _2X) * zoom, y + (float)(-208 * _2X + (32 - j) / 2 * _2X) * zoom, 0, zoom);
 
 				//불꽃2
 				j = (robin.playtime + 16 + i * 8) % 32;
@@ -2623,7 +2735,7 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 				SetAlpha(40 - j);
 
 				if (j >= 10 && j < 18)
-					DrawBgEffect(BG9_MAGMA_FIRE1, xPos + (float)(x + 48 * _2X) * zoom, y + (float)(-208 * _2X + (j - 20) / 2 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_MAGMA_FIRE1, xPos + (float)(x + 48 * _2X) * zoom, y + (float)(-208 * _2X + (j - 20) / 2 * _2X) * zoom, 0, zoom);
 
 				SetAlpha(32);
 
@@ -2632,44 +2744,44 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 
 				if (j < 42) {
 					SetAlpha(j);
-					DrawBgEffect(BG9_ETC0, xPos + (float)x * zoom, y, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, xPos + (float)x * zoom, y, 0, zoom);
 				}
 				else if (j < 58)
-					DrawBgEffect(BG9_ETC0, xPos + (float)(x + robin.playtime % 3 - 1 * _2X) * zoom, y, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, xPos + (float)(x + robin.playtime % 3 - 1 * _2X) * zoom, y, 0, zoom);
 				else if (j < 64) {
 					SetAlpha((64 - j) * 6);
-					DrawBgEffect(BG9_ETC0, xPos + (float)x * zoom, y + (float)(-(j - 57) * (j - 57) * 3 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, xPos + (float)x * zoom, y + (float)(-(j - 57) * (j - 57) * 3 * _2X) * zoom, 0, zoom);
 				}
 				else if (j < 68) {
 					SetAlpha((68 - j) * 8);
-					DrawBgEffect(BG9_ETC1 + j % 2, xPos + (float)x * zoom, y + (float)(-144 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC1 + j % 2, xPos + (float)x * zoom, y + (float)(-144 * _2X) * zoom, 0, zoom);
 				}
 
 				SetAlpha(32);
 				break;
 			case MAPTYPE_THUNDER:
 				//번개지대 원경효과
-				DrawBgEffect(BG11_BACK0 + robin.playtime / 2 % 3, xPos + (float)x * zoom, y, 0, zoom, cvtDest, cvtLayer, buffering);
-				DrawBgEffect(BG11_BACK3 + robin.playtime % 8, xPos + (float)x * zoom, y, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG11_BACK0 + robin.playtime / 2 % 3, xPos + (float)x * zoom, y, 0, zoom);
+				DrawBgEffect(BG11_BACK3 + robin.playtime % 8, xPos + (float)x * zoom, y, 0, zoom);
 				break;
 			case MAPTYPE_LIGHT:
 				//빛의지대 원경효과
 				j = (robin.playtime + i * 36) % 100;
 
 				if (j < 15)
-					DrawBgEffect(BG12_LIGHT0 + j, xPos + (float)x * zoom, y - (float)64 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG12_LIGHT0 + j, xPos + (float)x * zoom, y - (float)64 * _2X * zoom, 0, zoom);
 				break;
 			case MAPTYPE_DARKNESS:
 				//어둠의 지대 오오라
 				j = (robin.playtime + i * 3) % 30;
 
 				if (j < 15)
-					DrawBgEffect(BG14_AURORA0 + j, xPos + (float)(x + 42 * _2X) * zoom, y - (float)7 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_AURORA0 + j, xPos + (float)(x + 42 * _2X) * zoom, y - (float)7 * _2X * zoom, 0, zoom);
 
 				j = (robin.playtime + i * 3 + 15) % 30;
 
 				if (j < 15)
-					DrawBgEffect(BG14_AURORA0 + j, xPos + x + (float)12 * _2X * zoom, y - (float)36 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_AURORA0 + j, xPos + x + (float)12 * _2X * zoom, y - (float)36 * _2X * zoom, 0, zoom);
 				break;
 			}
 			i++;
@@ -2682,7 +2794,7 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 		//물고기
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active)
-				DrawBgEffect(BG4_FISH0 + 7 * bgObj[i].etc + (robin.playtime / 2 + i) % 7, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, (bgObj[i].dx > 0 ? 1 : 0), zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG4_FISH0 + 7 * bgObj[i].etc + (robin.playtime / 2 + i) % 7, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, (bgObj[i].dx > 0 ? 1 : 0), zoom);
 			else
 				break;
 		}
@@ -2709,14 +2821,14 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 		//골렘 협곡 구름
 		for (i = 0; i < MAXBGOBJECT - 4; i++) {
 			if (bgObj[i].active == true && bgObj[i].etc < 3)
-				DrawBgEffect(BG13_CLOUD0 + bgObj[i].etc % 3, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG13_CLOUD0 + bgObj[i].etc % 3, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom);
 		}
 		break;
 	case MAPTYPE_DARKNESS:
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			SetAlpha(Abs(32 - (robin.playtime + bgObj[i].etc) % 64));
 			//bg14.bmp
-			DrawImage(5 * _2X, 5 * _2X, 18 * _2X, 172 * _2X, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y) * zoom, false, false, false, true, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(5 * _2X, 5 * _2X, 18 * _2X, 172 * _2X, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y) * zoom, false, false, false, true, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			SetAlpha(32);
 		}
 		break;
@@ -2724,7 +2836,7 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 		//망자의 도시 구름 및 안개
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active == true && bgObj[i].etc)
-				DrawBgEffect(BG16_CLOUD0 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG16_CLOUD0 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom);
 		}
 		break;
 	case MAPTYPE_SPACE:
@@ -2732,10 +2844,10 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active) {
 				if (bgObj[i].etc < 3)
-					DrawBgEffect(BG18_SATELITE0 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(-bgObj[i].y - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG18_SATELITE0 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(-bgObj[i].y - ry) * zoom, 0, zoom);
 				else {
 					SetAlpha(16 - Abs(DY / 2 - bgObj[i].y) / 8);
-					DrawBgEffect(BG18_METEOR0 - 3 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG18_METEOR0 - 3 + bgObj[i].etc, xPos + (float)(bgObj[i].x - rx) * zoom, y + (float)(*(bgPtr + 1) - bgObj[i].y - ry) * zoom, 0, zoom);
 					SetAlpha(32);
 				}
 			}
@@ -2755,7 +2867,7 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom, cocos2d:
 	}
 }
 
-void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i, j, y;
 	const unsigned short* bgPtr;
@@ -2775,7 +2887,7 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG0_2:
 			//굴뚝 연기
 			if ((robin.playtime + *(mbObj + 1)) / 2 % 20 < 8)
-				DrawBgEffect(BG0_SMOKE0 + (robin.playtime + *(mbObj + 1)) / 2 % 20, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG0_SMOKE0 + (robin.playtime + *(mbObj + 1)) / 2 % 20, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG0_39:
 		case IMG_BG0_42:
@@ -2792,14 +2904,14 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 			y = robin.playtime / 2 % bgObj[j].frame;
 
 			if (y > 3 && y < 9)
-				DrawBgEffect(BG3_REED_SEED0 - 4 + y, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG3_REED_SEED0 - 4 + y, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 
 			if (y < 10)
 				y %= 3;
 			else
 				y = 0;
 
-			DrawBgEffect((*mbObj > 0 ? BG3_REED0 : BG3_REED3) + (y % 3), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect((*mbObj > 0 ? BG3_REED0 : BG3_REED3) + (y % 3), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 
 			j++;
 			continue;
@@ -2813,12 +2925,12 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG12_1:
 			//빛의지대 스탠드 : bg12.bmp
 			SetAlpha(32 - Abs(robin.playtime % 32 - 16));
-			DrawImage(14 * _2X, 14 * _2X, 14 * _2X, 54 * _2X, xPos + (float)(*(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 1 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(14 * _2X, 14 * _2X, 14 * _2X, 54 * _2X, xPos + (float)(*(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 1 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			SetAlpha(32);
 			break;
 		case IMG_BG9_1:
 			//홍염의 대지
-			DrawImage(34 * _2X, 30 * _2X, 119 * _2X, 32 * _2X, xPos + (float)(*(mbObj + 1) + 4 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(34 * _2X, 30 * _2X, 119 * _2X, 32 * _2X, xPos + (float)(*(mbObj + 1) + 4 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG17_12:
 		case IMG_BG17_13:
@@ -2826,25 +2938,25 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG17_15:
 		case IMG_BG17_16:
 			//마왕성 발판 : bg17.bmp
-			DrawImage(16 * _2X, 24 * _2X, 17 * _2X, 112 * _2X, xPos + (float)(*(mbObj + 1) - 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(16 * _2X, 24 * _2X, 17 * _2X, 112 * _2X, xPos + (float)(*(mbObj + 1) + 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 3 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(16 * _2X, 24 * _2X, 17 * _2X, 112 * _2X, xPos + (float)(*(mbObj + 1) - 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(16 * _2X, 24 * _2X, 17 * _2X, 112 * _2X, xPos + (float)(*(mbObj + 1) + 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 3 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG17_4:
 			//마왕성 기타 : bg17.bmp
 			if (*mbObj > 0)
-				DrawImage(16 * _2X, 32 * _2X, 40 * _2X, 124 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(16 * _2X, 32 * _2X, 40 * _2X, 124 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			else
-				DrawImage(16 * _2X, 32 * _2X, 40 * _2X, 124 * _2X, xPos + (float)(*(mbObj + 1) - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(16 * _2X, 32 * _2X, 40 * _2X, 124 * _2X, xPos + (float)(*(mbObj + 1) - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG_WITCHHOUSE:
-			DrawImage(114 * _2X, 136 * _2X, 0 * _2X, 0 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[CASTLE_IMG], cvtDest, cvtLayer, CASTLE_IMG, buffering);
+			DrawImage(114 * _2X, 136 * _2X, 0 * _2X, 0 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[CASTLE_IMG], CASTLE_IMG);
 			continue;
 		case IMG_BG_BOSSSTATUE:
 			//보스 표지판 : c.bmp
 			if (*mbObj < 0)
-				DrawImage(32 * _2X, 48 * _2X, 214 * _2X, 93 * _2X, xPos + (float)(*(mbObj + 1) - 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 54 * _2X) * zoom, true, false, false, false, false, zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
+				DrawImage(32 * _2X, 48 * _2X, 214 * _2X, 93 * _2X, xPos + (float)(*(mbObj + 1) - 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 54 * _2X) * zoom, true, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			else
-				DrawImage(32 * _2X, 48 * _2X, 214 * _2X, 93 * _2X, xPos + (float)(*(mbObj + 1) - 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 54 * _2X) * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
+				DrawImage(32 * _2X, 48 * _2X, 214 * _2X, 93 * _2X, xPos + (float)(*(mbObj + 1) - 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 54 * _2X) * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			continue;
 		case IMG_BG_REDORB:
 		case IMG_BG_YELLOWORB:
@@ -2853,28 +2965,28 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG_BLUEORB:
 
 			SetAlpha(Abs(8 - robin.playtime % 16) * 4);
-			DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, xPos + (float)(*(mbObj + 1) - 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, xPos + (float)(*(mbObj + 1) - 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			SetAlpha(32);
 
-			DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (*mbObj - IMG_BG_REDORB), xPos + (float)(*(mbObj + 1) - 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 8 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (*mbObj - IMG_BG_REDORB), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 8 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (*mbObj - IMG_BG_REDORB), xPos + (float)(*(mbObj + 1) - 8 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 8 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (*mbObj - IMG_BG_REDORB), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 8 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
 			continue;
 		}
 
 		if (*mbObj < 0)
-			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 		else
-			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(*(mbObj + 1) + temp) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(*(mbObj + 1) + temp) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
 		switch (*mbObj) {
 		case IMG_BG0_29:
 			//풍향계
 			if (robin.playtime % 14 < 7)
-				DrawBgEffect(BG0_WINDMETER0 + robin.playtime % 7, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG0_WINDMETER0 + robin.playtime % 7, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			else
-				DrawBgEffect(BG0_WINDMETER6 - robin.playtime % 7, xPos + (float)(*(mbObj + 1) + 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 1, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG0_WINDMETER6 - robin.playtime % 7, xPos + (float)(*(mbObj + 1) + 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 1, zoom);
 			break;
 		case IMG_BG0_39:
 		case IMG_BG0_41:
@@ -2882,12 +2994,12 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 			break;
 		case IMG_BG11_0:
 			//번개지대 플라스크 : bg11.bmp
-			DrawImage(5 * _2X, 17 * _2X, 18 * _2X, 23 * _2X, xPos + (float)(*(mbObj + 1) + 6 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 4 * _2X + Random(3) * _2X) * zoom, false, false, false, false, false, 1.0f, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(5 * _2X, 17 * _2X, 18 * _2X, 23 * _2X, xPos + (float)(*(mbObj + 1) + 6 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 4 * _2X + Random(3) * _2X) * zoom, false, false, false, false, false, 1.0f, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG11_1:
 			//번개지대 등불 : bg11.bmp
 			SetAlpha(32 - Abs(robin.playtime % 32 - 16) * 2);
-			DrawImage(5 * _2X, 5 * _2X, 59 * _2X, 21 * _2X, xPos + (float)(*(mbObj + 1) + 4 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 8 * _2X) * zoom, false, false, false, false, false, 1.0f, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(5 * _2X, 5 * _2X, 59 * _2X, 21 * _2X, xPos + (float)(*(mbObj + 1) + 4 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 8 * _2X) * zoom, false, false, false, false, false, 1.0f, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			SetAlpha(32);
 			break;
 		case IMG_BG12_0:
@@ -2896,117 +3008,117 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 
 			if (j < 120) {
 				if (j < 7)
-					DrawBgEffect(BG12_FLOWER0 + j, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG12_FLOWER0 + j, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 				else if (j > 113)
-					DrawBgEffect(BG12_FLOWER0 + 120 - j, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG12_FLOWER0 + 120 - j, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 				else
-					DrawBgEffect(BG12_FLOWER7, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG12_FLOWER7, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			}
 			break;
 		case IMG_BG1_10:
 			//집 내부 난로 파이프
-			DrawImage(32 * _2X, 8 * _2X, 132 * _2X, 20 * _2X, xPos + (float)(*(mbObj + 1) - 22 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 28 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(11 * _2X, 14 * _2X, 177 * _2X, 109 * _2X, xPos + (float)(*(mbObj + 1) - 23 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 36 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(32 * _2X, 8 * _2X, 132 * _2X, 20 * _2X, xPos + (float)(*(mbObj + 1) - 22 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 28 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(11 * _2X, 14 * _2X, 177 * _2X, 109 * _2X, xPos + (float)(*(mbObj + 1) - 23 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 36 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG1_37:
 			//집 내부 램프
-			DrawImage(15 * _2X, 29 * _2X, 60 * _2X, 77 * _2X, xPos + (float)(*(mbObj + 1) - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 15 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(15 * _2X, 29 * _2X, 60 * _2X, 77 * _2X, xPos + (float)(*(mbObj + 1) - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 15 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG1_39:
 			//집 내부 커튼
-			DrawImage(23 * _2X, 22 * _2X, 109 * _2X, 34 * _2X, xPos + (float)(*(mbObj + 1) + 27 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(23 * _2X, 22 * _2X, 109 * _2X, 34 * _2X, xPos + (float)(*(mbObj + 1) + 27 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG2_0:
 			//톨레아 습지 나무
-			DrawImage(66 * _2X, 32 * _2X, 0 * _2X, 80 * _2X, xPos + (float)(*(mbObj + 1) + 24 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 80 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(66 * _2X, 32 * _2X, 0 * _2X, 80 * _2X, xPos + (float)(*(mbObj + 1) + 24 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 80 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_2:
 			//아델성 깃발
-			DrawImage(13 * _2X, 48 * _2X, 158 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(13 * _2X, 48 * _2X, 158 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_4:
 			//아델성 문
-			DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, xPos + (float)(*(mbObj + 1) + 25 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, xPos + (float)(*(mbObj + 1) + 25 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_5:
 			//아델성 창문
-			DrawImage(30 * _2X, 8 * _2X, 171 * _2X, 24 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 24 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(30 * _2X, 8 * _2X, 171 * _2X, 24 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 24 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_8:
 			//아델성 책장
-			DrawImage(16 * _2X, 42 * _2X, 195 * _2X, 127 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(16 * _2X, 42 * _2X, 195 * _2X, 127 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_10:
 			//아델성 커튼
-			DrawImage(10 * _2X, 60 * _2X, 201 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) + 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(10 * _2X, 60 * _2X, 201 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) + 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_12:
 			//아델성 석상
-			DrawImage(24 * _2X, 24 * _2X, 83 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 37 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(24 * _2X, 24 * _2X, 83 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 37 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_13:
 			//아델성 석상2
-			DrawImage(24 * _2X, 24 * _2X, 83 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 36 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(24 * _2X, 24 * _2X, 83 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 36 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_17:
 			//아델성 난간
-			DrawImage(15 * _2X, 18 * _2X, 113 * _2X, 134 * _2X, xPos + (float)(*(mbObj + 1) + 15 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(15 * _2X, 18 * _2X, 113 * _2X, 134 * _2X, xPos + (float)(*(mbObj + 1) + 15 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_66:
 			//아델성 문장식
-			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 6 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 20 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 30 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 20 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(7 * _2X, 25 * _2X, 204 * _2X, 98 * _2X, xPos + (float)(*(mbObj + 1) + 53 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 6 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 20 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 30 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 20 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(7 * _2X, 25 * _2X, 204 * _2X, 98 * _2X, xPos + (float)(*(mbObj + 1) + 53 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_26:
 			//아델성 문장식2
-			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 24 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(24 * _2X, 26 * _2X, 171 * _2X, 143 * _2X, xPos + (float)(*(mbObj + 1) + 24 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_25:
 			//아델성 문장식2
-			DrawImage(19 * _2X, 28 * _2X, 25 * _2X, 146 * _2X, xPos + (float)(*(mbObj + 1) + 19 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(19 * _2X, 28 * _2X, 25 * _2X, 146 * _2X, xPos + (float)(*(mbObj + 1) + 19 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG6_58:
 			//아델성 조리기구
-			DrawImage(24 * _2X, 24 * _2X, 131 * _2X, 152 * _2X, xPos + (float)(*(mbObj + 1) + 20 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(24 * _2X, 24 * _2X, 131 * _2X, 152 * _2X, xPos + (float)(*(mbObj + 1) + 20 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG13_1:
 			//골렘지대 석상
 			SetAlpha(Abs(8 - robin.playtime % 16) * 4);
-			DrawBgEffect(BG13_STATUE0, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG13_STATUE0, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			SetAlpha(32);
 			break;
 		case IMG_BG13_9:
 			//골렘지역 난간 : bg13.bmp
-			DrawImage(23 * _2X, 6 * _2X, 61 * _2X, 75 * _2X, xPos + (float)(*(mbObj + 1) + 5 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(6 * _2X, 14 * _2X, 16 * _2X, 99 * _2X, xPos + (float)(*(mbObj + 1) + 26 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(23 * _2X, 6 * _2X, 61 * _2X, 75 * _2X, xPos + (float)(*(mbObj + 1) + 5 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(6 * _2X, 14 * _2X, 16 * _2X, 99 * _2X, xPos + (float)(*(mbObj + 1) + 26 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG14_8:
 			//어둠의 정령 투수 : bg14.bmp
-			DrawImage(16 * _2X, 32 * _2X, 16 * _2X, 71 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(16 * _2X, 32 * _2X, 16 * _2X, 71 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG15_2:
-			DrawBgEffect(BG15_FLAG0 + robin.playtime / 2 % 3, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG15_FLAG0 + robin.playtime / 2 % 3, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG15_3:
 			//드래곤의 무덤 : bg15.bmp
-			DrawImage(39 * _2X, 13 * _2X, 0 * _2X, 158 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 25 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(60 * _2X, 34 * _2X, 0 * _2X, 70 * _2X, xPos + (float)(*(mbObj + 1) + 29 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 6 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(39 * _2X, 13 * _2X, 0 * _2X, 158 * _2X, xPos + (float)(*(mbObj + 1) - 1 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 25 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(60 * _2X, 34 * _2X, 0 * _2X, 70 * _2X, xPos + (float)(*(mbObj + 1) + 29 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 6 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG16_2:
 			//망자의 도시 나무 : bg16.bmp
-			DrawImage(27 * _2X, 27 * _2X, 109 * _2X, 20 * _2X, xPos + (float)(*(mbObj + 1) + 15 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 43 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(27 * _2X, 27 * _2X, 109 * _2X, 20 * _2X, xPos + (float)(*(mbObj + 1) + 15 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 43 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG17_10:
 			//마왕성 창문 하단 : bg17.bmp
-			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 48 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 16 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 64 * _2X, xPos + (float)(*(mbObj + 1) + *(bgPtr + 2)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 48 * _2X, xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 48 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 16 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(16 * _2X, 16 * _2X, 34 * _2X, 64 * _2X, xPos + (float)(*(mbObj + 1) + *(bgPtr + 2)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG17_6:
 			//마왕성 오망성 : bg17.bmp
-			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)186 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)264 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)186 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)264 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			//덮어그리는 타일
 			//DrawImage(16 * _2X, 16 * _2X, 16 * _2X, 0 * _2X, xPos + (float)208 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 304 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
 			//DrawImage(16 * _2X, 16 * _2X, 64 * _2X, 16 * _2X, xPos + (float)192 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 320 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
@@ -3023,7 +3135,7 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG17_7:
 			//마왕성 샹들리에 : bg17.bmp
 			//MemImageFlip(18, 34, 0, 78, -rx + *(mbObj + 1) + 18, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
-			DrawImage(4 * _2X, 10 * _2X, 64 * _2X, 50 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(4 * _2X, 10 * _2X, 64 * _2X, 50 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 		case IMG_BG16_6:
 			//망자의 도시 철창 : bg16.bmp
 			//MemImageFlip(12, 23, 72, 46, xPos + *(mbObj + 1) + 12, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
@@ -3036,15 +3148,15 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 		case IMG_BG17_17:
 			//마왕성 소켓 : bg17.bmp
 			//MemImageFlip(17, 24, 0, 112, xPos + *(mbObj + 1) + 17, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
-			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(*(mbObj + 1) + *(bgPtr + 2)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(*(mbObj + 1) + *(bgPtr + 2)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG16_7:
 			//망자의 도시 촛불
-			DrawBgEffect(BG16_CANDLE0 + Abs(4 - robin.playtime % 8), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG16_CANDLE0 + Abs(4 - robin.playtime % 8), xPos + (float)*(mbObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG17_1:
 			//마왕성 촛불
-			DrawBgEffect(BG17_CANDLE0 + robin.playtime / 2 % 4, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG17_CANDLE0 + robin.playtime / 2 % 4, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG17_11:
 			/*
@@ -3093,25 +3205,25 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 			clipX2 = clipX4;
 			clipY2 = clipY4;
 			*/
-			DrawBgEffect(BG17_MIRROR, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG17_MIRROR, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG17_18:
-			DrawImage(10 * _2X, 29 * _2X, 96 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) - 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 19 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(10 * _2X, 48 * _2X, 96 * _2X, 106 * _2X, xPos + (float)(*(mbObj + 1) + 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(10 * _2X, 29 * _2X, 96 * _2X, 77 * _2X, xPos + (float)(*(mbObj + 1) + 20 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 19 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(10 * _2X, 29 * _2X, 96 * _2X, 0 * _2X, xPos + (float)(*(mbObj + 1) - 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 19 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(10 * _2X, 48 * _2X, 96 * _2X, 106 * _2X, xPos + (float)(*(mbObj + 1) + 10 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(10 * _2X, 29 * _2X, 96 * _2X, 77 * _2X, xPos + (float)(*(mbObj + 1) + 20 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) - 19 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		}
 	}
 }
 
-void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i = 0, j, y, t;
 	int iStart, iEnd, jStart, jEnd;
 	const unsigned short* bgPtr;
 	const unsigned char* bgPtrChar;
 
-	DrawBackMapFar(xPos, yPos, mapIdx, rw * TSIZE, zoom, cvtDest, cvtLayer, buffering);
+	DrawBackMapFar(xPos, yPos, mapIdx, rw * TSIZE, zoom);
 
 	//타일
 	iStart = 0;
@@ -3127,7 +3239,7 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 				y = mapArray[i * mapData[1] + j] - 1;
 
 				if (y >= 0) {
-					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, xPos + (float)(-rx + TSIZE * j) * zoom, yPos - ry + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, xPos + (float)(-rx + TSIZE * j) * zoom, yPos - ry + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 				}
 			}
 		}
@@ -3162,7 +3274,7 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 						}
 					}
 
-					DrawImage(TSIZE, TSIZE, (t % MAXTILE) * TSIZE, t / MAXTILE * TSIZE, xPos + (float)(-rx + TSIZE * j) * zoom, yPos - ry + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (t % MAXTILE) * TSIZE, t / MAXTILE * TSIZE, xPos + (float)(-rx + TSIZE * j) * zoom, yPos - ry + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 
 				}
 			}
@@ -3171,11 +3283,11 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rende
 	}
 
 
-	DrawBackMapFront(xPos, yPos, mapIdx, zoom, cvtDest, cvtLayer, buffering);
+	DrawBackMapFront(xPos, yPos, mapIdx, zoom);
 }
 
 
-void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i = 0, y, t;
 	int iStart, jStart, jEnd;
@@ -3189,8 +3301,8 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rend
 	bgPtr = &mapBg[mapData[7] * 4];
 	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
 
-	if (!buffering)
-		DrawBackMap_Back(xPos, yPos, mapIdx, zoom, cvtDest, cvtLayer, buffering);
+	//if (!buffering)
+	DrawBackMap_Back(xPos, yPos, mapIdx, zoom);
 
 	//근경 이후 그려지는 추가효과
 	switch (mapData[7]) {
@@ -3201,7 +3313,7 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rend
 				const signed char* swPtr = &swampSplash[(9 + (robin.playtime + swampBubble[i * 4 + 3]) % 9) * 4];
 
 				bgPtr = &swampImg[*swPtr * 4];
-				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(swampBubble[i * 4 + 1] * 4 + *(swPtr + 1) - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - swampBubble[i * 4 + 2] * 4 - *(swPtr + 2) + ry - 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(swampBubble[i * 4 + 1] * 4 + *(swPtr + 1) - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - swampBubble[i * 4 + 2] * 4 - *(swPtr + 2) + ry - 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			}
 		}
 		break;
@@ -3215,7 +3327,7 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::Rend
 	//}
 }
 
-void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i = 0, y, t;
 	int iStart, jStart, jEnd;
@@ -3230,7 +3342,7 @@ void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
 
 	//if (!buffering)
-	DrawBackMap_Back(xPos, yPos, mapIdx, zoom, cvtDest, cvtLayer, buffering);
+	DrawBackMap_Back(xPos, yPos, mapIdx, zoom);
 
 	//근경 이후 그려지는 추가효과
 	switch (mapData[7]) {
@@ -3241,7 +3353,7 @@ void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 				const signed char* swPtr = &swampSplash[(9 + (robin.playtime + swampBubble[i * 4 + 3]) % 9) * 4];
 
 				bgPtr = &swampImg[*swPtr * 4];
-				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(swampBubble[i * 4 + 1] * 4 + *(swPtr + 1) - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - swampBubble[i * 4 + 2] * 4 - *(swPtr + 2) + ry - 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(swampBubble[i * 4 + 1] * 4 + *(swPtr + 1) - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - swampBubble[i * 4 + 2] * 4 - *(swPtr + 2) + ry - 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			}
 		}
 		break;
@@ -3254,13 +3366,13 @@ void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 		ReadMap(robinmap);
 	}
 }
-void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawBg(int mapIdx, int yPos, float zoom)
 {
 	int i = 0, j, y, t;
 	int iStart, jStart, jEnd;
 	const unsigned short* bgPtr;
 
-	SetSectionClip(0, yPos + (float)(PLAYAREA_Y)*zoom, (float)(DX)*zoom, (float)(PLAYAREA_Y)*zoom, buffering);
+	SetSectionClip(0, yPos + (float)(PLAYAREA_Y)*zoom, (float)(DX)*zoom, (float)(PLAYAREA_Y)*zoom, IsOffscreenTarget());
 	ReadMap(mapIdx);
 
 	//원경
@@ -3268,33 +3380,33 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 	y = yPos + ((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1));
 
-	MemRect(0, DY, DX, REALDY, mapColor[mapData[3]], cvtDest, cvtLayer, buffering);
+	MemRect(0, DY, DX, REALDY, mapColor[mapData[3]]);
 
 	if (*(bgPtr + 3) > 0) {
 		switch (mapData[7]) {
 		case MAPTYPE_VALLEY:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x5F3B2D, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x5F3B2D);
 			break;
 		case MAPTYPE_ELF:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x242B31, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x242B31);
 			break;
 		case MAPTYPE_GOLEMVALLEY:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x0A0208, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x0A0208);
 			break;
 		case MAPTYPE_DRAGON:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x170805, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x170805);
 			break;
 		case MAPTYPE_DARKNESS:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x0A2F3D, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x0A2F3D);
 			break;
 		case MAPTYPE_GHOST:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x2B2F20, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x2B2F20);
 			break;
 		case MAPTYPE_DEVILCASTLE:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x182429, cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, 0x182429);
 			break;
 		default:
-			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, mapColor[mapData[3]], cvtDest, cvtLayer, buffering);
+			MemRect(0, yPos + (float)((REALDY - *(bgPtr + 3)) / 2) * zoom, (float)(rw * TSIZE) * zoom, (float)((REALDY - *(bgPtr + 3))) * zoom, mapColor[mapData[3]]);
 			break;
 		}
 	}
@@ -3303,10 +3415,10 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 		do {
 			int x = i * *(bgPtr + 2);
 
-			DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, x, y, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+			DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, x, y, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 
 			if (*bgPtr != *(bgPtr + 2))
-				DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, x + (float)*bgPtr * zoom, y, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+				DrawImage(*bgPtr, *(bgPtr + 1), 0, 0, x + (float)*bgPtr * zoom, y, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 
 			switch (mapData[7]) {
 			case MAPTYPE_TOLEM:
@@ -3316,11 +3428,11 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 					j++;
 
 					//b0.bmp
-					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, x, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
-					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, x + (float)*bgPtr * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], cvtDest, cvtLayer, MAP_BG_IMG + mapData[7], buffering);
+					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, x, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
+					DrawImage(48 * _2X, 25 * _2X, 0 * _2X, 230 * _2X, x + (float)*bgPtr * zoom, y + (float)(-*(bgPtr + 1) - 25 * _2X * j) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapData[7]], MAP_BG_IMG + mapData[7]);
 				} while (y - *(bgPtr + 1) - 25 * _2X * j > 0);
 
-				DrawBgEffect((i + robin.playtime) % 5 + BG0_WATER0, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect((i + robin.playtime) % 5 + BG0_WATER0, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 0, zoom);
 
 				if (robin.playtime % 1000 < 256) {
 					if (robin.playtime % 1000 < 4)
@@ -3330,28 +3442,28 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 					else
 						j = robin.playtime % 4 + BG0_WATER_SIDE4;
 
-					DrawBgEffect(j, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
-					DrawBgEffect(j, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 1, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(j, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 0, zoom);
+					DrawBgEffect(j, x + (float)*bgPtr * zoom, y - (float)152 * _2X * zoom, 1, zoom);
 				}
 
 				break;
 			case MAPTYPE_ATLANTICE:
-				DrawBgEffect(BG4_AQUA0 + robin.playtime / 2 % 4, x + (float)64 * _2X * zoom, y - (float)80 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG4_AQUA0 + robin.playtime / 2 % 4, x + (float)64 * _2X * zoom, y - (float)80 * _2X * zoom, 0, zoom);
 				break;
 			case MAPTYPE_FLAME:
 				//왼쪽 바위부분
 				SetAlpha(Abs(16 - ((robin.playtime + i * 8) % 32)) * 2);
 				//bg.bmp
-				DrawImage(17 * _2X, 36 * _2X, 102 * _2X, 38 * _2X, x + (float)4 * _2X * zoom, y - (float)92 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(17 * _2X, 36 * _2X, 102 * _2X, 38 * _2X, x + (float)4 * _2X * zoom, y - (float)92 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
 				//아래쪽 용암
 				j = Abs(16 - ((robin.playtime + 16 + i * 8) % 32)) * 2;
 				SetAlpha(j);
-				DrawBgEffect(BG9_MAGMA, x, y - (float)208 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG9_MAGMA, x, y - (float)208 * _2X * zoom, 0, zoom);
 
 				//불꽃1
 				SetAlpha(32 - j);
-				DrawBgEffect(BG9_MAGMA_FIRE0, x + (float)48 * _2X * zoom, y + (float)(-208 * _2X + (32 - j) * _2X / 2) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG9_MAGMA_FIRE0, x + (float)48 * _2X * zoom, y + (float)(-208 * _2X + (32 - j) * _2X / 2) * zoom, 0, zoom);
 
 				//불꽃2
 				j = (robin.playtime + 16 + i * 8) % 32;
@@ -3359,7 +3471,7 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 				SetAlpha(40 - j);
 
 				if (j >= 10 && j < 18)
-					DrawBgEffect(BG9_MAGMA_FIRE1, x + (float)48 * _2X * zoom, y + (float)(-208 * _2X + (j - 20) * _2X / 2) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_MAGMA_FIRE1, x + (float)48 * _2X * zoom, y + (float)(-208 * _2X + (j - 20) * _2X / 2) * zoom, 0, zoom);
 
 				SetAlpha(32);
 
@@ -3368,44 +3480,44 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 
 				if (j < 42) {
 					SetAlpha(j);
-					DrawBgEffect(BG9_ETC0, x, y, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, x, y, 0, zoom);
 				}
 				else if (j < 58)
-					DrawBgEffect(BG9_ETC0, x + (float)(robin.playtime % 3 - 1 * _2X) * zoom, y, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, x + (float)(robin.playtime % 3 - 1 * _2X) * zoom, y, 0, zoom);
 				else if (j < 64) {
 					SetAlpha((64 - j) * 6);
-					DrawBgEffect(BG9_ETC0, x, y + (float)(-(j - 57) * (j - 57) * 3 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC0, x, y + (float)(-(j - 57) * (j - 57) * 3 * _2X) * zoom, 0, zoom);
 				}
 				else if (j < 68) {
 					SetAlpha((68 - j) * 8);
-					DrawBgEffect(BG9_ETC1 + j % 2, x, y - (float)144 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG9_ETC1 + j % 2, x, y - (float)144 * _2X * zoom, 0, zoom);
 				}
 
 				SetAlpha(32);
 				break;
 			case MAPTYPE_THUNDER:
 				//번개지대 원경효과
-				DrawBgEffect(BG11_BACK0 + robin.playtime / 2 % 3, x, y, 0, zoom, cvtDest, cvtLayer, buffering);
-				DrawBgEffect(BG11_BACK3 + robin.playtime % 8, x, y, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG11_BACK0 + robin.playtime / 2 % 3, x, y, 0, zoom);
+				DrawBgEffect(BG11_BACK3 + robin.playtime % 8, x, y, 0, zoom);
 				break;
 			case MAPTYPE_LIGHT:
 				//빛의지대 원경효과
 				j = (robin.playtime + i * 36) % 100;
 
 				if (j < 15)
-					DrawBgEffect(BG12_LIGHT0 + j, x, y - (float)64 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG12_LIGHT0 + j, x, y - (float)64 * _2X * zoom, 0, zoom);
 				break;
 			case MAPTYPE_DARKNESS:
 				//어둠의 지대 오오라
 				j = (robin.playtime + i * 3) % 30;
 
 				if (j < 15)
-					DrawBgEffect(BG14_AURORA0 + j, x + (float)42 * _2X * zoom, y - (float)7 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_AURORA0 + j, x + (float)42 * _2X * zoom, y - (float)7 * _2X * zoom, 0, zoom);
 
 				j = (robin.playtime + i * 3 + 15) % 30;
 
 				if (j < 15)
-					DrawBgEffect(BG14_AURORA0 + j, x + (float)12 * _2X * zoom, y - (float)36 * _2X * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_AURORA0 + j, x + (float)12 * _2X * zoom, y - (float)36 * _2X * zoom, 0, zoom);
 				break;
 			}
 
@@ -3413,11 +3525,11 @@ void DrawBg(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, c
 		} while (i * *(bgPtr + 2) < rw * TSIZE);
 	}
 
-	UnSectionClip(buffering);
+	UnSectionClip(IsOffscreenTarget());
 
 }
 
-void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawTileDirect(int mapIdx, int x, int yPos, float zoom)
 {
 	int i = 0, j, y, t;
 	int iStart, iEnd, jStart, jEnd;
@@ -3445,7 +3557,7 @@ void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderText
 				y = mapArray[i * mapData[1] + j] - 1;
 
 				if (y >= 0) {
-					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, x + (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, x + (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 				}
 			}
 		}
@@ -3479,7 +3591,7 @@ void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderText
 								t = 44 + (y + t) % 4;
 						}
 					}
-					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, x + (float)(TSIZE * j) * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, x + (float)(TSIZE * j) * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 
 				}
 			}
@@ -3487,7 +3599,7 @@ void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderText
 		break;
 	}
 
-	DrawBackMapFront(x, yPos, mapIdx, zoom, cvtDest, cvtLayer, buffering);
+	DrawBackMapFront(x, yPos, mapIdx, zoom);
 
 	//UnSectionClip(false);
 
@@ -3495,17 +3607,16 @@ void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderText
 	ReadMap(robinmap);
 }
 
-void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawTile(int mapIdx, int yPos, float zoom)
 {
 	int i = 0, j, y, t;
 	int iStart, iEnd, jStart, jEnd;
 	const unsigned short* bgPtr;
 	const unsigned char* bgPtrChar;
 
-	SetSectionClip(0, yPos + TILEDY, TILEDX, TILEDY, buffering);
+	SetSectionClip(0, yPos + TILEDY, TILEDX, TILEDY, IsOffscreenTarget());
 
-	cvtDest->beginWithClear(0, 0, 0, 0);
-	cvtDest->end();
+	//타겟 클리어는 PushRenderTarget(..., true)가 beginWithClear로 처리한다.
 
 	ReadMap(mapIdx);
 
@@ -3527,7 +3638,7 @@ void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest,
 				y = mapArray[i * mapData[1] + j] - 1;
 
 				if (y >= 0) {
-					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 				}
 			}
 		}
@@ -3561,7 +3672,7 @@ void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest,
 								t = 44 + (y + t) % 4;
 						}
 					}
-					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
+					DrawImage(TSIZE, TSIZE, (y % MAXTILE) * TSIZE, y / MAXTILE * TSIZE, (float)TSIZE * j * zoom, yPos + (float)((rh - 4) * TSIZE - TSIZE * i) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 
 				}
 			}
@@ -3572,7 +3683,7 @@ void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest,
 	UnSectionClip(false);
 }
 
-void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i;
 
@@ -3586,16 +3697,16 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 		const unsigned short* bgPtr = &backObjImg[Abs(*mfObj) * 4];
 
 		if (*mfObj < 0)
-			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 		else {
 			switch (*mfObj) {
 			case IMG_BG1_69:	//촛불
 				SetAlpha(32 - Abs(robin.playtime % 8 - 4) * 4);
-				BrightImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, MAP_BG_IMG + mapData[7], zoom, cvtDest, cvtLayer, buffering);
+				BrightImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, MAP_BG_IMG + mapData[7], zoom);
 				SetAlpha(32);
 				break;
 			default:
-				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 				break;
 			}
 		}
@@ -3603,8 +3714,8 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 		switch (*mfObj) {
 		case IMG_BG13_8:
 			//골렘지역 난간 : bg13.bmp
-			DrawImage(23 * _2X, 11 * _2X, 35 * _2X, 75 * _2X, xPos + (float)(*(mfObj + 1) + 5 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-			DrawImage(6 * _2X, 20 * _2X, 16 * _2X, 79 * _2X, xPos + (float)(*(mfObj + 1) + 26 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
+			DrawImage(23 * _2X, 11 * _2X, 35 * _2X, 75 * _2X, xPos + (float)(*(mfObj + 1) + 5 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
+			DrawImage(6 * _2X, 20 * _2X, 16 * _2X, 79 * _2X, xPos + (float)(*(mfObj + 1) + 26 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		}
 	}
@@ -3618,10 +3729,10 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 			if (bgObj[i].active == true) {
 				if (bgObj[i].etc >= 10) {
 					SetAlpha(32 - (bgObj[i].y / 8));
-					DrawBgEffect(BG13_STONE0 + (bgObj[i].etc - 10 + robin.playtime) % 4, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG13_STONE0 + (bgObj[i].etc - 10 + robin.playtime) % 4, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y) * zoom, 0, zoom);
 				}
 				else if (bgObj[i].etc > 2)
-					DrawBgEffect(BG13_CLOUD0 + bgObj[i].etc % 3, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG13_CLOUD0 + bgObj[i].etc % 3, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom);
 			}
 		}
 
@@ -3631,7 +3742,7 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 		//망자의 도시 구름 및 안개
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active == true && bgObj[i].etc == 0)
-				DrawBgEffect(BG16_CLOUD0, xPos + (float)(bgObj[i].x) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG16_CLOUD0, xPos + (float)(bgObj[i].x) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom);
 		}
 		break;
 	}
@@ -3641,7 +3752,7 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderText
 	}
 }
 
-void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawScreen(int x, int y, float zoom)
 {
 	int i, j, k, l, yPos;
 	int tempCurtainFrame;
@@ -3658,7 +3769,7 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 
 		SetScreenRatio();
 
-		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom - (frame % DX), y / TSIZE + STATUSWIN_Y - (DIORAMA_GAPY - 0 * _2X) - (SCREENRATIO - 134), MAP_DIORAMA_SPACE, (float)DX * 2 / screenZoom * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawBackMapFar(xOffset + x / TSIZE - (float)DX / 2 * zoom - (frame % DX), y / TSIZE + STATUSWIN_Y - (DIORAMA_GAPY - 0 * _2X) - (SCREENRATIO - 134), MAP_DIORAMA_SPACE, (float)DX * 2 / screenZoom * zoom, zoom);
 		robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 
 		// 사용
@@ -3673,14 +3784,14 @@ void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 
 		//robin.castle = 1;
 
-		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen, cvtDest, cvtLayer, buffering);
+		DrawDiorama(castleX, castleY, castleOrder[robin.castle], dioramaZoomOnScreen);
 
 		break;
 	}
 
 }
 
-void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void TheaterDraw()
 {
 	int tempOffX = offX;
 	int tempOffY = offY;
@@ -3692,7 +3803,7 @@ void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool
 	offY = 0;
 	//본체
 	if (curtainFrame == 0)
-		DrawImage(525, 707, 0, 0, xOffset + DX / 2 - 525 * _2X / 2, /*DY / 2 + 707 * _2X / 2*/707 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+		DrawImage(525, 707, 0, 0, xOffset + DX / 2 - 525 * _2X / 2, /*DY / 2 + 707 * _2X / 2*/707 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 	else
 		ResetRectPoint();
 
@@ -3701,12 +3812,12 @@ void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
 			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, DY / 2 + 707 * _2X / 2 - 182 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
 			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, DY / 2 + 707 * _2X / 2 - 182 * _2X, true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
 		curtainFrame -= CURTAINSPEED;
@@ -3719,13 +3830,13 @@ void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
 			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], DY / 2 + 707 * _2X / 2 - 182 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
 			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], DY / 2 + 707 * _2X / 2 - 182 * _2X, true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
 		curtainFrame += CURTAINSPEED;
@@ -3736,7 +3847,7 @@ void TheaterDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool
 
 	//상단 장막
 	//DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, DY / 2 + 707 * _2X / 2 - 68 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
-	DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X, DY), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
+	DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X, DY), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 
 	offX = tempOffX;
 	offX = tempOffY;

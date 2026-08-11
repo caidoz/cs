@@ -51,6 +51,47 @@ static int FindCrewAoOffsetByType(int type, bool used[], int maxCrew)
 void DecideRouletteResult(void)
 {
 	gRouletteResultValid = false;
+	gRouletteResultCnt = 0;
+
+	//릴은 항상 -1(빈칸/자물쇠)로 초기화해두고 실제로 뽑은 만큼만 채운다.
+	for (int r = 0; r < TOTALREEL; r++) {
+		gRouletteStartAoOffset[r] = -1;
+		gRouletteResultAoOffset[r] = -1;
+	}
+
+	if (crewCnt <= 0) return;
+
+	//이번 판에 실제로 돌릴 릴 수. 동료가 3명이 안 되면 남는 릴은 -1로 남겨
+	//자물쇠만 그리고 턴에서도 건너뛴다.
+	gRouletteResultCnt = Min(crewCnt, TOTALREEL);
+
+	//----------------------------------------------------------------
+	// 동료가 정족수(MAXCREW)를 못 채운 동안: 룰렛은 돌리되 중복 없이 뽑는다.
+	//  - 보유 3명 이하 : 보유한 전원이 한 번씩
+	//  - 보유 4~5명    : 그 중 3명을 중복 없이 무작위로
+	// 중복이 없으므로 GetSameRouletteCnt()는 항상 1이 되어 1레벨 스킬로 공격한다.
+	//----------------------------------------------------------------
+	if (crewCnt < MAXCREW) {
+		int pool[MAXCREW];
+
+		for (int r = 0; r < crewCnt; r++)
+			pool[r] = r;
+
+		//Fisher-Yates로 앞쪽 gRouletteResultCnt개만 뽑는다(중복 없음).
+		for (int r = 0; r < gRouletteResultCnt; r++) {
+			int pick = r + Random(crewCnt - r);
+			int temp = pool[r];
+
+			pool[r] = pool[pick];
+			pool[pick] = temp;
+
+			gRouletteResultAoOffset[r] = pool[r];
+			gRouletteStartAoOffset[r] = r;	//연출 시작 표시는 보유 순서대로
+		}
+
+		gRouletteResultValid = true;
+		return;
+	}
 
 	// 로딩에서 뽑힌 크루 수(최대 9)가 crewCnt라고 가정
 	// (리더 포함 9칸)
@@ -148,7 +189,21 @@ void DecideRouletteResult(void)
 void InitRouletteJump(void)
 {
 	// [MOD-G2] 슬롯 시작 시 종료 딜레이 리셋
-	sEndDelayLeft = -1;
+	//여기서 쓰던 sEndDelayLeft는 CoreGlobals.cpp의 전역이지만, 실제 상태머신이 쓰는 건
+	//RouletteDraw() 안의 동명 함수-static이다(전역을 가리는 shadow). 즉 이 대입은 아무 효과가 없었다.
+	//새 판이 시작됐다는 신호만 남기고, 실제 초기화는 RouletteDraw()가 자기 static들에 대해 수행한다.
+	//
+	//이 신호가 필요한 이유: RouletteDraw()의 리셋 블록은 isSlotPlaying(= attackSequence >= SLOT)이
+	//false일 때만 도는데, 컷씬->실전투 핸드오프처럼 attackSequence가 READY인 프레임에 룰렛 바가
+	//한 번도 그려지지 않으면 그 블록이 통째로 안 돈다. 그러면 sSlotInited가 true로 남아 [INIT]이
+	//건너뛰어지고, 지난 판의 sSkillPhase(SP_DONE)가 그대로 남아 스킬 합성/발사 연출이 전부 생략된
+	//채 릴이 서자마자 곧바로 ACTION + InitBar(BAR_BATTLECOIN)으로 넘어가버린다.
+	gRouletteNewSpin = true;
+
+	//slotFrame은 어디서도 0으로 돌아가지 않아 판을 거듭할수록 계속 커진다.
+	//릴 시작 시점은 reelStartFrame[]와 절대값으로 비교하기 때문에(slotFrame < reelStartFrame[r]),
+	//두 번째 판부터는 세 릴이 한꺼번에 출발해 순차 연출이 사라진다.
+	slotFrame = 0;
 
 	for (int i = 0; i < TOTALREEL; i++) {
 		gReelJump[i].state = JS_IDLE;
@@ -197,22 +252,9 @@ void RouletteAttackStart(void)
 		attackSequence = ATTACKSEQUENCE_ACTION;
 		InitBar(BAR_BATTLECOIN);
 	}
-	//CREW가 있지만 3마리 이하라서 룰렛을 안돌리면 그냥 공격을 해준다.
-	else if (crewCnt < MAXCREW)
-	{
-		attackSequence = ATTACKSEQUENCE_ACTION;
-		//ao[NEUTRAL].status = BOXSTATUS_OPENED;
-		InitBar(BAR_BATTLECOIN);
-		//그 다음에는 전체 순서를 정해준다.
-		//일단 크류를 배치했고
-		for (i = 0; i < MAXCREW; i++) {
-			if (ao[CREW + i].active) {
-				turnList[j] = CREW + i;
-				j++;
-			}
-		}
-	}
-	//CREW가 6마리 이상이면 룰렛을 돌리고 공격해준다.
+	//CREW가 한 명이라도 있으면 항상 룰렛을 돌린다.
+	//동료가 6명이 안 되는 동안은 DecideRouletteResult()가 중복 없이 뽑아주고(3명 이하면 전원,
+	//4~5명이면 그 중 3명), 남는 릴은 -1로 두어 자물쇠 칸이 된다. 그 칸은 턴에서도 건너뛴다.
 	else {
 		attackSequence = ATTACKSEQUENCE_SLOT;
 		//여기서 어떤 CREW를 뽑을건지 결정한다.
@@ -220,6 +262,9 @@ void RouletteAttackStart(void)
 		//그 다음에는 전체 순서를 정해준다.
 		//일단 크류를 배치했고
 		for (i = 0; i < TOTALREEL; i++) {
+			if (gRouletteResultAoOffset[i] < 0)
+				continue;	//자물쇠(빈 릴)는 스킵
+
 			turnList[j] = CREW + gRouletteResultAoOffset[i];
 			j++;
 		}
@@ -248,9 +293,40 @@ void RouletteAttackStart(void)
 	//어떤놈이 시작할거냐.
 	turnListIdx = 0;
 	turn = turnList[turnListIdx];
-	crewIdx = GetCrewIdxFromType(ao[turn].type);
-	ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + GetSameRouletteCnt(turn - CREW) - 1];
-	ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * GetSameRouletteCnt(turn - CREW) - 1];
+
+	//첫 턴이 크루가 아닐 수 있다. 위에서 turnList에는 active한 크루만 넣는데, 크루가 아직 등장
+	//연출(REGENMOVE) 중이면 한 명도 안 들어가서 turnList[0]이 주인공이나 적이 된다.
+	//GetCrewIdxFromType()은 크루가 아니면 -1을 돌려주므로, 가드 없이 쓰면
+	//crewData[-CREWDATASIZE + ...]라는 음수 인덱스를 읽고 그 값으로 주인공/적의
+	//currentSkill과 etc를 덮어써서 그 캐릭터의 공격이 통째로 망가진다.
+	if (turn >= CREW && turn < PLAYERALL) {
+		crewIdx = GetCrewIdxFromType(ao[turn].type);
+
+		if (crewIdx >= 0) {
+			//GetSameRouletteCnt()는 gRouletteResultAoOffset[](DecideRouletteResult()가 채움)에서 turn과 같은
+			//슬롯이 몇 개인지 세는 함수라 룰렛을 실제로 돌린 경우(ATTACKSEQUENCE_SLOT, 크루 6마리 이상)에만
+			//유효하다. 룰렛을 안 돌리는 ACTION 경로(크루 0~5마리)는 gRouletteResultAoOffset[]가 이번 공격에
+			//채워지지 않아 항상 0을 반환한다. ACTION 경로는 항상 기본(1레벨) 스킬을 쓴다.
+			int sameCnt = (attackSequence == ATTACKSEQUENCE_SLOT) ? GetSameRouletteCnt(turn - CREW) : 1;
+
+			if (sameCnt < 1)
+				sameCnt = 1;
+
+			ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
+
+			//enemyAttackPattern[]의 한 행 = [0]기본상태 [1]쿨타임 + 스킬블록 3개(각 ATTACKPATTERNDATASIZE칸).
+			//블록 안은 offset 0~3이 turnPosition(HERE/GOING/THERE/COMING)별 상태, 4가 히트수, 5가 사거리다.
+			//적 쪽(Func_Battle.cpp의 EnemySequenceDraw)은 "2 + 스킬 * DATASIZE + turnPosition"으로 읽는데,
+			//여기는 괄호가 빠져서 "2 + DATASIZE * sameCnt - 1"이 되어 있었다. sameCnt가 1이면 블록0의
+			//offset 5(사거리 칸)를 상태값으로 읽어버려서 공격 모션이 엉뚱하게 나온다.
+			//스킬 블록 번호는 sameCnt - 1이고, 턴이 막 시작된 시점이므로 turnPosition은 HERE다.
+			ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+		}
+	}
+
+	//턴 시작 시 위치 상태는 항상 HERE에서 출발해야 한다. 이전 전투에서 COMING/DMGUPDATE로 끝난
+	//값이 남아 있으면 CrewMove()/PlayerMove()의 ACTION 분기가 HERE 케이스를 타지 못해 멈춘다.
+	ao[turn].turnPosition = HERE;
 	ao[turn].frame = 0;
 	ao[turn].mainFrame = 0;
 	//if (turn >= CREW && turn < PLAYERALL) {
@@ -288,6 +364,9 @@ int GetSameRouletteCnt(int objIdx)
 	int i, j = 0;
 
 	for (i = 0; i < TOTALREEL; i++) {
+		if (gRouletteResultAoOffset[i] < 0)
+			continue;	//자물쇠(빈 릴)는 세지 않는다
+
 		if (gRouletteResultAoOffset[i] == objIdx) {
 			j++;
 		}
@@ -312,15 +391,14 @@ void RouletteDrawSimple3Slots(
 	int y,
 	float zoom,
 	const int slotCrewIdx[3],
-	int totalCrewCount,
-	cocos2d::RenderTexture* cvtDest,
-	cocos2d::Layer* cvtLayer,
-	bool buffering)
+	int totalCrewCount)
 {
-	const bool rouletteLocked = (totalCrewCount < 6);
+	//동료가 1~5명이라 룰렛이 아직 안 열린 상태.
+	//예전에는 이때 슬롯 프레임부터 캐릭터까지 전부 회색으로 깔고 창 전체에 쇠사슬을 덮었는데,
+	//지금은 회색/쇠사슬 없이 원색 그대로 그리고, 비어있는 슬롯만 자물쇠로 막아서 표시한다.
 
 	//---------------------------------------
-	// 슬롯 프레임
+	// 슬롯 프레임 - 항상 원색
 	//---------------------------------------
 	DrawImage(
 		SLOTSIZE_X,
@@ -331,18 +409,7 @@ void RouletteDrawSimple3Slots(
 		false, false, false, false, false,
 		zoom,
 		sprite[SLOT_IMG],
-		cvtDest,
-		cvtLayer,
-		SLOT_IMG,
-		buffering);
-
-	//---------------------------------------
-	// 기존 GrayScale 저장
-	//---------------------------------------
-	int oldGray = grayScale;
-
-	if (rouletteLocked)
-		grayScale = 32;
+		SLOT_IMG);
 
 	//---------------------------------------
 	// 슬롯 3개
@@ -361,19 +428,20 @@ void RouletteDrawSimple3Slots(
 		//-----------------------------------
 		if (slotCrewIdx[i] < 0)
 		{
+			//빈 슬롯은 자물쇠로 막는다. 회색 처리는 하지 않고 원색 그대로 그린다.
+			//DrawImage의 (x,y)는 이미지 좌상단이고 Y는 위로 갈수록 커지는 좌표계다(top-left anchor, Y-up).
+			//centerY는 캐릭터가 서는 바닥 기준점. top = centerY + LOCK_H(전체 높이)는 너무 올라가고,
+			//+ LOCK_H/2(중앙 정렬)는 너무 낮아서 그 사이 값으로 살짝 낮춘다.
 			DrawImage(
 				LOCK_W,
 				LOCK_H,
 				1, 438,
 				centerX - LOCK_W * zoom / 2,
-				centerY - LOCK_H * zoom / 2,
+				centerY + LOCK_H * zoom * 0.85f,
 				false, false, false, false, false,
 				zoom,
 				sprite[SLOT_IMG],
-				cvtDest,
-				cvtLayer,
-				SLOT_IMG,
-				buffering);
+				SLOT_IMG);
 
 			continue;
 		}
@@ -391,10 +459,7 @@ void RouletteDrawSimple3Slots(
 			centerX - 12 * _2X * 2.5f * zoom,
 			centerY + 8 * _2X * 2.5f * zoom,
 			SHADOW_IMG,
-			2.5f * zoom,
-			cvtDest,
-			cvtLayer,
-			buffering);
+			2.5f * zoom);
 
 		DrawCmfDetail(
 			u->cmf,
@@ -404,56 +469,14 @@ void RouletteDrawSimple3Slots(
 			RIGHT,
 			2.5f * zoom * enemyIconZoom[u->type],
 			false,
-			false,
-			cvtDest,
-			cvtLayer,
-			buffering);
+			false);
 	}
 
-	grayScale = oldGray;
-
-	//---------------------------------------
-	// 전체 잠금
-	//---------------------------------------
-	if (rouletteLocked && totalCrewCount >= 3)
-	{
-		//-----------------------------------
-		// 어둡게
-		//-----------------------------------
-		SetAlpha(24);
-		MemRect(
-			x - SLOTSIZE_X * zoom / 2,
-			y,
-			SLOTSIZE_X * zoom,
-			SLOTSIZE_Y * zoom,
-			COLOR_BLACK,
-			cvtDest,
-			cvtLayer,
-			buffering);
-		SetAlpha(32);
-		//-----------------------------------
-		// 큰 자물쇠
-		//-----------------------------------
-		DrawImage(
-			CHAINLOCK_W,
-			CHAINLOCK_H,
-			147, 438,
-			x - CHAINLOCK_W * zoom / 2,
-			y + SLOTSIZE_Y * zoom / 2 - CHAINLOCK_H * zoom / 2,
-			false, false, false, false, false,
-			zoom,
-			sprite[SLOT_IMG],
-			cvtDest,
-			cvtLayer,
-			SLOT_IMG,
-			buffering);
-	}
+	//창 전체를 덮던 어둡게 처리 + 큰 쇠사슬(CHAINLOCK)은 제거했다.
+	//잠금 표시는 위의 빈 슬롯 자물쇠만으로 한다.
 }
 
-void RouletteDraw(int x, int y, float zoom,
-	cocos2d::RenderTexture* cvtDest,
-	cocos2d::Layer* cvtLayer,
-	bool buffering)
+void RouletteDraw(int x, int y, float zoom)
 {
 	// -----------------------------
 	// [CFG] 점프 연출 파라미터 (짧고 탄력)
@@ -477,6 +500,7 @@ void RouletteDraw(int x, int y, float zoom,
 	//if (crewCnt < MINCREW) return;
 
 	auto WrapCrew = [&](int v)->int {
+		if (crewCnt <= 0) return 0;	//0으로 나누기 방지(동료가 없으면 룰렛도 안 돈다)
 		v %= crewCnt;
 		if (v < 0) v += crewCnt;
 		return v;
@@ -618,7 +642,7 @@ void RouletteDraw(int x, int y, float zoom,
 	DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
 		x - (float)SLOTSIZE_X / 2 * zoom, y,
 		false, false, false, false, false,
-		zoom, sprite[SLOT_IMG], cvtDest, cvtLayer, SLOT_IMG, buffering);
+		zoom, sprite[SLOT_IMG], SLOT_IMG);
 
 	// ============================================================
 	// [SKILL PHASE] 합성/임팩트/발사 상태 머신
@@ -723,29 +747,52 @@ void RouletteDraw(int x, int y, float zoom,
 		sLiftStartFrame = 0;
 
 		// ✅ 2) 로딩 상태에서도 "기본 3릴 캐릭터"는 보여줘야 함
-		for (int i = 0; i < TOTALREEL; i++)
+		// 정족수(MAXCREW)가 차기 전에는 룰렛이 실제로 안 돌고(RouletteAttackStart의 crewCnt<MAXCREW 분기)
+		// gRouletteStartAoOffset도 신뢰할 수 없으므로, 현재 보유한 크루를 그대로 슬롯에 채워서
+		// RouletteDrawSimple3Slots로 잠금 표시(그레이스케일 + 자물쇠)까지 그려준다.
+		if (crewCnt < MAXCREW)
 		{
-			float centerX = x - (float)SLOTSIZE_X * zoom / 2 + (float)reelPostion[i * 2 + 0] * zoom;
-			float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
+			int slotCrewIdx[3];
+			for (int i = 0; i < 3; i++)
+				slotCrewIdx[i] = (i < crewCnt) ? i : -1;
 
-			float baseScale = 2.5f * zoom * enemyIconZoom[ao[CREW + gRouletteStartAoOffset[i]].type];
+			RouletteDrawSimple3Slots(x, y, zoom, slotCrewIdx, crewCnt);
+		}
+		else
+		{
+			for (int i = 0; i < TOTALREEL; i++)
+			{
+				float centerX = x - (float)SLOTSIZE_X * zoom / 2 + (float)reelPostion[i * 2 + 0] * zoom;
+				float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
 
-			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
-				centerX - (float)12 * _2X * 2.5f * zoom,
-				centerY + (float)8 * _2X * 2.5f * zoom,
-				SHADOW_IMG, 2.5f * zoom, cvtDest, cvtLayer, buffering);
+				float baseScale = 2.5f * zoom * enemyIconZoom[ao[CREW + gRouletteStartAoOffset[i]].type];
 
-			DrawCmfDetail(ao[CREW + gRouletteStartAoOffset[i]].cmf,
-				crewPos[ao[CREW + gRouletteStartAoOffset[i]].type * 5 + 0],
-				centerX, centerY,
-				RIGHT, baseScale,
-				false, false, cvtDest, cvtLayer, buffering);
+				ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+					centerX - (float)12 * _2X * 2.5f * zoom,
+					centerY + (float)8 * _2X * 2.5f * zoom,
+					SHADOW_IMG, 2.5f * zoom);
+
+				DrawCmfDetail(ao[CREW + gRouletteStartAoOffset[i]].cmf,
+					crewPos[ao[CREW + gRouletteStartAoOffset[i]].type * 5 + 0],
+					centerX, centerY,
+					RIGHT, baseScale,
+					false, false);
+			}
 		}
 
 		// ✅ 인트로 팝업은 “로딩에서 1번만”
 		// 공격 눌러 SLOT 들어가도 다시 안 나오게 유지
 		// (만약 UI를 완전히 닫았다가 다시 열면 초기화해야 한다면, 그 타이밍에서 sIntroDone=false 처리)
 		return;
+	}
+
+	// -----------------------------
+	// [NEW SPIN] InitRouletteJump()가 세워둔 신호. 위 리셋 블록을 한 번도 못 탄 채 SLOT으로
+	// 들어온 경우(컷씬->실전투 핸드오프 등)에도 아래 [INIT]이 반드시 돌게 해준다.
+	// -----------------------------
+	if (gRouletteNewSpin) {
+		gRouletteNewSpin = false;
+		sSlotInited = false;
 	}
 
 	// -----------------------------
@@ -799,8 +846,10 @@ void RouletteDraw(int x, int y, float zoom,
 
 			rs.bounceLeft = 1;
 
-			rs.curShowPos = gRouletteStartAoOffset[r];
-			rs.landedPos = gRouletteStartAoOffset[r];
+			//빈 릴(-1)은 ao[] 인덱스로 쓸 수 없으므로 0으로 눌러둔다.
+			//어차피 아래 [REEL DRAW]에서 자물쇠만 그리고 건너뛴다.
+			rs.curShowPos = (gRouletteStartAoOffset[r] < 0) ? 0 : gRouletteStartAoOffset[r];
+			rs.landedPos = rs.curShowPos;
 		}
 	}
 
@@ -810,6 +859,10 @@ void RouletteDraw(int x, int y, float zoom,
 	int activeReel = -1;
 	for (int r = 0; r < TOTALREEL; r++) {
 		ReelJumpState& rs = gReelJump[r];
+
+		//빈 릴(자물쇠)은 돌리지 않으므로 진행 대상에서 제외한다.
+		//빼두지 않으면 앞쪽에 빈 릴이 있을 때 그 릴이 activeReel을 잡아 다음 릴이 못 돈다.
+		if (gRouletteResultAoOffset[r] < 0) continue;
 
 		if (slotFrame < reelStartFrame[r]) continue;
 
@@ -833,6 +886,26 @@ void RouletteDraw(int x, int y, float zoom,
 
 		float centerX = x - (float)SLOTSIZE_X * zoom / 2 + (float)reelPostion[i * 2 + 0] * zoom;
 		float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
+
+		//동료가 아직 3명이 안 되어 비어있는 릴. 돌리지 않고 자물쇠만 그린 뒤 넘어간다.
+		//완료 판정(allDone/allMarksReady)과 턴 구성에서도 제외된다.
+		if (gRouletteResultAoOffset[i] < 0)
+		{
+			rs.state = JS_DONE;
+			rs.started = true;
+			rs.jumpY = 0.0f;
+
+			DrawImage(
+				LOCK_W, LOCK_H,
+				1, 438,
+				centerX - LOCK_W * zoom / 2,
+				centerY + LOCK_H * zoom * 0.85f,
+				false, false, false, false, false,
+				zoom,
+				sprite[SLOT_IMG], SLOT_IMG);
+
+			continue;
+		}
 
 		if (shouldAnimate)
 		{
@@ -981,7 +1054,7 @@ void RouletteDraw(int x, int y, float zoom,
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
 			centerX - (float)12 * _2X * 2.5f * zoom,
 			centerY + (float)8 * _2X * 2.5f * zoom,
-			SHADOW_IMG, shadowScale, cvtDest, cvtLayer, buffering);
+			SHADOW_IMG, shadowScale);
 
 		int drawDir = RIGHT;
 		if (shouldAnimate && rs.jumpY > 0.01f) drawDir = rs.flipLR ? LEFT : RIGHT;
@@ -990,14 +1063,17 @@ void RouletteDraw(int x, int y, float zoom,
 			crewPos[u->type * 5 + 0],
 			centerX, yPos,
 			drawDir, drawScale,
-			false, false, cvtDest, cvtLayer, buffering);
+			false, false);
 	}
 
 	// ============================================================
 	// [SKILL] 3릴 모두 DONE이면 -> 합성/임팩트/발사 진행
 	// ============================================================
+	//자물쇠(빈 릴)는 애초에 돌지도, 스킬 마크를 만들지도 않으므로 완료 판정에서 제외한다.
+	//그러지 않으면 동료가 3명이 안 될 때 영원히 allDone/allMarksReady가 안 되어 룰렛이 끝나지 않는다.
 	bool allDone = true;
 	for (int r = 0; r < TOTALREEL; r++) {
+		if (gRouletteResultAoOffset[r] < 0) continue;
 		if (gReelJump[r].state != JS_DONE) { allDone = false; break; }
 	}
 	if (!allDone) {
@@ -1007,6 +1083,7 @@ void RouletteDraw(int x, int y, float zoom,
 
 	bool allMarksReady = true;
 	for (int r = 0; r < TOTALREEL; r++) {
+		if (gRouletteResultAoOffset[r] < 0) continue;
 		if (gRouletteSkillIdx[r] < 0) { allMarksReady = false; break; }
 	}
 	if (!allMarksReady) {
@@ -1086,6 +1163,12 @@ void RouletteDraw(int x, int y, float zoom,
 		sGroupCount = 0;
 		for (int i = 0; i < TOTALREEL; i++) {
 			int skillKey = gRouletteSkillIdx[i];
+
+			//자물쇠(빈 릴)는 스킬이 없다(-1). 그룹에 넣으면 "-1 스킬이 2개 겹쳤다"는 가짜 그룹이
+			//생겨서 maxDup이 2가 되고, 동료가 1명뿐인데도 2매치 합성 연출(존재하지 않는
+			//controlMark를 들어올리고 모으는)을 타 버린다.
+			if (gRouletteResultAoOffset[i] < 0 || skillKey < 0)
+				continue;
 
 			int g = -1;
 			for (int k = 0; k < sGroupCount; k++) {
@@ -1268,9 +1351,7 @@ void RouletteDraw(int x, int y, float zoom,
 				gZoom * zoom,
 				CENTER,
 				(sGroupDupCount[g] == 3),
-				rot,
-				cvtDest, cvtLayer, buffering
-			);
+				rot);
 		}
 
 		if (local >= sImpactFrames) {
@@ -1357,7 +1438,20 @@ void RouletteDraw(int x, int y, float zoom,
 	if (sSkillPhase == SP_DONE && attackSequence == ATTACKSEQUENCE_SLOT)
 	{
 		attackSequence = ATTACKSEQUENCE_ACTION;
-		turn = CREW + gRouletteResultAoOffset[0];
+
+		//첫 턴은 "채워진" 첫 릴이다. 자물쇠 칸이 앞에 올 수도 있으므로 인덱스 0을 그냥 쓰면 안 된다.
+		//turnList[0]도 같은 규칙으로 만들어져 있으므로(RouletteAttackStart) 그걸 그대로 쓴다.
+		turn = (totalTurn > 0) ? turnList[0] : PLAYER;
+		turnListIdx = 0;
+
+		//릴이 도는 동안(SLOT)에도 CrewMove()/PlayerMove()가 매 프레임 frame을 올린다.
+		//그대로 두면 ACTION 첫 프레임에서 "frame % ret == 0" 게이트에 걸리지 않아 공격 시작이
+		//최대 ret 프레임만큼 랜덤하게 밀린다. 턴이 막 시작되는 시점이므로 HERE에서 다시 출발시킨다.
+		ao[turn].turnPosition = HERE;
+		ao[turn].frame = 0;
+		ao[turn].mainFrame = 0;
+		sequenceFrame = 0;
+
 		InitBar(BAR_BATTLECOIN);
 
 		//여기서 남은 턴을 줄여준다.

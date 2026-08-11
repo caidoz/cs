@@ -867,6 +867,91 @@ int SelectCastleRewardBox(
 	return BOX_REWARD0;
 }
 
+//인터랙티브 전투 튜토리얼: 이번에 여는 상자가 시나리오상 몇 번째 상자인지.
+//0=첫 처치, 1=두번째 처치, 2=하트베팅 처치. 튜토리얼이 아니거나 지정 상자가 아니면 -1.
+//robin.waveIdx는 첫 상자와 두번째 상자가 둘 다 0(SNAIL)이라 구분이 안 되므로,
+//진행 플래그(robin.demoSeen[])로 판별한다. 이 순서는 Func_Combat.cpp의 사망 훅이
+//nextTutorialDemo를 고르는 순서와 1:1로 같다.
+int GetTutorialGachaBoxIndex(void)
+{
+	if (robinmap != MAP_DIORAMA_TOLEM || robin.demoSeen[DEMO_TUTORIAL_END])
+		return -1;
+
+	if (!robin.demoSeen[DEMO_TUTORIAL_FIRSTKILL])
+		return 0;
+
+	if (!robin.demoSeen[DEMO_TUTORIAL_SECONDKILL])
+		return 1;
+
+	if (!robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
+		return 2;
+
+	return -1;
+}
+
+//튜토리얼 상자의 확정 카드 구성.
+//보상 내용은 demoItem[](Data/DemoData.h)을 그대로 쓴다 - 예전에는 데모의
+//EFFECT_TUTORIAL_REWARD가 같은 표를 읽어 직접 GetItem()으로 지급했는데, 지금은 카드를
+//뒤집어 받는 가챠 쪽으로 지급을 옮겼다(이중 지급을 막기 위해 DemoData.h의 해당 행은 제거).
+//DEMOITEM_TUTORIAL_FIRSTKILL_BOX는 "떨어지는 상자" 자체라서 카드 목록에서 제외한다.
+static bool MakeTutorialBoxReward(int tutorialBoxIndex)
+{
+	static const int cardCount[3] = { 2, 3, 4 };
+
+	static const int cardItemIdx[3][4] = {
+		{ DEMOITEM_TUTORIAL_FIRSTKILL_HEART,	DEMOITEM_TUTORIAL_FIRSTKILL_CREW,	-1,									-1 },
+		{ DEMOITEM_TUTORIAL_SECONDKILL_HEART,	DEMOITEM_TUTORIAL_SECONDKILL_CREW,	DEMOITEM_TUTORIAL_SECONDKILL_EQUIP,	-1 },
+		{ DEMOITEM_TUTORIAL_HEARTBET_HEART,		DEMOITEM_TUTORIAL_HEARTBET_CREW1,	DEMOITEM_TUTORIAL_HEARTBET_CREW2,	DEMOITEM_TUTORIAL_HEARTBET_CREW3 },
+	};
+
+	int i;
+	int writeIndex = 0;
+
+	if (tutorialBoxIndex < 0 || tutorialBoxIndex > 2)
+		return false;
+
+	memset(&boxCardItem[0], 0, sizeof(boxCardItem[0]));
+	boxCardItemCnt[0] = 0;
+
+	for (i = 0; i < cardCount[tutorialBoxIndex] && writeIndex < GACHA_MAX_REWARD_CARD; i++) {
+		int idx = cardItemIdx[tutorialBoxIndex][i];
+
+		if (idx < 0)
+			continue;
+
+		ITEM* item = &boxCardItem[0][writeIndex];
+
+		//demoItem[]의 한 행 = [0]NPC [1]type [2]detail [3]grade [4]count
+		item->type = demoItem[idx * 5 + 1];
+		item->detail = demoItem[idx * 5 + 2];
+		item->grade = demoItem[idx * 5 + 3];
+		item->count = demoItem[idx * 5 + 4];
+
+		//하트/골드는 수량 아이템이라 lv/cooldown이 의미없다. 나머지는 MakeBoxCrewReward()/
+		//MakeBoxEquipReward()와 같은 값으로 맞춰준다.
+		switch (item->type) {
+		case ITEM_HEART:
+		case ITEM_GOLD:
+			item->seen = true;
+			break;
+		default:
+			item->lv = 1;
+			item->cooldown = 0;
+			item->seen = GetInvenIdx(item->type, item->detail, item->grade) >= 0;
+			break;
+		}
+
+		writeIndex++;
+	}
+
+	boxCardItemCnt[0] = writeIndex;
+
+	//순서는 시나리오대로 고정이므로 ShuffleBoxReward()를 부르지 않는다.
+	CheckNewBoxReward(boxCardItemCnt[0]);
+
+	return boxCardItemCnt[0] > 0;
+}
+
 bool GenerateCastleBoxReward(
 	int boxDetail)
 {
@@ -889,6 +974,24 @@ bool GenerateCastleBoxReward(
 	const REWARD_BOX_DATA*
 		boxData =
 		&rewardBoxData[boxIndex];
+
+	//----------------------------------------------------
+	// 인터랙티브 전투 튜토리얼: 확률을 전혀 쓰지 않고 시나리오가 정한 카드만 낸다.
+	// 몇 번째 상자인지는 GetTutorialGachaBoxIndex()가 진행 플래그로 판별한다.
+	//----------------------------------------------------
+	{
+		const int tutorialBoxIndex =
+			GetTutorialGachaBoxIndex();
+
+		if (tutorialBoxIndex >= 0)
+		{
+			gachaLuckyBox =
+				false;
+
+			return MakeTutorialBoxReward(
+				tutorialBoxIndex);
+		}
+	}
 
 	//----------------------------------------------------
 	// 럭키 상자 판정
@@ -1963,10 +2066,7 @@ void GachaDraw(void)
 				0,
 				0,
 				true,
-				0,
-				gScreenBuffer,
-				gScreenLayer,
-				false);
+				0);
 		}
 
 		//----------------------------------------------------
@@ -1990,9 +2090,6 @@ void GachaDraw(void)
 				1,
 				CENTER,
 				false,
-				false,
-				gScreenBuffer,
-				gScreenLayer,
 				false);
 
 			SetAlpha(32);
@@ -2780,9 +2877,6 @@ void GachaDraw(void)
 					1,
 					CENTER,
 					false,
-					false,
-					gScreenBuffer,
-					gScreenLayer,
 					false);
 
 				SetAlpha(32);
@@ -3031,26 +3125,26 @@ void GachaDraw(void)
 			panelZoom * 1.15f,
 
 			sprite[MENU_IMG],
-			gScreenBuffer,
-			gScreenLayer,
-			MENU_IMG,
-			false);
+			MENU_IMG);
 
 		//----------------------------------------------------
 		// 카드 배치
 		//
-		// 최대 4열 × 3행 = 12장
+		// 최대 4열 x 3행 = 12장 격자를 고정으로 잡고, 맨 윗줄 왼쪽부터 한 장씩 채운다.
+		// 열 수를 장수에 맞춰 줄이면(2장이면 2열) 격자 폭이 달라져서 가운데로 몰리기 때문에
+		// 장수와 무관하게 항상 최대 열 수를 쓴다. 그래야 왼쪽 시작 위치가 고정된다.
 		//----------------------------------------------------
-		int numCols;
+		const int POPUP_MAX_COLS =
+			4;
 
-		if (rewardCount <= 1)
-			numCols = 1;
-		else if (rewardCount == 2)
-			numCols = 2;
-		else if (rewardCount == 3)
-			numCols = 3;
-		else
-			numCols = 4;
+		const int POPUP_MAX_ROWS =
+			(GACHA_MAX_REWARD_CARD +
+				POPUP_MAX_COLS -
+				1) /
+			POPUP_MAX_COLS;
+
+		int numCols =
+			POPUP_MAX_COLS;
 
 		int numRows =
 			(rewardCount +
@@ -3083,18 +3177,25 @@ void GachaDraw(void)
 			finalPanelH *
 			0.8f;
 
+		//----------------------------------------------------
+		// 카드 크기는 이번에 나온 장수와 무관하게 고정한다.
+		//
+		// 예전에는 numCols/numRows(= 실제 장수)로 맞춰서, 장수가 적으면 그만큼 카드가 커져
+		// 창을 가득 채웠다(2장이면 거대하게, 12장이면 작게). 최대 구성인 12장(4열 x 3행)이
+		// 들어갈 크기로 계산해두고 항상 그 값을 쓴다.
+		//----------------------------------------------------
 		float popupCardZoomByW =
 			(popupInnerW -
 				popupGapX *
-				(numCols - 1)) /
-			(numCols *
+				(POPUP_MAX_COLS - 1)) /
+			(POPUP_MAX_COLS *
 				240.0f);
 
 		float popupCardZoomByH =
 			(popupInnerH -
 				popupGapY *
-				(numRows - 1)) /
-			(numRows *
+				(POPUP_MAX_ROWS - 1)) /
+			(POPUP_MAX_ROWS *
 				332.0f);
 
 		float popupCardZoom =
@@ -3297,10 +3398,7 @@ void GachaDraw(void)
 				0,
 				0,
 				true,
-				0,
-				gScreenBuffer,
-				gScreenLayer,
-				false);
+				0);
 		}
 
 		//----------------------------------------------------
@@ -3352,12 +3450,9 @@ void GachaDraw(void)
 				false,
 				btnZoom,
 				sprite[MENU_IMG],
-				gScreenBuffer,
-				gScreenLayer,
-				MENU_IMG,
-				false);
+				MENU_IMG);
 
-			CenterText(TEXT_CONFIRM, btnX + (float)BTN_SRC_W * btnZoom / 2, btnY - (float)BTN_SRC_H * btnZoom / 2 + (float)8 * _2X * btnZoom, 1.5f * btnZoom, gScreenBuffer, gScreenLayer, false);
+			CenterText(TEXT_CONFIRM, btnX + (float)BTN_SRC_W * btnZoom / 2, btnY - (float)BTN_SRC_H * btnZoom / 2 + (float)8 * _2X * btnZoom, 1.5f * btnZoom);
 
 			SetAlpha(
 				32 -
@@ -3375,9 +3470,6 @@ void GachaDraw(void)
 				1,
 				CENTER,
 				false,
-				false,
-				gScreenBuffer,
-				gScreenLayer,
 				false);
 
 			SetAlpha(32);
@@ -3647,10 +3739,7 @@ void GachaDraw(void)
 				panelZoom,
 
 				sprite[MENU_IMG],
-				gScreenBuffer,
-				gScreenLayer,
-				MENU_IMG,
-				false);
+				MENU_IMG);
 		}
 
 		//----------------------------------------------------
@@ -4053,10 +4142,7 @@ void GachaDraw(void)
 						0,
 						0,
 						true,
-						0,
-						gScreenBuffer,
-						gScreenLayer,
-						false);
+						0);
 
 					DrawItemCard(
 						item->type,
@@ -4074,10 +4160,7 @@ void GachaDraw(void)
 						0,
 						0,
 						true,
-						0,
-						gScreenBuffer,
-						gScreenLayer,
-						false);
+						0);
 
 					DrawItemCard(
 						item->type,
@@ -4095,10 +4178,7 @@ void GachaDraw(void)
 						0,
 						0,
 						true,
-						0,
-						gScreenBuffer,
-						gScreenLayer,
-						false);
+						0);
 				}
 
 				//------------------------------------------------
@@ -4122,10 +4202,7 @@ void GachaDraw(void)
 					0,
 					0,
 					true,
-					0,
-					gScreenBuffer,
-					gScreenLayer,
-					false);
+					0);
 
 				SetAlpha(32);
 			}
@@ -4329,10 +4406,7 @@ void DrawGachaItemEffect(
 		effectZoom,
 
 		sprite[effectImg],
-		gScreenBuffer,
-		gScreenLayer,
-		effectImg,
-		false);
+		effectImg);
 
 	//--------------------------------------------------------
 	// 고가치 보상 테두리 효과
@@ -4371,10 +4445,7 @@ void DrawGachaItemEffect(
 			rimZoom,
 
 			sprite[GACHA_IMG],
-			gScreenBuffer,
-			gScreenLayer,
-			GACHA_IMG,
-			false);
+			GACHA_IMG);
 	}
 
 	//--------------------------------------------------------

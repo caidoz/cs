@@ -12,24 +12,24 @@ typedef enum _uiDef {
 
 	FRAME_NORMAL = 0,
 	FRAME_MONSTER,
-	FRAME_MENUWIN,//ë©”ë‰´ì°?ì²˜ìŒ
-	FRAME_MENUWIN_QUICK,//ë©”ë‰´ì°??˜ë‹¨???µì•„?´í…œ???ˆëŠ”ê²½ìš°
-	FRAME_MENUWIN_INFO,//ë©”ë‰´ì°?ì¤‘ê°„??ë§‰ë?ë°”ë¡œ ê°€ë¡?ë§‰ëŠ” ê²½ìš°
-	FRAME_BUTTON,//?ìž?Œê¸°
-	FRAME_CHOICEBUTTON,//? íƒë²„íŠ¼
-	FRAME_CHOICEBUTTON2,//? íƒë²„íŠ¼ ?…ì???
-	FRAME_CHOICEBUTTON_BEIGE,//ë¸Œë¼???ìž?Œê¸°
-	FRAME_TALKWIN,//?€?”ì‹ 
-	FRAME_SHOPBALLOON,//?ì ?±ì—??
-	FRAME_ANIINFO,//? ë‹ˆë©”ì´?˜ìœ¼ë¡?ì»¤ì???ì°?
+	FRAME_MENUWIN,//¸Þ´ºÃ¢ Ã³À½
+	FRAME_MENUWIN_QUICK,//¸Þ´ºÃ¢ ÇÏ´Ü¿¡ Äü¾ÆÀÌÅÛÀÌ ÀÖ´Â°æ¿ì
+	FRAME_MENUWIN_INFO,//¸Þ´ºÃ¢ Áß°£¿¡ ¸·´ë¹Ù·Î °¡·Î ¸·´Â °æ¿ì
+	FRAME_BUTTON,//ÆÇÀÚ¶§±â
+	FRAME_CHOICEBUTTON,//¼±ÅÃ¹öÆ°
+	FRAME_CHOICEBUTTON2,//¼±ÅÃ¹öÆ° ¿¶Àº»ö
+	FRAME_CHOICEBUTTON_BEIGE,//ºê¶ó¿î ÆÇÀÚ¶§±â
+	FRAME_TALKWIN,//´ëÈ­½Å
+	FRAME_SHOPBALLOON,//»óÁ¡µî¿¡¼­
+	FRAME_ANIINFO,//¾Ö´Ï¸ÞÀÌ¼ÇÀ¸·Î Ä¿Áö´Â Ã¢
 	FRAME_MENUDAILY,
 	FRAME_GAMEOVER,
 	FRAME_NOFRAME,
-	FRAME_GREEN,//ì´ˆë¡??
-	FRAME_RED,//ë¹¨ê°„??
-	FRAME_BLUE,//?˜ëŠ˜??
-	FRAME_GREY,//?Œìƒ‰
-	FRAME_GNB,//?¼ë°˜?ì¸ ?¸ë???
+	FRAME_GREEN,//ÃÊ·Ï»ö
+	FRAME_RED,//»¡°£»ö
+	FRAME_BLUE,//ÇÏ´Ã»ö
+	FRAME_GREY,//È¸»ö
+	FRAME_GNB,//ÀÏ¹ÝÀûÀÎ ³ë¸ÖÇÑ 
 	FRAME_GREEN_OPTION,
 	FRAME_RED_OPTION,
 	FRAME_BLUE_OPTION,
@@ -38,7 +38,7 @@ typedef enum _uiDef {
 	FRAME_GREY_STAGE,
 	FRAME_WHITEROUND,
 
-	//?°ëª¨ ê´€??
+	//µ¥¸ð °ü·Ã
 	TEXTLINEPERPAGE = 3,
 
 	INFOTYPE_GETITEM = 0,
@@ -59,37 +59,37 @@ typedef enum _uiDef {
 	BAR_CASTLE,
 	BAR_CREW,
 	BAR_HEART,
-	BAR_HEARTBET,//?˜íŠ¸ë² íŒ… ë²„íŠ¼
+	BAR_HEARTBET,//ÇÏÆ®º£ÆÃ ¹öÆ°
 	BAR_BATTLECOIN,
 	BAR_HAMMER,
 	BAR_SHIELD,
 	BAR_MEDAL,
 	BAR_INVENTORY,
 	BAR_SKILL = BAR_INVENTORY + TOTALCHAR,
-	BAR_ENEMYUSER = BAR_SKILL + TOTALCHAR,//?ë?ë°?? ì?
-	BAR_ENEMYUSER_BOX,//ë°•ìŠ¤?ì„œ ?€?´ë‚˜?¤ëŠ” ?ë?ë°?? ì?
-	BAR_MAINSHOP,//ë©”ì¸??
-	BAR_DAILYQUEST,//?¼ì¼?˜ìŠ¤??
-	BAR_CREWUPGRADE,//?¬ë¥˜(?¬ê¸°???™ë£Œ?¤ì„ ?…ê·¸?ˆì´???´ì£¼?”ê³³)
-	BAR_EQUIP,//ì»¬ë ‰???ˆì–´ë¡œë³„ ?¥ë¹„, ?¤í‚¬, ë³„ìƒ??
-	BAR_FRIENDS,//ì¹œêµ¬
+	BAR_ENEMYUSER = BAR_SKILL + TOTALCHAR,//»ó´ë¹æ À¯Àú
+	BAR_ENEMYUSER_BOX,//¹Ú½º¿¡¼­ Æ¢¾î³ª¿À´Â »ó´ë¹æ À¯Àú
+	BAR_MAINSHOP,//¸ÞÀÎ¼¥
+	BAR_DAILYQUEST,//ÀÏÀÏÄù½ºÆ®
+	BAR_CREWUPGRADE,//Å©·ù(¿©±â´Â µ¿·áµéÀ» ¾÷±×·¹ÀÌµå ÇØÁÖ´Â°÷)
+	BAR_EQUIP,//ÄÃ·º¼Ç(È÷¾î·Îº° Àåºñ, ½ºÅ³, º°»óÁ¡)
+	BAR_FRIENDS,//Ä£±¸
 	BAR_QUEST,
 	BAR_NPC,
 	BAR_RAIDGOLD,//
-	BAR_RAIDCOIN,//ë°°í??ì„œ ?°ì¼ ?´ë²ˆ???´í„´ + ?í„´) ?ë“??
-	BAR_BOSSHP,//ë³´ìŠ¤ HP
+	BAR_RAIDCOIN,//¹èÆ²¿¡¼­ ¾²ÀÏ ÀÌ¹øÅÏ(³»ÅÏ + ÀûÅÏ) È¹µæ·®
+	BAR_BOSSHP,//º¸½º HP
 	BAR_HITCOUNT,
 	BAR_COMBATPOWER,
 	BAR_COMBATPOWERALL,
 	BAR_STAR,
 	BAR_STAGEPROGRESS,
 	BAR_REMAINEDTURN,
-	BAR_DAY,              // Day ?œì‹œë§?
-	BAR_WAVE,             // Life ?œì‹œë§?
-	BAR_ROULETTE,//ë£°ë ›
-	BAR_PLAY,//?Œë ˆ??ë²„íŠ¼
-	BAR_JOYSTICK,//?€ì§ìž„ ì»¨íŠ¸ë¡¤ëŸ¬
-	BAR_JUMP,//?í”„ë²„íŠ¼
+	BAR_DAY,              // Day Ç¥½Ã¸¸
+	BAR_WAVE,             // Life Ç¥½Ã¸¸
+	BAR_ROULETTE,//·ê·¿
+	BAR_PLAY,//ÇÃ·¹ÀÌ ¹öÆ°
+	BAR_JOYSTICK,//¿òÁ÷ÀÓ ÄÁÆ®·Ñ·¯
+	BAR_JUMP,//Á¡ÇÁ¹öÆ°
 
 	TOTAL_BAR,
 
@@ -106,21 +106,21 @@ typedef enum _uiDef {
 	BARCOLOR_PURPLE,
 
 	//menuResult
-	RESULT_NOGOLD = 1,	//ê³¨ë“œê°€ ë¶€ì¡±í•©?ˆë‹¤.
-	RESULT_INVENTORYFULL,//?¸ë²¤? ë¦¬ê°€ ê°€??ì°¼ìŠµ?ˆë‹¤.
-	RESULT_NOSOCKET,	//?Œì¼“???†ëŠ” ?¥ë¹„?…ë‹ˆ??
-	RESULT_CANNOTSELLITEM,	//?ë§¤?????†ëŠ” ?„ì´?œìž…?ˆë‹¤.
-	RESULT_ITEMLIMIT,//?´ë‹¹ ?„ì´?œì„ ?”ì´???Œì??????†ìŠµ?ˆë‹¤.
-	RESULT_NOORE,	//?¬ë£Œê°€ ë¶€ì¡±í•©?ˆë‹¤.
-	RESULT_NOMOREENCHANT,	//?”ì´??ê°•í™”?˜ì‹¤ ???†ìŠµ?ˆë‹¤.
-	RESULT_NOENCHANTITEM,//ê°•í™”?????ˆëŠ” ?„ì´?œì´ ?†ìŠµ?ˆë‹¤.
-	RESULT_NORECIPE,	//?œìž‘ê°€?¥í•œ ì¡°í•©?œë? ê°€ì§€ê³??ˆì? ?ŠìŠµ?ˆë‹¤.
+	RESULT_NOGOLD = 1,	//°ñµå°¡ ºÎÁ·ÇÕ´Ï´Ù.
+	RESULT_INVENTORYFULL,//ÀÎº¥Åä¸®°¡ °¡µæ Ã¡½À´Ï´Ù.
+	RESULT_NOSOCKET,	//¼ÒÄÏÀÌ ¾ø´Â ÀåºñÀÔ´Ï´Ù.
+	RESULT_CANNOTSELLITEM,	//ÆÇ¸ÅÇÒ ¼ö ¾ø´Â ¾ÆÀÌÅÛÀÔ´Ï´Ù.
+	RESULT_ITEMLIMIT,//ÇØ´ç ¾ÆÀÌÅÛÀ» ´õÀÌ»ó ¼ÒÁöÇÒ ¼ö ¾ø½À´Ï´Ù.
+	RESULT_NOORE,	//Àç·á°¡ ºÎÁ·ÇÕ´Ï´Ù.
+	RESULT_NOMOREENCHANT,	//´õÀÌ»ó °­È­ÇÏ½Ç ¼ö ¾ø½À´Ï´Ù.
+	RESULT_NOENCHANTITEM,//°­È­ÇÒ ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ ¾ø½À´Ï´Ù.
+	RESULT_NORECIPE,	//Á¦ÀÛ°¡´ÉÇÑ Á¶ÇÕ¼­¸¦ °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù.
 	RESULT_NOGEM,
-	RESULT_NOGEMITEM,//ë³´ì„???¥ì°©?????ˆëŠ” ?¥ë¹„ê°€ ?†ìŠµ?ˆë‹¤.
-	RESULT_BROKENITEM,	//ë¶€?œì§„ ?„ì´?œì? ê°•í™”?˜ì‹¤ ???†ìŠµ?ˆë‹¤.
-	RESULT_ENCHANTSUCCESS,	//ê°•í™”???±ê³µ?˜ì??µë‹ˆ??
-	RESULT_RECIPESUCCESS,	//?ˆë¡œ???„ì´?œì´ ?ì„±?˜ì—ˆ?µë‹ˆ??
-	RESULT_SOCKETSUCCESS,	//ë³´ì„ ?¥ì°©???±ê³µ?˜ì??µë‹ˆ??
+	RESULT_NOGEMITEM,//º¸¼®À» ÀåÂøÇÒ ¼ö ÀÖ´Â Àåºñ°¡ ¾ø½À´Ï´Ù.
+	RESULT_BROKENITEM,	//ºÎ¼­Áø ¾ÆÀÌÅÛÀº °­È­ÇÏ½Ç ¼ö ¾ø½À´Ï´Ù.
+	RESULT_ENCHANTSUCCESS,	//°­È­¿¡ ¼º°øÇÏ¿´½À´Ï´Ù.
+	RESULT_RECIPESUCCESS,	//»õ·Î¿î ¾ÆÀÌÅÛÀÌ »ý¼ºµÇ¾ú½À´Ï´Ù.
+	RESULT_SOCKETSUCCESS,	//º¸¼® ÀåÂø¿¡ ¼º°øÇÏ¿´½À´Ï´Ù.
 	RESULT_NOSTONE,
 	RESULT_ENCHANTFAILURE,
 	RESULT_ENCHANTFAILURE2,
@@ -163,7 +163,7 @@ typedef enum _uiDef {
 	MAXPOPUP = 10,
 
 	INVEN_HCNT = 4,
-	INVEN_HCNT_2X = 5,//?¸ë²¤? ë¦¬ ê°€ë¡?ëª‡ê°œ?¸ê?
+	INVEN_HCNT_2X = 5,//ÀÎº¥Åä¸® °¡·Î ¸î°³ÀÎ°¡
 	INVEN_VCNT_MIN = 5,
 	INVEN_VCNT_MIN_2X = 4,
 

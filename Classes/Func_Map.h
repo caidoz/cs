@@ -35,17 +35,17 @@ void AddObject(OBJECT *, OBJECT *, int);
 void SetCamera(void);
 void PopTalk(void);
 
-void DrawBackMapFar(int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawBackMapFront(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawBackMap_Back(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawBackMap(int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawBg(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void DrawTileDirect(int mapIdx, int x, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawTile(int mapIdx, int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawForeMap(int, int, int, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawScreen(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void TheaterDraw(cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawBackMapFar(int, int, int, int, float zoom);
+void DrawBackMapFront(int, int, int, float zoom);
+void DrawBackMap_Back(int, int, int, float zoom);
+void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom);
+void DrawBackMap(int, int, int, float zoom);
+void DrawBg(int, int, float zoom);
+void DrawTileDirect(int mapIdx, int x, int yPos, float zoom);
+void DrawTile(int mapIdx, int yPos, float zoom);
+void DrawForeMap(int, int, int, float zoom);
+void DrawScreen(int x, int y, float zoom);
+void TheaterDraw();
 
 float EaseInOutSine(float t);
 // 부드러운 상하 부유 효과

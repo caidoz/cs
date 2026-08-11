@@ -4343,7 +4343,7 @@ void SetPlayerMotion(OBJECT* pObj)
 			InitMotion(pObj);
 
 			//그려주기
-			DrawPlayer(pObj, pObj->motion, pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + GetObjHeight(pObj) - ry + OBJIMGGAP, 0, pObj->zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+			DrawPlayer(pObj, pObj->motion, pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + GetObjHeight(pObj) - ry + OBJIMGGAP, 0, pObj->zoom, false, false, false);
 
 			//본체 모션 복구
 			pObj->motion = tempMotion;
@@ -8340,14 +8340,32 @@ void FollowMove(OBJECT* pObj)
 		//여기서 총탄을 쏜 다음에 다음 턴으로 넘겨준다.
 		if (pObj->mom == turn) {
 			//WhoIsNextTurn();
-			controlMark[GetControlMark(pObj->mom)].alpha = 1;
+			//스킬마크가 없을 수도 있다(GetControlMark()가 -1). 가드 없이 쓰면 배열 밖에 write한다.
+			int markIdx = GetControlMark(pObj->mom);
+
+			if (markIdx >= 0)
+				controlMark[markIdx].alpha = 1;
+
 			ao[pObj->mom].turnPosition = DMGUPDATE;
 			onceDmgUpdateFrame = 2 * FPS;
 		}
 #endif
 		memset(pObj, 0, sizeof(OBJECT));
+		return;
 	}
 
+	//유도탄은 맞기 전에는 스스로 사라지지 않는다. 그런데 턴을 넘겨주는 경로는 "이 총알이 적에게
+	//맞았을 때"뿐이라(위 DMGUPDATE), 대상이 다른 원인으로 먼저 죽거나 사라지면 총알이 시체를
+	//영원히 쫓고 크루는 THERE에 갇혀 전투 전체가 멈춘다(다음 턴인 히어로 공격이 아예 안 나감).
+	//대상이 사라졌거나 너무 오래 날았으면 총알을 지우고 턴을 진행시킨다.
+	if (ao[pObj->target].active == false || ao[pObj->target].dead == true || pObj->frame > 3 * FPS) {
+		if (pObj->mom == turn && ao[pObj->mom].turnPosition == THERE) {
+			ao[pObj->mom].turnPosition = DMGUPDATE;
+			onceDmgUpdateFrame = 2 * FPS;
+		}
+
+		memset(pObj, 0, sizeof(OBJECT));
+	}
 }
 
 void FollowMomMove(OBJECT* pObj)
@@ -11124,7 +11142,14 @@ void RegenMove(OBJECT* pObj)
 							j++;
 					}
 
-					if (obj == ROBIN && j > 0) {
+					//인터랙티브 전투 튜토리얼 중에는 이 블록을 타면 안 된다. 컷씬->실전투 핸드오프에서
+					//GotoPlay()가 SetHero()를 부르는 바람에 주인공이 등장 낙하 연출(REGENMOVE)을 다시
+					//하는데, 그 착지 시점에 여기서 CopyEnemyObj()로 백업본을 덮어쓰고 살아있는 몬스터를
+					//전부 REGENMOVE로 되돌려버린다. 그러면 컷씬에서 막 스폰한 몬스터가 등장 연출을
+					//처음부터 다시 하고 BAR_BOSSHP도 다시 InitBar되어, "몬스터 생성이 끝난 뒤에도 계속
+					//다시 초기화되는" 증상이 된다. 게다가 moveHandler가 ENEMYMOVETURN에서 벗어나므로
+					//WaveControler()의 tutorialWaitingEnemyLand 체크가 터치를 다시 잠근다.
+					if (obj == ROBIN && j > 0 && !(robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])) {
 						CopyEnemyObj();
 						InitBar(BAR_BOSSHP);
 
@@ -11166,7 +11191,7 @@ void RegenMove(OBJECT* pObj)
 			}
 			else {
 				pObj->hp = pObj->maxhp;
-				if (drawHandle == MD_PLAY)
+				if (drawHandle == MD_PLAY || drawHandle == MD_DEMO)
 					pObj->moveHandler = ENEMYMOVETURN;
 				else
 					pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];
@@ -12117,8 +12142,13 @@ void ItemMove(OBJECT* pObj)
 					if (pObj->mainFrame > 3 * FPS) {
 						//여기서 처리
 
-						boxMark[0].type = ao[ITEMOBJ].def;
-						boxMark[0].detail = ao[ITEMOBJ].etc;
+						//DropItem()은 ITEMOBJ부터 훑어서 "빈 슬롯"에 아이템을 배치하는데(Func_Item.cpp),
+						//여기서는 ao[ITEMOBJ]를 하드코딩해서 읽고 있었다. 전투 중 떨어진 골드 코인이
+						//ITEMOBJ 슬롯을 점유한 상태에서 상자가 떨어지면 상자는 ITEMOBJ+N에 생기고,
+						//boxMark에는 상자가 아니라 코인 정보가 들어가서 GotoGacha()가
+						//"invalid box type" 으로 조용히 실패했다. 지금 처리 중인 오브젝트를 그대로 쓴다.
+						boxMark[0].type = pObj->def;
+						boxMark[0].detail = pObj->etc;
 						boxMark[0].grade = GRADE_NORMAL;
 
 						GotoGacha();
@@ -12211,6 +12241,14 @@ void WarpMove(OBJECT* pObj)
 	int grade, detail;
 
 	if (dontWarp == true || robin.bossRoom == true || isDemo == true)
+		return;
+
+	//인터랙티브 전투 튜토리얼 중(SEBASTIAN~BOSS)에는 실전투(MD_PLAY)로 넘어가면 isDemo가 false가 되어
+	//이 가드를 통과해버린다. 튜토리얼 동안 히어로가 고정된 로비 좌표에 서 있는데, 그 좌표가 실제
+	//워프 도어 오브젝트와 겹치면 매 프레임 ObjCrash가 true가 되어 loadedMap=-1 + ao[ENEMY] memset이
+	//반복 실행되면서 "방 세팅이 계속 새로 되고 전투가 리셋되는" 증상이 나타난다. 튜토리얼이 끝날
+	//때까지(DEMO_TUTORIAL_END) 이 방에서는 워프를 완전히 막는다.
+	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])
 		return;
 
 	//MC_knlPrintk("WarpObj:%d, Type:%d, X:%d, Y:%d\n", i, ao[i].type, ao[i].x, ao[i].y);
@@ -13795,6 +13833,11 @@ void CrewMove(OBJECT* pObj)
 	case MD_PLAY:
 		switch (attackSequence) {
 		case ATTACKSEQUENCE_READY:
+		//룰렛이 도는 동안에도 크루는 제자리에서 대기 모션이어야 한다.
+		//SLOT 케이스가 없어서 switch를 그냥 빠져나가면, 위에서 잡아둔
+		//cmf_status_data[cmf][etc](RouletteAttackStart()가 넣어둔 공격패턴 상태) 모션이 그대로
+		//남아 크루가 룰렛 내내 달리는 모션을 재생했다.
+		case ATTACKSEQUENCE_SLOT:
 		case ATTACKSEQUENCE_COIN:
 			pObj->motion = crewPos[pObj->type * 5 + 0] + pObj->frame / 2 % crewPos[pObj->type * 5 + 1];
 			break;
@@ -13816,25 +13859,48 @@ void CrewMove(OBJECT* pObj)
 							attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
 							switch (attackType) {
 							case CREWBULLET:
+							{
+								//총알을 실제로 만들었는지 추적한다.
+								//바로 위에서 turnPosition을 THERE로 바꿔놨는데, THERE에는 아무 처리가 없고
+								//(아래 case THERE: break;) 턴을 넘겨주는 쪽은 총알이 적에게 맞았을 때
+								//FollowMove()가 mom의 turnPosition을 DMGUPDATE로 올려주는 경로뿐이다.
+								//따라서 총알이 안 만들어지면 이 크루는 THERE에 영원히 머물고 턴이 넘어가지
+								//않아 전투 전체가 멈춘다("공격버튼을 눌러도 아무 일도 안 일어남").
+								//NearEnemy()는 active하고 dead가 아닌 적이 없으면 0을 돌려주므로,
+								//적이 아직 등장 연출 중이거나 이미 죽었으면 여기에 걸린다.
+								bool bulletFired = false;
 
-								for (i = BULLET; i < ENEMYUSEROBJ; i++) {
-									if (ao[i].active == false && pObj->target) {
+								if (pObj->target >= ENEMY && pObj->target < NEUTRAL) {
+									for (i = BULLET; i < ENEMYUSEROBJ; i++) {
+										if (ao[i].active == false) {
 
-										AddObject(&ao[i], pObj, ADDOBJ_CREWBULLET);
-										ao[i].target = pObj->target;
-										//방향성 잡아주고
-										if (pObj->x > ao[ao[i].target].x)
-											ao[i].dirF = ao[i].dirX = LEFT;
-										else
-											ao[i].dirF = ao[i].dirX = RIGHT;
+											AddObject(&ao[i], pObj, ADDOBJ_CREWBULLET);
+											ao[i].target = pObj->target;
+											//방향성 잡아주고
+											if (pObj->x > ao[ao[i].target].x)
+												ao[i].dirF = ao[i].dirX = LEFT;
+											else
+												ao[i].dirF = ao[i].dirX = RIGHT;
+
+											bulletFired = true;
 
 #ifdef SPEEDTURN
-										if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0)
-											WhoIsNextTurn();
+											if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0)
+												WhoIsNextTurn();
 #endif
-										break;
+											break;
+										}
 									}
 								}
+
+								//총알을 못 쐈으면 이 턴은 그냥 넘긴다. DMGUPDATE로 올려두면 아래
+								//case DMGUPDATE에서 onceDmgUpdateFrame이 다 되는 시점에 WhoIsNextTurn()이
+								//호출되어 다음 턴(주인공)으로 정상 진행된다.
+								if (bulletFired == false) {
+									pObj->turnPosition = DMGUPDATE;
+									onceDmgUpdateFrame = 2 * FPS;
+								}
+							}
 								break;
 							case SUMMON:
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];

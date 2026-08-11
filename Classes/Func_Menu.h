@@ -87,42 +87,42 @@ const int equipBgData[] = {
 };
 
 // Menu & UI 관련 함수
-void NewsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void GiftDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void GuildEventDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DailyQuestDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void ShopDraw_Back(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void ShopDraw(int, int, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CastleMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void NewsDraw(int x, int y, float zoom);
+void GiftDraw(int x, int y, float zoom);
+void GuildEventDraw(int x, int y, float zoom);
+void DailyQuestDraw(int x, int y, float zoom);
+void ShopDraw_Back(int, int);
+void ShopDraw(int, int, float zoom);
+void CastleMenuDraw(int x, int y, float zoom);
 void StarShopDraw(int, int);
-void HeroDraw(int type, int x, int y, int dirX, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CrewListDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onlyInfo, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void ItemOptionCompareDraw(ITEM * it1, ITEM * it2, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void ItemOptionDraw(ITEM * it, int x, int y, float zoom, bool equipped, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void EquipInfoDraw(ITEM * it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void StageProgressDraw(int x, int y, int current, int progress, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void RemainedTurnDraw(int x, int y, int current, int progress, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void StageListDraw(int x, int y, int status, int frame, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CrewUpgradeMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void HowToGetHeroesDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void HowToGetCrewsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void HeroDraw(int type, int x, int y, int dirX, float zoom);
+void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap);
+void CrewListDraw(int x, int y, float zoom);
+void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal);
+void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);
+void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onlyInfo);
+void ItemOptionCompareDraw(ITEM * it1, ITEM * it2, int x, int y, float zoom);
+void ItemOptionDraw(ITEM * it, int x, int y, float zoom, bool equipped);
+void EquipInfoDraw(ITEM * it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom);
+void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoom);
+void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom);
+void StageProgressDraw(int x, int y, int current, int progress, float zoom);
+void RemainedTurnDraw(int x, int y, int current, int progress, float zoom);
+void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, int y, float zoom);
+void StageListDraw(int x, int y, int status, int frame);
+void CrewUpgradeMenuDraw(int x, int y, float zoom);
+void HowToGetHeroesDraw(int x, int y, float zoom);
+void HowToGetCrewsDraw(int x, int y, float zoom);
 int GetItemCntUpgradePossible(void);
-void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CollectionsDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CalendarDraw(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void OptionDraw(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void JokboDraw(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DeptDiscountDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DoubleGoldDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom);
+void CollectionsDraw(int x, int y, float zoom);
+void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom);
+void CalendarDraw(int, int, float zoom);
+void OptionDraw(int, int, float zoom);
+void JokboDraw(int, int, float zoom);
+void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom);
+void DeptDiscountDraw(int x, int y, float zoom);
+void DoubleGoldDraw(int x, int y, float zoom);
 void LimitScrollY(void);
 
 int GetBoxCurrency(int, int);
@@ -138,7 +138,7 @@ void OutOfAlert(void);
 void DrawHandleExec(int drawIdx);
 void AlertDraw(void);
 void GachaDraw(void);
-void NewCollectionDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void NewCollectionDraw(int x, int y, float zoom);
 void NewCardDraw(void);
 
 void DrawItemCardBack(
@@ -146,11 +146,7 @@ void DrawItemCardBack(
 	int x,
 	int y,
 	float zoom,
-	int backFrame,
-	cocos2d::RenderTexture* cvtDest,
-	cocos2d::Layer* cvtLayer,
-	bool buffering
-);
+	int backFrame);
 
 // 동료 편성 메뉴 그리기
 void DrawItemCard(
@@ -168,15 +164,11 @@ void DrawItemCard(
 	int buttonTouchFunc,
 	int cardTouchFunc,
 	int selectedFrame,
-	int backFrame,	// 0: 앞면, 1~7: 카드 뒷면 프레임
-	cocos2d::RenderTexture* cvtDest,
-	cocos2d::Layer* cvtLayer,
-	bool buffering
-);
+	int backFrame);
 
 int GetCrewInventoryIdx(int type);
-void CrewMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void CrewPannelDraw(int crewIdx, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void CrewMenuDraw(int x, int y, float zoom);
+void CrewPannelDraw(int crewIdx, int x, int y, float zoom);
 bool IsCrewSet(int crewIdx);
-void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY);
 #endif

@@ -4,7 +4,7 @@
 #define _DEF_CMF_H_
 
 typedef enum _cmfDef {
-	//CMF 디파인
+	//CMF ?�파??
 	CMF_SNAIL = 3,//o
 	CMF_TREE, //4//o
 	CMF_FROG, //5//o
@@ -50,33 +50,33 @@ typedef enum _cmfDef {
 	CMF_CASTLE2,//45//o
 	CMF_SPACE1,//46//o
 	CMF_SPACE2,//47//o
-	CMF_CASTLE_BOSS1,//데브리온48//o
-	CMF_CASTLE_BOSS2,//엘케인 맨티스49//o
-	CMF_CASTLE_BOSS3,//테트라쿤50//o
-	CMF_CASTLE_BOSS4,//다크나이트51//o
+	CMF_CASTLE_BOSS1,//?�브리온48//o
+	CMF_CASTLE_BOSS2,//?��???맨티??9//o
+	CMF_CASTLE_BOSS3,//?�트?�쿤50//o
+	CMF_CASTLE_BOSS4,//?�크?�이??1//o
 
-	CMF_NPC_CAPTAIN,//c52//선장 o
-	CMF_NPC_CREW,//c53//선원 o
-	CMF_NPC_GRANDFA,//c54//할아버지 o
-	CMF_NPC_UNCLE,//c55//아저씨 o
-	CMF_NPC_AUNT,//c56//아줌마 o
-	CMF_NPC_MAN,//c57//자경단청년 o
-	CMF_NPC_WOMAN,//c58//처녀 o
-	CMF_NPC_BOY,//c59//꼬마남 o
-	CMF_NPC_GIRL,//c60//꼬마녀 o
-	CMF_NPC_ALMA,//c61//알마 o
-	CMF_NPC_ITEM,//c62//터번 o
+	CMF_NPC_CAPTAIN,//c52//?�장 o
+	CMF_NPC_CREW,//c53//?�원 o
+	CMF_NPC_GRANDFA,//c54//?�아버�? o
+	CMF_NPC_UNCLE,//c55//?��???o
+	CMF_NPC_AUNT,//c56//?�줌�?o
+	CMF_NPC_MAN,//c57//?�경?�청??o
+	CMF_NPC_WOMAN,//c58//처�? o
+	CMF_NPC_BOY,//c59//꼬마??o
+	CMF_NPC_GIRL,//c60//꼬마?� o
+	CMF_NPC_ALMA,//c61//?�마 o
+	CMF_NPC_ITEM,//c62//?�번 o
 	CMF_NPC_FATMAN,//c63 o
 	CMF_NPC_BUNNYGIRL,//c64 o
-	CMF_NPC_KNIGHT,//c65//플레타 o
+	CMF_NPC_KNIGHT,//c65//?�레?� o
 	CMF_NPC_DOG,//c66 o
 	CMF_NPC_MERCHANT,//c67
 	CMF_NPC_CRAFTMAN,//c68 o
 	CMF_NPC_MAP,//c69 o
-	CMF_NPC_USERQUEST,//c70//스튜어디스 o
-	CMF_NPC_TRAVEL,//c71//이국의여행자 o
-	CMF_NPC_GRANDMA,//c72//할머니 o
-	CMF_NPC_FISHING,//c73//라피 o
+	CMF_NPC_USERQUEST,//c70//?�튜?�디??o
+	CMF_NPC_TRAVEL,//c71//?�국?�여?�자 o
+	CMF_NPC_GRANDMA,//c72//?�머??o
+	CMF_NPC_FISHING,//c73//?�피 o
 	CMF_NPC_INN,//c74
 	CMF_NPC_NETITEM,//c75 o
 	CMF_NPC_MILESE,//c76 o
@@ -85,49 +85,49 @@ typedef enum _cmfDef {
 	CMF_NPC_MONICA,//c79 o
 	CMF_NPC_SHIP,//c80
 
-	CMF_NPC_SEASOLDIER,//c81//아틀란병사 o
+	CMF_NPC_SEASOLDIER,//c81//?��??�병사 o
 	CMF_NPC_FRAUD,//c82 o
 	CMF_NPC_DARIAN,//c83 o
 	CMF_NPC_LUISE,//c84 o
-	CMF_NPC_SEAUNCLE,//c85//아틀란아저씨 o
-	CMF_NPC_SEABOY,//c86//아틀란소년 o
-	CMF_NPC_DONALD,//c87//이소룡 o
+	CMF_NPC_SEAUNCLE,//c85//?��??�?��???o
+	CMF_NPC_SEABOY,//c86//?��??�?�년 o
+	CMF_NPC_DONALD,//c87//?�소�?o
 
-	CMF_NPC_SCHOLAR,//c88//학자 o
-	CMF_NPC_CHEF,//c89//요리대가 o
-	CMF_NPC_BISTRO,//c90//비스트로 o
-	CMF_NPC_MAID,//c91//시녀 o
+	CMF_NPC_SCHOLAR,//c88//?�자 o
+	CMF_NPC_CHEF,//c89//?�리?�가 o
+	CMF_NPC_BISTRO,//c90//비스?�로 o
+	CMF_NPC_MAID,//c91//?��? o
 	CMF_NPC_ADELKNIGHT,//c92//기사 o
-	CMF_NPC_SEBASTIAN,//c93//세바스찬 o
-	CMF_NPC_NOBLEMAN,//c94//귀족아저씨 o
-	CMF_NPC_DELPIOS,//c95//델피오스 o
+	CMF_NPC_SEBASTIAN,//c93//?�바?�찬 o
+	CMF_NPC_NOBLEMAN,//c94//귀족아?�??o
+	CMF_NPC_DELPIOS,//c95//?�피?�스 o
 	CMF_NPC_LORA,//c96//로라 o
-	CMF_NPC_WITCH,//c97//마녀 o
-	CMF_NPC_ELFGRANDFA,//c98//엘프할아버지 o
-	CMF_NPC_ELFUNCLE,//c99//엘프아저씨 o
-	CMF_NPC_ELFAUNT,//c100//엘프아줌마 o
-	CMF_NPC_ELFMAN,//c101//엘프청년 o
-	CMF_NPC_ELFWOMAN,//c102//엘프처녀 o
-	CMF_NPC_ELFBOY,//c103//엘프꼬마남 o
-	CMF_NPC_ELFGIRL,//c104//엘프꼬마녀 o
-	CMF_NPC_ELFDARK,//c105//엘프다크 o
-	CMF_NPC_ELFMAGIC,//c106//엘프마법사 o
-	CMF_NPC_ELFDANCER,//c107//엘프무희 o
-	CMF_NPC_OWL,//c108//부엉이 o
-	CMF_NPC_LABETH,//c109//라베스 o
-	CMF_NPC_ELKEIN,//c110//엘케인 o
-	CMF_NPC_ELEIN,//c111//엘레인 o
-	CMF_NPC_EVAN,//c112//에번 o
-	CMF_NPC_TABLE,//c113//테이블//o//NPC_BEAD
-	CMF_NPC_FOUNTAIN,//c114//샘물//o
-	CMF_NPC_NEZAR,//c115//네자르 o
-	CMF_NPC_GALLAND,//c116//갈란드//o
-	CMF_NPC_DURAK,//c117//듀라크 o
-	CMF_NPC_KING,//c118//에드몬드 o
-	CMF_NPC_WOMANGHOST,//c119//여자유령 o
-	CMF_NPC_MANGHOST,//c120//남자유령 o
-	CMF_NPC_AUSTIN,//c121//오스틴(유령) o
-	CMF_NPC_HEART,//c122//마왕의 심장 o
+	CMF_NPC_WITCH,//c97//마�? o
+	CMF_NPC_ELFGRANDFA,//c98//?�프?�아버�? o
+	CMF_NPC_ELFUNCLE,//c99//?�프?��???o
+	CMF_NPC_ELFAUNT,//c100//?�프?�줌�?o
+	CMF_NPC_ELFMAN,//c101//?�프�?�� o
+	CMF_NPC_ELFWOMAN,//c102//?�프처�? o
+	CMF_NPC_ELFBOY,//c103//?�프꼬마??o
+	CMF_NPC_ELFGIRL,//c104//?�프꼬마?� o
+	CMF_NPC_ELFDARK,//c105//?�프?�크 o
+	CMF_NPC_ELFMAGIC,//c106//?�프마법??o
+	CMF_NPC_ELFDANCER,//c107//?�프무희 o
+	CMF_NPC_OWL,//c108//부?�이 o
+	CMF_NPC_LABETH,//c109//?�베??o
+	CMF_NPC_ELKEIN,//c110//?��???o
+	CMF_NPC_ELEIN,//c111//?�레??o
+	CMF_NPC_EVAN,//c112//?�번 o
+	CMF_NPC_TABLE,//c113//?�이�?/o//NPC_BEAD
+	CMF_NPC_FOUNTAIN,//c114//?�물//o
+	CMF_NPC_NEZAR,//c115//?�자�?o
+	CMF_NPC_GALLAND,//c116//갈�???/o
+	CMF_NPC_DURAK,//c117//?�?�크 o
+	CMF_NPC_KING,//c118//?�드몬드 o
+	CMF_NPC_WOMANGHOST,//c119//?�자?�령 o
+	CMF_NPC_MANGHOST,//c120//?�자?�령 o
+	CMF_NPC_AUSTIN,//c121//?�스???�령) o
+	CMF_NPC_HEART,//c122//마왕???�장 o
 
 	CMF_SNAIL_RED, //123//3
 	CMF_SNAIL_BLUE, //124//3
@@ -444,47 +444,47 @@ typedef enum _cmfDef {
 	CMF_SPACE2_GOLD,//391//47
 	CMF_SPACE2_BLACK,//392//47
 
-	CMF_CASTLE_BOSS1_RED,//393//데브리온48
-	CMF_CASTLE_BOSS1_BLUE,//394//데브리온48
-	CMF_CASTLE_BOSS1_PURPLE,//395//데브리온48
-	CMF_CASTLE_BOSS1_GREEN,//396//데브리온48
-	CMF_CASTLE_BOSS1_GOLD,//397//데브리온48
-	CMF_CASTLE_BOSS1_BLACK,//398//데브리온48
+	CMF_CASTLE_BOSS1_RED,//393//?�브리온48
+	CMF_CASTLE_BOSS1_BLUE,//394//?�브리온48
+	CMF_CASTLE_BOSS1_PURPLE,//395//?�브리온48
+	CMF_CASTLE_BOSS1_GREEN,//396//?�브리온48
+	CMF_CASTLE_BOSS1_GOLD,//397//?�브리온48
+	CMF_CASTLE_BOSS1_BLACK,//398//?�브리온48
 
-	CMF_CASTLE_BOSS2_RED,//399//엘케인 맨티스49
-	CMF_CASTLE_BOSS2_BLUE,//400//엘케인 맨티스49
-	CMF_CASTLE_BOSS2_PURPLE,//401//엘케인 맨티스49
-	CMF_CASTLE_BOSS2_GREEN,//402//엘케인 맨티스49
-	CMF_CASTLE_BOSS2_GOLD,//403//엘케인 맨티스49
-	CMF_CASTLE_BOSS2_BLACK,//404//엘케인 맨티스49
+	CMF_CASTLE_BOSS2_RED,//399//?��???맨티??9
+	CMF_CASTLE_BOSS2_BLUE,//400//?��???맨티??9
+	CMF_CASTLE_BOSS2_PURPLE,//401//?��???맨티??9
+	CMF_CASTLE_BOSS2_GREEN,//402//?��???맨티??9
+	CMF_CASTLE_BOSS2_GOLD,//403//?��???맨티??9
+	CMF_CASTLE_BOSS2_BLACK,//404//?��???맨티??9
 
-	CMF_CASTLE_BOSS3_RED,//405//테트라쿤50
-	CMF_CASTLE_BOSS3_BLUE,//406//테트라쿤50
-	CMF_CASTLE_BOSS3_PURPLE,//407//테트라쿤50
-	CMF_CASTLE_BOSS3_GREEN,//408//테트라쿤50
-	CMF_CASTLE_BOSS3_GOLD,//409//테트라쿤50
-	CMF_CASTLE_BOSS3_BLACK,//410//테트라쿤50
+	CMF_CASTLE_BOSS3_RED,//405//?�트?�쿤50
+	CMF_CASTLE_BOSS3_BLUE,//406//?�트?�쿤50
+	CMF_CASTLE_BOSS3_PURPLE,//407//?�트?�쿤50
+	CMF_CASTLE_BOSS3_GREEN,//408//?�트?�쿤50
+	CMF_CASTLE_BOSS3_GOLD,//409//?�트?�쿤50
+	CMF_CASTLE_BOSS3_BLACK,//410//?�트?�쿤50
 
-	CMF_CASTLE_BOSS4_RED,//411//다크나이트51
-	CMF_CASTLE_BOSS4_BLUE,//412//다크나이트51
-	CMF_CASTLE_BOSS4_PURPLE,//413//다크나이트51
-	CMF_CASTLE_BOSS4_GREEN,//414//다크나이트51
-	CMF_CASTLE_BOSS4_GOLD,//415//다크나이트51
-	CMF_CASTLE_BOSS4_BLACK,//416//다크나이트51
+	CMF_CASTLE_BOSS4_RED,//411//?�크?�이??1
+	CMF_CASTLE_BOSS4_BLUE,//412//?�크?�이??1
+	CMF_CASTLE_BOSS4_PURPLE,//413//?�크?�이??1
+	CMF_CASTLE_BOSS4_GREEN,//414//?�크?�이??1
+	CMF_CASTLE_BOSS4_GOLD,//415//?�크?�이??1
+	CMF_CASTLE_BOSS4_BLACK,//416//?�크?�이??1
 
-	CMF_NPC_LABETH_RED,//417//c109//라베스
-	CMF_NPC_LABETH_BLUE,//418//c109//라베스
-	CMF_NPC_LABETH_PURPLE,//419//c109//라베스
-	CMF_NPC_LABETH_GREEN,//420//c109//라베스
-	CMF_NPC_LABETH_GOLD,//421//c109//라베스
-	CMF_NPC_LABETH_BLACK,//422//c109//라베스
+	CMF_NPC_LABETH_RED,//417//c109//?�베??
+	CMF_NPC_LABETH_BLUE,//418//c109//?�베??
+	CMF_NPC_LABETH_PURPLE,//419//c109//?�베??
+	CMF_NPC_LABETH_GREEN,//420//c109//?�베??
+	CMF_NPC_LABETH_GOLD,//421//c109//?�베??
+	CMF_NPC_LABETH_BLACK,//422//c109//?�베??
 
-	CMF_NPC_ELKEIN_RED,//423//c110//엘케인
-	CMF_NPC_ELKEIN_BLUE,//424//c110//엘케인
-	CMF_NPC_ELKEIN_PURPLE,//425//c110//엘케인
-	CMF_NPC_ELKEIN_GREEN,//426//c110//엘케인
-	CMF_NPC_ELKEIN_GOLD,//427//c110//엘케인
-	CMF_NPC_ELKEIN_BLACK,//428//c110//엘케인
+	CMF_NPC_ELKEIN_RED,//423//c110//?��???
+	CMF_NPC_ELKEIN_BLUE,//424//c110//?��???
+	CMF_NPC_ELKEIN_PURPLE,//425//c110//?��???
+	CMF_NPC_ELKEIN_GREEN,//426//c110//?��???
+	CMF_NPC_ELKEIN_GOLD,//427//c110//?��???
+	CMF_NPC_ELKEIN_BLACK,//428//c110//?��???
 
 	TOTALCMF,
 
@@ -493,7 +493,7 @@ typedef enum _cmfDef {
 	BATTLEMODE_HELPER = CMF_NPC_LUISE,
 	RAIDMODE_HELPER = CMF_NPC_CAPTAIN,
 
-	//달팽이
+	//?�팽??
 	SNAIL_NEUTRAL = 0,
 	SNAIL_MOVE,
 	SNAIL_MOVE_FAST,
@@ -502,9 +502,9 @@ typedef enum _cmfDef {
 	SNAIL_HIDE,
 	SNAIL_COME,
 
-	SKILL_SNAIL_BULLET = 0,//달팽이 기본공격
+	SKILL_SNAIL_BULLET = 0,//?�팽??기본공격
 
-	//나무
+	//?�무
 	TREE_STOP = 0,
 	TREE_MOVE,
 	TREE_NEUTRAL,
@@ -681,7 +681,7 @@ typedef enum _cmfDef {
 	MACHINE_LASER_SIDE,
 	MACHINE_LASER_CENTER,
 
-	//라이오너
+	//?�이?�너
 	THUNDERBOSS_NEUTRAL = 0,
 	THUNDERBOSS_MOVE,
 	THUNDERBOSS_ATTACK,
@@ -719,7 +719,7 @@ typedef enum _cmfDef {
 	SHIP_CLOSEWEAK,
 	SHIP_MOVEOUT,
 	SHIP_MOVEIN,
-	SHIP_WEAK,				// 보스가 에너지가 달기 시작하는 부분
+	SHIP_WEAK,				// 보스가 ?�너지가 ?�기 ?�작?�는 부�?
 	SHIP_WEAKMOVE,
 	SHIP_LASER,
 	SHIP_GUIDESHOT,
@@ -790,7 +790,7 @@ typedef enum _cmfDef {
 	ANGEL_MOVE_CENTER,
 	ANGEL_SHOT,
 	ANGEL_DASHREADY,
-	ANGEL_DASH,			//DASH부분은 항상 젤 밑에잇어야 그림자를 그리지 않음
+	ANGEL_DASH,			//DASH부분�? ??�� ??밑에?�어??그림?��? 그리지 ?�음
 	ANGEL_DASHUP,
 	ANGEL_DASHDOWN,
 	ANGEL_MOVE,
@@ -805,7 +805,7 @@ typedef enum _cmfDef {
 	DARKGIANT_NEUTRAL = 0,
 	DARKGIANT_MOVE,
 
-	//ENEMY_DRAGON1	//탐욕의 살육자
+	//ENEMY_DRAGON1	//?�욕???�육??
 	DRAGON1_NEUTRAL = 0,
 	DRAGON1_MOVE,
 	DRAGON1_MOVE_FAST,
@@ -814,7 +814,7 @@ typedef enum _cmfDef {
 	DRAGON1_LANDINGREADY,
 	DRAGON1_LANDING,
 
-	//ENEMY_DRAGON2	//드라곤 좀비
+	//ENEMY_DRAGON2	//?�라�?좀�?
 	DRAGON2_NEUTRAL = 0,
 	DRAGON2_ATTACK,
 
@@ -928,16 +928,16 @@ typedef enum _cmfDef {
 	CASTLEBOSS4_HAND_GRAB,
 	CASTLEBOSS4_HAND_MOMMOVE,
 
-	//NPC_CAPTAIN//c52//잭스패너
+	//NPC_CAPTAIN//c52//??��?�너
 	CAPTAIN_NEUTRAL = 0,
 
-	//NPC_CREW//c53//선원
+	//NPC_CREW//c53//?�원
 
 	//NPC_GRANDFA//c54//촌장
 
-	//NPC_UNCLE//c55//아저씨
+	//NPC_UNCLE//c55//?��???
 
-	//NPC_AUNT,//c56//아줌마
+	//NPC_AUNT,//c56//?�줌�?
 
 	//NPC_MAN
 	MAN_NEUTRAL = 0,
@@ -945,15 +945,15 @@ typedef enum _cmfDef {
 	MAN_TRUMBLE,
 	MAN_DIE,
 
-	//NPC_WOMAN//c58//처녀
+	//NPC_WOMAN//c58//처�?
 
-	//NPC_BOY//c59//꼬마남
+	//NPC_BOY//c59//꼬마??
 
-	//NPC_GIRL//c60//꼬마녀
+	//NPC_GIRL//c60//꼬마?�
 
-	//NPC_ALMA//c61//알마
+	//NPC_ALMA//c61//?�마
 
-	//NPC_ITEM//c62//터번
+	//NPC_ITEM//c62//?�번
 	ITEM_NEUTRAL = 0,
 
 	//NPC_FATMAN//c63
@@ -962,7 +962,7 @@ typedef enum _cmfDef {
 	//NPC_BUNNYGIRL//c64
 	BUNNYGIRL_NEUTRAL = 0,
 
-	//NPC_KNIGHT//c65//플레타
+	//NPC_KNIGHT//c65//?�레?�
 
 	//NPC_DOG//c66
 	DOG_NEUTRAL = 0,
@@ -976,13 +976,13 @@ typedef enum _cmfDef {
 	//NPC_MAP//c69
 	MAP_NEUTRAL = 0,
 
-	//NPC_USERQUEST//c70//스튜어디스
+	//NPC_USERQUEST//c70//?�튜?�디??
 	USERQUEST_NEUTRAL = 0,
 
-	//NPC_TRAVEL//c71//이국의여행자
+	//NPC_TRAVEL//c71//?�국?�여?�자
 	TRAVEL_NEUTRAL = 0,
 
-	//NPC_GRANDMA//c72//할머니
+	//NPC_GRANDMA//c72//?�머??
 	GRANDMA_NEUTRAL = 0,
 
 	//NPC_FISHING
@@ -1033,7 +1033,7 @@ typedef enum _cmfDef {
 
 	//NPC_SHIP//c80
 
-	//NPC_SEASOLDIER//c81//아틀란병사
+	//NPC_SEASOLDIER//c81//?��??�병사
 	SEASOLDIER_NEUTRAL = 0,
 
 	//NPC_FRAUD//c82
@@ -1048,38 +1048,38 @@ typedef enum _cmfDef {
 	LUISE_ATTACK,
 	LUISE_KNEE,
 
-	//NPC_SEAUNCLE//c85//아틀란아저씨
+	//NPC_SEAUNCLE//c85//?��??�?��???
 	SEAUNCLE_NEUTRAL = 0,
 
-	//NPC_SEABOY//c86//아틀란소년
+	//NPC_SEABOY//c86//?��??�?�년
 	SEABOY_NEUTRAL = 0,
 
-	//NPC_DONALD//c87//이소룡
+	//NPC_DONALD//c87//?�소�?
 	DONALD_NEUTRAL = 0,
 
-	//NPC_SCHOLAR//c88//학자
+	//NPC_SCHOLAR//c88//?�자
 	SCHOLAR_NEUTRAL = 0,
 
-	//NPC_CHEF//c89//요리대가
+	//NPC_CHEF//c89//?�리?�가
 	CHEF_NEUTRAL = 0,
 
-	//NPC_BISTRO//c90//비스트로
+	//NPC_BISTRO//c90//비스?�로
 	BISTRO_NEUTRAL = 0,
 
-	//NPC_MAID//c91//시녀
+	//NPC_MAID//c91//?��?
 	MAID_NEUTRAL = 0,
 
 	//NPC_ADELKNIGHT//c92//기사
 	ADELKNIGHT_NEUTRAL = 0,
 
-	//NPC_SEBASTIAN//c93//세바스찬
+	//NPC_SEBASTIAN//c93//?�바?�찬
 	SEBASTIAN_NEUTRAL = 0,
 
-	//NPC_NOBLEMAN//c94//귀족아저씨
-	NOBLEMAN_NEUTRAL = 0,//그냥 있을 때                                                            
+	//NPC_NOBLEMAN//c94//귀족아?�??
+	NOBLEMAN_NEUTRAL = 0,//그냥 ?�을 ??                                                           
 	NOBLEMAN_CAST,
 
-	//NPC_DELPIOS//c95//델피오스
+	//NPC_DELPIOS//c95//?�피?�스
 	DELPIOS_NEUTRAL = 0,
 	DELPIOS_MOVE,
 	DELPIOS_ATTACK,
@@ -1092,35 +1092,35 @@ typedef enum _cmfDef {
 	LORA_NEUTRAL,
 	LORA_MOVE,
 
-	//NPC_WITCH//c97//마녀
+	//NPC_WITCH//c97//마�?
 
-	//NPC_ELFGRANDFA//c98//엘프할아버지
+	//NPC_ELFGRANDFA//c98//?�프?�아버�?
 
-	//NPC_ELFUNCLE//c99//엘프아저씨
+	//NPC_ELFUNCLE//c99//?�프?��???
 
-	//NPC_ELFAUNT//c100//엘프아줌마
+	//NPC_ELFAUNT//c100//?�프?�줌�?
 
-	//NPC_ELFMAN//c101//엘프청년
+	//NPC_ELFMAN//c101//?�프�?��
 
-	//NPC_ELFWOMAN//c102//엘프처녀
+	//NPC_ELFWOMAN//c102//?�프처�?
 
-	//NPC_ELFBOY//c103//엘프꼬마남
+	//NPC_ELFBOY//c103//?�프꼬마??
 
-	//NPC_ELFGIRL//c104//엘프꼬마녀
+	//NPC_ELFGIRL//c104//?�프꼬마?�
 
-	//NPC_ELFDARK//c105//엘프다크
+	//NPC_ELFDARK//c105//?�프?�크
 
-	//NPC_ELFMAGIC//c106//엘프마법사
+	//NPC_ELFMAGIC//c106//?�프마법??
 
-	//NPC_ELFDANCER//c107//엘프무희
+	//NPC_ELFDANCER//c107//?�프무희
 
-	//NPC_OWL//c108//부엉이
+	//NPC_OWL//c108//부?�이
 
-	//NPC_LABETH//c109//라베스
+	//NPC_LABETH//c109//?�베??
 
-	//NPC_ELKEIN//c110//엘케인
+	//NPC_ELKEIN//c110//?��???
 
-	//NPC_ELEIN//c111//엘레인
+	//NPC_ELEIN//c111//?�레??
 	ELEIN_NEUTRAL = 0,
 	ELEIN_SWORD,
 	ELEIN_DOWN,
@@ -1153,21 +1153,21 @@ typedef enum _cmfDef {
 	EVAN_ONLY_HOLYSWORD,
 	EVAN_SHAKEHANDS,
 
-	//NPC_BEAD//c113//테이블
+	//NPC_BEAD//c113//?�이�?
 
-	//NPC_FOUNTAIN//c114//샘물
+	//NPC_FOUNTAIN//c114//?�물
 
-	//NPC_NEZAR//c115//네자르
+	//NPC_NEZAR//c115//?�자�?
 
-	//NPC_GALLAND//c116//갈란드
+	//NPC_GALLAND//c116//갈�???
 
-	//NPC_DURAK//c117//듀라크
+	//NPC_DURAK//c117//?�?�크
 
-	//NPC_KING//c118//에드몬드
+	//NPC_KING//c118//?�드몬드
 
-	//NPC_WOMANGHOST//c119//여자유령
+	//NPC_WOMANGHOST//c119//?�자?�령
 
-	//NPC_MANGHOST//c120//남자유령
+	//NPC_MANGHOST//c120//?�자?�령
 
 	//NPC_AUSTIN
 	AUSTIN_NEUTRAL = 0,
@@ -1196,15 +1196,15 @@ typedef enum _cmfDef {
 	SOUL_NEUTRAL2,
 	SOUL_NEUTRAL3,
 
-	//NPC들의 행동패턴
-	NPCMOVE_STAND = 0,	//제자리에 서있기
-	NPCMOVE_WALKSLOW,	//천천히 걷다가 섰다를 반복
-	NPCMOVE_WALKFAST,	//계속 분주하게 좌우로 걸어다님
-	NPCMOVE_GOTOPLAYER,	//플레이어 ?아다니기
-	NPCMOVE_2FRAME,	//지정된 모션으로부터 2프레임을 반복(우는 유치원생)
-	NPCMOVE_DOG,	//개들의 움직임
-	NPCMOVE_BLOCK,	//블록하는 캐릭터
-	NPCMOVE_CAST,//시전하는 경우
+	//NPC?�의 ?�동?�턴
+	NPCMOVE_STAND = 0,	//?�자리에 ?�있�?
+	NPCMOVE_WALKSLOW,	//천천??걷다가 ?�다�?반복
+	NPCMOVE_WALKFAST,	//계속 분주?�게 좌우�?걸어?�님
+	NPCMOVE_GOTOPLAYER,	//?�레?�어 ??�다?�기
+	NPCMOVE_2FRAME,	//지?�된 모션?�로부??2?�레?�을 반복(?�는 ?�치?�생)
+	NPCMOVE_DOG,	//개들???�직임
+	NPCMOVE_BLOCK,	//블록?�는 캐릭??
+	NPCMOVE_CAST,//?�전?�는 경우
 
 } CMFDEF;
 

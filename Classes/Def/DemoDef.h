@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_DEMO_H_
 #define _DEF_DEMO_H_
@@ -169,6 +169,7 @@ typedef enum _demoDef {
 	EFFECT_EQUIPONLYSWORD,
 	EFFECT_WAVE,
 	EFFECT_TUTORIAL_REWARD,	//demoItem[] 인덱스를 받아 GetItem()으로 확정 보상을 지급(랜덤 상자 연출 없음)
+	EFFECT_TUTORIAL_INITBAR,	//인터랙티브 전투 튜토리얼용 하트/베팅/플레이/룰렛 바를 컷씬 도중에 초기화
 
 	EFFECT_CHANGE_ETC = 170,		//etc를 바꿔줌
 	EFFECT_ERASEICON = 190,
@@ -211,7 +212,7 @@ typedef enum _demoDef {
 	//1층
 	//인터랙티브 전투 튜토리얼(설명 컷씬 <-> 실전투를 번갈아 진행한다. AfterDemo()에서 GotoPlay()로 빠지는 지점과
 	//실전투 중 SetDemo()로 되돌아오는 지점은 Func_Demo.cpp를 참고)
-	DEMO_TUTORIAL_SEBASTIAN,	//세바스찬의 등장 + 대사(TEXT_OPENING_5_0) -> 대사 끝나면 바로 실전투로 진입
+	DEMO_TUTORIAL_SEBASTIAN,	//세바스찬의 등장 + 대사(TEXT_OPENING_5_0) -> 몬스터 스폰 -> 주인공 놀람 리액션 -> 바 활성화 -> 공격 안내 대사(TEXT_OPENING_5_1) -> 실전투로 진입
 	DEMO_TUTORIAL_FIRSTKILL,	//2: 첫 몬스터 처치 보상 설명(1등급 상자 + 하트 + 지정 동료)
 	DEMO_TUTORIAL_CREWMENU,	//3: 동료 메뉴에서 장착해보기 안내 -> 실제 메뉴 조작으로 핸드오프
 	DEMO_TUTORIAL_SECONDKILL,	//4: 재공격 보상 설명(하트 + 동료 + 장비)
@@ -233,23 +234,30 @@ typedef enum _demoDef {
 	DEMO_OPENING_END_FRAME0 = DEMO_OPENING_WARNNING_FRAME0 + 3,
 
 	DEMO_TUTORIAL_INIT_FRAME0 = DEMO_OPENING_END_FRAME0 + 3,
-	//DEMO_TUTORIAL_SEBASTIAN	1행: 세바스찬 대사(TEXT_OPENING_5_0)만. 이 한 줄이 끝나는 즉시 AfterDemo()가
-	//호출되어 실전투 복귀(스폰/HUD)로 넘어간다 - 추가 대사를 기다리지 않는다.
-	DEMO_TUTORIAL_SEBASTIAN_FRAME0 = DEMO_TUTORIAL_INIT_FRAME0 + 53,
+	//DEMO_TUTORIAL_INIT은 13행(FRAME0~FRAME12, 방 세팅 + 세바스찬 TALK 1줄(=TEXT_OPENING_5_0) +
+	//전체 UI 바 초기화)으로 끝난다. 몬스터 스폰용 EFFECT_WAVE는 DEMO_TUTORIAL_SEBASTIAN으로 옮겨서
+	//여기엔 없다(여기 있으면 몬스터가 너무 일찍 튀어나옴). 뒤에 붙어있던 옛 DEMO_OPENING_BEGGAR
+	//잔재(TALK 2줄 더 + 아이콘들 + 재사용된 TEXT_OPENING_3_0 나레이션 + 영혼변신 연출 + 상자에서 검
+	//획득)는 인터랙티브 튜토리얼과 무관한 옛 오프닝 콘텐츠라 제거.
+	//DEMO_TUTORIAL_SEBASTIAN	11행: 크루(세바스찬) 재활성화(SetDemo()가 블록 진입 시 꺼버리는 걸 복구) ->
+	//놀람 아이콘 -> 모션리셋 -> 몬스터 스폰(EFFECT_WAVE, 정식 wave[] 데이터) -> 주인공 우측 주시 ->
+	//줌/포커스(몬스터->플레이어) -> 놀람 아이콘 제거(바 활성화 대기 겸용) -> TALK(movie.text가 이어져서
+	//TEXT_OPENING_5_1이 나옴). 이 11행이 다 끝나야 AfterDemo()가 호출되어 실전투 복귀(GotoPlay)로 넘어간다.
+	DEMO_TUTORIAL_SEBASTIAN_FRAME0 = DEMO_TUTORIAL_INIT_FRAME0 + 13,
 	//DEMO_TUTORIAL_FIRSTKILL	4행: 보상지급x3 + 나레이션
-	DEMO_TUTORIAL_FIRSTKILL_FRAME0 = DEMO_TUTORIAL_SEBASTIAN_FRAME0 + 1,
+	DEMO_TUTORIAL_FIRSTKILL_FRAME0 = DEMO_TUTORIAL_SEBASTIAN_FRAME0 + 11,
 	//DEMO_TUTORIAL_CREWMENU	1행: 나레이션
-	DEMO_TUTORIAL_CREWMENU_FRAME0 = DEMO_TUTORIAL_FIRSTKILL_FRAME0 + 4,
+	DEMO_TUTORIAL_CREWMENU_FRAME0 = DEMO_TUTORIAL_FIRSTKILL_FRAME0 + 1,
 	//DEMO_TUTORIAL_SECONDKILL	4행: 보상지급x3 + 나레이션
 	DEMO_TUTORIAL_SECONDKILL_FRAME0 = DEMO_TUTORIAL_CREWMENU_FRAME0 + 1,
 	//DEMO_TUTORIAL_EQUIP	1행: 나레이션(스폰 없음, 몬스터가 필요없는 구간)
-	DEMO_TUTORIAL_EQUIP_FRAME0 = DEMO_TUTORIAL_SECONDKILL_FRAME0 + 4,
+	DEMO_TUTORIAL_EQUIP_FRAME0 = DEMO_TUTORIAL_SECONDKILL_FRAME0 + 1,
 	//DEMO_TUTORIAL_HEARTBET	1행: 나레이션
 	DEMO_TUTORIAL_HEARTBET_FRAME0 = DEMO_TUTORIAL_EQUIP_FRAME0 + 1,
 	//DEMO_TUTORIAL_ROULETTE	5행: 보상지급x4 + 나레이션
 	DEMO_TUTORIAL_ROULETTE_FRAME0 = DEMO_TUTORIAL_HEARTBET_FRAME0 + 1,
 	//DEMO_TUTORIAL_ROULETTE_LIVE	1행: 나레이션
-	DEMO_TUTORIAL_ROULETTE_LIVE_FRAME0 = DEMO_TUTORIAL_ROULETTE_FRAME0 + 5,
+	DEMO_TUTORIAL_ROULETTE_LIVE_FRAME0 = DEMO_TUTORIAL_ROULETTE_FRAME0 + 1,
 	//DEMO_TUTORIAL_BOSS	1행: 나레이션
 	DEMO_TUTORIAL_BOSS_FRAME0 = DEMO_TUTORIAL_ROULETTE_LIVE_FRAME0 + 1,
 

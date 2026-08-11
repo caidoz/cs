@@ -21,9 +21,9 @@ const int openingTextId[] =
 	TEXT_OPENING_4_0
 };
 // DrawÇÚµé
-void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawWindow3(int x, int y, int w, int h, int index, float zoom);
+void DrawWindow4(int x, int y, int w, int h, int index, float zoom);
+void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);
 
 void VersionDraw(void);
 void NoSpaceDraw(void);
@@ -31,10 +31,10 @@ void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
 void OpeningDraw(void);
-void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void GNBDraw(int, int, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void ActiveHelpDraw(cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void LogDraw(LOG *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
+void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
+void GNBDraw(int, int);
+void ActiveHelpDraw();
+void LogDraw(LOG *);
 int GetEventMenuPosX(int eventIdx, int eventStatus);
 int GetEventMenuPosY(int eventIdx, int eventStatus);
 void EventScheduler(void);
@@ -45,15 +45,15 @@ void sortArray(int arr[], int index[], int n);
 void MainMenuOut(void);
 void MainMenuIn(void);
 void ArrangeEventMenu(void);
-void EventMenuDraw(GAMEEVENT *, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void GameOverDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void EventMenuDraw(GAMEEVENT *);
+void GoldQuestMenuDraw(int x, int y, float zoom);
+void GameOverDraw(int x, int y, float zoom);
 void ClosePopUp(void);
 void SetPopUp(int type, int x, int y, int w, int h,
 	int itemType, int itemDetail, int itemGrade,
 	int rewardType1, int rewardDetail1, int rewardGrade1, long long rewardStartCnt1, long long rewardEndCnt1,
 	int rewardType2, int rewardDetail2, int rewardGrade2, long long rewardStartCnt2, long long rewardEndCnt2,
 	int rewardType3, int rewardDetail3, int rewardGrade3, long long rewardStartCnt3, long long rewardEndCnt3);
-void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
-void GameMenuDraw(int, int, float zoom, cocos2d::RenderTexture*, cocos2d::Layer*, bool);
-void BossHpBarDraw(long long count, long long max, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering);
+void DrawPopUp(int idx);
+void GameMenuDraw(int, int, float zoom);
+void BossHpBarDraw(long long count, long long max, int x, int y, float zoom);

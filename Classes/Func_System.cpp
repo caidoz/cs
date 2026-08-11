@@ -266,6 +266,9 @@ void InitGame(void)
 	memset(&movie.robinMotion, 0, sizeof(movie.robinMotion));
 
 	isDemo = false;
+	tutorialWaitingEnemyLand = false;
+	tutorialAttackPending = false;
+	tutorialPendingDemo = -1;
 	talkShakeFrame = 0;
 
 	robin.maxInven = option.maxInven;
@@ -1948,6 +1951,19 @@ int InsertItemTest(int type, int detail, int cnt)
 	}
 }
 
+int GetSlotCrewCnt(void)
+{
+	int i, cnt = 0;
+
+	for (i = 0; i < MAXCREW; i++) {
+		if (robin.slotCrew[i] == -1)
+			break;
+		cnt++;
+	}
+
+	return cnt;
+}
+
 void NewGame(void)
 {
 	int i, j, k;
@@ -2177,12 +2193,12 @@ void NewGame(void)
 	robin.currentDay = 1;           // Day 1부터 시작
 	robin.lifeRemaining = 3;        // 3일의 수명
 
-	//crewCnt = MAXCREW;
-
-	for (i = 0; i < crewCnt; i++)
+	for (i = 0; i < MAXCREW; i++)
 		robin.slotCrew[i] = -1;
-	
+
 	robin.slotCrew[0] = NPC_SEBASTIAN;
+
+	crewCnt = GetSlotCrewCnt();
 
 	//robin.slotCrew[1] = NPC_UNCLE;
 	//robin.slotCrew[2] = NPC_AUNT;
@@ -2402,7 +2418,7 @@ void GotoTitle(void)
 #endif
 }
 
-void GotoPlay(void)
+void GotoPlay(bool forceReload)
 {
 	int i, j, k = 0;
 	int doorY = 10 * TSIZE;
@@ -2410,7 +2426,7 @@ void GotoPlay(void)
 	int prevKeyHandle = keyHandle;
 	OBJECT* pObj;
 
-	//InitMenu(); 
+	//InitMenu();
 	robin.stage = 0;
 
 	//memset(&ao[NPC], 0, sizeof(OBJECT));
@@ -2420,7 +2436,10 @@ void GotoPlay(void)
 	keyHandle = MK_PLAY;
 	frame = 0;
 
-	loadedMap = -1;
+	//forceReload=false인 경우(인터랙티브 전투 튜토리얼의 GotoPlay(false))는 loadedMap을 그대로 둬서,
+	//아래 robinmap이 이미 로드된 맵과 같으면 SetRoom()이 ao[] 전체 memset을 건너뛰게 한다.
+	if (forceReload)
+		loadedMap = -1;
 
 	oldMap = robinmap;
 	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
@@ -2544,8 +2563,10 @@ void OutOfGacha(void)
 	keyHandle = before_KeyHandle_Gacha;
 	curMenu = before_CurMenu_Gacha;
 
+	//가챠는 robinmap을 바꾸지 않는다(GotoGacha()가 playmap = robinmap으로 백업만 해둔다).
+	//그래서 여기서 ReadMap()을 다시 부르면 똑같은 맵을 재로딩하면서 한 프레임 깜빡일 뿐이다.
+	//배경 더블버퍼는 가챠 화면 기준으로 만들어져 있으므로 DoubleBuffering()만 다시 해준다.
 	robinmap = playmap;
-	ReadMap(robinmap);
 	DoubleBuffering(drawHandle);
 
 	PlayMusic(M_SELECT);
@@ -2944,23 +2965,21 @@ static void DrawCrewGridBackground(void)
 				// HERO
 				DrawPlayer(&ao[type], (blFrame / 2) % 4,
 					x, y, RIGHT, enemyZoom[type],
-					false, false, true,
-					gScreenBuffer, gScreenLayer, false);
+					false, false, true);
 			}
 			else {
 				// CREW
 				DrawCmfDetailShadow(
 					cmf, crewPos[type * 5],
 					x, y, RIGHT,
-					BG_ZOOM * enemyZoom[type],
-					gScreenBuffer, gScreenLayer, false);
+					BG_ZOOM * enemyZoom[type]);
 			}
 
 			// 미보유 표시
 			if (!owned) {
 				for (int py = -8 * _2X; py <= 8 * _2X; py += 4 * _2X)
 					MemRect(x - 10 * _2X, y + py, 20 * _2X, 1 * _2X,
-						COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+						COLOR_BLACK);
 			}
 		}
 	}
@@ -2985,7 +3004,7 @@ static void DrawFilmOverlay(void)
 {
 	for (int y = 0; y < DY; y += 2 * _2X)
 		MemRect(0, y, DX, 1 * _2X,
-			COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+			COLOR_BLACK);
 }
 
 static double Rand01()
@@ -3095,8 +3114,7 @@ void BattleLoadingDraw(void)
 	int runY = 16 * _2X;
 	int leftX = 24 * _2X;
 
-	MemRect(0, DY, DX, DY, COLOR_BLACK,
-		gScreenBuffer, gScreenLayer, false);
+	MemRect(0, DY, DX, DY, COLOR_BLACK);
 
 	// 1) 배경 격자
 	DrawCrewGridBackground();
@@ -3126,9 +3144,7 @@ void BattleLoadingDraw(void)
 		DrawCmfDetailShadow(
 			summonCmf, crewPos[summonType * 5],
 			summonX, summonY,
-			RIGHT, summonScale * typeZoom,
-			gScreenBuffer, gScreenLayer, false
-		);
+			RIGHT, summonScale * typeZoom);
 
 		if (blState == BL_REVEAL) {
 			switch (summonCmf) {
@@ -3136,13 +3152,13 @@ void BattleLoadingDraw(void)
 			case DIANA:
 			case MAXX:
 				//이름과 레벨
-				DrawLv(ao[summonCmf].lv, summonX, summonY - (float)8 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f, CENTER, gScreenBuffer, gScreenLayer, false);
-				CenterText(ao[summonCmf].name, summonX, summonY - (float)16 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
+				DrawLv(ao[summonCmf].lv, summonX, summonY - (float)8 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f, CENTER);
+				CenterText(ao[summonCmf].name, summonX, summonY - (float)16 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f);
 				break;
 			default:
 				//이름과 별
-				DrawStar(ICON_STAR, summonX, summonY - (float)12 * _2X * summonScale * typeZoom * 0.5f, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, CENTER, true, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
-				CenterText(ao[CREW + crewSummonIdx].name, summonX, summonY - (float)16 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f, gScreenBuffer, gScreenLayer, false);
+				DrawStar(ICON_STAR, summonX, summonY - (float)12 * _2X * summonScale * typeZoom * 0.5f, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, enemyData[crewData[index * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1, CENTER, true, summonScale * typeZoom * 0.5f);
+				CenterText(ao[CREW + crewSummonIdx].name, summonX, summonY - (float)16 * _2X * summonScale * typeZoom, summonScale * typeZoom * 0.5f);
 				break;
 			}
 		}
@@ -3187,8 +3203,7 @@ void BattleLoadingDraw(void)
 			DrawPlayer(&ao[i], (blFrame / 2) % 4,
 				x,
 				runY, RIGHT, enemyZoom[i],
-				false, false, true,
-				gScreenBuffer, gScreenLayer, false);
+				false, false, true);
 		}
 		else {
 			// 크루
@@ -3200,18 +3215,16 @@ void BattleLoadingDraw(void)
 				cmf,
 				crewPos[key * 5] + (blFrame / 2) % crewPos[key * 5 + 1],
 				x, runY,
-				RIGHT, enemyIconZoom[key],
-				gScreenBuffer, gScreenLayer, false
-			);
+				RIGHT, enemyIconZoom[key]);
 		}
 	}
 
 	// 5) 로딩바
 	int barW = Min(DX, blFrame * 2);
 	MemRect(0, 8 * _2X, barW, 8 * _2X,
-		COLOR_ORANGE, gScreenBuffer, gScreenLayer, false);
+		COLOR_ORANGE);
 
-	BarDraw(&bar[BAR_COMBATPOWERALL], bar[BAR_COMBATPOWERALL].zoom, gScreenBuffer, gScreenLayer, false);
+	BarDraw(&bar[BAR_COMBATPOWERALL], bar[BAR_COMBATPOWERALL].zoom);
 }
 
 // 로딩용: crewId -> type (crewDataKey 기준)
@@ -4111,10 +4124,28 @@ void WhoIsNextTurn(void)
 			//ao[turn].attack = ATTACK_NORMAL;
 			//ao[turn].turnPosition = GOING;
 		}
-		else {
+		//크루 차례일 때만 크루 데이터로 스킬/모션을 세팅한다.
+		//예전에는 turn >= TOTALCHAR이면 무조건 이 분기를 타서 적 차례에도 실행됐는데,
+		//GetCrewIdxFromType()는 크루가 아니면 -1을 돌려주므로 crewData[-CREWDATASIZE + ...]라는
+		//음수 인덱스를 읽고(범위 밖 접근) 그 값으로 적의 currentSkill/etc를 덮어써버렸다.
+		else if (turn >= CREW && turn < PLAYERALL) {
 			crewIdx = GetCrewIdxFromType(ao[turn].type);
-			ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + GetSameRouletteCnt(turn - CREW) - 1];
-			ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * GetSameRouletteCnt(turn - CREW) - 1];
+
+			if (crewIdx >= 0) {
+				//GetSameRouletteCnt()는 gRouletteResultAoOffset[]를 세는 함수라 룰렛을 실제로 돌린
+				//경우(ATTACKSEQUENCE_SLOT)에만 유효하고, 룰렛을 안 도는 ACTION 경로(크루 0~5명)에서는
+				//항상 0을 반환한다. 그대로 쓰면 currentSkill이 crewData의 CREWDATA_STR 칸을 읽는다.
+				int sameCnt = (attackSequence == ATTACKSEQUENCE_SLOT) ? GetSameRouletteCnt(turn - CREW) : 1;
+
+				if (sameCnt < 1)
+					sameCnt = 1;
+
+				ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
+
+				//인덱싱 규칙은 RouletteAttackStart()의 주석 참고. 스킬 블록 = sameCnt - 1,
+				//턴이 막 시작된 시점이므로 turnPosition은 HERE.
+				ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+			}
 		}
 		ao[turn].attackFrame = 0;
 		ao[turn].frame = 0;
@@ -4416,6 +4447,21 @@ void GotoGacha()
 		CCLOG(
 			"GotoGacha FAILED: GenerateCastleBoxReward detail=%d",
 			gachaBoxDetail);
+
+		//여기까지 오면 drawHandle/keyHandle은 이미 가챠 화면으로 바뀐 뒤다(위쪽 참고).
+		//그대로 return하면 보상 카드가 0장인 가챠 화면에 갇혀서 빠져나올 수 없다.
+		//이전 화면 상태로 되돌려놓고 나간다.
+		drawHandle =
+			before_DrawHandle_Gacha;
+
+		keyHandle =
+			before_KeyHandle_Gacha;
+
+		curMenu =
+			before_CurMenu_Gacha;
+
+		gachaPrepared =
+			false;
 
 		return;
 	}
@@ -4951,6 +4997,12 @@ void LoadGame(void)
 	//for (i = 0; i < TOTALINVENTORY; i++)
 	//	memcpy(&robin.inven[i], saveMem + i * sizeof(ITEM), sizeof(ITEM));
 	memcpy((char*)&robin, saveMem, sizeof(ROBINDATA));
+
+	//crewCnt는 ROBINDATA에 들어가지 않는 순수 전역이라 세이브에서 복원되지 않는다.
+	//NewGame()에서만 세팅하면, 세이브가 생긴 뒤(튜토리얼 중에도 SaveGame()이 수시로 호출된다)
+	//두 번째 실행부터는 전역 초기값 0인 채로 남아서 SetBattleCrew()가 크루를 한 명도 만들지 않고
+	//RouletteAttackStart()도 "크루 없음" 분기를 타 세바스찬 턴이 통째로 사라진다.
+	crewCnt = GetSlotCrewCnt();
 
 	InitMenu();
 

@@ -18,7 +18,7 @@ void NewCardKey(void);
 void HouseKey(void);
 
 // KeyRelease
-void ReleaseCore(void);
+void ReleaseCore(bool dispatchKey = true);
 void PlayRelease(OBJECT *);
 void ReleasePlayer(OBJECT *);
 

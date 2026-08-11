@@ -103,35 +103,35 @@ int UCS2toUTF8(unsigned short* ucs2, int count, char* dst)
 	return len;
 }
 
-void TouchArrow2(int flag, int x, int y, int pos, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void TouchArrow2(int flag, int x, int y, int pos)
 {
 	//flag// 1==상하좌우//2==좌우//3=v=상하//
 	if (touch && !touchDrawButton) {
 		SetAlpha(32 - Abs(frame * 2 % 32 - 16));
 		switch (flag) {
 		case 1:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) + pos, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) - pos + 16 * _2X, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) + pos, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) - pos + 16 * _2X, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		case 2:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X - 8 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X - 8 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		case 3:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y - pos, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + pos - 16 * _2X, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y - pos, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + pos - 16 * _2X, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		case 4:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		case 5:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		case 6:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X + 144 * _2X - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X - 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], cvtDest, cvtLayer, TOUCH_IMG, buffering);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X + 144 * _2X - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
+			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X - 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
 			break;
 		}
 		SetAlpha(32);
@@ -147,7 +147,7 @@ void DrawPlayerCostume(
 	int pantsDetail, int pantsGrade,
 	int bootsDetail, int bootsGrade,
 
-	int x, int y, int dirX, int attackMotion, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+	int x, int y, int dirX, int attackMotion, float zoom)
 {
 	ao[SOLDIER].x = x;
 	ao[SOLDIER].y = y;
@@ -226,11 +226,11 @@ void DrawPlayerCostume(
 	}
 	ao[SOLDIER].equip[EQUIP_BOOTS].grade = bootsGrade;
 
-	DrawPlayer(&ao[SOLDIER], (attackMotion == 2 ? motionData[64 + (ao[SOLDIER].frame / 2 % 32)] : (attackMotion == true ? motionData[ao[SOLDIER].frame / 2 % 64] : 0)), x, y, dirX, zoom, false, false, true, cvtDest, cvtLayer, buffering);
+	DrawPlayer(&ao[SOLDIER], (attackMotion == 2 ? motionData[64 + (ao[SOLDIER].frame / 2 % 32)] : (attackMotion == true ? motionData[ao[SOLDIER].frame / 2 % 64] : 0)), x, y, dirX, zoom, false, false, true);
 	ao[SOLDIER].frame++;
 }
 
-void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void StatusDraw(int x, int y, float zoom)
 {
 	int motion;
 	int nearEnemy = NearEnemy(&ao[raidPlayer]);
@@ -260,6 +260,7 @@ void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 	case MD_BATTLE:
 		break;
 	case MD_PLAY:
+	case MD_DEMO:
 	//case MD_BATTLE:
 
 		//스테이지 정보
@@ -306,13 +307,13 @@ void StatusDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos
 #endif
 }
 
-void ShopMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void ShopMenuDraw(int x, int y, float zoom)
 {
-	DrawIcon(ICON_EVENT_BOX, x, y, zoom, COLOR_BROWN, false, true, true, cvtDest, cvtLayer, buffering);
+	DrawIcon(ICON_EVENT_BOX, x, y, zoom, COLOR_BROWN, false, true, true);
 
 }
 
-void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 {
 	float width = 0;
 	float textPos = 0.0f;
@@ -324,14 +325,14 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom, cocos2d
 	long long betCnt = housePtr->gold;
 
 
-	DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(RAIDGOLDBARWIDTH)*zoom / 2 - (float)25 * _2X * zoom, y + (float)-0 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_CASTLE, buffering);
-	DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(RAIDGOLDBARWIDTH)*zoom / 2 - (float)25 * _2X * zoom + (float)25 * _2X * zoom, y + (float)-0 * _2X * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_CASTLE, buffering);
-	DrawLabel(x, y - (float)(RAIDGOLDBARHEIGHT - 16 * _2X) * zoom, TEXT_NICKNAME + robin.enemyUserIdx, 0.6f * zoom, cvtDest, cvtLayer, buffering);
+	DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(RAIDGOLDBARWIDTH)*zoom / 2 - (float)25 * _2X * zoom, y + (float)-0 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], MAP_OBJ_IMG + MAPTYPE_CASTLE);
+	DrawImage(25 * _2X, 57 * _2X, 0 * _2X, 130 * _2X, x + (float)(RAIDGOLDBARWIDTH)*zoom / 2 - (float)25 * _2X * zoom + (float)25 * _2X * zoom, y + (float)-0 * _2X * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + MAPTYPE_CASTLE], MAP_OBJ_IMG + MAPTYPE_CASTLE);
+	DrawLabel(x, y - (float)(RAIDGOLDBARHEIGHT - 16 * _2X) * zoom, TEXT_NICKNAME + robin.enemyUserIdx, 0.6f * zoom);
 
 
 	//DrawLabel(x + (float)(RAIDGOLDBARWIDTH)* zoom / 2 - (float)40 * _2X * zoom, y + (float)26 * _2X * zoom, TEXT_ALPHA_COINSWORD, zoom, cvtDest, cvtLayer, buffering);
-	DrawFrame(x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom + (float)-1 * _2X * zoom, y - (float)(23 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * 0.85f * zoom, (float)(PROFILEIMG_Y + 2 * _2X) * 0.8f * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom, y - (float)(24 * _2X) * zoom, false, false, false, false, false, zoom * 0.85f, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], cvtDest, cvtLayer, PROFILE_IMG + housePtr->userProfileImgIdx, buffering);
+	DrawFrame(x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom + (float)-1 * _2X * zoom, y - (float)(23 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * 0.85f * zoom, (float)(PROFILEIMG_Y + 2 * _2X) * 0.8f * zoom, FRAME_SHOPBALLOON);
+	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom, y - (float)(24 * _2X) * zoom, false, false, false, false, false, zoom * 0.85f, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], PROFILE_IMG + housePtr->userProfileImgIdx);
 
 	//MemRectRound(x, y, (float)RAIDGOLDBARWIDTH * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X, cvtDest, cvtLayer, buffering);
 	//CenterText(TEXT_NICKNAME + robin.enemyUserIdx, x + (float)RAIDGOLDBARWIDTH / 2 * zoom, y - (float)(2 * _2X) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
@@ -343,16 +344,16 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom, cocos2d
 
 	width = (float)(ITEMICONSIZE + 2 * _2X) * iconZoom + GetBigNumDx(betCnt, false, NUM_FONT_NORMAL, false, true, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, zoom, false);
 
-	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2), y - (float)(10 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
+	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2), y - (float)(10 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true);
 #ifdef NUMTTF
-	DrawBigNumTTF(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false, cvtDest, cvtLayer, buffering);
+	DrawBigNumTTF(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false);
 #else
-	DrawBigNum(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false, cvtDest, cvtLayer, buffering);
+	DrawBigNum(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false);
 #endif
 
 }
 
-void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom)
 {
 	float width = 0;
 	float textPos = 0.0f;
@@ -365,23 +366,23 @@ void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom, cocos2d::Re
 
 	return;
 
-	DrawLabel(x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y, TEXT_NICKNAME + robin.enemyUserIdx, zoom, cvtDest, cvtLayer, buffering);
+	DrawLabel(x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y, TEXT_NICKNAME + robin.enemyUserIdx, zoom);
 
 
-	DrawFrame(x - width / 2, y - (float)(1 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * profileZoom, (float)(PROFILEIMG_Y + 2 * _2X) * profileZoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x - width / 2 + (float)1 * _2X * profileZoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, profileZoom, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], cvtDest, cvtLayer, PROFILE_IMG + housePtr->userProfileImgIdx, buffering);
+	DrawFrame(x - width / 2, y - (float)(1 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * profileZoom, (float)(PROFILEIMG_Y + 2 * _2X) * profileZoom, FRAME_SHOPBALLOON);
+	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x - width / 2 + (float)1 * _2X * profileZoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, profileZoom, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], PROFILE_IMG + housePtr->userProfileImgIdx);
 
 	
-	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y - (float)(32 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true, cvtDest, cvtLayer, buffering);
+	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y - (float)(32 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true);
 #ifdef NUMTTF
-	DrawBigNumTTF(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false, cvtDest, cvtLayer, buffering);
+	DrawBigNumTTF(betCnt, x + (float)(RAIDGOLDBARWIDTH / 2 * zoom - width / 2) + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(10 * _2X + 1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, true, zoom, false);
 #else
-	DrawBigNum(betCnt, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(32 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, width, true, zoom * 1.5f, false, cvtDest, cvtLayer, buffering);
+	DrawBigNum(betCnt, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom, y - (float)(32 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, width, true, zoom * 1.5f, false);
 #endif
 
 }
 
-void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void EffectDrawOnlyBg(int yPos, float zoom)
 {
 	int i, j, y;
 	const unsigned char* bgPtr;
@@ -397,12 +398,12 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	for (i = 0; i < 6; i++, bbPtr += 2) {
 		if (*bbPtr || *(bbPtr + 1)) {
 			if (drawHandle == MD_PLAY) {
-				DrawArray(IMG_BUBBLE_SWAMP0 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 7 * _2X + Random(4)) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 7 * _2X + Random(4) * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-				DrawArray(IMG_BUBBLE_SWAMP1 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 3 * _2X + Random(4)) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 3 * _2X + Random(4) * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawArray(IMG_BUBBLE_SWAMP0 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 7 * _2X + Random(4)) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 7 * _2X + Random(4) * _2X) * zoom, zoom);
+				DrawArray(IMG_BUBBLE_SWAMP1 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 3 * _2X + Random(4)) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 3 * _2X + Random(4) * _2X) * zoom, zoom);
 			}
 			else {
-				DrawArray(IMG_BUBBLE_SWAMP0 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 7 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
-				DrawArray(IMG_BUBBLE_SWAMP1 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 3 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 3 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawArray(IMG_BUBBLE_SWAMP0 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 7 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 7 * _2X) * zoom, zoom);
+				DrawArray(IMG_BUBBLE_SWAMP1 + (mapData[7] == MAPTYPE_SWAMP ? 0 : 2), (float)(xOffset + *bbPtr - rx - 3 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + *(bbPtr + 1) - ry - 3 * _2X) * zoom, zoom);
 			}
 		}
 	}
@@ -414,7 +415,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 			for (j = 0; j < mapRect[i * 5 + 2]; j += 3)
 				//water.bmp
-				DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 12 * _2X, 0 * _2X, 16 * _2X + ((robin.playtime / 2 + j) % 3) * 28 * _2X, (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + (mapRect[i * 5 + 1] << 4) * _2X - ry - 12 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
+				DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 12 * _2X, 0 * _2X, 16 * _2X + ((robin.playtime / 2 + j) % 3) * 28 * _2X, (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + (mapRect[i * 5 + 1] << 4) * _2X - ry - 12 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], WATER_IMG);
 
 			//웨이브
 			for (j = 0; j < realPlayerCnt; j++) {
@@ -422,7 +423,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 				if (pPlayer->x >= (mapRect[i * 5] << 4) * _2X && pPlayer->x <= ((mapRect[i * 5] + mapRect[i * 5 + 2]) << 4) * _2X && pPlayer->y >= (mapRect[i * 5 + 1] << 4) * _2X - 12 * _2X && pPlayer->y <= (mapRect[i * 5 + 1] << 4) * _2X + 12 * _2X) {
 					bgPtrShort = &atlanticeImg[swampSplash[(robin.playtime % 6) * 4] * 4];
-					DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + pPlayer->x + swampSplash[(robin.playtime % 6) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + (mapRect[i * 5 + 1] << 4) * _2X - 6 * _2X + swampSplash[(robin.playtime % 6) * 4 + 3] - ry) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
+					DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + pPlayer->x + swampSplash[(robin.playtime % 6) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + (mapRect[i * 5 + 1] << 4) * _2X - 6 * _2X + swampSplash[(robin.playtime % 6) * 4 + 3] - ry) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], WATER_IMG);
 				}
 			}
 
@@ -437,13 +438,13 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		if (splashType == 1) {
 			//아래쪽
 			bgPtrShort = &atlanticeImg[swampSplash[(splash.frame - 1) * 4] * 4];
-			DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame - 1) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame - 1) * 4 + 3] - ry + 4 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
+			DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame - 1) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame - 1) * 4 + 3] - ry + 4 * _2X) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], WATER_IMG);
 
 			bgPtrShort = &atlanticeImg[swampSplash[(splash.frame + 5) * 4] * 4];
-			DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame + 5) * 4 + 1 + splash.dir] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame + 5) * 4 + 3] - ry) * zoom, false, false, false, false, false, 1.0f, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
+			DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame + 5) * 4 + 1 + splash.dir] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame + 5) * 4 + 3] - ry) * zoom, false, false, false, false, false, 1.0f, sprite[WATER_IMG], WATER_IMG);
 		}
 		else
-			DrawBgEffect(BG4_SIDE2 + 1 - splash.frame, (float)(xOffset + splash.x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y - ry) * zoom, splash.dir, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(BG4_SIDE2 + 1 - splash.frame, (float)(xOffset + splash.x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y - ry) * zoom, splash.dir, zoom);
 	}
 
 	//수중 사각형
@@ -458,11 +459,11 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			bgPtr = &mapRect[i * 5];
 
 			if (*(bgPtr + 4) < 254) {
-				MemRect((float)(xOffset + (*bgPtr << 3) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (*(bgPtr + 1) << 3) * _2X - ry) * zoom, (float)(*(bgPtr + 2) << 3) * _2X * zoom, (float)(*(bgPtr + 3) << 3) * _2X * zoom, 0x392439, cvtDest, cvtLayer, buffering);
+				MemRect((float)(xOffset + (*bgPtr << 3) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (*(bgPtr + 1) << 3) * _2X - ry) * zoom, (float)(*(bgPtr + 2) << 3) * _2X * zoom, (float)(*(bgPtr + 3) << 3) * _2X * zoom, 0x392439);
 
 				if (mapData[7] != MAPTYPE_SWAMP/* && option.effect*/) {
 					for (j = 0; j < *(bgPtr + 3); j += 2)
-						Waterize((float)(xOffset + (*bgPtr << 3) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - ((*(bgPtr + 1) + j) << 3) * _2X - ry) * zoom, (float)(*(bgPtr + 2) << 3) * _2X * zoom, (float)Min(16, (*(bgPtr + 3) - j) << 3) * _2X * zoom, cvtDest, cvtLayer, buffering);
+						Waterize((float)(xOffset + (*bgPtr << 3) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - ((*(bgPtr + 1) + j) << 3) * _2X - ry) * zoom, (float)(*(bgPtr + 2) << 3) * _2X * zoom, (float)Min(16, (*(bgPtr + 3) - j) << 3) * _2X * zoom);
 				}
 			}
 		}
@@ -480,13 +481,13 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			//	SetSectionClip(0, 0, DX, PxlUp(pPlayer) - ry, buffering);
 
 			SetAlpha(16);
-			MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)*(bgPtr + 2) * _2X * zoom, 1000, 0x1C6DCC, cvtDest, cvtLayer, buffering);
+			MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)*(bgPtr + 2) * _2X * zoom, 1000, 0x1C6DCC);
 			SetAlpha(32);
 
-			DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATERFALL0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATERFALL0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom);
 
 			do {
-				DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATER0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATER0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom);
 				y -= sewageFallHeight[(*(bgPtr + 2) == 10 ? 5 : 0) + (robin.playtime % 5)];
 			} while (y > 0);
 #ifdef CLIPPING
@@ -498,10 +499,10 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				//SetSectionClip(0, yPos + PxlUp(pPlayer) - ry, DX, DY - PxlUp(pPlayer) + ry, buffering);
 
 				SetAlpha(8);
-				MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)(*(bgPtr + 2) * _2X) * zoom, 1000, 0x1C6DCC, cvtDest, cvtLayer, buffering);
+				MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)(*(bgPtr + 2) * _2X) * zoom, 1000, 0x1C6DCC);
 
 				do {
-					DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATER0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect((*(bgPtr + 2) == 10 ? 5 : 0) + BG5_WATER0 + (robin.playtime % 5), (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)y * zoom, 0, zoom);
 					y -= (float)(sewageFallHeight[(*(bgPtr + 2) == 10 ? 5 : 0) + (robin.playtime % 5)]) * zoom;
 				} while (y > 0);
 
@@ -509,7 +510,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				SetAlpha(24);
 
 				if (pPlayer->active)
-					DrawBgEffect(2000 + BG_WATERFALL_SPLASH0 + (*(bgPtr + 2) == 10 ? 3 : 0) + robin.playtime % 3, (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)(pPlayer->y - OBJIMGGAP - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(2000 + BG_WATERFALL_SPLASH0 + (*(bgPtr + 2) == 10 ? 3 : 0) + robin.playtime % 3, (float)(xOffset + (*bgPtr << 4) * _2X - rx) * zoom, yPos + (float)(pPlayer->y - OBJIMGGAP - ry) * zoom, 0, zoom);
 #ifdef CLIPPING
 			}
 #endif
@@ -527,13 +528,13 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				y = (rh - 4) * TSIZE - ry - (*(mbObj + 2) + 16 * _2X);
 
 				SetAlpha(24);
-				MemRect((float)(xOffset - rx + *(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)y * zoom, (float)22 * _2X * zoom, 1000, 0x826C44, cvtDest, cvtLayer, buffering);
+				MemRect((float)(xOffset - rx + *(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)y * zoom, (float)22 * _2X * zoom, 1000, 0x826C44);
 				SetAlpha(32);
 
-				DrawBgEffect(BG14_WATERFALL0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG14_WATERFALL0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom);
 
 				do {
-					DrawBgEffect(BG14_WATER0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_WATER0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom);
 					y -= sewageFallHeight[robin.playtime % 5];
 				} while (y > 0);
 
@@ -543,19 +544,19 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 					y = (rh - 4) * TSIZE - ry - (*(mbObj + 2) + 16 * _2X);
 
 					SetAlpha(8);
-					MemRect((float)(xOffset - rx + *(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)y * zoom, (float)22 * _2X * zoom, 1000, 0x826C44, cvtDest, cvtLayer, buffering);
+					MemRect((float)(xOffset - rx + *(mbObj + 1) + 2 * _2X) * zoom, yPos + (float)y * zoom, (float)22 * _2X * zoom, 1000, 0x826C44);
 
-					DrawBgEffect(BG14_WATERFALL0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+					DrawBgEffect(BG14_WATERFALL0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom);
 
 					do {
-						DrawBgEffect(BG14_WATER0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+						DrawBgEffect(BG14_WATER0 + (robin.playtime % 5), (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)y * zoom, 0, zoom);
 						y -= sewageFallHeight[robin.playtime % 5];
 					} while (y > 0);
 
 					SetAlpha(24);
 
 					if (pPlayer->active)
-						DrawBgEffect(2000 + BG_WATERFALL_SPLASH0 + robin.playtime % 3, (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + pPlayer->y - OBJIMGGAP - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+						DrawBgEffect(2000 + BG_WATERFALL_SPLASH0 + robin.playtime % 3, (float)(xOffset - rx + *(mbObj + 1) + 13 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE + pPlayer->y - OBJIMGGAP - ry) * zoom, 0, zoom);
 #ifdef CLIPPING
 				}
 #endif
@@ -573,7 +574,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				//톨레아습지
 				for (j = 0; j < mapRect[i * 5 + 2]; j++) {
 					bgPtrShort = &swampImg[(((robin.playtime / 2 + j) % 3) + 5) * 4];
-					DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (16 + (mapRect[i * 5 + 1] << 4) * _2X + ((robin.playtime / 2 % 3) % 2)) - ry) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG], cvtDest, cvtLayer, MAP_OBJ_IMG, buffering);
+					DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (16 + (mapRect[i * 5 + 1] << 4) * _2X + ((robin.playtime / 2 % 3) % 2)) - ry) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG], MAP_OBJ_IMG);
 				}
 			}
 			else {
@@ -582,7 +583,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 				//수면
 				for (j = 0; j < mapRect[i * 5 + 2]; j += 3)
 					//water.bmp
-					DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 12 * _2X, 0, 16 * _2X + ((robin.playtime / 2 + j) % 3) * 28 * _2X, (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (16 * _2X + (mapRect[i * 5 + 1] << 4) * _2X) - ry) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
+					DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 12 * _2X, 0, 16 * _2X + ((robin.playtime / 2 + j) % 3) * 28 * _2X, (float)(xOffset + ((mapRect[i * 5] + j) << 4) * _2X - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - (16 * _2X + (mapRect[i * 5 + 1] << 4) * _2X) - ry) * zoom, false, false, false, false, false, zoom, sprite[WATER_IMG], WATER_IMG);
 
 				SetAlpha(32);
 			}
@@ -604,7 +605,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 					imgFile = WATER_IMG;
 				}
 
-				DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + pPlayer->x + swampSplash[(robin.playtime % 6) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - ((mapRect[i * 5 + 1] << 4) * _2X + 22 * _2X + swampSplash[(robin.playtime % 6) * 4 + 3]) - ry) * zoom, false, false, false, false, false, zoom, sprite[imgFile], cvtDest, cvtLayer, imgFile, buffering);
+				DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + pPlayer->x + swampSplash[(robin.playtime % 6) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - ((mapRect[i * 5 + 1] << 4) * _2X + 22 * _2X + swampSplash[(robin.playtime % 6) * 4 + 3]) - ry) * zoom, false, false, false, false, false, zoom, sprite[imgFile], imgFile);
 				SetAlpha(32);
 			}
 		}
@@ -624,14 +625,14 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			imgFile = WATER_IMG;
 		}
 
-		DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame - 1) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame - 1) * 4 + 3] - ry + 4) * zoom, false, false, false, false, false, zoom, sprite[imgFile], cvtDest, cvtLayer, imgFile, buffering);
+		DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame - 1) * 4 + 1 + pPlayer->dirF] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame - 1) * 4 + 3] - ry + 4) * zoom, false, false, false, false, false, zoom, sprite[imgFile], imgFile);
 
 		if (mapData[7] == MAPTYPE_SWAMP)
 			bgPtrShort = &swampImg[swampSplash[(splash.frame + 5) * 4] * 4];
 		else
 			bgPtrShort = &atlanticeImg[swampSplash[(splash.frame + 5) * 4] * 4];
 
-		DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame + 5) * 4 + 1 + splash.dir] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame + 5) * 4 + 3] - ry) * zoom, false, false, false, false, false, zoom, sprite[imgFile], cvtDest, cvtLayer, imgFile, buffering);
+		DrawImage(*(bgPtrShort + 2), *(bgPtrShort + 3), *bgPtrShort, *(bgPtrShort + 1), (float)(xOffset + splash.x + swampSplash[(splash.frame + 5) * 4 + 1 + splash.dir] - rx) * zoom, yPos + (float)((rh - 4) * TSIZE + splash.y + swampSplash[(splash.frame + 5) * 4 + 3] - ry) * zoom, false, false, false, false, false, zoom, sprite[imgFile], imgFile);
 
 		SetAlpha(32);
 	}
@@ -642,7 +643,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		//아델라인 평원 나비
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active)
-				DrawBgEffect(BG7_BUTTERFLY0 + (robin.playtime / 2 + i) % 3, (float)(xOffset + bgObj[i].x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y - ry) * zoom, bgObj[i].etc, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG7_BUTTERFLY0 + (robin.playtime / 2 + i) % 3, (float)(xOffset + bgObj[i].x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y - ry) * zoom, bgObj[i].etc, zoom);
 			else
 				break;
 		}
@@ -659,10 +660,10 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		//GammaImage(0, 5, gScreenBuffer);
 
 		SetAlpha(24 + areaFrame);
-		DrawBgEffect(1000 + sunShineMotion[j], (float)DX * zoom, yPos + (float)((rh - 4) * TSIZE) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+		DrawBgEffect(1000 + sunShineMotion[j], (float)DX * zoom, yPos + (float)((rh - 4) * TSIZE) * zoom, 0, zoom);
 
 		if (sunShineMotion[24 + j] >= 0)
-			DrawBgEffect(1000 + sunShineMotion[24 + j], (float)(DX - 192 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - 176 * _2X) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+			DrawBgEffect(1000 + sunShineMotion[24 + j], (float)(DX - 192 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - 176 * _2X) * zoom, 0, zoom);
 
 		SetAlpha(32);
 		break;
@@ -671,7 +672,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 		//안개
 		for (i = 0; i < MAXBGOBJECT; i++) {
 			if (bgObj[i].active)
-				DrawBgEffect(BG2_MIST0 + bgObj[i].etc, (float)(bgObj[i].x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y - ry) * zoom, 0, zoom, cvtDest, cvtLayer, buffering);
+				DrawBgEffect(BG2_MIST0 + bgObj[i].etc, (float)(bgObj[i].x - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y - ry) * zoom, 0, zoom);
 			else
 				break;
 		}
@@ -680,7 +681,7 @@ void EffectDrawOnlyBg(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	//}
 }
 
-void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void EffectDraw(int yPos, float zoom)
 {
 	int i, j, y;
 	signed short* bbPtr = bubbleXY;
@@ -688,12 +689,12 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 	pPlayer = &ao[raidPlayer];
 
-	EffectDrawOnlyBg(yPos, zoom, cvtDest, cvtLayer, buffering);
+	EffectDrawOnlyBg(yPos, zoom);
 
 	//산소 처리
 	if (pPlayer->O2 != OXYGEN && isDemo == false && pPlayer->dead == false) {
-		MemRect((float)(xOffset + pPlayer->x - rx - 12 * _2X) * zoom, (float)(pPlayer->y - ry - OBJIMGGAP - 32 * _2X) * zoom, (float)24 * _2X * zoom, (float)2 * _2X * zoom, 0xCC0000, cvtDest, cvtLayer, buffering);
-		MemRect((float)(xOffset + pPlayer->x - rx - 12 * _2X) * zoom, (float)(pPlayer->y - ry - OBJIMGGAP - 32 * _2X) * zoom, (float)pPlayer->O2 * 24 * _2X / OXYGEN * zoom, (float)2 * _2X * zoom, 0x00FF00, cvtDest, cvtLayer, buffering);
+		MemRect((float)(xOffset + pPlayer->x - rx - 12 * _2X) * zoom, (float)(pPlayer->y - ry - OBJIMGGAP - 32 * _2X) * zoom, (float)24 * _2X * zoom, (float)2 * _2X * zoom, 0xCC0000);
+		MemRect((float)(xOffset + pPlayer->x - rx - 12 * _2X) * zoom, (float)(pPlayer->y - ry - OBJIMGGAP - 32 * _2X) * zoom, (float)pPlayer->O2 * 24 * _2X / OXYGEN * zoom, (float)2 * _2X * zoom, 0x00FF00);
 	}
 
 	i = TOTALHITMARK;
@@ -703,7 +704,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 		if (hitMark[i].frame > 0 && hitMark[i].etc == HITMARK_LARGE) {
 			//if (option.effect)
-			GammaImage(48 - hitMark[i].frame * 2, 0, zoom, cvtDest, cvtLayer, buffering);
+			GammaImage(48 - hitMark[i].frame * 2, 0, zoom);
 			//GammaImage(16 + hitMark[i].frame * 4, 0);
 			break;
 		}
@@ -715,11 +716,11 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 		if (hitMark[i].frame > 0) {
 			if (hitMark[i].x != 0 || hitMark[i].y != 0) {
 
-				DrawEffect(1000 - 1 + hitMarkData[hitMark[i].type * 3 + (hitMark[i].etc == 0 ? 0 : 1)] + hitMark[i].frame, (float)(xOffset + hitMark[i].x - rx), (float)(STATUSWIN_Y + (rh - 4) * TSIZE - hitMark[i].y - ry + OBJIMGGAP), hitMark[i].dir, false, hitMark[i].zoom, cvtDest, cvtLayer, buffering);
+				DrawEffect(1000 - 1 + hitMarkData[hitMark[i].type * 3 + (hitMark[i].etc == 0 ? 0 : 1)] + hitMark[i].frame, (float)(xOffset + hitMark[i].x - rx), (float)(STATUSWIN_Y + (rh - 4) * TSIZE - hitMark[i].y - ry + OBJIMGGAP), hitMark[i].dir, false, hitMark[i].zoom);
 
 				if (hitMark[i].etc == HITMARK_LARGE && hitMark[i].frame < 4)
 					//if (option.effect)
-					DrawEffect(HIT_LARGE1 - 1 + hitMark[i].frame, (float)(xOffset + hitMark[i].x - rx), (float)(STATUSWIN_Y + (rh - 4) * TSIZE - hitMark[i].y - ry + OBJIMGGAP + 8 * _2X), hitMark[i].dir, false, hitMark[i].zoom, cvtDest, cvtLayer, buffering);
+					DrawEffect(HIT_LARGE1 - 1 + hitMark[i].frame, (float)(xOffset + hitMark[i].x - rx), (float)(STATUSWIN_Y + (rh - 4) * TSIZE - hitMark[i].y - ry + OBJIMGGAP + 8 * _2X), hitMark[i].dir, false, hitMark[i].zoom);
 			}
 		}
 	}
@@ -728,20 +729,20 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 	if (pPlayer->inTile == SWAMP) {
 		//늪지일때
 		if (pPlayer->debuf[BLIND] && pPlayer->debuf[BLIND] >= 8)
-			GammaImage(0, 7, zoom, cvtDest, cvtLayer, buffering);
+			GammaImage(0, 7, zoom);
 		else //if (option.effect)
-			GammaImage(0, 1, zoom, cvtDest, cvtLayer, buffering);
+			GammaImage(0, 1, zoom);
 	}
 	else if (pPlayer->debuf[BLIND])
 		//실명일때
-		GammaImage(0, 7, zoom, cvtDest, cvtLayer, buffering);
+		GammaImage(0, 7, zoom);
 
 	//if (option.effect) {
 	if (effect.edge) {
 		if (effect.edge > 0)
-			GammaImage(effect.edge, 2, zoom, cvtDest, cvtLayer, buffering);
+			GammaImage(effect.edge, 2, zoom);
 		else
-			GammaImage(-effect.edge, 3, zoom, cvtDest, cvtLayer, buffering);
+			GammaImage(-effect.edge, 3, zoom);
 
 		effect.edge /= 2;
 	}
@@ -767,22 +768,22 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 				if (dmgInfo[i].frame < 5) {
 					tMag++;
 					SetAlpha(32 - dmgInfo[i].frame * 4);
-					MemRect(0, -ry + dmgInfo[i].y + (float)20 * _2X * dmgInfo[i].zoom, DX, 2 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)20 * _2X * dmgInfo[i].zoom, DX, 2 * _2X, 0xFFFFFF);
 					m_lgrpAlpha -= 3;
-					MemRect(0, -ry + dmgInfo[i].y + (float)19 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
-					MemRect(0, -ry + dmgInfo[i].y + (float)22 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)19 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
+					MemRect(0, -ry + dmgInfo[i].y + (float)22 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
 					m_lgrpAlpha -= 3;
-					MemRect(0, -ry + dmgInfo[i].y + (float)18 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
-					MemRect(0, -ry + dmgInfo[i].y + (float)23 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)18 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
+					MemRect(0, -ry + dmgInfo[i].y + (float)23 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
 					m_lgrpAlpha -= 3;
-					MemRect(0, -ry + dmgInfo[i].y + (float)17 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
-					MemRect(0, -ry + dmgInfo[i].y + (float)24 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)17 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
+					MemRect(0, -ry + dmgInfo[i].y + (float)24 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
 					m_lgrpAlpha -= 3;
-					MemRect(0, -ry + dmgInfo[i].y + (float)16 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
-					MemRect(0, -ry + dmgInfo[i].y + (float)25 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)16 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
+					MemRect(0, -ry + dmgInfo[i].y + (float)25 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
 					m_lgrpAlpha -= 3;
-					MemRect(0, -ry + dmgInfo[i].y + (float)15 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
-					MemRect(0, -ry + dmgInfo[i].y + (float)26 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF, cvtDest, cvtLayer, buffering);
+					MemRect(0, -ry + dmgInfo[i].y + (float)15 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
+					MemRect(0, -ry + dmgInfo[i].y + (float)26 * _2X * dmgInfo[i].zoom, DX, 1 * _2X, 0xFFFFFF);
 					m_lgrpAlpha = 0;
 					//SetAlpha(32);
 				}
@@ -803,7 +804,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 			}
 
 			//SetAlpha(32);
-			DrawNum(dmgInfo[i].dmg, -rx + dmgInfo[i].x, -ry + dmgInfo[i].y, j, CENTER, 0, MINUS, true, dmgInfo[i].zoom, false, cvtDest, cvtLayer, buffering);
+			DrawNum(dmgInfo[i].dmg, -rx + dmgInfo[i].x, -ry + dmgInfo[i].y, j, CENTER, 0, MINUS, true, dmgInfo[i].zoom, false);
 
 			SetColor(false);
 
@@ -843,26 +844,26 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 				//ef.bmp
 				//if (option.effect) {
 				if (imgText[i].dmg < BULLET)
-					DrawImage(33 * _2X, 12 * _2X, 164 * _2X, 223 * _2X, (float)(xOffset + imgText[i].x - (float)33 * _2X * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
+					DrawImage(33 * _2X, 12 * _2X, 164 * _2X, 223 * _2X, (float)(xOffset + imgText[i].x - (float)33 * _2X * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				else
-					DrawImage(33 * _2X, 12 * _2X, 197 * _2X, 223 * _2X, (float)(xOffset + imgText[i].x - (float)33 * _2X * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
+					DrawImage(33 * _2X, 12 * _2X, 197 * _2X, 223 * _2X, (float)(xOffset + imgText[i].x - (float)33 * _2X * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				//}
 				break;
 			case EFFECT_TEXT_EVASION:
 				//ef.bmp
 				//if (option.effect)
-				DrawImage(31 * _2X, 11 * _2X, 184 * _2X, 179 * _2X, (float)(xOffset + imgText[i].x - (float)(31 * _2X) * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)11 * _2X * imgText[i].zoom / 2 - y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
+				DrawImage(31 * _2X, 11 * _2X, 184 * _2X, 179 * _2X, (float)(xOffset + imgText[i].x - (float)(31 * _2X) * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)11 * _2X * imgText[i].zoom / 2 - y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				break;
 			case EFFECT_TEXT_REGIST:
 				//ef.bmp
 				//if (option.effect)
-				DrawImage(46 * _2X, 12 * _2X, 67 * _2X, 56 * _2X, (float)(xOffset + imgText[i].x - (float)(46 * _2X) * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
+				DrawImage(46 * _2X, 12 * _2X, 67 * _2X, 56 * _2X, (float)(xOffset + imgText[i].x - (float)(46 * _2X) * imgText[i].zoom / 2 + j) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, false, false, false, false, false, imgText[i].zoom * zoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				break;
 			case EFFECT_TEXT_CRITICAL:
 				if (imgText[i].dmg >= ENEMY) {
 					SetBlend(8, 0x000000);
 					//if (option.effect)
-					DrawEffect(Min(3, imgText[i].frame) + EFFECT_CRITICAL_TEXT0, (float)(xOffset + imgText[i].x + j + gap) * zoom, (float)(imgText[i].y + (float)0 * _2X * imgText[i].zoom / 2 + y) * zoom, 0, false, imgText[i].zoom * zoom, cvtDest, cvtLayer, buffering);
+					DrawEffect(Min(3, imgText[i].frame) + EFFECT_CRITICAL_TEXT0, (float)(xOffset + imgText[i].x + j + gap) * zoom, (float)(imgText[i].y + (float)0 * _2X * imgText[i].zoom / 2 + y) * zoom, 0, false, imgText[i].zoom * zoom);
 					UnSetBlend();
 					break;
 				}
@@ -870,7 +871,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 			case EFFECT_TEXT_EXTRA:
 			case EFFECT_TEXT_GUARD:
 				//if (option.effect)
-				DrawEffect(Min(3, imgText[i].frame) + EFFECT_CRITICAL_TEXT0 + (imgText[i].type - EFFECT_TEXT_CRITICAL) * 4, (float)(xOffset + imgText[i].x + gap) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, 0, false, imgText[i].zoom * zoom, cvtDest, cvtLayer, buffering);
+				DrawEffect(Min(3, imgText[i].frame) + EFFECT_CRITICAL_TEXT0 + (imgText[i].type - EFFECT_TEXT_CRITICAL) * 4, (float)(xOffset + imgText[i].x + gap) * zoom, (float)(imgText[i].y + (float)12 * _2X * imgText[i].zoom / 2 + y) * zoom, 0, false, imgText[i].zoom * zoom);
 				break;
 			}
 
@@ -883,7 +884,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 		if (imgText[i].type == EFFECT_TEXT_EXP) {
 			SetBlend(12, 0xFFFFF00);
 			//if (option.effect)
-			DrawNum(imgText[i].dmg, (float)(xOffset + imgText[i].x - rx - 6 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, NUM_FONT_NORMAL, RIGHT, 0, 0, true, zoom, false, cvtDest, cvtLayer, buffering);
+			DrawNum(imgText[i].dmg, (float)(xOffset + imgText[i].x - rx - 6 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, NUM_FONT_NORMAL, RIGHT, 0, 0, true, zoom, false);
 			UnSetBlend();
 
 			if (imgText[i].frame > 4)
@@ -893,7 +894,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 			//ef.bmp
 			//if (option.effect)
-			DrawImage(31 * _2X, 11 * _2X, 184 * _2X, 179 * _2X, (float)(xOffset + imgText[i].x - rx - 4 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, false, false, false, false, false, zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
+			DrawImage(31 * _2X, 11 * _2X, 184 * _2X, 179 * _2X, (float)(xOffset + imgText[i].x - rx - 4 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, false, false, false, false, false, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
 			SetAlpha(32);
 		}
 	}
@@ -903,7 +904,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 		pPlayer = &ao[PLAYER + j];
 		if (pPlayer->levelUpFrame) {
 			//if (option.effect)
-			DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (pPlayer->levelUpFrame < 11 ? pPlayer->levelUpFrame : Max(11, pPlayer->levelUpFrame - 5)), (float)(xOffset + pPlayer->x - rx) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE - PxlUp(pPlayer) - ry + OBJIMGGAP + 20 * _2X) * zoom, 0, false, pPlayer->zoom * zoom, cvtDest, cvtLayer, buffering);
+			DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (pPlayer->levelUpFrame < 11 ? pPlayer->levelUpFrame : Max(11, pPlayer->levelUpFrame - 5)), (float)(xOffset + pPlayer->x - rx) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE - PxlUp(pPlayer) - ry + OBJIMGGAP + 20 * _2X) * zoom, 0, false, pPlayer->zoom * zoom);
 		}
 	}
 
@@ -911,8 +912,8 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 		zoomFrame--;
 		warpFrame += 2;
 
-		ZoomImage((float)(xOffset + pPlayer->x - rx) * zoom, (float)(pPlayer->y - ry) * zoom, cvtDest, cvtLayer, (float)(256 + zoomData[zoomFrame]) * zoom, buffering);
-		GammaImage(warpFrame, 0, zoom, cvtDest, cvtLayer, buffering);
+		ZoomImage((float)(xOffset + pPlayer->x - rx) * zoom, (float)(pPlayer->y - ry) * zoom, (float)(256 + zoomData[zoomFrame]) * zoom);
+		GammaImage(warpFrame, 0, zoom);
 
 		if (zoomFrame == 0) {
 			if (drawHandle == MD_BATTLE)
@@ -938,7 +939,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 
 		//MemRect(xOffset, DY, DX - 2 * xOffset, DY, fadeColor, cvtDest, cvtLayer, buffering);
 		//MemRect((float)(xOffset) * zoom, (float)(DY) * zoom, (float)(DX) * zoom, (float)(DY - STATUSWIN_Y) * zoom, fadeColor, cvtDest, cvtLayer, buffering);
-		MemRect(0, DY, DX, DY, fadeColor, cvtDest, cvtLayer, buffering);
+		MemRect(0, DY, DX, DY, fadeColor);
 
 		SetAlpha(32);
 	}
@@ -964,7 +965,7 @@ void EffectDraw(int yPos, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::
 void DrawTouchPoint(void)
 {
 	SetAlpha(20);
-	DrawEffect(MAGNET_ACTIVE0 + touchFrame / MOTIONDIV % 5, touchX, touchY - 16 * _2X, RIGHT, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+	DrawEffect(MAGNET_ACTIVE0 + touchFrame / MOTIONDIV % 5, touchX, touchY - 16 * _2X, RIGHT, false, 1.0f);
 
 	SetAlpha(32);
 

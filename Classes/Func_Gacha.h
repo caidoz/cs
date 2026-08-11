@@ -3,8 +3,8 @@
 #define _FUNC_GACHA_H_
 
 #define GACHA_BOX_BOUNCE_FALL		(FPS * 8 / 30)	// ³«ÇÏ
-#define GACHA_BOX_BOUNCE_UP		(FPS * 5 / 30)	// Æ¢¾î ¿À¸§
-#define GACHA_BOX_BOUNCE_DOWN		(FPS * 5 / 30)	// ´Ù½Ã ³»·Á¿È
+#define GACHA_BOX_BOUNCE_UP		(FPS * 5 / 30)	// Æ¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+#define GACHA_BOX_BOUNCE_DOWN		(FPS * 5 / 30)	// ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define GACHA_BOX_BOUNCE_HEIGHT		(32 * _2X)		// ¹Ù¿î½º ³ôÀÌ
 
 #define GACHA_MAX_REWARD_CARD     12
@@ -13,15 +13,15 @@
 
 enum GACHA_DEPTH
 {
-	GACHA_DEPTH_BOX = 0,       // »óÀÚ ³«ÇÏ ¹× ¿ÀÇÂ
+	GACHA_DEPTH_BOX = 0,       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GACHA_DEPTH_CARD,          // º¸»ó ÇÑ Àå¾¿ °ø°³
-	GACHA_DEPTH_SUMMARY,       // ÃÖÁ¾ º¸»ó ¿ä¾à
-	GACHA_DEPTH_FLYTOBAR,		//¿ä¾àÄ«µå°¡ °¢ ¹öÆ°À¸·Î ³¯¶ó°¡´Â °Í.
+	GACHA_DEPTH_SUMMARY,       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	GACHA_DEPTH_FLYTOBAR,		//ï¿½ï¿½ï¿½Ä«ï¿½å°¡ ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ó°¡´ï¿½ ï¿½ï¿½.
 	GACHA_DEPTH_GETITEM        // ÀÎº¥Åä¸® ¹Ý¿µ ÈÄ Á¾·á
 };
 
 //------------------------------------------------------------
-// °ø°³°¡ ³¡³­ Ä«µåÀÇ ÀÌµ¿ ¿¬Ãâ Á¤º¸
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 //------------------------------------------------------------
 typedef struct GACHA_REWARD_CARD_ANIM
 {
@@ -48,7 +48,7 @@ typedef struct GACHA_REWARD_CARD_ANIM
 	float popupZoom;
 
 	//--------------------------------------------------------
-	// ÇÏ´Ü ¸Þ´º·Î ³¯¾Æ°¡´Â ÃÖÁ¾ ¿¬Ãâ
+	// ï¿½Ï´ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------------------------
 	bool movingToBar;
 	bool arrivedBar;
@@ -96,13 +96,13 @@ struct REWARD_BOX_DATA
 	int goldRate;
 
 	//----------------------------------------------------
-	// µ¿·á / Àåºñ ¼±ÅÃ ºñÀ²
+	// ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//----------------------------------------------------
 	int crewRate;
 	int equipRate;
 
 	//----------------------------------------------------
-	// µ¿·á / Àåºñ µî±Þ È®·ü
+	// ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	//----------------------------------------------------
 	int crewGradeRate[
 		BOX_GRADE_COUNT];
@@ -330,6 +330,8 @@ int SelectCastleRewardBox(
 	int castleIndex);
 bool GenerateCastleBoxReward(
 	int boxDetail);
+//ì¸í„°ëž™í‹°ë¸Œ ì „íˆ¬ íŠœí† ë¦¬ì–¼: ì´ë²ˆ ìƒìžê°€ ì‹œë‚˜ë¦¬ì˜¤ìƒ ëª‡ ë²ˆì§¸ì¸ì§€(0~2), ì•„ë‹ˆë©´ -1
+int GetTutorialGachaBoxIndex(void);
 int GetWeightedNormalizedReward(
 	int minValue,
 	int maxValue);

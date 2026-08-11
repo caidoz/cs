@@ -64,7 +64,7 @@ ITEM* GetItemPtr(int idx)
 		return 0;
 }
 
-//¿ÀºêÁ§Æ® ÇüÅÂ·Î ¾ÆÀÌÅÛÀ» »ý¼º½ÃÅ²´Ù
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½
 int DropItem(OBJECT* pObj, int type)
 {
 	int i, j, rand, dropSum;
@@ -72,13 +72,13 @@ int DropItem(OBJECT* pObj, int type)
 	int tempHp = pObj->maxhp;
 
 	PlayMusic(M_JUMP);//PlayMusic(M_JUMP);
-	//¿ÀÃµ¸¶¸® Àâ¾ÒÀ»¶§ ÇÃ·¹ÀÌ¾î°¡ ¾ò´Â °Í
-	//1. ¿ÀÃµ¸¶¸®¿¡ ÇØ´çÇÏ´Â °æÇèÄ¡
-	//2. 2.5%(´ë·« 100°³)ÀÇ ÀåºñÁß 18°³ÀÇ °í±ÞÀåºñ, 1.8°³ÀÇ Èñ±ÍÀåºñ, 0.18°³ÀÇ ¿µ¿õÀåºñ
-	//3. ¾à 225000ÀÇ °ñµå(¸¶¸®´ç 150ÀÎ °æ¿ì)
-	//4. 1.4%(´ë·« 70°³)ÀÇ ·¹½ÃÇÇÁß 7°³ÀÇ °í±Þ·¹½ÃÇÇ, 7°³ÀÇ Èñ±Í·¹½ÃÇÇ
+	//ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ ï¿½ï¿½
+	//1. ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+	//2. 2.5%(ï¿½ë·« 100ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 18ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 1.8ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 0.18ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//3. ï¿½ï¿½ 225000ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 150ï¿½ï¿½ ï¿½ï¿½ï¿½)
+	//4. 1.4%(ï¿½ë·« 70ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 7ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½, 7ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½
 	//5. 650°³ÀÇ ¼Ò¸ð¼º¾ÆÀÌÅÛ
-	//6. 140°³ÀÇ º¸¼®Áß 25°³ÀÇ °í±Þº¸¼®, 2.5°³ÀÇ Èñ±Íº¸¼®, 0.25°³ÀÇ ¿µ¿õº¸¼®
+	//6. 140ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 25ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Þºï¿½ï¿½ï¿½, 2.5ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Íºï¿½ï¿½ï¿½, 0.25ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//7. 1150°³ÀÇ Àç·áµé
 	for (i = ITEMOBJ; i < TOTALOBJECT; i++) {
 		OBJECT* pNew = &ao[i];
@@ -111,7 +111,7 @@ int DropItem(OBJECT* pObj, int type)
 				pNew->zoom = 0.2f + 0.02f * (pNew->etc - BOX_REWARD0);
 			}
 			else {
-				//¶óÀÌÆ®´× || ½½¶óÀÓ || °Å¹Ì ´Â ¾ÆÀÌÅÛÀ» ¹Ù·Î ¾Æ·¡·Î ¶³¾î¶ß¸°´Ù.(º®¿¡°É¸²)
+				//ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ || ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ || ï¿½Å¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß¸ï¿½ï¿½ï¿½.(ï¿½ï¿½ï¿½ï¿½ï¿½É¸ï¿½)
 				if (robinmap == GACHAROOM) {
 					//pNew->y = pObj->y;
 					//pNew->jumpFrame = 0;
@@ -138,7 +138,7 @@ int DropItem(OBJECT* pObj, int type)
 					pNew->def = type - 2000;
 
 
-					// ÀåºñÀÏ°æ¿ì ·¹º§ ¸ÂÃß±â
+					// ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½
 					int k, randSum = 0;
 
 					for (k = 0; k < 8; k++) {
@@ -174,7 +174,7 @@ int DropItem(OBJECT* pObj, int type)
 					//¾ÆÀÌÅÛ ÀÌ¸§
 					pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
 
-					//º° 4°³ ÀÌ»óÀÌ¸é È­¸éÀ» ¼¼¿öÁÖÀÚ
+					//ï¿½ï¿½ 4ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				}
 				else if (type >= 1000) {
 					pNew->def = type - 1000;
@@ -188,7 +188,7 @@ int DropItem(OBJECT* pObj, int type)
 					}
 					else {
 						if (pNew->def <= ITEM_GEM) {
-							//´ë¿ø µ¿±¼ µå¶ø
+							//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 							rand = Random(10000);
 							//rand = 9999;
 							caveItemGrade = false;
@@ -270,12 +270,12 @@ int DropItem(OBJECT* pObj, int type)
 						pNew->name = -1;
 						pNew->ay = ICON_GOLD;
 					}
-					// º¸¼®ÀÏ°æ¿ì ¾î¶²º¸¼®ÀÎÁö
+					// ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ ï¿½î¶²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					else if (pNew->def == ITEM_GEM) {
 						//º¸¼®ÀÇ µî±Þ
 						//°í±Þ : 80%
-						//Èñ±Í : 18% : 30·¹º§ ÀÌ»ó ¸ó½ºÅÍ µå¶ø
-						//¿µ¿õ : 2% : 60·¹º§ ÀÌ»ó ¸ó½ºÅÍ µå¶ø
+						//ï¿½ï¿½ï¿½ : 18% : 30ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+						//ï¿½ï¿½ï¿½ï¿½ : 2% : 60ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 						pNew->apy = MakeItemGrade(pNew->def, pObj->lv, MakeItemDetail(pNew->def, pObj->lv));
 
 						if (pNew->apy == GRADE_SET || pNew->apy == GRADE_LEGEND)
@@ -290,7 +290,7 @@ int DropItem(OBJECT* pObj, int type)
 						//type°ú lv, detail·Î grade °áÁ¤
 						pNew->apy = MakeItemGrade(pNew->def, pObj->lv, pNew->apx);
 					}
-					// ÀåºñÀÏ°æ¿ì ·¹º§ ¸ÂÃß±â
+					// ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½
 					else {
 						int k, randSum = 0;
 						pNew->lv = pObj->lv;
@@ -393,7 +393,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 
 	//it->materialExp = itemExp[itemLevelLimit[2 * it->detail + 1]];//Àåºñ º°°³¼öÀÇ ÃÊ±â ¾÷±×·¹ÀÌµå¿¡ µå´Â °ªÀ¸·Î ¼öÁ¤ÇØ ÁØ´Ù.
 
-	//ÀåºñÀÎ °æ¿ì
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	switch (type) {
 	default:
 		if (caveMap) {
@@ -433,7 +433,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 			}
 		}
 		else {
-			//ÀÓ½ÃÀúÀå¼Ò¿¡ ¸¸µé¾îÁö´Â ¾ÆÀÌÅÛÀº °­È­/¿É¼Ç»ý¼ºµîÀ» ÇÏÁö ¾Ê´Â´Ù.
+			//ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­/ï¿½É¼Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 #ifdef DEBUG
 			if (idx == ITEMPTR_TEMPITEM && drawHandle != MD_SIMUL) {
 				j = 0;
@@ -477,20 +477,20 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 			if (grade < GRADE_RARE && caveItemGrade == false)
 				it->cooldown = Proc(proc10, Min(10, lv / 10 + 1));
 
-			//¿É¼Ç °¹¼ö °áÁ¤
+			//ï¿½É¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			switch (grade) {
 			default:
 				//case GRADE_NORMAL:
-					//ÀÏ¹Ý ¾ÆÀÌÅÛÀÇ °æ¿ì´Â º°µµÀÇ ¿É¼Ç»ý¼ºÀ» ÇÏÁö ¾Ê´Â´Ù.
+					//ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 				j = 0;
 				break;
 			case GRADE_SUPERIOR:
 
-				//1~2°³ÀÇ ¿É¼ÇÀ» µ¿ÀÏÇÑ È®·ü·Î »ý¼º
+				//1~2ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				j = Random(2) + 1;
 				break;
 			case GRADE_RARE:
-				//3~5°³ÀÇ ¿É¼ÇÀ» µ¿ÀÏÇÑ È®·ü·Î »ý¼º
+				//3~5ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				j = Random(4) + 2;
 				break;
 			case GRADE_SET:
@@ -516,12 +516,12 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 				else
 					it->set = set - 1;
 
-				//2~4°³ÀÇ ¿É¼ÇÀ» µ¿ÀÏÇÑ È®·ü·Î »ý¼º
+				//2~4ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 				j = Random((caveMap == 0 ? 3 : 5)) + 2;
 				break;
 			case GRADE_EPIC:
-				//5~6°³ÀÇ ¿É¼ÇÀ» »ý¼º
+				//5~6ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				j = Random(2) + 5;
 				break;
 			}
@@ -532,7 +532,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 			suffix = j - prefix;
 
 			for (i = 0; i < prefix + suffix; i++) {
-				//ºÙÀ» ¿É¼ÇÀÇ Á¾·ù¸¦ Á¤ÇÔ
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				if (grade == GRADE_SET && i < 2) {
 					//if (robinmap >= CAVE_A_1 && it->grade == GRADE_SET)
 					//	t = extraSetItem[((type * 4 + caveItemDetail) * 2 + it->set / 100) * 3 + 1 + i + (it->type == ITEM_RING ? 72 : 0)];
@@ -547,7 +547,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 						//Á¢¹Ì»ç
 						t = option_suffix[itemEquipSlot[type] * 16 + Random(option_count_suffix[itemEquipSlot[type]])];
 				}
-				//ÇöÀç ¿É¼ÇÀÌ ¸¸¾à ¿©ÅÂ±îÁö ³ª¿Â ¿É¼ÇÀÎ °æ¿ì
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				for (j = 0; j < i; j++) {
 					if (it->option[j][0] == t || (t == SUFFIX_REQUIRE && it->grade == GRADE_SET) ||
 						((t >= PREFIX_SWORD_DMG && t <= PREFIX_BOOMERANG_DMG) && (it->option[j][0] >= PREFIX_SWORD_DMG && it->option[j][0] <= PREFIX_BOOMERANG_DMG)) ||
@@ -560,7 +560,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 
 				it->option[i][0] = t;
 
-				//ºÙÀ» ¿É¼ÇÀÇ µî±ÞÀ» Á¤ÇÔ
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				switch ((lv - 1) / 10) {
 				case 0:
 					//1~10 : ÇÏ±Þ¸¸
@@ -578,7 +578,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 				case 7:
 				case 8:
 					if (grade == GRADE_RARE)
-						//Èñ±ÍÀÇ °æ¿ì´Â ¹«Á¶°Ç Áß±Þ¿É¼Ç
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß±Þ¿É¼ï¿½
 						optionGrade[i] = 1;
 					else
 						//Áß±Þ ¶Ç´Â »ó±Þ
@@ -593,7 +593,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 					//case 14:
 					//case 15:
 					if (grade == GRADE_RARE)
-						//Èñ±ÍÀÇ °æ¿ì´Â ¹«Á¶°Ç Áß±Þ¿É¼Ç
+						//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß±Þ¿É¼ï¿½
 						optionGrade[i] = 1;
 					else
 						//·¹º§ 91 ÀÌ»óÀÇ ¾ÆÀÌÅÛÀº ¹«Á¶°Ç »ó±Þ
@@ -605,19 +605,19 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 					optionGrade[i] = (Random(lv + 50) >= 100 ? 1 : 0);
 
 				if (optionRange[it->option[i][0] * 6 + optionGrade[i] * 2]) {
-					//¿É¼Ç°ªÀÇ ¹üÀ§¸¦ Á¤ÇÑ´Ù.
+					//ï¿½É¼Ç°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 					it->option[i][1] = optionRange[it->option[i][0] * 6 + optionGrade[i] * 2] + Random(optionRange[it->option[i][0] * 6 + optionGrade[i] * 2 + 1] + 1);
 					if (lv > 99)
 						it->option[i][1] = Min(250, RoundDiv(it->option[i][1] * (10 + (lv - 90) / 10), 10));
 				}
 				else {
-					//¿É¼Ç°ªÀÌ 0ÀÌ¸é ÇöÀç ´Þ¸±¼ö ¾ø´Â ¿É¼ÇÀÌ´Ï ´Ù½Ã ·çÇÁ¸¦ µ¹¸°´Ù.
+					//ï¿½É¼Ç°ï¿½ï¿½ï¿½ 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½Ì´ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 					i--;
 
 					goto END;
 				}
 
-				//°è¿­º°·Î Àû¿ëµÇ¾î¾ß ÇÏ´Â ¿É¼ÇÀÎ °æ¿ì ÇöÀç ¹«±âÁ¾·ù¿¡ ¸ÂÃß¾î¼­ ¿É¼ÇÀ» º¯°æ
+				//ï¿½è¿­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¾î¼­ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				switch (it->option[i][0]) {
 				case PREFIX_SWORD_DMG:
 				case SUFFIX_SWORD_DMG:
@@ -634,7 +634,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 			END:;
 			}
 
-			//Á¤ÇØÁø ¿É¼ÇÁß¿¡ ÀÌ¸§À¸·Î µÉ ¿É¼ÇÀ» Á¤ÇÑ´Ù.
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ß¿ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 
 
 			if (grade < GRADE_SET && grade) {
@@ -796,7 +796,7 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 	}
 }
 
-void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom)
 {
 	int i = (option.hotSlot == true ? 0 : 1);
 	int tempX = x;
@@ -815,16 +815,16 @@ void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 			//curRandomIdx = activeSkillProb[pObj->type][(frame % MAXCHARSKILL) * 2 + 1];
 
 			//TEST
-			DrawSkillIcon(skillData[SKILLDATASIZE * curRandomIdx + 5], x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom, cvtDest, cvtLayer, buffering);
+			DrawSkillIcon(skillData[SKILLDATASIZE * curRandomIdx + 5], x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom);
 		}
 		else
-			DrawSkillIcon(skillData[SKILLDATASIZE * pObj->hotKey[0].idx + 5], x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom, cvtDest, cvtLayer, buffering);
+			DrawSkillIcon(skillData[SKILLDATASIZE * pObj->hotKey[0].idx + 5], x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom);
 
 		//pObj->hotKey[0].frame = frame % FPS;
 		//pObj->hotKey[0].inven = FPS;
 
 		if (pObj->hotKey[0].frame && pObj->hotKey[0].random == false)
-			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom, cvtDest, cvtLayer, buffering);
+			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom);
 
 		if (pObj->hotKey[0].randomFrame > 0) {
 			pObj->hotKey[0].randomFrame--;
@@ -835,26 +835,26 @@ void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 			}
 		}
 		if (pObj->hotKey[0].randomFrame == 0 && pObj->hotKey[0].random == false && pObj->hotKey[0].frame == 0) {
-			MemRectFrameThick(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, (float)18 * _2X * zoom * SKILLICONZOOM, (float)18 * _2X * zoom * SKILLICONZOOM, itemColor[frame % 6], 2 * _2X, cvtDest, cvtLayer, buffering);
-			DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+			MemRectFrameThick(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, (float)18 * _2X * zoom * SKILLICONZOOM, (float)18 * _2X * zoom * SKILLICONZOOM, itemColor[frame % 6], 2 * _2X);
+			DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 2.0f * zoom);
 
 			SetRectPoint(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, (float)18 * _2X * zoom * SKILLICONZOOM, (float)18 * _2X * zoom * SKILLICONZOOM, TOUCH_FUNC_HOTKEYPRESS1 + pObj->type);
 		}
 		break;
 	case HOTKEY_ITEM:
-		DrawItemIcon(GetItemPtr(ITEMPTR_INVEN + GetInvenIdx(ITEM_WASTE, pObj->hotKey[0].idx, 0)), pObj, x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom, cvtDest, cvtLayer, buffering);
+		DrawItemIcon(GetItemPtr(ITEMPTR_INVEN + GetInvenIdx(ITEM_WASTE, pObj->hotKey[0].idx, 0)), pObj, x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom);
 		break;
 	case HOTKEY_STATUE:
-		DrawIcon(GetItemIcon(ITEM_STATUE, pObj->hotKey[0].idx, false), x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(GetItemIcon(ITEM_STATUE, pObj->hotKey[0].idx, false), x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, SKILLICONZOOM * zoom, false, false, false, true);
 
 		if (pObj->hotKey[0].frame)
-			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom, cvtDest, cvtLayer, buffering);
+			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom);
 		break;
 	case HOTKEY_RING:
-		DrawItemIcon(&pObj->equip[EQUIP_RING], pObj, x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, zoom * SKILLICONZOOM, cvtDest, cvtLayer, buffering);
+		DrawItemIcon(&pObj->equip[EQUIP_RING], pObj, x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, zoom * SKILLICONZOOM);
 
 		if (pObj->hotKey[0].frame)
-			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom, cvtDest, cvtLayer, buffering);
+			DrawCycle(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, (float)16 * _2X * zoom * SKILLICONZOOM, (float)16 * _2X * zoom * SKILLICONZOOM, pObj->hotKey[0].frame, pObj->hotKey[0].inven, zoom);
 		break;
 	}
 
@@ -863,7 +863,7 @@ void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 	//hotKeyFrame = frame % 10;
 
 	if (hotKeyFrame && hotKeyFrame / 10 < MAXHOTKEY) {
-		DrawEffect(EFFECT_SLOT0 + 7 - (hotKeyFrame % 10), x + (float)(20 * _2X + (int)(hotKeyFrame / 10) * 44 * _2X) * zoom, y + (float)(-20 * _2X) * zoom, LEFT, false, zoom, cvtDest, cvtLayer, buffering);
+		DrawEffect(EFFECT_SLOT0 + 7 - (hotKeyFrame % 10), x + (float)(20 * _2X + (int)(hotKeyFrame / 10) * 44 * _2X) * zoom, y + (float)(-20 * _2X) * zoom, LEFT, false, zoom);
 		hotKeyFrame--;
 
 		if (hotKeyFrame % 10 == 0)
@@ -873,7 +873,7 @@ void DrawQuickIcon(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 }
 
 
-void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 {
 	int i = 0, count = MAXHOTKEY;
 	long long upgradePrice;
@@ -884,16 +884,16 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom, cocos2d::Rend
 	//if (drawHandle == MD_PLAY)
 	//DrawLabel(x + (float)(32 * _2X) * zoom, y - (float)(46 * _2X) * zoom, TEXT_ALPHA_SKILL, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 
-	EnemyProfileDraw(x + xGap, y + (float)-2 * _2X * zoom + yGap, pObj->type, false, false, 1.0f * zoom, cvtDest, cvtLayer, buffering);
+	EnemyProfileDraw(x + xGap, y + (float)-2 * _2X * zoom + yGap, pObj->type, false, false, 1.0f * zoom);
 
-	DrawFrame(x + xGap + (float)36 * _2X * zoom, y + yGap, (float)40 * _2X * zoom, (float)40 * _2X * zoom, FRAME_NORMAL, cvtDest, cvtLayer, buffering);
+	DrawFrame(x + xGap + (float)36 * _2X * zoom, y + yGap, (float)40 * _2X * zoom, (float)40 * _2X * zoom, FRAME_NORMAL);
 
 	if (IsGetHero(GetObjFromPtr(pObj)) == false) {
-		DrawLock(getSkillSlotLv[i], x + 4 * _2X * zoom + xGap, y + yGap - (float)5 * _2X * zoom, 1.8f * zoom, cvtDest, cvtLayer, buffering);
+		DrawLock(getSkillSlotLv[i], x + 4 * _2X * zoom + xGap, y + yGap - (float)5 * _2X * zoom, 1.8f * zoom);
 	}
 	else if (pObj->hotKey[0].idx == false) {
-		CenterText(TEXT_ALPHA_SKILL, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)10 * _2X * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
-		CenterText(TEXT_ALPHA_EMPTY, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)22 * _2X * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+		CenterText(TEXT_ALPHA_SKILL, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)10 * _2X * zoom, 0.8f * zoom);
+		CenterText(TEXT_ALPHA_EMPTY, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)22 * _2X * zoom, 0.8f * zoom);
 		//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
 		//DrawImage(8 * _2X, 8 * _2X, 224 * _2X, 0 * _2X, x - (float)( - 12 * _2X) * zoom + xGap + (float)37 * _2X * zoom, y - (float)13 * _2X * zoom + yGap, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
 		//SetAlpha(32);
@@ -908,13 +908,13 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom, cocos2d::Rend
 	//	DrawBuyButton()
 	//}
 
-	//ÀÏ´Ü empty¿Í 
+	//ï¿½Ï´ï¿½ emptyï¿½ï¿½ 
 	//if (status)
 	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18 + Abs(8 - frame % 16)], cvtDest, cvtLayer, buffering);
 	//else
 	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18], cvtDest, cvtLayer, buffering);
 
-	DrawQuickIcon(pObj, x + xGap + (float)36 * _2X * zoom, y + yGap, zoom, cvtDest, cvtLayer, buffering);
+	DrawQuickIcon(pObj, x + xGap + (float)36 * _2X * zoom, y + yGap, zoom);
 	/*
 	if (curMenu == 6 && menuCur == 1) {
 		if (count == 5) {
@@ -971,7 +971,7 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom, cocos2d::Rend
 	*/
 }
 
-void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 {
 	int i;
 	int divide = 8;//4´ÜÀ§·Î ³ª´©¶ó´Â°Í
@@ -983,10 +983,10 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 	const signed short* usPtr;
 
 	//ÇÁ·ÎÇÊ »çÁø ±×·ÁÁÖ±â
-	EnemyProfileDraw(x, y - (float)4 * _2X * zoom, GetObjFromPtr(pObj), false, pObj->lv, 1.5f * zoom, cvtDest, cvtLayer, buffering);
+	EnemyProfileDraw(x, y - (float)4 * _2X * zoom, GetObjFromPtr(pObj), false, pObj->lv, 1.5f * zoom);
 
 	//ÇÁ·¹ÀÓ Àâ¾ÆÁÖ±â
-	DrawFrame(x + (float)1.5f * 36 * _2X * zoom, y + (float)0 * _2X * zoom, (float)(34 * 3 * _2X + 20 * _2X) * zoom, (float)(yGap * 2 + 0 * _2X) * zoom, FRAME_NORMAL, cvtDest, cvtLayer, buffering);
+	DrawFrame(x + (float)1.5f * 36 * _2X * zoom, y + (float)0 * _2X * zoom, (float)(34 * 3 * _2X + 20 * _2X) * zoom, (float)(yGap * 2 + 0 * _2X) * zoom, FRAME_NORMAL);
 	
 	//ÇöÀç Àåºñ
 	//DrawLabel(x - (float)(6 * _2X) * zoom, y + (float)8 * _2X * zoom, TEXT_ALPHA_EQUIP, 0.72f * zoom, cvtDest, cvtLayer, buffering);
@@ -994,16 +994,16 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 	for (i = EQUIP_NECK - 1; i >= 0; i--) {
 		usPtr = &equipSlotPos[i * 4];
 
-		DrawEmptyBox(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * zoom * 2, (float)16 * _2X * zoom * 2, cvtDest, cvtLayer, buffering);
-		DrawArray(*(usPtr + 1), x + plusX + (float)*(usPtr + 2) * zoom + (float)4 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom - (float)4 * _2X * zoom, zoom * 2, cvtDest, cvtLayer, buffering);
+		DrawEmptyBox(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * zoom * 2, (float)16 * _2X * zoom * 2);
+		DrawArray(*(usPtr + 1), x + plusX + (float)*(usPtr + 2) * zoom + (float)4 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom - (float)4 * _2X * zoom, zoom * 2);
 
 		if (pObj->equip[*usPtr].type < EMPTY) {
 			if (pObj->equipImg[*usPtr] == 0)
 				grayScale = 20;
 
-			DrawItemIcon(&pObj->equip[*usPtr], pObj, x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, zoom * 2, cvtDest, cvtLayer, buffering);
+			DrawItemIcon(&pObj->equip[*usPtr], pObj, x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, zoom * 2);
 
-			MemRectFrameThick(x + plusX + (float)*(usPtr + 2) * zoom - (float)2 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom + (float)2 * _2X * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, itemColor[pObj->equip[*usPtr].grade], (float)1 * _2X * zoom, cvtDest, cvtLayer, buffering);
+			MemRectFrameThick(x + plusX + (float)*(usPtr + 2) * zoom - (float)2 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom + (float)2 * _2X * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, itemColor[pObj->equip[*usPtr].grade], (float)1 * _2X * zoom);
 
 			//if (*usPtr == EQUIP_RING && pObj->equip[EQUIP_RING].cooldown)
 			//	DrawCycle(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * 2 * zoom, (float)16 * _2X * 2 * zoom, pObj->equip[EQUIP_RING].cooldown, ringOption[pObj->equip[EQUIP_RING].detail * 7 + 3 + Min(3, pObj->equip[EQUIP_RING].grade)] * 120, zoom, cvtDest, cvtLayer, buffering);
@@ -1011,7 +1011,7 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 			if (pObj->equipImg[*usPtr] == 0) {
 				grayScale = 0;
 				SetAlpha(8);
-				MemRect(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * 2 * zoom, (float)16 * _2X * 2 * zoom, 0xFF0000, cvtDest, cvtLayer, buffering);
+				MemRect(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * 2 * zoom, (float)16 * _2X * 2 * zoom, 0xFF0000);
 				SetAlpha(32);
 			}
 
@@ -1019,7 +1019,7 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 		}
 
 		if (hotKeyFrame && hotKeyFrame / 10 == *usPtr + 10) {
-			DrawEffect(EFFECT_SLOT0 + 7 - (hotKeyFrame % 10), x + plusX + (float)*(usPtr + 2) * zoom + (float)8 * _2X * 2 * zoom, y + plusY + (float)*(usPtr + 3) * zoom - (float)8 * _2X * 2 * zoom, LEFT, false, zoom, cvtDest, cvtLayer, buffering);
+			DrawEffect(EFFECT_SLOT0 + 7 - (hotKeyFrame % 10), x + plusX + (float)*(usPtr + 2) * zoom + (float)8 * _2X * 2 * zoom, y + plusY + (float)*(usPtr + 3) * zoom - (float)8 * _2X * 2 * zoom, LEFT, false, zoom);
 			hotKeyFrame--;
 
 			if (hotKeyFrame % 10 == 0)
@@ -1027,10 +1027,10 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom, cocos2d::RenderTextur
 		}
 	}
 
-	//ÇöÀç ¿µ¿õ
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//HeroListDraw(x + (float)(156 * _2X) * zoom, y + (float)8 * _2X * zoom, zoom, false, 64 * _2X, cvtDest, cvtLayer, buffering);
 
-	//ÇöÀç µ¿·á·Î µ¥¸®°í ÀÖ´Â ¸ó½ºÅÍ
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//CrewListDraw(x + (float)(156 * _2X) * zoom, y - (float)62 * _2X * zoom, zoom, false, 48 * _2X, cvtDest, cvtLayer, buffering);
 }
 
@@ -1053,7 +1053,7 @@ int MakeItemType(int seed)
 	//10% È®·ü·Î ¶Ñ²±
 	else if (seed < 334)
 		return ITEM_HELM + type;
-	//10% È®·ü·Î °©¿Ê
+	//10% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	else if (seed < 501)
 		return ITEM_ARMOR + type;
 	//10% È®·ü·Î Àå°©
@@ -1062,7 +1062,7 @@ int MakeItemType(int seed)
 	//10% È®·ü·Î ¹ÙÁö
 	else if (seed < 835)
 		return ITEM_KILT + type;
-	//10% È®·ü·Î ½Å¹ß
+	//10% È®ï¿½ï¿½ï¿½ï¿½ ï¿½Å¹ï¿½
 	else //if (seed < 900)
 		return ITEM_GREAVES + type;
 	//10% È®·ü·Î ¸ñ°ÉÀÌ
@@ -1074,7 +1074,7 @@ int MakeItemType(int seed)
 	//1% È®·ü·Î ÇÏÆ®
 	//else if (seed < 810)
 	//	return ITEM_HEART;
-	//4% È®·ü·Î Äù½ºÆ® ¾ÆÀÌÅÛ
+	//4% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//else if (seed < 850)
 	//	return ITEM_QUEST;
 	//15% È®·ü·Î °ñµå
@@ -1085,7 +1085,7 @@ int MakeItemType(int seed)
 int MakeArenaItem()
 {
 	int temp = Random(1000);
-	// 50% È®·ü·Î Àåºñµå¶ø. //Åõ±âÀå 1Ãþ¾¿ ³»·Á°¥¶§¸¶´Ù 0.5%¾¿ Àåºñµå¶ø·ü»ó½Â(100Ãþ¿¡¼­´Â 100%·Î Àåºñµå¶ø)
+	// 50% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0.5%ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(100ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 100%ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½)
 	//if (temp > (500 - arenaFloor * 5)) {
 	if (temp < 300) {
 		temp = Random(100);
@@ -1148,25 +1148,25 @@ int MakeGachaItem()
 {
 	int temp = Random(1000);
 
-	//19Á¾·ùÀÇ Àåºñ¿¡ ´ëÇØ 5.2%È®·ü
+	//19ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 5.2%È®ï¿½ï¿½
 	//if (temp < ITEM_RING * 52)
 	return 2000 + ITEM_SWORD + Random(ITEM_RING);
-	//2°³ÀÇ ¾Ç¼¼»ç¸®¿¡ ´ëÇØ 1.8% È®·ü
+	//2ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ï¿½ç¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1.8% È®ï¿½ï¿½
 	//else
 	//	return 2000 + ITEM_RING;
 	//else
 	//	return 2000 + ITEM_SWORD + Random(ITEM_NECK);
 	/*
-	//18Á¾·ùÀÇ Àåºñ¿¡ ´ëÇØ 5.2%È®·ü
+	//18ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 5.2%È®ï¿½ï¿½
 	if (temp < ITEM_NECK * 52)
 		return 2000 + ITEM_SWORD + Random(ITEM_NECK);
-	//2°³ÀÇ ¾Ç¼¼»ç¸®¿¡ ´ëÇØ 1.8% È®·ü
+	//2ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ï¿½ç¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1.8% È®ï¿½ï¿½
 	else if (temp < ITEM_NECK * 52 + 2 * 18)
 		return 2000 + ITEM_NECK + Random(2);
 	else
 		return 2000 + ITEM_SWORD + Random(ITEM_NECK);
 	*/
-	//º¸¼®¿¡ ´ëÇØ 3.0%ÀÇ È®·ü
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3.0%ï¿½ï¿½ È®ï¿½ï¿½
 	//else //if (temp < ITEM_NECK * 45 + 2 * 50 + 50)
 	//	return 2000 + ITEM_GEM;
 	//else
@@ -1197,7 +1197,7 @@ int MakeItemDetail(int type, int lv)
 
 	switch (type) {
 	default:
-		//ÀåºñµéÀº ·¹º§¿¡ µû¶ó ±âº» Å¸ÀÔÀÌ Á¤ÇØÁø´Ù.
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº» Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		r = Min(itemTypeCnt[type], lv / 10);
 
 		if (Random(100) < 50)
@@ -1326,7 +1326,7 @@ int MakeItemGrade(int type, int lv, int detail)
 		//°í±Þ : 16%
 		//Èñ±Í : 3%
 		//¼¼Æ® : 0.89%
-		//¿µ¿õ : 0.1%
+		//ï¿½ï¿½ï¿½ï¿½ : 0.1%
 		//Àü¼³ : 0.01%
 		if (basis < (8000 - ao[PLAYER].ps[PS_LUCK] * 5))
 			rt = GRADE_NORMAL;
@@ -1349,7 +1349,7 @@ int MakeItemGrade(int type, int lv, int detail)
 		//°í±Þ : 16%
 		//Èñ±Í : 3%
 		//¼¼Æ® : 0.9%
-		//¿µ¿õ : 0.1%
+		//ï¿½ï¿½ï¿½ï¿½ : 0.1%
 		if (basis < (8000 - ao[PLAYER].ps[PS_LUCK] * 5))
 			return GRADE_NORMAL;
 		else if (basis < (9600 - ao[PLAYER].ps[PS_LUCK]))
@@ -1364,8 +1364,8 @@ int MakeItemGrade(int type, int lv, int detail)
 	case ITEM_GEM:
 		//º¸¼®ÀÇ µî±Þ
 		//°í±Þ : 80%
-		//Èñ±Í : 18% : 30·¹º§ ÀÌ»ó ¸ó½ºÅÍ µå¶ø
-		//¿µ¿õ : 2% : 60·¹º§ ÀÌ»ó ¸ó½ºÅÍ µå¶ø
+		//ï¿½ï¿½ï¿½ : 18% : 30ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½ï¿½ : 2% : 60ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		if (basis < (8000 - ao[PLAYER].ps[PS_LUCK] * 5) || lv < 30)
 			return GRADE_SUPERIOR;
 		else if (basis < (9800 - ao[PLAYER].ps[PS_LUCK] / 2) || lv < 60)
@@ -1400,7 +1400,7 @@ int MakeItemGrade(int type, int lv, int detail)
 			rt = GRADE_SET;
 
 
-		//¿µ¿õ±ÞÀÌ ¾ø´Â ¾ÆÀÌÅÛÀº ¼¼Æ®¸¦ ´ë½Å ¶³±ÅÁØ´Ù.
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 		if (rt == GRADE_SET && (detail & 0x07) < 2)
 			rt = GRADE_RARE;
 
@@ -1412,7 +1412,7 @@ int MakeItemValue(int type, int detail, int grade, int lv)
 {
 	int rt;
 
-	//ÀÌ°÷¿¡¼­ ¾ÆÀÌÅÛ ¹ë·±½º Á¶Àý
+	//ï¿½Ì°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë·±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	switch (type) {
 #ifdef NECKRING_8STAR
 	case ITEM_NECK:
@@ -1471,7 +1471,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 	int i, j;
 	ITEM* it;
 
-	//ÀÎº¥Åä¸®¿¡ ¾î´À°÷¿¡ µé¾î°¥Áö Á¤ÇÏ´Â ºÎºÐ
+	//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½
 	switch (type) {
 	default:
 		//case ITEM_WASTE:
@@ -1517,7 +1517,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 		//ÃÖ´ë°ªÀÌ °¡Àå Å«
 		//if (temp < robin.maxInven) {
 		if (temp < TOTALINVENTORY) {
-			//Á¤ÇØÁø ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛÀ» ³Ö´Â´Ù.
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 			itemObj = temp;
 			MakeItem(&robin.inven[itemObj], type, lv, grade, detail, set);
 
@@ -1552,7 +1552,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 
 		break;
 	case ITEM_STATUE:
-		//»ó È¹µæ½Ã ¼³¸í Ã¢À» µû·Î ¶ç¿î´Ù
+		//ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		itemObj = detail;
 		robin.statue[detail] = true;
 		InitStatue(&ao[raidPlayer]);
@@ -1609,6 +1609,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 
 		if (!alreadySet && emptySlot != -1) {
 			robin.slotCrew[emptySlot] = crewType;
+			crewCnt = GetSlotCrewCnt();
 			SetBattleCrew();
 		}
 	}
@@ -2058,7 +2059,7 @@ bool EquipNextWeapon(void)
 	int curCollectionIdx = GetCurWeaponCollectionsIndex();
 	int nextCollectionIdx = GetNextWeaponCollectionsIndex();
 
-	//¹«±â°¡ ÇÏ³ª¹Û¿¡ ¾ø´Â °æ¿ì
+	//ï¿½ï¿½ï¿½â°¡ ï¿½Ï³ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (curCollectionIdx == nextCollectionIdx)
 		return false;
 
@@ -2087,7 +2088,7 @@ int GetHighestCollections(int index)
 	return highest;
 }
 
-//´Ü ¹«±âÁ¾·ù¿¡´Â ¸ø¾¸
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 int GetItemCount(int type, int detail, int grade)
 {
 	int i, j;
@@ -2101,7 +2102,7 @@ int GetItemCount(int type, int detail, int grade)
 	return j;
 }
 
-//´Ü ÀåÂøµÈ Àåºñ¿Í ÀÎº¥Åä¸® Àåºñ¿ÍÀÇ µ¿±âÈ­°¡ º¸ÀåµÇ¾î¾ß ÇÔ.
+//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ ï¿½ï¿½.
 int GetItemLv(int type, int detail, int grade)
 {
 	int i, j;
@@ -2119,7 +2120,7 @@ int GetItemLv(int type, int detail, int grade)
 int SetStrongestEquip(int type, int detail, int grade)
 {
 	int slot = itemEquipSlot[type];
-	//ÀåÂø½½·ÔÀÌ ºñ¾î ÀÖ°Å³ª
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö°Å³ï¿½
 	if (ao[PLAYER].equip[slot].type == EMPTY) {
 		EquipItem(&ao[PLAYER], &robin.inven[GetInvenIdx(type, detail, grade)]);
 		return slot;
@@ -2219,7 +2220,7 @@ int GetEnemyMomObj(int idx)
 	return false;
 }
 
-//n¹øÂ° ÀûÀÌ ¿ÀºêÁ§Æ® ³Ñ¹ö·Î ¸îÀÎÁö È®ÀÎÇÏ´Â ÇÔ¼ö
+//nï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 int GetObjectNumFromEnemyIdx(int idx)
 {
 	int i, before_idx, after_idx, j = 0;
@@ -2252,7 +2253,7 @@ int GetAttackEnemy(void)
 
 	return j;
 }
-//¿ÀºêÁ§Æ® ³Ñ¹ö·Î ºÎÅÍ ¸î¹øÂ° ÀûÀÎÁö È®ÀÎÇÏ´Â ÇÔ¼ö
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 int GetEnemyBarIdx(int idx)
 {
 	int i, before_idx, after_idx, j = 0;
@@ -2315,7 +2316,7 @@ int CollectionCheck(void)
 			if (GetInvenIdx(itemType, itemDetail, itemGrade) != -1)
 				k++;
 		}
-		//¸¸¾à ÀÌ¹ø¿¡ ¾òÀº ¾ÆÀÌÅÛÀÌ 
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		if (k == COLLECTIONSITEMCNT)
 			return i;
 	}
@@ -2341,9 +2342,9 @@ int GetCollectionIdx(int type, int detail, int grade)
 
 //´ÙÀ½ µÎ°¡Áö ÇÔ¼ö°¡ ÇÊ¿äÇÏ´Ù.
 //1. ÇöÀç ÄÃ·º¼Ç¿¡ ¸ðµç Àåºñ°¡ È¹µæµÈ »óÅÂÀÎÁö.
-//-> ÀÌ°ÍÀ» ÅëÇØ ÇöÀç ½ºÅ³ÀÌ È°¼ºÈ­µÉ ¼ö ÀÖ´Â »óÅÂÀÎÁö¸¦ È®ÀÎÇÒ ¼ö ÀÖ´Ù.
+//-> ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 //2. ÇöÀç ÄÃ·º¼Ç¿¡ ¸ðµç Àåºñ°¡ È¹µæµÇ°í ÀåºñµÈ »óÅÂÀÎÁö
-//-> ÀÌ°ÍÀ» ÅëÇØ ÇöÀç ½ºÅ³ÀÌ »ç¿ëÁßÀÎ »óÅÂÀÎÁö¸¦ È®ÀÎÇÒ ¼ö ÀÖ´Ù.
+//-> ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 //3. ÄÃ·º¼Ç Áß¿¡ Ç®ÀåÂøµÈ ÄÃ·º¼ÇÀÌ ÀÖ´Ù¸é ÀÌ ÄÃ·º¼Ç ÀÎµ¦½º¸¦ ¸®ÅÏÇÏ´Â 
 //->
 bool IsCollectionFull(int collectionIdx)
@@ -2607,7 +2608,7 @@ void ArrangeInven(void)
 		}
 	}
 
-	// ´Ù½Ã robin.inven¿¡ ¹Ý¿µ
+	// ï¿½Ù½ï¿½ robin.invenï¿½ï¿½ ï¿½Ý¿ï¿½
 	for (i = 0; i < TOTALINVENTORY; i++) {
 		memcpy(&robin.inven[i], &tempInven[i], sizeof(ITEM));
 	}
@@ -2646,7 +2647,7 @@ void ArrangeNetInven(void)
 	nInvenCnt = i;
 }
 */
-// ¿ì¼±¼øÀ§¿Í, ÀÎº¥ÀÇ ¹øÈ£¸¦ ¾ò¾î¿Í¼­, ¿ì¼±¼øÀ§º°·Î ¼ÒÆÃÇÑµÚ, ÇØ´çÀÎº¥ÀÇ ¹øÈ£¾ÆÀÌÅÛÀ» º¹»çÇÑ´Ù.
+// ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½Í¼ï¿½, ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½, ï¿½Ø´ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 void OrderInven(void)
 {
 	int i;
@@ -2657,16 +2658,16 @@ void OrderInven(void)
 	if (robin.count <= 1)
 		return;
 
-	//¾ÆÀÌÅÛÀÇ ¿ì¼±¼øÀ§°ªÀ» ¹Þ¾Æ¿Â´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¿Â´ï¿½.
 	for (i = 0; i < robin.count; i++) {
 		invenSort[i] = i;
-		invenSort[TOTALINVENTORY + i] = GetOrder(&robin.inven[i], i);	//¾ÆÀÌÅÛÀÇ ¿ì¼±¼øÀ§ ¹øÈ£¸¦ ¾Ë¾Æ¿Â´Ù.
+		invenSort[TOTALINVENTORY + i] = GetOrder(&robin.inven[i], i);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ë¾Æ¿Â´ï¿½.
 	}
 
 	//QuickSort(invenSort, 0, robin.count);
 	RadixSort(invenSort, robin.count);
 
-	//ÇØ´ç ÀÎµ¦½º ¹øÈ£¸¦ ¾ò¾î¿Í shop¿¡ º¹»çÇÑ´Ù
+	//ï¿½Ø´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ shopï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
 	memset(&a.shop, 0, sizeof(a.shop));
 
 	for (i = 0; i < TOTALINVENTORY; i++)
@@ -2678,10 +2679,10 @@ void OrderInven(void)
 	memcpy(&robin.inven, &a.shop, sizeof(robin.inven));
 }
 
-//case ¼ø¼­´ë·Î ¿ì¼±¼øÀ§
-//ÀåºñÀÇ °æ¿ì ¹ÝÁö°¡ ¿ì¼±¼øÀ§ °¡Àå³ô°í, ¸ñ°ÉÀÌ°¡ °¡Àå ³·À½
-//ÀåºñÀÇ °æ¿ì Âø¿ëÇÒ ¼ö ÀÖ´Â Àåºñ°¡ ¿ì¼±¼øÀ§ ³ôÀ½
-//ÀåºñÀÇ °æ¿ì detailÀÌ ³ôÀ»¼ö·Ï ¿ì¼±¼øÀ§ ³ôÀ½
+//case ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ detailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 int GetOrder(ITEM* it, int index) {
 	int tempOrder = 0;
 
@@ -2839,7 +2840,7 @@ void EquipNewItem(OBJECT* pObj, ITEM* it)
 	int tEquip = itemEquipSlot[it->type];
 	int i;
 
-	//¿ì¼± ÀåÂøÇÒ ¼ö ÀÖ´ÂÁö Ã¼Å©
+	//ï¿½ì¼± ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã¼Å©
 	if (!EquipCheck(pObj, it)) {
 		if (it->broken)
 			menuResult = 20;
@@ -2851,8 +2852,8 @@ void EquipNewItem(OBJECT* pObj, ITEM* it)
 
 	menuResult = 0;
 
-	//ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛÀÌ °íÁ¤ÀÌ±â ¶§¹®¿¡ ±×³É º¹»çÇØÁØ´Ù.
-	//¾÷±×·¹ÀÌµå¸¦ ÇÏ¸é ÀÎº¥Åä¸®¸¦ ¾÷±×·¹ÀÌµå ½ÃÅ°°í, ¸¸¾à ÀÌ ¾ÆÀÌÅÛÀÌ ÇöÀç ÀåÂøµÇ¾î ÀÖ´Â °Å¶ó¸é ÀåºñÀåÂøÀ» ÇÑ¹ø ´õ ÇØÁØ´Ù.
+	//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+	//ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµå¸¦ ï¿½Ï¸ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ ï¿½ï¿½Å°ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½.
 
 	//memcpy(&pObj->equip[tEquip], it, sizeof(ITEM));	//ÀÓ½ÃÀúÀå¼Ò¿¡ ÀÖ´Â°ÍÀ» ÀåºñÇØÁØ´Ù.
 
@@ -2901,7 +2902,7 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 	int i;
 
-	//¿ì¼± ÀåÂøÇÒ ¼ö ÀÖ´ÂÁö Ã¼Å©
+	//ï¿½ì¼± ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã¼Å©
 	if (!EquipCheck(pObj, it)) {
 		if (it->broken)
 			menuResult = 20;
@@ -2913,8 +2914,8 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 
 	menuResult = 0;
 
-	//ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛÀÌ °íÁ¤ÀÌ±â ¶§¹®¿¡ ±×³É º¹»çÇØÁØ´Ù.
-	//¾÷±×·¹ÀÌµå¸¦ ÇÏ¸é ÀÎº¥Åä¸®¸¦ ¾÷±×·¹ÀÌµå ½ÃÅ°°í, ¸¸¾à ÀÌ ¾ÆÀÌÅÛÀÌ ÇöÀç ÀåÂøµÇ¾î ÀÖ´Â °Å¶ó¸é ÀåºñÀåÂøÀ» ÇÑ¹ø ´õ ÇØÁØ´Ù.
+	//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+	//ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµå¸¦ ï¿½Ï¸ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ ï¿½ï¿½Å°ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½.
 
 	memcpy(&pObj->equip[tEquip], it, sizeof(ITEM));	//ÀÓ½ÃÀúÀå¼Ò¿¡ ÀÖ´Â°ÍÀ» ÀåºñÇØÁØ´Ù.
 	/*
@@ -2962,7 +2963,7 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 
 }
 
-//ÇöÀç ÀÌÅ¢¿¡ ÀÖ´Â Àåºñ¸¦ ÀÎº¥Åä¸®¿¡ ³Ö°í ÀÌÅ¢µ¥ÀÌÅÍ¸¦ ¸®¼ÂÇÏ¸é¼­ ÀÌ¹ÌÁö¸¦ ¸ÂÃçÁØ´Ù.
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¢ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½Å¢ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 void UnEquipItem(OBJECT* pObj, ITEM* it)
 {
 	int i;
@@ -2994,7 +2995,7 @@ void UnEquipEffect(OBJECT* pObj, ITEM* it)
 {
 	int i;
 
-	//¹«±âÀÎ °æ¿ì
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (itemEquipSlot[it->type] == EQUIP_WEAPON) {
 		//°ø°ÝÀ» Áß´Ü½ÃÅ²´Ù.
 		pObj->attack = false;
@@ -3007,7 +3008,7 @@ void UnEquipEffect(OBJECT* pObj, ITEM* it)
 #endif
 #endif
 	}
-	//¹ÝÁöÀÎ °æ¿ì
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	else if (itemEquipSlot[it->type] == EQUIP_RING) {
 		//´ÜÃà½½·Ô¿¡¼­ »èÁ¦ÇÑ´Ù.
 		for (i = 0; i < MAXHOTKEY; i++) {
@@ -3037,7 +3038,7 @@ int UseItem(OBJECT* pObj, int idx)
 
 	switch (it->type) {
 	case ITEM_WASTE:
-		//»ç¿ë ºÒ°¡ Á¶°Ç
+		//ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		switch (it->detail) {
 			const unsigned char* ucPtr;
 
@@ -3259,7 +3260,7 @@ void UseRing(OBJECT* pObj, int idx)
 		pObj->statusRestore = 1;
 #endif
 		break;
-	case ITEM_RING1:	//ÅëÂûÀÇ ¹ÝÁö(½Ç¸í Á¦°Å)
+	case ITEM_RING1:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		useV = BLIND;
 #ifdef USERINGFORALL
 		for (i = PLAYER; i < PLAYERALL; i++)
@@ -3269,7 +3270,7 @@ void UseRing(OBJECT* pObj, int idx)
 		pObj->statusRestore = 1;
 #endif
 		break;
-	case ITEM_RING2:	//½Ã°øÀÇ ¹ÝÁö(±âÀý Á¦°Å)
+	case ITEM_RING2:	//ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		useV = STUN;
 #ifdef USERINGFORALL
 		for (i = PLAYER; i < PLAYERALL; i++)
@@ -3279,7 +3280,7 @@ void UseRing(OBJECT* pObj, int idx)
 		pObj->statusRestore = 1;
 #endif
 		break;
-	case ITEM_RING3:	//ÇØ¹æÀÇ ¹ÝÁö(½½·Î¿ì Á¦°Å)
+	case ITEM_RING3:	//ï¿½Ø¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		useV = SLOW;
 #ifdef USERINGFORALL
 		for (i = PLAYER; i < PLAYERALL; i++)
@@ -3314,7 +3315,7 @@ void UseRing(OBJECT* pObj, int idx)
 #endif
 		break;
 	case ITEM_RING6:	//Èñ»ýÀÇ ¹ÝÁö(¸¶·Â È¸º¹x ¹°¸®µ¥¹ÌÁö Èí¼ö Áõ°¡)
-		//|e»ç¿ë½Ã |i%d%%|jÈ®·ü·Î Ãß°¡Å¸°Ý
+		//|eï¿½ï¿½ï¿½ï¿½ |i%d%%|jÈ®ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½Å¸ï¿½ï¿½
 	//	pObj->mp = Min(pObj->ps[PS_MP], pObj->mp + UpDiv(it->value * (100 + pObj->ps[PS_POTION]), 100));
 	//	pObj->mpRestore = 1;
 		useV = INC_EXTRA_RING;
@@ -3331,7 +3332,7 @@ void UseRing(OBJECT* pObj, int idx)
 		RefreshStat(pObj);
 #endif
 		break;
-	case ITEM_RING16:	//¿µÈ­ÀÇ ¹ÝÁö(½ºÅ³ Àç»ç¿ë ½Ã°£ °¨¼Ò)
+	case ITEM_RING16:	//ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½)
 #ifdef USERINGFORALL
 		for (i = PLAYER; i < PLAYERALL; i++)
 			if (ao[i].active == true && ao[i].dead == false)
@@ -3351,47 +3352,47 @@ void UseRing(OBJECT* pObj, int idx)
 		//case ITEM_RING7:	//ÆøÁÖÀÇ ¹ÝÁö(°ø°Ý·Â Áõ°¡)
 		//case ITEM_RING8:	//°ñ·½ÀÇ ¹ÝÁö(¹æ¾îµµ Áõ°¡)
 		//case ITEM_RING9:	//±¤´ëÀÇ ¹ÝÁö(È¸ÇÇ Áõ°¡)
-		//case ITEM_RING10:	//¿øÇÑÀÇ ¹ÝÁö(°üÅë Áõ°¡)
-		//case ITEM_RING11:	//½Å³äÀÇ ¹ÝÁö(ÀûÁß Áõ°¡)
+		//case ITEM_RING10:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		//case ITEM_RING11:	//ï¿½Å³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		//case ITEM_RING12:	//±¤Æ÷ÀÇ ¹ÝÁö(±âÀý°ø°Ý Áõ°¡)
-		//case ITEM_RING13:	//½ÂÀÚÀÇ ¹ÝÁö(Ä¡¸íÅ¸ Áõ°¡)
+		//case ITEM_RING13:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(Ä¡ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½)
 		//case ITEM_RING14:	//±Ã±ØÀÇ ¹ÝÁö(Ä¡¸íÅ¸ µ¥¹ÌÁö Áõ°¡)
-		//case ITEM_RING15:	//Â÷¿øÀÇ ¹ÝÁö(Àû ¹æ¾îµµ ¹«½Ã Áõ°¡)
+		//case ITEM_RING15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 #ifdef USERINGFORALL
 		for (i = PLAYER; i < PLAYERALL; i++)
 			if (ao[i].active == true && ao[i].dead == false) {
-				if (it->detail == ITEM_RING9) {//±¤´ëÀÇ ¹ÝÁö(37)//|e»ç¿ë½Ã |bÈ¸ÇÇ |i%d%% |bÁõ°¡
+				if (it->detail == ITEM_RING9) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(37)//|eï¿½ï¿½ï¿½ï¿½ |bÈ¸ï¿½ï¿½ |i%d%% |bï¿½ï¿½ï¿½ï¿½
 					ao[i].mpRestore = 1;
 				}
-				else if (it->detail == ITEM_RING10) {//¿øÇÑÀÇ ¹ÝÁö(38)//|e»ç¿ë½Ã |b°üÅë°ø°ÝÈ®·ü |i%d%% |bÁõ°¡
+				else if (it->detail == ITEM_RING10) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(38)//|eï¿½ï¿½ï¿½ï¿½ |bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½ |i%d%% |bï¿½ï¿½ï¿½ï¿½
 					ao[i].mpDrain = 1;
 				}
-				else if (it->detail == ITEM_RING15) {//Â÷¿øÀÇ ¹ÝÁö(43)//|en.»ç¿ë½Ã |bÀû¹æ¾îµµ°¨¼Ò |i%d
+				else if (it->detail == ITEM_RING15) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(43)//|en.ï¿½ï¿½ï¿½ï¿½ |bï¿½ï¿½ï¿½ï¿½îµµï¿½ï¿½ï¿½ï¿½ |i%d
 					ao[i].hpDrain = 1;
 				}
 			}
 #endif
 		useV = (it->detail - ITEM_RING7) + INC_DAMAGE_RING;
 		break;
-	case ITEM_RING17:	//Çà¿îÀÇ ¹ÝÁö(°æÇèÄ¡ È¹µæ)
+	case ITEM_RING17:	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ä¡ È¹ï¿½ï¿½)
 		useV = INC_EXP_RING;
 		break;
 	}
 
 	if (useV) {
 		switch (it->detail) {
-		case ITEM_RING3:	//ÇØ¹æÀÇ ¹ÝÁö(31)//|e»ç¿ë½Ã|i%d%%|jÈ®·ü·Î »óÅÂÀÌ»óÁ¦°Å
+		case ITEM_RING3:	//ï¿½Ø¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(31)//|eï¿½ï¿½ï¿½ï¿½|i%d%%|jÈ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì»ï¿½ï¿½ï¿½ï¿½ï¿½
 #ifdef RINGERASEALLDEBUF
 #ifdef USERINGFORALL
 			for (i = PLAYER; i < PLAYERALL; i++)
 				if (ao[i].active == true && ao[i].dead == false)
 					if (pObj->equip[EQUIP_RING].value > Random(1000)) {
-						ao[i].ringValue[ITEM_RING3] = pObj->equip[EQUIP_RING].value;//È¸º¹¿¡ ¼º°øÇÏ¸é
+						ao[i].ringValue[ITEM_RING3] = pObj->equip[EQUIP_RING].value;//È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
 						for (j = 0; j < TOTALDEBUF; j++)
 							ao[i].debuf[j] = 0;
 					}
 					else
-						ao[i].ringValue[ITEM_RING3] = 1;//È¸º¹¿¡ ½ÇÆÐÇÏ¸é
+						ao[i].ringValue[ITEM_RING3] = 1;//È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
 #else
 			if (Random(100) < it->value)
 				for (j = 0; j < TOTALDEBUF; j++)
@@ -3404,7 +3405,7 @@ void UseRing(OBJECT* pObj, int idx)
 			break;
 		case ITEM_RING0:	//»ç½ÅÀÇ ¹ÝÁö(28)
 		case ITEM_RING1:	//ÅëÂûÀÇ ¹ÝÁö(29)
-		case ITEM_RING2:	//½Ã°øÀÇ ¹ÝÁö(30)
+		case ITEM_RING2:	//ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(30)
 		case ITEM_RING4:	//»êÈ£¼® ¹ÝÁö(32)
 #ifdef USERINGFORALL
 			for (i = PLAYER; i < PLAYERALL; i++)
@@ -3416,21 +3417,21 @@ void UseRing(OBJECT* pObj, int idx)
 				debuf[useV] = 0;
 #endif
 			break;
-		case ITEM_RING5:	//»ýÈ¯ÀÇ ¹ÝÁö(33)//|e»ç¿ë½Ã |jHP |i%d |jÈ¸º¹
+		case ITEM_RING5:	//ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(33)//|eï¿½ï¿½ï¿½ï¿½ |jHP |i%d |jÈ¸ï¿½ï¿½
 			break;
 
-		case ITEM_RING6:	//Èñ»ýÀÇ ¹ÝÁö(34)//|e»ç¿ë½Ã |i%d%%|jÈ®·ü·Î Ãß°¡Å¸°Ý
+		case ITEM_RING6:	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(34)//|eï¿½ï¿½ï¿½ï¿½ |i%d%%|jÈ®ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½Å¸ï¿½ï¿½
 		case ITEM_RING7:	//ÆøÁÖÀÇ ¹ÝÁö(35)
 		case ITEM_RING8:	//°ñ·½ÀÇ ¹ÝÁö(36)
-		case ITEM_RING9:	//±¤´ëÀÇ ¹ÝÁö(37)//|e»ç¿ë½Ã |jÈ¸ÇÇ |i%d%%|jÁõ°¡
-		case ITEM_RING10:	//¿øÇÑÀÇ ¹ÝÁö(38)//|e»ç¿ë½Ã|j°üÅë°ø°ÝÈ®·ü|i%d%%|jÁõ°¡
-		case ITEM_RING11:	//½Å³äÀÇ ¹ÝÁö(39)
+		case ITEM_RING9:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(37)//|eï¿½ï¿½ï¿½ï¿½ |jÈ¸ï¿½ï¿½ |i%d%%|jï¿½ï¿½ï¿½ï¿½
+		case ITEM_RING10:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(38)//|eï¿½ï¿½ï¿½ï¿½|jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½|i%d%%|jï¿½ï¿½ï¿½ï¿½
+		case ITEM_RING11:	//ï¿½Å³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(39)
 		case ITEM_RING12:	//±¤Æ÷ÀÇ ¹ÝÁö(40)
-		case ITEM_RING13:	//½ÂÀÚÀÇ ¹ÝÁö(41)
+		case ITEM_RING13:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(41)
 		case ITEM_RING14:	//±Ã±ØÀÇ ¹ÝÁö(42)
-		case ITEM_RING15:	//Â÷¿øÀÇ ¹ÝÁö(43)//|e»ç¿ë½Ã |jÀû¹æ¾îµµ°¨¼Ò -|i%d
-		case ITEM_RING16:	//¿µÈ­ÀÇ ¹ÝÁö(44)
-		case ITEM_RING17:	//Çà¿îÀÇ ¹ÝÁö(45)
+		case ITEM_RING15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(43)//|eï¿½ï¿½ï¿½ï¿½ |jï¿½ï¿½ï¿½ï¿½îµµï¿½ï¿½ï¿½ï¿½ -|i%d
+		case ITEM_RING16:	//ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(44)
+		case ITEM_RING17:	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(45)
 #ifdef USERINGFORALL
 			for (i = PLAYER; i < PLAYERALL; i++)
 				if (ao[i].active == true && ao[i].dead == false) {
@@ -3486,7 +3487,7 @@ void UseItemBox(ITEM* it)
 		//°í±Þ 10%
 		//Èñ±Í 50%
 		//¼¼Æ® 30%
-		//¿µ¿õ 9.7%
+		//ï¿½ï¿½ï¿½ï¿½ 9.7%
 		//Àü¼³ 0.3%
 		if (tUse < 100)
 			arenaRewardGrade = GRADE_SUPERIOR;
@@ -3582,16 +3583,16 @@ void SetHotKey(OBJECT* pObj, int type, int idx, int where)
 		break;
 	}
 
-	//°°Àº ½ºÅ³ÀÌ ´ÜÃàÅ°·Î ÁöÁ¤µÇ¾ú´ÂÁö °Ë»ç
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
 	for (i = 0; i < MAXHOTKEY; i++) {
 		if (i != where && pObj->hotKey[i].type == type) {
 			if (type == HOTKEY_ITEM) {
-				//°°Àº ½ºÅ³ÀÌ ÀÖ´Â°æ¿ì ÇØÁ¦½ÃÄÑÁØ´Ù
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ö´Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
 				if (pObj->hotKey[i].idx == pObj->hotKey[where].idx)
 					FreeHotKey(pObj, i);
 			}
 			else {
-				//°°Àº ½ºÅ³ÀÌ ÀÖ´Â°æ¿ì ÇØÁ¦½ÃÄÑÁØ´Ù
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ö´Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
 				if (pObj->hotKey[i].idx == idx)
 					FreeHotKey(pObj, i);
 			}
@@ -3608,7 +3609,7 @@ void FreeHotKey(OBJECT* pObj, int where)
 	if (pObj->hotKey[where].type == HOTKEY_RING) {
 		int i;
 
-		//¹öÇÁÈ¿°ú¸¦ Áö¿öÁØ´Ù.
+		//ï¿½ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 		for (i = INC_DAMAGE_RING; i < INC_DAMAGE_ARENA; i++)
 			pObj->buff[i] = 0;
 
@@ -3720,7 +3721,7 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 		switch (it->type) {
 		case ITEM_QUEST:
 		default:
-			//»óÁ¡¿¡¼­ ¿©·¯°³ »ì¼ö ÀÖ´Â ¾ÆÀÌÅÛÀ» »ç°Å³ª ÆÄ´Â ÄÁÆßÃ¢ÀÎ °æ¿ì
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ ï¿½Ä´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½
 			if (menuDepth == 2 && shopType != SHOPTYPE_CRAFT && it->type >= ITEM_WASTE && it->type < ITEM_RECIPE) {
 				memset(dmgStr, 0, 100);
 				sprintf(dmgStr, textId[TEXT_SHOP_COUNT], it->name, menuItemCount);
@@ -3767,7 +3768,7 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 			//TextFree(temp);
 			break;
 		case ITEM_NETITEM:
-			//»óÁ¡¿¡¼­ ¿©·¯°³ »ì¼ö ÀÖ´Â ¾ÆÀÌÅÛÀ» »ç°Å³ª ÆÄ´Â ÄÁÆßÃ¢ÀÎ °æ¿ì
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ï¿½ ï¿½Ä´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½
 			if (menuDepth == 2 && menuItemCount > 1) {
 				memset(dmgStr, 0, 100);
 				sprintf(dmgStr, textId[TEXT_SHOP_COUNT], it->name, menuItemCount);
@@ -3789,7 +3790,7 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 	isT = 0;
 	isC = 0;
 
-	//°­È­¿¡ µû¸¥ ±âº»°ª º¯°æ
+	//ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	value = it->value;
 
 
@@ -3816,7 +3817,7 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 	case ITEM_SWORD:
 	case ITEM_GUN:
 	case ITEM_BOOMERANG:
-		//ÇöÀç ÀåÂøÁßÀÎ ¹«±âÀÎ °æ¿ì
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		//if (it == &robin.charDatap[pObj->type].equip[EQUIP_WEAPON]) {
 		//	tv1 = robin.ps[PS_DMGMOD];
 		//	tv2 = robin.ps[PS_DMGADD];
@@ -3989,7 +3990,7 @@ void SetItemString_Gem(ITEM* it)
 					sprintf(optionStr[i], "%s |e%f %s", TEXTPTR(temp), valueInt, TEXTPTR(temp + 1));
 					//sprintf(optionStr[i], TEXTPTR(temp), Abs(ao[idx].ps[optionInfo[i * 2]]) - defaultStat[3 * 0 + ao[idx].type]);
 					break;
-					//¾Æ¹«°Íµµ ¾ø´Â °æ¿ì
+					//ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				case SUFFIX_ENEMYREGEN:
 				case SUFFIX_POISON_IMMUNE:
 				case SUFFIX_BLIND_IMMUNE:
@@ -4001,7 +4002,7 @@ void SetItemString_Gem(ITEM* it)
 					sprintf(optionStr[i], "%s", TEXTPTR(temp));
 					//sprintf(optionStr[i], TEXTPTR(temp), Abs(ao[idx].ps[optionInfo[i * 2]]));
 					break;
-					//Àý´ë°ªÀÎ °æ¿ì
+					//ï¿½ï¿½ï¿½ë°ªï¿½ï¿½ ï¿½ï¿½ï¿½
 				case PREFIX_STR:
 				case PREFIX_FIRE_REGIST:
 				case PREFIX_FROST_REGIST:
@@ -4036,7 +4037,7 @@ void SetItemString_Gem(ITEM* it)
 					//sprintf(optionStr[i], "%s |e%ld% %s", TEXTPTR(temp), valueInt, TEXTPTR(temp + 1));
 					//sprintf(optionStr[i], TEXTPTR(temp), Abs(ao[idx].ps[optionInfo[i * 2]]));
 					break;
-					//%ÀÎ °æ¿ì
+					//%ï¿½ï¿½ ï¿½ï¿½ï¿½
 				default:
 					temp = TEXT_PREFIX_DESC_SEP + *ucPtr * 2;
 					//valueInt = Abs(value);
@@ -4087,7 +4088,7 @@ void SetItemString_Gem(ITEM* it)
 		}
 
 #ifdef SETITEM
-		//¼¼Æ® È¿°ú ¿É¼Ç ÅØ½ºÆ® ¼³Á¤
+		//ï¿½ï¿½Æ® È¿ï¿½ï¿½ ï¿½É¼ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 		if (it->grade == GRADE_SET) {
 			ucPtr = &setOption[(it->set % 100) * SETOPTIONDATASIZE];
 			memset(setStr, 0, sizeof(setStr));
@@ -4096,7 +4097,7 @@ void SetItemString_Gem(ITEM* it)
 			sprintf(setStr[0], "|q%s|h(%d/%d)", TEXTPTR(TEXT_SETNAME_START + (it->set % 100)), ao[PLAYER].setCount[itemEquipSlot[it->type]], *(ucPtr + 15));
 			isT += 20;
 
-			//¼¼Æ® ¿É¼Ç
+			//ï¿½ï¿½Æ® ï¿½É¼ï¿½
 			for (i = 1; i < 7 && *(ucPtr + 1) < EMPTY; i++, ucPtr += 3) {
 				sprintf(setStr[i], TEXTPTR(TEXT_PREFIX_DESC + *(ucPtr + 1)), *(ucPtr + 2));
 				sprintf(setStr[i], "%s|k(%dp)", setStr[i], *ucPtr);
@@ -4169,12 +4170,12 @@ void SetSocketString(int idx, int type)
 
 	//¼ÒÄÏ¿¡ ÀåÂøµÈ º¸¼® ¼³¸í ¼ÂÆÃ
 	if (it->socket[type] < EMPTYINT) {
-		//º¸¼® ¿É¼Ç ¼³¸í ÅØ½ºÆ® Á¶ÇÕ
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 		memset(tempStr, 0, sizeof(tempStr));
 		temp = TEXT_PREFIX_DESC + it->option[6 + type][0];
 		sprintf(tempStr, TEXTPTR(temp), it->option[6 + type][1]);
 
-		//º¸¼® ÀÌ¸§°ú ¿É¼Ç ÅØ½ºÆ®¸¦ Á¶ÇÕ
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		temp = TEXT_ITEMNAME_GEM + it->socket[type] % 10;
 		sprintf(recipeDesc, "|b%s|b:%s", TEXTPTR(temp), tempStr);
 		recipeDesc[1] = itemColorText[it->socket[type] / 10];
@@ -4233,14 +4234,14 @@ void SetActiveSkillString(int index, char* str, unsigned short width, unsigned s
 				sprintf(strPtr, "%s %s |r%d%%|b%s %s%d%s", TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), TEXTPTR(TEXT_SKILL_DEFAULTATK), (int)RoundDiv(skillDescMod[ao[raidPlayer].type * 8 + (index % 30) - SKILL_ROBIN6] * (100 + *(skPtr2 + 6 + skillValue)), 10), TEXTPTR(TEXT_SKILL_POWER), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
 				break;
 			case SKILL_ROBIN13:	//VIT°¡ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
-			case SKILL_ROBIN14:	//¹Þ´Â µ¥¹ÌÁöÀÇ |i%d%%|b¿¡ ÇØ´çÇÏ´Â MP¸¦ ¼Ò¸ðÇÏ¿© ÇÇÇØ¸¦ |r%d%%|b¸¸Å­ °¨¼Ò½ÃÅ²´Ù. %s
-			case SKILL_ROBIN15:	//Àû¿¡°Ô ÁÖ´Â µ¥¹ÌÁö¸¦ |r%d%%|b¸¸Å­ Áõ°¡½ÃÅµ´Ï´Ù. %s//È¸ÇÇ ¼º°ø½Ã ÃÖ´ë HPÀÇ |r%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_ROBIN14:	//ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d%%|bï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ MPï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ø¸ï¿½ |r%d%%|bï¿½ï¿½Å­ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½. %s
+			case SKILL_ROBIN15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½Ï´ï¿½. %s//È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ HPï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ HPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_ROBIN16:	//ÃÖ´ë HPÀÇ |i%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÕ´Ï´Ù. %s
-			case SKILL_ROBIN17:	//ÇÇÇØ¸¦ ÀÔÀ» ½Ã ¹ÞÀº µ¥¹ÌÁöÀÇ |r%d%%|b¸¦ Àû¿¡°Ô ¹Ý»çÇÑ´Ù. %s
+			case SKILL_ROBIN17:	//ï¿½ï¿½ï¿½Ø¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_DIANA14:	//¹æ¾î·ÂÀÇ |r%d%%|b¸¦ Èñ»ýÇÏ¸é¼­ °ø°Ý·ÂÀ» |r%d%%|b¸¸Å­ Áõ°¡½ÃÅ²´Ù. %s
-			case SKILL_DIANA15:	//Àû¿¡°Ô ÀÔÈù µ¥¹ÌÁöÀÇ |i%d%%|b¸¸Å­ MP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_DIANA15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d%%|bï¿½ï¿½Å­ MPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_DIANA16:	//Å©¸®Æ¼ÄÃ ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
-			case SKILL_MAXX14:	//Àû¿¡°Ô ÀÔÈù µ¥¹ÌÁöÀÇ |r%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_MAXX14:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ HPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_MAXX15:	//È¸ÇÇ ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ »ó½ÂÇÑ´Ù. %s
 			case SKILL_MAXX17:	//±âÀý °ø°Ý ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
 				memset(strPtr, 0, sizeof(strPtr));
@@ -4248,7 +4249,7 @@ void SetActiveSkillString(int index, char* str, unsigned short width, unsigned s
 				if (index == SKILL_MAXX14)
 					seconds += *(skPtr2 + 6 + skillValue) / FPS;
 #endif
-				//|e%d%%ÃÊ |bµ¿¾È %s
+				//|e%d%%ï¿½ï¿½ |bï¿½ï¿½ï¿½ï¿½ %s
 				switch (index) {
 				case SKILL_ROBIN13:
 					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN13_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN13_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
@@ -4294,7 +4295,7 @@ void SetActiveSkillString(int index, char* str, unsigned short width, unsigned s
 				seconds = ao[raidPlayer].buff[INC_IGNORE];
 				sprintf(strPtr, "|e%d%s %s |b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA17_SEP1), TEXTPTR(TEXT_SKILL_DIANA17_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
 				break;
-			case SKILL_MAXX16:	//È¸ÇÇ ¼º°ø½Ã |i%d|b¸¸Å­ MP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_MAXX16:	//È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d|bï¿½ï¿½Å­ MPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 				sprintf(strPtr, "|b%s %s%d%s", TEXTPTR(TEXT_SKILL_DIANA16_SEP1), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
 				break;
 			}
@@ -4302,7 +4303,7 @@ void SetActiveSkillString(int index, char* str, unsigned short width, unsigned s
 	}
 
 	memcpy(str, strPtr, sizeof(str));
-	isT = (LineTextStr(str, 1000, 1000, width, -1, -1, 1.0f, gScreenBuffer, gScreenLayer, false)) * 13 * _2X + height;
+	isT = (LineTextStr(str, 1000, 1000, width, -1, -1, 1.0f)) * 13 * _2X + height;
 }
 
 void SetActiveSkillBodyString(int index)
@@ -4350,30 +4351,30 @@ void SetActiveSkillBodyString(int index)
 			//¾×Æ¼ºê¶ó¸é
 			switch (index) {
 			default:
-				//case SKILL_ROBIN6:		//¾Æ·¡¿¡¼­ºÎÅÍ °ËÀ» À§·Î º£¾î¿Ã¸®´Â ±â¼ú. %s
-				//case SKILL_ROBIN7:		//³¯Ä«·Î¿î ¿¬¼Ó Âî¸£±â·Î ÀûÀ» °ø°ÝÇÑ´Ù. %s
-				//case SKILL_ROBIN8:		//°¡·Î·Î °ËÀ» ÈÖµÑ·¯ Àü¹æÀÇ ¿©·¯ ÀûÀ» µ¿½Ã¿¡ °ø°ÝÇÑ´Ù. %s
+				//case SKILL_ROBIN6:		//ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½. %s
+				//case SKILL_ROBIN7:		//ï¿½ï¿½Ä«ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¸£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. %s
+				//case SKILL_ROBIN8:		//ï¿½ï¿½ï¿½Î·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ÖµÑ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 				//case SKILL_ROBIN9:		//¸öÅë¹ÚÄ¡±â·Î ÀûÀ» µÚ·Î ³¯·Á¹ö¸°´Ù. %s
-				//case SKILL_ROBIN10:	//Ä®µîÀ¸·Î ³»¸®ÃÄ ÀûÀ» ±âÀý½ÃÅ²´Ù. %s
+				//case SKILL_ROBIN10:	//Ä®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½. %s
 				//case SKILL_ROBIN11:	//°ËÀ» È¸Àü½ÃÅ°¸ç Âî¸£´Â °­·ÂÇÑ Âî¸£±â. %s
-				//case SKILL_ROBIN12:	//°­·ÂÇÑ ¿¬¼Ó°ø°ÝÀ» °¡ÇÏ´Â ÃÊÇÊ»ì±â. %s
+				//case SKILL_ROBIN12:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ê»ï¿½ï¿½. %s
 				//case SKILL_DIANA6:		//3¹æÇâÀ¸·Î µ¿½Ã¿¡ ÃÑÀ» ¹ß»çÇÑ´Ù. %s
-				//case SKILL_DIANA7:		//ÁöÇü¿¡ µû¶ó ¹Ý»çµÇ´Â ·¹ÀÌÀú¸¦ ¹ß»çÇÑ´Ù. %s
-				//case SKILL_DIANA8:		//°­·ÂÇÑ È­¿°À» ¹æ»çÇÏ¿© ÀûÀ» ¿¬Å¸ÇÑ´Ù. %s
-				//case SKILL_DIANA9:		//º®ÀÌ³ª Àû¿¡ ¸íÁßÇÏ¸é Æø¹ßÇÏ´Â ·ÎÄÏÅºÀ» ¹ß»çÇÑ´Ù. %s
+				//case SKILL_DIANA7:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ñ´ï¿½. %s
+				//case SKILL_DIANA8:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½Ñ´ï¿½. %s
+				//case SKILL_DIANA9:		//ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ñ´ï¿½. %s
 				//case SKILL_DIANA10:	//ÀûÀ» ÃßÀûÇÏ´Â À¯µµ¹Ì»çÀÏÀ» ¹ß»çÇÑ´Ù. %s
 				//case SKILL_DIANA11:	//ÃÑÀ» ³­»çÇÏ¿© ÁÖÀ§ÀÇ ÀûÀ» °ø°ÝÇÏ´Â ÃÊÇÊ»ì±â. %s
 				//case SKILL_DIANA12:	//ÀûÀ» Á¶ÁØÇÑ µÚ À§¼º·¹ÀÌÀú°¡ ¹ß»çµÈ´Ù. %s
-				//case SKILL_MAXX7:		//µ¹·ÁÂ÷±â·Î ÁÖÀ§ÀÇ ÀûÀ» °ø°ÝÇÏ¸ç, ºÎ¸Þ¶ûÀÌ ¾ø¾îµµ »ç¿ëÀÌ °¡´ÉÇÏ´Ù. %s
+				//case SKILL_MAXX7:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½Î¸Þ¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. %s
 				//case SKILL_MAXX8:		//»çÁ¤°Å¸®°¡ Âª°í °üÅë·ÂÀÌ ÁÁÀº ÅõÃ´±â¼ú. %s
 				//case SKILL_MAXX9:		//À§ÂÊÀÇ ÀûÀ» °ø°ÝÇÏ´Â ÅõÃ´±â¼ú. %s
 				//case SKILL_MAXX10:		//³¯¾Æ°£ ºÎ¸Þ¶ûÀÌ ¾Õ¿¡¼­ ¸Ó¹°¸ç È¸ÀüÇÑ´Ù. %s
-				//case SKILL_MAXX11:		//ºÎ¸Þ¶ûÀÌ °¡Àå °¡±î¿î ÀûÀ» ÃßÀûÇÏ¿© °ø°ÝÇÑ µÚ µ¹¾Æ¿Â´Ù. %s
+				//case SKILL_MAXX11:		//ï¿½Î¸Þ¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¿Â´ï¿½. %s
 				//case SKILL_MAXX12:		//´øÁ®Áø ºÎ¸Þ¶ûÀÌ ÁÖÀ§ÀÇ ÀûÀ» ¸ðµÎ °ø°ÝÇÏ´Â ÅõÃ´±â¼ú. %s
-				//case SKILL_MAXX13:		//°­·ÂÇÑ ¿À¿À¶ó¸¦ ÈÖ°¨¾Æ ÀüÈÄÀÇ ÀûÀ» ¼¶¸êÇÏ´Â ÃÊÇÊ»ì±â. %s
+				//case SKILL_MAXX13:		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ê»ï¿½ï¿½. %s
 				/*
 				//°ø°Ý½ºÅ³·ù
-					//(Àç»ç¿ë ´ë±â½Ã°£:|j%dÃÊ|b)
+					//(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½:|j%dï¿½ï¿½|b)
 				//sprintf(strPtr, TEXTPTR(TEXT_SKILL_ETC2), RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[PLAYER].ps[PS_DELAY] : 0)), 1200));
 
 				//MP¸¦ |i%d%%|b¸¸Å­ ¼ÒºñÇÑ´Ù. %s
@@ -4393,18 +4394,18 @@ void SetActiveSkillBodyString(int index)
 				sprintf(strPtr, "%s %s |r%d%%|b%s", TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), TEXTPTR(TEXT_SKILL_DEFAULTATK), (int)RoundDiv(skillDescMod[ao[raidPlayer].type * 8 + (index % 30) - SKILL_ROBIN6] * (100 + *(skPtr2 + 6 + skillValue)), 10), TEXTPTR(TEXT_SKILL_POWER));
 				break;
 			case SKILL_ROBIN13:	//VIT°¡ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
-			case SKILL_ROBIN14:	//¹Þ´Â µ¥¹ÌÁöÀÇ |i%d%%|b¿¡ ÇØ´çÇÏ´Â MP¸¦ ¼Ò¸ðÇÏ¿© ÇÇÇØ¸¦ |r%d%%|b¸¸Å­ °¨¼Ò½ÃÅ²´Ù. %s
-			case SKILL_ROBIN15:	//Àû¿¡°Ô ÁÖ´Â µ¥¹ÌÁö¸¦ |r%d%%|b¸¸Å­ Áõ°¡½ÃÅµ´Ï´Ù. %s//È¸ÇÇ ¼º°ø½Ã ÃÖ´ë HPÀÇ |r%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_ROBIN14:	//ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d%%|bï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ MPï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ø¸ï¿½ |r%d%%|bï¿½ï¿½Å­ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½. %s
+			case SKILL_ROBIN15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½Ï´ï¿½. %s//È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ HPï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ HPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_ROBIN16:	//ÃÖ´ë HPÀÇ |i%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÕ´Ï´Ù. %s
-			case SKILL_ROBIN17:	//ÇÇÇØ¸¦ ÀÔÀ» ½Ã ¹ÞÀº µ¥¹ÌÁöÀÇ |r%d%%|b¸¦ Àû¿¡°Ô ¹Ý»çÇÑ´Ù. %s
+			case SKILL_ROBIN17:	//ï¿½ï¿½ï¿½Ø¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_DIANA14:	//¹æ¾î·ÂÀÇ |r%d%%|b¸¦ Èñ»ýÇÏ¸é¼­ °ø°Ý·ÂÀ» |r%d%%|b¸¸Å­ Áõ°¡½ÃÅ²´Ù. %s
-			case SKILL_DIANA15:	//Àû¿¡°Ô ÀÔÈù µ¥¹ÌÁöÀÇ |i%d%%|b¸¸Å­ MP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_DIANA15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d%%|bï¿½ï¿½Å­ MPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_DIANA16:	//Å©¸®Æ¼ÄÃ ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
-			case SKILL_MAXX14:	//Àû¿¡°Ô ÀÔÈù µ¥¹ÌÁöÀÇ |r%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_MAXX14:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |r%d%%|bï¿½ï¿½Å­ HPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 			case SKILL_MAXX15:	//È¸ÇÇ ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ »ó½ÂÇÑ´Ù. %s
 			case SKILL_MAXX17:	//±âÀý °ø°Ý ¼º°ø·üÀÌ |r%d%%|b¸¸Å­ Áõ°¡ÇÑ´Ù. %s
 				/*
-								//(Àç»ç¿ë ´ë±â½Ã°£:|j%dÃÊ|b)
+								//(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½:|j%dï¿½ï¿½|b)
 				//sprintf(strPtr, TEXTPTR(TEXT_SKILL_ETC2), RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[PLAYER].ps[PS_DELAY] : 0)), 1200));
 
 				//MP¸¦ |i%d%%|b¸¸Å­ ¼ÒºñÇÑ´Ù. %s
@@ -4421,7 +4422,7 @@ void SetActiveSkillBodyString(int index)
 
 				memset(strPtr, 0, sizeof(strPtr));
 
-				//|e%d%%ÃÊ |bµ¿¾È %s
+				//|e%d%%ï¿½ï¿½ |bï¿½ï¿½ï¿½ï¿½ %s
 				sprintf(strPtr, TEXTPTR(TEXT_SKILL_ETC3), 30, tempStr);
 				*/
 				memset(strPtr, 0, sizeof(strPtr));
@@ -4429,7 +4430,7 @@ void SetActiveSkillBodyString(int index)
 				if (index == SKILL_MAXX14)
 					seconds += *(skPtr2 + 6 + skillValue) / FPS;
 #endif
-				//|e%d%%ÃÊ |bµ¿¾È %s
+				//|e%d%%ï¿½ï¿½ |bï¿½ï¿½ï¿½ï¿½ %s
 				switch (index) {
 				case SKILL_ROBIN13:
 					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN13_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN13_SEP2));
@@ -4470,7 +4471,7 @@ void SetActiveSkillBodyString(int index)
 				break;
 			case SKILL_DIANA13:	//È¸º¹ÅºÀ» ¹ß»çÇÏ¿© ÃÖ´ë HPÀÇ |r%d%%|b¸¸Å­ HP¸¦ È¸º¹ÇÑ´Ù. %s
 				/*
-				//(Àç»ç¿ë ´ë±â½Ã°£:|j%dÃÊ|b)
+				//(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½:|j%dï¿½ï¿½|b)
 				//sprintf(tempStr, TEXTPTR(TEXT_SKILL_ETC2), RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[PLAYER].ps[PS_DELAY] : 0)), 1200));
 
 				//MP¸¦ |i%d%%|b¸¸Å­ ¼ÒºñÇÑ´Ù. %s
@@ -4486,7 +4487,7 @@ void SetActiveSkillBodyString(int index)
 			case SKILL_DIANA17:	//ÀûÀÇ ¹æ¾îµµ¸¦ |r%d%%|b¸¸Å­ ¹«½ÃÇÏ¿© Ãß°¡ÇÇÇØ¸¦ ÀÔÈù´Ù. %s
 				/*
 				//°ø°Ý½ºÅ³·ù
-				//(Àç»ç¿ë ´ë±â½Ã°£:|j%dÃÊ|b)
+				//(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½:|j%dï¿½ï¿½|b)
 				sprintf(tempStr, TEXTPTR(TEXT_SKILL_ETC2), RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100));
 
 				//¸ÞÀÎ ¼³¸í
@@ -4495,10 +4496,10 @@ void SetActiveSkillBodyString(int index)
 				seconds = ao[raidPlayer].buff[INC_IGNORE];
 				sprintf(strPtr, "|e%d%s %s |b%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA17_SEP1), TEXTPTR(TEXT_SKILL_DIANA17_SEP2));
 				break;
-			case SKILL_MAXX16:	//È¸ÇÇ ¼º°ø½Ã |i%d|b¸¸Å­ MP¸¦ È¸º¹ÇÑ´Ù. %s
+			case SKILL_MAXX16:	//È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ |i%d|bï¿½ï¿½Å­ MPï¿½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´ï¿½. %s
 				/*
 				//°ø°Ý½ºÅ³·ù
-				//(Àç»ç¿ë ´ë±â½Ã°£:|j%dÃÊ|b)
+				//(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½:|j%dï¿½ï¿½|b)
 				sprintf(tempStr, TEXTPTR(TEXT_SKILL_ETC2), RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100) + (*(skPtr2 + 6 + skillValue) / FPS));
 
 				//¸ÞÀÎ ¼³¸í
@@ -4511,7 +4512,7 @@ void SetActiveSkillBodyString(int index)
 	}
 
 	memcpy(skillBodyStr, strPtr, sizeof(skillBodyStr));
-	isT = (LineTextStr(skillBodyStr, 1000, 1000, 144 * _2X - 8 * _2X - 2 * _2X, -1, -1, 1.0f, gScreenBuffer, gScreenLayer, false)) * 13 * _2X + 24 * _2X + 8 * _2X;
+	isT = (LineTextStr(skillBodyStr, 1000, 1000, 144 * _2X - 8 * _2X - 2 * _2X, -1, -1, 1.0f)) * 13 * _2X + 24 * _2X + 8 * _2X;
 }
 
 void SetNpcEquip(ITEM* it)
@@ -4580,7 +4581,7 @@ void StoneRecipe(ITEM* it)
 	memcpy(&tempItem, &robin.inven[idx], sizeof(ITEM));
 	MakeItem(&robin.inven[idx], tempItem.detail >> 3, tempItem.lv, tempItem.grade + 1, tempItem.detail & 0x07, tempItem.set + 1);
 
-	//ÇØ´ç ¾ÆÀÌÅÛÀ» ¶ç¿öÁØ´Ù.
+	//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 	SetItemString(it, 0, 0);
 	menuItem = idx;
 
@@ -4603,7 +4604,7 @@ void StoneResolution(int idx)
 
 	i = GetItemCount(ITEM_NETITEM, ITEM_NET_RESOLUTION, GRADE_NORMAL);
 
-	//ÀÎº¥Åä¸®¿¡ º¸¼® °¹¼ö¸¸Å­ÀÇ ºó°ø°£ÀÌ ÀÖ´Ù¸é
+	//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
 	if (count == 0) {
 		menuDepth = 19;
 		//menuResult = TEXT_NOGEM_SOCKET;
@@ -4628,24 +4629,24 @@ void StoneResolution(int idx)
 		for (i = 0; i < 6; i++) {
 			//º¸¼®ÀÌ ÀåÂøµÇ¾î ÀÖ´Ù¸é
 			if (it->socket[i] != EMPTYINT) {
-				//º¸¼®À» ÀÎº¥Åä¸®¿¡ ³Ö´Â´Ù.
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 				MakeItem(&tempItem, ITEM_GEM, 1, it->socket[i] / 10, it->socket[i] % 10, 0);
 				tempItem.option[0][0] = it->option[i + 6][0];
 				tempItem.option[0][1] = it->option[i + 6][1];
 				memcpy(&robin.inven[robin.count], &tempItem, sizeof(ITEM));
 				robin.count++;
 
-				//ÀåºñÀÇ ¼ÒÄÏÄ­À» ºñ¿öÁØ´Ù.
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 				it->socket[i] = EMPTYINT;
 				it->option[i + 6][0] = EMPTYINT;
 				it->option[i + 6][1] = 0;
 			}
 		}
 
-		//»óÅÂ¸¦ °»½ÅÇÑ´Ù.
+		//ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		RefreshStat(&ao[PLAYER]);
 
-		//ÇØ´ç ¾ÆÀÌÅÛÀ» ¶ç¿öÁØ´Ù.
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 		SetItemString(it, 0, 0);
 		menuItem = idx;
 
@@ -4668,7 +4669,7 @@ void StoneSocket(int idx)
 	//¼ÒÄÏÀ» ´Ù½Ã ¶Õ¾îÁØ´Ù.
 	it->count = 2 + Proc(proc4, 4);
 
-	//ÀåºñÀÇ ¼ÒÄÏÄ­À» ºñ¿öÁØ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 	for (i = 0; i < 6; i++) {
 		it->socket[i] = EMPTYINT;
 		it->option[i + 6][0] = EMPTYINT;
@@ -4689,10 +4690,10 @@ void StoneSocket(int idx)
 	else
 		robin.inven[count].count--;
 
-	//»óÅÂ¸¦ °»½ÅÇÑ´Ù.
+	//ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	RefreshStat(&ao[PLAYER]);
 
-	//ÇØ´ç ¾ÆÀÌÅÛÀ» ¶ç¿öÁØ´Ù.
+	//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 	SetItemString(&robin.inven[idx], 0, 0);
 	menuItem = idx;
 

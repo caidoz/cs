@@ -155,12 +155,12 @@ void EraiseColorFont(const char* str)
 		//ASCII ¹®ÀÚ¸é
 		if (str[offset] >= 0 && str[offset] <= 127) {
 
-			//¸¸¾à '|'°¡ ³ª¿ÔÀ¸¸é
+			//ï¿½ï¿½ï¿½ï¿½ '|'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (fontInfo[str[offset]] == 127) {
-				//'|' ´ÙÀ½ ³ª¿À´Â ¾ËÆÄºªÀ» ±âÁØÀ¸·Î ÆùÆ®»öÀ» Á¤ÇÏ°í
+				//'|' ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½
 				ParseText(str[offset + 1]);
 
-				//'|'¿Í ¾ËÆÄºªÀ» Á¦°ÅÇÑ´Ù.
+				//'|'ï¿½ï¿½ ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 				offset++;
 				i++;
 			}
@@ -194,11 +194,11 @@ int GetSameStringIndex(const char* str)
 {
 	int i;
 
-	//ÀÏ´Ü ÅØ½ºÆ®¸¦ labelStr¿¡´Ù°¡ ³Ö°í ½ºÆ®¸µÇüÅÂ·Î ¹Ù²Û ´ÙÀ½¿¡
+	//ï¿½Ï´ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ labelStrï¿½ï¿½ï¿½Ù°ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	memset(&labelStr2, 0, sizeof(labelStr2));
 	TextToString(labelStr, strlen(labelStr), (char*)&labelStr2);
 
-	//ÇØ´ç ÅØ½ºÆ®¿¡ ´ëÇØ¼­ °°Àº ÅØ½ºÆ®°¡ ÀÖ´ÂÁö Á¡°Ë
+	//ï¿½Ø´ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (i = 0; i < totalFontLabelCnt; i++) {
 		labelString = fontLabel[i]->getString();
 		//¹®ÀÚ¿­ÀÌ °°À¸¸é
@@ -212,7 +212,7 @@ int GetSameStringIndex(const char* str)
 }
 
 
-//ÇöÀç ±â·ÎµùµÇ¾î ÀÖ´Â°Í Æ÷ÇÔÇØ¼­ ¸î¹ø ÀÎµ¦½º¸¦ ½á¾ß µÇ´ÂÁö 
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îµï¿½ï¿½Ç¾ï¿½ ï¿½Ö´Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ 
 int GetFontLabelIndex(const char* str)
 {
 	int i;
@@ -292,14 +292,14 @@ void LoadFontLabelFromText(const char* str)
 }
 
 
-float DrawTextSystem(int index, int x, int y, float zoom, int align, bool bold, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float DrawTextSystem(int index, int x, int y, float zoom, int align, bool bold)
 {
 	float width;
-	width = DrawTextStrSystem(textId[index], x, y, zoom, align, bold, cvtDest, cvtLayer, buffering);
+	width = DrawTextStrSystem(textId[index], x, y, zoom, align, bold);
 	return width;
 }
 
-float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bool bold, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bool bold)
 {
 	int i;
 	int length;
@@ -378,10 +378,10 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 		}
 	}
 
-	//AfterSpriting() °ú °°Àº ±Ô¾à: ·»´õ Å¸°ÙÀÌ ¿­·Á ÀÖÀ¸¸é ±× Å¸°Ù¿¡ ¹Ù·Î ±â·ÏÇÏ°í,
-	//¾øÀ¸¸é ¾À¿¡ ºÙÀÌ´Â ·¹°Å½Ã °æ·Î¸¦ ¾´´Ù.
+	//AfterSpriting() ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½: ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½Ù¿ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½Å½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	if (gRenderTarget) {
-		//Label Àº 3ÀÎÀÚ visit ¿À¹ö·Îµå°¡ 0ÀÎÀÚ Node::visit() À» °¡¸®¹Ç·Î Node* ·Î ¹Þ¾Æ È£ÃâÇÑ´Ù.
+		//Label ï¿½ï¿½ 3ï¿½ï¿½ï¿½ï¿½ visit ï¿½ï¿½ï¿½ï¿½ï¿½Îµå°¡ 0ï¿½ï¿½ï¿½ï¿½ Node::visit() ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ Node* ï¿½ï¿½ ï¿½Þ¾ï¿½ È£ï¿½ï¿½ï¿½Ñ´ï¿½.
 		cocos2d::Node* node = src;
 		node->visit();
 	}
@@ -395,31 +395,31 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	return textSize.width;
 }
 
-void DrawText(int index, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawText(int index, int x, int y, float zoom)
 {
 #ifdef TTFFONT
-	DrawTextStrSystem(textId[index], x, y, zoom, LEFT, true, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(textId[index], x, y, zoom, LEFT, true);
 #else
-	DrawTextStr(TEXTPTR(index), x, y, cvtDest, cvtLayer, buffering);
+	DrawTextStr(TEXTPTR(index), x, y, zoom);
 #endif
 }
 
-void DrawTextSolid(int index, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawTextSolid(int index, int x, int y, float zoom)
 {
 #ifdef TTFFONT
-	DrawTextStrSystem(textId[index], x, y, zoom, LEFT, false, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(textId[index], x, y, zoom, LEFT, false);
 #else
 
 #endif
 }
 
-void DrawTextStr(const char* str, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawTextStr(const char* str, int x, int y, float zoom)
 {
-	DrawTextStrSystem(str, x, y, zoom, LEFT, true, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(str, x, y, zoom, LEFT, true);
 
 }
 
-void DrawSubText(const char* src, int offset, int length, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawSubText(const char* src, int offset, int length, int x, int y, float zoom)
 {
 	int i, byte_len, wide = 0;
 	int start = 0, end;
@@ -446,13 +446,13 @@ void DrawSubText(const char* src, int offset, int length, int x, int y, float zo
 
 	strncpy(subtext, src + start, end - start);
 #ifdef TTFFONT
-	DrawTextStrSystem(subtext, x, y, zoom, LEFT, true, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(subtext, x, y, zoom, LEFT, true);
 #else
-	DrawCharsZoom(subtext, 0, strlen(subtext), x, y, zoom, cvtDest, cvtLayer, buffering);
+	DrawCharsZoom(subtext, 0, strlen(subtext), x, y, zoom);
 #endif
 }
 
-void DrawSubTextSolid(const char* src, int offset, int length, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawSubTextSolid(const char* src, int offset, int length, int x, int y, float zoom)
 {
 	int i, byte_len, wide = 0;
 	int start = 0, end;
@@ -479,34 +479,34 @@ void DrawSubTextSolid(const char* src, int offset, int length, int x, int y, flo
 
 	strncpy(subtext, src + start, end - start);
 #ifdef TTFFONT
-	DrawTextStrSystem(subtext, x, y, zoom, LEFT, false, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(subtext, x, y, zoom, LEFT, false);
 #else
-	DrawCharsSolid(subtext, 0, strlen(subtext), x, y, cvtDest, cvtLayer, buffering);
+	DrawCharsSolid(subtext, 0, strlen(subtext), x, y);
 #endif
 }
 
-float CenterText(int index, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float CenterText(int index, int x, int y, float zoom)
 {
 	float rtn;
 
 	rtn = StringWidth(TEXTPTR(index), zoom);
 #ifdef TTFFONT
-	DrawTextStrSystem(TEXTPTR(index), x, y, zoom, CENTER, true, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(TEXTPTR(index), x, y, zoom, CENTER, true);
 #else
-	DrawTextStr(TEXTPTR(index), x - rtn / 2, y, cvtDest, cvtLayer, buffering);
+	DrawTextStr(TEXTPTR(index), x - rtn / 2, y, zoom);
 #endif
 
 	return rtn;
 }
 
-float CenterTextSolid(int index, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float CenterTextSolid(int index, int x, int y, float zoom)
 {
 	float rtn;
 
 	rtn = StringWidth(TEXTPTR(index), zoom);
 
 #ifdef TTFFONT
-	DrawTextStrSystem(TEXTPTR(index), x, y, zoom, CENTER, false, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(TEXTPTR(index), x, y, zoom, CENTER, false);
 #else
 
 #endif
@@ -514,32 +514,32 @@ float CenterTextSolid(int index, int x, int y, float zoom, cocos2d::RenderTextur
 	return rtn;
 }
 
-float CenterTextStr(const char* str, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float CenterTextStr(const char* str, int x, int y, float zoom)
 {
 	float rtn = StringWidth(str, zoom);
 
 #ifdef TTFFONT
-	DrawTextStrSystem(str, x, y, zoom, CENTER, true, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(str, x, y, zoom, CENTER, true);
 #else
-	DrawTextStr(str, x - rtn / 2, y, cvtDest, cvtLayer, buffering);
+	DrawTextStr(str, x - rtn / 2, y, zoom);
 #endif
 
 	return rtn;
 }
 
-float CenterTextStrSolid(const char* str, int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+float CenterTextStrSolid(const char* str, int x, int y, float zoom)
 {
 	float rtn = StringWidth(str, zoom);
 
 #ifdef TTFFONT
-	DrawTextStrSystem(str, x, y, zoom, CENTER, false, cvtDest, cvtLayer, buffering);
+	DrawTextStrSystem(str, x, y, zoom, CENTER, false);
 #else
 
 #endif
 	return rtn;
 }
 
-void FrameText(const char* str, int x, int y, int dx, int line, int page, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void FrameText(const char* str, int x, int y, int dx, int line, int page, float zoom)
 {
 	int len = Min(textFrame, StringLength(str)) - (page == 0 ? 0 : textStringLength[page - 1]);
 	int i, cnt, ofs, wide = 0;
@@ -553,7 +553,7 @@ void FrameText(const char* str, int x, int y, int dx, int line, int page, float 
 	for (i = 0, cnt = 0, ofs = 0; i < len; i++) {
 		if (SubstringWidth(str, ofs, i - ofs, zoom) > dx - (float)(cnt % 3 == 2 ? 18 * _2X : 9 * _2X) * zoom || strcmp(str, "@") == 0) {
 			if (cnt < line)
-				DrawSubText(str, ofs, i - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawSubText(str, ofs, i - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom);
 
 			ofs = i;
 			cnt++;
@@ -571,7 +571,7 @@ void FrameText(const char* str, int x, int y, int dx, int line, int page, float 
 	}
 
 	if (cnt < line)
-		DrawSubText(str, ofs, len - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawSubText(str, ofs, len - ofs, x, y - (float)cnt * 13 * _2X * zoom, zoom);
 
 	int endPage = page + line - 1;
 
@@ -640,7 +640,7 @@ int ParseText(char str)
 		fontColor = 0x999999;
 		break;
 	case 'k':
-		//¿¬ÁÖÈ²
+		//ï¿½ï¿½ï¿½ï¿½È²
 		oldColor = fontColor;
 		fontColor = 0xFFCC66;
 		break;
@@ -650,12 +650,12 @@ int ParseText(char str)
 		fontColor = 0xAA6688;
 		break;
 	case 'm':
-		//½Å¼º¼Ó¼º
+		//ï¿½Å¼ï¿½ï¿½Ó¼ï¿½
 		oldColor = fontColor;
 		fontColor = 0xFFFFAA;
 		break;
 	case 'n':
-		//Áö¿ª¸í
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		oldColor = fontColor;
 		fontColor = 0xFF8800;
 		break;
@@ -670,13 +670,13 @@ int ParseText(char str)
 		fontColor = 0xAAFF00;
 		break;
 	case 'q':
-		//±×¶óµ¥ÀÌ¼Ç ÆùÆ®(Äù½ºÆ®¿ë)
+		//ï¿½×¶ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½Æ®(ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½)
 	{
 		fontColor = fontGradiation[frame % 21];
 	}
 	break;
 	case 'r':
-		//¿¬ºÐÈ«
+		//ï¿½ï¿½ï¿½ï¿½È«
 		oldColor = fontColor;
 		fontColor = 0xFFAACC;
 		break;
@@ -693,17 +693,17 @@ int ParseText(char str)
 	return 0;
 }
 
-int LineText(int index, int x, int y, int width, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+int LineText(int index, int x, int y, int width, float zoom)
 {
-	return LineTextStr(TEXTPTR(index), x, y, width, -1, -1, zoom, cvtDest, cvtLayer, buffering);
+	return LineTextStr(TEXTPTR(index), x, y, width, -1, -1, zoom);
 }
 
-int LineTextSolid(int index, int x, int y, int width, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+int LineTextSolid(int index, int x, int y, int width, float zoom)
 {
-	return LineTextStrSolid(TEXTPTR(index), x, y, width, -1, -1, zoom, cvtDest, cvtLayer, buffering);
+	return LineTextStrSolid(TEXTPTR(index), x, y, width, -1, -1, zoom);
 }
 
-int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, float zoom)
 {
 
 	int i, cnt, ofs, end, wide = 0;
@@ -715,7 +715,7 @@ int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, fl
 	for (i = 0, cnt = 0, ofs = 0; i < end; i++) {
 		if (SubstringWidth(str, ofs, i - ofs, zoom) > dx - (float)(NEXT_FONT_WIDTH - 1 * _2X) * zoom || str[i + wide] == '@') {
 			if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
-				DrawSubText(str, ofs, i - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * FONT_HEIGHT_LINE * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawSubText(str, ofs, i - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * FONT_HEIGHT_LINE * zoom, zoom);
 
 			ofs = i;
 			cnt++;
@@ -733,14 +733,14 @@ int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, fl
 	}
 
 	if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
-		DrawSubText(str, ofs, end - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * FONT_HEIGHT_LINE * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawSubText(str, ofs, end - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * FONT_HEIGHT_LINE * zoom, zoom);
 
 
 	return cnt + 1;
 
 }
 
-int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines2, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines2, float zoom)
 {
 
 	int i, cnt, ofs, end, wide = 0;
@@ -752,7 +752,7 @@ int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines
 	for (i = 0, cnt = 0, ofs = 0; i < end; i++) {
 		if (SubstringWidth(str, ofs, i - ofs, zoom) > dx - (float)(NEXT_FONT_WIDTH - 1 * _2X) * zoom || str[i + wide] == '@') {
 			if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
-				DrawSubTextSolid(str, ofs, i - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * (FONT_HEIGHT_LINE - 1 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawSubTextSolid(str, ofs, i - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * (FONT_HEIGHT_LINE - 1 * _2X) * zoom, zoom);
 
 			ofs = i;
 			cnt++;
@@ -770,13 +770,13 @@ int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines
 	}
 
 	if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
-		DrawSubTextSolid(str, ofs, end - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * (FONT_HEIGHT_LINE - 1 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+		DrawSubTextSolid(str, ofs, end - ofs, x, y - (float)(cnt - (lines < 0 ? 0 : lines)) * (FONT_HEIGHT_LINE - 1 * _2X) * zoom, zoom);
 
 	return cnt + 1;
 
 }
 
-int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom)
 {
 
 	int i, cnt, ofs, wide = 0, w;
@@ -793,7 +793,7 @@ int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom, 
 		w = SubstringWidth(str, ofs, i - ofs, zoom);
 
 		if (w > dx - (float)(NEXT_FONT_WIDTH - 1 * _2X) * zoom || str[i + wide] == '@') {
-			DrawSubText(str, ofs, i - ofs, x - ((type) ? w : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom, cvtDest, cvtLayer, buffering);
+			DrawSubText(str, ofs, i - ofs, x - ((type) ? w : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom);
 			ofs = i;
 			cnt++;
 
@@ -809,7 +809,7 @@ int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom, 
 			wide++;
 	}
 
-	DrawSubText(str, ofs, end - ofs, x - (float)((type) ? SubstringWidth(str, ofs, end - ofs, zoom) : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom, cvtDest, cvtLayer, buffering);
+	DrawSubText(str, ofs, end - ofs, x - (float)((type) ? SubstringWidth(str, ofs, end - ofs, zoom) : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom);
 
 	return cnt + 1;
 }
@@ -868,19 +868,19 @@ void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCo
 	textLines = line;
 }
 
-//Æ¯Á¤ ½ºÆ®·°ÃÄ¸¦ Æ¯Á¤ jsonÆÄÀÏ·Î ÀÛ¼ºÇÏ´Â ÇÔ¼ö
+//Æ¯ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ä¸ï¿½ Æ¯ï¿½ï¿½ jsonï¿½ï¿½ï¿½Ï·ï¿½ ï¿½Û¼ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 //bool StructureToJson(rapidjson::Writer<rapidjson::StringBuffer> * writer)
 bool StructureToJson(void* structure, std::string jsonFileName)
 {
 	return true;
 }
-//Á¦ÀÌ½¼ ÆÄÀÏÀ» ½ºÆ®·°ÃÄ·Î ·ÎµùÇÏ´Â ÇÔ¼ö
+//ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ä·ï¿½ ï¿½Îµï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 bool JsonToStructure(void* structure, std::string jsonFileName)
 {
 	return true;
 }
 
-//ÆÄÀÏÀ» ÀÐ±â¿Í ¾²±â°¡ °¡´ÉÇÑ »óÅÂ·Î ³»¿ëÀ» ¾´´Ù.
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ï¿½ ï¿½ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 bool GameWriteFile(char* filename, char* buf, int size)
 {
 	std::string path = FileUtils::sharedFileUtils()->getWritablePath();
@@ -899,7 +899,7 @@ bool GameWriteFile(char* filename, char* buf, int size)
 	return true;
 }
 
-//ÆÄÀÏÀ» ÀÐ±âÀü¿ëÀ¸·Î ¿ÀÇÂÇÑ ÈÄ ³»¿ëÀ» ÀÐ¾î¿Â´Ù.
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½Â´ï¿½.
 bool LoadFile(char* filename, char* buf, int size)
 {
 	std::string path = FileUtils::sharedFileUtils()->getWritablePath();

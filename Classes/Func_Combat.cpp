@@ -3036,6 +3036,18 @@ NEXT:
 	//betHeart
 	damage *= betHeart[bet];
 
+	//인터랙티브 전투 튜토리얼의 첫 몬스터: "세바스찬(크루)이 먼저 공격 -> HP가 남아있으면 주인공이
+	//마무리"라는 순서를 스크립트대로 보여줘야 한다. 크루가 한 방에 죽여버리면 주인공의 공격 턴이
+	//통째로 생략되므로, 첫 몬스터에 한해 크루의 공격은 HP를 1 남기고 멈추게 한다.
+	//attackSequence 진행 중 실제 행동 주체는 turn이라 turn으로 판별하는 것이 기본이고,
+	//총알이 늦게 맞아 턴이 이미 넘어간 경우를 대비해 총알의 주인(mom)도 같이 본다.
+	if (dest >= ENEMY && dest < NEUTRAL
+		&& robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_FIRSTKILL]
+		&& ((turn >= CREW && turn < PLAYERALL)
+			|| (attacker >= 0 && attacker < TOTALOBJECT && ao[attacker].mom >= CREW && ao[attacker].mom < PLAYERALL))
+		&& damage >= ao[dest].hp)
+		damage = ao[dest].hp - 1;
+
 	pDest->attackedFrame = ATTACKEDFRAME;
 
 	if (ao[dest].type == ENEMY_MAMMOTH && ao[dest].shield > 0) {
@@ -3443,8 +3455,12 @@ NEXT:
 			else if (!robin.demoSeen[DEMO_TUTORIAL_BOSS])
 				nextTutorialDemo = DEMO_TUTORIAL_BOSS;
 
+			//여기서 곧바로 SetDemo()를 부르면 drawHandle이 MD_DEMO로 바뀌면서 사망 연출(VANISHMOVE) ->
+			//상자 드롭(VanishMove의 DropItem(ITEM_BOX)) -> 상자 열기(ItemMove -> GotoGacha) 로 이어지는
+			//정상 보상 흐름이 통째로 잘려나간다("몬스터가 그냥 사라지고 아무것도 안 이어짐"의 원인).
+			//예약만 해두고, 그 흐름이 다 끝나 플레이 화면이 조용해졌을 때 Play()에서 실제로 시작한다.
 			if (nextTutorialDemo != -1)
-				SetDemo(nextTutorialDemo);
+				tutorialPendingDemo = nextTutorialDemo;
 			//보스(ENEMY_CASTLE_BOSS4)를 잡으면 튜토리얼 에필로그: 골드 대량 지급 + 성 메뉴 강제 오픈.
 			//DEMO_TUTORIAL_END는 실제 데모 컨텐츠 없이 "에필로그 지급 완료" 1회성 플래그로만 사용한다.
 			else if (pDest->type == ENEMY_CASTLE_BOSS4 && robin.demoSeen[DEMO_TUTORIAL_BOSS] && !robin.demoSeen[DEMO_TUTORIAL_END]) {
@@ -5032,6 +5048,11 @@ int GetControlMark(int owner) {
 			return i;
 		}
 	}
+
+	//못 찾았을 때 return이 없어서 쓰레기값이 돌아왔다(정의되지 않은 동작).
+	//호출부(FollowMove 등)가 그 값을 그대로 controlMark[] 인덱스로 써서 배열 밖에 write를 하는
+	//바람에, 룰렛 스킬마크가 안 만들어진 상황(동료 1명 등)에서 전투 상태가 통째로 깨졌다.
+	return -1;
 }
 
 int SetControlMark(

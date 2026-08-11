@@ -992,16 +992,16 @@ void DoubleBuffering(int drawHandleIdx)
 	//doubleBuffer가 꺼진 빌드에서는 기존처럼 현재 타겟(화면)에 바로 그린다.
 	if (doubleBuffer) {
 		PushRenderTarget(bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], true);
-		DrawBg(robinmap, STATUSWIN_Y, 1.0f, bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], doubleBuffer);
+		DrawBg(robinmap, STATUSWIN_Y, 1.0f);
 		PopRenderTarget();
 
 		PushRenderTarget(bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], true);
-		DrawTile(robinmap, 0, 1.0f, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
+		DrawTile(robinmap, 0, 1.0f);
 		PopRenderTarget();
 	}
 	else {
-		DrawBg(robinmap, STATUSWIN_Y, 1.0f, bufferTexture[BUFFER_PLAY], bufferLayer[BUFFER_PLAY], doubleBuffer);
-		DrawTile(robinmap, 0, 1.0f, bufferTexture[BUFFER_TILE], bufferLayer[BUFFER_TILE], doubleBuffer);
+		DrawBg(robinmap, STATUSWIN_Y, 1.0f);
+		DrawTile(robinmap, 0, 1.0f);
 	}
 
 	SetSectionClip(0, STATUSWIN_Y, DX, STATUSWIN_Y - STATUSWIN_Y2, false);
@@ -1274,12 +1274,12 @@ void PaintClet(int x, int y, int w, int h)
 				if (itemMark[i].alpha < TRANSPARENCY_MAX)
 					switch (itemMark[i].icon) {
 					case ICON_GOLD:
-						DrawIcon(ICON_GOLD + itemMark[i].frame % GOLDICONFRAME, itemMark[i].x, itemMark[i].y, _3X, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-						DrawNeutral(OBJ_ITEM0 + itemMark[i].frame % 4, itemMark[i].x + 24 * _2X, itemMark[i].y - 36 * _2X, 0, 2, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(ICON_GOLD + itemMark[i].frame % GOLDICONFRAME, itemMark[i].x, itemMark[i].y, _3X, false, false, false, true);
+						DrawNeutral(OBJ_ITEM0 + itemMark[i].frame % 4, itemMark[i].x + 24 * _2X, itemMark[i].y - 36 * _2X, 0, 2);
 						break;
 					default:
-						DrawImage(itemMark[i].imageDx, itemMark[i].imageDy, itemMark[i].imageOffX, itemMark[i].imageOffY, itemMark[i].x, itemMark[i].y, false, false, false, false, false, 2.0f, sprite[itemMark[i].resNum], gScreenBuffer, gScreenLayer, itemMark[i].resNum, false);
-						DrawNeutral(OBJ_ITEM0 + itemMark[i].frame % 4, itemMark[i].x + 16 * _2X, itemMark[i].y - 32 * _2X, 0, 2, gScreenBuffer, gScreenLayer, false);
+						DrawImage(itemMark[i].imageDx, itemMark[i].imageDy, itemMark[i].imageOffX, itemMark[i].imageOffY, itemMark[i].x, itemMark[i].y, false, false, false, false, false, 2.0f, sprite[itemMark[i].resNum], itemMark[i].resNum);
+						DrawNeutral(OBJ_ITEM0 + itemMark[i].frame % 4, itemMark[i].x + 16 * _2X, itemMark[i].y - 32 * _2X, 0, 2);
 						break;
 					}
 			}
@@ -1315,10 +1315,10 @@ void PaintClet(int x, int y, int w, int h)
 			ao[ENEMY].y = STATUSWIN_Y + (rh - 4) * TSIZE - (soulMark.y - 80 * _2X * ao[ENEMY].zoom) - ry;
 			ao[ENEMY].defaultZoom = ao[ENEMY].zoom = soulMark.zoom;
 
-			DrawCmfDetail(ao[ENEMY].cmf, ao[ENEMY].motion, ao[ENEMY].x, soulMark.y - 80 * _2X * ao[ENEMY].zoom, ao[ENEMY].dirF, ao[ENEMY].zoom, false, false, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetail(ao[ENEMY].cmf, ao[ENEMY].motion, ao[ENEMY].x, soulMark.y - 80 * _2X * ao[ENEMY].zoom, ao[ENEMY].dirF, ao[ENEMY].zoom, false, false);
 		}
 
-		DrawCmfDetail(CMF_NPC_HEART, soulMark.attackStr ? PO_C122_SPARK0 + robin.playtime / MOTIONDIV % 8 : 0, soulMark.x, soulMark.y, LEFT, soulMark.zoom2, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawCmfDetail(CMF_NPC_HEART, soulMark.attackStr ? PO_C122_SPARK0 + robin.playtime / MOTIONDIV % 8 : 0, soulMark.x, soulMark.y, LEFT, soulMark.zoom2, false, false);
 
 
 	}
@@ -1355,10 +1355,10 @@ void PaintClet(int x, int y, int w, int h)
 			ao[ENEMY].y = STATUSWIN_Y + (rh - 4) * TSIZE - (soulMark.y - 80 * _2X * ao[ENEMY].zoom) - ry;
 			ao[ENEMY].defaultZoom = ao[ENEMY].zoom = soulMark.zoom;
 
-			DrawCmfDetail(ao[ENEMY].cmf, ao[ENEMY].motion, ao[ENEMY].x, soulMark.y - 80 * _2X * ao[ENEMY].zoom, ao[ENEMY].dirF, ao[ENEMY].zoom, false, false, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetail(ao[ENEMY].cmf, ao[ENEMY].motion, ao[ENEMY].x, soulMark.y - 80 * _2X * ao[ENEMY].zoom, ao[ENEMY].dirF, ao[ENEMY].zoom, false, false);
 		}
 
-		DrawCmfDetail(CMF_NPC_HEART, soulMark.attackStr ? PO_C122_SPARK0 + robin.playtime / MOTIONDIV % 8 : 0, soulMark.x, soulMark.y, LEFT, soulMark.zoom, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawCmfDetail(CMF_NPC_HEART, soulMark.attackStr ? PO_C122_SPARK0 + robin.playtime / MOTIONDIV % 8 : 0, soulMark.x, soulMark.y, LEFT, soulMark.zoom, false, false);
 	}
 
 	//골드마크
@@ -1398,12 +1398,12 @@ void PaintClet(int x, int y, int w, int h)
 				if (goldAlphaMark[i].alpha < TRANSPARENCY_MAX)
 					switch (goldAlphaMark[i].icon) {
 					case ICON_GOLD:
-						DrawIcon(ICON_GOLD + goldAlphaMark[i].frame % GOLDICONFRAME, goldAlphaMark[i].x, goldAlphaMark[i].y, _3X, false, false, false, true, gScreenBuffer, gScreenLayer, false);
-						DrawNeutral(OBJ_ITEM0 + goldAlphaMark[i].frame % 4, goldAlphaMark[i].x + 24 * _2X, goldAlphaMark[i].y - 36 * _2X, 0, 2, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(ICON_GOLD + goldAlphaMark[i].frame % GOLDICONFRAME, goldAlphaMark[i].x, goldAlphaMark[i].y, _3X, false, false, false, true);
+						DrawNeutral(OBJ_ITEM0 + goldAlphaMark[i].frame % 4, goldAlphaMark[i].x + 24 * _2X, goldAlphaMark[i].y - 36 * _2X, 0, 2);
 						break;
 					default:
-						DrawImage(goldAlphaMark[i].imageDx, goldAlphaMark[i].imageDy, goldAlphaMark[i].imageOffX, goldAlphaMark[i].imageOffY, goldAlphaMark[i].x, goldAlphaMark[i].y, false, false, false, false, false, 2.0f, sprite[goldAlphaMark[i].resNum], gScreenBuffer, gScreenLayer, goldAlphaMark[i].resNum, false);
-						DrawNeutral(OBJ_ITEM0 + goldAlphaMark[i].frame % 4, goldAlphaMark[i].x + 16 * _2X, goldAlphaMark[i].y - 32 * _2X, 0, 2, gScreenBuffer, gScreenLayer, false);
+						DrawImage(goldAlphaMark[i].imageDx, goldAlphaMark[i].imageDy, goldAlphaMark[i].imageOffX, goldAlphaMark[i].imageOffY, goldAlphaMark[i].x, goldAlphaMark[i].y, false, false, false, false, false, 2.0f, sprite[goldAlphaMark[i].resNum], goldAlphaMark[i].resNum);
+						DrawNeutral(OBJ_ITEM0 + goldAlphaMark[i].frame % 4, goldAlphaMark[i].x + 16 * _2X, goldAlphaMark[i].y - 32 * _2X, 0, 2);
 						break;
 					}
 			}
@@ -1435,7 +1435,7 @@ void PaintClet(int x, int y, int w, int h)
 				goldAlphaMark[i].frame++;
 			}
 
-			DrawGoldAlpha(goldAlphaMark[i].x, goldAlphaMark[i].y, goldAlphaMark[i].icon, FONT_GOLD_LARGE, goldAlphaMark[i].zoom, CENTER, false, false, gScreenBuffer, gScreenLayer, false);
+			DrawGoldAlpha(goldAlphaMark[i].x, goldAlphaMark[i].y, goldAlphaMark[i].icon, FONT_GOLD_LARGE, goldAlphaMark[i].zoom, CENTER, false, false);
 		}
 	}
 
@@ -1485,7 +1485,7 @@ void PaintClet(int x, int y, int w, int h)
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
 			}
 
-			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom2, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom2, false, rewardMark[i].zoom2, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom2, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom2, false, rewardMark[i].zoom2, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame);
 
 		}
 		else if (rewardMark[i].frame > 0) {
@@ -1538,7 +1538,7 @@ void PaintClet(int x, int y, int w, int h)
 				curStar = maxStar = GetItemStar(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade);
 			}
 
-			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom, false, rewardMark[i].zoom, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(rewardMark[i].type, rewardMark[i].detail, rewardMark[i].grade, rewardMark[i].cooldown, rewardMark[i].amount, xOffset + rewardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * rewardMark[i].zoom, rewardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * rewardMark[i].zoom, false, rewardMark[i].zoom, rewardMark[i].cardFrame, rewardMark[i].newItem, true, curStar, maxStar, true, rewardMark[i].openFrame);
 
 
 		}
@@ -1595,19 +1595,19 @@ void PaintClet(int x, int y, int w, int h)
 
 				if (currencyMark[i].icon == ICON_CROWN || currencyMark[i].icon == ICON_STAR) {
 					if (currencyMark[i].amount > 0) {
-						DrawStarNum(currencyMark[i].icon, currencyMark[i].amount, currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
+						DrawStarNum(currencyMark[i].icon, currencyMark[i].amount, currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2);
 					}
 					else
-						DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true);
 				}
 				else if (currencyMark[i].icon == ICON_SHIELD) {
 					if (currencyMark[i].amount > 0) {
-						DrawNumTTF(currencyMark[i].amount, currencyMark[i].x, currencyMark[i].y - (float)(ITEMICONSIZE + 2 * _2X) / 2 * currencyMark[i].zoom2, NUM_FONT_LARGE, CENTER, false, PLUS, true, currencyMark[i].zoom2 / 2, false, gScreenBuffer, gScreenLayer, false);
+						DrawNumTTF(currencyMark[i].amount, currencyMark[i].x, currencyMark[i].y - (float)(ITEMICONSIZE + 2 * _2X) / 2 * currencyMark[i].zoom2, NUM_FONT_LARGE, CENTER, false, PLUS, true, currencyMark[i].zoom2 / 2, false);
 					}
-					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true);
 				}
 				else
-					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true);
 
 			}
 		}
@@ -1676,19 +1676,19 @@ void PaintClet(int x, int y, int w, int h)
 			if (currencyMark[i].frame > 0) {
 				if (currencyMark[i].icon == ICON_CROWN || currencyMark[i].icon == ICON_STAR) {
 					if (currencyMark[i].amount > 0) {
-						DrawStarNum(currencyMark[i].icon, currencyMark[i].amount, currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+						DrawStarNum(currencyMark[i].icon, currencyMark[i].amount, currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom);
 					}
 					else
-						DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, COLOR_WHITE, false, false, true);
 				}
 				else if (currencyMark[i].icon == ICON_SHIELD) {
 					if (currencyMark[i].amount > 0 && currencyMark[i].targetX == currencyMark[i].x && currencyMark[i].targetY == currencyMark[i].y) {
-						DrawNumTTF(currencyMark[i].amount, currencyMark[i].x, currencyMark[i].y - (float)(ITEMICONSIZE + 2 * _2X) / 2 * currencyMark[i].zoom2, NUM_FONT_LARGE, CENTER, false, PLUS, true, currencyMark[i].zoom2 / 2, false, gScreenBuffer, gScreenLayer, false);
+						DrawNumTTF(currencyMark[i].amount, currencyMark[i].x, currencyMark[i].y - (float)(ITEMICONSIZE + 2 * _2X) / 2 * currencyMark[i].zoom2, NUM_FONT_LARGE, CENTER, false, PLUS, true, currencyMark[i].zoom2 / 2, false);
 					}
-					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true);
 				}
 				else
-					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, COLOR_WHITE, false, false, true);
 
 			}
 		}
@@ -1697,7 +1697,7 @@ void PaintClet(int x, int y, int w, int h)
 	if (popUpCnt > 0) {
 		ScreenDarken(SCREENDARKEN);
 		ResetRectPoint();
-		DrawPopUp(popUpCnt - 1, gScreenBuffer, gScreenLayer, false);
+		DrawPopUp(popUpCnt - 1);
 	}
 
 	int boxMotion = OBJ_BOX0;
@@ -1730,7 +1730,7 @@ void PaintClet(int x, int y, int w, int h)
 			//	boxMark[i].openFrame++;
 			//}
 
-			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, boxMark[i].motion, itemColor[frame % 6], true, boxMark[i].openFrame, false, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, boxMark[i].motion, itemColor[frame % 6], true, boxMark[i].openFrame, false, boxMark[i].zoom2);
 
 			//if (boxMark[i].detail == BOX_INGAME)
 			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, LEFT, boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
@@ -1738,7 +1738,7 @@ void PaintClet(int x, int y, int w, int h)
 			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom2 / 2, itemColor[frame % 6], boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
 
 			if (boxMark[i].openFrame == true && boxMark[i].detail != BOX_INGAME)
-				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom2, LEFT, false, 1.2f * boxMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
+				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom2, LEFT, false, 1.2f * boxMark[i].zoom2);
 
 		}
 		else if (boxMark[i].frame > 0) {
@@ -1791,7 +1791,7 @@ void PaintClet(int x, int y, int w, int h)
 			//	boxMark[i].openFrame++;
 			//}
 
-			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, boxMark[i].motion, false, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+			DrawBox(boxMark[i].detail, xOffset + boxMark[i].x, boxMark[i].y, boxMark[i].dirX, false, itemColor[frame % 6], true, boxMark[i].motion, false, boxMark[i].zoom);
 
 			//if (boxMark[i].detail == BOX_INGAME)
 			//	DrawNeutral(boxMotion, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, LEFT, boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
@@ -1799,7 +1799,7 @@ void PaintClet(int x, int y, int w, int h)
 			//	DrawCastleBoxXY(boxMark[i].detail, true, RIGHT, xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y * boxMark[i].zoom / 2, itemColor[frame % 6], boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
 
 			if (boxMark[i].openFrame == true && boxMark[i].detail != BOX_INGAME)
-				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom, LEFT, false, 1.2f * boxMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+				DrawEffect(EFFECT_HOLY0 + (frame / MOTIONDIV % 10), xOffset + boxMark[i].x, boxMark[i].y - (float)BOXSIZE_Y / 2 * boxMark[i].zoom, LEFT, false, 1.2f * boxMark[i].zoom);
 
 
 		}
@@ -1838,7 +1838,7 @@ void PaintClet(int x, int y, int w, int h)
 				maxStar = ITEMMAXLEVEL;
 			}
 
-			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom2, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom2, false, boxCardMark[i].zoom2, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, boxCardMark[i].openFrame, curStar, maxStar, true, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom2, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom2, false, boxCardMark[i].zoom2, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, boxCardMark[i].openFrame, curStar, maxStar, true);
 
 		}
 		else if (boxCardMark[i].frame > 0) {
@@ -1896,7 +1896,7 @@ void PaintClet(int x, int y, int w, int h)
 				maxStar = ITEMMAXLEVEL;
 			}
 
-			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom, false, boxCardMark[i].zoom, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, curStar, maxStar, true, boxCardMark[i].openFrame, gScreenBuffer, gScreenLayer, false);
+			DrawRewardCard(boxCardMark[i].type, boxCardMark[i].detail, boxCardMark[i].grade, boxCardMark[i].cooldown, boxCardMark[i].amount, xOffset + boxCardMark[i].x - (float)(REWARDCARDSIZE_X) / 2 * boxCardMark[i].zoom, boxCardMark[i].y + (float)(REWARDCARDSIZE_Y) / 2 * boxCardMark[i].zoom, false, boxCardMark[i].zoom, boxCardMark[i].cardFrame, boxCardMark[i].newItem, true, curStar, maxStar, true, boxCardMark[i].openFrame);
 
 		}
 	}
@@ -1960,13 +1960,13 @@ void PaintClet(int x, int y, int w, int h)
 
 				if (currencyMark_PopUp[i].icon == ICON_CROWN || currencyMark_PopUp[i].icon == ICON_STAR) {
 					if (currencyMark_PopUp[i].amount > 0) {
-						DrawStarNum(currencyMark_PopUp[i].icon, currencyMark_PopUp[i].amount, currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2, gScreenBuffer, gScreenLayer, false);
+						DrawStarNum(currencyMark_PopUp[i].icon, currencyMark_PopUp[i].amount, currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2);
 					}
 					else
-						DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame2 % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame2 % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2, COLOR_WHITE, false, false, true);
 				}
 				else
-					DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame2 % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame2 % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom2, currencyMark_PopUp[i].zoom2, COLOR_WHITE, false, false, true);
 
 			}
 		}
@@ -2015,14 +2015,14 @@ void PaintClet(int x, int y, int w, int h)
 			if (currencyMark_PopUp[i].frame > 0) {
 				if (currencyMark_PopUp[i].icon == ICON_CROWN || currencyMark_PopUp[i].icon == ICON_STAR) {
 					if (currencyMark_PopUp[i].amount > 0) {
-						DrawStarNum(currencyMark_PopUp[i].icon, currencyMark_PopUp[i].amount, currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom, gScreenBuffer, gScreenLayer, false);
+						DrawStarNum(currencyMark_PopUp[i].icon, currencyMark_PopUp[i].amount, currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom);
 					}
 					else
-						DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+						DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom, COLOR_WHITE, false, false, true);
 
 				}
 				else
-					DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom, COLOR_WHITE, false, false, true, gScreenBuffer, gScreenLayer, false);
+					DrawIcon(currencyMark_PopUp[i].icon + (currencyMark_PopUp[i].icon == ICON_GOLD ? currencyMark_PopUp[i].frame % GOLDICONFRAME : 0), currencyMark_PopUp[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark_PopUp[i].zoom, currencyMark_PopUp[i].zoom, COLOR_WHITE, false, false, true);
 
 			}
 		}
@@ -2056,7 +2056,7 @@ void PaintClet(int x, int y, int w, int h)
 				gameLog[i].frame2++;
 			}
 			if (gameLog[i].frame2 > 0)
-				LogDraw(&gameLog[i], gScreenBuffer, gScreenLayer, false);
+				LogDraw(&gameLog[i]);
 
 		}
 		else if (gameLog[i].frame > 0) {
@@ -2098,7 +2098,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (gameLog[i].frame > 0)
-				LogDraw(&gameLog[i], gScreenBuffer, gScreenLayer, false);
+				LogDraw(&gameLog[i]);
 
 		}
 	}
@@ -2119,13 +2119,13 @@ void PaintClet(int x, int y, int w, int h)
 	//얘네들은 최상위단에 별도로 그려줘야 한다.
 	switch (drawHandle) {
 	case MD_NEWCOLLECTION:
-		NewCollectionDraw(DX / 2 - (float)(DX / 2) * zoom, DY / 2 + (float)(236 * _2X) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+		NewCollectionDraw(DX / 2 - (float)(DX / 2) * zoom, DY / 2 + (float)(236 * _2X) * zoom, zoom);
 		break;
 	case MD_NEWCARD:
 		NewCardDraw();
 		break;
 	case MD_STAGECLEAR:
-		StageInfoDraw(robin.stage, robin.room, false, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2), POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2, zoom, gScreenBuffer, gScreenLayer, false);
+		StageInfoDraw(robin.stage, robin.room, false, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2), POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2, zoom);
 		break;
 	}
 	
@@ -2155,19 +2155,19 @@ void PaintClet(int x, int y, int w, int h)
 
 	if (touchDisable == false) {
 		for (i = 0; i < touchIndex; i++)
-			MemRectFrame(touchRect[i][0], touchRect[i][1], touchRect[i][2], touchRect[i][3], 0xFF0000, gScreenBuffer, gScreenLayer, false);
+			MemRectFrame(touchRect[i][0], touchRect[i][1], touchRect[i][2], touchRect[i][3], 0xFF0000);
 		for (i = 0; i < swipeIndex; i++)
-			MemRectFrame(swipeRect[i][0], swipeRect[i][1], swipeRect[i][2], swipeRect[i][3], 0xFFFF00, gScreenBuffer, gScreenLayer, false);
+			MemRectFrame(swipeRect[i][0], swipeRect[i][1], swipeRect[i][2], swipeRect[i][3], 0xFFFF00);
 
 		for (i = 0; i < TOTALRAIDBOX; i++)
-			MemRectFrame(xOffset + raidBox[i].x + raidBox[i].cpx, raidBox[i].y + raidBox[i].cpy, raidBox[i].cx, raidBox[i].cy, 0xFFFF00, gScreenBuffer, gScreenLayer, false);
+			MemRectFrame(xOffset + raidBox[i].x + raidBox[i].cpx, raidBox[i].y + raidBox[i].cpy, raidBox[i].cx, raidBox[i].cy, 0xFFFF00);
 
-		MemRectFrame(xOffset + ao[NPC].x + ao[NPC].cpx, ao[NPC].y + ao[NPC].cpy, ao[NPC].cx, ao[NPC].cy, 0xFFFF00, gScreenBuffer, gScreenLayer, false);
+		MemRectFrame(xOffset + ao[NPC].x + ao[NPC].cpx, ao[NPC].y + ao[NPC].cpy, ao[NPC].cx, ao[NPC].cy, 0xFFFF00);
 	}
 		
 #endif
 
-	MemRectFrame(0, DY, 1, 1, 0x000000, gScreenBuffer, gScreenLayer, false);
+	MemRectFrame(0, DY, 1, 1, 0x000000);
 
 	frame++;
 	if (touchedFrame > 0)

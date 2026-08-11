@@ -5,20 +5,18 @@
 
 
 //���
-void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawWindow3(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
 	int cnt;
 
-	if (buffering == false) {
-		//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_CARDFRAME + index]);
-		index = Min(TOTALMAPTYPE - 1, index);
-		DrawImage(ITEMCARDSIZE_X, ITEMCARDSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[BUFFER_CARDFRAME_IMG + index], cvtDest, cvtLayer, BUFFER_CARDFRAME_IMG + index, buffering);
-		//return;
-	}
-	else {
+	//호출부는 BUFFER_CARDFRAME 프리렌더 한 곳뿐이므로 항상 라이브로 그린다.
+	//완성된 텍스처를 곧바로 찍던 아래 경로는 호출부가 없어 남겨만 둔다.
+	//index = Min(TOTALMAPTYPE - 1, index);
+	//DrawImage(ITEMCARDSIZE_X, ITEMCARDSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[BUFFER_CARDFRAME_IMG + index], BUFFER_CARDFRAME_IMG + index);
+	{
 
-		DrawFrame(x, y, w, h, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+		DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
 		if (index >= 0) {
 
@@ -26,53 +24,53 @@ void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 			if (w >= 128 * _2X || h >= 128 * _2X) {
 				switch ((cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)) {
 				case MAPTYPE_VALLEY:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x5F3B2D, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x5F3B2D);
 					break;
 				case MAPTYPE_ELF:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x242B31, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x242B31);
 					break;
 				case MAPTYPE_GOLEMVALLEY:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x0A0208, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x0A0208);
 					break;
 				case MAPTYPE_DRAGON:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x170805, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x170805);
 					break;
 				case MAPTYPE_DARKNESS:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x0A2F3D, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x0A2F3D);
 					break;
 				case MAPTYPE_GHOST:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x2B2F20, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x2B2F20);
 					break;
 				case MAPTYPE_DEVILCASTLE:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x182424, cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, 0x182424);
 					break;
 				default:
-					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, mapColor[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)], cvtDest, cvtLayer, buffering);
+					MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, mapColor[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)]);
 					break;
 				}
 				if (cardImgBg[index * 6] - MAP_BG_IMG == MAPTYPE_TOLEM) {
 					for (i = 0; i < w / (mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2) + 1; i++) {
-						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2) * zoom, y + (float)(-CREWHEIGHT + mapBg[cardImgBg[index * WINDOWBGDATASIZE + 3] * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
-						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2 + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, true, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
+						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2) * zoom, y + (float)(-CREWHEIGHT + mapBg[cardImgBg[index * WINDOWBGDATASIZE + 3] * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
+						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2 + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, true, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
 					}
 				}
 				else {
 					for (i = 0; i < w / mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] + 1; i++) {
-						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
+						DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
 					}
 				}
 
-				DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x, y - h, zoom, cvtDest, cvtLayer, buffering);
+				DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x, y - h, zoom);
 			}
 			else {
-				DrawImage(w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, cardImgBg[index * WINDOWBGDATASIZE + 1], cardImgBg[index * WINDOWBGDATASIZE + 2], x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
-				DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x + (float)cardImgBg[index * WINDOWBGDATASIZE + 4] * zoom, y + (float)cardImgBg[index * WINDOWBGDATASIZE + 5] * zoom, zoom, cvtDest, cvtLayer, buffering);
+				DrawImage(w - (float)4 * _2X * zoom, h - (float)4 * _2X * zoom, cardImgBg[index * WINDOWBGDATASIZE + 1], cardImgBg[index * WINDOWBGDATASIZE + 2], x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
+				DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x + (float)cardImgBg[index * WINDOWBGDATASIZE + 4] * zoom, y + (float)cardImgBg[index * WINDOWBGDATASIZE + 5] * zoom, zoom);
 			}
 
 			UnSectionClip(false);
 
 			SetAlpha(16);
-			MemRect(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 0x000000, cvtDest, cvtLayer, buffering);
+			MemRect(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 0x000000);
 			SetAlpha(32);
 		}
 	}
@@ -80,12 +78,12 @@ void DrawWindow3(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 
 
 //���
-void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawWindow4(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
 	int cnt;
 
-	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
 	if (index >= 0) {
 
@@ -93,51 +91,51 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 		if (w >= 128 * _2X || h >= 128 * _2X) {
 			switch ((cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)) {
 			case MAPTYPE_VALLEY:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x5F3B2D, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x5F3B2D);
 				break;
 			case MAPTYPE_ELF:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x242B31, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x242B31);
 				break;
 			case MAPTYPE_GOLEMVALLEY:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x0A0208, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x0A0208);
 				break;
 			case MAPTYPE_DRAGON:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x170805, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x170805);
 				break;
 			case MAPTYPE_DARKNESS:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x0A2F3D, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x0A2F3D);
 				break;
 			case MAPTYPE_GHOST:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x2B2F20, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x2B2F20);
 				break;
 			case MAPTYPE_DEVILCASTLE:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x182429, cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, 0x182429);
 				break;
 			default:
-				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, mapColor[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)], cvtDest, cvtLayer, buffering);
+				MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, h - (float)14 * _2X * zoom, mapColor[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG)]);
 				break;
 			}
 			if (cardImgBg[index * 6] - MAP_BG_IMG == MAPTYPE_TOLEM) {
 				for (i = 0; i < w / (mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2) + 1; i++) {
-					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2, y - CREWHEIGHT + mapBg[cardImgBg[index * WINDOWBGDATASIZE + 3] * 4 + 1] + 4 * _2X + 4 * TSIZE, false, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
-					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2 + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], y - CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE, true, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
+					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2, y - CREWHEIGHT + mapBg[cardImgBg[index * WINDOWBGDATASIZE + 3] * 4 + 1] + 4 * _2X + 4 * TSIZE, false, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
+					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] * 2 + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], y - CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE, true, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
 				}
 			}
 			else {
 				for (i = 0; i < w / mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0] + 1; i++) {
-					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], y - CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE, false, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
+					DrawImage(mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1], 0 * _2X, 0 * _2X, x + 4 * _2X + i * mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 0], y - CREWHEIGHT + mapBg[(cardImgBg[index * WINDOWBGDATASIZE + 0] - MAP_BG_IMG) * 4 + 1] + 4 * _2X + 4 * TSIZE, false, false, false, false, false, 1.0f, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
 				}
 			}
 
-			DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x, y - h, zoom, cvtDest, cvtLayer, buffering);
+			DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x, y - h, zoom);
 		}
 		else {
-			DrawImage(w - 9 * _2X, h - 9 * _2X, cardImgBg[index * WINDOWBGDATASIZE + 1], cardImgBg[index * WINDOWBGDATASIZE + 2], x + 4 * _2X, y - 4 * _2X, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cvtDest, cvtLayer, cardImgBg[index * WINDOWBGDATASIZE + 0], buffering);
-			DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x + cardImgBg[index * WINDOWBGDATASIZE + 4], y + cardImgBg[index * WINDOWBGDATASIZE + 5], zoom, cvtDest, cvtLayer, buffering);
+			DrawImage(w - 9 * _2X, h - 9 * _2X, cardImgBg[index * WINDOWBGDATASIZE + 1], cardImgBg[index * WINDOWBGDATASIZE + 2], x + 4 * _2X, y - 4 * _2X, false, false, false, false, false, zoom, sprite[cardImgBg[index * WINDOWBGDATASIZE + 0]], cardImgBg[index * WINDOWBGDATASIZE + 0]);
+			DrawTileDirect(cardImgBg[index * WINDOWBGDATASIZE + 3], x + cardImgBg[index * WINDOWBGDATASIZE + 4], y + cardImgBg[index * WINDOWBGDATASIZE + 5], zoom);
 		}
 
 		SetAlpha(16);
-		MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)14 * _2X * zoom, 0x000000, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)14 * _2X * zoom, 0x000000);
 		SetAlpha(32);
 
 		UnSectionClip(false);
@@ -145,60 +143,60 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom, cocos2d::Ren
 }
 
 //���
-void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY)
 {
 	int i;
 	int cnt;
 	int mapType = mapDatas[mapIdx][7];
 
-	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
 	SetSectionClip(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)8 * _2X * zoom, false);
 
-	MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, (h - (float)8 * _2X * zoom) / 2, mapColor[mapType], cvtDest, cvtLayer, buffering);
+	MemRect(x + (float)(4 * _2X) * zoom, y - (float)4 * _2X * zoom, w - (float)(8 * _2X) * zoom, (h - (float)8 * _2X * zoom) / 2, mapColor[mapType]);
 
 	switch (mapType) {
 	case MAPTYPE_VALLEY:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x5F3B2D, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x5F3B2D);
 		break;
 	case MAPTYPE_ELF:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x242B31, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x242B31);
 		break;
 	case MAPTYPE_GOLEMVALLEY:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x0A0208, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x0A0208);
 		break;
 	case MAPTYPE_DRAGON:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x170805, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x170805);
 		break;
 	case MAPTYPE_DARKNESS:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x0A2F3D, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x0A2F3D);
 		break;
 	case MAPTYPE_GHOST:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x2B2F20, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x2B2F20);
 		break;
 	case MAPTYPE_DEVILCASTLE:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x182429, cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, 0x182429);
 		break;
 	default:
-		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, mapColor[mapType], cvtDest, cvtLayer, buffering);
+		MemRect(x + (float)(4 * _2X) * zoom, y - h / 2, w - (float)(8 * _2X) * zoom, h / 2, mapColor[mapType]);
 		break;
 	}
 
 	if (mapBg[mapType * 4 + 0] != 0) {
 		if (mapType == MAPTYPE_TOLEM) {
 			for (i = 0; i < w / (mapBg[mapType * 4 + 0] * 2) + 1; i++) {
-				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0] * 2) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], cvtDest, cvtLayer, MAP_BG_IMG + mapType, buffering);
-				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0] * 2 + mapBg[mapType * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], cvtDest, cvtLayer, MAP_BG_IMG + mapType, buffering);
+				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0] * 2) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], MAP_BG_IMG + mapType);
+				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0] * 2 + mapBg[mapType * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, true, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], MAP_BG_IMG + mapType);
 			}
 		}
 		else {
 			for (i = 0; i < w / mapBg[mapType * 4 + 0] + 1; i++) {
-				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], cvtDest, cvtLayer, MAP_BG_IMG + mapType, buffering);
+				DrawImage(mapBg[mapType * 4 + 0], mapBg[mapType * 4 + 1], 0 * _2X, 0 * _2X, x + (float)(4 * _2X + i * mapBg[mapType * 4 + 0]) * zoom, y + (float)(-CREWHEIGHT + mapBg[mapType * 4 + 1] + 4 * _2X + 4 * TSIZE) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + mapType], MAP_BG_IMG + mapType);
 			}
 		}
 	}
 
-	DrawTileDirect(mapIdx, x, y - h + mapOffsetY, zoom, cvtDest, cvtLayer, buffering);
+	DrawTileDirect(mapIdx, x, y - h + mapOffsetY, zoom);
 
 	//SetAlpha(12);
 	//MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)14 * _2X * zoom, 0x000000, cvtDest, cvtLayer, buffering);
@@ -220,22 +218,22 @@ void VersionDraw(void)
 		y = DY - GNBHEIGHT - 4 * _2X;
 
 	SetAlpha(24);
-	MemRect(0, y, 64 * _2X, 26 * _2X, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+	MemRect(0, y, 64 * _2X, 26 * _2X, COLOR_BLACK);
 	SetAlpha(32);
 	//SetFontColor(COLOR_WHITE);
-	DrawText(TEXT_VERSION, 8, y - 1 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-	DrawAlpha(8, y - 1 * _2X - 14 * _2X, ALPHA_MACRO, FONT_SMALL, 1.0f, false, gScreenBuffer, gScreenLayer, false);
-	DrawAlpha(8 + 32 * _2X, y - 1 * _2X - 14 * _2X, option.macro == true ? ALPHA_ON : ALPHA_OFF, FONT_SMALL, 1.0f, false, gScreenBuffer, gScreenLayer, false);
+	DrawText(TEXT_VERSION, 8, y - 1 * _2X, 1.0f);
+	DrawAlpha(8, y - 1 * _2X - 14 * _2X, ALPHA_MACRO, FONT_SMALL, 1.0f, false);
+	DrawAlpha(8 + 32 * _2X, y - 1 * _2X - 14 * _2X, option.macro == true ? ALPHA_ON : ALPHA_OFF, FONT_SMALL, 1.0f, false);
 
 	if (option.macro == true)
-		DrawNum(LOG_COUNT - macroTimes + 1, 8 + 52 * _2X, y - 1 * _2X - 14 * _2X, NUM_FONT_SMALL, LEFT, 0, false, true, 1.0f, true, gScreenBuffer, gScreenLayer, false);
+		DrawNum(LOG_COUNT - macroTimes + 1, 8 + 52 * _2X, y - 1 * _2X - 14 * _2X, NUM_FONT_SMALL, LEFT, 0, false, true, 1.0f, true);
 }
 
 void NoSpaceDraw(void)
 {
-	MemRect(0, 0, DX, DY, 0x000000, gScreenBuffer, gScreenLayer, false);
+	MemRect(0, 0, DX, DY, 0x000000);
 	//��������� �����մϴ�.
-	LineTextStr(tempStr, DX / 2 - 70, DY / 2 - 40, 140, -1, -1, 1.0f, gScreenBuffer, gScreenLayer, false);
+	LineTextStr(tempStr, DX / 2 - 70, DY / 2 - 40, 140, -1, -1, 1.0f);
 }
 
 void LogoDraw(void)
@@ -245,10 +243,10 @@ void LogoDraw(void)
 	int i;
 	std::string fileName;
 
-	MemRect(0, DY, DX, DY, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
+	MemRect(0, DY, DX, DY, COLOR_WHITE);
 
-	DrawArray(IMG_LOGO, DX / 2 - imgArray[IMG_LOGO * 4 + 2] / 2, DY / 2 + imgArray[IMG_LOGO * 4 + 3] / 2, 1.0f, gScreenBuffer, gScreenLayer, false);
-	DrawAlphaFrame(DX / 2 - GetAlphaWidth(ALPHA_BIGPIXEL, FONT_SMALL, 1.0f) / 2, DY / 2 - imgArray[IMG_LOGO * 4 + 3] / 2 - 8, ALPHA_BIGPIXEL, frame, false, FONT_SMALL, false, 1.0f);
+	DrawArray(IMG_LOGO, DX / 2 - imgArray[IMG_LOGO * 4 + 2] / 2, DY / 2 + imgArray[IMG_LOGO * 4 + 3] / 2, 1.0f);
+	DrawAlphaFrame(DX / 2 - GetAlphaWidth(ALPHA_BIGPIXEL, FONT_SMALL, 1.0f) / 2, DY / 2 - imgArray[IMG_LOGO * 4 + 3] / 2 - 8, ALPHA_BIGPIXEL, frame, FONT_SMALL, false, 1.0f);
 
 	switch (frame) {
 	case 1:
@@ -289,8 +287,8 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_SHOP]->setPosition(0, DY);
 
 			PushRenderTarget(bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP]);
-			DrawImage(640 * _2X, 512 * _2X, 0 * _2X, 0 * _2X, xOffset, DY, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_UP_IMG], bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP], UI_PAPER_BG_UP_IMG, true);
-			DrawImage(640 * _2X, 362 * _2X, 0 * _2X, 0 * _2X, xOffset, DY - 512 * _2X, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_DOWN_IMG], bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP], UI_PAPER_BG_DOWN_IMG, true);
+			DrawImage(640 * _2X, 512 * _2X, 0 * _2X, 0 * _2X, xOffset, DY, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_UP_IMG], UI_PAPER_BG_UP_IMG);
+			DrawImage(640 * _2X, 362 * _2X, 0 * _2X, 0 * _2X, xOffset, DY - 512 * _2X, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_DOWN_IMG], UI_PAPER_BG_DOWN_IMG);
 			PopRenderTarget();
 
 
@@ -372,7 +370,7 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_CARDFRAME + frame - 13]->setPosition(0, DY);
 
 			PushRenderTarget(bufferTexture[BUFFER_CARDFRAME + frame - 13], bufferLayer[BUFFER_CARDFRAME + frame - 13]);
-			DrawWindow3(0, ITEMCARDSIZE_Y, ITEMCARDSIZE_X, ITEMCARDSIZE_Y, (frame - 13), 1.0f, bufferTexture[BUFFER_CARDFRAME + frame - 13], bufferLayer[BUFFER_CARDFRAME + frame - 13], doubleBuffer);
+			DrawWindow3(0, ITEMCARDSIZE_Y, ITEMCARDSIZE_X, ITEMCARDSIZE_Y, (frame - 13), 1.0f);
 			PopRenderTarget();
 
 			texture[BUFFER_CARDFRAME_IMG + frame - 13] = bufferTexture[BUFFER_CARDFRAME + frame - 13]->getSprite()->getTexture();
@@ -394,7 +392,7 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32]->setPosition(0, DY);
 
 			PushRenderTarget(bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32], bufferLayer[BUFFER_OPTIONBUTTON_GREEN + frame - 32]);
-			DrawFrame(0, OPTIONBUTTONSIZE_Y, OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, FRAME_GREEN + frame - 32, bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32], bufferLayer[BUFFER_OPTIONBUTTON_GREEN + frame - 32], doubleBuffer);
+			DrawFrame(0, OPTIONBUTTONSIZE_Y, OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, FRAME_GREEN + frame - 32);
 			PopRenderTarget();
 
 			texture[BUFFER_OPTIONBUTTON_GREEN_IMG + frame - 32] = bufferTexture[BUFFER_OPTIONBUTTON_GREEN + frame - 32]->getSprite()->getTexture();
@@ -412,7 +410,7 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]->setPosition(0, DY);
 
 			PushRenderTarget(bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], bufferLayer[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]);
-			DrawFrame(0, CREWUPGRADEBUTTONSIZE_Y, CREWUPGRADEBUTTONSIZE_X, CREWUPGRADEBUTTONSIZE_Y, frame == 36 ? FRAME_GREEN : FRAME_GREY, bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], bufferLayer[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36], doubleBuffer);
+			DrawFrame(0, CREWUPGRADEBUTTONSIZE_Y, CREWUPGRADEBUTTONSIZE_X, CREWUPGRADEBUTTONSIZE_Y, frame == 36 ? FRAME_GREEN : FRAME_GREY);
 			PopRenderTarget();
 
 			texture[BUFFER_CREWUPGRADEBUTTON_GREEN_IMG + frame - 36] = bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN + frame - 36]->getSprite()->getTexture();
@@ -441,10 +439,10 @@ void LoadingDraw(void)
 	return;
 
 	SetAlpha(24);
-	MemRect(0, DY, DX, DY, COLOR_NAVY, gScreenBuffer, gScreenLayer, false);
+	MemRect(0, DY, DX, DY, COLOR_NAVY);
 	SetAlpha(32);
-	DrawCmfDetailShadow(CMF_NPC_DOG, 0, DX / 2, DY / 2, RIGHT, 1.0f, gScreenBuffer, gScreenLayer, false);
-	CenterAlpha(DX / 2, DY / 2 - 8 * _2X, ALPHA_LOADING, FONT_SMALL, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+	DrawCmfDetailShadow(CMF_NPC_DOG, 0, DX / 2, DY / 2, RIGHT, 1.0f);
+	CenterAlpha(DX / 2, DY / 2 - 8 * _2X, ALPHA_LOADING, FONT_SMALL, false, 1.0f);
 }
 
 void TitleDraw(void)
@@ -489,7 +487,7 @@ void TitleDraw(void)
 		//DrawSkillCard(0, 0, 1, DX / 2 - REWARDCARDSIZE_X, DY / 2 + REWARDCARDSIZE_Y, 2.0f, gScreenBuffer, gScreenLayer, false);
 		//MemRect(DX / 2 + points[(frame % 1000)][0], DY / 2 + points[(frame % 1000)][1], 2 * _2X, 2 * _2X, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
 		zoom = 1.0f;
-		DrawDioramaCrew(&enemyHouse, xOffset + DX / 2 - (float)(DIORAMASIZE_X / 2) * zoom, DY / 2 + (float)DIORAMASIZE_Y / 2 * zoom, zoom, frame % 100, false, false, false, gScreenBuffer, gScreenLayer, false);
+		DrawDioramaCrew(&enemyHouse, xOffset + DX / 2 - (float)(DIORAMASIZE_X / 2) * zoom, DY / 2 + (float)DIORAMASIZE_Y / 2 * zoom, zoom, frame % 100, false, false, false);
 		//EnemyUserProfileDraw(robin.enemyUserIdx, robin.stage, robin.room, 40 * _2X, DY - 80 * _2X, 0.1f + (float)(frame / FPS % 12) * 0.1f, gScreenBuffer, gScreenLayer, false);
 		/*
 		DrawPlayerCostume(
@@ -511,7 +509,7 @@ void TitleDraw(void)
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + DX / 2 - DIORAMASIZE_X / 2, y - DY / 2 + DIORAMASIZE_Y / 2 + 72 * _2X, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + houseOrder[0]], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + houseOrder[0], false);
 		//NewCollectionDraw(0, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
 #else
-		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], gScreenBuffer, gScreenLayer, TITLE_IMG, false);
+		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], TITLE_IMG);
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
@@ -571,7 +569,7 @@ void TitleDraw(void)
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-			LoadingBarDraw(xOffset + DX / 2 - 525 * _2X / 2 + 180 * _2X, 40 * _2X, frame, gScreenBuffer, gScreenLayer, false);
+			LoadingBarDraw(xOffset + DX / 2 - 525 * _2X / 2 + 180 * _2X, 40 * _2X, frame);
 			break;
 			//case CURTAINFRAME - 1:
 			//case 23:
@@ -579,9 +577,9 @@ void TitleDraw(void)
 
 			touchDisable = false;
 
-			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0);
 			
-			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0, gScreenBuffer, gScreenLayer, false);
+			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0);
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
 
@@ -617,12 +615,12 @@ void TitleDraw(void)
 		break;
 		//�α��� �̷��� ������ �α��� ����
 	case MENU_LOGIN:
-		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+		MemRect(0, DY, DX, DY, COLOR_BLACK);
 		for (i = 0; i < TOTAL_LOGIN; i++) {
-			MemRect(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
-			DrawImage(32 * _2X, 32 * _2X, i * 32 * _2X, 147 * _2X, DX / 2 - 120 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 8 * _2X, false, false, false, false, false, 1.0f, sprite[ETC_IMG], gScreenBuffer, gScreenLayer, ETC_IMG, false);
+			MemRect(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, COLOR_WHITE);
+			DrawImage(32 * _2X, 32 * _2X, i * 32 * _2X, 147 * _2X, DX / 2 - 120 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 8 * _2X, false, false, false, false, false, 1.0f, sprite[ETC_IMG], ETC_IMG);
 			SetFontColor(COLOR_GREY);
-			CenterTextSolid(TEXT_LOGIN_FACEBOOK + i, DX / 2 + 24 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 20 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
+			CenterTextSolid(TEXT_LOGIN_FACEBOOK + i, DX / 2 + 24 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 20 * _2X, 1.0f);
 			SetRectPoint(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, TOUCH_FUNC_TITLE_LOGIN_FACEBOOK + i);
 		}
 		break;
@@ -650,7 +648,7 @@ void OpeningDraw(void)
 	int openingScene = openingTextPage / OPENING_TEXT_PER_SCENE;
 	int textIndex = TEXT_OPENING_0_0 + openingTextPage;
 
-	MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+	MemRect(0, DY, DX, DY, COLOR_BLACK);
 
 	DrawImage(
 		imgW, imgH,
@@ -659,11 +657,7 @@ void OpeningDraw(void)
 		false, false, false, false, false,
 		1.0f,
 		sprite[OP0_IMG + openingScene],
-		gScreenBuffer,
-		gScreenLayer,
-		OP0_IMG + openingScene,
-		false
-	);
+		OP0_IMG + openingScene);
 
 	FrameText(
 		TEXTPTR(textIndex),
@@ -672,33 +666,29 @@ void OpeningDraw(void)
 		textW,
 		textLines,
 		0,
-		textZoom,
-		gScreenBuffer,
-		gScreenLayer,
-		false
-	);
+		textZoom);
 }
 
-void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering, int dir)
+void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, int dir)
 {
 	//DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 	SetAlpha(24);
-	MemRect(x, y, dx, dy, 0x2A2A3A, cvtDest, cvtLayer, buffering);
+	MemRect(x, y, dx, dy, 0x2A2A3A);
 	SetAlpha(32);
 
 	// "DAY" �ؽ�Ʈ (�����ϰ� ǥ��)
 	//char dayText[32];
 	//sprintf(dayText, "DAY %d", day);
-	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
-	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)(dy - 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
+	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImage(512, 19, 2, 612, x + dx / 2 - (float)(512 / 2) * zoom, y - (float)(dy - 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 	if (popUpFrame > startFrame + 1) {
 		if (popUpFrame == startFrame + 2)
 			PlayMusic(M_JUMP);
 		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
 		//DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, dir, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom);
+		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, dir, zoom * 2, false, false);
 
 	}
 
@@ -708,7 +698,7 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 
 		if (popUpFrame > startFrame + 2) {
 			SetFontColor(COLOR_WHITE);
-			FrameText(TEXTPTR(textIdx), x + (float)((DX - 512) / 2 + 40 * _2X) * zoom, y - (float)(16 * _2X) * zoom, 1.2f * textDx, textLines, textCurPage, 1.2f * zoom, cvtDest, cvtLayer, buffering);
+			FrameText(TEXTPTR(textIdx), x + (float)((DX - 512) / 2 + 40 * _2X) * zoom, y - (float)(16 * _2X) * zoom, 1.2f * textDx, textLines, textCurPage, 1.2f * zoom);
 			//SetFontColor(COLOR_WHITE);
 		}
 	}
@@ -716,12 +706,12 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 	popUpFrame++;
 }
 
-void GNBDraw(int x, int y, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void GNBDraw(int x, int y)
 {
 	int i;
 
 	//�޴���ư
-	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
+	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	switch (drawHandle) {
 	default:
 		if (curMenu == MENU_PLAY) {
@@ -739,7 +729,7 @@ void GNBDraw(int x, int y, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 		break;
 	case MD_BOSSRAID:
 		SetAlpha(32 - Abs(frame % 32 - 16));
-		DrawImage(18 * _2X, 14 * _2X, 58 * _2X, 174 * _2X, x + DX - 32 * _2X + 6 * _2X, y - 2 * _2X - 7 * _2X, false, false, false, false, false, 1.0f, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
+		DrawImage(18 * _2X, 14 * _2X, 58 * _2X, 174 * _2X, x + DX - 32 * _2X + 6 * _2X, y - 2 * _2X - 7 * _2X, false, false, false, false, false, 1.0f, sprite[COMMON_IMG], COMMON_IMG);
 		SetAlpha(32);
 
 		SetRectPoint(x + DX - 48 * _2X, y, 48 * _2X, 48 * _2X, TOUCH_FUNC_BOSSRAID_OUT);
@@ -748,7 +738,7 @@ void GNBDraw(int x, int y, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtL
 	}
 }
 
-void ActiveHelpDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void ActiveHelpDraw()
 {
 	int i;
 	int startX, startY, width;
@@ -765,7 +755,7 @@ void ActiveHelpDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, b
 		if (attackSequence == ATTACKSEQUENCE_READY && !curtainFrame) {
 			//DrawAlpha(x + 4 * _2X, y - 2 * _2X)
 			SetAlpha(32 - Abs(robin.playtime % 16 - 8));
-			CenterText(TEXT_TARGETING_RAID, xOffset + DX / 2 - 80 * _2X + 160 * _2X / 2 + 2 * _2X, STATUSWIN_Y2 + HEARTBARGAP - 3 * _2X, 1.0f, cvtDest, cvtLayer, buffering);
+			CenterText(TEXT_TARGETING_RAID, xOffset + DX / 2 - 80 * _2X + 160 * _2X / 2 + 2 * _2X, STATUSWIN_Y2 + HEARTBARGAP - 3 * _2X, 1.0f);
 			SetAlpha(32);
 		}
 
@@ -773,76 +763,76 @@ void ActiveHelpDraw(cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, b
 	}
 }
 
-void LogDraw(LOG* g, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void LogDraw(LOG* g)
 {
 	int enemyType = GetTypeFromCmf(g->cmf);
-	DrawFrame(g->x - (float)(LOG_X / 2) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom, (float)LOG_X * g->zoom, (float)LOG_Y * g->zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+	DrawFrame(g->x - (float)(LOG_X / 2) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom, (float)LOG_X * g->zoom, (float)LOG_Y * g->zoom, FRAME_SHOPBALLOON);
 
 	switch (g->type) {
 	case LOG_EVENT_QUESTSTART:
-		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true);
 		//SetFontColor(COLOR_BROWN);
-		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_EVENT_BATTLESTART:
-		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true);
 
 		//SetFontColor(COLOR_BROWN);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_EVENT_RAIDSTART:
 		//DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], g->x - (float)(LOG_X / 2) * g->zoom + (float)(22 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, 1.6 * g->zoom, cvtDest, cvtLayer, buffering);
-		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true);
 
 		//SetFontColor(COLOR_BROWN);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 		break;
 	case LOG_RAID:
-		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom, cvtDest, cvtLayer, buffering);
-		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false, cvtDest, cvtLayer, buffering);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom);
+		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 
-		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
-		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, MINUS, true, g->zoom, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true);
+		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, MINUS, true, g->zoom, true);
 		break;
 	case LOG_BATTLE:
-		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom, cvtDest, cvtLayer, buffering);
-		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false, cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom);
+		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false);
 		grayScale = 32;
-		DrawCmfDetailShadow(g->cmf2, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, g->zoom, cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(g->cmf2, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, g->zoom);
 		grayScale = 0;
-		DrawEffect(DEBUF_STUN0 + frame / MOTIONDIV % 6, g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, false, g->zoom, cvtDest, cvtLayer, buffering);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 80 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		DrawEffect(DEBUF_STUN0 + frame / MOTIONDIV % 6, g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, false, g->zoom);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 80 * _2X) * g->zoom, -1, -1, g->zoom);
 		break;
 	case LOG_BOSSGETCOIN:
-		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom, cvtDest, cvtLayer, buffering);
-		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false, cvtDest, cvtLayer, buffering);
-		DrawCmfDetailShadow(g->cmf2, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, g->zoom, cvtDest, cvtLayer, buffering);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 80 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
-		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true, cvtDest, cvtLayer, buffering);
-		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, PLUS, true, g->zoom, true, cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom);
+		DrawGoldAlpha(g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(34 * _2X) * g->zoom, ALPHA_BOSS, FONT_GOLD_LARGE, g->zoom * 0.5f, CENTER, true, false);
+		DrawCmfDetailShadow(g->cmf2, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, g->zoom);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 80 * _2X) * g->zoom, -1, -1, g->zoom);
+		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true);
+		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, PLUS, true, g->zoom, true);
 
 		break;
 	case LOG_SKILL:
-		DrawSkillIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, cvtDest, cvtLayer, buffering);
+		DrawSkillIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f);
 		SetFontColor(COLOR_BROWN);
-		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 		SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_BETHEART:
 		//���ڸ� �����ְ�
-		PushButtonDraw(g->cmf, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, false, g->zoom, false, cvtDest, cvtLayer, buffering);
-		DrawBox(ao[ITEMBOX].etc, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, LEFT, false, false, false, false, true, g->zoom * 2.0f, cvtDest, cvtLayer, buffering);
-		DrawHeartButton(g->count, g->x - (float)(0 * _2X) * g->zoom/* + (float)(2 * _2X) * g->zoom*/, g->y + (float)(LOG_Y / 2) * g->zoom + (float)(-0 * _2X) * g->zoom, g->zoom * 1.0f, false, false, cvtDest, cvtLayer, buffering);
-		LineTextStr(g->text, g->x - (float)(LOG_X / 5) * g->zoom/* + (float)(8 * _2X + (float)16 * _2X * 1.5f + 58 * _2X) * g->zoom*/, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(30 * _2X) * g->zoom, (float)(LOG_X - BOXSIZE_X + ITEMICONSIZE) * g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		PushButtonDraw(g->cmf, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, false, g->zoom, false);
+		DrawBox(ao[ITEMBOX].etc, g->x - (float)(LOG_X / 3 + 8 * _2X) * g->zoom, g->y - (float)(LOG_Y * 2 / 5) * g->zoom, LEFT, false, false, false, false, true, g->zoom * 2.0f);
+		DrawHeartButton(g->count, g->x - (float)(0 * _2X) * g->zoom/* + (float)(2 * _2X) * g->zoom*/, g->y + (float)(LOG_Y / 2) * g->zoom + (float)(-0 * _2X) * g->zoom, g->zoom * 1.0f, false, false);
+		LineTextStr(g->text, g->x - (float)(LOG_X / 5) * g->zoom/* + (float)(8 * _2X + (float)16 * _2X * 1.5f + 58 * _2X) * g->zoom*/, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(30 * _2X) * g->zoom, (float)(LOG_X - BOXSIZE_X + ITEMICONSIZE) * g->zoom, -1, -1, g->zoom);
 		break;
 	case LOG_BETCOIN:
-		DrawRouletteNumIcon(g->count, g->icon, g->x, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, true, CENTER, g->zoom, cvtDest, cvtLayer, buffering);
+		DrawRouletteNumIcon(g->count, g->icon, g->x, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, true, CENTER, g->zoom);
 
 		SetFontColor(COLOR_BROWN);
-		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2 - 4 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + ITEMICONSIZE + 4 * _2X) * g->zoom, (float)(LOG_X)*g->zoom, -1, -1, g->zoom, cvtDest, cvtLayer, buffering);
+		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2 - 4 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + ITEMICONSIZE + 4 * _2X) * g->zoom, (float)(LOG_X)*g->zoom, -1, -1, g->zoom);
 		SetFontColor(COLOR_WHITE);
 		break;
 	}
@@ -1564,7 +1554,7 @@ void ArrangeEventMenu(void)
 	}
 }
 
-void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void EventMenuDraw(GAMEEVENT* gEvent)
 {
 	long long start, end, current;
 	long remainTime = Max(0, gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp));
@@ -1573,10 +1563,10 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 	case EVENTTYPE_PVP:
 		switch (gEvent->barStatus) {
 		default:
-			PvpEventBarDraw(gEvent, xOffset + gEvent->x + (float)(-PVPQUESTBARWIDTH - 32 * _2X * 1) * gEvent->zoom, gEvent->y + (float)(PVPQUESTBARHEIGHT / 2) * gEvent->zoom, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], robin.pvpQuestCnt, pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + TOTALPVPDETAILREQUEST - 1], false, true, gEvent->zoom, cvtDest, cvtLayer, buffering);
+			PvpEventBarDraw(gEvent, xOffset + gEvent->x + (float)(-PVPQUESTBARWIDTH - 32 * _2X * 1) * gEvent->zoom, gEvent->y + (float)(PVPQUESTBARHEIGHT / 2) * gEvent->zoom, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], robin.pvpQuestCnt, pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + TOTALPVPDETAILREQUEST - 1], false, true, gEvent->zoom);
 			break;
 		case EVENT_BAR_GUAGE_FILL:
-			PvpEventBarDraw(gEvent, xOffset + gEvent->x + (float)(-PVPQUESTBARWIDTH - 32 * _2X * 1) * gEvent->zoom, gEvent->y + (float)(PVPQUESTBARHEIGHT / 2) * gEvent->zoom, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], rouletteNum, pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + TOTALPVPDETAILREQUEST - 1], false, true, gEvent->zoom, cvtDest, cvtLayer, buffering);
+			PvpEventBarDraw(gEvent, xOffset + gEvent->x + (float)(-PVPQUESTBARWIDTH - 32 * _2X * 1) * gEvent->zoom, gEvent->y + (float)(PVPQUESTBARHEIGHT / 2) * gEvent->zoom, pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0], rouletteNum, pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + TOTALPVPDETAILREQUEST - 1], false, true, gEvent->zoom);
 			break;
 		}
 		break;
@@ -1593,7 +1583,7 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 			//case QUESTTYPE_ITEM_RAID:
 			//case QUESTTYPE_BATTLE:
 		default:
-			DrawIcon(gEvent->icon + (gEvent->icon == ICON_GOLD ? frame % GOLDICONFRAME : 0), xOffset + gEvent->x + (float)(-8 * _2X * 2 - 1 * _2X) * gEvent->zoom, gEvent->y + (float)(ITEMICONSIZE + 2 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true, cvtDest, cvtLayer, buffering);
+			DrawIcon(gEvent->icon + (gEvent->icon == ICON_GOLD ? frame % GOLDICONFRAME : 0), xOffset + gEvent->x + (float)(-8 * _2X * 2 - 1 * _2X) * gEvent->zoom, gEvent->y + (float)(ITEMICONSIZE + 2 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true);
 			break;
 			//case QUESTTYPE_RAID:
 			//	DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, 1.2f * gEvent->zoom, cvtDest, cvtLayer, buffering);
@@ -1602,20 +1592,20 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 		}
 		if (gEvent->type == EVENTTYPE_DOUBLE) {
 			//SetAlpha(32);
-			DrawGoldAlpha(xOffset + gEvent->x - (float)16 * _2X * gEvent->zoom, gEvent->y - (float)4 * _2X * gEvent->zoom, ALPHA_X, FONT_GOLD_LARGE, gEvent->zoom / 2, LEFT, true, false, cvtDest, cvtLayer, buffering);
-			DrawGoldNum(2, xOffset + gEvent->x - (float)4 * _2X * gEvent->zoom, gEvent->y + (float)4 * _2X * gEvent->zoom, LEFT, false, false, false, Min(0.1f * (frame % FPS), 1.0f) * gEvent->zoom, cvtDest, cvtLayer, buffering);
+			DrawGoldAlpha(xOffset + gEvent->x - (float)16 * _2X * gEvent->zoom, gEvent->y - (float)4 * _2X * gEvent->zoom, ALPHA_X, FONT_GOLD_LARGE, gEvent->zoom / 2, LEFT, true, false);
+			DrawGoldNum(2, xOffset + gEvent->x - (float)4 * _2X * gEvent->zoom, gEvent->y + (float)4 * _2X * gEvent->zoom, LEFT, false, false, false, Min(0.1f * (frame % FPS), 1.0f) * gEvent->zoom);
 		}
 		break;
 	case EVENTTYPE_DEBUG_NEWGAME:
 	case EVENTTYPE_DEBUG_MAXGAME:
-		DrawIcon(gEvent->icon, xOffset + gEvent->x + (float)(-ITEMICONSIZE - 1 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->y + (float)(ITEMICONSIZE + 1 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true, cvtDest, cvtLayer, buffering);
+		DrawIcon(gEvent->icon, xOffset + gEvent->x + (float)(-ITEMICONSIZE - 1 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->y + (float)(ITEMICONSIZE + 1 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true);
 		break;
 	case EVENTTYPE_DEBTDISCOUNT:
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, xOffset + gEvent->x - (float)20 * _2X * gEvent->zoom, gEvent->y - (float)8 * _2X * gEvent->zoom, SHADOW_IMG, gEvent->zoom, cvtDest, cvtLayer, buffering);
-		DrawNeutral(EFFECT_CRAFT0 + (frame / 2 / MOTIONDIV) % 3, xOffset + gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, gEvent->zoom, cvtDest, cvtLayer, buffering);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, xOffset + gEvent->x - (float)20 * _2X * gEvent->zoom, gEvent->y - (float)8 * _2X * gEvent->zoom, SHADOW_IMG, gEvent->zoom);
+		DrawNeutral(EFFECT_CRAFT0 + (frame / 2 / MOTIONDIV) % 3, xOffset + gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, gEvent->zoom);
 		break;
 	case EVENTTYPE_BOSSRAID:
-		DrawCmfDetailShadow(enemyData[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * 5 + 0], xOffset + gEvent->x, gEvent->y - (float)16 * _2X * gEvent->zoom, LEFT, gEvent->zoom * (float)goldQuestZoomData[gEvent->barStatus * 2 + 1], cvtDest, cvtLayer, buffering);
+		DrawCmfDetailShadow(enemyData[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[gEvent->barStatus * BOSSRAIDSIZE + BOSSRAIDSIZE - 1] * 5 + 0], xOffset + gEvent->x, gEvent->y - (float)16 * _2X * gEvent->zoom, LEFT, gEvent->zoom * (float)goldQuestZoomData[gEvent->barStatus * 2 + 1]);
 		break;
 	}
 
@@ -1623,21 +1613,21 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 	case EVENTTYPE_SHOP:
 		//�������� ȹ���� �� �ִ� Ÿ�̹��� �Ǹ�
 		if (remainTime > 3600)
-			DrawTime(xOffset + gEvent->x, gEvent->y - (float)32 * _2X * gEvent->zoom / 2, remainTime, TIME_HOUR_MINUTE, CENTER, gEvent->zoom * 0.8f, cvtDest, cvtLayer, buffering);
+			DrawTime(xOffset + gEvent->x, gEvent->y - (float)32 * _2X * gEvent->zoom / 2, remainTime, TIME_HOUR_MINUTE, CENTER, gEvent->zoom * 0.8f);
 		else {
-			DrawRedDot(gEvent->x + (float)(32 * _2X / 2 * gEvent->zoom - 9 * _2X * gEvent->zoom * 1.5f), gEvent->y + (float)(36 * _2X / 2) * gEvent->zoom, COLOR_WHITE, false, gEvent->zoom * 1.5f, cvtDest, cvtLayer, buffering);
+			DrawRedDot(gEvent->x + (float)(32 * _2X / 2 * gEvent->zoom - 9 * _2X * gEvent->zoom * 1.5f), gEvent->y + (float)(36 * _2X / 2) * gEvent->zoom, COLOR_WHITE, false, gEvent->zoom * 1.5f);
 		}
 		break;
 	default:
-		DrawTime(xOffset + gEvent->x, gEvent->y - (float)32 * _2X * gEvent->zoom / 2, remainTime, remainTime > 3600 ? TIME_HOUR_MINUTE : TIME_MINUTE_SECONDS, CENTER, gEvent->zoom * 0.8f, cvtDest, cvtLayer, buffering);
+		DrawTime(xOffset + gEvent->x, gEvent->y - (float)32 * _2X * gEvent->zoom / 2, remainTime, remainTime > 3600 ? TIME_HOUR_MINUTE : TIME_MINUTE_SECONDS, CENTER, gEvent->zoom * 0.8f);
 		break;
 	case EVENTTYPE_DEBUG_NEWGAME:
 	case EVENTTYPE_DEBUG_MAXGAME:
-		CenterAlpha(xOffset + gEvent->x, gEvent->y - (float)36 * _2X * gEvent->zoom / 2, gEvent->type == EVENTTYPE_DEBUG_NEWGAME ? ALPHA_NEWGAME : ALPHA_MAXGAME, FONT_SMALL, false, gEvent->zoom, cvtDest, cvtLayer, buffering);
+		CenterAlpha(xOffset + gEvent->x, gEvent->y - (float)36 * _2X * gEvent->zoom / 2, gEvent->type == EVENTTYPE_DEBUG_NEWGAME ? ALPHA_NEWGAME : ALPHA_MAXGAME, FONT_SMALL, false, gEvent->zoom);
 		break;
 	case EVENTTYPE_DEBUG_ENEMYATTACK:
-		DrawAlpha(xOffset + gEvent->x - (float)(20 * _2X) * gEvent->zoom, gEvent->y - (float)(36 * _2X) * gEvent->zoom / 2, ALPHA_ATK, FONT_SMALL, gEvent->zoom, false, cvtDest, cvtLayer, buffering);
-		DrawAlpha(xOffset + gEvent->x + (float)(-20 * _2X + 24 * _2X) * gEvent->zoom, gEvent->y - (float)(36 * _2X) * gEvent->zoom / 2, ONLYATTACKMODE == true ? ALPHA_N : ALPHA_Y, FONT_SMALL, gEvent->zoom, false, cvtDest, cvtLayer, buffering);
+		DrawAlpha(xOffset + gEvent->x - (float)(20 * _2X) * gEvent->zoom, gEvent->y - (float)(36 * _2X) * gEvent->zoom / 2, ALPHA_ATK, FONT_SMALL, gEvent->zoom, false);
+		DrawAlpha(xOffset + gEvent->x + (float)(-20 * _2X + 24 * _2X) * gEvent->zoom, gEvent->y - (float)(36 * _2X) * gEvent->zoom / 2, ONLYATTACKMODE == true ? ALPHA_N : ALPHA_Y, FONT_SMALL, gEvent->zoom, false);
 		break;
 	}
 
@@ -1645,7 +1635,7 @@ void EventMenuDraw(GAMEEVENT* gEvent, cocos2d::RenderTexture* cvtDest, cocos2d::
 		SetRectPoint(xOffset + gEvent->x + (float)(-ITEMICONSIZE - 4 * _2X) * gEvent->zoom, gEvent->y + (float)(ITEMICONSIZE + 4 * _2X) * gEvent->zoom, (float)(38 * _2X) * gEvent->zoom, (float)(38 * _2X) * gEvent->zoom, gEvent->touchFunc);
 }
 
-void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void GoldQuestMenuDraw(int x, int y, float zoom)
 {
 	int i, j;
 	int rewardType, rewardDetail, rewardGrade;
@@ -1660,27 +1650,27 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 	float degree = 90.0f - atan((float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 1] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 1]) / (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 0] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 0])) * 180 / M_PI;
 	float radian = degree * M_PI / 180;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, buffering);
+	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	//DrawWindow5(x + (float)(16 * _2X) * zoom, y - (float)(124 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 152 * _2X) * zoom, CASTLE3, zoom, cvtDest, cvtLayer, buffering);
 
-	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
+	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom);
 
 	for (i = BOSSRAIDSIZE - 1; i >= 0; i--) {
 		if (i != BOSSRAIDSIZE - 1) {
 			for (j = 0; j < 3; j++) {
-				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
-				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + (float)17 * _2X * zoom / 2, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
+				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
+				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + (float)17 * _2X * zoom / 2, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
 
 				//Ŭ�����ϸ� ���긦 ���ش�.
 				if ((int)(gEvent->barStatus) > i) {
 					SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)10 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
-					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
+					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)10 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
+					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
 					SetAlpha(32);
 
-					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)8 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
-					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], cvtDest, cvtLayer, MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE, buffering);
+					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)8 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
+					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
 
 				}
 				//goldQuestDotPosition
@@ -1692,9 +1682,9 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 
 		switch (i) {
 		default:
-			DrawBox(goldQuestBox[(int)(gEvent->barStatus) * BOSSRAIDSIZE + (int)(i)], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom - (float)(BOXSIZE_X) * 2 / 3 * zoom / 2 * 2 / 3 + (i / 2 % 2 == 0 ? -(float)18 * _2X * zoom : (float)20 * _2X * zoom), y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)10 * _2X * zoom + (float)10 * _2X * zoom, LEFT, false, false, true, i >= i ? false : true, true, zoom * 2 / 3 * 2 / 3, cvtDest, cvtLayer, buffering);
+			DrawBox(goldQuestBox[(int)(gEvent->barStatus) * BOSSRAIDSIZE + (int)(i)], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom - (float)(BOXSIZE_X) * 2 / 3 * zoom / 2 * 2 / 3 + (i / 2 % 2 == 0 ? -(float)18 * _2X * zoom : (float)20 * _2X * zoom), y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)10 * _2X * zoom + (float)10 * _2X * zoom, LEFT, false, false, true, i >= i ? false : true, true, zoom * 2 / 3 * 2 / 3);
 
-			DrawCmfDetailShadow(enemyData[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * 5 + 0], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom - (float)(24 * _2X) * zoom, i / 2 % 2 == 0 ? RIGHT : LEFT, LOBBYZOOM * zoom, cvtDest, cvtLayer, buffering);
+			DrawCmfDetailShadow(enemyData[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * 5 + 0], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom - (float)(24 * _2X) * zoom, i / 2 % 2 == 0 ? RIGHT : LEFT, LOBBYZOOM * zoom);
 
 			break;
 		}
@@ -1702,11 +1692,11 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 		SetRectPoint(x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)(BOXSIZE_X)*zoom + (float)8 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)24 * _2X * zoom, (float)BOXSIZE_X * zoom, (float)BOXSIZE_Y * zoom, TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO + i);
 	}
 	
-	DrawText(TEXT_REMAINTIME, x + (float)64 * _2X * zoom, y - (float)452 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
+	DrawText(TEXT_REMAINTIME, x + (float)64 * _2X * zoom, y - (float)452 * _2X * zoom, zoom);
 
-	DrawTime(x + (float)(128 * _2X) * zoom, y - (float)(450 * _2X) * zoom, Max(gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp), 0), TIME_HOUR_MINUTE, LEFT, zoom, cvtDest, cvtLayer, buffering);
+	DrawTime(x + (float)(128 * _2X) * zoom, y - (float)(450 * _2X) * zoom, Max(gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp), 0), TIME_HOUR_MINUTE, LEFT, zoom);
 
-	DrawTextButton(x + (POPUPWINDOWSIZE_X / 2 - 80 * _2X / 2) * zoom, y - (POPUPWINDOWSIZE_Y - 4 * ITEMICONSIZE) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, FRAME_GREEN, false, zoom, false, TEXT_ADVENTURE, cvtDest, cvtLayer, buffering);
+	DrawTextButton(x + (POPUPWINDOWSIZE_X / 2 - 80 * _2X / 2) * zoom, y - (POPUPWINDOWSIZE_Y - 4 * ITEMICONSIZE) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, FRAME_GREEN, false, zoom, false, TEXT_ADVENTURE);
 
 	switch (menuDepth) {
 	case 0:
@@ -1721,7 +1711,7 @@ void GoldQuestMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest
 	}
 }
 
-void GameOverDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void GameOverDraw(int x, int y, float zoom)
 {
 	int i;
 	float fontZoom = 1.5f;
@@ -1730,7 +1720,7 @@ void GameOverDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
-	DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGEFAILED, FONT_GOLD_LARGE, fontZoom * zoom, CENTER, true, false, cvtDest, cvtLayer, buffering);
+	DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGEFAILED, FONT_GOLD_LARGE, fontZoom * zoom, CENTER, true, false);
 
 	//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
 	//DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
@@ -1844,7 +1834,7 @@ void SetPopUp(int type, int x, int y, int w, int h,
 
 }
 
-void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void DrawPopUp(int idx)
 {
 	int i, j = 0;
 	POPUP* p = &popUp[idx];
@@ -1867,20 +1857,20 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 
 	switch (p->type) {
 	case POPUPTYPE_BOXINFO:
-		BoxInfoDraw(p->itemDetail, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		BoxInfoDraw(p->itemDetail, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 
 		break;
 	case POPUPTYPE_BOXREWARD:
 		//�������� Ŀ����
-		DrawFrame(p->x - (float)p->w * p->zoom / 2, p->y + plusY + (float)p->h * p->zoom / 2, (float)p->w * p->zoom, (float)p->h * p->zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+		DrawFrame(p->x - (float)p->w * p->zoom / 2, p->y + plusY + (float)p->h * p->zoom / 2, (float)p->w * p->zoom, (float)p->h * p->zoom, FRAME_SHOPBALLOON);
 
 		if (p->frame > POPUPFRAME)
-			DrawBox(p->itemDetail, p->x - (float)p->w * p->zoom / 2 + (float)BOXSIZE_X / 4 * p->zoom, p->y + plusY + (float)BOXSIZE_Y / 3 * p->zoom, LEFT, Min(1, (float)(((float)p->frame - POPUPFRAME) / POPUPFRAME)), true, false, false, true, p->zoom * 2, cvtDest, cvtLayer, buffering);
+			DrawBox(p->itemDetail, p->x - (float)p->w * p->zoom / 2 + (float)BOXSIZE_X / 4 * p->zoom, p->y + plusY + (float)BOXSIZE_Y / 3 * p->zoom, LEFT, Min(1, (float)(((float)p->frame - POPUPFRAME) / POPUPFRAME)), true, false, false, true, p->zoom * 2);
 
 		for (i = 0; i < BOX1MAXREWARDITEM; i++) {
 			if (p->rewardStartCnt[i] > 0) {
 				if (p->frame > 2 * POPUPFRAME + j * POPUPFRAME) {
-					DrawRewardCardRange(p->rewardType[i], p->rewardDetail[i], p->rewardGrade[i], p->rewardStartCnt[i], p->rewardEndCnt[i], p->x - (float)p->w * p->zoom / 2 + (float)(4 * _2X + (REWARDCARDSIZE_X + 2 * _2X) * j + (REWARDCARDSIZE_X / 2) - (REWARDCARDSIZE_X / 2) * Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1)) * p->zoom, p->y + plusY + (float)p->h * p->zoom / 2 - (float)28 * _2X * p->zoom - (float)REWARDCARDSIZE_Y / 2 * p->zoom + (float)(REWARDCARDSIZE_Y / 2) * Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1), Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1) * p->zoom, true, cvtDest, cvtLayer, buffering);
+					DrawRewardCardRange(p->rewardType[i], p->rewardDetail[i], p->rewardGrade[i], p->rewardStartCnt[i], p->rewardEndCnt[i], p->x - (float)p->w * p->zoom / 2 + (float)(4 * _2X + (REWARDCARDSIZE_X + 2 * _2X) * j + (REWARDCARDSIZE_X / 2) - (REWARDCARDSIZE_X / 2) * Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1)) * p->zoom, p->y + plusY + (float)p->h * p->zoom / 2 - (float)28 * _2X * p->zoom - (float)REWARDCARDSIZE_Y / 2 * p->zoom + (float)(REWARDCARDSIZE_Y / 2) * Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1), Min(((float)(p->frame - (2 * POPUPFRAME + j * POPUPFRAME)) / POPUPFRAME), 1) * p->zoom, true);
 				}
 				j++;
 			}
@@ -1889,111 +1879,107 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 		memset(&tempStr, 0, sizeof(tempStr));
 		sprintf(tempStr, "%s %d %s", textId[TEXT_STAGE], robin.stage + 1, textId[TEXT_REWARD]);
 
-		DrawLabelStr(p->x - (float)24 * _2X * p->zoom, p->y + plusY + (float)60 * _2X * p->zoom, tempStr, p->zoom, cvtDest, cvtLayer, buffering);
+		DrawLabelStr(p->x - (float)24 * _2X * p->zoom, p->y + plusY + (float)60 * _2X * p->zoom, tempStr, p->zoom);
 
 		break;
 	case POPUPTYPE_QUESTINFO:
-		QuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		QuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 
 		break;
 	case POPUPTYPE_PVPQUESTINFO:
-		PvpQuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		PvpQuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 
 		break;
 	case POPUPTYPE_SHOPINFO:
-		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
+		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
 	case POPUPTYPE_CASTLEMENU:
-		CastleMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
+		CastleMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
 	case POPUPTYPE_DAILYQUEST:
-		DailyQuestDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		DailyQuestDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_EVENTSHOP:
-		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
+		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
 	case POPUPTYPE_NEWS:
-		NewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		NewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CALENDAR:
-		CalendarDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)(POPUPWINDOWSIZE_Y / 2) * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		CalendarDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)(POPUPWINDOWSIZE_Y / 2) * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_STAGE:
 		//SetAlpha(20);
 		//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 		//SetAlpha(32);
-		StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_BOSSRAID:
-		GoldQuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		GoldQuestMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_JOKBO:
-		JokboDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		JokboDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_DEPTDISCOUNT:
-		DeptDiscountDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		DeptDiscountDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_DOUBLE:
-		DoubleGoldDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		DoubleGoldDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_ITEMCOMPARE:
-		ItemDetailDraw(&ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y + ITEMDETAILWINDOWSIZE_Y / 2 + 0 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, true, false, cvtDest, cvtLayer, buffering);
-		ItemDetailDraw(&robin.newItem, xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y - ITEMDETAILWINDOWSIZE_Y / 2 + 40 * _2X - 64 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, false, false, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y + ITEMDETAILWINDOWSIZE_Y / 2 + 0 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, true, false);
+		ItemDetailDraw(&robin.newItem, xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y - ITEMDETAILWINDOWSIZE_Y / 2 + 40 * _2X - 64 * _2X + (float)(ITEMDETAILWINDOWSIZE_Y / 2) * p->zoom, p->zoom, false, false);
 		break;
 	case POPUPTYPE_ITEMDETAIL:
-		ItemDetailDraw(&ao[PLAYER].equip[itemEquipSlot[p->itemType]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y, p->zoom, false, true, cvtDest, cvtLayer, buffering);
+		ItemDetailDraw(&ao[PLAYER].equip[itemEquipSlot[p->itemType]], xOffset + DX / 2 - (int)(float)(ITEMDETAILWINDOWSIZE_X / 2) * p->zoom, p->y, p->zoom, false, true);
 		break;
 	case POPUPTYPE_LEVELUP:
-		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_HEROSTAT:
 		//CollectionsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
-		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWUPGRADE:
-		CrewMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		CrewMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWLIST:
 		//CrewListDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
 		CrewMenuDraw(
 			xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom,
 			DY - GNBHEIGHT,
-			p->zoom,
-			cvtDest,
-			cvtLayer,
-			buffering
-		);
+			p->zoom);
 		break;
 	case POPUPTYPE_COLLECTIONS:
-		CollectionsDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom, cvtDest, cvtLayer, buffering);
+		CollectionsDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
 	case POPUPTYPE_FRIENDS:
 
 		break;
 	case POPUPTYPE_OPTION:
-		OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_ENEMYUSER:
 		//DrawDioramaCrew(&enemyHouse, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2 + 15 * _2X) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)80 * _2X * p->zoom, p->zoom, stageInfoFrame, false, false, false, cvtDest, cvtLayer, buffering);
-		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f, cvtDest, cvtLayer, buffering);
+		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f);
 		break;
 	case POPUPTYPE_GAMEOVER:
-		GameOverDraw(0, DY, 1.0f, cvtDest, cvtLayer, buffering);
+		GameOverDraw(0, DY, 1.0f);
 		break;
 	case POPUPTYPE_HOWTOGETHEROES:
 		//���⿡ ����θ� ��� ����� �׷��ش�.
-		HowToGetHeroesDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		HowToGetHeroesDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_HOWTOGETCREWS:
 		//���⿡ �������븦 ��� ����� �׷��ش�.
-		HowToGetCrewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
+		HowToGetCrewsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	}
 	//���ư
 
 	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER)) {
 		float xMarkZoom = 1.0f;
-		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom, cvtDest, cvtLayer, buffering);
+		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom);
 
 		SetRectPoint((float)(18)* p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, (float)64 * xMarkZoom * p->zoom, (float)64 * xMarkZoom * p->zoom, TOUCH_FUNC_POPUP_CLOSE);
 	}
@@ -2001,7 +1987,7 @@ void DrawPopUp(int idx, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLaye
 	p->frame++;
 }
 
-void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, cocos2d::Layer* cvtLayer, bool buffering)
+void GameMenuDraw(int x, int y, float zoom)
 {
 	int i, j, motion;
 	//int dy = 29 * _2X;
@@ -2016,7 +2002,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 	x = xOffset + DX;
 	y = DY;
 
-	DrawFrame(x, y, w, DY, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
+	DrawFrame(x, y, w, DY, FRAME_SHOPBALLOON);
 
 	y = DY - 28 * _2X - (GNBHEIGHT - GNB_INIT_HEIGHT);
 
@@ -2024,7 +2010,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 
 	for (i = 0; i < MENU_JOKBO; i++) {
 		if (robin.openedMenu[i] == OPENED) {
-			DrawText(TEXT_MENU_PLAY + i, x + 58 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 8 * _2X, 2.0f, cvtDest, cvtLayer, buffering);
+			DrawText(TEXT_MENU_PLAY + i, x + 58 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 8 * _2X, 2.0f);
 
 			//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, SHADOW_IMG, 1.0f, cvtDest, cvtLayer, buffering);
 
@@ -2038,38 +2024,38 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			switch (i) {
 			case MENU_PLAY://ĳ���͸޴� : ĳ���͸� �������ϰ� ����(STAT_STR, STAT_VIT, STAT_AGI, STAT_INT)�� ��� �κ�
 				//DrawNeutral(OBJ_LEVER0, x + 28 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, LEFT, 2, gScreenBuffer, gScreenLayer, false);
-				DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], x + 28 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 32 * _2X, LEFT, 2.0f * zoom, cvtDest, cvtLayer, buffering);
+				DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], x + 28 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 32 * _2X, LEFT, 2.0f * zoom);
 				break;
 
 			default:
-				DrawIcon(listMenuIcon[i], x + 12 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2, 2, false, false, false, true, cvtDest, cvtLayer, buffering);
+				DrawIcon(listMenuIcon[i], x + 12 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2, 2, false, false, false, true);
 				break;
 			case MENU_FRIENDS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X, 0 * _2X, x + 10 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
+				DrawImage(40 * _2X, 40 * _2X, 40 * _2X, 0 * _2X, x + 10 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_HERO:
-				DrawBarIcon(BAR_CASTLE, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_CASTLE, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
 				break;
 			case MENU_CREW:
-				DrawBarIcon(BAR_CREW, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_CREW, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
 				break;
 			case MENU_COLLECTIONS:
-				DrawBarIcon(BAR_EQUIP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_EQUIP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
 				break;
 			case MENU_SHOP:
-				DrawBarIcon(BAR_MAINSHOP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
+				DrawBarIcon(BAR_MAINSHOP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
 				break;
 			case MENU_NEWS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 5, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
+				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 5, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_GIFTS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 6, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
+				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 6, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_CALENDAR:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 7, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
+				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 7, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_SETTING:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 8, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], cvtDest, cvtLayer, MENUICON_IMG, buffering);
+				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 8, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_GAMERESET:
 				//�����̱� ������ �׳� �ؽ�Ʈ�� ����ش�.
@@ -2079,7 +2065,7 @@ void GameMenuDraw(int x, int y, float zoom, cocos2d::RenderTexture* cvtDest, coc
 			grayScale = 0;
 
 			if (i < TOTAL_MENU - 1)
-				MemRect(x + 4 * _2X, y - dy * (j + 1) + 8 * _2X, w - 8 * _2X, 2 * _2X, 0xEEEEEE, cvtDest, cvtLayer, buffering);
+				MemRect(x + 4 * _2X, y - dy * (j + 1) + 8 * _2X, w - 8 * _2X, 2 * _2X, 0xEEEEEE);
 
 			if (robin.openedMenu[i] == OPENED)
 				SetRectPoint(x, y - dy * j + 8 * _2X, w, dy, TOUCH_FUNC_PLAY + i);

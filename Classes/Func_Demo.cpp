@@ -57,7 +57,7 @@ void Demo(void)
 #ifdef DEBUG
 	if (demoSkip == 0)
 #endif
-	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom, gScreenBuffer, gScreenLayer, false);
+	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom);
 
 	//HUD(StatusDraw/InfoDraw/카드마크 등)를 대화신/캐릭터 초상화보다 먼저 그려서, 나레이션/TALK 창이
 	//항상 HUD 위(가장 바깥 레이어)에 보이도록 한다.
@@ -71,7 +71,7 @@ void Demo(void)
 		break;
 	default:
 
-		StatusDraw(xOffset, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+		StatusDraw(xOffset, 0, 1.0f);
 
 		InfoDraw();
 
@@ -199,7 +199,7 @@ void Demo(void)
 						bar[i].frame2++;
 					}
 
-					BarDraw(&bar[i], bar[i].zoom2, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom2);
 				}
 				else if (bar[i].frame > 0) {
 					GotoPositionBar(&bar[i], bar[i].targetX, bar[i].targetY, bar[i].speed);
@@ -239,16 +239,16 @@ void Demo(void)
 					else
 						bar[i].frame++;
 
-					BarDraw(&bar[i], bar[i].zoom, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom);
 				}
 				else
-					BarDraw(&bar[i], bar[i].zoom, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom);
 			}
 		}
 
 		if (effect.color2) {
 			SetAlpha(24);
-			MemRect(xOffset, DY, DX - 2 * xOffset, DY, effect.color, gScreenBuffer, gScreenLayer, false);
+			MemRect(xOffset, DY, DX - 2 * xOffset, DY, effect.color);
 			SetAlpha(32);
 		}
 
@@ -278,7 +278,7 @@ void Demo(void)
 							robin.gameEvent[i].frame2++;
 						}
 
-						EventMenuDraw(&robin.gameEvent[i], gScreenBuffer, gScreenLayer, false);
+						EventMenuDraw(&robin.gameEvent[i]);
 
 					}
 					else if (robin.gameEvent[i].frame > 0) {
@@ -309,7 +309,7 @@ void Demo(void)
 							robin.gameEvent[i].frame++;
 						}
 
-						EventMenuDraw(&robin.gameEvent[i], gScreenBuffer, gScreenLayer, false);
+						EventMenuDraw(&robin.gameEvent[i]);
 
 
 					}
@@ -348,7 +348,7 @@ void Demo(void)
 			}
 		}
 
-		GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT), gScreenBuffer, gScreenLayer, false);
+		GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 
 		if (curMenu == MENU_PLAY && JoyStickPressPossible() == true)
 			EventScheduler();
@@ -395,7 +395,7 @@ void Demo(void)
 						bar[i].frame2++;
 					}
 
-					BarDraw(&bar[i], bar[i].zoom2, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom2);
 				}
 				else if (bar[i].frame > 0) {
 					GotoPositionBar(&bar[i], bar[i].targetX, bar[i].targetY, bar[i].speed);
@@ -435,10 +435,10 @@ void Demo(void)
 					else
 						bar[i].frame++;
 
-					BarDraw(&bar[i], bar[i].zoom, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom);
 				}
 				else
-					BarDraw(&bar[i], bar[i].zoom, gScreenBuffer, gScreenLayer, false);
+					BarDraw(&bar[i], bar[i].zoom);
 			}
 		}
 
@@ -467,7 +467,7 @@ void Demo(void)
 				}
 
 				if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
-					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2, gScreenBuffer, gScreenLayer, false);
+					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2);
 				}
 
 				SetAlpha(32);
@@ -505,7 +505,7 @@ void Demo(void)
 				}
 
 				if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
-					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom, gScreenBuffer, gScreenLayer, false);
+					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom);
 				}
 
 				SetAlpha(32);
@@ -561,9 +561,9 @@ void Demo(void)
 			int width = StringWidth(skillStr3, 2) + 8 * _2X + SKILLICONSIZE * 2;
 
 			if (curSkill < 100)//스킬이면
-				DrawTextStr(skillStr3, xOffset + DX / 2 - width / 2 + 8 * _2X + SKILLICONSIZE * 2 + 4 * _2X, STATUSWIN_Y + SKILLTEXT_Y, 2, gScreenBuffer, gScreenLayer, false);
+				DrawTextStr(skillStr3, xOffset + DX / 2 - width / 2 + 8 * _2X + SKILLICONSIZE * 2 + 4 * _2X, STATUSWIN_Y + SKILLTEXT_Y, 2);
 			else
-				DrawTextStr(ringStr, xOffset + DX / 2 - width / 2 + 8 * _2X + SKILLICONSIZE * 2 + 4 * _2X, STATUSWIN_Y + SKILLTEXT_Y, 2, gScreenBuffer, gScreenLayer, false);
+				DrawTextStr(ringStr, xOffset + DX / 2 - width / 2 + 8 * _2X + SKILLICONSIZE * 2 + 4 * _2X, STATUSWIN_Y + SKILLTEXT_Y, 2);
 
 
 			int collectionIdx = GetCollectionIdx(ao[PLAYER].equip[EQUIP_WEAPON].type, ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade);
@@ -576,18 +576,18 @@ void Demo(void)
 
 				float zoom = 2.0f;
 				SetSectionClip(xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, (float)(SKILLICONSIZE)*zoom, (float)(SKILLICONSIZE)*zoom, false);
-				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, xOffset + DX / 2 - width / 2 + 8 * _2X + (float)(SKILLICONSIZE)*zoom / 2 - (float)40 * _2X / 2 * zoom, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X + (float)(-SKILLICONSIZE + 8 * _2X) * zoom * 3 / 4, SHADOW_IMG, zoom / 2, gScreenBuffer, gScreenLayer, false);
+				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, xOffset + DX / 2 - width / 2 + 8 * _2X + (float)(SKILLICONSIZE)*zoom / 2 - (float)40 * _2X / 2 * zoom, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X + (float)(-SKILLICONSIZE + 8 * _2X) * zoom * 3 / 4, SHADOW_IMG, zoom / 2);
 
-				DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemySkillIconPos[3 * enemyIdx + 0], xOffset + DX / 2 - width / 2 + 8 * _2X + (float)(SKILLICONSIZE)*zoom / 2 + (float)(enemySkillIconPos[3 * enemyIdx + 1]) * zoom, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X + (float)(-SKILLICONSIZE + enemySkillIconPos[3 * enemyIdx + 2]) * zoom, LEFT, zoom / 2, false, false, gScreenBuffer, gScreenLayer, false);
+				DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemySkillIconPos[3 * enemyIdx + 0], xOffset + DX / 2 - width / 2 + 8 * _2X + (float)(SKILLICONSIZE)*zoom / 2 + (float)(enemySkillIconPos[3 * enemyIdx + 1]) * zoom, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X + (float)(-SKILLICONSIZE + enemySkillIconPos[3 * enemyIdx + 2]) * zoom, LEFT, zoom / 2, false, false);
 
 				UnSectionClip(false);
 			}
 			else
-				DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
+				DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2);
 		}
 
 
-		ActiveHelpDraw(gScreenBuffer, gScreenLayer, false);
+		ActiveHelpDraw();
 
 		for (i = ROBIN; i < TOTALPLAYER; i++)
 			if (ao[i].hitCountFrame > 0) {
@@ -606,8 +606,8 @@ void Demo(void)
 			if (ao[turn].hitCount > 0) {
 				int hitCountPosX = xOffset + ao[turn].x;
 				int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[turn].y) + floatOffsetY + 48 * _2X;
-				DrawGoldNum(ao[turn].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * zoom, gScreenBuffer, gScreenLayer, false);
-				DrawGoldAlpha(hitCountPosX + 4 * _2X, hitCountPosY - 4 * _2X, ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, gScreenBuffer, gScreenLayer, false);
+				DrawGoldNum(ao[turn].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * zoom);
+				DrawGoldAlpha(hitCountPosX + 4 * _2X, hitCountPosY - 4 * _2X, ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
 			}
 		}
 
@@ -621,7 +621,10 @@ void Demo(void)
 		}
 
 		//popMenu
-		if (drawHandle != MD_NEWCOLLECTION && drawHandle != MD_NEWCARD) {
+		//popUpCnt(실제 열린 메뉴 팝업 수)가 0일 땐 이 블록이 할 일이 없는데도 매 프레임 돌면서
+		//popUpFrame을 건드려서, Demo_Talk()가 같은 popUpFrame으로 관리하는 대화창 점프/텍스트리빌
+		//연출과 충돌해 계속 리셋되는 원인이 됐다. 실제 팝업이 열려있을 때만 돌게 막는다.
+		if (drawHandle != MD_NEWCOLLECTION && drawHandle != MD_NEWCARD && popUpCnt > 0) {
 			if (popUpFrame == 0)
 				zoom = 1.0f;
 			else if (popUpFrame > 0)
@@ -651,49 +654,49 @@ void Demo(void)
 			StarShopDraw(xOffset + DX / 2 - POPUPWINDOWSIZE_X / 2, POPUPPOSITION_Y + POPUPWINDOWSIZE_Y / 2);
 			break;
 		case MENU_NEWS:
-			NewsDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+			NewsDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 		case MENU_GIFTS:
-			GiftDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+			GiftDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 		case MENU_LEADERBOARD:
 			break;
 		case MENU_FRIENDS:
-			GuildEventDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+			GuildEventDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 		case MENU_INVITEFREINDS:
 
 			break;
 		case MENU_CALENDAR://데일리 리워드
-			CalendarDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)(POPUPWINDOWSIZE_Y / 2) * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+			CalendarDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)(POPUPWINDOWSIZE_Y / 2) * zoom, zoom);
 			break;
 		case MENU_SETTING:
-			OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+			OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 
 		case MENU_LIST:
-			GameMenuDraw(xOffset + (DX - GAMEMENUWIN2_X) / 2, DY / 2 + GAMEMENUWIN2_Y / 2, 1.0f, gScreenBuffer, gScreenLayer, false);
+			GameMenuDraw(xOffset + (DX - GAMEMENUWIN2_X) / 2, DY / 2 + GAMEMENUWIN2_Y / 2, 1.0f);
 			break;
 		case MENU_GAMEEVENT:
 
 			switch (robin.gameEvent[curEventIdx].type) {
 			case EVENTTYPE_QUEST:
-				QuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				QuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 				break;
 			case EVENTTYPE_PVP:
-				PvpQuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				PvpQuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 				break;
 			case EVENTTYPE_SHOP:
 
 				break;
 			case EVENTTYPE_DEBTDISCOUNT:
-				DiscountMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				DiscountMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 				break;
 			case EVENTTYPE_DOUBLE:
 				//EventMenuDraw()
 				break;
 			case EVENTTYPE_BOSSRAID:
-				GoldQuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom, gScreenBuffer, gScreenLayer, false);
+				GoldQuestMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 				break;
 			case EVENTTYPE_TOUCHGAME:
 
@@ -701,7 +704,7 @@ void Demo(void)
 			}
 			break;
 		case MENU_PLAY:
-			GameMenuDraw(xOffset, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
+			GameMenuDraw(xOffset, DY, 1.0f);
 
 			break;
 			//메뉴
@@ -727,7 +730,7 @@ void Demo(void)
 	case DEMO_OPENING_PLUNDER:
 	case DEMO_OPENING_WARNNING:
 	case DEMO_OPENING_END:
-		MemRect(0, DY, DX, DY, COLOR_BLACK, gScreenBuffer, gScreenLayer, false);
+		MemRect(0, DY, DX, DY, COLOR_BLACK);
 		DrawImage(
 			imgW, imgH,
 			0, 0,
@@ -735,31 +738,27 @@ void Demo(void)
 			false, false, false, false, false,
 			1.0f,
 			sprite[OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL],
-			gScreenBuffer,
-			gScreenLayer,
-			OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL,
-			false
-		);
+			OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL);
 		break;
 	case DEMO_TUTORIAL_INIT:
 		if (curtainFrame > 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom);
 		else if (curtainFrame < 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X + curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X + curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
 		else {
-			DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
 			SetRectPoint(xOffset + HELPER_DEMO_GAP_X - 2 * ITEMICONSIZE, STATUSWIN_Y2 + HELPERGAP_Y + 3 * ITEMICONSIZE, ITEMICONSIZE * 4, ITEMICONSIZE * 4, TOUCH_FUNC_SKIPDEMO);
 
 			//SKIP MARK
-			MemRectBoth(xOffset + HELPER_DEMO_GAP_X - 24 * _2X, STATUSWIN_Y2 + HELPERGAP_Y - 8 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE, gScreenBuffer, gScreenLayer, false);
-			CenterAlpha(xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y - 10 * _2X, ALPHA_SKIP, FONT_SMALL, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+			MemRectBoth(xOffset + HELPER_DEMO_GAP_X - 24 * _2X, STATUSWIN_Y2 + HELPERGAP_Y - 8 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE);
+			CenterAlpha(xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y - 10 * _2X, ALPHA_SKIP, FONT_SMALL, false, 1.0f);
 		}
 
 		break;
 	case DEMO_TUTORIAL_SEBASTIAN:
 		switch (movie.start) {
 		case DEMO_TUTORIAL_SEBASTIAN_FRAME0:
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom);
 			break;
 		}
 		break;
@@ -771,7 +770,7 @@ void Demo(void)
 	case DEMO_TUTORIAL_ROULETTE:	//7:룰렛 개방 연출/설명
 	case DEMO_TUTORIAL_ROULETTE_LIVE:	//8:룰렛 실전 관전 안내
 	case DEMO_TUTORIAL_BOSS:		//9:보스전 안내
-		DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + 32 * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom, gScreenBuffer, gScreenLayer, false);
+		DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + 32 * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
 		break;
 	}
 
@@ -781,7 +780,14 @@ void Demo(void)
 		menuWinFrame++;
 	}
 
-	if (movie.start == movie.end) {
+	//대사 중 연타하면 TalkKey()가 탭마다 movie.start++를 하기 때문에 movie.end를 그냥 지나칠 수 있다.
+	//예전처럼 ==로 보면 movie.start는 단조증가라 이 조건이 두 번 다시 참이 되지 않아서,
+	//AfterDemo()가 영영 호출되지 않고 DemoCore()가 다음 블록들의 행(EFFECT_WAVE 몬스터 스폰,
+	//EFFECT_TALK 등)을 잘못된 movie.index 상태로 계속 실행하다가 frameData[] 밖까지 넘어갔다.
+	//>=로 두면 넘겨도 그 시점에 블록이 정상 종료된다.
+	//단 movie.end < 0은 SetTalk2()가 쓰는 "데모 블록이 아닌 단독 대사" 경로다(movie.end = -1).
+	//예전 ==에서는 절대 성립하지 않던 조건이라 그대로 두지 않으면 대사가 뜨자마자 AfterDemo()가 불린다.
+	if (movie.end >= 0 && movie.start >= movie.end) {
 		talk.obj = talk.clr = talk.temp = null;
 		AfterDemo();
 
@@ -789,7 +795,7 @@ void Demo(void)
 	}
 
 	if (effect.gray)
-		GammaImage(32, 6, 1.0f, gScreenBuffer, gScreenLayer, false);
+		GammaImage(32, 6, 1.0f);
 
 	//텍스트 뒤 프레임
 	switch (movie.type) {
@@ -867,9 +873,9 @@ void Demo(void)
 		if (demoFrame < 10) {
 			ao[focus].active = false;
 			SetAlpha(movie.type == MOVIE_WARPIN ? demoFrame * 3 : 32 - demoFrame * 3);
-			DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
+			DrawObj(&ao[focus]);
 			SetAlpha(32);
-			DrawPlayer(&ao[raidPlayer], 2000 + LEVELUP_FRONT0 + demoFrame, ao[focus].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[focus].y - ry + OBJIMGGAP, ao[focus].dirF, ao[focus].zoom, false, false, false, gScreenBuffer, gScreenLayer, false);
+			DrawPlayer(&ao[raidPlayer], 2000 + LEVELUP_FRONT0 + demoFrame, ao[focus].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[focus].y - ry + OBJIMGGAP, ao[focus].dirF, ao[focus].zoom, false, false, false);
 			if (frame % MOTIONDIV == 0)
 				demoFrame++;
 		}
@@ -891,7 +897,7 @@ void Demo(void)
 			DemoMove(&ao[focus]);
 
 		SetAlpha(movie.type == MOVIE_APPEAROBJ ? demoFrame : 32 - demoFrame);
-		DrawObj(&ao[focus], gScreenBuffer, gScreenLayer, false);
+		DrawObj(&ao[focus]);
 		SetAlpha(32);
 		if (frame % MOTIONDIV == 0)
 			demoFrame++;
@@ -1010,9 +1016,18 @@ void Demo_Talk(void)
 
 	//대화자 화살표
 	if (!effect.color)
-		DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - frame % 8), ao[i].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry + OBJIMGGAP, 0, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+		DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - frame % 8), ao[i].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry + OBJIMGGAP, 0, false, 1.0f);
 
-	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, RIGHT);
+
+	//인터랙티브 전투 튜토리얼: SEBASTIAN의 "공격버튼을 눌러주세요" 대사는 시간이 지났다고 저절로
+	//넘어가면 안 된다(예전엔 텍스트가 끝나고 2초 뒤 자동으로 컷씬을 종료시켜서, 플레이어가 누르기도
+	//전에 실전투로 넘어가 공격 연출이 바로 시작되는 것처럼 보였다). 대사는 그대로 띄워둔 채 대기하고,
+	//플레이어가 실제 공격버튼을 눌렀을 때만 TalkKey()가 다음 단계로 넘겨준다.
+	//공격버튼(BAR_PLAY)의 터치영역은 BarDraw()에서 touchDisable == false일 때만 등록되므로,
+	//이 대사가 떠 있는 동안에는 터치를 열어둬야 버튼을 누를 수 있다.
+	if (movie.index == DEMO_TUTORIAL_SEBASTIAN && textFrame >= textStringLength[textPage - 1])
+		touchDisable = false;
 
 	if (talkShakeFrame)
 		talkShakeFrame--;
@@ -1094,11 +1109,11 @@ void Demo_Alpha(void)
 {
 	int i;
 	if (demoFrame < 8)
-		GammaImage(32 - demoFrame, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+		GammaImage(32 - demoFrame, 0, 1.0f);
 	else if (demoFrame > frameData[movie.start * DFLEN + 2] - 8)
-		GammaImage(32 - (frameData[movie.start * DFLEN + 2] - demoFrame), 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+		GammaImage(32 - (frameData[movie.start * DFLEN + 2] - demoFrame), 0, 1.0f);
 	else
-		GammaImage(24, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
+		GammaImage(24, 0, 1.0f);
 
 	grayScale = 0;
 
@@ -1111,7 +1126,7 @@ void Demo_Alpha(void)
 		int idx = demoAlpha[(frameData[movie.start * DFLEN + 1] - EFFECT_ALPHA_0) * 5 + i];
 
 		if (idx)
-			CenterAlpha(DX / 2, DY / 2 + 16 * _2X * (i - 3), idx, FONT_LARGE, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+			CenterAlpha(DX / 2, DY / 2 + 16 * _2X * (i - 3), idx, FONT_LARGE, false, 1.0f);
 	}
 
 	SetAlpha(32);
@@ -1154,11 +1169,7 @@ void Demo_Narration(void)
 			textW,
 			textLines,
 			0,
-			textZoom,
-			gScreenBuffer,
-			gScreenLayer,
-			false
-		);
+			textZoom);
 
 		//LineTextSolid(frameData[movie.start * DFLEN + 2], x + 8 * _2X, y - 8 * _2X, dx - 16 * _2X, textZoom, gScreenBuffer, gScreenLayer, false);
 
@@ -1312,7 +1323,7 @@ void AfterDemo(void)
 {
 	int i, itemIndex;
 
-	ReleaseCore();
+	ReleaseCore(false);
 
 
 #ifdef DEMOSKIP
@@ -1419,76 +1430,166 @@ void AfterDemo(void)
 		memset(&rewardMark, 0, sizeof(rewardMark));
 		memset(&boxMark, 0, sizeof(boxMark));
 
-		fadeFrame = FPS;
+		//DEMO_TUTORIAL_INIT -> DEMO_TUTORIAL_SEBASTIAN은 같은 방/캐릭터로 이어지는 연속 장면이라
+		//여기서 fadeFrame을 세팅하면 화면이 순간적으로 어두워졌다 1초간 서서히 밝아지는 페이드가
+		//끼어들어 "화면이 깜빡이며 리셋되는 것처럼" 보인다. 오프닝 장면 전환(실제로 배경이 바뀜)에는
+		//필요하므로 DEMO_TUTORIAL_INIT만 제외한다.
+		if (movie.index != DEMO_TUTORIAL_INIT)
+			fadeFrame = FPS;
 		effect.color = false;
 		//아이템을 먹여준다.
 
 		SetDemo(movie.index + 1);
 		break;
 	default:
-		switch (movie.index) {
-		case DEMO_TUTORIAL_INIT:
-			NewGame();
 
-			break;
-		}
-
-		//인터랙티브 전투 튜토리얼: 실제 GotoPlay()는 room을 통째로 리로드하며 ao[](몬스터 포함)를
-		//전부 memset하므로, 같은 세션 안에서 반복되는 튜토리얼 핸드오프마다 다시 부르면 직전에
-		//스폰한 몬스터가 사라진다. 최초 1회(DEMO_TUTORIAL_SEBASTIAN)만 정식 GotoPlay()로 방에 진입하고,
-		//그 이후의 튜토리얼 복귀는 ResumeTutorialPlay()로 가볍게 처리한다.
+		//인터랙티브 전투 튜토리얼: DEMO_TUTORIAL_INIT의 EFFECT_SETROOM에서 이미 MAP_DIORAMA_TOLEM으로
+		//방을 로드해뒀기 때문에(loadedMap==robinmap), 여기서는 GotoPlay(false)로 강제 리로드를 꺼서
+		//SetRoom()의 ao[] 전체 memset이 아예 실행되지 않게 한다 - 컷씬 중 스폰한 몬스터가 그대로 남는다.
+		//최초 1회(DEMO_TUTORIAL_SEBASTIAN)만 정식 GotoPlay()로 방에 진입하고, 그 이후의 튜토리얼
+		//복귀는 ResumeTutorialPlay()로 가볍게 처리한다.
 		if (movie.index == DEMO_TUTORIAL_SEBASTIAN)
-			GotoPlay();
+			GotoPlay(false);
 		else
 			ResumeTutorialPlay();
 
-		//실제 stage 0 wave[] 테이블은 모든 유저 공용 데이터라 건드리지 않고, 몬스터는 완전히
-		//별도로 관리한다. HP 값은 임시 튜닝값이며 실제 플레이 테스트 후 조정이 필요하다.
-		//몬스터를 스폰하는 단계는 touchDisable을 true로 유지하고, RegenMove() 점프 연출이 끝나
-		//moveHandler가 ENEMYMOVETURN이 될 때(WaveControler()에서 매 프레임 확인)까지 터치를 막는다 -
-		//그 전에 공격하면 몬스터가 아직 active 상태가 아니라서 공격이 안 먹는다.
+		//Play()의 지역명/START 인트로를 건너뛴다. 이 구간이 systemKey를 강제로 지워서
+		//공격버튼 입력이 먹지 않았다(자세한 내용은 SkipPlayIntro() 주석 참고).
+		SkipPlayIntro();
+
+		//인터랙티브 전투 튜토리얼: 몬스터는 정식 wave[] 데이터/WaveControler()로 스폰한다(타입/좌표/
+		//점프연출/SaveGame()까지 실제 게임과 동일한 경로를 타고, 체력만 SetEnemy()에서 robin.waveIdx
+		//기준으로 낮춘다 - Func_Map.cpp 참고). 원하는 몬스터 타입이 있는 wave[] 행(waveIdx)을 직접
+		//골라서 슬롯0만 열어 재사용한다(웨이브 순번 의미는 무시: 0=SNAIL, 5=ONEEYE, 6=SKELETON).
+		//슬롯 세팅은 반드시 SetTutorialWave()를 쓴다 - 나머지 슬롯을 막지 않으면 매 프레임 연속으로
+		//스폰되면서 InitBar/SaveGame이 반복된다(자세한 내용은 SetTutorialWave() 주석 참고).
+		//SetHero()의 착지 트리거를 안 타서 waveStatus가 저절로 WAVESTATUS_PLAY가 안 되므로 여기서
+		//직접 켜야 WaveControler()가 매프레임 돈다 - touchDisable 자동 해제도 이걸 통해 이루어진다.
 		switch (movie.index) {
 		case DEMO_TUTORIAL_SEBASTIAN:
-			InitBar(BAR_HEART);
-			InitBar(BAR_HEARTBET);
-			InitBar(BAR_PLAY);
-			InitBar(BAR_ROULETTE);
-
-			return; //TEMP DEBUG: InitBar 애니메이션 확인용 임시 정지 - 확인 끝나면 제거
-
-			//진짜 WaveControler()가 robin.stage=0/robin.room=0의 실제 wave[] 데이터로 자기 몬스터를
-			//따로 스폰해버려서(체력/moveHandler가 튜토리얼용과 다르고, 같은 자리에 겹쳐 보임) 튜토리얼
-			//전용 스폰과 충돌한다. curWaveIdx를 끝까지 밀어서 실제 웨이브 스폰을 완전히 막는다.
-			robin.curWaveIdx = GetMaxWaveCnt();
-			for (i = 0; i < MAXWAVEENEMY; i++)
-				robin.waveActive[i] = true;
-
+			//바 초기화는 DEMO_TUTORIAL_INIT의 EFFECT_TUTORIAL_INITBAR에서 처리하므로 여기서 하지 않는다.
+			//몬스터는 컷씬 중간(FRAME3의 EFFECT_WAVE, SetDemo()가 준비해둔 waveIdx=0)에서 이미
+			//스폰됐고, 바로 위 GotoPlay(false)가 SetRoom()의 강제 리로드를 꺼뒀으므로 ao[]가
+			//memset되지 않아 그 몬스터가 그대로 살아있다 - 재스폰 불필요, 웨이브를 닫고 waveStatus만 켠다.
+			CloseTutorialWave();
+			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
-			SpawnTutorialEnemy(ENEMY_SNAIL, 1);	//TODO: 밸런스 확인, 한방컷 목적
+			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_CREWMENU:
+			SetTutorialWave(0);		//SNAIL
+			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
-			SpawnTutorialEnemy(ENEMY_SNAIL, 1);	//TODO: 밸런스 확인, 한방컷 목적
+			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_HEARTBET:
+			SetTutorialWave(5);		//ONEEYE
+			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
-			SpawnTutorialEnemy(ENEMY_ONEEYE, 100);	//TODO: 3배 하트베팅 공격에만 죽도록 밸런스 확인
+			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_ROULETTE_LIVE:
+			SetTutorialWave(6);		//SKELETON
+			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
-			SpawnTutorialEnemy(ENEMY_SKELETON, 100);	//TODO: 룰렛 3인 공격으로 죽도록 밸런스 확인
+			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_BOSS:
+			//보스는 일반 wave[] 순환과 성격이 달라(robin.bossRoom류 별도 체계) 지금은 기존 커스텀
+			//스폰을 그대로 둔다. 대신 WaveControler()가 일반 몬스터를 끼워 넣지 못하게 웨이브는 닫는다.
+			CloseTutorialWave();
 			touchDisable = true;
+			tutorialWaitingEnemyLand = true;
 			SpawnTutorialEnemy(ENEMY_CASTLE_BOSS4, 5000);	//TODO: 강제 룰렛 결과(가장 센 동료 스킬)로 한방킷 되도록 밸런스 확인
 			break;
 		default:
 			//몬스터를 스폰하지 않는 단계(EQUIP)는 기다릴 이유가 없으니 바로 터치를 풀어준다.
 			touchDisable = false;
+			tutorialWaitingEnemyLand = false;
 			break;
 		}
 		break;
 	}
+}
+
+void SetTutorialWave(int waveIdx)
+{
+	int i;
+
+	//인터랙티브 전투 튜토리얼: 정식 wave[] 데이터로 "딱 한 마리만" 스폰시키기 위한 슬롯 세팅.
+	//WaveControler()는 robin.waveActive[robin.curWaveIdx] == false인 슬롯을 스폰하고 curWaveIdx만
+	//올릴 뿐, robin.waveTimeStamp를 갱신하지 않는다. 그래서 waveTimeStamp를 0으로 두면
+	//(현재시각 - 0 >= 지연시간)이 모든 슬롯에서 항상 참이 되어, 남은 슬롯까지 매 프레임 하나씩
+	//연달아 튀어나온다. 스폰 1회마다 InitBar(BAR_ENEMYHP)/BackUpEnemyObj()/SaveGame()가 돌기 때문에
+	//"가만히 놔둬도 초기화가 반복되는" 것처럼 보였다.
+	//슬롯0만 열어두고 나머지는 이미 스폰한 것으로 막아두면, waveTimeStamp가 0이어도 한 마리만 나온다.
+	robin.waveIdx = waveIdx;
+	robin.curWaveIdx = 0;
+
+	for (i = 0; i < MAXWAVEENEMY; i++)
+		robin.waveActive[i] = true;
+
+	robin.waveActive[0] = false;
+
+	//슬롯0은 지연 없이 바로 나와야 하므로 0으로 둔다(나머지 슬롯은 위에서 이미 막았다).
+	robin.waveTimeStamp = 0;
+}
+
+void CloseTutorialWave(void)
+{
+	int i;
+
+	//이번 튜토리얼 단계의 몬스터를 이미 스폰해둔 경우(컷씬 중 EFFECT_WAVE 등) WaveControler()가
+	//추가로 스폰하지 못하게 웨이브를 완전히 닫는다.
+	robin.curWaveIdx = GetMaxWaveCnt();
+
+	for (i = 0; i < MAXWAVEENEMY; i++)
+		robin.waveActive[i] = true;
+}
+
+//인터랙티브 전투 튜토리얼: 컷씬에서 실전투로 넘어올 때 Play()의 "지역명 / START" 인트로 연출을
+//통째로 건너뛴다.
+//
+//GotoPlay()는 areaFrame = INFOFRAME을 걸어두는데, Play()는 그 값이 0이 되는 프레임과
+//이어서 세팅되는 arenaFrame(= INFOFRAME * 2)이 0이 되는 프레임에서 각각
+//  systemKey = null; key_released = true;              (areaFrame == 0)
+//  systemRelease = systemKey = null; ReleasePlayer();  (arenaFrame == 0)
+//를 실행한다(Func_Battle.cpp의 areaFrame/arenaFrame 블록 참고).
+//즉 실전투 진입 직후 수십 프레임 동안은 입력이 강제로 지워져서 공격버튼을 눌러도 먹지 않고,
+//그 사이 캐릭터/모션 재설정이 겹쳐 전투가 시작되지 않은 것처럼 보인다.
+//튜토리얼은 컷씬에서 이미 상황 설명을 끝냈으므로 이 인트로가 필요 없다.
+//인트로가 끝나는 시점에 하던 마무리 처리는 여기서 직접 해준다.
+void SkipPlayIntro(void)
+{
+	int i;
+
+	//인트로 첫 프레임(areaFrame == INFOFRAME)에 하던 일: 살아있는 적의 모션을 다시 잡아준다.
+	//InitMotion()은 cmd_m_crash[cmf][motion * 8]에서 피격박스(cx/cy/cpx/cpy)와 공격박스
+	//(ax/ay/apx/apy)를 zoom을 곱해 채우는 함수라, 이걸 건너뛰면 스폰 시점 모션 기준의 낡은
+	//박스가 그대로 남아 AttackCrash()의 겹침 판정이 어긋난다(공격은 나가는데 안 맞음).
+	for (i = ENEMY; i < NEUTRAL; i++) {
+		if (ao[i].active == true)
+			InitMotion(&ao[i]);
+	}
+
+	infoFrame = 0;
+	infoText = 0;
+	areaFrame = 0;
+	arenaFrame = 0;
+
+	if (loadRoulette == true) {
+		turn = PLAYER;
+		attackSequence = ATTACKSEQUENCE_READY;
+		loadRoulette = false;
+		initControlerFrame = ROULETTESPREADTIME;
+	}
+	else
+		initControlerFrame = 1;
+
+	touchIdleFrame = 0;
+	idleHelpCnt = 0;
+
+	keyHandle = MK_PLAY;
 }
 
 void ResumeTutorialPlay(void)
@@ -1499,6 +1600,10 @@ void ResumeTutorialPlay(void)
 	drawHandle = MD_PLAY;
 	keyHandle = MK_PLAY;
 	arenaStatus = STATUS_PLAY;
+
+	//AttackObj()는 맨 첫 줄이 "if (isDemo) return 0;"이라, 여기가 true로 남으면 데미지 계산 전에
+	//조용히 0을 반환해서 모든 공격이 무효가 된다.
+	isDemo = false;
 }
 
 void SpawnTutorialEnemy(int enemyType, long long hp)
@@ -1531,6 +1636,11 @@ void SpawnTutorialEnemy(int enemyType, long long hp)
 
 	//RegenMove()가 착지 시점에 pObj->hp = pObj->maxhp로 재설정하므로 maxhp만 정확히 맞춰두면 된다.
 	pObj->maxhp = pObj->hp = hp;
+
+	//InitBar(BAR_BOSSHP)는 max를 GetTotalWaveHp(robin.waveIdx)로 채우는데, 튜토리얼 몬스터는 실제
+	//wave[] 데이터와 무관해서 이 값이 안 맞는다(0이면 빨간 바가 아예 안 그려짐) - 여기서 실제 스폰
+	//HP를 더해준다. 여러 마리가 나올 수 있으므로 덮어쓰지 않고 누적한다.
+	bar[BAR_BOSSHP].max += hp;
 
 	//WaveControler()가 스폰 마지막에 하는 것과 동일하게 dead=true/active=false로 둬야 한다.
 	//매 프레임 오브젝트 갱신 루프(Func_Battle.cpp의 "else if (dead==true && moveHandler==REGENMOVE) RegenMove(...)")
@@ -1728,7 +1838,12 @@ void DemoCore(void)
 				if (*(ssPtr + 2) == PLAYERALL) {
 					int k;
 
-					for (k = PLAYER; k < PLAYERALL; k++)
+					//히어로는 0번(주인공)만 활성화
+					ao[PLAYER].active = true;
+
+					//크루는 실제 보유한 인원(crewCnt)까지만 활성화 - 나머지 빈 슬롯까지 켜면
+					//DrawDiorama의 그림자 루프가 위치/타입이 없는 빈 슬롯까지 그려버린다.
+					for (k = CREW; k < CREW + crewCnt; k++)
 						ao[k].active = true;
 
 					break;
@@ -1752,6 +1867,9 @@ void DemoCore(void)
 				break;
 			case EFFECT_TUTORIAL_REWARD:
 				DemoCore_Effect_TutorialReward(ssPtr);
+				break;
+			case EFFECT_TUTORIAL_INITBAR:
+				DemoCore_Effect_TutorialInitBar();
 				break;
 				//case EFFECT_STOPMUSIC:
 				//	Stop();
@@ -2302,6 +2420,29 @@ void DemoCore_Effect_TutorialReward(const signed short* ssPtr)
 	GetItem(type, 1, detail, grade, count, false);
 }
 
+void DemoCore_Effect_TutorialInitBar(void)
+{
+	InitBar(BAR_GOLD);
+	InitBar(BAR_CROWN);
+	InitBar(BAR_MEDAL);
+	InitBar(BAR_SHIELD);
+	InitBar(BAR_CREW);
+	InitBar(BAR_EQUIP);
+	InitBar(BAR_CASTLE);
+	InitBar(BAR_MAINSHOP);
+	InitBar(BAR_HEART);
+	//BAR_HEARTBET/BAR_PLAY는 여기서 InitBar하지 않는다. BAR_ROULETTE가 활성화되면 RouletteDraw()가
+	//곧바로 호출되고, 그 인트로 팝 애니메이션이 끝나는 시점(Func_Roulette.cpp)에 이미 InitBar(BAR_HEARTBET)/
+	//InitBar(BAR_PLAY)를 호출한다. 여기서도 부르면 바가 두 번 초기화된다.
+	InitBar(BAR_ROULETTE);
+
+	InitBar(BAR_BOSSHP);
+	//InitBar(BAR_BOSSHP)는 max를 GetTotalWaveHp(robin.waveIdx)(실제 웨이브 기준값, 수천 단위)로 채우는데
+	//튜토리얼은 실제 웨이브와 무관하다. 0으로 강제 리셋해서 이후 SpawnTutorialEnemy()의 max += hp가
+	//튜토리얼 몬스터 체력만으로 정확히 채워지게 한다.
+	bar[BAR_BOSSHP].max = 0;
+}
+
 void SetDemoEquip(OBJECT* pObj, int type, int detail, int grade)
 {
 	EquipItem(pObj, &robin.inven[itemStartCnt[type] + detail * TOTALGRADE + grade]);
@@ -2312,7 +2453,7 @@ void SetDemo(int index)
 	int i;
 	//OBJECT* pObj = &ao[PLAYER];
 
-	ReleaseCore();
+	ReleaseCore(false);
 
 	//pObj->dx = 0;
 	//pObj->playerRun = false;
@@ -2375,8 +2516,19 @@ void SetDemo(int index)
 	memset(boomerangAway, 0, sizeof(boomerangAway));
 
 	if (escort.active == false) {
-		for (i = PLAYER + 1; i < ENEMY; i++)
+		for (i = PLAYER + 1; i < ENEMY; i++) {
+			//크루(ao[CREW..CREW+MAXCREW))는 끄지 않는다.
+			//오브젝트 갱신 루프는 "active면 MoveObj / dead && REGENMOVE면 RegenMove" 두 갈래뿐이라
+			//(Func_Battle.cpp, Func_Demo.cpp), 이미 자리에 서 있던 크루
+			//(active=true / dead=false / CREWMOVE)를 여기서 꺼버리면 두 갈래 어디에도 걸리지 않아
+			//되살릴 주체가 없어진다 - 컷씬을 한 번 거치면 성 위의 세바스찬이 영영 사라졌다.
+			//(예전에는 SetBattleCrew()가 매번 전원을 REGENMOVE로 다시 만들어서 우연히 되살아났고,
+			//그게 "동료를 얻을 때마다 전원이 다시 등장하는" 증상의 원인이었다)
+			if (i >= CREW && i < CREW + MAXCREW)
+				continue;
+
 			ao[i].active = false;
+		}
 	}
 
 	//pObj->motion = 0;
@@ -2399,14 +2551,15 @@ void SetDemo(int index)
 		SetHero();
 		SetBattleCrew();
 		//InitMenu();
-
-		//인터랙티브 전투 튜토리얼: StatusDraw()가 DEMO_OPENING_* 이후 모든 데모 단계에서 그려지므로,
-		//튜토리얼의 첫 데모 단계(INIT) 시작 시점에 미리 HUD 바를 초기화해둬야 한다. 안 그러면
-		//SEBASTIAN 대사가 나오기도 전에 초기화 안 된 바가 그대로 화면에 튀어나온다.
-		//InitBar(BAR_HEART);
-		//InitBar(BAR_HEARTBET);
-		//InitBar(BAR_PLAY);
-		//InitBar(BAR_ROULETTE);
+		break;
+	case DEMO_TUTORIAL_SEBASTIAN:
+		//인터랙티브 전투 튜토리얼: 이 블록 FRAME3의 EFFECT_WAVE가 아직 drawHandle==MD_DEMO인 컷씬
+		//도중에 WaveControler()를 호출해서 몬스터를 스폰한다(정식 wave[] 데이터 사용, 체력은
+		//SetEnemy()에서 robin.waveIdx 기준으로 낮춤 - Func_Map.cpp 참고). 그 EFFECT_WAVE보다 먼저
+		//여기서 슬롯을 준비해둔다. waveIdx=0은 SNAIL이 있는 행.
+		//SetTutorialWave()가 슬롯0 외의 슬롯을 막아주므로, 컷씬이 끝나고 waveStatus가
+		//WAVESTATUS_PLAY로 켜져도 나머지 웨이브가 줄줄이 스폰되지 않는다.
+		SetTutorialWave(0);
 		break;
 	}
 
@@ -2490,7 +2643,7 @@ void SetTalk_Movie(void)
 void SetTalk2(int textIdx)
 {
 	ao[raidPlayer].motion = PO_C0_N0;
-	ReleaseCore();
+	ReleaseCore(false);
 	ao[raidPlayer].playerRun = false;
 	ao[raidPlayer].dx = 0;
 	movie.text = textIdx;
