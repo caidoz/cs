@@ -1830,7 +1830,12 @@ void SetPopUp(int type, int x, int y, int w, int h,
 		memset(&stageUpgradeMotion, 0, sizeof(stageUpgradeMotion));
 
 	PlayMusic(M_OPENWINDOW);
-	ScreenDarken(SCREENDARKEN);
+
+	//SetPopUp()은 입력 처리에서 불리므로 화면버퍼가 열리기 전이다.
+	//여기서 그리면 AfterSpriting()이 curScene에 스프라이트를 영구히 붙여
+	//매 프레임 화면버퍼를 덮어버린다. 암전은 PaintClet()이 popUpCnt > 0 동안
+	//매 프레임 처리하므로 여기서는 부르지 않는다.
+	//ScreenDarken(SCREENDARKEN);
 
 }
 
@@ -1843,7 +1848,7 @@ void DrawPopUp(int idx)
 	int curStar;
 	int maxStar;
 	float plusY = (float)64 * _2X * p->zoom;
-
+	
 	if (p->popUpFrame == 0)
 		p->zoom = 1.0f;
 	else if (p->popUpFrame > 0)

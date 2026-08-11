@@ -1206,6 +1206,7 @@ extern int tutorialPendingTouchFunc;
 //Ʃ�丮�� �ȳ��� ���� �޴��� �� ���Ŀ��� ��. �������� �ʴ´�.
 extern bool tutorialCrewGuide;
 
+
 //튜토리얼에서 지금 눌러야 하는 터치기능.
 //TUTORIAL_TOUCH_FREE면 제한 없음, TUTORIAL_TOUCH_NONE이면 아무것도 안 눌린다.
 //그 외에는 그 터치기능 하나만 살아난다.

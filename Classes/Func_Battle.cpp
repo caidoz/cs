@@ -79,6 +79,7 @@ void Play(void)
 			infoFrame, areaFrame, arenaFrame);
 		DrawTextStr(dbgStr, 10 * _2X, DY - 60 * _2X, 0.7f);
 
+
 		//crewCnt / 예약공격 / 턴 / 각 캐릭터의 준비 상태.
 		//pend=1인데 공격이 안 나가면 crew나 enemy 중 준비가 안 된 쪽이 원인이다.
 		sprintf(dbgStr, "crewCnt=%d pend=%d turn=%d totT=%d | P(act=%d mv=%d) C0(act=%d mv=%d) E(act=%d mv=%d)",

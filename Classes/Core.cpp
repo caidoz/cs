@@ -1719,6 +1719,7 @@ void PaintClet(int x, int y, int w, int h)
 	if (popUpCnt > 0) {
 		ScreenDarken(SCREENDARKEN);
 		ResetRectPoint();
+
 		DrawPopUp(popUpCnt - 1);
 	}
 

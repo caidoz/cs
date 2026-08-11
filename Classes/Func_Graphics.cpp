@@ -122,7 +122,10 @@ void AfterSpriting(cocos2d::Sprite* src) {
 
 	if (gRenderTarget)
 		src->visit();
-	else
+	//화면버퍼를 쓰는 동안에는 Core::Run의 정리 루프가 removeChild를 하지 않는다.
+	//그래서 여기서 addChild하면 씬에 영구히 남아 매 프레임 화면버퍼를 덮는다.
+	//렌더타겟 밖에서 들어온 드로우는 그릴 곳이 없으므로 버린다.
+	else if (!screenBuffer)
 		curScene->addChild(src);
 
 	//���?��ε�?�̹� �����ӿ� �� Ǯ ��������Ʈ�� �����?�д�.
@@ -869,8 +872,13 @@ void ZoomImage(int cx, int cy, int zoom)
 	cx = Max(0, Min(DX - 1, cx));
 	cy = Max(0, Min(DY - 1, cy));
 
-	if (gRenderTarget)
-		gRenderTarget->setScale(float(zoom / 256));
+	//화면버퍼를 직접 스케일하지 않는다.
+	//Stage 3에서 인자로 받던 렌더텍스처(buff)를 gRenderTarget으로 바꿨는데, 그건 프레임 중
+	//gScreenBuffer라서 화면 전체가 대상이 되어버렸다. 게다가 zoom / 256이 정수 나눗셈이라
+	//zoom이 256 미만이면 setScale(0)이 되고, 되돌리는 코드가 없어 화면이 영영 사라진다
+	//(메뉴를 열면 단색만 보이던 원인). cx, cy는 계산만 하고 쓰지도 않아 중심 기준 확대도
+	//구현돼 있지 않았다. 확대 연출이 필요하면 화면버퍼가 아닌 별도 대상에 다시 만들어야 한다.
+	//gRenderTarget->setScale(float(zoom) / 256.0f);
 }
 //
 void GammaImage(int gamma, int type, float zoom)
@@ -1029,9 +1037,10 @@ static void ApplySpotlight(void)
 		return;
 
 	if (gSpotlightOn == false) {
-		//쉐이더를 매 프레임 갈아끼우지 않도록 걸어둔 상태일 때만 되돌린다.
-		if (spotlightApplied && savedScreenProgram) {
-			sp->setGLProgram(savedScreenProgram);
+		//셰이더를 매 프레임 갈아끼우지 않도록, 걸어둔 상태일 때만 되돌린다.
+		if (spotlightApplied) {
+			sp->setGLProgram(savedScreenProgram ? savedScreenProgram
+				: GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR));
 			spotlightApplied = false;
 		}
 		return;
@@ -1187,6 +1196,7 @@ void SetFontColor(int color)
 void ScreenDarken(int alpha)
 {
 	int i;
+	//return;
 	if (alpha > 0) {
 		if (screenDarken == false)
 			screenDarken = true;

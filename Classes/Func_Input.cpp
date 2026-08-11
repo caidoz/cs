@@ -250,6 +250,12 @@ void TitleKey(void)
 
 			crewCnt = GetSlotCrewCnt();
 
+			
+			for (i = 0; i < TOTAL_CREW; i++) {
+				robin.inven[i].count = 1;
+				robin.inven[i].lv = 1;
+			}
+
 			//SetRoom();
 			GotoPlay();
 

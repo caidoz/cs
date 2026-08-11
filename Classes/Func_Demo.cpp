@@ -741,24 +741,14 @@ void Demo(void)
 			OP0_IMG + movie.index - DEMO_OPENING_PEACEFUL);
 		break;
 	case DEMO_TUTORIAL_INIT:
-		if (curtainFrame > 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom);
-		else if (curtainFrame < 0)
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X + curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
-		else {
-			DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
-			SetRectPoint(xOffset + HELPER_DEMO_GAP_X - 2 * ITEMICONSIZE, STATUSWIN_Y2 + HELPERGAP_Y + 3 * ITEMICONSIZE, ITEMICONSIZE * 4, ITEMICONSIZE * 4, TOUCH_FUNC_SKIPDEMO);
-
-			//SKIP MARK
-			MemRectBoth(xOffset + HELPER_DEMO_GAP_X - 24 * _2X, STATUSWIN_Y2 + HELPERGAP_Y - 8 * _2X, 48 * _2X, 11 * _2X, COLOR_BLACK, COLOR_WHITE);
-			CenterAlpha(xOffset + HELPER_DEMO_GAP_X, STATUSWIN_Y2 + HELPERGAP_Y - 10 * _2X, ALPHA_SKIP, FONT_SMALL, false, 1.0f);
-		}
-
+		//DEMO_HELPER(= CMF_NPC_SEBASTIAN)�� �����ϴܿ� ���� �׸��� ���� ����.
+		//���ٽ����� ���� ũ��� ���� ������ �� �ְ� ��絵 ���� �ϹǷ� �ߺ��̴�.
+		//�Բ� �ִ� SKIP �ڽ��� �� ��ġ����(TOUCH_FUNC_SKIPDEMO)�� ���� �����ߴ�.
 		break;
 	case DEMO_TUTORIAL_SEBASTIAN:
 		switch (movie.start) {
 		case DEMO_TUTORIAL_SEBASTIAN_FRAME0:
-			DrawCmfDetailShadow(DEMO_HELPER, PO_C93_W0 + walkFrame[frame / MOTIONDIV % 4], xOffset + HELPER_DEMO_GAP_X - curtainFrame * _2X, STATUSWIN_Y2 + HELPERGAP_Y, LEFT, talkerZoom);
+			//DEMO_HELPER �ߺ� ǥ�� ����(�� �ּ� ����).
 			break;
 		}
 		break;
@@ -770,7 +760,7 @@ void Demo(void)
 	case DEMO_TUTORIAL_ROULETTE:	//7:룰렛 개방 연출/설명
 	case DEMO_TUTORIAL_ROULETTE_LIVE:	//8:룰렛 실전 관전 안내
 	case DEMO_TUTORIAL_BOSS:		//9:보스전 안내
-		DrawCmfDetailShadow(DEMO_HELPER, frame / MOTIONDIV / MOTIONDIV % 4, xOffset + 32 * _2X, STATUSWIN_Y2 + HELPERGAP_Y, RIGHT, talkerZoom);
+		//DEMO_HELPER �ߺ� ǥ�� ����(�� �ּ� ����).
 		break;
 	}
 

@@ -1996,6 +1996,20 @@ void NewGame(void)
 	}
 
 	k = 0;
+	for (i = 0; i < TOTAL_CREW; i++) {
+		MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, i, false);
+		robin.inven[robin.count].count = 0;
+		robin.inven[robin.count].lv = 0;
+		robin.count++;
+	}
+
+	//시작 시점에는 세바스찬만 데리고 있는다. 나머지 동료는 상자를 열어서 얻는다.
+	//예전에는 TOTAL_CREW 전부를 넣어줘서 튜토리얼의 "동료를 획득했다" 연출이 의미가 없었다.
+	
+	robin.inven[CREW_SEBASTIAN].count = 1;
+	robin.inven[CREW_SEBASTIAN].lv = 1;
+	
+	k = 0;
 	for (i = 0; i < EQUIP_NECK; i++) {
 		for (j = 0; j < (itemStartCnt[i * TOTALCHAR + 1] - itemStartCnt[i * TOTALCHAR]); j++) {
 			MakeItem(&robin.inven[robin.count], i * TOTALCHAR, 0, 0, j, false);
@@ -2004,13 +2018,6 @@ void NewGame(void)
 			robin.count++;
 		}
 	}
-
-	//시작 시점에는 세바스찬만 데리고 있는다. 나머지 동료는 상자를 열어서 얻는다.
-	//예전에는 TOTAL_CREW 전부를 넣어줘서 튜토리얼의 "동료를 획득했다" 연출이 의미가 없었다.
-	MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, CREW_SEBASTIAN, false);
-		robin.inven[robin.count].count = 1;
-		robin.inven[robin.count].lv = 1;
-		robin.count++;
 
 	//무기하나 주기
 	//MakeItem(&robin.inven[0], ITEM_SWORD, 0, 0, 0, false);

@@ -1477,7 +1477,12 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 	int i, j;
 	ITEM* it;
 
-	//�κ��丮�� �������?����?���ϴ� �κ�
+	//동료 카드는 lv 0을 "미획득"으로 표시한다(TEXT_NOTACQUIRED).
+	//획득한 동료가 lv 0으로 남으면 미획득으로 보이고 튜토리얼 포커싱도 잡히지 않는다.
+	if (type == ITEM_CREW && lv < 1)
+		lv = 1;
+
+	//占싸븝옙占썰리占쏙옙 占쏙옙占쏙옙占쏙옙占?占쏙옙載ο옙占?占쏙옙占싹댐옙 占싸븝옙
 	switch (type) {
 	default:
 		//case ITEM_WASTE:
@@ -1496,6 +1501,11 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 				if (robin.inven[i].count + count < MAXNUM) {
 					robin.inven[i].count += count;
 					itemObj = i;
+
+					//이미 칸이 있으면 수량만 더하고 지나가므로 lv이 0인 채로 남는다.
+					//여기서 올려줘야 미획득 표시가 풀린다.
+					if (robin.inven[i].lv < lv)
+						robin.inven[i].lv = lv;
 
 				}
 				else {

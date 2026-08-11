@@ -265,6 +265,7 @@ int tutorialPendingTouchFunc = 0;
 //저장하지 않는다 - 그 자리에서만 도는 안내라 세이브에 남으면 일반 플레이까지 물든다.
 bool tutorialCrewGuide = false;
 
+
 int gTutorialTouchFunc = TUTORIAL_TOUCH_FREE;
 int gTouchHitFunc = TUTORIAL_TOUCH_NONE;
 
