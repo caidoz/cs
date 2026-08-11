@@ -296,7 +296,7 @@ void Demo(void)
 
 						if ((robin.gameEvent[i].targetX - robin.gameEvent[i].x) * (robin.gameEvent[i].targetX - robin.gameEvent[i].x) + (robin.gameEvent[i].targetY - robin.gameEvent[i].y) * (robin.gameEvent[i].targetY - robin.gameEvent[i].y) < 2 * robin.gameEvent[i].speed * robin.gameEvent[i].speed && robin.gameEvent[i].frame >= robin.gameEvent[i].waitingFrame) {
 							//if (rewardMark[i].frame >= rewardMark[i].waitingFrame) {
-								//PlayMusic(M_COIN);
+								PlayMusic(M_COIN);
 								//두번째 세팅이 있으면 
 							robin.gameEvent[i].x = robin.gameEvent[i].targetX;
 							robin.gameEvent[i].y = robin.gameEvent[i].targetY;

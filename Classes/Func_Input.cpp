@@ -241,12 +241,12 @@ void TitleKey(void)
 			//robin.slotCrew[4] = NPC_ADELKNIGHT;
 
 			//--- 6�?: ?�식 룰렛 ---------------------------------------------------
-			//robin.slotCrew[0] = NPC_SEBASTIAN;
-			//robin.slotCrew[1] = NPC_GIRL;
-			//robin.slotCrew[2] = NPC_UNCLE;
-			//robin.slotCrew[3] = NPC_AUNT;
-			//robin.slotCrew[4] = NPC_ADELKNIGHT;
-			//robin.slotCrew[5] = NPC_NOBLEMAN;
+			robin.slotCrew[0] = NPC_SEBASTIAN;
+			robin.slotCrew[1] = NPC_GIRL;
+			robin.slotCrew[2] = NPC_UNCLE;
+			robin.slotCrew[3] = NPC_AUNT;
+			robin.slotCrew[4] = NPC_ADELKNIGHT;
+			robin.slotCrew[5] = NPC_NOBLEMAN;
 
 			crewCnt = GetSlotCrewCnt();
 

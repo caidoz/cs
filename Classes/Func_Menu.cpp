@@ -3442,14 +3442,20 @@ void CrewMenuDraw(int x, int y, float zoom)
 			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
 
 			//ì†ì€ ì¹´ë“œ í•œê°€ìš´ë°ì—, í¬ê²Œ.
-			DrawHand(rx + rw / 2, ry - rh / 2, robin.playtime / MOTIONDIV, 2.4f);
+			//DrawHand()¿¡ ³Ñ±â´Â ÁÂÇ¥°¡ ¼Õ ±×¸²ÀÇ ÁÂ»ó´ÜÀÌ¶ó, Áß¾ÓÀ» ±×³É ÁÖ¸é ¼ÕÀÌ
+			//Áß¾Ó¿¡¼­ ¿À¸¥ÂÊ ¾Æ·¡·Î »¸´Â´Ù. ÀÚ±â Å©±â¸¸Å­ ¿ŞÂÊ/À§·Î ¹°·Á ¼Õ³¡ÀÌ Áß¾Ó¿¡ ¿À°Ô ÇÑ´Ù.
+			float handZoom = 2.4f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(rx + rw / 2 - handW, ry - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
 
 			//ì¹´ë“œëŠ” í­ rw, ê°€ë¡œ ê°„ê²©ì€ INVENTORY_GAP_X * zoomì´ë¼ ì¹´ë“œ ì‚¬ì´ ì—¬ë°±ì´ ê±°ì˜ ì—†ë‹¤.
 			//ë°˜ê²½ì„ ì¹´ë“œ ë†’ì´ ê¸°ì¤€ìœ¼ë¡œ ì¡ìœ¼ë©´ ì˜† ì¹´ë“œê¹Œì§€ í†µì§¸ë¡œ ë°ì•„ì§€ë¯€ë¡œ í­ ê¸°ì¤€ìœ¼ë¡œ ì¡ëŠ”ë‹¤.
 			//ì˜† ì¹´ë“œì˜ ì•ˆìª½ ëª¨ì„œë¦¬ê¹Œì§€ê°€ ì¤‘ì‹¬ì—ì„œ (INVENTORY_GAP_X - 240 * CARDDEFAULTZOOM / 2) * zoom
 			//ì´ë¯€ë¡œ ê·¸ ì•ˆìª½ì—ì„œ ê°ì‡ ê°€ ëë‚˜ë„ë¡ ë‘”ë‹¤.
 			SetSpotlight(rx + rw / 2, ry - rh / 2,
-				rw * 0.28f * pulse, rw * 0.50f * pulse, 0.25f);
+				rw * 0.34f * pulse, rw * 0.60f * pulse, 0.25f);
 		}
 	}
 

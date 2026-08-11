@@ -1281,7 +1281,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if ((itemMark[i].targetX - itemMark[i].x) * (itemMark[i].targetX - itemMark[i].x) + (itemMark[i].targetY - itemMark[i].y) * (itemMark[i].targetY - itemMark[i].y) < (16 * _2X) * (16 * _2X)) {
-				//PlayMusic(M_COIN);
+				PlayMusic(M_COIN);
 				switch (itemMark[i].icon) {
 				case ICON_GOLD:
 					break;
@@ -1405,7 +1405,7 @@ void PaintClet(int x, int y, int w, int h)
 				goldAlphaMark[i].zoom2 = goldAlphaMark[i].zoomEnd2;
 
 			if ((goldAlphaMark[i].targetX2 - goldAlphaMark[i].x) * (goldAlphaMark[i].targetX2 - goldAlphaMark[i].x) + (goldAlphaMark[i].targetY2 - goldAlphaMark[i].y) * (goldAlphaMark[i].targetY2 - goldAlphaMark[i].y) < 2 * goldAlphaMark[i].speed2 * goldAlphaMark[i].speed2 && goldAlphaMark[i].frame2 >= goldAlphaMark[i].waitingFrame2) {
-				//PlayMusic(M_COIN);
+				PlayMusic(M_COIN);
 				switch (goldAlphaMark[i].icon) {
 				case ICON_GOLD:
 					break;
@@ -1647,7 +1647,7 @@ void PaintClet(int x, int y, int w, int h)
 
 			if ((currencyMark[i].targetX - currencyMark[i].x) * (currencyMark[i].targetX - currencyMark[i].x) + (currencyMark[i].targetY - currencyMark[i].y) * (currencyMark[i].targetY - currencyMark[i].y) < 2 * currencyMark[i].speed * currencyMark[i].speed && currencyMark[i].frame >= currencyMark[i].waitingFrame) {
 				//if (currencyMark[i].frame >= currencyMark[i].waitingFrame) {
-					//PlayMusic(M_COIN);
+					PlayMusic(M_COIN);
 					//두번째 세팅이 있으면 
 				if (currencyMark[i].targetX2 != 0 || currencyMark[i].targetY2 != 0) {
 					currencyMark[i].frame2 = 1;
@@ -1879,7 +1879,7 @@ void PaintClet(int x, int y, int w, int h)
 
 				if ((boxCardMark[i].targetX - boxCardMark[i].x) * (boxCardMark[i].targetX - boxCardMark[i].x) + (boxCardMark[i].targetY - boxCardMark[i].y) * (boxCardMark[i].targetY - boxCardMark[i].y) < 2 * boxCardMark[i].speed * boxCardMark[i].speed && boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
 					//if (boxCardMark[i].frame >= boxCardMark[i].waitingFrame) {
-						//PlayMusic(M_COIN);
+						PlayMusic(M_COIN);
 						//두번째 세팅이 있으면 
 					boxCardMark[i].x = boxCardMark[i].targetX;
 					boxCardMark[i].y = boxCardMark[i].targetY;
@@ -1953,7 +1953,7 @@ void PaintClet(int x, int y, int w, int h)
 
 			if ((currencyMark_PopUp[i].targetX2 - currencyMark_PopUp[i].x) * (currencyMark_PopUp[i].targetX2 - currencyMark_PopUp[i].x) + (currencyMark_PopUp[i].targetY2 - currencyMark_PopUp[i].y) * (currencyMark_PopUp[i].targetY2 - currencyMark_PopUp[i].y) < 2 * currencyMark_PopUp[i].speed2 * currencyMark_PopUp[i].speed2 && currencyMark_PopUp[i].frame2 >= currencyMark_PopUp[i].waitingFrame2 && currencyMark_PopUp[i].waitingFrame2 != CURRENCYDONTERASE) {
 				//if (currencyMark_PopUp[i].frame2 >= currencyMark_PopUp[i].waitingFrame2) {
-					//PlayMusic(M_COIN);
+					PlayMusic(M_COIN);
 				currencyEffect[currencyMark_PopUp[i].type].iconFrame += CURRENCYMARKEFFECTFRAME;
 
 				if (currencyEffect[currencyMark_PopUp[i].type].endValue - currencyEffect[currencyMark_PopUp[i].type].startValue <= 10)
@@ -2006,7 +2006,7 @@ void PaintClet(int x, int y, int w, int h)
 
 			if ((currencyMark_PopUp[i].targetX - currencyMark_PopUp[i].x) * (currencyMark_PopUp[i].targetX - currencyMark_PopUp[i].x) + (currencyMark_PopUp[i].targetY - currencyMark_PopUp[i].y) * (currencyMark_PopUp[i].targetY - currencyMark_PopUp[i].y) < 2 * currencyMark_PopUp[i].speed * currencyMark_PopUp[i].speed && currencyMark_PopUp[i].frame >= currencyMark_PopUp[i].waitingFrame) {
 				//if (currencyMark_PopUp[i].frame >= currencyMark_PopUp[i].waitingFrame) {
-					//PlayMusic(M_COIN);
+					PlayMusic(M_COIN);
 					//두번째 세팅이 있으면 
 				if (currencyMark_PopUp[i].targetX2 != 0 || currencyMark_PopUp[i].targetY2 != 0) {
 					currencyMark_PopUp[i].frame2 = 1;
@@ -2098,7 +2098,7 @@ void PaintClet(int x, int y, int w, int h)
 
 			if ((gameLog[i].targetX - gameLog[i].x) * (gameLog[i].targetX - gameLog[i].x) + (gameLog[i].targetY - gameLog[i].y) * (gameLog[i].targetY - gameLog[i].y) < 2 * gameLog[i].speed * gameLog[i].speed && gameLog[i].frame >= gameLog[i].waitingFrame) {
 				//if (gameLog[i].frame >= gameLog[i].waitingFrame) {
-					//PlayMusic(M_COIN);
+					PlayMusic(M_COIN);
 					//두번째 세팅이 있으면 
 				if (gameLog[i].targetX2 != 0 || gameLog[i].targetY2 != 0) {
 					gameLog[i].frame2 = 1;

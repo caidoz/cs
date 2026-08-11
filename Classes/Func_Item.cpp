@@ -378,6 +378,12 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 		break;
 	}
 
+	//등급은 무조건 0으로 고정한다.
+	//위 switch가 타입별로 등급을 올려주는 경우(ITEM_GEM의 GRADE_NORMAL -> GRADE_SUPERIOR)가
+	//있어서 함수 첫머리가 아니라 그 뒤에서 덮어써야 결과가 확실히 0이 된다.
+	//아래 값/옵션 계산도 이 지역변수를 보므로 여기서 한 번만 바꿔주면 전부 따라간다.
+	grade = 0;
+
 	it->type = type;
 	it->lv = lv;
 	it->detail = detail;
