@@ -999,6 +999,135 @@ void Demo(void)
 	//}
 }
 
+//인터랙티브 전투 튜토리얼이 진행 중인지(튜토리얼 방에서 아직 끝나지 않았는지).
+bool IsTutorialPlaying(void)
+{
+	return robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END];
+}
+
+//대사를 띄워둔 채 플레이어가 특정 버튼을 직접 눌러야 다음으로 넘어가는 튜토리얼 안내 대사인지.
+//맞으면 눌러야 하는 터치기능과 강조할 바를 돌려준다.
+//터치 제한, 스팟라이트, DrawHand, 대사 대기 처리가 모두 같은 기준을 봐야 해서 여기에 모아 둔다.
+//
+//데모 블록 번호(movie.index)가 아니라 지금 떠 있는 대사(movie.text)로 판정한다.
+//movie.text는 SetDemo()가 헤더값으로 리셋하고 EFFECT_TALK마다 ++하는 별도 커서라 블록 진행과
+//항상 1:1로 붙어 있지 않고, 플레이어가 반응하는 것도 블록 번호가 아니라 읽고 있는 문장이다.
+bool GetTutorialTalkTarget(int textIdx, int* touchFunc, int* barIdx)
+{
+	int func;
+	int idx;
+
+	switch (textIdx) {
+	case TEXT_OPENING_5_1:			//"때마침 몬스터가 나타났네요! 공격버튼을 눌러주세요!!"
+	case TEXT_TUTORIAL_SECONDKILL:	//"다시 공격해보자! 이번엔 하트와 동료, 장비를 얻을 수 있다."
+		func = TOUCH_FUNC_ATTACK;
+		idx = BAR_PLAY;
+		break;
+	case TEXT_TUTORIAL_FIRSTKILL:	//"상자에서 동료를 획득하셨네요? 그럼 동료를 전투에 참가시켜볼까요??"
+		func = TOUCH_FUNC_POPUP_CREWLIST;
+		idx = BAR_CREW;
+		break;
+	default:
+		return false;
+	}
+
+	if (touchFunc)
+		*touchFunc = func;
+
+	if (barIdx)
+		*barIdx = idx;
+
+	return true;
+}
+
+//안내 대사에서 강조할 바의 버튼 사각형(왼쪽, 윗변, 폭, 높이).
+//BarDraw()가 SetRectPoint()에 넘기는 값과 같아야 스팟라이트/손 위치가 실제 터치영역과 맞는다.
+static void GetTutorialTalkRect(int barIdx, float* x, float* y, float* w, float* h)
+{
+	BAR* barP = &bar[barIdx];
+	float zoom = barP->zoom;
+
+	switch (barIdx) {
+	case BAR_CREW:
+		*x = xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom;
+		*y = barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom;
+		*w = (float)(MAINMENU_X)*zoom;
+		*h = (float)(MAINMENU_Y + 16 * _2X) * zoom;
+		break;
+	default:	//BAR_PLAY
+		*x = xOffset + barP->x;
+		*y = barP->y;
+		*w = (float)ATTACKBUTTONWIDTH * zoom;
+		*h = (float)ATTACKBUTTONHEIGHT * zoom;
+		break;
+	}
+}
+
+//튜토리얼: 동료 메뉴에서 새로 얻은 동료 카드를 눌러 상세보기로 들어가야 하는 단계인지.
+//맞으면 그 카드의 터치기능을, 아니면 0을 돌려준다.
+//대사가 떠 있는 단계가 아니라 "메뉴가 열려 있는 동안"의 안내라 GetTutorialTalkTarget()과 별개다.
+//단계 완료 표시는 robin.demoSeen[DEMO_TUTORIAL_CREWMENU]를 쓴다. 그 데모 블록은 이제
+//아무도 부르지 않아(FIRSTKILL 체인을 끊었다) 이 플래그가 비어 있고, 의미도 "동료 메뉴 단계를
+//마쳤다"로 그대로 들어맞는다.
+int GetTutorialCrewCardTouchFunc(void)
+{
+	int i;
+
+	if (IsTutorialPlaying() == false)
+		return 0;
+
+	if (robin.demoSeen[DEMO_TUTORIAL_CREWMENU])
+		return 0;
+
+	//동료 리스트가 열려 있고 아직 상세보기로 들어가지 않은 상태에서만
+	if (curMenu != MENU_CREW || menuDepth != 0)
+		return 0;
+
+	//세바스찬이 아닌 첫 동료 = 상자에서 새로 얻은 동료
+	for (i = 0; i < TOTALINVENTORY; i++) {
+		if (robin.inven[i].type == ITEM_CREW && robin.inven[i].detail != CREW_SEBASTIAN && robin.inven[i].lv > 0)
+			return TOUCH_FUNC_ITEMDETAIL + i;
+	}
+
+	return 0;
+}
+
+//튜토리얼에서 지금 눌러야 하는 터치기능을 돌려준다. -1이면 제한하지 않는다.
+//프레임 시작(Core.cpp의 touchIndex 초기화 지점)에서 한 번 정해야 한다. Demo_Talk()에서
+//정하면 BarDraw()처럼 그보다 먼저 도는 곳이 이미 등록해 둔 터치영역이 새어나간다.
+int GetTutorialTouchFunc(void)
+{
+	//동료 메뉴 안내는 컷씬이 아니라 메뉴가 열린 상태(MD_PLAY + 팝업)에서 돈다.
+	int crewCardFunc = GetTutorialCrewCardTouchFunc();
+
+	if (crewCardFunc)
+		return crewCardFunc;
+
+	if (drawHandle != MD_DEMO)
+		return TUTORIAL_TOUCH_FREE;
+
+	//튜토리얼 컷씬이 아니면(오프닝 등 일반 데모) 손대지 않는다.
+	if (movie.index < DEMO_TUTORIAL_INIT || movie.index > DEMO_TUTORIAL_END)
+		return TUTORIAL_TOUCH_FREE;
+
+	//여기부터는 튜토리얼 컷씬 진행 중이다. 기본은 "아무것도 안 눌림"이다.
+	//EFFECT_TUTORIAL_INITBAR가 바를 만드는 몇 프레임 동안 버튼의 터치영역이 잠깐
+	//살아나서 컷씬 도중에 눌리던 것도 이걸로 막힌다.
+	if (movie.type != MOVIE_TALK && movie.type != MOVIE_MENUTALK)
+		return TUTORIAL_TOUCH_NONE;
+
+	if (textPage <= 0 || textFrame < textStringLength[textPage - 1])
+		return TUTORIAL_TOUCH_NONE;
+
+	//버튼 안내 대사. 눌러야 하는 그 버튼 외에는 전부 막는다.
+	int touchFunc;
+
+	if (GetTutorialTalkTarget(movie.text, &touchFunc, nullptr))
+		return touchFunc;
+
+	return TUTORIAL_TOUCH_NONE;
+}
+
 void Demo_Talk(void)
 {
 	int i, w = 0;
@@ -1020,14 +1149,41 @@ void Demo_Talk(void)
 
 	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, RIGHT);
 
-	//인터랙티브 전투 튜토리얼: SEBASTIAN의 "공격버튼을 눌러주세요" 대사는 시간이 지났다고 저절로
-	//넘어가면 안 된다(예전엔 텍스트가 끝나고 2초 뒤 자동으로 컷씬을 종료시켜서, 플레이어가 누르기도
-	//전에 실전투로 넘어가 공격 연출이 바로 시작되는 것처럼 보였다). 대사는 그대로 띄워둔 채 대기하고,
+	//인터랙티브 전투 튜토리얼: 공격을 안내하는 대사는 시간이 지났다고 저절로 넘어가면 안 된다
+	//(예전엔 텍스트가 끝나고 2초 뒤 자동으로 컷씬을 종료시켜서, 플레이어가 누르기도 전에 실전투로
+	//넘어가 공격 연출이 바로 시작되는 것처럼 보였다). 대사는 그대로 띄워둔 채 대기하고,
 	//플레이어가 실제 공격버튼을 눌렀을 때만 TalkKey()가 다음 단계로 넘겨준다.
 	//공격버튼(BAR_PLAY)의 터치영역은 BarDraw()에서 touchDisable == false일 때만 등록되므로,
 	//이 대사가 떠 있는 동안에는 터치를 열어둬야 버튼을 누를 수 있다.
-	if (movie.index == DEMO_TUTORIAL_SEBASTIAN && textFrame >= textStringLength[textPage - 1])
+	int talkTouchFunc;
+	int talkBarIdx;
+
+	if (GetTutorialTalkTarget(movie.text, &talkTouchFunc, &talkBarIdx) && textFrame >= textStringLength[textPage - 1]) {
 		touchDisable = false;
+
+		//눌러야 할 버튼만 밝게 남기고 나머지를 어둡게 덮는다. 사각형은 BarDraw()가
+		//SetRectPoint()에 넘기는 것과 같은 값이라 스팟과 실제 터치영역이 정확히 겹친다.
+		float bx, by, bw, bh;
+		float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;	//숨쉬듯 반경이 오르내린다
+
+		GetTutorialTalkRect(talkBarIdx, &bx, &by, &bw, &bh);
+
+		float spotX = bx + bw / 2;
+		float spotY = by - bh / 2;
+		float spotSize = Max(bw, bh);
+
+		//공격버튼은 DrawAttackButton()이 ani일 때 손을 직접 그리지만, 나머지 바는 안 그린다.
+		//여기서 그려줘야 안내하는 버튼마다 포인터가 붙는다.
+		if (talkBarIdx != BAR_PLAY)
+			DrawHand(bx - (float)4 * _2X, by + (float)4 * _2X, robin.playtime / MOTIONDIV, 1.2f);
+
+		SetSpotlight(spotX, spotY,
+			spotSize * 0.6f * pulse, spotSize * 1.4f * pulse, 0.25f);
+
+		//대화신은 같이 노출되어야 하므로 대화창 영역은 암전에서 뺀다.
+		//바로 위 DrawCmfPopUp()에 넘긴 사각형과 같은 값이다.
+		SetSpotlightKeepRect(0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, 12 * _2X);
+	}
 
 	if (talkShakeFrame)
 		talkShakeFrame--;
@@ -1417,7 +1573,9 @@ void AfterDemo(void)
 	//DEMO_TUTORIAL_SEBASTIAN과 나머지(CREWMENU/EQUIP/HEARTBET/ROULETTE_LIVE/BOSS)는 실전투/실메뉴 조작으로
 	//넘겨야 하므로 default(GotoPlay/ResumeTutorialPlay) 경로를 타도록 이 목록에서 제외한다 - 실전투 중
 	//다음 컷씬 복귀는 robin.demoSeen[]을 확인하는 별도 트리거(Func_Combat.cpp 사망 훅, Func_Input.cpp 장착 훅)가 담당한다.
-	case DEMO_TUTORIAL_FIRSTKILL:
+	//DEMO_TUTORIAL_FIRSTKILL은 여기서 제외한다. 이 대사("상자에서 동료를 획득하셨네요?")는
+	//플레이어가 동료 바(BAR_CREW)를 눌러야 넘어가고, 그 터치가 동료 메뉴를 직접 연다.
+	//체인으로 다음 컷씬을 띄우면 버튼을 누를 새도 없이 넘어가 버린다.
 	case DEMO_TUTORIAL_SECONDKILL:
 	case DEMO_TUTORIAL_ROULETTE:
 
@@ -2431,6 +2589,7 @@ void DemoCore_Effect_TutorialInitBar(void)
 	InitBar(BAR_CASTLE);
 	InitBar(BAR_MAINSHOP);
 	InitBar(BAR_HEART);
+	InitBar(BAR_STAR);
 	//BAR_HEARTBET/BAR_PLAY는 여기서 InitBar하지 않는다. BAR_ROULETTE가 활성화되면 RouletteDraw()가
 	//곧바로 호출되고, 그 인트로 팝 애니메이션이 끝나는 시점(Func_Roulette.cpp)에 이미 InitBar(BAR_HEARTBET)/
 	//InitBar(BAR_PLAY)를 호출한다. 여기서도 부르면 바가 두 번 초기화된다.

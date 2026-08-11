@@ -26,7 +26,7 @@ void LoadImg(int index)
 {
 	std::string fileName;
 	fileName = null;
-	//�̹����� �׳� �о �ε��ϴ� ���
+	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
 		sprite[index] = Sprite::create(fileName);
@@ -40,7 +40,7 @@ void LoadTexture(int index)
 {
 	std::string fileName;
 
-	//�̹����� �׳� �о �ε��ϴ� ���
+	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
 		texture[index] = Director::getInstance()->getTextureCache()->addImage(fileName);
@@ -113,11 +113,11 @@ void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
 	curBufferCnt++;
 }
 
-//��ο��� ������ �ܰ�. ���� ���� Ÿ�ٿ� ���� ��� ����� ������.
+//��ο���?������ �ܰ�. ���� ���� Ÿ�ٿ� ���� ���?�����?������.
 //gRenderTarget �� ���� ������(BeginScreenBuffer/PushRenderTarget) �̹� begin() �� Ÿ�ٿ�
-//��� visit() ���� �׸���. Ÿ���� ������/���� ������ �� ���� begin/end �ϹǷ�
+//���?visit() ���� �׸���. Ÿ���� ������/���� ������ �� ���� begin/end �ϹǷ�
 //��ο� �ݸ��� ����Ÿ���� ���ε��ϰų� renderer->render() �� �÷������� �ʴ´�.
-//gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ� ����.
+//gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
 void AfterSpriting(cocos2d::Sprite* src) {
 
 	if (gRenderTarget)
@@ -125,7 +125,7 @@ void AfterSpriting(cocos2d::Sprite* src) {
 	else
 		curScene->addChild(src);
 
-	//��� ��ε� �̹� �����ӿ� �� Ǯ ��������Ʈ�� ����� �д�.
+	//���?��ε�?�̹� �����ӿ� �� Ǯ ��������Ʈ�� �����?�д�.
 	//Core::Run �� ������ �������� ��������Ʈ ���¸� �ǵ����� �� ���δ�.
 	curRenderSpriteArr[curRenderCnt] = getSpriteIdx;
 	curRenderCnt++;
@@ -134,7 +134,7 @@ void AfterSpriting(cocos2d::Sprite* src) {
 }
 
 
-//���� ��ε��Ǿ� �ִ°� �����ؼ� ��� �ε����� ��� �Ǵ��� 
+//���� ��ε��Ǿ�?�ִ°� �����ؼ� ���?�ε����� ���?�Ǵ��� 
 int GetSpriteIndex(int index)
 {
 	int i;
@@ -162,7 +162,7 @@ int GetSpriteIndex(int index)
 	return false;
 }
 
-//���� ��ε��Ǿ� �ִ°� �����ؼ� ��� �ε����� ��� �Ǵ��� 
+//���� ��ε��Ǿ�?�ִ°� �����ؼ� ���?�ε����� ���?�Ǵ��� 
 int GetBufferSpriteIndex(int index, cocos2d::Layer* cvtLayer)
 {
 	int i;
@@ -189,7 +189,7 @@ int GetBufferSpriteIndex(int index, cocos2d::Layer* cvtLayer)
 	return false;
 }
 
-//���� ��ε��Ǿ� �ִ°� �����ؼ� ��� �ε����� ��� �Ǵ��� 
+//���� ��ε��Ǿ�?�ִ°� �����ؼ� ���?�ε����� ���?�Ǵ��� 
 int GetTextLabelIndex(int index)
 {
 	int i;
@@ -229,7 +229,7 @@ std::string convertToString(char* a, int size)
 	return s;
 }
 
-//Ÿ�԰� �ε����� ���� ���ϸ� ���� �� ���ϸ��� �� ���ۿ� ��Ƽ� �����ϱ�
+//Ÿ�԰� �ε����� ���� ���ϸ� ���� �� ���ϸ��� �� ���ۿ� ��Ƽ�?�����ϱ�
 std::string  GetResourceName(int type, int idx)
 {
 	std::string fileName;
@@ -295,10 +295,10 @@ void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
 		//cvtDest->setAnchorPoint(Vec2(0.0f, 1.0f));
 		cvtDest->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
 
-		//�̸� �׷� �� ������ũ�� ���۸� ���� Ÿ��(ȭ�����)�� �ռ��Ѵ�.
+		//�̸� �׷� �� ������ũ�� ���۸� ���� Ÿ��(ȭ�����?�� �ռ��Ѵ�.
 		if (gRenderTarget) {
 			//RenderTexture �� 3���� visit �����ε尡 0���� Node::visit() �� �����Ƿ�
-			//Node* �� �޾Ƽ� ȣ���Ѵ�. ���ο��� RenderTexture �� �������̵�� ���� ����ġ�ȴ�.
+			//Node* �� �޾Ƽ� ȣ���Ѵ�. ���ο��� RenderTexture �� �������̵��?���� ����ġ�ȴ�.
 			cocos2d::Node* node = cvtDest;
 			node->visit();
 		}
@@ -891,7 +891,7 @@ void GammaImage(int gamma, int type, float zoom)
 		src = buff;
 		dest = src + (DY * DX >> 1);
 
-		//��ü���� ��� ����
+		//��ü���� ���?����
 		if (gamma > 63)
 			src->beginWithClear(1.0, 1.0, 1.0, 1.0);//memset(src, COLOR_WHITEFF, (DY * DX) << 1);
 		else if (gamma > 32) {
@@ -956,7 +956,7 @@ void InitContext(void)
 **			SCREEN BUFFER / RENDER TARGET
 **--------------------------------------------------------------------------*/
 
-//ȭ����۸� ������ �����Ѵ�. DX/DY �� Ȯ���� ��(Core::init)�� �� ���� ȣ���ؾ� �Ѵ�.
+//ȭ����۸�?������ �����Ѵ�. DX/DY �� Ȯ���� ��(Core::init)�� �� ���� ȣ���ؾ� �Ѵ�.
 void InitScreenBuffer(void)
 {
 	if (gScreenBuffer)
@@ -967,12 +967,12 @@ void InitScreenBuffer(void)
 
 	gScreenBuffer = cocos2d::RenderTexture::create(DX, DY);
 	gScreenBuffer->retain();
-	//DrawBuffer() �� ���� ��ǥ �Ծ�: �»�� ����(anchor 0,1)�� ��ġ�� (0, DY)
+	//DrawBuffer() �� ���� ��ǥ �Ծ�: �»��?����(anchor 0,1)�� ��ġ�� (0, DY)
 	gScreenBuffer->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
 	gScreenBuffer->setPosition(Vec2(0, DY));
 }
 
-//������ ����. ������ ��� ��ο�� ȭ����ۿ� ���δ�.
+//������ ����. ������ ���?��ο�� ȭ����ۿ�?���δ�.
 void BeginScreenBuffer(void)
 {
 	if (!screenBuffer || !gScreenBuffer)
@@ -984,7 +984,96 @@ void BeginScreenBuffer(void)
 	gRenderLayer = gScreenLayer;
 }
 
-//������ ����. ȭ����۸� �ݰ�, ���� �� ���� �ٿ� ȭ�鿡 ǥ���Ѵ�.
+//������ ����. ȭ����۸�?�ݰ�, ���� �� ���� �ٿ� ȭ�鿡 ǥ���Ѵ�.
+//스팟라이트를 이번 프레임에 켠다. EndScreenBuffer()가 소비한 뒤 자동으로 꺼지므로
+//강조하고 싶은 프레임마다 그리는 자리에서 불러주면 된다.
+//x, y는 게임 좌표(y가 위로 증가, 화면 위쪽이 DY)의 스팟 중심이다.
+//inner까지는 원본 밝기 그대로, radius 바깥은 전부 darkness로 덮인다.
+void SetSpotlight(float x, float y, float inner, float radius, float darkness)
+{
+	gSpotlightOn = true;
+	gSpotlightX = x;
+	gSpotlightY = y;
+	gSpotlightInner = inner;
+	gSpotlightRadius = radius;
+	gSpotlightDarkness = darkness;
+}
+
+//암전에서 뺄 사각형을 지정한다. 대화창처럼 스팟과 별개로 밝게 남겨야 하는 UI에 쓴다.
+//x, y는 사각형의 왼쪽/윗변이고 h는 아래로 뻗는다. DrawCmfPopUp() 등과 인자가 같다.
+//SetSpotlight()과 마찬가지로 EndScreenBuffer()가 소비한 뒤 꺼진다.
+void SetSpotlightKeepRect(float x, float y, float w, float h, float soft)
+{
+	gSpotlightKeepX = x;
+	gSpotlightKeepY = y;
+	gSpotlightKeepW = w;
+	gSpotlightKeepH = h;
+	gSpotlightKeepSoft = soft;
+}
+
+void ClearSpotlight(void)
+{
+	gSpotlightOn = false;
+	gSpotlightKeepW = 0.0f;
+}
+
+//화면버퍼 스프라이트에 스팟라이트 쉐이더를 걸거나 원래 쉐이더로 되돌린다.
+static void ApplySpotlight(void)
+{
+	static cocos2d::GLProgram* savedScreenProgram = nullptr;
+	static bool spotlightApplied = false;
+
+	cocos2d::Sprite* sp = gScreenBuffer->getSprite();
+
+	if (sp == nullptr)
+		return;
+
+	if (gSpotlightOn == false) {
+		//쉐이더를 매 프레임 갈아끼우지 않도록 걸어둔 상태일 때만 되돌린다.
+		if (spotlightApplied && savedScreenProgram) {
+			sp->setGLProgram(savedScreenProgram);
+			spotlightApplied = false;
+		}
+		return;
+	}
+
+	if (spotlightApplied == false) {
+		//원래 쉐이더는 처음 한 번만 기억해 둔다. 되돌릴 때 쓴다.
+		if (savedScreenProgram == nullptr)
+			savedScreenProgram = sp->getGLProgram();
+
+		sp->setGLProgram(shader_spotlight);
+		spotlightApplied = true;
+	}
+
+	cocos2d::GLProgramState* st = sp->getGLProgramState();
+
+	if (st) {
+		//NPOT을 못 쓰는 기기에서는 텍스처가 2의 거듭제곱으로 패딩되어
+		//v_texCoord가 0~1을 다 쓰지 않는다. 그 비율을 넘겨 셰이더에서 되돌린다.
+		Vec2 texScale(1.0f, 1.0f);
+		cocos2d::Texture2D* tex = sp->getTexture();
+
+		if (tex && tex->getPixelsWide() > 0 && tex->getPixelsHigh() > 0) {
+			texScale.x = tex->getContentSize().width / (float)tex->getPixelsWide();
+			texScale.y = tex->getContentSize().height / (float)tex->getPixelsHigh();
+		}
+
+		st->setUniformVec2("u_texScale", texScale);
+		st->setUniformVec2("u_resolution", Vec2((float)DX, (float)DY));
+		st->setUniformVec2("u_center", Vec2(gSpotlightX, gSpotlightY));
+		st->setUniformFloat("u_inner", gSpotlightInner);
+		st->setUniformFloat("u_radius", gSpotlightRadius);
+		st->setUniformFloat("u_darkness", gSpotlightDarkness);
+		st->setUniformVec4("u_keepRect", Vec4(gSpotlightKeepX, gSpotlightKeepY, gSpotlightKeepW, gSpotlightKeepH));
+		st->setUniformFloat("u_keepSoft", gSpotlightKeepSoft > 0.0f ? gSpotlightKeepSoft : 1.0f);
+	}
+
+	//즉시모드. 다음 프레임에 다시 켜지 않으면 꺼진다.
+	gSpotlightOn = false;
+	gSpotlightKeepW = 0.0f;
+}
+
 void EndScreenBuffer(void)
 {
 	if (!screenBuffer || !gScreenBuffer)
@@ -995,7 +1084,9 @@ void EndScreenBuffer(void)
 	gRenderTarget = nullptr;
 	gRenderLayer = nullptr;
 
-	//���� ���� ȭ����۴� �� ������ ���ŵǹǷ� ������ ���� �ʿ䰡 ����.
+	ApplySpotlight();
+
+	//���� ���� ȭ����۴�?�� ������ ���ŵǹǷ� ������ ���� �ʿ䰡 ����.
 	if (gScreenBuffer->getParent() == nullptr)
 		curScene->addChild(gScreenBuffer);
 }
@@ -1030,7 +1121,7 @@ void PopRenderTarget(void)
 	if (gRenderTarget)
 		gRenderTarget->end();
 
-	//�ݾ� �ξ��� ���� Ÿ���� �ٽ� ����. beginWithClear �� �ƴ϶� begin �̾��
+	//�ݾ� �ξ��� ���� Ÿ���� �ٽ� ����. beginWithClear �� �ƴ϶� begin �̾��?
 	//�̹� �׷� �� ������ �������� �ʴ´�.
 	if (savedRenderTarget)
 		savedRenderTarget->begin();
@@ -1042,9 +1133,9 @@ void PopRenderTarget(void)
 	savedRenderLayer = nullptr;
 }
 
-//화면보다 큰 오프스크린 버퍼(bufferTexture[BUFFER_*])에 그리는 중인지.
-//화면버퍼는 화면과 같은 크기이므로 제외한다.
-//드로우 함수가 쓰던 buffering 인자 중 클립 범위 판단용으로만 남은 부분을 대체한다.
+//?�면보다 ???�프?�크�?버퍼(bufferTexture[BUFFER_*])??그리??중인지.
+//?�면버퍼???�면�?같�? ?�기?��?�??�외?�다.
+//?�로???�수가 ?�던 buffering ?�자 �??�립 범위 ?�단?�으로만 ?��? 부분을 ?�체한??
 bool IsOffscreenTarget(void)
 {
 	return gRenderTarget != nullptr && gRenderTarget != gScreenBuffer;
@@ -1197,7 +1288,7 @@ void MemRectBothThick(int x, int y, int w, int h, int frameCol, int fillCol)
 	MemRect(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, fillCol);
 }
 
-//�ձ� �簢��ä���
+//�ձ� �簢��ä���?
 void MemRectRound(int x, int y, int w, int h, int fillCol, int empty)
 {
 	int j = 0;
@@ -1207,7 +1298,7 @@ void MemRectRound(int x, int y, int w, int h, int fillCol, int empty)
 	dx2 = 0;
 	dy2 = empty;
 
-	//���⼭ empty�� �����̿� ��� ���簢���� ũ��
+	//���⼭ empty�� �����̿� ���?���簢���� ũ��
 	for (r = 0; r <= 90; r++) {
 		dx = ((float)empty) * sin(CC_DEGREES_TO_RADIANS(r));
 		dy = ((float)empty) * cos(CC_DEGREES_TO_RADIANS(r));
@@ -1693,7 +1784,7 @@ void DrawLabel(int x, int y, int textIdx, float zoom)
 	//CenterText(textIdx, x + (float)(21 * _2X * _2X) * zoom, y - (float)(16 * _2X) * zoom + (float)11 * _2X / 2 * LABELZOOM * zoom, LABELZOOM * zoom, cvtDest, cvtLayer, buffering);
 }
 
-//�� ���׹� ����� 
+//�� ���׹� �����?
 void DrawStageEnemyWave(int x, int y, int stageBossType, float zoom)
 {
 
@@ -1739,8 +1830,8 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 }
 
 
-//�ϳ��� ����󸶸� �׸��� �Լ�
-//����󸶾��� ������Ʈ�� �޾Ƽ� �׷��ִµ�, ��ġ�� �ٸ���. 
+//�ϳ��� ����󸶸�?�׸��� �Լ�
+//����󸶾���?������Ʈ�� �޾Ƽ� �׷��ִµ�, ��ġ�� �ٸ���. 
 //
 void DrawDiorama(int x, int y, int type, float zoom)
 {
@@ -1935,7 +2026,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		for (i = 0; i < CASTLEALL; i++) {
 			if (ao[i].active) {
 				if (ao[i].moveHandler == PLAYERMOVE) {
-					//��Ƴ� �ڴ� ����϶� �׸��� �׸��� ����
+					//��Ƴ�?�ڴ� ����϶�?�׸��� �׸��� ����
 					if ((ao[i].type == DIANA && ao[i].motion == PO_C1_SLEEP) || ao[i].motion == PO_C0_WARP5)
 						continue;
 					else {
@@ -2193,7 +2284,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					if (jumpRatio > 1.0f)
 						jumpRatio = 1.0f;
 
-					// �ְ������� ���� ũ���� 55%���� ���
+					// �ְ������� ���� ũ���� 55%���� ���?
 					float shadowJumpScale = 1.0f - jumpRatio * 0.45f;
 
 					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom * shadowJumpScale, objStartY - (ao[i].ny - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom * shadowJumpScale, SHADOW_IMG, ao[i].zoom * shadowJumpScale);
@@ -2270,7 +2361,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//����׸���
+		//����׸���?
 		for (i = BULLET; i >= CREW; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP && i != SOLDIER) {
 
@@ -2492,7 +2583,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 				}
 			}
 
-		//��Ƴ� ���� �۵��� ȿ��
+		//��Ƴ�?���� �۵��� ȿ��
 		if (skillUsed == false || buffItemUsed == false)
 			if (dianaTrapFrame)
 				DrawNeutral(OBJ_STAMPEFFECT0 + (dianaTrapFrame % 10), xOffset + ao[dianaTrapFrame / 10 + NEUTRAL].x - rx, objStartY - ao[dianaTrapFrame / 10 + NEUTRAL].y - ry + OBJIMGGAP, 0, ao[dianaTrapFrame / 10 + NEUTRAL].zoom);
@@ -2917,7 +3008,7 @@ void CenterAlpha(int x, int y, int idx, int type, float rotation, float zoom)
 	DrawAlpha(x - GetAlphaWidth(idx, type, zoom) / 2, y, idx, type, zoom, rotation);
 }
 
-//������ �����ӿ� ���� ��µ� ù���ڴ� �빮��, �ڿ� ���ڴ� �ҹ��ڷ� ��� �Լ�
+//������ �����ӿ� ���� ��µ�?ù���ڴ� �빮��, �ڿ� ���ڴ� �ҹ��ڷ� ���?�Լ�
 void DrawAlphaFrame(int x, int y, int idx, int frame, int font, float rotaion, float zoom)
 {
 	int i, w;
@@ -2939,7 +3030,7 @@ void DrawAlphaFrame(int x, int y, int idx, int frame, int font, float rotaion, f
 			x += (float)(w - 1 * _2X) * zoom;
 			break;
 		case FONT_LARGE:
-			if (i == 201)		//Exit Dungeon �� ��� ���̰� �� ���ڰ� ���ĺ��̹Ƿ�,,
+			if (i == 201)		//Exit Dungeon �� ���?���̰� ���?���ڰ� ���ĺ��̹Ƿ�,,
 				x += (float)(w + 1 * _2X) * zoom;
 			else
 				x += (float)(w - 1 * _2X) * zoom;
@@ -3156,7 +3247,7 @@ float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool com
 	} while (gapWidth > width && gapNum > 0);
 
 
-	//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+	//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 	if (gap % 3) {
 		do {
 			gap++;
@@ -3240,7 +3331,7 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 		} while (gapWidth > width);
 
 
-		//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 		if (gap % 3) {
 			do {
 				gap++;
@@ -3260,7 +3351,7 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 		} while (gapWidth > width);
 
 
-		//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 		if (gap % 3) {
 			do {
 				gap++;
@@ -3329,7 +3420,7 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 		} while (gapWidth > width);
 
 
-		//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 		if (gap % 3) {
 			do {
 				gap++;
@@ -3349,7 +3440,7 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 		} while (gapWidth > width);
 
 
-		//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 		if (gap % 3) {
 			do {
 				gap++;
@@ -3719,7 +3810,7 @@ void DrawBigNumGold(long long int num, int x, int y, int font, int align, int di
 		gapWidth = GetGoldNumDx(gapNum, sign, digit, comma, zoom);
 	} while (gapWidth > width);
 
-	//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+	//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 
 	if (gap % 3) {
 		do {
@@ -3832,7 +3923,7 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 		gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
-	//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+	//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 
 	if (gap % 3) {
 		do {
@@ -3976,7 +4067,7 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 		gapWidth = GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
-	//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+	//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 
 	if (gap % 3) {
 		do {
@@ -4114,7 +4205,7 @@ void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign
 		gapWidth = GetNumDx2(gapNum, sign, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
-	//3������ �ڸ��� ���� ��� ���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
+	//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
 
 	if (gap % 3) {
 		do {
@@ -4212,9 +4303,9 @@ void DrawStarNum(int icon, int star, int x, int y, float zoom)
 	DrawNum2AutoSpaceing(star, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)16 * _2X * NUM2ZOOM * zoom, CENTER, false, false, (float)ITEMICONSIZE * zoom, false, 1.0f * zoom * NUM2ZOOM, false, true);
 }
 
-//size�� ����, �̵��, ����
+//size�� ����, �̵��? ����
 //cnt�� ������ ������ �׸��°� ���� 0�̸� �׸��� �ϵ� ���� �κ��� ����.
-//max�� cnt�� ������ �� ��� �׸��°Ű� max�� ũ�� �������� �����Ѵ�.
+//max�� cnt�� ������ �� ���?�׸��°Ű� max�� ũ�� �������� �����Ѵ�.
 
 void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, bool bigStar, float zoom)
 {
@@ -4228,7 +4319,7 @@ void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, b
 		width = (float)(STARGAP * (drawCnt - 1) + ITEMICONSIZE) * zoom;
 		y += (float)(4 * _2X) * zoom;
 	}
-	//��պ�
+	//��պ�?
 	else {
 		zoom = zoom * 1.8f;
 		width = (float)(16 * _2X * 1) * zoom;
@@ -4439,7 +4530,7 @@ void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(COINBUTTONWIDTH - width) / 2 * zoom, y + (float)(-2 * _2X) * zoom, zoom, false, false, false, true);
 	DrawXNumGold(cnt, x + (float)(COINBUTTONWIDTH - width) / 2 + (float)(ITEMICONSIZE + 2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, false, GOLDALPHAZOOM * zoom, LEFT, false);
 
-	//Bet�϶�� ����
+	//Bet�϶��?����
 	if (betFrame)
 		if (robin.gold > betCoin[betBattle] * GetStageAdmissionFee()) {
 			//�ִ� bet�̸� �ִ밪�ΰ� ǥ�����ְ�
@@ -4478,14 +4569,14 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 	//��ų�� ������ �׷��ִ°�
 	//Test Setting
 
-	//Bet�϶�� ����
+	//Bet�϶��?����
 	//��ް� robin.bet�� ���ؼ� �ش� ������ �������� Ȯ���Ѵ�.
-	//���� ��� ��ų������ 0�̸� �ٷ� ����� �� �ְ�,
-	//��ų������ 1�̸� ��Ʈ�� 3�̻� �����ؾ� ����� �� �ִ�.
-	//��ų����� ����
+	//���� ���?��ų������ 0�̸� �ٷ� �����?�� �ְ�,
+	//��ų������ 1�̸� ��Ʈ�� 3�̻� �����ؾ� �����?�� �ִ�.
+	//��ų�����?����
 	//�׷��� ���� ���� �ִ� ��ų�׷��̵�(GRADE_NORMAL,....) �̰� ������ �Ѵ�.
 	//�׸��� ��������� ��带 ��� �����ٰų�.
-	//��带 ü�¿� �����ϸ� �ָ��ؼ� �⺻������ �˿� � �� ȹ���ϴ� ��带 �ھ��ְ�, ���ݷ°� ���ȹ�淮�� �����ؾ� �ɵ�
+	//���?ü�¿� �����ϸ� �ָ��ؼ� �⺻������ �˿� � �� ȹ���ϴ� ���?�ھ��ְ�, ���ݷ°� ���ȹ��?���?�����ؾ� �ɵ�
 	//�׷��� 1Ÿ�� 
 
 	if (betFrame)
@@ -4964,7 +5055,7 @@ void DrawCrewBulletIcon(int idx, int x, int y, float zoom)
 	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx % 16) * CREWBULLETICONSIZE, (idx / 16) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], CREWBULLET_IMG);
 }
 
-//�ϴ� ��Ƽ�� ��ų�� ��쿡�� ����Ѵ�.
+//�ϴ� ��Ƽ�� ��ų�� ��쿡��?����Ѵ�?
 void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 {
 	int i, j;

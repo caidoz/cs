@@ -3429,6 +3429,28 @@ void CrewMenuDraw(int x, int y, float zoom)
 			//menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] + i : false,
 			false,
 			0);
+
+		//튜토리얼: 새로 얻은 동료 카드만 밝게 남기고 나머지를 어둡게 덮는다.
+		//사각형은 DrawItemCard()가 카드 터치영역으로 등록하는 것과 같은 값이다.
+		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i]) {
+			int itemStar = GetItemStar(itemType, itemDetail, itemGrade);
+			float cardZoom = CARDDEFAULTZOOM * zoom;
+			float rx = cardX + (float)equipBgData[(itemStar - 1) * 6 + 4] * cardZoom;
+			float ry = cardY - (float)equipBgData[(itemStar - 1) * 6 + 5] * cardZoom;
+			float rw = (float)equipBgData[(itemStar - 1) * 6 + 0] * cardZoom;
+			float rh = (float)equipBgData[(itemStar - 1) * 6 + 1] * cardZoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//손은 카드 한가운데에, 크게.
+			DrawHand(rx + rw / 2, ry - rh / 2, robin.playtime / MOTIONDIV, 2.4f);
+
+			//카드는 폭 rw, 가로 간격은 INVENTORY_GAP_X * zoom이라 카드 사이 여백이 거의 없다.
+			//반경을 카드 높이 기준으로 잡으면 옆 카드까지 통째로 밝아지므로 폭 기준으로 잡는다.
+			//옆 카드의 안쪽 모서리까지가 중심에서 (INVENTORY_GAP_X - 240 * CARDDEFAULTZOOM / 2) * zoom
+			//이므로 그 안쪽에서 감쇠가 끝나도록 둔다.
+			SetSpotlight(rx + rw / 2, ry - rh / 2,
+				rw * 0.28f * pulse, rw * 0.50f * pulse, 0.25f);
+		}
 	}
 
 	int scrollH = WINY - (float)340 * zoom;

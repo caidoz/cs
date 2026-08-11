@@ -4253,10 +4253,14 @@ void GachaDraw(void)
 					item->count,
 					false);
 
+				//튜토리얼에서 장착을 가르치기 전(DEMO_TUTORIAL_EQUIP)까지는 자동장착하지 않는다.
+				//첫 상자에서 나온 것을 플레이어가 직접 장착해봐야 하는데, 자동으로 껴버리면
+				//"장비창의 장착 버튼을 눌러보자" 안내가 할 일이 없어진다.
 				if (item->type != ITEM_CREW &&
 					item->type != ITEM_GOLD &&
 					item->type != ITEM_HEART &&
-					item->type != ITEM_STAR)
+					item->type != ITEM_STAR &&
+					!(IsTutorialPlaying() && !robin.demoSeen[DEMO_TUTORIAL_EQUIP]))
 				{
 					SetStrongestEquip(
 						item->type,

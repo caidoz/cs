@@ -11191,7 +11191,9 @@ void RegenMove(OBJECT* pObj)
 			}
 			else {
 				pObj->hp = pObj->maxhp;
-				if (drawHandle == MD_PLAY || drawHandle == MD_DEMO)
+				//보상 상자(MD_GACHA)처럼 화면만 덮는 연출이 떠 있는 사이에 착지해도
+				//아레나는 계속 돌고 있으므로 ENEMYMOVETURN이어야 한다(IsArenaRunning() 주석 참고).
+				if (IsArenaRunning())
 					pObj->moveHandler = ENEMYMOVETURN;
 				else
 					pObj->moveHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_MOVEHANDLER];

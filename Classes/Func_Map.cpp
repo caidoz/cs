@@ -1896,7 +1896,42 @@ long long GetWaveHp(int waveIdx, int curWave)
 {
 	int monType = wave[waveIdx * WAVEDATASIZE * MAXENEMY + curWave * WAVEDATASIZE + 0];
 
+	//인터랙티브 전투 튜토리얼은 몬스터 타입/스폰 타이밍만 wave[]를 그대로 쓰고 체력은 여기서
+	//웨이브 순번에 맞춰 한 대씩 늘려간다(0:2, 1:3, 2:4 ...). 정규 공식을 그대로 쓰면 수천 단위라
+	//튜토리얼에서 몇 대를 때려도 안 죽는다.
+	if (IsTutorialPlaying()) {
+		switch (waveIdx) {
+		case 5:		//HEARTBET: 3배 하트베팅 공격에만 죽도록
+		case 6:		//ROULETTE_LIVE: 룰렛 3인 공격으로 죽도록
+			return 100;
+		}
+
+		//0번은 "세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를 보여줘야 해서
+		//최소 2가 필요하다. 크루의 공격이 마지막 1을 못 깎게 막는 처리는 AttackObj()에 있다.
+		return 2 + waveIdx;
+	}
+
 	return 100 * (waveIdx + 10) * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
+}
+
+//아레나가 밑에서 계속 돌고 있는 모드인지.
+//보상 상자(MD_GACHA)나 스테이지클리어는 화면만 덮을 뿐 Core::Run()에서 Play()를 그대로 돌린다.
+//그래서 그 연출이 떠 있는 동안에도 WaveControler()가 다음 웨이브를 스폰하고 몬스터가 착지한다.
+//이때 drawHandle만 보고 enemyData의 기본 무브핸들러(ENEMYMOVE)로 떨어뜨리면, 그 몬스터는
+//다가오지도 돌지도 않고 제자리에서 공격만 하는 상태로 굳어버린다.
+//튜토리얼 2번째 웨이브(ENEMY_TREE)가 첫 몬스터 보상 상자가 열려 있는 사이에 스폰되면서
+//1번째(ENEMY_SNAIL)와 달리 ENEMYMOVE를 받던 것이 이 경우였다.
+bool IsArenaRunning(void)
+{
+	switch (drawHandle) {
+	case MD_PLAY:
+	case MD_DEMO:
+	case MD_GACHA:
+	case MD_STAGECLEAR:
+		return true;
+	}
+
+	return false;
 }
 
 int SetEnemy(OBJECT *pObj)
@@ -1920,7 +1955,7 @@ int SetEnemy(OBJECT *pObj)
 	pObj->cmf = *uPtr;
 
 	//MoveHandler
-	if (drawHandle == MD_PLAY)
+	if (IsArenaRunning())
 		pObj->moveHandler = ENEMYMOVETURN;
 	else
 		pObj->moveHandler = *(uPtr + 1);
@@ -1956,30 +1991,18 @@ int SetEnemy(OBJECT *pObj)
 		break;
 	}
 
-	//인터랙티브 전투 튜토리얼: 몬스터 타입/스폰 타이밍은 정식 wave[] 데이터를 그대로 쓰되, 체력만
-	//여기서 튜토리얼 난이도로 낮춘다. drawHandle과 무관하게(EFFECT_WAVE로 MD_DEMO 중에 스폰되는
-	//경우도 포함) 항상 적용되어야 하므로 위 switch(drawHandle) 밖에서 robin.waveIdx로 분기한다.
-	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END]) {
-		switch (robin.waveIdx) {
-		case 0:		//SEBASTIAN/CREWMENU: SNAIL
-			//첫 몬스터(SEBASTIAN 단계)는 "세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를
-			//보여줘야 하므로 최소 2는 있어야 한다. 크루의 공격이 마지막 1을 못 깎게 막는 처리는
-			//Func_Combat.cpp의 AttackObj()에 있다.
-			pObj->maxhp = pObj->hp = 2;
-			break;
-		case 5:		//HEARTBET: ONEEYE, 3배 하트베팅 공격에만 죽도록
-			pObj->maxhp = pObj->hp = 100;
-			break;
-		case 6:		//ROULETTE_LIVE: SKELETON, 룰렛 3인 공격으로 죽도록
-			pObj->maxhp = pObj->hp = 100;
-			break;
-		}
+	//인터랙티브 전투 튜토리얼: 체력은 GetWaveHp()가 튜토리얼 값으로 돌려준다.
+	//다만 위 switch(drawHandle)는 MD_PLAY/MD_BATTLE/MD_RAID에서만 GetWaveHp()를 부르는데,
+	//컷씬 중(MD_DEMO의 EFFECT_WAVE)에 스폰되는 경우도 있으므로 여기서 한 번 더 확정한다.
+	if (IsTutorialPlaying()) {
+		pObj->maxhp = pObj->hp = GetWaveHp(robin.waveIdx, robin.curWaveIdx);
 
-		//빨간 HP바(BAR_BOSSHP)의 분모.
-		//DemoCore_Effect_TutorialInitBar()가 max를 0으로 밀어놓고 실제 스폰 체력을 더하는 방식인데,
-		//그 덧셈이 SpawnTutorialEnemy()에만 있어서 SetTutorialWave()+WaveControler() 경로로 스폰하면
-		//max가 0으로 남는다. BossHpBarDraw()가 count/max를 클램프 없이 넘겨서 percent가 inf가 된다.
-		bar[BAR_BOSSHP].max += pObj->maxhp;
+		//빨간 HP바(BAR_BOSSHP)의 분모는 이번 웨이브 전체 합으로 확정한다.
+		//누적(+=)하면 안 된다. 상자 연출이 끝날 때 Func_Gacha.cpp가 이미
+		//bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx)로 채워두기 때문에, 여기서 한 번 더
+		//더하면 분모가 두 배가 되어 갓 소환한 몬스터의 바가 절반만 차 있는 것처럼 보인다.
+		//대입으로 두면 SetEnemy()가 몇 번 불리든 값이 흔들리지 않는다.
+		bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 	}
 
 	//Str

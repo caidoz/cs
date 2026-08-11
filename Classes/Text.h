@@ -8952,9 +8952,9 @@ const char* const textId[] = {
 #else
 	"찌링찌링",//TEXT_GAMETITLE
 	"킹소드",//TEXT_ONLINE
-
-	"빚을 갚아주고 왕국의 주민들을 구출하세요!",//TEXT_RENT
 #endif
+	"빚을 갚아주고 왕국의 주민들을 구출하세요!",//TEXT_RENT
+
 	"단장님을 위해 돈벌 준비가 되었나!",//TEXT_MILLIONAIRE
 
 	"사용하려면 기존 아이템을 팔아 인벤토리를 비워주세요.",//TEXT_OUTOFINVENITEM
@@ -10446,24 +10446,25 @@ const char* const textId[] = {
 
 	"빅보스",//BIGBOSS,//405
 
-	"아델라인 성",//CASTLE_ADELINE
-	"톨레아 습지",//CASTLE_SWAMP
-	"금단의 계곡",//CASTLE_VALLEY
-	"아틀란티스",//CASTLE_ATLANTICE
-	"아델라인 지하도",//CASTLE_SEWAGE
-	"아델 평원",//CASTLE_PLAIN
-	"홍염의 대지",//CASTLE_FLAME
-	"유구한 빙원",//CASTLE_FROST
-	"뇌전의 공방",//CASTLE_THUNDER
-	"황혼의 성역",//CASTLE_LIGHT
-	"골렘의 협곡",//CASTLE_GOLEMVALLEY
-	"칠흑의 심연",//CASTLE_DARKNESS
-	"드래곤의 무덤",//CASTLE_DRAGON
-	"망자의 도시",//CASTLE_GHOST
-	"마왕성",//CASTLE_DEVILCASTLE
-	"우주공간",//CASTLE_SPACE
-	"투기장",//CASTLE_ARENA
-
+	"아델라인 성",//MAP_DIORAMA_TOLEM,//406//
+	"늪지대",//MAP_DIORAMA_ARENA,//407//
+	"금단의 계곡",//MAP_DIORAMA_SWAMP,//408//
+	"아틀란티스",//MAP_DIORAMA_VALLEY,//409//
+	"아델라인 지하도",//MAP_DIORAMA_ATALANTICE,//410//
+	"늪지대",//MAP_DIORAMA_SEWAGE,//411//
+	"아델라인 성",//MAP_DIORAMA_ADELINE,//412//
+	"아델라인 평원",//MAP_DIORAMA_PLAIN,//413//
+	"홍염의 대지",//MAP_DIORAMA_ELF,//414//
+	"홍염의 대지",//MAP_DIORAMA_FLAME,//415//
+	"유구한 빙원",//MAP_DIORAMA_FROST,//416//
+	"뇌전의 공방",//MAP_DIORAMA_THUNDER,//417//
+	"황혼의 성역",//MAP_DIORAMA_LIGHT,//418//
+	"골렘의 협곡",//MAP_DIORAMA_GOLEMVALLEY,//419//
+	"망자의 도시",//MAP_DIORAMA_DARKNESS,//420//
+	"드래곤 협곡",//MAP_DIORAMA_DRAGON,//421//
+	"망자의 도시",//MAP_DIORAMA_GHOST,//422//
+	"마왕성",//MAP_DIORAMA_DEVILCASTLE,//423//
+	"우주",//MAP_DIORAMA_SPACE,//424//
 	
 	"WAVE",//
 
@@ -10497,7 +10498,7 @@ const char* const textId[] = {
 	"@",
 
 	"몬스터가 나타났다! 공격 버튼을 눌러 공격해보자!",//TEXT_TUTORIAL_ATTACK
-	"몬스터를 쓰러뜨리고 상자와 하트, 새로운 동료를 얻었다!",//TEXT_TUTORIAL_FIRSTKILL
+	"상자에서 동료를 획득하셨네요? 그럼 동료를 전투에 참가시켜볼까요??",//TEXT_TUTORIAL_FIRSTKILL
 	"동료 메뉴를 열어 새로 얻은 동료를 확인해보자. 동료는 자동으로 전투에 배치된다!",//TEXT_TUTORIAL_CREWMENU
 	"다시 공격해보자! 이번엔 하트와 동료, 장비를 얻을 수 있다.",//TEXT_TUTORIAL_SECONDKILL
 	"동료는 알아서 장착되지만, 장비는 직접 장착해줘야 한다. 장비창의 장착 버튼을 눌러보자!",//TEXT_TUTORIAL_EQUIP

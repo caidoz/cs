@@ -712,7 +712,7 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (!tempAlpha) {
 		}
 		else {
@@ -1047,7 +1047,7 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (!tempAlpha) {
 		}
 		else {
@@ -1161,7 +1161,7 @@ void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½×¸ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (!tempAlpha) {
 		}
 		else {
@@ -1984,7 +1984,7 @@ void BulletLaserDraw(OBJECT* pObj)
 {
 	NormalDraw(pObj);
 
-	//ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿½
+	//ï¿½æµ¹ï¿½ï¿½ ï¿½ï¿½ï¿?
 	if (pObj->status) {
 		int xx = pObj->x - (float)(DIR(pObj->dirX) * TSIZE / 2) * pObj->zoom;
 		int yy = pObj->y - (float)(DIR(pObj->dirY) * TSIZE / 2) * pObj->zoom;
@@ -2025,7 +2025,7 @@ void BulletSateliteDraw(OBJECT* pObj)
 		SetAlpha(tempAlpha);
 	}
 
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½Ö´ï¿½ ï¿½Îºï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½Ö´ï¿½ ï¿½Îºï¿½
 
 	clipX3 = clipX;
 	clipY3 = clipY;
@@ -2705,7 +2705,7 @@ void NeutralDraw(OBJECT* pObj)
 			break;
 		case MAPTYPE_CASTLE:	//¾Æµ¨¶óÀÎ ¼º//6
 			break;
-		case MAPTYPE_PLAIN:	//ï¿½Æµï¿½ ï¿½ï¿½ï¿½//7
+		case MAPTYPE_PLAIN:	//ï¿½Æµï¿½ ï¿½ï¿½ï¿?/7
 			break;
 		case MAPTYPE_ELF:	//º§·Î³× ¸¶À»//8
 			break;
@@ -2780,7 +2780,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 
 	//±×¸²ÀÚ »çÀÌÁî¿¡ µû¸¥ ¸î°³ÀÇ ÆÄÃ÷·Î ºÐ¸®½ÃÅ³²¨³Ä¸¦ °è»êÇÑµÚ
 	for (i = (pObj->x - 12 * _2X) / TSIZE; i <= (pObj->x + 12 * _2X) / TSIZE; i++) {
-		//ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½Ù´ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+		//ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½Ù´ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿?
 		for (j = pObj->y / TSIZE, tHeight = 0; j < rh - 1; j++) {
 			//¹Ù´ÚÀÌ¶û ´ê¾ÒÀ¸¸é
 			if (mapInfoArray[mapInfoOff + j * rw + i] >= TILE_BLOCK || (pObj->inTile == GROUND && pObj->onWater > 0 && mapInfoArray[mapInfoOff + j * rw + i] >= TILE_WATER) || j == rh - 2) {
@@ -2799,7 +2799,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 				if (j == rh - 2)
 					shadowTileY += 10000;
 
-				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿?
 				for (k = ENEMY, shadowBlockY = 20000, bHeight = 0; k < ITEMOBJ; k++) {
 					OBJECT* pCompare = &ao[k];
 					int compY = PxlUp(pCompare);
@@ -2813,7 +2813,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 					}
 				}
 
-				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½×¸ï¿½ï¿½Ú°ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½×¸ï¿½ï¿½Ú°ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿?
 				if (shadowBlockY < shadowTileY) {
 					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
 					if (bcLeft == sLeft) {
@@ -2837,7 +2837,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 						ShadowImage(bcRight - bcLeft, 16 * _2X, offset + bcLeft - sLeft, 0, xOffset + bcLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowBlockY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
 					}
 				}
-				//Å¸ï¿½Ï¿ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
+				//Å¸ï¿½Ï¿ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿?
 				else if (shadowTileY < 10000) {
 					pObj->nHeight = tHeight;
 					ShadowImage(sRight - sLeft, 16 * _2X, offset, 0, xOffset + sLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
@@ -2870,7 +2870,7 @@ void DrawShadowCommon(OBJECT* pObj)
 		return;
 
 	for (i = sLeft / TSIZE; i <= sRight / TSIZE; i++) {
-		//ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½Ù´ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+		//ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½Ù´ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿?
 		pObj->nHeight = 0;
 
 		for (j = PxlDown(pObj) / TSIZE; j < rh - 1; j++) {

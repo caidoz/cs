@@ -132,6 +132,10 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 
 			systemKey = 0;
 
+			//새 터치가 시작됐으니 "무엇을 눌렀는가"를 비운다. ExecTouchFunc()이 건너뛰어지는
+			//경로가 있어서 여기서 안 비우면 직전 터치의 결과가 남는다.
+			gTouchHitFunc = TUTORIAL_TOUCH_NONE;
+
 			if (touchModeOld == null) {
 				startTouchCheck = true;
 
@@ -659,6 +663,20 @@ bool Core::init()
 
 	ShaderCache::getInstance()->addGLProgram(shader_lighten, "lighten");
 
+	//스팟라이트 쉐이더. 화면버퍼 스프라이트에 걸어 쓴다.
+	shader_spotlight = new GLProgram();
+	shader_spotlight->initWithByteArrays(vsh_spotlight, fsh_spotlight);
+
+	shader_spotlight->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
+	shader_spotlight->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
+	shader_spotlight->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORD);
+
+	shader_spotlight->link();
+	shader_spotlight->updateUniforms();
+	shader_spotlight->retain();
+
+	ShaderCache::getInstance()->addGLProgram(shader_spotlight, "spotlight");
+
 	//블랜딩 기본값
 	BLEND_ORIGIN.src = GL_SRC_ALPHA;
 	BLEND_ORIGIN.dst = GL_ONE_MINUS_SRC_ALPHA;
@@ -1016,14 +1034,14 @@ void PaintClet(int x, int y, int w, int h)
 {
 	int i, j, k;
 	float zoom;
-
+	/*
 	if (refreshRate < FPS) {
 		Director::getInstance()->setAnimationInterval(1.0f / refreshRate);
 		refreshRate = FPS;
 	}
 	else
 		Director::getInstance()->setAnimationInterval(1.0f / refreshRate);
-
+	*/
 	clearFrame = Max(clearFrame - 1, 0);
 
 	if (MC_knlCurrentTime() - clearFrame > 300 + touch * 100) {
@@ -1187,6 +1205,10 @@ void PaintClet(int x, int y, int w, int h)
 	effect.sound = -1;
 	touchIndex = 0;//인덱스 초기화
 	swipeIndex = 0;
+
+	//터치영역을 새로 쌓기 전에 튜토리얼 제한을 정해둔다. 이 프레임에 등록되는
+	//모든 SetRectPoint()가 같은 기준으로 걸러진다.
+	gTutorialTouchFunc = GetTutorialTouchFunc();
 
 	if (mustRefresh == true) {
 		if (isScreenShot == false) {

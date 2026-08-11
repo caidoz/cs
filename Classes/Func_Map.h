@@ -2,6 +2,7 @@
 #ifndef _FUNC_MAP_H_
 #define _FUNC_MAP_H_
 // 방 셋팅 및 그리기 함수
+bool IsArenaRunning(void);
 void ReadMap(int);
 void SetRoom(void);
 void SetRoom_BGObj(void);

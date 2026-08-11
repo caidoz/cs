@@ -6239,4 +6239,5 @@ const long long stageGold[] = {
 2080000,
 
 };
+
 #endif

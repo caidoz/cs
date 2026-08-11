@@ -199,9 +199,9 @@ void BarDraw(BAR* barP, float zoom)
 		//DEMO_TUTORIAL_HEARTBET을 배우고 나면(=실제 게임 진입 이후 포함) 정상적으로 활성화된다.
 		bool heartBetTutorialLocked = !robin.demoSeen[DEMO_TUTORIAL_HEARTBET];
 
-		DrawHeartButton(betHeart[bet], xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false && !heartBetTutorialLocked ? true : false), true);
+		DrawHeartButton(betHeart[bet], xOffset + barP->x, barP->y, barP->zoom, (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked ? true : false), true);
 
-		if (touchDisable == false && !heartBetTutorialLocked)
+		if (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)HEARTBUTTONWIDTH * barP->zoom, (float)HEARTBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_HEARTAMOUNT);
 	}
 
@@ -214,7 +214,7 @@ void BarDraw(BAR* barP, float zoom)
 		}
 		break;
 	case BAR_PLAY://플레이 버튼
-		DrawAttackButton(count, xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
+		DrawAttackButton(count, xOffset + barP->x, barP->y, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_ATTACK), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_ATTACK);
 
@@ -231,12 +231,12 @@ void BarDraw(BAR* barP, float zoom)
 			}
 		}
 
-		JoyStickDraw(count, xOffset + barP->x, barP->y, joyDx, joyDy, joyPower, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
+		JoyStickDraw(count, xOffset + barP->x, barP->y, joyDx, joyDy, joyPower, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_MOVE), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x - (float)(108 / 2) * barP->zoom, barP->y + (float)(93 / 2) * barP->zoom, (float)108 * barP->zoom, (float)93 * barP->zoom, TOUCH_FUNC_MOVE);
 		break;
 	case BAR_JUMP:
-		DrawJumpButton(count, xOffset + barP->x, barP->y, barP->zoom, (touchDisable == false ? true : false), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
+		DrawJumpButton(count, xOffset + barP->x, barP->y, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_JUMP), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_JUMP);
 		break;

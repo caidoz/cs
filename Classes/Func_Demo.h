@@ -4,6 +4,10 @@
 // Demo ���� �Լ�
 void Demo(void);
 void Demo_Talk(void);
+bool IsTutorialPlaying(void);
+bool GetTutorialTalkTarget(int textIdx, int* touchFunc, int* barIdx);
+int GetTutorialCrewCardTouchFunc(void);
+int GetTutorialTouchFunc(void);
 void Demo_Win(void);
 void Demo_Alpha(void);
 void Demo_Narration(void);

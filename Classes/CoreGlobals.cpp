@@ -82,9 +82,72 @@ void main()
 }
 )";
 
+//스팟라이트 쉐이더. 화면버퍼 한 장에 통째로 걸어 특정 위치만 밝게 남기고
+//나머지를 어둡게 덮는다. 예전 ProcessRadius()가 DX*DY/2 감쇠 테이블을 미리
+//만들어 두던 것을 픽셀마다 매 프레임 계산하는 것으로 대체한다.
+const char* vsh_spotlight = R"(
+attribute vec4 a_position;
+attribute vec2 a_texCoord;
+attribute vec4 a_color;
+varying vec4 v_fragmentColor;
+varying vec2 v_texCoord;
+void main()
+{
+	gl_Position = CC_PMatrix * a_position;
+	v_fragmentColor = a_color;
+	v_texCoord = a_texCoord;
+}
+)";
+
+const char* fsh_spotlight = R"(
+#ifdef GL_ES
+precision mediump float;
+#endif
+uniform vec2  u_resolution;	//(DX, DY)
+uniform vec2  u_texScale;	//텍스처가 2의 거듭제곱으로 패딩된 만큼 보정. 안 되면 (1, 1)
+uniform vec2  u_center;		//스팟 중심. 픽셀 좌표
+uniform float u_inner;		//여기까지는 원본 밝기 그대로
+uniform float u_radius;		//여기부터 바깥은 완전히 어두움
+uniform float u_darkness;	//바깥 밝기. 0.0이면 완전 검정
+uniform vec4  u_keepRect;	//암전에서 뺄 사각형 (x, 윗변 y, 폭, 높이). 폭이 0이면 안 씀
+uniform float u_keepSoft;	//사각형 가장자리가 풀어지는 폭
+varying vec4 v_fragmentColor;
+varying vec2 v_texCoord;
+void main()
+{
+	vec4 color = v_fragmentColor * texture2D(CC_Texture0, v_texCoord);
+
+	//RenderTexture는 화면보다 큰 텍스처에 담길 수 있어 v_texCoord가 0~1이 아니다.
+	//먼저 0~1로 되돌린다. RenderTexture 스프라이트는 setFlippedY(true)라
+	//이 좌표의 y=1이 화면 위쪽, 즉 게임 좌표의 y=DY와 그대로 맞는다.
+	vec2 uv = v_texCoord / u_texScale;
+
+	//정규화 좌표로 거리를 재면 화면비 때문에 원이 타원이 된다. 픽셀 좌표로 환산해서 잰다.
+	float d = distance(uv * u_resolution, u_center);
+
+	float light = 1.0 - smoothstep(u_inner, u_radius, d);
+
+	//대화창처럼 암전에서 빼야 하는 영역. 사각형 바깥까지의 거리로 가장자리를 풀어준다.
+	if (u_keepRect.z > 0.0) {
+		vec2 p = uv * u_resolution;
+		vec2 halfSize = vec2(u_keepRect.z, u_keepRect.w) * 0.5;
+		vec2 rectCenter = vec2(u_keepRect.x + halfSize.x, u_keepRect.y - halfSize.y);
+		vec2 q = abs(p - rectCenter) - halfSize;
+		float rd = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
+
+		light = max(light, 1.0 - smoothstep(0.0, u_keepSoft, rd));
+	}
+
+	light = mix(u_darkness, 1.0, light);
+
+	gl_FragColor = vec4(color.rgb * light, color.a);
+}
+)";
+
 GLProgram* shader_gray;
 GLProgram* shader_white;
 GLProgram* shader_lighten;
+GLProgram* shader_spotlight;
 GLProgram* shader_outline;
 GLProgramState* shader_state_outline;
 GLProgramState* shader_state_default;
@@ -180,6 +243,33 @@ cocos2d::Layer* gScreenLayer;//Screen Buffer
 
 cocos2d::RenderTexture* gRenderTarget = nullptr;
 cocos2d::Layer* gRenderLayer = nullptr;
+
+//스팟라이트 상태. 매 프레임 SetSpotlight()으로 세우고 EndScreenBuffer()가 소비한 뒤 끈다.
+//드로우 코드가 그리던 자리에서 바로 켤 수 있는 즉시모드 방식이라 꺼주는 걸 잊어도 남지 않는다.
+bool gSpotlightOn = false;
+float gSpotlightX = 0.0f;
+float gSpotlightY = 0.0f;
+float gSpotlightInner = 0.0f;
+float gSpotlightRadius = 0.0f;
+float gSpotlightDarkness = 0.0f;
+
+//튜토리얼에서 지금 눌러야 하는 터치기능. -1이면 제한하지 않는다.
+//프레임 시작(터치영역 초기화 지점)에서 GetTutorialTouchFunc()으로 한 번 정한다.
+//튜토리얼 안내 대사에서 누른 버튼의 동작을 컷씬이 끝난 뒤 실전투에서 처리하기 위한 예약.
+//대사 중에는 keyHandle이 MK_TALK이라 ReleaseCore()가 TalkKey()로만 보내고, 그 동작을 실제로
+//수행하는 PlayKey()까지 가지 못한다(동료 바를 눌러도 메뉴가 안 열리고 대사만 끝나던 원인).
+//눌린 터치기능을 담아두면 Play()가 플레이로 돌아온 뒤 그대로 처리한다. 0이면 예약 없음.
+int tutorialPendingTouchFunc = 0;
+
+int gTutorialTouchFunc = TUTORIAL_TOUCH_FREE;
+int gTouchHitFunc = TUTORIAL_TOUCH_NONE;
+
+//암전에서 뺄 사각형. 대화창처럼 스팟과 별개로 밝게 남겨야 하는 UI에 쓴다.
+float gSpotlightKeepX = 0.0f;
+float gSpotlightKeepY = 0.0f;
+float gSpotlightKeepW = 0.0f;
+float gSpotlightKeepH = 0.0f;
+float gSpotlightKeepSoft = 0.0f;
 
 cocos2d::Layer* bufferLayer[TOTALBUFFER];
 cocos2d::RenderTexture* bufferTexture[TOTALBUFFER];

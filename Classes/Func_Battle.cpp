@@ -53,6 +53,19 @@ void Play(void)
 		}
 	}
 
+	//튜토리얼 안내 대사에서 누른 버튼(동료 바 등)의 동작을 여기서 처리한다.
+	//TalkKey()가 예약해 둔 터치기능을 실제 눌린 것과 똑같이 흘려보낸다 - touchFunc()가
+	//systemKey를 세우고 PlayKey()가 그 키로 팝업을 연다.
+	if (tutorialPendingTouchFunc && drawHandle == MD_PLAY && popUpCnt == 0) {
+		int pendingFunc = tutorialPendingTouchFunc;
+
+		tutorialPendingTouchFunc = 0;
+
+		touchFunc(pendingFunc);
+		PlayKey(raidPlayer);
+		systemKey = null;
+	}
+
 	//DEBUG: 튜토리얼 진행 상태 추적용 임시 오버레이. 원인 확인되면 제거.
 	if (robinmap == MAP_DIORAMA_TOLEM) {
 		char dbgStr[256];

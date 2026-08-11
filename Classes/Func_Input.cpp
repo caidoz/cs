@@ -198,49 +198,49 @@ void TitleKey(void)
 			LevelUp(robin.exps);
 
 			//======================================================================
-			//TEST : 동료 수별 룰렛/턴 진행 확인용 세팅
+			//TEST : ?�료 ?�별 룰렛/??진행 ?�인???�팅
 			//
-			//NewGame()이 robin.slotCrew[0] = NPC_SEBASTIAN을 넣어두기 때문에, 먼저 전부
-			//비워야 "히어로 혼자" 상태를 만들 수 있다.
-			//아래 블록 중 확인하고 싶은 것 하나만 주석을 풀고 나머지는 주석 처리한다.
-			//crewCnt는 항상 GetSlotCrewCnt()로 slotCrew[]에서 다시 세므로 직접 대입하지 않는다.
+			//NewGame()??robin.slotCrew[0] = NPC_SEBASTIAN???�어?�기 ?�문?? 먼�? ?��?
+			//비워??"?�어�??�자" ?�태�?만들 ???�다.
+			//?�래 블록 �??�인?�고 ?��? �??�나�?주석???��??�머지??주석 처리?�다.
+			//crewCnt????�� GetSlotCrewCnt()�?slotCrew[]?�서 ?�시 ?��?�?직접 ?�?�하지 ?�는??
 			//
-			//  0명 : 룰렛 없이 ATTACKSEQUENCE_ACTION 직행(히어로만 공격)
-			//  1~5명 : 룰렛은 돌되 남는 릴은 자물쇠(-1), 중복 없이 뽑히므로 항상 1레벨 스킬
-			//  6명 : 정식 룰렛(중복 발생 -> 2/3매치 스킬 강화 연출)
+			//  0�?: 룰렛 ?�이 ATTACKSEQUENCE_ACTION 직행(?�어로만 공격)
+			//  1~5�?: 룰렛?� ?�되 ?�는 릴�? ?�물??-1), 중복 ?�이 뽑히므�???�� 1?�벨 ?�킬
+			//  6�?: ?�식 룰렛(중복 발생 -> 2/3매치 ?�킬 강화 ?�출)
 			//======================================================================
 			for (i = 0; i < MAXCREW; i++)
 				robin.slotCrew[i] = -1;
 
-			//--- 0명 : 히어로 혼자 -------------------------------------------------
-			//(slotCrew를 전부 -1로 비워둔 위 상태가 그대로 0명이다)
+			//--- 0�?: ?�어�??�자 -------------------------------------------------
+			//(slotCrew�??��? -1�?비워?????�태가 그�?�?0명이??
 
-			//--- 1명 ---------------------------------------------------------------
+			//--- 1�?---------------------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 
-			//--- 2명 ---------------------------------------------------------------
+			//--- 2�?---------------------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 			//robin.slotCrew[1] = NPC_GIRL;
 
-			//--- 3명 ---------------------------------------------------------------
+			//--- 3�?---------------------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 			//robin.slotCrew[1] = NPC_GIRL;
 			//robin.slotCrew[2] = NPC_UNCLE;
 
-			//--- 4명 ---------------------------------------------------------------
+			//--- 4�?---------------------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 			//robin.slotCrew[1] = NPC_GIRL;
 			//robin.slotCrew[2] = NPC_UNCLE;
 			//robin.slotCrew[3] = NPC_AUNT;
 
-			//--- 5명 ---------------------------------------------------------------
+			//--- 5�?---------------------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 			//robin.slotCrew[1] = NPC_GIRL;
 			//robin.slotCrew[2] = NPC_UNCLE;
 			//robin.slotCrew[3] = NPC_AUNT;
 			//robin.slotCrew[4] = NPC_ADELKNIGHT;
 
-			//--- 6명 : 정식 룰렛 ---------------------------------------------------
+			//--- 6�?: ?�식 룰렛 ---------------------------------------------------
 			//robin.slotCrew[0] = NPC_SEBASTIAN;
 			//robin.slotCrew[1] = NPC_GIRL;
 			//robin.slotCrew[2] = NPC_UNCLE;
@@ -285,7 +285,7 @@ void TitleKey(void)
 					break;
 			}
 
-			//��� ������� �ٺ�����
+			//���?�������?�ٺ�����
 			if (j == TOTALDEMO) {
 				robinmap = false;
 			}
@@ -318,7 +318,7 @@ void TitleKey(void)
 			break;
 		}
 		break;
-	case MENU_POLICY://�������
+	case MENU_POLICY://�������?
 		switch (systemKey) {
 		case AVK_5:
 			PlayMusic(M_SELECT);
@@ -390,15 +390,26 @@ void TalkKey(void)
 		if (textFrame < textStringLength[textPage - 1])	//���� �������� �� �ȳѾ����
 			textFrame = textStringLength[textPage - 1] + 1;
 		else {
-			//인터랙티브 전투 튜토리얼: SEBASTIAN의 "공격버튼을 눌러주세요" 대사를 닫는 입력은
-			//곧 첫 공격이 되도록 예약해둔다(실행은 WaveControler()의 대기 훅에서).
-			//예전에는 bar[BAR_PLAY].active를 조건으로 걸었는데, 이 바는 룰렛 인트로 연출이
-			//끝나는 시점(Func_Roulette.cpp의 InitBar(BAR_PLAY))에야 켜진다. 그 전에 탭하면
-			//예약이 안 걸린 채 대사만 넘어가서 "전투로 들어왔는데 아무도 공격하지 않는" 상태가 됐고,
-			//디버거로 지연시키면 그 사이 인트로가 끝나 우연히 동작하는 타이밍 레이스였다.
-			//입력 종류/바 상태와 무관하게 항상 예약한다.
-			if (movie.index == DEMO_TUTORIAL_SEBASTIAN)
+			//?�터?�티�??�투 ?�토리얼: SEBASTIAN??"공격버튼???�러주세?? ?�?��? ?�는 ?�력?�
+			//�?�?공격???�도�??�약?�둔???�행?� WaveControler()???��??�에??.
+			//?�전?�는 bar[BAR_PLAY].active�?조건?�로 걸었?�데, ??바는 룰렛 ?�트�??�출??
+			//?�나???�점(Func_Roulette.cpp??InitBar(BAR_PLAY))?�야 켜진?? �??�에 ??���?
+			//?�약????걸린 �??�?�만 ?�어가??"?�투�??�어?�는???�무??공격?��? ?�는" ?�태가 ?�고,
+			//?�버거로 지?�시?�면 �??�이 ?�트로�? ?�나 ?�연???�작?�는 ?�?�밍 ?�이?��???
+			//?�력 종류/�??�태?� 무�??�게 ??�� ?�약?�다.
+			//안내 대사를 넘긴 것이 그 대사가 지정한 버튼이면, 그 버튼의 동작을 예약한다.
+			//지금은 keyHandle이 MK_TALK이라 ReleaseCore()가 여기(TalkKey)로만 보내고,
+			//동작을 실제로 수행하는 PlayKey()까지 가지 않는다. 게다가 곧 AfterDemo()가
+			//플레이로 전환하면서 입력 상태를 지운다 - 동료 바를 눌러도 메뉴가 안 열리고
+			//대사만 끝나던 것이 이 때문이다. 예약해 두면 Play()가 돌아온 뒤 처리한다.
+			int talkTouchFunc;
+
+			if (GetTutorialTalkTarget(movie.text, &talkTouchFunc, nullptr)) {
+				if (talkTouchFunc == TOUCH_FUNC_ATTACK)
 				tutorialAttackPending = true;
+				else
+					tutorialPendingTouchFunc = talkTouchFunc;
+			}
 
 			movie.type = MOVIE_MOVE;
 			movie.frame++;
@@ -581,6 +592,11 @@ void PlayKey(int obj)
 		winAniFrame = 1;
 	}
 	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + TOTALINVENTORY) {
+		//튜토리얼에서 안내하던 동료 카드를 눌러 상세보기로 들어왔으면 그 단계를 마친 것으로 둔다.
+		//스팟라이트/터치제한이 이 플래그를 보고 풀린다.
+		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + (systemKey - AVK_ITEMDETAIL))
+			robin.demoSeen[DEMO_TUTORIAL_CREWMENU] = true;
+
 		menuItem = systemKey - AVK_ITEMDETAIL;
 		menuDepth = 1;
 		ao[NPC].frame = 0;
@@ -616,7 +632,7 @@ void PlayKey(int obj)
 
 	}
 	else if (systemKey >= AVK_CREW_REWARD && systemKey < AVK_CREW_REWARD + TOTAL_CREW) {
-		//���⼭ ��ȭ�� ȹ������ش�.
+		//���⼭ ��ȭ�� ȹ������ش�?
 		crewIdx = GetCrewIdxFromType(ao[ENEMY + systemKey - AVK_CREW_REWARD].type);
 		itemType = crewReward[crewIdx * CREWREWARDDATASIZE + 0];
 		itemDetail = crewReward[crewIdx * CREWREWARDDATASIZE + 1];
@@ -923,7 +939,7 @@ void PlayKey(int obj)
 					break;
 				}
 				break;
-				//�ؿ��� ����� ���� AVK_CLR�� ����ϸ�  
+				//�ؿ��� �����?���� AVK_CLR�� ����ϸ�? 
 			case MD_BATTLE:
 				sequenceDelay = ATTACKDELAY_BATTLEREWARD_COIN_GET + 2;
 				break;
@@ -994,7 +1010,7 @@ void PlayKey(int obj)
 		case AVK_TABMENUX_3:
 			menuX = 2;
 			break;
-			//�������̵忡�� �������� ���
+			//�������̵忡�� �������� ���?
 		case AVK_BOSSRAIDOUT:
 			attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
 			bossRaidMode = false;
@@ -1302,7 +1318,7 @@ void PlayKey(int obj)
 		case AVK_GETREWARDSTART:
 			sequenceDelay = ATTACKDELAY_REWARD_TABTOCOLLECT + 1;
 			break;
-			//��í���� ��� �ɰ� ������? GachaKey���� PlayKey�� ó���� �ִϱ� ���⼭ �ϸ� ��.
+			//��í���� ���?�ɰ� ������? GachaKey���� PlayKey�� ó���� �ִϱ� ���⼭ �ϸ� ��.
 		case AVK_NEXTREWARD:
 			break;
 		case AVK_GOTOPLAY:
@@ -1355,7 +1371,7 @@ void PlayKey(int obj)
 			memset(&popUp[popUpCnt - 1], 0, sizeof(POPUP));
 			popUpCnt--;
 
-			//����̺�Ʈ ������ �̵�
+			//����̺��?������ �̵�
 			attackSequence = ATTACKSEQUENCE_BOSSRAID;
 			sequenceDelay = CURTAINFRAME / CURTAINSPEED + 1;
 
@@ -1468,9 +1484,12 @@ void PlayKey(int obj)
 			break;
 		case AVK_GETGACHACARD:
 			curNewCollection = 0;
-			//��í���� ���� ī����� �κ��丮�� �־��ش�.
+			//��í���� ���� ī�����?�κ��丮�� �־��ش�.
 			for (i = 0; i < boxCardItemCnt[gachaIndex]; i++) {
 				GetItem(boxCardItem[gachaIndex][i].type, boxCardItem[gachaIndex][i].lv, boxCardItem[gachaIndex][i].detail, boxCardItem[gachaIndex][i].grade, 1, false);
+
+				//튜토리얼에서 장착을 가르치기 전까지는 자동장착하지 않는다(Func_Gacha.cpp 주석 참고).
+				if (!(IsTutorialPlaying() && !robin.demoSeen[DEMO_TUTORIAL_EQUIP]))
 				SetStrongestEquip(boxCardItem[gachaIndex][i].type, boxCardItem[gachaIndex][i].detail, boxCardItem[gachaIndex][i].grade);
 			}
 
@@ -1539,7 +1558,7 @@ void PlayKey(int obj)
 					itemCnt++;
 			}
 
-			//���⼭ �˾��� ����ش�.
+			//���⼭ �˾��� ����ش�?
 			//SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)(DX / 2 - DIORAMASIZE_X * dioramaZoom / 2) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 0] * dioramaZoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 - (float)(72 * _2X) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 1] * dioramaZoom + 108 * _2X, (REWARDCARDSIZE_X + 4 * _2X) * itemCnt + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 			SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)DX / 2, POPUPPOSITION_Y, (REWARDCARDSIZE_X + 4 * _2X) * 3 + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 				ITEM_BOX, rewardBoxDetail, rewardBoxGrade,
@@ -1748,7 +1767,7 @@ void AlertKey(void)
 			case ALERT_INVENFULL:
 
 				break;
-				//����Ʈ �Ϸ� �������� �������� ���
+				//����Ʈ �Ϸ� �������� �������� ���?
 			case ALERT_EQUIP:
 				break;
 			case ALERT_NOTICE:
@@ -1807,27 +1826,27 @@ bool IsMovingSkill(int idx)
 		//case SKILL_COMMON_ROBIN6:	//��°�ȭ : MP �ִ�ġ ���
 		//case SKILL_COMMON_ROBIN7:	//������� : ���ݷ� ����
 		//case SKILL_COMMON_ROBIN8:	//������: ���� ����
-		//case SKILL_COMMON_ROBIN9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���
-		//case SKILL_COMMON_ROBIN10:	//�������� : ũ��Ƽ�� ������ ���
+		//case SKILL_COMMON_ROBIN9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���?
+		//case SKILL_COMMON_ROBIN10:	//�������� : ũ��Ƽ�� ������ ���?
 		//case SKILL_COMMON_ROBIN11:	//�ҽ� : ������ �氨
 		//case SKILL_COMMON_ROBIN12:	//������ : ���� ����
 		//case SKILL_COMMON_ROBIN13:	//�ż�ȸ�� : ȸ�� ����
 
-		//case SKILL_ROBIN1:	//�˼����� : ���� �߻� Ȯ�� ���
-		//case SKILL_ROBIN2:	//��޹�� : ��� �ߵ� Ȯ���� �ö�(1�����̸� ��� �ߵ��� ����: ���� Ȯ�� ���)
-		//case SKILL_ROBIN3:	//������ : ��� �ߵ��� �氨�Ǵ� ������ �ۼ�Ʈ ���
-		//case SKILL_ROBIN4:	//�鿪�� : �����̻� ���� ���׷� ���
+		//case SKILL_ROBIN1:	//�˼����� : ���� �߻� Ȯ�� ���?
+		//case SKILL_ROBIN2:	//��޹�� : ���?�ߵ� Ȯ���� �ö�(1�����̸� ���?�ߵ��� ����: ���� Ȯ�� ���?
+		//case SKILL_ROBIN3:	//������ : ���?�ߵ��� �氨�Ǵ� ������ �ۼ�Ʈ ���?
+		//case SKILL_ROBIN4:	//�鿪�� : �����̻� ���� ���׷� ���?
 		//case SKILL_ROBIN5:	//������ : INT�� �������� VIT ���
-		//case SKILL_ROBIN6:	//����ũ���� : �� �ٿ��
+		//case SKILL_ROBIN6:	//����ũ���� : �� �ٿ��?
 		//case SKILL_ROBIN7:	//������� : ��Ÿ
-		//case SKILL_ROBIN8:	//�ν�Ʈ������ : ���η� ũ�� ���: ��������
+		//case SKILL_ROBIN8:	//�ν�Ʈ������ : ���η� ũ�� ���? ��������
 		//case SKILL_ROBIN9:	//���������� : ���ݰ���: ���� �ڷ� ��������
 		//case SKILL_ROBIN10:	//�ҿ�ũ���� : ����
 		//case SKILL_ROBIN11:	//�ۼַ�Ʈ�Ǿ : �񷯼�ȸ��
-		//case SKILL_ROBIN12:	//��쿬�� : ���ӱ�
+		//case SKILL_ROBIN12:	//��쿬��?: ���ӱ�
 		//case SKILL_ROBIN13:	//����¼� : �����ð� VIT ���
 		//case SKILL_ROBIN14:	//���żҸ� : MP �Ҹ��Ͽ� ������ �氨
-		//case SKILL_ROBIN15:	//�������� : �� ���� ȸ�ǽ� HP ���
+		//case SKILL_ROBIN15:	//�������� : �� ���� ȸ�ǽ� HP ���?
 		//case SKILL_ROBIN16:	//����ħ�� : ������ ������ MP ȸ��
 		//case SKILL_ROBIN17:	//���÷��� : Ȯ���ε����� �ݻ�
 
@@ -1839,15 +1858,15 @@ bool IsMovingSkill(int idx)
 		//case SKILL_COMMON_DIANA6:	//��°�ȭ : MP �ִ�ġ ���
 		//case SKILL_COMMON_DIANA7:	//������� : ���ݷ� ����
 		//case SKILL_COMMON_DIANA8:	//������: ���� ����
-		//case SKILL_COMMON_DIANA9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���
-		//case SKILL_COMMON_DIANA10:	//�������� : ũ��Ƽ�� ������ ���
+		//case SKILL_COMMON_DIANA9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���?
+		//case SKILL_COMMON_DIANA10:	//�������� : ũ��Ƽ�� ������ ���?
 		//case SKILL_COMMON_DIANA11:	//�ҽ� : ������ �氨
 		//case SKILL_COMMON_DIANA12:	//������ : ���� ����
 		//case SKILL_COMMON_DIANA13:	//�ż�ȸ�� : ȸ�� ����
 
-		//case SKILL_DIANA1:	//���Ǵ� : ���� �Ÿ� ���
-		//case SKILL_DIANA2:	//��ݼ��� : ���������� �߻��� Ȯ���� ���
-		//case SKILL_DIANA3:	//�Ƶ巹���� : �������� ������ MP ȸ���� ���
+		//case SKILL_DIANA1:	//���Ǵ� : ���� �Ÿ� ���?
+		//case SKILL_DIANA2:	//��ݼ���?: ���������� �߻��� Ȯ���� ���?
+		//case SKILL_DIANA3:	//�Ƶ巹���� : �������� ������ MP ȸ���� ���?
 		//case SKILL_DIANA4:	//Ȱ��ȭ : ��ų ���� �ð� ����
 		//case SKILL_DIANA5:	//���߷����� : STR�� �������� INT ���
 		//case SKILL_DIANA6:	//3way : 3�������� �� �߻�
@@ -1858,10 +1877,10 @@ bool IsMovingSkill(int idx)
 		//case SKILL_DIANA11:	//ų���� : ����
 		//case SKILL_DIANA12:	//����Ż������ : �ΰ�����
 		//case SKILL_DIANA13:	//��Ŀ���� : ȸ��ź
-		//case SKILL_DIANA14:	//��а��� : ���� ���� ���ݷ� ���
+		//case SKILL_DIANA14:	//��а���?: ���� ���� ���ݷ� ���?
 		//case SKILL_DIANA15:	//�����Ǹ�ź : ���ݽ� MP ����
-		//case SKILL_DIANA16:	//�ʻ����� : ũ�� ���
-		//case SKILL_DIANA17:	//�ĸ������� : �����ð� �� ��� ����
+		//case SKILL_DIANA16:	//�ʻ����� : ũ�� ���?
+		//case SKILL_DIANA17:	//�ĸ������� : �����ð� �� ���?����
 
 		//case SKILL_COMMON_MAXX1:	//���ܷ� : STR ���
 		//case SKILL_COMMON_MAXX2:	//ü�´ܷ� : VIT ���
@@ -1871,29 +1890,29 @@ bool IsMovingSkill(int idx)
 		//case SKILL_COMMON_MAXX6:	//��°�ȭ : MP �ִ�ġ ���
 		//case SKILL_COMMON_MAXX7:	//������� : ���ݷ� ����
 		//case SKILL_COMMON_MAXX8:	//������: ���� ����
-		//case SKILL_COMMON_MAXX9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���
-		//case SKILL_COMMON_MAXX10:	//�������� : ũ��Ƽ�� ������ ���
+		//case SKILL_COMMON_MAXX9:	//�����ľ� : ũ��Ƽ�� Ȯ�� ���?
+		//case SKILL_COMMON_MAXX10:	//�������� : ũ��Ƽ�� ������ ���?
 		//case SKILL_COMMON_MAXX11:	//�ҽ� : ������ �氨
 		//case SKILL_COMMON_MAXX12:	//������ : ���� ����
 		//case SKILL_COMMON_MAXX13:	//�ż�ȸ�� : ȸ�� ����
 
-		//case SKILL_MAXX1:	//����¼��� : ���� �������� �� �θ޶��� ������ �������� Ȯ���� ����Ѵ�.
-		//case SKILL_MAXX2:	//��ô���� : �θ޶� �ӵ� ���
+		//case SKILL_MAXX1:	//����¼���?: ���� �������� �� �θ޶��� ������ �������� Ȯ���� ����Ѵ�?
+		//case SKILL_MAXX2:	//��ô���� : �θ޶� �ӵ� ���?
 		//case SKILL_MAXX3:	//���Ӱ��� : �߰� ���� Ȯ�� ����
-		//case SKILL_MAXX4:	//ȸ���»�� : �߰� ���� ������ �ش� ���ݿ� ���ؼ� ������ ���
+		//case SKILL_MAXX4:	//ȸ���»��?: �߰� ���� ������ �ش� ���ݿ� ���ؼ� ������ ���?
 		//case SKILL_MAXX5:	//ź�¼� : VIT �������� AGI ���
-		//case SKILL_MAXX6:	//ȿ������� : INT�� �������� AGI�� �ö�
+		//case SKILL_MAXX6:	//ȿ�������?: INT�� �������� AGI�� �ö�
 	case SKILL_MAXX7:	//�������� : ȸ��: ��������
-		//case SKILL_MAXX8:	//����Ʈ : ����: ��Ÿ� ª��
-		//case SKILL_MAXX9:	//������Ʈ : ���� ��� ����
+		//case SKILL_MAXX8:	//����Ʈ : ����: ��Ÿ�?ª��
+		//case SKILL_MAXX9:	//������Ʈ : ���� ���?����
 		//case SKILL_MAXX10:	//ķ����Ʈ : ������ ���󰡼� ���ڸ�ȸ��
-		//case SKILL_MAXX11:	//ȣ����Ʈ : ���� ����� �� ������ �ǵ��ƿ�
+		//case SKILL_MAXX11:	//ȣ����Ʈ : ���� �����?�� ������ �ǵ��ƿ�
 		//case SKILL_MAXX12:	//��Ŭ��Ʈ : ���ΰ� �ֺ� ��ȣ
 		//case SKILL_MAXX13:	//�ް���Ʈ : ������ �ڿ��� ���ƿ�
 		//case SKILL_MAXX14:	//��������Ʈ : �� ���ݽ� HP ȸ��
 		//case SKILL_MAXX15:	//�������� : �����ð� ȸ���� ����
 		//case SKILL_MAXX16:	//�ȵ����Ѽ� : �� ���� ȸ�ǽ� MP ȸ��
-		//case SKILL_MAXX17:	//ȥ�źи� : ���� Ȯ�� ���
+		//case SKILL_MAXX17:	//ȥ�źи� : ���� Ȯ�� ���?
 		return true;
 	}
 
@@ -1902,8 +1921,8 @@ bool IsMovingSkill(int idx)
 
 void HotKeyPress(OBJECT* pObj, int idx)
 {
-	//��ų ������ ���ҿɼǿ� ���� ����ð��� �ٿ��ش�.
-	//��� ���� �뷱�� - ����
+	//��ų ������ ���ҿɼǿ� ���� ����ð���?�ٿ��ش�.
+	//���?���� �뷱�� - ����
 
 	int obj = GetObjFromPtr(pObj);
 	int limitStat = pObj->ps[PS_DELAY];
@@ -1924,10 +1943,10 @@ void HotKeyPress(OBJECT* pObj, int idx)
 		//�ƹ��͵� ���� �ʴ´�.
 	case HOTKEY_NOTHING:
 		break;
-		//��ų�� ��� �ش� ��ų�� ����� �� �ִ� �����̸� ���ش�.
+		//��ų�� ���?�ش� ��ų�� �����?�� �ִ� �����̸� ���ش�.
 		//����1 MP�� ����Ѱ�
 		//����2 ���� �����Ҽ� �ִ� �����ΰ�
-		//����3 ���� ����ϴ� ��ų�� ��� �´� ��ų�ΰ�
+		//����3 ���� ����ϴ�?��ų�� ���?�´� ��ų�ΰ�
 	case HOTKEY_SKILL:
 		/*
 		if (pObj->dead == true || pObj->hotKey[idx].frame != 0 || pObj->debuf[KNOCKBACK] || pObj->debuf[CURSE] || pObj->debuf[STUN] || pObj->attack >= ATTACK_SKILL) {
@@ -1953,7 +1972,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 		*/
 
 		switch (pObj->hotKey[idx].idx) {
-		case SKILL_DIANA14://��а��� : ��ų ������ ��
+		case SKILL_DIANA14://��а���?: ��ų ������ ��
 			j = 0;
 			for (i = 0; i < MAXCHARSKILL; i++) {
 				if (pObj->getSkillList[i] != -1 && pObj->hotKey[pObj->getSkillList[i]].frame == 0) {
@@ -2117,11 +2136,18 @@ void ReleaseCore(bool dispatchKey)
 		break;
 	}
 
-	//SetDemo()/AfterDemo()/SetTalk2() 등은 새 모드로 들어가기 전 입력 상태를 정리할 목적으로만
-	//ReleaseCore()를 부르는데, 아래 switch(keyHandle)는 "실제 눌렸던 키"를 그대로 재실행(TalkKey,
-	//PlayKey 등)해버린다. 그 결과 탭 한 번으로 다음 데모 블록에 들어가자마자 그 stale한 키가 또
-	//처리되어 - 대사가 여러 줄 건너뛰거나, 전투 도중 데모로 전환되는 순간 공격이 중복 처리되는 등의
-	//원인이 됐다. dispatchKey=false로 부르면 정리(위/아래 코드)만 하고 재실행은 건너뛴다.
+	//SetDemo()/AfterDemo()/SetTalk2() ?��? ??모드�??�어가�????�력 ?�태�??�리??목적?�로�?
+	//ReleaseCore()�?부르는?? ?�래 switch(keyHandle)??"?�제 ?�렸????�?그�?�??�실??TalkKey,
+	//PlayKey ???�버린다. �?결과 ????번으�??�음 ?�모 블록???�어가?�마??�?stale???��? ??
+	//처리?�어 - ?�?��? ?�러 �?건너?�거?? ?�투 ?�중 ?�모�??�환?�는 ?�간 공격??중복 처리?�는 ?�의
+	//?�인???�다. dispatchKey=false�?부르면 ?�리(???�래 코드)�??�고 ?�실?��? 건너?�다.
+	//튜토리얼에서 특정 버튼을 누르라고 안내 중일 때, 지정된 터치영역이 아닌 곳을 눌렀으면
+	//아무것도 처리하지 않는다. TalkKey()는 touchRect를 거치지 않고 탭만으로 movie.start++를
+	//해버려서, SetRectPoint()를 막는 것만으로는 대화가 그냥 넘어가 버린다.
+	//TUTORIAL_TOUCH_NONE(컷씬 진행 중)일 때는 막지 않는다. 대사를 탭으로 넘기는 건 정상 동작이다.
+	if (gTutorialTouchFunc >= 0 && gTouchHitFunc != gTutorialTouchFunc)
+		dispatchKey = false;
+
 	if (dispatchKey)
 	switch (keyHandle) {
 #ifdef RELEASEEXEC
@@ -2347,8 +2373,15 @@ int GetTouchFunc(int x, int y)
 void ExecTouchFunc(int x, int y)
 {
 	int i;
+
+	//이번 터치가 뭘 눌렀는지 기록해 둔다. ReleaseCore()가 이걸 보고 튜토리얼 중
+	//엉뚱한 곳을 눌렀을 때 키 처리를 통째로 건너뛴다.
+	gTouchHitFunc = TUTORIAL_TOUCH_NONE;
+
 	for (i = touchIndex - 1; i >= 0; i--) {
 		if (GetRectPoint(x, y, touchRect[i][0], touchRect[i][1], touchRect[i][2], touchRect[i][3])) {
+
+			gTouchHitFunc = touchRect[i][4];
 
 			if (startTouchCheck == true) {
 				startTouchRect[0] = touchRect[i][0];//x
@@ -2395,21 +2428,39 @@ void ResetSwipetPoint(void)
 	swipeIndex = 0;
 }
 
+//지금 이 터치기능이 살아 있는지. 터치영역 등록과 DrawHand 표시가 같은 판정을 쓰도록
+//한 곳에 모아 둔다. 튜토리얼 안내 중에는 눌러야 하는 것 하나만 살아 있다.
+bool IsTouchFuncEnabled(int func)
+{
+	if (touchDisable)
+		return false;
+
+	if (gTutorialTouchFunc != TUTORIAL_TOUCH_FREE && func != gTutorialTouchFunc)
+		return false;
+
+	return true;
+}
+
 void SetRectPoint(int rx, int ry, int width, int height, int func)
 {
+	//튜토리얼 안내 중에는 지금 눌러야 하는 것 말고는 터치영역 자체를 만들지 않는다.
+	//모든 터치영역이 이 함수를 거치므로 메뉴마다 따로 막을 필요가 없다.
+	if (gTutorialTouchFunc != TUTORIAL_TOUCH_FREE && func != gTutorialTouchFunc)
+		return;
+
 	// ��ġ �簢�� ��ǥ
 	int rectX1 = rx;
 	int rectY1 = ry;
 	int rectX2 = rx + width;
 	int rectY2 = ry - height;
 
-	// Ŭ���� ������ ���� ���� ���
+	// Ŭ���� ������ ���� ���� ���?
 	int clippedX1 = Max(rectX1, clipX);
 	int clippedY1 = Min(rectY1, clipY);
 	int clippedX2 = Min(rectX2, clipX2);
 	int clippedY2 = Max(rectY2, clipY2);
 
-	// ��ġ�� ������ ������ ��ġ ��� �� ��
+	// ��ġ�� ������ ������ ��ġ ���?�� ��
 	if (clippedX1 >= clippedX2) return;
 	if (clippedY1 <= clippedY2) return;
 
@@ -2900,7 +2951,7 @@ void touchFunc(int func)
 				onlyPlayerDmgNumBig = true;
 			break;
 		case TOUCH_FUNC_DEBUG_GAMESPEED:
-			Director::getInstance()->setAnimationInterval(1.0f / option.gameSpeed);
+			//Director::getInstance()->setAnimationInterval(1.0f / option.gameSpeed);
 			SaveOption();
 			break;
 		case TOUCH_FUNC_CLOSEALERT:
@@ -3177,10 +3228,10 @@ void JoyStickPressRaid(void)
 
 		//ROULETTE_COIN = 0,//��//�Ϲ� ������ //1, 2, 5��//
 		//ROULETTE_BATTLE,//�۷κ�//��Ÿ ������ //1, 2, 4�� ��Ÿ//
-		//ROULETTE_EQUIP,//���//3���� �� ������ ũ��Ƽ�� ������//��䰪��ŭ 10�迡�� ����//
+		//ROULETTE_EQUIP,//���?/3���� �� ������ ũ��Ƽ�� ������//��䰪���?10�迡�� ����//
 		//ROULETTE_HEART,//����//3���� �� ������ ��Ʈ//
 		//ROULETTE_QUEST,//����//����Ʈ ������ ȹ��//1, 2, 5��//
-		//ROULETTE_RAID,//�Ź�//���� ����//��� 1, 2, 5��//
+		//ROULETTE_RAID,//�Ź�//���� ����//���?1, 2, 5��//
 
 		//actionCardArr[0] = ROULETTE_COIN;
 		//actionCardArr[1] = ROULETTE_COIN;
@@ -3235,7 +3286,7 @@ void BoxOpen(void)
 
 	//
 	//TEST
-	//���⼭ ���ڿ��� ���� �������� ������ش�.
+	//���⼭ ���ڿ��� ���� �������� ������ش�?
 
 	GetItem(ITEM_HEART, false, false, false, -1, false);
 	AddBar(&bar[BAR_HEART], -betHeart[bet], BARFRAME);
@@ -3469,7 +3520,7 @@ int printCoords() {
 	double angleIncrement = (float)0.3f; // ���� ������
 
 	for (int i = 0; i < MAX_POINTS; ++i) {
-		// �ݰ��� 256 �̻��� ��� �ݰ��� �����ϰ� ��� ȸ��
+		// �ݰ��� 256 �̻��� ���?�ݰ��� �����ϰ� ���?ȸ��
 		if (radius >= MAX_RADIUS) {
 			radius = MAX_RADIUS;
 		}
@@ -3531,7 +3582,7 @@ int printBoxCoords() {
 	return 0;
 }
 
-//�� �Լ��� ��ġ�� ������ �� ������ ������ Ȯ���ϴ°�
+//�� �Լ��� ��ġ�� ������ �� ������?������ Ȯ���ϴ°�
 //touchX, touchY ���� ������ ��ġ�� ������ �ְ�
 //�� ������ ���� �����ϰ��� �ϴ� �����ӿ� ���ԵǴ��� Ȯ���ϴ� �Լ�
 

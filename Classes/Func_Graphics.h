@@ -39,6 +39,11 @@ void PushRenderTarget(cocos2d::RenderTexture* dest, cocos2d::Layer* layer, bool 
 void PopRenderTarget(void);
 bool IsOffscreenTarget(void);
 
+//스팟라이트. 매 프레임 켜주면 유지되고, 안 켜면 자동으로 꺼진다.
+void SetSpotlight(float x, float y, float inner, float radius, float darkness);
+void SetSpotlightKeepRect(float x, float y, float w, float h, float soft);
+void ClearSpotlight(void);
+
 void SetSectionClip(int, int, int, int, bool);
 void UnSectionClip(bool);
 void SetColor(int);

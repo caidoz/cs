@@ -30,6 +30,7 @@ int GetRectPoint(int, int, int, int, int, int);
 int GetSwipePoint(int, int, int, int, int, int);
 void ResetRectPoint(void);
 void ResetSwipetPoint(void);
+bool IsTouchFuncEnabled(int func);
 void SetRectPoint(int rx, int ry, int width, int height, int func);
 bool IsFullInSectionClip(float x, float y, float w, float h);
 void SetSwipePoint(int, int, int, int, int);

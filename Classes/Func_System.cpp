@@ -269,6 +269,7 @@ void InitGame(void)
 	tutorialWaitingEnemyLand = false;
 	tutorialAttackPending = false;
 	tutorialPendingDemo = -1;
+	tutorialPendingTouchFunc = 0;
 	talkShakeFrame = 0;
 
 	robin.maxInven = option.maxInven;
@@ -2003,12 +2004,12 @@ void NewGame(void)
 		}
 	}
 
-	for (i = 0; i < TOTAL_CREW; i++) {
-		MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, i, false);
+	//시작 시점에는 세바스찬만 데리고 있는다. 나머지 동료는 상자를 열어서 얻는다.
+	//예전에는 TOTAL_CREW 전부를 넣어줘서 튜토리얼의 "동료를 획득했다" 연출이 의미가 없었다.
+	MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, CREW_SEBASTIAN, false);
 		robin.inven[robin.count].count = 1;
 		robin.inven[robin.count].lv = 1;
 		robin.count++;
-	}
 
 	//무기하나 주기
 	//MakeItem(&robin.inven[0], ITEM_SWORD, 0, 0, 0, false);
@@ -5062,7 +5063,7 @@ void LoadOption(void)
 	if (option.gameSpeed != 5.0f && option.gameSpeed != FPS && option.gameSpeed != 20.0f)
 		option.gameSpeed = FPS;
 
-	Director::getInstance()->setAnimationInterval(1.0f / option.gameSpeed);
+	//Director::getInstance()->setAnimationInterval(1.0f / option.gameSpeed);
 }
 
 void SaveLog(void)

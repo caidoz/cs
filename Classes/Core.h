@@ -66,10 +66,13 @@ extern const char* vsh_white;
 extern const char* fsh_white;
 extern const char* vsh_lighten;
 extern const char* fsh_lighten;
+extern const char* vsh_spotlight;
+extern const char* fsh_spotlight;
 
 extern GLProgram* shader_gray;
 extern GLProgram* shader_white;
 extern GLProgram* shader_lighten;
+extern GLProgram* shader_spotlight;
 extern GLProgram* shader_outline;
 extern GLProgramState* shader_state_outline;
 extern GLProgramState* shader_state_default;
@@ -1183,6 +1186,35 @@ extern cocos2d::Layer* gScreenLayer;//Screen Buffer
 //드로우 함수의 (cvtDest, cvtLayer, buffering) 3인자를 대체하는 상태값이다.
 extern cocos2d::RenderTexture* gRenderTarget;
 extern cocos2d::Layer* gRenderLayer;
+
+//스팟라이트 상태. SetSpotlight()으로 세우고 EndScreenBuffer()가 소비한다.
+extern bool gSpotlightOn;
+extern float gSpotlightX;
+extern float gSpotlightY;
+extern float gSpotlightInner;
+extern float gSpotlightRadius;
+extern float gSpotlightDarkness;
+extern float gSpotlightKeepX;
+extern float gSpotlightKeepY;
+extern float gSpotlightKeepW;
+extern float gSpotlightKeepH;
+extern float gSpotlightKeepSoft;
+
+//튜토리얼 안내 대사에서 누른 버튼의 동작을 컷씬이 끝난 뒤 처리하기 위한 예약. 0이면 없음.
+extern int tutorialPendingTouchFunc;
+
+//튜토리얼에서 지금 눌러야 하는 터치기능.
+//TUTORIAL_TOUCH_FREE면 제한 없음, TUTORIAL_TOUCH_NONE이면 아무것도 안 눌린다.
+//그 외에는 그 터치기능 하나만 살아난다.
+enum {
+	TUTORIAL_TOUCH_FREE = -1,
+	TUTORIAL_TOUCH_NONE = -2
+};
+
+extern int gTutorialTouchFunc;
+
+//이번 터치가 실제로 눌렀던 터치기능. 아무 영역도 안 눌렀으면 TUTORIAL_TOUCH_NONE.
+extern int gTouchHitFunc;
 
 extern cocos2d::Layer* bufferLayer[TOTALBUFFER];
 extern cocos2d::RenderTexture* bufferTexture[TOTALBUFFER];
