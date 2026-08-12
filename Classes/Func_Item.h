@@ -15,6 +15,7 @@ int MakeItemType(int);
 int MakeArenaItem(void);
 int MakeCaveItem(void);
 int MakeGachaItem(void);
+int GetDropLv(void);
 int MakeItemLevel(int, int);
 int MakeItemDetail(int, int);
 int MakeItemGrade(int, int, int);

@@ -5,6 +5,20 @@
 
 // KeyPress
 
+//인벤토리에서 찾아 장비시킨다.
+//GetInvenIdx()는 못 찾으면 -1을 돌려주는데, 그대로 &robin.inven[-1]을 넘기면
+//배열 밖을 읽고 EquipItem()이 그 쓰레기값으로 슬롯을 골라 엉뚱한 곳에 써버린다.
+//인벤에 없는 아이템을 장비시키려 할 때 실제로 그렇게 된다.
+static void EquipInvenItem(OBJECT* pObj, int type, int detail, int grade)
+{
+	int idx = GetInvenIdx(type, detail, grade);
+
+	if (idx < 0)
+		return;
+
+	EquipItem(pObj, &robin.inven[idx]);
+}
+
 void KeyCore(void)
 {
 	if (is_release_finished == false && is_key_released == true && twice_released == false && systemKey != systemRelease) {
@@ -119,12 +133,12 @@ void TitleKey(void)
 				}
 			}
 
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_SWORD, ITEM_SWORD_CALADBOLG, GRADE_NORMAL)]);
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_HELM, ITEM_HELM_TITANIUM, GRADE_NORMAL)]);
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_ARMOR, ITEM_ARMOR_DRAGONSKIN, GRADE_NORMAL)]);
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_GUNTLET, ITEM_GUNTLET_HOLYHAND, GRADE_NORMAL)]);
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_KILT, ITEM_KILT_EARTHQUAKE, GRADE_NORMAL)]);
-			EquipItem(&ao[ROBIN], &robin.inven[GetInvenIdx(ITEM_GREAVES, ITEM_GREAVES_LEGEND, GRADE_NORMAL)]);
+			EquipInvenItem(&ao[ROBIN], ITEM_SWORD, ITEM_SWORD_CALADBOLG, GRADE_NORMAL);
+			EquipInvenItem(&ao[ROBIN], ITEM_HELM, ITEM_HELM_TITANIUM, GRADE_NORMAL);
+			EquipInvenItem(&ao[ROBIN], ITEM_ARMOR, ITEM_ARMOR_DRAGONSKIN, GRADE_NORMAL);
+			EquipInvenItem(&ao[ROBIN], ITEM_GUNTLET, ITEM_GUNTLET_HOLYHAND, GRADE_NORMAL);
+			EquipInvenItem(&ao[ROBIN], ITEM_KILT, ITEM_KILT_EARTHQUAKE, GRADE_NORMAL);
+			EquipInvenItem(&ao[ROBIN], ITEM_GREAVES, ITEM_GREAVES_LEGEND, GRADE_NORMAL);
 
 			//EquipItem(&ao[ROBIN].equip[EQUIP_WEAPON], ITEM_SWORD, 1, GRADE_NORMAL, ITEM_SWORD_KING, 0);
 			//MakeItem(&ao[ROBIN].equip[EQUIP_HELM], ITEM_HELM, 1, GRADE_NORMAL, ITEM_HELM_TITANIUM, 0);
@@ -251,7 +265,14 @@ void TitleKey(void)
 			crewCnt = GetSlotCrewCnt();
 
 			
-			for (i = 0; i < TOTAL_CREW; i++) {
+			//동료를 전부 획득 상태로 만든다(lv 0이 미획득이라 "?"로 보인다).
+			//인벤 앞쪽 TOTAL_CREW칸이 동료라는 보장은 NewGame() 직후에만 성립하고,
+			//그 뒤 장비/아이템이 들어가면 배치가 달라진다. 그래서 인덱스가 아니라
+			//type으로 찾는다.
+			for (i = 0; i < TOTALINVENTORY; i++) {
+				if (robin.inven[i].type != ITEM_CREW)
+					continue;
+
 				robin.inven[i].count = 1;
 				robin.inven[i].lv = 1;
 			}
@@ -3311,9 +3332,6 @@ void BoxOpen(void)
 		}
 	}
 
-	//TEST
-	boxDropItemType = BOXDROP_COIN;
-
 	switch (boxDropItemType) {
 	case BOXDROP_COIN:
 	case BOXDROP_COINBAG:
@@ -3356,9 +3374,11 @@ void BoxOpen(void)
 		attackType = ROULETTE_EQUIP;
 		itemType = MakeItemType(Random(ITEMTYPESEED));
 		//itemType = ITEM_NECK;
-		itemDetail = MakeItemDetail(itemType, robin.lv);
-		itemGrade = MakeItemGrade(itemType, robin.lv, itemDetail);
-		itemLv = MakeItemLevel(itemType, robin.lv);
+		//드롭 품질은 플레이어 레벨이 아니라 성 진행도를 따른다.
+		//robin.lv를 쓰면 성을 진행하지 않고 레벨만 올려도 최상위 티어가 나온다.
+		itemDetail = MakeItemDetail(itemType, GetDropLv());
+		itemGrade = MakeItemGrade(itemType, GetDropLv(), itemDetail);
+		itemLv = MakeItemLevel(itemType, GetDropLv());
 
 		MakeItem(&robin.newItem, itemType, itemLv, itemGrade, itemDetail, false);
 

@@ -6,6 +6,7 @@ void Demo(void);
 void Demo_Talk(void);
 bool IsTutorialPlaying(void);
 bool GetTutorialTalkTarget(int textIdx, int* touchFunc, int* barIdx);
+int GetTutorialCrewSlotTouchFunc(void);
 int GetTutorialCrewCardTouchFunc(void);
 int GetTutorialTouchFunc(void);
 void Demo_Win(void);

@@ -273,7 +273,9 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 			else {
 				isTouchKey = TOUCH_DRAG;
 
-				if (keyHandle == MK_PLAY && swipeLock == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
+				//튜토리얼 중에는 스와이프로 화면이 밀리면 안 된다. 안내하는 버튼이나 카드가
+				//스팟라이트 밖으로 나가버려서 무엇을 눌러야 하는지 알 수 없게 된다.
+				if (keyHandle == MK_PLAY && swipeLock == false && IsTutorialPlaying() == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
 					touchFrame = FPS;
 
 					if (scDir == SCROLL_NOTHING) {
@@ -505,7 +507,9 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 					curMenu == MENU_STARSHOP ||
 					curMenu == MENU_PLAY
 					) {
-					if (rapidSwipe) {
+					//튜토리얼 중에는 관성 스크롤도 걸리면 안 된다. 손을 뗀 뒤에 화면이
+					//더 밀려서 안내 대상이 스팟라이트 밖으로 나가는 것을 막는다.
+					if (rapidSwipe && IsTutorialPlaying() == false) {
 						//y축으로 이동하면
 						if ((touchPressedKey[0][1] - touchPressedKey[1][1]) > 0 && scDir == SCROLL_VERTICAL) {
 							switch (curMenu) {
@@ -1465,7 +1469,19 @@ void PaintClet(int x, int y, int w, int h)
 	//커런시 효과를 생성하는 함수
 	for (i = 0; i < TOTALCURRENCYMARKARR; i++) {
 		if (currencyMarkArr[i].frame > 0) {
-			SetCurrencyMark(currencyMarkArr[i].x, currencyMarkArr[i].y, currencyMarkArr[i].targetX, currencyMarkArr[i].targetY, currencyMarkArr[i].targetX2, currencyMarkArr[i].targetY2, currencyMarkArr[i].speed, currencyMarkArr[i].speedIncrement, currencyMarkArr[i].speed2, currencyMarkArr[i].speedIncrement2, currencyMarkArr[i].waitingFrame, currencyMarkArr[i].waitingFrame2, currencyMarkArr[i].icon, currencyMarkArr[i].moveAngle, currencyMarkArr[i].amount, currencyMarkArr[i].type, currencyMarkArr[i].zoom, currencyMarkArr[i].zoomEnd, currencyMarkArr[i].zoomIncrement, currencyMarkArr[i].zoom2, currencyMarkArr[i].zoomEnd2, currencyMarkArr[i].zoomIncrement2, currencyMarkArr[i].bar);
+			//amount는 총액이고 코인 iconMarkCnt개로 쪼개 뿌린다. 도착한 코인마다
+			//자기 몫을 바에 더하므로(Core.cpp의 AddBar 호출) 몫의 합이 총액과 같아야 한다.
+			//총액/개수로 나누면 2골드를 10개로 쪼갤 때 2/10 = 0이 되어 한 푼도 안 들어간다.
+			//누적값의 차이로 구하면 나머지가 앞쪽 코인들에 실려 합이 정확히 총액이 된다.
+			long long markTotal = currencyMarkArr[i].amount;
+			int markCnt = currencyMarkArr[i].iconMarkCnt;
+			int markIdx = currencyMarkArr[i].frame;	//1부터 iconMarkCnt까지
+			long long markShare = markTotal;
+
+			if (markCnt > 1)
+				markShare = markTotal * markIdx / markCnt - markTotal * (markIdx - 1) / markCnt;
+
+			SetCurrencyMark(currencyMarkArr[i].x, currencyMarkArr[i].y, currencyMarkArr[i].targetX, currencyMarkArr[i].targetY, currencyMarkArr[i].targetX2, currencyMarkArr[i].targetY2, currencyMarkArr[i].speed, currencyMarkArr[i].speedIncrement, currencyMarkArr[i].speed2, currencyMarkArr[i].speedIncrement2, currencyMarkArr[i].waitingFrame, currencyMarkArr[i].waitingFrame2, currencyMarkArr[i].icon, currencyMarkArr[i].moveAngle, markShare, currencyMarkArr[i].type, currencyMarkArr[i].zoom, currencyMarkArr[i].zoomEnd, currencyMarkArr[i].zoomIncrement, currencyMarkArr[i].zoom2, currencyMarkArr[i].zoomEnd2, currencyMarkArr[i].zoomIncrement2, currencyMarkArr[i].bar);
 
 			if (currencyMarkArr[i].frame == currencyMarkArr[i].iconMarkCnt) {
 				memset(&currencyMarkArr[i], 0, sizeof(currencyMarkArr[i]));

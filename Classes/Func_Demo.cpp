@@ -1063,20 +1063,49 @@ static void GetTutorialTalkRect(int barIdx, float* x, float* y, float* w, float*
 //단계 완료 표시는 robin.demoSeen[DEMO_TUTORIAL_CREWMENU]를 쓴다. 그 데모 블록은 이제
 //아무도 부르지 않아(FIRSTKILL 체인을 끊었다) 이 플래그가 비어 있고, 의미도 "동료 메뉴 단계를
 //마쳤다"로 그대로 들어맞는다.
-int GetTutorialCrewCardTouchFunc(void)
+//동료 메뉴 안내가 도는 상태인지. 1단/2단이 같은 전제를 봐야 해서 따로 뺐다.
+static bool IsTutorialCrewGuideOn(void)
 {
-	int i;
-
 	if (IsTutorialPlaying() == false)
-		return 0;
+		return false;
 
 	//안내 대사에서 동료 바를 눌러 메뉴를 연 그 순간에만 켜진다.
 	//저장되는 플래그로 판정하면 일반 플레이에서 동료 메뉴를 열 때도 걸린다.
 	if (tutorialCrewGuide == false)
-		return 0;
+		return false;
 
 	//동료 리스트가 열려 있고 아직 상세보기로 들어가지 않은 상태에서만
 	if (curMenu != MENU_CREW || menuDepth != 0)
+		return false;
+
+	return true;
+}
+
+//튜토리얼 1단: 동료를 넣을 슬롯을 먼저 고르게 한다.
+//카드부터 누르게 하면 그 동료가 위쪽 어느 자리에 들어가는지 보이지 않는다.
+//슬롯을 고른 뒤 카드를 누르는 2단으로 나눠야 편성이라는 걸 알 수 있다.
+int GetTutorialCrewSlotTouchFunc(void)
+{
+	if (IsTutorialCrewGuideOn() == false)
+		return 0;
+
+	//이미 골랐으면 1단은 끝이다
+	if (menuX == TUTORIAL_CREW_SLOT)
+		return 0;
+
+	return TOUCH_FUNC_MENUX_1 + TUTORIAL_CREW_SLOT;
+}
+
+//튜토리얼 2단: 새로 얻은 동료 카드를 눌러 고른 슬롯에 넣게 한다.
+int GetTutorialCrewCardTouchFunc(void)
+{
+	int i;
+
+	if (IsTutorialCrewGuideOn() == false)
+		return 0;
+
+	//슬롯을 먼저 고르게 한다
+	if (menuX != TUTORIAL_CREW_SLOT)
 		return 0;
 
 	//세바스찬이 아닌 첫 동료 = 상자에서 새로 얻은 동료
@@ -1094,6 +1123,12 @@ int GetTutorialCrewCardTouchFunc(void)
 int GetTutorialTouchFunc(void)
 {
 	//동료 메뉴 안내는 컷씬이 아니라 메뉴가 열린 상태(MD_PLAY + 팝업)에서 돈다.
+	//1단(슬롯 고르기)이 남아 있으면 그것만, 끝났으면 카드만 눌리게 한다.
+	int crewSlotFunc = GetTutorialCrewSlotTouchFunc();
+
+	if (crewSlotFunc)
+		return crewSlotFunc;
+
 	int crewCardFunc = GetTutorialCrewCardTouchFunc();
 
 	if (crewCardFunc)
@@ -1171,10 +1206,12 @@ void Demo_Talk(void)
 		//공격버튼은 DrawAttackButton()이 ani일 때 손을 직접 그리지만, 나머지 바는 안 그린다.
 		//여기서 그려줘야 안내하는 버튼마다 포인터가 붙는다.
 		if (talkBarIdx != BAR_PLAY)
-			DrawHand(bx - (float)4 * _2X, by + (float)4 * _2X, robin.playtime / MOTIONDIV, 1.2f);
+			DrawHand(bx - (float)4 * _2X, by + (float)4 * _2X - 16, robin.playtime / MOTIONDIV, 1.8f);
 
+		//반경을 크게 잡으면 하단 메뉴가 가로로 붙어 있어 옆 메뉴(장비 등)까지 같이 밝아진다.
+		//버튼 하나만 도드라지도록 좁힌다.
 		SetSpotlight(spotX, spotY,
-			spotSize * 0.6f * pulse, spotSize * 1.4f * pulse, 0.25f);
+			spotSize * 0.40f * pulse, spotSize * 0.75f * pulse, 0.25f);
 
 		//대화신은 같이 노출되어야 하므로 대화창 영역은 암전에서 뺀다.
 		//바로 위 DrawCmfPopUp()에 넘긴 사각형과 같은 값이다.

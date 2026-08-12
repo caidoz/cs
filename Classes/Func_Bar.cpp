@@ -196,8 +196,10 @@ void BarDraw(BAR* barP, float zoom)
 		//인터랙티브 전투 튜토리얼: 하트베팅을 아직 안 배운 시점(DEMO_TUTORIAL_HEARTBET 전)에는 공격
 		//버튼만 눌러야 하므로 하트베팅 버튼의 터치와 DrawHand 안내를 막는다.
 		//다만 그레이스케일은 걸지 않는다 - 룰렛 잠금 표시와 마찬가지로 버튼은 원색 그대로 보여준다.
-		//DEMO_TUTORIAL_HEARTBET을 배우고 나면(=실제 게임 진입 이후 포함) 정상적으로 활성화된다.
-		bool heartBetTutorialLocked = !robin.demoSeen[DEMO_TUTORIAL_HEARTBET];
+		//
+		//잠금은 튜토리얼이 도는 동안에만 건다. demoSeen만으로 판정하면 튜토리얼을 건너뛰었거나
+		//그 데모 블록을 거치지 않은 세이브에서 일반 플레이 내내 버튼이 죽어 있게 된다.
+		bool heartBetTutorialLocked = IsTutorialPlaying() && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET];
 
 		DrawHeartButton(betHeart[bet], xOffset + barP->x, barP->y, barP->zoom, (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked ? true : false), true);
 
@@ -206,7 +208,9 @@ void BarDraw(BAR* barP, float zoom)
 	}
 
 		//인터랙티브 전투 튜토리얼: 하트 베팅 설명 이후 룰렛이 열리기 전까지 베팅 버튼을 강조해준다.
-		if (robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE]) {
+		//위 잠금과 같은 이유로 튜토리얼이 도는 동안에만 켠다. 튜토리얼을 중간에 벗어난
+		//세이브에서는 두 플래그가 그 상태로 굳어 일반 플레이에서 테두리가 계속 남는다.
+		if (IsTutorialPlaying() && robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE]) {
 			float pulse = 0.9f + sinf((float)frame * 0.1f) * 0.1f;
 			float hlW = (float)HEARTBUTTONWIDTH * barP->zoom * pulse;
 			float hlH = (float)HEARTBUTTONHEIGHT * barP->zoom * pulse;

@@ -33,4 +33,8 @@ typedef enum _tutorial {
 	TOTAL_TUTORIAL,
 } TUTORIAL;
 
+//튜토리얼에서 동료를 넣도록 안내하는 슬롯 번호.
+//0번은 세바스찬이 이미 차지하고 있어 두 번째 자리를 안내한다.
+#define TUTORIAL_CREW_SLOT		1
+
 #endif

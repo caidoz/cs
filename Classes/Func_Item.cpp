@@ -1196,6 +1196,22 @@ int MakeItemLevel(int type, int lv)
 		return rt;
 }
 
+//드롭 아이템의 티어/레벨을 정할 때 쓰는 기준 레벨.
+//MakeItemDetail()은 lv / 10을 티어 인덱스로 쓰는데, 여기에 플레이어 레벨을 그대로 넣으면
+//성을 진행하지 않고 레벨만 올려도 최상위 티어가 나온다. 드롭의 품질은 성 진행도를 따라야 하므로
+//성 번호를 기존 1~99 레벨 눈금으로 환산해서 넘긴다. 마지막 성이 99가 된다.
+int GetDropLv(void)
+{
+	int castle = robin.castle;
+
+	if (castle < 0)
+		castle = 0;
+	else if (castle > TOTALCASTLE - 1)
+		castle = TOTALCASTLE - 1;
+
+	return castle * 99 / (TOTALCASTLE - 1);
+}
+
 int MakeItemDetail(int type, int lv)
 {
 	int i, randSum = 0, r;

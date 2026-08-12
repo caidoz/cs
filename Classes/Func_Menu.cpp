@@ -3373,6 +3373,25 @@ void CrewMenuDraw(int x, int y, float zoom)
 				TOUCH_FUNC_MENUX_1 + i
 			);
 		}
+
+		//튜토리얼 1단: 동료를 넣을 자리를 먼저 고르게 한다.
+		//사각형은 바로 위 SetRectPoint()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
+		if (GetTutorialCrewSlotTouchFunc() == TOUCH_FUNC_MENUX_1 + i) {
+			float rw = (float)CARDSIZE_X * 0.45f * zoom;
+			float rh = (float)CARDSIZE_Y * 0.4f * zoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//DrawHand()에 넘기는 좌표가 손 그림의 좌상단이라 자기 크기만큼 물려야 손끝이 중앙에 온다.
+			float handZoom = 2.0f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(slotX + rw / 2 - handW, slotY - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+
+			//슬롯은 가로로 붙어 있어 옆 슬롯까지 밝아지지 않도록 폭 기준으로 반경을 잡는다.
+			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
+				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
+		}
 	}
 	
 
