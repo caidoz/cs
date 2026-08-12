@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #define BOX_OPEN_FRAME           10
 #define BOX_OPEN_CHANGE_FRAME     6
 #define BOX_CLOSE_FRAME           8

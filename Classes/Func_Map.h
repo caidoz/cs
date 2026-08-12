@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FUNC_MAP_H_
 #define _FUNC_MAP_H_
-// ¹æ ¼ÂÆÃ ¹× ±×¸®±â ÇÔ¼ö
+// ë°© ì…‹íŒ… ë° ê·¸ë¦¬ê¸° í•¨ìˆ˜
 bool IsArenaRunning(void);
 void ReadMap(int);
 void SetRoom(void);
@@ -49,6 +49,6 @@ void DrawScreen(int x, int y, float zoom);
 void TheaterDraw();
 
 float EaseInOutSine(float t);
-// ºÎµå·¯¿î »óÇÏ ºÎÀ¯ È¿°ú
+// ë¶€ë“œëŸ¬ìš´ ìƒí•˜ ë¶€ìœ  íš¨ê³¼
 float GetDioramaFloatY(int frame);
 #endif

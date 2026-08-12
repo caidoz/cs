@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_DROP_H_
@@ -194,7 +194,7 @@ const int boxDropProc[TOTAL_BOX][TOTAL_BOXDROP] = {
 	},
 };
 
-//È®·ü Å×ÀÌºí
+//í™•ë¥  í…Œì´ë¸”
 const unsigned short proc1[2] = {
 	7000,
 	10000

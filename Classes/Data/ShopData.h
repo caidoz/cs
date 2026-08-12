@@ -1,29 +1,29 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_SHOP_H_
 #define _DATA_SHOP_H_
 
 const int currencyShop[] = {
-	//»óÇ°ÀÌ¸§, ¾ÆÀÌÄÜ, ÇÒÀÎÀ², ¾ÆÀÌÅÛ Á¾·ù, Áö±Þ·®, Áö±ÞÈ­ÆóÁ¾·ù, Áö±ÞÈ­Æó¼ö·®
+	//ìƒí’ˆì´ë¦„, ì•„ì´ì½˜, í• ì¸ìœ¨, ì•„ì´í…œ ì¢…ë¥˜, ì§€ê¸‰ëŸ‰, ì§€ê¸‰í™”íì¢…ë¥˜, ì§€ê¸‰í™”íìˆ˜ëŸ‰
 	TEXT_CURRENCY_HEART, ICON_HEART, 0, CURRENCY_HEART, 100, CURRENCY_CASH, 1000,
 	TEXT_CURRENCY_HEART, ICON_HEART, 20, CURRENCY_HEART, 300, CURRENCY_CASH, 2000,
 	TEXT_CURRENCY_HEART, ICON_HEART, 50, CURRENCY_HEART, 1000, CURRENCY_CASH, 5000,
 	TEXT_CURRENCY_HEART, ICON_HEART, 80, CURRENCY_HEART, 5000, CURRENCY_CASH, 20000,
 	TEXT_CURRENCY_HEART, ICON_HEART, 120, CURRENCY_HEART, 15000, CURRENCY_CASH, 50000,
 	TEXT_CURRENCY_HEART, ICON_HEART, 140, CURRENCY_HEART, 50000, CURRENCY_CASH, 100000,
-	//Àåºñ»Ì±â
+	//ìž¥ë¹„ë½‘ê¸°
 	TEXT_CURRENCY_COIN, 64 * 3 + 19, 1, 64 * 3 + 19, 1, CURRENCY_GOLD, 1000000,
 	TEXT_CURRENCY_COIN, 64 * 3 + 20, 2, 64 * 3 + 20, 2, CURRENCY_GOLD, 3000000,
 	TEXT_CURRENCY_COIN, 64 * 3 + 21, 3, 64 * 3 + 21, 3, CURRENCY_GOLD, 5000000,
-	//ÄÚÀÎ 
+	//ì½”ì¸ 
 	TEXT_CURRENCY_COIN, ICON_GOLD, 0, CURRENCY_GOLD, 1000000, CURRENCY_CASH, 10000,
 	TEXT_CURRENCY_COIN, ICON_GOLD, 10, CURRENCY_GOLD, 2500000, CURRENCY_CASH, 20000,
 	TEXT_CURRENCY_COIN, ITEM_GOLDBAR_ICON, 30, CURRENCY_GOLD, 7000000, CURRENCY_CASH, 50000,
 	TEXT_CURRENCY_COIN, ITEM_GOLDBAR_ICON, 60, CURRENCY_GOLD, 15000000, CURRENCY_CASH, 20000,
 	TEXT_CURRENCY_COIN, ICON_GOLDBAG, 85, CURRENCY_GOLD, 50000000, CURRENCY_CASH, 50000,
 	TEXT_CURRENCY_COIN, ICON_GOLDBAG, 120, CURRENCY_GOLD, 125000000, CURRENCY_CASH, 100000,
-	//¸Þ´Þ
+	//ë©”ë‹¬
 	TEXT_CURRENCY_MEDAL, ICON_MEDAL, 1, CURRENCY_MEDAL, 100, CURRENCY_COIN, 100,
 	TEXT_CURRENCY_MEDAL, ICON_MEDAL, 2, CURRENCY_MEDAL, 500, CURRENCY_COIN, 500,
 	TEXT_CURRENCY_MEDAL, ICON_MEDAL, 3, CURRENCY_MEDAL, 1000, CURRENCY_COIN, 1000,
@@ -35,35 +35,35 @@ const unsigned char quickShopData[6 * SHOPCOUNT_QUICK] = {
 	//1 : type
 	//2 : detail
 	//3 : broken
-	//4 : °¡°Ý
+	//4 : ê°€ê²©
 	//5 : count
-	20,	29,	24,	5,		19,	1,		//|iÃÊ½ÉÀÚ ÆÐÅ°Áö
-	21,	29,	25,	2,		29,	1,		//|i½´ÆÛ°­È­ ÆÐÅ°Áö
-	22,	29,	26,	5,		29,	1,		//|i½ºÅæ ÆÐÅ°Áö
-	23,	29,	27,	4,		29,	1,		//|iÅõ±âÀå ÆÐÅ°Áö
-	34,	29,	28,	3,		20,	1,		//|iÇà¿î ÆÐÅ°Áö
-	10,	29,	9,		1,		9,		1,		//|g°í±Þ¹«±â»óÀÚ
-	11,	29,	12,	1,		7,		1,		//|g°í±Þ¹æ¾î±¸»óÀÚ
-	12,	29,	15,	1,		9,		1,		//|g°í±Þ¾Ç¼¼»ç¸®»óÀÚ
-	14,	29,	19,	1,		3,		1,		//|d°í±Þº¸¼®»óÀÚ
-	13,	29,	18,	1,		1,		1,		//|e·£´ý¾ÆÀÌÅÛ»óÀÚ
-	15,	29,	20,	0,		7,		1,		//|e°¡¹æ
-	18,	29,	22,	0,		7,		1,		//|dAPÃÊ±âÈ­
-	19,	29,	23,	0,		7,		1,		//|dSPÃÊ±âÈ­
-	//35,	29,	3,		1,		4,		1,		//|eº¸È£¼®
-	32,	29,	8,		1,		8,		10,	//|eºÎÈ°¾à
-	9,		29,	8,		1,		19,	25,	//|eºÎÈ°¾à
-	2,		29,	1,		1,		5,		1,		//|dÅõ±âÀå ÀÔÀå±Ç
-	3,		29,	2,		1,		19,	20,	//|e°­È­¼®
-	4,		29,	3,		1,		19,	5,		//|eº¸È£¼®
-	5,		29,	4,		1,		19,	5,		//|eÁ¶ÇÕ¼®
-	6,		29,	5,		1,		19,	20,	//|eºÐÇØ¼®
-	7,		29,	6,		1,		19,	20,	//|e¼ÒÄÏ¼®
-	31,	29,	0,		1,		2,		5,		//|bÄíÆù
-	1,		29,	0,		1,		29,	100,	//|bÄíÆù
-	24,	21,	23,	1,		9,		20,	//|e°­È­ÀÇ ºñ¾à
-	25,	21,	24,	1,		9,		20,	//|eÀÎ³»ÀÇ ºñ¾à
-	26,	21,	25,	1,		9,		20,	//|eÄ¡À¯ÀÇ ºñ¾à
-	27,	21,	26,	1,		9,		20,	//|e¸¶¹ýÀÇ ºñ¾à
+	20,	29,	24,	5,		19,	1,		//|iì´ˆì‹¬ìž íŒ¨í‚¤ì§€
+	21,	29,	25,	2,		29,	1,		//|iìŠˆí¼ê°•í™” íŒ¨í‚¤ì§€
+	22,	29,	26,	5,		29,	1,		//|iìŠ¤í†¤ íŒ¨í‚¤ì§€
+	23,	29,	27,	4,		29,	1,		//|iíˆ¬ê¸°ìž¥ íŒ¨í‚¤ì§€
+	34,	29,	28,	3,		20,	1,		//|ií–‰ìš´ íŒ¨í‚¤ì§€
+	10,	29,	9,		1,		9,		1,		//|gê³ ê¸‰ë¬´ê¸°ìƒìž
+	11,	29,	12,	1,		7,		1,		//|gê³ ê¸‰ë°©ì–´êµ¬ìƒìž
+	12,	29,	15,	1,		9,		1,		//|gê³ ê¸‰ì•…ì„¸ì‚¬ë¦¬ìƒìž
+	14,	29,	19,	1,		3,		1,		//|dê³ ê¸‰ë³´ì„ìƒìž
+	13,	29,	18,	1,		1,		1,		//|eëžœë¤ì•„ì´í…œìƒìž
+	15,	29,	20,	0,		7,		1,		//|eê°€ë°©
+	18,	29,	22,	0,		7,		1,		//|dAPì´ˆê¸°í™”
+	19,	29,	23,	0,		7,		1,		//|dSPì´ˆê¸°í™”
+	//35,	29,	3,		1,		4,		1,		//|eë³´í˜¸ì„
+	32,	29,	8,		1,		8,		10,	//|eë¶€í™œì•½
+	9,		29,	8,		1,		19,	25,	//|eë¶€í™œì•½
+	2,		29,	1,		1,		5,		1,		//|díˆ¬ê¸°ìž¥ ìž…ìž¥ê¶Œ
+	3,		29,	2,		1,		19,	20,	//|eê°•í™”ì„
+	4,		29,	3,		1,		19,	5,		//|eë³´í˜¸ì„
+	5,		29,	4,		1,		19,	5,		//|eì¡°í•©ì„
+	6,		29,	5,		1,		19,	20,	//|eë¶„í•´ì„
+	7,		29,	6,		1,		19,	20,	//|eì†Œì¼“ì„
+	31,	29,	0,		1,		2,		5,		//|bì¿ í°
+	1,		29,	0,		1,		29,	100,	//|bì¿ í°
+	24,	21,	23,	1,		9,		20,	//|eê°•í™”ì˜ ë¹„ì•½
+	25,	21,	24,	1,		9,		20,	//|eì¸ë‚´ì˜ ë¹„ì•½
+	26,	21,	25,	1,		9,		20,	//|eì¹˜ìœ ì˜ ë¹„ì•½
+	27,	21,	26,	1,		9,		20,	//|eë§ˆë²•ì˜ ë¹„ì•½
 };
 #endif

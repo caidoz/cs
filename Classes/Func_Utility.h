@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _FUNC_UTILITY_H_
 #define _FUNC_UTILITY_H_
 
 
-// Utility ÇÔ¼öµé
+// Utility í•¨ìˆ˜ë“¤
 unsigned short Convert_Char_KSC5601_To_UCS2(unsigned char byte1, unsigned char byte2);
 int TextToString(char* src, int count, char* dst);
 int UCS2toUTF8(unsigned short* ucs2, int count, char* dst);

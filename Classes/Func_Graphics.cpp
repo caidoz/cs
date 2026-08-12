@@ -1,4 +1,4 @@
-#include "Core.h"
+ï»¿#include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
@@ -56,7 +56,7 @@ void LoadSpriteFromTexture(int textureIdx)
 	GetSpriteIndex(textureIdx);
 	//renderSprite[spriteIdx]->autorelease();
 
-	//¸¸¾à ÀÌ¹ÌÁö¸¦ Ãß°¡ÇØ¾ß µÈ´Ù¸é
+	//ë§Œì•½ ì´ë¯¸ì§€ë¥¼ ì¶”ê°€í•´ì•¼ ëœë‹¤ë©´
 	if (getSpriteIdx == totalRenderCnt) {
 		renderSprite[getSpriteIdx] = Sprite::createWithTexture(texture[textureIdx]);
 		renderSprite[getSpriteIdx]->retain();
@@ -67,7 +67,7 @@ void LoadSpriteFromTexture(int textureIdx)
 		sameRenderSpriteCur[textureIdx]++;
 		totalRenderCnt++;
 	}
-	//±âÁ¸°ÍÀ» ¾´´Ù¸é
+	//ê¸°ì¡´ê²ƒì„ ì“´ë‹¤ë©´
 	renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
 	renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
 	renderSprite[getSpriteIdx]->setFlippedX(false);
@@ -86,7 +86,7 @@ void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
 	GetBufferSpriteIndex(textureIdx, cvtLayer);
 	//renderSprite[spriteIdx]->autorelease();
 
-	//¸¸¾à ÀÌ¹ÌÁö¸¦ Ãß°¡ÇØ¾ß µÈ´Ù¸é
+	//ë§Œì•½ ì´ë¯¸ì§€ë¥¼ ì¶”ê°€í•´ì•¼ ëœë‹¤ë©´
 	if (getBufferSpriteIdx == totalBufferCnt) {
 		bufferSprite[getBufferSpriteIdx] = Sprite::createWithTexture(texture[textureIdx]);
 		bufferSprite[getBufferSpriteIdx]->retain();
@@ -98,7 +98,7 @@ void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
 		totalBufferCnt++;
 		cvtLayer->addChild(bufferSprite[getBufferSpriteIdx]);
 	}
-	//±âÁ¸°ÍÀ» ¾´´Ù¸é
+	//ê¸°ì¡´ê²ƒì„ ì“´ë‹¤ë©´
 	bufferSprite[getBufferSpriteIdx]->getTexture()->setAliasTexParameters();
 	bufferSprite[getBufferSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
 	bufferSprite[getBufferSpriteIdx]->setFlippedX(false);
@@ -116,7 +116,7 @@ void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
 //ï¿½ï¿½Î¿ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 //gRenderTarget ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(BeginScreenBuffer/PushRenderTarget) ï¿½Ì¹ï¿½ begin() ï¿½ï¿½ Å¸ï¿½Ù¿ï¿½
 //ï¿½ï¿½ï¿½?visit() ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½. Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ begin/end ï¿½Ï¹Ç·ï¿½
-//µå·Î¿ì Äİ¸¶´Ù ·»´õÅ¸°ÙÀ» ¹ÙÀÎµùÇÏ°Å³ª renderer->render() ·Î ÇÃ·¯½ÃÇÏÁö ¾Ê´Â´Ù.
+//ë“œë¡œìš° ì½œë§ˆë‹¤ ë Œë”íƒ€ê²Ÿì„ ë°”ì¸ë”©í•˜ê±°ë‚˜ renderer->render() ë¡œ í”ŒëŸ¬ì‹œí•˜ì§€ ì•ŠëŠ”ë‹¤.
 //gRenderTarget ï¿½ï¿½ nullptr ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½Å½ï¿½ ï¿½ï¿½Î¸ï¿½?ï¿½ï¿½ï¿½ï¿½.
 void AfterSpriting(cocos2d::Sprite* src) {
 
@@ -237,7 +237,7 @@ std::string  GetResourceName(int type, int idx)
 {
 	std::string fileName;
 
-	//ÆÄÀÏ¸í Á¤ÇÏ±â
+	//íŒŒì¼ëª… ì •í•˜ê¸°
 	fileName = null;
 
 	switch (type) {
@@ -378,7 +378,7 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	if (blendDepth) {
 		renderSprite[getSpriteIdx]->setBlendFunc(BLEND_BLENDMODE);
 	}
-	//¶óÀÌÆ°È¿°ú
+	//ë¼ì´íŠ¼íš¨ê³¼
 	if (effect) {
 		renderSprite[getSpriteIdx]->setBlendFunc(BLEND_LIGHTEN);
 		glBlendEquation(GL_MAX_EXT);
@@ -913,7 +913,7 @@ void GammaImage(int gamma, int type, float zoom)
 		break;
 	case 1:
 	case 7:
-		//Æ¯Á¤ À§Ä¡ Áß½ÉÀ¸·Î ÆÛÁö¸é¼­ ¹à±â °¨¼Ò
+		//íŠ¹ì • ìœ„ì¹˜ ì¤‘ì‹¬ìœ¼ë¡œ í¼ì§€ë©´ì„œ ë°ê¸° ê°ì†Œ
 		if (viewRadius[0] == 0)
 			ProcessRadius(0, 2);
 
@@ -922,12 +922,12 @@ void GammaImage(int gamma, int type, float zoom)
 
 		break;
 	case 2:
-		//Å×µÎ¸® ¹à°Ô
+		//í…Œë‘ë¦¬ ë°ê²Œ
 		src = buff;
 		dest = src + (DY * DX >> 1);
 		break;
 	case 3:
-		//Å×µÎ¸® ¾îµÓ°Ô
+		//í…Œë‘ë¦¬ ì–´ë‘¡ê²Œ
 		src = buff;
 		dest = src + (DY * DX >> 1);
 		break;
@@ -936,7 +936,7 @@ void GammaImage(int gamma, int type, float zoom)
 		dest = src + (DY * DX >> 1);
 		break;
 	case 5:
-		//Æ¯Á¤ À§Ä¡ Áß½ÉÀ¸·Î ÆÛÁö¸é¼­ ¹à±â °¨¼Ò
+		//íŠ¹ì • ìœ„ì¹˜ ì¤‘ì‹¬ìœ¼ë¡œ í¼ì§€ë©´ì„œ ë°ê¸° ê°ì†Œ
 		if (viewRadius == 0)
 			ProcessRadius(1, Max(3, radiusStatus + 2));
 
@@ -944,7 +944,7 @@ void GammaImage(int gamma, int type, float zoom)
 		dest = src + (DY * DX >> 1);
 		break;
 	case 6:
-		//±×·¹ÀÌ½ºÄÉÀÏ
+		//ê·¸ë ˆì´ìŠ¤ì¼€ì¼
 		if (gamma == 0)
 			return;
 
@@ -1716,7 +1716,7 @@ void DrawRouletteNum(long long num, int icon, int x, int y, bool ani, float zoom
 {
 	float width = GetNumDx(num, false, NUM_FONT_LARGE, false, true, zoom, false) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom;
 	
-	//ÀÏ¹İ¼ıÀÚ 2¹è¼ö
+	//ì¼ë°˜ìˆ«ì 2ë°°ìˆ˜
 	DrawIcon(icon, x - width / 2, y, zoom, COLOR_BROWN, false, false, true);
 	DrawNum(num, x - width / 2 + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y + (float)(1 * _2X), NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
 
@@ -1727,7 +1727,7 @@ void DrawRouletteNum(long long num, int icon, int x, int y, bool ani, float zoom
 void DrawRouletteNumSmall(long long num, int icon, int x, int y, bool ani, float zoom)
 {
 	float width = GetNumDx(num, num < 0 ? MINUS : false, NUM_FONT_LARGE, false, true, zoom, false);// +ITEMICONSIZE * zoom + 4 * _2X * zoom;
-	//ÀÏ¹İ¼ıÀÚ 2¹è¼ö
+	//ì¼ë°˜ìˆ«ì 2ë°°ìˆ˜
 	//DrawIcon(icon, x - width / 2, y, zoom, true, false, false, cvtDest, cvtLayer, buffering);
 	DrawNum(num, x - width / 2 + ITEMICONSIZE * zoom + 4 * _2X * zoom, y + 1 * _2X, NUM_FONT_LARGE, CENTER, 0, num < 0 ? MINUS : false, true, zoom, false);
 	//DrawNumTTF(num, x - width / 2 + ITEMICONSIZE * zoom + 4 * _2X * zoom, y + 1 * _2X, NUM_FONT_LARGE, CENTER, 0, num < 0 ? MINUS : false, true, zoom, false, cvtDest, cvtLayer, buffering);
@@ -1747,7 +1747,7 @@ float DrawRouletteNumIcon(long long num, int icon, int x, int y, bool ani, int a
 		x -= width;
 		break;
 	}
-	//ÀÏ¹İ¼ıÀÚ 2¹è¼ö
+	//ì¼ë°˜ìˆ«ì 2ë°°ìˆ˜
 	DrawIcon(icon, x, y - (float)(1 * _2X) * zoom, zoom, COLOR_BROWN, ani, false, true);
 	DrawNum(num, x + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y, NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
 
@@ -1831,7 +1831,7 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 	}
 
 	CenterTextStr(tempStr, x, y, 1.2f * zoom);
-	//¸î
+	//ëª‡
 	//DrawText(stage * TOTALROOM + room + 1, x - width / 2, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, false, zoom, false, cvtDest, cvtLayer, buffering);
 
 	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
@@ -1875,19 +1875,19 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		MemRect(xOffset, STATUSWIN_Y, DX - 2 * xOffset, REALDY, 0x7B48AE);
 
 		for (i = -64 * _2X; i < rw * TSIZE + 64 * _2X; i += 64 * _2X) {
-			//Å«¾È°³
+			//í°ì•ˆê°œ
 			SetAlpha(Min(demoFrame, 16));
 			//c51.bmp
 			DrawImage(64 * _2X, 48 * _2X, 194 * _2X, 0 * _2X, xOffset + i - rx - (demoFrame % 64), STATUSWIN_Y + 128 * _2X - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], MONSTER_IMG + CMF_CASTLE_BOSS4);
 			DrawImage(64 * _2X, 48 * _2X, 194 * _2X, 0 * _2X, xOffset + i - rx + (demoFrame % 64), STATUSWIN_Y + 88 * _2X - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], MONSTER_IMG + CMF_CASTLE_BOSS4);
 
-			//ÀÛÀº¾È°³
+			//ì‘ì€ì•ˆê°œ
 			//c51.bmp
-			//ÀÛÀº - Å«¾È°³
+			//ì‘ì€ - í°ì•ˆê°œ
 			DrawImage(80 * _2X, 16 * _2X, 76 * _2X, 140 * _2X, xOffset + i - 28 * _2X - rx - (demoFrame % 64) * _2X, STATUSWIN_Y + (96 * _2X - (21 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], MONSTER_IMG + CMF_CASTLE_BOSS4);
-			//ÀÛÀº - Áß°£¾È°³
+			//ì‘ì€ - ì¤‘ê°„ì•ˆê°œ
 			DrawImage(32 * _2X, 6 * _2X, 156 * _2X, 147 * _2X, xOffset + i - 22 * _2X - rx + (demoFrame % 32) * _2X, STATUSWIN_Y + (78 * _2X - (19 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], MONSTER_IMG + CMF_CASTLE_BOSS4);
-			//ÀÛÀº - ÀÛÀº¾È°³
+			//ì‘ì€ - ì‘ì€ì•ˆê°œ
 			DrawImage(26 * _2X, 4 * _2X, 61 * _2X, 78 * _2X, xOffset + i + 23 * _2X - rx - (demoFrame % 26) * _2X, STATUSWIN_Y + (69 * _2X - (20 * _2X * (i % 2))) - ry, false, false, false, false, false, 1.0f, sprite[MONSTER_IMG + CMF_CASTLE_BOSS4], MONSTER_IMG + CMF_CASTLE_BOSS4);
 
 		}
@@ -1918,7 +1918,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 				DrawBuffer(xOffset - rx + offX, -ry + offY + STATUSWIN_Y + TILEDY, (rw - 4) * TSIZE, (rh - 4) * TSIZE, bufferTexture[BUFFER_TILE]);
 
-				//±Ù°æ ÆÄÆ®1
+				//ê·¼ê²½ íŒŒíŠ¸1
 				DrawBackMapFront(xOffset - rx + offX, -ry + offY + STATUSWIN_Y, robinmap, 1.0f);
 
 				//if (attackDelay) {
@@ -2014,7 +2014,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 				}
 			}
 
-		//¹è ±×·ÁÁÖ±â
+		//ë°° ê·¸ë ¤ì£¼ê¸°
 		for (i = ENEMY; i < NEUTRAL; i++) {
 			if (ao[i].type == NPC_SHIP && ao[i].active == true) {
 				ao[i].zoom *= dioramaZoom;
@@ -2023,7 +2023,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//»óÀÚ ±×¸²ÀÚ
+		//ìƒì ê·¸ë¦¼ì
 		if (ao[ITEMBOX].active == true) {
 			zoomBefore = ao[ITEMBOX].zoom;
 			ao[ITEMBOX].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
@@ -2032,7 +2032,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 		//ShadowImage(&ao[ITEMBOX], cvtDest, cvtLayer, buffering);
 
-	//ÁÖÀÎ°ø ±×¸²ÀÚ
+	//ì£¼ì¸ê³µ ê·¸ë¦¼ì
 		for (i = 0; i < CASTLEALL; i++) {
 			if (ao[i].active) {
 				if (ao[i].moveHandler == PLAYERMOVE) {
@@ -2059,7 +2059,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//Àû ±×¸²ÀÚ
+		//ì  ê·¸ë¦¼ì
 		for (i = ENEMY; i < TOTALOBJECT; i++) {
 			if (ao[i].active && ao[i].moveHandler < BULLET3WAYMOVE) {
 				switch (ao[i].type) {
@@ -2256,7 +2256,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		if (skillUsed == false && buffItemUsed == false)
-			//¾ÆÀÌÅÛ ±×¸²ÀÚ
+			//ì•„ì´í…œ ê·¸ë¦¼ì
 			for (i = ITEMOBJ; i < TOTALOBJECT; i++) {
 				if (ao[i].active/* && ao[i].status == WALK*/) {
 					int pxl;
@@ -2352,7 +2352,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 		//EnemyUserProfileDraw(&enemyHouse, xOffset + ao[ENEMYUSEROBJ].x - ry - RAIDGOLDBARWIDTH / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[ENEMYUSEROBJ].y - ry - ao[ENEMYUSEROBJ].cpy + RAIDGOLDBARHEIGHT, ao[ENEMYUSEROBJ].zoom, gScreenBuffer, gScreenLayer, false);
 
-		//Àû ±×¸®±â
+		//ì  ê·¸ë¦¬ê¸°
 		for (i = TOTALOBJECT - 1; i >= NEUTRAL; i--) {
 			if (ao[i].active) {
 #ifdef HITMARKWHITE
@@ -2396,7 +2396,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//Àû ±×¸®±â
+		//ì  ê·¸ë¦¬ê¸°
 		for (i = ENEMY; i < NEUTRAL; i++) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 #ifdef HITMARKWHITE
@@ -2456,7 +2456,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		
-		//¼ÖÁ® ±×¸®±â
+		//ì†”ì ¸ ê·¸ë¦¬ê¸°
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 
@@ -2481,7 +2481,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//ÇÃ·¹ÀÌ¾î ±×¸®±â
+		//í”Œë ˆì´ì–´ ê·¸ë¦¬ê¸°
 		for (i = SOLDIER + MAXENEMYOBJ - 1; i >= SOLDIER; i--) {
 			if (ao[i].active) {
 
@@ -2506,7 +2506,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//ÅºÈ¯ ±×¸®±â
+		//íƒ„í™˜ ê·¸ë¦¬ê¸°
 		for (i = ENEMYUSEROBJ - 1; i >= BULLET; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 
@@ -2531,7 +2531,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//Ã¼·Â¹Ù
+		//ì²´ë ¥ë°”
 		for (i = ITEMOBJ - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP && ((i < TOTALCHAR && ao[i].ps[PS_HP] > 0) || (i >= ENEMY && i < NEUTRAL && ao[i].maxhp > 0)) && ao[i].moveHandler != REGENMOVE) {
 
@@ -2639,7 +2639,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						else
 							bFrame = ao[raidPlayer].buff[i];
 
-						//¹İÁö¹öÇÁ
+						//ë°˜ì§€ë²„í”„
 						switch (i) {
 						default:
 							if (ao[raidPlayer].buff[i] % 6 != 5)
@@ -2663,11 +2663,11 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 		for (i = 0; i < NEUTRAL; i++) {
 			if (ao[i].active) {
-				//Äù½ºÆ® °ü·Ã ¾ÆÀÌÄÜ
+				//í€˜ìŠ¤íŠ¸ ê´€ë ¨ ì•„ì´ì½˜
 				if (ao[i].str == -1 && ao[i].def > 0 && !robin.bossRoom)
 					DrawEffect(EFFECT_QUEST0_0 + (ao[i].def - QUESTREADY) * 5 + Abs(4 - ao[i].frame % 9), ao[i].x - rx, objStartY - (ao[i].y - OBJIMGGAP) - ry, 0, false, ao[i].zoom);
 
-				//ÀÌ¸ğÆ¼ÄÜ
+				//ì´ëª¨í‹°ì½˜
 
 				if (ao[i].moveHandler < BULLET3WAYMOVE && ao[i].icon && areaFrame == 0 && arenaFrame == 0) {
 
@@ -2691,7 +2691,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 				DrawFrame(ao[i].x + 2 * _2X * DIR(ao[i].dirF) - rx - 24 * _2X, objStartY - (ao[i].y + ao[i].cpy - 19 * _2X - OBJIMGGAP) - ry, 48 * _2X, 20 * _2X, FRAME_SHOPBALLOON);
 			}
 
-			//»ı¼º ±×¸®±â
+			//ìƒì„± ê·¸ë¦¬ê¸°
 			for (i = SOLDIER; i < NEUTRAL; i++) {
 				if (ao[i].active && ao[i].drawHandler == REGENDRAW && ao[i].type != NPC_SHIP) {
 					ao[i].zoom *= dioramaZoom;
@@ -2745,7 +2745,7 @@ void DrawGrid(int x, int y, int w, int h, int dx, int dy, int color1, int color2
 	}
 }
 
-//type 0ÀÌ °¡·ÎÅ¸ÀÔ, 1°¡ ¼¼·ÎÅ¸ÀÔ
+//type 0ì´ ê°€ë¡œíƒ€ì…, 1ê°€ ì„¸ë¡œíƒ€ì…
 void GradiationFrame(int x, int y, int w, int h, int type)
 {
 	switch (type) {
@@ -2782,13 +2782,13 @@ void GradiationFrame(int x, int y, int w, int h, int type)
 		MemRect(x, y - h / 5 * 3, w, h / 5, 0x00C2D3);
 		MemRect(x, y - h / 5 * 4, w, h - (h / 5 * 4), 0xA7F7FF);
 		break;
-	case 4://³ì»ö
+	case 4://ë…¹ìƒ‰
 		MemRectRound(x + 0 * _2X, y - 0 * _2X, w - 0 * _2X, h - 0 * 2 * _2X, 0x154F03, 4 * _2X);
 		MemRectRound(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * 2 * _2X, 0x73F32C, 4 * _2X);
 		MemRectRound(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 3 * 2 * _2X, 0x2FBA09, 4 * _2X);
 		MemRectRound(x + 3 * _2X, y - 3 * _2X, w - 6 * _2X, h / 2, 0x6BEB24, 4 * _2X);
 		break;
-	case 5://»¡°£
+	case 5://ë¹¨ê°„
 		MemRectRound(x + 0 * _2X, y - 0 * _2X, w - 0 * _2X, h - 0 * 2 * _2X, 0x663300, 4 * _2X);
 		MemRectRound(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * 2 * _2X, 0xE79EA5, 4 * _2X);
 		MemRectRound(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 3 * 2 * _2X, 0x8E251F, 4 * _2X);
@@ -2800,7 +2800,7 @@ void GradiationFrame(int x, int y, int w, int h, int type)
 		MemRectRound(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 3 * 2 * _2X, 0x2D66BD, 4 * _2X);
 		MemRectRound(x + 3 * _2X, y - 3 * _2X, w - 6 * _2X, h / 2, 0x68ADF8, 4 * _2X);
 		break;
-	case 7://È¸»ö
+	case 7://íšŒìƒ‰
 		MemRectRound(x + 0 * _2X, y - 0 * _2X, w - 0 * _2X, h - 0 * 2 * _2X, 0x666666, 4 * _2X);
 		MemRectRound(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * 2 * _2X, 0xF1F2F6, 4 * _2X);
 		MemRectRound(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 3 * 2 * _2X, 0xBAC3D2, 4 * _2X);
@@ -2880,7 +2880,7 @@ float GetAlphaWidth(int idx, int type, float zoom)
 
 	return (float)(w + 1) * zoom;
 }
-//ÀÏ´Ü ´ë¹®ÀÚ¸¸ ÇÏÀÚ. ¼Ò¹®ÀÚ´Â ³ªÁß¿¡ ÇÊ¿äÇÏ¸é
+//ì¼ë‹¨ ëŒ€ë¬¸ìë§Œ í•˜ì. ì†Œë¬¸ìëŠ” ë‚˜ì¤‘ì— í•„ìš”í•˜ë©´
 float GetAlphaWidth2(int idx, float zoom)
 {
 	int i;
@@ -3025,7 +3025,7 @@ void DrawAlphaFrame(int x, int y, int idx, int frame, int font, float rotaion, f
 	int type;
 
 	for (i = alphaOff[idx]; i < ((alphaOff[idx] + frame) < alphaOff[idx + 1] ? (alphaOff[idx] + frame) : alphaOff[idx + 1]); i++) {
-		if (i == alphaOff[idx] || alphaData[i - 1] == SPC)//´ë¹®ÀÚ
+		if (i == alphaOff[idx] || alphaData[i - 1] == SPC)//ëŒ€ë¬¸ì
 			type = font;
 		else
 			type = font;
@@ -3059,7 +3059,7 @@ void addCommasToNumber(int number, bool showSign, char* result, size_t bufferSiz
 	ss << (showSign ? std::showpos : std::noshowpos) << number;
 	std::string formattedNumber = ss.str();
 
-	// °á°ú ¹®ÀÚ¿­À» char ¹è¿­·Î º¹»ç
+	// ê²°ê³¼ ë¬¸ìì—´ì„ char ë°°ì—´ë¡œ ë³µì‚¬
 	strncpy(result, formattedNumber.c_str(), bufferSize - 1);
 	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NULL ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ß°ï¿½
 	result[bufferSize - 1] = '\0';
@@ -3067,7 +3067,7 @@ void addCommasToNumber(int number, bool showSign, char* result, size_t bufferSiz
 
 int GetNumFigure(long long int num)
 {
-	//ÀÚ¸®¼ö ±¸ÇÏ´Â ÇÔ¼ö
+	//ìë¦¬ìˆ˜ êµ¬í•˜ëŠ” í•¨ìˆ˜
 	int i = 0;
 
 	num = Abs(num);
@@ -3088,7 +3088,7 @@ float GetNumDx2(long long int num, int sign, int digit, bool comma, float zoom, 
 	long long int numOrigin = num;
 	int figureNum = GetNumFigure(num);
 	int widthNum = 0;
-	int widestNum = 5;//ÀÌ¹ÌÁö ¼ıÀÚÁß¿¡ °¡Àå ³ĞÀÌ°¡ ³ĞÀº °ÍÀº 5
+	int widestNum = 5;//ì´ë¯¸ì§€ ìˆ«ìì¤‘ì— ê°€ì¥ ë„“ì´ê°€ ë„“ì€ ê²ƒì€ 5
 
 
 	if (fixed == true) {
@@ -3114,7 +3114,7 @@ float GetNumDx2(long long int num, int sign, int digit, bool comma, float zoom, 
 	if (sign) {
 		width += (float)(53 + 2 * _2X) * zoom;
 	}
-	//ÀÚ¸´¼ö ÄŞ¸¶
+	//ìë¦¿ìˆ˜ ì½¤ë§ˆ
 	if (comma)
 		width += ((GetNumFigure(numOrigin) - 1) / 3) * (float)(22 + 6 * _2X) * zoom;
 
@@ -3129,7 +3129,7 @@ float GetNumDx(long long int num, int sign, int font, int digit, bool comma, flo
 	long long int numOrigin = num;
 	int figureNum = GetNumFigure(num);
 	int widthNum = 0;
-	int widestNum = 5;//ÀÌ¹ÌÁö ¼ıÀÚÁß¿¡ °¡Àå ³ĞÀÌ°¡ ³ĞÀº °ÍÀº 5
+	int widestNum = 5;//ì´ë¯¸ì§€ ìˆ«ìì¤‘ì— ê°€ì¥ ë„“ì´ê°€ ë„“ì€ ê²ƒì€ 5
 
 
 	if (fixed == true) {
@@ -3185,7 +3185,7 @@ float GetNumDx(long long int num, int sign, int font, int digit, bool comma, flo
 			break;
 		}
 	}
-	//ÀÚ¸´¼ö ÄŞ¸¶
+	//ìë¦¿ìˆ˜ ì½¤ë§ˆ
 	if (comma)
 		switch (font) {
 		case NUM_FONT_SMALL:
@@ -3227,7 +3227,7 @@ float GetGoldNumDx(long long int num, int sign, int digit, bool comma, float zoo
 		width += (float)27 * zoom;
 	}
 
-	//ÀÚ¸´¼ö ÄŞ¸¶
+	//ìë¦¿ìˆ˜ ì½¤ë§ˆ
 	if (comma)
 		width += (float)((GetNumFigure(numOrigin) - 1) / 3) * (float)16 * zoom;
 
@@ -3238,11 +3238,11 @@ float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool com
 {
 	int alphaArray[] = { ALPHA_NUM_K, ALPHA_NUM_M, ALPHA_NUM_B, ALPHA_NUM_T, ALPHA_NUM_Q, ALPHA_NUM_Z, ALPHA_NUM_Y };
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 	int alphaIdx;
-	float dotWidth = (float)(17) * zoom;//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
+	float dotWidth = (float)(17) * zoom;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
 	int figureNum = GetNumFigure(num);
 	int num2;
 
@@ -3252,7 +3252,7 @@ float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool com
 
 	do {
 		gapNum /= 10;
-		gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+		gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 		gapWidth = GetGoldNumDx(gapNum, sign, digit, comma, zoom);
 	} while (gapWidth > width && gapNum > 0);
 
@@ -3280,7 +3280,7 @@ float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool com
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetGoldNumDx(num2, sign, digit, comma, zoom);
@@ -3311,15 +3311,15 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 	int i;
 	int alphaArray[] = { TEXT_ALPHA_K, TEXT_ALPHA_M, TEXT_ALPHA_B, TEXT_ALPHA_T, TEXT_ALPHA_Q, TEXT_ALPHA_Z, TEXT_ALPHA_Y };
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 	int alphaIdx;
-	float dotWidth = (float)(3 * _2X) * zoom;// = StringWidthTTF(".", zoom);//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
+	float dotWidth = (float)(3 * _2X) * zoom;// = StringWidthTTF(".", zoom);//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
 	int figureNum = GetNumFigure(num);
 	int num2;
 	int widthNum = 0;
-	int widestNum = 5;//ÀÌ¹ÌÁö ¼ıÀÚÁß¿¡ °¡Àå ³ĞÀÌ°¡ ³ĞÀº °ÍÀº 5
+	int widestNum = 5;//ì´ë¯¸ì§€ ìˆ«ìì¤‘ì— ê°€ì¥ ë„“ì´ê°€ ë„“ì€ ê²ƒì€ 5
 
 	return GetBigNumDx(num, sign, NUM_FONT_NORMAL, false, comma, width, zoom, fixed);
 
@@ -3336,7 +3336,7 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 		do {
 			gapNum /= 10;
 			widthNum /= 10;
-			gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+			gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 			gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
 		} while (gapWidth > width);
 
@@ -3356,7 +3356,7 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 	else {
 		do {
 			gapNum /= 10;
-			gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+			gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 			gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
 		} while (gapWidth > width);
 
@@ -3386,7 +3386,7 @@ float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comm
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetNumDxTTF(num2, sign, font, digit, comma, zoom, fixed);
@@ -3402,15 +3402,15 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 	int i;
 	int alphaArray[] = { ALPHA_NUM_K, ALPHA_NUM_M, ALPHA_NUM_B, ALPHA_NUM_T, ALPHA_NUM_Q, ALPHA_NUM_Z, ALPHA_NUM_Y };
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 	int alphaIdx;
-	float dotWidth = (float)(3 * _2X) * zoom;//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
+	float dotWidth = (float)(3 * _2X) * zoom;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
 	int figureNum = GetNumFigure(num);
 	int num2;
 	int widthNum = 0;
-	int widestNum = 5;//ÀÌ¹ÌÁö ¼ıÀÚÁß¿¡ °¡Àå ³ĞÀÌ°¡ ³ĞÀº °ÍÀº 5
+	int widestNum = 5;//ì´ë¯¸ì§€ ìˆ«ìì¤‘ì— ê°€ì¥ ë„“ì´ê°€ ë„“ì€ ê²ƒì€ 5
 
 	if (fixed) {
 		for (i = 0; i < figureNum; i++)
@@ -3425,7 +3425,7 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 		do {
 			gapNum /= 10;
 			widthNum /= 10;
-			gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+			gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 			gapWidth = GetNumDx(widthNum, sign, font, digit, comma, zoom, fixed);
 		} while (gapWidth > width);
 
@@ -3445,7 +3445,7 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 	else {
 		do {
 			gapNum /= 10;
-			gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+			gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 			gapWidth = GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed);
 		} while (gapWidth > width);
 
@@ -3475,7 +3475,7 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetNumDx(num2, sign, font, digit, comma, zoom, fixed);
@@ -3567,7 +3567,7 @@ void DrawNum2(long long int num, int x, int y, int align, int digit, int sign, b
 	//	tempNum = tempNum;
 	//}
 
-	//¼ıÀÚ
+	//ìˆ«ì
 	do {
 		//ï¿½ï¿½Ç¥ ï¿½×·ï¿½ï¿½Ö±ï¿½
 		if (numbers % 4 == 0 && numbers > 0 && comma) {
@@ -3634,7 +3634,7 @@ void DrawNum(long long int num, int x, int y, int font, int align, int digit, bo
 	//	tempNum = tempNum;
 	//}
 
-	//¼ıÀÚ
+	//ìˆ«ì
 	do {
 		//ï¿½ï¿½Ç¥ ï¿½×·ï¿½ï¿½Ö±ï¿½
 		if (numbers % 4 == 0 && numbers > 0 && comma) {
@@ -3733,7 +3733,7 @@ void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign
 
 	num = Abs(num);
 
-	//¼ıÀÚ
+	//ìˆ«ì
 	do {
 		//ï¿½ï¿½Ç¥ ï¿½×·ï¿½ï¿½Ö±ï¿½
 		if (numbers % 4 == 0 && numbers > 0 && comma) {
@@ -3763,7 +3763,7 @@ void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign
 
 
 	//+, - ï¿½ï¿½È£Ç¥ï¿½ï¿½
-	//+¸é 1, 0ÀÌ¸é ºÎÈ£¾ø°í -¸é -1
+	//+ë©´ 1, 0ì´ë©´ ë¶€í˜¸ì—†ê³  -ë©´ -1
 	if (sign == PLUS) {
 		x -= 30 * zoom;
 		DrawImage(29, 28, 266, 360, x, y - 8 * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
@@ -3777,16 +3777,16 @@ void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign
 void DrawBigNumGold(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom)
 {
 	int alphaArray[] = { ALPHA_NUM_K, ALPHA_NUM_M, ALPHA_NUM_B, ALPHA_NUM_T, ALPHA_NUM_Q, ALPHA_NUM_Z, ALPHA_NUM_Y };
-	int num1;//¼Ò¼öÁ¡ À§ ¼ıÀÚ(ÃÖ´ë 3ÀÚ¸®)
-	int dot;//¼Ò¼öÁ¡ µµÆ®ÀÇ À¯¹«
-	int num2;//¼Ò¼öÁ¡ ¾Æ·¡ ¼ıÀÚ(ÃÖ´ë 2ÀÚ¸®)
-	int alpha;//¾ËÆÄÀÚ¸®¼ö
-	float num1Width;//num1ÀÇ ¼ıÀÚ
-	float dotWidth = (float)(3 * _2X) * zoom;//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
-	float num2Width;//num2ÀÇ ¼ıÀÚ
+	int num1;//ì†Œìˆ˜ì  ìœ„ ìˆ«ì(ìµœëŒ€ 3ìë¦¬)
+	int dot;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ìœ ë¬´
+	int num2;//ì†Œìˆ˜ì  ì•„ë˜ ìˆ«ì(ìµœëŒ€ 2ìë¦¬)
+	int alpha;//ì•ŒíŒŒìë¦¬ìˆ˜
+	float num1Width;//num1ì˜ ìˆ«ì
+	float dotWidth = (float)(3 * _2X) * zoom;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
+	float num2Width;//num2ì˜ ìˆ«ì
 	//int alphaIdx = ALPHA_NUM_A + ((GetNumFigure(num) - 1) / 3) - 1;
 	int alphaIdx = GetNumFigure(num) < 6 ? 0 : alphaArray[Min(2, (GetNumFigure(num) - 2) / 3 - 1)];
-	int alphaFont = FONT_GOLD_LARGE;//¼ıÀÚ¿¡ µû¸¥ ¾ËÆÄ ÆùÆ®
+	int alphaFont = FONT_GOLD_LARGE;//ìˆ«ìì— ë”°ë¥¸ ì•ŒíŒŒ í°íŠ¸
 
 	float alphaGapY;
 	float dotGapY;
@@ -3795,7 +3795,7 @@ void DrawBigNumGold(long long int num, int x, int y, int font, int align, int di
 	float totalWidth;
 	long long int temp;
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 
@@ -3816,7 +3816,7 @@ void DrawBigNumGold(long long int num, int x, int y, int font, int align, int di
 
 	do {
 		gapNum /= 10;
-		gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+		gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 		gapWidth = GetGoldNumDx(gapNum, sign, digit, comma, zoom);
 	} while (gapWidth > width);
 
@@ -3844,7 +3844,7 @@ void DrawBigNumGold(long long int num, int x, int y, int font, int align, int di
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetGoldNumDx(num2, sign, digit, comma, zoom);
@@ -3890,16 +3890,16 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 {
 
 	int alphaArray[] = { TEXT_ALPHA_K, TEXT_ALPHA_M, TEXT_ALPHA_B, TEXT_ALPHA_T, TEXT_ALPHA_Q, TEXT_ALPHA_Z, TEXT_ALPHA_Y };
-	int num1;//¼Ò¼öÁ¡ À§ ¼ıÀÚ(ÃÖ´ë 3ÀÚ¸®)
-	int dot;//¼Ò¼öÁ¡ µµÆ®ÀÇ À¯¹«
-	int num2;//¼Ò¼öÁ¡ ¾Æ·¡ ¼ıÀÚ(ÃÖ´ë 2ÀÚ¸®)
-	int alpha;//¾ËÆÄÀÚ¸®¼ö
-	float num1Width;//num1ÀÇ ¼ıÀÚ
-	float dotWidth = (float)3 * _2X * zoom;// StringWidthTTF(".", zoom);//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
-	float num2Width;//num2ÀÇ ¼ıÀÚ
+	int num1;//ì†Œìˆ˜ì  ìœ„ ìˆ«ì(ìµœëŒ€ 3ìë¦¬)
+	int dot;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ìœ ë¬´
+	int num2;//ì†Œìˆ˜ì  ì•„ë˜ ìˆ«ì(ìµœëŒ€ 2ìë¦¬)
+	int alpha;//ì•ŒíŒŒìë¦¬ìˆ˜
+	float num1Width;//num1ì˜ ìˆ«ì
+	float dotWidth = (float)3 * _2X * zoom;// StringWidthTTF(".", zoom);//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
+	float num2Width;//num2ì˜ ìˆ«ì
 	//int alphaIdx = ALPHA_NUM_A + ((GetNumFigure(num) - 1) / 3) - 1;
 	int alphaIdx = GetNumFigure(num) < 6 ? 0 : alphaArray[Min(2, (GetNumFigure(num) - 2) / 3 - 1)];
-	int alphaFont = (font == NUM_FONT_SMALL ? FONT_SMALL : FONT_LARGE);//¼ıÀÚ¿¡ µû¸¥ ¾ËÆÄ ÆùÆ®
+	int alphaFont = (font == NUM_FONT_SMALL ? FONT_SMALL : FONT_LARGE);//ìˆ«ìì— ë”°ë¥¸ ì•ŒíŒŒ í°íŠ¸
 	float numWidth;
 
 	float alphaGapY;
@@ -3909,7 +3909,7 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 	float totalWidth;
 	long long int temp;
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 
@@ -3929,7 +3929,7 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 
 	do {
 		gapNum /= 10;
-		gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+		gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 		gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
@@ -3957,7 +3957,7 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetNumDxTTF(num2, sign, font, digit, comma, zoom, fixed);
@@ -4024,16 +4024,16 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 void DrawBigNum(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed)
 {
 	int alphaArray[] = { ALPHA_NUM_K, ALPHA_NUM_M, ALPHA_NUM_B, ALPHA_NUM_T, ALPHA_NUM_Q, ALPHA_NUM_Z, ALPHA_NUM_Y };
-	int num1;//¼Ò¼öÁ¡ À§ ¼ıÀÚ(ÃÖ´ë 3ÀÚ¸®)
-	int dot;//¼Ò¼öÁ¡ µµÆ®ÀÇ À¯¹«
-	int num2;//¼Ò¼öÁ¡ ¾Æ·¡ ¼ıÀÚ(ÃÖ´ë 2ÀÚ¸®)
-	int alpha;//¾ËÆÄÀÚ¸®¼ö
-	float num1Width;//num1ÀÇ ¼ıÀÚ
-	float dotWidth = (float)(3 * _2X) * zoom;//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
-	float num2Width;//num2ÀÇ ¼ıÀÚ
+	int num1;//ì†Œìˆ˜ì  ìœ„ ìˆ«ì(ìµœëŒ€ 3ìë¦¬)
+	int dot;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ìœ ë¬´
+	int num2;//ì†Œìˆ˜ì  ì•„ë˜ ìˆ«ì(ìµœëŒ€ 2ìë¦¬)
+	int alpha;//ì•ŒíŒŒìë¦¬ìˆ˜
+	float num1Width;//num1ì˜ ìˆ«ì
+	float dotWidth = (float)(3 * _2X) * zoom;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
+	float num2Width;//num2ì˜ ìˆ«ì
 	//int alphaIdx = ALPHA_NUM_A + ((GetNumFigure(num) - 1) / 3) - 1;
 	int alphaIdx = GetNumFigure(num) < 6 ? 0 : alphaArray[Min(2, (GetNumFigure(num) - 2) / 3 - 1)];
-	int alphaFont = (font == NUM_FONT_SMALL ? FONT_SMALL : FONT_LARGE);//¼ıÀÚ¿¡ µû¸¥ ¾ËÆÄ ÆùÆ®
+	int alphaFont = (font == NUM_FONT_SMALL ? FONT_SMALL : FONT_LARGE);//ìˆ«ìì— ë”°ë¥¸ ì•ŒíŒŒ í°íŠ¸
 
 	float alphaGapY;
 	float dotGapY;
@@ -4042,7 +4042,7 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 	float totalWidth;
 	long long int temp;
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 
@@ -4073,7 +4073,7 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 
 	do {
 		gapNum /= 10;
-		gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+		gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 		gapWidth = GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
@@ -4101,7 +4101,7 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetNumDx(num2, sign, font, digit, comma, zoom, fixed);
@@ -4177,13 +4177,13 @@ void DrawBigNum2Bold(long long int num, int x, int y, int align, int digit, int 
 void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed)
 {
 	int alphaArray[] = { ALPHA_NUM_K, ALPHA_NUM_M, ALPHA_NUM_B, ALPHA_NUM_T, ALPHA_NUM_Q, ALPHA_NUM_Z, ALPHA_NUM_Y };
-	int num1;//¼Ò¼öÁ¡ À§ ¼ıÀÚ(ÃÖ´ë 3ÀÚ¸®)
-	int dot;//¼Ò¼öÁ¡ µµÆ®ÀÇ À¯¹«
-	int num2;//¼Ò¼öÁ¡ ¾Æ·¡ ¼ıÀÚ(ÃÖ´ë 2ÀÚ¸®)
-	int alpha;//¾ËÆÄÀÚ¸®¼ö
-	float num1Width;//num1ÀÇ ¼ıÀÚ
-	float dotWidth = (float)(22) * zoom;//¼Ò¼öÁ¡ µµÆ®ÀÇ ³ĞÀÌ
-	float num2Width;//num2ÀÇ ¼ıÀÚ
+	int num1;//ì†Œìˆ˜ì  ìœ„ ìˆ«ì(ìµœëŒ€ 3ìë¦¬)
+	int dot;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ìœ ë¬´
+	int num2;//ì†Œìˆ˜ì  ì•„ë˜ ìˆ«ì(ìµœëŒ€ 2ìë¦¬)
+	int alpha;//ì•ŒíŒŒìë¦¬ìˆ˜
+	float num1Width;//num1ì˜ ìˆ«ì
+	float dotWidth = (float)(22) * zoom;//ì†Œìˆ˜ì  ë„íŠ¸ì˜ ë„“ì´
+	float num2Width;//num2ì˜ ìˆ«ì
 	//int alphaIdx = ALPHA_NUM_A + ((GetNumFigure(num) - 1) / 3) - 1;
 	int alphaIdx = GetNumFigure(num) < 6 ? 0 : alphaArray[Min(2, (GetNumFigure(num) - 2) / 3 - 1)];
 
@@ -4194,7 +4194,7 @@ void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign
 	float totalWidth;
 	long long int temp;
 
-	int gap = 0;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+	int gap = 0;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 	float gapWidth;
 	long long gapNum = num;
 
@@ -4211,7 +4211,7 @@ void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign
 
 	do {
 		gapNum /= 10;
-		gap++;//ÁÙ¿©¾ß µÇ´Â ÀÚ¸®¼ö
+		gap++;//ì¤„ì—¬ì•¼ ë˜ëŠ” ìë¦¬ìˆ˜
 		gapWidth = GetNumDx2(gapNum, sign, digit, comma, zoom, fixed);
 	} while (gapWidth > width);
 
@@ -4239,7 +4239,7 @@ void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign
 	}
 	else if (figureNum == 1) {
 
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//¼Ò¼öÀ§ ÀÚ¸®¼öµéÀ» Á¦°ÅÇÑ ³ª¸ÓÁö ¼ıÀÚ¸¦ ±¸ÇÑ´Ù.
+		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//ì†Œìˆ˜ìœ„ ìë¦¬ìˆ˜ë“¤ì„ ì œê±°í•œ ë‚˜ë¨¸ì§€ ìˆ«ìë¥¼ êµ¬í•œë‹¤.
 		num2 = temp / pow(10, GetNumFigure(num) - 2);
 
 		gapWidth += dotWidth + GetNumDx2(num2, sign, digit, comma, zoom, fixed);
@@ -4443,7 +4443,7 @@ void DrawShield(int x, int y, int cnt, int max, int align, float zoom)
 	for (i = drawCnt - 1; i >= 0; i--) {
 		if (i >= cnt)
 			SetColor(COLOR_STARGREY);
-		//¾ÆÀÌÄÜÀ¸·Î ±×¸®´Â°Å
+		//ì•„ì´ì½˜ìœ¼ë¡œ ê·¸ë¦¬ëŠ”ê±°
 		DrawIcon(ICON_SHIELD, x + (float)(i * gapX) * shieldZoom, y, shieldZoom, COLOR_WHITE, false, false, true);
 		SetColor(false);
 	}
@@ -4475,7 +4475,7 @@ void DrawHeart(int x, int y, int cnt, int max, int align, float zoom)
 	for (i = 0; i < drawCnt; i++) {
 		if (i >= cnt)
 			SetColor(COLOR_STARGREY);
-		//¾ÆÀÌÄÜÀ¸·Î ±×¸®´Â°Å
+		//ì•„ì´ì½˜ìœ¼ë¡œ ê·¸ë¦¬ëŠ”ê±°
 		DrawIcon(ICON_HEART, x + (float)(i * 14 * _2X) * zoom, y, zoom, COLOR_BROWN, false, false, true);
 		SetColor(false);
 	}
@@ -4485,7 +4485,7 @@ void DrawHeart(int x, int y, int cnt, int max, int align, float zoom)
 
 void DrawRaidButton(float zoom, bool ani)
 {
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	int x = xOffset + DX / 2 - 36 * _2X * zoom;
 	int y = STATUSWIN_Y + HEARTBUTTONGAP;
 	float width = (float)(12 * _2X) * zoom + GetNumDx(raidChance, false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 4 * _2X) * zoom;
@@ -4504,7 +4504,7 @@ void DrawRaidButton(float zoom, bool ani)
 
 void DrawGoldButton(int itemType, int itemDetail, int itemGrade, int itemLv, int x, int y, float zoom, bool ani)
 {
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	float width = (float)(ITEMICONSIZE + 10 * _2X + 1 * _2X) * zoom + GetNumDx(GetBetGold(itemDetail, itemGrade), false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
 
 	if (width == 0)
@@ -4524,7 +4524,7 @@ void DrawGoldButton(int itemType, int itemDetail, int itemGrade, int itemLv, int
 void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 {
 	float GOLDALPHAZOOM = 0.5f;
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	//float width = (float)(ITEMICONSIZE + 10 * _2X + 1 * _2X) * zoom + GetNumDx(GetBetHeart(itemDetail, itemGrade, bet), false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
 	//float width = (float)(ITEMICONSIZE + 2 * _2X + 8 * _2X) * 1.1f * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * 0.65f);
 	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
@@ -4566,7 +4566,7 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 	int MAXPUSHDOWN = AUTOPLAYFRAME;
 	int i;
 
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
 
 	if (width == 0)
@@ -4580,12 +4580,12 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 	//Test Setting
 
 	//Betï¿½Ï¶ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
-	//µî±Ş°ú robin.betÀ» ºñ±³ÇØ¼­ ÇØ´ç °ø°İÀÌ µîÀåÇÒÁö È®ÀÎÇÑ´Ù.
+	//ë“±ê¸‰ê³¼ robin.betì„ ë¹„êµí•´ì„œ í•´ë‹¹ ê³µê²©ì´ ë“±ì¥í• ì§€ í™•ì¸í•œë‹¤.
 	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½Ì¸ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ ï¿½Ö°ï¿½,
 	//ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½Ì¸ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ 3ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ ï¿½Ö´ï¿½.
 	//ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
 	//ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å³ï¿½×·ï¿½ï¿½Ìµï¿½(GRADE_NORMAL,....) ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
-	//±×¸®°í ¶á±İÆ÷Áö¸¸ °ñµå¸¦ ¾î¶»°Ô ³»·ÁÁÙ°Å³Ä.
+	//ê·¸ë¦¬ê³  ëœ¬ê¸ˆí¬ì§€ë§Œ ê³¨ë“œë¥¼ ì–´ë–»ê²Œ ë‚´ë ¤ì¤„ê±°ëƒ.
 	//ï¿½ï¿½ï¿½?Ã¼ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ö¸ï¿½ï¿½Ø¼ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¿ï¿½ ï¿½î¸¦ ï¿½ï¿½ È¹ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½?ï¿½Ú¾ï¿½ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½İ·Â°ï¿½ ï¿½ï¿½ï¿½È¹ï¿½ï¿½?ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Éµï¿½
 	//ï¿½×·ï¿½ï¿½ï¿½ 1Å¸ï¿½ï¿½ 
 
@@ -4620,7 +4620,7 @@ void DrawBattleButton(int x, int y, float zoom, bool ani)
 
 	DrawIcon(ICON_EVENT_2SWORD, x, y, zoom, COLOR_BROWN/*(ani == true ? itemColor[robin.playtime % 10] : COLOR_BROWN)*/, false, false, 1.0f);
 	CenterText(TEXT_ADVENTURE, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)(ITEMICONSIZE - 2 * _2X) * zoom, 0.5f * zoom);
-	//ÀÔÀå·á
+	//ì…ì¥ë£Œ
 	//
 	if (frame % FPS < 15)
 		heartZoom += (float)(frame % FPS) * 0.02f;
@@ -4650,7 +4650,7 @@ void JoyStickDraw(int cnt, int x, int y, float joyDx, float joyDy, float joyPowe
 	float knobX = x + joyDx;
 	float knobY = y + joyDy + (float)16 * zoom;
 
-	// 1. ³ë¶õ º£ÀÌ½º
+	// 1. ë…¸ë€ ë² ì´ìŠ¤
 	DrawImageScale(
 		baseW, baseH,
 		0, 140,
@@ -4661,7 +4661,7 @@ void JoyStickDraw(int cnt, int x, int y, float joyDx, float joyDy, float joyPowe
 		sprite[PLAYBUTTON_IMG],
 		PLAYBUTTON_IMG);
 
-	// 2. È¸»ö °¡ÀÌµå ¸µ
+	// 2. íšŒìƒ‰ ê°€ì´ë“œ ë§
 	DrawImageScale(
 		ringW, ringH,
 		109, 208,
@@ -4671,7 +4671,7 @@ void JoyStickDraw(int cnt, int x, int y, float joyDx, float joyDy, float joyPowe
 		zoom, zoom,
 		sprite[PLAYBUTTON_IMG],
 		PLAYBUTTON_IMG);
-	// 4. ³ë¶õ ¼ÕÀâÀÌ
+	// 4. ë…¸ë€ ì†ì¡ì´
 	DrawImageScale(
 		knobW, knobH,
 		109, 141,
@@ -4689,7 +4689,7 @@ void DrawJumpButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, 
 	int MAXPUSHDOWN = 12;
 	int i;
 
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
 
 	if (ani == true) {
@@ -4725,7 +4725,7 @@ void DrawAttackButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame
 	int MAXPUSHDOWN = 12;
 	int i;
 
-	//ÇÏÆ®¹öÆ°
+	//í•˜íŠ¸ë²„íŠ¼
 	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
 
 	if (ani == true) {
@@ -4752,7 +4752,7 @@ void DrawAttackButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame
 
 }
 
-//ÇöÀç ÃÖ´ë ¸Æ½º 
+//í˜„ì¬ ìµœëŒ€ ë§¥ìŠ¤ 
 int GetMaxShield(void)
 {
 	return MAXSHIELD;
@@ -4798,7 +4798,7 @@ void DrawCheckButton(int x, int y, int w, int h, int gray, bool checked, int cur
 
 	DrawBigNum(amount, x + w - (float)(4 * _2X) * zoom, y - (float)9 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, 0, false, width - (float)(ITEMICONSIZE + 1 * _2X) * zoom, true, zoom, false);
 }
-//frameColor´Â FRAME_GREEN ÀÌ»ó
+//frameColorëŠ” FRAME_GREEN ì´ìƒ
 void DrawButtonFrame(int x, int y, int w, int h, int frameColor, float zoom)
 {
 	int i;
@@ -4839,7 +4839,7 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 
 	DrawImageScale(176, 40, 1, 679, x, y, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	//¹«·á
+	//ë¬´ë£Œ
 	if (amount == 0) {
 		CenterText(TEXT_FREE, x + (float)w / 2, y - (float)8 * _2X * zoom, BUYBUTTONZOOM * zoom);
 	}
@@ -4953,7 +4953,7 @@ void DrawAlarmMark(int x, int y, int count, float zoom)
 
 }
 
-//È­Æó°°Àº°ÍÀ» ´õÇÒ ¶§´Â ÀÌ ¸¶Å©°í
+//í™”íê°™ì€ê²ƒì„ ë”í•  ë•ŒëŠ” ì´ ë§ˆí¬ê³ 
 void DrawPlusMark(int x, int y, float zoom)
 {
 	DrawImage(64, 64, 521, 640, x, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
@@ -5017,7 +5017,7 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 	else {
 		if (idx >= ICON_SKILL && idx < ICON_SUMMON) {
 		}
-		//Àåºñ·ùÀÌ¸é
+		//ì¥ë¹„ë¥˜ì´ë©´
 		else if (idx >= ICON_WEAPON && idx < ICON_DEBUF) {
 
 			idx = GetItemIcon(ITEM_SWORD, idx - ICON_WEAPON, GRADE_NORMAL);
@@ -5290,7 +5290,7 @@ void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, in
 void DrawRedDot(int x, int y, int color, int num, float zoom)
 {
 	int i;
-	//Ä®¶ó°¡ ÀÖÀ¸¸é Å×µÎ¸®¸¦ ÃÄÁØ´Ù.
+	//ì¹¼ë¼ê°€ ìˆìœ¼ë©´ í…Œë‘ë¦¬ë¥¼ ì³ì¤€ë‹¤.
 	if (color) {
 		SetColor(color);
 		for (i = 0; i < 4; i++) {
@@ -5417,15 +5417,15 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 
 	switch (type) {
 	case BOX_EQUIP:
-		//Àåºñ°¡ µé¾îÀÖ´Â ¹Ú½º
+		//ì¥ë¹„ê°€ ë“¤ì–´ìˆëŠ” ë°•ìŠ¤
 		if (detail <= BOX_REWARD0) {
 			icon = GetItemIcon(boxEquipType[frame % 8], frame % itemTypeCnt[boxEquipType[frame % 8]], GRADE_NORMAL);
 		}
-		//¸ó½ºÅÍ°¡ µé¾îÀÖ´Â ¹Ú½º
+		//ëª¬ìŠ¤í„°ê°€ ë“¤ì–´ìˆëŠ” ë°•ìŠ¤
 		else if (detail <= BOX_REWARD1) {
 			icon = ICON_SUMMON + crewData[(frame % TOTAL_CREW) * CREWDATASIZE];
 		}
-		//±âÅ¸ ¹Ú½º
+		//ê¸°íƒ€ ë°•ìŠ¤
 		else {
 		}
 
@@ -5463,7 +5463,7 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 
 }
 
-//º¸»óÀ» Ç¥ÇöÇÏ±â 
+//ë³´ìƒì„ í‘œí˜„í•˜ê¸° 
 void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, int openFrame)
 {
 	int i, j;
@@ -5583,11 +5583,11 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 
 			if (lv != -1 && type < ITEM_GEM) {
 				if (cardFrame == true) {
-					////°³¼ö¸¶Å©
+					////ê°œìˆ˜ë§ˆí¬
 					//DrawAlarmMark(x + (float)(2 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, count, zoom / 2, cvtDest, cvtLayer, buffering);
-					////i¸¶Å©
+					////ië§ˆí¬
 					//DrawInfoMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, zoom / 2, cvtDest, cvtLayer, buffering);
-					//°³¼ö¸¶Å©
+					//ê°œìˆ˜ë§ˆí¬
 					if (count)
 						DrawAlarmMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, count, zoom / 2);
 
@@ -5616,7 +5616,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 #endif
 			}
 
-			//º° ±×·ÁÁÖ±â
+			//ë³„ ê·¸ë ¤ì£¼ê¸°
 			if (cardFrame == true) {
 
 				DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 16 * _2X) * zoom, curStar, maxStar, maxStar, CENTER, true, zoom * 0.40f);
@@ -5632,11 +5632,11 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 		case ITEM_CREW:
 			//if (lv != -1) {
 			if (cardFrame == true) {
-				////°³¼ö¸¶Å©
+				////ê°œìˆ˜ë§ˆí¬
 				//DrawAlarmMark(x + (float)(2 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, count, zoom / 2, cvtDest, cvtLayer, buffering);
-				////i¸¶Å©
+				////ië§ˆí¬
 				//DrawInfoMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, zoom / 2, cvtDest, cvtLayer, buffering);
-				//°³¼ö¸¶Å©
+				//ê°œìˆ˜ë§ˆí¬
 				DrawAlarmMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, count, zoom / 2);
 
 			}
@@ -5699,17 +5699,17 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			break;
 		case ITEM_NETITEM:
 			switch (detail) {
-			case ITEM_NET_BOX_WEAPON_HIGH: //°í±Ş¹«±â»óÀÚ(168)	//BOX_H2
-			case ITEM_NET_BOX_WEAPON_MID: //Áß±Ş¹«±â»óÀÚ(169)	//BOX_H1
-			case ITEM_NET_BOX_WEAPON_LOW: //ÇÏ±Ş¹«±â»óÀÚ(170)	//BOX_H1
-			case ITEM_NET_BOX_DEFENSE_HIGH: //°í±Ş¹æ¾î±¸»óÀÚ(171)	//BOX_H2
-			case ITEM_NET_BOX_DEFENSE_MID: //Áß±Ş¹æ¾î±¸»óÀÚ(172)	//BOX_H1
-			case ITEM_NET_BOX_DEFENSE_LOW: //ÇÏ±Ş¹æ¾î±¸»óÀÚ(173)	//BOX_H1
-			case ITEM_NET_BOX_ACCESSORY_HIGH: //°í±Ş¾Ç¼¼»ç¸®»óÀÚ(174)	//BOX_H2
-			case ITEM_NET_BOX_ACCESSORY_MID: //Áß±Ş¾Ç¼¼»ç¸®»óÀÚ(175)	//BOX_H1
-			case ITEM_NET_BOX_ACCESSORY_LOW: //ÇÏ±Ş¾Ç¼¼»ç¸®»óÀÚ(176)	//BOX_H1
-			case ITEM_NET_BOX_RANDOM:	//·£´ı¾ÆÀÌÅÛ»óÀÚ(177)	//BOX_EQUIP_SILVER
-			case ITEM_NET_BOX_GEM:	//°í±Şº¸¼®(178)	//BOX_S5
+			case ITEM_NET_BOX_WEAPON_HIGH: //ê³ ê¸‰ë¬´ê¸°ìƒì(168)	//BOX_H2
+			case ITEM_NET_BOX_WEAPON_MID: //ì¤‘ê¸‰ë¬´ê¸°ìƒì(169)	//BOX_H1
+			case ITEM_NET_BOX_WEAPON_LOW: //í•˜ê¸‰ë¬´ê¸°ìƒì(170)	//BOX_H1
+			case ITEM_NET_BOX_DEFENSE_HIGH: //ê³ ê¸‰ë°©ì–´êµ¬ìƒì(171)	//BOX_H2
+			case ITEM_NET_BOX_DEFENSE_MID: //ì¤‘ê¸‰ë°©ì–´êµ¬ìƒì(172)	//BOX_H1
+			case ITEM_NET_BOX_DEFENSE_LOW: //í•˜ê¸‰ë°©ì–´êµ¬ìƒì(173)	//BOX_H1
+			case ITEM_NET_BOX_ACCESSORY_HIGH: //ê³ ê¸‰ì•…ì„¸ì‚¬ë¦¬ìƒì(174)	//BOX_H2
+			case ITEM_NET_BOX_ACCESSORY_MID: //ì¤‘ê¸‰ì•…ì„¸ì‚¬ë¦¬ìƒì(175)	//BOX_H1
+			case ITEM_NET_BOX_ACCESSORY_LOW: //í•˜ê¸‰ì•…ì„¸ì‚¬ë¦¬ìƒì(176)	//BOX_H1
+			case ITEM_NET_BOX_RANDOM:	//ëœë¤ì•„ì´í…œìƒì(177)	//BOX_EQUIP_SILVER
+			case ITEM_NET_BOX_GEM:	//ê³ ê¸‰ë³´ì„(178)	//BOX_S5
 				break;
 			default:
 				width = GetNumDx(count, false, NUM_FONT_LARGE, false, false, zoom / 2, false);
@@ -5754,7 +5754,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 
 	}
 
-	//»õ·Î¿î ¾ÆÀÌÅÛÀÌ¸é º°À» 
+	//ìƒˆë¡œìš´ ì•„ì´í…œì´ë©´ ë³„ì„ 
 	if (newItem == true && (type < ITEM_GEM || type == ITEM_CREW)) {
 		DrawEffect(1000 + newCardEffect[(frame / MOTIONDIV % 28) * 3 + 0], x + (float)(newCardEffect[(frame / MOTIONDIV % 28) * 3 + 1]) * zoom, y - (float)(newCardEffect[(frame / MOTIONDIV % 28) * 3 + 2]) * zoom, ao[PLAYER].dirF, false, 0.5f * zoom);
 	}
@@ -5775,7 +5775,7 @@ float GetEquipIconWidth(int itemType, int itemDetail, int itemGrade, float zoom)
 //x
 //y
 //align
-//return °ªÀº ³ĞÀÌÀÌ´Ù.
+//return ê°’ì€ ë„“ì´ì´ë‹¤.
 void DrawEquipIcon(int itemType, int itemDetail, int itemGrade, int x, int y, float zoom, bool iconAni)
 {
 	int i;
@@ -5963,11 +5963,11 @@ void DrawSelect(int x, int y, int w, int h, int grade)
 
 void DrawTime(int x, int y, int atime, int type, int align, float zoom)
 {
-	//atimeÀº ÃÊ´Ù.
+	//atimeì€ ì´ˆë‹¤.
 	//atime * 60 = 1m
 	//atime * 3600 = 1h
 	//atime * 144000 = 1d
-	//1ÀÏ ÀÌ»óÀÌ¸é xx d:yy h:zz m
+	//1ì¼ ì´ìƒì´ë©´ xx d:yy h:zz m
 	float width;
 
 	switch (type) {
@@ -6036,11 +6036,11 @@ void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom)
 
 void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom)
 {
-	//atimeÀº ÃÊ´Ù.
+	//atimeì€ ì´ˆë‹¤.
 	//atime * 60 = 1m
 	//atime * 3600 = 1h
 	//atime * 144000 = 1d
-	//1ÀÏ ÀÌ»óÀÌ¸é xx d:yy h:zz m
+	//1ì¼ ì´ìƒì´ë©´ xx d:yy h:zz m
 	float width;
 
 	//x = x + (float)30 * _2X * zoom;
@@ -6188,19 +6188,19 @@ void DrawDateText(int x, int y, int atime, int type, float zoom)
 	int hour = tm->tm_hour;
 	int min = tm->tm_min;
 	int second = tm->tm_sec;
-	//ÀÏ
-	DrawNum(day, x, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ÃÊ
+	//ì¼
+	DrawNum(day, x, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ì´ˆ
 	DrawText(TEXT_DAY, x + (float)(20 * _2X) * zoom, y, zoom);
 
 	//ï¿½Ã°ï¿½
-	DrawNum(hour, x + (float)(20 * _2X * 2) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ÃÊ
+	DrawNum(hour, x + (float)(20 * _2X * 2) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ì´ˆ
 	DrawText(TEXT_HOUR, x + (float)(20 * _2X * 3) * zoom, y, zoom);
 
-	//ºĞ
+	//ë¶„
 	DrawText(TEXT_MINUTE, x + (float)(20 * _2X * 5) * zoom + (float)(10 * _2X) * zoom, y, zoom);
 
-	//ÃÊ
-	DrawNum(second, x + (float)(20 * _2X * 6) * zoom + (float)(10 * _2X) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ÃÊ
+	//ì´ˆ
+	DrawNum(second, x + (float)(20 * _2X * 6) * zoom + (float)(10 * _2X) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//ì´ˆ
 	DrawText(TEXT_SECONDS, x + (float)(20 * _2X * 7) * zoom + (float)(10 * _2X) * zoom, y, zoom);
 }
 
@@ -6286,29 +6286,29 @@ void BoxInfoDraw(int boxType, int x, int y, float zoom)
 	CenterText(TEXT_ITEMNAME_BOX + boxType, x + (float)POPUPWINDOWSIZE_X / 2 * zoom, y + plusY - (float)72 * _2X * zoom, zoom);
 	//DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 80 * _2X) / 2 * zoom, y - (float)88 * _2X * zoom, TEXT_ITEMNAME_BOX + boxType, zoom, cvtDest, cvtLayer, buffering);
 
-	//°ñµå
+	//ê³¨ë“œ
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * 2 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xFFFFFF);
 	DrawRouletteNumIcon(GetBoxGold(boxType), ICON_GOLD, x + (float)16 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 2) * zoom, false, LEFT, zoom);
 	DrawPercent(boxDropPercent[boxType][BOXDROP_COIN], x + (float)292 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 2 + 6 * _2X) * zoom, zoom, RIGHT);
 
-	//°ñµå¹é
+	//ê³¨ë“œë°±
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * 1 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xEEEEEE);
 	width = DrawRouletteNumIcon(GetBoxGold(boxType), ICON_GOLD, x + (float)16 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 1) * zoom, false, LEFT, zoom);
 	DrawXNumGold(COINPER, x + (float)(12 + 8) * _2X * zoom + width, y + plusY - (float)144 * _2X * zoom + (float)24 * _2X * 1 * zoom, false, 0.6f * zoom, LEFT, false);
 	DrawPercent(boxDropPercent[boxType][BOXDROP_COINBAG], x + (float)292 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 1 + 6 * _2X) * zoom, zoom, RIGHT);
 
-	//Äù½ºÆ® ¾ÆÀÌÅÛ
+	//í€˜ìŠ¤íŠ¸ ì•„ì´í…œ
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * 0 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xFFFFFF);
 	DrawRouletteNumIcon(GetBoxQuestItem(boxType), GetItemIcon(questRequestItem[robin.quest * 3 + 0], questRequestItem[robin.quest * 3 + 1], questRequestItem[robin.quest * 3 + 2]), x + (float)16 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 0) * zoom, false, LEFT, zoom);
 	DrawPercent(boxDropPercent[boxType][BOXDROP_QUESTITEM], x + (float)292 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * 0 + 6 * _2X) * zoom, zoom, RIGHT);
 
-	//Äù½ºÆ® ¾ÆÀÌÅÛ ¹é
+	//í€˜ìŠ¤íŠ¸ ì•„ì´í…œ ë°±
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * -1 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xEEEEEE);
 	width = DrawRouletteNumIcon(GetBoxQuestItem(boxType), GetItemIcon(questRequestItem[robin.quest * 3 + 0], questRequestItem[robin.quest * 3 + 1], questRequestItem[robin.quest * 3 + 2]), x + (float)16 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * -1) * zoom, false, LEFT, zoom);
 	DrawXNumGold(QUESTPER, x + (float)(12 + 8) * _2X * zoom + width, y + plusY - (float)144 * _2X * zoom + (float)24 * _2X * -1 * zoom, false, 0.6f * zoom, LEFT, false);
 	DrawPercent(boxDropPercent[boxType][BOXDROP_QUESTITEMBAG], x + (float)292 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * -1 + 6 * _2X) * zoom, zoom, RIGHT);
 
-	//ÇÏÆ® ¾ÆÀÌÅÛ
+	//í•˜íŠ¸ ì•„ì´í…œ
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * -2 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xFFFFFF);
 	DrawRouletteNumIcon(GetBoxHeartItem(boxType), ICON_HEART, x + (float)16 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * -2) * zoom, false, LEFT, zoom);
 	DrawPercent(boxDropPercent[boxType][BOXDROP_HEART], x + (float)292 * _2X * zoom, y + plusY - (float)(142 * _2X - 24 * _2X * -2 + 6 * _2X) * zoom, zoom, RIGHT);

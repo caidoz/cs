@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _CMF_H_
 #define _CMF_H_
-// C0 ~ C122±îÁöÀÇ ¸ğµç .c ÆÄÀÏÀ» ÇÑ °÷¿¡¼­ include
+// C0 ~ C122ê¹Œì§€ì˜ ëª¨ë“  .c íŒŒì¼ì„ í•œ ê³³ì—ì„œ include
 //Include Divider File
 #include "Cmf/c0.h"
 #include "Cmf/c1.h"

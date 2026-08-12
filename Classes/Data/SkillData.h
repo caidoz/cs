@@ -1,7152 +1,7152 @@
-#pragma once
+Ôªø#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_SKILL_H_
 #define _DATA_SKILL_H_
 
-//¿œ¥‹ ΩΩ∑‘ø°º≠ º±≈√µ» ∞Õ ø‹ø°¥¬ »˜æÓ∑Œ∞° ∞¯∞›¿ª «“∞Õ¿Ã≥ƒ? ±‚∫ª¿˚¿∏∑Œ «ÿ¡÷¥¬∞‘ ¡¡¿ª∞Õ ∞∞¿∫µ•.
+//ÏùºÎã® Ïä¨Î°ØÏóêÏÑú ÏÑ†ÌÉùÎêú Í≤É Ïô∏ÏóêÎäî ÌûàÏñ¥Î°úÍ∞Ä Í≥µÍ≤©ÏùÑ Ìï†Í≤ÉÏù¥ÎÉê? Í∏∞Î≥∏Ï†ÅÏúºÎ°ú Ìï¥Ï£ºÎäîÍ≤å Ï¢ãÏùÑÍ≤É Í∞ôÏùÄÎç∞.
 // 
 
-//6~20:¡ı∞°¿≤
-//21~25:Ω¿µÊ¡∂∞«∑π∫ß 5¥‹∞Ë, 26:Ω∫≈≥Ω√¿¸Ω√ µ•¿Ã≈Õ
-//27: ªÁøÓµÂ->ªÁ∞≈∏Æ
-//28: √÷¥Î »˜∆Æƒ´øÓ∆Æ
-//Ω∫≈≥¿Ã ∏Óº∫¬•∏Æ¿Œ¡ˆ »Æ¿Œ
-//Ω∫≈≥¿Ã «œ∆Æ ∏Ó∞≥ ¿ÃªÛ ∫£∆√«ÿæﬂ ≥™ø¿¥¬¡ˆ »Æ¿Œ
+//6~20:Ï¶ùÍ∞ÄÏú®
+//21~25:ÏäµÎìùÏ°∞Í±¥Î†àÎ≤® 5Îã®Í≥Ñ, 26:Ïä§ÌÇ¨ÏãúÏ†ÑÏãú Îç∞Ïù¥ÌÑ∞
+//27: ÏÇ¨Ïö¥Îìú->ÏÇ¨Í±∞Î¶¨
+//28: ÏµúÎåÄ ÌûàÌä∏Ïπ¥Ïö¥Ìä∏
+//Ïä§ÌÇ¨Ïù¥ Î™áÏÑ±ÏßúÎ¶¨Ïù∏ÏßÄ ÌôïÏù∏
+//Ïä§ÌÇ¨Ïù¥ ÌïòÌä∏ Î™áÍ∞ú Ïù¥ÏÉÅ Î≤†ÌåÖÌï¥Ïïº ÎÇòÏò§ÎäîÏßÄ ÌôïÏù∏
 const signed int skillData[TOTAL_SKILL * SKILLDATASIZE] = {
-	///∑Œ∫ÛΩ∫≈≥
-	//∞¯≈ÎΩ∫≈≥
-	//SKILL_COMMON_ROBIN1//»˚¥‹∑√(P)
+	///Î°úÎπàÏä§ÌÇ¨
+	//Í≥µÌÜµÏä§ÌÇ¨
+	//SKILL_COMMON_ROBIN1//ÌûòÎã®Î†®(P)
 	PASSIVE, 0, 0, 255, 0, 29,
 	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 	1, 5, 15, 35, 60, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN2//√º∑¬¥‹∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN2//Ï≤¥Î†•Îã®Î†®(P)
 	PASSIVE, 0, 0, 255, 0, 30,
 	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 	1, 5, 15, 35, 60, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN3//πŒ√∏¥‹∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN3//ÎØºÏ≤©Îã®Î†®(P)
 	PASSIVE, 0, 0, 255, 0, 21,
 	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 	1, 5, 15, 35, 60, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN4//¡§Ω≈¥‹∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN4//Ï†ïÏã†Îã®Î†®(P)
 	PASSIVE, 0, 0, 255, 0, 22,
 	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 	1, 5, 15, 35, 60, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN5//ª˝∏Ì∑¬∞≠»≠(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN5//ÏÉùÎ™ÖÎ†•Í∞ïÌôî(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN2, 3, 23,
 	4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN6//±‚∑¬∞≠»≠(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN6//Í∏∞Î†•Í∞ïÌôî(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN4, 3, 24,
 	4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN7//π´±‚º˜∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN7//Î¨¥Í∏∞ÏàôÎ†®(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN1, 3, 31,
 	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN8//πÊæÓ±∏º˜∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN8//Î∞©Ïñ¥Íµ¨ÏàôÎ†®(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN2, 3, 26,
 	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN9//æ‡¡°∆ƒæ«(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN9//ÏïΩÏ†êÌååÏïÖ(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN12, 3, 32,
 	1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 	25, 40, 55, 70, 90, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN10//æ‡¡°∞¯∞›(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN10//ÏïΩÏ†êÍ≥µÍ≤©(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN9, 3, 33,
 	5, 7, 9, 11, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25,
 	40, 50, 60, 70, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN11//∂“Ω…(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN11//ÎöùÏã¨(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN2, 5, 25,
 	4, 7, 10, 13, 15, 17, 19, 20, 22, 23, 25, 26, 28, 29, 30,
 	15, 30, 45, 60, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN12//¡§¡∂¡ÿ(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN12//Ï†ïÏ°∞Ï§Ä(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN4, 3, 27,
 	1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 	15, 25, 40, 60, 90, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_COMMON_ROBIN13//Ω≈º”»∏««(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_COMMON_ROBIN13//Ïã†ÏÜçÌöåÌîº(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN3, 5, 28,
 	1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 	15, 30, 45, 60, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN1//∞Àº˙º˜∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN1//Í≤ÄÏà†ÏàôÎ†®(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN1, 3, 16,
 	2, 4, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN2//±‰±ﬁπÊæÓ(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN2//Í∏¥Í∏âÎ∞©Ïñ¥(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN3, 3, 7,
 	2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 	5, 15, 30, 50, 70, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN3//πÊæÓº˜∑√(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN3//Î∞©Ïñ¥ÏàôÎ†®(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN8, 1, 8,
 	25, 32, 38, 43, 47, 51, 54, 57, 60, 62, 64, 66, 68, 69, 70,
 	5, 15, 30, 50, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN4//∏Èø™∑¬(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN4//Î©¥Ïó≠Î†•(P)
 	PASSIVE, 0, 0, SKILL_COMMON_ROBIN5, 3, 12,
 	25, 32, 39, 45, 51, 56, 61, 65, 69, 72, 74, 76, 78, 79, 80,
 	15, 30, 45, 60, 80, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN5//¡ˆ±∏¿¸(P)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN5//ÏßÄÍµ¨Ï†Ñ(P)
 	PASSIVE, 0, 0, SKILL_ROBIN14, 7, 36,
 	5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 28, 29, 30,
 	60, 70, 80, 90, 95, 0,
 	false,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN6//ø°æÓ≈©∑°Ω¨(A)-≥ÀπÈ
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN6//ÏóêÏñ¥ÌÅ¨ÎûòÏâ¨(A)-ÎÑâÎ∞±
 	ACTIVE, 10, FPS * 10, SKILL_COMMON_ROBIN7, 3, 0,
 	0, 22, 37, 52, 64, 76, 88, 97, 106, 115, 121, 127, 130, 133, 137,
 	15, 30, 45, 60, 75, ROBIN_SKILL_AIRCRASH,
 	50,
-	GRADE_NORMAL,//µÓ±ﬁ
-	//SKILL_ROBIN7//∏∂±∏¬Ó∏£±‚(A)
+	GRADE_NORMAL,//Îì±Í∏â
+	//SKILL_ROBIN7//ÎßàÍµ¨Ï∞åÎ•¥Í∏∞(A)
 	ACTIVE, 30, FPS * 15, SKILL_ROBIN8, 5, 1,
 	0, 17, 32, 47, 59, 71, 83, 92, 101, 110, 116, 122, 125, 128, 132,
 	25, 35, 50, 65, 80, ROBIN_SKILL_STAB,
 	50,
-	GRADE_SET,//µÓ±ﬁ
-	//SKILL_ROBIN8//∫ŒΩ∫∆ÆΩΩ∑°Ω¨(A)-≥ÀπÈ
+	GRADE_SET,//Îì±Í∏â
+	//SKILL_ROBIN8//Î∂ÄÏä§Ìä∏Ïä¨ÎûòÏâ¨(A)-ÎÑâÎ∞±
 	ACTIVE, 20, FPS * 15, SKILL_ROBIN1, 1, 2,
 	0, 8, 18, 28, 36, 44, 52, 58, 64, 70, 74, 78, 80, 82, 86,
 	5, 15, 25, 40, 60, ROBIN_SKILL_BOOSTSLASH,
 	50,
-	GRADE_SUPERIOR,//µÓ±ﬁ
-	//SKILL_ROBIN9//«œ¿Ã∆€¬˜¡ˆ(A)-∞¸≈Î
+	GRADE_SUPERIOR,//Îì±Í∏â
+	//SKILL_ROBIN9//ÌïòÏù¥ÌçºÏ∞®ÏßÄ(A)-Í¥ÄÌÜµ
 	ACTIVE, 25, FPS * 15, SKILL_COMMON_ROBIN11, 1, 3,
 	0, 11, 21, 31, 39, 47, 55, 61, 67, 73, 77, 81, 83, 85, 89,
 	15, 30, 45, 60, 75, ROBIN_SKILL_HYPERCHARGE,
 	50,
-	GRADE_SUPERIOR,//µÓ±ﬁ
-	//SKILL_ROBIN10//º“øÔ≈©∑°Ω¨(A)-∞¸≈Î
+	GRADE_SUPERIOR,//Îì±Í∏â
+	//SKILL_ROBIN10//ÏÜåÏö∏ÌÅ¨ÎûòÏâ¨(A)-Í¥ÄÌÜµ
 	ACTIVE, 35, FPS * 15, SKILL_ROBIN6, 3, 4,
 	0, 13, 23, 33, 41, 49, 57, 63, 69, 75, 79, 83, 85, 87, 91,
 	30, 40, 50, 65, 80, ROBIN_SKILL_SOULCRASH,
 	50,
-	GRADE_SET,//µÓ±ﬁ
-	//SKILL_ROBIN11//æ€º÷∑Á∆Æ««æÓΩ∫(A)-∞¸≈Î
+	GRADE_SET,//Îì±Í∏â
+	//SKILL_ROBIN11//Ïï±ÏÜîÎ£®Ìä∏ÌîºÏñ¥Ïä§(A)-Í¥ÄÌÜµ
 	ACTIVE, 50, FPS * 20, SKILL_ROBIN10, 5, 5,
 	0, 15, 25, 35, 43, 51, 59, 65, 71, 77, 81, 85, 87, 89, 93,
 	50, 60, 70, 80, 90, ROBIN_SKILL_ABSOLUTEPIERCE,
 	50,
-	GRADE_EPIC,//µÓ±ﬁ
-	//SKILL_ROBIN12//∏ÍªÏø¨¬¸(A)
+	GRADE_EPIC,//Îì±Í∏â
+	//SKILL_ROBIN12//Î©∏ÏÇ¥Ïó∞Ï∞∏(A)
 	ACTIVE, 70, FPS * 25, SKILL_ROBIN7, 5, 15,
 	0, 25, 40, 55, 67, 79, 91, 100, 109, 118, 124, 130, 133, 136, 140,
 	50, 60, 70, 80, 90, ROBIN_SKILL_KILLALL,
 	50,
-	GRADE_LEGEND,//µÓ±ﬁ
-	//SKILL_ROBIN13//πÊæÓ≈¬ºº(A)
+	GRADE_LEGEND,//Îì±Í∏â
+	//SKILL_ROBIN13//Î∞©Ïñ¥ÌÉúÏÑ∏(A)
 	ACTIVE, 50, FPS * 25, SKILL_ROBIN3, 3, 35,
 	10, 13, 16, 18, 20, 22, 24, 26, 28, 30, 32, 33, 34, 35, 40,
 	15, 25, 40, 60, 80, ROBIN_SKILL_DEFENSE,
 	false,
-GRADE_EPIC,//µÓ±ﬁ
-//SKILL_ROBIN14//¡§Ω≈º“∏(A)
+GRADE_EPIC,//Îì±Í∏â
+//SKILL_ROBIN14//Ï†ïÏã†ÏÜåÎ™®(A)
 ACTIVE, 40, FPS * 25, SKILL_COMMON_ROBIN6, 5, 17,
 10, 15, 19, 22, 25, 27, 29, 31, 32, 34, 35, 38, 39, 40, 45,
 30, 40, 50, 60, 70, ROBIN_SKILL_BARRIER,
 false,
-GRADE_EPIC,//µÓ±ﬁ
-//SKILL_ROBIN15//ø©¿Ø∆˜¬¯(A)
+GRADE_EPIC,//Îì±Í∏â
+//SKILL_ROBIN15//Ïó¨Ïú†Ìè¨Ï∞©(A)
 ACTIVE, 50, FPS * 25, SKILL_COMMON_ROBIN13, 3, 9,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 45, 60, 75, 90, ROBIN_SKILL_HPRESTORE,
 false,
-GRADE_EPIC,//µÓ±ﬁ
-//SKILL_ROBIN16//≥√¡§ƒß¬¯(A)
+GRADE_EPIC,//Îì±Í∏â
+//SKILL_ROBIN16//ÎÉâÏ†ïÏπ®Ï∞©(A)
 ACTIVE, 50, FPS * 25, SKILL_ROBIN2, 5, 10,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 45, 60, 75, 90, ROBIN_SKILL_MPRESTORE,
 false,
-GRADE_EPIC,//µÓ±ﬁ
-//SKILL_ROBIN17//∏Æ«√∑∫≈Õ(A)
+GRADE_EPIC,//Îì±Í∏â
+//SKILL_ROBIN17//Î¶¨ÌîåÎ†âÌÑ∞(A)
 ACTIVE, 50, FPS * 25, SKILL_ROBIN4, 5, 11,
 25, 32, 38, 43, 47, 51, 54, 57, 60, 62, 64, 66, 68, 69, 70,
 45, 55, 65, 75, 90, ROBIN_SKILL_REFLECTOR,
 false,
-GRADE_EPIC,//µÓ±ﬁ
-//µæ∆≥™Ω∫≈≥
-//∞¯≈ÎΩ∫≈≥
-//SKILL_COMMON_DIANA1//»˚¥‹∑√(P)
+GRADE_EPIC,//Îì±Í∏â
+//ÎîîÏïÑÎÇòÏä§ÌÇ¨
+//Í≥µÌÜµÏä§ÌÇ¨
+//SKILL_COMMON_DIANA1//ÌûòÎã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 29,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA2//√º∑¬¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA2//Ï≤¥Î†•Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 30,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA3//πŒ√∏¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA3//ÎØºÏ≤©Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 21,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA4//¡§Ω≈¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA4//Ï†ïÏã†Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 22,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA5//ª˝∏Ì∑¬∞≠»≠(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA5//ÏÉùÎ™ÖÎ†•Í∞ïÌôî(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA2, 3, 23,
 4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA6//±‚∑¬∞≠»≠(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA6//Í∏∞Î†•Í∞ïÌôî(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA4, 3, 24,
 4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA7//π´±‚º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA7//Î¨¥Í∏∞ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA1, 3, 31,
 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA8//πÊæÓ±∏º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA8//Î∞©Ïñ¥Íµ¨ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA2, 3, 26,
 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA9//æ‡¡°∆ƒæ«(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA9//ÏïΩÏ†êÌååÏïÖ(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA12, 3, 32,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 25, 40, 55, 70, 90, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA10//æ‡¡°∞¯∞›(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA10//ÏïΩÏ†êÍ≥µÍ≤©(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA9, 3, 33,
 5, 7, 9, 11, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25,
 40, 50, 60, 70, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA11//∂“Ω…(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA11//ÎöùÏã¨(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA2, 5, 25,
 4, 7, 10, 13, 15, 17, 19, 20, 22, 23, 25, 26, 28, 29, 30,
 15, 30, 45, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA12//¡§¡∂¡ÿ(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA12//Ï†ïÏ°∞Ï§Ä(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA3, 5, 27,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 15, 25, 40, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_DIANA13//Ω≈º”»∏««(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_DIANA13//Ïã†ÏÜçÌöåÌîº(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA3, 5, 28,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 15, 30, 45, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//SKILL_DIANA1//∏≈¿«¥´(P)
+//SKILL_DIANA1//Îß§ÏùòÎàà(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA13, 1, 17,
 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106, 109,
 15, 25, 40, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA2//ªÁ∞›º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA2//ÏÇ¨Í≤©ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_DIANA4, 3, 18,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 0, 0, 0, 0, 0, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA3//æ∆µÂ∑π≥Ø∏∞(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA3//ÏïÑÎìúÎ†àÎÇ†Î¶∞(P)
 PASSIVE, 0, 0, SKILL_DIANA4, 3, 36,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 50, 60, 70, 80, 90, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA4//»∞º∫»≠(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA4//ÌôúÏÑ±Ìôî(P)
 PASSIVE, 0, 0, SKILL_DIANA15, 5, 5,
 10, 15, 19, 23, 27, 31, 34, 37, 40, 42, 44, 46, 48, 49, 50,
 50, 60, 70, 80, 90, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA5//¡˝¡ﬂ∑¬¿Ø¡ˆ(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA5//ÏßëÏ§ëÎ†•Ïú†ÏßÄ(P)
 PASSIVE, 0, 0, SKILL_DIANA16, 3, 20,
 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 28, 29, 30,
 60, 70, 80, 90, 95, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //SKILL_DIANA6//3way(A)
 ACTIVE, 60, FPS * 15, SKILL_COMMON_DIANA7, 1, 6,
 0, 11, 24, 37, 47, 57, 67, 75, 83, 91, 97, 103, 107, 111, 115,
 5, 20, 40, 60, 80, DIANA_SKILL_3WAY,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA7//∏Æ«√∑∫º«∫ˆ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA7//Î¶¨ÌîåÎ†âÏÖòÎπî(A)
 ACTIVE, 30, FPS * 10, SKILL_COMMON_DIANA8, 3, 11,
 0, 12, 25, 38, 48, 58, 68, 76, 84, 92, 98, 104, 108, 112, 116,
 15, 30, 45, 60, 75, DIANA_SKILL_LASER,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA8//«Ô∆ƒ¿ÃæÓ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA8//Ìó¨ÌååÏù¥Ïñ¥(A)
 ACTIVE, 50, FPS * 20, SKILL_DIANA14, 1, 12,
 0, 11, 23, 35, 44, 53, 62, 69, 76, 83, 88, 93, 97, 101, 105,
 45, 55, 65, 75, 85, DIANA_SKILL_FLAMER,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA9//∑Œƒœ∑±√ƒ(A)-∞¸≈Î
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA9//Î°úÏºìÎü∞Ï≥ê(A)-Í¥ÄÌÜµ
 ACTIVE, 40, FPS * 15, SKILL_DIANA1, 3, 37,
 0, 13, 26, 39, 49, 59, 69, 77, 85, 93, 99, 105, 109, 113, 117,
 25, 35, 50, 65, 80, DIANA_SKILL_BOMBSHOT,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA10//»£π÷πÃªÁ¿œ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA10//Ìò∏Î∞çÎØ∏ÏÇ¨Ïùº(A)
 ACTIVE, 50, FPS * 15, SKILL_DIANA2, 5, 39,
 0, 14, 27, 40, 50, 60, 70, 78, 86, 94, 100, 106, 110, 114, 118,
 30, 40, 50, 65, 80, DIANA_SKILL_GUIDEDSHOT,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA11//≈≥∏µ¡∏(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA11//ÌÇ¨ÎßÅÏ°¥(A)
 ACTIVE, 100, FPS * 25, SKILL_COMMON_DIANA10, 5, 1,
 0, 12, 24, 36, 45, 54, 63, 70, 77, 84, 89, 94, 98, 102, 106,
 60, 70, 80, 90, 95, DIANA_SKILL_SPRAYSHOT,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA12//ø¿∫Ò≈ª∑π¿Ã¡Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA12//Ïò§ÎπÑÌÉàÎ†àÏù¥Ï†∏(A)
 ACTIVE, 150, FPS * 25, SKILL_DIANA5, 3, 14,
 0, 13, 25, 37, 46, 55, 64, 71, 78, 85, 90, 95, 99, 103, 107,
 70, 75, 80, 85, 95, DIANA_SKILL_SATELLITESHOT,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA13//∏Æƒøπˆ∏Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA13//Î¶¨Ïª§Î≤ÑÎ¶¨(A)
 ACTIVE, 100, FPS * 20, SKILL_COMMON_DIANA5, 3, 38,
 25, 32, 38, 43, 47, 51, 54, 57, 60, 62, 64, 66, 68, 69, 70,
 15, 30, 50, 70, 90, DIANA_SKILL_HEALSHOT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA14//»Ô∫–∞Ì¡∂(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA14//Ìù•Î∂ÑÍ≥†Ï°∞(A)
 ACTIVE, 100, FPS * 20, SKILL_COMMON_DIANA11, 5, 15,
 4, 8, 12, 16, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50,
 45, 55, 65, 75, 85, DIANA_SKILL_FEELUP,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA15//»Ì∏∂¿«∏∂≈∫(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA15//Ìù°ÎßàÏùòÎßàÌÉÑ(A)
 ACTIVE, 100, FPS * 20, SKILL_COMMON_DIANA6, 5, 9,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 50, 60, 75, DIANA_SKILL_VAMPIRE,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA16//« ªÏ¡˝¡ﬂ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA16//ÌïÑÏÇ¥ÏßëÏ§ë(A)
 ACTIVE, 100, FPS * 20, SKILL_COMMON_DIANA6, 7, 8,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 50, 60, 70, 80, 90, DIANA_SKILL_FOCUS,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_DIANA17//∆ƒ∏∂¿«¡˜∞›(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_DIANA17//ÌååÎßàÏùòÏßÅÍ≤©(A)
 ACTIVE, 100, FPS * 20, SKILL_DIANA6, 5, 16,
 10, 13, 16, 19, 22, 24, 26, 28, 30, 32, 33, 35, 36, 38, 40,
 40, 50, 60, 75, 90, DIANA_SKILL_FAMAS,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//∏∆Ω∫Ω∫≈≥
-//∞¯≈ÎΩ∫≈≥
-//SKILL_COMMON_MAXX1//»˚¥‹∑√(P)
+//Îß•Ïä§Ïä§ÌÇ¨
+//Í≥µÌÜµÏä§ÌÇ¨
+//SKILL_COMMON_MAXX1//ÌûòÎã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 29,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX2//√º∑¬¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX2//Ï≤¥Î†•Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 30,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX3//πŒ√∏¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX3//ÎØºÏ≤©Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 21,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX4//¡§Ω≈¥‹∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX4//Ï†ïÏã†Îã®Î†®(P)
 PASSIVE, 0, 0, 255, 0, 22,
 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 22, 23, 24, 25,
 1, 5, 15, 35, 60, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX5//ª˝∏Ì∑¬∞≠»≠(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX5//ÏÉùÎ™ÖÎ†•Í∞ïÌôî(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX2, 3, 23,
 4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX6//±‚∑¬∞≠»≠(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX6//Í∏∞Î†•Í∞ïÌôî(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX4, 3, 24,
 4, 7, 10, 13, 16, 19, 22, 25, 28, 30, 32, 34, 36, 38, 40,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX7//π´±‚º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX7//Î¨¥Í∏∞ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX1, 3, 31,
 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX8//πÊæÓ±∏º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX8//Î∞©Ïñ¥Íµ¨ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX2, 3, 26,
 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX9//æ‡¡°∆ƒæ«(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX9//ÏïΩÏ†êÌååÏïÖ(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX12, 3, 32,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 25, 40, 55, 70, 90, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX10//æ‡¡°∞¯∞›(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX10//ÏïΩÏ†êÍ≥µÍ≤©(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX9, 3, 33,
 5, 7, 9, 11, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25,
 40, 50, 60, 70, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX11//∂“Ω…(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX11//ÎöùÏã¨(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX2, 5, 25,
 4, 7, 10, 13, 15, 17, 19, 20, 22, 23, 25, 26, 28, 29, 30,
 15, 30, 45, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX12//¡§¡∂¡ÿ(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX12//Ï†ïÏ°∞Ï§Ä(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX4, 5, 27,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 15, 25, 40, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_COMMON_MAXX13//Ω≈º”»∏««(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_COMMON_MAXX13//Ïã†ÏÜçÌöåÌîº(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX3, 5, 28,
 1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
 15, 30, 45, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX1//∞¸≈Î∑¬º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX1//Í¥ÄÌÜµÎ†•ÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX1, 3, 20,
 2, 4, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX2//≈ı√¥º˜∑√(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX2//Ìà¨Ï≤ôÏàôÎ†®(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX3, 5, 17,
 90, 100, 110, 117, 126, 135, 136, 144, 153, 162, 164, 164, 172, 172, 180,
 15, 30, 45, 60, 75, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX3//ø¨º”∞¯∞›(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX3//Ïó∞ÏÜçÍ≥µÍ≤©(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX3, 3, 39,
 2, 4, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15,
 5, 15, 30, 50, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX4//»∏¿¸∑¬ªÛΩ¬(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX4//ÌöåÏ†ÑÎ†•ÏÉÅÏäπ(P)
 PASSIVE, 0, 0, SKILL_MAXX3, 3, 2,
 5, 7, 9, 11, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25,
 15, 25, 40, 60, 80, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX5//≈∫∑¬º∫(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX5//ÌÉÑÎ†•ÏÑ±(P)
 PASSIVE, 0, 0, SKILL_COMMON_MAXX8, 7, 3,
 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 28, 29, 30,
 60, 70, 80, 90, 95, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX6//»ø¿≤¿˚ªÁ∞Ì(P)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX6//Ìö®Ïú®Ï†ÅÏÇ¨Í≥†(P)
 PASSIVE, 0, 0, SKILL_MAXX16, 3, 19,
 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 28, 29, 30,
 60, 70, 80, 90, 95, 0,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX7//µπ∑¡¬˜±‚(A)-≥ÀπÈ
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX7//ÎèåÎ†§Ï∞®Í∏∞(A)-ÎÑâÎ∞±
 ACTIVE, 30, FPS * 5, SKILL_COMMON_MAXX13, 1, 5,
 0, 11, 23, 35, 44, 53, 62, 69, 76, 83, 89, 95, 100, 105, 110,
 15, 30, 45, 60, 80, MAXX_SKILL_KICK,
 10,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX8//ºÙ«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX8//ÏàèÌóåÌä∏(A)
 ACTIVE, 100, FPS * 10, SKILL_MAXX1, 1, 35,
 0, 13, 27, 41, 52, 63, 74, 82, 90, 98, 104, 110, 114, 118, 123,
 5, 20, 40, 60, 80, MAXX_SKILL_SHORT,
 20,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX9//ø°æÓ«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX9//ÏóêÏñ¥ÌóåÌä∏(A)
 ACTIVE, 70, FPS * 7, SKILL_MAXX2, 1, 0,
 0, 14, 28, 42, 53, 64, 75, 83, 91, 99, 105, 111, 115, 119, 124,
 15, 30, 45, 60, 80, MAXX_SKILL_AIR,
 30,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX10//ƒ∑«Œ«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX10//Ï∫†ÌïëÌóåÌä∏(A)
 ACTIVE, 80, FPS * 10, SKILL_MAXX4, 3, 36,
 0, 12, 24, 36, 45, 54, 63, 70, 77, 84, 90, 96, 101, 106, 111,
 25, 35, 50, 65, 80, MAXX_SKILL_CAMPING,
 40,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX11//»£π÷«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX11//Ìò∏Î∞çÌóåÌä∏(A)
 ACTIVE, 80, FPS * 10, SKILL_COMMON_MAXX10, 1, 6,
 0, 16, 30, 44, 55, 66, 77, 85, 93, 101, 107, 113, 117, 121, 126,
 40, 50, 60, 75, 90, MAXX_SKILL_HORMING,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX12//Ω·≈¨«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX12//Ïç®ÌÅ¥ÌóåÌä∏(A)
 ACTIVE, 90, FPS * 15, SKILL_COMMON_MAXX11, 3, 7,
 0, 9, 20, 31, 39, 47, 55, 62, 68, 74, 80, 85, 90, 94, 99,
 30, 40, 55, 70, 85, MAXX_SKILL_CIRCLE,
 60,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX13//∏ﬁ∞°«Â∆Æ(A)-∞¸≈Î
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX13//Î©îÍ∞ÄÌóåÌä∏(A)-Í¥ÄÌÜµ
 ACTIVE, 150, FPS * 25, SKILL_MAXX8, 7, 13,
 0, 15, 27, 39, 48, 57, 66, 73, 80, 87, 93, 99, 104, 109, 114,
 60, 70, 80, 90, 95, MAXX_SKILL_MEGA,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX14//∫Ì∑ØµÂ«Â∆Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX14//Î∏îÎü¨ÎìúÌóåÌä∏(A)
 ACTIVE, 100, FPS * 40, SKILL_COMMON_MAXX5, 5, 15,
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 30, 40, 55, 70, 85, MAXX_SKILL_BLOOD,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX15//«ˆ∂ıπ´µµ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX15//ÌòÑÎûÄÎ¨¥ÎèÑ(A)
 ACTIVE, 100, FPS * 10, SKILL_MAXX7, 5, 16,
 10, 15, 19, 22, 25, 27, 29, 31, 33, 35, 36, 37, 38, 39, 40,
 45, 55, 65, 75, 85, MAXX_SKILL_DAZZLE,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX16//æ»µµ¿««—º˚(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX16//ÏïàÎèÑÏùòÌïúÏà®(A)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX6, 7, 38,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 50, 60, 70, 80, 90, MAXX_SKILL_SIGH,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//SKILL_MAXX17//»•Ω≈∫–∏Æ(A)
+GRADE_NORMAL,//Îì±Í∏â
+//SKILL_MAXX17//ÌòºÏã†Î∂ÑÎ¶¨(A)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
 //CREWSKILL
-//ENEMY_SNAIL_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ 
+GRADE_NORMAL,//Îì±Í∏â 
 //ENEMY_SNAIL_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_SKILL1,	//Ω∫∆ƒ≈©18//
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_SKILL1,	//Ïä§ÌååÌÅ¨18//
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥21
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø21
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı23
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî23
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω24
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò24
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫26(x øπ¥¬ ±◊≥… æ»µ )
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§26(x ÏòàÎäî Í∑∏ÎÉ• ÏïàÎê®)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_SKILL1,	//∂∞µµ¥¬ øµ»•29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_SKILL1,	//π´»•¿« ±‚ªÁ30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥31		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»(?)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà31		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥(?)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_SKILL1,	//æ»µÂ∑Œ∫º33
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_SKILL1,	//ÏïàÎìúÎ°úÎ≥º33
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_SKILL1,	//≈‰µÂπ¬≈œ∆Æ35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_SKILL1,	//æ∆∏£∞Ô36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_SKILL1,	//ÏïÑÎ•¥Í≥§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_SKILL1,	//ƒ´≈˘37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_SKILL1,	//Ïπ¥Ìàº37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_SKILL1,	//¿Ã«¡∏Æ∆Æ39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_SKILL1,	//«¡∑ŒΩ∫∆Æ40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_SKILL1,	//∂Û¿Ãø¿≥ 41		(x)			//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà41		(x)			//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_SKILL1,	//»£∑ÁΩ∫42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_SKILL1,	//Ìò∏Î£®Ïä§42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_SKILL1,	//∏∂µµ«’º∫ºˆ43
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò43
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_SKILL1,	//∞Ì¥Î¿« πÊ¡÷44 (x)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º44 (x)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_SKILL1,	//æ∆∏Æ∏∏45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_SKILL1,	//ÏïÑÎ¶¨Îßå45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_SKILL1,	//∆ºæÓ∏À46 (x)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_SKILL1,	//Ìã∞Ïñ¥Îß∑46 (x)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_SKILL1,	//ªÁΩ≈47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_SKILL1,	//ÏÇ¨Ïã†47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_SKILL1,	//µ•∫Í∏Æø¬48 (x)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®48 (x)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ50 -> ¡¶ø‹ (x)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§50 -> Ï†úÏô∏ (x)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ51						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏51						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫52 (x)
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§52 (x)
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫53				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§53				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//ENEMY_SNAIL_RED_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_RED_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_RED_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_RED_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_RED_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_RED_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_RED_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_RED_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_RED_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_RED_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_RED_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_RED_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_RED_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_RED_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_RED_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_RED_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_RED_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_RED_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_RED_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_RED_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_RED_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_RED_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_RED_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_RED_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_RED_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_RED_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_RED_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_RED_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_RED_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_RED_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_RED_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_RED_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_RED_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_RED_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_RED_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_RED_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_RED_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥21
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_RED_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø21
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_RED_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_RED_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_RED_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı23
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_RED_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî23
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_RED_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω24
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_RED_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò24
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_RED_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_RED_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_RED_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_RED_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_RED_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_RED_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_RED_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_RED_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_RED_SKILL1,	//∂∞µµ¥¬ øµ»•29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_RED_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_RED_SKILL1,	//π´»•¿« ±‚ªÁ30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_RED_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_RED_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥31		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_RED_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà31		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_RED_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_RED_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_RED_SKILL1,	//æ»µÂ∑Œ∫º33
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_RED_SKILL1,	//ÏïàÎìúÎ°úÎ≥º33
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_RED_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_RED_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_RED_SKILL1,	//≈‰µÂπ¬≈œ∆Æ35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_RED_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_RED_SKILL1,	//æ∆∏£∞Ô36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_RED_SKILL1,	//ÏïÑÎ•¥Í≥§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_RED_SKILL1,	//ƒ´≈˘37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_RED_SKILL1,	//Ïπ¥Ìàº37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_RED_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_RED_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_RED_SKILL1,	//¿Ã«¡∏Æ∆Æ39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_RED_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_RED_SKILL1,	//«¡∑ŒΩ∫∆Æ40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_RED_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_RED_SKILL1,	//∂Û¿Ãø¿≥ 41					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_RED_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà41					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_RED_SKILL1,	//»£∑ÁΩ∫42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_RED_SKILL1,	//Ìò∏Î£®Ïä§42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_RED_SKILL1,	//∏∂µµ«’º∫ºˆ43
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_RED_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò43
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_RED_SKILL1,	//∞Ì¥Î¿« πÊ¡÷44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_RED_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_RED_SKILL1,	//æ∆∏Æ∏∏45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_RED_SKILL1,	//ÏïÑÎ¶¨Îßå45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_RED_SKILL1,	//∆ºæÓ∏À46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_RED_SKILL1,	//Ìã∞Ïñ¥Îß∑46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_RED_SKILL1,	//ªÁΩ≈47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_RED_SKILL1,	//ÏÇ¨Ïã†47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_RED_SKILL1,	//µ•∫Í∏Æø¬48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_RED_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_RED_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_RED_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_RED_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ50 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_RED_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§50 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_RED_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ51						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_RED_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏51						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_RED_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫52
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_RED_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§52
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_RED_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫53				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_RED_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§53				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_RED_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_RED_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNAIL_BLUE_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNAIL_BLUE_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_BLUE_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_BLUE_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_BLUE_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_BLUE_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_BLUE_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_BLUE_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_BLUE_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_BLUE_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_BLUE_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_BLUE_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_BLUE_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_BLUE_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_BLUE_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_BLUE_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_BLUE_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_BLUE_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_BLUE_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_BLUE_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_BLUE_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_BLUE_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_BLUE_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_BLUE_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_BLUE_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_BLUE_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_BLUE_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_BLUE_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_BLUE_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_BLUE_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_BLUE_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_BLUE_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_BLUE_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_BLUE_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_BLUE_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_BLUE_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_BLUE_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥21
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_BLUE_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø21
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_BLUE_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_BLUE_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_BLUE_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı23
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_BLUE_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî23
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_BLUE_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω24
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_BLUE_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò24
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ 
+GRADE_NORMAL,//Îì±Í∏â 
 //ENEMY_GOLEM_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_BLUE_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_BLUE_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_BLUE_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_BLUE_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_BLUE_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_BLUE_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_BLUE_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_BLUE_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_BLUE_SKILL1,	//∂∞µµ¥¬ øµ»•29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_BLUE_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_BLUE_SKILL1,	//π´»•¿« ±‚ªÁ30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_BLUE_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_BLUE_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥31		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_BLUE_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà31		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_BLUE_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_BLUE_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_BLUE_SKILL1,	//æ»µÂ∑Œ∫º33
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_BLUE_SKILL1,	//ÏïàÎìúÎ°úÎ≥º33
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_BLUE_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_BLUE_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_BLUE_SKILL1,	//≈‰µÂπ¬≈œ∆Æ35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_BLUE_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_BLUE_SKILL1,	//æ∆∏£∞Ô36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_BLUE_SKILL1,	//ÏïÑÎ•¥Í≥§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_BLUE_SKILL1,	//ƒ´≈˘37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_BLUE_SKILL1,	//Ïπ¥Ìàº37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_BLUE_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_BLUE_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_BLUE_SKILL1,	//¿Ã«¡∏Æ∆Æ39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_BLUE_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_BLUE_SKILL1,	//«¡∑ŒΩ∫∆Æ40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_BLUE_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_BLUE_SKILL1,	//∂Û¿Ãø¿≥ 41					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_BLUE_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà41					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_BLUE_SKILL1,	//»£∑ÁΩ∫42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_BLUE_SKILL1,	//Ìò∏Î£®Ïä§42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_BLUE_SKILL1,	//∏∂µµ«’º∫ºˆ43
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_BLUE_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò43
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_BLUE_SKILL1,	//∞Ì¥Î¿« πÊ¡÷44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_BLUE_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_BLUE_SKILL1,	//æ∆∏Æ∏∏45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_BLUE_SKILL1,	//ÏïÑÎ¶¨Îßå45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_BLUE_SKILL1,	//∆ºæÓ∏À46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_BLUE_SKILL1,	//Ìã∞Ïñ¥Îß∑46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_BLUE_SKILL1,	//ªÁΩ≈47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_BLUE_SKILL1,	//ÏÇ¨Ïã†47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_BLUE_SKILL1,	//µ•∫Í∏Æø¬48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_BLUE_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_BLUE_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_BLUE_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_BLUE_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ50 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_BLUE_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§50 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_BLUE_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ51						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_BLUE_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏51						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_BLUE_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫52
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_BLUE_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§52
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_BLUE_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫53				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_BLUE_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§53				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_BLUE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_BLUE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//ENEMY_SNAIL_PURPLE_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_PURPLE_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_PURPLE_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_PURPLE_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_PURPLE_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_PURPLE_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_PURPLE_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_PURPLE_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_PURPLE_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_PURPLE_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_PURPLE_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_PURPLE_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_PURPLE_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_PURPLE_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_PURPLE_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_PURPLE_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_PURPLE_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_PURPLE_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_PURPLE_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_PURPLE_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_PURPLE_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_PURPLE_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_PURPLE_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_PURPLE_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_PURPLE_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_PURPLE_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_PURPLE_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_PURPLE_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_PURPLE_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_PURPLE_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_PURPLE_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_PURPLE_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_PURPLE_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_PURPLE_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_PURPLE_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_PURPLE_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_PURPLE_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥2     1
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_PURPLE_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø2     1
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_PURPLE_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_PURPLE_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_PURPLE_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_PURPLE_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_PURPLE_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_PURPLE_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_PURPLE_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_PURPLE_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_PURPLE_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_PURPLE_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_PURPLE_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_PURPLE_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_PURPLE_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_PURPLE_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_PURPLE_SKILL1,	//∂∞µµ¥¬ øµ»•31
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_PURPLE_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº31
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_PURPLE_SKILL1,	//π´»•¿« ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_PURPLE_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_PURPLE_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥33		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_PURPLE_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà33		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_PURPLE_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_PURPLE_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_PURPLE_SKILL1,	//æ»µÂ∑Œ∫º35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_PURPLE_SKILL1,	//ÏïàÎìúÎ°úÎ≥º35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_PURPLE_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_PURPLE_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_PURPLE_SKILL1,	//≈‰µÂπ¬≈œ∆Æ37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_PURPLE_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_PURPLE_SKILL1,	//æ∆∏£∞Ô38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_PURPLE_SKILL1,	//ÏïÑÎ•¥Í≥§38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_PURPLE_SKILL1,	//ƒ´≈˘39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_PURPLE_SKILL1,	//Ïπ¥Ìàº39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_PURPLE_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_PURPLE_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_PURPLE_SKILL1,	//¿Ã«¡∏Æ∆Æ41
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_PURPLE_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏41
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_PURPLE_SKILL1,	//«¡∑ŒΩ∫∆Æ42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_PURPLE_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_PURPLE_SKILL1,	//∂Û¿Ãø¿≥ 43					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_PURPLE_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà43					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_PURPLE_SKILL1,	//»£∑ÁΩ∫44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_PURPLE_SKILL1,	//Ìò∏Î£®Ïä§44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_PURPLE_SKILL1,	//∏∂µµ«’º∫ºˆ45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_PURPLE_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_PURPLE_SKILL1,	//∞Ì¥Î¿« πÊ¡÷46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_PURPLE_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_PURPLE_SKILL1,	//æ∆∏Æ∏∏47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_PURPLE_SKILL1,	//ÏïÑÎ¶¨Îßå47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_PURPLE_SKILL1,	//∆ºæÓ∏À48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_PURPLE_SKILL1,	//Ìã∞Ïñ¥Îß∑48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_PURPLE_SKILL1,	//ªÁΩ≈49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_PURPLE_SKILL1,	//ÏÇ¨Ïã†49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_PURPLE_SKILL1,	//µ•∫Í∏Æø¬50
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_PURPLE_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®50
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_PURPLE_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫51
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_PURPLE_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§51
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_PURPLE_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ52 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_PURPLE_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§52 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_PURPLE_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ53						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_PURPLE_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏53						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_PURPLE_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫54
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_PURPLE_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§54
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_PURPLE_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫55				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_PURPLE_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§55				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_PURPLE_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_PURPLE_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//ENEMY_SNAIL_GREEN_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_GREEN_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_GREEN_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_GREEN_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_GREEN_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_GREEN_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_GREEN_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_GREEN_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_GREEN_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_GREEN_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_GREEN_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_GREEN_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_GREEN_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_GREEN_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_GREEN_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_GREEN_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_GREEN_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_GREEN_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_GREEN_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_GREEN_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_GREEN_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_GREEN_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_GREEN_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_GREEN_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_GREEN_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_GREEN_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_GREEN_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_GREEN_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_GREEN_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_GREEN_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_GREEN_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_GREEN_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_GREEN_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_GREEN_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_GREEN_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_GREEN_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_GREEN_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥2     1
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_GREEN_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø2     1
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_GREEN_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_GREEN_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_GREEN_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_GREEN_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_GREEN_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_GREEN_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_GREEN_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_GREEN_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_GREEN_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_GREEN_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_GREEN_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_GREEN_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_GREEN_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_GREEN_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_GREEN_SKILL1,	//∂∞µµ¥¬ øµ»•31
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_GREEN_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº31
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_GREEN_SKILL1,	//π´»•¿« ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_GREEN_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_GREEN_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥33		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_GREEN_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà33		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_GREEN_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_GREEN_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_GREEN_SKILL1,	//æ»µÂ∑Œ∫º35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_GREEN_SKILL1,	//ÏïàÎìúÎ°úÎ≥º35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_GREEN_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_GREEN_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_GREEN_SKILL1,	//≈‰µÂπ¬≈œ∆Æ37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_GREEN_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_GREEN_SKILL1,	//æ∆∏£∞Ô38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_GREEN_SKILL1,	//ÏïÑÎ•¥Í≥§38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_GREEN_SKILL1,	//ƒ´≈˘39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_GREEN_SKILL1,	//Ïπ¥Ìàº39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_GREEN_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_GREEN_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_GREEN_SKILL1,	//¿Ã«¡∏Æ∆Æ41
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_GREEN_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏41
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_GREEN_SKILL1,	//«¡∑ŒΩ∫∆Æ42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_GREEN_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_GREEN_SKILL1,	//∂Û¿Ãø¿≥ 43					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_GREEN_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà43					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_GREEN_SKILL1,	//»£∑ÁΩ∫44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_GREEN_SKILL1,	//Ìò∏Î£®Ïä§44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_GREEN_SKILL1,	//∏∂µµ«’º∫ºˆ45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_GREEN_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_GREEN_SKILL1,	//∞Ì¥Î¿« πÊ¡÷46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_GREEN_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_GREEN_SKILL1,	//æ∆∏Æ∏∏47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_GREEN_SKILL1,	//ÏïÑÎ¶¨Îßå47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_GREEN_SKILL1,	//∆ºæÓ∏À48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_GREEN_SKILL1,	//Ìã∞Ïñ¥Îß∑48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_GREEN_SKILL1,	//ªÁΩ≈49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_GREEN_SKILL1,	//ÏÇ¨Ïã†49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_GREEN_SKILL1,	//µ•∫Í∏Æø¬50
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_GREEN_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®50
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_GREEN_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫51
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_GREEN_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§51
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_GREEN_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ52 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_GREEN_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§52 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_GREEN_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ53						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_GREEN_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏53						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_GREEN_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫54
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_GREEN_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§54
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_GREEN_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫55				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_GREEN_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§55				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_GREEN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_GREEN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//ENEMY_SNAIL_GOLD_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_GOLD_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_GOLD_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_GOLD_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_GOLD_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_GOLD_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_GOLD_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_GOLD_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_GOLD_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_GOLD_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_GOLD_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_GOLD_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_GOLD_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_GOLD_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_GOLD_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_GOLD_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_GOLD_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_GOLD_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_GOLD_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_GOLD_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_GOLD_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_GOLD_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_GOLD_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_GOLD_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_GOLD_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_GOLD_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_GOLD_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_GOLD_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_GOLD_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_GOLD_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_GOLD_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_GOLD_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_GOLD_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_GOLD_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_GOLD_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_GOLD_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_GOLD_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥2     1
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_GOLD_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø2     1
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_GOLD_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_GOLD_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_GOLD_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_GOLD_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_GOLD_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_GOLD_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_GOLD_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_GOLD_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_GOLD_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_GOLD_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_GOLD_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_GOLD_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_GOLD_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_GOLD_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_GOLD_SKILL1,	//∂∞µµ¥¬ øµ»•31
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_GOLD_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº31
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_GOLD_SKILL1,	//π´»•¿« ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_GOLD_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_GOLD_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥33		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_GOLD_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà33		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_GOLD_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_GOLD_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_GOLD_SKILL1,	//æ»µÂ∑Œ∫º35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_GOLD_SKILL1,	//ÏïàÎìúÎ°úÎ≥º35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_GOLD_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_GOLD_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_GOLD_SKILL1,	//≈‰µÂπ¬≈œ∆Æ37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_GOLD_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_GOLD_SKILL1,	//æ∆∏£∞Ô38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_GOLD_SKILL1,	//ÏïÑÎ•¥Í≥§38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_GOLD_SKILL1,	//ƒ´≈˘39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_GOLD_SKILL1,	//Ïπ¥Ìàº39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_GOLD_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_GOLD_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_GOLD_SKILL1,	//¿Ã«¡∏Æ∆Æ41
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_GOLD_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏41
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_GOLD_SKILL1,	//«¡∑ŒΩ∫∆Æ42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_GOLD_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_GOLD_SKILL1,	//∂Û¿Ãø¿≥ 43					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_GOLD_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà43					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_GOLD_SKILL1,	//»£∑ÁΩ∫44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_GOLD_SKILL1,	//Ìò∏Î£®Ïä§44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_GOLD_SKILL1,	//∏∂µµ«’º∫ºˆ45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_GOLD_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_GOLD_SKILL1,	//∞Ì¥Î¿« πÊ¡÷46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_GOLD_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_GOLD_SKILL1,	//æ∆∏Æ∏∏47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_GOLD_SKILL1,	//ÏïÑÎ¶¨Îßå47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_GOLD_SKILL1,	//∆ºæÓ∏À48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_GOLD_SKILL1,	//Ìã∞Ïñ¥Îß∑48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_GOLD_SKILL1,	//ªÁΩ≈49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_GOLD_SKILL1,	//ÏÇ¨Ïã†49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_GOLD_SKILL1,	//µ•∫Í∏Æø¬50
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_GOLD_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®50
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_GOLD_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫51
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_GOLD_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§51
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_GOLD_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ52 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_GOLD_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§52 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_GOLD_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ53						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_GOLD_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏53						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_GOLD_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫54
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_GOLD_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§54
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_GOLD_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫55				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_GOLD_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§55				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_GOLD_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_GOLD_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//ENEMY_SNAIL_BLACK_SKILL1,	//∞°Ω√≤Æ¡˙ ¥ﬁ∆ÿ¿Ã
+//ENEMY_SNAIL_BLACK_SKILL1,	//Í∞ÄÏãúÍªçÏßà Îã¨ÌåΩÏù¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNAIL_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_TREE_BLACK_SKILL1,	//¥À¿« ¡÷¿Œ 4
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_TREE_BLACK_SKILL1,	//Îä™Ïùò Ï£ºÏù∏ 4
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_TREE_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ONEEYE_BLACK_SKILL1,	//æ∆¿Ã∫º 5
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ONEEYE_BLACK_SKILL1,	//ÏïÑÏù¥Î≥º 5
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ONEEYE_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SKELETON_BLACK_SKILL1,	//ƒ•»Ê¿« ±‚ªÁ 6 
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SKELETON_BLACK_SKILL1,	//Ïπ†ÌùëÏùò Í∏∞ÏÇ¨ 6 
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SKELETON_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIZARD_BLACK_SKILL1,	//ªÁ«œ±‰ ∫¥ªÁ 7
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIZARD_BLACK_SKILL1,	//ÏÇ¨ÌïòÍ∏¥ Î≥ëÏÇ¨ 7
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIZARD_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_JELLYFISH_BLACK_SKILL1,	//∏Õµ∂ «ÿ∆ƒ∏Æ8
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_JELLYFISH_BLACK_SKILL1,	//ÎßπÎèÖ Ìï¥ÌååÎ¶¨8
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_JELLYFISH_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KNIGHT_BLACK_SKILL1,	//≈∏∂Ù«— ±‚ªÁ 9
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KNIGHT_BLACK_SKILL1,	//ÌÉÄÎùΩÌïú Í∏∞ÏÇ¨ 9
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KNIGHT_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLIME_BLACK_SKILL1,	//ΩΩ∂Û¿” 10
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLIME_BLACK_SKILL1,	//Ïä¨ÎùºÏûÑ 10
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLIME_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SLING_BLACK_SKILL1,	//∆Úø¯¿« µµ¿˚ 11
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SLING_BLACK_SKILL1,	//ÌèâÏõêÏùò ÎèÑÏ†Å 11
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SLING_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BOAR_BLACK_SKILL1,	//∞≈ƒ£πﬂ ∏‰µ≈¡ˆ 12
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BOAR_BLACK_SKILL1,	//Í±∞ÏπúÎ∞ú Î©ßÎèºÏßÄ 12
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BOAR_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FLAME_BLACK_SKILL1,	//∫–≥Î¿« ¡§∑… 13
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FLAME_BLACK_SKILL1,	//Î∂ÑÎÖ∏Ïùò Ï†ïÎ†π 13
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FLAME_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PHOENIX_BLACK_SKILL1,	//∏∂º∫¿« ∫“ªı14
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PHOENIX_BLACK_SKILL1,	//ÎßàÏÑ±Ïùò Î∂àÏÉà14
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PHOENIX_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FACE_BLACK_SKILL1,	//∞·∫˘¿« ºÆªÛ15
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FACE_BLACK_SKILL1,	//Í≤∞ÎπôÏùò ÏÑùÏÉÅ15
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FACE_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SNOWMAN_BLACK_SKILL1,	//Ω∫≥ÎøÏ∏«16
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SNOWMAN_BLACK_SKILL1,	//Ïä§ÎÖ∏Ïö∞Îß®16
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SNOWMAN_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ICESUN_BLACK_SKILL1,	//æ∆¿ÃΩ∫∏∂Ω∫≈©17
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ICESUN_BLACK_SKILL1,	//ÏïÑÏù¥Ïä§ÎßàÏä§ÌÅ¨17
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ICESUN_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LIGHTNING_BLACK_SKILL1,	//Ω∫∆ƒ≈©18
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LIGHTNING_BLACK_SKILL1,	//Ïä§ÌååÌÅ¨18
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LIGHTNING_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_THUNDER_BLACK_SKILL1,	//¥Ÿ≈©πÃΩ∫∆Æ19
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_THUNDER_BLACK_SKILL1,	//Îã§ÌÅ¨ÎØ∏Ïä§Ìä∏19
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_THUNDER_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CRYSTAL_BLACK_SKILL1,	//Ω∫∆ƒ≈© «√∑£∆Æ20
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CRYSTAL_BLACK_SKILL1,	//Ïä§ÌååÌÅ¨ ÌîåÎûúÌä∏20
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CRYSTAL_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FAIRY_BLACK_SKILL1,	//∂Û¿Ã∆Æ Ω∫««∏¥2     1
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FAIRY_BLACK_SKILL1,	//ÎùºÏù¥Ìä∏ Ïä§ÌîºÎ¶ø2     1
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FAIRY_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CIRCLE_BLACK_SKILL1,	//µÙ∑Á¡Ø º“øÔ22
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CIRCLE_BLACK_SKILL1,	//ÎîúÎ£®Ï†º ÏÜåÏö∏22
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CIRCLE_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPIDER_BLACK_SKILL1,	//Ω∫∆Æ∂Û¿Ã¥ı25
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPIDER_BLACK_SKILL1,	//Ïä§Ìä∏ÎùºÏù¥Îçî25
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPIDER_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GOLEM_BLACK_SKILL1,	//¡÷¿Œ¿“¿∫ ∞Ò∑Ω26
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GOLEM_BLACK_SKILL1,	//Ï£ºÏù∏ÏûÉÏùÄ Í≥®Î†ò26
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GOLEM_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKGIANT_BLACK_SKILL1,	//±◊∑π¿Ã∆Æ æ∆∏”27
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKGIANT_BLACK_SKILL1,	//Í∑∏Î†àÏù¥Ìä∏ ÏïÑÎ®∏27
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKGIANT_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DARKDRAGON_BLACK_SKILL1,	//øÏ∑Œ∫∏∑ŒΩ∫28
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DARKDRAGON_BLACK_SKILL1,	//Ïö∞Î°úÎ≥¥Î°úÏä§28
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DARKDRAGON_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON1_BLACK_SKILL1,	//≈ΩøÂ¿« ªÏ¿∞¿⁄29
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON1_BLACK_SKILL1,	//ÌÉêÏöïÏùò ÏÇ¥Ïú°Ïûê29
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON1_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DRAGON2_BLACK_SKILL1,	//µÂ∑°∞Ô ¡ª∫Ò30
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DRAGON2_BLACK_SKILL1,	//ÎìúÎûòÍ≥§ Ï¢ÄÎπÑ30
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DRAGON2_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GHOST_BLACK_SKILL1,	//∂∞µµ¥¬ øµ»•31
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GHOST_BLACK_SKILL1,	//Îñ†ÎèÑÎäî ÏòÅÌòº31
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GHOST_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_PUMPKIN_BLACK_SKILL1,	//π´»•¿« ±‚ªÁ32
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_PUMPKIN_BLACK_SKILL1,	//Î¨¥ÌòºÏùò Í∏∞ÏÇ¨32
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_PUMPKIN_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE1_BLACK_SKILL1,	//æÓµ“¿« ∏∂µµªÁ	//≈⁄∑π∆˜∆Æ∞¯∞›«œ¥¬≥33		//πÆ¡¶ : ªÁ∂Û¡ˆ∏È æ»µπæ∆ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE1_BLACK_SKILL1,	//Ïñ¥Îë†Ïùò ÎßàÎèÑÏÇ¨	//ÌÖîÎ†àÌè¨Ìä∏Í≥µÍ≤©ÌïòÎäîÎÜà33		//Î¨∏Ï†ú : ÏÇ¨ÎùºÏßÄÎ©¥ ÏïàÎèåÏïÑÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE1_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE2_BLACK_SKILL1,	//∞¯«„«— ∞©¡÷	//≈´ ±‚ªÁ34
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE2_BLACK_SKILL1,	//Í≥µÌóàÌïú Í∞ëÏ£º	//ÌÅ∞ Í∏∞ÏÇ¨34
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE2_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE1_BLACK_SKILL1,	//æ»µÂ∑Œ∫º35
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE1_BLACK_SKILL1,	//ÏïàÎìúÎ°úÎ≥º35
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE1_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SPACE2_BLACK_SKILL1,	//∏ﬁ≈ª∞°øÏΩ∫36
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SPACE2_BLACK_SKILL1,	//Î©îÌÉàÍ∞ÄÏö∞Ïä§36
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SPACE2_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FROG_BLACK_SKILL1,	//≈‰µÂπ¬≈œ∆Æ37
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FROG_BLACK_SKILL1,	//ÌÜ†ÎìúÎÆ§ÌÑ¥Ìä∏37
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FROG_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LARVA_BLACK_SKILL1,	//æ∆∏£∞Ô38
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LARVA_BLACK_SKILL1,	//ÏïÑÎ•¥Í≥§38
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LARVA_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SALAMANDER_BLACK_SKILL1,	//ƒ´≈˘39
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SALAMANDER_BLACK_SKILL1,	//Ïπ¥Ìàº39
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SALAMANDER_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_GIANT_BLACK_SKILL1,	//∞Ì¥Î¿« ºˆ»£¿⁄40
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_GIANT_BLACK_SKILL1,	//Í≥†ÎåÄÏùò ÏàòÌò∏Ïûê40
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_GIANT_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_IFRIT_BLACK_SKILL1,	//¿Ã«¡∏Æ∆Æ41
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_IFRIT_BLACK_SKILL1,	//Ïù¥ÌîÑÎ¶¨Ìä∏41
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_IFRIT_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MAMMOTH_BLACK_SKILL1,	//«¡∑ŒΩ∫∆Æ42
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MAMMOTH_BLACK_SKILL1,	//ÌîÑÎ°úÏä§Ìä∏42
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MAMMOTH_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_MACHINE_BLACK_SKILL1,	//∂Û¿Ãø¿≥ 43					//πÆ¡¶ : ∏º«¿Ã ±‚∞Ë ∏º«¿Ã ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_MACHINE_BLACK_SKILL1,	//ÎùºÏù¥Ïò§ÎÑà43					//Î¨∏Ï†ú : Î™®ÏÖòÏù¥ Í∏∞Í≥Ñ Î™®ÏÖòÏù¥ ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_MACHINE_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ANGEL_BLACK_SKILL1,	//»£∑ÁΩ∫44
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ANGEL_BLACK_SKILL1,	//Ìò∏Î£®Ïä§44
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ANGEL_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_KIMERA_BLACK_SKILL1,	//∏∂µµ«’º∫ºˆ45
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_KIMERA_BLACK_SKILL1,	//ÎßàÎèÑÌï©ÏÑ±Ïàò45
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_KIMERA_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_SHIP_BLACK_SKILL1,	//∞Ì¥Î¿« πÊ¡÷46
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_SHIP_BLACK_SKILL1,	//Í≥†ÎåÄÏùò Î∞©Ï£º46
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_SHIP_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_FOGRA_BLACK_SKILL1,	//æ∆∏Æ∏∏47
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_FOGRA_BLACK_SKILL1,	//ÏïÑÎ¶¨Îßå47
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_FOGRA_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_BAHAMUT_BLACK_SKILL1,	//∆ºæÓ∏À48
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_BAHAMUT_BLACK_SKILL1,	//Ìã∞Ïñ¥Îß∑48
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_BAHAMUT_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_DEATH_BLACK_SKILL1,	//ªÁΩ≈49
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_DEATH_BLACK_SKILL1,	//ÏÇ¨Ïã†49
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_DEATH_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS1_BLACK_SKILL1,	//µ•∫Í∏Æø¬50
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS1_BLACK_SKILL1,	//Îç∞Î∏åÎ¶¨Ïò®50
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS1_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS2_BLACK_SKILL1,	//ø§ƒ…¿Œ∏«∆ºΩ∫51
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS2_BLACK_SKILL1,	//ÏóòÏºÄÏù∏Îß®Ìã∞Ïä§51
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS2_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS3_BLACK_SKILL1,	//Ω¶µµøÏ ≈◊∆Æ∂ÛƒÔ52 -> ¡¶ø‹
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS3_BLACK_SKILL1,	//ÏâêÎèÑÏö∞ ÌÖåÌä∏ÎùºÏø§52 -> Ï†úÏô∏
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS3_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_CASTLE_BOSS4_BLACK_SKILL1,	//¥Ÿ≈©≥™¿Ã∆Æ53						//πÆ¡¶ ¿ßø° ∂∞º≠ ≥™ø»
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_CASTLE_BOSS4_BLACK_SKILL1,	//Îã§ÌÅ¨ÎÇòÏù¥Ìä∏53						//Î¨∏Ï†ú ÏúÑÏóê Îñ†ÏÑú ÎÇòÏò¥
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_CASTLE_BOSS4_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_LABETH_BLACK_SKILL1,	//∂Û∫£Ω∫ ∫∏Ω∫54
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_LABETH_BLACK_SKILL1,	//ÎùºÎ≤†Ïä§ Î≥¥Ïä§54
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_LABETH_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//ENEMY_ELKEIN_BLACK_SKILL1,	//ø§ƒ…¿Œ ∫∏Ω∫55				//πÆ¡¶ ø©±‚º≠∫Œ≈Õ 4∞≥∞° æÓµÚ∞° »≠∏È¿ª ±˙¡ˆ∞‘ «‘
+GRADE_NORMAL,//Îì±Í∏â
+//ENEMY_ELKEIN_BLACK_SKILL1,	//ÏóòÏºÄÏù∏ Î≥¥Ïä§55				//Î¨∏Ï†ú Ïó¨Í∏∞ÏÑúÎ∂ÄÌÑ∞ 4Í∞úÍ∞Ä Ïñ¥ÎîòÍ∞Ä ÌôîÎ©¥ÏùÑ Íπ®ÏßÄÍ≤å Ìï®
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_BLACK_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //ENEMY_ELKEIN_BLACK_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
-//NPC_CAPTAIN_SKILL1,//c52//¿ËΩ∫∆–≥ //x
+//NPC_CAPTAIN_SKILL1,//c52//Ïû≠Ïä§Ìå®ÎÑà//x
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CAPTAIN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CAPTAIN_SKILL3,
 SUMMON, SOLDIER, NPC_SHIP, ENEMY, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_CREW_SKILL1,//c53//º±ø¯//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_CREW_SKILL1,//c53//ÏÑ†Ïõê//x
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CREW_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CREW_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_GRANDFA_SKILL1,//c54//√Ã¿Â//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_GRANDFA_SKILL1,//c54//Ï¥åÏû•//x
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GRANDFA_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GRANDFA_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_UNCLE_SKILL1,//c55//æ∆¿˙ææ
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_UNCLE_SKILL1,//c55//ÏïÑÏ†ÄÏî®
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_UNCLE_SKILL2,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_UNCLE_SKILL3,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_AUNT_SKILL1,//c56//æ∆¡‹∏∂//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_AUNT_SKILL1,//c56//ÏïÑÏ§åÎßà//x
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_AUNT_SKILL2,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_AUNT_SKILL3,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_MAN_SKILL1,//c57//¿⁄∞Ê¥‹√ª≥‚//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_MAN_SKILL1,//c57//ÏûêÍ≤ΩÎã®Ï≤≠ÎÖÑ//x
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_WOMAN_SKILL1,//c58//√≥≥‡//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_WOMAN_SKILL1,//c58//Ï≤òÎÖÄ//x
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WOMAN_SKILL2,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WOMAN_SKILL3,
 ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_BOY_SKILL1,//c59//≤ø∏∂≥≤//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_BOY_SKILL1,//c59//Íº¨ÎßàÎÇ®//x
 CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BOY_SKILL2,
 CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BOY_SKILL3,
 CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_GIRL_SKILL1,//c60//≤ø∏∂≥‡//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_GIRL_SKILL1,//c60//Íº¨ÎßàÎÖÄ//x
 //SUMMON, SOLDIER, NPC_SHIP, ENEMY, -16 * _2X, SKILLDATA_RESERVED2,
 HEROSKILL, ROBIN, SKILL_ROBIN12, SKILLDATA_OBJECTDETAILINFO, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 ITEM_BOOMERANG_MEGATRIAL, ITEM_CAP_TROLLHEAD, ITEM_COAT_HYDRASCALE, ITEM_GLOVE_GLORY, ITEM_PANTS_SATANIC, ITEM_BOOTS_DESTINY,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 
 //HEROSKILL, ROBIN, SKILL_ROBIN13, SKILLDATA_OBJECTDETAILINFO, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 
@@ -7169,25 +7169,25 @@ SUMMONHERO, SOLDIER, MAXX, SKILL_MAXX13, 160 * _2X, SKILLDATA_RESERVED2,
 
 //SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8 
 //EQUIP_WEAPON, EQUIP_HELM, EQUIP_ARMOR, EQUIP_GLOVE, EQUIP_PANTS, EQUIP_BOOTS
-//µæ∆≥™¿« ∞ÊøÏ
+//ÎîîÏïÑÎÇòÏùò Í≤ΩÏö∞
 //ITEM_GUN, ITEM_HAT, ITEM_VEST, ITEM_ARMLET, ITEM_SKIRT, ITEM_SHOES,
-//∏∆Ω∫¿« ∞ÊøÏ
+//Îß•Ïä§Ïùò Í≤ΩÏö∞
 //ITEM_BOOMERANG, ITEM_CAP, ITEM_COAT, ITEM_GLOVE, ITEM_PANTS, ITEM_BOOTS,
 
 ITEM_GUN_PISTOL,		ITEM_HAT_COWBOY,			ITEM_VEST_WESTERN,			ITEM_ARMLET_LEATHER,	ITEM_SKIRT_BROCADE,		ITEM_SHOES_CLEAN,
-//SKILL_DIANA6,	//3way : 3πÊ«‚¿∏∑Œ √— πﬂªÁ
+//SKILL_DIANA6,	//3way : 3Î∞©Ìñ•ÏúºÎ°ú Ï¥ù Î∞úÏÇ¨
 ITEM_GUN_REVOLVER,		ITEM_HAT_RIDINGGOGGLE,		ITEM_VEST_LEOPARD,			ITEM_ARMLET_DESERT,		ITEM_SKIRT_CARPSKIN,	ITEM_SHOES_CHASER,
-//SKILL_DIANA8,	//«Ô∆ƒ¿ÃæÓ : »≠ø∞ πÊªÁ±‚
+//SKILL_DIANA8,	//Ìó¨ÌååÏù¥Ïñ¥ : ÌôîÏóº Î∞©ÏÇ¨Í∏∞
 ITEM_GUN_MAGNUM,		ITEM_HAT_BERET,				ITEM_VEST_SILK,				ITEM_ARMLET_EXPLORER,	ITEM_SKIRT_VELVET,		ITEM_SHOES_LEATHER,
-//SKILL_DIANA9,	//∑Œƒœ∑±√ƒ : ∑Œƒœ πﬂªÁµ«æÓ ∆¯πﬂ
+//SKILL_DIANA9,	//Î°úÏºìÎü∞Ï≥ê : Î°úÏºì Î∞úÏÇ¨ÎêòÏñ¥ Ìè≠Î∞ú
 ITEM_GUN_AUTOGUN45MM,	ITEM_HAT_WESTERNROMANCE,	ITEM_VEST_PIRATE,			ITEM_ARMLET_RAIDERS,	ITEM_SKIRT_NOBLE,		ITEM_SHOES_ROCKY,
-//SKILL_DIANA10,	//»£π÷πÃªÁ¿œ : ¿Øµµ≈∫ 3∞≥
+//SKILL_DIANA10,	//Ìò∏Î∞çÎØ∏ÏÇ¨Ïùº : Ïú†ÎèÑÌÉÑ 3Í∞ú
 ITEM_GUN_JEWELGUN,		ITEM_HAT_SCOUT,				ITEM_VEST_BALL,				ITEM_ARMLET_NOBLESS,	ITEM_SKIRT_GENERAL,		ITEM_SHOES_CARVING,
-//SKILL_DIANA7,	//∏Æ«√∑∫º«∫ˆ : ∑π¿Ã¡Æ∞° ∫Æø° ∆®±Ë
+//SKILL_DIANA7,	//Î¶¨ÌîåÎ†âÏÖòÎπî : Î†àÏù¥Ï†∏Í∞Ä Î≤ΩÏóê ÌäïÍπÄ
 ITEM_GUN_EXPLOSION,		ITEM_HAT_SNIPERGOGGLE,		ITEM_VEST_STAR,				ITEM_ARMLET_DEVIL,		ITEM_SKIRT_GLORY,		ITEM_SHOES_NETHERWORLD,
-//SKILL_DIANA11,	//≈≥∏µ¡∏ : ≥≠ªÁ
+//SKILL_DIANA11,	//ÌÇ¨ÎßÅÏ°¥ : ÎÇúÏÇ¨
 ITEM_GUN_CROSSFIRE,		ITEM_HAT_ELVENCAP,			ITEM_VEST_SPATIOTEMPORAL,	ITEM_ARMLET_DIGNITY,	ITEM_SKIRT_CHAOS,		ITEM_SHOES_INCARNATION,
-//SKILL_DIANA12,	//ø¿∫Ò≈ª∑π¿Ã¡Æ : ¿Œ∞¯¿ßº∫
+//SKILL_DIANA12,	//Ïò§ÎπÑÌÉàÎ†àÏù¥Ï†∏ : Ïù∏Í≥µÏúÑÏÑ±
 ITEM_GUN_INFERNO,		ITEM_HAT_DRAGONSKULL,		ITEM_VEST_QUEEN,			ITEM_ARMLET_HERO,		ITEM_SKIRT_HERO,		ITEM_SHOES_HEAVENS,
 
 
@@ -7200,19 +7200,19 @@ SUMMONHERO, SOLDIER, MAXX, SKILL_MAXX10, 80 * _2X, SKILLDATA_RESERVED2,
 SUMMONHERO, SOLDIER, MAXX, SKILL_MAXX13, 80 * _2X, SKILLDATA_RESERVED2,
 
 ITEM_BOOMERANG_BOOMERANG,	ITEM_CAP_FEATHER,	ITEM_COAT_SIMPLE,	ITEM_GLOVE_TRAVELER,	ITEM_PANTS_RIDING,		ITEM_BOOTS_SUEDE,
-//SKILL_MAXX7,	//µπ∑¡¬˜±‚ : »∏¿¸, ±‚¿˝∞¯∞›
+//SKILL_MAXX7,	//ÎèåÎ†§Ï∞®Í∏∞ : ÌöåÏ†Ñ, Í∏∞Ï†àÍ≥µÍ≤©
 ITEM_BOOMERANG_VOYAGER,		ITEM_CAP_BEASTMANE,	ITEM_COAT_PADDING,	ITEM_GLOVE_DUALTIE,		ITEM_PANTS_VINTAGEJEAN,	ITEM_BOOTS_WESTERN,
-//SKILL_MAXX9,	//ø°æÓ«Â∆Æ : ºˆ¡˜ ªÛΩ¬ ∞¯∞›
+//SKILL_MAXX9,	//ÏóêÏñ¥ÌóåÌä∏ : ÏàòÏßÅ ÏÉÅÏäπ Í≥µÍ≤©
 ITEM_BOOMERANG_WINDWALKER,	ITEM_CAP_EXPLORERHAT,ITEM_COAT_LEATHER,	ITEM_GLOVE_LINEN,		ITEM_PANTS_BLAZE,		ITEM_BOOTS_RIDING,
-//SKILL_MAXX8,	//ºÙ«Â∆Æ : ∞¸≈Î, ªÁ∞≈∏Æ ¬™¿Ω
+//SKILL_MAXX8,	//ÏàèÌóåÌä∏ : Í¥ÄÌÜµ, ÏÇ¨Í±∞Î¶¨ ÏßßÏùå
 ITEM_BOOMERANG_DOUBLECROSS,	ITEM_CAP_ACECAP,	ITEM_COAT_CUREBOIL,	ITEM_GLOVE_RUNE,		ITEM_PANTS_ASSASSIN,	ITEM_BOOTS_RICH,
-//SKILL_MAXX11,	//»£π÷«Â∆Æ : ∞°¿Â ∞°±ÓøÓ ¿˚ ∂ß∏Æ∞Ì µ«µπæ∆ø»
+//SKILL_MAXX11,	//Ìò∏Î∞çÌóåÌä∏ : Í∞ÄÏû• Í∞ÄÍπåÏö¥ Ï†Å ÎïåÎ¶¨Í≥† ÎêòÎèåÏïÑÏò¥
 ITEM_BOOMERANG_THUNDERMASTER,ITEM_CAP_LIONMANE,	ITEM_COAT_BEAST,	ITEM_GLOVE_FAIRY,		ITEM_PANTS_TEMPEST,		ITEM_BOOTS_OGRE,
-//SKILL_MAXX12,	//Ω·≈¨«Â∆Æ : ¡÷¿Œ∞¯ ¡÷∫Ø ∫∏»£
+//SKILL_MAXX12,	//Ïç®ÌÅ¥ÌóåÌä∏ : Ï£ºÏù∏Í≥µ Ï£ºÎ≥Ä Î≥¥Ìò∏
 ITEM_BOOMERANG_SOULCHASER,	ITEM_CAP_GREAVE,	ITEM_COAT_GRIZZLY,	ITEM_GLOVE_ROCKET,		ITEM_PANTS_SCARLETLEGGINGS,	ITEM_BOOTS_DARK,
-//SKILL_MAXX10,	//ƒ∑«Œ«Â∆Æ : æ’¿∏∑Œ ≥Ø∂Û∞°º≠ ¡¶¿⁄∏Æ»∏¿¸
+//SKILL_MAXX10,	//Ï∫†ÌïëÌóåÌä∏ : ÏïûÏúºÎ°ú ÎÇ†ÎùºÍ∞ÄÏÑú Ï†úÏûêÎ¶¨ÌöåÏ†Ñ
 ITEM_BOOMERANG_GRYPHONWING,	ITEM_CAP_DEATH,		ITEM_COAT_CROCODYLE,ITEM_GLOVE_LACEMITTEN,	ITEM_PANTS_HEAVEN,		ITEM_BOOTS_MIRACLE,
-//SKILL_MAXX13,	//∏ﬁ∞°«Â∆Æ : ∞¸≈Î»ƒ µ⁄ø°º≠ µπæ∆ø»
+//SKILL_MAXX13,	//Î©îÍ∞ÄÌóåÌä∏ : Í¥ÄÌÜµÌõÑ Îí§ÏóêÏÑú ÎèåÏïÑÏò¥
 ITEM_BOOMERANG_MEGATRIAL,	ITEM_CAP_TROLLHEAD,	ITEM_COAT_HYDRASCALE,ITEM_GLOVE_GLORY,		ITEM_PANTS_SATANIC,		ITEM_BOOTS_DESTINY,
 */
 
@@ -7221,1190 +7221,1194 @@ SUMMON, SOLDIER, ENEMY_SKELETON, ENEMY, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 50,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GIRL_SKILL3,
 HEROSKILL, ROBIN, SKILL_ROBIN7, SKILLDATA_OBJECTDETAILINFO, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 2,
-SKILLDATA_GRADE,//µÓ±ﬁ
-//NPC_ALMA_SKILL1,//c61//æÀ∏∂//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+SKILLDATA_GRADE,//Îì±Í∏â
+//NPC_ALMA_SKILL1,//c61//ÏïåÎßà//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ALMA_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ALMA_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ITEM_SKILL1,//c62//≈Õπ¯//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ITEM_SKILL1,//c62//ÌÑ∞Î≤à//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ITEM_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ITEM_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FATMAN_SKILL1,//c63//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FATMAN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FATMAN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BUNNYGIRL_SKILL1,//c64//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BUNNYGIRL_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BUNNYGIRL_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_KNIGHT_SKILL1,//c65//«√∑π≈∏//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_KNIGHT_SKILL1,//c65//ÌîåÎ†àÌÉÄ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_KNIGHT_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_KNIGHT_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOG_SKILL1,//c66//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOG_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOG_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MERCHANT_SKILL1,//c67
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MERCHANT_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MERCHANT_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CRAFTMAN_SKILL1,//c68//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CRAFTMAN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CRAFTMAN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAP_SKILL1,//c69//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAP_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAP_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_USERQUEST_SKILL1,//c70//Ω∫∆©æÓµΩ∫//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_USERQUEST_SKILL1,//c70//Ïä§ÌäúÏñ¥ÎîîÏä§//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_USERQUEST_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_USERQUEST_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_TRAVEL_SKILL1,//c71//¿Ã±π¿«ø©«‡¿⁄//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_TRAVEL_SKILL1,//c71//Ïù¥Íµ≠ÏùòÏó¨ÌñâÏûê//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_TRAVEL_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_TRAVEL_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_GRANDMA_SKILL1,//c72//«“∏”¥œ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_GRANDMA_SKILL1,//c72//Ìï†Î®∏Îãà//x
 CREWBULLET, 57, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GRANDMA_SKILL2,
 CREWBULLET, 58, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GRANDMA_SKILL3,
 CREWBULLET, 59, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_FISHING_SKILL1,//c73//∂Û««//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_FISHING_SKILL1,//c73//ÎùºÌîº//x
 CREWBULLET, 42, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FISHING_SKILL2,
 CREWBULLET, 43, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FISHING_SKILL3,
 CREWBULLET, 44, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_INN_SKILL1,//c74
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_INN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_INN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NETITEM_SKILL1,//c75//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NETITEM_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NETITEM_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MILESE_SKILL1,//c76//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MILESE_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 1, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MILESE_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 2, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOBEL_SKILL1,//c77//x
 CREWBULLET, 48, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOBEL_SKILL2,
 CREWBULLET, 49, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DOBEL_SKILL3,
 CREWBULLET, 50, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GAGEL_SKILL1,//c78//x
 CREWBULLET, 48, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GAGEL_SKILL2,
 CREWBULLET, 49, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GAGEL_SKILL3,
 CREWBULLET, 50, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MONICA_SKILL1,//c79//x
 CREWBULLET, 57, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MONICA_SKILL2,
 CREWBULLET, 58, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MONICA_SKILL3,
 CREWBULLET, 59, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SHIP_SKILL1,//c80
 CREWBULLET, 33, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SHIP_SKILL2,
 CREWBULLET, 34, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SHIP_SKILL3,
 CREWBULLET, 35, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SEASOLDIER_SKILL1,//c81//æ∆∆≤∂ı∫¥ªÁ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SEASOLDIER_SKILL1,//c81//ÏïÑÌãÄÎûÄÎ≥ëÏÇ¨//x
 CREWBULLET, 60, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEASOLDIER_SKILL2,
 CREWBULLET, 61, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEASOLDIER_SKILL3,
 CREWBULLET, 62, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FRAUD_SKILL1,//c82//x
 CREWBULLET, 45, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FRAUD_SKILL2,
 CREWBULLET, 46, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FRAUD_SKILL3,
 CREWBULLET, 47, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DARIAN_SKILL1,//c83//x
 CREWBULLET, 45, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DARIAN_SKILL2,
 CREWBULLET, 46, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DARIAN_SKILL3,
 CREWBULLET, 47, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LUISE_SKILL1,//c84//x
 CREWBULLET, 3, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LUISE_SKILL2,
 CREWBULLET, 4, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LUISE_SKILL3,
 CREWBULLET, 5, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SEAUNCLE_SKILL1,//c85//æ∆∆≤∂ıæ∆¿˙ææ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SEAUNCLE_SKILL1,//c85//ÏïÑÌãÄÎûÄÏïÑÏ†ÄÏî®//x
 CREWBULLET, 45, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEAUNCLE_SKILL2,
 CREWBULLET, 46, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEAUNCLE_SKILL3,
 CREWBULLET, 47, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SEABOY_SKILL1,//c86//æ∆∆≤∂ıº“≥‚//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SEABOY_SKILL1,//c86//ÏïÑÌãÄÎûÄÏÜåÎÖÑ//x
 CREWBULLET, 45, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEABOY_SKILL2,
 CREWBULLET, 46, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEABOY_SKILL3,
 CREWBULLET, 47, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_DONALD_SKILL1,//c87//¿Ãº“∑Ê//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_DONALD_SKILL1,//c87//Ïù¥ÏÜåÎ£°//x
 CREWBULLET, 42, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DONALD_SKILL2,
 CREWBULLET, 43, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DONALD_SKILL3,
 CREWBULLET, 44, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SCHOLAR_SKILL1,//c88//«–¿⁄//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SCHOLAR_SKILL1,//c88//ÌïôÏûê//x
 CREWBULLET, 18, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SCHOLAR_SKILL2,
 CREWBULLET, 19, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SCHOLAR_SKILL3,
-CREWBULLET, 20, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
+SUMMON, SOLDIER, ENEMY_SNAIL_RED, ENEMY, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_CHEF_SKILL1,//c89//ø‰∏Æ¥Î∞°//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_CHEF_SKILL1,//c89//ÏöîÎ¶¨ÎåÄÍ∞Ä//x
 CREWBULLET, 63, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CHEF_SKILL2,
 CREWBULLET, 64, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_CHEF_SKILL3,
 CREWBULLET, 65, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_BISTRO_SKILL1,//c90//∫ÒΩ∫∆Æ∑Œ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_BISTRO_SKILL1,//c90//ÎπÑÏä§Ìä∏Î°ú//x
 CREWBULLET, 63, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BISTRO_SKILL2,
 CREWBULLET, 64, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BISTRO_SKILL3,
 CREWBULLET, 65, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_MAID_SKILL1,//c91//Ω√≥‡//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_MAID_SKILL1,//c91//ÏãúÎÖÄ//x
 CREWBULLET, 66, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAID_SKILL2,
 CREWBULLET, 67, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MAID_SKILL3,
 CREWBULLET, 68, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ADELKNIGHT_SKILL1,//c92//±‚ªÁ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ADELKNIGHT_SKILL1,//c92//Í∏∞ÏÇ¨//x
 CREWBULLET, 68, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ADELKNIGHT_SKILL2,
 CREWBULLET, 39, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ADELKNIGHT_SKILL3,
 CREWBULLET, 40, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SEBASTIAN_SKILL1,//c93//ººπŸΩ∫¬˘//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SEBASTIAN_SKILL1,//c93//ÏÑ∏Î∞îÏä§Ï∞¨//x
 CREWBULLET, 72, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEBASTIAN_SKILL2,
 CREWBULLET, 73, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SEBASTIAN_SKILL3,
 CREWBULLET, 73, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_NOBLEMAN_SKILL1,//c94//±Õ¡∑æ∆¿˙ææ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_NOBLEMAN_SKILL1,//c94//Í∑ÄÏ°±ÏïÑÏ†ÄÏî®//x
 CREWBULLET, 74, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NOBLEMAN_SKILL2,
 CREWBULLET, 75, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 1,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NOBLEMAN_SKILL3,
 CREWBULLET, 76, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 2,
-SKILLDATA_GRADE,//µÓ±ﬁ
-//NPC_DELPIOS_SKILL1,//c95//µ®««ø¿Ω∫//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+SKILLDATA_GRADE,//Îì±Í∏â
+//NPC_DELPIOS_SKILL1,//c95//Îç∏ÌîºÏò§Ïä§//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DELPIOS_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DELPIOS_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_LORA_SKILL1,//c96//∑Œ∂Û//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_LORA_SKILL1,//c96//Î°úÎùº//x
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LORA_SKILL2,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LORA_SKILL3,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_WITCH_SKILL1,//c97//∏∂≥‡//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_WITCH_SKILL1,//c97//ÎßàÎÖÄ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WITCH_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WITCH_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFGRANDFA_SKILL1,//c98//ø§«¡«“æ∆πˆ¡ˆ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFGRANDFA_SKILL1,//c98//ÏóòÌîÑÌï†ÏïÑÎ≤ÑÏßÄ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFGRANDFA_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFGRANDFA_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFUNCLE_SKILL1,//c99//ø§«¡æ∆¿˙ææ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFUNCLE_SKILL1,//c99//ÏóòÌîÑÏïÑÏ†ÄÏî®//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFUNCLE_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFUNCLE_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFAUNT_SKILL1,//c100//ø§«¡æ∆¡‹∏∂//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFAUNT_SKILL1,//c100//ÏóòÌîÑÏïÑÏ§åÎßà//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFAUNT_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFAUNT_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFMAN_SKILL1,//c101//ø§«¡√ª≥‚//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFMAN_SKILL1,//c101//ÏóòÌîÑÏ≤≠ÎÖÑ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFMAN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFMAN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+SUMMONHERO, SOLDIER, MAXX, SKILL_MAXX7, 160 * _2X, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFWOMAN_SKILL1,//c102//ø§«¡√≥≥‡//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFWOMAN_SKILL1,//c102//ÏóòÌîÑÏ≤òÎÖÄ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFWOMAN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFWOMAN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFBOY_SKILL1,//c103//ø§«¡≤ø∏∂≥≤//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFBOY_SKILL1,//c103//ÏóòÌîÑÍº¨ÎßàÎÇ®//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFBOY_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFBOY_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFGIRL_SKILL1,//c104//ø§«¡≤ø∏∂≥‡//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFGIRL_SKILL1,//c104//ÏóòÌîÑÍº¨ÎßàÎÖÄ//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFGIRL_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFGIRL_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFDARK_SKILL1,//c105//ø§«¡¥Ÿ≈©//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFDARK_SKILL1,//c105//ÏóòÌîÑÎã§ÌÅ¨//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFDARK_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFDARK_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFMAGIC_SKILL1,//c106//ø§«¡∏∂π˝ªÁ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFMAGIC_SKILL1,//c106//ÏóòÌîÑÎßàÎ≤ïÏÇ¨//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFMAGIC_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFMAGIC_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELFDANCER_SKILL1,//c107//ø§«¡π´»Ò//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELFDANCER_SKILL1,//c107//ÏóòÌîÑÎ¨¥Ìù¨//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFDANCER_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELFDANCER_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+HEROSKILL, ROBIN, SKILL_ROBIN7, SKILLDATA_OBJECTDETAILINFO, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_OWL_SKILL1,//c108//∫Œæ˚¿Ã//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_OWL_SKILL1,//c108//Î∂ÄÏóâÏù¥//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_OWL_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_OWL_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_LABETH_SKILL1,//c109//∂Û∫£Ω∫//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_LABETH_SKILL1,//c109//ÎùºÎ≤†Ïä§//x
+//CREWSUMMON Ïù∏ Í≤ΩÏö∞ 
+//1. ÎàÑÍµ¨ÌïúÌÖå Ïä§ÌÇ¨ÏùÑ Ïì∏ÏßÄ
+//2. Ïñ¥Îñ§ Ïä§ÌÇ¨ÏùÑ Ïì∏ÏßÄ(ÏùºÎ∞òÏ†ÅÏúºÎ°ú etcÏóêÎã§Í∞Ä Ìï¥Îãπ ÏÉÅÌÉúÎ•º Ïç®Ï§ÄÎã§.)
+//3. Ïñ¥Îñ§ ÏúÑÏπòÎ°ú Ïù¥ÎèôÌï†ÏßÄ(ÏùºÎã® yÏ∂ïÍ∞íÏùÄ Î°úÎπàÍ≥º Í∞ôÍ≤å Í∞ÄÍ≥†, xÏ∂ïÍ∞íÎßå Ï°∞Ï†ïÌïúÎã§.)
+CREWSUMMON, ENEMY, LABETH_FLAME, TSIZE * 3, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LABETH_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWSUMMON, ENEMY, LABETH_MAGIC, TSIZE * 3, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_LABETH_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWSUMMON, ENEMY, LABETH_LASER, TSIZE * 3, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELKEIN_SKILL1,//c110//ø§ƒ…¿Œ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELKEIN_SKILL1,//c110//ÏóòÏºÄÏù∏//x
+CREWSUMMON, ENEMY, ELKEIN_BULLET, TSIZE * 10, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELKEIN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWSUMMON, ENEMY, ELKEIN_JUMPATTACK, TSIZE * 10, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELKEIN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWSUMMON, ENEMY, ELKEIN_DASH, TSIZE * 10, 5, 34,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_ELEIN_SKILL1,//c111//ø§∑π¿Œ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_ELEIN_SKILL1,//c111//ÏóòÎ†àÏù∏//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELEIN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_ELEIN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_EVAN_SKILL1,//c112//ø°π¯//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_EVAN_SKILL1,//c112//ÏóêÎ≤à//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_EVAN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_EVAN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+HEROSKILL, ROBIN, SKILL_ROBIN12, SKILLDATA_OBJECTDETAILINFO, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_BEAD_SKILL1,//c113//≈◊¿Ã∫Ì//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_BEAD_SKILL1,//c113//ÌÖåÏù¥Î∏î//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BEAD_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_BEAD_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_FOUNTAIN_SKILL1,//c114//ª˘π∞//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_FOUNTAIN_SKILL1,//c114//ÏÉòÎ¨º//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FOUNTAIN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_FOUNTAIN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_NEZAR_SKILL1,//c115//≥◊¿⁄∏£//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_NEZAR_SKILL1,//c115//ÎÑ§ÏûêÎ•¥//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NEZAR_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_NEZAR_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_GALLAND_SKILL1,//c116//∞•∂ıµÂ//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_GALLAND_SKILL1,//c116//Í∞àÎûÄÎìú//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GALLAND_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_GALLAND_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_DURAK_SKILL1,//c117//µ‡∂Û≈©//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_DURAK_SKILL1,//c117//ÎìÄÎùºÌÅ¨//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DURAK_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_DURAK_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_KING_SKILL1,//c118//ø°µÂ∏ÛµÂ//x
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_KING_SKILL1,//c118//ÏóêÎìúÎ™¨Îìú//x
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_KING_SKILL2,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_KING_SKILL3,
 CREWBULLET, ENEMY, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 SKILLDATA_RESERVED3, SKILLDATA_RESERVED4, SKILLDATA_RESERVED5, SKILLDATA_RESERVED6, SKILLDATA_RESERVED7, SKILLDATA_RESERVED8,
 51,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_WOMANGHOST_SKILL1,//c119//ø©¿⁄¿Ø∑…//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_WOMANGHOST_SKILL1,//c119//Ïó¨ÏûêÏú†Î†π//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WOMANGHOST_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_WOMANGHOST_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_MANGHOST_SKILL1,//c120//≥≤¿⁄¿Ø∑…//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_MANGHOST_SKILL1,//c120//ÎÇ®ÏûêÏú†Î†π//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MANGHOST_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_MANGHOST_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_AUSTIN_SKILL1,//c121//ø¿Ω∫∆æ(¿Ø∑…)//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_AUSTIN_SKILL1,//c121//Ïò§Ïä§Ìã¥(Ïú†Î†π)//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_AUSTIN_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_AUSTIN_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
-//NPC_SOUL_SKILL1,//c122//∏∂ø’¿« Ω…¿Â//x
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+GRADE_NORMAL,//Îì±Í∏â
+//NPC_SOUL_SKILL1,//c122//ÎßàÏôïÏùò Ïã¨Ïû•//x
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SOUL_SKILL2,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 //NPC_SOUL_SKILL3,
-ACTIVE, 100, FPS * 10, SKILL_COMMON_MAXX7, 5, 34,
+CREWBULLET, 0, ADDOBJ_CREWBULLET, ADDOBJ_SLING, SKILLDATA_RESERVED1, SKILLDATA_RESERVED2,
 2, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, 18, 19, 19, 20,
 30, 40, 55, 70, 85, MAXX_SKILL_SPLIT,
 false,
-GRADE_NORMAL,//µÓ±ﬁ
+GRADE_NORMAL,//Îì±Í∏â
 };
 
 const unsigned short barrierEtcData[15] = {
-	//¡§Ω≈º“∏
+	//Ï†ïÏã†ÏÜåÎ™®
 	100, 90, 82, 75, 69, 65, 62, 60, 58, 56, 54, 53, 52, 51, 50
 };
 
 const unsigned short berserkEtcData[15] = {
-	//»Ô∫–∞Ì¡∂
+	//Ìù•Î∂ÑÍ≥†Ï°∞
 	40, 70, 100, 130, 150, 170, 190, 200, 220, 230, 240, 260, 280, 290, 300,
 };
 
 const signed char skillToStat[7] = {
-	PS_DMGSKILLMOD,	//π´±‚º˜∑√ : ∞¯∞›∑¬ ¡ı∞°
-	PS_ARMORMOD,	//πÊæÓ±∏º˜∑√: πÊæÓ∑¬ ¡ı∞°
-	PS_CRITICAL,	//æ‡¡°∆ƒæ« : ≈©∏Æ∆ºƒ√ »Æ∑¸ ªÛΩ¬
-	PS_CRITDMG,	//æ‡¡°∞¯∞› : ≈©∏Æ∆ºƒ√ µ•πÃ¡ˆ ªÛΩ¬
-	PS_ABSORB,	//∂“Ω… : µ•πÃ¡ˆ ∞Ê∞®
-	PS_HIT,	//¡§¡∂¡ÿ : ∏Ì¡ﬂ ¡ı∞°
-	PS_EVASION,	//Ω≈º”»∏«« : »∏«« ¡ı∞°
+	PS_DMGSKILLMOD,	//Î¨¥Í∏∞ÏàôÎ†® : Í≥µÍ≤©Î†• Ï¶ùÍ∞Ä
+	PS_ARMORMOD,	//Î∞©Ïñ¥Íµ¨ÏàôÎ†®: Î∞©Ïñ¥Î†• Ï¶ùÍ∞Ä
+	PS_CRITICAL,	//ÏïΩÏ†êÌååÏïÖ : ÌÅ¨Î¶¨Ìã∞Ïª¨ ÌôïÎ•† ÏÉÅÏäπ
+	PS_CRITDMG,	//ÏïΩÏ†êÍ≥µÍ≤© : ÌÅ¨Î¶¨Ìã∞Ïª¨ Îç∞ÎØ∏ÏßÄ ÏÉÅÏäπ
+	PS_ABSORB,	//ÎöùÏã¨ : Îç∞ÎØ∏ÏßÄ Í≤ΩÍ∞ê
+	PS_HIT,	//Ï†ïÏ°∞Ï§Ä : Î™ÖÏ§ë Ï¶ùÍ∞Ä
+	PS_EVASION,	//Ïã†ÏÜçÌöåÌîº : ÌöåÌîº Ï¶ùÍ∞Ä
 };
 
-//GetAtkøÕ µø±‚»≠ µ«æÓæﬂ «‘
+//GetAtkÏôÄ ÎèôÍ∏∞Ìôî ÎêòÏñ¥Ïïº Ìï®
 const unsigned char skillDescMod[8 * 3] = {
 #ifdef AIR2XDMG
-	35,	//SKILL_ROBIN6	: ø°æÓ≈©∑°Ω¨ : ∏˜ ∂ŸøÏ±‚ //0
+	35,	//SKILL_ROBIN6	: ÏóêÏñ¥ÌÅ¨ÎûòÏâ¨ : Î™π Îõ∞Ïö∞Í∏∞ //0
 #else
-	25,	//SKILL_ROBIN6	: ø°æÓ≈©∑°Ω¨ : ∏˜ ∂ŸøÏ±‚ //0
+	25,	//SKILL_ROBIN6	: ÏóêÏñ¥ÌÅ¨ÎûòÏâ¨ : Î™π Îõ∞Ïö∞Í∏∞ //0
 #endif
-	10,	//SKILL_ROBIN7	: ∏∂±∏¬Ó∏£±‚ : ≥≠≈∏ //1
-	20,	//SKILL_ROBIN8	: ∫ŒΩ∫∆ÆΩΩ∑°Ω¨ : ∞°∑Œ∑Œ ≈©∞‘ πË±‚, ±‚¿˝ //2
-	30,	//SKILL_ROBIN9	: «œ¿Ã∆€¬˜¡ˆ : µπ∞›∞¯∞›, ¿˚¿ª µ⁄∑Œ ≥Ø∑¡πˆ∏≤ //3
-	25,	//SKILL_ROBIN10	: º“øÔ≈©∑°Ω¨ : ±‚¿˝ //4
-	15,	//SKILL_ROBIN11	: æ€º÷∑Á∆Æ««æÓΩ∫ : ¬Ò∑Øº≠»∏¿¸ //5
-	15,	//SKILL_ROBIN12	: ∏ÍªÏø¨¬¸ : ø¨º”±‚ //6
+	10,	//SKILL_ROBIN7	: ÎßàÍµ¨Ï∞åÎ•¥Í∏∞ : ÎÇúÌÉÄ //1
+	20,	//SKILL_ROBIN8	: Î∂ÄÏä§Ìä∏Ïä¨ÎûòÏâ¨ : Í∞ÄÎ°úÎ°ú ÌÅ¨Í≤å Î∞∞Í∏∞, Í∏∞Ï†à //2
+	30,	//SKILL_ROBIN9	: ÌïòÏù¥ÌçºÏ∞®ÏßÄ : ÎèåÍ≤©Í≥µÍ≤©, Ï†ÅÏùÑ Îí§Î°ú ÎÇ†Î†§Î≤ÑÎ¶º //3
+	25,	//SKILL_ROBIN10	: ÏÜåÏö∏ÌÅ¨ÎûòÏâ¨ : Í∏∞Ï†à //4
+	15,	//SKILL_ROBIN11	: Ïï±ÏÜîÎ£®Ìä∏ÌîºÏñ¥Ïä§ : Ï∞îÎü¨ÏÑúÌöåÏ†Ñ //5
+	15,	//SKILL_ROBIN12	: Î©∏ÏÇ¥Ïó∞Ï∞∏ : Ïó∞ÏÜçÍ∏∞ //6
 	10,	//SKILL_ROBIN13 //7
 
-	20,	//SKILL_DIANA6	: //3way : 3πÊ«‚¿∏∑Œ √— πﬂªÁ //8
+	20,	//SKILL_DIANA6	: //3way : 3Î∞©Ìñ•ÏúºÎ°ú Ï¥ù Î∞úÏÇ¨ //8
 #ifdef AIR2XDMG
-	15,	//SKILL_DIANA7	: //∏Æ«√∑∫º«∫ˆ : ∑π¿Ã¡Æ∞° ∫Æø° ∆®±Ë //9
+	15,	//SKILL_DIANA7	: //Î¶¨ÌîåÎ†âÏÖòÎπî : Î†àÏù¥Ï†∏Í∞Ä Î≤ΩÏóê ÌäïÍπÄ //9
 #else
-	10,	//SKILL_DIANA7	: //∏Æ«√∑∫º«∫ˆ : ∑π¿Ã¡Æ∞° ∫Æø° ∆®±Ë //9
+	10,	//SKILL_DIANA7	: //Î¶¨ÌîåÎ†âÏÖòÎπî : Î†àÏù¥Ï†∏Í∞Ä Î≤ΩÏóê ÌäïÍπÄ //9
 #endif
-	10,	//SKILL_DIANA8	: //«Ô∆ƒ¿ÃæÓ : »≠ø∞ πÊªÁ±‚ //10
-	25,	//SKILL_DIANA9	: //∑Œƒœ∑±√ƒ : ∑Œƒœ πﬂªÁµ«æÓ ∆¯πﬂ //11
-	20,	//SKILL_DIANA10	: //»£π÷πÃªÁ¿œ : ¿Øµµ≈∫ 3∞≥ //12
-	25,	//SKILL_DIANA11	: //≈≥∏µ¡∏ : ≥≠ªÁ //13
-	30,	//SKILL_DIANA12	: //ø¿∫Ò≈ª∑π¿Ã¡Æ : ¿Œ∞¯¿ßº∫ //14
+	10,	//SKILL_DIANA8	: //Ìó¨ÌååÏù¥Ïñ¥ : ÌôîÏóº Î∞©ÏÇ¨Í∏∞ //10
+	25,	//SKILL_DIANA9	: //Î°úÏºìÎü∞Ï≥ê : Î°úÏºì Î∞úÏÇ¨ÎêòÏñ¥ Ìè≠Î∞ú //11
+	20,	//SKILL_DIANA10	: //Ìò∏Î∞çÎØ∏ÏÇ¨Ïùº : Ïú†ÎèÑÌÉÑ 3Í∞ú //12
+	25,	//SKILL_DIANA11	: //ÌÇ¨ÎßÅÏ°¥ : ÎÇúÏÇ¨ //13
+	30,	//SKILL_DIANA12	: //Ïò§ÎπÑÌÉàÎ†àÏù¥Ï†∏ : Ïù∏Í≥µÏúÑÏÑ± //14
 	10,	//SKILL_DIANA13 //15
 
 	10,	//SKILL_MAXX6 //16
-	25,	//SKILL_MAXX7	: //µπ∑¡¬˜±‚ : »∏¿¸, ±‚¿˝ //17
-	7,	//SKILL_MAXX8	: //ºÙ«Â∆Æ : ∞¸≈Î, ªÁ∞≈∏Æ ¬™¿Ω //18
+	25,	//SKILL_MAXX7	: //ÎèåÎ†§Ï∞®Í∏∞ : ÌöåÏ†Ñ, Í∏∞Ï†à //17
+	7,	//SKILL_MAXX8	: //ÏàèÌóåÌä∏ : Í¥ÄÌÜµ, ÏÇ¨Í±∞Î¶¨ ÏßßÏùå //18
 #ifdef AIR2XDMG
-	25,	//SKILL_MAXX9	: //ø°æÓ«Â∆Æ : ºˆ¡˜ ªÛΩ¬ ∞¯∞› //19
+	25,	//SKILL_MAXX9	: //ÏóêÏñ¥ÌóåÌä∏ : ÏàòÏßÅ ÏÉÅÏäπ Í≥µÍ≤© //19
 #else
-	45,	//SKILL_MAXX9	: //ø°æÓ«Â∆Æ : ºˆ¡˜ ªÛΩ¬ ∞¯∞› //19
+	45,	//SKILL_MAXX9	: //ÏóêÏñ¥ÌóåÌä∏ : ÏàòÏßÅ ÏÉÅÏäπ Í≥µÍ≤© //19
 #endif
-	10,	//SKILL_MAXX10	: //ƒ∑«Œ«Â∆Æ : æ’¿∏∑Œ ≥Ø∂Û∞°º≠ ¡¶¿⁄∏Æ»∏¿¸ //20
-	20,	//SKILL_MAXX11	: //»£π÷«Â∆Æ : ∞°¿Â ∞°±ÓøÓ ¿˚ ∂ß∏Æ∞Ì µ«µπæ∆ø» //21
-	10,	//SKILL_MAXX12	: //Ω·≈¨«Â∆Æ : ¡÷¿Œ∞¯ ¡÷∫Ø ∫∏»£ //22
-	30,	//SKILL_MAXX13	: //∏ﬁ∞°«Â∆Æ : ∞¸≈Î»ƒ µ⁄ø°º≠ µπæ∆ø» //23
+	10,	//SKILL_MAXX10	: //Ï∫†ÌïëÌóåÌä∏ : ÏïûÏúºÎ°ú ÎÇ†ÎùºÍ∞ÄÏÑú Ï†úÏûêÎ¶¨ÌöåÏ†Ñ //20
+	20,	//SKILL_MAXX11	: //Ìò∏Î∞çÌóåÌä∏ : Í∞ÄÏû• Í∞ÄÍπåÏö¥ Ï†Å ÎïåÎ¶¨Í≥† ÎêòÎèåÏïÑÏò¥ //21
+	10,	//SKILL_MAXX12	: //Ïç®ÌÅ¥ÌóåÌä∏ : Ï£ºÏù∏Í≥µ Ï£ºÎ≥Ä Î≥¥Ìò∏ //22
+	30,	//SKILL_MAXX13	: //Î©îÍ∞ÄÌóåÌä∏ : Í¥ÄÌÜµÌõÑ Îí§ÏóêÏÑú ÎèåÏïÑÏò¥ //23
 };
 #endif

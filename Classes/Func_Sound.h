@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _FUNC_SOUND_H_
 #define _FUNC_SOUND_H_
 
-// Sound °ü·Ã
+// Sound ê´€ë ¨
 void PlayMusic(int);
 void Stop(void);
 void TimerMusic(void);

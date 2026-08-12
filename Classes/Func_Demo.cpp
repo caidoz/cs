@@ -992,8 +992,8 @@ void Demo(void)
 //인터랙티브 전투 튜토리얼이 진행 중인지(튜토리얼 방에서 아직 끝나지 않았는지).
 bool IsTutorialPlaying(void)
 {
-	//ù ���� �� MAP_DIORAMA_TOLEM�̶� �ʸ� ���� �Ϲ� �÷��̵� �ɸ���.
-	//DEMO_TUTORIAL_INIT�� �� ���� �ִ������� Ȯ���ؾ� "Ʃ�丮�� ���� ��"�� �ȴ�.
+	//첫 성이 곧 MAP_DIORAMA_TOLEM이라 맵만 보면 일반 플레이도 걸린다.
+	//DEMO_TUTORIAL_INIT을 본 적이 있는지까지 확인해야 "튜토리얼 진행 중"이 된다.
 	return robinmap == MAP_DIORAMA_TOLEM
 		&& robin.demoSeen[DEMO_TUTORIAL_INIT]
 		&& !robin.demoSeen[DEMO_TUTORIAL_END];
@@ -1070,8 +1070,8 @@ int GetTutorialCrewCardTouchFunc(void)
 	if (IsTutorialPlaying() == false)
 		return 0;
 
-	//�ȳ� ��翡�� ���� �ٸ� ���� �޴��� �� �� �������� ������.
-	//����Ǵ� �÷��׷� �����ϸ� �Ϲ� �÷��̿��� ���� �޴��� �� ���� �ɸ���.
+	//안내 대사에서 동료 바를 눌러 메뉴를 연 그 순간에만 켜진다.
+	//저장되는 플래그로 판정하면 일반 플레이에서 동료 메뉴를 열 때도 걸린다.
 	if (tutorialCrewGuide == false)
 		return 0;
 

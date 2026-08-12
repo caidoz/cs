@@ -1,5 +1,5 @@
-#pragma once
+ï»¿#pragma once
 
 #include "cocos2d.h"
-// Object ±×¸®±â °ü·Ã
+// Object ê·¸ë¦¬ê¸° ê´€ë ¨
 void CmfRead(int, int);

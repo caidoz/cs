@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 // =============================================================
 // AUTO GENERATED - DO NOT EDIT
 // Source : Definitions.xlsx
@@ -8,91 +8,91 @@
 
 
 // ---
-#define DEVELOPMENT                    // °³¹ß ºôµå ¸ðµå
-// #define RELEASE                     // ¸±¸®Áî ºôµå ¸ðµå
+#define DEVELOPMENT                    // ê°œë°œ ë¹Œë“œ ëª¨ë“œ
+// #define RELEASE                     // ë¦´ë¦¬ì¦ˆ ë¹Œë“œ ëª¨ë“œ
 
 // ---
-#define GAMEDEBUG                      // °ÔÀÓ ÀüÃ¼ µð¹ö±×
-#define DEBUGMENU                      // µð¹ö±× ¸Þ´º Ç¥½Ã
-#define TURNRPG			0                   // ÅÏÁ¦ RPG ¸ðµå
-#define ACTIONRPG		1					// ¾×¼Ç RPG
-#define INFINITEMODE                   // ¹«ÇÑ ¸ðµå
-#define NOIAP                          // ÀÎ¾Û°áÁ¦ ºñÈ°¼ºÈ­
+#define GAMEDEBUG                      // ê²Œìž„ ì „ì²´ ë””ë²„ê·¸
+#define DEBUGMENU                      // ë””ë²„ê·¸ ë©”ë‰´ í‘œì‹œ
+#define TURNRPG			0                   // í„´ì œ RPG ëª¨ë“œ
+#define ACTIONRPG		1					// ì•¡ì…˜ RPG
+#define INFINITEMODE                   // ë¬´í•œ ëª¨ë“œ
+#define NOIAP                          // ì¸ì•±ê²°ì œ ë¹„í™œì„±í™”
 
 // ---
-#define ROULETTE                       // ·ê·¿ ½Ã½ºÅÛ
-#define ROULETTEICON                   // ·ê·¿ ¾ÆÀÌÄÜ Ç¥½Ã
-#define SELECTROULETTE                 // ·ê·¿ ¼±ÅÃ ¸ðµå
-#define SHOWJOKBOMULTIPLE              // Á·º¸ ¹èÀ² Ç¥½Ã
+#define ROULETTE                       // ë£°ë › ì‹œìŠ¤í…œ
+#define ROULETTEICON                   // ë£°ë › ì•„ì´ì½˜ í‘œì‹œ
+#define SELECTROULETTE                 // ë£°ë › ì„ íƒ ëª¨ë“œ
+#define SHOWJOKBOMULTIPLE              // ì¡±ë³´ ë°°ìœ¨ í‘œì‹œ
 
 // ---
-#define ONEHEARTONEATTACK              // ÇÏÆ® 1°³´ç °ø°Ý 1È¸
-#define ENEMYUSER                      // Àû À¯Àú ¸ðµå
-#define PVPWITHUSER                    // À¯Àú°£ PVP
-#define NOCRITICAL                     // Å©¸®Æ¼ÄÃ ¾øÀ½
-#define STUNEXCEPTBOSS                 // º¸½º ½ºÅÏ Á¦¿Ü
-#define DAMAGE_REDUCE_BY_HP            // HP¿¡ µû¸¥ µ¥¹ÌÁö °¨¼Ò
-#define ATTACK_INIT_DELAY              // °ø°Ý ÃÊ±â µô·¹ÀÌ
-#define MANUALDELAY                    // ¼öµ¿ µô·¹ÀÌ
+#define ONEHEARTONEATTACK              // í•˜íŠ¸ 1ê°œë‹¹ ê³µê²© 1íšŒ
+#define ENEMYUSER                      // ì  ìœ ì € ëª¨ë“œ
+#define PVPWITHUSER                    // ìœ ì €ê°„ PVP
+#define NOCRITICAL                     // í¬ë¦¬í‹°ì»¬ ì—†ìŒ
+#define STUNEXCEPTBOSS                 // ë³´ìŠ¤ ìŠ¤í„´ ì œì™¸
+#define DAMAGE_REDUCE_BY_HP            // HPì— ë”°ë¥¸ ë°ë¯¸ì§€ ê°ì†Œ
+#define ATTACK_INIT_DELAY              // ê³µê²© ì´ˆê¸° ë”œë ˆì´
+#define MANUALDELAY                    // ìˆ˜ë™ ë”œë ˆì´
 
 // ---
-#define BGEFFECTDRAW                   // ¹è°æ ÀÌÆåÆ® ·»´õ
-#define CLIPPING                       // Å¬¸®ÇÎ
-#define DOUBLEBUFFERING                // ´õºí ¹öÆÛ¸µ
-#define EQUIPCARDIMG                   // Àåºñ Ä«µå ÀÌ¹ÌÁö
-#define CENTERDISPLAY                  // Áß¾Ó µð½ºÇÃ·¹ÀÌ
-#define TTFFONT                        // TTF ÆùÆ® »ç¿ë
+#define BGEFFECTDRAW                   // ë°°ê²½ ì´íŽ™íŠ¸ ë Œë”
+#define CLIPPING                       // í´ë¦¬í•‘
+#define DOUBLEBUFFERING                // ë”ë¸” ë²„í¼ë§
+#define EQUIPCARDIMG                   // ìž¥ë¹„ ì¹´ë“œ ì´ë¯¸ì§€
+#define CENTERDISPLAY                  // ì¤‘ì•™ ë””ìŠ¤í”Œë ˆì´
+#define TTFFONT                        // TTF í°íŠ¸ ì‚¬ìš©
 
 // ---
-#define DROPONLYROBINS                 // ·Îºó ¾ÆÀÌÅÛ¸¸ µå·Ó
-#define WITHOUTNECKRING                // ¸ñ°ÉÀÌ/¹ÝÁö Á¦¿Ü
-#define SETITEM                        // ¼¼Æ® ¾ÆÀÌÅÛ
-#define ALLEQUIPLEGENDGRADE            // ¸ðµç Àåºñ ·¹Àüµå µî±Þ
-#define GLOVEATTACKFRAME               // Àå°© °ø°Ý ÇÁ·¹ÀÓ
+#define DROPONLYROBINS                 // ë¡œë¹ˆ ì•„ì´í…œë§Œ ë“œë¡­
+#define WITHOUTNECKRING                // ëª©ê±¸ì´/ë°˜ì§€ ì œì™¸
+#define SETITEM                        // ì„¸íŠ¸ ì•„ì´í…œ
+#define ALLEQUIPLEGENDGRADE            // ëª¨ë“  ìž¥ë¹„ ë ˆì „ë“œ ë“±ê¸‰
+#define GLOVEATTACKFRAME               // ìž¥ê°‘ ê³µê²© í”„ë ˆìž„
 
 // ---
-#define SKILLCARD                      // ½ºÅ³ Ä«µå
-#define SKILLTEST                      // ½ºÅ³ Å×½ºÆ® ¸ðµå
-#define ENEMYSKILLTEST                 // Àû ½ºÅ³ Å×½ºÆ®
-#define NOSKILLMOVE                    // ½ºÅ³ ÀÌµ¿ ¾øÀ½
-#define EVERYLVGETSKILL                // ¸Å ·¹º§ ½ºÅ³ È¹µæ
+#define SKILLCARD                      // ìŠ¤í‚¬ ì¹´ë“œ
+#define SKILLTEST                      // ìŠ¤í‚¬ í…ŒìŠ¤íŠ¸ ëª¨ë“œ
+#define ENEMYSKILLTEST                 // ì  ìŠ¤í‚¬ í…ŒìŠ¤íŠ¸
+#define NOSKILLMOVE                    // ìŠ¤í‚¬ ì´ë™ ì—†ìŒ
+#define EVERYLVGETSKILL                // ë§¤ ë ˆë²¨ ìŠ¤í‚¬ íšë“
 
 // ---
-#define LVUPBYGOLD                     // °ñµå·Î ·¹º§¾÷
-#define TIERPLAYERCNT                  // Æ¼¾î ÇÃ·¹ÀÌ¾î ¼ö
-#define TIERFLOOR                      // Æ¼¾î Ãþ¼ö
-#define TIERCUTOFF                     // Æ¼¾î ÄÆ¿ÀÇÁ
+#define LVUPBYGOLD                     // ê³¨ë“œë¡œ ë ˆë²¨ì—…
+#define TIERPLAYERCNT                  // í‹°ì–´ í”Œë ˆì´ì–´ ìˆ˜
+#define TIERFLOOR                      // í‹°ì–´ ì¸µìˆ˜
+#define TIERCUTOFF                     // í‹°ì–´ ì»·ì˜¤í”„
 
 // ---
-#define MOVETEST                       // ÀÌµ¿ Å×½ºÆ®
-#define GETITEMAUTO                    // ¾ÆÀÌÅÛ ÀÚµ¿ È¹µæ
-#define SCROLLTEST                     // ½ºÅ©·Ñ Å×½ºÆ®
-#define BLOCKOBJ                       // ¿ÀºêÁ§Æ® ºí·Ï
-#define ARENAMONDATA                   // ¾Æ·¹³ª ¸ó½ºÅÍ µ¥ÀÌÅÍ
-#define WARIGARI                       // ¿Í¸®°¡¸®
-#define CAGE                           // ÄÉÀÌÁö
-#define INTEREST                       // ÀÌÀÚ ½Ã½ºÅÛ
-#define NOINERTIA                      // °ü¼º ¾øÀ½
+#define MOVETEST                       // ì´ë™ í…ŒìŠ¤íŠ¸
+#define GETITEMAUTO                    // ì•„ì´í…œ ìžë™ íšë“
+#define SCROLLTEST                     // ìŠ¤í¬ë¡¤ í…ŒìŠ¤íŠ¸
+#define BLOCKOBJ                       // ì˜¤ë¸Œì íŠ¸ ë¸”ë¡
+#define ARENAMONDATA                   // ì•„ë ˆë‚˜ ëª¬ìŠ¤í„° ë°ì´í„°
+#define WARIGARI                       // ì™€ë¦¬ê°€ë¦¬
+#define CAGE                           // ì¼€ì´ì§€
+#define INTEREST                       // ì´ìž ì‹œìŠ¤í…œ
+#define NOINERTIA                      // ê´€ì„± ì—†ìŒ
 
 // ---
-#define HITMARKSHOW                    // È÷Æ®¸¶Å© Ç¥½Ã
-#define HITMARKWHITE                   // È÷Æ®¸¶Å© Èò»ö
+#define HITMARKSHOW                    // ížˆíŠ¸ë§ˆí¬ í‘œì‹œ
+#define HITMARKWHITE                   // ížˆíŠ¸ë§ˆí¬ í°ìƒ‰
 
 // ---
-#define ATTACKFIRSTROULETTELAST        // °ø°Ý ¸ÕÀú ·ê·¿ ³ªÁß
-#define ROBINDEFAULTATTACKSTING        // ·Îºó ±âº» °ø°Ý ½ºÆÃ
-#define LONGSWORDLONGDMG               // ·Õ¼Òµå ±ä µ¥¹ÌÁö
+#define ATTACKFIRSTROULETTELAST        // ê³µê²© ë¨¼ì € ë£°ë › ë‚˜ì¤‘
+#define ROBINDEFAULTATTACKSTING        // ë¡œë¹ˆ ê¸°ë³¸ ê³µê²© ìŠ¤íŒ…
+#define LONGSWORDLONGDMG               // ë¡±ì†Œë“œ ê¸´ ë°ë¯¸ì§€
 
 // ---
-#define TITLETYPEMUSKETTERS            // ¸Ó½ºÅ¶Æ¼¾î½º Å¸ÀÌÆ²
+#define TITLETYPEMUSKETTERS            // ë¨¸ìŠ¤í‚·í‹°ì–´ìŠ¤ íƒ€ì´í‹€
 
 // ---
-#define MAXPLAYER_FIVE             5        // ÃÖ´ë ÇÃ·¹ÀÌ¾î ¼ö
-#define MAXACTIVESKILL             7        // ÃÖ´ë ¾×Æ¼ºê ½ºÅ³
-#define BIGSWORD                   5        // Å« °Ë Å©±â
-#define REWARDZOOM                 2        // º¸»ó ÁÜ
-#define EQUIPREWARDZOOM            2        // Àåºñ º¸»ó ÁÜ
-#define ROULETTEZOOM               0.5f     // ·ê·¿ ÁÜ
-#define SLOTINITZOOM               0.5f    // ½½·Ô ÃÊ±â ÁÜ
-#define SLOTZOOM                   0.6f    // ½½·Ô ÁÜ
-#define JOYSTICKZOOM               2.0f     // Á¶ÀÌ½ºÆ½ ÁÜ
+#define MAXPLAYER_FIVE             5        // ìµœëŒ€ í”Œë ˆì´ì–´ ìˆ˜
+#define MAXACTIVESKILL             7        // ìµœëŒ€ ì•¡í‹°ë¸Œ ìŠ¤í‚¬
+#define BIGSWORD                   5        // í° ê²€ í¬ê¸°
+#define REWARDZOOM                 2        // ë³´ìƒ ì¤Œ
+#define EQUIPREWARDZOOM            2        // ìž¥ë¹„ ë³´ìƒ ì¤Œ
+#define ROULETTEZOOM               0.5f     // ë£°ë › ì¤Œ
+#define SLOTINITZOOM               0.5f    // ìŠ¬ë¡¯ ì´ˆê¸° ì¤Œ
+#define SLOTZOOM                   0.6f    // ìŠ¬ë¡¯ ì¤Œ
+#define JOYSTICKZOOM               2.0f     // ì¡°ì´ìŠ¤í‹± ì¤Œ

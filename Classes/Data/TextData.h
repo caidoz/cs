@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_TEXT_H_
@@ -929,7 +929,7 @@ const unsigned short alphaOff[TOTAL_ALPHA_TEXT + 1] = {
 };
 
 const signed short alertText[TOTALALERT] = {
-	//0 : øœ¿¸ ºˆµø, -1 : tempStr, -2 : infoStr, -3 : skillStr
+	//0 : ÏôÑÏ†Ñ ÏàòÎèô, -1 : tempStr, -2 : infoStr, -3 : skillStr
 	TEXT_NOGOLD,	//ALERT_NOGOLD
 	-4,//ALERT_EQUIP
 	TEXT_INVENTORYFULL,	//ALERT_INVENFULL

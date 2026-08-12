@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FUNC_MENU_H_
 #define _FUNC_MENU_H_
 
@@ -20,59 +20,59 @@
 #define BUTTON_TOTALSIZE 3
 
 const signed int crewMenuUiData[] = {
-	640, 153, 0, 0, 0, 0, MENU_IMG,//»ó´ÜÃ¢
+	640, 153, 0, 0, 0, 0, MENU_IMG,//ìƒë‹¨ì°½
 	
-	332, 114, 641, 0, 154, 4, MENU_IMG,//Å¸ÀÌÆ² Ã¢
+	332, 114, 641, 0, 154, 4, MENU_IMG,//íƒ€ì´í‹€ ì°½
 };
 
 const signed int equipMenuUiData[] = {
-	640, 149, 0, 154, 0, 0, MENU_IMG,//»ó´ÜÃ¢
+	640, 149, 0, 154, 0, 0, MENU_IMG,//ìƒë‹¨ì°½
 
-	290, 128, 641, 155, 176, 4, MENU_IMG,//Å¸ÀÌÆ² Ã¢
+	290, 128, 641, 155, 176, 4, MENU_IMG,//íƒ€ì´í‹€ ì°½
 
-	//597, 326, 0, 543, 19, 130, MENU_IMG,//ÇöÀç Ä³¸¯ÅÍ ¼Â¾÷
+	//597, 326, 0, 543, 19, 130, MENU_IMG,//í˜„ì¬ ìºë¦­í„° ì…‹ì—…
 };
 
 const signed int shopMenuUiData[] = {
-	640, 137, 0, 304, 0, 0, MENU_IMG,//»ó´ÜÃ¢
+	640, 137, 0, 304, 0, 0, MENU_IMG,//ìƒë‹¨ì°½
 
-	337, 114, 641, 305, 152, 16, MENU_IMG,//Å¸ÀÌÆ² Ã¢
+	337, 114, 641, 305, 152, 16, MENU_IMG,//íƒ€ì´í‹€ ì°½
 };
 
 const signed int castleMenuUiData[] = {
-	640, 163, 0, 442, 0, -17, MENU_IMG,//»ó´ÜÃ¢
+	640, 163, 0, 442, 0, -17, MENU_IMG,//ìƒë‹¨ì°½
 
-	346, 112, 654, 453, 147, 12, MENU_IMG,//Å¸ÀÌÆ² Ã¢
+	346, 112, 654, 453, 147, 12, MENU_IMG,//íƒ€ì´í‹€ ì°½
 };
 
 const int buttonImgData[] = {
-	176, 40, 1, 638, UI_NEW_IMG,//È­ÀÌÆ® Large
-	//128, 40, 178, 638, UI_NEW_IMG,//È­ÀÌÆ® Mid
-	//80, 40, 307, 638, UI_NEW_IMG,//È­ÀÌÆ® Small
+	176, 40, 1, 638, UI_NEW_IMG,//í™”ì´íŠ¸ Large
+	//128, 40, 178, 638, UI_NEW_IMG,//í™”ì´íŠ¸ Mid
+	//80, 40, 307, 638, UI_NEW_IMG,//í™”ì´íŠ¸ Small
 
-	176, 40, 1, 720, UI_NEW_IMG,//º¸¶ó Large
-	//128, 40, 178, 720, UI_NEW_IMG,//º¸¶ó Mid
-	//80, 40, 307, 720, UI_NEW_IMG,//º¸¶ó Small
+	176, 40, 1, 720, UI_NEW_IMG,//ë³´ë¼ Large
+	//128, 40, 178, 720, UI_NEW_IMG,//ë³´ë¼ Mid
+	//80, 40, 307, 720, UI_NEW_IMG,//ë³´ë¼ Small
 
-	176, 40, 1, 761, UI_NEW_IMG,//ÃÊ·Ï Large
-	//128, 40, 178, 761, UI_NEW_IMG,//ÃÊ·Ï Mid
-	//80, 40, 307, 761, UI_NEW_IMG,//ÃÊ·Ï Small
+	176, 40, 1, 761, UI_NEW_IMG,//ì´ˆë¡ Large
+	//128, 40, 178, 761, UI_NEW_IMG,//ì´ˆë¡ Mid
+	//80, 40, 307, 761, UI_NEW_IMG,//ì´ˆë¡ Small
 
-	176, 40, 1, 802, UI_NEW_IMG,//ÆÄ¶û Large
-	//128, 40, 178, 802, UI_NEW_IMG,//ÆÄ¶û Mid
-	//80, 40, 307, 802, UI_NEW_IMG,//ÆÄ¶û Small	
+	176, 40, 1, 802, UI_NEW_IMG,//íŒŒë‘ Large
+	//128, 40, 178, 802, UI_NEW_IMG,//íŒŒë‘ Mid
+	//80, 40, 307, 802, UI_NEW_IMG,//íŒŒë‘ Small	
 
-	176, 40, 1, 843, UI_NEW_IMG,//°¥»ö Large
-	//128, 40, 178, 843, UI_NEW_IMG,//°¥»ö Mid
-	//80, 40, 307, 843, UI_NEW_IMG,//°¥»ö Small
+	176, 40, 1, 843, UI_NEW_IMG,//ê°ˆìƒ‰ Large
+	//128, 40, 178, 843, UI_NEW_IMG,//ê°ˆìƒ‰ Mid
+	//80, 40, 307, 843, UI_NEW_IMG,//ê°ˆìƒ‰ Small
 
-	176, 40, 1, 884, UI_NEW_IMG,//º£ÀÌÁö Large
-	//128, 40, 178, 884, UI_NEW_IMG,//º£ÀÌÁö Mid
-	//80, 40, 307, 884, UI_NEW_IMG,//º£ÀÌÁö Small	
+	176, 40, 1, 884, UI_NEW_IMG,//ë² ì´ì§€ Large
+	//128, 40, 178, 884, UI_NEW_IMG,//ë² ì´ì§€ Mid
+	//80, 40, 307, 884, UI_NEW_IMG,//ë² ì´ì§€ Small	
 
-	176, 40, 1, 925, UI_NEW_IMG,//´ÙÅ©±×·¹ÀÌ Large
-	//128, 40, 178, 884, UI_NEW_IMG,//º£ÀÌÁö Mid
-	//80, 40, 307, 884, UI_NEW_IMG,//º£ÀÌÁö Small	
+	176, 40, 1, 925, UI_NEW_IMG,//ë‹¤í¬ê·¸ë ˆì´ Large
+	//128, 40, 178, 884, UI_NEW_IMG,//ë² ì´ì§€ Mid
+	//80, 40, 307, 884, UI_NEW_IMG,//ë² ì´ì§€ Small	
 
 };
 
@@ -86,7 +86,7 @@ const int equipBgData[] = {
 	
 };
 
-// Menu & UI °ü·Ã ÇÔ¼ö
+// Menu & UI ê´€ë ¨ í•¨ìˆ˜
 void NewsDraw(int x, int y, float zoom);
 void GiftDraw(int x, int y, float zoom);
 void GuildEventDraw(int x, int y, float zoom);
@@ -148,7 +148,7 @@ void DrawItemCardBack(
 	float zoom,
 	int backFrame);
 
-// µ¿·á Æí¼º ¸Ş´º ±×¸®±â
+// ë™ë£Œ í¸ì„± ë©”ë‰´ ê·¸ë¦¬ê¸°
 void DrawItemCard(
 	int itemType,
 	int itemDetail,

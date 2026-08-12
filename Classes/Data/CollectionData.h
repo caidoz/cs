@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_COLLECTION_H_
@@ -31,7 +31,7 @@ const int collectionLvLimit[TOTAL_COLLECTIONS] = {
 	ITEMMAXLEVEL,
 };
 
-//¼ÒÆÃÀ» º°ÀÌ ³·Àº°ÍºÎÅÍ ³ôÀº°Í±îÁö ÇØ¾ß µÈ´Ù.
+//ì†ŒíŒ…ì„ ë³„ì´ ë‚®ì€ê²ƒë¶€í„° ë†’ì€ê²ƒê¹Œì§€ í•´ì•¼ ëœë‹¤.
 const int collectionData[TOTAL_COLLECTIONS * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE] = {
 	//0
 	ITEM_SWORD, 0, GRADE_NORMAL,  STAR1, false,

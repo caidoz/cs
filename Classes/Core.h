@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _CORE_H_
 #define _CORE_H_
@@ -1203,7 +1203,7 @@ extern float gSpotlightKeepSoft;
 //튜토리얼 안내 대사에서 누른 버튼의 동작을 컷씬이 끝난 뒤 처리하기 위한 예약. 0이면 없음.
 extern int tutorialPendingTouchFunc;
 
-//Ʃ�丮�� �ȳ��� ���� �޴��� �� ���Ŀ��� ��. �������� �ʴ´�.
+//튜토리얼 안내로 동료 메뉴를 연 직후에만 참. 저장하지 않는다.
 extern bool tutorialCrewGuide;
 
 
@@ -1409,8 +1409,9 @@ extern unsigned char radiusStatus;
 extern char tempStr[256];
 extern char tempStr2[256];
 extern char tempStr3[256];
-extern char labelStr[256];
-extern char labelStr2[256];
+//UTF-8 한글은 한 글자가 3바이트라 CP949(2바이트)보다 1.5배 길어진다.
+extern char labelStr[512];
+extern char labelStr2[512];
 extern char labelStr3[256];
 extern char skillStr[256];
 extern char ringStr[256];
@@ -1429,7 +1430,7 @@ extern char itemOptionStr[50];
 extern char screenStr[100];
 extern char playerTitle[24];
 extern char phoneStr[10][8];
-extern int bmFontColor[256];
+extern int bmFontColor[512];
 
 #ifndef KTF
 

@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FUNC_GACHA_H_
 #define _FUNC_GACHA_H_
 
-#define GACHA_BOX_BOUNCE_FALL		(FPS * 8 / 30)	// ³«ÇÏ
+#define GACHA_BOX_BOUNCE_FALL		(FPS * 8 / 30)	// ë‚™í•˜
 #define GACHA_BOX_BOUNCE_UP		(FPS * 5 / 30)	// Æ¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #define GACHA_BOX_BOUNCE_DOWN		(FPS * 5 / 30)	// ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-#define GACHA_BOX_BOUNCE_HEIGHT		(32 * _2X)		// ¹Ù¿î½º ³ôÀÌ
+#define GACHA_BOX_BOUNCE_HEIGHT		(32 * _2X)		// ë°”ìš´ìŠ¤ ë†’ì´
 
 #define GACHA_MAX_REWARD_CARD     12
 #define REWARD_BOX_COUNT		8
@@ -14,10 +14,10 @@
 enum GACHA_DEPTH
 {
 	GACHA_DEPTH_BOX = 0,       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	GACHA_DEPTH_CARD,          // º¸»ó ÇÑ Àå¾¿ °ø°³
+	GACHA_DEPTH_CARD,          // ë³´ìƒ í•œ ìž¥ì”© ê³µê°œ
 	GACHA_DEPTH_SUMMARY,       // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	GACHA_DEPTH_FLYTOBAR,		//ï¿½ï¿½ï¿½Ä«ï¿½å°¡ ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ó°¡´ï¿½ ï¿½ï¿½.
-	GACHA_DEPTH_GETITEM        // ÀÎº¥Åä¸® ¹Ý¿µ ÈÄ Á¾·á
+	GACHA_DEPTH_GETITEM        // ì¸ë²¤í† ë¦¬ ë°˜ì˜ í›„ ì¢…ë£Œ
 };
 
 //------------------------------------------------------------
@@ -77,19 +77,19 @@ static bool gachaConfirmReady = false;
 struct REWARD_BOX_DATA
 {
 	//----------------------------------------------------
-	// ÃÑ º¸»ó Ä«µå ¼ö
+	// ì´ ë³´ìƒ ì¹´ë“œ ìˆ˜
 	//----------------------------------------------------
 	int minCard;
 	int maxCard;
 
 	//----------------------------------------------------
-	// ÇÏÆ® ¼ö·® ¹üÀ§
+	// í•˜íŠ¸ ìˆ˜ëŸ‰ ë²”ìœ„
 	//----------------------------------------------------
 	int heartMin;
 	int heartMax;
 
 	//----------------------------------------------------
-	// °ñµå ¼ö·® ¹üÀ§ ¹× µîÀå È®·ü
+	// ê³¨ë“œ ìˆ˜ëŸ‰ ë²”ìœ„ ë° ë“±ìž¥ í™•ë¥ 
 	//----------------------------------------------------
 	int goldMin;
 	int goldMax;
@@ -111,7 +111,7 @@ struct REWARD_BOX_DATA
 		BOX_GRADE_COUNT];
 
 	//----------------------------------------------------
-	// ·°Å° »óÀÚ È®·ü
+	// ëŸ­í‚¤ ìƒìž í™•ë¥ 
 	//----------------------------------------------------
 	int luckyRate;
 };

@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _FUNC_MOVEMENT_H_
 #define _FUNC_MOVEMENT_H_
-// Object ÀÌµ¿°ü·Ã
+// Object ì´ë™ê´€ë ¨
 int PxlLeft(OBJECT *);
 int PxlUp(OBJECT *);
 int PxlRight(OBJECT *);

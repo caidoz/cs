@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _DATA_GACHA_H_
 #define _DATA_GACHA_H_
@@ -20,7 +20,7 @@ const unsigned short gachaRate[8] = {
 #endif
 
 const int miniGachaDetailRate[] = {
-	//º°1, 2, 3, 4, 5, 6, 7, 8 
+	//ë³„1, 2, 3, 4, 5, 6, 7, 8 
 	9000, 900, 90, 9, 1, 0, 0, 0,
 };
 #endif

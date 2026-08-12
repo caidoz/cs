@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FUNC_MATH_H_
 #define _FUNC_MATH_H_
-// ¼öÇÐÇÔ¼ö
+// ìˆ˜í•™í•¨ìˆ˜
 unsigned int SqrtX256(unsigned int);
 int BC_mathSin1024(int);
 int BC_mathCos1024(int);

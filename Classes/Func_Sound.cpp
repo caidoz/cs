@@ -1,6 +1,6 @@
-#include "Func.h"
+ï»¿#include "Func.h"
 
-// Sound °ü·Ã
+// Sound ê´€ë ¨
 void PlayMusic(int idx)
 {
 	if (idx < 0)
@@ -54,7 +54,7 @@ void Stop()
 void TimerMusic()
 {
 
-	//ÇÃ·¹ÀÌÁßÀÌ¸é ¹è°æÀ½À» Æ²¾îÁØ´Ù.
+	//í”Œë ˆì´ì¤‘ì´ë©´ ë°°ê²½ìŒì„ í‹€ì–´ì¤€ë‹¤.
 	switch (drawHandle) {
 	case MD_PLAY:
 		if (bossRaidMode == true)
@@ -81,25 +81,25 @@ void EffectSound(int music)
 		effect.sound = music;
 
 	switch (music) {
-	case M_SWORDHIT://Ä®¸ÂÀ½			//32
-	case M_GUNHIT://ÃÑ¸ÂÀ½			//33
-	case M_BOOMERANGHIT://ºÎ¸Þ¶û¸ÂÀ½		//34
+	case M_SWORDHIT://ì¹¼ë§žìŒ			//32
+	case M_GUNHIT://ì´ë§žìŒ			//33
+	case M_BOOMERANGHIT://ë¶€ë©”ëž‘ë§žìŒ		//34
 		music = M_SWORDHIT;
 		break;
 	}
 
 	switch (music) {
-	case M_SWORDHIT://Ä®¸ÂÀ½			//32
-	case M_GUNHIT://ÃÑ¸ÂÀ½			//33
-	case M_BOOMERANGHIT://ºÎ¸Þ¶û¸ÂÀ½		//34
-	case M_LASER://·¹ÀÌÀú		//36
-	case M_BUFF_PINK://ÇÎÅ©»ö¹öÇÁ	//38
-	case M_BUFF_YELLOW://³ë¶õ»ö¹öÇÁ	//39
-	case M_BUFF_BLUE://ÆÄ¶õ»ö¹öÇÁ	//40
-	case M_BUFF_RED://»¡°£»ö¹öÇÁ	//41
-	case M_BANG://ÅÍÁö´Â¼Ò¸®	//42
-	case M_KUNG:	//°Å´ë¸ó½ºÅÍ°¡ Á¡ÇÁÇß´Ù°¡ ¶³¾îÁö°Å³ª~(Äô)	//44
-	case M_OPENDOOR:	//¹®¿­¶§ ³ª´Â ¼Ò¸®	//45
+	case M_SWORDHIT://ì¹¼ë§žìŒ			//32
+	case M_GUNHIT://ì´ë§žìŒ			//33
+	case M_BOOMERANGHIT://ë¶€ë©”ëž‘ë§žìŒ		//34
+	case M_LASER://ë ˆì´ì €		//36
+	case M_BUFF_PINK://í•‘í¬ìƒ‰ë²„í”„	//38
+	case M_BUFF_YELLOW://ë…¸ëž€ìƒ‰ë²„í”„	//39
+	case M_BUFF_BLUE://íŒŒëž€ìƒ‰ë²„í”„	//40
+	case M_BUFF_RED://ë¹¨ê°„ìƒ‰ë²„í”„	//41
+	case M_BANG://í„°ì§€ëŠ”ì†Œë¦¬	//42
+	case M_KUNG:	//ê±°ëŒ€ëª¬ìŠ¤í„°ê°€ ì í”„í–ˆë‹¤ê°€ ë–¨ì–´ì§€ê±°ë‚˜~(ì¿µ)	//44
+	case M_OPENDOOR:	//ë¬¸ì—´ë•Œ ë‚˜ëŠ” ì†Œë¦¬	//45
 		//Vibration();
 		break;
 	}

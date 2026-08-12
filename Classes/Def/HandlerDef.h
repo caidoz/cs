@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_HANDLER_H_
 #define _DEF_HANDLER_H_

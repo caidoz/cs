@@ -1,4 +1,4 @@
-#ifndef _NATIVEINTERFACE_
+﻿#ifndef _NATIVEINTERFACE_
 #define	_NATIVEINTERFACE_
 
 #include "NativeInterface.h"

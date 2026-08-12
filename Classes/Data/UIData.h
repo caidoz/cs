@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _DATA_UI_H_
 #define _DATA_UI_H_
 #include "../Def.h"
 #include "../Cmf.h"
 
-// ===== UI ¾ÆÀÌÄÜ ¹× ±×·¡ÇÈ µ¥ÀÌÅÍ =====
+// ===== UI ì•„ì´ì½˜ ë° ê·¸ëž˜í”½ ë°ì´í„° =====
 
 const int colorSet[4 * TOTALGRIDCOLOR] = {
 	COLOR_WIN_LIGHT_PINK1, COLOR_WIN_MID_PINK1, COLOR_WIN_MIDDARK_PINK1, COLOR_WIN_DARK_PINK1,//GRIDCOLOR_LIGHTPINK
@@ -68,9 +68,9 @@ const short statIcon[] = {
     64 * 7 + 28,
 };
 
-// ===== ¸Þ´º »óÅÂ ¹× ¾ÆÀÌÄÜ µ¥ÀÌÅÍ =====
-// CLOSED: ¾Æ¿¹ ½Ã½ºÅÛÀÌ ¾ø´Â °Í
-// OPEN: ½Ã½ºÅÛÀº ÀÖÀ¸³ª ¾ÆÁ÷ °ÔÀÓ ÁøÇà»ó ¿ÀÇÂÀÌ µÇÁö ¾ÊÀº »óÅÂ
+// ===== ë©”ë‰´ ìƒíƒœ ë° ì•„ì´ì½˜ ë°ì´í„° =====
+// CLOSED: ì•„ì˜ˆ ì‹œìŠ¤í…œì´ ì—†ëŠ” ê²ƒ
+// OPEN: ì‹œìŠ¤í…œì€ ìžˆìœ¼ë‚˜ ì•„ì§ ê²Œìž„ ì§„í–‰ìƒ ì˜¤í”ˆì´ ë˜ì§€ ì•Šì€ ìƒíƒœ
 const unsigned char menuOpened[] = {
     OPENED,     //MENU_PLAY
     OPENED,     //MENU_HERO
@@ -132,392 +132,392 @@ const signed short crewPos[] = {
 	0, 4, 0, 0, CASTLE_TOLEM,//DIANA
 	0, 4, 0, 0, CASTLE_TOLEM,//MAXX
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 17, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 17, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 4, 0 * _2X, 0 * _2X, CASTLE_SEWAGE,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FLAME,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 4, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A0, 8, 0 * _2X, 0 * _2X, CASTLE_FROST,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, 4, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N0, 8, 0 * _2X, 0 * _2X, CASTLE_THUNDER,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, 4, 0 * _2X, 0 * _2X, CASTLE_LIGHT,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, 4, 0 * _2X, -36 * _2X, CASTLE_DARKNESS,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DARKNESS,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N0, 4, 16 * _2X, -32 * _2X, CASTLE_DRAGON, //ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A0, 6, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A0, 12, 0 * _2X, 0 * _2X, CASTLE_SPACE,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 4, 8 * _2X, -8 * _2X, CASTLE_SWAMP,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 4, 28 * _2X, -20 * _2X, CASTLE_VALLEY,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, 4, 0 * _2X, -20 * _2X, CASTLE_ATLANTICE,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, 4, 0 * _2X, -32 * _2X, CASTLE_PLAIN, //ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 4, 0 * _2X, -52 * _2X, CASTLE_FLAME,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 4, 8 * _2X, -8 * _2X, CASTLE_FROST,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, 1, 0 * _2X, 8 * _2X, CASTLE_THUNDER,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, 4, 0 * _2X, -36 * _2X, CASTLE_LIGHT,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, 4, 40 * _2X, -32 * _2X, CASTLE_GOLEMVALLEY,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_OPENEYE0, 7, 0 * _2X, -8 * _2X, CASTLE_DARKNESS,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	PO_C43_EVENT0, 4, 40 * _2X, -56 * _2X, CASTLE_DRAGON,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4, 0 * _2X, -40 * _2X, CASTLE_GHOST,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N0, 4, 0 * _2X, -48 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 4, 8 * _2X, -40 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 4, 8 * _2X, -64 * _2X, CASTLE_DEVILCASTLE,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, 4, 0 * _2X, -60 * _2X, CASTLE_SPACE,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C52_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_CAPTAIN,//c52//Àè½ºÆÐ³Ê
-	PO_C53_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_CREW,//c53//¼±¿ø
-	PO_C54_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GRANDFA,//c54//ÃÌÀå
-	PO_C55_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_UNCLE,//c55//¾ÆÀú¾¾
-	PO_C56_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_AUNT,//c56//¾ÆÁÜ¸¶
-	PO_C57_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_MAN,//c57//ÀÚ°æ´ÜÃ»³â
-	PO_C58_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_WOMAN,//c58//Ã³³à
-	PO_C59_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_BOY,//c59//²¿¸¶³²
-	PO_C60_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GIRL,//c60//²¿¸¶³à
-	PO_C61_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//NPC_ALMA,//c61//¾Ë¸¶
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_ITEM,//c62//ÅÍ¹ø
+	PO_C52_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_CAPTAIN,//c52//ìž­ìŠ¤íŒ¨ë„ˆ
+	PO_C53_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_CREW,//c53//ì„ ì›
+	PO_C54_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GRANDFA,//c54//ì´Œìž¥
+	PO_C55_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_UNCLE,//c55//ì•„ì €ì”¨
+	PO_C56_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_AUNT,//c56//ì•„ì¤Œë§ˆ
+	PO_C57_N0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_MAN,//c57//ìžê²½ë‹¨ì²­ë…„
+	PO_C58_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_WOMAN,//c58//ì²˜ë…€
+	PO_C59_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_BOY,//c59//ê¼¬ë§ˆë‚¨
+	PO_C60_N0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GIRL,//c60//ê¼¬ë§ˆë…€
+	PO_C61_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//NPC_ALMA,//c61//ì•Œë§ˆ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_ITEM,//c62//í„°ë²ˆ
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_FATMAN,//c63
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_BUNNYGIRL,//c64
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_KNIGHT,//c65//ÇÃ·¹Å¸
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_KNIGHT,//c65//í”Œë ˆíƒ€
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_DOG,//c66
 	0, 1, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_MERCHANT,//c67
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_CRAFTMAN,//c68
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//NPC_MAP,//c69
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_SPACE,//NPC_USERQUEST,//c70//½ºÆ©¾îµð½º
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//NPC_TRAVEL,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GRANDMA,//c72//ÇÒ¸Ó´Ï
-	PO_C73_N0, 3, -16 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_FISHING,//c73//¶óÇÇ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_SPACE,//NPC_USERQUEST,//c70//ìŠ¤íŠœì–´ë””ìŠ¤
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GOLEMVALLEY,//NPC_TRAVEL,//c71//ì´êµ­ì˜ì—¬í–‰ìž
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_TOLEM,//NPC_GRANDMA,//c72//í• ë¨¸ë‹ˆ
+	PO_C73_N0, 3, -16 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_FISHING,//c73//ë¼í”¼
 	0, 1, 0 * _2X, 0 * _2X, CASTLE_ARENA,//NPC_INN,//c74
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_SPACE,//NPC_NETITEM,//c75
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,//NPC_MILESE,//c76
@@ -525,48 +525,48 @@ const signed short crewPos[] = {
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_GAGEL,//c78
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,//NPC_MONICA,//c79
 	0, 1, 28 * _2X, -8 * _2X, CASTLE_SWAMP,//NPC_SHIP,//c80
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEA,//c81//¾ÆÆ²¶õº´»ç
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEA,//c81//ì•„í‹€ëž€ë³‘ì‚¬
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_FRAUD,//c82
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_DARIAN,//c83
 	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_LUISE,//c84
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEAUNCLE,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEABOY,//c86//¾ÆÆ²¶õ¼Ò³â
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_DONALD,//c87//ÀÌ¼Ò·æ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_SCHOLAR,//c88//ÇÐÀÚ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_CHEF,//c89//¿ä¸®´ë°¡
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_BISTRO,//c90//ºñ½ºÆ®·Î
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_MAID,//c91//½Ã³à
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_ADELKNIGHT,//c92//±â»ç
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_SEBASTIAN,//c93//¼¼¹Ù½ºÂù
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_NOBLEMAN,//c94//±ÍÁ·¾ÆÀú¾¾
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_DELPIOS,//c95//µ¨ÇÇ¿À½º
-	PO_C96_N0_DRESS, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_LORA,//c96//·Î¶ó
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_WITCH,//c97//¸¶³à
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFGRANDFA,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFUNCLE,//c99//¿¤ÇÁ¾ÆÀú¾¾
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFAUNT,//c100//¿¤ÇÁ¾ÆÁÜ¸¶
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFMAN,//c101//¿¤ÇÁÃ»³â
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFWOMAN,//c102//¿¤ÇÁÃ³³à
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFBOY,//c103//¿¤ÇÁ²¿¸¶³²
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFGIRL,//c104//¿¤ÇÁ²¿¸¶³à
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFDARK,//c105//¿¤ÇÁ´ÙÅ©
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFMAGIC,//c106//¿¤ÇÁ¸¶¹ý»ç
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFDANCER,//c107//¿¤ÇÁ¹«Èñ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_OWL,//c108//ºÎ¾ûÀÌ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_LABETH,//c109//¶óº£½º
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELKEIN,//c110//¿¤ÄÉÀÎ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_ELEIN,//c111//¿¤·¹ÀÎ
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_EVAN,//c112//¿¡¹ø
-	0, 1, 0 * _2X, 8 * _2X, CASTLE_PLAIN,//NPC_BEAD,//c113//Å×ÀÌºí
-	PO_C114_WATER0, 3, 0 * _2X, -8 * _2X, CASTLE_PLAIN,//NPC_FOUNTAIN,//c114//»ù¹°
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_NEZAR,//c115//³×ÀÚ¸£
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_GALLAND,//c116//°¥¶õµå
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_DURAK,//c117//µà¶óÅ©
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,///NPC_KING,//c118//¿¡µå¸óµå
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_WOMANGHOST,//c119//¿©ÀÚÀ¯·É
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_MANGHOST,//c120//³²ÀÚÀ¯·É
-	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_AUSTIN,//c121//¿À½ºÆ¾(À¯·É)
-	0, 1, 0 * _2X, 0 * _2X, CASTLE_SPACE,//NPC_SOUL,//c122//¸¶¿ÕÀÇ ½ÉÀå
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEAUNCLE,//c85//ì•„í‹€ëž€ì•„ì €ì”¨
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_SEABOY,//c86//ì•„í‹€ëž€ì†Œë…„
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ATLANTICE,//NPC_DONALD,//c87//ì´ì†Œë£¡
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_SCHOLAR,//c88//í•™ìž
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_CHEF,//c89//ìš”ë¦¬ëŒ€ê°€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_BISTRO,//c90//ë¹„ìŠ¤íŠ¸ë¡œ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_MAID,//c91//ì‹œë…€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_ADELKNIGHT,//c92//ê¸°ì‚¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_SEBASTIAN,//c93//ì„¸ë°”ìŠ¤ì°¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_NOBLEMAN,//c94//ê·€ì¡±ì•„ì €ì”¨
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_DELPIOS,//c95//ë¸í”¼ì˜¤ìŠ¤
+	PO_C96_N0_DRESS, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,//NPC_LORA,//c96//ë¡œë¼
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_WITCH,//c97//ë§ˆë…€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFGRANDFA,//c98//ì—˜í”„í• ì•„ë²„ì§€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFUNCLE,//c99//ì—˜í”„ì•„ì €ì”¨
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFAUNT,//c100//ì—˜í”„ì•„ì¤Œë§ˆ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFMAN,//c101//ì—˜í”„ì²­ë…„
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFWOMAN,//c102//ì—˜í”„ì²˜ë…€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFBOY,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFGIRL,//c104//ì—˜í”„ê¼¬ë§ˆë…€
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFDARK,//c105//ì—˜í”„ë‹¤í¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFMAGIC,//c106//ì—˜í”„ë§ˆë²•ì‚¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELFDANCER,//c107//ì—˜í”„ë¬´í¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_OWL,//c108//ë¶€ì—‰ì´
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_LABETH,//c109//ë¼ë² ìŠ¤
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_PLAIN,//NPC_ELKEIN,//c110//ì—˜ì¼€ì¸
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_ELEIN,//c111//ì—˜ë ˆì¸
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_EVAN,//c112//ì—ë²ˆ
+	0, 1, 0 * _2X, 8 * _2X, CASTLE_PLAIN,//NPC_BEAD,//c113//í…Œì´ë¸”
+	PO_C114_WATER0, 3, 0 * _2X, -8 * _2X, CASTLE_PLAIN,//NPC_FOUNTAIN,//c114//ìƒ˜ë¬¼
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_NEZAR,//c115//ë„¤ìžë¥´
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_GALLAND,//c116//ê°ˆëž€ë“œ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_DEVILCASTLE,//NPC_DURAK,//c117//ë“€ë¼í¬
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_ADELINE,///NPC_KING,//c118//ì—ë“œëª¬ë“œ
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_WOMANGHOST,//c119//ì—¬ìžìœ ë ¹
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_MANGHOST,//c120//ë‚¨ìžìœ ë ¹
+	0, 4, 0 * _2X, 0 * _2X, CASTLE_GHOST,//NPC_AUSTIN,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)
+	0, 1, 0 * _2X, 0 * _2X, CASTLE_SPACE,//NPC_SOUL,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥
 };
 
 const signed short enemyIconPos[] = {
@@ -574,392 +574,392 @@ const signed short enemyIconPos[] = {
 	0, 0, 0,//DIANA
 	0, 0, 0,//MAXX
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-			PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-			PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-			PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-			PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-			PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-			PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-			PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-			PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-			PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-			PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-			PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-			PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-			PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-			PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-			PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-			PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-			PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-			PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-			PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-			PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-			PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-			PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-			PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-			PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-			PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-			PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-			PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-			PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-			PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-			PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-			PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-			PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-			PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-			PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-			PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-			PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-			PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-			PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-			PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-			PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-			PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-			PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-			PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-			PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-			PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-			PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-			PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-			PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-			PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-			PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-			0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+			PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+			PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+			PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+			PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+			PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+			PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+			PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+			PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+			PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+			PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+			PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+			PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+			PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+			PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+			PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+			PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+			PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+			PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+			PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+			PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+			PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+			PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+			PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+			PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+			PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+			PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+			PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+			PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+			PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+			PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+			PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+			PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+			PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+			PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+			PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+			PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+			PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+			PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+			PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+			PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+			PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+			PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+			PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+			PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+			PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+			PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+			PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+			PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+			PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+			PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+			0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, -6 * _2X, -12 * _2X,//NPC_CAPTAIN,//c52//Àè½ºÆÐ³Ê
-	0, -6 * _2X, -12 * _2X,//NPC_CREW,//c53//¼±¿ø
-	0, -2 * _2X, -10 * _2X,//NPC_GRANDFA,//c54//ÃÌÀå
-	0, -6 * _2X, -12 * _2X,//NPC_UNCLE,//c55//¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_AUNT,//c56//¾ÆÁÜ¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_MAN,//c57//ÀÚ°æ´ÜÃ»³â
-	0, -4 * _2X, -10 * _2X,//NPC_WOMAN,//c58//Ã³³à
-	0, -6 * _2X, -5 * _2X,//NPC_BOY,//c59//²¿¸¶³²
-	0, -6 * _2X, -5 * _2X,//NPC_GIRL,//c60//²¿¸¶³à
-	0, -6 * _2X, -5 * _2X,//NPC_ALMA,//c61//¾Ë¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_ITEM,//c62//ÅÍ¹ø
+	0, -6 * _2X, -12 * _2X,//NPC_CAPTAIN,//c52//ìž­ìŠ¤íŒ¨ë„ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_CREW,//c53//ì„ ì›
+	0, -2 * _2X, -10 * _2X,//NPC_GRANDFA,//c54//ì´Œìž¥
+	0, -6 * _2X, -12 * _2X,//NPC_UNCLE,//c55//ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_AUNT,//c56//ì•„ì¤Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_MAN,//c57//ìžê²½ë‹¨ì²­ë…„
+	0, -4 * _2X, -10 * _2X,//NPC_WOMAN,//c58//ì²˜ë…€
+	0, -6 * _2X, -5 * _2X,//NPC_BOY,//c59//ê¼¬ë§ˆë‚¨
+	0, -6 * _2X, -5 * _2X,//NPC_GIRL,//c60//ê¼¬ë§ˆë…€
+	0, -6 * _2X, -5 * _2X,//NPC_ALMA,//c61//ì•Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_ITEM,//c62//í„°ë²ˆ
 	0, -6 * _2X, -12 * _2X,//NPC_FATMAN,//c63
 	0, -6 * _2X, -10 * _2X,//NPC_BUNNYGIRL,//c64
-	0, -6 * _2X, -12 * _2X,//NPC_KNIGHT,//c65//ÇÃ·¹Å¸
+	0, -6 * _2X, -12 * _2X,//NPC_KNIGHT,//c65//í”Œë ˆíƒ€
 	0, -6 * _2X, -5 * _2X,//NPC_DOG,//c66
 	0, -8 * _2X, -2 * _2X,//NPC_MERCHANT,//c67
 	0, -6 * _2X, -12 * _2X,//NPC_CRAFTMAN,//c68
 	0, -6 * _2X, -12 * _2X,//NPC_MAP,//c69
-	0, -6 * _2X, -12 * _2X,//NPC_USERQUEST,//c70//½ºÆ©¾îµð½º
-	0, -6 * _2X, -12 * _2X,//NPC_TRAVEL,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ
-	0, -2 * _2X, -10 * _2X,//NPC_GRANDMA,//c72//ÇÒ¸Ó´Ï
-	0, -6 * _2X, -12 * _2X,//NPC_FISHING,//c73//¶óÇÇ
+	0, -6 * _2X, -12 * _2X,//NPC_USERQUEST,//c70//ìŠ¤íŠœì–´ë””ìŠ¤
+	0, -6 * _2X, -12 * _2X,//NPC_TRAVEL,//c71//ì´êµ­ì˜ì—¬í–‰ìž
+	0, -2 * _2X, -10 * _2X,//NPC_GRANDMA,//c72//í• ë¨¸ë‹ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_FISHING,//c73//ë¼í”¼
 	0, -8 * _2X, -2 * _2X,//NPC_INN,//c74
 	0, -6 * _2X, -12 * _2X,//NPC_NETITEM,//c75
 	0, -6 * _2X, -14 * _2X,//NPC_MILESE,//c76
@@ -967,48 +967,48 @@ const signed short enemyIconPos[] = {
 	0, -6 * _2X, -12 * _2X,//NPC_GAGEL,//c78
 	0, -6 * _2X, -12 * _2X,//NPC_MONICA,//c79
 	0, -2 * _2X, -10 * _2X,//NPC_SHIP,//c80
-	0, -6 * _2X, -12 * _2X,//NPC_SEA,//c81//¾ÆÆ²¶õº´»ç
+	0, -6 * _2X, -12 * _2X,//NPC_SEA,//c81//ì•„í‹€ëž€ë³‘ì‚¬
 	0, -6 * _2X, -12 * _2X,//NPC_FRAUD,//c82
 	0, -6 * _2X, -12 * _2X,//NPC_DARIAN,//c83
 	0, -2 * _2X, -10 * _2X,//NPC_LUISE,//c84
-	0, -6 * _2X, -12 * _2X,//NPC_SEAUNCLE,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾
-	0, -6 * _2X, -8 * _2X,//NPC_SEABOY,//c86//¾ÆÆ²¶õ¼Ò³â
-	0, -6 * _2X, -12 * _2X,//NPC_DONALD,//c87//ÀÌ¼Ò·æ
-	0, -6 * _2X, -12 * _2X,//NPC_SCHOLAR,//c88//ÇÐÀÚ
-	0, -6 * _2X, -12 * _2X,//NPC_CHEF,//c89//¿ä¸®´ë°¡
-	0, -6 * _2X, -12 * _2X,//NPC_BISTRO,//c90//ºñ½ºÆ®·Î
-	0, -6 * _2X, -12 * _2X,//NPC_MAID,//c91//½Ã³à
-	0, -6 * _2X, -12 * _2X,//NPC_ADELKNIGHT,//c92//±â»ç
-	0, -6 * _2X, -12 * _2X,//NPC_SEBASTIAN,//c93//¼¼¹Ù½ºÂù
-	0, -6 * _2X, -12 * _2X,//NPC_NOBLEMAN,//c94//±ÍÁ·¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_DELPIOS,//c95//µ¨ÇÇ¿À½º
-	PO_C96_N0_DRESS, -6 * _2X, -12 * _2X,//NPC_LORA,//c96//·Î¶ó
-	0, -2 * _2X, -10 * _2X,//NPC_WITCH,//c97//¸¶³à
-	0, -2 * _2X, -10 * _2X,//NPC_ELFGRANDFA,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö
-	0, -6 * _2X, -12 * _2X,//NPC_ELFUNCLE,//c99//¿¤ÇÁ¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_ELFAUNT,//c100//¿¤ÇÁ¾ÆÁÜ¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_ELFMAN,//c101//¿¤ÇÁÃ»³â
-	0, -6 * _2X, -12 * _2X,//NPC_ELFWOMAN,//c102//¿¤ÇÁÃ³³à
-	0, -6 * _2X, -5 * _2X,//NPC_ELFBOY,//c103//¿¤ÇÁ²¿¸¶³²
-	0, -6 * _2X, -5 * _2X,//NPC_ELFGIRL,//c104//¿¤ÇÁ²¿¸¶³à
-	0, -6 * _2X, -12 * _2X,//NPC_ELFDARK,//c105//¿¤ÇÁ´ÙÅ©
-	0, -6 * _2X, -12 * _2X,//NPC_ELFMAGIC,//c106//¿¤ÇÁ¸¶¹ý»ç
-	0, -6 * _2X, -12 * _2X,//NPC_ELFDANCER,//c107//¿¤ÇÁ¹«Èñ
-	0, -2 * _2X, -10 * _2X,//NPC_OWL,//c108//ºÎ¾ûÀÌ
-	0, -6 * _2X, -16 * _2X,//NPC_LABETH,//c109//¶óº£½º
-	0, -6 * _2X, -16 * _2X,//NPC_ELKEIN,//c110//¿¤ÄÉÀÎ
-	0, -6 * _2X, -12 * _2X,//NPC_ELEIN,//c111//¿¤·¹ÀÎ
-	0, -6 * _2X, -12 * _2X,//NPC_EVAN,//c112//¿¡¹ø
-	0, -6 * _2X, -5 * _2X,//NPC_BEAD,//c113//Å×ÀÌºí
-	PO_C114_WATER0, -2 * _2X, -10 * _2X,//NPC_FOUNTAIN,//c114//»ù¹°
-	0, -6 * _2X, -12 * _2X,//NPC_NEZAR,//c115//³×ÀÚ¸£
-	0, -6 * _2X, -12 * _2X,//NPC_GALLAND,//c116//°¥¶õµå
-	0, -6 * _2X, -12 * _2X,//NPC_DURAK,//c117//µà¶óÅ©
-	0, -6 * _2X, -12 * _2X,//NPC_KING,//c118//¿¡µå¸óµå
-	0, -6 * _2X, -12 * _2X,//NPC_WOMANGHOST,//c119//¿©ÀÚÀ¯·É
-	0, -6 * _2X, -12 * _2X,//NPC_MANGHOST,//c120//³²ÀÚÀ¯·É
-	0, -6 * _2X, -12 * _2X,//NPC_AUSTIN,//c121//¿À½ºÆ¾(À¯·É)
-	0, -8 * _2X, -6 * _2X,//NPC_SOUL,//c122//¸¶¿ÕÀÇ ½ÉÀå
+	0, -6 * _2X, -12 * _2X,//NPC_SEAUNCLE,//c85//ì•„í‹€ëž€ì•„ì €ì”¨
+	0, -6 * _2X, -8 * _2X,//NPC_SEABOY,//c86//ì•„í‹€ëž€ì†Œë…„
+	0, -6 * _2X, -12 * _2X,//NPC_DONALD,//c87//ì´ì†Œë£¡
+	0, -6 * _2X, -12 * _2X,//NPC_SCHOLAR,//c88//í•™ìž
+	0, -6 * _2X, -12 * _2X,//NPC_CHEF,//c89//ìš”ë¦¬ëŒ€ê°€
+	0, -6 * _2X, -12 * _2X,//NPC_BISTRO,//c90//ë¹„ìŠ¤íŠ¸ë¡œ
+	0, -6 * _2X, -12 * _2X,//NPC_MAID,//c91//ì‹œë…€
+	0, -6 * _2X, -12 * _2X,//NPC_ADELKNIGHT,//c92//ê¸°ì‚¬
+	0, -6 * _2X, -12 * _2X,//NPC_SEBASTIAN,//c93//ì„¸ë°”ìŠ¤ì°¬
+	0, -6 * _2X, -12 * _2X,//NPC_NOBLEMAN,//c94//ê·€ì¡±ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_DELPIOS,//c95//ë¸í”¼ì˜¤ìŠ¤
+	PO_C96_N0_DRESS, -6 * _2X, -12 * _2X,//NPC_LORA,//c96//ë¡œë¼
+	0, -2 * _2X, -10 * _2X,//NPC_WITCH,//c97//ë§ˆë…€
+	0, -2 * _2X, -10 * _2X,//NPC_ELFGRANDFA,//c98//ì—˜í”„í• ì•„ë²„ì§€
+	0, -6 * _2X, -12 * _2X,//NPC_ELFUNCLE,//c99//ì—˜í”„ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_ELFAUNT,//c100//ì—˜í”„ì•„ì¤Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_ELFMAN,//c101//ì—˜í”„ì²­ë…„
+	0, -6 * _2X, -12 * _2X,//NPC_ELFWOMAN,//c102//ì—˜í”„ì²˜ë…€
+	0, -6 * _2X, -5 * _2X,//NPC_ELFBOY,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨
+	0, -6 * _2X, -5 * _2X,//NPC_ELFGIRL,//c104//ì—˜í”„ê¼¬ë§ˆë…€
+	0, -6 * _2X, -12 * _2X,//NPC_ELFDARK,//c105//ì—˜í”„ë‹¤í¬
+	0, -6 * _2X, -12 * _2X,//NPC_ELFMAGIC,//c106//ì—˜í”„ë§ˆë²•ì‚¬
+	0, -6 * _2X, -12 * _2X,//NPC_ELFDANCER,//c107//ì—˜í”„ë¬´í¬
+	0, -2 * _2X, -10 * _2X,//NPC_OWL,//c108//ë¶€ì—‰ì´
+	0, -6 * _2X, -16 * _2X,//NPC_LABETH,//c109//ë¼ë² ìŠ¤
+	0, -6 * _2X, -16 * _2X,//NPC_ELKEIN,//c110//ì—˜ì¼€ì¸
+	0, -6 * _2X, -12 * _2X,//NPC_ELEIN,//c111//ì—˜ë ˆì¸
+	0, -6 * _2X, -12 * _2X,//NPC_EVAN,//c112//ì—ë²ˆ
+	0, -6 * _2X, -5 * _2X,//NPC_BEAD,//c113//í…Œì´ë¸”
+	PO_C114_WATER0, -2 * _2X, -10 * _2X,//NPC_FOUNTAIN,//c114//ìƒ˜ë¬¼
+	0, -6 * _2X, -12 * _2X,//NPC_NEZAR,//c115//ë„¤ìžë¥´
+	0, -6 * _2X, -12 * _2X,//NPC_GALLAND,//c116//ê°ˆëž€ë“œ
+	0, -6 * _2X, -12 * _2X,//NPC_DURAK,//c117//ë“€ë¼í¬
+	0, -6 * _2X, -12 * _2X,//NPC_KING,//c118//ì—ë“œëª¬ë“œ
+	0, -6 * _2X, -12 * _2X,//NPC_WOMANGHOST,//c119//ì—¬ìžìœ ë ¹
+	0, -6 * _2X, -12 * _2X,//NPC_MANGHOST,//c120//ë‚¨ìžìœ ë ¹
+	0, -6 * _2X, -12 * _2X,//NPC_AUSTIN,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)
+	0, -8 * _2X, -6 * _2X,//NPC_SOUL,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥
 };
 
 const signed short enemyBigIconPos[] = {
@@ -1016,392 +1016,392 @@ const signed short enemyBigIconPos[] = {
 	0, 0, 0,//DIANA
 	0, 0, 0,//MAXX
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 32 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_U5, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 32 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_U5, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ //1¹æ
-	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4 //2¹æ
-	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5 //2¹æ
-	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 //1¹æ 
-	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7 //1¹æ
-	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8 //3¹æ
-	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9 //1¹æ
-	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10 //1¹æ
-	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11 //1¹æ
-	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12 //´ë½¬-1¹æ, ¾îÆÛÄÆ-1¹æ
-	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13 //3¹æ
-	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14 //´ë½¬ 2¹æ, ¹ß»ç 1¹æ
-	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15 //1¹æ
-	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16 //1¹æ
-	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17 //4¹æ
-	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18 //2¹æ
-	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19 //2¹æ
-	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20  //°ø°ÝÇÏÁö ¾Ê´Â °Í
-	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     //2¹æ
-	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22		//1¹æ
-	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25		//2¹æ
-	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26	//1¹æ
-	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27 //2¹æ
-	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28  -> ¼öÁ¤ÇÊ¿ä
-	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29	//2¹æ
-	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30	//3¹æ
-	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31		//1¹æ
-	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32 //1¹æ
-	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33 //2¹æ
-	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34 //1¹æ
-	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35	//2¹æ
-	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36	//2¹æ
-	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37 //Çô 2¹æ, //Á¡ÇÁ 1¹æ
-	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38	//¸ö°ø°Ý 4¹æ, ¼¦°ø°Ý 3¹æ
-	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39 //È¸Àü°ø°Ý 2¹æ, Á¡ÇÁ¾îÅÃ 2¹æ
-	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40 //ÁÖ¸Ô°ø°Ý 1¹æ, °¡½¿¾îÅÃ 2¹æ
-	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41 //´ë½¬¾îÅÃ 1¹æ, ÃÑÅº 2¹æ
-	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42	//¾ÆÀÌ½º¼¦ 2¹æ, ¹Ù´Ú¼¦ 3¹æ
-	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43	-> ¼öÁ¤ÇÊ¿ä
-	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//È£·ç½º44	//¿øÇü 2¹æ, °¡´Ã°Ô 1¹æ
-	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45 //È­¿° 1¹æ, ¾óÀ½ 2¹æ, 
-	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46   -> ¼öÁ¤ÇÊ¿ä
-	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47	//·¹ÀÌÀú 2¹æ
-	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48 -> ¼öÁ¤ÇÊ¿ä
-	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//»ç½Å49		//³´ ÈÖµÎ¸£±â 1¹æ
-	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50  -> ¼öÁ¤ÇÊ¿ä
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51 //±âº»°ø°Ý 2¹æ, ¼¦ 2¹æ, »ï´ÜÁ¡ÇÁ¾îÅÃ 3¹æ
-	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü, ·¹ÀÌÀú¸¸ »ì·Áº¸ÀÚ
-	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53 //Âî¸£±â ÇÑ¹æ, È¸Àüº£±â 2¹æ
-	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54 //3¹ß 2, 3¿þÀÌ 1¹ß, ·¹ÀÌÀú 1¹ß
-	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55 //È¸Àüº£±â 2, ÃÑÅº 4, ´ë½¬¾îÅÃ 2
+	PO_C3_N0, 0 * _2X, -0 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´ //1ë°©
+	PO_C4_N0, 8 * _2X, -20 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4 //2ë°©
+	PO_C6_N0, 0 * _2X, -0 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5 //2ë°©
+	PO_C7_N0, 0 * _2X, -24 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 //1ë°© 
+	PO_C10_N0, 4 * _2X, -12 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7 //1ë°©
+	PO_C9_N0, 0 * _2X, -4 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8 //3ë°©
+	PO_C32_N0, 4 * _2X, -8 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9 //1ë°©
+	PO_C33_N_D_0, 0 * _2X, -0 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10 //1ë°©
+	PO_C12_N0, 0 * _2X, -6 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11 //1ë°©
+	PO_C13_N0, 24 * _2X, -8 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12 //ëŒ€ì‰¬-1ë°©, ì–´í¼ì»·-1ë°©
+	PO_C15_N0, 0 * _2X, -4 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13 //3ë°©
+	PO_C16_N0, 8 * _2X, -4 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14 //ëŒ€ì‰¬ 2ë°©, ë°œì‚¬ 1ë°©
+	PO_C19_N0, 0 * _2X, 0 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15 //1ë°©
+	PO_C18_N0, 8 * _2X, -4 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16 //1ë°©
+	PO_C20_A1, 0 * _2X, -8 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17 //4ë°©
+	PO_C22_N0, 2 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18 //2ë°©
+	PO_C24_N0, 0 * _2X, -8 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19 //2ë°©
+	PO_C23_N1, 0 * _2X, -24 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20  //ê³µê²©í•˜ì§€ ì•ŠëŠ” ê²ƒ
+	PO_C35_N0, 0 * _2X, -12 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     //2ë°©
+	PO_C36_N0, 0 * _2X, -0 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22		//1ë°©
+	PO_C27_D_N0, 16 * _2X, -8 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25		//2ë°©
+	PO_C26_N0, 8 * _2X, -28 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26	//1ë°©
+	PO_C39_N0, 16 * _2X, -60 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27 //2ë°©
+	PO_C38_N0, 10 * _2X, -32 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28  -> ìˆ˜ì •í•„ìš”
+	PO_C41_N0, 12 * _2X, -8 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29	//2ë°©
+	PO_C42_N3, 32 * _2X, -40 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30	//3ë°©
+	PO_C30_N0, 0 * _2X, -8 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31		//1ë°©
+	PO_C29_N0, 8 * _2X, -20 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32 //1ë°©
+	PO_C44_N0, 16 * _2X, -12 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33 //2ë°©
+	PO_C45_N0, 20 * _2X, -56 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34 //1ë°©
+	PO_C46_A1, 0 * _2X, -0 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35	//2ë°©
+	PO_C47_A1, 0 * _2X, -4 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36	//2ë°©
+	PO_C5_N0, 24 * _2X, -24 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37 //í˜€ 2ë°©, //ì í”„ 1ë°©
+	PO_C8_N0, 40 * _2X, -28 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38	//ëª¸ê³µê²© 4ë°©, ìƒ·ê³µê²© 3ë°©
+	PO_C11_N0, 12 * _2X, -40 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39 //íšŒì „ê³µê²© 2ë°©, ì í”„ì–´íƒ 2ë°©
+	PO_C14_N0, 8 * _2X, -48 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40 //ì£¼ë¨¹ê³µê²© 1ë°©, ê°€ìŠ´ì–´íƒ 2ë°©
+	PO_C17_N0, 4 * _2X, -72 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41 //ëŒ€ì‰¬ì–´íƒ 1ë°©, ì´íƒ„ 2ë°©
+	PO_C21_N0, 20 * _2X, -12 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42	//ì•„ì´ìŠ¤ìƒ· 2ë°©, ë°”ë‹¥ìƒ· 3ë°©
+	PO_C25_W0_L, 0 * _2X, 8 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43	-> ìˆ˜ì •í•„ìš”
+	PO_C37_N0, 0 * _2X, -52 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44	//ì›í˜• 2ë°©, ê°€ëŠ˜ê²Œ 1ë°©
+	PO_C34_N0, 24 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45 //í™”ì—¼ 1ë°©, ì–¼ìŒ 2ë°©, 
+	PO_C28_N0, 56 * _2X, -48 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46   -> ìˆ˜ì •í•„ìš”
+	PO_C40_OPENEYE6, 0 * _2X, -100 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47	//ë ˆì´ì € 2ë°©
+	PO_C43_EVENT0, 52 * _2X, -64 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48 -> ìˆ˜ì •í•„ìš”
+	PO_C31_N0, 8 * _2X, -48 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49		//ë‚« íœ˜ë‘ë¥´ê¸° 1ë°©
+	PO_C48_ARM0_N3, 0 * _2X, -44 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50  -> ìˆ˜ì •í•„ìš”
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51 //ê¸°ë³¸ê³µê²© 2ë°©, ìƒ· 2ë°©, ì‚¼ë‹¨ì í”„ì–´íƒ 3ë°©
+	PO_C50_M0, 16 * _2X, -72 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸, ë ˆì´ì €ë§Œ ì‚´ë ¤ë³´ìž
+	PO_C51_N0, 0 * _2X, -80 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53 //ì°Œë¥´ê¸° í•œë°©, íšŒì „ë² ê¸° 2ë°©
+	PO_C109_N0, 4 * _2X, -12 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54 //3ë°œ 2, 3ì›¨ì´ 1ë°œ, ë ˆì´ì € 1ë°œ
+	0, 0 * _2X, -8 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55 //íšŒì „ë² ê¸° 2, ì´íƒ„ 4, ëŒ€ì‰¬ì–´íƒ 2
 
-	0, 0 * _2X, -0 * _2X,//NPC_CAPTAIN,//c52//Àè½ºÆÐ³Ê
-	0, 0 * _2X, -0 * _2X,//NPC_CREW,//c53//¼±¿ø
-	0, 0 * _2X, -0 * _2X,//NPC_GRANDFA,//c54//ÃÌÀå
-	0, 0 * _2X, -0 * _2X,//NPC_UNCLE,//c55//¾ÆÀú¾¾
-	0, 0 * _2X, -0 * _2X,//NPC_AUNT,//c56//¾ÆÁÜ¸¶
-	0, 0 * _2X, -0 * _2X,//NPC_MAN,//c57//ÀÚ°æ´ÜÃ»³â
-	0, 0 * _2X, -0 * _2X,//NPC_WOMAN,//c58//Ã³³à
-	0, 0 * _2X, -0 * _2X,//NPC_BOY,//c59//²¿¸¶³²
-	0, 0 * _2X, -0 * _2X,//NPC_GIRL,//c60//²¿¸¶³à
-	0, 0 * _2X, -0 * _2X,//NPC_ALMA,//c61//¾Ë¸¶
-	0, 0 * _2X, -0 * _2X,//NPC_ITEM,//c62//ÅÍ¹ø
+	0, 0 * _2X, -0 * _2X,//NPC_CAPTAIN,//c52//ìž­ìŠ¤íŒ¨ë„ˆ
+	0, 0 * _2X, -0 * _2X,//NPC_CREW,//c53//ì„ ì›
+	0, 0 * _2X, -0 * _2X,//NPC_GRANDFA,//c54//ì´Œìž¥
+	0, 0 * _2X, -0 * _2X,//NPC_UNCLE,//c55//ì•„ì €ì”¨
+	0, 0 * _2X, -0 * _2X,//NPC_AUNT,//c56//ì•„ì¤Œë§ˆ
+	0, 0 * _2X, -0 * _2X,//NPC_MAN,//c57//ìžê²½ë‹¨ì²­ë…„
+	0, 0 * _2X, -0 * _2X,//NPC_WOMAN,//c58//ì²˜ë…€
+	0, 0 * _2X, -0 * _2X,//NPC_BOY,//c59//ê¼¬ë§ˆë‚¨
+	0, 0 * _2X, -0 * _2X,//NPC_GIRL,//c60//ê¼¬ë§ˆë…€
+	0, 0 * _2X, -0 * _2X,//NPC_ALMA,//c61//ì•Œë§ˆ
+	0, 0 * _2X, -0 * _2X,//NPC_ITEM,//c62//í„°ë²ˆ
 	0, 0 * _2X, -0 * _2X,//NPC_FATMAN,//c63
 	0, 0 * _2X, -0 * _2X,//NPC_BUNNYGIRL,//c64
-	0, 0 * _2X, -0 * _2X,//NPC_KNIGHT,//c65//ÇÃ·¹Å¸
+	0, 0 * _2X, -0 * _2X,//NPC_KNIGHT,//c65//í”Œë ˆíƒ€
 	0, 0 * _2X, -0 * _2X,//NPC_DOG,//c66
 	0, 0 * _2X, -0 * _2X,//NPC_MERCHANT,//c67
 	0, 0 * _2X, -0 * _2X,//NPC_CRAFTMAN,//c68
 	0, 0 * _2X, -0 * _2X,//NPC_MAP,//c69
-	0, 0 * _2X, -0 * _2X,//NPC_USERQUEST,//c70//½ºÆ©¾îµð½º
-	0, 0 * _2X, -0 * _2X,//NPC_TRAVEL,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ
-	0, 0 * _2X, -0 * _2X,//NPC_GRANDMA,//c72//ÇÒ¸Ó´Ï
-	PO_C73_FISH5, -0 * _2X, -4 * _2X,//NPC_FISHING,//c73//¶óÇÇ
+	0, 0 * _2X, -0 * _2X,//NPC_USERQUEST,//c70//ìŠ¤íŠœì–´ë””ìŠ¤
+	0, 0 * _2X, -0 * _2X,//NPC_TRAVEL,//c71//ì´êµ­ì˜ì—¬í–‰ìž
+	0, 0 * _2X, -0 * _2X,//NPC_GRANDMA,//c72//í• ë¨¸ë‹ˆ
+	PO_C73_FISH5, -0 * _2X, -4 * _2X,//NPC_FISHING,//c73//ë¼í”¼
 	0, 0 * _2X, -0 * _2X,//NPC_INN,//c74
 	0, 0 * _2X, -0 * _2X,//NPC_NETITEM,//c75
 	0, 0 * _2X, -0 * _2X,//NPC_MILESE,//c76
@@ -1409,48 +1409,48 @@ const signed short enemyBigIconPos[] = {
 	0, 0 * _2X, -0 * _2X,//NPC_GAGEL,//c78
 	0, 0 * _2X, -0 * _2X,//NPC_MONICA,//c79
 	0, 32 * _2X, -12 * _2X,//NPC_SHIP,//c80
-	0, 0 * _2X, -0 * _2X,//NPC_SEASOLDIER,//c81//¾ÆÆ²¶õº´»ç
+	0, 0 * _2X, -0 * _2X,//NPC_SEASOLDIER,//c81//ì•„í‹€ëž€ë³‘ì‚¬
 	0, 0 * _2X, -0 * _2X,//NPC_FRAUD,//c82
 	0, 0 * _2X, -0 * _2X,//NPC_DARIAN,//c83
 	0, 0 * _2X, -0 * _2X,//NPC_LUISE,//c84
-	0, 0 * _2X, -0 * _2X,//NPC_SEAUNCLE,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾
-	0, 0 * _2X, -0 * _2X,//NPC_SEABOY,//c86//¾ÆÆ²¶õ¼Ò³â
-	0, 0 * _2X, -0 * _2X,//NPC_DONALD,//c87//ÀÌ¼Ò·æ
-	0, 0 * _2X, -0 * _2X,//NPC_SCHOLAR,//c88//ÇÐÀÚ
-	0, 0 * _2X, -0 * _2X,//NPC_CHEF,//c89//¿ä¸®´ë°¡
-	0, 0 * _2X, -0 * _2X,//NPC_BISTRO,//c90//ºñ½ºÆ®·Î
-	0, 0 * _2X, -0 * _2X,//NPC_MAID,//c91//½Ã³à
-	0, 0 * _2X, -0 * _2X,//NPC_ADELKNIGHT,//c92//±â»ç
-	0, 0 * _2X, -0 * _2X,//NPC_SEBASTIAN,//c93//¼¼¹Ù½ºÂù
-	0, 0 * _2X, -0 * _2X,//NPC_NOBLEMAN,//c94//±ÍÁ·¾ÆÀú¾¾
-	0, 0 * _2X, -0 * _2X,//NPC_DELPIOS,//c95//µ¨ÇÇ¿À½º
-	PO_C96_N0_DRESS, 0 * _2X, -0 * _2X,//NPC_LORA,//c96//·Î¶ó
-	0, 0 * _2X, -0 * _2X,//NPC_WITCH,//c97//¸¶³à
-	0, 0 * _2X, -0 * _2X,//NPC_ELFGRANDFA,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö
-	0, 0 * _2X, -0 * _2X,//NPC_ELFUNCLE,//c99//¿¤ÇÁ¾ÆÀú¾¾
-	0, 0 * _2X, -0 * _2X,//NPC_ELFAUNT,//c100//¿¤ÇÁ¾ÆÁÜ¸¶
-	0, 0 * _2X, -0 * _2X,//NPC_ELFMAN,//c101//¿¤ÇÁÃ»³â
-	0, 0 * _2X, -0 * _2X,//NPC_ELFWOMAN,//c102//¿¤ÇÁÃ³³à
-	0, 0 * _2X, -0 * _2X,//NPC_ELFBOY,//c103//¿¤ÇÁ²¿¸¶³²
-	0, 0 * _2X, -0 * _2X,//NPC_ELFGIRL,//c104//¿¤ÇÁ²¿¸¶³à
-	0, 0 * _2X, -0 * _2X,//NPC_ELFDARK,//c105//¿¤ÇÁ´ÙÅ©
-	0, 0 * _2X, -0 * _2X,//NPC_ELFMAGIC,//c106//¿¤ÇÁ¸¶¹ý»ç
-	0, 0 * _2X, -0 * _2X,//NPC_ELFDANCER,//c107//¿¤ÇÁ¹«Èñ
-	0, 0 * _2X, -0 * _2X,//NPC_OWL,//c108//ºÎ¾ûÀÌ
-	0, 0 * _2X, -0 * _2X,//NPC_LABETH,//c109//¶óº£½º
-	0, 0 * _2X, -0 * _2X,//NPC_ELKEIN,//c110//¿¤ÄÉÀÎ
-	0, 0 * _2X, -0 * _2X,//NPC_ELEIN,//c111//¿¤·¹ÀÎ
-	0, 0 * _2X, -0 * _2X,//NPC_EVAN,//c112//¿¡¹ø
-	0, 0 * _2X, -0 * _2X,//NPC_BEAD,//c113//Å×ÀÌºí
-	PO_C114_WATER0, 0 * _2X, -8 * _2X,//NPC_FOUNTAIN,//c114//»ù¹°
-	0, 0 * _2X, -0 * _2X,//NPC_NEZAR,//c115//³×ÀÚ¸£
-	0, 0 * _2X, -0 * _2X,//NPC_GALLAND,//c116//°¥¶õµå
-	0, 0 * _2X, -0 * _2X,//NPC_DURAK,//c117//µà¶óÅ©
-	0, 0 * _2X, -0 * _2X,//NPC_KING,//c118//¿¡µå¸óµå
-	0, 0 * _2X, -0 * _2X,//NPC_WOMANGHOST,//c119//¿©ÀÚÀ¯·É
-	0, 0 * _2X, -0 * _2X,//NPC_MANGHOST,//c120//³²ÀÚÀ¯·É
-	0, 0 * _2X, -0 * _2X,//NPC_AUSTIN,//c121//¿À½ºÆ¾(À¯·É)
-	0, 0 * _2X, -0 * _2X,//NPC_SOUL,//c122//¸¶¿ÕÀÇ ½ÉÀå
+	0, 0 * _2X, -0 * _2X,//NPC_SEAUNCLE,//c85//ì•„í‹€ëž€ì•„ì €ì”¨
+	0, 0 * _2X, -0 * _2X,//NPC_SEABOY,//c86//ì•„í‹€ëž€ì†Œë…„
+	0, 0 * _2X, -0 * _2X,//NPC_DONALD,//c87//ì´ì†Œë£¡
+	0, 0 * _2X, -0 * _2X,//NPC_SCHOLAR,//c88//í•™ìž
+	0, 0 * _2X, -0 * _2X,//NPC_CHEF,//c89//ìš”ë¦¬ëŒ€ê°€
+	0, 0 * _2X, -0 * _2X,//NPC_BISTRO,//c90//ë¹„ìŠ¤íŠ¸ë¡œ
+	0, 0 * _2X, -0 * _2X,//NPC_MAID,//c91//ì‹œë…€
+	0, 0 * _2X, -0 * _2X,//NPC_ADELKNIGHT,//c92//ê¸°ì‚¬
+	0, 0 * _2X, -0 * _2X,//NPC_SEBASTIAN,//c93//ì„¸ë°”ìŠ¤ì°¬
+	0, 0 * _2X, -0 * _2X,//NPC_NOBLEMAN,//c94//ê·€ì¡±ì•„ì €ì”¨
+	0, 0 * _2X, -0 * _2X,//NPC_DELPIOS,//c95//ë¸í”¼ì˜¤ìŠ¤
+	PO_C96_N0_DRESS, 0 * _2X, -0 * _2X,//NPC_LORA,//c96//ë¡œë¼
+	0, 0 * _2X, -0 * _2X,//NPC_WITCH,//c97//ë§ˆë…€
+	0, 0 * _2X, -0 * _2X,//NPC_ELFGRANDFA,//c98//ì—˜í”„í• ì•„ë²„ì§€
+	0, 0 * _2X, -0 * _2X,//NPC_ELFUNCLE,//c99//ì—˜í”„ì•„ì €ì”¨
+	0, 0 * _2X, -0 * _2X,//NPC_ELFAUNT,//c100//ì—˜í”„ì•„ì¤Œë§ˆ
+	0, 0 * _2X, -0 * _2X,//NPC_ELFMAN,//c101//ì—˜í”„ì²­ë…„
+	0, 0 * _2X, -0 * _2X,//NPC_ELFWOMAN,//c102//ì—˜í”„ì²˜ë…€
+	0, 0 * _2X, -0 * _2X,//NPC_ELFBOY,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨
+	0, 0 * _2X, -0 * _2X,//NPC_ELFGIRL,//c104//ì—˜í”„ê¼¬ë§ˆë…€
+	0, 0 * _2X, -0 * _2X,//NPC_ELFDARK,//c105//ì—˜í”„ë‹¤í¬
+	0, 0 * _2X, -0 * _2X,//NPC_ELFMAGIC,//c106//ì—˜í”„ë§ˆë²•ì‚¬
+	0, 0 * _2X, -0 * _2X,//NPC_ELFDANCER,//c107//ì—˜í”„ë¬´í¬
+	0, 0 * _2X, -0 * _2X,//NPC_OWL,//c108//ë¶€ì—‰ì´
+	0, 0 * _2X, -0 * _2X,//NPC_LABETH,//c109//ë¼ë² ìŠ¤
+	0, 0 * _2X, -0 * _2X,//NPC_ELKEIN,//c110//ì—˜ì¼€ì¸
+	0, 0 * _2X, -0 * _2X,//NPC_ELEIN,//c111//ì—˜ë ˆì¸
+	0, 0 * _2X, -0 * _2X,//NPC_EVAN,//c112//ì—ë²ˆ
+	0, 0 * _2X, -0 * _2X,//NPC_BEAD,//c113//í…Œì´ë¸”
+	PO_C114_WATER0, 0 * _2X, -8 * _2X,//NPC_FOUNTAIN,//c114//ìƒ˜ë¬¼
+	0, 0 * _2X, -0 * _2X,//NPC_NEZAR,//c115//ë„¤ìžë¥´
+	0, 0 * _2X, -0 * _2X,//NPC_GALLAND,//c116//ê°ˆëž€ë“œ
+	0, 0 * _2X, -0 * _2X,//NPC_DURAK,//c117//ë“€ë¼í¬
+	0, 0 * _2X, -0 * _2X,//NPC_KING,//c118//ì—ë“œëª¬ë“œ
+	0, 0 * _2X, -0 * _2X,//NPC_WOMANGHOST,//c119//ì—¬ìžìœ ë ¹
+	0, 0 * _2X, -0 * _2X,//NPC_MANGHOST,//c120//ë‚¨ìžìœ ë ¹
+	0, 0 * _2X, -0 * _2X,//NPC_AUSTIN,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)
+	0, 0 * _2X, -0 * _2X,//NPC_SOUL,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥
 };
 
 
@@ -1459,392 +1459,392 @@ const signed short enemySkillIconPos[] = {
 	0, 0, 0,//DIANA
 	0, 0, 0,//MAXX
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -4 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, 24 * _2X, -12 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, 0 * _2X, -32 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, 10 * _2X, -6 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, 12 * _2X, -6 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, 0 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -4 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, 24 * _2X, -12 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, 0 * _2X, -32 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, 10 * _2X, -6 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, 12 * _2X, -6 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, 0 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+	PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+	PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+	PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+		PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-		PO_C4_N0, 0 * _2X, -4 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+		PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+		PO_C4_N0, 0 * _2X, -4 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+		PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+		PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+		PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+		PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+		PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+		PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+		PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+		PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+		PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+		PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+		PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+		PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+		PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+		PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+		PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+		PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+		PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+		PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+		PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+		PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+		PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+		PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+		PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+		PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+		PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+		PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+		PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+		PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+		PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+		PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+		PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+		PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+		PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+		PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+		PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+		PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+		PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+		PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+		PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+		PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+		PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+		PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+		PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+		PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+		PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+		PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+		PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+		PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+		0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-			PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-			PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-			PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-			PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-			PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-			PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-			PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-			PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//½½¶óÀÓ 10
-			PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-			PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-			PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-			PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-			PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-			PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-			PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-			PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-			PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-			PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-			PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
-			PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-			PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-			PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-			PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-			PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-			PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-			PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-			PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-			PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-			PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-			PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-			PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-			PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-			PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-			PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//¾Æ¸£°ï38
-			PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//Ä«Åù39
-			PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-			PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-			PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-			PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-			PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//È£·ç½º44
-			PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-			PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-			PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//¾Æ¸®¸¸47/PO_C40_CIRCLE3
-			PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-			PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//»ç½Å49
-			PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-			PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-			PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
-			PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-			PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-			0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+			PO_C3_N0, 0 * _2X, -4 * _2X,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+			PO_C4_N0, -4 * _2X, -18 * _2X,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+			PO_C6_N0, 1 * _2X, -6 * _2X,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+			PO_C7_N0, -4 * _2X, -28 * _2X,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+			PO_C10_N0, 1 * _2X, -16 * _2X,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+			PO_C9_N0, -4 * _2X, -8 * _2X,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+			PO_C32_N0, -8 * _2X, -20 * _2X,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+			PO_C33_N_D_0, 0 * _2X, -2 * _2X,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+			PO_C12_N0, -8 * _2X, -18 * _2X,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+			PO_C13_N0, 20 * _2X, -10 * _2X,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+			PO_C15_N0, -4 * _2X, -0 * _2X,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+			PO_C16_N0, 10 * _2X, -2 * _2X,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+			PO_C19_N0, -8 * _2X, -6 * _2X,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+			PO_C18_N0, 0 * _2X, -12 * _2X,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+			PO_C20_A1, 2 * _2X, -20 * _2X,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+			PO_C22_N0, 0 * _2X, 0 * _2X,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+			PO_C24_N0, -8 * _2X, -10 * _2X,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+			PO_C23_N1, -8 * _2X, -32 * _2X,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+			PO_C35_N0, -4 * _2X, -14 * _2X,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
+			PO_C36_N0, -16 * _2X, -16 * _2X,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+			PO_C27_D_N0, 8 * _2X, -12 * _2X,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+			PO_C26_N0, 8 * _2X, -40 * _2X,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+			PO_C39_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+			PO_C38_N0, -8 * _2X, -16 * _2X,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+			PO_C41_N0, 8 * _2X, -16 * _2X,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+			PO_C42_N3, 16 * _2X, -48 * _2X,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+			PO_C30_N0, -8 * _2X, -16 * _2X,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+			PO_C29_N0, -8 * _2X, -24 * _2X,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+			PO_C44_N0, 0 * _2X, -28 * _2X,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+			PO_C45_N0, 0 * _2X, -60 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+			PO_C46_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+			PO_C47_A1, -8 * _2X, -16 * _2X,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+			PO_C5_N0, 12 * _2X, -32 * _2X,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+			PO_C8_N0, -8 * _2X, -16 * _2X,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+			PO_C11_N0, -8 * _2X, -48 * _2X,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+			PO_C14_N0, -8 * _2X, -16 * _2X,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+			PO_C17_N0, -8 * _2X, -16 * _2X,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+			PO_C21_N0, -8 * _2X, -16 * _2X,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+			PO_C25_W0_L, -8 * _2X, -16 * _2X,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+			PO_C37_N0, -8 * _2X, -56 * _2X,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+			PO_C34_N0, -8 * _2X, -16 * _2X,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+			PO_C28_N0, -8 * _2X, -16 * _2X,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+			PO_C40_CIRCLE3, -8 * _2X, 8 * _2X,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47/PO_C40_CIRCLE3
+			PO_C43_EVENT0, 52 * _2X, -76 * _2X,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+			PO_C31_N0, 4 * _2X, -52 * _2X,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+			PO_C48_ARM0_N3, -8 * _2X, -56 * _2X,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+			PO_C49_N0, 24 * _2X, -60 * _2X,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+			PO_C50_M0, 16 * _2X, -88 * _2X,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
+			PO_C51_N0, -4 * _2X, -84 * _2X,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+			PO_C109_N0, -6 * _2X, -16 * _2X,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+			0, -6 * _2X, -16 * _2X,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, -6 * _2X, -12 * _2X,//NPC_CAPTAIN,//c52//Àè½ºÆÐ³Ê
-	0, -6 * _2X, -12 * _2X,//NPC_CREW,//c53//¼±¿ø
-	0, -2 * _2X, -10 * _2X,//NPC_GRANDFA,//c54//ÃÌÀå
-	0, -6 * _2X, -12 * _2X,//NPC_UNCLE,//c55//¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_AUNT,//c56//¾ÆÁÜ¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_MAN,//c57//ÀÚ°æ´ÜÃ»³â
-	0, -4 * _2X, -10 * _2X,//NPC_WOMAN,//c58//Ã³³à
-	0, -6 * _2X, -5 * _2X,//NPC_BOY,//c59//²¿¸¶³²
-	0, -6 * _2X, -5 * _2X,//NPC_GIRL,//c60//²¿¸¶³à
-	0, -6 * _2X, -5 * _2X,//NPC_ALMA,//c61//¾Ë¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_ITEM,//c62//ÅÍ¹ø
+	0, -6 * _2X, -12 * _2X,//NPC_CAPTAIN,//c52//ìž­ìŠ¤íŒ¨ë„ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_CREW,//c53//ì„ ì›
+	0, -2 * _2X, -10 * _2X,//NPC_GRANDFA,//c54//ì´Œìž¥
+	0, -6 * _2X, -12 * _2X,//NPC_UNCLE,//c55//ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_AUNT,//c56//ì•„ì¤Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_MAN,//c57//ìžê²½ë‹¨ì²­ë…„
+	0, -4 * _2X, -10 * _2X,//NPC_WOMAN,//c58//ì²˜ë…€
+	0, -6 * _2X, -5 * _2X,//NPC_BOY,//c59//ê¼¬ë§ˆë‚¨
+	0, -6 * _2X, -5 * _2X,//NPC_GIRL,//c60//ê¼¬ë§ˆë…€
+	0, -6 * _2X, -5 * _2X,//NPC_ALMA,//c61//ì•Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_ITEM,//c62//í„°ë²ˆ
 	0, -6 * _2X, -12 * _2X,//NPC_FATMAN,//c63
 	0, -6 * _2X, -10 * _2X,//NPC_BUNNYGIRL,//c64
-	0, -6 * _2X, -12 * _2X,//NPC_KNIGHT,//c65//ÇÃ·¹Å¸
+	0, -6 * _2X, -12 * _2X,//NPC_KNIGHT,//c65//í”Œë ˆíƒ€
 	0, -6 * _2X, -5 * _2X,//NPC_DOG,//c66
 	0, -8 * _2X, -2 * _2X,//NPC_MERCHANT,//c67
 	0, -6 * _2X, -12 * _2X,//NPC_CRAFTMAN,//c68
 	0, -6 * _2X, -12 * _2X,//NPC_MAP,//c69
-	0, -6 * _2X, -12 * _2X,//NPC_USERQUEST,//c70//½ºÆ©¾îµð½º
-	0, -6 * _2X, -12 * _2X,//NPC_TRAVEL,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ
-	0, -2 * _2X, -10 * _2X,//NPC_GRANDMA,//c72//ÇÒ¸Ó´Ï
-	0, -6 * _2X, -12 * _2X,//NPC_FISHING,//c73//¶óÇÇ
+	0, -6 * _2X, -12 * _2X,//NPC_USERQUEST,//c70//ìŠ¤íŠœì–´ë””ìŠ¤
+	0, -6 * _2X, -12 * _2X,//NPC_TRAVEL,//c71//ì´êµ­ì˜ì—¬í–‰ìž
+	0, -2 * _2X, -10 * _2X,//NPC_GRANDMA,//c72//í• ë¨¸ë‹ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_FISHING,//c73//ë¼í”¼
 	0, -8 * _2X, -2 * _2X,//NPC_INN,//c74
 	0, -6 * _2X, -12 * _2X,//NPC_NETITEM,//c75
 	0, -6 * _2X, -14 * _2X,//NPC_MILESE,//c76
@@ -1852,48 +1852,48 @@ const signed short enemySkillIconPos[] = {
 	0, -6 * _2X, -12 * _2X,//NPC_GAGEL,//c78
 	0, -6 * _2X, -12 * _2X,//NPC_MONICA,//c79
 	0, -2 * _2X, -10 * _2X,//NPC_SHIP,//c80
-	0, -6 * _2X, -12 * _2X,//NPC_SEA,//c81//¾ÆÆ²¶õº´»ç
+	0, -6 * _2X, -12 * _2X,//NPC_SEA,//c81//ì•„í‹€ëž€ë³‘ì‚¬
 	0, -6 * _2X, -12 * _2X,//NPC_FRAUD,//c82
 	0, -6 * _2X, -12 * _2X,//NPC_DARIAN,//c83
 	0, -2 * _2X, -10 * _2X,//NPC_LUISE,//c84
-	0, -6 * _2X, -12 * _2X,//NPC_SEAUNCLE,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾
-	0, -6 * _2X, -8 * _2X,//NPC_SEABOY,//c86//¾ÆÆ²¶õ¼Ò³â
-	0, -6 * _2X, -12 * _2X,//NPC_DONALD,//c87//ÀÌ¼Ò·æ
-	0, -6 * _2X, -12 * _2X,//NPC_SCHOLAR,//c88//ÇÐÀÚ
-	0, -6 * _2X, -12 * _2X,//NPC_CHEF,//c89//¿ä¸®´ë°¡
-	0, -6 * _2X, -12 * _2X,//NPC_BISTRO,//c90//ºñ½ºÆ®·Î
-	0, -6 * _2X, -12 * _2X,//NPC_MAID,//c91//½Ã³à
-	0, -6 * _2X, -12 * _2X,//NPC_ADELKNIGHT,//c92//±â»ç
-	0, -6 * _2X, -12 * _2X,//NPC_SEBASTIAN,//c93//¼¼¹Ù½ºÂù
-	0, -6 * _2X, -12 * _2X,//NPC_NOBLEMAN,//c94//±ÍÁ·¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_DELPIOS,//c95//µ¨ÇÇ¿À½º
-	PO_C96_N0_DRESS, -6 * _2X, -12 * _2X,//NPC_LORA,//c96//·Î¶ó
-	0, -2 * _2X, -10 * _2X,//NPC_WITCH,//c97//¸¶³à
-	0, -2 * _2X, -10 * _2X,//NPC_ELFGRANDFA,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö
-	0, -6 * _2X, -12 * _2X,//NPC_ELFUNCLE,//c99//¿¤ÇÁ¾ÆÀú¾¾
-	0, -6 * _2X, -12 * _2X,//NPC_ELFAUNT,//c100//¿¤ÇÁ¾ÆÁÜ¸¶
-	0, -6 * _2X, -12 * _2X,//NPC_ELFMAN,//c101//¿¤ÇÁÃ»³â
-	0, -6 * _2X, -12 * _2X,//NPC_ELFWOMAN,//c102//¿¤ÇÁÃ³³à
-	0, -6 * _2X, -5 * _2X,//NPC_ELFBOY,//c103//¿¤ÇÁ²¿¸¶³²
-	0, -6 * _2X, -5 * _2X,//NPC_ELFGIRL,//c104//¿¤ÇÁ²¿¸¶³à
-	0, -6 * _2X, -12 * _2X,//NPC_ELFDARK,//c105//¿¤ÇÁ´ÙÅ©
-	0, -6 * _2X, -12 * _2X,//NPC_ELFMAGIC,//c106//¿¤ÇÁ¸¶¹ý»ç
-	0, -6 * _2X, -12 * _2X,//NPC_ELFDANCER,//c107//¿¤ÇÁ¹«Èñ
-	0, -2 * _2X, -10 * _2X,//NPC_OWL,//c108//ºÎ¾ûÀÌ
-	0, -6 * _2X, -16 * _2X,//NPC_LABETH,//c109//¶óº£½º
-	0, -6 * _2X, -16 * _2X,//NPC_ELKEIN,//c110//¿¤ÄÉÀÎ
-	0, -6 * _2X, -12 * _2X,//NPC_ELEIN,//c111//¿¤·¹ÀÎ
-	0, -6 * _2X, -12 * _2X,//NPC_EVAN,//c112//¿¡¹ø
-	0, -6 * _2X, -5 * _2X,//NPC_BEAD,//c113//Å×ÀÌºí
-	PO_C114_WATER0, -2 * _2X, -10 * _2X,//NPC_FOUNTAIN,//c114//»ù¹°
-	0, -6 * _2X, -12 * _2X,//NPC_NEZAR,//c115//³×ÀÚ¸£
-	0, -6 * _2X, -12 * _2X,//NPC_GALLAND,//c116//°¥¶õµå
-	0, -6 * _2X, -12 * _2X,//NPC_DURAK,//c117//µà¶óÅ©
-	0, -6 * _2X, -12 * _2X,//NPC_KING,//c118//¿¡µå¸óµå
-	0, -6 * _2X, -12 * _2X,//NPC_WOMANGHOST,//c119//¿©ÀÚÀ¯·É
-	0, -6 * _2X, -12 * _2X,//NPC_MANGHOST,//c120//³²ÀÚÀ¯·É
-	0, -6 * _2X, -12 * _2X,//NPC_AUSTIN,//c121//¿À½ºÆ¾(À¯·É)
-	0, -8 * _2X, -6 * _2X,//NPC_SOUL,//c122//¸¶¿ÕÀÇ ½ÉÀå
+	0, -6 * _2X, -12 * _2X,//NPC_SEAUNCLE,//c85//ì•„í‹€ëž€ì•„ì €ì”¨
+	0, -6 * _2X, -8 * _2X,//NPC_SEABOY,//c86//ì•„í‹€ëž€ì†Œë…„
+	0, -6 * _2X, -12 * _2X,//NPC_DONALD,//c87//ì´ì†Œë£¡
+	0, -6 * _2X, -12 * _2X,//NPC_SCHOLAR,//c88//í•™ìž
+	0, -6 * _2X, -12 * _2X,//NPC_CHEF,//c89//ìš”ë¦¬ëŒ€ê°€
+	0, -6 * _2X, -12 * _2X,//NPC_BISTRO,//c90//ë¹„ìŠ¤íŠ¸ë¡œ
+	0, -6 * _2X, -12 * _2X,//NPC_MAID,//c91//ì‹œë…€
+	0, -6 * _2X, -12 * _2X,//NPC_ADELKNIGHT,//c92//ê¸°ì‚¬
+	0, -6 * _2X, -12 * _2X,//NPC_SEBASTIAN,//c93//ì„¸ë°”ìŠ¤ì°¬
+	0, -6 * _2X, -12 * _2X,//NPC_NOBLEMAN,//c94//ê·€ì¡±ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_DELPIOS,//c95//ë¸í”¼ì˜¤ìŠ¤
+	PO_C96_N0_DRESS, -6 * _2X, -12 * _2X,//NPC_LORA,//c96//ë¡œë¼
+	0, -2 * _2X, -10 * _2X,//NPC_WITCH,//c97//ë§ˆë…€
+	0, -2 * _2X, -10 * _2X,//NPC_ELFGRANDFA,//c98//ì—˜í”„í• ì•„ë²„ì§€
+	0, -6 * _2X, -12 * _2X,//NPC_ELFUNCLE,//c99//ì—˜í”„ì•„ì €ì”¨
+	0, -6 * _2X, -12 * _2X,//NPC_ELFAUNT,//c100//ì—˜í”„ì•„ì¤Œë§ˆ
+	0, -6 * _2X, -12 * _2X,//NPC_ELFMAN,//c101//ì—˜í”„ì²­ë…„
+	0, -6 * _2X, -12 * _2X,//NPC_ELFWOMAN,//c102//ì—˜í”„ì²˜ë…€
+	0, -6 * _2X, -5 * _2X,//NPC_ELFBOY,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨
+	0, -6 * _2X, -5 * _2X,//NPC_ELFGIRL,//c104//ì—˜í”„ê¼¬ë§ˆë…€
+	0, -6 * _2X, -12 * _2X,//NPC_ELFDARK,//c105//ì—˜í”„ë‹¤í¬
+	0, -6 * _2X, -12 * _2X,//NPC_ELFMAGIC,//c106//ì—˜í”„ë§ˆë²•ì‚¬
+	0, -6 * _2X, -12 * _2X,//NPC_ELFDANCER,//c107//ì—˜í”„ë¬´í¬
+	0, -2 * _2X, -10 * _2X,//NPC_OWL,//c108//ë¶€ì—‰ì´
+	0, -6 * _2X, -16 * _2X,//NPC_LABETH,//c109//ë¼ë² ìŠ¤
+	0, -6 * _2X, -16 * _2X,//NPC_ELKEIN,//c110//ì—˜ì¼€ì¸
+	0, -6 * _2X, -12 * _2X,//NPC_ELEIN,//c111//ì—˜ë ˆì¸
+	0, -6 * _2X, -12 * _2X,//NPC_EVAN,//c112//ì—ë²ˆ
+	0, -6 * _2X, -5 * _2X,//NPC_BEAD,//c113//í…Œì´ë¸”
+	PO_C114_WATER0, -2 * _2X, -10 * _2X,//NPC_FOUNTAIN,//c114//ìƒ˜ë¬¼
+	0, -6 * _2X, -12 * _2X,//NPC_NEZAR,//c115//ë„¤ìžë¥´
+	0, -6 * _2X, -12 * _2X,//NPC_GALLAND,//c116//ê°ˆëž€ë“œ
+	0, -6 * _2X, -12 * _2X,//NPC_DURAK,//c117//ë“€ë¼í¬
+	0, -6 * _2X, -12 * _2X,//NPC_KING,//c118//ì—ë“œëª¬ë“œ
+	0, -6 * _2X, -12 * _2X,//NPC_WOMANGHOST,//c119//ì—¬ìžìœ ë ¹
+	0, -6 * _2X, -12 * _2X,//NPC_MANGHOST,//c120//ë‚¨ìžìœ ë ¹
+	0, -6 * _2X, -12 * _2X,//NPC_AUSTIN,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)
+	0, -8 * _2X, -6 * _2X,//NPC_SOUL,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥
 };
 
 
@@ -1942,12 +1942,12 @@ const signed short cardImgBg[TOTALMAPTYPE * 6] = {
 
 
 const int equipIconPos[] = {
-	0 * _2X, 240 * _2X,                                                       //EQUIP_WEAPON = 0, //¹«±â
-	0 * _2X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X),                      //EQUIP_HELM, //Åõ±¸
-	0 * _2X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X) * 2,                  //EQUIP_ARMOR, //°©¿Ê
-	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X,                      //EQUIP_PANTS, //¹ÙÁö
-	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X),       //EQUIP_GLOVE, //Àå°©
-	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X) * 2,   //EQUIP_BOOTS, //½Å¹ß
+	0 * _2X, 240 * _2X,                                                       //EQUIP_WEAPON = 0, //ë¬´ê¸°
+	0 * _2X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X),                      //EQUIP_HELM, //íˆ¬êµ¬
+	0 * _2X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X) * 2,                  //EQUIP_ARMOR, //ê°‘ì˜·
+	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X,                      //EQUIP_PANTS, //ë°”ì§€
+	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X),       //EQUIP_GLOVE, //ìž¥ê°‘
+	320 * _2X - 0 * _2X - ROULETTECARDSIZE_X, 240 * _2X - (ROULETTECARDSIZE_Y + 2 * _2X) * 2,   //EQUIP_BOOTS, //ì‹ ë°œ
 };
 
 const int runMotion[] = {
@@ -1955,7 +1955,7 @@ const int runMotion[] = {
 };
 
 const int curtainPosX[] = {
-	// ¼ø¼­´ë·Î 1, 2, 3¹øÂ° Ä¿Æ°
+	// ìˆœì„œëŒ€ë¡œ 1, 2, 3ë²ˆì§¸ ì»¤íŠ¼
 	0 * _2X + CURTAINSTARTPOSX, 1 * _2X + CURTAINSTARTPOSX, 2 * _2X + CURTAINSTARTPOSX,     //0
 	0 * _2X + CURTAINSTARTPOSX, 1 * _2X + CURTAINSTARTPOSX, 2 * _2X + CURTAINSTARTPOSX,     //0
 	0 * _2X + CURTAINSTARTPOSX, 1 * _2X + CURTAINSTARTPOSX, 2 * _2X + CURTAINSTARTPOSX,     //0
@@ -2045,12 +2045,12 @@ const int curtainPosX[] = {
 };
 
 const signed short raidEquipPos[] = {
-	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 2,             //EQUIP_WEAPON = 0, //¹«±â
-	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 3,             //EQUIP_HELM, //Åõ±¸
-	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 3, //EQUIP_ARMOR, //°©¿Ê
-	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 2, //EQUIP_PANTS, //¹ÙÁö
-	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X),                 //EQUIP_GLOVE, //Àå°©
-	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X),  //EQUIP_BOOTS, //½Å¹ß
+	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 2,             //EQUIP_WEAPON = 0, //ë¬´ê¸°
+	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 3,             //EQUIP_HELM, //íˆ¬êµ¬
+	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 3, //EQUIP_ARMOR, //ê°‘ì˜·
+	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X) * 2, //EQUIP_PANTS, //ë°”ì§€
+	-ROULETTECARDSIZE_X * 2 + 12 * _2X, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X),                 //EQUIP_GLOVE, //ìž¥ê°‘
+	+ROULETTECARDSIZE_X * 1 + 12 * _2X - ROULETTECARDSIZE_X / 2, -12 * _2X + (ROULETTECARDSIZE_Y + 8 * _2X),  //EQUIP_BOOTS, //ì‹ ë°œ
 };
 
 const int scrollDx[] = {
@@ -2068,7 +2068,7 @@ static std::string fontList[] =
 {
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	// info.plist ¿¡ »ç¿ëÀÚ°¡ Ãß°¡ÇÑ ttf ¸¦ Á¤ÀÇÇØ¾ß ÇÑ´Ù.
+	// info.plist ì— ì‚¬ìš©ìžê°€ ì¶”ê°€í•œ ttf ë¥¼ ì •ì˜í•´ì•¼ í•œë‹¤.
 	"NanumBarunGothicLight",
 #else
 	"NanumBarunGothicLight.ttf",
@@ -2145,7 +2145,7 @@ const int cardFrameColorData[60] = {
 };
 
 const int colorData[56] = {
-	//¾÷Àû ÀÎÅÍÆäÀÌ½º ±×¶óµ¥ÀÌ¼Ç ÄÃ·¯
+	//ì—…ì  ì¸í„°íŽ˜ì´ìŠ¤ ê·¸ë¼ë°ì´ì…˜ ì»¬ëŸ¬
 	0xFFD942,
 	0xFFB918,
 	0xF88800,
@@ -2156,7 +2156,7 @@ const int colorData[56] = {
 	0x933F0D,
 	0x8A3C0D,
 
-	//Á¢¼ÓÃ¢ ±×¶óµ¥ÀÌ¼Ç ÄÃ·¯
+	//ì ‘ì†ì°½ ê·¸ë¼ë°ì´ì…˜ ì»¬ëŸ¬
 	0x012145,
 	0x012854,
 	0x023368,
@@ -2167,7 +2167,7 @@ const int colorData[56] = {
 	0x036DBE,
 	0x0A7CFC,
 
-	//·©Å·ÂÊ ±×¶óµ¥ÀÌ¼Ç
+	//ëž­í‚¹ìª½ ê·¸ë¼ë°ì´ì…˜
 	0x1A556E,
 	0x1A5975,
 	0x1A5E7F,
@@ -2178,7 +2178,7 @@ const int colorData[56] = {
 	0x1B80C0,
 	0x1C88C8,
 
-	//¸ó½ºÅÍ ±×¶óµ¥ÀÌ¼Ç
+	//ëª¬ìŠ¤í„° ê·¸ë¼ë°ì´ì…˜
 	0xA5F34E,
 	0x7ECA1B,
 	0x63B10C,
@@ -2189,7 +2189,7 @@ const int colorData[56] = {
 	0x0D4514,
 	0x0E3D11,
 
-	//±æµå ±×·¡ÇÁ ±×¶óµ¥ÀÌ¼Ç
+	//ê¸¸ë“œ ê·¸ëž˜í”„ ê·¸ë¼ë°ì´ì…˜
 	0xFFC59D,
 	0xFFA88A,
 	0xFF8C78,
@@ -3627,11 +3627,11 @@ const unsigned char blindFrame[9] = {
 };
 
 const unsigned short alertData[TOTALALERT * ALERTDATASIZE] = {
-	//0 : Ã¢ Width
-	//1 : Ã¢ Height
-	//2 : ÅØ½ºÆ® ±×¸®´Â Å¸ÀÔ(0-LineText, 1-CenterText)
-	//3 : ¹öÆ° Å¸ÀÔ(0-OK, 1-YES/NO)
-	//4 : cmf Ä³¸¯ÅÍ
+	//0 : ì°½ Width
+	//1 : ì°½ Height
+	//2 : í…ìŠ¤íŠ¸ ê·¸ë¦¬ëŠ” íƒ€ìž…(0-LineText, 1-CenterText)
+	//3 : ë²„íŠ¼ íƒ€ìž…(0-OK, 1-YES/NO)
+	//4 : cmf ìºë¦­í„°
 	//5 : TEXT
 	256 * _2X, 100 * _2X, 1, 0, CMF_NPC_ITEM,	//ALERT_NOGOLD
 	256 * _2X, 140 * _2X, 0, 0,	CMF_NPC_CRAFTMAN,	//ALERT_EQUIP
@@ -3645,7 +3645,7 @@ const unsigned short alertData[TOTALALERT * ALERTDATASIZE] = {
 };
 
 const unsigned short skillTreePos[TOTALCHARSKILL * TOTALCHAR * 4] = {
-	//·Îºó
+	//ë¡œë¹ˆ
 	44 * _2X, 26 * _2X - 26 * _2X, 16 * _2X, 0 * _2X,//0
 	21 * _2X, 34 * _2X - 26 * _2X, 23 * _2X, 1 * _2X,//1
 	18 * _2X, 34 * _2X - 26 * _2X, 8 * _2X, 2 * _2X,//2
@@ -3680,7 +3680,7 @@ const unsigned short skillTreePos[TOTALCHARSKILL * TOTALCHAR * 4] = {
 	110 * _2X, 275 * _2X - 26 * _2X, 8 * _2X, 0 * _2X,//28
 	136 * _2X, 275 * _2X - 26 * _2X, 8 * _2X, 0 * _2X,//29
 
-	//µð¾Æ³ª
+	//ë””ì•„ë‚˜
 	44 * _2X, 26 * _2X - 26 * _2X, 16 * _2X, 0 * _2X,//0
 	47 * _2X, 34 * _2X - 26 * _2X, 23 * _2X, 1 * _2X,//1
 	70 * _2X, 34 * _2X - 26 * _2X, 8 * _2X, 2 * _2X,//2
@@ -3716,7 +3716,7 @@ const unsigned short skillTreePos[TOTALCHARSKILL * TOTALCHAR * 4] = {
 	136 * _2X, 275 * _2X - 26 * _2X, 8 * _2X, 0 * _2X,//29
 
 
-	//¸Æ½º
+	//ë§¥ìŠ¤
 	18 * _2X, 34 * _2X - 26 * _2X, 8 * _2X, 2 * _2X,//0
 	70 * _2X, 34 * _2X - 26 * _2X, 8 * _2X, 2 * _2X,//1
 	21 * _2X, 34 * _2X - 26 * _2X, 49 * _2X, 1 * _2X,//2

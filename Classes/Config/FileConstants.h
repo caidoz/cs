@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 // =============================================================
 // AUTO GENERATED - DO NOT EDIT
 // Source : Definitions.xlsx
@@ -8,9 +8,9 @@
 
 
 // ---
-#define SAVEFILE                   "save.dat"               // ¼¼ÀÌºê ÆÄÀÏ
-#define OPTIONFILE                 "option.dat"             // ¿É¼Ç ÆÄÀÏ
-#define GAMEFILE                   "game.dat"               // °ÔÀÓ ÆÄÀÏ
-#define UPLOADFILE                 "up.dat"                 // ¾÷·Îµå ÆÄÀÏ
-#define LOGFILE                    "log.dat"                // ·Î±× ÆÄÀÏ
-#define AIDATAFILE                 "aiData.dat"             // AI µ¥ÀÌÅÍ ÆÄÀÏ
+#define SAVEFILE                   "save.dat"               // ì„¸ì´ë¸Œ íŒŒì¼
+#define OPTIONFILE                 "option.dat"             // ì˜µì…˜ íŒŒì¼
+#define GAMEFILE                   "game.dat"               // ê²Œì„ íŒŒì¼
+#define UPLOADFILE                 "up.dat"                 // ì—…ë¡œë“œ íŒŒì¼
+#define LOGFILE                    "log.dat"                // ë¡œê·¸ íŒŒì¼
+#define AIDATAFILE                 "aiData.dat"             // AI ë°ì´í„° íŒŒì¼

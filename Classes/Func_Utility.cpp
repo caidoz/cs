@@ -18,49 +18,21 @@ unsigned short Convert_Char_KSC5601_To_UCS2(unsigned char byte1, unsigned char b
 	return 0;
 }
 
+//소스가 UTF-8로 통일되면서 문자열 리터럴이 이미 UTF-8이다.
+//예전에는 CP949를 UTF-8로 바꿔 Label에 넘겼지만 이제 변환할 것이 없다.
+//호출부를 그대로 두려고 복사만 한다. Convert_Char_KSC5601_To_UCS2()와
+//unicode_table은 이제 쓰이지 않는다.
 int TextToString(char* src, int count, char* dst)
 {
-	unsigned short unicode;
-	unsigned char bytes[4];
-	int nbytes;
-	int i, j;
 	int len = 0;
 
-	i = 0;
-
-	for (i = 0; i < count; i++) {
-		if (!src[i])
-			break;
-		unicode = src[i];
-		if (unicode < 0x80) {
-			nbytes = 1;
-			bytes[0] = unicode;
-		}
-		else {
-			unicode = Convert_Char_KSC5601_To_UCS2(src[i], src[i + 1]);
-			//unicode -= 0xAC00;
-			//UCS2toUTF8(&unicode, 1, (char*)bytes[0]);
-
-			if (unicode < 0x800) {
-				nbytes = 2;
-				bytes[1] = (unicode & 0x3f) | 0x80;
-				bytes[0] = ((unicode << 2) & 0xcf00 | 0xc000) >> 8;
-			}
-			else {
-				nbytes = 3;
-				bytes[2] = (unicode & 0x3f) | 0x80;
-				bytes[1] = ((unicode << 2) & 0x3f00 | 0x8000) >> 8;
-				bytes[0] = ((unicode << 4) & 0x3f0000 | 0xe00000) >> 16;
-			}
-			i++;
-		}
-
-		for (j = 0; j < nbytes; j++) {
-			dst[len] = bytes[j];
-			len++;
-		}
+	while (len < count && src[len]) {
+		dst[len] = src[len];
+		len++;
 	}
+
 	dst[len] = '\0';
+
 	return len;
 }
 

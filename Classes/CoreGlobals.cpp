@@ -261,8 +261,8 @@ float gSpotlightDarkness = 0.0f;
 //ëˆŒë¦° í„°ì¹˜ê¸°ëŠ¥ì„ ë‹´ì•„ë‘ë©´ Play()ê°€ í”Œë ˆì´ë¡œ ëŒì•„ì˜¨ ë’¤ ê·¸ëŒ€ë¡œ ì²˜ë¦¬í•œë‹¤. 0ì´ë©´ ì˜ˆì•½ ì—†ìŒ.
 int tutorialPendingTouchFunc = 0;
 
-//Æ©Åä¸®¾ó ¾È³»·Î µ¿·á ¸Ş´º¸¦ ¿¬ Á÷ÈÄ, »õ µ¿·á Ä«µå¸¦ ´­·¯ »ó¼¼º¸±â·Î µé¾î°¥ ¶§±îÁö¸¸ Âü.
-//ÀúÀåÇÏÁö ¾Ê´Â´Ù - ±× ÀÚ¸®¿¡¼­¸¸ µµ´Â ¾È³»¶ó ¼¼ÀÌºê¿¡ ³²À¸¸é ÀÏ¹İ ÇÃ·¹ÀÌ±îÁö ¹°µç´Ù.
+//íŠœí† ë¦¬ì–¼ ì•ˆë‚´ë¡œ ë™ë£Œ ë©”ë‰´ë¥¼ ì—° ì§í›„, ìƒˆ ë™ë£Œ ì¹´ë“œë¥¼ ëˆŒëŸ¬ ìƒì„¸ë³´ê¸°ë¡œ ë“¤ì–´ê°ˆ ë•Œê¹Œì§€ë§Œ ì°¸.
+//ì €ì¥í•˜ì§€ ì•ŠëŠ”ë‹¤ - ê·¸ ìë¦¬ì—ì„œë§Œ ë„ëŠ” ì•ˆë‚´ë¼ ì„¸ì´ë¸Œì— ë‚¨ìœ¼ë©´ ì¼ë°˜ í”Œë ˆì´ê¹Œì§€ ë¬¼ë“ ë‹¤.
 bool tutorialCrewGuide = false;
 
 
@@ -465,8 +465,8 @@ unsigned char radiusStatus;
 char tempStr[256];
 char tempStr2[256];
 char tempStr3[256];
-char labelStr[256];
-char labelStr2[256];
+char labelStr[512];
+char labelStr2[512];
 char labelStr3[256];
 char skillStr[256];
 char ringStr[256];
@@ -485,7 +485,7 @@ char itemOptionStr[50];
 char screenStr[100];
 char playerTitle[24];
 char phoneStr[10][8];
-int bmFontColor[256];
+int bmFontColor[512];
 
 #ifndef KTF
 

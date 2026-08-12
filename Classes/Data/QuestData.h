@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_QUEST_H_
@@ -68,7 +68,7 @@ const int goldQuestResultItem[] = {
 };
 
 
-//º¸½º
+//ë³´ìŠ¤
 const long long goldQuestReward[TOTALBOSSRAID * BOSSRAIDSIZE * (BOX1MAXREWARDITEM * 5)] = {
 	ITEM_GOLD, false, false, 10000, 10000,
 	-1, false, false, false, false,
@@ -112,7 +112,7 @@ const long long goldQuestReward[TOTALBOSSRAID * BOSSRAIDSIZE * (BOX1MAXREWARDITE
 
 };
 
-//Ã¹¹øÂ°´Â ¾ÆÀÌÄÜ, µÎ¹øÂ°´Â Áö¼Ó½Ã°£
+//ì²«ë²ˆì§¸ëŠ” ì•„ì´ì½˜, ë‘ë²ˆì§¸ëŠ” ì§€ì†ì‹œê°„
 const unsigned int pvpQuestInfo[TOTALPVPQUEST * PVPQUESTINFODATASIZE] = {
 	ICON_MEDAL, PVPQUESTTIME, CMF_SNAIL,//PVPQUEST_TUTORIAL = 0,
 	ICON_EVENT_2SWORD, PVPQUESTTIME, CMF_TREE,//PVPQUEST1,
@@ -5502,10 +5502,10 @@ const unsigned int pvpQuestRequest[] = {
 
 
 const unsigned long long pvpQuestReward[TOTALPVPQUESTREWARD * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST * PVPQUESTDATASIZE] = {
-	//0 : ¾ÆÀÌÄÜ
-	//1 : ¾ÆÀÌÅÛ type
-	//2 : ¾ÆÀÌÅÛ detail
-	//3 : ¾ÆÀÌÅÛ grade or count
+	//0 : ì•„ì´ì½˜
+	//1 : ì•„ì´í…œ type
+	//2 : ì•„ì´í…œ detail
+	//3 : ì•„ì´í…œ grade or count
 
 	//PVPQUESTREWARD_TUTORIAL = 0,
 	ITEM_GOLD, null, null, 3000,//1
@@ -12606,14 +12606,14 @@ const unsigned int questRequestItem[] = {
 
 };
 
-//Äù½ºÆ® ¿ä±¸ ¾ÆÀÌÅÛ
+//í€˜ìŠ¤íŠ¸ ìš”êµ¬ ì•„ì´í…œ
 const unsigned long long questRequestItemCntData[] = {
-	//0 : ¾ÆÀÌÅÛ Å¸ÀÔ
-	//1 : ¾ÆÀÌÅÛ µðÅ×ÀÏ
-	//2 : ¾ÆÀÌÅÛ ±×·¹ÀÌµå
-	//3 ~ 12 : ¸ð¾Æ¾ß µÇ´Â ¾ÆÀÌÅÛ °³¼ö
+	//0 : ì•„ì´í…œ íƒ€ìž…
+	//1 : ì•„ì´í…œ ë””í…Œì¼
+	//2 : ì•„ì´í…œ ê·¸ë ˆì´ë“œ
+	//3 ~ 12 : ëª¨ì•„ì•¼ ë˜ëŠ” ì•„ì´í…œ ê°œìˆ˜
 
-	//1. ·¹ÀÌµå ¸Åµå´Ï½º - ±×·çºñ Æ÷ °ñµå
+	//1. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ - ê·¸ë£¨ë¹„ í¬ ê³¨ë“œ
 	25,//1
 	40,//2
 	90,//3
@@ -12665,7 +12665,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//2.»çÀÌ¹ö¸Õµ¥ÀÌ
+	//2.ì‚¬ì´ë²„ë¨¼ë°ì´
 	10,//1
 	40,//2
 	20,//3
@@ -12717,7 +12717,7 @@ const unsigned long long questRequestItemCntData[] = {
 	7000,//49
 	100000,//50
 
-	//3. ½ß½º±âºù
+	//3. ìŒ©ìŠ¤ê¸°ë¹™
 	10,//1
 	10,//2
 	20,//3
@@ -12769,7 +12769,7 @@ const unsigned long long questRequestItemCntData[] = {
 	7000,//49
 	100000,//50
 
-	//4. ¾îÅÃ¸Åµå´Ï½º ¼­¸Ó¼­ÇÁ
+	//4. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì„œë¨¸ì„œí”„
 	5,//1
 	10,//2
 	60,//3
@@ -12821,7 +12821,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//5. ½ÃÅ©¸®Æ® ½Ã½©
+	//5. ì‹œí¬ë¦¬íŠ¸ ì‹œì‰˜
 	20,//1
 	5,//2
 	10,//3
@@ -12873,7 +12873,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//6. ¾îÅÃ¸Åµå´Ï½º ¿ÍÀÏµå ÄÉÀÌºê
+	//6. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì™€ì¼ë“œ ì¼€ì´ë¸Œ
 	5,//1
 	15,//2
 	60,//3
@@ -12925,7 +12925,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//7. ½ºÅæ ¿¡ÀÌÁö ½º³»Ä¡
+	//7. ìŠ¤í†¤ ì—ì´ì§€ ìŠ¤ë‚´ì¹˜
 	20,//1
 	5,//2
 	10,//3
@@ -12977,7 +12977,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//8. ·¹ÀÌµå ¸Åµå´Ï½º ¼¶¸Ó½ºÆ÷Ã÷
+	//8. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ ì„¬ë¨¸ìŠ¤í¬ì¸ 
 	10,//1
 	20,//2
 	35,//3
@@ -13029,7 +13029,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//9. ¸µ°ÔÀÓÁî
+	//9. ë§ê²Œìž„ì¦ˆ
 	20,//1
 	5,//2
 	10,//3
@@ -13081,7 +13081,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//10. ·¹ÀÌµå¸Åµå´Ï½º Æ®·¹Á® ·¯½Ã
+	//10. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ íŠ¸ë ˆì ¸ ëŸ¬ì‹œ
 	10,//1
 	20,//2
 	35,//3
@@ -13133,7 +13133,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//11. Ä³Ä¡´õ Å¬¶ó¿î
+	//11. ìºì¹˜ë” í´ë¼ìš´
 	5,//1
 	10,//2
 	15,//3
@@ -13185,7 +13185,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//12. ¿ïÆ®¶ó ¾îÅÃ
+	//12. ìš¸íŠ¸ë¼ ì–´íƒ
 	6,//1
 	6,//2
 	15,//3
@@ -13237,7 +13237,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//13. ¾îÅÃ¸Åµå´Ï½º - ¿¾³¯
+	//13. ì–´íƒë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ 
 	1,//1
 	2,//2
 	3,//3
@@ -13289,7 +13289,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//14. ·¹ÀÌµå¸Åµå´Ï½º - ¿¾³¯
+	//14. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ 
 	10,//1
 	20,//2
 	20,//3
@@ -13341,7 +13341,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//15. ºñÆ®´õÈ÷Æ®
+	//15. ë¹„íŠ¸ë”ížˆíŠ¸
 	5,//1
 	10,//2
 	15,//3
@@ -13393,7 +13393,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//16.»êÅ¸½º ¼¶¸Ó ºê·¹ÀÌÅ©
+	//16.ì‚°íƒ€ìŠ¤ ì„¬ë¨¸ ë¸Œë ˆì´í¬
 	5,//1
 	10,//2
 	15,//3
@@ -13445,7 +13445,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//17. ½ºÆ®·Îº£¸® ½ºÇÃ·¡½¬
+	//17. ìŠ¤íŠ¸ë¡œë² ë¦¬ ìŠ¤í”Œëž˜ì‰¬
 	5,//1
 	10,//2
 	15,//3
@@ -13497,7 +13497,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 
-	//18. ¿ïÆ®¶ó¾îÅÃ º£¸® ¿Ãµå
+	//18. ìš¸íŠ¸ë¼ì–´íƒ ë² ë¦¬ ì˜¬ë“œ
 	6,//1
 	6,//2
 	15,//3
@@ -13551,16 +13551,16 @@ const unsigned long long questRequestItemCntData[] = {
 };
 
 
-//ÄÚÀÎ·¹ÀÌµåÀÇ °ñµå¸¦ 250À¸·Î ³ª´©¸é ½ºÄÉÀÏÀÌ ¸Â´Ù.
-//ºñÀ²À» Á» ¾Ë¾Æº¸ÀÚ
+//ì½”ì¸ë ˆì´ë“œì˜ ê³¨ë“œë¥¼ 250ìœ¼ë¡œ ë‚˜ëˆ„ë©´ ìŠ¤ì¼€ì¼ì´ ë§žë‹¤.
+//ë¹„ìœ¨ì„ ì¢€ ì•Œì•„ë³´ìž
 //
 const unsigned long long questReward[] = {
-	//ÃÑ 10¹øÀÇ ¿¬Äù°¡ ÀÖ±â ¶§¹®¿¡ º¸»óµµ ÃÑ 10¹øÀÇ º¸»óÀÌ ¹ß»ýµÈ´Ù.
-	//0 : ¾ÆÀÌÅÛ Å¸ÀÔ(°ñµå(gold)³Ä, ÇÏÆ®(heart)³Ä, Á¶ÇÕ¼®(exp)ÀÌ³Ä,  
-	//1 : ¾ÆÀÌÅÛ °³¼ö
-	//µû¶ó¼­ 10°³ÀÇ º¸»ó * 2°³ÀÇ Á¤º¸°¡ ÇÊ¿äÇÏ´Ï ÃÑ 20°³ÀÇ Á¤º¸°¡ ÇÊ¿äÇÏ´Ù.
+	//ì´ 10ë²ˆì˜ ì—°í€˜ê°€ ìžˆê¸° ë•Œë¬¸ì— ë³´ìƒë„ ì´ 10ë²ˆì˜ ë³´ìƒì´ ë°œìƒëœë‹¤.
+	//0 : ì•„ì´í…œ íƒ€ìž…(ê³¨ë“œ(gold)ëƒ, í•˜íŠ¸(heart)ëƒ, ì¡°í•©ì„(exp)ì´ëƒ,  
+	//1 : ì•„ì´í…œ ê°œìˆ˜
+	//ë”°ë¼ì„œ 10ê°œì˜ ë³´ìƒ * 2ê°œì˜ ì •ë³´ê°€ í•„ìš”í•˜ë‹ˆ ì´ 20ê°œì˜ ì •ë³´ê°€ í•„ìš”í•˜ë‹¤.
 
-	//1. ·¹ÀÌµå ¸Åµå´Ï½º - ±×·çºñ Æ÷ °ñµå//QUESTTYPE_RAID
+	//1. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ - ê·¸ë£¨ë¹„ í¬ ê³¨ë“œ//QUESTTYPE_RAID
 	ITEM_HEART, false, false, 50,//1
 	ITEM_GOLD, false, false,  200000,//2
 	ITEM_HEART, false, false,  120,//3
@@ -13573,16 +13573,16 @@ const unsigned long long questReward[] = {
 	ITEM_HAMMER, false, false, 60,//10
 	ITEM_HEART, false, false,  1000,//11
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//12
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//13//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//13//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_HAMMER, false, false, 250,//14
 	ITEM_HEART, false, false,  2000,//15
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//16
 	ITEM_GOLD, false, false,  2000000,//17
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//18
 	ITEM_HEART, false, false,  3600,//19
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//20//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//20//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//21
-	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//22//ºúÇÒÀÎÀÌº¥Æ®
+	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//22//ë¹ší• ì¸ì´ë²¤íŠ¸
 	ITEM_HAMMER, false, false, 450,//23
 	ITEM_HEART, false, false,  5500,//24
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//25
@@ -13590,11 +13590,11 @@ const unsigned long long questReward[] = {
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//27
 	ITEM_GOLD, false, false,  4000000,//28
 	ITEM_HEART, false, false,  11000,//29
-	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//30//ºúÇÒÀÎÀÌº¥Æ®
+	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//30//ë¹ší• ì¸ì´ë²¤íŠ¸
 	ITEM_GOLD, false, false,  4500000,//31
 	ITEM_HEART, false, false,  14000,//32
 	ITEM_HAMMER, false, false, 1500,//33
-	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//34//ºúÇÒÀÎÀÌº¥Æ®
+	ITEM_NETITEM, ITEM_NET_COUPON, false, 1,//34//ë¹ší• ì¸ì´ë²¤íŠ¸
 	ITEM_HEART, false, false,  18000,//35
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//36
 	ITEM_HEART, false, false,  30000,//37
@@ -13612,15 +13612,15 @@ const unsigned long long questReward[] = {
 	false, false, false, false, //49
 	false, false, false, false, //50
 
-	//2.»çÀÌ¹ö¸Õµ¥ÀÌ//QUESTTYPE_ITEM
+	//2.ì‚¬ì´ë²„ë¨¼ë°ì´//QUESTTYPE_ITEM
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//5000,//1
 	ITEM_HEART, false, false,  200,//2
 	ITEM_GOLD, false, false,  300000,//3
-	ITEM_NETITEM, ITEM_NET_BOX_RANDOM, false,  1,//4//ÅÍÄ¡ÀÌº¥Æ®
+	ITEM_NETITEM, ITEM_NET_BOX_RANDOM, false,  1,//4//í„°ì¹˜ì´ë²¤íŠ¸
 	ITEM_GOLD, false, false,  300000,//5
 	ITEM_HEART, false, false,  130,//6
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//7//µÎ¹èÀÌº¥Æ®
-	ITEM_BOX, BOX_REWARD0, false,  1,//8//¼Ó¼º»óÀÚ(ÇÏÆ® + ±âÅ¸µîµî)
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//7//ë‘ë°°ì´ë²¤íŠ¸
+	ITEM_BOX, BOX_REWARD0, false,  1,//8//ì†ì„±ìƒìž(í•˜íŠ¸ + ê¸°íƒ€ë“±ë“±)
 	ITEM_HEART, false, false,  150,//9
 	ITEM_STAR, false, false,  1,//10
 	ITEM_HEART, false, false,  700,//11
@@ -13630,11 +13630,11 @@ const unsigned long long questReward[] = {
 	ITEM_STAR, false, false,  1,//15
 	ITEM_HEART, false, false,  2600,//16
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//17
-	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//18//ÇÏÆ®»óÀÚ
+	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//18//í•˜íŠ¸ìƒìž
 	ITEM_HEART, false, false,  5000,//19
 	ITEM_STAR, false, false,  1,//20
-	ITEM_NETITEM, ITEM_NET_PACKAGE_LUCK, GRADE_NORMAL,  1,//21//Ä«µåºÕ
-	ITEM_GOLD, false, false,  400000,//22//½Ã¿ÀºêÆ÷ÃáÀÌ ³ª¿Ã ÀÚ¸®
+	ITEM_NETITEM, ITEM_NET_PACKAGE_LUCK, GRADE_NORMAL,  1,//21//ì¹´ë“œë¶
+	ITEM_GOLD, false, false,  400000,//22//ì‹œì˜¤ë¸Œí¬ì¶˜ì´ ë‚˜ì˜¬ ìžë¦¬
 	ITEM_HEART, false, false,  7000,//23
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//24
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//25
@@ -13642,7 +13642,7 @@ const unsigned long long questReward[] = {
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//27
 	ITEM_HEART, false, false,  10000,//28
 	ITEM_STAR, false, false,  1,//29
-	ITEM_GOLD, false, false,  500000,//30//½Ã¿ÀºêÆ÷Ãá
+	ITEM_GOLD, false, false,  500000,//30//ì‹œì˜¤ë¸Œí¬ì¶˜
 	ITEM_HEART, false, false,  15000,//31
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//32
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//33
@@ -13664,12 +13664,12 @@ const unsigned long long questReward[] = {
 	ITEM_STAR, false, false, 1,//49
 	ITEM_HEART, false, false, 150000,//50
 
-	//3. ½ß½º±âºù//QUESTTYPE_ITEM
+	//3. ìŒ©ìŠ¤ê¸°ë¹™//QUESTTYPE_ITEM
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//1
 	ITEM_HEART, false, false,  100,//2
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//3
 	ITEM_GOLD, false, false, 150000,//4
-	ITEM_NETITEM, ITEM_NET_BOX_RANDOM, false,  1,//5 ÅÍÄ¡ÀÌº¥Æ®
+	ITEM_NETITEM, ITEM_NET_BOX_RANDOM, false,  1,//5 í„°ì¹˜ì´ë²¤íŠ¸
 	ITEM_GOLD, false, false, 300000,//6
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//7
 	ITEM_HAMMER, false, false,  25,//8
@@ -13680,33 +13680,33 @@ const unsigned long long questReward[] = {
 	ITEM_HEART, false, false,  1500,//13
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//14
 	ITEM_HEART, false, false,  2700,//15
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//16//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//16//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//17
 	ITEM_GOLD, false, false, 400000,//18
 	ITEM_HEART, false, false,  5000,//19
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//20//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//20//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//21
 	ITEM_GOLD, false, false, 600000,//22
 	ITEM_HAMMER, false, false,  100,//23
 	ITEM_HEART, false, false,  7000,//24
 	ITEM_GOLD, false, false, 800000,//25
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//26//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//26//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//27
 	ITEM_HAMMER, false, false,  150,//28
 	ITEM_GOLD, false, false, 1500000,//29
 	ITEM_HEART, false, false,  10000,//30
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//31//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//31//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_HAMMER, false, false,  175,//32
 	ITEM_GOLD, false, false, 1500000,//33
 	ITEM_HEART, false, false,  15000,//34
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//35//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//35//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_HAMMER, false, false,  250,//36
 	ITEM_GOLD, false, false, 1500000,//37
 	ITEM_HEART, false, false,  25000,//38
 	ITEM_HAMMER, false, false,  450,//39
 	ITEM_GOLD, false, false, 800000,//40
 	ITEM_HEART, false, false,  35000,//41
-	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//42//µÎ¹èÀÌº¥Æ®
+	ITEM_WASTE, ITEM_WASTE_DAMAGE, false,  1,//42//ë‘ë°°ì´ë²¤íŠ¸
 	ITEM_HAMMER, false, false,  1000,//43
 	ITEM_HEART, false, false,  45000,//44
 	ITEM_HAMMER, false, false,  1500,//45
@@ -13716,7 +13716,7 @@ const unsigned long long questReward[] = {
 	ITEM_HAMMER, false, false,  2500,//49
 	ITEM_HEART, false, false,  100000,//50
 
-	//4. ¾îÅÃ¸Åµå´Ï½º ¼­¸Ó¼­ÇÁ//QUESTTYPE_BATTLE
+	//4. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì„œë¨¸ì„œí”„//QUESTTYPE_BATTLE
 	ITEM_HEART, false, false, 55,//1
 	ITEM_GOLD, false, false, 300000,//2
 	ITEM_HEART, false, false, 110,//3
@@ -13768,7 +13768,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//5. ½ÃÅ©¸®Æ®½Ã½©//QUESTTYPE_ITEM
+	//5. ì‹œí¬ë¦¬íŠ¸ì‹œì‰˜//QUESTTYPE_ITEM
 	ITEM_HEART, false, false,  80,//1
 	ITEM_GOLD, false, false,  125000,//2
 	ITEM_HAMMER, false, false,  6,//3
@@ -13820,7 +13820,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//6. ¾îÅÃ¸Åµå´Ï½º ¿ÍÀÏµå ÄÉÀÌºê//QUESTTYPE_BATTLE
+	//6. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì™€ì¼ë“œ ì¼€ì´ë¸Œ//QUESTTYPE_BATTLE
 	ITEM_HEART, false, false,  55,//1
 	ITEM_GOLD, false, false,  300000,//2
 	ITEM_HEART, false, false,  110,//3
@@ -13872,7 +13872,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//7. ½ºÅæ ¿¡ÀÌÁö ½º³»Ä¡//QUESTTYPE_ITEM
+	//7. ìŠ¤í†¤ ì—ì´ì§€ ìŠ¤ë‚´ì¹˜//QUESTTYPE_ITEM
 	ITEM_HEART, false, false, 90,//1
 	ITEM_GOLD, false, false, 125000,//2
 	ITEM_HAMMER, false, false, 6,//3
@@ -13924,7 +13924,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//8. ·¹ÀÌµå ¸Åµå´Ï½º ¼¶¸Ó½ºÆ÷Ã÷//QUESTTYPE_RAID
+	//8. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ ì„¬ë¨¸ìŠ¤í¬ì¸ //QUESTTYPE_RAID
 	ITEM_HEART, false, false,  85,//1
 	ITEM_GOLD, false, false,  300000,//2
 	ITEM_GOLD, false, false,  400000,//3
@@ -13976,7 +13976,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//9. ¸µ°ÔÀÓÁî//QUESTTYPE_ITEM
+	//9. ë§ê²Œìž„ì¦ˆ//QUESTTYPE_ITEM
 	ITEM_HEART, false, false,  85,//1
 	ITEM_GOLD, false, false,  125000,//2
 	ITEM_HAMMER, false, false,  6,//3
@@ -14028,7 +14028,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//10. ·¹ÀÌµå¸Åµå´Ï½º Æ®·¹Á® ·¯½Ã//QUESTTYPE_RAID
+	//10. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ íŠ¸ë ˆì ¸ ëŸ¬ì‹œ//QUESTTYPE_RAID
 	ITEM_HEART, false, false,  85,//1
 	ITEM_GOLD, false, false,  300000,//2
 	ITEM_GOLD, false, false,  400000,//3
@@ -14080,7 +14080,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//11. Ä³Ä¡´õ Å¬¶ó¿î//QUESTTYPE_ITEM
+	//11. ìºì¹˜ë” í´ë¼ìš´//QUESTTYPE_ITEM
 	ITEM_HEART, false, false,  50,//1
 	ITEM_GOLD, false, false,  20000,//2
 	ITEM_GOLD, false, false,  40000,//3
@@ -14132,7 +14132,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//12. ¿ïÆ®¶ó¾îÅÃ//QUESTTYPE_BATTLE
+	//12. ìš¸íŠ¸ë¼ì–´íƒ//QUESTTYPE_BATTLE
 	ITEM_BOX, BOX_REWARD0, GRADE_SUPERIOR,  1,//1
 	ITEM_HEART, false, false,  85,//2
 	ITEM_GOLD, false, false,  150000,//3
@@ -14184,7 +14184,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//13. ¾îÅÃ¸Åµå´Ï½º - ¿¾³¯//QUESTTYPE_BATTLE
+	//13. ì–´íƒë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ //QUESTTYPE_BATTLE
 	ITEM_HEART, false, false,  50,//1
 	ITEM_GOLD, false, false,  150000,//2
 	ITEM_GOLD, false, false,  200000,//3
@@ -14236,7 +14236,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//14. ·¹ÀÌµå¸Åµå´Ï½º - ¿¾³¯//QUESTTYPE_RAID
+	//14. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ //QUESTTYPE_RAID
 	ITEM_HEART, false, false,  60,//1
 	ITEM_GOLD, false, false,  100000,//2
 	ITEM_GOLD, false, false, 200000,//3
@@ -14288,7 +14288,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//15. ºñÆ®´õÈ÷Æ®
+	//15. ë¹„íŠ¸ë”ížˆíŠ¸
 	ITEM_HEART, false, false,  50,//1
 	ITEM_GOLD, false, false,  20000,//2
 	ITEM_GOLD, false, false,  40000,//3
@@ -14340,7 +14340,7 @@ const unsigned long long questReward[] = {
 	false, false, false,  false,//49
 	false, false, false,  false,//50
 
-	//16.»êÅ¸½º ¼¶¸Ó ºê·¹ÀÌÅ©
+	//16.ì‚°íƒ€ìŠ¤ ì„¬ë¨¸ ë¸Œë ˆì´í¬
 	ITEM_HEART, false, false,  50,//1
 	ITEM_GOLD, false, false,  20000,//2
 	ITEM_HAMMER, false, false,  12,//3
@@ -14392,7 +14392,7 @@ const unsigned long long questReward[] = {
 	false, false, false,  false,//49
 	false, false, false,  false,//50
 
-	//17. ½ºÆ®·Îº£¸® ½ºÇÃ·¡½¬//QUESTTYPE_ITEM
+	//17. ìŠ¤íŠ¸ë¡œë² ë¦¬ ìŠ¤í”Œëž˜ì‰¬//QUESTTYPE_ITEM
 	ITEM_HEART, false, false,  50,//1
 	ITEM_GOLD, false, false,  20000,//2
 	ITEM_GOLD, false, false,  40000,//3
@@ -14444,7 +14444,7 @@ const unsigned long long questReward[] = {
 	false, false, false, false,//49
 	false, false, false, false,//50
 
-	//18. ¿ïÆ®¶ó¾îÅÃ º£¸® ¿Ãµå//QUESTTYPE_BATTLE
+	//18. ìš¸íŠ¸ë¼ì–´íƒ ë² ë¦¬ ì˜¬ë“œ//QUESTTYPE_BATTLE
 	ITEM_BOX, BOX_REWARD0, GRADE_NORMAL,  1,//1
 	ITEM_HEART, false, false,  85,//2
 	ITEM_GOLD, false, false,  150000,//3
@@ -14498,32 +14498,32 @@ const unsigned long long questReward[] = {
 
 };
 
-//0:¹ß»ýÀÚ CMF 1:Äù½ºÆ®Å¸ÀÔ 2:¿ä±¸¾ÆÀÌÅÛ 3:º¸»ó ¾ÆÀÌÅÛ 4 : ÇÃ·¹ÀÌÅ¸ÀÓ(seconds)
+//0:ë°œìƒìž CMF 1:í€˜ìŠ¤íŠ¸íƒ€ìž… 2:ìš”êµ¬ì•„ì´í…œ 3:ë³´ìƒ ì•„ì´í…œ 4 : í”Œë ˆì´íƒ€ìž„(seconds)
 
-// QUESTINFO Á¤º¸ÀÔ·Â -> 8¹øÀÇ Äù½ºÆ® Å¸ÀÔ¿¡ µû¶ó Á¤º¸ ¼öÁ¤ÇÊ¿ä.
-// QUESTTYPE_ITEM_QUEST or QUESTTYPE_ITEM_ONE : (¾ÆÀÌÅÛ°¡Á®¿À´ÂÄù½ºÆ®ÀÏ¶§)REQUEST_QUEST¸í(ex:REQUEST_QUEST1) <-Ãß°¡ÈÄ questRequest¿¡ ÇÊ¿ä¾ÆÀÌÅÛ µî·Ï. TOTALITEMQUEST °ª º¯°æ. itemQuest¿¡ Äù½ºÆ® µî·Ï
-// QUESTTYPE_MON : (¸÷Àâ´ÂÄùÀÏ¶§)TOTALENEMYQUEST¿¡ °ª º¯°æ. enemyQuest¿¡ QUESTµî·Ï.
-// QUESTTYPE_TRAVEL : (ÁöµµÆì´ÂÄùÀÏ¶§)TOTALTRAVELQUEST¿¡ °ª º¯°æ. travelQuest¿¡ QUESTµî·Ï.
-// QUESTTYPE_DEMO : (µ¥¸ð½Åº¸´ÂÄùÀÏ¶§)TOTALDEMOQUEST¿¡ °ª º¯°æ. demoQuest¿¡ QUESTµî·Ï.
+// QUESTINFO ì •ë³´ìž…ë ¥ -> 8ë²ˆì˜ í€˜ìŠ¤íŠ¸ íƒ€ìž…ì— ë”°ë¼ ì •ë³´ ìˆ˜ì •í•„ìš”.
+// QUESTTYPE_ITEM_QUEST or QUESTTYPE_ITEM_ONE : (ì•„ì´í…œê°€ì ¸ì˜¤ëŠ”í€˜ìŠ¤íŠ¸ì¼ë•Œ)REQUEST_QUESTëª…(ex:REQUEST_QUEST1) <-ì¶”ê°€í›„ questRequestì— í•„ìš”ì•„ì´í…œ ë“±ë¡. TOTALITEMQUEST ê°’ ë³€ê²½. itemQuestì— í€˜ìŠ¤íŠ¸ ë“±ë¡
+// QUESTTYPE_MON : (ëª¹ìž¡ëŠ”í€˜ì¼ë•Œ)TOTALENEMYQUESTì— ê°’ ë³€ê²½. enemyQuestì— QUESTë“±ë¡.
+// QUESTTYPE_TRAVEL : (ì§€ë„íŽ´ëŠ”í€˜ì¼ë•Œ)TOTALTRAVELQUESTì— ê°’ ë³€ê²½. travelQuestì— QUESTë“±ë¡.
+// QUESTTYPE_DEMO : (ë°ëª¨ì‹ ë³´ëŠ”í€˜ì¼ë•Œ)TOTALDEMOQUESTì— ê°’ ë³€ê²½. demoQuestì— QUESTë“±ë¡.
 const signed int questInfo[] = {
-	ENEMY_FROG_BLACK, QUESTTYPE_ITEM, REQUEST_QUEST_TUTORIAL, QUESTREWARD_TUTORIAL, MAINQUESTTIME, QUESTZOKBO_1210,//1. ·¹ÀÌµå ¸Åµå´Ï½º - ±×·çºñ Æ÷ °ñµå
-	CMF_FROG, QUESTTYPE_ITEM, REQUEST_QUEST0, QUESTREWARD0, MAINQUESTTIME, QUESTZOKBO_1210,//2.»çÀÌ¹ö¸Õµ¥ÀÌ
-	CMF_NPC_AUNT, QUESTTYPE_ITEM, REQUEST_QUEST1, QUESTREWARD1, MAINQUESTTIME, QUESTZOKBO_139,//3. ½ß½º±âºù
-	CMF_NPC_WOMAN, QUESTTYPE_BATTLE, REQUEST_QUEST2, QUESTREWARD2, MAINQUESTTIME, QUESTZOKBO_145,//4. ¾îÅÃ¸Åµå´Ï½º ¼­¸Ó¼­ÇÁ
-	CMF_NPC_ALMA, QUESTTYPE_ITEM, -1, QUESTREWARD3, MAINQUESTTIME, QUESTZOKBO_1210,//5. ½ÃÅ©¸®Æ®½Ã½©
-	CMF_NPC_ALMA, QUESTTYPE_BATTLE, -1, QUESTREWARD4, MAINQUESTTIME, QUESTZOKBO_145,//6. ¾îÅÃ¸Åµå´Ï½º ¿ÍÀÏµå ÄÉÀÌºê
-	CMF_NPC_MAN, QUESTTYPE_ITEM, -1, QUESTREWARD5, MAINQUESTTIME, QUESTZOKBO_1210,//7. ½ºÅæ ¿¡ÀÌÁö ½º³»Ä¡
-	CMF_NPC_CREW, QUESTTYPE_RAID, REQUEST_QUEST6, QUESTREWARD6, MAINQUESTTIME, QUESTZOKBO_246,//8. ·¹ÀÌµå ¸Åµå´Ï½º ¼¶¸Ó½ºÆ÷Ã÷
-	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST7, QUESTREWARD7, MAINQUESTTIME, QUESTZOKBO_1210,//9. ¸µ°ÔÀÓÁî
-	CMF_NPC_CAPTAIN, QUESTTYPE_RAID, REQUEST_QUEST8, QUESTREWARD8, MAINQUESTTIME, QUESTZOKBO_246,//10. ·¹ÀÌµå¸Åµå´Ï½º Æ®·¹Á® ·¯½Ã
-	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST9, QUESTREWARD9, MAINQUESTTIME, QUESTZOKBO_1210,//11. Ä³Ä¡´õ Å¬¶ó¿î
-	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST10, QUESTREWARD10, MAINQUESTTIME, QUESTZOKBO_145,//12. ¿ïÆ®¶ó¾îÅÃ
-	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST11, QUESTREWARD11, MAINQUESTTIME, QUESTZOKBO_145,//13. ¾îÅÃ¸Åµå´Ï½º - ¿¾³¯
-	CMF_NPC_CAPTAIN, QUESTTYPE_RAID, REQUEST_QUEST12, QUESTREWARD12, MAINQUESTTIME, QUESTZOKBO_145,//14. ·¹ÀÌµå¸Åµå´Ï½º - ¿¾³¯
-	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM/*_BATTLE*/, REQUEST_QUEST13, QUESTREWARD13, MAINQUESTTIME, QUESTZOKBO_1210,//15. ºñÆ®´õÈ÷Æ®
-	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM/*_RAID*/, REQUEST_QUESTGUARD, QUESTREWARDGUARD, MAINQUESTTIME, QUESTZOKBO_1210,//16.»êÅ¸½º ¼¶¸Ó ºê·¹ÀÌÅ©
-	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST14, QUESTREWARD14, MAINQUESTTIME, QUESTZOKBO_1210,//17. ½ºÆ®·Îº£¸® ½ºÇÃ·¡½¬
-	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST15, QUESTREWARD15, MAINQUESTTIME, QUESTZOKBO_145,//18. ¿ïÆ®¶ó¾îÅÃ º£¸® ¿Ãµå
+	ENEMY_FROG_BLACK, QUESTTYPE_ITEM, REQUEST_QUEST_TUTORIAL, QUESTREWARD_TUTORIAL, MAINQUESTTIME, QUESTZOKBO_1210,//1. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ - ê·¸ë£¨ë¹„ í¬ ê³¨ë“œ
+	CMF_FROG, QUESTTYPE_ITEM, REQUEST_QUEST0, QUESTREWARD0, MAINQUESTTIME, QUESTZOKBO_1210,//2.ì‚¬ì´ë²„ë¨¼ë°ì´
+	CMF_NPC_AUNT, QUESTTYPE_ITEM, REQUEST_QUEST1, QUESTREWARD1, MAINQUESTTIME, QUESTZOKBO_139,//3. ìŒ©ìŠ¤ê¸°ë¹™
+	CMF_NPC_WOMAN, QUESTTYPE_BATTLE, REQUEST_QUEST2, QUESTREWARD2, MAINQUESTTIME, QUESTZOKBO_145,//4. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì„œë¨¸ì„œí”„
+	CMF_NPC_ALMA, QUESTTYPE_ITEM, -1, QUESTREWARD3, MAINQUESTTIME, QUESTZOKBO_1210,//5. ì‹œí¬ë¦¬íŠ¸ì‹œì‰˜
+	CMF_NPC_ALMA, QUESTTYPE_BATTLE, -1, QUESTREWARD4, MAINQUESTTIME, QUESTZOKBO_145,//6. ì–´íƒë§¤ë“œë‹ˆìŠ¤ ì™€ì¼ë“œ ì¼€ì´ë¸Œ
+	CMF_NPC_MAN, QUESTTYPE_ITEM, -1, QUESTREWARD5, MAINQUESTTIME, QUESTZOKBO_1210,//7. ìŠ¤í†¤ ì—ì´ì§€ ìŠ¤ë‚´ì¹˜
+	CMF_NPC_CREW, QUESTTYPE_RAID, REQUEST_QUEST6, QUESTREWARD6, MAINQUESTTIME, QUESTZOKBO_246,//8. ë ˆì´ë“œ ë§¤ë“œë‹ˆìŠ¤ ì„¬ë¨¸ìŠ¤í¬ì¸ 
+	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST7, QUESTREWARD7, MAINQUESTTIME, QUESTZOKBO_1210,//9. ë§ê²Œìž„ì¦ˆ
+	CMF_NPC_CAPTAIN, QUESTTYPE_RAID, REQUEST_QUEST8, QUESTREWARD8, MAINQUESTTIME, QUESTZOKBO_246,//10. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ íŠ¸ë ˆì ¸ ëŸ¬ì‹œ
+	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST9, QUESTREWARD9, MAINQUESTTIME, QUESTZOKBO_1210,//11. ìºì¹˜ë” í´ë¼ìš´
+	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST10, QUESTREWARD10, MAINQUESTTIME, QUESTZOKBO_145,//12. ìš¸íŠ¸ë¼ì–´íƒ
+	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST11, QUESTREWARD11, MAINQUESTTIME, QUESTZOKBO_145,//13. ì–´íƒë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ 
+	CMF_NPC_CAPTAIN, QUESTTYPE_RAID, REQUEST_QUEST12, QUESTREWARD12, MAINQUESTTIME, QUESTZOKBO_145,//14. ë ˆì´ë“œë§¤ë“œë‹ˆìŠ¤ - ì˜›ë‚ 
+	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM/*_BATTLE*/, REQUEST_QUEST13, QUESTREWARD13, MAINQUESTTIME, QUESTZOKBO_1210,//15. ë¹„íŠ¸ë”ížˆíŠ¸
+	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM/*_RAID*/, REQUEST_QUESTGUARD, QUESTREWARDGUARD, MAINQUESTTIME, QUESTZOKBO_1210,//16.ì‚°íƒ€ìŠ¤ ì„¬ë¨¸ ë¸Œë ˆì´í¬
+	CMF_NPC_CAPTAIN, QUESTTYPE_ITEM, REQUEST_QUEST14, QUESTREWARD14, MAINQUESTTIME, QUESTZOKBO_1210,//17. ìŠ¤íŠ¸ë¡œë² ë¦¬ ìŠ¤í”Œëž˜ì‰¬
+	CMF_NPC_CAPTAIN, QUESTTYPE_BATTLE, REQUEST_QUEST15, QUESTREWARD15, MAINQUESTTIME, QUESTZOKBO_145,//18. ìš¸íŠ¸ë¼ì–´íƒ ë² ë¦¬ ì˜¬ë“œ
 };
 
 

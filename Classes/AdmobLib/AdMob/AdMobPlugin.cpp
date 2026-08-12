@@ -1,4 +1,4 @@
-//
+﻿//
 //  AdMobPlugin.cpp
 //  CurshPop
 //

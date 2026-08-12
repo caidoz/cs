@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _DEF_SKILL_H_
 #define _DEF_SKILL_H_
 typedef enum _skillDef {
-	//¸ó½ºÅÍ °ø°Ý ÀÌ¿ÜÀÇ °ø°ÝÇüÅÂµé
+	//ëª¬ìŠ¤í„° ê³µê²© ì´ì™¸ì˜ ê³µê²©í˜•íƒœë“¤
 	ATTACKTYPE_NORMAL = 0,
 	ATTACKTYPE_TILE = TOTALOBJECT,
 	ATTACKTYPE_WATER,
@@ -15,7 +15,7 @@ typedef enum _skillDef {
 	ATTACKTYPE_POISON,
 	ATTACKTYPE_DARKBALL,
 
-	//°ø°ÝÁ¾·ù
+	//ê³µê²©ì¢…ë¥˜
 	ATTACK_NORMAL = 1,
 	ATTACK_DASH,
 	ATTACK_AIR,
@@ -29,14 +29,14 @@ typedef enum _skillDef {
 	ATTACK_SKILL,
 
 	//ROBIN
-	ROBIN_SKILL_AIRCRASH = ATTACK_SKILL,//³Ê¹« Å¸¼ö°¡ ¸¹¾Æ
-	ROBIN_SKILL_STAB,//³Ê¹« Å¸¼ö°¡ ¸¹¾Æ
-	ROBIN_SKILL_BOOSTSLASH,//¾ÕÀ¸·Î µ¹ÁøÇÑ´Ù.
-	ROBIN_SKILL_HYPERCHARGE,//¾ÕÀ¸·Î µ¹ÁøÇÑ´Ù.
-	ROBIN_SKILL_SOULCRASH,//³Ê¹« Å¸¼ö°¡ ¸¹¾Æ.
-	ROBIN_SKILL_ABSOLUTEPIERCE,//³Ê¹« Å¸¼ö°¡ ¸¹¾Æ
-	ROBIN_SKILL_KILLALL,//³Ê¹« Å¸¼ö°¡ ¸¹°í »¡¶ó
-	ROBIN_SKILL_DEFENSE,//ÀÌ ÀÌÇÏ ½ºÅ³µéÀº »ç¿ëÇÑ µÚ¿¡ 
+	ROBIN_SKILL_AIRCRASH = ATTACK_SKILL,//ë„ˆë¬´ íƒ€ìˆ˜ê°€ ë§Žì•„
+	ROBIN_SKILL_STAB,//ë„ˆë¬´ íƒ€ìˆ˜ê°€ ë§Žì•„
+	ROBIN_SKILL_BOOSTSLASH,//ì•žìœ¼ë¡œ ëŒì§„í•œë‹¤.
+	ROBIN_SKILL_HYPERCHARGE,//ì•žìœ¼ë¡œ ëŒì§„í•œë‹¤.
+	ROBIN_SKILL_SOULCRASH,//ë„ˆë¬´ íƒ€ìˆ˜ê°€ ë§Žì•„.
+	ROBIN_SKILL_ABSOLUTEPIERCE,//ë„ˆë¬´ íƒ€ìˆ˜ê°€ ë§Žì•„
+	ROBIN_SKILL_KILLALL,//ë„ˆë¬´ íƒ€ìˆ˜ê°€ ë§Žê³  ë¹¨ë¼
+	ROBIN_SKILL_DEFENSE,//ì´ ì´í•˜ ìŠ¤í‚¬ë“¤ì€ ì‚¬ìš©í•œ ë’¤ì— 
 	ROBIN_SKILL_BARRIER,
 	ROBIN_SKILL_HPRESTORE,
 	ROBIN_SKILL_MPRESTORE,
@@ -44,13 +44,13 @@ typedef enum _skillDef {
 	ROBIN_TOTAL_SKILL,
 
 	//DIANA
-	DIANA_SKILL_3WAY = ATTACK_SKILL,//³Ê¹« ´À¸®°í ¿¬Å¸¼ö°¡ ¸¹À½. ±×¸®°í 3wayÀÏ ÇÊ¿ä°¡ ¾øÀ½
-	DIANA_SKILL_LASER,//·¹ÀÌÀú°¡ ³Ê¹« ±½°í Å¸¼ö°¡ ¸¹À½
-	DIANA_SKILL_FLAMER,//È­¿°ÀÌ ¾È³ª°£´Ù.
-	DIANA_SKILL_BOMBSHOT,//ÃÑ¾ËÀÌ ³ª°¡°í ÅÍÁ®¾ß ÇÏ´Âµ¥
-	DIANA_SKILL_GUIDEDSHOT,//¹Ì»çÀÏÀÌ ³Ê¹« ¸¹ÀÌ ³ª°¡°í ¹Ì»çÀÏÀÌ ÅÍÁ³À» ¶§ ¼ýÀÚ°¡ º¸ÀÌÁö ¾Ê´Â´Ù.
-	DIANA_SKILL_SPRAYSHOT,//µ¿ÀÛÀÌ Á¦´ë·Î º¸ÀÌÁö ¾Ê´Â´Ù.
-	DIANA_SKILL_SATELLITESHOT,//À§¼ºÀÌ¹ÌÁö°¡ °¡¸²
+	DIANA_SKILL_3WAY = ATTACK_SKILL,//ë„ˆë¬´ ëŠë¦¬ê³  ì—°íƒ€ìˆ˜ê°€ ë§ŽìŒ. ê·¸ë¦¬ê³  3wayì¼ í•„ìš”ê°€ ì—†ìŒ
+	DIANA_SKILL_LASER,//ë ˆì´ì €ê°€ ë„ˆë¬´ êµµê³  íƒ€ìˆ˜ê°€ ë§ŽìŒ
+	DIANA_SKILL_FLAMER,//í™”ì—¼ì´ ì•ˆë‚˜ê°„ë‹¤.
+	DIANA_SKILL_BOMBSHOT,//ì´ì•Œì´ ë‚˜ê°€ê³  í„°ì ¸ì•¼ í•˜ëŠ”ë°
+	DIANA_SKILL_GUIDEDSHOT,//ë¯¸ì‚¬ì¼ì´ ë„ˆë¬´ ë§Žì´ ë‚˜ê°€ê³  ë¯¸ì‚¬ì¼ì´ í„°ì¡Œì„ ë•Œ ìˆ«ìžê°€ ë³´ì´ì§€ ì•ŠëŠ”ë‹¤.
+	DIANA_SKILL_SPRAYSHOT,//ë™ìž‘ì´ ì œëŒ€ë¡œ ë³´ì´ì§€ ì•ŠëŠ”ë‹¤.
+	DIANA_SKILL_SATELLITESHOT,//ìœ„ì„±ì´ë¯¸ì§€ê°€ ê°€ë¦¼
 	DIANA_SKILL_HEALSHOT,//
 	DIANA_SKILL_FEELUP,
 	DIANA_SKILL_VAMPIRE,
@@ -60,13 +60,13 @@ typedef enum _skillDef {
 	DIANA_TOTAL_SKILL,
 
 	//MAXX
-	MAXX_SKILL_KICK = ATTACK_SKILL,//¾ÕÀ¸·Î ÀüÁøÇÏÁö ¾ÊÀ½.
-	MAXX_SKILL_SHORT,//°ø°ÝÀÌ ´êÁö ¾Ê´Â´Ù.
-	MAXX_SKILL_AIR,//´ë°¢¼±À¸·Î °ø°ÝÇÏ´Âµ¥ °øÁßÀûÀÌ ¾øÀ¸¸é °ø°ÝºÒ°¡
-	MAXX_SKILL_CAMPING,//Ä·ÇÎ½Ã°£ÀÌ Âª´Ù.
-	MAXX_SKILL_HORMING,//°ø°ÝÇÑ ´ÙÀ½¿¡ ÁÖÀÎ°øÇÑÅ× ¾È°¡°í ¾û¶×ÇÑµ¥ ³¯¶ó°£´Ù.
-	MAXX_SKILL_CIRCLE,//³ª°£µÚ¿¡ ºÎ¸Þ¶ûÀÌ ÁÖÀÎ°ø µÚ¸¦ µ¹Áö ¾Ê°í »ç¶óÁø´Ù.
-	MAXX_SKILL_MEGA,//ºÎ¸Þ¶û°ú ÀÌÆåÆ®°¡ µû·Î ³í´Ù.
+	MAXX_SKILL_KICK = ATTACK_SKILL,//ì•žìœ¼ë¡œ ì „ì§„í•˜ì§€ ì•ŠìŒ.
+	MAXX_SKILL_SHORT,//ê³µê²©ì´ ë‹¿ì§€ ì•ŠëŠ”ë‹¤.
+	MAXX_SKILL_AIR,//ëŒ€ê°ì„ ìœ¼ë¡œ ê³µê²©í•˜ëŠ”ë° ê³µì¤‘ì ì´ ì—†ìœ¼ë©´ ê³µê²©ë¶ˆê°€
+	MAXX_SKILL_CAMPING,//ìº í•‘ì‹œê°„ì´ ì§§ë‹¤.
+	MAXX_SKILL_HORMING,//ê³µê²©í•œ ë‹¤ìŒì— ì£¼ì¸ê³µí•œí…Œ ì•ˆê°€ê³  ì—‰ëš±í•œë° ë‚ ë¼ê°„ë‹¤.
+	MAXX_SKILL_CIRCLE,//ë‚˜ê°„ë’¤ì— ë¶€ë©”ëž‘ì´ ì£¼ì¸ê³µ ë’¤ë¥¼ ëŒì§€ ì•Šê³  ì‚¬ë¼ì§„ë‹¤.
+	MAXX_SKILL_MEGA,//ë¶€ë©”ëž‘ê³¼ ì´íŽ™íŠ¸ê°€ ë”°ë¡œ ë…¼ë‹¤.
 	MAXX_SKILL_BLOOD,//
 	MAXX_SKILL_DAZZLE,
 	MAXX_SKILL_SIGH,
@@ -74,13 +74,13 @@ typedef enum _skillDef {
 
 	MAXX_TOTAL_SKILL,
 
-	//¿©±â¼­ Å©·ù½ºÅ³µéÀ» Á¤¸®ÇÏÀÚ.
-	//±×·±µ¥ ¸ð¼ÇµéÀ» ¼¼ÆÃÇÏ´Â °ÍÀº ¿©±âÁö.
+	//ì—¬ê¸°ì„œ í¬ë¥˜ìŠ¤í‚¬ë“¤ì„ ì •ë¦¬í•˜ìž.
+	//ê·¸ëŸ°ë° ëª¨ì…˜ë“¤ì„ ì„¸íŒ…í•˜ëŠ” ê²ƒì€ ì—¬ê¸°ì§€.
 
 
 
 
-	//½ºÅ³ Áö¼Ó ÇÁ·¹ÀÓ ¹× ½ÃÀÛÇÁ·¹ÀÓ Á¤ÀÇ
+	//ìŠ¤í‚¬ ì§€ì† í”„ë ˆìž„ ë° ì‹œìž‘í”„ë ˆìž„ ì •ì˜
 #ifdef ATTACK_INIT_DELAY
 	ROBIN_ATTACK_DELAY = 1,
 #else
@@ -247,7 +247,7 @@ typedef enum _skillDef {
 	MAXX_SKILL_SPLIT_START = MAXX_SKILL_SIGH_START + MAXX_SKILL_SIGH_CNT,
 	MAXX_TOTAL_ATTACK_FRAME = MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT,
 
-	//½ºÅ³ ÇÁ·¹ÀÓ XY ¹× È¿°ú Á¤ÀÇ
+	//ìŠ¤í‚¬ í”„ë ˆìž„ XY ë° íš¨ê³¼ ì •ì˜
 	_DIROPPOSITE = 16,
 	_DIRDOWN = 32,
 	_JUMP0 = 64,
@@ -261,25 +261,25 @@ typedef enum _skillDef {
 	_ENDTOFALL,
 	_ADDBUFF,
 	_CONTINUE,
-	_EDGE3,//ÀÏ¹Ý°ø°Ý½Ã
-	_HLINE_RED1,//·Îºó´ë½¬¾îÅÃ½Ã(Lighten 100%)
-	_HLINE_RED2,//·Îºó´ë½¬¾îÅÃ½Ã(Lighten 50%)
-	_VLINE_RED1,//·ÎºóÂï±â°ø°Ý½Ã(Lighten 100%)
-	_VLINE_RED2,//·ÎºóÂï±â°ø°Ý½Ã(Lighten 50%)
-	_VLINE_BLUE1,//·Îºó¿¡¾îÅ©·¡½¬(Lighten 100%)
-	_VLINE_BLUE2,//·Îºó¿¡¾îÅ©·¡½¬(Lighten 50%)
-	_EDGE_YELLOW1,//·Îºó¸¶±¸Âî¸£±â(Lighten 100%)
-	_EDGE_YELLOW2,//·Îºó¸¶±¸Âî¸£±â(Lighten 50%)
-	_EDGE_VIOLET1,//·ÎºóºÎ½ºÆ®½½·¡½¬/¾Û¼Ö·çÆ®ÇÇ¾î½º(Lighten 100%)
-	_EDGE_VIOLET2,//·ÎºóºÎ½ºÆ®½½·¡½¬(Lighten 50%)
-	_HLINE_GREEN1,//·ÎºóÇÏÀÌÆÛÂ÷Áö(Lighten 100%)
-	_HLINE_GREEN2,//·ÎºóÇÏÀÌÆÛÂ÷Áö(Lighten 50%)
-	_HLINE_LENZ1,//·ÎºóÇÏÀÌÆÛÂ÷Áö(¹Ý°æ 48)
-	_HLINE_LENZ2,//·ÎºóÇÏÀÌÆÛÂ÷Áö(¹Ý°æ 32)
-	_EDGE_BLUE1,//·Îºó¼Ò¿ïÅ©·¡½¬(Lighten 100%)
-	_EDGE_BLUE2,//·Îºó¼Ò¿ïÅ©·¡½¬(Lighten 50%)
-	_EDGE_RED1,//·Îºó¸ê»ì¿¬Âü(Lighten 100%)
-	_EDGE_RED2,//·Îºó¸ê»ì¿¬Âü(Lighten 50%)
+	_EDGE3,//ì¼ë°˜ê³µê²©ì‹œ
+	_HLINE_RED1,//ë¡œë¹ˆëŒ€ì‰¬ì–´íƒì‹œ(Lighten 100%)
+	_HLINE_RED2,//ë¡œë¹ˆëŒ€ì‰¬ì–´íƒì‹œ(Lighten 50%)
+	_VLINE_RED1,//ë¡œë¹ˆì°ê¸°ê³µê²©ì‹œ(Lighten 100%)
+	_VLINE_RED2,//ë¡œë¹ˆì°ê¸°ê³µê²©ì‹œ(Lighten 50%)
+	_VLINE_BLUE1,//ë¡œë¹ˆì—ì–´í¬ëž˜ì‰¬(Lighten 100%)
+	_VLINE_BLUE2,//ë¡œë¹ˆì—ì–´í¬ëž˜ì‰¬(Lighten 50%)
+	_EDGE_YELLOW1,//ë¡œë¹ˆë§ˆêµ¬ì°Œë¥´ê¸°(Lighten 100%)
+	_EDGE_YELLOW2,//ë¡œë¹ˆë§ˆêµ¬ì°Œë¥´ê¸°(Lighten 50%)
+	_EDGE_VIOLET1,//ë¡œë¹ˆë¶€ìŠ¤íŠ¸ìŠ¬ëž˜ì‰¬/ì•±ì†”ë£¨íŠ¸í”¼ì–´ìŠ¤(Lighten 100%)
+	_EDGE_VIOLET2,//ë¡œë¹ˆë¶€ìŠ¤íŠ¸ìŠ¬ëž˜ì‰¬(Lighten 50%)
+	_HLINE_GREEN1,//ë¡œë¹ˆí•˜ì´í¼ì°¨ì§€(Lighten 100%)
+	_HLINE_GREEN2,//ë¡œë¹ˆí•˜ì´í¼ì°¨ì§€(Lighten 50%)
+	_HLINE_LENZ1,//ë¡œë¹ˆí•˜ì´í¼ì°¨ì§€(ë°˜ê²½ 48)
+	_HLINE_LENZ2,//ë¡œë¹ˆí•˜ì´í¼ì°¨ì§€(ë°˜ê²½ 32)
+	_EDGE_BLUE1,//ë¡œë¹ˆì†Œìš¸í¬ëž˜ì‰¬(Lighten 100%)
+	_EDGE_BLUE2,//ë¡œë¹ˆì†Œìš¸í¬ëž˜ì‰¬(Lighten 50%)
+	_EDGE_RED1,//ë¡œë¹ˆë©¸ì‚´ì—°ì°¸(Lighten 100%)
+	_EDGE_RED2,//ë¡œë¹ˆë©¸ì‚´ì—°ì°¸(Lighten 50%)
 	_SETFRAMEBYDX,
 	_SETFRAMEBYDX2,
 	_DXDECREASE4,
@@ -301,18 +301,18 @@ typedef enum _skillDef {
 	_DIRECTHEAL,
 	_ADDMON,
 
-	//Ä³¸¯ÅÍº° ÇÊ¿ä µ¥ÀÌÅÍ µðÆÄÀÎ
+	//ìºë¦­í„°ë³„ í•„ìš” ë°ì´í„° ë””íŒŒì¸
 	WAIT1FRAME = 0,
 	WAIT2FRAME,
 	TOTALETCDATA,
 
-	//ÃÑ¾Ë ÀÌµ¿¼Óµµ µðÆÄÀÎ
+	//ì´ì•Œ ì´ë™ì†ë„ ë””íŒŒì¸
 	BULLET_3WAY_DX = 30 * _2X,
 	BULLET_3WAY_DY = 15 * _2X,
 	BULLET_LASER_DX = TSIZE,
 	BULLET_BOMB_DX = TSIZE * 2,
 
-	//·¹º§¾÷ ¸ð¼Ç µðÆÄÀÎ
+	//ë ˆë²¨ì—… ëª¨ì…˜ ë””íŒŒì¸
 	LEVELUP_BACK0 = 0,
 	LEVELUP_BACK1 = 1,
 	LEVELUP_BACK2 = 2,
@@ -336,26 +336,26 @@ typedef enum _skillDef {
 
 	TOTALLEVELUPMOTION,
 
-	//¾×Æ¼ºê½ºÅ³ÀÎÁö, ÆÐ½Ãºê½ºÅ³ÀÎÁö, ¸ó½ºÅÍ¸¦ ¼ÒÈ¯ÇÏ´Â°ÇÁö, È÷¾î·Î ½ºÅ³À» »ç¿ëÇÏ´Â°ÇÁö.
-	//½ÇÁ¦°ª ACTIVE / PASSIVE / CREWBULLET / CREWSUMMON / HEROSKILL
+	//ì•¡í‹°ë¸ŒìŠ¤í‚¬ì¸ì§€, íŒ¨ì‹œë¸ŒìŠ¤í‚¬ì¸ì§€, ëª¬ìŠ¤í„°ë¥¼ ì†Œí™˜í•˜ëŠ”ê±´ì§€, ížˆì–´ë¡œ ìŠ¤í‚¬ì„ ì‚¬ìš©í•˜ëŠ”ê±´ì§€.
+	//ì‹¤ì œê°’ ACTIVE / PASSIVE / CREWBULLET / CREWSUMMON / HEROSKILL
 	SKILLDATA_ACTIVEPASSIVE = 0,//0
 
-	//Å¸°Ù
-	//CREWBULLET ÀÌ¸é Å¸°ÙÀº »ì¾ÆÀÖ´Â ÀûÁß¿¡ Áß¿¡ ÇÏ³ª
-	//- ENEMY ¸é Á¦ÀÏ °¡±î¿î°Í, ENEMY + 1ÀÌ¸é ¼¾ÅÍ, ENEMY + 2 ¸é ¸¶Áö¸·
-	//SUMMON ÀÌ¸é
-	//- ¾î¶² ¿ÀºêÁ§Æ®¿¡ ¼¼ÆÃÇÏ´À³Ä.
-	//HEROSKILL ÀÌ¸é
-	// - È÷¾î·Î ½ºÅ³ ÀÎµ¦½º SKILL_COMMON_ROBIN1~SKILL_ROBIN17
+	//íƒ€ê²Ÿ
+	//CREWBULLET ì´ë©´ íƒ€ê²Ÿì€ ì‚´ì•„ìžˆëŠ” ì ì¤‘ì— ì¤‘ì— í•˜ë‚˜
+	//- ENEMY ë©´ ì œì¼ ê°€ê¹Œìš´ê²ƒ, ENEMY + 1ì´ë©´ ì„¼í„°, ENEMY + 2 ë©´ ë§ˆì§€ë§‰
+	//SUMMON ì´ë©´
+	//- ì–´ë–¤ ì˜¤ë¸Œì íŠ¸ì— ì„¸íŒ…í•˜ëŠëƒ.
+	//HEROSKILL ì´ë©´
+	// - ížˆì–´ë¡œ ìŠ¤í‚¬ ì¸ë±ìŠ¤ SKILL_COMMON_ROBIN1~SKILL_ROBIN17
 	SKILLDATA_TARGET,//1
 
-	//¿ÀºêÁ§Æ® Á¤º¸
-	//CREWBULLET ÀÌ¸é
+	//ì˜¤ë¸Œì íŠ¸ ì •ë³´
+	//CREWBULLET ì´ë©´
 	//- ADDOBJ_PHOENIX~ADDOBJ_CREWBULLET
-	//SUMMONÀÌ¸é
+	//SUMMONì´ë©´
 	// - ENEMY_BAHAMUT
-	// , HEROSKILL ÀÌ¸é
-	//- ÇÊ¿ä¾øÀ½
+	// , HEROSKILL ì´ë©´
+	//- í•„ìš”ì—†ìŒ
 	SKILLDATA_OBJECTINFO,//2
 
 	SKILLDATA_OBJECTDETAILINFO,//3
@@ -392,1210 +392,1210 @@ typedef enum _skillDef {
 	SKILLDATASIZE,//29
 	SKILLINFODATASIZE = 2,
 
-	SKILL_COMMON_ROBIN1 = 0,	//Èû´Ü·Ã : STR »ó½Â
-	SKILL_COMMON_ROBIN2,	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-	SKILL_COMMON_ROBIN3,	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-	SKILL_COMMON_ROBIN4,	//Á¤½Å´Ü·Ã : INT »ó½Â
-	SKILL_COMMON_ROBIN5,	//»ý¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_ROBIN6,	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_ROBIN7,	//¹«±â¼÷·Ã : °ø°Ý·Â Áõ°¡
-	SKILL_COMMON_ROBIN8,	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
-	SKILL_COMMON_ROBIN9,	//¾àÁ¡ÆÄ¾Ç : Å©¸®Æ¼ÄÃ È®·ü »ó½Â
-	SKILL_COMMON_ROBIN10,	//¾àÁ¡°ø°Ý : Å©¸®Æ¼ÄÃ µ¥¹ÌÁö »ó½Â
-	SKILL_COMMON_ROBIN11,	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-	SKILL_COMMON_ROBIN12,	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
-	SKILL_COMMON_ROBIN13,	//½Å¼ÓÈ¸ÇÇ : È¸ÇÇ Áõ°¡
+	SKILL_COMMON_ROBIN1 = 0,	//íž˜ë‹¨ë ¨ : STR ìƒìŠ¹
+	SKILL_COMMON_ROBIN2,	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+	SKILL_COMMON_ROBIN3,	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+	SKILL_COMMON_ROBIN4,	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+	SKILL_COMMON_ROBIN5,	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_ROBIN6,	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_ROBIN7,	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+	SKILL_COMMON_ROBIN8,	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
+	SKILL_COMMON_ROBIN9,	//ì•½ì íŒŒì•… : í¬ë¦¬í‹°ì»¬ í™•ë¥  ìƒìŠ¹
+	SKILL_COMMON_ROBIN10,	//ì•½ì ê³µê²© : í¬ë¦¬í‹°ì»¬ ë°ë¯¸ì§€ ìƒìŠ¹
+	SKILL_COMMON_ROBIN11,	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+	SKILL_COMMON_ROBIN12,	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
+	SKILL_COMMON_ROBIN13,	//ì‹ ì†íšŒí”¼ : íšŒí”¼ ì¦ê°€
 
-	SKILL_ROBIN1,	//°Ë¼ú¼÷·Ã : °üÅë ¹ß»ý È®·ü »ó½Â
-	SKILL_ROBIN2,	//±ä±Þ¹æ¾î : ¹æ¾î ¹ßµ¿ È®·üÀÌ ¿Ã¶ó°¨(1·¹º§ÀÌ¸é ¹æ¾î ¹ßµ¿ÀÌ ½ÃÀÛ, Á¡Á¡ È®·ü »ó½Â)
-	SKILL_ROBIN3,	//¹æ¾î¼÷·Ã : ¹æ¾î ¹ßµ¿½Ã °æ°¨µÇ´Â µ¥¹ÌÁö ÆÛ¼¾Æ® »ó½Â
-	SKILL_ROBIN4,	//¸é¿ª·Â : »óÅÂÀÌ»ó¿¡ ´ëÇÑ ÀúÇ×·Â »ó½Â
-	SKILL_ROBIN5,	//Áö±¸Àü : INT°¡ ³ôÀ»¼ö·Ï VIT »ó½Â
-	SKILL_ROBIN6,	//¿¡¾îÅ©·¡½¬ : ¸÷ ¶Ù¿ì±â
-	SKILL_ROBIN7,	//¸¶±¸Âî¸£±â : ³­Å¸
-	SKILL_ROBIN8,	//ºÎ½ºÆ®½½·¡½¬ : °¡·Î·Î Å©°Ô ¹è±â, ±âÀý°ø°Ý
-	SKILL_ROBIN9,	//ÇÏÀÌÆÛÂ÷Áö : µ¹°Ý°ø°Ý, ÀûÀ» µÚ·Î ³¯·Á¹ö¸²
-	SKILL_ROBIN10,	//¼Ò¿ïÅ©·¡½¬ : ±âÀý
-	SKILL_ROBIN11,	//¾Û¼Ö·çÆ®ÇÇ¾î½º : Âñ·¯¼­È¸Àü
-	SKILL_ROBIN12,	//¸ê»ì¿¬Âü : ¿¬¼Ó±â
-	SKILL_ROBIN13,	//¹æ¾îÅÂ¼¼ : //¹æ¾î·Â ¿Ã·Á¼­ µ¥¹ÌÁö ÁÙÀÌ´Â°ÍÀ¸·Î º¯°æ//ÀÏÁ¤½Ã°£ VIT »ó½Â
-	SKILL_ROBIN14,	//Á¤½Å¼Ò¸ð : //¹æ¾î·Â ¿Ã·Á¼­ µ¥¹ÌÁö ÁÙÀÌ´Â°ÍÀ¸·Î º¯°æ//MP ¼Ò¸ðÇÏ¿© µ¥¹ÌÁö °æ°¨
-	SKILL_ROBIN15,	//¿©À¯Æ÷Âø : Àû °ø°Ý È¸ÇÇ½Ã HP »ó½Â//µ¥¹ÌÁö 2¹è »ó½Â
-	SKILL_ROBIN16,	//³ÃÁ¤Ä§Âø : µ¥¹ÌÁö ÀÔÀ¸¸é MP È¸º¹//HPÈ¸º¹
-	SKILL_ROBIN17,	//¸®ÇÃ·º¼Ç : È®·ü·Îµ¥¹ÌÁö ¹Ý»ç//¹Ý»ç
+	SKILL_ROBIN1,	//ê²€ìˆ ìˆ™ë ¨ : ê´€í†µ ë°œìƒ í™•ë¥  ìƒìŠ¹
+	SKILL_ROBIN2,	//ê¸´ê¸‰ë°©ì–´ : ë°©ì–´ ë°œë™ í™•ë¥ ì´ ì˜¬ë¼ê°(1ë ˆë²¨ì´ë©´ ë°©ì–´ ë°œë™ì´ ì‹œìž‘, ì ì  í™•ë¥  ìƒìŠ¹)
+	SKILL_ROBIN3,	//ë°©ì–´ìˆ™ë ¨ : ë°©ì–´ ë°œë™ì‹œ ê²½ê°ë˜ëŠ” ë°ë¯¸ì§€ í¼ì„¼íŠ¸ ìƒìŠ¹
+	SKILL_ROBIN4,	//ë©´ì—­ë ¥ : ìƒíƒœì´ìƒì— ëŒ€í•œ ì €í•­ë ¥ ìƒìŠ¹
+	SKILL_ROBIN5,	//ì§€êµ¬ì „ : INTê°€ ë†’ì„ìˆ˜ë¡ VIT ìƒìŠ¹
+	SKILL_ROBIN6,	//ì—ì–´í¬ëž˜ì‰¬ : ëª¹ ë›°ìš°ê¸°
+	SKILL_ROBIN7,	//ë§ˆêµ¬ì°Œë¥´ê¸° : ë‚œíƒ€
+	SKILL_ROBIN8,	//ë¶€ìŠ¤íŠ¸ìŠ¬ëž˜ì‰¬ : ê°€ë¡œë¡œ í¬ê²Œ ë°°ê¸°, ê¸°ì ˆê³µê²©
+	SKILL_ROBIN9,	//í•˜ì´í¼ì°¨ì§€ : ëŒê²©ê³µê²©, ì ì„ ë’¤ë¡œ ë‚ ë ¤ë²„ë¦¼
+	SKILL_ROBIN10,	//ì†Œìš¸í¬ëž˜ì‰¬ : ê¸°ì ˆ
+	SKILL_ROBIN11,	//ì•±ì†”ë£¨íŠ¸í”¼ì–´ìŠ¤ : ì°”ëŸ¬ì„œíšŒì „
+	SKILL_ROBIN12,	//ë©¸ì‚´ì—°ì°¸ : ì—°ì†ê¸°
+	SKILL_ROBIN13,	//ë°©ì–´íƒœì„¸ : //ë°©ì–´ë ¥ ì˜¬ë ¤ì„œ ë°ë¯¸ì§€ ì¤„ì´ëŠ”ê²ƒìœ¼ë¡œ ë³€ê²½//ì¼ì •ì‹œê°„ VIT ìƒìŠ¹
+	SKILL_ROBIN14,	//ì •ì‹ ì†Œëª¨ : //ë°©ì–´ë ¥ ì˜¬ë ¤ì„œ ë°ë¯¸ì§€ ì¤„ì´ëŠ”ê²ƒìœ¼ë¡œ ë³€ê²½//MP ì†Œëª¨í•˜ì—¬ ë°ë¯¸ì§€ ê²½ê°
+	SKILL_ROBIN15,	//ì—¬ìœ í¬ì°© : ì  ê³µê²© íšŒí”¼ì‹œ HP ìƒìŠ¹//ë°ë¯¸ì§€ 2ë°° ìƒìŠ¹
+	SKILL_ROBIN16,	//ëƒ‰ì •ì¹¨ì°© : ë°ë¯¸ì§€ ìž…ìœ¼ë©´ MP íšŒë³µ//HPíšŒë³µ
+	SKILL_ROBIN17,	//ë¦¬í”Œë ‰ì…˜ : í™•ë¥ ë¡œë°ë¯¸ì§€ ë°˜ì‚¬//ë°˜ì‚¬
 
-	SKILL_COMMON_DIANA1,	//Èû´Ü·Ã : STR »ó½Â
-	SKILL_COMMON_DIANA2,	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-	SKILL_COMMON_DIANA3,	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-	SKILL_COMMON_DIANA4,	//Á¤½Å´Ü·Ã : INT »ó½Â
-	SKILL_COMMON_DIANA5,	//»ý¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_DIANA6,	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_DIANA7,	//¹«±â¼÷·Ã : °ø°Ý·Â Áõ°¡
-	SKILL_COMMON_DIANA8,	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
-	SKILL_COMMON_DIANA9,	//¾àÁ¡ÆÄ¾Ç : Å©¸®Æ¼ÄÃ È®·ü »ó½Â
-	SKILL_COMMON_DIANA10,	//¾àÁ¡°ø°Ý : Å©¸®Æ¼ÄÃ µ¥¹ÌÁö »ó½Â
-	SKILL_COMMON_DIANA11,	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-	SKILL_COMMON_DIANA12,	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
-	SKILL_COMMON_DIANA13,	//½Å¼ÓÈ¸ÇÇ : È¸ÇÇ Áõ°¡
+	SKILL_COMMON_DIANA1,	//íž˜ë‹¨ë ¨ : STR ìƒìŠ¹
+	SKILL_COMMON_DIANA2,	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+	SKILL_COMMON_DIANA3,	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+	SKILL_COMMON_DIANA4,	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+	SKILL_COMMON_DIANA5,	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_DIANA6,	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_DIANA7,	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+	SKILL_COMMON_DIANA8,	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
+	SKILL_COMMON_DIANA9,	//ì•½ì íŒŒì•… : í¬ë¦¬í‹°ì»¬ í™•ë¥  ìƒìŠ¹
+	SKILL_COMMON_DIANA10,	//ì•½ì ê³µê²© : í¬ë¦¬í‹°ì»¬ ë°ë¯¸ì§€ ìƒìŠ¹
+	SKILL_COMMON_DIANA11,	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+	SKILL_COMMON_DIANA12,	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
+	SKILL_COMMON_DIANA13,	//ì‹ ì†íšŒí”¼ : íšŒí”¼ ì¦ê°€
 
-	SKILL_DIANA1,	//¸ÅÀÇ´« : °ø°Ý °Å¸® »ó½Â
-	SKILL_DIANA2,	//»ç°Ý¼÷·Ã : ±âÀý°ø°ÝÀÌ ¹ß»ýÇÒ È®·üÀÌ »ó½Â
-	SKILL_DIANA3,	//¾Æµå·¹³¯¸° : ±âÀý°ø°Ý ¼º°ø½Ã MP È¸º¹·® »ó½Â
-	SKILL_DIANA4,	//È°¼ºÈ­ : ½ºÅ³ Àç»ç¿ë ½Ã°£ °¨¼Ò
-	SKILL_DIANA5,	//ÁýÁß·ÂÀ¯Áö : STRÀÌ ³ôÀ»¼ö·Ï INT »ó½Â
-	SKILL_DIANA6,	//3way : 3¹æÇâÀ¸·Î ÃÑ ¹ß»ç
-	SKILL_DIANA7,	//¸®ÇÃ·º¼Çºö : ·¹ÀÌÁ®°¡ º®¿¡ Æ¨±è
-	SKILL_DIANA8,	//ÇïÆÄÀÌ¾î : È­¿° ¹æ»ç±â
-	SKILL_DIANA9,	//·ÎÄÏ·±ÃÄ : ·ÎÄÏ ¹ß»çµÇ¾î Æø¹ß
-	SKILL_DIANA10,	//È£¹Ö¹Ì»çÀÏ : À¯µµÅº 3°³
-	SKILL_DIANA11,	//Å³¸µÁ¸ : ³­»ç
-	SKILL_DIANA12,	//¿ÀºñÅ»·¹ÀÌÁ® : ÀÎ°øÀ§¼º
-	SKILL_DIANA13,	//¸®Ä¿¹ö¸® : È¸º¹Åº
-	SKILL_DIANA14,	//ÈïºÐ°íÁ¶ : ¹æ¾î·Â ÀúÇÏ °ø°Ý·Â »ó½Â
-	SKILL_DIANA15,	//Èí¸¶ÀÇ¸¶Åº : °ø°Ý½Ã MP Èí¼ö
-	SKILL_DIANA16,	//ÇÊ»ìÁýÁß : Å©¸® »ó½Â
-	SKILL_DIANA17,	//ÆÄ¸¶ÀÇÁ÷°Ý : ÀÏÁ¤½Ã°£ Àû ¹æ¾î ¹«½Ã
+	SKILL_DIANA1,	//ë§¤ì˜ëˆˆ : ê³µê²© ê±°ë¦¬ ìƒìŠ¹
+	SKILL_DIANA2,	//ì‚¬ê²©ìˆ™ë ¨ : ê¸°ì ˆê³µê²©ì´ ë°œìƒí•  í™•ë¥ ì´ ìƒìŠ¹
+	SKILL_DIANA3,	//ì•„ë“œë ˆë‚ ë¦° : ê¸°ì ˆê³µê²© ì„±ê³µì‹œ MP íšŒë³µëŸ‰ ìƒìŠ¹
+	SKILL_DIANA4,	//í™œì„±í™” : ìŠ¤í‚¬ ìž¬ì‚¬ìš© ì‹œê°„ ê°ì†Œ
+	SKILL_DIANA5,	//ì§‘ì¤‘ë ¥ìœ ì§€ : STRì´ ë†’ì„ìˆ˜ë¡ INT ìƒìŠ¹
+	SKILL_DIANA6,	//3way : 3ë°©í–¥ìœ¼ë¡œ ì´ ë°œì‚¬
+	SKILL_DIANA7,	//ë¦¬í”Œë ‰ì…˜ë¹” : ë ˆì´ì ¸ê°€ ë²½ì— íŠ•ê¹€
+	SKILL_DIANA8,	//í—¬íŒŒì´ì–´ : í™”ì—¼ ë°©ì‚¬ê¸°
+	SKILL_DIANA9,	//ë¡œì¼“ëŸ°ì³ : ë¡œì¼“ ë°œì‚¬ë˜ì–´ í­ë°œ
+	SKILL_DIANA10,	//í˜¸ë°ë¯¸ì‚¬ì¼ : ìœ ë„íƒ„ 3ê°œ
+	SKILL_DIANA11,	//í‚¬ë§ì¡´ : ë‚œì‚¬
+	SKILL_DIANA12,	//ì˜¤ë¹„íƒˆë ˆì´ì ¸ : ì¸ê³µìœ„ì„±
+	SKILL_DIANA13,	//ë¦¬ì»¤ë²„ë¦¬ : íšŒë³µíƒ„
+	SKILL_DIANA14,	//í¥ë¶„ê³ ì¡° : ë°©ì–´ë ¥ ì €í•˜ ê³µê²©ë ¥ ìƒìŠ¹
+	SKILL_DIANA15,	//í¡ë§ˆì˜ë§ˆíƒ„ : ê³µê²©ì‹œ MP í¡ìˆ˜
+	SKILL_DIANA16,	//í•„ì‚´ì§‘ì¤‘ : í¬ë¦¬ ìƒìŠ¹
+	SKILL_DIANA17,	//íŒŒë§ˆì˜ì§ê²© : ì¼ì •ì‹œê°„ ì  ë°©ì–´ ë¬´ì‹œ
 
-	SKILL_COMMON_MAXX1,	//Èû´Ü·Ã : STR »ó½Â
-	SKILL_COMMON_MAXX2,	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-	SKILL_COMMON_MAXX3,	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-	SKILL_COMMON_MAXX4,	//Á¤½Å´Ü·Ã : INT »ó½Â
-	SKILL_COMMON_MAXX5,	//»ý¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_MAXX6,	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-	SKILL_COMMON_MAXX7,	//¹«±â¼÷·Ã : °ø°Ý·Â Áõ°¡
-	SKILL_COMMON_MAXX8,	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
-	SKILL_COMMON_MAXX9,	//¾àÁ¡ÆÄ¾Ç : Å©¸®Æ¼ÄÃ È®·ü »ó½Â
-	SKILL_COMMON_MAXX10,	//¾àÁ¡°ø°Ý : Å©¸®Æ¼ÄÃ µ¥¹ÌÁö »ó½Â
-	SKILL_COMMON_MAXX11,	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-	SKILL_COMMON_MAXX12,	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
-	SKILL_COMMON_MAXX13,	//½Å¼ÓÈ¸ÇÇ : È¸ÇÇ Áõ°¡
+	SKILL_COMMON_MAXX1,	//íž˜ë‹¨ë ¨ : STR ìƒìŠ¹
+	SKILL_COMMON_MAXX2,	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+	SKILL_COMMON_MAXX3,	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+	SKILL_COMMON_MAXX4,	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+	SKILL_COMMON_MAXX5,	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_MAXX6,	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+	SKILL_COMMON_MAXX7,	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+	SKILL_COMMON_MAXX8,	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
+	SKILL_COMMON_MAXX9,	//ì•½ì íŒŒì•… : í¬ë¦¬í‹°ì»¬ í™•ë¥  ìƒìŠ¹
+	SKILL_COMMON_MAXX10,	//ì•½ì ê³µê²© : í¬ë¦¬í‹°ì»¬ ë°ë¯¸ì§€ ìƒìŠ¹
+	SKILL_COMMON_MAXX11,	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+	SKILL_COMMON_MAXX12,	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
+	SKILL_COMMON_MAXX13,	//ì‹ ì†íšŒí”¼ : íšŒí”¼ ì¦ê°€
 
-	SKILL_MAXX1,	//°üÅë·Â¼÷·Ã : ÀûÀ» °ø°ÝÇßÀ» ¶§ ºÎ¸Þ¶ûÀÇ ÆÇÁ¤ÀÌ ³²¾ÆÀÖÀ» È®·üÀÌ »ó½ÂÇÑ´Ù.
-	SKILL_MAXX2,	//ÅõÃ´¼÷·Ã : ºÎ¸Þ¶û ¼Óµµ »ó½Â
-	SKILL_MAXX3,	//¿¬¼Ó°ø°Ý : Ãß°¡ °ø°Ý È®·ü Áõ°¡
-	SKILL_MAXX4,	//È¸Àü·Â»ó½Â : Ãß°¡ °ø°Ý ¼º°ø½Ã ÇØ´ç °ø°Ý¿¡ ´ëÇØ¼­ µ¥¹ÌÁö »ó½Â
-	SKILL_MAXX5,	//Åº·Â¼º : VIT ³ôÀ»¼ö·Ï AGI »ó½Â
-	SKILL_MAXX6,	//È¿À²Àû»ç°í : INT°¡ ³ôÀ»¼ö·Ï AGI°¡ ¿Ã¶ó°¨
-	SKILL_MAXX7,	//µ¹·ÁÂ÷±â : È¸Àü, ±âÀý°ø°Ý
-	SKILL_MAXX8,	//¼ôÇåÆ® : °üÅë, »ç°Å¸® ÂªÀ½
-	SKILL_MAXX9,	//¿¡¾îÇåÆ® : ¼öÁ÷ »ó½Â °ø°Ý
-	SKILL_MAXX10,	//Ä·ÇÎÇåÆ® : ¾ÕÀ¸·Î ³¯¶ó°¡¼­ Á¦ÀÚ¸®È¸Àü
-	SKILL_MAXX11,	//È£¹ÖÇåÆ® : °¡Àå °¡±î¿î Àû ¶§¸®°í µÇµ¹¾Æ¿È
-	SKILL_MAXX12,	//½áÅ¬ÇåÆ® : ÁÖÀÎ°ø ÁÖº¯ º¸È£
-	SKILL_MAXX13,	//¸Þ°¡ÇåÆ® : °üÅëÈÄ µÚ¿¡¼­ µ¹¾Æ¿È
-	SKILL_MAXX14,	//ºí·¯µåÇåÆ® : Àû °ø°Ý½Ã HP È¸º¹
-	SKILL_MAXX15,	//Çö¶õ¹«µµ : ÀÏÁ¤½Ã°£ È¸ÇÇÀ² Áõ°¡
-	SKILL_MAXX16,	//¾ÈµµÀÇÇÑ¼û : Àû °ø°Ý È¸ÇÇ½Ã MP È¸º¹
-	SKILL_MAXX17,	//È¥½ÅºÐ¸® : ±âÀý È®·ü »ó½Â
+	SKILL_MAXX1,	//ê´€í†µë ¥ìˆ™ë ¨ : ì ì„ ê³µê²©í–ˆì„ ë•Œ ë¶€ë©”ëž‘ì˜ íŒì •ì´ ë‚¨ì•„ìžˆì„ í™•ë¥ ì´ ìƒìŠ¹í•œë‹¤.
+	SKILL_MAXX2,	//íˆ¬ì²™ìˆ™ë ¨ : ë¶€ë©”ëž‘ ì†ë„ ìƒìŠ¹
+	SKILL_MAXX3,	//ì—°ì†ê³µê²© : ì¶”ê°€ ê³µê²© í™•ë¥  ì¦ê°€
+	SKILL_MAXX4,	//íšŒì „ë ¥ìƒìŠ¹ : ì¶”ê°€ ê³µê²© ì„±ê³µì‹œ í•´ë‹¹ ê³µê²©ì— ëŒ€í•´ì„œ ë°ë¯¸ì§€ ìƒìŠ¹
+	SKILL_MAXX5,	//íƒ„ë ¥ì„± : VIT ë†’ì„ìˆ˜ë¡ AGI ìƒìŠ¹
+	SKILL_MAXX6,	//íš¨ìœ¨ì ì‚¬ê³  : INTê°€ ë†’ì„ìˆ˜ë¡ AGIê°€ ì˜¬ë¼ê°
+	SKILL_MAXX7,	//ëŒë ¤ì°¨ê¸° : íšŒì „, ê¸°ì ˆê³µê²©
+	SKILL_MAXX8,	//ìˆí—ŒíŠ¸ : ê´€í†µ, ì‚¬ê±°ë¦¬ ì§§ìŒ
+	SKILL_MAXX9,	//ì—ì–´í—ŒíŠ¸ : ìˆ˜ì§ ìƒìŠ¹ ê³µê²©
+	SKILL_MAXX10,	//ìº í•‘í—ŒíŠ¸ : ì•žìœ¼ë¡œ ë‚ ë¼ê°€ì„œ ì œìžë¦¬íšŒì „
+	SKILL_MAXX11,	//í˜¸ë°í—ŒíŠ¸ : ê°€ìž¥ ê°€ê¹Œìš´ ì  ë•Œë¦¬ê³  ë˜ëŒì•„ì˜´
+	SKILL_MAXX12,	//ì¨í´í—ŒíŠ¸ : ì£¼ì¸ê³µ ì£¼ë³€ ë³´í˜¸
+	SKILL_MAXX13,	//ë©”ê°€í—ŒíŠ¸ : ê´€í†µí›„ ë’¤ì—ì„œ ëŒì•„ì˜´
+	SKILL_MAXX14,	//ë¸”ëŸ¬ë“œí—ŒíŠ¸ : ì  ê³µê²©ì‹œ HP íšŒë³µ
+	SKILL_MAXX15,	//í˜„ëž€ë¬´ë„ : ì¼ì •ì‹œê°„ íšŒí”¼ìœ¨ ì¦ê°€
+	SKILL_MAXX16,	//ì•ˆë„ì˜í•œìˆ¨ : ì  ê³µê²© íšŒí”¼ì‹œ MP íšŒë³µ
+	SKILL_MAXX17,	//í˜¼ì‹ ë¶„ë¦¬ : ê¸°ì ˆ í™•ë¥  ìƒìŠ¹
 
-	ENEMY_SNAIL_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_SKILL2,
 	ENEMY_SNAIL_SKILL3,
-	ENEMY_TREE_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_SKILL2,
 	ENEMY_TREE_SKILL3,
-	ENEMY_ONEEYE_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_SKILL2,
 	ENEMY_ONEEYE_SKILL3,
-	ENEMY_SKELETON_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_SKILL2,
 	ENEMY_SKELETON_SKILL3,
-	ENEMY_LIZARD_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_SKILL2,
 	ENEMY_LIZARD_SKILL3,
-	ENEMY_JELLYFISH_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_SKILL2,
 	ENEMY_JELLYFISH_SKILL3,
-	ENEMY_KNIGHT_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_SKILL2,
 	ENEMY_KNIGHT_SKILL3,
-	ENEMY_SLIME_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_SKILL2,
 	ENEMY_SLIME_SKILL3,
-	ENEMY_SLING_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_SKILL2,
 	ENEMY_SLING_SKILL3,
-	ENEMY_BOAR_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_SKILL2,
 	ENEMY_BOAR_SKILL3,
-	ENEMY_FLAME_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_SKILL2,
 	ENEMY_FLAME_SKILL3,
-	ENEMY_PHOENIX_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_SKILL2,
 	ENEMY_PHOENIX_SKILL3,
-	ENEMY_FACE_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_SKILL2,
 	ENEMY_FACE_SKILL3,
-	ENEMY_SNOWMAN_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_SKILL2,
 	ENEMY_SNOWMAN_SKILL3,
-	ENEMY_ICESUN_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_SKILL2,
 	ENEMY_ICESUN_SKILL3,
-	ENEMY_LIGHTNING_SKILL1,	//½ºÆÄÅ©18//
+	ENEMY_LIGHTNING_SKILL1,	//ìŠ¤íŒŒí¬18//
 	ENEMY_LIGHTNING_SKILL2,
 	ENEMY_LIGHTNING_SKILL3,
-	ENEMY_THUNDER_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_SKILL2,
 	ENEMY_THUNDER_SKILL3,
-	ENEMY_CRYSTAL_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_SKILL2,
 	ENEMY_CRYSTAL_SKILL3,
-	ENEMY_FAIRY_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´21
+	ENEMY_FAIRY_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
 	ENEMY_FAIRY_SKILL2,
 	ENEMY_FAIRY_SKILL3,
-	ENEMY_CIRCLE_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_SKILL2,
 	ENEMY_CIRCLE_SKILL3,
-	ENEMY_SPIDER_SKILL1,	//½ºÆ®¶óÀÌ´õ23
+	ENEMY_SPIDER_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”23
 	ENEMY_SPIDER_SKILL2,
 	ENEMY_SPIDER_SKILL3,
-	ENEMY_GOLEM_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½24
+	ENEMY_GOLEM_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜24
 	ENEMY_GOLEM_SKILL2,
 	ENEMY_GOLEM_SKILL3,
-	ENEMY_DARKGIANT_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó25
+	ENEMY_DARKGIANT_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸25
 	ENEMY_DARKGIANT_SKILL2,
 	ENEMY_DARKGIANT_SKILL3,
-	ENEMY_DARKDRAGON_SKILL1,	//¿ì·Îº¸·Î½º26(x ¿¹´Â ±×³É ¾ÈµÊ)
+	ENEMY_DARKDRAGON_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤26(x ì˜ˆëŠ” ê·¸ëƒ¥ ì•ˆë¨)
 	ENEMY_DARKDRAGON_SKILL2,
 	ENEMY_DARKDRAGON_SKILL3,
-	ENEMY_DRAGON1_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ27
+	ENEMY_DRAGON1_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž27
 	ENEMY_DRAGON1_SKILL2,
 	ENEMY_DRAGON1_SKILL3,
-	ENEMY_DRAGON2_SKILL1,	//µå·¡°ï Á»ºñ28
+	ENEMY_DRAGON2_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„28
 	ENEMY_DRAGON2_SKILL2,
 	ENEMY_DRAGON2_SKILL3,
-	ENEMY_GHOST_SKILL1,	//¶°µµ´Â ¿µÈ¥29
+	ENEMY_GHOST_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼29
 	ENEMY_GHOST_SKILL2,
 	ENEMY_GHOST_SKILL3,
-	ENEMY_PUMPKIN_SKILL1,	//¹«È¥ÀÇ ±â»ç30
+	ENEMY_PUMPKIN_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬30
 	ENEMY_PUMPKIN_SKILL2,
 	ENEMY_PUMPKIN_SKILL3,
-	ENEMY_CASTLE1_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð31		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È(?)
+	ENEMY_CASTLE1_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ31		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´(?)
 	ENEMY_CASTLE1_SKILL2,
 	ENEMY_CASTLE1_SKILL3,
-	ENEMY_CASTLE2_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç32
+	ENEMY_CASTLE2_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬32
 	ENEMY_CASTLE2_SKILL2,
 	ENEMY_CASTLE2_SKILL3,
-	ENEMY_SPACE1_SKILL1,	//¾Èµå·Îº¼33
+	ENEMY_SPACE1_SKILL1,	//ì•ˆë“œë¡œë³¼33
 	ENEMY_SPACE1_SKILL2,
 	ENEMY_SPACE1_SKILL3,
-	ENEMY_SPACE2_SKILL1,	//¸ÞÅ»°¡¿ì½º34
+	ENEMY_SPACE2_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤34
 	ENEMY_SPACE2_SKILL2,
 	ENEMY_SPACE2_SKILL3,
-	ENEMY_FROG_SKILL1,	//Åäµå¹ÂÅÏÆ®35
+	ENEMY_FROG_SKILL1,	//í† ë“œë®¤í„´íŠ¸35
 	ENEMY_FROG_SKILL2,
 	ENEMY_FROG_SKILL3,
-	ENEMY_LARVA_SKILL1,	//¾Æ¸£°ï36
+	ENEMY_LARVA_SKILL1,	//ì•„ë¥´ê³¤36
 	ENEMY_LARVA_SKILL2,
 	ENEMY_LARVA_SKILL3,
-	ENEMY_SALAMANDER_SKILL1,	//Ä«Åù37
+	ENEMY_SALAMANDER_SKILL1,	//ì¹´íˆ¼37
 	ENEMY_SALAMANDER_SKILL2,
 	ENEMY_SALAMANDER_SKILL3,
-	ENEMY_GIANT_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ38
+	ENEMY_GIANT_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž38
 	ENEMY_GIANT_SKILL2,
 	ENEMY_GIANT_SKILL3,
-	ENEMY_IFRIT_SKILL1,	//ÀÌÇÁ¸®Æ®39
+	ENEMY_IFRIT_SKILL1,	//ì´í”„ë¦¬íŠ¸39
 	ENEMY_IFRIT_SKILL2,
 	ENEMY_IFRIT_SKILL3,
-	ENEMY_MAMMOTH_SKILL1,	//ÇÁ·Î½ºÆ®40
+	ENEMY_MAMMOTH_SKILL1,	//í”„ë¡œìŠ¤íŠ¸40
 	ENEMY_MAMMOTH_SKILL2,
 	ENEMY_MAMMOTH_SKILL3,
-	ENEMY_MACHINE_SKILL1,	//¶óÀÌ¿À³Ê41		(x)			//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_SKILL1,	//ë¼ì´ì˜¤ë„ˆ41		(x)			//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_SKILL2,
 	ENEMY_MACHINE_SKILL3,
-	ENEMY_ANGEL_SKILL1,	//È£·ç½º42
+	ENEMY_ANGEL_SKILL1,	//í˜¸ë£¨ìŠ¤42
 	ENEMY_ANGEL_SKILL2,
 	ENEMY_ANGEL_SKILL3,
-	ENEMY_KIMERA_SKILL1,	//¸¶µµÇÕ¼º¼ö43
+	ENEMY_KIMERA_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜43
 	ENEMY_KIMERA_SKILL2,
 	ENEMY_KIMERA_SKILL3,
-	ENEMY_SHIP_SKILL1,	//°í´ëÀÇ ¹æÁÖ44 (x)
+	ENEMY_SHIP_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼44 (x)
 	ENEMY_SHIP_SKILL2,
 	ENEMY_SHIP_SKILL3,
-	ENEMY_FOGRA_SKILL1,	//¾Æ¸®¸¸45
+	ENEMY_FOGRA_SKILL1,	//ì•„ë¦¬ë§Œ45
 	ENEMY_FOGRA_SKILL2,
 	ENEMY_FOGRA_SKILL3,
-	ENEMY_BAHAMUT_SKILL1,	//Æ¼¾î¸Ë46 (x)
+	ENEMY_BAHAMUT_SKILL1,	//í‹°ì–´ë§·46 (x)
 	ENEMY_BAHAMUT_SKILL2,
 	ENEMY_BAHAMUT_SKILL3,
-	ENEMY_DEATH_SKILL1,	//»ç½Å47
+	ENEMY_DEATH_SKILL1,	//ì‚¬ì‹ 47
 	ENEMY_DEATH_SKILL2,
 	ENEMY_DEATH_SKILL3,
-	ENEMY_CASTLE_BOSS1_SKILL1,	//µ¥ºê¸®¿Â48 (x)
+	ENEMY_CASTLE_BOSS1_SKILL1,	//ë°ë¸Œë¦¬ì˜¨48 (x)
 	ENEMY_CASTLE_BOSS1_SKILL2,
 	ENEMY_CASTLE_BOSS1_SKILL3,
-	ENEMY_CASTLE_BOSS2_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º49
+	ENEMY_CASTLE_BOSS2_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤49
 	ENEMY_CASTLE_BOSS2_SKILL2,
 	ENEMY_CASTLE_BOSS2_SKILL3,
-	ENEMY_CASTLE_BOSS3_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï50 -> Á¦¿Ü (x)
+	ENEMY_CASTLE_BOSS3_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤50 -> ì œì™¸ (x)
 	ENEMY_CASTLE_BOSS3_SKILL2,
 	ENEMY_CASTLE_BOSS3_SKILL3,
-	ENEMY_CASTLE_BOSS4_SKILL1,	//´ÙÅ©³ªÀÌÆ®51						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸51						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_SKILL2,
 	ENEMY_CASTLE_BOSS4_SKILL3,
-	ENEMY_LABETH_SKILL1,	//¶óº£½º º¸½º52 (x)
+	ENEMY_LABETH_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤52 (x)
 	ENEMY_LABETH_SKILL2,
 	ENEMY_LABETH_SKILL3,
-	ENEMY_ELKEIN_SKILL1,	//¿¤ÄÉÀÎ º¸½º53				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤53				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_SKILL2,
 	ENEMY_ELKEIN_SKILL3,
 
-	ENEMY_SNAIL_RED_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_RED_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_RED_SKILL2,
 	ENEMY_SNAIL_RED_SKILL3,
-	ENEMY_TREE_RED_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_RED_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_RED_SKILL2,
 	ENEMY_TREE_RED_SKILL3,
-	ENEMY_ONEEYE_RED_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_RED_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_RED_SKILL2,
 	ENEMY_ONEEYE_RED_SKILL3,
-	ENEMY_SKELETON_RED_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_RED_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_RED_SKILL2,
 	ENEMY_SKELETON_RED_SKILL3,
-	ENEMY_LIZARD_RED_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_RED_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_RED_SKILL2,
 	ENEMY_LIZARD_RED_SKILL3,
-	ENEMY_JELLYFISH_RED_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_RED_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_RED_SKILL2,
 	ENEMY_JELLYFISH_RED_SKILL3,
-	ENEMY_KNIGHT_RED_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_RED_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_RED_SKILL2,
 	ENEMY_KNIGHT_RED_SKILL3,
-	ENEMY_SLIME_RED_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_RED_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_RED_SKILL2,
 	ENEMY_SLIME_RED_SKILL3,
-	ENEMY_SLING_RED_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_RED_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_RED_SKILL2,
 	ENEMY_SLING_RED_SKILL3,
-	ENEMY_BOAR_RED_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_RED_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_RED_SKILL2,
 	ENEMY_BOAR_RED_SKILL3,
-	ENEMY_FLAME_RED_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_RED_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_RED_SKILL2,
 	ENEMY_FLAME_RED_SKILL3,
-	ENEMY_PHOENIX_RED_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_RED_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_RED_SKILL2,
 	ENEMY_PHOENIX_RED_SKILL3,
-	ENEMY_FACE_RED_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_RED_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_RED_SKILL2,
 	ENEMY_FACE_RED_SKILL3,
-	ENEMY_SNOWMAN_RED_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_RED_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_RED_SKILL2,
 	ENEMY_SNOWMAN_RED_SKILL3,
-	ENEMY_ICESUN_RED_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_RED_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_RED_SKILL2,
 	ENEMY_ICESUN_RED_SKILL3,
-	ENEMY_LIGHTNING_RED_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_RED_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_RED_SKILL2,
 	ENEMY_LIGHTNING_RED_SKILL3,
-	ENEMY_THUNDER_RED_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_RED_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_RED_SKILL2,
 	ENEMY_THUNDER_RED_SKILL3,
-	ENEMY_CRYSTAL_RED_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_RED_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_RED_SKILL2,
 	ENEMY_CRYSTAL_RED_SKILL3,
-	ENEMY_FAIRY_RED_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´21
+	ENEMY_FAIRY_RED_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
 	ENEMY_FAIRY_RED_SKILL2,
 	ENEMY_FAIRY_RED_SKILL3,
-	ENEMY_CIRCLE_RED_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_RED_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_RED_SKILL2,
 	ENEMY_CIRCLE_RED_SKILL3,
-	ENEMY_SPIDER_RED_SKILL1,	//½ºÆ®¶óÀÌ´õ23
+	ENEMY_SPIDER_RED_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”23
 	ENEMY_SPIDER_RED_SKILL2,
 	ENEMY_SPIDER_RED_SKILL3,
-	ENEMY_GOLEM_RED_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½24
+	ENEMY_GOLEM_RED_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜24
 	ENEMY_GOLEM_RED_SKILL2,
 	ENEMY_GOLEM_RED_SKILL3,
-	ENEMY_DARKGIANT_RED_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó25
+	ENEMY_DARKGIANT_RED_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸25
 	ENEMY_DARKGIANT_RED_SKILL2,
 	ENEMY_DARKGIANT_RED_SKILL3,
-	ENEMY_DARKDRAGON_RED_SKILL1,	//¿ì·Îº¸·Î½º26
+	ENEMY_DARKDRAGON_RED_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤26
 	ENEMY_DARKDRAGON_RED_SKILL2,
 	ENEMY_DARKDRAGON_RED_SKILL3,
-	ENEMY_DRAGON1_RED_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ27
+	ENEMY_DRAGON1_RED_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž27
 	ENEMY_DRAGON1_RED_SKILL2,
 	ENEMY_DRAGON1_RED_SKILL3,
-	ENEMY_DRAGON2_RED_SKILL1,	//µå·¡°ï Á»ºñ28
+	ENEMY_DRAGON2_RED_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„28
 	ENEMY_DRAGON2_RED_SKILL2,
 	ENEMY_DRAGON2_RED_SKILL3,
-	ENEMY_GHOST_RED_SKILL1,	//¶°µµ´Â ¿µÈ¥29
+	ENEMY_GHOST_RED_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼29
 	ENEMY_GHOST_RED_SKILL2,
 	ENEMY_GHOST_RED_SKILL3,
-	ENEMY_PUMPKIN_RED_SKILL1,	//¹«È¥ÀÇ ±â»ç30
+	ENEMY_PUMPKIN_RED_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬30
 	ENEMY_PUMPKIN_RED_SKILL2,
 	ENEMY_PUMPKIN_RED_SKILL3,
-	ENEMY_CASTLE1_RED_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð31		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_RED_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ31		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_RED_SKILL2,
 	ENEMY_CASTLE1_RED_SKILL3,
-	ENEMY_CASTLE2_RED_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç32
+	ENEMY_CASTLE2_RED_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬32
 	ENEMY_CASTLE2_RED_SKILL2,
 	ENEMY_CASTLE2_RED_SKILL3,
-	ENEMY_SPACE1_RED_SKILL1,	//¾Èµå·Îº¼33
+	ENEMY_SPACE1_RED_SKILL1,	//ì•ˆë“œë¡œë³¼33
 	ENEMY_SPACE1_RED_SKILL2,
 	ENEMY_SPACE1_RED_SKILL3,
-	ENEMY_SPACE2_RED_SKILL1,	//¸ÞÅ»°¡¿ì½º34
+	ENEMY_SPACE2_RED_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤34
 	ENEMY_SPACE2_RED_SKILL2,
 	ENEMY_SPACE2_RED_SKILL3,
-	ENEMY_FROG_RED_SKILL1,	//Åäµå¹ÂÅÏÆ®35
+	ENEMY_FROG_RED_SKILL1,	//í† ë“œë®¤í„´íŠ¸35
 	ENEMY_FROG_RED_SKILL2,
 	ENEMY_FROG_RED_SKILL3,
-	ENEMY_LARVA_RED_SKILL1,	//¾Æ¸£°ï36
+	ENEMY_LARVA_RED_SKILL1,	//ì•„ë¥´ê³¤36
 	ENEMY_LARVA_RED_SKILL2,
 	ENEMY_LARVA_RED_SKILL3,
-	ENEMY_SALAMANDER_RED_SKILL1,	//Ä«Åù37
+	ENEMY_SALAMANDER_RED_SKILL1,	//ì¹´íˆ¼37
 	ENEMY_SALAMANDER_RED_SKILL2,
 	ENEMY_SALAMANDER_RED_SKILL3,
-	ENEMY_GIANT_RED_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ38
+	ENEMY_GIANT_RED_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž38
 	ENEMY_GIANT_RED_SKILL2,
 	ENEMY_GIANT_RED_SKILL3,
-	ENEMY_IFRIT_RED_SKILL1,	//ÀÌÇÁ¸®Æ®39
+	ENEMY_IFRIT_RED_SKILL1,	//ì´í”„ë¦¬íŠ¸39
 	ENEMY_IFRIT_RED_SKILL2,
 	ENEMY_IFRIT_RED_SKILL3,
-	ENEMY_MAMMOTH_RED_SKILL1,	//ÇÁ·Î½ºÆ®40
+	ENEMY_MAMMOTH_RED_SKILL1,	//í”„ë¡œìŠ¤íŠ¸40
 	ENEMY_MAMMOTH_RED_SKILL2,
 	ENEMY_MAMMOTH_RED_SKILL3,
-	ENEMY_MACHINE_RED_SKILL1,	//¶óÀÌ¿À³Ê41					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_RED_SKILL1,	//ë¼ì´ì˜¤ë„ˆ41					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_RED_SKILL2,
 	ENEMY_MACHINE_RED_SKILL3,
-	ENEMY_ANGEL_RED_SKILL1,	//È£·ç½º42
+	ENEMY_ANGEL_RED_SKILL1,	//í˜¸ë£¨ìŠ¤42
 	ENEMY_ANGEL_RED_SKILL2,
 	ENEMY_ANGEL_RED_SKILL3,
-	ENEMY_KIMERA_RED_SKILL1,	//¸¶µµÇÕ¼º¼ö43
+	ENEMY_KIMERA_RED_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜43
 	ENEMY_KIMERA_RED_SKILL2,
 	ENEMY_KIMERA_RED_SKILL3,
-	ENEMY_SHIP_RED_SKILL1,	//°í´ëÀÇ ¹æÁÖ44
+	ENEMY_SHIP_RED_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼44
 	ENEMY_SHIP_RED_SKILL2,
 	ENEMY_SHIP_RED_SKILL3,
-	ENEMY_FOGRA_RED_SKILL1,	//¾Æ¸®¸¸45
+	ENEMY_FOGRA_RED_SKILL1,	//ì•„ë¦¬ë§Œ45
 	ENEMY_FOGRA_RED_SKILL2,
 	ENEMY_FOGRA_RED_SKILL3,
-	ENEMY_BAHAMUT_RED_SKILL1,	//Æ¼¾î¸Ë46
+	ENEMY_BAHAMUT_RED_SKILL1,	//í‹°ì–´ë§·46
 	ENEMY_BAHAMUT_RED_SKILL2,
 	ENEMY_BAHAMUT_RED_SKILL3,
-	ENEMY_DEATH_RED_SKILL1,	//»ç½Å47
+	ENEMY_DEATH_RED_SKILL1,	//ì‚¬ì‹ 47
 	ENEMY_DEATH_RED_SKILL2,
 	ENEMY_DEATH_RED_SKILL3,
-	ENEMY_CASTLE_BOSS1_RED_SKILL1,	//µ¥ºê¸®¿Â48
+	ENEMY_CASTLE_BOSS1_RED_SKILL1,	//ë°ë¸Œë¦¬ì˜¨48
 	ENEMY_CASTLE_BOSS1_RED_SKILL2,
 	ENEMY_CASTLE_BOSS1_RED_SKILL3,
-	ENEMY_CASTLE_BOSS2_RED_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º49
+	ENEMY_CASTLE_BOSS2_RED_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤49
 	ENEMY_CASTLE_BOSS2_RED_SKILL2,
 	ENEMY_CASTLE_BOSS2_RED_SKILL3,
-	ENEMY_CASTLE_BOSS3_RED_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï50 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_RED_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤50 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_RED_SKILL2,
 	ENEMY_CASTLE_BOSS3_RED_SKILL3,
-	ENEMY_CASTLE_BOSS4_RED_SKILL1,	//´ÙÅ©³ªÀÌÆ®51						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_RED_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸51						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_RED_SKILL2,
 	ENEMY_CASTLE_BOSS4_RED_SKILL3,
-	ENEMY_LABETH_RED_SKILL1,	//¶óº£½º º¸½º52
+	ENEMY_LABETH_RED_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤52
 	ENEMY_LABETH_RED_SKILL2,
 	ENEMY_LABETH_RED_SKILL3,
-	ENEMY_ELKEIN_RED_SKILL1,	//¿¤ÄÉÀÎ º¸½º53				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_RED_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤53				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_RED_SKILL2,
 	ENEMY_ELKEIN_RED_SKILL3,
 
-	ENEMY_SNAIL_BLUE_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_BLUE_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_BLUE_SKILL2,
 	ENEMY_SNAIL_BLUE_SKILL3,
-	ENEMY_TREE_BLUE_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_BLUE_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_BLUE_SKILL2,
 	ENEMY_TREE_BLUE_SKILL3,
-	ENEMY_ONEEYE_BLUE_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_BLUE_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_BLUE_SKILL2,
 	ENEMY_ONEEYE_BLUE_SKILL3,
-	ENEMY_SKELETON_BLUE_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_BLUE_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_BLUE_SKILL2,
 	ENEMY_SKELETON_BLUE_SKILL3,
-	ENEMY_LIZARD_BLUE_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_BLUE_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_BLUE_SKILL2,
 	ENEMY_LIZARD_BLUE_SKILL3,
-	ENEMY_JELLYFISH_BLUE_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_BLUE_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_BLUE_SKILL2,
 	ENEMY_JELLYFISH_BLUE_SKILL3,
-	ENEMY_KNIGHT_BLUE_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_BLUE_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_BLUE_SKILL2,
 	ENEMY_KNIGHT_BLUE_SKILL3,
-	ENEMY_SLIME_BLUE_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_BLUE_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_BLUE_SKILL2,
 	ENEMY_SLIME_BLUE_SKILL3,
-	ENEMY_SLING_BLUE_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_BLUE_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_BLUE_SKILL2,
 	ENEMY_SLING_BLUE_SKILL3,
-	ENEMY_BOAR_BLUE_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_BLUE_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_BLUE_SKILL2,
 	ENEMY_BOAR_BLUE_SKILL3,
-	ENEMY_FLAME_BLUE_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_BLUE_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_BLUE_SKILL2,
 	ENEMY_FLAME_BLUE_SKILL3,
-	ENEMY_PHOENIX_BLUE_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_BLUE_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_BLUE_SKILL2,
 	ENEMY_PHOENIX_BLUE_SKILL3,
-	ENEMY_FACE_BLUE_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_BLUE_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_BLUE_SKILL2,
 	ENEMY_FACE_BLUE_SKILL3,
-	ENEMY_SNOWMAN_BLUE_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_BLUE_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_BLUE_SKILL2,
 	ENEMY_SNOWMAN_BLUE_SKILL3,
-	ENEMY_ICESUN_BLUE_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_BLUE_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_BLUE_SKILL2,
 	ENEMY_ICESUN_BLUE_SKILL3,
-	ENEMY_LIGHTNING_BLUE_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_BLUE_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_BLUE_SKILL2,
 	ENEMY_LIGHTNING_BLUE_SKILL3,
-	ENEMY_THUNDER_BLUE_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_BLUE_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_BLUE_SKILL2,
 	ENEMY_THUNDER_BLUE_SKILL3,
-	ENEMY_CRYSTAL_BLUE_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_BLUE_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_BLUE_SKILL2,
 	ENEMY_CRYSTAL_BLUE_SKILL3,
-	ENEMY_FAIRY_BLUE_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´21
+	ENEMY_FAIRY_BLUE_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
 	ENEMY_FAIRY_BLUE_SKILL2,
 	ENEMY_FAIRY_BLUE_SKILL3,
-	ENEMY_CIRCLE_BLUE_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_BLUE_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_BLUE_SKILL2,
 	ENEMY_CIRCLE_BLUE_SKILL3,
-	ENEMY_SPIDER_BLUE_SKILL1,	//½ºÆ®¶óÀÌ´õ23
+	ENEMY_SPIDER_BLUE_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”23
 	ENEMY_SPIDER_BLUE_SKILL2,
 	ENEMY_SPIDER_BLUE_SKILL3,
-	ENEMY_GOLEM_BLUE_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½24
+	ENEMY_GOLEM_BLUE_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜24
 	ENEMY_GOLEM_BLUE_SKILL2,
 	ENEMY_GOLEM_BLUE_SKILL3,
-	ENEMY_DARKGIANT_BLUE_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó25
+	ENEMY_DARKGIANT_BLUE_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸25
 	ENEMY_DARKGIANT_BLUE_SKILL2,
 	ENEMY_DARKGIANT_BLUE_SKILL3,
-	ENEMY_DARKDRAGON_BLUE_SKILL1,	//¿ì·Îº¸·Î½º26
+	ENEMY_DARKDRAGON_BLUE_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤26
 	ENEMY_DARKDRAGON_BLUE_SKILL2,
 	ENEMY_DARKDRAGON_BLUE_SKILL3,
-	ENEMY_DRAGON1_BLUE_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ27
+	ENEMY_DRAGON1_BLUE_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž27
 	ENEMY_DRAGON1_BLUE_SKILL2,
 	ENEMY_DRAGON1_BLUE_SKILL3,
-	ENEMY_DRAGON2_BLUE_SKILL1,	//µå·¡°ï Á»ºñ28
+	ENEMY_DRAGON2_BLUE_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„28
 	ENEMY_DRAGON2_BLUE_SKILL2,
 	ENEMY_DRAGON2_BLUE_SKILL3,
-	ENEMY_GHOST_BLUE_SKILL1,	//¶°µµ´Â ¿µÈ¥29
+	ENEMY_GHOST_BLUE_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼29
 	ENEMY_GHOST_BLUE_SKILL2,
 	ENEMY_GHOST_BLUE_SKILL3,
-	ENEMY_PUMPKIN_BLUE_SKILL1,	//¹«È¥ÀÇ ±â»ç30
+	ENEMY_PUMPKIN_BLUE_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬30
 	ENEMY_PUMPKIN_BLUE_SKILL2,
 	ENEMY_PUMPKIN_BLUE_SKILL3,
-	ENEMY_CASTLE1_BLUE_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð31		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_BLUE_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ31		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_BLUE_SKILL2,
 	ENEMY_CASTLE1_BLUE_SKILL3,
-	ENEMY_CASTLE2_BLUE_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç32
+	ENEMY_CASTLE2_BLUE_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬32
 	ENEMY_CASTLE2_BLUE_SKILL2,
 	ENEMY_CASTLE2_BLUE_SKILL3,
-	ENEMY_SPACE1_BLUE_SKILL1,	//¾Èµå·Îº¼33
+	ENEMY_SPACE1_BLUE_SKILL1,	//ì•ˆë“œë¡œë³¼33
 	ENEMY_SPACE1_BLUE_SKILL2,
 	ENEMY_SPACE1_BLUE_SKILL3,
-	ENEMY_SPACE2_BLUE_SKILL1,	//¸ÞÅ»°¡¿ì½º34
+	ENEMY_SPACE2_BLUE_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤34
 	ENEMY_SPACE2_BLUE_SKILL2,
 	ENEMY_SPACE2_BLUE_SKILL3,
-	ENEMY_FROG_BLUE_SKILL1,	//Åäµå¹ÂÅÏÆ®35
+	ENEMY_FROG_BLUE_SKILL1,	//í† ë“œë®¤í„´íŠ¸35
 	ENEMY_FROG_BLUE_SKILL2,
 	ENEMY_FROG_BLUE_SKILL3,
-	ENEMY_LARVA_BLUE_SKILL1,	//¾Æ¸£°ï36
+	ENEMY_LARVA_BLUE_SKILL1,	//ì•„ë¥´ê³¤36
 	ENEMY_LARVA_BLUE_SKILL2,
 	ENEMY_LARVA_BLUE_SKILL3,
-	ENEMY_SALAMANDER_BLUE_SKILL1,	//Ä«Åù37
+	ENEMY_SALAMANDER_BLUE_SKILL1,	//ì¹´íˆ¼37
 	ENEMY_SALAMANDER_BLUE_SKILL2,
 	ENEMY_SALAMANDER_BLUE_SKILL3,
-	ENEMY_GIANT_BLUE_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ38
+	ENEMY_GIANT_BLUE_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž38
 	ENEMY_GIANT_BLUE_SKILL2,
 	ENEMY_GIANT_BLUE_SKILL3,
-	ENEMY_IFRIT_BLUE_SKILL1,	//ÀÌÇÁ¸®Æ®39
+	ENEMY_IFRIT_BLUE_SKILL1,	//ì´í”„ë¦¬íŠ¸39
 	ENEMY_IFRIT_BLUE_SKILL2,
 	ENEMY_IFRIT_BLUE_SKILL3,
-	ENEMY_MAMMOTH_BLUE_SKILL1,	//ÇÁ·Î½ºÆ®40
+	ENEMY_MAMMOTH_BLUE_SKILL1,	//í”„ë¡œìŠ¤íŠ¸40
 	ENEMY_MAMMOTH_BLUE_SKILL2,
 	ENEMY_MAMMOTH_BLUE_SKILL3,
-	ENEMY_MACHINE_BLUE_SKILL1,	//¶óÀÌ¿À³Ê41					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_BLUE_SKILL1,	//ë¼ì´ì˜¤ë„ˆ41					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_BLUE_SKILL2,
 	ENEMY_MACHINE_BLUE_SKILL3,
-	ENEMY_ANGEL_BLUE_SKILL1,	//È£·ç½º42
+	ENEMY_ANGEL_BLUE_SKILL1,	//í˜¸ë£¨ìŠ¤42
 	ENEMY_ANGEL_BLUE_SKILL2,
 	ENEMY_ANGEL_BLUE_SKILL3,
-	ENEMY_KIMERA_BLUE_SKILL1,	//¸¶µµÇÕ¼º¼ö43
+	ENEMY_KIMERA_BLUE_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜43
 	ENEMY_KIMERA_BLUE_SKILL2,
 	ENEMY_KIMERA_BLUE_SKILL3,
-	ENEMY_SHIP_BLUE_SKILL1,	//°í´ëÀÇ ¹æÁÖ44
+	ENEMY_SHIP_BLUE_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼44
 	ENEMY_SHIP_BLUE_SKILL2,
 	ENEMY_SHIP_BLUE_SKILL3,
-	ENEMY_FOGRA_BLUE_SKILL1,	//¾Æ¸®¸¸45
+	ENEMY_FOGRA_BLUE_SKILL1,	//ì•„ë¦¬ë§Œ45
 	ENEMY_FOGRA_BLUE_SKILL2,
 	ENEMY_FOGRA_BLUE_SKILL3,
-	ENEMY_BAHAMUT_BLUE_SKILL1,	//Æ¼¾î¸Ë46
+	ENEMY_BAHAMUT_BLUE_SKILL1,	//í‹°ì–´ë§·46
 	ENEMY_BAHAMUT_BLUE_SKILL2,
 	ENEMY_BAHAMUT_BLUE_SKILL3,
-	ENEMY_DEATH_BLUE_SKILL1,	//»ç½Å47
+	ENEMY_DEATH_BLUE_SKILL1,	//ì‚¬ì‹ 47
 	ENEMY_DEATH_BLUE_SKILL2,
 	ENEMY_DEATH_BLUE_SKILL3,
-	ENEMY_CASTLE_BOSS1_BLUE_SKILL1,	//µ¥ºê¸®¿Â48
+	ENEMY_CASTLE_BOSS1_BLUE_SKILL1,	//ë°ë¸Œë¦¬ì˜¨48
 	ENEMY_CASTLE_BOSS1_BLUE_SKILL2,
 	ENEMY_CASTLE_BOSS1_BLUE_SKILL3,
-	ENEMY_CASTLE_BOSS2_BLUE_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º49
+	ENEMY_CASTLE_BOSS2_BLUE_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤49
 	ENEMY_CASTLE_BOSS2_BLUE_SKILL2,
 	ENEMY_CASTLE_BOSS2_BLUE_SKILL3,
-	ENEMY_CASTLE_BOSS3_BLUE_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï50 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_BLUE_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤50 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_BLUE_SKILL2,
 	ENEMY_CASTLE_BOSS3_BLUE_SKILL3,
-	ENEMY_CASTLE_BOSS4_BLUE_SKILL1,	//´ÙÅ©³ªÀÌÆ®51						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_BLUE_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸51						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_BLUE_SKILL2,
 	ENEMY_CASTLE_BOSS4_BLUE_SKILL3,
-	ENEMY_LABETH_BLUE_SKILL1,	//¶óº£½º º¸½º52
+	ENEMY_LABETH_BLUE_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤52
 	ENEMY_LABETH_BLUE_SKILL2,
 	ENEMY_LABETH_BLUE_SKILL3,
-	ENEMY_ELKEIN_BLUE_SKILL1,	//¿¤ÄÉÀÎ º¸½º53				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_BLUE_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤53				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_BLUE_SKILL2,
 	ENEMY_ELKEIN_BLUE_SKILL3,
 
-	ENEMY_SNAIL_PURPLE_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_PURPLE_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_PURPLE_SKILL2,
 	ENEMY_SNAIL_PURPLE_SKILL3,
-	ENEMY_TREE_PURPLE_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_PURPLE_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_PURPLE_SKILL2,
 	ENEMY_TREE_PURPLE_SKILL3,
-	ENEMY_ONEEYE_PURPLE_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_PURPLE_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_PURPLE_SKILL2,
 	ENEMY_ONEEYE_PURPLE_SKILL3,
-	ENEMY_SKELETON_PURPLE_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_PURPLE_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_PURPLE_SKILL2,
 	ENEMY_SKELETON_PURPLE_SKILL3,
-	ENEMY_LIZARD_PURPLE_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_PURPLE_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_PURPLE_SKILL2,
 	ENEMY_LIZARD_PURPLE_SKILL3,
-	ENEMY_JELLYFISH_PURPLE_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_PURPLE_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_PURPLE_SKILL2,
 	ENEMY_JELLYFISH_PURPLE_SKILL3,
-	ENEMY_KNIGHT_PURPLE_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_PURPLE_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_PURPLE_SKILL2,
 	ENEMY_KNIGHT_PURPLE_SKILL3,
-	ENEMY_SLIME_PURPLE_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_PURPLE_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_PURPLE_SKILL2,
 	ENEMY_SLIME_PURPLE_SKILL3,
-	ENEMY_SLING_PURPLE_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_PURPLE_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_PURPLE_SKILL2,
 	ENEMY_SLING_PURPLE_SKILL3,
-	ENEMY_BOAR_PURPLE_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_PURPLE_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_PURPLE_SKILL2,
 	ENEMY_BOAR_PURPLE_SKILL3,
-	ENEMY_FLAME_PURPLE_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_PURPLE_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_PURPLE_SKILL2,
 	ENEMY_FLAME_PURPLE_SKILL3,
-	ENEMY_PHOENIX_PURPLE_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_PURPLE_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_PURPLE_SKILL2,
 	ENEMY_PHOENIX_PURPLE_SKILL3,
-	ENEMY_FACE_PURPLE_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_PURPLE_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_PURPLE_SKILL2,
 	ENEMY_FACE_PURPLE_SKILL3,
-	ENEMY_SNOWMAN_PURPLE_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_PURPLE_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_PURPLE_SKILL2,
 	ENEMY_SNOWMAN_PURPLE_SKILL3,
-	ENEMY_ICESUN_PURPLE_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_PURPLE_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_PURPLE_SKILL2,
 	ENEMY_ICESUN_PURPLE_SKILL3,
-	ENEMY_LIGHTNING_PURPLE_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_PURPLE_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_PURPLE_SKILL2,
 	ENEMY_LIGHTNING_PURPLE_SKILL3,
-	ENEMY_THUNDER_PURPLE_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_PURPLE_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_PURPLE_SKILL2,
 	ENEMY_THUNDER_PURPLE_SKILL3,
-	ENEMY_CRYSTAL_PURPLE_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_PURPLE_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_PURPLE_SKILL2,
 	ENEMY_CRYSTAL_PURPLE_SKILL3,
-	ENEMY_FAIRY_PURPLE_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
+	ENEMY_FAIRY_PURPLE_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
 	ENEMY_FAIRY_PURPLE_SKILL2,
 	ENEMY_FAIRY_PURPLE_SKILL3,
-	ENEMY_CIRCLE_PURPLE_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_PURPLE_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_PURPLE_SKILL2,
 	ENEMY_CIRCLE_PURPLE_SKILL3,
-	ENEMY_SPIDER_PURPLE_SKILL1,	//½ºÆ®¶óÀÌ´õ25
+	ENEMY_SPIDER_PURPLE_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”25
 	ENEMY_SPIDER_PURPLE_SKILL2,
 	ENEMY_SPIDER_PURPLE_SKILL3,
-	ENEMY_GOLEM_PURPLE_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½26
+	ENEMY_GOLEM_PURPLE_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
 	ENEMY_GOLEM_PURPLE_SKILL2,
 	ENEMY_GOLEM_PURPLE_SKILL3,
-	ENEMY_DARKGIANT_PURPLE_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
+	ENEMY_DARKGIANT_PURPLE_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
 	ENEMY_DARKGIANT_PURPLE_SKILL2,
 	ENEMY_DARKGIANT_PURPLE_SKILL3,
-	ENEMY_DARKDRAGON_PURPLE_SKILL1,	//¿ì·Îº¸·Î½º28
+	ENEMY_DARKDRAGON_PURPLE_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤28
 	ENEMY_DARKDRAGON_PURPLE_SKILL2,
 	ENEMY_DARKDRAGON_PURPLE_SKILL3,
-	ENEMY_DRAGON1_PURPLE_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
+	ENEMY_DRAGON1_PURPLE_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
 	ENEMY_DRAGON1_PURPLE_SKILL2,
 	ENEMY_DRAGON1_PURPLE_SKILL3,
-	ENEMY_DRAGON2_PURPLE_SKILL1,	//µå·¡°ï Á»ºñ30
+	ENEMY_DRAGON2_PURPLE_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„30
 	ENEMY_DRAGON2_PURPLE_SKILL2,
 	ENEMY_DRAGON2_PURPLE_SKILL3,
-	ENEMY_GHOST_PURPLE_SKILL1,	//¶°µµ´Â ¿µÈ¥31
+	ENEMY_GHOST_PURPLE_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼31
 	ENEMY_GHOST_PURPLE_SKILL2,
 	ENEMY_GHOST_PURPLE_SKILL3,
-	ENEMY_PUMPKIN_PURPLE_SKILL1,	//¹«È¥ÀÇ ±â»ç32
+	ENEMY_PUMPKIN_PURPLE_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
 	ENEMY_PUMPKIN_PURPLE_SKILL2,
 	ENEMY_PUMPKIN_PURPLE_SKILL3,
-	ENEMY_CASTLE1_PURPLE_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_PURPLE_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_PURPLE_SKILL2,
 	ENEMY_CASTLE1_PURPLE_SKILL3,
-	ENEMY_CASTLE2_PURPLE_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
+	ENEMY_CASTLE2_PURPLE_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
 	ENEMY_CASTLE2_PURPLE_SKILL2,
 	ENEMY_CASTLE2_PURPLE_SKILL3,
-	ENEMY_SPACE1_PURPLE_SKILL1,	//¾Èµå·Îº¼35
+	ENEMY_SPACE1_PURPLE_SKILL1,	//ì•ˆë“œë¡œë³¼35
 	ENEMY_SPACE1_PURPLE_SKILL2,
 	ENEMY_SPACE1_PURPLE_SKILL3,
-	ENEMY_SPACE2_PURPLE_SKILL1,	//¸ÞÅ»°¡¿ì½º36
+	ENEMY_SPACE2_PURPLE_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤36
 	ENEMY_SPACE2_PURPLE_SKILL2,
 	ENEMY_SPACE2_PURPLE_SKILL3,
-	ENEMY_FROG_PURPLE_SKILL1,	//Åäµå¹ÂÅÏÆ®37
+	ENEMY_FROG_PURPLE_SKILL1,	//í† ë“œë®¤í„´íŠ¸37
 	ENEMY_FROG_PURPLE_SKILL2,
 	ENEMY_FROG_PURPLE_SKILL3,
-	ENEMY_LARVA_PURPLE_SKILL1,	//¾Æ¸£°ï38
+	ENEMY_LARVA_PURPLE_SKILL1,	//ì•„ë¥´ê³¤38
 	ENEMY_LARVA_PURPLE_SKILL2,
 	ENEMY_LARVA_PURPLE_SKILL3,
-	ENEMY_SALAMANDER_PURPLE_SKILL1,	//Ä«Åù39
+	ENEMY_SALAMANDER_PURPLE_SKILL1,	//ì¹´íˆ¼39
 	ENEMY_SALAMANDER_PURPLE_SKILL2,
 	ENEMY_SALAMANDER_PURPLE_SKILL3,
-	ENEMY_GIANT_PURPLE_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ40
+	ENEMY_GIANT_PURPLE_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
 	ENEMY_GIANT_PURPLE_SKILL2,
 	ENEMY_GIANT_PURPLE_SKILL3,
-	ENEMY_IFRIT_PURPLE_SKILL1,	//ÀÌÇÁ¸®Æ®41
+	ENEMY_IFRIT_PURPLE_SKILL1,	//ì´í”„ë¦¬íŠ¸41
 	ENEMY_IFRIT_PURPLE_SKILL2,
 	ENEMY_IFRIT_PURPLE_SKILL3,
-	ENEMY_MAMMOTH_PURPLE_SKILL1,	//ÇÁ·Î½ºÆ®42
+	ENEMY_MAMMOTH_PURPLE_SKILL1,	//í”„ë¡œìŠ¤íŠ¸42
 	ENEMY_MAMMOTH_PURPLE_SKILL2,
 	ENEMY_MAMMOTH_PURPLE_SKILL3,
-	ENEMY_MACHINE_PURPLE_SKILL1,	//¶óÀÌ¿À³Ê43					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_PURPLE_SKILL1,	//ë¼ì´ì˜¤ë„ˆ43					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_PURPLE_SKILL2,
 	ENEMY_MACHINE_PURPLE_SKILL3,
-	ENEMY_ANGEL_PURPLE_SKILL1,	//È£·ç½º44
+	ENEMY_ANGEL_PURPLE_SKILL1,	//í˜¸ë£¨ìŠ¤44
 	ENEMY_ANGEL_PURPLE_SKILL2,
 	ENEMY_ANGEL_PURPLE_SKILL3,
-	ENEMY_KIMERA_PURPLE_SKILL1,	//¸¶µµÇÕ¼º¼ö45
+	ENEMY_KIMERA_PURPLE_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜45
 	ENEMY_KIMERA_PURPLE_SKILL2,
 	ENEMY_KIMERA_PURPLE_SKILL3,
-	ENEMY_SHIP_PURPLE_SKILL1,	//°í´ëÀÇ ¹æÁÖ46
+	ENEMY_SHIP_PURPLE_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼46
 	ENEMY_SHIP_PURPLE_SKILL2,
 	ENEMY_SHIP_PURPLE_SKILL3,
-	ENEMY_FOGRA_PURPLE_SKILL1,	//¾Æ¸®¸¸47
+	ENEMY_FOGRA_PURPLE_SKILL1,	//ì•„ë¦¬ë§Œ47
 	ENEMY_FOGRA_PURPLE_SKILL2,
 	ENEMY_FOGRA_PURPLE_SKILL3,
-	ENEMY_BAHAMUT_PURPLE_SKILL1,	//Æ¼¾î¸Ë48
+	ENEMY_BAHAMUT_PURPLE_SKILL1,	//í‹°ì–´ë§·48
 	ENEMY_BAHAMUT_PURPLE_SKILL2,
 	ENEMY_BAHAMUT_PURPLE_SKILL3,
-	ENEMY_DEATH_PURPLE_SKILL1,	//»ç½Å49
+	ENEMY_DEATH_PURPLE_SKILL1,	//ì‚¬ì‹ 49
 	ENEMY_DEATH_PURPLE_SKILL2,
 	ENEMY_DEATH_PURPLE_SKILL3,
-	ENEMY_CASTLE_BOSS1_PURPLE_SKILL1,	//µ¥ºê¸®¿Â50
+	ENEMY_CASTLE_BOSS1_PURPLE_SKILL1,	//ë°ë¸Œë¦¬ì˜¨50
 	ENEMY_CASTLE_BOSS1_PURPLE_SKILL2,
 	ENEMY_CASTLE_BOSS1_PURPLE_SKILL3,
-	ENEMY_CASTLE_BOSS2_PURPLE_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
+	ENEMY_CASTLE_BOSS2_PURPLE_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
 	ENEMY_CASTLE_BOSS2_PURPLE_SKILL2,
 	ENEMY_CASTLE_BOSS2_PURPLE_SKILL3,
-	ENEMY_CASTLE_BOSS3_PURPLE_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_PURPLE_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_PURPLE_SKILL2,
 	ENEMY_CASTLE_BOSS3_PURPLE_SKILL3,
-	ENEMY_CASTLE_BOSS4_PURPLE_SKILL1,	//´ÙÅ©³ªÀÌÆ®53						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_PURPLE_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸53						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_PURPLE_SKILL2,
 	ENEMY_CASTLE_BOSS4_PURPLE_SKILL3,
-	ENEMY_LABETH_PURPLE_SKILL1,	//¶óº£½º º¸½º54
+	ENEMY_LABETH_PURPLE_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
 	ENEMY_LABETH_PURPLE_SKILL2,
 	ENEMY_LABETH_PURPLE_SKILL3,
-	ENEMY_ELKEIN_PURPLE_SKILL1,	//¿¤ÄÉÀÎ º¸½º55				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_PURPLE_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_PURPLE_SKILL2,
 	ENEMY_ELKEIN_PURPLE_SKILL3,
 
-	ENEMY_SNAIL_GREEN_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_GREEN_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_GREEN_SKILL2,
 	ENEMY_SNAIL_GREEN_SKILL3,
-	ENEMY_TREE_GREEN_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_GREEN_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_GREEN_SKILL2,
 	ENEMY_TREE_GREEN_SKILL3,
-	ENEMY_ONEEYE_GREEN_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_GREEN_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_GREEN_SKILL2,
 	ENEMY_ONEEYE_GREEN_SKILL3,
-	ENEMY_SKELETON_GREEN_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_GREEN_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_GREEN_SKILL2,
 	ENEMY_SKELETON_GREEN_SKILL3,
-	ENEMY_LIZARD_GREEN_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_GREEN_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_GREEN_SKILL2,
 	ENEMY_LIZARD_GREEN_SKILL3,
-	ENEMY_JELLYFISH_GREEN_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_GREEN_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_GREEN_SKILL2,
 	ENEMY_JELLYFISH_GREEN_SKILL3,
-	ENEMY_KNIGHT_GREEN_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_GREEN_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_GREEN_SKILL2,
 	ENEMY_KNIGHT_GREEN_SKILL3,
-	ENEMY_SLIME_GREEN_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_GREEN_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_GREEN_SKILL2,
 	ENEMY_SLIME_GREEN_SKILL3,
-	ENEMY_SLING_GREEN_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_GREEN_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_GREEN_SKILL2,
 	ENEMY_SLING_GREEN_SKILL3,
-	ENEMY_BOAR_GREEN_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_GREEN_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_GREEN_SKILL2,
 	ENEMY_BOAR_GREEN_SKILL3,
-	ENEMY_FLAME_GREEN_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_GREEN_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_GREEN_SKILL2,
 	ENEMY_FLAME_GREEN_SKILL3,
-	ENEMY_PHOENIX_GREEN_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_GREEN_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_GREEN_SKILL2,
 	ENEMY_PHOENIX_GREEN_SKILL3,
-	ENEMY_FACE_GREEN_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_GREEN_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_GREEN_SKILL2,
 	ENEMY_FACE_GREEN_SKILL3,
-	ENEMY_SNOWMAN_GREEN_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_GREEN_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_GREEN_SKILL2,
 	ENEMY_SNOWMAN_GREEN_SKILL3,
-	ENEMY_ICESUN_GREEN_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_GREEN_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_GREEN_SKILL2,
 	ENEMY_ICESUN_GREEN_SKILL3,
-	ENEMY_LIGHTNING_GREEN_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_GREEN_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_GREEN_SKILL2,
 	ENEMY_LIGHTNING_GREEN_SKILL3,
-	ENEMY_THUNDER_GREEN_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_GREEN_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_GREEN_SKILL2,
 	ENEMY_THUNDER_GREEN_SKILL3,
-	ENEMY_CRYSTAL_GREEN_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_GREEN_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_GREEN_SKILL2,
 	ENEMY_CRYSTAL_GREEN_SKILL3,
-	ENEMY_FAIRY_GREEN_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
+	ENEMY_FAIRY_GREEN_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
 	ENEMY_FAIRY_GREEN_SKILL2,
 	ENEMY_FAIRY_GREEN_SKILL3,
-	ENEMY_CIRCLE_GREEN_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_GREEN_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_GREEN_SKILL2,
 	ENEMY_CIRCLE_GREEN_SKILL3,
-	ENEMY_SPIDER_GREEN_SKILL1,	//½ºÆ®¶óÀÌ´õ25
+	ENEMY_SPIDER_GREEN_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”25
 	ENEMY_SPIDER_GREEN_SKILL2,
 	ENEMY_SPIDER_GREEN_SKILL3,
-	ENEMY_GOLEM_GREEN_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½26
+	ENEMY_GOLEM_GREEN_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
 	ENEMY_GOLEM_GREEN_SKILL2,
 	ENEMY_GOLEM_GREEN_SKILL3,
-	ENEMY_DARKGIANT_GREEN_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
+	ENEMY_DARKGIANT_GREEN_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
 	ENEMY_DARKGIANT_GREEN_SKILL2,
 	ENEMY_DARKGIANT_GREEN_SKILL3,
-	ENEMY_DARKDRAGON_GREEN_SKILL1,	//¿ì·Îº¸·Î½º28
+	ENEMY_DARKDRAGON_GREEN_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤28
 	ENEMY_DARKDRAGON_GREEN_SKILL2,
 	ENEMY_DARKDRAGON_GREEN_SKILL3,
-	ENEMY_DRAGON1_GREEN_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
+	ENEMY_DRAGON1_GREEN_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
 	ENEMY_DRAGON1_GREEN_SKILL2,
 	ENEMY_DRAGON1_GREEN_SKILL3,
-	ENEMY_DRAGON2_GREEN_SKILL1,	//µå·¡°ï Á»ºñ30
+	ENEMY_DRAGON2_GREEN_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„30
 	ENEMY_DRAGON2_GREEN_SKILL2,
 	ENEMY_DRAGON2_GREEN_SKILL3,
-	ENEMY_GHOST_GREEN_SKILL1,	//¶°µµ´Â ¿µÈ¥31
+	ENEMY_GHOST_GREEN_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼31
 	ENEMY_GHOST_GREEN_SKILL2,
 	ENEMY_GHOST_GREEN_SKILL3,
-	ENEMY_PUMPKIN_GREEN_SKILL1,	//¹«È¥ÀÇ ±â»ç32
+	ENEMY_PUMPKIN_GREEN_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
 	ENEMY_PUMPKIN_GREEN_SKILL2,
 	ENEMY_PUMPKIN_GREEN_SKILL3,
-	ENEMY_CASTLE1_GREEN_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_GREEN_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_GREEN_SKILL2,
 	ENEMY_CASTLE1_GREEN_SKILL3,
-	ENEMY_CASTLE2_GREEN_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
+	ENEMY_CASTLE2_GREEN_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
 	ENEMY_CASTLE2_GREEN_SKILL2,
 	ENEMY_CASTLE2_GREEN_SKILL3,
-	ENEMY_SPACE1_GREEN_SKILL1,	//¾Èµå·Îº¼35
+	ENEMY_SPACE1_GREEN_SKILL1,	//ì•ˆë“œë¡œë³¼35
 	ENEMY_SPACE1_GREEN_SKILL2,
 	ENEMY_SPACE1_GREEN_SKILL3,
-	ENEMY_SPACE2_GREEN_SKILL1,	//¸ÞÅ»°¡¿ì½º36
+	ENEMY_SPACE2_GREEN_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤36
 	ENEMY_SPACE2_GREEN_SKILL2,
 	ENEMY_SPACE2_GREEN_SKILL3,
-	ENEMY_FROG_GREEN_SKILL1,	//Åäµå¹ÂÅÏÆ®37
+	ENEMY_FROG_GREEN_SKILL1,	//í† ë“œë®¤í„´íŠ¸37
 	ENEMY_FROG_GREEN_SKILL2,
 	ENEMY_FROG_GREEN_SKILL3,
-	ENEMY_LARVA_GREEN_SKILL1,	//¾Æ¸£°ï38
+	ENEMY_LARVA_GREEN_SKILL1,	//ì•„ë¥´ê³¤38
 	ENEMY_LARVA_GREEN_SKILL2,
 	ENEMY_LARVA_GREEN_SKILL3,
-	ENEMY_SALAMANDER_GREEN_SKILL1,	//Ä«Åù39
+	ENEMY_SALAMANDER_GREEN_SKILL1,	//ì¹´íˆ¼39
 	ENEMY_SALAMANDER_GREEN_SKILL2,
 	ENEMY_SALAMANDER_GREEN_SKILL3,
-	ENEMY_GIANT_GREEN_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ40
+	ENEMY_GIANT_GREEN_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
 	ENEMY_GIANT_GREEN_SKILL2,
 	ENEMY_GIANT_GREEN_SKILL3,
-	ENEMY_IFRIT_GREEN_SKILL1,	//ÀÌÇÁ¸®Æ®41
+	ENEMY_IFRIT_GREEN_SKILL1,	//ì´í”„ë¦¬íŠ¸41
 	ENEMY_IFRIT_GREEN_SKILL2,
 	ENEMY_IFRIT_GREEN_SKILL3,
-	ENEMY_MAMMOTH_GREEN_SKILL1,	//ÇÁ·Î½ºÆ®42
+	ENEMY_MAMMOTH_GREEN_SKILL1,	//í”„ë¡œìŠ¤íŠ¸42
 	ENEMY_MAMMOTH_GREEN_SKILL2,
 	ENEMY_MAMMOTH_GREEN_SKILL3,
-	ENEMY_MACHINE_GREEN_SKILL1,	//¶óÀÌ¿À³Ê43					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_GREEN_SKILL1,	//ë¼ì´ì˜¤ë„ˆ43					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_GREEN_SKILL2,
 	ENEMY_MACHINE_GREEN_SKILL3,
-	ENEMY_ANGEL_GREEN_SKILL1,	//È£·ç½º44
+	ENEMY_ANGEL_GREEN_SKILL1,	//í˜¸ë£¨ìŠ¤44
 	ENEMY_ANGEL_GREEN_SKILL2,
 	ENEMY_ANGEL_GREEN_SKILL3,
-	ENEMY_KIMERA_GREEN_SKILL1,	//¸¶µµÇÕ¼º¼ö45
+	ENEMY_KIMERA_GREEN_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜45
 	ENEMY_KIMERA_GREEN_SKILL2,
 	ENEMY_KIMERA_GREEN_SKILL3,
-	ENEMY_SHIP_GREEN_SKILL1,	//°í´ëÀÇ ¹æÁÖ46
+	ENEMY_SHIP_GREEN_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼46
 	ENEMY_SHIP_GREEN_SKILL2,
 	ENEMY_SHIP_GREEN_SKILL3,
-	ENEMY_FOGRA_GREEN_SKILL1,	//¾Æ¸®¸¸47
+	ENEMY_FOGRA_GREEN_SKILL1,	//ì•„ë¦¬ë§Œ47
 	ENEMY_FOGRA_GREEN_SKILL2,
 	ENEMY_FOGRA_GREEN_SKILL3,
-	ENEMY_BAHAMUT_GREEN_SKILL1,	//Æ¼¾î¸Ë48
+	ENEMY_BAHAMUT_GREEN_SKILL1,	//í‹°ì–´ë§·48
 	ENEMY_BAHAMUT_GREEN_SKILL2,
 	ENEMY_BAHAMUT_GREEN_SKILL3,
-	ENEMY_DEATH_GREEN_SKILL1,	//»ç½Å49
+	ENEMY_DEATH_GREEN_SKILL1,	//ì‚¬ì‹ 49
 	ENEMY_DEATH_GREEN_SKILL2,
 	ENEMY_DEATH_GREEN_SKILL3,
-	ENEMY_CASTLE_BOSS1_GREEN_SKILL1,	//µ¥ºê¸®¿Â50
+	ENEMY_CASTLE_BOSS1_GREEN_SKILL1,	//ë°ë¸Œë¦¬ì˜¨50
 	ENEMY_CASTLE_BOSS1_GREEN_SKILL2,
 	ENEMY_CASTLE_BOSS1_GREEN_SKILL3,
-	ENEMY_CASTLE_BOSS2_GREEN_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
+	ENEMY_CASTLE_BOSS2_GREEN_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
 	ENEMY_CASTLE_BOSS2_GREEN_SKILL2,
 	ENEMY_CASTLE_BOSS2_GREEN_SKILL3,
-	ENEMY_CASTLE_BOSS3_GREEN_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_GREEN_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_GREEN_SKILL2,
 	ENEMY_CASTLE_BOSS3_GREEN_SKILL3,
-	ENEMY_CASTLE_BOSS4_GREEN_SKILL1,	//´ÙÅ©³ªÀÌÆ®53						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_GREEN_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸53						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_GREEN_SKILL2,
 	ENEMY_CASTLE_BOSS4_GREEN_SKILL3,
-	ENEMY_LABETH_GREEN_SKILL1,	//¶óº£½º º¸½º54
+	ENEMY_LABETH_GREEN_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
 	ENEMY_LABETH_GREEN_SKILL2,
 	ENEMY_LABETH_GREEN_SKILL3,
-	ENEMY_ELKEIN_GREEN_SKILL1,	//¿¤ÄÉÀÎ º¸½º55				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_GREEN_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_GREEN_SKILL2,
 	ENEMY_ELKEIN_GREEN_SKILL3,
-	ENEMY_SNAIL_GOLD_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_GOLD_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_GOLD_SKILL2,
 	ENEMY_SNAIL_GOLD_SKILL3,
-	ENEMY_TREE_GOLD_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_GOLD_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_GOLD_SKILL2,
 	ENEMY_TREE_GOLD_SKILL3,
-	ENEMY_ONEEYE_GOLD_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_GOLD_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_GOLD_SKILL2,
 	ENEMY_ONEEYE_GOLD_SKILL3,
-	ENEMY_SKELETON_GOLD_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_GOLD_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_GOLD_SKILL2,
 	ENEMY_SKELETON_GOLD_SKILL3,
-	ENEMY_LIZARD_GOLD_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_GOLD_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_GOLD_SKILL2,
 	ENEMY_LIZARD_GOLD_SKILL3,
-	ENEMY_JELLYFISH_GOLD_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_GOLD_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_GOLD_SKILL2,
 	ENEMY_JELLYFISH_GOLD_SKILL3,
-	ENEMY_KNIGHT_GOLD_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_GOLD_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_GOLD_SKILL2,
 	ENEMY_KNIGHT_GOLD_SKILL3,
-	ENEMY_SLIME_GOLD_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_GOLD_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_GOLD_SKILL2,
 	ENEMY_SLIME_GOLD_SKILL3,
-	ENEMY_SLING_GOLD_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_GOLD_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_GOLD_SKILL2,
 	ENEMY_SLING_GOLD_SKILL3,
-	ENEMY_BOAR_GOLD_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_GOLD_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_GOLD_SKILL2,
 	ENEMY_BOAR_GOLD_SKILL3,
-	ENEMY_FLAME_GOLD_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_GOLD_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_GOLD_SKILL2,
 	ENEMY_FLAME_GOLD_SKILL3,
-	ENEMY_PHOENIX_GOLD_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_GOLD_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_GOLD_SKILL2,
 	ENEMY_PHOENIX_GOLD_SKILL3,
-	ENEMY_FACE_GOLD_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_GOLD_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_GOLD_SKILL2,
 	ENEMY_FACE_GOLD_SKILL3,
-	ENEMY_SNOWMAN_GOLD_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_GOLD_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_GOLD_SKILL2,
 	ENEMY_SNOWMAN_GOLD_SKILL3,
-	ENEMY_ICESUN_GOLD_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_GOLD_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_GOLD_SKILL2,
 	ENEMY_ICESUN_GOLD_SKILL3,
-	ENEMY_LIGHTNING_GOLD_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_GOLD_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_GOLD_SKILL2,
 	ENEMY_LIGHTNING_GOLD_SKILL3,
-	ENEMY_THUNDER_GOLD_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_GOLD_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_GOLD_SKILL2,
 	ENEMY_THUNDER_GOLD_SKILL3,
-	ENEMY_CRYSTAL_GOLD_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_GOLD_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_GOLD_SKILL2,
 	ENEMY_CRYSTAL_GOLD_SKILL3,
-	ENEMY_FAIRY_GOLD_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
+	ENEMY_FAIRY_GOLD_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
 	ENEMY_FAIRY_GOLD_SKILL2,
 	ENEMY_FAIRY_GOLD_SKILL3,
-	ENEMY_CIRCLE_GOLD_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_GOLD_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_GOLD_SKILL2,
 	ENEMY_CIRCLE_GOLD_SKILL3,
-	ENEMY_SPIDER_GOLD_SKILL1,	//½ºÆ®¶óÀÌ´õ25
+	ENEMY_SPIDER_GOLD_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”25
 	ENEMY_SPIDER_GOLD_SKILL2,
 	ENEMY_SPIDER_GOLD_SKILL3,
-	ENEMY_GOLEM_GOLD_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½26
+	ENEMY_GOLEM_GOLD_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
 	ENEMY_GOLEM_GOLD_SKILL2,
 	ENEMY_GOLEM_GOLD_SKILL3,
-	ENEMY_DARKGIANT_GOLD_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
+	ENEMY_DARKGIANT_GOLD_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
 	ENEMY_DARKGIANT_GOLD_SKILL2,
 	ENEMY_DARKGIANT_GOLD_SKILL3,
-	ENEMY_DARKDRAGON_GOLD_SKILL1,	//¿ì·Îº¸·Î½º28
+	ENEMY_DARKDRAGON_GOLD_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤28
 	ENEMY_DARKDRAGON_GOLD_SKILL2,
 	ENEMY_DARKDRAGON_GOLD_SKILL3,
-	ENEMY_DRAGON1_GOLD_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
+	ENEMY_DRAGON1_GOLD_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
 	ENEMY_DRAGON1_GOLD_SKILL2,
 	ENEMY_DRAGON1_GOLD_SKILL3,
-	ENEMY_DRAGON2_GOLD_SKILL1,	//µå·¡°ï Á»ºñ30
+	ENEMY_DRAGON2_GOLD_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„30
 	ENEMY_DRAGON2_GOLD_SKILL2,
 	ENEMY_DRAGON2_GOLD_SKILL3,
-	ENEMY_GHOST_GOLD_SKILL1,	//¶°µµ´Â ¿µÈ¥31
+	ENEMY_GHOST_GOLD_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼31
 	ENEMY_GHOST_GOLD_SKILL2,
 	ENEMY_GHOST_GOLD_SKILL3,
-	ENEMY_PUMPKIN_GOLD_SKILL1,	//¹«È¥ÀÇ ±â»ç32
+	ENEMY_PUMPKIN_GOLD_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
 	ENEMY_PUMPKIN_GOLD_SKILL2,
 	ENEMY_PUMPKIN_GOLD_SKILL3,
-	ENEMY_CASTLE1_GOLD_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_GOLD_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_GOLD_SKILL2,
 	ENEMY_CASTLE1_GOLD_SKILL3,
-	ENEMY_CASTLE2_GOLD_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
+	ENEMY_CASTLE2_GOLD_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
 	ENEMY_CASTLE2_GOLD_SKILL2,
 	ENEMY_CASTLE2_GOLD_SKILL3,
-	ENEMY_SPACE1_GOLD_SKILL1,	//¾Èµå·Îº¼35
+	ENEMY_SPACE1_GOLD_SKILL1,	//ì•ˆë“œë¡œë³¼35
 	ENEMY_SPACE1_GOLD_SKILL2,
 	ENEMY_SPACE1_GOLD_SKILL3,
-	ENEMY_SPACE2_GOLD_SKILL1,	//¸ÞÅ»°¡¿ì½º36
+	ENEMY_SPACE2_GOLD_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤36
 	ENEMY_SPACE2_GOLD_SKILL2,
 	ENEMY_SPACE2_GOLD_SKILL3,
-	ENEMY_FROG_GOLD_SKILL1,	//Åäµå¹ÂÅÏÆ®37
+	ENEMY_FROG_GOLD_SKILL1,	//í† ë“œë®¤í„´íŠ¸37
 	ENEMY_FROG_GOLD_SKILL2,
 	ENEMY_FROG_GOLD_SKILL3,
-	ENEMY_LARVA_GOLD_SKILL1,	//¾Æ¸£°ï38
+	ENEMY_LARVA_GOLD_SKILL1,	//ì•„ë¥´ê³¤38
 	ENEMY_LARVA_GOLD_SKILL2,
 	ENEMY_LARVA_GOLD_SKILL3,
-	ENEMY_SALAMANDER_GOLD_SKILL1,	//Ä«Åù39
+	ENEMY_SALAMANDER_GOLD_SKILL1,	//ì¹´íˆ¼39
 	ENEMY_SALAMANDER_GOLD_SKILL2,
 	ENEMY_SALAMANDER_GOLD_SKILL3,
-	ENEMY_GIANT_GOLD_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ40
+	ENEMY_GIANT_GOLD_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
 	ENEMY_GIANT_GOLD_SKILL2,
 	ENEMY_GIANT_GOLD_SKILL3,
-	ENEMY_IFRIT_GOLD_SKILL1,	//ÀÌÇÁ¸®Æ®41
+	ENEMY_IFRIT_GOLD_SKILL1,	//ì´í”„ë¦¬íŠ¸41
 	ENEMY_IFRIT_GOLD_SKILL2,
 	ENEMY_IFRIT_GOLD_SKILL3,
-	ENEMY_MAMMOTH_GOLD_SKILL1,	//ÇÁ·Î½ºÆ®42
+	ENEMY_MAMMOTH_GOLD_SKILL1,	//í”„ë¡œìŠ¤íŠ¸42
 	ENEMY_MAMMOTH_GOLD_SKILL2,
 	ENEMY_MAMMOTH_GOLD_SKILL3,
-	ENEMY_MACHINE_GOLD_SKILL1,	//¶óÀÌ¿À³Ê43					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_GOLD_SKILL1,	//ë¼ì´ì˜¤ë„ˆ43					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_GOLD_SKILL2,
 	ENEMY_MACHINE_GOLD_SKILL3,
-	ENEMY_ANGEL_GOLD_SKILL1,	//È£·ç½º44
+	ENEMY_ANGEL_GOLD_SKILL1,	//í˜¸ë£¨ìŠ¤44
 	ENEMY_ANGEL_GOLD_SKILL2,
 	ENEMY_ANGEL_GOLD_SKILL3,
-	ENEMY_KIMERA_GOLD_SKILL1,	//¸¶µµÇÕ¼º¼ö45
+	ENEMY_KIMERA_GOLD_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜45
 	ENEMY_KIMERA_GOLD_SKILL2,
 	ENEMY_KIMERA_GOLD_SKILL3,
-	ENEMY_SHIP_GOLD_SKILL1,	//°í´ëÀÇ ¹æÁÖ46
+	ENEMY_SHIP_GOLD_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼46
 	ENEMY_SHIP_GOLD_SKILL2,
 	ENEMY_SHIP_GOLD_SKILL3,
-	ENEMY_FOGRA_GOLD_SKILL1,	//¾Æ¸®¸¸47
+	ENEMY_FOGRA_GOLD_SKILL1,	//ì•„ë¦¬ë§Œ47
 	ENEMY_FOGRA_GOLD_SKILL2,
 	ENEMY_FOGRA_GOLD_SKILL3,
-	ENEMY_BAHAMUT_GOLD_SKILL1,	//Æ¼¾î¸Ë48
+	ENEMY_BAHAMUT_GOLD_SKILL1,	//í‹°ì–´ë§·48
 	ENEMY_BAHAMUT_GOLD_SKILL2,
 	ENEMY_BAHAMUT_GOLD_SKILL3,
-	ENEMY_DEATH_GOLD_SKILL1,	//»ç½Å49
+	ENEMY_DEATH_GOLD_SKILL1,	//ì‚¬ì‹ 49
 	ENEMY_DEATH_GOLD_SKILL2,
 	ENEMY_DEATH_GOLD_SKILL3,
-	ENEMY_CASTLE_BOSS1_GOLD_SKILL1,	//µ¥ºê¸®¿Â50
+	ENEMY_CASTLE_BOSS1_GOLD_SKILL1,	//ë°ë¸Œë¦¬ì˜¨50
 	ENEMY_CASTLE_BOSS1_GOLD_SKILL2,
 	ENEMY_CASTLE_BOSS1_GOLD_SKILL3,
-	ENEMY_CASTLE_BOSS2_GOLD_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
+	ENEMY_CASTLE_BOSS2_GOLD_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
 	ENEMY_CASTLE_BOSS2_GOLD_SKILL2,
 	ENEMY_CASTLE_BOSS2_GOLD_SKILL3,
-	ENEMY_CASTLE_BOSS3_GOLD_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_GOLD_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_GOLD_SKILL2,
 	ENEMY_CASTLE_BOSS3_GOLD_SKILL3,
-	ENEMY_CASTLE_BOSS4_GOLD_SKILL1,	//´ÙÅ©³ªÀÌÆ®53						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_GOLD_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸53						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_GOLD_SKILL2,
 	ENEMY_CASTLE_BOSS4_GOLD_SKILL3,
-	ENEMY_LABETH_GOLD_SKILL1,	//¶óº£½º º¸½º54
+	ENEMY_LABETH_GOLD_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
 	ENEMY_LABETH_GOLD_SKILL2,
 	ENEMY_LABETH_GOLD_SKILL3,
-	ENEMY_ELKEIN_GOLD_SKILL1,	//¿¤ÄÉÀÎ º¸½º55				//¹®Á¦ ¿©±â¼­ºÎÅÍ 4°³°¡ ¾îµò°¡ È­¸éÀ» ±úÁö°Ô ÇÔ
+	ENEMY_ELKEIN_GOLD_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55				//ë¬¸ì œ ì—¬ê¸°ì„œë¶€í„° 4ê°œê°€ ì–´ë”˜ê°€ í™”ë©´ì„ ê¹¨ì§€ê²Œ í•¨
 	ENEMY_ELKEIN_GOLD_SKILL2,
 	ENEMY_ELKEIN_GOLD_SKILL3,
 
-	ENEMY_SNAIL_BLACK_SKILL1,	//°¡½Ã²®Áú ´ÞÆØÀÌ
+	ENEMY_SNAIL_BLACK_SKILL1,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
 	ENEMY_SNAIL_BLACK_SKILL2,
 	ENEMY_SNAIL_BLACK_SKILL3,
-	ENEMY_TREE_BLACK_SKILL1,	//´ËÀÇ ÁÖÀÎ 4
+	ENEMY_TREE_BLACK_SKILL1,	//ëŠªì˜ ì£¼ì¸ 4
 	ENEMY_TREE_BLACK_SKILL2,
 	ENEMY_TREE_BLACK_SKILL3,
-	ENEMY_ONEEYE_BLACK_SKILL1,	//¾ÆÀÌº¼ 5
+	ENEMY_ONEEYE_BLACK_SKILL1,	//ì•„ì´ë³¼ 5
 	ENEMY_ONEEYE_BLACK_SKILL2,
 	ENEMY_ONEEYE_BLACK_SKILL3,
-	ENEMY_SKELETON_BLACK_SKILL1,	//Ä¥ÈæÀÇ ±â»ç 6 
+	ENEMY_SKELETON_BLACK_SKILL1,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
 	ENEMY_SKELETON_BLACK_SKILL2,
 	ENEMY_SKELETON_BLACK_SKILL3,
-	ENEMY_LIZARD_BLACK_SKILL1,	//»çÇÏ±ä º´»ç 7
+	ENEMY_LIZARD_BLACK_SKILL1,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
 	ENEMY_LIZARD_BLACK_SKILL2,
 	ENEMY_LIZARD_BLACK_SKILL3,
-	ENEMY_JELLYFISH_BLACK_SKILL1,	//¸Íµ¶ ÇØÆÄ¸®8
+	ENEMY_JELLYFISH_BLACK_SKILL1,	//ë§¹ë… í•´íŒŒë¦¬8
 	ENEMY_JELLYFISH_BLACK_SKILL2,
 	ENEMY_JELLYFISH_BLACK_SKILL3,
-	ENEMY_KNIGHT_BLACK_SKILL1,	//Å¸¶ôÇÑ ±â»ç 9
+	ENEMY_KNIGHT_BLACK_SKILL1,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
 	ENEMY_KNIGHT_BLACK_SKILL2,
 	ENEMY_KNIGHT_BLACK_SKILL3,
-	ENEMY_SLIME_BLACK_SKILL1,	//½½¶óÀÓ 10
+	ENEMY_SLIME_BLACK_SKILL1,	//ìŠ¬ë¼ìž„ 10
 	ENEMY_SLIME_BLACK_SKILL2,
 	ENEMY_SLIME_BLACK_SKILL3,
-	ENEMY_SLING_BLACK_SKILL1,	//Æò¿øÀÇ µµÀû 11
+	ENEMY_SLING_BLACK_SKILL1,	//í‰ì›ì˜ ë„ì  11
 	ENEMY_SLING_BLACK_SKILL2,
 	ENEMY_SLING_BLACK_SKILL3,
-	ENEMY_BOAR_BLACK_SKILL1,	//°ÅÄ£¹ß ¸äµÅÁö 12
+	ENEMY_BOAR_BLACK_SKILL1,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
 	ENEMY_BOAR_BLACK_SKILL2,
 	ENEMY_BOAR_BLACK_SKILL3,
-	ENEMY_FLAME_BLACK_SKILL1,	//ºÐ³ëÀÇ Á¤·É 13
+	ENEMY_FLAME_BLACK_SKILL1,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
 	ENEMY_FLAME_BLACK_SKILL2,
 	ENEMY_FLAME_BLACK_SKILL3,
-	ENEMY_PHOENIX_BLACK_SKILL1,	//¸¶¼ºÀÇ ºÒ»õ14
+	ENEMY_PHOENIX_BLACK_SKILL1,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
 	ENEMY_PHOENIX_BLACK_SKILL2,
 	ENEMY_PHOENIX_BLACK_SKILL3,
-	ENEMY_FACE_BLACK_SKILL1,	//°áºùÀÇ ¼®»ó15
+	ENEMY_FACE_BLACK_SKILL1,	//ê²°ë¹™ì˜ ì„ìƒ15
 	ENEMY_FACE_BLACK_SKILL2,
 	ENEMY_FACE_BLACK_SKILL3,
-	ENEMY_SNOWMAN_BLACK_SKILL1,	//½º³ë¿ì¸Ç16
+	ENEMY_SNOWMAN_BLACK_SKILL1,	//ìŠ¤ë…¸ìš°ë§¨16
 	ENEMY_SNOWMAN_BLACK_SKILL2,
 	ENEMY_SNOWMAN_BLACK_SKILL3,
-	ENEMY_ICESUN_BLACK_SKILL1,	//¾ÆÀÌ½º¸¶½ºÅ©17
+	ENEMY_ICESUN_BLACK_SKILL1,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
 	ENEMY_ICESUN_BLACK_SKILL2,
 	ENEMY_ICESUN_BLACK_SKILL3,
-	ENEMY_LIGHTNING_BLACK_SKILL1,	//½ºÆÄÅ©18
+	ENEMY_LIGHTNING_BLACK_SKILL1,	//ìŠ¤íŒŒí¬18
 	ENEMY_LIGHTNING_BLACK_SKILL2,
 	ENEMY_LIGHTNING_BLACK_SKILL3,
-	ENEMY_THUNDER_BLACK_SKILL1,	//´ÙÅ©¹Ì½ºÆ®19
+	ENEMY_THUNDER_BLACK_SKILL1,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
 	ENEMY_THUNDER_BLACK_SKILL2,
 	ENEMY_THUNDER_BLACK_SKILL3,
-	ENEMY_CRYSTAL_BLACK_SKILL1,	//½ºÆÄÅ© ÇÃ·£Æ®20
+	ENEMY_CRYSTAL_BLACK_SKILL1,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
 	ENEMY_CRYSTAL_BLACK_SKILL2,
 	ENEMY_CRYSTAL_BLACK_SKILL3,
-	ENEMY_FAIRY_BLACK_SKILL1,	//¶óÀÌÆ® ½ºÇÇ¸´2     1
+	ENEMY_FAIRY_BLACK_SKILL1,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿2     1
 	ENEMY_FAIRY_BLACK_SKILL2,
 	ENEMY_FAIRY_BLACK_SKILL3,
-	ENEMY_CIRCLE_BLACK_SKILL1,	//µô·çÁ¯ ¼Ò¿ï22
+	ENEMY_CIRCLE_BLACK_SKILL1,	//ë”œë£¨ì ¼ ì†Œìš¸22
 	ENEMY_CIRCLE_BLACK_SKILL2,
 	ENEMY_CIRCLE_BLACK_SKILL3,
-	ENEMY_SPIDER_BLACK_SKILL1,	//½ºÆ®¶óÀÌ´õ25
+	ENEMY_SPIDER_BLACK_SKILL1,	//ìŠ¤íŠ¸ë¼ì´ë”25
 	ENEMY_SPIDER_BLACK_SKILL2,
 	ENEMY_SPIDER_BLACK_SKILL3,
-	ENEMY_GOLEM_BLACK_SKILL1,	//ÁÖÀÎÀÒÀº °ñ·½26
+	ENEMY_GOLEM_BLACK_SKILL1,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
 	ENEMY_GOLEM_BLACK_SKILL2,
 	ENEMY_GOLEM_BLACK_SKILL3,
-	ENEMY_DARKGIANT_BLACK_SKILL1,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
+	ENEMY_DARKGIANT_BLACK_SKILL1,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
 	ENEMY_DARKGIANT_BLACK_SKILL2,
 	ENEMY_DARKGIANT_BLACK_SKILL3,
-	ENEMY_DARKDRAGON_BLACK_SKILL1,	//¿ì·Îº¸·Î½º28
+	ENEMY_DARKDRAGON_BLACK_SKILL1,	//ìš°ë¡œë³´ë¡œìŠ¤28
 	ENEMY_DARKDRAGON_BLACK_SKILL2,
 	ENEMY_DARKDRAGON_BLACK_SKILL3,
-	ENEMY_DRAGON1_BLACK_SKILL1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
+	ENEMY_DRAGON1_BLACK_SKILL1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
 	ENEMY_DRAGON1_BLACK_SKILL2,
 	ENEMY_DRAGON1_BLACK_SKILL3,
-	ENEMY_DRAGON2_BLACK_SKILL1,	//µå·¡°ï Á»ºñ30
+	ENEMY_DRAGON2_BLACK_SKILL1,	//ë“œëž˜ê³¤ ì¢€ë¹„30
 	ENEMY_DRAGON2_BLACK_SKILL2,
 	ENEMY_DRAGON2_BLACK_SKILL3,
-	ENEMY_GHOST_BLACK_SKILL1,	//¶°µµ´Â ¿µÈ¥31
+	ENEMY_GHOST_BLACK_SKILL1,	//ë– ë„ëŠ” ì˜í˜¼31
 	ENEMY_GHOST_BLACK_SKILL2,
 	ENEMY_GHOST_BLACK_SKILL3,
-	ENEMY_PUMPKIN_BLACK_SKILL1,	//¹«È¥ÀÇ ±â»ç32
+	ENEMY_PUMPKIN_BLACK_SKILL1,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
 	ENEMY_PUMPKIN_BLACK_SKILL2,
 	ENEMY_PUMPKIN_BLACK_SKILL3,
-	ENEMY_CASTLE1_BLACK_SKILL1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33		//¹®Á¦ : »ç¶óÁö¸é ¾Èµ¹¾Æ¿È
+	ENEMY_CASTLE1_BLACK_SKILL1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33		//ë¬¸ì œ : ì‚¬ë¼ì§€ë©´ ì•ˆëŒì•„ì˜´
 	ENEMY_CASTLE1_BLACK_SKILL2,
 	ENEMY_CASTLE1_BLACK_SKILL3,
-	ENEMY_CASTLE2_BLACK_SKILL1,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
+	ENEMY_CASTLE2_BLACK_SKILL1,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
 	ENEMY_CASTLE2_BLACK_SKILL2,
 	ENEMY_CASTLE2_BLACK_SKILL3,
-	ENEMY_SPACE1_BLACK_SKILL1,	//¾Èµå·Îº¼35
+	ENEMY_SPACE1_BLACK_SKILL1,	//ì•ˆë“œë¡œë³¼35
 	ENEMY_SPACE1_BLACK_SKILL2,
 	ENEMY_SPACE1_BLACK_SKILL3,
-	ENEMY_SPACE2_BLACK_SKILL1,	//¸ÞÅ»°¡¿ì½º36
+	ENEMY_SPACE2_BLACK_SKILL1,	//ë©”íƒˆê°€ìš°ìŠ¤36
 	ENEMY_SPACE2_BLACK_SKILL2,
 	ENEMY_SPACE2_BLACK_SKILL3,
-	ENEMY_FROG_BLACK_SKILL1,	//Åäµå¹ÂÅÏÆ®37
+	ENEMY_FROG_BLACK_SKILL1,	//í† ë“œë®¤í„´íŠ¸37
 	ENEMY_FROG_BLACK_SKILL2,
 	ENEMY_FROG_BLACK_SKILL3,
-	ENEMY_LARVA_BLACK_SKILL1,	//¾Æ¸£°ï38
+	ENEMY_LARVA_BLACK_SKILL1,	//ì•„ë¥´ê³¤38
 	ENEMY_LARVA_BLACK_SKILL2,
 	ENEMY_LARVA_BLACK_SKILL3,
-	ENEMY_SALAMANDER_BLACK_SKILL1,	//Ä«Åù39
+	ENEMY_SALAMANDER_BLACK_SKILL1,	//ì¹´íˆ¼39
 	ENEMY_SALAMANDER_BLACK_SKILL2,
 	ENEMY_SALAMANDER_BLACK_SKILL3,
-	ENEMY_GIANT_BLACK_SKILL1,	//°í´ëÀÇ ¼öÈ£ÀÚ40
+	ENEMY_GIANT_BLACK_SKILL1,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
 	ENEMY_GIANT_BLACK_SKILL2,
 	ENEMY_GIANT_BLACK_SKILL3,
-	ENEMY_IFRIT_BLACK_SKILL1,	//ÀÌÇÁ¸®Æ®41
+	ENEMY_IFRIT_BLACK_SKILL1,	//ì´í”„ë¦¬íŠ¸41
 	ENEMY_IFRIT_BLACK_SKILL2,
 	ENEMY_IFRIT_BLACK_SKILL3,
-	ENEMY_MAMMOTH_BLACK_SKILL1,	//ÇÁ·Î½ºÆ®42
+	ENEMY_MAMMOTH_BLACK_SKILL1,	//í”„ë¡œìŠ¤íŠ¸42
 	ENEMY_MAMMOTH_BLACK_SKILL2,
 	ENEMY_MAMMOTH_BLACK_SKILL3,
-	ENEMY_MACHINE_BLACK_SKILL1,	//¶óÀÌ¿À³Ê43					//¹®Á¦ : ¸ð¼ÇÀÌ ±â°è ¸ð¼ÇÀÌ ³ª¿È
+	ENEMY_MACHINE_BLACK_SKILL1,	//ë¼ì´ì˜¤ë„ˆ43					//ë¬¸ì œ : ëª¨ì…˜ì´ ê¸°ê³„ ëª¨ì…˜ì´ ë‚˜ì˜´
 	ENEMY_MACHINE_BLACK_SKILL2,
 	ENEMY_MACHINE_BLACK_SKILL3,
-	ENEMY_ANGEL_BLACK_SKILL1,	//È£·ç½º44
+	ENEMY_ANGEL_BLACK_SKILL1,	//í˜¸ë£¨ìŠ¤44
 	ENEMY_ANGEL_BLACK_SKILL2,
 	ENEMY_ANGEL_BLACK_SKILL3,
-	ENEMY_KIMERA_BLACK_SKILL1,	//¸¶µµÇÕ¼º¼ö45
+	ENEMY_KIMERA_BLACK_SKILL1,	//ë§ˆë„í•©ì„±ìˆ˜45
 	ENEMY_KIMERA_BLACK_SKILL2,
 	ENEMY_KIMERA_BLACK_SKILL3,
-	ENEMY_SHIP_BLACK_SKILL1,	//°í´ëÀÇ ¹æÁÖ46
+	ENEMY_SHIP_BLACK_SKILL1,	//ê³ ëŒ€ì˜ ë°©ì£¼46
 	ENEMY_SHIP_BLACK_SKILL2,
 	ENEMY_SHIP_BLACK_SKILL3,
-	ENEMY_FOGRA_BLACK_SKILL1,	//¾Æ¸®¸¸47
+	ENEMY_FOGRA_BLACK_SKILL1,	//ì•„ë¦¬ë§Œ47
 	ENEMY_FOGRA_BLACK_SKILL2,
 	ENEMY_FOGRA_BLACK_SKILL3,
-	ENEMY_BAHAMUT_BLACK_SKILL1,	//Æ¼¾î¸Ë48
+	ENEMY_BAHAMUT_BLACK_SKILL1,	//í‹°ì–´ë§·48
 	ENEMY_BAHAMUT_BLACK_SKILL2,
 	ENEMY_BAHAMUT_BLACK_SKILL3,
-	ENEMY_DEATH_BLACK_SKILL1,	//»ç½Å49
+	ENEMY_DEATH_BLACK_SKILL1,	//ì‚¬ì‹ 49
 	ENEMY_DEATH_BLACK_SKILL2,
 	ENEMY_DEATH_BLACK_SKILL3,
-	ENEMY_CASTLE_BOSS1_BLACK_SKILL1,	//µ¥ºê¸®¿Â50
+	ENEMY_CASTLE_BOSS1_BLACK_SKILL1,	//ë°ë¸Œë¦¬ì˜¨50
 	ENEMY_CASTLE_BOSS1_BLACK_SKILL2,
 	ENEMY_CASTLE_BOSS1_BLACK_SKILL3,
-	ENEMY_CASTLE_BOSS2_BLACK_SKILL1,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
+	ENEMY_CASTLE_BOSS2_BLACK_SKILL1,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
 	ENEMY_CASTLE_BOSS2_BLACK_SKILL2,
 	ENEMY_CASTLE_BOSS2_BLACK_SKILL3,
-	ENEMY_CASTLE_BOSS3_BLACK_SKILL1,	//½¦µµ¿ì Å×Æ®¶óÄï52 -> Á¦¿Ü
+	ENEMY_CASTLE_BOSS3_BLACK_SKILL1,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52 -> ì œì™¸
 	ENEMY_CASTLE_BOSS3_BLACK_SKILL2,
 	ENEMY_CASTLE_BOSS3_BLACK_SKILL3,
-	ENEMY_CASTLE_BOSS4_BLACK_SKILL1,	//´ÙÅ©³ªÀÌÆ®53						//¹®Á¦ À§¿¡ ¶°¼­ ³ª¿È
+	ENEMY_CASTLE_BOSS4_BLACK_SKILL1,	//ë‹¤í¬ë‚˜ì´íŠ¸53						//ë¬¸ì œ ìœ„ì— ë– ì„œ ë‚˜ì˜´
 	ENEMY_CASTLE_BOSS4_BLACK_SKILL2,
 	ENEMY_CASTLE_BOSS4_BLACK_SKILL3,
-	ENEMY_LABETH_BLACK_SKILL1,	//¶óº£½º º¸½º54
+	ENEMY_LABETH_BLACK_SKILL1,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
 	ENEMY_LABETH_BLACK_SKILL2,
 	ENEMY_LABETH_BLACK_SKILL3,
-	ENEMY_ELKEIN_BLACK_SKILL1,	//¿¤ÄÉÀÎ º¸½º55
+	ENEMY_ELKEIN_BLACK_SKILL1,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 	ENEMY_ELKEIN_BLACK_SKILL2,
 	ENEMY_ELKEIN_BLACK_SKILL3,
 
-	NPC_CAPTAIN_SKILL1,//c52//Àè½ºÆÐ³Ê//x
+	NPC_CAPTAIN_SKILL1,//c52//ìž­ìŠ¤íŒ¨ë„ˆ//x
 	NPC_CAPTAIN_SKILL2,
 	NPC_CAPTAIN_SKILL3,
-	NPC_CREW_SKILL1,//c53//¼±¿ø//x
+	NPC_CREW_SKILL1,//c53//ì„ ì›//x
 	NPC_CREW_SKILL2,
 	NPC_CREW_SKILL3,
-	NPC_GRANDFA_SKILL1,//c54//ÃÌÀå//x
+	NPC_GRANDFA_SKILL1,//c54//ì´Œìž¥//x
 	NPC_GRANDFA_SKILL2,
 	NPC_GRANDFA_SKILL3,
-	NPC_UNCLE_SKILL1,//c55//¾ÆÀú¾¾
+	NPC_UNCLE_SKILL1,//c55//ì•„ì €ì”¨
 	NPC_UNCLE_SKILL2,
 	NPC_UNCLE_SKILL3,
-	NPC_AUNT_SKILL1,//c56//¾ÆÁÜ¸¶//x
+	NPC_AUNT_SKILL1,//c56//ì•„ì¤Œë§ˆ//x
 	NPC_AUNT_SKILL2,
 	NPC_AUNT_SKILL3,
-	NPC_MAN_SKILL1,//c57//ÀÚ°æ´ÜÃ»³â//x
+	NPC_MAN_SKILL1,//c57//ìžê²½ë‹¨ì²­ë…„//x
 	NPC_MAN_SKILL2,
 	NPC_MAN_SKILL3,
-	NPC_WOMAN_SKILL1,//c58//Ã³³à//x
+	NPC_WOMAN_SKILL1,//c58//ì²˜ë…€//x
 	NPC_WOMAN_SKILL2,
 	NPC_WOMAN_SKILL3,
-	NPC_BOY_SKILL1,//c59//²¿¸¶³²//x
+	NPC_BOY_SKILL1,//c59//ê¼¬ë§ˆë‚¨//x
 	NPC_BOY_SKILL2,
 	NPC_BOY_SKILL3,
-	NPC_GIRL_SKILL1,//c60//²¿¸¶³à//x
+	NPC_GIRL_SKILL1,//c60//ê¼¬ë§ˆë…€//x
 	NPC_GIRL_SKILL2,
 	NPC_GIRL_SKILL3,
-	NPC_ALMA_SKILL1,//c61//¾Ë¸¶//x
+	NPC_ALMA_SKILL1,//c61//ì•Œë§ˆ//x
 	NPC_ALMA_SKILL2,
 	NPC_ALMA_SKILL3,
-	NPC_ITEM_SKILL1,//c62//ÅÍ¹ø//x
+	NPC_ITEM_SKILL1,//c62//í„°ë²ˆ//x
 	NPC_ITEM_SKILL2,
 	NPC_ITEM_SKILL3,
 	NPC_FATMAN_SKILL1,//c63//x
@@ -1604,7 +1604,7 @@ typedef enum _skillDef {
 	NPC_BUNNYGIRL_SKILL1,//c64//x
 	NPC_BUNNYGIRL_SKILL2,
 	NPC_BUNNYGIRL_SKILL3,
-	NPC_KNIGHT_SKILL1,//c65//ÇÃ·¹Å¸//x
+	NPC_KNIGHT_SKILL1,//c65//í”Œë ˆíƒ€//x
 	NPC_KNIGHT_SKILL2,
 	NPC_KNIGHT_SKILL3,
 	NPC_DOG_SKILL1,//c66//x
@@ -1619,16 +1619,16 @@ typedef enum _skillDef {
 	NPC_MAP_SKILL1,//c69//x
 	NPC_MAP_SKILL2,
 	NPC_MAP_SKILL3,
-	NPC_USERQUEST_SKILL1,//c70//½ºÆ©¾îµð½º//x
+	NPC_USERQUEST_SKILL1,//c70//ìŠ¤íŠœì–´ë””ìŠ¤//x
 	NPC_USERQUEST_SKILL2,
 	NPC_USERQUEST_SKILL3,
-	NPC_TRAVEL_SKILL1,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ//x
+	NPC_TRAVEL_SKILL1,//c71//ì´êµ­ì˜ì—¬í–‰ìž//x
 	NPC_TRAVEL_SKILL2,
 	NPC_TRAVEL_SKILL3,
-	NPC_GRANDMA_SKILL1,//c72//ÇÒ¸Ó´Ï//x
+	NPC_GRANDMA_SKILL1,//c72//í• ë¨¸ë‹ˆ//x
 	NPC_GRANDMA_SKILL2,
 	NPC_GRANDMA_SKILL3,
-	NPC_FISHING_SKILL1,//c73//¶óÇÇ//x
+	NPC_FISHING_SKILL1,//c73//ë¼í”¼//x
 	NPC_FISHING_SKILL2,
 	NPC_FISHING_SKILL3,
 	NPC_INN_SKILL1,//c74
@@ -1652,7 +1652,7 @@ typedef enum _skillDef {
 	NPC_SHIP_SKILL1,//c80
 	NPC_SHIP_SKILL2,
 	NPC_SHIP_SKILL3,
-	NPC_SEASOLDIER_SKILL1,//c81//¾ÆÆ²¶õº´»ç//x
+	NPC_SEASOLDIER_SKILL1,//c81//ì•„í‹€ëž€ë³‘ì‚¬//x
 	NPC_SEASOLDIER_SKILL2,
 	NPC_SEASOLDIER_SKILL3,
 	NPC_FRAUD_SKILL1,//c82//x
@@ -1664,118 +1664,118 @@ typedef enum _skillDef {
 	NPC_LUISE_SKILL1,//c84//x
 	NPC_LUISE_SKILL2,
 	NPC_LUISE_SKILL3,
-	NPC_SEAUNCLE_SKILL1,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾//x
+	NPC_SEAUNCLE_SKILL1,//c85//ì•„í‹€ëž€ì•„ì €ì”¨//x
 	NPC_SEAUNCLE_SKILL2,
 	NPC_SEAUNCLE_SKILL3,
-	NPC_SEABOY_SKILL1,//c86//¾ÆÆ²¶õ¼Ò³â//x
+	NPC_SEABOY_SKILL1,//c86//ì•„í‹€ëž€ì†Œë…„//x
 	NPC_SEABOY_SKILL2,
 	NPC_SEABOY_SKILL3,
-	NPC_DONALD_SKILL1,//c87//ÀÌ¼Ò·æ//x
+	NPC_DONALD_SKILL1,//c87//ì´ì†Œë£¡//x
 	NPC_DONALD_SKILL2,
 	NPC_DONALD_SKILL3,
-	NPC_SCHOLAR_SKILL1,//c88//ÇÐÀÚ//x
+	NPC_SCHOLAR_SKILL1,//c88//í•™ìž//x
 	NPC_SCHOLAR_SKILL2,
 	NPC_SCHOLAR_SKILL3,
-	NPC_CHEF_SKILL1,//c89//¿ä¸®´ë°¡//x
+	NPC_CHEF_SKILL1,//c89//ìš”ë¦¬ëŒ€ê°€//x
 	NPC_CHEF_SKILL2,
 	NPC_CHEF_SKILL3,
-	NPC_BISTRO_SKILL1,//c90//ºñ½ºÆ®·Î//x
+	NPC_BISTRO_SKILL1,//c90//ë¹„ìŠ¤íŠ¸ë¡œ//x
 	NPC_BISTRO_SKILL2,
 	NPC_BISTRO_SKILL3,
-	NPC_MAID_SKILL1,//c91//½Ã³à//x
+	NPC_MAID_SKILL1,//c91//ì‹œë…€//x
 	NPC_MAID_SKILL2,
 	NPC_MAID_SKILL3,
-	NPC_ADELKNIGHT_SKILL1,//c92//±â»ç//x
+	NPC_ADELKNIGHT_SKILL1,//c92//ê¸°ì‚¬//x
 	NPC_ADELKNIGHT_SKILL2,
 	NPC_ADELKNIGHT_SKILL3,
-	NPC_SEBASTIAN_SKILL1,//c93//¼¼¹Ù½ºÂù//x
+	NPC_SEBASTIAN_SKILL1,//c93//ì„¸ë°”ìŠ¤ì°¬//x
 	NPC_SEBASTIAN_SKILL2,
 	NPC_SEBASTIAN_SKILL3,
-	NPC_NOBLEMAN_SKILL1,//c94//±ÍÁ·¾ÆÀú¾¾//x
+	NPC_NOBLEMAN_SKILL1,//c94//ê·€ì¡±ì•„ì €ì”¨//x
 	NPC_NOBLEMAN_SKILL2,
 	NPC_NOBLEMAN_SKILL3,
-	NPC_DELPIOS_SKILL1,//c95//µ¨ÇÇ¿À½º//x
+	NPC_DELPIOS_SKILL1,//c95//ë¸í”¼ì˜¤ìŠ¤//x
 	NPC_DELPIOS_SKILL2,
 	NPC_DELPIOS_SKILL3,
-	NPC_LORA_SKILL1,//c96//·Î¶ó//x
+	NPC_LORA_SKILL1,//c96//ë¡œë¼//x
 	NPC_LORA_SKILL2,
 	NPC_LORA_SKILL3,
-	NPC_WITCH_SKILL1,//c97//¸¶³à//x
+	NPC_WITCH_SKILL1,//c97//ë§ˆë…€//x
 	NPC_WITCH_SKILL2,
 	NPC_WITCH_SKILL3,
-	NPC_ELFGRANDFA_SKILL1,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö//x
+	NPC_ELFGRANDFA_SKILL1,//c98//ì—˜í”„í• ì•„ë²„ì§€//x
 	NPC_ELFGRANDFA_SKILL2,
 	NPC_ELFGRANDFA_SKILL3,
-	NPC_ELFUNCLE_SKILL1,//c99//¿¤ÇÁ¾ÆÀú¾¾//x
+	NPC_ELFUNCLE_SKILL1,//c99//ì—˜í”„ì•„ì €ì”¨//x
 	NPC_ELFUNCLE_SKILL2,
 	NPC_ELFUNCLE_SKILL3,
-	NPC_ELFAUNT_SKILL1,//c100//¿¤ÇÁ¾ÆÁÜ¸¶//x
+	NPC_ELFAUNT_SKILL1,//c100//ì—˜í”„ì•„ì¤Œë§ˆ//x
 	NPC_ELFAUNT_SKILL2,
 	NPC_ELFAUNT_SKILL3,
-	NPC_ELFMAN_SKILL1,//c101//¿¤ÇÁÃ»³â//x
+	NPC_ELFMAN_SKILL1,//c101//ì—˜í”„ì²­ë…„//x
 	NPC_ELFMAN_SKILL2,
 	NPC_ELFMAN_SKILL3,
-	NPC_ELFWOMAN_SKILL1,//c102//¿¤ÇÁÃ³³à//x
+	NPC_ELFWOMAN_SKILL1,//c102//ì—˜í”„ì²˜ë…€//x
 	NPC_ELFWOMAN_SKILL2,
 	NPC_ELFWOMAN_SKILL3,
-	NPC_ELFBOY_SKILL1,//c103//¿¤ÇÁ²¿¸¶³²//x
+	NPC_ELFBOY_SKILL1,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨//x
 	NPC_ELFBOY_SKILL2,
 	NPC_ELFBOY_SKILL3,
-	NPC_ELFGIRL_SKILL1,//c104//¿¤ÇÁ²¿¸¶³à//x
+	NPC_ELFGIRL_SKILL1,//c104//ì—˜í”„ê¼¬ë§ˆë…€//x
 	NPC_ELFGIRL_SKILL2,
 	NPC_ELFGIRL_SKILL3,
-	NPC_ELFDARK_SKILL1,//c105//¿¤ÇÁ´ÙÅ©//x
+	NPC_ELFDARK_SKILL1,//c105//ì—˜í”„ë‹¤í¬//x
 	NPC_ELFDARK_SKILL2,
 	NPC_ELFDARK_SKILL3,
-	NPC_ELFMAGIC_SKILL1,//c106//¿¤ÇÁ¸¶¹ý»ç//x
+	NPC_ELFMAGIC_SKILL1,//c106//ì—˜í”„ë§ˆë²•ì‚¬//x
 	NPC_ELFMAGIC_SKILL2,
 	NPC_ELFMAGIC_SKILL3,
-	NPC_ELFDANCER_SKILL1,//c107//¿¤ÇÁ¹«Èñ//x
+	NPC_ELFDANCER_SKILL1,//c107//ì—˜í”„ë¬´í¬//x
 	NPC_ELFDANCER_SKILL2,
 	NPC_ELFDANCER_SKILL3,
-	NPC_OWL_SKILL1,//c108//ºÎ¾ûÀÌ//x
+	NPC_OWL_SKILL1,//c108//ë¶€ì—‰ì´//x
 	NPC_OWL_SKILL2,
 	NPC_OWL_SKILL3,
-	NPC_LABETH_SKILL1,//c109//¶óº£½º//x
+	NPC_LABETH_SKILL1,//c109//ë¼ë² ìŠ¤//x
 	NPC_LABETH_SKILL2,
 	NPC_LABETH_SKILL3,
-	NPC_ELKEIN_SKILL1,//c110//¿¤ÄÉÀÎ//x
+	NPC_ELKEIN_SKILL1,//c110//ì—˜ì¼€ì¸//x
 	NPC_ELKEIN_SKILL2,
 	NPC_ELKEIN_SKILL3,
-	NPC_ELEIN_SKILL1,//c111//¿¤·¹ÀÎ//x
+	NPC_ELEIN_SKILL1,//c111//ì—˜ë ˆì¸//x
 	NPC_ELEIN_SKILL2,
 	NPC_ELEIN_SKILL3,
-	NPC_EVAN_SKILL1,//c112//¿¡¹ø//x
+	NPC_EVAN_SKILL1,//c112//ì—ë²ˆ//x
 	NPC_EVAN_SKILL2,
 	NPC_EVAN_SKILL3,
-	NPC_BEAD_SKILL1,//c113//Å×ÀÌºí//x
+	NPC_BEAD_SKILL1,//c113//í…Œì´ë¸”//x
 	NPC_BEAD_SKILL2,
 	NPC_BEAD_SKILL3,
-	NPC_FOUNTAIN_SKILL1,//c114//»ù¹°//x
+	NPC_FOUNTAIN_SKILL1,//c114//ìƒ˜ë¬¼//x
 	NPC_FOUNTAIN_SKILL2,
 	NPC_FOUNTAIN_SKILL3,
-	NPC_NEZAR_SKILL1,//c115//³×ÀÚ¸£//x
+	NPC_NEZAR_SKILL1,//c115//ë„¤ìžë¥´//x
 	NPC_NEZAR_SKILL2,
 	NPC_NEZAR_SKILL3,
-	NPC_GALLAND_SKILL1,//c116//°¥¶õµå//x
+	NPC_GALLAND_SKILL1,//c116//ê°ˆëž€ë“œ//x
 	NPC_GALLAND_SKILL2,
 	NPC_GALLAND_SKILL3,
-	NPC_DURAK_SKILL1,//c117//µà¶óÅ©//x
+	NPC_DURAK_SKILL1,//c117//ë“€ë¼í¬//x
 	NPC_DURAK_SKILL2,
 	NPC_DURAK_SKILL3,
-	NPC_KING_SKILL1,//c118//¿¡µå¸óµå//x
+	NPC_KING_SKILL1,//c118//ì—ë“œëª¬ë“œ//x
 	NPC_KING_SKILL2,
 	NPC_KING_SKILL3,
-	NPC_WOMANGHOST_SKILL1,//c119//¿©ÀÚÀ¯·É//x
+	NPC_WOMANGHOST_SKILL1,//c119//ì—¬ìžìœ ë ¹//x
 	NPC_WOMANGHOST_SKILL2,
 	NPC_WOMANGHOST_SKILL3,
-	NPC_MANGHOST_SKILL1,//c120//³²ÀÚÀ¯·É//x
+	NPC_MANGHOST_SKILL1,//c120//ë‚¨ìžìœ ë ¹//x
 	NPC_MANGHOST_SKILL2,
 	NPC_MANGHOST_SKILL3,
-	NPC_AUSTIN_SKILL1,//c121//¿À½ºÆ¾(À¯·É)//x
+	NPC_AUSTIN_SKILL1,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)//x
 	NPC_AUSTIN_SKILL2,
 	NPC_AUSTIN_SKILL3,
-	NPC_SOUL_SKILL1,//c122//¸¶¿ÕÀÇ ½ÉÀå//x
+	NPC_SOUL_SKILL1,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥//x
 	NPC_SOUL_SKILL2,
 	NPC_SOUL_SKILL3,
 
@@ -1812,9 +1812,9 @@ typedef enum _skillDef {
 
 
 
-	SKILLEFFECTFRAME = 20,//½ºÅ³»ç¿ë½Ã ¾ÏÀüµÇ´Â ÇÁ·¹ÀÓ
-	BUFFITEMEFFECTFRAME = 16,//½ºÅ³»ç¿ë½Ã ¾ÏÀüµÇ´Â ÇÁ·¹ÀÓ
-	RINGEFFECTFRAME = 8,//¹ÝÁö¸¦ »ç¿ëÇßÀ» ¶§ ÇÁ·¹ÀÓ
+	SKILLEFFECTFRAME = 20,//ìŠ¤í‚¬ì‚¬ìš©ì‹œ ì•”ì „ë˜ëŠ” í”„ë ˆìž„
+	BUFFITEMEFFECTFRAME = 16,//ìŠ¤í‚¬ì‚¬ìš©ì‹œ ì•”ì „ë˜ëŠ” í”„ë ˆìž„
+	RINGEFFECTFRAME = 8,//ë°˜ì§€ë¥¼ ì‚¬ìš©í–ˆì„ ë•Œ í”„ë ˆìž„
 	BUFFINITSECONDS = 10,
 	DEADSTARTFRAME = FPS,
 	DEADFRAME = FPS * 5,

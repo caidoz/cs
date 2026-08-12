@@ -5,6 +5,8 @@
 #define _FUNC_TEXT_H_
 
 // Text Handling
+int CharByteLen(const char*);
+int CharExtraBytes(const char*);
 int StringLength(const char*);
 int SubstringLength(const char*, unsigned int, unsigned int);
 

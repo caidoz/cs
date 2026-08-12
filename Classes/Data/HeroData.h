@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #ifndef _DATA_HERO_H_
@@ -777,393 +777,393 @@ const unsigned long long crewLvUpgradeGold[] = {//TOTALSTAGE * TOTALROOM * MAXCR
 
 
 const signed short monXYGap[] = {
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, -1 * TSIZE,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 0 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, -1 * TSIZE,//ENEMY_DEATH,	//»ç½Å49
-	0, -1 * TSIZE,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	0 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, -1 * TSIZE,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 0 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, -1 * TSIZE,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, -1 * TSIZE,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	0 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 2 * TSIZE,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 2 * TSIZE,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 0,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 0,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 2 * TSIZE,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 2 * TSIZE,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 0,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 0,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 2 * TSIZE,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 2 * TSIZE,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
-	0, 0,//ENEMY_SNAIL = 3,	//°¡½Ã²®Áú ´ÞÆØÀÌ
-	0, 0,//ENEMY_TREE,	//´ËÀÇ ÁÖÀÎ 4
-	0, -TSIZE,//ENEMY_ONEEYE,	//¾ÆÀÌº¼ 5
-	0, 0,//ENEMY_SKELETON,	//Ä¥ÈæÀÇ ±â»ç 6 
-	0, 0,//ENEMY_LIZARD,	//»çÇÏ±ä º´»ç 7
-	0, -TSIZE,//ENEMY_JELLYFISH,	//¸Íµ¶ ÇØÆÄ¸®8
-	0, 0,//ENEMY_KNIGHT,	//Å¸¶ôÇÑ ±â»ç 9
-	0, 0,//ENEMY_SLIME,	//½½¶óÀÓ 10
-	0, 0,//ENEMY_SLING,	//Æò¿øÀÇ µµÀû 11
-	0, 0,//ENEMY_BOAR,	//°ÅÄ£¹ß ¸äµÅÁö 12
-	0, 0,//ENEMY_FLAME,	//ºÐ³ëÀÇ Á¤·É 13
-	0, -TSIZE,//ENEMY_PHOENIX,	//¸¶¼ºÀÇ ºÒ»õ14
-	0, 0,//ENEMY_FACE,	//°áºùÀÇ ¼®»ó15
-	0, 0,//ENEMY_SNOWMAN,	//½º³ë¿ì¸Ç16
-	0, 0,//ENEMY_ICESUN,	//¾ÆÀÌ½º¸¶½ºÅ©17
-	0, 0,//ENEMY_LIGHTNING,	//½ºÆÄÅ©18
-	0, -TSIZE,//ENEMY_THUNDER,	//´ÙÅ©¹Ì½ºÆ®19
-	0, 0,//ENEMY_CRYSTAL,	//½ºÆÄÅ© ÇÃ·£Æ®20
-	0, -TSIZE,//ENEMY_FAIRY,	//¶óÀÌÆ® ½ºÇÇ¸´21
-	0, -TSIZE,//ENEMY_CIRCLE,	//µô·çÁ¯ ¼Ò¿ï22
-	0, 0,//ENEMY_SPIDER,	//½ºÆ®¶óÀÌ´õ25
-	0, 0,//ENEMY_GOLEM,	//ÁÖÀÎÀÒÀº °ñ·½26
-	0, 0,//ENEMY_DARKGIANT,	//±×·¹ÀÌÆ® ¾Æ¸Ó27
-	0, 0,//ENEMY_DARKDRAGON,	//¿ì·Îº¸·Î½º28
-	0, 0,//ENEMY_DRAGON1,	//Å½¿åÀÇ »ìÀ°ÀÚ29
-	0, 0,//ENEMY_DRAGON2,	//µå·¡°ï Á»ºñ30
-	0, -TSIZE,//ENEMY_GHOST,	//¶°µµ´Â ¿µÈ¥31
-	0, 0,//ENEMY_PUMPKIN,	//¹«È¥ÀÇ ±â»ç32
-	0, -TSIZE,//ENEMY_CASTLE1,	//¾îµÒÀÇ ¸¶µµ»ç	//ÅÚ·¹Æ÷Æ®°ø°ÝÇÏ´Â³ð33
-	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//°øÇãÇÑ °©ÁÖ	//Å« ±â»ç34
-	0, -TSIZE,//ENEMY_SPACE1,	//¾Èµå·Îº¼35
-	0, 0,//ENEMY_SPACE2,	//¸ÞÅ»°¡¿ì½º36
-	0, 0,//ENEMY_FROG,	//Åäµå¹ÂÅÏÆ®37
-	TSIZE, 0,//ENEMY_LARVA,	//¾Æ¸£°ï38
-	0, 0,//ENEMY_SALAMANDER,	//Ä«Åù39
-	0, 0,//ENEMY_GIANT,	//°í´ëÀÇ ¼öÈ£ÀÚ40
-	0, -TSIZE,//ENEMY_IFRIT,	//ÀÌÇÁ¸®Æ®41
-	0, 0,//ENEMY_MAMMOTH,	//ÇÁ·Î½ºÆ®42
-	0, -TSIZE,//ENEMY_MACHINE,	//¶óÀÌ¿À³Ê43
-	0, 0,//ENEMY_ANGEL,	//È£·ç½º44
-	0, 0,//ENEMY_KIMERA,	//¸¶µµÇÕ¼º¼ö45
-	0, 0,//ENEMY_SHIP,	//°í´ëÀÇ ¹æÁÖ46
-	0, 4 * TSIZE,//ENEMY_FOGRA,	//¾Æ¸®¸¸47
-	0, 0,//ENEMY_BAHAMUT,	//Æ¼¾î¸Ë48
-	0, 0,//ENEMY_DEATH,	//»ç½Å49
-	0, 0,//ENEMY_CASTLE_BOSS1,	//µ¥ºê¸®¿Â50
-	0, 0,//ENEMY_CASTLE_BOSS2,	//¿¤ÄÉÀÎ¸ÇÆ¼½º51
-	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//½¦µµ¿ì Å×Æ®¶óÄï52
-	0, 0,//ENEMY_CASTLE_BOSS4,	//´ÙÅ©³ªÀÌÆ®53
-	0, 0,//ENEMY_LABETH,	//¶óº£½º º¸½º54
-	0, 0,//ENEMY_ELKEIN,	//¿¤ÄÉÀÎ º¸½º55
+	0, 0,//ENEMY_SNAIL = 3,	//ê°€ì‹œê»ì§ˆ ë‹¬íŒ½ì´
+	0, 0,//ENEMY_TREE,	//ëŠªì˜ ì£¼ì¸ 4
+	0, -TSIZE,//ENEMY_ONEEYE,	//ì•„ì´ë³¼ 5
+	0, 0,//ENEMY_SKELETON,	//ì¹ í‘ì˜ ê¸°ì‚¬ 6 
+	0, 0,//ENEMY_LIZARD,	//ì‚¬í•˜ê¸´ ë³‘ì‚¬ 7
+	0, -TSIZE,//ENEMY_JELLYFISH,	//ë§¹ë… í•´íŒŒë¦¬8
+	0, 0,//ENEMY_KNIGHT,	//íƒ€ë½í•œ ê¸°ì‚¬ 9
+	0, 0,//ENEMY_SLIME,	//ìŠ¬ë¼ìž„ 10
+	0, 0,//ENEMY_SLING,	//í‰ì›ì˜ ë„ì  11
+	0, 0,//ENEMY_BOAR,	//ê±°ì¹œë°œ ë©§ë¼ì§€ 12
+	0, 0,//ENEMY_FLAME,	//ë¶„ë…¸ì˜ ì •ë ¹ 13
+	0, -TSIZE,//ENEMY_PHOENIX,	//ë§ˆì„±ì˜ ë¶ˆìƒˆ14
+	0, 0,//ENEMY_FACE,	//ê²°ë¹™ì˜ ì„ìƒ15
+	0, 0,//ENEMY_SNOWMAN,	//ìŠ¤ë…¸ìš°ë§¨16
+	0, 0,//ENEMY_ICESUN,	//ì•„ì´ìŠ¤ë§ˆìŠ¤í¬17
+	0, 0,//ENEMY_LIGHTNING,	//ìŠ¤íŒŒí¬18
+	0, -TSIZE,//ENEMY_THUNDER,	//ë‹¤í¬ë¯¸ìŠ¤íŠ¸19
+	0, 0,//ENEMY_CRYSTAL,	//ìŠ¤íŒŒí¬ í”ŒëžœíŠ¸20
+	0, -TSIZE,//ENEMY_FAIRY,	//ë¼ì´íŠ¸ ìŠ¤í”¼ë¦¿21
+	0, -TSIZE,//ENEMY_CIRCLE,	//ë”œë£¨ì ¼ ì†Œìš¸22
+	0, 0,//ENEMY_SPIDER,	//ìŠ¤íŠ¸ë¼ì´ë”25
+	0, 0,//ENEMY_GOLEM,	//ì£¼ì¸ìžƒì€ ê³¨ë ˜26
+	0, 0,//ENEMY_DARKGIANT,	//ê·¸ë ˆì´íŠ¸ ì•„ë¨¸27
+	0, 0,//ENEMY_DARKDRAGON,	//ìš°ë¡œë³´ë¡œìŠ¤28
+	0, 0,//ENEMY_DRAGON1,	//íƒìš•ì˜ ì‚´ìœ¡ìž29
+	0, 0,//ENEMY_DRAGON2,	//ë“œëž˜ê³¤ ì¢€ë¹„30
+	0, -TSIZE,//ENEMY_GHOST,	//ë– ë„ëŠ” ì˜í˜¼31
+	0, 0,//ENEMY_PUMPKIN,	//ë¬´í˜¼ì˜ ê¸°ì‚¬32
+	0, -TSIZE,//ENEMY_CASTLE1,	//ì–´ë‘ ì˜ ë§ˆë„ì‚¬	//í…”ë ˆí¬íŠ¸ê³µê²©í•˜ëŠ”ë†ˆ33
+	0, 0,//0, -40 * _2X,//ENEMY_CASTLE2,	//ê³µí—ˆí•œ ê°‘ì£¼	//í° ê¸°ì‚¬34
+	0, -TSIZE,//ENEMY_SPACE1,	//ì•ˆë“œë¡œë³¼35
+	0, 0,//ENEMY_SPACE2,	//ë©”íƒˆê°€ìš°ìŠ¤36
+	0, 0,//ENEMY_FROG,	//í† ë“œë®¤í„´íŠ¸37
+	TSIZE, 0,//ENEMY_LARVA,	//ì•„ë¥´ê³¤38
+	0, 0,//ENEMY_SALAMANDER,	//ì¹´íˆ¼39
+	0, 0,//ENEMY_GIANT,	//ê³ ëŒ€ì˜ ìˆ˜í˜¸ìž40
+	0, -TSIZE,//ENEMY_IFRIT,	//ì´í”„ë¦¬íŠ¸41
+	0, 0,//ENEMY_MAMMOTH,	//í”„ë¡œìŠ¤íŠ¸42
+	0, -TSIZE,//ENEMY_MACHINE,	//ë¼ì´ì˜¤ë„ˆ43
+	0, 0,//ENEMY_ANGEL,	//í˜¸ë£¨ìŠ¤44
+	0, 0,//ENEMY_KIMERA,	//ë§ˆë„í•©ì„±ìˆ˜45
+	0, 0,//ENEMY_SHIP,	//ê³ ëŒ€ì˜ ë°©ì£¼46
+	0, 4 * TSIZE,//ENEMY_FOGRA,	//ì•„ë¦¬ë§Œ47
+	0, 0,//ENEMY_BAHAMUT,	//í‹°ì–´ë§·48
+	0, 0,//ENEMY_DEATH,	//ì‚¬ì‹ 49
+	0, 0,//ENEMY_CASTLE_BOSS1,	//ë°ë¸Œë¦¬ì˜¨50
+	0, 0,//ENEMY_CASTLE_BOSS2,	//ì—˜ì¼€ì¸ë§¨í‹°ìŠ¤51
+	3 * TSIZE, 0,//ENEMY_CASTLE_BOSS3,	//ì‰ë„ìš° í…ŒíŠ¸ë¼ì¿¤52
+	0, 0,//ENEMY_CASTLE_BOSS4,	//ë‹¤í¬ë‚˜ì´íŠ¸53
+	0, 0,//ENEMY_LABETH,	//ë¼ë² ìŠ¤ ë³´ìŠ¤54
+	0, 0,//ENEMY_ELKEIN,	//ì—˜ì¼€ì¸ ë³´ìŠ¤55
 
 
-	0, 0,//NPC_CAPTAIN,//c52//Àè½ºÆÐ³Ê
-	0, 0,//NPC_CREW,//c53//¼±¿ø
-	0, 0,//NPC_GRANDFA,//c54//ÃÌÀå
-	0, 0,//NPC_UNCLE,//c55//¾ÆÀú¾¾
-	0, 0,//NPC_AUNT,//c56//¾ÆÁÜ¸¶
-	0, 0,//NPC_MAN,//c57//ÀÚ°æ´ÜÃ»³â
-	0, 0,//NPC_WOMAN,//c58//Ã³³à
-	0, 0,//NPC_BOY,//c59//²¿¸¶³²
-	0, 0,//NPC_GIRL,//c60//²¿¸¶³à
-	0, 0,//NPC_ALMA,//c61//¾Ë¸¶
-	0, 0,//NPC_ITEM,//c62//ÅÍ¹ø
+	0, 0,//NPC_CAPTAIN,//c52//ìž­ìŠ¤íŒ¨ë„ˆ
+	0, 0,//NPC_CREW,//c53//ì„ ì›
+	0, 0,//NPC_GRANDFA,//c54//ì´Œìž¥
+	0, 0,//NPC_UNCLE,//c55//ì•„ì €ì”¨
+	0, 0,//NPC_AUNT,//c56//ì•„ì¤Œë§ˆ
+	0, 0,//NPC_MAN,//c57//ìžê²½ë‹¨ì²­ë…„
+	0, 0,//NPC_WOMAN,//c58//ì²˜ë…€
+	0, 0,//NPC_BOY,//c59//ê¼¬ë§ˆë‚¨
+	0, 0,//NPC_GIRL,//c60//ê¼¬ë§ˆë…€
+	0, 0,//NPC_ALMA,//c61//ì•Œë§ˆ
+	0, 0,//NPC_ITEM,//c62//í„°ë²ˆ
 	0, 0,//NPC_FATMAN,//c63
 	0, 0,//NPC_BUNNYGIRL,//c64
-	0, 0,//NPC_KNIGHT,//c65//ÇÃ·¹Å¸
+	0, 0,//NPC_KNIGHT,//c65//í”Œë ˆíƒ€
 	0, 0,//NPC_DOG,//c66
 	0, 0,//NPC_MERCHANT,//c67
 	0, 0,//NPC_CRAFTMAN,//c68
 	0, 0,//NPC_MAP,//c69
-	0, 0,//NPC_USERQUEST,//c70//½ºÆ©¾îµð½º
-	0, 0,//NPC_TRAVEL,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ
-	0, 0,//NPC_GRANDMA,//c72//ÇÒ¸Ó´Ï
-	0, 0,//NPC_FISHING,//c73//¶óÇÇ
+	0, 0,//NPC_USERQUEST,//c70//ìŠ¤íŠœì–´ë””ìŠ¤
+	0, 0,//NPC_TRAVEL,//c71//ì´êµ­ì˜ì—¬í–‰ìž
+	0, 0,//NPC_GRANDMA,//c72//í• ë¨¸ë‹ˆ
+	0, 0,//NPC_FISHING,//c73//ë¼í”¼
 	0, 0,//NPC_INN,//c74
 	0, 0,//NPC_NETITEM,//c75
 	0, 0,//NPC_MILESE,//c76
@@ -1171,54 +1171,54 @@ const signed short monXYGap[] = {
 	0, 0,//NPC_GAGEL,//c78
 	0, 0,//NPC_MONICA,//c79
 	0, 0,//NPC_SHIP,//c80
-	0, 0,//NPC_SEA,//c81//¾ÆÆ²¶õº´»ç
+	0, 0,//NPC_SEA,//c81//ì•„í‹€ëž€ë³‘ì‚¬
 	0, 0,//NPC_FRAUD,//c82
 	0, 0,//NPC_DARIAN,//c83
 	0, 0,//NPC_LUISE,//c84
-	0, 0,//NPC_SEAUNCLE,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾
-	0, 0,//NPC_SEABOY,//c86//¾ÆÆ²¶õ¼Ò³â
-	0, 0,//NPC_DONALD,//c87//ÀÌ¼Ò·æ
-	0, 0,//NPC_SCHOLAR,//c88//ÇÐÀÚ
-	0, 0,//NPC_CHEF,//c89//¿ä¸®´ë°¡
-	0, 0,//NPC_BISTRO,//c90//ºñ½ºÆ®·Î
-	0, 0,//NPC_MAID,//c91//½Ã³à
-	0, 0,//NPC_ADELKNIGHT,//c92//±â»ç
-	0, 0,//NPC_SEBASTIAN,//c93//¼¼¹Ù½ºÂù
-	0, 0,//NPC_NOBLEMAN,//c94//±ÍÁ·¾ÆÀú¾¾
-	0, 0,//NPC_DELPIOS,//c95//µ¨ÇÇ¿À½º
-	0, 0,//NPC_LORA,//c96//·Î¶ó
-	0, 0,//NPC_WITCH,//c97//¸¶³à
-	0, 0,//NPC_ELFGRANDFA,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö
-	0, 0,//NPC_ELFUNCLE,//c99//¿¤ÇÁ¾ÆÀú¾¾
-	0, 0,//NPC_ELFAUNT,//c100//¿¤ÇÁ¾ÆÁÜ¸¶
-	0, 0,//NPC_ELFMAN,//c101//¿¤ÇÁÃ»³â
-	0, 0,//NPC_ELFWOMAN,//c102//¿¤ÇÁÃ³³à
-	0, 0,//NPC_ELFBOY,//c103//¿¤ÇÁ²¿¸¶³²
-	0, 0,//NPC_ELFGIRL,//c104//¿¤ÇÁ²¿¸¶³à
-	0, 0,//NPC_ELFDARK,//c105//¿¤ÇÁ´ÙÅ©
-	0, 0,//NPC_ELFMAGIC,//c106//¿¤ÇÁ¸¶¹ý»ç
-	0, 0,//NPC_ELFDANCER,//c107//¿¤ÇÁ¹«Èñ
-	0, 0,//NPC_OWL,//c108//ºÎ¾ûÀÌ
-	0, 0,//NPC_LABETH,//c109//¶óº£½º
-	0, 0,//NPC_ELKEIN,//c110//¿¤ÄÉÀÎ
-	0, 0,//NPC_ELEIN,//c111//¿¤·¹ÀÎ
-	0, 0,//NPC_EVAN,//c112//¿¡¹ø
-	0, 0,//NPC_BEAD,//c113//Å×ÀÌºí
-	0, TSIZE,//NPC_FOUNTAIN,//c114//»ù¹°
-	0, 0,//NPC_NEZAR,//c115//³×ÀÚ¸£
-	0, 0,//NPC_GALLAND,//c116//°¥¶õµå
-	0, 0,//NPC_DURAK,//c117//µà¶óÅ©
-	0, 0,//NPC_KING,//c118//¿¡µå¸óµå
-	0, 0,//NPC_WOMANGHOST,//c119//¿©ÀÚÀ¯·É
-	0, 0,//NPC_MANGHOST,//c120//³²ÀÚÀ¯·É
-	0, 0,//NPC_AUSTIN,//c121//¿À½ºÆ¾(À¯·É)
-	0, 0,//NPC_SOUL,//c122//¸¶¿ÕÀÇ ½ÉÀå
+	0, 0,//NPC_SEAUNCLE,//c85//ì•„í‹€ëž€ì•„ì €ì”¨
+	0, 0,//NPC_SEABOY,//c86//ì•„í‹€ëž€ì†Œë…„
+	0, 0,//NPC_DONALD,//c87//ì´ì†Œë£¡
+	0, 0,//NPC_SCHOLAR,//c88//í•™ìž
+	0, 0,//NPC_CHEF,//c89//ìš”ë¦¬ëŒ€ê°€
+	0, 0,//NPC_BISTRO,//c90//ë¹„ìŠ¤íŠ¸ë¡œ
+	0, 0,//NPC_MAID,//c91//ì‹œë…€
+	0, 0,//NPC_ADELKNIGHT,//c92//ê¸°ì‚¬
+	0, 0,//NPC_SEBASTIAN,//c93//ì„¸ë°”ìŠ¤ì°¬
+	0, 0,//NPC_NOBLEMAN,//c94//ê·€ì¡±ì•„ì €ì”¨
+	0, 0,//NPC_DELPIOS,//c95//ë¸í”¼ì˜¤ìŠ¤
+	0, 0,//NPC_LORA,//c96//ë¡œë¼
+	0, 0,//NPC_WITCH,//c97//ë§ˆë…€
+	0, 0,//NPC_ELFGRANDFA,//c98//ì—˜í”„í• ì•„ë²„ì§€
+	0, 0,//NPC_ELFUNCLE,//c99//ì—˜í”„ì•„ì €ì”¨
+	0, 0,//NPC_ELFAUNT,//c100//ì—˜í”„ì•„ì¤Œë§ˆ
+	0, 0,//NPC_ELFMAN,//c101//ì—˜í”„ì²­ë…„
+	0, 0,//NPC_ELFWOMAN,//c102//ì—˜í”„ì²˜ë…€
+	0, 0,//NPC_ELFBOY,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨
+	0, 0,//NPC_ELFGIRL,//c104//ì—˜í”„ê¼¬ë§ˆë…€
+	0, 0,//NPC_ELFDARK,//c105//ì—˜í”„ë‹¤í¬
+	0, 0,//NPC_ELFMAGIC,//c106//ì—˜í”„ë§ˆë²•ì‚¬
+	0, 0,//NPC_ELFDANCER,//c107//ì—˜í”„ë¬´í¬
+	0, 0,//NPC_OWL,//c108//ë¶€ì—‰ì´
+	0, 0,//NPC_LABETH,//c109//ë¼ë² ìŠ¤
+	0, 0,//NPC_ELKEIN,//c110//ì—˜ì¼€ì¸
+	0, 0,//NPC_ELEIN,//c111//ì—˜ë ˆì¸
+	0, 0,//NPC_EVAN,//c112//ì—ë²ˆ
+	0, 0,//NPC_BEAD,//c113//í…Œì´ë¸”
+	0, TSIZE,//NPC_FOUNTAIN,//c114//ìƒ˜ë¬¼
+	0, 0,//NPC_NEZAR,//c115//ë„¤ìžë¥´
+	0, 0,//NPC_GALLAND,//c116//ê°ˆëž€ë“œ
+	0, 0,//NPC_DURAK,//c117//ë“€ë¼í¬
+	0, 0,//NPC_KING,//c118//ì—ë“œëª¬ë“œ
+	0, 0,//NPC_WOMANGHOST,//c119//ì—¬ìžìœ ë ¹
+	0, 0,//NPC_MANGHOST,//c120//ë‚¨ìžìœ ë ¹
+	0, 0,//NPC_AUSTIN,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)
+	0, 0,//NPC_SOUL,//c122//ë§ˆì™•ì˜ ì‹¬ìž¥
 
 
 };
 
-//ÇöÀç ·¹º§À» ±âÁØÀ¸·Î ·¹º§¾÷¿¡ ÇÊ¿äÇÑ °æÇèÄ¡
-//·¹º§ 1ÀÌ¸é 2°¡ µÇ±â À§ÇØ¼­ 4//2°¡ ÇÊ¿äÇÏ´Ù.
+//í˜„ìž¬ ë ˆë²¨ì„ ê¸°ì¤€ìœ¼ë¡œ ë ˆë²¨ì—…ì— í•„ìš”í•œ ê²½í—˜ì¹˜
+//ë ˆë²¨ 1ì´ë©´ 2ê°€ ë˜ê¸° ìœ„í•´ì„œ 4//2ê°€ í•„ìš”í•˜ë‹¤.
 const long long lvUpExp[] = {
 	//0,//1
 	4,//2
@@ -1365,61 +1365,61 @@ const unsigned char walkFrame[] = {
 };
 
 
-//LVÀÌ 0ÀÏ ¶§´Â
+//LVì´ 0ì¼ ë•ŒëŠ”
 const int crewBulletLvUpDmgPercent[] = {
 	0, 100, 150, 200, 300, 500, 700, 1000, 1500, 2000,
 };
 
 
 //const int crewData[TOTAL_CREW * CREWDATASIZE] = {
-//0 Á¾·ù
-//1 ¸î¼ºÀÎÁö
+//0 ì¢…ë¥˜
+//1 ëª‡ì„±ì¸ì§€
 //2 DMG
 //3 DATA_SLING
 const int crewData[] = {
-	//6¸í¾¿ ÆÐÅ°Â¡À» ÇØ¾ß µÇ
-	//ÃÊ½ÉÀÚ ½Ã¸®Áî
-	//¾Æµ¨¶óÀÎ(Åç·½¸¶À»)(6)
-	//NPC_BOY_SKILL1 : »õÃÑ ´øÁö±â1
-	//NPC_BOY_SKILL2 : »õÃÑ ´øÁö±â2
-	//NPC_BOY_SKILL3 : »õÃÑ ´øÁö±â3
-	NPC_BOY, 10, NPC_BOY_SKILL1, NPC_BOY_SKILL2, NPC_BOY_SKILL3, 1,//c59//²¿¸¶³²//x
-	//NPC_GIRL_SKILL1 : ¸Ó¸®ÇÉ ´øÁö±â1
-	//NPC_GIRL_SKILL2 : ¸Ó¸®ÇÉ ´øÁö±â2
-	//NPC_GIRL_SKILL3 : ¸Ó¸®ÇÉ ´øÁö±â3
-	NPC_GIRL, 11, NPC_GIRL_SKILL1, NPC_GIRL_SKILL2, NPC_GIRL_SKILL3, 1,//c60//²¿¸¶³à//x
-	//NPC_GRANDMA_SKILL1 : ¿ì»ê ´øÁö±â1
-	//NPC_GRANDMA_SKILL2 : ¿ì»ê ´øÁö±â2
-	//NPC_GRANDMA_SKILL3 : ¿ì»ê ´øÁö±â3
-	NPC_GRANDMA, 12, NPC_GRANDMA_SKILL1, NPC_GRANDMA_SKILL2,	 NPC_GRANDMA_SKILL3, 2,//c72//ÇÒ¸Ó´Ï//x
-	//NPC_GRANDFA_SKILL1 : ÁöÆÎÀÌ ´øÁö±â1
-	//NPC_GRANDFA_SKILL2 : ÁöÆÎÀÌ ´øÁö±â2
-	//NPC_GRANDFA_SKILL3 : ÁöÆÎÀÌ ´øÁö±â3
-	NPC_GRANDFA, 13, NPC_GRANDFA_SKILL1, NPC_GRANDFA_SKILL2, NPC_GRANDFA_SKILL3, 2,//c54//ÃÌÀå//x
+	//6ëª…ì”© íŒ¨í‚¤ì§•ì„ í•´ì•¼ ë˜
+	//ì´ˆì‹¬ìž ì‹œë¦¬ì¦ˆ
+	//ì•„ë¸ë¼ì¸(í†¨ë ˜ë§ˆì„)(6)
+	//NPC_BOY_SKILL1 : ìƒˆì´ ë˜ì§€ê¸°1
+	//NPC_BOY_SKILL2 : ìƒˆì´ ë˜ì§€ê¸°2
+	//NPC_BOY_SKILL3 : ìƒˆì´ ë˜ì§€ê¸°3
+	NPC_BOY, 10, NPC_BOY_SKILL1, NPC_BOY_SKILL2, NPC_BOY_SKILL3, 1,//c59//ê¼¬ë§ˆë‚¨//x
+	//NPC_GIRL_SKILL1 : ë¨¸ë¦¬í•€ ë˜ì§€ê¸°1
+	//NPC_GIRL_SKILL2 : ë¨¸ë¦¬í•€ ë˜ì§€ê¸°2
+	//NPC_GIRL_SKILL3 : ë¨¸ë¦¬í•€ ë˜ì§€ê¸°3
+	NPC_GIRL, 11, NPC_GIRL_SKILL1, NPC_GIRL_SKILL2, NPC_GIRL_SKILL3, 1,//c60//ê¼¬ë§ˆë…€//x
+	//NPC_GRANDMA_SKILL1 : ìš°ì‚° ë˜ì§€ê¸°1
+	//NPC_GRANDMA_SKILL2 : ìš°ì‚° ë˜ì§€ê¸°2
+	//NPC_GRANDMA_SKILL3 : ìš°ì‚° ë˜ì§€ê¸°3
+	NPC_GRANDMA, 12, NPC_GRANDMA_SKILL1, NPC_GRANDMA_SKILL2,	 NPC_GRANDMA_SKILL3, 2,//c72//í• ë¨¸ë‹ˆ//x
+	//NPC_GRANDFA_SKILL1 : ì§€íŒ¡ì´ ë˜ì§€ê¸°1
+	//NPC_GRANDFA_SKILL2 : ì§€íŒ¡ì´ ë˜ì§€ê¸°2
+	//NPC_GRANDFA_SKILL3 : ì§€íŒ¡ì´ ë˜ì§€ê¸°3
+	NPC_GRANDFA, 13, NPC_GRANDFA_SKILL1, NPC_GRANDFA_SKILL2, NPC_GRANDFA_SKILL3, 2,//c54//ì´Œìž¥//x
 	//NPC_MAN_SKILL1 : 
 	//NPC_MAN_SKILL2 : 
 	//NPC_MAN_SKILL3 : 
-	NPC_MAN, 14, NPC_MAN_SKILL1, NPC_MAN_SKILL2, NPC_MAN_SKILL3, 3,//c57//ÀÚ°æ´ÜÃ»³â//x
+	NPC_MAN, 14, NPC_MAN_SKILL1, NPC_MAN_SKILL2, NPC_MAN_SKILL3, 3,//c57//ìžê²½ë‹¨ì²­ë…„//x
 	//NPC_WOMAN_SKILL1 :
 	//NPC_WOMAN_SKILL2 :
 	//NPC_WOMAN_SKILL3 :
-	NPC_WOMAN, 15, NPC_WOMAN_SKILL1, NPC_WOMAN_SKILL2, NPC_WOMAN_SKILL3, 3,//c58//Ã³³à//x
+	NPC_WOMAN, 15, NPC_WOMAN_SKILL1, NPC_WOMAN_SKILL2, NPC_WOMAN_SKILL3, 3,//c58//ì²˜ë…€//x
 	//NPC_UNCLE_SKILL1 : 
 	//NPC_UNCLE_SKILL2 : 
 	//NPC_UNCLE_SKILL3 : 
-	NPC_UNCLE, 16, NPC_UNCLE_SKILL1, NPC_UNCLE_SKILL2, NPC_UNCLE_SKILL3, 4,//c55//¾ÆÀú¾¾
+	NPC_UNCLE, 16, NPC_UNCLE_SKILL1, NPC_UNCLE_SKILL2, NPC_UNCLE_SKILL3, 4,//c55//ì•„ì €ì”¨
 	//NPC_AUNT_SKILL1 :
 	//NPC_AUNT_SKILL2 :
 	//NPC_AUNT_SKILL3 :
-	NPC_AUNT, 17, NPC_AUNT_SKILL1, NPC_AUNT_SKILL2, NPC_AUNT_SKILL3, 4,//c56//¾ÆÁÜ¸¶//x
+	NPC_AUNT, 17, NPC_AUNT_SKILL1, NPC_AUNT_SKILL2, NPC_AUNT_SKILL3, 4,//c56//ì•„ì¤Œë§ˆ//x
 	//NPC_SEAUNCLE_SKILL1 : 
 	//NPC_SEAUNCLE_SKILL2 : 
 	//NPC_SEAUNCLE_SKILL3 : 
-	NPC_SEAUNCLE, 18, NPC_SEAUNCLE_SKILL1, NPC_SEAUNCLE_SKILL2, NPC_SEAUNCLE_SKILL3, 5,//c85//¾ÆÆ²¶õ¾ÆÀú¾¾//x
+	NPC_SEAUNCLE, 18, NPC_SEAUNCLE_SKILL1, NPC_SEAUNCLE_SKILL2, NPC_SEAUNCLE_SKILL3, 5,//c85//ì•„í‹€ëž€ì•„ì €ì”¨//x
 	//NPC_SEASOLDIER_SKILL1 : 
 	//NPC_SEASOLDIER_SKILL2 : 
 	//NPC_SEASOLDIER_SKILL3 : 
-	NPC_SEASOLDIER, 19, NPC_SEASOLDIER_SKILL1, NPC_SEASOLDIER_SKILL2, NPC_SEASOLDIER_SKILL3, 5,//c81//¾ÆÆ²¶õº´»ç//x
+	NPC_SEASOLDIER, 19, NPC_SEASOLDIER_SKILL1, NPC_SEASOLDIER_SKILL2, NPC_SEASOLDIER_SKILL3, 5,//c81//ì•„í‹€ëž€ë³‘ì‚¬//x
 	//NPC_MILESE_SKILL1 : 
 	//NPC_MILESE_SKILL2 : 
 	//NPC_MILESE_SKILL3 : 
@@ -1427,95 +1427,95 @@ const int crewData[] = {
 	//NPC_ALMA_SKILL1 : 
 	//NPC_ALMA_SKILL2 : 
 	//NPC_ALMA_SKILL3 : 
-	NPC_ALMA, 21, NPC_ALMA_SKILL1, NPC_ALMA_SKILL2, NPC_ALMA_SKILL3, 6,////c61//¾Ë¸¶//x
+	NPC_ALMA, 21, NPC_ALMA_SKILL1, NPC_ALMA_SKILL2, NPC_ALMA_SKILL3, 6,////c61//ì•Œë§ˆ//x
 	//NPC_CREW_SKILL1 : 
 	//NPC_CREW_SKILL2 : 
 	//NPC_CREW_SKILL3 : 
-	NPC_CREW, 22, NPC_CREW_SKILL1, NPC_CREW_SKILL2, NPC_CREW_SKILL3, 7,//c53//¼±¿ø//x
+	NPC_CREW, 22, NPC_CREW_SKILL1, NPC_CREW_SKILL2, NPC_CREW_SKILL3, 7,//c53//ì„ ì›//x
 	//NPC_TRAVEL_SKILL1 : 
 	//NPC_TRAVEL_SKILL2 : 
 	//NPC_TRAVEL_SKILL3 : 
-	NPC_TRAVEL, 23, NPC_TRAVEL_SKILL1, NPC_TRAVEL_SKILL2, NPC_TRAVEL_SKILL3, 7,//c71//ÀÌ±¹ÀÇ¿©ÇàÀÚ//x
+	NPC_TRAVEL, 23, NPC_TRAVEL_SKILL1, NPC_TRAVEL_SKILL2, NPC_TRAVEL_SKILL3, 7,//c71//ì´êµ­ì˜ì—¬í–‰ìž//x
 	//NPC_ELFBOY_SKILL1 : 
 	//NPC_ELFBOY_SKILL2 : 
 	//NPC_ELFBOY_SKILL3 : 
-	NPC_ELFBOY, 24, NPC_ELFBOY_SKILL1, NPC_ELFBOY_SKILL2, NPC_ELFBOY_SKILL3, 8,//c103//¿¤ÇÁ²¿¸¶³²//x
+	NPC_ELFBOY, 24, NPC_ELFBOY_SKILL1, NPC_ELFBOY_SKILL2, NPC_ELFBOY_SKILL3, 8,//c103//ì—˜í”„ê¼¬ë§ˆë‚¨//x
 	//NPC_ELFGIRL_SKILL1 : 
 	//NPC_ELFGIRL_SKILL2 : 
 	//NPC_ELFGIRL_SKILL3 : 
-	NPC_ELFGIRL, 25, NPC_ELFGIRL_SKILL1, NPC_ELFGIRL_SKILL2, NPC_ELFGIRL_SKILL3, 8,//c104//¿¤ÇÁ²¿¸¶³à//x
+	NPC_ELFGIRL, 25, NPC_ELFGIRL_SKILL1, NPC_ELFGIRL_SKILL2, NPC_ELFGIRL_SKILL3, 8,//c104//ì—˜í”„ê¼¬ë§ˆë…€//x
 	//NPC_ITEM_SKILL1 : 
 	//NPC_ITEM_SKILL2 : 
 	//NPC_ITEM_SKILL3 : 
-	NPC_ITEM, 26, NPC_ITEM_SKILL1, NPC_ITEM_SKILL2, NPC_ITEM_SKILL3, 9,//c62//ÅÍ¹ø//x
+	NPC_ITEM, 26, NPC_ITEM_SKILL1, NPC_ITEM_SKILL2, NPC_ITEM_SKILL3, 9,//c62//í„°ë²ˆ//x
 	//NPC_ELFUNCLE_SKILL1 : 
 	//NPC_ELFUNCLE_SKILL2 : 
 	//NPC_ELFUNCLE_SKILL3 : 
-	NPC_ELFUNCLE, 27, NPC_ELFUNCLE_SKILL1, NPC_ELFUNCLE_SKILL2, NPC_ELFUNCLE_SKILL3, 9,//c99//¿¤ÇÁ¾ÆÀú¾¾//x
+	NPC_ELFUNCLE, 27, NPC_ELFUNCLE_SKILL1, NPC_ELFUNCLE_SKILL2, NPC_ELFUNCLE_SKILL3, 9,//c99//ì—˜í”„ì•„ì €ì”¨//x
 	//NPC_ELFAUNT_SKILL1 : 
 	//NPC_ELFAUNT_SKILL2 : 
 	//NPC_ELFAUNT_SKILL3 : 
-	NPC_ELFAUNT, 28, NPC_ELFAUNT_SKILL1, NPC_ELFAUNT_SKILL2, NPC_ELFAUNT_SKILL3, 10,//c100//¿¤ÇÁ¾ÆÁÜ¸¶//x
+	NPC_ELFAUNT, 28, NPC_ELFAUNT_SKILL1, NPC_ELFAUNT_SKILL2, NPC_ELFAUNT_SKILL3, 10,//c100//ì—˜í”„ì•„ì¤Œë§ˆ//x
 	//NPC_ADELKNIGHT_SKILL1 : 
 	//NPC_ADELKNIGHT_SKILL2 : 
 	//NPC_ADELKNIGHT_SKILL3 : 
-	NPC_ADELKNIGHT, 29, NPC_ADELKNIGHT_SKILL1, NPC_ADELKNIGHT_SKILL2, NPC_ADELKNIGHT_SKILL3, 10,//c92//±â»ç//x
+	NPC_ADELKNIGHT, 29, NPC_ADELKNIGHT_SKILL1, NPC_ADELKNIGHT_SKILL2, NPC_ADELKNIGHT_SKILL3, 10,//c92//ê¸°ì‚¬//x
 	//NPC_OWL_SKILL1 : 
 	//NPC_OWL_SKILL2 : 
 	//NPC_OWL_SKILL3 : 
-	NPC_OWL, 30, NPC_OWL_SKILL1, NPC_OWL_SKILL2, NPC_OWL_SKILL3, 11,//c91//½Ã³à//x
+	NPC_OWL, 30, NPC_OWL_SKILL1, NPC_OWL_SKILL2, NPC_OWL_SKILL3, 11,//c91//ì‹œë…€//x
 	//NPC_MAID_SKILL1 : 
 	//NPC_MAID_SKILL2 : 
 	//NPC_MAID_SKILL3 : 
-	NPC_MAID, 31, NPC_MAID_SKILL1, NPC_MAID_SKILL2, NPC_MAID_SKILL3, 11,//c91//½Ã³à//x
+	NPC_MAID, 31, NPC_MAID_SKILL1, NPC_MAID_SKILL2, NPC_MAID_SKILL3, 11,//c91//ì‹œë…€//x
 	//NPC_BUNNYGIRL_SKILL1 :  
 	//NPC_BUNNYGIRL_SKILL2 : 
 	//NPC_BUNNYGIRL_SKILL3 : 
 	NPC_BUNNYGIRL, 32, NPC_BUNNYGIRL_SKILL1, NPC_BUNNYGIRL_SKILL2, NPC_BUNNYGIRL_SKILL3, 11,//c64//x
-	//NPC_MAP_SKILL1 : ÁöµµÅë1
-	//NPC_MAP_SKILL2 : ÁöµµÅë2 
-	//NPC_MAP_SKILL3 : ÁöµµÅë3 
+	//NPC_MAP_SKILL1 : ì§€ë„í†µ1
+	//NPC_MAP_SKILL2 : ì§€ë„í†µ2 
+	//NPC_MAP_SKILL3 : ì§€ë„í†µ3 
 	NPC_MAP, 33, NPC_MAP_SKILL1, NPC_MAP_SKILL2, NPC_MAP_SKILL3, 11,//c69//x
-	//NPC_MONICA_SKILL1 : ¾ç»ê1
-	//NPC_MONICA_SKILL2 : ¾ç»ê2
-	//NPC_MONICA_SKILL3 : ¾ç»ê3 
+	//NPC_MONICA_SKILL1 : ì–‘ì‚°1
+	//NPC_MONICA_SKILL2 : ì–‘ì‚°2
+	//NPC_MONICA_SKILL3 : ì–‘ì‚°3 
 	NPC_MONICA, 34, NPC_MONICA_SKILL1, NPC_MONICA_SKILL2, NPC_MONICA_SKILL3, 11,//c79//x
 	//NPC_SEABOY_SKILL1 : 
 	//NPC_SEABOY_SKILL2 : 
 	//NPC_SEABOY_SKILL3 : 
-	NPC_SEABOY, 35, NPC_SEABOY_SKILL1, NPC_SEABOY_SKILL2, NPC_SEABOY_SKILL3, 11,//c86//¾ÆÆ²¶õ¼Ò³â//x
-	//NPC_DOBEL_SKILL1 : ÆøÅº1
-	//NPC_DOBEL_SKILL2 : ÆøÅº2 
-	//NPC_DOBEL_SKILL3 : ÆøÅº3 
+	NPC_SEABOY, 35, NPC_SEABOY_SKILL1, NPC_SEABOY_SKILL2, NPC_SEABOY_SKILL3, 11,//c86//ì•„í‹€ëž€ì†Œë…„//x
+	//NPC_DOBEL_SKILL1 : í­íƒ„1
+	//NPC_DOBEL_SKILL2 : í­íƒ„2 
+	//NPC_DOBEL_SKILL3 : í­íƒ„3 
 	NPC_DOBEL, 36, NPC_DOBEL_SKILL1, NPC_DOBEL_SKILL2, NPC_DOBEL_SKILL3, 11,//c77//x
-	//NPC_GAGEL_SKILL1 : ÆøÅº1
-	//NPC_GAGEL_SKILL2 : ÆøÅº2
-	//NPC_GAGEL_SKILL3 : ÆøÅº3
+	//NPC_GAGEL_SKILL1 : í­íƒ„1
+	//NPC_GAGEL_SKILL2 : í­íƒ„2
+	//NPC_GAGEL_SKILL3 : í­íƒ„3
 	NPC_GAGEL, 37, NPC_GAGEL_SKILL1, NPC_GAGEL_SKILL2, NPC_GAGEL_SKILL3, 11,//c78//x
 	//NPC_ELFGRANDFA_SKILL1 : 
 	//NPC_ELFGRANDFA_SKILL2 : 
 	//NPC_ELFGRANDFA_SKILL3 : 
-	NPC_ELFGRANDFA, 38, NPC_ELFGRANDFA_SKILL1, NPC_ELFGRANDFA_SKILL2, NPC_ELFGRANDFA_SKILL3, 11,//c98//¿¤ÇÁÇÒ¾Æ¹öÁö//x
+	NPC_ELFGRANDFA, 38, NPC_ELFGRANDFA_SKILL1, NPC_ELFGRANDFA_SKILL2, NPC_ELFGRANDFA_SKILL3, 11,//c98//ì—˜í”„í• ì•„ë²„ì§€//x
 	//NPC_ELFWOMAN_SKILL1 : 
 	//NPC_ELFWOMAN_SKILL2 : 
 	//NPC_ELFWOMAN_SKILL3 : 
-	NPC_ELFWOMAN, 39, NPC_ELFWOMAN_SKILL1, NPC_ELFWOMAN_SKILL2, NPC_ELFWOMAN_SKILL3, 11,//c102//¿¤ÇÁÃ³³à//x
+	NPC_ELFWOMAN, 39, NPC_ELFWOMAN_SKILL1, NPC_ELFWOMAN_SKILL2, NPC_ELFWOMAN_SKILL3, 11,//c102//ì—˜í”„ì²˜ë…€//x
 	//NPC_ELFMAN_SKILL1 : 
 	//NPC_ELFMAN_SKILL2 : 
-	//NPC_ELFMAN_SKILL3 : ¸Æ½º ºÎ¸Þ¶û ½ºÅ³1
-	NPC_ELFMAN, 40, NPC_ELFMAN_SKILL1, NPC_ELFMAN_SKILL2, NPC_ELFMAN_SKILL3, 11,//c101//¿¤ÇÁÃ»³â//x
+	//NPC_ELFMAN_SKILL3 : ë§¥ìŠ¤ ë¶€ë©”ëž‘ ìŠ¤í‚¬1
+	NPC_ELFMAN, 40, NPC_ELFMAN_SKILL1, NPC_ELFMAN_SKILL2, NPC_ELFMAN_SKILL3, 11,//c101//ì—˜í”„ì²­ë…„//x
 	//NPC_ELFDANCER_SKILL1 : 
 	//NPC_ELFDANCER_SKILL2 : 
-	//NPC_ELFDANCER_SKILL3 : ·Îºó ¸¶±¸Âî¸£±â ½ºÅ³
-	NPC_ELFDANCER, 41, NPC_ELFDANCER_SKILL1, NPC_ELFDANCER_SKILL2, NPC_ELFDANCER_SKILL3, 11,//c107//¿¤ÇÁ¹«Èñ//x
+	//NPC_ELFDANCER_SKILL3 : ë¡œë¹ˆ ë§ˆêµ¬ì°Œë¥´ê¸° ìŠ¤í‚¬
+	NPC_ELFDANCER, 41, NPC_ELFDANCER_SKILL1, NPC_ELFDANCER_SKILL2, NPC_ELFDANCER_SKILL3, 11,//c107//ì—˜í”„ë¬´í¬//x
 	//NPC_NOBLEMAN_SKILL1 : 
 	//NPC_NOBLEMAN_SKILL2 : 
 	//NPC_NOBLEMAN_SKILL3 : 
-	NPC_NOBLEMAN, 42, NPC_NOBLEMAN_SKILL1, NPC_NOBLEMAN_SKILL2, NPC_NOBLEMAN_SKILL3, 11,//c94//±ÍÁ·¾ÆÀú¾¾//x
+	NPC_NOBLEMAN, 42, NPC_NOBLEMAN_SKILL1, NPC_NOBLEMAN_SKILL2, NPC_NOBLEMAN_SKILL3, 11,//c94//ê·€ì¡±ì•„ì €ì”¨//x
 	//NPC_SCHOLAR_SKILL1 : 
 	//NPC_SCHOLAR_SKILL2 : 
-	//NPC_SCHOLAR_SKILL3 : ¼ÒÈ¯
-	NPC_SCHOLAR, 43, NPC_SCHOLAR_SKILL1, NPC_SCHOLAR_SKILL2, NPC_SCHOLAR_SKILL3, 11,//c88//ÇÐÀÚ//x
+	//NPC_SCHOLAR_SKILL3 : ì†Œí™˜
+	NPC_SCHOLAR, 43, NPC_SCHOLAR_SKILL1, NPC_SCHOLAR_SKILL2, NPC_SCHOLAR_SKILL3, 11,//c88//í•™ìž//x
 	//NPC_NETITEM_SKILL1 : 
 	//NPC_NETITEM_SKILL2 : 
 	//NPC_NETITEM_SKILL3 : 
@@ -1539,23 +1539,23 @@ const int crewData[] = {
 	//NPC_KNIGHT_SKILL1 : 
 	//NPC_KNIGHT_SKILL2 : 
 	//NPC_KNIGHT_SKILL3 : 
-	NPC_KNIGHT, 49, NPC_KNIGHT_SKILL1, NPC_KNIGHT_SKILL2, NPC_KNIGHT_SKILL3, 11,//c65//ÇÃ·¹Å¸//x
+	NPC_KNIGHT, 49, NPC_KNIGHT_SKILL1, NPC_KNIGHT_SKILL2, NPC_KNIGHT_SKILL3, 11,//c65//í”Œë ˆíƒ€//x
 	//NPC_WITCH_SKILL1 : 
 	//NPC_WITCH_SKILL2 : 
 	//NPC_WITCH_SKILL3 : 
-	NPC_WITCH, 50, NPC_WITCH_SKILL1, NPC_WITCH_SKILL2, NPC_WITCH_SKILL3, 11,//c97//¸¶³à//x
+	NPC_WITCH, 50, NPC_WITCH_SKILL1, NPC_WITCH_SKILL2, NPC_WITCH_SKILL3, 11,//c97//ë§ˆë…€//x
 	//NPC_BISTRO_SKILL1 : 
 	//NPC_BISTRO_SKILL2 : 
 	//NPC_BISTRO_SKILL3 : 
-	NPC_BISTRO, 51, NPC_BISTRO_SKILL1, NPC_BISTRO_SKILL2, NPC_BISTRO_SKILL3, 11,//c90//ºñ½ºÆ®·Î//x
+	NPC_BISTRO, 51, NPC_BISTRO_SKILL1, NPC_BISTRO_SKILL2, NPC_BISTRO_SKILL3, 11,//c90//ë¹„ìŠ¤íŠ¸ë¡œ//x
 	//NPC_SEBASTIAN_SKILL1 : 
 	//NPC_SEBASTIAN_SKILL2 : 
 	//NPC_SEBASTIAN_SKILL3 : 
-	NPC_SEBASTIAN, 52, NPC_SEBASTIAN_SKILL1, NPC_SEBASTIAN_SKILL2, NPC_SEBASTIAN_SKILL3, 11,//c93//¼¼¹Ù½ºÂù//x
+	NPC_SEBASTIAN, 52, NPC_SEBASTIAN_SKILL1, NPC_SEBASTIAN_SKILL2, NPC_SEBASTIAN_SKILL3, 11,//c93//ì„¸ë°”ìŠ¤ì°¬//x
 	//NPC_FISHING_SKILL1 : 
 	//NPC_FISHING_SKILL2 : 
 	//NPC_FISHING_SKILL3 : 
-	NPC_FISHING, 53, NPC_FISHING_SKILL1, NPC_FISHING_SKILL2, NPC_FISHING_SKILL3, 11,//c73//¶óÇÇ//x
+	NPC_FISHING, 53, NPC_FISHING_SKILL1, NPC_FISHING_SKILL2, NPC_FISHING_SKILL3, 11,//c73//ë¼í”¼//x
 	//NPC_FRAUD_SKILL1 : 
 	//NPC_FRAUD_SKILL2 : 
 	//NPC_FRAUD_SKILL3 : 
@@ -1563,7 +1563,7 @@ const int crewData[] = {
 	//NPC_ELFMAGIC_SKILL1 : 
 	//NPC_ELFMAGIC_SKILL2 : 
 	//NPC_ELFMAGIC_SKILL3 : 
-	NPC_ELFMAGIC, 55, NPC_ELFMAGIC_SKILL1, NPC_ELFMAGIC_SKILL2, NPC_ELFMAGIC_SKILL3, 11,//c106//¿¤ÇÁ¸¶¹ý»ç//x
+	NPC_ELFMAGIC, 55, NPC_ELFMAGIC_SKILL1, NPC_ELFMAGIC_SKILL2, NPC_ELFMAGIC_SKILL3, 11,//c106//ì—˜í”„ë§ˆë²•ì‚¬//x
 	//NPC_DARIAN_SKILL1 : 
 	//NPC_DARIAN_SKILL2 : 
 	//NPC_DARIAN_SKILL3 : 
@@ -1571,71 +1571,71 @@ const int crewData[] = {
 	//NPC_DONALD_SKILL1 : 
 	//NPC_DONALD_SKILL2 : 
 	//NPC_DONALD_SKILL3 : 
-	NPC_DONALD, 57, NPC_DONALD_SKILL1, NPC_DONALD_SKILL2, NPC_DONALD_SKILL3, 11,//c87//ÀÌ¼Ò·æ//x
+	NPC_DONALD, 57, NPC_DONALD_SKILL1, NPC_DONALD_SKILL2, NPC_DONALD_SKILL3, 11,//c87//ì´ì†Œë£¡//x
 	//NPC_ELFDARK_SKILL1 : 
 	//NPC_ELFDARK_SKILL2 : 
 	//NPC_ELFDARK_SKILL3 : 
-	NPC_ELFDARK, 58, NPC_ELFDARK_SKILL1, NPC_ELFDARK_SKILL2, NPC_ELFDARK_SKILL3, 11,//c105//¿¤ÇÁ´ÙÅ©//x
+	NPC_ELFDARK, 58, NPC_ELFDARK_SKILL1, NPC_ELFDARK_SKILL2, NPC_ELFDARK_SKILL3, 11,//c105//ì—˜í”„ë‹¤í¬//x
 	//NPC_NEZAR_SKILL1 : 
 	//NPC_NEZAR_SKILL2 : 
 	//NPC_NEZAR_SKILL3 : 
-	NPC_NEZAR, 59, NPC_NEZAR_SKILL1, NPC_NEZAR_SKILL2, NPC_NEZAR_SKILL3, 11,//c115//³×ÀÚ¸£//x
+	NPC_NEZAR, 59, NPC_NEZAR_SKILL1, NPC_NEZAR_SKILL2, NPC_NEZAR_SKILL3, 11,//c115//ë„¤ìžë¥´//x
 	//NPC_DURAK_SKILL1 : 
 	//NPC_DURAK_SKILL2 : 
 	//NPC_DURAK_SKILL3 : 
-	NPC_DURAK, 60, NPC_DURAK_SKILL1, NPC_DURAK_SKILL2, NPC_DURAK_SKILL3, 11,//c117//µà¶óÅ©//x
+	NPC_DURAK, 60, NPC_DURAK_SKILL1, NPC_DURAK_SKILL2, NPC_DURAK_SKILL3, 11,//c117//ë“€ë¼í¬//x
 	//NPC_WOMANGHOST_SKILL1 : 
 	//NPC_WOMANGHOST_SKILL2 : 
 	//NPC_WOMANGHOST_SKILL3 : 
-	NPC_WOMANGHOST, 61, NPC_WOMANGHOST_SKILL1, NPC_WOMANGHOST_SKILL2, NPC_WOMANGHOST_SKILL3, 11,//c119//¿©ÀÚÀ¯·É//x
+	NPC_WOMANGHOST, 61, NPC_WOMANGHOST_SKILL1, NPC_WOMANGHOST_SKILL2, NPC_WOMANGHOST_SKILL3, 11,//c119//ì—¬ìžìœ ë ¹//x
 	//NPC_MANGHOST_SKILL1 : 
 	//NPC_MANGHOST_SKILL2 : 
 	//NPC_MANGHOST_SKILL3 : 
-	NPC_MANGHOST, 62, NPC_MANGHOST_SKILL1, NPC_MANGHOST_SKILL2, NPC_MANGHOST_SKILL3, 11,//c120//³²ÀÚÀ¯·É//x
+	NPC_MANGHOST, 62, NPC_MANGHOST_SKILL1, NPC_MANGHOST_SKILL2, NPC_MANGHOST_SKILL3, 11,//c120//ë‚¨ìžìœ ë ¹//x
 	//NPC_AUSTIN_SKILL1 : 
 	//NPC_AUSTIN_SKILL2 : 
 	//NPC_AUSTIN_SKILL3 : 
-	NPC_AUSTIN, 63, NPC_AUSTIN_SKILL1, NPC_AUSTIN_SKILL2, NPC_AUSTIN_SKILL3, 11,//c121//¿À½ºÆ¾(À¯·É)//x
+	NPC_AUSTIN, 63, NPC_AUSTIN_SKILL1, NPC_AUSTIN_SKILL2, NPC_AUSTIN_SKILL3, 11,//c121//ì˜¤ìŠ¤í‹´(ìœ ë ¹)//x
 	//NPC_ELEIN_SKILL1 : 
 	//NPC_ELEIN_SKILL2 : 
 	//NPC_ELEIN_SKILL3 : 
-	NPC_ELEIN, 64, NPC_ELEIN_SKILL1, NPC_ELEIN_SKILL2, NPC_ELEIN_SKILL3, 11,//c111//¿¤·¹ÀÎ//x
+	NPC_ELEIN, 64, NPC_ELEIN_SKILL1, NPC_ELEIN_SKILL2, NPC_ELEIN_SKILL3, 11,//c111//ì—˜ë ˆì¸//x
 	//NPC_USERQUEST_SKILL1 : 
 	//NPC_USERQUEST_SKILL2 : 
 	//NPC_USERQUEST_SKILL3 : 
-	NPC_USERQUEST, 65, NPC_USERQUEST_SKILL1, NPC_USERQUEST_SKILL2, NPC_USERQUEST_SKILL3, 12,//c70//½ºÆ©¾îµð½º//x
+	NPC_USERQUEST, 65, NPC_USERQUEST_SKILL1, NPC_USERQUEST_SKILL2, NPC_USERQUEST_SKILL3, 12,//c70//ìŠ¤íŠœì–´ë””ìŠ¤//x
 	//NPC_CHEF_SKILL1 : 
 	//NPC_CHEF_SKILL2 : 
 	//NPC_CHEF_SKILL3 : 
-	NPC_CHEF, 66, NPC_CHEF_SKILL1, NPC_CHEF_SKILL2, NPC_CHEF_SKILL3, 12,//c89//¿ä¸®´ë°¡//x
+	NPC_CHEF, 66, NPC_CHEF_SKILL1, NPC_CHEF_SKILL2, NPC_CHEF_SKILL3, 12,//c89//ìš”ë¦¬ëŒ€ê°€//x
 	//NPC_CAPTAIN_SKILL1 : 
 	//NPC_CAPTAIN_SKILL2 : 
-	//NPC_CAPTAIN_SKILL3 : ¹è¸¦ ¼ÒÈ¯ÇØ¼­ ´ëÇüÆøÅº ´øÁø´Ù.
-	NPC_CAPTAIN, 67, NPC_CAPTAIN_SKILL1, NPC_CAPTAIN_SKILL2, NPC_CAPTAIN_SKILL3, 13,//c52//Àè½ºÆÐ³Ê//x
+	//NPC_CAPTAIN_SKILL3 : ë°°ë¥¼ ì†Œí™˜í•´ì„œ ëŒ€í˜•í­íƒ„ ë˜ì§„ë‹¤.
+	NPC_CAPTAIN, 67, NPC_CAPTAIN_SKILL1, NPC_CAPTAIN_SKILL2, NPC_CAPTAIN_SKILL3, 13,//c52//ìž­ìŠ¤íŒ¨ë„ˆ//x
 	//NPC_ELKEIN_SKILL1 : 
 	//NPC_ELKEIN_SKILL2 : 
-	//NPC_ELKEIN_SKILL3 : º¯½ÅµÈ ¿¤ÄÉÀÎ ¼ÒÈ¯
+	//NPC_ELKEIN_SKILL3 : ë³€ì‹ ëœ ì—˜ì¼€ì¸ ì†Œí™˜
 	NPC_ELKEIN, 68, NPC_ELKEIN_SKILL1, NPC_ELKEIN_SKILL2, NPC_ELKEIN_SKILL3, 13,
 	//NPC_DELPIOS_SKILL1 :
 	//NPC_DELPIOS_SKILL2 :
 	//NPC_DELPIOS_SKILL3 : 
-	NPC_DELPIOS, 69, NPC_DELPIOS_SKILL1, NPC_DELPIOS_SKILL2, NPC_DELPIOS_SKILL3, 14,//c95//µ¨ÇÇ¿À½º//x
-	//NPC_LABETH_SKILL1 : ±âº»°ø°Ý
-	//NPC_LABETH_SKILL2 : ¶óº£½º ½ºÅ³1
-	//NPC_LABETH_SKILL3 : ¶óº£½º ½ºÅ³2
+	NPC_DELPIOS, 69, NPC_DELPIOS_SKILL1, NPC_DELPIOS_SKILL2, NPC_DELPIOS_SKILL3, 14,//c95//ë¸í”¼ì˜¤ìŠ¤//x
+	//NPC_LABETH_SKILL1 : ê¸°ë³¸ê³µê²©
+	//NPC_LABETH_SKILL2 : ë¼ë² ìŠ¤ ìŠ¤í‚¬1
+	//NPC_LABETH_SKILL3 : ë¼ë² ìŠ¤ ìŠ¤í‚¬2
 	NPC_LABETH, 70, NPC_LABETH_SKILL1, NPC_LABETH_SKILL2, NPC_LABETH_SKILL3, 14,
 	//NPC_EVAN_SKILL1 :
 	//NPC_EVAN_SKILL2 :
-	//NPC_EVAN_SKILL3 : ·Îºó ³­¹« ½ºÅ³
-	NPC_EVAN, 71, NPC_EVAN_SKILL1, NPC_EVAN_SKILL2, NPC_EVAN_SKILL3, 14,//c112//¿¡¹ø//x
+	//NPC_EVAN_SKILL3 : ë¡œë¹ˆ ë‚œë¬´ ìŠ¤í‚¬
+	NPC_EVAN, 71, NPC_EVAN_SKILL1, NPC_EVAN_SKILL2, NPC_EVAN_SKILL3, 14,//c112//ì—ë²ˆ//x
 	//NPC_LORA_SKILL1 : 
 	//NPC_LORA_SKILL2 : 
 	//NPC_LORA_SKILL3 : 
-	NPC_LORA, 72, NPC_LORA_SKILL1, NPC_LORA_SKILL2, NPC_LORA_SKILL3, 14,//c96//·Î¶ó//x
+	NPC_LORA, 72, NPC_LORA_SKILL1, NPC_LORA_SKILL2, NPC_LORA_SKILL3, 14,//c96//ë¡œë¼//x
 	//NPC_KING_SKILL1 : 
 	//NPC_KING_SKILL2 : 
-	//NPC_KING_SKILL3 : ´ë¸¶¿Õ °ñµå¸¦ ºÎ¸£°í
-	NPC_KING, 73, NPC_KING_SKILL1, NPC_KING_SKILL2, NPC_KING_SKILL3, 14,//c118//¿¡µå¸óµå//x
+	//NPC_KING_SKILL3 : ëŒ€ë§ˆì™• ê³¨ë“œë¥¼ ë¶€ë¥´ê³ 
+	NPC_KING, 73, NPC_KING_SKILL1, NPC_KING_SKILL2, NPC_KING_SKILL3, 14,//c118//ì—ë“œëª¬ë“œ//x
 
 };
 
@@ -2125,10 +2125,10 @@ const unsigned short maxxSkillClosingFrame[MAXX_TOTAL_SKILL] = {
 };
 
 const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
-	//¸ð¼Ç, X/Y¿òÁ÷ÀÓ, È¿°ú, »ç¿îµå
+	//ëª¨ì…˜, X/Yì›€ì§ìž„, íš¨ê³¼, ì‚¬ìš´ë“œ
 #ifdef ROBINDEFAULTATTACKSTING
 #ifdef ATTACK_INIT_DELAY
-	//ÀÏ¹Ý°ø°Ý
+	//ì¼ë°˜ê³µê²©
 	PO_C0_STING0, 0, _WAIT1,	0,//0->				SKIP -3
 #endif
 	PO_C0_STING1, 0, 0,	0,//1 ->				SKIP 6
@@ -2262,7 +2262,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_STOP3, 0, 0,	0,//21 ->					SKIP 1
 	0, 0, _END,	0,//22
 #endif
-	//´ë½¬¾îÅÃ
+	//ëŒ€ì‰¬ì–´íƒ
 	PO_C0_DA0, 0, _SETFRAMEBYDX,	M_DOWN,//0
 	PO_C0_DA1, 0, _DXDECREASE4,	0,//1
 	PO_C0_DA2, 0, _DXDECREASE4,	0,//2
@@ -2271,14 +2271,14 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_DA4, 0, _DXDECREASE4,	0,//5
 	0, 0, _END,	0,//6
 
-	//°øÁß°ø°Ý
+	//ê³µì¤‘ê³µê²©
 	PO_C0_JA0, 0, _WALKTOEND,	0,//0
 	PO_C0_JA1, 0, _WALKTOEND,	M_SWORD,//1
 	PO_C0_JA2, 0, _WALKTOEND,	0,//2
 	0, 0, _END,	0,//3
 
-	//Âï±â°ø°Ý
-	//Âï±â°ø°Ý ÈÄ
+	//ì°ê¸°ê³µê²©
+	//ì°ê¸°ê³µê²© í›„
 	PO_C0_JU0, _JUMP2, 0,	0,//0
 	PO_C0_JU0, 0, 0,	0,//1
 	PO_C0_JU0, 0, 0,	0,//2
@@ -2286,7 +2286,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_JD0, 0, 0,	0,//4
 	0, 0, _ENDTOFALL,	0,//5
 
-	//¹ÝÁö¹ßµ¿
+	//ë°˜ì§€ë°œë™
 	PO_C0_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C0_SKILLREADY, 0, 0, 0,	//1
 	PO_C0_SKILLREADY, 0, 0, 0,	//2
@@ -2301,7 +2301,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_USERING2, 0, 0, 0,	//11
 	0, 0, _ADDMON,	0,//12
 
-	//´Ù¶÷Áã º¯½Å
+	//ë‹¤ëžŒì¥ ë³€ì‹ 
 	PO_C0_SKILLREADY, 0, 0, M_BUFF_BLUE,	//0
 	PO_C0_SKILLREADY, 0, 0, 0,	//1
 	PO_C0_CHANGE0, 0, 0, 0,	//2
@@ -2310,7 +2310,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_CHANGE3, 0, 0, 0,	//5
 	0, 0, _END,	0,//6
 
-	//ÀÎ°£ º¯½Å
+	//ì¸ê°„ ë³€ì‹ 
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, M_BUFF_BLUE,	//0
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, 0,	//1
 	PO_C0_SQUIRREL_CHANGE1, 0, 0, 0,	//2
@@ -2318,7 +2318,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_SQUIRREL_CHANGE3, 0, 0, 0,	//4
 	0, 0, _END,	0,//5
 
-	//¿öÇÁ
+	//ì›Œí”„
 	PO_C0_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C0_USERING0, 0, 0, 0,	//1
 	PO_C0_USERING1, 0, 0, 0,	//2
@@ -2339,7 +2339,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_WARP11, 0, 0, 0,	//17
 	0, 0, _END,	0,//18
 
-	//¾ÆÀÌÅÛ ´øÁö±â
+	//ì•„ì´í…œ ë˜ì§€ê¸°
 	PO_C0_THROW0, 0, _ADDITEMBULLET, 0,	//0
 	PO_C0_THROW1, 0, 0, 0,	//1
 	PO_C0_THROW2, 0, 0, M_BOOMERANGSTRONG,	//2
@@ -2347,7 +2347,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END, 0,	//4
 
 	//SKILL_ROBIN6
-	//¿¡¾îÅ©·¡½¬
+	//ì—ì–´í¬ëž˜ì‰¬
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2443,7 +2443,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//91
 
 	//SKILL_ROBIN7
-	//¸¶±¸Âî¸£±â
+	//ë§ˆêµ¬ì°Œë¥´ê¸°
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2526,7 +2526,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//79
 
 	//SKILL_ROBIN8
-	//ºÎ½ºÆ®½½·¡½¬
+	//ë¶€ìŠ¤íŠ¸ìŠ¬ëž˜ì‰¬
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2618,7 +2618,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//88
 
 	//SKILL_ROBIN9
-	//ÇÏÀÌÆÛÂ÷Áö
+	//í•˜ì´í¼ì°¨ì§€
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2714,7 +2714,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 1, _ENDTOFALL,	0,//92
 
 	//SKILL_ROBIN10
-	//¼Ò¿ïÅ©·¡½¬
+	//ì†Œìš¸í¬ëž˜ì‰¬
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2809,7 +2809,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//91
 
 	//SKILL_ROBIN11
-	//¾Û¼Ö·çÆ®ÇÇ¾î½º
+	//ì•±ì†”ë£¨íŠ¸í”¼ì–´ìŠ¤
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1
 	PO_C0_A1, 0, 0, 0,//2 
@@ -2906,7 +2906,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//93
 
 	//SKILL_ROBIN12
-	//¸ê»ì¿¬Âü
+	//ë©¸ì‚´ì—°ì°¸
 	PO_C0_A0, 0, 0, 0,//0 
 	PO_C0_A0, 0, 0, 0,//1 
 	PO_C0_A1, 0, 0, 0,//2 
@@ -3015,7 +3015,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_SCRASH3, 0, 0,	0,//105
 	0, 0, _END,	0,//106
 
-	//¹æ¾îÅÂ¼¼
+	//ë°©ì–´íƒœì„¸
 	PO_C0_SKILLREADY, 0, 0,	M_BUFF_PINK,//0
 	PO_C0_SKILLREADY, 0, 0,	0,//1
 	PO_C0_SKILLREADY, 0, 0,	0,//2
@@ -3033,7 +3033,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_DEFREADY2, 0, 0,	0,//14
 	0, 0, _ADDBUFF, 0,//15
 
-	//Á¤½Å¼Ò¸ð
+	//ì •ì‹ ì†Œëª¨
 	PO_C0_SKILLREADY, 0, 0,	M_BUFF_YELLOW,//0
 	PO_C0_SKILLREADY, 0, 0,	0,//1
 	PO_C0_SKILLREADY, 0, 0,	0,//2
@@ -3051,7 +3051,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_MINDREADY2, 0, 0,	0,//14
 	0, 0, _ADDBUFF, 0,//15
 
-	//º£¸£¼¼¸£Å©//¿©À¯Æ÷Âø
+	//ë² ë¥´ì„¸ë¥´í¬//ì—¬ìœ í¬ì°©
 	PO_C0_SKILLREADY, 0, 0,	M_BUFF_BLUE,//0
 	PO_C0_SKILLREADY, 0, 0,	0,//1
 	PO_C0_SKILLREADY, 0, 0,	0,//2
@@ -3069,7 +3069,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_AFFORDREADY2, 0, 0,	0,//14
 	0, 0, _ADDBUFF, 0,//15
 
-	//HPÈ¸º¹//³ÃÁ¤Ä§Âø
+	//HPíšŒë³µ//ëƒ‰ì •ì¹¨ì°©
 	PO_C0_SKILLREADY, 0, 0,	M_BUFF_RED,//0
 	PO_C0_SKILLREADY, 0, 0,	0,//1
 	PO_C0_SKILLREADY, 0, 0,	0,//2
@@ -3087,7 +3087,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_COLDREADY2, 0, 0,	0,//14
 	0, 0, _ADDBUFF, 0,//15
 
-	//¸®ÇÃ·ºÅÍ
+	//ë¦¬í”Œë ‰í„°
 	PO_C0_SKILLREADY, 0, 0,	M_BUFF_PINK,//0
 	PO_C0_SKILLREADY, 0, 0,	0,//1
 	PO_C0_SKILLREADY, 0, 0,	0,//2
@@ -3107,7 +3107,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 };
 
 const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
-	//ÀÏ¹Ý°ø°Ý
+	//ì¼ë°˜ê³µê²©
 #ifdef ATTACK_INIT_DELAY
 	PO_C1_3WAY0, 0, 0, 0,//0								//SKIP -4
 	PO_C1_3WAY1, 0, 0, 0,//1								//SKIP -3
@@ -3147,7 +3147,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_STOP7, 0, 0,	0,//30											//SKIP 5
 	0, 0, _END,	0,//31
 
-	//´ë½¬¾îÅÃ
+	//ëŒ€ì‰¬ì–´íƒ
 	PO_C1_DA0, 0, _FACEOPPOSITE,	0,//0
 	PO_C1_DA1, _DIROPPOSITE, 0,	M_SWORDSTRONG,//1
 	PO_C1_DA2, _DIROPPOSITE, 0,	0,//2
@@ -3157,14 +3157,14 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_STOP7, 0, 0,	0,//6
 	0, 0, _END,	0,//7
 
-	//°øÁß°ø°Ý
+	//ê³µì¤‘ê³µê²©
 	PO_C1_JA0, 0, _WALKTOEND,	0,//0
 	PO_C1_JA1, _DIROPPOSITE, _WALKTOEND,	M_GUN,//1
 	PO_C1_JA2, 0, _WALKTOEND,	0,//2
 	PO_C1_JA3, _DIROPPOSITE, _WALKTOEND,	M_GUN,//3
 	0, 0, _END,	0,//4
 
-	//ÇÏ´Ü°ø°Ý
+	//í•˜ë‹¨ê³µê²©
 	PO_C1_DOA0, _JUMP2, _ADDJUMPFRAME,	0,//0
 	PO_C1_DOA1, _JUMP2, _ADDJUMPFRAME2,	M_SWORDSTRONG,//1
 	PO_C1_DOA2, _JUMP2, _ADDJUMPFRAME2,	0,//2
@@ -3176,14 +3176,14 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_JD0, 0, 0,	0,//8
 	0, 0, _ENDTOFALL,	0,//9
 
-	//¹ÝÁö¹ßµ¿
+	//ë°˜ì§€ë°œë™
 	PO_C1_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C1_USERING0, 0, 0, 0,	//1
 	PO_C1_USERING1, 0, 0, 0,	//2
 	PO_C1_USERING2, 0, 0, 0,	//3
 	0, 0, _USERING,	0,//4
 
-	//´Ù¶÷Áã º¯½Å
+	//ë‹¤ëžŒì¥ ë³€ì‹ 
 	PO_C1_SKILLREADY, 0, 0, M_BUFF_BLUE,	//0
 	PO_C1_SKILLREADY, 0, 0, 0,	//1
 	PO_C1_CHANGE0, 0, 0, 0,	//2
@@ -3192,7 +3192,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_CHANGE3, 0, 0, 0,	//5
 	0, 0, _END, 0,//6
 
-	//ÀÎ°£ º¯½Å
+	//ì¸ê°„ ë³€ì‹ 
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, M_BUFF_BLUE,	//0
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, 0,	//1
 	PO_C0_SQUIRREL_CHANGE1, 0, 0, 0,	//2
@@ -3200,7 +3200,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_SQUIRREL_CHANGE3, 0, 0, 0,	//4
 	0, 0, _END, 0,//5
 
-	//¿öÇÁ
+	//ì›Œí”„
 	PO_C1_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C1_USERING0, 0, 0, 0,	//1
 	PO_C1_USERING1, 0, 0, 0,	//2
@@ -3221,7 +3221,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_WARP11, 0, 0, 0,	//17
 	0, 0, _END,	0,//18
 
-	//¾ÆÀÌÅÛ ´øÁö±â
+	//ì•„ì´í…œ ë˜ì§€ê¸°
 	PO_C1_THROW0, 0, _ADDITEMBULLET, 0,	//0
 	PO_C1_THROW1, 0, 0, 0,	//1
 	PO_C1_THROW2, 0, 0, M_BOOMERANGSTRONG,	//2
@@ -3330,7 +3330,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_A22, 0, 0,	0,//98
 	0, 0, _END,	0,//99
 
-	//¹Ý»ç·¹ÀÌÀú
+	//ë°˜ì‚¬ë ˆì´ì €
 	PO_C1_RLAY0, 0, 0,	0,//0
 	PO_C1_RLAY0, 0, 0,	0,//1
 	PO_C1_RLAY0, 0, 0,	0,//2
@@ -3482,7 +3482,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_RLAY5, 0, 0, 0,//148
 	0, 0, _END,	0,//149
 
-	//ÆøÆÄÃÑ¾Ë
+	//í­íŒŒì´ì•Œ
 	PO_C1_A6, 0, 0,	0,//0
 	PO_C1_A6, 0, 0,	0,//1
 	PO_C1_A6, 0, 0,	0,//2
@@ -3584,7 +3584,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_BOMB2, 0, 0,	0,//98
 	0, 0, _END,	0,//99
 
-	//À¯µµ¹Ì»çÀÏ
+	//ìœ ë„ë¯¸ì‚¬ì¼
 	PO_C1_3WAY0, 0, 0,	0,//0
 	PO_C1_3WAY0, 0, 0,	0,//1
 	PO_C1_3WAY0, 0, 0,	0,//2
@@ -3824,7 +3824,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_MISSILE4, 0, 0, 0,//240
 	0, 0, _END,	0,//241
 
-	//³­»ç
+	//ë‚œì‚¬
 	PO_C1_A0, 0, 0,	0,//0
 	PO_C1_A0, 0, 0,	0,//1
 	PO_C1_A0, 0, 0,	0,//2
@@ -3890,7 +3890,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_RFIRE16, 0, 0,	0,//62
 	0, 0, _ENDTOFALL,	0,//63
 
-	//À§¼º·¹ÀÌÀú
+	//ìœ„ì„±ë ˆì´ì €
 	PO_C1_SATLASER0, 0, 0,	0,//0
 	PO_C1_SATLASER0, 0, 0,	0,//1
 	PO_C1_SATLASER0, 0, 0,	0,//2
@@ -3992,7 +3992,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_SATLASER3, 0, 0,	0,//98
 	0, 0, _END,	0,//99
 
-	//È¸º¹Åº
+	//íšŒë³µíƒ„
 	PO_C1_HEAL0, 0, 0,	0,//0
 	PO_C1_HEAL1, 0, 0,	0,//1
 	PO_C1_HEAL2, 0, 0,	0,//2
@@ -4005,28 +4005,28 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_HEAL8, 0, _ADDHEAL,	0,//9
 	0, 0, _END,	0,//10
 
-	//ÈïºÐ°íÁ¶
+	//í¥ë¶„ê³ ì¡°
 	PO_C1_SKILLREADY, 0, 0,	M_BUFF_PINK,//0
 	PO_C1_RISEREADY0, 0, 0,	0,//1
 	PO_C1_RISEREADY1, 0, 0,	0,//2
 	PO_C1_RISEREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//Èí¸¶ÀÇ ¸¶Åº
+	//í¡ë§ˆì˜ ë§ˆíƒ„
 	PO_C1_SKILLREADY, 0, 0,	M_BUFF_YELLOW,//0
 	PO_C1_SUCKREADY0, 0, 0,	0,//1
 	PO_C1_SUCKREADY1, 0, 0,	0,//2
 	PO_C1_SUCKREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//ÇÊ»ìÁýÁß
+	//í•„ì‚´ì§‘ì¤‘
 	PO_C1_SKILLREADY, 0, 0,	M_BUFF_BLUE,//0
 	PO_C1_CONREADY0, 0, 0,	0,//1
 	PO_C1_CONREADY1, 0, 0,	0,//2
 	PO_C1_CONREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//ÇÊ»ìÁýÁß
+	//í•„ì‚´ì§‘ì¤‘
 	PO_C1_SKILLREADY, 0, 0,	M_BUFF_RED,//0
 	PO_C1_DENYREADY0, 0, 0,	0,//1
 	PO_C1_DENYREADY1, 0, 0,	0,//2
@@ -4035,7 +4035,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 };
 
 const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
-	//ÀÏ¹Ý°ø°Ý
+	//ì¼ë°˜ê³µê²©
 #ifdef ATTACK_INIT_DELAY
 	PO_C2_HELLMOTION0, 0, 0,	0,//0				//SKIP -5
 	PO_C2_HELLMOTION1, 0, 0,	0,//1				//SKIP -4
@@ -4051,7 +4051,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_STOP0, 0, 0,	M_SWORDSTRONG,//5
 	PO_C2_STOP1, 0, _END,	0,//6
 
-	//´ë½¬°ø°Ý
+	//ëŒ€ì‰¬ê³µê²©
 	PO_C2_DASHATT0, 0, 0,	0,//0
 	PO_C2_DASHATT1, _JUMP2, _SETFRAMEBYDX2,	M_DOWN,//1
 	PO_C2_DASHATT1, 0, _DXDECREASE4,	0,//2
@@ -4061,14 +4061,14 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_DASHATT3, 0, _DXDECREASE4,	0,//6
 	0, 0, _ENDTOFALL,	0,//7
 
-	//°øÁß°ø°Ý
+	//ê³µì¤‘ê³µê²©
 	PO_C2_A0, 0, 0,	0,//0
 	PO_C2_A1, 0, 0,	0,//1
 	PO_C2_A2, 0, _ADDBOOMERANG,	M_BOOMERANG,//2
 	PO_C2_A2, 0, 0,	0,//2
 	0, 0, _ENDTOFALL,	0,//4
 
-	//ÇÏ´Ü°ø°Ý
+	//í•˜ë‹¨ê³µê²©
 	PO_C2_GROUND0, _JUMP2, _ADDJUMPFRAME,	0,//0
 	PO_C2_GROUND1, _JUMP2, _ADDJUMPFRAME,	0,//1
 	PO_C2_GROUND1, 0, 0,	0,//2
@@ -4080,14 +4080,14 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_JD0, 0, _ADDJUMPFRAME,	0,//8
 	0, 0, _ENDTOFALL,	0,//9
 
-	//¹ÝÁö¹ßµ¿
+	//ë°˜ì§€ë°œë™
 	PO_C2_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C2_USERING0, 0, 0, 0,	//1
 	PO_C2_USERING1, 0, 0, 0,	//2
 	PO_C2_USERING2, 0, 0, 0,	//3
 	0, 0, _USERING,	0,//4
 
-	//´Ù¶÷Áã º¯½Å
+	//ë‹¤ëžŒì¥ ë³€ì‹ 
 	PO_C2_SKILLREADY, 0, 0, M_BUFF_BLUE,	//0
 	PO_C2_SKILLREADY, 0, 0, 0,	//1
 	PO_C2_CHANGE0, 0, 0, 0,	//2
@@ -4096,7 +4096,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_CHANGE3, 0, 0, 0,	//5
 	0, 0, _END, 0,//6
 
-	//ÀÎ°£ º¯½Å
+	//ì¸ê°„ ë³€ì‹ 
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, M_BUFF_BLUE,	//0
 	PO_C0_SQUIRREL_CHANGE0, 0, 0, 0,	//1
 	PO_C0_SQUIRREL_CHANGE1, 0, 0, 0,	//2
@@ -4104,7 +4104,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_SQUIRREL_CHANGE3, 0, 0, 0,	//4
 	0, 0, _END,	0,//5
 
-	//¿öÇÁ
+	//ì›Œí”„
 	PO_C0_SKILLREADY, 0, 0, M_LASER,	//0
 	PO_C0_USERING0, 0, 0, 0,	//1
 	PO_C0_USERING1, 0, 0, 0,	//2
@@ -4125,14 +4125,14 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_WARP11, 0, 0, 0,	//17
 	0, 0, _END,	0,//18
 
-	//¾ÆÀÌÅÛ ´øÁö±â
+	//ì•„ì´í…œ ë˜ì§€ê¸°
 	PO_C2_THROW0, 0, _ADDITEMBULLET, 0,	//0
 	PO_C2_THROW1, 0, 0, 0,	//1
 	PO_C2_THROW2, 0, 0, M_BOOMERANGSTRONG,	//2
 	PO_C2_THROW3, 0, 0, 0,	//3
 	0, 0, _END, 0,	//4
 
-	//µ¹·ÁÂ÷±â
+	//ëŒë ¤ì°¨ê¸°
 	PO_C2_KICK0, 0, 0,	0,//0
 	PO_C2_KICK0, 0, 0,	0,//1
 	PO_C2_KICK0, 0, 0,	0,//2
@@ -4168,7 +4168,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_KICK7, 0, 0,	0,//32
 	0, 0, _ENDTOFALL,	0,//33
 
-	//¼ôÇåÆ®
+	//ìˆí—ŒíŠ¸
 	PO_C2_KICK0, 0, 0,	0,//0
 	PO_C2_KICK0, 0, 0,	0,//1
 	PO_C2_KICK0, 0, 0,	0,//2
@@ -4217,7 +4217,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_SHORT4, 0, 0,	0,//45//31
 	0, 0, _END,	0,//46//32
 
-	//¿¡¾îÇåÆ®
+	//ì—ì–´í—ŒíŠ¸
 	PO_C2_KICK0, 0, 0,	0,//0
 	PO_C2_KICK0, 0, 0,	0,//1
 	PO_C2_KICK0, 0, 0,	0,//2
@@ -4247,7 +4247,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_GROUND5, 0, 0,	0,//26
 	0, 0, _ENDTOFALL,	0,//27
 
-	//Ä·ÇÎÇåÆ®
+	//ìº í•‘í—ŒíŠ¸
 	PO_C2_A0, _JUMP1, 0,	0,//0
 	PO_C2_A0, 0, 0,	0,//1
 	PO_C2_A0, 0, 0,	0,//2
@@ -4262,7 +4262,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_JD0, 0, 0,	0,//11
 	0, 0, _ENDTOFALL,	0,//12
 
-	//È£¹ÖÇåÆ®
+	//í˜¸ë°í—ŒíŠ¸
 	PO_C2_KICK0, 0, 0,	0,//0
 	PO_C2_KICK0, 0, 0,	0,//1
 	PO_C2_KICK0, 0, 0,	0,//2
@@ -4298,7 +4298,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_SHORT4, 0, 0,	0,//32
 	0, 0, _END,	0,//33
 
-	//½áÅ¬ÇåÆ®
+	//ì¨í´í—ŒíŠ¸
 	PO_C2_A0, _JUMP1, 0,	0,//0
 	PO_C2_A0, 0, 0,	0,//1
 	PO_C2_A0, 0, 0,	0,//2
@@ -4390,7 +4390,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_JD0, 0, 0,	0,//88
 	0, 0, _ENDTOFALL,	0,//89
 
-	//¸Þ°¡ÇåÆ®
+	//ë©”ê°€í—ŒíŠ¸
 	PO_C2_KICK0, 0, 0,	0,//0
 	PO_C2_KICK0, 0, 0,	0,//1
 	PO_C2_KICK0, 0, 0,	0,//2
@@ -4444,28 +4444,28 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_SHORT4, 0, 0,	0,//50
 	0, 0, _END,	0,//51
 
-	//ºí·¯µåÇåÆ®
+	//ë¸”ëŸ¬ë“œí—ŒíŠ¸
 	PO_C2_SKILLREADY, 0, 0,	M_BUFF_PINK,//0
 	PO_C2_BLOODREADY0, 0, 0,	0,//1
 	PO_C2_BLOODREADY1, 0, 0,	0,//2
 	PO_C2_BLOODREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//Çö¶õ¹«µµ
+	//í˜„ëž€ë¬´ë„
 	PO_C2_SKILLREADY, 0, 0,	M_BUFF_YELLOW,//0
 	PO_C2_DAZZLEREADY0, 0, 0,	0,//1
 	PO_C2_DAZZLEREADY1, 0, 0,	0,//2
 	PO_C2_DAZZLEREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//¾ÈµµÀÇÇÑ¼û
+	//ì•ˆë„ì˜í•œìˆ¨
 	PO_C2_SKILLREADY, 0, 0,	M_BUFF_BLUE,//0
 	PO_C2_SIGHREADY0, 0, 0,	0,//1
 	PO_C2_SIGHREADY1, 0, 0,	0,//2
 	PO_C2_SIGHREADY2, 0, 0,	0,//3
 	0, 0, _ADDBUFF,	0,//4
 
-	//È¥½ÅºÐ¸®
+	//í˜¼ì‹ ë¶„ë¦¬
 	PO_C2_SKILLREADY, 0, 0,	M_BUFF_RED,//0
 	PO_C2_SPLITREADY0, 0, 0,	0,//1
 	PO_C2_SPLITREADY1, 0, 0,	0,//2
@@ -4475,7 +4475,7 @@ const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 
 
 const signed char dianaHelmPos[50] = {
-	//µð¾Æ³ª Åõ±¸ À§Ä¡
+	//ë””ì•„ë‚˜ íˆ¬êµ¬ ìœ„ì¹˜
 	0 * _2X, 0 * _2X,	//0
 	0 * _2X, 0 * _2X,	//1
 	1 * _2X, 1 * _2X,	//2
@@ -4504,7 +4504,7 @@ const signed char dianaHelmPos[50] = {
 };
 
 const signed char maxxHelmPos[50] = {
-	//¸Æ½º Åõ±¸ À§Ä¡
+	//ë§¥ìŠ¤ íˆ¬êµ¬ ìœ„ì¹˜
 	0 * _2X, 0 * _2X,	//0
 	0 * _2X, 0 * _2X,	//1
 	0 * _2X, 1 * _2X,	//2
@@ -4921,7 +4921,7 @@ const unsigned char satelliteShotMotion[] = {
 
 };
 
-//ÁÖÀÇ : core.h´Â signedÀÌ¾î¾ß ÇÔ
+//ì£¼ì˜ : core.hëŠ” signedì´ì–´ì•¼ í•¨
 const signed short satelliteShotData[15] = {
 	-30 * _2X, -53 * _2X, N00E0X3,
 	-30 * _2X, -53 * _2X, N00E0X3,
@@ -4931,11 +4931,11 @@ const signed short satelliteShotData[15] = {
 };
 
 const unsigned char hitMarkData[5 * 3] = {
-	//·Îºó
+	//ë¡œë¹ˆ
 	HIT_ROBIN_SMALL1, HIT_ROBIN_MEDIUM1, 4,
-	//µð¾Æ³ª
+	//ë””ì•„ë‚˜
 	HIT_DIANA_SMALL1, HIT_DIANA_MEDIUM1, 8,
-	//¸Æ½º
+	//ë§¥ìŠ¤
 	HIT_MAXX_SMALL1, HIT_MAXX_MEDIUM1, 5,
 	//3
 	HIT_EXTRA0, HIT_EXTRA0, 5,
@@ -4944,55 +4944,55 @@ const unsigned char hitMarkData[5 * 3] = {
 };
 
 const unsigned short buffData[TOTALPLAYERBUFF * 4] = {
-	//¹ßµ¿ ÇÁ·¹ÀÓ, Áö¼ÓÇÁ·¹ÀÓ, ¹öÇÁ ¹Ýº¹ ÇÁ·¹ÀÓ, ½ÃÀÛ¸ð¼Ç
-	//·Îºó
-	ROBIN_ATTACK_DEFENSE_START + ROBIN_ATTACK_DEFENSE_CNT, 5 * MINUTES, 3, PO_C0_DEF0,	//¹æ¾îÅÂ¼¼//DEC_ENEMY_DEFENSE °ø°Ý´çÇÑ ÀûÀÇ µ¥¹ÌÁö °¨¼Ò
-	ROBIN_ATTACK_BARRIER_START + ROBIN_ATTACK_BARRIER_CNT, 5 * MINUTES, 4, PO_C0_MIND0,	//Á¤½Å¼Ò¸ð//
-	ROBIN_ATTACK_HPRESTORE_START + ROBIN_ATTACK_HPRESTORE_CNT, 5 * MINUTES, 8, PO_C0_AFFORD0,	//¿©À¯Æ÷Âø//º£¸£¼¼¸£Å©
-	ROBIN_ATTACK_MPRESTORE_START + ROBIN_ATTACK_MPRESTORE_CNT, 5 * MINUTES, 8, PO_C0_COLD0,	//HPÈ¸º¹//³ÃÁ¤Ä§Âø
-	ROBIN_ATTACK_REFLECTOR_START + ROBIN_ATTACK_REFLECTOR_CNT, 5 * MINUTES, 4, PO_C0_REFLECT0,	//¸®ÇÃ·ºÅÍ
+	//ë°œë™ í”„ë ˆìž„, ì§€ì†í”„ë ˆìž„, ë²„í”„ ë°˜ë³µ í”„ë ˆìž„, ì‹œìž‘ëª¨ì…˜
+	//ë¡œë¹ˆ
+	ROBIN_ATTACK_DEFENSE_START + ROBIN_ATTACK_DEFENSE_CNT, 5 * MINUTES, 3, PO_C0_DEF0,	//ë°©ì–´íƒœì„¸//DEC_ENEMY_DEFENSE ê³µê²©ë‹¹í•œ ì ì˜ ë°ë¯¸ì§€ ê°ì†Œ
+	ROBIN_ATTACK_BARRIER_START + ROBIN_ATTACK_BARRIER_CNT, 5 * MINUTES, 4, PO_C0_MIND0,	//ì •ì‹ ì†Œëª¨//
+	ROBIN_ATTACK_HPRESTORE_START + ROBIN_ATTACK_HPRESTORE_CNT, 5 * MINUTES, 8, PO_C0_AFFORD0,	//ì—¬ìœ í¬ì°©//ë² ë¥´ì„¸ë¥´í¬
+	ROBIN_ATTACK_MPRESTORE_START + ROBIN_ATTACK_MPRESTORE_CNT, 5 * MINUTES, 8, PO_C0_COLD0,	//HPíšŒë³µ//ëƒ‰ì •ì¹¨ì°©
+	ROBIN_ATTACK_REFLECTOR_START + ROBIN_ATTACK_REFLECTOR_CNT, 5 * MINUTES, 4, PO_C0_REFLECT0,	//ë¦¬í”Œë ‰í„°
 
-	//µð¾Æ³ª
-	DIANA_SKILL_FEELUP_START + DIANA_SKILL_FEELUP_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_RISE0,	//ÈïºÐ°íÁ¶
-	DIANA_SKILL_VAMPIRE_START + DIANA_SKILL_VAMPIRE_CNT, FPS * BUFFINITSECONDS, 8, PO_C1_SUCK0,	//Èí¸¶ÀÇ ¸¶Åº
-	DIANA_SKILL_FOCUS_START + DIANA_SKILL_FOCUS_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_CON0,	//ÇÊ»ìÁýÁß
-	DIANA_SKILL_FAMAS_START + DIANA_SKILL_FAMAS_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_DENY0,	//ÆÄ¸¶ÀÇ Á÷°Ý
+	//ë””ì•„ë‚˜
+	DIANA_SKILL_FEELUP_START + DIANA_SKILL_FEELUP_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_RISE0,	//í¥ë¶„ê³ ì¡°
+	DIANA_SKILL_VAMPIRE_START + DIANA_SKILL_VAMPIRE_CNT, FPS * BUFFINITSECONDS, 8, PO_C1_SUCK0,	//í¡ë§ˆì˜ ë§ˆíƒ„
+	DIANA_SKILL_FOCUS_START + DIANA_SKILL_FOCUS_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_CON0,	//í•„ì‚´ì§‘ì¤‘
+	DIANA_SKILL_FAMAS_START + DIANA_SKILL_FAMAS_CNT, FPS * BUFFINITSECONDS, 4, PO_C1_DENY0,	//íŒŒë§ˆì˜ ì§ê²©
 
-	//¸Æ½º
-	MAXX_SKILL_BLOOD_START + MAXX_SKILL_BLOOD_CNT, FPS * BUFFINITSECONDS, 8, PO_C2_BLOOD0,	//ºí·¯µåÇåÆ®
-	MAXX_SKILL_DAZZLE_START + MAXX_SKILL_DAZZLE_CNT, FPS * BUFFINITSECONDS, 4, PO_C2_DAZZLE0,	//Çö¶õ¹«µµ
-	MAXX_SKILL_SIGH_START + MAXX_SKILL_SIGH_CNT, FPS * BUFFINITSECONDS, 8, PO_C2_SIGH0,	//¾ÈµµÀÇÇÑ¼û
-	MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT, FPS * BUFFINITSECONDS, 4, PO_C2_SPLIT0,	//È¥½ÅºÐ¸®
+	//ë§¥ìŠ¤
+	MAXX_SKILL_BLOOD_START + MAXX_SKILL_BLOOD_CNT, FPS * BUFFINITSECONDS, 8, PO_C2_BLOOD0,	//ë¸”ëŸ¬ë“œí—ŒíŠ¸
+	MAXX_SKILL_DAZZLE_START + MAXX_SKILL_DAZZLE_CNT, FPS * BUFFINITSECONDS, 4, PO_C2_DAZZLE0,	//í˜„ëž€ë¬´ë„
+	MAXX_SKILL_SIGH_START + MAXX_SKILL_SIGH_CNT, FPS * BUFFINITSECONDS, 8, PO_C2_SIGH0,	//ì•ˆë„ì˜í•œìˆ¨
+	MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT, FPS * BUFFINITSECONDS, 4, PO_C2_SPLIT0,	//í˜¼ì‹ ë¶„ë¦¬
 };
 
 const unsigned char dianaBulletData[7 * 5] = {
-	//¸ð¼Ç, ¹«ºêÇÚµé·¯, µå·Î¿ìÇÚµé·¯, ½ÃÀÛXÁÂÇ¥, ½ÃÀÛYÁÂÇ¥,
-	//3¿þÀÌ
+	//ëª¨ì…˜, ë¬´ë¸Œí•¸ë“¤ëŸ¬, ë“œë¡œìš°í•¸ë“¤ëŸ¬, ì‹œìž‘Xì¢Œí‘œ, ì‹œìž‘Yì¢Œí‘œ,
+	//3ì›¨ì´
 	PO_C1_3WAY_CENTER, BULLET3WAYMOVE, NORMALDRAW, 101 * _2X - BULLET_3WAY_DX * _2X, 1 * _2X,
-	//¹Ý»ç·¹ÀÌÀú
+	//ë°˜ì‚¬ë ˆì´ì €
 	PO_C1_RLAY_SHOT0, BULLETLASERMOVE, BULLETLASERDRAW, 46 * _2X - TSIZE, TSIZE * 2 + 10 * _2X,
-	//È­¿°¹æ»ç±â
+	//í™”ì—¼ë°©ì‚¬ê¸°
 	0, 0, 0, 0 * _2X, 0 * _2X,
-	//ÆøÅºÃÑ¾Ë
+	//í­íƒ„ì´ì•Œ
 	PO_C1_BOMB_SHOT0, BULLETBOMBMOVE, NORMALDRAW, 58 * _2X, 12 * _2X,
-	//À¯µµ¹Ì»çÀÏ
+	//ìœ ë„ë¯¸ì‚¬ì¼
 	PO_C1_MISSILE_SHOT0, BULLETGUIDEDMOVE, BULLETGUIDEDDRAW, 52 * _2X, 16 * _2X,
-	//¸¶±¸½î±â
+	//ë§ˆêµ¬ì˜ê¸°
 	0, 0, 0, 0 * _2X, 0 * _2X,
-	//À§¼º·¹ÀÌÀú
+	//ìœ„ì„±ë ˆì´ì €
 	0, BULLETSATELLITEMOVE, BULLETSATELITEDRAW, 112 * _2X, 0 * _2X,
 };
 
-//ÁÖÀÇ : core.h´Â signedÀÌ¾î¾ß ÇÔ
+//ì£¼ì˜ : core.hëŠ” signedì´ì–´ì•¼ í•¨
 const signed short maxxBoomerangData[17 * 7] = {
-	//¸ð¼Ç, ¹«ºêÇÚµé·¯, µå·Î¿ìÇÚµé·¯, ½ÃÀÛXÁÂÇ¥, ½ÃÀÛYÁÂÇ¥, DX, DY, DXº¯È­·®, DYº¯È­·®
-	//ÀÏ¹Ý°ø°Ý
+	//ëª¨ì…˜, ë¬´ë¸Œí•¸ë“¤ëŸ¬, ë“œë¡œìš°í•¸ë“¤ëŸ¬, ì‹œìž‘Xì¢Œí‘œ, ì‹œìž‘Yì¢Œí‘œ, DX, DY, DXë³€í™”ëŸ‰, DYë³€í™”ëŸ‰
+	//ì¼ë°˜ê³µê²©
 	PO_C2_A_BUME0, 0 * _2X, TSIZE, 17 * _2X, 3 * _2X, 2 * _2X, -1 * _2X,
 	//Trash
 	0, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	//Á¡ÇÁ°ø°Ý
+	//ì í”„ê³µê²©
 	PO_C2_A_BUME0, 0 * _2X, 8 * _2X, 32 * _2X, 4 * _2X, 4 * _2X, -2 * _2X,
-	//´Ù¿î°ø°Ý
+	//ë‹¤ìš´ê³µê²©
 	PO_C2_GROUND_BUME0, 0 * _2X, 0 * _2X, 8 * _2X, 32 * _2X, 2 * _2X, -4 * _2X,
 	//Trash
 	0, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
@@ -5008,43 +5008,43 @@ const signed short maxxBoomerangData[17 * 7] = {
 	0, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//Trash
 	0, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	//¼ôÇåÆ®
+	//ìˆí—ŒíŠ¸
 	PO_C2_SHORT_BUME0, 0 * _2X, 0 * _2X, 24 * _2X, 2 * _2X, 8 * _2X, -2 * _2X,
-	//¿¡¾îÇåÆ®
+	//ì—ì–´í—ŒíŠ¸
 	PO_C2_AIR_BUME0, 0 * _2X, 0 * _2X, 32 * _2X, -32 * _2X, 6 * _2X, 6 * _2X,
-	//Ä·ÇÎÇåÆ®
+	//ìº í•‘í—ŒíŠ¸
 	PO_C2_CAMPING_SHOT0, 0 * _2X, TSIZE, 34 * _2X, 8 * _2X, 4 * _2X, -2 * _2X,
-	//È£¹ÖÇåÆ®
+	//í˜¸ë°í—ŒíŠ¸
 	PO_C2_SHORT_SHOT0, 0 * _2X, TSIZE, 34 * _2X, 8 * _2X, 4 * _2X, -2 * _2X,
-	//½áÅ¬ÇåÆ®
+	//ì¨í´í—ŒíŠ¸
 	PO_C2_CIRCLE_SHOT0, 32 * _2X, 16 * _2X, 0 * _2X, 16 * _2X, 4 * _2X, -4 * _2X,
-	//¸Þ°¡ÇåÆ®
+	//ë©”ê°€í—ŒíŠ¸
 	PO_C2_MEGA_SHOT0, 20 * _2X, 0 * _2X, 12 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 };
 
 const short normalboomerangData[16 * 4] = {
-	//DX, DY, DXº¯È­·®, DYº¯È­·®
-	17 * _2X + BOOMERANGGAP, 3 * _2X, 2 * _2X, -1 * _2X,	//0·¹º§(81/9)
-	18 * _2X + BOOMERANGGAP, 3 * _2X, 2 * _2X, -1 * _2X,	//1·¹º§(90/9)
-	19 * _2X + BOOMERANGGAP, 5 * _2X, 2 * _2X, -1 * _2X,	//2·¹º§(100/10)
-	20 * _2X + BOOMERANGGAP, 5 * _2X, 2 * _2X, -1 * _2X,	//3·¹º§(110/10)
-	//24 * _2X, 6 * _2X, 3 * _2X, -2 * _2X,	//4·¹º§(108/8)
-	25 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//4·¹º§(117/9)
-	26 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//5·¹º§(126/9)
-	27 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//6·¹º§(135/9)
-	//28 * _2X, 6 * _2X, 3 * _2X, -2 * _2X,	//8·¹º§(145/10)
-	31 * _2X + BOOMERANGGAP, 6 * _2X, 4 * _2X, -2 * _2X,	//7·¹º§(136/8)
-	32 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//8·¹º§(144/8)
-	33 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//9·¹º§(153/9)
-	34 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//10·¹º§(162/9)
-	38 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//11·¹º§(164/8)
-	38 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//12·¹º§(164/8)
-	39 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//13·¹º§(172/8)
-	39 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//14·¹º§(172/8)
-	40 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//15·¹º§(180/8)
+	//DX, DY, DXë³€í™”ëŸ‰, DYë³€í™”ëŸ‰
+	17 * _2X + BOOMERANGGAP, 3 * _2X, 2 * _2X, -1 * _2X,	//0ë ˆë²¨(81/9)
+	18 * _2X + BOOMERANGGAP, 3 * _2X, 2 * _2X, -1 * _2X,	//1ë ˆë²¨(90/9)
+	19 * _2X + BOOMERANGGAP, 5 * _2X, 2 * _2X, -1 * _2X,	//2ë ˆë²¨(100/10)
+	20 * _2X + BOOMERANGGAP, 5 * _2X, 2 * _2X, -1 * _2X,	//3ë ˆë²¨(110/10)
+	//24 * _2X, 6 * _2X, 3 * _2X, -2 * _2X,	//4ë ˆë²¨(108/8)
+	25 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//4ë ˆë²¨(117/9)
+	26 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//5ë ˆë²¨(126/9)
+	27 * _2X + BOOMERANGGAP, 6 * _2X, 3 * _2X, -2 * _2X,	//6ë ˆë²¨(135/9)
+	//28 * _2X, 6 * _2X, 3 * _2X, -2 * _2X,	//8ë ˆë²¨(145/10)
+	31 * _2X + BOOMERANGGAP, 6 * _2X, 4 * _2X, -2 * _2X,	//7ë ˆë²¨(136/8)
+	32 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//8ë ˆë²¨(144/8)
+	33 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//9ë ˆë²¨(153/9)
+	34 * _2X + BOOMERANGGAP, 8 * _2X, 4 * _2X, -2 * _2X,	//10ë ˆë²¨(162/9)
+	38 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//11ë ˆë²¨(164/8)
+	38 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//12ë ˆë²¨(164/8)
+	39 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//13ë ˆë²¨(172/8)
+	39 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//14ë ˆë²¨(172/8)
+	40 * _2X + BOOMERANGGAP, 9 * _2X, 5 * _2X, -3 * _2X,	//15ë ˆë²¨(180/8)
 };
 
-//ÁÖÀÇ : core.h´Â signedÀÌ¾î¾ß ÇÔ
+//ì£¼ì˜ : core.hëŠ” signedì´ì–´ì•¼ í•¨
 const signed short sateliteMotion[816] = {
 	//PO_C1_SATLASER_SHOT0
 	IMG_C1_147, -25 * _2X, -43 * _2X, N00E2X1,	//2068//1
@@ -5537,31 +5537,31 @@ const signed short equipSlotPos2[TOTALEQUIP * 4] = {
 };
 
 const unsigned char statueInfo[TOTAL_STATUE] = {
-	PASSIVE,//ÁúÇ³ÀÇ »ó
-	PASSIVE,//ÆÄ±«ÀÇ »ó
-	PASSIVE,//¿Ï·ÂÀÇ »ó
-	PASSIVE,//ÀÎ¾îÀÇ »ó
-	PASSIVE,//ºÒ²ÉÀÇ »ó
-	PASSIVE,//Æë±ÏÀÇ »ó
-	PASSIVE,//¾óÀ½ÀÇ »ó
-	ACTIVE,//¹ø°³ÀÇ »ó
-	PASSIVE,//ÅÂ¾çÀÇ »ó
-	PASSIVE,//Åä³¢ÀÇ »ó
-	PASSIVE,//°ñ·½ÀÇ »ó
-	ACTIVE,//Â÷¿øÀÇ »ó
-	PASSIVE,//µ¶¼ö¸®ÀÇ »ó
-	ACTIVE,//´Ù¶÷ÁãÀÇ »ó
-	PASSIVE,//µå·¡°ïÀÇ »ó
-	PASSIVE,//¿µÈ¥ÀÇ »ó
+	PASSIVE,//ì§ˆí’ì˜ ìƒ
+	PASSIVE,//íŒŒê´´ì˜ ìƒ
+	PASSIVE,//ì™„ë ¥ì˜ ìƒ
+	PASSIVE,//ì¸ì–´ì˜ ìƒ
+	PASSIVE,//ë¶ˆê½ƒì˜ ìƒ
+	PASSIVE,//íŽ­ê·„ì˜ ìƒ
+	PASSIVE,//ì–¼ìŒì˜ ìƒ
+	ACTIVE,//ë²ˆê°œì˜ ìƒ
+	PASSIVE,//íƒœì–‘ì˜ ìƒ
+	PASSIVE,//í† ë¼ì˜ ìƒ
+	PASSIVE,//ê³¨ë ˜ì˜ ìƒ
+	ACTIVE,//ì°¨ì›ì˜ ìƒ
+	PASSIVE,//ë…ìˆ˜ë¦¬ì˜ ìƒ
+	ACTIVE,//ë‹¤ëžŒì¥ì˜ ìƒ
+	PASSIVE,//ë“œëž˜ê³¤ì˜ ìƒ
+	PASSIVE,//ì˜í˜¼ì˜ ìƒ
 };
 
 
 const unsigned char deadMotion[8 * 3] = {
-	//·Îºó
+	//ë¡œë¹ˆ
 	PO_C0_THINK0, PO_C0_STUN0, PO_C0_STUN1, PO_C0_STUN2, PO_C0_STUN3, PO_C0_STUN2, PO_C0_KNEE0, PO_C0_DIE0,
-	//µð¾Æ³ª
+	//ë””ì•„ë‚˜
 	PO_C1_THINK0, PO_C1_STUN0, PO_C1_STUN1, PO_C1_STUN2, PO_C1_STUN3, PO_C1_STUN2, PO_C1_KNEE0, PO_C1_DIE0,
-	//¸Æ½º
+	//ë§¥ìŠ¤
 	PO_C2_THINK0, PO_C2_STUN0, PO_C2_STUN1, PO_C2_STUN2, PO_C2_STUN3, PO_C2_STUN2, PO_C2_KNEE0, PO_C2_DIE0,
 };
 

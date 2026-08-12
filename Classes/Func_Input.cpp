@@ -1,4 +1,4 @@
-#include "Core.h"
+ï»¿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
@@ -102,11 +102,11 @@ void TitleKey(void)
 			GetItem(ITEM_HEART, false, false, false, 9999, false);
 			AddBar(&bar[BAR_HAMMER], 9999, BARFRAME);
 			GetItem(ITEM_HAMMER, false, false, false, 9999, false);
-			//robin.gold = 10000000;//ÄÚÀÎ
-			//robin.medal = 100000;//PVP ¾ÆÀÌÅÛ
-			//robin.coin = 100000;//ÄÚÀÎ
+			//robin.gold = 10000000;//ì½”ì¸
+			//robin.medal = 100000;//PVP ì•„ì´í…œ
+			//robin.coin = 100000;//ì½”ì¸
 			//robin.star = 100000;//ï¿½ï¿½Å¸(ï¿½Õ¼ï¿½ï¿½ï¿½)
-			//robin.hammer = 100000;//ÇÕ¼º¼®
+			//robin.hammer = 100000;//í•©ì„±ì„
 			//robin.heart = 9999;
 
 			for (i = ROBIN; i < 1; i++) {
@@ -282,7 +282,7 @@ void TitleKey(void)
 			NewGame();
 			SetHero();
 			j = 0;
-			//ÇöÀç ¾îµğ µ¥¸ğ½Å±îÁö ºÃ´ÂÁö È®ÀÎÇÑ´Ù.
+			//í˜„ì¬ ì–´ë”” ë°ëª¨ì‹ ê¹Œì§€ ë´¤ëŠ”ì§€ í™•ì¸í•œë‹¤.
 			for (i = 0; i < TOTALDEMO; i++) {
 				robin.demoSeen[i] = false;
 				if (robin.demoSeen[i] == true)
@@ -304,7 +304,7 @@ void TitleKey(void)
 			break;
 		}
 		break;
-	case MENU_LOGIN://·Î±×ÀÎ ÀÌ·ÂÀÌ ¾øÀ¸¸é ·Î±×ÀÎ¼±ÅÃ
+	case MENU_LOGIN://ë¡œê·¸ì¸ ì´ë ¥ì´ ì—†ìœ¼ë©´ ë¡œê·¸ì¸ì„ íƒ
 		switch (systemKey) {
 		case AVK_LOGIN_FACEBOOK:
 			menuResult = 0;
@@ -340,9 +340,9 @@ void TalkKey(void)
 
 	switch (drawHandle) {
 	case MD_OPENING:
-		if (textFrame < textStringLength[textPage - 1])	//¸¸¾à ÇÁ·¹ÀÓÀÌ ´Ù ¾È³Ñ¾î°¬À¸¸é
+		if (textFrame < textStringLength[textPage - 1])	//ë§Œì•½ í”„ë ˆì„ì´ ë‹¤ ì•ˆë„˜ì–´ê°”ìœ¼ë©´
 			textFrame = textStringLength[textPage - 1] + 1;
-		else if (openingTextPage < OPENING_TOTAL_TEXT - 1) {//¸¸¾à ÇÁ·¹ÀÓÀº ´Ù ³Ñ¾î°¬´Âµ¥ ÆäÀÌÁö°¡ ´Ù ¾È³Ñ¾î°¬À¸¸é
+		else if (openingTextPage < OPENING_TOTAL_TEXT - 1) {//ë§Œì•½ í”„ë ˆì„ì€ ë‹¤ ë„˜ì–´ê°”ëŠ”ë° í˜ì´ì§€ê°€ ë‹¤ ì•ˆë„˜ì–´ê°”ìœ¼ë©´
 			openingTextPage++;
 			SetFrameText(TEXT_OPENING_0_0 + openingTextPage, 512, TEXTLINEPERPAGE, 1.4f);
 			//textFrame = 0;
@@ -393,7 +393,7 @@ void TalkKey(void)
 		}
 		break;
 	case MD_DEMO:
-		if (textFrame < textStringLength[textPage - 1])	//¸¸¾à ÇÁ·¹ÀÓÀÌ ´Ù ¾È³Ñ¾î°¬À¸¸é
+		if (textFrame < textStringLength[textPage - 1])	//ë§Œì•½ í”„ë ˆì„ì´ ë‹¤ ì•ˆë„˜ì–´ê°”ìœ¼ë©´
 			textFrame = textStringLength[textPage - 1] + 1;
 		else {
 			//?ï¿½í„°?ï¿½í‹°ï¿½??ï¿½íˆ¬ ?ï¿½í† ë¦¬ì–¼: SEBASTIAN??"ê³µê²©ë²„íŠ¼???ï¿½ëŸ¬ì£¼ì„¸?? ?ï¿½?ï¿½ï¿½? ?ï¿½ëŠ” ?ï¿½ë ¥?ï¿½
@@ -511,14 +511,14 @@ void PlayKey(int obj)
 	}
 
 	if (systemKey >= AVK_BATTLE_TARGET && systemKey < AVK_BATTLE_TARGET + MAXCREW) {
-		//ÇØÁà¾ß µÉ ÀÏµé
+		//í•´ì¤˜ì•¼ ë  ì¼ë“¤
 
-		//ÀÏ´Ü Å¸°ÙÀ» ¼³Á¤ÇØ ÁØ´Ù.
+		//ì¼ë‹¨ íƒ€ê²Ÿì„ ì„¤ì •í•´ ì¤€ë‹¤.
 		battleTarget = systemKey - AVK_BATTLE_TARGET;
 
-		//ÀÌÈÄ ¹æÆĞ°¡ ÀÖ´ÂÁö¸¦ µûÁ®¼­ ¹æÆĞ¸¦ ÇÏ³ª ¼Ò¸ğ½ÃÅ°¸é¼­ 
-		//ÇöÀç´Â ¼­¹öÀÇ µ¥ÀÌÅÍ°¡ ¾øÀ¸¹Ç·Î
-		//·£´ıÇÏ°Ô 70%È®·ü·Î ÅÂÅ¬À» °ÉÀÚ
+		//ì´í›„ ë°©íŒ¨ê°€ ìˆëŠ”ì§€ë¥¼ ë”°ì ¸ì„œ ë°©íŒ¨ë¥¼ í•˜ë‚˜ ì†Œëª¨ì‹œí‚¤ë©´ì„œ 
+		//í˜„ì¬ëŠ” ì„œë²„ì˜ ë°ì´í„°ê°€ ì—†ìœ¼ë¯€ë¡œ
+		//ëœë¤í•˜ê²Œ 70%í™•ë¥ ë¡œ íƒœí´ì„ ê±¸ì
 
 		if (Random(100) < 70)
 			battleShield = true;
@@ -527,23 +527,23 @@ void PlayKey(int obj)
 
 		battleShield = true;
 
-		//±×¸®°í ÀÌ°åÀ» ¶§ È¹µæÇÏ´Â gold¸¦ °áÁ¤ÇÏÀÚ
+		//ê·¸ë¦¬ê³  ì´ê²¼ì„ ë•Œ íšë“í•˜ëŠ” goldë¥¼ ê²°ì •í•˜ì
 		battleGold = battleRewardGold[robin.stage];//ï¿½Ì°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¾Æ¿Í¾ï¿½ ï¿½È´ï¿½.
 
-		//´ÙÀ½È­¸éÀ¸·Î ³Ñ°ÜÁÖ±â À§ÇØ¼­ attackDelay¸¦ Á¦°ÅÇØ ÁØ´Ù.
+		//ë‹¤ìŒí™”ë©´ìœ¼ë¡œ ë„˜ê²¨ì£¼ê¸° ìœ„í•´ì„œ attackDelayë¥¼ ì œê±°í•´ ì¤€ë‹¤.
 		attackDelay--;
 		if (sequenceDelay > 0)
 			sequenceDelay--;
 	}
 	else if (systemKey >= AVK_RAID_TARGET && systemKey < AVK_RAID_TARGET + TOTALRAIDBOX) {
-		//ÇØÁà¾ß µÉ ÀÏµé
+		//í•´ì¤˜ì•¼ ë  ì¼ë“¤
 
-		//ÀÏ´Ü Å¸°ÙÀ» ¼³Á¤ÇØ ÁØ´Ù.
+		//ì¼ë‹¨ íƒ€ê²Ÿì„ ì„¤ì •í•´ ì¤€ë‹¤.
 		raidTarget = systemKey - AVK_RAID_TARGET;
 
-		//±×¸®°í ÀÌ°åÀ» ¶§ È¹µæÇÏ´Â gold¸¦ °áÁ¤ÇÏÀÚ
+		//ê·¸ë¦¬ê³  ì´ê²¼ì„ ë•Œ íšë“í•˜ëŠ” goldë¥¼ ê²°ì •í•˜ì
 		raidGold = raidBox[raidTarget].gold;//ï¿½Ì°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¾Æ¿Í¾ï¿½ ï¿½È´ï¿½.
-		//Àı¹İ°ªº¸´Ù Å©¸é
+		//ì ˆë°˜ê°’ë³´ë‹¤ í¬ë©´
 		if (raidBox[raidTarget].gold > enemyHouse.gold * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet) / 2)
 			raidAttack = ROULETTE_RAID_PERFECT;
 		else if (raidBox[raidTarget].gold == 0)
@@ -552,7 +552,7 @@ void PlayKey(int obj)
 			raidAttack = ROULETTE_RAID_GOOD;
 
 		sequenceFrame = 0;
-		//´ÙÀ½È­¸éÀ¸·Î ³Ñ°ÜÁÖ±â À§ÇØ¼­ attackDelay¸¦ Á¦°ÅÇØ ÁØ´Ù.
+		//ë‹¤ìŒí™”ë©´ìœ¼ë¡œ ë„˜ê²¨ì£¼ê¸° ìœ„í•´ì„œ attackDelayë¥¼ ì œê±°í•´ ì¤€ë‹¤.
 		attackDelay--;
 		if (sequenceDelay > 0)
 			sequenceDelay--;
@@ -731,7 +731,7 @@ void PlayKey(int obj)
 	}
 	else if (systemKey >= AVK_MENUCUR_CREWSET && systemKey < AVK_MENUCUR_CREWSET + TOTAL_CREW) {
 		robin.slotCrew[menuCur] = crewData[(systemKey  - AVK_MENUCUR_CREWSET) *CREWDATASIZE + CREWDATA_TYPE];
-		SetBattleCrew();//´Ù½Ã Àç¼³Á¤.
+		SetBattleCrew();//ë‹¤ì‹œ ì¬ì„¤ì •.
 	}
 	else if (systemKey >= AVK_EQUIP_INVENTORY && systemKey < AVK_EQUIP_INVENTORY + TOTALINVENTORY) {
 		switch (robin.inven[systemKey - AVK_EQUIP_INVENTORY].type) {
@@ -826,7 +826,7 @@ void PlayKey(int obj)
 
 				PlayMusic(M_BUTTON);
 				break;
-			case 2://·©Å·¸®½ºÆ®
+			case 2://ë­í‚¹ë¦¬ìŠ¤íŠ¸
 				break;
 			}
 			break;
@@ -838,7 +838,7 @@ void PlayKey(int obj)
 
 				PlayMusic(M_BUTTON);
 				break;
-			case 2://·©Å·¸®½ºÆ®
+			case 2://ë­í‚¹ë¦¬ìŠ¤íŠ¸
 				break;
 			}
 			break;
@@ -1244,12 +1244,12 @@ void PlayKey(int obj)
 			}
 			break;
 		case AVK_EQUIP_ENCHANT_SELECT:
-			menuX = 0;//°­È­¸Ş´º
+			menuX = 0;//ê°•í™”ë©”ë‰´
 			break;
 		case AVK_EQUIP_HAMMER_SELECT:
-			menuX = 1;//ÁøÈ­¸Ş´º
+			menuX = 1;//ì§„í™”ë©”ë‰´
 			break;
-			//»õ·Î¿î ¾ÆÀÌÅÛ ÀåÂø
+			//ìƒˆë¡œìš´ ì•„ì´í…œ ì¥ì°©
 		case AVK_EQUIP_NEWITEM:
 			who = robin.newItem.type % 3;
 			memset(&popUp[popUpCnt - 1], 0, sizeof(POPUP));
@@ -1826,100 +1826,100 @@ void ClearRoom(void)
 bool IsMovingSkill(int idx)
 {
 	switch (idx) {
-		//case SKILL_COMMON_ROBIN1:	//Èû´Ü·Ã : STR »ó½Â
-		//case SKILL_COMMON_ROBIN2:	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-		//case SKILL_COMMON_ROBIN3:	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-		//case SKILL_COMMON_ROBIN4:	//Á¤½Å´Ü·Ã : INT »ó½Â
-		//case SKILL_COMMON_ROBIN5:	//»ı¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_ROBIN6:	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_ROBIN7:	//¹«±â¼÷·Ã : °ø°İ·Â Áõ°¡
-		//case SKILL_COMMON_ROBIN8:	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
+		//case SKILL_COMMON_ROBIN1:	//í˜ë‹¨ë ¨ : STR ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN2:	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN3:	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN4:	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN5:	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN6:	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_ROBIN7:	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+		//case SKILL_COMMON_ROBIN8:	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
 		//case SKILL_COMMON_ROBIN9:	//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_COMMON_ROBIN10:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_COMMON_ROBIN11:	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-		//case SKILL_COMMON_ROBIN12:	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
+		//case SKILL_COMMON_ROBIN11:	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+		//case SKILL_COMMON_ROBIN12:	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
 		//case SKILL_COMMON_ROBIN13:	//ï¿½Å¼ï¿½È¸ï¿½ï¿½ : È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//case SKILL_ROBIN1:	//ï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_ROBIN2:	//ï¿½ï¿½Ş¹ï¿½ï¿½ : ï¿½ï¿½ï¿½?ï¿½ßµï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½(1ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½?ï¿½ßµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_ROBIN3:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½?ï¿½ßµï¿½ï¿½ï¿½ ï¿½æ°¨ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½Æ® ï¿½ï¿½ï¿½?
 		//case SKILL_ROBIN4:	//ï¿½é¿ªï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_ROBIN5:	//Áö±¸Àü : INT°¡ ³ôÀ»¼ö·Ï VIT »ó½Â
+		//case SKILL_ROBIN5:	//ì§€êµ¬ì „ : INTê°€ ë†’ì„ìˆ˜ë¡ VIT ìƒìŠ¹
 		//case SKILL_ROBIN6:	//ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½?
-		//case SKILL_ROBIN7:	//¸¶±¸Âî¸£±â : ³­Å¸
+		//case SKILL_ROBIN7:	//ë§ˆêµ¬ì°Œë¥´ê¸° : ë‚œíƒ€
 		//case SKILL_ROBIN8:	//ï¿½Î½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Î·ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_ROBIN9:	//ÇÏÀÌÆÛÂ÷Áö : µ¹°İ°ø°İ: ÀûÀ» µÚ·Î ³¯·Á¹ö¸²
+		//case SKILL_ROBIN9:	//í•˜ì´í¼ì°¨ì§€ : ëŒê²©ê³µê²©: ì ì„ ë’¤ë¡œ ë‚ ë ¤ë²„ë¦¼
 		//case SKILL_ROBIN10:	//ï¿½Ò¿ï¿½Å©ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_ROBIN11:	//¾Û¼Ö·çÆ®ÇÇ¾î½º : Âñ·¯¼­È¸Àü
+		//case SKILL_ROBIN11:	//ì•±ì†”ë£¨íŠ¸í”¼ì–´ìŠ¤ : ì°”ëŸ¬ì„œíšŒì „
 		//case SKILL_ROBIN12:	//ï¿½ï¿½ì¿¬ï¿½ï¿½?: ï¿½ï¿½ï¿½Ó±ï¿½
-		//case SKILL_ROBIN13:	//¹æ¾îÅÂ¼¼ : ÀÏÁ¤½Ã°£ VIT »ó½Â
-		//case SKILL_ROBIN14:	//Á¤½Å¼Ò¸ğ : MP ¼Ò¸ğÇÏ¿© µ¥¹ÌÁö °æ°¨
+		//case SKILL_ROBIN13:	//ë°©ì–´íƒœì„¸ : ì¼ì •ì‹œê°„ VIT ìƒìŠ¹
+		//case SKILL_ROBIN14:	//ì •ì‹ ì†Œëª¨ : MP ì†Œëª¨í•˜ì—¬ ë°ë¯¸ì§€ ê²½ê°
 		//case SKILL_ROBIN15:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½Ç½ï¿½ HP ï¿½ï¿½ï¿½?
-		//case SKILL_ROBIN16:	//³ÃÁ¤Ä§Âø : µ¥¹ÌÁö ÀÔÀ¸¸é MP È¸º¹
-		//case SKILL_ROBIN17:	//¸®ÇÃ·º¼Ç : È®·ü·Îµ¥¹ÌÁö ¹İ»ç
+		//case SKILL_ROBIN16:	//ëƒ‰ì •ì¹¨ì°© : ë°ë¯¸ì§€ ì…ìœ¼ë©´ MP íšŒë³µ
+		//case SKILL_ROBIN17:	//ë¦¬í”Œë ‰ì…˜ : í™•ë¥ ë¡œë°ë¯¸ì§€ ë°˜ì‚¬
 
-		//case SKILL_COMMON_DIANA1:	//Èû´Ü·Ã : STR »ó½Â
-		//case SKILL_COMMON_DIANA2:	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-		//case SKILL_COMMON_DIANA3:	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-		//case SKILL_COMMON_DIANA4:	//Á¤½Å´Ü·Ã : INT »ó½Â
-		//case SKILL_COMMON_DIANA5:	//»ı¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_DIANA6:	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_DIANA7:	//¹«±â¼÷·Ã : °ø°İ·Â Áõ°¡
-		//case SKILL_COMMON_DIANA8:	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
+		//case SKILL_COMMON_DIANA1:	//í˜ë‹¨ë ¨ : STR ìƒìŠ¹
+		//case SKILL_COMMON_DIANA2:	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+		//case SKILL_COMMON_DIANA3:	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+		//case SKILL_COMMON_DIANA4:	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+		//case SKILL_COMMON_DIANA5:	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_DIANA6:	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_DIANA7:	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+		//case SKILL_COMMON_DIANA8:	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
 		//case SKILL_COMMON_DIANA9:	//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_COMMON_DIANA10:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_COMMON_DIANA11:	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-		//case SKILL_COMMON_DIANA12:	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
+		//case SKILL_COMMON_DIANA11:	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+		//case SKILL_COMMON_DIANA12:	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
 		//case SKILL_COMMON_DIANA13:	//ï¿½Å¼ï¿½È¸ï¿½ï¿½ : È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//case SKILL_DIANA1:	//ï¿½ï¿½ï¿½Ç´ï¿½ : ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_DIANA2:	//ï¿½ï¿½İ¼ï¿½ï¿½ï¿½?: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_DIANA3:	//ï¿½Æµå·¹ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MP È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_DIANA4:	//È°ï¿½ï¿½È­ : ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_DIANA5:	//ÁıÁß·ÂÀ¯Áö : STRÀÌ ³ôÀ»¼ö·Ï INT »ó½Â
-		//case SKILL_DIANA6:	//3way : 3¹æÇâÀ¸·Î ÃÑ ¹ß»ç
+		//case SKILL_DIANA5:	//ì§‘ì¤‘ë ¥ìœ ì§€ : STRì´ ë†’ì„ìˆ˜ë¡ INT ìƒìŠ¹
+		//case SKILL_DIANA6:	//3way : 3ë°©í–¥ìœ¼ë¡œ ì´ ë°œì‚¬
 		//case SKILL_DIANA7:	//ï¿½ï¿½ï¿½Ã·ï¿½ï¿½Çºï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¨ï¿½ï¿½
 		//case SKILL_DIANA8:	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ : È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_DIANA9:	//·ÎÄÏ·±ÃÄ : ·ÎÄÏ ¹ß»çµÇ¾î Æø¹ß
-		//case SKILL_DIANA10:	//È£¹Ö¹Ì»çÀÏ : À¯µµÅº 3°³
-		//case SKILL_DIANA11:	//Å³¸µÁ¸ : ³­»ç
+		//case SKILL_DIANA9:	//ë¡œì¼“ëŸ°ì³ : ë¡œì¼“ ë°œì‚¬ë˜ì–´ í­ë°œ
+		//case SKILL_DIANA10:	//í˜¸ë°ë¯¸ì‚¬ì¼ : ìœ ë„íƒ„ 3ê°œ
+		//case SKILL_DIANA11:	//í‚¬ë§ì¡´ : ë‚œì‚¬
 		//case SKILL_DIANA12:	//ï¿½ï¿½ï¿½ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_DIANA13:	//¸®Ä¿¹ö¸® : È¸º¹Åº
+		//case SKILL_DIANA13:	//ë¦¬ì»¤ë²„ë¦¬ : íšŒë³µíƒ„
 		//case SKILL_DIANA14:	//ï¿½ï¿½Ğ°ï¿½ï¿½ï¿½?: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½İ·ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_DIANA15:	//Èí¸¶ÀÇ¸¶Åº : °ø°İ½Ã MP Èí¼ö
+		//case SKILL_DIANA15:	//í¡ë§ˆì˜ë§ˆíƒ„ : ê³µê²©ì‹œ MP í¡ìˆ˜
 		//case SKILL_DIANA16:	//ï¿½Ê»ï¿½ï¿½ï¿½ï¿½ï¿½ : Å©ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_DIANA17:	//ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
 
-		//case SKILL_COMMON_MAXX1:	//Èû´Ü·Ã : STR »ó½Â
-		//case SKILL_COMMON_MAXX2:	//Ã¼·Â´Ü·Ã : VIT »ó½Â
-		//case SKILL_COMMON_MAXX3:	//¹ÎÃ¸´Ü·Ã : AGI »ó½Â
-		//case SKILL_COMMON_MAXX4:	//Á¤½Å´Ü·Ã : INT »ó½Â
-		//case SKILL_COMMON_MAXX5:	//»ı¸í·Â°­È­ : HP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_MAXX6:	//±â·Â°­È­ : MP ÃÖ´ëÄ¡ »ó½Â
-		//case SKILL_COMMON_MAXX7:	//¹«±â¼÷·Ã : °ø°İ·Â Áõ°¡
-		//case SKILL_COMMON_MAXX8:	//¹æ¾î±¸¼÷·Ã: ¹æ¾î·Â Áõ°¡
+		//case SKILL_COMMON_MAXX1:	//í˜ë‹¨ë ¨ : STR ìƒìŠ¹
+		//case SKILL_COMMON_MAXX2:	//ì²´ë ¥ë‹¨ë ¨ : VIT ìƒìŠ¹
+		//case SKILL_COMMON_MAXX3:	//ë¯¼ì²©ë‹¨ë ¨ : AGI ìƒìŠ¹
+		//case SKILL_COMMON_MAXX4:	//ì •ì‹ ë‹¨ë ¨ : INT ìƒìŠ¹
+		//case SKILL_COMMON_MAXX5:	//ìƒëª…ë ¥ê°•í™” : HP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_MAXX6:	//ê¸°ë ¥ê°•í™” : MP ìµœëŒ€ì¹˜ ìƒìŠ¹
+		//case SKILL_COMMON_MAXX7:	//ë¬´ê¸°ìˆ™ë ¨ : ê³µê²©ë ¥ ì¦ê°€
+		//case SKILL_COMMON_MAXX8:	//ë°©ì–´êµ¬ìˆ™ë ¨: ë°©ì–´ë ¥ ì¦ê°€
 		//case SKILL_COMMON_MAXX9:	//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_COMMON_MAXX10:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : Å©ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_COMMON_MAXX11:	//¶Ò½É : µ¥¹ÌÁö °æ°¨
-		//case SKILL_COMMON_MAXX12:	//Á¤Á¶ÁØ : ¸íÁß Áõ°¡
+		//case SKILL_COMMON_MAXX11:	//ëšì‹¬ : ë°ë¯¸ì§€ ê²½ê°
+		//case SKILL_COMMON_MAXX12:	//ì •ì¡°ì¤€ : ëª…ì¤‘ ì¦ê°€
 		//case SKILL_COMMON_MAXX13:	//ï¿½Å¼ï¿½È¸ï¿½ï¿½ : È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		//case SKILL_MAXX1:	//ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½?: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Î¸Ş¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½?
 		//case SKILL_MAXX2:	//ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ : ï¿½Î¸Ş¶ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½?
 		//case SKILL_MAXX3:	//ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ : ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		//case SKILL_MAXX4:	//È¸ï¿½ï¿½ï¿½Â»ï¿½ï¿½?: ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½İ¿ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?
-		//case SKILL_MAXX5:	//Åº·Â¼º : VIT ³ôÀ»¼ö·Ï AGI »ó½Â
+		//case SKILL_MAXX5:	//íƒ„ë ¥ì„± : VIT ë†’ì„ìˆ˜ë¡ AGI ìƒìŠ¹
 		//case SKILL_MAXX6:	//È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?: INTï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AGIï¿½ï¿½ ï¿½Ã¶ï¿½
-	case SKILL_MAXX7:	//µ¹·ÁÂ÷±â : È¸Àü: ±âÀı°ø°İ
+	case SKILL_MAXX7:	//ëŒë ¤ì°¨ê¸° : íšŒì „: ê¸°ì ˆê³µê²©
 		//case SKILL_MAXX8:	//ï¿½ï¿½ï¿½ï¿½Æ® : ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½Å¸ï¿½?Âªï¿½ï¿½
 		//case SKILL_MAXX9:	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
-		//case SKILL_MAXX10:	//Ä·ÇÎÇåÆ® : ¾ÕÀ¸·Î ³¯¶ó°¡¼­ Á¦ÀÚ¸®È¸Àü
+		//case SKILL_MAXX10:	//ìº í•‘í—ŒíŠ¸ : ì•ìœ¼ë¡œ ë‚ ë¼ê°€ì„œ ì œìë¦¬íšŒì „
 		//case SKILL_MAXX11:	//È£ï¿½ï¿½ï¿½ï¿½Æ® : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½Æ¿ï¿½
 		//case SKILL_MAXX12:	//ï¿½ï¿½Å¬ï¿½ï¿½Æ® : ï¿½ï¿½ï¿½Î°ï¿½ ï¿½Öºï¿½ ï¿½ï¿½È£
-		//case SKILL_MAXX13:	//¸Ş°¡ÇåÆ® : °üÅëÈÄ µÚ¿¡¼­ µ¹¾Æ¿È
-		//case SKILL_MAXX14:	//ºí·¯µåÇåÆ® : Àû °ø°İ½Ã HP È¸º¹
-		//case SKILL_MAXX15:	//Çö¶õ¹«µµ : ÀÏÁ¤½Ã°£ È¸ÇÇÀ² Áõ°¡
-		//case SKILL_MAXX16:	//¾ÈµµÀÇÇÑ¼û : Àû °ø°İ È¸ÇÇ½Ã MP È¸º¹
+		//case SKILL_MAXX13:	//ë©”ê°€í—ŒíŠ¸ : ê´€í†µí›„ ë’¤ì—ì„œ ëŒì•„ì˜´
+		//case SKILL_MAXX14:	//ë¸”ëŸ¬ë“œí—ŒíŠ¸ : ì  ê³µê²©ì‹œ HP íšŒë³µ
+		//case SKILL_MAXX15:	//í˜„ë€ë¬´ë„ : ì¼ì •ì‹œê°„ íšŒí”¼ìœ¨ ì¦ê°€
+		//case SKILL_MAXX16:	//ì•ˆë„ì˜í•œìˆ¨ : ì  ê³µê²© íšŒí”¼ì‹œ MP íšŒë³µ
 		//case SKILL_MAXX17:	//È¥ï¿½ÅºĞ¸ï¿½ : ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½?
 		return true;
 	}
@@ -1948,11 +1948,11 @@ void HotKeyPress(OBJECT* pObj, int idx)
 		PlayRelease(pObj);
 
 	switch (pObj->hotKey[idx].type) {
-		//¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù.
+		//ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 	case HOTKEY_NOTHING:
 		break;
 		//ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½Ø´ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½.
-		//Á¶°Ç1 MP°¡ ÃæºĞÇÑ°¡
+		//ì¡°ê±´1 MPê°€ ì¶©ë¶„í•œê°€
 		//ï¿½ï¿½ï¿½ï¿½2 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½
 		//ï¿½ï¿½ï¿½ï¿½3 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½?ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½Â´ï¿½ ï¿½ï¿½Å³ï¿½Î°ï¿½
 	case HOTKEY_SKILL:
@@ -1990,7 +1990,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 			if (j == 0)
 				return;
 			break;
-		case SKILL_MAXX16://¾ÈµµÀÇÇÑ¼û : »óÅÂÀÌ»ó ÀüºÎÈ¸º¹
+		case SKILL_MAXX16://ì•ˆë„ì˜í•œìˆ¨ : ìƒíƒœì´ìƒ ì „ë¶€íšŒë³µ
 			j = 0;
 			for (i = 0; i < TOTALDEBUF; i++) {
 				if (!pObj->debuf[i])
@@ -2286,7 +2286,7 @@ void ReleasePlayer(OBJECT* pObj)
 }
 
 
-// Touch °ü·Ã
+// Touch ê´€ë ¨
 void TouchEndedPlayer(OBJECT* pObj)
 {
 	if (pObj->dead == false && !pObj->debuf[KNOCKBACK] && !pObj->debuf[STUN] && pObj->currentSkill <= 0) {
@@ -2295,7 +2295,7 @@ void TouchEndedPlayer(OBJECT* pObj)
 				if (!(pObj->type == DIANA && pObj->flamer > 0) && !(pObj->type == MAXX && boomerangAway[GetObjFromPtr(pObj)])) {
 
 
-					//¾Æ·¡·Î µå·¡±×
+					//ì•„ë˜ë¡œ ë“œë˜ê·¸
 					if (touchPressedKey[1][1] - touchPressedKey[0][1] > SWIPE_DISTANCE_Y && isTouchKey == TOUCH_DRAG) {
 						pObj->pressedKey[2] = pObj->pressedKey[1];
 						pObj->pressedKey[1] = pObj->pressedKey[0];
@@ -2456,7 +2456,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 	if (gTutorialTouchFunc != TUTORIAL_TOUCH_FREE && func != gTutorialTouchFunc)
 		return;
 
-	// ÅÍÄ¡ »ç°¢Çü ÁÂÇ¥
+	// í„°ì¹˜ ì‚¬ê°í˜• ì¢Œí‘œ
 	int rectX1 = rx;
 	int rectY1 = ry;
 	int rectX2 = rx + width;
@@ -2528,7 +2528,7 @@ void touchFunc(int func)
 	int detail;
 	OBJECT* pObj;
 
-	//ÇöÀç ÅÍÄ¡ÇÏ¸é ¾ÈµÇ¸é
+	//í˜„ì¬ í„°ì¹˜í•˜ë©´ ì•ˆë˜ë©´
 	if (touchDisable)
 		return;
 
@@ -2617,7 +2617,7 @@ void touchFunc(int func)
 			systemKey = AVK_NEWGAME;
 			break;
 
-		case TOUCH_FUNC_PLAY://ÇÃ·¹ÀÌ
+		case TOUCH_FUNC_PLAY://í”Œë ˆì´
 			systemKey = AVK_PLAY;
 			break;
 		case TOUCH_FUNC_COLLECTIONS://ï¿½ï¿½ï¿½ï¿½
@@ -2626,16 +2626,16 @@ void touchFunc(int func)
 		case TOUCH_FUNC_STAGE_POPUP:
 			systemKey = AVK_STAGE_POPUP;
 			break;
-		case TOUCH_FUNC_SHOP://»óÁ¡
+		case TOUCH_FUNC_SHOP://ìƒì 
 			systemKey = AVK_SHOP;
 			break;
-		case TOUCH_FUNC_STARSHOP://»óÁ¡
+		case TOUCH_FUNC_STARSHOP://ìƒì 
 			systemKey = AVK_STARSHOP;
 			break;
 		case TOUCH_FUNC_NEWS://Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			systemKey = AVK_NEWS;
 			break;
-		case TOUCH_FUNC_GIFTS://¼±¹°
+		case TOUCH_FUNC_GIFTS://ì„ ë¬¼
 			systemKey = AVK_GIFTS;
 			break;
 		case TOUCH_FUNC_LEADERBOARD://
@@ -3157,7 +3157,7 @@ void SaveFlag(int which)
 }
 
 
-// JoyStick °ü·Ã
+// JoyStick ê´€ë ¨
 
 bool JoyStickPressGoldQuestPossible(void)
 {
@@ -3196,7 +3196,7 @@ bool JoyStickPressPossible(void)
 		else
 			return false;
 		break;
-		//·¹ÀÌµå´Â Á¶ÀÌ½ºÆ½À» ¾È¾´´Ù.
+		//ë ˆì´ë“œëŠ” ì¡°ì´ìŠ¤í‹±ì„ ì•ˆì“´ë‹¤.
 	case MD_RAID:
 		if (!curtainFrame && infoFrame == 0 && areaFrame == 0 && initControlerFrame > 1 && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY && raidChance > 0)
 			return true;
@@ -3230,15 +3230,15 @@ void JoyStickPressRaid(void)
 	if (attackDelay)
 		return;
 
-	//ÇÏÆ®´Â ÇÏÁö ¾Ê°í
+	//í•˜íŠ¸ëŠ” í•˜ì§€ ì•Šê³ 
 	if (raidChance > 0 && turn == NEUTRAL) {
 		raidChance--;
 
-		//ROULETTE_COIN = 0,//°Ë//ÀÏ¹İ µ¥¹ÌÁö //1, 2, 5¹è//
+		//ROULETTE_COIN = 0,//ê²€//ì¼ë°˜ ë°ë¯¸ì§€ //1, 2, 5ë°°//
 		//ROULETTE_BATTLE,//ï¿½Û·Îºï¿½//ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ //1, 2, 4ï¿½ï¿½ ï¿½ï¿½Å¸//
 		//ROULETTE_EQUIP,//ï¿½ï¿½ï¿½?/3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½//ï¿½ï¿½ä°ªï¿½ï¿½ï¿½?10ï¿½è¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½//
 		//ROULETTE_HEART,//ï¿½ï¿½ï¿½ï¿½//3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®//
-		//ROULETTE_QUEST,//ÇÏÀÇ//Äù½ºÆ® ¾ÆÀÌÅÛ È¹µæ//1, 2, 5¹è//
+		//ROULETTE_QUEST,//í•˜ì˜//í€˜ìŠ¤íŠ¸ ì•„ì´í…œ íšë“//1, 2, 5ë°°//
 		//ROULETTE_RAID,//ï¿½Å¹ï¿½//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½//ï¿½ï¿½ï¿½?1, 2, 5ï¿½ï¿½//
 
 		//actionCardArr[0] = ROULETTE_COIN;
@@ -3281,7 +3281,7 @@ void JoyStickPressRaid(void)
 	}
 }
 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
-//1. º¸½º°¡ µîÀåÇÏ°í 
+//1. ë³´ìŠ¤ê°€ ë“±ì¥í•˜ê³  
 //2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
 //3. 
 
@@ -3319,9 +3319,9 @@ void BoxOpen(void)
 	case BOXDROP_COINBAG:
 		attackType = ROULETTE_COIN;
 		if (boxDropItemType == BOXDROP_COINBAG)
-			attackStr = 1;//5¹è
+			attackStr = 1;//5ë°°
 		else
-			attackStr = 0;//1¹è
+			attackStr = 0;//1ë°°
 
 		bar[BAR_GOLD].front = true;
 		bar[BAR_INVENTORY].front = false;
@@ -3334,9 +3334,9 @@ void BoxOpen(void)
 	case BOXDROP_QUESTITEMBAG:
 		attackType = ROULETTE_QUEST;
 		if (boxDropItemType == BOXDROP_QUESTITEMBAG)
-			attackStr = 2;//5¹è
+			attackStr = 2;//5ë°°
 		else
-			attackStr = 0;//1¹è
+			attackStr = 0;//1ë°°
 
 		bar[BAR_INVENTORY].front = false;
 		bar[BAR_INVENTORY + 1].front = false;
@@ -3430,7 +3430,7 @@ void BoxOpen(void)
 		break;
 	case BOXDROP_SHIELD:
 		attackType = ROULETTE_SHIELD;
-		attackStr = 0;//1¹è
+		attackStr = 0;//1ë°°
 
 		bar[BAR_INVENTORY].front = false;
 		bar[BAR_INVENTORY + 1].front = false;
@@ -3519,13 +3519,13 @@ int GetBetGold(int itemDetail, int itemGrade)
 }
 
 int printCoords() {
-	int radius = 0; // ÃÊ±â ¹İ°æ
+	int radius = 0; // ì´ˆê¸° ë°˜ê²½
 
-	int centerX = 0; // Áß½ÉÁ¡ x ÁÂÇ¥
-	int centerY = 0; // Áß½ÉÁ¡ y ÁÂÇ¥
+	int centerX = 0; // ì¤‘ì‹¬ì  x ì¢Œí‘œ
+	int centerY = 0; // ì¤‘ì‹¬ì  y ì¢Œí‘œ
 
-	double angle = 0; // È¸Àü °¢µµ
-	double angleIncrement = (float)0.3f; // °¢µµ Áõ°¡·®
+	double angle = 0; // íšŒì „ ê°ë„
+	double angleIncrement = (float)0.3f; // ê°ë„ ì¦ê°€ëŸ‰
 
 	for (int i = 0; i < MAX_POINTS; ++i) {
 		// ï¿½İ°ï¿½ï¿½ï¿½ 256 ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½İ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½?È¸ï¿½ï¿½
@@ -3533,7 +3533,7 @@ int printCoords() {
 			radius = MAX_RADIUS;
 		}
 
-		// ÁÂÇ¥ °è»ê
+		// ì¢Œí‘œ ê³„ì‚°
 		int x = centerX + static_cast<int>(radius * std::cos(angle));
 		int y = centerY + static_cast<int>(radius * std::sin(angle));
 
@@ -3541,13 +3541,13 @@ int printCoords() {
 		points[i][0] = x;
 		points[i][1] = y;
 
-		// °¢µµ Áõ°¡
+		// ê°ë„ ì¦ê°€
 		angle += angleIncrement;
 
-		// ¹İ°æ Áõ°¡
+		// ë°˜ê²½ ì¦ê°€
 		radius += (float)(3 * _2X) / MOTIONDIV;
 
-		// °¢µµ¸¦ 360µµ·Î À¯Áö
+		// ê°ë„ë¥¼ 360ë„ë¡œ ìœ ì§€
 		if (angle >= 2 * M_PI) {
 			angle -= 2 * M_PI;
 		}
@@ -3557,17 +3557,17 @@ int printCoords() {
 }
 
 int printBoxCoords() {
-	int radius = 0; // ÃÊ±â ¹İ°æ
+	int radius = 0; // ì´ˆê¸° ë°˜ê²½
 
-	int centerX = 0; // Áß½ÉÁ¡ x ÁÂÇ¥
-	int centerY = 0; // Áß½ÉÁ¡ y ÁÂÇ¥
+	int centerX = 0; // ì¤‘ì‹¬ì  x ì¢Œí‘œ
+	int centerY = 0; // ì¤‘ì‹¬ì  y ì¢Œí‘œ
 
-	double angle = 0; // È¸Àü °¢µµ
-	double angleIncrement = (float)0.3f; // °¢µµ Áõ°¡·®
+	double angle = 0; // íšŒì „ ê°ë„
+	double angleIncrement = (float)0.3f; // ê°ë„ ì¦ê°€ëŸ‰
 
 	for (int i = 0; i < MAX_POINTS; ++i) {
 
-		// ÁÂÇ¥ °è»ê
+		// ì¢Œí‘œ ê³„ì‚°
 		int x = centerX + static_cast<int>(radius * std::cos(angle));
 		int y = centerY + static_cast<int>(radius * std::sin(angle));
 
@@ -3575,13 +3575,13 @@ int printBoxCoords() {
 		boxPoints[i][0] = x;
 		boxPoints[i][1] = y;
 
-		// °¢µµ Áõ°¡
+		// ê°ë„ ì¦ê°€
 		angle += angleIncrement;
 
-		// ¹İ°æ Áõ°¡
+		// ë°˜ê²½ ì¦ê°€
 		radius += (float)(2 * _2X) / MOTIONDIV;
 
-		// °¢µµ¸¦ 360µµ·Î À¯Áö
+		// ê°ë„ë¥¼ 360ë„ë¡œ ìœ ì§€
 		if (radius >= 48 * _2X) {
 			radius = 48 * _2X;
 		}

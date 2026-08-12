@@ -1,18 +1,18 @@
-#pragma once
+﻿#pragma once
 #ifndef _DATA_H_
 #define _DATA_H_
 //#pragma pack (1)
 //x, y, w, h\jj
-//로드맵�? ?�픈?�는 메뉴??조건???�???�보�??��? 배열?�다.
+//濡쒕뱶留듭? ?ㅽ뵂?섎뒗 硫붾돱??議곌굔???�???뺣낫瑜??댁? 諛곗뿴?대떎.
 //int loadMap[] = {
-//	//1. 맨처?�에 ?�리??것�? ?�스?�이??
-//	//-> ?�리??조건 (10번째 보스�??�리?�하�??�린??)
-//	//2. ?�번째로 ?�리??것�? PVP ?�스?�이??
+//	//1. 留⑥쿂?뚯뿉 ?대━??寃껋? ?섏뒪?몄씠??
+//	//-> ?대━??議곌굔 (10踰덉㎏ 蹂댁뒪瑜??대━?댄븯硫??대┛??)
+//	//2. ?먮쾲吏몃줈 ?대━??寃껋? PVP ?섏뒪?몄씠??
 //	//-> 
 
 //};
 //
-// ===== ?�이???�더 ?�일 Include =====
+// ===== ?곗씠???ㅻ뜑 ?뚯씪 Include =====
 
 #include "Def.h"
 #include "Data/AlphaData.h"
@@ -42,7 +42,7 @@
 
 const int getHeroLv[] = {
 	//0, 4, 9,
-	0, 99, 99,//�ϴ� ������ �ΰ��� ����δ� �������� �ʴ´�.
+	0, 99, 99,//일단 나머지 두개의 히어로는 오픈하지 않는다.
 };
 
 const int getSkillSlotLv[] = {
@@ -60,7 +60,7 @@ const float heroZoom[] = {
 };
 
 
-//?�레?�별
+//?꾨젅?꾨퀎
 const float hitNumZoom[] = {
 	0.0f,//1
 	0.0f,//2
@@ -143,8 +143,8 @@ const float battleFrameZoom[] = {
 };
 
 const signed int reelBgOffset[] = {
-	513, 1,//?�반
-	513, 1,//가�?
+	513, 1,//?쇰컲
+	513, 1,//媛�由?
 	513, 1,//고속
 };
 
@@ -154,12 +154,12 @@ const signed int reelPostion[] = {
 	420, -160,
 };
 
-// 릴별 ?�작 지???�→중→??
+// 由대퀎 ?쒖옉 吏�???쇄넂以묅넂??
 const int reelStartFrame[] = { 8, 14, 20 };
-const int reelStopBegin[] = { 24, 34, 44 };    // 고속???�간 ?�당�??�냄
+const int reelStopBegin[] = { 24, 34, 44 };    // 怨좎냽???쎄컙 ?욌떦寃??앸깂
 const int reelSnapFrame[] = { 30, 42, 54 };  // 감속??길게
 
-// ---------- STAR ?�률 ?�이�?----------
+// ---------- STAR ?뺣쪧 ?뚯씠釉?----------
 static float gStarBaseProb[10] = {
 	// idx 0 unused
 		0.0f,
@@ -174,19 +174,19 @@ static float gStarBaseProb[10] = {
 		0.005f  // STAR9 (0.5%)
 };
 
-// ?�닝 ?�라미터
-static const int   PITY_TRIGGER = 10;   // 10�??�안 고등�?미출??
-static const float PITY_BONUS = 0.20f; // 고등�??�률 +20%
-static const float REGION_PENALTY = 0.65f; // 같�? 지??반복 ???�률 감소
-static const float STAR_PENALTY = 0.70f; // 같�? STAR 반복 ??감소
+// ?쒕떇 ?뚮씪誘명꽣
+static const int   PITY_TRIGGER = 10;   // 10踰??숈븞 怨좊벑湲?誘몄텧??
+static const float PITY_BONUS = 0.20f; // 怨좊벑湲??뺣쪧 +20%
+static const float REGION_PENALTY = 0.65f; // 媛숈? 吏�??諛섎났 ???뺣쪧 媛먯냼
+static const float STAR_PENALTY = 0.70f; // 媛숈? STAR 諛섎났 ??媛먯냼
 
 
-//?�라가???�텝?�랑
-//?�려가???�텝 ?��?지�?분리
-//?�라가???�레?�과, ?�려가???�레?�을 분리
+//?щ씪媛�???ㅽ뀦?대옉
+//?대젮媛�???ㅽ뀦 ?먭?吏�濡?遺꾨━
+//?щ씪媛�???꾨젅?꾧낵, ?대젮媛�???꾨젅?꾩쓣 遺꾨━
 
 //
-//3개의 커서?�치, ?�동?�도
+//3媛쒖쓽 而ㅼ꽌?꾩튂, ?대룞?띾룄
 
 const float coinScatterInfoRaid[20 * COINSCATTERRAIDINFOSIZE] = {
 	//0
@@ -311,7 +311,7 @@ const float coinScatterInfoRaid[20 * COINSCATTERRAIDINFOSIZE] = {
 
 };
 
-//targetX, targetY, targetX2, targetY2, (기�??� DX / 2, DY / 2)
+//targetX, targetY, targetX2, targetY2, (湲곗??� DX / 2, DY / 2)
 //speed, speedIncrement, speed2, sppedIncrement2,
 //waitFrame, waitFrame2
 //zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2

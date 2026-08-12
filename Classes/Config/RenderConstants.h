@@ -1,125 +1,125 @@
-#pragma once
+ï»¿#pragma once
 // =============================================================
 // RENDER CONSTANTS
-// ½ÇÁ¦ »ç¿ëµÇ´Â ·»´õ¸µ »ó¼ö¸¸ À¯Áö
+// ì‹¤ì œ ì‚¬ìš©ë˜ëŠ” ë Œë”ë§ ìƒìˆ˜ë§Œ ìœ ì§€
 // =============================================================
 
-// ±âº» ÁÜ »ó¼ö
-#define HEROZOOM                   1.5f           // È÷¾î·Î ÁÜ
-#define CREWZOOM                   1.5f           // Å©·ç ÁÜ
-#define MONSTERZOOM                1.5f           // ¸ó½ºÅÍ ÁÜ
-#define BOSSZOOM                   2.5f           // º¸½º ÁÜ
-#define LOBBYZOOM                  1.2f           // ·Îºñ ÁÜ
-#define BATTLEZOOM                 1.5f          // ¹èÆ² ÁÜ
-#define SUMMONZOOM                 1.5f           // ¼ÒÈ¯ ÁÜ
-#define DROPITEMZOOM               2.0f           // µå·Ó ¾ÆÀÌÅÛ ÁÜ
-#define HOUSEZOOM                  1.25f          // ÇÏ¿ì½º ÁÜ
-#define HOUSEPLAYERZOOM            1.0f           // ÇÏ¿ì½º ÇÃ·¹ÀÌ¾î ÁÜ
-#define BOXZOOM                    2.5f           // ¹Ú½º ÁÜ
-#define BOXCASTLEZOOM              0.25f           // ¹Ú½º ÇÏ¿ì½º ÁÜ
+// ê¸°ë³¸ ì¤Œ ìƒìˆ˜
+#define HEROZOOM                   1.5f           // ížˆì–´ë¡œ ì¤Œ
+#define CREWZOOM                   1.5f           // í¬ë£¨ ì¤Œ
+#define MONSTERZOOM                1.5f           // ëª¬ìŠ¤í„° ì¤Œ
+#define BOSSZOOM                   2.5f           // ë³´ìŠ¤ ì¤Œ
+#define LOBBYZOOM                  1.2f           // ë¡œë¹„ ì¤Œ
+#define BATTLEZOOM                 1.5f          // ë°°í‹€ ì¤Œ
+#define SUMMONZOOM                 1.5f           // ì†Œí™˜ ì¤Œ
+#define DROPITEMZOOM               2.0f           // ë“œë¡­ ì•„ì´í…œ ì¤Œ
+#define HOUSEZOOM                  1.25f          // í•˜ìš°ìŠ¤ ì¤Œ
+#define HOUSEPLAYERZOOM            1.0f           // í•˜ìš°ìŠ¤ í”Œë ˆì´ì–´ ì¤Œ
+#define BOXZOOM                    2.5f           // ë°•ìŠ¤ ì¤Œ
+#define BOXCASTLEZOOM              0.25f           // ë°•ìŠ¤ í•˜ìš°ìŠ¤ ì¤Œ
 
 // ---
-#define REWARDICONZOOM             1.5f           // º¸»ó ¾ÆÀÌÄÜ ÁÜ
-#define HEROCASTLEZOOM             1.5f           // ¿µ¿õ ¼º ÁÜ
-#define CREWCASTLEZOOM             1.2f           // Å©·ç ¼º ÁÜ
-#define HITMARKZOOM                0.5f           // È÷Æ®¸¶Å© ÁÜ
-#define DIORAMAZOOM                0.77f          // µð¿À¶ó¸¶ ÁÜ
-#define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // µð¿À¶ó¸¶ ¹èÆ² ÁÜ
-#define DIORAMAZOOM_REMAINDER      1.5f           // µð¿À¶ó¸¶ ³ª¸ÓÁö ÁÜ
-#define BATTLEWEAPONZOOM           6.0f           // ¹èÆ² ¹«±â ÁÜ
-#define HITCOUNTZOOM               1.0f           // È÷Æ® Ä«¿îÆ® ÁÜ
-#define RAIDGOLDBARZOOM            2.5f           // ·¹ÀÌµå °ñµå¹Ù ÁÜ
-#define BATTLEGOLDALPHAZOOM        2.2f           // ¹èÆ² °ñµå ¾ËÆÄ ÁÜ
-#define BATTLETEXTZOOM             1.5f           // ¹èÆ² ÅØ½ºÆ® ÁÜ
-#define PLAYERHEADZOOM             1              // ÇÃ·¹ÀÌ¾î Çìµå ÁÜ
-#define ALLHEADZOOM                2              // ÀüÃ¼ Çìµå ÁÜ
+#define REWARDICONZOOM             1.5f           // ë³´ìƒ ì•„ì´ì½˜ ì¤Œ
+#define HEROCASTLEZOOM             1.5f           // ì˜ì›… ì„± ì¤Œ
+#define CREWCASTLEZOOM             1.2f           // í¬ë£¨ ì„± ì¤Œ
+#define HITMARKZOOM                0.5f           // ížˆíŠ¸ë§ˆí¬ ì¤Œ
+#define DIORAMAZOOM                0.77f          // ë””ì˜¤ë¼ë§ˆ ì¤Œ
+#define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // ë””ì˜¤ë¼ë§ˆ ë°°í‹€ ì¤Œ
+#define DIORAMAZOOM_REMAINDER      1.5f           // ë””ì˜¤ë¼ë§ˆ ë‚˜ë¨¸ì§€ ì¤Œ
+#define BATTLEWEAPONZOOM           6.0f           // ë°°í‹€ ë¬´ê¸° ì¤Œ
+#define HITCOUNTZOOM               1.0f           // ížˆíŠ¸ ì¹´ìš´íŠ¸ ì¤Œ
+#define RAIDGOLDBARZOOM            2.5f           // ë ˆì´ë“œ ê³¨ë“œë°” ì¤Œ
+#define BATTLEGOLDALPHAZOOM        2.2f           // ë°°í‹€ ê³¨ë“œ ì•ŒíŒŒ ì¤Œ
+#define BATTLETEXTZOOM             1.5f           // ë°°í‹€ í…ìŠ¤íŠ¸ ì¤Œ
+#define PLAYERHEADZOOM             1              // í”Œë ˆì´ì–´ í—¤ë“œ ì¤Œ
+#define ALLHEADZOOM                2              // ì „ì²´ í—¤ë“œ ì¤Œ
 
 // ---
-#define CAMERAPER_MULTIPLE         2              // Ä«¸Þ¶ó ¹èÀ² ºÐÀÚ
-#define CAMERAPER_DIVIDE           5              // Ä«¸Þ¶ó ¹èÀ² ºÐ¸ð
+#define CAMERAPER_MULTIPLE         2              // ì¹´ë©”ë¼ ë°°ìœ¨ ë¶„ìž
+#define CAMERAPER_DIVIDE           5              // ì¹´ë©”ë¼ ë°°ìœ¨ ë¶„ëª¨
 
 // ---
-#define GOLDBARZOOM                0.5f           // °ñµå¹Ù ÁÜ
-#define CROWNBARZOOM               0.5f           // ¿Õ°ü¹Ù ÁÜ
-#define BAR_GOLD_ZOOM              1.0f           // °ñµå ¹Ù ÁÜ
-#define BAR_CROWN_ZOOM             1.0f           // ¿Õ°ü ¹Ù ÁÜ
-#define BAR_HAMMER_ZOOM            1.0f           // ¸ÁÄ¡ ¹Ù ÁÜ
-#define BAR_SHIELD_ZOOM            1.0f           // ¹æÆÐ ¹Ù ÁÜ
-#define BAR_BOX_ZOOM               1.1f           // ¹Ú½º ¹Ù ÁÜ
-#define BAR_PLAYERHP_ZOOM          1.0f           // ÇÃ·¹ÀÌ¾î HP ¹Ù ÁÜ
-#define BAR_BOSSHP_ZOOM            0.45f           // º¸½º HP ¹Ù ÁÜ
-#define BAR_COIN_ZOOM              2.0f           // ÄÚÀÎ ¹Ù ÁÜ
-#define BAR_ITEM_ZOOM              2.0f           // ¾ÆÀÌÅÛ ¹Ù ÁÜ
-#define BAR_HERO_ZOOM              0.95f           // ¿µ¿õ ¹Ù ÁÜ
-#define BAR_CREW_ZOOM              0.95f           // Å©·ç ¹Ù ÁÜ
-#define BAR_HEART_ZOOM             1.0f           // ÇÏÆ® ¹Ù ÁÜ
-#define BAR_ROULETTE_ZOOM             0.5f           // ÇÏÆ® ¹Ù ÁÜ
-#define BAR_HEARTBET_ZOOM             1.6f           // ÇÏÆ® ¹Ù ÁÜ
-#define BAR_PLAY_ZOOM             1.8f           // ÇÏÆ® ¹Ù ÁÜ
-#define BAR_CONTROLER_ZOOM			1.5f		//°ø°Ý¹öÆ°
-#define BAR_JUMP_ZOOM			1.8f		//°ø°Ý¹öÆ°
-#define BAR_BATTLECOIN_ZOOM        1.0f          // ¹èÆ² ÄÚÀÎ ¹Ù ÁÜ
-#define BAR_MEDAL_ZOOM             1.0f           // ¸Þ´Þ ¹Ù ÁÜ
-#define BAR_ENEMYUSER_ZOOM         1.0f           // Àû À¯Àú ¹Ù ÁÜ
-#define BAR_ENEMYUSER_BOX_ZOOM     1.0f           // Àû À¯Àú ¹Ú½º ¹Ù ÁÜ
-#define BAR_MAINSHOP_ZOOM          0.95f           // ¸ÞÀÎ¼¥ ¹Ù ÁÜ
-#define BAR_DAILYQUEST_ZOOM        1.0f           // ÀÏÀÏÄù½ºÆ® ¹Ù ÁÜ
-#define BAR_CREWUPGRADE_ZOOM       1.0f           // Å©·ç ¾÷±×·¹ÀÌµå ¹Ù ÁÜ
-#define BAR_COLLECTIONS_ZOOM       0.95f           // ÄÃ·º¼Ç ¹Ù ÁÜ
-#define BAR_FRIENDS_ZOOM           1.0f           // Ä£±¸ ¹Ù ÁÜ
-#define BAR_QUEST_ZOOM             1.0f           // Äù½ºÆ® ¹Ù ÁÜ
-#define BAR_RAIDGOLD_ZOOM          1.2f           // ·¹ÀÌµå °ñµå ¹Ù ÁÜ
-#define BAR_RAIDCOIN_ZOOM          1.2f           // ·¹ÀÌµå ÄÚÀÎ ¹Ù ÁÜ
-#define BAR_COMBATPOWERALL_ZOOM    1.0f           // ÀüÅõ·Â ÀüÃ¼ ¹Ù ÁÜ
-#define BAR_COMBATPOWER_ZOOM       1.0f           // ÀüÅõ·Â ¹Ù ÁÜ
-#define BAR_STAR_ZOOM              1.0f           // º° ¹Ù ÁÜ
-#define BAR_STAGEPROGRESS_ZOOM     1.0f           // ½ºÅ×ÀÌÁö ÁøÇà ¹Ù ÁÜ
-#define BAR_REMAINEDTURN_ZOOM	3.0f           // ½ºÅ×ÀÌÁö ÁøÇà ¹Ù ÁÜ
-#define BAR_INVENTORY_ZOOM         0.6f           // ÀÎº¥Åä¸® ¹Ù ÁÜ
-#define BAR_SKILL_ZOOM             1.0f           // ½ºÅ³ ¹Ù ÁÜ
+#define GOLDBARZOOM                0.5f           // ê³¨ë“œë°” ì¤Œ
+#define CROWNBARZOOM               0.5f           // ì™•ê´€ë°” ì¤Œ
+#define BAR_GOLD_ZOOM              1.0f           // ê³¨ë“œ ë°” ì¤Œ
+#define BAR_CROWN_ZOOM             1.0f           // ì™•ê´€ ë°” ì¤Œ
+#define BAR_HAMMER_ZOOM            1.0f           // ë§ì¹˜ ë°” ì¤Œ
+#define BAR_SHIELD_ZOOM            1.0f           // ë°©íŒ¨ ë°” ì¤Œ
+#define BAR_BOX_ZOOM               1.1f           // ë°•ìŠ¤ ë°” ì¤Œ
+#define BAR_PLAYERHP_ZOOM          1.0f           // í”Œë ˆì´ì–´ HP ë°” ì¤Œ
+#define BAR_BOSSHP_ZOOM            0.45f           // ë³´ìŠ¤ HP ë°” ì¤Œ
+#define BAR_COIN_ZOOM              2.0f           // ì½”ì¸ ë°” ì¤Œ
+#define BAR_ITEM_ZOOM              2.0f           // ì•„ì´í…œ ë°” ì¤Œ
+#define BAR_HERO_ZOOM              0.95f           // ì˜ì›… ë°” ì¤Œ
+#define BAR_CREW_ZOOM              0.95f           // í¬ë£¨ ë°” ì¤Œ
+#define BAR_HEART_ZOOM             1.0f           // í•˜íŠ¸ ë°” ì¤Œ
+#define BAR_ROULETTE_ZOOM             0.5f           // í•˜íŠ¸ ë°” ì¤Œ
+#define BAR_HEARTBET_ZOOM             1.6f           // í•˜íŠ¸ ë°” ì¤Œ
+#define BAR_PLAY_ZOOM             1.8f           // í•˜íŠ¸ ë°” ì¤Œ
+#define BAR_CONTROLER_ZOOM			1.5f		//ê³µê²©ë²„íŠ¼
+#define BAR_JUMP_ZOOM			1.8f		//ê³µê²©ë²„íŠ¼
+#define BAR_BATTLECOIN_ZOOM        1.0f          // ë°°í‹€ ì½”ì¸ ë°” ì¤Œ
+#define BAR_MEDAL_ZOOM             1.0f           // ë©”ë‹¬ ë°” ì¤Œ
+#define BAR_ENEMYUSER_ZOOM         1.0f           // ì  ìœ ì € ë°” ì¤Œ
+#define BAR_ENEMYUSER_BOX_ZOOM     1.0f           // ì  ìœ ì € ë°•ìŠ¤ ë°” ì¤Œ
+#define BAR_MAINSHOP_ZOOM          0.95f           // ë©”ì¸ìƒµ ë°” ì¤Œ
+#define BAR_DAILYQUEST_ZOOM        1.0f           // ì¼ì¼í€˜ìŠ¤íŠ¸ ë°” ì¤Œ
+#define BAR_CREWUPGRADE_ZOOM       1.0f           // í¬ë£¨ ì—…ê·¸ë ˆì´ë“œ ë°” ì¤Œ
+#define BAR_COLLECTIONS_ZOOM       0.95f           // ì»¬ë ‰ì…˜ ë°” ì¤Œ
+#define BAR_FRIENDS_ZOOM           1.0f           // ì¹œêµ¬ ë°” ì¤Œ
+#define BAR_QUEST_ZOOM             1.0f           // í€˜ìŠ¤íŠ¸ ë°” ì¤Œ
+#define BAR_RAIDGOLD_ZOOM          1.2f           // ë ˆì´ë“œ ê³¨ë“œ ë°” ì¤Œ
+#define BAR_RAIDCOIN_ZOOM          1.2f           // ë ˆì´ë“œ ì½”ì¸ ë°” ì¤Œ
+#define BAR_COMBATPOWERALL_ZOOM    1.0f           // ì „íˆ¬ë ¥ ì „ì²´ ë°” ì¤Œ
+#define BAR_COMBATPOWER_ZOOM       1.0f           // ì „íˆ¬ë ¥ ë°” ì¤Œ
+#define BAR_STAR_ZOOM              1.0f           // ë³„ ë°” ì¤Œ
+#define BAR_STAGEPROGRESS_ZOOM     1.0f           // ìŠ¤í…Œì´ì§€ ì§„í–‰ ë°” ì¤Œ
+#define BAR_REMAINEDTURN_ZOOM	3.0f           // ìŠ¤í…Œì´ì§€ ì§„í–‰ ë°” ì¤Œ
+#define BAR_INVENTORY_ZOOM         0.6f           // ì¸ë²¤í† ë¦¬ ë°” ì¤Œ
+#define BAR_SKILL_ZOOM             1.0f           // ìŠ¤í‚¬ ë°” ì¤Œ
 
 // ---
-#define EQUIPZOOM                  2.0f           // Àåºñ ÁÜ
-#define SKILLICONZOOM              2.0f           // ½ºÅ³ ¾ÆÀÌÄÜ ÁÜ
-#define IMGTEXTZOOM                2.0f           // ÀÌ¹ÌÁö ÅØ½ºÆ® ÁÜ
-#define DMGNUMZOOM                 0.5f           // µ¥¹ÌÁö ¼ýÀÚ ÁÜ
-#define XNUMZOOM                   1.4f           // X ¼ýÀÚ ÁÜ
-#define ENEMYICONZOOM              0.5f           // Àû ¾ÆÀÌÄÜ ÁÜ
+#define EQUIPZOOM                  2.0f           // ìž¥ë¹„ ì¤Œ
+#define SKILLICONZOOM              2.0f           // ìŠ¤í‚¬ ì•„ì´ì½˜ ì¤Œ
+#define IMGTEXTZOOM                2.0f           // ì´ë¯¸ì§€ í…ìŠ¤íŠ¸ ì¤Œ
+#define DMGNUMZOOM                 0.5f           // ë°ë¯¸ì§€ ìˆ«ìž ì¤Œ
+#define XNUMZOOM                   1.4f           // X ìˆ«ìž ì¤Œ
+#define ENEMYICONZOOM              0.5f           // ì  ì•„ì´ì½˜ ì¤Œ
 #define CREWBULLETZOOM				0.6f
-#define EQUIPICON_X                0              // Àåºñ ¾ÆÀÌÄÜ X
-#define EQUIPICON_Y                -40 * _2X                // Àåºñ ¾ÆÀÌÄÜ Y
+#define EQUIPICON_X                0              // ìž¥ë¹„ ì•„ì´ì½˜ X
+#define EQUIPICON_Y                -40 * _2X                // ìž¥ë¹„ ì•„ì´ì½˜ Y
 
 // ---
-#define BATTLECHARZOOM             3.0f           // ¹èÆ² Ä³¸¯ÅÍ ÁÜ
-#define BATTLECHARSTARZOOM         2.0f           // ¹èÆ² Ä³¸¯ÅÍ º° ÁÜ
-#define BATTLECHARSTARZOOM_FAIL    1.2f           // ¹èÆ² Ä³¸¯ÅÍ º° ½ÇÆÐ ÁÜ
-#define BATTLEPOSGAP_Y             -ITEMICONSIZE * 8.0f     // ¹èÆ² À§Ä¡ Y °£°Ý
-#define STAGESTARBUTTONZOOM        0.8f           // ½ºÅ×ÀÌÁö º° ¹öÆ° ÁÜ
-#define NUM2ZOOM                   0.22f          // ¼ýÀÚ2 ÁÜ
-#define UPGRADEBUTTONPER           0.72f          // ¾÷±×·¹ÀÌµå ¹öÆ° ºñÀ²
+#define BATTLECHARZOOM             3.0f           // ë°°í‹€ ìºë¦­í„° ì¤Œ
+#define BATTLECHARSTARZOOM         2.0f           // ë°°í‹€ ìºë¦­í„° ë³„ ì¤Œ
+#define BATTLECHARSTARZOOM_FAIL    1.2f           // ë°°í‹€ ìºë¦­í„° ë³„ ì‹¤íŒ¨ ì¤Œ
+#define BATTLEPOSGAP_Y             -ITEMICONSIZE * 8.0f     // ë°°í‹€ ìœ„ì¹˜ Y ê°„ê²©
+#define STAGESTARBUTTONZOOM        0.8f           // ìŠ¤í…Œì´ì§€ ë³„ ë²„íŠ¼ ì¤Œ
+#define NUM2ZOOM                   0.22f          // ìˆ«ìž2 ì¤Œ
+#define UPGRADEBUTTONPER           0.72f          // ì—…ê·¸ë ˆì´ë“œ ë²„íŠ¼ ë¹„ìœ¨
 
 // ---
-#define HITCOUNTPOSX               160 * _2X                // È÷Æ® Ä«¿îÆ® X À§Ä¡
-#define HITCOUNTPOSY               0 * _2X                  // È÷Æ® Ä«¿îÆ® Y À§Ä¡
-#define PROFILEIMG_X               32 * _2X                 // ÇÁ·ÎÇÊ ÀÌ¹ÌÁö X
-#define PROFILEIMG_Y               32 * _2X                 // ÇÁ·ÎÇÊ ÀÌ¹ÌÁö Y
-#define STAGEINFO_Y                200 * _2X                // ½ºÅ×ÀÌÁö Á¤º¸ Y
-#define CONTROLMARKGAP_X           4 * _2X                  // ÄÁÆ®·Ñ ¸¶Å© X °£°Ý
+#define HITCOUNTPOSX               160 * _2X                // ížˆíŠ¸ ì¹´ìš´íŠ¸ X ìœ„ì¹˜
+#define HITCOUNTPOSY               0 * _2X                  // ížˆíŠ¸ ì¹´ìš´íŠ¸ Y ìœ„ì¹˜
+#define PROFILEIMG_X               32 * _2X                 // í”„ë¡œí•„ ì´ë¯¸ì§€ X
+#define PROFILEIMG_Y               32 * _2X                 // í”„ë¡œí•„ ì´ë¯¸ì§€ Y
+#define STAGEINFO_Y                200 * _2X                // ìŠ¤í…Œì´ì§€ ì •ë³´ Y
+#define CONTROLMARKGAP_X           4 * _2X                  // ì»¨íŠ¸ë¡¤ ë§ˆí¬ X ê°„ê²©
 
 // ---
-#define BG_COLS                    10             // ¹è°æ ¿­ ¼ö
-#define BG_ZOOM                    (0.5f)                   // ¹è°æ ÁÜ
-#define BG_SCROLL_SPD_X            (1)                      // ¹è°æ ½ºÅ©·Ñ X ¼Óµµ
-#define BG_SCROLL_SPD_Y            (1)                      // ¹è°æ ½ºÅ©·Ñ Y ¼Óµµ
-#define BG_SIL_W                   6              // ¹è°æ ½Ç·ç¿§ ³Êºñ
-#define BG_SIL_H                   6              // ¹è°æ ½Ç·ç¿§ ³ôÀÌ
-#define BG_SIL_N                   (BG_SIL_W * BG_SIL_H)    // ¹è°æ ½Ç·ç¿§ ÃÑ ¼ö
+#define BG_COLS                    10             // ë°°ê²½ ì—´ ìˆ˜
+#define BG_ZOOM                    (0.5f)                   // ë°°ê²½ ì¤Œ
+#define BG_SCROLL_SPD_X            (1)                      // ë°°ê²½ ìŠ¤í¬ë¡¤ X ì†ë„
+#define BG_SCROLL_SPD_Y            (1)                      // ë°°ê²½ ìŠ¤í¬ë¡¤ Y ì†ë„
+#define BG_SIL_W                   6              // ë°°ê²½ ì‹¤ë£¨ì—£ ë„ˆë¹„
+#define BG_SIL_H                   6              // ë°°ê²½ ì‹¤ë£¨ì—£ ë†’ì´
+#define BG_SIL_N                   (BG_SIL_W * BG_SIL_H)    // ë°°ê²½ ì‹¤ë£¨ì—£ ì´ ìˆ˜
 
 // ---
-#define FX_ELECTRIC_WEAK_IMG       0              // Àü±â ¾à ÀÌ¹ÌÁö
-#define FX_ELECTRIC_MID_IMG        1              // Àü±â Áß ÀÌ¹ÌÁö
-#define FX_ELECTRIC_STRONG_IMG     2              // Àü±â °­ ÀÌ¹ÌÁö
-#define FX_FLASH_WEAK_IMG          3              // ÇÃ·¡½Ã ¾à ÀÌ¹ÌÁö
-#define FX_FLASH_STRONG_IMG        4              // ÇÃ·¡½Ã °­ ÀÌ¹ÌÁö
-#define FX_ELECTRIC_FRAMES         8              // Àü±â ÇÁ·¹ÀÓ ¼ö
-#define FX_ELECTRIC_H              64             // Àü±â ³ôÀÌ
+#define FX_ELECTRIC_WEAK_IMG       0              // ì „ê¸° ì•½ ì´ë¯¸ì§€
+#define FX_ELECTRIC_MID_IMG        1              // ì „ê¸° ì¤‘ ì´ë¯¸ì§€
+#define FX_ELECTRIC_STRONG_IMG     2              // ì „ê¸° ê°• ì´ë¯¸ì§€
+#define FX_FLASH_WEAK_IMG          3              // í”Œëž˜ì‹œ ì•½ ì´ë¯¸ì§€
+#define FX_FLASH_STRONG_IMG        4              // í”Œëž˜ì‹œ ê°• ì´ë¯¸ì§€
+#define FX_ELECTRIC_FRAMES         8              // ì „ê¸° í”„ë ˆìž„ ìˆ˜
+#define FX_ELECTRIC_H              64             // ì „ê¸° ë†’ì´

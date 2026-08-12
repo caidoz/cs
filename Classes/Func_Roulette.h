@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _FUNC_ROULETTE_H_
 #define _FUNC_ROULETTE_H_
 
-// Utility ÇÔ¼öµé
+// Utility í•¨ìˆ˜ë“¤
 int GetUnitScore(OBJECT* pObj);
 void DecideRouletteResult();
 void InitRouletteJump(void);
@@ -11,9 +11,9 @@ void RouletteAttackStart(void);
 int GetSameRouletteCnt(int objIdx);
 int UpgradeSkillIdx(int reelIdx, int count);
 //------------------------------------------------------------
-// ·ê·¿ ¹Ì¸®º¸±â(¾Ö´Ï¸ŞÀÌ¼Ç ¾øÀ½)
-// slotCrewIdx : ½½·Ô¿¡ µé¾î°¥ µ¿·á offset
-// totalCrewCount : ÇöÀç º¸À¯ µ¿·á ¼ö
+// ë£°ë › ë¯¸ë¦¬ë³´ê¸°(ì• ë‹ˆë©”ì´ì…˜ ì—†ìŒ)
+// slotCrewIdx : ìŠ¬ë¡¯ì— ë“¤ì–´ê°ˆ ë™ë£Œ offset
+// totalCrewCount : í˜„ì¬ ë³´ìœ  ë™ë£Œ ìˆ˜
 //------------------------------------------------------------
 void RouletteDrawSimple3Slots(
 	int x,
@@ -24,7 +24,7 @@ void RouletteDrawSimple3Slots(
 
 void RouletteDraw(int x, int y, float zoom);
 
-// Crew °ü·Ã
+// Crew ê´€ë ¨
 int GetHouseFromCrewIdx(int);
 int GetCrewDmg(int crewIdx, int lv);
 int GetCrewIdxFromType(int);

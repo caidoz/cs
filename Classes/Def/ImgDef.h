@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_IMG_H_
 #define _DEF_IMG_H_

@@ -1,8 +1,8 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
-// Object �׸��� ����
+// Object 그리기 관련
 void GetMotionPtr(OBJECT* pObj)
 {
 	switch (pObj->cmf) {
@@ -47,7 +47,7 @@ void DrawObj(OBJECT* pObj)
 
 	if (obj < ITEMOBJ) {
 		if (pObj->zoom >= 2) {
-			//��ȭ
+			//석화
 		}
 
 		if (obj >= PLAYER && obj < PLAYERALL && pObj->dead == true && pObj->drawHandler != REGENDRAW)
@@ -68,7 +68,7 @@ void DrawObj(OBJECT* pObj)
 		if (pObj->debuf[STUN])
 			grayScale = 32;
 
-		//Ƽ��� ������ ������
+		//티어맷 검은색 입히기
 		if (pObj->type == ENEMY_BAHAMUT
 			|| pObj->type == ENEMY_BAHAMUT_RED
 			|| pObj->type == ENEMY_BAHAMUT_BLUE
@@ -132,7 +132,7 @@ void DrawObj(OBJECT* pObj)
 		break;
 	case CREWDRAW:
 
-		//���� �������� �ȵǾ� �ְų� ���ݹ��� ���¸�
+		//아직 레벨업이 안되어 있거나 공격받은 상태면
 		//if (pObj->curStar < pObj->maxStar || !pObj->maxStar)
 		//{
 		//	grayScale = 32;
@@ -283,7 +283,7 @@ void DrawObj(OBJECT* pObj)
 
 	if (obj < NEUTRAL) {
 
-		//�Ӽ� Ÿ��ȿ��
+		//속성 타격효과
 		if (pObj->attr && pObj->moveHandler < BULLET3WAYMOVE) {
 			int aType = pObj->attr % 10;
 			int aFrame = pObj->attr / 10;
@@ -310,7 +310,7 @@ void DrawObj(OBJECT* pObj)
 			UnSetBlend();
 		}
 
-		//����� ȿ��
+		//디버프 효과
 		i = 0;
 
 		do {
@@ -392,11 +392,11 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		//���� ��
 		magnify = ((type >> 6) + 1) * zoom;
 
-		//����
+		//방향
 		dirX = (dirF + type) % 2;
 
-		//������ ��
-//������ �������
+		//반투명 값
+//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
@@ -404,7 +404,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		if (!tempAlpha)
 			continue;
 
-		//����ư ȿ������ ����
+		//라이튼 효과인지 추출
 		if (type & 0x08)
 			pxl = 1;
 		else
@@ -632,7 +632,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 		}
 
-		//������� ����Ʈ
+		//기모으는 이펙트
 		if (imgFile == ROBIN_PART_IMG + ROBIN_IMG_WEAPON && motion >= PO_C0_A0 && motion <= PO_C0_A11 && concentrateMotion[pObj->concentrate]) {
 			SetAlpha(4 + pObj->concentrate);
 			DrawPlayer(pObj, (pObj->concentrate == 24 ? PO_C0_CONCENTRATE5 + robin.playtime % 3 : concentrateMotion[pObj->concentrate]) + ((motion >= PO_C0_A8) ? 8 : 0), x - DIR(dirF) * (*(cPtr + 1) * zoom * extra + imgOffsetX), imgOffsetY, dirF, zoom, false, false, false);
@@ -643,7 +643,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		i--;
 	} while (i > 0);
 
-	//��ǳ�� �׸���
+	//말풍선 그리기
 }
 
 void DrawPlayerIcon(int type, int x, int y, int zoom)
@@ -703,20 +703,20 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 		//���� ��
 		magnify = ((type >> 6) + 1) * zoom;
 
-		//����
+		//방향
 		dirX = (pObj->dirF + type) % 2;
 
-		//������ ��
-//������ �������
+		//반투명 값
+//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//���������� ���?�׸��ʿ� ����
+		//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占?占쌓몌옙占십울옙 占쏙옙占쏙옙
 		if (!tempAlpha) {
 		}
 		else {
-			//����ư ȿ������ ����
+			//라이튼 효과인지 추출
 			if (type & 0x08)
 				pxl = 1;
 			else
@@ -956,7 +956,7 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 			case ENEMY_CASTLE_BOSS4_GOLD:
 			case ENEMY_CASTLE_BOSS4_BLACK:
 
-				// �÷��̾� �ѹ��� �׸��� �հ����� �׸���
+				// 플레이어 한번더 그리고 손가락을 그린다
 				if (fixedImg == IMG_C51_39) {
 					DrawPlayer(&ao[NearPlayer(pObj)], ao[NearPlayer(pObj)].motion, ao[NearPlayer(pObj)].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (ao[raidPlayer].y - OBJIMGGAP) - ry, ao[NearPlayer(pObj)].dirF, ao[NearPlayer(pObj)].zoom, false, false, false);
 				}
@@ -1006,7 +1006,7 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 
 	const signed short* cPtr;
 
-	//cmf �� ������ 
+	//cmf 가 작으면 
 	if (cmf < TOTALCHAR) {
 		DrawPlayer(&ao[cmf], motion, x, y, ao[cmf].dirF, zoom, rotation, center, false);
 		return;
@@ -1037,21 +1037,21 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 		//���� ��
 		magnify = ((type >> 6) + 1) * zoom;
 
-		//����
+		//방향
 		dirX = (dirF + type) % 2;
 		//����Ʈ ����
 
-		//������ ��
-		//������ �������
+		//반투명 값
+		//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//���������� ���?�׸��ʿ� ����
+		//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占?占쌓몌옙占십울옙 占쏙옙占쏙옙
 		if (!tempAlpha) {
 		}
 		else {
-			//����ư ȿ������ ����
+			//라이튼 효과인지 추출
 			if (type & 0x08)
 				pxl = 1;
 			else
@@ -1120,7 +1120,7 @@ void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX
 
 	const signed short* cPtr;
 
-	//cmf �� ������ 
+	//cmf 가 작으면 
 	if (cmf < TOTALCHAR) {
 		DrawPlayer(&ao[cmf], motion, x, y, ao[cmf].dirF, zoom, rotation, center, false);
 		return;
@@ -1151,21 +1151,21 @@ void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX
 		//���� ��
 		magnify = ((type >> 6) + 1) * zoom;
 
-		//����
+		//방향
 		dirX = (dirF + type) % 2;
 		//����Ʈ ����
 
-		//������ ��
-		//������ �������
+		//반투명 값
+		//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
 
-		//���������� ���?�׸��ʿ� ����
+		//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占?占쌓몌옙占십울옙 占쏙옙占쏙옙
 		if (!tempAlpha) {
 		}
 		else {
-			//����ư ȿ������ ����
+			//라이튼 효과인지 추출
 			if (type & 0x08)
 				pxl = 1;
 			else
@@ -1359,7 +1359,7 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		}
 
 		switch (idx) {
-			//��Ÿ��ȿ�� ��ġ����
+			//강타격효과 위치보정
 		case 7:
 		case 9:
 		case 18:
@@ -1476,7 +1476,7 @@ void DrawNeutral(int idx, int x, int y, int dirF, float zoom)
 			//SetAlpha(tempAlpha);
 		}
 
-		//����ư ȿ������ ����
+		//라이튼 효과인지 추출
 		if (type & 0x08)
 			pxl = 1;
 		else
@@ -1644,11 +1644,11 @@ void DrawBgEffect(int idx, int x, int y, int dirF, float zoom)
 
 		magnify = ((type >> 6) + 1) * zoom;
 
-		//����
+		//방향
 		dirX = (dirF + type) % 2;
 
-		//������ ��
-		//������ �������
+		//반투명 값
+		//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
@@ -1755,11 +1755,11 @@ void DrawBgEffectDetail(int idx, int x, int y, int dirF, int res)
 
 		magnify = ((type >> 6) + 1);
 
-		//����
+		//방향
 		dirX = (dirF + type) % 2;
 
-		//������ ��
-		//������ �������
+		//반투명 값
+		//투명도 상대조절
 		if (type & 0x30) {
 			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
 		}
@@ -1850,7 +1850,7 @@ void PlayerDraw(OBJECT* pObj)
 		InitMotion(pObj);
 	}
 
-	//������ ȿ��
+	//레벨업 효과
 	if (pObj->levelUpFrame && pObj->levelUpFrame < 11)
 		DrawPlayer(pObj, 2000 - 1 + LEVELUP_BACK0 + pObj->levelUpFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, pObj->zoom, false, false, false);
 
@@ -1858,17 +1858,17 @@ void PlayerDraw(OBJECT* pObj)
 		DrawPlayer(pObj, 2000 - 1 + LEVELUP_BACK0 + pObj->statUpFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, pObj->zoom, false, false, false);
 
 	if (pObj->invincible / 2 % 2 == 0 || pObj->levelUpFrame == 0) {
-		//�¾����� �� ȿ��
+		//맞았을때 색 효과
 		if (pObj->attackedFrame)
 			SetBlend(Max(0, (pObj->attackedFrame - 2) << 2), 0xFF0000);
 
-		//�÷��̾�
+		//플레이어
 		DrawPlayer(pObj, pObj->motion, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, pObj->zoom, false, false, false);
 
 		UnSetBlend();
 	}
 
-	//�÷��̾� �տ� �׷����� ȿ��
+	//플레이어 앞에 그려지는 효과
 	tempMotion = pObj->motion;
 
 	if (!isDemo) {
@@ -1899,7 +1899,7 @@ void PlayerDraw(OBJECT* pObj)
 					else
 						bFrame = pObj->buff[i];
 
-					//��������
+					//반지버프
 					switch (i) {
 					default:
 						if (pObj->buff[i] % 6 != 5)
@@ -1926,7 +1926,7 @@ void PlayerDraw(OBJECT* pObj)
 		InitMotion(pObj);
 	}
 
-	//�ڼ� �ٴ� ȿ��
+	//자석 붙는 효과
 	if (pObj->canMagnet) {
 		if (pObj->magnet)
 			DrawEffect(MAGNET_ACTIVE0 + robin.playtime % 5, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
@@ -1934,28 +1934,28 @@ void PlayerDraw(OBJECT* pObj)
 			DrawEffect(MAGNET_DEACTIVE0 + robin.playtime % 12, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 	}
 
-	//�÷��̾� �ǰ�ȿ��
-	//�����ð�
+	//플레이어 피격효과
+	//무적시간
 	if (pObj->attackedFrame > ATTACKEDFRAME + 1)
 		DrawEffect(1000 + 10 - pObj->attackedFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
-	//����ȸ��ȿ��
+	//마나회복효과
 	if (pObj->mpRestore)
 		DrawEffect(EFFECT_RESTORE0 - 1 + pObj->mpRestore, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
-	//ü��ȸ��ȿ��
+	//체력회복효과
 	if (pObj->hpRestore)
 		DrawEffect(EFFECT_RESTORE0 - 1 + pObj->hpRestore, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
-	//�����̻� ȸ��ȿ��
+	//상태이상 회복효과
 	if (pObj->statusRestore)
 		DrawEffect(EFFECT_CURE0 - 1 + pObj->statusRestore, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
-	//�������� ȿ��
+	//마나흡수 효과
 	if (pObj->mpDrain)
 		DrawEffect(EFFECT_DRAIN0 - 1 + pObj->mpDrain, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
-	//ü�� ���� ȿ��
+	//체력 흡수 효과
 	if (pObj->hpDrain)
 		DrawEffect(EFFECT_CURE0 - 1 + pObj->hpDrain, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 
@@ -1966,7 +1966,7 @@ void PlayerDraw(OBJECT* pObj)
 
 	UnSetBlend();
 
-	//������ ȿ��
+	//레벨업 효과
 	if (pObj->levelUpFrame && pObj->levelUpFrame < 11)
 		DrawPlayer(pObj, 2000 - 1 + LEVELUP_FRONT0 + pObj->levelUpFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, pObj->zoom, false, false, false);
 	else if (pObj->statUpFrame && pObj->statUpFrame < 11)
@@ -1984,7 +1984,7 @@ void BulletLaserDraw(OBJECT* pObj)
 {
 	NormalDraw(pObj);
 
-	//�浹�� ���?
+	//占썸돌占쏙옙 占쏙옙占?
 	if (pObj->status) {
 		int xx = pObj->x - (float)(DIR(pObj->dirX) * TSIZE / 2) * pObj->zoom;
 		int yy = pObj->y - (float)(DIR(pObj->dirY) * TSIZE / 2) * pObj->zoom;
@@ -1998,7 +1998,7 @@ void BulletGuidedDraw(OBJECT* pObj)
 {
 	InitMotion(pObj);
 
-	//�̻��� �׷��ֱ�
+	//미사일 그려주기
 	DrawPlayer(pObj, pObj->motion, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, pObj->zoom, false, false, false);
 
 }
@@ -2009,7 +2009,7 @@ void BulletSateliteDraw(OBJECT* pObj)
 	int tempAlpha = m_lgrpAlpha;
 
 	if (pObj->frame > 24) {
-		//���� ������ /�׸���
+		//지상 레이저 /그리기
 		SetAlpha(24 - (32 - tempAlpha));
 		tempMotion = satelliteShotMotion[Min(24 + 36 * 3 + 36 * 3 - 1, pObj->frame - 24 + (24 + 36 * 3))];
 
@@ -2018,14 +2018,14 @@ void BulletSateliteDraw(OBJECT* pObj)
 
 		if (tempMotion >= PO_C1_SATLASER_SHOT5) {
 			//cc.bmp
-			//�ٴ��� �׷��ִ°�
+			//바닥을 그려주는것
 			//DrawImage(20 * _2X, 20 * _2X, 40 * _2X, 83 * _2X, xOffset + pObj->x - rx + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3]) * pObj->zoom * 2, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 1]) * pObj->zoom * 2) - ry, false, false, false, false, false, (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 2]) * pObj->zoom * 2, sprite[COMMON_CMF_IMG], cvtDest, cvtLayer, COMMON_CMF_IMG, buffering);
 		}
 
 		SetAlpha(tempAlpha);
 	}
 
-	//�������������� ������ ���?������ �׷��ִ� �κ�
+	//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占?占쏙옙占쏙옙占쏙옙 占쌓뤄옙占쌍댐옙 占싸븝옙
 
 	clipX3 = clipX;
 	clipY3 = clipY;
@@ -2433,7 +2433,7 @@ void VanishDraw(OBJECT* pObj)
 void RegenDraw(OBJECT* pObj)
 {
 	int obj = GetObjFromPtr(pObj);
-	//������ ó���� ����ſ����� 
+	//전투신 처음의 등장신에서는 
 	if (obj < SOLDIER + 1) {
 		//���⼭ �ĸ鿡 �׷��ִ� ����Ʈ�� ������ �׷��ְ�
 	}
@@ -2481,13 +2481,13 @@ void NeutralDraw(OBJECT* pObj)
 		DrawImage(TSIZE, TSIZE, (*maPtr - 1) % MAXTILE * TSIZE, (*maPtr - 1) / MAXTILE * TSIZE, xOffset - rx + (pObj->x + (float)(8 * _2X) * pObj->zoom) / TSIZE * TSIZE, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y / TSIZE * TSIZE), false, false, false, false, false, pObj->zoom, sprite[MAP_TILE_IMG + mapData[7]], MAP_TILE_IMG + mapData[7]);
 
 		if (pObj->mainFrame) {
-			//�ٴڸ���
+			//바닥먼지
 			DrawNeutral(OBJ_DOORDUST0 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), 0, pObj->zoom);
 			DrawNeutral(OBJ_DOORDUST0 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), 1, pObj->zoom);
 		}
 
 		if (pObj->jumpFrame) {
-			//�ٴڸ���
+			//바닥먼지
 			DrawNeutral(OBJ_DOORDUST7 - 1 + pObj->jumpFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)OBJIMGGAP * pObj->zoom), 0, pObj->zoom);
 			DrawNeutral(OBJ_DOORDUST7 - 1 + pObj->jumpFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)OBJIMGGAP * pObj->zoom), 1, pObj->zoom);
 		}
@@ -2510,7 +2510,7 @@ void NeutralDraw(OBJECT* pObj)
 			break;
 		}
 
-		// �����ð�(30������) �̻�Ǹ� �����̴ٰ� �����
+		// 일정시간(30초정도) 이상되면 깜빡이다가 사라짐
 		/*
 		if (pObj->mainFrame > 3000 && pObj->def < ITEM_QUEST) {
 
@@ -2581,15 +2581,15 @@ void NeutralDraw(OBJECT* pObj)
 		break;
 	case OBJ_MAGMA:
 		if (pObj->status) {
-			//���׸� �ߴܺκ�
+			//마그마 중단부분
 			for (i = 0; i < pObj->jumpFrame - 1; i++)
 				DrawNeutral(OBJ_MAGMA6, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)(i * 16 * _2X) * pObj->zoom), 0, pObj->zoom);
 
-			//���׸� �ϴܺκ�
+			//마그마 하단부분
 			DrawNeutral(OBJ_MAGMA0 + (robin.playtime % 3), xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y), 0, pObj->zoom);
 
 			if (pObj->jumpFrame)
-				//���׸� ��ܺκ�
+				//마그마 상단부분
 				DrawNeutral(OBJ_MAGMA3 + (robin.playtime % 3), xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - (float)(i * 16 * _2X) * pObj->zoom), 0, pObj->zoom);
 		}
 		break;
@@ -2654,17 +2654,17 @@ void NeutralDraw(OBJECT* pObj)
 	case OBJ_GOLD:
 		UnSetBlend();
 		switch (mapData[7]) {
-		case MAPTYPE_TOLEM:	//�緽���� �ٱ�//0
+		case MAPTYPE_TOLEM:	//톨렘마을 바깥//0
 			DrawImage(108 * _2X, 80 * _2X, 0 * _2X, 0 * _2X, xOffset + pObj->x - rx - (float)(6 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 6 * _2X) * pObj->zoom), false, false, false, false, false, pObj->zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
 			break;
-		case MAPTYPE_TOLEMINSIDE:	//�緽���� ����//1
+		case MAPTYPE_TOLEMINSIDE:	//톨렘마을 집안//1
 			break;
 		case MAPTYPE_SWAMP:	//�緹�� ����//2
 			DrawImage(108 * _2X, 80 * _2X, 0 * _2X, 0 * _2X, xOffset + pObj->x - rx - (float)(56 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 112 * _2X) * pObj->zoom), false, false, false, false, false, pObj->zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			DrawImage(66 * _2X, 32 * _2X, 0 * _2X, 80 * _2X, xOffset + pObj->x - rx - (float)(56 * _2X - 24 * _2X) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 32 * _2X) * pObj->zoom), false, false, false, false, false, pObj->zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 
-			//���
+			//골드
 			iconZoom = 0.7f;
 			for (i = 0; i < 4; i++) {
 				//gapX = treeGoldPos[2 * i + 0];
@@ -2672,7 +2672,7 @@ void NeutralDraw(OBJECT* pObj)
 
 				DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, xOffset + pObj->x - rx - (float)(56 * _2X) * pObj->zoom + gapX * pObj->zoom - (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 112 * _2X) * pObj->zoom) + gapY * pObj->zoom + (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, pObj->zoom * iconZoom, COLOR_WHITE, false, true, true);
 			}
-			//����
+			//골드백
 			iconZoom = 0.8f;
 			for (i = 0; i < 3; i++) {
 				//gapX = treeGoldBagPos[2 * i + 0];
@@ -2680,7 +2680,7 @@ void NeutralDraw(OBJECT* pObj)
 
 				DrawIcon(ICON_GOLDBAG, xOffset + pObj->x - rx - (float)(56 * _2X) * pObj->zoom + gapX * pObj->zoom - (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 112 * _2X) * pObj->zoom) + gapY * pObj->zoom + (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, pObj->zoom * iconZoom, COLOR_WHITE, false, true, true);
 			}
-			//����
+			//방패
 			iconZoom = 0.9f;
 			for (i = 0; i < 2; i++) {
 				//gapX = treeShieldPos[2 * i + 0];
@@ -2688,7 +2688,7 @@ void NeutralDraw(OBJECT* pObj)
 
 				DrawIcon(ICON_SHIELD, xOffset + pObj->x - rx - (float)(56 * _2X) * pObj->zoom + gapX * pObj->zoom - (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 112 * _2X) * pObj->zoom) + gapY * pObj->zoom + (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, pObj->zoom * iconZoom, COLOR_WHITE, false, true, true);
 			}
-			//��Ʈ
+			//하트
 			iconZoom = 1.0f + (float)(32 - Abs(frame % 32 - 16)) / 160;
 			for (i = 0; i < 1; i++) {
 				//gapX = treeHeartPos[2 * i + 0];
@@ -2697,33 +2697,33 @@ void NeutralDraw(OBJECT* pObj)
 				DrawIcon(ICON_HEART, xOffset + pObj->x - rx - (float)(56 * _2X) * pObj->zoom + gapX * pObj->zoom - (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y + (float)(-OBJIMGGAP - 112 * _2X) * pObj->zoom) + gapY * pObj->zoom + (float)ITEMICONSIZE * iconZoom * pObj->zoom / 2, pObj->zoom * iconZoom, COLOR_WHITE, false, true, true);
 			}
 			break;
-		case MAPTYPE_VALLEY:	//�ݴ��� ���//3
+		case MAPTYPE_VALLEY:	//금단의 계곡//3
 			break;
 		case MAPTYPE_ATLANTICE:	//��Ʋ��Ƽ��//4
 			break;
-		case MAPTYPE_SEWAGE:	//�Ƶ����� ���ϵ�//5
+		case MAPTYPE_SEWAGE:	//아델라인 지하도//5
 			break;
-		case MAPTYPE_CASTLE:	//�Ƶ����� ��//6
+		case MAPTYPE_CASTLE:	//아델라인 성//6
 			break;
-		case MAPTYPE_PLAIN:	//�Ƶ� ���?/7
+		case MAPTYPE_PLAIN:	//占싣듸옙 占쏙옙占?/7
 			break;
-		case MAPTYPE_ELF:	//���γ� ����//8
+		case MAPTYPE_ELF:	//벨로네 마을//8
 			break;
 		case MAPTYPE_FLAME:	//ȫ���� ����//9
 			break;
 		case MAPTYPE_FROST:	//������ ����//10
 			break;
-		case MAPTYPE_THUNDER:	//������ ����//11
+		case MAPTYPE_THUNDER:	//뇌전의 공방//11
 			break;
 		case MAPTYPE_LIGHT:	//Ȳȥ�� ����//12
 			break;
-		case MAPTYPE_GOLEMVALLEY:	//���� ����//13
+		case MAPTYPE_GOLEMVALLEY:	//골렘의 협곡//13
 			break;
 		case MAPTYPE_DARKNESS:	//ĥ���� �ɿ�//14
 			break;
-		case MAPTYPE_DRAGON:	//�巡���� ����//15
+		case MAPTYPE_DRAGON:	//드래곤의 무덤//15
 			break;
-		case MAPTYPE_GHOST:	//������ ��//16
+		case MAPTYPE_GHOST:	//금지된 땅//16
 			break;
 		case MAPTYPE_DEVILCASTLE:	//���ռ�//17
 			break;
@@ -2778,19 +2778,19 @@ void DrawShadowPlayer(OBJECT* pObj)
 	float tempZoom = pObj->zoom;
 	pObj->zoom = 1.0f;
 
-	//�׸��� ����� ���� ��� ������ �и���ų���ĸ� ����ѵ�
+	//그림자 사이즈에 따른 몇개의 파츠로 분리시킬꺼냐를 계산한뒤
 	for (i = (pObj->x - 12 * _2X) / TSIZE; i <= (pObj->x + 12 * _2X) / TSIZE; i++) {
-		//�� ��ġ�� ���� ������ �������鼭 �ٴ��̶� ������ ���� ����Ѵ�?
+		//占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占썽서 占쌕댐옙占싱띰옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙磯占?
 		for (j = pObj->y / TSIZE, tHeight = 0; j < rh - 1; j++) {
-			//�ٴ��̶� �������
+			//바닥이랑 닿았으면
 			if (mapInfoArray[mapInfoOff + j * rw + i] >= TILE_BLOCK || (pObj->inTile == GROUND && pObj->onWater > 0 && mapInfoArray[mapInfoOff + j * rw + i] >= TILE_WATER) || j == rh - 2) {
-				//�׸��� ��ü�� ���� ���� : (pObj->x - 12)
+				//그림자 전체의 좌측 경계면 : (pObj->x - 12)
 				//�׸��� ��ü�� ���� ���� : (pObj->x + 12)
-				//���� Ÿ���� ���� ���� : i * TSIZE;
+				//현재 타일의 좌측 경계면 : i * TSIZE;
 				//���� Ÿ���� ���� ���� : (i + 1) * TSIZE
-				//�׷����� ������ ���� ���� : max(pObj->x - 12, i * TSIZE)
+				//그려야할 지점의 좌측 경계면 : max(pObj->x - 12, i * TSIZE)
 				//�׷����� ������ ���� ���� : min(pObj->x + 12, (i + 1) * TSIZE)
-				//�׷��� �� �׸����� �� : min(pObj->x + 12, (i + 1) * TSIZE) - max(pObj->x - 12, i * TSIZE)
+				//그려야 할 그림자의 폭 : min(pObj->x + 12, (i + 1) * TSIZE) - max(pObj->x - 12, i * TSIZE)
 
 				sLeft = Max(pObj->x - 12 * _2X, i * TSIZE);
 				sRight = Min(pObj->x + 12 * _2X, (i + 1) * TSIZE);
@@ -2799,7 +2799,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 				if (j == rh - 2)
 					shadowTileY += 10000;
 
-				//���� ������Ʈ�� ����Ѵ�?
+				//占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트占쏙옙 占쏙옙占쏙옙磯占?
 				for (k = ENEMY, shadowBlockY = 20000, bHeight = 0; k < ITEMOBJ; k++) {
 					OBJECT* pCompare = &ao[k];
 					int compY = PxlUp(pCompare);
@@ -2813,7 +2813,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 					}
 				}
 
-				//����������Ʈ�� �׸��ڰ� �׷����� �ϴ� ���?
+				//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙트占쏙옙 占쌓몌옙占쌘곤옙 占쌓뤄옙占쏙옙占쏙옙 占싹댐옙 占쏙옙占?
 				if (shadowBlockY < shadowTileY) {
 					//����������Ʈ ���� ���� �׷��� �� �׸��� ���� ���� ���ٸ�
 					if (bcLeft == sLeft) {
@@ -2826,7 +2826,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 							ShadowImage(sRight - bcRight, 16 * _2X, offset + bcRight - sLeft, 0, xOffset + bcRight - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
 						}
 					}
-					//�ٸ��ٸ�
+					//다르다면
 					else {
 						//�켱 Ÿ���ʿ� ���ʺκ��� �ѹ� �׸���
 						pObj->nHeight = tHeight;
@@ -2837,7 +2837,7 @@ void DrawShadowPlayer(OBJECT* pObj)
 						ShadowImage(bcRight - bcLeft, 16 * _2X, offset + bcLeft - sLeft, 0, xOffset + bcLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowBlockY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
 					}
 				}
-				//Ÿ�Ͽ� �׷����� �ϴ� ���?
+				//타占싹울옙 占쌓뤄옙占쏙옙占쏙옙 占싹댐옙 占쏙옙占?
 				else if (shadowTileY < 10000) {
 					pObj->nHeight = tHeight;
 					ShadowImage(sRight - sLeft, 16 * _2X, offset, 0, xOffset + sLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
@@ -2862,7 +2862,7 @@ void DrawShadowCommon(OBJECT* pObj)
 	int sRight;
 	int obj = GetObjFromPtr(pObj);
 
-	//�׸��� ����� ���� ��� ������ �и���ų���ĸ� ����ѵ�
+	//그림자 사이즈에 따른 몇개의 파츠로 분리시킬꺼냐를 계산한뒤
 	sLeft = PxlLeft(pObj) - 4 * _2X;
 	sRight = PxlRight(pObj) + 4 * _2X;
 
@@ -2870,11 +2870,11 @@ void DrawShadowCommon(OBJECT* pObj)
 		return;
 
 	for (i = sLeft / TSIZE; i <= sRight / TSIZE; i++) {
-		//�� ��ġ�� ���� ������ �������鼭 �ٴ��̶� ������ ���� ����Ѵ�?
+		//占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占썽서 占쌕댐옙占싱띰옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙磯占?
 		pObj->nHeight = 0;
 
 		for (j = PxlDown(pObj) / TSIZE; j < rh - 1; j++) {
-			//�ٴ��̶� �������
+			//바닥이랑 닿았으면
 			if (mapInfoArray[mapInfoOff + j * rw + i] >= TILE_BLOCK) {
 				int y = j * TSIZE + ry - 14 * _2X;
 
@@ -2885,13 +2885,13 @@ void DrawShadowCommon(OBJECT* pObj)
 						y -= 3 * _2X;
 				}
 
-				//�׸��� ��ü�� ���� ���� : sLeft
+				//그림자 전체의 좌측 경계면 : sLeft
 				//�׸��� ��ü�� ���� ���� : sRight
-				//���� Ÿ���� ���� ���� : i * TSIZE;
+				//현재 타일의 좌측 경계면 : i * TSIZE;
 				//���� Ÿ���� ���� ���� : (i + 1) * TSIZE
-				//�׷����� ������ ���� ���� : max(sLeft, i * TSIZE)
+				//그려야할 지점의 좌측 경계면 : max(sLeft, i * TSIZE)
 				//�׷����� ������ ���� ���� : min(sRight, (i + 1) * TSIZE)
-				//�׷��� �� �׸����� �� : min(sRight, (i + 1) * TSIZE) - max(sLeft, i * TSIZE)
+				//그려야 할 그림자의 폭 : min(sRight, (i + 1) * TSIZE) - max(sLeft, i * TSIZE)
 				if (sLeft >= i * TSIZE)
 					//����
 					ShadowImage((i + 1) * TSIZE - sLeft, 16 * _2X, 24 * _2X, 0, xOffset + (float)sLeft - rx, (STATUSWIN_Y + (rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);

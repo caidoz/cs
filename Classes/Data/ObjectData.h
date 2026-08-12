@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_OBJECT_H_
@@ -2007,9 +2007,9 @@ const signed short levelUpMI[61 * 4] = {
 	IMG_C0_27, -10 * _2X, -19 * _2X, N00E2X1,	//60
 };
 
-//core.h´Â ¹Ýµå½Ã signed char·Î µé¾î°¡¾ß ÇÔ
+//core.hëŠ” ë°˜ë“œì‹œ signed charë¡œ ë“¤ì–´ê°€ì•¼ í•¨
 const signed short objectData[TOTAL_ADDOBJ * OBJDATA_SIZE] = {
-	//¸ð¼Ç, dx, dy, status, type, x, y, draw, move
+	//ëª¨ì…˜, dx, dy, status, type, x, y, draw, move
 	PO_C16_SHOT0, TSIZE >> 2 * _2X, 0 * _2X, 0, ENEMY_PHOENIX, 14 * _2X, -7 * _2X, ENEMYDRAW, BULLET3WAYMOVE,	//ADDOBJ_PHOENIX
 	PO_C12_SHOT0, TSIZE / 2, 0 * _2X, JUMP, ENEMY_SLING, 16 * _2X, -26 * _2X, ENEMYDRAW, SLINGMOVE,	//ADDOBJ_SLING,
 	PO_C14_SHOT0, 16 * _2X, -8 * _2X, -1, ENEMY_GIANT, 33 * _2X, -17 * _2X, ENEMYDRAW, BULLET3WAYMOVE,	//ADDOBJ_GIANT

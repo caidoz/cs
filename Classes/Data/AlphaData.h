@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include "../Def.h"
 
 #ifndef _ALPHA_DATA_H_
@@ -623,7 +623,7 @@ const unsigned char alphaData[TOTAL_ALPHA_OFF] = {
 
 
 const unsigned short alphaX[TOTALALPHA * 12] = {
-	//æÀ∆ƒ∫™ 26∞≥, COLON,SLA,PLUS,MINUS,STAR,POUND,PER,PAR_L,PAR_R,DOT
+	//ÏïåÌååÎ≤≥ 26Í∞ú, COLON,SLA,PLUS,MINUS,STAR,POUND,PER,PAR_L,PAR_R,DOT
 	//FONT_SMALL
 	0 * _2X, 6 * _2X, 12 * _2X, 18 * _2X, 24 * _2X, 30 * _2X, 36 * _2X, 42 * _2X, 48 * _2X, 53 * _2X, 59 * _2X, 65 * _2X, 71 * _2X, 78 * _2X, 84 * _2X, 90 * _2X, 96 * _2X, 102 * _2X, 108 * _2X, 114 * _2X, 121 * _2X, 127 * _2X, 134 * _2X, 141 * _2X, 148 * _2X, 155 * _2X, 161 * _2X, 164 * _2X, 168 * _2X, 175 * _2X, 182 * _2X, 189 * _2X, 196 * _2X, 201 * _2X, 205 * _2X, 209 * _2X, 212 * _2X,
 	6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 5 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 7 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 7 * _2X, 6 * _2X, 7 * _2X, 7 * _2X, 7 * _2X, 7 * _2X, 6 * _2X, 3 * _2X, 4 * _2X, 7 * _2X, 7 * _2X, 7 * _2X, 7 * _2X, 5 * _2X, 4 * _2X, 4 * _2X, 3 * _2X, 3 * _2X,
@@ -639,7 +639,7 @@ const unsigned short alphaX[TOTALALPHA * 12] = {
 };
 
 const signed short alpha2[TOTALALPHA * 6] = {
-	//¥ÎπÆ¿⁄ æÀ∆ƒ∫™ 26∞≥, PLUS, MINUS, DOT
+	//ÎåÄÎ¨∏Ïûê ÏïåÌååÎ≤≥ 26Í∞ú, PLUS, MINUS, DOT
 	//dx, dy, srcx, srcy, offsetx, offsety
 	//A
 	67, 82, 1, 97, 0, 0,
@@ -721,7 +721,7 @@ const signed short alpha2[TOTALALPHA * 6] = {
 const unsigned short goldAlphaInfo[TOTALALPHA * 6 * 2] = {
 	//dx, dy, srcx, srcy, offsetx, offsety,
 
-	//æÀ∆ƒ∫™ 26∞≥, COLON,SLA,PLUS,MINUS,STAR,POUND,PER,PAR_L,PAR_R,DOT
+	//ÏïåÌååÎ≤≥ 26Í∞ú, COLON,SLA,PLUS,MINUS,STAR,POUND,PER,PAR_L,PAR_R,DOT
 	//FONT_GOLD_SMALLf
 	50,  41,  47,  43,  35,  34,  43,  41,  18,  27,  46,  31,  55,  44,  48,  40,  51,  44,  37,  36,  38,  49,  72,  51,  44,  44,  18,  18,  31,  27,  58,  45,  19,  22,  22,  17,  16,
 	46,  46,  47,  46,  46,  46,  47,  46,  46,  46,  46,  46,  46,  46,  47,  46,  47,  46,  47,  46,  46,  46,  46,  46,  46,  46,  43,  24,  31,  16,  57,  45,  46,  58,  58,  17,  47,

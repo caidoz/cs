@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FUNC_INPUT_H_
 #define _FUNC_INPUT_H_
 // KeyPress
@@ -22,7 +22,7 @@ void ReleaseCore(bool dispatchKey = true);
 void PlayRelease(OBJECT *);
 void ReleasePlayer(OBJECT *);
 
-// Touch °ü·Ã
+// Touch ê´€ë ¨
 void TouchEndedPlayer(OBJECT*);
 int GetTouchFunc(int, int);
 void ExecTouchFunc(int, int);
@@ -37,7 +37,7 @@ void SetSwipePoint(int, int, int, int, int);
 void touchFunc(int func);
 void SaveFlag(int whitch);
 
-// JoyStick °ü·Ã
+// JoyStick ê´€ë ¨
 bool JoyStickPressGoldQuestPossible(void);
 bool JoyStickPressRaidPossible(void);
 bool JoyStickPressPossible(void);

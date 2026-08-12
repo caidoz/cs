@@ -1,18 +1,18 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_ROULETTE_H_
 #define _DATA_ROULETTE_H_
 
 const unsigned char rouletteAttackStr[] = {
-	1, 5, 10,     //ACTIONCARD_COIN = 0, //±âº»¾îÅÃ
+	1, 5, 10,     //ACTIONCARD_COIN = 0, //ê¸°ë³¸ì–´íƒ
 	1, 1, 1,      //ACTIONCARD_BOX
-	1, 2, 5,      //ACTIONCARD_ATTACK_CRITICAL, //Å©¸®Æ¼ÄÃÀº 150%, 200% µÎ°¡Áö°¡ Á¸Àç
-	1, 2, 5,      //ACTIONCARD_ATTACK_PIERCE, //°üÅëÀº 2, 3 ¸¶¸® µÎ°¡Áö°¡ Á¸Àç
-	1, 2, 5,      //ACTIONCARD_ATTACK_EXTRA, //Ãß°¡ °ø°ÝÀº 1¸¶¸® Ãß°¡, 2¸¶¸® Ãß°¡ °ø°Ý
-	1, 2, 5,      //ACTIONCARD_ATTACK_FIRE, //ºÒ¼Ó¼º°ø°Ý ±âº» ¼Ó¼ºµ¥¹ÌÁö 200%, 250% / ¾óÀ½¼Ó¼º ¸ó½ºÅÍ 300%, 350%
-	1, 2, 5,      //ACTIONCARD_ATTACK_FROST, //¾óÀ½¼Ó¼º°ø°Ý ±âº» ¼Ó¼ºµ¥¹ÌÁö 200%, 250% / È­¿°¼Ó¼º ¸ó½ºÅÍ 300%, 350%
-	1, 2, 5,      //ACTIONCARD_ATTACK_THUNDER, //¹ø°³¼Ó¼º°ø°Ý ±âº» ¼Ó¼ºµ¥¹ÌÁö 200%, 250% / ±â°è¼Ó¼º ¸ó½ºÅÍ 300%, 350%
+	1, 2, 5,      //ACTIONCARD_ATTACK_CRITICAL, //í¬ë¦¬í‹°ì»¬ì€ 150%, 200% ë‘ê°€ì§€ê°€ ì¡´ìž¬
+	1, 2, 5,      //ACTIONCARD_ATTACK_PIERCE, //ê´€í†µì€ 2, 3 ë§ˆë¦¬ ë‘ê°€ì§€ê°€ ì¡´ìž¬
+	1, 2, 5,      //ACTIONCARD_ATTACK_EXTRA, //ì¶”ê°€ ê³µê²©ì€ 1ë§ˆë¦¬ ì¶”ê°€, 2ë§ˆë¦¬ ì¶”ê°€ ê³µê²©
+	1, 2, 5,      //ACTIONCARD_ATTACK_FIRE, //ë¶ˆì†ì„±ê³µê²© ê¸°ë³¸ ì†ì„±ë°ë¯¸ì§€ 200%, 250% / ì–¼ìŒì†ì„± ëª¬ìŠ¤í„° 300%, 350%
+	1, 2, 5,      //ACTIONCARD_ATTACK_FROST, //ì–¼ìŒì†ì„±ê³µê²© ê¸°ë³¸ ì†ì„±ë°ë¯¸ì§€ 200%, 250% / í™”ì—¼ì†ì„± ëª¬ìŠ¤í„° 300%, 350%
+	1, 2, 5,      //ACTIONCARD_ATTACK_THUNDER, //ë²ˆê°œì†ì„±ê³µê²© ê¸°ë³¸ ì†ì„±ë°ë¯¸ì§€ 200%, 250% / ê¸°ê³„ì†ì„± ëª¬ìŠ¤í„° 300%, 350%
 	1, 2, 5,      //ACTIONCARD_ATTACK_HOLY
 	1, 2, 5,      //ACTIONCARD_ATTACK_DARK
 	1, 2, 5,      //ACTIONCARD_ATTACK_SLOW

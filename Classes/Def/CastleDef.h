@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_CASTLE_H_
 #define _DEF_CASTLE_H_

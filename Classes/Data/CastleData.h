@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../Def.h"
 
 #ifndef _CASTLE_DATA_H_
@@ -243,7 +243,7 @@ const int setEnemyPos[] = {
 	BATTLEPOSITION_ENEMY_X + (TSIZE + TSIZE / 3) * 2, TSIZE * 17,
 	BATTLEPOSITION_ENEMY_X + (TSIZE + TSIZE / 3) * 4, TSIZE * 17,
 
-	//CASTLE_ADELINE€
+	//CASTLE_ADELINEï¿½
 	BATTLEPOSITION_ENEMY_X, TSIZE * 17,
 	BATTLEPOSITION_ENEMY_X + (TSIZE + TSIZE / 3) * 2, TSIZE * 17,
 	BATTLEPOSITION_ENEMY_X + (TSIZE + TSIZE / 3) * 4, TSIZE * 17,
@@ -310,8 +310,8 @@ const int setEnemyPos[] = {
 
 };
 
-//¾Õ¿¡ ¼¼°³´Â È÷¾î·Î
-//³ª¸ÓÁö´Â 
+//ì•žì— ì„¸ê°œëŠ” ížˆì–´ë¡œ
+//ë‚˜ë¨¸ì§€ëŠ” 
 const int castleCrewPosition[] = {
 	//CASTLE_TOLEM
 	TSIZE * 4 - TSIZE / 2, TSIZE * 9,

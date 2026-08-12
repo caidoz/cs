@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #include "Core.h"
 
-// Battle °ü·Ã ÇÔ¼ö
+// Battle ê´€ë ¨ í•¨ìˆ˜
 void Play(void);
 void AttackSequenceDraw(void);
 void EnemySequenceDraw(void);

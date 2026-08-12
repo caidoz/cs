@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_FONT_H_
@@ -36,28 +36,28 @@ const unsigned short mediumNumData[10 * 4] = {
 
 #ifdef DMGINFOEFFECT
 const signed char dmgInfoData[5 * DMGNUMFRAME] = {
-	//Y¿Ãµø∆¯
+	//YÏù¥ÎèôÌè≠
 	//0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, -3 * _2X, -3 * _2X, -3 * _2X, -3 * _2X, 0 * _2X,
 	-8 * _2X, -4 * _2X, -2 * _2X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	//∆˘∆Æ ¡æ∑˘
+	//Ìè∞Ìä∏ Ï¢ÖÎ•ò
 	NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_LARGE_FORELIGHTEN, NUM_FONT_LARGE_BACKLIGHTEN, NUM_FONT_LARGE_BACKLIGHTEN2, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE,
 	//NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE, NUM_FONT_LARGE,
-	//≈ı∏Ìµµ
+	//Ìà¨Î™ÖÎèÑ
 	32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
 	//32, 32, 32, 32, 32, 26, 20, 14, 8,
 };
 #else
 const signed char dmgInfoData[3 * DMGNUMFRAME] = {
-	//Y¿Ãµø∆¯
+	//YÏù¥ÎèôÌè≠
 	//0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, -3 * _2X, -3 * _2X, -3 * _2X, -3 * _2X, 0 * _2X,
 	0, 0, 0, 0, -1, -1, -1, -1, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	//∆˘∆Æ ¡æ∑˘
+	//Ìè∞Ìä∏ Ï¢ÖÎ•ò
 	NUM_FONT_LARGE_FORELIGHTEN, NUM_FONT_LARGE_BACKLIGHTEN, NUM_FONT_LARGE_BACKLIGHTEN2, NUM_FONT_LARGE, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL,
 	NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL,
 	NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL, NUM_FONT_NORMAL,
-	//≈ı∏Ìµµ
+	//Ìà¨Î™ÖÎèÑ
 	32, 32, 32, 32, 32, 31, 30, 29, 28, 27,
 	26, 25, 24, 23, 22, 21, 20, 19, 18, 17,
 	16, 15, 14, 13, 12, 11, 10, 9, 8, 7,
@@ -65,7 +65,7 @@ const signed char dmgInfoData[3 * DMGNUMFRAME] = {
 
 #endif
 
-//æ∆¿Ã≈€ ƒ√∑Ø ≈◊¿Ã∫Ì
+//ÏïÑÏù¥ÌÖú Ïª¨Îü¨ ÌÖåÏù¥Î∏î
 const signed char itemColorText[6] = {
 	'b', 'e', 'd', 'i', 'g', 'h',
 };

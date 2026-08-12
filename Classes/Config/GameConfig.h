@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // =============================================================
 // AUTO GENERATED - DO NOT EDIT
 // Source : Definitions.xlsx
@@ -9,7 +9,7 @@
 typedef enum _gameConfig {
 	TOTALRAIDBOX = 4,
 
-	//���� ������ �ε��� ������
+	//상태 데이터 인덱스 디파인
 	STATUS_CHANGE_BEFORE = 0,
 	STATUS_CHANGE_AFTER,
 	STATUS_CHANGE_CONDITION,
@@ -20,7 +20,7 @@ typedef enum _gameConfig {
 
 	MAXSTATUS = 19,
 
-	//�ʱ�ȭ �÷��� ������
+	//초기화 플래그 디파인
 	SET_DIR_PLAYER = 64,
 	SET_DIR_RANDOM = 128,
 	SET_DIR_OPPOSITE = 192,
@@ -29,7 +29,7 @@ typedef enum _gameConfig {
 	SET_MAINFRAME_RANDOM12,
 	RECOVER_HP,
 
-	//���º��� ������ ����
+	//상태변경 조건의 유형
 	DISTANCE_CHECK_XY = 1,
 	DISTANCE_OUT_XY,
 	ATTACK_CHECK,
@@ -51,7 +51,7 @@ typedef enum _gameConfig {
 	LEFT_SIDE_UP,
 	RIGHT_SIDE_UP,
 
-	//���� ������ ����
+	//조건 데이터 유형
 	EQUAL_MAINFRAME = -1,
 
 	MOTIONDIV = 1,
@@ -66,22 +66,22 @@ typedef enum _gameConfig {
 	MAXHEROCREW = 2,
 
 
-	//������Ʈ
+	//오브젝트
 	OBJIMGGAP = 4 * _2X,
 
 #ifdef MOTIONCAPTURE
 	MAXPLAYER = 1,
 #else
 	//MAXPLAYER = 1,
-	MAXPLAYER = 3,//TOTALCMF,//�κ� ��Ƴ�, �ƽ�
+	MAXPLAYER = 3,//TOTALCMF,//로빈 디아나, 맥스
 #endif
 	MAXPLAYEROBJ = 10,
-	MAXENEMY = 50,//�ִ� �� ����
-	ONEWAVEENEMY = 1,//���̺�� 3
-	MAXENEMYOBJ = 5,//�� �Ѹ����� ����ϴ� �ִ� ������Ʈ��
+	MAXENEMY = 50,//최대 적 개수
+	ONEWAVEENEMY = 1,//웨이브당 3
+	MAXENEMYOBJ = 5,//적 한마리가 사용하는 최대 오브젝트수
 	MAXNEUTRAL = 20,
 	MAXITEMOBJ = 50,
-	MAXSOLDIER = 4,//�ϳ��� ����, �������� ����
+	MAXSOLDIER = 4,//하나는 무료, 나머지는 유료
 	STAGEENEMY = 1,
 	TOTALREEL = 3,
 
@@ -90,78 +90,78 @@ typedef enum _gameConfig {
 	TOTALMENUOPTION = 27,
 	CHARINFOPAGELINE = 10,
 
-	//�帣
-	//1.��ô
-	//2.���ͼ�ȯ
-	//3.����(����)
-	//4.����(���)
-	//5.����ν�ų(�κ�)
-	//6.����ν�ų��ȯ(��Ƴ�)
-	//7.����ν�ų��ȯ(�ƽ�)
-	CREW_BOY = 0,//����ô
-	CREW_GIRL,//����ô
-	CREW_GRANDMA,//��
-	CREW_GRANDFA,//�ڷ�������� ��ȯ
-	CREW_MAN,//��
-	CREW_WOMAN,//��
-	CREW_UNCLE,//��
-	CREW_AUNT,//��
-	CREW_SEAUNCLE,//�ڡ�
-	CREW_SEASOLDIER,//�ڡ�
-	CREW_MILESE,//�ڡ�
-	CREW_ALMA,//�ڡ�
-	CREW_CREW,//�ڡ�
-	CREW_TRAVEL,//�ڡ�
-	CREW_ELFBOY,//�ڡ�
-	CREW_ELFGIRL,//�ڡ�
-	CREW_ITEM,//�ڡ�
-	CREW_ELFUNCLE,//�ڡ�
-	CREW_ELFAUNT,//�ڡ�
-	CREW_ADELKNIGHT,//�ڡ�
-	CREW_OWL,//�ڡڡ�//�κ�ų(����ũ����)
-	CREW_MAID,//�ڡڡ�
-	CREW_BUNNYGIRL,//�ڡڡ�
-	CREW_MAP,//�ڡڡ�
-	CREW_MONICA,//�ڡڡ�
-	CREW_SEABOY,//�ڡڡ�
-	CREW_DOBEL,//�ڡڡ�
-	CREW_GAGEL,//�ڡڡ�
-	CREW_ELFGRANDFA,//�ڡڡ�
-	CREW_ELFWOMAN,//�ڡڡ�
-	CREW_ELFMAN,//�ڡڡ�
-	CREW_ELFDANCER,//�ڡڡ�
-	CREW_NOBLEMAN,//�ڡڡ�
-	CREW_SCHOLAR,//�ڡڡ�
-	CREW_NETITEM,//�ڡڡ�//��Ƴ���ų(�����̻���)
-	CREW_FATMAN,//�ڡڡڡ�
-	CREW_CRAFTMAN,//�ڡڡڡ�//�κ�ų(�ҿ�Ŭ����)
-	CREW_LUISE,//�ڡڡڡ�
-	CREW_DOG,//�ڡڡڡ�//�κ�ų(����������)
-	CREW_KNIGHT,//�ڡڡڡ�
-	CREW_WITCH,//�ڡڡڡ�//���� ��ȯ(1, 2, 3 �ܰ� �� �ٸ�)
-	CREW_BISTRO,//�ڡڡڡ�//
-	CREW_SEBASTIAN,//�ڡڡڡ�//�κ�ų(�ν�Ʈ������)
-	CREW_FISHING,//�ڡڡڡڡ�//
-	CREW_FRAUD,//�ڡڡڡڡ�
-	CREW_ELFMAGIC,//�ڡڡڡ�
-	CREW_DARIAN,//�ڡڡڡ�
-	CREW_DONALD,//�ڡڡڡ�//�κ�ų(�������)
-	CREW_ELFDARK,//�ڡڡڡ�//��Ƴ���ų(����)
-	CREW_NEZAR,//�ڡڡڡ�//��ȯ
-	CREW_DURAK,//�ڡڡڡ�
-	CREW_WOMANGHOST,//�ڡڡڡ�
-	CREW_MANGHOST,//�ڡڡڡ�
-	CREW_AUSTIN,//�ڡڡڡ�
-	CREW_ELEIN,//�ڡڡڡڡ�//�κ�ų(�ʻ쿬��)
-	CREW_USERQUEST,//�ڡڡڡ�//��Ƴ���ų(����������)//��Ʃ���
-	CREW_CHEF,//�ڡڡڡڡ�//
-	CREW_CAPTAIN,//�ڡڡڡڡ�//�ƽ���ų(�ް���Ʈ)
-	CREW_ELKEIN,//�ڡڡڡڡ�//CASTLEBOSS2 ��ȯ
-	CREW_DELPIOS,//�ڡڡڡڡ�//
-	CREW_LABETH,//�ڡڡڡڡ�//�󺣽� ��ų
-	CREW_EVAN,//�ڡڡڡڡڡ�//�κ�ų(�ʻ쿬��)
-	CREW_LORA,//�ڡڡڡڡڡ�//��Ʈ 1��, 2��, 5�� ȸ��.
-	CREW_KING,//�ڡڡڡڡڡ�//��ȯ(������ �������)
+	//장르
+	//1.투척
+	//2.몬스터소환
+	//3.버프(공격)
+	//4.버프(방어)
+	//5.히어로스킬(로빈)
+	//6.히어로스킬소환(디아나)
+	//7.히어로스킬소환(맥스)
+	CREW_BOY = 0,//★투척
+	CREW_GIRL,//★투척
+	CREW_GRANDMA,//★
+	CREW_GRANDFA,//★레드달팽이 소환
+	CREW_MAN,//★
+	CREW_WOMAN,//★
+	CREW_UNCLE,//★
+	CREW_AUNT,//★
+	CREW_SEAUNCLE,//★★
+	CREW_SEASOLDIER,//★★
+	CREW_MILESE,//★★
+	CREW_ALMA,//★★
+	CREW_CREW,//★★
+	CREW_TRAVEL,//★★
+	CREW_ELFBOY,//★★
+	CREW_ELFGIRL,//★★
+	CREW_ITEM,//★★
+	CREW_ELFUNCLE,//★★
+	CREW_ELFAUNT,//★★
+	CREW_ADELKNIGHT,//★★
+	CREW_OWL,//★★★//로빈스킬(에어크래쉬)
+	CREW_MAID,//★★★
+	CREW_BUNNYGIRL,//★★★
+	CREW_MAP,//★★★
+	CREW_MONICA,//★★★
+	CREW_SEABOY,//★★★
+	CREW_DOBEL,//★★★
+	CREW_GAGEL,//★★★
+	CREW_ELFGRANDFA,//★★★
+	CREW_ELFWOMAN,//★★★
+	CREW_ELFMAN,//★★★
+	CREW_ELFDANCER,//★★★
+	CREW_NOBLEMAN,//★★★
+	CREW_SCHOLAR,//★★★
+	CREW_NETITEM,//★★★//디아나스킬(유도미사일)
+	CREW_FATMAN,//★★★★
+	CREW_CRAFTMAN,//★★★★//로빈스킬(소울클래쉬)
+	CREW_LUISE,//★★★★
+	CREW_DOG,//★★★★//로빈스킬(하이퍼차지)
+	CREW_KNIGHT,//★★★★
+	CREW_WITCH,//★★★★//몬스터 소환(1, 2, 3 단계 다 다름)
+	CREW_BISTRO,//★★★★//
+	CREW_SEBASTIAN,//★★★★//로빈스킬(부스트슬래쉬)
+	CREW_FISHING,//★★★★★//
+	CREW_FRAUD,//★★★★★
+	CREW_ELFMAGIC,//★★★★
+	CREW_DARIAN,//★★★★
+	CREW_DONALD,//★★★★//로빈스킬(마구찌르기)
+	CREW_ELFDARK,//★★★★//디아나스킬(난사)
+	CREW_NEZAR,//★★★★//소환
+	CREW_DURAK,//★★★★
+	CREW_WOMANGHOST,//★★★★
+	CREW_MANGHOST,//★★★★
+	CREW_AUSTIN,//★★★★
+	CREW_ELEIN,//★★★★★//로빈스킬(필살연참)
+	CREW_USERQUEST,//★★★★//디아나스킬(위성레이저)//스튜어디스
+	CREW_CHEF,//★★★★★//
+	CREW_CAPTAIN,//★★★★★//맥스스킬(메가헌트)
+	CREW_ELKEIN,//★★★★★//CASTLEBOSS2 소환
+	CREW_DELPIOS,//★★★★★//
+	CREW_LABETH,//★★★★★//라베스 스킬
+	CREW_EVAN,//★★★★★★//로빈스킬(필살연참)
+	CREW_LORA,//★★★★★★//하트 1개, 2개, 5개 회득.
+	CREW_KING,//★★★★★★//소환(마왕의 레드버전)
 
 	TOTAL_CREW,
 
@@ -172,32 +172,32 @@ typedef enum _gameConfig {
 	TOTALCHAR,
 	TOTALPLAYER = TOTALCHAR,
 	PLAYER = ROBIN,
-	CREW = PLAYER + MAXPLAYER,//���� ���ʹ� 3��ĭ��
+	CREW = PLAYER + MAXPLAYER,//솔저 몬스터는 3번칸에
 	SOLDIER = CREW + MAXCREW,
 	PLAYERALL = CREW + MAXCREW + 1,//TOTALPLAYER
 	CASTLEALL = CREW + TOTAL_CREW,
-	ITEMBOX = SOLDIER + MAXENEMYOBJ,//�巡���� ��ȯ�ϴ� ���
-	NPC,//��ȭ�� �����ָ��÷��ʹ� NPC�� �̷��ֵ�
+	ITEMBOX = SOLDIER + MAXENEMYOBJ,//드래곤을 소환하는 경우
+	NPC,//대화나 구해주리플렉터는 NPC나 이런애들
 	BULLET,
 	ENEMYUSEROBJ = BULLET + MAXPLAYER * MAXPLAYEROBJ,
 	ENEMY,
-	NEUTRAL = ENEMY + MAXENEMY * MAXENEMYOBJ,//PVP�� �ϴ� ��� ������Ʈ
+	NEUTRAL = ENEMY + MAXENEMY * MAXENEMYOBJ,//PVP를 하는 대상 오브젝트
 	ITEMOBJ = NEUTRAL + MAXNEUTRAL,
 	TOTALOBJECT = ITEMOBJ + TOTAL_CREW + TOTALCHAR,
 
-	//��Ʈ�Ѹ�ũ
+	//컨트롤마크
 	TOTALCONTROLMARK = (TOTALCHAR + MAXCREW) * TOTALREEL,
-	//ī�帶ũ
+	//카드마크
 	TOTALCARDMARK = 20,
-	//��ų��ũ
+	//스킬마크
 	TOTALSKILLMARK = 20,
-	//���ũ
+	//장비마크
 	TOTALEQUIPMARK = 20,
-	//�����帶ũ
+	//리워드마크
 	TOTALREWARDMARK = 20,
-	//������ڸ�ũ
+	//보상상자마크
 	TOTALBOXMARK = 20,
-	//�����ĸ�ũ
+	//골드알파마크
 	TOTALGOLDALPHAMARK = 30,
 
 	TOTALBUBBLE = 41,
@@ -228,12 +228,12 @@ typedef enum _gameConfig {
 	GOLDRATIO = 10,
 	EQUIPGEMRATIO = 1,
 	STAGEGOLDRATIO = 10,
-	SOCKETGOLDRATIO = 50,	//���������� ��� �Ҹ����(���� ��� ���� * SOCKETGOLDRATIO)
-	ENCHANTGOLDRATIO = 8,	//��ȭ�� ��� �Ҹ����(������ ���� * ��ȭ���� / ENCHANTGOLDRATIO)
-	RECIPEGOLDRATIO = 2,	//���۽� ��� �Ҹ����(������ ���� / RECIPEGOLDRATIO)
+	SOCKETGOLDRATIO = 50,	//소켓장착시 골드 소모비율(보석 등급 비율 * SOCKETGOLDRATIO)
+	ENCHANTGOLDRATIO = 8,	//강화시 골드 소모비율(아이템 가격 * 강화레벨 / ENCHANTGOLDRATIO)
+	RECIPEGOLDRATIO = 2,	//제작시 골드 소모비율(아이템 가격 / RECIPEGOLDRATIO)
 
-	ENCHANTSUCCESSRATE = 80,//��ȭ���� Ȯ��(%)
-	ENCHANTITEMRATE = 12,	//��ȭ�� ������ : (������� * ��ȭ���� / ENCHANTITEMRATE)
+	ENCHANTSUCCESSRATE = 80,//강화성공 확률(%)
+	ENCHANTITEMRATE = 12,	//강화시 재료비율 : (제작재료 * 강화레벨 / ENCHANTITEMRATE)
 	RECIPEITEMRATE = 50,
 	MAXENCHANT = 50,
 	SOCKETPRICE = 10,

@@ -294,7 +294,7 @@ const signed long long levelUpReward[] = {
 	LVUPREWARD_DAILYQUEST, MAXLV, //4//Quick wins
 	LVUPREWARD_HEARTMAX, 40,//5//Number of throws
 
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_AIRCRASH,//6//Case départ
+	LVUPREWARD_GETSKILL, ROBIN_SKILL_AIRCRASH,//6//Case d챕part
 	LVUPREWARD_GETHERO, DIANA,//7//Rent targets 
 	LVUPREWARD_GETSKILL, DIANA_SKILL_3WAY,//8//Closing
 	LVUPREWARD_SHILED, 4,//9//Shields 
@@ -332,7 +332,7 @@ const signed long long levelUpReward[] = {
 
 	LVUPREWARD_HEART, 2000,//36
 	LVUPREWARD_HEARTMAX, 90,//37//Compagnie de Service Public
-	LVUPREWARD_GETSKILL, DIANA_SKILL_GUIDEDSHOT,//38//Rent //Case départ : Bonus when you pass the starting square +500K
+	LVUPREWARD_GETSKILL, DIANA_SKILL_GUIDEDSHOT,//38//Rent //Case d챕part : Bonus when you pass the starting square +500K
 	LVUPREWARD_HEART, 3000,//39
 	LVUPREWARD_HEARTPERHOUR, 9,//40
 

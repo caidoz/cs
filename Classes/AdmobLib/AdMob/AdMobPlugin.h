@@ -1,4 +1,4 @@
-//
+﻿//
 //  AdMobPlugin.hpp
 //  AdmobTest
 //

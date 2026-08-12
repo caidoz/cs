@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _DEF_TOUCHKEY_H_
 #define _DEF_TOUCHKEY_H_
 
 typedef enum _touchFuncDef {
 
-	BOSSRAID_ROYALFAMILY = 0,	//·Î¾âÆÐ¹Ð¸®
+	BOSSRAID_ROYALFAMILY = 0,	//ë¡œì–„íŒ¨ë°€ë¦¬
 
 	TOTALBOSSRAID,
 
@@ -13,14 +13,14 @@ typedef enum _touchFuncDef {
 
 
 	//TOUCH_MODE
-	TOUCH_OK = 1,        //¾îµô´©¸£µçÁö ok¹öÆ°À¸·Î, (°æ°íÃ¢, È®ÀÎÃ¢ µî)
-	TOUCH_TITLE,        //¸ÞÀÎÈ­¸é ÅÍÄ¡
-	TOUCH_TITLEMENU,	//Å¸ÀÌÆ²¸Þ´º ÅÍÄ¡
-	TOUCH_TITLE_HELP,    //µµ¿ò¸» ÅÍÄ¡
-	TOUCH_LOAD,            //loadµÈ Ä³¸¯ÅÍ ¼±ÅÃÈ­¸é
-	TOUCH_NEW,            //»õ·Î¿î Ä³¸¯ÅÍ ¼±ÅÃÈ­¸é
-	TOUCH_YESNO,        //YesNo¼±ÅÃÈ­¸é
-	TOUCH_GAMEMENU,        //°ÔÀÓ¸Þ´ºÃ¢(4¹æÇâ ¹× ¼±ÅÃ)
+	TOUCH_OK = 1,        //ì–´ë”œëˆ„ë¥´ë“ ì§€ okë²„íŠ¼ìœ¼ë¡œ, (ê²½ê³ ì°½, í™•ì¸ì°½ ë“±)
+	TOUCH_TITLE,        //ë©”ì¸í™”ë©´ í„°ì¹˜
+	TOUCH_TITLEMENU,	//íƒ€ì´í‹€ë©”ë‰´ í„°ì¹˜
+	TOUCH_TITLE_HELP,    //ë„ì›€ë§ í„°ì¹˜
+	TOUCH_LOAD,            //loadëœ ìºë¦­í„° ì„ íƒí™”ë©´
+	TOUCH_NEW,            //ìƒˆë¡œìš´ ìºë¦­í„° ì„ íƒí™”ë©´
+	TOUCH_YESNO,        //YesNoì„ íƒí™”ë©´
+	TOUCH_GAMEMENU,        //ê²Œìž„ë©”ë‰´ì°½(4ë°©í–¥ ë° ì„ íƒ)
 	TOUCH_PLAY,
 	TOUCH_GIFT,
 	TOUCH_GAMEOVER,
@@ -33,7 +33,7 @@ typedef enum _touchFuncDef {
 	TOUCH_GXG,
 #endif
 
-	//#ifdef EXPVERSION        //¹«·áÃ¼ÇèÆÇ TOUCH Ver. ÀÏ °æ¿ì »ç¿ë
+	//#ifdef EXPVERSION        //ë¬´ë£Œì²´í—˜íŒ TOUCH Ver. ì¼ ê²½ìš° ì‚¬ìš©
 	TOUCH_EXP,
 
 	TOUCHBUTTON_1 = 0,
@@ -57,9 +57,9 @@ typedef enum _touchFuncDef {
 	HOTKEY_NOTHING = 0,
 	HOTKEY_SKILL,
 	HOTKEY_ITEM,
-	HOTKEY_STATUE,//»óÀ» ÀåÂøÇßÀ» °æ¿ìf
-	HOTKEY_RING,//¹ÝÁö¸¦ ÀåÂøÇßÀ» °æ¿ì
-	HOTKEY_SCREEN,	//½ºÅ©¸°¼¦ ¾ÆÀÌÄÜ
+	HOTKEY_STATUE,//ìƒì„ ìž¥ì°©í–ˆì„ ê²½ìš°f
+	HOTKEY_RING,//ë°˜ì§€ë¥¼ ìž¥ì°©í–ˆì„ ê²½ìš°
+	HOTKEY_SCREEN,	//ìŠ¤í¬ë¦°ìƒ· ì•„ì´ì½˜
 
 	TOUCH_FUNC_OPENING = 0,
 	TOUCH_FUNC_TITLE,
@@ -71,13 +71,13 @@ typedef enum _touchFuncDef {
 
 	TOUCH_FUNC_TITLE_NEWGAME,
 
-	TOUCH_FUNC_PLAY,//ÇÃ·¹ÀÌ//MENU_PLAY
-	TOUCH_FUNC_COLLECTIONS,//ÄÃ·º¼Ç//MENU_HERO
+	TOUCH_FUNC_PLAY,//í”Œë ˆì´//MENU_PLAY
+	TOUCH_FUNC_COLLECTIONS,//ì»¬ë ‰ì…˜//MENU_HERO
 	TOUCH_FUNC_FRIENDS,////MENU_CREW
-	TOUCH_FUNC_SHOP,//»óÁ¡//MENU_COLLECTIONS
-	TOUCH_FUNC_STARSHOP,//½ºÅ¸»óÁ¡//MENU_SHOP
-	TOUCH_FUNC_NEWS,//´º½º
-	TOUCH_FUNC_GIFTS,//¼±¹°
+	TOUCH_FUNC_SHOP,//ìƒì //MENU_COLLECTIONS
+	TOUCH_FUNC_STARSHOP,//ìŠ¤íƒ€ìƒì //MENU_SHOP
+	TOUCH_FUNC_NEWS,//ë‰´ìŠ¤
+	TOUCH_FUNC_GIFTS,//ì„ ë¬¼
 	TOUCH_FUNC_LEADERBOARD,//
 	TOUCH_FUNC_INVITEFRIENDS,//
 	TOUCH_FUNC_CALENDAR,//
@@ -116,7 +116,7 @@ typedef enum _touchFuncDef {
 
 	TOUCH_FUNC_CREW_DETAIL = TOUCH_FUNC_HOUSE_CREWREWARD + MAXCREW,
 
-	TOUCH_FUNC_CREW_REWARD = TOUCH_FUNC_CREW_DETAIL + TOTAL_CREW,//°¡Ã­¹öÆ°
+	TOUCH_FUNC_CREW_REWARD = TOUCH_FUNC_CREW_DETAIL + TOTAL_CREW,//ê°€ì± ë²„íŠ¼
 
 	TOUCH_FUNC_OPTION_BGM = TOUCH_FUNC_CREW_REWARD + TOTAL_CREW,
 	TOUCH_FUNC_OPTION_SE,
@@ -154,7 +154,7 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_GAMEMENU_MAIL,
 	TOUCH_FUNC_GAMEMENU_SETTING,
 
-	TOUCH_FUNC_GAMEMENU_NEWS_CLR,//°ÔÀÓ¸Þ´ºÈ­¸é¿¡¼­ Å¬¸®¾îÅ°¸¦ ´­·¶À» ¶§
+	TOUCH_FUNC_GAMEMENU_NEWS_CLR,//ê²Œìž„ë©”ë‰´í™”ë©´ì—ì„œ í´ë¦¬ì–´í‚¤ë¥¼ ëˆŒë €ì„ ë•Œ
 	TOUCH_FUNC_GAMEMENU_RANKING_CLR,
 	TOUCH_FUNC_GAMEMENU_MAIL_CLR,
 	TOUCH_FUNC_GAMEMENU_SETTING_CLR,
@@ -174,9 +174,9 @@ typedef enum _touchFuncDef {
 
 	TOUCH_FUNC_ITEM_UPGRADE,
 	TOUCH_FUNC_ITEM_HAMMER,
-	TOUCH_FUNC_EQUIP_INVENTORY,//±×³É ÀÎº¥Åä¸®
+	TOUCH_FUNC_EQUIP_INVENTORY,//ê·¸ëƒ¥ ì¸ë²¤í† ë¦¬
 
-	TOUCH_FUNC_SKILL_UPGRADE = TOUCH_FUNC_EQUIP_INVENTORY + TOTALINVENTORY,//±×³É ÀÎº¥Åä¸®
+	TOUCH_FUNC_SKILL_UPGRADE = TOUCH_FUNC_EQUIP_INVENTORY + TOTALINVENTORY,//ê·¸ëƒ¥ ì¸ë²¤í† ë¦¬
 
 	TOUCH_FUNC_INGAME_AUTO,
 	TOUCH_FUNC_INGAME_AUTOOFF,
@@ -371,7 +371,7 @@ typedef enum _voiceDef {
 } VOICEDEF;
 
 typedef enum _touchKeyDef {
-	//Å°¹öÆ° ¸ÅÇÎ
+	//í‚¤ë²„íŠ¼ ë§¤í•‘
 	AVK_0 = 1,// = MC_KEY_0,
 	AVK_1,// = MC_KEY_1,
 	AVK_2,// = MC_KEY_2,
@@ -446,7 +446,7 @@ typedef enum _touchKeyDef {
 
 	AVK_GOTODEMO,
 	AVK_GOTOPLAY,
-	AVK_GOTOGACHA,//»Ì±âÈ­¸éÀ¸·Î ÀÌµ¿ 
+	AVK_GOTOGACHA,//ë½‘ê¸°í™”ë©´ìœ¼ë¡œ ì´ë™ 
 	AVK_GOTOBOSSRAID,
 	AVK_GOTOBATTLE,
 	AVK_GOTONEWCARD,
@@ -604,7 +604,7 @@ typedef enum _touchKeyDef {
 	AVK_ITEMEQUIP,
 	AVK_ERASESOCKET,
 	AVK_EQUIPSLOT,
-	AVK_EQUIP_INVENTORY = AVK_EQUIPSLOT + TOTALEQUIP,//±×³É ÀÎº¥Åä¸®
+	AVK_EQUIP_INVENTORY = AVK_EQUIPSLOT + TOTALEQUIP,//ê·¸ëƒ¥ ì¸ë²¤í† ë¦¬
 	AVK_SELLITEM = AVK_EQUIP_INVENTORY + TOTALINVENTORY,
 	AVK_ENCHANTSLOT,
 

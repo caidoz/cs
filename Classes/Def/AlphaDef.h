@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_ALPHA_H_
 #define _DEF_ALPHA_H_

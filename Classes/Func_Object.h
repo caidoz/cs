@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _FUNC_OBJECT_H_
 #define _FUNC_OBJECT_H_
 
-// Object ±×¸®±â °ü·Ã
+// Object ê·¸ë¦¬ê¸° ê´€ë ¨
 void GetMotionPtr(OBJECT* pObj);
 void EraseCmf(OBJECT *);
 void DrawObj(OBJECT *);

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 // =============================================================
 // AUTO GENERATED - DO NOT EDIT
 // Source : Definitions.xlsx
@@ -8,14 +8,14 @@
 
 
 // ---
-#define EPOCH_YR                   1970                     // Unix ¿¡Æ÷Å© ±âÁØ ¿¬µµ
-#define YEAR0                      1900                     // tm_year ±âÁØ ¿¬µµ
-#define SECS_DAY                   (24L * 60L * 60L)        // ÇÏ·ç ÃÊ ¼ö
+#define EPOCH_YR                   1970                     // Unix ì—í¬í¬ ê¸°ì¤€ ì—°ë„
+#define YEAR0                      1900                     // tm_year ê¸°ì¤€ ì—°ë„
+#define SECS_DAY                   (24L * 60L * 60L)        // í•˜ë£¨ ì´ˆ ìˆ˜
 
 // ---
-#define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400))) // À±³â ÆÇº°
-#define YEARSIZE(year) (LEAPYEAR(year) ? 366 : 365) // ¿¬µµ ÀÏ¼ö
-#define FIRSTSUNDAY(timp) (((timp)->tm_yday - (timp)->tm_wday + 420) % 7) // Ã¹ ¹øÂ° ÀÏ¿äÀÏ
-#define FIRSTDAYOF(timp) (((timp)->tm_wday - (timp)->tm_yday + 420) % 7) // Ã¹ ¹øÂ° ¿äÀÏ
+#define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400))) // ìœ¤ë…„ íŒë³„
+#define YEARSIZE(year) (LEAPYEAR(year) ? 366 : 365) // ì—°ë„ ì¼ìˆ˜
+#define FIRSTSUNDAY(timp) (((timp)->tm_yday - (timp)->tm_wday + 420) % 7) // ì²« ë²ˆì§¸ ì¼ìš”ì¼
+#define FIRSTDAYOF(timp) (((timp)->tm_wday - (timp)->tm_yday + 420) % 7) // ì²« ë²ˆì§¸ ìš”ì¼
 
 // ---

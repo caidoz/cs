@@ -1,24 +1,24 @@
-#pragma once
+ï»¿#pragma once
 #include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
 
-// Menu & UI °ü·Ã ÇÔ¼ö
-//´º½º µå·Î¿ì
+// Menu & UI ê´€ë ¨ í•¨ìˆ˜
+//ë‰´ìŠ¤ ë“œë¡œìš°
 void NewsDraw(int x, int y, float zoom)
 {
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
-//¼±¹°ÇÔ µå·Î¿ì
+//ì„ ë¬¼í•¨ ë“œë¡œìš°
 void GiftDraw(int x, int y, float zoom)
 {
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
 
-//Ä£±¸¿ÍÀÇ ÀüÅõ µå·Î¿ì
+//ì¹œêµ¬ì™€ì˜ ì „íˆ¬ ë“œë¡œìš°
 void GuildEventDraw(int x, int y, float zoom)
 {
 	int i, j, tempIdx, mul = 1;
@@ -31,21 +31,21 @@ void GuildEventDraw(int x, int y, float zoom)
 	switch (menuDepth) {
 
 	case 0:
-		//¿©±â¼­´Â ±×³É ¸®½ºÆ®¸¦ ±×·ÁÁØ´Ù.
-		//ÇÏ·ç¿¡ ¼¼°¡Áö
+		//ì—¬ê¸°ì„œëŠ” ê·¸ëƒ¥ ë¦¬ìŠ¤íŠ¸ë¥¼ ê·¸ë ¤ì¤€ë‹¤.
+		//í•˜ë£¨ì— ì„¸ê°€ì§€
 		for (i = 0; i < 3; i++) {
 			MemRectRound(x + (float)(32 * _2X) * zoom, y - (float)(48 * _2X + 80 * _2X * i) * zoom, (float)(256 * _2X) * zoom, (float)(72 * _2X) * zoom, COLOR_BROWN, 2);
 
 			//DrawFrame(x + (float)32 * _2X * zoom, y - (float)(48 * _2X + 80 * _2X * i) * zoom, (float)256 * _2X * zoom, (float)72 * _2X * zoom, COLOR_LIGHTBROWN, )
 		}
 	case 1:
-		//¿©±â¼­ °¢Á¾ È¹µæ ÀÌÆåÆ®¸¦ ±×·ÁÁØ´Ù.
+		//ì—¬ê¸°ì„œ ê°ì¢… íšë“ ì´í™íŠ¸ë¥¼ ê·¸ë ¤ì¤€ë‹¤.
 
 		break;
 	}
 
 
-	//ÇöÀç µ¥ÀÏ¸® ÀÌº¥Æ®±îÁö ³²´Â ½Ã°£
+	//í˜„ì¬ ë°ì¼ë¦¬ ì´ë²¤íŠ¸ê¹Œì§€ ë‚¨ëŠ” ì‹œê°„
 	DrawTime(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y + (float)(-440 * _2X) * zoom, Max(0, 86400 - (MC_knlCurrentTimeStamp() - robin.calendarTimeStamp)), TIME_HOUR_MINUTE, CENTER, zoom);
 
 
@@ -71,8 +71,8 @@ void DailyQuestDraw(int x, int y, float zoom)
 	switch (menuDepth) {
 
 	case 0:
-		//¿©±â¼­´Â ±×³É ¸®½ºÆ®¸¦ ±×·ÁÁØ´Ù.
-		//ÇÏ·ç¿¡ ¼¼°¡Áö
+		//ì—¬ê¸°ì„œëŠ” ê·¸ëƒ¥ ë¦¬ìŠ¤íŠ¸ë¥¼ ê·¸ë ¤ì¤€ë‹¤.
+		//í•˜ë£¨ì— ì„¸ê°€ì§€
 		for (i = 0; i < 3; i++) {
 			//for (i = 0; i < TOTAL_DAILYQUEST_TYPE; i++) {
 			MemRectRound(x + (float)(20 * _2X) * zoom, y - (float)(64 * _2X + 72 * _2X * i) * zoom, (float)(280 * _2X) * zoom, (float)(64 * _2X) * zoom, COLOR_BEIGE, 2 * _2X);
@@ -80,9 +80,9 @@ void DailyQuestDraw(int x, int y, float zoom)
 			dailyQuestType = i;
 
 			switch (i) {
-				//»óÀÚ¸¦ ¿­¾î¼­ Àåºñ¸¦ ¾ò¾î¶ó
+				//ìƒìë¥¼ ì—´ì–´ì„œ ì¥ë¹„ë¥¼ ì–»ì–´ë¼
 			case DAILYQUEST_OPEN_BOX_GETEQUIP:
-				//»óÀÚ¸¦ ¿©¼¼¿ä
+				//ìƒìë¥¼ ì—¬ì„¸ìš”
 				DrawNeutral(OBJ_BOX0 + boxOpenAnimation[((frame / (MOTIONDIV * 2)) % 20)], x + (float)(20 * _2X + 32 * _2X) * zoom, y - (float)(64 * _2X + 60 * _2X + 72 * _2X * i) * zoom, LEFT, 2.0f * zoom);
 				if (frame / (MOTIONDIV) % 40 > 16/* && ((frame / (MOTIONDIV * 2)) % 20) < 16*/) {
 					boxOpenFrame = ((frame / (MOTIONDIV)) % 40) - 16;
@@ -92,7 +92,7 @@ void DailyQuestDraw(int x, int y, float zoom)
 				}
 
 				break;
-				//±¹°æ¼öºñ´ë¸¦ ¾÷±×·¹ÀÌµå¸¦ ÇØ¶ó
+				//êµ­ê²½ìˆ˜ë¹„ëŒ€ë¥¼ ì—…ê·¸ë ˆì´ë“œë¥¼ í•´ë¼
 			case DAILYQUEST_UPGRADE_CREW:
 				ao[NPC].x = x + (float)(28 * _2X + 24 * _2X) * zoom;
 				ao[NPC].y = y - (float)(52 * _2X * NPCZOOM + 72 * _2X * i) * zoom - (float)(8 * _2X + 24 * _2X) * NPCZOOM * zoom;
@@ -101,7 +101,7 @@ void DailyQuestDraw(int x, int y, float zoom)
 
 				DrawCmfDetailShadow(enemyData[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[enemyData[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF]], ao[NPC].x, ao[NPC].y, RIGHT, enemyIconZoom[crewData[(robin.stage * MAXCREW + MAXCREW - 1) * CREWDATASIZE]] * NPCZOOM * zoom);
 				break;
-				//´Ù¸¥ À¯Àú¸¦ °ø°İÇØ¶ó
+				//ë‹¤ë¥¸ ìœ ì €ë¥¼ ê³µê²©í•´ë¼
 			case DAILYQUEST_ATTACK_OTHERUSER:
 				EnemyUserProfileDraw(&enemyHouse, x + (float)(20 * _2X + 28 * _2X - 20 * _2X) * zoom, y - (float)(58 * _2X + 72 * _2X * i) * zoom, zoom);
 				break;
@@ -124,13 +124,13 @@ void DailyQuestDraw(int x, int y, float zoom)
 			DrawRewardCard(i, i, i, false, 1, x + (float)(20 * _2X + 28 * _2X + 204 * _2X) * zoom, y - (float)(64 * _2X + 4 * _2X + 72 * _2X * i) * zoom, false, zoom, true, false, true, GetItemStar(i, i, i), GetItemStar(i, i, i), true, 0);
 		}
 	case 1:
-		//¿©±â¼­ °¢Á¾ È¹µæ ÀÌÆåÆ®¸¦ ±×·ÁÁØ´Ù.
+		//ì—¬ê¸°ì„œ ê°ì¢… íšë“ ì´í™íŠ¸ë¥¼ ê·¸ë ¤ì¤€ë‹¤.
 
 		break;
 	}
 
 
-	//ÇöÀç µ¥ÀÏ¸® ÀÌº¥Æ®±îÁö ³²´Â ½Ã°£
+	//í˜„ì¬ ë°ì¼ë¦¬ ì´ë²¤íŠ¸ê¹Œì§€ ë‚¨ëŠ” ì‹œê°„
 	DrawTime(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y + (float)(-440 * _2X) * zoom, Max(0, 86400 - (MC_knlCurrentTimeStamp() - robin.calendarTimeStamp)), TIME_HOUR_MINUTE, CENTER, zoom);
 
 }
@@ -159,7 +159,7 @@ void ShopDraw_Back(int x, int y)
 	}
 }
 
-//º° µå·Î¿ì
+//ë³„ ë“œë¡œìš°
 void StarShopDraw(int x, int y)
 {
 	DrawCmfPopUp(CMF_NPC_USERQUEST, TEXT_MENU_STARSHOP, x, y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, DX - 120 * _2X, 6, 1, 1.0f);
@@ -233,7 +233,7 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 	float plusX = (float)(12 * _2X) * zoom;
 	float plusY = (float)(-52 * _2X) * zoom;
 	const signed short* usPtr;
-	//È÷¾î·Î ½ºÅÈÀ» ±×·ÁÁØ´Ù.
+	//íˆì–´ë¡œ ìŠ¤íƒ¯ì„ ê·¸ë ¤ì¤€ë‹¤.
 	//DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 
 	//DrawPlayer(pObj, PO_C0_N0 + (frame / 2 / MOTIONDIV % 4), x + (float)32 * _2X * zoom, y - (float)54 * _2X * zoom, RIGHT, zoom * 2.0f, false, false, true, cvtDest, cvtLayer, buffering);
@@ -278,13 +278,13 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 	DrawFrame(x + (float)32 * _2X * zoom, y + plusY - (float)35 * _2X * zoom, (float)(POPUPWINDOWSIZE_X - 64 * _2X) * zoom, (float)120 * _2X * zoom, FRAME_NOFRAME);
 
 	//DrawText()
-	//HP, MP, EXP ºÎºĞ
+	//HP, MP, EXP ë¶€ë¶„
 	//hp
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s  %lld  /  %lld", textId[TEXT_ALPHA_HP], pObj->hp, pObj->ps[PS_HP]);
 	DrawTextStr(tempStr, x + (float)40 * _2X * zoom, y + plusY - (float)40 * _2X * zoom, zoom);
 
-	//ÃÑ °ø°İ¼öÄ¡
+	//ì´ ê³µê²©ìˆ˜ì¹˜
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s  %lld  -  %lld", textId[TEXT_ALPHA_DAMAGE], RoundDiv(pObj->ps[PS_DMG] * (100 - weaponRange[pObj->equip[EQUIP_WEAPON].type]), 100), RoundDiv(pObj->ps[PS_DMG] * (100 + weaponRange[pObj->equip[EQUIP_WEAPON].type]), 100));
 	DrawTextStr(tempStr, x + (float)40 * _2X * zoom, y + plusY - (float)55 * _2X * zoom, zoom);
@@ -316,7 +316,7 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 
 	DrawTextStr(textId[TEXT_ATTRREGIST], x + (float)40 * _2X * zoom, y + plusY - (float)115 * _2X * zoom, 1.2f * zoom);
 
-	//ÀúÇ×µµ
+	//ì €í•­ë„
 	for (i = 5 - 1; i >= 0; i--) {
 		DrawArray(IMG_FLAME + i, x + (float)(40 * _2X + 48 * _2X * i) * zoom, y + plusY - (float)134 * _2X * zoom, 2.0f * zoom);
 		DrawNum(pObj->ps[PS_FIRE + i], x + (float)(40 * _2X + 24 * _2X + 48 * _2X * i) * zoom, y + plusY - (float)136 * _2X * zoom, NUM_FONT_NORMAL, LEFT, false, false, true, zoom, false);
@@ -337,7 +337,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 {
 	int i, j;
 	float width;
-	//°¸ÀÌ ¸¶ÀÌ³Ê½º¸é ÇöÀç ÀåÂøÁßÀÎ°Ô ÁÁÀº°Å´Ù
+	//ê°­ì´ ë§ˆì´ë„ˆìŠ¤ë©´ í˜„ì¬ ì¥ì°©ì¤‘ì¸ê²Œ ì¢‹ì€ê±°ë‹¤
 	long long combatPowerGap = CompareCombatPower(&robin.newItem, &ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]]);
 
 	int arrowDirY = DOWN;
@@ -347,9 +347,9 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 
 	//DrawFrame(x, y, (float)ITEMDETAILWINDOWSIZE_X * zoom, (float)(ITEMDETAILWINDOWSIZE_Y) * zoom, FRAME_NORMAL, cvtDest, cvtLayer, buffering);
 	
-	//equipped°¡ true¸é ÀåÂøÁß, false¸é 
+	//equippedê°€ trueë©´ ì¥ì°©ì¤‘, falseë©´ 
 	switch (it->type) {
-		//Àåºñ
+		//ì¥ë¹„
 	default:
 		DrawItemCard(
 			it->type,
@@ -371,7 +371,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(it->type, it->detail, it->grade), FRAME_GREEN, zoom / CARDDEFAULTZOOM);
 
 		break;
-		//µ¿·á
+		//ë™ë£Œ
 	case ITEM_CREW:
 		int crewType = crewData[it->detail * CREWDATASIZE + CREWDATA_TYPE];
 		int crewDetail = it->detail;
@@ -432,7 +432,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		/*
 		DrawImageScale(128, 128, 716, 609, x, y, false, false, false, false, false, 4.75f * zoom, 1.65f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 
-		//Ä³¸¯ÅÍ
+		//ìºë¦­í„°
 		DrawImageScale(128, 128, 587, 737, x + (float)8 * zoom, y - (float)8 * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 		
 		int crewType = crewData[it->detail * CREWDATASIZE + CREWDATA_TYPE];
@@ -453,7 +453,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, crewGrade), FRAME_GREEN, zoom, cvtDest, cvtLayer, buffering);
 		*/
 
-		//·ê·¿ÆÇ
+		//ë£°ë ›íŒ
 		DrawImageScale(128, 128, 587, 737, x + (float)8 * zoom, y - (float)240 * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 		for (i = 0; i < 3; i++) {
@@ -468,7 +468,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			DrawSkillIcon(skillIcon, x + (float)300 * zoom, y - (float)(240 + i * 60) * zoom, 2.0f * zoom);
 
 		}
-		//·¹º§¾÷
+		//ë ˆë²¨ì—…
 		DrawImageScale(128, 128, 587, 737, x + (float)8 * zoom, y - (float)240 * 2 * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 
@@ -506,7 +506,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 
 	DrawItemIcon(it, &ao[PLAYER], x + (float)(8 * _2X) * zoom, y - (float)8 * _2X * zoom, zoom * LOBBYZOOM);
 
-	//¼ÒÄÏÀÌ ÀÖ´Â ¾ÆÀÌÅÛÀÌ¶ó¸é
+	//ì†Œì¼“ì´ ìˆëŠ” ì•„ì´í…œì´ë¼ë©´
 	//if (it->type <= ITEM_RING && it->count > 0) {
 	//	DrawAlpha(x + (float)48 * _2X * zoom, y - (float)5 * _2X * zoom, ALPHA_SOCKET, FONT_SMALL, zoom, false, cvtDest, cvtLayer, buffering);
 	//	for (i = 0; i < it->count; i++)
@@ -526,7 +526,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 	//SetFontColor(COLOR_)
 	DrawTextStrSystem(tempStr, x + (float)44 * _2X * zoom, y - (float)28 * _2X * zoom, 0.8f * zoom, LEFT, false);
 
-	//ÀåºñÀÎ °æ¿ì
+	//ì¥ë¹„ì¸ ê²½ìš°
 	if (it->type <= ITEM_RING || it->type == ITEM_RECIPE) {
 		int itemType = it->type;
 
@@ -534,7 +534,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			itemType = it->detail >> 3;
 		}
 
-		//Á¾·ù
+		//ì¢…ë¥˜
 		width = GetAlphaWidth(ALPHA_SWORD + itemType, FONT_SMALL, zoom);
 		//SetBlend(12, 0x0000FF);
 		DrawAlpha(x + (float)(44 * _2X) * zoom, y - (float)6 * _2X * zoom, ALPHA_SWORD + itemType, FONT_SMALL, zoom, false);
@@ -542,7 +542,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 
 		DrawTextStr(textId[TEXT_DEFAULTSTAT], x + (float)12 * _2X * zoom, y - (float)52 * _2X * zoom, zoom);
 
-		//°ø°İ/¹æ¾î·Â/È¿°ú ÅØ½ºÆ®
+		//ê³µê²©/ë°©ì–´ë ¥/íš¨ê³¼ í…ìŠ¤íŠ¸
 		//MemRectFrame(x + (float)4 * _2X * zoom, y - (float)75 * _2X * zoom, (float)168 * _2X * zoom, (float)15 * _2X * zoom, 0x9BA9BD, cvtDest, cvtLayer, buffering);
 
 		//if (itemType != ITEM_RING)
@@ -569,7 +569,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			//DrawTextStr(textId[itemValueTypeText[it->type]], x + (float)64 * _2X * zoom, y - (float)52 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 			//DrawTextStr(dmgStr, x + (float)100 * _2X * zoom, y - (float)52 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 			/*
-			//°­È­·¹º§
+			//ê°•í™”ë ˆë²¨
 			SetBlend(8, 0xEFA536);
 			DrawAlpha(x + (float)115 * _2X * zoom, y - (float)79 * _2X * zoom, ALPHA_ENCHANT, FONT_SMALL, zoom, false, cvtDest, cvtLayer, buffering);
 			UnSetBlend();
@@ -617,14 +617,14 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 	else if (it->type == ITEM_GEM) {
 		MemRectFrame(x + (float)4 * _2X * zoom, y - (float)60 * _2X * zoom, (float)168 * _2X * zoom, (float)13 * _2X * zoom, 0x9BA9BD);
 
-		//Á¾·ù
+		//ì¢…ë¥˜
 		width = GetAlphaWidth(ALPHA_GEM, FONT_SMALL, zoom);
 
 		SetBlend(12, 0x0000FF);
 		DrawAlpha(x + (float)169 * _2X * zoom - width, y - (float)63 * _2X * zoom, ALPHA_GEM, FONT_SMALL, zoom, false);
 		UnSetBlend();
 
-		//°ø°İ/¹æ¾î·Â/È¿°ú ÅØ½ºÆ®
+		//ê³µê²©/ë°©ì–´ë ¥/íš¨ê³¼ í…ìŠ¤íŠ¸
 		MemRectFrame(x + (float)4 * _2X * zoom, y - (float)75 * _2X * zoom, (float)168 * _2X * zoom, (float)15 * _2X * zoom, 0x9BA9BD);
 		DrawAlpha(x + (float)7 * _2X * zoom, y - (float)79 * _2X * zoom, ALPHA_OPTION, FONT_SMALL, zoom, false);
 		DrawTextStr(optionStr[0], x + (float)43 * _2X * zoom, y - (float)76 * _2X * zoom, zoom);
@@ -640,7 +640,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 	ItemOptionDraw(it, x + (float)(64 * _2X) * zoom, y - (float)(72 * _2X * zoom), zoom, equipped);
 	if (equipped == false && onlyInfo == false)
 		ItemOptionCompareDraw(it, &ao[PLAYER].equip[itemEquipSlot[it->type]], x + (float)(200 * _2X) * zoom, y - (float)(72 * _2X * zoom), zoom);
-	//ÀåÂø, ±³Ã¼ ¹öÆ°
+	//ì¥ì°©, êµì²´ ë²„íŠ¼
 	if (equipped == false && onlyInfo == false) {
 		DrawTouchLargeButton(x + (float)(8 * _2X) * zoom, y - (float)(ITEMDETAILWINDOWSIZE_Y - 36 * _2X) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_DISASSEMBLE], TOUCH_FUNC_DISASSEMBLE_NEWITEM, FRAME_RED, zoom);
 		DrawTouchLargeButton(x + (float)(196 * _2X) * zoom, y - (float)(ITEMDETAILWINDOWSIZE_Y - 36 * _2X) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_NEWITEM, FRAME_GREEN, zoom);
@@ -648,7 +648,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		//if (CompareCombatPower(it, &ao[PLAYER].equip[itemEquipSlot[it->type]]) < 0) {
 		//	ResetRectPoint();
 		//	ScreenDarken(SCREENDARKEN);
-		//	//°æ°í
+		//	//ê²½ê³ 
 		//	DrawFrame(DX / 2, DY / 2, (float)160 * _2X * zoom, (float)160 * _2X * zoom, FRAME_ANIINFO, cvtDest, cvtLayer, buffering);
 
 		//	DrawTouchLargeButton(x + (float)(32 * _2X) * zoom, DY / 2 - (float)(160 * _2X - 36 * _2X) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_CANCEL], TOUCH_FUNC_DISASSEMBLE_NEWITEM, FRAME_RED, zoom, cvtDest, cvtLayer, buffering);
@@ -691,7 +691,7 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 	int i, rt = 1, count, require;
 
 	if (it->type <= ITEM_RING) {
-		//¿É¼Ç
+		//ì˜µì…˜
 		count = y;
 
 		for (i = 0; i < 12; i++) {
@@ -719,7 +719,7 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 		}
 
 		if (it->type < ITEM_GEM) {
-			//¼¼Æ®¾ÆÀÌÅÛÀÎ °æ¿ì ¼¼Æ®È¿°ú¸¦ º¸¿©ÁØ´Ù.
+			//ì„¸íŠ¸ì•„ì´í…œì¸ ê²½ìš° ì„¸íŠ¸íš¨ê³¼ë¥¼ ë³´ì—¬ì¤€ë‹¤.
 			if (it->grade == GRADE_SET) {
 				const int* ucPtr = &setOption[(it->set % 100) * SETOPTIONDATASIZE];
 
@@ -747,11 +747,11 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 				if (count != y)
 					y += 5;
 
-				//°­È­Àç·á »ó¼¼³»¿ë
+				//ê°•í™”ì¬ë£Œ ìƒì„¸ë‚´ìš©
 				for (i = 0; i < 2; i++) {
 					unsigned char *eData = &d.enchantData[(it->type * 40 + d.itemDataOrder[(it->detail * 6 + it->grade)]) * ENCHANTDATASIZE + i * 2];
 
-					//¾ÆÀÌÄÜ ¹× ¿ä±¸°¹¼ö
+					//ì•„ì´ì½˜ ë° ìš”êµ¬ê°¯ìˆ˜
 					require = UpDiv((it->cooldown + 1) * *(eData + 1), ENCHANTITEMRATE);
 					count = GetItemCount(ITEM_IRON + *eData / 50, *eData % 50, 0);
 
@@ -766,17 +766,17 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 					grayScale = 0;
 					UnSetBlend();
 
-					//À¯Àú°¡ ¼ÒÁöÇÑ °³¼ö°¡ Á¦ÀÛÇÏ±â ÃæºĞÇÑÁö Ã¼Å©ÇÏ°í »ç¿ëÀÚ°¡ °¡Áö°í ÀÖ´Â °¹¼ö¸¸Å­À» ºÎÃ¤²Ã·Î º¸¿©ÁØ´Ù.
+					//ìœ ì €ê°€ ì†Œì§€í•œ ê°œìˆ˜ê°€ ì œì‘í•˜ê¸° ì¶©ë¶„í•œì§€ ì²´í¬í•˜ê³  ì‚¬ìš©ìê°€ ê°€ì§€ê³  ìˆëŠ” ê°¯ìˆ˜ë§Œí¼ì„ ë¶€ì±„ê¼´ë¡œ ë³´ì—¬ì¤€ë‹¤.
 					if (count < require) {
 						DrawCycle(x + 40, y + 15 + i * 18, 16, 16, 4 + require - count, 4 + require);
 						rt = 0;
 					}
 
-					//¾ÆÀÌÅÛ ÀÌ¸§
+					//ì•„ì´í…œ ì´ë¦„
 					DrawText(TEXT_ITEMNAME_START + GetItemName(ITEM_IRON + *eData / 50, *eData % 50, 0), x + 60, y + 17 + i * 18);
 				}
 
-				//°­È­Àç·á
+				//ê°•í™”ì¬ë£Œ
 				SetFontColor(rt == 0 ? 0xFF0000 : 0x00FF00);
 				CenterText(TEXT_ENCHANT_STUFF, x + 82, y);
 			}
@@ -784,7 +784,7 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 		}
 	}
 	else if (it->type == ITEM_RECIPE) {
-		//±âº»Àç·á »ó¼¼³»¿ë
+		//ê¸°ë³¸ì¬ë£Œ ìƒì„¸ë‚´ìš©
 		if (GetItemCount(it->type, it->detail, it->grade) == 0) {
 			grayScale = 20;
 			SetBlend(6, 0xFF0000);
@@ -826,7 +826,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 	if (eventIdx != -1)
 		discount = robin.gameEvent[eventIdx].value;
 
-	//ÀÎº¥Åä¸®¿¡¼­ ½½·ÔÀ» Ã£´Â´Ù.
+	//ì¸ë²¤í† ë¦¬ì—ì„œ ìŠ¬ë¡¯ì„ ì°¾ëŠ”ë‹¤.
 	itemIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
 	itemIcon = GetItemIcon(itemType, itemDetail, itemGrade);
 	itemLv = GetItemLv(itemType, itemDetail, itemGrade);
@@ -839,7 +839,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 	case 0:
 	case 1:
 	case 2:
-		//ÀÌÀü´Ü°è
+		//ì´ì „ë‹¨ê³„
 		//TouchArrow2(2, x + 0 * _2X, y + 0, DY / 2, cvtDest, cvtLayer, buffering);
 
 		if (winAniFrame > 0) {
@@ -852,7 +852,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 		}
 
 
-		//ÇöÀç´Ü°è
+		//í˜„ì¬ë‹¨ê³„
 		DrawPlayerCostume(
 			pObj->type,
 			pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].detail : -1, pObj->equip[EQUIP_WEAPON].type != EMPTY ? pObj->equip[EQUIP_WEAPON].grade : 0,
@@ -895,8 +895,8 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 		}
 
 		DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x + (float)(DX / 2 - REWARDCARDSIZE_X) * zoom, y + (float)(DY / 2 + 148 * _2X) * zoom, true, (float)2 * zoom, true, false, true, itemLv, ITEMMAXLEVEL, true, 0);
-		//°³º° ÀåÂøÀÌ µÇÁö ¾Ê´Â´Ù¸é
-		//¸¸¾à ÀåÂøÀÌ µÇ¾î ÀÖÁö ¾ÊÀ¸¸é
+		//ê°œë³„ ì¥ì°©ì´ ë˜ì§€ ì•ŠëŠ”ë‹¤ë©´
+		//ë§Œì•½ ì¥ì°©ì´ ë˜ì–´ ìˆì§€ ì•Šìœ¼ë©´
 		if (GetEquipSlot(itemType, itemDetail, itemGrade) == -1) {
 			DrawTextButton(x + (float)(DX / 2 - 40 * _2X) * zoom, y + (float)(DY / 2 + 148 * _2X - REWARDCARDSIZE_Y * 2 - 8 * _2X) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, 0, false, zoom, false, TEXT_EQUIP);
 			SetRectPoint(x + (float)(DX / 2 - 40 * _2X) * zoom, y + (float)(DY / 2 + 148 * _2X - REWARDCARDSIZE_Y * 2 - 8 * _2X) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, TOUCH_FUNC_EQUIP_INVENTORY + itemStartCnt[itemType] + itemDetail * TOTALGRADE + itemGrade);
@@ -905,7 +905,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			DrawTextButton(x + (float)(DX / 2 - 40 * _2X) * zoom, y + (float)(DY / 2 + 148 * _2X - REWARDCARDSIZE_Y * 2 - 8 * _2X) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, 0, 32, zoom, false, TEXT_SOCKETING);
 
 
-		//°ñµå / °ñµå¹é / ÇÏÆ® / Äù½ºÆ® ¾ÆÀÌÅÛ
+		//ê³¨ë“œ / ê³¨ë“œë°± / í•˜íŠ¸ / í€˜ìŠ¤íŠ¸ ì•„ì´í…œ
 		switch (itemType) {
 		default:
 			DrawItemValue(it->type, it->detail, it->grade, it->cooldown, x + (float)(DX / 2) * zoom, y + (float)(DY / 2 - 10 * _2X - ITEMICONSIZE) * zoom, CENTER, false, zoom, 128 * _2X * zoom);
@@ -932,11 +932,11 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			LineText(TEXT_TIP_MENU_BOOTS, x + (float)(DX / 2 - 136 * _2X + 12 * _2X) * zoom, y + (float)(DY / 2 - 64 * _2X) * zoom, (float)(272 * _2X - 8 * _2X) * zoom, zoom);
 			break;
 		}
-		//ÀåÂøÇÑ ¸ğ½ÀÀ» º¸¿©ÁÖ°í,
+		//ì¥ì°©í•œ ëª¨ìŠµì„ ë³´ì—¬ì£¼ê³ ,
 
-		//¾÷±×·¹ÀÌµå
-		//¿ŞÂÊÀÌ °­È­ÇÏ±â
-		//¿À¸¥ÂÊÀÌ ÀåÂøÇÏ±â
+		//ì—…ê·¸ë ˆì´ë“œ
+		//ì™¼ìª½ì´ ê°•í™”í•˜ê¸°
+		//ì˜¤ë¥¸ìª½ì´ ì¥ì°©í•˜ê¸°
 		//
 
 		for (i = 0; i < 1; i++) {
@@ -947,7 +947,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 				DrawFrame(x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP) * zoom, (float)(128 * _2X) * zoom, (float)(32 * _2X) * zoom, FRAME_CHOICEBUTTON);
 			}
 			switch (i) {
-				//°­È­ÇÏ±â
+				//ê°•í™”í•˜ê¸°
 			case 0:
 				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i - 20 * _2X + 24 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP + 8 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom);
 				DrawNeutral(EFFECT_CRAFT0 + (menuX == 0 ? (frame / 2) % 3 : 0), x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i + 24 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP - 20 * _2X) * zoom, 0, zoom);
@@ -958,7 +958,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 
 				//DrawTextStr(tempStr, x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i + 60 * _2X + 128 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 14 * _2X + YGAP) * zoom, zoom, cvtDest, cvtLayer, buffering);
 				break;
-				//ÁøÈ­ÇÏ±âTEXT_HAMMER
+				//ì§„í™”í•˜ê¸°TEXT_HAMMER
 			case 1:
 				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i - 20 * _2X + 24 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP + 8 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom);
 				DrawCmfDetail(CMF_NPC_HEART, PO_C122_HEART, x + (float)(DX / 2 - 132 * _2X + 134 * _2X * i + 24 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 4 * _2X + YGAP - 20 * _2X) * zoom, LEFT, zoom, false, false);
@@ -975,20 +975,20 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			CARDZOOM = 0.45f;
 
 			if (itemLv < collectionLvLimit[collectionIdx]) {
-				//ÇöÀç ·¹º§°ú µ¥¹ÌÁö
+				//í˜„ì¬ ë ˆë²¨ê³¼ ë°ë¯¸ì§€
 
 				DrawStar(ICON_STAR, +(float)(DX / 2 - 132 * _2X + 42 * _2X + 11 * _2X * 2) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X - 10 * _2X + YGAP - 2 * _2X * 2) * zoom, itemLv, ITEMMAXLEVEL, ITEMMAXLEVEL, CENTER, true, zoom);
 
 				DrawStar(ICON_STAR, x + (float)(DX / 2 - 132 * _2X + 42 * _2X + 11 * _2X * 2 + 140 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X - 10 * _2X + YGAP - 2 * _2X * 2) * zoom, itemLv + 1, ITEMMAXLEVEL, ITEMMAXLEVEL, CENTER, true, zoom);
 
-				//¾÷±×·¹ÀÌµå È­»ìÇ¥
+				//ì—…ê·¸ë ˆì´ë“œ í™”ì‚´í‘œ
 				SetAlpha(32 - Abs(frame % 32 - 16));
 				DrawImage(18 * _2X, 14 * _2X, 58 * _2X, 174 * _2X, x + (float)(DX / 2 - 12 * _2X) * zoom, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X - 8 * _2X + YGAP) * zoom, true, false, false, false, false, (float)1.5f * zoom, sprite[COMMON_IMG], COMMON_IMG);
 				SetAlpha(32);
 
-				//¾÷±×·¹ÀÌµå º¸»ó
+				//ì—…ê·¸ë ˆì´ë“œ ë³´ìƒ
 
-				//¾÷±×·¹ÀÌµå ÈÄ µ¥¹ÌÁö
+				//ì—…ê·¸ë ˆì´ë“œ í›„ ë°ë¯¸ì§€
 				DrawBuyButton(x + (float)(DX / 2) * zoom - ((float)BUYBUTTON_X * zoom) / 2, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X - (MINDY_MIN - 240 * _2X - 4 * _2X - 32 * _2X) + 28 * _2X + 8 * _2X - 32 * _2X - 8 * _2X) * zoom, (float)BUYBUTTON_X * zoom, (float)(BUYBUTTON_Y)*zoom, frame, robin.hammer >= GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv) ? 0 : 32, GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv), CURRENCY_HAMMER, zoom, false, false, false);
 				if (robin.hammer >= GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv)) {
 					SetRectPoint(x + (float)(DX / 2) * zoom - ((float)BUYBUTTON_X * zoom) / 2, y + (float)(DY / 2 + MINDY_MIN / 2 - 240 * _2X - 32 * _2X - (MINDY_MIN - 240 * _2X - 4 * _2X - 32 * _2X) + 28 * _2X + 8 * _2X - 32 * _2X - 8 * _2X) * zoom, (float)BUYBUTTON_X * zoom, (float)(BUYBUTTON_Y)*zoom, TOUCH_FUNC_ITEM_UPGRADE);
@@ -1097,7 +1097,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 					SetAlpha(32);
 
 					if (menuFrame == FPS - 1) {
-						//°ñµå Â÷°¨
+						//ê³¨ë“œ ì°¨ê°
 						robin.hammer -= GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv);
 						AddBar(&bar[BAR_HAMMER], -GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv), BARFRAME);
 
@@ -1118,7 +1118,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 					}
 
 				}
-				//Äá±×·¹Åø·¹ÀÌ¼Ç½º!
+				//ì½©ê·¸ë ˆíˆ´ë ˆì´ì…˜ìŠ¤!
 				else {
 					if (itemType == ITEM_CREW) {
 						curStar = maxStar = crewData[itemDetail * CREWDATASIZE + CREWDATASIZE - 1] + 1;
@@ -1146,7 +1146,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 			case 1:
 				effect.color = COLOR_BLACK;
 
-				//ÁøÈ­ ¾Ö´Ï¸ŞÀÌ¼Ç
+				//ì§„í™” ì• ë‹ˆë©”ì´ì…˜
 				if (menuFrame < 10 * 3 + 10 * 2 + 10 * 1 + 5 * 2 + 8 * 2 + 8 * 2 * 2) {
 
 					width = ITEMHAMMERCNT * (ROULETTECARDSIZE_X + 8 * _2X);
@@ -1163,8 +1163,8 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 					}
 				}
 
-				//0: Ä«µå°¡ 
-				//´Ù¼¸°³ÀÇ Ä«µå°¡ ÇÏ³ª·Î ÇÕÃÄÁö°í		
+				//0: ì¹´ë“œê°€ 
+				//ë‹¤ì„¯ê°œì˜ ì¹´ë“œê°€ í•˜ë‚˜ë¡œ í•©ì³ì§€ê³ 		
 				if (menuFrame < 10 * 3 + 10 * 2 + 10 * 1 + 5 * 2 + 8 * 2 + 8 * 2 * 2 + FPS / 2) {
 
 					//55 - 41 + 2
@@ -1204,17 +1204,17 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 						DrawSubText(textId[TEXT_ENCHANTING], 0, menuFrame % 7, x + DX / 2 - StringWidth(textId[TEXT_ENCHANTING], 1.0f) / 2, y - EQUIP_WIN_HEIGHT + 272 * _2X - 216 * _2X - 4 * _2X, 1.0f);
 
 					if (menuFrame == 21 * 2 - 1) {
-						//Á¶ÇÕ¼® Â÷°¨
+						//ì¡°í•©ì„ ì°¨ê°
 						robin.star -= itemEvolutionItem[itemDetail * TOTALGRADE * (ITEMMAXLEVEL + 1) + itemGrade * (ITEMMAXLEVEL + 1) + itemLv];
 						it = GetItemPtr(ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + itemDetail * TOTALGRADE + itemGrade);
 
 						it->count -= ITEMHAMMERCNT;
 
-						//¸¶Áö¸· µî±ŞÀÌ¸é µğÅ×ÀÏÀ» ÇÏ³ª ¿Ã·ÁÁØ´Ù.
+						//ë§ˆì§€ë§‰ ë“±ê¸‰ì´ë©´ ë””í…Œì¼ì„ í•˜ë‚˜ ì˜¬ë ¤ì¤€ë‹¤.
 						if (itemGrade == GRADE_LEGEND) {
 							robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + (itemDetail + 1) * TOTALGRADE + 0].count++;
 						}
-						//±×·¸Áö ¾ÊÀ¸¸é ±×·¹ÀÌµå¸¦ ÇÏ³ª ¿Ã·ÁÁØ´Ù. 
+						//ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ ê·¸ë ˆì´ë“œë¥¼ í•˜ë‚˜ ì˜¬ë ¤ì¤€ë‹¤. 
 						else {
 							robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + itemDetail * TOTALGRADE + itemGrade++].count++;
 						}
@@ -1241,7 +1241,7 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 
 					DrawRewardCard(itemTypeNext, itemDetailNext, itemGradeNext, itemLv, itemCnt, x + DX / 2 - ITEMCARDSIZE_X / 2, y + DY / 2 + 108 * _2X, false, 2.0f, true, false, true, curStar, maxStar, true, 0);
 
-					//°­È­¼º°ø½Ã
+					//ê°•í™”ì„±ê³µì‹œ
 					DrawEffect(EFFECT_LEVELUP_TEXT0 + (frame / 2) % 14, x + DX / 2, y + DY / 2 + 108 * _2X + 32 * _2X, 0, false, 3.0f);
 
 					DrawGoldAlpha(x + DX / 2, y + DY / 2 - 160 * _2X, ALPHA_CONGRATULATIONS, FONT_GOLD_LARGE, 1.0f, CENTER, true, false);
@@ -1311,8 +1311,8 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 	{
 		float t = (float)remainedTurnFrame / FPS; // 0.0 ~ 1.0
 
-		// ===== ÀÌÀü ¼ıÀÚ(3) ¾Ö´Ï¸ŞÀÌ¼Ç =====
-		// Phase 1: ÂÉ±×¶óµé±â (0.0 ~ 0.2)
+		// ===== ì´ì „ ìˆ«ì(3) ì• ë‹ˆë©”ì´ì…˜ =====
+		// Phase 1: ìª¼ê·¸ë¼ë“¤ê¸° (0.0 ~ 0.2)
 		if (t >= 0.0f && t < 0.2f)
 		{
 			float phase = t / 0.2f; // 0.0 ~ 1.0
@@ -1322,7 +1322,7 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 			oldNumZoom = zoom * (1.0f + 0.2f * squashCurve);
 			oldAlpha = 32;
 		}
-		// Phase 2: ÀÛÀº Æ÷¹°¼±À¸·Î ¿ìÃø ÀÌµ¿ (0.2 ~ 0.5)
+		// Phase 2: ì‘ì€ í¬ë¬¼ì„ ìœ¼ë¡œ ìš°ì¸¡ ì´ë™ (0.2 ~ 0.5)
 		else if (t >= 0.2f && t < 0.5f)
 		{
 			float phase = (t - 0.2f) / 0.3f; // 0.0 ~ 1.0
@@ -1342,7 +1342,7 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 			}
 			oldAlpha = 32;
 		}
-		// Phase 3: ¿ìÃø ³¡¿¡¼­ ¾Æ·¡·Î ¶³¾îÁö¸é¼­ ÆäÀÌµå¾Æ¿ô (0.5 ~ 0.8)
+		// Phase 3: ìš°ì¸¡ ëì—ì„œ ì•„ë˜ë¡œ ë–¨ì–´ì§€ë©´ì„œ í˜ì´ë“œì•„ì›ƒ (0.5 ~ 0.8)
 		else if (t >= 0.5f && t < 0.8f)
 		{
 			float phase = (t - 0.5f) / 0.3f; // 0.0 ~ 1.0
@@ -1357,12 +1357,12 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 		}
 		else
 		{
-			// Phase 3 ÀÌÈÄ¿¡´Â ÀÌÀü ¼ıÀÚ ¾È ±×¸²
+			// Phase 3 ì´í›„ì—ëŠ” ì´ì „ ìˆ«ì ì•ˆ ê·¸ë¦¼
 			oldAlpha = 0;
 		}
 
-		// ===== »õ ¼ıÀÚ(2) ¾Ö´Ï¸ŞÀÌ¼Ç =====
-		// Phase 4: ÀÛ°Ô ³ªÅ¸³ª¼­ Ä¿Áö¸é¼­ Á¤Áö (0.85 ~ 0.95)
+		// ===== ìƒˆ ìˆ«ì(2) ì• ë‹ˆë©”ì´ì…˜ =====
+		// Phase 4: ì‘ê²Œ ë‚˜íƒ€ë‚˜ì„œ ì»¤ì§€ë©´ì„œ ì •ì§€ (0.85 ~ 0.95)
 		if (t >= 0.85f && t < 0.95f)
 		{
 			float phase = (t - 0.85f) / 0.1f; // 0.0 ~ 1.0
@@ -1374,7 +1374,7 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 
 			newAlpha = (int)(32 * Min(phase * 2.0f, 1.0f));
 		}
-		// Phase 5: Á¤Áö ÈÄ »ìÂ¦ ³»·Á¿À¸ç ¾ÈÂø (0.95 ~ 1.0)
+		// Phase 5: ì •ì§€ í›„ ì‚´ì§ ë‚´ë ¤ì˜¤ë©° ì•ˆì°© (0.95 ~ 1.0)
 		else if (t >= 0.95f)
 		{
 			float phase = (t - 0.95f) / 0.05f; // 0.0 ~ 1.0
@@ -1386,7 +1386,7 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 			newAlpha = 32;
 		}
 
-		// ÀÌÀü ¼ıÀÚ(3) ±×¸®±â
+		// ì´ì „ ìˆ«ì(3) ê·¸ë¦¬ê¸°
 		if (oldAlpha > 0)
 		{
 			SetAlpha(oldAlpha);
@@ -1394,7 +1394,7 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 			SetAlpha(32);
 		}
 
-		// »õ ¼ıÀÚ(2) ±×¸®±â
+		// ìƒˆ ìˆ«ì(2) ê·¸ë¦¬ê¸°
 		if (newAlpha > 0)
 		{
 			SetAlpha(newAlpha);
@@ -1420,10 +1420,10 @@ void HowToGetHeroesDraw(int x, int y, float zoom)
 {
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//ÀÏ´Ü È÷¾î·Î¸¦ È¹µæÇÏ´Â Á¶°ÇÀ» Á¤¸®ÇÏÀÚ.
-	//1¹ø ·¹º§, 2¹ø ½ºÅ×ÀÌÁö
-	//·¹º§·Î ÇÏ¸é »óÀÚ¸¦ ¸¹ÀÌ ¿­¾î¾ß ÇÏ´Ï±î ÇÏÆ®°¡ ¸¹ÀÌ ÇÊ¿äÇÏ°í
-	//½ºÅ×ÀÌÁö·Î ÇÏ¸é 
+	//ì¼ë‹¨ íˆì–´ë¡œë¥¼ íšë“í•˜ëŠ” ì¡°ê±´ì„ ì •ë¦¬í•˜ì.
+	//1ë²ˆ ë ˆë²¨, 2ë²ˆ ìŠ¤í…Œì´ì§€
+	//ë ˆë²¨ë¡œ í•˜ë©´ ìƒìë¥¼ ë§ì´ ì—´ì–´ì•¼ í•˜ë‹ˆê¹Œ í•˜íŠ¸ê°€ ë§ì´ í•„ìš”í•˜ê³ 
+	//ìŠ¤í…Œì´ì§€ë¡œ í•˜ë©´ 
 
 	//DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 88 * _2X) / 2 * zoom, y - (float)0 * _2X * zoom, TEXT_BORDERGUARD, zoom, cvtDest, cvtLayer, buffering);
 
@@ -1435,16 +1435,16 @@ void HowToGetCrewsDraw(int x, int y, float zoom)
 {
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//ÀÏ´Ü Å©·ùÀÚ¸®¸¦ ¿ÀÇÂÇÏ´Â Á¶°ÇÀ» Á¤¸®ÇÏÀÚ.
-	//1¹ø ·¹º§, 2¹ø ½ºÅ×ÀÌÁö
-	//·¹º§·Î ÇÏ¸é »óÀÚ¸¦ ¸¹ÀÌ ¿­¾î¾ß ÇÏ´Ï±î ÇÏÆ®°¡ ¸¹ÀÌ ÇÊ¿äÇÏ°í
-	//½ºÅ×ÀÌÁö·Î ÇÏ¸é 
+	//ì¼ë‹¨ í¬ë¥˜ìë¦¬ë¥¼ ì˜¤í”ˆí•˜ëŠ” ì¡°ê±´ì„ ì •ë¦¬í•˜ì.
+	//1ë²ˆ ë ˆë²¨, 2ë²ˆ ìŠ¤í…Œì´ì§€
+	//ë ˆë²¨ë¡œ í•˜ë©´ ìƒìë¥¼ ë§ì´ ì—´ì–´ì•¼ í•˜ë‹ˆê¹Œ í•˜íŠ¸ê°€ ë§ì´ í•„ìš”í•˜ê³ 
+	//ìŠ¤í…Œì´ì§€ë¡œ í•˜ë©´ 
 
 	//DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 88 * _2X) / 2 * zoom, y - (float)0 * _2X * zoom, TEXT_BORDERGUARD, zoom, cvtDest, cvtLayer, buffering);
 
 }
 
-//ÇöÀç ¾÷±×·¹ÀÌµå°¡ °¡´ÉÇÑ 
+//í˜„ì¬ ì—…ê·¸ë ˆì´ë“œê°€ ê°€ëŠ¥í•œ 
 int GetItemCntUpgradePossible(void)
 {
 	int i, j;
@@ -1481,10 +1481,10 @@ void CalendarDraw(int x, int y, float zoom)
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//¹Ø¿¡ ÀÏÁÖÀÏÂ¥¸® ½ºÄÉÁì Ç¥
+	//ë°‘ì— ì¼ì£¼ì¼ì§œë¦¬ ìŠ¤ì¼€ì¥´ í‘œ
 	for (i = 0; i < WEEK + 1; i++) {
 		switch (i) {
-			//1´ŞÄ¡ º¸»óÀÌ ±×·ÁÁö°í
+			//1ë‹¬ì¹˜ ë³´ìƒì´ ê·¸ë ¤ì§€ê³ 
 		case 0:
 			DrawFrame(x + (float)(calendarPos[4 * i + 0]) * zoom, y + (float)(calendarPos[4 * i + 1] - 16 * _2X) * zoom, (float)(calendarPos[4 * i + 2]) * zoom, (float)(calendarPos[4 * i + 3]) * zoom, FRAME_SHOPBALLOON);
 
@@ -1572,14 +1572,14 @@ void CalendarDraw(int x, int y, float zoom)
 
 	}
 
-	//ÇöÀç º¸»ó±îÁö ³²Àº ½Ã°£
+	//í˜„ì¬ ë³´ìƒê¹Œì§€ ë‚¨ì€ ì‹œê°„
 	//DrawTime(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y + (float)( - 440 * _2X) * zoom, Max(0, 86400 - (MC_knlCurrentTimeStamp() - robin.calendarTimeStamp)), TIME_HOUR_MINUTE, CENTER, zoom, cvtDest, cvtLayer, buffering);
 
 
 
-	//»ó´Ü¿¡ ÇÑ´ŞÂ¥¸® ½ºÄÉÁì Ç¥
+	//ìƒë‹¨ì— í•œë‹¬ì§œë¦¬ ìŠ¤ì¼€ì¥´ í‘œ
 
-	//À§¿¡ Å¸ÀÌÆ² ÅÂ±×¸¦ ºÙ¿©ÁÖ°í,
+	//ìœ„ì— íƒ€ì´í‹€ íƒœê·¸ë¥¼ ë¶™ì—¬ì£¼ê³ ,
 	//
 }
 
@@ -1591,49 +1591,49 @@ void OptionDraw(int x, int y, float zoom)
 	//DrawFrame(x, y, (float)(POPUPWINDOWSIZE_X)* zoom, (float)(GAMEMENUWIN2_Y)* zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//¸ŞÀÎÈ­¸é
-//À½¾Ç
+	//ë©”ì¸í™”ë©´
+//ìŒì•…
 	CenterText(TEXT_BGM, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y - (float)(32 * _2X) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.bgm ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_BGM, option.bgm ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//È¿°úÀ½
+	//íš¨ê³¼ìŒ
 	CenterText(TEXT_SE, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y - (float)(32 * _2X) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.se ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_SE, option.se ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//Áøµ¿
+	//ì§„ë™
 	CenterText(TEXT_VIBRATION, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.vibration ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_VIBRATION, option.vibration ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//¾ğ¾î
+	//ì–¸ì–´
 	CenterText(TEXT_LANGUAGE, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_KOREAN + option.language], TOUCH_FUNC_OPTION_LANGUAGE, FRAME_BLUE, zoom);
 
-	//ÆäÀÌ½ººÏ
+	//í˜ì´ìŠ¤ë¶
 	CenterText(TEXT_FACEBOOK, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 2) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 2) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.facebook ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_FACEBOOK, option.facebook ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//±¸±ÛÇÃ·¹ÀÌ
+	//êµ¬ê¸€í”Œë ˆì´
 	CenterText(TEXT_GOOGLEPLAY, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 2) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 2) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.google ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_GOOGLE, option.google ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//°ÔÀÓ¼¾ÅÍ
+	//ê²Œì„ì„¼í„°
 	CenterText(TEXT_GAMECENTER, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 3) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 3) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.gameCenter ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_GAMECENTER, option.gameCenter ? FRAME_GREEN : FRAME_RED, zoom);
 
-	//°Ô½ºÆ®
+	//ê²ŒìŠ¤íŠ¸
 	CenterText(TEXT_GUEST, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 3) * zoom, zoom);
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 3) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_CONNECTED], TOUCH_FUNC_OPTION_GUEST, FRAME_GREY, zoom);
 
-	//µµ¿ò¸» Áö¿ø
+	//ë„ì›€ë§ ì§€ì›
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_HELP], TOUCH_FUNC_OPTION_HELP, FRAME_BLUE, zoom);
 
-	//°³ÀÎÁ¤º¸ º¸È£Á¤Ã¥
+	//ê°œì¸ì •ë³´ ë³´í˜¸ì •ì±…
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_PRIVACY], TOUCH_FUNC_OPTION_POLICY, FRAME_BLUE, zoom);
 
-	//ÀÌ¿ë¾à°ü
+	//ì´ìš©ì•½ê´€
 	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X - 40 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_TERMOFSERVICE], TOUCH_FUNC_OPTION_POLICY, FRAME_GREY, zoom);
 
-	//Á¦ÀÛÁø
+	//ì œì‘ì§„
 	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X - 40 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_STAFF], TOUCH_FUNC_OPTION_COMMUNITY, FRAME_GREY, zoom);
 }
 
@@ -1703,23 +1703,23 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
 			}
 
 
-		//¸îºĞÀÇ ¸îÀ» ¸ğ¾Ò´ÂÁö¸¦ º¸¿©ÁÖ´Â
+		//ëª‡ë¶„ì˜ ëª‡ì„ ëª¨ì•˜ëŠ”ì§€ë¥¼ ë³´ì—¬ì£¼ëŠ”
 		if (setItemCnt > 0) {
 			DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 			DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
 			DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 		}
-		//6°³°¡ ´Ù ÀåÂøµÇ¾î ÀÖ¾î¼­ ½ºÅ³ÀÌ È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é
+		//6ê°œê°€ ë‹¤ ì¥ì°©ë˜ì–´ ìˆì–´ì„œ ìŠ¤í‚¬ì´ í™œì„±í™” ë˜ì–´ ìˆìœ¼ë©´
 		if (GetFullEquipedCollectionIdx() == i)
 			DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
-		//¸¸¾à 6°³°¡ ´Ù ¸ğ¿©¸¸ ÀÖÀ¸¸é
+		//ë§Œì•½ 6ê°œê°€ ë‹¤ ëª¨ì—¬ë§Œ ìˆìœ¼ë©´
 		else if (setItemCnt == COLLECTIONSITEMCNT) {
-			//¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù.
+			//ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 		}
 		else if (setItemCnt > 0) {
-			//¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù.
+			//ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 		}
-		//¾Æ¹«°Íµµ ¾øÀ¸¸é
+		//ì•„ë¬´ê²ƒë„ ì—†ìœ¼ë©´
 		else
 			DrawIcon(ICON_EVENT_LOCK, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X - 12 * _2X - 52 * _2X, 2.0f, false, false, false, gScreenBuffer, gScreenLayer, false);
 		*/
@@ -1729,15 +1729,15 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
 
 	}
 	//
-	//ÀÏ´Ü ¸Ş´º Á¤¸®ºÎÅÍ ÇÏÀÚ.
-	//1. »óÁ¡->
-	//2. Äù½ºÆ®°¡ ÀÖ°í
+	//ì¼ë‹¨ ë©”ë‰´ ì •ë¦¬ë¶€í„° í•˜ì.
+	//1. ìƒì ->
+	//2. í€˜ìŠ¤íŠ¸ê°€ ìˆê³ 
 	//3. 
 
-	//·¹º§¾÷ ÀÌÆåÆ®¸¦ Á¤ÀÇÇÏÀÚ.
-	//ÄÉÀÌ½º Á¤ÀÇ
-	//1. ÃÖ´ë ÇÏÆ®¿Í ½Ã°£´ç È¸º¹·® Áõ°¡
-	//2. ¸Ş´º ¿ÀÇÂ
+	//ë ˆë²¨ì—… ì´í™íŠ¸ë¥¼ ì •ì˜í•˜ì.
+	//ì¼€ì´ìŠ¤ ì •ì˜
+	//1. ìµœëŒ€ í•˜íŠ¸ì™€ ì‹œê°„ë‹¹ íšŒë³µëŸ‰ ì¦ê°€
+	//2. ë©”ë‰´ ì˜¤í”ˆ
 	//   - 
 	//   - 
 	//3. 
@@ -1836,7 +1836,7 @@ int GetBoxCurrency(int detail, int grade)
 
 int GetBoxGold(int boxType)
 {
-	//¹Ú½ºÀÇ ÄÚÀÎÀ» ±¸ÇÏ´Â ¹æ¹ı
+	//ë°•ìŠ¤ì˜ ì½”ì¸ì„ êµ¬í•˜ëŠ” ë°©ë²•
 	return stageGold[robin.stage * TOTALROOM + robin.room] * betHeart[boxType];
 }
 
@@ -1855,11 +1855,11 @@ int GetBoxPrice(int detail, int grade)
 	switch (detail) {
 	case BOX_REWARD0:
 		return 10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000;
-	case BOX_REWARD1:	//Ä«µå ÇÑÀå	//BOX_CHEST1
+	case BOX_REWARD1:	//ì¹´ë“œ í•œì¥	//BOX_CHEST1
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000);
-	case BOX_REWARD2:	//Ä«µå µÎÀå	//BOX_CHEST2
+	case BOX_REWARD2:	//ì¹´ë“œ ë‘ì¥	//BOX_CHEST2
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 10;
-	case BOX_REWARD3:	//Ä«µå ¼¼Àå	//BOX_CHEST3
+	case BOX_REWARD3:	//ì¹´ë“œ ì„¸ì¥	//BOX_CHEST3
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
 	case BOX_REWARD4:
 		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 1000;
@@ -1911,7 +1911,7 @@ int GetScrollDy(int menuIdx)
 		scrollDy = (float)(CREW_GAP_Y) * (itemCategoryCnt / INVEN_HCNT + 1 - (itemCategoryCnt % INVEN_HCNT == 0 ? 1 : 0)) - 16;
 		break;
 	case MENU_COLLECTIONS:
-		//ÇöÀç ½ºÅ©·Ñ ±âÁØÀ¸·Î ¾ÆÀÌÅÛÀÌ ¸î°³ÀÎÁö È®ÀÎ
+		//í˜„ì¬ ìŠ¤í¬ë¡¤ ê¸°ì¤€ìœ¼ë¡œ ì•„ì´í…œì´ ëª‡ê°œì¸ì§€ í™•ì¸
 		itemCategoryCnt = GetItemCategoryCnt(menuX * TOTALCHAR + curHero);
 
 		scrollDy = (float)(INVENTORY_GAP_Y) * (itemCategoryCnt / INVEN_HCNT + 1 - (itemCategoryCnt % INVEN_HCNT == 0 ? 1 : 0));
@@ -2003,11 +2003,11 @@ void AlertDraw(void)
 	SetAlpha(32);
 
 	ResetRectPoint();
-	//4°÷À» ¹Ù±ùÀ¸·Î ³ª°¡´Â°ÍÀ¸·Î ÇÏÀÚ
-	SetRectPoint(0, DY, DX, (DY - *(ucPtr + 1)) / 2, TOUCH_ALERT_NO);//À§ÂÊ
-	SetRectPoint(0, DY / 2 + *(ucPtr + 1) / 2, (DX - *ucPtr) / 2, *(ucPtr + 1), TOUCH_ALERT_NO);//¿ŞÂÊ
-	SetRectPoint(DX / 2 + *ucPtr / 2, DY / 2 + *(ucPtr + 1) / 2, (DX - *ucPtr) / 2, *(ucPtr + 1), TOUCH_ALERT_NO);//¿À¸¥ÂÊ
-	SetRectPoint(0, DY / 2 - *(ucPtr + 1) / 2, DX, (DY - *(ucPtr + 1)) / 2, TOUCH_ALERT_NO);//¾Æ·¡ÂÊ
+	//4ê³³ì„ ë°”ê¹¥ìœ¼ë¡œ ë‚˜ê°€ëŠ”ê²ƒìœ¼ë¡œ í•˜ì
+	SetRectPoint(0, DY, DX, (DY - *(ucPtr + 1)) / 2, TOUCH_ALERT_NO);//ìœ„ìª½
+	SetRectPoint(0, DY / 2 + *(ucPtr + 1) / 2, (DX - *ucPtr) / 2, *(ucPtr + 1), TOUCH_ALERT_NO);//ì™¼ìª½
+	SetRectPoint(DX / 2 + *ucPtr / 2, DY / 2 + *(ucPtr + 1) / 2, (DX - *ucPtr) / 2, *(ucPtr + 1), TOUCH_ALERT_NO);//ì˜¤ë¥¸ìª½
+	SetRectPoint(0, DY / 2 - *(ucPtr + 1) / 2, DX, (DY - *(ucPtr + 1)) / 2, TOUCH_ALERT_NO);//ì•„ë˜ìª½
 
 	if (winAniFrame < 7)
 		DrawFrame(DX / 2, DY / 2, *ucPtr, *(ucPtr + 1), FRAME_ANIINFO);
@@ -2020,7 +2020,7 @@ void AlertDraw(void)
 				case -5:
 					break;
 				case -4:
-					pStr = "Âø¿ëÁßÀÎ ¾ÆÀÌÅÛÀ¸·Î Äù½ºÆ®¸¦ ¿Ï·áÇÒ ¼ö ¾ø½À´Ï´Ù.";
+					pStr = "ì°©ìš©ì¤‘ì¸ ì•„ì´í…œìœ¼ë¡œ í€˜ìŠ¤íŠ¸ë¥¼ ì™„ë£Œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.";
 					break;
 				case -3:
 					pStr = skillStr;
@@ -2167,14 +2167,14 @@ void NewCardDraw(void)
 {
 	int i;
 	float zoom = 2.0f;
-	int row = 1;//°¡·Î·Î ¸î°³ÀÎÁö
-	int col = 1;//¼¼·Î·Î ¸îÁÙÀÎÁö
+	int row = 1;//ê°€ë¡œë¡œ ëª‡ê°œì¸ì§€
+	int col = 1;//ì„¸ë¡œë¡œ ëª‡ì¤„ì¸ì§€
 	bool crewMenuDraw = false;
 	bool equipMenuDraw = false;
 	float menuZoom = 1.0f;
 	float width;
 	int remainNewItemCnt;
-	//¼º µîÀåÇÏ´Â °Å ¾ø¾ÖÁÖ±â
+	//ì„± ë“±ì¥í•˜ëŠ” ê±° ì—†ì• ì£¼ê¸°
 	ResetRectPoint();
 
 	MemRect(0, DY, DX, DY, mapColor[MAPTYPE_SPACE]);
@@ -2243,13 +2243,13 @@ void NewCardDraw(void)
 
 		}
 		else if (newCardFrame == FPS * 1) {
-			//ÇöÀç ¾ÆÀÌÅÛ ÀÎµ¦½º¸¦ ´õÇØÁÖ°í
+			//í˜„ì¬ ì•„ì´í…œ ì¸ë±ìŠ¤ë¥¼ ë”í•´ì£¼ê³ 
 			curNewItemIdx++;
 
 			newCardDepth = 0;
 			newCardFrame = 0;
 
-			//¸¸¾à »õ·Î¿î ¾ÆÀÌÅÛÀÌ¸é
+			//ë§Œì•½ ìƒˆë¡œìš´ ì•„ì´í…œì´ë©´
 			if (newItemCnt == curNewItemIdx) {
 				drawHandle = before_DrawHandle_NewCard;
 				keyHandle = before_KeyHandle_NewCard;
@@ -2363,7 +2363,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 	//ao[ENEMY].type = stageEnemy[robin.stage * TOTALROOM + robin.room];
 	SetEnemy(&ao[ENEMY]);
 	ao[ENEMY].active = false;
-	//º¸½º
+	//ë³´ìŠ¤
 
 	//robin.stage = 9;
 
@@ -2373,10 +2373,10 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom + yGap, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
-		//º¸½º Á¤º¸
+		//ë³´ìŠ¤ ì •ë³´
 		DrawStageLabel(x + (float)(DX / 2) * zoom, y + (float)(8 * _2X) * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom);
 
-		//¿şÀÌºê º¸½º
+		//ì›¨ì´ë¸Œ ë³´ìŠ¤
 		//if (stageInfoCurFrame > 20)
 		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], frame / 2 % crewPos[stageBossType * CREWDATASIZE], x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom);
 
@@ -2422,7 +2422,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					rewardItemCnt++;
 				}
 			}
-			//¿şÀÌºê º¸»ó
+			//ì›¨ì´ë¸Œ ë³´ìƒ
 			for (i = 0; i < rewardItemCnt; i++) {
 				rewardType = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 0];
 				rewardDetail = stageClearReward[robin.stage * BOX1MAXREWARDITEM * REWARDDATASIZE + i * REWARDDATASIZE + 1];
@@ -2470,7 +2470,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
 
-		//¼¼ÀÔÀÚ
+		//ì„¸ì…ì
 		for (i = MAXCREW - 1; i >= 0; i--) {
 			if (enemyHouse.crew[i] != null) {
 				switch (stageInfoDepth) {
@@ -2589,19 +2589,19 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		}
 
-		//1.¼º°ú µ¿·áµéÀ» ¾ÕÀ¸·Î ³» ¼¼¿î »óÅÂ¿¡¼­
+		//1.ì„±ê³¼ ë™ë£Œë“¤ì„ ì•ìœ¼ë¡œ ë‚´ ì„¸ìš´ ìƒíƒœì—ì„œ
 		if (stageInfoCurFrame < STAGECLEARDELAY_APPEAR) {
 			UnSectionClip(true);
 			//DrawCmfDetail(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, RIGHT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * 0.6f + (float)stageInfoCurFrame * zoom * 0.01f + (float)stageInfoCurFrame * stageInfoCurFrame / 5 * zoom * 0.001f, false, false, cvtDest, cvtLayer, buffering);
 			UnSectionClip(false);
 		}
-		//2.º¸½º°¡ ³¯¶ó°¡°í
+		//2.ë³´ìŠ¤ê°€ ë‚ ë¼ê°€ê³ 
 		else if (stageInfoCurFrame < STAGECLEARDELAY_BOSSAWAY) {
 			UnSectionClip(true);
 			//DrawCmfDetail(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom - (float)Min(160 * _2X, stageInfoFrame * 4 * _2X) * zoom, RIGHT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * 0.6f + (float)stageInfoCurFrame * zoom * 0.01f + (float)stageInfoCurFrame * stageInfoCurFrame / 5 * zoom * 0.001f, (stageInfoCurFrame + (stageInfoCurFrame * stageInfoCurFrame) / (5 * MOTIONDIV)) % 360, false, cvtDest, cvtLayer, buffering);
 			UnSectionClip(false);
 		}
-		//3.¼¼ÀÔÀÚµéÀÌ ¿ô´Â ¸ğ½ÀÀÌ ³ª¿À°í, ¿©±â¼­ ¹Ø¿¡ ÅØ½ºÆ®¸¦ ¶ç¿öÁÖ¸é¼­ ·ê·¿ ½ºÅ¸Æ®¸¦ »ç¿ëÀÚ°¡ ¼±ÅÃÇÏ°Ô ½ÃÅ²´Ù.
+		//3.ì„¸ì…ìë“¤ì´ ì›ƒëŠ” ëª¨ìŠµì´ ë‚˜ì˜¤ê³ , ì—¬ê¸°ì„œ ë°‘ì— í…ìŠ¤íŠ¸ë¥¼ ë„ì›Œì£¼ë©´ì„œ ë£°ë › ìŠ¤íƒ€íŠ¸ë¥¼ ì‚¬ìš©ìê°€ ì„ íƒí•˜ê²Œ ì‹œí‚¨ë‹¤.
 		else if (stageInfoCurFrame < STAGECLEARDELAY_HAPPYTIME) {
 
 			for (i = MAXCREW - 1; i >= 0; i--) {
@@ -2620,7 +2620,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 			stageInfoFrame = 0;
 		}
 		break;
-		//½ºÅ×ÀÌÁö Å¬¸®¾î º¸»ó
+		//ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ ë³´ìƒ
 	case STAGEINFO_STAGECLEAR:
 		SetAlpha(20);
 		MemRect(0, DY, DX, DY, COLOR_BLACK);
@@ -2628,17 +2628,17 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGECLEAR, FONT_GOLD_LARGE, fontZoom, CENTER, true, false);
 
-		//½ºÅ×ÀÌÁö Å¬¸®¾î ¾ËÆÄºªÀÌ ¶ß°í
+		//ìŠ¤í…Œì´ì§€ í´ë¦¬ì–´ ì•ŒíŒŒë²³ì´ ëœ¨ê³ 
 		if (stageInfoCurFrame < STAGECLEARDELAY_ALPHA) {
 
 		}
-		//»óÀÚ°¡ ¶ß°í
+		//ìƒìê°€ ëœ¨ê³ 
 		else if (stageInfoCurFrame < STAGECLEARDELAY_BOXDROP) {
 			if (stageInfoCurFrame == STAGECLEARDELAY_ALPHA) {
 				SetBoxMark(xOffset + DX / 2, DY + REWARDCARDSIZE_Y, xOffset + DX / 2, STATUSWIN_Y + 16 * _2X, xOffset + DX / 2, STATUSWIN_Y + 16 * _2X, 16 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, 2 * _2X * 2 / MOTIONDIV, FPS * 3, FPS * 3, 30, stageClearBox[robin.stage], GRADE_NORMAL, BOXZOOM, BOXZOOM, 0.2f / MOTIONDIV, BOXZOOM, BOXZOOM, 0.2f / MOTIONDIV);
 			}
 		}
-		//»óÀÚ°¡ ¿­¸®¸é¼­ ³»ºÎ º¸»óÀÌ ³ª¿À°í, »óÀÚ´Â »ç¶óÁö°í
+		//ìƒìê°€ ì—´ë¦¬ë©´ì„œ ë‚´ë¶€ ë³´ìƒì´ ë‚˜ì˜¤ê³ , ìƒìëŠ” ì‚¬ë¼ì§€ê³ 
 		else if (stageInfoCurFrame < STAGECLEARDELAY_CLEARREWARD) {
 
 			int row = 1;
@@ -2755,7 +2755,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 				stageRewardIdx++;
 			}
 		}
-		//º¸»óÀ» ÅÇÇÏ¶ó´Â ¸Ş´º°¡ ³ª¿À°í
+		//ë³´ìƒì„ íƒ­í•˜ë¼ëŠ” ë©”ë‰´ê°€ ë‚˜ì˜¤ê³ 
 		else if (stageInfoCurFrame < STAGECLEARDELAY_TABREWARD) {
 			SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
 			DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, 1, CENTER, false, false);
@@ -2906,7 +2906,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 				case ITEM_BOX:
 
 					break;
-					//	//¿©±â¼­ ½ºÅ³Àº µû·Î ½Å±Ô È¹µæ È¤Àº ·¹º§¾÷À» ÇØÁØ´Ù..
+					//	//ì—¬ê¸°ì„œ ìŠ¤í‚¬ì€ ë”°ë¡œ ì‹ ê·œ íšë“ í˜¹ì€ ë ˆë²¨ì—…ì„ í•´ì¤€ë‹¤..
 				case ITEM_SKILL:
 
 					break;
@@ -2940,7 +2940,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 				GetItem(ITEM_HAMMER, false, false, false, getHammerNum, false);
 			}
 
-			//È¹µæµÈ°ÍÀº Á¦¿ÜÇÏ°í ´ç°ÜÁØ´Ù.
+			//íšë“ëœê²ƒì€ ì œì™¸í•˜ê³  ë‹¹ê²¨ì¤€ë‹¤.
 			if (stageInfoCurFrame == STAGECLEARDELAY_GETREWARD - 1) {
 
 				for (i = 0; i < rewardItemCnt; i++) {
@@ -2984,7 +2984,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 					}
 				}
 
-				//rewardItemCnt °¡ 0º¸´Ù Å©´Ù´Â °ÍÀº »óÀÚ°¡ ÀÖ´Ù´Â °ÍÀÌ¹Ç·Î GotoGacha·Î º¸³½´Ù.
+				//rewardItemCnt ê°€ 0ë³´ë‹¤ í¬ë‹¤ëŠ” ê²ƒì€ ìƒìê°€ ìˆë‹¤ëŠ” ê²ƒì´ë¯€ë¡œ GotoGachaë¡œ ë³´ë‚¸ë‹¤.
 				if (rewardItemCnt > 0)
 					GotoGacha();
 
@@ -3014,9 +3014,9 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 			SaveGame();
 		}
-		//°¡Â÷°¡ ÀÖÀ¸¸é ÇØ´ç È­¸éÀ¸·Î º¸³»ÁÖ°í
+		//ê°€ì°¨ê°€ ìˆìœ¼ë©´ í•´ë‹¹ í™”ë©´ìœ¼ë¡œ ë³´ë‚´ì£¼ê³ 
 
-		//´Ù ³¡³ª¸é Á¾·á½ÃÄÑÁÖ¸é¼­ ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ÀÌµ¿ÇÏ°í
+		//ë‹¤ ëë‚˜ë©´ ì¢…ë£Œì‹œì¼œì£¼ë©´ì„œ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ì´ë™í•˜ê³ 
 		break;
 
 	case STAGEINFO_NEWSTAGE:
@@ -3025,7 +3025,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom - (float)(DIORAMASIZE_X) / 2 * zoom, y + (float)16 * _2X * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + stageHouseType[stage]], cvtDest, cvtLayer, MAP_DIORAMA_IMG + stageHouseType[stage], buffering);
 
-		//¼¼ÀÔÀÚ
+		//ì„¸ì…ì
 		for (i = MAXCREW - 1; i >= 0; i--) {
 			if (enemyHouse.crew[i] != null) {
 				switch (stageInfoDepth) {
@@ -3139,7 +3139,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 
 					DrawStar(ICON_STAR, x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)90 * _2X * zoom, y - (float)(296 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, curStar, curMaxStar, maxStar, CENTER, true, zoom);
-					//ÃÖ´ë°ª¿¡ µµ´ŞÇÏ¸é
+					//ìµœëŒ€ê°’ì— ë„ë‹¬í•˜ë©´
 					if (curStar == maxStar) {
 						DrawMaxButton(x + (float)(12 * _2X) * zoom + (float)(POPUPWINDOWSIZE_X - 30 * _2X) / 2 * (i % 2) * zoom + (float)48 * _2X * zoom, y - (float)(292 * _2X + 20 * _2X) * zoom - (float)(REWARDCARDSIZE_Y - 6 * _2X) * (i / 2) * 1.2f * zoom, (float)(96 * _2X) * zoom, (float)(32 * _2X) * zoom, ALPHA_MAX, zoom);
 					}
@@ -3178,7 +3178,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 			}
 		}
 		if (stageInfoCurFrame > 54 + MAXCREW * 3) {
-			//¼ºÁÖ¿Í ÀÏ±âÅä
+			//ì„±ì£¼ì™€ ì¼ê¸°í† 
 			DrawTextButton(x + (float)(DX / 2 - 0 * _2X) * zoom, y - (float)(416 * _2X) * zoom, (float)(120 * _2X) * zoom, (float)(48 * _2X) * zoom, frame, totalStar < 10 || robin.bossRoom == true ? true : false, 1.0f, false, TEXT_LORD_DUEL);
 			//if (totalStar < MAXSTARPERHOUSE || robin.bossRoom == true)
 			//	grayScale = 32;
@@ -3190,13 +3190,13 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
 
-		//´º½ºÅ×ÀÌÁö¿¡ ´ëÇÑ ³»¿ëÀÌ ¶ß°í
+		//ë‰´ìŠ¤í…Œì´ì§€ì— ëŒ€í•œ ë‚´ìš©ì´ ëœ¨ê³ 
 		fontZoom = Max(1.2f, (float)(54 + MAXCREW * 3 + FPS / 2 - stageInfoCurFrame) * 0.2f / MOTIONDIV);
 
 		if (stageInfoCurFrame > 54 + MAXCREW * 3)
 			DrawGoldAlpha(DX / 2, DY / 2 + 248 * _2X, ALPHA_NEWSTAGE, FONT_GOLD_LARGE, fontZoom, CENTER, true, false);
 
-		//°ÔÀÓÀ¸·Î µ¹¾Æ°£´Ù.
+		//ê²Œì„ìœ¼ë¡œ ëŒì•„ê°„ë‹¤.
 
 		if (stageInfoCurFrame == 54 + MAXCREW * 3 + FPS * 3) {
 			robin.bossRoom = false;
@@ -3219,7 +3219,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 	}
 
 
-	//ÇöÀç Å¸°ÙÆÃµÇ´Â ÇÏ¿ì½º
+	//í˜„ì¬ íƒ€ê²ŸíŒ…ë˜ëŠ” í•˜ìš°ìŠ¤
 
 
 	if (cur == true)
@@ -3238,7 +3238,7 @@ int GetCrewInventoryIdx(int type)
 
 	return false;
 }
-// ÃÖÁ¾ ±×¸®±â ÇÔ¼ö
+// ìµœì¢… ê·¸ë¦¬ê¸° í•¨ìˆ˜
 void CrewMenuDraw(int x, int y, float zoom)
 {
 	int i, j;
@@ -3254,7 +3254,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 	//SetAlpha(32);
 
 	
-	// 1. ¹è°æ ¹× Å« UI
+	// 1. ë°°ê²½ ë° í° UI
 	for (i = 0; i < 2; i++)
 		DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], crewMenuUiData[i * MENUUIDATACNT + 6]);
 
@@ -3262,7 +3262,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 	CenterText(TEXT_CREW_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom);
 	CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom);
 	
-	//¼º°ú ¸Æ½º º°
+	//ì„±ê³¼ ë§¥ìŠ¤ ë³„
 	SetColor(COLOR_BROWN);
 	for (i = 0; i < 4; i++) {
 		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(500) * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(12) * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.1f * zoom, sprite[MAP_DIORAMA_IMG + CASTLE_ADELINE], MAP_DIORAMA_IMG + CASTLE_ADELINE);
@@ -3294,14 +3294,14 @@ void CrewMenuDraw(int x, int y, float zoom)
 	sprintf(tempStr, "%d/%d", curTeamStar, castleStarLimit[robin.castle]);
 	CenterTextStr(tempStr, x + (float)568 * zoom, y - (float)128 * zoom, 1.0f * zoom);
 
-	//½½·Ô 6°³Â¥¸® ÀÌ¹ÌÁö¸¦ ±×·ÁÁØ´Ù.
+	//ìŠ¬ë¡¯ 6ê°œì§œë¦¬ ì´ë¯¸ì§€ë¥¼ ê·¸ë ¤ì¤€ë‹¤.
 	
 	DrawImage(1024, 220, 0, 217,
 		x + WINX / 2 - (float)1024 / 2 * 0.61f * zoom, y - (float)168 * zoom,
 		false, false, false, false, false,
 		0.61f * zoom, sprite[SLOT_IMG], SLOT_IMG);
 
-	//ÇöÀç ¼±ÅÃµÇ¾î ÀÖ´Â Ä³¸¯ÅÍ 6°³
+	//í˜„ì¬ ì„ íƒë˜ì–´ ìˆëŠ” ìºë¦­í„° 6ê°œ
 	for (i = 0; i < MAXCREW; i++) {
 		int slotX = x + (float)(16 + 102 * (i % MAXCREW)) * zoom;
 		int slotY = y - (float)(168 + 180 * (i / MAXCREW)) * zoom;
@@ -3381,7 +3381,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 	//DrawImage(174, 138, 293, 870, x + (float)(50 + (182 * (menuCur % 3))) * zoom, y - (float)(160 + 136 * (menuCur / 3)) * zoom, false, false, false, false, false, 1.0f * zoom, sprite[MENU_CREW_IMG], cvtDest, cvtLayer, MENU_CREW_IMG, buffering);
 	//SetAlpha(32);
 
-	// 2. Å©·ç ¸®½ºÆ®
+	// 2. í¬ë£¨ ë¦¬ìŠ¤íŠ¸
 	SetSectionClip(0, y - (float)320 * zoom, DX, WINY - (float)340 * zoom, false);
 
 	curHero = ROBIN;
@@ -3442,8 +3442,8 @@ void CrewMenuDraw(int x, int y, float zoom)
 			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
 
 			//ì†ì€ ì¹´ë“œ í•œê°€ìš´ë°ì—, í¬ê²Œ.
-			//DrawHand()¿¡ ³Ñ±â´Â ÁÂÇ¥°¡ ¼Õ ±×¸²ÀÇ ÁÂ»ó´ÜÀÌ¶ó, Áß¾ÓÀ» ±×³É ÁÖ¸é ¼ÕÀÌ
-			//Áß¾Ó¿¡¼­ ¿À¸¥ÂÊ ¾Æ·¡·Î »¸´Â´Ù. ÀÚ±â Å©±â¸¸Å­ ¿ŞÂÊ/À§·Î ¹°·Á ¼Õ³¡ÀÌ Áß¾Ó¿¡ ¿À°Ô ÇÑ´Ù.
+			//DrawHand()ì— ë„˜ê¸°ëŠ” ì¢Œí‘œê°€ ì† ê·¸ë¦¼ì˜ ì¢Œìƒë‹¨ì´ë¼, ì¤‘ì•™ì„ ê·¸ëƒ¥ ì£¼ë©´ ì†ì´
+			//ì¤‘ì•™ì—ì„œ ì˜¤ë¥¸ìª½ ì•„ë˜ë¡œ ë»—ëŠ”ë‹¤. ìê¸° í¬ê¸°ë§Œí¼ ì™¼ìª½/ìœ„ë¡œ ë¬¼ë ¤ ì†ëì´ ì¤‘ì•™ì— ì˜¤ê²Œ í•œë‹¤.
 			float handZoom = 2.4f;
 			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
 			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
@@ -3469,9 +3469,9 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 	UnSectionClip(false);
 
-	//ÃÖ¿Ü°¢ Å×µÎ¸®
+	//ìµœì™¸ê° í…Œë‘ë¦¬
 	MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK * zoom);
-	//±×¾È¿¡ Å×µÎ¸®
+	//ê·¸ì•ˆì— í…Œë‘ë¦¬
 	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x7653D3, INTTHICK);
 
 	switch (menuDepth) {
@@ -3479,7 +3479,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 		ResetRectPoint();
 		//ScreenDarken(SCREENDARKEN);
 		MemRect(x, y, WINX, WINY, 0xD8D6FB);
-		// 1. ¹è°æ ¹× Å« UI
+		// 1. ë°°ê²½ ë° í° UI
 		for (i = 0; i < 2; i++)
 			DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], crewMenuUiData[i * MENUUIDATACNT + 6]);
 
@@ -3502,9 +3502,9 @@ void CrewMenuDraw(int x, int y, float zoom)
 			MemRectFrameThick(x + (float)(80) * zoom - (hlW - (float)BUYBUTTON_X * zoom) / 2, y - (float)(694) * zoom - (hlH - (float)BUYBUTTON_Y * zoom) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X));
 		}
 
-		//ÃÖ¿Ü°¢ Å×µÎ¸®
+		//ìµœì™¸ê° í…Œë‘ë¦¬
 		MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK* zoom);
-		//±×¾È¿¡ Å×µÎ¸®
+		//ê·¸ì•ˆì— í…Œë‘ë¦¬
 		MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x7653D3, INTTHICK);
 
 		break;
@@ -3533,13 +3533,13 @@ bool IsCrewSet(int crewIdx)
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY)
 {
 	float zoom = zoomY;
-	//ÆĞ³Î ±×¸®±â
+	//íŒ¨ë„ ê·¸ë¦¬ê¸°
 	//DrawImage(buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 0], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 1], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 2], buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 3], x, y, false, false, false, false, false, zoom, sprite[buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 4]], cvtDest, cvtLayer, buttonImgData[color * BUTTON_TOTALSIZE * 5 + size * 5 + 4], buffering);
 	DrawImageScale(buttonImgData[color * 5 + 0], buttonImgData[color * 5 + 1], buttonImgData[color * 5 + 2], buttonImgData[color * 5 + 3], x, y, false, false, false, false, false, zoomX, zoomY, sprite[buttonImgData[color * 5 + 4]], buttonImgData[color * 5 + 4]);
 
-	//¾ÆÀÌÄÜ ±×¸®±â(ÀÏ´Ü »ı·«)
+	//ì•„ì´ì½˜ ê·¸ë¦¬ê¸°(ì¼ë‹¨ ìƒëµ)
 
-	//ÅØ½ºÆ® ±×¸®±â
+	//í…ìŠ¤íŠ¸ ê·¸ë¦¬ê¸°
 	if (text > 0) {
 		SetFontColor(COLOR_WHITE);
 		CenterText(text, x + (float)buttonImgData[color * 5 + 0] / 2 * zoomX, y - (float)3 * _2X * zoom, 1.2f * zoom);
@@ -3660,11 +3660,11 @@ void DrawItemCard(
 
 
 	//--------------------------------------------------------
-	// Ä«µå µŞ¸é °ø°³ ¾Ö´Ï¸ŞÀÌ¼Ç
+	// ì¹´ë“œ ë’·ë©´ ê³µê°œ ì• ë‹ˆë©”ì´ì…˜
 	//
 	// backFrame
-	// 0   : ±âÁ¸ Ä«µå ¾Õ¸é
-	// 1~7 : CARD_IMGÀÇ 0~6¹ø µŞ¸é ÀÌ¹ÌÁö
+	// 0   : ê¸°ì¡´ ì¹´ë“œ ì•ë©´
+	// 1~7 : CARD_IMGì˜ 0~6ë²ˆ ë’·ë©´ ì´ë¯¸ì§€
 	//--------------------------------------------------------
 	if (backFrame >= 1 && backFrame <= 7)
 	{
@@ -3728,7 +3728,7 @@ void DrawItemCard(
 			1.45f * zoom);
 	}
 	else {
-		//ÇöÀç ÇÃ·¹ÀÌ¸Ş´º¸é ±î¸Ä°Ô, ¾Æ´Ï¸é È¹µæÃ¢ÀÌ´Ï±î º¸¿©ÁØ´Ù.
+		//í˜„ì¬ í”Œë ˆì´ë©”ë‰´ë©´ ê¹Œë§£ê²Œ, ì•„ë‹ˆë©´ íšë“ì°½ì´ë‹ˆê¹Œ ë³´ì—¬ì¤€ë‹¤.
 		if (itemLv == 0 && drawHandle == MD_PLAY)
 			SetColor(COLOR_BLACK);
 			//grayScale = 32;
@@ -3836,10 +3836,10 @@ void DrawItemCard(
 				break;
 			default:
 				//------------------------------------------------
-		// ÇÏÆ® ¼ö·®
+		// í•˜íŠ¸ ìˆ˜ëŸ‰
 		//------------------------------------------------
 				DrawGoldNum(
-					itemCnt,  // ¾Æ·¡ ¼³¸í Âü°í
+					itemCnt,  // ì•„ë˜ ì„¤ëª… ì°¸ê³ 
 
 					x + (float)120 * zoom,
 					y - (float)50 * zoom,
@@ -3972,7 +3972,7 @@ void CollectionsDraw(int x, int y, float zoom)
 
 	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)280 * zoom, false, false, false, false, false, 1.0f * zoom, 1.7f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	//°ø°İ·Â
+	//ê³µê²©ë ¥
 	itemType = ITEM_SWORD;
 	itemDetail = ao[ROBIN].equip[EQUIP_WEAPON].detail;
 	itemGrade = ao[ROBIN].equip[EQUIP_WEAPON].grade;
@@ -3984,7 +3984,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	sprintf(tempStr, "%s@+%d", textId[TEXT_ATK], ao[ROBIN].ps[PS_DMG]);
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70) * zoom, (float)108 * zoom, -1, -1, zoom);
 	SetFontColor(COLOR_WHITE);
-	//¹æ¾î·Â
+	//ë°©ì–´ë ¥
 	itemType = ITEM_ARMOR;
 	itemDetail = ao[ROBIN].equip[EQUIP_ARMOR].detail;
 	itemGrade = ao[ROBIN].equip[EQUIP_ARMOR].grade;
@@ -3996,7 +3996,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	sprintf(tempStr, "%s@+%d", textId[TEXT_DEF], ao[ROBIN].ps[PS_ARMOR]);
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 2) * zoom, (float)108 * zoom, -1, -1, zoom);
 	SetFontColor(COLOR_WHITE);
-	//Ã¼·Â
+	//ì²´ë ¥
 	DrawImageScale(64, 64, 390, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 3) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	//DrawIcon(ICON_HEART, x + (float)(476 + 8) * zoom, y - (float)(220 + 12 + 70 * 3) * zoom, 1.2f * zoom, false, false, true, (float)1.0f * zoom, cvtDest, cvtLayer, buffering);
 	
@@ -4006,7 +4006,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 3) * zoom, (float)108 * zoom, -1, -1, zoom);
 	SetFontColor(COLOR_WHITE);
 
-	// 2. ¾ÆÀÌÅÛ Ä«Å×°í¸® ¸®½ºÆ®
+	// 2. ì•„ì´í…œ ì¹´í…Œê³ ë¦¬ ë¦¬ìŠ¤íŠ¸
 	
 	for (i = 0; i < EQUIP_NECK; i++) {
 		itemType = ITEM_SWORD + i * 3;
@@ -4018,7 +4018,7 @@ void CollectionsDraw(int x, int y, float zoom)
 			SetRectPoint(x + (float)(34 + i * 96) * zoom, y - (float)(508) * zoom, (float)80 * zoom, (float)48 * zoom, TOUCH_FUNC_MENUX_1 + i);
 	}
 
-	// 3. Àåºñ ¸®½ºÆ®
+	// 3. ì¥ë¹„ ë¦¬ìŠ¤íŠ¸
 	SetSectionClip(0, y - (float)560 * zoom, DX, WINY - (float)600 * zoom, false);
 
 	curHero = ROBIN;
@@ -4076,9 +4076,9 @@ void CollectionsDraw(int x, int y, float zoom)
 
 	UnSectionClip(false);
 
-	//ÃÖ¿Ü°¢ Å×µÎ¸®
+	//ìµœì™¸ê° í…Œë‘ë¦¬
 	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
-	//±×¾È¿¡ Å×µÎ¸®
+	//ê·¸ì•ˆì— í…Œë‘ë¦¬
 	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
 
 	switch (menuDepth) {
@@ -4096,9 +4096,9 @@ void CollectionsDraw(int x, int y, float zoom)
 			
 			//EquipInfoDraw(&ao[curHero].equip[menuX], x, y - 500, robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade, /*menuDepth - 2*/0, menuX, 1.0f, cvtDest, cvtLayer, buffering);
 
-			//ÃÖ¿Ü°¢ Å×µÎ¸®
+			//ìµœì™¸ê° í…Œë‘ë¦¬
 			MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
-			//±×¾È¿¡ Å×µÎ¸®
+			//ê·¸ì•ˆì— í…Œë‘ë¦¬
 			MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
 
 			break;
@@ -4143,8 +4143,8 @@ void CollectionsDraw(int x, int y, float zoom)
 
 
 	switch (menuDepth) {
-		//»ó¼¼º¸±â
-		//menuItem À¸·Î ÇÏÀÚ.
+		//ìƒì„¸ë³´ê¸°
+		//menuItem ìœ¼ë¡œ í•˜ì.
 		//
 	case 1:
 		ScreenDarken(SCREENDARKEN);
@@ -4177,13 +4177,13 @@ void CollectionsDraw(int x, int y, float zoom)
 	}
 
 	switch (menuCur) {
-		//È÷¾î·Î
+		//íˆì–´ë¡œ
 	case COLLECTIONMENU_EQUIP:
 
 		HeroStatDraw(&ao[curHero], x + (float)0 * _2X * zoom, y + scY[MENU_COLLECTIONS] - (float)52 * _2X * zoom, zoom);
 
 		break;
-		//½ºÅ³
+		//ìŠ¤í‚¬
 	}
 
 
@@ -4245,23 +4245,23 @@ void CollectionsDraw(int x, int y, float zoom)
 				}
 
 
-			//¸îºĞÀÇ ¸îÀ» ¸ğ¾Ò´ÂÁö¸¦ º¸¿©ÁÖ´Â 
+			//ëª‡ë¶„ì˜ ëª‡ì„ ëª¨ì•˜ëŠ”ì§€ë¥¼ ë³´ì—¬ì£¼ëŠ” 
 			if (setItemCnt > 0) {
 				DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
 				DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f);
 				DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
 			}
-			//6°³°¡ ´Ù ÀåÂøµÇ¾î ÀÖ¾î¼­ ½ºÅ³ÀÌ È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é
+			//6ê°œê°€ ë‹¤ ì¥ì°©ë˜ì–´ ìˆì–´ì„œ ìŠ¤í‚¬ì´ í™œì„±í™” ë˜ì–´ ìˆìœ¼ë©´
 			if (GetFullEquipedCollectionIdx() == i)
 				DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X, 0, 1.0f);
-			//¸¸¾à 6°³°¡ ´Ù ¸ğ¿©¸¸ ÀÖÀ¸¸é
+			//ë§Œì•½ 6ê°œê°€ ë‹¤ ëª¨ì—¬ë§Œ ìˆìœ¼ë©´
 			else if (setItemCnt == COLLECTIONSITEMCNT) {
-				//¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù.
+				//ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 			}
 			else if (setItemCnt > 0) {
-				//¾Æ¹«°Íµµ ÇÏÁö ¾Ê´Â´Ù.
+				//ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 			}
-			//¾Æ¹«°Íµµ ¾øÀ¸¸é
+			//ì•„ë¬´ê²ƒë„ ì—†ìœ¼ë©´
 			else
 				DrawIcon(ICON_EVENT_LOCK, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X - 12 * _2X - 52 * _2X, 2.0f, false, false, false, true);
 
@@ -4301,8 +4301,8 @@ void CollectionsDraw(int x, int y, float zoom)
 		DrawNum(collectionReward[menuCur * 4 + 3], x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2 + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom, (y - 400 * _2X - 26 * _2X) * zoom / 2, NUM_FONT_LARGE, LEFT, 0, false, true, 1.5f * zoom / 2, true);
 		grayScale = 0;
 
-		//¸ğµÎ ÀåÂø
-		//¾ÆÁ÷ ÀåÂøµÇÁö ¾Ê°í 
+		//ëª¨ë‘ ì¥ì°©
+		//ì•„ì§ ì¥ì°©ë˜ì§€ ì•Šê³  
 		if (GetFullEquipedCollectionIdx() != menuCur && IsCollectionFull(menuCur) == true) {
 			DrawTextButton(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, 0, false, 1, false, TEXT_EQUIPALL);
 			SetRectPoint(x + DX / 2 - 40 * _2X, y - 410 * _2X - 46 * _2X - 12 * _2X, 80 * _2X, 28 * _2X, TOUCH_FUNC_EQUIPALL + menuCur);
@@ -4406,7 +4406,7 @@ void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 			sprintf(tempStr, "%s", TEXTPTR(TEXT_NOTACQUIRED));
 		}
 		else {
-			//·¹º§Ç¥½Ã
+			//ë ˆë²¨í‘œì‹œ
 			sprintf(tempStr, TEXTPTR(TEXT_ALPHA_LV), itemLv + 1);
 		}
 		//DrawText(TEXT_LV, x + w / 2 - 24 * _2X, y - REWARDCARDSIZE_Y + 32 * _2X, cvtDest, cvtLayer, buffering);
@@ -4415,8 +4415,8 @@ void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 		DrawLabel(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + 8 * _2X) * zoom, y + (float)(-(i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 40 * _2X) - 88 * _2X - TSIZE * 3 - 4 * _2X) * zoom, itemIdx == -1 ? TEXT_QUESTION : TEXT_ITEMNAME_START + GetItemName(itemType, itemDetail, itemGrade), zoom);
 	}
 
-	//ÄÃ·º¼Ç ±â´É ±×¸®±â
-	//¼¼Æ®½ºÅ³Àº º°µµ·Î Ç¥½ÃÇØµÎÁö ¾Ê´Â´Ù.
+	//ì»¬ë ‰ì…˜ ê¸°ëŠ¥ ê·¸ë¦¬ê¸°
+	//ì„¸íŠ¸ìŠ¤í‚¬ì€ ë³„ë„ë¡œ í‘œì‹œí•´ë‘ì§€ ì•ŠëŠ”ë‹¤.
 
 
 }
@@ -4441,9 +4441,9 @@ void ShopDraw(int x, int y, float zoom)
 	CenterText(TEXT_SHOP_BUY, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom);
 	//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
-	//ÃÖ¿Ü°¢ Å×µÎ¸®
+	//ìµœì™¸ê° í…Œë‘ë¦¬
 	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
-	//±×¾È¿¡ Å×µÎ¸®
+	//ê·¸ì•ˆì— í…Œë‘ë¦¬
 	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
 
 	return;
@@ -4454,7 +4454,7 @@ void ShopDraw(int x, int y, float zoom)
 	case 0:
 		switch (menuIdx) {
 		default:
-			//»ó´ÜÀÇ ÆË¾÷½ºÅä¾î
+			//ìƒë‹¨ì˜ íŒì—…ìŠ¤í† ì–´
 			for (i = 0; i < TOTALPOPUPSTORE; i++) {
 				DrawFrame(x + (float)32 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y, (float)(DX - 64 * _2X) * zoom, (float)POPUPSTORE_Y * zoom, FRAME_SHOPBALLOON);
 				DrawNumTTF(i + 1, x + (float)34 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y - (float)2 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, false, 1.0f, false);
@@ -4476,7 +4476,7 @@ void ShopDraw(int x, int y, float zoom)
 			}
 
 			return;
-			//ÇÏÆ®»óÇ° 6°³
+			//í•˜íŠ¸ìƒí’ˆ 6ê°œ
 			//y -= GNBHEIGHT;
 
 			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_SHOP_HEART_TITLE, zoom);
@@ -4488,16 +4488,16 @@ void ShopDraw(int x, int y, float zoom)
 
 				DrawImage(72 * _2X, 64 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 72 * _2X) / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 88 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[HEART_0_IMG + i], HEART_0_IMG + i);
 
-				//ÇÏÆ®¼ö·®
+				//í•˜íŠ¸ìˆ˜ëŸ‰
 				DrawNum(currencyShop[0 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT) * (i / 3)) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true);
 
 				if (currencyShop[0 * 7 + i * 7 + 2]) {
 					memset(tempStr, 0, sizeof(tempStr));
 					sprintf(tempStr, "+%d%%", currencyShop[0 * 7 + i * 7 + 2]);
-					//º¸³Ê½º ¼ıÀÚ
+					//ë³´ë„ˆìŠ¤ ìˆ«ì
 					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 36 * _2X) * zoom, zoom);
 				}
-				//¾ÆÀÌÄÜ
+				//ì•„ì´ì½˜
 
 				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
 
@@ -4506,7 +4506,7 @@ void ShopDraw(int x, int y, float zoom)
 
 			y -= (float)(208 * _2X) * zoom;
 
-			//Àåºñ»Ì±â 3Á¾
+			//ì¥ë¹„ë½‘ê¸° 3ì¢…
 			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_GACHA_TITLE, zoom);
 
 			for (i = 0; i < 3; i++) {
@@ -4528,13 +4528,13 @@ void ShopDraw(int x, int y, float zoom)
 			for (i = 0; i < 3; i++) {
 				DrawImage(64 * _2X, 52 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 64 * _2X) / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 52 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[COIN_0_IMG + 3 + i], COIN_0_IMG + 3 + i);
 
-				//ÄÚÀÎ¼ö·®
+				//ì½”ì¸ìˆ˜ëŸ‰
 				DrawNum(currencyShop[9 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 8 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true);
 
 				if (currencyShop[9 * 7 + i * 7 + 2]) {
 					memset(tempStr, 0, sizeof(tempStr));
 					sprintf(tempStr, "+%d%%", currencyShop[9 * 7 + i * 7 + 2]);
-					//º¸³Ê½º ¼ıÀÚ
+					//ë³´ë„ˆìŠ¤ ìˆ«ì
 					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, zoom);
 				}
 
@@ -4571,14 +4571,14 @@ void CastleMenuDraw(int x, int y, float zoom)
 	CenterText(TEXT_CASTLE, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom);
 	CenterText(TEXT_CASTLE_LISTSELECT, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom);
 	//CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom, cvtDest, cvtLayer, buffering);
-	//ÇöÀç ¼º
+	//í˜„ì¬ ì„±
 	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)(132) * zoom, false, false, false, false, false, 4.9f * zoom, 2.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)16 * zoom, y - (float)124 * zoom, false, false, false, false, false, 0.25f * zoom, sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]], MAP_DIORAMA_IMG + castleOrder[robin.castle]);
 	DrawImageScale(176, 40, 1, 679, x + (float)280 * zoom, y - (float)(132 + 12) * zoom, false, false, false, false, false, 1.2f * zoom, 1.2f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	CenterText(TEXT_CASTLE_TOLEM + castleOrder[robin.castle], x + (float)280 * zoom + (float)106 * zoom, y - (float)(132 + 20) * zoom, 1.2f * zoom);
 
 
-	//¸®½ºÆ®ÀÇ ¼º
+	//ë¦¬ìŠ¤íŠ¸ì˜ ì„±
 	int slotX;
 	int slotY = y - (float)(400 + CASTLE_GAP_Y * 0) * zoom;
 
@@ -4599,16 +4599,16 @@ void CastleMenuDraw(int x, int y, float zoom)
 		CenterText(TEXT_CASTLE_TOLEM + castleOrder[i], slotX + (float)240 * zoom, slotY - (float)12 * zoom, 1.2f * zoom);
 		//SetFontColor(COLOR_WHITE);
 
-		//ÃÖ´ë µ¿·á º°
+		//ìµœëŒ€ ë™ë£Œ ë³„
 		//DrawIcon(ICON_STAR, slotX + (float)152 * zoom, slotY - (float)60 * zoom, 1.0f * zoom, COLOR_BROWN, false, false, 1 * _2X, cvtDest, cvtLayer, buffering);
 		//DrawNum2AutoSpaceing(castleStarLimit[i], slotX + (float)200 * zoom, slotY - (float)64 * zoom, LEFT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.5f * zoom, true, true, cvtDest, cvtLayer, buffering);
 
-		//»óÀÚ
+		//ìƒì
 		DrawImageScale(128, 128, 587, 737, slotX + (float)350 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 		DrawBox(BOX_CASTLE0 + castleOrder[i], slotX + (float)400 * zoom, slotY - (float)108 * zoom, LEFT, 0, false, false, false, false, BOXCASTLEZOOM * 0.9f);
 
 		GoldBarDraw(castleBoxGold[castleOrder[i]], ICON_GOLD, slotX + (float)332 * zoom, slotY - (float)108 * zoom, false, 0.6f * zoom);
-		//È¹µæ½Ã Ä³¸¯ÅÍ
+		//íšë“ì‹œ ìºë¦­í„°
 		//DrawImageScale(128, 128, 587, 737, slotX + (float)480 * zoom, slotY - (float)8 * zoom, false, false, false, false, false, 0.8f * zoom, 0.8f * zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 		DrawItemCard(ITEM_CREW, i * 2, GRADE_NORMAL, 1, 1, false, slotX + (float)480 * zoom, slotY + (float)8 * zoom, TEXT_ALPHA_REWARD, CARDDEFAULTZOOM * 0.8f * zoom, false, false, false, false, 0);
 	}
@@ -4623,9 +4623,9 @@ void CastleMenuDraw(int x, int y, float zoom)
 
 	UnSectionClip(false);
 
-	//ÃÖ¿Ü°¢ Å×µÎ¸®
+	//ìµœì™¸ê° í…Œë‘ë¦¬
 	MemRectFrameThick(x, y, WINX, WINY, 0x052F6C, (float)OUTTHICK * zoom);
-	//±×¾È¿¡ Å×µÎ¸®
+	//ê·¸ì•ˆì— í…Œë‘ë¦¬
 	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x0C459B, INTTHICK);
 
 	return;

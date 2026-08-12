@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 // =============================================================
 // AUTO GENERATED - DO NOT EDIT
 // Source : Definitions.xlsx
@@ -8,48 +8,48 @@
 
 
 // ---
-#define PLAYERCNT                  1              // ÇÃ·¹ÀÌ¾î ¼ö
-#define NULL                       0              // ³Î °ª
-#define EMPTY                      0xFF           // ºó ½½·Ô (unsigned char)
-#define EMPTYINT                   0xFFFFFF       // ºó ½½·Ô (int)
-#define MAXLV                      65535          // ÃÖ´ë ·¹º§
-#define SOLDOUT                    1              // ¸ÅÁø »óÅÂ
-#define SLOTEMPTY                  -1             // ½½·Ô ºñ¾îÀÖÀ½
-#define SKILLPER                   1              // ½ºÅ³ ÆÛ¼¾Æ® ´ÜÀ§
-#define TOTALWARPCAVE              234            // ÀüÃ¼ ¿öÇÁ µ¿±¼ ¼ö
+#define PLAYERCNT                  1              // í”Œë ˆì´ì–´ ìˆ˜
+#define NULL                       0              // ë„ ê°’
+#define EMPTY                      0xFF           // ë¹ˆ ìŠ¬ë¡¯ (unsigned char)
+#define EMPTYINT                   0xFFFFFF       // ë¹ˆ ìŠ¬ë¡¯ (int)
+#define MAXLV                      65535          // ìµœëŒ€ ë ˆë²¨
+#define SOLDOUT                    1              // ë§¤ì§„ ìƒíƒœ
+#define SLOTEMPTY                  -1             // ìŠ¬ë¡¯ ë¹„ì–´ìˆìŒ
+#define SKILLPER                   1              // ìŠ¤í‚¬ í¼ì„¼íŠ¸ ë‹¨ìœ„
+#define TOTALWARPCAVE              234            // ì „ì²´ ì›Œí”„ ë™êµ´ ìˆ˜
 
 // ---
-#define _1X                        1              // 1¹èÀ²
-#define _2X                        2              // 2¹èÀ²
-#define _3X                        3              // 3¹èÀ²
-#define _4X                        4              // 4¹èÀ²
-#define _5X                        5              // 5¹èÀ²
-#define _6X                        6              // 6¹èÀ²
-#define _7X                        7              // 7¹èÀ²
-#define _8X                        8              // 8¹èÀ²
+#define _1X                        1              // 1ë°°ìœ¨
+#define _2X                        2              // 2ë°°ìœ¨
+#define _3X                        3              // 3ë°°ìœ¨
+#define _4X                        4              // 4ë°°ìœ¨
+#define _5X                        5              // 5ë°°ìœ¨
+#define _6X                        6              // 6ë°°ìœ¨
+#define _7X                        7              // 7ë°°ìœ¨
+#define _8X                        8              // 8ë°°ìœ¨
 
 // ---
-#define JOYSTICK                   0              // Á¶ÀÌ½ºÆ½ ÀÔ·Â ¸ğµå
-#define PUSHBUTTON                 1              // ¹öÆ° ÀÔ·Â ¸ğµå
+#define JOYSTICK                   0              // ì¡°ì´ìŠ¤í‹± ì…ë ¥ ëª¨ë“œ
+#define PUSHBUTTON                 1              // ë²„íŠ¼ ì…ë ¥ ëª¨ë“œ
 
 // ---
-#define CUTOFF0                    0              // ÄÆ¿ÀÇÁ ¾øÀ½
-#define CUTOFF2                    1              // ÄÆ¿ÀÇÁ 2´Ü°è
-#define CUTOFF5                    2              // ÄÆ¿ÀÇÁ 5´Ü°è
-#define MINMUMCUTOFFPLAYER         6              // ÃÖ¼Ò ÄÆ¿ÀÇÁ ÇÃ·¹ÀÌ¾î ¼ö
+#define CUTOFF0                    0              // ì»·ì˜¤í”„ ì—†ìŒ
+#define CUTOFF2                    1              // ì»·ì˜¤í”„ 2ë‹¨ê³„
+#define CUTOFF5                    2              // ì»·ì˜¤í”„ 5ë‹¨ê³„
+#define MINMUMCUTOFFPLAYER         6              // ìµœì†Œ ì»·ì˜¤í”„ í”Œë ˆì´ì–´ ìˆ˜
 
 // ---
-#define SWIPE_DISTANCE_X           4 * _2X                  // ½º¿ÍÀÌÇÁ X °Å¸®
-#define SWIPE_DISTANCE_Y           4 * _2X                  // ½º¿ÍÀÌÇÁ Y °Å¸®
-#define CONCENTRATE_Y              -36 * _2X                // ÁıÁß Y ¿ÀÇÁ¼Â
+#define SWIPE_DISTANCE_X           4 * _2X                  // ìŠ¤ì™€ì´í”„ X ê±°ë¦¬
+#define SWIPE_DISTANCE_Y           4 * _2X                  // ìŠ¤ì™€ì´í”„ Y ê±°ë¦¬
+#define CONCENTRATE_Y              -36 * _2X                // ì§‘ì¤‘ Y ì˜¤í”„ì…‹
 
 // ---
-#define STARTFROMTENPLAYER         0              // 10¸íºÎÅÍ ½ÃÀÛ
-#define STARTFROMONEPLAYER         1              // 1¸íºÎÅÍ ½ÃÀÛ
+#define STARTFROMTENPLAYER         0              // 10ëª…ë¶€í„° ì‹œì‘
+#define STARTFROMONEPLAYER         1              // 1ëª…ë¶€í„° ì‹œì‘
 
 // ---
-#define EFFECT_ONLY_PLAYER         false          // ÇÃ·¹ÀÌ¾î¸¸ ÀÌÆåÆ® Àû¿ë
-#define LOCALSAVE                      // ·ÎÄÃ ÀúÀå È°¼ºÈ­
+#define EFFECT_ONLY_PLAYER         false          // í”Œë ˆì´ì–´ë§Œ ì´í™íŠ¸ ì ìš©
+#define LOCALSAVE                      // ë¡œì»¬ ì €ì¥ í™œì„±í™”
 
-#define MAXTURN						3//ÀüÅõ½Ã ¸Æ½ºÅÏ				
+#define MAXTURN						3//ì „íˆ¬ì‹œ ë§¥ìŠ¤í„´				
 // ---

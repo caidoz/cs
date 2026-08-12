@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_CMF_H_
 #define _DEF_CMF_H_
 
 typedef enum _cmfDef {
-	//CMF ?�파??
+	//CMF ?뷀뙆??
 	CMF_SNAIL = 3,//o
 	CMF_TREE, //4//o
 	CMF_FROG, //5//o
@@ -50,33 +50,33 @@ typedef enum _cmfDef {
 	CMF_CASTLE2,//45//o
 	CMF_SPACE1,//46//o
 	CMF_SPACE2,//47//o
-	CMF_CASTLE_BOSS1,//?�브리온48//o
-	CMF_CASTLE_BOSS2,//?��???맨티??9//o
-	CMF_CASTLE_BOSS3,//?�트?�쿤50//o
-	CMF_CASTLE_BOSS4,//?�크?�이??1//o
+	CMF_CASTLE_BOSS1,//?곕툕由ъ삩48//o
+	CMF_CASTLE_BOSS2,//?섏???留⑦떚??9//o
+	CMF_CASTLE_BOSS3,//?뚰듃?쇱엘50//o
+	CMF_CASTLE_BOSS4,//?ㅽ겕?섏씠??1//o
 
-	CMF_NPC_CAPTAIN,//c52//?�장 o
-	CMF_NPC_CREW,//c53//?�원 o
-	CMF_NPC_GRANDFA,//c54//?�아버�? o
-	CMF_NPC_UNCLE,//c55//?��???o
-	CMF_NPC_AUNT,//c56//?�줌�?o
-	CMF_NPC_MAN,//c57//?�경?�청??o
-	CMF_NPC_WOMAN,//c58//처�? o
+	CMF_NPC_CAPTAIN,//c52//?좎옣 o
+	CMF_NPC_CREW,//c53//?좎썝 o
+	CMF_NPC_GRANDFA,//c54//?좎븘踰꾩? o
+	CMF_NPC_UNCLE,//c55//?꾩???o
+	CMF_NPC_AUNT,//c56//?꾩쨲留?o
+	CMF_NPC_MAN,//c57//?먭꼍?⑥껌??o
+	CMF_NPC_WOMAN,//c58//泥섎? o
 	CMF_NPC_BOY,//c59//꼬마??o
-	CMF_NPC_GIRL,//c60//꼬마?� o
-	CMF_NPC_ALMA,//c61//?�마 o
-	CMF_NPC_ITEM,//c62//?�번 o
+	CMF_NPC_GIRL,//c60//瑗щ쭏?� o
+	CMF_NPC_ALMA,//c61//?뚮쭏 o
+	CMF_NPC_ITEM,//c62//?곕쾲 o
 	CMF_NPC_FATMAN,//c63 o
 	CMF_NPC_BUNNYGIRL,//c64 o
-	CMF_NPC_KNIGHT,//c65//?�레?� o
+	CMF_NPC_KNIGHT,//c65//?뚮젅?� o
 	CMF_NPC_DOG,//c66 o
 	CMF_NPC_MERCHANT,//c67
 	CMF_NPC_CRAFTMAN,//c68 o
 	CMF_NPC_MAP,//c69 o
-	CMF_NPC_USERQUEST,//c70//?�튜?�디??o
-	CMF_NPC_TRAVEL,//c71//?�국?�여?�자 o
-	CMF_NPC_GRANDMA,//c72//?�머??o
-	CMF_NPC_FISHING,//c73//?�피 o
+	CMF_NPC_USERQUEST,//c70//?ㅽ뒠?대뵒??o
+	CMF_NPC_TRAVEL,//c71//?닿뎅?섏뿬?됱옄 o
+	CMF_NPC_GRANDMA,//c72//?좊㉧??o
+	CMF_NPC_FISHING,//c73//?쇳뵾 o
 	CMF_NPC_INN,//c74
 	CMF_NPC_NETITEM,//c75 o
 	CMF_NPC_MILESE,//c76 o
@@ -85,49 +85,49 @@ typedef enum _cmfDef {
 	CMF_NPC_MONICA,//c79 o
 	CMF_NPC_SHIP,//c80
 
-	CMF_NPC_SEASOLDIER,//c81//?��??�병사 o
+	CMF_NPC_SEASOLDIER,//c81//?꾪??�蹂묒궗 o
 	CMF_NPC_FRAUD,//c82 o
 	CMF_NPC_DARIAN,//c83 o
 	CMF_NPC_LUISE,//c84 o
-	CMF_NPC_SEAUNCLE,//c85//?��??�?��???o
-	CMF_NPC_SEABOY,//c86//?��??�?�년 o
-	CMF_NPC_DONALD,//c87//?�소�?o
+	CMF_NPC_SEAUNCLE,//c85//?꾪??�?꾩???o
+	CMF_NPC_SEABOY,//c86//?꾪??�?뚮뀈 o
+	CMF_NPC_DONALD,//c87//?댁냼猷?o
 
-	CMF_NPC_SCHOLAR,//c88//?�자 o
-	CMF_NPC_CHEF,//c89//?�리?�가 o
-	CMF_NPC_BISTRO,//c90//비스?�로 o
-	CMF_NPC_MAID,//c91//?��? o
+	CMF_NPC_SCHOLAR,//c88//?숈옄 o
+	CMF_NPC_CHEF,//c89//?붾━?�媛� o
+	CMF_NPC_BISTRO,//c90//鍮꾩뒪?몃줈 o
+	CMF_NPC_MAID,//c91//?쒕? o
 	CMF_NPC_ADELKNIGHT,//c92//기사 o
-	CMF_NPC_SEBASTIAN,//c93//?�바?�찬 o
-	CMF_NPC_NOBLEMAN,//c94//귀족아?�??o
-	CMF_NPC_DELPIOS,//c95//?�피?�스 o
+	CMF_NPC_SEBASTIAN,//c93//?몃컮?ㅼ갔 o
+	CMF_NPC_NOBLEMAN,//c94//洹�議깆븘?�??o
+	CMF_NPC_DELPIOS,//c95//?명뵾?ㅼ뒪 o
 	CMF_NPC_LORA,//c96//로라 o
-	CMF_NPC_WITCH,//c97//마�? o
-	CMF_NPC_ELFGRANDFA,//c98//?�프?�아버�? o
-	CMF_NPC_ELFUNCLE,//c99//?�프?��???o
-	CMF_NPC_ELFAUNT,//c100//?�프?�줌�?o
-	CMF_NPC_ELFMAN,//c101//?�프�?�� o
-	CMF_NPC_ELFWOMAN,//c102//?�프처�? o
-	CMF_NPC_ELFBOY,//c103//?�프꼬마??o
-	CMF_NPC_ELFGIRL,//c104//?�프꼬마?� o
-	CMF_NPC_ELFDARK,//c105//?�프?�크 o
-	CMF_NPC_ELFMAGIC,//c106//?�프마법??o
-	CMF_NPC_ELFDANCER,//c107//?�프무희 o
-	CMF_NPC_OWL,//c108//부?�이 o
-	CMF_NPC_LABETH,//c109//?�베??o
-	CMF_NPC_ELKEIN,//c110//?��???o
-	CMF_NPC_ELEIN,//c111//?�레??o
-	CMF_NPC_EVAN,//c112//?�번 o
-	CMF_NPC_TABLE,//c113//?�이�?/o//NPC_BEAD
-	CMF_NPC_FOUNTAIN,//c114//?�물//o
-	CMF_NPC_NEZAR,//c115//?�자�?o
-	CMF_NPC_GALLAND,//c116//갈�???/o
-	CMF_NPC_DURAK,//c117//?�?�크 o
-	CMF_NPC_KING,//c118//?�드몬드 o
-	CMF_NPC_WOMANGHOST,//c119//?�자?�령 o
-	CMF_NPC_MANGHOST,//c120//?�자?�령 o
-	CMF_NPC_AUSTIN,//c121//?�스???�령) o
-	CMF_NPC_HEART,//c122//마왕???�장 o
+	CMF_NPC_WITCH,//c97//留덈? o
+	CMF_NPC_ELFGRANDFA,//c98//?섑봽?좎븘踰꾩? o
+	CMF_NPC_ELFUNCLE,//c99//?섑봽?꾩???o
+	CMF_NPC_ELFAUNT,//c100//?섑봽?꾩쨲留?o
+	CMF_NPC_ELFMAN,//c101//?섑봽泥?뀈 o
+	CMF_NPC_ELFWOMAN,//c102//?섑봽泥섎? o
+	CMF_NPC_ELFBOY,//c103//?섑봽瑗щ쭏??o
+	CMF_NPC_ELFGIRL,//c104//?섑봽瑗щ쭏?� o
+	CMF_NPC_ELFDARK,//c105//?섑봽?ㅽ겕 o
+	CMF_NPC_ELFMAGIC,//c106//?섑봽留덈쾿??o
+	CMF_NPC_ELFDANCER,//c107//?섑봽臾댄씗 o
+	CMF_NPC_OWL,//c108//遺�?됱씠 o
+	CMF_NPC_LABETH,//c109//?쇰쿋??o
+	CMF_NPC_ELKEIN,//c110//?섏???o
+	CMF_NPC_ELEIN,//c111//?섎젅??o
+	CMF_NPC_EVAN,//c112//?먮쾲 o
+	CMF_NPC_TABLE,//c113//?뚯씠釉?/o//NPC_BEAD
+	CMF_NPC_FOUNTAIN,//c114//?섎Ъ//o
+	CMF_NPC_NEZAR,//c115//?ㅼ옄瑜?o
+	CMF_NPC_GALLAND,//c116//媛덈???/o
+	CMF_NPC_DURAK,//c117//?�?쇳겕 o
+	CMF_NPC_KING,//c118//?먮뱶紐щ뱶 o
+	CMF_NPC_WOMANGHOST,//c119//?ъ옄?좊졊 o
+	CMF_NPC_MANGHOST,//c120//?⑥옄?좊졊 o
+	CMF_NPC_AUSTIN,//c121//?ㅼ뒪???좊졊) o
+	CMF_NPC_HEART,//c122//留덉솗???ъ옣 o
 
 	CMF_SNAIL_RED, //123//3
 	CMF_SNAIL_BLUE, //124//3
@@ -444,47 +444,47 @@ typedef enum _cmfDef {
 	CMF_SPACE2_GOLD,//391//47
 	CMF_SPACE2_BLACK,//392//47
 
-	CMF_CASTLE_BOSS1_RED,//393//?�브리온48
-	CMF_CASTLE_BOSS1_BLUE,//394//?�브리온48
-	CMF_CASTLE_BOSS1_PURPLE,//395//?�브리온48
-	CMF_CASTLE_BOSS1_GREEN,//396//?�브리온48
-	CMF_CASTLE_BOSS1_GOLD,//397//?�브리온48
-	CMF_CASTLE_BOSS1_BLACK,//398//?�브리온48
+	CMF_CASTLE_BOSS1_RED,//393//?곕툕由ъ삩48
+	CMF_CASTLE_BOSS1_BLUE,//394//?곕툕由ъ삩48
+	CMF_CASTLE_BOSS1_PURPLE,//395//?곕툕由ъ삩48
+	CMF_CASTLE_BOSS1_GREEN,//396//?곕툕由ъ삩48
+	CMF_CASTLE_BOSS1_GOLD,//397//?곕툕由ъ삩48
+	CMF_CASTLE_BOSS1_BLACK,//398//?곕툕由ъ삩48
 
-	CMF_CASTLE_BOSS2_RED,//399//?��???맨티??9
-	CMF_CASTLE_BOSS2_BLUE,//400//?��???맨티??9
-	CMF_CASTLE_BOSS2_PURPLE,//401//?��???맨티??9
-	CMF_CASTLE_BOSS2_GREEN,//402//?��???맨티??9
-	CMF_CASTLE_BOSS2_GOLD,//403//?��???맨티??9
-	CMF_CASTLE_BOSS2_BLACK,//404//?��???맨티??9
+	CMF_CASTLE_BOSS2_RED,//399//?섏???留⑦떚??9
+	CMF_CASTLE_BOSS2_BLUE,//400//?섏???留⑦떚??9
+	CMF_CASTLE_BOSS2_PURPLE,//401//?섏???留⑦떚??9
+	CMF_CASTLE_BOSS2_GREEN,//402//?섏???留⑦떚??9
+	CMF_CASTLE_BOSS2_GOLD,//403//?섏???留⑦떚??9
+	CMF_CASTLE_BOSS2_BLACK,//404//?섏???留⑦떚??9
 
-	CMF_CASTLE_BOSS3_RED,//405//?�트?�쿤50
-	CMF_CASTLE_BOSS3_BLUE,//406//?�트?�쿤50
-	CMF_CASTLE_BOSS3_PURPLE,//407//?�트?�쿤50
-	CMF_CASTLE_BOSS3_GREEN,//408//?�트?�쿤50
-	CMF_CASTLE_BOSS3_GOLD,//409//?�트?�쿤50
-	CMF_CASTLE_BOSS3_BLACK,//410//?�트?�쿤50
+	CMF_CASTLE_BOSS3_RED,//405//?뚰듃?쇱엘50
+	CMF_CASTLE_BOSS3_BLUE,//406//?뚰듃?쇱엘50
+	CMF_CASTLE_BOSS3_PURPLE,//407//?뚰듃?쇱엘50
+	CMF_CASTLE_BOSS3_GREEN,//408//?뚰듃?쇱엘50
+	CMF_CASTLE_BOSS3_GOLD,//409//?뚰듃?쇱엘50
+	CMF_CASTLE_BOSS3_BLACK,//410//?뚰듃?쇱엘50
 
-	CMF_CASTLE_BOSS4_RED,//411//?�크?�이??1
-	CMF_CASTLE_BOSS4_BLUE,//412//?�크?�이??1
-	CMF_CASTLE_BOSS4_PURPLE,//413//?�크?�이??1
-	CMF_CASTLE_BOSS4_GREEN,//414//?�크?�이??1
-	CMF_CASTLE_BOSS4_GOLD,//415//?�크?�이??1
-	CMF_CASTLE_BOSS4_BLACK,//416//?�크?�이??1
+	CMF_CASTLE_BOSS4_RED,//411//?ㅽ겕?섏씠??1
+	CMF_CASTLE_BOSS4_BLUE,//412//?ㅽ겕?섏씠??1
+	CMF_CASTLE_BOSS4_PURPLE,//413//?ㅽ겕?섏씠??1
+	CMF_CASTLE_BOSS4_GREEN,//414//?ㅽ겕?섏씠??1
+	CMF_CASTLE_BOSS4_GOLD,//415//?ㅽ겕?섏씠??1
+	CMF_CASTLE_BOSS4_BLACK,//416//?ㅽ겕?섏씠??1
 
-	CMF_NPC_LABETH_RED,//417//c109//?�베??
-	CMF_NPC_LABETH_BLUE,//418//c109//?�베??
-	CMF_NPC_LABETH_PURPLE,//419//c109//?�베??
-	CMF_NPC_LABETH_GREEN,//420//c109//?�베??
-	CMF_NPC_LABETH_GOLD,//421//c109//?�베??
-	CMF_NPC_LABETH_BLACK,//422//c109//?�베??
+	CMF_NPC_LABETH_RED,//417//c109//?쇰쿋??
+	CMF_NPC_LABETH_BLUE,//418//c109//?쇰쿋??
+	CMF_NPC_LABETH_PURPLE,//419//c109//?쇰쿋??
+	CMF_NPC_LABETH_GREEN,//420//c109//?쇰쿋??
+	CMF_NPC_LABETH_GOLD,//421//c109//?쇰쿋??
+	CMF_NPC_LABETH_BLACK,//422//c109//?쇰쿋??
 
-	CMF_NPC_ELKEIN_RED,//423//c110//?��???
-	CMF_NPC_ELKEIN_BLUE,//424//c110//?��???
-	CMF_NPC_ELKEIN_PURPLE,//425//c110//?��???
-	CMF_NPC_ELKEIN_GREEN,//426//c110//?��???
-	CMF_NPC_ELKEIN_GOLD,//427//c110//?��???
-	CMF_NPC_ELKEIN_BLACK,//428//c110//?��???
+	CMF_NPC_ELKEIN_RED,//423//c110//?섏???
+	CMF_NPC_ELKEIN_BLUE,//424//c110//?섏???
+	CMF_NPC_ELKEIN_PURPLE,//425//c110//?섏???
+	CMF_NPC_ELKEIN_GREEN,//426//c110//?섏???
+	CMF_NPC_ELKEIN_GOLD,//427//c110//?섏???
+	CMF_NPC_ELKEIN_BLACK,//428//c110//?섏???
 
 	TOTALCMF,
 
@@ -493,7 +493,7 @@ typedef enum _cmfDef {
 	BATTLEMODE_HELPER = CMF_NPC_LUISE,
 	RAIDMODE_HELPER = CMF_NPC_CAPTAIN,
 
-	//?�팽??
+	//?ы뙺??
 	SNAIL_NEUTRAL = 0,
 	SNAIL_MOVE,
 	SNAIL_MOVE_FAST,
@@ -502,9 +502,9 @@ typedef enum _cmfDef {
 	SNAIL_HIDE,
 	SNAIL_COME,
 
-	SKILL_SNAIL_BULLET = 0,//?�팽??기본공격
+	SKILL_SNAIL_BULLET = 0,//?ы뙺??湲곕낯怨듦꺽
 
-	//?�무
+	//?섎Т
 	TREE_STOP = 0,
 	TREE_MOVE,
 	TREE_NEUTRAL,
@@ -681,7 +681,7 @@ typedef enum _cmfDef {
 	MACHINE_LASER_SIDE,
 	MACHINE_LASER_CENTER,
 
-	//?�이?�너
+	//?쇱씠?ㅻ꼫
 	THUNDERBOSS_NEUTRAL = 0,
 	THUNDERBOSS_MOVE,
 	THUNDERBOSS_ATTACK,
@@ -719,7 +719,7 @@ typedef enum _cmfDef {
 	SHIP_CLOSEWEAK,
 	SHIP_MOVEOUT,
 	SHIP_MOVEIN,
-	SHIP_WEAK,				// 보스가 ?�너지가 ?�기 ?�작?�는 부�?
+	SHIP_WEAK,				// 蹂댁뒪媛� ?먮꼫吏�媛� ?ш린 ?쒖옉?섎뒗 遺�遺?
 	SHIP_WEAKMOVE,
 	SHIP_LASER,
 	SHIP_GUIDESHOT,
@@ -790,7 +790,7 @@ typedef enum _cmfDef {
 	ANGEL_MOVE_CENTER,
 	ANGEL_SHOT,
 	ANGEL_DASHREADY,
-	ANGEL_DASH,			//DASH부분�? ??�� ??밑에?�어??그림?��? 그리지 ?�음
+	ANGEL_DASH,			//DASH遺�遺꾩? ??긽 ??諛묒뿉?뉗뼱??洹몃┝?먮? 洹몃━吏� ?딆쓬
 	ANGEL_DASHUP,
 	ANGEL_DASHDOWN,
 	ANGEL_MOVE,
@@ -805,7 +805,7 @@ typedef enum _cmfDef {
 	DARKGIANT_NEUTRAL = 0,
 	DARKGIANT_MOVE,
 
-	//ENEMY_DRAGON1	//?�욕???�육??
+	//ENEMY_DRAGON1	//?먯슃???댁쑁??
 	DRAGON1_NEUTRAL = 0,
 	DRAGON1_MOVE,
 	DRAGON1_MOVE_FAST,
@@ -814,7 +814,7 @@ typedef enum _cmfDef {
 	DRAGON1_LANDINGREADY,
 	DRAGON1_LANDING,
 
-	//ENEMY_DRAGON2	//?�라�?좀�?
+	//ENEMY_DRAGON2	//?쒕씪怨?醫�鍮?
 	DRAGON2_NEUTRAL = 0,
 	DRAGON2_ATTACK,
 
@@ -928,16 +928,16 @@ typedef enum _cmfDef {
 	CASTLEBOSS4_HAND_GRAB,
 	CASTLEBOSS4_HAND_MOMMOVE,
 
-	//NPC_CAPTAIN//c52//??��?�너
+	//NPC_CAPTAIN//c52//??뒪?⑤꼫
 	CAPTAIN_NEUTRAL = 0,
 
-	//NPC_CREW//c53//?�원
+	//NPC_CREW//c53//?좎썝
 
 	//NPC_GRANDFA//c54//촌장
 
-	//NPC_UNCLE//c55//?��???
+	//NPC_UNCLE//c55//?꾩???
 
-	//NPC_AUNT,//c56//?�줌�?
+	//NPC_AUNT,//c56//?꾩쨲留?
 
 	//NPC_MAN
 	MAN_NEUTRAL = 0,
@@ -945,15 +945,15 @@ typedef enum _cmfDef {
 	MAN_TRUMBLE,
 	MAN_DIE,
 
-	//NPC_WOMAN//c58//처�?
+	//NPC_WOMAN//c58//泥섎?
 
 	//NPC_BOY//c59//꼬마??
 
-	//NPC_GIRL//c60//꼬마?�
+	//NPC_GIRL//c60//瑗щ쭏?�
 
-	//NPC_ALMA//c61//?�마
+	//NPC_ALMA//c61//?뚮쭏
 
-	//NPC_ITEM//c62//?�번
+	//NPC_ITEM//c62//?곕쾲
 	ITEM_NEUTRAL = 0,
 
 	//NPC_FATMAN//c63
@@ -962,7 +962,7 @@ typedef enum _cmfDef {
 	//NPC_BUNNYGIRL//c64
 	BUNNYGIRL_NEUTRAL = 0,
 
-	//NPC_KNIGHT//c65//?�레?�
+	//NPC_KNIGHT//c65//?뚮젅?�
 
 	//NPC_DOG//c66
 	DOG_NEUTRAL = 0,
@@ -976,13 +976,13 @@ typedef enum _cmfDef {
 	//NPC_MAP//c69
 	MAP_NEUTRAL = 0,
 
-	//NPC_USERQUEST//c70//?�튜?�디??
+	//NPC_USERQUEST//c70//?ㅽ뒠?대뵒??
 	USERQUEST_NEUTRAL = 0,
 
-	//NPC_TRAVEL//c71//?�국?�여?�자
+	//NPC_TRAVEL//c71//?닿뎅?섏뿬?됱옄
 	TRAVEL_NEUTRAL = 0,
 
-	//NPC_GRANDMA//c72//?�머??
+	//NPC_GRANDMA//c72//?좊㉧??
 	GRANDMA_NEUTRAL = 0,
 
 	//NPC_FISHING
@@ -1033,7 +1033,7 @@ typedef enum _cmfDef {
 
 	//NPC_SHIP//c80
 
-	//NPC_SEASOLDIER//c81//?��??�병사
+	//NPC_SEASOLDIER//c81//?꾪??�蹂묒궗
 	SEASOLDIER_NEUTRAL = 0,
 
 	//NPC_FRAUD//c82
@@ -1048,38 +1048,38 @@ typedef enum _cmfDef {
 	LUISE_ATTACK,
 	LUISE_KNEE,
 
-	//NPC_SEAUNCLE//c85//?��??�?��???
+	//NPC_SEAUNCLE//c85//?꾪??�?꾩???
 	SEAUNCLE_NEUTRAL = 0,
 
-	//NPC_SEABOY//c86//?��??�?�년
+	//NPC_SEABOY//c86//?꾪??�?뚮뀈
 	SEABOY_NEUTRAL = 0,
 
-	//NPC_DONALD//c87//?�소�?
+	//NPC_DONALD//c87//?댁냼猷?
 	DONALD_NEUTRAL = 0,
 
-	//NPC_SCHOLAR//c88//?�자
+	//NPC_SCHOLAR//c88//?숈옄
 	SCHOLAR_NEUTRAL = 0,
 
-	//NPC_CHEF//c89//?�리?�가
+	//NPC_CHEF//c89//?붾━?�媛�
 	CHEF_NEUTRAL = 0,
 
-	//NPC_BISTRO//c90//비스?�로
+	//NPC_BISTRO//c90//鍮꾩뒪?몃줈
 	BISTRO_NEUTRAL = 0,
 
-	//NPC_MAID//c91//?��?
+	//NPC_MAID//c91//?쒕?
 	MAID_NEUTRAL = 0,
 
 	//NPC_ADELKNIGHT//c92//기사
 	ADELKNIGHT_NEUTRAL = 0,
 
-	//NPC_SEBASTIAN//c93//?�바?�찬
+	//NPC_SEBASTIAN//c93//?몃컮?ㅼ갔
 	SEBASTIAN_NEUTRAL = 0,
 
-	//NPC_NOBLEMAN//c94//귀족아?�??
-	NOBLEMAN_NEUTRAL = 0,//그냥 ?�을 ??                                                           
+	//NPC_NOBLEMAN//c94//洹�議깆븘?�??
+	NOBLEMAN_NEUTRAL = 0,//洹몃깷 ?덉쓣 ??                                                           
 	NOBLEMAN_CAST,
 
-	//NPC_DELPIOS//c95//?�피?�스
+	//NPC_DELPIOS//c95//?명뵾?ㅼ뒪
 	DELPIOS_NEUTRAL = 0,
 	DELPIOS_MOVE,
 	DELPIOS_ATTACK,
@@ -1092,35 +1092,35 @@ typedef enum _cmfDef {
 	LORA_NEUTRAL,
 	LORA_MOVE,
 
-	//NPC_WITCH//c97//마�?
+	//NPC_WITCH//c97//留덈?
 
-	//NPC_ELFGRANDFA//c98//?�프?�아버�?
+	//NPC_ELFGRANDFA//c98//?섑봽?좎븘踰꾩?
 
-	//NPC_ELFUNCLE//c99//?�프?��???
+	//NPC_ELFUNCLE//c99//?섑봽?꾩???
 
-	//NPC_ELFAUNT//c100//?�프?�줌�?
+	//NPC_ELFAUNT//c100//?섑봽?꾩쨲留?
 
-	//NPC_ELFMAN//c101//?�프�?��
+	//NPC_ELFMAN//c101//?섑봽泥?뀈
 
-	//NPC_ELFWOMAN//c102//?�프처�?
+	//NPC_ELFWOMAN//c102//?섑봽泥섎?
 
-	//NPC_ELFBOY//c103//?�프꼬마??
+	//NPC_ELFBOY//c103//?섑봽瑗щ쭏??
 
-	//NPC_ELFGIRL//c104//?�프꼬마?�
+	//NPC_ELFGIRL//c104//?섑봽瑗щ쭏?�
 
-	//NPC_ELFDARK//c105//?�프?�크
+	//NPC_ELFDARK//c105//?섑봽?ㅽ겕
 
-	//NPC_ELFMAGIC//c106//?�프마법??
+	//NPC_ELFMAGIC//c106//?섑봽留덈쾿??
 
-	//NPC_ELFDANCER//c107//?�프무희
+	//NPC_ELFDANCER//c107//?섑봽臾댄씗
 
-	//NPC_OWL//c108//부?�이
+	//NPC_OWL//c108//遺�?됱씠
 
-	//NPC_LABETH//c109//?�베??
+	//NPC_LABETH//c109//?쇰쿋??
 
-	//NPC_ELKEIN//c110//?��???
+	//NPC_ELKEIN//c110//?섏???
 
-	//NPC_ELEIN//c111//?�레??
+	//NPC_ELEIN//c111//?섎젅??
 	ELEIN_NEUTRAL = 0,
 	ELEIN_SWORD,
 	ELEIN_DOWN,
@@ -1153,21 +1153,21 @@ typedef enum _cmfDef {
 	EVAN_ONLY_HOLYSWORD,
 	EVAN_SHAKEHANDS,
 
-	//NPC_BEAD//c113//?�이�?
+	//NPC_BEAD//c113//?뚯씠釉?
 
-	//NPC_FOUNTAIN//c114//?�물
+	//NPC_FOUNTAIN//c114//?섎Ъ
 
-	//NPC_NEZAR//c115//?�자�?
+	//NPC_NEZAR//c115//?ㅼ옄瑜?
 
-	//NPC_GALLAND//c116//갈�???
+	//NPC_GALLAND//c116//媛덈???
 
-	//NPC_DURAK//c117//?�?�크
+	//NPC_DURAK//c117//?�?쇳겕
 
-	//NPC_KING//c118//?�드몬드
+	//NPC_KING//c118//?먮뱶紐щ뱶
 
-	//NPC_WOMANGHOST//c119//?�자?�령
+	//NPC_WOMANGHOST//c119//?ъ옄?좊졊
 
-	//NPC_MANGHOST//c120//?�자?�령
+	//NPC_MANGHOST//c120//?⑥옄?좊졊
 
 	//NPC_AUSTIN
 	AUSTIN_NEUTRAL = 0,
@@ -1196,15 +1196,15 @@ typedef enum _cmfDef {
 	SOUL_NEUTRAL2,
 	SOUL_NEUTRAL3,
 
-	//NPC?�의 ?�동?�턴
-	NPCMOVE_STAND = 0,	//?�자리에 ?�있�?
-	NPCMOVE_WALKSLOW,	//천천??걷다가 ?�다�?반복
-	NPCMOVE_WALKFAST,	//계속 분주?�게 좌우�?걸어?�님
-	NPCMOVE_GOTOPLAYER,	//?�레?�어 ??�다?�기
-	NPCMOVE_2FRAME,	//지?�된 모션?�로부??2?�레?�을 반복(?�는 ?�치?�생)
-	NPCMOVE_DOG,	//개들???�직임
-	NPCMOVE_BLOCK,	//블록?�는 캐릭??
-	NPCMOVE_CAST,//?�전?�는 경우
+	//NPC?ㅼ쓽 ?됰룞?⑦꽩
+	NPCMOVE_STAND = 0,	//?쒖옄由ъ뿉 ?쒖엳湲?
+	NPCMOVE_WALKSLOW,	//泥쒖쿇??嫄룸떎媛� ?곕떎瑜?諛섎났
+	NPCMOVE_WALKFAST,	//怨꾩냽 遺꾩＜?섍쾶 醫뚯슦濡?嫄몄뼱?ㅻ떂
+	NPCMOVE_GOTOPLAYER,	//?뚮젅?댁뼱 ??꾨떎?덇린
+	NPCMOVE_2FRAME,	//吏�?뺣맂 紐⑥뀡?쇰줈遺�??2?꾨젅?꾩쓣 諛섎났(?곕뒗 ?좎튂?먯깮)
+	NPCMOVE_DOG,	//媛쒕뱾???�吏곸엫
+	NPCMOVE_BLOCK,	//釉붾줉?섎뒗 罹먮┃??
+	NPCMOVE_CAST,//?쒖쟾?섎뒗 寃쎌슦
 
 } CMFDEF;
 

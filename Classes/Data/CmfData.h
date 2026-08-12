@@ -1,4 +1,4 @@
-#pragma once
+О╩©#pragma once
 
 #ifndef _DATA_CMF_H_
 #define _DATA_CMF_H_
@@ -7,102 +7,102 @@
 
 //CMF
 const signed short c0mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//SNAIL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 	-1,
 };
 
 const signed short c1mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//SNAIL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 	-1,
 };
 
 const signed short c2mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//SNAIL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 	-1,
 };
 
 const signed short c3mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//SNAIL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SNAIL_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C3_W0, PO_C3_W0, PO_C3_W1, PO_C3_W1, PO_C3_W2, PO_C3_W2, PO_C3_W3, PO_C3_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_W0, PO_C3_W0, PO_C3_W1, PO_C3_W1, PO_C3_W2, PO_C3_W2, PO_C3_W3, PO_C3_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SNAIL_MOVE_FAST
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	//2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	//2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SNAIL_ATTACK
-	30,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	30,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C3_A0, PO_C3_A0, PO_C3_A0, PO_C3_A0, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1,
 	PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2,
-	PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A4, PO_C3_A4,	PO_C3_A4, PO_C3_A4,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A4, PO_C3_A4,	PO_C3_A4, PO_C3_A4,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SNAIL_IN
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	0,	//цй╠Бх╜ а╤╟г
-	PO_C3_N2, PO_C3_N2, PO_C3_D0, PO_C3_D0, PO_C3_D1, PO_C3_D1, PO_C3_D2, PO_C3_D2,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	0,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_N2, PO_C3_N2, PO_C3_D0, PO_C3_D0, PO_C3_D1, PO_C3_D1, PO_C3_D2, PO_C3_D2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SNAIL_HIDE
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	RECOVER_HP,	//цй╠Бх╜ а╤╟г
-	PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	RECOVER_HP,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SNAIL_COME
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	0,	//цй╠Бх╜ а╤╟г
-	PO_C3_D2, PO_C3_D2, PO_C3_D1, PO_C3_D1, PO_C3_D0, PO_C3_D0, PO_C3_N2, PO_C3_N2,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	0,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C3_D2, PO_C3_D2, PO_C3_D1, PO_C3_D1, PO_C3_D0, PO_C3_D0, PO_C3_N2, PO_C3_N2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
 	//ACTIONRPG
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	SNAIL_NEUTRAL,	SNAIL_IN,	COMPARE_LESSHP,	20,	RANDOM,	20,
 	SNAIL_NEUTRAL,	SNAIL_ATTACK,	DISTANCE_CHECK_XY,	3 * 8 + 2,	0,	0,
 	SNAIL_NEUTRAL,	SNAIL_MOVE_FAST,	DISTANCE_CHECK_XY,	7 * 8 + 2,	0,	0,
@@ -126,7 +126,7 @@ const signed short c3mv[] = {
 };
 
 const signed short c4mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//TREE_STOP
 	1,
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
@@ -136,17 +136,17 @@ const signed short c4mv[] = {
 
 	//TREE_MOVE
 	8,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C4_W0, PO_C4_W0, PO_C4_W1, PO_C4_W1, PO_C4_W2, PO_C4_W2, PO_C4_W3, PO_C4_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C4_W0, PO_C4_W0, PO_C4_W1, PO_C4_W1, PO_C4_W2, PO_C4_W2, PO_C4_W3, PO_C4_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//TREE_NEUTRAL
 	16,
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C4_N0, PO_C4_N0, PO_C4_N1, PO_C4_N1, PO_C4_N2, PO_C4_N2, PO_C4_N3, PO_C4_N3, PO_C4_N0, PO_C4_N0, PO_C4_N1, PO_C4_N1, PO_C4_N2, PO_C4_N2, PO_C4_N3, PO_C4_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C4_N0, PO_C4_N0, PO_C4_N1, PO_C4_N1, PO_C4_N2, PO_C4_N2, PO_C4_N3, PO_C4_N3, PO_C4_N0, PO_C4_N0, PO_C4_N1, PO_C4_N1, PO_C4_N2, PO_C4_N2, PO_C4_N3, PO_C4_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//TREE_ATTACK
 	28,
@@ -176,7 +176,7 @@ const signed short c4mv[] = {
 
 	-1,
 
-	// ╩СебюЭх╞
+	// Л┐│М┐°Л═└М≥≤
 	TREE_STOP,		TREE_MOVE,			DISTANCE_CHECK_XY, 8 * 8 + 3, 0, 0,
 	
 	TREE_NEUTRAL,	TREE_ATTACK,		DISTANCE_CHECK_XY, 4 * 8 + 3, 0, 0,
@@ -194,51 +194,51 @@ const signed short c4mv[] = {
 const signed short c5mv[] = {
 	//FROG_NEUTRAL
 	8,
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C5_N0, PO_C5_N0, PO_C5_N1, PO_C5_N1, PO_C5_N2, PO_C5_N2, PO_C5_N3, PO_C5_N3,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C5_N0, PO_C5_N0, PO_C5_N1, PO_C5_N1, PO_C5_N2, PO_C5_N2, PO_C5_N3, PO_C5_N3,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FROG_MOVE
 	8,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C5_W0, PO_C5_W0, PO_C5_W1, PO_C5_W1, PO_C5_W2, PO_C5_W2, PO_C5_W3, PO_C5_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C5_W0, PO_C5_W0, PO_C5_W1, PO_C5_W1, PO_C5_W2, PO_C5_W2, PO_C5_W3, PO_C5_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FROG_JUMP
 	20 + 16,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C5_J0, PO_C5_J0, PO_C5_J1, PO_C5_J1, PO_C5_J1, PO_C5_J1, PO_C5_J1,
 	PO_C5_J1, PO_C5_J1, PO_C5_J1, PO_C5_J1, PO_C5_J2, PO_C5_J2,
-	PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J3, PO_C5_J4, PO_C5_J5,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J3, PO_C5_J4, PO_C5_J5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C5_LANDING0, PO_C5_LANDING1, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING3,
 
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5, 10, 10, 10, 10, 5, 5, 5, 5,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 5, 0 * _2X, -5, 0 * _2X, 5, 0 * _2X, -5,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5, 10, 10, 10, 10, 5, 5, 5, 5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 5, 0 * _2X, -5, 0 * _2X, 5, 0 * _2X, -5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 		//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FROG_RETREAT
 	22,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_OPPOSITE,	//цй╠Бх╜ а╤╟г
-	PO_C5_J0, PO_C5_J0, PO_C5_J1, PO_C5_J1, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J3, PO_C5_J3, PO_C5_J4, PO_C5_J4, PO_C5_J5, PO_C5_J5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_OPPOSITE,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C5_J0, PO_C5_J0, PO_C5_J1, PO_C5_J1, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J2, PO_C5_J3, PO_C5_J3, PO_C5_J4, PO_C5_J4, PO_C5_J5, PO_C5_J5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FROG_LANDING																																																//FROG_LANDING
 	16,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C5_LANDING0, PO_C5_LANDING1, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2,
 	PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING2, PO_C5_LANDING3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 5 * _2X, 0 * _2X, -5 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, -5 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 5 * _2X, 0 * _2X, -5 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, -5 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FROG_ATTACK																																			//FROG_ATTACK
 	28,
@@ -255,7 +255,7 @@ const signed short c5mv[] = {
 
 	-1,
 
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 	FROG_NEUTRAL,		FROG_ATTACK,		0, 0, RANDOM, 60,
 	FROG_NEUTRAL,		FROG_JUMP,			DISTANCE_OUT_XY, 6 * 8 + 3, RANDOM, 33,
 	FROG_NEUTRAL,		FROG_RETREAT,		DISTANCE_CHECK_XY, 4 * 8 + 3, RANDOM, 40,
@@ -319,7 +319,7 @@ const signed short c6mv[] = {
 
 	-1,
 
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 	ONEEYE_NEUTRAL,			ONEEYE_PLAYER_MOVE,		DISTANCE_CHECK_XY, 6 * 8 + 7, 0, 0,
 	ONEEYE_NEUTRAL,			ONEEYE_MOVE,			COMPARE_FRAME, 10, RANDOM, 30,
 
@@ -332,25 +332,25 @@ const signed short c6mv[] = {
 
 //SKELETON
 const signed short c7mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//SKELETON_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,//цй╠Бх╜ а╤╟г
-	PO_C7_N0, PO_C7_N0, PO_C7_N1, PO_C7_N1, PO_C7_N2, PO_C7_N2, PO_C7_N3, PO_C7_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C7_N0, PO_C7_N0, PO_C7_N1, PO_C7_N1, PO_C7_N2, PO_C7_N2, PO_C7_N3, PO_C7_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SKELETON_MOVE
-	12, //╩Себ га╥╧юс д╚©Нф╝
+	12, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,
-	PO_C7_W0, PO_C7_W0, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W2, PO_C7_W2, PO_C7_W3, PO_C7_W3, PO_C7_W3, PO_C7_W3,		//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C7_W0, PO_C7_W0, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W2, PO_C7_W2, PO_C7_W3, PO_C7_W3, PO_C7_W3, PO_C7_W3,		//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SKELETON_MOVE_FAST
-	4, //╩Себ га╥╧юс д╚©Нф╝
+	4, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C7_W0, PO_C7_W1, PO_C7_W2, PO_C7_W3,		//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C7_W0, PO_C7_W1, PO_C7_W2, PO_C7_W3,		//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
@@ -363,19 +363,19 @@ const signed short c7mv[] = {
 	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
 	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
 	PO_C7_A3, PO_C7_A3, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//SKELETON_RETREAT - еП╟╒
+	//SKELETON_RETREAT - М┤╢Й╟│
 	6,
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C7_W0, PO_C7_W3, PO_C7_W3,	PO_C7_W2, PO_C7_W1, PO_C7_W1, //╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C7_W0, PO_C7_W3, PO_C7_W3,	PO_C7_W2, PO_C7_W1, PO_C7_W1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	SKELETON_NEUTRAL, SKELETON_ATTACK,		DISTANCE_CHECK_XY, 4 * 8 + 4, 0, 0,
 	SKELETON_NEUTRAL, SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY, 6 * 8 + 4, 0, 0,
 	SKELETON_NEUTRAL, SKELETON_MOVE,		COMPARE_FRAME,	16,	0,	0,
@@ -396,7 +396,7 @@ const signed short c7mv[] = {
 	-1,
 };
 
-// XцФ╣╧©║ юггь ╧Ж╠в ╧ъ╩Щ ╟║╢и╪╨ ╦╧ю╫ - цъхд ╪Жа╓╧ы╤Ь╢о╢ы.
+// XЛ╤╘К▐▄Л≈░ Л²≤М∙╢ К╡└Й╥╦ К╟°Л┐² Й╟─К┼╔Л└╠ К╖▌Л²▄ - Л╤■М⌡└ Л┬≤Л═∙К╟■К·█К▀┬К▀╓.
 const signed short c8mv[] = {
 	//LARVA_NEUTRAL
 	8,
@@ -453,7 +453,7 @@ const signed short c8mv[] = {
 
 	-1,
 
-	// ╩СебюЭх╞
+	// Л┐│М┐°Л═└М≥≤
 	LARVA_NEUTRAL, LARVA_SHOT,			DISTANCE_CHECK_XY, 10 * 8 + 4, RANDOM, 40,
 	LARVA_NEUTRAL, LARVA_ATTACK,		DISTANCE_CHECK_XY, 8 * 8 + 4, RANDOM, 80,
 	LARVA_NEUTRAL, LARVA_HIDE,			0, 0, 0, 0,
@@ -473,7 +473,7 @@ const signed short c8mv[] = {
 
 //JELLYFISH
 const signed short c9mv[] = {
-	//JELLYFISH_NEUTRAL - ╪Жаъ©║╪╜ ╫ггХ©Д╦а
+	//JELLYFISH_NEUTRAL - Л┬≤Л╓▒Л≈░Л└° Л▀╓М≈≤Л ■К╖²
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C9_D0, PO_C9_D0, PO_C9_D0, PO_C9_D0, PO_C9_D1, PO_C9_D1, PO_C9_D1, PO_C9_D1,
@@ -496,7 +496,7 @@ const signed short c9mv[] = {
 	0 * _2X, 0 * _2X, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	JELLYFISH_NEUTRAL, JELLYFISH_MOVE_FAST,		DISTANCE_CHECK_XY, 6 * 8 + 5, 0, 0,
 	JELLYFISH_NEUTRAL, JELLYFISH_MOVE,			0, 0, RANDOM, 40,
 
@@ -540,14 +540,14 @@ const signed short c10mv[] = {
 	-2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 2 * _2X, 1 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//LIZARD_RETREAT-еП╟╒
+	//LIZARD_RETREAT-М┤╢Й╟│
 	4,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_OPPOSITE,
 	PO_C10_W3, PO_C10_W2, PO_C10_W1, PO_C10_W0,
 	3 * _2X, 3 * _2X, 2 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	LIZARD_NEUTRAL, LIZARD_RETREAT,		DISTANCE_CHECK_XY, 4 * 8 + 2, RANDOM, 40,
 	LIZARD_NEUTRAL, LIZARD_ATTACK,		DISTANCE_CHECK_XY, 4 * 8 + 3, 0, 0,
 	LIZARD_NEUTRAL, LIZARD_MOVE_FAST,	DISTANCE_CHECK_XY, 6 * 8 + 4, 0, 0,
@@ -582,10 +582,10 @@ const signed short c11mv[] = {
 	8,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,
 	PO_C11_W0, PO_C11_W0, PO_C11_W1, PO_C11_W1, PO_C11_W2, PO_C11_W2, PO_C11_W3, PO_C11_W3,
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, // 3 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 17 * _2X, 4 * _2X, га╥╧юс╩Сю╦╥н гъю╩╟Ф©Л(17╨н╨п©║╪╜ ╡В╬НаЖ╟т╨╦юс)
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, // 3 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 17 * _2X, 4 * _2X, М■└К═┬Л·└Л┐│Л°╪К║° М√┬Л²└Й╡╫Л ╟(17К╤─К╤└Л≈░Л└° К│┼Л√╢Л╖─Й╡▄КЁ╢Л·└)
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//SALAMANDER_ATTACK(юо╧щ╟Ь╟щ)
+	//SALAMANDER_ATTACK(Л²╪К╟≤ЙЁ╣Й╡╘)
 	30,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,
 	PO_C11_N0, PO_C11_N0, PO_C11_N0, PO_C11_N0, PO_C11_N0, PO_C11_N0, PO_C11_N0, PO_C11_N0,
@@ -597,7 +597,7 @@ const signed short c11mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//SALAMANDER_JUMPATTACK(а║га╟Ь╟щ)
+	//SALAMANDER_JUMPATTACK(Л═░М■└ЙЁ╣Й╡╘)
 	47,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,
 	PO_C11_JA0, PO_C11_JA0, PO_C11_JA0, PO_C11_JA0, PO_C11_JA0, PO_C11_JA0, PO_C11_JA0,
@@ -611,14 +611,14 @@ const signed short c11mv[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
-	//SALAMANDER_RETREAT(╣╣╦а)
+	//SALAMANDER_RETREAT(К▐└К╖²)
 	JUMPFRAME,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,
 	PO_C11_JA0, PO_C11_JA1, PO_C11_JA1, PO_C11_JA2, PO_C11_JA2, PO_C11_JA2, PO_C11_JA1, PO_C11_JA1, PO_C11_JA1, PO_C11_JA1,
 	0, 0, 0, -23, -23, -19, -15, 0, 0, 0,
 	0, 0, 0, 100, 0, 0, 0, 0, 0, 0,
 	-1,
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 
 	SALAMANDER_NEUTRAL, SALAMANDER_JUMPATTACK,	DISTANCE_OUT_XY, 6 * 8 + 6, RANDOM, 50,
 	SALAMANDER_NEUTRAL, SALAMANDER_RETREAT,		DISTANCE_CHECK_XY, 5 * 8 + 6, RANDOM, 25,
@@ -639,20 +639,20 @@ const signed short c11mv[] = {
 };
 
 
-//SLING ╩Уця╦г
+//SLING Л┐┬Л╢²К╖╗
 const signed short c12mv[] = {
-	//╧Ж╠в╩Ггв(еП╟╒аъ ╟Ь╟щю╩╧ч╟т╣г╦И ажюн╟Ью╩ ╨╦╟т╣г╬Н ажюн╟Ь ╧ФгБю╦╥н юл╣©го╟т╣х╢ы)
+	//К╡└Й╥╦Л┌╛М∙╜(М┤╢Й╟│Л╓▒ ЙЁ╣Й╡╘Л²└К╟⌡Й╡▄К░≤К╘╢ Лё╪Л²╦ЙЁ╣Л²└ КЁ╢Й╡▄К░≤Л√╢ Лё╪Л²╦ЙЁ╣ К╟╘М√╔Л°╪К║° Л²╢К▐≥М∙≤Й╡▄К░°К▀╓)
 	//SLING_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,//цй╠Бх╜ а╤╟г
-	PO_C12_N0, PO_C12_N0, PO_C12_N1, PO_C12_N1, PO_C12_N2, PO_C12_N2, PO_C12_N3, PO_C12_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C12_N0, PO_C12_N0, PO_C12_N1, PO_C12_N1, PO_C12_N2, PO_C12_N2, PO_C12_N3, PO_C12_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SLING_MOVE
-	12,		//╩Себ га╥╧юс д╚©Нф╝
+	12,		//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,
-	PO_C12_W0, PO_C12_W0, PO_C12_W1, PO_C12_W1, PO_C12_W1, PO_C12_W1, PO_C12_W2, PO_C12_W2, PO_C12_W3, PO_C12_W3, PO_C12_W3, PO_C12_W3,		//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C12_W0, PO_C12_W0, PO_C12_W1, PO_C12_W1, PO_C12_W1, PO_C12_W1, PO_C12_W2, PO_C12_W2, PO_C12_W3, PO_C12_W3, PO_C12_W3, PO_C12_W3,		//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
@@ -688,9 +688,9 @@ const signed short c12mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SLING_SWORDMOVE
-	6,		//╩Себ га╥╧юс д╚©Нф╝
+	6,		//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,
-	PO_C12_SWORDMOVE0, PO_C12_SWORDMOVE1, PO_C12_SWORDMOVE1, PO_C12_SWORDMOVE2, PO_C12_SWORDMOVE3, PO_C12_SWORDMOVE3,		//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C12_SWORDMOVE0, PO_C12_SWORDMOVE1, PO_C12_SWORDMOVE1, PO_C12_SWORDMOVE2, PO_C12_SWORDMOVE3, PO_C12_SWORDMOVE3,		//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
@@ -702,7 +702,7 @@ const signed short c12mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	// ╩Себ╨╞╟Ф
+	// Л┐│М┐°КЁ─Й╡╫
 	SLING_NEUTRAL, SLING_RETREAT,		DISTANCE_CHECK_XY, 4 * 8 + 3, 0, 0,
 	SLING_NEUTRAL, SLING_ATTACK,		DISTANCE_CHECK_XY, 7 * 8 + 3, 0, 0,
 	SLING_NEUTRAL, SLING_MOVE,			COMPARE_FRAME, 16, RANDOM, 25,
@@ -805,7 +805,7 @@ const signed short c13mv[] = {
 };
 
 
-//GIANT ╬ф╣╗фР©Ь ╨╦╫╨
+//GIANT Л∙└К█╦М▐┴Л⌡░ КЁ╢Л┼╓
 const signed short c14mv[] = {
 	//GIANT_NEUTRAL
 	16,
@@ -855,7 +855,7 @@ const signed short c14mv[] = {
 
 	-1,
 
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 	GIANT_NEUTRAL, GIANT_BULLET,		0, 0, RANDOM, 30,
 	GIANT_NEUTRAL, GIANT_ATTACK,		DISTANCE_CHECK_XY, 4 * 8 + 6, 0, 0,
 	GIANT_NEUTRAL, GIANT_MOVE,			0, 0, 0, 0,
@@ -926,7 +926,7 @@ const signed short c15mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 	FLAME_NEUTRAL, FLAME_MOVE_FAST,			DISTANCE_CHECK_XY, 3 * 8 + 5, 0, 0,
 	FLAME_NEUTRAL, FLAME_ATTACK,			DISTANCE_CHECK_XY, 6 * 8 + 4, 0, 0,
 	FLAME_NEUTRAL, FLAME_MOVE,				COMPARE_FRAME, 20, RANDOM, 30,
@@ -988,7 +988,7 @@ const signed short c16mv[] = {
 
 	-1,
 
-	// ╩Себ╨╞х╜
+	// Л┐│М┐°КЁ─М≥■
 	PHOENIX_NEUTRAL, PHOENIX_DASH,			DISTANCE_CHECK_XY, 6 * 8 + 6, RANDOM, 33,
 	PHOENIX_NEUTRAL, PHOENIX_ATTACK,		DISTANCE_CHECK_XY, 6 * 8 + 3, 0, 0,
 	PHOENIX_NEUTRAL, PHOENIX_MOVE,			DISTANCE_OUT_XY, 6 * 8 + 6, RANDOM, 50,
@@ -1066,7 +1066,7 @@ const signed short c17mv[] = {
 	6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X,
 
 	-1,
-	// ╩Себ╨╞╟Ф
+	// Л┐│М┐°КЁ─Й╡╫
 	IFRIT_NEUTRAL,		IFRIT_NEUTRAL_UP,	0, 0, 0, 0,
 
 	IFRIT_NEUTRAL_UP,	IFRIT_ATTACK,		0, 0, RANDOM, 50,
@@ -1150,7 +1150,7 @@ const signed short c18mv[] = {
 
 	-1,
 
-	// ╩Себ╨╞х╜
+	// Л┐│М┐°КЁ─М≥■
 	SNOWMAN_NEUTRAL, SNOWMAN_HIDE,				DISTANCE_CHECK_XY, 4 * 8 + 3, RANDOM, 20,
 	SNOWMAN_NEUTRAL, SNOWMAN_ATTACK,			DISTANCE_CHECK_XY, 4 * 8 + 3, 0, 0,
 	SNOWMAN_NEUTRAL, SNOWMAN_MOVE_FAST,			DISTANCE_CHECK_XY, 8 * 8 + 3, 0, 0,
@@ -1169,7 +1169,7 @@ const signed short c18mv[] = {
 };
 
 
-//FACE ╩О╣н╩С
+//FACE Л┌╪К▒░Л┐│
 const signed short c19mv[] = {
 	// FACE_STOP
 	16,
@@ -1201,7 +1201,7 @@ const signed short c19mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞х╜
+	//Л┐│М┐°КЁ─М≥■
 	FACE_STOP, FACE_NEUTRAL,			DISTANCE_CHECK_XY, 6 * 8 + 3, 0, 0,
 	FACE_NEUTRAL, FACE_ATTACK,			DISTANCE_CHECK_XY, 6 * 8 + 3, 0, 0,
 	FACE_NEUTRAL, FACE_STOP,			DISTANCE_OUT_XY, 6 * 8 + 3, 0, 0,
@@ -1239,15 +1239,15 @@ const signed short c20mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	-1,
 
-	// ╩Себ╨╞х╜
+	// Л┐│М┐°КЁ─М≥■
 	ICESUN_NEUTRAL, ICESUN_ATTACK,			DISTANCE_CHECK_XY, 6 * 8 + 6, 0, 0,
 	ICESUN_ATTACK, ICESUN_NEUTRAL,			0, 0, 0, 0,
 	-1,
 };
 
 const signed short c21mv[] = {
-	// MAMMOTH_NEUTRAL - ╧╚╨Йхд ╧╚а╤╟г ╢К╠Б╩Себ╥н ╟║╬ъгт.
-	// MAMMOTH - ╩Щ╪╨ ╤╖ attackFrame(SHEILD) ╪Ёа╓гь аЮ╬ъ гт.
+	// MAMMOTH_NEUTRAL - К╛╢К╦▄М⌡└ К╛╢Л║╟Й╠╢ К▄─Й╦╟Л┐│М┐°К║° Й╟─Л∙╪М∙╗.
+	// MAMMOTH - Л┐²Л└╠ К∙▄ attackFrame(SHEILD) Л└╓Л═∙М∙╢ Л╓≤Л∙╪ М∙╗.
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C21_N0, PO_C21_N0, PO_C21_N1, PO_C21_N1, PO_C21_N2, PO_C21_N2, PO_C21_N3, PO_C21_N3,
@@ -1411,21 +1411,21 @@ const signed short c21mv[] = {
 };
 
 const signed short c22mv[] = {
-	//LIGHTNING_NEUTRAL - ╟Х╪с юл╣©╦╦го╢б ╦С╫╨ем
+	//LIGHTNING_NEUTRAL - ЙЁ└Л├█ Л²╢К▐≥К╖▄М∙≤К┼■ К╙╛Л┼╓М└╟
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C22_N0, PO_C22_N0, PO_C22_N1, PO_C22_N1, PO_C22_N2, PO_C22_N2, PO_C22_N3, PO_C22_N3,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//LIGHTNING_FASTMOVE - ╟Х╪с юл╣©╦╦го╢б ╦С╫╨ем
+	//LIGHTNING_FASTMOVE - ЙЁ└Л├█ Л²╢К▐≥К╖▄М∙≤К┼■ К╙╛Л┼╓М└╟
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C22_N0, PO_C22_N0, PO_C22_N1, PO_C22_N1, PO_C22_N2, PO_C22_N2, PO_C22_N3, PO_C22_N3,
 	1 * _4X, 1 * _4X, 1 * _4X, 1 * _4X, 1 * _4X, 1 * _4X, 1 * _4X, 1 * _4X,
 	0 * _4X, 0 * _4X, 0 * _4X, 0 * _4X, 0 * _4X, 0 * _4X, 0 * _4X, 0 * _4X,
 
-	//LIGHTNING_ATTACK - ╟Х╪с юл╣©╦╦го╢б ╦С╫╨ем
+	//LIGHTNING_ATTACK - ЙЁ└Л├█ Л²╢К▐≥К╖▄М∙≤К┼■ К╙╛Л┼╓М└╟
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C22_N0, PO_C22_N0, PO_C22_N1, PO_C22_N1, PO_C22_N2, PO_C22_N2, PO_C22_N3, PO_C22_N3,
@@ -1557,74 +1557,74 @@ const signed short c25mv[] = {
 };
 
 const signed short c26mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//GOLEM_STOP
 	//1,
 	//SET_MAINFRAME_RANDOM8,
 	//PO_C26_N0,
 	//0 * _2X,
 	//0 * _2X,
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C26_N0, PO_C26_N0, PO_C26_N1, PO_C26_N1, PO_C26_N2, PO_C26_N2, PO_C26_N3, PO_C26_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_N0, PO_C26_N0, PO_C26_N1, PO_C26_N1, PO_C26_N2, PO_C26_N2, PO_C26_N3, PO_C26_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C26_N0, PO_C26_N0, PO_C26_N1, PO_C26_N1, PO_C26_N2, PO_C26_N2, PO_C26_N3, PO_C26_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_N0, PO_C26_N0, PO_C26_N1, PO_C26_N1, PO_C26_N2, PO_C26_N2, PO_C26_N3, PO_C26_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_MOVE
-	20,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1, PO_C26_W2, PO_C26_W2, PO_C26_W2, PO_C26_W2,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	20,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1, PO_C26_W2, PO_C26_W2, PO_C26_W2, PO_C26_W2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_MOVE_FAST
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_ATTACK
-	26,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C26_A0, PO_C26_A0, PO_C26_A0, PO_C26_A0, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4,	PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4,	PO_C26_A4, PO_C26_A4,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 14 * _2X, 8 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	26,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_A0, PO_C26_A0, PO_C26_A0, PO_C26_A0, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4,	PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4,	PO_C26_A4, PO_C26_A4,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 14 * _2X, 8 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_GUARD
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C26_G0, PO_C26_G0, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_G0, PO_C26_G0, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1, PO_C26_G1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_COUNTER
-	10,	//╩Себ га╥╧юс д╚©Нф╝
-	0,	//цй╠Бх╜ а╤╟г
-	PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_N0, PO_C26_N0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	30 * _2X, 30 * _2X, 5 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	10,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	0,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_N0, PO_C26_N0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	30 * _2X, 30 * _2X, 5 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_JUMP
-	22,	//╩Себ га╥╧юс д╚©Нф╝
-	0,	//цй╠Бх╜ а╤╟г
+	22,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	0,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C26_JU0, PO_C26_JU0, PO_C26_JU1, PO_C26_JU1, PO_C26_JU1, PO_C26_JU1, PO_C26_JU2, PO_C26_JU2, PO_C26_JU2, PO_C26_JU2, PO_C26_JU2, PO_C26_JU2, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0, PO_C26_JD0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X, 6 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, -24 * _2X, -24 * _2X, -24 * _2X, -24 * _2X, -24 * _2X, -24 * _2X, -22 * _2X, -22 * _2X, -18 * _2X, -18 * _2X, -14 * _2X, -14 * _2X, -9 * _2X, -9 * _2X, -4 * _2X, -4 * _2X,
 
 	//GOLEM_SPEEDATTACK
-	20,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C26_A0, PO_C26_A0, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_N0, PO_C26_N0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 24 * _2X, 24 * _2X, 12 * _2X, 12 * _2X, 4 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	20,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_A0, PO_C26_A0, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A1, PO_C26_A2, PO_C26_A2, PO_C26_A3, PO_C26_A3, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_A4, PO_C26_N0, PO_C26_N0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 24 * _2X, 24 * _2X, 12 * _2X, 12 * _2X, 4 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_OPEN
 	10,
@@ -1641,11 +1641,11 @@ const signed short c26mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//GOLEM_BACKSTEP
-	20,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1, PO_C26_W2, PO_C26_W2, PO_C26_W2, PO_C26_W2,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	-1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	20,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C26_W2, PO_C26_W2, PO_C26_W3, PO_C26_W3, PO_C26_W4, PO_C26_W4, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W5, PO_C26_W0, PO_C26_W0, PO_C26_W1, PO_C26_W1, PO_C26_W2, PO_C26_W2, PO_C26_W2, PO_C26_W2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	-1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GOLEM_DIEREADY
 	1,
@@ -1670,7 +1670,7 @@ const signed short c26mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	GOLEM_STOP, GOLEM_NEUTRAL, 0, 0, 0, 0,
 	GOLEM_NEUTRAL, GOLEM_GUARD, ATTACK_CHECK, 0, RANDOM, 30,
 	GOLEM_NEUTRAL, GOLEM_ATTACK, DISTANCE_CHECK_XY, 4 * 8 + 3, 0, 0,
@@ -1836,11 +1836,11 @@ const signed short c27mv[] = {
 
 const signed short c28mv[] = {
 	//SHIP_NEUTRAL
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C28_N0,
-	0,		//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,		//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SHIP_MOVE
 	1,
@@ -1929,46 +1929,46 @@ const signed short c29mv[] = {
 
 const signed short c30mv[] = {
 	//GHOST_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//GHOST_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GHOST_PLAYER_MOVE
 	8,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GHOST_INVISIBLE
 	10,
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C30_D0, PO_C30_D0, PO_C30_D1, PO_C30_D1,	PO_C30_D2, //╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C30_D2, PO_C30_D3, PO_C30_D3, PO_C30_D4,	PO_C30_D4, //╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_D0, PO_C30_D0, PO_C30_D1, PO_C30_D1,	PO_C30_D2, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C30_D2, PO_C30_D3, PO_C30_D3, PO_C30_D4,	PO_C30_D4, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GHOST_INVISIBLED
 	10,
 	SET_MAINFRAME_RANDOM8,
-	PO_C30_T0, PO_C30_T0, PO_C30_T1, PO_C30_T1, PO_C30_T2, PO_C30_T2, PO_C30_T3, PO_C30_T3,	PO_C30_T4, PO_C30_T4, //╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C30_T0, PO_C30_T0, PO_C30_T1, PO_C30_T1, PO_C30_T2, PO_C30_T2, PO_C30_T3, PO_C30_T3,	PO_C30_T4, PO_C30_T4, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//GHOST_INVISI_MOVE
 	10,
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C30_T0, PO_C30_T0, PO_C30_T1, PO_C30_T1,PO_C30_T2, PO_C30_T2, PO_C30_T3, PO_C30_T3, PO_C30_T4, PO_C30_T4, //╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C30_T0, PO_C30_T0, PO_C30_T1, PO_C30_T1,PO_C30_T2, PO_C30_T2, PO_C30_T3, PO_C30_T3, PO_C30_T4, PO_C30_T4, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1, 100 + 1,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
@@ -1986,7 +1986,7 @@ const signed short c30mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	GHOST_NEUTRAL, GHOST_ATTACK,				DISTANCE_CHECK_XY, 4 * 8 + 3, RANDOM, 60,
 	GHOST_NEUTRAL, GHOST_INVISIBLE,				DISTANCE_CHECK_XY, 8 * 8 + 7, RANDOM, 20,
 	GHOST_NEUTRAL, GHOST_PLAYER_MOVE,			DISTANCE_CHECK_XY, 8 * 8 + 7, 0, 0,
@@ -2128,7 +2128,7 @@ const signed short c31mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	DEATH_NEUTRAL, DEATH_ATTACK, DISTANCE_CHECK_XY, 8 * 8 + 5, RANDOM, 40,
 	DEATH_NEUTRAL, DEATH_SUMMONS, 0, 0, 0, 0,
 
@@ -2158,55 +2158,55 @@ const signed short c31mv[] = {
 
 const signed short c32mv[] = {
 	//KNIGHT_NEUTRAL
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C32_N0, PO_C32_N0, PO_C32_N1, PO_C32_N1, PO_C32_N2, PO_C32_N2, PO_C32_N3, PO_C32_N3,	PO_C32_N1, PO_C32_N1, PO_C32_N0, PO_C32_N0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//KNIGHT_MOVE
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C32_W0, PO_C32_W0, PO_C32_W1, PO_C32_W1, PO_C32_W2, PO_C32_W2, PO_C32_W3, PO_C32_W3,	PO_C32_W4, PO_C32_W4, PO_C32_W5, PO_C32_W5,
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//KNIGHT_PLAYER_MOVE
-	6,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	6,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C32_W0, PO_C32_W1, PO_C32_W2, PO_C32_W3,	PO_C32_W4, PO_C32_W5,
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//KNIGHT_ATTACK
-	30,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	30,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C32_A0, PO_C32_A1, PO_C32_A1, PO_C32_A1, PO_C32_A1, PO_C32_A1,
 	PO_C32_A1, PO_C32_A1, PO_C32_A1, PO_C32_A1, PO_C32_A1, PO_C32_A1,
-	PO_C32_A1, PO_C32_A1, PO_C32_A2, PO_C32_A3, PO_C32_A4, PO_C32_A5,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C32_A1, PO_C32_A1, PO_C32_A2, PO_C32_A3, PO_C32_A4, PO_C32_A5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5,
 	PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5, PO_C32_A5,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 10 * _2X, 10 * _2X, 5 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 102 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//KNIGHT_GUARD
-	2,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	2,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C32_D0, PO_C32_D0,
 	0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X,
 
 	//KNIGHT_GUARDED
-	24,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C32_D1, PO_C32_D1, PO_C32_D1, PO_C32_D1,	PO_C32_D1, PO_C32_D1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	24,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C32_D1, PO_C32_D1, PO_C32_D1, PO_C32_D1,	PO_C32_D1, PO_C32_D1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C32_D1, PO_C32_D1, PO_C32_D1, PO_C32_D1,	PO_C32_D1, PO_C32_D1,
 	PO_C32_D1, PO_C32_D1, PO_C32_D1, PO_C32_D1,	PO_C32_D1, PO_C32_D1,
 	PO_C32_D1, PO_C32_D1, PO_C32_D1, PO_C32_D1,	PO_C32_D1, PO_C32_D1,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
@@ -2237,36 +2237,36 @@ const signed short c32mv[] = {
 
 const signed short c33mv[] = {
 	//SLIME_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SLIME_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C30_N0, PO_C30_N0, PO_C30_N1, PO_C30_N1, PO_C30_N2, PO_C30_N2, PO_C30_N3, PO_C30_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SLIME_ATTACK
 	24,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C33_A_D_0, PO_C33_A_D_0, PO_C33_A_D_1, PO_C33_A_D_1, PO_C33_A_D_0, PO_C33_A_D_0, PO_C33_A_D_1, PO_C33_A_D_1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_3, PO_C33_A_D_3, PO_C33_A_D_3, PO_C33_A_D_3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_5, PO_C33_A_D_5, PO_C33_A_D_5, PO_C33_A_D_5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C33_A_D_0, PO_C33_A_D_0, PO_C33_A_D_1, PO_C33_A_D_1, PO_C33_A_D_0, PO_C33_A_D_0, PO_C33_A_D_1, PO_C33_A_D_1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_2, PO_C33_A_D_3, PO_C33_A_D_3, PO_C33_A_D_3, PO_C33_A_D_3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_4, PO_C33_A_D_5, PO_C33_A_D_5, PO_C33_A_D_5, PO_C33_A_D_5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
@@ -2368,7 +2368,7 @@ const signed short c34mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	KIMERA_NEUTRAL,		KIMERA_FIRESHOT,		0, 0, RANDOM, 33,
 	KIMERA_NEUTRAL,		KIMERA_ICESHOT,			0, 0, RANDOM, 20,
 	KIMERA_NEUTRAL,		KIMERA_SPIN,			0, 0, RANDOM, 25,
@@ -2392,29 +2392,29 @@ const signed short c34mv[] = {
 
 const signed short c35mv[] = {
 	//FAIRY_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C35_N0, PO_C35_N0, PO_C35_N1, PO_C35_N1,	PO_C35_N2, PO_C35_N2, PO_C35_N3, PO_C35_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FAIRY_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C35_W0, PO_C35_W0, PO_C35_W1, PO_C35_W1,	PO_C35_W2, PO_C35_W2, PO_C35_W3, PO_C35_W3,
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FAIRY_ATTACK
-	11,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	11,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C35_N0, PO_C35_N0, PO_C35_N1, PO_C35_N1,	PO_C35_N2, PO_C35_N3, PO_C35_N3,
 	PO_C35_N0, PO_C35_N1, PO_C35_N2, PO_C35_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	FAIRY_NEUTRAL,		FAIRY_ATTACK,			DISTANCE_CHECK_XY, 2 * 8 + 7, 0, 0,
 	FAIRY_NEUTRAL,		FAIRY_MOVE,				DISTANCE_CHECK_XY, 8 * 8 + 7, 0, 0,
 
@@ -2428,31 +2428,31 @@ const signed short c35mv[] = {
 
 const signed short c36mv[] = {
 	//CIRCLE_NEUTRAL
-	12, //╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8, //цй╠Бх╜ а╤╟г
+	12, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8, //Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C36_N0, PO_C36_N0, PO_C36_N0, PO_C36_N1, PO_C36_N1, PO_C36_N1, PO_C36_N2, PO_C36_N2,
 	PO_C36_N2, PO_C36_N3, PO_C36_N3, PO_C36_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CIRCLE_PLAYER_MOVE
-	16, //╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER, //цй╠Бх╜ а╤╟г
+	16, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER, //Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C36_N0, PO_C36_N0, PO_C36_N1, PO_C36_N1, PO_C36_N2, PO_C36_N2, PO_C36_N3, PO_C36_N3, PO_C36_N0, PO_C36_N0, PO_C36_N1, PO_C36_N1, PO_C36_N2, PO_C36_N2, PO_C36_N3, PO_C36_N3,
-	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2,	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2 * _2X, 100 + 2,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2,	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2 * _2X, 100 + 2,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2,	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2 * _2X, 100 + 2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2,	100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2, 100 + 2 * _2X, 100 + 2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 
 	//CIRCLE_RETREAT
-	8, //╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER, //цй╠Бх╜ а╤╟г
+	8, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER, //Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C36_N0, PO_C36_N0, PO_C36_N1, PO_C36_N1,PO_C36_N2, PO_C36_N2, PO_C36_N3, PO_C36_N3,
 	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
 	0, 0, 0, 0, 0, 0, 0, 0,
 
 	//CIRCLE_DASH
-	12, //╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8, //цй╠Бх╜ а╤╟г
+	12, //Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8, //Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C36_N0, PO_C36_N1, PO_C36_N2, PO_C36_N3, PO_C36_N0, PO_C36_N1, PO_C36_N2, PO_C36_N3,PO_C36_N0, PO_C36_N1, PO_C36_N2, PO_C36_N3,
 	100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8, 100 + 8,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2466,7 +2466,7 @@ const signed short c36mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	CIRCLE_NEUTRAL,		CIRCLE_DASH,				ATTACK_CHECK, 0, 0, 0,
 	CIRCLE_NEUTRAL,		CIRCLE_STOP,				DIR_DIFFER_PLAYER, 0, 0, 0,
 	CIRCLE_NEUTRAL,		CIRCLE_PLAYER_MOVE,			DISTANCE_CHECK_XY, 8 * 8 + 6, 0, 0,
@@ -2529,7 +2529,7 @@ const signed short c37mv[] = {
 	PO_C37_N0, PO_C37_N0, PO_C37_N1, PO_C37_N1, PO_C37_N2, PO_C37_N2, PO_C37_N3, PO_C37_N3,
 	PO_C37_N2, PO_C37_N2,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, //(╦й е╘╠Б©║╣Ш╤С ╪Жа╓гй©Д)
+	8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, //(К╖╣ М│╛Й╦╟Л≈░К■╟К²╪ Л┬≤Л═∙М∙└Л ■)
 
 	//ANGEL_SHOT
 	38,
@@ -2588,7 +2588,7 @@ const signed short c37mv[] = {
 
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	ANGEL_NEUTRAL, ANGEL_SHOT, 0, 0, RANDOM, 30,
 	ANGEL_NEUTRAL, ANGEL_ATTACK, 0, 0, RANDOM, 30,
 	ANGEL_NEUTRAL, ANGEL_MOVE_DOWN, 0, 0, 0, 0,
@@ -2643,8 +2643,8 @@ const signed short c39mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//DARKGIANT_MOVE
-	//╪р╫╨гуд╔╤╖ ©╘╠Б╪╜ ©║╥╞Ё╞╟мют╢о╢ы.
-	//юо╢э аж╪╝цЁ╦╝гьаж╪╪©Д. ╪р╫╨гуд║╦И cmf╢ы╫ц ╨╦а╓гь╬ъгу╢о╢ы.
+	//Л├▄Л┼╓М∙╘Л╧═К∙▄ Л≈╛Й╦╟Л└° Л≈░К÷╛К┌═Й╡┐Л·┘К▀┬К▀╓.
+	//Л²╪К▀╗ Лё╪Л└²Л╡≤К╕╛М∙╢Лё╪Л└╦Л ■. Л├▄Л┼╓М∙╘Л╧≤К╘╢ cmfК▀╓Л▀° КЁ╢Л═∙М∙╢Л∙╪М∙╘К▀┬К▀╓.
 	144,
 	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
 	PO_C39_W0, PO_C39_W0, PO_C39_W1, PO_C39_W1, PO_C39_W2, PO_C39_W2, PO_C39_W3, PO_C39_W3, PO_C39_W4, PO_C39_W4,
@@ -2682,7 +2682,7 @@ const signed short c39mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	DARKGIANT_NEUTRAL,	DARKGIANT_MOVE,		DISTANCE_CHECK_XY, 8 * 8 + 4, 0, 0,
 
 	DARKGIANT_MOVE,		DARKGIANT_NEUTRAL,	DISTANCE_OUT_XY, 8 * 8 + 4, 0, 0,
@@ -2690,17 +2690,17 @@ const signed short c39mv[] = {
 };
 
 const signed short c40mv[] = {
-	//╢╚╟╗╟Мюж╢б╩Себ
-	//╩Себ ╣╔юлем
+	//К┬┬Й╟░ЙЁ═Л·┬К┼■Л┐│М┐°
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//FOGRA_CLOSEEYE
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C40_OPENEYE0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C40_OPENEYE0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//FOGRA_OPENEYE
-	//╢╚╤ъ╠Б
+	//К┬┬К°╗Й╦╟
 	20,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_OPENEYE0, PO_C40_OPENEYE0, PO_C40_OPENEYE0, PO_C40_OPENEYE0,
@@ -2712,7 +2712,7 @@ const signed short c40mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//FOGRA_NEUTRAL
-	//╢╚╤ъ╟М ╢╨ф╝╥╡
+	//К┬┬К°╗ЙЁ═ К┴╢М┼╦К÷╢
 	16,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_OPENEYE4, PO_C40_OPENEYE4, PO_C40_OPENEYE4, PO_C40_OPENEYE5, PO_C40_OPENEYE5, PO_C40_OPENEYE5, PO_C40_OPENEYE6, PO_C40_OPENEYE6,
@@ -2721,7 +2721,7 @@ const signed short c40mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//FOGRA_MOVE
-	//гц╥╧юл╬Н©║╟т а╒╠ы
+	//М■▄К═┬Л²╢Л√╢Л≈░Й╡▄ Л═▒Й╥╪
 	16,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_OPENEYE3, PO_C40_OPENEYE3, PO_C40_OPENEYE4, PO_C40_OPENEYE4, PO_C40_OPENEYE5, PO_C40_OPENEYE5, PO_C40_OPENEYE6, PO_C40_OPENEYE6,
@@ -2730,7 +2730,7 @@ const signed short c40mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//FOGRA_BULLET
-	//╧л╩Гюо ╧ъ╩Г
+	//К╞╦Л┌╛Л²╪ К╟°Л┌╛
 	36,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_A0, PO_C40_A1, PO_C40_A2, PO_C40_A0, PO_C40_A1, PO_C40_A2, PO_C40_A0, PO_C40_A1, PO_C40_A2,
@@ -2743,7 +2743,7 @@ const signed short c40mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//FOGRA_LASER
-	//╥╧юла╝ ╧ъ╩Г
+	//К═┬Л²╢Л═╦ К╟°Л┌╛
 	54,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_OPENEYE2, PO_C40_OPENEYE2, PO_C40_OPENEYE1, PO_C40_OPENEYE1, PO_C40_OPENEYE2, PO_C40_OPENEYE2, PO_C40_LASER0, PO_C40_LASER0, PO_C40_LASER1, PO_C40_LASER1, PO_C40_LASER2, PO_C40_LASER2,
@@ -2753,7 +2753,7 @@ const signed short c40mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//FOGRA_SUBFOGRA
-	//╬ф╦╝╦╦ sub ╢╨ф╝╥╡
+	//Л∙└К╕╛К╖▄ sub К┴╢М┼╦К÷╢
 	6,
 	SET_MAINFRAME_RANDOM8,
 	PO_C40_CIRCLE0, PO_C40_CIRCLE1, PO_C40_CIRCLE2,
@@ -2770,42 +2770,42 @@ const signed short c40mv[] = {
 
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c41mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//DRAGON1_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C41_N0, PO_C41_N0, PO_C41_N1, PO_C41_N1, PO_C41_N2, PO_C41_N2, PO_C41_N3, PO_C41_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C41_N0, PO_C41_N0, PO_C41_N1, PO_C41_N1, PO_C41_N2, PO_C41_N2, PO_C41_N3, PO_C41_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//DRAGON1_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C41_W0, PO_C41_W0, PO_C41_W1, PO_C41_W1, PO_C41_W2, PO_C41_W2, PO_C41_W3, PO_C41_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C41_W0, PO_C41_W0, PO_C41_W1, PO_C41_W1, PO_C41_W2, PO_C41_W2, PO_C41_W3, PO_C41_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//DRAGON1_MOVE_FAST
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C41_W0, PO_C41_W1, PO_C41_W2, PO_C41_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C41_W0, PO_C41_W1, PO_C41_W2, PO_C41_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//DRAGON1_ATTACK
-	19,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	19,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C4_A0, PO_C4_A1, PO_C4_A1, PO_C4_A1, PO_C4_A1,
 	PO_C4_A1, PO_C4_A1, PO_C4_A1, PO_C4_A1, PO_C4_A1,
 	PO_C4_A1, PO_C4_A1, PO_C4_A1, PO_C4_A1, PO_C4_A1,
 	PO_C4_A2, PO_C4_A2,	PO_C4_A3, PO_C4_A3,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//DRAGON1_FALL
 	1,
@@ -2830,7 +2830,7 @@ const signed short c41mv[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	DRAGON1_NEUTRAL, DRAGON1_MOVE,			0, 0, RANDOM, 30,
 	DRAGON1_NEUTRAL, DRAGON1_MOVE_FAST,		DISTANCE_CHECK_XY, 10 * 8 + 6, 0, 0,
 	DRAGON1_NEUTRAL, DRAGON1_ATTACK,		DISTANCE_CHECK_XY, 6 * 8 + 6, 0, 0,
@@ -2850,31 +2850,31 @@ const signed short c41mv[] = {
 };
 
 const signed short c42mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//DRAGON2_NEUTRAL
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C42_N0, PO_C42_N0, PO_C42_N0, PO_C42_N1, PO_C42_N1, PO_C42_N1,
-	PO_C42_N2, PO_C42_N2, PO_C42_N2, PO_C42_N3, PO_C42_N3, PO_C42_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C42_N2, PO_C42_N2, PO_C42_N2, PO_C42_N3, PO_C42_N3, PO_C42_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//DRAGON2_ATTACK
-	43,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	43,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C42_A0, PO_C42_A0, PO_C42_A0, PO_C42_A0, PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1,
 	PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1,
 	PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A1, PO_C42_A2, PO_C42_A3, PO_C42_A3, PO_C42_A3,
 	PO_C42_A4, PO_C42_A4, PO_C42_A3, PO_C42_A3, PO_C42_A4, PO_C42_A4, PO_C42_A3, PO_C42_A3, PO_C42_A4, PO_C42_A4, PO_C42_A3, PO_C42_A3,
-	PO_C42_A4, PO_C42_A4, PO_C42_A3, PO_C42_A3, PO_C42_A4, PO_C42_A4, PO_C42_A5, PO_C42_A5,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C42_A4, PO_C42_A4, PO_C42_A3, PO_C42_A3, PO_C42_A4, PO_C42_A4, PO_C42_A5, PO_C42_A5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	DRAGON2_NEUTRAL, DRAGON2_ATTACK,	DISTANCE_CHECK_XY, 10 * 8 + 6, 0, 0,
 
 	DRAGON2_ATTACK, DRAGON2_NEUTRAL,	0, 0, 0, 0,
@@ -2884,141 +2884,141 @@ const signed short c42mv[] = {
 
 const signed short c43mv[] = {
 	//BAHAMUT_NEUTRAL
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_N0, PO_C43_N0, PO_C43_N0, PO_C43_N0, PO_C43_N1, PO_C43_N1, PO_C43_N1, PO_C43_N1,
-	PO_C43_N2, PO_C43_N2, PO_C43_N2, PO_C43_N2, PO_C43_N3,	PO_C43_N3, PO_C43_N3, PO_C43_N3,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_N2, PO_C43_N2, PO_C43_N2, PO_C43_N2, PO_C43_N3,	PO_C43_N3, PO_C43_N3, PO_C43_N3,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_FIRE
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK1, PO_C43_FIREATTACK1,
 	PO_C43_FIREATTACK1, PO_C43_FIREATTACK1, PO_C43_FIREATTACK2,
 	PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK3, PO_C43_FIREATTACK3,
-	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_BULLET
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK1, PO_C43_FIREATTACK1,
 	PO_C43_FIREATTACK1, PO_C43_FIREATTACK1, PO_C43_FIREATTACK2,
 	PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK3, PO_C43_FIREATTACK3,
-	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_ATTACK
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK0, PO_C43_FIREATTACK1, PO_C43_FIREATTACK1,
 	PO_C43_FIREATTACK1, PO_C43_FIREATTACK1, PO_C43_FIREATTACK2,
 	PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK2, PO_C43_FIREATTACK3, PO_C43_FIREATTACK3,
-	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_FIREATTACK4, PO_C43_FIREATTACK4, PO_C43_FIREATTACK4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_EVENT
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_EVENT0, PO_C43_EVENT0, PO_C43_EVENT0, PO_C43_EVENT0, PO_C43_EVENT1, PO_C43_EVENT1, PO_C43_EVENT1, PO_C43_EVENT1,
-	PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT3,	PO_C43_EVENT3, PO_C43_EVENT3, PO_C43_EVENT3,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT2, PO_C43_EVENT3,	PO_C43_EVENT3, PO_C43_EVENT3, PO_C43_EVENT3,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_EVENT2
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_EVENT4, PO_C43_EVENT4, PO_C43_EVENT4, PO_C43_EVENT4, PO_C43_EVENT5, PO_C43_EVENT5, PO_C43_EVENT5, PO_C43_EVENT5,
-	PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT7, PO_C43_EVENT7, PO_C43_EVENT7, PO_C43_EVENT7,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT6, PO_C43_EVENT7, PO_C43_EVENT7, PO_C43_EVENT7, PO_C43_EVENT7,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_EVENT_NEUTRAL
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_EVENT_N0, PO_C43_EVENT_N0, PO_C43_EVENT_N0, PO_C43_EVENT_N0, PO_C43_EVENT_N1, PO_C43_EVENT_N1, PO_C43_EVENT_N1, PO_C43_EVENT_N1,
-	PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N3,	PO_C43_EVENT_N3, PO_C43_EVENT_N3, PO_C43_EVENT_N3,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N2, PO_C43_EVENT_N3,	PO_C43_EVENT_N3, PO_C43_EVENT_N3, PO_C43_EVENT_N3,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_EVENT_FIRE
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C43_EVENT_FIRE0, PO_C43_EVENT_FIRE1, PO_C43_EVENT_FIRE1, PO_C43_EVENT_FIRE4, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE3,
-	PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2,	PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE1, PO_C43_EVENT_FIRE0,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2, PO_C43_EVENT_FIRE2,	PO_C43_EVENT_FIRE3, PO_C43_EVENT_FIRE1, PO_C43_EVENT_FIRE0,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_HEAD_NEUTRAL
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C43_HEAD_N0,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C43_HEAD_N0,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_HEAD_FIRE
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C43_HEAD_N0,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C43_HEAD_N0,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_HEAD_BULLET
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C43_HEAD_N0,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C43_HEAD_N0,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_HEAD_ATTACK
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C43_HEAD2,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C43_HEAD2,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//BAHAMUT_NECK
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C43_NECK_N0,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C43_NECK_N0,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c44mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//CASTLE1_NEUTRAL
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C44_N0, PO_C44_N0, PO_C44_N0, PO_C44_N1, PO_C44_N1, PO_C44_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C44_N0, PO_C44_N0, PO_C44_N0, PO_C44_N1, PO_C44_N1, PO_C44_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C44_N2, PO_C44_N2, PO_C44_N2, PO_C44_N3, PO_C44_N3, PO_C44_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CASTLE1_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C44_W0, PO_C44_W0, PO_C44_W1, PO_C44_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C44_W0, PO_C44_W0, PO_C44_W1, PO_C44_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C44_W2, PO_C44_W2, PO_C44_W3, PO_C44_W3,
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CASTLE1_DISAPPEAR
-	16,	//╩Себ га╥╧юс д╚©Нф╝
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM8,
 	PO_C44_WARP0, PO_C44_WARP0, PO_C44_WARP0, PO_C44_WARP0, PO_C44_WARP1, PO_C44_WARP1, PO_C44_WARP2, PO_C44_WARP2,
 	PO_C44_WARP3, PO_C44_WARP3, PO_C44_WARP4, PO_C44_WARP4, PO_C44_WARP5, PO_C44_WARP5, PO_C44_WARP6, PO_C44_WARP6,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CASTLE1_APPEAR
 	8,
@@ -3028,54 +3028,54 @@ const signed short c44mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//CASTLE1_ATTACK
-	16,	//╩Себ га╥╧юс д╚©Нф╝
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
 	SET_MAINFRAME_RANDOM8,
 	PO_C44_A0, PO_C44_A0, PO_C44_A0, PO_C44_A0,
 	PO_C44_A0, PO_C44_A0, PO_C44_A1, PO_C44_A1,
 	PO_C44_A2, PO_C44_A3, PO_C44_A3, PO_C44_A4,
 	PO_C44_A4, PO_C44_A4, PO_C44_A4, PO_C44_N0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c45mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//CASTLE2_NEUTRAL
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C45_N0, PO_C45_N0, PO_C45_N0, PO_C45_N1, PO_C45_N1, PO_C45_N1,
-	PO_C45_N2, PO_C45_N2, PO_C45_N2, PO_C45_N3,	PO_C45_N3, PO_C45_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C45_N2, PO_C45_N2, PO_C45_N2, PO_C45_N3,	PO_C45_N3, PO_C45_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CASTLE2_MOVE
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C45_W0, PO_C45_W0, PO_C45_W1, PO_C45_W1, PO_C45_W2, PO_C45_W2,
-	PO_C45_W3, PO_C45_W3, PO_C45_W4, PO_C45_W4,	PO_C45_W5, PO_C45_W5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C45_W3, PO_C45_W3, PO_C45_W4, PO_C45_W4,	PO_C45_W5, PO_C45_W5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//CASTLE2_ATTACK
-	40,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	40,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C45_A0, PO_C45_A0, PO_C45_A1, PO_C45_A1, PO_C45_A2, PO_C45_A2,
 	PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2,
 	PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2,
 	PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2, PO_C45_A2,
-	PO_C45_A2, PO_C45_A3, PO_C45_A3, PO_C45_A3, PO_C45_A4, PO_C45_A4, PO_C45_A4, PO_C45_A5,	PO_C45_A6, PO_C45_A6,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C45_A2, PO_C45_A3, PO_C45_A3, PO_C45_A3, PO_C45_A4, PO_C45_A4, PO_C45_A4, PO_C45_A5,	PO_C45_A6, PO_C45_A6,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C45_A6, PO_C45_A6, PO_C45_A6, PO_C45_A6, PO_C45_A6, PO_C45_A6,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	CASTLE2_NEUTRAL,	CASTLE2_MOVE,		0, 0, RANDOM, 30,
 	CASTLE2_NEUTRAL,	CASTLE2_ATTACK,		DISTANCE_CHECK_XY, 8 * 8 + 6, 0, 0,
 
@@ -3088,40 +3088,40 @@ const signed short c45mv[] = {
 
 const signed short c46mv[] = {
 	//SPACE1_NEUTRAL
-	//╩Себ ╣╔юлем
-	24,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	//Л┐│М┐° К█╟Л²╢М└╟
+	24,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C46_A0, PO_C46_A0, PO_C46_A0, PO_C46_A0,
 	PO_C46_A1, PO_C46_A1, PO_C46_A1, PO_C46_A1,
 	PO_C46_A2, PO_C46_A2, PO_C46_A2, PO_C46_A2,
 	PO_C46_A3, PO_C46_A3, PO_C46_A3, PO_C46_A3,
 	PO_C46_A4, PO_C46_A4, PO_C46_A4, PO_C46_A4,
-	PO_C46_A5, PO_C46_A5, PO_C46_A5, PO_C46_A5,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C46_A5, PO_C46_A5, PO_C46_A5, PO_C46_A5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SPACE1_MOVE
-	6,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C46_A0, PO_C46_A1, PO_C46_A2, PO_C46_A3,	PO_C46_A4,	PO_C46_A5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	6,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C46_A0, PO_C46_A1, PO_C46_A2, PO_C46_A3,	PO_C46_A4,	PO_C46_A5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SPACE1_ATTACK
-	6,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C46_A0, PO_C46_A1, PO_C46_A2, PO_C46_A3,	PO_C46_A4,	PO_C46_A5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	6,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C46_A0, PO_C46_A1, PO_C46_A2, PO_C46_A3,	PO_C46_A4,	PO_C46_A5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	SPACE1_NEUTRAL,		SPACE1_ATTACK,				ATTACK_CHECK, 0, 0, 0,
 	SPACE1_NEUTRAL,		SPACE1_ATTACK,				DISTANCE_CHECK_XY, 4 * 8 + 4, 0, 0,
 	SPACE1_NEUTRAL,		SPACE1_MOVE,				DIR_DIFFER_PLAYER, 0, 0, 0,
@@ -3138,10 +3138,10 @@ const signed short c46mv[] = {
 };
 
 const signed short c47mv[] = {
-	//╩Себ ╣╔юлем
-	32,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C47_N0, PO_C47_N0, PO_C47_N0, PO_C47_N0,	//╩Себ га╥╧юс╨╟ ╦П╪г 
+	//Л┐│М┐° К█╟Л²╢М└╟
+	32,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C47_N0, PO_C47_N0, PO_C47_N0, PO_C47_N0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤ 
 	PO_C47_N1, PO_C47_N1, PO_C47_N1, PO_C47_N1,
 	PO_C47_N2, PO_C47_N2, PO_C47_N2, PO_C47_N2,
 	PO_C47_N3, PO_C47_N3, PO_C47_N3, PO_C47_N3,
@@ -3149,7 +3149,7 @@ const signed short c47mv[] = {
 	PO_C47_N5, PO_C47_N5, PO_C47_N5, PO_C47_N5,
 	PO_C47_N6, PO_C47_N6, PO_C47_N6, PO_C47_N6,
 	PO_C47_N7, PO_C47_N7, PO_C47_N7, PO_C47_N7,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
@@ -3157,7 +3157,7 @@ const signed short c47mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
@@ -3166,15 +3166,15 @@ const signed short c47mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C47_W0, PO_C47_W1, PO_C47_W2, PO_C47_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C47_W0, PO_C47_W1, PO_C47_W2, PO_C47_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//5 ©║гоЁ╙╫Н╟М 9©║ гоЁ╙╫Н╟М
-	30,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	//5 Л≈░М∙≤К┌≤Л▐≤ЙЁ═ 9Л≈░ М∙≤К┌≤Л▐≤ЙЁ═
+	30,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C47_A0, PO_C47_A1, PO_C47_A2, PO_C47_A2, PO_C47_A2, PO_C47_A2,
 	PO_C47_A2, PO_C47_A2, PO_C47_A2, PO_C47_A2, PO_C47_A2, PO_C47_A2,
 	PO_C47_A3, PO_C47_A4, PO_C47_A5, PO_C47_A6, PO_C47_A7, PO_C47_A8,
@@ -3184,7 +3184,7 @@ const signed short c47mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	SPACE2_NEUTRAL,		SPACE2_ATTACK,		ATTACK_CHECK, 0, 0, 0,
 	SPACE2_NEUTRAL,		SPACE2_ATTACK,		DISTANCE_CHECK_XY, 6 * 8 + 6, 0, 0,
 	SPACE2_NEUTRAL,		SPACE2_MOVE,		0, 0, RANDOM, 30,
@@ -3198,7 +3198,7 @@ const signed short c47mv[] = {
 };
 
 const signed short c48mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 
 	//CASTLEBOSS1_BODY_NEUTRAL
 	1,
@@ -3325,28 +3325,28 @@ const signed short c48mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c49mv[] = {
 	//ELKEIN2_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C49_N0, PO_C49_N0, PO_C49_N1, PO_C49_N1, PO_C49_N2, PO_C49_N2, PO_C49_N1, PO_C49_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C49_N0, PO_C49_N0, PO_C49_N1, PO_C49_N1, PO_C49_N2, PO_C49_N2, PO_C49_N1, PO_C49_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELKEIN2_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C49_W0, PO_C49_W0, PO_C49_W1, PO_C49_W1, PO_C49_W2, PO_C49_W2, PO_C49_W3, PO_C49_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C49_W0, PO_C49_W0, PO_C49_W1, PO_C49_W1, PO_C49_W2, PO_C49_W2, PO_C49_W3, PO_C49_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELKEIN2_ATTACK
-	42,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+	42,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C49_A0, PO_C49_A1, PO_C49_A1, PO_C49_A1, PO_C49_A1, PO_C49_A1,
 	PO_C49_A1, PO_C49_A1, PO_C49_A1, PO_C49_A1, PO_C49_A1, PO_C49_A1,
 	PO_C49_A1, PO_C49_A1, PO_C49_A2, PO_C49_A3, PO_C49_A4,
@@ -3359,15 +3359,15 @@ const signed short c49mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//ELKEIN2_UPATTACK
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C49_SA0, PO_C49_SA1, PO_C49_SA2, PO_C49_SA3, PO_C49_SA4, PO_C49_SA5, PO_C49_SA5, PO_C49_SA5,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C49_SA0, PO_C49_SA1, PO_C49_SA2, PO_C49_SA3, PO_C49_SA4, PO_C49_SA5, PO_C49_SA5, PO_C49_SA5,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELKEIN2_JUMPATTACK
-	55,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
+	55,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C49_JA0, PO_C49_JA0, PO_C49_JA0, PO_C49_JA0, PO_C49_JA0,
 	PO_C49_JA0, PO_C49_JA0, PO_C49_JA0, PO_C49_JA0, PO_C49_JA0,
 	PO_C49_JA0, PO_C49_JA1, PO_C49_JA1, PO_C49_JA2,	PO_C49_JA2,
@@ -3385,8 +3385,8 @@ const signed short c49mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//ELKEIN2_WEAK
-	42,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	42,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C49_WEAK0, PO_C49_WEAK1, PO_C49_WEAK2, PO_C49_WEAK3,	PO_C49_WEAK4, PO_C49_WEAK5, PO_C49_WEAK6,
 	PO_C49_WEAK7, PO_C49_WEAK8,	PO_C49_WEAK9, PO_C49_WEAK10,
 	PO_C49_WEAK7, PO_C49_WEAK8,	PO_C49_WEAK9, PO_C49_WEAK10,
@@ -3397,13 +3397,13 @@ const signed short c49mv[] = {
 	PO_C49_WEAK7, PO_C49_WEAK8,	PO_C49_WEAK9, PO_C49_WEAK10,
 	PO_C49_WEAK11, PO_C49_WEAK12, PO_C49_WEAK13, PO_C49_WEAK14, PO_C49_WEAK15, PO_C49_WEAK16, PO_C49_WEAK17,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	ELKEIN2_NEUTRAL,		ELKEIN2_ATTACK,			DISTANCE_CHECK_XY, 4 * 8 + 4, RANDOM, 50,
 	ELKEIN2_NEUTRAL,		ELKEIN2_JUMPATTACK,		0, 0, RANDOM, 30,
 	ELKEIN2_NEUTRAL,		ELKEIN2_UPATTACK,		DISTANCE_OUT_XY, 4 * 8 + 4, RANDOM, 30,
@@ -3425,8 +3425,8 @@ const signed short c49mv[] = {
 };
 
 const signed short c50mv[] = {
-	// STATUS╥н бВюЭ ╠╦╨п
-	//0: ╡╝аЗ╦П╣н╩Ща╦ 1: ю╜╡╝аЗ╦╦ ╧Ч╟эаЭ 2: ╬ф╥╖╡╝аЗ╦╦ ╧Ч╟эаЭ 3:╡╝аЗ╦П╣н ╧Ч╟эаЭ
+	// STATUSК║° Л╟╗Л═└ Й╣╛К╤└
+	//0: Й╩█Л╖┬К╙╗К▒░Л┐²Л║╢ 1: Л°≈Й╩█Л╖┬К╖▄ К╡≈Й╡╗Л╖░ 2: Л∙└К·╚Й╩█Л╖┬К╖▄ К╡≈Й╡╗Л╖░ 3:Й╩█Л╖┬К╙╗К▒░ К╡≈Й╡╗Л╖░
 
 	// CASTLEBOSS3_NEUTRAL
 	12,
@@ -3453,7 +3453,7 @@ const signed short c50mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	// CASTLEBOSS3_IMPALE
-	// B0©║╪╜ ╟║╫ц ╪рх╞
+	// B0Л≈░Л└° Й╟─Л▀° Л├▄М≥≤
 	48,
 	SET_MAINFRAME_RANDOM12,
 	PO_C50_B0, PO_C50_B1, PO_C50_B2, PO_C50_B3, PO_C50_B2, PO_C50_B3, PO_C50_B2, PO_C50_B3,
@@ -3470,7 +3470,7 @@ const signed short c50mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	// CASTLEBOSS3_BOMB
-	// B0©║╪╜ фЬе╨ ╪рх╞
+	// B0Л≈░Л└° М▐╜М┐└ Л├▄М≥≤
 	24,
 	SET_MAINFRAME_RANDOM12,
 	PO_C50_B0, PO_C50_B1, PO_C50_B2, PO_C50_B3, PO_C50_B2, PO_C50_B3, PO_C50_B2, PO_C50_B3,
@@ -3499,7 +3499,7 @@ const signed short c50mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	CASTLEBOSS3_NEUTRAL,		CASTLEBOSS3_IMPALE,			0, 0, RANDOM, 30,
 	CASTLEBOSS3_NEUTRAL,		CASTLEBOSS3_BOMB,			0, 0, RANDOM, 30,
 	CASTLEBOSS3_NEUTRAL,		CASTLEBOSS3_LASER,			0, 0, RANDOM, 30,
@@ -3513,9 +3513,9 @@ const signed short c50mv[] = {
 	CASTLEBOSS3_LASER,			CASTLEBOSS3_NEUTRAL,		0, 0, 0, 0,
 	-1,
 };
-// ╧╚╨Йгр╤╖ гяд╜Ё╩╥а╟╗
+// К╛╢К╦▄М∙═К∙▄ М∙°Л╧╦К┌╢К═╓Й╟░
 const signed short c51mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//CASTLEBOSS4_NEUTRAL
 	16,
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,
@@ -3606,7 +3606,7 @@ const signed short c51mv[] = {
 	PO_C51_HANDDOWN0, PO_C51_HANDDOWN0, PO_C51_HANDDOWN0, PO_C51_HANDDOWN0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	//CASTLEBOSS4_HAND_RETURN (╪уюл ©Ь╥║юг юз╦╝╥н ╣╧╬ф╟╗)
+	//CASTLEBOSS4_HAND_RETURN (Л├░Л²╢ Л⌡░К·≤Л²≤ Л·░К╕╛К║° К▐▄Л∙└Й╟░)
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C51_HANDDOWN0,
@@ -3620,7 +3620,7 @@ const signed short c51mv[] = {
 	0 * _2X,
 	0 * _2X,
 
-	//CASTLEBOSS4_HAND_GRAB(гц╥╧юл╬Н юБ╬р╢ы ? MOMOVE : RETURN)
+	//CASTLEBOSS4_HAND_GRAB(М■▄К═┬Л²╢Л√╢ Л·║Л∙≤К▀╓ ? MOMOVE : RETURN)
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C51_HANDGRAB1,
@@ -3635,7 +3635,7 @@ const signed short c51mv[] = {
 	0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	CASTLEBOSS4_NEUTRAL, CASTLEBOSS4_ATTACK, 0, 0, RANDOM, 40,
 	CASTLEBOSS4_NEUTRAL, CASTLEBOSS4_WIND, 0, 0, RANDOM, 40,
 	CASTLEBOSS4_NEUTRAL, CASTLEBOSS4_WALK, 0, 0, RANDOM, 40,
@@ -3652,73 +3652,73 @@ const signed short c51mv[] = {
 };
 
 const signed short c52mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C52_N0, PO_C52_N0, PO_C52_N1, PO_C52_N1, PO_C52_N2, PO_C52_N2, PO_C52_N3, PO_C52_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	-1,
 
-	//╩Себ╨╞╟Ф(юл╣©╬Ью╫)
+	//Л┐│М┐°КЁ─Й╡╫(Л²╢К▐≥Л≈├Л²▄)
 	-1,
 };
 
 const signed short c53mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C53_N0, PO_C53_N0, PO_C53_N1, PO_C53_N1, PO_C53_N2, PO_C53_N2, PO_C53_N3, PO_C53_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C53_N0, PO_C53_N0, PO_C53_N1, PO_C53_N1, PO_C53_N2, PO_C53_N2, PO_C53_N3, PO_C53_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c54mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C54_N0, PO_C54_N0, PO_C54_N1, PO_C54_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C54_N0, PO_C54_N0, PO_C54_N1, PO_C54_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C54_N2, PO_C54_N2, PO_C54_N3, PO_C54_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	16,
 	SET_MAINFRAME_RANDOM12,
-	PO_C54_W0, PO_C54_W0, PO_C54_W0, PO_C54_W0, PO_C54_W1, PO_C54_W1, PO_C54_W1, PO_C54_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	PO_C54_W0, PO_C54_W0, PO_C54_W0, PO_C54_W0, PO_C54_W1, PO_C54_W1, PO_C54_W1, PO_C54_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C54_W2, PO_C54_W2, PO_C54_W2, PO_C54_W2, PO_C54_W1, PO_C54_W1, PO_C54_W1, PO_C54_W1,
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X	- га╥╧юс╢эю╖╥нго╦И Ёй╧╚ ╨Э╦╖.юсюг╥н ╪Жа╓
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X	- М■└К═┬Л·└К▀╗Л°└К║°М∙≤К╘╢ К└┬К╛╢ К╧═К╕└.Л·└Л²≤К║° Л┬≤Л═∙
 	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 20,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 40,
 	-1,
 };
 
 const signed short c55mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C55_N0, PO_C55_N0, PO_C55_N1, PO_C55_N1, PO_C55_N2, PO_C55_N2, PO_C55_N3, PO_C55_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C55_N0, PO_C55_N0, PO_C55_N1, PO_C55_N1, PO_C55_N2, PO_C55_N2, PO_C55_N3, PO_C55_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	16,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C55_W0, PO_C55_W0, PO_C55_W0, PO_C55_W0, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W2, PO_C55_W2, PO_C55_W2, PO_C55_W2, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C55_W0, PO_C55_W0, PO_C55_W0, PO_C55_W0, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W2, PO_C55_W2, PO_C55_W2, PO_C55_W2, PO_C55_W1, PO_C55_W1, PO_C55_W1, PO_C55_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	8,
 	SET_MAINFRAME_RANDOM12,
@@ -3728,49 +3728,49 @@ const signed short c55mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 40,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c56mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C56_N0, PO_C56_N0, PO_C56_N1, PO_C56_N1, PO_C56_N2, PO_C56_N2, PO_C56_N3, PO_C56_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C56_N0, PO_C56_N0, PO_C56_N1, PO_C56_N1, PO_C56_N2, PO_C56_N2, PO_C56_N3, PO_C56_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	16,
-	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C56_W0, PO_C56_W0, PO_C56_W0, PO_C56_W0, PO_C56_W1, PO_C56_W1, PO_C56_W1, PO_C56_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C56_W0, PO_C56_W0, PO_C56_W0, PO_C56_W0, PO_C56_W1, PO_C56_W1, PO_C56_W1, PO_C56_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C56_W2, PO_C56_W2, PO_C56_W2, PO_C56_W2, PO_C56_W1, PO_C56_W1, PO_C56_W1, PO_C56_W1,
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c57mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C57_N0, PO_C57_N0, PO_C57_N1, PO_C57_N1, PO_C57_N2, PO_C57_N2, PO_C57_N3, PO_C57_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C57_N0, PO_C57_N0, PO_C57_N1, PO_C57_N1, PO_C57_N2, PO_C57_N2, PO_C57_N3, PO_C57_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C57_W0, PO_C57_W0, PO_C57_W0, PO_C57_W0, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W2, PO_C57_W2, PO_C57_W2, PO_C57_W2, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C57_W0, PO_C57_W0, PO_C57_W0, PO_C57_W0, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W2, PO_C57_W2, PO_C57_W2, PO_C57_W2, PO_C57_W1, PO_C57_W1, PO_C57_W1, PO_C57_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	8,
 	SET_MAINFRAME_RANDOM8,
@@ -3786,57 +3786,57 @@ const signed short c57mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c58mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C58_N0, PO_C58_N0, PO_C58_N1, PO_C58_N1, PO_C58_N2, PO_C58_N2, PO_C58_N3, PO_C58_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C58_N0, PO_C58_N0, PO_C58_N1, PO_C58_N1, PO_C58_N2, PO_C58_N2, PO_C58_N3, PO_C58_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C58_W0, PO_C58_W0, PO_C58_W0, PO_C58_W0, PO_C58_W1, PO_C58_W1, PO_C58_W1, PO_C58_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C58_W2, PO_C58_W2, PO_C58_W2, PO_C58_W2, PO_C58_W1, PO_C58_W1, PO_C58_W1, PO_C58_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C58_W0, PO_C58_W0, PO_C58_W0, PO_C58_W0, PO_C58_W1, PO_C58_W1, PO_C58_W1, PO_C58_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C58_W2, PO_C58_W2, PO_C58_W2, PO_C58_W2, PO_C58_W1, PO_C58_W1, PO_C58_W1, PO_C58_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C58_W0, PO_C58_W0, PO_C58_W1, PO_C58_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C58_W2, PO_C58_W2, PO_C58_W1, PO_C58_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C58_W0, PO_C58_W0, PO_C58_W1, PO_C58_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C58_W2, PO_C58_W2, PO_C58_W1, PO_C58_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c59mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C59_N0, PO_C59_N0, PO_C59_N1, PO_C59_N1, PO_C59_N2, PO_C59_N2, PO_C59_N3, PO_C59_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C59_N0, PO_C59_N0, PO_C59_N1, PO_C59_N1, PO_C59_N2, PO_C59_N2, PO_C59_N3, PO_C59_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C59_W0, PO_C59_W0, PO_C59_W0, PO_C59_W0, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W2, PO_C59_W2, PO_C59_W2, PO_C59_W2, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C59_W0, PO_C59_W0, PO_C59_W0, PO_C59_W0, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W2, PO_C59_W2, PO_C59_W2, PO_C59_W2, PO_C59_W1, PO_C59_W1, PO_C59_W1, PO_C59_W1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	8,
 	SET_MAINFRAME_RANDOM8,
@@ -3845,60 +3845,60 @@ const signed short c59mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 33,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 15,
 	-1,
 };
 
 const signed short c60mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C60_N0, PO_C60_N0, PO_C60_N1, PO_C60_N1, PO_C60_N2, PO_C60_N2, PO_C60_N3, PO_C60_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C60_N0, PO_C60_N0, PO_C60_N1, PO_C60_N1, PO_C60_N2, PO_C60_N2, PO_C60_N3, PO_C60_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C60_W0, PO_C60_W0, PO_C60_W0, PO_C60_W0, PO_C60_W1, PO_C60_W1, PO_C60_W1, PO_C60_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C60_W2, PO_C60_W2, PO_C60_W2, PO_C60_W2, PO_C60_W1, PO_C60_W1, PO_C60_W1, PO_C60_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C60_W0, PO_C60_W0, PO_C60_W0, PO_C60_W0, PO_C60_W1, PO_C60_W1, PO_C60_W1, PO_C60_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C60_W2, PO_C60_W2, PO_C60_W2, PO_C60_W2, PO_C60_W1, PO_C60_W1, PO_C60_W1, PO_C60_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 33,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 33,
 	-1,
 };
 
 const signed short c61mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C61_N0, PO_C61_N0, PO_C61_N1, PO_C61_N1, PO_C61_N2, PO_C61_N2, PO_C61_N3, PO_C61_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C61_N0, PO_C61_N0, PO_C61_N1, PO_C61_N1, PO_C61_N2, PO_C61_N2, PO_C61_N3, PO_C61_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C61_W0, PO_C61_W0, PO_C61_W0, PO_C61_W0, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W2, PO_C61_W2, PO_C61_W2, PO_C61_W2, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C61_W0, PO_C61_W0, PO_C61_W0, PO_C61_W0, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W2, PO_C61_W2, PO_C61_W2, PO_C61_W2, PO_C61_W1, PO_C61_W1, PO_C61_W1, PO_C61_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	// NPCMOVE_WALKFAST
-	// ╣╔╦П©К, ╬к╦╤ ╢ч╦╝╠Б etc 02╧Ь
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C61_W0, PO_C61_W0, PO_C61_W1, PO_C61_W1, PO_C61_W2, PO_C61_W2, PO_C61_W1, PO_C61_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	6 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	// К█╟К╙╗Л ╘, Л∙▄К╖┬ К▀╛К╕╛Й╦╟ etc 02К╡┬
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C61_W0, PO_C61_W0, PO_C61_W1, PO_C61_W1, PO_C61_W2, PO_C61_W2, PO_C61_W1, PO_C61_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	6 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	// ╬к╦╤ ╬╡╥╞аЭ
+	// Л∙▄К╖┬ Л⌠╟К÷╛Л╖░
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C61_D0, PO_C61_D0, PO_C61_D0, PO_C61_D0, PO_C61_D0, PO_C61_D0, PO_C61_D0, PO_C61_D0,
@@ -3907,38 +3907,38 @@ const signed short c61mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 33,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 33,
 	-1,
 };
 
 const signed short c62mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C62_N0, PO_C62_N0, PO_C62_N1, PO_C62_N1, PO_C62_N2, PO_C62_N2, PO_C62_N3, PO_C62_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C62_N0, PO_C62_N0, PO_C62_N1, PO_C62_N1, PO_C62_N2, PO_C62_N2, PO_C62_N3, PO_C62_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	16,
 	SET_MAINFRAME_RANDOM8,
 	PO_C62_W0, PO_C62_W0, PO_C62_W0, PO_C62_W0,
 	PO_C62_W1, PO_C62_W1, PO_C62_W1, PO_C62_W1,
 	PO_C62_W2, PO_C62_W2, PO_C62_W2, PO_C62_W2,
-	PO_C62_W1, PO_C62_W1, PO_C62_W1, PO_C62_W1,//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	PO_C62_W1, PO_C62_W1, PO_C62_W1, PO_C62_W1,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C62_W0, PO_C62_W0, PO_C62_W1, PO_C62_W1, PO_C62_W2, PO_C62_W2, PO_C62_W1, PO_C62_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C62_W0, PO_C62_W0, PO_C62_W1, PO_C62_W1, PO_C62_W2, PO_C62_W2, PO_C62_W1, PO_C62_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	// ╩Сюн ╢╘©Жюж╢б╦П╪г
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	// Л┐│Л²╦ К┬└Л⌡▄Л·┬К┼■К╙╗Л┘≤
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C62_D, PO_C62_D, PO_C62_D, PO_C62_D, PO_C62_D, PO_C62_D, PO_C62_D, PO_C62_D,
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -3947,207 +3947,207 @@ const signed short c62mv[] = {
 };
 
 const signed short c63mv[] = {
-	//╩Себ ╣╔юлем
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C63_N0, PO_C63_N0, PO_C63_N1, PO_C63_N1, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N3, PO_C63_N3, PO_C63_N3, PO_C63_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C63_N0, PO_C63_N0, PO_C63_N1, PO_C63_N1, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N2, PO_C63_N3, PO_C63_N3, PO_C63_N3, PO_C63_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c64mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C64_N0, PO_C64_N0, PO_C64_N1, PO_C64_N1, PO_C64_N2, PO_C64_N2, PO_C64_N3, PO_C64_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C64_N0, PO_C64_N0, PO_C64_N1, PO_C64_N1, PO_C64_N2, PO_C64_N2, PO_C64_N3, PO_C64_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C64_W0, PO_C64_W0, PO_C64_W0, PO_C64_W0, PO_C64_W1, PO_C64_W1, PO_C64_W1, PO_C64_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C64_W2, PO_C64_W2, PO_C64_W2, PO_C64_W2, PO_C64_W1, PO_C64_W1, PO_C64_W1, PO_C64_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	3 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C64_W0, PO_C64_W0, PO_C64_W0, PO_C64_W0, PO_C64_W1, PO_C64_W1, PO_C64_W1, PO_C64_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C64_W2, PO_C64_W2, PO_C64_W2, PO_C64_W2, PO_C64_W1, PO_C64_W1, PO_C64_W1, PO_C64_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	3 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 40,
 	-1,
 };
 
 const signed short c65mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C65_N0, PO_C65_N0, PO_C65_N1, PO_C65_N1, PO_C65_N2, PO_C65_N2, PO_C65_N3, PO_C65_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C65_N0, PO_C65_N0, PO_C65_N1, PO_C65_N1, PO_C65_N2, PO_C65_N2, PO_C65_N3, PO_C65_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	16,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C65_W0, PO_C65_W0, PO_C65_W0, PO_C65_W0, PO_C65_W1, PO_C65_W1, PO_C65_W1, PO_C65_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C65_W2, PO_C65_W2, PO_C65_W2, PO_C65_W2, PO_C65_W1, PO_C65_W1, PO_C65_W1, PO_C65_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C65_W0, PO_C65_W0, PO_C65_W0, PO_C65_W0, PO_C65_W1, PO_C65_W1, PO_C65_W1, PO_C65_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C65_W2, PO_C65_W2, PO_C65_W2, PO_C65_W2, PO_C65_W1, PO_C65_W1, PO_C65_W1, PO_C65_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 33,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 33,
 	-1,
 };
 
-const signed short c66mv[] = {		//╟Ё
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C66_N0, PO_C66_N0, PO_C66_N1, PO_C66_N1, PO_C66_N2, PO_C66_N2, PO_C66_N3, PO_C66_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+const signed short c66mv[] = {		//Й╟°
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C66_N0, PO_C66_N0, PO_C66_N1, PO_C66_N1, PO_C66_N2, PO_C66_N2, PO_C66_N3, PO_C66_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C66_W0, PO_C66_W0, PO_C66_W0, PO_C66_W0, PO_C66_W1, PO_C66_W1, PO_C66_W1, PO_C66_W1, PO_C66_W2, PO_C66_W2, PO_C66_W2, PO_C66_W2, PO_C66_W3, PO_C66_W3, PO_C66_W3, PO_C66_W3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C66_W0, PO_C66_W0, PO_C66_W0, PO_C66_W0, PO_C66_W1, PO_C66_W1, PO_C66_W1, PO_C66_W1, PO_C66_W2, PO_C66_W2, PO_C66_W2, PO_C66_W2, PO_C66_W3, PO_C66_W3, PO_C66_W3, PO_C66_W3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 3 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c67mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C67_N0, PO_C67_N0, PO_C67_N1, PO_C67_N1, PO_C67_N2, PO_C67_N2, PO_C67_N3, PO_C67_N3,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 
 	-1,
 };
 
 const signed short c68mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C68_N0, PO_C68_N0, PO_C68_N1, PO_C68_N1, PO_C68_N2, PO_C68_N2, PO_C68_N3, PO_C68_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C68_N0, PO_C68_N0, PO_C68_N1, PO_C68_N1, PO_C68_N2, PO_C68_N2, PO_C68_N3, PO_C68_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c69mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C69_N0, PO_C69_N0, PO_C69_N1, PO_C69_N1, PO_C69_N2, PO_C69_N2, PO_C69_N3, PO_C69_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C69_N0, PO_C69_N0, PO_C69_N1, PO_C69_N1, PO_C69_N2, PO_C69_N2, PO_C69_N3, PO_C69_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c70mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C70_N0, PO_C70_N0, PO_C70_N1, PO_C70_N1, PO_C70_N2, PO_C70_N2, PO_C70_N3, PO_C70_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C70_N0, PO_C70_N0, PO_C70_N1, PO_C70_N1, PO_C70_N2, PO_C70_N2, PO_C70_N3, PO_C70_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c71mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C71_N0, PO_C71_N0, PO_C71_N1, PO_C71_N1, PO_C71_N2, PO_C71_N2, PO_C71_N3, PO_C71_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C71_N0, PO_C71_N0, PO_C71_N1, PO_C71_N1, PO_C71_N2, PO_C71_N2, PO_C71_N3, PO_C71_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C71_W0, PO_C71_W0, PO_C71_W0, PO_C71_W0, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W2, PO_C71_W2, PO_C71_W2, PO_C71_W2, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C71_W0, PO_C71_W0, PO_C71_W0, PO_C71_W0, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W2, PO_C71_W2, PO_C71_W2, PO_C71_W2, PO_C71_W1, PO_C71_W1, PO_C71_W1, PO_C71_W1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c72mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C72_N0, PO_C72_N0, PO_C72_N1, PO_C72_N1, PO_C72_N2, PO_C72_N2, PO_C72_N3, PO_C72_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C72_N0, PO_C72_N0, PO_C72_N1, PO_C72_N1, PO_C72_N2, PO_C72_N2, PO_C72_N3, PO_C72_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C72_W0, PO_C72_W0, PO_C72_W0, PO_C72_W0, PO_C72_W1, PO_C72_W1, PO_C72_W1, PO_C72_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C72_W2, PO_C72_W2, PO_C72_W2, PO_C72_W2,	PO_C72_W1, PO_C72_W1, PO_C72_W1, PO_C72_W1,//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C72_W0, PO_C72_W0, PO_C72_W0, PO_C72_W0, PO_C72_W1, PO_C72_W1, PO_C72_W1, PO_C72_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C72_W2, PO_C72_W2, PO_C72_W2, PO_C72_W2,	PO_C72_W1, PO_C72_W1, PO_C72_W1, PO_C72_W1,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 45,
 	-1,
 };
 
 const signed short c73mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C73_N0, PO_C73_N0, PO_C73_N1, PO_C73_N1, PO_C73_N2, PO_C73_N2, PO_C73_N1, PO_C73_N1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C73_N0, PO_C73_N0, PO_C73_N1, PO_C73_N1, PO_C73_N2, PO_C73_N2, PO_C73_N1, PO_C73_N1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//Ё╛╫ц аь╨Я
+	//К┌ Л▀° Л╓─К╧└
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//╩Сюз Ё╛╠Б
+	//Л┐│Л·░ К┌ Й╦╟
 	32,
 	SET_MAINFRAME_RANDOM8,
 	PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_BOX0, PO_C73_BOX0, PO_C73_BOX1, PO_C73_BOX1, PO_C73_BOX2, PO_C73_BOX2, PO_C73_BOX3, PO_C73_BOX3,
@@ -4155,14 +4155,14 @@ const signed short c73mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//╩Сюз ╟гЁ╩аж╢б ╦П╪г
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C73_BOXGIVE0, PO_C73_BOXGIVE0, PO_C73_BOXGIVE1, PO_C73_BOXGIVE1, PO_C73_BOXGIVE2, PO_C73_BOXGIVE2, PO_C73_BOXGIVE3, PO_C73_BOXGIVE3, PO_C73_BOXGIVE0, PO_C73_BOXGIVE0, PO_C73_BOXGIVE1, PO_C73_BOXGIVE1, PO_C73_BOXGIVE2, PO_C73_BOXGIVE2, PO_C73_BOXGIVE3, PO_C73_BOXGIVE3, //╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│Л·░ Й╠╢К┌╢Лё╪К┼■ К╙╗Л┘≤
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C73_BOXGIVE0, PO_C73_BOXGIVE0, PO_C73_BOXGIVE1, PO_C73_BOXGIVE1, PO_C73_BOXGIVE2, PO_C73_BOXGIVE2, PO_C73_BOXGIVE3, PO_C73_BOXGIVE3, PO_C73_BOXGIVE0, PO_C73_BOXGIVE0, PO_C73_BOXGIVE1, PO_C73_BOXGIVE1, PO_C73_BOXGIVE2, PO_C73_BOXGIVE2, PO_C73_BOXGIVE3, PO_C73_BOXGIVE3, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//©Ьгг╫╛ Ё╛╠Б
+	//Л⌡░М■╪Л┴╛ К┌ Й╦╟
 	32,
 	SET_MAINFRAME_RANDOM8,
 	PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_READY, PO_C73_FISH0, PO_C73_FISH0, PO_C73_FISH1, PO_C73_FISH1, PO_C73_FISH2, PO_C73_FISH2, PO_C73_FISH3, PO_C73_FISH3,
@@ -4170,81 +4170,81 @@ const signed short c73mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//©Ьгг╫╛ ╣И╟Мюж╢б ╦П╪г
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C73_FISHGIVE0, PO_C73_FISHGIVE0, PO_C73_FISHGIVE1, PO_C73_FISHGIVE1, PO_C73_FISHGIVE2, PO_C73_FISHGIVE2, PO_C73_FISHGIVE3, PO_C73_FISHGIVE3,PO_C73_FISHGIVE0, PO_C73_FISHGIVE0, PO_C73_FISHGIVE1, PO_C73_FISHGIVE1, PO_C73_FISHGIVE2, PO_C73_FISHGIVE2, PO_C73_FISHGIVE3, PO_C73_FISHGIVE3, //╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л⌡░М■╪Л┴╛ К⌠╓ЙЁ═Л·┬К┼■ К╙╗Л┘≤
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C73_FISHGIVE0, PO_C73_FISHGIVE0, PO_C73_FISHGIVE1, PO_C73_FISHGIVE1, PO_C73_FISHGIVE2, PO_C73_FISHGIVE2, PO_C73_FISHGIVE3, PO_C73_FISHGIVE3,PO_C73_FISHGIVE0, PO_C73_FISHGIVE0, PO_C73_FISHGIVE1, PO_C73_FISHGIVE1, PO_C73_FISHGIVE2, PO_C73_FISHGIVE2, PO_C73_FISHGIVE3, PO_C73_FISHGIVE3, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
 	-1,
 };
 
-const signed short c74mv[] = {	// ╨╦╥Ы(©╘╟Эажюн)
-	//╩Себ ╣╔юлем
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C74_N0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+const signed short c74mv[] = {	// КЁ╢К╔≤(Л≈╛Й╢─Лё╪Л²╦)
+	//Л┐│М┐° К█╟Л²╢М└╟
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C74_N0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c75mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C75_N0, PO_C75_N0, PO_C75_N1, PO_C75_N1, PO_C75_N2, PO_C75_N2, PO_C75_N3, PO_C75_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C75_N0, PO_C75_N0, PO_C75_N1, PO_C75_N1, PO_C75_N2, PO_C75_N2, PO_C75_N3, PO_C75_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c76mv[] = {
-	//╩Себ ╣╔юлем
-	//╦╤юоаН
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C76_N0, PO_C76_N0, PO_C76_N1, PO_C76_N1, PO_C76_N2, PO_C76_N2, PO_C76_N3, PO_C76_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//К╖┬Л²╪Л╕┬
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C76_N0, PO_C76_N0, PO_C76_N1, PO_C76_N1, PO_C76_N2, PO_C76_N2, PO_C76_N3, PO_C76_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C76_W0, PO_C76_W0, PO_C76_W0, PO_C76_W0, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W2, PO_C76_W2, PO_C76_W2, PO_C76_W2, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C76_W0, PO_C76_W0, PO_C76_W0, PO_C76_W0, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W2, PO_C76_W2, PO_C76_W2, PO_C76_W2, PO_C76_W1, PO_C76_W1, PO_C76_W1, PO_C76_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C76_W0, PO_C76_W0, PO_C76_W1, PO_C76_W1, PO_C76_W2, PO_C76_W2, PO_C76_W1, PO_C76_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C76_W0, PO_C76_W0, PO_C76_W1, PO_C76_W1, PO_C76_W2, PO_C76_W2, PO_C76_W1, PO_C76_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 9 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C76_D, PO_C76_D, PO_C76_D, PO_C76_D, PO_C76_D, PO_C76_D, PO_C76_D, PO_C76_D,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╦╤юоаН ╤╖╦╝╠Б
+	//К╖┬Л²╪Л╕┬ К∙▄К╕╛Й╦╟
 	10,
 	SET_MAINFRAME_RANDOM8,
 	PO_C76_PUNCH0, PO_C76_PUNCH0, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1, PO_C76_PUNCH1,
 	0 * _2X, 0 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//╬г╪Ж
+	//Л∙┘Л┬≤
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C76_SHAKEHAND0, PO_C76_SHAKEHAND0, PO_C76_SHAKEHAND0, PO_C76_SHAKEHAND0,
@@ -4254,63 +4254,63 @@ const signed short c76mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
-// ╣╣╨╖
+// К▐└К╡╗
 const signed short c77mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//DOBEL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C77_N0, PO_C77_N0, PO_C77_N1, PO_C77_N1, PO_C77_N2, PO_C77_N2, PO_C77_N3, PO_C77_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C77_N0, PO_C77_N0, PO_C77_N1, PO_C77_N1, PO_C77_N2, PO_C77_N2, PO_C77_N3, PO_C77_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//DOBEL_MOVE
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C77_W0, PO_C77_W0, PO_C77_W0, PO_C77_W0, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W2, PO_C77_W2, PO_C77_W2, PO_C77_W2, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C77_W0, PO_C77_W0, PO_C77_W0, PO_C77_W0, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W2, PO_C77_W2, PO_C77_W2, PO_C77_W2, PO_C77_W1, PO_C77_W1, PO_C77_W1, PO_C77_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//DOBEL_NEUTRAL_SWORD
-	8,	//╩Себ га╥╧юс д╚©Нф╝		//д╝╣И╟М ╢╨ф╝╥╡
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C77_N2_SWORD, PO_C77_N2_SWORD, PO_C77_N1_SWORD, PO_C77_N1_SWORD, PO_C77_N2_SWORD, PO_C77_N2_SWORD, PO_C77_N3_SWORD, PO_C77_N3_SWORD,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦		//Л╧╪К⌠╓ЙЁ═ К┴╢М┼╦К÷╢
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C77_N2_SWORD, PO_C77_N2_SWORD, PO_C77_N1_SWORD, PO_C77_N1_SWORD, PO_C77_N2_SWORD, PO_C77_N2_SWORD, PO_C77_N3_SWORD, PO_C77_N3_SWORD,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//DOBEL_DOWN
-	8,			//╬╡╥╞аЭ
+	8,			//Л⌠╟К÷╛Л╖░
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_D0, PO_C77_D0, PO_C77_D0, PO_C77_D0, PO_C77_D0, PO_C77_D0, PO_C77_D0, PO_C77_D0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//DOBEL_DOWN_HEAD
-	8,			//╬╡╥╞аЭ - ╟М╟Ё╣К
+	8,			//Л⌠╟К÷╛Л╖░ - ЙЁ═Й╟°К⌠╛
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_D1, PO_C77_D1, PO_C77_D1, PO_C77_D1, PO_C77_D1, PO_C77_D1, PO_C77_D1, PO_C77_D1,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//DOBEL_VICTORY
-	8,			//╫б╦╝фВаН
+	8,			//Л┼╧К╕╛М▐╛Л╕┬
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0, PO_C77_HAPPY0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//DOBEL_KNEE
-	8,			//╧╚╦╜╡щ╠Б
+	8,			//К╛╢К╕▌Й©┤Й╦╟
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0, PO_C77_KNEE0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//DOBEL_SLEEP_CLOSEEYE
-	8,			//д╖╢К©║ ╢╘©Ж╪╜ ╢╚╟╗ю╫
+	8,			//Л╧╗К▄─Л≈░ К┬└Л⌡▄Л└° К┬┬Й╟░Л²▄
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0, PO_C77_HEAD0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	//DOBEL_SLEEP_OPENEYE
-	8,			//д╖╢К©║ ╢╘©Ж╪╜ ╢╚ ╤Д
+	8,			//Л╧╗К▄─Л≈░ К┬└Л⌡▄Л└° К┬┬ К°╦
 	SET_MAINFRAME_RANDOM8,
 	PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1, PO_C77_HEAD1,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
@@ -4318,256 +4318,256 @@ const signed short c77mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
-//╟║а╘
+//Й╟─Л═╓
 const signed short c78mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//GAGEL_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C78_N0, PO_C78_N0, PO_C78_N1, PO_C78_N1, PO_C78_N2, PO_C78_N2, PO_C78_N3, PO_C78_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C78_N0, PO_C78_N0, PO_C78_N1, PO_C78_N1, PO_C78_N2, PO_C78_N2, PO_C78_N3, PO_C78_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_MOVE
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C78_W0, PO_C78_W0, PO_C78_W0, PO_C78_W0, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W2, PO_C78_W2, PO_C78_W2, PO_C78_W2, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C78_W0, PO_C78_W0, PO_C78_W0, PO_C78_W0, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W2, PO_C78_W2, PO_C78_W2, PO_C78_W2, PO_C78_W1, PO_C78_W1, PO_C78_W1, PO_C78_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_NEUTRAL_SWORD
-	8,	//д╝╣И╟М ╢╨ф╝╥╡
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C78_N0_SWORD, PO_C78_N0_SWORD, PO_C78_N1_SWORD, PO_C78_N1_SWORD, PO_C78_N2_SWORD, PO_C78_N2_SWORD, PO_C78_N3_SWORD, PO_C78_N3_SWORD,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л╧╪К⌠╓ЙЁ═ К┴╢М┼╦К÷╢
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C78_N0_SWORD, PO_C78_N0_SWORD, PO_C78_N1_SWORD, PO_C78_N1_SWORD, PO_C78_N2_SWORD, PO_C78_N2_SWORD, PO_C78_N3_SWORD, PO_C78_N3_SWORD,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_DOWN
-	8,			//╬╡╥╞аЭ
+	8,			//Л⌠╟К÷╛Л╖░
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_D0, PO_C78_D0, PO_C78_D0, PO_C78_D0, PO_C78_D0, PO_C78_D0, PO_C78_D0, PO_C78_D0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_DOWN_HEAD
-	8,			//╬╡╥╞аЭ-╟М╟Ё╣К
+	8,			//Л⌠╟К÷╛Л╖░-ЙЁ═Й╟°К⌠╛
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_D1, PO_C78_D1, PO_C78_D1, PO_C78_D1, PO_C78_D1, PO_C78_D1, PO_C78_D1, PO_C78_D1,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_VICTORY
-	8,			//╫б╦╝фВаН
+	8,			//Л┼╧К╕╛М▐╛Л╕┬
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY, PO_C78_HAPPY,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_KNEE
-	8,			//╧╚╦╜╡щю╫
+	8,			//К╛╢К╕▌Й©┤Л²▄
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0, PO_C78_KNEE0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_SLEEP_CLOSEEYE
-	8,			//д╖╢К©║ ╢╘©Ж╪╜ ╢╚╟╗ю╫
+	8,			//Л╧╗К▄─Л≈░ К┬└Л⌡▄Л└° К┬┬Й╟░Л²▄
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0, PO_C78_HEAD0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_SLEEP_OPENEYE
-	8,			//д╖╢К©║ ╢╘©Ж╪╜ ╢╚ ╤Д
+	8,			//Л╧╗К▄─Л≈░ К┬└Л⌡▄Л└° К┬┬ К°╦
 	SET_MAINFRAME_RANDOM8,
 	PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1, PO_C78_HEAD1,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	//GAGEL_BOMB
-	24,			//фЬе╨╢ЬаЖ╠Б		// фЬе╨ PO_C78_BOMB
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	24,			//М▐╜М┐└К█≤Л╖─Й╦╟		// М▐╜М┐└ PO_C78_BOMB
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C78_THROW0, PO_C78_THROW0, PO_C78_THROW1, PO_C78_THROW1, PO_C78_THROW2, PO_C78_THROW2, PO_C78_THROW3, PO_C78_THROW3, PO_C78_THROW4, PO_C78_THROW4, PO_C78_THROW5, PO_C78_THROW5,
 	PO_C78_THROW6, PO_C78_THROW6, PO_C78_THROW7, PO_C78_THROW7, PO_C78_THROW8, PO_C78_THROW8, PO_C78_THROW9, PO_C78_THROW9, PO_C78_THROW8, PO_C78_THROW8, PO_C78_THROW9, PO_C78_THROW9,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c79mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C79_N0, PO_C79_N0, PO_C79_N1, PO_C79_N1, PO_C79_N2, PO_C79_N2, PO_C79_N3, PO_C79_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C79_N0, PO_C79_N0, PO_C79_N1, PO_C79_N1, PO_C79_N2, PO_C79_N2, PO_C79_N3, PO_C79_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c80mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c81mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C81_N0, PO_C81_N0, PO_C81_N1, PO_C81_N1, PO_C81_N2, PO_C81_N2, PO_C81_N3, PO_C81_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C81_N0, PO_C81_N0, PO_C81_N1, PO_C81_N1, PO_C81_N2, PO_C81_N2, PO_C81_N3, PO_C81_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C81_W0, PO_C81_W0, PO_C81_W0, PO_C81_W0, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W2, PO_C81_W2, PO_C81_W2, PO_C81_W2, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C81_W0, PO_C81_W0, PO_C81_W0, PO_C81_W0, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W2, PO_C81_W2, PO_C81_W2, PO_C81_W2, PO_C81_W1, PO_C81_W1, PO_C81_W1, PO_C81_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	// ╩║╦╝ ╟х╠Б цъ╟║
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C81_W0, PO_C81_W0, PO_C81_W1, PO_C81_W1, PO_C81_W2, PO_C81_W2, PO_C81_W1, PO_C81_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	// К╧╗К╕╛ Й╠╥Й╦╟ Л╤■Й╟─
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C81_W0, PO_C81_W0, PO_C81_W1, PO_C81_W1, PO_C81_W2, PO_C81_W2, PO_C81_W1, PO_C81_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c82mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C82_N0, PO_C82_N0, PO_C82_N1, PO_C82_N1, PO_C82_N2, PO_C82_N2, PO_C82_N3, PO_C82_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C82_N0, PO_C82_N0, PO_C82_N1, PO_C82_N1, PO_C82_N2, PO_C82_N2, PO_C82_N3, PO_C82_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c83mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C83_N0, PO_C83_N0, PO_C83_N1, PO_C83_N1, PO_C83_N2, PO_C83_N2, PO_C83_N3, PO_C83_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C83_N0, PO_C83_N0, PO_C83_N1, PO_C83_N1, PO_C83_N2, PO_C83_N2, PO_C83_N3, PO_C83_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C83_W0, PO_C83_W0, PO_C83_W0, PO_C83_W0, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W2, PO_C83_W2, PO_C83_W2, PO_C83_W2, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C83_W0, PO_C83_W0, PO_C83_W0, PO_C83_W0, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W2, PO_C83_W2, PO_C83_W2, PO_C83_W2, PO_C83_W1, PO_C83_W1, PO_C83_W1, PO_C83_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c84mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//LUISE_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C84_N0, PO_C84_N0, PO_C84_N1, PO_C84_N1, PO_C84_N2, PO_C84_N2, PO_C84_N3, PO_C84_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C84_N0, PO_C84_N0, PO_C84_N1, PO_C84_N1, PO_C84_N2, PO_C84_N2, PO_C84_N3, PO_C84_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LUISE_MOVE
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C84_W0, PO_C84_W0, PO_C84_W0, PO_C84_W0, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W2, PO_C84_W2, PO_C84_W2, PO_C84_W2, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C84_W0, PO_C84_W0, PO_C84_W0, PO_C84_W0, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W2, PO_C84_W2, PO_C84_W2, PO_C84_W2, PO_C84_W1, PO_C84_W1, PO_C84_W1, PO_C84_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LUISE_ATTACK
-	32,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C84_A0, PO_C84_A0, PO_C84_A1, PO_C84_A1, PO_C84_A2, PO_C84_A2, PO_C84_A3, PO_C84_A3,	PO_C84_A4, PO_C84_A4, PO_C84_A5, PO_C84_A5, PO_C84_A6, PO_C84_A6, PO_C84_A3, PO_C84_A3, PO_C84_A4, PO_C84_A4, PO_C84_A5, PO_C84_A5, PO_C84_A6, PO_C84_A6, PO_C84_A1, PO_C84_A1, PO_C84_A7, PO_C84_A7, PO_C84_A8, PO_C84_A8, PO_C84_A2, PO_C84_A2, PO_C84_A1, PO_C84_A1,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 101 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	32,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C84_A0, PO_C84_A0, PO_C84_A1, PO_C84_A1, PO_C84_A2, PO_C84_A2, PO_C84_A3, PO_C84_A3,	PO_C84_A4, PO_C84_A4, PO_C84_A5, PO_C84_A5, PO_C84_A6, PO_C84_A6, PO_C84_A3, PO_C84_A3, PO_C84_A4, PO_C84_A4, PO_C84_A5, PO_C84_A5, PO_C84_A6, PO_C84_A6, PO_C84_A1, PO_C84_A1, PO_C84_A7, PO_C84_A7, PO_C84_A8, PO_C84_A8, PO_C84_A2, PO_C84_A2, PO_C84_A1, PO_C84_A1,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 101 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LUISE_KNEE
-	//╧╚╦╜╡щ╠Б
+	//К╛╢К╕▌Й©┤Й╦╟
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0, PO_C84_KNEE0,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//╢ы╫╨╫╨еФ ╪рх╞╩Себ©║╪╜ ╢╨ф╝╥╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C84_W0, PO_C84_W0, PO_C84_W1, PO_C84_W1, PO_C84_W2, PO_C84_W2, PO_C84_W1, PO_C84_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К▀╓Л┼╓Л┼╓М├╓ Л├▄М≥≤Л┐│М┐°Л≈░Л└° К┴╢М┼╦К÷╢
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C84_W0, PO_C84_W0, PO_C84_W1, PO_C84_W1, PO_C84_W2, PO_C84_W2, PO_C84_W1, PO_C84_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c85mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C85_N0, PO_C85_N0, PO_C85_N1, PO_C85_N1, PO_C85_N2, PO_C85_N2, PO_C85_N3, PO_C85_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C85_N0, PO_C85_N0, PO_C85_N1, PO_C85_N1, PO_C85_N2, PO_C85_N2, PO_C85_N3, PO_C85_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c86mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, PO_C86_N2, PO_C86_N2, PO_C86_N3, PO_C86_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, PO_C86_N2, PO_C86_N2, PO_C86_N3, PO_C86_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C86_W0, PO_C86_W0, PO_C86_W0, PO_C86_W0, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W2, PO_C86_W2, PO_C86_W2, PO_C86_W2, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C86_W0, PO_C86_W0, PO_C86_W0, PO_C86_W0, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W2, PO_C86_W2, PO_C86_W2, PO_C86_W2, PO_C86_W1, PO_C86_W1, PO_C86_W1, PO_C86_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, PO_C86_N2, PO_C86_N2, PO_C86_N3, PO_C86_N3, PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	-2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X,	-2 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	102 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, PO_C86_N2, PO_C86_N2, PO_C86_N3, PO_C86_N3, PO_C86_N0, PO_C86_N0, PO_C86_N1, PO_C86_N1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	-2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X,	-2 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	102 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c87mv[] = {
-	32,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	32,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C87_N4, PO_C87_N4, PO_C87_N5, PO_C87_N5, PO_C87_N4, PO_C87_N4, PO_C87_N5, PO_C87_N5, PO_C87_N6, PO_C87_N6, PO_C87_N7, PO_C87_N7, PO_C87_N6, PO_C87_N6, PO_C87_N7, PO_C87_N7,
 	PO_C87_N0, PO_C87_N0, PO_C87_N1, PO_C87_N1, PO_C87_N0, PO_C87_N0, PO_C87_N1, PO_C87_N1, PO_C87_N2, PO_C87_N2, PO_C87_N3, PO_C87_N3, PO_C87_N2, PO_C87_N2, PO_C87_N3, PO_C87_N3,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
@@ -4577,154 +4577,154 @@ const signed short c87mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c88mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C88_N0, PO_C88_N0, PO_C88_N1, PO_C88_N1, PO_C88_N2, PO_C88_N2, PO_C88_N3, PO_C88_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C88_N0, PO_C88_N0, PO_C88_N1, PO_C88_N1, PO_C88_N2, PO_C88_N2, PO_C88_N3, PO_C88_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C88_MAGIC0, PO_C88_MAGIC0, PO_C88_MAGIC1, PO_C88_MAGIC1, PO_C88_MAGIC2, PO_C88_MAGIC2, PO_C88_MAGIC3, PO_C88_MAGIC3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C88_MAGIC0, PO_C88_MAGIC0, PO_C88_MAGIC1, PO_C88_MAGIC1, PO_C88_MAGIC2, PO_C88_MAGIC2, PO_C88_MAGIC3, PO_C88_MAGIC3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c89mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C89_N0, PO_C89_N0, PO_C89_N1, PO_C89_N1, PO_C89_N2, PO_C89_N2, PO_C89_N3, PO_C89_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C89_N0, PO_C89_N0, PO_C89_N1, PO_C89_N1, PO_C89_N2, PO_C89_N2, PO_C89_N3, PO_C89_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c90mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C90_N0, PO_C90_N0, PO_C90_N1, PO_C90_N1, PO_C90_N2, PO_C90_N2, PO_C90_N3, PO_C90_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C90_N0, PO_C90_N0, PO_C90_N1, PO_C90_N1, PO_C90_N2, PO_C90_N2, PO_C90_N3, PO_C90_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c91mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C91_N0, PO_C91_N0, PO_C91_N1, PO_C91_N1, PO_C91_N2, PO_C91_N2, PO_C91_N3, PO_C91_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C91_N0, PO_C91_N0, PO_C91_N1, PO_C91_N1, PO_C91_N2, PO_C91_N2, PO_C91_N3, PO_C91_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C91_W0, PO_C91_W0, PO_C91_W0, PO_C91_W0, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W2, PO_C91_W2, PO_C91_W2, PO_C91_W2, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C91_W0, PO_C91_W0, PO_C91_W0, PO_C91_W0, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W2, PO_C91_W2, PO_C91_W2, PO_C91_W2, PO_C91_W1, PO_C91_W1, PO_C91_W1, PO_C91_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c92mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C92_N0, PO_C92_N0, PO_C92_N1, PO_C92_N1, PO_C92_N2, PO_C92_N2, PO_C92_N3, PO_C92_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C92_N0, PO_C92_N0, PO_C92_N1, PO_C92_N1, PO_C92_N2, PO_C92_N2, PO_C92_N3, PO_C92_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//16,	//╩Себ га╥╧юс д╚©Нф╝
-	//SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	//PO_C92_W0, PO_C92_W0, PO_C92_W1, PO_C92_W1, PO_C92_W2, PO_C92_W2, PO_C92_W1, PO_C92_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	//4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	//0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	//SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	//PO_C92_W0, PO_C92_W0, PO_C92_W1, PO_C92_W1, PO_C92_W2, PO_C92_W2, PO_C92_W1, PO_C92_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	//4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	//0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C92_W0, PO_C92_W0, PO_C92_W1, PO_C92_W1, PO_C92_W2, PO_C92_W2, PO_C92_W1, PO_C92_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C92_W0, PO_C92_W0, PO_C92_W1, PO_C92_W1, PO_C92_W2, PO_C92_W2, PO_C92_W1, PO_C92_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, 8 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c93mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C93_N0, PO_C93_N0, PO_C93_N1, PO_C93_N1, PO_C93_N2, PO_C93_N2, PO_C93_N3, PO_C93_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C93_N0, PO_C93_N0, PO_C93_N1, PO_C93_N1, PO_C93_N2, PO_C93_N2, PO_C93_N3, PO_C93_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C93_W0, PO_C93_W0, PO_C93_W0, PO_C93_W0, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W2, PO_C93_W2, PO_C93_W2, PO_C93_W2, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C93_W0, PO_C93_W0, PO_C93_W0, PO_C93_W0, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W2, PO_C93_W2, PO_C93_W2, PO_C93_W2, PO_C93_W1, PO_C93_W1, PO_C93_W1, PO_C93_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c94mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C94_N0, PO_C94_N0, PO_C94_N1, PO_C94_N1, PO_C94_N2, PO_C94_N2, PO_C94_N3, PO_C94_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C94_N0, PO_C94_N0, PO_C94_N1, PO_C94_N1, PO_C94_N2, PO_C94_N2, PO_C94_N3, PO_C94_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c95mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C95_N0, PO_C95_N0, PO_C95_N1, PO_C95_N1, PO_C95_N2, PO_C95_N2, PO_C95_N3, PO_C95_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C95_N0, PO_C95_N0, PO_C95_N1, PO_C95_N1, PO_C95_N2, PO_C95_N2, PO_C95_N3, PO_C95_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C95_W0, PO_C95_W0, PO_C95_W0, PO_C95_W0, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W2, PO_C95_W2, PO_C95_W2, PO_C95_W2, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C95_W0, PO_C95_W0, PO_C95_W0, PO_C95_W0, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W2, PO_C95_W2, PO_C95_W2, PO_C95_W2, PO_C95_W1, PO_C95_W1, PO_C95_W1, PO_C95_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╥╧юлюЗ ╟Ь╟щ
+	//К═┬Л²╢Л═─ ЙЁ╣Й╡╘
 	36,
 	SET_MAINFRAME_RANDOM8,
 	PO_C95_LASER0, PO_C95_LASER0, PO_C95_LASER1, PO_C95_LASER1, PO_C95_LASER2, PO_C95_LASER2, PO_C95_LASER3, PO_C95_LASER3, PO_C95_LASER4, PO_C95_LASER4, PO_C95_LASER5, PO_C95_LASER5, PO_C95_LASER6, PO_C95_LASER6,
@@ -4733,78 +4733,78 @@ const signed short c95mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X,
 
-	//╟М╫╨ф╝ ╢╨ф╝╥╡
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C95_N0_GHOST, PO_C95_N1_GHOST, PO_C95_N2_GHOST, PO_C95_N3_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//ЙЁ═Л┼╓М┼╦ К┴╢М┼╦К÷╢
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C95_N0_GHOST, PO_C95_N1_GHOST, PO_C95_N2_GHOST, PO_C95_N3_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╟М╫╨ф╝ юл╣©
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C95_W0_GHOST, PO_C95_W1_GHOST, PO_C95_W2_GHOST, PO_C95_W1_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//ЙЁ═Л┼╓М┼╦ Л²╢К▐≥
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C95_W0_GHOST, PO_C95_W1_GHOST, PO_C95_W2_GHOST, PO_C95_W1_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╟М╫╨ф╝ ЁН╤В
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C95_SURPRISE0_GHOST, PO_C95_SURPRISE1_GHOST, PO_C95_SURPRISE2_GHOST, PO_C95_SURPRISE3_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//ЙЁ═Л┼╓М┼╦ К├─К·▄
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C95_SURPRISE0_GHOST, PO_C95_SURPRISE1_GHOST, PO_C95_SURPRISE2_GHOST, PO_C95_SURPRISE3_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c96mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 		//LORA_NEUTRAL_DRESS
-	8,	//╩Себ га╥╧юс д╚©Нф╝		//╣Е╥╧╫╨ ╢╨ф╝╥╡
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_N0_DRESS, PO_C96_N0_DRESS, PO_C96_N1_DRESS, PO_C96_N1_DRESS, PO_C96_N2_DRESS, PO_C96_N2_DRESS, PO_C96_N3_DRESS, PO_C96_N3_DRESS,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦		//К⌠°К═┬Л┼╓ К┴╢М┼╦К÷╢
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_N0_DRESS, PO_C96_N0_DRESS, PO_C96_N1_DRESS, PO_C96_N1_DRESS, PO_C96_N2_DRESS, PO_C96_N2_DRESS, PO_C96_N3_DRESS, PO_C96_N3_DRESS,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LORA_MOVE_DRESS
-	16,	//╩Себ га╥╧юс д╚©Нф╝		//╣Е╥╧╫╨ ╧╚╨Й
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2,	2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦		//К⌠°К═┬Л┼╓ К╛╢К╦▄
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W0_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W2_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS, PO_C96_W1_DRESS,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2,	2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2, 2 * _2X * 2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LORA_SAD_DRESS
-	8,	//╩Себ га╥╧юс д╚©Нф╝		//╣Е╥╧╫╨ ╢╨ф╝╥╡
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦		//К⌠°К═┬Л┼╓ К┴╢М┼╦К÷╢
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0, PO_C96_SAD0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LORA_SUPRISE_DRESS
-	8,	//╩Себ га╥╧юс д╚©Нф╝		//╣Е╥╧╫╨ ╢╨ф╝╥╡
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦		//К⌠°К═┬Л┼╓ К┴╢М┼╦К÷╢
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS, PO_C96_SURPRISE0_DRESS,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LORA_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_N0, PO_C96_N0, PO_C96_N1, PO_C96_N1, PO_C96_N2, PO_C96_N2, PO_C96_N3, PO_C96_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_N0, PO_C96_N0, PO_C96_N1, PO_C96_N1, PO_C96_N2, PO_C96_N2, PO_C96_N3, PO_C96_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LORA_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C96_W0, PO_C96_W0, PO_C96_W1, PO_C96_W1, PO_C96_W2, PO_C96_W2, PO_C96_W1, PO_C96_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C96_W0, PO_C96_W0, PO_C96_W1, PO_C96_W1, PO_C96_W2, PO_C96_W2, PO_C96_W1, PO_C96_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╫╫гб╦П╪г цъ╟║
+	//Л┼╛М■┬К╙╗Л┘≤ Л╤■Й╟─
 	1,
 	SET_MAINFRAME_RANDOM8,
 	PO_C96_SAD0,
@@ -4812,17 +4812,17 @@ const signed short c96mv[] = {
 	0 * _2X,
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c97mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C97_N0, PO_C97_N0, PO_C97_N1, PO_C97_N1, PO_C97_N2, PO_C97_N2, PO_C97_N3, PO_C97_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C97_N0, PO_C97_N0, PO_C97_N1, PO_C97_N1, PO_C97_N2, PO_C97_N2, PO_C97_N3, PO_C97_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	32,
 	SET_MAINFRAME_RANDOM8,
@@ -4833,57 +4833,57 @@ const signed short c97mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 
 const signed short c98mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C98_N0, PO_C98_N0, PO_C98_N1, PO_C98_N1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C98_N0, PO_C98_N0, PO_C98_N1, PO_C98_N1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C98_N2, PO_C98_N2, PO_C98_N3, PO_C98_N3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c99mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C99_N0, PO_C99_N0, PO_C99_N1, PO_C99_N1, PO_C99_N2, PO_C99_N2, PO_C99_N3, PO_C99_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C99_N0, PO_C99_N0, PO_C99_N1, PO_C99_N1, PO_C99_N2, PO_C99_N2, PO_C99_N3, PO_C99_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	16,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C99_W0, PO_C99_W0, PO_C99_W0, PO_C99_W0, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W2, PO_C99_W2, PO_C99_W2, PO_C99_W2, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C99_W0, PO_C99_W0, PO_C99_W0, PO_C99_W0, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W2, PO_C99_W2, PO_C99_W2, PO_C99_W2, PO_C99_W1, PO_C99_W1, PO_C99_W1, PO_C99_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 40,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c100mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C100_N0, PO_C100_N0, PO_C100_N1, PO_C100_N1, PO_C100_N2, PO_C100_N2, PO_C100_N3, PO_C100_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C100_N0, PO_C100_N0, PO_C100_N1, PO_C100_N1, PO_C100_N2, PO_C100_N2, PO_C100_N3, PO_C100_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
@@ -4891,78 +4891,78 @@ const signed short c100mv[] = {
 };
 
 const signed short c101mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C101_N0, PO_C101_N0, PO_C101_N1, PO_C101_N1, PO_C101_N2, PO_C101_N2, PO_C101_N3, PO_C101_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C101_N0, PO_C101_N0, PO_C101_N1, PO_C101_N1, PO_C101_N2, PO_C101_N2, PO_C101_N3, PO_C101_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C101_W0, PO_C101_W0, PO_C101_W0, PO_C101_W0, PO_C101_W1, PO_C101_W1, PO_C101_W1, PO_C101_W1, PO_C101_W2, PO_C101_W2, PO_C101_W2, PO_C101_W2, PO_C101_W1, PO_C101_W1,	PO_C101_W1, PO_C101_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C101_W0, PO_C101_W0, PO_C101_W0, PO_C101_W0, PO_C101_W1, PO_C101_W1, PO_C101_W1, PO_C101_W1, PO_C101_W2, PO_C101_W2, PO_C101_W2, PO_C101_W2, PO_C101_W1, PO_C101_W1,	PO_C101_W1, PO_C101_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	3 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	7 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C101_W0, PO_C101_W0, PO_C101_W1, PO_C101_W1, PO_C101_W2, PO_C101_W2, PO_C101_W1, PO_C101_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	-3 * _2X, 0 * _2X, -5 * _2X, 0 * _2X, -7 * _2X, 0 * _2X, -6 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C101_W0, PO_C101_W0, PO_C101_W1, PO_C101_W1, PO_C101_W2, PO_C101_W2, PO_C101_W1, PO_C101_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	-3 * _2X, 0 * _2X, -5 * _2X, 0 * _2X, -7 * _2X, 0 * _2X, -6 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c102mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C102_N0, PO_C102_N0, PO_C102_N1, PO_C102_N1, PO_C102_N2, PO_C102_N2, PO_C102_N3, PO_C102_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C102_N0, PO_C102_N0, PO_C102_N1, PO_C102_N1, PO_C102_N2, PO_C102_N2, PO_C102_N3, PO_C102_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
 	-1,
 };
 
 const signed short c103mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C103_N0, PO_C103_N0, PO_C103_N1, PO_C103_N1, PO_C103_N2, PO_C103_N2, PO_C103_N3, PO_C103_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C103_N0, PO_C103_N0, PO_C103_N1, PO_C103_N1, PO_C103_N2, PO_C103_N2, PO_C103_N3, PO_C103_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C103_W0, PO_C103_W0, PO_C103_W0, PO_C103_W0, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W2, PO_C103_W2, PO_C103_W2, PO_C103_W2, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C103_W0, PO_C103_W0, PO_C103_W0, PO_C103_W0, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W2, PO_C103_W2, PO_C103_W2, PO_C103_W2, PO_C103_W1, PO_C103_W1, PO_C103_W1, PO_C103_W1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	8,
 	SET_MAINFRAME_RANDOM8,
@@ -4970,97 +4970,97 @@ const signed short c103mv[] = {
 	-2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C103_CAP0, PO_C103_CAP0, PO_C103_CAP1, PO_C103_CAP1, PO_C103_CAP2, PO_C103_CAP2, PO_C103_CAP3, PO_C103_CAP3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C103_CAP0, PO_C103_CAP0, PO_C103_CAP1, PO_C103_CAP1, PO_C103_CAP2, PO_C103_CAP2, PO_C103_CAP3, PO_C103_CAP3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C103_CAPMOVE0, PO_C103_CAPMOVE0, PO_C103_CAPMOVE1, PO_C103_CAPMOVE1, PO_C103_CAPMOVE2, PO_C103_CAPMOVE2, PO_C103_CAPMOVE1, PO_C103_CAPMOVE1, //╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C103_CAPMOVE0, PO_C103_CAPMOVE0, PO_C103_CAPMOVE1, PO_C103_CAPMOVE1, PO_C103_CAPMOVE2, PO_C103_CAPMOVE2, PO_C103_CAPMOVE1, PO_C103_CAPMOVE1, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 5 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 33,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 15,
 	-1,
 };
 
 const signed short c104mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C104_N0, PO_C104_N0, PO_C104_N1, PO_C104_N1, PO_C104_N2, PO_C104_N2, PO_C104_N3, PO_C104_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C104_N0, PO_C104_N0, PO_C104_N1, PO_C104_N1, PO_C104_N2, PO_C104_N2, PO_C104_N3, PO_C104_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c105mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C105_N0, PO_C105_N0, PO_C105_N1, PO_C105_N1, PO_C105_N2, PO_C105_N2, PO_C105_N3, PO_C105_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C105_N0, PO_C105_N0, PO_C105_N1, PO_C105_N1, PO_C105_N2, PO_C105_N2, PO_C105_N3, PO_C105_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C105_W0, PO_C105_W0, PO_C105_W0, PO_C105_W0, PO_C105_W1, PO_C105_W1, PO_C105_W1, PO_C105_W1, PO_C105_W2, PO_C105_W2, PO_C105_W2, PO_C105_W2, PO_C105_W1, PO_C105_W1,	PO_C105_W1, PO_C105_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C105_W0, PO_C105_W0, PO_C105_W0, PO_C105_W0, PO_C105_W1, PO_C105_W1, PO_C105_W1, PO_C105_W1, PO_C105_W2, PO_C105_W2, PO_C105_W2, PO_C105_W2, PO_C105_W1, PO_C105_W1,	PO_C105_W1, PO_C105_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c106mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C106_N0, PO_C106_N0, PO_C106_N1, PO_C106_N1, PO_C106_N2, PO_C106_N2, PO_C106_N3,	PO_C106_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C106_N0, PO_C106_N0, PO_C106_N1, PO_C106_N1, PO_C106_N2, PO_C106_N2, PO_C106_N3,	PO_C106_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C106_W0, PO_C106_W0, PO_C106_W0, PO_C106_W0, PO_C106_W1, PO_C106_W1, PO_C106_W1, PO_C106_W1, PO_C106_W2, PO_C106_W2, PO_C106_W2, PO_C106_W2, PO_C106_W1,	PO_C106_W1, PO_C106_W1,	PO_C106_W1,//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C106_W0, PO_C106_W0, PO_C106_W0, PO_C106_W0, PO_C106_W1, PO_C106_W1, PO_C106_W1, PO_C106_W1, PO_C106_W2, PO_C106_W2, PO_C106_W2, PO_C106_W2, PO_C106_W1,	PO_C106_W1, PO_C106_W1,	PO_C106_W1,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//Ё╙д╖╧щ ╣И╟М ╢╨ф╝╥╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//К┌≤Л╧╗К╟≤ К⌠╓ЙЁ═ К┴╢М┼╦К÷╢
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C106_COMPASS5, PO_C106_COMPASS5, PO_C106_COMPASS6, PO_C106_COMPASS6, PO_C106_COMPASS7, PO_C106_COMPASS7, PO_C106_COMPASS6, PO_C106_COMPASS6,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//Ё╙д╖╧щ ╣НюЕ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//К┌≤Л╧╗К╟≤ К⌠╠Л·╔
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C106_COMPASS0, PO_C106_COMPASS0, PO_C106_COMPASS1, PO_C106_COMPASS1, PO_C106_COMPASS2, PO_C106_COMPASS2, PO_C106_COMPASS3, PO_C106_COMPASS3,
 	PO_C106_COMPASS4, PO_C106_COMPASS4, PO_C106_COMPASS5, PO_C106_COMPASS5, PO_C106_COMPASS6, PO_C106_COMPASS6, PO_C106_COMPASS7, PO_C106_COMPASS7,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//Ё╙д╖╧щ ╠ЗаЭ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//К┌≤Л╧╗К╟≤ Й╧╗Л╖░
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C106_COMPASS7, PO_C106_COMPASS7, PO_C106_COMPASS6, PO_C106_COMPASS6, PO_C106_COMPASS5, PO_C106_COMPASS5, PO_C106_COMPASS4, PO_C106_COMPASS4,
 	PO_C106_COMPASS3, PO_C106_COMPASS3, PO_C106_COMPASS2, PO_C106_COMPASS2, PO_C106_COMPASS1, PO_C106_COMPASS1, PO_C106_N0, PO_C106_N0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╬╡╥╞аЭ
+	//Л⌠╟К÷╛Л╖░
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C106_D0, PO_C106_D0, PO_C106_D0, PO_C106_D0, PO_C106_D0, PO_C106_D0, PO_C106_D0, PO_C106_D0,
@@ -5069,104 +5069,104 @@ const signed short c106mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c107mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C107_N0, PO_C107_N0, PO_C107_N1, PO_C107_N1, PO_C107_N2, PO_C107_N2, PO_C107_N3, PO_C107_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C107_N0, PO_C107_N0, PO_C107_N1, PO_C107_N1, PO_C107_N2, PO_C107_N2, PO_C107_N3, PO_C107_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C107_M0, PO_C107_M0, PO_C107_M1, PO_C107_M1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	PO_C107_M2, PO_C107_M2, PO_C107_M1, PO_C107_M1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C107_M0, PO_C107_M0, PO_C107_M1, PO_C107_M1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	PO_C107_M2, PO_C107_M2, PO_C107_M1, PO_C107_M1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
-const signed short c108mv[] = {		//╨н╬Шюл
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C108_N0, PO_C108_N0, PO_C108_N1, PO_C108_N1, PO_C108_N2, PO_C108_N2, PO_C108_N3, PO_C108_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+const signed short c108mv[] = {		//К╤─Л≈┴Л²╢
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C108_N0, PO_C108_N0, PO_C108_N1, PO_C108_N1, PO_C108_N2, PO_C108_N2, PO_C108_N3, PO_C108_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C108_LOOK0, PO_C108_LOOK0, PO_C108_LOOK1, PO_C108_LOOK1, PO_C108_LOOK2, PO_C108_LOOK2, PO_C108_LOOK3, PO_C108_LOOK3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C108_LOOK0, PO_C108_LOOK0, PO_C108_LOOK1, PO_C108_LOOK1, PO_C108_LOOK2, PO_C108_LOOK2, PO_C108_LOOK3, PO_C108_LOOK3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф - ажюн╟Ью╩ ╣Ш╤С╢ы╢о╢б ╟Ё
+	//Л┐│М┐°КЁ─Й╡╫ - Лё╪Л²╦ЙЁ╣Л²└ К■╟К²╪К▀╓К▀┬К┼■ Й╟°
 	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		DISTANCE_OUT_XY, 3 * 8 + 3, 0, 0,
 	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		DISTANCE_CHECK_XY, 3 * 8 + 3, 0, 0,
 	-1,
 };
 
-//╤С╨ё╫╨
+//К²╪К╡═Л┼╓
 const signed short c109mv[] = {
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C109_N0, PO_C109_N0, PO_C109_N1, PO_C109_N1, PO_C109_N2, PO_C109_N2, PO_C109_N3,	PO_C109_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C109_N0, PO_C109_N0, PO_C109_N1, PO_C109_N1, PO_C109_N2, PO_C109_N2, PO_C109_N3,	PO_C109_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C109_W0, PO_C109_W0, PO_C109_W0, PO_C109_W0, PO_C109_W1, PO_C109_W1, PO_C109_W1, PO_C109_W1, PO_C109_W2, PO_C109_W2, PO_C109_W2, PO_C109_W2, PO_C109_W1,	PO_C109_W1,	PO_C109_W1,	PO_C109_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C109_W0, PO_C109_W0, PO_C109_W0, PO_C109_W0, PO_C109_W1, PO_C109_W1, PO_C109_W1, PO_C109_W1, PO_C109_W2, PO_C109_W2, PO_C109_W2, PO_C109_W2, PO_C109_W1,	PO_C109_W1,	PO_C109_W1,	PO_C109_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╧╚╦╜╡щю╫
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+	//К╛╢К╕▌Й©┤Л²▄
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C109_DOWN0,
 	2 * _2X,
 	0 * _2X,
 
-	//╩Щ╟╒
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+	//Л┐²Й╟│
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C109_THINK0,
 	2 * _2X,
 	0 * _2X,
 
-	//ЁН╤В, ╣з╥н ╤э
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+	//К├─К·▄, К▓╓К║° К°─
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C109_DOWN0, PO_C109_DOWN0, PO_C109_DOWN0, PO_C109_DOWN0,
 	-2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	103, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//BOSS
 	//LABETH_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C109_N0, PO_C109_N0, PO_C109_N1, PO_C109_N1, PO_C109_N2, PO_C109_N2, PO_C109_N3,	PO_C109_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C109_N0, PO_C109_N0, PO_C109_N1, PO_C109_N1, PO_C109_N2, PO_C109_N2, PO_C109_N3,	PO_C109_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELKEIN2_MOVE
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C109_W0, PO_C109_W0, PO_C109_W1, PO_C109_W1, PO_C109_W2, PO_C109_W2, PO_C109_W1,	PO_C109_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, //╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C109_W0, PO_C109_W0, PO_C109_W1, PO_C109_W1, PO_C109_W2, PO_C109_W2, PO_C109_W1,	PO_C109_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, 4 * _2X, 0 * _2X, //Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//LABETH_LASER
 	135,
@@ -5225,15 +5225,15 @@ const signed short c109mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//авю╫
-	1,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+	//Лё╫Л²▄
+	1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C109_DOWN0,
 	0 * _2X,
 	0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 //	LABETH_NEUTRAL,		LABETH_LASER,		0, 0, 0, 0,
 	LABETH_NEUTRAL,		LABETH_FLAME,		0, 0, RANDOM, 30,
 	LABETH_NEUTRAL,		LABETH_MAGIC,		0, 0, RANDOM, 30,
@@ -5253,30 +5253,30 @@ const signed short c109mv[] = {
 	-1,
 };
 
-//©╓диюн
-//╪Ь╪╜ ╧ы╡э╤╖ 124╧Ь END╣╔╦П╫е бЭа╤
+//Л≈≤Л╪─Л²╦
+//Л┬°Л└° К╟■Й©─К∙▄ 124К╡┬ ENDК█╟К╙╗Л▀═ Л╟╦Л║╟
 const signed short c110mv[] = {
-	//╩Себ ╣╔юлем
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C110_N0, PO_C110_N1, PO_C110_N2, PO_C110_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_N0, PO_C110_N1, PO_C110_N2, PO_C110_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	4,
-	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//цй╠Бх╜ а╤╟г
-	PO_C110_W0, PO_C110_W1,	PO_C110_W2, PO_C110_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 4 * _2X, 3 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_W0, PO_C110_W1,	PO_C110_W2, PO_C110_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 4 * _2X, 3 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╦╤©уюг ╫июЕю╩ ╡╗Ё©
+	//К╖┬Л≥∙Л²≤ Л▀╛Л·╔Л²└ Й╨╪К┐└
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_GRAB0,
 	0 * _2X,
 	0 * _2X,
 
-	//ф╪╬Н╦кюг д╝ю╩ ╩л╬фаэ
+	//М▀╟Л√╢К╖╥Л²≤ Л╧╪Л²└ К╫▒Л∙└Л╓▄
 	8,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_EXTRACT0, PO_C110_EXTRACT0, PO_C110_EXTRACT0, PO_C110_EXTRACT0,
@@ -5284,35 +5284,35 @@ const signed short c110mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//4х╕╦╝╪р╣Е ╣И╟М ╢╨ф╝╥╡
-	4,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C110_N0_SWORD, PO_C110_N1_SWORD, PO_C110_N2_SWORD, PO_C110_N3_SWORD,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//4М≥─К╕╛Л├▄К⌠° К⌠╓ЙЁ═ К┴╢М┼╦К÷╢
+	4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_N0_SWORD, PO_C110_N1_SWORD, PO_C110_N2_SWORD, PO_C110_N3_SWORD,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//5х╕╦╝╪р╣Е╥н ф╪╬Н╦кю╩ ╟э╢╘╢ы
+	//5М≥─К╕╛Л├▄К⌠°К║° М▀╟Л√╢К╖╥Л²└ Й╡╗К┬└К▀╓
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_EXTRACT2,
 	0 * _2X,
 	0 * _2X,
 
-	//6х╕╦╝╪р╣Е╥н ╟Ь╟щ
+	//6М≥─К╕╛Л├▄К⌠°К║° ЙЁ╣Й╡╘
 	5,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_A0, PO_C110_A1, PO_C110_A2, PO_C110_A3, PO_C110_A4,
 	0 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//7╧╚╦╜╡щ╟М фц╟эЁ╙╟╗
+	//7К╛╢К╕▌Й©┤ЙЁ═ М▄┘Й╡╗К┌≤Й╟░
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_KNEE0,
 	-8 * _2X,
 	0 * _2X,
 
-	//8╧╚╦╜╡щ╟М а╓аЖ
+	//8К╛╢К╕▌Й©┤ЙЁ═ Л═∙Л╖─
 	1,
 	SET_MAINFRAME_RANDOM12,
 	PO_C110_KNEE0,
@@ -5321,23 +5321,23 @@ const signed short c110mv[] = {
 
 	// BOSS
 	// 9 ELKEIN_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C110_BOSS_N0, PO_C110_BOSS_N0, PO_C110_BOSS_N1, PO_C110_BOSS_N1, PO_C110_BOSS_N2, PO_C110_BOSS_N2, PO_C110_BOSS_N3,	PO_C110_BOSS_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_BOSS_N0, PO_C110_BOSS_N0, PO_C110_BOSS_N1, PO_C110_BOSS_N1, PO_C110_BOSS_N2, PO_C110_BOSS_N2, PO_C110_BOSS_N3,	PO_C110_BOSS_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	// 10 ELKEIN_MOVE
 	8,
-	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//цй╠Бх╜ а╤╟г
-	PO_C110_BOSS_W0, PO_C110_BOSS_W0, PO_C110_BOSS_W1, PO_C110_BOSS_W1, PO_C110_BOSS_W2, PO_C110_BOSS_W2, PO_C110_BOSS_W1, PO_C110_BOSS_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_BOSS_W0, PO_C110_BOSS_W0, PO_C110_BOSS_W1, PO_C110_BOSS_W1, PO_C110_BOSS_W2, PO_C110_BOSS_W2, PO_C110_BOSS_W1, PO_C110_BOSS_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X, 4 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	// 11 ELKEIN_GUARD
 	32,
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C110_BOSS_G0, PO_C110_BOSS_G0, PO_C110_BOSS_G0, PO_C110_BOSS_G0, //╩Себ га╥╧юс╨╟ ╦П╪г
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_BOSS_G0, PO_C110_BOSS_G0, PO_C110_BOSS_G0, PO_C110_BOSS_G0, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C110_BOSS_G1, PO_C110_BOSS_G1, PO_C110_BOSS_G1, PO_C110_BOSS_G1,
 	PO_C110_BOSS_G2, PO_C110_BOSS_G2, PO_C110_BOSS_G2, PO_C110_BOSS_G2,
 	PO_C110_BOSS_G3, PO_C110_BOSS_G3, PO_C110_BOSS_G3, PO_C110_BOSS_G3,
@@ -5345,13 +5345,13 @@ const signed short c110mv[] = {
 	PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5,
 	PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5,
 	PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5, PO_C110_BOSS_G5,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	// 12 ELKEIN_JUMPATTACK
 	32,
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, //╩Себ га╥╧юс╨╟ ╦П╪г
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0, PO_C110_BOSS_JA0,
 	PO_C110_BOSS_JA1, PO_C110_BOSS_JA1, PO_C110_BOSS_JA2, PO_C110_BOSS_JA3,
 	PO_C110_BOSS_JA4, PO_C110_BOSS_JA5, PO_C110_BOSS_JA6, PO_C110_BOSS_JA7,
@@ -5359,14 +5359,14 @@ const signed short c110mv[] = {
 	PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9,
 	PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9,
 	PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9, PO_C110_BOSS_JA9,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 6 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 6 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 8 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 100, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	// 13 ELKEIN_DASH
-	// ╦е╧Ь ╟к╩Г ╟Х╪сгь╪╜ гя╧Ь©║ 50 гх╪©бК ╣н╧Ь ╟║╠Б
+	// К╖╓К╡┬ Й╡─Л┌╛ ЙЁ└Л├█М∙╢Л└° М∙°К╡┬Л≈░ 50 М■╫Л┘─Л╞╓ К▒░К╡┬ Й╟─Й╦╟
 	80,
-	SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-	PO_C110_BOSS_CA0, PO_C110_BOSS_CA0, PO_C110_BOSS_CA1, PO_C110_BOSS_CA1, PO_C110_BOSS_CA2, PO_C110_BOSS_CA2, PO_C110_BOSS_CA3, PO_C110_BOSS_CA3, //╩Себ га╥╧юс╨╟ ╦П╪г
+	SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C110_BOSS_CA0, PO_C110_BOSS_CA0, PO_C110_BOSS_CA1, PO_C110_BOSS_CA1, PO_C110_BOSS_CA2, PO_C110_BOSS_CA2, PO_C110_BOSS_CA3, PO_C110_BOSS_CA3, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C110_BOSS_CA4, PO_C110_BOSS_CA4, PO_C110_BOSS_CA5, PO_C110_BOSS_CA5, PO_C110_BOSS_CA1, PO_C110_BOSS_CA1, PO_C110_BOSS_CA2, PO_C110_BOSS_CA2,
 	PO_C110_BOSS_CA3, PO_C110_BOSS_CA3, PO_C110_BOSS_CA4, PO_C110_BOSS_CA4, PO_C110_BOSS_CA5, PO_C110_BOSS_CA5, PO_C110_BOSS_CA6, PO_C110_BOSS_CA6,
 	PO_C110_BOSS_CA7, PO_C110_BOSS_CA7, PO_C110_BOSS_CA8, PO_C110_BOSS_CA8, PO_C110_BOSS_CA8, PO_C110_BOSS_CA8, PO_C110_BOSS_CA8, PO_C110_BOSS_CA8,
@@ -5376,15 +5376,15 @@ const signed short c110mv[] = {
 	PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12,
 	PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12,
 	PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12, PO_C110_BOSS_CA12,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
 		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 		// 14 ELKEIN_BULLET
 		36,
-		SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-		PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, //╩Себ га╥╧юс╨╟ ╦П╪г
+		SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+		PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, //Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 		PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0,
 		PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0, PO_C110_BOSS_SA0,
 		PO_C110_BOSS_SA1, PO_C110_BOSS_SA2, PO_C110_BOSS_SA3, PO_C110_BOSS_SA4,
@@ -5398,22 +5398,22 @@ const signed short c110mv[] = {
 		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-		// 15 ╬╡╥╞аЭ
-		1,	//╩Себ га╥╧юс д╚©Нф╝
-		SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
+		// 15 Л⌠╟К÷╛Л╖░
+		1,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+		SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 		PO_C110_CRAWL0,
-		0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-		0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+		0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+		0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-		// 16 ╠Б╬Н╟╗
-		4,	//╩Себ га╥╧юс д╚©Нф╝
-		SET_MAINFRAME_RANDOM12,	//цй╠Бх╜ а╤╟г
-		PO_C110_CRAWL0, PO_C110_CRAWL1, PO_C110_CRAWL2, PO_C110_CRAWL3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-		0 * _2X, 2 * _2X, 2 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+		// 16 Й╦╟Л√╢Й╟░
+		4,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+		SET_MAINFRAME_RANDOM12,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+		PO_C110_CRAWL0, PO_C110_CRAWL1, PO_C110_CRAWL2, PO_C110_CRAWL3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+		0 * _2X, 2 * _2X, 2 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+		0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 		-1,
-		//╩Себ╨╞╟Ф
+		//Л┐│М┐°КЁ─Й╡╫
 		ELKEIN_NEUTRAL,		ELKEIN_DASH,			DISTANCE_OUT_XY, 6 * 8 + 6, RANDOM, 20,
 		ELKEIN_NEUTRAL,		ELKEIN_BULLET,			DISTANCE_OUT_XY, 6 * 8 + 6, RANDOM, 20,
 		ELKEIN_NEUTRAL,		ELKEIN_JUMPATTACK,		DISTANCE_CHECK_XY, 6 * 8 + 6, RANDOM, 30,
@@ -5437,227 +5437,227 @@ const signed short c110mv[] = {
 		-1,
 };
 
-//©╓╥╧юн
+//Л≈≤К═┬Л²╦
 const signed short c111mv[] = {
-	//╩Себ ╣╔юлем
+	//Л┐│М┐° К█╟Л²╢М└╟
 	//ELEIN_NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_N0, PO_C111_N0, PO_C111_N1, PO_C111_N1, PO_C111_N2, PO_C111_N2, PO_C111_N3, PO_C111_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_N0, PO_C111_N0, PO_C111_N1, PO_C111_N1, PO_C111_N2, PO_C111_N2, PO_C111_N3, PO_C111_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_SWORD																		//
-	//х╕╦╝╪р╣Е©║ бЯ╦╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//М≥─К╕╛Л├▄К⌠°Л≈░ Л╟■К╕╪
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1, PO_C111_DIE1,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_DOWN
-	//х╕╦╝╪р╣Е©║ бЯ╦╟хд ╬╡╥╞аЭ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2,	PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	//М≥─К╕╛Л├▄К⌠°Л≈░ Л╟■К╕╟М⌡└ Л⌠╟К÷╛Л╖░
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2,	PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2, PO_C111_DIE2,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_DOWNHOLD
-	//х╕╦╝╪р╣Е©║ бЯ╦╟хд ╬╡╥╞аЭ(а╓аЖ)
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//М≥─К╕╛Л├▄К⌠°Л≈░ Л╟■К╕╟М⌡└ Л⌠╟К÷╛Л╖░(Л═∙Л╖─)
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3, PO_C111_DIE3,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_NEUTRAL_GHOST
-	//4╟М╫╨ф╝ : NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_N0_GHOST, PO_C111_N0_GHOST, PO_C111_N1_GHOST, PO_C111_N1_GHOST, PO_C111_N2_GHOST, PO_C111_N2_GHOST, PO_C111_N3_GHOST, PO_C111_N3_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//4ЙЁ═Л┼╓М┼╦ : NEUTRAL
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_N0_GHOST, PO_C111_N0_GHOST, PO_C111_N1_GHOST, PO_C111_N1_GHOST, PO_C111_N2_GHOST, PO_C111_N2_GHOST, PO_C111_N3_GHOST, PO_C111_N3_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_SAD_GHOST,
-	//5╟М╫╨ф╝ : ╟М╟Ё╪Вюс
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_ARREST0_GHOST, PO_C111_ARREST0_GHOST, PO_C111_ARREST1_GHOST, PO_C111_ARREST1_GHOST, PO_C111_ARREST2_GHOST, PO_C111_ARREST2_GHOST, PO_C111_ARREST3_GHOST, PO_C111_ARREST3_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//5ЙЁ═Л┼╓М┼╦ : ЙЁ═Й╟°Л┬≥Л·└
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_ARREST0_GHOST, PO_C111_ARREST0_GHOST, PO_C111_ARREST1_GHOST, PO_C111_ARREST1_GHOST, PO_C111_ARREST2_GHOST, PO_C111_ARREST2_GHOST, PO_C111_ARREST3_GHOST, PO_C111_ARREST3_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_SURPRISE_GHOST
-	//6╟М╫╨ф╝ : ЁН╤В
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_SURPRISE0_GHOST, PO_C111_SURPRISE0_GHOST, PO_C111_SURPRISE1_GHOST, PO_C111_SURPRISE1_GHOST, PO_C111_SURPRISE2_GHOST, PO_C111_SURPRISE2_GHOST, PO_C111_SURPRISE3_GHOST, PO_C111_SURPRISE3_GHOST,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//6ЙЁ═Л┼╓М┼╦ : К├─К·▄
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_SURPRISE0_GHOST, PO_C111_SURPRISE0_GHOST, PO_C111_SURPRISE1_GHOST, PO_C111_SURPRISE1_GHOST, PO_C111_SURPRISE2_GHOST, PO_C111_SURPRISE2_GHOST, PO_C111_SURPRISE3_GHOST, PO_C111_SURPRISE3_GHOST,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_HUG_GHOST
-	//7╟М╫╨ф╝ : ╬х╠Б
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_HUG0, PO_C111_HUG0, PO_C111_HUG1, PO_C111_HUG1, PO_C111_HUG2, PO_C111_HUG2, PO_C111_HUG3, PO_C111_HUG3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//7ЙЁ═Л┼╓М┼╦ : Л∙┬Й╦╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_HUG0, PO_C111_HUG0, PO_C111_HUG1, PO_C111_HUG1, PO_C111_HUG2, PO_C111_HUG2, PO_C111_HUG3, PO_C111_HUG3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_LIGHT_GHOST
-	//8╟М╫╨ф╝ : ╨Ш╠Б╣у NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_LIGHT0, PO_C111_LIGHT0, PO_C111_LIGHT1, PO_C111_LIGHT1, PO_C111_LIGHT2, PO_C111_LIGHT2, PO_C111_LIGHT3, PO_C111_LIGHT3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//8ЙЁ═Л┼╓М┼╦ : К╧⌡Й╦╟К▒╔ NEUTRAL
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_LIGHT0, PO_C111_LIGHT0, PO_C111_LIGHT1, PO_C111_LIGHT1, PO_C111_LIGHT2, PO_C111_LIGHT2, PO_C111_LIGHT3, PO_C111_LIGHT3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//ELEIN_DISAPPEAR_GHOST
-	//9╟М╫╨ф╝ : ╩Г╤СаЭ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C111_DIS0, PO_C111_DIS0, PO_C111_DIS1, PO_C111_DIS1, PO_C111_DIS2, PO_C111_DIS2, PO_C111_DIS3, PO_C111_DIS3,	//╩Себ га╥╧юс╨╟ ╦П╪г
+	//9ЙЁ═Л┼╓М┼╦ : Л┌╛К²╪Л╖░
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C111_DIS0, PO_C111_DIS0, PO_C111_DIS1, PO_C111_DIS1, PO_C111_DIS2, PO_C111_DIS2, PO_C111_DIS3, PO_C111_DIS3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C111_DIS4, PO_C111_DIS4, PO_C111_DIS5, PO_C111_DIS5, PO_C111_DIS6, PO_C111_DIS6, PO_C111_DIS7, PO_C111_DIS7,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
-//©║╧щ
+//Л≈░К╟≤
 const signed short c112mv[] = {
-	//╩Себ ╣╔юлем
-	//0фР╩С╫ц
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_N0, PO_C112_N0, PO_C112_N1, PO_C112_N1, PO_C112_N2, PO_C112_N2, PO_C112_N3,	PO_C112_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//0М▐┴Л┐│Л▀°
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_N0, PO_C112_N0, PO_C112_N1, PO_C112_N1, PO_C112_N2, PO_C112_N2, PO_C112_N3,	PO_C112_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//1юл╣©
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_W0, PO_C112_W0, PO_C112_W1, PO_C112_W1, PO_C112_W2, PO_C112_W2, PO_C112_W1, PO_C112_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//1Л²╢К▐≥
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_W0, PO_C112_W0, PO_C112_W1, PO_C112_W1, PO_C112_W2, PO_C112_W2, PO_C112_W1, PO_C112_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,	6 * _2X, 0 * _2X, 6 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//2╟Ь╟щ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_A0, PO_C112_A0, PO_C112_A0, PO_C112_A0, PO_C112_A1, PO_C112_A1, PO_C112_A2,	PO_C112_A2,	PO_C112_A3, PO_C112_A3, PO_C112_A4, PO_C112_A4, PO_C112_A5, PO_C112_A5, PO_C112_A6, PO_C112_A6,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 5 * _2X, 5 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 5 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//2ЙЁ╣Й╡╘
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_A0, PO_C112_A0, PO_C112_A0, PO_C112_A0, PO_C112_A1, PO_C112_A1, PO_C112_A2,	PO_C112_A2,	PO_C112_A3, PO_C112_A3, PO_C112_A4, PO_C112_A4, PO_C112_A5, PO_C112_A5, PO_C112_A6, PO_C112_A6,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 5 * _2X, 5 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 5 * _2X, 5 * _2X,	5 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//3╬╡╥╞аЭ
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//3Л⌠╟К÷╛Л╖░
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_D0, PO_C112_D0, PO_C112_D0, PO_C112_D0, PO_C112_D0, PO_C112_D0, PO_C112_D0, PO_C112_D0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//4╧╚╦╜╡щ╠Б
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//4К╛╢К╕▌Й©┤Й╦╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//5╣з╥н ф╗╟эаЭ
-	10,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	-5 * _2X, -5 * _2X, -4 * _2X, -4 * _2X, -3 * _2X, -3 * _2X, -2 * _2X, -2 * _2X, -1 * _2X, -1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	102 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//5К▓╓К║° М┼∙Й╡╗Л╖░
+	10,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0, PO_C112_KNEE0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	-5 * _2X, -5 * _2X, -4 * _2X, -4 * _2X, -3 * _2X, -3 * _2X, -2 * _2X, -2 * _2X, -1 * _2X, -1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	102 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//6╨Э╦╔юл╣©
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//6К╧═К╔╦Л²╢К▐≥
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	PO_C112_W0, PO_C112_W1, PO_C112_W2, PO_C112_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X, 10 * _2X, 8 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//7╢ЬаЖ╠Б
+	//7К█≤Л╖─Й╦╟
 	16,
 	SET_MAINFRAME_RANDOM8,
 	PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW0, PO_C112_THROW1, PO_C112_THROW1, PO_C112_THROW1, PO_C112_THROW1,
 	-1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//8╥н╨С╬х╟М NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_N0_BABY, PO_C112_N0_BABY, PO_C112_N1_BABY, PO_C112_N1_BABY, PO_C112_N2_BABY, PO_C112_N2_BABY, PO_C112_N3_BABY, PO_C112_N3_BABY,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//8К║°К╧┬Л∙┬ЙЁ═ NEUTRAL
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_N0_BABY, PO_C112_N0_BABY, PO_C112_N1_BABY, PO_C112_N1_BABY, PO_C112_N2_BABY, PO_C112_N2_BABY, PO_C112_N3_BABY, PO_C112_N3_BABY,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//9╥н╨С ╬х╟М д╝╥н╦╥╠Б
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//9К║°К╧┬ Л∙┬ЙЁ═ Л╧╪К║°К╖┴Й╦╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_GA0, PO_C112_GA0, PO_C112_GA0, PO_C112_GA0, PO_C112_GA0, PO_C112_GA0, PO_C112_GA0, PO_C112_GA0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//10╥н╨С ╬х╟М д╝╣И╟М ╣з╥н ╧п╦╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//10К║°К╧┬ Л∙┬ЙЁ═ Л╧╪К⌠╓ЙЁ═ К▓╓К║° К╟─К╕╪
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1,
-	-2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	-2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//11╥н╨С ╬х╟М д╝╣И╟М ╧╚╦╜╡щю╫
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//11К║°К╧┬ Л∙┬ЙЁ═ Л╧╪К⌠╓ЙЁ═ К╛╢К╕▌Й©┤Л²▄
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1, PO_C112_GA1,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//12╥н╨С ╬х╟М д╝╣И╟М ╧щ╟щ
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//12К║°К╧┬ Л∙┬ЙЁ═ Л╧╪К⌠╓ЙЁ═ К╟≤Й╡╘
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_GA2, PO_C112_GA2, PO_C112_GA2, PO_C112_GA2, PO_C112_GA2, PO_C112_GA2, PO_C112_GA2, PO_C112_GA2,
-	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//13 х╕╦╝╪р╣Е ╡╗Ё╩╠Б
-	20,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C112_SHOW0, PO_C112_SHOW0, PO_C112_SHOW1, PO_C112_SHOW1, PO_C112_SHOW2, PO_C112_SHOW2, PO_C112_SHOW3, PO_C112_SHOW3, PO_C112_SHOW4, PO_C112_SHOW4,//╩Себ га╥╧юс╨╟ ╦П╪г
+	//13 М≥─К╕╛Л├▄К⌠° Й╨╪К┌╢Й╦╟
+	20,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C112_SHOW0, PO_C112_SHOW0, PO_C112_SHOW1, PO_C112_SHOW1, PO_C112_SHOW2, PO_C112_SHOW2, PO_C112_SHOW3, PO_C112_SHOW3, PO_C112_SHOW4, PO_C112_SHOW4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
 	PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4, PO_C112_SHOW4,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//14 х╕╦╝╪р╣Е NEUTRAL
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//14 М≥─К╕╛Л├▄К⌠° NEUTRAL
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_N0_SWORD, PO_C112_N0_SWORD, PO_C112_N1_SWORD, PO_C112_N1_SWORD, PO_C112_N2_SWORD, PO_C112_N2_SWORD, PO_C112_N3_SWORD, PO_C112_N3_SWORD,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//15 х╕╦╝╪р╣Е а║га ╟Ь╟щ
+	//15 М≥─К╕╛Л├▄К⌠° Л═░М■└ ЙЁ╣Й╡╘
 	16,
 	SET_MAINFRAME_RANDOM8,
 	PO_C112_JA1, PO_C112_JA1, PO_C112_JA2, PO_C112_JA2, PO_C112_JA3, PO_C112_JA3, PO_C112_JA4, PO_C112_JA4, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5, PO_C112_JA5,
 	3 * _2X, 2 * _2X, 3 * _2X, 2 * _2X, 3 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 6 * _2X, 4 * _2X, 6 * _2X, 4 * _2X, 6 * _2X, 4 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 100 * _2X, 100 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
-	//16 х╕╦╝╪р╣Е ©╥©║ ╢╘ю╫
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//16 М≥─К╕╛Л├▄К⌠° Л≤├Л≈░ К┬└Л²▄
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_D1, PO_C112_D1, PO_C112_D1, PO_C112_D1, PO_C112_D1, PO_C112_D1, PO_C112_D1, PO_C112_D1,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//17 х╕╦╝╪р╣Е╦╦ Ё╡ю╫
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//17 М≥─К╕╛Л├▄К⌠°К╖▄ К┌╗Л²▄
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD, PO_C112_SWORD,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//18 ╬г╪Жго╠Б
+	//18 Л∙┘Л┬≤М∙≤Й╦╟
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C112_HAND0, PO_C112_HAND0, PO_C112_HAND0, PO_C112_HAND0,
@@ -5666,40 +5666,40 @@ const signed short c112mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c113mv[] = {
-	//╩Себ ╣╔юлем
-	//е╧юз.╪Жа╓╠╦╫╫
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//М┐│Л·░.Л┬≤Л═∙Й╣╛Л┼╛
 	1,
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C113_N0,
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╠╦╫╫ ╠ЗаЭ
+	//Й╣╛Л┼╛ Й╧╗Л╖░
 	1,
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C113_N1,
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c114mv[] = {
-	//╩Себ ╣╔юлем
-	//╩Ы╧╟
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//Л┐≤К╛╪
 	8,
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C114_N0, PO_C114_N0, PO_C114_N0, PO_C114_N0, PO_C114_N0, PO_C114_N0, PO_C114_N0, PO_C114_N0,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	44,
 	SET_MAINFRAME_RANDOM8,
@@ -5721,103 +5721,103 @@ const signed short c114mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c115mv[] = {
-	//╩Себ ╣╔юлем
-	//Ёвюз╦ё
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C115_N0, PO_C115_N0, PO_C115_N1, PO_C115_N1, PO_C115_N2, PO_C115_N2, PO_C115_N3, PO_C115_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//К└╓Л·░К╔╢
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C115_N0, PO_C115_N0, PO_C115_N1, PO_C115_N1, PO_C115_N2, PO_C115_N2, PO_C115_N3, PO_C115_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//Ёвюз╦ё ╦╤╧Щ╦П╪г цъ╟║
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C115_MAGIC0, PO_C115_MAGIC0, PO_C115_MAGIC1, PO_C115_MAGIC1, PO_C115_MAGIC2, PO_C115_MAGIC2, PO_C115_MAGIC3, PO_C115_MAGIC3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К└╓Л·░К╔╢ К╖┬К╡∙К╙╗Л┘≤ Л╤■Й╟─
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C115_MAGIC0, PO_C115_MAGIC0, PO_C115_MAGIC1, PO_C115_MAGIC1, PO_C115_MAGIC2, PO_C115_MAGIC2, PO_C115_MAGIC3, PO_C115_MAGIC3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c116mv[] = {
-	//╟╔╤У╣Е
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C116_N0, PO_C116_N0, PO_C116_N1, PO_C116_N1, PO_C116_N2, PO_C116_N2, PO_C116_N3, PO_C116_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Й╟┬К·─К⌠°
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C116_N0, PO_C116_N0, PO_C116_N1, PO_C116_N1, PO_C116_N2, PO_C116_N2, PO_C116_N3, PO_C116_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//юл╣©
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C116_W0, PO_C116_W0, PO_C116_W1, PO_C116_W1, PO_C116_W2, PO_C116_W2, PO_C116_W1,	PO_C116_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л²╢К▐≥
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C116_W0, PO_C116_W0, PO_C116_W1, PO_C116_W1, PO_C116_W2, PO_C116_W2, PO_C116_W1,	PO_C116_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╟Ь╟щ
-	12,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C116_A0, PO_C116_A0, PO_C116_A1, PO_C116_A1, PO_C116_A2, PO_C116_A2, PO_C116_A3, PO_C116_A3, PO_C116_A4, PO_C116_A4, PO_C116_A4,	PO_C116_A4,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//ЙЁ╣Й╡╘
+	12,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C116_A0, PO_C116_A0, PO_C116_A1, PO_C116_A1, PO_C116_A2, PO_C116_A2, PO_C116_A3, PO_C116_A3, PO_C116_A4, PO_C116_A4, PO_C116_A4,	PO_C116_A4,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╢╘©Жюж╢б юл╧лаЖ
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К┬└Л⌡▄Л·┬К┼■ Л²╢К╞╦Л╖─
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0, PO_C116_D0,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c117mv[] = {
-	//╣Ю╤Се╘
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C117_N0, PO_C117_N0, PO_C117_N1, PO_C117_N1, PO_C117_N2, PO_C117_N2, PO_C117_N3, PO_C117_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К⌠─К²╪М│╛
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C117_N0, PO_C117_N0, PO_C117_N1, PO_C117_N1, PO_C117_N2, PO_C117_N2, PO_C117_N3, PO_C117_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C117_W0, PO_C117_W0, PO_C117_W1, PO_C117_W1, PO_C117_W2, PO_C117_W2, PO_C117_W1, PO_C117_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C117_W0, PO_C117_W0, PO_C117_W1, PO_C117_W1, PO_C117_W2, PO_C117_W2, PO_C117_W1, PO_C117_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c118mv[] = {
-	//©║╣Е╦С╣Е ©у
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C118_N0, PO_C118_N0, PO_C118_N1, PO_C118_N1, PO_C118_N2, PO_C118_N2, PO_C118_N3, PO_C118_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л≈░К⌠°К╙╛К⌠° Л≥∙
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C118_N0, PO_C118_N0, PO_C118_N1, PO_C118_N1, PO_C118_N2, PO_C118_N2, PO_C118_N3, PO_C118_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	24,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W1, PO_C118_W1,	PO_C118_W1, PO_C118_W1,	PO_C118_W1, PO_C118_W1,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	24,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W0, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W1, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W2, PO_C118_W1, PO_C118_W1,	PO_C118_W1, PO_C118_W1,	PO_C118_W1, PO_C118_W1,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	8,
 	SET_MAINFRAME_RANDOM8,
@@ -5833,76 +5833,76 @@ const signed short c118mv[] = {
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c119mv[] = {
-	//ю╞╥и╬фаэ╦╤
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C119_N0, PO_C119_N0, PO_C119_N1, PO_C119_N1, PO_C119_N2, PO_C119_N2, PO_C119_N3, PO_C119_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л°═К═╧Л∙└Л╓▄К╖┬
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C119_N0, PO_C119_N0, PO_C119_N1, PO_C119_N1, PO_C119_N2, PO_C119_N2, PO_C119_N3, PO_C119_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c120mv[] = {
-	//ю╞╥и╬фюЗ╬╬
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л°═К═╧Л∙└Л═─Л■╗
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	-2 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, 2 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	-2 * _2X, 0 * _2X, 2 * _2X, 0 * _2X, -2 * _2X, 0 * _2X, 2 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
 
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 
 const signed short c121mv[] = {
-	//©ю╫╨ф╬
-	//╩Себ ╣╔юлем
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//Л≤╓Л┼╓М▀╢
+	//Л┐│М┐° К█╟Л²╢М└╟
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C120_N0, PO_C120_N0, PO_C120_N1, PO_C120_N1, PO_C120_N2, PO_C120_N2, PO_C120_N3, PO_C120_N3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╢ы╤ВаЦ╩С ╣К
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C121_STATUE0, PO_C121_STATUE0, PO_C121_STATUE1, PO_C121_STATUE1, PO_C121_STATUE2, PO_C121_STATUE2, PO_C121_STATUE3, PO_C121_STATUE3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К▀╓К·▄Л╔░Л┐│ К⌠╛
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C121_STATUE0, PO_C121_STATUE0, PO_C121_STATUE1, PO_C121_STATUE1, PO_C121_STATUE2, PO_C121_STATUE2, PO_C121_STATUE3, PO_C121_STATUE3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╨Шюг╠Б╣у ╧ч╟М ╢╨ф╝╥╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C121_LIGHT0, PO_C121_LIGHT0, PO_C121_LIGHT1, PO_C121_LIGHT1, PO_C121_LIGHT2, PO_C121_LIGHT2, PO_C121_LIGHT3, PO_C121_LIGHT3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//К╧⌡Л²≤Й╦╟К▒╔ К╟⌡ЙЁ═ К┴╢М┼╦К÷╢
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C121_LIGHT0, PO_C121_LIGHT0, PO_C121_LIGHT1, PO_C121_LIGHT1, PO_C121_LIGHT2, PO_C121_LIGHT2, PO_C121_LIGHT3, PO_C121_LIGHT3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
-	//╩Г╤СаЭ
+	//Л┌╛К²╪Л╖░
 	18,
 	SET_MAINFRAME_RANDOM8,
 	PO_C121_DIS0, PO_C121_DIS0, PO_C121_DIS0, PO_C121_DIS1, PO_C121_DIS1, PO_C121_DIS1, PO_C121_DIS2, PO_C121_DIS2, PO_C121_DIS2, PO_C121_DIS3, PO_C121_DIS3, PO_C121_DIS3,
@@ -5917,26 +5917,26 @@ const signed short c121mv[] = {
 };
 
 const signed short c122mv[] = {
-	//╩Себ ╣╔юлем
-	//╦╤©уюг ╫июЕ╫ц╦╝аН
+	//Л┐│М┐° К█╟Л²╢М└╟
+	//К╖┬Л≥∙Л²≤ Л▀╛Л·╔Л▀°К╕╛Л╕┬
 	//SOUL_4_NEUTRAL
-	//4╟Ёюг ╪р©О ╢╨ф╝╥╡
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C122_4_0, PO_C122_4_0, PO_C122_4_1, PO_C122_4_1, PO_C122_4_2, PO_C122_4_2, PO_C122_4_3, PO_C122_4_3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	-2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//4Й╟°Л²≤ Л├▄Л ╦ К┴╢М┼╦К÷╢
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C122_4_0, PO_C122_4_0, PO_C122_4_1, PO_C122_4_1, PO_C122_4_2, PO_C122_4_2, PO_C122_4_3, PO_C122_4_3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	-2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SOUL_4_NEUTRAL_RISE
-	//4╟Ёюг ╪р©О ╤╟©ю╦╖
-	8,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C122_4_0, PO_C122_4_0, PO_C122_4_1, PO_C122_4_1, PO_C122_4_2, PO_C122_4_2, PO_C122_4_3, PO_C122_4_3,	//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	-4 * _2X, -4 * _2X, -4 * _2X, -4 * _2X,	-4 * _2X, -4 * _2X, -4 * _2X, -4 * _2X,//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	//4Й╟°Л²≤ Л├▄Л ╦ К√═Л≤╓К╕└
+	8,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C122_4_0, PO_C122_4_0, PO_C122_4_1, PO_C122_4_1, PO_C122_4_2, PO_C122_4_2, PO_C122_4_3, PO_C122_4_3,	//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	-4 * _2X, -4 * _2X, -4 * _2X, -4 * _2X,	-4 * _2X, -4 * _2X, -4 * _2X, -4 * _2X,//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SOUL_DARK
-	//╬Н╣рюг фдфМ
+	//Л√╢К▒═Л²≤ М▄▄М▌╦
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0,
@@ -5944,7 +5944,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_DARK_AWAY
-	//╬Н╣рюг фдфМюл Ё╞╬ф╟╗
+	//Л√╢К▒═Л²≤ М▄▄М▌╦Л²╢ К┌═Л∙└Й╟░
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0,
@@ -5952,34 +5952,34 @@ const signed short c122mv[] = {
 	-1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X, -1 * _2X,-1 * _2X,
 
 	//SOUL_5_NEUTRAL
-	//5╟Ёюг ╪р©О NEUTRAL
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//5Й╟°Л²≤ Л├▄Л ╦ NEUTRAL
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_5_0, PO_C122_5_0, PO_C122_5_1, PO_C122_5_1, PO_C122_5_2, PO_C122_5_2, PO_C122_5_3, PO_C122_5_3,
 	PO_C122_5_4, PO_C122_5_4, PO_C122_5_5, PO_C122_5_5, PO_C122_5_6, PO_C122_5_6, PO_C122_5_7, PO_C122_5_7,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X,
 
 	//SOUL_6_NEUTRAL
-	//6╟Ёюг ╪р©О
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//6Й╟°Л²≤ Л├▄Л ╦
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_6_0, PO_C122_6_0, PO_C122_6_1, PO_C122_6_1, PO_C122_6_2, PO_C122_6_2, PO_C122_6_3, PO_C122_6_3,
 	PO_C122_6_4, PO_C122_6_4, PO_C122_6_5, PO_C122_6_5, PO_C122_6_6, PO_C122_6_6, PO_C122_6_7, PO_C122_6_7,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, -2 * _2X, 2 * _2X, 2 * _2X,
 
 	//SOUL_SPARK
-	//6╟Ёюг ╪р©О хШюл ╦Пюс
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//6Й╟°Л²≤ Л├▄Л ╦ М·≤Л²╢ К╙╗Л·└
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_SPARK0, PO_C122_SPARK0, PO_C122_SPARK1, PO_C122_SPARK1, PO_C122_SPARK2, PO_C122_SPARK2, PO_C122_SPARK3, PO_C122_SPARK3,
 	PO_C122_SPARK4, PO_C122_SPARK4, PO_C122_SPARK5, PO_C122_SPARK5, PO_C122_SPARK6, PO_C122_SPARK6, PO_C122_SPARK7, PO_C122_SPARK7,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_NEUTRAL
-	//6╟Ёюг ╪р©О а╓аЖ
+	//6Й╟°Л²≤ Л├▄Л ╦ Л═∙Л╖─
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART,
@@ -5987,9 +5987,9 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_BURST
-	//6╟Ёюг ╪р©О фЬфд
-	30,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	//6Й╟°Л²≤ Л├▄Л ╦ М▐╜М▄▄
+	30,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST0,
 	PO_C122_BURST0, PO_C122_BURST0, PO_C122_BURST1, PO_C122_BURST1, PO_C122_BURST2, PO_C122_BURST2, PO_C122_BURST3, PO_C122_BURST3,
 	PO_C122_BURST4, PO_C122_BURST4, PO_C122_BURST3, PO_C122_BURST3, PO_C122_BURST4, PO_C122_BURST4, PO_C122_BURST3, PO_C122_BURST3,
@@ -5998,7 +5998,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_PART0
-	//аъ╥б╧ч╢б ╦╤©уюг ╫июЕ
+	//Л╓▒К═╔К╟⌡К┼■ К╖┬Л≥∙Л²≤ Л▀╛Л·╔
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0, PO_C122_PART0,
@@ -6006,9 +6006,9 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_6_ROTATION
-	// 6╟Ёюг ╪р©О х╦юЭ
-	60,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	// 6Й╟°Л²≤ Л├▄Л ╦ М ▄Л═└
+	60,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_6_C0, PO_C122_6_C0, PO_C122_6_C0, PO_C122_6_C0, PO_C122_6_C0, PO_C122_6_C0, PO_C122_6_C1, PO_C122_6_C1, PO_C122_6_C1, PO_C122_6_C1, PO_C122_6_C1, PO_C122_6_C1,
 	PO_C122_6_C2, PO_C122_6_C2, PO_C122_6_C2, PO_C122_6_C2, PO_C122_6_C2, PO_C122_6_C2, PO_C122_6_C3, PO_C122_6_C3, PO_C122_6_C3, PO_C122_6_C3, PO_C122_6_C3, PO_C122_6_C3,
 	PO_C122_6_C4, PO_C122_6_C4, PO_C122_6_C4, PO_C122_6_C4, PO_C122_6_C4, PO_C122_6_C4, PO_C122_6_C5, PO_C122_6_C5, PO_C122_6_C5, PO_C122_6_C5, PO_C122_6_C5, PO_C122_6_C5,
@@ -6018,18 +6018,18 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_6_TOGETHER
-	// 6╟Ёюг ╪р©О гуцдаЭ
-	16,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	// 6Й╟°Л²≤ Л├▄Л ╦ М∙╘ЛЁ░Л╖░
+	16,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_6_SUM0, PO_C122_6_SUM0, PO_C122_6_SUM1, PO_C122_6_SUM1, PO_C122_6_SUM2, PO_C122_6_SUM2, PO_C122_6_SUM3, PO_C122_6_SUM3,
 	PO_C122_6_SUM4, PO_C122_6_SUM4, PO_C122_SPARK0, PO_C122_SPARK0, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART, PO_C122_HEART,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_5_ROTATION
-	// 5╟Ёюг ╪р©О х╦юЭ
-	60,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
+	// 5Й╟°Л²≤ Л├▄Л ╦ М ▄Л═└
+	60,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
 	PO_C122_5_C0, PO_C122_5_C0, PO_C122_5_C0, PO_C122_5_C0, PO_C122_5_C0, PO_C122_5_C0, PO_C122_5_C1, PO_C122_5_C1, PO_C122_5_C1, PO_C122_5_C1, PO_C122_5_C1, PO_C122_5_C1,
 	PO_C122_5_C2, PO_C122_5_C2, PO_C122_5_C2, PO_C122_5_C2, PO_C122_5_C2, PO_C122_5_C2, PO_C122_5_C3, PO_C122_5_C3, PO_C122_5_C3, PO_C122_5_C3, PO_C122_5_C3, PO_C122_5_C3,
 	PO_C122_5_C4, PO_C122_5_C4, PO_C122_5_C4, PO_C122_5_C4, PO_C122_5_C4, PO_C122_5_C4, PO_C122_5_C5, PO_C122_5_C5, PO_C122_5_C5, PO_C122_5_C5, PO_C122_5_C5, PO_C122_5_C5,
@@ -6039,7 +6039,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_FLAME
-	// юш©╜юг ╪р©О
+	// Л·▒Л≈╢Л²≤ Л├▄Л ╦
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART1, PO_C122_PART1, PO_C122_PART1, PO_C122_PART1, PO_C122_PART1, PO_C122_PART1, PO_C122_PART1, PO_C122_PART1,
@@ -6047,7 +6047,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_ICE
-	// ╟А╨Ыюг ╪р©О
+	// Й╡╟К╧≥Л²≤ Л├▄Л ╦
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART2, PO_C122_PART2, PO_C122_PART2, PO_C122_PART2, PO_C122_PART2, PO_C122_PART2, PO_C122_PART2, PO_C122_PART2,
@@ -6055,7 +6055,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_THUNDER
-	// юЭ╟щюг ╪р©О
+	// Л═└Й╡╘Л²≤ Л├▄Л ╦
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART3, PO_C122_PART3, PO_C122_PART3, PO_C122_PART3, PO_C122_PART3, PO_C122_PART3, PO_C122_PART3, PO_C122_PART3,
@@ -6063,7 +6063,7 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_LIGHT
-	//ю╖╠╓юг ╪р©О
+	//Л°└Й╢▒Л²≤ Л├▄Л ╦
 	8,
 	SET_MAINFRAME_RANDOM8,
 	PO_C122_PART4, PO_C122_PART4, PO_C122_PART4, PO_C122_PART4, PO_C122_PART4, PO_C122_PART4, PO_C122_PART4, PO_C122_PART4,
@@ -6071,21 +6071,21 @@ const signed short c122mv[] = {
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 
 	//SOUL_NEUTRAL2
-	10,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C122_1_0, PO_C122_1_0, PO_C122_1_1, PO_C122_1_1, PO_C122_1_2, PO_C122_1_2, PO_C122_1_3, PO_C122_1_3, PO_C122_1_4, PO_C122_1_4,//╩Себ га╥╧юс╨╟ ╦П╪г
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	10,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C122_1_0, PO_C122_1_0, PO_C122_1_1, PO_C122_1_1, PO_C122_1_2, PO_C122_1_2, PO_C122_1_3, PO_C122_1_3, PO_C122_1_4, PO_C122_1_4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	//SOUL_NEUTRAL3
-	10,	//╩Себ га╥╧юс д╚©Нф╝
-	SET_MAINFRAME_RANDOM8,	//цй╠Бх╜ а╤╟г
-	PO_C122_1_0, PO_C122_1_0, PO_C122_1_1, PO_C122_1_1, PO_C122_1_2, PO_C122_1_2, PO_C122_1_3, PO_C122_1_3, PO_C122_1_4, PO_C122_1_4,//╩Себ га╥╧юс╨╟ ╦П╪г
-	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ X
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,		//╩Себ га╥╧юс╨╟ юл╣©фЬ Y
+	10,	//Л┐│М┐° М■└К═┬Л·└ Л╧╢Л ╢М┼╦
+	SET_MAINFRAME_RANDOM8,	//Л╢┬Й╦╟М≥■ Л║╟Й╠╢
+	PO_C122_1_0, PO_C122_1_0, PO_C122_1_1, PO_C122_1_1, PO_C122_1_2, PO_C122_1_2, PO_C122_1_3, PO_C122_1_3, PO_C122_1_4, PO_C122_1_4,//Л┐│М┐° М■└К═┬Л·└КЁ└ К╙╗Л┘≤
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ X
+	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,		//Л┐│М┐° М■└К═┬Л·└КЁ└ Л²╢К▐≥М▐╜ Y
 
 	-1,
-	//╩Себ╨╞╟Ф
+	//Л┐│М┐°КЁ─Й╡╫
 	-1,
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -20,7 +20,7 @@ const int openingTextId[] =
 	TEXT_OPENING_3_0,
 	TEXT_OPENING_4_0
 };
-// Draw�ڵ�
+// Draw핸들
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom);
 void DrawWindow4(int x, int y, int w, int h, int index, float zoom);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);

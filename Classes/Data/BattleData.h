@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef _DATA_BATTLE_H_
 #define _DATA_BATTLE_H_
@@ -138,31 +138,31 @@ const int wheelCrewPos[] = {
 };
 
 const unsigned short gameEventOpenStage[] = {
-    0 * TOTALROOM + 0,//EVENTTYPE_NONE = 0,//ÀÌº¥Æ®°¡ ¾ø´Â°ÍÀ¸·Î ÀÌ°É º¸°í ¸®½ºÆ®¸¦ ¶ç¿ïÁö ¾Ë·ÁÁØ´Ù.
+    0 * TOTALROOM + 0,//EVENTTYPE_NONE = 0,//ì´ë²¤íŠ¸ê°€ ì—†ëŠ”ê²ƒìœ¼ë¡œ ì´ê±¸ ë³´ê³  ë¦¬ìŠ¤íŠ¸ë¥¼ ë„ìš¸ì§€ ì•Œë ¤ì¤€ë‹¤.
 #ifdef GAMEDEBUG
-    0 * TOTALROOM + 0,//EVENTTYPE_PVP,//Á·º¸Áß¿¡ ÀüÅõ¸¦ ÇÏ¸é ¹ß»ýÇÏ´Â 
-    0 * TOTALROOM + 0,//EVENTTYPE_QUEST,//Äù½ºÆ® ¾ÆÀÌÅÛ ÀÌº¥Æ® 
-    0 * TOTALROOM + 0,//EVENTTYPE_SHOP,//»óÁ¡À» 
-    0 * TOTALROOM + 0,//EVENTTYPE_DEBTDISCOUNT,//¾÷±×·¹ÀÌµå °¡°ÝÀ» ÇÒÀÎÇØ ÁÖ´Â ÀÌº¥Æ®
-    0 * TOTALROOM + 0,//EVENTTYPE_DOUBLE,//È¹µæ·®À» µÎ¹è·Î ¿Ã·ÁÁÖ´Â ÀÌº¥Æ®
-    0 * TOTALROOM + 0,//EVENTTYPE_BOSSRAID,//º¸½º°ñµåÀüÅõ
-    0 * TOTALROOM + 0,//EVENTTYPE_TOUCHGAME,//Áß°£¿¡ ÅÍÄ¡¸¦ ÇØ¼­ ¾ÆÀÌÅÛÀ» È¹µæÇÏ´Â ÀÌº¥Æ®
-    0,//EVENTTYPE_DEBUG_NEWGAME,//ÃÊ±â°ª
-    0,//EVENTTYPE_DEBUG_MAXGAME,//ÃÖ´ë°ª
-    0,//EVENTTYPE_DEBUG_ENEMYATTACK,//Àû¿¡°Ô °ø°ÝÇÏ°Ô ¸¸µå´Â °Í
+    0 * TOTALROOM + 0,//EVENTTYPE_PVP,//ì¡±ë³´ì¤‘ì— ì „íˆ¬ë¥¼ í•˜ë©´ ë°œìƒí•˜ëŠ” 
+    0 * TOTALROOM + 0,//EVENTTYPE_QUEST,//í€˜ìŠ¤íŠ¸ ì•„ì´í…œ ì´ë²¤íŠ¸ 
+    0 * TOTALROOM + 0,//EVENTTYPE_SHOP,//ìƒì ì„ 
+    0 * TOTALROOM + 0,//EVENTTYPE_DEBTDISCOUNT,//ì—…ê·¸ë ˆì´ë“œ ê°€ê²©ì„ í• ì¸í•´ ì£¼ëŠ” ì´ë²¤íŠ¸
+    0 * TOTALROOM + 0,//EVENTTYPE_DOUBLE,//íšë“ëŸ‰ì„ ë‘ë°°ë¡œ ì˜¬ë ¤ì£¼ëŠ” ì´ë²¤íŠ¸
+    0 * TOTALROOM + 0,//EVENTTYPE_BOSSRAID,//ë³´ìŠ¤ê³¨ë“œì „íˆ¬
+    0 * TOTALROOM + 0,//EVENTTYPE_TOUCHGAME,//ì¤‘ê°„ì— í„°ì¹˜ë¥¼ í•´ì„œ ì•„ì´í…œì„ íšë“í•˜ëŠ” ì´ë²¤íŠ¸
+    0,//EVENTTYPE_DEBUG_NEWGAME,//ì´ˆê¸°ê°’
+    0,//EVENTTYPE_DEBUG_MAXGAME,//ìµœëŒ€ê°’
+    0,//EVENTTYPE_DEBUG_ENEMYATTACK,//ì ì—ê²Œ ê³µê²©í•˜ê²Œ ë§Œë“œëŠ” ê²ƒ
     0,//EVENTTYPE_DEBUG_NFT,//NFT
 
 #else
-    0 * TOTALROOM + 5,//EVENTTYPE_PVP,//Á·º¸Áß¿¡ ÀüÅõ¸¦ ÇÏ¸é ¹ß»ýÇÏ´Â 
-    0 * TOTALROOM + 0,//EVENTTYPE_QUEST,//Äù½ºÆ® ¾ÆÀÌÅÛ ÀÌº¥Æ® 
-    0 * TOTALROOM + 0,//EVENTTYPE_SHOP,//»óÁ¡À» 
-    5 * TOTALROOM + 0,//EVENTTYPE_DEBTDISCOUNT,//¾÷±×·¹ÀÌµå °¡°ÝÀ» ÇÒÀÎÇØ ÁÖ´Â ÀÌº¥Æ®
-    6 * TOTALROOM + 0,//EVENTTYPE_DOUBLE,//È¹µæ·®À» µÎ¹è·Î ¿Ã·ÁÁÖ´Â ÀÌº¥Æ®
-    20 * TOTALROOM + 0,//EVENTTYPE_BOSSRAID,//º¸½º°ñµåÀüÅõ
-    7 * TOTALROOM + 0,//EVENTTYPE_TOUCHGAME,//Áß°£¿¡ ÅÍÄ¡¸¦ ÇØ¼­ ¾ÆÀÌÅÛÀ» È¹µæÇÏ´Â ÀÌº¥Æ®
-    0,//EVENTTYPE_DEBUG_NEWGAME,//ÃÊ±â°ª
-    0,//EVENTTYPE_DEBUG_MAXGAME,//ÃÖ´ë°ª
-    0,//EVENTTYPE_DEBUG_ENEMYATTACK,//Àû¿¡°Ô °ø°ÝÇÏ°Ô ¸¸µå´Â °Í
+    0 * TOTALROOM + 5,//EVENTTYPE_PVP,//ì¡±ë³´ì¤‘ì— ì „íˆ¬ë¥¼ í•˜ë©´ ë°œìƒí•˜ëŠ” 
+    0 * TOTALROOM + 0,//EVENTTYPE_QUEST,//í€˜ìŠ¤íŠ¸ ì•„ì´í…œ ì´ë²¤íŠ¸ 
+    0 * TOTALROOM + 0,//EVENTTYPE_SHOP,//ìƒì ì„ 
+    5 * TOTALROOM + 0,//EVENTTYPE_DEBTDISCOUNT,//ì—…ê·¸ë ˆì´ë“œ ê°€ê²©ì„ í• ì¸í•´ ì£¼ëŠ” ì´ë²¤íŠ¸
+    6 * TOTALROOM + 0,//EVENTTYPE_DOUBLE,//íšë“ëŸ‰ì„ ë‘ë°°ë¡œ ì˜¬ë ¤ì£¼ëŠ” ì´ë²¤íŠ¸
+    20 * TOTALROOM + 0,//EVENTTYPE_BOSSRAID,//ë³´ìŠ¤ê³¨ë“œì „íˆ¬
+    7 * TOTALROOM + 0,//EVENTTYPE_TOUCHGAME,//ì¤‘ê°„ì— í„°ì¹˜ë¥¼ í•´ì„œ ì•„ì´í…œì„ íšë“í•˜ëŠ” ì´ë²¤íŠ¸
+    0,//EVENTTYPE_DEBUG_NEWGAME,//ì´ˆê¸°ê°’
+    0,//EVENTTYPE_DEBUG_MAXGAME,//ìµœëŒ€ê°’
+    0,//EVENTTYPE_DEBUG_ENEMYATTACK,//ì ì—ê²Œ ê³µê²©í•˜ê²Œ ë§Œë“œëŠ” ê²ƒ
     0,//EVENTTYPE_DEBUG_NFT,//NFT
 
 #endif
@@ -179,7 +179,7 @@ const int rouletteProb[] = {
 };
 
 const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL] = {
-    //·Îºó
+    //ë¡œë¹ˆ
     {
         70, SKILL_ROBIN8,//ROBIN_SKILL_BOOSTSLASH,//1
         60, SKILL_ROBIN6,//ROBIN_SKILL_AIRCRASH,//2
@@ -189,7 +189,7 @@ const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL] = {
         20, SKILL_ROBIN11,//ROBIN_SKILL_ABSOLUTEPIERCE,//6
         10, SKILL_ROBIN12,//ROBIN_SKILL_KILLALL,//7
     },
-    //µð¾Æ³ª
+    //ë””ì•„ë‚˜
     {
         70, SKILL_DIANA6,//DIANA_SKILL_3WAY,//1
         60, SKILL_DIANA7,//DIANA_SKILL_LASER,//2
@@ -199,7 +199,7 @@ const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL] = {
         20, SKILL_DIANA11,//DIANA_SKILL_SPRAYSHOT,//6
         10, SKILL_DIANA12,//DIANA_SKILL_SATELLITESHOT,//7
     },
-    //¸Æ½º
+    //ë§¥ìŠ¤
     {
         70, SKILL_MAXX7,//MAXX_SKILL_KICK//1
         60, SKILL_MAXX8,//MAXX_SKILL_SHORT//2
@@ -234,7 +234,7 @@ const short raidAlpha[] = {
     ALPHA_PERFECT,
 };
 
-// ===== µµÀå±ú±â/µ·ÅÐ±â µ¥ÀÌÅÍ =====
+// ===== ë„ìž¥ê¹¨ê¸°/ëˆí„¸ê¸° ë°ì´í„° =====
 const int battleData[] = {
     //chapter1
     30, 30, 30,

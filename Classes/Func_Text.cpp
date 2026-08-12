@@ -1,49 +1,77 @@
-#include "Core.h"
+ï»¿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
 
 // Text Handling
+
+//í•œ ê¸€ìê°€ ì°¨ì§€í•˜ëŠ” ë°”ì´íŠ¸ ìˆ˜(1~4).
+//UTF-8 ì‹œí€€ìŠ¤ë¥¼ ë¨¼ì € ì¸ì‹í•˜ê³ , ì•„ë‹ˆë©´ CP949 2ë°”ì´íŠ¸ë¡œ ë³¸ë‹¤.
+//ì†ŒìŠ¤ê°€ ì „ë¶€ UTF-8ë¡œ ë„˜ì–´ê°€ë©´ CP949 ë¶„ê¸°ëŠ” ì£½ëŠ”ë‹¤.
+int CharByteLen(const char* s)
+{
+	unsigned char c0 = (unsigned char)s[0];
+
+	if (c0 < 0x80)
+		return 1;
+
+	if ((c0 & 0xE0) == 0xC0 && ((unsigned char)s[1] & 0xC0) == 0x80)
+		return 2;
+
+	if ((c0 & 0xF0) == 0xE0 && ((unsigned char)s[1] & 0xC0) == 0x80
+		&& ((unsigned char)s[2] & 0xC0) == 0x80)
+		return 3;
+
+	if ((c0 & 0xF8) == 0xF0 && ((unsigned char)s[1] & 0xC0) == 0x80
+		&& ((unsigned char)s[2] & 0xC0) == 0x80 && ((unsigned char)s[3] & 0xC0) == 0x80)
+		return 4;
+
+	//CP949 2ë°”ì´íŠ¸
+	if (c0 >= 0x81 && s[1])
+		return 2;
+
+	return 1;
+}
+
+//ì²« ë°”ì´íŠ¸ ì™¸ì— ë” ì°¨ì§€í•˜ëŠ” ë°”ì´íŠ¸ ìˆ˜. wide ëˆ„ì‚°ê¸°ì— ë”í•´ ì“´ë‹¤.
+int CharExtraBytes(const char* s)
+{
+	return CharByteLen(s) - 1;
+}
+
 int StringLength(const char* str)
 {
 	int i, rtn = 0, byte_len = strlen(str);
 
-	for (i = 0; i < byte_len; i++) {
+	for (i = 0; i < byte_len; i += CharByteLen(str + i))
 		rtn++;
-
-		if (str[i] < 0 || str[i] > 127)
-			i++;
-	}
 
 	return rtn;
 }
 
 int SubstringLength(const char* str, unsigned int offset, unsigned int length)
 {
-	unsigned int i, byte_len;
-	int wide = 0, rtn = 0;
+	unsigned int i, byte_len, start, next;
+	int rtn = 0;
 
-	for (i = 0; i < offset; i++) {
-		if (str[i] < 0 || str[i] > 127)
-			wide = 1 - wide;
+	//offsetì´ ê¸€ì ì¤‘ê°„ì— ê±¸ë¦¬ë©´ ê·¸ ê¸€ìì˜ ì²« ë°”ì´íŠ¸ë¡œ ë¬¼ëŸ¬ë‚œë‹¤.
+	for (start = 0; start < offset && str[start]; start = next) {
+		next = start + CharByteLen(str + start);
+
+		if (next > offset)
+			break;
 	}
 
-	offset = offset - wide;
-	byte_len = Min(offset + length, strlen(str));
+	byte_len = Min(start + length, strlen(str));
 
-	for (i = offset; i < byte_len; i++) {
+	for (i = start; i < byte_len; i += CharByteLen(str + i)) {
 		if (str[i] == '|')
-			i++;
+			i++;	//ìƒ‰ìƒì½”ë“œëŠ” ê¸€ììˆ˜ì— ë„£ì§€ ì•ŠëŠ”ë‹¤
 		else
 			rtn++;
-
-		if (str[i] < 0 || str[i] > 127) {
-			wide = 1 - wide;
-			i++;
-		}
 	}
 
-	return rtn - wide;
+	return rtn;
 }
 
 float StringWidthTTF(const char* str, float zoom)
@@ -57,20 +85,20 @@ float StringWidthTTF(const char* str, float zoom)
 	//fontLabelWidth->release();
 	return width;
 }
-//¹®ÀÚ¿­ÀÇ ±æÀÌ ¸®ÅÏ
+//ë¬¸ìì—´ì˜ ê¸¸ì´ ë¦¬í„´
 float StringWidth(const char* str, float zoom)
 {
-	int i, rtn = 0, byte_len = strlen(str);
+	int i, len, rtn = 0, byte_len = strlen(str);
 
-	for (i = 0; i < byte_len; i++) {
-		if (str[i] < 0 || str[i] > 127) {
+	for (i = 0; i < byte_len; i += len) {
+		len = CharByteLen(str + i);
+
+		if (len > 1)
 			rtn += NEXT_FONT_WIDTH;
-			i++;
-		}
 		else if (str[i] == '@')
-			continue;
+			;	//ê°œí–‰í‘œì‹œëŠ” í­ì„ ì°¨ì§€í•˜ì§€ ì•ŠëŠ”ë‹¤
 		else if (str[i] == '|')
-			i++;
+			len = 2;	//ìƒ‰ìƒì½”ë“œ '|' + ìƒ‰ìƒë¬¸ì
 		else
 			rtn += NEXT_ALPHAFONT_WIDTH;
 	}
@@ -78,35 +106,33 @@ float StringWidth(const char* str, float zoom)
 	return (float)(rtn + 2 * _2X) * zoom;
 }
 
-//¼­ºê¹®ÀÚ¿­ÀÇ ±æÀÌ ¸®ÅÏ
+//ì„œë¸Œë¬¸ìì—´ì˜ ê¸¸ì´ ë¦¬í„´
 float SubstringWidth(const char* str, int offset, int length, float zoom)
 {
-	int i, byte_len, rtn = 0;
-	int start = 0, end, wide = 0;
+	int i, len, byte_len, rtn = 0;
+	int start = 0, end;
 
-	for (i = 0; i < offset; i++, start++) {
-		if (str[start] < 0 || str[start] > 127) {
-			if (wide == 0)
-				i--;
+	//offsetì€ ê¸€ììˆ˜ë‹¤. ê·¸ë§Œí¼ ì§€ë‚˜ê°„ ë°”ì´íŠ¸ ìœ„ì¹˜ë¥¼ êµ¬í•œë‹¤.
+	for (i = 0; i < offset && str[start]; i++)
+		start += CharByteLen(str + start);
 
-			wide = 1 - wide;
-		}
-	}
-
-	start -= wide;
 	byte_len = Min(offset + length, StringLength(str));
 
-	for (i = offset, end = start; i < byte_len; i++, end++) {
-		if (str[end] < 0 || str[end] > 127) {
+	for (i = offset, end = start; i < byte_len && str[end]; i++) {
+		len = CharByteLen(str + end);
+
+		if (len > 1) {
 			rtn += NEXT_FONT_WIDTH;
-			end++;
+			end += len;
 		}
 		else if (str[end] == '|') {
-			end++;
+			end += 2;	//ìƒ‰ìƒì½”ë“œ '|' + ìƒ‰ìƒë¬¸ì
 			i++;
 		}
-		else
+		else {
 			rtn += NEXT_ALPHAFONT_WIDTH;
+			end++;
+		}
 	}
 
 	return (float)(rtn + 2 * _2X) * zoom;
@@ -143,16 +169,16 @@ void EraiseColorFont(const char* str)
 	int offset = 0;
 	int cursor = 0;
 
-	//ÀÏ´Ü ÆùÆ® ÄÃ·¯µ¥ÀÌÅÍ¸¦ ÇöÀç ÆùÆ® ÄÃ·¯·Î ¹Ù²ãÁÖ°í
+	//ì¼ë‹¨ í°íŠ¸ ì»¬ëŸ¬ë°ì´í„°ë¥¼ í˜„ì¬ í°íŠ¸ ì»¬ëŸ¬ë¡œ ë°”ê¿”ì£¼ê³ 
 	//for (i = 0; i < 256; i++)
 	//	bmFontColor[i] = fontColor;
 	memset(&bmFontColor, fontColor, sizeof(bmFontColor));
-	//»ö»ó±âÈ£³ª ÁÙ¹Ù²Ş ±âÈ£¸¦ Â©¶ó³»°í ³²Àº ÅØ½ºÆ®°¡ ´ã±æ °ø°£
+	//ìƒ‰ìƒê¸°í˜¸ë‚˜ ì¤„ë°”ê¿ˆ ê¸°í˜¸ë¥¼ ì§¤ë¼ë‚´ê³  ë‚¨ì€ í…ìŠ¤íŠ¸ê°€ ë‹´ê¸¸ ê³µê°„
 	memset(&labelStr, 0, sizeof(labelStr));
 
-	//¹®ÀÚ¿­ÀÇ ±æÀÌ
+	//ë¬¸ìì—´ì˜ ê¸¸ì´
 	for (i = 0; i < length; i++, offset++) {
-		//ASCII ¹®ÀÚ¸é
+		//ASCII ë¬¸ìë©´
 		if (str[offset] >= 0 && str[offset] <= 127) {
 
 			//ï¿½ï¿½ï¿½ï¿½ '|'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
@@ -165,7 +191,10 @@ void EraiseColorFont(const char* str)
 				i++;
 			}
 			else {
-				//°¢ ±ÛÀÚ¸¶´Ù ÆùÆ®»ö»óÀ» Á¤ÇØÁØ´Ù.
+				if (cursor + 1 >= (int)sizeof(labelStr))
+					break;
+
+				//ê° ê¸€ìë§ˆë‹¤ í°íŠ¸ìƒ‰ìƒì„ ì •í•´ì¤€ë‹¤.
 				bmFontColor[cursor] = fontColor;
 
 				labelStr[cursor] = str[offset];
@@ -173,23 +202,28 @@ void EraiseColorFont(const char* str)
 			}
 
 		}
-		//ÇÑ±ÛÀÌ¸é
+		//í•œê¸€ì´ë©´ (UTF-8ì€ 2~4ë°”ì´íŠ¸)
 		else {
-			bmFontColor[cursor] = fontColor;
-			bmFontColor[cursor + 1] = fontColor;
-			labelStr[cursor] = str[offset];
-			labelStr[cursor + 1] = str[offset + 1];
+			int len = CharByteLen(str + offset), j;
 
-			cursor += 2;
+			if (cursor + len >= (int)sizeof(labelStr))
+				break;
 
-			offset++;
-			i++;
+			for (j = 0; j < len; j++) {
+				bmFontColor[cursor + j] = fontColor;
+				labelStr[cursor + j] = str[offset + j];
+			}
+
+			cursor += len;
+
+			offset += len - 1;
+			i += len - 1;
 		}
 	}
 
 }
 
-//Ã³À½ °°Àº ¹®ÀÚ¿­À» °¡Áø ¶óº§ ÀÎµ¦½º¸¦ ¸®ÅÏ
+//ì²˜ìŒ ê°™ì€ ë¬¸ìì—´ì„ ê°€ì§„ ë¼ë²¨ ì¸ë±ìŠ¤ë¥¼ ë¦¬í„´
 int GetSameStringIndex(const char* str)
 {
 	int i;
@@ -201,7 +235,7 @@ int GetSameStringIndex(const char* str)
 	//ï¿½Ø´ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (i = 0; i < totalFontLabelCnt; i++) {
 		labelString = fontLabel[i]->getString();
-		//¹®ÀÚ¿­ÀÌ °°À¸¸é
+		//ë¬¸ìì—´ì´ ê°™ìœ¼ë©´
 		if (!strcmp(labelString.c_str(), labelStr2))
 		{
 			return i;
@@ -219,12 +253,12 @@ int GetFontLabelIndex(const char* str)
 	int index;
 	int j = 0;
 
-	//Ã³À½ °°Àº ¹®ÀÚ¿­À» °¡Áø ¶óº§ ÀÎµ¦½º¸¦ ¸®ÅÏ
+	//ì²˜ìŒ ê°™ì€ ë¬¸ìì—´ì„ ê°€ì§„ ë¼ë²¨ ì¸ë±ìŠ¤ë¥¼ ë¦¬í„´
 	index = GetSameStringIndex(str);
 
 	if (sameFontLabelCur[index] < sameFontLabelMax[index]) {
 		for (i = 0; i < MAXFONTLABELCNT; i++) {
-			//fontLabelIndex´Â ¸î¹ø ¶óº§ÀÇ °ªÀ» °¡Á³´ÂÁö ±× ¸î¹øÀ» ÀúÀåÇÑ´Ù.
+			//fontLabelIndexëŠ” ëª‡ë²ˆ ë¼ë²¨ì˜ ê°’ì„ ê°€ì¡ŒëŠ”ì§€ ê·¸ ëª‡ë²ˆì„ ì €ì¥í•œë‹¤.
 			if (fontLabelMotherIndex[i] == index) {
 				j++;
 				if (j > sameFontLabelCur[index]) {
@@ -262,9 +296,9 @@ void LoadFontLabelFromText(const char* str)
 
 	if (getFontLabelIdx == totalFontLabelCnt) {
 
-		//strÀ¸·Î º¯È¯ÇÒ char ¹è¿­À» labelStr2·Î ÇÏ°í ÃÊ±âÈ­ÇÑ´Ù.
+		//strìœ¼ë¡œ ë³€í™˜í•  char ë°°ì—´ì„ labelStr2ë¡œ í•˜ê³  ì´ˆê¸°í™”í•œë‹¤.
 		memset(&labelStr2, 0, sizeof(labelStr2));
-		//strÀ¸·Î º¯È¯ÇÒ char ¹è¿­À» labelStr2·Î ÇÏ°í ÃÊ±âÈ­ÇÑ´Ù.
+		//strìœ¼ë¡œ ë³€í™˜í•  char ë°°ì—´ì„ labelStr2ë¡œ í•˜ê³  ì´ˆê¸°í™”í•œë‹¤.
 		TextToString((char*)&labelStr, strlen(labelStr), (char*)&labelStr2);
 
 		fontLabel[getFontLabelIdx] = Label::createWithTTF(labelStr2, "fonts/font.ttf", FONT_HEIGHT + 1 * _2X);
@@ -301,7 +335,7 @@ float DrawTextSystem(int index, int x, int y, float zoom, int align, bool bold)
 
 float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bool bold)
 {
-	int i;
+	int i, len;
 	int length;
 	int offset = 0;
 	int cursor = 0;
@@ -360,22 +394,25 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	else
 		src->enableOutline(Color4B::BLACK, 0);
 
-	for (i = 0; i < length; i++) {
+	//bmFontColor[]ëŠ” ë°”ì´íŠ¸ ì²¨ì, getLetter()ëŠ” ê¸€ì ì²¨ìë‹¤.
+	//ê¸€ì ë‹¨ìœ„ë¡œ ì „ì§„í•˜ë©´ì„œ ë‘˜ì„ ë§ì¶˜ë‹¤.
+	for (i = 0; i < length; i += len) {
+		cocos2d::Sprite* letter;
 
-		//ASCII ¹®ÀÚ¸é
-		if (labelStr[i] >= 0 && labelStr[i] <= 127) {
-			if (labelStr[i] != 32)
-				fontLabel[getFontLabelIdx]->getLetter(offset)->setColor(Color3B((bmFontColor[i] >> 16) & 0xFF, (bmFontColor[i] >> 8) & 0xFF, bmFontColor[i] & 0xFF));
+		len = CharByteLen(labelStr + i);
 
+		//ê³µë°±ì€ Labelì´ letterë¥¼ ë§Œë“¤ì§€ ì•ŠëŠ”ë‹¤
+		if (len == 1 && labelStr[i] == 32) {
 			offset++;
+			continue;
 		}
-		//ÇÑ±ÛÀÌ¸é
-		else {
-			fontLabel[getFontLabelIdx]->getLetter(offset)->setColor(Color3B((bmFontColor[i] >> 16) & 0xFF, (bmFontColor[i] >> 8) & 0xFF, bmFontColor[i] & 0xFF));
 
-			offset++;
-			i++;
-		}
+		letter = fontLabel[getFontLabelIdx]->getLetter(offset);
+
+		if (letter)
+			letter->setColor(Color3B((bmFontColor[i] >> 16) & 0xFF, (bmFontColor[i] >> 8) & 0xFF, bmFontColor[i] & 0xFF));
+
+		offset++;
 	}
 
 	//AfterSpriting() ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½: ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½Ù¿ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
@@ -421,30 +458,22 @@ void DrawTextStr(const char* str, int x, int y, float zoom)
 
 void DrawSubText(const char* src, int offset, int length, int x, int y, float zoom)
 {
-	int i, byte_len, wide = 0;
+	int i, byte_len;
 	int start = 0, end;
 	char subtext[200];
 
 	memset(subtext, 0, 200);
 
-	for (i = 0; i < offset; i++, start++) {
-		if (src[start] < 0 || src[start] > 127) {
-			if (wide == 0)
-				i--;
+	//offset, lengthëŠ” ê¸€ììˆ˜ë‹¤. í•´ë‹¹í•˜ëŠ” ë°”ì´íŠ¸ êµ¬ê°„ì„ êµ¬í•œë‹¤.
+	for (i = 0; i < offset && src[start]; i++)
+		start += CharByteLen(src + start);
 
-			wide = 1 - wide;
-		}
-	}
-
-	start -= wide;
 	byte_len = Min(offset + length, StringLength(src));
 
-	for (i = offset, end = start; i < byte_len; i++, end++) {
-		if (src[end] < 0 || src[end] > 127)
-			end++;
-	}
+	for (i = offset, end = start; i < byte_len && src[end]; i++)
+		end += CharByteLen(src + end);
 
-	strncpy(subtext, src + start, end - start);
+	strncpy(subtext, src + start, Min(end - start, (int)sizeof(subtext) - 1));
 #ifdef TTFFONT
 	DrawTextStrSystem(subtext, x, y, zoom, LEFT, true);
 #else
@@ -454,30 +483,22 @@ void DrawSubText(const char* src, int offset, int length, int x, int y, float zo
 
 void DrawSubTextSolid(const char* src, int offset, int length, int x, int y, float zoom)
 {
-	int i, byte_len, wide = 0;
+	int i, byte_len;
 	int start = 0, end;
 	char subtext[100];
 
 	memset(subtext, 0, 100);
 
-	for (i = 0; i < offset; i++, start++) {
-		if (src[start] < 0 || src[start] > 127) {
-			if (wide == 0)
-				i--;
+	//offset, lengthëŠ” ê¸€ììˆ˜ë‹¤. í•´ë‹¹í•˜ëŠ” ë°”ì´íŠ¸ êµ¬ê°„ì„ êµ¬í•œë‹¤.
+	for (i = 0; i < offset && src[start]; i++)
+		start += CharByteLen(src + start);
 
-			wide = 1 - wide;
-		}
-	}
-
-	start -= wide;
 	byte_len = Min(offset + length, StringLength(src));
 
-	for (i = offset, end = start; i < byte_len; i++, end++) {
-		if (src[end] < 0 || src[end] > 127)
-			end++;
-	}
+	for (i = offset, end = start; i < byte_len && src[end]; i++)
+		end += CharByteLen(src + end);
 
-	strncpy(subtext, src + start, end - start);
+	strncpy(subtext, src + start, Min(end - start, (int)sizeof(subtext) - 1));
 #ifdef TTFFONT
 	DrawTextStrSystem(subtext, x, y, zoom, LEFT, false);
 #else
@@ -566,8 +587,7 @@ void FrameText(const char* str, int x, int y, int dx, int line, int page, float 
 				ofs++;
 		}
 
-		if (str[i + wide] < 0 || str[i + wide] > 127)
-			wide++;
+		wide += CharExtraBytes(str + i + wide);
 	}
 
 	if (cnt < line)
@@ -590,52 +610,52 @@ int ParseText(char str)
 
 	switch (str) {
 	case 'a':
-		//°ËÁ¤»ö
+		//ê²€ì •ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0x111111;
 		break;
 	case 'b':
-		//Èò»ö
+		//í°ìƒ‰
 		oldColor = fontColor;
 		fontColor = COLOR_WHITE;
 		break;
 	case 'c':
-		//»¡°£»ö
+		//ë¹¨ê°„ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0xFF0000;
 		break;
 	case 'd':
-		//³ë¶õ»ö
+		//ë…¸ë€ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0xFFFF00;
 		break;
 	case 'e':
-		//ÃÊ·Ï»ö
+		//ì´ˆë¡ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0x66CC66;
 		break;
 	case 'f':
-		//ÆÄ¶õ»ö
+		//íŒŒë€ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0x0000FF;
 		break;
 	case 'g':
-		//º¸¶ó»ö
+		//ë³´ë¼ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0xCC33FF;
 		break;
 	case 'h':
-		//ÁÖÈ²»ö
+		//ì£¼í™©ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0xEFA536;
 		break;
 	case 'i':
-		//ÆÄ¶õ»ö
+		//íŒŒë€ìƒ‰
 		oldColor = fontColor;
 		fontColor = 0x3399FF;
 		break;
 	case 'j':
-		//È¸»ö
+		//íšŒìƒ‰
 		oldColor = fontColor;
 		fontColor = 0x999999;
 		break;
@@ -645,7 +665,7 @@ int ParseText(char str)
 		fontColor = 0xFFCC66;
 		break;
 	case 'l':
-		//¹ø°³¼Ó¼º
+		//ë²ˆê°œì†ì„±
 		oldColor = fontColor;
 		fontColor = 0xAA6688;
 		break;
@@ -660,12 +680,12 @@ int ParseText(char str)
 		fontColor = 0xFF8800;
 		break;
 	case 'o':
-		//Ä³¸¯ÅÍÀÌ¸§¸í
+		//ìºë¦­í„°ì´ë¦„ëª…
 		oldColor = fontColor;
 		fontColor = 0xFFAAFF;
 		break;
 	case 'p':
-		//¾ÆÀÌÅÛ¸í
+		//ì•„ì´í…œëª…
 		oldColor = fontColor;
 		fontColor = 0xAAFF00;
 		break;
@@ -681,7 +701,7 @@ int ParseText(char str)
 		fontColor = 0xFFAACC;
 		break;
 	case 's':
-		//ÀÌÀüÀ¸·Î º¹±Í
+		//ì´ì „ìœ¼ë¡œ ë³µê·€
 		fontColor = oldColor;
 		break;
 	default:
@@ -728,8 +748,7 @@ int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, fl
 				ofs++;
 		}
 
-		if (str[i + wide] < 0 || str[i + wide] > 127)
-			wide++;
+		wide += CharExtraBytes(str + i + wide);
 	}
 
 	if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
@@ -765,8 +784,7 @@ int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines
 				ofs++;
 		}
 
-		if (str[i + wide] < 0 || str[i + wide] > 127)
-			wide++;
+		wide += CharExtraBytes(str + i + wide);
 	}
 
 	if ((lines < 0 || cnt >= lines) && (lines2 < 0 || cnt < lines2))
@@ -805,8 +823,7 @@ int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom)
 				ofs++;
 		}
 
-		if (str[i + wide] < 0 || str[i + wide] > 127)
-			wide++;
+		wide += CharExtraBytes(str + i + wide);
 	}
 
 	DrawSubText(str, ofs, end - ofs, x - (float)((type) ? SubstringWidth(str, ofs, end - ofs, zoom) : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom);
@@ -855,8 +872,8 @@ void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCo
 
 		}
 
-		if (textString[i + wide] < 0 || textString[i + wide] > 127)
-			wide++;
+		if (CharByteLen(textString + i + wide) > 1)
+			wide += CharExtraBytes(textString + i + wide);
 		else if (textString[i + wide] == '|')
 			color = textString[i + wide + 1];
 	}
@@ -864,7 +881,7 @@ void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCo
 	textStringLength[textPage] = StringLength(textString);
 	textPage++;
 	textCurPage = 0;
-	textFrame = 0;	//ÅØ½ºÆ® ÇÁ·¹ÀÓÃÊ±âÈ­
+	textFrame = 0;	//í…ìŠ¤íŠ¸ í”„ë ˆì„ì´ˆê¸°í™”
 	textLines = line;
 }
 

@@ -61,7 +61,7 @@ void Play(void)
 
 		tutorialPendingTouchFunc = 0;
 
-		//µ¿·á ¸Þ´º¸¦ ¿©´Â ¾È³»¿´´Ù¸é, »õ µ¿·á Ä«µå¸¦ ´©¸¦ ¶§±îÁö ¾È³»¸¦ ÀÌ¾î°£´Ù.
+		//ë™ë£Œ ë©”ë‰´ë¥¼ ì—¬ëŠ” ì•ˆë‚´ì˜€ë‹¤ë©´, ìƒˆ ë™ë£Œ ì¹´ë“œë¥¼ ëˆ„ë¥¼ ë•Œê¹Œì§€ ì•ˆë‚´ë¥¼ ì´ì–´ê°„ë‹¤.
 		if (pendingFunc == TOUCH_FUNC_POPUP_CREWLIST)
 			tutorialCrewGuide = true;
 

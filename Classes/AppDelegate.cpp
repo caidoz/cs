@@ -1,4 +1,4 @@
-//cd C:\Users\polyp\Desktop\CP\cs\proj.android
+﻿//cd C:\Users\polyp\Desktop\CP\cs\proj.android
 //gradlew.bat :cs:assembleDebug 2>&1 | findstr /i "error: error failed failure fatal exception"
 
 
