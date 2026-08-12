@@ -3332,6 +3332,12 @@ void BoxOpen(void)
 		}
 	}
 
+	//MD_PLAY의 상자는 몬스터 드롭이라 골드만 나온다.
+	//boxDropProc 표에는 장비/배틀/레이드까지 들어 있지만 그건 플레이 화면 밖에서 쓰는
+	//분포다. 여기서 표를 그대로 따르면 몬스터를 때릴 때마다 배틀/레이드로 넘어간다.
+	if (drawHandle == MD_PLAY)
+		boxDropItemType = BOXDROP_COIN;
+
 	switch (boxDropItemType) {
 	case BOXDROP_COIN:
 	case BOXDROP_COINBAG:
