@@ -35,6 +35,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func);
 bool IsFullInSectionClip(float x, float y, float w, float h);
 void SetSwipePoint(int, int, int, int, int);
 void touchFunc(int func);
+void RaiseHeartBet(void);
 void SaveFlag(int whitch);
 
 // JoyStick 관련

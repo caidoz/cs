@@ -3446,10 +3446,14 @@ NEXT:
 		if (drawHandle == MD_PLAY && robinmap == MAP_DIORAMA_TOLEM) {
 			int nextTutorialDemo = -1;
 
+			//DEMO_TUTORIAL_SECONDKILL("다시 공격해보자")은 여기서 걸지 않는다. 그건 처치 결과가
+			//아니라 동료 편성을 마친 뒤 "한 번 더 때려보자"고 등을 떠미는 대사라,
+			//동료 안내가 끝나는 자리(TutorialCrewStepUpdate)에서 건다.
+			//두번째 처치의 상자에 갑옷이 들어 있으므로 그 자리에 장비 안내를 건다.
 			if (!robin.demoSeen[DEMO_TUTORIAL_FIRSTKILL])
 				nextTutorialDemo = DEMO_TUTORIAL_FIRSTKILL;
-			else if (!robin.demoSeen[DEMO_TUTORIAL_SECONDKILL])
-				nextTutorialDemo = DEMO_TUTORIAL_SECONDKILL;
+			else if (!robin.demoSeen[DEMO_TUTORIAL_EQUIP])
+				nextTutorialDemo = DEMO_TUTORIAL_EQUIP;
 			else if (!robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
 				nextTutorialDemo = DEMO_TUTORIAL_ROULETTE;
 			else if (!robin.demoSeen[DEMO_TUTORIAL_BOSS])

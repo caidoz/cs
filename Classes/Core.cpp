@@ -1210,6 +1210,11 @@ void PaintClet(int x, int y, int w, int h)
 	touchIndex = 0;//인덱스 초기화
 	swipeIndex = 0;
 
+	//동료 편성 안내(장착 -> 편성칸 연출 -> 뒤로가기 -> 성 위 등장)의 시간 진행.
+	//터치 제한을 정하기 전에 돌려야 이번 프레임의 단계로 제한이 걸린다.
+	TutorialCrewStepUpdate();
+	TutorialEquipStepUpdate();
+
 	//터치영역을 새로 쌓기 전에 튜토리얼 제한을 정해둔다. 이 프레임에 등록되는
 	//모든 SetRectPoint()가 같은 기준으로 걸러진다.
 	gTutorialTouchFunc = GetTutorialTouchFunc();
@@ -2096,6 +2101,7 @@ void PaintClet(int x, int y, int w, int h)
 			}
 			if (gameLog[i].frame2 > 0)
 				LogDraw(&gameLog[i]);
+			KeepLogFromDarken(&gameLog[i]);
 
 		}
 		else if (gameLog[i].frame > 0) {
@@ -2138,6 +2144,7 @@ void PaintClet(int x, int y, int w, int h)
 
 			if (gameLog[i].frame > 0)
 				LogDraw(&gameLog[i]);
+			KeepLogFromDarken(&gameLog[i]);
 
 		}
 	}

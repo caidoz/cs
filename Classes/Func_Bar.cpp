@@ -188,6 +188,28 @@ void BarDraw(BAR* barP, float zoom)
 		break;
 	case BAR_ROULETTE://룰렛
 		RouletteDraw(xOffset + barP->x, barP->y, barP->zoom);
+
+		//룰렛이 막 열렸다는 것을 알리는 반짝임. 슬롯판 위에 흰빛을 깜빡여 덮는다.
+		//SetDemo(DEMO_TUTORIAL_ROULETTE)가 프레임 수를 걸어두고 여기서 소진한다.
+		if (rouletteGlowFrame > 0) {
+			//0 -> 최대 -> 0으로 두어 번 오갔다 사라진다.
+			int glowAlpha = (int)(12 * (0.5f + 0.5f * sinf((float)rouletteGlowFrame * 0.25f))
+				* (float)rouletteGlowFrame / (float)ROULETTE_GLOW_FRAME);
+
+			if (glowAlpha > 0) {
+				SetAlpha(glowAlpha);
+				MemRect(xOffset + barP->x - (float)SLOTSIZE_X / 2 * barP->zoom, barP->y,
+					(float)SLOTSIZE_X * barP->zoom, (float)SLOTSIZE_Y * barP->zoom, COLOR_WHITE);
+				SetAlpha(32);
+			}
+
+			rouletteGlowFrame--;
+		}
+
+
+		//튜토리얼: 성 위에서 갈아입은 주인공을 비춘다.
+		//플레이 화면에서 매 프레임 도는 자리라 여기에 붙였다(스팟라이트는 즉시모드).
+		SetTutorialHeroSpotlight();
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x - (float)SLOTSIZE_X / 2 * barP->zoom, barP->y, (float)SLOTSIZE_X * barP->zoom, (float)SLOTSIZE_Y * barP->zoom, TOUCH_FUNC_POPUP_CREWLIST);
 		break;
@@ -207,15 +229,9 @@ void BarDraw(BAR* barP, float zoom)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)HEARTBUTTONWIDTH * barP->zoom, (float)HEARTBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_HEARTAMOUNT);
 	}
 
-		//인터랙티브 전투 튜토리얼: 하트 베팅 설명 이후 룰렛이 열리기 전까지 베팅 버튼을 강조해준다.
-		//위 잠금과 같은 이유로 튜토리얼이 도는 동안에만 켠다. 튜토리얼을 중간에 벗어난
-		//세이브에서는 두 플래그가 그 상태로 굳어 일반 플레이에서 테두리가 계속 남는다.
-		if (IsTutorialPlaying() && robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE]) {
-			float pulse = 0.9f + sinf((float)frame * 0.1f) * 0.1f;
-			float hlW = (float)HEARTBUTTONWIDTH * barP->zoom * pulse;
-			float hlH = (float)HEARTBUTTONHEIGHT * barP->zoom * pulse;
-			MemRectFrameThick(xOffset + barP->x - (hlW - (float)HEARTBUTTONWIDTH * barP->zoom) / 2, barP->y - (hlH - (float)HEARTBUTTONHEIGHT * barP->zoom) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X));
-		}
+		//예전에는 여기서 노란 테두리를 펄스로 그려 베팅 버튼을 강조했다. 지금은 안내 대사가
+		//스팟라이트 + 손으로 같은 일을 하므로(Demo_Talk의 GetTutorialTalkTarget 경로) 뺐다.
+		//테두리만 남으면 "웬 사각형이 혼자 움직이는" 것으로 보인다.
 		break;
 	case BAR_PLAY://플레이 버튼
 		DrawAttackButton(count, xOffset + barP->x, barP->y, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_ATTACK), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);

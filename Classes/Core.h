@@ -455,6 +455,10 @@ typedef struct _log {
 	unsigned short icon;//아이콘
 	long long count;//숫자 정보가 필요한 경우
 
+	//LOG_SIMPLE용 아이콘 지정. 종류마다 그리는 방법도, 값의 의미도 다르다(LOGICON_* 주석 참고).
+	unsigned char iconType;
+	int iconA, iconB, iconC;
+
 	int x;//x위치
 	int y;//y위치
 
@@ -1188,23 +1192,48 @@ extern cocos2d::RenderTexture* gRenderTarget;
 extern cocos2d::Layer* gRenderLayer;
 
 //스팟라이트 상태. SetSpotlight()으로 세우고 EndScreenBuffer()가 소비한다.
+//한 프레임에 여러 번 부르면 밝은 지점이 여러 개가 된다(성 위의 동료와 아래 룰렛 슬롯을
+//동시에 가리키는 식). 셰이더 배열 크기와 반드시 같아야 한다(fsh_spotlight의 [4]).
+#define MAXSPOTLIGHT	4
+
 extern bool gSpotlightOn;
-extern float gSpotlightX;
-extern float gSpotlightY;
-extern float gSpotlightInner;
-extern float gSpotlightRadius;
+extern int gSpotlightCnt;
+extern float gSpotlightX[MAXSPOTLIGHT];
+extern float gSpotlightY[MAXSPOTLIGHT];
+extern float gSpotlightInner[MAXSPOTLIGHT];
+extern float gSpotlightRadius[MAXSPOTLIGHT];
 extern float gSpotlightDarkness;
-extern float gSpotlightKeepX;
-extern float gSpotlightKeepY;
-extern float gSpotlightKeepW;
-extern float gSpotlightKeepH;
-extern float gSpotlightKeepSoft;
+
+//암전에서 뺄 사각형도 여러 개 둘 수 있다(대화창 + 로그창이 동시에 뜬다).
+//셰이더 배열 크기와 반드시 같아야 한다(fsh_spotlight의 u_keepRect[2]).
+#define MAXKEEPRECT		2
+
+extern int gSpotlightKeepCnt;
+extern float gSpotlightKeepX[MAXKEEPRECT];
+extern float gSpotlightKeepY[MAXKEEPRECT];
+extern float gSpotlightKeepW[MAXKEEPRECT];
+extern float gSpotlightKeepH[MAXKEEPRECT];
+extern float gSpotlightKeepSoft[MAXKEEPRECT];
 
 //튜토리얼 안내 대사에서 누른 버튼의 동작을 컷씬이 끝난 뒤 처리하기 위한 예약. 0이면 없음.
 extern int tutorialPendingTouchFunc;
 
 //튜토리얼 안내로 동료 메뉴를 연 직후에만 참. 저장하지 않는다.
 extern bool tutorialCrewGuide;
+
+//동료 상세보기의 장착 버튼부터 성 위 등장까지의 안내 단계(TUTORIAL_CREWSTEP_*).
+extern int tutorialCrewStep;
+extern int tutorialCrewStepFrame;
+
+//장비 슬롯 고르기부터 성 위 주인공이 갈아입는 것까지의 안내 단계(TUTORIAL_EQUIPSTEP_*).
+extern int tutorialEquipStep;
+extern int tutorialEquipStepFrame;
+
+//룰렛이 열렸다는 것을 알리는 반짝임의 남은 프레임.
+extern int rouletteGlowFrame;
+
+//튜토리얼 마지막 보스전에서 룰렛 결과를 최고 별 동료 3개로 강제할지.
+extern bool tutorialForceRouletteBest;
 
 
 //튜토리얼에서 지금 눌러야 하는 터치기능.

@@ -9,9 +9,12 @@ void InitGraphics(void);
 void InitMenu(void);
 void InitGame(void);
 void EraseControlMark(int selected);
-void AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigned short icon, long long count,
+int AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigned short icon, long long count,
 	int x, int y, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2,
 	float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, char * text);
+
+//아이콘 한 개 + 한 줄 텍스트짜리 로그. iconType은 LOGICON_*, a/b/c의 의미는 종류마다 다르다.
+void AddSimpleLog(int iconType, int a, int b, int c, int textIdx);
 
 void AddBar(BAR *, signed long long, int countFrame);
 void InitTarget(void);

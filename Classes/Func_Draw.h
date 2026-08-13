@@ -35,6 +35,7 @@ void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int d
 void GNBDraw(int, int);
 void ActiveHelpDraw();
 void LogDraw(LOG *);
+void KeepLogFromDarken(LOG *);
 int GetEventMenuPosX(int eventIdx, int eventStatus);
 int GetEventMenuPosY(int eventIdx, int eventStatus);
 void EventScheduler(void);

@@ -763,9 +763,31 @@ void ActiveHelpDraw()
 	}
 }
 
+//떠 있는 로그창을 스팟라이트 암전에서 빼준다.
+//로그는 화면 맨 위에 얹는 알림이라 안내용 암전에 같이 묻히면 읽을 수가 없다.
+//사각형은 LogDraw()가 DrawFrame()에 넘기는 것과 같은 값이다.
+void KeepLogFromDarken(LOG* g)
+{
+	if (g->frame <= 0 && g->frame2 <= 0)
+		return;
+
+	SetSpotlightKeepRect(
+		g->x - (float)(LOG_X / 2) * g->zoom,
+		g->y + (float)(LOG_Y / 2) * g->zoom,
+		(float)LOG_X * g->zoom,
+		(float)LOG_Y * g->zoom,
+		8 * _2X);
+}
+
 void LogDraw(LOG* g)
 {
 	int enemyType = GetTypeFromCmf(g->cmf);
+
+	//로그는 화면 맨 위에 얹는 알림이라 어떤 화면 위에서도 통째로 보여야 한다.
+	//앞서 그린 메뉴가 SetSectionClip()을 걸어둔 채로 넘어오면 DrawTextStrSystem()의
+	//클리핑 검사(y > clipY)에 걸려 틀과 아이콘만 남고 글자가 통째로 사라진다.
+	UnSectionClip(false);
+
 	DrawFrame(g->x - (float)(LOG_X / 2) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom, (float)LOG_X * g->zoom, (float)LOG_Y * g->zoom, FRAME_SHOPBALLOON);
 
 	switch (g->type) {
@@ -835,6 +857,64 @@ void LogDraw(LOG* g)
 		LineTextStrSolid(g->text, g->x - (float)(LOG_X / 2 - 4 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + ITEMICONSIZE + 4 * _2X) * g->zoom, (float)(LOG_X)*g->zoom, -1, -1, g->zoom);
 		SetFontColor(COLOR_WHITE);
 		break;
+	case LOG_SIMPLE:
+	{
+		//왼쪽에 아이콘 한 개, 오른쪽에 한 줄 텍스트. 아이콘은 종류마다 그리는 함수가 다르다.
+		//지나가는 알림이라 읽을 시간이 짧다. 아이콘/글자를 크게 잡는다.
+		const float ICONZOOM = 2.4f;		//아이콘 배율
+		const float TEXTZOOM = 1.5f;		//글자 배율
+		const int ICONBOX = 40 * _2X;		//아이콘이 차지하는 폭
+
+		float iconX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X) * g->zoom;
+		float iconY = g->y + (float)(LOG_Y / 2) * g->zoom - (float)(10 * _2X) * g->zoom;
+		float textX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X + ICONBOX) * g->zoom;
+		float textW = (float)(LOG_X - 20 * _2X - ICONBOX) * g->zoom;
+
+		switch (g->iconType) {
+		case LOGICON_CREW:
+		{
+			//동료는 아이콘이 없다. 실제 캐릭터 그림(cmf)을 그대로 쓴다.
+			//crewPos[]는 타입별 서있는 모션의 시작 프레임이라 cmf에서 타입을 되짚어야 한다.
+			//DrawCmfDetailShadow()는 발밑 기준이라 아이콘 칸 아래쪽에 세운다.
+			int crewType = GetTypeFromCmf(g->iconA);
+
+			DrawCmfDetailShadow(g->iconA, crewPos[crewType * 5 + 0],
+				iconX + (float)(ICONBOX / 2) * g->zoom,
+				iconY - (float)(LOG_Y - 16 * _2X) * g->zoom,
+				RIGHT, g->zoom * 1.6f);
+			break;
+		}
+		case LOGICON_EQUIP:
+			//장비는 type/detail/grade에서 아이콘을 뽑는다.
+			DrawIcon(GetItemIcon(g->iconA, g->iconB, g->iconC), iconX, iconY, g->zoom * ICONZOOM, false, false, true, true);
+			break;
+		case LOGICON_CASTLE:
+			//성은 디오라마 그림을 축소해서 쓴다.
+			DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+				iconX, iconY,
+				false, false, false, false, false,
+				0.16f * g->zoom,
+				sprite[MAP_DIORAMA_IMG + g->iconA], MAP_DIORAMA_IMG + g->iconA);
+			break;
+		case LOGICON_ICON:
+			DrawIcon(g->iconA + (g->iconA == ICON_GOLD ? frame % GOLDICONFRAME : 0), iconX, iconY, g->zoom * ICONZOOM, false, false, true, true);
+			break;
+		default:	//LOGICON_NONE - 아이콘 없이 텍스트만. 텍스트를 왼쪽 끝까지 당긴다.
+			textX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X) * g->zoom;
+			textW = (float)(LOG_X - 20 * _2X) * g->zoom;
+			break;
+		}
+
+		//로그 바탕(FRAME_SHOPBALLOON)이 밝아서 기본 폰트색(흰색)으로 쓰면 글자가 안 보인다.
+		//LOG_SKILL/LOG_BETCOIN과 같은 방식으로 어두운 색을 씌우고 원래대로 돌려놓는다.
+		//새까맣게(COLOR_DARKGREY) 쓰면 오히려 바탕 무늬에 묻혀서 조금 옅은 회색을 쓴다.
+		SetFontColor(COLOR_STARGREY);
+		LineTextStrSolid(g->text, textX,
+			g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom,
+			textW, -1, -1, g->zoom * TEXTZOOM);
+		SetFontColor(COLOR_WHITE);
+		break;
+	}
 	}
 }
 
@@ -1987,6 +2067,25 @@ void DrawPopUp(int idx)
 		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom);
 
 		SetRectPoint((float)(18)* p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, (float)64 * xMarkZoom * p->zoom, (float)64 * xMarkZoom * p->zoom, TOUCH_FUNC_POPUP_CLOSE);
+
+		//튜토리얼 5단: 뒤로가기를 눌러 성으로 돌아가게 한다.
+		//사각형은 바로 위 SetRectPoint()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
+		if (GetTutorialCrewCloseTouchFunc() || GetTutorialEquipCloseTouchFunc()) {
+			float bx = (float)(18) * p->zoom;
+			float by = DY - GNBHEIGHT - (float)(22) * p->zoom;
+			float bs = (float)64 * xMarkZoom * p->zoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//손 크기는 앞 단계들과 같게 맞춘다.
+			float handZoom = 2.0f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(bx + bs / 2 - handW, by - bs / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+
+			SetSpotlight(bx + bs / 2, by - bs / 2,
+				bs * 0.6f * pulse, bs * 1.1f * pulse, 0.25f);
+		}
 	}
 
 	p->frame++;

@@ -316,9 +316,9 @@ typedef enum _flag {
 	HELPER_DEMO_GAP_X = 32 * _2X,
 	HELPERGAP_Y = -108 * _2X,
 	EVENTMENUGAP = 0 * _2X,
-	//로그창
-	LOG_X = 212 * _2X,
-	LOG_Y = 48 * _2X,
+	//로그창. 지나가면서 읽어야 하는 알림이라 작으면 못 읽는다.
+	LOG_X = 300 * _2X,
+	LOG_Y = 76 * _2X,
 
 	LOG_POSITION_Y = 64 * _2X,//어디까지 갈건지
 

@@ -129,14 +129,22 @@ const signed short frameData[TOTAL_DEMO_FRAME * 3 + 3] = {
 	//DEMO_TUTORIAL_EQUIP	5:동료 자동장착+장비 수동장착 안내 -> 실제 장착 핸드오프
 	DEMO_TUTORIAL_EQUIP_FRAME0_SCENE, EFFECT_TALK, 10000 + CREW,
 
-	//DEMO_TUTORIAL_HEARTBET	6:하트 베팅/3배공격 설명 -> 실전투 핸드오프(중간 HP 몬스터)
+	//DEMO_TUTORIAL_HEARTBET	6:하트 베팅 3단 안내
+	//1) "하트 버튼을 눌러 베팅을 올려보세요" -> 버튼을 누르면 그 자리에서 베팅이 2가 된다
+	//2) "하트값이 2가 되었네요..." -> 한 번 더 누르면 3이 된다
+	//3) "3배의 공격 데미지를..." -> 공격버튼 안내, 누르면 실전투로 핸드오프
 	DEMO_TUTORIAL_HEARTBET_FRAME0_SCENE, EFFECT_TALK, 10000 + CREW,
+	DEMO_TUTORIAL_HEARTBET_FRAME1_SCENE, EFFECT_TALK, 10000 + CREW,
+	DEMO_TUTORIAL_HEARTBET_FRAME2_SCENE, EFFECT_TALK, 10000 + CREW,
 
-	//DEMO_TUTORIAL_ROULETTE	7:하트+동료3 지급(총 6마리->룰렛 자연개방) + 룰렛 개방 설명
+	//DEMO_TUTORIAL_ROULETTE	7~9:룰렛 개방 설명 -> 보스 스폰 -> 공격 안내
 	//하트+동료3장(총 6마리 -> 룰렛 자연개방)은 가챠(MakeTutorialBoxReward)가 지급한다.
-	DEMO_TUTORIAL_ROULETTE_FRAME4_SCENE, EFFECT_TALK, 10000 + CREW,
+	//대사 두 줄이 movie.text를 이어 읽으므로 TEXT_TUTORIAL_ROULETTE, TEXT_TUTORIAL_ROULETTE_LIVE 순으로 나온다.
+	DEMO_TUTORIAL_ROULETTE_FRAME0_SCENE, EFFECT_TALK, 10000 + CREW,
+	DEMO_TUTORIAL_ROULETTE_FRAME1_SCENE, EFFECT_TALK, 10000 + CREW,
 
-	//DEMO_TUTORIAL_ROULETTE_LIVE	8:룰렛 실전 관전 안내 -> 실전투 핸드오프
+	//DEMO_TUTORIAL_ROULETTE_LIVE	지금은 쓰지 않는다(위 블록이 그 대사까지 이어서 읽는다).
+	//표 크기(TOTAL_DEMO_FRAME)를 맞추기 위해 행 자체는 남겨둔다.
 	DEMO_TUTORIAL_ROULETTE_LIVE_FRAME0_SCENE, EFFECT_TALK, 10000 + CREW,
 
 	//DEMO_TUTORIAL_BOSS	9:보스전 안내(하트 맥스베팅+룰렛 강제결과) -> 실전투 핸드오프
@@ -172,5 +180,7 @@ const unsigned short demoItem[TOTALDEMOITEM * 5] = {
 	NPC_SOUL, ITEM_CREW, CREW_GRANDMA, GRADE_NORMAL, 1,	//DEMOITEM_TUTORIAL_HEARTBET_CREW1	TODO: 실제 지정 동료로 교체
 	NPC_SOUL, ITEM_CREW, CREW_GRANDFA, GRADE_NORMAL, 1,	//DEMOITEM_TUTORIAL_HEARTBET_CREW2	TODO: 실제 지정 동료로 교체
 	NPC_SOUL, ITEM_CREW, CREW_MAN, GRADE_NORMAL, 1,	//DEMOITEM_TUTORIAL_HEARTBET_CREW3	TODO: 실제 지정 동료로 교체
+	//10단계: 보스 처치 보상. 마무리 선물이라 5성 동료로 준다.
+	NPC_SOUL, ITEM_CREW, CREW_FISHING, GRADE_NORMAL, 1,	//DEMOITEM_TUTORIAL_BOSS_CREW
 };
 #endif

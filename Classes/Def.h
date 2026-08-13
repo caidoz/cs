@@ -785,6 +785,16 @@ typedef enum _gameDef {
 	CURRENCYWAITINGFRAMEMAX2 = FPS * 2,
 
 
+	//LOG_SIMPLE 로그의 아이콘 종류. 무엇을 알리는 로그냐에 따라 그리는 그림이 다르다.
+	//AddSimpleLog(iconType, a, b, c, textIdx)의 a/b/c가 종류마다 다른 의미를 갖는다.
+	LOGICON_NONE = 0,	//아이콘 없이 텍스트만
+	LOGICON_ICON,		//a = DrawIcon() 인덱스(ICON_GOLD, ICON_HEART, ICON_STAR ...)
+	LOGICON_CREW,		//a = 동료 cmf. 동료 그림을 그대로 그린다
+	LOGICON_EQUIP,		//a/b/c = 아이템 type/detail/grade. 장비 아이콘을 뽑아 그린다
+	LOGICON_CASTLE,		//a = 성 번호. 성 디오라마를 그린다
+
+	TOTAL_LOGICON,
+
 	LOG_EVENT_QUESTSTART = 0,//이벤트 오픈
 	//퀘스트 아이콘 + 퀘스트 이름 + 퀘스트가 활성화되었습니다
 	LOG_EVENT_BATTLESTART,
@@ -800,6 +810,8 @@ typedef enum _gameDef {
 	LOG_SKILL,//스킬
 	LOG_BETHEART,//하트 증가
 	LOG_BETCOIN,
+	//아이콘 + 한 줄 텍스트만 있는 범용 로그. 아이콘을 무엇으로 그릴지는 LOGICON_*이 정한다.
+	LOG_SIMPLE,
 
 	TOTAL_LOG,
 

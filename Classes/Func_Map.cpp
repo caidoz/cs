@@ -1591,6 +1591,12 @@ void WaveControler()
 
 			pObj->dirX = pObj->dirF = LEFT;
 			pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
+
+			//튜토리얼 마무리 보스는 같은 달팽이라도 두 배로 커야 "보스"로 보인다.
+			//따로 스폰하지 않고 정식 wave[] 경로를 타므로 여기서 크기만 키운다.
+			if (robin.waveIdx == WAVEIDX_TUTORIAL_BOSS)
+				pObj->defaultZoom = pObj->zoom = MONSTERZOOM * 2.0f;
+
 			pObj->mom = obj;
 
 			SetEnemy(pObj);
@@ -1900,6 +1906,11 @@ long long GetWaveHp(int waveIdx, int curWave)
 	//웨이브 순번에 맞춰 한 대씩 늘려간다(0:2, 1:3, 2:4 ...). 정규 공식을 그대로 쓰면 수천 단위라
 	//튜토리얼에서 몇 대를 때려도 안 죽는다.
 	if (IsTutorialPlaying()) {
+		//마무리 보스는 표의 맨 마지막 행이라 waveIdx가 크다. 아래 "2 + waveIdx" 공식을 그대로
+		//타면 체력이 수천이 되어 절대 안 죽는다. 동료 3중첩 공격 한 방에 죽을 값으로 따로 잡는다.
+		if (waveIdx == WAVEIDX_TUTORIAL_BOSS)
+			return TUTORIAL_BOSS_HP;
+
 		switch (waveIdx) {
 		case 5:		//HEARTBET: 3배 하트베팅 공격에만 죽도록
 		case 6:		//ROULETTE_LIVE: 룰렛 3인 공격으로 죽도록

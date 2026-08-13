@@ -10502,9 +10502,16 @@ const char* const textId[] = {
 	"동료 메뉴를 열어 새로 얻은 동료를 확인해보자. 동료는 자동으로 전투에 배치된다!",//TEXT_TUTORIAL_CREWMENU
 	"다시 공격해보자! 이번엔 하트와 동료, 장비를 얻을 수 있다.",//TEXT_TUTORIAL_SECONDKILL
 	"동료는 알아서 장착되지만, 장비는 직접 장착해줘야 한다. 장비창의 장착 버튼을 눌러보자!",//TEXT_TUTORIAL_EQUIP
-	"강한 몬스터가 나타났다! 하트를 베팅하면 더 강하게 공격할 수 있다. 베팅을 올리고 공격해보자!",//TEXT_TUTORIAL_HEARTBET
-	"동료가 6명이 모이자 룰렛이 열렸다! 룰렛을 돌리면 동료 중 3명이 선택되어 함께 공격한다.",//TEXT_TUTORIAL_ROULETTE
-	"이제 공격해서 룰렛을 돌려보자! 선택된 동료들이 함께 몬스터를 공격할 것이다.",//TEXT_TUTORIAL_ROULETTE_LIVE
-	"강력한 보스가 나타났다! 하트를 최대로 베팅하고 공격해서 보스를 단숨에 쓰러뜨려보자!",//TEXT_TUTORIAL_BOSS
+	"강한 몬스터가 나타났어요! 왼쪽의 하트 버튼을 눌러 베팅을 올려보세요.",//TEXT_TUTORIAL_HEARTBET
+	"하트값이 2가 되었네요. 이렇게 되면 두 배의 하트를 소모하면서 2배의 데미지를 올릴 수 있어요.",//TEXT_TUTORIAL_HEARTBET2
+	"용사님, 이제 보통 때의 3배의 공격 데미지를 줄 수 있어요. 공격버튼을 눌러보세요!",//TEXT_TUTORIAL_HEARTBET3
+	"동료가 6명이 세팅이 되면 그 때부터는 동료가 중첩될 때 나오는 강력한 공격이나 스킬을 사용할 수 있어요.",//TEXT_TUTORIAL_ROULETTE
+	"마침 강한 보스 몬스터가 등장했네요. 동료들이 도와줄겁니다! 공격하세요!!",//TEXT_TUTORIAL_ROULETTE_LIVE
+	"이제 기본적인 전투방법은 아시겠죠. 이후에 새롭게 알려드려야 될게 있을 때 다시 말씀드릴게요. 그럼 이만..",//TEXT_TUTORIAL_BOSS
+	"동료를 편성했다! 두 번째 자리에 새 동료가 들어갔다.",//TEXT_TUTORIAL_CREWSET
+	"새 동료가 성에 도착했다! 이제부터 함께 싸운다.",//TEXT_TUTORIAL_CREWJOIN
+	"장비를 장착했다! 갑옷 자리에 새 장비가 들어갔다.",//TEXT_TUTORIAL_EQUIPSET
+	"새 갑옷을 입었다! 방어력이 올라 더 오래 버틸 수 있다.",//TEXT_TUTORIAL_EQUIPWEAR
+	"베팅을 올렸다! 하트를 더 걸수록 공격이 강해진다.",//TEXT_TUTORIAL_BETUP
 };
 #endif /* Text_h */

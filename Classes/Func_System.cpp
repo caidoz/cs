@@ -338,12 +338,14 @@ void EraseControlMark(int selected)
 }
 //로그의 정의
 //
-void AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigned short icon, long long count,
+//채워 넣은 칸의 첨자를 돌려준다. 빈 칸이 없으면 -1.
+//호출부에서 그 칸에 값을 더 붙일 수 있어야 해서(AddSimpleLog의 아이콘 종류) 돌려준다.
+int AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigned short icon, long long count,
 	int x, int y, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2,
 	float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, char* text)
 {
 	int i;
-	int curIdx;//현재 인덱스
+	int curIdx = -1;//현재 인덱스. 빈 칸을 못 찾으면 -1로 남는다
 	int activeIdx = -1;
 
 	for (i = 0; i < MAXLOG; i++) {
@@ -392,9 +394,53 @@ void AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigne
 		}
 	}
 	//아직 활성화되어 있는 인덱스가 없으면 이번에 add된 로그를 활성화시켜주자.
-	if (activeIdx == -1)
+	if (curIdx >= 0 && activeIdx == -1)
 		gameLog[curIdx].frame = 1;
 
+	return curIdx;
+}
+
+//아이콘 한 개 + 한 줄 텍스트짜리 로그를 띄운다.
+//AddLog()는 인자가 23개라 부를 때마다 연출값을 다 적어야 해서, 실제로 알리고 싶은 것
+//(무슨 아이콘 / 무슨 문구)만 받는 껍데기를 둔다. 움직임은 오른쪽에서 들어와 가운데에서
+//잠깐 머물다 왼쪽으로 빠지는 한 가지로 고정한다.
+//
+//iconType(LOGICON_*)에 따라 a/b/c의 의미가 달라진다.
+//  LOGICON_ICON   : a = 아이콘 인덱스
+//  LOGICON_CREW   : a = 동료 cmf
+//  LOGICON_EQUIP  : a/b/c = 아이템 type/detail/grade
+//  LOGICON_CASTLE : a = 성 번호
+void AddSimpleLog(int iconType, int a, int b, int c, int textIdx)
+{
+	int i;
+	char logStr[256];
+	//화면 위쪽, 상단 바(bar[BAR_GOLD] 등이 올라앉는 GNB) 아래에 띄운다.
+	//GNBHEIGHT가 그 상단 바의 높이라 DY - GNBHEIGHT가 그 아래쪽 경계이고,
+	//거기에 바로 붙이면 바와 겹쳐 보여서 한 칸 더 내린다.
+	int ty = DY - GNBHEIGHT - 28 * _2X;
+
+	memset(logStr, 0, sizeof(logStr));
+
+	//AddLog()는 넘긴 포인터에서 로그 버퍼 크기(256바이트)만큼 통째로 복사해 간다.
+	//짧은 리터럴을 그대로 넘기면 그 뒤까지 읽으므로 꽉 채운 지역버퍼로 넘긴다.
+	strncpy(logStr, TEXTPTR(textIdx), sizeof(logStr) - 1);
+
+	i = AddLog(LOG_SIMPLE, 0, 0, 0, 0,
+		DX + LOG_X, ty,			//시작(화면 오른쪽 바깥)
+		DX / 2, ty,				//1차 목적지(화면 중앙)
+		-LOG_X, ty,				//2차 목적지(화면 왼쪽 바깥)
+		(float)(24 * _2X) / MOTIONDIV, 0.0f, (float)(24 * _2X) / MOTIONDIV, 0.0f,
+		FPS * 6, 0,				//중앙에서 6초 머문다(지나가면서 읽어야 해서 짧으면 놓친다)
+		1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, logStr);
+
+	//AddLog()의 인자에는 아이콘 종류를 넘길 자리가 없다. 방금 채운 칸에 직접 덧붙인다.
+	if (i < 0)
+		return;
+
+	gameLog[i].iconType = iconType;
+	gameLog[i].iconA = a;
+	gameLog[i].iconB = b;
+	gameLog[i].iconC = c;
 }
 
 void AddBar(BAR* barP, signed long long add, int countFrame)

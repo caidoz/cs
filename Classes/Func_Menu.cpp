@@ -370,6 +370,28 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 
 		DrawTouchLargeButton(x + (float)(432) * zoom, y - (float)(20) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(it->type, it->detail, it->grade), FRAME_GREEN, zoom / CARDDEFAULTZOOM);
 
+		//튜토리얼 3단: 장착 버튼을 누르게 한다.
+		//사각형은 바로 위 DrawTouchLargeButton()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
+		if (GetTutorialEquipButtonTouchFunc() == TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(it->type, it->detail, it->grade)) {
+			float btnZoom = zoom / CARDDEFAULTZOOM;
+			float bx = x + (float)(432) * zoom;
+			float by = y - (float)(20) * zoom;
+			float bw = (float)BUYBUTTON_X * btnZoom;
+			float bh = (float)BUYBUTTON_Y * btnZoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//손 크기는 앞 단계들과 같게 맞춘다.
+			float handZoom = 2.0f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(bx + bw / 2 - handW, by - bh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+
+			//버튼이 가로로 길어서 폭 기준으로 잡으면 옆의 카드까지 밝아진다. 높이 기준으로 좁힌다.
+			SetSpotlight(bx + bw / 2, by - bh / 2,
+				bh * 0.9f * pulse, bh * 1.6f * pulse, 0.25f);
+		}
+
 		break;
 		//동료
 	case ITEM_CREW:
@@ -3325,11 +3347,17 @@ void CrewMenuDraw(int x, int y, float zoom)
 			itemLv = robin.inven[GetInvenIdx(itemType, itemDetail, itemGrade)].lv;
 			itemStar = GetItemStar(itemType, itemDetail, itemGrade);
 
+			//튜토리얼: 방금 편성한 동료는 위에서 뛰어 내려앉는다. 성 위 등장 연출과 결을 맞춘 것이다.
+			float dropY = 0.0f;
+
+			if (tutorialCrewStep == TUTORIAL_CREWSTEP_SLOTSHOW && i == TUTORIAL_CREW_SLOT)
+				dropY = GetTutorialCrewDropOffset(tutorialCrewStepFrame, zoom);
+
 			int crewCmf = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
 			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
 			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (menuX == i ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
 				slotX + (float)52 * zoom,
-				slotY - (float)88 * zoom,
+				slotY - (float)88 * zoom + dropY,
 				RIGHT, enemyZoom[crewType] * 1.3f * zoom);
 			DrawStar(ICON_STAR, slotX + (float)52 * zoom, slotY - (float)102 * zoom, itemStar, itemStar, itemStar, CENTER, false, 0.6f * zoom);
 			/*
@@ -3389,6 +3417,17 @@ void CrewMenuDraw(int x, int y, float zoom)
 			DrawHand(slotX + rw / 2 - handW, slotY - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
 
 			//슬롯은 가로로 붙어 있어 옆 슬롯까지 밝아지지 않도록 폭 기준으로 반경을 잡는다.
+			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
+				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
+		}
+
+		//튜토리얼 4단: 편성된 자리를 밝혀서 어디에 들어갔는지 보여준다. 손은 띄우지 않는다.
+		//누를 것이 없고 잠깐 보여주기만 하는 구간이라 손이 있으면 오히려 눌러야 하는 줄 안다.
+		if (tutorialCrewStep == TUTORIAL_CREWSTEP_SLOTSHOW && i == TUTORIAL_CREW_SLOT) {
+			float rw = (float)CARDSIZE_X * 0.45f * zoom;
+			float rh = (float)CARDSIZE_Y * 0.4f * zoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
 			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
 				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
 		}
@@ -3512,6 +3551,29 @@ void CrewMenuDraw(int x, int y, float zoom)
 		
 		DrawTouchLargeButton(x + (float)(80) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_GREEN, 1.0f * zoom);
 		DrawTouchLargeButton(x + (float)(380) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_UPGRADE], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_RED, 1.0f * zoom);
+
+		//튜토리얼 3단: 장착 버튼을 누르게 한다.
+		//사각형은 바로 위 DrawTouchLargeButton()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
+		if (GetTutorialCrewEquipTouchFunc()) {
+			float bx = x + (float)(80) * zoom;
+			float by = y - (float)(694) * zoom;
+			float bw = (float)BUYBUTTON_X * zoom;
+			float bh = (float)BUYBUTTON_Y * zoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//손 크기는 앞 단계(슬롯/카드 안내)와 같게 맞춘다.
+			//DrawHand()에 넘기는 좌표가 손 그림의 좌상단이라 자기 크기만큼 물려야 손끝이 중앙에 온다.
+			float handZoom = 2.0f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(bx + bw / 2 - handW, by - bh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+
+			//버튼은 가로로 긴 편이라 폭 기준으로 잡으면 옆의 강화하기 버튼까지 밝아진다.
+			//높이 기준으로 좁게 잡는다.
+			SetSpotlight(bx + bw / 2, by - bh / 2,
+				bh * 0.9f * pulse, bh * 1.6f * pulse, 0.25f);
+		}
 
 		//Tutorial: pulse a highlight around the EQUIP button while the EQUIP step is guiding the player to tap it.
 		if (robin.demoSeen[DEMO_TUTORIAL_EQUIP] && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET]) {
@@ -3983,7 +4045,31 @@ void CollectionsDraw(int x, int y, float zoom)
 				0);
 		}
 
-		
+		//튜토리얼 1단: 장비를 넣을 자리(갑옷)를 먼저 고르게 한다.
+		//4단: 장착된 뒤 그 자리를 다시 밝혀서 어디에 들어갔는지 보여준다(손은 띄우지 않는다).
+		bool equipSlotGuide = (GetTutorialEquipSlotTouchFunc() == TOUCH_FUNC_MENUX_1 + i);
+		bool equipSlotShow = (tutorialEquipStep == TUTORIAL_EQUIPSTEP_SLOTSHOW && i == TUTORIAL_EQUIP_SLOT);
+
+		if (equipSlotGuide || equipSlotShow) {
+			//DrawItemCard()가 카드 터치영역으로 쓰는 사각형과 같은 기준으로 잡는다.
+			float cardZoom = CARDDEFAULTZOOM * 0.8f * zoom;
+			float rw = (float)240 * cardZoom;
+			float rh = (float)332 * cardZoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			if (equipSlotGuide) {
+				//손 크기는 동료 안내와 같게 맞춘다.
+				float handZoom = 2.0f;
+				float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+				float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+				DrawHand(slotX + rw / 2 - handW, slotY - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+			}
+
+			//슬롯은 가로로 붙어 있어 옆 슬롯까지 밝아지지 않도록 폭 기준으로 반경을 잡는다.
+			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
+				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
+		}
 	}
 
 	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)142 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
@@ -4083,6 +4169,29 @@ void CollectionsDraw(int x, int y, float zoom)
 			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
 			false,
 			0);
+
+		//튜토리얼 2단: 새로 얻은 장비 카드만 밝게 남기고 나머지를 어둡게 덮는다.
+		//사각형은 DrawItemCard()가 카드 터치영역으로 등록하는 것과 같은 값이다.
+		if (GetTutorialEquipCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i]) {
+			int cardStar = GetItemStar(itemType, itemDetail, itemGrade);
+			float cardZoom = CARDDEFAULTZOOM * 0.9f * zoom;
+			float rx = cardX + (float)equipBgData[(cardStar - 1) * 6 + 4] * cardZoom;
+			float ry = cardY - (float)equipBgData[(cardStar - 1) * 6 + 5] * cardZoom;
+			float rw = (float)equipBgData[(cardStar - 1) * 6 + 0] * cardZoom;
+			float rh = (float)equipBgData[(cardStar - 1) * 6 + 1] * cardZoom;
+			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
+
+			//DrawHand()에 넘기는 좌표가 손 그림의 좌상단이라 자기 크기만큼 물려야 손끝이 중앙에 온다.
+			float handZoom = 2.4f;
+			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
+			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
+
+			DrawHand(rx + rw / 2 - handW, ry - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
+
+			//카드 사이 여백이 거의 없어서 높이 기준으로 잡으면 옆 카드까지 밝아진다. 폭 기준으로 좁힌다.
+			SetSpotlight(rx + rw / 2, ry - rh / 2,
+				rw * 0.34f * pulse, rw * 0.60f * pulse, 0.25f);
+		}
 	}
 
 	int scrollH = WINY - (float)580 * zoom;

@@ -5232,9 +5232,17 @@ const int wave[] = {
 	ENEMY_CASTLE2, FPS * 2, MONSTERTYPE_JACO,//2
 	ENEMY_CASTLE2, FPS * 3, MONSTERTYPE_JACO,//3
 
-
-
+	//튜토리얼 마무리 보스(초록 달팽이). 반드시 이 표의 맨 마지막 행이어야 한다.
+	//WAVEIDX_TUTORIAL_BOSS가 "마지막 행"으로 자기 번호를 구하기 때문이다.
+	//중간에 끼워 넣으면 그 뒤 행들의 waveIdx가 통째로 밀려서 일반 스테이지 편성이 어긋난다.
+	ENEMY_SNAIL_GREEN, FPS * 1, MONSTERTYPE_JACO,//1
+	false, FPS * 2, MONSTERTYPE_JACO,//2
+	false, FPS * 3, MONSTERTYPE_JACO,//3
 };
+
+//튜토리얼 마무리 보스가 들어 있는 wave[] 행 번호(= 마지막 행).
+//행 하나는 슬롯 MAXWAVEENEMY개, 슬롯 하나는 3개 값(타입/등장타이밍/체력)이다.
+#define WAVEIDX_TUTORIAL_BOSS	((int)(sizeof(wave) / sizeof(wave[0]) / 3 / MAXWAVEENEMY) - 1)
 
 const long long stageGold[] = {
 100,

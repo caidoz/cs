@@ -259,6 +259,44 @@ void RouletteAttackStart(void)
 		attackSequence = ATTACKSEQUENCE_SLOT;
 		//여기서 어떤 CREW를 뽑을건지 결정한다.
 		DecideRouletteResult();
+
+		//튜토리얼 마무리 보스전: 같은 동료가 3개 겹쳤을 때 나오는 강력한 공격을 보여주는 자리라
+		//결과를 운에 맡기지 않는다. 편성된 동료 중 별이 가장 높은 하나로 세 릴을 채운다.
+		if (tutorialForceRouletteBest) {
+			int bestOffset = -1;
+			int bestStar = -1;
+
+			for (i = 0; i < crewCnt && i < MAXCREW; i++) {
+				int type = robin.slotCrew[i];
+				int crewIdxBest;
+				int star;
+
+				if (type < 0)
+					continue;
+
+				crewIdxBest = GetCrewIdxFromType(type);
+
+				if (crewIdxBest < 0)
+					continue;
+
+				star = enemyData[type * ENEMYDATASIZE + ENEMYDATA_STAR];
+
+				if (star > bestStar) {
+					bestStar = star;
+					bestOffset = i;
+				}
+			}
+
+			if (bestOffset >= 0) {
+				for (i = 0; i < TOTALREEL; i++)
+					gRouletteResultAoOffset[i] = bestOffset;
+
+				gRouletteResultCnt = TOTALREEL;
+			}
+
+			tutorialForceRouletteBest = false;
+		}
+
 		//그 다음에는 전체 순서를 정해준다.
 		//일단 크류를 배치했고
 		for (i = 0; i < TOTALREEL; i++) {
@@ -451,6 +489,20 @@ void RouletteDrawSimple3Slots(
 		//-----------------------------------
 		OBJECT* u = &ao[CREW + slotCrewIdx[i]];
 
+		//튜토리얼: 새로 편성된 동료가 이 슬롯에도 뛰어 들어온다.
+		//성 위 등장과 같은 프레임에 같은 곡선으로 움직여야 한 사건으로 읽힌다.
+		float dropY = 0.0f;
+
+		if (tutorialCrewStep == TUTORIAL_CREWSTEP_CASTLE && slotCrewIdx[i] == TUTORIAL_CREW_SLOT) {
+			dropY = GetTutorialCrewDropOffset(tutorialCrewStepFrame, zoom);
+
+			//성 위의 동료와 이 슬롯을 동시에 밝힌다(멀티 스팟).
+			SetTutorialCrewCastleSpotlight();
+			SetSpotlight(centerX, centerY + (float)(24 * _2X) * zoom,
+				(float)(36 * _2X) * zoom, (float)(64 * _2X) * zoom, 0.3f);
+		}
+
+		//그림자는 바닥에 있는 것이라 점프해도 따라 올라가지 않는다.
 		ShadowImage(
 			24 * _2X,
 			16 * _2X,
@@ -465,7 +517,7 @@ void RouletteDrawSimple3Slots(
 			u->cmf,
 			crewPos[u->type * 5 + 0],
 			centerX,
-			centerY,
+			centerY + dropY,
 			RIGHT,
 			2.5f * zoom * enemyIconZoom[u->type],
 			false,

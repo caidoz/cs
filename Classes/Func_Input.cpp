@@ -19,6 +19,20 @@ static void EquipInvenItem(OBJECT* pObj, int type, int detail, int grade)
 	EquipItem(pObj, &robin.inven[idx]);
 }
 
+//하트 베팅을 한 칸 올린다. 하트가 모자라면 처음으로 돌아간다.
+//일반 플레이(AVK_HEARTAMOUNT)와 튜토리얼 대사 중 누르는 경로가 같은 동작을 해야 해서 따로 뺐다.
+void RaiseHeartBet(void)
+{
+	if (robin.heart > betHeart[bet + 1])
+		bet = (bet + 1) % MAXBET;
+	else
+		bet = 0;
+
+	//튜토리얼: 베팅을 배우는 구간(HEARTBET 봄 ~ ROULETTE 보기 전)에만 무슨 일이 일어났는지 알려준다.
+	if (IsTutorialPlaying() && robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
+		AddSimpleLog(LOGICON_ICON, ICON_HEART, 0, 0, TEXT_TUTORIAL_BETUP);
+}
+
 void KeyCore(void)
 {
 	if (is_release_finished == false && is_key_released == true && twice_released == false && systemKey != systemRelease) {
@@ -434,6 +448,11 @@ void TalkKey(void)
 			if (GetTutorialTalkTarget(movie.text, &talkTouchFunc, nullptr)) {
 				if (talkTouchFunc == TOUCH_FUNC_ATTACK)
 				tutorialAttackPending = true;
+				//하트 베팅만은 예약하지 않고 그 자리에서 올린다.
+				//예약(tutorialPendingTouchFunc)은 컷씬이 다 끝나 플레이로 돌아왔을 때 처리되는데,
+				//베팅은 다음 대사에서 "하트값이 2가 되었네요"라고 짚어줘야 해서 지금 바뀌어야 한다.
+				else if (talkTouchFunc == TOUCH_FUNC_HEARTAMOUNT)
+					RaiseHeartBet();
 				else
 					tutorialPendingTouchFunc = talkTouchFunc;
 			}
@@ -621,8 +640,12 @@ void PlayKey(int obj)
 	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + TOTALINVENTORY) {
 		//튜토리얼에서 안내하던 동료 카드를 눌러 상세보기로 들어왔으면 그 단계를 마친 것으로 둔다.
 		//스팟라이트/터치제한이 이 플래그를 보고 풀린다.
-		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + (systemKey - AVK_ITEMDETAIL))
+		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + (systemKey - AVK_ITEMDETAIL)) {
 			robin.demoSeen[DEMO_TUTORIAL_CREWMENU] = true;
+
+			//여기서부터는 상세보기의 장착 버튼을 누르게 하는 2부 안내가 이어받는다.
+			SetTutorialCrewStep(TUTORIAL_CREWSTEP_EQUIP);
+		}
 
 		tutorialCrewGuide = false;
 
@@ -759,13 +782,33 @@ void PlayKey(int obj)
 		case ITEM_CREW:
 			robin.slotCrew[menuX] = crewData[robin.inven[systemKey - AVK_EQUIP_INVENTORY].detail * CREWDATASIZE + CREWDATA_TYPE];
 			menuDepth--;
+
+			//튜토리얼: 편성칸으로 돌아가 새 동료가 내려앉는 것을 보여준다.
+			//SetBattleCrew()는 여기서 부르지 않는다. 지금 부르면 메뉴 뒤에서 성 위 등장 연출이
+			//먼저 끝나버려서, 메뉴를 닫았을 때 보여줄 것이 남지 않는다.
+			if (tutorialCrewStep == TUTORIAL_CREWSTEP_EQUIP) {
+				SetTutorialCrewStep(TUTORIAL_CREWSTEP_SLOTSHOW);
+				AddTutorialCrewLog(TEXT_TUTORIAL_CREWSET);
+			}
 			break;
 		default:
 			EquipItem(&ao[ROBIN], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
 
+			//튜토리얼: 장착했으면 리스트로 돌아가 갑옷 자리에 들어간 것을 보여준다.
+			//상세보기에 머물러 있으면 슬롯이 화면에 없어서 보여줄 것이 없다.
+			if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_EQUIP) {
+				menuDepth--;
+				SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_SLOTSHOW);
+				AddTutorialEquipLog(TEXT_TUTORIAL_EQUIPSET);
+				break;
+			}
+
 			//Tutorial: after the player manually equips gear following the EQUIP step's guidance,
 			//advance to the next tutorial demo (heart betting explanation).
-			if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && robin.demoSeen[DEMO_TUTORIAL_EQUIP])
+			//안내가 도는 중이면 여기서 넘기지 않는다. 메뉴를 닫고 성 위 연출까지 끝난 뒤
+			//TutorialEquipStepUpdate()가 넘긴다.
+			if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_NONE
+				&& robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && robin.demoSeen[DEMO_TUTORIAL_EQUIP])
 				SetDemo(DEMO_TUTORIAL_HEARTBET);
 			break;
 		}
@@ -1422,10 +1465,7 @@ void PlayKey(int obj)
 			SetDemo(0);
 			break;
 		case AVK_HEARTAMOUNT:
-			if (robin.heart > betHeart[bet + 1])
-				bet = (bet + 1) % MAXBET;
-			else
-				bet = 0;
+			RaiseHeartBet();
 			break;
 		case AVK_ENEMYATTACK:
 			//if (ONLYATTACKMODE == true)
@@ -1663,6 +1703,22 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_POPUP_CLOSE:
+			//튜토리얼: 여기서야 성 위에 동료를 실제로 세운다.
+			//SetBattleCrew()가 새로 배치되는 슬롯만 REGENMOVE(등장 낙하)로 태우므로,
+			//메뉴를 닫는 순간 성 위에 떨어지는 연출이 시작된다.
+			if (tutorialCrewStep == TUTORIAL_CREWSTEP_CLOSE) {
+				crewCnt = GetSlotCrewCnt();
+				SetBattleCrew();
+				SetTutorialCrewStep(TUTORIAL_CREWSTEP_CASTLE);
+				AddTutorialCrewLog(TEXT_TUTORIAL_CREWJOIN);
+			}
+
+			//튜토리얼: 장비는 이미 주인공이 입고 있다. 성으로 돌아가 갈아입은 모습을 보여준다.
+			if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_CLOSE) {
+				SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_HERO);
+				AddTutorialEquipLog(TEXT_TUTORIAL_EQUIPWEAR);
+			}
+
 			ClosePopUp();
 			break;
 		case AVK_JOKBO:

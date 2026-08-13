@@ -880,11 +880,18 @@ int GetTutorialGachaBoxIndex(void)
 	if (!robin.demoSeen[DEMO_TUTORIAL_FIRSTKILL])
 		return 0;
 
-	if (!robin.demoSeen[DEMO_TUTORIAL_SECONDKILL])
+	//두번째 상자(하트+동료+갑옷)는 그 갑옷을 가르치는 DEMO_TUTORIAL_EQUIP을 기준으로 본다.
+	//DEMO_TUTORIAL_SECONDKILL("다시 공격해보자")은 이제 동료 편성을 마친 자리에서 걸려
+	//두번째 처치보다 먼저 seen이 되므로 여기에 쓸 수 없다.
+	if (!robin.demoSeen[DEMO_TUTORIAL_EQUIP])
 		return 1;
 
 	if (!robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
 		return 2;
+
+	//마지막 보스를 잡고 여는 상자. 5성 동료 한 명이 들어 있다.
+	if (!robin.demoSeen[DEMO_TUTORIAL_BOSS])
+		return 3;
 
 	return -1;
 }
@@ -896,18 +903,19 @@ int GetTutorialGachaBoxIndex(void)
 //DEMOITEM_TUTORIAL_FIRSTKILL_BOX는 "떨어지는 상자" 자체라서 카드 목록에서 제외한다.
 static bool MakeTutorialBoxReward(int tutorialBoxIndex)
 {
-	static const int cardCount[3] = { 2, 3, 4 };
+	static const int cardCount[4] = { 2, 3, 4, 1 };
 
-	static const int cardItemIdx[3][4] = {
+	static const int cardItemIdx[4][4] = {
 		{ DEMOITEM_TUTORIAL_FIRSTKILL_HEART,	DEMOITEM_TUTORIAL_FIRSTKILL_CREW,	-1,									-1 },
 		{ DEMOITEM_TUTORIAL_SECONDKILL_HEART,	DEMOITEM_TUTORIAL_SECONDKILL_CREW,	DEMOITEM_TUTORIAL_SECONDKILL_EQUIP,	-1 },
 		{ DEMOITEM_TUTORIAL_HEARTBET_HEART,		DEMOITEM_TUTORIAL_HEARTBET_CREW1,	DEMOITEM_TUTORIAL_HEARTBET_CREW2,	DEMOITEM_TUTORIAL_HEARTBET_CREW3 },
+		{ DEMOITEM_TUTORIAL_BOSS_CREW,			-1,									-1,									-1 },
 	};
 
 	int i;
 	int writeIndex = 0;
 
-	if (tutorialBoxIndex < 0 || tutorialBoxIndex > 2)
+	if (tutorialBoxIndex < 0 || tutorialBoxIndex > 3)
 		return false;
 
 	memset(&boxCardItem[0], 0, sizeof(boxCardItem[0]));

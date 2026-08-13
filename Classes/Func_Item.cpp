@@ -2151,17 +2151,39 @@ int GetItemLv(int type, int detail, int grade)
 	return j;
 }
 
+//새로 얻은 장비를 자동으로 장착한다. 장착했으면 슬롯번호, 안 했으면 -1.
+//
+//판정 순서: 빈 슬롯 -> 별 -> 티어(detail) -> 등급(grade).
+//예전에는 detail * TOTALGRADE + grade만 비교했는데, detail은 아이템 종류 안에서의 순번일 뿐
+//강함의 척도가 아니다. 별이 낮은 후반 장비가 별이 높은 장비를 밀어내는 일이 생긴다.
+//별을 먼저 보고, 별이 같을 때만 더 나중 티어(detail이 큰 쪽)를 고른다.
 int SetStrongestEquip(int type, int detail, int grade)
 {
 	int slot = itemEquipSlot[type];
-	//���������� ���?�ְų�
-	if (ao[PLAYER].equip[slot].type == EMPTY) {
-		EquipItem(&ao[PLAYER], &robin.inven[GetInvenIdx(type, detail, grade)]);
+	int idx = GetInvenIdx(type, detail, grade);
+	ITEM* cur;
+	int curStar, newStar;
+
+	//인벤에 없는 것을 장착하려 하면 &robin.inven[-1]로 배열 밖을 넘긴다.
+	if (idx < 0)
+		return -1;
+
+	cur = &ao[PLAYER].equip[slot];
+
+	//빈 슬롯이면 그냥 넣는다
+	if (cur->type == EMPTY) {
+		EquipItem(&ao[PLAYER], &robin.inven[idx]);
 		return slot;
 	}
-	//더 좋은 아이템이면
-	else if (ao[PLAYER].equip[slot].detail * TOTALGRADE + ao[PLAYER].equip[slot].grade < detail * TOTALGRADE + grade) {
-		EquipItem(&ao[PLAYER], &robin.inven[GetInvenIdx(type, detail, grade)]);
+
+	curStar = GetItemStar(cur->type, cur->detail, cur->grade);
+	newStar = GetItemStar(type, detail, grade);
+
+	//더 좋은 것일 때만 바꾼다. 그 외에는 손대지 않는다(강화해둔 장비를 지키기 위해).
+	if (newStar > curStar
+		|| (newStar == curStar && detail > cur->detail)
+		|| (newStar == curStar && detail == cur->detail && grade > cur->grade)) {
+		EquipItem(&ao[PLAYER], &robin.inven[idx]);
 		return slot;
 	}
 

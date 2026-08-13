@@ -65,6 +65,10 @@ void Play(void)
 		if (pendingFunc == TOUCH_FUNC_POPUP_CREWLIST)
 			tutorialCrewGuide = true;
 
+		//장비 메뉴를 여는 안내였다면, 갑옷 슬롯 고르기부터 이어간다.
+		if (pendingFunc == TOUCH_FUNC_COLLECTIONS)
+			SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_SLOT);
+
 		touchFunc(pendingFunc);
 		PlayKey(raidPlayer);
 		systemKey = null;

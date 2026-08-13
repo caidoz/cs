@@ -105,12 +105,17 @@ precision mediump float;
 #endif
 uniform vec2  u_resolution;	//(DX, DY)
 uniform vec2  u_texScale;	//텍스처가 2의 거듭제곱으로 패딩된 만큼 보정. 안 되면 (1, 1)
-uniform vec2  u_center;		//스팟 중심. 픽셀 좌표
-uniform float u_inner;		//여기까지는 원본 밝기 그대로
-uniform float u_radius;		//여기부터 바깥은 완전히 어두움
+//스팟은 여러 개를 동시에 켤 수 있다(MAXSPOTLIGHT). 안 쓰는 칸은 중심을 화면 밖 멀리,
+//inner=0/radius=1로 채워 보내므로 아무 데도 밝히지 않는다. 개수를 uniform으로 넘겨
+//분기하지 않는 이유는 GLSL ES 1.00에서 루프 조건에 uniform을 쓰기 까다롭기 때문이다.
+uniform vec2  u_center[4];	//스팟 중심. 픽셀 좌표
+uniform float u_inner[4];	//여기까지는 원본 밝기 그대로
+uniform float u_radius[4];	//여기부터 바깥은 완전히 어두움
 uniform float u_darkness;	//바깥 밝기. 0.0이면 완전 검정
-uniform vec4  u_keepRect;	//암전에서 뺄 사각형 (x, 윗변 y, 폭, 높이). 폭이 0이면 안 씀
-uniform float u_keepSoft;	//사각형 가장자리가 풀어지는 폭
+//암전에서 뺄 사각형도 여러 개다(대화창 + 로그창처럼 동시에 떠 있을 수 있다).
+//안 쓰는 칸은 폭 0으로 보내면 건너뛴다.
+uniform vec4  u_keepRect[2];	//(x, 윗변 y, 폭, 높이)
+uniform float u_keepSoft[2];	//사각형 가장자리가 풀어지는 폭
 varying vec4 v_fragmentColor;
 varying vec2 v_texCoord;
 void main()
@@ -123,19 +128,25 @@ void main()
 	vec2 uv = v_texCoord / u_texScale;
 
 	//정규화 좌표로 거리를 재면 화면비 때문에 원이 타원이 된다. 픽셀 좌표로 환산해서 잰다.
-	float d = distance(uv * u_resolution, u_center);
+	vec2 sp = uv * u_resolution;
 
-	float light = 1.0 - smoothstep(u_inner, u_radius, d);
+	float light = 0.0;
 
-	//대화창처럼 암전에서 빼야 하는 영역. 사각형 바깥까지의 거리로 가장자리를 풀어준다.
-	if (u_keepRect.z > 0.0) {
-		vec2 p = uv * u_resolution;
-		vec2 halfSize = vec2(u_keepRect.z, u_keepRect.w) * 0.5;
-		vec2 rectCenter = vec2(u_keepRect.x + halfSize.x, u_keepRect.y - halfSize.y);
-		vec2 q = abs(p - rectCenter) - halfSize;
-		float rd = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
+	for (int i = 0; i < 4; i++) {
+		float d = distance(sp, u_center[i]);
+		light = max(light, 1.0 - smoothstep(u_inner[i], u_radius[i], d));
+	}
 
-		light = max(light, 1.0 - smoothstep(0.0, u_keepSoft, rd));
+	//대화창/로그창처럼 암전에서 빼야 하는 영역. 사각형 바깥까지의 거리로 가장자리를 풀어준다.
+	for (int k = 0; k < 2; k++) {
+		if (u_keepRect[k].z > 0.0) {
+			vec2 halfSize = vec2(u_keepRect[k].z, u_keepRect[k].w) * 0.5;
+			vec2 rectCenter = vec2(u_keepRect[k].x + halfSize.x, u_keepRect[k].y - halfSize.y);
+			vec2 q = abs(sp - rectCenter) - halfSize;
+			float rd = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
+
+			light = max(light, 1.0 - smoothstep(0.0, u_keepSoft[k], rd));
+		}
 	}
 
 	light = mix(u_darkness, 1.0, light);
@@ -246,11 +257,13 @@ cocos2d::Layer* gRenderLayer = nullptr;
 
 //스팟라이트 상태. 매 프레임 SetSpotlight()으로 세우고 EndScreenBuffer()가 소비한 뒤 끈다.
 //드로우 코드가 그리던 자리에서 바로 켤 수 있는 즉시모드 방식이라 꺼주는 걸 잊어도 남지 않는다.
+//한 프레임에 SetSpotlight()을 여러 번 부르면 밝은 지점이 그만큼 늘어난다(gSpotlightCnt).
 bool gSpotlightOn = false;
-float gSpotlightX = 0.0f;
-float gSpotlightY = 0.0f;
-float gSpotlightInner = 0.0f;
-float gSpotlightRadius = 0.0f;
+int gSpotlightCnt = 0;
+float gSpotlightX[MAXSPOTLIGHT] = { 0.0f };
+float gSpotlightY[MAXSPOTLIGHT] = { 0.0f };
+float gSpotlightInner[MAXSPOTLIGHT] = { 0.0f };
+float gSpotlightRadius[MAXSPOTLIGHT] = { 0.0f };
 float gSpotlightDarkness = 0.0f;
 
 //튜토리얼에서 지금 눌러야 하는 터치기능. -1이면 제한하지 않는다.
@@ -265,16 +278,33 @@ int tutorialPendingTouchFunc = 0;
 //저장하지 않는다 - 그 자리에서만 도는 안내라 세이브에 남으면 일반 플레이까지 물든다.
 bool tutorialCrewGuide = false;
 
+//장착 버튼부터 성 위 등장까지의 안내 단계. 역시 저장하지 않는다.
+int tutorialCrewStep = TUTORIAL_CREWSTEP_NONE;
+int tutorialCrewStepFrame = 0;
+
+//장비 장착 안내 단계. 슬롯 고르기부터 성 위 주인공이 갈아입는 것까지.
+int tutorialEquipStep = TUTORIAL_EQUIPSTEP_NONE;
+int tutorialEquipStepFrame = 0;
+
+//룰렛이 열렸다는 것을 알리는 반짝임. 남은 프레임 수. 0이면 안 그린다.
+int rouletteGlowFrame = 0;
+
+//튜토리얼 마지막 보스전: 룰렛 결과를 가장 별이 높은 동료 3개로 강제한다.
+//한 번 쓰고 꺼진다(RouletteAttackStart에서 소비).
+bool tutorialForceRouletteBest = false;
+
 
 int gTutorialTouchFunc = TUTORIAL_TOUCH_FREE;
 int gTouchHitFunc = TUTORIAL_TOUCH_NONE;
 
-//암전에서 뺄 사각형. 대화창처럼 스팟과 별개로 밝게 남겨야 하는 UI에 쓴다.
-float gSpotlightKeepX = 0.0f;
-float gSpotlightKeepY = 0.0f;
-float gSpotlightKeepW = 0.0f;
-float gSpotlightKeepH = 0.0f;
-float gSpotlightKeepSoft = 0.0f;
+//암전에서 뺄 사각형. 대화창/로그창처럼 스팟과 별개로 밝게 남겨야 하는 UI에 쓴다.
+//스팟과 마찬가지로 한 프레임에 여러 번 부르면 그만큼 늘어난다.
+int gSpotlightKeepCnt = 0;
+float gSpotlightKeepX[MAXKEEPRECT] = { 0.0f };
+float gSpotlightKeepY[MAXKEEPRECT] = { 0.0f };
+float gSpotlightKeepW[MAXKEEPRECT] = { 0.0f };
+float gSpotlightKeepH[MAXKEEPRECT] = { 0.0f };
+float gSpotlightKeepSoft[MAXKEEPRECT] = { 0.0f };
 
 cocos2d::Layer* bufferLayer[TOTALBUFFER];
 cocos2d::RenderTexture* bufferTexture[TOTALBUFFER];

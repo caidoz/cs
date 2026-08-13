@@ -997,32 +997,48 @@ void BeginScreenBuffer(void)
 //강조하고 싶은 프레임마다 그리는 자리에서 불러주면 된다.
 //x, y는 게임 좌표(y가 위로 증가, 화면 위쪽이 DY)의 스팟 중심이다.
 //inner까지는 원본 밝기 그대로, radius 바깥은 전부 darkness로 덮인다.
+//
+//한 프레임에 여러 번 부르면 그만큼 밝은 지점이 늘어난다(최대 MAXSPOTLIGHT개).
+//한 번만 부르던 기존 호출부는 그대로 하나짜리로 동작한다.
+//darkness는 스팟마다 따로 둘 수 없어(암전은 화면 전체에 한 번 깔린다) 마지막 값이 이긴다.
 void SetSpotlight(float x, float y, float inner, float radius, float darkness)
 {
-	gSpotlightOn = true;
-	gSpotlightX = x;
-	gSpotlightY = y;
-	gSpotlightInner = inner;
-	gSpotlightRadius = radius;
 	gSpotlightDarkness = darkness;
+
+	if (gSpotlightCnt >= MAXSPOTLIGHT)
+		return;
+
+	gSpotlightX[gSpotlightCnt] = x;
+	gSpotlightY[gSpotlightCnt] = y;
+	gSpotlightInner[gSpotlightCnt] = inner;
+	gSpotlightRadius[gSpotlightCnt] = radius;
+	gSpotlightCnt++;
+
+	gSpotlightOn = true;
 }
 
 //암전에서 뺄 사각형을 지정한다. 대화창처럼 스팟과 별개로 밝게 남겨야 하는 UI에 쓴다.
 //x, y는 사각형의 왼쪽/윗변이고 h는 아래로 뻗는다. DrawCmfPopUp() 등과 인자가 같다.
 //SetSpotlight()과 마찬가지로 EndScreenBuffer()가 소비한 뒤 꺼진다.
+//한 프레임에 여러 번 부르면 그만큼 늘어난다(최대 MAXKEEPRECT개).
 void SetSpotlightKeepRect(float x, float y, float w, float h, float soft)
 {
-	gSpotlightKeepX = x;
-	gSpotlightKeepY = y;
-	gSpotlightKeepW = w;
-	gSpotlightKeepH = h;
-	gSpotlightKeepSoft = soft;
+	if (gSpotlightKeepCnt >= MAXKEEPRECT)
+		return;
+
+	gSpotlightKeepX[gSpotlightKeepCnt] = x;
+	gSpotlightKeepY[gSpotlightKeepCnt] = y;
+	gSpotlightKeepW[gSpotlightKeepCnt] = w;
+	gSpotlightKeepH[gSpotlightKeepCnt] = h;
+	gSpotlightKeepSoft[gSpotlightKeepCnt] = soft;
+	gSpotlightKeepCnt++;
 }
 
 void ClearSpotlight(void)
 {
 	gSpotlightOn = false;
-	gSpotlightKeepW = 0.0f;
+	gSpotlightCnt = 0;
+	gSpotlightKeepCnt = 0;
 }
 
 //화면버퍼 스프라이트에 스팟라이트 쉐이더를 걸거나 원래 쉐이더로 되돌린다.
@@ -1068,19 +1084,58 @@ static void ApplySpotlight(void)
 			texScale.y = tex->getContentSize().height / (float)tex->getPixelsHigh();
 		}
 
+		//셰이더는 항상 MAXSPOTLIGHT개를 다 훑는다(GLSL ES 1.00에서 uniform으로 루프를
+		//끊기가 까다롭다). 안 쓰는 칸은 화면 밖 멀리에 반경 1로 두면 밝기 기여가 0이 된다.
+		//inner == radius면 smoothstep이 정의되지 않으므로 반드시 벌려 둔다.
+		//static이어야 한다. setUniformVec2v()/setUniformFloatv()는 값을 복사하지 않고
+		//넘긴 포인터를 그대로 들고 있다가 실제로 그릴 때 읽는다(CCGLProgramState.cpp의
+		//UniformValue::setVec2v). 지역배열로 두면 이 함수를 빠져나온 뒤 사라진 스택을
+		//읽어서 스팟라이트가 통째로 엉뚱하게 계산된다.
+		static Vec2 spotCenter[MAXSPOTLIGHT];
+		static float spotInner[MAXSPOTLIGHT];
+		static float spotRadius[MAXSPOTLIGHT];
+		static Vec4 keepRect[MAXKEEPRECT];
+		static float keepSoft[MAXKEEPRECT];
+
+		for (int k = 0; k < MAXKEEPRECT; k++) {
+			if (k < gSpotlightKeepCnt) {
+				keepRect[k] = Vec4(gSpotlightKeepX[k], gSpotlightKeepY[k], gSpotlightKeepW[k], gSpotlightKeepH[k]);
+				keepSoft[k] = gSpotlightKeepSoft[k] > 0.0f ? gSpotlightKeepSoft[k] : 1.0f;
+			}
+			else {
+				//폭이 0이면 셰이더가 건너뛴다.
+				keepRect[k] = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+				keepSoft[k] = 1.0f;
+			}
+		}
+
+		for (int s = 0; s < MAXSPOTLIGHT; s++) {
+			if (s < gSpotlightCnt) {
+				spotCenter[s] = Vec2(gSpotlightX[s], gSpotlightY[s]);
+				spotInner[s] = gSpotlightInner[s];
+				spotRadius[s] = Max(gSpotlightRadius[s], gSpotlightInner[s] + 1.0f);
+			}
+			else {
+				spotCenter[s] = Vec2(-100000.0f, -100000.0f);
+				spotInner[s] = 0.0f;
+				spotRadius[s] = 1.0f;
+			}
+		}
+
 		st->setUniformVec2("u_texScale", texScale);
 		st->setUniformVec2("u_resolution", Vec2((float)DX, (float)DY));
-		st->setUniformVec2("u_center", Vec2(gSpotlightX, gSpotlightY));
-		st->setUniformFloat("u_inner", gSpotlightInner);
-		st->setUniformFloat("u_radius", gSpotlightRadius);
+		st->setUniformVec2v("u_center", MAXSPOTLIGHT, spotCenter);
+		st->setUniformFloatv("u_inner", MAXSPOTLIGHT, spotInner);
+		st->setUniformFloatv("u_radius", MAXSPOTLIGHT, spotRadius);
 		st->setUniformFloat("u_darkness", gSpotlightDarkness);
-		st->setUniformVec4("u_keepRect", Vec4(gSpotlightKeepX, gSpotlightKeepY, gSpotlightKeepW, gSpotlightKeepH));
-		st->setUniformFloat("u_keepSoft", gSpotlightKeepSoft > 0.0f ? gSpotlightKeepSoft : 1.0f);
+		st->setUniformVec4v("u_keepRect", MAXKEEPRECT, keepRect);
+		st->setUniformFloatv("u_keepSoft", MAXKEEPRECT, keepSoft);
 	}
 
 	//즉시모드. 다음 프레임에 다시 켜지 않으면 꺼진다.
 	gSpotlightOn = false;
-	gSpotlightKeepW = 0.0f;
+	gSpotlightCnt = 0;
+	gSpotlightKeepCnt = 0;
 }
 
 void EndScreenBuffer(void)
@@ -2062,6 +2117,20 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//적 그림자
 		for (i = ENEMY; i < TOTALOBJECT; i++) {
 			if (ao[i].active && ao[i].moveHandler < BULLET3WAYMOVE) {
+				//몬스터 그림자는 자기 발밑이 아니라 주인공과 같은 바닥선에 그린다.
+				//ENEMY_ONEEYE처럼 공중에 뜬 적은 자기 y에 붙이면 그림자까지 같이 떠버리고,
+				//그렇다고 충돌검사용 타일 바닥에 맞추면 성벽처럼 지형 높이가 제멋대로인 곳에서
+				//엉뚱한 데 찍힌다. 전투는 주인공과 몬스터가 같은 바닥선에 서는 구도라 이게 맞다.
+				//
+				//아래 case들이 전부 ao[i].y로 그림자 위치를 잡으므로, 그리는 동안만 값을
+				//바꿔치기하고 되돌린다(BAHAMUT case가 floatOffsetY로 하던 것과 같은 방식).
+				//되돌리기 전에 빠져나가는 continue/return이 없어야 하는데, 이 루프에는 없다.
+				//NEUTRAL 이후(상자/아이템 등)는 원래 자리에 그려야 해서 건드리지 않는다.
+				int shadowYBack = ao[i].y;
+
+				if (i < NEUTRAL)
+					ao[i].y = ao[ROBIN].ny;
+
 				switch (ao[i].type) {
 				case NPC_KING:
 					if (ao[i].etc != 3 && ao[i].etc != 2) {
@@ -2252,6 +2321,9 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					}
 					break;
 				}
+
+				//그림자용으로 바꿔놨던 y를 되돌린다. 이게 빠지면 몬스터가 주인공 높이로 순간이동한다.
+				ao[i].y = shadowYBack;
 			}
 		}
 

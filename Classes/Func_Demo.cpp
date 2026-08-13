@@ -1021,6 +1021,20 @@ bool GetTutorialTalkTarget(int textIdx, int* touchFunc, int* barIdx)
 		func = TOUCH_FUNC_POPUP_CREWLIST;
 		idx = BAR_CREW;
 		break;
+	case TEXT_TUTORIAL_EQUIP:		//"장비는 직접 장착해줘야 한다. 장비창의 장착 버튼을 눌러보자!"
+		func = TOUCH_FUNC_COLLECTIONS;
+		idx = BAR_EQUIP;
+		break;
+	case TEXT_TUTORIAL_HEARTBET:	//"하트 버튼을 눌러 베팅을 올려보세요."
+	case TEXT_TUTORIAL_HEARTBET2:	//"하트값이 2가 되었네요..." -> 한 번 더 올린다
+		func = TOUCH_FUNC_HEARTAMOUNT;
+		idx = BAR_HEARTBET;
+		break;
+	case TEXT_TUTORIAL_HEARTBET3:		//"3배의 공격 데미지를 줄 수 있어요. 공격버튼을 눌러보세요!"
+	case TEXT_TUTORIAL_ROULETTE_LIVE:	//"보스 몬스터가 등장했네요. 공격하세요!!"
+		func = TOUCH_FUNC_ATTACK;
+		idx = BAR_PLAY;
+		break;
 	default:
 		return false;
 	}
@@ -1043,10 +1057,17 @@ static void GetTutorialTalkRect(int barIdx, float* x, float* y, float* w, float*
 
 	switch (barIdx) {
 	case BAR_CREW:
+	case BAR_EQUIP:	//둘 다 하단 메인메뉴 바라 SetRectPoint()에 넘기는 사각형이 같다
 		*x = xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom;
 		*y = barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom;
 		*w = (float)(MAINMENU_X)*zoom;
 		*h = (float)(MAINMENU_Y + 16 * _2X) * zoom;
+		break;
+	case BAR_HEARTBET:
+		*x = xOffset + barP->x;
+		*y = barP->y;
+		*w = (float)HEARTBUTTONWIDTH * zoom;
+		*h = (float)HEARTBUTTONHEIGHT * zoom;
 		break;
 	default:	//BAR_PLAY
 		*x = xOffset + barP->x;
@@ -1117,6 +1138,361 @@ int GetTutorialCrewCardTouchFunc(void)
 	return 0;
 }
 
+//---- 동료 편성 안내 2부 ----
+//1부(위 두 함수)는 슬롯과 카드를 고르게 하고 끝난다. 그 다음 상세보기에서 장착을 누르고,
+//편성칸에 내려앉는 걸 보고, 뒤로 나가서 성 위에 등장하는 것까지를 tutorialCrewStep이 잇는다.
+//저장하지 않는 상태라 도중에 앱을 껐다 켜면 안내만 사라지고 편성 결과는 남는다.
+void SetTutorialCrewStep(int step)
+{
+	tutorialCrewStep = step;
+	tutorialCrewStepFrame = 0;
+}
+
+//안내가 아직 성립하는 상황인지. 튜토리얼이 끝났거나 메뉴를 벗어났으면 접는다.
+static bool IsTutorialCrewStepValid(void)
+{
+	if (tutorialCrewStep == TUTORIAL_CREWSTEP_NONE)
+		return false;
+
+	if (IsTutorialPlaying() == false)
+		return false;
+
+	//성 위 등장 단계는 이미 메뉴를 닫은 뒤라 메뉴 상태를 보지 않는다.
+	if (tutorialCrewStep == TUTORIAL_CREWSTEP_CASTLE)
+		return true;
+
+	return curMenu == MENU_CREW && popUpCnt > 0;
+}
+
+//매 프레임 한 번. 시간이 지나면 저절로 넘어가는 단계들을 진행시킨다.
+void TutorialCrewStepUpdate(void)
+{
+	if (tutorialCrewStep == TUTORIAL_CREWSTEP_NONE)
+		return;
+
+	if (IsTutorialCrewStepValid() == false) {
+		SetTutorialCrewStep(TUTORIAL_CREWSTEP_NONE);
+		return;
+	}
+
+	tutorialCrewStepFrame++;
+
+	switch (tutorialCrewStep) {
+	case TUTORIAL_CREWSTEP_SLOTSHOW:
+		//편성칸에 내려앉는 걸 보여준 뒤 뒤로가기를 안내한다.
+		if (tutorialCrewStepFrame >= TUTORIAL_CREWSTEP_SLOTSHOW_FRAME)
+			SetTutorialCrewStep(TUTORIAL_CREWSTEP_CLOSE);
+		break;
+	case TUTORIAL_CREWSTEP_CASTLE:
+		//성 위 등장까지 보여주면 이 안내는 끝이다.
+		if (tutorialCrewStepFrame >= TUTORIAL_CREWSTEP_CASTLE_FRAME) {
+			SetTutorialCrewStep(TUTORIAL_CREWSTEP_NONE);
+
+			//편성을 다 배웠으니 "다시 공격해보자" 대사로 넘긴다.
+			//이 대사는 처치 결과가 아니라 편성을 마친 뒤 등을 떠미는 것이라 처치 훅
+			//(Func_Combat.cpp)이 아니라 여기서 건다.
+			if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_SECONDKILL])
+				SetDemo(DEMO_TUTORIAL_SECONDKILL);
+		}
+		break;
+	}
+}
+
+//튜토리얼 3단: 상세보기의 장착 버튼을 눌러야 한다.
+//CrewMenuDraw()가 그 버튼에 넘기는 터치기능과 같은 값을 만들어야 스팟과 터치가 맞는다.
+int GetTutorialCrewEquipTouchFunc(void)
+{
+	int idx;
+
+	if (tutorialCrewStep != TUTORIAL_CREWSTEP_EQUIP)
+		return 0;
+
+	if (IsTutorialCrewStepValid() == false)
+		return 0;
+
+	//상세보기(menuDepth 1)에서만 장착 버튼이 있다
+	if (menuDepth != 1)
+		return 0;
+
+	idx = GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade);
+
+	if (idx < 0)
+		return 0;
+
+	return TOUCH_FUNC_EQUIP_INVENTORY + idx;
+}
+
+//튜토리얼 5단: 왼쪽 위 뒤로가기를 눌러 성으로 돌아가야 한다.
+int GetTutorialCrewCloseTouchFunc(void)
+{
+	if (tutorialCrewStep != TUTORIAL_CREWSTEP_CLOSE)
+		return 0;
+
+	if (IsTutorialCrewStepValid() == false)
+		return 0;
+
+	return TOUCH_FUNC_POPUP_CLOSE;
+}
+
+//편성칸/룰렛 슬롯에 동료가 뛰어 내려앉는 연출의 세로 오프셋(위로 +).
+//성 위 등장 연출(REGENMOVE)과 결을 맞춰 위에서 떨어져 한 번 튀고 멈춘다.
+float GetTutorialCrewDropOffset(int f, float zoom)
+{
+	const int FALLFRAME = FPS / 3;
+	const int BOUNCEFRAME = FPS / 5;
+	float t;
+
+	if (f < 0)
+		return 0.0f;
+
+	if (f < FALLFRAME) {
+		t = (float)f / (float)FALLFRAME;
+		return (float)(120 * _2X) * zoom * (1.0f - t * t);
+	}
+
+	if (f < FALLFRAME + BOUNCEFRAME) {
+		t = (float)(f - FALLFRAME) / (float)BOUNCEFRAME;
+		return (float)(16 * _2X) * zoom * 4.0f * t * (1.0f - t);
+	}
+
+	return 0.0f;
+}
+
+//튜토리얼에서 안내하는 동료(세바스찬이 아닌 첫 동료)의 cmf. 못 찾으면 0.
+//로그 아이콘으로 그 동료 그림을 그대로 쓰기 위해 필요하다.
+static int GetTutorialCrewCmf(void)
+{
+	int crewType = robin.slotCrew[TUTORIAL_CREW_SLOT];
+
+	if (crewType < 0)
+		return 0;
+
+	return enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
+}
+
+//동료 안내용 로그. 아이콘 자리에 그 동료 그림을 그대로 띄운다.
+void AddTutorialCrewLog(int textIdx)
+{
+	AddSimpleLog(LOGICON_CREW, GetTutorialCrewCmf(), 0, 0, textIdx);
+}
+
+//장비 안내용 로그. 아이콘 자리에 그 장비의 아이콘을 띄운다.
+void AddTutorialEquipLog(int textIdx)
+{
+	//demoItem[]의 한 행 = [0]NPC [1]type [2]detail [3]grade [4]count
+	int type = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 1];
+	int detail = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 2];
+	int grade = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 3];
+
+	AddSimpleLog(LOGICON_EQUIP, type, detail, grade, textIdx);
+}
+
+//성 위에 등장한 새 동료를 밝힌다. 룰렛 슬롯 스팟과 같은 프레임에 걸려 둘이 동시에 보인다.
+void SetTutorialCrewCastleSpotlight(void)
+{
+	OBJECT* pObj = &ao[CREW + TUTORIAL_CREW_SLOT];
+	float sx, sy;
+
+	if (tutorialCrewStep != TUTORIAL_CREWSTEP_CASTLE)
+		return;
+
+	//등장 연출(REGENMOVE) 중에는 active가 false다. 그때도 좌표는 유효하므로 그대로 쓴다.
+	//빈 슬롯이면 ao[]가 통째로 0이라 화면 구석을 밝히게 되므로 편성표를 보고 거른다.
+	if (robin.slotCrew[TUTORIAL_CREW_SLOT] == -1)
+		return;
+
+	sx = xOffset + pObj->x - rx;
+	sy = STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP;
+
+	SetSpotlight(sx, sy, (float)(40 * _2X), (float)(80 * _2X), 0.3f);
+}
+
+//---- 장비 장착 안내 ----
+//동료 편성 안내와 같은 흐름이다: 슬롯 -> 카드 -> 장착 -> (연출) -> 뒤로가기 -> (연출).
+//동료와 달리 편성표가 아니라 주인공이 직접 입는 것이라 마지막에 성 위의 주인공을 비춘다.
+//장비 메뉴가 실제로 열린 것을 한 번이라도 봤는지.
+//첫 단계(SLOT)는 메뉴를 여는 터치와 같은 프레임에 세워지는데, 그 프레임에 이미 메뉴가
+//열려 있다는 보장이 없다. 열리기 전에 "메뉴가 아니다"로 판정해 안내를 접어버리지 않도록,
+//한 번 열린 뒤부터만 닫힘을 이유로 접는다.
+static bool sTutorialEquipMenuSeen = false;
+
+void SetTutorialEquipStep(int step)
+{
+	tutorialEquipStep = step;
+	tutorialEquipStepFrame = 0;
+
+	//첫 단계로 들어갈 때는 "메뉴를 본 적 없음"에서 다시 시작한다.
+	if (step == TUTORIAL_EQUIPSTEP_SLOT)
+		sTutorialEquipMenuSeen = false;
+}
+
+//튜토리얼에서 장착을 안내하는 장비가 인벤 몇 번째에 있는지. 없으면 -1.
+//두번째 상자 보상표(demoItem[])에 적힌 그 장비다. 인벤 앞쪽이라는 식으로 짐작하지 않는다.
+int GetTutorialEquipInvenIdx(void)
+{
+	//demoItem[]의 한 행 = [0]NPC [1]type [2]detail [3]grade [4]count
+	int type = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 1];
+	int detail = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 2];
+	int grade = demoItem[DEMOITEM_TUTORIAL_SECONDKILL_EQUIP * 5 + 3];
+
+	return GetInvenIdx(type, detail, grade);
+}
+
+//안내가 아직 성립하는 상황인지.
+static bool IsTutorialEquipStepValid(void)
+{
+	bool inMenu;
+
+	if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_NONE)
+		return false;
+
+	if (IsTutorialPlaying() == false)
+		return false;
+
+	//성 위 연출은 이미 메뉴를 닫은 뒤라 메뉴 상태를 보지 않는다.
+	if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_HERO)
+		return true;
+
+	inMenu = (curMenu == MENU_COLLECTIONS && popUpCnt > 0);
+
+	if (inMenu)
+		sTutorialEquipMenuSeen = true;
+
+	return inMenu || sTutorialEquipMenuSeen == false;
+}
+
+//매 프레임 한 번. 플레이어 조작으로 넘어가는 단계와 시간으로 넘어가는 단계를 모두 여기서 본다.
+void TutorialEquipStepUpdate(void)
+{
+	if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_NONE)
+		return;
+
+	if (IsTutorialEquipStepValid() == false) {
+		SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_NONE);
+		return;
+	}
+
+	tutorialEquipStepFrame++;
+
+	switch (tutorialEquipStep) {
+	case TUTORIAL_EQUIPSTEP_SLOT:
+		//슬롯을 고르면(menuX가 바뀌면) 카드 고르기로 넘어간다.
+		if (menuX == TUTORIAL_EQUIP_SLOT)
+			SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_CARD);
+		break;
+	case TUTORIAL_EQUIPSTEP_CARD:
+		//안내하던 카드로 상세보기에 들어갔으면 장착 버튼 안내로 넘어간다.
+		if (menuDepth == 1 && menuItem == GetTutorialEquipInvenIdx())
+			SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_EQUIP);
+		break;
+	case TUTORIAL_EQUIPSTEP_SLOTSHOW:
+		if (tutorialEquipStepFrame >= TUTORIAL_EQUIPSTEP_SLOTSHOW_FRAME)
+			SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_CLOSE);
+		break;
+	case TUTORIAL_EQUIPSTEP_HERO:
+		if (tutorialEquipStepFrame >= TUTORIAL_EQUIPSTEP_HERO_FRAME) {
+			SetTutorialEquipStep(TUTORIAL_EQUIPSTEP_NONE);
+
+			//장착을 다 배웠으니 다음 컷씬(하트 베팅)으로 넘긴다.
+			//예전에는 장착하는 순간 바로 넘겼는데, 그러면 메뉴 안에 있는 채로 컷씬이 시작된다.
+			if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && robin.demoSeen[DEMO_TUTORIAL_EQUIP])
+				SetDemo(DEMO_TUTORIAL_HEARTBET);
+		}
+		break;
+	}
+}
+
+//튜토리얼 1단: 갑옷 슬롯을 고르게 한다.
+int GetTutorialEquipSlotTouchFunc(void)
+{
+	if (tutorialEquipStep != TUTORIAL_EQUIPSTEP_SLOT)
+		return 0;
+
+	if (IsTutorialEquipStepValid() == false)
+		return 0;
+
+	if (menuDepth != 0)
+		return 0;
+
+	//이미 골랐으면 1단은 끝이다
+	if (menuX == TUTORIAL_EQUIP_SLOT)
+		return 0;
+
+	return TOUCH_FUNC_MENUX_1 + TUTORIAL_EQUIP_SLOT;
+}
+
+//튜토리얼 2단: 새로 얻은 장비 카드를 눌러 상세보기로 들어가게 한다.
+int GetTutorialEquipCardTouchFunc(void)
+{
+	int idx;
+
+	if (tutorialEquipStep != TUTORIAL_EQUIPSTEP_CARD)
+		return 0;
+
+	if (IsTutorialEquipStepValid() == false)
+		return 0;
+
+	if (menuDepth != 0)
+		return 0;
+
+	idx = GetTutorialEquipInvenIdx();
+
+	if (idx < 0)
+		return 0;
+
+	return TOUCH_FUNC_ITEMDETAIL + idx;
+}
+
+//튜토리얼 3단: 상세보기의 장착 버튼을 눌러야 한다.
+//ItemDetailDraw()가 그 버튼에 넘기는 터치기능과 같은 값을 만들어야 스팟과 터치가 맞는다.
+int GetTutorialEquipButtonTouchFunc(void)
+{
+	int idx;
+
+	if (tutorialEquipStep != TUTORIAL_EQUIPSTEP_EQUIP)
+		return 0;
+
+	if (IsTutorialEquipStepValid() == false)
+		return 0;
+
+	if (menuDepth != 1)
+		return 0;
+
+	idx = GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade);
+
+	if (idx < 0)
+		return 0;
+
+	return TOUCH_FUNC_EQUIP_INVENTORY + idx;
+}
+
+//튜토리얼 5단: 왼쪽 위 뒤로가기를 눌러 성으로 돌아가게 한다.
+int GetTutorialEquipCloseTouchFunc(void)
+{
+	if (tutorialEquipStep != TUTORIAL_EQUIPSTEP_CLOSE)
+		return 0;
+
+	if (IsTutorialEquipStepValid() == false)
+		return 0;
+
+	return TOUCH_FUNC_POPUP_CLOSE;
+}
+
+//성 위에서 갈아입은 주인공을 밝힌다.
+void SetTutorialHeroSpotlight(void)
+{
+	OBJECT* pObj = &ao[ROBIN];
+	float sx, sy;
+
+	if (tutorialEquipStep != TUTORIAL_EQUIPSTEP_HERO)
+		return;
+
+	sx = xOffset + pObj->x - rx;
+	sy = STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP;
+
+	SetSpotlight(sx, sy, (float)(40 * _2X), (float)(80 * _2X), 0.3f);
+}
+
 //튜토리얼에서 지금 눌러야 하는 터치기능을 돌려준다. -1이면 제한하지 않는다.
 //프레임 시작(Core.cpp의 touchIndex 초기화 지점)에서 한 번 정해야 한다. Demo_Talk()에서
 //정하면 BarDraw()처럼 그보다 먼저 도는 곳이 이미 등록해 둔 터치영역이 새어나간다.
@@ -1133,6 +1509,46 @@ int GetTutorialTouchFunc(void)
 
 	if (crewCardFunc)
 		return crewCardFunc;
+
+	//2부: 장착 버튼 -> (연출) -> 뒤로가기 -> (연출)
+	int crewEquipFunc = GetTutorialCrewEquipTouchFunc();
+
+	if (crewEquipFunc)
+		return crewEquipFunc;
+
+	int crewCloseFunc = GetTutorialCrewCloseTouchFunc();
+
+	if (crewCloseFunc)
+		return crewCloseFunc;
+
+	//장비 안내: 슬롯 -> 카드 -> 장착 버튼 -> (연출) -> 뒤로가기 -> (연출)
+	int equipSlotFunc = GetTutorialEquipSlotTouchFunc();
+
+	if (equipSlotFunc)
+		return equipSlotFunc;
+
+	int equipCardFunc = GetTutorialEquipCardTouchFunc();
+
+	if (equipCardFunc)
+		return equipCardFunc;
+
+	int equipButtonFunc = GetTutorialEquipButtonTouchFunc();
+
+	if (equipButtonFunc)
+		return equipButtonFunc;
+
+	int equipCloseFunc = GetTutorialEquipCloseTouchFunc();
+
+	if (equipCloseFunc)
+		return equipCloseFunc;
+
+	//연출을 보여주는 동안에는 아무것도 눌리지 않게 한다.
+	//여기서 열어두면 안내 대상이 아직 자리를 잡기 전에 화면을 넘겨버릴 수 있다.
+	if (tutorialCrewStep == TUTORIAL_CREWSTEP_SLOTSHOW || tutorialCrewStep == TUTORIAL_CREWSTEP_CASTLE)
+		return TUTORIAL_TOUCH_NONE;
+
+	if (tutorialEquipStep == TUTORIAL_EQUIPSTEP_SLOTSHOW || tutorialEquipStep == TUTORIAL_EQUIPSTEP_HERO)
+		return TUTORIAL_TOUCH_NONE;
 
 	if (drawHandle != MD_DEMO)
 		return TUTORIAL_TOUCH_FREE;
@@ -1178,7 +1594,28 @@ void Demo_Talk(void)
 	if (!effect.color)
 		DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - frame % 8), ao[i].x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry + OBJIMGGAP, 0, false, 1.0f);
 
-	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, DX - 120 * _2X, 6, false, 1.0f, RIGHT);
+	//대사창 위치. 예전에는 화면 맨 위(DY - GNBHEIGHT)에 고정이었는데, 눌러야 하는 버튼이
+	//전부 화면 아래에 있어서 대사와 시선이 멀었다. 공격버튼 바로 위까지 내려서 붙인다.
+	//기준은 BAR_PLAY의 윗변이다 - 하단 뭉치(룰렛/하트베팅/공격) 중 이 바가 가장 위라
+	//여기에 맞추면 나머지도 같이 안 가린다. GetTutorialTalkRect()의 BAR_PLAY 사각형과 같은 값이다.
+	//
+	//바가 아직 없는 첫 컷씬(오프닝)에서도 같은 자리에 띄운다. bar[BAR_PLAY].active로만 보면
+	//첫 대화만 화면 위에 뜨고, 바가 생기는 순간 대사창이 아래로 튀어 내려온다.
+	//그래서 좌표는 바 대신 InitBar(BAR_PLAY)가 쓰는 것과 같은 식으로 직접 계산한다.
+	const float talkH = (float)(88 * _2X);
+	float attackBarY = (float)SLOTSIZE_Y * SLOTINITZOOM + BOTTOMMENUHEIGHT + (float)(12 * _2X);
+	float talkY;
+
+	if (bar[BAR_PLAY].active)
+		attackBarY = bar[BAR_PLAY].y;
+
+	talkY = attackBarY + talkH + (float)(8 * _2X) + 16;
+
+	//더 내리면 버튼을 덮고, 예전 자리(화면 위)보다 올라가면 내리는 의미가 없다.
+	if (talkY > DY - GNBHEIGHT)
+		talkY = DY - GNBHEIGHT;
+
+	DrawCmfPopUp(ao[i].cmf, movie.text, 0 * _2X, talkY, DX, talkH, DX - 120 * _2X, 6, false, 1.0f, RIGHT);
 
 	//인터랙티브 전투 튜토리얼: 공격을 안내하는 대사는 시간이 지났다고 저절로 넘어가면 안 된다
 	//(예전엔 텍스트가 끝나고 2초 뒤 자동으로 컷씬을 종료시켜서, 플레이어가 누르기도 전에 실전투로
@@ -1215,7 +1652,7 @@ void Demo_Talk(void)
 
 		//대화신은 같이 노출되어야 하므로 대화창 영역은 암전에서 뺀다.
 		//바로 위 DrawCmfPopUp()에 넘긴 사각형과 같은 값이다.
-		SetSpotlightKeepRect(0 * _2X, DY - GNBHEIGHT, DX, 88 * _2X, 12 * _2X);
+		SetSpotlightKeepRect(0 * _2X, talkY, DX, talkH, 12 * _2X);
 	}
 
 	if (talkShakeFrame)
@@ -1583,6 +2020,13 @@ void AfterDemo(void)
 
 	robin.demoSeen[movie.index] = true;
 
+	//마무리 대사("그럼 이만..")까지 끝났으면 튜토리얼이 끝난 것으로 표시한다.
+	//이 플래그가 서야 IsTutorialPlaying()이 꺼지고 안내/터치제한이 전부 풀려 일반 플레이가 된다.
+	//예전에는 성 보스(ENEMY_CASTLE_BOSS4)를 잡는 것이 종료 조건이었는데, 지금 튜토리얼은
+	//초록 달팽이 보스에서 끝나므로 그 조건으로는 영영 끝나지 않는다.
+	if (movie.index == DEMO_TUTORIAL_BOSS)
+		robin.demoSeen[DEMO_TUTORIAL_END] = true;
+
 	//효과음이니까
 	if (curID > M_ENDING)
 		TimerMusic();
@@ -1610,9 +2054,9 @@ void AfterDemo(void)
 	//플레이어가 동료 바(BAR_CREW)를 눌러야 넘어가고, 그 터치가 동료 메뉴를 직접 연다.
 	//체인으로 다음 컷씬을 띄우면 버튼을 누를 새도 없이 넘어가 버린다.
 	case DEMO_TUTORIAL_SECONDKILL:
-	case DEMO_TUTORIAL_ROULETTE:
-
-
+		//DEMO_TUTORIAL_ROULETTE도 여기 있었는데 뺐다. 이제 그 블록이 보스 스폰과 공격 안내 대사까지
+		//직접 들고 있어서, 체인으로 다음 컷씬을 띄우면 공격버튼을 누를 새도 없이 넘어가 버린다.
+		//실전투로 넘겨야 하므로 default(GotoPlay/ResumeTutorialPlay) 경로를 탄다.
 
 		memset(&currencyMarkArr, 0, sizeof(currencyMarkArr));
 		memset(&currencyMark, 0, sizeof(currencyMark));
@@ -1679,6 +2123,18 @@ void AfterDemo(void)
 			touchDisable = true;
 			tutorialWaitingEnemyLand = true;
 			break;
+		case DEMO_TUTORIAL_ROULETTE:
+			//마무리 보스(초록 달팽이). 다른 단계와 똑같이 wave[] 한 행을 걸어주기만 한다.
+			//따로 스폰하면 그 전 웨이브의 몬스터와 겹쳐 두 마리가 서 있게 된다.
+			//크기(2배)는 wave[]에 넣을 자리가 없어서 WaveControler()에서 waveIdx로 판별해 처리한다.
+			SetTutorialWave(WAVEIDX_TUTORIAL_BOSS);
+			waveStatus = WAVESTATUS_PLAY;
+			touchDisable = true;
+			tutorialWaitingEnemyLand = true;
+
+			//동료들이 힘을 합치는 것을 보여주는 자리라 룰렛 결과를 최고 별 동료로 몰아준다.
+			tutorialForceRouletteBest = true;
+			break;
 		case DEMO_TUTORIAL_ROULETTE_LIVE:
 			SetTutorialWave(6);		//SKELETON
 			waveStatus = WAVESTATUS_PLAY;
@@ -1686,12 +2142,13 @@ void AfterDemo(void)
 			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_BOSS:
-			//보스는 일반 wave[] 순환과 성격이 달라(robin.bossRoom류 별도 체계) 지금은 기존 커스텀
-			//스폰을 그대로 둔다. 대신 WaveControler()가 일반 몬스터를 끼워 넣지 못하게 웨이브는 닫는다.
+			//이 블록은 이제 "그럼 이만.." 마무리 대사다. 예전에는 여기서 대마왕(ENEMY_CASTLE_BOSS4)을
+			//스폰하고 touchDisable/tutorialWaitingEnemyLand를 걸었는데, 튜토리얼이 끝난 뒤라
+			//그 착지 대기를 풀어주는 쪽이 돌지 않아 입력이 통째로 잠긴 채 대마왕만 서 있었다.
+			//이제는 아무것도 스폰하지 않고 그대로 일반 플레이로 넘긴다.
 			CloseTutorialWave();
-			touchDisable = true;
-			tutorialWaitingEnemyLand = true;
-			SpawnTutorialEnemy(ENEMY_CASTLE_BOSS4, 5000);	//TODO: 강제 룰렛 결과(가장 센 동료 스킬)로 한방킷 되도록 밸런스 확인
+			touchDisable = false;
+			tutorialWaitingEnemyLand = false;
 			break;
 		default:
 			//몬스터를 스폰하지 않는 단계(EQUIP)는 기다릴 이유가 없으니 바로 터치를 풀어준다.
@@ -2664,6 +3121,10 @@ void SetDemo(int index)
 	movie.frame = 0;
 	drawHandle = MD_DEMO;
 	keyHandle = MK_DEMO;
+
+	//동료가 6명이 차서 룰렛이 열리는 순간이다. 무엇이 열렸는지 눈에 띄게 반짝여준다.
+	if (index == DEMO_TUTORIAL_ROULETTE)
+		rouletteGlowFrame = ROULETTE_GLOW_FRAME;
 	//pObj->attack = null;
 	//pObj->attackFrame = null;
 	returnFrame = null;
