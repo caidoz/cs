@@ -432,65 +432,116 @@ const signed short c6mv[] = {
 const signed short c7mv[] = {
 	//상태 데이터
 	//SKELETON_NEUTRAL
-	8,	//상태 프레임 카운트
-	SET_MAINFRAME_RANDOM8,//초기화 조건
-	PO_C7_N0, PO_C7_N0, PO_C7_N1, PO_C7_N1, PO_C7_N2, PO_C7_N2, PO_C7_N3, PO_C7_N3,	//상태 프레임별 모션
+	16,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8,	//초기화 조건
+	PO_C7_N0, PO_C7_N0_1, PO_C7_N0_2, PO_C7_N0_3, PO_C7_N1, PO_C7_N1_1, PO_C7_N1_2, PO_C7_N1_3,
+	PO_C7_N2, PO_C7_N2_1, PO_C7_N2_2, PO_C7_N2_3, PO_C7_N3, PO_C7_N3_1, PO_C7_N3_2, PO_C7_N3_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SKELETON_MOVE
-	12, //상태 프레임 카운트
-	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,
-	PO_C7_W0, PO_C7_W0, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W1, PO_C7_W2, PO_C7_W2, PO_C7_W3, PO_C7_W3, PO_C7_W3, PO_C7_W3,		//상태 프레임별 모션
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	24,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//초기화 조건
+	PO_C7_W0, PO_C7_W0_W1_1, PO_C7_W0_W1_2, PO_C7_W0_W1_3, PO_C7_W1, PO_C7_W1, PO_C7_W1_W2_1, PO_C7_W1_W2_1,
+	PO_C7_W1_W2_2, PO_C7_W1_W2_2, PO_C7_W1_W2_3, PO_C7_W1_W2_3, PO_C7_W2, PO_C7_W2_W3_1, PO_C7_W2_W3_2, PO_C7_W2_W3_3,
+	PO_C7_W3, PO_C7_W3, PO_C7_W3_W0_1, PO_C7_W3_W0_1, PO_C7_W3_W0_2, PO_C7_W3_W0_2, PO_C7_W3_W0_3, PO_C7_W3_W0_3,	//상태 프레임별 모션
+	1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SKELETON_MOVE_FAST
-	4, //상태 프레임 카운트
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C7_W0, PO_C7_W1, PO_C7_W2, PO_C7_W3,		//상태 프레임별 모션
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	8,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//초기화 조건
+	PO_C7_W0, PO_C7_W0_W1_2, PO_C7_W1, PO_C7_W1_W2_2, PO_C7_W2, PO_C7_W2_W3_2, PO_C7_W3, PO_C7_W3_W0_2,	//상태 프레임별 모션
+	1, 1, 1, 1, 1, 1, 1, 1,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SKELETON_ATTACK
-	59,
-	SET_DIR_PLAYER,
-	PO_C7_A0, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1,
-	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
-	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
-	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
-	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
-	PO_C7_A3, PO_C7_A3, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 8 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	 0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,  0 * _2X,//상태 프레임별 이동폭 Y
+	130,	//상태 프레임 카운트
+	SET_DIR_PLAYER,	//초기화 조건
+	PO_C7_A0, PO_C7_A0_2, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1, PO_C7_A1,
+	PO_C7_A1_1, PO_C7_A1_1, PO_C7_A1_1, PO_C7_A1_1, PO_C7_A1_1, PO_C7_A1_2, PO_C7_A1_2, PO_C7_A1_2,
+	PO_C7_A1_2, PO_C7_A1_2, PO_C7_A1_2, PO_C7_A1_3, PO_C7_A1_3, PO_C7_A1_3, PO_C7_A1_3, PO_C7_A1_3,
+	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
+	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2,
+	PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2, PO_C7_A2_1, PO_C7_A2_1,
+	PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1,
+	PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1,
+	PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_1, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2,
+	PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2,
+	PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2, PO_C7_A2_2,
+	PO_C7_A2_2, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3,
+	PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3,
+	PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A2_3, PO_C7_A3, PO_C7_A3_1,
+	PO_C7_A3_2, PO_C7_A3_3, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4, PO_C7_A4_1, PO_C7_A4_1,
+	PO_C7_A4_1, PO_C7_A4_1, PO_C7_A4_2, PO_C7_A4_2, PO_C7_A4_2, PO_C7_A4_2, PO_C7_A4_3, PO_C7_A4_3,
+	PO_C7_A4_3, PO_C7_A4_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	4 * _2X, 4 * _2X, 1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
-	//SKELETON_RETREAT - 퇴각
-	6,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C7_W0, PO_C7_W3, PO_C7_W3,	PO_C7_W2, PO_C7_W1, PO_C7_W1, //상태 프레임별 모션
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	12,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//초기화 조건
+	PO_C7_W0, PO_C7_W0_W3_2, PO_C7_W3, PO_C7_W3_W2_1, PO_C7_W3_W2_2, PO_C7_W3_W2_3, PO_C7_W2, PO_C7_W2_W1_2,
+	PO_C7_W1, PO_C7_W1_W0_1, PO_C7_W1_W0_2, PO_C7_W1_W0_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	-1,
 
+	//ACTIONRPG
 	//상태변경
-	SKELETON_NEUTRAL, SKELETON_ATTACK,		DISTANCE_CHECK_XY, 4 * 8 + 4, 0, 0,
-	SKELETON_NEUTRAL, SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY, 6 * 8 + 4, 0, 0,
-	SKELETON_NEUTRAL, SKELETON_MOVE,		COMPARE_FRAME,	16,	0,	0,
-	SKELETON_MOVE, SKELETON_ATTACK,			DISTANCE_CHECK_XY,	4 * 8 + 4,	0, 0,
-	SKELETON_MOVE, SKELETON_MOVE_FAST,		DISTANCE_CHECK_XY,	6 * 8 + 4,	0, 0,
-	SKELETON_MOVE, SKELETON_NEUTRAL,		COMPARE_FRAME,	20,	RANDOM,	33,
-
-	SKELETON_MOVE_FAST, SKELETON_ATTACK,	DISTANCE_CHECK_XY, 4 * 8 + 4, 0, 0,
-	SKELETON_MOVE_FAST, SKELETON_MOVE,		DISTANCE_OUT_XY, 6 * 8 + 4, 0, 0,
-
-	SKELETON_ATTACK, SKELETON_RETREAT,		0, 0, RANDOM, 40,
-	SKELETON_ATTACK, SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY, 4 * 8 + 4, 0, 0,
-	SKELETON_ATTACK, SKELETON_NEUTRAL,		DISTANCE_OUT_XY, 6 * 8 + 4, 0, 0,
-
-	SKELETON_RETREAT, SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY, 8 * 8 + 4, RANDOM, 40,
-	SKELETON_RETREAT, SKELETON_ATTACK,		DISTANCE_OUT_XY, 4 * 8 + 4, 0, 0,
-
+	SKELETON_NEUTRAL,	SKELETON_ATTACK,	DISTANCE_CHECK_XY,	4 * 8 + 4,	0,	0,
+	SKELETON_NEUTRAL,	SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY,	6 * 8 + 4,	0,	0,
+	SKELETON_NEUTRAL,	SKELETON_MOVE,	COMPARE_FRAME,	16,	0,	0,
+	SKELETON_MOVE,	SKELETON_ATTACK,	DISTANCE_CHECK_XY,	4 * 8 + 4,	0,	0,
+	SKELETON_MOVE,	SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY,	6 * 8 + 4,	0,	0,
+	SKELETON_MOVE,	SKELETON_NEUTRAL,	COMPARE_FRAME,	20,	RANDOM,	33,
+	SKELETON_MOVE_FAST,	SKELETON_ATTACK,	DISTANCE_CHECK_XY,	4 * 8 + 4,	0,	0,
+	SKELETON_MOVE_FAST,	SKELETON_MOVE,	DISTANCE_OUT_XY,	6 * 8 + 4,	0,	0,
+	SKELETON_ATTACK,	SKELETON_RETREAT,	0,	0,	RANDOM,	40,
+	SKELETON_ATTACK,	SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY,	4 * 8 + 4,	0,	0,
+	SKELETON_ATTACK,	SKELETON_NEUTRAL,	DISTANCE_OUT_XY,	6 * 8 + 4,	0,	0,
+	SKELETON_RETREAT,	SKELETON_MOVE_FAST,	DISTANCE_CHECK_XY,	8 * 8 + 4,	RANDOM,	40,
+	SKELETON_RETREAT,	SKELETON_ATTACK,	DISTANCE_OUT_XY,	4 * 8 + 4,	0,	0,
 	-1,
 };
 
@@ -2331,29 +2382,39 @@ const signed short c24mv[] = {
 };
 
 const signed short c25mv[] = {
+	//상태 데이터
 	//THUNDERBOSS_NEUTRAL
-	4,
-	SET_MAINFRAME_RANDOM8,
-	PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	8,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8,	//초기화 조건
+	PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L, PO_C25_W0_L,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//THUNDERBOSS_MOVE
-	8,
-	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,
-	PO_C25_A0_L, PO_C25_A0_L, PO_C25_A1_L, PO_C25_A1_L, PO_C25_A2_L, PO_C25_A2_L, PO_C25_A3_L, PO_C25_A3_L,
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,
+	16,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8 | SET_DIR_PLAYER,	//초기화 조건
+	PO_C25_A0_L, PO_C25_A0_L_1, PO_C25_A0_L_2, PO_C25_A0_L_3, PO_C25_A1_L, PO_C25_A1_L_1, PO_C25_A1_L_2, PO_C25_A1_L_3,
+	PO_C25_A2_L, PO_C25_A2_L_1, PO_C25_A2_L_2, PO_C25_A2_L_3, PO_C25_A3_L, PO_C25_A3_L_1, PO_C25_A3_L_2, PO_C25_A3_L_3,	//상태 프레임별 모션
+	1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1,	//상태 프레임별 이동폭 X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//THUNDERBOSS_ATTACK
-	12,
-	SET_DIR_PLAYER,
-	PO_C25_A4_L, PO_C25_A4_L, PO_C25_A5_L, PO_C25_A5_L, PO_C25_A6_L, PO_C25_A6_L, PO_C25_A7_L, PO_C25_A7_L,
-	PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L,
+	32,	//상태 프레임 카운트
+	SET_DIR_PLAYER,	//초기화 조건
+	PO_C25_A4_L, PO_C25_A4_L_1, PO_C25_A4_L_2, PO_C25_A4_L_3, PO_C25_A5_L, PO_C25_A5_L_1, PO_C25_A5_L_2, PO_C25_A5_L_3,
+	PO_C25_A6_L, PO_C25_A6_L_1, PO_C25_A6_L_2, PO_C25_A6_L_3, PO_C25_A7_L, PO_C25_A7_L_1, PO_C25_A7_L_2, PO_C25_A7_L_3,
+	PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L, PO_C25_DASH_L_1, PO_C25_DASH_L_1, PO_C25_DASH_L_1, PO_C25_DASH_L_1,
+	PO_C25_DASH_L_2, PO_C25_DASH_L_2, PO_C25_DASH_L_2, PO_C25_DASH_L_2, PO_C25_DASH_L_3, PO_C25_DASH_L_3, PO_C25_DASH_L_3, PO_C25_DASH_L_3,	//상태 프레임별 모션
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	-1,
 	-1,
@@ -6805,21 +6866,31 @@ const signed short c78mv[] = {
 
 const signed short c79mv[] = {
 	//상태 데이터
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM8,	//초기화 조건
-	PO_C79_N0, PO_C79_N0, PO_C79_N1, PO_C79_N1, PO_C79_N2, PO_C79_N2, PO_C79_N3, PO_C79_N3,	//상태 프레임별 모션
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
+	PO_C79_N0, PO_C79_N0_1, PO_C79_N0_2, PO_C79_N0_3, PO_C79_N1, PO_C79_N1_1, PO_C79_N1_2, PO_C79_N1_3,
+	PO_C79_N2, PO_C79_N2_1, PO_C79_N2_2, PO_C79_N2_3, PO_C79_N3, PO_C79_N3_1, PO_C79_N3_2, PO_C79_N3_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
-	8,	//상태 프레임 카운트
+	32,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM8,	//초기화 조건
-	PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W0, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W2, PO_C79_W1, PO_C79_W1, PO_C79_W1, PO_C79_W1,	//상태 프레임별 모션
-	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
+	PO_C79_W0, PO_C79_W0, PO_C79_W0_1, PO_C79_W0_1, PO_C79_W0_2, PO_C79_W0_2, PO_C79_W0_3, PO_C79_W0_3,
+	PO_C79_W1, PO_C79_W1, PO_C79_W1_W2_1, PO_C79_W1_W2_1, PO_C79_W1_W2_2, PO_C79_W1_W2_2, PO_C79_W1_W2_3, PO_C79_W1_W2_3,
+	PO_C79_W2, PO_C79_W2, PO_C79_W2_1, PO_C79_W2_1, PO_C79_W2_2, PO_C79_W2_2, PO_C79_W2_3, PO_C79_W2_3,
+	PO_C79_W1, PO_C79_W1, PO_C79_W1_W0_1, PO_C79_W1_W0_1, PO_C79_W1_W0_2, PO_C79_W1_W0_2, PO_C79_W1_W0_3, PO_C79_W1_W0_3,	//상태 프레임별 모션
+	1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	1 * _2X, 1 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	-1,
-
-	//상태변경
 	-1,
 };
 
@@ -7547,33 +7618,45 @@ const signed short c101mv[] = {
 
 const signed short c102mv[] = {
 	//상태 데이터
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM8,	//초기화 조건
-	PO_C102_N0, PO_C102_N0, PO_C102_N1, PO_C102_N1, PO_C102_N2, PO_C102_N2, PO_C102_N3, PO_C102_N3,	//상태 프레임별 모션
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//상태 프레임별 이동폭 Y
+	PO_C102_N0, PO_C102_N0_1, PO_C102_N0_2, PO_C102_N0_3, PO_C102_N1, PO_C102_N1_1, PO_C102_N1_2, PO_C102_N1_3,
+	PO_C102_N2, PO_C102_N2_1, PO_C102_N2_2, PO_C102_N2_3, PO_C102_N3, PO_C102_N3_1, PO_C102_N3_2, PO_C102_N3_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
+
+	32,	//상태 프레임 카운트
+	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//초기화 조건
+	PO_C102_W0, PO_C102_W0, PO_C102_W0_1, PO_C102_W0_1, PO_C102_W0_2, PO_C102_W0_2, PO_C102_W0_3, PO_C102_W0_3,
+	PO_C102_W1, PO_C102_W1, PO_C102_W1_W2_1, PO_C102_W1_W2_1, PO_C102_W1_W2_2, PO_C102_W1_W2_2, PO_C102_W1_W2_3, PO_C102_W1_W2_3,
+	PO_C102_W2, PO_C102_W2, PO_C102_W2_1, PO_C102_W2_1, PO_C102_W2_2, PO_C102_W2_2, PO_C102_W2_3, PO_C102_W2_3,
+	PO_C102_W1, PO_C102_W1, PO_C102_W1_W0_1, PO_C102_W1_W0_1, PO_C102_W1_W0_2, PO_C102_W1_W0_2, PO_C102_W1_W0_3, PO_C102_W1_W0_3,	//상태 프레임별 모션
+	2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	2 * _2X, 2 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//초기화 조건
-	PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//상태 프레임별 모션
-	PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	PO_C102_W1, PO_C102_W1,	//상태 프레임별 모션
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	4 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
-
-	8,	//상태 프레임 카운트
-	SET_MAINFRAME_RANDOM8 | SET_DIR_RANDOM,	//초기화 조건
-	PO_C102_W0, PO_C102_W0, PO_C102_W1, PO_C102_W1,	//상태 프레임별 모션
-	PO_C102_W2, PO_C102_W2, PO_C102_W1, PO_C102_W1,	//상태 프레임별 모션
-	4 * _2X, 4 * _2X, 4 * _2X, 4 * _2X,
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	PO_C102_W0, PO_C102_W0_1, PO_C102_W0_2, PO_C102_W0_3, PO_C102_W1, PO_C102_W1_W2_1, PO_C102_W1_W2_2, PO_C102_W1_W2_3,
+	PO_C102_W2, PO_C102_W2_1, PO_C102_W2_2, PO_C102_W2_3, PO_C102_W1, PO_C102_W1_W0_1, PO_C102_W1_W0_2, PO_C102_W1_W0_3,	//상태 프레임별 모션
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,
+	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	-1,
 
+	//ACTIONRPG
 	//상태변경
-	NPCMOVE_STAND, NPCMOVE_WALKSLOW,		0, 0, RANDOM, 30,
-	NPCMOVE_WALKSLOW, NPCMOVE_STAND,		0, 0, RANDOM, 30,
+	NPCMOVE_STAND,	NPCMOVE_WALKSLOW,	0,	0,	RANDOM,	30,
+	NPCMOVE_WALKSLOW,	NPCMOVE_STAND,	0,	0,	RANDOM,	30,
 	-1,
 };
 

@@ -2090,6 +2090,10 @@ int AttackObj(long long int attacker, int dest)
 	long long int dmgOrigin = 0;
 	OBJECT* pAttack;
 	OBJECT* pDest = &ao[dest];
+	//특수타격(기절/추가/방무/관통/치명)이 터지면 공격자의 공격프레임을 건너뛴다.
+	//히어로는 스킬표가 60프레임용으로 2배가 됐으므로 건너뛰는 양도 2배여야
+	//원래와 같은 만큼 짧아진다. 몬스터는 아직 예전 기준이라 그대로 둔다.
+	int attackFrameSkip = (attacker < PLAYERALL) ? 8 : 4;
 	const signed short* scPtr;
 	unsigned char attackerLv;
 	long long int* attackerPs;
@@ -2263,7 +2267,7 @@ int AttackObj(long long int attacker, int dest)
 			refreshRate = FPSDOWN_STUN;
 
 			ad += 1 << ATTACK_STUN;
-			pAttack->attackFrame += 4;
+			pAttack->attackFrame += attackFrameSkip;
 
 			switch (pDest->type) {
 			case ENEMY_SLIME:
@@ -2658,7 +2662,7 @@ int AttackObj(long long int attacker, int dest)
 			refreshRate = FPSDOWN_EXTRA;
 
 			ad += 1 << ATTACK_EXTRA;
-			pAttack->attackFrame += 4;
+			pAttack->attackFrame += attackFrameSkip;
 			SetImgText(attackerObj, EFFECT_TEXT_EXTRA, IMGTEXTZOOM);
 			//SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_EXTRA, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, pDest->zoom);
 			//i = DropItem(pAttack, ITEM_GOLD);
@@ -2686,7 +2690,7 @@ int AttackObj(long long int attacker, int dest)
 			refreshRate = FPSDOWN_IGNORE;
 
 			ad += 1 << ATTACK_IGNORE;
-			pAttack->attackFrame += 4;
+			pAttack->attackFrame += attackFrameSkip;
 		}
 
 		//관통공격 계산식
@@ -2694,7 +2698,7 @@ int AttackObj(long long int attacker, int dest)
 			refreshRate = FPSDOWN_PIERCE;
 
 			ad += 1 << ATTACK_PIERCE;
-			pAttack->attackFrame += 4;
+			pAttack->attackFrame += attackFrameSkip;
 			SetImgText(attackerObj, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
 			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
@@ -2739,7 +2743,7 @@ int AttackObj(long long int attacker, int dest)
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			//SetImgText(attackerObj, EFFECT_TEXT_CRITICAL, IMGTEXTZOOM);
-			pAttack->attackFrame += 4;
+			pAttack->attackFrame += attackFrameSkip;
 			pAttack->attackLv++;
 		}
 
