@@ -3260,7 +3260,7 @@ void CrewInfoDraw(int crewIdx, int x, int y, float zoom)
 	}
 
 	//카드를 보여주고
-	DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(16 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, LEFT, zoom * MONSTERZOOM * enemyZoom[crewType]);
+	DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(16 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, LEFT, zoom * MONSTERZOOM * enemyZoom[crewType]);
 	DrawStar(ICON_STAR, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(34 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, curStar, maxStar, CREWMAXUPGRADELV, CENTER, true, zoom * 1.2f);
 
 	//이름 써주기

@@ -111,7 +111,7 @@ void DailyQuestDraw(int x, int y, float zoom)
 			case DAILYQUEST_STAGE_TRY:
 				DrawBox(stageClearBox[robin.stage], x + (float)(20 * _2X + 32 * _2X + 24 * _2X) * zoom, y - (float)(64 * _2X + 60 * _2X + 72 * _2X * i) * zoom, LEFT, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], COLOR_WHITE, true, false, true, 1.2f * zoom / 1.2f);
 
-				DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 2 % crewPos[stageBossType * 5 + 1]), x + (float)(20 * _2X + 28 * _2X) * zoom, y - (float)(64 * _2X + 60 * _2X + 72 * _2X * i) * zoom, LEFT, /*enemyIconZoom[stageBossType] **/ zoom / 1.2f);
+				DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 4 % crewPos[stageBossType * 5 + 1]), x + (float)(20 * _2X + 28 * _2X) * zoom, y - (float)(64 * _2X + 60 * _2X + 72 * _2X * i) * zoom, LEFT, /*enemyIconZoom[stageBossType] **/ zoom / 1.2f);
 
 				DrawStageLabel(x + (float)(20 * _2X + 28 * _2X) * zoom, y - (float)(64 * _2X + 60 * _2X - 60 * _2X + 72 * _2X * i) * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom / 1.2f);
 
@@ -2684,7 +2684,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 		//웨이브 보스
 		//if (stageInfoCurFrame > 20)
-		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], frame / 2 % crewPos[stageBossType * CREWDATASIZE], x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom);
+		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], frame / 4 % crewPos[stageBossType * CREWDATASIZE], x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom);
 
 		//BossHpBarDraw(GetStageBossObjectIdx() == false ? stageBossMaxHp : ao[GetStageBossObjectIdx()].hp, stageBossMaxHp, x + (float)(DX / 2) * zoom, y - (float)116 * _2X * zoom, zoom, cvtDest, cvtLayer, buffering);
 		if (stageInfoCurFrame > 23)
@@ -3355,7 +3355,7 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 			DrawPlayer(&ao[SOLDIER], frame / MOTIONDIV % 4, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom, LEFT, 2.0f * zoom * Max(1, FPS / 2 + 10 - stageInfoCurFrame) * 0.6f, false, false, true);
 
 #else
-			DrawCmfDetailShadow(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 2 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X - 160 * _2X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom, LEFT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * Max(1, FPS / 2 + 10 - stageInfoCurFrame) * 0.6f);
+			DrawCmfDetailShadow(enemyData[boss[stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[stage] * 5 + 0] + (FPS / 2 + 10 < stageInfoCurFrame ? frame / 4 / MOTIONDIV : 0) % crewPos[boss[stage] * 5 + 1], x + (float)(POPUPWINDOWSIZE_X - 160 * _2X) / 2 * zoom, y - (float)DIORAMASIZE_Y * zoom + (float)32 * _2X * zoom, LEFT, enemyZoom[boss[stage]] * enemyBossZoom[boss[stage]] * zoom * Max(1, FPS / 2 + 10 - stageInfoCurFrame) * 0.6f);
 #endif
 		}
 

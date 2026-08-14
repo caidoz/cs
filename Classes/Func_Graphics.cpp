@@ -1857,7 +1857,7 @@ void DrawStageEnemyWave(int x, int y, int stageBossType, float zoom)
 
 	DrawBox(stageClearBox[robin.stage], x + (float)(32 * _2X) * zoom, y, LEFT, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], COLOR_WHITE, true, false, true, 1.2f * zoom);
 
-	DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 2 % crewPos[stageBossType * 5 + 1]), x, y, LEFT, /*enemyIconZoom[stageBossType] **/ zoom);
+	DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 4 % crewPos[stageBossType * 5 + 1]), x, y, LEFT, /*enemyIconZoom[stageBossType] **/ zoom);
 
 	DrawStageLabel(x, y + (float)92 * _2X * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom);
 

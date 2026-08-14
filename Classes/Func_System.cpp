@@ -3275,7 +3275,7 @@ void BattleLoadingDraw(void)
 
 			DrawCmfDetailShadow(
 				cmf,
-				crewPos[key * 5] + (blFrame / 2) % crewPos[key * 5 + 1],
+				crewPos[key * 5] + (blFrame / 4) % crewPos[key * 5 + 1],
 				x, runY,
 				RIGHT, enemyIconZoom[key]);
 		}
