@@ -48,55 +48,88 @@ const signed short c2mv[] = {
 const signed short c3mv[] = {
 	//상태 데이터
 	//SNAIL_NEUTRAL
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM8,	//초기화 조건
-	PO_C3_N0, PO_C3_N0, PO_C3_N1, PO_C3_N1, PO_C3_N2, PO_C3_N2, PO_C3_N3, PO_C3_N3,	//상태 프레임별 모션
+	PO_C3_N0, PO_C3_N0_1, PO_C3_N0_2, PO_C3_N0_3, PO_C3_N1, PO_C3_N1_1, PO_C3_N1_2, PO_C3_N1_3,
+	PO_C3_N2, PO_C3_N2_N3_1, PO_C3_N2_N3_2, PO_C3_N2_N3_3, PO_C3_N3, PO_C3_N3_1, PO_C3_N3_2, PO_C3_N3_3,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_MOVE
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM12 | SET_DIR_RANDOM,	//초기화 조건
-	PO_C3_W0, PO_C3_W0, PO_C3_W1, PO_C3_W1, PO_C3_W2, PO_C3_W2, PO_C3_W3, PO_C3_W3,	//상태 프레임별 모션
-	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	1 * _2X, 0 * _2X, 1 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
+	PO_C3_W0, PO_C3_W0_1, PO_C3_W0_2, PO_C3_W0_3, PO_C3_W1, PO_C3_W1_1, PO_C3_W1_2, PO_C3_W1_3,
+	PO_C3_W2, PO_C3_W2_1, PO_C3_W2_2, PO_C3_W2_3, PO_C3_W3, PO_C3_W3_1, PO_C3_W3_2, PO_C3_W3_3,	//상태 프레임별 모션
+	1, 1, 0 * _2X, 0 * _2X, 1, 1, 0 * _2X, 0 * _2X,
+	1, 1, 0 * _2X, 0 * _2X, 1, 1, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_MOVE_FAST
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	SET_MAINFRAME_RANDOM12 | SET_DIR_PLAYER,	//초기화 조건
-	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	PO_C3_W0, PO_C3_W1, PO_C3_W2, PO_C3_W3,	//상태 프레임별 모션
-	//2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	2 * _2X, 2 * _2X, 2 * _2X, 2 * _2X,	//상태 프레임별 이동폭 X
-	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
+	PO_C3_W0, PO_C3_W0_2, PO_C3_W1, PO_C3_W1_2, PO_C3_W2, PO_C3_W2_2, PO_C3_W3, PO_C3_W3_2,
+	PO_C3_W0, PO_C3_W0_2, PO_C3_W1, PO_C3_W1_2, PO_C3_W2, PO_C3_W2_2, PO_C3_W3, PO_C3_W3_2,	//상태 프레임별 모션
+	1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_ATTACK
-	30,	//상태 프레임 카운트
+	60,	//상태 프레임 카운트
 	SET_DIR_PLAYER,	//초기화 조건
-	PO_C3_A0, PO_C3_A0, PO_C3_A0, PO_C3_A0, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1,
-	PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2,
-	PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A4, PO_C3_A4,	PO_C3_A4, PO_C3_A4,	//상태 프레임별 모션
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,//상태 프레임별 이동폭 Y
+	PO_C3_A0, PO_C3_A0, PO_C3_A0_1, PO_C3_A0_1, PO_C3_A0_2, PO_C3_A0_2, PO_C3_A0_3, PO_C3_A0_3,
+	PO_C3_A1, PO_C3_A1, PO_C3_A1, PO_C3_A1_1, PO_C3_A1_1, PO_C3_A1_1, PO_C3_A1_2, PO_C3_A1_2,
+	PO_C3_A1_2, PO_C3_A1_3, PO_C3_A1_3, PO_C3_A1_3, PO_C3_A2, PO_C3_A2, PO_C3_A2, PO_C3_A2,
+	PO_C3_A2, PO_C3_A2_1, PO_C3_A2_1, PO_C3_A2_1, PO_C3_A2_1, PO_C3_A2_1, PO_C3_A2_2, PO_C3_A2_2,
+	PO_C3_A2_2, PO_C3_A2_2, PO_C3_A2_2, PO_C3_A2_3, PO_C3_A2_3, PO_C3_A2_3, PO_C3_A2_3, PO_C3_A2_3,
+	PO_C3_A3, PO_C3_A3, PO_C3_A3, PO_C3_A3_1, PO_C3_A3_1, PO_C3_A3_1, PO_C3_A3_2, PO_C3_A3_2,
+	PO_C3_A3_2, PO_C3_A3_3, PO_C3_A3_3, PO_C3_A3_3, PO_C3_A4, PO_C3_A4, PO_C3_A4, PO_C3_A4,
+	PO_C3_A4, PO_C3_A4, PO_C3_A4, PO_C3_A4,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_IN
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	0,	//초기화 조건
-	PO_C3_N2, PO_C3_N2, PO_C3_D0, PO_C3_D0, PO_C3_D1, PO_C3_D1, PO_C3_D2, PO_C3_D2,	//상태 프레임별 모션
+	PO_C3_N2, PO_C3_N2_D0_1, PO_C3_N2_D0_2, PO_C3_N2_D0_3, PO_C3_D0, PO_C3_D0_D1_1, PO_C3_D0_D1_2, PO_C3_D0_D1_3,
+	PO_C3_D1, PO_C3_D1_D2_1, PO_C3_D1_D2_2, PO_C3_D1_D2_3, PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_HIDE
-	4,	//상태 프레임 카운트
+	8,	//상태 프레임 카운트
 	RECOVER_HP,	//초기화 조건
-	PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2,	//상태 프레임별 모션
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
-	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
+	PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2, PO_C3_D2,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	//SNAIL_COME
-	8,	//상태 프레임 카운트
+	16,	//상태 프레임 카운트
 	0,	//초기화 조건
-	PO_C3_D2, PO_C3_D2, PO_C3_D1, PO_C3_D1, PO_C3_D0, PO_C3_D0, PO_C3_N2, PO_C3_N2,	//상태 프레임별 모션
+	PO_C3_D2, PO_C3_D2_1, PO_C3_D2_2, PO_C3_D2_3, PO_C3_D1, PO_C3_D1_D0_1, PO_C3_D1_D0_2, PO_C3_D1_D0_3,
+	PO_C3_D0, PO_C3_D0_N2_1, PO_C3_D0_N2_2, PO_C3_D0_N2_3, PO_C3_N2, PO_C3_N2, PO_C3_N2, PO_C3_N2,	//상태 프레임별 모션
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 X
+	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,
 	0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X, 0 * _2X,	//상태 프레임별 이동폭 Y
 
 	-1,
@@ -107,18 +140,14 @@ const signed short c3mv[] = {
 	SNAIL_NEUTRAL,	SNAIL_ATTACK,	DISTANCE_CHECK_XY,	3 * 8 + 2,	0,	0,
 	SNAIL_NEUTRAL,	SNAIL_MOVE_FAST,	DISTANCE_CHECK_XY,	7 * 8 + 2,	0,	0,
 	SNAIL_NEUTRAL,	SNAIL_MOVE,	COMPARE_FRAME,	8,	0,	0,
-
 	SNAIL_MOVE,	SNAIL_IN,	COMPARE_LESSHP,	20,	RANDOM,	20,
 	SNAIL_MOVE,	SNAIL_ATTACK,	DISTANCE_CHECK_XY,	3 * 8 + 2,	0,	0,
 	SNAIL_MOVE,	SNAIL_MOVE_FAST,	DISTANCE_CHECK_XY,	7 * 8 + 3,	0,	0,
 	SNAIL_MOVE,	SNAIL_NEUTRAL,	COMPARE_FRAME,	EQUAL_MAINFRAME,	RANDOM,	33,
-
 	SNAIL_MOVE_FAST,	SNAIL_ATTACK,	DISTANCE_CHECK_XY,	3 * 8 + 2,	0,	0,
 	SNAIL_MOVE_FAST,	SNAIL_MOVE,	DISTANCE_OUT_XY,	8 * 8 + 3,	0,	0,
-
-	SNAIL_ATTACK,	SNAIL_MOVE_FAST,	DISTANCE_CHECK_XY, 4 * 8 + 2, 0, 0,
-	SNAIL_ATTACK,	SNAIL_NEUTRAL,		0, 0, 0, 0,
-
+	SNAIL_ATTACK,	SNAIL_MOVE_FAST,	DISTANCE_CHECK_XY,	4 * 8 + 2,	0,	0,
+	SNAIL_ATTACK,	SNAIL_NEUTRAL,	0,	0,	0,	0,
 	SNAIL_IN,	SNAIL_HIDE,	0,	0,	0,	0,
 	SNAIL_HIDE,	SNAIL_COME,	COMPARE_MOREHP,	50,	0,	0,
 	SNAIL_COME,	SNAIL_MOVE,	0,	0,	0,	0,

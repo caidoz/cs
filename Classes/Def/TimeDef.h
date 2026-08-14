@@ -4,7 +4,7 @@
 #define _DEF_TIME_H_
 
 typedef enum _timeDef {
-	FPS_INIT = 30,
+	FPS_INIT = 60,
 	FPS = FPS_INIT,
 	FPS_SKILL = FPS_INIT,
 	FPSDOWN_HIT = 10,

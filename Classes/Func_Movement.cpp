@@ -9879,7 +9879,11 @@ void EnemyMoveTurn(OBJECT* pObj)
 	//pObj->target = PLAYER;
 
 	//Motion
-	tPtr += (2 + (pObj->frame / 2 % ret));
+	//예전에는 frame / 2 로 두 프레임에 한 번씩 모션을 넘겼는데,
+	//이 핸들러는 frame % ret == 0 에서 frame을 0으로 되돌리므로 frame이 ret을 넘지 못한다.
+	//그래서 모션표의 앞쪽 절반만 재생되고 뒤쪽 절반은 한 번도 나오지 않았다.
+	//mv 데이터를 쓰는 다른 핸들러들과 똑같이 매 프레임 넘긴다.
+	tPtr += (2 + (pObj->frame % ret));
 	pObj->motion = *tPtr;
 
 	//DX
