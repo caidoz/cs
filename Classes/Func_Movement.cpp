@@ -4298,7 +4298,7 @@ void SetPlayerMotion(OBJECT* pObj)
 		case PO_C0_W0:
 		case PO_C0_R0:
 			if (pObj->status == GLIDE) {
-				pObj->motion = PO_C0_HAPPY0 + (pObj->frame / MOTIONDIV % 8) / 4 * 3;
+				pObj->motion = PO_C0_HAPPY0 + (pObj->frame / MOTIONDIV % 16) / 8 * 3;
 				break;
 			}
 
@@ -4402,7 +4402,7 @@ void PlayerSledMove(OBJECT* pObj)
 			pObj->x -= 1 * _2X;
 	}
 
-	pObj->motion = (robin.playtime / MOTIONDIV % 2 == 0) ? PO_C0_HAPPY0 : PO_C0_HAPPY3;
+	pObj->motion = (robin.playtime / MOTIONDIV / 2 % 2 == 0) ? PO_C0_HAPPY0 : PO_C0_HAPPY3;
 
 	//썰매에 타고 있는지 체크한다.
 	pObj->y += 8 * _2X;
@@ -5345,10 +5345,10 @@ void SlingMove(OBJECT* pObj)
 {
 	switch (pObj->etc) {
 	case 2:
-		pObj->motion = (pObj->frame / MOTIONDIV) % 2 ? PO_C8_SHOT0 : PO_C8_SHOT1;//LarvaShotMotion[pObj->frame % 2];
+		pObj->motion = (pObj->frame / MOTIONDIV / 2) % 2 ? PO_C8_SHOT0 : PO_C8_SHOT1;//LarvaShotMotion[pObj->frame % 2];
 		pObj->frame++;
 	case 3:
-		pObj->motion = PO_C35_STAR0 + (pObj->frame / MOTIONDIV) % 4;
+		pObj->motion = PO_C35_STAR0 + (pObj->frame / MOTIONDIV / 2) % 4;
 		pObj->frame++;
 		pObj->y += pObj->dy;
 		pObj->dy += 2 * _2X;
@@ -5501,7 +5501,7 @@ void BugMove(OBJECT* pObj)
 	TileCheckX2(pObj);
 	//pObj->x += pObj->dx * DIR(pObj->dirX);
 
-	pObj->motion = pObj->frame / MOTIONDIV % 2 == 0 ? PO_C50_BUG0 : PO_C50_BUG1;
+	pObj->motion = pObj->frame / MOTIONDIV / 2 % 2 == 0 ? PO_C50_BUG0 : PO_C50_BUG1;
 
 	TileCheckY2(pObj);
 	InitMotion(pObj);
@@ -5530,7 +5530,7 @@ void SkelGuideMove(OBJECT* pObj)
 		pObj->y += pObj->dy;
 	}
 
-	pObj->motion = PO_C31_SHOT0 + pObj->frame / MOTIONDIV % 4;
+	pObj->motion = c31Shot60[pObj->frame / MOTIONDIV % 8];
 
 	if (BoundaryCheck(pObj))
 		memset(pObj, 0, sizeof(OBJECT));
@@ -5969,7 +5969,7 @@ void StraightMove(OBJECT* pObj)
 			}
 		}
 		else
-			pObj->motion = pObj->frame % 2 == 0 ? PO_C48_SHOT0 : PO_C48_SHOT1;
+			pObj->motion = pObj->frame / 2 % 2 == 0 ? PO_C48_SHOT0 : PO_C48_SHOT1;
 
 		if (pObj->x < 0 || pObj->y < 0 || pObj->x > rw * TSIZE || pObj->y >(rh - 4) * TSIZE)
 			memset(pObj, 0, sizeof(OBJECT));
@@ -6474,7 +6474,7 @@ void BahamutHeadMove(OBJECT* pObj)
 		else if (pObj->frame < 26) {
 			pObj->x -= 32 * _2X * pObj->zoom;
 			pObj->y += 20 * _2X * pObj->zoom;
-			pObj->motion = pObj->frame % 2 == 0 ? PO_C43_HEAD0 : PO_C43_HEAD1;
+			pObj->motion = pObj->frame / 2 % 2 == 0 ? PO_C43_HEAD0 : PO_C43_HEAD1;
 		}
 		else {
 			pObj->x += 6 * _2X * pObj->zoom;
@@ -8560,7 +8560,7 @@ void BulletSpinMove(OBJECT* pObj)
 			pObj->status += 10;
 		}
 
-		pObj->motion = PO_C34_SPINATK4 + (pObj->frame % 2);
+		pObj->motion = PO_C34_SPINATK4 + (pObj->frame / 2 % 2);
 		InitMotion(pObj);
 
 		pObj->frame++;
@@ -8601,11 +8601,11 @@ void BulletGuideMove(OBJECT* pObj)
 	}
 
 	if (pObj->status == 1) {
-		pObj->motion = PO_C37_SHOT0 + pObj->frame / 2;
+		pObj->motion = PO_C37_SHOT0 + pObj->frame / 4;
 		pObj->dx = 0;
 		pObj->dy = 0;
 
-		if (pObj->frame >= 7 * 2) {
+		if (pObj->frame >= 7 * 4) {
 			memset(pObj, 0, sizeof(OBJECT));
 			return;
 		}
@@ -14149,7 +14149,7 @@ void CutOffMove(OBJECT* pObj)
 	if (pObj->active == false)
 		return;
 
-	pObj->motion = PO_C0_SURPRISE0 + pObj->frame / 2 % 2;
+	pObj->motion = PO_C0_SURPRISE0 + pObj->frame / 4 % 2;
 
 	InitMotion(pObj);
 

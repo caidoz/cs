@@ -1679,4 +1679,12 @@ static const signed short c31CS[] = {
 	-16 * _2X, -41 * _2X - 2 * TSIZE + 2 * TSIZE, 32 * _2X, 76 * _2X - 2 * TSIZE,		0 * _2X, 35 * _2X, 0 * _2X, 0 * _2X,	//82
 	-16 * _2X, -41 * _2X - 2 * TSIZE + 2 * TSIZE, 32 * _2X, 76 * _2X - 2 * TSIZE,		0 * _2X, 35 * _2X, 0 * _2X, 0 * _2X,	//83
 };
+
+//60프레임용 발사 모션 순환표. 원본 4포즈 사이에 50% 중간모션을 끼웠다.
+//SlingMove가 frame % 8 로 한 프레임에 한 칸씩 쓴다.
+static const unsigned short c31Shot60[] = {
+	PO_C31_SHOT0, PO_C31_SHOT0_2, PO_C31_SHOT1, PO_C31_SHOT1_2,
+	PO_C31_SHOT2, PO_C31_SHOT2_2, PO_C31_SHOT3, PO_C31_SHOT3_2,
+};
+
 #endif
