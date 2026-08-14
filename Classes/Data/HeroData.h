@@ -1923,7 +1923,9 @@ const signed short backHomeMotion[] = {
 
 };
 
-const signed char jump[JUMPFRAME] = { 14, 13, 12, 11, 10, 8, 6, 4, 2, 1 };// , 6, 5, 4, 3, 2};
+//60프레임 대응. 원본 {14,13,12,11,10,8,6,4,2,1}의 각 값을 두 프레임에 나눠 담았다.
+//총 상승량 81은 그대로고 체공 시간만 2배가 되어 30프레임 시절 체감으로 돌아온다.
+const signed char jump[JUMPFRAME] = { 7, 7, 7, 6, 6, 6, 6, 5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0 };
 const signed short jumpFullFrame[11] = {
 	0 * _2X,
 	0 * _2X + 6 * _2X,

@@ -24,7 +24,7 @@ typedef enum _statusDef {
 	SPACE,
 
 	FREEFALL = 24 * _2X,
-	JUMPFRAME = 10,
+	JUMPFRAME = 20,	//60프레임용으로 2배. jump[]도 20칸이다.
 	JUMPFULLFRAME = 11,
 	HIGHJUMPFRAME = 8,
 	DOWNATTHEIGHT = 64 * _2X,
