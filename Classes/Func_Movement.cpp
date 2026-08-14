@@ -1590,7 +1590,7 @@ void MoveObj(OBJECT* pObj)
 		}
 
 		if (pObj->ax > 0) {
-			if ((pObj->attack >= ATTACK_NORMAL && pObj->attack != ATTACK_DASH) || (pObj->attack == ATTACK_NORMAL && ((pObj->cmf == ROBIN && pObj->attackFrame == 10 + ROBIN_ATTACK_DELAY) || (pObj->cmf == DIANA && pObj->attackFrame == 23 + DIANA_ATTACK_DELAY))))
+			if ((pObj->attack >= ATTACK_NORMAL && pObj->attack != ATTACK_DASH) || (pObj->attack == ATTACK_NORMAL && ((pObj->cmf == ROBIN && pObj->attackFrame == 20 + ROBIN_ATTACK_DELAY) || (pObj->cmf == DIANA && pObj->attackFrame == 23 + DIANA_ATTACK_DELAY))))
 				pObj->attackLv = 2;
 			else
 				pObj->attackLv = 1;
@@ -4235,7 +4235,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		break;
 	}
 
-	if (pObj->cmf == ROBIN && pObj->attackFrame == 15 + ROBIN_ATTACK_DELAY) {
+	if (pObj->cmf == ROBIN && pObj->attackFrame == 30 + ROBIN_ATTACK_DELAY) {
 		pObj->status = FALL;
 		pObj->jumpFrame = JUMPFRAME;
 		pObj->dirY = DOWN;

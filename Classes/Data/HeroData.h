@@ -1965,9 +1965,9 @@ const signed short jumpFullFrame2[7] = {
 
 const unsigned char charEtcData[TOTALETCDATA * TOTALCHAR] = {
 	//WAIT1FRAME
-	ROBIN_ATTACK_NORMAL_START + 18 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 28 + DIANA_ATTACK_DELAY, 0,
+	ROBIN_ATTACK_NORMAL_START + 36 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 28 + DIANA_ATTACK_DELAY, 0,
 	//WAIT2FRAME
-	ROBIN_ATTACK_NORMAL_START + 20 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 28 + DIANA_ATTACK_DELAY, 0,
+	ROBIN_ATTACK_NORMAL_START + 40 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 28 + DIANA_ATTACK_DELAY, 0,
 };
 
 const unsigned short robinSkillStartFrame[ROBIN_TOTAL_SKILL] = {
@@ -2130,20 +2130,22 @@ const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	//모션, X/Y움직임, 효과, 사운드
 #ifdef ROBINDEFAULTATTACKSTING
 #ifdef ATTACK_INIT_DELAY
-	//일반공격
-	PO_C0_STING0, 0, _WAIT1,	0,//0->				SKIP -3
+	//일반공격. 60프레임용으로 31 -> 62행.
+	//스윙 6프레임은 키모션과 50% 중간모션을 번갈아 12프레임으로 펴고,
+	//나머지 홀드 구간은 길이만 2배로 늘렸다.
+	PO_C0_STING0, 0, _WAIT1,	0,//0
 #endif
-	PO_C0_STING1, 0, 0,	0,//1 ->				SKIP 6
-	PO_C0_STING2, 0, 0,	0,//2 ->				SKIP 6
-	PO_C0_STING3, 0, 0,	0,//3
-	PO_C0_STING4, 0, 0,	0,//4
-	PO_C0_STING5, 0, 0,	M_SWORD,//5
-	PO_C0_STING6, 0, 0,	0,//6
-	PO_C0_STING6, 0, 0,	0,//7
-	PO_C0_STING6, 0, 0,	0,//8
-	PO_C0_STING6, 0, 0,	0,//9
-	PO_C0_STING6, 0, 0,	0,//10
-	PO_C0_STING6, 0, 0,	0,//11
+	PO_C0_STING0, 0, 0,	0,//1
+	PO_C0_STING1, 0, 0,	0,//2
+	PO_C0_STING1_2, 0, 0,	0,//3
+	PO_C0_STING2, 0, 0,	0,//4
+	PO_C0_STING2_2, 0, 0,	0,//5
+	PO_C0_STING3, 0, 0,	0,//6
+	PO_C0_STING3_2, 0, 0,	0,//7
+	PO_C0_STING4, 0, 0,	0,//8
+	PO_C0_STING4_2, 0, 0,	0,//9
+	PO_C0_STING5, 0, 0,	M_SWORD,//10
+	PO_C0_STING5_2, 0, 0,	0,//11
 	PO_C0_STING6, 0, 0,	0,//12
 	PO_C0_STING6, 0, 0,	0,//13
 	PO_C0_STING6, 0, 0,	0,//14
@@ -2162,83 +2164,38 @@ const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_STING6, 0, 0,	0,//27
 	PO_C0_STING6, 0, 0,	0,//28
 	PO_C0_STING6, 0, 0,	0,//29
-	//PO_C0_STING6, 0, 0,	0,//30
-	//PO_C0_STING6, 0, 0,	0,//31
-	//PO_C0_STING6, 0, 0,	0,//32
-	//PO_C0_STING6, 0, 0,	0,//33
-	//PO_C0_STING6, 0, 0,	0,//34
-	//PO_C0_STING6, 0, 0,	0,//35
-	//PO_C0_STING6, 0, 0,	0,//36
-	//PO_C0_STING6, 0, 0,	0,//37
-	//PO_C0_STING6, 0, 0,	0,//38
-	//PO_C0_STING6, 0, 0,	0,//39
-	//PO_C0_STING6, 0, 0,	0,//40
-	//PO_C0_STING6, 0, 0,	0,//41
-	//PO_C0_STING6, 0, 0,	0,//42
-	//PO_C0_STING6, 0, 0,	0,//43
-	//PO_C0_STING6, 0, 0,	0,//44
-	//PO_C0_STING6, 0, 0,	0,//45
-	//PO_C0_STING6, 0, 0,	0,//46
-	//PO_C0_STING6, 0, 0,	0,//47
-	//PO_C0_STING6, 0, 0,	0,//48
-	//PO_C0_STING6, 0, 0,	0,//49
-	//PO_C0_STING6, 0, 0,	0,//50
-	//PO_C0_STING6, 0, 0,	0,//51
-	//PO_C0_STING6, 0, 0,	0,//52
-	//PO_C0_STING6, 0, 0,	0,//53
-	//PO_C0_STING6, 0, 0,	0,//54
-	//PO_C0_STING6, 0, 0,	0,//55
-	//PO_C0_STING6, 0, 0,	0,//56
-	//PO_C0_STING6, 0, 0, 0,//57
-	//PO_C0_STING6, 0, 0, 0,//58
-	//PO_C0_STING6, 0, 0, 0,//59
-	//PO_C0_STING6, 0, 0, 0,//60
-	//PO_C0_STING6, 0, 0, 0,//61
-	//PO_C0_STING6, 0, 0, 0,//62
-	//PO_C0_STING6, 0, 0, 0,//63
-	//PO_C0_STING6, 0, 0, 0,//64
-	//PO_C0_STING6, 0, 0, 0,//65
-	//PO_C0_STING6, 0, 0, 0,//66
-	//PO_C0_STING6, 0, 0, 0,//67
-	//PO_C0_STING6, 0, 0, 0,//68
-	//PO_C0_STING6, 0, 0, 0,//69
-	//PO_C0_STING6, 0, 0, 0,//70
-	//PO_C0_STING6, 0, 0, 0,//71
-	//PO_C0_STING6, 0, 0, 0,//72
-	//PO_C0_STING6, 0, 0, 0,//73
-	//PO_C0_STING6, 0, 0, 0,//74
-	//PO_C0_STING6, 0, 0, 0,//75
-	//PO_C0_STING6, 0, 0, 0,//76
-	//PO_C0_STING6, 0, 0, 0,//77
-	//PO_C0_STING6, 0, 0, 0,//78
-	//PO_C0_STING6, 0, 0, 0,//79
-	//PO_C0_STING6, 0, 0, 0,//80
-	//PO_C0_STING6, 0, 0, 0,//81
-	//PO_C0_STING6, 0, 0, 0,//82
-	//PO_C0_STING6, 0, 0, 0,//83
-	//PO_C0_STING6, 0, 0, 0,//84
-	//PO_C0_STING6, 0, 0, 0,//85
-	//PO_C0_STING6, 0, 0, 0,//86
-	//PO_C0_STING6, 0, 0, 0,//87
-	//PO_C0_STING6, 0, 0, 0,//88
-	//PO_C0_STING6, 0, 0, 0,//89
-	//PO_C0_STING6, 0, 0, 0,//90
-	//PO_C0_STING6, 0, 0, 0,//91
-	//PO_C0_STING6, 0, 0, 0,//92
-	//PO_C0_STING6, 0, 0, 0,//93
-	//PO_C0_STING6, 0, 0, 0,//94
-	//PO_C0_STING6, 0, 0, 0,//95
-	//PO_C0_STING6, 0, 0, 0,//96
-	//PO_C0_STING6, 0, 0, 0,//97
-	//PO_C0_STING6, 0, 0, 0,//98
-	//PO_C0_STING6, 0, 0, 0,//99
-	//PO_C0_STING6, 0, 0, 0,//100
-	//PO_C0_STING6, 0, 0, 0,//101
-	//PO_C0_STING6, 0, 0, 0,//102
-	//PO_C0_STING6, 0, 0, 0,//103
-	//PO_C0_STING6, 0, 0, 0,//104
-	//PO_C0_STING6, 0, 0, 0,//105
-	0, 0, _END,	0,//106
+	PO_C0_STING6, 0, 0,	0,//30
+	PO_C0_STING6, 0, 0,	0,//31
+	PO_C0_STING6, 0, 0,	0,//32
+	PO_C0_STING6, 0, 0,	0,//33
+	PO_C0_STING6, 0, 0,	0,//34
+	PO_C0_STING6, 0, 0,	0,//35
+	PO_C0_STING6, 0, 0,	0,//36
+	PO_C0_STING6, 0, 0,	0,//37
+	PO_C0_STING6, 0, 0,	0,//38
+	PO_C0_STING6, 0, 0,	0,//39
+	PO_C0_STING6, 0, 0,	0,//40
+	PO_C0_STING6, 0, 0,	0,//41
+	PO_C0_STING6, 0, 0,	0,//42
+	PO_C0_STING6, 0, 0,	0,//43
+	PO_C0_STING6, 0, 0,	0,//44
+	PO_C0_STING6, 0, 0,	0,//45
+	PO_C0_STING6, 0, 0,	0,//46
+	PO_C0_STING6, 0, 0,	0,//47
+	PO_C0_STING6, 0, 0,	0,//48
+	PO_C0_STING6, 0, 0,	0,//49
+	PO_C0_STING6, 0, 0,	0,//50
+	PO_C0_STING6, 0, 0,	0,//51
+	PO_C0_STING6, 0, 0,	0,//52
+	PO_C0_STING6, 0, 0,	0,//53
+	PO_C0_STING6, 0, 0,	0,//54
+	PO_C0_STING6, 0, 0,	0,//55
+	PO_C0_STING6, 0, 0,	0,//56
+	PO_C0_STING6, 0, 0,	0,//57
+	PO_C0_STING6, 0, 0,	0,//58
+	PO_C0_STING6, 0, 0,	0,//59
+	PO_C0_STING6, 0, 0,	0,//60
+	0, 0, _END,	0,//61
 #else
 	PO_C0_A0, 0, _WAIT1,	0,//0 ->				SKIP 6
 	PO_C0_A12, 0, _EDGE3,	M_SWORD,//1
