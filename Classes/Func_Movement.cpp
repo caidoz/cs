@@ -13859,7 +13859,7 @@ void CrewMove(OBJECT* pObj)
 		//남아 크루가 룰렛 내내 달리는 모션을 재생했다.
 		case ATTACKSEQUENCE_SLOT:
 		case ATTACKSEQUENCE_COIN:
-			pObj->motion = crewPos[pObj->type * 5 + 0] + pObj->frame / 2 % crewPos[pObj->type * 5 + 1];
+			pObj->motion = crewPos[pObj->type * 5 + 0] + pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
 			break;
 		case ATTACKSEQUENCE_ACTION:
 			//현재 얘가 움직이는 턴이면

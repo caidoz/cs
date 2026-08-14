@@ -399,7 +399,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		int crewDetail = it->detail;
 		int crewGrade = it->grade;
 		int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1];
+		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1];
 		int crewName = TEXT_MONSTERNAME_START + crewType;
 		int crewStar = GetItemStar(crewType, crewDetail, crewGrade);
 
@@ -461,7 +461,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		int crewDetail = it->detail;
 		int crewGrade = it->grade;
 		int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1];
+		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1];
 		int crewName = TEXT_MONSTERNAME_START + crewType;
 		int crewStar = GetItemStar(crewType, crewDetail, crewGrade);
 
@@ -3639,7 +3639,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 			int crewCmf = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
 			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
-			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (menuX == i ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
+			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (menuX == i ? (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
 				slotX + (float)52 * zoom,
 				slotY - (float)88 * zoom + dropY,
 				RIGHT, enemyZoom[crewType] * 1.3f * zoom);
@@ -4102,7 +4102,7 @@ void DrawItemCard(
 		if (itemType == ITEM_CREW) {
 			int crewCmf = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
 			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
-			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (ani == true ? (frame / 2 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
+			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (ani == true ? (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
 				x + (float)120 * zoom,
 				y - (float)240 * zoom, 
 				RIGHT, enemyZoom[crewType] * 2.2f * zoom);
