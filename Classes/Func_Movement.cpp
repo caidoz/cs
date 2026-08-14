@@ -1687,6 +1687,8 @@ NEXT:
 
 void PlayerMove(OBJECT* pObj)
 {
+	//60프레임 순환표에서 뽑은 모션. 없으면 -1.
+	int loopMotion;
 	int released = ((keyHandle == MK_PLAY || keyHandle == MK_BATTLE || keyHandle == MK_RAID || keyHandle == MK_BOSSRAID) && pObj->dead == false ? key_released : true);
 	int motion = -1;
 	int obj = GetObjFromPtr(pObj);
@@ -2694,7 +2696,8 @@ chk:
 					GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, pObj->pDx));
 					pObj->x += pObj->dx;
 					pObj->y += pObj->dy;
-					pObj->motion = PO_C0_W0 + walkFrame[pObj->frame / 2 % 4];
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_WALK, pObj->frame);
+					pObj->motion = (loopMotion < 0) ? PO_C0_W0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					if (pObj->x + GetAttackRange(obj) >= ao[pObj->target].x) {
 						pObj->x = Max(ao[pObj->target].x - GetAttackRange(obj), pObj->nx);
 						pObj->y = ao[pObj->target].y;
@@ -2716,12 +2719,15 @@ chk:
 						pObj->x = pObj->nx;
 					}
 					*/
-					pObj->motion = PO_C0_W0 + walkFrame[pObj->frame % 4];
+					//이쪽은 원래 /2 가 없어 주기가 절반이다. 표를 두 칸씩 건너뛴다.
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_WALK, pObj->frame * 2);
+					pObj->motion = (loopMotion < 0) ? PO_C0_W0 + walkFrame[pObj->frame % 4] : loopMotion;
 					pObj->dirX = pObj->dirF = LEFT;
 					if (pObj->x == pObj->nx) {
 						pObj->y = pObj->ny;
 						pObj->attack = false;
-						pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+						loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+						pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 						ReleasePlayer(pObj);
 						pObj->dirX = pObj->dirF = RIGHT;
 						
@@ -2734,7 +2740,8 @@ chk:
 					break;
 				case DMGUPDATE:
 #ifndef SPEEDTURN
-					pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+					pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					if (onceDmgUpdateFrame == 1) {
 						pObj->turnPosition = HERE;
 						WhoIsNextTurn();
@@ -2747,7 +2754,8 @@ chk:
 				}
 				else {
 					if (!pObj->flamer)
-					pObj->motion = PO_C0_N0 + walkFrame[pObj->frame / 2 % 4];
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+					pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					pObj->dx = pObj->dy = 0;
 				}
 				//if (pObj->y != pObj->ny)

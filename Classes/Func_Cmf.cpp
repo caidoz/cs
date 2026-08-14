@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Cmf.h"
 
@@ -32,4 +32,25 @@ void CmfRead(int wh, int idx)
 	dataPos++;
 
 	cmf_change_data[wh] = &cmfMoveInfo[idx][dataPos];
+}
+
+//히어로의 대기/걷기/달리기/수영은 mv 데이터가 아니라 코드가 모션을 직접 골라 쓴다.
+//60프레임용으로 4배 늘린 순환표가 있으면 매 프레임 한 칸씩 넘겨주고,
+//아직 30프레임 데이터인 cmf는 -1을 돌려줘서 호출한 쪽이 예전 식을 쓰게 한다.
+int GetHeroLoopMotion(int cmfSlot, int chain, int frameIdx)
+{
+	int idx;
+
+	if (cmfSlot < 0 || cmfSlot >= REALMAXCMF)
+		return -1;
+
+	idx = cmfLoaded[cmfSlot];
+
+	if (idx < 0 || idx >= cmfHeroLoopCnt || cmfHeroLoop[idx] == 0)
+		return -1;
+
+	if (frameIdx < 0)
+		frameIdx = -frameIdx;
+
+	return cmfHeroLoop[idx][chain * HEROLOOP_FRAME + frameIdx % HEROLOOP_FRAME];
 }

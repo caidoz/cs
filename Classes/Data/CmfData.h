@@ -11237,6 +11237,16 @@ const signed short* const cmfCrashSize[] = {
 	c110CS, c110CS, c110CS, c110CS, c110CS, c110CS,
 };
 
+//히어로의 대기/걷기/달리기/수영은 mv 데이터가 아니라 코드가 모션을 직접 고른다.
+//60프레임용으로 4배 늘린 순환표가 있는 cmf만 여기 채운다. 0이면 예전 식을 그대로 쓴다.
+const unsigned short* const cmfHeroLoop[] = {
+	c0Loop60,	//c0 로빈
+	0,			//c1 아직 30프레임 데이터
+	0,			//c2 아직 30프레임 데이터
+};
+
+const int cmfHeroLoopCnt = sizeof(cmfHeroLoop) / sizeof(cmfHeroLoop[0]);
+
 const signed short* const cmfMoveInfo[] = {
 	c0mv, c1mv, c2mv, c3mv, c4mv, c5mv, c6mv, c7mv, c8mv, c9mv,
 	c10mv, c11mv, c12mv, c13mv, c14mv, c15mv, c16mv, c17mv, c18mv, c19mv,

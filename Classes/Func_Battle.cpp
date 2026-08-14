@@ -2502,7 +2502,11 @@ void RaidSequenceDraw(void)
 
 	switch (attackSequence) {
 	case ATTACKSEQUENCE_READY:
-		pObj->motion = PO_C0_N0 + frame / MOTIONDIV % 4;
+		{
+			//레이드 대기. 60프레임 순환표가 있으면 그걸 쓴다.
+			int loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, frame / MOTIONDIV);
+			pObj->motion = (loopMotion < 0) ? PO_C0_N0 + frame / MOTIONDIV % 4 : loopMotion;
+		}
 		break;
 		//현재는 룰렛을 그리는 타이밍이다.
 	case ATTACKSEQUENCE_SLOT:
