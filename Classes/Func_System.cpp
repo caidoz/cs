@@ -425,12 +425,19 @@ void AddSimpleLog(int iconType, int a, int b, int c, int textIdx)
 	//짧은 리터럴을 그대로 넘기면 그 뒤까지 읽으므로 꽉 채운 지역버퍼로 넘긴다.
 	strncpy(logStr, TEXTPTR(textIdx), sizeof(logStr) - 1);
 
+	//화면 위쪽 바깥. y는 위로 갈수록 커지므로 DY보다 크면 화면 밖이다.
+	int sky = DY + LOG_Y * 2;
+
+	//x를 시작/도착 모두 화면 중앙으로 두면 GotoPositionLog()가 수직으로만 움직인다.
+	//떨어질 때와 튕겨 오를 때 모두 속도증가를 줘서, 위에서 툭 떨어져 제자리에 걸렸다가
+	//다 읽고 나면 튀어 올라 사라지는 모양이 된다.
 	i = AddLog(LOG_SIMPLE, 0, 0, 0, 0,
-		DX + LOG_X, ty,			//시작(화면 오른쪽 바깥)
-		DX / 2, ty,				//1차 목적지(화면 중앙)
-		-LOG_X, ty,				//2차 목적지(화면 왼쪽 바깥)
-		(float)(24 * _2X) / MOTIONDIV, 0.0f, (float)(24 * _2X) / MOTIONDIV, 0.0f,
-		FPS * 6, 0,				//중앙에서 6초 머문다(지나가면서 읽어야 해서 짧으면 놓친다)
+		DX / 2, sky,			//시작(화면 위 바깥)
+		DX / 2, ty,				//1차 목적지(제자리로 낙하)
+		DX / 2, sky,			//2차 목적지(다시 위로 빠져나감)
+		(float)(6 * _2X), (float)(3 * _2X),		//떨어질수록 빨라진다
+		(float)(2 * _2X), (float)(3 * _2X),		//튕겨 오를 때도 점점 빨라진다
+		FPS * 6, 0,				//제자리에서 6초 머문다(지나가면서 읽어야 해서 짧으면 놓친다)
 		1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, logStr);
 
 	//AddLog()의 인자에는 아이콘 종류를 넘길 자리가 없다. 방금 채운 칸에 직접 덧붙인다.

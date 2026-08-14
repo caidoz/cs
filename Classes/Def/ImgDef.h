@@ -549,6 +549,7 @@ typedef enum _imgDef {
 
 	CREWBULLET_IMG,
 	GACHA_IMG,
+	OPTION_IMG,
 
 	GTILE_IMG,
 	GBACK_IMG,

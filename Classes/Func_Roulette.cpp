@@ -65,6 +65,39 @@ void DecideRouletteResult(void)
 	//자물쇠만 그리고 턴에서도 건너뛴다.
 	gRouletteResultCnt = Min(crewCnt, TOTALREEL);
 
+	//인터랙티브 전투 튜토리얼 마무리 보스전: 룰렛 3칸을 전부 세바스찬으로 고정한다.
+	//같은 동료가 3개 겹쳤을 때 나오는 강한 스킬(GetSameRouletteCnt()==3 -> CREWDATA_SKILL3)을
+	//반드시 보여줘야 하는 자리라 운에 맡기지 않는다.
+	//
+	//판정을 "보스가 나오는 웨이브 행"으로 한다. 예전에는 ao[ENEMY].type == ENEMY_CASTLE_BOSS4와
+	//demoSeen[DEMO_TUTORIAL_BOSS]로 봤는데, 마무리 보스가 초록 달팽이로 바뀌고 그 플래그도
+	//보스전이 끝나야 서기 때문에 영영 걸리지 않는 조건이 되어 있었다.
+	//아래 crewCnt < MAXCREW 분기보다 먼저 둔다. 동료가 덜 모인 상태로 들어와도 걸려야 한다.
+	if (IsTutorialPlaying() && robin.waveIdx == TUTORIAL_WAVEIDX_BOSS) {
+		int forceCrewIndex = -1;
+
+		for (int r = 0; r < crewCnt && r < MAXCREW; r++) {
+			if (robin.slotCrew[r] == NPC_SEBASTIAN) {
+				forceCrewIndex = r;
+				break;
+			}
+		}
+
+		//세바스찬이 편성에 없으면(세이브가 꼬인 경우) 0번 자리로 대신한다.
+		if (forceCrewIndex < 0)
+			forceCrewIndex = 0;
+
+		for (int r = 0; r < TOTALREEL; r++) {
+			//연출 시작 칸은 아무나 세워두고, 멈추는 칸만 세바스찬으로 맞춘다.
+			gRouletteStartAoOffset[r] = r % crewCnt;
+			gRouletteResultAoOffset[r] = forceCrewIndex;
+		}
+
+		gRouletteResultCnt = TOTALREEL;
+		gRouletteResultValid = true;
+		return;
+	}
+
 	//----------------------------------------------------------------
 	// 동료가 정족수(MAXCREW)를 못 채운 동안: 룰렛은 돌리되 중복 없이 뽑는다.
 	//  - 보유 3명 이하 : 보유한 전원이 한 번씩
@@ -145,21 +178,8 @@ void DecideRouletteResult(void)
 		return -1;
 		};
 
-	// 인터랙티브 전투 튜토리얼: 보스전에서는 룰렛 결과 3칸을 전부 가장 센 동료로 고정해
-	// 트리플 매치(GetSameRouletteCnt==3 -> CREWDATA_SKILL1+2, 즉 그 동료의 3번째 스킬)를
-	// 강제로 띄운다. 실제 전투 시스템(AttackEnemyCheck 등)이 그대로 스킬 데미지를 계산하므로
-	// 별도 데미지 계산 로직은 필요 없다.
-	if (robinmap == MAP_DIORAMA_TOLEM && robin.demoSeen[DEMO_TUTORIAL_BOSS] && ao[ENEMY].type == ENEMY_CASTLE_BOSS4) {
-		int strongestCrewIndex = idx[crewCnt - 1];
-
-		for (int r = 0; r < TOTALREEL; r++) {
-			gRouletteStartAoOffset[r] = idx[r];
-			gRouletteResultAoOffset[r] = strongestCrewIndex;
-		}
-
-		gRouletteResultValid = true;
-		return;
-	}
+	//튜토리얼 보스전의 트리플 매치 강제는 이 함수 맨 앞으로 옮겼다.
+	//여기(crewCnt >= MAXCREW 경로)에 두면 동료가 덜 모인 경우를 놓친다.
 
 	// 시작 3명 = 최약 3개 (crewIndex 저장)
 	for (int r = 0; r < TOTALREEL; r++) {
@@ -259,43 +279,6 @@ void RouletteAttackStart(void)
 		attackSequence = ATTACKSEQUENCE_SLOT;
 		//여기서 어떤 CREW를 뽑을건지 결정한다.
 		DecideRouletteResult();
-
-		//튜토리얼 마무리 보스전: 같은 동료가 3개 겹쳤을 때 나오는 강력한 공격을 보여주는 자리라
-		//결과를 운에 맡기지 않는다. 편성된 동료 중 별이 가장 높은 하나로 세 릴을 채운다.
-		if (tutorialForceRouletteBest) {
-			int bestOffset = -1;
-			int bestStar = -1;
-
-			for (i = 0; i < crewCnt && i < MAXCREW; i++) {
-				int type = robin.slotCrew[i];
-				int crewIdxBest;
-				int star;
-
-				if (type < 0)
-					continue;
-
-				crewIdxBest = GetCrewIdxFromType(type);
-
-				if (crewIdxBest < 0)
-					continue;
-
-				star = enemyData[type * ENEMYDATASIZE + ENEMYDATA_STAR];
-
-				if (star > bestStar) {
-					bestStar = star;
-					bestOffset = i;
-				}
-			}
-
-			if (bestOffset >= 0) {
-				for (i = 0; i < TOTALREEL; i++)
-					gRouletteResultAoOffset[i] = bestOffset;
-
-				gRouletteResultCnt = TOTALREEL;
-			}
-
-			tutorialForceRouletteBest = false;
-		}
 
 		//그 다음에는 전체 순서를 정해준다.
 		//일단 크류를 배치했고

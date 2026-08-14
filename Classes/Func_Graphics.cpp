@@ -2089,6 +2089,14 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 	//주인공 그림자
 		for (i = 0; i < CASTLEALL; i++) {
+			//CASTLEALL은 CREW + TOTAL_CREW(동료 "종류" 수)로 잡힌 값이라, 실제 오브젝트 배열에서는
+			//ENEMY 구간까지 넘어간다(지금 값으로 CASTLEALL=67, ENEMY=47). 그대로 두면 적에게도
+			//여기서 그림자가 한 번 더 그려지고, 아래 "적 그림자"와 합쳐 이중으로 찍힌다.
+			//예전에는 둘 다 몬스터 자기 y에 그려져 정확히 겹쳐서 안 보였는데, 적 그림자를
+			//주인공 바닥선으로 옮기면서 두 개가 떨어져 드러났다.
+			if (i >= ENEMY)
+				break;
+
 			if (ao[i].active) {
 				if (ao[i].moveHandler == PLAYERMOVE) {
 					//��Ƴ�?�ڴ� ����϶�?�׸��� �׸��� ����
@@ -2609,6 +2617,18 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 				zoomBefore = ao[i].zoom;
 				ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
+
+				//몬스터 체력바는 몬스터 바로 밑이 아니라 주인공 체력바와 같은 높이에 둔다.
+				//그림자를 주인공 바닥선에 그리므로(위 "적 그림자" 참고) 체력바도 같은 기준을 써야
+				//공중에 뜬 적이나 크기가 큰 보스에서 바가 몸통에 파묻히거나 혼자 내려가지 않는다.
+				//아래 SimpleHpBarDraw()들이 전부 ao[i].y로 위치를 잡으므로 그 동안만 값을 바꾼다.
+				//몬스터 zoom으로 오프셋을 주면 보스처럼 큰 놈만 바가 따로 놀아서, 보정 없이
+				//주인공 바닥선을 그대로 쓴다. 주인공 바는 자기 y로 그려지고 서 있을 땐 y == ny다.
+				int hpYBack = ao[i].y;
+
+				if (i >= ENEMY && i < NEUTRAL)
+					ao[i].y = ao[ROBIN].ny;
+
 				switch (ao[i].moveHandler) {
 				case BAHAMUTHEADMOVE:
 					SimpleHpBarDraw(ao[i].hp, i < TOTALCHAR ? ao[i].ps[PS_HP] : ao[i].maxhp, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 16 * _2X, ao[i].zoom, i >= ENEMY ? ENEMYHPBARCOLOR : PLAYERHPBARCOLOR);
@@ -2639,6 +2659,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					break;
 				}
 				*/
+				//체력바용으로 바꿔놨던 y를 되돌린다.
+				ao[i].y = hpYBack;
 				ao[i].zoom = zoomBefore;
 			}
 		}
@@ -5134,7 +5156,54 @@ void DrawSkillIcon(int idx, int x, int y, float zoom)
 
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom)
 {
-	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx % 16) * CREWBULLETICONSIZE, (idx / 16) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], CREWBULLET_IMG);
+	DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, (idx % CREWBULLETICONPERLINE) * CREWBULLETICONSIZE, (idx / CREWBULLETICONPERLINE) * CREWBULLETICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[CREWBULLET_IMG], CREWBULLET_IMG);
+}
+
+//총탄 아이콘이 날아가는 모양. 표에 없는 번호는 그냥 날아가는 것으로 둔다.
+int GetCrewBulletAni(int idx)
+{
+	if (idx < 0 || idx >= (int)(sizeof(crewBulletAni) / sizeof(crewBulletAni[0])))
+		return CREWBULLETANI_NONE;
+
+	return crewBulletAni[idx];
+}
+
+//총탄 한 개를 자기 패턴에 맞춰 그린다.
+//DrawCrewBulletIcon()과 달리 x, y는 아이콘의 한가운데다 - 회전/확대가 중심 기준이라야
+//총탄이 제자리에서 돌고 커진다(좌상단 기준으로 돌리면 궤도를 그리며 흔들린다).
+//aniFrame은 계속 늘어나는 값이면 된다. 회전각과 맥동 위상의 기준으로만 쓴다.
+void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame)
+{
+	int xs = (idx % CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
+	int ys = (idx / CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
+
+	if (aniFrame < 0)
+		aniFrame = -aniFrame;
+
+	switch (ani) {
+	case CREWBULLETANI_SPIN:
+		RotateImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys, x, y, false,
+			(float)(aniFrame % CREWBULLET_SPINFRAME) * 360.0f / (float)CREWBULLET_SPINFRAME,
+			false, false, zoom, Vec2(0.5f, 0.5f), sprite[CREWBULLET_IMG], CREWBULLET_IMG);
+		break;
+	case CREWBULLETANI_PULSE:
+	{
+		//0 -> +최대 -> 0 -> -최대 -> 0. 커졌다 원래대로 돌아오는 것이 반복된다.
+		float pulse = 1.0f + CREWBULLET_PULSEAMP
+			* sinf(3.141592f * 2.0f * (float)(aniFrame % CREWBULLET_PULSEFRAME) / (float)CREWBULLET_PULSEFRAME);
+
+		RotateImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys, x, y, false, 0.0f,
+			false, false, zoom * pulse, Vec2(0.5f, 0.5f), sprite[CREWBULLET_IMG], CREWBULLET_IMG);
+		break;
+	}
+	default:
+		//그냥 날아간다. 기존 그리기를 그대로 쓰되 중심좌표를 좌상단으로 되돌려 넘긴다.
+		DrawCrewBulletIcon(idx,
+			x - (float)(CREWBULLETICONSIZE / 2) * zoom,
+			y + (float)(CREWBULLETICONSIZE / 2) * zoom,
+			zoom);
+		break;
+	}
 }
 
 //�ϴ� ��Ƽ�� ��ų�� ��쿡��?����Ѵ�?

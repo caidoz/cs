@@ -289,10 +289,6 @@ int tutorialEquipStepFrame = 0;
 //룰렛이 열렸다는 것을 알리는 반짝임. 남은 프레임 수. 0이면 안 그린다.
 int rouletteGlowFrame = 0;
 
-//튜토리얼 마지막 보스전: 룰렛 결과를 가장 별이 높은 동료 3개로 강제한다.
-//한 번 쓰고 꺼진다(RouletteAttackStart에서 소비).
-bool tutorialForceRouletteBest = false;
-
 
 int gTutorialTouchFunc = TUTORIAL_TOUCH_FREE;
 int gTouchHitFunc = TUTORIAL_TOUCH_NONE;

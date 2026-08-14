@@ -2053,10 +2053,10 @@ void AfterDemo(void)
 	//DEMO_TUTORIAL_FIRSTKILL은 여기서 제외한다. 이 대사("상자에서 동료를 획득하셨네요?")는
 	//플레이어가 동료 바(BAR_CREW)를 눌러야 넘어가고, 그 터치가 동료 메뉴를 직접 연다.
 	//체인으로 다음 컷씬을 띄우면 버튼을 누를 새도 없이 넘어가 버린다.
-	case DEMO_TUTORIAL_SECONDKILL:
-		//DEMO_TUTORIAL_ROULETTE도 여기 있었는데 뺐다. 이제 그 블록이 보스 스폰과 공격 안내 대사까지
-		//직접 들고 있어서, 체인으로 다음 컷씬을 띄우면 공격버튼을 누를 새도 없이 넘어가 버린다.
-		//실전투로 넘겨야 하므로 default(GotoPlay/ResumeTutorialPlay) 경로를 탄다.
+		//DEMO_TUTORIAL_SECONDKILL과 DEMO_TUTORIAL_ROULETTE도 여기 있었는데 뺐다.
+		//둘 다 "다시 공격해보자" / "공격하세요!!"로 끝나는 안내라 실전투로 넘겨야 한다.
+		//체인으로 다음 컷씬을 띄우면 공격버튼을 누를 새도 없이 넘어가 버린다.
+		//그래서 default(GotoPlay/ResumeTutorialPlay) 경로를 타고, 거기서 다음 웨이브를 걸어준다.
 
 		memset(&currencyMarkArr, 0, sizeof(currencyMarkArr));
 		memset(&currencyMark, 0, sizeof(currencyMark));
@@ -2111,35 +2111,30 @@ void AfterDemo(void)
 			touchDisable = true;
 			tutorialWaitingEnemyLand = true;
 			break;
-		case DEMO_TUTORIAL_CREWMENU:
-			SetTutorialWave(0);		//SNAIL
+		//아래 세 단계는 각각 다음 전투를 열어준다. 쓰는 wave[] 행은 표 순서 그대로 0 -> 1 -> 2 -> 3이고,
+		//1차전(행 0)은 SetDemo(DEMO_TUTORIAL_SEBASTIAN)이 미리 걸어둔다.
+		case DEMO_TUTORIAL_SECONDKILL:
+			//"다시 공격해보자" -> 2차전
+			SetTutorialWave(TUTORIAL_WAVEIDX_2ND);
 			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
 			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_HEARTBET:
-			SetTutorialWave(5);		//ONEEYE
+			//하트 3배 베팅을 배운 직후 -> 3차전
+			SetTutorialWave(TUTORIAL_WAVEIDX_3RD);
 			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
 			tutorialWaitingEnemyLand = true;
 			break;
 		case DEMO_TUTORIAL_ROULETTE:
-			//마무리 보스(초록 달팽이). 다른 단계와 똑같이 wave[] 한 행을 걸어주기만 한다.
-			//따로 스폰하면 그 전 웨이브의 몬스터와 겹쳐 두 마리가 서 있게 된다.
-			//크기(2배)는 wave[]에 넣을 자리가 없어서 WaveControler()에서 waveIdx로 판별해 처리한다.
-			SetTutorialWave(WAVEIDX_TUTORIAL_BOSS);
+			//룰렛 개방 설명 + "공격하세요!!" -> 마무리 보스전
+			SetTutorialWave(TUTORIAL_WAVEIDX_BOSS);
 			waveStatus = WAVESTATUS_PLAY;
 			touchDisable = true;
 			tutorialWaitingEnemyLand = true;
-
-			//동료들이 힘을 합치는 것을 보여주는 자리라 룰렛 결과를 최고 별 동료로 몰아준다.
-			tutorialForceRouletteBest = true;
-			break;
-		case DEMO_TUTORIAL_ROULETTE_LIVE:
-			SetTutorialWave(6);		//SKELETON
-			waveStatus = WAVESTATUS_PLAY;
-			touchDisable = true;
-			tutorialWaitingEnemyLand = true;
+			//룰렛 3칸을 세바스찬으로 고정하는 처리는 DecideRouletteResult()가
+			//robin.waveIdx로 판별해서 직접 한다. 여기서 따로 플래그를 세우지 않는다.
 			break;
 		case DEMO_TUTORIAL_BOSS:
 			//이 블록은 이제 "그럼 이만.." 마무리 대사다. 예전에는 여기서 대마왕(ENEMY_CASTLE_BOSS4)을
@@ -3209,10 +3204,10 @@ void SetDemo(int index)
 		//인터랙티브 전투 튜토리얼: 이 블록 FRAME3의 EFFECT_WAVE가 아직 drawHandle==MD_DEMO인 컷씬
 		//도중에 WaveControler()를 호출해서 몬스터를 스폰한다(정식 wave[] 데이터 사용, 체력은
 		//SetEnemy()에서 robin.waveIdx 기준으로 낮춤 - Func_Map.cpp 참고). 그 EFFECT_WAVE보다 먼저
-		//여기서 슬롯을 준비해둔다. waveIdx=0은 SNAIL이 있는 행.
+		//여기서 슬롯을 준비해둔다. 튜토리얼 1차전이 쓰는 행이다.
 		//SetTutorialWave()가 슬롯0 외의 슬롯을 막아주므로, 컷씬이 끝나고 waveStatus가
 		//WAVESTATUS_PLAY로 켜져도 나머지 웨이브가 줄줄이 스폰되지 않는다.
-		SetTutorialWave(0);
+		SetTutorialWave(TUTORIAL_WAVEIDX_1ST);
 		break;
 	}
 

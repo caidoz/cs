@@ -2081,16 +2081,29 @@ void BulletCrewDraw(OBJECT* pObj)
 	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->hp * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
+	//총탄마다 정해진 날아가는 모양(그냥 / 회전 / 쫀득). 아이콘 번호로 정한다.
+	int bulletAni = GetCrewBulletAni(pObj->icon);
+
+	//같은 종류가 여러 발 날아갈 때 전부 같은 각도로 도는 것을 피하려고 오브젝트 번호만큼 위상을 민다.
+	int bulletAniFrame = frame + GetObjFromPtr(pObj) * 7;
+
+	//테두리와 본체가 같은 각도/크기여야 하므로 중심좌표를 한 번만 구해서 같이 쓴다.
+	int bulletCx = xOffset - rx + pObj->x;
+	int bulletCy = STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry;
+
 	//if (pObj->status == 0)
 	SetColor(itemColor[frame / 2 % 6]);
-	
+
 	for (i = 0; i < 4; i++) {
-		DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom + (float)solidPosition[2 * i + 0] * 8 * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry + (float)solidPosition[2 * i + 1] * 8 * pObj->zoom, pObj->zoom);
+		DrawCrewBulletAni(pObj->icon,
+			bulletCx + (float)solidPosition[2 * i + 0] * 8 * pObj->zoom,
+			bulletCy + (float)solidPosition[2 * i + 1] * 8 * pObj->zoom,
+			pObj->zoom, bulletAni, bulletAniFrame);
 	}
 
 	SetColor(false);
 
-	DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x - (float)(CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom);
+	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame);
 	//else
 	//	DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 

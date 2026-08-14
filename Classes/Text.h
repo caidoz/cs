@@ -3234,6 +3234,7 @@ const char* const textId[] = {
 
 	"crewBullet",
 	"gacha",
+	"option",
 
 	"t0",
 	"bg0",
@@ -9043,13 +9044,13 @@ const char* const textId[] = {
 	"갑옷",//TEXT_CATEGORY_ITEM_ARMOR,//6
 	"조끼",//TEXT_CATEGORY_ITEM_VEST,//7
 	"코트",//TEXT_CATEGORY_ITEM_COAT,//8
-	"건렛",//TEXT_CATEGORY_ITEM_GUNTLET,//9
+	"장갑",//TEXT_CATEGORY_ITEM_GUNTLET,//9
 	"팔찌",//TEXT_CATEGORY_ITEM_ARMLET,//10
 	"장갑",//TEXT_CATEGORY_ITEM_GLOVE,//11
-	"킬트",//TEXT_CATEGORY_ITEM_KILT,//12
+	"바지",//TEXT_CATEGORY_ITEM_KILT,//12
 	"치마",//TEXT_CATEGORY_ITEM_SKIRT,//13
 	"바지",//TEXT_CATEGORY_ITEM_PANTS,//14
-	"그리브",//TEXT_CATEGORY_ITEM_GREAVES,//15
+	"신발",//TEXT_CATEGORY_ITEM_GREAVES,//15
 	"신발",//TEXT_CATEGORY_ITEM_SHOES,//16
 	"부츠",//TEXT_CATEGORY_ITEM_BOOTS,//17
 	"목걸이",//TEXT_CATEGORY_ITEM_NECK,//18

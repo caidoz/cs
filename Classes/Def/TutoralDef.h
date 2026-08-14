@@ -70,9 +70,20 @@ typedef enum _tutorialEquipStep {
 #define TUTORIAL_EQUIPSTEP_SLOTSHOW_FRAME	(FPS * 2)
 #define TUTORIAL_EQUIPSTEP_HERO_FRAME		(FPS * 3)
 
+//튜토리얼 4연전이 쓰는 wave[] 행. 표 앞쪽 0~3번을 순서대로 그대로 쓴다.
+//튜토리얼 전용 행을 따로 만들지 않는다 - 표 순서와 실제 진행이 어긋나면 나중에 읽기 어렵다.
+//튜토리얼이 끝나면 4번 행부터 일반 진행이 이어진다.
+#define TUTORIAL_WAVEIDX_1ST				0	//SNAIL		첫 몬스터
+#define TUTORIAL_WAVEIDX_2ND				1	//SNAIL		동료 편성을 배운 뒤
+#define TUTORIAL_WAVEIDX_3RD				2	//TREE		하트 3배 베팅 대상
+#define TUTORIAL_WAVEIDX_BOSS				3	//SNAIL_GREEN	마무리 보스(2배 크기)
+
 //튜토리얼 마무리 보스(2배 크기 초록 달팽이)의 체력.
 //동료 3명이 겹친 강한 공격 한 방에 죽어야 하므로 넉넉하지 않게 잡는다.
 #define TUTORIAL_BOSS_HP					300
+
+//마무리 보스를 몇 배로 키울지.
+#define TUTORIAL_BOSS_ZOOM					2.0f
 
 //룰렛 개방 반짝임이 도는 시간.
 #define ROULETTE_GLOW_FRAME					(FPS * 2)

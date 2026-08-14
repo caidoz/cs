@@ -1802,6 +1802,22 @@ typedef enum _skillDef {
 	MAXSKILLCOUNT = 41,
 #endif
 	CREWBULLETICONSIZE = 32 * _2X,
+	//총탄 이미지(crewBullet.png)는 가로로 16개씩 늘어서 있다.
+	CREWBULLETICONPERLINE = 16,
+
+	//총탄이 날아가는 모양. crewBulletAni[]가 아이콘마다 하나씩 들고 있다.
+	CREWBULLETANI_NONE = 0,	//그냥 날아간다
+	CREWBULLETANI_SPIN,		//360도 회전하며 날아간다
+	CREWBULLETANI_PULSE,	//살짝 커졌다 원래대로 돌아오기를 반복하며 쫀득하게 날아간다
+	TOTAL_CREWBULLETANI,
+
+	//SPIN: 한 바퀴 도는 데 걸리는 프레임
+	CREWBULLET_SPINFRAME = 24,
+	//PULSE: 커졌다 작아졌다 한 번 하는 데 걸리는 프레임
+	CREWBULLET_PULSEFRAME = 20,
+	//PULSE로 커지는 최대 비율(%). 아래 CREWBULLET_PULSEAMP가 이 값을 쓴다.
+	CREWBULLET_PULSEPERCENT = 18,
+
 	SKILLPERCENTDATASIZE = 8,
 	ITEMICONSIZE = 16 * _2X,
 
@@ -2417,5 +2433,7 @@ typedef enum _skillDef {
 	END_SKILLDEF
 } SKILLDEF;
 
+//PULSE 총탄이 커지는 최대 비율. enum은 정수만 담을 수 있어 여기서 실수로 만든다.
+#define CREWBULLET_PULSEAMP		((float)CREWBULLET_PULSEPERCENT / 100.0f)
 
 #endif

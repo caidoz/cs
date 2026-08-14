@@ -1232,9 +1232,6 @@ extern int tutorialEquipStepFrame;
 //룰렛이 열렸다는 것을 알리는 반짝임의 남은 프레임.
 extern int rouletteGlowFrame;
 
-//튜토리얼 마지막 보스전에서 룰렛 결과를 최고 별 동료 3개로 강제할지.
-extern bool tutorialForceRouletteBest;
-
 
 //튜토리얼에서 지금 눌러야 하는 터치기능.
 //TUTORIAL_TOUCH_FREE면 제한 없음, TUTORIAL_TOUCH_NONE이면 아무것도 안 눌린다.

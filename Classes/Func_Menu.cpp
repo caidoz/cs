@@ -1605,58 +1605,342 @@ void CalendarDraw(int x, int y, float zoom)
 	//
 }
 
+//환경설정 화면 글자 크기
+static const float OPTIONTITLEZOOM = 1.8f;
+static const float OPTIONTEXTZOOM = 1.2f;
+static const float OPTIONROWTEXTZOOM = 1.32f;	//항목 이름은 리본/버튼 글자보다 10% 크게
+
+//환경설정 화면(option.png)에서 잘라 쓰는 파츠 좌표.
+//optionSample.png의 배치를 그대로 따라간다.
+enum {
+	//창 본체. 세로로 늘릴 때는 y축을 늘리지 않고 MID 띠를 반복해서 쌓는다.
+	OPT_WIN_X = 2, OPT_WIN_W = 398,
+	OPT_WIN_TOP_Y = 1, OPT_WIN_TOP_H = 95,		//타이틀바 + 위쪽 금색 모서리
+	OPT_WIN_MID_Y = 200, OPT_WIN_MID_H = 20,		//반복해서 쌓는 중간 띠
+	OPT_WIN_BOT_Y = 300, OPT_WIN_BOT_H = 69,		//아래쪽 금색 모서리 + 하단 테두리
+
+	//타이틀바의 X버튼(창 이미지에 이미 그려져 있다. 터치영역만 잡아준다)
+	OPT_CLOSE_X = 345, OPT_CLOSE_Y = 26, OPT_CLOSE_W = 50, OPT_CLOSE_H = 40,
+
+	//하단 회색 띠(고객센터/이용약관/개인정보처리방침이 올라간다)
+	OPT_FOOT_X = 2, OPT_FOOT_Y = 375, OPT_FOOT_W = 396, OPT_FOOT_H = 59, OPT_FOOT_EDGE = 24,
+
+	//본문 패널(밝은 회색 라운드)
+	OPT_PANEL_X = 413, OPT_PANEL_Y = 48, OPT_PANEL_W = 304, OPT_PANEL_H = 309, OPT_PANEL_EDGE = 40,
+
+	//섹션 리본(파랑)
+	OPT_RIBBON_X = 733, OPT_RIBBON_Y = 31, OPT_RIBBON_W = 248, OPT_RIBBON_H = 55, OPT_RIBBON_EDGE = 26,
+
+	//행 묶음 배경(크림색)
+	OPT_GROUP_X = 734, OPT_GROUP_Y = 160, OPT_GROUP_W = 286, OPT_GROUP_H = 56, OPT_GROUP_EDGE = 24,
+
+	//가로로 긴 파란 버튼
+	OPT_BTNBLUE_X = 283, OPT_BTNBLUE_Y = 509, OPT_BTNBLUE_W = 163, OPT_BTNBLUE_H = 69, OPT_BTN_EDGE = 28,
+
+	//토글 스위치
+	OPT_TOGGLEON_X = 414, OPT_TOGGLEON_Y = 382, OPT_TOGGLE_W = 86, OPT_TOGGLE_H = 45,
+	OPT_TOGGLEOFF_X = 413, OPT_TOGGLEOFF_Y = 437,
+
+	//파란 화살표 버튼
+	OPT_ARROW_X = 866, OPT_ARROW_Y = 424, OPT_ARROW_W = 65, OPT_ARROW_H = 62,
+
+	//아이콘 3x3. 좌->우 열, 위->아래 행.
+	OPT_ICON_W = 66, OPT_ICON_H = 66,
+	OPT_ICONCOL0 = 9, OPT_ICONCOL1 = 88, OPT_ICONCOL2 = 166,
+	OPT_ICONROW0 = 441, OPT_ICONROW1 = 511, OPT_ICONROW2 = 581,
+};
+
+//option.png 한 조각을 그대로 그린다.
+static void DrawOptionPart(int sx, int sy, int sw, int sh, float x, float y, float sc)
+{
+	DrawImage(sw, sh, sx, sy, x, y, false, false, false, false, false, sc, sprite[OPTION_IMG], OPTION_IMG);
+}
+
+//가운데를 늘려서 원하는 크기로 만드는 9분할. 모서리는 원본 비율을 지킨다.
+static void DrawOptionPart9(int sx, int sy, int sw, int sh, int edge, float x, float y, float w, float h, float sc)
+{
+	float e = (float)edge * sc;
+	int   me = sw - edge * 2;	//가운데 소스 폭
+	int   mv = sh - edge * 2;	//가운데 소스 높이
+	float mw = w - e * 2;
+	float mh = h - e * 2;
+
+	if (w <= 0 || h <= 0)
+		return;
+
+	if (mw < 0) mw = 0;
+	if (mh < 0) mh = 0;
+
+	//늘린 조각과 모서리가 맞닿는 곳은 반올림 때문에 1픽셀 틈이 생긴다.
+	//변과 가운데를 양쪽으로 OV만큼 키워 겹쳐 그린 뒤, 모서리를 그 위에 덮는다.
+	{
+		const float OV = 1.0f;
+		float ow = mw + OV * 2;
+		float oh = mh + OV * 2;
+
+		//위/아래 변
+		if (mw > 0 && me > 0) {
+			DrawImageScale(me, edge, sx + edge, sy, x + e - OV, y, false, false, false, false, false, ow / (float)me, sc, sprite[OPTION_IMG], OPTION_IMG);
+			DrawImageScale(me, edge, sx + edge, sy + sh - edge, x + e - OV, y - h + e, false, false, false, false, false, ow / (float)me, sc, sprite[OPTION_IMG], OPTION_IMG);
+		}
+
+		//좌/우 변
+		if (mh > 0 && mv > 0) {
+			DrawImageScale(edge, mv, sx, sy + edge, x, y - e + OV, false, false, false, false, false, sc, oh / (float)mv, sprite[OPTION_IMG], OPTION_IMG);
+			DrawImageScale(edge, mv, sx + sw - edge, sy + edge, x + w - e, y - e + OV, false, false, false, false, false, sc, oh / (float)mv, sprite[OPTION_IMG], OPTION_IMG);
+		}
+
+		//가운데
+		if (mw > 0 && mh > 0 && me > 0 && mv > 0)
+			DrawImageScale(me, mv, sx + edge, sy + edge, x + e - OV, y - e + OV, false, false, false, false, false, ow / (float)me, oh / (float)mv, sprite[OPTION_IMG], OPTION_IMG);
+	}
+
+	//네 모서리
+	DrawOptionPart(sx, sy, edge, edge, x, y, sc);
+	DrawOptionPart(sx + sw - edge, sy, edge, edge, x + w - e, y, sc);
+	DrawOptionPart(sx, sy + sh - edge, edge, edge, x, y - h + e, sc);
+	DrawOptionPart(sx + sw - edge, sy + sh - edge, edge, edge, x + w - e, y - h + e, sc);
+}
+
+//창을 세로로 늘린다. y축 스케일을 키우면 테두리가 뭉개지므로
+//중간 띠(OPT_WIN_MID)를 필요한 만큼 반복해서 쌓아 올린다.
+static void DrawOptionWindow(float x, float y, float w, float h)
+{
+	float s = w / (float)OPT_WIN_W;
+	float topH = (float)OPT_WIN_TOP_H * s;
+	float botH = (float)OPT_WIN_BOT_H * s;
+	//띠 하나를 그린 뒤 원본 1픽셀만큼 덜 내려간다.
+	//딱 맞게 내려가면 반올림 때문에 이음매에 1픽셀 틈이 생긴다.
+	float step = (float)(OPT_WIN_MID_H - 1) * s;
+	float rest = h - topH - botH;
+	float cy = y - topH;
+
+	DrawOptionPart(OPT_WIN_X, OPT_WIN_TOP_Y, OPT_WIN_W, OPT_WIN_TOP_H, x, y, s);
+
+	while (rest > 0.5f) {
+		if (rest >= step) {
+			DrawOptionPart(OPT_WIN_X, OPT_WIN_MID_Y, OPT_WIN_W, OPT_WIN_MID_H, x, cy, s);
+			cy -= step;
+			rest -= step;
+		}
+		else {
+			//마지막 자투리는 띠를 잘라서 채운다. 모자라지 않게 한 픽셀 넉넉히 자른다.
+			int cut = (int)(rest / s) + 1;
+
+			DrawOptionPart(OPT_WIN_X, OPT_WIN_MID_Y, OPT_WIN_W, cut, x, cy, s);
+			cy -= rest;
+			rest = 0;
+		}
+	}
+
+	DrawOptionPart(OPT_WIN_X, OPT_WIN_BOT_Y, OPT_WIN_W, OPT_WIN_BOT_H, x, cy, s);
+}
+
+//섹션 제목 리본
+static void DrawOptionRibbon(const char* title, float x, float y, float w, float h, float sc)
+{
+	DrawOptionPart9(OPT_RIBBON_X, OPT_RIBBON_Y, OPT_RIBBON_W, OPT_RIBBON_H, OPT_RIBBON_EDGE, x, y, w, h, sc);
+
+	//리본은 왼쪽 끝의 금색 장식이 글자를 밀어내므로 그만큼 오른쪽으로 옮겨서 가운데 정렬한다.
+	SetFontColor(COLOR_WHITE);
+	CenterTextStr(title, x + w * 0.5f + h * 0.24f, y - h * 0.5f + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+	SetFontColor(COLOR_WHITE);
+}
+
+//아이콘 + 이름으로 시작하는 한 줄. 오른쪽에 무엇을 붙일지는 호출한 쪽이 정한다.
+static void DrawOptionRowLabel(int iconSx, int iconSy, const char* label, float x, float y, float rowH)
+{
+	float iconSize = rowH * 0.7f;
+	float iconSc = iconSize / (float)OPT_ICON_W;
+
+	DrawOptionPart(iconSx, iconSy, OPT_ICON_W, OPT_ICON_H, x + rowH * 0.14f, y - (rowH - iconSize) / 2, iconSc);
+
+	SetFontColor(COLOR_WHITE);
+	DrawTextStr(label, x + rowH * 0.14f + iconSize + rowH * 0.2f, y - rowH / 2 + (float)FONT_HEIGHT * OPTIONROWTEXTZOOM / 2, OPTIONROWTEXTZOOM);
+}
+
+//ON/OFF 토글. 오른쪽 끝에 붙는다.
+static void DrawOptionToggle(bool on, float rightX, float centerY, float toggleH, int touchFunc)
+{
+	float sc = toggleH / (float)OPT_TOGGLE_H;
+	float toggleW = (float)OPT_TOGGLE_W * sc;
+	float tx = rightX - toggleW;
+	float ty = centerY + toggleH / 2;
+
+	if (on)
+		DrawOptionPart(OPT_TOGGLEON_X, OPT_TOGGLEON_Y, OPT_TOGGLE_W, OPT_TOGGLE_H, tx, ty, sc);
+	else
+		DrawOptionPart(OPT_TOGGLEOFF_X, OPT_TOGGLEOFF_Y, OPT_TOGGLE_W, OPT_TOGGLE_H, tx, ty, sc);
+
+	SetRectPoint(tx, ty, toggleW, toggleH, touchFunc);
+}
+
 void OptionDraw(int x, int y, float zoom)
 {
-	//int GAP = -4 * _2X;
-	int GAP = 14 * _2X;
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const float s = w / (float)OPT_WIN_W;		//창을 팝업 폭에 맞춘 배율
 
-	//DrawFrame(x, y, (float)(POPUPWINDOWSIZE_X)* zoom, (float)(GAMEMENUWIN2_Y)* zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
+	const float RIBBONH = 40 * zoom;
+	const float ROWH = 57 * zoom;
+	const float SECTIONGAP = 5 * zoom;
+	const float RIBBONW = 160 * zoom;
+	const float TOGGLEH = ROWH * 0.78f;
 
-	//메인화면
-//음악
-	CenterText(TEXT_BGM, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y - (float)(32 * _2X) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.bgm ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_BGM, option.bgm ? FRAME_GREEN : FRAME_RED, zoom);
+	float innerL = x + 22.0f * s;
+	float innerR = x + w - 22.0f * s;
+	float innerW = innerR - innerL;
 
-	//효과음
-	CenterText(TEXT_SE, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y - (float)(32 * _2X) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.se ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_SE, option.se ? FRAME_GREEN : FRAME_RED, zoom);
+	float footH = (float)OPT_FOOT_H * s;
+	float footY = y - h + 20.0f * s + footH;	//하단 띠의 위쪽 좌표
+	float panelTop = y - 82.0f * s;
+	float panelBottom = footY + 4.0f * s;
+	float panelH = panelTop - panelBottom;
 
-	//진동
-	CenterText(TEXT_VIBRATION, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.vibration ? TEXT_ON : TEXT_OFF], TOUCH_FUNC_OPTION_VIBRATION, option.vibration ? FRAME_GREEN : FRAME_RED, zoom);
+	float cy;			//지금 그릴 줄의 위쪽 좌표
+	float groupTop;
+	float rowRight;
+	float bx, bw;
+	int i;
 
-	//언어
-	CenterText(TEXT_LANGUAGE, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_KOREAN + option.language], TOUCH_FUNC_OPTION_LANGUAGE, FRAME_BLUE, zoom);
+	//창 + 본문 패널
+	DrawOptionWindow(x, y, w, h);
+	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE, innerL, panelTop, innerW, panelH, s * 0.5f);
 
-	//페이스북
-	CenterText(TEXT_FACEBOOK, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 2) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 2) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.facebook ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_FACEBOOK, option.facebook ? FRAME_GREEN : FRAME_RED, zoom);
+	//타이틀. 가운데의 기어 방패를 피해 왼쪽으로 빼고 조금 내려 그린다.
+	SetFontColor(COLOR_WHITE);
+	CenterTextStr("환경설정", x + w / 2 - 180.0f * zoom, y - 30.0f * s - 32.0f * zoom + (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
 
-	//구글플레이
-	CenterText(TEXT_GOOGLEPLAY, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 2) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 2) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.google ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_GOOGLE, option.google ? FRAME_GREEN : FRAME_RED, zoom);
+	//타이틀바의 X버튼은 창 이미지에 이미 그려져 있다. 터치영역만 얹는다.
+	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s, (float)OPT_CLOSE_W * s, (float)OPT_CLOSE_H * s, TOUCH_FUNC_POPUP_CLOSE);
 
-	//게임센터
-	CenterText(TEXT_GAMECENTER, x + (float)(50 * _2X + 32 * _2X + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 3) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 3) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[option.gameCenter ? TEXT_CONNECTED : TEXT_DISCONNECTED], TOUCH_FUNC_OPTION_GAMECENTER, option.gameCenter ? FRAME_GREEN : FRAME_RED, zoom);
+	//글자와 버튼을 키워야 해서 좌우 여백을 최대한 줄여 쓴다.
+	innerL += 7.0f * zoom;
+	innerR -= 7.0f * zoom;
+	innerW = innerR - innerL;
+	rowRight = innerR - 6.0f * zoom;
 
-	//게스트
-	CenterText(TEXT_GUEST, x + (float)(DX / 2 + 104 * _2X / 2 + GAP) * zoom, y + (float)(-32 * _2X - 64 * _2X * 3) * zoom, zoom);
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 16 * _2X - 64 * _2X * 3) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_CONNECTED], TOUCH_FUNC_OPTION_GUEST, FRAME_GREY, zoom);
+	cy = panelTop - 9.0f * zoom;
 
-	//도움말 지원
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_HELP], TOUCH_FUNC_OPTION_HELP, FRAME_BLUE, zoom);
+	//----- 사운드 -----
+	DrawOptionRibbon("사운드", innerL, cy, RIBBONW, RIBBONH, s * 0.6f);
+	cy -= RIBBONH + 4 * zoom;
 
-	//개인정보 보호정책
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_PRIVACY], TOUCH_FUNC_OPTION_POLICY, FRAME_BLUE, zoom);
+	groupTop = cy;
+	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE, innerL, groupTop, innerW, ROWH * 2, s * 0.5f);
 
-	//이용약관
-	DrawTouchLargeButton(x + (float)(50 * _2X + 32 * _2X + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X - 40 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_TERMOFSERVICE], TOUCH_FUNC_OPTION_POLICY, FRAME_GREY, zoom);
+	DrawOptionRowLabel(OPT_ICONCOL1, OPT_ICONROW0, textId[TEXT_BGM], innerL, cy, ROWH);
+	DrawOptionToggle(option.bgm != 0, rowRight, cy - ROWH / 2, TOGGLEH, TOUCH_FUNC_OPTION_BGM);
+	cy -= ROWH;
 
-	//제작진
-	DrawTouchLargeButton(x + (float)(DX / 2 + 104 * _2X / 2 + GAP - OPTIONBUTTONSIZE_X / 2) * zoom, y + (float)(-32 * _2X - 64 * _2X * 4 - 12 * _2X - 40 * _2X) * zoom, (float)OPTIONBUTTONSIZE_X * zoom, (float)OPTIONBUTTONSIZE_Y * zoom, textId[TEXT_STAFF], TOUCH_FUNC_OPTION_COMMUNITY, FRAME_GREY, zoom);
+	DrawOptionRowLabel(OPT_ICONCOL0, OPT_ICONROW0, textId[TEXT_SE], innerL, cy, ROWH);
+	DrawOptionToggle(option.se != 0, rowRight, cy - ROWH / 2, TOGGLEH, TOUCH_FUNC_OPTION_SE);
+	cy -= ROWH + SECTIONGAP;
+
+	//----- 알림 -----
+	DrawOptionRibbon("알림", innerL, cy, RIBBONW, RIBBONH, s * 0.6f);
+	cy -= RIBBONH + 4 * zoom;
+
+	//알림 설정 버튼이 아래 테두리에 닿지 않게 바탕패널만 조금 더 늘려준다.
+	groupTop = cy;
+	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE, innerL, groupTop, innerW, ROWH * 2 + 16.0f * zoom, s * 0.5f);
+
+	DrawOptionRowLabel(OPT_ICONCOL2, OPT_ICONROW0, "푸시 알림", innerL, cy, ROWH);
+	DrawOptionToggle(option.pushAlarm != 0, rowRight, cy - ROWH / 2, TOGGLEH, TOUCH_FUNC_OPTION_PUSHALARM);
+	cy -= ROWH;
+
+	//알림 설정(가로로 긴 파란 버튼 한 줄)
+	{
+		float bh = ROWH * 0.88f + 4.0f * zoom;
+		float by = cy - (ROWH - bh) / 2;
+		float iconSize = bh * 0.7f;
+
+		bx = innerL + 16.0f * zoom;
+		bw = rowRight - bx;
+
+		DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE, bx, by, bw, bh, s * 0.5f);
+		DrawOptionPart(OPT_ICONCOL2, OPT_ICONROW2, OPT_ICON_W, OPT_ICON_H, bx + bh * 0.2f, by - (bh - iconSize) / 2, iconSize / (float)OPT_ICON_W);
+
+		SetFontColor(COLOR_WHITE);
+		DrawTextStr("알림 설정", bx + bh * 0.2f + iconSize + bh * 0.24f, by - bh / 2 + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+
+		DrawOptionPart(OPT_ARROW_X, OPT_ARROW_Y, OPT_ARROW_W, OPT_ARROW_H, bx + bw - bh * 0.9f, by - (bh - bh * 0.7f) / 2, bh * 0.7f / (float)OPT_ARROW_H);
+
+		SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_OPTION_PUSHALARM);
+	}
+	//늘어난 알림 패널만큼 기타 섹션 전체를 아래로 내린다.
+	cy -= ROWH + SECTIONGAP + 16.0f * zoom;
+
+	//----- 기타 -----
+	DrawOptionRibbon("기타", innerL, cy, RIBBONW, RIBBONH, s * 0.6f);
+	cy -= RIBBONH + 4 * zoom;
+
+	groupTop = cy;
+	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE, innerL, groupTop, innerW, ROWH * 3, s * 0.5f);
+
+	DrawOptionRowLabel(OPT_ICONCOL0, OPT_ICONROW1, textId[TEXT_VIBRATION], innerL, cy, ROWH);
+	DrawOptionToggle(option.vibration != 0, rowRight, cy - ROWH / 2, TOGGLEH, TOUCH_FUNC_OPTION_VIBRATION);
+	cy -= ROWH;
+
+	//언어(값이 적힌 파란 버튼)
+	DrawOptionRowLabel(OPT_ICONCOL1, OPT_ICONROW1, textId[TEXT_LANGUAGE], innerL, cy, ROWH);
+	{
+		float bh = ROWH * 0.82f;
+		float by = cy - (ROWH - bh) / 2;
+
+		bw = 176.0f * zoom;
+		bx = rowRight - bw;
+
+		DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE, bx, by, bw, bh, s * 0.5f);
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStr(textId[TEXT_KOREAN + option.language], bx + bw / 2 - bh * 0.3f, by - bh / 2 + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+
+		DrawOptionPart(OPT_ARROW_X, OPT_ARROW_Y, OPT_ARROW_W, OPT_ARROW_H, bx + bw - bh * 0.9f, by - (bh - bh * 0.7f) / 2, bh * 0.7f / (float)OPT_ARROW_H);
+
+		SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_OPTION_LANGUAGE);
+	}
+	cy -= ROWH;
+
+	//버전 정보
+	DrawOptionRowLabel(OPT_ICONCOL1, OPT_ICONROW2, "버전 정보", innerL, cy, ROWH);
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem("Ver 1.0.0", rowRight, cy - ROWH / 2 + (float)FONT_HEIGHT * OPTIONROWTEXTZOOM / 2, OPTIONROWTEXTZOOM, RIGHT, true);
+
+	//----- 하단 띠 + 버튼 3개 -----
+	DrawOptionPart9(OPT_FOOT_X, OPT_FOOT_Y, OPT_FOOT_W, OPT_FOOT_H, OPT_FOOT_EDGE, x + 12.0f * s, footY, w - 24.0f * s, footH, s);
+
+	{
+		const char* footText[3] = { "고객센터", "이용약관", "개인정보처리방침" };
+		const int footTouch[3] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_POLICY };
+		float gap = 8.0f * zoom;
+		float bh2 = footH * 0.68f;
+		float by2 = footY - (footH - bh2) / 2;
+
+		bw = (innerW - gap * 2) / 3;
+
+		for (i = 0; i < 3; i++) {
+			//글자는 섹션 제목 크기까지 키우되, 버튼을 넘칠 때만 그만큼 줄인다.
+			float tz = OPTIONTEXTZOOM;
+			float maxW = bw - 14.0f * zoom;
+			float tw;
+
+			bx = innerL + (bw + gap) * i;
+
+			DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE, bx, by2, bw, bh2, s * 0.5f);
+
+			tw = StringWidth(footText[i], tz);
+			if (tw > maxW && tw > 0)
+				tz *= (maxW / tw) * 0.95f;	//넘치는 글자는 5% 더 줄여 좌우에 여유를 준다
+
+			SetFontColor(COLOR_WHITE);
+			CenterTextStr(footText[i], bx + bw / 2, by2 - bh2 / 2 + (float)FONT_HEIGHT * tz / 2, tz);
+
+			SetRectPoint(bx, by2, bw, bh2, footTouch[i]);
+		}
+	}
+
+	SetFontColor(COLOR_WHITE);
 }
 
 
@@ -3803,9 +4087,10 @@ void DrawItemCard(
 	}
 
 	if (empty) {
+		//카드 한가운데에 오도록 왼쪽 4픽셀, 아래 8픽셀 밀어준다(y는 위로 갈수록 커진다).
 		DrawPlusMark(
-			x + (float)88 * zoom,
-			y - (float)72 * zoom,
+			x + (float)88 * zoom - 4,
+			y - (float)72 * zoom - 8,
 			1.45f * zoom);
 	}
 	else {

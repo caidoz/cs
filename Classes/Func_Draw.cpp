@@ -718,10 +718,11 @@ void GNBDraw(int x, int y)
 			if (xOffset != 0)//ȭ���� 
 				SetRectPoint(x, y, DX, DY, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
 			else
-				SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
+				SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
 		}
 		else {
-			SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
+			//우측상단 톱니바퀴는 환경설정 팝업을 띄운다.
+			SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
 		}
 		break;
 	case MD_BATTLE:
@@ -787,6 +788,15 @@ void LogDraw(LOG* g)
 	//앞서 그린 메뉴가 SetSectionClip()을 걸어둔 채로 넘어오면 DrawTextStrSystem()의
 	//클리핑 검사(y > clipY)에 걸려 틀과 아이콘만 남고 글자가 통째로 사라진다.
 	UnSectionClip(false);
+
+	//위로 빠져나가기 시작할 때 살짝 주저앉았다 튀어 오르는 반동.
+	//frame2가 2차 목적지(화면 위)로 올라가는 구간의 프레임 수라 그 앞머리에만 준다.
+	//아래 그리기가 전부 g->y를 기준으로 하므로 그리는 동안만 값을 옮기고 끝에서 되돌린다.
+	const int BOUNCEFRAME = FPS / 5;
+	int logYBack = g->y;
+
+	if (g->frame2 > 0 && g->frame2 < BOUNCEFRAME)
+		g->y -= (int)((float)(6 * _2X) * sinf(3.141592f * (float)g->frame2 / (float)BOUNCEFRAME));
 
 	DrawFrame(g->x - (float)(LOG_X / 2) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom, (float)LOG_X * g->zoom, (float)LOG_Y * g->zoom, FRAME_SHOPBALLOON);
 
@@ -862,13 +872,14 @@ void LogDraw(LOG* g)
 		//왼쪽에 아이콘 한 개, 오른쪽에 한 줄 텍스트. 아이콘은 종류마다 그리는 함수가 다르다.
 		//지나가는 알림이라 읽을 시간이 짧다. 아이콘/글자를 크게 잡는다.
 		const float ICONZOOM = 2.4f;		//아이콘 배율
-		const float TEXTZOOM = 1.5f;		//글자 배율
+		const float TEXTZOOM = 1.1f;		//글자 배율
 		const int ICONBOX = 40 * _2X;		//아이콘이 차지하는 폭
 
 		float iconX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X) * g->zoom;
 		float iconY = g->y + (float)(LOG_Y / 2) * g->zoom - (float)(10 * _2X) * g->zoom;
-		float textX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X + ICONBOX) * g->zoom;
-		float textW = (float)(LOG_X - 20 * _2X - ICONBOX) * g->zoom;
+		//글자는 아이콘에서 8픽셀 더 떼고, 캐릭터는 4픽셀 왼쪽으로 붙인다.
+		float textX = g->x - (float)(LOG_X / 2) * g->zoom + (float)(10 * _2X + ICONBOX) * g->zoom + 8;
+		float textW = (float)(LOG_X - 20 * _2X - ICONBOX) * g->zoom - 8;
 
 		switch (g->iconType) {
 		case LOGICON_CREW:
@@ -878,9 +889,11 @@ void LogDraw(LOG* g)
 			//DrawCmfDetailShadow()는 발밑 기준이라 아이콘 칸 아래쪽에 세운다.
 			int crewType = GetTypeFromCmf(g->iconA);
 
+			//DrawCmfDetailShadow()는 발밑 기준이라 로그창 아래쪽에 세운다.
+			//그대로 두면 바닥에 너무 붙어 보여서 8픽셀 띄운다(y는 위로 갈수록 커진다).
 			DrawCmfDetailShadow(g->iconA, crewPos[crewType * 5 + 0],
-				iconX + (float)(ICONBOX / 2) * g->zoom,
-				iconY - (float)(LOG_Y - 16 * _2X) * g->zoom,
+				iconX + (float)(ICONBOX / 2) * g->zoom - 4,
+				iconY - (float)(LOG_Y - 16 * _2X) * g->zoom + 8,
 				RIGHT, g->zoom * 1.6f);
 			break;
 		}
@@ -907,8 +920,7 @@ void LogDraw(LOG* g)
 
 		//로그 바탕(FRAME_SHOPBALLOON)이 밝아서 기본 폰트색(흰색)으로 쓰면 글자가 안 보인다.
 		//LOG_SKILL/LOG_BETCOIN과 같은 방식으로 어두운 색을 씌우고 원래대로 돌려놓는다.
-		//새까맣게(COLOR_DARKGREY) 쓰면 오히려 바탕 무늬에 묻혀서 조금 옅은 회색을 쓴다.
-		SetFontColor(COLOR_STARGREY);
+		SetFontColor(COLOR_BROWN);
 		LineTextStrSolid(g->text, textX,
 			g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom,
 			textW, -1, -1, g->zoom * TEXTZOOM);
@@ -916,6 +928,9 @@ void LogDraw(LOG* g)
 		break;
 	}
 	}
+
+	//반동으로 옮겨놨던 y를 되돌린다. 이게 빠지면 매 프레임 조금씩 위로 밀려 올라간다.
+	g->y = logYBack;
 }
 
 int GetEventMenuPosX(int eventType, int eventStatus)
@@ -2062,7 +2077,8 @@ void DrawPopUp(int idx)
 	}
 	//���ư
 
-	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER)) {
+	//환경설정은 창 자체의 타이틀바에 X버튼이 있으므로 좌측상단 뒤로가기를 그리지 않는다.
+	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER && p->type != POPUPTYPE_OPTION)) {
 		float xMarkZoom = 1.0f;
 		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom);
 

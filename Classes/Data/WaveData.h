@@ -30,28 +30,29 @@ const int boss[] = {
 //2: 체력
 const int wave[] = {
 	//여기서 패턴을 잡아준다.
-	//몬스터를 그냥 잡는거
-	//아델라인성 -  1
+	//
+	//0~3번 행은 튜토리얼 4연전이 순서대로 쓴다(TutoralDef.h의 TUTORIAL_WAVEIDX_*).
+	//튜토리얼은 한 번에 한 마리만 상대하므로(GetMaxWaveCnt()가 1을 돌려준다) 슬롯0만 채운다.
+	//튜토리얼이 끝나면 4번 행부터 일반 진행이 이어진다.
+
+	//아델라인성 - 1	튜토리얼 1차전: 첫 몬스터
 	ENEMY_SNAIL, FPS * 1, MONSTERTYPE_JACO,//1
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//체력 높은 애를 잡는것
-	//아델라인성 - 2
+	//아델라인성 - 2	튜토리얼 2차전: 동료 편성을 배운 뒤 다시 한 번
+	ENEMY_SNAIL, FPS * 1, MONSTERTYPE_JACO,//1
+	false, FPS * 2, MONSTERTYPE_JACO,//2
+	false, FPS * 3, MONSTERTYPE_JACO,//3
+
+	//아델라인성 - 3	튜토리얼 3차전: 하트 3배 베팅으로만 잡히는 체력 높은 놈
 	ENEMY_TREE, FPS * 1, MONSTERTYPE_JACO,//1
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//두마리를 잡는 것
-	//아델라인성 - 3
-	ENEMY_SNAIL, FPS * 1, MONSTERTYPE_JACO,//1
-	ENEMY_SNAIL, FPS * 2, MONSTERTYPE_JACO,//2
-	false, FPS * 3, MONSTERTYPE_JACO,//3
-
-	//두마리인데 다른 캐릭터 조합
-	//아델라인성 - 4
-	ENEMY_SNAIL, FPS * 1, MONSTERTYPE_JACO,//1
-	ENEMY_TREE, FPS * 2, MONSTERTYPE_JACO,//2
+	//아델라인성 - 4	튜토리얼 4차전(마무리 보스): 초록 달팽이. 크기는 WaveControler()가 2배로 키운다
+	ENEMY_SNAIL_GREEN, FPS * 1, MONSTERTYPE_JACO,//1
+	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//아델라인성 - 5
@@ -5232,17 +5233,9 @@ const int wave[] = {
 	ENEMY_CASTLE2, FPS * 2, MONSTERTYPE_JACO,//2
 	ENEMY_CASTLE2, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//튜토리얼 마무리 보스(초록 달팽이). 반드시 이 표의 맨 마지막 행이어야 한다.
-	//WAVEIDX_TUTORIAL_BOSS가 "마지막 행"으로 자기 번호를 구하기 때문이다.
-	//중간에 끼워 넣으면 그 뒤 행들의 waveIdx가 통째로 밀려서 일반 스테이지 편성이 어긋난다.
-	ENEMY_SNAIL_GREEN, FPS * 1, MONSTERTYPE_JACO,//1
-	false, FPS * 2, MONSTERTYPE_JACO,//2
-	false, FPS * 3, MONSTERTYPE_JACO,//3
-};
 
-//튜토리얼 마무리 보스가 들어 있는 wave[] 행 번호(= 마지막 행).
-//행 하나는 슬롯 MAXWAVEENEMY개, 슬롯 하나는 3개 값(타입/등장타이밍/체력)이다.
-#define WAVEIDX_TUTORIAL_BOSS	((int)(sizeof(wave) / sizeof(wave[0]) / 3 / MAXWAVEENEMY) - 1)
+
+};
 
 const long long stageGold[] = {
 100,

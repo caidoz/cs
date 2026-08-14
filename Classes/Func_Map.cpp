@@ -1593,9 +1593,10 @@ void WaveControler()
 			pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
 
 			//튜토리얼 마무리 보스는 같은 달팽이라도 두 배로 커야 "보스"로 보인다.
-			//따로 스폰하지 않고 정식 wave[] 경로를 타므로 여기서 크기만 키운다.
-			if (robin.waveIdx == WAVEIDX_TUTORIAL_BOSS)
-				pObj->defaultZoom = pObj->zoom = MONSTERZOOM * 2.0f;
+			//wave[] 한 줄에는 타입/등장타이밍/몬스터종류 세 값뿐이라 크기를 적어둘 자리가 없다.
+			//스폰은 다른 몬스터와 똑같이 정식 경로를 타고, 크기만 여기서 키운다.
+			if (IsTutorialPlaying() && robin.waveIdx == TUTORIAL_WAVEIDX_BOSS)
+				pObj->defaultZoom = pObj->zoom = MONSTERZOOM * TUTORIAL_BOSS_ZOOM;
 
 			pObj->mom = obj;
 
@@ -1905,20 +1906,25 @@ long long GetWaveHp(int waveIdx, int curWave)
 	//인터랙티브 전투 튜토리얼은 몬스터 타입/스폰 타이밍만 wave[]를 그대로 쓰고 체력은 여기서
 	//웨이브 순번에 맞춰 한 대씩 늘려간다(0:2, 1:3, 2:4 ...). 정규 공식을 그대로 쓰면 수천 단위라
 	//튜토리얼에서 몇 대를 때려도 안 죽는다.
+	//튜토리얼 4연전은 정규 공식(수천 단위)을 쓰면 몇 대를 때려도 안 죽는다.
+	//단계마다 "무엇을 배웠는지"가 드러나도록 체력을 직접 잡는다.
 	if (IsTutorialPlaying()) {
-		//마무리 보스는 표의 맨 마지막 행이라 waveIdx가 크다. 아래 "2 + waveIdx" 공식을 그대로
-		//타면 체력이 수천이 되어 절대 안 죽는다. 동료 3중첩 공격 한 방에 죽을 값으로 따로 잡는다.
-		if (waveIdx == WAVEIDX_TUTORIAL_BOSS)
-			return TUTORIAL_BOSS_HP;
-
 		switch (waveIdx) {
-		case 5:		//HEARTBET: 3배 하트베팅 공격에만 죽도록
-		case 6:		//ROULETTE_LIVE: 룰렛 3인 공격으로 죽도록
+		case TUTORIAL_WAVEIDX_1ST:
+			//"세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를 보여줘야 해서 최소 2가 필요하다.
+			//크루의 공격이 마지막 1을 못 깎게 막는 처리는 AttackObj()에 있다.
+			return 2;
+		case TUTORIAL_WAVEIDX_2ND:
+			//동료가 한 명 늘었으니 그만큼만 더 준다.
+			return 3;
+		case TUTORIAL_WAVEIDX_3RD:
+			//하트 3배 베팅 공격에만 죽도록.
 			return 100;
+		case TUTORIAL_WAVEIDX_BOSS:
+			//동료 3중첩 강공격 한 방에 죽도록.
+			return TUTORIAL_BOSS_HP;
 		}
 
-		//0번은 "세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를 보여줘야 해서
-		//최소 2가 필요하다. 크루의 공격이 마지막 1을 못 깎게 막는 처리는 AttackObj()에 있다.
 		return 2 + waveIdx;
 	}
 
