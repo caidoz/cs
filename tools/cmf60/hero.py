@@ -93,10 +93,12 @@ def expandHero(n):
             L.append('\t' + ', '.join(c.newNames[m] for m in seq[i:i + 6]) + ',')
     L += ['};', '']
 
-    L += ['enum {', '\tHEROLOOP_FRAME = %d,' % HEROLOOP_FRAME, '',
-          '\tHEROLOOP_NEUTRAL = 0,', '\tHEROLOOP_WALK,', '\tHEROLOOP_RUN,', '\tHEROLOOP_SWIM,',
-          '', '\tTOTALHEROLOOP', '};', '',
-          '//대기/걷기/달리기/수영 순환표. 한 프레임에 한 칸씩 쓴다.',
+    #HEROLOOP_* 상수는 c0.h에만 둔다. c1/c2에도 넣으면 재정의 에러가 난다.
+    if n == 0:
+        L += ['enum {', '\tHEROLOOP_FRAME = %d,' % HEROLOOP_FRAME, '',
+              '\tHEROLOOP_NEUTRAL = 0,', '\tHEROLOOP_WALK,', '\tHEROLOOP_RUN,', '\tHEROLOOP_SWIM,',
+              '', '\tTOTALHEROLOOP', '};', '']
+    L += ['//대기/걷기/달리기/수영 순환표. 한 프레임에 한 칸씩 쓴다.',
           '//원본은 walkFrame[]으로 0,1,2,1 을 두 프레임씩 잡아 8프레임에 3포즈였다.',
           '//같은 0.267초를 16프레임 16포즈로 채운다.',
           'static const unsigned short c%dLoop60[] = {' % n]

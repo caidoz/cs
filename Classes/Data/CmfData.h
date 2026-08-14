@@ -11241,8 +11241,8 @@ const signed short* const cmfCrashSize[] = {
 //60프레임용으로 4배 늘린 순환표가 있는 cmf만 여기 채운다. 0이면 예전 식을 그대로 쓴다.
 const unsigned short* const cmfHeroLoop[] = {
 	c0Loop60,	//c0 로빈
-	0,			//c1 아직 30프레임 데이터
-	0,			//c2 아직 30프레임 데이터
+	c1Loop60,	//c1 디아나
+	c2Loop60,	//c2 맥스
 };
 
 const int cmfHeroLoopCnt = sizeof(cmfHeroLoop) / sizeof(cmfHeroLoop[0]);

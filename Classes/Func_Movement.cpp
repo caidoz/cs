@@ -3958,7 +3958,8 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		pObj->dx = pObj->pDx += 4 * _2X;
 		break;
 	case _SETFRAMEBYDX2:
-		pObj->attackFrame = 1 + skillStartFrame[ATTACK_DASH] + Min(4, 5 - pObj->pDx / 4);
+		//맥스 전용. 대시 블록이 60프레임용으로 2배가 되어 건너뛰는 칸도 2배다.
+		pObj->attackFrame = 1 + skillStartFrame[ATTACK_DASH] + 2 * Min(4, 5 - pObj->pDx / 4);
 		pObj->dx = pObj->pDx += 7 * _2X;
 		break;
 	case _DXDECREASE4:
@@ -8194,7 +8195,7 @@ void BulletBoomerangMove(OBJECT* pObj)
 
 		if (ao[pObj->target].attack == 0) {
 			ao[pObj->target].attack = 1;
-			ao[pObj->target].attackFrame = 5 + MAXX_ATTACK_DELAY;
+			ao[pObj->target].attackFrame = 10 + MAXX_ATTACK_DELAY;
 			ao[pObj->target].motion = PO_C2_STOP0;
 		}
 	}
@@ -8263,7 +8264,7 @@ void BulletBoomerangMove(OBJECT* pObj)
 					//부메랑을 받을때, 다람쥐로 변신한 상태라면 스탑모션을 하지 않는다.
 					if (ao[i].attack == 0) {
 						ao[i].attack = 1;
-						ao[i].attackFrame = 5 + MAXX_ATTACK_DELAY;
+						ao[i].attackFrame = 10 + MAXX_ATTACK_DELAY;
 						ao[i].motion = PO_C2_STOP0;
 					}
 
@@ -8280,7 +8281,7 @@ void BulletBoomerangMove(OBJECT* pObj)
 				//부메랑을 받을때, 다람쥐로 변신한 상태라면 스탑모션을 하지 않는다.
 				if (ao[SOLDIER].attack == 0) {
 					ao[SOLDIER].attack = 1;
-					ao[SOLDIER].attackFrame = 5 + MAXX_ATTACK_DELAY;
+					ao[SOLDIER].attackFrame = 10 + MAXX_ATTACK_DELAY;
 					ao[SOLDIER].motion = PO_C2_STOP0;
 				}
 
