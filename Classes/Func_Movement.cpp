@@ -3953,7 +3953,8 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		effect.edge = 3;
 		break;
 	case _SETFRAMEBYDX:
-		pObj->attackFrame = skillStartFrame[ATTACK_DASH] + Min(4, 5 - pObj->pDx / 4);
+		//로빈 전용. 대시 블록이 60프레임용으로 2배가 되어 건너뛰는 칸도 2배다.
+		pObj->attackFrame = skillStartFrame[ATTACK_DASH] + 2 * Min(4, 5 - pObj->pDx / 4);
 		pObj->dx = pObj->pDx += 4 * _2X;
 		break;
 	case _SETFRAMEBYDX2:
@@ -3962,6 +3963,10 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		break;
 	case _DXDECREASE4:
 		pObj->pDx -= 4 * _2X;
+		break;
+	case _DXDECREASE2:
+		//프레임이 2배인 대시용. 한 프레임당 감속을 절반으로 해 총 감속량을 지킨다.
+		pObj->pDx -= 2 * _2X;
 		break;
 	case _WALKTOEND:
 		if (pObj->status == WALK) {

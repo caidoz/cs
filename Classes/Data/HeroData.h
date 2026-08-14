@@ -2222,28 +2222,48 @@ const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _END,	0,//22
 #endif
 	//대쉬어택
+	//대시. 60프레임용으로 7 -> 14행. 감속은 _DXDECREASE2로 절반씩 준다.
 	PO_C0_DA0, 0, _SETFRAMEBYDX,	M_DOWN,//0
-	PO_C0_DA1, 0, _DXDECREASE4,	0,//1
-	PO_C0_DA2, 0, _DXDECREASE4,	0,//2
-	PO_C0_DA3, 0, _DXDECREASE4,	0,//3
-	PO_C0_DA4, 0, _DXDECREASE4,	0,//4
-	PO_C0_DA4, 0, _DXDECREASE4,	0,//5
-	0, 0, _END,	0,//6
+	PO_C0_DA0_2, 0, 0,	0,//1
+	PO_C0_DA1, 0, _DXDECREASE2,	0,//2
+	PO_C0_DA1_2, 0, _DXDECREASE2,	0,//3
+	PO_C0_DA2, 0, _DXDECREASE2,	0,//4
+	PO_C0_DA2_2, 0, _DXDECREASE2,	0,//5
+	PO_C0_DA3, 0, _DXDECREASE2,	0,//6
+	PO_C0_DA3_2, 0, _DXDECREASE2,	0,//7
+	PO_C0_DA4, 0, _DXDECREASE2,	0,//8
+	PO_C0_DA4, 0, _DXDECREASE2,	0,//9
+	PO_C0_DA4, 0, _DXDECREASE2,	0,//10
+	PO_C0_DA4, 0, _DXDECREASE2,	0,//11
+	PO_C0_DA4, 0, _DXDECREASE2,	0,//12
+	0, 0, _END,	0,//13
 
 	//공중공격
+	//공중공격. 60프레임용으로 4 -> 8행.
 	PO_C0_JA0, 0, _WALKTOEND,	0,//0
-	PO_C0_JA1, 0, _WALKTOEND,	M_SWORD,//1
-	PO_C0_JA2, 0, _WALKTOEND,	0,//2
-	0, 0, _END,	0,//3
+	PO_C0_JA0_2, 0, _WALKTOEND,	0,//1
+	PO_C0_JA1, 0, _WALKTOEND,	M_SWORD,//2
+	PO_C0_JA1_2, 0, _WALKTOEND,	0,//3
+	PO_C0_JA2, 0, _WALKTOEND,	0,//4
+	PO_C0_JA2, 0, _WALKTOEND,	0,//5
+	PO_C0_JA2, 0, _WALKTOEND,	0,//6
+	0, 0, _END,	0,//7
 
 	//찍기공격
 	//찍기공격 후
+	//공격 후 후퇴. 60프레임용으로 6 -> 12행. JU0/JD0는 모션이 하나뿐이라 길이만 늘린다.
 	PO_C0_JU0, _JUMP2, 0,	0,//0
 	PO_C0_JU0, 0, 0,	0,//1
 	PO_C0_JU0, 0, 0,	0,//2
-	PO_C0_JD0, 0, 0,	0,//3
-	PO_C0_JD0, 0, 0,	0,//4
-	0, 0, _ENDTOFALL,	0,//5
+	PO_C0_JU0, 0, 0,	0,//3
+	PO_C0_JU0, 0, 0,	0,//4
+	PO_C0_JU0, 0, 0,	0,//5
+	PO_C0_JD0, 0, 0,	0,//6
+	PO_C0_JD0, 0, 0,	0,//7
+	PO_C0_JD0, 0, 0,	0,//8
+	PO_C0_JD0, 0, 0,	0,//9
+	PO_C0_JD0, 0, 0,	0,//10
+	0, 0, _ENDTOFALL,	0,//11
 
 	//반지발동
 	PO_C0_SKILLREADY, 0, 0, M_LASER,	//0
