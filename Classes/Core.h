@@ -1581,7 +1581,7 @@ const extern signed short* cmf_change_data[REALMAXCMF];
 //플레이어 움직임 관련 변수
 const extern unsigned short* skillStartFrame;
 const extern unsigned short* skillClosingFrame;
-const extern unsigned char* skillMotion;
+const extern unsigned short* skillMotion;
 extern unsigned char whichPlayer;
 extern unsigned char isDemo;
 extern unsigned short attackDelay;

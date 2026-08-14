@@ -1644,7 +1644,7 @@ const int crewData[] = {
 //const signed char jump[6] = {24, 16, 11, 8, 5, 2};
 //const signed char jump2[6] = {24, 18, 13, 9, 5, 2};
 
-const signed char jumpUpMotion[] = {
+const signed short jumpUpMotion[] = {
 	PO_C0_SKILLREADY,
 	PO_C0_SKILLREADY,
 	PO_C0_CHANGE0,
@@ -1703,7 +1703,7 @@ const signed char jumpUpMotion[] = {
 	PO_C0_JU0,
 };
 
-const signed char jumpDownMotion[] = {
+const signed short jumpDownMotion[] = {
 	PO_C0_DOA0,
 	PO_C0_DOA0,
 	PO_C0_DOA0,
@@ -1814,7 +1814,7 @@ const signed char jumpDownMotion[] = {
 
 };
 
-const signed char backHomeMotion[] = {
+const signed short backHomeMotion[] = {
 	PO_C0_DOA4,//0
 	PO_C0_DOA4,//1
 	PO_C0_JU0,//1
@@ -2124,7 +2124,9 @@ const unsigned short maxxSkillClosingFrame[MAXX_TOTAL_SKILL] = {
 	MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT - 1,
 };
 
-const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
+//c0~c2 모션을 60프레임용으로 늘리면 인덱스가 char 범위를 넘는다.
+//MSVC는 이 경우 에러가 아니라 C4309 경고만 내고 값을 잘라버리므로 폭을 넓혀 둔다.
+const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	//모션, X/Y움직임, 효과, 사운드
 #ifdef ROBINDEFAULTATTACKSTING
 #ifdef ATTACK_INIT_DELAY
@@ -3106,7 +3108,7 @@ const unsigned char robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _ADDBUFF, 0,//15
 };
 
-const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
+const unsigned short dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	//일반공격
 #ifdef ATTACK_INIT_DELAY
 	PO_C1_3WAY0, 0, 0, 0,//0								//SKIP -4
@@ -4034,7 +4036,7 @@ const unsigned char dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	0, 0, _ADDBUFF,	0,//4
 };
 
-const unsigned char maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
+const unsigned short maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	//일반공격
 #ifdef ATTACK_INIT_DELAY
 	PO_C2_HELLMOTION0, 0, 0,	0,//0				//SKIP -5
@@ -4532,7 +4534,7 @@ const signed char maxxHelmPos[50] = {
 	0 * _2X, 0 * _2X,	//24
 };
 
-const unsigned char concentrateMotion[25] = {
+const unsigned short concentrateMotion[25] = {
 	0,
 	0,
 	0,
@@ -4560,7 +4562,7 @@ const unsigned char concentrateMotion[25] = {
 	PO_C0_CONCENTRATE7,
 };
 
-const unsigned char bombShotMotion[100] = {
+const unsigned short bombShotMotion[100] = {
 	PO_C1_BOMB_SHOT1,	//0
 	PO_C1_BOMB_SHOT2,	//1
 	PO_C1_BOMB_SHOT4,	//2
@@ -4670,7 +4672,7 @@ const unsigned char bombShotMotion[100] = {
 //	-1, -1,
 //};
 //24 + 36 * 3 + 36 * 3 = 
-const unsigned char satelliteShotMotion[] = {
+const unsigned short satelliteShotMotion[] = {
 	PO_C1_SATLASER_SAT0,	//0
 	PO_C1_SATLASER_SAT0,	//1
 	PO_C1_SATLASER_SAT0,	//2
@@ -4965,7 +4967,7 @@ const unsigned short buffData[TOTALPLAYERBUFF * 4] = {
 	MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT, FPS * BUFFINITSECONDS, 4, PO_C2_SPLIT0,	//혼신분리
 };
 
-const unsigned char dianaBulletData[7 * 5] = {
+const unsigned short dianaBulletData[7 * 5] = {
 	//모션, 무브핸들러, 드로우핸들러, 시작X좌표, 시작Y좌표,
 	//3웨이
 	PO_C1_3WAY_CENTER, BULLET3WAYMOVE, NORMALDRAW, 101 * _2X - BULLET_3WAY_DX * _2X, 1 * _2X,
@@ -5490,7 +5492,7 @@ const signed char surpriseEffect[5] = {
 	1,
 };
 
-const unsigned char stunMotion[10] = {
+const unsigned short stunMotion[10] = {
 	PO_C0_STUN2,
 	PO_C0_STUN3,
 	PO_C0_STUN3,
@@ -5556,7 +5558,7 @@ const unsigned char statueInfo[TOTAL_STATUE] = {
 };
 
 
-const unsigned char deadMotion[8 * 3] = {
+const unsigned short deadMotion[8 * 3] = {
 	//로빈
 	PO_C0_THINK0, PO_C0_STUN0, PO_C0_STUN1, PO_C0_STUN2, PO_C0_STUN3, PO_C0_STUN2, PO_C0_KNEE0, PO_C0_DIE0,
 	//디아나
