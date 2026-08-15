@@ -3,10 +3,9 @@
 #define BOX_OPEN_CHANGE_FRAME     6
 #define BOX_CLOSE_FRAME           8
 
-// 타격 줌
+// 공격 줌
 bool HitZoomOn(void);
 void HitZoomPoint(int* x, int* y);
-void HitZoomStart(int x, int y);
 void HitZoomUpdate(void);
 
 // Image Handling & Drawing

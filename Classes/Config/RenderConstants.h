@@ -38,14 +38,14 @@
 #define CAMERAPER_MULTIPLE         2              // 카메라 배율 분자
 #define CAMERAPER_DIVIDE           5              // 카메라 배율 분모
 
-// --- 타격 줌 (SetDmgNum 지점을 중심으로 월드만 확대)
-// 들어갈 때는 빠르게 때리고 나갈 때는 천천히 놓아야 타격감이 산다.
-// 그래서 IN과 OUT 프레임 수를 다르게 둔다. 60프레임 기준이다.
-#define HITZOOMMAX                 2.0f           // 타격 순간 월드 배율
-#define HITZOOMINFRAME             4              // 최대 배율까지 올라가는 프레임
-#define HITZOOMHOLDFRAME           6              // 최대 배율을 유지하는 프레임
-#define HITZOOMOUTFRAME            10             // 원래 배율로 돌아가는 프레임
-#define HITSTOPFRAME               10             // 월드를 절반 속도로 돌리는 프레임
+// --- 공격 줌 (공격을 시작하면 공격자를 중심으로 월드만 확대)
+// 공격이 진행되는 내내 물고 있다가 공격이 끝나면 놓는다. 유지 프레임이
+// 따로 없는 이유다. 들어갈 때와 나올 때의 속도는 다르게 둔다.
+// 60프레임 기준이다.
+#define HITZOOMMAX                 2.0f           // 공격 중 월드 배율
+#define HITZOOMINFRAME             10             // 최대 배율까지 올라가는 프레임
+#define HITZOOMOUTFRAME            16             // 원래 배율로 돌아가는 프레임
+#define HITZOOMMAXHOLD             240            // 물고 있는 최대 프레임(안전장치)
 
 // ---
 #define GOLDBARZOOM                0.5f           // 골드바 줌

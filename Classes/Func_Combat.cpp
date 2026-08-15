@@ -4175,16 +4175,6 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 		extra = true;
 	}
 
-	//타격 지점을 중심으로 월드를 확대하고 잠깐 느리게 돌린다.
-	//좌표는 DrawObj가 쓰는 것과 같은 월드->화면 변환이다.
-	switch (drawHandle) {
-	case MD_PLAY:
-	case MD_BATTLE:
-		HitZoomStart(xOffset + ao[obj].x - rx,
-			STATUSWIN_Y + (rh - 4) * TSIZE - ao[obj].y - ry);
-		break;
-	}
-
 	switch (drawHandle) {
 	case MD_PLAY:
 	case MD_BATTLE:

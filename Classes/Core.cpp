@@ -2215,7 +2215,15 @@ void PaintClet(int x, int y, int w, int h)
 
 	MemRectFrame(0, DY, 1, 1, 0x000000);
 
-	//히트스톱으로 월드 갱신을 건너뛴 프레임에는 frame도 멈춘다.
+	//플레이 화면을 벗어나면 공격 줌 상태를 놓는다. Play()가 안 도는 동안
+	//hitStopFrame이 홀수로 남아 있으면 아래에서 frame이 영영 멈춘다.
+	if (drawHandle != MD_PLAY && drawHandle != MD_BATTLE) {
+		hitStopFrame = 0;
+		hitZoomFrame = 0;
+		hitZoom = 1.0f;
+	}
+
+	//절반 속도로 월드 갱신을 건너뛴 프레임에는 frame도 멈춘다.
 	//frame / 4 % n 으로 모션을 고르는 대기동작들이 혼자 계속 돌면 안 된다.
 	if (!(hitStopFrame & 1))
 		frame++;

@@ -3,7 +3,7 @@
 #include "Text.h"
 #include "Data.h"
 
-//타격 줌이 걸려 있는가. 월드를 그리는 중이고 배율이 1이 아닐 때만 좌표를 손댄다.
+//공격 줌이 걸려 있는가. 월드를 그리는 중이고 배율이 1이 아닐 때만 좌표를 손댄다.
 //1.0f와의 비교는 부동소수 오차 때문에 여유를 준다. 안 그러면 줌이 다 풀린 뒤에도
 //곱셈이 계속 걸려 화면 전체가 1픽셀씩 미세하게 떨린다.
 bool HitZoomOn(void)
@@ -22,10 +22,10 @@ void HitZoomPoint(int* x, int* y)
 	*y = (int)(hitZoomCY + ((float)*y - hitZoomCY) * hitZoom);
 }
 
-//타격 줌을 시작한다. 인자는 타격 지점의 화면좌표다.
-//연타 중에 다시 불리면 중심을 새 지점으로 반쯤 당겨온다. 그대로 옮기면
-//콤보가 이어질 때 화면이 툭툭 튄다.
-void HitZoomStart(int x, int y)
+//줌 중심을 옮긴다. 인자는 화면좌표다.
+//이미 줌이 걸려 있으면 새 지점으로 반쯤만 당겨온다. 그대로 옮기면 공격자가
+//움직이거나 다음 공격으로 넘어갈 때 화면이 툭툭 튄다.
+static void HitZoomSetCenter(int x, int y)
 {
 	//줌 중심이 화면 밖으로 나가면 확대된 월드가 화면을 못 덮어 가장자리가 빈다.
 	x = Max(0, Min(DX, x));
@@ -39,29 +39,58 @@ void HitZoomStart(int x, int y)
 		hitZoomCX = (float)x;
 		hitZoomCY = (float)y;
 	}
-
-	hitZoomFrame = HITZOOMINFRAME + HITZOOMHOLDFRAME;
-	hitStopFrame = HITSTOPFRAME;
 }
 
-//한 프레임 진행. 들어갈 때와 나올 때의 속도가 다르다.
+//지금 공격 중인 아군을 찾는다. 없으면 -1.
+//pObj->attack은 공격이 시작될 때 켜지고 스킬표의 _END에서 꺼지므로
+//공격의 시작과 끝을 그대로 알려준다.
+static int HitZoomAttacker(void)
+{
+	int i;
+
+	switch (drawHandle) {
+	case MD_PLAY:
+	case MD_BATTLE:
+		break;
+	default:
+		return -1;
+	}
+
+	for (i = PLAYER; i < TOTALCHAR; i++) {
+		if (ao[i].active && ao[i].attack)
+			return i;
+	}
+
+	return -1;
+}
+
+//한 프레임 진행. 공격이 시작되면 공격자를 중심으로 당기고, 공격이 진행되는
+//동안 물고 있다가, 공격이 끝나면 놓는다. 들어갈 때와 나올 때의 속도가 다르다.
 void HitZoomUpdate(void)
 {
-	if (hitStopFrame > 0)
-		hitStopFrame--;
+	int attacker = HitZoomAttacker();
 
-	//물고 있는 동안에는 최대 배율까지 HITZOOMINFRAME에 걸쳐 올린다.
-	if (hitZoomFrame > 0) {
-		hitZoomFrame--;
+	//어떤 이유로 attack이 안 풀려도 화면이 확대된 채 굳지 않게 상한을 둔다.
+	if (attacker >= 0 && hitZoomFrame < HITZOOMMAXHOLD) {
+		HitZoomSetCenter(xOffset + (int)ao[attacker].x - rx,
+			STATUSWIN_Y + (rh - 4) * TSIZE - (int)ao[attacker].y - ry);
+
+		hitZoomFrame++;
+		hitStopFrame++;	//공격 중에는 월드를 절반 속도로 돌린다
+
 		hitZoom += (HITZOOMMAX - 1.0f) / HITZOOMINFRAME;
 		if (hitZoom > HITZOOMMAX)
 			hitZoom = HITZOOMMAX;
 	}
-	//놓으면 HITZOOMOUTFRAME에 걸쳐 원래대로 돌아간다.
-	else if (hitZoom > 1.0f) {
-		hitZoom -= (HITZOOMMAX - 1.0f) / HITZOOMOUTFRAME;
-		if (hitZoom < 1.0f)
-			hitZoom = 1.0f;
+	else {
+		hitZoomFrame = 0;
+		hitStopFrame = 0;	//공격이 끝나면 속도를 원래대로 돌린다
+
+		if (hitZoom > 1.0f) {
+			hitZoom -= (HITZOOMMAX - 1.0f) / HITZOOMOUTFRAME;
+			if (hitZoom < 1.0f)
+				hitZoom = 1.0f;
+		}
 	}
 }
 
