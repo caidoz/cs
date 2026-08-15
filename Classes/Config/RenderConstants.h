@@ -42,7 +42,7 @@
 // 공격이 진행되는 내내 물고 있다가 공격이 끝나면 놓는다. 유지 프레임이
 // 따로 없는 이유다. 들어갈 때와 나올 때의 속도는 다르게 둔다.
 // 60프레임 기준이다.
-#define HITZOOMMAX                 2.0f           // 공격 중 월드 배율
+#define HITZOOMMAX                 1.5f           // 공격 중 월드 배율
 #define HITZOOMINFRAME             10             // 최대 배율까지 올라가는 프레임
 #define HITZOOMOUTFRAME            16             // 원래 배율로 돌아가는 프레임
 #define HITZOOMMAXHOLD             240            // 물고 있는 최대 프레임(안전장치)
