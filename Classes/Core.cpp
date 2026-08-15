@@ -2215,7 +2215,10 @@ void PaintClet(int x, int y, int w, int h)
 
 	MemRectFrame(0, DY, 1, 1, 0x000000);
 
-	frame++;
+	//히트스톱으로 월드 갱신을 건너뛴 프레임에는 frame도 멈춘다.
+	//frame / 4 % n 으로 모션을 고르는 대기동작들이 혼자 계속 돌면 안 된다.
+	if (!(hitStopFrame & 1))
+		frame++;
 	if (touchedFrame > 0)
 		touchedFrame++;
 

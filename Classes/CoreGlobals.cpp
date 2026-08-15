@@ -1491,6 +1491,12 @@ float dioramaZoomGap = 0.0f;
 float battleZoom = 1.0f;
 int screenDarken = 0;
 
+float hitZoom = 1.0f;
+float hitZoomCX = 0.0f, hitZoomCY = 0.0f;
+int hitZoomFrame = 0;
+int hitStopFrame = 0;
+bool worldDrawing = false;
+
 // 게임 상태
 int waveStatus = WAVESTATUS_READY;
 int levelUpFrame = 0;

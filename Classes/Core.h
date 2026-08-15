@@ -2412,6 +2412,14 @@ extern float dioramaZoomGap;
 extern float battleZoom;
 extern int screenDarken;
 
+//타격 줌. 월드(DrawScreen 안)만 hitZoomCX/CY를 중심으로 hitZoom배로 그린다.
+//bar와 상자->bar로 날아가는 마크는 DrawScreen 바깥이라 영향을 받지 않는다.
+extern float hitZoom;
+extern float hitZoomCX, hitZoomCY;
+extern int hitZoomFrame;	//줌을 물고 있는 남은 프레임(들어가기 + 유지)
+extern int hitStopFrame;	//월드를 절반 속도로 돌리는 남은 프레임
+extern bool worldDrawing;	//지금 그리는 것이 월드인가
+
 // 게임 상태
 extern int waveStatus;
 extern int levelUpFrame;

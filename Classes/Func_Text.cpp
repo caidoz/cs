@@ -346,6 +346,14 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	int fontColorBack = fontColor;
 	Size textSize;
 
+	//타격 줌. 월드 안에서 찍히는 글자(데미지 숫자 등)도 같이 커져야 한다.
+	//w/h는 클리핑 판정에만 쓰이므로 같이 늘려 준다.
+	if (HitZoomOn()) {
+		HitZoomPoint(&x, &y);
+		zoom *= hitZoom;
+		w *= hitZoom;
+		h *= hitZoom;
+	}
 
 #ifdef CLIPPING
 	if (x + w < clipX || x > clipX2 || y > clipY || y < clipY2)

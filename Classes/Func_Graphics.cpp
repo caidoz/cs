@@ -3,6 +3,68 @@
 #include "Text.h"
 #include "Data.h"
 
+//타격 줌이 걸려 있는가. 월드를 그리는 중이고 배율이 1이 아닐 때만 좌표를 손댄다.
+//1.0f와의 비교는 부동소수 오차 때문에 여유를 준다. 안 그러면 줌이 다 풀린 뒤에도
+//곱셈이 계속 걸려 화면 전체가 1픽셀씩 미세하게 떨린다.
+bool HitZoomOn(void)
+{
+	return worldDrawing && (hitZoom > 1.001f);
+}
+
+//화면좌표를 타격 줌이 걸린 자리로 옮긴다. 줌 중심에서 hitZoom배 만큼 밀어낸다.
+//스프라이트의 배율(zoom)은 호출한 쪽에서 따로 곱한다.
+void HitZoomPoint(int* x, int* y)
+{
+	if (!HitZoomOn())
+		return;
+
+	*x = (int)(hitZoomCX + ((float)*x - hitZoomCX) * hitZoom);
+	*y = (int)(hitZoomCY + ((float)*y - hitZoomCY) * hitZoom);
+}
+
+//타격 줌을 시작한다. 인자는 타격 지점의 화면좌표다.
+//연타 중에 다시 불리면 중심을 새 지점으로 반쯤 당겨온다. 그대로 옮기면
+//콤보가 이어질 때 화면이 툭툭 튄다.
+void HitZoomStart(int x, int y)
+{
+	//줌 중심이 화면 밖으로 나가면 확대된 월드가 화면을 못 덮어 가장자리가 빈다.
+	x = Max(0, Min(DX, x));
+	y = Max(0, Min(DY, y));
+
+	if (hitZoom > 1.001f) {
+		hitZoomCX += ((float)x - hitZoomCX) / 2;
+		hitZoomCY += ((float)y - hitZoomCY) / 2;
+	}
+	else {
+		hitZoomCX = (float)x;
+		hitZoomCY = (float)y;
+	}
+
+	hitZoomFrame = HITZOOMINFRAME + HITZOOMHOLDFRAME;
+	hitStopFrame = HITSTOPFRAME;
+}
+
+//한 프레임 진행. 들어갈 때와 나올 때의 속도가 다르다.
+void HitZoomUpdate(void)
+{
+	if (hitStopFrame > 0)
+		hitStopFrame--;
+
+	//물고 있는 동안에는 최대 배율까지 HITZOOMINFRAME에 걸쳐 올린다.
+	if (hitZoomFrame > 0) {
+		hitZoomFrame--;
+		hitZoom += (HITZOOMMAX - 1.0f) / HITZOOMINFRAME;
+		if (hitZoom > HITZOOMMAX)
+			hitZoom = HITZOOMMAX;
+	}
+	//놓으면 HITZOOMOUTFRAME에 걸쳐 원래대로 돌아간다.
+	else if (hitZoom > 1.0f) {
+		hitZoom -= (HITZOOMMAX - 1.0f) / HITZOOMOUTFRAME;
+		if (hitZoom < 1.0f)
+			hitZoom = 1.0f;
+	}
+}
+
 // Image Handling & Drawing
 void NewGameImgLoad(void)
 {
@@ -294,9 +356,16 @@ int GetTypeByZoom(int type, int zoom)
 void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
 {
 	if (doubleBuffer) {
+		//타격 줌. 렌더텍스처는 매 프레임 재사용되므로 줌이 없을 때도 배율을 되돌려 놔야 한다.
+		bool hitZoomed = HitZoomOn();
+
+		if (hitZoomed)
+			HitZoomPoint(&x, &y);
+
 		cvtDest->setPosition(Vec2(x, y));
 		//cvtDest->setAnchorPoint(Vec2(0.0f, 1.0f));
 		cvtDest->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
+		cvtDest->getSprite()->setScale(hitZoomed ? hitZoom : 1.0f);
 
 		//�̸� �׷� �� ������ũ�� ���۸� ���� Ÿ��(ȭ�����?�� �ռ��Ѵ�.
 		if (gRenderTarget) {
@@ -349,6 +418,11 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 		SetAlpha(alpha);
 	}
 
+	//타격 줌
+	if (HitZoomOn()) {
+		HitZoomPoint(&x, &y);
+		zoom *= hitZoom;
+	}
 
 	GetSpriteIndex(srcIdx);
 
@@ -430,6 +504,14 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 		return;
 
 	int tempAlpha = m_lgrpAlpha;
+
+	//타격 줌. 클리핑보다 먼저 옮겨야 한다. clipX/clipY는 화면상의 플레이영역이라
+	//줌과 무관하게 그대로 두는 것이 맞고, 옮긴 뒤 그 영역으로 잘라야 한다.
+	if (HitZoomOn()) {
+		HitZoomPoint(&x, &y);
+		zoomX *= hitZoom;
+		zoomY *= hitZoom;
+	}
 
 #ifdef CLIPPING
 
@@ -733,6 +815,9 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 
 	x += offX;
 	y += offY;
+
+	//타격 줌
+	HitZoomPoint(&x, &y);
 #ifdef CLIPPING
 	if (x < clipX) { xs -= (x - clipX); w += (x - clipX); x = clipX; }
 	if (x + w > clipX2) { w = clipX2 - x; }
@@ -747,6 +832,9 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 
 	LoadSpriteFromTexture(res);
 	src = renderSprite[getSpriteIdx];
+
+	//원래 배율을 안 쓰던 함수다. 타격 줌이 걸렸을 때만 늘린다.
+	src->setScale(HitZoomOn() ? hitZoom : 1.0f);
 
 	if (grayScale) {
 		if (grayScale != 32) {
@@ -787,6 +875,12 @@ void ShadowImage(int w, int h, int xs, int ys, int x, int y, int res, float magn
 
 	//x += offX;
 	//y += offY;
+
+	//타격 줌
+	if (HitZoomOn()) {
+		HitZoomPoint(&x, &y);
+		magnify *= hitZoom;
+	}
 #ifdef CLIPPING
 	if (x < clipX) { xs -= (x - clipX) / magnify; w -= (clipX - x) / magnify; x = clipX; }
 	if (x + w > clipX2) { w = (clipX2 - x) / magnify; }
@@ -1288,6 +1382,13 @@ void MemRect(int x, int y, int w, int h, int fillCol)
 
 	//x += offX;
 	//y += offY;
+
+	//타격 줌. 배율 인자가 없는 함수라 폭과 높이를 직접 늘린다.
+	if (HitZoomOn()) {
+		HitZoomPoint(&x, &y);
+		w = (int)((float)w * hitZoom);
+		h = (int)((float)h * hitZoom);
+	}
 #ifdef CLIPPING
 	if (x < clipX) { w += (x - clipX); x = clipX; }
 	if (x + w > clipX2) { w = clipX2 - x; }

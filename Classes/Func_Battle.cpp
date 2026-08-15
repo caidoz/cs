@@ -314,9 +314,15 @@ void Play(void)
 	if (bar[BAR_QUEST].rewardIcon > 1)
 		bar[BAR_QUEST].rewardIcon--;
 
+	//타격 줌의 배율과 히트스톱을 한 프레임 진행시킨다.
+	//아래 갱신 게이트가 이 프레임의 hitStopFrame을 보고 판단하므로 먼저 돌린다.
+	HitZoomUpdate();
+
 	if ((drawHandle == MD_PLAY && curMenu == MENU_PLAY) || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID) {
 		//if (!attackDelay || (attackSequence == ATTACKSEQUENCE_ATTACKRESULT && (attackDelay > FPS * 12 / 4 && attackType == ROULETTE_BATTLE))) {
-		if (!attackDelay) {
+		//히트스톱 중에는 한 프레임 걸러 한 번만 갱신한다. 같은 화면이 두 번 그려져
+		//체감 속도가 절반이 된다. bar와 UI는 이 게이트 밖이라 계속 움직인다.
+		if (!attackDelay && !(hitStopFrame & 1)) {
 			if (waveStatus == WAVESTATUS_PLAY) {
 				for (i = PLAYER; i < TOTALCHAR; i++) {
 					//단축스킬 쿨타임
@@ -395,11 +401,14 @@ void Play(void)
 
 
 	//아이템은 attackDelay와 상관없이 여기서 처리해준다.
-	for (i = TOTALOBJECT - 1; i >= ITEMOBJ; i--) {
-		if (ao[i].active)
-			MoveObj(&ao[i]);
-		else if (ao[i].dead == true && ao[i].moveHandler == REGENMOVE)
-			RegenMove(&ao[i]);
+	//다만 히트스톱은 월드 전체가 대상이므로 드롭 아이템도 같이 멈춘다.
+	if (!(hitStopFrame & 1)) {
+		for (i = TOTALOBJECT - 1; i >= ITEMOBJ; i--) {
+			if (ao[i].active)
+				MoveObj(&ao[i]);
+			else if (ao[i].dead == true && ao[i].moveHandler == REGENMOVE)
+				RegenMove(&ao[i]);
+		}
 	}
 
 	//AttackSequenceDraw에서는 그려주기만 하고
@@ -417,7 +426,11 @@ void Play(void)
 		break;
 	}
 
+	//월드는 여기서 전부 그린다. 이 구간에서만 타격 줌이 걸린다.
+	//뒤에 오는 StatusDraw/BarDraw와 PaintClet의 마크들은 화면좌표 그대로 남는다.
+	worldDrawing = true;
 	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom);
+	worldDrawing = false;
 
 	grayScale = 0;
 
