@@ -2190,6 +2190,9 @@ void PaintClet(int x, int y, int w, int h)
 	if (touch && touchFrame)
 		DrawTouchPoint();
 
+	//눌린 터치영역 표시. 모든 UI를 그린 뒤라야 위에 얹힌다.
+	DrawButtonPressHighlight();
+
 	if (vibrationFrame)
 		vibrationFrame--;
 

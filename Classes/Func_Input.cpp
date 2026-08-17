@@ -3448,6 +3448,9 @@ void ClearButtonPress(bool pop)
 //"되돌릴 수 있다"는 안정감이 생긴다.
 void UpdateButtonPress(void)
 {
+	//이번 프레임에 누가 스스로 표현하는지는 지금부터 다시 센다.
+	buttonPressHandled = false;
+
 	if (buttonPopFrame > 0)
 		buttonPopFrame--;
 	else
@@ -3479,8 +3482,12 @@ float GetButtonScale(int func, int x, int y, int w, int h)
 		return 1.0f;
 
 	if (func == buttonPressFunc
-		&& ButtonHit(buttonPressX, buttonPressY, x, y, w, h))
+		&& ButtonHit(buttonPressX, buttonPressY, x, y, w, h)) {
+		//이 버튼이 스스로 눌린 티를 내므로 공용 하이라이트는 필요 없다.
+		buttonPressHandled = true;
+
 		return BUTTON_DOWNSCALE;
+	}
 
 	if (func == buttonPopFunc && buttonPopFrame > 0
 		&& ButtonHit(buttonPopX, buttonPopY, x, y, w, h)) {

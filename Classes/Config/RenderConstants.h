@@ -34,6 +34,7 @@
 #define BUTTON_DOWNSCALE           0.94f          // 누르고 있는 동안의 배율
 #define BUTTON_POPSCALE            1.06f          // 뗀 직후 튀어오르는 배율
 #define BUTTON_POPFRAME            10             // 튀었다가 돌아오는 프레임
+#define BUTTON_HIGHLIGHTALPHA      7              // 눌린 터치영역을 덮는 밝기(32가 불투명)
 
 // --- 보상 재화 마크(하트/골드)가 바로 날아갈 때의 배율
 // 값이 클수록 크게 보여준다. 1000부터 자릿수가 하나 늘 때마다 한 단계씩

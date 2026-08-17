@@ -117,6 +117,7 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, bool ani, int textIdx);
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom);
 void DrawTouchButton(int, int, const char*, int);
+void DrawButtonPressHighlight(void);
 void DrawTouchLargeButton(int, int, int, int, const char*, int, int, float zoom);
 void DrawAlarmMark(int x, int y, int count, float zoom);
 void DrawPlusMark(int x, int y, float zoom);

@@ -4702,6 +4702,47 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 }
 
 
+//눌린 터치영역 위에 옅게 덮어 준다.
+//
+// 터치영역은 전부 SetRectPoint()를 지나므로, 눌린 사각형 하나만 알면
+// 그리는 코드를 하나도 안 고치고 모든 터치영역이 반응하게 만들 수 있다.
+// 카드나 아이콘처럼 버튼 모양이 아닌 것까지 눌러 들어가게 하면 산만하므로
+// 여기서는 밝기만 얹는다.
+//
+// 배율로 스스로 표현하는 버튼(GetButtonScale을 쓰는 것들)은 제외한다.
+// 둘 다 걸리면 눌리면서 동시에 밝아져서 과해 보인다.
+void DrawButtonPressHighlight(void)
+{
+	int frame;
+	int alpha;
+
+	if (buttonPressHandled)
+		return;
+
+	if (buttonPressFunc >= 0) {
+		frame = BUTTON_POPFRAME;
+	}
+	else if (buttonPopFunc >= 0 && buttonPopFrame > 0) {
+		//뗀 뒤에는 옅어지며 사라진다. 짧게 톡 누른 것도 눈에 남는다.
+		frame = buttonPopFrame;
+	}
+	else
+		return;
+
+	if (buttonPressRect[2] <= 0 || buttonPressRect[3] <= 0)
+		return;
+
+	alpha = BUTTON_HIGHLIGHTALPHA * frame / BUTTON_POPFRAME;
+
+	if (alpha <= 0)
+		return;
+
+	SetAlpha(alpha);
+	MemRectRound(buttonPressRect[0], buttonPressRect[1],
+		buttonPressRect[2], buttonPressRect[3], COLOR_WHITE, 2 * _2X);
+	SetAlpha(32);
+}
+
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
 	//누르면 들어가고 떼면 튀어오른다. 배율만 곱하고 한가운데를 붙잡아
