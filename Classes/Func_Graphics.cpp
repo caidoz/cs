@@ -4921,7 +4921,7 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 
 void DrawSkillIcon(int idx, int x, int y, float zoom)
 {
-	DrawImage(SKILLICONSIZE, SKILLICONSIZE, (idx & 0x07) * SKILLICONSIZE, ((idx & 0x3F) >> 3) * 16 * _2X, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[SICON_IMG], SICON_IMG);
+	DrawImage(SKILLICONSIZE, SKILLICONSIZE, (idx % 16) * SKILLICONSIZE, (idx / 16) * SKILLICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[SICON_IMG], SICON_IMG);
 }
 
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom)

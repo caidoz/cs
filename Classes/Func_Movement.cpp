@@ -12466,6 +12466,12 @@ void BoxMove(OBJECT* pObj)
 					pObj->y = BOXPOSITION_Y;
 					pObj->attackedFrame = JUMPFULLFRAME + 1;
 					PlayMusic(M_KUNG);
+
+					//상자가 바닥에 닿는 순간을 잠깐 당겨 본다.
+					//예전에는 SetBox()에 걸어뒀는데 그 함수 자체가 아무 데서도
+					//불리지 않는 죽은 코드였다. 방 배치 시점(SetRoom_Neutral)은
+					//아직 상자가 하늘에 있어서 엉뚱한 자리를 잡는다.
+					RequestFocusZoom(GetObjFromPtr(pObj), FOCUSPRI_BOXDROP);
 				}
 			}
 
