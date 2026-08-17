@@ -205,7 +205,6 @@ int getBufferSpriteTexture;
 int totalBufferCnt = 0;
 int curBufferCnt = 0;
 
-int bufferSpriteCnt = 0;
 
 int tileBufferSpriteIndex;
 
@@ -245,7 +244,6 @@ int curTextLabelArr[MAXLABELCNT];
 int getTextLabelIdx;
 int getTextLabelTexture;
 
-int totalTextLabelCnt = 0;
 int curTextLabelCnt = 0;
 
 //MC_GrpContext gContext;
@@ -333,10 +331,8 @@ float audioVolume[TOTALMUSIC];
 signed short curID;
 char netCritical;
 char phone[20];
-signed char touchQuick = false;
 signed char touchQuickIcon = false;
 signed char touchDrawButton = false;
-signed char touchDrawYesNo = false;
 signed char touch;
 int touchIndex;
 int touchRect[TOTALTOUCHCNT][5];//int rx, int ry, int width, int height, int func
@@ -347,7 +343,6 @@ bool swipeLock = false;
 unsigned char rapidSwipe = false;
 signed char DrawButton_OK;
 int touch_Select;
-signed char touchDownBar = false;
 signed char touchOK = false;
 signed char touchYESNO = false;
 signed int pointX;
@@ -367,7 +362,6 @@ signed short STATUSWIN_Y_INIT;//초기값
 signed short STATUSWIN_Y2;
 signed short PLAYAREA_X = 20 * TSIZE;
 signed short PLAYAREA_Y = 20 * TSIZE;
-signed char yesnoFrame = null;
 signed char buy_Mode;
 
 unsigned char imgLoaded;
@@ -677,7 +671,6 @@ int boxNeutral;
 int cNeutral;
 int progress;
 unsigned char extraArmor;
-int shopGachaItemCnt = 1;
 
 //메뉴관련 변수
 signed char yesNo;
@@ -755,7 +748,6 @@ signed short scRecoveryFrameX, scRecoveryFrameY, scAccelY;//복구
 int autoScroll;//자동으로 스크롤을 시킬건지
 int autoScrollGap;//해당 프레임에 진행할 스크롤 크기
 
-bool keyCoreDisable = false;
 unsigned char vibLevel;
 unsigned char stoneWhere;
 unsigned short charInfoPage;
@@ -925,13 +917,10 @@ M_Boolean buy_Confirm;
 unsigned short caveMap = 0;			//현재 어디 투기장인지.
 unsigned short caveEnemyAlive[159 * 2];
 
-unsigned short caveCountEmy = 0;
-unsigned short caveCountEmy2 = 0;
 unsigned short caveKill = 0;		//투기장 몬스터 퇴치수.(신규 투기장은 몬스터를 모두 잡으면 끝남)
 unsigned short caveItemType;
 unsigned short caveItemText;
 unsigned short caveItemDetail;
-unsigned short caveItemCnt = 0;
 unsigned short caveItemGrade = 0;
 unsigned char caveMapData = 0;
 
@@ -1055,8 +1044,6 @@ std::random_device rd;
 
 int touchIdleFrame;
 int idleHelpCnt = 0;
-int idleHelpType = 0;//이동을 시킬지, 공격을 하라고 할지
-int idleHelpObj = ENEMY;
 
 int MINDY = MINDY_MIN;
 int EQUIP_WIN_HEIGHT = MINDY;
@@ -1073,7 +1060,6 @@ int tutorialStep;
 
 int floatingMessage;
 
-bool playClear = false;
 
 ITEM gachaItem[MAXGACHAITEM];
 
@@ -1095,19 +1081,15 @@ int HEARTTIME = 60 * 60;
 int FREEITEMTIME = 18 * 60 * 60;
 int realPlayerCnt;
 
-bool textInput = false;
 
 unsigned short gachaIcon[5];
 unsigned char gachaGrade[5];
 
-int SOLDIERSALE = 10;
 
 int curLabMain;
 int curLabSub;
 
-int GNB_GAP = 64 * _2X;
 
-int outline = GRADE_NORMAL;
 #ifdef ONESKILLTEST
 int oneSkillTest = ONESKILLTEST;
 #endif
@@ -1126,7 +1108,6 @@ int shieldFrame;
 
 int goldCount;
 int goldCountFrame;
-int joyStickFrame = 0;
 int joyStickAni = 0;
 int joyStickDir = LEFT;
 
@@ -1235,12 +1216,10 @@ int curRewardBoxIdx;
 bool ONLYATTACKMODE = false;
 
 
-int ROULETTEINTERVAL = 3;
 
 int ROULETTEWHEELTIME;
 
 int ROULETTESPREADTIME = SPREADDIV * MAXROULETTE;
-int ROULETTESELECTTIME = FPS * 5;
 
 int TOTAL_OPENEDMENU;
 
@@ -1258,26 +1237,18 @@ int DRAWROULETTENUMGAP_SUB = DRAWROULETTENUMGAP + 72 * _2X;
 int QUESTBARYGAP = DRAWROULETTENUMGAP_SUB - (float)(DRAWROULETTENUM_SUB_HEIGHT * 0.9f);
 int DRAWROULETTENUMGAP_RAID = DRAWROULETTENUMGAP_SUB - 56 * _2X;
 int DRAWRAIDNUMGAP = DRAWROULETTENUMGAP_SUB + 92 * _2X;
-int RAIDUSERPROFILEGAP = 64 * _2X;
-int HPBARGAP = 0 * _2X;
-int BAR_UPPERMENUGAP = 0 * _2X;
 int BAR_BOTTOMMENUGAP = 0 * _2X;
 int BOXPOSITION_Y = 420 * _2X;//160 * _2X;//300 * _2X;//408 * _2X;//
 
-int BOXITEM_Y = 128 * _2X;
 #endif
 
 int STAGELABELGAP = QUESTBARYGAP - QUESTBARHEIGHT - 4 * _2X;
 
 int DRAWROULETTENUMGAP_BATTLE = DRAWROULETTENUMGAP + 92 * _2X;
-int DRAWROULETTENUMGAP_ALPHA = RAIDREWARDGOLD_Y + 46 * _2X;
 
-int ENEMYUSERINFOGAP = 58 * _2X;
-int STAGEBOSSINFOGAP = 148 * _2X;
 int ENEMYHPBARYGAP = QUESTBARYGAP - 40 * _2X;
 
 int HITPOSITIONGAP = 168 * _2X;
-int HITPOSITIONGAP2 = -80 * _2X;
 
 int JOKBOGAP_INIT = 160 * _2X;
 int JOKBOGAP = JOKBOGAP_INIT;
@@ -1288,11 +1259,7 @@ int CARDPOSITIONGAP = 132 * _2X;
 int CARDPOSITIONGAP = 144 * _2X;
 #endif
 
-int HITPOSITION_CREW = 280 * _2X;
-int HITPOSITION_HITSTART = 368 * _2X;
-int HITPOSITION_HITMODE = 406 * _2X - 8 * _2X;
 
-int PLAYINFO_GAP = 192 * _2X;
 
 POPUP popUp[MAXPOPUP];
 
@@ -1308,7 +1275,6 @@ GAMEEVENT gameEventArr[MAXGAMEEVENT];
 
 int pvpRewardPosition[3][2];
 
-int joyStick = PUSHBUTTON;
 
 int curStar, curMaxStar, maxStar;
 
@@ -1396,7 +1362,6 @@ int turnListIdx;
 int enemyTurnStartIdx;
 int totalTurn;
 int turnList[PLAYERALL + MAXWAVEENEMY];
-int crewIdList[MAXCREW] = { -1, -1, -1, -1, -1, -1 };
 int crewCnt = 0;
 int heroCnt = 0;
 int showCrewCnt = 0; // 로딩 화면에서 현재까지 "공개/합류 연출로 보여줄" 크루 수(0..crewCnt)
@@ -1406,7 +1371,6 @@ int leaderCrewId = -1;   // 0..TOTAL_CREW-1 or -1
 bool hasLeader = false;
 
 // 중앙 카드에 표시할 현재 공개 캐릭터(robin.slotCrew[showCrewCnt]를 기반으로)
-int cardCmf = -1;
 int cardAlpha = 0;
 
 // 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
@@ -1431,35 +1395,26 @@ int bgScrollX = 0;
 int bgScrollY = 0;
 
 // ===== 소환 연출 =====
-int summonCrewId = -1;
 int summonCmf = -1;
 int summonFromX, summonFromY;
 int summonX, summonY;
 int summonToX, summonToY;
-int summonMidX = 0, summonMidY = 0;
+int summonMidY = 0;
 float summonScale = 0.5f;
-int summonHold = 0;          // 센터 박히는 홀드 프레임 카운터(옵션)
-int summonStar = 1;          // 현재 소환 크루의 별등급(1~9)
-int celebFlash = 0;          // 축하 플래시(0이면 없음)
 int shake = 0;               // 화면 흔들림 강도(0이면 없음)
 int joinFromX = 0;
 int joinFromY = 0;
 
 bool needPickSummonFromBg = false;
 bool pickedSummonFromBg = false;
-bool hideSummonBgTile = false;
-int  hideBgCmf = -1;
 int summonType = -1;
 
 // 로딩바 진행률(“등장 단계” 기반)
 int loadPct = 0;
 
 // ---------- pity 상태 ----------
-int gNoHighStarCount = 0; // STAR7+ 안 나온 연속 횟수
 
 // ---------- 소프트 분산 상태 ----------
-int gRecentRegionCount[TOTALCASTLE] = { 0 }; // 최근 등장 횟수
-int gRecentStarCount[10] = { 0 };            // STAR 연속 패널티
 
 // ================================
 // 게임 상태 전역 변수 선언 (extern)
@@ -1471,15 +1426,11 @@ int attackDelayBefore = 0;
 int attackTypeBefore = 0;
 int attackStrBefore = 0;
 int rewardItemCntBefore = 0;
-int maxHitCnt = 0;
 int sequenceFrame = 0;
 int raidFrame = 0;
-int continuousAttackFrame = 0;
-int raidCnt = 0;
 
 // 자동 플레이
 bool autoPlay = false;
-bool autoSelect = false;
 bool autoSkill = false;
 int autoFrame = 0;
 bool autoButtonText = true;
@@ -1504,7 +1455,6 @@ bool worldDrawing = false;
 // 게임 상태
 int waveStatus = WAVESTATUS_READY;
 int levelUpFrame = 0;
-int levelUpStatus = 0;
 int maxUserLv = 0;
 bool bossOn = false;
 int touchDisable = 3 * FPS;
