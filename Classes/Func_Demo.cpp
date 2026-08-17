@@ -474,7 +474,11 @@ void Demo(void)
 				}
 
 				if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
+					//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
+					//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
+					worldDrawing = true;
 					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2);
+					worldDrawing = false;
 				}
 
 				SetAlpha(32);
@@ -512,7 +516,11 @@ void Demo(void)
 				}
 
 				if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
+					//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
+					//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
+					worldDrawing = true;
 					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom);
+					worldDrawing = false;
 				}
 
 				SetAlpha(32);

@@ -1453,7 +1453,11 @@ void RouletteDraw(int x, int y, float zoom)
 						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
 						//여기서 더하면 그 폭만큼 옆으로 밀린다.
 						destX = ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP) + markLift;
+						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
+						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
+						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE
+							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
 
 						break;
 					case SUMMON:
@@ -1467,7 +1471,11 @@ void RouletteDraw(int x, int y, float zoom)
 						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
 						//여기서 더하면 그 폭만큼 옆으로 밀린다.
 						destX = ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP) + markLift;
+						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
+						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
+						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE
+							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
 
 						break;
 					}
