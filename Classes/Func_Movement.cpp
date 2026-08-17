@@ -2750,8 +2750,12 @@ chk:
 					break;
 				}
 				else {
-					if (!pObj->flamer)
-					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+					//중괄호가 없어서 flamer일 때 loopMotion이 갱신되지 않은 채
+					//아래에서 쓰였다. -1은 "60프레임 표가 없다"는 뜻이라
+					//원래 식으로 떨어진다.
+					loopMotion = pObj->flamer
+						? -1
+						: GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
 					pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					pObj->dx = pObj->dy = 0;
 				}
@@ -11206,7 +11210,9 @@ void RegenMove(OBJECT* pObj)
 				pObj->drawHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_DRAWHANDLER];
 				AddBar(&bar[BAR_BOSSHP], pObj->hp, BARFRAME);
 			}
-			int startObj;
+			//아래 루프의 break가 if 밖에 있어 첫 칸만 보고 빠져나온다.
+			//배가 아니면 대입이 없어 초기화도 안 된 값으로 obj와 비교했다.
+			int startObj = -1;
 
 			for (i = BULLET; i < NEUTRAL; i++) {
 				if (ao[i].type == ENEMY_SHIP ||
@@ -11215,9 +11221,10 @@ void RegenMove(OBJECT* pObj)
 					ao[i].type == ENEMY_SHIP_PURPLE ||
 					ao[i].type == ENEMY_SHIP_GREEN ||
 					ao[i].type == ENEMY_SHIP_GOLD ||
-					ao[i].type == ENEMY_SHIP_BLACK)
+					ao[i].type == ENEMY_SHIP_BLACK) {
 					startObj = i;
-				break;
+					break;
+				}
 			}
 			//소환수거나 
 			if (obj >= SOLDIER) {

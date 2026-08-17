@@ -5532,7 +5532,7 @@ void DrawSlotIndex(int idx, int x, int y, int color, float zoom)
 void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, int str, bool ani, float zoom)
 {
 	int icon = pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0];
-	int value;
+	int value = 0;	//아래 두 분기 밖에서도 읽힌다
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int crewIdx = GetCrewIdxFromType(ao[ENEMY].type);
 

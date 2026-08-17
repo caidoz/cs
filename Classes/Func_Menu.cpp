@@ -755,7 +755,9 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 {
 	int i;
 	int itemLv, itemCnt, itemIdx, itemIcon;
-	int itemTypeNext, itemDetailNext, itemGradeNext;
+	//레벨업 연출 분기에서만 채워지는데 다른 분기에서도 읽힌다.
+	//crewData[itemDetailNext * ...] 처럼 첨자로도 쓰여서 배열 밖을 읽었다.
+	int itemTypeNext = 0, itemDetailNext = 0, itemGradeNext = 0;
 	int icon, skillIcon, questIcon, pvpQuestIcon;
 	OBJECT* pObj = &ao[PLAYER];
 	int collectionIdx;
@@ -2797,7 +2799,8 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 			int row = 1;
 			int col = 1;
 			float zoom = 1.0f;
-			int gap;
+			//아래 switch(rewardItemCnt)가 못 잡는 개수가 오면 그대로 좌표 계산에 쓰인다.
+			int gap = 0;
 			int itemType;
 			int itemDetail;
 			int itemGrade;
@@ -4041,7 +4044,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	
 	int repItem = 0;
 	int setItemCnt = 0;
-	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot;
+	int itemType, itemDetail, itemGrade, itemLv, itemCnt = 0, itemSlot;
 	OBJECT* pObj = &ao[curHero];
 	float numWidth = (float)(32 * _2X) * zoom;
 	int collectionIdx;

@@ -1039,7 +1039,9 @@ void DoubleBuffering(int drawHandleIdx)
 void PaintClet(int x, int y, int w, int h)
 {
 	int i, j;
-	float zoom;
+	//아래에서 MD_NEWCOLLECTION/MD_NEWCARD일 때만 값을 잡는데, MD_STAGECLEAR의
+	//StageInfoDraw()도 이 값을 배율로 받는다. 그 경로에서는 초기화도 안 된 값이었다.
+	float zoom = 1.0f;
 	/*
 	if (refreshRate < FPS) {
 		Director::getInstance()->setAnimationInterval(1.0f / refreshRate);

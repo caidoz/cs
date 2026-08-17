@@ -1295,7 +1295,10 @@ void AttackSequenceDraw(void)
 
 	float battleZoom = dioramaZoom;
 
-	int pvpMenuIndex;
+	//아래 검색 루프가 PVP 이벤트를 못 찾으면 대입이 안 된다. 그 값이 그대로
+	//robin.gameEvent[]의 첨자로 쓰이는데 쓰기까지 하므로, 초기화가 없으면
+	//세이브 구조체 밖을 덮어쓴다. 못 찾았을 때는 0번을 보게 둔다.
+	int pvpMenuIndex = 0;
 
 	ITEM* it;
 

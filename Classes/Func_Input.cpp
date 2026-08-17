@@ -1777,10 +1777,12 @@ void DemoKey(void)
 	int newItemDetail;
 	int newItemGrade;
 
-	int newItemRewardType;
-	int newItemRewardDetail;
-	int newItemRewardGrade;
-	int newItemRewardCnt;
+	//아래 if 안에서만 채워진다. 쓰는 곳(AVK_GETDEMOREWARD)이 같은 조건이라
+	//실제로 도달하지는 않지만, 컴파일러가 짝을 못 지으니 여기서 잡아둔다.
+	int newItemRewardType = 0;
+	int newItemRewardDetail = 0;
+	int newItemRewardGrade = 0;
+	int newItemRewardCnt = 0;
 
 	if (systemKey == AVK_NEWDEMOITEMREWARD || systemKey == AVK_GETDEMOREWARD) {
 		newItemType = boxCardItem[0][newItemIdx[curNewItemIdx]].type;

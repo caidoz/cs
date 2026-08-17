@@ -693,7 +693,9 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 	int type;
 	int imgFile = 0;
 	int y = pObj->y;
-	int dx;
+	//tempAlpha가 0이면 아래 else 블록을 건너뛰는데, 그 블록 바깥의 DrawImage가
+	//dx와 pxl을 그대로 쓴다. 초기화가 없으면 첫 파트에서 쓰레기 값이 들어간다.
+	int dx = 0;
 	int centerX = 0;
 	int centerY = 0;
 
@@ -713,7 +715,7 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int pxl;
+		int pxl = 0;
 		int partsRotation = 0;
 
 		fixedImg = *cPtr;
@@ -1361,6 +1363,11 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		case 3:
 			ucPtr = &titleOff[(*cPtr) * 4];
 			break;
+		default:
+			//위 분기가 where에 0/1/3만 넣으므로 여기 올 일은 없다.
+			//그래도 막아둔다 - 예전에 이 함수는 초기화 안 된 where로 들어오는
+			//경로가 있었고, 그때 ucPtr이 아무 데나 가리켰다.
+			return;
 		}
 
 		type = *(cPtr + 3);
@@ -1665,6 +1672,10 @@ void DrawBgEffect(int idx, int x, int y, int dirF, float zoom)
 		case 0:
 			imgFile = MAP_OBJ_IMG + mapData[7];
 			break;
+		default:
+			//where는 위에서 0~3만 들어간다. 그래도 막아야 sprite[imgFile]이
+			//초기화 안 된 첨자로 불릴 일이 없다.
+			return;
 		}
 
 		float magnify;

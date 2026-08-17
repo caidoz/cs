@@ -1,4 +1,4 @@
-#include "Func.h"
+﻿#include "Func.h"
 #include "Data.h"
 
 unsigned int SqrtX256(unsigned int n)
@@ -493,6 +493,10 @@ int GotoPosition(int targetX, int targetY, int iconMarkIdx, int speed, int type)
 		x = targetX - pObj->x;
 		y = targetY - pObj->y;
 		break;
+	default:
+		//모르는 마크 종류면 pObj/x/y가 안 잡힌다. 그대로 두면 아래에서
+		//초기화도 안 된 포인터에 targetX를 써넣는다.
+		return false;
 	}
 
 	pObj->targetX = targetX;

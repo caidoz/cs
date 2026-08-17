@@ -1984,7 +1984,8 @@ int GetCharPow(OBJECT* obj)
 int GetItemPow(int type, int detail, int cooldown)
 {
 	int value;
-	unsigned char ratio;
+	//아래 switch가 못 잡는 타입이 오면 그대로 배율로 쓰인다. 100이 등가다.
+	unsigned char ratio = 100;
 
 	switch (type) {
 	case ITEM_SWORD://0

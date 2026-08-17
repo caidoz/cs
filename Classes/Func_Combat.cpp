@@ -1172,10 +1172,10 @@ int GetAttackRange(int obj)
 {
 	int range;
 	OBJECT* pObj = &ao[obj];
-	ITEM* it;
-
-	if (pObj->type < TOTALCHAR)
-		it = &pObj->equip[EQUIP_WEAPON];
+	//주소 계산일 뿐이라 조건 없이 잡아도 된다. 예전에는 type < TOTALCHAR일 때만
+	//대입해서, 아래 ROBIN/DIANA/MAXX 분기가 그 조건과 같은 뜻인데도 컴파일러가
+	//짝을 못 지어 초기화 안 된 포인터로 보였다.
+	ITEM* it = &pObj->equip[EQUIP_WEAPON];
 
 	//몬스터의 사정거리도 따져준다.
 	if (obj >= ENEMY) {
