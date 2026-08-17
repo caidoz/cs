@@ -1433,14 +1433,27 @@ void RouletteDraw(int x, int y, float zoom)
 
 					//스킬인덱스가 controlMark[i].attackType
 
+					//카드는 controlMark의 x/y를 한가운데로 삼아 그려진다
+					//(Func_Battle의 DrawSkillCard 호출부가 폭/높이의 절반을 뺀다).
+					//그래서 머리 위에 얹으려면 카드 높이의 절반만큼 더 올려야 한다.
+					//예전 48*_2X는 옛 카드(48픽셀 높이) 기준이라, 카드를 키우자
+					//그만큼 아래로 내려앉아 캐릭터를 덮었다.
+					//날아가서 멈출 때의 배율은 아래 SetControlMark에 넘기는
+					//zoomEnd2(zoom - 0.3f)다. 그 크기로 계산해야 도착점이 맞는다.
+					float markZoom = Max(0.1f, controlMark[i].zoom - 0.3f);
+					int markLift = (int)((float)ROULETTECARDSIZE_Y * markZoom / 2);
+
 					int targetObj;
 					switch (skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
 					case ACTIVE:
 					case PASSIVE:
 					case HEROSKILL:
 						targetObj = skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_TARGET];
-						destX = xOffset + ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP);
+						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
+						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
+						//여기서 더하면 그 폭만큼 옆으로 밀린다.
+						destX = ao[targetObj].x - rx;
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP) + markLift;
 
 						break;
 					case SUMMON:
@@ -1450,8 +1463,11 @@ void RouletteDraw(int x, int y, float zoom)
 						break;
 					default:
 						targetObj = controlMark[i].owner;
-						destX = xOffset + ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP);
+						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
+						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
+						//여기서 더하면 그 폭만큼 옆으로 밀린다.
+						destX = ao[targetObj].x - rx;
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP) + markLift;
 
 						break;
 					}
