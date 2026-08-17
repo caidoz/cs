@@ -158,7 +158,6 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 {
 	int i;
 	rapidSwipe = false;
-	OBJECT * pObj = &ao[raidPlayer];
 
 	auto touchPoint = touch->getLocation();
 
@@ -398,7 +397,6 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 {
 	auto touchPoint = touch->getLocation();
-	OBJECT * pObj = &ao[raidPlayer];
 	rapidSwipe = false;
 
 	endTouchX = touchPoint.x;
@@ -458,7 +456,6 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
-	OBJECT * pObj = &ao[raidPlayer];
 	rapidSwipe = false;
 
 	auto touchPoint = touch->getLocation();
@@ -1007,7 +1004,6 @@ void Core::Run(float delta) {
 
 void DoubleBuffering(int drawHandleIdx)
 {
-	int i;
 	int temprx = rx;
 	
 	offX = 0;
@@ -1042,7 +1038,7 @@ void DoubleBuffering(int drawHandleIdx)
 
 void PaintClet(int x, int y, int w, int h)
 {
-	int i, j, k;
+	int i, j;
 	float zoom;
 	/*
 	if (refreshRate < FPS) {

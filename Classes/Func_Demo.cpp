@@ -5,9 +5,7 @@
 
 void Demo(void)
 {
-	int i, j, k;
-	int gap;
-	int totalPlayer = realPlayerCnt;
+	int i, k;
 
 	if (curMenu == MENU_LIST && xOffset < 0) {
 		xOffset -= 32 * _2X;
@@ -727,7 +725,6 @@ void Demo(void)
 
 	//여기에 이야기하는 화자가 나온다.
 
-	int talkerZoom = 2;
 	int imgW = 765;
 	int imgH = 1024;
 	int imgX = DX / 2 - imgW / 2;
@@ -968,7 +965,6 @@ void Demo(void)
 		break;
 	}
 
-	bool back = false;
 	battleZoom = 1.0f;
 
 	if (battleStartFrame > 0) {
@@ -1585,7 +1581,7 @@ int GetTutorialTouchFunc(void)
 
 void Demo_Talk(void)
 {
-	int i, w = 0;
+	int i;
 	signed char talkShakeY = talkShakeFrame;
 
 	if (talkShakeFrame) {
@@ -1669,8 +1665,7 @@ void Demo_Talk(void)
 
 void Demo_Win(void)
 {
-	int i, j, k;
-	int zoom;
+	int i;
 	//int x = 0, y = 0 - (touch == 1 ? 5 : 0);
 	int x = xOffset;
 	int y = DY - (GNBHEIGHT - GNB_INIT_HEIGHT);
@@ -1678,31 +1673,15 @@ void Demo_Win(void)
 	int xPos = xOffset + DX / 2 - Min(REWARDITEM_XCOUNT, rewardItemCnt) * REWARDCARDSIZE_X / 2;
 	int yPos = DY / 2 + ((rewardItemCnt + REWARDITEM_XCOUNT - 1) / REWARDITEM_XCOUNT) * (REWARDCARDSIZE_Y + 4 * _2X) / 2;
 
-	unsigned char* item;
-	const unsigned short* demoitem;
 
-	int speed;
-	int amount;
-	int count;
 
 	int type, detail, grade;
-	int tempGachaIcon = gachaIcon[0];
-	int tempGachaGrade = gachaGrade[0];
-	ITEM* it;
 
-	long long start, end, current;
-
-	int startX, startY, targetX, targetY;
-	int width;
+	long long start;
 
 
-	int fontZoom;
 
-	long long getGoldNum = 0;
-	long long getHeartNum = 0;
-	long long getMedalNum = 0;
-	long long getStarNum = 0;
-	long long getHammerNum = 0;
+
 
 	newItemCnt = 0;
 
@@ -1710,10 +1689,6 @@ void Demo_Win(void)
 	newItemDetail[newItemCnt] = boxCardItem[0][newItemIdx[curNewItemIdx]].detail;
 	newItemGrade[newItemCnt] = boxCardItem[0][newItemIdx[curNewItemIdx]].grade;
 
-	int newItemRewardType = newItemReward[itemStartCnt[newItemType[newItemCnt]] * REWARDITEMDATASIZE + newItemDetail[newItemCnt] * TOTALGRADE * REWARDITEMDATASIZE + newItemGrade[newItemCnt] * REWARDITEMDATASIZE + 0];
-	int newItemRewardDetail = newItemReward[itemStartCnt[newItemType[newItemCnt]] * REWARDITEMDATASIZE + newItemDetail[newItemCnt] * TOTALGRADE * REWARDITEMDATASIZE + newItemGrade[newItemCnt] * REWARDITEMDATASIZE + 1];
-	int newItemRewardGrade = newItemReward[itemStartCnt[newItemType[newItemCnt]] * REWARDITEMDATASIZE + newItemDetail[newItemCnt] * TOTALGRADE * REWARDITEMDATASIZE + newItemGrade[newItemCnt] * REWARDITEMDATASIZE + 2];
-	int newItemRewardCnt = newItemReward[itemStartCnt[newItemType[newItemCnt]] * REWARDITEMDATASIZE + newItemDetail[newItemCnt] * TOTALGRADE * REWARDITEMDATASIZE + newItemGrade[newItemCnt] * REWARDITEMDATASIZE + 3];
 
 	newItemCnt++;
 
@@ -1901,7 +1876,6 @@ void AfterAttack(OBJECT* pObj)
 {
 	int enemyTurn = turn;
 
-	OBJECT* eObj = &ao[enemyTurn];
 
 	option.gameControl = CONTROL_AUTO;
 	arenaStatus = STATUS_PLAY;
@@ -1955,7 +1929,7 @@ void AfterAttack(OBJECT* pObj)
 
 void AfterDemo(void)
 {
-	int i, itemIndex;
+	int i;
 
 	ReleaseCore(false);
 
@@ -3254,8 +3228,7 @@ void SetDemo(int index)
 
 void SetTalk(void)
 {
-	int i, j;
-	signed short* ssPtr;
+	int i;
 
 	for (i = 0; i < movie.dCount; i++) {
 		// 본래 이것.
@@ -3295,8 +3268,6 @@ void SetTalk(void)
 
 void SetTalk_Movie(void)
 {
-	int i;
-	signed short* ssPtr;
 
 }
 

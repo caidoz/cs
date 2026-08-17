@@ -95,7 +95,6 @@ void KeyCore(void)
 void TitleKey(void)
 {
 	int i, j, k;
-	int doorY;
 	switch (curMenu) {
 	case MENU_LOADING://�� ó���� 100 ������ ȭ�鿬��
 		switch (systemKey) {
@@ -485,26 +484,13 @@ void BossRaidKey(void)
 
 void PlayKey(int obj)
 {
-	int i, j, k, temp = 0;
+	int i;
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
-	int tempIdx;
 	int type, detail, grade;
-	const signed short* tPtr;
-	int ret;
-	int skillIdx;
-	const long long* reward;
 	const long long* boxReward;
-	int boxStartIndex;
-	int boxEndIndex;
-	int speed;
-	int cardSpanNum = 2;
-	int cardSpan;
-	float controlZoom = 1.0f;
-	const signed short* scPtr;
-	int width;
 	int sameRouletteCnt = 1;//����ī�尡 ���� �ִ���
 	int sameRouletteStartIdx;//����ī�尡 ��ŸƮ �Ǵ� ����
 	int sameRouletteEndIdx;//����ī�尡 ���尡 �Ǵ� ����
@@ -519,9 +505,7 @@ void PlayKey(int obj)
 	int itemGrade;
 	int itemCnt;
 	int index;
-	int distance;
 
-	long long tempPrice;
 
 	int who;
 
@@ -1826,8 +1810,6 @@ void DemoKey(void)
 
 void AlertKey(void)
 {
-	ITEM* it;
-	OBJECT* pObj;
 
 	if (winAniFrame < 8)
 
@@ -2011,11 +1993,9 @@ void HotKeyPress(OBJECT* pObj, int idx)
 
 	int obj = GetObjFromPtr(pObj);
 	int limitStat = pObj->ps[PS_DELAY];
-	int delay = 100 - limitStat;
 	int i, j;
 	int closestEnemy;
 
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	if (pObj->hotKey[idx].type != HOTKEY_SCREEN)
 
@@ -2594,16 +2574,11 @@ void SetSwipePoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
-	int i, j, k, temp = 0;
-	int doorY = 256 * _2X;
+	int i, j;
 	int x = DX / 2 - STATUSWIN_X / 2;
 	int y = DY / 2 + MINDY / 2;
-	ITEM* it;
 	int itemType, itemDetail, itemGrade;
 
-	int grade = GRADE_LEGEND;
-	int detail;
-	OBJECT* pObj;
 
 	//현재 터치하면 안되면
 	if (touchDisable)
@@ -3239,7 +3214,6 @@ void SaveFlag(int which)
 bool JoyStickPressGoldQuestPossible(void)
 {
 	int i;
-	int controlMarkActiveCnt = 0;
 
 	for (i = 0; i < TOTALCONTROLMARK; i++) {
 		if (controlMark[i].frame > 0)
@@ -3262,8 +3236,6 @@ bool JoyStickPressRaidPossible(void)
 
 bool JoyStickPressPossible(void)
 {
-	int i;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	switch (drawHandle) {
 	case MD_PLAY:
@@ -3287,7 +3259,6 @@ bool JoyStickPressPossible(void)
 
 bool menuPressPossible(void)
 {
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	if (!curtainFrame && !infoFrame && !areaFrame && attackSequence == ATTACKSEQUENCE_READY && !ao[PLAYER].dead && arenaStatus == STATUS_PLAY && autoPlay == false) {
 		return true;
@@ -3299,9 +3270,6 @@ bool menuPressPossible(void)
 
 void JoyStickPressRaid(void)
 {
-	int i, j;
-	int rand;
-	int bigger = false;
 	OBJECT* pObj = &ao[PLAYER];
 
 	if (attackDelay)
@@ -3364,10 +3332,9 @@ void JoyStickPressRaid(void)
 
 void BoxOpen(void)
 {
-	int i, j;
+	int i;
 	int itemType, itemDetail, itemGrade, itemLv;
 	int rand = Random(ITEMDETAILSEED);
-	int eventIdx;
 
 	//
 	//TEST
@@ -3548,7 +3515,6 @@ void BoxOpen(void)
 
 void JoyStickPressAll(void)
 {
-	int i, j;
 
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
@@ -3559,7 +3525,6 @@ void JoyStickPressAll(void)
 
 void JoyStickRelease(void)
 {
-	int i, j, rand;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	//�ڵ��̸�
 	if (autoPlay == true) {

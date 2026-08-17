@@ -1549,7 +1549,6 @@ void SetFontColor(int color)
 
 void ScreenDarken(int alpha)
 {
-	int i;
 	//return;
 	if (alpha > 0) {
 		if (screenDarken == false)
@@ -1615,8 +1614,6 @@ void MemRect(int x, int y, int w, int h, int fillCol)
 
 void MemRectFrame(int x, int y, int w, int h, int frameCol)
 {
-	cocos2d::Sprite* src;
-	int color = frameCol;
 
 	//x += offX;
 	//y += offY;
@@ -2138,13 +2135,9 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 //
 void DrawDiorama(int x, int y, int type, float zoom)
 {
-	int i = 0, j = 0, k = 0, l = 0;
+	int i = 0, j = 0;
 	int sortedCrewIdx[TOTAL_CREW + TOTALCHAR];
 	int sortedCrewY[TOTAL_CREW + TOTALCHAR];
-	int crewType, crewCmf;
-	int crewX, crewY;
-	int crewMotion = false;
-	float cloudZoom;
 	float zoomBefore = 1.0f;
 	int objStartY = STATUSWIN_Y + (rh - 4) * TSIZE;
 
@@ -3318,7 +3311,7 @@ void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 
 void DrawAlpha2(int x, int y, int idx, float zoom, float rotation)
 {
-	int i, w;
+	int i;
 
 	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
 		switch (alphaData[i]) {
@@ -3614,7 +3607,6 @@ float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool com
 
 float GetNumDxTTF(long long int num, int sign, int font, int digit, bool comma, float zoom, bool fixed)
 {
-	int i;
 	Size textSize;
 	float width;
 	return GetNumDx(num, sign, font, digit, comma, zoom, fixed);
@@ -4030,11 +4022,8 @@ void DrawNum(long long int num, int x, int y, int font, int align, int digit, bo
 
 void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom)
 {
-	int i, j;
-	long long int tempNum = num;
-	int mul, mule;
+	int j;
 	int numbers = 1;
-	float width = 0;
 
 	switch (align) {
 	case CENTER:
@@ -4106,7 +4095,6 @@ void DrawBigNumGold(long long int num, int x, int y, int font, int align, int di
 	float dotGapY;
 	int figureNum = GetNumFigure(num);
 
-	float totalWidth;
 	long long int temp;
 
 	int gap = 0;//줄여야 되는 자리수
@@ -4214,13 +4202,11 @@ float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int di
 	//int alphaIdx = ALPHA_NUM_A + ((GetNumFigure(num) - 1) / 3) - 1;
 	int alphaIdx = GetNumFigure(num) < 6 ? 0 : alphaArray[Min(2, (GetNumFigure(num) - 2) / 3 - 1)];
 	int alphaFont = (font == NUM_FONT_SMALL ? FONT_SMALL : FONT_LARGE);//숫자에 따른 알파 폰트
-	float numWidth;
 
 	float alphaGapY;
 	float dotGapY;
 	int figureNum = GetNumFigure(num);
 
-	float totalWidth;
 	long long int temp;
 
 	int gap = 0;//줄여야 되는 자리수
@@ -4353,7 +4339,6 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 	float dotGapY;
 	int figureNum = GetNumFigure(num);
 
-	float totalWidth;
 	long long int temp;
 
 	int gap = 0;//줄여야 되는 자리수
@@ -4505,7 +4490,6 @@ void DrawBigNum2(long long int num, int x, int y, int align, int digit, int sign
 	float dotGapY;
 	int figureNum = GetNumFigure(num);
 
-	float totalWidth;
 	long long int temp;
 
 	int gap = 0;//줄여야 되는 자리수
@@ -4854,8 +4838,6 @@ void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 {
 	float GOLDALPHAZOOM = 0.4f;
-	int MAXPUSHDOWN = AUTOPLAYFRAME;
-	int i;
 
 	//하트버튼
 	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
@@ -5058,7 +5040,6 @@ int GetHeartAmount(void)
 
 void LoadingBarDraw(int x, int y, int loadingBarFrame)
 {
-	int text;
 	DrawImage(165, 21, 180, 519, x, y, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 	MemRect(x + 3 * _2X, y - 3 * _2X, Min(159 * _2X, loadingBarFrame * 5 * _2X), 16 * _2X, COLOR_ORANGE);
 
@@ -5157,7 +5138,6 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, bool ani, int textIdx)
 {
 	int curGray = grayScale;
-	int numFont = zoom == 1 ? NUM_FONT_NORMAL : NUM_FONT_LARGE;
 	int frameColor;
 
 	if (gray > grayScale)
@@ -5257,12 +5237,6 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 {
 	int i;
 	int beforeColor = baseColor;
-	ITEM* it;
-	int collectionIdx;
-	int swordSkillIdx;
-	int itemType;
-	int itemDetail;
-	int itemGrade;
 	int enemyIdx = idx - ICON_SUMMON;
 	int dMotion;
 	OBJECT* pObj;
@@ -5394,9 +5368,6 @@ void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame)
 //�ϴ� ��Ƽ�� ��ų�� ��쿡��?����Ѵ�?
 void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 {
-	int i, j;
-	float width;
-	long long realValue;
 	float w = (float)SKILLCARDSIZE_X * zoom;
 	float h = (float)SKILLCARDSIZE_Y * zoom;
 	float numWidth = (float)(SKILLCARDSIZE_X - 12 * _2X) * zoom;
@@ -5405,9 +5376,6 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 	float bigNumWidth = (float)(SKILLCARDSIZE_X - ITEMICONSIZE - 1 * _2X) * itemValueZoom * zoom;
 	int enemyIdx;
 
-	int rewardIcon = 0;
-	int rewardValue = 0;
-	int str;
 
 	//curStar = maxStar = GetItemStar(type, detail, grade);
 	curStar = 0;
@@ -5507,7 +5475,6 @@ void DrawLv(int lv, int x, int y, float zoom, int align)
 
 void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 {
-	int i;
 
 	if (it->type == EMPTY)
 		return;
@@ -5568,12 +5535,6 @@ void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, in
 	int value;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int crewIdx = GetCrewIdxFromType(ao[ENEMY].type);
-	int itemType = crewReward[crewIdx * CREWREWARDDATASIZE + 0];
-	int itemDetail = crewReward[crewIdx * CREWREWARDDATASIZE + 1];
-	int itemGrade = crewReward[crewIdx * CREWREWARDDATASIZE + 2];
-	int itemCnt = crewReward[crewIdx * CREWREWARDDATASIZE + 3];
-	int itemLv = 1;
-	float width;
 
 	if (attackTypeIdx == ROULETTE_BATTLE)
 		value = battleRewardMedal[str] * GetBetHeart(it->detail, it->grade, bet);
@@ -5784,7 +5745,7 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 //보상을 표현하기 
 void DrawRewardCard(int type, int detail, int grade, int lv, long long count, int x, int y, bool ani, float zoom, int cardFrame, bool newItem, bool showValue, int curStar, int maxStar, bool shadow, int openFrame)
 {
-	int i, j;
+	int i;
 	float width;
 	int icon = GetItemIcon(type, detail, grade);
 	long long realValue;
@@ -6064,7 +6025,6 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 float GetEquipIconWidth(int itemType, int itemDetail, int itemGrade, float zoom)
 {
 	float width = 0;
-	int i;
 	int collectionIdx = GetCollectionIdx(itemType, itemDetail, itemGrade);
 
 	width = (float)(ITEMICONSIZE + 2 * _2X) * zoom;
@@ -6079,12 +6039,10 @@ float GetEquipIconWidth(int itemType, int itemDetail, int itemGrade, float zoom)
 //return 값은 넓이이다.
 void DrawEquipIcon(int itemType, int itemDetail, int itemGrade, int x, int y, float zoom, bool iconAni)
 {
-	int i;
 	int collectionIdx = GetCollectionIdx(itemType, itemDetail, itemGrade);
 
 	signed short icon;// = statIcon[itemEquipSlot[itemType]];
 
-	float width = 0;
 
 	icon = ICON_GOLD;
 	DrawIcon(icon, x, y, zoom, false, false, false, true);
@@ -6093,10 +6051,7 @@ void DrawEquipIcon(int itemType, int itemDetail, int itemGrade, int x, int y, fl
 void DrawItemValue(int itemType, int itemDetail, int itemGrade, int itemLv, int x, int y, int align, int plusLv, float zoom, float numWidth)
 {
 	float width;
-	int icon;
 	long long realValue;
-	int upperValue;
-	int underValue;
 	int collectionIdx = GetCollectionIdx(itemType, itemDetail, itemGrade);
 
 
@@ -6209,7 +6164,6 @@ void DrawCycle(int x, int y, int w, int h, int cycle, int full, float zoom)
 	int tRect[4];
 	w = float(w) * zoom;
 	h = float(h) * zoom;
-	int t;
 
 //if (rect[0])
 //	return;
@@ -6338,7 +6292,6 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 	//atime * 3600 = 1h
 	//atime * 144000 = 1d
 	//1일 이상이면 xx d:yy h:zz m
-	float width;
 
 	//x = x + (float)30 * _2X * zoom;
 
@@ -6389,12 +6342,10 @@ void DrawDate(int x, int y, int atime, float zoom)
 	timep = tv.tv_sec;
 
 	tm = localtime(&timep);
-	int year = tm->tm_year + 1900;
 	int month = tm->tm_mon + 1;
 	int day = tm->tm_mday;
 	int hour = tm->tm_hour;
 	int min = tm->tm_min;
-	int second = tm->tm_sec;
 
 	DrawNum(hour, x, y, FONT_SMALL, LEFT, 2, false, true, zoom, true);
 	DrawAlpha(x + (float)(10 * _2X) * zoom, y, ALPHA_COLON, FONT_SMALL, zoom, false);
@@ -6418,11 +6369,8 @@ void DrawDateText(int x, int y, int atime, int type, float zoom)
 	timep = atime;
 
 	tm = localtime(&timep);
-	int year = tm->tm_year + 1900;
-	int month = tm->tm_mon + 1;
 	int day = tm->tm_mday;
 	int hour = tm->tm_hour;
-	int min = tm->tm_min;
 	int second = tm->tm_sec;
 	//일
 	DrawNum(day, x, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//초
@@ -6442,7 +6390,6 @@ void DrawDateText(int x, int y, int atime, int type, float zoom)
 
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText)
 {
-	int MAXPUSHDOWN = AUTOPLAYFRAME;
 
 	if (autoPlayText == true)
 		if (autoPlay == false) {
@@ -6721,8 +6668,6 @@ void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, 
 
 void DrawCastleBox(OBJECT* pObj)
 {
-	int i;
-	int img = BOX0_IMG + pObj->etc - BOX_CASTLE0;
 
 	bool openedImage = false;
 
@@ -6845,7 +6790,6 @@ void DrawCastleBox(OBJECT* pObj)
 
 void BoxDraw(OBJECT* pObj)
 {
-	int i;
 	switch (pObj->etc) {
 	case BOX_INGAME:
 		DrawNeutral(OBJ_BOX0 + pObj->motion, xOffset + pObj->x, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP), pObj->dirX, pObj->zoom);

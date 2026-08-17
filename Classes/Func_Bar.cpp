@@ -35,15 +35,6 @@ void BarDraw(BAR* barP, float zoom)
 	long long count = barP->count;
 	int max;//퀘스트에서 맥스값 숫자 적어줄 때 쓰는 변수
 	long long val;
-	int textPos = 0;
-	float textZoom = 1.2f * zoom;
-	long long rewardCnt;
-	const long long* reward;
-	float coinZoom = 1.0f;
-	long long remainTime;
-	long long totalTime;
-	float INFOZOOM = 0.7f;
-	int buttonZoom = 3.0f;
 
 	if (barP->add > 0) {
 		count += Min(barP->add * barP->aniFrame * 3 / barP->countFrame, barP->add);
@@ -441,11 +432,7 @@ void HammerBarDraw(int x, int y, long long amount, bool ani, float zoom)
 
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 {
-	float textPos = 0.0f;
 	float width = StringWidth(textId[TEXT_STAGE], zoom) + (float)(4 * _2X) * zoom + GetNumDx(robin.stage + 1, false, NUM_FONT_NORMAL, false, false, zoom, false) + GetNumDx(robin.room + 1, MINUS, NUM_FONT_NORMAL, false, false, zoom, false);
-	float goldZoom = zoom * 0.8f;
-	float textZoom = zoom * 1.0f;
-	int i;
 	long long betCnt = bossGold[robin.stage] * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 	int obj = ENEMY + GetEnemyBarIdx(ENEMY);
 
@@ -488,7 +475,7 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 
 	float xPos;
 	int moveSpeed = 4 * _2X * 2 / MOTIONDIV;
-	long long start, end, current;
+	long long start, end;
 
 	if (robin.pvpSubQuest == 0) {
 		start = count;
@@ -618,11 +605,6 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 
 void DevilHeartDraw(int x, int y, float zoom)
 {
-	int tempGrayScale = grayScale;
-	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int crewIdx = 0;
 
 	float defaultAngle;
 	float radius = (float)ROULETTERADIUS * zoom;//반경
@@ -708,7 +690,6 @@ void ExpBarDraw(int lv, long long count, int x, int y, int alpha, float zoom)
 void ShieldBarDraw(long long count, long long max, int x, int y, float zoom, int hpColor)
 {
 	long long val;
-	float coinZoom = 1.0f;
 	val = (float)(SIMPLEHPBARWIDTH)*zoom * count / max;
 
 	MemRect(xOffset + x + (float)shakePosX[effect.hpShake] * zoom, y + (float)shakePosY[effect.hpShake] * zoom, (float)(SIMPLEHPBARWIDTH + 2 * _2X) * zoom, (float)(SIMPLEHPBARHEIGHT + 2 * _2X) * zoom, COLOR_NAVY);
@@ -728,7 +709,6 @@ void ShieldBarDraw(long long count, long long max, int x, int y, float zoom, int
 void SimpleHpBarDraw(long long count, long long max, int x, int y, float zoom, int hpColor)
 {
 	long long val;
-	float coinZoom = 1.0f;
 	val = (float)(SIMPLEHPBARWIDTH)*zoom * count / max;
 
 	MemRect(x + (float)shakePosX[effect.hpShake] * zoom, y + (float)shakePosY[effect.hpShake] * zoom, (float)(SIMPLEHPBARWIDTH + 2 * _2X) * zoom, (float)(SIMPLEHPBARHEIGHT + 2 * _2X) * zoom, COLOR_NAVY);
@@ -748,11 +728,7 @@ void SimpleHpBarDraw(long long count, long long max, int x, int y, float zoom, i
 void HpBarDraw(int type, long long count, long long max, int x, int y, float zoom)
 {
 	long long val;
-	float coinZoom = 1.0f;
-	int textPos = 0;
-	float textZoom = 0.8f * zoom;
 	int obj = ENEMY + GetEnemyBarIdx(ENEMY);
-	int HPBARCOLOR = type <= MAXX ? COLOR_GREEN : COLOR_REALRED;
 
 	val = (float)(HPBARWIDTH - 4 * _2X) * zoom * count / max;
 

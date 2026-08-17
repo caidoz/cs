@@ -6,17 +6,10 @@
 // Battle 관련 함수
 void Play(void)
 {
-	int i, j, k;
+	int i, j;
 	int gap;
-	int totalPlayer = realPlayerCnt;
-	int itemType;
-	int itemDetail, itemGrade;
-	ITEM* it;
-	OBJECT* eObj = &ao[ao[PLAYER].target];
 	int x, y;
 
-	int startX;
-	int startY;
 	float zoom;
 
 	//인터랙티브 전투 튜토리얼: Func_Combat.cpp의 몬스터 사망 훅이 예약해둔 다음 컷씬을 여기서 시작한다.
@@ -1261,7 +1254,6 @@ void Play(void)
 
 	}
 
-	bool back = false;
 	battleZoom = 1.0f;
 
 	if (battleStartFrame > 0) {
@@ -1284,9 +1276,6 @@ void AttackSequenceDraw(void)
 	int i, j, k;
 
 	long long gloveValue = 0;
-	float width;
-	float iconZoom;
-	int totalObjCnt = 0;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
 
@@ -1295,32 +1284,20 @@ void AttackSequenceDraw(void)
 	long long current;
 	long long gap = (end - start) / (FPS / 2);
 
-	long long start2;
-	long long end2;
-	long long gap2;
 
 	int icon;
 	int rewardIcon;
-	int currencyIcon;
-	int currency;
 
-	int amount;
 
-	int tempBet = bet;
 	OBJECT* pObj = &ao[turn];
 	OBJECT* eObj = &ao[pObj->target];
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
 	float battleZoom = dioramaZoom;
 
 	int pvpMenuIndex;
 
 	ITEM* it;
-	int skillRewardType;
 
 	long long getGoldNum = 0;
 	long long getHeartNum = 0;
@@ -1333,44 +1310,24 @@ void AttackSequenceDraw(void)
 	int col = 2;//세로로 몇줄인지
 	int rewardGap = 8 * _2X;
 
-	int enemyCrewY = 512 * _2X;
-	int beforeEnemyCrewY;
 
 	bool crewMenuDraw = false;
 	bool equipMenuDraw = false;
 
 	float menuZoom = 1.0f;
-	int doorY;
 
 	int collectionIdx;
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
-	int itemCnt;
-	int itemLv;
-
-	const signed short* tPtr;
-
-	float barZoom;
-
-	int beforeCoinBarY;
-	float beforeCoinBarZoom;
-
-	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
-	int backUpX, backUpY;
 
 
-	int boxY;
-	int rewardCnt;
 
-	int who;
 
-	int jokboAniFrame = FPS / 3;
-	float zoomBefore;
+	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, zoom, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
+
+
+
+
 
 	//bond
 
@@ -2298,33 +2255,23 @@ void AttackSequenceDraw(void)
 
 void EnemySequenceDraw(void)
 {
-	int i, j, k;
+	int i;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
 
-	int icon;
-	int rewardIcon;
 	int iconArr[3];
 	int currencyIcon;
 	int currency;
 	int enemyTurn = turn;
 
-	int speed;
-	int amount;
 
-	int tempBet = bet;
 	OBJECT* eObj = &ao[enemyTurn];
 	eObj->target = GetClosestPlayer(eObj);
 
 	OBJECT* pObj = &ao[eObj->target];
 	int enemyBarIdx = GetEnemyBarIdx(enemyTurn);
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
-	int battleZoom;
 
 	long long armorValue = 0;
 	float iconZoom;
@@ -2469,16 +2416,13 @@ void EnemySequenceDraw(void)
 
 void RaidSequenceDraw(void)
 {
-	int i, j;
+	int i;
 	float width = 44 * _2X;
-	int totalObjCnt = 0;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
-	long long start = dmgInfo[dmgIndex].dmg;
 	long long end = dmgInfo[dmgIndex].dmg * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 
 
-	int icon;
 	int rewardIcon;
 	int iconArr[3];
 	int currencyIcon;
@@ -2486,22 +2430,13 @@ void RaidSequenceDraw(void)
 
 	int amount;
 
-	int tempBet = bet;
 	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
 	OBJECT* pDest = &ao[pObj->target];
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	float fontZoom = 2;
 
-	int equipCount = 0;
-	int goldAlpha = MISS;
 
 	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
 	int backUpX, backUpY;
@@ -3005,7 +2940,7 @@ void RaidSequenceDraw(void)
 
 void InfoDraw(void)
 {
-	int i, j, k;
+	int i;
 	int x, y;
 	int gap = -48 * _2X;
 	int type;
@@ -3247,24 +3182,13 @@ void InfoDraw(void)
 
 void CrewInfoDraw(int crewIdx, int x, int y, float zoom)
 {
-	int i;
 	int itemType = ITEM_CREW;
 	int itemDetail = crewIdx;
 	int itemGrade = 0;
-	int itemLv = 1;
 	int crewType = crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE];
 	int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-	int count = 1;
-	float cardZoom = 2.0f * zoom;
-	int itemCnt, itemSlot, itemIdx, itemIcon;
-	int itemTypeNext, itemDetailNext, itemGradeNext;
-	int icon, skillIcon, questIcon, pvpQuestIcon;
-	OBJECT* pObj = &ao[PLAYER];
-	int collectionIdx;
 
-	ITEM* it;
 	float width;
-	float YGAP = -48 * _2X;
 	int eventIdx = GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT);
 	float discount = 0;
 
@@ -3311,10 +3235,6 @@ void CrewInfoDraw(int crewIdx, int x, int y, float zoom)
 
 void DiscountMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
-	int icon = pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0];
-	OBJECT* pObj = &ao[PLAYER];
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT)];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
@@ -3342,10 +3262,7 @@ void DiscountMenuDraw(int x, int y, float zoom)
 
 void PvpQuestMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
-	int icon = pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0];
-	OBJECT* pObj = &ao[PLAYER];
+	int i;
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_PVP)];
 	float pvpBarZoom = 1.0f;
 	int tempBarStatus = gEvent->barStatus;
@@ -3389,11 +3306,8 @@ void PvpQuestMenuDraw(int x, int y, float zoom)
 
 void QuestMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
+	int i;
 	int icon;
-	OBJECT* pObj = &ao[PLAYER];
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_QUEST)];
 
 	icon = gEvent->icon;
@@ -3463,9 +3377,6 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 	int rewardIcon = GetItemIcon(rewardType, rewardDetail, rewardGrade);
 	long long rewardCnt = questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + robin.subQuest * QUESTREWARDDATASIZE + 3];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_QUEST)];
-	float zoomOrigin = zoom;
-	float ENEMYICONZOOM_X = 0.7f;
-	float ENEMYICONZOOM_Y = 0.6f;
 	//체력바형태로 변경
 
 	if (robin.subQuest >= TOTALSUBQUEST)
@@ -3500,7 +3411,6 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 void RaidBoxDraw(int x, int y, float zoom, bool touch, bool shadow)
 {
 	int i;
-	int j = 0;
 
 	for (i = 0; i < TOTALRAIDBOX; i++) {
 		switch (raidBox[i].motion) {
@@ -3570,7 +3480,7 @@ void RaidBoxDraw(int x, int y, float zoom, bool touch, bool shadow)
 
 void RaidControlerDraw(void)
 {
-	int i, j;
+	int i;
 
 	//하트
 	startX = xOffset + 52 * _2X;

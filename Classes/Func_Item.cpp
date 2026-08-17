@@ -67,9 +67,7 @@ ITEM* GetItemPtr(int idx)
 //������Ʈ ���·� �������� ������Ų��
 int DropItem(OBJECT* pObj, int type)
 {
-	int i, j, rand, dropSum;
-	const unsigned char* uPtr;
-	int tempHp = pObj->maxhp;
+	int i, rand;
 
 	PlayMusic(M_JUMP);//PlayMusic(M_JUMP);
 	//��õ���� �������?�÷��̾ ���?��
@@ -341,7 +339,6 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 	char pr[100];
 	char su[100];
 	char name[100];
-	int originVal;
 
 	int name_idx1 = -1, name_idx2 = -1;
 
@@ -975,9 +972,7 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 {
 	int i;
 	int divide = 8;//4단위로 나누라는것
-	int xGap = ITEMICONSIZE * 2 + 8 * _2X;
 	int yGap = ITEMICONSIZE * 2 + 20 * _2X;
-	int star;
 	float plusX = (float)(12 * _2X + 1.5f * 36 * _2X) * zoom;
 	float plusY = (float)(-16 * _2X) * zoom;
 	const signed short* usPtr;
@@ -1033,7 +1028,6 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 int MakeItemType(int seed)
 {
 	int i;
-	int rt = 0;
 	int maxType = 0;
 	int type;
 	//if (seed > 350 - Min(50, UpDiv(ao[PLAYER].ps[PS_LUCK], 20)))
@@ -1204,7 +1198,7 @@ int GetDropLv(void)
 
 int MakeItemDetail(int type, int lv)
 {
-	int i, randSum = 0, r;
+	int r;
 	int rand = Random(10000);
 
 	switch (type) {
@@ -1480,7 +1474,7 @@ int MakeItemId(void)
 
 int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 {
-	int i, j;
+	int i;
 	ITEM* it;
 
 	//동료 카드는 lv 0을 "미획득"으로 표시한다(TEXT_NOTACQUIRED).
@@ -1650,7 +1644,6 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 
 void ItemSetString(std::string str, int type, int lv, int detail, int grade, int cnt)
 {
-	int temp;
 
 	str = null;
 
@@ -2029,7 +2022,6 @@ int GetItemPow(int type, int detail, int cooldown)
 int GetItemStar(int type, int detail, int grade)
 {
 	int i;
-	int idx;
 
 	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {
@@ -2053,7 +2045,7 @@ int GetItemStar(int type, int detail, int grade)
 
 int GetCurWeaponCollectionsIndex(void)
 {
-	int i, j;
+	int i;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
@@ -2436,7 +2428,6 @@ bool IsCollectionFullEquiped(int collectionIdx)
 int GetFullEquipedCollectionIdx(void)
 {
 	int i;
-	int collectionsItemCnt = 0;
 
 	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
 		if (IsCollectionFullEquiped(i) == true) {
@@ -2818,7 +2809,6 @@ bool NewItemCheck(void)
 
 bool EmptySlotCheck(int itemType)
 {
-	int i;
 	if (ao[itemType % 3].equip[itemEquipSlot[itemType]].type == EMPTY)
 		return true;
 	return false;
@@ -3087,7 +3077,6 @@ int UseItem(OBJECT* pObj, int idx)
 	case ITEM_WASTE:
 		//���?�Ұ� ����
 		switch (it->detail) {
-			const unsigned char* ucPtr;
 
 		case ITEM_WASTE_STAR:
 		case ITEM_WASTE_MOON:
@@ -3682,9 +3671,7 @@ void FreeHotKey(OBJECT* pObj, int where)
 int GetItemValue(ITEM* it)
 {
 	int i;
-	long long int value, value2, tv1, tv2;
-	int valueInt;
-	float valueFloat;
+	long long int value, tv1, tv2;
 	int* ucPtr = &it->option[0][0];
 
 	value = it->value;
@@ -3747,11 +3734,8 @@ int GetItemValue(ITEM* it)
 
 void SetItemString(ITEM* it, int addDetail, int addCool)
 {
-	long long int value, value2, tv1, tv2;
-	int valueInt;
-	float valueFloat;
+	long long int value, tv1, tv2;
 	int i;
-	int min, max;
 	int* ucPtr = &it->option[0][0];
 
 	if (it->type == EMPTY)

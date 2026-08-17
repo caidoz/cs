@@ -315,7 +315,6 @@ void RefreshStat_Sub(OBJECT* pObj)
 {
 	int i;
 	int obj = GetObjFromPtr(pObj);
-	int psHp, psDmg;
 
 
 	for (i = 0; i < 5; i++)
@@ -652,7 +651,6 @@ void RefreshBuff(OBJECT* pObj)
 
 void RefreshQuestTime(void)
 {
-	int i;
 	//생성시간과 현재 시간을 비교하여 그 차이만큼 시간을 배준다.
 	if ((long)(currentTimeStamp - robin.questTimeStamp) >= questInfo[robin.quest * QUESTINFODATASIZE + 4]) {
 		robin.questTimeStamp = MC_knlCurrentTimeStamp();
@@ -663,7 +661,6 @@ void RefreshQuestTime(void)
 
 void RefreshHeartTime(void)
 {
-	int i;
 
 	if (robin.heart < GetInitHeart()) {
 		if ((long)(currentTimeStamp - robin.heartTimeStamp) >= HEARTTIME) {
@@ -721,7 +718,6 @@ void RefreshCalendarTime(void)
 long long NextExp(int lv)
 {
 	int i;
-	int temp = 0;
 	long long rt = 0;
 
 	for (i = 0; i < lv + 1; i++)
@@ -808,7 +804,7 @@ int GetGoldFromSocketSlot(void)
 void LevelUpEquip(ITEM * it, int getExp)
 {
 	int tempLevel;
-	int i, j = 0;
+	int i;
 
 	tempLevel = it->cooldown;
 	it->exp += getExp;
@@ -928,7 +924,7 @@ int checkEmptySocketSlot(int target)
 
 bool checkSameSocketSlot(int idx, int target)
 {
-	int i, j = 0;
+	int i;
 	int startEmptySlot = checkExistSocketSlotCnt(target);
 	bool same = false;
 	ITEM* it = GetItemPtr(target);
@@ -1117,7 +1113,6 @@ long long int GetAbsorb(OBJECT* pObj, long long int damage)
 bool CheckSkillAttack(long long int attacker)
 {
 	//스킬로 인한 공격력 상승을 반영한다.
-	int rt = 100 * SKILLPER;
 	temp = -1;
 
 	if (attacker < BULLET) {
@@ -1582,7 +1577,6 @@ void AttackRobin(int obj, int dest)
 	int defenseAttr = 0;
 	long long recoverHp;
 
-	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[obj].equip[EQUIP_ARMOR];
 
 	if (dest >= CREW && dest < CREW + MAXCREW)
@@ -2101,30 +2095,23 @@ int AttackObj(long long int attacker, int dest)
 	unsigned char attackerObj;
 	unsigned char maxAttackerLv;
 	unsigned char maxDestLv;
-	long long int damageGap = 0;
 
-	int currencyIcon;
-	int currency;
-	int skillIdx;
 
 	OBJECT* pObj = &ao[turn];
 	ITEM* it;
 	if (turn < TOTALCHAR)
 		it = &pObj->equip[EQUIP_WEAPON];
 
-	int collectionIdx = false;
 	if (turn < TOTALCHAR)
 		GetCollectionIdx(it->type, it->detail, it->grade);
 
-	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
+	float zoom;
 
 	int realValue[EQUIP_BOOTS + 1];
 
 	int maxZoom = 4.0f;//퀘스트 아이템 최
 	int minZoom = 2.0f;//
 
-	int stageCrewIdx;
-	int stageCrewType;
 
 	attackerObj = attacker;
 
@@ -3579,7 +3566,7 @@ NEXT:
 //플레이어가 몬스터를 공격하는
 int AttackEnemyCheck(int obj)
 {
-	int i, j, k, rt = 0, count = 0;
+	int i, j, rt = 0, count = 0;
 	int distance[ITEMOBJ - ENEMYUSEROBJ];
 	int sort[ITEMOBJ - ENEMYUSEROBJ];
 	int sorted = false;
@@ -4043,7 +4030,6 @@ void AttackPlayerCheck(OBJECT* pObj)
 //몬스터나 타일이 플레이어를 공격하는
 void AttackBoxCheck(OBJECT* pObj)
 {
-	int i, j;
 
 	if (AttackCrash(pObj, &ao[NEUTRAL]) && ao[NEUTRAL].status == BOXSTATUS_CLOSED) {
 		ao[NEUTRAL].motion = BOXSTATUS_OPENING;
@@ -4164,10 +4150,7 @@ void ItemCheck(OBJECT* pObj)
 void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, float zoom)
 {
 	int i, j, extra = 0;
-	bool sameOwner = false;
 	int str = 0;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int collectionIdx;
 	int currencyObj;
 
 	if (critical >= 100) {
@@ -4760,7 +4743,7 @@ void SetCurrencyMarkGold(int startPosX, int startPosY, int str)
 	int strArr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	int pos = 0;
 	int iconIdx = ICON_GOLD;
-	int startX, startY, targetX, targetY, targetX2, targetY2, startSpeed;
+	int targetX, targetY, targetX2, targetY2;
 
 	for (i = 0; i < TOTALCURRENCYMARK; i++) {
 		if (currencyMark[i].frame == 0) {
@@ -5037,7 +5020,6 @@ int SetRewardMark(int startPosX, int startPosY, int targetX, int targetY, int ta
 
 void ArrangeControlMark(int start)
 {
-	int i, j = 0;
 	if (start < actionCardCnt) {
 		memcpy(&controlMark[start], &controlMark[start + 1], sizeof(ICONMARK) * (actionCardCnt - start));
 		memcpy(&actionCardArr[start], &actionCardArr[start + 1], sizeof(actionCardArr[0]) * (actionCardCnt - start));
@@ -5381,7 +5363,7 @@ int SetBoxCardMark(int startPosX, int startPosY, int targetX, int targetY, int t
 //적에게 가장 가까운 유저
 int NearPlayer(OBJECT* pObj)
 {
-	int i, j, distance, target = -1;
+	int i, distance, target = -1;
 
 	distance = DX;
 	for (i = PLAYER; i < TOTALCHAR; i++) {
@@ -5400,7 +5382,7 @@ int NearPlayer(OBJECT* pObj)
 //아군에게 가장 가까운 적
 int NearEnemy(OBJECT* pObj)
 {
-	int i, j, distance = DX, target = 0;
+	int i, distance = DX, target = 0;
 
 	for (i = ENEMY; i < NEUTRAL; i++) {
 		if (GetDistance(pObj, &ao[i]) < distance && ao[i].active == true && ao[i].dead == false) {
@@ -5458,7 +5440,7 @@ int NearEnemy(OBJECT* pObj)
 
 int TargetPlayer(int obj)
 {
-	int i, j, distance = rw * TSIZE, tempDis;
+	int i, distance = rw * TSIZE, tempDis;
 	int range;
 
 	switch (arenaStatus) {

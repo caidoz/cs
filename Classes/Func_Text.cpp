@@ -286,8 +286,6 @@ int GetFontLabelIndex(const char* str)
 void LoadFontLabelFromText(const char* str)
 {
 	int length = strlen(str);
-	int offset = 0;
-	int cursor = 0;
 	int fontIdx;
 
 	fontIdx = GetSameStringIndex(str);
@@ -338,11 +336,8 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	int i, len;
 	int length;
 	int offset = 0;
-	int cursor = 0;
 	float w = StringWidth(str, zoom);
 	float h = FONT_HEIGHT * zoom;
-	int xs = 0;
-	int ys = 0;
 	int fontColorBack = fontColor;
 	Size textSize;
 

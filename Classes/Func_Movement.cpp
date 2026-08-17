@@ -822,9 +822,8 @@ void MoveBG(void)
 
 void MoveObj(OBJECT* pObj)
 {
-	int rand;
 	int obj = GetObjFromPtr(pObj);
-	int i, j, temp;
+	int i;
 	int tempSystemKey = systemKey;
 
 	if (pObj->invincible)
@@ -1694,7 +1693,6 @@ void PlayerMove(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int height = 0;
 	int playerMoveKey = systemKey;
-	int skillIdx;
 
 	//if (pObj->invincible)
 	//	pObj->invincible--;
@@ -3747,8 +3745,6 @@ chk:
 
 int PlayerMove_Attack(OBJECT* pObj, int released)
 {
-	int i, j, k;
-	int rand;
 	pObj->playerRun = false;
 
 	if (robin.playtime % MOTIONDIV != 0)
@@ -3786,10 +3782,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 {
 	int i, j, cnt;
 	int xy;
-	signed short* tPtr;
 	const short* sPtr;
-	int rand;
-	int skillIdx;
 	ITEM* it = &pObj->equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
@@ -5435,7 +5428,7 @@ void SlingMove(OBJECT* pObj)
 
 void LightningMove(OBJECT* pObj, int speed)
 {
-	int tempx, tempy, tile;
+	int tempx, tempy;
 
 	tempx = pObj->x;
 	tempy = pObj->y;
@@ -8775,7 +8768,7 @@ void LabethMagicMove(OBJECT* pObj)
 
 void EnemyMove_AddObj(OBJECT* pObj)
 {
-	int i, dis = 0, tempX, j, target;
+	int i, dis = 0, tempX, target;
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
 	int endObj;
@@ -9864,7 +9857,6 @@ void EnemyMoveCommon(OBJECT* pObj)
 void EnemyMoveTurn(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
 	int i;
 	int distance;
@@ -10450,7 +10442,6 @@ END:
 void SummonMove(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
 	int i;
 	int distance;
@@ -10805,8 +10796,7 @@ END:
 }
 void VanishMove(OBJECT* pObj)
 {
-	int i, totalItemObjCnt = 1, tempX, tempY, j = 0;
-	int itemObj;
+	int i;
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
 	int endObj;
@@ -12089,10 +12079,9 @@ void RepulsionMove(OBJECT* pObj)
 
 void ItemMove(OBJECT* pObj)
 {
-	int i, j;
+	int i;
 #ifdef GETITEMAUTO
 	int targetX, targetY;
-	int objX, objY;
 #endif
 	int barName = BAR_BATTLECOIN;
 	int itemStatusFrame;
@@ -12252,11 +12241,10 @@ void CloakingMove(OBJECT* pObj)
 
 void WarpMove(OBJECT* pObj)
 {
-	int i, j, k, totalProb = 0, rand;
+	int i;
 	unsigned char type;
 	int doorY = 256 * _2X;
 	OBJECT* pPlayer = &ao[PLAYER];
-	int grade, detail;
 
 	if (dontWarp == true || robin.bossRoom == true || isDemo == true)
 		return;
@@ -13820,18 +13808,11 @@ void ItemGotoBoxMove(OBJECT* pObj)
 void CrewMove(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
-	int cmp;
 	int i;
-	int distance;
 	int obj = GetObjFromPtr(pObj);
 	int speed = 4 * _2X;//미사일 스피드
-	int dx_block;
-	int t_crashed;
-	int check = 2;
 	int attackType;
-	signed char wx = pObj->dx;
 	OBJECT* objPtr;
 
 	tPtr = cmf_status_data[pObj->cmf][pObj->etc];
@@ -14172,7 +14153,6 @@ void TileCheckX(OBJECT* pObj)
 	int dx_block;
 	int t_crashed;
 	int dx = pObj->dx;
-	int o_x = pObj->x;
 	signed char wx;
 
 	//if (drawHandle == MD_BATTLE && (GetObjFromPtr(pObj) == PLAYER || GetObjFromPtr(pObj) == ENEMY)) {
@@ -14248,7 +14228,6 @@ void TileCheckY(OBJECT* pObj)
 	unsigned char o_m = pObj->motion;
 	signed char wy = pObj->dy;
 	int dx_block;
-	int oy = pObj->y;
 
 	if (drawHandle == MD_PLAY)
 	return;

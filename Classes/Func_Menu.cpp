@@ -21,10 +21,7 @@ void GiftDraw(int x, int y, float zoom)
 //친구와의 전투 드로우
 void GuildEventDraw(int x, int y, float zoom)
 {
-	int i, j, tempIdx, mul = 1;
-	int week = 0;
-	int dayOfWeek = 1;
-	int dayOfMonth = robin.calendarMonthDay;
+	int i;
 
 	DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
@@ -53,10 +50,7 @@ void GuildEventDraw(int x, int y, float zoom)
 
 void DailyQuestDraw(int x, int y, float zoom)
 {
-	int i, j, tempIdx, mul = 1;
-	int week = 0;
-	int dayOfWeek = 1;
-	int dayOfMonth = robin.calendarMonthDay;
+	int i, j;
 	int boxOpenFrame;
 	int dailyQuestType;
 
@@ -137,8 +131,6 @@ void DailyQuestDraw(int x, int y, float zoom)
 
 void ShopDraw_Back(int x, int y)
 {
-	int i;
-	ITEM* it;
 
 	switch (menuDepth) {
 	case 0:
@@ -169,7 +161,6 @@ void StarShopDraw(int x, int y)
 
 void HeroDraw(int type, int x, int y, int dirX, float zoom)
 {
-	OBJECT* pObj = &ao[PLAYER];
 
 	if (IsGetHero(type) == false)
 		grayScale = 32;
@@ -185,7 +176,6 @@ void HeroDraw(int type, int x, int y, int dirX, float zoom)
 void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap)
 {
 	int i;
-	OBJECT* pObj = &ao[PLAYER];
 
 
 	for (i = 1; i < MAXPLAYER; i++) {
@@ -392,7 +382,6 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		int crewGrade = it->grade;
 		int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
 		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1];
-		int crewName = TEXT_MONSTERNAME_START + crewType;
 		int crewStar = GetItemStar(crewType, crewDetail, crewGrade);
 
 		DrawItemCard(
@@ -623,7 +612,6 @@ void ItemOptionCompareDraw(ITEM* it1, ITEM* it2, int x, int y, float zoom)
 	int i;
 	unsigned char mark[12];
 	int valueInt;
-	float valueFloat;
 
 	for (i = 0; i < 12; i++) {
 		if (it1->option[i][0] != EMPTYINT && optionStr[i][0] != 0) {
@@ -766,7 +754,7 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom)
 {
 	int i;
-	int itemLv, itemCnt, itemSlot, itemIdx, itemIcon;
+	int itemLv, itemCnt, itemIdx, itemIcon;
 	int itemTypeNext, itemDetailNext, itemGradeNext;
 	int icon, skillIcon, questIcon, pvpQuestIcon;
 	OBJECT* pObj = &ao[PLAYER];
@@ -776,8 +764,6 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 	float YGAP = -64 * _2X;
 	int eventIdx = GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT);
 	float discount = 0;
-	int swordSkillIdx;
-	int curSkillPerSword = 4;
 	float CARDZOOM = 0.7f;
 	int Divide = 1;
 
@@ -1426,9 +1412,8 @@ int GetItemCntUpgradePossible(void)
 
 void CalendarDraw(int x, int y, float zoom)
 {
-	int i, j, tempIdx, mul = 1;
+	int i, j;
 	int week = 0;
-	int dayOfWeek = 1;
 	int dayOfMonth = robin.calendarMonthDay;
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
@@ -1970,20 +1955,11 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
 
 void DeptDiscountDraw(int x, int y, float zoom)
 {
-	int i, j;
-	float rouletteZoom = 0.7f;
-	int gapX = 12 * _2X;
-	int gapX2 = 4 * _2X;
-	int gapY = 24 * _2X;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int itemType = it->type;
 	int itemDetail = it->detail;
 	int itemGrade = it->grade;
-	int itemLv = it->cooldown;
-	int rewardIcon;
 	int collectionIdx = GetCollectionIdx(itemType, itemDetail, itemGrade);
-	long long str;
-	float width;
 	float itemValueZoom = 1.0f;
 	float w = (float)ROULETTECARDSIZE_X * zoom;
 	float h = (float)ROULETTECARDSIZE_Y * zoom;
@@ -1997,20 +1973,11 @@ void DeptDiscountDraw(int x, int y, float zoom)
 
 void DoubleGoldDraw(int x, int y, float zoom)
 {
-	int i, j;
-	float rouletteZoom = 0.7f;
-	int gapX = 12 * _2X;
-	int gapX2 = 4 * _2X;
-	int gapY = 24 * _2X;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int itemType = it->type;
 	int itemDetail = it->detail;
 	int itemGrade = it->grade;
-	int itemLv = it->cooldown;
-	int rewardIcon;
 	int collectionIdx = GetCollectionIdx(itemType, itemDetail, itemGrade);
-	long long str;
-	float width;
 	float itemValueZoom = 1.0f;
 	float w = (float)ROULETTECARDSIZE_X * zoom;
 	float h = (float)ROULETTECARDSIZE_Y * zoom;
@@ -2111,9 +2078,7 @@ int GetItemCategoryCnt(int category) {
 
 int GetScrollDy(int menuIdx)
 {
-	int i, j;
 	int scrollDy = 0;
-	int gapY = 0;
 	int itemCategoryCnt;
 
 	switch (menuIdx) {
@@ -2183,10 +2148,6 @@ void OutOfAlert(void)
 
 void DrawHandleExec(int drawIdx)
 {
-	int x = 0;
-	int y = DY;
-	int dx = DX;
-	int dy = DY;
 
 	drawHandle = before_DrawHandle;
 	before_DrawHandle = drawIdx;
@@ -2289,10 +2250,7 @@ void NewCollectionDraw(int x, int y, float zoom)
 {
 	int i;
 	float iconZoom = EQUIPZOOM;
-	float width;
-	ITEM* it;
-	int itemType, itemDetail, itemGrade, itemLv, skillIdx, skillLv;
-	int setItemCnt = 0;
+	int itemType, itemDetail, itemGrade, itemLv, skillLv;
 	int collectionIdx;
 	int newSkillIdx;
 
@@ -2394,9 +2352,6 @@ void NewCardDraw(void)
 	float zoom = 2.0f;
 	int row = 1;//가로로 몇개인지
 	int col = 1;//세로로 몇줄인지
-	bool crewMenuDraw = false;
-	bool equipMenuDraw = false;
-	float menuZoom = 1.0f;
 	float width;
 	int remainNewItemCnt;
 	//성 등장하는 거 없애주기
@@ -2535,14 +2490,11 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 	int type = ITEM_CREW;
 	int detail = stage;
 	int grade = 0;
-	int lv = 0;
 	int count = 1;
-	float cardZoom = 1.5f * zoom;
 	float goldZoom = 0.8f * zoom;
 	float width;
 	int enemyCrewY = 400 * _2X;
 	int beforeEnemyCrewY;
-	int stageCrewIdx;
 	int stageBossIdx = GetStageBossIdx();
 	int stageBossType = GetStageBossType();
 	int stageBossMaxHp = (robin.stage * TOTALROOM + robin.room + 1) * (100 + enemyData[stageBossType * ENEMYDATASIZE + 3]);
@@ -2551,15 +2503,12 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 	int curStar, maxStar;
 	float yGap = (float)-32 * _2X * zoom;
 
-	long long realValue;
-	float numWidth = ITEMICONSIZE;
 
 	int stageInfoCurFrame = stageInfoFrame;
 	int bFrame = 2;
 
 	float menuZoom;
 	float fontZoom = Max(1.2f, (float)(STAGECLEARDELAY_ALPHA - stageInfoCurFrame) * 0.2f / MOTIONDIV);
-	float roomZoom = 0.5f * zoom;
 
 	long long getGoldNum = 0;
 	long long getHeartNum = 0;
@@ -2570,17 +2519,12 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 	bool crewMenuDraw = false;
 	bool equipMenuDraw = false;
 
-	int doorY = 10 * TSIZE;
 	int totalStar = 0;
 	long long betCnt = bossGold[stage] * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 
-	int mapIdx;
-	int price;
 
 	long long betGold = GetStageAdmissionFee();
 
-	int textPos = 0;
-	float textZoom = 1.0f;
 
 	if (cur == false)
 		stageInfoCurFrame = FPS * 10;
@@ -3773,15 +3717,7 @@ void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani,
 
 void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom)
 {
-	int i;
 	int star = GetItemStar(itemType, itemDetail, itemGrade);
-	int width;
-	int repItem = 0;
-	int setItemCnt = 0;
-	int rewardIcon;
-	ITEM* it;
-	OBJECT* pObj = &ao[curHero];
-	long long realValue;
 	float numWidth = (float)(32 * _2X) * zoom;
 	DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x, y, false, zoom, true, false, true, star, star, star, 0);
 }
@@ -4099,26 +4035,13 @@ void CollectionsDraw(int x, int y, float zoom)
 	float WINX = (float)DX * zoom;
 	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
 	
-	int w = COLLECTIONCARDSIZE_X;
-	int h = COLLECTIONCARDSIZE_Y;
-	int star = 1;
-	int width;
 	int repItem = 0;
 	int setItemCnt = 0;
-	int rewardIcon;
-	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon, itemStar;
-	ITEM* it;
+	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot;
 	OBJECT* pObj = &ao[curHero];
-	int starCnt;
-	long long realValue;
 	float numWidth = (float)(32 * _2X) * zoom;
-	int actionCardIdx;
-	int skillIdx;
-	int swordSkillIdx;
 	int collectionIdx;
 	int menuText[] = { TEXT_EQUIPMENT, TEXT_SKILL };
-	int charType = ROBIN;
-	long long upgradePrice;
 
 	MemRect(x, y, WINX, WINY, 0x3B2513);
 
@@ -4610,9 +4533,8 @@ void CollectionsDraw(int x, int y, float zoom)
 void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 {
 	int i;
-	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemSlot, itemIdx, itemIcon;
+	int itemType, itemDetail, itemGrade, itemLv, itemCnt, itemIdx;
 	float iconZoom = EQUIPZOOM;
-	float width;
 	ITEM* it;
 	int setItemCnt = 0;
 
@@ -4679,13 +4601,12 @@ void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 
 void ShopDraw(int x, int y, float zoom)
 {
-	int i, j;
+	int i;
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
 	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
 
-	int tempIdx, mul = 1;
 
 	MemRect(x, y, WINX, WINY, 0x3B2513);
 
@@ -4809,13 +4730,12 @@ void ShopDraw(int x, int y, float zoom)
 
 void CastleMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
+	int i;
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
 	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
 
-	int tempIdx, mul = 1;
 
 	MemRect(x, y, WINX, WINY, 0xB4D4F2);
 

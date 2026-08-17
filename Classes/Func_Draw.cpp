@@ -8,7 +8,6 @@
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
-	int cnt;
 
 	//호출부는 BUFFER_CARDFRAME 프리렌더 한 곳뿐이므로 항상 라이브로 그린다.
 	//완성된 텍스처를 곧바로 찍던 아래 경로는 호출부가 없어 남겨만 둔다.
@@ -81,7 +80,6 @@ void DrawWindow3(int x, int y, int w, int h, int index, float zoom)
 void DrawWindow4(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
-	int cnt;
 
 	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
@@ -146,7 +144,6 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom)
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY)
 {
 	int i;
-	int cnt;
 	int mapType = mapDatas[mapIdx][7];
 
 	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
@@ -446,21 +443,15 @@ void LoadingDraw(void)
 
 void TitleDraw(void)
 {
-	int i, j, k;
+	int i;
 	std::string fileName;
 	int x = 0, y = MINDY_MIN / 2 + DY / 2 + (MINDY_MIN - MINDY) / 2;
 	float zoom;
 	float scale = 0.7f;
 	int width = GetGoldAlphaWidth(ALPHA_RANDOM, FONT_GOLD_LARGE, scale) + 8 * _2X + GetGoldAlphaWidth(ALPHA_SWORD, FONT_GOLD_LARGE, scale);
-	int remainBoxCnt;
 	int monCmf[] = { CMF_FROG , CMF_FROG_RED , CMF_FROG_BLUE, CMF_FROG_PURPLE, CMF_FROG_GREEN, CMF_FROG_GOLD, CMF_FROG_BLACK };
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
 
 	switch (curMenu) {
 	case MENU_LOADING://�� ó���� 100 ������ ȭ�鿬��
@@ -701,7 +692,6 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 
 void GNBDraw(int x, int y)
 {
-	int i;
 
 	//�޴���ư
 	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], UI_NEW_IMG);
@@ -734,9 +724,6 @@ void GNBDraw(int x, int y)
 
 void ActiveHelpDraw()
 {
-	int i;
-	int startX, startY, width;
-	ITEM* it;
 
 	if (curtainFrame == 0)
 		touchIdleFrame++;
@@ -1060,12 +1047,7 @@ void EventScheduler(void)
 	int i;
 	int eventIdx = -1;
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
 	int questIcon;
 
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
@@ -1614,7 +1596,7 @@ void MainMenuIn(void)
 
 void ArrangeEventMenu(void)
 {
-	int i, j = 0, k = 0;
+	int i, j = 0;
 	int curArr[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	int indexArr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -1643,7 +1625,6 @@ void ArrangeEventMenu(void)
 
 void EventMenuDraw(GAMEEVENT* gEvent)
 {
-	long long start, end, current;
 	long remainTime = Max(0, gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp));
 
 	switch (gEvent->type) {
@@ -1724,17 +1705,11 @@ void EventMenuDraw(GAMEEVENT* gEvent)
 void GoldQuestMenuDraw(int x, int y, float zoom)
 {
 	int i, j;
-	int rewardType, rewardDetail, rewardGrade;
-	long long rewardCnt;
-	OBJECT* pObj = &ao[PLAYER];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)];
-	int enemyType;
-	int enemyCmf;
 	float gapX = (float)8 * _2X * zoom;
 	float gapY = -(float)5 * _2X * zoom;
 
 	float degree = 90.0f - atan((float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 1] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 1]) / (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 0] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 0])) * 180 / M_PI;
-	float radian = degree * M_PI / 180;
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
@@ -1926,10 +1901,6 @@ void DrawPopUp(int idx)
 {
 	int i, j = 0;
 	POPUP* p = &popUp[idx];
-	int menuCurBack;
-	int menuDepthBack;
-	int curStar;
-	int maxStar;
 	float plusY = (float)64 * _2X * p->zoom;
 	
 	if (p->popUpFrame == 0)
@@ -2093,12 +2064,10 @@ void DrawPopUp(int idx)
 
 void GameMenuDraw(int x, int y, float zoom)
 {
-	int i, j, motion;
+	int i, j;
 	//int dy = 29 * _2X;
 	int dy =  (DY - 16 * _2X - (GNBHEIGHT - GNB_INIT_HEIGHT)) / TOTAL_OPENEDMENU;
 	int w = GAMEMENUWIN_X;
-	ITEM* it;
-	int tempX, tempY;
 
 	if (dy > MAINMENU_Y)
 		dy = MAINMENU_Y;

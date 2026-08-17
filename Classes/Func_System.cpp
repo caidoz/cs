@@ -224,7 +224,7 @@ void InitMenu(void)
 
 void InitGame(void)
 {
-	int i, j, k;
+	int i, j;
 
 	for (i = 0; i < TOTALOBJECT; i++) {
 		memset(&ao[i], 0, sizeof(OBJECT));
@@ -527,7 +527,6 @@ void ArrangeTarget(void)
 
 void ArrangeEnemyTarget(void)
 {
-	int i;
 	//만약 타겟팅 된 몬스터가 죽었으면
 	if (ao[ao[PLAYER].target].dead == true || ao[ao[PLAYER].target].active == false) {
 		InitTarget();
@@ -547,7 +546,7 @@ void ArrangeEnemyHpBar(void)
 
 void LoadEnemyHpBar(void)
 {
-	int i, j = 0;
+	int i;
 	for (i = ENEMY; i < NEUTRAL; i++) {
 		if (ao[i].mom == ENEMY + GetEnemyBarIdx(i) && ao[i].active == true && ao[i].dead == false) {
 			InitBar(BAR_ENEMYHP + GetEnemyBarIdx(i));
@@ -1829,7 +1828,6 @@ void InitStatue(OBJECT* pObj)
 
 void InitReward(void)
 {
-	int i;
 
 	memset(&rewardItem, 0, sizeof(ITEM) * MAXREWARDITEM * 2);//메인 리워드 아이템
 	rewardItemCnt = 0;//현재 획득된 아이템
@@ -2022,7 +2020,6 @@ int GetSlotCrewCnt(void)
 void NewGame(void)
 {
 	int i, j, k;
-	ITEM* it;
 
 	InitGame();
 
@@ -2480,11 +2477,7 @@ void GotoTitle(void)
 
 void GotoPlay(bool forceReload)
 {
-	int i, j, k = 0;
-	int doorY = 10 * TSIZE;
-	int prevDrawHandle = drawHandle;
-	int prevKeyHandle = keyHandle;
-	OBJECT* pObj;
+	int i;
 
 	//InitMenu();
 	robin.stage = 0;
@@ -2696,7 +2689,6 @@ void OutOfGacha(void)
 
 void OutOfNewCard(void)
 {
-	int i;
 
 	drawHandle = before_DrawHandle;
 	keyHandle = before_KeyHandle;
@@ -2710,9 +2702,7 @@ void OutOfNewCard(void)
 void GotoBoss(void)
 {
 	int i;
-	int doorY = 256 * _2X;
 	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
 
 	ao[NPC].active = false;
 
@@ -3733,7 +3723,6 @@ void BattleLoadingUpdate(void)
 		if (u < 0.5f) e = 2.0f * u * u;
 		else         e = 1.0f - (float)pow(-2.0f * u + 2.0f, 2.0f) / 2.0f;
 
-		int dx = 24 * _2X;
 		int runY = 16 * _2X;
 		int leftX = 24 * _2X;      // ✅ 러닝라인의 "맨 왼쪽(뒤)" 위치
 
@@ -3992,7 +3981,6 @@ void SetRaidBox(bool activeVal)
 	int bigSlot;
 	long long totalGold = enemyHouse.gold * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 
-	int startIdx;
 
 	//HOUSE * house = &stageHouse;
 	HOUSE* house = &enemyHouse;
@@ -4052,10 +4040,7 @@ void SetRaidBox(bool activeVal)
 void GotoRaid(void)
 {
 	int i;
-	int doorY = 10 * TSIZE;
 	int count;
-	int emptySlot;
-	int bigSlot;
 
 	OBJECT* pObj = &ao[PLAYER];
 	OBJECT* eObj = &ao[ENEMY];
@@ -4248,7 +4233,6 @@ void WhoIsNextTurn(void)
 //일반 스테이지 진행일 때 다음 스테이지로 가는 함수
 void GotoNextStage(void)
 {
-	int i;
 	//마지막 스테이지라면
 	if (robin.room == TOTALROOM - 1) {
 		if (robin.stage == TOTAL_STAGE - 1) {
@@ -4724,8 +4708,6 @@ void GotoStageClear(void)
 
 void GotoGameOver(void)
 {
-	int i, j, temp = 0, temp2 = 0;
-	ITEM* it;
 
 
 }
@@ -4968,7 +4950,7 @@ void SaveEtc(void)
 // Save & Load
 void SaveGame(void)
 {
-	int i, j;
+	int i;
 
 	running = false;
 
@@ -5037,11 +5019,7 @@ void LoadRoulette(void)
 
 void LoadGame(void)
 {
-	int i, j, result;
-	int skillIdx;
-	ROBINDATA* pRobin;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int collectionIdx;
+	int i;
 
 	InitGame();
 
@@ -5163,7 +5141,6 @@ void LoadAiHouse(void)
 void MakeAiHouse(void)
 {
 	int i, j, k;
-	int aiIndex;
 
 	int houseGoldTier;//현재 골드티어
 

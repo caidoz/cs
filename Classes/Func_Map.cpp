@@ -762,8 +762,8 @@ void SetRoom_Neutral(void)
 
 void SetBossEnemy(void)
 {
-	int i, j, k;
-	int type, detail, grade, lv;
+	int i;
+	int type;
 	GAMEEVENT* gameEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)];
 
 	OBJECT* eObj = &ao[GetEnemyBarIdx(ENEMY)];
@@ -815,8 +815,8 @@ void SetStageBoss(void)
 
 void SetHouseCrew(long long userIdx, int house)
 {
-	int i, j, k;
-	int type, detail, grade, lv;
+	int i;
+	int type;
 	int crewIdx;
 	HOUSE* housePtr;
 
@@ -1125,9 +1125,7 @@ void SetEnemyUser()
 {
 	//실제로는 pri num을 해야되나 일단은 땜빵으로
 	//robin.enemyUserIdx = Random(TOTALAI);
-	int i;
 	long long limit = TOTALAI;// *(robin.stage + 1) / TOTAL_STAGE;
-	OBJECT * enemyUserObj = &ao[ENEMYUSEROBJ];
 	//0번은 제외
 	if (!robin.enemyUserIdx) {
 		do {
@@ -1179,7 +1177,7 @@ int GetSkillCnt(int acquiredSkills[MAXCHARSKILL])
 // 스킬을 확률적으로 선택하는 함수
 int selectRandomSkill(int characterID, int acquiredSkills[MAXCHARSKILL])
 {
-	int i, j, k;
+	int i, j;
 	int cumulativeProb = 0;
 	int accumulatedProb = 0;
 	int skillProb;
@@ -1269,7 +1267,6 @@ void CharSkillSetting(void)
 
 void ObjectSkillSetting(OBJECT * pObj)
 {
-	int i;
 	int skillIdx;
 	skillIdx = selectRandomSkill(GetObjFromPtr(pObj), pObj->getSkillList);
 	switch (skillIdx) {
@@ -1294,9 +1291,7 @@ void ObjectSkillSetting(OBJECT * pObj)
 
 void WaveStart(void)
 {
-	int i, j;
-	int cnt;
-	int rand;
+	int i;
 	waveStatus = WAVESTATUS_PLAY;
 	areaFrame = AREAFRAME;
 	robin.curWaveIdx = 0;
@@ -2468,7 +2463,7 @@ int SetCmf(int idx)
 
 void SetRoom_Demo(void)
 {
-	int i, j = 0;
+	int i;
 
 	for (i = 0, movie.dCount = 0; i < TOTALDEMO; i++) {
 		//만약 현재 방이
@@ -2675,8 +2670,7 @@ void PopTalk(void)
 
 void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom)
 {
-	int i = 0, j, y, t;
-	int jStart, jEnd;
+	int i = 0, j, y;
 	const unsigned short* bgPtr;
 
 	if (robinmap != mapIdx) {
@@ -3187,7 +3181,6 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i = 0, j, y, t;
 	int iStart, iEnd, jStart, jEnd;
-	const unsigned short* bgPtr;
 	const unsigned char* bgPtrChar;
 
 	DrawBackMapFar(xPos, yPos, mapIdx, rw * TSIZE, zoom);
@@ -3256,8 +3249,7 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom)
 
 void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom)
 {
-	int i = 0, y, t;
-	int iStart, jStart, jEnd;
+	int i = 0, y;
 	const unsigned short* bgPtr;
 
 	//if (robinmap != mapIdx) {
@@ -3295,8 +3287,7 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom)
 
 void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom)
 {
-	int i = 0, y, t;
-	int iStart, jStart, jEnd;
+	int i = 0, y;
 	const unsigned short* bgPtr;
 
 	if (robinmap != mapIdx) {
@@ -3333,8 +3324,7 @@ void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom)
 }
 void DrawBg(int mapIdx, int yPos, float zoom)
 {
-	int i = 0, j, y, t;
-	int iStart, jStart, jEnd;
+	int i = 0, j, y;
 	const unsigned short* bgPtr;
 
 	SetSectionClip(0, yPos + (float)(PLAYAREA_Y)*zoom, (float)(DX)*zoom, (float)(PLAYAREA_Y)*zoom, IsOffscreenTarget());
@@ -3719,9 +3709,7 @@ void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom)
 
 void DrawScreen(int x, int y, float zoom)
 {
-	int i, j, k, l, yPos;
-	int tempCurtainFrame;
-	const unsigned short* bgPtr;
+	int i;
 	float dioramaZoomOnScreen = zoom * dioramaZoom;
 	int castleX, castleY;
 	

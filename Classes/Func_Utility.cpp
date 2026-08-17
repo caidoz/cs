@@ -204,19 +204,8 @@ void DrawPlayerCostume(
 
 void StatusDraw(int x, int y, float zoom)
 {
-	int motion;
 	int nearEnemy = NearEnemy(&ao[raidPlayer]);
-	int xPos = 0;
-	ITEM* it;
-	int curIcon;
-	float width;
-	int i;
 	int xGap, yGap;
-	int drawHandleBack = drawHandle;
-	int userIdx = PLAYER;
-	int stageCrewIdx;
-	int stageCrewType;
-	long long upgradePrice;
 
 	int stageBossIdx = GetStageBossIdx();
 	int stageBossType = GetStageBossType();
@@ -285,10 +274,7 @@ void ShopMenuDraw(int x, int y, float zoom)
 void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 {
 	float width = 0;
-	float textPos = 0.0f;
 	float iconZoom = zoom * 0.8f;
-	float textZoom = zoom * 0.6f;
-	float profileZoom = zoom * 1.4f;
 
 	//long long betCnt = housePtr->gold * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 	long long betCnt = housePtr->gold;
@@ -319,9 +305,7 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom)
 {
 	float width = 0;
-	float textPos = 0.0f;
 	float iconZoom = zoom * 1.2f;
-	float textZoom = zoom * 0.8f;
 	float profileZoom = zoom * 1.5f;
 	long long betCnt = housePtr->gold;
 
@@ -645,7 +629,6 @@ void EffectDrawOnlyBg(int yPos, float zoom)
 void EffectDraw(int yPos, float zoom)
 {
 	int i, j, y;
-	signed short* bbPtr = bubbleXY;
 	OBJECT* pPlayer;
 
 	pPlayer = &ao[raidPlayer];

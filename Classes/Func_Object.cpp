@@ -339,11 +339,9 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	int type;
 	int imgFile = 0;
 	int dx;
-	int imgFileE = 0;
 	const signed short* cPtr;
 	int obj = GetObjFromPtr(pObj);
 	int tempAlpha = m_lgrpAlpha;
-	int tempZoom = zoom;
 	int centerX = 0;
 	int centerY = 0;
 
@@ -402,7 +400,6 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -716,7 +713,6 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1049,7 +1045,6 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1163,7 +1158,6 @@ void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1337,7 +1331,6 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		const signed short* ucPtr;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1489,11 +1482,9 @@ void DrawNeutral(int idx, int x, int y, int dirF, float zoom)
 		int imgOffsetX = 0;
 		int imgOffsetY = 0;
 		float magnify;
-		int extra = false;
 		int pxl;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int partsRotation = 0;
 
 		if (*cPtr < IMG_OBJ_72)
@@ -1676,12 +1667,9 @@ void DrawBgEffect(int idx, int x, int y, int dirF, float zoom)
 			break;
 		}
 
-		int imgOffsetX = 0;
-		int imgOffsetY = 0;
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1794,12 +1782,9 @@ void DrawBgEffectDetail(int idx, int x, int y, int dirF, int res)
 		LoadImg(imgFile);
 
 	do {
-		int imgOffsetX = 0;
-		int imgOffsetY = 0;
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -2225,8 +2210,6 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 
 void EnemyDraw(OBJECT* pObj)
 {
-	int temp = 0;
-	int i;
 	int obj = GetObjFromPtr(pObj);
 
 	if ((pObj->type == ENEMY_LARVA
