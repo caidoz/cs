@@ -448,33 +448,6 @@ int GetSpriteIndex(int index)
 	return false;
 }
 
-//���� ��ε��Ǿ�?�ִ°� �����ؼ� ���?�ε����� ���?�Ǵ��� 
-int GetBufferSpriteIndex(int index, cocos2d::Layer* cvtLayer)
-{
-	int i;
-	int sameCnt = 0;
-	getBufferSpriteTexture = index;
-
-	if (sameBufferSpriteCur[index] < sameBufferSpriteMax[index]) {
-		for (i = 0; i < MAXBUFFERSPRITECNT; i++) {
-			if (bufferSpriteIndex[i] == index) {
-				if (sameBufferSpriteCur[index] == sameCnt) {
-					sameBufferSpriteArr[index][sameBufferSpriteCur[index]] = i;
-					sameBufferSpriteCur[index]++;
-					getBufferSpriteIdx = i;
-					return i;
-				}
-				sameCnt++;
-			}
-		}
-	}
-	else {
-		getBufferSpriteIdx = totalBufferCnt;
-		return totalBufferCnt;
-	}
-	return false;
-}
-
 
 
 //Ÿ�԰� �ε����� ���� ���ϸ� ���� �� ���ϸ��� �� ���ۿ� ��Ƽ�?�����ϱ�
@@ -981,70 +954,6 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
-}
-
-void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom)
-{
-	cocos2d::Sprite* src;
-
-	if (m_lgrpAlpha == 0)
-		return;
-
-	x += offX;
-	y += offY;
-
-	//타격 줌. 원래 배율을 안 쓰던 함수라 아래에서 setScale로만 늘린다.
-	//그래서 클리핑 계산도 그 배율로 나눠야 한다. 화면에서 잘린 픽셀 수를
-	//그대로 텍스처 좌표에 더하면 배율만큼 과하게 밀려서 엉뚱한 곳을 샘플링한다.
-	float mag = HitZoomOn() ? hitZoom : 1.0f;
-
-	HitZoomPoint(&x, &y);
-#ifdef CLIPPING
-	if (x < clipX) { xs += (int)((clipX - x) / mag); w -= (int)((clipX - x) / mag); x = clipX; }
-	if (x + (int)(w * mag) > clipX2) { w = (int)((clipX2 - x) / mag); }
-	if (y > clipY) { ys += (int)((y - clipY) / mag); h -= (int)((y - clipY) / mag); y = clipY; }
-	if (y - (int)(h * mag) < clipY2) { h = (int)((y - clipY2) / mag); }
-	if (w <= 0 || h <= 0)
-		return;
-#endif
-
-	if (!sprite[res])
-		LoadImg(res);
-
-	LoadSpriteFromTexture(res);
-	src = renderSprite[getSpriteIdx];
-
-	//원래 배율을 안 쓰던 함수다. 타격 줌이 걸렸을 때만 늘린다.
-	src->setScale(HitZoomOn() ? hitZoom : 1.0f);
-
-	if (grayScale) {
-		if (grayScale != 32) {
-
-		}
-		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
-	}
-	else
-		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-	src->setBlendFunc(BLEND_LIGHTEN);
-	glBlendEquation(GL_MAX_EXT);
-	SetAlpha(m_lgrpAlpha - LIGHTENALPHA);
-	src->setTextureRect(Rect(xs, ys, w, h));
-	src->setPosition(Vec2(x, y));
-	if (baseColor)//if (baseColor != 0x000000 && !baseColor)
-	{
-		if (baseColor == 0xFFFFFF && !grayScale)
-			src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("whitescale"));
-		else
-			src->setColor(Color3B((baseColor >> 16) & 0xFF, (baseColor >> 8) & 0xFF, baseColor & 0xFF));
-	}
-	else if (!grayScale)
-		src->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-
-
-	AfterSpriting(src);
-
-	SetAlpha(m_lgrpAlpha + LIGHTENALPHA);
 }
 
 void ShadowImage(int w, int h, int xs, int ys, int x, int y, int res, float magnify)
@@ -4674,31 +4583,6 @@ void LoadingBarDraw(int x, int y, int loadingBarFrame)
 	CenterText(Min(TEXT_LOADING_5, TEXT_LOADING_1 + frame / 5), x + 165 * _2X / 2, y - 6 * _2X, 1.0f);
 }
 
-void DrawCheckBox(int x, int y, int w, int h, bool checked, float zoom)
-{
-	MemRect(x, y, (float)w * zoom, (float)h * zoom, COLOR_BLACK);
-	MemRect(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, (float)(w - 4 * _2X) * zoom, (float)(h - 4 * _2X) * zoom, COLOR_WHITE);
-	if (checked == true)
-		DrawImage(32 * _2X, 27 * _2X, 0 * _2X, 0 * _2X, x + (float)0 * _2X * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, 0.65f * zoom, sprite[ETC_IMG], ETC_IMG);
-}
-
-//frameColor는 FRAME_GREEN 이상
-void DrawButtonFrame(int x, int y, int w, int h, int frameColor, float zoom)
-{
-	int i;
-
-	/*
-	//����
-	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (frameColor - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	for (i = 0; i < (float)(w - (float)32 * _2X * zoom) / (float)(8 * _2X * zoom) + 1; i++)
-		DrawImage(8 * _2X + 1, BUYBUTTON_Y, 33, 1 + (frameColor - FRAME_GREEN) * 63, x + (float)(16 * _2X + 8 * _2X * i) * zoom - 1, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	//������
-	DrawImage(16 * _2X, BUYBUTTON_Y, 137, 1 + (frameColor - FRAME_GREEN) * 63, x + w - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-	*/
-}
-
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount)
 {
 	int curGray = grayScale;
@@ -5767,21 +5651,6 @@ else {
 }
 
 SetAlpha(32);
-}
-
-void DrawSelect(int x, int y, int w, int h, int grade)
-{
-	int tRect[4];
-
-	if (w > 20 || h > 20)
-		return;
-
-	tRect[0] = x + offX;
-	tRect[1] = y + offY;
-	tRect[2] = x + w + offX;
-	tRect[3] = y + h + offY;
-	//SetColor(itemColor[grade]);
-
 }
 
 

@@ -2319,7 +2319,6 @@ extern int summonCmf;
 extern int summonFromX, summonFromY;
 extern int summonX, summonY;
 extern int summonToX, summonToY;
-extern int summonMidY;
 extern float summonScale;
 extern int shake;               // 화면 흔들림 강도(0이면 없음)
 extern int joinFromX;

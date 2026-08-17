@@ -14955,18 +14955,6 @@ bool IsMaxBet(void)
 
 }
 
-bool IsMaxCoinBet(void)
-{
-	if (bet == MAXCOINBET - 1)
-		return true;
-	else if (robin.gold >= betCoin[betBattle] * GetStageAdmissionFee() && robin.gold < betCoin[betBattle + 1] * GetStageAdmissionFee())
-		return true;
-	else
-		return false;
-
-
-}
-
 int IsKnockBack(int objType)
 {
 	switch (objType) {
@@ -15515,18 +15503,6 @@ int IsBigCmf(int cmfIdx)
 	default:
 		return false;
 	}
-}
-
-void RegenEnemy(OBJECT* pObj, int type, int x, int y, int dir)
-{
-	memset(pObj, 0, sizeof(OBJECT));
-	pObj->type = type;
-	pObj->x = x;
-	pObj->y = y;
-	pObj->dirF = pObj->dirX = dir;
-	SetEnemy(pObj);
-	pObj->moveHandler = REGENMOVE;
-	pObj->drawHandler = REGENDRAW;
 }
 
 int CanRunPlayer(int obj)

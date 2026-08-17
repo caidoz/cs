@@ -3181,8 +3181,3 @@ void SetDemo(int index)
 	//}
 #endif
 }
-
-void SetTalk_Movie(void)
-{
-
-}

@@ -3308,12 +3308,6 @@ int GetBetHeart(int itemDetail, int itemGrade, int betGrade)
 	//return swordHeart[itemDetail * TOTALGRADE + itemGrade] * betHeart[betGrade];
 }
 
-int GetBetGold(int itemDetail, int itemGrade)
-{
-	return swordGold[itemDetail * TOTALGRADE + itemGrade];
-	//return betHeart[bet];
-}
-
 int printCoords() {
 	int radius = 0; // 초기 반경
 

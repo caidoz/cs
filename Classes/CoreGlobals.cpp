@@ -1399,7 +1399,6 @@ int summonCmf = -1;
 int summonFromX, summonFromY;
 int summonX, summonY;
 int summonToX, summonToY;
-int summonMidY = 0;
 float summonScale = 0.5f;
 int shake = 0;               // 화면 흔들림 강도(0이면 없음)
 int joinFromX = 0;

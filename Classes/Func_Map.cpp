@@ -781,56 +781,6 @@ void SetStageBoss(void)
 	}
 }
 
-void SetHouseCrew(long long userIdx, int house)
-{
-	int i;
-	int type;
-	int crewIdx;
-	HOUSE* housePtr;
-
-	if (userIdx == PLAYER) {
-		housePtr = &stageHouse;
-	}
-	else {
-		housePtr = &enemyHouse;
-	}
-
-	for (i = 0; i < MAXCREW; i++) {
-		if (housePtr->crew[i] > 0) {
-			OBJECT* pObj = &ao[ENEMY + i];
-			crewIdx = GetCrewIdxFromType(housePtr->crew[i]);
-
-			pObj->type = housePtr->crew[i];
-			pObj->x = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CARDBG] * 2 + 0];	//x위치
-			pObj->y = castleCrewPosition[crewData[crewIdx * CREWDATASIZE + CREWDATA_CARDBG] * 2 + 1];	//y위치
-			pObj->dirX = pObj->dirF = crewData[crewIdx * CREWDATASIZE + 3];
-			pObj->curStar = housePtr->crewCurStar[i];
-			pObj->maxStar = housePtr->crewMaxStar[i];
-			pObj->maxHeart = enemyData[crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
-			pObj->curHeart = housePtr->crewCurStar[i];
-			pObj->zoom = enemyZoom[pObj->type] * HOUSEZOOM;
-			//if (pObj->type >= ENEMY_LABETH)
-
-			pObj->mom = ENEMY + i;
-
-			SetEnemy(pObj);
-
-			if (pObj->shield > 0) {
-				pObj->shieldMax = pObj->shield = pObj->maxhp / SHIELDPERHP;
-				pObj->maxhp = pObj->hp += pObj->shieldMax;
-			}
-
-			pObj->moveHandler = CREWMOVE;
-
-			InitMotion(pObj);
-
-			MoveObj(pObj);
-
-			//보상을 세팅해 준다.
-		}
-	}
-}
-
 
 long long CompareCombatPower(ITEM* it1, ITEM* it2)
 {
@@ -1103,33 +1053,6 @@ int selectRandomSkill(int characterID, int acquiredSkills[MAXCHARSKILL])
 	}
 
 	return -1;  // 이 경우는 발생하지 않겠지만 안전을 위해 추가
-}
-
-void CharSkillSetting(void)
-{
-	int i;
-	int skillIdx;
-	for (i = 0; i < TOTALCHAR; i++) {
-		skillIdx = selectRandomSkill(i, ao[i].getSkillList);
-		switch (skillIdx) {
-			//스킬이 없음
-		case -1:
-			break;
-		default:
-			SetHotKey(&ao[i], HOTKEY_SKILL, skillIdx, 0);
-			//스킬이 하나면
-			ao[i].hotKey[0].randomCnt = GetSkillCnt(ao[i].getSkillList);
-			if (ao[i].hotKey[0].randomCnt == 1) {
-				ao[i].hotKey[0].random = false;
-			}
-			//그렇지 않으면
-			else {
-				ao[i].hotKey[0].random = true;
-				ao[i].hotKey[0].randomFrame = FPS;
-			}
-			break;
-		}
-	}
 }
 
 void ObjectSkillSetting(OBJECT * pObj)

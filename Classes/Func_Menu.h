@@ -94,7 +94,6 @@ void DailyQuestDraw(int x, int y, float zoom);
 void ShopDraw(int, int, float zoom);
 void CastleMenuDraw(int x, int y, float zoom);
 void StarShopDraw(int, int);
-void HeroDraw(int type, int x, int y, int dirX, float zoom);
 void CrewListDraw(int x, int y, float zoom);
 void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal);
 void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);

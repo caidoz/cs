@@ -1856,18 +1856,6 @@ int GetCurWeaponCollectionsIndex(void)
 	}
 }
 
-int GetNextWeaponCollectionsIndex(void)
-{
-	int curCollectionIdx = GetCurWeaponCollectionsIndex();
-
-	do {
-		curCollectionIdx = ++curCollectionIdx % TOTAL_COLLECTIONS;
-
-	} while (GetInvenIdx(collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 0], collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 1], collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 2]) == -1);
-
-	return curCollectionIdx;
-}
-
 int GetHighestCollections(int index)
 {
 	int i;
@@ -1987,25 +1975,6 @@ void CopyEnemyObj(void)
 			
 		}
 	}
-}
-
-//n��° ���� ������Ʈ �ѹ��� ������ Ȯ���ϴ� �Լ�
-int GetObjectNumFromEnemyIdx(int idx)
-{
-	int i, before_idx, after_idx, j = 0;
-	before_idx = robin.enemyObj[j].mom;
-	after_idx = 0;
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		after_idx = robin.enemyObj[i - ENEMY].mom;
-		if (before_idx != after_idx) {
-			j++;
-			before_idx = after_idx;
-		}
-
-		if (j == idx)
-			return i;
-	}
-	return false;
 }
 
 int GetAttackEnemy(void)
@@ -2277,75 +2246,6 @@ void ArrangeInven(void)
 		memcpy(&robin.inven[i], &tempInven[i], sizeof(ITEM));
 	}
 }
-//case �������?�켱����
-//�����?���?������ �켱���� �������? ����̰�?���� ����
-//�����?���?������ �� �ִ� ���?�켱���� ����
-//�����?���?detail�� �������� �켱���� ����
-int GetOrder(ITEM* it, int index) {
-	int tempOrder = 0;
-
-	switch (it->type) {
-	case ITEM_WASTE:
-		return TOTAL_WASTE - it->detail;
-	case ITEM_RING:
-		return TOTAL_WASTE + TOTAL_RING - it->detail;
-	default:
-		if (EquipCheck(&ao[PLAYER], &robin.inven[index]) == false)
-			tempOrder = 1000;
-
-		return TOTAL_WASTE + TOTAL_RING + tempOrder + it->type * 8 + 8 - it->detail;
-	case ITEM_NECK:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK - it->detail;
-	case ITEM_GEM:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM - it->detail;
-	case ITEM_RECIPE:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1;
-	case ITEM_IRON:
-	case ITEM_LEATHER:
-	case ITEM_CLOTH:
-	case ITEM_WOOD:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + (ITEM_IRON - it->type) * 8 + it->detail;
-	case ITEM_ESSENCE:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + it->detail;
-	case ITEM_QUEST:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + TOTAL_ESSENCE + it->detail;
-	case ITEM_NETITEM:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + TOTAL_ESSENCE + TOTAL_QUESTITEM + it->detail;
-	}
-
-	return 0;
-}
-
-void RadixSort(int* array, int size)
-{
-	int count[10], temp[2 * TOTALINVENTORY];
-	int index, pval, i, j, n;
-
-	memcpy(temp, array, sizeof(temp));
-
-	for (n = 0, pval = 1; n < 4; n++, pval *= 10) {
-		for (i = 0; i < 10; i++)
-			count[i] = 0;
-
-		for (j = 0; j < size; j++) {
-			index = (int)(array[TOTALINVENTORY + j] / pval) % 10;
-			count[index] = count[index] + 1;
-		}
-
-		for (i = 1; i < 10; i++)
-			count[i] = count[i] + count[i - 1];
-
-		for (j = size - 1; j >= 0; j--) {
-			index = (int)(array[TOTALINVENTORY + j] / pval) % 10;
-			temp[TOTALINVENTORY + count[index] - 1] = array[TOTALINVENTORY + j];
-			temp[count[index] - 1] = array[j];
-			count[index] = count[index] - 1;
-		}
-
-		memcpy(array, temp, sizeof(temp));
-	}
-}
-
 int EquipCheck(OBJECT* pObj, ITEM* it)
 {
 
@@ -2798,98 +2698,6 @@ void UseRing(OBJECT* pObj, int idx)
 
 	pObj->hotKey[pObj->currentSkill].frame = pObj->hotKey[pObj->currentSkill].inven;
 
-}
-
-void UseItemBox(ITEM* it)
-{
-	int tUse;
-	//레벨 결정
-	arenaRewardLv = 20 + Random(90);
-
-	//타입 결정
-	switch (it->detail) {
-	case ITEM_NET_BOX_WEAPON_HIGH:
-		arenaRewardType = ROBIN;
-		break;
-	case ITEM_NET_BOX_DEFENSE_HIGH:
-		arenaRewardType = ITEM_HELM + Random(15);
-		break;
-	case ITEM_NET_BOX_ACCESSORY_HIGH:
-		arenaRewardType = ITEM_NECK + Random(2);
-		break;
-	case ITEM_NET_BOX_RANDOM:
-		arenaRewardType = Random(ITEM_GEM);
-		break;
-	case ITEM_NET_BOX_GEM:
-		arenaRewardType = ITEM_GEM;
-		arenaRewardLv = 1;
-		break;
-	}
-
-	//등급 결정
-	switch (it->detail) {
-	case ITEM_NET_BOX_WEAPON_HIGH:
-	case ITEM_NET_BOX_DEFENSE_HIGH:
-	case ITEM_NET_BOX_ACCESSORY_HIGH:
-		tUse = Random(1000);
-
-		//고급 10%
-		//희귀 50%
-		//세트 30%
-		//���� 9.7%
-		//전설 0.3%
-		if (tUse < 100)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 600)
-			arenaRewardGrade = GRADE_RARE;
-#ifdef SETITEM
-		else if (tUse < 900)
-			arenaRewardGrade = GRADE_SET;
-#endif
-		else if (tUse < 997 || arenaRewardType >= ITEM_NECK)
-			arenaRewardGrade = GRADE_EPIC;
-		else
-			arenaRewardGrade = GRADE_LEGEND;
-		break;
-	case ITEM_NET_BOX_RANDOM:
-		tUse = Random(100);
-
-		if (tUse < 40)
-			arenaRewardGrade = GRADE_NORMAL;
-		else if (tUse < 75)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 90)
-			arenaRewardGrade = GRADE_RARE;
-#ifdef SETITEM
-		else if (tUse < 97)
-			arenaRewardGrade = GRADE_SET;
-#endif
-		else
-			arenaRewardGrade = GRADE_EPIC;
-		break;
-	case ITEM_NET_BOX_GEM:
-		tUse = Random(100);
-
-		if (tUse < 40)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 80)
-			arenaRewardGrade = GRADE_RARE;
-		else
-			arenaRewardGrade = GRADE_EPIC;
-		break;
-	}
-
-	if (arenaRewardGrade == GRADE_LEGEND && (arenaRewardType >= ITEM_NECK || arenaRewardDetail < 6))
-		arenaRewardGrade = GRADE_EPIC;
-
-	//디테일 결정
-	arenaRewardDetail = Max(2, MakeItemDetail(arenaRewardType, arenaRewardLv));
-	EraseItem(it);
-	GetItem(arenaRewardType, arenaRewardLv, arenaRewardDetail, arenaRewardGrade, 1, 0);
-	menuItem = robin.count - 1 + ITEMPTR_INVEN;
-	SetItemString(it, 0, 0);
-
-	//SaveFlag(0);
 }
 
 void SetHotKey(OBJECT* pObj, int type, int idx, int where)

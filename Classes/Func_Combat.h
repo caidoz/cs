@@ -15,10 +15,7 @@ void RefreshEnemyTime(void);
 
 // Combat Formula
 long long NextExp(int);
-int GetExpFromEnchantSlot(void);
 int NextExpEquip(ITEM *, int);
-int NextLvEquip(ITEM *, int);
-int checkExistSocketSlotCnt(int);
 int GetLevelUpRewardLv(int type, int userLv);
 void LevelUp(int getExp);
 void LevelUpObj(OBJECT *, int);

@@ -138,20 +138,6 @@ void StarShopDraw(int x, int y)
 }
 
 
-void HeroDraw(int type, int x, int y, int dirX, float zoom)
-{
-
-	if (IsGetHero(type) == false)
-		grayScale = 32;
-	EnemyProfileDraw(x, y, type, false, (drawHandle == MD_PLAY ? ao[type].lv : false), 1.0f * zoom);
-
-	grayScale = 0;
-	if (IsGetHero(type) == false) {
-		DrawLock(getHeroLv[type], x + (float)(+(2 * _2X)) * zoom, y - (float)2 * _2X * zoom, 2.0f * zoom);
-	}
-
-}
-
 
 void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal)
 {

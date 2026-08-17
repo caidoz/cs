@@ -37,7 +37,6 @@ void BoxOpen(void);
 void JoyStickRelease(void);
 
 int GetBetHeart(int itemDetail, int itemGrade, int betGrade);
-int GetBetGold(int itemDetail, int itemGrade);
 
 int printCoords(void);
 int printBoxCoords(void);

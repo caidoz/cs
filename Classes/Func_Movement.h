@@ -146,11 +146,9 @@ int AlivePlayerCnt(void);
 int AliveEnemyCnt(void);
 bool IsHitPossible(OBJECT * pObj, OBJECT * mObj);
 bool IsMaxBet(void);
-bool IsMaxCoinBet(void);
 bool IsRoulettePossible(int rouletteType);
 int IsKnockBack(int objType);
 int IsBigMonster(int);
 int IsBigCmf(int);
-void RegenEnemy(OBJECT *, int, int, int, int);
 int CanRunPlayer(int);
 #endif

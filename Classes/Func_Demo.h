@@ -44,4 +44,3 @@ void ResumeTutorialPlay(void);
 void SkipPlayIntro(void);
 void SetDemoEquip(OBJECT *, int, int, int);
 void SetDemo(int);
-void SetTalk_Movie(void);

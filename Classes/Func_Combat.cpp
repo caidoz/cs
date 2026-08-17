@@ -719,38 +719,6 @@ long long NextExp(int lv)
 //- 이미 슬롯이 가득차 있을때 선택마크가 없는 장비를 선택하면 들어갈 곳이 없기 때문에 아무 반응을 하지 않는다.
 //- 이미 슬롯이 가득차 있을 때 선택마크가 있는 장비를 선택하면 해당 장비를 비우고 뒤에서부터 땡겨서 채워준다.
 
-//2. 슬롯에서 선택햇을 때 행동양식이 필요한가?
-//- 슬롯에서 선택했을 때는 아래 인벤토리를 해당 아이템에 포커싱이 가도록 페이지를 이동시키고 포커싱 표시를 해주면 될듯 하다.
-//- 거기서 한번 더 누르던 하는것은 자유
-int GetExpFromEnchantSlot(void)
-{
-	int i, exps = 0;
-	ITEM* it;
-	ITEM* itSelected;
-
-	for (i = 0; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] != SLOTEMPTY) {
-			it = GetItemPtr(invenRecipe[enchantSlot[i]]);
-			switch (it->type) {
-			case ITEM_RING:
-			case ITEM_NECK:
-				exps += itemMaterialExpAcce[it->cooldown];
-				break;
-			default:
-				exps += itemMaterialExp[itemLevelLimit[2 * it->detail + 1] + it->cooldown];
-				break;
-			}
-		}
-	}
-
-	itSelected = GetItemPtr(menuItem - 1);
-
-	if (exps > NextExpEquip(itSelected, itemLevelLimit[2 * itSelected->detail]))
-		exps = NextExpEquip(itSelected, itemLevelLimit[2 * itSelected->detail]);
-
-	return exps;
-}
-
 //장비의 특정 레벨까지 필요한 경험치를 합산해서 반환
 int NextExpEquip(ITEM* it, int lv)
 {
@@ -769,45 +737,6 @@ int NextExpEquip(ITEM* it, int lv)
 	}
 
 	return needExp;
-}
-
-//현재 주어진 경험치로 어디까지 레벨을 올릴 수 있는지 반환
-int NextLvEquip(ITEM* it, int getExp)
-{
-	int tempLevel, tempExp;
-
-	tempLevel = 0;
-	tempExp = getExp;
-
-	while (tempExp > 0) {
-		switch (it->type) {
-		case ITEM_RING:
-		case ITEM_NECK:
-			tempExp -= itemExpAcce[tempLevel];
-			break;
-		default:
-			tempExp -= itemExp[itemLevelLimit[it->detail * 2 + 1] + tempLevel];
-			break;
-		}
-		if (tempExp >= 0)
-			tempLevel++;
-	}
-
-	return tempLevel + 1;
-}
-
-int checkExistSocketSlotCnt(int idx)
-{
-	int i, j = 0;
-	ITEM* it = GetItemPtr(idx);
-
-	for (i = 0; i < it->count; i++) {
-		if (it->socket[i] < EMPTYINT) {
-			j++;
-		}
-	}
-
-	return j;
 }
 
 int GetLevelUpRewardLv(int type, int userLv)
