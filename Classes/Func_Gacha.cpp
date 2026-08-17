@@ -3659,6 +3659,75 @@ void GachaDraw(void)
 					anim->popupZoom;
 
 				//------------------------------------------------
+				// 하트와 골드는 카드째로 날리지 않는다
+				//
+				// 카드에 그려진 아이콘 자리에서 재화 마크를 쏟아 보낸다.
+				// 상자를 열었을 때와 같은 연출이다(Func_Battle의 보상 처리 참고).
+				// 개수는 수량/10이되 CURRENCYMARK_MAX개를 넘지 않는다.
+				// 82만 골드를 8만 개로 쏟으면 마크 풀이 감당하지 못한다.
+				//------------------------------------------------
+				if (item->type == ITEM_GOLD ||
+					item->type == ITEM_HEART)
+				{
+					//DrawItemCard이 아이콘을 놓는 자리와 같은 식으로 중심을 잡는다.
+					const float CARD_ICON_X = 72.0f;
+					const float CARD_ICON_Y = 122.0f;
+					const float CARD_ICON_ZOOM = 3.3f;
+
+					float iconHalf =
+						(float)ITEMICONSIZE * CARD_ICON_ZOOM / 2.0f;
+
+					float markX =
+						anim->popupX +
+						(CARD_ICON_X + iconHalf) * anim->popupZoom;
+
+					float markY =
+						anim->popupY -
+						(CARD_ICON_Y + iconHalf) * anim->popupZoom;
+
+					long long amount =
+						item->count;
+
+					int markCnt =
+						(int)Min((long long)CURRENCYMARK_MAX,
+							Max((long long)1, amount / 10));
+
+					if (item->type == ITEM_GOLD)
+					{
+						SetCurrencyMarkArr(markX, markY,
+							bar[BAR_GOLD].x, bar[BAR_GOLD].y,
+							bar[BAR_GOLD].x, bar[BAR_GOLD].y,
+							16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
+							2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
+							CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX,
+							ICON_GOLD, 30, amount, CURRENCY_GOLD,
+							3.0f, 2.0f, -0.2f / MOTIONDIV,
+							2.0f, 1.0f, -0.2f / MOTIONDIV,
+							markCnt, BAR_GOLD);
+					}
+					else
+					{
+						SetCurrencyMarkArr(markX, markY,
+							markX, markY,
+							bar[BAR_HEART].x, bar[BAR_HEART].y,
+							2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
+							16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
+							FPS / 2, FPS / 2,
+							ICON_HEART, 30, amount, CURRENCY_HEART,
+							2.0f, 3.0f, 0.2f / MOTIONDIV,
+							3.0f, 1.5f, -0.2f / MOTIONDIV,
+							markCnt, BAR_HEART);
+					}
+
+					//카드 자체는 더 이상 그리지도, 날리지도 않는다.
+					anim->movingToBar = false;
+					anim->arrivedBar = false;
+					anim->finishedBar = true;
+
+					continue;
+				}
+
+				//------------------------------------------------
 				// 카드 종류별 도착 바 위치
 				//------------------------------------------------
 				float destinationCX =

@@ -443,6 +443,11 @@ typedef enum _gameDef {
 	//재화
 	TOTALCURRENCYMARKARR = 10,
 	TOTALCURRENCYMARK = 100,
+	//한 번에 쏟아보낼 재화 마크의 최대 개수. 수량/10을 이 값으로 자른다.
+	//위 TOTALCURRENCYMARK은 동시에 날고 있을 수 있는 마크의 총량이고,
+	//여기 값은 요청 하나가 만들어내는 개수다. 마크는 순차로 나가므로
+	//같아도 되지만, 넘기면 뒤에 요청한 재화가 밀린다.
+	CURRENCYMARK_MAX = 100,
 	CURRENCYMOVESPEED = 16 * _2X,
 	CURRENCYMARKEFFECTFRAME = FPS / 2,
 	CURRENCYDONTERASE = 10000,
