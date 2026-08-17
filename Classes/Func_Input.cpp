@@ -1603,21 +1603,21 @@ void PlayKey(int obj)
 			rewardBoxDetail = stageClearBox[robin.stage];
 			rewardBoxGrade = GRADE_NORMAL;
 
-			//boxReward = &rewardBoxData[rewardBoxDetail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardBoxGrade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE];
-
+			//TODO: 보상 목록을 되살려야 한다.
+			//보상표가 들어 있던 rewardBoxData가 구조체 배열(REWARD_BOX_DATA)로
+			//바뀌면서 위 대입이 주석 처리됐는데, 아래에서는 boxReward를 그대로
+			//역참조하고 있었다. 초기화도 안 된 포인터라 아무 메모리나 읽는다.
+			//지금은 대체할 평면 테이블이 없으므로 빈 목록으로 띄운다.
+			//-1은 아래 개수 세기가 쓰던 "빈 칸" 표시값이다.
 			itemCnt = 0;
-			for (i = 0; i < BOX1MAXREWARDITEM; i++) {
-				if (*(boxReward + 5 * i) != -1)
-					itemCnt++;
-			}
 
 			//���⼭ �˾��� ����ش�?
 			//SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)(DX / 2 - DIORAMASIZE_X * dioramaZoom / 2) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 0] * dioramaZoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 - (float)(72 * _2X) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 1] * dioramaZoom + 108 * _2X, (REWARDCARDSIZE_X + 4 * _2X) * itemCnt + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 			SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)DX / 2, POPUPPOSITION_Y, (REWARDCARDSIZE_X + 4 * _2X) * 3 + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 				ITEM_BOX, rewardBoxDetail, rewardBoxGrade,
-				*(boxReward), *(boxReward + 1), *(boxReward + 2), *(boxReward + 3), *(boxReward + 4),
-				*(boxReward + 5), *(boxReward + 6), *(boxReward + 7), *(boxReward + 8), *(boxReward + 9),
-				*(boxReward + 10), *(boxReward + 11), *(boxReward + 12), *(boxReward + 13), *(boxReward + 14));
+				-1, -1, -1, -1, -1,
+				-1, -1, -1, -1, -1,
+				-1, -1, -1, -1, -1);
 
 			//SetPopUp(POPUPTYPE_STAGE, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 			//	false, false, false, false, false,

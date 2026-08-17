@@ -298,6 +298,12 @@ void BarDraw(BAR* barP, float zoom)
 		DrawImage(207, 33, 0, 953, xOffset + barP->x + shakePosX[effect.hpShake], barP->y - 12 * _2X + shakePosY[effect.hpShake], false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		EnemyProfileDraw(xOffset + barP->x + (float)(4 * _2X) * zoom, barP->y - (float)(14 * _2X) * zoom, ao[ENEMY].type, zoom, false, false);
 
+		//채워지는 폭. HpBarDraw()와 같은 식이다. 예전에는 val을 대입하는 줄이 아예
+		//없어서 초기화도 안 된 값이 그대로 폭으로 들어갔다.
+		val = barP->max > 0
+			? (long long)((float)(HPBARWIDTH)*zoom * count / barP->max)
+			: 0;
+
 		MemRect(xOffset + barP->x + (float)(40 * _2X + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake]) * zoom, val, (float)(HPBARHEIGHT)*zoom, ENEMYHPBARCOLOR);
 
 		DrawNum(count, xOffset + barP->x + (float)(30 * _2X + HPBARWIDTH + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake] - 2 * _2X) * zoom, NUM_FONT_NORMAL, RIGHT, 0, count >= 0 ? false : MINUS, true, zoom, true);

@@ -2496,7 +2496,11 @@ void NeutralDraw(OBJECT* pObj)
 {
 	int i;
 	unsigned char* maPtr;
-	float gapX, gapY;
+	//TODO: 아이콘 배치표(treeGoldPos/treeGoldBagPos/treeShieldPos/treeHeartPos)가
+	//사라졌다. 그것들을 읽던 줄만 주석 처리되고 gapX/gapY를 쓰는 DrawIcon은 남아서,
+	//초기화도 안 된 값이 화면 좌표로 들어가고 있었다. 배치를 되살릴 데이터가 없으므로
+	//0으로 둔다 - 같은 자리에 겹쳐 그려지지만 최소한 매번 같은 자리다.
+	float gapX = 0, gapY = 0;
 	float iconZoom;
 
 	switch (pObj->type) {

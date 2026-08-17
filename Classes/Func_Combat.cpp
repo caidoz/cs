@@ -5640,7 +5640,9 @@ int TargetPlayer(int obj)
 int TargetEnemy(int obj)
 {
 	int i, j, distance = rw * TSIZE, tempDis;
-	int range;
+	//아래에서 다시 잡아주지만 여기서도 채워둔다. ACTION 라벨로 바로 뛰어드는
+	//경로가 있어서, 그 길로 들어오면 range가 초기화도 안 된 채 사거리 판정에 쓰였다.
+	int range = GetAttackRange(obj);
 	int gameStartPosition = BATTLEPOSITION_PLAYER_X;
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &pObj->equip[EQUIP_WEAPON];

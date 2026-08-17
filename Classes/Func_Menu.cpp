@@ -2252,7 +2252,11 @@ void NewCollectionDraw(int x, int y, float zoom)
 	float iconZoom = EQUIPZOOM;
 	int itemType, itemDetail, itemGrade, itemLv, skillLv;
 	int collectionIdx;
-	int newSkillIdx;
+	//TODO: 어느 스킬을 보여줄지 정하는 값이 사라졌다.
+	//아래에서 skillLv[newSkillIdx]와 TEXT_SKILLNAME_COMMON_ROBIN1 + newSkillIdx로
+	//쓰는데 대입하는 곳이 없어서, 초기화도 안 된 값으로 배열 밖을 읽고 있었다.
+	//컬렉션에서 스킬 번호를 얻는 표가 코드에 남아 있지 않아 일단 0으로 둔다.
+	int newSkillIdx = 0;
 
 	if (newCollectionFrame % 3 == 0 && zoom == 1)
 		SetHitMark(Random(DX), Random(DY), Random(2), DIANA, 1, PLAYER, HITMARKZOOM/*zoom*/);
