@@ -492,6 +492,7 @@ void TitleDraw(void)
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + DX / 2 - DIORAMASIZE_X / 2, y - DY / 2 + DIORAMASIZE_Y / 2 + 72 * _2X, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + houseOrder[0]], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + houseOrder[0], false);
 		//NewCollectionDraw(0, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
 #else
+		MemRect(0, DY, DX, DY, COLOR_WHITE);
 		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], TITLE_IMG);
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);

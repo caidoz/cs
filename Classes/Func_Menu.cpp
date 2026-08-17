@@ -1493,8 +1493,12 @@ enum {
 	OPT_FLAG_W = 63, OPT_FLAG_H = 49,
 	OPT_FLAGROW0 = 690, OPT_FLAGROW1 = 748,
 
-	//고객센터 상담원 얼굴
-	OPT_FACE_X = 10, OPT_FACE_Y = 730, OPT_FACE_W = 154, OPT_FACE_H = 126,
+	//고객센터 상담원 얼굴. 위에 방패 조각들이 붙어 있어서 y를 넉넉히 잡으면
+	//그 금색 끝자락까지 같이 잘려 들어온다.
+	OPT_FACE_X = 10, OPT_FACE_Y = 747, OPT_FACE_W = 92, OPT_FACE_H = 109,
+
+	//타이틀바 오른쪽 닫기 버튼(빨간 X)
+	OPT_XBTN_X = 866, OPT_XBTN_Y = 550, OPT_XBTN_W = 58, OPT_XBTN_H = 51,
 
 	//타이틀바 한가운데에 얹는 방패 아이콘. 창마다 다른 것을 쓴다.
 	OPT_BADGE_Y = 652, OPT_BADGE_W = 80, OPT_BADGE_H = 88,
@@ -1670,12 +1674,23 @@ static void DrawOptionSubWindow(const char* title, int badgeX, float x, float y,
 	}
 
 	//제목은 창 한가운데. 아이콘이 위로 빠져 있으므로 옆으로 피할 필요가 없다.
+	//파란 타이틀바 안에 들어가야 하므로 금색 모서리보다 위에 놓는다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(title, x + w / 2, y - 34.0f * s - 30.0f * z
+	CenterTextStr(title, x + w / 2, y - 18.0f * s - 20.0f * z
 		+ (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
+	SetFontColor(COLOR_WHITE);
 
-	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s,
-		(float)OPT_CLOSE_W * s, (float)OPT_CLOSE_H * s, TOUCH_FUNC_POPUP_CLOSE);
+	//닫기 버튼. 창 그림에는 X가 없어서 직접 얹는다.
+	{
+		float xh = 52.0f * z;
+		float xsc = xh / (float)OPT_XBTN_H;
+		float xw = (float)OPT_XBTN_W * xsc;
+		float bx = x + w - 26.0f * s - xw;
+		float by = y - 14.0f * s;
+
+		DrawOptionPart(OPT_XBTN_X, OPT_XBTN_Y, OPT_XBTN_W, OPT_XBTN_H, bx, by, xsc);
+		SetRectPoint(bx, by, xw, xh, TOUCH_FUNC_POPUP_CLOSE);
+	}
 
 	*panelL = innerL;
 	*panelTop = y - 82.0f * s;
@@ -1840,17 +1855,19 @@ void OptionHelpDraw(int x, int y, float zoom)
 	//----- 안내 문구 + 상담원 -----
 	{
 		float boxH = lineH * 3 + pad * 2;
-		float face = boxH - pad * 2;
-		float textL = bx + pad + face + pad;
+		//얼굴은 상자보다 살짝 크게 잡아 위아래로 넘치게 둔다. 딱 맞추면
+		//가운데 안내문에 비해 너무 작아 보인다.
+		float face = boxH * 1.16f;
+		float textL = bx + pad + (float)OPT_FACE_W * (face / (float)OPT_FACE_H) + pad;
 		float ty = cy - pad;
 
 		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
 			bx, cy, bw, boxH, s * 0.5f);
 
 		DrawOptionPart(OPT_FACE_X, OPT_FACE_Y, OPT_FACE_W, OPT_FACE_H,
-			bx + pad, cy - pad, face / (float)OPT_FACE_H);
+			bx + pad, cy + (face - boxH) / 2, face / (float)OPT_FACE_H);
 
-		SetFontColor(COLOR_BROWN);
+		SetFontColor(COLOR_WHITE);
 
 		for (i = 0; i < 3; i++) {
 			DrawTextStr(guide[i], textL, ty - (float)FONT_HEIGHT * OPTIONTEXTZOOM * 0.15f * zoom, OPTIONTEXTZOOM * zoom);
@@ -1876,9 +1893,9 @@ void OptionHelpDraw(int x, int y, float zoom)
 		DrawOptionRibbon("고객지원 이메일", bx + (bw - ribbonW) / 2, cy + ribbonH / 2,
 			ribbonW, ribbonH, s * 0.5f);
 
-		SetFontColor(COLOR_BROWN);
+		SetFontColor(COLOR_WHITE);
 		CenterTextStr(OPTION_SUPPORTMAIL, bx + bw / 2,
-			cy - ribbonH / 2 - lineH * 0.9f, OPTIONROWTEXTZOOM * zoom);
+			cy - ribbonH / 2 - lineH * 0.35f, OPTIONROWTEXTZOOM * zoom);
 		SetFontColor(COLOR_WHITE);
 
 		{
@@ -1912,7 +1929,7 @@ void OptionHelpDraw(int x, int y, float zoom)
 
 		ty = cy - pad;
 
-		SetFontColor(COLOR_BROWN);
+		SetFontColor(COLOR_WHITE);
 
 		for (i = 0; i < 4; i++) {
 			DrawTextStr(need[i], bx + pad * 2, ty - (float)FONT_HEIGHT * OPTIONTEXTZOOM * 0.15f * zoom, OPTIONTEXTZOOM * zoom);
@@ -1931,7 +1948,7 @@ void OptionHelpDraw(int x, int y, float zoom)
 		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
 			bx, cy, bw, boxH, s * 0.5f);
 
-		SetFontColor(COLOR_BROWN);
+		SetFontColor(COLOR_WHITE);
 		DrawTextStr("운영시간  평일 10:00 ~ 18:00", bx + pad * 2, cy - pad, OPTIONTEXTZOOM * zoom);
 		DrawTextStr("주말 및 공휴일 휴무", bx + pad * 2, cy - pad - lineH, OPTIONTEXTZOOM * zoom);
 		SetFontColor(COLOR_WHITE);

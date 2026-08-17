@@ -4582,7 +4582,9 @@ void LoadingBarDraw(int x, int y, int loadingBarFrame)
 	DrawImage(165, 21, 180, 519, x, y, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 	MemRect(x + 3 * _2X, y - 3 * _2X, Min(159 * _2X, loadingBarFrame * 5 * _2X), 16 * _2X, COLOR_ORANGE);
 
+	//SetFontColor(COLOR_DARKGREY);
 	CenterText(Min(TEXT_LOADING_5, TEXT_LOADING_1 + frame / 5), x + 165 * _2X / 2, y - 6 * _2X, 1.0f);
+	//SetFontColor(COLOR_WHITE);
 }
 
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount)
