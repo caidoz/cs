@@ -344,6 +344,9 @@ int buttonPressFrame = 0;
 int buttonPressRect[4];
 int buttonPopFunc = -1;
 int buttonPopFrame = 0;
+//누른 지점. 기능 번호가 같은 버튼이 둘 이상 있을 때 이걸로 가른다.
+int buttonPressX = 0, buttonPressY = 0;
+int buttonPopX = 0, buttonPopY = 0;
 int swipeIndex;
 int swipeRect[TOTALSWIPECNT][5];//int rx, int ry, int width, int height, int func
 bool swipeLock = false;

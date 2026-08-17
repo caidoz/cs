@@ -3424,6 +3424,9 @@ void SetButtonPress(int func)
 	buttonPressRect[1] = startTouchRect[1];
 	buttonPressRect[2] = startTouchRect[2];
 	buttonPressRect[3] = startTouchRect[3];
+
+	buttonPressX = touchX;
+	buttonPressY = touchY;
 }
 
 //떼거나 취소할 때 호출한다. pop이 true면 튀어오르는 연출을 시작한다.
@@ -3432,6 +3435,8 @@ void ClearButtonPress(bool pop)
 	if (pop && buttonPressFunc >= 0) {
 		buttonPopFunc = buttonPressFunc;
 		buttonPopFrame = BUTTON_POPFRAME;
+		buttonPopX = buttonPressX;
+		buttonPopY = buttonPressY;
 	}
 
 	buttonPressFunc = -1;
@@ -3460,15 +3465,25 @@ void UpdateButtonPress(void)
 
 //그리는 쪽이 쓰는 배율. 누르고 있으면 들어가 있고, 뗀 직후에는 튀었다가
 //제자리로 돌아온다.
-float GetButtonScale(int func)
+//기능 번호만으로는 부족하다. 한 화면에 같은 번호를 쓰는 버튼이 둘 이상
+//있을 수 있어서(장비창의 장착/강화가 그렇다) 그것들이 같이 움직인다.
+//누른 지점이 내 사각형 안에 있는지까지 봐야 누른 그 버튼만 반응한다.
+static bool ButtonHit(int px, int py, int x, int y, int w, int h)
+{
+	return (px >= x) && (px <= x + w) && (py <= y) && (py >= y - h);
+}
+
+float GetButtonScale(int func, int x, int y, int w, int h)
 {
 	if (func < 0)
 		return 1.0f;
 
-	if (func == buttonPressFunc)
+	if (func == buttonPressFunc
+		&& ButtonHit(buttonPressX, buttonPressY, x, y, w, h))
 		return BUTTON_DOWNSCALE;
 
-	if (func == buttonPopFunc && buttonPopFrame > 0) {
+	if (func == buttonPopFunc && buttonPopFrame > 0
+		&& ButtonHit(buttonPopX, buttonPopY, x, y, w, h)) {
 		float t = (float)buttonPopFrame / (float)BUTTON_POPFRAME;
 
 		return 1.0f + (BUTTON_POPSCALE - 1.0f) * t;

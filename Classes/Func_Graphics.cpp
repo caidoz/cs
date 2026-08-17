@@ -4685,9 +4685,9 @@ void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 
 void DrawTouchButton(int x, int y, const char* text, int func)
 {
-	float press = GetButtonScale(func);
 	float w = StringWidth(text, 1) + 4 * _2X;
 	float h = 20 * _2X;
+	float press = GetButtonScale(func, x, y, w, h);
 
 	//한가운데를 붙잡고 배율만 준다. 터치영역은 원래 크기 그대로 둔다.
 	float gapX = w * (press - 1.0f) / 2;
@@ -4710,7 +4710,9 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 	//나간 것으로 처리되어 스스로 취소된다.
 	//이 함수는 func 0을 "터치영역 없음"으로 쓴다(아래 if (func) 참고).
 	//TOUCH_FUNC_OPENING이 0이라 그냥 물어보면 오프닝 탭에 같이 반응한다.
-	float press = func ? GetButtonScale(func) : 1.0f;
+	float press = func
+		? GetButtonScale(func, x, y, (float)w * zoom, (float)h * zoom)
+		: 1.0f;
 	float drawZoom = zoom * press;
 
 	float gapX = (float)w * zoom * (press - 1.0f) / 2;
