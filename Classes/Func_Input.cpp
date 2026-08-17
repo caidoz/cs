@@ -427,6 +427,16 @@ void TalkKey(void)
 		}
 		break;
 	case MD_DEMO:
+		//대사가 떠 있을 때만 넘길 수 있다. 아래에서 movie.type을 MOVIE_MOVE로
+		//되돌리는데, 그 뒤에 들어온 탭이 여기로 또 들어오면 movie.start를 한 번 더
+		//올려서 데모 장면 하나를 통째로 건너뛴다. 연타하면 "때마침 몬스터가
+		//나타났네요!" 다음 장면이 날아가 실전투 핸드오프가 걸리지 않고 멈춘다.
+		//keyHandle은 EFFECT_TALK에서 MK_TALK으로 바뀐 뒤 다음 연출까지 그대로라
+		//keyHandle만으로는 이 상태를 가릴 수 없다.
+		if (movie.type != MOVIE_TALK && movie.type != MOVIE_MENUTALK
+			&& movie.type != MOVIE_NARRATION)
+			break;
+
 		if (textFrame < textStringLength[textPage - 1])	//만약 프레임이 다 안넘어갔으면
 			textFrame = textStringLength[textPage - 1] + 1;
 		else {

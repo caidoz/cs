@@ -1750,19 +1750,19 @@ void GachaDraw(void)
 		const int CARD_TO_TRAY_FRAME =
 			10 * MOTIONDIV;
 
-		//한 줄에 12장을 늘어놓으면 12*60 + 11*8 = 808px로 화면(DX)을 넘어간다.
-		//넘치는 만큼 카드를 줄이면 0.21까지 내려가 아이콘도 등급도 안 보이고,
-		//무엇보다 많이 받을수록 카드가 작아져서 보상 연출이 거꾸로 초라해진다.
-		//그래서 줄여서 맞추지 않고 6열 2행으로 접는다. 6열이면 폭이 절반이라
-		//오히려 카드를 키울 수 있고, 개수와 무관하게 크기가 항상 같다.
-		const int TRAY_MAX_COL =
-			6;
-
+		//항상 한 줄이다. 2행으로 접었더니 윗줄이 상자에 가렸다.
+		//대신 폭이 모자라면 카드를 줄이지 않고 서로 겹쳐 깐다. 손패처럼 보이고,
+		//무엇보다 카드 크기가 획득 개수와 무관하게 항상 같다. 개수에 따라
+		//작아지면 많이 받을수록 연출이 초라해진다.
 		const float TRAY_GAP =
 			4.0f * _2X;
 
-		float TRAY_CARD_ZOOM =
-			0.30f;
+		//겹치더라도 카드 폭의 이만큼은 보이게 한다.
+		const float TRAY_MIN_SHOW =
+			0.40f;
+
+		const float TRAY_CARD_ZOOM =
+			0.38f;
 
 		//----------------------------------------------------
 		// 공개 카드 위치
@@ -1797,76 +1797,61 @@ void GachaDraw(void)
 		//----------------------------------------------------
 		// 하단 카드 정렬 위치 계산
 		//
-		// TRAY_MAX_COL열 그리드. 개수가 열 수 이하면 예전처럼 한 줄이다.
+		// 한 줄. 폭이 모자라면 간격(pitch)을 좁혀 겹쳐 깐다.
 		//----------------------------------------------------
-		int trayCol =
-			Min(TRAY_MAX_COL, Max(1, rewardCount));
-
-		int trayRow =
-			(rewardCount + trayCol - 1) /
-			trayCol;
-
-		//좁은 해상도에서도 한 행이 화면 안에 들어가야 한다. 여기서만 줄인다.
-		float trayUsableW =
-			(float)(DX - 2 * xOffset) -
-			8.0f * _2X;
-
-		float trayNeedW =
-			trayCol * 240.0f * TRAY_CARD_ZOOM +
-			(trayCol - 1) * TRAY_GAP;
-
-		if (trayNeedW > trayUsableW && trayNeedW > 0.0f) {
-			TRAY_CARD_ZOOM *=
-				(trayUsableW - (trayCol - 1) * TRAY_GAP) /
-				(trayNeedW - (trayCol - 1) * TRAY_GAP);
-		}
-
 		float trayCardW =
 			240.0f *
 			TRAY_CARD_ZOOM;
 
-		float trayCardH =
-			332.0f *
-			TRAY_CARD_ZOOM;
+		float trayUsableW =
+			(float)(DX - 2 * xOffset) -
+			8.0f * _2X;
 
-		//y는 카드의 윗변이고 값이 클수록 화면 위다. 마지막 행을 예전 자리에 두고
-		//행이 늘어나면 위로 쌓는다. 그래야 하단 메뉴와의 간격이 그대로다.
-		float trayBottomY =
+		//안 겹쳤을 때의 간격. 이대로 다 들어가면 그냥 나란히 깐다.
+		float trayPitch =
+			trayCardW + TRAY_GAP;
+
+		if (rewardCount > 1) {
+			float need =
+				trayCardW + (rewardCount - 1) * trayPitch;
+
+			if (need > trayUsableW) {
+				trayPitch =
+					(trayUsableW - trayCardW) / (rewardCount - 1);
+			}
+
+			//너무 겹치면 앞 카드가 아이콘까지 가린다.
+			if (trayPitch < trayCardW * TRAY_MIN_SHOW)
+				trayPitch = trayCardW * TRAY_MIN_SHOW;
+		}
+
+		float trayTotalW =
+			trayCardW + (rewardCount - 1) * trayPitch;
+
+		float trayStartX =
+			xOffset +
+			DX / 2.0f -
+			trayTotalW / 2.0f;
+
+		//y는 카드의 윗변이고 값이 클수록 화면 위다.
+		float trayY =
 			BOTTOMMENUHEIGHT +
 			12.0f * _2X;
 
 		//----------------------------------------------------
 		// 모든 카드의 하단 목표 위치 갱신
+		//
+		// 뒤 카드일수록 나중에 그려져 앞 카드를 덮는다. 손패처럼 보인다.
 		//----------------------------------------------------
 		for (i = 0;
 			i < rewardCount;
 			i++)
 		{
-			int row =
-				i / trayCol;
-
-			int col =
-				i % trayCol;
-
-			//마지막 행이 덜 찼으면 그 행만 따로 가운데로 모은다.
-			int colsInRow =
-				Min(trayCol, rewardCount - row * trayCol);
-
-			float rowW =
-				colsInRow * trayCardW +
-				(colsInRow - 1) * TRAY_GAP;
-
 			gachaRewardCardAnim[i].trayX =
-				xOffset +
-				DX / 2.0f -
-				rowW / 2.0f +
-				col *
-				(trayCardW + TRAY_GAP);
+				trayStartX + i * trayPitch;
 
 			gachaRewardCardAnim[i].trayY =
-				trayBottomY +
-				(trayRow - 1 - row) *
-				(trayCardH + TRAY_GAP);
+				trayY;
 
 			gachaRewardCardAnim[i].trayZoom =
 				TRAY_CARD_ZOOM;

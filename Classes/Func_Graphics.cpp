@@ -2730,9 +2730,11 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			//생성 그리기
 			for (i = SOLDIER; i < NEUTRAL; i++) {
 				if (ao[i].active && ao[i].drawHandler == REGENDRAW && ao[i].type != NPC_SHIP) {
-					ao[i].zoom *= dioramaZoom;
-					DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, ao[i].frame)], ao[i].x - rx, objStartY + (float)64 * _2X * ao[i].zoom - (PxlUp(&ao[i]) + ao[i].cy / 2 - OBJIMGGAP) - ry, LEFT, ao[i].zoom, false, false);
-					ao[i].zoom /= dioramaZoom;
+					//소환 연출로 덧그리는 마왕의 심장. 몬스터 배율을 그대로 쓰면
+					//몬스터를 덮을 만큼 커서 소환 대상이 안 보인다.
+					float heartZoom = ao[i].zoom * dioramaZoom * SUMMONHEARTZOOM;
+
+					DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, ao[i].frame)], ao[i].x - rx, objStartY + (float)64 * _2X * heartZoom - (PxlUp(&ao[i]) + ao[i].cy / 2 - OBJIMGGAP) - ry, LEFT, heartZoom, false, false);
 				}
 			}
 
@@ -4880,19 +4882,52 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 
 
 
+	//아이콘은 카드 안쪽 폭(64픽셀)에 맞춘다. SKILLICONSIZE와 CREWBULLETICONSIZE가
+	//둘 다 32*_2X라 2배로 그리면 정확히 64픽셀 자리를 채운다.
+	float iconZoom = zoom * 2.0f;
+	float iconSize = (float)SKILLICONSIZE * iconZoom;
+	float iconX = x + w / 2 - iconSize / 2;
+	float iconY = y - h / 2 + iconSize / 2;
+
 	switch (skillData[skillIdx * SKILLDATASIZE]) {
 	case SUMMON:
+		//몬스터 소환 : 소환될 몬스터를 그대로 보여준다.
 		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
 		SetSectionClip(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)(2 * _2X) * zoom, h - (float)(2 * _2X) * zoom, false);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y + (float)(-36 * _2X + 8 * _2X) * zoom, SHADOW_IMG, zoom);
+		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y - h / 2 + (float)(8 * _2X) * zoom, SHADOW_IMG, zoom);
 
-		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + w / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-36 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 2 * _2X) * zoom, LEFT, 1.2f * zoom, false, false);
+		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + w / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y - h / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 2] + 2 * _2X) * zoom, LEFT, 1.2f * zoom, false, false);
 
 		UnSectionClip(false);
 		break;
+
+	case CREWBULLET:
+		//동료 총탄 : 실제로 날아가는 그 총탄을 보여준다.
+		//AddObject()가 총탄 오브젝트의 icon을 SKILLDATA_TARGET에서 가져오므로
+		//여기서도 같은 자리를 봐야 카드와 날아가는 그림이 일치한다.
+		DrawCrewBulletIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET],
+			iconX, iconY, iconZoom);
+		break;
+
+	case HEROSKILL:
+		//히어로 스킬 : 발동되는 히어로 스킬의 아이콘을 보여준다.
+		//이 칸에는 스킬 자신의 아이콘이 아니라 SKILLDATA_OBJECTINFO가 가리키는
+		//히어로 스킬 번호가 들어 있다.
+		{
+			int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
+			if (heroSkill < 0 || heroSkill >= TOTAL_SKILL)
+				heroSkill = skillIdx;
+
+			DrawSkillIcon(skillData[heroSkill * SKILLDATASIZE + SKILLDATA_ICON],
+				iconX, iconY, iconZoom);
+		}
+		break;
+
 	default:
-		DrawSkillIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON], x + w / 2 - (float)(ITEMICONSIZE)*zoom, y - h / 2 + (float)(ITEMICONSIZE)*zoom, zoom * 2);
+		DrawSkillIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON],
+			iconX, iconY, iconZoom);
 		break;
 	}
 }

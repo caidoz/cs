@@ -27,6 +27,7 @@
 #define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // 디오라마 배틀 줌
 #define DIORAMAZOOM_REMAINDER      1.5f           // 디오라마 나머지 줌
 #define BATTLEWEAPONZOOM           6.0f           // 배틀 무기 줌
+#define SUMMONHEARTZOOM            0.7f           // 소환 연출로 덧그리는 마왕의 심장 배율
 #define HITCOUNTZOOM               1.0f           // 히트 카운트 줌
 #define RAIDGOLDBARZOOM            2.5f           // 레이드 골드바 줌
 #define BATTLEGOLDALPHAZOOM        2.2f           // 배틀 골드 알파 줌
