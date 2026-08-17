@@ -3692,30 +3692,62 @@ void GachaDraw(void)
 						(int)Min((long long)CURRENCYMARK_MAX,
 							Max((long long)1, amount / 10));
 
+					//값이 클수록 크게. 1000부터 자릿수가 하나 늘 때마다 한 단계씩
+					//키우고 상한에서 멈춘다.
+					float markScale =
+						CURRENCYMARK_ZOOMBASE;
+
+					for (long long v = amount; v >= 1000; v /= 10)
+					{
+						markScale += CURRENCYMARK_ZOOMSTEP;
+
+						if (markScale >= CURRENCYMARK_ZOOMMAX)
+						{
+							markScale = CURRENCYMARK_ZOOMMAX;
+							break;
+						}
+					}
+
 					if (item->type == ITEM_GOLD)
 					{
+						//골드바의 동전 아이콘 자리. 바 좌표는 왼쪽 위라
+						//아이콘 반만큼 안쪽으로 넣어야 한다.
+						float goldX =
+							bar[BAR_GOLD].x + 8 * _2X + ITEMICONSIZE / 2;
+
+						float goldY =
+							bar[BAR_GOLD].y - 8 * _2X - ITEMICONSIZE / 2;
+
 						SetCurrencyMarkArr(markX, markY,
-							bar[BAR_GOLD].x, bar[BAR_GOLD].y,
-							bar[BAR_GOLD].x, bar[BAR_GOLD].y,
+							goldX, goldY,
+							goldX, goldY,
 							16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
 							2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
 							CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX,
 							ICON_GOLD, 30, amount, CURRENCY_GOLD,
-							3.0f, 2.0f, -0.2f / MOTIONDIV,
-							2.0f, 1.0f, -0.2f / MOTIONDIV,
+							3.0f * markScale, 2.0f * markScale, -0.2f / MOTIONDIV,
+							2.0f * markScale, 1.0f * markScale, -0.2f / MOTIONDIV,
 							markCnt, BAR_GOLD);
 					}
 					else
 					{
+						//하트바의 하트 아이콘은 바 오른쪽 끝이 아니라 왼쪽에 있다.
+						//바 좌표에서 바 길이만큼 왼쪽으로 물리고 조금 내린다.
+						float heartX =
+							bar[BAR_HEART].x - HEARTBARWIDTH + ITEMICONSIZE / 2;
+
+						float heartY =
+							bar[BAR_HEART].y - 8 * _2X - ITEMICONSIZE / 2;
+
 						SetCurrencyMarkArr(markX, markY,
 							markX, markY,
-							bar[BAR_HEART].x, bar[BAR_HEART].y,
+							heartX, heartY,
 							2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
 							16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV,
 							FPS / 2, FPS / 2,
 							ICON_HEART, 30, amount, CURRENCY_HEART,
-							2.0f, 3.0f, 0.2f / MOTIONDIV,
-							3.0f, 1.5f, -0.2f / MOTIONDIV,
+							2.0f * markScale, 3.0f * markScale, 0.2f / MOTIONDIV,
+							3.0f * markScale, 1.5f * markScale, -0.2f / MOTIONDIV,
 							markCnt, BAR_HEART);
 					}
 

@@ -27,6 +27,13 @@
 #define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // 디오라마 배틀 줌
 #define DIORAMAZOOM_REMAINDER      1.5f           // 디오라마 나머지 줌
 #define BATTLEWEAPONZOOM           6.0f           // 배틀 무기 줌
+// --- 보상 재화 마크(하트/골드)가 바로 날아갈 때의 배율
+// 값이 클수록 크게 보여준다. 1000부터 자릿수가 하나 늘 때마다 한 단계씩
+// 키우고 상한에서 멈춘다. 상한이 없으면 큰 보상에서 아이콘이 화면을 덮는다.
+#define CURRENCYMARK_ZOOMBASE      1.3f           // 기본 배율
+#define CURRENCYMARK_ZOOMSTEP      0.15f          // 자릿수 한 칸당 가산
+#define CURRENCYMARK_ZOOMMAX       2.0f           // 배율 상한
+
 #define SUMMONHEARTZOOM            0.7f           // 소환 연출로 덧그리는 마왕의 심장 배율
 #define HITCOUNTZOOM               1.0f           // 히트 카운트 줌
 #define RAIDGOLDBARZOOM            2.5f           // 레이드 골드바 줌
