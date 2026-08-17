@@ -32,6 +32,19 @@ void DrawBarIcon(int type, int x, int y, float zoom)
 
 void BarDraw(BAR* barP, float zoom)
 {
+	//메뉴형 바(동료/장비/성/상점/일일퀘스트 등)는 모두 같은 크기의 터치영역을
+	//쓰고, 그 영역의 한가운데가 barP->x/y다. 여기서 zoom 하나만 눌림 배율로
+	//곱해두면 아래 그리기가 전부 제자리에서 줄었다 튀어오른다.
+	//
+	//누른 지점이 이 사각형 안일 때만 1이 아닌 값이 오므로, 크기가 다른
+	//골드바나 하트바는 저절로 걸러진다. 눌린 뒤에 터치영역이 같이 줄어드는
+	//것은 상관없다 - 취소 판정은 누를 때 잡아둔 사각형으로 하기 때문이다.
+	zoom *= GetButtonPressScale(
+		xOffset + barP->x - (float)MAINMENU_X / 2 * zoom,
+		barP->y + (float)MAINMENU_Y / 2 * zoom,
+		(float)MAINMENU_X * zoom,
+		(float)MAINMENU_Y * zoom);
+
 	long long count = barP->count;
 	int max;//퀘스트에서 맥스값 숫자 적어줄 때 쓰는 변수
 	long long val;

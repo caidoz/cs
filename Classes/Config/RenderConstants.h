@@ -34,7 +34,7 @@
 #define BUTTON_DOWNSCALE           0.94f          // 누르고 있는 동안의 배율
 #define BUTTON_POPSCALE            1.06f          // 뗀 직후 튀어오르는 배율
 #define BUTTON_POPFRAME            10             // 튀었다가 돌아오는 프레임
-#define BUTTON_HIGHLIGHTALPHA      12             // 눌린 터치영역을 덮는 밝기(32가 불투명)
+#define BUTTON_HIGHLIGHTALPHA      20             // 눌린 터치영역을 덮는 밝기(32가 불투명)
 // 톡 누르면 손가락이 3~5프레임만 닿아 있어서, 그동안만 보여주면 눈에 안 남는다.
 // 떼고 나서도 잠깐 그대로 뒀다가 옅어지게 한다.
 #define BUTTON_HIGHLIGHTHOLD       10             // 뗀 뒤 그대로 있는 프레임

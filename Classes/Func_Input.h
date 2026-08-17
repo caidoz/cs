@@ -47,4 +47,5 @@ void SetButtonPress(int func);
 void ClearButtonPress(bool pop);
 void UpdateButtonPress(void);
 float GetButtonScale(int func, int x, int y, int w, int h);
+float GetButtonPressScale(int x, int y, int w, int h);
 #endif

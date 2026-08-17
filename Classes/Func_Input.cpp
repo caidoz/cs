@@ -3482,6 +3482,29 @@ static bool ButtonHit(int px, int py, int x, int y, int w, int h)
 	return (px >= x) && (px <= x + w) && (py <= y) && (py >= y - h);
 }
 
+//기능 번호를 모르는 버튼용. 누른 지점이 내 사각형 안이면 나다.
+//버튼끼리는 겹치지 않으므로 이것만으로 충분하다.
+float GetButtonPressScale(int x, int y, int w, int h)
+{
+	if (buttonPressFunc >= 0
+		&& ButtonHit(buttonPressX, buttonPressY, x, y, w, h)) {
+		buttonPressHandled = true;
+
+		return BUTTON_DOWNSCALE;
+	}
+
+	if (buttonPopFrame > 0
+		&& ButtonHit(buttonPopX, buttonPopY, x, y, w, h)) {
+		float t = (float)buttonPopFrame / (float)BUTTON_POPFRAME;
+
+		buttonPressHandled = true;
+
+		return 1.0f + (BUTTON_POPSCALE - 1.0f) * t;
+	}
+
+	return 1.0f;
+}
+
 float GetButtonScale(int func, int x, int y, int w, int h)
 {
 	if (func < 0)

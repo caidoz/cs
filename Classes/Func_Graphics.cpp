@@ -4587,6 +4587,21 @@ void LoadingBarDraw(int x, int y, int loadingBarFrame)
 
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount)
 {
+	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
+	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
+	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
+	{
+		float press = GetButtonPressScale(x, y, w, h);
+
+		if (press != 1.0f) {
+			x -= (int)((float)w * (press - 1.0f) / 2);
+			y += (int)((float)h * (press - 1.0f) / 2);
+			w = (int)((float)w * press);
+			h = (int)((float)h * press);
+			zoom *= press;
+		}
+	}
+
 	int curGray = grayScale;
 	float BUYBUTTONZOOM = 1.2f;
 	int numFont = NUM_FONT_NORMAL;
@@ -4640,6 +4655,21 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 
 void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, bool ani, int textIdx)
 {
+	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
+	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
+	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
+	{
+		float press = GetButtonPressScale(x, y, w, h);
+
+		if (press != 1.0f) {
+			x -= (int)((float)w * (press - 1.0f) / 2);
+			y += (int)((float)h * (press - 1.0f) / 2);
+			w = (int)((float)w * press);
+			h = (int)((float)h * press);
+			zoom *= press;
+		}
+	}
+
 	int curGray = grayScale;
 	int frameColor;
 
@@ -4662,6 +4692,21 @@ void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, b
 
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 {
+	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
+	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
+	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
+	{
+		float press = GetButtonPressScale(x, y, w, h);
+
+		if (press != 1.0f) {
+			x -= (int)((float)w * (press - 1.0f) / 2);
+			y += (int)((float)h * (press - 1.0f) / 2);
+			w = (int)((float)w * press);
+			h = (int)((float)h * press);
+			zoom *= press;
+		}
+	}
+
 	int gray = 32;
 	int curGray = grayScale;
 	int i;
@@ -4701,53 +4746,6 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 	SetFontColor(COLOR_WHITE);
 }
 
-
-//눌린 터치영역 위에 옅게 덮어 준다.
-//
-// 터치영역은 전부 SetRectPoint()를 지나므로, 눌린 사각형 하나만 알면
-// 그리는 코드를 하나도 안 고치고 모든 터치영역이 반응하게 만들 수 있다.
-// 카드나 아이콘처럼 버튼 모양이 아닌 것까지 눌러 들어가게 하면 산만하므로
-// 여기서는 밝기만 얹는다.
-//
-// 배율로 스스로 표현하는 버튼(GetButtonScale을 쓰는 것들)은 제외한다.
-// 둘 다 걸리면 눌리면서 동시에 밝아져서 과해 보인다.
-void DrawButtonPressHighlight(void)
-{
-	int alpha;
-
-	if (buttonPressHandled)
-		return;
-
-	if (buttonPressRect[2] <= 0 || buttonPressRect[3] <= 0)
-		return;
-
-	if (buttonPressFunc >= 0) {
-		//누르고 있는 동안은 그대로 밝다.
-		alpha = BUTTON_HIGHLIGHTALPHA;
-	}
-	else if (buttonHighlightFrame > 0) {
-		//뗀 뒤 HOLD 동안은 그대로 두고, 그 뒤 FADE 동안 옅어진다.
-		//톡 누르면 손가락이 3~5프레임만 닿으므로 이 꼬리가 없으면 안 보인다.
-		if (buttonHighlightFrame > BUTTON_HIGHLIGHTFADE)
-			alpha = BUTTON_HIGHLIGHTALPHA;
-		else
-			alpha = BUTTON_HIGHLIGHTALPHA * buttonHighlightFrame
-				/ BUTTON_HIGHLIGHTFADE;
-	}
-	else
-		return;
-
-	if (alpha <= 0)
-		return;
-
-	//MemRectRound는 모서리를 만드느라 MemRect를 90번 가까이 부른다.
-	//누를 때마다 스프라이트를 그만큼 쓰는 데다, 겹치는 자리마다 알파가
-	//쌓여 모서리만 진해진다. 여기서는 그냥 사각형 하나면 된다.
-	SetAlpha(alpha);
-	MemRect(buttonPressRect[0], buttonPressRect[1],
-		buttonPressRect[2], buttonPressRect[3], COLOR_WHITE);
-	SetAlpha(32);
-}
 
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
