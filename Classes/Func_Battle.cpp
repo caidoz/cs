@@ -3406,9 +3406,7 @@ void QuestMenuDraw(int x, int y, float zoom)
 
 	DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - (float)(40 * _2X) * zoom, y - (float)(64 * _2X - 32 * _2X) * zoom, TEXT_GRANDPRIZE, zoom);
 
-	//DrawCmfDetailShadow(enemyData[questInfo[robin.quest * QUESTINFODATASIZE] * ENEMYDATASIZE + 0], frame / 2 % 4, x + (float)(48 * _2X) * zoom, y - (float)(88 * _2X) * zoom, RIGHT, zoom, cvtDest, cvtLayer, buffering);
 
-	//DrawIcon(icon, x + (float)(248 * _2X) * zoom, y - (float)(56 * _2X) * zoom, 2.0f * zoom, COLOR_BROWN, false, true, cvtDest, cvtLayer, buffering);
 
 	//바를 그려주기
 	MemRectRound(x + (float)(36 * _2X) * zoom, y - (float)(160 * _2X - 44 * _2X) * zoom, (float)(16 * _2X) * zoom, (float)(240 * _2X) * zoom, COLOR_NAVY, 2);

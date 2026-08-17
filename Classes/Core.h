@@ -1187,7 +1187,6 @@ extern cocos2d::Layer* gScreenLayer;//Screen Buffer
 
 //현재 렌더 타겟. nullptr이면 curScene에 직접 addChild하는 레거시 경로,
 //nullptr이 아니면 이미 begin()된 렌더텍스처에 visit()으로 기록한다.
-//드로우 함수의 (cvtDest, cvtLayer, buffering) 3인자를 대체하는 상태값이다.
 extern cocos2d::RenderTexture* gRenderTarget;
 extern cocos2d::Layer* gRenderLayer;
 

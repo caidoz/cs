@@ -635,7 +635,6 @@ void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
 			HitZoomPoint(&x, &y);
 
 		cvtDest->setPosition(Vec2(x, y));
-		//cvtDest->setAnchorPoint(Vec2(0.0f, 1.0f));
 		cvtDest->getSprite()->setAnchorPoint(Vec2(0.0f, 1.0f));
 		cvtDest->getSprite()->setScale(hitZoomed ? hitZoom : 1.0f);
 
@@ -1253,75 +1252,6 @@ void ZoomImage(int cx, int cy, int zoom)
 //
 void GammaImage(int gamma, int type, float zoom)
 {
-	/*
-	cocos2d::RenderTexture* buff = cvtDest;
-	cocos2d::Layer*dest;
-	cocos2d::Layer*src;
-	cocos2d::Layer*pDest;
-	int i, j, mask, mask2, gap1, gap2;
-	unsigned char *pRadius, *pView;
-
-	switch (type) {
-	case 0:
-		if (gamma == 32)
-			return;
-
-		src = buff;
-		dest = src + (DY * DX >> 1);
-
-		//��ü���� ���?����
-		if (gamma > 63)
-			src->beginWithClear(1.0, 1.0, 1.0, 1.0);//memset(src, COLOR_WHITEFF, (DY * DX) << 1);
-		else if (gamma > 32) {
-			//gamma
-		}
-		else if (gamma > 0) {
-			//gamma
-		}
-		else
-			src->beginWithClear(0, 0, 0, 1.0);//memset(src, 0x000000, (DY * DX) << 1);
-		break;
-	case 1:
-	case 7:
-		//특정 위치 중심으로 퍼지면서 밝기 감소
-		if (viewRadius[0] == 0)
-			ProcessRadius(0, 2);
-
-		if (viewRadius2[0] == 0)
-			ProcessRadius(2, 0);
-
-		break;
-	case 2:
-		//테두리 밝게
-		src = buff;
-		dest = src + (DY * DX >> 1);
-		break;
-	case 3:
-		//테두리 어둡게
-		src = buff;
-		dest = src + (DY * DX >> 1);
-		break;
-	case 4:
-		src = buff;
-		dest = src + (DY * DX >> 1);
-		break;
-	case 5:
-		//특정 위치 중심으로 퍼지면서 밝기 감소
-		if (viewRadius == 0)
-			ProcessRadius(1, Max(3, radiusStatus + 2));
-
-		src = buff;
-		dest = src + (DY * DX >> 1);
-		break;
-	case 6:
-		//그레이스케일
-		if (gamma == 0)
-			return;
-
-		pDest = buff + (DY * DX);
-		break;
-	}
- */
 }
 
 void InitContext(void)
@@ -1569,7 +1499,6 @@ void PopRenderTarget(void)
 
 //?�면보다 ???�프?�크�?버퍼(bufferTexture[BUFFER_*])??그리??중인지.
 //?�면버퍼???�면�?같�? ?�기?��?�??�외?�다.
-//?�로???�수가 ?�던 buffering ?�자 �??�립 범위 ?�단?�으로만 ?��? 부분을 ?�체한??
 bool IsOffscreenTarget(void)
 {
 	return gRenderTarget != nullptr && gRenderTarget != gScreenBuffer;
@@ -1933,12 +1862,6 @@ void DrawFrame(int x, int y, int w, int h, int type)
 		break;
 	case FRAME_CHOICEBUTTON:
 		MemRectBoth(x, y, w, h, COLOR_WIN_DARK, COLOR_WIN_MID);
-		//MemRect(x + 1 * _2X, y - 1 * _2X, w - 3 * _2X, 1 * _2X, COLOR_WIN_LIGHT, cvtDest, cvtLayer, buffering);
-		//MemRect(x + 1 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, COLOR_WIN_LIGHT, cvtDest, cvtLayer, buffering);
-		//MemRect(x + w - 2 * _2X, y - 1 * _2X, 1 * _2X, 1 * _2X, COLOR_WIN_MID, cvtDest, cvtLayer, buffering);
-		//MemRect(x + 1 * _2X, y - (h - 2 * _2X), 1 * _2X, 1 * _2X, COLOR_WIN_MID, cvtDest, cvtLayer, buffering);
-		//MemRect(x + w - 2 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, COLOR_WIN_MIDDARK, cvtDest, cvtLayer, buffering);
-		//MemRect(x + 2 * _2X, y - (h - 2 * _2X), w - 3 * _2X, 1 * _2X, COLOR_WIN_MIDDARK, cvtDest, cvtLayer, buffering);
 
 		MemRect(x + 1 * _2X, y - 1 * _2X, w - 3 * _2X, 1 * _2X, 0x1286C3);
 		MemRect(x + 1 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, 0x1286C3);
@@ -2013,62 +1936,19 @@ void DrawFrame(int x, int y, int w, int h, int type)
 			}
 		}
 
-		//DrawFrame(x - w / 2, y + h / 2, w, h, FRAME_NORMAL, cvtDest);
 		DrawFrame(x - w / 2, y + h / 2, w, h, FRAME_SHOPBALLOON);
 		winAniFrame++;
 		break;
 	case FRAME_GREEN:
-		/*
-		if (w == OPTIONBUTTONSIZE_X && h == OPTIONBUTTONSIZE_Y && buffering == false) {
-			DrawImage(OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_OPTIONBUTTON_GREEN_IMG], cvtDest, cvtLayer, BUFFER_OPTIONBUTTON_GREEN_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_OPTIONBUTTON_GREEN]);
-		}
-		else if (w == CREWUPGRADEBUTTONSIZE_X && h == CREWUPGRADEBUTTONSIZE_Y && buffering == false) {
-			DrawImage(CREWUPGRADEBUTTONSIZE_X, CREWUPGRADEBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_CREWUPGRADEBUTTON_GREEN_IMG], cvtDest, cvtLayer, BUFFER_CREWUPGRADEBUTTON_GREEN_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREEN]);
-		}
-		else
-		*/
 		GradiationFrame(x, y, w, h, 4);
 		break;
 	case FRAME_RED:
-		/*
-		if (w == OPTIONBUTTONSIZE_X && h == OPTIONBUTTONSIZE_Y && buffering == false) {
-			DrawImage(OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_OPTIONBUTTON_RED_IMG], cvtDest, cvtLayer, BUFFER_OPTIONBUTTON_RED_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_OPTIONBUTTON_RED]);
-		}
-		else
-		*/
 		GradiationFrame(x, y, w, h, 5);
 		break;
 	case FRAME_BLUE:
-		/*
-		if (w == OPTIONBUTTONSIZE_X && h == OPTIONBUTTONSIZE_Y && buffering == false) {
-			DrawImage(OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_OPTIONBUTTON_BLUE_IMG], cvtDest, cvtLayer, BUFFER_OPTIONBUTTON_BLUE_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_OPTIONBUTTON_BLUE]);
-		}
-		else
-		*/
 		GradiationFrame(x, y, w, h, 6);
 		break;
 	case FRAME_GREY:
-		/*
-		if (w == OPTIONBUTTONSIZE_X && h == OPTIONBUTTONSIZE_Y && buffering == false) {
-			DrawImage(OPTIONBUTTONSIZE_X, OPTIONBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_OPTIONBUTTON_GREY_IMG], cvtDest, cvtLayer, BUFFER_OPTIONBUTTON_GREY_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_OPTIONBUTTON_GREY]);
-		}
-		else if (w == CREWUPGRADEBUTTONSIZE_X && h == CREWUPGRADEBUTTONSIZE_Y && buffering == false) {
-			DrawImage(CREWUPGRADEBUTTONSIZE_X, CREWUPGRADEBUTTONSIZE_Y, 0, 0, x, y, false, false, false, false, false, 1.0f, sprite[BUFFER_CREWUPGRADEBUTTON_GREY_IMG], cvtDest, cvtLayer, BUFFER_CREWUPGRADEBUTTON_GREY_IMG, buffering);
-
-			//DrawBuffer(x, y, w, h, bufferTexture[BUFFER_CREWUPGRADEBUTTON_GREY]);
-		}
-		else
-		*/
 		GradiationFrame(x, y, w, h, 7);
 		break;
 	case FRAME_WHITEROUND:
@@ -2117,11 +1997,9 @@ void DrawRoundBar(int x, int y, float percent, int type, int color, int alpha, f
 	}
 	//switch (type) {
 	//case BARCOLOR_RED:
-	//	DrawImage(413, 96, 317, 132, x + (float)16 * zoom, y - (float)14 * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 	//	break;
 
 	//case BARCOLOR_YELLOW:
-	//	DrawImage(413, 95, 317, 229, x + (float)16 * zoom, y - (float)14 * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, buffering);
 	//	break;
 	//}
 	//SetAlpha(tempAlpha);
@@ -2135,9 +2013,6 @@ void DrawGuage(int x, int y, int w, int h, long cur, long max, int bgCol, int fu
 	DrawFrame(x, y, (float)w, (float)h, FRAME_SHOPBALLOON);
 	MemRectRound(x + (float)(4 * _2X) * zoom, y - (float)(4 * _2X) * zoom, realWidth, realHeight, fullCol, (float)4 * _2X * zoom);
 
-	//MemRectRound(x, y, w, h, COLOR_BROWN, (float)4 * _2X * zoom, cvtDest, cvtLayer, buffering);
-	//MemRectRound(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)8 * _2X * zoom, COLOR_WHITE, (float)4 * _2X * zoom, cvtDest, cvtLayer, buffering);
-	//MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, realWidth, realHeight, fullCol, cvtDest, cvtLayer, buffering);
 
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%ld / %ld", cur, max);
@@ -2152,7 +2027,6 @@ void DrawRouletteNum(long long num, int icon, int x, int y, bool ani, float zoom
 	DrawIcon(icon, x - width / 2, y, zoom, COLOR_BROWN, false, false, true);
 	DrawNum(num, x - width / 2 + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y + (float)(1 * _2X), NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
 
-	//DrawNumTTF(num, x - width / 2 + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y + (float)(1 * _2X), NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -2160,9 +2034,7 @@ void DrawRouletteNumSmall(long long num, int icon, int x, int y, bool ani, float
 {
 	float width = GetNumDx(num, num < 0 ? MINUS : false, NUM_FONT_LARGE, false, true, zoom, false);// +ITEMICONSIZE * zoom + 4 * _2X * zoom;
 	//일반숫자 2배수
-	//DrawIcon(icon, x - width / 2, y, zoom, true, false, false, cvtDest, cvtLayer, buffering);
 	DrawNum(num, x - width / 2 + ITEMICONSIZE * zoom + 4 * _2X * zoom, y + 1 * _2X, NUM_FONT_LARGE, CENTER, 0, num < 0 ? MINUS : false, true, zoom, false);
-	//DrawNumTTF(num, x - width / 2 + ITEMICONSIZE * zoom + 4 * _2X * zoom, y + 1 * _2X, NUM_FONT_LARGE, CENTER, 0, num < 0 ? MINUS : false, true, zoom, false, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -2183,7 +2055,6 @@ float DrawRouletteNumIcon(long long num, int icon, int x, int y, bool ani, int a
 	DrawIcon(icon, x, y - (float)(1 * _2X) * zoom, zoom, COLOR_BROWN, ani, false, true);
 	DrawNum(num, x + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y, NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
 
-	//DrawNumTTF(num, x + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y - (float)2 * _2X * zoom, NUM_FONT_LARGE, LEFT, 0, false, true, (float)1.3f * zoom, false, cvtDest, cvtLayer, buffering);
 
 	return width;
 }
@@ -2217,13 +2088,8 @@ void DrawLabel(int x, int y, int textIdx, float zoom)
 	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * IMGZOOM * zoom, y - (float)4 * _2X, false, false, false, false, false, IMGZOOM * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * IMGZOOM * zoom, y - (float)22 * _2X, false, false, false, false, false, IMGZOOM * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	//DrawImage(objOff[IMG_OBJ_53 * 4 + 2], objOff[IMG_OBJ_53 * 4 + 3], objOff[IMG_OBJ_53 * 4 + 0], objOff[IMG_OBJ_53 * 4 + 1], x, y, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
-	//DrawImage(objOff[IMG_OBJ_54 * 4 + 2], objOff[IMG_OBJ_54 * 4 + 3], objOff[IMG_OBJ_54 * 4 + 0], objOff[IMG_OBJ_54 * 4 + 1], x + (float)(13 * _2X * _2X) * zoom, y - (float)(1 * _2X * _2X) * zoom, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
-	//DrawImage(objOff[IMG_OBJ_55 * 4 + 2], objOff[IMG_OBJ_55 * 4 + 3], objOff[IMG_OBJ_55 * 4 + 0], objOff[IMG_OBJ_55 * 4 + 1], x + (float)(27 * _2X * _2X) * zoom, y - (float)(3 * _2X * _2X) * zoom, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
-	//DrawImage(objOff[IMG_OBJ_56 * 4 + 2], objOff[IMG_OBJ_56 * 4 + 3], objOff[IMG_OBJ_56 * 4 + 0], objOff[IMG_OBJ_56 * 4 + 1], x + (float)(35 * _2X * _2X) * zoom, y - (float)(2 * _2X * _2X) * zoom, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
 	if (textIdx)
 		CenterText(textIdx, x, y - (float)(16 * _2X) * zoom + (float)11 * _2X / 2 * LABELZOOM * zoom, LABELZOOM * zoom);
-	//CenterText(textIdx, x + (float)(21 * _2X * _2X) * zoom, y - (float)(16 * _2X) * zoom + (float)11 * _2X / 2 * LABELZOOM * zoom, LABELZOOM * zoom, cvtDest, cvtLayer, buffering);
 }
 
 //�� ���׹� �����?
@@ -2259,15 +2125,12 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 	if (label == true) {
 		DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * zoom, y + (float)8 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-		//DrawLabel(x + (float)( - 88 * _2X) / 2 * zoom, y + (float)8 * _2X * zoom, false, zoom, cvtDest, cvtLayer, buffering);
 	}
 
 	CenterTextStr(tempStr, x, y, 1.2f * zoom);
 	//몇
-	//DrawText(stage * TOTALROOM + room + 1, x - width / 2, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, false, zoom, false, cvtDest, cvtLayer, buffering);
 
 	//��������
-	//DrawText(textIdx, x - width / 2 + (float)(4 * _2X) * zoom + GetNumDx(stage * TOTALROOM + room + 1, false, NUM_FONT_NORMAL, false, false, zoom, false), y, zoom, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -2393,7 +2256,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 #endif
 
 	//if (drawHandle == MD_PLAY)
-	//	DrawLabel(x + (float)(DIORAMASIZE_X / 2 - 48 * _2X) * zoom, y, TEXT_MAPNAME + dioramaMap[type], zoom * 1.5f, cvtDest, cvtLayer, buffering);
 	switch (drawHandle) {
 	case MD_DEMO:
 	case MD_PLAY:
@@ -2409,7 +2271,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						ShadowImage(40 * _2X, 16 * _2X, 25 * _2X, 1 * _2X, ao[i].x - (float)20 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
 					else
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-					//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 					ao[i].zoom = zoomBefore;
 				}
 			}
@@ -2471,7 +2332,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[ITEMBOX].x - (float)12 * _2X * ao[ITEMBOX].zoom, objStartY - BOXPOSITION_Y - ry + (float)14 * _2X * ao[ITEMBOX].zoom, SHADOW_IMG, ao[ITEMBOX].zoom);
 			ao[ITEMBOX].zoom = zoomBefore;
 		}
-		//ShadowImage(&ao[ITEMBOX], cvtDest, cvtLayer, buffering);
 
 	//주인공 그림자
 		for (i = 0; i < CASTLEALL; i++) {
@@ -2500,10 +2360,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
-					//DrawShadowPlayer(&ao[i], cvtDest, cvtLayer, buffering);
 				}
 			}
 		}
@@ -2531,7 +2389,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 
 					}
@@ -2542,7 +2399,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2557,7 +2413,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2640,7 +2495,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2655,7 +2509,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2670,7 +2523,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2685,7 +2537,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2701,7 +2552,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 					ao[i].y -= floatOffsetY;
 					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-					//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 					ao[i].y += floatOffsetY;
 					ao[i].zoom = zoomBefore;
 					break;
@@ -2710,7 +2560,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						zoomBefore = ao[i].zoom;
 						ao[i].zoom = dioramaZoom * DIORAMAZOOM_REMAINDER;
 						ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom, objStartY - (ao[i].y - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom, SHADOW_IMG, ao[i].zoom);
-						//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 						ao[i].zoom = zoomBefore;
 					}
 					break;
@@ -2764,7 +2613,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					float shadowJumpScale = 1.0f - jumpRatio * 0.45f;
 
 					ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, ao[i].x - (float)12 * _2X * ao[i].zoom * shadowJumpScale, objStartY - (ao[i].ny - OBJIMGGAP) - ry + (float)8 * _2X * ao[i].zoom * shadowJumpScale, SHADOW_IMG, ao[i].zoom * shadowJumpScale);
-					//DrawShadowCommon(&ao[i], cvtDest, cvtLayer, buffering);
 					ao[i].zoom = zoomBefore;
 				}
 			}
@@ -3024,7 +2872,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					SimpleHpBarDraw(ao[i].hp, i < TOTALCHAR ? ao[i].ps[PS_HP] : ao[i].maxhp, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X, ao[i].zoom, i >= ENEMY ? ENEMYHPBARCOLOR : PLAYERHPBARCOLOR);
 					break;
 				default:
-					//SimpleHpBarDraw(ao[i].hp, i < TOTALCHAR ? ao[i].ps[PS_HP] : ao[i].maxhp, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X, 1.0f/*ao[i].zoom*/, i >= ENEMY ? ENEMYHPBARCOLOR : PLAYERHPBARCOLOR, cvtDest, cvtLayer, buffering);
 					SimpleHpBarDraw(ao[i].hp, i < TOTALCHAR ? ao[i].ps[PS_HP] : ao[i].maxhp, xOffset + ao[i].x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y - ry - OBJIMGGAP - 0 * _2X, ao[i].zoom, i >= ENEMY ? ENEMYHPBARCOLOR : PLAYERHPBARCOLOR);
 					break;
 				}
@@ -3204,8 +3051,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		if (!effect.color2)
 			EffectDraw(x + (float)STATUSWIN_Y, zoom);
 
-		//DrawImage(640, 640, 0, 0, 0, DY, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
-		//DrawImage(160, 201, (1 % 30) % 6 * 161, (1 % 30) / 6 * 201, DX / 2, DY / 2, false, false, false, false, false, zoom, sprite[TREE_IMG], cvtDest, cvtLayer, TREE_IMG, buffering);
 		break;
 	}
 }
@@ -3217,15 +3062,12 @@ void DrawGrid(int x, int y, int w, int h, int dx, int dy, int color1, int color2
 	int jCnt = (h / dy) + ((h % dy) ? 1 : 0);
 	//return;
 
-	//MemRect(x, y, w, h, color1, cvtDest);
 	for (i = 0; i < iCnt; i++) {
 		for (j = 0; j < jCnt; j++) {
 			if ((i + j) % 2)
 				MemRect(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color1]);
-			//DrawColorFrame(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color1], colorSet[4 * color1 + 1], colorSet[4 * color1 + 2], colorSet[4 * color1 + 3], cvtDest, cvtLayer, buffering);
 			else
 				MemRect(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color2]);
-			//DrawColorFrame(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color2], colorSet[4 * color2 + 1], colorSet[4 * color2 + 2], colorSet[4 * color2 + 3], cvtDest, cvtLayer, buffering);
 		}
 	}
 }
@@ -3444,9 +3286,7 @@ void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 
 
 	//#ifdef TTFFONT
-	//	DrawTextStrSystem(textId[idx], x, y, zoom, LEFT, true, cvtDest, cvtLayer, buffering);
 	//#else
-	//	DrawTextStr(TEXTPTR(idx), x, y, cvtDest, cvtLayer, buffering);
 	//#endif
 
 	//	return;
@@ -3458,7 +3298,6 @@ void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 		case SPC:
 			break;
 		case DOT:
-			//DrawTextStr(".", x, y, zoom, cvtDest, cvtLayer, buffering);
 			if (type == FONT_LARGE)
 				DrawImage(3 * _2X, 11 * _2X, 106 * _2X, 196 * _2X, x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			else if (type == FONT_SMALL)
@@ -3975,7 +3814,6 @@ float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, 
 void DrawXNumGold(long long int num, int x, int y, bool ani, float zoom, int align, int digit)
 {
 	//if (ani)
-	//	MemRect(x - 2 * _2X, y + 2 * _2X, 16 * _2X + GetNumDx(num, false, NUM_FONT_LARGE, 2, false), 24 * _2X, itemColor[frame % 6], cvtDest, cvtLayer, buffering);
 	//num = 100;
 	float width = GetGoldNumDx(num, false, digit, false, zoom * 1.3f) + GetGoldAlphaWidth(ALPHA_X, FONT_GOLD_LARGE, zoom * 0.8f) + (float)(2 * _2X * zoom);
 
@@ -4004,15 +3842,10 @@ void DrawXNum(long long int num, int x, int y, bool ani, float zoom)
 void DrawSlashNum(int min, int max, int x, int y, float width, float zoom)
 {
 	float w = GetNumDx2(min, false, false, true, 1.1f * NUM2ZOOM * zoom, false) + GetNumDx2(max, false, false, true, 1.1f * NUM2ZOOM * zoom, false) + (float)9 * _2X * zoom;
-	//DrawNumTTF(min, x, y, NUM_FONT_NORMAL, RIGHT, 0, false, true, zoom, true, cvtDest, cvtLayer, buffering);
-	//DrawText(TEXT_SLASH, x + (float)(4 * _2X) * zoom, y, zoom, cvtDest, cvtLayer, buffering);
-	//DrawNumTTF(max, x + (float)(12 * _2X) * zoom, y, NUM_FONT_NORMAL, LEFT, 0, false, true, zoom, true, cvtDest, cvtLayer, buffering);
-	//DrawNum(min, x, y, NUM_FONT_NORMAL, RIGHT, 0, false, true, zoom, true, cvtDest, cvtLayer, buffering);
 	x -= w / 2;
 	DrawNum2AutoSpaceing(min, x, y, LEFT, 0, false, width, true, 1.1f * NUM2ZOOM * zoom, false, true);
 	DrawText(TEXT_SLASH, x + GetNumDx2(min, false, false, true, 1.1f * NUM2ZOOM * zoom, false) + (float)(2 * _2X) * zoom, y + (float)(0 * _2X) * zoom, zoom);
 	DrawNum2AutoSpaceing(max, x + GetNumDx2(min, false, false, true, 1.1f * NUM2ZOOM * zoom, false) + (float)(9 * _2X) * zoom, y, LEFT, 0, false, width, true, 1.1f * NUM2ZOOM * zoom, true, true);
-	//DrawNum(max, x + (float)(12 * _2X) * zoom, y, NUM_FONT_NORMAL, LEFT, 0, false, true, zoom, true, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -4023,7 +3856,6 @@ float DrawNumTTF(long long int num, int x, int y, int font, int align, int digit
 	memset(&tempStr, 0, sizeof(tempStr));
 	addCommasToNumber(num, sign, tempStr, sizeof(tempStr));
 	numWidth = DrawTextStrSystem(tempStr, x, y, 1.0f * zoom, align, true);
-	//DrawNum(num, x, y, font, align, digit, sign, comma, zoom, fixed, cvtDest, cvtLayer, buffering);
 	return numWidth;
 }
 
@@ -4793,8 +4625,6 @@ void DrawStarNum(int icon, int star, int x, int y, float zoom)
 	DrawIcon(icon, x, y, zoom, COLOR_BROWN, false, false, true);
 	//memset(&tempStr, 0, sizeof(tempStr));
 	//sprintf(tempStr, "%d", star);
-	//CenterTextStr(tempStr, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)5 * _2X * zoom, 0.65f * zoom, cvtDest, cvtLayer, buffering);
-	//DrawNumTTF(star, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)0.8f * 5 * _2X * zoom, NUM_FONT_LARGE, CENTER, false, false, true, 0.8f * zoom, false, cvtDest, cvtLayer, buffering);
 	DrawNum2AutoSpaceing(star, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)16 * _2X * NUM2ZOOM * zoom, CENTER, false, false, (float)ITEMICONSIZE * zoom, false, 1.0f * zoom * NUM2ZOOM, false, true);
 }
 
@@ -4844,7 +4674,6 @@ void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, b
 				grayScale = false;
 
 				//SetColor(COLOR_BLACK);
-				//DrawIcon(ICON_STAR, x + (float)(i * STARGAP) * zoom, y, zoom, false, false, false, cvtDest, cvtLayer, buffering);
 				//SetColor(false);
 
 			}
@@ -4857,25 +4686,12 @@ void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, b
 				SetColor(false);
 			}
 			//else
-			//	DrawIcon(icon, x + (float)(i * STARGAP) * zoom, y, zoom, COLOR_BROWN, false, false, cvtDest, cvtLayer, buffering);
 
 		}
 
 		for (i = 0; i < drawCnt; i++) {
 
 			if (i >= curMax) {
-				/*
-				SetColor(COLOR_BLACK);
-				DrawIcon(icon, x + (float)(i * STARGAP) * zoom, y, 1.1f * zoom, false, false, false);
-				SetColor(false);
-				grayScale = 32;
-				DrawIcon(icon, x + (float)(i * STARGAP + 2) * zoom, y - (float)(1) * zoom, zoom * 1.0f, false, false, false);
-				grayScale = false;
-
-				//SetColor(COLOR_BLACK);
-				//DrawIcon(ICON_STAR, x + (float)(i * STARGAP) * zoom, y, zoom, false, false, false, cvtDest, cvtLayer, buffering);
-				//SetColor(false);
-				*/
 			}
 			else if (i >= cnt) {
 				/*
@@ -5018,10 +4834,7 @@ void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 		return;
 
 	//if (ani == true)
-	//	MemRect(x - (float)(4 * _2X) * zoom, y - (float)(2 * _2X) * zoom, (float)(72 * _2X + 8 * _2X) * zoom, (float)(18 * _2X) * zoom, itemColor[frame % 6], cvtDest, cvtLayer, buffering);
 
-	//DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(72 * _2X) * zoom / 2 - width / 2, y - (float)(3 * _2X) * zoom, zoom, false, false, false, cvtDest, cvtLayer, buffering);
-	//DrawXMark(x, y, zoom, cvtDest, cvtLayer, buffering);
 	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(COINBUTTONWIDTH - width) / 2 * zoom, y + (float)(-2 * _2X) * zoom, zoom, false, false, false, true);
 	DrawXNumGold(cnt, x + (float)(COINBUTTONWIDTH - width) / 2 + (float)(ITEMICONSIZE + 2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, false, GOLDALPHAZOOM * zoom, LEFT, false);
 
@@ -5030,14 +4843,10 @@ void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 		if (robin.gold > betCoin[betBattle] * GetStageAdmissionFee()) {
 			//�ִ� bet�̸� �ִ밪�ΰ� ǥ�����ְ�
 			if (IsMaxCoinBet() == true) {
-				//DrawFrame(x - (float)8 * _2X * zoom, y + (float)16 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)32 * _2X * zoom, (float)18 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-				//DrawText(TEXT_ALPHA_MAX, x - (float)(8 * _2X - 4 * _2X) * zoom, y + (float)(16 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), zoom, cvtDest, cvtLayer, buffering);
 				DrawFrame(xOffset + x - (float)40 * _2X * zoom, y + (float)4 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)44 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
 				DrawGoldAlpha(xOffset + x - (float)(40 * _2X - 4 * _2X) * zoom, y + (float)(4 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_MAX, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
 			}
 			else {
-				//DrawFrame(x - (float)8 * _2X * zoom, y + (float)16 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)28 * _2X * zoom, (float)18 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-				//DrawText(TEXT_ALPHA_BET, x - (float)(8 * _2X - 4 * _2X) * zoom, y + (float)(16 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), zoom, cvtDest, cvtLayer, buffering);
 				DrawFrame(xOffset + x - (float)40 * _2X * zoom, y + (float)4 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)36 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
 				DrawGoldAlpha(xOffset + x - (float)(40 * _2X - 4 * _2X) * zoom, y + (float)(4 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_BET, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
 			}
@@ -5059,7 +4868,6 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 
 	DrawIcon(ICON_HEART, xOffset + x + (float)6 * _2X * zoom, y, 1.8f * zoom, (ani == true ? itemColor[robin.playtime % 10] : COLOR_WHITE), false, false, 1.0f * zoom);
 	DrawGoldNum(cnt, xOffset + x + (float)(6 * _2X + ITEMICONSIZE * 1.6f / 2) * zoom, y - (float)5 * _2X * zoom, CENTER, false, false, false, 0.8f * zoom);
-	//DrawXNumTTF(cnt, xOffset + x + (float)(8 * _2X + ITEMICONSIZE * 1.6f / 2) * zoom, y - (float)6 * _2X * zoom, 1.0f * zoom, CENTER, cvtDest, cvtLayer, buffering);
 
 	//��ų�� ������ �׷��ִ°�
 	//Test Setting
@@ -5079,15 +4887,11 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 			zoom = zoom * 0.8f;
 			//�ִ� bet�̸� �ִ밪�ΰ� ǥ�����ְ�
 			if (IsMaxBet() == true) {
-				//DrawFrame(x - (float)8 * _2X * zoom, y + (float)16 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)32 * _2X * zoom, (float)18 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-				//DrawText(TEXT_ALPHA_MAX, x - (float)(8 * _2X - 4 * _2X) * zoom, y + (float)(16 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), zoom, cvtDest, cvtLayer, buffering);
 				DrawFrame(xOffset + x, y + (float)20 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)60 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
 				DrawIcon(ICON_HEART, xOffset + x - (float)(- 2 * _2X) * zoom, y + (float)(20 * _2X - 2 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), 1.0f * zoom, false, false, false, true);
 				DrawGoldAlpha(xOffset + x + (float)( + 4 * _2X + ITEMICONSIZE) * zoom, y + (float)(20 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_MAX, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
 			}
 			else {
-				//DrawFrame(x - (float)8 * _2X * zoom, y + (float)16 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)28 * _2X * zoom, (float)18 * _2X * zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-				//DrawText(TEXT_ALPHA_BET, x - (float)(8 * _2X - 4 * _2X) * zoom, y + (float)(16 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), zoom, cvtDest, cvtLayer, buffering);
 				DrawFrame(xOffset + x, y + (float)20 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)42 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
 				DrawIcon(ICON_HEART, xOffset + x + (float)(2 * _2X) * zoom, y + (float)(20 * _2X - 2 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), 1.0f * zoom, false, false, false, true);
 				DrawGoldAlpha(xOffset + x + (float)(4 * _2X + ITEMICONSIZE) * zoom, y + (float)(20 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_UP, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
@@ -5309,7 +5113,6 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 	int tempAlpha = m_lgrpAlpha;
 	int i;
 
-	//DrawButtonFrame(x, y, w, h, frameColor, zoom, cvtDest, cvtLayer, buffering);
 	/*
 	//����
 	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
@@ -5329,7 +5132,6 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 		CenterText(TEXT_FREE, x + (float)w / 2, y - (float)8 * _2X * zoom, BUYBUTTONZOOM * zoom);
 	}
 	else {
-		//DrawSolidIcon(currencyIcon[currency], x + w / 2 - width / 2, y - 5 * _2X * zoom, zoom, false, cvtDest, cvtLayer, buffering);
 		DrawIcon(currencyIcon[currency] == ICON_GOLD ? currencyIcon[currency] + frame % GOLDICONFRAME : currencyIcon[currency], x + w / 2 - width / 2 + (float)1 * _2X * zoom, y - (float)7 * _2X * zoom, zoom, COLOR_BROWN, false, false, true);
 
 		if (discount > 0) {
@@ -5387,7 +5189,6 @@ void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 	if (gray > grayScale)
 		grayScale = gray;
 
-	//DrawFrame(x, y, width, (float)(28 * _2X) * zoom, FRAME_GREEN, cvtDest, cvtLayer, buffering);
 	//����
 	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
 
@@ -5415,7 +5216,6 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
-	//DrawFrame(x, y, (float)w * zoom, (float)h * zoom, color, cvtDest, cvtLayer, buffering);
 
 	DrawImage(192, 62, 1, 1 + (color - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
 
@@ -5442,7 +5242,6 @@ void DrawAlarmMark(int x, int y, int count, float zoom)
 void DrawPlusMark(int x, int y, float zoom)
 {
 	DrawImage(64, 64, 521, 640, x, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	//DrawImage(27 * _2X, 27 * _2X, 65 * _2X, 0 * _2X, x, y, false, false, false, false, false, zoom, sprite[ETC_IMG], cvtDest, cvtLayer, ETC_IMG, buffering);
 }
 
 void DrawXMark(int x, int y, float zoom)
@@ -5478,7 +5277,6 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 		enemyIdx = idx - ICON_SUMMON;
 
 		SetSectionClip(x + (float)ITEMICONSIZE * zoom / 2 - (float)(ITEMICONSIZE + 6 * _2X) * zoom / 2, y + (float)8 * _2X * zoom, (float)(ITEMICONSIZE + 6 * _2X) * zoom, (float)(REWARDCARDSIZE_Y - 2 * _2X) * zoom, false);
-		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)ITEMICONSIZE * zoom / 2 - (float)(40 * _2X / 2) * zoom, y + (float)(-ITEMICONSIZE + 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
 
 		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)ITEMICONSIZE * zoom / 2/* + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom*/, y + (float)(-ITEMICONSIZE /*+ enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X*/) * zoom, RIGHT, zoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx], false, false);
 
@@ -5489,7 +5287,6 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 		enemyIdx = pObj->type;
 
 		SetSectionClip(x + (float)ITEMICONSIZE * zoom / 2 - (float)(ITEMICONSIZE + 6 * _2X) * zoom / 2, y + (float)1 * _2X * zoom, (float)(ITEMICONSIZE + 6 * _2X) * zoom, (float)(ITEMICONSIZE + 4 * _2X) * zoom, false);
-		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)ITEMICONSIZE * zoom / 2 - (float)(40 * _2X / 2) * zoom, y + (float)(-ITEMICONSIZE + 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
 		MemRect(x + (float)ITEMICONSIZE * zoom / 2 - (float)(ITEMICONSIZE + 6 * _2X) * zoom / 2, y + (float)1 * _2X * zoom, (float)(ITEMICONSIZE + 6 * _2X) * zoom, (float)(ITEMICONSIZE + 6 * _2X) * zoom, COLOR_GREY);
 		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)ITEMICONSIZE * zoom / 2/* + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom*/, y + (float)(-ITEMICONSIZE /*+ enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X*/) * zoom, LEFT, zoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx], false, false);
 
@@ -5621,7 +5418,6 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 
 	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
-	//DrawTextStrSystem(TEXTPTR(TEXT_SKILLNAME_COMMON_ROBIN1 + skillIdx), x + (float)REWARDCARDSIZE_X / 2 * zoom, y + (float)(-REWARDCARDSIZE_Y + 16 * _2X / 2) * zoom, zoom / 2, CENTER, true, cvtDest, cvtLayer, buffering);
 
 
 	switch (skillData[skillIdx * SKILLDATASIZE]) {
@@ -5646,7 +5442,6 @@ void DrawLock(int lv, int x, int y, float zoom)
 {
 	DrawIcon(ICON_EVENT_LOCK, x, y, zoom, COLOR_BROWN, false, false, true);
 	DrawStarNum(ICON_CROWN, lv, x + (float)(2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, 0.7f * zoom);
-	//DrawLv(lv, x + (float)(ITEMICONSIZE / 2 + 1 * _2X) * zoom, y - (float)(ITEMICONSIZE / 4 + 5 * _2X) * zoom, 0.4f * zoom, CENTER, cvtDest, cvtLayer, buffering);
 }
 
 void DrawPercent(float num, int x, int y, float zoom, int align)
@@ -5761,8 +5556,6 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 
 	MemRectFrameThick(x - (float)1 * _2X * zoom, y + (float)1 * _2X * zoom, (float)(ITEMICONSIZE + 2 * _2X) * zoom, (float)(ITEMICONSIZE + 2 * _2X) * zoom, itemColor[it->grade], 1 * _2X);
 	DrawStar(ICON_STAR, x + (float)ITEMICONSIZE * zoom / 2, y + (float)(5 * _2X) * zoom, GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), CENTER, true, 0.3f * zoom);
-	//DrawLv(it->cooldown + 1, x + (float)ITEMICONSIZE * zoom / 2, y - (float)(ITEMICONSIZE + 1 * _2X) * zoom, 0.4f * zoom, CENTER, cvtDest, cvtLayer, buffering);
-	//DrawStar(ICON_STAR, x + (float)ITEMICONSIZE * zoom / 2, y - (float)(ITEMICONSIZE + 2 * _2X) * zoom, GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), CENTER, true, 0.3f * zoom, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -5908,7 +5701,6 @@ void DrawLevelUpCard(int type, int lv, bool locked, int x, int y, float zoom)
 		DrawSkillIcon(0, x + (float)(18 * _2X) * zoom, y - (float)(36 * _2X) * zoom, 2.0f * zoom);
 		break;
 	case LVUPREWARD_STARBOX:
-		//DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], x + (float)(34 * _2X) * zoom, y - (float)(80 * _2X) * zoom, LEFT, 2.0f * zoom, cvtDest, cvtLayer, buffering);
 		DrawBox(BOX_REWARD0, x + (float)(32 * _2X) * zoom, y - (float)(72 * _2X) * zoom, LEFT, false, COLOR_WHITE, locked == false ? true : false, false, false, 2.0f * zoom);
 		DrawIcon(ICON_STAR, x + (float)(32 * _2X) * zoom, y - (float)(36 * _2X) * zoom, 1.0f * zoom, COLOR_WHITE, locked == false ? true : false, false, true);
 		break;
@@ -5939,12 +5731,9 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 		icon = GetItemIcon(type, detail, grade);
 
 	if (cardFrame) {
-		//DrawImage(REWARDCARDSIZE_X, ITEMCARDSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_CARD_LARGE_FRONT_IMG], cvtDest, cvtLayer, UI_CARD_LARGE_FRONT_IMG, buffering);
-		//DrawWindow4(x, y, w, h, type == ITEM_CREW ? crewData[detail * CREWDATASIZE + 4] : itemBg[itemStartCnt[type] + detail * TOTALGRADE + grade], zoom, cvtDest, cvtLayer, buffering);
 
 	}
 
-	//DrawRewardCard(type, detail, grade, 0, startCnt, x, y, false, zoom, true, false, true, GetItemStar(type, detail, grade) + 1, GetItemStar(type, detail, grade) + 1, true, 0, cvtDest, cvtLayer, buffering);
 	ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + w / 2 - (float)24 * _2X * zoom, y + (float)(-ITEMCARDSIZE_Y + ITEMICONSIZE * 4 + 8 * _2X) * zoom, SHADOW_IMG, zoom * 2);
 
 	switch (type) {
@@ -6031,14 +5820,11 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 		//if (newItem == true)
 		//	MemRect(x - (float)2 * _2X * zoom, y + (float)2 * _2X * zoom, w + (float)(4 * _2X) * zoom, h + (float)(4 * _2X) * zoom, cardFrameColorData[frame % 60], gScreenBuffer, gScreenLayer, false);
 
-		//DrawWindow4(x, y, w, h, type == ITEM_CREW ? crewData[detail * CREWDATASIZE + 4] : itemBg[itemStartCnt[type] + detail * TOTALGRADE + grade], zoom, cvtDest, cvtLayer, buffering);
 
 		//SetAlpha(28);
-		//MemRect(x - (float)(1 * _2X) * zoom, y + (float)(-REWARDCARDSIZE_Y + 19 * _2X / 2) * zoom, w + (float)(2 * _2X) * zoom, (float)18 * _2X * zoom / 2, itemColor[GetItemStar(type, detail, grade) - 1], cvtDest, cvtLayer, buffering);
 		//SetAlpha(32);
 		//���� ȹ���� ���� ���� ī������ �ű�ȹ�涧 �����ټ��� �ֱ� ������
 		//if (lv == -1) {
-		//	CenterText(TEXT_QUESTION, x + (float)(REWARDCARDSIZE_X) / 2 * zoom, y + (float)(-REWARDCARDSIZE_Y + 15 * _2X / 2) * zoom, zoom / 2, cvtDest, cvtLayer, buffering);
 		//}
 		//else {
 		switch (type) {
@@ -6116,26 +5902,21 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			if (lv != -1 && type < ITEM_GEM) {
 				if (cardFrame == true) {
 					////개수마크
-					//DrawAlarmMark(x + (float)(2 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, count, zoom / 2, cvtDest, cvtLayer, buffering);
 					////i마크
-					//DrawInfoMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, zoom / 2, cvtDest, cvtLayer, buffering);
 					//개수마크
 					if (count)
 						DrawAlarmMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(4 * _2X) * zoom / 2, count, zoom / 2);
 
 				}
 
-				//DrawItemValue(type, detail, grade, lv, x + (float)REWARDCARDSIZE_X * zoom / 2, y + (float)(-REWARDCARDSIZE_Y + 26 * _2X) * zoom, CENTER, false, zoom / 2, 32 * _2X * zoom, cvtDest, cvtLayer, buffering);
 
 				if (type < ITEM_GEM) {
 					//if (lv) {
 						//����ǥ��
 					DrawLv(lv + 1, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 48 * _2X / 2) * zoom, zoom / 2, CENTER);
 					//sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), lv + 1);
-					//CenterTextStr(tempStr, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 48 * _2X / 2) * zoom, zoom / 2, cvtDest, cvtLayer, buffering);
 				//}
 				//else
-				//	CenterText(TEXT_NOTACQUIRED, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 32 * _2X / 2) * zoom, zoom / 2, cvtDest, cvtLayer, buffering);
 				}
 			}
 
@@ -6165,9 +5946,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			//if (lv != -1) {
 			if (cardFrame == true) {
 				////개수마크
-				//DrawAlarmMark(x + (float)(2 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, count, zoom / 2, cvtDest, cvtLayer, buffering);
 				////i마크
-				//DrawInfoMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, zoom / 2, cvtDest, cvtLayer, buffering);
 				//개수마크
 				DrawAlarmMark(x + w - (float)(18 * _2X) * zoom / 2, y - (float)(2 * _2X) * zoom / 2, count, zoom / 2);
 
@@ -6189,12 +5968,10 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			if (cardFrame == true) {
 				//����ǥ��
 				sprintf(tempStr, TEXTPTR(TEXT_ALPHA_LV), lv + 1);
-				//DrawText(TEXT_LV, x + w / 2 - 24 * _2X, y - REWARDCARDSIZE_Y + 32 * _2X, cvtDest, cvtLayer, buffering);
 				CenterTextStr(tempStr, x + w / 2 + (float)2 * _2X * zoom, y + (float)(-REWARDCARDSIZE_Y + 32 * _2X / 2) * zoom, zoom / 2);
 			}
 			//}
 			//else
-			//	CenterText(TEXT_NOTACQUIRED, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 32 * _2X / 2) * zoom, zoom / 2, cvtDest, cvtLayer, buffering);
 #ifdef NEWITEMMARKSHOW
 			//new mark
 			if (newItem == true) {
@@ -6221,7 +5998,6 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			width = (float)ITEMICONSIZE * zoom + GetNumDx(realValue, false, NUM_FONT_LARGE, false, false, zoom, true) + (float)(16 * _2X) * zoom;
 
 			DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + w / 2 - width / 2, y - (float)REWARDCARDSIZE_Y * zoom + (float)30 * _2X * zoom, zoom, false, false, false, true);
-			//DrawAlpha(x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)(30 * _2X) * zoom - (float)(4 * _2X) * zoom, ALPHA_X, FONT_LARGE, zoom, false, cvtDest, cvtLayer, buffering);
 			DrawTextStr("x", x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)(30 * _2X) * zoom - (float)(4 * _2X) * zoom, zoom);
 #ifdef NUMTTF
 			DrawNumTTF(realValue, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + (float)8 * _2X * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)30 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, true, zoom, false);
@@ -6254,7 +6030,6 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			}
 			break;
 		case ITEM_SKILL:
-			//DrawLv(lv, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 4 * _2X) * zoom, zoom / 2, CENTER, cvtDest, cvtLayer, buffering);
 			DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 2 * _2X) * zoom, skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], CENTER, true, zoom * 0.45f);
 
 			DrawXNumGold(10, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 34 * _2X / 2) * zoom, false, 0.35f * zoom, CENTER, false);
@@ -6266,7 +6041,6 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			//	//width = GetBigNumDx(count, false, NUM_FONT_LARGE, false, false, REWARDCARDSIZE_X - 32 * _2X, zoom / 2);
 			//	numWidth = (float)(REWARDCARDSIZE_X - 24 * _2X) * zoom;
 
-			//	DrawBigNum(count, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 27 * _2X) * zoom, NUM_FONT_LARGE, CENTER, false, false, numWidth, false, zoom / 2, true, cvtDest, cvtLayer, buffering);
 			//	break;
 		}
 
@@ -6274,13 +6048,11 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 	default:
 		//��ǥ��
 	//starCnt = GetItemStar(type, detail, grade);
-		//DrawStar(ICON_STAR, x + w / 2, y + (float)6 * _2X * zoom / 2, curStar, maxStar, CENTER, true, zoom / 2, cvtDest, cvtLayer, buffering);
 
 		break;
 	case ITEM_CREW:
 		//��ǥ��
 		//starCnt = crewData[detail * CREWDATASIZE + CREWDATASIZE - 1] + 1;
-		//DrawStar(ICON_STAR, x + w / 2, y + (float)6 * _2X * zoom / 2, curStar, maxStar, CENTER, true, zoom / 2, cvtDest, cvtLayer, buffering);
 
 		break;
 
@@ -6419,10 +6191,7 @@ void HitCountCheck(OBJECT* pObj)
 void DrawHitCount(OBJECT* pObj, int x, int y, float zoom)
 {
 	if (pObj->hitCount > 1) {
-		//DrawGoldNum(pObj->hitCount, x, y, LEFT, false, false, true, 2 * zoom, cvtDest, cvtLayer, buffering);
 		DrawXNumGold(pObj->hitCount, x, y, false, zoom, CENTER, false);
-		//DrawNum(pObj->hitCount, x - (float)(4 * _2X) * zoom, y, NUM_FONT_NORMAL, RIGHT, false, false, true, 2 * zoom, true, cvtDest, cvtLayer, buffering);
-		//DrawImage(24 * _2X, 11 * _2X, 215 * _2X, 179 * _2X, x + (float)(4 * _2X) * zoom, y - (float)2 * _2X * zoom, false, false, false, false, false, 2 * zoom, sprite[EFFECT_IMG], cvtDest, cvtLayer, EFFECT_IMG, buffering);
 		//PlayMusic(M_SWORDHIT);
 	}
 }
@@ -6583,14 +6352,9 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 			//00d:00h:00m
 			DrawGoldNum(atime / 144000, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
 			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_D, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			//DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
 			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
 			DrawGoldNum((atime % 144000) / 3600, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
 			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawGoldNum((atime % 3600) / 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
-			//DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
 		}
 		else if (atime >= 3600) {
@@ -6601,10 +6365,6 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
 			DrawGoldNum((atime % 3600) / 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
 			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawGoldNum(atime % 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
-			//DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
 		}
 		else {
@@ -6615,64 +6375,12 @@ void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom
 			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
 			DrawGoldNum(atime % 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
 			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], cvtDest, cvtLayer, GOLDFONT_IMG, buffering);
-			//DrawGoldNum(frame % FPS, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom, cvtDest, cvtLayer, buffering);
 			
-			//DrawGoldAlpha(x + (float)177 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
 
 		}
 		break;
 	}
 	//SetAlpha(16);
-	/*
-	switch (font) {
-	default:
-		if (atime >= 144000) {
-			//00d:00h:00m
-			DrawGoldNum(atime / 144000, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_D, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum((atime % 144000) / 3600, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum((atime % 3600) / 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-
-		}
-		else if (atime >= 3600) {
-			//00h:00m:00s
-			DrawGoldNum(atime / 3600, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum((atime % 3600) / 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum(atime % 60, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)182 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-
-		}
-		else {
-			//00m:00s:00
-			DrawGoldNum(atime / 60, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum(atime % 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)132 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum(frame % FPS, x + (float)180 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			//DrawGoldAlpha(x + (float)177 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false, cvtDest, cvtLayer, buffering);
-
-		}
-		break;
-	}
-	*/
 }
 
 void DrawDate(int x, int y, int atime, float zoom)
@@ -6816,7 +6524,6 @@ void BoxInfoDraw(int boxType, int x, int y, float zoom)
 
 	DrawBox(boxType, x + (float)POPUPWINDOWSIZE_X / 2 * zoom, y + plusY - (float)64 * _2X * zoom, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], LEFT, false, true, false, true, 2.0f * zoom);
 	CenterText(TEXT_ITEMNAME_BOX + boxType, x + (float)POPUPWINDOWSIZE_X / 2 * zoom, y + plusY - (float)72 * _2X * zoom, zoom);
-	//DrawLabel(x + (float)(POPUPWINDOWSIZE_X - 80 * _2X) / 2 * zoom, y - (float)88 * _2X * zoom, TEXT_ITEMNAME_BOX + boxType, zoom, cvtDest, cvtLayer, buffering);
 
 	//골드
 	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom + (float)24 * _2X * 2 * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, 0xFFFFFF);
@@ -6847,12 +6554,9 @@ void BoxInfoDraw(int boxType, int x, int y, float zoom)
 
 	//
 	//for (i = 0; i < STAR10 + 1; i++) {
-	//	MemRect(x + (float)12 * _2X * zoom, y + plusY - (float)140 * _2X * zoom - (float)24 * _2X * (i + 3) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(24 * _2X) * zoom, i % 2 == 1 ? 0xFFFFFF : 0xEEEEEE, cvtDest, cvtLayer, buffering);
 	//	if (boxDropPercent[boxType][BOXDROP_STAR1 + i] == 0)
 	//		grayScale = 32;
-	//	DrawStar(ICON_STAR, x + (float)16 * _2X * zoom, y + plusY - (float)148 * _2X * zoom - (float)24 * _2X * (i + 3) * zoom, boxStar[boxType * 2] + 1 + i, boxStar[boxType * 2] + 1 + i, LEFT, false, zoom, cvtDest, cvtLayer, buffering);
 	//	grayScale = 0;
-	//	DrawPercent(boxDropPercent[boxType][BOXDROP_STAR1 + i], x + (float)292 * _2X * zoom, y + plusY - (float)148 * _2X * zoom - (float)24 * _2X * (i + 3) * zoom, zoom, RIGHT, cvtDest, cvtLayer, buffering);
 
 	//}
 }

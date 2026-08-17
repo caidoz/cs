@@ -240,7 +240,6 @@ void StatusDraw(int x, int y, float zoom)
 
 		if (waveStatus == WAVESTATUS_READY) {
 			//TEST
-			//DrawStageEnemyWave(x + (float)(BATTLEPOSITION_ENEMY_X)* zoom, STATUSWIN_Y + (float)56 * _2X * zoom, stageBossType, zoom, cvtDest, cvtLayer, buffering);
 
 			//SetRectPoint(x + (float)(BATTLEPOSITION_ENEMY_X - 40 * _2X) * zoom, STATUSWIN_Y + (float)136 * _2X * zoom, (float)(80 * _2X) * zoom, (float)(80 * _2X) * zoom, TOUCH_FUNC_POPUP_STAGEREWARD);
 
@@ -248,7 +247,6 @@ void StatusDraw(int x, int y, float zoom)
 			//	SetRectPoint(x + (float)(BATTLEPOSITION_ENEMY_X - 40 * _2X * STAGESTARBUTTONZOOM) * zoom, STATUSWIN_Y + (float)(56) * _2X * zoom, (float)(80 * _2X) * STAGESTARBUTTONZOOM * zoom, (float)BUYBUTTON_Y * STAGESTARBUTTONZOOM * zoom, TOUCH_FUNC_GOTOPLAY);
 			//}
 
-			//DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 2 % crewPos[stageBossType * 5 + 1]), x + (float)(BATTLEPOSITION_ENEMY_X)*zoom, STATUSWIN_Y + (float)56 * _2X * zoom, LEFT, /*enemyIconZoom[stageBossType] **/ zoom, cvtDest, cvtLayer, buffering);
 
 		}
 		else if (waveStatus == WAVESTATUS_PLAY) {
@@ -265,7 +263,6 @@ void StatusDraw(int x, int y, float zoom)
 
 		break;
 	case MD_RAID:
-		//EnemyUserProfileDraw(robin.enemyUserIdx, robin.stage, robin.room, xOffset + DX / 2 - RAIDGOLDBARWIDTH / 2/*100 * _2X*/, yPos + ENEMYUSERINFOGAP, 1.0f, cvtDest, cvtLayer, buffering);
 
 
 		break;
@@ -302,17 +299,11 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 	DrawLabel(x, y - (float)(RAIDGOLDBARHEIGHT - 16 * _2X) * zoom, TEXT_NICKNAME + robin.enemyUserIdx, 0.6f * zoom);
 
 
-	//DrawLabel(x + (float)(RAIDGOLDBARWIDTH)* zoom / 2 - (float)40 * _2X * zoom, y + (float)26 * _2X * zoom, TEXT_ALPHA_COINSWORD, zoom, cvtDest, cvtLayer, buffering);
 	DrawFrame(x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom + (float)-1 * _2X * zoom, y - (float)(23 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * 0.85f * zoom, (float)(PROFILEIMG_Y + 2 * _2X) * 0.8f * zoom, FRAME_SHOPBALLOON);
 	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom, y - (float)(24 * _2X) * zoom, false, false, false, false, false, zoom * 0.85f, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], PROFILE_IMG + housePtr->userProfileImgIdx);
 
-	//MemRectRound(x, y, (float)RAIDGOLDBARWIDTH * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X, cvtDest, cvtLayer, buffering);
-	//CenterText(TEXT_NICKNAME + robin.enemyUserIdx, x + (float)RAIDGOLDBARWIDTH / 2 * zoom, y - (float)(2 * _2X) * zoom, 0.8f * zoom, cvtDest, cvtLayer, buffering);
 
-	//DrawLabel(x, y + (float)(16 * _2X) * zoom, TEXT_NICKNAME + 38/*robin.enemyUserIdx*/, textZoom, cvtDest, cvtLayer, buffering);
-	//CenterText(TEXT_NICKNAME + robin.enemyUserIdx, x + (float)RAIDGOLDBARWIDTH / 2 * zoom, y - (float)(PROFILEIMG_Y + 2 * _2X) * zoom, zoom, cvtDest, cvtLayer, buffering);
 
-	//DrawRouletteNumIcon(betCnt, ICON_GOLD + frame % GOLDICONFRAME, x + (float)RAIDGOLDBARWIDTH / 2 * zoom, y - (float)(0 * _2X) * zoom, false, CENTER, zoom, cvtDest, cvtLayer, buffering);
 
 	width = (float)(ITEMICONSIZE + 2 * _2X) * iconZoom + GetBigNumDx(betCnt, false, NUM_FONT_NORMAL, false, true, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, zoom, false);
 
@@ -450,7 +441,6 @@ void EffectDrawOnlyBg(int yPos, float zoom)
 			j = (*bgPtr << 4) * _2X - rx - *(bgPtr + 2) * _2X / 2;
 
 			//if (PxlUp(pPlayer) - ry > y + *(bgPtr + 3) && PxlLeft(pPlayer) - rx < j + *(bgPtr + 2) && PxlRight(pPlayer) - rx > j)
-			//	SetSectionClip(0, 0, DX, PxlUp(pPlayer) - ry, buffering);
 
 			SetAlpha(16);
 			MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)*(bgPtr + 2) * _2X * zoom, 1000, 0x1C6DCC);
@@ -468,7 +458,6 @@ void EffectDrawOnlyBg(int yPos, float zoom)
 				y = (rh - 4) * TSIZE - (*(bgPtr + 1) << 4) * _2X - ry;
 				j = (*bgPtr << 4) * _2X - rx - *(bgPtr + 2) * _2X / 2;
 
-				//SetSectionClip(0, yPos + PxlUp(pPlayer) - ry, DX, DY - PxlUp(pPlayer) + ry, buffering);
 
 				SetAlpha(8);
 				MemRect((float)(xOffset + j) * zoom, yPos + (float)(y + *(bgPtr + 3) * _2X) * zoom, (float)(*(bgPtr + 2) * _2X) * zoom, 1000, 0x1C6DCC);
@@ -909,8 +898,6 @@ void EffectDraw(int yPos, float zoom)
 		else if (fadeFrame < 0)
 			SetAlpha(32 - (-fadeFrame + 1));
 
-		//MemRect(xOffset, DY, DX - 2 * xOffset, DY, fadeColor, cvtDest, cvtLayer, buffering);
-		//MemRect((float)(xOffset) * zoom, (float)(DY) * zoom, (float)(DX) * zoom, (float)(DY - STATUSWIN_Y) * zoom, fadeColor, cvtDest, cvtLayer, buffering);
 		MemRect(0, DY, DX, DY, fadeColor);
 
 		SetAlpha(32);
@@ -921,17 +908,6 @@ void EffectDraw(int yPos, float zoom)
 	}
 
 	//보스전에서의 화면 특수 효과
-	/*
-	for (i = 0; i < TOTAL)
-	if (robin.bossRoom == true) {
-		SetAlpha(4 + Abs(8 - frame) % 16);
-		MemRect(0, DY, DX, 8 * _2X, COLOR_WHITE, cvtDest, cvtLayer, buffering);
-		MemRect(0, DY - 8 * _2X, 8 * _2X, DY - 16 * _2X, COLOR_WHITE, cvtDest, cvtLayer, buffering);
-		MemRect(DX - 8 * _2X, DY - 8 * _2X, 8 * _2X, DY - 16 * _2X, COLOR_WHITE, cvtDest, cvtLayer, buffering);
-		MemRect(0, 8 * _2X, DX, 8 * _2X, COLOR_WHITE, cvtDest, cvtLayer, buffering);
-		SetAlpha(32);
-	}
-	*/
 }
 
 void DrawTouchPoint(void)

@@ -199,7 +199,6 @@ void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffs
 	DrawTileDirect(mapIdx, x, y - h + mapOffsetY, zoom);
 
 	//SetAlpha(12);
-	//MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)14 * _2X * zoom, 0x000000, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	UnSectionClip(false);
@@ -671,7 +670,6 @@ void OpeningDraw(void)
 
 void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, int dir)
 {
-	//DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 	SetAlpha(24);
 	MemRect(x, y, dx, dy, 0x2A2A3A);
 	SetAlpha(32);
@@ -685,8 +683,6 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 	if (popUpFrame > startFrame + 1) {
 		if (popUpFrame == startFrame + 2)
 			PlayMusic(M_JUMP);
-		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		//DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
 		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom);
 		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, dir, zoom * 2, false, false);
 
@@ -815,7 +811,6 @@ void LogDraw(LOG* g)
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_EVENT_RAIDSTART:
-		//DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], g->x - (float)(LOG_X / 2) * g->zoom + (float)(22 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, 1.6 * g->zoom, cvtDest, cvtLayer, buffering);
 		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true);
 
 		//SetFontColor(COLOR_BROWN);
@@ -1681,7 +1676,6 @@ void EventMenuDraw(GAMEEVENT* gEvent)
 			DrawIcon(gEvent->icon + (gEvent->icon == ICON_GOLD ? frame % GOLDICONFRAME : 0), xOffset + gEvent->x + (float)(-8 * _2X * 2 - 1 * _2X) * gEvent->zoom, gEvent->y + (float)(ITEMICONSIZE + 2 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true);
 			break;
 			//case QUESTTYPE_RAID:
-			//	DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, 1.2f * gEvent->zoom, cvtDest, cvtLayer, buffering);
 			//	break;
 
 		}
@@ -1747,7 +1741,6 @@ void GoldQuestMenuDraw(int x, int y, float zoom)
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//DrawWindow5(x + (float)(16 * _2X) * zoom, y - (float)(124 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 152 * _2X) * zoom, CASTLE3, zoom, cvtDest, cvtLayer, buffering);
 
 	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom);
 
@@ -1812,13 +1805,11 @@ void GameOverDraw(int x, int y, float zoom)
 	float fontZoom = 1.5f;
 
 	//SetAlpha(20);
-	//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGEFAILED, FONT_GOLD_LARGE, fontZoom * zoom, CENTER, true, false);
 
 	//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-	//DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_STAGEFAILED);
@@ -2010,7 +2001,6 @@ void DrawPopUp(int idx)
 		break;
 	case POPUPTYPE_STAGE:
 		//SetAlpha(20);
-		//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 		//SetAlpha(32);
 		StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
@@ -2037,14 +2027,12 @@ void DrawPopUp(int idx)
 		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_HEROSTAT:
-		//CollectionsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWUPGRADE:
 		CrewMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWLIST:
-		//CrewListDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
 		CrewMenuDraw(
 			xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom,
 			DY - GNBHEIGHT,
@@ -2060,7 +2048,6 @@ void DrawPopUp(int idx)
 		OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_ENEMYUSER:
-		//DrawDioramaCrew(&enemyHouse, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2 + 15 * _2X) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)80 * _2X * p->zoom, p->zoom, stageInfoFrame, false, false, false, cvtDest, cvtLayer, buffering);
 		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f);
 		break;
 	case POPUPTYPE_GAMEOVER:
@@ -2132,12 +2119,10 @@ void GameMenuDraw(int x, int y, float zoom)
 		if (robin.openedMenu[i] == OPENED) {
 			DrawText(TEXT_MENU_PLAY + i, x + 58 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 8 * _2X, 2.0f);
 
-			//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, SHADOW_IMG, 1.0f, cvtDest, cvtLayer, buffering);
 
 
 			//���������
 			//if (robin.openedMenu[i] == CLOSE) {
-			//	DrawIcon(ICON_EVENT_LOCK, x + 12 * _2X, y - dy * (j)-dy / 2 + 6 * _2X + ITEMICONSIZE, 2, false, false, false, cvtDest, cvtLayer, buffering);
 
 			//}
 			//else

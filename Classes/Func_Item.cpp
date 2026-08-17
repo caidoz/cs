@@ -888,7 +888,6 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 	int yGap = 4 * _2X;
 
 	//if (drawHandle == MD_PLAY)
-	//DrawLabel(x + (float)(32 * _2X) * zoom, y - (float)(46 * _2X) * zoom, TEXT_ALPHA_SKILL, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 
 	EnemyProfileDraw(x + xGap, y + (float)-2 * _2X * zoom + yGap, pObj->type, false, false, 1.0f * zoom);
 
@@ -901,12 +900,10 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 		CenterText(TEXT_ALPHA_SKILL, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)10 * _2X * zoom, 0.8f * zoom);
 		CenterText(TEXT_ALPHA_EMPTY, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)22 * _2X * zoom, 0.8f * zoom);
 		//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-		//DrawImage(8 * _2X, 8 * _2X, 224 * _2X, 0 * _2X, x - (float)( - 12 * _2X) * zoom + xGap + (float)37 * _2X * zoom, y - (float)13 * _2X * zoom + yGap, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
 		//SetAlpha(32);
 	}
 
 	//upgradePrice = 100;
-	//DrawBuyButton(x + xGap, y + (float)-40 * _2X * zoom + yGap, (float)BUYSMALLBUTTON_X * UPGRADEBUTTONPER * zoom, (float)BUYSMALLBUTTON_Y * UPGRADEBUTTONPER * zoom, frame, robin.gold >= upgradePrice ? false : true, upgradePrice, CURRENCY_GOLD, UPGRADEBUTTONPER * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 	//SetRectPoint(x + xGap, y + (float)-40 * _2X * zoom + yGap, (float)BUYSMALLBUTTON_X * UPGRADEBUTTONPER * zoom, (float)BUYSMALLBUTTON_Y * UPGRADEBUTTONPER * zoom, TOUCH_FUNC_HOTKEYPRESS1 + i);
 
 	grayScale = 0;
@@ -916,9 +913,7 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 
 	//�ϴ� empty�� 
 	//if (status)
-	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18 + Abs(8 - frame % 16)], cvtDest, cvtLayer, buffering);
 	//else
-	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18], cvtDest, cvtLayer, buffering);
 
 	DrawQuickIcon(pObj, x + xGap + (float)36 * _2X * zoom, y + yGap, zoom);
 	/*
@@ -995,7 +990,6 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 	DrawFrame(x + (float)1.5f * 36 * _2X * zoom, y + (float)0 * _2X * zoom, (float)(34 * 3 * _2X + 20 * _2X) * zoom, (float)(yGap * 2 + 0 * _2X) * zoom, FRAME_NORMAL);
 	
 	//현재 장비
-	//DrawLabel(x - (float)(6 * _2X) * zoom, y + (float)8 * _2X * zoom, TEXT_ALPHA_EQUIP, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 
 	for (i = EQUIP_NECK - 1; i >= 0; i--) {
 		usPtr = &equipSlotPos[i * 4];
@@ -1012,7 +1006,6 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 			MemRectFrameThick(x + plusX + (float)*(usPtr + 2) * zoom - (float)2 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom + (float)2 * _2X * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, itemColor[pObj->equip[*usPtr].grade], (float)1 * _2X * zoom);
 
 			//if (*usPtr == EQUIP_RING && pObj->equip[EQUIP_RING].cooldown)
-			//	DrawCycle(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * 2 * zoom, (float)16 * _2X * 2 * zoom, pObj->equip[EQUIP_RING].cooldown, ringOption[pObj->equip[EQUIP_RING].detail * 7 + 3 + Min(3, pObj->equip[EQUIP_RING].grade)] * 120, zoom, cvtDest, cvtLayer, buffering);
 
 			if (pObj->equipImg[*usPtr] == 0) {
 				grayScale = 0;
@@ -1034,10 +1027,8 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 	}
 
 	//���� ����
-	//HeroListDraw(x + (float)(156 * _2X) * zoom, y + (float)8 * _2X * zoom, zoom, false, 64 * _2X, cvtDest, cvtLayer, buffering);
 
 	//���� �����?������ �ִ� ����
-	//CrewListDraw(x + (float)(156 * _2X) * zoom, y - (float)62 * _2X * zoom, zoom, false, 48 * _2X, cvtDest, cvtLayer, buffering);
 }
 
 int MakeItemType(int seed)

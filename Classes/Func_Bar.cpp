@@ -9,32 +9,22 @@ void DrawBarIcon(int type, int x, int y, float zoom)
 
 	switch (type) {
 	case BAR_CASTLE:
-		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 		DrawImage(128, 128, 128 * 3, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
-		//DrawIcon(ICON_EVENT_CROWN, x + (float)(MAINMENU_X / 2) * zoom - (float)(ITEMICONSIZE)*zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(ITEMICONSIZE)*zoom + (float)(12 * _2X) * zoom, 2.0f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
 		//SetFontColor(fontColor);
-		//CenterTextSolid(TEXT_HERO, x + (float)(MAINMENU_X / 2) * zoom, y - (float)(32 * _2X) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case BAR_CREW:
-		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
-		//DrawIcon(ICON_EVENT_GOLDSHEILD, x + (float)(MAINMENU_X / 2) * zoom - (float)(ITEMICONSIZE)*zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(ITEMICONSIZE)*zoom + (float)(12 * _2X) * zoom, 2.0f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
 		DrawImage(128, 128, 128 * 1, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
 		//SetFontColor(fontColor);
-		//CenterTextSolid(TEXT_BORDERGUARD, x + (float)(MAINMENU_X / 2) * zoom, y - (float)(32 * _2X) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case BAR_EQUIP:
-		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 		DrawImage(128, 128, 128 * 0, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
 		break;
 	case BAR_MAINSHOP:
-		//DrawFrame(x, y, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y)*zoom, FRAME_SHOPBALLOON, cvtDest, cvtLayer, buffering);
 		DrawImage(128, 128, 128 * 2, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
 
-		//DrawIcon(ICON_EVENT_BOX, x + (float)(MAINMENU_X / 2) * zoom - (float)(ITEMICONSIZE)*zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(ITEMICONSIZE)*zoom + (float)(12 * _2X) * zoom, 2.0f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
 		//SetFontColor(fontColor);
-		//CenterTextSolid(TEXT_MENU_SHOP, x + (float)(MAINMENU_X / 2) * zoom, y - (float)(32 * _2X) * zoom, 1.2f * zoom, cvtDest, cvtLayer, buffering);
 		//SetFontColor(COLOR_WHITE);
 		break;
 	}
@@ -267,8 +257,6 @@ void BarDraw(BAR* barP, float zoom)
 			BattleCoinBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom);
 		}
 //		if (barP->addView)
-//			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 6 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.25f * zoom, false, true, cvtDest, cvtLayer, buffering);
-		//DrawNum2AutoSpaceing(barP->add, xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(4 * _2X) * zoom, RIGHT, false, barP->add >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.5f * zoom, false, true, cvtDest, cvtLayer, buffering);
 
 		break;
 	case BAR_CASTLE:
@@ -463,20 +451,14 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 	//count = 100;
 	//max = 200;
-	//MemRectBothThick(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT / 2 * zoom, (float)BOSSHPBARWIDTH * zoom, (float)BOSSHPBARHEIGHT * zoom, COLOR_NAVY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
-	//MemRect(x - (float)(BOSSHPBARWIDTH / 2 - 4 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 - 4 * _2X) * zoom, (float)(BOSSHPBARWIDTH - 8 * _2X) * count / max * zoom, (float)(BOSSHPBARHEIGHT - 8 * _2X) * zoom, COLOR_REALRED, cvtDest, cvtLayer, buffering);
 	DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, (float)(count) / (float)max, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
 	
-	//DrawSlashNum(count, max, x, y + (float)(BOSSHPBARHEIGHT / 2 - 8 * _2X) * zoom, (float)(BOSSHPBARWIDTH / 2 - 4 * _2X) * zoom, 1.5f * zoom, cvtDest, cvtLayer, buffering);
 	if (count > 0)
 		DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
-	//DrawStageLabel(x, y + (float)(BOSSHPBARHEIGHT + 8 * _2X) * zoom, TEXT_ALPHA_WAVE, robin.stage, robin.room, true, 1.0f * zoom, cvtDest, cvtLayer, buffering);
 
 	DevilHeartDraw(x - (float)(BOSSHPBARWIDTH / 2) * zoom, y + (float)0 * _2X * zoom, 2.5f * zoom);
 
-	//DrawCmfDetail(CMF_NPC_HEART, PO_C122_HEART, x - (float)(BOSSHPBARWIDTH / 2) * zoom, y - (float)16 * _2X * zoom, RIGHT, 1.5f * zoom, false, false, cvtDest, cvtLayer, buffering);
 
-	//DrawStageLabel(x - (float)(BOSSHPBARWIDTH / 2 + 60 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT - 4 * _2X) * zoom, TEXT_ALPHA_WAVE, robin.stage, robin.room, true, 0.85f * zoom, cvtDest, cvtLayer, buffering);
 
 }
 
@@ -606,7 +588,6 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 				pvpRewardPosition[i][1] = y - (float)(2 * _2X) * zoom * iconZoom - (float)(ITEMICONSIZE / 2) * zoom * iconZoom;
 
 				//TEST
-				//DrawNum(pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i], x + xPos + (float)ITEMICONSIZE / 2 * zoom, y + (-(float)ITEMICONSIZE - 4 * _2X) * zoom, NUM_FONT_LARGE, CENTER, false, false, true, zoom / 2, cvtDest, cvtLayer, buffering);
 			}
 
 		}
@@ -619,13 +600,11 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 				xPos = (float)(6 * _2X + (PVPQUESTBARWIDTH - 12 * _2X) * (pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i] - pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + (robin.pvpSubQuest - 1) * TOTALPVPDETAILREQUEST + 2]) / (pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + 2] - pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + (robin.pvpSubQuest - 1) * TOTALPVPDETAILREQUEST + 2])) * zoom;
 
 			if (i >= robin.pvpDetailQuest) {
-				//DrawIcon(GetItemIcon(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2]), x + xPos, y - (float)(2 * _2X) * zoom, zoom, COLOR_BROWN, false, false, cvtDest, cvtLayer, buffering);
 				DrawRewardCard(pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 0], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 1], pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 2], 0, pvpQuestReward[(robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i) * PVPQUESTDATASIZE + 3], x + xPos - (float)REWARDCARDSIZE_X / 2 * zoom * iconZoom * 0.6f, y + (float)8 * _2X * zoom, false, 0.6f * zoom * iconZoom, false, false, true, false, false, true, 0);
 
 				pvpRewardPosition[i][0] = x + xPos + (float)(ITEMICONSIZE / 2) * 0.6f * zoom * iconZoom;
 				pvpRewardPosition[i][1] = y - (float)(2 * _2X) * zoom * iconZoom - (float)(ITEMICONSIZE / 2) * zoom * iconZoom;
 
-				//DrawNum(pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i], x + xPos + (float)ITEMICONSIZE / 2 * zoom, y + (-(float)ITEMICONSIZE - 4 * _2X) * zoom, NUM_FONT_LARGE, CENTER, false, false, true, zoom / 2, cvtDest, cvtLayer, buffering);
 			}
 		}
 	}
@@ -671,32 +650,24 @@ void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom)
 	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - 0 * _2X) * zoom, true, zoom, true);
 #else
 	DrawNum2AutoSpaceing(count, x + (float)(GOLDBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true);
-	//DrawBigNum2Bold(count, x + (float)(0.5f * GOLDBARWIDTH - 8 * _2X) * zoom, y - (float)(11 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH * 0.55f - ITEMICONSIZE * 1.2f - 12 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
 #endif
 }
 
 void BattleCoinBarDraw(long long count, int icon, int x, int y, int alpha, float zoom)
 {
-	//DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom, cvtDest, cvtLayer, buffering);
-	//DrawIcon(icon, x + (float)(6 * _2X) * zoom, y - (float)(6 * _2X) * zoom, 1.2f * zoom, COLOR_BROWN, false, false, 1, cvtDest, cvtLayer, buffering);
 #ifdef NUMTTF
 	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - 0 * _2X) * zoom, true, zoom, true);
 #else
 	DrawGoldNum(count, x, y, CENTER, false, PLUS, true, zoom);
-	//DrawNum2AutoSpaceing(count, x/* + (float)(GOLDBARWIDTH - 7 * _2X) * zoom*/, y - (float)(10 * _2X) * zoom, CENTER, false, false, (float)(GOLDBARWIDTH) * zoom, true, 1.0f * zoom, true, true, cvtDest, cvtLayer, buffering);
-	//DrawBigNum2Bold(count, x + (float)(0.5f * GOLDBARWIDTH - 8 * _2X) * zoom, y - (float)(11 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH * 0.55f - ITEMICONSIZE * 1.2f - 12 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
 #endif
 }
 
 void ExpBarWideDraw(int lv, long long count, int x, int y, float zoom)
 {
 	//count = 10;
-	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2) * zoom, y - (float)(2 * _2X) * zoom, (float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE + 4 * _2X) * zoom, (float)(CROWNBARHEIGHT + 4 * _2X) * zoom, COLOR_BROWN, cvtDest, cvtLayer, buffering);
-	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2 + 2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, (float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE) * zoom, (float)(CROWNBARHEIGHT)* zoom, COLOR_NAVY, cvtDest, cvtLayer, buffering);
 	//count = 33960000;
 
 	MemRect(x + (float)(ITEMICONSIZE * 1.5f + 2 * _2X + 6 * _2X) * zoom, y - (float)(7 * _2X) * zoom, Min((float)(CROWNBARWIDTH - 1.5f * ITEMICONSIZE - 28 * _2X) * zoom, (float)(CROWNBARWIDTH_WIDE - 1.5f * ITEMICONSIZE - 28 * _2X) * ((float)(count - NextExp(lv - 1)) / (float)(NextExp(lv) - NextExp(lv - 1))) * zoom), (float)(CROWNBARHEIGHT - 14 * _2X) * zoom, COLOR_REALYELLOW);
-	//MemRect(x + (float)(ITEMICONSIZE * 1.5f / 2 + 8 * _2X) * zoom, y - (float)(8 * _2X) * zoom, (float)100, (float)(CROWNBARHEIGHT - 16 * _2X)* zoom, COLOR_REALYELLOW, cvtDest, cvtLayer, buffering);
 
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%ld / %ld", (long)(count - NextExp(lv - 1)), (long)(NextExp(lv) - NextExp(lv - 1)));
@@ -704,8 +675,6 @@ void ExpBarWideDraw(int lv, long long count, int x, int y, float zoom)
 	CenterTextStr(tempStr, x + (float)(CROWNBARWIDTH_WIDE / 2 + 1.5f * ITEMICONSIZE - 24 * _2X) * zoom, y - (float)(4 * _2X + 6 * _2X) * zoom, zoom);
 
 	DrawStarNum(ICON_CROWN, lv + 1, x + (float)2 * _2X * zoom, y - (float)4 * _2X * zoom, 1.5f * zoom);
-	//DrawIcon(ICON_STAR, x + (float)2 * _2X * zoom, y - (float)4 * _2X * zoom, 1.5f * zoom, COLOR_BROWN, false, false, cvtDest, cvtLayer, buffering);
-	//DrawNum(lv, x + (float)(2 * _2X + ITEMICONSIZE * 1.5f / 2) * zoom, y - (float)10 * _2X * zoom, NUM_FONT_NORMAL, CENTER, false, false, false, zoom, false, cvtDest, cvtLayer, buffering);
 	DrawLevelUpCard(levelUpReward[lv], lv, false, x + (float)(CROWNBARWIDTH_WIDE + 1.5f * ITEMICONSIZE - 4 * _2X - 48 * _2X) * zoom, y - (float)(0 * _2X) * zoom, 0.4f * zoom);
 }
 
@@ -720,8 +689,6 @@ void HeartBarDraw(int count, int max, int x, int y, int alpha, float zoom)
 	SetFontColor(COLOR_WHITE);
 	DrawSlashNum(count, max, x + (float)(HEARTBARWIDTH / 2 + 2 * _2X) * zoom, y - (float)(10 * _2X) * zoom, HEARTBARWIDTH, 1.2f * zoom);
 	SetFontColor(false);
-	//DrawNum2AutoSpaceing(count, x + (float)(CROWNBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(CROWNBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true, cvtDest, cvtLayer, buffering);
-	//DrawBigNum2Bold(count, x + (float)(CROWNBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(CROWNBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, cvtDest, cvtLayer, buffering);
 #endif
 }
 
@@ -831,35 +798,7 @@ void DayBarDraw(int day, int x, int y, float zoom)
 	DrawRemainTime(x, y - (float)8 * _2X * zoom, day, CENTER, emphasisScale * 2.0f);
 	
 	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_BOSS, FONT_GOLD_LARGE, zoom, CENTER, false, false);
-	//DrawDetailTimeGold(x - (float)16 * _2X, y - (float)8 * _2X, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
 
-	/*
-	// 강조 효과 (살짝 커졌다 작아지는 펄스)
-	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
-	emphasisScale = 1.2f * zoom;
-
-	// 배경 (어두운 라운드 박스)
-	float bgW = 480 * zoom;
-	float bgH = 120 * zoom;
-	
-	// 배경 사각형
-	SetAlpha(24);
-	MemRect(x - bgW / 2, y - (float)4 * _2X * zoom, bgW, bgH, 0x2A2A3A, cvtDest, cvtLayer, buffering);
-	SetAlpha(32);
-
-	// "DAY" 텍스트 (간단하게 표시)
-	//char dayText[32];
-	//sprintf(dayText, "DAY %d", day);
-	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
-	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * zoom, y - (float)bgH, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], cvtDest, cvtLayer, UI_NEW_IMG, false);
-
-	// "DAY" 레이블 (작게)
-	DrawGoldAlpha(x + (float)4 * _2X * zoom, y - (float)14 * _2X * zoom, ALPHA_BOSS_SUMMON_IN, FONT_GOLD_LARGE, 0.7f * zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
-	//DrawTextStr("DAY", x, y, 2.0f * zoom, cvtDest, cvtLayer, buffering);
-
-	// 숫자 크게 강조
-	DrawDetailTimeGold(x - (float)124 * _2X * zoom * 0.9f, y - (float)36 * _2X * zoom, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
-	*/
 }
 
 // ============================================================================
@@ -878,6 +817,5 @@ void WaveBarDraw(int life, int maxLife, int x, int y, float zoom)
 	
 	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_STAGE, FONT_GOLD_LARGE, zoom, CENTER, false, false);
 	DrawGoldNum(robin.curWaveIdx + 1, x, y + (float)108 * zoom, CENTER, false, false, false, 0.5f * zoom);
-	//DrawDetailTimeGold(x - (float)16 * _2X, y - (float)8 * _2X, day, FONT_GOLD_LARGE, CENTER, emphasisScale * 0.9f, cvtDest, cvtLayer, buffering);
 
 }

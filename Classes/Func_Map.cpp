@@ -2845,22 +2845,6 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom)
 		}
 	case MAPTYPE_FROST:
 	case MAPTYPE_CASTLE:
-		/*
-		SetAlpha(24);
-		for (i = 0; i < mapData[4]; i++) {
-			if (mapRect[i * 5 + 4] == EMPTY) {
-				for (j = 0; j < mapRect[i * 5 + 2]; j += 3)
-					//water.bmp
-					DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 16 * _2X, 0, (robin.playtime / 2 % 3) * 28 * _2X, xPos + ((mapRect[i * 5] + j) << 4) * _2X - rx, yPos + *(bgPtr + 1) - (mapRect[i * 5 + 1] << 4) * _2X - ry, false, false, false, false, false, 1.0f, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
-			}
-			else if (mapRect[i * 5 + 4] == 254) {
-				for (j = 0; j < mapRect[i * 5 + 2]; j += 3)
-					//water.bmp
-					DrawImage(Min((mapRect[i * 5 + 2] - j) * 16, 48) * _2X, 16 * _2X, 0, (robin.playtime / 2 % 3) * 28 * _2X, xPos + ((mapRect[i * 5] + j) << 4) * _2X - rx, yPos + *(bgPtr + 1) - (mapRect[i * 5 + 1] << 4) * _2X - ry + 28 * _2X, false, false, false, false, false, 1.0f, sprite[WATER_IMG], cvtDest, cvtLayer, WATER_IMG, buffering);
-			}
-		}
-		SetAlpha(32);
-		*/
 		break;
 	case MAPTYPE_GOLEMVALLEY:
 		//골렘 협곡 구름
@@ -2906,7 +2890,6 @@ void DrawBackMapFar(int xPos, int yPos, int mapIdx, int dx, float zoom)
 			effect.shake = 2;
 		}
 		//if (frame % (FPS * 3) >= 0 && frame % (FPS * 3) < 19) {
-		//	DrawCmfDetail(CMF_NPC_LABETH, PO_C109_LASER0 + (frame % FPS) % 19, DX / 2 + (float)12 * _2X * 4.0f, STATUSWIN_Y - (float)48 * _2X * 4.0f, false, 4.0f, false, false, cvtDest, cvtLayer, buffering);
 		//}
 		//}	
 	}
@@ -3165,34 +3148,19 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom)
 			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)186 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			DrawImage(78 * _2X, 156 * _2X, 114 * _2X, 0 * _2X, xPos + (float)264 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 296 * _2X) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			//덮어그리는 타일
-			//DrawImage(16 * _2X, 16 * _2X, 16 * _2X, 0 * _2X, xPos + (float)208 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 304 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 64 * _2X, 16 * _2X, xPos + (float)192 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 320 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 16 * _2X, 16 * _2X, xPos + (float)208 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 320 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 32 * _2X, 16 * _2X, xPos + (float)192 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 336 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 48 * _2X, 0 * _2X, xPos + (float)208 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 336 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
 
-			//DrawImage(16 * _2X, 16 * _2X, 0 * _2X, 0 * _2X, xPos + (float)304 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 304 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 0 * _2X, 16 * _2X, xPos + (float)304 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 320 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 64 * _2X, 16 * _2X, xPos + (float)320 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 320 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 32 * _2X, 0 * _2X, xPos + (float)304 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 336 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
-			//DrawImage(16 * _2X, 16 * _2X, 32 * _2X, 16 * _2X, xPos + (float)320 * _2X * zoom, yPos + (float)((rh - 4) * TSIZE - 336 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_TILE_IMG + mapData[7]], cvtDest, cvtLayer, MAP_TILE_IMG + mapData[7], buffering);
 			break;
 		case IMG_BG17_7:
 			//마왕성 샹들리에 : bg17.bmp
-			//MemImageFlip(18, 34, 0, 78, -rx + *(mbObj + 1) + 18, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
 			DrawImage(4 * _2X, 10 * _2X, 64 * _2X, 50 * _2X, xPos + (float)(*(mbObj + 1) + 16 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2) + 10 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 		case IMG_BG16_6:
 			//망자의 도시 철창 : bg16.bmp
-			//MemImageFlip(12, 23, 72, 46, xPos + *(mbObj + 1) + 12, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
 		case IMG_BG17_8:
 			//마왕성 창문 상단 : bg17.bmp
-			//MemImageFlip(16, 32, 18, 80, xPos + *(mbObj + 1) + 16,yPos +  REALDY / 2 + mapData[2] * TSIZE / 2 +ry - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
 		case IMG_BG17_9:
 			//마왕성 창문 중단 : bg17.bmp
-			//MemImageFlip(16, 16, 34, 48, xPos + *(mbObj + 1) + 16, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
 		case IMG_BG17_17:
 			//마왕성 소켓 : bg17.bmp
-			//MemImageFlip(17, 24, 0, 112, xPos + *(mbObj + 1) + 17, yPos + (rh - 4) * TSIZE - *(mbObj + 2), MAP_OBJ_IMG + mapData[7], cvtDest, cvtLayer, buffering);
 			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(*(mbObj + 1) + *(bgPtr + 2)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
 			break;
 		case IMG_BG16_7:
@@ -3204,52 +3172,6 @@ void DrawBackMapFront(int xPos, int yPos, int mapIdx, float zoom)
 			DrawBgEffect(BG17_CANDLE0 + robin.playtime / 2 % 4, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG17_11:
-			/*
-			clipX3 = clipX;
-			clipY3 = clipY;
-			clipX4 = clipX2;
-			clipY4 = clipY2;
-
-			//마왕성 거울 : bg17.bmp
-
-			DrawImage(32 * _2X, 32 * _2X, 64 * _2X, 0 * _2X, xPos + *(mbObj + 1), yPos + (rh - 4) * TSIZE - *(mbObj + 2) - 32 * _2X, false, false, false, false, false, 4.0f, sprite[MAP_OBJ_IMG + mapData[7]], cvtDest, cvtLayer, MAP_OBJ_IMG + mapData[7], buffering);
-
-			SetSectionClip(xPos + *(mbObj + 1) + 1 * _2X, yPos + (rh - 4) * TSIZE - *(mbObj + 2) - 1 * _2X, 30 * _2X, 62 * _2X, buffering);
-
-			offX -= 16 * _2X;
-			offY -= 24 * _2X;
-
-			SetAlpha(16);
-
-			for (j = 0; j < PLAYERALL; j++) {
-				if (ao[j].active)
-					DrawShadowPlayer(&ao[j], cvtDest, cvtLayer, buffering);
-			}
-
-			for (j = ENEMY; j < NEUTRAL; j++) {
-				if (ao[j].active && ao[j].type != ENEMY_BULLET_NOSHADOW)
-					DrawShadowCommon(&ao[j], cvtDest, cvtLayer, buffering);
-			}
-
-			for (j = TOTALOBJECT - 1; j >= 0; j--) {
-				if (ao[j].active) {
-					SetAlpha(16);
-					DrawObj(&ao[j], cvtDest, cvtLayer, buffering);
-				}
-			}
-
-			SetAlpha(32);
-
-			offX += 16 * _2X;
-			offY += 24 * _2X;
-
-			UnSectionClip(buffering);
-
-			clipX = clipX3;
-			clipY = clipY3;
-			clipX2 = clipX4;
-			clipY2 = clipY4;
-			*/
 			DrawBgEffect(BG17_MIRROR, xPos + (float)(*(mbObj + 1)) * zoom, yPos + (float)((rh - 4) * TSIZE - *(mbObj + 2)) * zoom, 0, zoom);
 			break;
 		case IMG_BG17_18:
@@ -3346,7 +3268,6 @@ void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom)
 	bgPtr = &mapBg[mapData[7] * 4];
 	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
 
-	//if (!buffering)
 	DrawBackMap_Back(xPos, yPos, mapIdx, zoom);
 
 	//근경 이후 그려지는 추가효과
@@ -3386,7 +3307,6 @@ void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom)
 	bgPtr = &mapBg[mapData[7] * 4];
 	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
 
-	//if (!buffering)
 	DrawBackMap_Back(xPos, yPos, mapIdx, zoom);
 
 	//근경 이후 그려지는 추가효과
@@ -3856,12 +3776,10 @@ void TheaterDraw()
 	if (curtainFrame > 0) {
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
-			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, DY / 2 + 707 * _2X / 2 - 182 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
 			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
-			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, DY / 2 + 707 * _2X / 2 - 182 * _2X, true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
 			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
@@ -3874,13 +3792,11 @@ void TheaterDraw()
 	else if (curtainFrame < 0) {
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
-			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], DY / 2 + 707 * _2X / 2 - 182 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
 			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
-			//DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], DY / 2 + 707 * _2X / 2 - 182 * _2X, true, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
 			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 		}
 
@@ -3891,7 +3807,6 @@ void TheaterDraw()
 	}
 
 	//상단 장막
-	//DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, DY / 2 + 707 * _2X / 2 - 68 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], cvtDest, cvtLayer, THEATER_IMG, buffering);
 	DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X, DY), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
 
 	offX = tempOffX;

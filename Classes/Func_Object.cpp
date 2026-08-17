@@ -206,8 +206,6 @@ void DrawObj(OBJECT* pObj)
 					break;
 				}
 
-				//MemRect(pObj->x - rx - (pObj->dirX == LEFT ? 73 * _2X : 0), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y) - ry, 48 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx - (pObj->dirX == LEFT ? 73 * _2X : 0), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y) - ry, pObj->hp * 48 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				if (pObj->jumpFrame > 0)
 					pObj->jumpFrame--;
 			}
@@ -225,23 +223,17 @@ void DrawObj(OBJECT* pObj)
 			if (pObj->moveHandler == FOLLOWMOMMOVE && pObj->jumpFrame > 0) {
 				SimpleHpBarDraw(pObj->hp, pObj->maxhp, pObj->x - rx + 54 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), pObj->zoom, ENEMYHPBARCOLOR);
 
-				//MemRect(pObj->x - rx + 40 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), 48 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx + 40 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), pObj->hp * 48 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				pObj->jumpFrame--;
 			}
 			else if (pObj->moveHandler == BUGMOVE && pObj->attackFrame > 0) {
 				SimpleHpBarDraw(pObj->hp, pObj->maxhp, pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, pObj->zoom, ENEMYHPBARCOLOR);
 
-				//MemRect(pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, 24 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, pObj->hp * 24 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				pObj->attackFrame--;
 			}
 			break;
 
 		}
 
-		//MemRect(xOffset + pObj->x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry - OBJIMGGAP - 0 * _2X, (float)(SIMPLEHPBARWIDTH + 2 * _2X), (float)(SIMPLEHPBARHEIGHT + 2 * _2X), COLOR_NAVY, cvtDest, cvtLayer, buffering);
-		//MemRect(xOffset + pObj->x - rx - (float)(SIMPLEHPBARWIDTH) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry - OBJIMGGAP - 1 * _2X, 24 * _2X * pObj->hp / pObj->maxhp, (float)(SIMPLEHPBARHEIGHT), ENEMYHPBARCOLOR, cvtDest, cvtLayer, buffering);
 
 		break;
 	case CLOUDDRAW:
@@ -1905,7 +1897,6 @@ void DrawEmoticon(int type, int icon, int frame, int x, int y, float zoom)
 				DrawIcon(icon, x - (float)(ITEMICONSIZE / 2) * zoom, y + (float)(ITEMICONSIZE / 2) * zoom, 0.9f * zoom, COLOR_BROWN, false, false, true);
 				break;
 			case EMOTICON_REWARDBOX:
-				//DrawBoxSpecial(x, y - (float)(ITEMICONSIZE / 2) * zoom / 2, LEFT, icon - ICON_BOX, zoom / 2, false, false, false, cvtDest, cvtLayer, buffering);
 				break;
 			}
 		}
@@ -2094,7 +2085,6 @@ void BulletSateliteDraw(OBJECT* pObj)
 		if (tempMotion >= PO_C1_SATLASER_SHOT5) {
 			//cc.bmp
 			//바닥을 그려주는것
-			//DrawImage(20 * _2X, 20 * _2X, 40 * _2X, 83 * _2X, xOffset + pObj->x - rx + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3]) * pObj->zoom * 2, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 1]) * pObj->zoom * 2) - ry, false, false, false, false, false, (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 2]) * pObj->zoom * 2, sprite[COMMON_CMF_IMG], cvtDest, cvtLayer, COMMON_CMF_IMG, buffering);
 		}
 
 		SetAlpha(tempAlpha);
@@ -2151,9 +2141,7 @@ void BulletCrewDraw(OBJECT* pObj)
 {
 	int i;
 	//SetAlpha(10);
-	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->jumpFrame * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y +  - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(21);
-	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->hp * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	//총탄마다 정해진 날아가는 모양(그냥 / 회전 / 쫀득). 아이콘 번호로 정한다.
@@ -2180,7 +2168,6 @@ void BulletCrewDraw(OBJECT* pObj)
 
 	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame);
 	//else
-	//	DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 
 	return;
 	SetAlpha(10);
@@ -2218,8 +2205,6 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 			robin.charData[enemyIdx].equip[EQUIP_BOOTS].type != EMPTY ? robin.charData[enemyIdx].equip[EQUIP_BOOTS].detail : -1, robin.charData[enemyIdx].equip[EQUIP_BOOTS].type != EMPTY ? robin.charData[enemyIdx].equip[EQUIP_BOOTS].grade : 0,
 
 			x + (float)(36 * _2X / 2) * zoom, y + (float)(-32 * _2X) * zoom, RIGHT, false, zoom * HOUSEPLAYERZOOM);
-	//DrawCmfDetailShadow(enemyIdx, enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, RIGHT, zoom, cvtDest, cvtLayer, buffering);
-	//DrawPlayer(&ao[enemyIdx], false, x + (float)(36 * _2X / 2) * zoom, y + (float)(-32 * _2X) * zoom, RIGHT, HOUSEZOOM * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 	else
 		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, LEFT, zoom, false, false);
 
@@ -2305,11 +2290,7 @@ void EnemyDraw(OBJECT* pObj)
 		|| pObj->type == ENEMY_CASTLE_BOSS3_BLACK
 		) && pObj->moveHandler == SLINGMOVE) {
 		//c50.bmp
-		//DrawImage(12 * _2X, 12 * _2X, 0 * _2X, 216 * _2X, pObj->x + pObj->cx + pObj->dx * 2 - rx - (float)6 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + pObj->cy + pObj->dy * 2 - ry - (float)6 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
-		//DrawImage(18 * _2X, 18 * _2X, 26 * _2X, 200 * _2X, pObj->x + pObj->cx / 2 + pObj->dx * 1 - rx - (float)9 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + pObj->cy + pObj->dy * 1 - ry - (float)9 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
 
-		//DrawImage(12 * _2X, 12 * _2X, 0 * _2X, 216 * _2X, pObj->cpx - rx - (float)6 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->cpy - ry + (float)6 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
-		//DrawImage(18 * _2X, 18 * _2X, 26 * _2X, 200 * _2X, pObj->cx - rx - (float)9 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->cy - ry + (float)9 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
 	}
 
 	DrawCmf(pObj, false, pObj->zoom, false);
@@ -2322,24 +2303,6 @@ void EnemyDraw(OBJECT* pObj)
 		DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (pObj->levelUpFrame < 11 ? pObj->levelUpFrame : Max(11, pObj->levelUpFrame - 5)), pObj->x, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP - (float)(16 * _2X) * pObj->zoom, 0, false, pObj->zoom);
 
 	}
-	/*
-	switch (pObj->type) {
-	case ENEMY_CASTLE_BOSS3:
-	case ENEMY_CASTLE_BOSS3_RED:
-	case ENEMY_CASTLE_BOSS3_BLUE:
-	case ENEMY_CASTLE_BOSS3_PURPLE:
-	case ENEMY_CASTLE_BOSS3_GREEN:
-	case ENEMY_CASTLE_BOSS3_GOLD:
-	case ENEMY_CASTLE_BOSS3_BLACK:
-		temp = pObj->motion;
-		pObj->motion = PO_C50_UPSKIN;
-		DrawCmf(pObj, false, pObj->zoom, false, cvtDest, cvtLayer, buffering);
-		pObj->motion = PO_C50_DOWNSKIN;
-		DrawCmf(pObj, false, pObj->zoom, false, cvtDest, cvtLayer, buffering);
-		pObj->motion = temp;
-		break;
-	}
-	*/
 }
 
 void CloudDraw(OBJECT* pObj)
@@ -2542,9 +2505,7 @@ void RegenDraw(OBJECT* pObj)
 		UnSetBlend();
 	}
 
-	//DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, pObj->frame)], pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE + (float)64 * _2X * pObj->zoom - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, LEFT, pObj->zoom, false, false, cvtDest, cvtLayer, buffering);
 	//if (pObj->frame < 3) {
-	//	DrawEffect(pObj->frame + HIT_DEAD1, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//}
 }
 
@@ -2818,7 +2779,6 @@ void NeutralDraw(OBJECT* pObj)
 		case MAPTYPE_SPACE:	//���ְ���//18
 			break;
 		}
-		//DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, xOffset + pObj->x - 8 * _2X * 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - 16 * _2X * 2 - OBJIMGGAP), pObj->zoom * 2, false, false, false, cvtDest, cvtLayer, buffering);
 		break;
 	DEFAULT:
 	default:
