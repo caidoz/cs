@@ -4708,7 +4708,9 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 	//제자리에서 커졌다 작아지게 한다. 터치영역은 배율과 무관하게
 	//원래 자리에 그대로 둔다 - 눌린 동안 영역이 줄면 손가락이 밖으로
 	//나간 것으로 처리되어 스스로 취소된다.
-	float press = GetButtonScale(func);
+	//이 함수는 func 0을 "터치영역 없음"으로 쓴다(아래 if (func) 참고).
+	//TOUCH_FUNC_OPENING이 0이라 그냥 물어보면 오프닝 탭에 같이 반응한다.
+	float press = func ? GetButtonScale(func) : 1.0f;
 	float drawZoom = zoom * press;
 
 	float gapX = (float)w * zoom * (press - 1.0f) / 2;
