@@ -1878,6 +1878,15 @@ void DrawPopUp(int idx)
 	case POPUPTYPE_OPTION:
 		OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
+	case POPUPTYPE_OPTION_LANGUAGE:
+		OptionLanguageDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
+		break;
+	case POPUPTYPE_OPTION_PUSHALARM:
+		OptionPushAlarmDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
+		break;
+	case POPUPTYPE_OPTION_HELP:
+		OptionHelpDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
+		break;
 	case POPUPTYPE_ENEMYUSER:
 		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f);
 		break;

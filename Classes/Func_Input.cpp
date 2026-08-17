@@ -941,14 +941,73 @@ void PlayKey(int obj)
 			SaveOption();
 			break;
 		case AVK_OPTION_PUSHALARM:
-			option.pushAlarm = ++option.pushAlarm % 2;
+			//환경설정의 "알림 설정" 줄을 누르면 종류별 창을 연다.
+			//전체 스위치는 그 창 안에서 끄고 켠다.
+			SetPopUp(POPUPTYPE_OPTION_PUSHALARM, xOffset + DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_LANGUAGE:
+			SetPopUp(POPUPTYPE_OPTION_LANGUAGE, xOffset + DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_HELP:
+			SetPopUp(POPUPTYPE_OPTION_HELP, xOffset + DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_HELP_MAIL:
+			//메일 앱을 여는 것은 플랫폼마다 방식이 달라서 여기서는 소리만 낸다.
+			//TODO: 안드로이드/iOS 네이티브 호출을 붙여야 한다.
+			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_PUSHALARM_TYPE + 0:
+			//전체 스위치. 이것만 끄면 종류와 무관하게 아무것도 안 나간다.
+			option.pushAlarm = option.pushAlarm ? 0 : 1;
 			SaveOption();
+			PlayMusic(M_BUTTON);
+			break;
+		case AVK_OPTION_PUSHALARM_TYPE + 1:
+		case AVK_OPTION_PUSHALARM_TYPE + 2:
+		case AVK_OPTION_PUSHALARM_TYPE + 3:
+		case AVK_OPTION_PUSHALARM_TYPE + 4:
+			{
+				//꺼진 것을 비트로 들고 있으므로 뒤집기만 하면 된다.
+				int bit = 1 << (systemKey - AVK_OPTION_PUSHALARM_TYPE);
+
+				option.pushAlarmOff ^= bit;
+				SaveOption();
+				PlayMusic(M_BUTTON);
+			}
 			break;
 		case AVK_OPTION_ACCOUNT:
 			menuDepth = 2;
 			menuCur = 1;
 
 			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_LANGUAGE_SELECT + 0:
+		case AVK_OPTION_LANGUAGE_SELECT + 1:
+		case AVK_OPTION_LANGUAGE_SELECT + 2:
+		case AVK_OPTION_LANGUAGE_SELECT + 3:
+		case AVK_OPTION_LANGUAGE_SELECT + 4:
+		case AVK_OPTION_LANGUAGE_SELECT + 5:
+		case AVK_OPTION_LANGUAGE_SELECT + 6:
+		case AVK_OPTION_LANGUAGE_SELECT + 7:
+		case AVK_OPTION_LANGUAGE_SELECT + 8:
+		case AVK_OPTION_LANGUAGE_SELECT + 9:
+		case AVK_OPTION_LANGUAGE_SELECT + 10:
+		case AVK_OPTION_LANGUAGE_SELECT + 11:
+			option.language = (unsigned char)(systemKey - AVK_OPTION_LANGUAGE_SELECT);
+			SaveOption();
+			PlayMusic(M_BUTTON);
 			break;
 		case AVK_OPTION_POLICY:
 			menuDepth = 2;
@@ -2456,6 +2515,12 @@ void touchFunc(int func)
 	else if (func >= TOUCH_FUNC_HIT_ATTACK && func < TOUCH_FUNC_HIT_ATTACK + MAXCREW) {
 		systemKey = AVK_HIT_ATTACK + func - TOUCH_FUNC_HIT_ATTACK;
 	}
+	else if (func >= TOUCH_FUNC_OPTION_LANGUAGE_SELECT && func < TOUCH_FUNC_OPTION_LANGUAGE_SELECT + TOTALLANGUAGE) {
+		systemKey = AVK_OPTION_LANGUAGE_SELECT + func - TOUCH_FUNC_OPTION_LANGUAGE_SELECT;
+	}
+	else if (func >= TOUCH_FUNC_OPTION_PUSHALARM_TYPE && func < TOUCH_FUNC_OPTION_PUSHALARM_TYPE + TOTAL_PUSHALARM) {
+		systemKey = AVK_OPTION_PUSHALARM_TYPE + func - TOUCH_FUNC_OPTION_PUSHALARM_TYPE;
+	}
 	else if (func >= TOUCH_FUNC_COLLECTIONS_REWARD && func < TOUCH_FUNC_COLLECTIONS_REWARD + TOTAL_COLLECTIONS) {
 		systemKey = AVK_COLLECTIONS_REWARD + func - TOUCH_FUNC_COLLECTIONS_REWARD;
 	}
@@ -2660,6 +2725,12 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_OPTION_PUSHALARM:
 			systemKey = AVK_OPTION_PUSHALARM;
+			break;
+		case TOUCH_FUNC_OPTION_HELP:
+			systemKey = AVK_OPTION_HELP;
+			break;
+		case TOUCH_FUNC_OPTION_HELP_MAIL:
+			systemKey = AVK_OPTION_HELP_MAIL;
 			break;
 		case TOUCH_FUNC_OPTION_ACCOUNT:
 			systemKey = AVK_OPTION_ACCOUNT;

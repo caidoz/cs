@@ -785,6 +785,11 @@ typedef struct _option {
 	bool guest;
 	unsigned char gameMode;
 	unsigned char cutOff;
+
+	//알림 종류별 끔 표시. 비트가 서 있으면 그 종류가 꺼진 것이다.
+	//"켜짐"을 저장하지 않는 이유는, 이 칸이 없던 예전 옵션 파일이 0으로
+	//읽히기 때문이다. 0 = 아무것도 안 껐음 = 전부 켜짐이라야 기본값이 맞다.
+	unsigned char pushAlarmOff;
 } OPTION;
 
 typedef struct _efffect {

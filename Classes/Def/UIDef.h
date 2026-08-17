@@ -1,5 +1,16 @@
 ﻿#pragma once
 
+//환경설정 하위 창에서 쓰는 개수. 값이 정해진 상수라 아래 큰 enum 안에
+//끼우면 그 자리부터 뒤따르는 번호가 전부 다시 매겨진다(POPUPTYPE 뒤에
+//FRAME_ 들이 같은 enum으로 이어져 있어서 실제로 충돌했다).
+enum {
+	//알림 설정에 들어가는 줄 수. 0번은 전체 스위치다.
+	TOTAL_PUSHALARM = 5,
+
+	//언어 개수. 국기 표와 이름 표의 길이다.
+	TOTALLANGUAGE = 12,
+};
+
 #ifndef _DEF_UI_H_
 #define _DEF_UI_H_
 
@@ -155,6 +166,11 @@ typedef enum _uiDef {
 	POPUPTYPE_GAMEOVER,
 	POPUPTYPE_HOWTOGETHEROES,
 	POPUPTYPE_HOWTOGETCREWS,
+
+	//환경설정에서 갈라져 나오는 창들
+	POPUPTYPE_OPTION_LANGUAGE,
+	POPUPTYPE_OPTION_PUSHALARM,
+	POPUPTYPE_OPTION_HELP,
 
 	TOTALPOPUPTYPE,
 

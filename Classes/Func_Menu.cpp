@@ -1479,6 +1479,37 @@ enum {
 	OPT_ICON_W = 66, OPT_ICON_H = 66,
 	OPT_ICONCOL0 = 9, OPT_ICONCOL1 = 88, OPT_ICONCOL2 = 166,
 	OPT_ICONROW0 = 441, OPT_ICONROW1 = 511, OPT_ICONROW2 = 581,
+
+	//목록 한 줄. 왼쪽에 아이콘이 들어갈 네모가 파여 있다.
+	OPT_LISTROW_X = 734, OPT_LISTROW_Y = 285, OPT_LISTROW_W = 286, OPT_LISTROW_H = 58, OPT_LISTROW_EDGE = 26,
+
+	//고른 줄(파란 리본). 위 목록 줄과 같은 자리에 덮어 그린다.
+	OPT_SELROW_X = 733, OPT_SELROW_Y = 31, OPT_SELROW_W = 248, OPT_SELROW_H = 64, OPT_SELROW_EDGE = 30,
+
+	//고름 표시(초록 체크)
+	OPT_CHECK_X = 730, OPT_CHECK_Y = 429, OPT_CHECK_W = 51, OPT_CHECK_H = 52,
+
+	//국기. 폭이 조금씩 달라서 x를 표로 들고 있는다(optionLangFlagX).
+	OPT_FLAG_W = 63, OPT_FLAG_H = 49,
+	OPT_FLAGROW0 = 690, OPT_FLAGROW1 = 748,
+
+	//고객센터 상담원 얼굴
+	OPT_FACE_X = 10, OPT_FACE_Y = 730, OPT_FACE_W = 154, OPT_FACE_H = 126,
+};
+
+//고객지원 메일 주소. 실제 주소가 정해지면 여기만 바꾸면 된다.
+#define OPTION_SUPPORTMAIL "support@bigpixel.kr"
+
+//국기 12개의 아틀라스 x좌표. 윗줄 6개, 아랫줄 6개 순서다.
+static const short optionLangFlagX[12] = {
+	581, 652, 725, 793, 861, 931,
+	581, 652, 725, 793, 861, 931,
+};
+
+//언어 이름은 그 언어로 적어야 알아본다. 번역하지 않는다.
+static const char* const optionLangName[12] = {
+	"한국어", "English", "日本語", "简体中文", "繁體中文", "Español",
+	"Português", "Français", "Deutsch", "ไทย", "Bahasa Indonesia", "Tiếng Việt",
 };
 
 //option.png 한 조각을 그대로 그린다.
@@ -1604,6 +1635,253 @@ static void DrawOptionToggle(bool on, float rightX, float centerY, float toggleH
 		DrawOptionPart(OPT_TOGGLEOFF_X, OPT_TOGGLEOFF_Y, OPT_TOGGLE_W, OPT_TOGGLE_H, tx, ty, sc);
 
 	SetRectPoint(tx, ty, toggleW, toggleH, touchFunc);
+}
+
+//환경설정에서 갈라져 나오는 창들의 공통 껍데기.
+//창 + 제목 + 닫기 터치영역까지 잡고, 본문 패널의 자리를 돌려준다.
+static void DrawOptionSubWindow(const char* title, float x, float y, float w, float h,
+	float* panelL, float* panelTop, float* panelW, float* panelH)
+{
+	float s = w / (float)OPT_WIN_W;
+	float innerL = x + 22.0f * s;
+	float innerR = x + w - 22.0f * s;
+
+	DrawOptionWindow(x, y, w, h);
+
+	//제목은 가운데의 방패 장식을 피해 살짝 왼쪽으로 뺀다. 본 창과 같은 기준이다.
+	SetFontColor(COLOR_WHITE);
+	CenterTextStr(title, x + w / 2 - 180.0f * s, y - 30.0f * s - 32.0f * s
+		+ (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
+
+	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s,
+		(float)OPT_CLOSE_W * s, (float)OPT_CLOSE_H * s, TOUCH_FUNC_POPUP_CLOSE);
+
+	*panelL = innerL;
+	*panelTop = y - 82.0f * s;
+	*panelW = innerR - innerL;
+	*panelH = (*panelTop) - (y - h + 24.0f * s);
+
+	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE,
+		*panelL, *panelTop, *panelW, *panelH, s * 0.5f);
+}
+
+//언어 설정. 국기 + 그 언어로 쓴 이름을 2열로 늘어놓는다.
+void OptionLanguageDraw(int x, int y, float zoom)
+{
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const float s = w / (float)OPT_WIN_W;
+
+	float panelL, panelTop, panelW, panelH;
+	float colW, rowH, gapX, gapY;
+	int i;
+
+	DrawOptionSubWindow("언어 설정", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+
+	gapX = 8.0f * zoom;
+	gapY = 6.0f * zoom;
+
+	colW = (panelW - 24.0f * zoom - gapX) / 2;
+	rowH = (panelH - 24.0f * zoom - gapY * 5) / 6;
+
+	for (i = 0; i < TOTALLANGUAGE; i++) {
+		float bx = panelL + 12.0f * zoom + (colW + gapX) * (i % 2);
+		float by = panelTop - 12.0f * zoom - (rowH + gapY) * (i / 2);
+		bool on = (option.language == i);
+
+		float flagH = rowH * 0.62f;
+		float flagSc = flagH / (float)OPT_FLAG_H;
+		float flagW = (float)OPT_FLAG_W * flagSc;
+		float tz = OPTIONTEXTZOOM;
+		float textL = bx + rowH * 0.16f + flagW + rowH * 0.18f;
+		float maxW = bx + colW - rowH * 0.5f - textL;
+		float tw;
+
+		if (on)
+			DrawOptionPart9(OPT_SELROW_X, OPT_SELROW_Y, OPT_SELROW_W, OPT_SELROW_H, OPT_SELROW_EDGE,
+				bx, by, colW, rowH, s * 0.5f);
+		else
+			DrawOptionPart9(OPT_LISTROW_X, OPT_LISTROW_Y, OPT_LISTROW_W, OPT_LISTROW_H, OPT_LISTROW_EDGE,
+				bx, by, colW, rowH, s * 0.5f);
+
+		DrawOptionPart(optionLangFlagX[i], i < 6 ? OPT_FLAGROW0 : OPT_FLAGROW1,
+			OPT_FLAG_W, OPT_FLAG_H,
+			bx + rowH * 0.16f, by - (rowH - flagH) / 2, flagSc);
+
+		//이름이 칸을 넘치면 그만큼 줄인다. Bahasa Indonesia가 제일 길다.
+		tw = StringWidth(optionLangName[i], tz);
+
+		if (tw > maxW && tw > 0)
+			tz *= maxW / tw;
+
+		//고른 줄은 파란 바탕이라 흰 글자, 아닌 줄은 크림 바탕이라 갈색 글자다.
+		SetFontColor(on ? COLOR_WHITE : COLOR_BROWN);
+		DrawTextStr(optionLangName[i], textL,
+			by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz);
+		SetFontColor(COLOR_WHITE);
+
+		if (on) {
+			float ch = rowH * 0.56f;
+			float csc = ch / (float)OPT_CHECK_H;
+
+			DrawOptionPart(OPT_CHECK_X, OPT_CHECK_Y, OPT_CHECK_W, OPT_CHECK_H,
+				bx + colW - rowH * 0.16f - (float)OPT_CHECK_W * csc,
+				by - (rowH - ch) / 2, csc);
+		}
+
+		SetRectPoint(bx, by, colW, rowH, TOUCH_FUNC_OPTION_LANGUAGE_SELECT + i);
+	}
+}
+
+//알림 설정. 전체 스위치 하나와 종류별 스위치들.
+void OptionPushAlarmDraw(int x, int y, float zoom)
+{
+	//표에 이름과 아이콘만 적어두고 아래에서 한 줄씩 찍는다.
+	static const struct {
+		const char* name;
+		int iconX, iconY;
+	} row[TOTAL_PUSHALARM] = {
+		{ "전체 푸시 알림", OPT_ICONCOL2, OPT_ICONROW0 },
+		{ "하트 충전 완료", OPT_ICONCOL0, OPT_ICONROW1 },
+		{ "보스 등장",      OPT_ICONCOL0, OPT_ICONROW2 },
+		{ "이벤트 알림",    OPT_ICONCOL1, OPT_ICONROW2 },
+		{ "마케팅 알림",    OPT_ICONCOL2, OPT_ICONROW1 },
+	};
+
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const float s = w / (float)OPT_WIN_W;
+
+	float panelL, panelTop, panelW, panelH;
+	float rowH, cy;
+	int i;
+
+	DrawOptionSubWindow("알림 설정", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+
+	rowH = 62.0f * zoom;
+	cy = panelTop - 14.0f * zoom;
+
+	for (i = 0; i < TOTAL_PUSHALARM; i++) {
+		float bx = panelL + 12.0f * zoom;
+		float bw = panelW - 24.0f * zoom;
+
+		//전체 스위치는 나머지와 성격이 달라서 한 칸 띄운다.
+		if (i == 1)
+			cy -= 10.0f * zoom;
+
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			bx, cy, bw, rowH, s * 0.5f);
+
+		DrawOptionRowLabel(row[i].iconX, row[i].iconY, row[i].name, bx, cy, rowH);
+
+		//전체가 꺼져 있으면 나머지는 어차피 안 나가므로 같이 꺼진 것으로 보여준다.
+		DrawOptionToggle(option.pushAlarm != 0
+			&& (i == 0 || (option.pushAlarmOff & (1 << i)) == 0),
+			bx + bw - rowH * 0.2f, cy - rowH / 2, rowH * 0.62f,
+			TOUCH_FUNC_OPTION_PUSHALARM_TYPE + i);
+
+		cy -= rowH + 6.0f * zoom;
+	}
+}
+
+//고객센터. 문의 메일 주소와 함께 보내야 할 정보를 알려준다.
+void OptionHelpDraw(int x, int y, float zoom)
+{
+	static const char* const need[4] = {
+		"게임 닉네임", "사용자 ID", "사용 기기 및 OS 버전", "문의 내용 및 관련 스크린샷"
+	};
+
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const float s = w / (float)OPT_WIN_W;
+
+	float panelL, panelTop, panelW, panelH;
+	float bx, bw, cy, rowH;
+	int i;
+
+	DrawOptionSubWindow("고객센터", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+
+	bx = panelL + 12.0f * zoom;
+	bw = panelW - 24.0f * zoom;
+	cy = panelTop - 14.0f * zoom;
+
+	//안내 문구
+	{
+		float boxH = 92.0f * zoom;
+		float portrait = boxH * 0.8f;
+
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			bx, cy, bw, boxH, s * 0.5f);
+
+		//상담원 얼굴은 아틀라스 왼쪽 아래에 따로 들어 있다.
+		DrawOptionPart(OPT_FACE_X, OPT_FACE_Y, OPT_FACE_W, OPT_FACE_H,
+			bx + 10.0f * zoom, cy - (boxH - portrait) / 2, portrait / (float)OPT_FACE_H);
+
+		SetFontColor(COLOR_BROWN);
+		DrawTextStr("게임 이용 중 도움이 필요하신가요?",
+			bx + 20.0f * zoom + portrait, cy - 26.0f * zoom, OPTIONTEXTZOOM);
+		DrawTextStr("아래 이메일로 문의해 주세요.",
+			bx + 20.0f * zoom + portrait, cy - 52.0f * zoom, OPTIONTEXTZOOM);
+		DrawTextStr("확인 후 순차적으로 답변드리겠습니다.",
+			bx + 20.0f * zoom + portrait, cy - 78.0f * zoom, OPTIONTEXTZOOM);
+		SetFontColor(COLOR_WHITE);
+
+		cy -= boxH + 12.0f * zoom;
+	}
+
+	//메일 주소 + 문의 버튼
+	{
+		float boxH = 104.0f * zoom;
+		float btnH = 44.0f * zoom;
+
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			bx, cy, bw, boxH, s * 0.5f);
+
+		DrawOptionRibbon("고객지원 이메일", bx + bw / 2 - 80.0f * zoom, cy + 8.0f * zoom,
+			160.0f * zoom, 34.0f * zoom, s * 0.5f);
+
+		SetFontColor(COLOR_BROWN);
+		CenterTextStr(OPTION_SUPPORTMAIL, bx + bw / 2, cy - 46.0f * zoom, OPTIONROWTEXTZOOM);
+		SetFontColor(COLOR_WHITE);
+
+		DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE,
+			bx + 20.0f * zoom, cy - boxH + btnH + 8.0f * zoom, bw - 40.0f * zoom, btnH, s * 0.5f);
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStr("이메일 문의", bx + bw / 2,
+			cy - boxH + btnH / 2 + 8.0f * zoom + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+
+		SetRectPoint(bx + 20.0f * zoom, cy - boxH + btnH + 8.0f * zoom,
+			bw - 40.0f * zoom, btnH, TOUCH_FUNC_OPTION_HELP_MAIL);
+
+		cy -= boxH + 12.0f * zoom;
+	}
+
+	//문의 시 함께 보낼 정보
+	rowH = 40.0f * zoom;
+
+	DrawOptionRibbon("문의 시 아래 정보를 보내주세요", bx, cy, bw * 0.86f, 34.0f * zoom, s * 0.5f);
+	cy -= 40.0f * zoom;
+
+	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+		bx, cy, bw, rowH * 4, s * 0.5f);
+
+	for (i = 0; i < 4; i++) {
+		SetFontColor(COLOR_BROWN);
+		DrawTextStr(need[i], bx + 20.0f * zoom,
+			cy - rowH / 2 + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+		SetFontColor(COLOR_WHITE);
+
+		cy -= rowH;
+	}
+
+	//운영시간
+	cy -= 12.0f * zoom;
+
+	SetFontColor(COLOR_BROWN);
+	DrawTextStr("운영시간  평일 10:00 ~ 18:00 (주말/공휴일 휴무)",
+		bx + 8.0f * zoom, cy, OPTIONTEXTZOOM);
+	SetFontColor(COLOR_WHITE);
 }
 
 void OptionDraw(int x, int y, float zoom)
