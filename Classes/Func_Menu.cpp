@@ -1676,7 +1676,7 @@ static void DrawOptionSubWindow(const char* title, int badgeX, float x, float y,
 	//제목은 창 한가운데. 아이콘이 위로 빠져 있으므로 옆으로 피할 필요가 없다.
 	//파란 타이틀바 안에 들어가야 하므로 금색 모서리보다 위에 놓는다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(title, x + w / 2, y - 18.0f * s - 20.0f * z
+	CenterTextStr(title, x + w / 2, y - 25.0f * s - 22.0f * z
 		+ (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
 	SetFontColor(COLOR_WHITE);
 
@@ -1858,14 +1858,16 @@ void OptionHelpDraw(int x, int y, float zoom)
 		//얼굴은 상자보다 살짝 크게 잡아 위아래로 넘치게 둔다. 딱 맞추면
 		//가운데 안내문에 비해 너무 작아 보인다.
 		float face = boxH * 1.16f;
-		float textL = bx + pad + (float)OPT_FACE_W * (face / (float)OPT_FACE_H) + pad;
+		float textL = bx + pad * 0.3f + (float)OPT_FACE_W * (face / (float)OPT_FACE_H) + pad * 0.6f;
 		float ty = cy - pad;
 
 		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
 			bx, cy, bw, boxH, s * 0.5f);
 
+		//상자보다 큰 만큼 위로만 넘치게 둔다. 아래를 상자 아랫변에 맞춰야
+		//몸이 잘린 것처럼 보이지 않는다.
 		DrawOptionPart(OPT_FACE_X, OPT_FACE_Y, OPT_FACE_W, OPT_FACE_H,
-			bx + pad, cy + (face - boxH) / 2, face / (float)OPT_FACE_H);
+			bx + pad * 0.3f, cy - boxH + face, face / (float)OPT_FACE_H);
 
 		SetFontColor(COLOR_WHITE);
 
