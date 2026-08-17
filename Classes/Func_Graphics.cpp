@@ -4737,9 +4737,12 @@ void DrawButtonPressHighlight(void)
 	if (alpha <= 0)
 		return;
 
+	//MemRectRound는 모서리를 만드느라 MemRect를 90번 가까이 부른다.
+	//누를 때마다 스프라이트를 그만큼 쓰는 데다, 겹치는 자리마다 알파가
+	//쌓여 모서리만 진해진다. 여기서는 그냥 사각형 하나면 된다.
 	SetAlpha(alpha);
-	MemRectRound(buttonPressRect[0], buttonPressRect[1],
-		buttonPressRect[2], buttonPressRect[3], COLOR_WHITE, 2 * _2X);
+	MemRect(buttonPressRect[0], buttonPressRect[1],
+		buttonPressRect[2], buttonPressRect[3], COLOR_WHITE);
 	SetAlpha(32);
 }
 
