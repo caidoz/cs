@@ -1904,8 +1904,13 @@ void DrawPopUp(int idx)
 	}
 	//���ư
 
-	//환경설정은 창 자체의 타이틀바에 X버튼이 있으므로 좌측상단 뒤로가기를 그리지 않는다.
-	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER && p->type != POPUPTYPE_OPTION)) {
+	//환경설정과 그 하위 창들은 창 자체의 타이틀바에 X버튼이 있으므로
+	//좌측상단 뒤로가기를 그리지 않는다.
+	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER
+		&& p->type != POPUPTYPE_OPTION
+		&& p->type != POPUPTYPE_OPTION_LANGUAGE
+		&& p->type != POPUPTYPE_OPTION_PUSHALARM
+		&& p->type != POPUPTYPE_OPTION_HELP)) {
 		float xMarkZoom = 1.0f;
 		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom);
 

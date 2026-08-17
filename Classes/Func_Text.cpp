@@ -144,10 +144,12 @@ void EraiseColorFont(const char* str)
 	int offset = 0;
 	int cursor = 0;
 
-	//일단 폰트 컬러데이터를 현재 폰트 컬러로 바꿔주고
-	//for (i = 0; i < 256; i++)
-	//	bmFontColor[i] = fontColor;
-	memset(&bmFontColor, fontColor, sizeof(bmFontColor));
+	//글자마다의 색을 현재 폰트 색으로 채운다.
+	//memset은 바이트 단위라 int 배열에 색을 넣을 수 없다. 0x3E3C39를 넣으면
+	//낮은 바이트 0x39만 네 번 깔려 0x393939, 즉 회색이 된다. 그래서 지금까지
+	//R/G/B가 같은 색(흰색, 검정)만 제대로 나오고 나머지는 전부 회색이었다.
+	for (i = 0; i < (int)(sizeof(bmFontColor) / sizeof(bmFontColor[0])); i++)
+		bmFontColor[i] = fontColor;
 	//색상기호나 줄바꿈 기호를 짤라내고 남은 텍스트가 담길 공간
 	memset(&labelStr, 0, sizeof(labelStr));
 

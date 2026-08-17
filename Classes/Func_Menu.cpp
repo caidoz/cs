@@ -1495,6 +1495,14 @@ enum {
 
 	//고객센터 상담원 얼굴
 	OPT_FACE_X = 10, OPT_FACE_Y = 730, OPT_FACE_W = 154, OPT_FACE_H = 126,
+
+	//타이틀바 한가운데에 얹는 방패 아이콘. 창마다 다른 것을 쓴다.
+	OPT_BADGE_Y = 652, OPT_BADGE_W = 80, OPT_BADGE_H = 88,
+	OPT_BADGE_LOCK = 9,		//개인정보처리방침
+	OPT_BADGE_TERMS = 105,	//이용약관
+	OPT_BADGE_HELP = 202,	//고객센터
+	OPT_BADGE_GLOBE = 306,	//언어 설정
+	OPT_BADGE_BELL = 409,	//알림 설정
 };
 
 //고객지원 메일 주소. 실제 주소가 정해지면 여기만 바꾸면 된다.
@@ -1639,7 +1647,7 @@ static void DrawOptionToggle(bool on, float rightX, float centerY, float toggleH
 
 //환경설정에서 갈라져 나오는 창들의 공통 껍데기.
 //창 + 제목 + 닫기 터치영역까지 잡고, 본문 패널의 자리를 돌려준다.
-static void DrawOptionSubWindow(const char* title, float x, float y, float w, float h,
+static void DrawOptionSubWindow(const char* title, int badgeX, float x, float y, float w, float h,
 	float* panelL, float* panelTop, float* panelW, float* panelH)
 {
 	float s = w / (float)OPT_WIN_W;
@@ -1651,9 +1659,19 @@ static void DrawOptionSubWindow(const char* title, float x, float y, float w, fl
 
 	DrawOptionWindow(x, y, w, h);
 
-	//제목은 가운데의 방패 장식을 피해 살짝 왼쪽으로 뺀다. 본 창과 같은 기준이다.
+	//창마다 다른 방패 아이콘을 타이틀바 한가운데 위쪽에 얹는다.
+	{
+		float badgeH = 74.0f * z;
+		float badgeSc = badgeH / (float)OPT_BADGE_H;
+
+		DrawOptionPart(badgeX, OPT_BADGE_Y, OPT_BADGE_W, OPT_BADGE_H,
+			x + w / 2 - (float)OPT_BADGE_W * badgeSc / 2,
+			y + badgeH * 0.34f, badgeSc);
+	}
+
+	//제목은 창 한가운데. 아이콘이 위로 빠져 있으므로 옆으로 피할 필요가 없다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(title, x + w / 2 - 180.0f * z, y - 30.0f * s - 32.0f * z
+	CenterTextStr(title, x + w / 2, y - 34.0f * s - 30.0f * z
 		+ (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
 
 	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s,
@@ -1679,7 +1697,7 @@ void OptionLanguageDraw(int x, int y, float zoom)
 	float colW, rowH, gapX, gapY;
 	int i;
 
-	DrawOptionSubWindow("언어 설정", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+	DrawOptionSubWindow("언어 설정", OPT_BADGE_GLOBE, x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
 
 	gapX = 8.0f * zoom;
 	gapY = 6.0f * zoom;
@@ -1759,7 +1777,7 @@ void OptionPushAlarmDraw(int x, int y, float zoom)
 	float rowH, cy;
 	int i;
 
-	DrawOptionSubWindow("알림 설정", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+	DrawOptionSubWindow("알림 설정", OPT_BADGE_BELL, x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
 
 	rowH = 62.0f * zoom;
 	cy = panelTop - 14.0f * zoom;
@@ -1813,7 +1831,7 @@ void OptionHelpDraw(int x, int y, float zoom)
 	float bx, bw, cy;
 	int i;
 
-	DrawOptionSubWindow("고객센터", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
+	DrawOptionSubWindow("고객센터", OPT_BADGE_HELP, x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
 
 	bx = panelL + pad;
 	bw = panelW - pad * 2;
