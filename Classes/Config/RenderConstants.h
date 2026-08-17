@@ -47,6 +47,26 @@
 #define HITZOOMOUTFRAME            16             // 원래 배율로 돌아가는 프레임
 #define HITZOOMMAXHOLD             240            // 물고 있는 최대 프레임(안전장치)
 
+// --- 연출 줌 (데모의 FOCUS처럼 특정 대상을 잠깐 당겨 보여줄 때)
+// 공격 줌과 같은 변환(hitZoom)을 쓴다. 두 개를 따로 두면 서로 덮어써서
+// 배율이 튄다. 공격 줌이 걸려 있으면 그쪽이 이긴다.
+// 연출이므로 공격 줌보다 약하게, 느리게 들어가고 나온다.
+#define FOCUSZOOMMAX               1.35f          // 포커스 대상 확대 배율
+#define FOCUSZOOMINFRAME           16             // 최대 배율까지 올라가는 프레임
+#define FOCUSZOOMHOLD              (FPS * 4 / 5)  // 당긴 채로 물고 있는 프레임
+#define FOCUSZOOMCOOL              (FPS * 3 / 2)  // 다음 연출을 받기까지의 쿨다운
+#define FOCUSZOOM_MAXREQ           16             // 한 번에 쌓아둘 수 있는 요청 수
+#define FOCUSZOOM_REQTTL           (FPS * 3)      // 요청이 살아 있는 프레임(넘으면 버린다)
+
+// 연출 줌 우선순위. 되돌릴 수 없고 한 번뿐인 것일수록 높다.
+// 일반 몬스터 소환처럼 수십 번 반복되는 것은 놓쳐도 되므로 가장 낮다.
+#define FOCUSPRI_CREWNEW           50             // 동료 신규 등장
+#define FOCUSPRI_EQUIP             40             // 장비 장착/교체
+#define FOCUSPRI_CREWCHANGE        35             // 동료 교체
+#define FOCUSPRI_BOSSSUMMON        30             // 보스/특수 몬스터 소환
+#define FOCUSPRI_BOXDROP           20             // 상자 드랍
+#define FOCUSPRI_SUMMON            10             // 일반 몬스터 소환
+
 // ---
 #define GOLDBARZOOM                0.5f           // 골드바 줌
 #define CROWNBARZOOM               0.5f           // 왕관바 줌

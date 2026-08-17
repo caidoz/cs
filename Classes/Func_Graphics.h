@@ -7,6 +7,12 @@
 bool HitZoomOn(void);
 void HitZoomPoint(int* x, int* y);
 void HitZoomUpdate(void);
+void HitZoomPause(void);
+void HitZoomResume(void);
+void SetFocusZoom(int obj);
+void ClearFocusZoom(void);
+void RequestFocusZoom(int obj, int priority);
+void ClearFocusZoomRequest(void);
 
 // Image Handling & Drawing
 void NewGameImgLoad(void);

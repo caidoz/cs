@@ -1495,6 +1495,10 @@ float hitZoom = 1.0f;
 float hitZoomCX = 0.0f, hitZoomCY = 0.0f;
 int hitZoomFrame = 0;
 int hitStopFrame = 0;
+int focusZoomObj = -1;
+int focusZoomFrame = 0;
+float focusZoomMax = FOCUSZOOMMAX;
+float focusZoomWX = 0, focusZoomWY = 0;
 bool worldDrawing = false;
 
 // 게임 상태

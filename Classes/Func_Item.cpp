@@ -3015,6 +3015,9 @@ void EquipItem(OBJECT* pObj, ITEM* it)
 
 	ArrangeInven();
 
+	//장착한 캐릭터를 잠깐 당겨 본다. 장비가 바뀐 모습이 바로 보여야 손맛이 산다.
+	RequestFocusZoom(GetObjFromPtr(pObj), FOCUSPRI_EQUIP);
+
 	SaveGame();
 
 }

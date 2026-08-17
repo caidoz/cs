@@ -1842,6 +1842,8 @@ typedef enum _skillDef {
 	ATTACKEDFRAME = FPS,
 	BOXATTACKEDFRAME = ATTACKEDFRAME / 5,
 	TOUCHIDLEFRAME = FPS * 10,
+	//터치 포인터(DrawTouchPoint)가 남아 있는 프레임. 1초는 너무 길어 절반으로 줄였다.
+	TOUCHPOINTFRAME = FPS / 2,
 	TABMENUFRAME = 8,
 
 	POPUPFRAME = 5,

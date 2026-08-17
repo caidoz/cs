@@ -2418,6 +2418,10 @@ extern float hitZoom;
 extern float hitZoomCX, hitZoomCY;
 extern int hitZoomFrame;	//공격 줌을 물고 있는 프레임 수(0이면 놓은 상태)
 extern int hitStopFrame;	//절반 속도로 돌린 프레임 수. 홀수인 프레임은 건너뛴다
+extern int focusZoomObj;	//연출 줌으로 따라가는 ao[] 인덱스(-1이면 아래 월드좌표 고정)
+extern int focusZoomFrame;	//연출 줌을 물고 있는 남은 프레임
+extern float focusZoomMax;	//이번 연출의 목표 배율. 담을 것이 넓으면 덜 당긴다
+extern float focusZoomWX, focusZoomWY;	//여러 대상을 담을 때의 무게중심(월드좌표)
 extern bool worldDrawing;	//지금 그리는 것이 월드인가
 
 // 게임 상태

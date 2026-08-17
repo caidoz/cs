@@ -3,12 +3,29 @@
 #include "Text.h"
 #include "Data.h"
 
-//공격 줌이 걸려 있는가. 월드를 그리는 중이고 배율이 1이 아닐 때만 좌표를 손댄다.
+//타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미
+//화면 절대좌표인 것들(전체화면 이펙트, 레터박스, DX/2 기준으로 놓는 강타격 연출)에 쓴다.
+//이런 것들에 월드 변환을 걸면 줌 중심에서 멀수록 크게 밀려나고, 소프트웨어 클리핑이
+//밀려난 좌표로 텍스처 사각형을 다시 잡으면서 화면이 통째로 뭉개진다.
+static int hitZoomHold = 0;
+
+void HitZoomPause(void)
+{
+	hitZoomHold++;
+}
+
+void HitZoomResume(void)
+{
+	if (hitZoomHold > 0)
+		hitZoomHold--;
+}
+
+//공격 줌/연출 줌이 걸려 있는가. 월드를 그리는 중이고 배율이 1이 아닐 때만 좌표를 손댄다.
 //1.0f와의 비교는 부동소수 오차 때문에 여유를 준다. 안 그러면 줌이 다 풀린 뒤에도
 //곱셈이 계속 걸려 화면 전체가 1픽셀씩 미세하게 떨린다.
 bool HitZoomOn(void)
 {
-	return worldDrawing && (hitZoom > 1.001f);
+	return worldDrawing && !hitZoomHold && (hitZoom > 1.001f);
 }
 
 //화면좌표를 타격 줌이 걸린 자리로 옮긴다. 줌 중심에서 hitZoom배 만큼 밀어낸다.
@@ -41,6 +58,201 @@ static void HitZoomSetCenter(int x, int y)
 	}
 }
 
+//연출 줌을 건다. obj는 ao[] 인덱스이고, 그 대상을 FOCUSZOOMHOLD 동안 당겨 본다.
+//데모의 EFFECT_FOCUS처럼 카메라를 옮기는 자리에서 같이 불러주면 된다.
+//공격 줌이 걸려 있는 동안에는 무시한다 - 전투 연출이 우선이고, 두 줌이 같은
+//hitZoom을 두고 싸우면 배율이 눈에 띄게 튄다.
+void SetFocusZoom(int obj)
+{
+	if (obj < 0 || obj >= TOTALOBJECT)
+		return;
+
+	if (hitZoomFrame > 0)
+		return;
+
+	focusZoomObj = obj;
+	focusZoomFrame = FOCUSZOOMHOLD;
+	focusZoomMax = FOCUSZOOMMAX;
+}
+
+void ClearFocusZoom(void)
+{
+	focusZoomObj = -1;
+	focusZoomFrame = 0;
+	focusZoomMax = FOCUSZOOMMAX;
+}
+
+//----------------------------------------------------------------------
+// 연출 줌 요청 큐
+//
+// 인게임에서는 동료 등장, 장비 장착, 몬스터 소환, 상자 드랍이 한꺼번에
+// 몰린다. 이벤트마다 그 자리에서 줌을 걸면 마지막 호출이 이기고, 매 프레임
+// 대상이 바뀌면 카메라가 경련한다. 그래서 즉시 걸지 않고 여기 쌓아 두었다가
+// HitZoomUpdate()가 프레임마다 하나만 골라 실행한다.
+//
+// 같은 우선순위가 여럿이면 하나를 고르지 않고 그것들을 다 담는 줌을 건다.
+// "누구를 볼 것인가" 문제가 아예 사라지고, 정보량도 더 많다.
+//----------------------------------------------------------------------
+typedef struct {
+	int obj;
+	int priority;
+	int ttl;
+} FOCUSZOOMREQ;
+
+static FOCUSZOOMREQ focusReq[FOCUSZOOM_MAXREQ];
+static int focusReqCnt = 0;
+static int focusZoomCool = 0;
+
+void RequestFocusZoom(int obj, int priority)
+{
+	int i, worst = -1;
+
+	//등장 연출(REGENMOVE) 중인 놈은 아직 active가 아니다. 소환은 바로 그 순간에
+	//요청이 들어오므로 여기서 걸러버리면 몬스터 소환은 영영 줌이 안 걸린다.
+	if (obj < 0 || obj >= TOTALOBJECT)
+		return;
+
+	if (!ao[obj].active && ao[obj].moveHandler != REGENMOVE)
+		return;
+
+	//같은 대상이 이미 있으면 더 높은 우선순위로만 올린다.
+	for (i = 0; i < focusReqCnt; i++) {
+		if (focusReq[i].obj == obj) {
+			if (priority > focusReq[i].priority)
+				focusReq[i].priority = priority;
+			focusReq[i].ttl = FOCUSZOOM_REQTTL;
+			return;
+		}
+	}
+
+	if (focusReqCnt < FOCUSZOOM_MAXREQ) {
+		focusReq[focusReqCnt].obj = obj;
+		focusReq[focusReqCnt].priority = priority;
+		focusReq[focusReqCnt].ttl = FOCUSZOOM_REQTTL;
+		focusReqCnt++;
+		return;
+	}
+
+	//꽉 찼으면 가장 덜 중요한 것을 밀어낸다.
+	for (i = 0; i < focusReqCnt; i++) {
+		if (worst < 0 || focusReq[i].priority < focusReq[worst].priority)
+			worst = i;
+	}
+
+	if (worst >= 0 && priority > focusReq[worst].priority) {
+		focusReq[worst].obj = obj;
+		focusReq[worst].priority = priority;
+		focusReq[worst].ttl = FOCUSZOOM_REQTTL;
+	}
+}
+
+void ClearFocusZoomRequest(void)
+{
+	focusReqCnt = 0;
+	focusZoomCool = 0;
+}
+
+static void FocusZoomDropRequest(int idx)
+{
+	if (idx < 0 || idx >= focusReqCnt)
+		return;
+
+	focusReq[idx] = focusReq[focusReqCnt - 1];
+	focusReqCnt--;
+}
+
+//쌓인 요청 중 하나를 골라 실제 줌으로 옮긴다.
+static void FocusZoomPickRequest(void)
+{
+	int i, best = -1;
+	int minX, maxX, minY, maxY;
+	float boxW;
+
+	//나이를 먹이고, 대상이 사라졌거나 너무 오래된 것은 버린다.
+	for (i = focusReqCnt - 1; i >= 0; i--) {
+		focusReq[i].ttl--;
+
+		if (focusReq[i].ttl <= 0
+			|| (!ao[focusReq[i].obj].active
+				&& ao[focusReq[i].obj].moveHandler != REGENMOVE))
+			FocusZoomDropRequest(i);
+	}
+
+	//쿨다운은 요청이 있든 없든 흐른다. 큐가 비었을 때 멈춰 있으면
+	//한참 뒤에 들어온 첫 요청이 이유 없이 쿨다운을 다 기다린다.
+	if (focusZoomCool > 0)
+		focusZoomCool--;
+
+	if (focusReqCnt == 0 || focusZoomCool > 0)
+		return;
+
+	//이미 무언가를 보고 있으면 끝날 때까지 기다린다.
+	if (focusZoomFrame > 0 || hitZoomFrame > 0)
+		return;
+
+	//전투 시퀀스가 도는 중에는 연출을 얹지 않는다. 끝나면 그때 하나씩 푼다.
+	if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
+		&& (attackDelay || attackSequence != ATTACKSEQUENCE_READY))
+		return;
+
+	//등장 연출이 끝나 제자리에 선 것만 고른다. 연출 중에는 좌표가 화면 밖이라
+	//그대로 당기면 엉뚱한 곳을 본다.
+	for (i = 0; i < focusReqCnt; i++) {
+		if (!ao[focusReq[i].obj].active)
+			continue;
+
+		if (best < 0 || focusReq[i].priority > focusReq[best].priority)
+			best = i;
+	}
+
+	if (best < 0)
+		return;
+
+	//같은 우선순위끼리는 전부 담는다.
+	minX = maxX = (int)ao[focusReq[best].obj].x;
+	minY = maxY = (int)ao[focusReq[best].obj].y;
+
+	for (i = 0; i < focusReqCnt; i++) {
+		if (focusReq[i].priority != focusReq[best].priority
+			|| !ao[focusReq[i].obj].active)
+			continue;
+
+		minX = Min(minX, (int)ao[focusReq[i].obj].x);
+		maxX = Max(maxX, (int)ao[focusReq[i].obj].x);
+		minY = Min(minY, (int)ao[focusReq[i].obj].y);
+		maxY = Max(maxY, (int)ao[focusReq[i].obj].y);
+	}
+
+	//담을 것이 넓으면 그만큼 덜 당긴다. 화면 밖으로 밀어내면 안 보여준 것만 못하다.
+	boxW = (float)(maxX - minX) + 96.0f * _2X;
+
+	focusZoomMax = (float)(DX - 2 * xOffset) / boxW;
+	focusZoomMax = Min(FOCUSZOOMMAX, Max(1.0f, focusZoomMax));
+
+	//대상이 하나면 그 대상을 따라간다(움직여도 화면 중앙에 남는다).
+	//여럿이면 무게중심에 고정한다 - 하나를 쫓으면 나머지가 밀려 나간다.
+	if (minX == maxX && minY == maxY)
+		focusZoomObj = focusReq[best].obj;
+	else {
+		focusZoomObj = -1;
+		focusZoomWX = (float)(minX + maxX) / 2;
+		focusZoomWY = (float)(minY + maxY) / 2;
+	}
+
+	focusZoomFrame = FOCUSZOOMHOLD;
+	focusZoomCool = FOCUSZOOMCOOL;
+
+	//쓴 요청은 비운다. 낮은 우선순위는 다음 차례를 기다린다.
+	for (i = focusReqCnt - 1; i >= 0; i--) {
+		if (focusReq[i].priority == focusReq[best].priority)
+			FocusZoomDropRequest(i);
+	}
+
+	//1배와 다를 게 없으면 굳이 걸지 않는다.
+	if (focusZoomMax <= 1.001f)
+		ClearFocusZoom();
+}
+
 //지금 공격 중인 아군을 찾는다. 없으면 -1.
 //pObj->attack은 공격이 시작될 때 켜지고 스킬표의 _END에서 꺼지므로
 //공격의 시작과 끝을 그대로 알려준다.
@@ -70,6 +282,9 @@ void HitZoomUpdate(void)
 {
 	int attacker = HitZoomAttacker();
 
+	//쌓인 연출 요청 중 하나를 고른다. 공격 줌이 걸려 있으면 안에서 알아서 기다린다.
+	FocusZoomPickRequest();
+
 	//어떤 이유로 attack이 안 풀려도 화면이 확대된 채 굳지 않게 상한을 둔다.
 	if (attacker >= 0 && hitZoomFrame < HITZOOMMAXHOLD) {
 		HitZoomSetCenter(xOffset + (int)ao[attacker].x - rx,
@@ -78,13 +293,41 @@ void HitZoomUpdate(void)
 		hitZoomFrame++;
 		hitStopFrame++;	//공격 중에는 월드를 절반 속도로 돌린다
 
+		//공격이 시작되면 연출 줌은 자리를 내준다.
+		ClearFocusZoom();
+
 		hitZoom += (HITZOOMMAX - 1.0f) / HITZOOMINFRAME;
 		if (hitZoom > HITZOOMMAX)
 			hitZoom = HITZOOMMAX;
 	}
+	//연출 줌(EFFECT_FOCUS, 요청 큐). 대상이 사라지면 바로 놓는다.
+	else if (focusZoomFrame > 0
+		&& (focusZoomObj < 0 || ao[focusZoomObj].active)) {
+		float wx = focusZoomWX;
+		float wy = focusZoomWY;
+
+		hitZoomFrame = 0;
+		hitStopFrame = 0;
+
+		//대상이 하나면 따라가고, 여럿을 담은 것이면 무게중심에 고정한다.
+		if (focusZoomObj >= 0) {
+			wx = ao[focusZoomObj].x;
+			wy = ao[focusZoomObj].y;
+		}
+
+		HitZoomSetCenter(xOffset + (int)wx - rx,
+			STATUSWIN_Y + (rh - 4) * TSIZE - (int)wy - ry);
+
+		focusZoomFrame--;
+
+		hitZoom += (focusZoomMax - 1.0f) / FOCUSZOOMINFRAME;
+		if (hitZoom > focusZoomMax)
+			hitZoom = focusZoomMax;
+	}
 	else {
 		hitZoomFrame = 0;
 		hitStopFrame = 0;	//공격이 끝나면 속도를 원래대로 돌린다
+		ClearFocusZoom();
 
 		if (hitZoom > 1.0f) {
 			hitZoom -= (HITZOOMMAX - 1.0f) / HITZOOMOUTFRAME;
@@ -845,13 +1088,17 @@ void BrightImage(int w, int h, int xs, int ys, int x, int y, int res, float zoom
 	x += offX;
 	y += offY;
 
-	//타격 줌
+	//타격 줌. 원래 배율을 안 쓰던 함수라 아래에서 setScale로만 늘린다.
+	//그래서 클리핑 계산도 그 배율로 나눠야 한다. 화면에서 잘린 픽셀 수를
+	//그대로 텍스처 좌표에 더하면 배율만큼 과하게 밀려서 엉뚱한 곳을 샘플링한다.
+	float mag = HitZoomOn() ? hitZoom : 1.0f;
+
 	HitZoomPoint(&x, &y);
 #ifdef CLIPPING
-	if (x < clipX) { xs -= (x - clipX); w += (x - clipX); x = clipX; }
-	if (x + w > clipX2) { w = clipX2 - x; }
-	if (y > clipY) { ys += (y - clipY); h -= (y - clipY); y = clipY; }
-	if (y - h < clipY2) { h = y - clipY2; }
+	if (x < clipX) { xs += (int)((clipX - x) / mag); w -= (int)((clipX - x) / mag); x = clipX; }
+	if (x + (int)(w * mag) > clipX2) { w = (int)((clipX2 - x) / mag); }
+	if (y > clipY) { ys += (int)((y - clipY) / mag); h -= (int)((y - clipY) / mag); y = clipY; }
+	if (y - (int)(h * mag) < clipY2) { h = (int)((y - clipY2) / mag); }
 	if (w <= 0 || h <= 0)
 		return;
 #endif
@@ -2037,7 +2284,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	int crewX, crewY;
 	int crewMotion = false;
 	float cloudZoom;
-	float zoomBefore;
+	float zoomBefore = 1.0f;
 	int objStartY = STATUSWIN_Y + (rh - 4) * TSIZE;
 
 	memset(&sortedCrewIdx, -1, sizeof(sortedCrewIdx));
@@ -2057,7 +2304,10 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			demoFrame++;
 
 		//SetAlpha(Min(demoFrame, 8));
+		//화면 전체 색판이라 월드 변환에서 뺀다.
+		HitZoomPause();
 		MemRect(xOffset, STATUSWIN_Y, DX - 2 * xOffset, REALDY, 0x7B48AE);
+		HitZoomResume();
 
 		for (i = -64 * _2X; i < rw * TSIZE + 64 * _2X; i += 64 * _2X) {
 			//큰안개
@@ -2126,9 +2376,12 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	}
 
 	if (effect.color) {
+		//화면 전체를 덮는 색판이다. 월드 변환을 걸면 밀리고 늘어나 화면이 반만 덮인다.
+		HitZoomPause();
 		SetAlpha(24);
 		MemRect(xOffset, STATUSWIN_Y + TILEDY, DX - 2 * xOffset, TILEDY, effect.color);
 		SetAlpha(32);
+		HitZoomResume();
 	}
 
 	UnSectionClip(false);
@@ -2204,7 +2457,10 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			if (ao[i].type == NPC_SHIP && ao[i].active == true) {
 				ao[i].zoom *= dioramaZoom;
 				DrawObj(&ao[i]);
-				ao[i].zoom /= zoomBefore;
+				//dioramaZoom으로 곱했으니 dioramaZoom으로 나눠야 한다.
+				//zoomBefore는 초기화도 안 된 지역변수라, 여기 걸리면 zoom이
+				//매 프레임 엉뚱한 값으로 부풀어 배가 거대해지거나 NaN이 된다.
+				ao[i].zoom /= dioramaZoom;
 			}
 		}
 
@@ -2935,8 +3191,13 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 				dmgInfo[i].frame++;
 
+				//한 칸만 지워야 한다. sizeof(dmgInfo)는 배열 전체 크기라
+				//i번째부터 배열 전체 길이만큼 밀어버려서, i가 0이 아니면
+				//바로 뒤에 있는 imgText[]와 hitMark[]까지 덮어썼다.
+				//hitMark가 망가지면 EffectDraw()가 프레임/배율을 엉뚱한 값으로 읽어
+				//멀쩡한 이펙트 이미지가 거대한 크기로 화면에 흩뿌려진다.
 				if (dmgInfo[i].frame == FPS)
-					memset(&dmgInfo[i], 0, sizeof(dmgInfo));
+					memset(&dmgInfo[i], 0, sizeof(DMGINFO));
 			}
 		}
 

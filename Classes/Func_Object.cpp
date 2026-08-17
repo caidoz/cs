@@ -358,20 +358,51 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	if (shadow == true)
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x - (float)(12 * _2X) * zoom, y + (float)(8 * _2X) * zoom, SHADOW_IMG, zoom);
 
+	//DrawEffect와 같은 이유로 모션 번호를 반드시 검사한다. 범위를 벗어난 번호가
+	//그대로 첨자가 되면 cPtr이 테이블 밖을 가리켜, 캐릭터 파츠가 엉뚱한 크기와
+	//자리에 그려진다.
+	if (motion < 0) {
+		CCLOG("DrawPlayer: 음수 모션 %d (cmf %d)", motion, pObj->cmf);
+		return;
+	}
+
 	if (motion >= 2000) {
+		if (motion - 2000 >= TOTALLEVELUPMOTION) {
+			CCLOG("DrawPlayer: levelUp 범위 밖 %d", motion - 2000);
+			return;
+		}
+
 		//��������
 		i = levelUpMIC[(motion - 2000) * 2 + 1];
 		cPtr = &levelUpMI[levelUpMIC[(motion - 2000) * 2] * 4];
 	}
 	else if (motion >= 1000) {
+		if ((motion - 1000) * 2 + 1 >= (int)(sizeof(sateliteMotionCnt) / sizeof(sateliteMotionCnt[0]))) {
+			CCLOG("DrawPlayer: satelite 범위 밖 %d", motion - 1000);
+			return;
+		}
+
 		//������
 		i = sateliteMotionCnt[(motion - 1000) * 2 + 1];
 		cPtr = &sateliteMotion[sateliteMotionCnt[(motion - 1000) * 2] * 4];
 	}
 	else {
+		if (pObj->cmf < 0 || pObj->cmf >= REALMAXCMF
+			|| cmd_m_cnt[pObj->cmf] == 0
+			|| motion >= cmf_m_cnt[pObj->cmf]) {
+			CCLOG("DrawPlayer: 모션 범위 밖 %d / %d (cmf %d)",
+				motion, pObj->cmf >= 0 && pObj->cmf < REALMAXCMF ? cmf_m_cnt[pObj->cmf] : -1,
+				pObj->cmf);
+			return;
+		}
+
 		i = cmd_m_cnt[pObj->cmf][motion * 2 + 1];
 		cPtr = &cmd_m_img[pObj->cmf][cmd_m_cnt[pObj->cmf][motion * 2] * 4];
 	}
+
+	//파트가 없으면 do-while이 한 번 돌면서 없는 파트를 그린다.
+	if (i <= 0)
+		return;
 
 	do {
 		int imgOffsetX = 0;
@@ -1250,33 +1281,63 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 
 	//zoom = 2;
 
+	//인덱스를 반드시 검사한다. 여기서 걸러지지 않은 값이 그대로 테이블 첨자가 되면
+	//cPtr이 배열 밖을 가리켜, 멀쩡한 그림이 말도 안 되는 위치와 배율로 화면에
+	//흩뿌려진다(깨진 그림이 아니라 정상 그림이 거대하게 나오는 이유다).
+	//특히 5000~9999 구간은 아래 tenbyten 자리가 비어 있어서, 그냥 두면 i/cPtr/where가
+	//초기화도 안 된 채 do-while로 들어간다.
+	if (idx < 0) {
+		CCLOG("DrawEffect: 음수 인덱스 %d", idx);
+		return;
+	}
+
 	if (idx >= 10000) {
 		idx -= 10000;
+
+		if (idx >= TOTALTITLEMOTION) {
+			CCLOG("DrawEffect: title 범위 밖 %d / %d", idx, TOTALTITLEMOTION);
+			return;
+		}
+
 		i = titleMIC[idx * 2 + 1];
 		idx = titleMIC[idx * 2];
 		cPtr = &titleMI[idx * 4];
 		imgFile = TITLE_IMG;
 		where = 3;
 	}
-	//tenbytenMIC
+	//tenbytenMIC : 아직 안 만든 자리다. 들어오면 안 되는 값이므로 그냥 버린다.
 	else if (idx >= 5000) {
-
+		CCLOG("DrawEffect: 미구현 구간 인덱스 %d", idx);
+		return;
 	}
 	else if (idx >= 1000) {
 		idx -= 1000;
-		if (idx > 100)
-			idx = idx;
+
+		if (idx >= TOTALHITMOTION) {
+			CCLOG("DrawEffect: hit 범위 밖 %d / %d", idx, TOTALHITMOTION);
+			return;
+		}
+
 		i = hitMIC[idx * 2 + 1];
 		idx = hitMIC[idx * 2];
 		cPtr = &hitMI[idx * 4];
 		where = 1;
 	}
 	else {
+		if (idx >= TOTALEFFECTMOTION) {
+			CCLOG("DrawEffect: effect 범위 밖 %d / %d", idx, TOTALEFFECTMOTION);
+			return;
+		}
+
 		i = effectMIC[idx * 2 + 1];
 		idx = effectMIC[idx * 2];
 		cPtr = &effectMI[idx * 4];
 		where = 0;
 	}
+
+	//파트 수가 0이면 do-while이 최소 한 번 도는 바람에 없는 파트를 그린다.
+	if (i <= 0)
+		return;
 
 	do {
 		float magnify;
@@ -1358,6 +1419,12 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 			break;
 		}
 
+		//이 파트가 월드가 아니라 화면 절대좌표로 놓이는가.
+		//아래 강타격 보정은 DX/2나 0을 기준으로 잡으므로 카메라(rx/ry)와 무관하다.
+		//여기에 타격 줌을 걸면 줌 중심에서 멀리 밀려나고, 화면 폭짜리 이미지가
+		//밀린 자리에서 다시 클리핑되면서 텍스처가 늘어붙어 화면이 뭉개진다.
+		bool screenFixed = false;
+
 		switch (idx) {
 			//강타격효과 위치보정
 		case 7:
@@ -1365,17 +1432,22 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		case 18:
 			if (where == 0) {
 				x2 = DX / 2 - (float)(160 * _2X) * zoom;
+				screenFixed = true;
 				break;
 			}
 		case 19:
 			if (where == 0) {
 				x2 = -(float)(134 * _2X) * zoom;
+				screenFixed = true;
 				break;
 			}
 		default:
 			x2 = x + (dirF == 0 ? x2 * zoom : -*(ucPtr + ((type & 0x02) ? 3 : 2)) * magnify - x2 * zoom);
 			break;
 		}
+
+		if (screenFixed)
+			HitZoomPause();
 
 		GetSpriteIndex(imgFile);
 		if (where == 1 && (*cPtr) < IMG_HIT_3)
@@ -1391,6 +1463,9 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 				x2,
 				y - *(cPtr + 2) * zoom,
 				dirX, partsRotation, rotation, pxl, tempAlpha, magnify, sprite[imgFile], imgFile);
+
+		if (screenFixed)
+			HitZoomResume();
 
 		if ((*cPtr) == IMG_EFFECT_123)
 			UnSetBlend();

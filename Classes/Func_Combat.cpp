@@ -5268,6 +5268,10 @@ void SetBox(OBJECT* pObj, int etc)
 	pObj->status = BOXSTATUS_APPEAR;
 	pObj->y += BOXPOSITION_INIT;
 
+	//상자가 떨어지는 것을 잠깐 당겨 본다. 바로 걸지 않고 요청만 넣는다 -
+	//전투 시퀀스 중이면 큐가 알아서 끝날 때까지 들고 있는다.
+	RequestFocusZoom(GetObjFromPtr(pObj), FOCUSPRI_BOXDROP);
+
 	PlayMusic(M_DOWN);
 
 }

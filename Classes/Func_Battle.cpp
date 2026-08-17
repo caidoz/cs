@@ -1489,9 +1489,23 @@ void AttackSequenceDraw(void)
 		//if (sequenceFrame < FPS) {
 			//ScreenDarken(SCREENDARKEN);
 			//여기서 어떤 캐릭터가 현재 스킬을 발동중인지 적어준다.
-		ao[turn].zoom *= dioramaZoom;
-		DrawObj(&ao[turn]);
-		ao[turn].zoom /= dioramaZoom;
+		//월드 패스(DrawScreen -> DrawDiorama)가 이미 ao[turn]을 그리는 화면에서는
+		//여기서 또 그리면 같은 그림이 두 장 겹친다. 타격 줌이 들어오기 전에는 두 장이
+		//정확히 포개져 안 보였지만, 줌이 월드 안에만 걸리는 지금은 큰 것(월드)과
+		//작은 것(여기)이 따로 보인다. 월드를 안 그리는 보스레이드에서는 여기가
+		//유일한 드로우라 그대로 그려야 한다.
+		switch (drawHandle) {
+		case MD_DEMO:
+		case MD_PLAY:
+		case MD_BATTLE:
+		case MD_GACHA:
+			break;
+		default:
+			ao[turn].zoom *= dioramaZoom;
+			DrawObj(&ao[turn]);
+			ao[turn].zoom /= dioramaZoom;
+			break;
+		}
 		//이렇게 되면 버프고
 		if (ao[turn].target < TOTALCHAR) {
 

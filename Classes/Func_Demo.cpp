@@ -54,10 +54,19 @@ void Demo(void)
 
 	SetCamera();
 
+	//컷씬에서도 연출 줌(EFFECT_FOCUS)이 돌아야 한다. 여기는 Play()를 안 거치므로
+	//월드 표시 구간과 줌 진행을 직접 잡아준다. 공격 줌은 MD_PLAY/MD_BATTLE 전용이라
+	//여기서는 포커스 줌만 걸린다(컷씬 타이밍이 절반 속도로 늘어지면 안 된다).
+	HitZoomUpdate();
+
 #ifdef DEBUG
 	if (demoSkip == 0)
 #endif
-	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom);
+	{
+		worldDrawing = true;
+		DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom);
+		worldDrawing = false;
+	}
 
 	//HUD(StatusDraw/InfoDraw/카드마크 등)를 대화신/캐릭터 초상화보다 먼저 그려서, 나레이션/TALK 창이
 	//항상 HUD 위(가장 바깥 레이어)에 보이도록 한다.
@@ -2394,12 +2403,16 @@ void DemoCore(void)
 				break;
 			case EFFECT_FOCUS:
 				focus = obj;
+				//카메라만 옮기면 "무엇을 보라는 것인지"가 약해서, 같이 당겨 준다.
+				SetFocusZoom(obj);
 				break;
 			case EFFECT_FOCUS_FAST:
 				focus = obj;
 
 				for (j = 20 - 1; j >= 0; j--)
 					SetCamera();
+
+				SetFocusZoom(obj);
 				break;
 			case EFFECT_JUMP:
 			case EFFECT_SHORTJUMP:

@@ -14,7 +14,7 @@ void CmfRead(int wh, int idx)
 	cmf_i_div[wh][0] = cmf_i_div[wh][1];
 	cmf_i_div[wh][1] = MONSTER_IMG + wh;
 	cmd_i_offset[wh] = cmfOff[idx];
-	cmd_m_cnt[wh] = new unsigned short[sizeof(cmfMotionImgCnt[idx])];
+	//바로 아래에서 상수 테이블을 가리키게 덮어쓰므로 할당은 통째로 새는 값이었다.
 	cmd_m_cnt[wh] = cmfMotionImgCnt[idx];
 	cmd_m_crash[wh] = cmfCrashSize[idx];
 	cmd_m_img[wh] = cmfMotionImg[idx];

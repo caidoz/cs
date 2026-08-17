@@ -121,7 +121,7 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 			is_touchkey_pressed = true;
 			is_press_finished = false;
 			//touchFrame = MAXKEYPRESSED;
-			touchFrame = FPS;
+			touchFrame = TOUCHPOINTFRAME;
 			touchedFrame = 1;
 
 			for (i = MAXKEYPRESSED - 1; i > 0; i--)
@@ -247,8 +247,8 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 		if (touchPoint.y <= DY && ((Abs(touchPressedKey[0][0] - touchPoint.x) > SWIPE_DISTANCE_X) || (Abs(touchPressedKey[0][1] - touchPoint.y) > SWIPE_DISTANCE_Y))) {
 			int oldKey = systemKey;
 
-			if (touchFrame % FPS == 0)
-				touchFrame = FPS;
+			if (touchFrame % TOUCHPOINTFRAME == 0)
+				touchFrame = TOUCHPOINTFRAME;
 
 			for (i = MAXKEYPRESSED - 1; i > 0; i--)
 				memcpy(touchPressedKey[i], touchPressedKey[i - 1], sizeof(touchPressedKey[i]));
@@ -276,7 +276,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 				//튜토리얼 중에는 스와이프로 화면이 밀리면 안 된다. 안내하는 버튼이나 카드가
 				//스팟라이트 밖으로 나가버려서 무엇을 눌러야 하는지 알 수 없게 된다.
 				if (keyHandle == MK_PLAY && swipeLock == false && IsTutorialPlaying() == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
-					touchFrame = FPS;
+					touchFrame = TOUCHPOINTFRAME;
 
 					if (scDir == SCROLL_NOTHING) {
 						switch (curMenu) {
@@ -376,8 +376,8 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 			touchPressedKey[0][0] = (short)touchPoint.x;
 			touchPressedKey[0][1] = (short)touchPoint.y;
 
-			if (touchFrame % FPS == 0)
-				touchFrame = FPS;
+			if (touchFrame % TOUCHPOINTFRAME == 0)
+				touchFrame = TOUCHPOINTFRAME;
 
 			ExecTouchFunc(touchPoint.x, touchPoint.y);
 
@@ -386,7 +386,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 				is_key_pressed = true;
 				is_touchkey_pressed = true;
 				is_press_finished = false;
-				touchFrame = FPS;
+				touchFrame = TOUCHPOINTFRAME;
 			}
 			else
 				systemKey = oldKey;
@@ -967,6 +967,15 @@ void Core::Run(float delta) {
 		}
 
 
+		//밀려 있는 뗌(release)을 먼저 비워낸다. 실제 동작은 RELEASEEXEC 빌드에서
+		//ReleaseCore()가 하고(TalkKey/PlayKey/...), 누름은 KeyCore()가 상태만 정리한다.
+		//예전에는 이 둘이 else로 묶여 있어 같은 프레임에 누름이 있으면 뗌이 밀렸는데,
+		//밀린 뗌은 다음 누름 때 KeyCore() 첫 줄이 그냥 버려버린다(is_key_released = false).
+		//그래서 연타하면 탭이 통째로 사라져 대사가 안 넘어가고 튜토리얼이 멈춰 보였다.
+		//뗌과 누름은 서로 다른 사건이므로 한 프레임에 둘 다 처리해도 된다.
+		if (is_release_finished == false && is_key_released == true && scDir == SCROLL_NOTHING)
+			ReleaseCore();
+
 		if (isTouchKey == TOUCH_DRAG || (is_press_finished == false && is_key_pressed == true)) {
 
 			KeyCore();
@@ -977,9 +986,6 @@ void Core::Run(float delta) {
 				touchMode = touchModeOld;
 				touchModeOld = null;
 			}
-		}
-		else if (is_release_finished == false && is_key_released == true && scDir == SCROLL_NOTHING) {
-			ReleaseCore();
 		}
 
 		RefreshQuestTime();
@@ -2215,12 +2221,16 @@ void PaintClet(int x, int y, int w, int h)
 
 	MemRectFrame(0, DY, 1, 1, 0x000000);
 
-	//플레이 화면을 벗어나면 공격 줌 상태를 놓는다. Play()가 안 도는 동안
+	//줌을 돌려주는 화면(Play()/DemoPlay())을 벗어나면 줌 상태를 놓는다.
 	//hitStopFrame이 홀수로 남아 있으면 아래에서 frame이 영영 멈춘다.
-	if (drawHandle != MD_PLAY && drawHandle != MD_BATTLE) {
+	if (drawHandle != MD_PLAY && drawHandle != MD_BATTLE && drawHandle != MD_DEMO) {
 		hitStopFrame = 0;
 		hitZoomFrame = 0;
 		hitZoom = 1.0f;
+		ClearFocusZoom();
+		//쌓여 있던 연출 요청도 버린다. 메뉴를 한참 돌다 돌아왔을 때
+		//그동안의 이벤트가 몰아서 터지면 안 된다.
+		ClearFocusZoomRequest();
 	}
 
 	//절반 속도로 월드 갱신을 건너뛴 프레임에는 frame도 멈춘다.

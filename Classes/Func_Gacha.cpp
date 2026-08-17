@@ -1774,11 +1774,19 @@ void GachaDraw(void)
 		const int CARD_TO_TRAY_FRAME =
 			10 * MOTIONDIV;
 
-		const float TRAY_CARD_ZOOM =
-			0.25f;
+		//한 줄에 12장을 늘어놓으면 12*60 + 11*8 = 808px로 화면(DX)을 넘어간다.
+		//넘치는 만큼 카드를 줄이면 0.21까지 내려가 아이콘도 등급도 안 보이고,
+		//무엇보다 많이 받을수록 카드가 작아져서 보상 연출이 거꾸로 초라해진다.
+		//그래서 줄여서 맞추지 않고 6열 2행으로 접는다. 6열이면 폭이 절반이라
+		//오히려 카드를 키울 수 있고, 개수와 무관하게 크기가 항상 같다.
+		const int TRAY_MAX_COL =
+			6;
 
 		const float TRAY_GAP =
 			4.0f * _2X;
+
+		float TRAY_CARD_ZOOM =
+			0.30f;
 
 		//----------------------------------------------------
 		// 공개 카드 위치
@@ -1813,8 +1821,30 @@ void GachaDraw(void)
 		//----------------------------------------------------
 		// 하단 카드 정렬 위치 계산
 		//
-		// 최대 12개를 한 줄로 정렬한다.
+		// TRAY_MAX_COL열 그리드. 개수가 열 수 이하면 예전처럼 한 줄이다.
 		//----------------------------------------------------
+		int trayCol =
+			Min(TRAY_MAX_COL, Max(1, rewardCount));
+
+		int trayRow =
+			(rewardCount + trayCol - 1) /
+			trayCol;
+
+		//좁은 해상도에서도 한 행이 화면 안에 들어가야 한다. 여기서만 줄인다.
+		float trayUsableW =
+			(float)(DX - 2 * xOffset) -
+			8.0f * _2X;
+
+		float trayNeedW =
+			trayCol * 240.0f * TRAY_CARD_ZOOM +
+			(trayCol - 1) * TRAY_GAP;
+
+		if (trayNeedW > trayUsableW && trayNeedW > 0.0f) {
+			TRAY_CARD_ZOOM *=
+				(trayUsableW - (trayCol - 1) * TRAY_GAP) /
+				(trayNeedW - (trayCol - 1) * TRAY_GAP);
+		}
+
 		float trayCardW =
 			240.0f *
 			TRAY_CARD_ZOOM;
@@ -1823,18 +1853,9 @@ void GachaDraw(void)
 			332.0f *
 			TRAY_CARD_ZOOM;
 
-		float trayTotalW =
-			rewardCount *
-			trayCardW +
-			(rewardCount - 1) *
-			TRAY_GAP;
-
-		float trayStartX =
-			xOffset +
-			DX / 2.0f -
-			trayTotalW / 2.0f;
-
-		float trayY =
+		//y는 카드의 윗변이고 값이 클수록 화면 위다. 마지막 행을 예전 자리에 두고
+		//행이 늘어나면 위로 쌓는다. 그래야 하단 메뉴와의 간격이 그대로다.
+		float trayBottomY =
 			BOTTOMMENUHEIGHT +
 			12.0f * _2X;
 
@@ -1845,13 +1866,31 @@ void GachaDraw(void)
 			i < rewardCount;
 			i++)
 		{
+			int row =
+				i / trayCol;
+
+			int col =
+				i % trayCol;
+
+			//마지막 행이 덜 찼으면 그 행만 따로 가운데로 모은다.
+			int colsInRow =
+				Min(trayCol, rewardCount - row * trayCol);
+
+			float rowW =
+				colsInRow * trayCardW +
+				(colsInRow - 1) * TRAY_GAP;
+
 			gachaRewardCardAnim[i].trayX =
-				trayStartX +
-				i *
+				xOffset +
+				DX / 2.0f -
+				rowW / 2.0f +
+				col *
 				(trayCardW + TRAY_GAP);
 
 			gachaRewardCardAnim[i].trayY =
-				trayY;
+				trayBottomY +
+				(trayRow - 1 - row) *
+				(trayCardH + TRAY_GAP);
 
 			gachaRewardCardAnim[i].trayZoom =
 				TRAY_CARD_ZOOM;

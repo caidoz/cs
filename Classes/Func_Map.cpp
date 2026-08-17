@@ -2318,6 +2318,11 @@ int SetEnemy(OBJECT *pObj)
 
 	pObj->coolTime = MC_knlCurrentTimeStamp();
 
+	//소환된 몬스터를 보여준다. 보스방은 한 번뿐이라 우선순위를 올리고,
+	//일반 몬스터는 수십 번 반복되므로 가장 낮게 둔다 - 겹치면 밀려서 그냥 넘어간다.
+	//한 웨이브에 여러 마리가 같이 나오면 큐가 전부 담는 줌으로 묶어 준다.
+	RequestFocusZoom(obj, robin.bossRoom ? FOCUSPRI_BOSSSUMMON : FOCUSPRI_SUMMON);
+
 	return cnt;
 }
 
