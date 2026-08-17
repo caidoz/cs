@@ -1643,6 +1643,9 @@ static void DrawOptionSubWindow(const char* title, float x, float y, float w, fl
 	float* panelL, float* panelTop, float* panelW, float* panelH)
 {
 	float s = w / (float)OPT_WIN_W;
+	//팝업 배율. s는 창 그림 기준이라 이것과 1.6배쯤 차이가 난다.
+	//제목 위치를 s로 잡으면 그만큼 왼쪽으로 밀려 창 밖으로 나간다.
+	float z = w / (float)POPUPWINDOWSIZE_X;
 	float innerL = x + 22.0f * s;
 	float innerR = x + w - 22.0f * s;
 
@@ -1650,7 +1653,7 @@ static void DrawOptionSubWindow(const char* title, float x, float y, float w, fl
 
 	//제목은 가운데의 방패 장식을 피해 살짝 왼쪽으로 뺀다. 본 창과 같은 기준이다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(title, x + w / 2 - 180.0f * s, y - 30.0f * s - 32.0f * s
+	CenterTextStr(title, x + w / 2 - 180.0f * z, y - 30.0f * s - 32.0f * z
 		+ (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
 
 	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s,
@@ -1787,6 +1790,12 @@ void OptionPushAlarmDraw(int x, int y, float zoom)
 //고객센터. 문의 메일 주소와 함께 보내야 할 정보를 알려준다.
 void OptionHelpDraw(int x, int y, float zoom)
 {
+	static const char* const guide[3] = {
+		"게임 이용 중 도움이 필요하신가요?",
+		"아래 이메일로 문의해 주세요.",
+		"확인 후 순차적으로 답변드리겠습니다."
+	};
+
 	static const char* const need[4] = {
 		"게임 닉네임", "사용자 ID", "사용 기기 및 OS 버전", "문의 내용 및 관련 스크린샷"
 	};
@@ -1795,93 +1804,120 @@ void OptionHelpDraw(int x, int y, float zoom)
 	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
 	const float s = w / (float)OPT_WIN_W;
 
+	//글줄 하나가 차지하는 높이. 이걸 단위로 삼아야 글자 크기를 바꿔도
+	//줄이 서로 겹치지 않는다. 1.45는 줄 사이 여백이다.
+	const float lineH = (float)FONT_HEIGHT * OPTIONTEXTZOOM * 1.45f * zoom;
+	const float pad = 10.0f * zoom;
+
 	float panelL, panelTop, panelW, panelH;
-	float bx, bw, cy, rowH;
+	float bx, bw, cy;
 	int i;
 
 	DrawOptionSubWindow("고객센터", x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
 
-	bx = panelL + 12.0f * zoom;
-	bw = panelW - 24.0f * zoom;
-	cy = panelTop - 14.0f * zoom;
+	bx = panelL + pad;
+	bw = panelW - pad * 2;
+	cy = panelTop - pad;
 
-	//안내 문구
+	//----- 안내 문구 + 상담원 -----
 	{
-		float boxH = 92.0f * zoom;
-		float portrait = boxH * 0.8f;
+		float boxH = lineH * 3 + pad * 2;
+		float face = boxH - pad * 2;
+		float textL = bx + pad + face + pad;
+		float ty = cy - pad;
 
 		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
 			bx, cy, bw, boxH, s * 0.5f);
 
-		//상담원 얼굴은 아틀라스 왼쪽 아래에 따로 들어 있다.
 		DrawOptionPart(OPT_FACE_X, OPT_FACE_Y, OPT_FACE_W, OPT_FACE_H,
-			bx + 10.0f * zoom, cy - (boxH - portrait) / 2, portrait / (float)OPT_FACE_H);
+			bx + pad, cy - pad, face / (float)OPT_FACE_H);
 
 		SetFontColor(COLOR_BROWN);
-		DrawTextStr("게임 이용 중 도움이 필요하신가요?",
-			bx + 20.0f * zoom + portrait, cy - 26.0f * zoom, OPTIONTEXTZOOM);
-		DrawTextStr("아래 이메일로 문의해 주세요.",
-			bx + 20.0f * zoom + portrait, cy - 52.0f * zoom, OPTIONTEXTZOOM);
-		DrawTextStr("확인 후 순차적으로 답변드리겠습니다.",
-			bx + 20.0f * zoom + portrait, cy - 78.0f * zoom, OPTIONTEXTZOOM);
+
+		for (i = 0; i < 3; i++) {
+			DrawTextStr(guide[i], textL, ty - (float)FONT_HEIGHT * OPTIONTEXTZOOM * 0.15f * zoom, OPTIONTEXTZOOM * zoom);
+			ty -= lineH;
+		}
+
 		SetFontColor(COLOR_WHITE);
 
-		cy -= boxH + 12.0f * zoom;
+		cy -= boxH + pad;
 	}
 
-	//메일 주소 + 문의 버튼
+	//----- 고객지원 이메일 -----
 	{
-		float boxH = 104.0f * zoom;
-		float btnH = 44.0f * zoom;
+		float ribbonH = lineH * 1.1f;
+		float btnH = lineH * 1.4f;
+		float boxH = ribbonH / 2 + lineH * 1.3f + btnH + pad * 2;
+		float ribbonW = bw * 0.6f;
 
 		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
 			bx, cy, bw, boxH, s * 0.5f);
 
-		DrawOptionRibbon("고객지원 이메일", bx + bw / 2 - 80.0f * zoom, cy + 8.0f * zoom,
-			160.0f * zoom, 34.0f * zoom, s * 0.5f);
+		//리본은 상자 윗변에 반쯤 걸치게 올린다.
+		DrawOptionRibbon("고객지원 이메일", bx + (bw - ribbonW) / 2, cy + ribbonH / 2,
+			ribbonW, ribbonH, s * 0.5f);
 
 		SetFontColor(COLOR_BROWN);
-		CenterTextStr(OPTION_SUPPORTMAIL, bx + bw / 2, cy - 46.0f * zoom, OPTIONROWTEXTZOOM);
+		CenterTextStr(OPTION_SUPPORTMAIL, bx + bw / 2,
+			cy - ribbonH / 2 - lineH * 0.9f, OPTIONROWTEXTZOOM * zoom);
 		SetFontColor(COLOR_WHITE);
 
-		DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE,
-			bx + 20.0f * zoom, cy - boxH + btnH + 8.0f * zoom, bw - 40.0f * zoom, btnH, s * 0.5f);
+		{
+			float by = cy - boxH + btnH + pad;
 
-		SetFontColor(COLOR_WHITE);
-		CenterTextStr("이메일 문의", bx + bw / 2,
-			cy - boxH + btnH / 2 + 8.0f * zoom + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+			DrawOptionPart9(OPT_BTNBLUE_X, OPT_BTNBLUE_Y, OPT_BTNBLUE_W, OPT_BTNBLUE_H, OPT_BTN_EDGE,
+				bx + pad * 2, by, bw - pad * 4, btnH, s * 0.5f);
 
-		SetRectPoint(bx + 20.0f * zoom, cy - boxH + btnH + 8.0f * zoom,
-			bw - 40.0f * zoom, btnH, TOUCH_FUNC_OPTION_HELP_MAIL);
+			SetFontColor(COLOR_WHITE);
+			CenterTextStr("이메일 문의", bx + bw / 2,
+				by - btnH / 2 + (float)FONT_HEIGHT * OPTIONTEXTZOOM * zoom / 2, OPTIONTEXTZOOM * zoom);
 
-		cy -= boxH + 12.0f * zoom;
+			SetRectPoint(bx + pad * 2, by, bw - pad * 4, btnH, TOUCH_FUNC_OPTION_HELP_MAIL);
+		}
+
+		cy -= boxH + pad * 1.6f;
 	}
 
-	//문의 시 함께 보낼 정보
-	rowH = 40.0f * zoom;
+	//----- 문의 시 함께 보낼 정보 -----
+	{
+		float ribbonH = lineH * 1.1f;
+		float boxH = lineH * 4 + pad * 2;
+		float ribbonW = bw * 0.86f;
+		float ty;
 
-	DrawOptionRibbon("문의 시 아래 정보를 보내주세요", bx, cy, bw * 0.86f, 34.0f * zoom, s * 0.5f);
-	cy -= 40.0f * zoom;
+		DrawOptionRibbon("문의 시 아래 정보를 보내주세요", bx, cy, ribbonW, ribbonH, s * 0.5f);
+		cy -= ribbonH + pad * 0.6f;
 
-	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
-		bx, cy, bw, rowH * 4, s * 0.5f);
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			bx, cy, bw, boxH, s * 0.5f);
 
-	for (i = 0; i < 4; i++) {
+		ty = cy - pad;
+
 		SetFontColor(COLOR_BROWN);
-		DrawTextStr(need[i], bx + 20.0f * zoom,
-			cy - rowH / 2 + (float)FONT_HEIGHT * OPTIONTEXTZOOM / 2, OPTIONTEXTZOOM);
+
+		for (i = 0; i < 4; i++) {
+			DrawTextStr(need[i], bx + pad * 2, ty - (float)FONT_HEIGHT * OPTIONTEXTZOOM * 0.15f * zoom, OPTIONTEXTZOOM * zoom);
+			ty -= lineH;
+		}
+
 		SetFontColor(COLOR_WHITE);
 
-		cy -= rowH;
+		cy -= boxH + pad * 1.6f;
 	}
 
-	//운영시간
-	cy -= 12.0f * zoom;
+	//----- 운영시간 -----
+	{
+		float boxH = lineH * 2 + pad * 2;
 
-	SetFontColor(COLOR_BROWN);
-	DrawTextStr("운영시간  평일 10:00 ~ 18:00 (주말/공휴일 휴무)",
-		bx + 8.0f * zoom, cy, OPTIONTEXTZOOM);
-	SetFontColor(COLOR_WHITE);
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			bx, cy, bw, boxH, s * 0.5f);
+
+		SetFontColor(COLOR_BROWN);
+		DrawTextStr("운영시간  평일 10:00 ~ 18:00", bx + pad * 2, cy - pad, OPTIONTEXTZOOM * zoom);
+		DrawTextStr("주말 및 공휴일 휴무", bx + pad * 2, cy - pad - lineH, OPTIONTEXTZOOM * zoom);
+		SetFontColor(COLOR_WHITE);
+	}
 }
 
 void OptionDraw(int x, int y, float zoom)
