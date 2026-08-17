@@ -2262,6 +2262,10 @@ void ReleaseCore(bool dispatchKey)
 	isTouchKey = TOUCH_NULL;
 	systemKey = null;
 	systemRelease = null;
+	//누른 그 버튼에서 뗐을 때만 튀어오른다. 밖으로 빼서 취소한 경우는
+	//UpdateButtonPress()가 이미 눌림을 풀어놨으므로 여기서 아무 일도 안 한다.
+	ClearButtonPress(buttonPressFunc >= 0 && buttonPressFunc == gTouchHitFunc);
+
 	is_release_finished = true;
 	is_key_released = false;
 	twice_released = false;
@@ -2352,6 +2356,9 @@ void ExecTouchFunc(int x, int y)
 				startTouchRect[1] = touchRect[i][1];//y
 				startTouchRect[2] = touchRect[i][2];//width
 				startTouchRect[3] = touchRect[i][3];//height
+
+				//누른 티를 즉시 낸다. 여기서 늦추면 "먹통인가?" 싶어진다.
+				SetButtonPress(touchRect[i][4]);
 			}
 
 			touchFunc(touchRect[i][4]);
@@ -3393,6 +3400,82 @@ int printBoxCoords() {
 //�� �Լ��� ��ġ�� ������ �� ������?������ Ȯ���ϴ°�
 //touchX, touchY ���� ������ ��ġ�� ������ �ְ�
 //�� ������ ���� �����ϰ��� �ϴ� �����ӿ� ���ԵǴ��� Ȯ���ϴ� �Լ�
+
+//----------------------------------------------------------------------
+// 버튼 감촉
+//
+// 버튼 객체를 따로 만들지 않는다. 이 코드베이스의 터치는 매 프레임 다시
+// 등록되는 사각형 + 기능 번호(SetRectPoint)라서, 그리기와 터치영역이 서로
+// 다른 함수에서 계산된다. 객체로 묶으려면 수백 곳을 한꺼번에 고쳐야 하고
+// SetRectPoint 한 곳에서 하던 튜토리얼 게이팅도 다시 설계해야 한다.
+//
+// 그래서 기능 번호를 그대로 키로 쓴다. 그리는 쪽은 자기 func으로
+// GetButtonScale()만 물어보면 되고, 안 물어보는 버튼은 예전 그대로 동작한다.
+//----------------------------------------------------------------------
+
+//누르는 순간 호출한다. 눌린 사각형을 같이 적어둬야 손가락이 버튼 밖으로
+//나갔을 때 취소할 수 있다.
+void SetButtonPress(int func)
+{
+	buttonPressFunc = func;
+	buttonPressFrame = 0;
+
+	buttonPressRect[0] = startTouchRect[0];
+	buttonPressRect[1] = startTouchRect[1];
+	buttonPressRect[2] = startTouchRect[2];
+	buttonPressRect[3] = startTouchRect[3];
+}
+
+//떼거나 취소할 때 호출한다. pop이 true면 튀어오르는 연출을 시작한다.
+void ClearButtonPress(bool pop)
+{
+	if (pop && buttonPressFunc >= 0) {
+		buttonPopFunc = buttonPressFunc;
+		buttonPopFrame = BUTTON_POPFRAME;
+	}
+
+	buttonPressFunc = -1;
+	buttonPressFrame = 0;
+}
+
+//한 프레임 진행. 손가락이 처음 눌렀던 사각형을 벗어나면 눌림을 푼다.
+//누른 채로 밖으로 빼면 취소되는 것이 버튼의 기본 동작이고, 그래야
+//"되돌릴 수 있다"는 안정감이 생긴다.
+void UpdateButtonPress(void)
+{
+	if (buttonPopFrame > 0)
+		buttonPopFrame--;
+	else
+		buttonPopFunc = -1;
+
+	if (buttonPressFunc < 0)
+		return;
+
+	buttonPressFrame++;
+
+	if (!rectContainsTouchPoint(buttonPressRect[0], buttonPressRect[1],
+			buttonPressRect[2], buttonPressRect[3]))
+		ClearButtonPress(false);
+}
+
+//그리는 쪽이 쓰는 배율. 누르고 있으면 들어가 있고, 뗀 직후에는 튀었다가
+//제자리로 돌아온다.
+float GetButtonScale(int func)
+{
+	if (func < 0)
+		return 1.0f;
+
+	if (func == buttonPressFunc)
+		return BUTTON_DOWNSCALE;
+
+	if (func == buttonPopFunc && buttonPopFrame > 0) {
+		float t = (float)buttonPopFrame / (float)BUTTON_POPFRAME;
+
+		return 1.0f + (BUTTON_POPSCALE - 1.0f) * t;
+	}
+
+	return 1.0f;
+}
 
 bool rectContainsTouchPoint(int x, int y, int w, int h)
 {

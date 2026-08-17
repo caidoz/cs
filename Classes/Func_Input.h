@@ -41,4 +41,10 @@ int GetBetHeart(int itemDetail, int itemGrade, int betGrade);
 int printCoords(void);
 int printBoxCoords(void);
 bool rectContainsTouchPoint(int x, int y, int w, int h);
+
+//버튼 감촉. 기능 번호를 키로 눌림/튀어오름 상태를 들고 있는다.
+void SetButtonPress(int func);
+void ClearButtonPress(bool pop);
+void UpdateButtonPress(void);
+float GetButtonScale(int func);
 #endif

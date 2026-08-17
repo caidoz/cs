@@ -1223,6 +1223,10 @@ void PaintClet(int x, int y, int w, int h)
 	//모든 SetRectPoint()가 같은 기준으로 걸러진다.
 	gTutorialTouchFunc = GetTutorialTouchFunc();
 
+	//버튼 눌림/튀어오름을 한 칸 진행시킨다. 터치영역을 다시 등록하기 전에
+	//돌려야 이번 프레임에 그리는 버튼이 지금 상태로 그려진다.
+	UpdateButtonPress();
+
 	if (mustRefresh == true) {
 		if (isScreenShot == false) {
 			switch (drawHandle) {

@@ -337,6 +337,13 @@ signed char touch;
 int touchIndex;
 int touchRect[TOTALTOUCHCNT][5];//int rx, int ry, int width, int height, int func
 int startTouchRect[5];
+//버튼 감촉. 지금 눌려 있는 터치기능과, 방금 떼서 튀어오르는 중인 터치기능.
+//버튼 객체를 따로 만들지 않고 기능 번호를 그대로 키로 쓴다.
+int buttonPressFunc = -1;
+int buttonPressFrame = 0;
+int buttonPressRect[4];
+int buttonPopFunc = -1;
+int buttonPopFrame = 0;
 int swipeIndex;
 int swipeRect[TOTALSWIPECNT][5];//int rx, int ry, int width, int height, int func
 bool swipeLock = false;

@@ -1280,6 +1280,12 @@ extern signed char touch;
 extern int touchIndex;
 extern int touchRect[TOTALTOUCHCNT][5];//int rx, int ry, int width, int height, int func
 extern int startTouchRect[5];
+//버튼 감촉. 자세한 것은 CoreGlobals.cpp 참고.
+extern int buttonPressFunc;
+extern int buttonPressFrame;
+extern int buttonPressRect[4];
+extern int buttonPopFunc;
+extern int buttonPopFrame;
 extern int swipeIndex;
 extern int swipeRect[TOTALSWIPECNT][5];//int rx, int ry, int width, int height, int func
 extern bool swipeLock;

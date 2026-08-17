@@ -4685,23 +4685,40 @@ void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 
 void DrawTouchButton(int x, int y, const char* text, int func)
 {
-	DrawFrame(x, y, StringWidth(text, 1) + 4 * _2X, 20 * _2X, FRAME_CHOICEBUTTON);
-	SetRectPoint(x, y, StringWidth(text, 1) + 4 * _2X, 20 * _2X, func);
+	float press = GetButtonScale(func);
+	float w = StringWidth(text, 1) + 4 * _2X;
+	float h = 20 * _2X;
+
+	//한가운데를 붙잡고 배율만 준다. 터치영역은 원래 크기 그대로 둔다.
+	float gapX = w * (press - 1.0f) / 2;
+	float gapY = h * (press - 1.0f) / 2;
+
+	DrawFrame(x - gapX, y + gapY, w * press, h * press, FRAME_CHOICEBUTTON);
+	SetRectPoint(x, y, w, h, func);
 
 	SetFontColor(COLOR_BROWN);
-	CenterTextStrSolid(text, x + StringWidth(text, 1) / 2 + 2 * _2X, y - 3 * _2X, 1.0f);
+	CenterTextStrSolid(text, x + w / 2, y + gapY - 3 * _2X * press, 1.0f * press);
 	SetFontColor(COLOR_WHITE);
 }
 
 
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
+	//누르면 들어가고 떼면 튀어오른다. 배율만 곱하고 한가운데를 붙잡아
+	//제자리에서 커졌다 작아지게 한다. 터치영역은 배율과 무관하게
+	//원래 자리에 그대로 둔다 - 눌린 동안 영역이 줄면 손가락이 밖으로
+	//나간 것으로 처리되어 스스로 취소된다.
+	float press = GetButtonScale(func);
+	float drawZoom = zoom * press;
 
-	DrawImage(192, 62, 1, 1 + (color - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
+	float gapX = (float)w * zoom * (press - 1.0f) / 2;
+	float gapY = (float)h * zoom * (press - 1.0f) / 2;
+
+	DrawImage(192, 62, 1, 1 + (color - FRAME_GREEN) * 63, x - gapX, y + gapY, false, false, false, false, false, drawZoom, sprite[BUTTON_IMG], BUTTON_IMG);
 
 
 	//SetFontColor(COLOR_BROWN);
-	DrawTextStr(text, x + ((float)w * zoom - StringWidth(text, zoom)) / 2, y - ((float)h / 2 * zoom + (float)(12) * zoom) / 2, 1.0f * zoom);
+	DrawTextStr(text, x - gapX + ((float)w * drawZoom - StringWidth(text, drawZoom)) / 2, y + gapY - ((float)h / 2 * drawZoom + (float)(12) * drawZoom) / 2, 1.0f * drawZoom);
 	//SetFontColor(COLOR_WHITE);
 	if (func)
 		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
