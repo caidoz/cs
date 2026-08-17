@@ -91,30 +91,6 @@ int BoxRandomRange(int minValue, int maxValue)
 		Random(maxValue - minValue + 1);
 }
 
-int RoundBoxCurrency(int itemType, int value)
-{
-	int unit = 1;
-
-	if (itemType == ITEM_HEART)
-	{
-		if (value >= 1000)
-			unit = 100;
-		else if (value >= 100)
-			unit = 10;
-	}
-	else if (itemType == ITEM_GOLD)
-	{
-		if (value >= 100000)
-			unit = 10000;
-		else if (value >= 10000)
-			unit = 1000;
-		else
-			unit = 100;
-	}
-
-	return value / unit * unit;
-}
-
 int RollBoxGrade(
 	const int gradeRate[BOX_GRADE_COUNT],
 	int* highGradeMissCount)

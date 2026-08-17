@@ -23,21 +23,6 @@ int PxlDown(OBJECT* pObj)
 	return (pObj->y + pObj->cpy + pObj->cy);
 }
 
-int GetObjIdxFromType(int type, int startIdx, int endIdx)
-{
-	int i = endIdx;
-
-	do {
-		i--;
-
-		if (ao[i].type == type)
-			return i;
-	} while (i > startIdx);
-
-
-	return -1;
-}
-
 int GetObjFromPtr(OBJECT* pObj)
 {
 	int i = TOTALOBJECT;
@@ -73,13 +58,6 @@ void GetTile(OBJECT* pObj)
 	pObj->tileX2 = (PxlRight(pObj) - 1) / TSIZE;
 	pObj->tileY1 = (pObj->y + pObj->cpy) / TSIZE;
 	pObj->tileY2 = (PxlDown(pObj) - 1) / TSIZE;
-}
-
-int GetDistanceX(OBJECT* obj1, OBJECT* obj2)
-{
-	int dist = Abs(obj1->x - obj2->x);
-
-	return dist;
 }
 
 int GetDistance(OBJECT* obj1, OBJECT* obj2)
@@ -347,25 +325,6 @@ int ObjCrash(OBJECT* obj1, OBJECT* obj2)
 {
 	return ((obj1->cx != 0 && obj2->cx != 0 && obj1->cy != 0 && obj2->cy != 0 && PxlLeft(obj1) < PxlRight(obj2) && PxlLeft(obj2) < PxlRight(obj1) && PxlUp(obj1) < PxlDown(obj2) && PxlUp(obj2) < PxlDown(obj1)) ? 1 : 0);
 }
-//화면기준의 충돌
-int ObjCrash2(OBJECT* obj1, OBJECT* obj2)
-{
-	if ((obj1->x + obj1->cpx + obj1->cx) < obj2->x || obj1->x > (obj2->x + obj2->cpx + obj2->cx))
-		return false;
-
-	if ((obj1->y + obj1->cpy + obj1->cy) < obj2->y || obj1->y > (obj2->y + obj2->cpy + obj2->cy))
-		return false;
-
-	return true;
-}
-
-int PointCrash(OBJECT* obj, int x, int y)
-{
-#define POINTCRASHSIZE	4
-
-	return ((obj->cx != 0 && obj->cy != 0 && PxlLeft(obj) - POINTCRASHSIZE < x && PxlRight(obj) + POINTCRASHSIZE > x && PxlDown(obj) + POINTCRASHSIZE > y && PxlUp(obj) - POINTCRASHSIZE < y) ? 1 : 0);
-}
-
 int AttackCrash(OBJECT* obj1, OBJECT* obj2)
 {
 	if (obj1->ax == 0 || obj2->cx == 0)
@@ -458,22 +417,6 @@ int AttackCrash(OBJECT* obj1, OBJECT* obj2)
 	if (crW > 0 && crH > 0) {
 		return true;
 	}
-	else
-		return false;
-}
-
-int AttackCrash2(OBJECT* obj1, OBJECT* obj2)
-{
-	if (obj1->ax == 0 || obj2->ax == 0)
-		return false;
-
-	crX = Max(obj1->x + obj1->apx, obj2->x + obj2->apx);
-	crY = Max(obj1->y + obj1->apy, obj2->y + obj2->apy);
-	crW = Min(obj1->x + obj1->apx + obj1->ax, obj2->x + obj2->apx + obj2->ax) - crX;
-	crH = Min(obj1->y + obj1->apy + obj1->ay, obj2->y + obj2->apy + obj2->ay) - crY;
-
-	if (crW > 0 && crH > 0)
-		return true;
 	else
 		return false;
 }
@@ -4241,27 +4184,6 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		pObj->jumpFrame = JUMPFRAME;
 		pObj->dirY = DOWN;
 	}
-}
-
-bool IsSkillUsable(OBJECT* pObj)
-{
-	int i, j;
-	for (i = 0; i < MAXCHARSKILL; i++) {
-		if (pObj->getSkillList[i] != EMPTY) {
-			if (skillData[SKILLDATASIZE * pObj->getSkillList[i]] > PASSIVE) {
-				for (j = 0; j < MAXHOTKEY; j++) {
-					if (pObj->hotKey[j].idx == pObj->getSkillList[i]) {
-						temp = j;
-						break;
-					}
-				}
-
-				if (pObj->hotKey[temp].frame == 0)
-					return true;
-			}
-		}
-	}
-	return false;
 }
 
 void SetPlayerMotion(OBJECT* pObj)

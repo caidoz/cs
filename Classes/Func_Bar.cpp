@@ -419,22 +419,6 @@ void BarAddStop(BAR * barP)
 	ao[NEUTRAL].status = BOXSTATUS_CLOSED;
 }
 
-void HammerBarDraw(int x, int y, long long amount, bool ani, float zoom)
-{
-	if (ani) {
-		MemRect(x - (float)(2 * _2X) * zoom, y + 2 * _2X, CROWNBARWIDTH + 4 * _2X, CROWNBARHEIGHT + 4 * _2X, itemColor[frame % 6]);
-	}
-
-	if (ironFrame > 0 && ironFrame % 2 == 0 && ani == true)
-		DrawIcon(ICON_HAMMER, x, y + (float)(1 * _2X) * zoom, 2 * zoom, false, false, false, true);
-	else
-		DrawIcon(ICON_HAMMER, x + (float)(8 * _2X) * zoom, y - (float)(9 * _2X) * zoom, zoom, false, false, false, true);
-
-	DrawNum(amount, x + (float)(TSIZE * 5 + 8 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, true, zoom, true);
-	if (ironFrame > 0 && ani == true)
-		ironFrame--;
-}
-
 
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 {

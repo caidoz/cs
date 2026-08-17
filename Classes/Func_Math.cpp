@@ -71,16 +71,6 @@ int BC_mathCos1024(int degree)
 	}
 }
 
-int BC_mathTan1024(int degree)
-{
-	degree = (degree + 36000) % 360;
-
-	if (degree % 180 < 90)
-		return tan1024[degree % 90];
-	else
-		return -tan1024[90 - (degree % 90)];
-}
-
 int Random(int limit)
 {
 	int number;
@@ -578,19 +568,9 @@ long long int UpDiv(long long int num, long long int divider)
 	return ((num << 4) / divider + 15) >> 4;
 }
 
-signed char GetBit(signed char* var, int idx)
-{
-	return (signed char)((var[idx >> 3] >> (7 - (idx & 0x07))) & 0x01);
-}
-
 void SetBit(signed char* var, int idx)
 {
 	var[idx >> 3] = var[idx >> 3] | (0x01 << (7 - (idx & 0x07)));
-}
-
-void UnSetBit(signed char* var, int idx)
-{
-	var[idx >> 3] = var[idx >> 3] & (~(0x01 << (7 - (idx & 0x07))));
 }
 
 int TriHeight(int x1, int y1, int x2, int y2, int xx, int yy)
@@ -610,117 +590,4 @@ int TriHeight(int x1, int y1, int x2, int y2, int xx, int yy)
 		return ((4 * (area / 100) * area) / (a1 / 100));
 	else
 		return ((4 * area * area) / a1);
-}
-
-double degreesToRadians(double degrees) {
-	return degrees * (M_PI / 180.0);
-}
-
-Point rotatePoint(const Point& point, double angle) {
-	double cosAngle = cos(angle);
-	double sinAngle = sin(angle);
-
-	Point rotatedPoint;
-	rotatedPoint.x = point.x * cosAngle - point.y * sinAngle;
-	rotatedPoint.y = point.x * sinAngle + point.y * cosAngle;
-
-	return rotatedPoint;
-}
-
-Point translatePoint(const Point& point, double dx, double dy) {
-	Point translatedPoint;
-	translatedPoint.x = point.x + dx;
-	translatedPoint.y = point.y + dy;
-
-	return translatedPoint;
-}
-
-bool IsActionCardActive(int arr[], int size, int index, int value, int numConsecutive) {
-	if (index < 0 || index >= size) {
-		return false;
-	}
-
-	if (numConsecutive <= 0) {
-		return false;
-	}
-
-	int consecutiveCount = 1;
-
-	for (int i = index - 1; i >= 0; --i) {
-		if (arr[i] == value) {
-			consecutiveCount++;
-		}
-		else {
-			break;
-		}
-	}
-
-	for (int i = index + 1; i < size; ++i) {
-		if (arr[i] == value) {
-			consecutiveCount++;
-		}
-		else {
-			break;
-		}
-	}
-
-	return consecutiveCount >= numConsecutive;
-}
-
-void bubble_sort(long long int list[], int n, long long int orderList[]) {
-	int i, j, temp;
-
-	for (i = n - 1; i > 0; i--) {
-		for (j = 0; j < i; j++) {
-			if (list[j] < list[j + 1]) {
-				temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-				temp = orderList[j];
-				orderList[j] = orderList[j + 1];
-				orderList[j + 1] = temp;
-			}
-		}
-	}
-}
-
-void bubble_sort_int(int list[], int n, int orderList[]) {
-	int i, j, temp;
-
-	for (i = n - 1; i > 0; i--) {
-		for (j = 0; j < i; j++) {
-			if (list[j] > list[j + 1]) {
-				temp = list[j];
-				list[j] = list[j + 1];
-				list[j + 1] = temp;
-				temp = orderList[j];
-				orderList[j] = orderList[j + 1];
-				orderList[j + 1] = temp;
-			}
-		}
-	}
-}
-
-int arrValueIdx(int list[], int val, int cnt)
-{
-	int i;
-
-	for (i = 0; i < cnt; i++)
-		if (list[i] == val)
-			return i;
-
-	return -1;
-}
-
-int bestOfThree(int value1, int value2, int value3) {
-	int value;
-
-	if (value1 > value2)
-		value = value1;
-	else
-		value = value2;
-	if (value < value3)
-		value = value3;
-
-	return value;
 }

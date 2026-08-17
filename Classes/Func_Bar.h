@@ -1,11 +1,10 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 
 #ifndef _FUNC_BAR_H_
 #define _FUNC_BAR_H_
 void DrawBarIcon(int type, int x, int y, float zoom);
 void BarDraw(BAR*, float zoom);
-void HammerBarDraw(int, int, long long, bool, float zoom);
 void MedalBarDraw(int, int, long long, bool, float zoom);
 void PvpEventBarDraw(GAMEEVENT*, int, int, int, int, int, bool, bool, float);
 void DevilHeartDraw(int x, int y, float zoom);

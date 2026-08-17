@@ -760,38 +760,6 @@ void SetRoom_Neutral(void)
 	}
 }
 
-void SetBossEnemy(void)
-{
-	int i;
-	int type;
-	GAMEEVENT* gameEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)];
-
-	OBJECT* eObj = &ao[GetEnemyBarIdx(ENEMY)];
-
-	for (i = 0; i < MAXENEMY; i++)
-		ao[GetEnemyBarIdx(ENEMY + i)].hp = ao[GetEnemyBarIdx(ENEMY + i)].maxhp = 0;
-
-	eObj->zoom = 4.0f;
-
-	eObj->dirX = eObj->dirF = LEFT;
-
-	eObj->x = BATTLEPOSITION_ENEMY_X + (monXYGap[eObj->type * 2 + 0]);	//x위치
-	eObj->y = (rh - 7) * TSIZE + (monXYGap[eObj->type * 2 + 1]);	//y위치
-
-	eObj->mom = ENEMY;
-
-	SetEnemy(eObj);
-
-	if (eObj->shield > 0) {
-		eObj->shieldMax = eObj->shield = eObj->maxhp / SHIELDPERHP;
-		eObj->maxhp = eObj->hp += eObj->shieldMax;
-	}
-
-	InitMotion(eObj);
-
-	MoveObj(eObj);
-}
-
 void SetStageBoss(void)
 {
 	int i, j;
@@ -882,107 +850,6 @@ long long CompareCombatPower(ITEM* it1, ITEM* it2)
 	memset(&ao[NPC], 0, sizeof(OBJECT));
 
 	return combatPower1 - combatPower2;
-}
-
-void SetRoom_Enemy(void)
-{
-	int i, j, end, start = 0;
-
-	//호위퀘스트 중이라면 해당 엔피씨의 cmf는 방이 바뀌어도 삭제하지 않는다.
-	i = (escort.active) ? 5 : 4;
-
-	switch (drawHandle) {
-	default:
-		end = mapData[9];
-		break;
-	}
-
-	//if (!(drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID))
-	//if (curMenu == MENU_BATTLE)
-		for (i = start, j = 0; i < end; i++) {
-
-			OBJECT *pObj = &ao[ENEMY + j];
-			//추가 파츠생성 1
-			switch (mapEnemyObj[i * 4]) {
-			case ENEMY_SNAIL:
-				break;
-			}
-
-			pObj->type = mapEnemyObj[i * 4];	//타입
-			pObj->x = mapEnemyObj[i * 4 + 1];	//x위치
-			pObj->y = mapEnemyObj[i * 4 + 2];	//y위치
-
-			if (pObj->type == ENEMY_SLIME
-				|| pObj->type == ENEMY_SLIME_RED
-				|| pObj->type == ENEMY_SLIME_BLUE
-				|| pObj->type == ENEMY_SLIME_PURPLE
-				|| pObj->type == ENEMY_SLIME_GREEN
-				|| pObj->type == ENEMY_SLIME_GOLD
-				|| pObj->type == ENEMY_SLIME_BLACK) {
-				pObj->dirF = pObj->dirX = (signed char)mapEnemyObj[i * 4 + 3] % 2;
-				pObj->status = (signed char)mapEnemyObj[i * 4 + 3];	//방향성
-			}
-			else
-				pObj->dirF = pObj->dirX = (signed char)mapEnemyObj[i * 4 + 3] % 2;	//방향성
-
-			if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
-				//중간보스는 크게 준다.
-				pObj->zoom = MONSTERZOOM;// +(float)robin.room / 2;
-			else if (drawHandle == MD_RAID || drawHandle == MD_BOSSRAID) {
-				pObj->zoom = BATTLEZOOM * enemyZoom[pObj->type];
-			}
-			else
-				pObj->zoom = LOBBYZOOM;
-
-			pObj->mom = ENEMY + j;
-
-			//*********************************************************************************//
-			if (pObj->type < NPC_CAPTAIN) {
-				SetEnemy(pObj);	//타입에 따른 데이터 세팅
-				if (drawHandle == MD_DEMO) {
-					pObj->moveHandler = DEMOMOVE;
-				}
-
-				//if (pObj->type == ENEMY_CASTLE_BOSS4)
-				//	pObj->zoom = 2.0f;
-				//else
-				if (drawHandle == MD_BATTLE)
-					pObj->zoom = BATTLEZOOM;
-				else
-					pObj->zoom = LOBBYZOOM;
-				//SetNpc(pObj);
-			}
-			else {
-				SetNpc(pObj);
-			}
-
-			if (pObj->active) {
-				j++;
-
-				//근접한 적 날리기
-				if (!isDemo && newStart == 2 && pObj->type < NPC_CAPTAIN && DistanceCheck(&ao[raidPlayer], pObj, TSIZE * 4) &&
-					(pObj->type != ENEMY_MACHINE
-						|| pObj->type != ENEMY_MACHINE_RED
-						|| pObj->type != ENEMY_MACHINE_BLUE
-						|| pObj->type != ENEMY_MACHINE_PURPLE
-						|| pObj->type != ENEMY_MACHINE_GREEN
-						|| pObj->type != ENEMY_MACHINE_GOLD
-						|| pObj->type != ENEMY_MACHINE_BLACK)) {
-					pObj->active = false;
-					pObj->dead = true;
-					pObj->frame = 20;
-					pObj->moveHandler = VANISHMOVE;
-				}
-			}
-			else
-				j++;
-
-			caveCountEmy = 0;
-		}
-
-	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
-		SaveGame();
-
 }
 
 void SetRoom_Etc(int i)
@@ -1287,46 +1154,6 @@ void ObjectSkillSetting(OBJECT * pObj)
 		}
 		break;
 	}
-}
-
-void WaveStart(void)
-{
-	int i;
-	waveStatus = WAVESTATUS_PLAY;
-	areaFrame = AREAFRAME;
-	robin.curWaveIdx = 0;
-	memset(&robin.waveActive, 0, sizeof(robin.waveActive));
-	robin.waveTimeStamp = MC_knlCurrentTimeStamp();//여기서 웨이브 시작 시간을 정해주고
-	
-	//MainMenuOut();
-
-	SaveGame();
-	for (i = 0; i < TOTALCHAR; i++) {
-		if (ao[i].hotKey[0].type == HOTKEY_SKILL)
-			ao[i].hotKey[0].frame = ao[i].hotKey[0].inven;
-	}
-
-	for (i = CREW; i < PLAYERALL; i++) {
-		ao[i].lv = 0;
-
-	}
-
-	bossOn = false;
-	//여기서도 상대방 웨이브가 끝났을 때 획득하는 상자를 보여준다.
-	//그래서 보스를 깨면 주인공이 걸어가서 획득하는 것을 보여준다.
-
-	//스테이지 보여주고
-
-	//적 체력바 보여주고
-	
-	//스테이지
-	//SetGoldAlphaMark(DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, DX / 2, bar[BAR_BOSSHP].y + 40 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, 1 * _2X, FPS, FPS, ALPHA_STAGE, false, false, FONT_GOLD_LARGE, 0.1f, 0.8f, 0.1f, 0.8f, 0.8f, 0.0f);
-
-	
-	//아군 스킬이 있으면 보여주고
-	CharSkillSetting();
-
-
 }
 
 void WaveControler()
@@ -2366,101 +2193,6 @@ void SetNpc(OBJECT *pObj)
 		pObj->skillIdx = true;
 }
 
-void SetRaid()
-{
-	int i;
-	//여기서 보스 및 보상을 결정한다.
-	for (i = 0; i < TOTALRAIDSELECTED; i++) {
-		raidInfo[i * RAIDARRAYDATASIZE] = 3 * i + Random(3);
-
-		switch (i) {
-		case 0:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_ARMOR;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 1;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_SUPERIOR;//grade
-			break;
-		case 1:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_VEST;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 1;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_SUPERIOR;//grade
-			break;
-		case 2:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_COAT;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 1;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_SUPERIOR;//grade
-			break;
-		case 3:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_GUNTLET;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 2;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_RARE;//grade
-			break;
-		case 4:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_ARMLET;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 2;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_RARE;//grade
-			break;
-		case 5:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_GLOVE;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 2;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_RARE;//grade
-			break;
-		case 6:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_HELM;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 3;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_EPIC;//grade
-			break;
-		case 7:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_HAT;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 3;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_EPIC;//grade
-			break;
-		case 8:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_CAP;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 3;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_EPIC;//grade
-			break;
-		case 9:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_SWORD;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 4;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_LEGEND;//grade
-			break;
-		case 10:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_GUN;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 4;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_LEGEND;//grade
-			break;
-		case 11:
-			raidInfo[i * RAIDARRAYDATASIZE + 1] = ITEM_BOOMERANG;
-			raidInfo[i * RAIDARRAYDATASIZE + 2] = 4;//detail
-			raidInfo[i * RAIDARRAYDATASIZE + 3] = GRADE_LEGEND;//grade
-			break;
-		}
-	}
-}
-
-int SetCmf(int idx)
-{
-	int i;
-
-	for (i = 4; i < MAXCMF; i++) {
-		if (cmfLoaded[i] == idx)
-			return i;
-	}
-
-	//만약 공통된 cmf가 없으면
-	if (i == MAXCMF) {
-		for (i = 4; i < MAXCMF; i++) {
-			if (cmfLoaded[i] == -1) {
-				CmfRead(i, idx);	//cmf 로딩
-
-				return i;
-			}
-		}
-	}
-
-	return -1;
-}
-
 void SetRoom_Demo(void)
 {
 	int i;
@@ -3247,44 +2979,6 @@ void DrawBackMap_Back(int xPos, int yPos, int mapIdx, float zoom)
 }
 
 
-void DrawBackMapDirect(int xPos, int yPos, int mapIdx, float zoom)
-{
-	int i = 0, y;
-	const unsigned short* bgPtr;
-
-	//if (robinmap != mapIdx) {
-	ReadMap(mapIdx);
-	//}
-
-	//원경
-	bgPtr = &mapBg[mapData[7] * 4];
-	y = yPos + (float)((*(bgPtr + 3)) ? (PLAYAREA_Y + *(bgPtr + 3)) / 2 : 0 + *(bgPtr + 1)) * zoom;
-
-	DrawBackMap_Back(xPos, yPos, mapIdx, zoom);
-
-	//근경 이후 그려지는 추가효과
-	switch (mapData[7]) {
-	case MAPTYPE_SWAMP:
-		//톨레아습지 수면
-		for (i = 0; i < TOTALBUBBLE; i++) {
-			if (swampBubble[i * 4] == robinmap && (robin.playtime + swampBubble[i * 4 + 3]) % 9 < 5) {
-				const signed char* swPtr = &swampSplash[(9 + (robin.playtime + swampBubble[i * 4 + 3]) % 9) * 4];
-
-				bgPtr = &swampImg[*swPtr * 4];
-				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)(swampBubble[i * 4 + 1] * 4 + *(swPtr + 1) - rx) * zoom, yPos + (float)((rh - 4) * TSIZE - swampBubble[i * 4 + 2] * 4 - *(swPtr + 2) + ry - 3 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
-			}
-		}
-		break;
-	case MAPTYPE_ATLANTICE:
-		//아틀란티스 수면
-		break;
-	}
-
-	//if (robinmap != mapIdx) {
-	ReadMap(robinmap);
-	//}
-}
-
 void DrawBackMap(int xPos, int yPos, int mapIdx, float zoom)
 {
 	int i = 0, y;
@@ -3636,75 +3330,6 @@ void DrawTile(int mapIdx, int yPos, float zoom)
 	}
 
 	UnSectionClip(false);
-}
-
-void DrawForeMap(int xPos, int yPos, int mapIdx, float zoom)
-{
-	int i;
-
-	if (robinmap != mapIdx) {
-		ReadMap(mapIdx);
-	}
-
-	//주인공 앞쪽 근경 파
-	for (i = 0; i < mapData[6]; i++) {
-		short* mfObj = &mapForeObj[i * 3 + 0];
-		const unsigned short* bgPtr = &backObjImg[Abs(*mfObj) * 4];
-
-		if (*mfObj < 0)
-			DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, true, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
-		else {
-			switch (*mfObj) {
-			case IMG_BG1_69:	//촛불
-				SetAlpha(32 - Abs(robin.playtime % 8 - 4) * 4);
-				BrightImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, MAP_BG_IMG + mapData[7], zoom);
-				SetAlpha(32);
-				break;
-			default:
-				DrawImage(*(bgPtr + 2), *(bgPtr + 3), *bgPtr, *(bgPtr + 1), xPos + (float)*(mfObj + 1) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
-				break;
-			}
-		}
-
-		switch (*mfObj) {
-		case IMG_BG13_8:
-			//골렘지역 난간 : bg13.bmp
-			DrawImage(23 * _2X, 11 * _2X, 35 * _2X, 75 * _2X, xPos + (float)(*(mfObj + 1) + 5 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
-			DrawImage(6 * _2X, 20 * _2X, 16 * _2X, 79 * _2X, xPos + (float)(*(mfObj + 1) + 26 * _2X) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - *(mfObj + 2)) * zoom, false, false, false, false, false, zoom, sprite[MAP_OBJ_IMG + mapData[7]], MAP_OBJ_IMG + mapData[7]);
-			break;
-		}
-	}
-
-	switch (mapData[7]) {
-	case MAPTYPE_GOLEMVALLEY:
-		//골렘 협곡 구름
-		SetAlpha(8);
-
-		for (i = 0; i < MAXBGOBJECT; i++) {
-			if (bgObj[i].active == true) {
-				if (bgObj[i].etc >= 10) {
-					SetAlpha(32 - (bgObj[i].y / 8));
-					DrawBgEffect(BG13_STONE0 + (bgObj[i].etc - 10 + robin.playtime) % 4, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - bgObj[i].y) * zoom, 0, zoom);
-				}
-				else if (bgObj[i].etc > 2)
-					DrawBgEffect(BG13_CLOUD0 + bgObj[i].etc % 3, xPos + (float)bgObj[i].x * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom);
-			}
-		}
-
-		SetAlpha(32);
-		break;
-	case MAPTYPE_GHOST:
-		//망자의 도시 구름 및 안개
-		for (i = 0; i < MAXBGOBJECT; i++) {
-			if (bgObj[i].active == true && bgObj[i].etc == 0)
-				DrawBgEffect(BG16_CLOUD0, xPos + (float)(bgObj[i].x) * zoom, yPos + (float)((rh - 4) * TSIZE - ry - bgObj[i].y) * zoom, 0, zoom);
-		}
-		break;
-	}
-
-	if (robinmap != mapIdx) {
-		ReadMap(robinmap);
-	}
 }
 
 void DrawScreen(int x, int y, float zoom)

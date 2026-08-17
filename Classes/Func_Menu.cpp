@@ -129,27 +129,6 @@ void DailyQuestDraw(int x, int y, float zoom)
 }
 
 
-void ShopDraw_Back(int x, int y)
-{
-
-	switch (menuDepth) {
-	case 0:
-		switch (menuIdx) {
-		default:
-
-			MemRectRound(x, y, DX, DY, 0x1D2B47, 1 * _2X);
-			DrawBackMap_Back(x, DY / 2 - 320 * _2X / 2, TOLEMHOUSE2, 1.0f);
-
-			break;
-		}
-		break;
-	case 1:
-		break;
-	case 2:
-		break;
-	}
-}
-
 //별 드로우
 void StarShopDraw(int x, int y)
 {
@@ -170,23 +149,6 @@ void HeroDraw(int type, int x, int y, int dirX, float zoom)
 	if (IsGetHero(type) == false) {
 		DrawLock(getHeroLv[type], x + (float)(+(2 * _2X)) * zoom, y - (float)2 * _2X * zoom, 2.0f * zoom);
 	}
-
-}
-
-void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap)
-{
-	int i;
-
-
-	for (i = 1; i < MAXPLAYER; i++) {
-
-		//SetSectionClip(x + (float)8 * _2X + (gap * (i - 1)) * zoom, y - (float)24 * _2X * zoom, (float)32 * _2X * zoom, (float)32 * _2X * zoom, false);
-		HeroDraw(i, x + (float)0 * _2X + (gap * (i - 1)) * zoom, y - (float)24 * _2X * zoom, LEFT, zoom);
-		//UnSectionClip(false);
-	}
-
-	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
-		DrawLabel(x + (float)(14 * _2X) * zoom, y - (float)(68 * _2X) * zoom, TEXT_ALPHA_HEROES, 0.72f * zoom);
 
 }
 
@@ -1384,34 +1346,6 @@ void HowToGetCrewsDraw(int x, int y, float zoom)
 
 }
 
-//현재 업그레이드가 가능한 
-int GetItemCntUpgradePossible(void)
-{
-	int i, j;
-	int itemCnt = 0;
-	int itemType;
-	int itemDetail;
-	int itemGrade;
-	int itemLv = 0;
-	int invenIdx;
-
-	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
-		for (j = 0; j < COLLECTIONSITEMCNT; j++) {
-			itemType = collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 0];
-			itemDetail = collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 1];
-			itemGrade = collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + j * COLLECTIONSDATASIZE + 2];
-			invenIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
-			if (invenIdx != -1) {
-				itemLv = robin.inven[invenIdx].cooldown;
-				if (robin.hammer >= GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv))
-					itemCnt++;
-			}
-		}
-	}
-
-	return itemCnt;
-}
-
 void CalendarDraw(int x, int y, float zoom)
 {
 	int i, j;
@@ -1855,16 +1789,6 @@ void OptionDraw(int x, int y, float zoom)
 }
 
 
-void SlotDraw(int x, int y, int crew1Cmf, int crew2Cmf, int crew3Cmf, float zoom)
-{
-	DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
-		x, y,
-		false, false, false, false, false,
-		0.35f * zoom, sprite[SLOT_IMG], SLOT_IMG);
-
-
-}
-
 void JokboDraw(int x, int y, float zoom)
 {
 
@@ -1992,16 +1916,6 @@ void DoubleGoldDraw(int x, int y, float zoom)
 
 
 
-
-void LimitScrollY(void)
-{
-	if (scY[curMenu] < 0) {
-		scY[curMenu] = 0;
-	}
-	else if (scY[curMenu] > scT[curMenu]) {
-		scY[curMenu] = scT[curMenu];
-	}
-}
 
 int GetBoxCurrency(int detail, int grade)
 {
@@ -3691,22 +3605,6 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 }
 
-void CrewPannelDraw(int crewIdx, int x, int y, float zoom)
-{
-	SetRectPoint(x + (float)120 * zoom, y - (float)60 * zoom, (float)179 * zoom, (float)48 * zoom, TOUCH_FUNC_MENUCUR_CREWSET + crewIdx);
-
-}
-
-bool IsCrewSet(int crewIdx)
-{
-	int i;
-	for (i = 0; i < MAXCREW; i++) {
-		if (robin.slotCrew[i] == crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE])
-			return true;
-	}
-	return false;
-}
-
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY)
 {
 	float zoom = zoomY;
@@ -3720,13 +3618,6 @@ void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani,
 		SetFontColor(COLOR_WHITE);
 		CenterText(text, x + (float)buttonImgData[color * 5 + 0] / 2 * zoomX, y - (float)3 * _2X * zoom, 1.2f * zoom);
 	}
-}
-
-void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom)
-{
-	int star = GetItemStar(itemType, itemDetail, itemGrade);
-	float numWidth = (float)(32 * _2X) * zoom;
-	DrawRewardCard(itemType, itemDetail, itemGrade, itemLv, itemCnt, x, y, false, zoom, true, false, true, star, star, star, 0);
 }
 
 void DrawItemCardBack(

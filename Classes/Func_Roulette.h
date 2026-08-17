@@ -25,12 +25,7 @@ void RouletteDrawSimple3Slots(
 void RouletteDraw(int x, int y, float zoom);
 
 // Crew 관련
-int GetHouseFromCrewIdx(int);
-int GetCrewDmg(int crewIdx, int lv);
 int GetCrewIdxFromType(int);
-int GetCrewPrice(int crewIdx);
-int GetCrewPositionX(int);
-int GetCrewPositionY(int);
 
 
 #endif

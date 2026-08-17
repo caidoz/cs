@@ -1499,24 +1499,6 @@ void RouletteDraw(int x, int y, float zoom)
 	}
 }
 
-// Crew 관련
-int GetHouseFromCrewIdx(int crewIdx)
-{
-	int i;
-	for (i = 0; i < TOTAL_HOUSE; i++) {
-		if (crewData[crewIdx * CREWDATASIZE + CREWDATASIZE - 2] == i)
-			return i;
-	}
-
-	return -1;
-}
-
-int GetCrewDmg(int crewIdx, int lv)
-{
-	//return crewData[crewIdx * CREWDATASIZE + CREWDATA_DMG] * crewBulletLvUpDmgPercent[lv] / 100;
-	return 100;
-}
-
 int GetCrewIdxFromType(int type)
 {
 	// hero 3개는 로비 편의 데이터라, 크루 검색에서 제외하려면 3부터 시작
@@ -1530,42 +1512,4 @@ int GetCrewIdxFromType(int type)
 		if (t == type) return key; // ✅ key(=crewData 인덱스) 반환
 	}
 	return -1;
-}
-
-int GetCrewPrice(int crewIdx)
-{
-	return crewData[crewIdx * CREWDATASIZE + 2];
-}
-
-int GetCrewPositionX(int crewIdx)
-{
-	int realX;
-
-	realX = 2 * _2X + (crewIdx % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X;
-
-	return realX;
-}
-
-int GetCrewPositionY(int crewIdx)
-{
-	int i, j;
-	int gapY = 0;
-	int realY = 0;
-
-	for (i = 0; i < crewIdx; i++) {
-		if (i % 3 == 2) {
-			gapY = 0;
-			for (j = i + 1; j < i + 1 + 3; j++) {
-				//switch (enemyData[crewData[j * CREWDATASIZE + 0] * ENEMYDATASIZE]) {
-				//default:
-					if (gapY < CREW_GAPY)
-						gapY = 0;
-				//	break;
-				//}
-			}
-
-			realY -= gapY + CREWLISTSIZE_Y;
-		}
-	}
-	return realY - 16 * _2X;
 }

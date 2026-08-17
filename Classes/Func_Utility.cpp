@@ -2,22 +2,6 @@
 #include "Data.h"
 #include "Func.h"
 
-// Utility 함수들
-unsigned short Convert_Char_KSC5601_To_UCS2(unsigned char byte1, unsigned char byte2)
-{
-	int tab_idx = ((int)byte1 - 0x00a1) * 94 + (int)byte2 - 0x00a1;
-	signed short code_ucs2;
-
-	if (tab_idx - 1410 >= 0 && tab_idx - 1410 < sizeof(unicode_table) / 2) {
-		code_ucs2 = unicode_table[tab_idx - 1410];
-
-		if (code_ucs2 != -1)
-			return code_ucs2;
-	}
-
-	return 0;
-}
-
 //소스가 UTF-8로 통일되면서 문자열 리터럴이 이미 UTF-8이다.
 //예전에는 CP949를 UTF-8로 바꿔 Label에 넘겼지만 이제 변환할 것이 없다.
 //호출부를 그대로 두려고 복사만 한다. Convert_Char_KSC5601_To_UCS2()와
@@ -34,80 +18,6 @@ int TextToString(char* src, int count, char* dst)
 	dst[len] = '\0';
 
 	return len;
-}
-
-/* UCS2toUTF8
-* converts UCS2 array to UTF8 string
-*/
-int UCS2toUTF8(unsigned short* ucs2, int count, char* dst)
-{
-	unsigned short unicode;
-	unsigned char bytes[4];
-	int nbytes;
-	int i, j;
-	int len = 0;
-
-	for (i = 0; i < count; i++) {
-		unicode = ucs2[i];
-
-		if (unicode < 0x80) {
-			nbytes = 1;
-			bytes[0] = unicode;
-		}
-		else if (unicode < 0x800) {
-			nbytes = 2;
-			bytes[1] = (unicode & 0x3f) | 0x80;
-			bytes[0] = ((unicode << 2) & 0xcf00 | 0xc000) >> 8;
-		}
-		else {
-			nbytes = 3;
-			bytes[2] = (unicode & 0x3f) | 0x80;
-			bytes[1] = ((unicode << 2) & 0x3f00 | 0x8000) >> 8;
-			bytes[0] = ((unicode << 4) & 0x3f0000 | 0xe00000) >> 16;
-		}
-
-		for (j = 0; j < nbytes; j++) {
-			dst[len] = bytes[j];
-			len++;
-		}
-	}
-	dst[len] = '\0';
-	return len;
-}
-
-void TouchArrow2(int flag, int x, int y, int pos)
-{
-	//flag// 1==상하좌우//2==좌우//3=v=상하//
-	if (touch && !touchDrawButton) {
-		SetAlpha(32 - Abs(frame * 2 % 32 - 16));
-		switch (flag) {
-		case 1:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) + pos, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + (DY >> 1) - pos + 16 * _2X, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + (DY >> 1) + 41 * _2X / 2 + 1 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		case 2:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X - 8 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		case 3:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y - pos, false, 90.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX / 2 - 21 * _2X, y + pos - 16 * _2X, false, 270.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		case 4:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + 0 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		case 5:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + DX - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		case 6:
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X + 144 * _2X - 16 * _2X, y + pos + 21 * _2X, false, false, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			DrawImage(16 * _2X, 41 * _2X, 240 * _2X, 0 * _2X, x + (DX - STATUSWIN_X) / 2 + 164 * _2X - 8 * _2X, y + pos + 21 * _2X, false, 180.0f, false, false, false, 1.0f, sprite[TOUCH_IMG], TOUCH_IMG);
-			break;
-		}
-		SetAlpha(32);
-	}
 }
 
 void DrawPlayerCostume(
@@ -263,12 +173,6 @@ void StatusDraw(int x, int y, float zoom)
 #else
 
 #endif
-}
-
-void ShopMenuDraw(int x, int y, float zoom)
-{
-	DrawIcon(ICON_EVENT_BOX, x, y, zoom, COLOR_BROWN, false, true, true);
-
 }
 
 void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
@@ -903,15 +807,6 @@ void DrawTouchPoint(void)
 	touchFrame--;
 }
 
-
-void InitBanner(void)
-{
-	char szID1[100];
-	char szID2[100];
-
-	sprintf(szID1, "ca-app-pub-ID");   //전면광고
-	sprintf(szID2, "ca-app-pub-ID");   //배너광고
-}
 
 long long GetCurrentTimeMs()
 {

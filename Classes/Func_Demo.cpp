@@ -2231,50 +2231,6 @@ void ResumeTutorialPlay(void)
 	isDemo = false;
 }
 
-void SpawnTutorialEnemy(int enemyType, long long hp)
-{
-	//WaveControler()(Func_Map.cpp)를 참고해서 만들었다. 실제 웨이브 몬스터와 똑같이
-	//RegenEnemy()로 스폰해서 RegenMove()의 점프-등장 연출(붕 뜨면서 커졌다가 착지)을 그대로 타게 하고,
-	//착지 시점(frame==FPS/2)에 RegenMove가 자동으로 moveHandler를 ENEMYMOVETURN(MD_PLAY 기준)으로
-	//바꿔주므로 별도로 강제할 필요가 없다. 직접 SetEnemy+active=true로 즉석 배치하던 이전 방식은
-	//점프 연출이 전혀 없어서 몬스터가 "그냥 나타나는" 것처럼 보였다.
-	int i;
-	OBJECT* pObj = nullptr;
-
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		if (!ao[i].type && ao[i].active == false) {
-			pObj = &ao[i];
-			break;
-		}
-	}
-
-	if (pObj == nullptr)
-		return;
-
-	int x = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 0];
-	int y = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 1];
-
-	RegenEnemy(pObj, enemyType, x, y, LEFT);
-
-	pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
-	pObj->mom = GetObjFromPtr(pObj);
-
-	//RegenMove()가 착지 시점에 pObj->hp = pObj->maxhp로 재설정하므로 maxhp만 정확히 맞춰두면 된다.
-	pObj->maxhp = pObj->hp = hp;
-
-	//InitBar(BAR_BOSSHP)는 max를 GetTotalWaveHp(robin.waveIdx)로 채우는데, 튜토리얼 몬스터는 실제
-	//wave[] 데이터와 무관해서 이 값이 안 맞는다(0이면 빨간 바가 아예 안 그려짐) - 여기서 실제 스폰
-	//HP를 더해준다. 여러 마리가 나올 수 있으므로 덮어쓰지 않고 누적한다.
-	bar[BAR_BOSSHP].max += hp;
-
-	//WaveControler()가 스폰 마지막에 하는 것과 동일하게 dead=true/active=false로 둬야 한다.
-	//매 프레임 오브젝트 갱신 루프(Func_Battle.cpp의 "else if (dead==true && moveHandler==REGENMOVE) RegenMove(...)")
-	//가 이 조건을 보고서야 RegenMove()를 틱해준다 - 이게 없으면 점프 연출이 아예 시작되지 않고
-	//오브젝트가 가만히 멈춰있기만 한다("생성될 때까지 타이밍을 기다리는" 부분이 여기서 처리된다).
-	pObj->dead = true;
-	pObj->active = false;
-}
-
 void DemoCore(void)
 {
 	int i, j, k, obj;
@@ -3226,64 +3182,7 @@ void SetDemo(int index)
 #endif
 }
 
-void SetTalk(void)
-{
-	int i;
-
-	for (i = 0; i < movie.dCount; i++) {
-		// 본래 이것.
-		if (ao[talk.obj].type == demoData[movie.movies[i] * DDLEN + 2] &&
-			demoData[movie.movies[i] * DDLEN + 1] == TRIGGER_TALK) {
-			//디버그용
-			//if (ao[talk.obj].type == d.demoData[i * DDLEN + 2] && ((d.demoData[i * DDLEN + 1] == TRIGGER_TALK && !GetBit(robin.demoSeen, i)))) {
-			switch (movie.movies[i]) {
-			DEFAULT:
-			default:
-				//해당 데모신을 안봤을때만 데모신 걸리게.
-				if (robin.demoSeen[movie.movies[i]])
-					continue;
-
-				//시간제 퀘스트 중에는 다른 시간제 퀘스트를 받을 수 없다.
-				if (timeFrame > 0) {
-
-				}
-
-				if (robin.count >= robin.maxInven) {
-
-				}
-
-				SetDemo(movie.movies[i]);
-				return;
-			}
-		}
-	}
-
-	//SetTalkEnd:
-		//@@부하처리
-		//아이템을 기준으로 데모신을 걸때 퀘스트 완료 혹은 기타 등
-
-
-	SetTalk_Movie();
-}
-
 void SetTalk_Movie(void)
 {
 
-}
-
-void SetTalk2(int textIdx)
-{
-	ao[raidPlayer].motion = PO_C0_N0;
-	ReleaseCore(false);
-	ao[raidPlayer].playerRun = false;
-	ao[raidPlayer].dx = 0;
-	movie.text = textIdx;
-	SetFrameText(movie.text, 512, TEXTLINEPERPAGE, 1.0f);
-	movie.type = MOVIE_TALK;
-	movie.end = -1;
-	drawHandle = MD_DEMO;
-	keyHandle = MK_TALK;
-
-	if (touch)
-		touchMode = TOUCH_TALK;
 }

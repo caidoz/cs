@@ -2241,34 +2241,6 @@ void PaintClet(int x, int y, int w, int h)
 	VersionDraw();
 }
 
-//세이브데이터에 획득경험치, 변경된 레벨, 보상까지 같이 다 저장해 준다.
-void SS_UserLevelUp(int getExp)
-{
-	/*
-	int tempLevel;
-	tempLevel = robin.lv;
-
-	robin.exps += getExp;
-
-	while (robin.exps >= NextExp(robin.lv)) {
-		//lv
-		GetLevelUpReward(robin.lv);
-		robin.lv++;
-		robin.
-	}
-	*/
-
-}
-
-int CheckSpace(int space)
-{
-
-	//if (sp != M_E_ERROR && sp < space)
-	//	return space - sp;
-	//else
-	return space;
-}
-
 long MC_knlCurrentTime()
 {
 	timeval tv;

@@ -49,31 +49,6 @@ int StringLength(const char* str)
 	return rtn;
 }
 
-int SubstringLength(const char* str, unsigned int offset, unsigned int length)
-{
-	unsigned int i, byte_len, start, next;
-	int rtn = 0;
-
-	//offset이 글자 중간에 걸리면 그 글자의 첫 바이트로 물러난다.
-	for (start = 0; start < offset && str[start]; start = next) {
-		next = start + CharByteLen(str + start);
-
-		if (next > offset)
-			break;
-	}
-
-	byte_len = Min(start + length, strlen(str));
-
-	for (i = start; i < byte_len; i += CharByteLen(str + i)) {
-		if (str[i] == '|')
-			i++;	//색상코드는 글자수에 넣지 않는다
-		else
-			rtn++;
-	}
-
-	return rtn;
-}
-
 float StringWidthTTF(const char* str, float zoom)
 {
 	Size textSize;
@@ -323,13 +298,6 @@ void LoadFontLabelFromText(const char* str)
 	fontLabel[getFontLabelIdx]->setRotation(0);
 }
 
-
-float DrawTextSystem(int index, int x, int y, float zoom, int align, bool bold)
-{
-	float width;
-	width = DrawTextStrSystem(textId[index], x, y, zoom, align, bold);
-	return width;
-}
 
 float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bool bold)
 {
@@ -721,11 +689,6 @@ int LineText(int index, int x, int y, int width, float zoom)
 	return LineTextStr(TEXTPTR(index), x, y, width, -1, -1, zoom);
 }
 
-int LineTextSolid(int index, int x, int y, int width, float zoom)
-{
-	return LineTextStrSolid(TEXTPTR(index), x, y, width, -1, -1, zoom);
-}
-
 int LineTextStr(const char* str, int x, int y, int dx, int lines, int lines2, float zoom)
 {
 
@@ -797,43 +760,6 @@ int LineTextStrSolid(const char* str, int x, int y, int dx, int lines, int lines
 
 }
 
-int CenterLineText(const char* str, int x, int y, int dx, int type, float zoom)
-{
-
-	int i, cnt, ofs, wide = 0, w;
-	float end;
-
-	if (!str)
-		return 0;
-
-	end = StringWidth(str, zoom);
-	dx = Min(dx, (end + 20 * _2X) * zoom / (end / dx + 1));
-	end = StringLength(str);
-
-	for (i = 0, cnt = 0, ofs = 0; i < end; i++) {
-		w = SubstringWidth(str, ofs, i - ofs, zoom);
-
-		if (w > dx - (float)(NEXT_FONT_WIDTH - 1 * _2X) * zoom || str[i + wide] == '@') {
-			DrawSubText(str, ofs, i - ofs, x - ((type) ? w : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom);
-			ofs = i;
-			cnt++;
-
-			if (str[i + wide] == ' ') {
-				ofs++;
-				i++;
-			}
-			else if (str[i + wide] == '@')
-				ofs++;
-		}
-
-		wide += CharExtraBytes(str + i + wide);
-	}
-
-	DrawSubText(str, ofs, end - ofs, x - (float)((type) ? SubstringWidth(str, ofs, end - ofs, zoom) : dx) / 2, y - (float)(cnt * FONT_HEIGHT_LINE) * zoom, zoom);
-
-	return cnt + 1;
-}
-
 void SetFrameText(int index, int dx, int line, float zoom)
 {
 	SetFrameTextStr(textId[index], dx, line, zoom, COLOR_BLACK);
@@ -886,18 +812,6 @@ void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCo
 	textCurPage = 0;
 	textFrame = 0;	//텍스트 프레임초기화
 	textLines = line;
-}
-
-//Ư�� ��Ʈ���ĸ� Ư�� json���Ϸ� �ۼ��ϴ� �Լ�
-//bool StructureToJson(rapidjson::Writer<rapidjson::StringBuffer> * writer)
-bool StructureToJson(void* structure, std::string jsonFileName)
-{
-	return true;
-}
-//���̽� ������ ��Ʈ���ķ� �ε��ϴ� �Լ�
-bool JsonToStructure(void* structure, std::string jsonFileName)
-{
-	return true;
 }
 
 //������ �б�� ���Ⱑ ������ ���·� ������ ����.

@@ -318,24 +318,6 @@ void InitGame(void)
 	refreshRate = FPS;
 }
 
-void EraseControlMark(int selected)
-{
-	int i;
-	//일단 알파값을 올려주고 알파값이 다 올라가면 지워지도록 한다.
-	controlMark[selected].alpha = 1;
-
-	for (i = selected + 1; i < actionCardCnt; i++) {
-		controlMark[i].targetX2 = controlMark[i].targetX = xOffset + (i - 1) * (ROULETTECARDSIZE_X + 1 * _2X) + ROULETTECARDSIZE_X / 2;
-		controlMark[i].targetY2 = controlMark[i].targetY;
-		controlMark[i].zoom2 = controlMark[i].zoom;
-		controlMark[i].speed = controlMark[i].speed2 = 1 * _2X;
-		controlMark[i].speedIncrement = controlMark[i].speedIncrement2 = 1 * _2X;
-		controlMark[i].frame = 1;
-		controlerSpread[i] = false;
-	}
-
-	SaveGame();
-}
 //로그의 정의
 //
 //채워 넣은 칸의 첨자를 돌려준다. 빈 칸이 없으면 -1.
@@ -501,28 +483,6 @@ void InitTarget(void)
 		}
 	}
 
-}
-
-void ArrangeTarget(void)
-{
-	int i, j;
-	int distance[MAXENEMY] = { 0, };
-	int enemyIdx[MAXENEMY] = { 0, };
-
-	return;
-
-	//만약 타겟팅 된 몬스터가 죽었으면
-	for (i = 0, j = 0; i < MAXENEMY; i++) {
-		if (ao[GetObjectNumFromEnemyIdx(i)].active == true && ao[GetObjectNumFromEnemyIdx(i)].dead == false) {
-			enemyIdx[j] = GetObjectNumFromEnemyIdx(i);
-			distance[j] = GetDistance(&ao[PLAYER], &ao[enemyIdx[j]]);
-			j++;
-		}
-	}
-
-	sortArray(distance, enemyIdx, j);
-
-	ao[PLAYER].target = enemyIdx[0];
 }
 
 void ArrangeEnemyTarget(void)
@@ -1900,109 +1860,6 @@ void SetPvpQuestReward(int getPvpQuestItemCnt)
 	robin.thisTimePvpQuestItem = Min(robin.remainPvpQuestItem, (pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + robin.pvpDetailQuest] - robin.pvpQuestCnt));
 
 }
-//획득한 아이템의 개수를 인자로 받는다.
-void SetQuestReward(int getQuestItemCnt)
-{
-	int start = robin.questCnt;
-	int end = start + getQuestItemCnt;
-	int i = 0;
-	int quest = robin.quest;
-	int subQuest = robin.subQuest;
-
-	InitReward();
-	//한번에 획득할 모든 퀘스트 이미지를 처리한다.
-
-	if (questRequestItemCnt[quest * TOTALSUBQUEST + subQuest + i] <= end) {
-		start = questRequestItemCnt[quest * TOTALSUBQUEST + subQuest + i];
-
-		do {
-			if (start <= end) {
-				rewardItem[rewardItemCnt].type = questReward[quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuest + i) * QUESTREWARDDATASIZE + 0];
-				rewardItem[rewardItemCnt].detail = questReward[quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuest + i) * QUESTREWARDDATASIZE + 1];
-				rewardItem[rewardItemCnt].grade = questReward[quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuest + i) * QUESTREWARDDATASIZE + 2];
-				rewardItem[rewardItemCnt].count = questReward[quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + (subQuest + i) * QUESTREWARDDATASIZE + 3];
-				rewardItemCnt++;
-				i++;
-
-				if (subQuest + i >= TOTALSUBQUEST) {
-					break;
-				}
-
-				start = questRequestItemCnt[quest * TOTALSUBQUEST + subQuest + i];
-			}
-		} while (start <= end);
-	}
-
-	robin.remainQuestItem = getQuestItemCnt;
-	robin.thisTimeQuestItem = Min(robin.remainQuestItem, (questRequestItemCnt[quest * TOTALSUBQUEST + subQuest] - robin.questCnt));
-
-}
-
-
-//현재 이 아이템을 인벤토리에 넣을 수 있는지 없는지 확인하는 함수
-//return 값이 -1이면 소지개수 초과, 0이면 인벤토리가 가득차고, 1이면 넣을수 있음
-int InsertItemTest(int type, int detail, int cnt)
-{
-	int i, j = -1;
-
-	switch (type) {
-		//무조건 받을 수 있는것
-	case ITEM_GOLD:
-	case ITEM_KEY:
-	case ITEM_STATUE:
-		return true;
-
-		//갯수가 중첩되는것
-	case ITEM_WASTE:
-	case ITEM_IRON:
-	case ITEM_LEATHER:
-	case ITEM_CLOTH:
-	case ITEM_WOOD:
-	case ITEM_ESSENCE:
-	case ITEM_QUEST:
-		//해당아이템이 있는지 검사
-		for (i = 0; i < robin.maxInven; i++) {
-			if (robin.inven[i].type == type && robin.inven[i].detail == detail) {
-				j = i;
-				break;
-			}
-		}
-		//만약 이미 그 아이템을 가지고 있다면
-		if (j != -1) {
-			//만약 아이템의 갯수가 9999 개 까지는
-			if (robin.inven[i].count + cnt < 10000)
-				return true;
-			else
-				return -1;
-		}
-		else {
-			for (i = 0; i < robin.maxInven; i++) {
-				if (robin.inven[i].type == EMPTY) {
-					break;
-				}
-			}
-			//만약 빈인벤토리가 있으면
-			if (i < robin.maxInven)
-				return true;
-			else
-				return false;
-		}
-		break;
-		//갯수가 중첩되지 않는것
-	default:
-		for (i = 0; i < robin.maxInven; i++) {
-			if (robin.inven[i].type == EMPTY) {
-				break;
-			}
-		}
-		//만약 빈인벤토리가 있으면
-		if (i < robin.maxInven)
-			return true;
-		else
-			return false;
-		break;
-	}
-}
 
 int GetSlotCrewCnt(void)
 {
@@ -2589,25 +2446,6 @@ void GotoPlay(bool forceReload)
 
 }
 
-void BackToReward(void)
-{
-	int i;
-
-	rewardFrame = 0;
-	menuDepth = 0;
-
-	//memset(&rewardItem[focusedItem], 0, sizeof(ITEM));
-	//for (i = focusedItem; i < rewardItemCnt - 1; i++) {
-	//	memcpy(&rewardItem[i], &rewardItem[i + 1], sizeof(ITEM));
-	//}
-	//memset(&rewardItem[rewardItemCnt - 1], 0, sizeof(ITEM));
-	//rewardItemCnt--;
-	focusedItem++;
-
-	
-	GotoGacha();
-}
-
 void OutOfGacha(void)
 {
 	int i;
@@ -2766,53 +2604,6 @@ void GotoBoss(void)
 #ifdef ENEMYHPBAR
 	bar[BAR_ENEMYHP].active = false;
 #endif
-}
-
-void OutOfBattle(void)
-{
-	memset(&cardMark, 0, sizeof(cardMark));
-	memset(&rewardMark, 0, sizeof(rewardMark));
-	memset(&boxMark, 0, sizeof(boxMark));
-	memset(&goldAlphaMark, 0, sizeof(goldAlphaMark));
-
-	attackSequence = ATTACKSEQUENCE_REWARD_BATTLE;
-	sequenceDelay = ATTACKDELAY_REWARD_BATTLE_START + FPS;
-	sequenceFrame = 0;
-
-	rouletteNum = 0;
-	rouletteNumSub = 0;
-	rouletteNumBar = 0;
-	rouletteNumPvpBar = 0;
-
-	bar[BAR_ENEMYUSER].front = false;
-	bar[BAR_CROWN].front = false;
-	bar[BAR_GOLD].front = false;
-
-	bar[BAR_RAIDGOLD].active = false;
-	bar[BAR_RAIDGOLD].front = false;
-	bar[BAR_ENEMYUSER_BOX].active = false;
-	bar[BAR_ENEMYUSER_BOX].front = false;
-
-	attackDelay = 0;
-}
-
-void OutOfRaid(void)
-{
-	memset(&cardMark, 0, sizeof(cardMark));
-	memset(&rewardMark, 0, sizeof(rewardMark));
-	memset(&boxMark, 0, sizeof(boxMark));
-	memset(&goldAlphaMark, 0, sizeof(goldAlphaMark));
-
-	attackSequence = ATTACKSEQUENCE_REWARD_RAID;
-	sequenceDelay = ATTACKSEQUENCE_REWARD_RAID + FPS;
-	sequenceFrame = 0;
-
-	rouletteNum = 0;
-	rouletteNumSub = 0;
-	rouletteNumBar = 0;
-	rouletteNumPvpBar = 0;
-
-	attackDelay = 0;
 }
 
 void OutOfHouse(void)
@@ -3496,100 +3287,6 @@ void PickBattleCrew(
 		outCrewKeyList[i] = CrewIdToCrewDataKey(outCrewIdList[i]);
 }
 
-void GotoBattleLoading(void)
-{
-	int i;
-
-	//drawHandle = MD_BATTLELOADING;
-	frame = 0;
-	sequenceFrame = false;
-	screenDarken = false;
-
-	heroCnt = 0;
-	crewCnt = MAXCREW;
-	showCrewCnt = 0;
-	cardCmf = -1;
-	cardAlpha = 0;
-
-	// HERO 카운트
-	for (i = 0; i < TOTALCHAR; i++) {
-		if (IsGetHero(i) == true) heroCnt++;
-	}
-
-	showHeroCnt = heroCnt;
-
-	// ------------------------------
-	// 리더: 0번 고정
-	// ------------------------------
-	int leaderCrewId = robin.slotCrew[0];
-	bool hasLeader = false;
-	if (leaderCrewId >= 0 && leaderCrewId < TOTAL_CREW/* && robin.getCrews[leaderCrewId] == true*/) {
-		hasLeader = true;
-		crewIdList[0] = leaderCrewId;
-		robin.slotCrew[0] = CrewIdToCrewDataKey(leaderCrewId);
-		crewCnt = 1;
-	}
-
-	int regionCount = GetRegionCount();
-
-	uint32_t seed = 0;
-	seed ^= (uint32_t)time(NULL);          // 가능하면
-	seed ^= (uint32_t)GetTickCount();      // Windows면 이게 더 좋음
-	seed ^= (uint32_t)(uintptr_t)&seed;    // fallback
-
-	BL_SeedRng(seed);
-
-	// ------------------------------
-	// [CANDIDATES] 전 지역 후보를 통째로 모아서 셔플 (편향 제거)
-	// ------------------------------
-	PickBattleCrew(
-		crewIdList,
-		robin.slotCrew,
-		crewCnt,
-		MAXCREW,
-		hasLeader,
-		leaderCrewId
-	);
-
-	//TEST
-	//crewCnt = MAXCREW;
-
-	//robin.slotCrew[0] = NPC_GIRL;
-	//robin.slotCrew[1] = NPC_UNCLE;
-	//robin.slotCrew[2] = NPC_AUNT;
-	//robin.slotCrew[3] = NPC_ADELKNIGHT;
-	//robin.slotCrew[4] = NPC_NOBLEMAN;
-	//robin.slotCrew[5] = NPC_SEBASTIAN;
-
-	// ---- 로딩 연출 초기화 ----
-	blState = BL_REVEAL;
-	blStateFrame = 0;
-	blFrame = 0;
-	finishOffsetX = 0;
-
-	summonCmf = -1;
-
-	showCrewCnt = 0;
-
-	bgScrollX = 0;
-	bgScrollY = 0;
-
-	robin.stage = nearestIndex;
-
-	SetHero();
-	SetBattleCrew();
-
-	//bar[BAR_COMBATPOWERALL].front = true;
-	//bar[BAR_COMBATPOWERALL].count = 0;
-	//bar[BAR_COMBATPOWERALL].countFrame = 0;
-	//bar[BAR_COMBATPOWERALL].add = 0;
-	//bar[BAR_COMBATPOWERALL].max = 0;
-	//for (i = 0; i < TOTALCHAR; i++) {
-	//	if (IsGetHero(i))
-	//		AddBar(&bar[BAR_COMBATPOWERALL], GetCombatPower(&ao[i]), BARFRAME);
-	//}
-}
-
 void BattleLoadingUpdate(void)
 {
 	blFrame++;
@@ -4037,124 +3734,6 @@ void SetRaidBox(bool activeVal)
 	//bar[BAR_COIN].active = true;
 }
 
-void GotoRaid(void)
-{
-	int i;
-	int count;
-
-	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
-
-	if (touch) {
-		touchMode = TOUCH_PLAY;
-		touchModeOld = null;
-		touchIndex = 0;
-		swipeIndex = 0;
-	}
-
-	effect.color = effect.color2 = false;
-	memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
-	memcpy(&robin.enemyObj, eObj, sizeof(robin.enemyObj));
-	//for (i = 0; i < MAXENEMY * MAXENEMYOBJ; i++)
-	//	robin.enemyObj[i].active = false;
-	memset(&ao[SOLDIER], 0, sizeof(OBJECT));
-	memcpy(&ao[SOLDIER], &ao[PLAYER], sizeof(OBJECT));
-	ao[SOLDIER].active = false;
-
-	curMenu = MENU_PLAY;
-
-	drawHandle = MD_RAID;
-	keyHandle = MK_RAID;
-
-	SetRaidBox(false);
-
-
-	//간혹 장비상자가 떨어지기도 한다.
-
-	attackSequence = attackType = attackStr = false;
-	sequenceFrame = false;
-	//여기서 공격슬롯 관련 정보를 초기화한다.
-
-	//레이드 회수를 초기화하고
-	raidChance = TOTALRAIDCHANCE;
-
-
-	joyStickAni = 0;
-	joyStickDir = LEFT;
-
-	//autoPlay = false;
-
-	bar[BAR_BOX].active = false;
-#ifdef ENEMYHPBAR
-	bar[BAR_ENEMYHP].active = false;
-#endif
-	bar[BAR_QUEST].active = false;
-	bar[BAR_HAMMER].active = false;
-	bar[BAR_SHIELD].active = false;
-	bar[BAR_CROWN].active = false;
-	bar[BAR_GOLD].front = false;
-
-	pObj->active = false;
-
-	pObj->zoom = HOUSEPLAYERZOOM;
-	pObj->x = DX / 2;
-	//pObj->x = 42 * _2X;
-
-	pObj->dirF = pObj->dirX = RIGHT;
-	pObj->dx = 0;
-
-#ifdef ENEMYUSER
-	SetHouseCrew(robin.enemyUserIdx, false);
-#else
-	SetBossCrew(robin.stage);
-#endif
-
-	if (curID == -1)
-		PlayMusic(M_EVENT_EMERG);
-
-	turn = NEUTRAL;
-#ifdef ENEMYHPBAR
-	bar[BAR_ENEMYHP].active = false;
-#endif
-	bar[BAR_BOX].active = false;
-	bar[BAR_GOLD].active = false;
-	bar[BAR_CROWN].active = false;
-	bar[BAR_QUEST].active = false;
-	bar[BAR_HAMMER].active = false;
-	bar[BAR_SHIELD].active = false;
-
-	bar[BAR_RAIDCOIN].y = STATUSWIN_Y + 128 * _2X;
-	bar[BAR_RAIDCOIN].active = false;
-
-	AddBar(&bar[BAR_COIN], -bar[BAR_COIN].count, BARFRAME);
-
-	//bar[BAR_COIN].y += 20 * _2X;
-	//bar[BAR_ENEMYUSER].y += 20 * _2X;
-
-	if (robin.bossRoom == true)
-		bar[BAR_BOSSHP].active = false;
-
-	memset(&controlMark, 0, sizeof(controlMark));
-	memset(&cardMark, 0, sizeof(cardMark));
-#ifdef ENEMYHPBAR
-	for (i = 0; i < MAXENEMY; i++)
-		bar[BAR_ENEMYHP + i].active = false;
-#endif
-
-	//bar[BAR_COIN].y = STATUSWIN_Y + DRAWRAIDNUMGAP;
-	//bar[BAR_COIN].count = 0;
-	//AddBar(&bar[BAR_COIN], 0, BARFRAME);
-
-	InitBar(BAR_ENEMYUSER);
-
-	initControlerFrame = 0;
-	wheelAngle = 0;
-	wheelSpeed = 0;
-
-	attackSequence = ATTACKSEQUENCE_READY;
-	arenaStatus = STATUS_READY;
-}
-
 void WhoIsNextTurn(void)
 {
 	int crewIdx;
@@ -4267,12 +3846,6 @@ void GotoNextStage(void)
 
 	GotoPlay();
 }
-//일반 스테이지 진행일 때 현재 스테이지 처음으로 가는 함수
-void GotoCurrentStage(void)
-{
-	GotoPlay();
-}
-
 //GotoGacha의 역할
 //GotoGacha는 무엇이고, GotoReward는 무엇인가
 //GotoReward는 rewardMark의 배열에 있는 상자와 재화를 처리하는 것이고
@@ -4668,79 +4241,10 @@ void GotoNewCard()
 	PlayMusic(M_CHEER);
 }
 
-void GotoStageClear(void)
-{
-	int i;
-	int plusHp;
-	//before_DrawHandle_StageClear = drawHandle;
-	//before_KeyHandle_StageClear = keyHandle;
-	//drawHandle = MD_STAGECLEAR;
-	//keyHandle = MK_STAGECLEAR;
-	//MainMenuIn();
-
-	SetPopUp(POPUPTYPE_BOXREWARD, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
-		false, false, false, false, false,
-		false, false, false, false, false,
-		false, false, false, false, false);
-
-	stageInfoDepth = STAGEINFO_STAGECLEAR;
-	stageInfoFrame = 0;
-
-	//curNewItemIdx = 0;
-
-	//stageInfoDepth = 1;
-	//stageInfoFrame = 0;
-
-	//selectedCrew = Proc(proc4, 4);
-
-	//bar[BAR_ENEMYUSER].front = false;
-
-	PlayMusic(M_CHEER);
-
-
-	for (i = ROBIN; i < TOTALCHAR; i++) {
-		plusHp = ao[i].ps[PS_HP] - ao[i].hp;
-		ao[i].hp = ao[i].ps[PS_HP];//최대값까지 채워두고
-		AddBar(&bar[BAR_PLAYERHP + i], plusHp, BARFRAME);
-	}
-
-}
-
 void GotoGameOver(void)
 {
 
 
-}
-
-void OutArena(void)
-{
-	int i;
-	//새로 생긴 투기장의 경우
-	robinmap = oldMap;
-	areaFrame = 0;
-	arenaFrame = 0;
-	//loadedMap = -1 ;
-	SetRoom();
-
-	ao[PLAYER].x = oldX;
-	ao[PLAYER].y = oldY;
-	ao[PLAYER].dirF = ao[PLAYER].dirX = LEFT;
-	ao[PLAYER].maxhp = ao[PLAYER].hp = ao[PLAYER].ps[PS_HP];
-	ao[PLAYER].mp = ao[PLAYER].ps[PS_MP];
-	ao[PLAYER].dead = false;
-	RefreshStat(&ao[PLAYER]);
-
-	// AI캐릭터 지워주기
-	//for (i = PLAYER + 1; i < PLAYERALL; i++)
-	//	memset(&ao[i], 0, sizeof(OBJECT));
-
-	memset(boomerangAway, 0, sizeof(boomerangAway));
-
-	memset(ao[PLAYER].buff, 0, sizeof(ao[PLAYER].buff));
-
-	SaveFlag(0);
-
-	GotoPlay();
 }
 
 
@@ -4937,16 +4441,6 @@ void ChangeTile(int x, int y, int width, int height, int type)
 	}
 }
 
-void SaveEtc(void)
-{
-	//파일 저장
-#ifdef CRYPT
-	EncryptFile(GAMEFILE, (char*)&game, sizeof(GAMEDATA));
-#else
-	GameWriteFile(GAMEFILE, (char*)&game, sizeof(GAMEDATA));
-#endif
-}
-
 // Save & Load
 void SaveGame(void)
 {
@@ -5100,24 +4594,6 @@ void LoadOption(void)
 		option.gameSpeed = FPS;
 
 	//Director::getInstance()->setAnimationInterval(1.0f / option.gameSpeed);
-}
-
-void SaveLog(void)
-{
-#ifdef CRYPT
-	EncryptFile(LOGFILE, (char*)battleLog, sizeof(LOG) * TOTAL_LOG);
-#else
-	GameWriteFile(LOGFILE, (char*)&battleLog, sizeof(LOG) * MAXBATTLELOG);
-#endif
-}
-
-void LoadLog(void)
-{
-#ifdef CRYPT
-	DecryptFile(LOGFILE, (char*)battleLog, sizeof(LOG) * MAXBATTLELOG);
-#else
-	LoadFile(LOGFILE, (char*)&battleLog, sizeof(LOG) * MAXBATTLELOG);
-#endif
 }
 
 void SaveAiHouse(void)

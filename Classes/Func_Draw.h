@@ -26,7 +26,6 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);
 
 void VersionDraw(void);
-void NoSpaceDraw(void);
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
@@ -43,7 +42,6 @@ int GetEventMenuIdx(int eventType);
 void DeleteEventMenu(int eventIdx);
 void InitEventMenu(GAMEEVENT * gEvent, unsigned char type, unsigned char subType, short icon, long limitTime, int touchFunc);
 void sortArray(int arr[], int index[], int n);
-void MainMenuOut(void);
 void MainMenuIn(void);
 void ArrangeEventMenu(void);
 void EventMenuDraw(GAMEEVENT *);

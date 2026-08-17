@@ -91,12 +91,10 @@ void NewsDraw(int x, int y, float zoom);
 void GiftDraw(int x, int y, float zoom);
 void GuildEventDraw(int x, int y, float zoom);
 void DailyQuestDraw(int x, int y, float zoom);
-void ShopDraw_Back(int, int);
 void ShopDraw(int, int, float zoom);
 void CastleMenuDraw(int x, int y, float zoom);
 void StarShopDraw(int, int);
 void HeroDraw(int type, int x, int y, int dirX, float zoom);
-void HeroListDraw(int x, int y, float zoom, bool checkBox, int gap);
 void CrewListDraw(int x, int y, float zoom);
 void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal);
 void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);
@@ -113,8 +111,6 @@ void StageListDraw(int x, int y, int status, int frame);
 void CrewUpgradeMenuDraw(int x, int y, float zoom);
 void HowToGetHeroesDraw(int x, int y, float zoom);
 void HowToGetCrewsDraw(int x, int y, float zoom);
-int GetItemCntUpgradePossible(void);
-void DrawEquipItemCard(int itemType, int itemDetail, int itemGrade, int itemLv, int itemCnt, int x, int y, float zoom);
 void CollectionsDraw(int x, int y, float zoom);
 void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom);
 void CalendarDraw(int, int, float zoom);
@@ -123,7 +119,6 @@ void JokboDraw(int, int, float zoom);
 void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom);
 void DeptDiscountDraw(int x, int y, float zoom);
 void DoubleGoldDraw(int x, int y, float zoom);
-void LimitScrollY(void);
 
 int GetBoxCurrency(int, int);
 int GetBoxGold(int boxType);
@@ -168,7 +163,5 @@ void DrawItemCard(
 
 int GetCrewInventoryIdx(int type);
 void CrewMenuDraw(int x, int y, float zoom);
-void CrewPannelDraw(int crewIdx, int x, int y, float zoom);
-bool IsCrewSet(int crewIdx);
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY);
 #endif

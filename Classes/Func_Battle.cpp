@@ -3183,59 +3183,6 @@ void InfoDraw(void)
 //하단에 마이킹을 털어줄건지.
 //마이킹을 터는 방법
 
-void CrewInfoDraw(int crewIdx, int x, int y, float zoom)
-{
-	int itemType = ITEM_CREW;
-	int itemDetail = crewIdx;
-	int itemGrade = 0;
-	int crewType = crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE];
-	int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-
-	float width;
-	int eventIdx = GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT);
-	float discount = 0;
-
-	int crewRewardType = crewReward[crewIdx * CREWREWARDDATASIZE + 0];
-	int crewRewardDetail = crewReward[crewIdx * CREWREWARDDATASIZE + 1];
-	int crewRewardGrade = crewReward[crewIdx * CREWREWARDDATASIZE + 2];
-	long long crewRewardCnt = crewReward[crewIdx * CREWREWARDDATASIZE + 3];
-	int crewRewardTime = crewReward[crewIdx * CREWREWARDDATASIZE + 4];
-
-	if (eventIdx != -1)
-		discount = robin.gameEvent[eventIdx].value;
-
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
-
-	if (itemType == ITEM_CREW) {
-		curStar = maxStar = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
-	}
-	else {
-		curStar = maxStar = GetItemStar(itemType, itemDetail, itemGrade);
-	}
-
-	//카드를 보여주고
-	DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(16 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, LEFT, zoom * MONSTERZOOM * enemyZoom[crewType]);
-	DrawStar(ICON_STAR, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(34 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, curStar, maxStar, CREWMAXUPGRADELV, CENTER, true, zoom * 1.2f);
-
-	//이름 써주기
-	DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_MONSTERNAME_START + crewType, zoom);
-	//생산량
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "%d %s", crewRewardTime / (60 * 60), textId[TEXT_MADA]);
-
-	DrawTextStr(tempStr, x + (float)(32 * _2X) * zoom, y - (float)(226 * _2X) * zoom, zoom);
-
-	if (crewRewardType == ITEM_BOX) {
-		DrawBox(crewRewardDetail, x + (float)(POPUPWINDOWSIZE_X / 2 - (float)BOXSIZE_X * 0.5f / 2) * zoom, y - (float)(228 * _2X + ITEMICONSIZE) * zoom, LEFT, false, false, true, false, true, zoom * 0.5f);
-	}
-	else {
-		width = (float)ITEMICONSIZE * zoom + (float)4 * _2X * zoom + GetBigNumDx(crewRewardCnt, false, NUM_FONT_LARGE, false, true, 256 * _2X - 16 * _2X - ITEMICONSIZE - 4 * _2X, zoom, true);
-		DrawIcon(GetItemIcon(crewRewardType, crewRewardDetail, crewRewardGrade), x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - width / 2, y - (float)(240 * _2X + ITEMICONSIZE) * zoom, zoom, false, false, false, 1);
-		DrawBigNum(crewRewardCnt, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - width / 2 + (float)(ITEMICONSIZE + 4 * _2X) * zoom, y - (float)(240 * _2X + ITEMICONSIZE - 1 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(256 * _2X - 16 * _2X - ITEMICONSIZE - 4 * _2X) * zoom, true, zoom, true);
-	}
-
-}
-
 void DiscountMenuDraw(int x, int y, float zoom)
 {
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
@@ -3409,76 +3356,6 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 	if (menuPressPossible())
 		SetRectPoint(x, y, w, h, TOUCH_FUNC_EVENT_QUEST);
 
-}
-
-void RaidBoxDraw(int x, int y, float zoom, bool touch, bool shadow)
-{
-	int i;
-
-	for (i = 0; i < TOTALRAIDBOX; i++) {
-		switch (raidBox[i].motion) {
-		case BOXSTATUS_APPEAR:
-			if (curtainFrame == 0) {
-				raidBox[i].motion = OBJ_BOX0;
-				raidBox[i].frame++;
-				raidBox[i].zoom += 0.2f / MOTIONDIV;
-				if (raidBox[i].zoom > BOXCASTLEZOOM)
-					raidBox[i].zoom = BOXCASTLEZOOM;
-				//SetAlpha(ao[i].frame);
-			}
-
-			if (raidBox[i].frame == FPS) {
-				raidBox[i].status = BOXSTATUS_CLOSED;
-				raidBox[i].frame = 0;
-			}
-
-			break;
-		case BOXSTATUS_CLOSED:
-			raidBox[i].motion = OBJ_BOX0 + boxNeutralAnimation[((raidBox[i].frame / (MOTIONDIV * 2)) % 4)];
-			raidBox[i].frame++;
-			break;
-		case BOXSTATUS_OPENING:
-			raidBox[i].motion = Min(OBJ_BOX5, OBJ_BOX0 + raidBox[i].frame / (MOTIONDIV * 2));
-			raidBox[i].frame++;
-			if (raidBox[i].motion == OBJ_BOX5) {
-				if (raidBox[i].gold == false)
-					raidBox[i].status = BOXSTATUS_EMPTY;
-				else
-					raidBox[i].status = BOXSTATUS_OPENED;
-				raidBox[i].frame = 0;
-			}
-			break;
-		case BOXSTATUS_OPENED:
-			//raidBox[i].motion = OBJ_BOX3 + raidBox[i].frame / (MOTIONDIV * 2) % 4;
-			raidBox[i].motion = OBJ_BOX6;
-			raidBox[i].frame++;
-			break;
-		case BOXSTATUS_CLOSING:
-			raidBox[i].motion = OBJ_BOX5 - raidBox[i].frame / (MOTIONDIV * 2);
-			raidBox[i].frame++;
-			if (raidBox[i].motion == OBJ_BOX0) {
-				raidBox[i].status = BOXSTATUS_CLOSED;
-				raidBox[i].motion = OBJ_BOX0;
-				raidBox[i].frame = 0;
-			}
-			break;
-		case BOXSTATUS_EMPTY:
-			raidBox[i].motion = OBJ_BOX6;
-			break;
-		}
-
-		if (shadow == true)
-			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + raidBox[i].x - (float)(12 * _2X) * zoom, y + raidBox[i].y + (float)(8 * _2X) * BOXCASTLEZOOM * zoom, SHADOW_IMG, zoom);
-
-		DrawNeutral(raidBox[i].motion, x + raidBox[i].x, y + raidBox[i].y, LEFT, zoom);
-		if (touch == true && raidBox[i].status != BOXSTATUS_OPENED && raidBox[i].status != BOXSTATUS_EMPTY) {
-			SetRectPoint(x + raidBox[i].x - (float)24 * _2X * zoom, y + raidBox[i].y + (float)(ITEMICONSIZE * 1.0f + 2 * _2X) * zoom * 2, (float)(ITEMICONSIZE * 1.5f) * zoom * 2, (float)(ITEMICONSIZE * 1.5f) * zoom * 2, TOUCH_FUNC_RAID_TARGET + i);
-			DrawHand(x + raidBox[i].x - (float)16 * _2X * zoom, y + raidBox[i].y + (float)(ITEMICONSIZE * 1.0f + 2 * _2X) * zoom * 2, robin.playtime / MOTIONDIV, 1.5f * zoom);
-		}
-#ifdef GUIDELINE
-		DrawNum(raidBox[i].gold, x + raidBox[i].x, y + raidBox[i].y - 8 * _2X, NUM_FONT_NORMAL, CENTER, false, false, true, zoom / 2, true);
-#endif
-	}
 }
 
 void RaidControlerDraw(void)

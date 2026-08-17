@@ -4,7 +4,6 @@
 // KeyPress
 void KeyCore(void);
 void TitleKey(void);
-void BossRaidKey(void);
 void PlayKey(int);
 void DemoKey(void);
 void AlertKey(void);
@@ -12,10 +11,7 @@ void ClearRoom(void);
 bool IsMovingSkill(int idx);
 void HotKeyPress(OBJECT *, int);
 void GachaKey(void);
-void NewSkillKey(void);
-void NewCollectionKey(void);
 void NewCardKey(void);
-void HouseKey(void);
 
 // KeyRelease
 void ReleaseCore(bool dispatchKey = true);
@@ -23,30 +19,21 @@ void PlayRelease(OBJECT *);
 void ReleasePlayer(OBJECT *);
 
 // Touch 관련
-void TouchEndedPlayer(OBJECT*);
 int GetTouchFunc(int, int);
 void ExecTouchFunc(int, int);
 int GetRectPoint(int, int, int, int, int, int);
-int GetSwipePoint(int, int, int, int, int, int);
 void ResetRectPoint(void);
-void ResetSwipetPoint(void);
 bool IsTouchFuncEnabled(int func);
 void SetRectPoint(int rx, int ry, int width, int height, int func);
-bool IsFullInSectionClip(float x, float y, float w, float h);
-void SetSwipePoint(int, int, int, int, int);
 void touchFunc(int func);
 void RaiseHeartBet(void);
 void SaveFlag(int whitch);
 
 // JoyStick 관련
-bool JoyStickPressGoldQuestPossible(void);
-bool JoyStickPressRaidPossible(void);
 bool JoyStickPressPossible(void);
 bool menuPressPossible(void);
-void JoyStickPressRaid(void);
 void JoyStickPressGoldQuest(void);
 void BoxOpen(void);
-void JoyStickPressAll(void);
 void JoyStickRelease(void);
 
 int GetBetHeart(int itemDetail, int itemGrade, int betGrade);

@@ -290,7 +290,6 @@ const int castleRewardBoxRate[TOTALCASTLE][REWARD_BOX_COUNT] =
 
 int GetRewardBoxIndex(int boxDetail);
 int BoxRandomRange(int minValue, int maxValue);
-int RoundBoxCurrency(int itemType, int value);
 int RollBoxGrade(
 	const int gradeRate[BOX_GRADE_COUNT],
 	int* highGradeMissCount);

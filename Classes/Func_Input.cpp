@@ -464,24 +464,6 @@ void TalkKey(void)
 	}
 }
 
-void BossRaidKey(void)
-{
-	switch (menuDepth) {
-	case 0:
-		switch (systemKey) {
-		case AVK_5:
-			if (robin.count >= robin.maxInven) {
-				SetAlert(ALERT_INVENFULL);
-			}
-			else {
-				PlayMusic(M_SELECT);
-			}
-			break;
-		}
-		break;
-	}
-}
-
 void PlayKey(int obj)
 {
 	int i;
@@ -2158,22 +2140,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 }
 
 
-void NewSkillKey(void)
-{
-	PlayKey(PLAYER);
-}
-
-void NewCollectionKey(void)
-{
-	PlayKey(PLAYER);
-}
-
 void NewCardKey(void)
-{
-	PlayKey(PLAYER);
-}
-
-void HouseKey(void)
 {
 	PlayKey(PLAYER);
 }
@@ -2345,86 +2312,6 @@ void ReleasePlayer(OBJECT* pObj)
 }
 
 
-// Touch 관련
-void TouchEndedPlayer(OBJECT* pObj)
-{
-	if (pObj->dead == false && !pObj->debuf[KNOCKBACK] && !pObj->debuf[STUN] && pObj->currentSkill <= 0) {
-		if (isTouchKey == TOUCH_PRESS || isTouchKey == TOUCH_DRAG) {
-			if (!pObj->attack) {
-				if (!(pObj->type == DIANA && pObj->flamer > 0) && !(pObj->type == MAXX && boomerangAway[GetObjFromPtr(pObj)])) {
-
-
-					//아래로 드래그
-					if (touchPressedKey[1][1] - touchPressedKey[0][1] > SWIPE_DISTANCE_Y && isTouchKey == TOUCH_DRAG) {
-						pObj->pressedKey[2] = pObj->pressedKey[1];
-						pObj->pressedKey[1] = pObj->pressedKey[0];
-						pObj->pressedKey[0] = AVK_8;
-
-					}
-					else if (touchedFrame < TOUCHCANCELFRAME) {
-						pObj->pressedKey[2] = pObj->pressedKey[1];
-						pObj->pressedKey[1] = pObj->pressedKey[0];
-						pObj->pressedKey[0] = AVK_5;
-					}
-
-					GetMotionPtr(&ao[raidPlayer]);
-
-					if (pObj->playerRun == true && pObj->pressedKey[0] == AVK_5) {
-						pObj->attack = ATTACK_DASH;
-						pObj->attackFrame = skillStartFrame[ATTACK_DASH];
-						HitCountCheck(pObj);
-					}
-					else if (pObj->status == WALK) {
-						if (pObj->pressedKey[0] == AVK_5) {
-
-							pObj->attack = ATTACK_NORMAL;
-							pObj->attackFrame = skillStartFrame[pObj->attack];
-							HitCountCheck(pObj);
-						}
-					}
-					else if ((pObj->status == JUMP || pObj->status == FALL || pObj->status == GLIDE || pObj->status == FLYING) && !pObj->attack) {
-						if (pObj->pressedKey[0] == AVK_8) {
-							GetMotionPtr(pObj);
-
-							pObj->currentSkill = -1;
-							pObj->mx = false;
-							pObj->dx = 0;
-							pObj->status = FALL;
-							pObj->dirY = DOWN;
-							pObj->jumpFrame = 0;
-
-							if (GetObjHeight(pObj) > 64 * _2X && pObj->canDown == true) {
-								pObj->attack = ATTACK_DOWN;
-								pObj->attackFrame = skillStartFrame[ATTACK_DOWN];
-								HitCountCheck(pObj);
-							}
-						}
-						else if (pObj->pressedKey[0] == AVK_5) {
-							pObj->attack = ATTACK_AIR;
-							pObj->attackFrame = skillStartFrame[ATTACK_AIR];
-							HitCountCheck(pObj);
-						}
-					}
-				}
-			}
-			else if (pObj->attack == ATTACK_NORMAL) {
-				if (pObj->type == ROBIN ||
-					pObj->type == DIANA) {
-					pObj->pressedKey[2] = pObj->pressedKey[1];
-					pObj->pressedKey[1] = pObj->pressedKey[0];
-					pObj->pressedKey[0] = AVK_5;
-				}
-			}
-		}
-		else {
-			ReleasePlayer(pObj);
-		}
-	}
-	else {
-		ReleasePlayer(pObj);
-	}
-}
-
 int GetTouchFunc(int x, int y)
 {
 	int i;
@@ -2471,28 +2358,12 @@ int GetRectPoint(int x, int y, int rx, int ry, int width, int height)
 	return 0;
 }
 
-int GetSwipePoint(int x, int y, int rx, int ry, int width, int height)
-{
-	if (x > rx && x < rx + width && y > ry - height && y < ry)
-		return 1;
-
-	return 0;
-}
-
 void ResetRectPoint(void)
 {
 	int i;
 	for (i = 0; i < TOTALTOUCHCNT; i++)
 		memset(touchRect, 0, sizeof(touchRect));
 	touchIndex = 0;
-}
-
-void ResetSwipetPoint(void)
-{
-	int i;
-	for (i = 0; i < TOTALSWIPECNT; i++)
-		memset(swipeRect, 0, sizeof(swipeRect));
-	swipeIndex = 0;
 }
 
 //지금 이 터치기능이 살아 있는지. 터치영역 등록과 DrawHand 표시가 같은 판정을 쓰도록
@@ -2538,40 +2409,6 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 	touchRect[touchIndex][4] = func;
 
 	touchIndex++;
-}
-
-bool IsFullInSectionClip(float x, float y, float w, float h)
-{
-	float rectX1 = x;
-	float rectY1 = y;
-	float rectX2 = x + w;
-	float rectY2 = y - h;
-
-	if (rectX1 < clipX)
-		return false;
-
-	if (rectX2 > clipX2)
-		return false;
-
-	if (rectY1 > clipY)
-		return false;
-
-	if (rectY2 < clipY2)
-		return false;
-
-	return true;
-}
-
-void SetSwipePoint(int rx, int ry, int width, int height, int func)
-{
-#ifdef CONTROL_MANUAL
-	swipeRect[swipeIndex][0] = rx;
-	swipeRect[swipeIndex][1] = ry;
-	swipeRect[swipeIndex][2] = width;
-	swipeRect[swipeIndex][3] = height;
-	swipeRect[swipeIndex][4] = func;
-	swipeIndex++;
-#endif
 }
 
 void touchFunc(int func)
@@ -3213,29 +3050,6 @@ void SaveFlag(int which)
 
 // JoyStick 관련
 
-bool JoyStickPressGoldQuestPossible(void)
-{
-	int i;
-
-	for (i = 0; i < TOTALCONTROLMARK; i++) {
-		if (controlMark[i].frame > 0)
-			return false;
-	}
-
-	if (((autoPlay == false && turn == NEUTRAL && !curtainFrame && ao[ENEMY].dead == false && ao[ENEMY].active == true && ao[ENEMY].moveHandler != VANISHMOVE && attackSequence == false) || autoPlay == true) && infoFrame == 0 && areaFrame == 0 && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY)
-		return true;
-	else
-		return false;
-}
-
-bool JoyStickPressRaidPossible(void)
-{
-	if (autoPlay == false && raidChance > 0 && turn == NEUTRAL && !curtainFrame && ao[ENEMY].dead == false && ao[ENEMY].active == true && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY)
-		return true;
-	else
-		return false;
-}
-
 bool JoyStickPressPossible(void)
 {
 
@@ -3270,63 +3084,6 @@ bool menuPressPossible(void)
 	}
 }
 
-void JoyStickPressRaid(void)
-{
-	OBJECT* pObj = &ao[PLAYER];
-
-	if (attackDelay)
-		return;
-
-	//하트는 하지 않고
-	if (raidChance > 0 && turn == NEUTRAL) {
-		raidChance--;
-
-		//ROULETTE_COIN = 0,//검//일반 데미지 //1, 2, 5배//
-		//ROULETTE_BATTLE,//�۷κ�//��Ÿ ������ //1, 2, 4�� ��Ÿ//
-		//ROULETTE_EQUIP,//���?/3���� �� ������ ũ��Ƽ�� ������//��䰪���?10�迡�� ����//
-		//ROULETTE_HEART,//����//3���� �� ������ ��Ʈ//
-		//ROULETTE_QUEST,//하의//퀘스트 아이템 획득//1, 2, 5배//
-		//ROULETTE_RAID,//�Ź�//���� ����//���?1, 2, 5��//
-
-		//actionCardArr[0] = ROULETTE_COIN;
-		//actionCardArr[1] = ROULETTE_COIN;
-		//actionCardArr[2] = ROULETTE_COIN;
-
-		if (ao[pObj->target].gold == 0) {
-			attackType = ROULETTE_RAID_MISS;
-		}
-		else if (ao[pObj->target].gold > ao[ENEMYUSEROBJ].gold * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet) / 2) {
-
-			attackType = ROULETTE_RAID_PERFECT;
-		}
-		else {
-			attackType = ROULETTE_RAID_GOOD;
-		}
-
-		attackStr = 0;
-
-		sequenceFrame = 0;
-		attackSequence = ATTACKSEQUENCE_READY;
-		rouletteNum = 0;
-		rouletteNumSub = 0;
-		rouletteNumBar = 0;
-		rouletteNumPvpBar = 0;
-
-		option.gameControl = CONTROL_AUTO;
-		turn = PLAYER;
-		turnFrame = 0;
-		pObj->turnPosition = GOING;
-		joyStickAni = 0;
-
-		pObj->superJump = 2;
-		pObj->jumpTwice = true;
-		pObj->jumpFrame = -4;
-		effect.shake = 4;
-
-
-		PlayMusic(M_SHAKIN);
-	}
-}
 //�������̵��� ���� 
 //1. 보스가 등장하고 
 //2. ������ ������ �����ϸ�
@@ -3512,16 +3269,6 @@ void BoxOpen(void)
 
 	SaveGame();
 
-
-}
-
-void JoyStickPressAll(void)
-{
-
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
-
-	totalRouletteCnt = Min(MAXROULETTE - actionCardCnt, robin.heart / GetBetHeart(it->detail, it->grade, bet));
 
 }
 

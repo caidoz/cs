@@ -337,25 +337,6 @@ void HitZoomUpdate(void)
 	}
 }
 
-// Image Handling & Drawing
-void NewGameImgLoad(void)
-{
-	int i;
-
-	costumeImg[ROBIN] = ROBIN;
-	costumeImg[DIANA] = DIANA;
-	costumeImg[MAXX] = MAXX;
-
-	ao[ROBIN].cmf = ao[ROBIN].type = ROBIN;
-	ao[DIANA].cmf = ao[DIANA].type = DIANA;
-	ao[MAXX].cmf = ao[MAXX].type = MAXX;
-
-	for (i = ROBIN; i < TOTALPLAYER; i++) {
-		memset(&ao[i].equipImg, 0, sizeof(ao[i].equipImg));
-		ao[i].equipImg[EQUIP_WEAPON] = 1 + itemStartCnt[i];
-	}
-}
-
 void LoadImg(int index)
 {
 	std::string fileName;
@@ -413,38 +394,6 @@ void LoadSpriteFromTexture(int textureIdx)
 		renderSprite[getSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
 	else
 		renderSprite[getSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-}
-
-void LoadBuffSpriteFromTexture(int textureIdx, cocos2d::Layer* cvtLayer)
-{
-	GetBufferSpriteIndex(textureIdx, cvtLayer);
-	//renderSprite[spriteIdx]->autorelease();
-
-	//만약 이미지를 추가해야 된다면
-	if (getBufferSpriteIdx == totalBufferCnt) {
-		bufferSprite[getBufferSpriteIdx] = Sprite::createWithTexture(texture[textureIdx]);
-		bufferSprite[getBufferSpriteIdx]->retain();
-		bufferSpriteIndex[getBufferSpriteIdx] = getBufferSpriteTexture;
-
-		sameBufferSpriteArr[textureIdx][sameBufferSpriteCur[textureIdx]] = totalBufferCnt;
-		sameBufferSpriteMax[textureIdx]++;
-		sameBufferSpriteCur[textureIdx]++;
-		totalBufferCnt++;
-		cvtLayer->addChild(bufferSprite[getBufferSpriteIdx]);
-	}
-	//기존것을 쓴다면
-	bufferSprite[getBufferSpriteIdx]->getTexture()->setAliasTexParameters();
-	bufferSprite[getBufferSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
-	bufferSprite[getBufferSpriteIdx]->setFlippedX(false);
-	bufferSprite[getBufferSpriteIdx]->setRotation(0);
-	bufferSprite[getBufferSpriteIdx]->setAnchorPoint(Vec2(0, 1.0f));
-	if (grayScale)
-		//renderSprite[getSpriteIdx]->setGLProgram(shader_gray);
-		bufferSprite[getBufferSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
-	else
-		bufferSprite[getBufferSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-	curBufferSpriteArr[curBufferCnt] = getBufferSpriteIdx;
-	curBufferCnt++;
 }
 
 //��ο���?������ �ܰ�. ���� ���� Ÿ�ٿ� ���� ���?�����?������.
@@ -526,45 +475,7 @@ int GetBufferSpriteIndex(int index, cocos2d::Layer* cvtLayer)
 	return false;
 }
 
-//���� ��ε��Ǿ�?�ִ°� �����ؼ� ���?�ε����� ���?�Ǵ��� 
-int GetTextLabelIndex(int index)
-{
-	int i;
-	int sameCnt = 0;
-	getTextLabelTexture = index;
 
-	if (sameTextLabelCur[index] < sameTextLabelMax[index]) {
-		for (i = 0; i < MAXLABELCNT; i++) {
-			if (textLabelIndex[i] == index) {
-				if (sameTextLabelCur[index] == sameCnt) {
-					sameTextLabelArr[index][sameTextLabelCur[index]] = i;
-					sameTextLabelCur[index]++;
-					getTextLabelIdx = i;
-					return i;
-				}
-				sameCnt++;
-			}
-		}
-	}
-	else {
-		getTextLabelIdx = totalTextLabelCnt;
-		return totalTextLabelCnt;
-	}
-
-	return false;
-}
-
-
-
-std::string convertToString(char* a, int size)
-{
-	int i;
-	std::string s = "";
-	for (i = 0; i < size; i++) {
-		s = s + a[i];
-	}
-	return s;
-}
 
 //Ÿ�԰� �ε����� ���� ���ϸ� ���� �� ���ϸ��� �� ���ۿ� ��Ƽ�?�����ϱ�
 std::string  GetResourceName(int type, int idx)
@@ -618,11 +529,6 @@ std::string  GetResourceName(int type, int idx)
 	}
 
 	return fileName;
-}
-
-int GetTypeByZoom(int type, int zoom)
-{
-	return type;
 }
 
 void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
@@ -1334,13 +1240,6 @@ void SetSpotlightKeepRect(float x, float y, float w, float h, float soft)
 	gSpotlightKeepCnt++;
 }
 
-void ClearSpotlight(void)
-{
-	gSpotlightOn = false;
-	gSpotlightCnt = 0;
-	gSpotlightKeepCnt = 0;
-}
-
 //화면버퍼 스프라이트에 스팟라이트 쉐이더를 걸거나 원래 쉐이더로 되돌린다.
 static void ApplySpotlight(void)
 {
@@ -1646,16 +1545,6 @@ void MemRectBoth(int x, int y, int w, int h, int frameCol, int fillCol)
 	MemRect(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, fillCol);
 }
 
-void MemRectBothThick(int x, int y, int w, int h, int frameCol, int fillCol)
-{
-	MemRect(x, y, w, 2 * _2X, frameCol);
-	MemRect(x, y - 2 * _2X, 2 * _2X, h - 2 * _2X * 2, frameCol);
-	MemRect(x + w - 2 * _2X, y - 2 * _2X, 2 * _2X, h - 2 * _2X * 2, frameCol);
-	MemRect(x, y - h + 2 * _2X, w, 2 * _2X, frameCol);
-
-	MemRect(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, fillCol);
-}
-
 //�ձ� �簢��ä���?
 void MemRectRound(int x, int y, int w, int h, int fillCol, int empty)
 {
@@ -1682,35 +1571,6 @@ void MemRectRound(int x, int y, int w, int h, int fillCol, int empty)
 	}
 
 	MemRect(x, y - empty, w, h - 2 * empty, fillCol);
-}
-
-void MemRectGraph(int x, int y, int w, int h, int type)
-{
-	int i = 0;
-	int height = h;
-	int gap[5] = { 4, 7, 11, 15, 10000 };
-
-	do {
-		height = Min(h, gap[i]);
-		MemRect(x, y, w, height, colorData[36 + type * 5 + i]);
-		y += height;
-		h -= height;
-		i++;
-	} while (h > 0 && i < 5);
-}
-
-//color1 �� ���� ���Ѱ�, color2, color3, color4�� ���� ���Ѱ�
-void DrawColorFrame(int x, int y, int w, int h, int color1, int color2, int color3, int color4)
-{
-
-	MemRectBoth(x, y, w, h, color4, color1);
-	MemRect(x + 1 * _2X, y - 1 * _2X, w - 3 * _2X, 1 * _2X, color1);
-	MemRect(x + 1 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, color1);
-	MemRect(x + w - 2 * _2X, y - 1 * _2X, 1 * _2X, 1 * _2X, color2);
-	MemRect(x + 1 * _2X, y - (h - 2 * _2X), 1 * _2X, 1 * _2X, color2);
-	MemRect(x + w - 2 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, color3);
-	MemRect(x + 2 * _2X, y - (h - 2 * _2X), w - 3 * _2X, 1 * _2X, color3);
-
 }
 
 void DrawFrame(int x, int y, int w, int h, int type)
@@ -1956,22 +1816,6 @@ void DrawFrame(int x, int y, int w, int h, int type)
 	}
 }
 
-void DrawEquipFrame(int x, int y, int w, int h, int baseColor, int frameColor)
-{
-	int i;
-
-	MemRect(x + 2 * _2X, y - 0 * _2X, w - 4 * _2X, 1 * _2X, 0x818CDA);
-	MemRect(x, y - 2 * _2X, 1 * _2X, h - 4 * _2X, 0x818CDA);
-	MemRect(x + w - 1 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, 0x818CDA);
-	MemRect(x + 2 * _2X, y - (h - 1 * _2X), w - 4 * _2X, 1 * _2X, 0x818CDA);
-	MemRectBoth(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, 0xCCFFFF, baseColor);
-	for (i = 0; i < 4; i++) {
-		MemRect(x + 1 * _2X + (w - 3 * _2X) * (i % 2), y - (1 * _2X + (h - 3 * _2X) * (i / 2)), 1 * _2X, 1 * _2X, 0x818CDA);
-		MemRect(x + 2 * _2X + (w - 5 * _2X) * (i % 2), y - (1 * _2X + (h - 3 * _2X) * (i / 2)), 1 * _2X, 1 * _2X, 0xB9D7FC);
-		MemRect(x + 1 * _2X + (w - 3 * _2X) * (i % 2), y - (2 * _2X + (h - 5 * _2X) * (i / 2)), 1 * _2X, 1 * _2X, 0xB9D7FC);
-	}
-}
-
 void DrawRoundBar(int x, int y, float percent, int type, int color, int alpha, float zoom)
 {
 	int tempAlpha;
@@ -2012,25 +1856,6 @@ void DrawGuage(int x, int y, int w, int h, long cur, long max, int bgCol, int fu
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%ld / %ld", cur, max);
 	CenterTextStr(tempStr, x + w / 2, y - (float)(h / 2 - FONT_HEIGHT / 2 * zoom), zoom);
-}
-
-void DrawRouletteNum(long long num, int icon, int x, int y, bool ani, float zoom)
-{
-	float width = GetNumDx(num, false, NUM_FONT_LARGE, false, true, zoom, false) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom;
-	
-	//일반숫자 2배수
-	DrawIcon(icon, x - width / 2, y, zoom, COLOR_BROWN, false, false, true);
-	DrawNum(num, x - width / 2 + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y + (float)(1 * _2X), NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
-
-
-}
-
-void DrawRouletteNumSmall(long long num, int icon, int x, int y, bool ani, float zoom)
-{
-	float width = GetNumDx(num, num < 0 ? MINUS : false, NUM_FONT_LARGE, false, true, zoom, false);// +ITEMICONSIZE * zoom + 4 * _2X * zoom;
-	//일반숫자 2배수
-	DrawNum(num, x - width / 2 + ITEMICONSIZE * zoom + 4 * _2X * zoom, y + 1 * _2X, NUM_FONT_LARGE, CENTER, 0, num < 0 ? MINUS : false, true, zoom, false);
-
 }
 
 float DrawRouletteNumIcon(long long num, int icon, int x, int y, bool ani, int align, float zoom)
@@ -2085,22 +1910,6 @@ void DrawLabel(int x, int y, int textIdx, float zoom)
 
 	if (textIdx)
 		CenterText(textIdx, x, y - (float)(16 * _2X) * zoom + (float)11 * _2X / 2 * LABELZOOM * zoom, LABELZOOM * zoom);
-}
-
-//�� ���׹� �����?
-void DrawStageEnemyWave(int x, int y, int stageBossType, float zoom)
-{
-
-	//return;
-
-	DrawBox(stageClearBox[robin.stage], x + (float)(32 * _2X) * zoom, y, LEFT, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], COLOR_WHITE, true, false, true, 1.2f * zoom);
-
-	DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 4 % crewPos[stageBossType * 5 + 1]), x, y, LEFT, /*enemyIconZoom[stageBossType] **/ zoom);
-
-	DrawStageLabel(x, y + (float)92 * _2X * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom);
-
-	DrawBuyButton(x + (float)(-24 * _2X * STAGESTARBUTTONZOOM) * zoom, y, (float)(80 * _2X) * STAGESTARBUTTONZOOM * zoom, (float)BUYBUTTON_Y * STAGESTARBUTTONZOOM * zoom, frame, robin.gold < GetStageAdmissionFee() ? FRAME_GREY : FRAME_GREEN, GetStageAdmissionFee(), CURRENCY_GOLD, STAGESTARBUTTONZOOM * zoom, false, false, false);
-
 }
 
 void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, float zoom)
@@ -3046,23 +2855,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	}
 }
 
-void DrawGrid(int x, int y, int w, int h, int dx, int dy, int color1, int color2)
-{
-	int i, j;
-	int iCnt = (w / dx) + ((w % dx) ? 1 : 0);
-	int jCnt = (h / dy) + ((h % dy) ? 1 : 0);
-	//return;
-
-	for (i = 0; i < iCnt; i++) {
-		for (j = 0; j < jCnt; j++) {
-			if ((i + j) % 2)
-				MemRect(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color1]);
-			else
-				MemRect(x + i * dx, y - j * dy, dx, dy, colorSet[4 * color2]);
-		}
-	}
-}
-
 //type 0이 가로타입, 1가 세로타입
 void GradiationFrame(int x, int y, int w, int h, int type)
 {
@@ -3820,12 +3612,6 @@ void DrawXNumGold(long long int num, int x, int y, bool ani, float zoom, int ali
 	DrawGoldAlpha(x, y - (float)(4 * _2X) * zoom, ALPHA_X, FONT_GOLD_LARGE, zoom * 0.8f, LEFT, false, false);
 	DrawGoldNum(num, x + GetGoldAlphaWidth(ALPHA_X, FONT_GOLD_LARGE, zoom * 0.8f) + (float)(2 * _2X * zoom), y + (float)4 * _2X * zoom, LEFT, digit, false, false, zoom * 1.3f);
 
-}
-
-void DrawXNum(long long int num, int x, int y, bool ani, float zoom)
-{
-	DrawAlpha(x, y - 4 * _2X, TEXT_ALPHA_X, FONT_LARGE, zoom, false);
-	DrawNum(num, x + 12 * _2X, y, NUM_FONT_LARGE, LEFT, 2, false, false, zoom, false);
 }
 
 void DrawSlashNum(int min, int max, int x, int y, float width, float zoom)
@@ -4699,142 +4485,6 @@ void DrawStar(int icon, int x, int y, int cnt, int curMax, int max, int align, b
 }
 
 
-void DrawShield(int x, int y, int cnt, int max, int align, float zoom)
-{
-	int i;
-	float width;
-	float shieldZoom = 1.5f;
-	float gapX = Min(14 * _2X, (float)(SHIELDBARWIDTH - ITEMICONSIZE * shieldZoom) / (max - 1));
-	int drawCnt = max;
-	int baseColorBack = baseColor;
-
-	width = (float)((gapX * (drawCnt - 1) + (float)ITEMICONSIZE * shieldZoom) * shieldZoom);
-	y -= (float)(2 * _2X) * zoom;
-
-	switch (align) {
-	case LEFT:
-		break;
-	case RIGHT:
-		x -= width;
-		break;
-	case CENTER:
-		x -= width / 2;
-		break;
-	}
-
-	for (i = drawCnt - 1; i >= 0; i--) {
-		if (i >= cnt)
-			SetColor(COLOR_STARGREY);
-		//아이콘으로 그리는거
-		DrawIcon(ICON_SHIELD, x + (float)(i * gapX) * shieldZoom, y, shieldZoom, COLOR_WHITE, false, false, true);
-		SetColor(false);
-	}
-
-	SetColor(baseColorBack);
-}
-
-void DrawHeart(int x, int y, int cnt, int max, int align, float zoom)
-{
-	int i;
-	float width;
-	int drawCnt = max;
-	int baseColorBack = baseColor;
-
-	width = (float)(14 * _2X * drawCnt) * zoom;
-	y += (float)(4 * _2X) * zoom;
-
-	switch (align) {
-	case LEFT:
-		break;
-	case RIGHT:
-		x -= width;
-		break;
-	case CENTER:
-		x -= width / 2;
-		break;
-	}
-
-	for (i = 0; i < drawCnt; i++) {
-		if (i >= cnt)
-			SetColor(COLOR_STARGREY);
-		//아이콘으로 그리는거
-		DrawIcon(ICON_HEART, x + (float)(i * 14 * _2X) * zoom, y, zoom, COLOR_BROWN, false, false, true);
-		SetColor(false);
-	}
-
-	SetColor(baseColorBack);
-}
-
-void DrawRaidButton(float zoom, bool ani)
-{
-	//하트버튼
-	int x = xOffset + DX / 2 - 36 * _2X * zoom;
-	int y = STATUSWIN_Y + HEARTBUTTONGAP;
-	float width = (float)(12 * _2X) * zoom + GetNumDx(raidChance, false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 4 * _2X) * zoom;
-
-	if (width == 0)
-		return;
-
-	if (ani == true)
-		MemRect(x - (float)(4 * _2X) * zoom, y - (float)(2 * _2X) * zoom, (float)(72 * _2X + 8 * _2X) * zoom, 18 * _2X, itemColor[frame % 6]);
-	DrawAlpha(x + (float)(72 * _2X) * zoom / 2 - width / 2, y - (float)(5 * _2X) * zoom, ALPHA_X, FONT_LARGE, zoom, false);
-	DrawNum(raidChance, x + (float)(72 * _2X) * zoom / 2 - width / 2 + (float)(12 * _2X) * zoom, y - (float)(4 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 1, false, false, zoom, false);
-
-	DrawIcon(ICON_RAID, x + (float)(72 * _2X) * zoom / 2 - width / 2 + (float)(12 * _2X) * zoom + GetNumDx(raidChance, false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(4 * _2X) * zoom, y - (float)(3 * _2X) * zoom + (float)(6 * _2X) * zoom, zoom, false, false, false, true);
-
-}
-
-void DrawGoldButton(int itemType, int itemDetail, int itemGrade, int itemLv, int x, int y, float zoom, bool ani)
-{
-	//하트버튼
-	float width = (float)(ITEMICONSIZE + 10 * _2X + 1 * _2X) * zoom + GetNumDx(GetBetGold(itemDetail, itemGrade), false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
-
-	if (width == 0)
-		return;
-
-	if (ani == true)
-		MemRect(x - (float)(4 * _2X) * zoom, y - (float)(2 * _2X) * zoom, (float)(72 * _2X + 8 * _2X) * zoom, (float)(18 * _2X) * zoom, itemColor[frame % 6]);
-
-	DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + (float)(72 * _2X) * zoom / 2 - width / 2, y - (float)(3 * _2X) * zoom, zoom, false, false, false, true);
-	DrawAlpha(x + (float)(72 * _2X) * zoom / 2 - width / 2 + (float)(ITEMICONSIZE + 1 * _2X) * zoom, y - (float)(5 * _2X) * zoom, ALPHA_X, FONT_LARGE, zoom, false);
-	DrawNum(GetBetGold(itemDetail, itemGrade), x + (float)(72 * _2X) * zoom / 2 - width / 2 + (float)(ITEMICONSIZE + 1 * _2X + 10 * _2X) * zoom, y - (float)(4 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, false, false, true, zoom, false);
-
-	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)72 * _2X * zoom / 2 - width / 2 + (float)(ITEMICONSIZE + 1 * _2X + 10 * _2X) * zoom + GetNumDx(GetBetGold(itemDetail, itemGrade), false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(1 * _2X) * zoom, y - (float)(3 * _2X) * zoom, zoom, false, false, false, true);
-
-}
-
-void DrawCoinButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
-{
-	float GOLDALPHAZOOM = 0.5f;
-	//하트버튼
-	//float width = (float)(ITEMICONSIZE + 10 * _2X + 1 * _2X) * zoom + GetNumDx(GetBetHeart(itemDetail, itemGrade, bet), false, NUM_FONT_NORMAL, false, true, zoom, false) + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
-	//float width = (float)(ITEMICONSIZE + 2 * _2X + 8 * _2X) * 1.1f * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * 0.65f);
-	float width = (float)(ITEMICONSIZE + 2 * _2X) * zoom + GetGoldNumDx(cnt, PLUS, false, false, zoom * GOLDALPHAZOOM);
-
-	if (width == 0)
-		return;
-
-	//if (ani == true)
-
-	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(COINBUTTONWIDTH - width) / 2 * zoom, y + (float)(-2 * _2X) * zoom, zoom, false, false, false, true);
-	DrawXNumGold(cnt, x + (float)(COINBUTTONWIDTH - width) / 2 + (float)(ITEMICONSIZE + 2 * _2X) * zoom, y - (float)(4 * _2X) * zoom, false, GOLDALPHAZOOM * zoom, LEFT, false);
-
-	//Bet�϶��?����
-	if (betFrame)
-		if (robin.gold > betCoin[betBattle] * GetStageAdmissionFee()) {
-			//�ִ� bet�̸� �ִ밪�ΰ� ǥ�����ְ�
-			if (IsMaxCoinBet() == true) {
-				DrawFrame(xOffset + x - (float)40 * _2X * zoom, y + (float)4 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)44 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
-				DrawGoldAlpha(xOffset + x - (float)(40 * _2X - 4 * _2X) * zoom, y + (float)(4 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_MAX, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
-			}
-			else {
-				DrawFrame(xOffset + x - (float)40 * _2X * zoom, y + (float)4 * _2X * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), (float)36 * _2X * zoom, (float)20 * _2X * zoom, FRAME_SHOPBALLOON);
-				DrawGoldAlpha(xOffset + x - (float)(40 * _2X - 4 * _2X) * zoom, y + (float)(4 * _2X - 4 * _2X) * zoom + 8 - Abs(frame / MOTIONDIV % 8 - 4), ALPHA_BET, FONT_GOLD_LARGE, 0.5f * zoom, LEFT, false, false);
-			}
-		}
-
-}
-
 void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 {
 	float GOLDALPHAZOOM = 0.4f;
@@ -4879,28 +4529,6 @@ void DrawHeartButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame)
 			DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 1.5f * zoom);
 		}
 
-}
-
-void DrawBattleButton(int x, int y, float zoom, bool ani)
-{
-	float heartZoom = 0.5f * zoom;
-	int heartX, heartY;
-
-	DrawIcon(ICON_EVENT_2SWORD, x, y, zoom, COLOR_BROWN/*(ani == true ? itemColor[robin.playtime % 10] : COLOR_BROWN)*/, false, false, 1.0f);
-	CenterText(TEXT_ADVENTURE, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)(ITEMICONSIZE - 2 * _2X) * zoom, 0.5f * zoom);
-	//입장료
-	//
-	if (frame % FPS < 15)
-		heartZoom += (float)(frame % FPS) * 0.02f;
-	
-	heartX = x + (float)14 * _2X * zoom + (float)8 * _2X * zoom;
-	heartY = y - (float)6 * _2X * zoom - (float)8 * _2X * zoom;
-	DrawIcon(ICON_HEART, heartX - (float)(heartZoom) * 16 * _2X / 2, heartY + (float)(heartZoom) * 16 * _2X / 2, heartZoom, COLOR_WHITE, false, false, 1 * _2X);
-	DrawNumTTF(-GetStageAdmissionHeart(nearestIndex), heartX, heartY + (float)3 * _2X * zoom, FONT_LARGE, CENTER, 2, false, false, 0.35f * zoom, false);
-
-	if (ani == true) {
-		DrawHand(x - (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, robin.playtime / MOTIONDIV, 0.8f * zoom);
-	}
 }
 
 
@@ -5054,17 +4682,6 @@ void DrawCheckBox(int x, int y, int w, int h, bool checked, float zoom)
 		DrawImage(32 * _2X, 27 * _2X, 0 * _2X, 0 * _2X, x + (float)0 * _2X * zoom, y - (float)0 * _2X * zoom, false, false, false, false, false, 0.65f * zoom, sprite[ETC_IMG], ETC_IMG);
 }
 
-void DrawCheckButton(int x, int y, int w, int h, int gray, bool checked, int currency, int amount, float zoom)
-{
-	float numWidth = GetBigNumDx(amount, false, NUM_FONT_NORMAL, false, true, w - (float)(ITEMICONSIZE + 1 * _2X) * zoom - ((float)18 * _2X * 0.65f) * zoom - (float)(4 + 4 + 2) * _2X * zoom, zoom, false);
-
-	float width = numWidth + (float)(ITEMICONSIZE + 1 * _2X) * zoom;
-	DrawButtonFrame(x, y, w, h, gray, zoom);
-	DrawCheckBox(x + (float)4 * _2X * zoom, y - (float)9 * _2X * zoom, (float)18 * _2X, (float)18 * _2X, checked, 0.65f * zoom);
-	DrawIcon(currencyIcon[currency] == ICON_GOLD ? currencyIcon[currency] + frame % GOLDICONFRAME : currencyIcon[currency], x + w - (float)(4 * _2X) * zoom - width, y - (float)7 * _2X * zoom, zoom, COLOR_BROWN, false, false, true);
-
-	DrawBigNum(amount, x + w - (float)(4 * _2X) * zoom, y - (float)9 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, 0, false, width - (float)(ITEMICONSIZE + 1 * _2X) * zoom, true, zoom, false);
-}
 //frameColor는 FRAME_GREEN 이상
 void DrawButtonFrame(int x, int y, int w, int h, int frameColor, float zoom)
 {
@@ -5224,12 +4841,6 @@ void DrawPlusMark(int x, int y, float zoom)
 void DrawXMark(int x, int y, float zoom)
 {
 	DrawImage(64, 62, 389, 639, x, y, false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-}
-
-void DrawInfoMark(int x, int y, float zoom)
-{
-	DrawFrame(x, y, (float)(20 * _2X) * zoom, (float)(24 * _2X) * zoom, FRAME_BLUE);
-	CenterText(TEXT_I, x + (float)(10 * _2X) * zoom, y - (float)(5 * _2X) * zoom, zoom);
 }
 
 // Item Showing
@@ -5431,27 +5042,6 @@ void DrawPercent(float num, int x, int y, float zoom, int align)
 
 }
 
-void DrawXNumTTF(int num, int x, int y, float zoom, int align)
-{
-	float width;
-
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "x%d", num);
-
-	width = StringWidth(tempStr, zoom);
-
-	switch (align) {
-	case RIGHT:
-		x -= width;
-		break;
-	case CENTER:
-		x -= width / 2;
-		break;
-	}
-
-	DrawTextStr(tempStr, x, y, zoom);
-}
-
 void DrawLv(int lv, int x, int y, float zoom, int align)
 {
 	float width;
@@ -5521,12 +5111,6 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 	MemRectFrameThick(x - (float)1 * _2X * zoom, y + (float)1 * _2X * zoom, (float)(ITEMICONSIZE + 2 * _2X) * zoom, (float)(ITEMICONSIZE + 2 * _2X) * zoom, itemColor[it->grade], 1 * _2X);
 	DrawStar(ICON_STAR, x + (float)ITEMICONSIZE * zoom / 2, y + (float)(5 * _2X) * zoom, GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), GetItemStar(it->type, it->detail, it->grade), CENTER, true, 0.3f * zoom);
 
-}
-
-void DrawSlotIndex(int idx, int x, int y, int color, float zoom)
-{
-	MemRect(x, y, (float)(7 * _2X) * zoom, (float)(9 * _2X) * zoom, color);
-	DrawNum(idx, x + (float)(1 * _2X) * zoom, y - (float)(1 * _2X) * zoom, FONT_SMALL, LEFT, 1, false, true, zoom, true);
 }
 
 void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, int str, bool ani, float zoom)
@@ -6148,17 +5732,6 @@ void DrawHitCount(OBJECT* pObj, int x, int y, float zoom)
 	}
 }
 
-void DrawSocket(int socket, int x, int y, float zoom)
-{
-	DrawArray(IMG_SOCKET, x, y, zoom);
-
-	if (socket < EMPTY) {
-		SetAlpha(32 - Abs(frame % 8 - 4) * 4);
-		DrawArray(IMG_RUBY + socket % 10, x + (float)1 * _2X * zoom, y - (float)1 * _2X * zoom, zoom);
-		SetAlpha(32);
-	}
-}
-
 void DrawCycle(int x, int y, int w, int h, int cycle, int full, float zoom)
 {
 	int tRect[4];
@@ -6285,109 +5858,6 @@ void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom)
 	DrawTextStrSystem(str, x, y, zoom, align, true);
 }
 
-void DrawDetailTimeGold(int x, int y, int atime, int font, int align, float zoom)
-{
-	//atime은 초다.
-	//atime * 60 = 1m
-	//atime * 3600 = 1h
-	//atime * 144000 = 1d
-	//1일 이상이면 xx d:yy h:zz m
-
-	//x = x + (float)30 * _2X * zoom;
-
-	switch (font) {
-	default:
-		if (atime >= 144000) {
-			//00d:00h:00m
-			DrawGoldNum(atime / 144000, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_D, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum((atime % 144000) / 3600, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-
-		}
-		else if (atime >= 3600) {
-			//00h:00m:00s
-			DrawGoldNum(atime / 3600, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_H, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum((atime % 3600) / 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-
-		}
-		else {
-			//00m:00s:00
-			DrawGoldNum(atime / 60, x + (float)38 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)40 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_M, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawImage(17, 16, 207, 363, x + (float)62 * _2X * zoom, y - (float)(11 * _2X) * zoom, false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			DrawGoldNum(atime % 60, x + (float)108 * _2X * zoom, y, RIGHT, 2, false, false, zoom);
-			DrawGoldAlpha(x + (float)110 * _2X * zoom, y - (float)(2 * _2X) * zoom, ALPHA_NUM_S, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
-			
-
-		}
-		break;
-	}
-	//SetAlpha(16);
-}
-
-void DrawDate(int x, int y, int atime, float zoom)
-{
-	struct tm* tm;
-	time_t timep;
-
-	timeval tv;
-	gettimeofday(&tv, nullptr);
-	timep = tv.tv_sec;
-
-	tm = localtime(&timep);
-	int month = tm->tm_mon + 1;
-	int day = tm->tm_mday;
-	int hour = tm->tm_hour;
-	int min = tm->tm_min;
-
-	DrawNum(hour, x, y, FONT_SMALL, LEFT, 2, false, true, zoom, true);
-	DrawAlpha(x + (float)(10 * _2X) * zoom, y, ALPHA_COLON, FONT_SMALL, zoom, false);
-	DrawNum(min, x + (float)(15 * _2X) * zoom, y, FONT_SMALL, LEFT, 2, false, true, zoom, true);
-
-	DrawNum(month, x + (float)(30 * _2X) * zoom, y, FONT_SMALL, LEFT, 2, false, true, zoom, true);
-	DrawAlpha(x + (float)(40 * _2X) * zoom, y, ALPHA_SLA, FONT_SMALL, zoom, false);
-	DrawNum(day, x + (float)(45 * _2X) * zoom, y, FONT_SMALL, LEFT, 2, false, true, zoom, true);
-
-}
-
-void DrawDateText(int x, int y, int atime, int type, float zoom)
-{
-	struct tm* tm;
-	time_t timep;
-
-	timeval tv;
-	gettimeofday(&tv, nullptr);
-	timep = tv.tv_sec;
-
-	timep = atime;
-
-	tm = localtime(&timep);
-	int day = tm->tm_mday;
-	int hour = tm->tm_hour;
-	int second = tm->tm_sec;
-	//일
-	DrawNum(day, x, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//초
-	DrawText(TEXT_DAY, x + (float)(20 * _2X) * zoom, y, zoom);
-
-	//�ð�
-	DrawNum(hour, x + (float)(20 * _2X * 2) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//초
-	DrawText(TEXT_HOUR, x + (float)(20 * _2X * 3) * zoom, y, zoom);
-
-	//분
-	DrawText(TEXT_MINUTE, x + (float)(20 * _2X * 5) * zoom + (float)(10 * _2X) * zoom, y, zoom);
-
-	//초
-	DrawNum(second, x + (float)(20 * _2X * 6) * zoom + (float)(10 * _2X) * zoom, y + (float)(1 * _2X) * zoom, NUM_FONT_NORMAL, LEFT, 2, false, true, zoom, true);//초
-	DrawText(TEXT_SECONDS, x + (float)(20 * _2X * 7) * zoom + (float)(10 * _2X) * zoom, y, zoom);
-}
-
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText)
 {
 
@@ -6425,28 +5895,6 @@ void YesNoDraw(int x, int y)
 		SetRectPoint(x + 16 * _2X, y, 64 * _2X, 32 * _2X, TOUCH_ALERT_NO);
 		break;
 	}
-}
-
-//�޴��� ���µǾ��� �� ���̶���Ʈ�� �ִ� 
-void AccountDraw(int x, int y)
-{
-
-}
-
-void PolicyDraw(int x, int y)
-{
-
-}
-
-void CommunityDraw(int x, int y)
-{
-
-}
-
-void DrawSelectBox(int x, int y, int hFrame, int grade)
-{
-	DrawSelect(x + 1 * _2X, y + 1 * _2X, 16 * _2X, 16 * _2X, grade);
-	MemRectFrame(x, y, 18 * _2X, 18 * _2X, selectColor[hFrame % 4]);
 }
 
 void DrawEmptyBox(int x, int y, int w, int h)
@@ -6591,31 +6039,6 @@ void OpenBox(OBJECT* pObj)
 		pObj->motion = BOXSTATUS_OPENING;
 		pObj->frame = 0;
 	}
-}
-
-void CloseBox(OBJECT* pObj)
-{
-	if (pObj->status == BOXSTATUS_OPENED)
-	{
-		pObj->status = BOXSTATUS_CLOSING;
-		pObj->frame = 0;
-	}
-}
-
-float EaseOutBack(float t)
-{
-	float c1 = 1.70158f;
-	float c3 = c1 + 1.0f;
-
-	t = t - 1.0f;
-	return 1.0f + c3 * t * t * t + c1 * t * t;
-}
-
-float Clamp01(float v)
-{
-	if (v < 0.0f) return 0.0f;
-	if (v > 1.0f) return 1.0f;
-	return v;
 }
 
 void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, float zoom)
