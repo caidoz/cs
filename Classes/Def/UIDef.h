@@ -246,8 +246,10 @@ typedef enum _uiDef {
 	//룰렛이 돈 뒤 나오는 controlMark 카드. 안쪽에 64픽셀짜리 아이콘이
 	//통째로 들어가야 해서 (64 + 테두리 4*2)로 잡는다. 예전 값(40x48)은
 	//SKILLICONSIZE(32*_2X)를 2배로 그리면 카드 밖으로 삐져나왔다.
+	//아이콘이 정사각형이므로 카드도 정사각형이라야 꽉 찬다. 세로로 길면
+	//위아래에 빈 테두리가 남는다.
 	ROULETTECARDSIZE_X = (64 + 4 * 2) * _2X,
-	ROULETTECARDSIZE_Y = (96 + 4 * 2) * _2X,
+	ROULETTECARDSIZE_Y = ROULETTECARDSIZE_X,
 
 	CHARCARD_WIDTH = 128 * _2X,
 	CHARCARD_HEIGHT = 192 * _2X,

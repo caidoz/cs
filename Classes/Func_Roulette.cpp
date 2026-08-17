@@ -1409,9 +1409,27 @@ void RouletteDraw(int x, int y, float zoom)
 
 			const int FLY_T = FPS / 3;
 
-			for (int i = 0; i < TOTALREEL; i++)
+			//살아 있는 마크를 먼저 적어둔다. 아래에서 마크를 하나 정리할 때마다
+			//SetControlMark()가 빈 칸을 새로 잡는데, 그 칸이 아직 안 지나간
+			//자리면 방금 만든 마크를 또 집어서 무한히 다시 날린다.
+			int live[TOTALCONTROLMARK];
+			int liveCnt = 0;
+
+			//예전에는 i < TOTALREEL 만 돌면서 frame2 > 0 인 것만 봤다.
+			//셔플/스왑이 만든 마크는 릴 개수 밖의 칸에 잡히거나 아직 1단 이동
+			//(frame > 0) 중이라 이 루프에 안 걸렸고, 아무도 지우지 않아서
+			//룰렛 위에 그대로 남았다. alpha가 0이면 페이드 소멸도 안 돈다.
+			for (int i = 0; i < TOTALCONTROLMARK; i++)
 			{
-				if (controlMark[i].frame2 > 0) {
+				if (controlMark[i].frame > 0 || controlMark[i].frame2 > 0)
+					live[liveCnt++] = i;
+			}
+
+			for (int n = 0; n < liveCnt; n++)
+			{
+				int i = live[n];
+
+				{
 
 					//스킬인덱스가 controlMark[i].attackType
 
