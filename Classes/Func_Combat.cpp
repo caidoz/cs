@@ -315,7 +315,6 @@ void RefreshStat_Sub(OBJECT* pObj)
 {
 	int i;
 	int obj = GetObjFromPtr(pObj);
-	int psHp, psDmg;
 
 
 	for (i = 0; i < 5; i++)
@@ -652,7 +651,6 @@ void RefreshBuff(OBJECT* pObj)
 
 void RefreshQuestTime(void)
 {
-	int i;
 	//생성시간과 현재 시간을 비교하여 그 차이만큼 시간을 배준다.
 	if ((long)(currentTimeStamp - robin.questTimeStamp) >= questInfo[robin.quest * QUESTINFODATASIZE + 4]) {
 		robin.questTimeStamp = MC_knlCurrentTimeStamp();
@@ -663,7 +661,6 @@ void RefreshQuestTime(void)
 
 void RefreshHeartTime(void)
 {
-	int i;
 
 	if (robin.heart < GetInitHeart()) {
 		if ((long)(currentTimeStamp - robin.heartTimeStamp) >= HEARTTIME) {
@@ -701,27 +698,12 @@ void RefreshEnemyTime(void)
 	}
 }
 
-void RefreshCalendarTime(void)
-{
-	int i;
-
-	for (i = 0; i < WEEK; i++) {
-		//현재 시간이 찾으면 보상을 얻을 수 있는 곳
-		if (robin.calendarDayStatus[i] == CALENDAR_REWARDSTATUS_NOTYET) {
-			if (86400 - (MC_knlCurrentTimeStamp() - robin.calendarTimeStamp) <= 0)
-				robin.calendarDayStatus[i] = CALENDAR_REWARDSTATUS_CANREWARD;
-
-		}
-	}
-}
-
 // Combat Formula
 //특정 레벨 기준으로 그 다음 레벨에 도달하기 위한 총 경험치를 구한다.
 
 long long NextExp(int lv)
 {
 	int i;
-	int temp = 0;
 	long long rt = 0;
 
 	for (i = 0; i < lv + 1; i++)
@@ -736,96 +718,6 @@ long long NextExp(int lv)
 //- 아직 슬롯이 가득차지 않았을 때 선택마크가 있는 장비를 선택하면 슬롯에서 빼주고 뒤에서부터 땡겨서 빈곳을 채워준다.
 //- 이미 슬롯이 가득차 있을때 선택마크가 없는 장비를 선택하면 들어갈 곳이 없기 때문에 아무 반응을 하지 않는다.
 //- 이미 슬롯이 가득차 있을 때 선택마크가 있는 장비를 선택하면 해당 장비를 비우고 뒤에서부터 땡겨서 채워준다.
-
-//2. 슬롯에서 선택햇을 때 행동양식이 필요한가?
-//- 슬롯에서 선택했을 때는 아래 인벤토리를 해당 아이템에 포커싱이 가도록 페이지를 이동시키고 포커싱 표시를 해주면 될듯 하다.
-//- 거기서 한번 더 누르던 하는것은 자유
-int GetExpFromEnchantSlot(void)
-{
-	int i, exps = 0;
-	ITEM* it;
-	ITEM* itSelected;
-
-	for (i = 0; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] != SLOTEMPTY) {
-			it = GetItemPtr(invenRecipe[enchantSlot[i]]);
-			switch (it->type) {
-			case ITEM_RING:
-			case ITEM_NECK:
-				exps += itemMaterialExpAcce[it->cooldown];
-				break;
-			default:
-				exps += itemMaterialExp[itemLevelLimit[2 * it->detail + 1] + it->cooldown];
-				break;
-			}
-		}
-	}
-
-	itSelected = GetItemPtr(menuItem - 1);
-
-	if (exps > NextExpEquip(itSelected, itemLevelLimit[2 * itSelected->detail]))
-		exps = NextExpEquip(itSelected, itemLevelLimit[2 * itSelected->detail]);
-
-	return exps;
-}
-
-//골드
-int GetGoldFromEnchantSlot(void)
-{
-	int gold = 0;
-	ITEM* it = GetItemPtr(menuItem - 1);
-	int nextExp, nextLv, totalExp;
-
-	totalExp = it->exp + GetExpFromEnchantSlot();
-	nextExp = NextExpEquip(it, NextLvEquip(it, it->exp + GetExpFromEnchantSlot()) + 1);
-	nextLv = NextLvEquip(it, nextExp);
-	gold = GetExpFromEnchantSlot();
-
-	if (nextLv > itemLevelLimit[2 * it->detail]) {
-		nextLv = itemLevelLimit[2 * it->detail];
-		nextExp = NextExpEquip(it, nextLv);
-		totalExp = nextExp;
-		gold = totalExp - it->exp;
-	}
-
-	return gold;
-}
-
-//골드
-int GetGoldFromSocketSlot(void)
-{
-	int i, gold = 0;
-
-	for (i = 0; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] != SLOTEMPTY) {
-			gold += gemPrice[GetItemPtr(enchantSlot[i])->grade];
-		}
-	}
-
-	return gold;
-}
-
-void LevelUpEquip(ITEM * it, int getExp)
-{
-	int tempLevel;
-	int i, j = 0;
-
-	tempLevel = it->cooldown;
-	it->exp += getExp;
-
-	while (it->exp >= NextExpEquip(it, it->cooldown)) {
-		it->cooldown++;
-		if (it->cooldown > itemLevelLimit[2 * it->cooldown])
-			it->cooldown = itemLevelLimit[2 * it->cooldown];
-	}
-
-	//it->value = MakeItemValue(it->type, it->detail, it->grade, it->cooldown);
-
-	for (i = ROBIN; i < TOTALPLAYER; i++)
-		RefreshStat(&ao[i]);
-
-	PlayMusic(M_LEVELUP);
-}
 
 //장비의 특정 레벨까지 필요한 경험치를 합산해서 반환
 int NextExpEquip(ITEM* it, int lv)
@@ -845,158 +737,6 @@ int NextExpEquip(ITEM* it, int lv)
 	}
 
 	return needExp;
-}
-
-//현재 주어진 경험치로 어디까지 레벨을 올릴 수 있는지 반환
-int NextLvEquip(ITEM* it, int getExp)
-{
-	int tempLevel, tempExp;
-
-	tempLevel = 0;
-	tempExp = getExp;
-
-	while (tempExp > 0) {
-		switch (it->type) {
-		case ITEM_RING:
-		case ITEM_NECK:
-			tempExp -= itemExpAcce[tempLevel];
-			break;
-		default:
-			tempExp -= itemExp[itemLevelLimit[it->detail * 2 + 1] + tempLevel];
-			break;
-		}
-		if (tempExp >= 0)
-			tempLevel++;
-	}
-
-	return tempLevel + 1;
-}
-
-int checkEnchantSlotNum(int idx)
-{
-	int i;
-	for (i = 0; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] == idx) {
-			return i;
-		}
-	}
-
-	return SLOTEMPTY;
-}
-
-int checkSocketSlotNum(int idx, int target)
-{
-	int i, startEmptySlot = checkExistSocketSlotCnt(target);
-	ITEM* it = GetItemPtr(target);
-
-	for (i = startEmptySlot; i < it->count; i++) {
-		if (enchantSlot[i - startEmptySlot] == idx) {
-			return (i - startEmptySlot);
-		}
-	}
-
-	return SLOTEMPTY;
-}
-
-int checkExistSocketSlotCnt(int idx)
-{
-	int i, j = 0;
-	ITEM* it = GetItemPtr(idx);
-
-	for (i = 0; i < it->count; i++) {
-		if (it->socket[i] < EMPTYINT) {
-			j++;
-		}
-	}
-
-	return j;
-}
-
-int checkEmptySocketSlot(int target)
-{
-	int i, fillCnt = 0;;
-	ITEM* it = GetItemPtr(target);
-	for (i = 0; i < it->count; i++) {
-		if (enchantSlot[i] == SLOTEMPTY) {
-			fillCnt = i;
-			break;
-		}
-	}
-
-	return (checkExistSocketSlotCnt(target) + fillCnt);
-}
-
-bool checkSameSocketSlot(int idx, int target)
-{
-	int i, j = 0;
-	int startEmptySlot = checkExistSocketSlotCnt(target);
-	bool same = false;
-	ITEM* it = GetItemPtr(target);
-
-	for (i = startEmptySlot; i < it->count; i++) {
-		if (enchantSlot[i - startEmptySlot] != SLOTEMPTY &&
-			enchantSlot[i - startEmptySlot] == idx) {
-			same = true;
-		}
-	}
-
-	return same;
-}
-
-int pushEnchantEquip(int idx)
-{
-	int i;
-	for (i = 0; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] == SLOTEMPTY) {
-			enchantSlot[i] = idx;
-			break;
-		}
-	}
-
-	return i;
-}
-
-int pushSocketSlot(int idx, int target)
-{
-	int i, startEmptySlot = checkExistSocketSlotCnt(target);
-	ITEM* it = GetItemPtr(target);
-	for (i = startEmptySlot; i < it->count; i++) {
-		if (enchantSlot[i - startEmptySlot] == SLOTEMPTY || i == it->count - 1) {
-			enchantSlot[i - startEmptySlot] = idx;
-			break;
-		}
-	}
-
-	return i;
-}
-
-int popEnchantEquip(int idx)
-{
-	int i;
-	enchantSlot[idx] = SLOTEMPTY;
-
-	for (i = idx + 1; i < INVEN_HCNT; i++) {
-		if (enchantSlot[i] != SLOTEMPTY) {
-			enchantSlot[i - 1] = enchantSlot[i];
-			enchantSlot[i] = SLOTEMPTY;
-		}
-	}
-	return i;
-}
-
-int popSocketSlot(int idx, int target)
-{
-	int i, startEmptySlot = checkExistSocketSlotCnt(target);
-	ITEM* it = GetItemPtr(target);
-	enchantSlot[idx] = SLOTEMPTY;
-
-	for (i = idx + 1; i < it->count; i++) {
-		if (enchantSlot[i - startEmptySlot] != SLOTEMPTY) {
-			enchantSlot[i - 1 - startEmptySlot] = enchantSlot[i - startEmptySlot];
-			enchantSlot[i - startEmptySlot] = SLOTEMPTY;
-		}
-	}
-	return i;
 }
 
 int GetLevelUpRewardLv(int type, int userLv)
@@ -1114,73 +854,14 @@ long long int GetAbsorb(OBJECT* pObj, long long int damage)
 		return damage;
 }
 
-bool CheckSkillAttack(long long int attacker)
-{
-	//스킬로 인한 공격력 상승을 반영한다.
-	int rt = 100 * SKILLPER;
-	temp = -1;
-
-	if (attacker < BULLET) {
-		if (ao[attacker].attack == 1) {
-			return false;
-		}
-		else if (ao[attacker].flamer) {
-			return true;
-		}
-		else if (ao[attacker].currentSkill >= 0/* && ao[attacker].hotKey[ao[attacker].currentSkill].type == HOTKEY_SKILL*/) {
-			//temp = ao[attacker].hotKey[ao[attacker].currentSkill].idx;
-			temp = ao[attacker].currentSkill;
-
-			switch (temp) {
-			case SKILL_ROBIN7://마구찌르기
-			case SKILL_ROBIN12://멸살연참 : 연속기
-			case SKILL_DIANA11://킬링존 : 난사
-			case SKILL_MAXX7://돌려차기 : 회전, 기절
-			case SKILL_ROBIN6://에어크래쉬 : 몹 뛰우기
-			case SKILL_ROBIN8://부스트슬래쉬 : 가로로 크게 배기, 기절
-			case SKILL_ROBIN9://하이퍼차지 : 돌격공격, 적을 뒤로 날려버림
-			case SKILL_ROBIN10://소울크래쉬 : 기절
-			case SKILL_ROBIN11://앱솔루트피어스 : 찔러서회전
-				return true;
-			}
-		}
-		else
-			return false;
-	}
-	else if (attacker < ENEMY) {
-		//각종 액티브 스킬이나 분노, 광기의 폭주 버프시 공격력을 증가시켜준다
-		switch (ao[attacker].moveHandler) {
-		case BULLETBOOMERANGMOVE:
-			switch (ao[attacker].attack) {
-			case MAXX_SKILL_SHORT:
-			case MAXX_SKILL_AIR://@@사정거리 더 길게, 45도로 수정
-			case MAXX_SKILL_CIRCLE:
-			case MAXX_SKILL_CAMPING://@@ 사정거리 상관없이 일정데미지 맞게 모두 수정
-			case MAXX_SKILL_HORMING:
-			case MAXX_SKILL_MEGA:
-				return true;
-			}
-			break;
-		case BULLET3WAYMOVE:
-		case BULLETLASERMOVE:
-		case BULLETBOMBMOVE:
-		case BULLETGUIDEDMOVE:
-		case BULLETSATELLITEMOVE:
-		case BULLETITEMMOVE:
-			return true;
-		}
-	}
-	return false;
-}
-
 int GetAttackRange(int obj)
 {
 	int range;
 	OBJECT* pObj = &ao[obj];
-	ITEM* it;
-
-	if (pObj->type < TOTALCHAR)
-		it = &pObj->equip[EQUIP_WEAPON];
+	//주소 계산일 뿐이라 조건 없이 잡아도 된다. 예전에는 type < TOTALCHAR일 때만
+	//대입해서, 아래 ROBIN/DIANA/MAXX 분기가 그 조건과 같은 뜻인데도 컴파일러가
+	//짝을 못 지어 초기화 안 된 포인터로 보였다.
+	ITEM* it = &pObj->equip[EQUIP_WEAPON];
 
 	//몬스터의 사정거리도 따져준다.
 	if (obj >= ENEMY) {
@@ -1274,13 +955,6 @@ void SetWheel(void)
 	}
 }
 
-void SetRouletteTime(void)
-{
-	ROULETTEWHEELTIME = (ao[ao[PLAYER].target].x - ao[PLAYER].x - GetAttackRange(PLAYER)) / GetSpeed(PLAYER) + MOTIONDIV * 2;
-	if (ROULETTEWHEELTIME < ROULETTEDIV)
-		ROULETTEWHEELTIME = ROULETTEDIV;
-}
-
 int GetSpeed(int obj)
 {
 	int speed;
@@ -1313,31 +987,6 @@ int GetSpeed(int obj)
 	default:
 		return speed / MOTIONDIV;
 	}
-}
-
-int GetRaidSpeed(int targetObj)
-{
-	int speed;
-	int maxSpeed;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_BOOTS];
-	int realValue;
-	int gameStartPosition = BATTLEPOSITION_PLAYER_X;
-
-	if (it->type == EMPTY)
-		realValue = 0;
-	else
-		realValue = itemUpgradeValue[it->type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + it->detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + it->grade * (ITEMMAXLEVEL + 1) + it->cooldown];
-
-	speed = dx_walk[ao[PLAYER].type] + realValue;
-
-	if (ao[PLAYER].x < ao[targetObj].x - GetAttackRange(PLAYER) - speed)
-		maxSpeed = (ao[targetObj].x - gameStartPosition - GetAttackRange(PLAYER)) / TOTALROULETTETYPE;
-	else
-		maxSpeed = speed;
-
-	if (speed > maxSpeed)
-		speed = maxSpeed;
-	return speed;
 }
 
 int GetAtk(int attacker)
@@ -1485,92 +1134,6 @@ RESULT:
 	return rt;
 }
 
-long long int GetMinDmg(OBJECT* pObj)
-{
-	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID)
-		return pObj->ps[PS_DMG];
-	else
-		return pObj->equip[EQUIP_WEAPON].value + (itemUpgradeValue[pObj->equip[EQUIP_WEAPON].type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].grade * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].cooldown] - itemUpgradeValue[pObj->equip[EQUIP_WEAPON].type * TOTAL_SWORD * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].grade * (ITEMMAXLEVEL + 1) + 0]) + pObj->ps[PS_DMGADD];
-}
-
-long long int GetMaxDmg(OBJECT* pObj)
-{
-	if (drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID)
-		return pObj->ps[PS_DMG] + pObj->equip[EQUIP_WEAPON].subValue - pObj->equip[EQUIP_WEAPON].value;
-	else
-		return pObj->equip[EQUIP_WEAPON].subValue + (itemUpgradeValue[pObj->equip[EQUIP_WEAPON].type * TOTAL_SWORD * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].grade * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].cooldown] - itemUpgradeValue[pObj->equip[EQUIP_WEAPON].type * TOTAL_SWORD * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_WEAPON].grade * (ITEMMAXLEVEL + 1) + 0]) + pObj->ps[PS_DMGADD];
-}
-
-int GetTouchGray(int x, int y)
-{
-	y -= DY;
-
-	switch (systemKey) {
-	case AVK_1:
-		if (x == 0 && y == 0)
-			return 1;
-		break;
-	case AVK_2:
-		if (x == 38 && y == 0)
-			return 1;
-		break;
-	case AVK_3:
-		if (x == 77 && y == 0)
-			return 1;
-		break;
-	case AVK_4:
-		if (x == 0 && y == 26)
-			return 1;
-		break;
-	case AVK_5:
-		if (x == 160 && y == 38)
-			return 1;
-		break;
-	case AVK_6:
-		if (x == 64 && y == 26)
-			return 1;
-		break;
-	case AVK_7:
-		if (x == 0 && y == 55)
-			return 1;
-		break;
-	case AVK_8:
-		if (x == 38 && y == 41)
-			return 1;
-		break;
-	case AVK_9:
-		if (x == 77 && y == 55)
-			return 1;
-		break;
-	case AVK_0:
-		if (x == 187 && y == 0)
-			return 1;
-		break;
-	case AVK_STAR:
-		if (x == 160 && y == 0)
-			return 1;
-		break;
-	case AVK_POUND:
-		if (x == 214 && y == 0)
-			return 1;
-		break;
-	case AVK_CLR:
-		if (x == 115 && y == 38)
-			return 1;
-		break;
-	case AVK_MENU:
-		if (x == 115 && y == 19)
-			return 1;
-		break;
-	case AVK_SOFT1:
-		if (x == 115 && y == 0)
-			return 1;
-		break;
-	}
-
-	return 0;
-}
-
 void AttackRobin(int obj, int dest)
 {
 	long long int i, damage = 0, gap, ad = 0;
@@ -1582,7 +1145,6 @@ void AttackRobin(int obj, int dest)
 	int defenseAttr = 0;
 	long long recoverHp;
 
-	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[obj].equip[EQUIP_ARMOR];
 
 	if (dest >= CREW && dest < CREW + MAXCREW)
@@ -2101,30 +1663,23 @@ int AttackObj(long long int attacker, int dest)
 	unsigned char attackerObj;
 	unsigned char maxAttackerLv;
 	unsigned char maxDestLv;
-	long long int damageGap = 0;
 
-	int currencyIcon;
-	int currency;
-	int skillIdx;
 
 	OBJECT* pObj = &ao[turn];
 	ITEM* it;
 	if (turn < TOTALCHAR)
 		it = &pObj->equip[EQUIP_WEAPON];
 
-	int collectionIdx = false;
 	if (turn < TOTALCHAR)
 		GetCollectionIdx(it->type, it->detail, it->grade);
 
-	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
+	float zoom;
 
 	int realValue[EQUIP_BOOTS + 1];
 
 	int maxZoom = 4.0f;//퀘스트 아이템 최
 	int minZoom = 2.0f;//
 
-	int stageCrewIdx;
-	int stageCrewType;
 
 	attackerObj = attacker;
 
@@ -3579,7 +3134,7 @@ NEXT:
 //플레이어가 몬스터를 공격하는
 int AttackEnemyCheck(int obj)
 {
-	int i, j, k, rt = 0, count = 0;
+	int i, j, rt = 0, count = 0;
 	int distance[ITEMOBJ - ENEMYUSEROBJ];
 	int sort[ITEMOBJ - ENEMYUSEROBJ];
 	int sorted = false;
@@ -4043,7 +3598,6 @@ void AttackPlayerCheck(OBJECT* pObj)
 //몬스터나 타일이 플레이어를 공격하는
 void AttackBoxCheck(OBJECT* pObj)
 {
-	int i, j;
 
 	if (AttackCrash(pObj, &ao[NEUTRAL]) && ao[NEUTRAL].status == BOXSTATUS_CLOSED) {
 		ao[NEUTRAL].motion = BOXSTATUS_OPENING;
@@ -4051,123 +3605,10 @@ void AttackBoxCheck(OBJECT* pObj)
 	}
 }
 
-void ItemCheck(OBJECT* pObj)
-{
-	int i;
-	int obj = GetObjFromPtr(pObj);
-	int targetX, targetY;
-
-	cItem = 0;
-
-	if (drawHandle == MD_DEMO)
-		return;
-
-	for (i = ITEMOBJ; i < TOTALOBJECT; i++) {
-		if (ao[i].active && ObjCrash(&ao[i], pObj) && (cItem != i || itemFrame == 0) && ao[cItem].moveHandler != ITEMGOTOBOXMOVE) {
-			if (ao[i].type == OBJ_ITEM) {
-				cItem = i;
-
-				if (cItem > 0) {
-
-					if (GetItem(ao[cItem].def, ao[cItem].lv, ao[cItem].apx, ao[cItem].apy, ao[cItem].ax, 0)) {
-						//gap = blahBlahDrawStartY + 32 * _2X < STATUSWIN_Y ? 0 : (blahBlahDrawStartY + 32 * _2X - STATUSWIN_Y);
-
-						//if (SCREENRATIO <= 150) {
-						//	gap = STATUSWIN_Y + 144 * _2X;
-						//}
-						//else if (SCREENRATIO <= 179) {
-						//	gap = STATUSWIN_Y + 32 * _2X;
-						//}
-						//else {
-						//	gap = STATUSWIN_Y - 238 * _2X;
-						//}
-
-						switch (ao[cItem].def) {
-						case ITEM_GOLD:
-#ifdef GOLDBARLEFTUP
-							targetX = xOffset + dmgInfo[dmgIndex].x - (GetNumDx(dmgInfo[dmgIndex].dmg, false, NUM_FONT_LARGE, false, true, 2.0f, true) + ITEMICONSIZE * 2 + 12 * _2X) / 2;
-							targetY = STATUSWIN_Y + DRAWROULETTENUMGAP + ITEMICONSIZE * 2;
-
-#else
-							targetX = DX / 2 - (GetNumDx(robin.gold, false, NUM_FONT_NORMAL, false) + 32 * _2X + 8 * _2X) / 2;
-							targetY = DY - GNBHEIGHT - 8 * _2X;
-#endif
-
-							SetItemMark(ao[cItem].x - rx - ao[cItem].cpx - 16 * _2X, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (ao[cItem].y - ao[cItem].cpy - OBJIMGGAP) + 16 * _2X, targetX, targetY, 16 * _2X / MOTIONDIV, ao[cItem].ay * 2 / MOTIONDIV, 0, 1);
-							PlayMusic(M_COIN);
-							break;
-						case ITEM_NETITEM:
-							switch (ao[cItem].apx) {
-							case ITEM_NET_EXPORB:
-								targetX = ao[raidPlayer].x - rx - ao[raidPlayer].cpx;
-								targetY = STATUSWIN_Y + (rh - 4) * TSIZE - ry - (ao[raidPlayer].y - ao[raidPlayer].cpy - OBJIMGGAP - 64 * _2X);
-								break;
-							default:
-								targetX = 8 * _2X + 16 * _2X;
-								targetY = STATUSWIN_Y + 24 * _2X - 8 * _2X;
-								break;
-							}
-							break;
-						default:
-							targetX = 8 * _2X + 16 * _2X;
-							targetY = STATUSWIN_Y + 24 * _2X - 8 * _2X;
-							SetItemMark(ao[cItem].x - rx - ao[cItem].cpx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (ao[cItem].y - ao[cItem].cpy - OBJIMGGAP), targetX, targetY, 16 * _2X / MOTIONDIV, ao[cItem].ay * 2 / MOTIONDIV, 0, 1);
-							switch (ao[cItem].def) {
-							case ITEM_HEART:
-								PlayMusic(M_ITEM);
-								break;
-							default:
-								PlayMusic(M_ITEM);
-								break;
-							}
-							break;
-						}
-
-
-
-						//PLAYER 나 SOLDIER 가 획득했을 경우는 골드를 PLAYER 한테 날려준다.
-
-						if (!boxOpenFrame) {
-							boxOpenFrame = 1;
-							PlayMusic(M_OPENDOOR);
-						}
-						ao[cItem].active = false;
-						//memset(&ao[cItem], 0, sizeof(OBJECT));
-						//여기서 날라가게 해준다.
-						//ao[cItem].moveHandler = ITEMGOTOBOXMOVE;
-					}
-				}
-
-				/*
-				if (ao[i].etc >= HIDDEN_0 && ao[i].lv == EMPTY)
-					continue;
-
-				itemFrame = INFOFRAME;
-
-				if (questFrame == 0) {
-					if (ao[cItem].def == ITEM_GOLD) {
-						memset(infoStr, 0, 100);
-						sprintf(infoStr, "%d ∞ÒµÂ", ao[cItem].apx);
-					}
-					else if (ao[cItem].ax > 1) {
-						//ReadString(ao[cItem].name);
-						sprintf(infoStr, "%s %d∞≥", TEXTPTR(ao[cItem].name), ao[cItem].ax);
-					}
-				}
-				 */
-			}
-			//break;
-		}
-	}
-}
-
 void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, float zoom)
 {
 	int i, j, extra = 0;
-	bool sameOwner = false;
 	int str = 0;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int collectionIdx;
 	int currencyObj;
 
 	if (critical >= 100) {
@@ -4300,59 +3741,6 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 			break;
 		}
 	}
-}
-
-void OrderDmgNum(void)
-{
-	int i, j, k = 0, temp = 0, maxCount = 0;
-	int dmgSort[TOTALHITMARK];
-	DMGINFO dmgInfoTemp[TOTALHITMARK];
-
-	memset(&dmgSort, 0, sizeof(dmgSort));
-
-	//먼저 주인공에 해당되는 것들을 뽑는다..
-	for (i = 0; i < TOTALHITMARK; i++) {
-		if (dmgInfo[i].type != 0) {
-			dmgSort[temp] = i;
-			temp++;
-			maxCount++;
-		}
-	}
-
-	memset(&dmgInfoTemp, 0, sizeof(dmgInfoTemp));
-
-	//그런 다음 역순으로 우선 주인공것을 먼저 놓고, 그 다음에 용병이 있으면 용병을 넣고
-	for (i = 0; i < temp; i++) {
-		memcpy(&dmgInfoTemp[maxCount - temp + i], &dmgInfo[dmgSort[i]], sizeof(DMGINFO));
-	}
-
-	k = 0;
-	for (i = 0; i < maxCount - temp; i++) {
-		temp = 0;
-		for (j = 0; j < temp; j++) {
-			if (dmgSort[j] == i) {
-				temp++;
-			}
-		}
-
-		//주인공거랑 인덱스가 같은게 전혀 없다면
-		if (temp == 0) {
-			memcpy(&dmgInfoTemp[k], &dmgInfo[i], sizeof(DMGINFO));
-			k++;
-		}
-	}
-
-	//최종적으로 제작한 배열을 원본에 카피를 시킨다.
-	memcpy(&dmgInfo, &dmgInfoTemp, sizeof(DMGINFO));
-}
-
-int SetImgTextPos(int obj, int type, int x, int y, float zoom)
-{
-	int index = SetImgText(obj, type, zoom);
-	imgText[index].x = x;
-	imgText[index].y = y;
-
-	return index;
 }
 
 int SetImgText(int obj, int type, float zoom)
@@ -4593,27 +3981,6 @@ void SetCurrencyMarkArr_PopUp(int startPosX, int startPosY, int targetX, int tar
 	}
 }
 
-//커런시마크 중에 목적지에 도달한 케이스
-int GetCurrencyMarkDoneCnt(void)
-{
-	int i;
-	int cnt = 0;
-
-	for (i = 0; i < TOTALCURRENCYMARK; i++) {
-		//두번째 타겟팅 위치가 있는 경우
-		if (currencyMark[i].targetX2 != 0 && currencyMark[i].targetY2 != 0) {
-			if (currencyMark[i].x == currencyMark[i].targetX2 && currencyMark[i].y == currencyMark[i].targetY2) {
-				cnt++;
-			}
-		}
-		else if (currencyMark[i].x == currencyMark[i].targetX && currencyMark[i].y == currencyMark[i].targetY) {
-			cnt++;
-		}
-	}
-
-	return cnt;
-}
-
 void SetCurrencyMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount, int type, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int bar)
 {
 	int i;
@@ -4753,140 +4120,6 @@ void SetCurrencyMark_PopUp(int startPosX, int startPosY, int targetX, int target
 	}
 }
 
-void SetCurrencyMarkGold(int startPosX, int startPosY, int str)
-{
-	int i;
-	int cnt = 0;
-	int strArr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	int pos = 0;
-	int iconIdx = ICON_GOLD;
-	int startX, startY, targetX, targetY, targetX2, targetY2, startSpeed;
-
-	for (i = 0; i < TOTALCURRENCYMARK; i++) {
-		if (currencyMark[i].frame == 0) {
-			pos = i % 20;
-			currencyMark[i].x = startPosX;
-			currencyMark[i].y = startPosY;
-			currencyMark[i].targetX = startPosX + coinScatterInfo[pos * COINSCATTERINFOSIZE + 0];
-			currencyMark[i].targetY = startPosY + coinScatterInfo[pos * COINSCATTERINFOSIZE + 1];
-			currencyMark[i].targetX2 = startPosX + coinScatterInfo[pos * COINSCATTERINFOSIZE + 2];
-			currencyMark[i].targetY2 = startPosY + coinScatterInfo[pos * COINSCATTERINFOSIZE + 3];
-			currencyMark[i].speed = coinScatterInfo[pos * COINSCATTERINFOSIZE + 4] / MOTIONDIV;
-			currencyMark[i].speedIncrement = coinScatterInfo[pos * COINSCATTERINFOSIZE + 5] / MOTIONDIV;
-			currencyMark[i].speed2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 6] / MOTIONDIV;
-			currencyMark[i].speedIncrement2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 7] / MOTIONDIV;
-			currencyMark[i].waitingFrame = coinScatterInfo[pos * COINSCATTERINFOSIZE + 8];
-			currencyMark[i].waitingFrame2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 9];
-			currencyMark[i].frame = 1;
-			currencyMark[i].frame2 = 0;
-			currencyMark[i].imageDx = 16 * _2X;
-			currencyMark[i].imageDy = 16 * _2X;
-			currencyMark[i].imageOffX = (iconIdx & 0x07) * 16 * _2X;
-			currencyMark[i].imageOffY = ((iconIdx & 0x3F) >> 3) * 16 * _2X;
-			currencyMark[i].resNum = ITEM_IMG + (iconIdx >> 6);
-			currencyMark[i].moveAngle = 30;
-			currencyMark[i].amount = 100;
-			currencyMark[i].type = CURRENCY_GOLD;
-			currencyMark[i].icon = iconIdx;
-			currencyMark[i].alpha = 0;
-			currencyMark[i].zoom = coinScatterInfo[pos * COINSCATTERINFOSIZE + 10];
-			currencyMark[i].zoomEnd = coinScatterInfo[pos * COINSCATTERINFOSIZE + 11];
-			currencyMark[i].zoomIncrement = coinScatterInfo[pos * COINSCATTERINFOSIZE + 12];
-			currencyMark[i].zoom2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 13];
-			currencyMark[i].zoomEnd2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 14];
-			currencyMark[i].zoomIncrement2 = coinScatterInfo[pos * COINSCATTERINFOSIZE + 15];
-
-			//cnt++;
-
-			PlayMusic(M_COIN);
-
-			//if (cnt == strArr[str])
-			break;
-		}
-	}
-}
-
-
-void SetGoldAlphaMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount, int type, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2)
-{
-	int i;
-
-	for (i = 0; i < TOTALGOLDALPHAMARK; i++) {
-		if (goldAlphaMark[i].frame == 0) {
-			goldAlphaMark[i].x = startPosX/* + Random(moveAngle * _2X)*/;
-			goldAlphaMark[i].y = startPosY/* + Random(moveAngle * _2X)*/;
-			goldAlphaMark[i].targetX = targetX;
-			goldAlphaMark[i].targetY = targetY;
-			goldAlphaMark[i].targetX2 = targetX2;
-			goldAlphaMark[i].targetY2 = targetY2;
-			goldAlphaMark[i].speed = speed;
-			goldAlphaMark[i].speedIncrement = speedIncrement;
-			goldAlphaMark[i].speed2 = speed2;
-			goldAlphaMark[i].speedIncrement2 = speedIncrement2;
-			goldAlphaMark[i].waitingFrame = waitingFrame;
-			goldAlphaMark[i].waitingFrame2 = waitingFrame2;
-			goldAlphaMark[i].frame = 1;
-			goldAlphaMark[i].imageDx = 16 * _2X;
-			goldAlphaMark[i].imageDy = 16 * _2X;
-			goldAlphaMark[i].imageOffX = (iconIdx & 0x07) * 16 * _2X;
-			goldAlphaMark[i].imageOffY = ((iconIdx & 0x3F) >> 3) * 16 * _2X;
-			goldAlphaMark[i].resNum = ITEM_IMG + (iconIdx >> 6);
-			goldAlphaMark[i].moveAngle = moveAngle;
-			goldAlphaMark[i].amount = amount;
-			goldAlphaMark[i].type = type;
-			goldAlphaMark[i].icon = iconIdx;
-			goldAlphaMark[i].alpha = 0;
-			goldAlphaMark[i].zoom = zoom;
-			goldAlphaMark[i].zoomEnd = zoomEnd;
-			goldAlphaMark[i].zoomIncrement = zoomIncrement;
-			goldAlphaMark[i].zoom2 = zoom2;
-			goldAlphaMark[i].zoomEnd2 = zoomEnd2;
-			goldAlphaMark[i].zoomIncrement2 = zoomIncrement2;
-
-			switch (goldAlphaMark[i].type) {
-			case MISS:
-				PlayMusic(M_ERROR);
-				break;
-			case GOOD:
-				PlayMusic(M_DRUM_GOOD);
-				break;
-			case PERFECT:
-				PlayMusic(M_DRUM_PERFECT);
-				break;
-			}
-
-			return;
-		}
-	}
-}
-
-int SetSoulMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, int speed, int speedIncrement, int speed2, int speedIncrement2, int waitingFrame, int waitingFrame2, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2)
-{
-	soulMark.x = startPosX;
-	soulMark.y = startPosY;
-	soulMark.targetX = targetX;
-	soulMark.targetY = targetY;
-	soulMark.targetX2 = targetX2;
-	soulMark.targetY2 = targetY2;
-	soulMark.speed = speed;
-	soulMark.speedIncrement = speedIncrement;
-	soulMark.speed2 = speed2;
-	soulMark.speedIncrement2 = speedIncrement2;
-	soulMark.waitingFrame = waitingFrame;
-	soulMark.waitingFrame2 = waitingFrame2;
-	soulMark.frame = 1;
-	soulMark.frame2 = 0;
-	soulMark.zoom = zoom;
-	soulMark.zoomEnd = zoomEnd;
-	soulMark.zoomIncrement = zoomIncrement;
-	soulMark.zoom2 = zoom2;
-	soulMark.zoomEnd2 = zoomEnd2;
-	soulMark.zoomIncrement2 = zoomIncrement2;
-
-	PlayMusic(M_LASER);
-
-	return true;
-}
 
 int SetItemMark(int startPosX, int startPosY, int targetX, int targetY, int startSpeed, int iconIdx, int moveAngle, int amount)
 {
@@ -4936,17 +4169,6 @@ int SetItemMark(int startPosX, int startPosY, int targetX, int targetY, int star
 			return i;
 		}
 	}
-}
-
-int GetRewardMarkCnt(void)
-{
-	int i;
-	int cnt = 0;
-	for (i = 0; i < TOTALREWARDMARK; i++) {
-		if (rewardMark[i].frame > 0)
-			cnt++;
-	}
-	return cnt;
 }
 
 void InitEventPos(GAMEEVENT* gEvent, int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
@@ -5037,7 +4259,6 @@ int SetRewardMark(int startPosX, int startPosY, int targetX, int targetY, int ta
 
 void ArrangeControlMark(int start)
 {
-	int i, j = 0;
 	if (start < actionCardCnt) {
 		memcpy(&controlMark[start], &controlMark[start + 1], sizeof(ICONMARK) * (actionCardCnt - start));
 		memcpy(&actionCardArr[start], &actionCardArr[start + 1], sizeof(actionCardArr[0]) * (actionCardCnt - start));
@@ -5192,90 +4413,6 @@ int SetCardMark(int startPosX, int startPosY, int targetX, int targetY, int targ
 	}
 }
 
-void SetBox(OBJECT* pObj, int etc)
-{
-	const signed short* sPtr;
-
-	pObj->active = true;
-	pObj->type = OBJ_BOX;
-	pObj->x = BOXPOSITION_X;
-	pObj->y = BOXPOSITION_Y;
-	pObj->etc = etc;// bet;//BOX_INGAME;
-	pObj->drawHandler = NEUTRALDRAW;
-	pObj->cmf = -1;
-	switch (pObj->etc) {
-	case BOX_CASTLE0:
-	case BOX_CASTLE1:
-	case BOX_CASTLE2:
-	case BOX_CASTLE3:
-	case BOX_CASTLE4:
-	case BOX_CASTLE5:
-	case BOX_CASTLE6:
-	case BOX_CASTLE7:
-	case BOX_CASTLE8:
-	case BOX_CASTLE9:
-	case BOX_CASTLE10:
-	case BOX_CASTLE11:
-	case BOX_CASTLE12:
-	case BOX_CASTLE13:
-	case BOX_CASTLE14:
-	case BOX_CASTLE15:
-	case BOX_CASTLE16:
-	case BOX_CASTLE17:
-	case BOX_CASTLE18:
-		pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);
-		break;
-	case BOX_REWARD0:
-	case BOX_REWARD1:
-	case BOX_REWARD2:
-	case BOX_REWARD3:
-	case BOX_REWARD4:
-	case BOX_REWARD5:
-	case BOX_REWARD6:
-	case BOX_REWARD7:
-		pObj->zoom = BOXCASTLEZOOM * (0.2f + (float)0.02f * (pObj->etc - BOX_REWARD0));
-		break;
-	default:
-	//case BOX_INGAME:
-		pObj->zoom = BOXZOOM;
-		break;
-	}
-
-	sPtr = &neutralData[pObj->type * NEUTRALDATASIZE];
-
-	pObj->block = *sPtr;
-
-	pObj->attr = *(sPtr + 1);
-	pObj->x += *(sPtr + 2);
-	pObj->y += *(sPtr + 3);
-	pObj->cpx = (float)*(sPtr + 4) * pObj->zoom;
-	pObj->cpy = (float)*(sPtr + 5) * pObj->zoom;
-	pObj->cx = (float)*(sPtr + 6) * pObj->zoom;
-	pObj->cy = (float)*(sPtr + 7) * pObj->zoom;
-	pObj->status = *(sPtr + 8);
-	pObj->motion = *(sPtr + 9) & 0xFF;
-	pObj->moveHandler = *(sPtr + 10);
-
-	pObj->drawHandler = BOXDRAW;
-
-	//pObj->etc = etc;
-
-	pObj->nx = pObj->x;
-	pObj->ny = pObj->y;
-
-	//pObj->dx = pObj->dy = 0;
-
-	pObj->status = BOXSTATUS_APPEAR;
-	pObj->y += BOXPOSITION_INIT;
-
-	//상자가 떨어지는 것을 잠깐 당겨 본다. 바로 걸지 않고 요청만 넣는다 -
-	//전투 시퀀스 중이면 큐가 알아서 끝날 때까지 들고 있는다.
-	RequestFocusZoom(GetObjFromPtr(pObj), FOCUSPRI_BOXDROP);
-
-	PlayMusic(M_DOWN);
-
-}
-
 int SetBoxMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int moveAngle, int detail, int grade, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2)
 {
 	int i;
@@ -5381,7 +4518,7 @@ int SetBoxCardMark(int startPosX, int startPosY, int targetX, int targetY, int t
 //적에게 가장 가까운 유저
 int NearPlayer(OBJECT* pObj)
 {
-	int i, j, distance, target = -1;
+	int i, distance, target = -1;
 
 	distance = DX;
 	for (i = PLAYER; i < TOTALCHAR; i++) {
@@ -5400,7 +4537,7 @@ int NearPlayer(OBJECT* pObj)
 //아군에게 가장 가까운 적
 int NearEnemy(OBJECT* pObj)
 {
-	int i, j, distance = DX, target = 0;
+	int i, distance = DX, target = 0;
 
 	for (i = ENEMY; i < NEUTRAL; i++) {
 		if (GetDistance(pObj, &ao[i]) < distance && ao[i].active == true && ao[i].dead == false) {
@@ -5458,7 +4595,7 @@ int NearEnemy(OBJECT* pObj)
 
 int TargetPlayer(int obj)
 {
-	int i, j, distance = rw * TSIZE, tempDis;
+	int i, distance = rw * TSIZE, tempDis;
 	int range;
 
 	switch (arenaStatus) {
@@ -5658,7 +4795,9 @@ int TargetPlayer(int obj)
 int TargetEnemy(int obj)
 {
 	int i, j, distance = rw * TSIZE, tempDis;
-	int range;
+	//아래에서 다시 잡아주지만 여기서도 채워둔다. ACTION 라벨로 바로 뛰어드는
+	//경로가 있어서, 그 길로 들어오면 range가 초기화도 안 된 채 사거리 판정에 쓰였다.
+	int range = GetAttackRange(obj);
 	int gameStartPosition = BATTLEPOSITION_PLAYER_X;
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &pObj->equip[EQUIP_WEAPON];

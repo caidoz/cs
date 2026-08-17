@@ -95,7 +95,6 @@ void KeyCore(void)
 void TitleKey(void)
 {
 	int i, j, k;
-	int doorY;
 	switch (curMenu) {
 	case MENU_LOADING://�� ó���� 100 ������ ȭ�鿬��
 		switch (systemKey) {
@@ -428,6 +427,16 @@ void TalkKey(void)
 		}
 		break;
 	case MD_DEMO:
+		//대사가 떠 있을 때만 넘길 수 있다. 아래에서 movie.type을 MOVIE_MOVE로
+		//되돌리는데, 그 뒤에 들어온 탭이 여기로 또 들어오면 movie.start를 한 번 더
+		//올려서 데모 장면 하나를 통째로 건너뛴다. 연타하면 "때마침 몬스터가
+		//나타났네요!" 다음 장면이 날아가 실전투 핸드오프가 걸리지 않고 멈춘다.
+		//keyHandle은 EFFECT_TALK에서 MK_TALK으로 바뀐 뒤 다음 연출까지 그대로라
+		//keyHandle만으로는 이 상태를 가릴 수 없다.
+		if (movie.type != MOVIE_TALK && movie.type != MOVIE_MENUTALK
+			&& movie.type != MOVIE_NARRATION)
+			break;
+
 		if (textFrame < textStringLength[textPage - 1])	//만약 프레임이 다 안넘어갔으면
 			textFrame = textStringLength[textPage - 1] + 1;
 		else {
@@ -465,46 +474,15 @@ void TalkKey(void)
 	}
 }
 
-void BossRaidKey(void)
-{
-	switch (menuDepth) {
-	case 0:
-		switch (systemKey) {
-		case AVK_5:
-			if (robin.count >= robin.maxInven) {
-				SetAlert(ALERT_INVENFULL);
-			}
-			else {
-				PlayMusic(M_SELECT);
-			}
-			break;
-		}
-		break;
-	}
-}
-
 void PlayKey(int obj)
 {
-	int i, j, k, temp = 0;
+	int i;
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
-	int tempIdx;
 	int type, detail, grade;
-	const signed short* tPtr;
-	int ret;
-	int skillIdx;
-	const long long* reward;
 	const long long* boxReward;
-	int boxStartIndex;
-	int boxEndIndex;
-	int speed;
-	int cardSpanNum = 2;
-	int cardSpan;
-	float controlZoom = 1.0f;
-	const signed short* scPtr;
-	int width;
 	int sameRouletteCnt = 1;//����ī�尡 ���� �ִ���
 	int sameRouletteStartIdx;//����ī�尡 ��ŸƮ �Ǵ� ����
 	int sameRouletteEndIdx;//����ī�尡 ���尡 �Ǵ� ����
@@ -519,9 +497,7 @@ void PlayKey(int obj)
 	int itemGrade;
 	int itemCnt;
 	int index;
-	int distance;
 
-	long long tempPrice;
 
 	int who;
 
@@ -1619,21 +1595,21 @@ void PlayKey(int obj)
 			rewardBoxDetail = stageClearBox[robin.stage];
 			rewardBoxGrade = GRADE_NORMAL;
 
-			//boxReward = &rewardBoxData[rewardBoxDetail * TOTALGRADE * BOX1MAXREWARDITEM * REWARDITEMDATASIZE + rewardBoxGrade * BOX1MAXREWARDITEM * REWARDITEMDATASIZE];
-
+			//TODO: 보상 목록을 되살려야 한다.
+			//보상표가 들어 있던 rewardBoxData가 구조체 배열(REWARD_BOX_DATA)로
+			//바뀌면서 위 대입이 주석 처리됐는데, 아래에서는 boxReward를 그대로
+			//역참조하고 있었다. 초기화도 안 된 포인터라 아무 메모리나 읽는다.
+			//지금은 대체할 평면 테이블이 없으므로 빈 목록으로 띄운다.
+			//-1은 아래 개수 세기가 쓰던 "빈 칸" 표시값이다.
 			itemCnt = 0;
-			for (i = 0; i < BOX1MAXREWARDITEM; i++) {
-				if (*(boxReward + 5 * i) != -1)
-					itemCnt++;
-			}
 
 			//���⼭ �˾��� ����ش�?
 			//SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)(DX / 2 - DIORAMASIZE_X * dioramaZoom / 2) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 0] * dioramaZoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 - (float)(72 * _2X) * dioramaZoom + (float)stageEnemyPos[stageHouseType[robin.stage] * TOTALROOM * 3 + (systemKey - AVK_POPUP_STAGEREWARD) * 3 + 1] * dioramaZoom + 108 * _2X, (REWARDCARDSIZE_X + 4 * _2X) * itemCnt + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 			SetPopUp(POPUPTYPE_BOXREWARD, xOffset + (float)DX / 2, POPUPPOSITION_Y, (REWARDCARDSIZE_X + 4 * _2X) * 3 + 4 * _2X, REWARDCARDSIZE_Y + 32 * _2X,
 				ITEM_BOX, rewardBoxDetail, rewardBoxGrade,
-				*(boxReward), *(boxReward + 1), *(boxReward + 2), *(boxReward + 3), *(boxReward + 4),
-				*(boxReward + 5), *(boxReward + 6), *(boxReward + 7), *(boxReward + 8), *(boxReward + 9),
-				*(boxReward + 10), *(boxReward + 11), *(boxReward + 12), *(boxReward + 13), *(boxReward + 14));
+				-1, -1, -1, -1, -1,
+				-1, -1, -1, -1, -1,
+				-1, -1, -1, -1, -1);
 
 			//SetPopUp(POPUPTYPE_STAGE, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 			//	false, false, false, false, false,
@@ -1793,10 +1769,12 @@ void DemoKey(void)
 	int newItemDetail;
 	int newItemGrade;
 
-	int newItemRewardType;
-	int newItemRewardDetail;
-	int newItemRewardGrade;
-	int newItemRewardCnt;
+	//아래 if 안에서만 채워진다. 쓰는 곳(AVK_GETDEMOREWARD)이 같은 조건이라
+	//실제로 도달하지는 않지만, 컴파일러가 짝을 못 지으니 여기서 잡아둔다.
+	int newItemRewardType = 0;
+	int newItemRewardDetail = 0;
+	int newItemRewardGrade = 0;
+	int newItemRewardCnt = 0;
 
 	if (systemKey == AVK_NEWDEMOITEMREWARD || systemKey == AVK_GETDEMOREWARD) {
 		newItemType = boxCardItem[0][newItemIdx[curNewItemIdx]].type;
@@ -1826,8 +1804,6 @@ void DemoKey(void)
 
 void AlertKey(void)
 {
-	ITEM* it;
-	OBJECT* pObj;
 
 	if (winAniFrame < 8)
 
@@ -2011,11 +1987,9 @@ void HotKeyPress(OBJECT* pObj, int idx)
 
 	int obj = GetObjFromPtr(pObj);
 	int limitStat = pObj->ps[PS_DELAY];
-	int delay = 100 - limitStat;
 	int i, j;
 	int closestEnemy;
 
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	if (pObj->hotKey[idx].type != HOTKEY_SCREEN)
 
@@ -2176,22 +2150,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 }
 
 
-void NewSkillKey(void)
-{
-	PlayKey(PLAYER);
-}
-
-void NewCollectionKey(void)
-{
-	PlayKey(PLAYER);
-}
-
 void NewCardKey(void)
-{
-	PlayKey(PLAYER);
-}
-
-void HouseKey(void)
 {
 	PlayKey(PLAYER);
 }
@@ -2363,86 +2322,6 @@ void ReleasePlayer(OBJECT* pObj)
 }
 
 
-// Touch 관련
-void TouchEndedPlayer(OBJECT* pObj)
-{
-	if (pObj->dead == false && !pObj->debuf[KNOCKBACK] && !pObj->debuf[STUN] && pObj->currentSkill <= 0) {
-		if (isTouchKey == TOUCH_PRESS || isTouchKey == TOUCH_DRAG) {
-			if (!pObj->attack) {
-				if (!(pObj->type == DIANA && pObj->flamer > 0) && !(pObj->type == MAXX && boomerangAway[GetObjFromPtr(pObj)])) {
-
-
-					//아래로 드래그
-					if (touchPressedKey[1][1] - touchPressedKey[0][1] > SWIPE_DISTANCE_Y && isTouchKey == TOUCH_DRAG) {
-						pObj->pressedKey[2] = pObj->pressedKey[1];
-						pObj->pressedKey[1] = pObj->pressedKey[0];
-						pObj->pressedKey[0] = AVK_8;
-
-					}
-					else if (touchedFrame < TOUCHCANCELFRAME) {
-						pObj->pressedKey[2] = pObj->pressedKey[1];
-						pObj->pressedKey[1] = pObj->pressedKey[0];
-						pObj->pressedKey[0] = AVK_5;
-					}
-
-					GetMotionPtr(&ao[raidPlayer]);
-
-					if (pObj->playerRun == true && pObj->pressedKey[0] == AVK_5) {
-						pObj->attack = ATTACK_DASH;
-						pObj->attackFrame = skillStartFrame[ATTACK_DASH];
-						HitCountCheck(pObj);
-					}
-					else if (pObj->status == WALK) {
-						if (pObj->pressedKey[0] == AVK_5) {
-
-							pObj->attack = ATTACK_NORMAL;
-							pObj->attackFrame = skillStartFrame[pObj->attack];
-							HitCountCheck(pObj);
-						}
-					}
-					else if ((pObj->status == JUMP || pObj->status == FALL || pObj->status == GLIDE || pObj->status == FLYING) && !pObj->attack) {
-						if (pObj->pressedKey[0] == AVK_8) {
-							GetMotionPtr(pObj);
-
-							pObj->currentSkill = -1;
-							pObj->mx = false;
-							pObj->dx = 0;
-							pObj->status = FALL;
-							pObj->dirY = DOWN;
-							pObj->jumpFrame = 0;
-
-							if (GetObjHeight(pObj) > 64 * _2X && pObj->canDown == true) {
-								pObj->attack = ATTACK_DOWN;
-								pObj->attackFrame = skillStartFrame[ATTACK_DOWN];
-								HitCountCheck(pObj);
-							}
-						}
-						else if (pObj->pressedKey[0] == AVK_5) {
-							pObj->attack = ATTACK_AIR;
-							pObj->attackFrame = skillStartFrame[ATTACK_AIR];
-							HitCountCheck(pObj);
-						}
-					}
-				}
-			}
-			else if (pObj->attack == ATTACK_NORMAL) {
-				if (pObj->type == ROBIN ||
-					pObj->type == DIANA) {
-					pObj->pressedKey[2] = pObj->pressedKey[1];
-					pObj->pressedKey[1] = pObj->pressedKey[0];
-					pObj->pressedKey[0] = AVK_5;
-				}
-			}
-		}
-		else {
-			ReleasePlayer(pObj);
-		}
-	}
-	else {
-		ReleasePlayer(pObj);
-	}
-}
-
 int GetTouchFunc(int x, int y)
 {
 	int i;
@@ -2489,28 +2368,12 @@ int GetRectPoint(int x, int y, int rx, int ry, int width, int height)
 	return 0;
 }
 
-int GetSwipePoint(int x, int y, int rx, int ry, int width, int height)
-{
-	if (x > rx && x < rx + width && y > ry - height && y < ry)
-		return 1;
-
-	return 0;
-}
-
 void ResetRectPoint(void)
 {
 	int i;
 	for (i = 0; i < TOTALTOUCHCNT; i++)
 		memset(touchRect, 0, sizeof(touchRect));
 	touchIndex = 0;
-}
-
-void ResetSwipetPoint(void)
-{
-	int i;
-	for (i = 0; i < TOTALSWIPECNT; i++)
-		memset(swipeRect, 0, sizeof(swipeRect));
-	swipeIndex = 0;
 }
 
 //지금 이 터치기능이 살아 있는지. 터치영역 등록과 DrawHand 표시가 같은 판정을 쓰도록
@@ -2558,52 +2421,13 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 	touchIndex++;
 }
 
-bool IsFullInSectionClip(float x, float y, float w, float h)
-{
-	float rectX1 = x;
-	float rectY1 = y;
-	float rectX2 = x + w;
-	float rectY2 = y - h;
-
-	if (rectX1 < clipX)
-		return false;
-
-	if (rectX2 > clipX2)
-		return false;
-
-	if (rectY1 > clipY)
-		return false;
-
-	if (rectY2 < clipY2)
-		return false;
-
-	return true;
-}
-
-void SetSwipePoint(int rx, int ry, int width, int height, int func)
-{
-#ifdef CONTROL_MANUAL
-	swipeRect[swipeIndex][0] = rx;
-	swipeRect[swipeIndex][1] = ry;
-	swipeRect[swipeIndex][2] = width;
-	swipeRect[swipeIndex][3] = height;
-	swipeRect[swipeIndex][4] = func;
-	swipeIndex++;
-#endif
-}
-
 void touchFunc(int func)
 {
-	int i, j, k, temp = 0;
-	int doorY = 256 * _2X;
+	int i, j;
 	int x = DX / 2 - STATUSWIN_X / 2;
 	int y = DY / 2 + MINDY / 2;
-	ITEM* it;
 	int itemType, itemDetail, itemGrade;
 
-	int grade = GRADE_LEGEND;
-	int detail;
-	OBJECT* pObj;
 
 	//현재 터치하면 안되면
 	if (touchDisable)
@@ -3236,34 +3060,8 @@ void SaveFlag(int which)
 
 // JoyStick 관련
 
-bool JoyStickPressGoldQuestPossible(void)
-{
-	int i;
-	int controlMarkActiveCnt = 0;
-
-	for (i = 0; i < TOTALCONTROLMARK; i++) {
-		if (controlMark[i].frame > 0)
-			return false;
-	}
-
-	if (((autoPlay == false && turn == NEUTRAL && !curtainFrame && ao[ENEMY].dead == false && ao[ENEMY].active == true && ao[ENEMY].moveHandler != VANISHMOVE && attackSequence == false) || autoPlay == true) && infoFrame == 0 && areaFrame == 0 && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY)
-		return true;
-	else
-		return false;
-}
-
-bool JoyStickPressRaidPossible(void)
-{
-	if (autoPlay == false && raidChance > 0 && turn == NEUTRAL && !curtainFrame && ao[ENEMY].dead == false && ao[ENEMY].active == true && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY)
-		return true;
-	else
-		return false;
-}
-
 bool JoyStickPressPossible(void)
 {
-	int i;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	switch (drawHandle) {
 	case MD_PLAY:
@@ -3287,7 +3085,6 @@ bool JoyStickPressPossible(void)
 
 bool menuPressPossible(void)
 {
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	if (!curtainFrame && !infoFrame && !areaFrame && attackSequence == ATTACKSEQUENCE_READY && !ao[PLAYER].dead && arenaStatus == STATUS_PLAY && autoPlay == false) {
 		return true;
@@ -3297,66 +3094,6 @@ bool menuPressPossible(void)
 	}
 }
 
-void JoyStickPressRaid(void)
-{
-	int i, j;
-	int rand;
-	int bigger = false;
-	OBJECT* pObj = &ao[PLAYER];
-
-	if (attackDelay)
-		return;
-
-	//하트는 하지 않고
-	if (raidChance > 0 && turn == NEUTRAL) {
-		raidChance--;
-
-		//ROULETTE_COIN = 0,//검//일반 데미지 //1, 2, 5배//
-		//ROULETTE_BATTLE,//�۷κ�//��Ÿ ������ //1, 2, 4�� ��Ÿ//
-		//ROULETTE_EQUIP,//���?/3���� �� ������ ũ��Ƽ�� ������//��䰪���?10�迡�� ����//
-		//ROULETTE_HEART,//����//3���� �� ������ ��Ʈ//
-		//ROULETTE_QUEST,//하의//퀘스트 아이템 획득//1, 2, 5배//
-		//ROULETTE_RAID,//�Ź�//���� ����//���?1, 2, 5��//
-
-		//actionCardArr[0] = ROULETTE_COIN;
-		//actionCardArr[1] = ROULETTE_COIN;
-		//actionCardArr[2] = ROULETTE_COIN;
-
-		if (ao[pObj->target].gold == 0) {
-			attackType = ROULETTE_RAID_MISS;
-		}
-		else if (ao[pObj->target].gold > ao[ENEMYUSEROBJ].gold * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet) / 2) {
-
-			attackType = ROULETTE_RAID_PERFECT;
-		}
-		else {
-			attackType = ROULETTE_RAID_GOOD;
-		}
-
-		attackStr = 0;
-
-		sequenceFrame = 0;
-		attackSequence = ATTACKSEQUENCE_READY;
-		rouletteNum = 0;
-		rouletteNumSub = 0;
-		rouletteNumBar = 0;
-		rouletteNumPvpBar = 0;
-
-		option.gameControl = CONTROL_AUTO;
-		turn = PLAYER;
-		turnFrame = 0;
-		pObj->turnPosition = GOING;
-		joyStickAni = 0;
-
-		pObj->superJump = 2;
-		pObj->jumpTwice = true;
-		pObj->jumpFrame = -4;
-		effect.shake = 4;
-
-
-		PlayMusic(M_SHAKIN);
-	}
-}
 //�������̵��� ���� 
 //1. 보스가 등장하고 
 //2. ������ ������ �����ϸ�
@@ -3364,10 +3101,9 @@ void JoyStickPressRaid(void)
 
 void BoxOpen(void)
 {
-	int i, j;
+	int i;
 	int itemType, itemDetail, itemGrade, itemLv;
 	int rand = Random(ITEMDETAILSEED);
-	int eventIdx;
 
 	//
 	//TEST
@@ -3546,20 +3282,8 @@ void BoxOpen(void)
 
 }
 
-void JoyStickPressAll(void)
-{
-	int i, j;
-
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
-
-	totalRouletteCnt = Min(MAXROULETTE - actionCardCnt, robin.heart / GetBetHeart(it->detail, it->grade, bet));
-
-}
-
 void JoyStickRelease(void)
 {
-	int i, j, rand;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	//�ڵ��̸�
 	if (autoPlay == true) {
@@ -3592,12 +3316,6 @@ int GetBetHeart(int itemDetail, int itemGrade, int betGrade)
 {
 	return betHeart[betGrade];
 	//return swordHeart[itemDetail * TOTALGRADE + itemGrade] * betHeart[betGrade];
-}
-
-int GetBetGold(int itemDetail, int itemGrade)
-{
-	return swordGold[itemDetail * TOTALGRADE + itemGrade];
-	//return betHeart[bet];
 }
 
 int printCoords() {

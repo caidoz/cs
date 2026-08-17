@@ -23,21 +23,6 @@ int PxlDown(OBJECT* pObj)
 	return (pObj->y + pObj->cpy + pObj->cy);
 }
 
-int GetObjIdxFromType(int type, int startIdx, int endIdx)
-{
-	int i = endIdx;
-
-	do {
-		i--;
-
-		if (ao[i].type == type)
-			return i;
-	} while (i > startIdx);
-
-
-	return -1;
-}
-
 int GetObjFromPtr(OBJECT* pObj)
 {
 	int i = TOTALOBJECT;
@@ -73,13 +58,6 @@ void GetTile(OBJECT* pObj)
 	pObj->tileX2 = (PxlRight(pObj) - 1) / TSIZE;
 	pObj->tileY1 = (pObj->y + pObj->cpy) / TSIZE;
 	pObj->tileY2 = (PxlDown(pObj) - 1) / TSIZE;
-}
-
-int GetDistanceX(OBJECT* obj1, OBJECT* obj2)
-{
-	int dist = Abs(obj1->x - obj2->x);
-
-	return dist;
 }
 
 int GetDistance(OBJECT* obj1, OBJECT* obj2)
@@ -347,25 +325,6 @@ int ObjCrash(OBJECT* obj1, OBJECT* obj2)
 {
 	return ((obj1->cx != 0 && obj2->cx != 0 && obj1->cy != 0 && obj2->cy != 0 && PxlLeft(obj1) < PxlRight(obj2) && PxlLeft(obj2) < PxlRight(obj1) && PxlUp(obj1) < PxlDown(obj2) && PxlUp(obj2) < PxlDown(obj1)) ? 1 : 0);
 }
-//화면기준의 충돌
-int ObjCrash2(OBJECT* obj1, OBJECT* obj2)
-{
-	if ((obj1->x + obj1->cpx + obj1->cx) < obj2->x || obj1->x > (obj2->x + obj2->cpx + obj2->cx))
-		return false;
-
-	if ((obj1->y + obj1->cpy + obj1->cy) < obj2->y || obj1->y > (obj2->y + obj2->cpy + obj2->cy))
-		return false;
-
-	return true;
-}
-
-int PointCrash(OBJECT* obj, int x, int y)
-{
-#define POINTCRASHSIZE	4
-
-	return ((obj->cx != 0 && obj->cy != 0 && PxlLeft(obj) - POINTCRASHSIZE < x && PxlRight(obj) + POINTCRASHSIZE > x && PxlDown(obj) + POINTCRASHSIZE > y && PxlUp(obj) - POINTCRASHSIZE < y) ? 1 : 0);
-}
-
 int AttackCrash(OBJECT* obj1, OBJECT* obj2)
 {
 	if (obj1->ax == 0 || obj2->cx == 0)
@@ -458,22 +417,6 @@ int AttackCrash(OBJECT* obj1, OBJECT* obj2)
 	if (crW > 0 && crH > 0) {
 		return true;
 	}
-	else
-		return false;
-}
-
-int AttackCrash2(OBJECT* obj1, OBJECT* obj2)
-{
-	if (obj1->ax == 0 || obj2->ax == 0)
-		return false;
-
-	crX = Max(obj1->x + obj1->apx, obj2->x + obj2->apx);
-	crY = Max(obj1->y + obj1->apy, obj2->y + obj2->apy);
-	crW = Min(obj1->x + obj1->apx + obj1->ax, obj2->x + obj2->apx + obj2->ax) - crX;
-	crH = Min(obj1->y + obj1->apy + obj1->ay, obj2->y + obj2->apy + obj2->ay) - crY;
-
-	if (crW > 0 && crH > 0)
-		return true;
 	else
 		return false;
 }
@@ -822,9 +765,8 @@ void MoveBG(void)
 
 void MoveObj(OBJECT* pObj)
 {
-	int rand;
 	int obj = GetObjFromPtr(pObj);
-	int i, j, temp;
+	int i;
 	int tempSystemKey = systemKey;
 
 	if (pObj->invincible)
@@ -1694,7 +1636,6 @@ void PlayerMove(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int height = 0;
 	int playerMoveKey = systemKey;
-	int skillIdx;
 
 	//if (pObj->invincible)
 	//	pObj->invincible--;
@@ -2483,7 +2424,6 @@ void PlayerMove(OBJECT* pObj)
 #endif
 
 chk:
-	//PlayerMove_Check(pObj, motion, height, playerMoveKey);
 	{
 		int i;
 		if (pObj->type == MAXX && pObj->motion == PO_C2_STOP0)
@@ -2753,8 +2693,12 @@ chk:
 					break;
 				}
 				else {
-					if (!pObj->flamer)
-					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+					//중괄호가 없어서 flamer일 때 loopMotion이 갱신되지 않은 채
+					//아래에서 쓰였다. -1은 "60프레임 표가 없다"는 뜻이라
+					//원래 식으로 떨어진다.
+					loopMotion = pObj->flamer
+						? -1
+						: GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
 					pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					pObj->dx = pObj->dy = 0;
 				}
@@ -3489,7 +3433,6 @@ void EnemyPlayerMove(OBJECT* pObj)
 #endif
 
 chk:
-	//PlayerMove_Check(pObj, motion, height, playerMoveKey);
 	{
 		int i;
 		if (pObj->type == MAXX && pObj->motion == PO_C2_STOP0)
@@ -3749,8 +3692,6 @@ chk:
 
 int PlayerMove_Attack(OBJECT* pObj, int released)
 {
-	int i, j, k;
-	int rand;
 	pObj->playerRun = false;
 
 	if (robin.playtime % MOTIONDIV != 0)
@@ -3788,10 +3729,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 {
 	int i, j, cnt;
 	int xy;
-	signed short* tPtr;
 	const short* sPtr;
-	int rand;
-	int skillIdx;
 	ITEM* it = &pObj->equip[EQUIP_WEAPON];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
@@ -4246,27 +4184,6 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		pObj->jumpFrame = JUMPFRAME;
 		pObj->dirY = DOWN;
 	}
-}
-
-bool IsSkillUsable(OBJECT* pObj)
-{
-	int i, j;
-	for (i = 0; i < MAXCHARSKILL; i++) {
-		if (pObj->getSkillList[i] != EMPTY) {
-			if (skillData[SKILLDATASIZE * pObj->getSkillList[i]] > PASSIVE) {
-				for (j = 0; j < MAXHOTKEY; j++) {
-					if (pObj->hotKey[j].idx == pObj->getSkillList[i]) {
-						temp = j;
-						break;
-					}
-				}
-
-				if (pObj->hotKey[temp].frame == 0)
-					return true;
-			}
-		}
-	}
-	return false;
 }
 
 void SetPlayerMotion(OBJECT* pObj)
@@ -5437,7 +5354,7 @@ void SlingMove(OBJECT* pObj)
 
 void LightningMove(OBJECT* pObj, int speed)
 {
-	int tempx, tempy, tile;
+	int tempx, tempy;
 
 	tempx = pObj->x;
 	tempy = pObj->y;
@@ -8777,7 +8694,7 @@ void LabethMagicMove(OBJECT* pObj)
 
 void EnemyMove_AddObj(OBJECT* pObj)
 {
-	int i, dis = 0, tempX, j, target;
+	int i, dis = 0, tempX, target;
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
 	int endObj;
@@ -9866,7 +9783,6 @@ void EnemyMoveCommon(OBJECT* pObj)
 void EnemyMoveTurn(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
 	int i;
 	int distance;
@@ -10452,7 +10368,6 @@ END:
 void SummonMove(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
 	int i;
 	int distance;
@@ -10807,8 +10722,7 @@ END:
 }
 void VanishMove(OBJECT* pObj)
 {
-	int i, totalItemObjCnt = 1, tempX, tempY, j = 0;
-	int itemObj;
+	int i;
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
 	int endObj;
@@ -11218,7 +11132,9 @@ void RegenMove(OBJECT* pObj)
 				pObj->drawHandler = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_DRAWHANDLER];
 				AddBar(&bar[BAR_BOSSHP], pObj->hp, BARFRAME);
 			}
-			int startObj;
+			//아래 루프의 break가 if 밖에 있어 첫 칸만 보고 빠져나온다.
+			//배가 아니면 대입이 없어 초기화도 안 된 값으로 obj와 비교했다.
+			int startObj = -1;
 
 			for (i = BULLET; i < NEUTRAL; i++) {
 				if (ao[i].type == ENEMY_SHIP ||
@@ -11227,9 +11143,10 @@ void RegenMove(OBJECT* pObj)
 					ao[i].type == ENEMY_SHIP_PURPLE ||
 					ao[i].type == ENEMY_SHIP_GREEN ||
 					ao[i].type == ENEMY_SHIP_GOLD ||
-					ao[i].type == ENEMY_SHIP_BLACK)
+					ao[i].type == ENEMY_SHIP_BLACK) {
 					startObj = i;
-				break;
+					break;
+				}
 			}
 			//소환수거나 
 			if (obj >= SOLDIER) {
@@ -12091,10 +12008,9 @@ void RepulsionMove(OBJECT* pObj)
 
 void ItemMove(OBJECT* pObj)
 {
-	int i, j;
+	int i;
 #ifdef GETITEMAUTO
 	int targetX, targetY;
-	int objX, objY;
 #endif
 	int barName = BAR_BATTLECOIN;
 	int itemStatusFrame;
@@ -12254,11 +12170,10 @@ void CloakingMove(OBJECT* pObj)
 
 void WarpMove(OBJECT* pObj)
 {
-	int i, j, k, totalProb = 0, rand;
+	int i;
 	unsigned char type;
 	int doorY = 256 * _2X;
 	OBJECT* pPlayer = &ao[PLAYER];
-	int grade, detail;
 
 	if (dontWarp == true || robin.bossRoom == true || isDemo == true)
 		return;
@@ -12271,7 +12186,6 @@ void WarpMove(OBJECT* pObj)
 	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])
 		return;
 
-	//MC_knlPrintk("WarpObj:%d, Type:%d, X:%d, Y:%d\n", i, ao[i].type, ao[i].x, ao[i].y);
 
 	//if (robin.bossRoom == false && (pPlayer->y < 1 || pPlayer->y > ((rh - 4) * TSIZE - 1)))
 	//	goto SETROOM;
@@ -12384,7 +12298,6 @@ void WarpMove(OBJECT* pObj)
 				//MoveObj(&ao[i]);
 			}
 			*/
-			//SetSimpleEnemy();
 
 			memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
 			memset(&ao[ENEMY], 0, sizeof(robin.enemyObj));
@@ -12553,6 +12466,12 @@ void BoxMove(OBJECT* pObj)
 					pObj->y = BOXPOSITION_Y;
 					pObj->attackedFrame = JUMPFULLFRAME + 1;
 					PlayMusic(M_KUNG);
+
+					//상자가 바닥에 닿는 순간을 잠깐 당겨 본다.
+					//예전에는 SetBox()에 걸어뒀는데 그 함수 자체가 아무 데서도
+					//불리지 않는 죽은 코드였다. 방 배치 시점(SetRoom_Neutral)은
+					//아직 상자가 하늘에 있어서 엉뚱한 자리를 잡는다.
+					RequestFocusZoom(GetObjFromPtr(pObj), FOCUSPRI_BOXDROP);
 				}
 			}
 
@@ -13824,18 +13743,11 @@ void ItemGotoBoxMove(OBJECT* pObj)
 void CrewMove(OBJECT* pObj)
 {
 	const signed short* tPtr;
-	int loop = false;
 	int ret;
-	int cmp;
 	int i;
-	int distance;
 	int obj = GetObjFromPtr(pObj);
 	int speed = 4 * _2X;//미사일 스피드
-	int dx_block;
-	int t_crashed;
-	int check = 2;
 	int attackType;
-	signed char wx = pObj->dx;
 	OBJECT* objPtr;
 
 	tPtr = cmf_status_data[pObj->cmf][pObj->etc];
@@ -14176,7 +14088,6 @@ void TileCheckX(OBJECT* pObj)
 	int dx_block;
 	int t_crashed;
 	int dx = pObj->dx;
-	int o_x = pObj->x;
 	signed char wx;
 
 	//if (drawHandle == MD_BATTLE && (GetObjFromPtr(pObj) == PLAYER || GetObjFromPtr(pObj) == ENEMY)) {
@@ -14252,7 +14163,6 @@ void TileCheckY(OBJECT* pObj)
 	unsigned char o_m = pObj->motion;
 	signed char wy = pObj->dy;
 	int dx_block;
-	int oy = pObj->y;
 
 	if (drawHandle == MD_PLAY)
 	return;
@@ -15045,18 +14955,6 @@ bool IsMaxBet(void)
 
 }
 
-bool IsMaxCoinBet(void)
-{
-	if (bet == MAXCOINBET - 1)
-		return true;
-	else if (robin.gold >= betCoin[betBattle] * GetStageAdmissionFee() && robin.gold < betCoin[betBattle + 1] * GetStageAdmissionFee())
-		return true;
-	else
-		return false;
-
-
-}
-
 int IsKnockBack(int objType)
 {
 	switch (objType) {
@@ -15605,18 +15503,6 @@ int IsBigCmf(int cmfIdx)
 	default:
 		return false;
 	}
-}
-
-void RegenEnemy(OBJECT* pObj, int type, int x, int y, int dir)
-{
-	memset(pObj, 0, sizeof(OBJECT));
-	pObj->type = type;
-	pObj->x = x;
-	pObj->y = y;
-	pObj->dirF = pObj->dirX = dir;
-	SetEnemy(pObj);
-	pObj->moveHandler = REGENMOVE;
-	pObj->drawHandler = REGENDRAW;
 }
 
 int CanRunPlayer(int obj)

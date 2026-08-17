@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 
 #ifndef _FUNC_TEXT_H_
@@ -8,7 +8,6 @@
 int CharByteLen(const char*);
 int CharExtraBytes(const char*);
 int StringLength(const char*);
-int SubstringLength(const char*, unsigned int, unsigned int);
 
 float StringWidthTTF(const char* str, float zoom);
 float StringWidth(const char*, float zoom);
@@ -20,7 +19,6 @@ int GetSameStringIndex(const char* str);
 int GetFontLabelIndex(std::string);
 void LoadFontLabelFromText(const char*);
 
-float DrawTextSystem(int, int, int, float, int, bool);
 float DrawTextStrSystem(const char*, int, int, float, int, bool);
 void DrawText(int, int, int, float zoom);
 void DrawTextSolid(int, int, int, float zoom);
@@ -34,16 +32,12 @@ float CenterTextStrSolid(const char*, int, int, float zoom);
 void FrameText(const char* str, int x, int y, int dx, int line, int page, float zoom);
 int ParseText(char);
 int LineText(int, int, int, int, float zoom);
-int LineTextSolid(int, int, int, int, float zoom);
 int LineTextStr(const char*, int, int, int, int, int, float zoom);
 int LineTextStrSolid(const char*, int, int, int, int, int, float zoom);
-int CenterLineText(const char*, int, int, int, int, float zoom);
 void SetFrameText(int index, int dx, int line, float zoom);
 void SetFrameTextStr(const char* str, int dx, int line, float zoom, char startCol);
 
 // File Handling
-bool StructureToJson(void*, std::string);
-bool JsonToStructure(void*, std::string);
 
 bool GameWriteFile(char*, char*, int);
 bool LoadFile(char*, char*, int);

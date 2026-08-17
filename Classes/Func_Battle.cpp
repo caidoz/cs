@@ -6,17 +6,10 @@
 // Battle 관련 함수
 void Play(void)
 {
-	int i, j, k;
+	int i, j;
 	int gap;
-	int totalPlayer = realPlayerCnt;
-	int itemType;
-	int itemDetail, itemGrade;
-	ITEM* it;
-	OBJECT* eObj = &ao[ao[PLAYER].target];
 	int x, y;
 
-	int startX;
-	int startY;
 	float zoom;
 
 	//인터랙티브 전투 튜토리얼: Func_Combat.cpp의 몬스터 사망 훅이 예약해둔 다음 컷씬을 여기서 시작한다.
@@ -901,7 +894,11 @@ void Play(void)
 			}
 
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
+				//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
+				//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
+				worldDrawing = true;
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2);
+				worldDrawing = false;
 			}
 
 			SetAlpha(32);
@@ -939,7 +936,11 @@ void Play(void)
 			}
 
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
+				//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
+				//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
+				worldDrawing = true;
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom);
+				worldDrawing = false;
 			}
 
 			SetAlpha(32);
@@ -1261,7 +1262,6 @@ void Play(void)
 
 	}
 
-	bool back = false;
 	battleZoom = 1.0f;
 
 	if (battleStartFrame > 0) {
@@ -1284,9 +1284,6 @@ void AttackSequenceDraw(void)
 	int i, j, k;
 
 	long long gloveValue = 0;
-	float width;
-	float iconZoom;
-	int totalObjCnt = 0;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
 
@@ -1295,32 +1292,23 @@ void AttackSequenceDraw(void)
 	long long current;
 	long long gap = (end - start) / (FPS / 2);
 
-	long long start2;
-	long long end2;
-	long long gap2;
 
 	int icon;
 	int rewardIcon;
-	int currencyIcon;
-	int currency;
 
-	int amount;
 
-	int tempBet = bet;
 	OBJECT* pObj = &ao[turn];
 	OBJECT* eObj = &ao[pObj->target];
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
 	float battleZoom = dioramaZoom;
 
-	int pvpMenuIndex;
+	//아래 검색 루프가 PVP 이벤트를 못 찾으면 대입이 안 된다. 그 값이 그대로
+	//robin.gameEvent[]의 첨자로 쓰이는데 쓰기까지 하므로, 초기화가 없으면
+	//세이브 구조체 밖을 덮어쓴다. 못 찾았을 때는 0번을 보게 둔다.
+	int pvpMenuIndex = 0;
 
 	ITEM* it;
-	int skillRewardType;
 
 	long long getGoldNum = 0;
 	long long getHeartNum = 0;
@@ -1333,44 +1321,24 @@ void AttackSequenceDraw(void)
 	int col = 2;//세로로 몇줄인지
 	int rewardGap = 8 * _2X;
 
-	int enemyCrewY = 512 * _2X;
-	int beforeEnemyCrewY;
 
 	bool crewMenuDraw = false;
 	bool equipMenuDraw = false;
 
 	float menuZoom = 1.0f;
-	int doorY;
 
 	int collectionIdx;
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
-	int itemCnt;
-	int itemLv;
-
-	const signed short* tPtr;
-
-	float barZoom;
-
-	int beforeCoinBarY;
-	float beforeCoinBarZoom;
-
-	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
-	int backUpX, backUpY;
 
 
-	int boxY;
-	int rewardCnt;
 
-	int who;
 
-	int jokboAniFrame = FPS / 3;
-	float zoomBefore;
+	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, zoom, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
+
+
+
+
 
 	//bond
 
@@ -2298,33 +2266,23 @@ void AttackSequenceDraw(void)
 
 void EnemySequenceDraw(void)
 {
-	int i, j, k;
+	int i;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
 
-	int icon;
-	int rewardIcon;
 	int iconArr[3];
 	int currencyIcon;
 	int currency;
 	int enemyTurn = turn;
 
-	int speed;
-	int amount;
 
-	int tempBet = bet;
 	OBJECT* eObj = &ao[enemyTurn];
 	eObj->target = GetClosestPlayer(eObj);
 
 	OBJECT* pObj = &ao[eObj->target];
 	int enemyBarIdx = GetEnemyBarIdx(enemyTurn);
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
-	int battleZoom;
 
 	long long armorValue = 0;
 	float iconZoom;
@@ -2469,16 +2427,13 @@ void EnemySequenceDraw(void)
 
 void RaidSequenceDraw(void)
 {
-	int i, j;
+	int i;
 	float width = 44 * _2X;
-	int totalObjCnt = 0;
 	int x = xOffset + DX / 2 - 92 * _2X;
 	int y = STATUSWIN_Y + ENEMYHPBARYGAP;
-	long long start = dmgInfo[dmgIndex].dmg;
 	long long end = dmgInfo[dmgIndex].dmg * GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
 
 
-	int icon;
 	int rewardIcon;
 	int iconArr[3];
 	int currencyIcon;
@@ -2486,22 +2441,13 @@ void RaidSequenceDraw(void)
 
 	int amount;
 
-	int tempBet = bet;
 	OBJECT* pObj = &ao[PLAYER];
-	OBJECT* eObj = &ao[ENEMY];
 	OBJECT* pDest = &ao[pObj->target];
-	int size = 2;
 
-	int damage;
-	int TERM = 1;
-	int PHASE = 1;
 
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	float fontZoom = 2;
 
-	int equipCount = 0;
-	int goldAlpha = MISS;
 
 	float startX, startY, targetX, targetY, targetX2, targetY2, speed, speedIncrement, speed2, speedIncrement2, waitingFrame, waitingFrame2, zoom, zoomEnd, zoomIncrement, zoom2, zoomEnd2, zoomIncrement2;
 	int backUpX, backUpY;
@@ -3005,7 +2951,7 @@ void RaidSequenceDraw(void)
 
 void InfoDraw(void)
 {
-	int i, j, k;
+	int i;
 	int x, y;
 	int gap = -48 * _2X;
 	int type;
@@ -3245,76 +3191,8 @@ void InfoDraw(void)
 //하단에 마이킹을 털어줄건지.
 //마이킹을 터는 방법
 
-void CrewInfoDraw(int crewIdx, int x, int y, float zoom)
-{
-	int i;
-	int itemType = ITEM_CREW;
-	int itemDetail = crewIdx;
-	int itemGrade = 0;
-	int itemLv = 1;
-	int crewType = crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE];
-	int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-	int count = 1;
-	float cardZoom = 2.0f * zoom;
-	int itemCnt, itemSlot, itemIdx, itemIcon;
-	int itemTypeNext, itemDetailNext, itemGradeNext;
-	int icon, skillIcon, questIcon, pvpQuestIcon;
-	OBJECT* pObj = &ao[PLAYER];
-	int collectionIdx;
-
-	ITEM* it;
-	float width;
-	float YGAP = -48 * _2X;
-	int eventIdx = GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT);
-	float discount = 0;
-
-	int crewRewardType = crewReward[crewIdx * CREWREWARDDATASIZE + 0];
-	int crewRewardDetail = crewReward[crewIdx * CREWREWARDDATASIZE + 1];
-	int crewRewardGrade = crewReward[crewIdx * CREWREWARDDATASIZE + 2];
-	long long crewRewardCnt = crewReward[crewIdx * CREWREWARDDATASIZE + 3];
-	int crewRewardTime = crewReward[crewIdx * CREWREWARDDATASIZE + 4];
-
-	if (eventIdx != -1)
-		discount = robin.gameEvent[eventIdx].value;
-
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
-
-	if (itemType == ITEM_CREW) {
-		curStar = maxStar = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_STAR] + 1;
-	}
-	else {
-		curStar = maxStar = GetItemStar(itemType, itemDetail, itemGrade);
-	}
-
-	//카드를 보여주고
-	DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1], x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(16 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, LEFT, zoom * MONSTERZOOM * enemyZoom[crewType]);
-	DrawStar(ICON_STAR, x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y - (float)(34 * _2X - crewData[crewIdx * CREWDATASIZE + 6]) * zoom, curStar, maxStar, CREWMAXUPGRADELV, CENTER, true, zoom * 1.2f);
-
-	//이름 써주기
-	DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_MONSTERNAME_START + crewType, zoom);
-	//생산량
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "%d %s", crewRewardTime / (60 * 60), textId[TEXT_MADA]);
-
-	DrawTextStr(tempStr, x + (float)(32 * _2X) * zoom, y - (float)(226 * _2X) * zoom, zoom);
-
-	if (crewRewardType == ITEM_BOX) {
-		DrawBox(crewRewardDetail, x + (float)(POPUPWINDOWSIZE_X / 2 - (float)BOXSIZE_X * 0.5f / 2) * zoom, y - (float)(228 * _2X + ITEMICONSIZE) * zoom, LEFT, false, false, true, false, true, zoom * 0.5f);
-	}
-	else {
-		width = (float)ITEMICONSIZE * zoom + (float)4 * _2X * zoom + GetBigNumDx(crewRewardCnt, false, NUM_FONT_LARGE, false, true, 256 * _2X - 16 * _2X - ITEMICONSIZE - 4 * _2X, zoom, true);
-		DrawIcon(GetItemIcon(crewRewardType, crewRewardDetail, crewRewardGrade), x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - width / 2, y - (float)(240 * _2X + ITEMICONSIZE) * zoom, zoom, false, false, false, 1);
-		DrawBigNum(crewRewardCnt, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - width / 2 + (float)(ITEMICONSIZE + 4 * _2X) * zoom, y - (float)(240 * _2X + ITEMICONSIZE - 1 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(256 * _2X - 16 * _2X - ITEMICONSIZE - 4 * _2X) * zoom, true, zoom, true);
-	}
-
-}
-
 void DiscountMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
-	int icon = pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0];
-	OBJECT* pObj = &ao[PLAYER];
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT)];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
@@ -3342,10 +3220,7 @@ void DiscountMenuDraw(int x, int y, float zoom)
 
 void PvpQuestMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
-	int icon = pvpQuestInfo[robin.pvpQuest * PVPQUESTINFODATASIZE + 0];
-	OBJECT* pObj = &ao[PLAYER];
+	int i;
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_PVP)];
 	float pvpBarZoom = 1.0f;
 	int tempBarStatus = gEvent->barStatus;
@@ -3389,11 +3264,8 @@ void PvpQuestMenuDraw(int x, int y, float zoom)
 
 void QuestMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	int width;
+	int i;
 	int icon;
-	OBJECT* pObj = &ao[PLAYER];
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_QUEST)];
 
 	icon = gEvent->icon;
@@ -3406,9 +3278,7 @@ void QuestMenuDraw(int x, int y, float zoom)
 
 	DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2) * zoom - (float)(40 * _2X) * zoom, y - (float)(64 * _2X - 32 * _2X) * zoom, TEXT_GRANDPRIZE, zoom);
 
-	//DrawCmfDetailShadow(enemyData[questInfo[robin.quest * QUESTINFODATASIZE] * ENEMYDATASIZE + 0], frame / 2 % 4, x + (float)(48 * _2X) * zoom, y - (float)(88 * _2X) * zoom, RIGHT, zoom, cvtDest, cvtLayer, buffering);
 
-	//DrawIcon(icon, x + (float)(248 * _2X) * zoom, y - (float)(56 * _2X) * zoom, 2.0f * zoom, COLOR_BROWN, false, true, cvtDest, cvtLayer, buffering);
 
 	//바를 그려주기
 	MemRectRound(x + (float)(36 * _2X) * zoom, y - (float)(160 * _2X - 44 * _2X) * zoom, (float)(16 * _2X) * zoom, (float)(240 * _2X) * zoom, COLOR_NAVY, 2);
@@ -3465,9 +3335,6 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 	int rewardIcon = GetItemIcon(rewardType, rewardDetail, rewardGrade);
 	long long rewardCnt = questReward[robin.quest * TOTALSUBQUEST * QUESTREWARDDATASIZE + robin.subQuest * QUESTREWARDDATASIZE + 3];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_QUEST)];
-	float zoomOrigin = zoom;
-	float ENEMYICONZOOM_X = 0.7f;
-	float ENEMYICONZOOM_Y = 0.6f;
 	//체력바형태로 변경
 
 	if (robin.subQuest >= TOTALSUBQUEST)
@@ -3499,80 +3366,9 @@ void QuestDraw(int x, int y, int icon, int count, int max, float animation, bool
 
 }
 
-void RaidBoxDraw(int x, int y, float zoom, bool touch, bool shadow)
-{
-	int i;
-	int j = 0;
-
-	for (i = 0; i < TOTALRAIDBOX; i++) {
-		switch (raidBox[i].motion) {
-		case BOXSTATUS_APPEAR:
-			if (curtainFrame == 0) {
-				raidBox[i].motion = OBJ_BOX0;
-				raidBox[i].frame++;
-				raidBox[i].zoom += 0.2f / MOTIONDIV;
-				if (raidBox[i].zoom > BOXCASTLEZOOM)
-					raidBox[i].zoom = BOXCASTLEZOOM;
-				//SetAlpha(ao[i].frame);
-			}
-
-			if (raidBox[i].frame == FPS) {
-				raidBox[i].status = BOXSTATUS_CLOSED;
-				raidBox[i].frame = 0;
-			}
-
-			break;
-		case BOXSTATUS_CLOSED:
-			raidBox[i].motion = OBJ_BOX0 + boxNeutralAnimation[((raidBox[i].frame / (MOTIONDIV * 2)) % 4)];
-			raidBox[i].frame++;
-			break;
-		case BOXSTATUS_OPENING:
-			raidBox[i].motion = Min(OBJ_BOX5, OBJ_BOX0 + raidBox[i].frame / (MOTIONDIV * 2));
-			raidBox[i].frame++;
-			if (raidBox[i].motion == OBJ_BOX5) {
-				if (raidBox[i].gold == false)
-					raidBox[i].status = BOXSTATUS_EMPTY;
-				else
-					raidBox[i].status = BOXSTATUS_OPENED;
-				raidBox[i].frame = 0;
-			}
-			break;
-		case BOXSTATUS_OPENED:
-			//raidBox[i].motion = OBJ_BOX3 + raidBox[i].frame / (MOTIONDIV * 2) % 4;
-			raidBox[i].motion = OBJ_BOX6;
-			raidBox[i].frame++;
-			break;
-		case BOXSTATUS_CLOSING:
-			raidBox[i].motion = OBJ_BOX5 - raidBox[i].frame / (MOTIONDIV * 2);
-			raidBox[i].frame++;
-			if (raidBox[i].motion == OBJ_BOX0) {
-				raidBox[i].status = BOXSTATUS_CLOSED;
-				raidBox[i].motion = OBJ_BOX0;
-				raidBox[i].frame = 0;
-			}
-			break;
-		case BOXSTATUS_EMPTY:
-			raidBox[i].motion = OBJ_BOX6;
-			break;
-		}
-
-		if (shadow == true)
-			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x + raidBox[i].x - (float)(12 * _2X) * zoom, y + raidBox[i].y + (float)(8 * _2X) * BOXCASTLEZOOM * zoom, SHADOW_IMG, zoom);
-
-		DrawNeutral(raidBox[i].motion, x + raidBox[i].x, y + raidBox[i].y, LEFT, zoom);
-		if (touch == true && raidBox[i].status != BOXSTATUS_OPENED && raidBox[i].status != BOXSTATUS_EMPTY) {
-			SetRectPoint(x + raidBox[i].x - (float)24 * _2X * zoom, y + raidBox[i].y + (float)(ITEMICONSIZE * 1.0f + 2 * _2X) * zoom * 2, (float)(ITEMICONSIZE * 1.5f) * zoom * 2, (float)(ITEMICONSIZE * 1.5f) * zoom * 2, TOUCH_FUNC_RAID_TARGET + i);
-			DrawHand(x + raidBox[i].x - (float)16 * _2X * zoom, y + raidBox[i].y + (float)(ITEMICONSIZE * 1.0f + 2 * _2X) * zoom * 2, robin.playtime / MOTIONDIV, 1.5f * zoom);
-		}
-#ifdef GUIDELINE
-		DrawNum(raidBox[i].gold, x + raidBox[i].x, y + raidBox[i].y - 8 * _2X, NUM_FONT_NORMAL, CENTER, false, false, true, zoom / 2, true);
-#endif
-	}
-}
-
 void RaidControlerDraw(void)
 {
-	int i, j;
+	int i;
 
 	//하트
 	startX = xOffset + 52 * _2X;

@@ -1138,7 +1138,6 @@ extern int getBufferSpriteTexture;
 extern int totalBufferCnt;
 extern int curBufferCnt;
 
-extern int bufferSpriteCnt;
 
 extern int tileBufferSpriteIndex;
 
@@ -1178,7 +1177,6 @@ extern int curTextLabelArr[MAXLABELCNT];
 extern int getTextLabelIdx;
 extern int getTextLabelTexture;
 
-extern int totalTextLabelCnt;
 extern int curTextLabelCnt;
 
 //MC_GrpContext gContext;
@@ -1187,7 +1185,6 @@ extern cocos2d::Layer* gScreenLayer;//Screen Buffer
 
 //현재 렌더 타겟. nullptr이면 curScene에 직접 addChild하는 레거시 경로,
 //nullptr이 아니면 이미 begin()된 렌더텍스처에 visit()으로 기록한다.
-//드로우 함수의 (cvtDest, cvtLayer, buffering) 3인자를 대체하는 상태값이다.
 extern cocos2d::RenderTexture* gRenderTarget;
 extern cocos2d::Layer* gRenderLayer;
 
@@ -1277,10 +1274,8 @@ extern float audioVolume[TOTALMUSIC];
 extern signed short curID;
 extern char netCritical;
 extern char phone[20];
-extern signed char touchQuick;
 extern signed char touchQuickIcon;
 extern signed char touchDrawButton;
-extern signed char touchDrawYesNo;
 extern signed char touch;
 extern int touchIndex;
 extern int touchRect[TOTALTOUCHCNT][5];//int rx, int ry, int width, int height, int func
@@ -1291,7 +1286,6 @@ extern bool swipeLock;
 extern unsigned char rapidSwipe;
 extern signed char DrawButton_OK;
 extern int touch_Select;
-extern signed char touchDownBar;
 extern signed char touchOK;
 extern signed char touchYESNO;
 extern signed int pointX;
@@ -1311,7 +1305,6 @@ extern signed short STATUSWIN_Y_INIT;//전투를 위한
 extern signed short STATUSWIN_Y2;
 extern signed short PLAYAREA_X;
 extern signed short PLAYAREA_Y;
-extern signed char yesnoFrame;
 extern signed char buy_Mode;
 
 extern unsigned char imgLoaded;
@@ -1622,7 +1615,6 @@ extern int boxNeutral;
 extern int cNeutral;
 extern int progress;
 extern unsigned char extraArmor;
-extern int shopGachaItemCnt;
 
 //메뉴관련 변수
 extern signed char yesNo;
@@ -1700,7 +1692,6 @@ extern signed short scRecoveryFrameX, scRecoveryFrameY, scAccelY;//복구
 extern int autoScroll;//자동으로 스크롤을 시킬건지
 extern int autoScrollGap;//해당 프레임에 진행할 스크롤 크기
 
-extern bool keyCoreDisable;
 extern unsigned char vibLevel;
 extern unsigned char stoneWhere;
 extern unsigned short charInfoPage;
@@ -1870,13 +1861,10 @@ extern M_Boolean buy_Confirm;
 extern unsigned short caveMap;			//현재 어디 투기장인지.
 extern unsigned short caveEnemyAlive[159 * 2];
 
-extern unsigned short caveCountEmy;
-extern unsigned short caveCountEmy2;
 extern unsigned short caveKill;		//투기장 몬스터 퇴치수.(신규 투기장은 몬스터를 모두 잡으면 끝남)
 extern unsigned short caveItemType;
 extern unsigned short caveItemText;
 extern unsigned short caveItemDetail;
-extern unsigned short caveItemCnt;
 extern unsigned short caveItemGrade;
 extern unsigned char caveMapData;
 
@@ -1975,8 +1963,6 @@ extern std::random_device rd;
 
 extern int touchIdleFrame;
 extern int idleHelpCnt;
-extern int idleHelpType;//이동을 시킬지, 공격을 하라고 할지
-extern int idleHelpObj;
 
 extern int MINDY;
 extern int EQUIP_WIN_HEIGHT;
@@ -1993,7 +1979,6 @@ extern int tutorialStep;
 
 extern int floatingMessage;
 
-extern bool playClear;
 
 extern ITEM gachaItem[MAXGACHAITEM];
 
@@ -2015,19 +2000,15 @@ extern int HEARTTIME;
 extern int FREEITEMTIME;
 extern int realPlayerCnt;
 
-extern bool textInput;
 
 extern unsigned short gachaIcon[5];
 extern unsigned char gachaGrade[5];
 
-extern int SOLDIERSALE;
 
 extern int curLabMain;
 extern int curLabSub;
 
-extern int GNB_GAP;
 
-extern int outline;
 #ifdef ONESKILLTEST
 extern int oneSkillTest;
 #endif
@@ -2046,7 +2027,6 @@ extern int shieldFrame;
 
 extern int goldCount;
 extern int goldCountFrame;
-extern int joyStickFrame;
 extern int joyStickAni;
 extern int joyStickDir;
 
@@ -2155,12 +2135,10 @@ extern int curRewardBoxIdx;
 extern bool ONLYATTACKMODE;
 
 
-extern int ROULETTEINTERVAL;
 
 extern int ROULETTEWHEELTIME;
 
 extern int ROULETTESPREADTIME;
-extern int ROULETTESELECTTIME;
 
 extern int TOTAL_OPENEDMENU;
 
@@ -2178,26 +2156,18 @@ extern int DRAWROULETTENUMGAP_SUB;
 extern int QUESTBARYGAP;
 extern int DRAWROULETTENUMGAP_RAID;
 extern int DRAWRAIDNUMGAP;
-extern int RAIDUSERPROFILEGAP;
-extern int HPBARGAP;
-extern int BAR_UPPERMENUGAP;
 extern int BAR_BOTTOMMENUGAP;
 extern int BOXPOSITION_Y;//160 * _2X;//300 * _2X;//408 * _2X;//
 
-extern int BOXITEM_Y;
 #endif
 
 extern int STAGELABELGAP;
 
 extern int DRAWROULETTENUMGAP_BATTLE;
-extern int DRAWROULETTENUMGAP_ALPHA;
 
-extern int ENEMYUSERINFOGAP;
-extern int STAGEBOSSINFOGAP;
 extern int ENEMYHPBARYGAP;
 
 extern int HITPOSITIONGAP;
-extern int HITPOSITIONGAP2;
 
 extern int JOKBOGAP_INIT;
 extern int JOKBOGAP;
@@ -2208,11 +2178,7 @@ extern int CARDPOSITIONGAP;
 extern int CARDPOSITIONGAP;
 #endif
 
-extern int HITPOSITION_CREW;
-extern int HITPOSITION_HITSTART;
-extern int HITPOSITION_HITMODE;
 
-extern int PLAYINFO_GAP;
 
 extern POPUP popUp[MAXPOPUP];
 
@@ -2228,7 +2194,6 @@ extern GAMEEVENT gameEventArr[MAXGAMEEVENT];
 
 extern int pvpRewardPosition[3][2];
 
-extern int joyStick;
 
 extern int curStar, curMaxStar, maxStar;
 
@@ -2317,7 +2282,6 @@ extern int enemyTurnStartIdx;
 extern int totalTurn;
 extern int turnList[PLAYERALL + MAXWAVEENEMY];
 extern int slotCrew[MAXCREW];
-extern int crewIdList[MAXCREW];
 extern int crewCnt;
 extern int heroCnt;
 extern int showCrewCnt; // 로딩 화면에서 현재까지 "공개/합류 연출로 보여줄" 크루 수(0..crewCnt)
@@ -2327,7 +2291,6 @@ extern int leaderCrewId;   // 0..TOTAL_CREW-1 or -1
 extern bool hasLeader;
 
 // 중앙 카드에 표시할 현재 공개 캐릭터(robin.slotCrew[showCrewCnt]를 기반으로)
-extern int cardCmf;
 extern int cardAlpha;
 
 // 1) 타겟 결과 (예시) : aoOffset(0~8)로 받는다고 가정
@@ -2352,35 +2315,25 @@ extern int bgScrollX;
 extern int bgScrollY;
 
 // ===== 소환 연출 =====
-extern int summonCrewId;
 extern int summonCmf;
 extern int summonFromX, summonFromY;
 extern int summonX, summonY;
 extern int summonToX, summonToY;
-extern int summonMidX, summonMidY;
 extern float summonScale;
-extern int summonHold;          // 센터 박히는 홀드 프레임 카운터(옵션)
-extern int summonStar;          // 현재 소환 크루의 별등급(1~9)
-extern int celebFlash;          // 축하 플래시(0이면 없음)
 extern int shake;               // 화면 흔들림 강도(0이면 없음)
 extern int joinFromX;
 extern int joinFromY;
 
 extern bool needPickSummonFromBg;
 extern bool pickedSummonFromBg;
-extern bool hideSummonBgTile;
-extern int  hideBgCmf;
 extern int summonType;
 
 // 로딩바 진행률(“등장 단계” 기반)
 extern int loadPct;
 
 // ---------- pity 상태 ----------
-extern int gNoHighStarCount; // STAR7+ 안 나온 연속 횟수
 
 // ---------- 소프트 분산 상태 ----------
-extern int gRecentRegionCount[TOTALCASTLE]; // 최근 등장 횟수
-extern int gRecentStarCount[10];            // STAR 연속 패널티
 
 // ================================
 // 게임 상태 전역 변수 선언 (extern)
@@ -2392,15 +2345,11 @@ extern int attackDelayBefore;
 extern int attackTypeBefore;
 extern int attackStrBefore;
 extern int rewardItemCntBefore;
-extern int maxHitCnt;
 extern int sequenceFrame;
 extern int raidFrame;
-extern int continuousAttackFrame;
-extern int raidCnt;
 
 // 자동 플레이
 extern bool autoPlay;
-extern bool autoSelect;
 extern bool autoSkill;
 extern int autoFrame;
 extern bool autoButtonText;
@@ -2427,7 +2376,6 @@ extern bool worldDrawing;	//지금 그리는 것이 월드인가
 // 게임 상태
 extern int waveStatus;
 extern int levelUpFrame;
-extern int levelUpStatus;
 extern int maxUserLv;
 extern bool bossOn;
 extern int touchDisable;

@@ -158,7 +158,6 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 {
 	int i;
 	rapidSwipe = false;
-	OBJECT * pObj = &ao[raidPlayer];
 
 	auto touchPoint = touch->getLocation();
 
@@ -398,7 +397,6 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 {
 	auto touchPoint = touch->getLocation();
-	OBJECT * pObj = &ao[raidPlayer];
 	rapidSwipe = false;
 
 	endTouchX = touchPoint.x;
@@ -458,7 +456,6 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
-	OBJECT * pObj = &ao[raidPlayer];
 	rapidSwipe = false;
 
 	auto touchPoint = touch->getLocation();
@@ -1007,7 +1004,6 @@ void Core::Run(float delta) {
 
 void DoubleBuffering(int drawHandleIdx)
 {
-	int i;
 	int temprx = rx;
 	
 	offX = 0;
@@ -1042,8 +1038,10 @@ void DoubleBuffering(int drawHandleIdx)
 
 void PaintClet(int x, int y, int w, int h)
 {
-	int i, j, k;
-	float zoom;
+	int i, j;
+	//아래에서 MD_NEWCOLLECTION/MD_NEWCARD일 때만 값을 잡는데, MD_STAGECLEAR의
+	//StageInfoDraw()도 이 값을 배율로 받는다. 그 경로에서는 초기화도 안 된 값이었다.
+	float zoom = 1.0f;
 	/*
 	if (refreshRate < FPS) {
 		Director::getInstance()->setAnimationInterval(1.0f / refreshRate);
@@ -2243,35 +2241,6 @@ void PaintClet(int x, int y, int w, int h)
 	VersionDraw();
 }
 
-//세이브데이터에 획득경험치, 변경된 레벨, 보상까지 같이 다 저장해 준다.
-void SS_UserLevelUp(int getExp)
-{
-	/*
-	int tempLevel;
-	tempLevel = robin.lv;
-
-	robin.exps += getExp;
-
-	while (robin.exps >= NextExp(robin.lv)) {
-		//lv
-		GetLevelUpReward(robin.lv);
-		robin.lv++;
-		robin.
-	}
-	*/
-
-}
-
-int CheckSpace(int space)
-{
-	//int sp = MC_fsAvailable();
-
-	//if (sp != M_E_ERROR && sp < space)
-	//	return space - sp;
-	//else
-	return space;
-}
-
 long MC_knlCurrentTime()
 {
 	timeval tv;
@@ -2293,7 +2262,6 @@ long MC_knlCurrentTimeStamp()
 
 	seconds = difftime(timer, mktime(&y2k));
 
-	//printf ("%.f seconds since January 1, 2000 in the current timezone", seconds);
 
 	return seconds;
 }

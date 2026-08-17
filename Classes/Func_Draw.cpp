@@ -8,7 +8,6 @@
 void DrawWindow3(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
-	int cnt;
 
 	//호출부는 BUFFER_CARDFRAME 프리렌더 한 곳뿐이므로 항상 라이브로 그린다.
 	//완성된 텍스처를 곧바로 찍던 아래 경로는 호출부가 없어 남겨만 둔다.
@@ -81,7 +80,6 @@ void DrawWindow3(int x, int y, int w, int h, int index, float zoom)
 void DrawWindow4(int x, int y, int w, int h, int index, float zoom)
 {
 	int i;
-	int cnt;
 
 	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
 
@@ -146,7 +144,6 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom)
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY)
 {
 	int i;
-	int cnt;
 	int mapType = mapDatas[mapIdx][7];
 
 	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
@@ -199,7 +196,6 @@ void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffs
 	DrawTileDirect(mapIdx, x, y - h + mapOffsetY, zoom);
 
 	//SetAlpha(12);
-	//MemRect(x + (float)4 * _2X * zoom, y - (float)4 * _2X * zoom, w - (float)8 * _2X * zoom, h - (float)14 * _2X * zoom, 0x000000, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	UnSectionClip(false);
@@ -227,13 +223,6 @@ void VersionDraw(void)
 
 	if (option.macro == true)
 		DrawNum(LOG_COUNT - macroTimes + 1, 8 + 52 * _2X, y - 1 * _2X - 14 * _2X, NUM_FONT_SMALL, LEFT, 0, false, true, 1.0f, true);
-}
-
-void NoSpaceDraw(void)
-{
-	MemRect(0, 0, DX, DY, 0x000000);
-	//��������� �����մϴ�.
-	LineTextStr(tempStr, DX / 2 - 70, DY / 2 - 40, 140, -1, -1, 1.0f);
 }
 
 void LogoDraw(void)
@@ -447,21 +436,15 @@ void LoadingDraw(void)
 
 void TitleDraw(void)
 {
-	int i, j, k;
+	int i;
 	std::string fileName;
 	int x = 0, y = MINDY_MIN / 2 + DY / 2 + (MINDY_MIN - MINDY) / 2;
 	float zoom;
 	float scale = 0.7f;
 	int width = GetGoldAlphaWidth(ALPHA_RANDOM, FONT_GOLD_LARGE, scale) + 8 * _2X + GetGoldAlphaWidth(ALPHA_SWORD, FONT_GOLD_LARGE, scale);
-	int remainBoxCnt;
 	int monCmf[] = { CMF_FROG , CMF_FROG_RED , CMF_FROG_BLUE, CMF_FROG_PURPLE, CMF_FROG_GREEN, CMF_FROG_GOLD, CMF_FROG_BLACK };
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
 
 	switch (curMenu) {
 	case MENU_LOADING://�� ó���� 100 ������ ȭ�鿬��
@@ -563,9 +546,6 @@ void TitleDraw(void)
 			//DrawHeart(DX - ITEMICONSIZE, ITEMICONSIZE + BOTTOMMENUHEIGHT, false, false, LEFT, 1.0f, gScreenBuffer, gScreenLayer, false);
 			//DrawFrame(0, 120 * _2X, DX, 120 * _2X, FRAME_TALKWIN, gScreenBuffer, gScreenLayer, false);
 
-			//DrawWindow2(30 * _2X, DY - 30 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 1.0f, gScreenBuffer, gScreenLayer, false);
-			//DrawWindow2(30 * _2X, DY - 130 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 0.5f, gScreenBuffer, gScreenLayer, false);
-			//DrawWindow2(30 * _2X, DY - 230 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 0.2f, gScreenBuffer, gScreenLayer, false);
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
@@ -671,7 +651,6 @@ void OpeningDraw(void)
 
 void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx, int line, int startFrame, float zoom, int dir)
 {
-	//DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], cvtDest, cvtLayer, UI_PAPER_POPUP_IMG, false);
 	SetAlpha(24);
 	MemRect(x, y, dx, dy, 0x2A2A3A);
 	SetAlpha(32);
@@ -685,8 +664,6 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 	if (popUpFrame > startFrame + 1) {
 		if (popUpFrame == startFrame + 2)
 			PlayMusic(M_JUMP);
-		//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(280 * _2X - 20 * _2X) * zoom, y - (float)(0 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom, cvtDest, cvtLayer, buffering);
-		//DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(280 * _2X) * zoom, y - float(0 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, LEFT, zoom * 2, false, false, cvtDest, cvtLayer, buffering);
 		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(32 * _2X - 20 * _2X) * zoom, y - (float)(64 * _2X - 8 * _2X) * zoom, SHADOW_IMG, zoom);
 		DrawCmfDetail(cmf, popUpFrame - (startFrame + 1) - 1 < 12 ? frame % 4 : 0, x + (float)(32 * _2X) * zoom, y - float(64 * _2X - (popUpFrame - (startFrame + 1) - 1 < 7 ? jumpFullFrame2[popUpFrame - (startFrame + 1) - 1] : 0)) * zoom, dir, zoom * 2, false, false);
 
@@ -708,7 +685,6 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 
 void GNBDraw(int x, int y)
 {
-	int i;
 
 	//�޴���ư
 	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], UI_NEW_IMG);
@@ -741,9 +717,6 @@ void GNBDraw(int x, int y)
 
 void ActiveHelpDraw()
 {
-	int i;
-	int startX, startY, width;
-	ITEM* it;
 
 	if (curtainFrame == 0)
 		touchIdleFrame++;
@@ -815,7 +788,6 @@ void LogDraw(LOG* g)
 		//SetFontColor(COLOR_WHITE);
 		break;
 	case LOG_EVENT_RAIDSTART:
-		//DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], g->x - (float)(LOG_X / 2) * g->zoom + (float)(22 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, 1.6 * g->zoom, cvtDest, cvtLayer, buffering);
 		DrawIcon(g->icon, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(8 * _2X) * g->zoom, g->zoom * 1.5f, false, false, true, true);
 
 		//SetFontColor(COLOR_BROWN);
@@ -1068,12 +1040,7 @@ void EventScheduler(void)
 	int i;
 	int eventIdx = -1;
 
-	int curQuest = robin.quest;
-	int questCmf = questInfo[robin.quest * QUESTINFODATASIZE];
 	int questRequest = questInfo[robin.quest * QUESTINFODATASIZE + 2];
-	int itemType = questRequestItem[questRequest * 3];
-	int itemDetail = questRequestItem[questRequest * 3 + 1];
-	int itemGrade = questRequestItem[questRequest * 3 + 2];
 	int questIcon;
 
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
@@ -1362,136 +1329,6 @@ void sortArray(int arr[], int index[], int n) {
 	}
 }
 
-void MainMenuOut(void)
-{
-	int i;
-	//���⼭ ��� �޴��� �����̰�
-	bar[BAR_HEART].nx = bar[BAR_HEART].x;
-	bar[BAR_HEART].ny = bar[BAR_HEART].y;
-	bar[BAR_HEART].targetX2 = bar[BAR_HEART].targetX = bar[BAR_HEART].x;
-	bar[BAR_HEART].targetY2 = bar[BAR_HEART].targetY = bar[BAR_HEART].y - 256 * _2X;
-	bar[BAR_HEART].speed2 = bar[BAR_HEART].speed = 8 * _2X;
-	bar[BAR_HEART].speedIncrement2 = bar[BAR_HEART].speedIncrement = 1 * _2X;
-	bar[BAR_HEART].frame = 1;
-
-	bar[BAR_BOX].nx = bar[BAR_BOX].x;
-	bar[BAR_BOX].ny = bar[BAR_BOX].y;
-	bar[BAR_BOX].targetX2 = bar[BAR_BOX].targetX = bar[BAR_BOX].x;
-	bar[BAR_BOX].targetY2 = bar[BAR_BOX].targetY = bar[BAR_BOX].y - 256 * _2X;
-	bar[BAR_BOX].speed2 = bar[BAR_BOX].speed = 8 * _2X;
-	bar[BAR_BOX].speedIncrement2 = bar[BAR_BOX].speedIncrement = 1 * _2X;
-	bar[BAR_BOX].frame = 1;
-
-	bar[BAR_ENEMYUSER].nx = bar[BAR_ENEMYUSER].x;
-	bar[BAR_ENEMYUSER].ny = bar[BAR_ENEMYUSER].y;
-	bar[BAR_ENEMYUSER].targetX2 = bar[BAR_ENEMYUSER].targetX = bar[BAR_ENEMYUSER].x + 128 * _2X;
-	bar[BAR_ENEMYUSER].targetY2 = bar[BAR_ENEMYUSER].targetY = bar[BAR_ENEMYUSER].y;
-	bar[BAR_ENEMYUSER].speed2 = bar[BAR_ENEMYUSER].speed = 8 * _2X;
-	bar[BAR_ENEMYUSER].speedIncrement2 = bar[BAR_ENEMYUSER].speedIncrement = 1 * _2X;
-	bar[BAR_ENEMYUSER].frame = 1;
-
-	bar[BAR_DAILYQUEST].nx = bar[BAR_EQUIP].x;
-	bar[BAR_EQUIP].ny = bar[BAR_EQUIP].y;
-	bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].x + 128 * _2X;
-	bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].y;
-	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
-	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
-	bar[BAR_EQUIP].frame = 1;
-
-	bar[BAR_MAINSHOP].nx = bar[BAR_MAINSHOP].x;
-	bar[BAR_MAINSHOP].ny = bar[BAR_MAINSHOP].y;
-	bar[BAR_MAINSHOP].targetX2 = bar[BAR_MAINSHOP].targetX = bar[BAR_MAINSHOP].x - 128 * _2X;
-	bar[BAR_MAINSHOP].targetY2 = bar[BAR_MAINSHOP].targetY = bar[BAR_MAINSHOP].y;
-	bar[BAR_MAINSHOP].speed2 = bar[BAR_MAINSHOP].speed = 8 * _2X;
-	bar[BAR_MAINSHOP].speedIncrement2 = bar[BAR_MAINSHOP].speedIncrement = 1 * _2X;
-	bar[BAR_MAINSHOP].frame = 1;
-
-	bar[BAR_DAILYQUEST].nx = bar[BAR_DAILYQUEST].x;
-	bar[BAR_DAILYQUEST].ny = bar[BAR_DAILYQUEST].y;
-	bar[BAR_DAILYQUEST].targetX2 = bar[BAR_DAILYQUEST].targetX = bar[BAR_DAILYQUEST].x - 128 * _2X;
-	bar[BAR_DAILYQUEST].targetY2 = bar[BAR_DAILYQUEST].targetY = bar[BAR_DAILYQUEST].y;
-	bar[BAR_DAILYQUEST].speed2 = bar[BAR_DAILYQUEST].speed = 8 * _2X;
-	bar[BAR_DAILYQUEST].speedIncrement2 = bar[BAR_DAILYQUEST].speedIncrement = 1 * _2X;
-	bar[BAR_DAILYQUEST].frame = 1;
-
-	bar[BAR_EQUIP].nx = bar[BAR_EQUIP].x;
-	bar[BAR_EQUIP].ny = bar[BAR_EQUIP].y;
-	bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].x - 128 * _2X;
-	bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].y;
-	bar[BAR_EQUIP].speed2 = bar[BAR_EQUIP].speed = 8 * _2X;
-	bar[BAR_EQUIP].speedIncrement2 = bar[BAR_EQUIP].speedIncrement = 1 * _2X;
-	bar[BAR_EQUIP].frame = 1;
-
-	bar[BAR_CREWUPGRADE].nx = bar[BAR_CREWUPGRADE].x;
-	bar[BAR_CREWUPGRADE].ny = bar[BAR_CREWUPGRADE].y;
-	bar[BAR_CREWUPGRADE].targetX2 = bar[BAR_CREWUPGRADE].targetX = bar[BAR_CREWUPGRADE].x + 128 * _2X;
-	bar[BAR_CREWUPGRADE].targetY2 = bar[BAR_CREWUPGRADE].targetY = bar[BAR_CREWUPGRADE].y;
-	bar[BAR_CREWUPGRADE].speed2 = bar[BAR_CREWUPGRADE].speed = 8 * _2X;
-	bar[BAR_CREWUPGRADE].speedIncrement2 = bar[BAR_CREWUPGRADE].speedIncrement = 1 * _2X;
-	bar[BAR_CREWUPGRADE].frame = 1;
-
-	bar[BAR_FRIENDS].nx = bar[BAR_FRIENDS].x;
-	bar[BAR_FRIENDS].ny = bar[BAR_FRIENDS].y;
-	bar[BAR_FRIENDS].targetX2 = bar[BAR_FRIENDS].targetX = bar[BAR_FRIENDS].x + 128 * _2X;
-	bar[BAR_FRIENDS].targetY2 = bar[BAR_FRIENDS].targetY = bar[BAR_FRIENDS].y;
-	bar[BAR_FRIENDS].speed2 = bar[BAR_FRIENDS].speed = 8 * _2X;
-	bar[BAR_FRIENDS].speedIncrement2 = bar[BAR_FRIENDS].speedIncrement = 1 * _2X;
-	bar[BAR_FRIENDS].frame = 1;
-
-	bar[BAR_QUEST].nx = bar[BAR_QUEST].x;
-	bar[BAR_QUEST].ny = bar[BAR_QUEST].y;
-	bar[BAR_QUEST].targetX2 = bar[BAR_QUEST].targetX = bar[BAR_QUEST].x;
-	bar[BAR_QUEST].targetY2 = bar[BAR_QUEST].targetY = bar[BAR_QUEST].y + 256 * _2X;
-	bar[BAR_QUEST].speed2 = bar[BAR_QUEST].speed = 8 * _2X;
-	bar[BAR_QUEST].speedIncrement2 = bar[BAR_QUEST].speedIncrement = 1 * _2X;
-	bar[BAR_QUEST].frame = 1;
-
-	for (i = PLAYER; i < TOTALCHAR; i++) {
-		bar[BAR_INVENTORY + i].nx = bar[BAR_INVENTORY + i].x;
-		bar[BAR_INVENTORY + i].ny = bar[BAR_INVENTORY + i].y;
-		bar[BAR_INVENTORY + i].targetX2 = bar[BAR_INVENTORY + i].targetX = bar[BAR_INVENTORY + i].nx - DX;
-		bar[BAR_INVENTORY + i].targetY2 = bar[BAR_INVENTORY + i].targetY = bar[BAR_INVENTORY + i].y;
-		bar[BAR_INVENTORY + i].speed2 = bar[BAR_INVENTORY + i].speed = 8 * _2X;
-		bar[BAR_INVENTORY + i].speedIncrement2 = bar[BAR_INVENTORY + i].speedIncrement = 1 * _2X;
-		bar[BAR_INVENTORY + i].zoom2 = bar[BAR_INVENTORY + i].zoom;
-		bar[BAR_INVENTORY + i].zoomIncrement2 = bar[BAR_INVENTORY + i].zoomIncrement = 0.0f;
-		bar[BAR_INVENTORY + i].zoomEnd2 = bar[BAR_INVENTORY + i].zoomEnd = bar[BAR_INVENTORY + i].zoom;
-		bar[BAR_INVENTORY + i].frame = 1;
-
-		bar[BAR_SKILL + i].nx = bar[BAR_SKILL + i].x;
-		bar[BAR_SKILL + i].ny = bar[BAR_SKILL + i].y;
-		bar[BAR_SKILL + i].targetX2 = bar[BAR_SKILL + i].targetX = bar[BAR_SKILL + i].nx - DX;
-		bar[BAR_SKILL + i].targetY2 = bar[BAR_SKILL + i].targetY = bar[BAR_SKILL + i].y;
-		bar[BAR_SKILL + i].speed2 = bar[BAR_SKILL + i].speed = 8 * _2X;
-		bar[BAR_SKILL + i].speedIncrement2 = bar[BAR_SKILL + i].speedIncrement = 1 * _2X;
-		bar[BAR_SKILL + i].zoom2 = bar[BAR_SKILL + i].zoom;
-		bar[BAR_SKILL + i].zoomIncrement2 = bar[BAR_SKILL + i].zoomIncrement = 0.0f;
-		bar[BAR_SKILL + i].zoomEnd2 = bar[BAR_SKILL + i].zoomEnd = bar[BAR_SKILL + i].zoom;
-		bar[BAR_SKILL + i].frame = 1;
-	}
-
-	//���⼭���� �̺�Ʈ�޴� �ܰ����� ������
-	for (i = 0; i < robin.eventCnt; i++) {
-		robin.gameEvent[i].nx = robin.gameEvent[i].x;
-		robin.gameEvent[i].ny = robin.gameEvent[i].y;
-		if (robin.gameEvent[i].nx < DX / 2)
-			robin.gameEvent[i].targetX2 = robin.gameEvent[i].targetX = robin.gameEvent[i].nx - DX;
-		else
-			robin.gameEvent[i].targetX2 = robin.gameEvent[i].targetX = robin.gameEvent[i].nx + DX;
-
-		robin.gameEvent[i].targetY2 = robin.gameEvent[i].targetY = robin.gameEvent[i].y;
-		robin.gameEvent[i].speed2 = robin.gameEvent[i].speed = 8 * _2X;
-		robin.gameEvent[i].speedIncrement2 = robin.gameEvent[i].speedIncrement = 1 * _2X;
-		robin.gameEvent[i].zoom2 = robin.gameEvent[i].zoom;
-		robin.gameEvent[i].zoomIncrement2 = robin.gameEvent[i].zoomIncrement = 0.0f;
-		robin.gameEvent[i].zoomEnd2 = robin.gameEvent[i].zoomEnd = robin.gameEvent[i].zoom;
-		robin.gameEvent[i].frame = 1;
-	}
-
-	ao[ITEMBOX].ny = ao[ITEMBOX].y;
-	ao[ITEMBOX].dy = 16 * _2X;
-}
-
 void MainMenuIn(void)
 {
 	int i;
@@ -1622,7 +1459,7 @@ void MainMenuIn(void)
 
 void ArrangeEventMenu(void)
 {
-	int i, j = 0, k = 0;
+	int i, j = 0;
 	int curArr[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	int indexArr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -1651,7 +1488,6 @@ void ArrangeEventMenu(void)
 
 void EventMenuDraw(GAMEEVENT* gEvent)
 {
-	long long start, end, current;
 	long remainTime = Max(0, gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp));
 
 	switch (gEvent->type) {
@@ -1681,7 +1517,6 @@ void EventMenuDraw(GAMEEVENT* gEvent)
 			DrawIcon(gEvent->icon + (gEvent->icon == ICON_GOLD ? frame % GOLDICONFRAME : 0), xOffset + gEvent->x + (float)(-8 * _2X * 2 - 1 * _2X) * gEvent->zoom, gEvent->y + (float)(ITEMICONSIZE + 2 * _2X) * gEvent->zoom * 2.0f / 2, gEvent->zoom * 2.0f, ICON_OUTLINE_COLOR, false, false, true);
 			break;
 			//case QUESTTYPE_RAID:
-			//	DrawNeutral(OBJ_BOX0 + boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], gEvent->x, gEvent->y - (float)12 * _2X * gEvent->zoom, LEFT, 1.2f * gEvent->zoom, cvtDest, cvtLayer, buffering);
 			//	break;
 
 		}
@@ -1733,21 +1568,14 @@ void EventMenuDraw(GAMEEVENT* gEvent)
 void GoldQuestMenuDraw(int x, int y, float zoom)
 {
 	int i, j;
-	int rewardType, rewardDetail, rewardGrade;
-	long long rewardCnt;
-	OBJECT* pObj = &ao[PLAYER];
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)];
-	int enemyType;
-	int enemyCmf;
 	float gapX = (float)8 * _2X * zoom;
 	float gapY = -(float)5 * _2X * zoom;
 
 	float degree = 90.0f - atan((float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 1] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 1]) / (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 0] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 0])) * 180 / M_PI;
-	float radian = degree * M_PI / 180;
 
 	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
-	//DrawWindow5(x + (float)(16 * _2X) * zoom, y - (float)(124 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 152 * _2X) * zoom, CASTLE3, zoom, cvtDest, cvtLayer, buffering);
 
 	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom);
 
@@ -1812,13 +1640,11 @@ void GameOverDraw(int x, int y, float zoom)
 	float fontZoom = 1.5f;
 
 	//SetAlpha(20);
-	//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	DrawGoldAlpha(DX / 2, DY - GNBHEIGHT - 16 * _2X, ALPHA_STAGEFAILED, FONT_GOLD_LARGE, fontZoom * zoom, CENTER, true, false);
 
 	//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-	//DrawGoldAlpha(xOffset + DX / 2, DY / 2 + TABBUTTONGAP, ALPHA_TABTOCOLLECT, FONT_GOLD_LARGE, zoom, CENTER, false, false, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_STAGEFAILED);
@@ -1938,10 +1764,6 @@ void DrawPopUp(int idx)
 {
 	int i, j = 0;
 	POPUP* p = &popUp[idx];
-	int menuCurBack;
-	int menuDepthBack;
-	int curStar;
-	int maxStar;
 	float plusY = (float)64 * _2X * p->zoom;
 	
 	if (p->popUpFrame == 0)
@@ -2010,7 +1832,6 @@ void DrawPopUp(int idx)
 		break;
 	case POPUPTYPE_STAGE:
 		//SetAlpha(20);
-		//MemRect(0, DY, DX, DY, COLOR_BLACK, cvtDest, cvtLayer, buffering);
 		//SetAlpha(32);
 		StageInfoDraw(robin.stage, robin.room, GetCombatPower(&ao[ENEMY]), true, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
@@ -2037,14 +1858,12 @@ void DrawPopUp(int idx)
 		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_HEROSTAT:
-		//CollectionsDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom, cvtDest, cvtLayer, buffering);
 		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWUPGRADE:
 		CrewMenuDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_CREWLIST:
-		//CrewListDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + scY[curMenu], p->zoom, cvtDest, cvtLayer, buffering);
 		CrewMenuDraw(
 			xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom,
 			DY - GNBHEIGHT,
@@ -2060,7 +1879,6 @@ void DrawPopUp(int idx)
 		OptionDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_ENEMYUSER:
-		//DrawDioramaCrew(&enemyHouse, DX / 2 - (float)(POPUPWINDOWSIZE_X / 2 + 15 * _2X) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)80 * _2X * p->zoom, p->zoom, stageInfoFrame, false, false, false, cvtDest, cvtLayer, buffering);
 		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f);
 		break;
 	case POPUPTYPE_GAMEOVER:
@@ -2109,12 +1927,10 @@ void DrawPopUp(int idx)
 
 void GameMenuDraw(int x, int y, float zoom)
 {
-	int i, j, motion;
+	int i, j;
 	//int dy = 29 * _2X;
 	int dy =  (DY - 16 * _2X - (GNBHEIGHT - GNB_INIT_HEIGHT)) / TOTAL_OPENEDMENU;
 	int w = GAMEMENUWIN_X;
-	ITEM* it;
-	int tempX, tempY;
 
 	if (dy > MAINMENU_Y)
 		dy = MAINMENU_Y;
@@ -2132,12 +1948,10 @@ void GameMenuDraw(int x, int y, float zoom)
 		if (robin.openedMenu[i] == OPENED) {
 			DrawText(TEXT_MENU_PLAY + i, x + 58 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 8 * _2X, 2.0f);
 
-			//ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 - 20 * _2X, SHADOW_IMG, 1.0f, cvtDest, cvtLayer, buffering);
 
 
 			//���������
 			//if (robin.openedMenu[i] == CLOSE) {
-			//	DrawIcon(ICON_EVENT_LOCK, x + 12 * _2X, y - dy * (j)-dy / 2 + 6 * _2X + ITEMICONSIZE, 2, false, false, false, cvtDest, cvtLayer, buffering);
 
 			//}
 			//else

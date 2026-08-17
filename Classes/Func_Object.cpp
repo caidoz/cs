@@ -27,18 +27,6 @@ void GetMotionPtr(OBJECT* pObj)
 	}
 }
 
-void EraseCmf(OBJECT* pObj)
-{
-	int i;
-
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		if (ao[i].active && pObj != &ao[i] && cmfLoaded[ao[i].cmf] == enemyData[pObj->type * ENEMYDATASIZE])
-			return;
-	}
-
-	cmfLoaded[pObj->cmf] = -1;
-}
-
 void DrawObj(OBJECT* pObj)
 {
 	int i;
@@ -206,8 +194,6 @@ void DrawObj(OBJECT* pObj)
 					break;
 				}
 
-				//MemRect(pObj->x - rx - (pObj->dirX == LEFT ? 73 * _2X : 0), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y) - ry, 48 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx - (pObj->dirX == LEFT ? 73 * _2X : 0), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y) - ry, pObj->hp * 48 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				if (pObj->jumpFrame > 0)
 					pObj->jumpFrame--;
 			}
@@ -225,23 +211,17 @@ void DrawObj(OBJECT* pObj)
 			if (pObj->moveHandler == FOLLOWMOMMOVE && pObj->jumpFrame > 0) {
 				SimpleHpBarDraw(pObj->hp, pObj->maxhp, pObj->x - rx + 54 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), pObj->zoom, ENEMYHPBARCOLOR);
 
-				//MemRect(pObj->x - rx + 40 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), 48 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx + 40 * _2X, pObj->y - ry + (pObj->motion == PO_C50_UPSKIN ? -130 * _2X : 0), pObj->hp * 48 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				pObj->jumpFrame--;
 			}
 			else if (pObj->moveHandler == BUGMOVE && pObj->attackFrame > 0) {
 				SimpleHpBarDraw(pObj->hp, pObj->maxhp, pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, pObj->zoom, ENEMYHPBARCOLOR);
 
-				//MemRect(pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, 24 * _2X, 4 * _2X, 0xCC0000, cvtDest, cvtLayer, buffering);
-				//MemRect(pObj->x - rx - 10 * _2X, pObj->y - ry - 20 * _2X, pObj->hp * 24 * _2X / pObj->maxhp, 4 * _2X, 0x00FF00, cvtDest, cvtLayer, buffering);
 				pObj->attackFrame--;
 			}
 			break;
 
 		}
 
-		//MemRect(xOffset + pObj->x - rx - (float)(SIMPLEHPBARWIDTH + 2 * _2X) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry - OBJIMGGAP - 0 * _2X, (float)(SIMPLEHPBARWIDTH + 2 * _2X), (float)(SIMPLEHPBARHEIGHT + 2 * _2X), COLOR_NAVY, cvtDest, cvtLayer, buffering);
-		//MemRect(xOffset + pObj->x - rx - (float)(SIMPLEHPBARWIDTH) / 2, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry - OBJIMGGAP - 1 * _2X, 24 * _2X * pObj->hp / pObj->maxhp, (float)(SIMPLEHPBARHEIGHT), ENEMYHPBARCOLOR, cvtDest, cvtLayer, buffering);
 
 		break;
 	case CLOUDDRAW:
@@ -347,11 +327,9 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	int type;
 	int imgFile = 0;
 	int dx;
-	int imgFileE = 0;
 	const signed short* cPtr;
 	int obj = GetObjFromPtr(pObj);
 	int tempAlpha = m_lgrpAlpha;
-	int tempZoom = zoom;
 	int centerX = 0;
 	int centerY = 0;
 
@@ -410,7 +388,6 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -677,34 +654,15 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	//말풍선 그리기
 }
 
-void DrawPlayerIcon(int type, int x, int y, int zoom)
-{
-	clipX3 = clipX;
-	clipY3 = clipY;
-	clipX4 = clipX2;
-	clipY4 = clipY2;
-
-	DrawFrame(x, y, 24 * _2X * zoom, 20 * _2X * zoom, FRAME_SHOPBALLOON);
-	SetSectionClip(x + 2 * _2X, y - 2 * _2X, 24 * _2X * zoom - 4 * _2X, 20 * _2X * zoom - 4 * _2X, false);
-	ao[type].head = true;
-	DrawPlayer(&ao[type], 0, x + 2 * _2X + 14 * _2X * zoom, y - 32 * _2X * zoom, LEFT, zoom, false, false, false);
-	ao[type].head = false;
-	UnSectionClip(false);
-
-	clipX = clipX3;
-	clipY = clipY3;
-	clipX2 = clipX4;
-	clipY2 = clipY4;
-
-}
-
 void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 {
 	int i, fixedImg, j;
 	int type;
 	int imgFile = 0;
 	int y = pObj->y;
-	int dx;
+	//tempAlpha가 0이면 아래 else 블록을 건너뛰는데, 그 블록 바깥의 DrawImage가
+	//dx와 pxl을 그대로 쓴다. 초기화가 없으면 첫 파트에서 쓰레기 값이 들어간다.
+	int dx = 0;
 	int centerX = 0;
 	int centerY = 0;
 
@@ -724,8 +682,7 @@ void DrawCmf(OBJECT* pObj, float rotation, float zoom, bool center)
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
-		int pxl;
+		int pxl = 0;
 		int partsRotation = 0;
 
 		fixedImg = *cPtr;
@@ -1057,7 +1014,6 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1139,129 +1095,6 @@ void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, floa
 }
 
 
-void DrawCmfDetailScale(int cmf, int motion, int x, int y, int dirF, float zoomX, float zoomY, float rotation, bool center)
-{
-	int i, fixedImg, j;
-	int type;
-	int imgFile = 0;
-	int dx;
-	int centerX = 0;
-	int centerY = 0;
-	float zoom = zoomX;
-
-	const signed short* cPtr;
-
-	//cmf 가 작으면 
-	if (cmf < TOTALCHAR) {
-		DrawPlayer(&ao[cmf], motion, x, y, ao[cmf].dirF, zoom, rotation, center, false);
-		return;
-	}
-
-	i = cmd_m_cnt[cmf][motion * 2 + 1];
-	cPtr = &cmd_m_img[cmf][cmd_m_cnt[cmf][motion * 2] * 4];
-
-	if (center == true) {
-		centerX = -(cmfMotionImgSize[cmf][motion * 4 + 0] + (cmfMotionImgSize[cmf][motion * 4 + 2] / 2));
-		centerY = -(cmfMotionImgSize[cmf][motion * 4 + 1] + (cmfMotionImgSize[cmf][motion * 4 + 3] / 2));
-	}
-
-	do {
-		int imgOffsetX = 0;
-		int imgOffsetY = 0;
-		float magnify;
-		int dirX;
-		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
-		int pxl;
-		int partsRotation = 0;
-
-
-		fixedImg = *cPtr;
-		type = *(cPtr + 3);
-
-		//���� ��
-		magnify = ((type >> 6) + 1) * zoom;
-
-		//방향
-		dirX = (dirF + type) % 2;
-		//����Ʈ ����
-
-		//반투명 값
-		//투명도 상대조절
-		if (type & 0x30) {
-			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
-		}
-
-		//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占?占쌓몌옙占십울옙 占쏙옙占쏙옙
-		if (!tempAlpha) {
-		}
-		else {
-			//라이튼 효과인지 추출
-			if (type & 0x08)
-				pxl = 1;
-			else
-				pxl = 0;
-
-			imgFile = COMMON_CMF_IMG;
-			j = 0;
-
-			while (j < 3 && fixedImg >= cmf_i_div[cmf][j * 2]) {
-				imgFile = cmf_i_div[cmf][j * 2 + 1];
-				j++;
-			}
-
-			dx = cmd_i_offset[cmf][fixedImg * 4 + 2];
-
-			switch (type & 0x06) {
-			case _00:
-				partsRotation = 0;
-				break;
-			case _09:
-				partsRotation = 90;
-				if (dirF == RIGHT) {
-					dx = cmd_i_offset[cmf][fixedImg * 4 + 3];
-				}
-				break;
-			case _18:
-				partsRotation = 180;
-				break;
-			case _27:
-				partsRotation = 270;
-				if (dirF == RIGHT) {
-					dx = cmd_i_offset[cmf][fixedImg * 4 + 3];
-				}
-				break;
-			}
-
-			if (dirF == LEFT)
-				DrawImage(
-					cmd_i_offset[cmf][fixedImg * 4 + 2], cmd_i_offset[cmf][fixedImg * 4 + 3], cmd_i_offset[cmf][fixedImg * 4], cmd_i_offset[cmf][fixedImg * 4 + 1],
-					x + ((float)(*(cPtr + 1) + centerX) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation)) - (float)(*(cPtr + 2) + centerY) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetX,
-					y - ((float)(*(cPtr + 1) + centerX) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation)) + (float)(*(cPtr + 2) + centerY) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetY,
-					dirX, partsRotation, rotation, pxl, tempAlpha, magnify, sprite[imgFile], imgFile);
-			else
-				DrawImage(
-					cmd_i_offset[cmf][fixedImg * 4 + 2], cmd_i_offset[cmf][fixedImg * 4 + 3], cmd_i_offset[cmf][fixedImg * 4], cmd_i_offset[cmf][fixedImg * 4 + 1],
-					x + ((float)(-(*(cPtr + 1) + centerX) - dx * ((type >> 6) + 1)) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation)) - (float)(*(cPtr + 2) + centerY) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetX,
-					y - ((float)(-(*(cPtr + 1) + centerX) - dx * ((type >> 6) + 1)) * zoom * sin(CC_DEGREES_TO_RADIANS(rotation)) + (float)(*(cPtr + 2) + centerY) * zoom * cos(CC_DEGREES_TO_RADIANS(rotation))) + imgOffsetY,
-					dirX, partsRotation, rotation, pxl, tempAlpha, magnify, sprite[imgFile], imgFile);
-
-		}
-		cPtr += 4;
-		i--;
-	} while (i > 0);
-}
-
-
-void DrawCommonShadow(int cmf, int x, int y, int dirF, float zoom)
-{
-	SetAlpha(24);
-	if (IsBigCmf(cmf) == true)
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x - (float)20 * _2X * zoom, y + (float)10 * _2X * zoom, SHADOW_IMG, zoom);
-	else
-		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x - (float)12 * _2X * zoom, y + (float)10 * _2X * zoom, SHADOW_IMG, zoom);
-	SetAlpha(32);
-}
 
 void DrawCmfDetailShadow(int cmf, int motion, int x, int y, int dirF, float zoom)
 {
@@ -1345,7 +1178,6 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		const signed short* ucPtr;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1376,6 +1208,11 @@ void DrawEffect(int idx, int x, int y, int dirF, float rotation, float zoom)
 		case 3:
 			ucPtr = &titleOff[(*cPtr) * 4];
 			break;
+		default:
+			//위 분기가 where에 0/1/3만 넣으므로 여기 올 일은 없다.
+			//그래도 막아둔다 - 예전에 이 함수는 초기화 안 된 where로 들어오는
+			//경로가 있었고, 그때 ucPtr이 아무 데나 가리켰다.
+			return;
 		}
 
 		type = *(cPtr + 3);
@@ -1497,11 +1334,9 @@ void DrawNeutral(int idx, int x, int y, int dirF, float zoom)
 		int imgOffsetX = 0;
 		int imgOffsetY = 0;
 		float magnify;
-		int extra = false;
 		int pxl;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int partsRotation = 0;
 
 		if (*cPtr < IMG_OBJ_72)
@@ -1682,14 +1517,15 @@ void DrawBgEffect(int idx, int x, int y, int dirF, float zoom)
 		case 0:
 			imgFile = MAP_OBJ_IMG + mapData[7];
 			break;
+		default:
+			//where는 위에서 0~3만 들어간다. 그래도 막아야 sprite[imgFile]이
+			//초기화 안 된 첨자로 불릴 일이 없다.
+			return;
 		}
 
-		int imgOffsetX = 0;
-		int imgOffsetY = 0;
 		float magnify;
 		int dirX;
 		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
 		int pxl;
 		int partsRotation = 0;
 
@@ -1759,117 +1595,6 @@ void DrawBgEffect(int idx, int x, int y, int dirF, float zoom)
 	} while (i > 0);
 }
 
-void DrawBgEffectDetail(int idx, int x, int y, int dirF, int res)
-{
-	int i, type, imgFile;
-	int drawx, drawy;
-	const signed short* cPtr;
-	const unsigned short* offPtr;
-
-	if (idx >= 3000) {
-		idx -= 3000;
-		i = arenaMIC[idx * 2 + 1];
-		idx = arenaMIC[idx * 2];
-		cPtr = &arenaMI[idx * 4];
-
-		imgFile = COMMON_IMG;
-	}
-	else if (idx >= 2000) {
-		idx -= 2000;
-		i = 2;
-		idx *= 2;
-		cPtr = &waterfallMI[idx * 4];
-
-		imgFile = WATER_IMG;
-	}
-	else if (idx >= 1000) {
-		idx -= 1000;
-		i = sunShineMIC[idx * 2 + 1];
-		idx = sunShineMIC[idx * 2];
-		cPtr = &sunShineMI[idx * 4];
-
-		imgFile = SHINE_IMG;
-	}
-	else {
-		i = bgObjMIC[idx * 2 + 1];
-		idx = bgObjMIC[idx * 2];
-		cPtr = &bgObjMI[idx * 4];
-
-		imgFile = MAP_OBJ_IMG + res;
-	}
-
-	if (!sprite[imgFile])
-		LoadImg(imgFile);
-
-	do {
-		int imgOffsetX = 0;
-		int imgOffsetY = 0;
-		float magnify;
-		int dirX;
-		int tempAlpha = m_lgrpAlpha;
-		int tempAlpha2 = m_lgrpAlpha;
-		int pxl;
-		int partsRotation = 0;
-
-		switch (imgFile) {
-		case COMMON_IMG:
-			offPtr = &arenaOff[*cPtr * 4];
-			break;
-		case WATER_IMG:
-			offPtr = &atlanticeImg[*cPtr * 4 + (mapData[7] == MAPTYPE_DARKNESS ? 12 : 0)];
-			break;
-		case SHINE_IMG:
-			offPtr = &sunShineOff[*cPtr * 4];
-			break;
-		default:
-			offPtr = &bgObjOff[*cPtr * 4];
-			break;
-		}
-
-		type = *(cPtr + 3);
-
-		magnify = ((type >> 6) + 1);
-
-		//방향
-		dirX = (dirF + type) % 2;
-
-		//반투명 값
-		//투명도 상대조절
-		if (type & 0x30) {
-			tempAlpha = (tempAlpha * (4 - ((type & 0x30) >> 4))) >> 2;
-		}
-
-		if (type & 0x08)
-			pxl = 1;
-		else
-			pxl = 0;
-
-		switch (type & 0x06) {
-		case _00:
-			partsRotation = 0;
-			break;
-		case _09:
-			partsRotation = 90;
-			break;
-		case _18:
-			partsRotation = 180;
-			break;
-		case _27:
-			partsRotation = 270;
-			break;
-		}
-
-		drawx = x + (dirF == 0 ? *(cPtr + 1) : (-*(offPtr + ((type & 0x02) ? 3 : 2)) * ((type >> 6) + 1) - *(cPtr + 1)));
-		drawy = y - *(cPtr + 2);
-
-		DrawImage(*(offPtr + 2), *(offPtr + 3), *offPtr, *(offPtr + 1), drawx, drawy, dirX, partsRotation, 0, pxl, tempAlpha, magnify, sprite[imgFile], imgFile);
-
-		cPtr += 4;
-		i--;
-		idx++;
-	} while (i > 0);
-}
-
 void DrawEmoticon(int type, int icon, int frame, int x, int y, float zoom)
 {
 	if (icon >= ICON_BOX) {
@@ -1905,7 +1630,6 @@ void DrawEmoticon(int type, int icon, int frame, int x, int y, float zoom)
 				DrawIcon(icon, x - (float)(ITEMICONSIZE / 2) * zoom, y + (float)(ITEMICONSIZE / 2) * zoom, 0.9f * zoom, COLOR_BROWN, false, false, true);
 				break;
 			case EMOTICON_REWARDBOX:
-				//DrawBoxSpecial(x, y - (float)(ITEMICONSIZE / 2) * zoom / 2, LEFT, icon - ICON_BOX, zoom / 2, false, false, false, cvtDest, cvtLayer, buffering);
 				break;
 			}
 		}
@@ -2094,7 +1818,6 @@ void BulletSateliteDraw(OBJECT* pObj)
 		if (tempMotion >= PO_C1_SATLASER_SHOT5) {
 			//cc.bmp
 			//바닥을 그려주는것
-			//DrawImage(20 * _2X, 20 * _2X, 40 * _2X, 83 * _2X, xOffset + pObj->x - rx + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3]) * pObj->zoom * 2, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y + (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 1]) * pObj->zoom * 2) - ry, false, false, false, false, false, (float)(satelliteShotData[(tempMotion - PO_C1_SATLASER_SHOT5) * 3 + 2]) * pObj->zoom * 2, sprite[COMMON_CMF_IMG], cvtDest, cvtLayer, COMMON_CMF_IMG, buffering);
 		}
 
 		SetAlpha(tempAlpha);
@@ -2151,9 +1874,7 @@ void BulletCrewDraw(OBJECT* pObj)
 {
 	int i;
 	//SetAlpha(10);
-	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->jumpFrame * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y +  - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(21);
-	//DrawCrewBulletIcon(pObj->icon, xOffset - rx + pObj->x + (float)(pObj->hp * _2X - CREWBULLETICONSIZE / 2) * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP - CREWBULLETICONSIZE / 2 * pObj->zoom) - ry, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//SetAlpha(32);
 
 	//총탄마다 정해진 날아가는 모양(그냥 / 회전 / 쫀득). 아이콘 번호로 정한다.
@@ -2180,7 +1901,6 @@ void BulletCrewDraw(OBJECT* pObj)
 
 	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame);
 	//else
-	//	DrawEffect((pObj->etc == 0 ? HIT_ITEM_SMALL0 : HIT_ITEM_LARGE0) + 1000 - 1 + pObj->mainFrame, xOffset + pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, 0, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 
 	return;
 	SetAlpha(10);
@@ -2218,8 +1938,6 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 			robin.charData[enemyIdx].equip[EQUIP_BOOTS].type != EMPTY ? robin.charData[enemyIdx].equip[EQUIP_BOOTS].detail : -1, robin.charData[enemyIdx].equip[EQUIP_BOOTS].type != EMPTY ? robin.charData[enemyIdx].equip[EQUIP_BOOTS].grade : 0,
 
 			x + (float)(36 * _2X / 2) * zoom, y + (float)(-32 * _2X) * zoom, RIGHT, false, zoom * HOUSEPLAYERZOOM);
-	//DrawCmfDetailShadow(enemyIdx, enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, RIGHT, zoom, cvtDest, cvtLayer, buffering);
-	//DrawPlayer(&ao[enemyIdx], false, x + (float)(36 * _2X / 2) * zoom, y + (float)(-32 * _2X) * zoom, RIGHT, HOUSEZOOM * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 	else
 		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, LEFT, zoom, false, false);
 
@@ -2240,8 +1958,6 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 
 void EnemyDraw(OBJECT* pObj)
 {
-	int temp = 0;
-	int i;
 	int obj = GetObjFromPtr(pObj);
 
 	if ((pObj->type == ENEMY_LARVA
@@ -2305,11 +2021,7 @@ void EnemyDraw(OBJECT* pObj)
 		|| pObj->type == ENEMY_CASTLE_BOSS3_BLACK
 		) && pObj->moveHandler == SLINGMOVE) {
 		//c50.bmp
-		//DrawImage(12 * _2X, 12 * _2X, 0 * _2X, 216 * _2X, pObj->x + pObj->cx + pObj->dx * 2 - rx - (float)6 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + pObj->cy + pObj->dy * 2 - ry - (float)6 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
-		//DrawImage(18 * _2X, 18 * _2X, 26 * _2X, 200 * _2X, pObj->x + pObj->cx / 2 + pObj->dx * 1 - rx - (float)9 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y + pObj->cy + pObj->dy * 1 - ry - (float)9 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
 
-		//DrawImage(12 * _2X, 12 * _2X, 0 * _2X, 216 * _2X, pObj->cpx - rx - (float)6 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->cpy - ry + (float)6 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
-		//DrawImage(18 * _2X, 18 * _2X, 26 * _2X, 200 * _2X, pObj->cx - rx - (float)9 * _2X * pObj->zoom, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->cy - ry + (float)9 * _2X * pObj->zoom, false, false, false, false, false, pObj->zoom, sprite[MONSTER_IMG + pObj->cmf], cvtDest, cvtLayer, MONSTER_IMG + pObj->cmf, buffering);
 	}
 
 	DrawCmf(pObj, false, pObj->zoom, false);
@@ -2322,24 +2034,6 @@ void EnemyDraw(OBJECT* pObj)
 		DrawEffect(EFFECT_LEVELUP_TEXT0 - 1 + (pObj->levelUpFrame < 11 ? pObj->levelUpFrame : Max(11, pObj->levelUpFrame - 5)), pObj->x, STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP - (float)(16 * _2X) * pObj->zoom, 0, false, pObj->zoom);
 
 	}
-	/*
-	switch (pObj->type) {
-	case ENEMY_CASTLE_BOSS3:
-	case ENEMY_CASTLE_BOSS3_RED:
-	case ENEMY_CASTLE_BOSS3_BLUE:
-	case ENEMY_CASTLE_BOSS3_PURPLE:
-	case ENEMY_CASTLE_BOSS3_GREEN:
-	case ENEMY_CASTLE_BOSS3_GOLD:
-	case ENEMY_CASTLE_BOSS3_BLACK:
-		temp = pObj->motion;
-		pObj->motion = PO_C50_UPSKIN;
-		DrawCmf(pObj, false, pObj->zoom, false, cvtDest, cvtLayer, buffering);
-		pObj->motion = PO_C50_DOWNSKIN;
-		DrawCmf(pObj, false, pObj->zoom, false, cvtDest, cvtLayer, buffering);
-		pObj->motion = temp;
-		break;
-	}
-	*/
 }
 
 void CloudDraw(OBJECT* pObj)
@@ -2542,9 +2236,7 @@ void RegenDraw(OBJECT* pObj)
 		UnSetBlend();
 	}
 
-	//DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, pObj->frame)], pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE + (float)64 * _2X * pObj->zoom - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, LEFT, pObj->zoom, false, false, cvtDest, cvtLayer, buffering);
 	//if (pObj->frame < 3) {
-	//	DrawEffect(pObj->frame + HIT_DEAD1, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom, cvtDest, cvtLayer, buffering);
 	//}
 }
 
@@ -2552,7 +2244,11 @@ void NeutralDraw(OBJECT* pObj)
 {
 	int i;
 	unsigned char* maPtr;
-	float gapX, gapY;
+	//TODO: 아이콘 배치표(treeGoldPos/treeGoldBagPos/treeShieldPos/treeHeartPos)가
+	//사라졌다. 그것들을 읽던 줄만 주석 처리되고 gapX/gapY를 쓰는 DrawIcon은 남아서,
+	//초기화도 안 된 값이 화면 좌표로 들어가고 있었다. 배치를 되살릴 데이터가 없으므로
+	//0으로 둔다 - 같은 자리에 겹쳐 그려지지만 최소한 매번 같은 자리다.
+	float gapX = 0, gapY = 0;
 	float iconZoom;
 
 	switch (pObj->type) {
@@ -2818,7 +2514,6 @@ void NeutralDraw(OBJECT* pObj)
 		case MAPTYPE_SPACE:	//���ְ���//18
 			break;
 		}
-		//DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, xOffset + pObj->x - 8 * _2X * 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - 16 * _2X * 2 - OBJIMGGAP), pObj->zoom * 2, false, false, false, cvtDest, cvtLayer, buffering);
 		break;
 	DEFAULT:
 	default:
@@ -2842,7 +2537,6 @@ void NeutralDraw(OBJECT* pObj)
 					imgFile = MAP_OBJ_IMG;
 
 				DrawImage(*(usPtr + 2), *(usPtr + 3), *usPtr, *(usPtr + 1), xOffset + pObj->x - rx + pObj->cpx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP + pObj->cpy + neutralOffset[pObj->motion] - ((pObj->type == OBJ_ITEM && pObj->apx == ITEM_QUEST_REEF) ? 12 * _2X : 0 * _2X) * pObj->zoom), pObj->dirF, false, false, false, false, pObj->zoom, sprite[imgFile], imgFile);
-				//MemImage(*(usPtr + 2), *(usPtr + 3), *usPtr, *(usPtr + 1), pObj->x - rx + pObj->cpx, pObj->y - ry - OBJIMGGAP + pObj->cpy + d.neutralOffset[pObj->motion] - ((pObj->type == OBJ_ITEM && pObj->apx == ITEM_QUEST_REEF) ? 12 : 0), imgFile);
 			}
 		}
 		else
@@ -2853,164 +2547,6 @@ void NeutralDraw(OBJECT* pObj)
 	SetAlpha(32);
 }
 
-
-void DrawShadowPlayer(OBJECT* pObj)
-{
-	int i, j, k;
-	int shadowTileY, shadowBlockY;
-	int bcLeft = 0, bcRight = 0;
-	int offset = (pObj->x - 12 * _2X < 0) ? 12 * _2X - pObj->x : 0 * _2X;
-	int sLeft, sRight;
-	int tHeight, bHeight;
-
-	float tempZoom = pObj->zoom;
-	pObj->zoom = 1.0f;
-
-	//그림자 사이즈에 따른 몇개의 파츠로 분리시킬꺼냐를 계산한뒤
-	for (i = (pObj->x - 12 * _2X) / TSIZE; i <= (pObj->x + 12 * _2X) / TSIZE; i++) {
-		//占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占썽서 占쌕댐옙占싱띰옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙磯占?
-		for (j = pObj->y / TSIZE, tHeight = 0; j < rh - 1; j++) {
-			//바닥이랑 닿았으면
-			if (mapInfoArray[mapInfoOff + j * rw + i] >= TILE_BLOCK || (pObj->inTile == GROUND && pObj->onWater > 0 && mapInfoArray[mapInfoOff + j * rw + i] >= TILE_WATER) || j == rh - 2) {
-				//그림자 전체의 좌측 경계면 : (pObj->x - 12)
-				//�׸��� ��ü�� ���� ���� : (pObj->x + 12)
-				//현재 타일의 좌측 경계면 : i * TSIZE;
-				//���� Ÿ���� ���� ���� : (i + 1) * TSIZE
-				//그려야할 지점의 좌측 경계면 : max(pObj->x - 12, i * TSIZE)
-				//�׷����� ������ ���� ���� : min(pObj->x + 12, (i + 1) * TSIZE)
-				//그려야 할 그림자의 폭 : min(pObj->x + 12, (i + 1) * TSIZE) - max(pObj->x - 12, i * TSIZE)
-
-				sLeft = Max(pObj->x - 12 * _2X, i * TSIZE);
-				sRight = Min(pObj->x + 12 * _2X, (i + 1) * TSIZE);
-				shadowTileY = j * TSIZE;
-
-				if (j == rh - 2)
-					shadowTileY += 10000;
-
-				//占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트占쏙옙 占쏙옙占쏙옙磯占?
-				for (k = ENEMY, shadowBlockY = 20000, bHeight = 0; k < ITEMOBJ; k++) {
-					OBJECT* pCompare = &ao[k];
-					int compY = PxlUp(pCompare);
-
-					if (pCompare->active && pCompare->block && pCompare->drawHandler && compY < shadowTileY && compY < shadowBlockY && sLeft < PxlRight(pCompare) && PxlLeft(pCompare) < sRight && PxlDown(pObj) <= compY) {
-						shadowBlockY = compY;
-						bHeight = (compY - pObj->y) / TSIZE;
-
-						bcLeft = Max(PxlLeft(pCompare), sLeft);
-						bcRight = Min(PxlRight(pCompare), sRight);
-					}
-				}
-
-				//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙트占쏙옙 占쌓몌옙占쌘곤옙 占쌓뤄옙占쏙옙占쏙옙 占싹댐옙 占쏙옙占?
-				if (shadowBlockY < shadowTileY) {
-					//����������Ʈ ���� ���� �׷��� �� �׸��� ���� ���� ���ٸ�
-					if (bcLeft == sLeft) {
-						pObj->nHeight = bHeight;
-						ShadowImage(bcRight - sLeft, 16 * _2X, offset, 0, xOffset + sLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowBlockY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
-
-						//����������Ʈ ������ ���� �׷��� �� �׸��� ������ ���� �ٸ��ٸ� Ÿ���ʿ� �������κ��� �ѹ� �� �׷��ش�.
-						if (bcRight != sRight) {
-							pObj->nHeight = tHeight;
-							ShadowImage(sRight - bcRight, 16 * _2X, offset + bcRight - sLeft, 0, xOffset + bcRight - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
-						}
-					}
-					//다르다면
-					else {
-						//�켱 Ÿ���ʿ� ���ʺκ��� �ѹ� �׸���
-						pObj->nHeight = tHeight;
-						ShadowImage(bcLeft - sLeft, 16 * _2X, offset, 0, xOffset + sLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
-
-						//����������Ʈ�ʿ� ������ �κ��� �׸���
-						pObj->nHeight = bHeight;
-						ShadowImage(bcRight - bcLeft, 16 * _2X, offset + bcLeft - sLeft, 0, xOffset + bcLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowBlockY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
-					}
-				}
-				//타占싹울옙 占쌓뤄옙占쏙옙占쏙옙 占싹댐옙 占쏙옙占?
-				else if (shadowTileY < 10000) {
-					pObj->nHeight = tHeight;
-					ShadowImage(sRight - sLeft, 16 * _2X, offset, 0, xOffset + sLeft - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (shadowTileY - 14 * _2X) - ry, COMMON_IMG, pObj->zoom);
-				}
-
-				offset += sRight - sLeft;
-				break;
-			}
-
-			tHeight++;
-		}
-	}
-
-	pObj->zoom = tempZoom;
-}
-
-void DrawShadowCommon(OBJECT* pObj)
-{
-	int i, j;
-	int offset1, offset2;
-	int sLeft;
-	int sRight;
-	int obj = GetObjFromPtr(pObj);
-
-	//그림자 사이즈에 따른 몇개의 파츠로 분리시킬꺼냐를 계산한뒤
-	sLeft = PxlLeft(pObj) - 4 * _2X;
-	sRight = PxlRight(pObj) + 4 * _2X;
-
-	if (pObj->cpx == 0 || pObj->cx == 0)
-		return;
-
-	for (i = sLeft / TSIZE; i <= sRight / TSIZE; i++) {
-		//占쏙옙 占쏙옙치占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占썽서 占쌕댐옙占싱띰옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙磯占?
-		pObj->nHeight = 0;
-
-		for (j = PxlDown(pObj) / TSIZE; j < rh - 1; j++) {
-			//바닥이랑 닿았으면
-			if (mapInfoArray[mapInfoOff + j * rw + i] >= TILE_BLOCK) {
-				int y = j * TSIZE + ry - 14 * _2X;
-
-				if (obj >= NEUTRAL) {
-					y += pObj->attr;
-
-					if (pObj->type == OBJ_BOX)
-						y -= 3 * _2X;
-				}
-
-				//그림자 전체의 좌측 경계면 : sLeft
-				//�׸��� ��ü�� ���� ���� : sRight
-				//현재 타일의 좌측 경계면 : i * TSIZE;
-				//���� Ÿ���� ���� ���� : (i + 1) * TSIZE
-				//그려야할 지점의 좌측 경계면 : max(sLeft, i * TSIZE)
-				//�׷����� ������ ���� ���� : min(sRight, (i + 1) * TSIZE)
-				//그려야 할 그림자의 폭 : min(sRight, (i + 1) * TSIZE) - max(sLeft, i * TSIZE)
-				if (sLeft >= i * TSIZE)
-					//����
-					ShadowImage((i + 1) * TSIZE - sLeft, 16 * _2X, 24 * _2X, 0, xOffset + (float)sLeft - rx, (STATUSWIN_Y + (rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);
-				else if (sRight <= (i + 1) * TSIZE)
-					//������
-					ShadowImage(sRight - i * TSIZE, 16 * _2X, 64 * _2X - (sRight - i * TSIZE), 0, xOffset + (float)i * TSIZE - rx, (STATUSWIN_Y + (rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);
-				else {
-					offset1 = 0;
-					offset2 = 0;
-
-					if (sLeft >= (i - 1) * TSIZE && TSIZE - (sLeft % TSIZE) < 12 * _2X) {
-						//���ʿ��� �ι�°
-						offset1 = (sLeft + 12 * _2X) % TSIZE;
-						ShadowImage((sLeft + 12 * _2X) % TSIZE, 16 * _2X, 36 * _2X - offset1, 0, xOffset + (float)i * TSIZE - rx, (float)(STATUSWIN_Y + (rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);
-					}
-
-					if (sRight < (i + 2) * TSIZE && sRight % TSIZE < 12 * _2X) {
-						//�����ʿ��� �ι�°
-						offset2 = (i + 1) * TSIZE - (sRight - 12 * _2X);
-						ShadowImage((i + 1) * TSIZE - (sRight - 12 * _2X), 16 * _2X, 52 * _2X, 0, xOffset + (float)(sRight - 12 * _2X) - rx, (float)(STATUSWIN_Y + (rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);
-					}
-
-					ShadowImage(TSIZE - (offset1 + offset2), 16 * _2X, 36 * _2X, 0, xOffset + (float)(i * TSIZE + offset1) - rx, STATUSWIN_Y + (float)((rh - 4) * TSIZE - y), COMMON_IMG, pObj->zoom);
-				}
-				break;
-			}
-
-			pObj->nHeight++;
-		}
-	}
-}
 
 int GetTypeFromCmf(int cmf)
 {

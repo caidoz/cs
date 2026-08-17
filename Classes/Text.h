@@ -10514,5 +10514,6 @@ const char* const textId[] = {
 	"장비를 장착했다! 갑옷 자리에 새 장비가 들어갔다.",//TEXT_TUTORIAL_EQUIPSET
 	"새 갑옷을 입었다! 방어력이 올라 더 오래 버틸 수 있다.",//TEXT_TUTORIAL_EQUIPWEAR
 	"베팅을 올렸다! 하트를 더 걸수록 공격이 강해진다.",//TEXT_TUTORIAL_BETUP
+	"획득한 보상",//TEXT_GACHAREWARD_TITLE
 };
 #endif /* Text_h */

@@ -1409,11 +1409,39 @@ void RouletteDraw(int x, int y, float zoom)
 
 			const int FLY_T = FPS / 3;
 
-			for (int i = 0; i < TOTALREEL; i++)
+			//살아 있는 마크를 먼저 적어둔다. 아래에서 마크를 하나 정리할 때마다
+			//SetControlMark()가 빈 칸을 새로 잡는데, 그 칸이 아직 안 지나간
+			//자리면 방금 만든 마크를 또 집어서 무한히 다시 날린다.
+			int live[TOTALCONTROLMARK];
+			int liveCnt = 0;
+
+			//예전에는 i < TOTALREEL 만 돌면서 frame2 > 0 인 것만 봤다.
+			//셔플/스왑이 만든 마크는 릴 개수 밖의 칸에 잡히거나 아직 1단 이동
+			//(frame > 0) 중이라 이 루프에 안 걸렸고, 아무도 지우지 않아서
+			//룰렛 위에 그대로 남았다. alpha가 0이면 페이드 소멸도 안 돈다.
+			for (int i = 0; i < TOTALCONTROLMARK; i++)
 			{
-				if (controlMark[i].frame2 > 0) {
+				if (controlMark[i].frame > 0 || controlMark[i].frame2 > 0)
+					live[liveCnt++] = i;
+			}
+
+			for (int n = 0; n < liveCnt; n++)
+			{
+				int i = live[n];
+
+				{
 
 					//스킬인덱스가 controlMark[i].attackType
+
+					//카드는 controlMark의 x/y를 한가운데로 삼아 그려진다
+					//(Func_Battle의 DrawSkillCard 호출부가 폭/높이의 절반을 뺀다).
+					//그래서 머리 위에 얹으려면 카드 높이의 절반만큼 더 올려야 한다.
+					//예전 48*_2X는 옛 카드(48픽셀 높이) 기준이라, 카드를 키우자
+					//그만큼 아래로 내려앉아 캐릭터를 덮었다.
+					//날아가서 멈출 때의 배율은 아래 SetControlMark에 넘기는
+					//zoomEnd2(zoom - 0.3f)다. 그 크기로 계산해야 도착점이 맞는다.
+					float markZoom = Max(0.1f, controlMark[i].zoom - 0.3f);
+					int markLift = (int)((float)ROULETTECARDSIZE_Y * markZoom / 2);
 
 					int targetObj;
 					switch (skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
@@ -1421,8 +1449,15 @@ void RouletteDraw(int x, int y, float zoom)
 					case PASSIVE:
 					case HEROSKILL:
 						targetObj = skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_TARGET];
-						destX = xOffset + ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP);
+						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
+						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
+						//여기서 더하면 그 폭만큼 옆으로 밀린다.
+						destX = ao[targetObj].x - rx;
+						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
+						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
+						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE
+							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
 
 						break;
 					case SUMMON:
@@ -1432,8 +1467,15 @@ void RouletteDraw(int x, int y, float zoom)
 						break;
 					default:
 						targetObj = controlMark[i].owner;
-						destX = xOffset + ao[targetObj].x - rx;
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[targetObj].y - 48 * _2X - ry - OBJIMGGAP);
+						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
+						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
+						//여기서 더하면 그 폭만큼 옆으로 밀린다.
+						destX = ao[targetObj].x - rx;
+						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
+						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
+						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
+						destY = STATUSWIN_Y + (rh - 4) * TSIZE
+							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
 
 						break;
 					}
@@ -1499,24 +1541,6 @@ void RouletteDraw(int x, int y, float zoom)
 	}
 }
 
-// Crew 관련
-int GetHouseFromCrewIdx(int crewIdx)
-{
-	int i;
-	for (i = 0; i < TOTAL_HOUSE; i++) {
-		if (crewData[crewIdx * CREWDATASIZE + CREWDATASIZE - 2] == i)
-			return i;
-	}
-
-	return -1;
-}
-
-int GetCrewDmg(int crewIdx, int lv)
-{
-	//return crewData[crewIdx * CREWDATASIZE + CREWDATA_DMG] * crewBulletLvUpDmgPercent[lv] / 100;
-	return 100;
-}
-
 int GetCrewIdxFromType(int type)
 {
 	// hero 3개는 로비 편의 데이터라, 크루 검색에서 제외하려면 3부터 시작
@@ -1530,42 +1554,4 @@ int GetCrewIdxFromType(int type)
 		if (t == type) return key; // ✅ key(=crewData 인덱스) 반환
 	}
 	return -1;
-}
-
-int GetCrewPrice(int crewIdx)
-{
-	return crewData[crewIdx * CREWDATASIZE + 2];
-}
-
-int GetCrewPositionX(int crewIdx)
-{
-	int realX;
-
-	realX = 2 * _2X + (crewIdx % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X;
-
-	return realX;
-}
-
-int GetCrewPositionY(int crewIdx)
-{
-	int i, j;
-	int gapY = 0;
-	int realY = 0;
-
-	for (i = 0; i < crewIdx; i++) {
-		if (i % 3 == 2) {
-			gapY = 0;
-			for (j = i + 1; j < i + 1 + 3; j++) {
-				//switch (enemyData[crewData[j * CREWDATASIZE + 0] * ENEMYDATASIZE]) {
-				//default:
-					if (gapY < CREW_GAPY)
-						gapY = 0;
-				//	break;
-				//}
-			}
-
-			realY -= gapY + CREWLISTSIZE_Y;
-		}
-	}
-	return realY - 16 * _2X;
 }

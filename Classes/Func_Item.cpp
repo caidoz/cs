@@ -67,9 +67,7 @@ ITEM* GetItemPtr(int idx)
 //������Ʈ ���·� �������� ������Ų��
 int DropItem(OBJECT* pObj, int type)
 {
-	int i, j, rand, dropSum;
-	const unsigned char* uPtr;
-	int tempHp = pObj->maxhp;
+	int i, rand;
 
 	PlayMusic(M_JUMP);//PlayMusic(M_JUMP);
 	//��õ���� �������?�÷��̾ ���?��
@@ -341,7 +339,6 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 	char pr[100];
 	char su[100];
 	char name[100];
-	int originVal;
 
 	int name_idx1 = -1, name_idx2 = -1;
 
@@ -746,7 +743,6 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 	//if (robin.map >= CAVE_A_1 && it->set >= 100)
 	//	it->set -= 100;
 
-	//SetRequire(it);
 	it->gold = GetItemPrice(it);
 
 	//이름 정하기
@@ -888,7 +884,6 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 	int yGap = 4 * _2X;
 
 	//if (drawHandle == MD_PLAY)
-	//DrawLabel(x + (float)(32 * _2X) * zoom, y - (float)(46 * _2X) * zoom, TEXT_ALPHA_SKILL, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 
 	EnemyProfileDraw(x + xGap, y + (float)-2 * _2X * zoom + yGap, pObj->type, false, false, 1.0f * zoom);
 
@@ -901,12 +896,10 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 		CenterText(TEXT_ALPHA_SKILL, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)10 * _2X * zoom, 0.8f * zoom);
 		CenterText(TEXT_ALPHA_EMPTY, x + xGap + (float)36 * _2X * zoom + (float)40 * _2X * zoom / 2, y + yGap - (float)22 * _2X * zoom, 0.8f * zoom);
 		//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-		//DrawImage(8 * _2X, 8 * _2X, 224 * _2X, 0 * _2X, x - (float)( - 12 * _2X) * zoom + xGap + (float)37 * _2X * zoom, y - (float)13 * _2X * zoom + yGap, false, false, false, false, false, 2.0f * zoom, sprite[COMMON_IMG], cvtDest, cvtLayer, COMMON_IMG, buffering);
 		//SetAlpha(32);
 	}
 
 	//upgradePrice = 100;
-	//DrawBuyButton(x + xGap, y + (float)-40 * _2X * zoom + yGap, (float)BUYSMALLBUTTON_X * UPGRADEBUTTONPER * zoom, (float)BUYSMALLBUTTON_Y * UPGRADEBUTTONPER * zoom, frame, robin.gold >= upgradePrice ? false : true, upgradePrice, CURRENCY_GOLD, UPGRADEBUTTONPER * zoom, false, false, false, cvtDest, cvtLayer, buffering);
 	//SetRectPoint(x + xGap, y + (float)-40 * _2X * zoom + yGap, (float)BUYSMALLBUTTON_X * UPGRADEBUTTONPER * zoom, (float)BUYSMALLBUTTON_Y * UPGRADEBUTTONPER * zoom, TOUCH_FUNC_HOTKEYPRESS1 + i);
 
 	grayScale = 0;
@@ -916,9 +909,7 @@ void DrawQuick(OBJECT* pObj, int x, int y, int status, float zoom)
 
 	//�ϴ� empty�� 
 	//if (status)
-	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18 + Abs(8 - frame % 16)], cvtDest, cvtLayer, buffering);
 	//else
-	//	MemRectFrame(x + (float)((40 * _2X + 8 * _2X) * i) * zoom, y, (float)32 * _2X * zoom, (float)32 * _2X * zoom, colorData[18], cvtDest, cvtLayer, buffering);
 
 	DrawQuickIcon(pObj, x + xGap + (float)36 * _2X * zoom, y + yGap, zoom);
 	/*
@@ -981,9 +972,7 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 {
 	int i;
 	int divide = 8;//4단위로 나누라는것
-	int xGap = ITEMICONSIZE * 2 + 8 * _2X;
 	int yGap = ITEMICONSIZE * 2 + 20 * _2X;
-	int star;
 	float plusX = (float)(12 * _2X + 1.5f * 36 * _2X) * zoom;
 	float plusY = (float)(-16 * _2X) * zoom;
 	const signed short* usPtr;
@@ -995,7 +984,6 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 	DrawFrame(x + (float)1.5f * 36 * _2X * zoom, y + (float)0 * _2X * zoom, (float)(34 * 3 * _2X + 20 * _2X) * zoom, (float)(yGap * 2 + 0 * _2X) * zoom, FRAME_NORMAL);
 	
 	//현재 장비
-	//DrawLabel(x - (float)(6 * _2X) * zoom, y + (float)8 * _2X * zoom, TEXT_ALPHA_EQUIP, 0.72f * zoom, cvtDest, cvtLayer, buffering);
 
 	for (i = EQUIP_NECK - 1; i >= 0; i--) {
 		usPtr = &equipSlotPos[i * 4];
@@ -1012,7 +1000,6 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 			MemRectFrameThick(x + plusX + (float)*(usPtr + 2) * zoom - (float)2 * _2X * zoom, y + plusY + (float)*(usPtr + 3) * zoom + (float)2 * _2X * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, (float)(ITEMICONSIZE * 2 + 4 * _2X) * zoom, itemColor[pObj->equip[*usPtr].grade], (float)1 * _2X * zoom);
 
 			//if (*usPtr == EQUIP_RING && pObj->equip[EQUIP_RING].cooldown)
-			//	DrawCycle(x + plusX + (float)*(usPtr + 2) * zoom, y + plusY + (float)*(usPtr + 3) * zoom, (float)16 * _2X * 2 * zoom, (float)16 * _2X * 2 * zoom, pObj->equip[EQUIP_RING].cooldown, ringOption[pObj->equip[EQUIP_RING].detail * 7 + 3 + Min(3, pObj->equip[EQUIP_RING].grade)] * 120, zoom, cvtDest, cvtLayer, buffering);
 
 			if (pObj->equipImg[*usPtr] == 0) {
 				grayScale = 0;
@@ -1034,16 +1021,13 @@ void InventoryDraw(OBJECT* pObj, int x, int y, float zoom)
 	}
 
 	//���� ����
-	//HeroListDraw(x + (float)(156 * _2X) * zoom, y + (float)8 * _2X * zoom, zoom, false, 64 * _2X, cvtDest, cvtLayer, buffering);
 
 	//���� �����?������ �ִ� ����
-	//CrewListDraw(x + (float)(156 * _2X) * zoom, y - (float)62 * _2X * zoom, zoom, false, 48 * _2X, cvtDest, cvtLayer, buffering);
 }
 
 int MakeItemType(int seed)
 {
 	int i;
-	int rt = 0;
 	int maxType = 0;
 	int type;
 	//if (seed > 350 - Min(50, UpDiv(ao[PLAYER].ps[PS_LUCK], 20)))
@@ -1088,97 +1072,6 @@ int MakeItemType(int seed)
 	//	return ITEM_GOLD;
 }
 
-int MakeArenaItem()
-{
-	int temp = Random(1000);
-	// 50% Ȯ���� �����? //������ 1���� ������������ 0.5%�� ����������(100�������� 100%�� �����?
-	//if (temp > (500 - arenaFloor * 5)) {
-	if (temp < 300) {
-		temp = Random(100);
-		// 장비 중에 15%확률로 무기
-		if (temp < 15)
-			return ITEM_SWORD + Random(3);
-		else if (temp < 25)
-			return ITEM_NECK + Random(2);
-		else
-			return 3 + Random(14);
-	}
-	else if (temp < 600)
-		return ITEM_GEM;
-	else
-		return ITEM_GOLD;
-}
-
-int MakeCaveItem()
-{
-	int temp = Random(1000);
-	//temp = 999;
-	caveMapData = mapData[11];
-
-	if (temp <= 400)
-		return -1;
-	else if (temp <= 500) {
-		caveItemType = ITEM_GEM;
-		return 1000 + caveItemType;
-	}
-	else if (temp <= 700) {
-		caveItemType = ITEM_GOLD;
-		return 1000 + caveItemType;
-	}
-	else if (temp <= 1000) {
-		switch (mapData[11]) {
-		case 0:	//일반방	
-			temp = Random(2);
-			caveItemType = (temp == 0 ? ITEM_HELM + Random(3) : ITEM_GREAVES + Random(3));
-			break;
-		case 1:	//강적방
-			temp = Random(2);
-			caveItemType = (temp == 0 ? ITEM_ARMOR + Random(3) : ITEM_KILT + Random(3));
-			break;
-		case 2:	//보스방
-			temp = Random(2);
-			caveItemType = (temp == 0 ? ITEM_NECK : ITEM_RING);
-			break;
-		case 3:	//강적보스방
-			temp = Random(2);
-			caveItemType = (temp == 0 ? ITEM_SWORD + Random(3) : ITEM_GUNTLET + Random(3));
-			break;
-		}
-		//return 1000 + ITEM_NECK;
-		return 1000 + caveItemType;
-	}
-	return -1;
-}
-
-int MakeGachaItem()
-{
-	int temp = Random(1000);
-
-	//19������ ���?���� 5.2%Ȯ��
-	//if (temp < ITEM_RING * 52)
-	return 2000 + ITEM_SWORD + Random(ITEM_RING);
-	//2���� �Ǽ��縮�� ���� 1.8% Ȯ��
-	//else
-	//	return 2000 + ITEM_RING;
-	//else
-	//	return 2000 + ITEM_SWORD + Random(ITEM_NECK);
-	/*
-	//18������ ���?���� 5.2%Ȯ��
-	if (temp < ITEM_NECK * 52)
-		return 2000 + ITEM_SWORD + Random(ITEM_NECK);
-	//2���� �Ǽ��縮�� ���� 1.8% Ȯ��
-	else if (temp < ITEM_NECK * 52 + 2 * 18)
-		return 2000 + ITEM_NECK + Random(2);
-	else
-		return 2000 + ITEM_SWORD + Random(ITEM_NECK);
-	*/
-	//������ ���� 3.0%�� Ȯ��
-	//else //if (temp < ITEM_NECK * 45 + 2 * 50 + 50)
-	//	return 2000 + ITEM_GEM;
-	//else
-	//	return 2000 + ITEM_GOLD;
-}
-
 int MakeItemLevel(int type, int lv)
 {
 	int rt;
@@ -1214,7 +1107,7 @@ int GetDropLv(void)
 
 int MakeItemDetail(int type, int lv)
 {
-	int i, randSum = 0, r;
+	int r;
 	int rand = Random(10000);
 
 	switch (type) {
@@ -1490,7 +1383,7 @@ int MakeItemId(void)
 
 int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 {
-	int i, j;
+	int i;
 	ITEM* it;
 
 	//동료 카드는 lv 0을 "미획득"으로 표시한다(TEXT_NOTACQUIRED).
@@ -1658,33 +1551,6 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 	return 1;
 }
 
-void ItemSetString(std::string str, int type, int lv, int detail, int grade, int cnt)
-{
-	int temp;
-
-	str = null;
-
-	switch (type) {
-		// 수량성 아이템
-	case ITEM_WASTE:
-	case ITEM_IRON:
-	case ITEM_LEATHER:
-	case ITEM_CLOTH:
-	case ITEM_WOOD:
-	case ITEM_ESSENCE:
-		//str = textId[TEXT_ITEMNAME_START + GetItemName(type, detail, grade)] + " " + std::to_string(cnt) + "개";
-		break;
-		// 골드
-	case ITEM_GOLD:
-		str = std::to_string(cnt) + textId[TEXT_SPACE_GOLD];
-		break;
-		//장비나 보석
-	default:
-		str = textId[TEXT_ITEMNAME_START + GetItemName(type, detail, grade)];
-		break;
-	}
-}
-
 int GetHeroCnt(void)
 {
 	int i;
@@ -1780,78 +1646,6 @@ int GetItemIcon(int type, int detail, int grade)
 		detail += ROBIN;
 
 	return itemIconTable[itemStartCnt[type] + detail];
-}
-
-int GetItemSellPrice(int idx)
-{
-	int i, j, rt;
-	int mod = 100;
-	ITEM* it = GetItemPtr(idx);
-
-	if (it->type < ITEM_WASTE) {
-		//등급별 가격조정
-		switch (it->grade) {
-		default:
-			mod = 100;
-			break;
-		case GRADE_SUPERIOR:
-			//mod = 110;
-			mod = 120;
-			break;
-		case GRADE_RARE:
-			mod = 140;
-			break;
-#ifdef SETITEM
-		case GRADE_SET:
-			//mod = 150;
-			mod = 190;
-			break;
-#endif
-		case GRADE_EPIC:
-			//mod = 180;
-			mod = 250;
-			break;
-		case GRADE_LEGEND:
-			//mod = 250;
-			mod = 390;
-			break;
-		}
-
-		//소켓별 가격조정
-		mod += it->count * 5;
-
-		//강화단계
-		mod += it->cooldown * 5;
-
-		for (i = 0; i < 6; i++) {
-			if (it->option[i][0] != EMPTYINT) {
-				const int* orPtr;
-
-				j = Min(SUFFIX_RESERVED3, it->option[i][0]);
-				orPtr = &optionRange[it->option[i][0] * 6];
-
-				if (it->option[i][1] > *(orPtr + 4) + *(orPtr + 5))
-					mod += optionValue[j] * 12;
-				else if (it->option[i][1] > *(orPtr + 2) + *(orPtr + 3))
-					mod += optionValue[j] * 9;
-				else if (it->option[i][1] > *orPtr + *(orPtr + 1))
-					mod += optionValue[j] * 6;
-				else
-					mod += optionValue[j] * 3;
-			}
-		}
-	}
-
-	if (it->type == ITEM_RECIPE) {
-		mod += it->grade * 20;
-		rt = itemSellPrice[itemStartCnt[it->detail >> 3] + (it->detail & 0x07)] / RECIPEGOLDRATIO;
-	}
-	else
-		rt = itemSellPrice[itemStartCnt[it->type] + it->detail];
-
-	rt = rt * mod / 100;
-
-	return rt;
 }
 
 
@@ -1985,23 +1779,11 @@ int GetCharPrice(int obj)
 	return value;
 }
 
-int GetCharPow(OBJECT* obj)
-{
-	int i, value = 0;
-
-	for (i = 0; i < TOTALEQUIP; i++) {
-		//for (i = 0; i < EQUIP_WEAPON + 1; i++) {
-		if (obj->equip[i].type != EMPTY)
-			value += GetItemPow(obj->equip[i].type, obj->equip[i].detail, obj->equip[i].cooldown);
-	}
-
-	return value;
-}
-
 int GetItemPow(int type, int detail, int cooldown)
 {
 	int value;
-	unsigned char ratio;
+	//아래 switch가 못 잡는 타입이 오면 그대로 배율로 쓰인다. 100이 등가다.
+	unsigned char ratio = 100;
 
 	switch (type) {
 	case ITEM_SWORD://0
@@ -2039,7 +1821,6 @@ int GetItemPow(int type, int detail, int cooldown)
 int GetItemStar(int type, int detail, int grade)
 {
 	int i;
-	int idx;
 
 	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {
@@ -2063,7 +1844,7 @@ int GetItemStar(int type, int detail, int grade)
 
 int GetCurWeaponCollectionsIndex(void)
 {
-	int i, j;
+	int i;
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
 
 	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
@@ -2073,38 +1854,6 @@ int GetCurWeaponCollectionsIndex(void)
 			return i;
 		}
 	}
-}
-
-int GetNextWeaponCollectionsIndex(void)
-{
-	int curCollectionIdx = GetCurWeaponCollectionsIndex();
-
-	do {
-		curCollectionIdx = ++curCollectionIdx % TOTAL_COLLECTIONS;
-
-	} while (GetInvenIdx(collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 0], collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 1], collectionData[curCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 2]) == -1);
-
-	return curCollectionIdx;
-}
-
-bool EquipNextWeapon(void)
-{
-	int i;
-	int curCollectionIdx = GetCurWeaponCollectionsIndex();
-	int nextCollectionIdx = GetNextWeaponCollectionsIndex();
-
-	//���Ⱑ �ϳ��ۿ� ���� ���?
-	if (curCollectionIdx == nextCollectionIdx)
-		return false;
-
-	for (i = 0; i < COLLECTIONSITEMCNT; i++) {
-		if (GetInvenIdx(collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0], collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1], collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2]) != -1)
-			EquipItem(&ao[PLAYER], &robin.inven[GetInvenIdx(collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 0], collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 1], collectionData[nextCollectionIdx * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + i * COLLECTIONSDATASIZE + 2])]);
-	}
-
-
-
-	return true;
 }
 
 int GetHighestCollections(int index)
@@ -2207,20 +1956,6 @@ int GetEquipSlot(int type, int detail, int grade)
 }
 
 
-bool isEnemyObjActive(void)
-{
-	int i, j;
-	for (i = ENEMY, j = 0; i < NEUTRAL; i++) {
-		if (robin.enemyObj[i - ENEMY].active == true)
-			j++;
-	}
-
-	if (j > 0)
-		return true;
-	else
-		return false;
-}
-
 void BackUpEnemyObj(void)
 {
 	memcpy(&robin.enemyObj, &ao[ENEMY], sizeof(OBJECT) * MAXENEMY * MAXENEMYOBJ);
@@ -2240,59 +1975,6 @@ void CopyEnemyObj(void)
 			
 		}
 	}
-}
-
-int RemainMonstersCnt(void)
-{
-	int i, j = 0;
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		if (ao[i].mom == i && ao[i].active == true && ao[i].dead == false) {
-			j++;
-		}
-	}
-
-	return j;
-}
-
-int GetEnemyDmgIdx(int enemyObj)
-{
-	int i;
-	for (i = 0; TOTALHITMARK; i++) {
-		if (dmgInfo[i].target == enemyObj)
-			return i;
-	}
-
-	return -1;
-}
-
-int GetEnemyMomObj(int idx)
-{
-	int i;
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		if (robin.enemyObj[idx - ENEMY].mom == i) {
-			return i;
-		}
-	}
-	return false;
-}
-
-//n��° ���� ������Ʈ �ѹ��� ������ Ȯ���ϴ� �Լ�
-int GetObjectNumFromEnemyIdx(int idx)
-{
-	int i, before_idx, after_idx, j = 0;
-	before_idx = robin.enemyObj[j].mom;
-	after_idx = 0;
-	for (i = ENEMY; i < NEUTRAL; i++) {
-		after_idx = robin.enemyObj[i - ENEMY].mom;
-		if (before_idx != after_idx) {
-			j++;
-			before_idx = after_idx;
-		}
-
-		if (j == idx)
-			return i;
-	}
-	return false;
 }
 
 int GetAttackEnemy(void)
@@ -2325,21 +2007,6 @@ int GetEnemyBarIdx(int idx)
 		}
 	}
 	return j;
-}
-
-int GetSlotIdx(int type, int detail, int grade)
-{
-	int i;
-
-	for (i = 0; i < TOTALEQUIP; i++) {
-		if (ao[PLAYER].equip[i].type == EMPTY)
-			break;
-
-		if (ao[PLAYER].equip[i].type == type && ao[PLAYER].equip[i].detail == detail && ao[PLAYER].equip[i].grade == grade)
-			return i;
-	}
-
-	return -1;
 }
 
 int GetInvenIdx(int type, int detail, int grade)
@@ -2446,7 +2113,6 @@ bool IsCollectionFullEquiped(int collectionIdx)
 int GetFullEquipedCollectionIdx(void)
 {
 	int i;
-	int collectionsItemCnt = 0;
 
 	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
 		if (IsCollectionFullEquiped(i) == true) {
@@ -2456,78 +2122,6 @@ int GetFullEquipedCollectionIdx(void)
 
 	return -1;
 }
-/*
-int EraseCopyItem(void)
-{
-	int i, j, rt, rt2 = 0, chk = 0;
-
-	memset(needErase, 0, sizeof(needErase));
-
-	for (i = 0; i < nInvenCnt; i++) {
-		rt = 0;
-
-		if (a.shop[i + NETINVENSTART].type < EMPTY) {
-			for (j = 0; j < TOTALEQUIP; j++) {
-				if (ao[PLAYER].equip[j].type < EMPTY && CompareItem(&a.shop[NETINVENSTART + i], &ao[PLAYER].equip[j])) {
-					needErase[rt2] = NetItemData[i].idx;
-					EraseNetItem(&a.shop[NetItemData[i].idx + NETINVENSTART]);
-					chk = 1;
-					rt++;
-					rt2++;
-					break;
-				}
-			}
-
-			if (rt == 0) {
-				for (j = 0; j < TOTALINVENTORY; j++) {
-					if (robin.inven[j].type < EMPTY && CompareItem(&a.shop[NETINVENSTART + i], &robin.inven[j])) {
-						needErase[rt2] = NetItemData[i].idx;
-						EraseNetItem(&a.shop[NetItemData[i].idx + NETINVENSTART]);
-						chk = 1;
-						rt++;
-						rt2++;
-						break;
-					}
-				}
-			}
-
-			if (rt)
-				i--;
-		}
-	}
-
-	return rt2;
-}
-*/
-int CompareItem(ITEM* it, ITEM* nt)
-{
-	int i;
-
-	if (it->id != nt->id || it->type != nt->type || it->detail != nt->detail || it->grade != nt->grade || it->value != nt->value || it->count != nt->count || it->lv != nt->lv)
-		return false;
-
-	for (i = 0; i < 6; i++) {
-		if (it->option[i][0] != nt->option[i][0] || it->option[i][1] != nt->option[i][1])
-			return false;
-	}
-
-	return true;
-}
-
-void BreakItem(ITEM* it)
-{
-	it->broken = 1;
-	it->name[1] = 'j';
-	it->cooldown = Max(0, it->cooldown - 3);
-	it->cooldown = 0;
-}
-
-void RestoreItem(ITEM* it)
-{
-	it->broken = 0;
-	it->name[1] = itemColorText[it->grade];
-}
-
 void EraseItem(ITEM* it)
 {
 	int i;
@@ -2591,23 +2185,6 @@ void EraseItem(ITEM* it)
 	ArrangeInven();
 }
 
-void EraseNetItem(ITEM* it)
-{
-	int i;
-
-	memset(it, 0, sizeof(ITEM));
-	it->type = EMPTY;
-
-	for (i = 0; i < 12; i++)
-		it->option[i][0] = EMPTYINT;
-
-	for (i = 0; i < 6; i++)
-		it->socket[i] = EMPTYINT;
-
-	nInvenCnt--;
-	//ArrangeNetInven();
-}
-
 void ArrangeInven(void)
 {
 	int i, j;
@@ -2669,173 +2246,6 @@ void ArrangeInven(void)
 		memcpy(&robin.inven[i], &tempInven[i], sizeof(ITEM));
 	}
 }
-/*
-void ArrangeNetInven(void)
-{
-	int i, j;
-
-	//인벤토리를 정렬한다.
-	for (i = 0; i < nInvenMax; i++) {
-		if (a.shop[i + NETINVENSTART].type == EMPTY) {
-			if (i < nInvenMax - 1) {
-				memcpy(&a.shop[i + NETINVENSTART], &a.shop[i + NETINVENSTART + 1], sizeof(ITEM) * (nInvenMax - i - 1));
-				memcpy(&NetItemData[i], &NetItemData[i + 1], sizeof(NETITEMDATA) * (nInvenMax - i - 1));
-			}
-
-			memset(&a.shop[nInvenMax - 1 + NETINVENSTART], 0, sizeof(ITEM));
-			a.shop[nInvenMax - 1 + NETINVENSTART].type = EMPTY;
-
-			for (j = 0; j < 12; j++)
-				a.shop[nInvenMax - 1 + NETINVENSTART].option[j][0] = EMPTYINT;
-			for (j = 0; j < 6; j++)
-				a.shop[nInvenMax - 1 + NETINVENSTART].socket[j] = EMPTYINT;
-
-			memset(&NetItemData[nInvenMax - 1], 0, sizeof(NETITEMDATA));
-			break;
-		}
-	}
-
-	for (i = 0; i < nInvenMax; i++) {
-		if (a.shop[i + NETINVENSTART].type == EMPTY)
-			break;
-	}
-
-	nInvenCnt = i;
-}
-*/
-// �켱������, �κ��� ��ȣ�� ���ͼ�, �켱�������� �����ѵ�, �ش��κ��� ��ȣ�������� �����Ѵ�.
-void OrderInven(void)
-{
-	int i;
-	int invenSort[2 * TOTALINVENTORY];
-
-	memset(&invenSort, 0, sizeof(invenSort));
-
-	if (robin.count <= 1)
-		return;
-
-	//�������� �켱�������� �޾ƿ´�.
-	for (i = 0; i < robin.count; i++) {
-		invenSort[i] = i;
-		invenSort[TOTALINVENTORY + i] = GetOrder(&robin.inven[i], i);	//�������� �켱���� ��ȣ�� �˾ƿ´�.
-	}
-
-	//QuickSort(invenSort, 0, robin.count);
-	RadixSort(invenSort, robin.count);
-
-	//�ش� �ε��� ��ȣ�� ���� shop�� �����Ѵ�
-	memset(&a.shop, 0, sizeof(a.shop));
-
-	for (i = 0; i < TOTALINVENTORY; i++)
-		a.shop[i].type = EMPTY;
-
-	for (i = 0; i < robin.count; i++)
-		memcpy(&a.shop[i], &robin.inven[invenSort[i]], sizeof(ITEM));
-
-	memcpy(&robin.inven, &a.shop, sizeof(robin.inven));
-}
-
-//case �������?�켱����
-//�����?���?������ �켱���� �������? ����̰�?���� ����
-//�����?���?������ �� �ִ� ���?�켱���� ����
-//�����?���?detail�� �������� �켱���� ����
-int GetOrder(ITEM* it, int index) {
-	int tempOrder = 0;
-
-	switch (it->type) {
-	case ITEM_WASTE:
-		return TOTAL_WASTE - it->detail;
-	case ITEM_RING:
-		return TOTAL_WASTE + TOTAL_RING - it->detail;
-	default:
-		if (EquipCheck(&ao[PLAYER], &robin.inven[index]) == false)
-			tempOrder = 1000;
-
-		return TOTAL_WASTE + TOTAL_RING + tempOrder + it->type * 8 + 8 - it->detail;
-	case ITEM_NECK:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK - it->detail;
-	case ITEM_GEM:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM - it->detail;
-	case ITEM_RECIPE:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1;
-	case ITEM_IRON:
-	case ITEM_LEATHER:
-	case ITEM_CLOTH:
-	case ITEM_WOOD:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + (ITEM_IRON - it->type) * 8 + it->detail;
-	case ITEM_ESSENCE:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + it->detail;
-	case ITEM_QUEST:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + TOTAL_ESSENCE + it->detail;
-	case ITEM_NETITEM:
-		return 5000 + TOTAL_WASTE + TOTAL_RING + ITEM_BOOTS * 8 + TOTAL_NECK + TOTAL_GEM + 1 + 4 * 8 + TOTAL_ESSENCE + TOTAL_QUESTITEM + it->detail;
-	}
-
-	return 0;
-}
-
-void RadixSort(int* array, int size)
-{
-	int count[10], temp[2 * TOTALINVENTORY];
-	int index, pval, i, j, n;
-
-	memcpy(temp, array, sizeof(temp));
-
-	for (n = 0, pval = 1; n < 4; n++, pval *= 10) {
-		for (i = 0; i < 10; i++)
-			count[i] = 0;
-
-		for (j = 0; j < size; j++) {
-			index = (int)(array[TOTALINVENTORY + j] / pval) % 10;
-			count[index] = count[index] + 1;
-		}
-
-		for (i = 1; i < 10; i++)
-			count[i] = count[i] + count[i - 1];
-
-		for (j = size - 1; j >= 0; j--) {
-			index = (int)(array[TOTALINVENTORY + j] / pval) % 10;
-			temp[TOTALINVENTORY + count[index] - 1] = array[TOTALINVENTORY + j];
-			temp[count[index] - 1] = array[j];
-			count[index] = count[index] - 1;
-		}
-
-		memcpy(array, temp, sizeof(temp));
-	}
-}
-
-int RemainedItemCheck(void)
-{
-	int i, cnt = 0;
-	for (i = ITEMOBJ; i < TOTALOBJECT; i++)
-		if (ao[i].active == true)
-			cnt++;
-
-	return cnt;
-}
-
-bool NewItemCheck(void)
-{
-	int i, newItemCnt = 0;
-	for (i = 0; i < robin.count; i++) {
-		if (robin.inven[i].seen == false)
-			newItemCnt++;
-	}
-
-	if (newItemCnt > 0)
-		return true;
-	else
-		return false;
-}
-
-bool EmptySlotCheck(int itemType)
-{
-	int i;
-	if (ao[itemType % 3].equip[itemEquipSlot[itemType]].type == EMPTY)
-		return true;
-	return false;
-}
-
 int EquipCheck(OBJECT* pObj, ITEM* it)
 {
 
@@ -3081,226 +2491,6 @@ void UnEquipEffect(OBJECT* pObj, ITEM* it)
 	RefreshStat(pObj);
 }
 
-int UseItem(OBJECT* pObj, int idx)
-{
-	ITEM* it = GetItemPtr(idx);
-
-	if (it->count == 0)
-		return false;
-
-	//if (it->cooldown) {
-	//	infoFrame = INFOFRAME;
-		//infoText = TEXT_CANNOTUSE;
-
-	//	return false;
-	//}
-
-	switch (it->type) {
-	case ITEM_WASTE:
-		//���?�Ұ� ����
-		switch (it->detail) {
-			const unsigned char* ucPtr;
-
-		case ITEM_WASTE_STAR:
-		case ITEM_WASTE_MOON:
-		case ITEM_WASTE_SUN:
-			if (pObj->hp == pObj->ps[PS_HP]) {
-				infoFrame = INFOFRAME;
-				//infoText = TEXT_CANNOTHPFULL;
-
-				return false;
-			}
-
-			PlusHp(pObj, wasteValue[it->detail] * 10 * (100 + pObj->ps[PS_POTION]) / 100);
-			if (!pObj->hpRestore)
-				pObj->hpRestore = 1;
-			//EffectSound(M_BUFF_YELLOW);
-			PlayMusic(M_BUFF_YELLOW);
-			break;
-		case ITEM_WASTE_SILVER:
-		case ITEM_WASTE_GOLD:
-		case ITEM_WASTE_SCARLET:
-			if (pObj->mp == pObj->ps[PS_MP]) {
-				infoFrame = INFOFRAME;
-				//infoText = TEXT_CANNOTMPFULL;
-
-				return false;
-			}
-
-			PlusMp(pObj, wasteValue[it->detail] * 10 * (100 + pObj->ps[PS_POTION]) / 100);
-			pObj->mpRestore = 1;
-			//EffectSound(M_BUFF_BLUE);
-			PlayMusic(M_BUFF_BLUE);
-			break;
-		case ITEM_WASTE_WATER:
-			if (pObj->hp == pObj->ps[PS_HP] && pObj->mp == pObj->ps[PS_MP]) {
-				infoFrame = INFOFRAME;
-				//infoText = TEXT_CANNOTHPFULL;
-
-				return false;
-			}
-
-			PlusHp(pObj, 5 * (100 + pObj->ps[PS_POTION]));
-			PlusMp(pObj, 3 * (100 + pObj->ps[PS_POTION]));
-			pObj->mpRestore = 1;
-			pObj->hpRestore = 1;
-			//EffectSound(M_BUFF_BLUE);
-			PlayMusic(M_BUFF_BLUE);
-			break;
-		case ITEM_WASTE_FLUTE:	//풀피리
-		case ITEM_WASTE_EYEWASH:	//안약
-		case ITEM_WASTE_ANTIDOTE:	//해독제
-		case ITEM_WASTE_WING:	//릴의 날개
-		case ITEM_WASTE_HOLYWATER:	//성수
-			if (pObj->debuf[it->detail - ITEM_WASTE_FLUTE])
-				pObj->debuf[it->detail - ITEM_WASTE_FLUTE] = 0;
-			else {
-				infoFrame = INFOFRAME;
-				//infoText = it->detail - ITEM_WASTE_FLUTE + TEXT_NOTSLOW;
-
-				return false;
-			}
-
-			pObj->statusRestore = 1;
-			//EffectSound(M_BUFF_RED);
-			PlayMusic(M_BUFF_RED);
-			break;
-		case ITEM_WASTE_DAMAGE:
-		case ITEM_WASTE_DEFENSE:
-		case ITEM_WASTE_MAGIC:
-		case ITEM_WASTE_SKILL:
-			if (robinmap < ARENA1) {
-				infoFrame = INFOFRAME;
-				infoText = TEXT_CANNOTUSE;
-				//infoText = TEXT_CANNOTARENA;
-				return false;
-			}
-
-			if (pObj->buff[INC_DAMAGE_ARENA - ITEM_WASTE_DAMAGE + it->detail]) {
-				infoFrame = INFOFRAME;
-				infoText = TEXT_CANNOTUSE;
-				//infoText = TEXT_CANNOTALREADY;
-				return false;
-			}
-
-			pObj->buff[INC_DAMAGE_ARENA - ITEM_WASTE_DAMAGE + it->detail] = ARENABUFFTIME;
-			RefreshStat(pObj);
-			break;
-		default:
-			//던지는 아이템
-			if (pObj->attack != 0 || pObj->debuf[STUN] || pObj->debuf[KNOCKBACK]) {
-				rpVar2.item = 0;
-				infoFrame = INFOFRAME;
-				infoText = TEXT_CANNOTUSE;
-				//infoText = TEXT_CANNOTUSE;
-
-				return false;
-			}
-
-			GetMotionPtr(pObj);
-
-			pObj->currentBullet = it->detail;
-			pObj->attack = ATTACK_ITEM;
-			pObj->attackFrame = skillStartFrame[ATTACK_ITEM];
-			//EffectSound(M_DOWN);
-			PlayMusic(M_DOWN);
-			break;
-		}
-		break;
-	case ITEM_NETITEM:
-		switch (it->detail) {
-		case ITEM_NET_BOX_WEAPON_HIGH:
-		case ITEM_NET_BOX_WEAPON_MID:
-		case ITEM_NET_BOX_WEAPON_LOW:
-		case ITEM_NET_BOX_DEFENSE_HIGH:
-		case ITEM_NET_BOX_DEFENSE_MID:
-		case ITEM_NET_BOX_DEFENSE_LOW:
-		case ITEM_NET_BOX_ACCESSORY_HIGH:
-		case ITEM_NET_BOX_ACCESSORY_MID:
-		case ITEM_NET_BOX_ACCESSORY_LOW:
-		case ITEM_NET_BOX_RANDOM:
-		case ITEM_NET_BOX_GEM:
-			UseItemBox(it);
-			//EffectSound(M_ITEM);
-			PlayMusic(M_ITEM);
-			return false;
-		case ITEM_NET_RESURRECTION:
-			ResurrectionEffect(pObj);
-			//EffectSound(M_BUFF_BLUE);
-			PlayMusic(M_BUFF_BLUE);
-			break;
-		case ITEM_NET_EXPORB:
-			LevelUpObj(pObj, NextExp(it->value));
-			//SaveFlag(0);
-			break;
-		}
-		break;
-	}
-
-	it->count--;
-
-	if (it->type == ITEM_WASTE) {
-		if (it->count == 0) {
-			int i;
-
-			for (i = 0; i < MAXHOTKEY; i++) {
-				if (pObj->hotKey[i].type == HOTKEY_ITEM && pObj->hotKey[i].idx == it->detail)
-					FreeHotKey(pObj, i);
-			}
-
-			EraseItem(it);
-		}
-		else
-			it->cooldown = itemCooltime[it->detail] * 12;
-	}
-	else if (it->type == ITEM_NETITEM && !it->count)
-		EraseItem(it);
-
-	return true;
-}
-
-void UseStatue(OBJECT* pObj, int idx)
-{
-	switch (idx) {
-	case ITEM_STATUE_THUNDER:
-
-		pObj->canMagnet = 1 - pObj->canMagnet;
-		//EffectSound(M_BUFF_RED);
-		PlayMusic(M_BUFF_RED);
-		break;
-	case ITEM_STATUE_DIMENSION:
-		if (robin.bossRoom == true || escort.active == true) {
-			infoFrame = INFOFRAME;
-
-			return;
-		}
-
-		ao[raidPlayer].attack = ATTACK_WARP;
-		ao[raidPlayer].attackFrame = skillStartFrame[ATTACK_WARP];
-		//EffectSound(M_BUFF_PINK);
-		PlayMusic(M_BUFF_PINK);
-		break;
-	case ITEM_STATUE_SQUIRREL:
-		pObj->canMagnet = null;
-		pObj->flamer = null;
-		skillInfoFrame = 0;
-		skillUsed = 0;
-		buffItemUsed = 0;
-		effect.color = false;
-		buffItemFrame = 0;
-		GetMotionPtr(pObj);
-
-		memset(pObj->buff, 0, sizeof(pObj->buff));
-		RefreshStat(pObj);
-
-		pObj->attack = ATTACK_SQUIRELL;
-		pObj->attackFrame = skillStartFrame[ATTACK_SQUIRELL];
-		//EffectSound(M_ENEMYDEAD);
-		PlayMusic(M_ENEMYDEAD);
-		break;
-	}
-}
-
 void UseRing(OBJECT* pObj, int idx)
 {
 	ITEM* it = GetItemPtr(idx);
@@ -3510,107 +2700,6 @@ void UseRing(OBJECT* pObj, int idx)
 
 }
 
-void UseItemBox(ITEM* it)
-{
-	int tUse;
-	//레벨 결정
-	arenaRewardLv = 20 + Random(90);
-
-	//타입 결정
-	switch (it->detail) {
-	case ITEM_NET_BOX_WEAPON_HIGH:
-		arenaRewardType = ROBIN;
-		break;
-	case ITEM_NET_BOX_DEFENSE_HIGH:
-		arenaRewardType = ITEM_HELM + Random(15);
-		break;
-	case ITEM_NET_BOX_ACCESSORY_HIGH:
-		arenaRewardType = ITEM_NECK + Random(2);
-		break;
-	case ITEM_NET_BOX_RANDOM:
-		arenaRewardType = Random(ITEM_GEM);
-		break;
-	case ITEM_NET_BOX_GEM:
-		arenaRewardType = ITEM_GEM;
-		arenaRewardLv = 1;
-		break;
-	}
-
-	//등급 결정
-	switch (it->detail) {
-	case ITEM_NET_BOX_WEAPON_HIGH:
-	case ITEM_NET_BOX_DEFENSE_HIGH:
-	case ITEM_NET_BOX_ACCESSORY_HIGH:
-		tUse = Random(1000);
-
-		//고급 10%
-		//희귀 50%
-		//세트 30%
-		//���� 9.7%
-		//전설 0.3%
-		if (tUse < 100)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 600)
-			arenaRewardGrade = GRADE_RARE;
-#ifdef SETITEM
-		else if (tUse < 900)
-			arenaRewardGrade = GRADE_SET;
-#endif
-		else if (tUse < 997 || arenaRewardType >= ITEM_NECK)
-			arenaRewardGrade = GRADE_EPIC;
-		else
-			arenaRewardGrade = GRADE_LEGEND;
-		break;
-	case ITEM_NET_BOX_RANDOM:
-		tUse = Random(100);
-
-		if (tUse < 40)
-			arenaRewardGrade = GRADE_NORMAL;
-		else if (tUse < 75)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 90)
-			arenaRewardGrade = GRADE_RARE;
-#ifdef SETITEM
-		else if (tUse < 97)
-			arenaRewardGrade = GRADE_SET;
-#endif
-		else
-			arenaRewardGrade = GRADE_EPIC;
-		break;
-	case ITEM_NET_BOX_GEM:
-		tUse = Random(100);
-
-		if (tUse < 40)
-			arenaRewardGrade = GRADE_SUPERIOR;
-		else if (tUse < 80)
-			arenaRewardGrade = GRADE_RARE;
-		else
-			arenaRewardGrade = GRADE_EPIC;
-		break;
-	}
-
-	if (arenaRewardGrade == GRADE_LEGEND && (arenaRewardType >= ITEM_NECK || arenaRewardDetail < 6))
-		arenaRewardGrade = GRADE_EPIC;
-
-	//디테일 결정
-	arenaRewardDetail = Max(2, MakeItemDetail(arenaRewardType, arenaRewardLv));
-	EraseItem(it);
-	GetItem(arenaRewardType, arenaRewardLv, arenaRewardDetail, arenaRewardGrade, 1, 0);
-	menuItem = robin.count - 1 + ITEMPTR_INVEN;
-	SetItemString(it, 0, 0);
-
-	//SaveFlag(0);
-}
-
-void SetTestHotKey()
-{
-#ifdef GAMEDEBUG
-	SetHotKey(&ao[ROBIN], HOTKEY_SKILL, SKILL_ROBIN12, 0);
-	SetHotKey(&ao[DIANA], HOTKEY_SKILL, SKILL_DIANA7, 0);
-	SetHotKey(&ao[MAXX], HOTKEY_SKILL, SKILL_MAXX11, 0);
-#endif
-}
-
 void SetHotKey(OBJECT* pObj, int type, int idx, int where)
 {
 	int i;
@@ -3694,9 +2783,7 @@ void FreeHotKey(OBJECT* pObj, int where)
 int GetItemValue(ITEM* it)
 {
 	int i;
-	long long int value, value2, tv1, tv2;
-	int valueInt;
-	float valueFloat;
+	long long int value, tv1, tv2;
 	int* ucPtr = &it->option[0][0];
 
 	value = it->value;
@@ -3759,11 +2846,8 @@ int GetItemValue(ITEM* it)
 
 void SetItemString(ITEM* it, int addDetail, int addCool)
 {
-	long long int value, value2, tv1, tv2;
-	int valueInt;
-	float valueFloat;
+	long long int value, tv1, tv2;
 	int i;
-	int min, max;
 	int* ucPtr = &it->option[0][0];
 
 	if (it->type == EMPTY)
@@ -3786,35 +2870,26 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 				sprintf(dmgStr, textId[TEXT_SHOP_COUNT], it->name, menuItemCount);
 			}
 			temp = TEXT_ITEMDESC_START + GetItemName(it->type, it->detail + addDetail, it->grade);
-			//ReadString(temp);
 			sprintf(tempStr, "%s", TEXTPTR(temp));
 			break;
 		case ITEM_RING:
 			//쿨타임
 			memset(dmgStr, 0, 100);
-			//ReadString(TEXT_COOLTIME);
 			sprintf(dmgStr, TEXTPTR(TEXT_COOLTIME), ringOption[it->detail * RINGOPTIONDATASIZE + 3 + Min(3, it->grade)] * 10);
 
 			temp = TEXT_ITEMDESC_START + (it->set >= SET_RA1 ? TEXT_ITEMDESC_NECK - TEXT_ITEMDESC_START + it->detail + 28 : GetItemName(it->type, it->detail, it->grade));
-			//ReadString(temp);
 			sprintf(tempStr, TEXTPTR(temp), dmgStr);
 			break;
 		case ITEM_RECIPE:
 			temp = TEXT_ITEMNAME_START + GetItemName(it->detail >> 3, it->detail & 0x07, it->grade + 1);
-			//ReadString(temp);
-			//ReadString(TEXT_ITEMDESC_RECIPE);
 
 			switch (it->grade) {
 			default:
-				//ReadString(TEXT_SUPERIOR + it->grade);
 				sprintf(tempStr, "|b%s %s|b%s", TEXTPTR(TEXT_SUPERIOR + it->grade), TEXTPTR(temp), TEXTPTR(TEXT_ITEMDESC_RECIPE));
 				tempStr[1] = itemColorText[it->grade + 1];
-				//TextFree(TEXT_SUPERIOR + it->grade);
 				break;
 			case GRADE_RARE:
-				//ReadString(TEXT_SETNAME_START + (it->set % 100));
 				sprintf(tempStr, "|q%s:|i%s|b%s", TEXTPTR(TEXT_SETNAME_START + (it->set % 100)), TEXTPTR(temp), TEXTPTR(TEXT_ITEMDESC_RECIPE));
-				//TextFree(TEXT_SETNAME_START + (it->set % 100));
 				break;
 #ifdef SETITEM
 			case GRADE_SET:
@@ -3823,8 +2898,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 #endif
 			}
 
-			//TextFree(TEXT_ITEMDESC_RECIPE);
-			//TextFree(temp);
 			break;
 		case ITEM_NETITEM:
 			//�������� ������ ���?�ִ� �������� ��ų�?�Ĵ� ����â�� ���?
@@ -3834,7 +2907,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 			}
 
 			temp = TEXT_ITEMDESC_START + GetItemName(it->type, it->detail, it->grade);
-			//ReadString(temp);
 
 			if (it->detail == ITEM_NET_EXPORB)
 				sprintf(tempStr, TEXTPTR(temp), it->lv);
@@ -3843,7 +2915,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 			break;
 		}
 
-		//TextFree(temp);
 	}
 
 	isT = 0;
@@ -4110,7 +3181,6 @@ void SetItemString_Gem(ITEM* it)
 				}
 				*/
 				sprintf(optionStr[i], TEXTPTR(TEXT_PREFIX_DESC + *ucPtr), value);
-				//TextFree(TEXT_PREFIX_DESC + *ucPtr);
 				isT += 13;
 			}
 		}
@@ -4139,9 +3209,7 @@ void SetItemString_Gem(ITEM* it)
 					break;
 				}
 
-				//ReadString(TEXT_PREFIX_DESC + temp);
 				sprintf(gemStr[i], TEXTPTR(TEXT_PREFIX_DESC + temp), gem[i]);
-				//TextFree(TEXT_PREFIX_DESC + temp);
 				isT += 13;
 			}
 		}
@@ -4173,196 +3241,6 @@ void SetNetString(ITEM* it)
 
 	if (menuFocus >= 100)
 		sprintf(skillStr, textId[TEXT_PRICE_GOLD], it->gold * GOLDRATIO);
-}
-
-void SetRecipeString(int type, int detail, int grade, int set)
-{
-	int tName;
-
-	//제작아이템 이름 : recipeName
-	memset(recipeName, 0, 30);
-	tName = TEXT_ITEMNAME_START + GetItemName(type, detail, grade);
-
-	switch (grade) {
-	default:
-		sprintf(recipeName, "|b%s %s", TEXTPTR(TEXT_NORMAL + grade), TEXTPTR(tName));
-		recipeName[1] = itemColorText[grade];
-		break;
-#ifdef SETITEM
-	case GRADE_SET:
-		sprintf(recipeName, "|q%s:|i%s", TEXTPTR(TEXT_SETNAME_START + (set % 100)), TEXTPTR(tName));
-		break;
-#endif
-	case GRADE_EPIC:
-		sprintf(recipeName, "|g%s", TEXTPTR(tName));
-		break;
-	}
-
-	//제작아이템 대미지 : recipeDmg
-	memset(recipeDmg, 0, 20);
-
-	//무기
-	if (detail / 10 < ITEM_HELM)
-		sprintf(recipeDmg, "|b%d - %d", RoundDiv(itemUpgradeValue[(detail / 10) * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + (detail % 10) * TOTALGRADE * (ITEMMAXLEVEL + 1) + grade * (ITEMMAXLEVEL + 1)] * (100 - weaponRange[detail / 10]), 100), RoundDiv(itemUpgradeValue[(detail / 10) * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + (detail % 10) * TOTALGRADE * (ITEMMAXLEVEL + 1) + grade * (ITEMMAXLEVEL + 1)] * (100 + weaponRange[detail / 10]), 100));
-	else
-		sprintf(recipeDmg, "%d", itemUpgradeValue[(detail / 10) * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + itemLevelLimit[(detail % 10) * 2 + 1]]);
-}
-
-void SetMaterialString(unsigned char* ed, int type)
-{
-	if (type == 1)
-		temp = GetItemName(ed[0], ed[1], GRADE_NORMAL);
-	else
-		temp = GetItemName(ed[3 * type - 4], ed[3 * type - 3], 0);
-
-	memset(recipeName, 0, 40);
-	memset(recipeDesc, 0, 80);
-	sprintf(recipeName, "%s", TEXTPTR(TEXT_ITEMNAME_START + temp));
-	sprintf(recipeDesc, "%s", TEXTPTR(TEXT_ITEMDESC_START + temp));
-}
-
-void SetSocketString(int idx, int type)
-{
-	ITEM* it = GetItemPtr(idx);
-
-	memset(recipeDesc, 0, 80);
-
-	//소켓에 장착된 보석 설명 셋팅
-	if (it->socket[type] < EMPTYINT) {
-		//���� �ɼ� ���� �ؽ�Ʈ ����
-		memset(tempStr, 0, sizeof(tempStr));
-		temp = TEXT_PREFIX_DESC + it->option[6 + type][0];
-		sprintf(tempStr, TEXTPTR(temp), it->option[6 + type][1]);
-
-		//���� �̸��� �ɼ� �ؽ�Ʈ�� ����
-		temp = TEXT_ITEMNAME_GEM + it->socket[type] % 10;
-		sprintf(recipeDesc, "|b%s|b:%s", TEXTPTR(temp), tempStr);
-		recipeDesc[1] = itemColorText[it->socket[type] / 10];
-	}
-	else {
-		//보석이 박혀있지 않다면
-		sprintf(recipeDesc, "%s", TEXTPTR(TEXT_EMPTYSOCKET));
-	}
-}
-
-void SetActiveSkillString(int index, char* str, unsigned short width, unsigned short height)
-{
-	const signed int* skPtr2 = &skillData[SKILLDATASIZE * index];
-	int skillValue, i, skillLv, skillLv2;
-	char* strPtr;
-	int seconds = BUFFINITSECONDS;
-
-	//문자열 합성
-
-	skillLv = ao[raidPlayer].skillLv[index];
-	skillLv2 = GetSkillLv(raidPlayer, index);
-	skillValue = skillLv2 - 1;
-
-	for (i = 0, strPtr = &str[0]; i < 2; i++, skillValue++, strPtr = &tempStr2[0]) {
-		memset(strPtr, 0, 256);
-
-		if (skillValue == MAXSKILLLV || (skillValue < 0 && index != SKILL_DIANA1 && index != SKILL_MAXX2))
-			continue;
-
-		//초기화
-		memset(tempStr, 0, sizeof(tempStr));
-
-		if (*skPtr2 == PASSIVE) {
-			//패시브라면 : 기본적으로 능력치 하나만을 합성한다.
-			if (skillValue < 0) {
-				if (index == SKILL_DIANA1)
-					temp = TEXT_GUN0;
-				else
-					temp = TEXT_BOOMERANG0;
-
-				sprintf(strPtr, "%s", TEXTPTR(temp));
-			}
-			else {
-				if (index == SKILL_ROBIN2)
-					sprintf(strPtr, TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), *(skPtr2 + 6 + skillValue), GetSkillLv(raidPlayer, index) == 0 ? 20 : GetSkillValue(raidPlayer, index + 1));
-				else if (index == SKILL_MAXX2)
-					sprintf(strPtr, TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), *(skPtr2 + 6 + skillValue), skillLv2 / 2 + 1);
-				else
-					sprintf(strPtr, TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), *(skPtr2 + 6 + skillValue));
-			}
-		}
-		else {
-			//액티브라면
-			switch (index) {
-			default:
-				sprintf(strPtr, "%s %s |r%d%%|b%s %s%d%s", TEXTPTR(TEXT_SKILLDESC_COMMON_ROBIN1 + index), TEXTPTR(TEXT_SKILL_DEFAULTATK), (int)RoundDiv(skillDescMod[ao[raidPlayer].type * 8 + (index % 30) - SKILL_ROBIN6] * (100 + *(skPtr2 + 6 + skillValue)), 10), TEXTPTR(TEXT_SKILL_POWER), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-				break;
-			case SKILL_ROBIN13:	//VIT가 |r%d%%|b만큼 증가한다. %s
-			case SKILL_ROBIN14:	//�޴� �������� |i%d%%|b�� �ش��ϴ� MP�� �Ҹ��Ͽ� ���ظ� |r%d%%|b��ŭ ���ҽ�Ų��. %s
-			case SKILL_ROBIN15:	//������ �ִ� �������� |r%d%%|b��ŭ ������ŵ�ϴ�. %s//ȸ�� ������ �ִ� HP�� |r%d%%|b��ŭ HP�� ȸ���Ѵ�. %s
-			case SKILL_ROBIN16:	//최대 HP의 |i%d%%|b만큼 HP를 회복합니다. %s
-			case SKILL_ROBIN17:	//���ظ� ���� �� ���� �������� |r%d%%|b�� ������ �ݻ��Ѵ�. %s
-			case SKILL_DIANA14:	//방어력의 |r%d%%|b를 희생하면서 공격력을 |r%d%%|b만큼 증가시킨다. %s
-			case SKILL_DIANA15:	//������ ���� �������� |i%d%%|b��ŭ MP�� ȸ���Ѵ�. %s
-			case SKILL_DIANA16:	//크리티컬 성공률이 |r%d%%|b만큼 증가한다. %s
-			case SKILL_MAXX14:	//������ ���� �������� |r%d%%|b��ŭ HP�� ȸ���Ѵ�. %s
-			case SKILL_MAXX15:	//회피 성공률이 |r%d%%|b만큼 상승한다. %s
-			case SKILL_MAXX17:	//기절 공격 성공률이 |r%d%%|b만큼 증가한다. %s
-				memset(strPtr, 0, sizeof(strPtr));
-#ifdef SKILL_MAXX14_TO_SKILL_MAXX1
-				if (index == SKILL_MAXX14)
-					seconds += *(skPtr2 + 6 + skillValue) / FPS;
-#endif
-				//|e%d%%�� |b���� %s
-				switch (index) {
-				case SKILL_ROBIN13:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN13_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN13_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_ROBIN14:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN14_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN14_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_ROBIN15:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN15_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN15_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_ROBIN16:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN16_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN16_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_ROBIN17:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_ROBIN17_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_ROBIN17_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-
-				case SKILL_DIANA14:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA14_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_DIANA14_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_DIANA15:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA15_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_DIANA15_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_DIANA16:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA16_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_DIANA16_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-
-				case SKILL_MAXX14:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_MAXX14_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_MAXX14_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_MAXX15:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_MAXX15_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_MAXX15_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				case SKILL_MAXX17:
-					sprintf(strPtr, "|e%d%s %s |r%d%%|b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_MAXX17_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_MAXX17_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-					break;
-				}
-				break;
-			case SKILL_DIANA13:	//회복탄을 발사하여 최대 HP의 |r%d%%|b만큼 HP를 회복한다. %s
-				sprintf(strPtr, "|e%s |r%d%%|b%s %s%d%s", TEXTPTR(TEXT_SKILL_DIANA13_SEP1), (int)*(skPtr2 + 6 + skillValue), TEXTPTR(TEXT_SKILL_DIANA13_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-				break;
-			case SKILL_DIANA17:	//적의 방어도를 |r%d%%|b만큼 무시하여 추가피해를 입힌다. %s
-				seconds = ao[raidPlayer].buff[INC_IGNORE];
-				sprintf(strPtr, "|e%d%s %s |b%s %s%d%s", (int)seconds, TEXTPTR(TEXT_SKILL_SECONDS_WHILE), TEXTPTR(TEXT_SKILL_DIANA17_SEP1), TEXTPTR(TEXT_SKILL_DIANA17_SEP2), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-				break;
-			case SKILL_MAXX16:	//ȸ�� ������ |i%d|b��ŭ MP�� ȸ���Ѵ�. %s
-				sprintf(strPtr, "|b%s %s%d%s", TEXTPTR(TEXT_SKILL_DIANA16_SEP1), TEXTPTR(TEXT_SKILL_COOLTIME), (int)RoundDiv(*(skPtr2 + 2) * (100 - (drawHandle == MD_GAMEMENU ? ao[raidPlayer].ps[PS_DELAY] : 0)), FPS * 100), TEXTPTR(TEXT_SKILL_SECONDS));
-				break;
-			}
-		}
-	}
-
-	memcpy(str, strPtr, sizeof(str));
-	isT = (LineTextStr(str, 1000, 1000, width, -1, -1, 1.0f)) * 13 * _2X + height;
 }
 
 void SetActiveSkillBodyString(int index)
@@ -4617,147 +3495,4 @@ void ResurrectionEffect(OBJECT* pObj)
 	memset(pObj->debuf, 0, sizeof(pObj->debuf));
 	pObj->dead = false;
 	pObj->O2 = OXYGEN;
-}
-
-void StoneRecipe(ITEM* it)
-{
-	int i;
-	int idx = GetInvenIdx(it->type, it->detail, it->grade);
-
-	//조합석을 줄여준다.
-	i = GetInvenIdx(ITEM_NETITEM, ITEM_NET_RECIPE, GRADE_NORMAL);
-
-	if (robin.inven[i].count > 1)
-		robin.inven[i].count--;
-	else {
-		if (i < GetInvenIdx(it->type, it->detail, it->grade))
-			idx--;
-
-		EraseItem(&robin.inven[i]);
-	}
-
-	//조합처리
-	memcpy(&tempItem, &robin.inven[idx], sizeof(ITEM));
-	MakeItem(&robin.inven[idx], tempItem.detail >> 3, tempItem.lv, tempItem.grade + 1, tempItem.detail & 0x07, tempItem.set + 1);
-
-	//�ش� �������� ����ش�?
-	SetItemString(it, 0, 0);
-	menuItem = idx;
-
-	//저장한다.
-	//SaveFlag(0);
-
-	menuDepth = ((menuFocus < 100 && stoneWhere == 1)) ? 1 : 2;
-}
-
-void StoneResolution(int idx)
-{
-	int i, count;
-	ITEM* it = GetItemPtr(idx);
-
-	//분해처리
-	for (i = 0, count = 0; i < 6; i++) {
-		if (it->socket[i] != EMPTYINT)
-			count++;
-	}
-
-	i = GetItemCount(ITEM_NETITEM, ITEM_NET_RESOLUTION, GRADE_NORMAL);
-
-	//�κ��丮�� ���� ������ŭ�� �������?�ִٸ�
-	if (count == 0) {
-		menuDepth = 19;
-		//menuResult = TEXT_NOGEM_SOCKET;
-		return;
-	}
-	else if (robin.count + count <= robin.maxInven || (robin.count + count - 1 == robin.maxInven && i == 1)) {
-		//분해석을 하나 소비한다.
-		count = GetInvenIdx(ITEM_NETITEM, ITEM_NET_RESOLUTION, GRADE_NORMAL);
-
-		if (i == 1) {
-			EraseItem(&robin.inven[count]);
-
-			if (idx < ITEMPTR_EQUIP && count < idx) {
-				idx -= 1;
-				it = GetItemPtr(idx);
-			}
-		}
-		else
-			robin.inven[count].count--;
-
-		//소켓을 검사한다.
-		for (i = 0; i < 6; i++) {
-			//보석이 장착되어 있다면
-			if (it->socket[i] != EMPTYINT) {
-				//������ �κ��丮�� �ִ´�.
-				MakeItem(&tempItem, ITEM_GEM, 1, it->socket[i] / 10, it->socket[i] % 10, 0);
-				tempItem.option[0][0] = it->option[i + 6][0];
-				tempItem.option[0][1] = it->option[i + 6][1];
-				memcpy(&robin.inven[robin.count], &tempItem, sizeof(ITEM));
-				robin.count++;
-
-				//�����?����ĭ�� ����ش�?
-				it->socket[i] = EMPTYINT;
-				it->option[i + 6][0] = EMPTYINT;
-				it->option[i + 6][1] = 0;
-			}
-		}
-
-		//���¸� �����Ѵ�.
-		RefreshStat(&ao[PLAYER]);
-
-		//�ش� �������� ����ش�?
-		SetItemString(it, 0, 0);
-		menuItem = idx;
-
-		//저장한다.
-		//SaveFlag(0);
-
-		menuDepth = ((menuFocus < 100 && stoneWhere == 1)) ? 1 : 2;
-	}
-	else {
-		//menuResult = TEXT_INVENTORY_LACK;
-		return;
-	}
-}
-
-void StoneSocket(int idx)
-{
-	int i, count;
-	ITEM* it = GetItemPtr(idx);
-
-	//소켓을 다시 뚫어준다.
-	it->count = 2 + Proc(proc4, 4);
-
-	//�����?����ĭ�� ����ش�?
-	for (i = 0; i < 6; i++) {
-		it->socket[i] = EMPTYINT;
-		it->option[i + 6][0] = EMPTYINT;
-		it->option[i + 6][1] = 0;
-	}
-
-	//소켓석을 하나 소비한다.
-	count = GetInvenIdx(ITEM_NETITEM, ITEM_NET_SOCKET, GRADE_NORMAL);
-
-	if (robin.inven[count].count == 1) {
-		EraseItem(&robin.inven[count]);
-
-		if (idx < ITEMPTR_EQUIP && count < idx) {
-			idx -= 1;
-			it = GetItemPtr(idx);
-		}
-	}
-	else
-		robin.inven[count].count--;
-
-	//���¸� �����Ѵ�.
-	RefreshStat(&ao[PLAYER]);
-
-	//�ش� �������� ����ش�?
-	SetItemString(&robin.inven[idx], 0, 0);
-	menuItem = idx;
-
-	//저장한다.
-	//SaveFlag(0);
-
-	menuDepth = ((menuFocus < 100 && stoneWhere == 1)) ? 1 : 2;
 }
