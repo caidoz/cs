@@ -217,7 +217,14 @@ void BarDraw(BAR* barP, float zoom)
 		//그 데모 블록을 거치지 않은 세이브에서 일반 플레이 내내 버튼이 죽어 있게 된다.
 		bool heartBetTutorialLocked = IsTutorialPlaying() && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET];
 
-		DrawHeartButton(betHeart[bet], xOffset + barP->x, barP->y, barP->zoom, (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked ? true : false), true);
+		//하트베팅 버튼
+		//터치영역과 같은 사각형으로 눌림을 물어보고, 한가운데를 붙잡아 배율만 준다.
+		float btnPress = GetButtonPressScale(xOffset + barP->x, barP->y,
+			(float)HEARTBUTTONWIDTH * barP->zoom, (float)HEARTBUTTONHEIGHT * barP->zoom);
+		float btnGapX = (float)HEARTBUTTONWIDTH * barP->zoom * (btnPress - 1.0f) / 2;
+		float btnGapY = (float)HEARTBUTTONHEIGHT * barP->zoom * (btnPress - 1.0f) / 2;
+
+		DrawHeartButton(betHeart[bet], xOffset + barP->x - btnGapX, barP->y + btnGapY, barP->zoom * btnPress, (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked ? true : false), true);
 
 		if (IsTouchFuncEnabled(TOUCH_FUNC_HEARTAMOUNT) && !heartBetTutorialLocked)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)HEARTBUTTONWIDTH * barP->zoom, (float)HEARTBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_HEARTAMOUNT);
@@ -228,11 +235,20 @@ void BarDraw(BAR* barP, float zoom)
 		//테두리만 남으면 "웬 사각형이 혼자 움직이는" 것으로 보인다.
 		break;
 	case BAR_PLAY://플레이 버튼
-		DrawAttackButton(count, xOffset + barP->x, barP->y, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_ATTACK), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
+	{
+			//공격 버튼
+			//터치영역과 같은 사각형으로 눌림을 물어보고, 한가운데를 붙잡아 배율만 준다.
+			float btnPress = GetButtonPressScale(xOffset + barP->x, barP->y,
+				(float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom);
+			float btnGapX = (float)ATTACKBUTTONWIDTH * barP->zoom * (btnPress - 1.0f) / 2;
+			float btnGapY = (float)ATTACKBUTTONHEIGHT * barP->zoom * (btnPress - 1.0f) / 2;
+
+			DrawAttackButton(count, xOffset + barP->x - btnGapX, barP->y + btnGapY, barP->zoom * btnPress, IsTouchFuncEnabled(TOUCH_FUNC_ATTACK), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_ATTACK);
 
 		break;
+	}
 	case BAR_JOYSTICK:
 		if (joyReturning) {
 			joyDx += (0.0f - joyDx) * joyReturnSpeed;
@@ -250,10 +266,19 @@ void BarDraw(BAR* barP, float zoom)
 			SetRectPoint(xOffset + barP->x - (float)(108 / 2) * barP->zoom, barP->y + (float)(93 / 2) * barP->zoom, (float)108 * barP->zoom, (float)93 * barP->zoom, TOUCH_FUNC_MOVE);
 		break;
 	case BAR_JUMP:
-		DrawJumpButton(count, xOffset + barP->x, barP->y, barP->zoom, IsTouchFuncEnabled(TOUCH_FUNC_JUMP), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
+	{
+			//점프 버튼
+			//터치영역과 같은 사각형으로 눌림을 물어보고, 한가운데를 붙잡아 배율만 준다.
+			float btnPress = GetButtonPressScale(xOffset + barP->x, barP->y,
+				(float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom);
+			float btnGapX = (float)ATTACKBUTTONWIDTH * barP->zoom * (btnPress - 1.0f) / 2;
+			float btnGapY = (float)ATTACKBUTTONHEIGHT * barP->zoom * (btnPress - 1.0f) / 2;
+
+			DrawJumpButton(count, xOffset + barP->x - btnGapX, barP->y + btnGapY, barP->zoom * btnPress, IsTouchFuncEnabled(TOUCH_FUNC_JUMP), false, rectContainsTouchPoint(barP->x + (float)(HEARTBARWIDTH + 8 * _2X) * barP->zoom, barP->y + (float)6 * _2X * barP->zoom, (float)ATTACKBUTTONWIDTH * 2.0f * zoom, (float)ATTACKBUTTONHEIGHT * 2.0f * barP->zoom) * touchFrame);
 		if (touchDisable == false)
 			SetRectPoint(xOffset + barP->x, barP->y, (float)ATTACKBUTTONWIDTH * barP->zoom, (float)ATTACKBUTTONHEIGHT * barP->zoom, TOUCH_FUNC_JUMP);
 		break;
+	}
 	case BAR_BATTLECOIN:
 		if (count < 0)
 			count = 0;
