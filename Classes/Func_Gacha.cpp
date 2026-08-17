@@ -3731,10 +3731,11 @@ void GachaDraw(void)
 					}
 					else
 					{
-						//하트바의 하트 아이콘은 바 오른쪽 끝이 아니라 왼쪽에 있다.
-						//바 좌표에서 바 길이만큼 왼쪽으로 물리고 조금 내린다.
+						//하트바의 하트 아이콘은 바 맨 왼쪽에 있다.
+						//bar[].x는 바 한가운데이므로 바 길이의 절반만 왼쪽으로
+						//가야 왼쪽 끝이다. 길이만큼 통째로 빼면 두 배로 넘어간다.
 						float heartX =
-							bar[BAR_HEART].x - HEARTBARWIDTH + ITEMICONSIZE / 2;
+							bar[BAR_HEART].x - HEARTBARWIDTH / 2 + ITEMICONSIZE / 2;
 
 						float heartY =
 							bar[BAR_HEART].y - 8 * _2X - ITEMICONSIZE / 2;
