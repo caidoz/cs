@@ -1705,7 +1705,6 @@ void MemRectGraph(int x, int y, int w, int h, int type)
 //color1 �� ���� ���Ѱ�, color2, color3, color4�� ���� ���Ѱ�
 void DrawColorFrame(int x, int y, int w, int h, int color1, int color2, int color3, int color4)
 {
-	//CC_PROFILER_START("");
 
 	MemRectBoth(x, y, w, h, color4, color1);
 	MemRect(x + 1 * _2X, y - 1 * _2X, w - 3 * _2X, 1 * _2X, color1);
@@ -1715,7 +1714,6 @@ void DrawColorFrame(int x, int y, int w, int h, int color1, int color2, int colo
 	MemRect(x + w - 2 * _2X, y - 2 * _2X, 1 * _2X, h - 4 * _2X, color3);
 	MemRect(x + 2 * _2X, y - (h - 2 * _2X), w - 3 * _2X, 1 * _2X, color3);
 
-	//CC_PROFILER_STOP("")//CC_PROFILER_DISPLAY_TIMERS();
 }
 
 void DrawFrame(int x, int y, int w, int h, int type)
@@ -3182,7 +3180,6 @@ void SetAlpha(int alpha)
 		alpha = 4;
 
 	m_lgrpAlpha = alpha;
-	//MC_grpSetContext(&gContext, MC_GRP_CONTEXT_ALPHA_IDX, (void *)((m_lgrpAlpha << 3) - 1));
 }
 
 float GetAlphaWidth(int idx, int type, float zoom)
@@ -6250,7 +6247,6 @@ void DrawSelect(int x, int y, int w, int h, int grade)
 	int tRect[4];
 
 	if (w > 20 || h > 20)
-		//fillRectAlpha(x, y, w, h, COLOR_WHITE, 0x20);
 		return;
 
 	tRect[0] = x + offX;

@@ -562,9 +562,6 @@ void TitleDraw(void)
 			//DrawHeart(DX - ITEMICONSIZE, ITEMICONSIZE + BOTTOMMENUHEIGHT, false, false, LEFT, 1.0f, gScreenBuffer, gScreenLayer, false);
 			//DrawFrame(0, 120 * _2X, DX, 120 * _2X, FRAME_TALKWIN, gScreenBuffer, gScreenLayer, false);
 
-			//DrawWindow2(30 * _2X, DY - 30 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 1.0f, gScreenBuffer, gScreenLayer, false);
-			//DrawWindow2(30 * _2X, DY - 130 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 0.5f, gScreenBuffer, gScreenLayer, false);
-			//DrawWindow2(30 * _2X, DY - 230 * _2X, 120 * _2X, 60 * _2X, COLOR_NAVY, 0.2f, gScreenBuffer, gScreenLayer, false);
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);

@@ -2802,7 +2802,6 @@ void NeutralDraw(OBJECT* pObj)
 					imgFile = MAP_OBJ_IMG;
 
 				DrawImage(*(usPtr + 2), *(usPtr + 3), *usPtr, *(usPtr + 1), xOffset + pObj->x - rx + pObj->cpx, STATUSWIN_Y + (rh - 4) * TSIZE - ry - (pObj->y - OBJIMGGAP + pObj->cpy + neutralOffset[pObj->motion] - ((pObj->type == OBJ_ITEM && pObj->apx == ITEM_QUEST_REEF) ? 12 * _2X : 0 * _2X) * pObj->zoom), pObj->dirF, false, false, false, false, pObj->zoom, sprite[imgFile], imgFile);
-				//MemImage(*(usPtr + 2), *(usPtr + 3), *usPtr, *(usPtr + 1), pObj->x - rx + pObj->cpx, pObj->y - ry - OBJIMGGAP + pObj->cpy + d.neutralOffset[pObj->motion] - ((pObj->type == OBJ_ITEM && pObj->apx == ITEM_QUEST_REEF) ? 12 : 0), imgFile);
 			}
 		}
 		else

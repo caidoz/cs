@@ -2264,7 +2264,6 @@ void SS_UserLevelUp(int getExp)
 
 int CheckSpace(int space)
 {
-	//int sp = MC_fsAvailable();
 
 	//if (sp != M_E_ERROR && sp < space)
 	//	return space - sp;
@@ -2293,7 +2292,6 @@ long MC_knlCurrentTimeStamp()
 
 	seconds = difftime(timer, mktime(&y2k));
 
-	//printf ("%.f seconds since January 1, 2000 in the current timezone", seconds);
 
 	return seconds;
 }

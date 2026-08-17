@@ -2483,7 +2483,6 @@ void PlayerMove(OBJECT* pObj)
 #endif
 
 chk:
-	//PlayerMove_Check(pObj, motion, height, playerMoveKey);
 	{
 		int i;
 		if (pObj->type == MAXX && pObj->motion == PO_C2_STOP0)
@@ -3489,7 +3488,6 @@ void EnemyPlayerMove(OBJECT* pObj)
 #endif
 
 chk:
-	//PlayerMove_Check(pObj, motion, height, playerMoveKey);
 	{
 		int i;
 		if (pObj->type == MAXX && pObj->motion == PO_C2_STOP0)
@@ -12271,7 +12269,6 @@ void WarpMove(OBJECT* pObj)
 	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])
 		return;
 
-	//MC_knlPrintk("WarpObj:%d, Type:%d, X:%d, Y:%d\n", i, ao[i].type, ao[i].x, ao[i].y);
 
 	//if (robin.bossRoom == false && (pPlayer->y < 1 || pPlayer->y > ((rh - 4) * TSIZE - 1)))
 	//	goto SETROOM;
@@ -12384,7 +12381,6 @@ void WarpMove(OBJECT* pObj)
 				//MoveObj(&ao[i]);
 			}
 			*/
-			//SetSimpleEnemy();
 
 			memset(&robin.enemyObj, 0, sizeof(robin.enemyObj));
 			memset(&ao[ENEMY], 0, sizeof(robin.enemyObj));

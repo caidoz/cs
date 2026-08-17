@@ -989,7 +989,6 @@ void Demo(void)
 
 #ifdef DEBUG
 	//memset(debugStr, 0, sizeof(debugStr));
-	//MC_knlSprintk(debugStr, "|dmap:%d/x:%d/y:%d/dx:%d/dy:%d", movie.index, movie.start, movie.frame, menuDepth, curMenu);
 	//CenterTextStr(debugStr, DX / 2, DY - 12);
 #endif
 

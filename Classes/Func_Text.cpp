@@ -919,7 +919,6 @@ bool GameWriteFile(char* filename, char* buf, int size)
 	}
 
 	fwrite(buf, sizeof(char), size, fp);
-	//fputs(buf, fp);
 	fclose(fp);
 	return true;
 }
@@ -938,7 +937,6 @@ bool LoadFile(char* filename, char* buf, int size)
 	}
 
 	fread(buf, sizeof(char), size, fp);
-	//fgets(buf, size, fp);
 	fclose(fp);
 	return true;
 }

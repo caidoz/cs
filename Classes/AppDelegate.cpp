@@ -132,7 +132,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	register_all_packages();
 
-	//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	// create a scene. it's an autorelease object
 	auto scene = Core::createScene();
 

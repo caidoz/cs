@@ -746,7 +746,6 @@ void MakeItem(ITEM* it, int type, int lv, int grade, int detail, int set)
 	//if (robin.map >= CAVE_A_1 && it->set >= 100)
 	//	it->set -= 100;
 
-	//SetRequire(it);
 	it->gold = GetItemPrice(it);
 
 	//이름 정하기
@@ -2596,7 +2595,6 @@ void EraseNetItem(ITEM* it)
 		it->socket[i] = EMPTYINT;
 
 	nInvenCnt--;
-	//ArrangeNetInven();
 }
 
 void ArrangeInven(void)
@@ -2711,7 +2709,6 @@ void OrderInven(void)
 		invenSort[TOTALINVENTORY + i] = GetOrder(&robin.inven[i], i);	//�������� �켱���� ��ȣ�� �˾ƿ´�.
 	}
 
-	//QuickSort(invenSort, 0, robin.count);
 	RadixSort(invenSort, robin.count);
 
 	//�ش� �ε��� ��ȣ�� ���� shop�� �����Ѵ�
@@ -3777,35 +3774,26 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 				sprintf(dmgStr, textId[TEXT_SHOP_COUNT], it->name, menuItemCount);
 			}
 			temp = TEXT_ITEMDESC_START + GetItemName(it->type, it->detail + addDetail, it->grade);
-			//ReadString(temp);
 			sprintf(tempStr, "%s", TEXTPTR(temp));
 			break;
 		case ITEM_RING:
 			//쿨타임
 			memset(dmgStr, 0, 100);
-			//ReadString(TEXT_COOLTIME);
 			sprintf(dmgStr, TEXTPTR(TEXT_COOLTIME), ringOption[it->detail * RINGOPTIONDATASIZE + 3 + Min(3, it->grade)] * 10);
 
 			temp = TEXT_ITEMDESC_START + (it->set >= SET_RA1 ? TEXT_ITEMDESC_NECK - TEXT_ITEMDESC_START + it->detail + 28 : GetItemName(it->type, it->detail, it->grade));
-			//ReadString(temp);
 			sprintf(tempStr, TEXTPTR(temp), dmgStr);
 			break;
 		case ITEM_RECIPE:
 			temp = TEXT_ITEMNAME_START + GetItemName(it->detail >> 3, it->detail & 0x07, it->grade + 1);
-			//ReadString(temp);
-			//ReadString(TEXT_ITEMDESC_RECIPE);
 
 			switch (it->grade) {
 			default:
-				//ReadString(TEXT_SUPERIOR + it->grade);
 				sprintf(tempStr, "|b%s %s|b%s", TEXTPTR(TEXT_SUPERIOR + it->grade), TEXTPTR(temp), TEXTPTR(TEXT_ITEMDESC_RECIPE));
 				tempStr[1] = itemColorText[it->grade + 1];
-				//TextFree(TEXT_SUPERIOR + it->grade);
 				break;
 			case GRADE_RARE:
-				//ReadString(TEXT_SETNAME_START + (it->set % 100));
 				sprintf(tempStr, "|q%s:|i%s|b%s", TEXTPTR(TEXT_SETNAME_START + (it->set % 100)), TEXTPTR(temp), TEXTPTR(TEXT_ITEMDESC_RECIPE));
-				//TextFree(TEXT_SETNAME_START + (it->set % 100));
 				break;
 #ifdef SETITEM
 			case GRADE_SET:
@@ -3814,8 +3802,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 #endif
 			}
 
-			//TextFree(TEXT_ITEMDESC_RECIPE);
-			//TextFree(temp);
 			break;
 		case ITEM_NETITEM:
 			//�������� ������ ���?�ִ� �������� ��ų�?�Ĵ� ����â�� ���?
@@ -3825,7 +3811,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 			}
 
 			temp = TEXT_ITEMDESC_START + GetItemName(it->type, it->detail, it->grade);
-			//ReadString(temp);
 
 			if (it->detail == ITEM_NET_EXPORB)
 				sprintf(tempStr, TEXTPTR(temp), it->lv);
@@ -3834,7 +3819,6 @@ void SetItemString(ITEM* it, int addDetail, int addCool)
 			break;
 		}
 
-		//TextFree(temp);
 	}
 
 	isT = 0;
@@ -4101,7 +4085,6 @@ void SetItemString_Gem(ITEM* it)
 				}
 				*/
 				sprintf(optionStr[i], TEXTPTR(TEXT_PREFIX_DESC + *ucPtr), value);
-				//TextFree(TEXT_PREFIX_DESC + *ucPtr);
 				isT += 13;
 			}
 		}
@@ -4130,9 +4113,7 @@ void SetItemString_Gem(ITEM* it)
 					break;
 				}
 
-				//ReadString(TEXT_PREFIX_DESC + temp);
 				sprintf(gemStr[i], TEXTPTR(TEXT_PREFIX_DESC + temp), gem[i]);
-				//TextFree(TEXT_PREFIX_DESC + temp);
 				isT += 13;
 			}
 		}

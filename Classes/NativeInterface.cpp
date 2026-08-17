@@ -21,7 +21,6 @@ using namespace cocos2d;
 #define SpeakFunc "SpeakString"
 
 void Jni_callSpeakString(const char *javaString, int voiceType) {
-	//CCLog("-----------Jni_callSpeakString ");
 	//return;
 	if (voiceType == VOICE_NOVOICE)
 		return;
@@ -29,7 +28,6 @@ void Jni_callSpeakString(const char *javaString, int voiceType) {
 	cocos2d::JniMethodInfo methodInfo;
 	if (!cocos2d::JniHelper::getStaticMethodInfo(methodInfo, CLASS_NAME, SpeakFunc, "(Ljava/lang/String;)V"), voiceType)
 	{
-		//CCLog(" 111111111111111111111111111 ");
 		return;
 	}
 	jstring stringArg = methodInfo.env->NewStringUTF(javaString);

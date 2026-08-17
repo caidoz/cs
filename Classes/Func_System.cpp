@@ -2231,7 +2231,6 @@ void NewGame(void)
 
 	//SetBossObj();
 	SetEnemyUser();
-	//SetStageHouse();
 
 	InitMenu();
 	InitCalendar();
@@ -2443,7 +2442,6 @@ void NewGame(void)
 	SaveGame();
 
 #ifdef DEBUG
-	//DebugInit();
 #endif
 }
 
@@ -4978,7 +4976,6 @@ void SaveGame(void)
 //#ifdef CRYPT
 //	DecryptFile(SAVEFILE, saveMem, sizeof(ROBINDATA));
 //#else
-//	ReadFile(SAVEFILE, saveMem, sizeof(ROBINDATA));
 //#endif
 
 	for (i = ROBIN; i < TOTALPLAYER; i++) {
