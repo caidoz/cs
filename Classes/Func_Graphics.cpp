@@ -4713,26 +4713,29 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 // 둘 다 걸리면 눌리면서 동시에 밝아져서 과해 보인다.
 void DrawButtonPressHighlight(void)
 {
-	int frame;
 	int alpha;
 
 	if (buttonPressHandled)
 		return;
 
-	if (buttonPressFunc >= 0) {
-		frame = BUTTON_POPFRAME;
-	}
-	else if (buttonPopFunc >= 0 && buttonPopFrame > 0) {
-		//뗀 뒤에는 옅어지며 사라진다. 짧게 톡 누른 것도 눈에 남는다.
-		frame = buttonPopFrame;
-	}
-	else
-		return;
-
 	if (buttonPressRect[2] <= 0 || buttonPressRect[3] <= 0)
 		return;
 
-	alpha = BUTTON_HIGHLIGHTALPHA * frame / BUTTON_POPFRAME;
+	if (buttonPressFunc >= 0) {
+		//누르고 있는 동안은 그대로 밝다.
+		alpha = BUTTON_HIGHLIGHTALPHA;
+	}
+	else if (buttonHighlightFrame > 0) {
+		//뗀 뒤 HOLD 동안은 그대로 두고, 그 뒤 FADE 동안 옅어진다.
+		//톡 누르면 손가락이 3~5프레임만 닿으므로 이 꼬리가 없으면 안 보인다.
+		if (buttonHighlightFrame > BUTTON_HIGHLIGHTFADE)
+			alpha = BUTTON_HIGHLIGHTALPHA;
+		else
+			alpha = BUTTON_HIGHLIGHTALPHA * buttonHighlightFrame
+				/ BUTTON_HIGHLIGHTFADE;
+	}
+	else
+		return;
 
 	if (alpha <= 0)
 		return;

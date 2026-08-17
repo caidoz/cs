@@ -3437,6 +3437,9 @@ void ClearButtonPress(bool pop)
 		buttonPopFrame = BUTTON_POPFRAME;
 		buttonPopX = buttonPressX;
 		buttonPopY = buttonPressY;
+
+		//떼고 나서도 잠깐 남아 있어야 톡 누른 것이 눈에 든다.
+		buttonHighlightFrame = BUTTON_HIGHLIGHTHOLD + BUTTON_HIGHLIGHTFADE;
 	}
 
 	buttonPressFunc = -1;
@@ -3450,6 +3453,9 @@ void UpdateButtonPress(void)
 {
 	//이번 프레임에 누가 스스로 표현하는지는 지금부터 다시 센다.
 	buttonPressHandled = false;
+
+	if (buttonHighlightFrame > 0)
+		buttonHighlightFrame--;
 
 	if (buttonPopFrame > 0)
 		buttonPopFrame--;
@@ -3492,6 +3498,9 @@ float GetButtonScale(int func, int x, int y, int w, int h)
 	if (func == buttonPopFunc && buttonPopFrame > 0
 		&& ButtonHit(buttonPopX, buttonPopY, x, y, w, h)) {
 		float t = (float)buttonPopFrame / (float)BUTTON_POPFRAME;
+
+		//튀는 동안에도 이 버튼이 스스로 표현하는 중이다.
+		buttonPressHandled = true;
 
 		return 1.0f + (BUTTON_POPSCALE - 1.0f) * t;
 	}

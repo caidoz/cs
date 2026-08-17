@@ -349,6 +349,8 @@ int buttonPressX = 0, buttonPressY = 0;
 //이번 프레임에 눌린 버튼이 스스로 배율로 표현했는가.
 //표현했으면 아래에서 공용 하이라이트를 덧그리지 않는다.
 bool buttonPressHandled = false;
+//하이라이트가 남아 있는 프레임. 눌림/튐과 별개로 흐른다.
+int buttonHighlightFrame = 0;
 int buttonPopX = 0, buttonPopY = 0;
 int swipeIndex;
 int swipeRect[TOTALSWIPECNT][5];//int rx, int ry, int width, int height, int func

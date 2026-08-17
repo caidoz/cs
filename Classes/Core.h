@@ -1288,6 +1288,7 @@ extern int buttonPopFunc;
 extern int buttonPopFrame;
 extern int buttonPressX, buttonPressY;
 extern bool buttonPressHandled;
+extern int buttonHighlightFrame;
 extern int buttonPopX, buttonPopY;
 extern int swipeIndex;
 extern int swipeRect[TOTALSWIPECNT][5];//int rx, int ry, int width, int height, int func

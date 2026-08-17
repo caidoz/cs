@@ -35,6 +35,10 @@
 #define BUTTON_POPSCALE            1.06f          // 뗀 직후 튀어오르는 배율
 #define BUTTON_POPFRAME            10             // 튀었다가 돌아오는 프레임
 #define BUTTON_HIGHLIGHTALPHA      12             // 눌린 터치영역을 덮는 밝기(32가 불투명)
+// 톡 누르면 손가락이 3~5프레임만 닿아 있어서, 그동안만 보여주면 눈에 안 남는다.
+// 떼고 나서도 잠깐 그대로 뒀다가 옅어지게 한다.
+#define BUTTON_HIGHLIGHTHOLD       10             // 뗀 뒤 그대로 있는 프레임
+#define BUTTON_HIGHLIGHTFADE       14             // 그 뒤 옅어지는 프레임
 
 // --- 보상 재화 마크(하트/골드)가 바로 날아갈 때의 배율
 // 값이 클수록 크게 보여준다. 1000부터 자릿수가 하나 늘 때마다 한 단계씩
