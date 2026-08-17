@@ -3136,6 +3136,48 @@ void GachaDraw(void)
 			MENU_IMG);
 
 		//----------------------------------------------------
+		// 리본 제목
+		//
+		// 창 그림 위쪽에 파란 리본이 붙어 있는데 글자가 없어서 비어 보였다.
+		// 위치와 크기를 창 크기에서 뽑아 쓰므로 창이 커지거나 연출로
+		// 확대되는 동안에도 리본 한가운데를 따라간다.
+		//----------------------------------------------------
+		{
+			//창 그림의 윗변. 리본은 여기서부터 아래로 조금 내려온 자리에 있다.
+			float panelTop =
+				panelCY + panelDisplayH / 2.0f;
+
+			//리본 한가운데까지의 거리(창 높이 대비)와 리본 안쪽 폭.
+			const float TITLE_CENTER_RATIO = 0.058f;
+			const float TITLE_WIDTH_RATIO = 0.68f;
+
+			float titleY =
+				panelTop - panelDisplayH * TITLE_CENTER_RATIO;
+
+			float titleZoom =
+				panelZoom * 1.1f;
+
+			//리본을 넘치면 그만큼 줄인다. 글자가 길어지거나
+			//다른 언어로 바뀌어도 리본 밖으로 안 나간다.
+			float titleW =
+				StringWidth(TEXTPTR(TEXT_GACHAREWARD_TITLE), titleZoom);
+
+			float titleMaxW =
+				panelDisplayW * TITLE_WIDTH_RATIO;
+
+			if (titleW > titleMaxW && titleW > 0.0f)
+				titleZoom *= titleMaxW / titleW;
+
+			SetFontColor(COLOR_WHITE);
+
+			//글자 높이의 절반만큼 올려야 리본 세로 한가운데에 온다.
+			CenterText(TEXT_GACHAREWARD_TITLE,
+				panelCX,
+				titleY + (float)FONT_HEIGHT * titleZoom / 2.0f,
+				titleZoom);
+		}
+
+		//----------------------------------------------------
 		// 카드 배치
 		//
 		// 최대 4열 x 3행 = 12장 격자를 고정으로 잡고, 맨 윗줄 왼쪽부터 한 장씩 채운다.

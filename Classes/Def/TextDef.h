@@ -6244,6 +6244,9 @@ typedef enum _textDef {
 	TEXT_TUTORIAL_EQUIPWEAR,
 	TEXT_TUTORIAL_BETUP,
 
+	//상자를 열고 나오는 보상 요약창의 리본 제목
+	TEXT_GACHAREWARD_TITLE,
+
 	TEXT_LENGTH,
 
 	MAXLABELCNT = TEXT_LENGTH,
