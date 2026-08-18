@@ -1518,10 +1518,20 @@ static const short optionLangFlagX[12] = {
 	581, 652, 725, 793, 861, 931,
 };
 
-//언어 이름은 그 언어로 적어야 알아본다. 번역하지 않는다.
+//언어 이름. 그 언어로 적어야 자기 언어를 알아보므로 원래는 원어 표기를 쓴다.
+//다만 지금 폰트(fonts/font.ttf)는 한글과 ASCII만 들고 있어서, 일본어/중국어/
+//태국어 글자와 라틴 확장 문자(ñ ê ç ế ệ)가 전부 두부(.notdef)로 나온다.
+//
+//그래서 폰트가 그릴 수 있는 표기로 낮춰 적는다.
+// - 라틴 계열은 발음기호만 뗀다. Espanol/Portugues/Francais/Tieng Viet은
+//   그래도 자기 언어로 읽힌다.
+// - 일본어/중국어/태국어는 글자 자체가 없어서 영어 이름으로 적는다.
+//   국기가 옆에 있으므로 알아보는 데는 지장이 없다.
+//
+//폰트를 바꾸거나 이름을 그림으로 미리 구워 넣으면 원어 표기로 되돌리면 된다.
 static const char* const optionLangName[12] = {
-	"한국어", "English", "日本語", "简体中文", "繁體中文", "Español",
-	"Português", "Français", "Deutsch", "ไทย", "Bahasa Indonesia", "Tiếng Việt",
+	"한국어", "English", "Japanese", "Chinese", "Chinese (T)", "Espanol",
+	"Portugues", "Francais", "Deutsch", "Thai", "Bahasa Indonesia", "Tieng Viet",
 };
 
 //option.png 한 조각을 그대로 그린다.
@@ -1750,19 +1760,29 @@ void OptionLanguageDraw(int x, int y, float zoom)
 		if (tw > maxW && tw > 0)
 			tz *= maxW / tw;
 
-		//고른 줄은 파란 바탕이라 흰 글자, 아닌 줄은 크림 바탕이라 갈색 글자다.
-		SetFontColor(on ? COLOR_WHITE : COLOR_BROWN);
-		DrawTextStr(optionLangName[i], textL,
-			by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz);
-		SetFontColor(COLOR_WHITE);
-
+		//고른 줄은 이름을 위로 올리고 체크를 그 아래에 놓아 두 단으로 만든다.
+		//한 줄에 나란히 두면 이름이 길 때 체크가 글자를 덮는다.
+		//
+		//글자도 다르게 그린다. 고른 줄은 파란 바탕이라 테두리 있는 흰 글자가
+		//또렷하고, 안 고른 줄은 크림 바탕이라 테두리를 빼야 회색이 회색으로
+		//보인다. 테두리를 두르면 검은 테가 글자를 덮어 까맣게만 보인다.
 		if (on) {
-			float ch = rowH * 0.56f;
+			float ch = rowH * 0.38f;
 			float csc = ch / (float)OPT_CHECK_H;
 
+			SetFontColor(COLOR_WHITE);
+			DrawTextStr(optionLangName[i], textL,
+				by - rowH * 0.30f + (float)FONT_HEIGHT * tz / 2, tz);
+			SetFontColor(COLOR_WHITE);
+
 			DrawOptionPart(OPT_CHECK_X, OPT_CHECK_Y, OPT_CHECK_W, OPT_CHECK_H,
-				bx + colW - rowH * 0.16f - (float)OPT_CHECK_W * csc,
-				by - (rowH - ch) / 2, csc);
+				textL, by - rowH * 0.54f, csc);
+		}
+		else {
+			SetFontColor(COLOR_BROWN);
+			DrawTextStrSystem(optionLangName[i], textL,
+				by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz, LEFT, false);
+			SetFontColor(COLOR_WHITE);
 		}
 
 		SetRectPoint(bx, by, colW, rowH, TOUCH_FUNC_OPTION_LANGUAGE_SELECT + i);
