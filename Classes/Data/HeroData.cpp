@@ -779,8 +779,8 @@ static const unsigned long long crewLvUpgradeGold_builtin[] = {//TOTALSTAGE * TO
 610, 680, 820, 1070, 1500, 2100, 2940, 4120, 5770, 8080,
 };
 static const signed short monXYGap_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
 	0, 0,	//3 ENEMY_SNAIL 가시껍질달팽이
 	0, 0,	//4 ENEMY_TREE 늪의 주인

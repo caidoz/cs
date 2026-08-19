@@ -846,12 +846,12 @@ static const unsigned char slimeMotion_builtin[] = {
 };
 
 static const signed short enemyAttackPattern_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//0 (hero) 검사
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//1 (hero) 거너
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//2 (hero) 헌터
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//0 (무명) 검사
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//1 (무명) 거너
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//2 (무명) 헌터
 	SNAIL_NEUTRAL, 60 * 1, SNAIL_MOVE_FAST, SNAIL_ATTACK, SNAIL_MOVE_FAST, SNAIL_NEUTRAL, 1, 16 * _2X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//3 ENEMY_SNAIL 가시껍질달팽이
 	TREE_NEUTRAL, 60 * 1, TREE_MOVE, TREE_ATTACK, TREE_MOVE, TREE_NEUTRAL, 1, 32 * _2X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//4 ENEMY_TREE 늪의 주인
 	ONEEYE_NEUTRAL, 60 * 1, ONEEYE_MOVE, ONEEYE_MOVE, ONEEYE_MOVE, ONEEYE_NEUTRAL, 1, 15 * _2X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//5 ENEMY_ONEEYE 아이볼
@@ -1283,12 +1283,12 @@ static const signed short enemyAttackPattern_builtin[] = {
 };
 
 static const float enemyIconZoom_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	1.0f,	//0 (hero) 검사
-	1.0f,	//1 (hero) 거너
-	1.0f,	//2 (hero) 헌터
+	1.0f,	//0 (무명) 검사
+	1.0f,	//1 (무명) 거너
+	1.0f,	//2 (무명) 헌터
 	1.0f,	//3 ENEMY_SNAIL 가시껍질달팽이
 	0.45f,	//4 ENEMY_TREE 늪의 주인
 	1.0f,	//5 ENEMY_ONEEYE 아이볼
@@ -1720,12 +1720,12 @@ static const float enemyIconZoom_builtin[] = {
 };
 
 static const float enemyZoom_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	1.2f,	//0 (hero) 검사
-	1.2f,	//1 (hero) 거너
-	1.2f,	//2 (hero) 헌터
+	1.2f,	//0 (무명) 검사
+	1.2f,	//1 (무명) 거너
+	1.2f,	//2 (무명) 헌터
 	1.0f,	//3 ENEMY_SNAIL 가시껍질달팽이
 	0.7f,	//4 ENEMY_TREE 늪의 주인
 	1.0f,	//5 ENEMY_ONEEYE 아이볼
@@ -2157,12 +2157,12 @@ static const float enemyZoom_builtin[] = {
 };
 
 static const float enemyBossZoom_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	3.0f,	//0 (hero) 검사
-	3.0f,	//1 (hero) 거너
-	3.0f,	//2 (hero) 헌터
+	3.0f,	//0 (무명) 검사
+	3.0f,	//1 (무명) 거너
+	3.0f,	//2 (무명) 헌터
 	4.0f,	//3 ENEMY_SNAIL 가시껍질달팽이
 	2.0f,	//4 ENEMY_TREE 늪의 주인
 	3.5f,	//5 ENEMY_ONEEYE 아이볼
@@ -2594,12 +2594,12 @@ static const float enemyBossZoom_builtin[] = {
 };
 
 static const signed short enemyData_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	ROBIN, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//0 (hero) 검사
-	DIANA, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//1 (hero) 거너
-	MAXX, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//2 (hero) 헌터
+	ROBIN, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//0 (무명) 검사
+	DIANA, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//1 (무명) 거너
+	MAXX, STAR8, PLAYERMOVE, PLAYERDRAW, 0, 0, TSIZE, TSIZE * 2,	//2 (무명) 헌터
 	CMF_SNAIL, STAR8, ENEMYMOVE, ENEMYDRAW, 0, 0, TSIZE, TSIZE * 3,	//3 ENEMY_SNAIL 가시껍질달팽이
 	CMF_TREE, STAR8, ENEMYMOVE, ENEMYDRAW, 100, 0, TSIZE, TSIZE * 9,	//4 ENEMY_TREE 늪의 주인
 	CMF_ONEEYE, STAR8, ENEMYMOVE, ENEMYDRAW, 0, 0, TSIZE, TSIZE * 4,	//5 ENEMY_ONEEYE 아이볼
@@ -3031,12 +3031,12 @@ static const signed short enemyData_builtin[] = {
 };
 
 static const long long int enemyStatInfo_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	0, 0, 0,	//0 (hero) 검사
-	0, 0, 0,	//1 (hero) 거너
-	0, 0, 0,	//2 (hero) 헌터
+	0, 0, 0,	//0 (무명) 검사
+	0, 0, 0,	//1 (무명) 거너
+	0, 0, 0,	//2 (무명) 헌터
 	100, 100, 0,	//3 ENEMY_SNAIL 가시껍질달팽이
 	200, 100, 0,	//4 ENEMY_TREE 늪의 주인
 	70, 100, 200,	//5 ENEMY_ONEEYE 아이볼

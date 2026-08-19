@@ -193,16 +193,21 @@ def find_decl(text, name):
     주석 처리된 선언을 물면 안 된다. HeroData.h에는 crewData의 옛 선언이
     //const int crewData[TOTAL_CREW * CREWDATASIZE] = { 로 남아 있는데,
     그걸 물면 닫는 중괄호를 못 찾아 뒤에 오는 배열들까지 통째로 삼킨다.
+
+    포인터로 바꾼 뒤에는 정의의 이름이 <이름>_builtin 이다. 게임이 읽는
+    이름은 그대로 <이름>이므로, 여기서 둘 다 찾아본다.
     """
-    pat = re.compile(r'\b%s\s*\[[^;{]*\]\s*(\[[^;{]*\]\s*)?=\s*\{' % re.escape(name))
+    for want in (name, name + '_builtin'):
+        pat = re.compile(r'\b%s\s*\[[^;{]*\]\s*(\[[^;{]*\]\s*)?=\s*\{'
+                         % re.escape(want))
 
-    for m in pat.finditer(text):
-        line_start = text.rfind('\n', 0, m.start()) + 1
+        for m in pat.finditer(text):
+            line_start = text.rfind('\n', 0, m.start()) + 1
 
-        if '//' in text[line_start:m.start()]:
-            continue
+            if '//' in text[line_start:m.start()]:
+                continue
 
-        return m.end()
+            return m.end()
 
     return None
 

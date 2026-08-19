@@ -123,12 +123,12 @@ static const unsigned short listMenuIcon_builtin[] = {
     false,                      //MENU_GAMERESET
 };
 static const signed short crewPos_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	0, 4, 0, 0, CASTLE_TOLEM,	//0 (hero) 검사
-	0, 4, 0, 0, CASTLE_TOLEM,	//1 (hero) 거너
-	0, 4, 0, 0, CASTLE_TOLEM,	//2 (hero) 헌터
+	0, 4, 0, 0, CASTLE_TOLEM,	//0 (무명) 검사
+	0, 4, 0, 0, CASTLE_TOLEM,	//1 (무명) 거너
+	0, 4, 0, 0, CASTLE_TOLEM,	//2 (무명) 헌터
 	PO_C3_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,	//3 ENEMY_SNAIL 가시껍질달팽이
 	PO_C4_N0, 4, 0 * _2X, 0 * _2X, CASTLE_SWAMP,	//4 ENEMY_TREE 늪의 주인
 	PO_C6_N0, 4, 0 * _2X, 0 * _2X, CASTLE_VALLEY,	//5 ENEMY_ONEEYE 아이볼
@@ -1000,12 +1000,12 @@ static const signed short enemyIconPos_builtin[] = {
 	0, -8 * _2X, -6 * _2X,//NPC_SOUL,//c122//마왕의 심장
 };
 static const signed short enemyBigIconPos_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	0, 0, 0,	//0 (hero) 검사
-	0, 0, 0,	//1 (hero) 거너
-	0, 0, 0,	//2 (hero) 헌터
+	0, 0, 0,	//0 (무명) 검사
+	0, 0, 0,	//1 (무명) 거너
+	0, 0, 0,	//2 (무명) 헌터
 	PO_C3_N0, 0 * _2X, -0 * _2X,	//3 ENEMY_SNAIL 가시껍질달팽이
 	PO_C4_N0, 8 * _2X, -20 * _2X,	//4 ENEMY_TREE 늪의 주인
 	PO_C6_N0, 0 * _2X, -0 * _2X,	//5 ENEMY_ONEEYE 아이볼
@@ -1436,12 +1436,12 @@ static const signed short enemyBigIconPos_builtin[] = {
 	0, 0 * _2X, -0 * _2X,	//430 NPC_SOUL 마왕의 심장
 };
 static const signed short enemySkillIconPos_builtin[] = {
-	//이 배열은 content/enemy.tsv 에서 생성된다. 직접 고치지 말 것.
-	//고치려면 tsv를 고치고 tools/content/enemy_table.py generate 를 돌린다.
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	0, 0, 0,	//0 (hero) 검사
-	0, 0, 0,	//1 (hero) 거너
-	0, 0, 0,	//2 (hero) 헌터
+	0, 0, 0,	//0 (무명) 검사
+	0, 0, 0,	//1 (무명) 거너
+	0, 0, 0,	//2 (무명) 헌터
 	PO_C3_N0, 0 * _2X, -4 * _2X,	//3 ENEMY_SNAIL 가시껍질달팽이
 	PO_C4_N0, -4 * _2X, -18 * _2X,	//4 ENEMY_TREE 늪의 주인
 	PO_C6_N0, 1 * _2X, -6 * _2X,	//5 ENEMY_ONEEYE 아이볼
