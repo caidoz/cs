@@ -349,6 +349,20 @@ def base_of(base, vals):
     return vals[base] if isinstance(base, str) else base
 
 
+def data_file(fn):
+    """배열 정의가 실제로 들어 있는 파일.
+
+    split_data.py 로 가른 뒤에는 정의가 .cpp 로 옮겨가고 헤더에는 extern
+    선언만 남는다. 갈라진 것과 안 갈라진 것이 섞여 있으므로 둘 다 본다.
+    """
+    cpp = os.path.join(CLASSES, 'Data', os.path.splitext(fn)[0] + '.cpp')
+
+    if os.path.isfile(cpp):
+        return cpp
+
+    return os.path.join(CLASSES, 'Data', fn)
+
+
 def load_arrays(spec, vals):
     cache = {}
     out = {}
@@ -356,7 +370,7 @@ def load_arrays(spec, vals):
 
     for name, fn, stride, base, _cols in spec['layout']:
         if fn not in cache:
-            cache[fn] = read(os.path.join(CLASSES, 'Data', fn))
+            cache[fn] = read(data_file(fn))
 
         elems = parse_array(cache[fn], name)
 
@@ -654,7 +668,7 @@ def cmd_generate(entity, spec, vals, write):
     newtext = {}
 
     for fn, arrays in byfile.items():
-        path = os.path.join(CLASSES, 'Data', fn)
+        path = data_file(fn)
         text = read(path)
         eol = '\r\n' if '\r\n' in text else '\n'
 
@@ -716,11 +730,12 @@ def cmd_generate(entity, spec, vals, write):
         return 0
 
     for fn, text in newtext.items():
-        with open(os.path.join(CLASSES, 'Data', fn), 'w',
-                  encoding='utf-8-sig', newline='') as fp:
+        path = data_file(fn)
+
+        with open(path, 'w', encoding='utf-8-sig', newline='') as fp:
             fp.write(text)
 
-        print('  썼다: Classes/Data/%s' % fn)
+        print('  썼다: %s' % os.path.relpath(path, ROOT))
 
     return 0
 

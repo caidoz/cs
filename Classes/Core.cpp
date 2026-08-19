@@ -62,6 +62,7 @@ USING_NS_CC_EXT;
 **			FUCTION PROTOTYPES
 **--------------------------------------------------------------------------*/
 #include "Func.h"
+#include "Data/DataPack.h"
 #include "Write.h"
 
 //#include "SimpleAudioEngine.h"
@@ -866,7 +867,12 @@ bool Core::init()
 		cmfLoaded[i] = -1;
 		CmfRead(i, i);
 	}
-	
+
+	//게임 데이터를 팩에서 읽는다. 읽으면 Data/*.h 의 포인터들이 팩 안쪽을
+	//가리키게 되고, 못 읽으면 소스에 박힌 내장 기본값을 그대로 쓴다.
+	//세이브를 읽기 전에 해야 한다. 세이브 복원이 이 데이터를 본다.
+	DataPackLoad("data/content.pack");
+
 	//서버에서 계정과 세이브를 받아온다.
 	//지금은 서버가 없어서 클라이언트 안의 임시 서버가 파일로 처리한다(Func_Net.cpp).
 	//
