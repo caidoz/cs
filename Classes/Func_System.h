@@ -76,6 +76,8 @@ void ChangeTile(int, int, int, int, int);
 void SaveGame(void);
 void LoadRoulette(void);
 void LoadGame(void);
+//서버가 robin을 채운 뒤의 마무리(LoadGame에서 파일 읽기만 뺀 것)
+void LoadGameAfterNet(void);
 void SaveOption(void);
 void LoadHeroObj(int type);
 void LoadOption(void);

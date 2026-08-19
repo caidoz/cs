@@ -2395,8 +2395,26 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		//����׸���?
-		for (i = BULLET; i >= CREW; i--) {
-			if (ao[i].active && ao[i].type != NPC_SHIP && i != SOLDIER) {
+		//동료 그리기
+		//
+		//이 루프가 담당하는 칸은 동료(CREW..CREW+MAXCREW), 상자(ITEMBOX), NPC까지다.
+		//예전에는 위끝을 BULLET으로 잡고 SOLDIER 한 칸만 건너뛰었는데, 그 사이의
+		//SOLDIER 부속칸(SOLDIER+1..SOLDIER+MAXENEMYOBJ-1)과 BULLET 칸은 아래
+		//"소환수 그리기"/"탄환 그리기"가 다시 그린다. 즉 같은 그림이 한 프레임에
+		//두 장 그려지고 있었다.
+		//
+		//히어로 때와 같은 증상이다. 두 장이 정확히 포개져 있을 때는 안 보이지만,
+		//타격 줌이나 알파가 한쪽에만 걸리면 큰 것과 작은 것이 따로 보인다.
+		//동료가 히어로 스킬을 발동시키면 이 구간이 전부 살아나므로 그때 드러난다.
+		//
+		//빠지는 것은 앞서 그리던 한 장뿐이고 뒤쪽 루프가 그대로 그리므로,
+		//겹치지 않던 화면에서는 보이는 결과가 달라지지 않는다.
+		for (i = NPC; i >= CREW; i--) {
+			//소환수 칸과 그 부속은 아래 전용 루프가 그린다.
+			if (i >= SOLDIER && i < SOLDIER + MAXENEMYOBJ)
+				continue;
+
+			if (ao[i].active && ao[i].type != NPC_SHIP) {
 
 				if (playerHeadZoom) {
 					ao[i].head = true;
@@ -2479,7 +2497,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		
-		//솔져 그리기
+		//히어로 그리기(주석이 한 칸씩 밀려 있었다. 이 구간은 0..CREW-1, 즉 히어로다)
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 
@@ -2504,7 +2522,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//플레이어 그리기
+		//소환수 그리기(SOLDIER 칸과 그 부속. 위 "동료 그리기"는 이 구간을 건너뛴다)
 		for (i = SOLDIER + MAXENEMYOBJ - 1; i >= SOLDIER; i--) {
 			if (ao[i].active) {
 

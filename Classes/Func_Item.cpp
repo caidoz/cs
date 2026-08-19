@@ -1818,6 +1818,75 @@ int GetItemPow(int type, int detail, int cooldown)
 	return value;
 }
 
+//동료를 한 레벨 더 올릴 수 있는 최대 레벨.
+//비용표 upgradeCostCrew의 한 줄이 (조각, 골드) 쌍 CREWUPGRADECOSTCNT개라, 표 밖을
+//읽지 않으려면 여기까지만 올릴 수 있다. 표를 늘리면 이 값도 같이 늘어난다.
+int GetCrewMaxLevel(void)
+{
+	return (int)(sizeof(upgradeCostCrew[0]) / sizeof(upgradeCostCrew[0][0])) / 2;
+}
+
+//이번 레벨업에 드는 값. what이 0이면 동료 조각 수, 1이면 골드다.
+//올릴 수 없는 상태면 0을 준다.
+long long GetCrewUpgradeCost(ITEM* it, int what)
+{
+	int star;
+
+	if (it == NULL || it->type != ITEM_CREW)
+		return 0;
+
+	//레벨 0은 아직 안 뽑은 동료라 올릴 대상이 아니다.
+	if (it->lv <= 0 || it->lv >= GetCrewMaxLevel())
+		return 0;
+
+	star = GetItemStar(ITEM_CREW, it->detail, it->grade);
+
+	//표는 1성부터 6성까지다. 데이터가 어긋나면 표 밖을 읽는다.
+	if (star < 1 || star > (int)(sizeof(upgradeCostCrew) / sizeof(upgradeCostCrew[0])))
+		return 0;
+
+	return upgradeCostCrew[star - 1][it->lv * 2 + (what ? 1 : 0)];
+}
+
+//조각과 골드가 둘 다 모였는지.
+bool CanCrewLevelUp(ITEM* it)
+{
+	long long needPiece = GetCrewUpgradeCost(it, 0);
+	long long needGold = GetCrewUpgradeCost(it, 1);
+
+	//올릴 수 없는 상태(최대 레벨/미보유)면 비용이 0으로 온다.
+	if (needPiece == 0 && needGold == 0)
+		return false;
+
+	return (long long)it->count >= needPiece && robin.gold >= needGold;
+}
+
+//동료의 공격력. 동료의 첫 번째 스킬이 레벨별로 들고 있는 값이 그대로 공격력이다
+//(SKILLDATA_VALUE_LV1..LV15). lv는 1부터라 첨자는 하나 뺀다.
+long long GetCrewPower(int detail, int lv)
+{
+	int skillIdx;
+	int valueIdx;
+	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
+
+	if (detail < 0 || detail >= TOTAL_CREW)
+		return 0;
+
+	skillIdx = crewData[detail * CREWDATASIZE + CREWDATA_SKILL1];
+
+	if (skillIdx < 0 || skillIdx >= TOTAL_SKILL)
+		return 0;
+
+	valueIdx = lv - 1;
+
+	if (valueIdx < 0)
+		valueIdx = 0;
+	if (valueIdx >= maxValue)
+		valueIdx = maxValue - 1;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+}
+
 int GetItemStar(int type, int detail, int grade)
 {
 	int i;

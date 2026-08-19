@@ -264,6 +264,479 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 		DrawTextStr(optionStr[i], x + (float)(24 * _2X + 160 * _2X * (i % 2)) * zoom, y + plusY - (float)(162 * _2X + 15 * _2X * (i / 2)) * zoom, zoom);
 }
 
+//==========================================================================
+// 동료 상세보기
+//
+// 화면 비율이 1:1.33부터 1:2.2까지 벌어지므로, 고정 좌표로 찍으면 짧은 화면에서
+// 아래가 잘린다. 그래서 내용을 CD_DESIGNW x CD_DESIGNH 짜리 "판" 하나로 그리고,
+// 그 판을 남는 자리에 맞춰 통째로 축소해서 가운데에 놓는다. 어느 기기에서나
+// 같은 그림이 크기만 달라져 나온다.
+//
+// 아래 좌표는 전부 그 판 안의 값이다. Loc()/LocY()가 화면 좌표로 바꿔준다.
+//==========================================================================
+enum {
+	CD_DESIGNW = 616,	//판의 폭
+	CD_DESIGNH = 620,	//판의 높이
+	CD_TOP = 152,		//타이틀/부제(CrewMenuDraw가 그린다) 아래부터
+
+	//A블록 : 카드 + 이름 + 장착 | 슬롯 등장 효능
+	CD_A_H = 340,
+	CD_COLW = 196,		//왼쪽(카드) 칸 폭
+	CD_CARD_H = 268,
+	CD_NAME_Y = 274,
+	CD_BTN_Y = 300,
+	CD_BTN_H = 38,
+
+	//B블록 : 강화하기
+	CD_B_Y = 358,
+	CD_B_H = CD_DESIGNH - CD_B_Y,
+
+	CD_RIBBONW = 176,	//UI_NEW_IMG의 이름표 원본 폭
+	CD_RIBBONH = 40,
+};
+
+//판을 화면에 놓기 위한 값. CrewDetailDraw() 첫머리에서 매번 다시 잡는다.
+static float sCdOx = 0.0f;		//판 왼쪽 위의 화면 x
+static float sCdOy = 0.0f;		//판 왼쪽 위의 화면 y
+static float sCdU = 1.0f;		//판 1단위가 화면 몇 픽셀인지
+
+static float Loc(float px) { return sCdOx + px * sCdU; }
+static float LocY(float py) { return sCdOy - py * sCdU; }
+
+//상세보기가 그린 장착 버튼의 자리. 튜토리얼 손/스팟이 이 버튼을 정확히 가리켜야 해서
+//그린 값을 그대로 남겨둔다. CrewDetailDraw()가 매 프레임 새로 채운다.
+static float sCrewEquipBtnX = 0.0f;
+static float sCrewEquipBtnY = 0.0f;
+static float sCrewEquipBtnW = 0.0f;
+static float sCrewEquipBtnH = 0.0f;
+
+//이 동료가 이미 편성표에 들어가 있는지. 들어가 있으면 또 넣을 이유가 없다.
+//같은 동료가 두 칸을 차지하면 SetBattleCrew()가 같은 놈을 둘 세운다.
+static bool IsCrewInSlot(int crewType)
+{
+	int i;
+
+	for (i = 0; i < MAXCREW; i++)
+		if (robin.slotCrew[i] == crewType)
+			return true;
+
+	return false;
+}
+
+//구획 제목표. UI_NEW_IMG(1,679)의 176x40 판을 원하는 폭으로 늘려 쓴다.
+//CrewMenuDraw가 "현재 편성" 표를 그릴 때 쓰는 것과 같은 그림이다.
+static void DrawCrewRibbon(int textIdx, float cx, float topY, float plateW)
+{
+	float sc = plateW / (float)CD_RIBBONW;
+
+	DrawImageScale(CD_RIBBONW, CD_RIBBONH, 1, 679,
+		Loc(cx) - plateW / 2 * sCdU, LocY(topY),
+		false, false, false, false, false,
+		sc * sCdU, sCdU,
+		sprite[UI_NEW_IMG], UI_NEW_IMG);
+
+	SetFontColor(COLOR_WHITE);
+	CenterText(textIdx, Loc(cx), LocY(topY + 11.0f), sCdU);
+	SetFontColor(COLOR_WHITE);
+}
+
+//동료 스킬 한 칸의 아이콘. 룰렛 카드(DrawSkillCard)와 같은 그림이 나와야 해서
+//고르는 규칙을 그쪽과 똑같이 맞춘다.
+static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSize)
+{
+	float iconZoom = iconSize / (float)SKILLICONSIZE * sCdU;
+	int enemyIdx;
+
+	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	case CREWBULLET:
+		//날아가는 총탄 그림. AddObject()가 총탄의 icon을 SKILLDATA_TARGET에서
+		//가져오므로 여기서도 같은 자리를 본다.
+		DrawCrewBulletIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET],
+			Loc(px), LocY(py), iconZoom);
+		break;
+
+	case SUMMON:
+		//소환될 몬스터를 그대로 보여준다. 모션 번호는 룰렛 카드와 같은 표에서 온다.
+		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
+		if (enemyIdx >= 0 && enemyIdx < TOTALENEMY)
+			DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
+				enemyBigIconPos[3 * enemyIdx + 0],
+				Loc(px + iconSize / 2), LocY(py + iconSize / 2),
+				LEFT, iconZoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx], false, false);
+		break;
+
+	case HEROSKILL:
+	{
+		//이 칸에는 스킬 자신이 아니라 발동시킬 히어로 스킬 번호가 들어 있다.
+		int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+
+		if (heroSkill < 0 || heroSkill >= TOTAL_SKILL)
+			heroSkill = skillIdx;
+
+		DrawSkillIcon(skillData[heroSkill * SKILLDATASIZE + SKILLDATA_ICON],
+			Loc(px), LocY(py), iconZoom);
+	}
+	break;
+
+	default:
+		DrawSkillIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON],
+			Loc(px), LocY(py), iconZoom);
+		break;
+	}
+}
+
+//슬롯에 몇 명 뜨느냐에 따라 붙는 효능 이름.
+//총탄이면 몇 명이 겹쳤는지로 세기가 갈리고, 그 밖이면 스킬 종류가 이름이 된다.
+static int GetCrewSkillTitle(int skillIdx, int slot)
+{
+	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	case SUMMON:
+		return TEXT_CREW_SKILL_SUMMON;
+	case HEROSKILL:
+		return TEXT_CREW_SKILL_HERO;
+	case ACTIVE:
+	case PASSIVE:
+		return TEXT_CREW_SKILL_BUFF;
+	default:
+		if (slot == 0)
+			return TEXT_CREW_SKILL_ATTACK;
+		return slot == 1 ? TEXT_CREW_SKILL_STRONG : TEXT_CREW_SKILL_ULTIMATE;
+	}
+}
+
+//효능 설명을 tempStr에 만든다. 수치는 지금 레벨의 값을 그대로 쓴다.
+static void SetCrewSkillDesc(int skillIdx, int lv)
+{
+	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
+	int valueIdx = lv - 1;
+	int value;
+	int sub;
+
+	if (valueIdx < 0)
+		valueIdx = 0;
+	if (valueIdx >= maxValue)
+		valueIdx = maxValue - 1;
+
+	value = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+
+	memset(&tempStr, 0, sizeof(tempStr));
+
+	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	case SUMMON:
+		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
+		if (sub >= 0 && sub < TOTALENEMY)
+			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_SUMMON),
+				TEXTPTR(TEXT_MONSTERNAME_START + sub), value);
+		else
+			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
+		break;
+
+	case HEROSKILL:
+		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+
+		//히어로 스킬 이름표는 SKILL_ 열거와 같은 순서로 붙어 있다.
+		if (sub >= 0 && sub < TOTAL_SKILL)
+			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_HERO),
+				TEXTPTR(TEXT_SKILLNAME_COMMON_ROBIN1 + sub), value);
+		else
+			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
+		break;
+
+	case ACTIVE:
+	case PASSIVE:
+		sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_BUFF), value);
+		break;
+
+	default:
+		sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
+		break;
+	}
+}
+
+//슬롯에 이 동료가 cnt명 떴을 때의 룰렛 그림. 실제 룰렛과 같은 판(SLOT_IMG)에
+//같은 릴 자리(reelPostion)로 세워서, 전투에서 보는 것과 같은 그림이 나오게 한다.
+static void DrawCrewSlotReel(int crewCmf, int crewType, int cnt, float px, float py, float w)
+{
+	//판을 원하는 폭에 맞춘다. 릴 자리와 캐릭터 배율이 전부 이 배율을 따른다.
+	float slotSc = w / (float)SLOTSIZE_X;
+	float sc = slotSc * sCdU;
+	int i;
+
+	DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
+		Loc(px), LocY(py),
+		false, false, false, false, false,
+		sc, sprite[SLOT_IMG], SLOT_IMG);
+
+	for (i = 0; i < cnt && i < TOTALREEL; i++) {
+		//reelPostion은 판 왼쪽 위 기준이고 y는 위로 갈수록 커진다.
+		float cx = Loc(px) + (float)reelPostion[i * 2 + 0] * sc;
+		float cy = LocY(py) + (float)reelPostion[i * 2 + 1] * sc;
+
+		//그림자와 배율은 RouletteDrawSimple3Slots()와 같은 식이다.
+		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+			cx - 12 * _2X * 2.5f * sc, cy + 8 * _2X * 2.5f * sc,
+			SHADOW_IMG, 2.5f * sc);
+
+		DrawCmfDetail(crewCmf, crewPos[crewType * 5 + 0],
+			cx, cy, RIGHT, 2.5f * sc * enemyIconZoom[crewType], false, false);
+	}
+}
+
+//레벨 한 칸(현재 / 다음 레벨). 다음 칸은 오르는 값이라 초록으로 적는다.
+static void DrawCrewLevelBox(int titleIdx, int lv, long long power, bool next,
+	float px, float py, float w, float h)
+{
+	float cx = px + w / 2;
+
+	DrawFrame(Loc(px), LocY(py), w * sCdU, h * sCdU, FRAME_SHOPBALLOON);
+
+	//이름표는 칸 윗변에 걸친다.
+	DrawCrewRibbon(titleIdx, cx, py - 10.0f, w * 0.72f);
+
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), lv);
+
+	SetFontColor(next ? COLOR_GREEN : COLOR_BROWN);
+	CenterTextStrSolid(tempStr, Loc(cx), LocY(py + h * 0.40f), 1.5f * sCdU);
+
+	SetFontColor(COLOR_BROWN);
+	CenterText(TEXT_ATK, Loc(cx), LocY(py + h * 0.62f), 0.85f * sCdU);
+
+	memset(&tempStr, 0, sizeof(tempStr));
+	sprintf(tempStr, "%lld", power);
+
+	SetFontColor(next ? COLOR_GREEN : COLOR_BROWN);
+	CenterTextStrSolid(tempStr, Loc(cx), LocY(py + h * 0.88f), 1.3f * sCdU);
+	SetFontColor(COLOR_WHITE);
+}
+
+void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
+{
+	int i;
+
+	int crewDetail = it->detail;
+	int crewType = crewData[crewDetail * CREWDATASIZE + CREWDATA_TYPE];
+	int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
+	int crewLv = it->lv;
+
+	//----------------------------------------------------------------------
+	// 판을 놓을 자리 정하기
+	//
+	// 남는 세로가 판보다 짧으면(1:1.33 같은 화면) 판을 통째로 줄인다.
+	// 가로도 같은 비율로 줄여야 그림이 안 찌그러지므로 배율은 하나만 쓴다.
+	//----------------------------------------------------------------------
+	float availH = winH / zoom - (float)CD_TOP;
+	float s = availH / (float)CD_DESIGNH;
+
+	//세로가 남아도는 화면(1:2 이상)에서는 조금 키워 빈 자리를 메우되, 글자가
+	//우스울 만큼 커지지 않게 여기서 끊는다. 남는 만큼은 위아래로 나눠 가운데에 둔다.
+	if (s > 1.25f)
+		s = 1.25f;
+
+	sCdU = zoom * s;
+	//가로 가운데 정렬. 세로는 남으면 조금 내려 균형을 잡는다.
+	sCdOx = x + (float)POPUPWINDOWSIZE_X / 2 * zoom - (float)CD_DESIGNW / 2 * sCdU;
+	sCdOy = y - (float)CD_TOP * zoom - (availH - (float)CD_DESIGNH * s) * zoom / 2;
+
+	//----------------------------------------------------------------------
+	// A. 카드 + 이름 + 장착 | 슬롯 등장 효능
+	//----------------------------------------------------------------------
+	//카드 원본은 242x340이다. 왼쪽 칸에 맞춰 배율을 잡는다.
+	float cardZoom = (float)CD_CARD_H / 340.0f;
+	float cardW = 242.0f * cardZoom;
+	float cardL = (float)(CD_COLW - cardW) / 2;
+
+	DrawItemCard(
+		ITEM_CREW,
+		crewDetail,
+		it->grade,
+		crewLv,
+		it->count,
+		false,
+		Loc(cardL),
+		LocY(0),
+		false,
+		cardZoom * sCdU,
+		true,
+		false,
+		false,
+		false,
+		0);
+
+	//동료 이름. 카드 아래쪽에는 조각 개수(1/2)가 찍히므로 이름이 따로 필요하다.
+	SetFontColor(COLOR_BROWN);
+	CenterTextStrSolid(textId[TEXT_MONSTERNAME_START + crewType],
+		Loc((float)CD_COLW / 2), LocY((float)CD_NAME_Y), 1.0f * sCdU);
+	SetFontColor(COLOR_WHITE);
+
+	//장착 버튼.
+	//누르면 편성표에서 고른 자리(menuX)에 이 동료가 들어간다.
+	// - 레벨 0은 아직 안 뽑은 동료라 넣을 수 없다.
+	// - 이미 편성돼 있으면 "편성중"으로 잠근다.
+	{
+		float ebW = (float)CD_COLW - 16.0f;
+		float ebL = ((float)CD_COLW - ebW) / 2;
+
+		bool owned = (crewLv > 0);
+		bool inSlot = IsCrewInSlot(crewType);
+		bool canEquip = (owned && inSlot == false);
+
+		sCrewEquipBtnX = Loc(ebL);
+		sCrewEquipBtnY = LocY((float)CD_BTN_Y);
+		sCrewEquipBtnW = ebW * sCdU;
+		sCrewEquipBtnH = (float)CD_BTN_H * sCdU;
+
+		DrawTouchLargeButton(
+			sCrewEquipBtnX, sCrewEquipBtnY,
+			ebW, CD_BTN_H,
+			textId[inSlot ? TEXT_CREW_EQUIPPED : TEXT_EQUIP],
+			canEquip ? TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, it->grade) : false,
+			canEquip ? FRAME_GREEN : FRAME_GREY,
+			sCdU);
+	}
+
+	//---- 슬롯 등장 효능 ----
+	float panelL = (float)CD_COLW + 12.0f;
+	float panelW = (float)CD_DESIGNW - panelL;
+
+	DrawFrame(Loc(panelL), LocY(0), panelW * sCdU, (float)CD_A_H * sCdU, FRAME_SHOPBALLOON);
+
+	DrawCrewRibbon(TEXT_CREW_SLOTEFFECT, panelL + panelW / 2, -10.0f, panelW * 0.66f);
+
+	{
+		float rowTop = 34.0f;
+		float rowH = ((float)CD_A_H - rowTop - 8.0f) / 3.0f;
+		float reelW = panelW * 0.40f;
+		float iconSize = rowH * 0.50f;
+
+		for (i = 0; i < 3; i++) {
+			int skillIdx = crewData[crewDetail * CREWDATASIZE + CREWDATA_SKILL1 + i];
+			float ry = rowTop + rowH * i;
+
+			//i+1명이 뜬 룰렛
+			DrawCrewSlotReel(crewCmf, crewType, i + 1,
+				panelL + 6.0f, ry + rowH * 0.06f, reelW);
+
+			//화살표
+			SetFontColor(COLOR_GREY);
+			CenterTextStrSolid(">>", Loc(panelL + reelW + 18.0f),
+				LocY(ry + rowH * 0.42f), 1.0f * sCdU);
+			SetFontColor(COLOR_WHITE);
+
+			//스킬 아이콘
+			float iconL = panelL + reelW + 32.0f;
+
+			DrawCrewSkillSlotIcon(skillIdx, iconL, ry + (rowH - iconSize) / 2, iconSize);
+
+			//효능 이름과 그 효과. 이름 아래에 수치를 붙여 한 칸에서 다 읽히게 한다.
+			float textL = iconL + iconSize + 8.0f;
+
+			SetFontColor(COLOR_BROWN);
+			DrawText(GetCrewSkillTitle(skillIdx, i),
+				Loc(textL), LocY(ry + rowH * 0.32f), 0.95f * sCdU);
+
+			SetCrewSkillDesc(skillIdx, crewLv);
+
+			LineTextStrSolid(tempStr,
+				Loc(textL), LocY(ry + rowH * 0.60f),
+				((float)CD_DESIGNW - textL - 8.0f) * sCdU,
+				0, 2, 0.85f * sCdU);
+			SetFontColor(COLOR_WHITE);
+		}
+	}
+
+	//----------------------------------------------------------------------
+	// B. 강화하기
+	//----------------------------------------------------------------------
+	DrawFrame(Loc(0), LocY((float)CD_B_Y), (float)CD_DESIGNW * sCdU, (float)CD_B_H * sCdU, FRAME_SHOPBALLOON);
+
+	DrawCrewRibbon(TEXT_UPGRADE, 80.0f, (float)CD_B_Y - 10.0f, 140.0f);
+
+	{
+		bool canUp = CanCrewLevelUp(it);
+		bool maxLv = (crewLv >= GetCrewMaxLevel());
+
+		float boxW = 150.0f;
+		float boxH = 150.0f;
+		float boxY = (float)CD_B_Y + 46.0f;
+		float curL = 14.0f;
+		float nextL = curL + boxW + 36.0f;
+		float costL = nextL + boxW + 22.0f;
+		float costW = (float)CD_DESIGNW - costL - 14.0f;
+
+		DrawCrewLevelBox(TEXT_CREW_LEVELCUR, crewLv, GetCrewPower(crewDetail, crewLv), false,
+			curL, boxY, boxW, boxH);
+
+		if (maxLv) {
+			DrawMaxButton(Loc(nextL), LocY(boxY + boxH * 0.34f),
+				boxW * sCdU, boxH * 0.34f * sCdU, ALPHA_MAX, sCdU);
+		}
+		else {
+			SetFontColor(COLOR_GREEN);
+			CenterTextStrSolid(">>", Loc(curL + boxW + 18.0f),
+				LocY(boxY + boxH * 0.44f), 1.3f * sCdU);
+			SetFontColor(COLOR_WHITE);
+
+			DrawCrewLevelBox(TEXT_CREW_LEVELNEXT, crewLv + 1, GetCrewPower(crewDetail, crewLv + 1), true,
+				nextL, boxY, boxW, boxH);
+		}
+
+		//필요 재화 : 동료 조각과 골드 두 줄
+		float costH = 96.0f;
+
+		DrawFrame(Loc(costL), LocY(boxY), costW * sCdU, costH * sCdU, FRAME_SHOPBALLOON);
+		DrawCrewRibbon(TEXT_CREW_NEEDCURRENCY, costL + costW / 2, boxY - 10.0f, costW * 0.78f);
+
+		if (maxLv == false) {
+			long long needPiece = GetCrewUpgradeCost(it, 0);
+			long long needGold = GetCrewUpgradeCost(it, 1);
+
+			for (i = 0; i < 2; i++) {
+				long long need = i ? needGold : needPiece;
+				bool enough = i ? (robin.gold >= need) : ((long long)it->count >= need);
+				float ly = boxY + 34.0f + 30.0f * i;
+
+				//조각은 동료 얼굴, 골드는 골드 아이콘으로 구분한다.
+				if (i)
+					DrawIcon(ICON_GOLD + frame % GOLDICONFRAME,
+						Loc(costL + 12.0f), LocY(ly), 0.9f * sCdU,
+						false, false, false, sCdU);
+				else
+					DrawCmfDetail(crewCmf, crewPos[crewType * 5 + 0],
+						Loc(costL + 12.0f + (float)ITEMICONSIZE * 0.45f),
+						LocY(ly + 2.0f), RIGHT, 0.55f * enemyIconZoom[crewType] * sCdU,
+						false, false);
+
+				memset(&tempStr, 0, sizeof(tempStr));
+				sprintf(tempStr, "%lld", need);
+
+				//모자란 쪽은 빨갛게 적어서 왜 못 누르는지 보이게 한다.
+				SetFontColor(enough ? COLOR_BROWN : COLOR_REALRED);
+				DrawTextStrSystem(tempStr,
+					Loc(costL + 20.0f + (float)ITEMICONSIZE * 0.9f),
+					LocY(ly - 4.0f), 1.0f * sCdU, LEFT, false);
+				SetFontColor(COLOR_WHITE);
+			}
+
+			DrawTouchLargeButton(
+				Loc(costL + (costW - 150.0f) / 2), LocY(boxY + costH + 18.0f),
+				150, 44,
+				textId[TEXT_UPGRADE],
+				canUp ? TOUCH_FUNC_CREW_LEVELUP : false,
+				canUp ? FRAME_GREEN : FRAME_GREY,
+				sCdU);
+		}
+		else {
+			SetFontColor(COLOR_BROWN);
+			CenterText(TEXT_CREW_MAXLEVEL, Loc(costL + costW / 2),
+				LocY(boxY + costH * 0.6f), 1.1f * sCdU);
+			SetFontColor(COLOR_WHITE);
+		}
+	}
+}
+
 void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool onlyInfo)
 {
 	int i, j;
@@ -325,84 +798,11 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 		break;
 		//동료
 	case ITEM_CREW:
-		int crewType = crewData[it->detail * CREWDATASIZE + CREWDATA_TYPE];
-		int crewDetail = it->detail;
-		int crewGrade = it->grade;
-		int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-		int crewMotion = crewPos[crewType * 5 + 0] + (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1];
-		int crewStar = GetItemStar(crewType, crewDetail, crewGrade);
-
-		DrawItemCard(
-			it->type,
-			crewDetail,
-			crewGrade,
-			it->lv,
-			it->count,
-			false,
-			x,
-			y,
-			false,
-			1.2f * zoom,
-			false,
-			false,
-			false,
-			false,
-			0);
-
-		float slotZoom = 0.5f;
-		for (i = 0; i < 3; i++) {
-			float startX = x + (float)16 * zoom;
-			float startY = y - (float)(400 + SLOTSIZE_Y * slotZoom * i) * zoom;
-			
-			DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
-				startX, startY,
-				false, false, false, false, false,
-				slotZoom * zoom, sprite[SLOT_IMG], SLOT_IMG);
-
-			for (int j = 0; j < i + 1; j++)
-			{
-				float centerX = startX + (float)4 * slotZoom * zoom + (float)reelPostion[j * 2 + 0] * slotZoom * zoom;
-				float centerY = startY + (float)reelPostion[j * 2 + 1] * slotZoom * zoom;
-
-				float baseScale = 2.5f * slotZoom * zoom * enemyIconZoom[crewType];
-
-				DrawCmfDetailShadow(enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF],
-					crewPos[crewType * 5 + 0],
-					centerX, centerY,
-					RIGHT, baseScale);
-			}
-		}
-
-		return;
-
-		//룰렛판
-		DrawImageScale(128, 128, 587, 737, x + (float)8 * zoom, y - (float)240 * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-
-		for (i = 0; i < 3; i++) {
-			DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
-				x + (float)16 * zoom, y - (float)(240 + i * 72) * zoom,
-				false, false, false, false, false,
-				0.35f * zoom, sprite[SLOT_IMG], SLOT_IMG);
-			for (j = 0; j < i + 1; j++)
-				DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0], x + (float)(44 + 56 * j) * zoom, y - (float)(240 + i * 72 + 56) * zoom, RIGHT, 1.0f * zoom);
-
-			int skillIcon = skillData[SKILLDATASIZE * crewData[crewType * CREWDATASIZE + CREWDATA_SKILL1 + i] + SKILLDATA_ICON];
-			DrawSkillIcon(skillIcon, x + (float)300 * zoom, y - (float)(240 + i * 60) * zoom, 2.0f * zoom);
-
-		}
-		//레벨업
-		DrawImageScale(128, 128, 587, 737, x + (float)8 * zoom, y - (float)240 * 2 * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-
-
-		DrawButton(x + (float)32 * zoom, y - (float)(240 * 2 + 32) * zoom, BUTTON_COLOR_PURPLE, 64, false, TEXT_ALPHA_BEFORE, false, 0.5f, 1.0f);
-		DrawImageScale(128, 128, 587, 608, x + (float)8 * zoom, y - (float)(240 * 2 + 24) * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-		
-		
-		DrawButton(x + (float)228 * zoom, y - (float)(240 * 2 + 32) * zoom, BUTTON_COLOR_PURPLE, 64, false, TEXT_ALPHA_AFTER, false, 0.5f, 1.0f);
-		DrawImageScale(128, 128, 587, 608, x + (float)228 * zoom, y - (float)(240 * 2 + 24) * zoom, false, false, false, false, false, 1.5f * zoom, 1.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-
-		//TEXT_EQUIP
-		//TEXT_SOCKETING
+		//동료는 보여줄 것이 카드 하나로 끝나지 않는다(슬롯 등장 효능, 스킬 셋, 업그레이드).
+		//세 블록을 나눠 담으려면 창 높이를 알아야 하는데 여기서는 알 수 없으므로,
+		//동료 메뉴는 CrewMenuDraw()가 자기 창 높이를 넘겨 CrewDetailDraw()를 직접 부른다.
+		//다른 경로로 흘러들어온 경우를 위해 기본 창 높이로 한 번은 그려준다.
+		CrewDetailDraw(it, x, y, zoom, (float)POPUPWINDOWSIZE_Y * zoom);
 		break;
 	}
 
@@ -2822,8 +3222,17 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 		DrawStageLabel(x + (float)(DX / 2) * zoom, y + (float)(8 * _2X) * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom);
 
 		//웨이브 보스
-		//if (stageInfoCurFrame > 20)
-		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], frame / 4 % crewPos[stageBossType * CREWDATASIZE], x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom);
+		//
+		//모션은 crewPos에서 가져온다. 한 몬스터가 쓰는 칸은 5개이고
+		//0번이 대기 모션의 첫 장, 1번이 그 모션의 장수다. 즉 다른 곳들처럼
+		//"첫 장 + (프레임 % 장수)"로 잡아야 한다.
+		//
+		//예전에는 crewPos[stageBossType * CREWDATASIZE] 였다. CREWDATASIZE는
+		//crewData의 칸수(6)라 5칸짜리 이 배열에는 맞지 않는다. 그래서 엉뚱한
+		//칸을 읽었고, 첫 장을 더하지도 않았다. 게다가 읽은 값이 0이면
+		//"% 0"이 되어 정수 나눗셈으로 죽는다. 지금 보스 18종에서는 0이 안 나와
+		//터지지 않았을 뿐이고, 보스를 추가하면 언제든 터질 수 있었다.
+		DrawCmfDetailShadow(enemyData[stageBossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[stageBossType * 5 + 0] + (frame / 4 % crewPos[stageBossType * 5 + 1]), x + (float)(DX / 2) * zoom, y - (float)108 * _2X * zoom + Max(0 * _2X, (FPS / 2 - stageInfoCurFrame) * 16 * _2X) * zoom + yGap, RIGHT, zoom);
 
 		if (stageInfoCurFrame > 23)
 			DrawGoldAlpha(x + (float)92 * _2X * zoom, y - (float)(DIORAMASIZE_Y - 44 * _2X) * zoom + yGap, ALPHA_BOSS, FONT_GOLD_LARGE, 0.7f * zoom, LEFT, true, false);
@@ -3665,7 +4074,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 	float WINY = (float)(DY - (GNBHEIGHT) - (BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
 	int itemType, itemDetail, itemGrade, itemLv, itemStar;
 	long itemCnt;
-	
+
 	//SetAlpha(24);
 	MemRect(x, y, WINX, WINY, 0xD8D6FB);
 	//SetAlpha(32);
@@ -3912,21 +4321,21 @@ void CrewMenuDraw(int x, int y, float zoom)
 			DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], crewMenuUiData[i * MENUUIDATACNT + 6]);
 
 		CenterText(TEXT_BORDERGUARD, x + (float)160 * _2X * zoom, y - (float)40 * zoom, 2.0f * zoom);
-		CenterText(TEXT_ACTIONCARDINFO, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom);
+		CenterText(TEXT_CREW_DETAIL_TITLE, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom);
 
-
-		ItemDetailDraw(&robin.inven[menuItem], x + (float)16 * zoom, y - (float)152 * zoom, CARDDEFAULTZOOM * 1.2f * zoom, false, false);
-		
-		DrawTouchLargeButton(x + (float)(80) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_EQUIP], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_GREEN, 1.0f * zoom);
-		DrawTouchLargeButton(x + (float)(380) * zoom, y - (float)(694) * zoom, BUYBUTTON_X, BUYBUTTON_Y, textId[TEXT_UPGRADE], TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(robin.inven[menuItem].type, robin.inven[menuItem].detail, robin.inven[menuItem].grade), FRAME_RED, 1.0f * zoom);
+		//장착 버튼과 업그레이드 버튼은 둘 다 CrewDetailDraw()가 그린다.
+		//장착은 초상화 카드 밑, 업그레이드는 업그레이드 칸 안이다.
+		//(예전에 하단에 있던 "강화하기" 버튼은 없앴다. 장착과 똑같은 터치기능을
+		// 달고 있어서 눌러도 강화가 되지 않던 자리다.)
+		CrewDetailDraw(&robin.inven[menuItem], x, y, zoom, WINY - 16 * zoom);
 
 		//튜토리얼 3단: 장착 버튼을 누르게 한다.
-		//사각형은 바로 위 DrawTouchLargeButton()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
+		//자리는 CrewDetailDraw()가 방금 그린 그 버튼을 그대로 쓴다.
 		if (GetTutorialCrewEquipTouchFunc()) {
-			float bx = x + (float)(80) * zoom;
-			float by = y - (float)(694) * zoom;
-			float bw = (float)BUYBUTTON_X * zoom;
-			float bh = (float)BUYBUTTON_Y * zoom;
+			float bx = sCrewEquipBtnX;
+			float by = sCrewEquipBtnY;
+			float bw = sCrewEquipBtnW;
+			float bh = sCrewEquipBtnH;
 			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
 
 			//손 크기는 앞 단계(슬롯/카드 안내)와 같게 맞춘다.
@@ -3937,7 +4346,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 			DrawHand(bx + bw / 2 - handW, by - bh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
 
-			//버튼은 가로로 긴 편이라 폭 기준으로 잡으면 옆의 강화하기 버튼까지 밝아진다.
+			//버튼이 가로로 길어서 폭 기준으로 잡으면 위의 업그레이드 칸까지 밝아진다.
 			//높이 기준으로 좁게 잡는다.
 			SetSpotlight(bx + bw / 2, by - bh / 2,
 				bh * 0.9f * pulse, bh * 1.6f * pulse, 0.25f);
@@ -3946,9 +4355,9 @@ void CrewMenuDraw(int x, int y, float zoom)
 		//Tutorial: pulse a highlight around the EQUIP button while the EQUIP step is guiding the player to tap it.
 		if (robin.demoSeen[DEMO_TUTORIAL_EQUIP] && !robin.demoSeen[DEMO_TUTORIAL_HEARTBET]) {
 			float pulse = 0.9f + sinf((float)frame * 0.1f) * 0.1f;
-			float hlW = (float)BUYBUTTON_X * zoom * pulse;
-			float hlH = (float)BUYBUTTON_Y * zoom * pulse;
-			MemRectFrameThick(x + (float)(80) * zoom - (hlW - (float)BUYBUTTON_X * zoom) / 2, y - (float)(694) * zoom - (hlH - (float)BUYBUTTON_Y * zoom) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X));
+			float hlW = sCrewEquipBtnW * pulse;
+			float hlH = sCrewEquipBtnH * pulse;
+			MemRectFrameThick(sCrewEquipBtnX - (hlW - sCrewEquipBtnW) / 2, sCrewEquipBtnY - (hlH - sCrewEquipBtnH) / 2, hlW, hlH, COLOR_YELLOW, (int)(3 * _2X));
 		}
 
 		//최외각 테두리

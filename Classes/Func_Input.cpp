@@ -1418,6 +1418,31 @@ void PlayKey(int obj)
 			menuFrame = 0;
 			PlayMusic(M_SELECT);
 			break;
+			//동료 상세보기의 업그레이드.
+			//비용표는 upgradeCostCrew[별-1][현재레벨*2 + (0:조각, 1:골드)]이고,
+			//레벨 0은 "아직 안 뽑은 동료"라서 올릴 대상이 아니다.
+		case AVK_CREW_LEVELUP:
+		{
+			ITEM* crewIt = &robin.inven[menuItem];
+
+			if (crewIt->type == ITEM_CREW && CanCrewLevelUp(crewIt)) {
+				int crewStar = GetItemStar(ITEM_CREW, crewIt->detail, crewIt->grade);
+
+				crewIt->count -= upgradeCostCrew[crewStar - 1][crewIt->lv * 2 + 0];
+				robin.gold -= upgradeCostCrew[crewStar - 1][crewIt->lv * 2 + 1];
+				crewIt->lv++;
+
+				//성 위에 서 있는 동료도 바로 새 레벨로 다시 세운다.
+				SetBattleCrew();
+
+				winUpgradeFrame = 1;
+				PlayMusic(M_LEVELUP);
+				SaveGame();
+			}
+			else
+				PlayMusic(M_ERROR);
+		}
+		break;
 		case AVK_SKILLUPGRADE:
 			robin.gold -= skillUpgradeGold[menuCur * MAXSKILLLV + ao[PLAYER].skillLv[curSkill]] * GetBetHeart(collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 1], collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 2], bet);
 			winUpgradeFrame = 1;
@@ -2802,6 +2827,9 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_SKILL_UPGRADE:
 			systemKey = AVK_SKILLUPGRADE;
+			break;
+		case TOUCH_FUNC_CREW_LEVELUP:
+			systemKey = AVK_CREW_LEVELUP;
 			break;
 		case TOUCH_FUNC_INGAME_AUTO:
 			systemKey = AVK_AUTO;
