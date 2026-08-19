@@ -51,6 +51,9 @@ CLASSES = CT.CLASSES
 CMFDIR = os.path.join(CLASSES, 'Cmf')
 DATA = os.path.join(CLASSES, 'Data')
 
+#슬롯 지도를 읽어올 커밋. 표를 헤더에서 지우기 전 마지막 판이다.
+TABLE_REV = '0567f67'
+
 #(표 이름, 배열 접미어, C 타입, 팩 종류)
 #cmfHeroLoop 은 히어로 3명만 있다. 나머지는 cmf 123개 전부다.
 FAMILIES = [
@@ -94,6 +97,67 @@ def hero_ids(ids):
             out.append(i)
 
     return out
+
+
+def slot_map():
+    """슬롯 번호 -> 어느 cmf 의 자료를 쓰는가. 429칸.
+
+    표에 슬롯이 429개인데 서로 다른 자료는 123개뿐이다. 슬롯 123부터는
+    몬스터 변종이라 앞 cmf 를 6개씩 나눠 쓴다.
+
+        cmfOff[123..128] = c3Off   (전부 같은 배열을 가리킨다)
+
+    이 별칭 구조를 잃으면 안 된다. 잃으면 변종 몬스터가 엉뚱한 모션을
+    쓰거나, 표 밖을 읽어 죽는다.
+
+    표는 이미 헤더에서 지웠으므로 커밋된 판에서 읽는다.
+    6가족(Off/MI/MIC/MIS/CS/mv)이 모두 같은 지도를 쓴다. 그래서 한 벌만 둔다.
+    """
+    r = subprocess.run(['git', 'show', '%s:Classes/Data/CmfData.h' % TABLE_REV],
+                       cwd=ROOT, stdout=subprocess.PIPE)
+
+    if r.returncode:
+        raise SystemExit('%s 의 CmfData.h 를 못 꺼냈다' % TABLE_REV)
+
+    text = r.stdout.decode('utf-8-sig', 'replace')
+    maps = {}
+
+    for table, suffix, _c, _k in FAMILIES:
+        if suffix == 'Loop60':
+            continue
+
+        m = re.search(r'\*\s*const\s+%s\[\]\s*=\s*\{(.*?)\n\};' % table,
+                      text, re.S)
+
+        if not m:
+            raise SystemExit('%s 표를 못 찾았다' % table)
+
+        body = re.sub(r'//[^\n]*', '', m.group(1))
+        ids = []
+
+        for x in body.split(','):
+            x = x.strip()
+
+            if not x:
+                continue
+
+            mm = re.match(r'c(\d+)%s$' % suffix, x)
+
+            if not mm:
+                raise SystemExit('%s 안의 %r 을 못 읽었다' % (table, x))
+
+            ids.append(int(mm.group(1)))
+
+        maps[table] = ids
+
+    #6가족이 같은 지도를 쓰는지 여기서 확인한다. 다르면 가족별로 따로 둬야 한다.
+    ref = maps[FAMILIES[0][0]]
+
+    for table, ids in maps.items():
+        if ids != ref:
+            raise SystemExit('%s 의 지도가 다르다. 가족별로 따로 둬야 한다' % table)
+
+    return ref
 
 
 DUMPER = r'''
@@ -203,7 +267,7 @@ def run_dumper(src, work):
         return fp.read()
 
 
-def split_blobs(raw, ids, heroes):
+def split_blobs(raw, ids, heroes, slots):
     """덤프를 가족별 (원소목록, 오프셋목록) 으로 나눈다."""
     at = 0
     result = []
@@ -215,16 +279,27 @@ def split_blobs(raw, ids, heroes):
         fmt = ('<%dh' if signed else '<%dH')
 
         blob = []
-        idx = [0]
+        start = {}		#cmf 번호 -> blob 안에서 시작하는 칸
 
-        for _i in which:
+        for i in which:
             cells = struct.unpack_from('<i', raw, at)[0]
             at += 4
+            start[i] = len(blob)
             blob.extend(struct.unpack_from(fmt % cells, raw, at))
             at += cells * esz
-            idx.append(len(blob))
 
-        result.append((table, ctype, blob, idx))
+        #슬롯마다 "어디서 시작하는가"를 적는다.
+        #
+        #슬롯은 429개인데 서로 다른 자료는 123개다. 슬롯 123부터는 몬스터
+        #변종이라 앞 cmf 를 나눠 쓴다. 그래서 여러 슬롯이 같은 자리를 가리킨다.
+        #예전 표(cmfOff[] = { c0Off, ..., c3Off, c3Off, ... })가 하던 일이다.
+        if suffix == 'Loop60':
+            #히어로 전용. 슬롯이 곧 히어로 번호다.
+            off = [start[i] for i in which]
+        else:
+            off = [start[c] for c in slots]
+
+        result.append((table, ctype, blob, off))
 
     if at != len(raw):
         raise SystemExit('덤프를 다 못 읽었다 (%d / %d)' % (at, len(raw)))
@@ -232,7 +307,7 @@ def split_blobs(raw, ids, heroes):
     return result
 
 
-def emit(groups, ids, heroes, eol):
+def emit(groups, slots, heroes, eol):
     """Data/CmfBlob.{h,cpp} 를 만든다."""
     H = []
     C = []
@@ -241,9 +316,12 @@ def emit(groups, ids, heroes, eol):
         '//tools/content/pack_cmf.py 가 생성한다. 직접 고치지 말 것.',
         '//',
         '//Classes/Cmf/c*.h 에 흩어져 있던 모션 배열을 가족별로 하나씩 이어붙인',
-        '//것이다. 어느 cmf가 어디서 시작하는지는 <이름>Idx 가 들고 있다.',
+        '//것이다. 슬롯마다 어디서 시작하는지는 <이름>Slot 이 들고 있다.',
         '//',
-        '//    i번 cmf의 자료 = Blob[Idx[i]] .. Blob[Idx[i + 1]] 앞까지',
+        '//    i번 슬롯의 자료 = Blob + Slot[i] 부터',
+        '//',
+        '//슬롯은 429개인데 서로 다른 자료는 123개다. 슬롯 123부터는 몬스터',
+        '//변종이라 앞 cmf 를 나눠 쓴다. 그래서 여러 슬롯이 같은 자리를 가리킨다.',
         '//',
         '//평범한 1차원 배열이라 팩에 그대로 들어간다. 표(cmfOff 등)는 부팅 때',
         '//CmfRelink() 가 이 둘로 채운다.',
@@ -264,9 +342,9 @@ def emit(groups, ids, heroes, eol):
     C.append('#include "CmfBlob.h"')
     C.append('')
 
-    for table, ctype, blob, idx in groups:
+    for table, ctype, blob, off in groups:
         for nm, typ, vals in ((table + 'Blob', ctype, blob),
-                              (table + 'Idx', 'unsigned int', idx)):
+                              (table + 'Slot', 'unsigned int', off)):
             H.append('extern const %s* %s;' % (typ, nm))
             H.append('enum { %s_COUNT = %d };' % (nm, len(vals)))
             H.append('')
@@ -281,9 +359,9 @@ def emit(groups, ids, heroes, eol):
             C.append('const %s* %s = %s_builtin;' % (typ, nm, nm))
             C.append('')
 
-    H.append('//cmf 개수. 표를 채울 때 쓴다.')
+    H.append('//슬롯 개수. 표를 채울 때 쓴다. 서로 다른 자료 수가 아니다.')
     H.append('enum { CMF_BUILTIN_COUNT = %d, CMF_HERO_COUNT = %d };' %
-             (len(ids), len(heroes)))
+             (len(slots), len(heroes)))
     H.append('')
     H.append('#endif')
     H.append('')
@@ -298,7 +376,8 @@ def main():
 
     ids = cmf_ids()
     heroes = hero_ids(ids)
-    print('cmf %d개, 히어로 %d개' % (len(ids), len(heroes)))
+    slots = slot_map()
+    print('cmf %d개, 히어로 %d개, 슬롯 %d개' % (len(ids), len(heroes), len(slots)))
 
     work = tempfile.mkdtemp(prefix='packcmf_')
 
@@ -309,17 +388,17 @@ def main():
         if raw is None:
             return 1
 
-        groups = split_blobs(raw, ids, heroes)
+        groups = split_blobs(raw, ids, heroes, slots)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
     total = 0
 
-    for table, ctype, blob, idx in groups:
+    for table, ctype, blob, off in groups:
         b = len(blob) * CTYPE_SIZE[ctype]
-        total += b + len(idx) * 4
-        print('  %-18s %8d칸 %9s바이트   Idx %d칸'
-              % (table, len(blob), format(b, ','), len(idx)))
+        total += b + len(off) * 4
+        print('  %-18s %8d칸 %9s바이트   슬롯 %d칸'
+              % (table, len(blob), format(b, ','), len(off)))
 
     print('  합계 %s 바이트' % format(total, ','))
 

@@ -18,32 +18,32 @@
 extern const unsigned short* cmfOffBlob;
 enum { cmfOffBlob_COUNT = 12692 };
 
-extern const unsigned int* cmfOffIdx;
-enum { cmfOffIdx_COUNT = 124 };
+extern const unsigned int* cmfOffSlot;
+enum { cmfOffSlot_COUNT = 429 };
 
 extern const signed short* cmfMotionImgBlob;
 enum { cmfMotionImgBlob_COUNT = 311556 };
 
-extern const unsigned int* cmfMotionImgIdx;
-enum { cmfMotionImgIdx_COUNT = 124 };
+extern const unsigned int* cmfMotionImgSlot;
+enum { cmfMotionImgSlot_COUNT = 429 };
 
 extern const unsigned short* cmfMotionImgCntBlob;
 enum { cmfMotionImgCntBlob_COUNT = 18364 };
 
-extern const unsigned int* cmfMotionImgCntIdx;
-enum { cmfMotionImgCntIdx_COUNT = 124 };
+extern const unsigned int* cmfMotionImgCntSlot;
+enum { cmfMotionImgCntSlot_COUNT = 429 };
 
 extern const signed short* cmfMotionImgSizeBlob;
 enum { cmfMotionImgSizeBlob_COUNT = 36728 };
 
-extern const unsigned int* cmfMotionImgSizeIdx;
-enum { cmfMotionImgSizeIdx_COUNT = 124 };
+extern const unsigned int* cmfMotionImgSizeSlot;
+enum { cmfMotionImgSizeSlot_COUNT = 429 };
 
 extern const signed short* cmfCrashSizeBlob;
 enum { cmfCrashSizeBlob_COUNT = 73456 };
 
-extern const unsigned int* cmfCrashSizeIdx;
-enum { cmfCrashSizeIdx_COUNT = 124 };
+extern const unsigned int* cmfCrashSizeSlot;
+enum { cmfCrashSizeSlot_COUNT = 429 };
 
 extern const unsigned short* cmfHeroLoopBlob;
 enum { cmfHeroLoopBlob_COUNT = 192 };
@@ -54,11 +54,11 @@ enum { cmfHeroLoopIdx_COUNT = 4 };
 extern const signed short* cmfMoveInfoBlob;
 enum { cmfMoveInfoBlob_COUNT = 50382 };
 
-extern const unsigned int* cmfMoveInfoIdx;
-enum { cmfMoveInfoIdx_COUNT = 124 };
+extern const unsigned int* cmfMoveInfoSlot;
+enum { cmfMoveInfoSlot_COUNT = 429 };
 
 //cmf 개수. 표를 채울 때 쓴다.
-enum { CMF_BUILTIN_COUNT = 123, CMF_HERO_COUNT = 3 };
+enum { CMF_BUILTIN_COUNT = 429, CMF_HERO_COUNT = 3 };
 
 #endif
 

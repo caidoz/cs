@@ -131,7 +131,7 @@ def key_of(name):
     if name in CONTENT_KEY:
         return CONTENT_KEY[name]
 
-    for suffix, kind in (('Blob', 'FREE'), ('Idx', 'IDX')):
+    for suffix, kind in (('Blob', 'FREE'), ('Slot', 'IDX'), ('Idx', 'IDX')):
         if not name.endswith(suffix):
             continue
 
@@ -144,7 +144,11 @@ def key_of(name):
         else:
             continue
 
-        return ('DPK_KEY_FREE', 0, 0) if kind == 'FREE' else (key, 1, -1)
+        if kind == 'FREE':
+            return ('DPK_KEY_FREE', 0, 0)
+
+        #Slot 은 슬롯 하나에 한 칸이다. Idx 는 '개수 + 1' 칸이라 -1 을 더한다.
+        return (key, 1, 0) if suffix == 'Slot' else (key, 1, -1)
 
     return ('DPK_KEY_NONE', 0, 0)
 
