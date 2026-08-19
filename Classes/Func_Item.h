@@ -35,6 +35,12 @@ int GetItemPrice(ITEM * it);
 int GetCharPrice(int);
 int GetItemPow(int, int, int);
 int GetItemStar(int, int, int);
+
+//동료 레벨업(동료 상세보기)
+int GetCrewMaxLevel(void);
+long long GetCrewUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
+bool CanCrewLevelUp(ITEM* it);
+long long GetCrewPower(int detail, int lv);
 int GetCurWeaponCollectionsIndex(void);
 int GetHighestCollections(int);
 int GetItemCount(int, int, int);

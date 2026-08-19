@@ -10515,5 +10515,27 @@ const char* const textId[] = {
 	"새 갑옷을 입었다! 방어력이 올라 더 오래 버틸 수 있다.",//TEXT_TUTORIAL_EQUIPWEAR
 	"베팅을 올렸다! 하트를 더 걸수록 공격이 강해진다.",//TEXT_TUTORIAL_BETUP
 	"획득한 보상",//TEXT_GACHAREWARD_TITLE
+
+	//---- 동료 상세보기 ----
+	"상세 보기",//TEXT_CREW_DETAIL_TITLE
+	"슬롯 등장 효능",//TEXT_CREW_SLOTEFFECT
+	"필요 재화",//TEXT_CREW_NEEDCURRENCY
+	"현재",//TEXT_CREW_LEVELCUR
+	"다음 레벨",//TEXT_CREW_LEVELNEXT
+	"최대 레벨",//TEXT_CREW_MAXLEVEL
+	"동료 조각",//TEXT_CREW_PIECE
+	"일반 공격",//TEXT_CREW_SKILL_ATTACK
+	"강력 공격",//TEXT_CREW_SKILL_STRONG
+	"필살 공격",//TEXT_CREW_SKILL_ULTIMATE
+	"몬스터 소환",//TEXT_CREW_SKILL_SUMMON
+	"히어로 스킬",//TEXT_CREW_SKILL_HERO
+	"능력 상승",//TEXT_CREW_SKILL_BUFF
+	//|r은 진분홍(강조), |s는 직전 색으로 복귀다. 밝은 패널 위에 그리므로
+	//|b(흰색)를 쓰면 글자가 사라진다. @는 줄바꿈이다.
+	"데미지 |r%d",//TEXT_CREW_DESC_DAMAGE
+	"%s 소환@데미지 |r%d",//TEXT_CREW_DESC_SUMMON
+	"용사님의 %s@데미지 |r%d",//TEXT_CREW_DESC_HERO
+	"아군의 능력이 |r%d|s 만큼 오른다",//TEXT_CREW_DESC_BUFF
+	"편성중",//TEXT_CREW_EQUIPPED
 };
 #endif /* Text_h */

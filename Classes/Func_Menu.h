@@ -98,6 +98,8 @@ void CrewListDraw(int x, int y, float zoom);
 void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActive, bool horizontal);
 void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);
 void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onlyInfo);
+//동료 상세보기. winH는 (x, y)부터 아래로 쓸 수 있는 높이(픽셀)다.
+void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH);
 void ItemOptionCompareDraw(ITEM * it1, ITEM * it2, int x, int y, float zoom);
 void ItemOptionDraw(ITEM * it, int x, int y, float zoom, bool equipped);
 void EquipInfoDraw(ITEM * it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom);
