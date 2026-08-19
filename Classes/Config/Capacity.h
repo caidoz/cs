@@ -38,6 +38,10 @@ enum {
 	CAP_SKILL  = 2048,	//현재 1374
 	CAP_CASTLE = 32,	//현재 19.  성(지역)
 	CAP_MAP    = 512,	//현재 425
+
+	//cmf = 모션 묶음. 캐릭터 하나가 하나씩 쓴다.
+	CAP_CMF      = 256,	//현재 123
+	CAP_CMF_HERO = 8,	//현재 3. cmfHeroLoop 전용
 };
 
 #endif

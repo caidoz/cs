@@ -23,6 +23,10 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Menu.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Movement.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Net.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/MapLink.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/MapBlob.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/CmfLink.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/CmfBlob.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/DataPackCheck.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/DataCount.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/WaveData.cpp \

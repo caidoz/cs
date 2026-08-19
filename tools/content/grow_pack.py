@@ -51,7 +51,8 @@ def read_list():
     out = {}
 
     for m in re.finditer(
-            r'X\((\w+),\s*(\d+),\s*(\w+),\s*([^,]+),\s*(\w+),\s*(\d+),\s*(\d+)\)', t):
+            #시작번호는 음수일 수 있다. 색인표는 "콘텐츠 수 + 1" 칸이라 -1 이다.
+            r'X\((\w+),\s*(\d+),\s*(\w+),\s*([^,]+),\s*(\w+),\s*(\d+),\s*(-?\d+)\)', t):
         out[m.group(1)] = (m.group(5), int(m.group(6)), int(m.group(7)))
 
     return out
@@ -59,7 +60,8 @@ def read_list():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('key', choices=['enemy', 'crew', 'skill', 'castle', 'map'])
+    ap.add_argument('key', choices=['enemy', 'crew', 'skill', 'castle',
+                                    'map', 'cmf', 'cmf_hero'])
     ap.add_argument('--add', type=int, default=1, help='몇 개 더 넣을까')
     ap.add_argument('--only', help='이 배열 하나만 늘린다. 어긋난 팩을 일부러 만들 때 쓴다')
     ap.add_argument('--out')
@@ -100,6 +102,8 @@ def main():
         blob = buf[dat + off: dat + off + cells * sz]
         items.append([name, sz, kind, cells, bytearray(blob)])
 
+    byname = {it[0]: it for it in items}
+
     #---- 콘텐츠에 매인 배열을 늘린다 ----
     grown = 0
     before = after = 0
@@ -116,14 +120,40 @@ def main():
         _k, w, base = spec[name]
         n = cells // w + base
         before = n
-        tail = blob[-w * sz:]          #마지막 콘텐츠 한 벌을 그대로 복제한다
 
-        for _ in range(args.add):
-            blob.extend(tail)
+        if name.endswith('Idx'):
+            #blob + 색인표 짝이다. 둘을 같이 늘려야 한다.
+            #  색인표 : 마지막 칸 뒤에 "끝 + 방금 늘린 만큼" 을 더 적는다
+            #  blob   : 마지막 콘텐츠 한 벌을 그대로 뒤에 붙인다
+            pair = byname.get(name[:-3] + 'Blob')
 
-        it[3] = cells + args.add * w
+            if pair is None:
+                sys.stderr.write('%s 의 짝이 되는 Blob 을 못 찾았다\n' % name)
+                return 1
+
+            idx = list(struct.unpack_from('<%dI' % cells, bytes(blob), 0))
+            seg = idx[-1] - idx[-2]          #마지막 콘텐츠의 칸 수
+            psz = pair[1]
+            tail = pair[4][idx[-2] * psz: idx[-1] * psz]
+
+            for _ in range(args.add):
+                pair[4].extend(tail)
+                idx.append(idx[-1] + seg)
+
+            pair[3] += args.add * seg
+            it[4] = bytearray(struct.pack('<%dI' % len(idx), *idx))
+            it[3] = len(idx)
+            grown += 2
+        else:
+            tail = blob[-w * sz:]      #마지막 콘텐츠 한 벌을 그대로 복제한다
+
+            for _ in range(args.add):
+                blob.extend(tail)
+
+            it[3] = cells + args.add * w
+            grown += 1
+
         after = it[3] // w + base
-        grown += 1
 
     if not grown:
         sys.stderr.write('늘릴 배열을 못 찾았다\n')

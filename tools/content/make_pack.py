@@ -118,8 +118,35 @@ NOW = {'DPK_KEY_ENEMY': 431, 'DPK_KEY_CREW': 64, 'DPK_KEY_SKILL': 1374,
        'DPK_KEY_CASTLE': 19, 'DPK_KEY_MAP': 425}
 
 
+#blob 과 그 색인표. pack_cmf.py / pack_map.py 가 만든다.
+#  <이름>Blob : 길이에 뜻이 없다. 몇 칸이든 받는다.
+#  <이름>Idx  : 콘텐츠 수 + 1 칸. 그래서 시작번호가 -1 이다.
+#               (개수 = 칸수 / 폭 + 시작번호)
+BLOB_KEY = {
+    'cmfHeroLoop': 'DPK_KEY_CMF_HERO',
+}
+
+
 def key_of(name):
-    return CONTENT_KEY.get(name, ('DPK_KEY_NONE', 0, 0))
+    if name in CONTENT_KEY:
+        return CONTENT_KEY[name]
+
+    for suffix, kind in (('Blob', 'FREE'), ('Idx', 'IDX')):
+        if not name.endswith(suffix):
+            continue
+
+        base = name[:-len(suffix)]
+
+        if base.startswith('cmf'):
+            key = BLOB_KEY.get(base, 'DPK_KEY_CMF')
+        elif base.startswith('map'):
+            key = 'DPK_KEY_MAP'
+        else:
+            continue
+
+        return ('DPK_KEY_FREE', 0, 0) if kind == 'FREE' else (key, 1, -1)
+
+    return ('DPK_KEY_NONE', 0, 0)
 
 
 def report_suspects(entries):

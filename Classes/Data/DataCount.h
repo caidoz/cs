@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DATA_COUNT_H_
 #define _DATA_COUNT_H_
@@ -28,6 +28,7 @@ extern int gTotalCrew;
 extern int gTotalSkill;
 extern int gTotalCastle;
 extern int gTotalMap;
+extern int gTotalCmf;
 
 //팩을 읽은 뒤 개수를 다시 잡는다. 팩이 없으면 내장 개수로 되돌린다.
 void DataCountRefresh(void);

@@ -30,8 +30,9 @@ MAIN = r'''
 #include <stdlib.h>
 
 static const char* KEYNAME[] = {
-    "(고정)", "몬스터", "동료", "스킬", "성", "맵"
+    "(고정)", "몬스터", "동료", "스킬", "성", "맵", "cmf", "cmf히어로", "(자유)"
 };
+
 
 int main(int argc, char** argv)
 {
@@ -129,7 +130,10 @@ def main():
             objs = [os.path.join(OBJDIR, os.path.splitext(n)[0] + '.obj')
                     for n in sorted(os.listdir(os.path.join(CT.CLASSES, 'Data')))
                     if n.endswith('.cpp') and n not in
-                    ('DataPack.cpp', 'DataCount.cpp', 'DataPackCheck.cpp')]
+                    #CmfLink/MapLink 는 표를 채우는 쪽이다. 팩 검사에는 안 쓰고,
+                    #DataPackCount 를 부르므로 링크만 번거로워진다. 뺀다.
+                    ('DataPack.cpp', 'DataCount.cpp', 'DataPackCheck.cpp',
+                     'CmfLink.cpp', 'MapLink.cpp', 'MapBlob.cpp')]
 
             missing = [o for o in objs if not os.path.isfile(o)]
 

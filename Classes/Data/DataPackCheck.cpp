@@ -49,6 +49,8 @@ int DataPackCapOf(int key)
 	case DPK_KEY_SKILL:		return CAP_SKILL;
 	case DPK_KEY_CASTLE:	return CAP_CASTLE;
 	case DPK_KEY_MAP:		return CAP_MAP;
+	case DPK_KEY_CMF:		return CAP_CMF;
+	case DPK_KEY_CMF_HERO:	return CAP_CMF_HERO;
 	}
 
 	return 0;
@@ -165,6 +167,9 @@ int DataPackCheck(const unsigned char* buf, long size,
 			SAY("%s 의 원소 형식이 다르다(팩 %d/%d, 클라 %d/%d)\n", \
 				#N, s, k, (int)(SZ), (int)(K)); \
 			bad++; \
+		} \
+		else if ((KEY) == DPK_KEY_FREE) { \
+			/* blob. 길이에 뜻이 없다. Idx 가 어디서 끊어 읽을지 말해준다. */ \
 		} \
 		else if ((KEY) == DPK_KEY_NONE) { \
 			/* 길이가 고정인 배열. 정확히 같아야 한다. */ \

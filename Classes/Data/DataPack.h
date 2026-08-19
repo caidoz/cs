@@ -66,6 +66,13 @@ enum {
 	DPK_KEY_SKILL,
 	DPK_KEY_CASTLE,
 	DPK_KEY_MAP,
+	DPK_KEY_CMF,
+	DPK_KEY_CMF_HERO,
+
+	//길이가 아무래도 되는 것. blob 이 여기 든다. 몇 칸이든 Idx 가 어디서
+	//끊어 읽을지 말해주므로 길이 자체에는 뜻이 없다. 그래서 안 잰다.
+	DPK_KEY_FREE,
+
 	DPK_KEY_MAX,
 };
 
@@ -92,6 +99,8 @@ int DataPackCapOf(int key);
 	X(CAP_SKILL) \
 	X(CAP_CASTLE) \
 	X(CAP_MAP) \
+	X(CAP_CMF) \
+	X(CAP_CMF_HERO) \
 	X(ENEMYDATASIZE) \
 	X(ATTACKPATTERNDATASIZE) \
 	X(SKILLDATASIZE) \

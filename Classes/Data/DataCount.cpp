@@ -1,8 +1,9 @@
-#include "cocos2d.h"
+﻿#include "cocos2d.h"
 
 #include "../Def.h"
 #include "DataCount.h"
 #include "DataPack.h"
+#include "CmfBlob.h"
 
 USING_NS_CC;
 
@@ -12,6 +13,9 @@ int gTotalCrew = TOTAL_CREW;
 int gTotalSkill = TOTAL_SKILL;
 int gTotalCastle = TOTALCASTLE;
 int gTotalMap = TOTALMAP;
+
+//cmf 개수는 CmfRelink() 가 잡는다. 표를 채우면서 같이 정해지기 때문이다.
+int gTotalCmf = CMF_BUILTIN_COUNT;
 
 //팩 안 배열의 길이에서 개수를 얻는다.
 //  name  : 개수를 대표하는 배열. 한 칸이 콘텐츠 하나에 해당해야 한다.

@@ -17,6 +17,7 @@
 #include "AlphaData.h"
 #include "BattleData.h"
 #include "CastleData.h"
+#include "CmfBlob.h"
 #include "CmfData.h"
 #include "CollectionData.h"
 #include "DemoData.h"
@@ -28,6 +29,7 @@
 #include "HeroData.h"
 #include "ImgData.h"
 #include "ItemData.h"
+#include "MapBlob.h"
 #include "MapData.h"
 #include "ObjectData.h"
 #include "QuestData.h"
@@ -69,134 +71,24 @@
 	X(setHeroPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(setEnemyPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
-	X(c0mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
-	X(c1mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
-	X(c2mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
-	X(c3mv, 2, DPK_INT, 550, DPK_KEY_NONE, 0, 0) \
-	X(c4mv, 2, DPK_INT, 376, DPK_KEY_NONE, 0, 0) \
-	X(c5mv, 2, DPK_INT, 788, DPK_KEY_NONE, 0, 0) \
-	X(c6mv, 2, DPK_INT, 328, DPK_KEY_NONE, 0, 0) \
-	X(c7mv, 2, DPK_INT, 660, DPK_KEY_NONE, 0, 0) \
-	X(c8mv, 2, DPK_INT, 758, DPK_KEY_NONE, 0, 0) \
-	X(c9mv, 2, DPK_INT, 302, DPK_KEY_NONE, 0, 0) \
-	X(c10mv, 2, DPK_INT, 420, DPK_KEY_NONE, 0, 0) \
-	X(c11mv, 2, DPK_INT, 750, DPK_KEY_NONE, 0, 0) \
-	X(c12mv, 2, DPK_INT, 432, DPK_KEY_NONE, 0, 0) \
-	X(c13mv, 2, DPK_INT, 716, DPK_KEY_NONE, 0, 0) \
-	X(c14mv, 2, DPK_INT, 750, DPK_KEY_NONE, 0, 0) \
-	X(c15mv, 2, DPK_INT, 488, DPK_KEY_NONE, 0, 0) \
-	X(c16mv, 2, DPK_INT, 496, DPK_KEY_NONE, 0, 0) \
-	X(c17mv, 2, DPK_INT, 984, DPK_KEY_NONE, 0, 0) \
-	X(c18mv, 2, DPK_INT, 514, DPK_KEY_NONE, 0, 0) \
-	X(c19mv, 2, DPK_INT, 304, DPK_KEY_NONE, 0, 0) \
-	X(c20mv, 2, DPK_INT, 428, DPK_KEY_NONE, 0, 0) \
-	X(c21mv, 2, DPK_INT, 1930, DPK_KEY_NONE, 0, 0) \
-	X(c22mv, 2, DPK_INT, 152, DPK_KEY_NONE, 0, 0) \
-	X(c23mv, 2, DPK_INT, 168, DPK_KEY_NONE, 0, 0) \
-	X(c24mv, 2, DPK_INT, 472, DPK_KEY_NONE, 0, 0) \
-	X(c25mv, 2, DPK_INT, 176, DPK_KEY_NONE, 0, 0) \
-	X(c26mv, 2, DPK_INT, 1268, DPK_KEY_NONE, 0, 0) \
-	X(c27mv, 2, DPK_INT, 1180, DPK_KEY_NONE, 0, 0) \
-	X(c28mv, 2, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
-	X(c29mv, 2, DPK_INT, 584, DPK_KEY_NONE, 0, 0) \
-	X(c30mv, 2, DPK_INT, 616, DPK_KEY_NONE, 0, 0) \
-	X(c31mv, 2, DPK_INT, 1190, DPK_KEY_NONE, 0, 0) \
-	X(c32mv, 2, DPK_INT, 626, DPK_KEY_NONE, 0, 0) \
-	X(c33mv, 2, DPK_INT, 248, DPK_KEY_NONE, 0, 0) \
-	X(c34mv, 2, DPK_INT, 1248, DPK_KEY_NONE, 0, 0) \
-	X(c35mv, 2, DPK_INT, 200, DPK_KEY_NONE, 0, 0) \
-	X(c36mv, 2, DPK_INT, 378, DPK_KEY_NONE, 0, 0) \
-	X(c37mv, 2, DPK_INT, 956, DPK_KEY_NONE, 0, 0) \
-	X(c38mv, 2, DPK_INT, 80, DPK_KEY_NONE, 0, 0) \
-	X(c39mv, 2, DPK_INT, 1026, DPK_KEY_NONE, 0, 0) \
-	X(c40mv, 2, DPK_INT, 942, DPK_KEY_NONE, 0, 0) \
-	X(c41mv, 2, DPK_INT, 424, DPK_KEY_NONE, 0, 0) \
-	X(c42mv, 2, DPK_INT, 348, DPK_KEY_NONE, 0, 0) \
-	X(c43mv, 2, DPK_INT, 826, DPK_KEY_NONE, 0, 0) \
-	X(c44mv, 2, DPK_INT, 372, DPK_KEY_NONE, 0, 0) \
-	X(c45mv, 2, DPK_INT, 422, DPK_KEY_NONE, 0, 0) \
-	X(c46mv, 2, DPK_INT, 266, DPK_KEY_NONE, 0, 0) \
-	X(c47mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
-	X(c48mv, 2, DPK_INT, 1016, DPK_KEY_NONE, 0, 0) \
-	X(c49mv, 2, DPK_INT, 1064, DPK_KEY_NONE, 0, 0) \
-	X(c50mv, 2, DPK_INT, 1262, DPK_KEY_NONE, 0, 0) \
-	X(c51mv, 2, DPK_INT, 1342, DPK_KEY_NONE, 0, 0) \
-	X(c52mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c53mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c54mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c55mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
-	X(c56mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c57mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
-	X(c58mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
-	X(c59mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
-	X(c60mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c61mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
-	X(c62mv, 2, DPK_INT, 250, DPK_KEY_NONE, 0, 0) \
-	X(c63mv, 2, DPK_INT, 100, DPK_KEY_NONE, 0, 0) \
-	X(c64mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c65mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c66mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c67mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c68mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c69mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c70mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c71mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c72mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c73mv, 2, DPK_INT, 686, DPK_KEY_NONE, 0, 0) \
-	X(c74mv, 2, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
-	X(c75mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c76mv, 2, DPK_INT, 362, DPK_KEY_NONE, 0, 0) \
-	X(c77mv, 2, DPK_INT, 500, DPK_KEY_NONE, 0, 0) \
-	X(c78mv, 2, DPK_INT, 646, DPK_KEY_NONE, 0, 0) \
-	X(c79mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
-	X(c80mv, 2, DPK_INT, 2, DPK_KEY_NONE, 0, 0) \
-	X(c81mv, 2, DPK_INT, 200, DPK_KEY_NONE, 0, 0) \
-	X(c82mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c83mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
-	X(c84mv, 2, DPK_INT, 444, DPK_KEY_NONE, 0, 0) \
-	X(c85mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c86mv, 2, DPK_INT, 224, DPK_KEY_NONE, 0, 0) \
-	X(c87mv, 2, DPK_INT, 196, DPK_KEY_NONE, 0, 0) \
-	X(c88mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
-	X(c89mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c90mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c91mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
-	X(c92mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
-	X(c93mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
-	X(c94mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c95mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
-	X(c96mv, 2, DPK_INT, 358, DPK_KEY_NONE, 0, 0) \
-	X(c97mv, 2, DPK_INT, 246, DPK_KEY_NONE, 0, 0) \
-	X(c98mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c99mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
-	X(c100mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c101mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
-	X(c102mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
-	X(c103mv, 2, DPK_INT, 312, DPK_KEY_NONE, 0, 0) \
-	X(c104mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c105mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
-	X(c106mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
-	X(c107mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
-	X(c108mv, 2, DPK_INT, 114, DPK_KEY_NONE, 0, 0) \
-	X(c109mv, 2, DPK_INT, 1662, DPK_KEY_NONE, 0, 0) \
-	X(c110mv, 2, DPK_INT, 1500, DPK_KEY_NONE, 0, 0) \
-	X(c111mv, 2, DPK_INT, 598, DPK_KEY_NONE, 0, 0) \
-	X(c112mv, 2, DPK_INT, 1228, DPK_KEY_NONE, 0, 0) \
-	X(c113mv, 2, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
-	X(c114mv, 2, DPK_INT, 464, DPK_KEY_NONE, 0, 0) \
-	X(c115mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
-	X(c116mv, 2, DPK_INT, 226, DPK_KEY_NONE, 0, 0) \
-	X(c117mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
-	X(c118mv, 2, DPK_INT, 298, DPK_KEY_NONE, 0, 0) \
-	X(c119mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
-	X(c120mv, 2, DPK_INT, 152, DPK_KEY_NONE, 0, 0) \
-	X(c121mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
-	X(c122mv, 2, DPK_INT, 1924, DPK_KEY_NONE, 0, 0) \
+	X(cmfOffBlob, 2, DPK_UINT, 12692, DPK_KEY_FREE, 0, 0) \
+	X(cmfOffIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
+	X(cmfMotionImgBlob, 2, DPK_INT, 311556, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
+	X(cmfMotionImgCntBlob, 2, DPK_UINT, 18364, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgCntIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
+	X(cmfMotionImgSizeBlob, 2, DPK_INT, 36728, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgSizeIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
+	X(cmfCrashSizeBlob, 2, DPK_INT, 73456, DPK_KEY_FREE, 0, 0) \
+	X(cmfCrashSizeIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
+	X(cmfHeroLoopBlob, 2, DPK_UINT, 192, DPK_KEY_FREE, 0, 0) \
+	X(cmfHeroLoopIdx, 4, DPK_UINT, 4, DPK_KEY_CMF_HERO, 1, -1) \
+	X(cmfMoveInfoBlob, 2, DPK_INT, 50382, DPK_KEY_FREE, 0, 0) \
+	X(cmfMoveInfoIdx, 4, DPK_UINT, 124, DPK_KEY_CMF, 1, -1) \
 	X(cmfImgOff, 2, DPK_INT, 2145, DPK_KEY_NONE, 0, 0) \
 	X(cmfTotalMotion, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
 	X(cmfTotalOff, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
 	X(cmfVar, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
-	X(cmfMove, 2, DPK_INT, 429, DPK_KEY_NONE, 0, 0) \
 	X(costumeSize, 2, DPK_UINT, 36, DPK_KEY_NONE, 0, 0) \
 	X(costumeOff, 2, DPK_UINT, 600, DPK_KEY_NONE, 0, 0) \
 	X(collectionLvLimit, 4, DPK_INT, 24, DPK_KEY_NONE, 0, 0) \
@@ -411,6 +303,20 @@
 	X(newItemReward, 4, DPK_INT, 684, DPK_KEY_NONE, 0, 0) \
 	X(upgradeCostCrew, 4, DPK_INT, upgradeCostCrew_ROWS * upgradeCostCrew_COLS, DPK_KEY_NONE, 0, 0) \
 	X(upgradeCostEquip, 4, DPK_INT, upgradeCostEquip_ROWS * upgradeCostEquip_COLS, DPK_KEY_NONE, 0, 0) \
+	X(mapPtrBlob, 1, DPK_UINT, 246959, DPK_KEY_FREE, 0, 0) \
+	X(mapPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapTilePtrBlob, 1, DPK_UINT, 246959, DPK_KEY_FREE, 0, 0) \
+	X(mapTilePtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapRectPtrBlob, 1, DPK_UINT, 1058, DPK_KEY_FREE, 0, 0) \
+	X(mapRectPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapBackPtrBlob, 2, DPK_INT, 15581, DPK_KEY_FREE, 0, 0) \
+	X(mapBackPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapObjPtrBlob, 2, DPK_INT, 1963, DPK_KEY_FREE, 0, 0) \
+	X(mapObjPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapNeutralPtrBlob, 2, DPK_INT, 981, DPK_KEY_FREE, 0, 0) \
+	X(mapNeutralPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
+	X(mapEnemyPtrBlob, 2, DPK_UINT, 505, DPK_KEY_FREE, 0, 0) \
+	X(mapEnemyPtrIdx, 4, DPK_UINT, 426, DPK_KEY_MAP, 1, -1) \
 	X(mapRectSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
 	X(mapBackSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
 	X(mapObjSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
