@@ -2,6 +2,7 @@
 //gradlew.bat :cs:assembleDebug 2>&1 | findstr /i "error: error failed failure fatal exception"
 
 
+#include "Content.h"
 #include "AppDelegate.h"
 #include "CoreClass.h"
 //#define SDKBOX_ENABLED
@@ -66,6 +67,11 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+	//내려받은 콘텐츠 폴더를 검색 경로 맨 앞에 넣는다.
+	//리소스를 하나라도 읽기 전에 해야 한다. 나중에 하면 이미 읽어둔 것이
+	//앱에 딸려온 옛 파일로 굳는다.
+	ContentInstallSearchPath();
+
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::init();
 #endif

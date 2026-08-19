@@ -298,6 +298,7 @@
     <ClCompile Include="..\Classes\Func_Menu.cpp" />
     <ClCompile Include="..\Classes\Func_Movement.cpp" />
     <ClCompile Include="..\Classes\Func_Net.cpp" />
+    <ClCompile Include="..\Classes\Content.cpp" />
     <ClCompile Include="..\Classes\Data\MapLink.cpp" />
     <ClCompile Include="..\Classes\Data\MapBlob.cpp" />
     <ClCompile Include="..\Classes\Data\CmfLink.cpp" />

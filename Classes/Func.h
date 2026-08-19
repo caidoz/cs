@@ -24,6 +24,7 @@
 #include "Func_Text.h"
 #include "Func_Utility.h"
 #include "Func_Demo.h"
+#include "Content.h"
 
 // wipi-c Function
 long MC_knlCurrentTime(void);
