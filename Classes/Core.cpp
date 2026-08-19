@@ -867,11 +867,34 @@ bool Core::init()
 		CmfRead(i, i);
 	}
 	
-	if (!LoadFile(SAVEFILE, saveMem, sizeof(ROBINDATA))) {
-		NewGame();
-	}
-	else {
-		LoadGame();
+	//서버에서 계정과 세이브를 받아온다.
+	//지금은 서버가 없어서 클라이언트 안의 임시 서버가 파일로 처리한다(Func_Net.cpp).
+	//
+	//부팅만 지연 없이 즉시 처리한다. 게임이 아직 안 떠서 기다릴 화면이 없기
+	//때문이다. 진짜 서버가 붙으면 여기가 로딩 화면을 띄우는 비동기 흐름이 된다.
+	{
+		//LoadGame()/NewGame()이 맨 앞에서 하는 일이다. 서버에서 받는 경로도
+		//robin을 채우기 전에 런타임 상태를 세워 두어야 한다.
+		InitGame();
+
+		int netResult = NetBootstrap();
+
+		if (netResult == NETRESULT_OK) {
+			//서버가 준 값이 robin에 이미 들어가 있다. 나머지를 세운다.
+			LoadGameAfterNet();
+		}
+		else if (LoadFile(SAVEFILE, saveMem, sizeof(ROBINDATA))) {
+			//서버에는 없는데 예전 save.dat이 있다. 한 번만 옮겨 담는다.
+			//다음 저장부터는 서버(=새 형식)로만 나간다. save.dat은 그대로
+			//남겨두므로 문제가 생기면 되돌릴 수 있다.
+			CCLOG("NetBootstrap: 서버에 없다. 예전 save.dat을 옮겨 담는다");
+			LoadGame();
+			NetMarkDirty();
+			NetFlush();
+		}
+		else {
+			NewGame();
+		}
 	}
 
 	for (i = 0; i < MAXRENDERCNT; i++)
@@ -905,6 +928,10 @@ void Core::Run(float delta) {
 	int i;
 	//항상 현재 시간을 세팅해 준다.
 	currentTimeStamp = MC_knlCurrentTimeStamp();
+
+	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
+	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
+	NetUpdate();
 
 	if (wholeFrame % FRAMEPER == 0) {
 		//프레임 정리.
@@ -2241,6 +2268,9 @@ void PaintClet(int x, int y, int w, int h)
 		frame++;
 	if (touchedFrame > 0)
 		touchedFrame++;
+
+	//통신 중이라는 표시. 가장 마지막에 그려서 무엇에도 가리지 않게 한다.
+	NetIndicatorDraw();
 
 	VersionDraw();
 }

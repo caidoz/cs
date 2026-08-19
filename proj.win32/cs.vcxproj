@@ -297,6 +297,7 @@
     <ClCompile Include="..\Classes\Func_Math.cpp" />
     <ClCompile Include="..\Classes\Func_Menu.cpp" />
     <ClCompile Include="..\Classes\Func_Movement.cpp" />
+    <ClCompile Include="..\Classes\Func_Net.cpp" />
     <ClCompile Include="..\Classes\Func_Object.cpp" />
     <ClCompile Include="..\Classes\Func_Roulette.cpp" />
     <ClCompile Include="..\Classes\Func_Sound.cpp" />
@@ -384,6 +385,7 @@
     <ClInclude Include="..\Classes\Func_Math.h" />
     <ClInclude Include="..\Classes\Func_Menu.h" />
     <ClInclude Include="..\Classes\Func_Movement.h" />
+    <ClInclude Include="..\Classes\Func_Net.h" />
     <ClInclude Include="..\Classes\Func_Object.h" />
     <ClInclude Include="..\Classes\Func_Roulette.h" />
     <ClInclude Include="..\Classes\Func_Sound.h" />

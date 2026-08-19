@@ -4469,18 +4469,12 @@ void SaveGame(void)
 		//robin.totalDmgRecord[i] = ao[i].totalDmgRecord;
 		//robin.onceDmgRecord[i] = ao[i].onceDmgRecord;
 	}
-	//할당된 메모리에 세이브영역 카피
-	memcpy(saveMem, &robin, sizeof(ROBINDATA));
-#ifdef LOCALSAVE
+	//예전에는 여기서 ROBINDATA를 통째로 save.dat에 썼다(1.1MB). 지금은 서버에
+	//올린다. 다만 여기서 바로 보내지는 않는다. SaveGame()은 32곳에서 불리고
+	//전투 중에도 불리므로, 그때마다 보내면 초당 몇 번씩 나간다.
+	//"보낼 것이 생겼다"고만 표시하고, NetUpdate()가 잠잠해진 뒤 한 번에 보낸다.
+	NetMarkDirty();
 
-	//파일쓰기
-#ifdef CRYPT
-	EncryptFile(SAVEFILE, saveMem, sizeof(ROBINDATA));
-#else
-	GameWriteFile(SAVEFILE, saveMem, sizeof(ROBINDATA));
-#endif
-
-#endif
 	//기타 작업
 	newStart = 0;
 	option.usedResurrection = 0;
@@ -4537,6 +4531,17 @@ void LoadGame(void)
 
 	InitMenu();
 
+}
+
+//서버가 robin을 채워준 뒤에 마무리로 하는 것.
+//LoadGame()에서 "파일 읽기"만 빠진 나머지다. 둘이 어긋나지 않게 한 곳에 둔다.
+void LoadGameAfterNet(void)
+{
+	//crewCnt는 ROBINDATA에 없는 순수 전역이라 저장에서 복원되지 않는다.
+	//편성표(slotCrew)를 보고 다시 센다. LoadGame()과 같은 이유다.
+	crewCnt = GetSlotCrewCnt();
+
+	InitMenu();
 }
 
 void SaveOption(void)
