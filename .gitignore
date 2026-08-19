@@ -42,3 +42,6 @@ cocos2d/
 # 필수 제외: Classes와 Resources는 반드시 포함
 !Classes/
 !Resources/
+# 파이썬 도구 캐시
+__pycache__/
+*.pyc
