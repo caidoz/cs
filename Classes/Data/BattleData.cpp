@@ -140,7 +140,7 @@ static const int wheelCrewPos_builtin[] = {
     352 * _2X - 256 * _2X + TSIZE, 420 * _2X + TSIZE - 352 * _2X,//4
     256 * _2X - 256 * _2X, 500 * _2X - 352 * _2X,//5
 };
-const unsigned short gameEventOpenStage[] = {
+static const unsigned short gameEventOpenStage_builtin[] = {
     0 * TOTALROOM + 0,//EVENTTYPE_NONE = 0,//이벤트가 없는것으로 이걸 보고 리스트를 띄울지 알려준다.
 #ifdef GAMEDEBUG
     0 * TOTALROOM + 0,//EVENTTYPE_PVP,//족보중에 전투를 하면 발생하는 
@@ -170,6 +170,8 @@ const unsigned short gameEventOpenStage[] = {
 
 #endif
 };
+
+
 static const int rouletteProb_builtin[] = {
     PROB_COIN,// = 700,
     PROB_COIN + PROB_COINBAG,// = 600,
@@ -179,7 +181,7 @@ static const int rouletteProb_builtin[] = {
     PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL + PROB_QUEST + PROB_HIT,// = 400,
     PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL + PROB_QUEST + PROB_HIT + PROB_RAID,// = 300,
 };
-const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL] = {
+static const int activeSkillProb_builtin[][2 * MAXCHARSKILL] = {
     //로빈
     {
         70, SKILL_ROBIN8,//ROBIN_SKILL_BOOSTSLASH,//1
@@ -211,6 +213,7 @@ const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL] = {
         10, SKILL_MAXX13,//MAXX_SKILL_MEGA//7
     }
 };
+
 static const float popUpFrameData_builtin[] = {
     0.0f,
     0.1f,
@@ -450,3 +453,15 @@ const int* skillInitData = skillInitData_builtin;
 const unsigned short* arenaOff = arenaOff_builtin;
 const signed short* arenaMI = arenaMI_builtin;
 const unsigned char* arenaMIC = arenaMIC_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const int (*activeSkillProb)[2 * MAXCHARSKILL] = activeSkillProb_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned short* gameEventOpenStage = gameEventOpenStage_builtin;

@@ -375,7 +375,7 @@ static const unsigned short itemNameStart_builtin[] = {
 	ITEM_SHIELD_NAMESTART,
 	ITEM_BOX_NAMESTART,
 };
-const unsigned short alphaOff[TOTAL_ALPHA_TEXT + 1] = {
+static const unsigned short alphaOff_builtin[] = {
 	ALPHA_L_OFF,
 	ALPHA_F_OFF,
 	ALPHA_HP_OFF,
@@ -931,6 +931,7 @@ const unsigned short alphaOff[TOTAL_ALPHA_TEXT + 1] = {
 
 	TOTAL_ALPHA_OFF
 };
+
 static const signed short alertText_builtin[] = {
 	//0 : 완전 수동, -1 : tempStr, -2 : infoStr, -3 : skillStr
 	TEXT_NOGOLD,	//ALERT_NOGOLD
@@ -952,3 +953,9 @@ const int* areaName = areaName_builtin;
 const unsigned short* unicode_table = unicode_table_builtin;
 const unsigned short* itemNameStart = itemNameStart_builtin;
 const signed short* alertText = alertText_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned short* alphaOff = alphaOff_builtin;

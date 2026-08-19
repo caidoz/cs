@@ -296,7 +296,15 @@ void InitGame(void)
 	}
 
 
-	int questDataCnt = sizeof(questRequestItemCntData);
+	//퀘스트마다 서브퀘스트가 몇 개 있는지 센다.
+	//
+	//예전에는 sizeof(questRequestItemCntData) 였다. 이 배열은 unsigned long long
+	//900칸이라 sizeof 는 원소 수 900이 아니라 바이트 수 7200을 준다. 그래서
+	//루프가 18번이 아니라 144번 돌았고, 배열을 6300칸이나 넘어 읽었다.
+	//(쓰기 쪽 subQuestCnt 는 TOTALQUEST(172)칸이라 범위 안이었다.)
+	//
+	//결과로 퀘스트 18번 이후의 서브퀘스트 개수가 쓰레기값이었다.
+	int questDataCnt = questRequestItemCntData_COUNT;
 	int subQuestDataCnt;
 
 	for (i = 0; i < questDataCnt / TOTALSUBQUEST; i++) {

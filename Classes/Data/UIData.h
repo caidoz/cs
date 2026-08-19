@@ -29,7 +29,8 @@ enum { statIcon_COUNT = 6 };
 // ===== 메뉴 상태 및 아이콘 데이터 =====
 // CLOSED: 아예 시스템이 없는 것
 // OPEN: 시스템은 있으나 아직 게임 진행상 오픈이 되지 않은 상태
-extern const unsigned char menuOpened[24];
+extern const unsigned char* menuOpened;
+enum { menuOpened_COUNT = 24 };
 
 extern const unsigned short* listMenuIcon;
 enum { listMenuIcon_COUNT = 22 };

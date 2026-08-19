@@ -26,7 +26,8 @@ extern const signed char* skillToStat;
 enum { skillToStat_COUNT = 7 };
 
 //GetAtk와 동기화 되어야 함
-extern const unsigned char skillDescMod[8 * 3];
+extern const unsigned char* skillDescMod;
+enum { skillDescMod_COUNT = 27 };
 
 //총탄 아이콘별로 날아가는 모양(CREWBULLETANI_*).
 //순서는 crewBullet.png의 아이콘 순서(가로 16개씩)와 1:1이다.
@@ -34,5 +35,6 @@ extern const unsigned char skillDescMod[8 * 3];
 //
 //기준: 구르거나 휘둘러 던지는 단단한 물건은 SPIN, 물렁하거나 살아있는 것은 PULSE,
 //방향이 뚜렷해서 돌면 어색한 것은 NONE.
-extern const unsigned char crewBulletAni[78];
+extern const unsigned char* crewBulletAni;
+enum { crewBulletAni_COUNT = 78 };
 #endif

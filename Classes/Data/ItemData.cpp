@@ -11388,7 +11388,7 @@ static const signed int newItemReward_builtin[] = {
 	ITEM_HEART, false, false, 1000, //에어워커
 
 };
-const int upgradeCostCrew[6][2 * 14] = {
+static const int upgradeCostCrew_builtin[][2 * 14] = {
 	//1스타
 	{
 		1, 50,//0
@@ -11492,7 +11492,8 @@ const int upgradeCostCrew[6][2 * 14] = {
 		0, 0,//13
 	},
 };
-const int upgradeCostEquip[6][2 * 14] = {
+
+static const int upgradeCostEquip_builtin[][2 * 14] = {
 	//1스타
 	{
 		0, 0,//0
@@ -11597,6 +11598,7 @@ const int upgradeCostEquip[6][2 * 14] = {
 	},
 };
 
+
 //게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
 //팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
@@ -11668,3 +11670,10 @@ const int* gemPrice = gemPrice_builtin;
 const int* enchantRate = enchantRate_builtin;
 const unsigned char* extraSetItem = extraSetItem_builtin;
 const signed int* newItemReward = newItemReward_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const int (*upgradeCostCrew)[2 * 14] = upgradeCostCrew_builtin;
+const int (*upgradeCostEquip)[2 * 14] = upgradeCostEquip_builtin;

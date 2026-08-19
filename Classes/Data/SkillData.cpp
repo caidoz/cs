@@ -1409,7 +1409,7 @@ static const signed char skillToStat_builtin[] = {
 	PS_HIT,	//정조준 : 명중 증가
 	PS_EVASION,	//신속회피 : 회피 증가
 };
-const unsigned char skillDescMod[8 * 3] = {
+static const unsigned char skillDescMod_builtin[] = {
 #ifdef AIR2XDMG
 	35,	//SKILL_ROBIN6	: 에어크래쉬 : 몹 뛰우기 //0
 #else
@@ -1449,7 +1449,9 @@ const unsigned char skillDescMod[8 * 3] = {
 	10,	//SKILL_MAXX12	: //써클헌트 : 주인공 주변 보호 //22
 	30,	//SKILL_MAXX13	: //메가헌트 : 관통후 뒤에서 돌아옴 //23
 };
-const unsigned char crewBulletAni[] = {
+
+
+static const unsigned char crewBulletAni_builtin[] = {
 	//0~15	돌 / 구슬 / 머리핀 / 부채 / 인형 / 지팡이
 	CREWBULLETANI_SPIN,		//0	돌(갈색)
 	CREWBULLETANI_SPIN,		//1	돌(은색)
@@ -1539,6 +1541,7 @@ const unsigned char crewBulletAni[] = {
 	CREWBULLETANI_PULSE,	//77	구슬(보라)
 };
 
+
 //게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
 //팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
@@ -1547,3 +1550,15 @@ const signed int* skillData = skillData_builtin;
 const unsigned short* barrierEtcData = barrierEtcData_builtin;
 const unsigned short* berserkEtcData = berserkEtcData_builtin;
 const signed char* skillToStat = skillToStat_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned char* crewBulletAni = crewBulletAni_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned char* skillDescMod = skillDescMod_builtin;

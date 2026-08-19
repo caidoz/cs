@@ -1842,7 +1842,8 @@ long long GetCrewUpgradeCost(ITEM* it, int what)
 	star = GetItemStar(ITEM_CREW, it->detail, it->grade);
 
 	//표는 1성부터 6성까지다. 데이터가 어긋나면 표 밖을 읽는다.
-	if (star < 1 || star > (int)(sizeof(upgradeCostCrew) / sizeof(upgradeCostCrew[0])))
+	//포인터가 되어 sizeof(upgradeCostCrew) 는 배열 크기가 아니라 포인터 크기다.
+	if (star < 1 || star > upgradeCostCrew_ROWS)
 		return 0;
 
 	return upgradeCostCrew[star - 1][it->lv * 2 + (what ? 1 : 0)];

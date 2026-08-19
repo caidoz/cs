@@ -44,6 +44,15 @@ PTR_RE = re.compile(
     r'(?P<name>[A-Za-z_]\w*)[ \t]*;\s*'
     r'enum[ \t]*\{[ \t]*(?P=name)_COUNT[ \t]*=[ \t]*(?P<count>\d+)[ \t]*\}[ \t]*;')
 
+# 2차원 : extern const <타입> (*<이름>)[COLS];
+#         enum { <이름>_ROWS = R, <이름>_COLS = (C), <이름>_COUNT = R * C };
+# 팩에는 평평하게 R*C 칸으로 들어간다. 색인식 x[a][b] 는 그대로 동작한다.
+PTR2_RE = re.compile(
+    r'extern[ \t]+const[ \t]+(?P<type>[A-Za-z_][A-Za-z0-9_ \t]*?)[ \t]*'
+    r'\([ \t]*\*[ \t]*(?P<name>[A-Za-z_]\w*)[ \t]*\)[ \t]*\[[^\]]*\][ \t]*;\s*'
+    r'enum[ \t]*\{[ \t]*(?P=name)_ROWS[ \t]*=[ \t]*(?P<rows>\d+)[ \t]*,'
+    r'\s*(?P=name)_COLS[ \t]*=[ \t]*\((?P<cols>[^)]*)\)')
+
 SIZE = {'char': 1, 'signed char': 1, 'unsigned char': 1, 'bool': 1,
         'short': 2, 'signed short': 2, 'unsigned short': 2,
         'int': 4, 'signed int': 4, 'unsigned int': 4, 'float': 4,
@@ -66,7 +75,11 @@ def scan(headers):
     for h in headers:
         text = CT.read(os.path.join(DATA, h))
 
-        for m in PTR_RE.finditer(text):
+        found = [(m, None) for m in PTR_RE.finditer(text)]
+        found += [(m, m.group('cols')) for m in PTR2_RE.finditer(text)]
+        found.sort(key=lambda x: x[0].start())
+
+        for m, cols in found:
             typ = ' '.join(m.group('type').split())
             sz = SIZE.get(typ)
 
@@ -80,8 +93,14 @@ def scan(headers):
                                  % (m.group('name'), NAMELEN - 1))
                 return None
 
-            out.append((h, typ, m.group('name'),
-                        int(m.group('count')), sz, kind_of(typ)))
+            if cols is None:
+                cnt = int(m.group('count'))
+            else:
+                # 안쪽 크기가 (2 * 14) 같은 식이라 파이썬으로 못 푼다.
+                # 그대로 넘겨서 컴파일러가 풀게 한다.
+                cnt = '%s_ROWS * %s_COLS' % (m.group('name'), m.group('name'))
+
+            out.append((h, typ, m.group('name'), cnt, sz, kind_of(typ)))
 
     return out
 
@@ -110,7 +129,7 @@ def write_list(entries, headers):
     L.append('#define DATA_LIST(X) \\')
 
     for _h, _t, name, cnt, sz, kind in entries:
-        L.append('\tX(%s, %d, %s, %d) \\' % (name, sz, kind, cnt))
+        L.append('\tX(%s, %d, %s, %s) \\' % (name, sz, kind, cnt))
 
     L.append('\t/* 끝 */')
     L.append('')
@@ -156,6 +175,8 @@ unsigned int DataPackAbi(void)
 #define ABI_ONE(N) at += sprintf(buf + at, "%s=%d;", #N, (int)(N));
     DATAPACK_ABI_LIST(ABI_ONE)
 #undef ABI_ONE
+
+    at += sprintf(buf + at, "%s", DATAPACK_ABI_FLAGS);
 
     return Crc32(buf, (unsigned int)at);
 }
@@ -300,6 +321,9 @@ def verify(path, entries):
         got = e[:NAMELEN].split(b'\0')[0].decode()
         gsz = e[NAMELEN]
         gcnt = struct.unpack('<I', e[NAMELEN + 4:NAMELEN + 8])[0]
+
+        if isinstance(cnt, str):
+            cnt = gcnt   # 식이라 파이썬에서 못 센다. 컴파일러가 푼 값을 쓴다.
 
         if got != name or gsz != sz or gcnt != cnt:
             print('  %d번 항목이 다르다: %s/%d/%d vs %s/%d/%d'

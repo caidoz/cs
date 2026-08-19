@@ -18,12 +18,15 @@ enum { houseGold_COUNT = 12 };
 extern const int* wheelCrewPos;
 enum { wheelCrewPos_COUNT = 10 };
 
-extern const unsigned short gameEventOpenStage[24];
+extern const unsigned short* gameEventOpenStage;
+enum { gameEventOpenStage_COUNT = 24 };
 
 extern const int* rouletteProb;
 enum { rouletteProb_COUNT = 7 };
 
-extern const int activeSkillProb[TOTALCHAR][2 * MAXCHARSKILL];
+extern const int (*activeSkillProb)[2 * MAXCHARSKILL];
+enum { activeSkillProb_ROWS = 3, activeSkillProb_COLS = (2 * MAXCHARSKILL),
+	   activeSkillProb_COUNT = activeSkillProb_ROWS * activeSkillProb_COLS };
 
 extern const float* popUpFrameData;
 enum { popUpFrameData_COUNT = 8 };

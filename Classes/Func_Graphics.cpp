@@ -4904,7 +4904,7 @@ void DrawCrewBulletIcon(int idx, int x, int y, float zoom)
 //총탄 아이콘이 날아가는 모양. 표에 없는 번호는 그냥 날아가는 것으로 둔다.
 int GetCrewBulletAni(int idx)
 {
-	if (idx < 0 || idx >= (int)(sizeof(crewBulletAni) / sizeof(crewBulletAni[0])))
+	if (idx < 0 || idx >= crewBulletAni_COUNT)
 		return CREWBULLETANI_NONE;
 
 	return crewBulletAni[idx];

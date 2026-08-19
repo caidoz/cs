@@ -37,6 +37,7 @@
 
 #define DATA_LIST(X) \
 	X(demoAlpha, 1, DPK_UINT, 50) \
+	X(alphaData, 1, DPK_UINT, 2793) \
 	X(alphaX, 2, DPK_UINT, 296) \
 	X(alpha2, 2, DPK_INT, 222) \
 	X(goldAlphaInfo, 2, DPK_UINT, 444) \
@@ -45,7 +46,9 @@
 	X(houseGoldStage, 4, DPK_INT, 12) \
 	X(houseGold, 8, DPK_INT, 12) \
 	X(wheelCrewPos, 4, DPK_INT, 10) \
+	X(gameEventOpenStage, 2, DPK_UINT, 24) \
 	X(rouletteProb, 4, DPK_INT, 7) \
+	X(activeSkillProb, 4, DPK_INT, activeSkillProb_ROWS * activeSkillProb_COLS) \
 	X(popUpFrameData, 4, DPK_FLOAT, 8) \
 	X(hitAlpha, 2, DPK_INT, 3) \
 	X(raidAlpha, 2, DPK_INT, 3) \
@@ -198,6 +201,7 @@
 	X(demoData, 2, DPK_INT, 105) \
 	X(frameData, 2, DPK_INT, 162) \
 	X(demoItem, 2, DPK_UINT, 60) \
+	X(boxDropProc, 4, DPK_INT, boxDropProc_ROWS * boxDropProc_COLS) \
 	X(proc1, 2, DPK_UINT, 2) \
 	X(proc2, 2, DPK_UINT, 3) \
 	X(proc3, 2, DPK_UINT, 4) \
@@ -290,6 +294,9 @@
 	X(dianaSkillClosingFrame, 2, DPK_UINT, 23) \
 	X(maxxSkillStartFrame, 2, DPK_UINT, 22) \
 	X(maxxSkillClosingFrame, 2, DPK_UINT, 22) \
+	X(robinSkillMotion, 2, DPK_UINT, 8612) \
+	X(dianaSkillMotion, 2, DPK_UINT, 7964) \
+	X(maxxSkillMotion, 2, DPK_UINT, 3652) \
 	X(dianaHelmPos, 1, DPK_INT, 50) \
 	X(maxxHelmPos, 1, DPK_INT, 50) \
 	X(concentrateMotion, 2, DPK_UINT, 25) \
@@ -398,6 +405,8 @@
 	X(enchantRate, 4, DPK_INT, 300) \
 	X(extraSetItem, 1, DPK_UINT, 576) \
 	X(newItemReward, 4, DPK_INT, 684) \
+	X(upgradeCostCrew, 4, DPK_INT, upgradeCostCrew_ROWS * upgradeCostCrew_COLS) \
+	X(upgradeCostEquip, 4, DPK_INT, upgradeCostEquip_ROWS * upgradeCostEquip_COLS) \
 	X(mapRectSize, 4, DPK_UINT, 425) \
 	X(mapBackSize, 4, DPK_UINT, 425) \
 	X(mapObjSize, 4, DPK_UINT, 425) \
@@ -422,6 +431,7 @@
 	X(sunShineOff, 2, DPK_UINT, 24) \
 	X(sunShineMI, 2, DPK_INT, 504) \
 	X(sunShineMIC, 1, DPK_UINT, 44) \
+	X(sateliteMotionCnt, 1, DPK_UINT, 62) \
 	X(neutralData, 2, DPK_INT, 506) \
 	X(mapBg, 2, DPK_UINT, 76) \
 	X(waterfallMI, 2, DPK_INT, 48) \
@@ -448,12 +458,15 @@
 	X(pvpQuestRequest, 4, DPK_UINT, 5040) \
 	X(pvpQuestReward, 8, DPK_UINT, 20280) \
 	X(questRequestItem, 4, DPK_UINT, 496) \
+	X(questRequestItemCntData, 8, DPK_UINT, 900) \
 	X(questReward, 8, DPK_UINT, 3600) \
 	X(questInfo, 4, DPK_INT, 108) \
 	X(goldQuestDotPosition, 4, DPK_INT, 60) \
 	X(goldQuestZoomData, 4, DPK_FLOAT, 20) \
+	X(battleRewardMedal, 4, DPK_INT, 7) \
 	X(battleRewardGold, 8, DPK_INT, 80) \
 	X(bossGold, 8, DPK_INT, 100) \
+	X(raidRewardMedal, 4, DPK_INT, 7) \
 	X(stageClearBox, 8, DPK_INT, 51) \
 	X(levelUpCategory, 4, DPK_INT, 9) \
 	X(levelUpReward, 8, DPK_INT, 200) \
@@ -476,15 +489,19 @@
 	X(barrierEtcData, 2, DPK_UINT, 15) \
 	X(berserkEtcData, 2, DPK_UINT, 15) \
 	X(skillToStat, 1, DPK_INT, 7) \
+	X(skillDescMod, 1, DPK_UINT, 27) \
+	X(crewBulletAni, 1, DPK_UINT, 78) \
 	X(areaName, 4, DPK_INT, 15) \
 	X(unicode_table, 2, DPK_UINT, 2350) \
 	X(itemNameStart, 2, DPK_UINT, 39) \
+	X(alphaOff, 2, DPK_UINT, 497) \
 	X(alertText, 2, DPK_INT, 9) \
 	X(colorSet, 4, DPK_INT, 52) \
 	X(currencyIcon, 2, DPK_UINT, 10) \
 	X(solidPosition, 4, DPK_INT, 8) \
 	X(openFrame, 4, DPK_INT, 7) \
 	X(statIcon, 2, DPK_INT, 6) \
+	X(menuOpened, 1, DPK_UINT, 24) \
 	X(listMenuIcon, 2, DPK_UINT, 22) \
 	X(crewPos, 2, DPK_INT, 2155) \
 	X(enemyIconPos, 2, DPK_INT, 1293) \

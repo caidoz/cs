@@ -5,7 +5,8 @@
 #define _DATA_REWARD_H_
 
 // 전투 및 레이드 보상 데이터
-extern const int battleRewardMedal[7];
+extern const int* battleRewardMedal;
+enum { battleRewardMedal_COUNT = 7 };
 
 // 스테이지별 전투 보상 골드
 extern const long long* battleRewardGold;
@@ -15,7 +16,8 @@ enum { battleRewardGold_COUNT = 80 };
 extern const long long* bossGold;
 enum { bossGold_COUNT = 100 };
 
-extern const int raidRewardMedal[7];
+extern const int* raidRewardMedal;
+enum { raidRewardMedal_COUNT = 7 };
 
 
 extern const long long* stageClearBox;

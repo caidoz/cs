@@ -109,11 +109,14 @@ enum { maxxSkillClosingFrame_COUNT = 22 };
 
 //c0~c2 모션을 60프레임용으로 늘리면 인덱스가 char 범위를 넘는다.
 //MSVC는 이 경우 에러가 아니라 C4309 경고만 내고 값을 잘라버리므로 폭을 넓혀 둔다.
-extern const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4];
+extern const unsigned short* robinSkillMotion;
+enum { robinSkillMotion_COUNT = 8612 };
 
-extern const unsigned short dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4];
+extern const unsigned short* dianaSkillMotion;
+enum { dianaSkillMotion_COUNT = 7964 };
 
-extern const unsigned short maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4];
+extern const unsigned short* maxxSkillMotion;
+enum { maxxSkillMotion_COUNT = 3652 };
 
 
 extern const signed char* dianaHelmPos;

@@ -37,9 +37,7 @@ DATA = SD.DATA
 
 #포인터로 바꾸면 sizeof 가 깨지는 배열들. 호출부를 _COUNT 로 고치면 여기서 뺀다.
 SIZEOF_USED = {
-    'crewBulletAni',
-    'sateliteMotionCnt',
-    'questRequestItemCntData',
+    #upgradeCostCrew 는 2차원이라 어차피 티어 2다. sizeof 도 그대로 동작한다.
     'upgradeCostCrew',
 }
 
@@ -177,6 +175,13 @@ def convert(fname, write):
             body = body.replace(
                 head, 'static const %s %s_builtin[] = {' % (typ, name), 1)
             decls.append(('ptr', typ, name, cnt))
+        elif tier == 4:
+            # 2차원. 안쪽 크기를 남겨야 const T (*p)[COLS] 와 짝이 맞는다.
+            cols = re.findall(r'\[([^\]]*)\]', dims)[1]
+            body = body.replace(
+                head,
+                'static const %s %s_builtin[][%s] = {' % (typ, name, cols), 1)
+            decls.append(('ptr2', typ, name, cnt, cols))
         else:
             decls.append(('arr', typ, name, cnt, dims))
 
@@ -187,7 +192,7 @@ def convert(fname, write):
     out.append(text[at:] if already else '')
     ctext = ''.join(out).rstrip()
 
-    ptrs = [d for d in decls if d[0] == 'ptr']
+    ptrs = [d for d in decls if d[0] in ('ptr', 'ptr2')]
 
     if ptrs:
         tail = ['', '',
@@ -196,8 +201,12 @@ def convert(fname, write):
                 '//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.',
                 '']
 
-        for _k, typ, name, _c in ptrs:
-            tail.append('const %s* %s = %s_builtin;' % (typ, name, name))
+        for d in ptrs:
+            if d[0] == 'ptr':
+                tail.append('const %s* %s = %s_builtin;' % (d[1], d[2], d[2]))
+            else:
+                tail.append('const %s (*%s)[%s] = %s_builtin;'
+                            % (d[1], d[2], d[4], d[2]))
 
         ctext += eol.join(tail)
 
@@ -232,15 +241,27 @@ def convert(fname, write):
     if already:
         # 이미 extern 선언이 들어 있다. 포인터로 바꿀 것만 교체한다.
         for d in decls:
-            if d[0] != 'ptr':
+            if d[0] not in ('ptr', 'ptr2'):
                 continue
 
-            _k, typ, name, cnt = d
-            pat = re.compile(
-                r'extern[ \t]+const[ \t]+%s[ \t]+%s\s*\[[^\]]*\]\s*;'
-                % (re.escape(typ), re.escape(name)))
-            rep = ('extern const %s* %s;%senum { %s_COUNT = %d };'
-                   % (typ, name, eol, name, cnt))
+            typ, name, cnt = d[1], d[2], d[3]
+
+            if d[0] == 'ptr':
+                pat = re.compile(
+                    r'extern[ \t]+const[ \t]+%s[ \t]+%s\s*\[[^\]]*\]\s*;'
+                    % (re.escape(typ), re.escape(name)))
+                rep = ('extern const %s* %s;%senum { %s_COUNT = %d };'
+                       % (typ, name, eol, name, cnt))
+            else:
+                cols = d[4]
+                pat = re.compile(
+                    r'extern[ \t]+const[ \t]+%s[ \t]+%s\s*(?:\[[^\]]*\]\s*)+;'
+                    % (re.escape(typ), re.escape(name)))
+                rep = ('extern const %s (*%s)[%s];%s'
+                       'enum { %s_ROWS = %d, %s_COLS = (%s),%s'
+                       '	   %s_COUNT = %s_ROWS * %s_COLS };'
+                       % (typ, name, cols, eol,
+                          name, cnt, name, cols, eol, name, name, name))
             htext, n = pat.subn(rep, htext, count=1)
 
             if n != 1:
@@ -259,6 +280,16 @@ def convert(fname, write):
             if tier == 1:
                 parts.append('extern const %s* %s;%senum { %s_COUNT = %d };'
                              % (typ, name, eol, name, cnt))
+            elif tier == 4:
+                cols = re.findall(r'\[([^\]]*)\]', dims)[1]
+                #cnt 는 바깥 차원(행 수)이다. 팩은 전체 원소 수를 쓰므로
+                #_COUNT 는 행 x 열로 둔다. 행 수는 _ROWS 로 따로 낸다.
+                parts.append(
+                    'extern const %s (*%s)[%s];%s'
+                    'enum { %s_ROWS = %d, %s_COLS = (%s),%s'
+                    '	   %s_COUNT = %s_ROWS * %s_COLS };'
+                    % (typ, name, cols, eol,
+                       name, cnt, name, cols, eol, name, name, name))
             else:
                 parts.append('extern const %s %s%s;'
                              % (typ, name, SD.sized_dims(
@@ -269,7 +300,7 @@ def convert(fname, write):
         parts.append(htext[at:])
         htext = ''.join(parts)
 
-    t1 = [r for r in rows if r[5] == 1]
+    t1 = [r for r in rows if r[5] in (1, 4)]
     t2 = [(fname, r[3], r[6]) for r in rows if r[5] in (2, 3)]
 
     if write:
@@ -305,7 +336,7 @@ def main():
             if not rows:
                 continue
 
-            a = sum(1 for r in rows if r[5] == 1)
+            a = sum(1 for r in rows if r[5] in (1, 4))
             b = [(fname, r[3], r[6]) for r in rows if r[5] in (2, 3)]
             print('%-18s 포인터 %3d  그대로 %d' % (fname, a, len(b)))
             total1 += a

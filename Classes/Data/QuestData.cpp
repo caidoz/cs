@@ -12601,7 +12601,7 @@ static const unsigned int questRequestItem_builtin[] = {
 	ITEM_CLOTH, ITEM_CLOTH_LV8, GRADE_SUPERIOR,
 
 };
-const unsigned long long questRequestItemCntData[] = {
+static const unsigned long long questRequestItemCntData_builtin[] = {
 	//0 : 아이템 타입
 	//1 : 아이템 디테일
 	//2 : 아이템 그레이드
@@ -13543,6 +13543,7 @@ const unsigned long long questRequestItemCntData[] = {
 	false,//49
 	false,//50
 };
+
 static const unsigned long long questReward_builtin[] = {
 	//총 10번의 연퀘가 있기 때문에 보상도 총 10번의 보상이 발생된다.
 	//0 : 아이템 타입(골드(gold)냐, 하트(heart)냐, 조합석(exp)이냐,  
@@ -14578,3 +14579,9 @@ const unsigned long long* questReward = questReward_builtin;
 const signed int* questInfo = questInfo_builtin;
 const int* goldQuestDotPosition = goldQuestDotPosition_builtin;
 const float* goldQuestZoomData = goldQuestZoomData_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned long long* questRequestItemCntData = questRequestItemCntData_builtin;

@@ -58,6 +58,66 @@ enum {
 	X(CREWDATASIZE) \
 	X(TOTALCASTLE)
 
+//값이 아니라 "정의됐는지"만 보는 것들.
+//
+// 배열 안에 #ifdef 분기가 있어서 설정에 따라 값이 달라지는 것들이 있다
+// (alphaData, gameEventOpenStage, robinSkillMotion, battleRewardMedal,
+//  skillDescMod, alphaOff, menuOpened).
+// 팩에는 만들 때의 설정으로 정해진 값이 들어가므로, 설정이 바뀐 클라이언트가
+// 옛 팩을 쓰면 조용히 틀린 값이 된다. 지문에 넣어 막는다.
+//
+// 문자열 이어붙이기로 쓴다. 매크로 전개 안에서는 #ifdef 를 못 쓴다.
+#define DATAPACK_ABI_FLAGS \
+	"SETITEM=" DPK_F_SETITEM ";" \
+	"GAMEDEBUG=" DPK_F_GAMEDEBUG ";" \
+	"ATTACK_INIT_DELAY=" DPK_F_ATTACK_INIT_DELAY ";" \
+	"ROBINDEFAULTATTACKSTING=" DPK_F_ROBINDEFAULTATTACKSTING ";" \
+	"BATTLEABSOLUTE=" DPK_F_BATTLEABSOLUTE ";" \
+	"AIR2XDMG=" DPK_F_AIR2XDMG ";" \
+	"IRON=" DPK_F_IRON ";"
+
+#ifdef SETITEM
+#define DPK_F_SETITEM "1"
+#else
+#define DPK_F_SETITEM "0"
+#endif
+
+#ifdef GAMEDEBUG
+#define DPK_F_GAMEDEBUG "1"
+#else
+#define DPK_F_GAMEDEBUG "0"
+#endif
+
+#ifdef ATTACK_INIT_DELAY
+#define DPK_F_ATTACK_INIT_DELAY "1"
+#else
+#define DPK_F_ATTACK_INIT_DELAY "0"
+#endif
+
+#ifdef ROBINDEFAULTATTACKSTING
+#define DPK_F_ROBINDEFAULTATTACKSTING "1"
+#else
+#define DPK_F_ROBINDEFAULTATTACKSTING "0"
+#endif
+
+#ifdef BATTLEABSOLUTE
+#define DPK_F_BATTLEABSOLUTE "1"
+#else
+#define DPK_F_BATTLEABSOLUTE "0"
+#endif
+
+#ifdef AIR2XDMG
+#define DPK_F_AIR2XDMG "1"
+#else
+#define DPK_F_AIR2XDMG "0"
+#endif
+
+#ifdef IRON
+#define DPK_F_IRON "1"
+#else
+#define DPK_F_IRON "0"
+#endif
+
 unsigned int DataPackAbi(void);
 unsigned int DataPackCrc(const void* buf, unsigned int len);
 

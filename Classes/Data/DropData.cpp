@@ -13,7 +13,7 @@
 #include "../Def.h"
 #include "../Cmf.h"
 
-const int boxDropProc[TOTAL_BOX][TOTAL_BOXDROP] = {
+static const int boxDropProc_builtin[][TOTAL_BOXDROP] = {
 	//BOX_INGAME
 	{
 		1700,//BOXDROP_COIN = 0
@@ -202,6 +202,7 @@ const int boxDropProc[TOTAL_BOX][TOTAL_BOXDROP] = {
 		10000,//BOXDROP_RAID,
 	},
 };
+
 static const unsigned short proc1_builtin[] = {
 	7000,
 	10000
@@ -966,3 +967,9 @@ const unsigned short* proc31 = proc31_builtin;
 const unsigned short* proc32 = proc32_builtin;
 const unsigned short* proc33 = proc33_builtin;
 const unsigned short* proc34 = proc34_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const int (*boxDropProc)[TOTAL_BOXDROP] = boxDropProc_builtin;

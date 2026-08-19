@@ -185,7 +185,14 @@ def ask_compiler(names):
 
 def count_array_elems(text, decl_name):
     """const 배열의 초기값 개수를 센다. 중첩 중괄호는 한 덩어리로 본다."""
-    m = re.search(r'\b%s\s*\[[^;{]*\]\s*(\[[^;{]*\]\s*)?=\s*\{' % re.escape(decl_name), text)
+    #split_data.py 가 정의를 옮기면서 이름 뒤에 _builtin 을 붙였다.
+    #(포인터가 원래 이름을 쓰고, 내장 기본값이 _builtin 이 된다)
+    for nm in (decl_name, decl_name + '_builtin'):
+        m = re.search(r'\b%s\s*\[[^;{]*\]\s*(\[[^;{]*\]\s*)?=\s*\{'
+                      % re.escape(nm), text)
+
+        if m:
+            break
 
     if not m:
         return None
@@ -271,7 +278,9 @@ def data_text():
     d = os.path.join(CLASSES, 'Data')
 
     for n in sorted(os.listdir(d)):
-        if n.endswith('.h'):
+        #정의는 split_data.py 가 .cpp 로 옮겼다. 헤더에는 extern 선언만
+        #남아 있으므로 .cpp 도 같이 읽어야 원소를 셀 수 있다.
+        if n.endswith('.h') or n.endswith('.cpp'):
             with open(os.path.join(d, n), encoding='utf-8-sig') as fp:
                 out.append((n, strip_comments(fp.read())))
 

@@ -1,4 +1,4 @@
-#include "cocos2d.h"
+﻿#include "cocos2d.h"
 
 #include "DataPack.h"
 #include "DataList.h"
@@ -50,6 +50,9 @@ unsigned int DataPackAbi(void)
 #define ABI_ONE(N) at += sprintf(buf + at, "%s=%d;", #N, (int)(N));
 	DATAPACK_ABI_LIST(ABI_ONE)
 #undef ABI_ONE
+
+	//정의 여부만 보는 것들
+	at += sprintf(buf + at, "%s", DATAPACK_ABI_FLAGS);
 
 	return DataPackCrc(buf, (unsigned int)at);
 }

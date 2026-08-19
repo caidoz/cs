@@ -355,7 +355,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		cPtr = &levelUpMI[levelUpMIC[(motion - 2000) * 2] * 4];
 	}
 	else if (motion >= 1000) {
-		if ((motion - 1000) * 2 + 1 >= (int)(sizeof(sateliteMotionCnt) / sizeof(sateliteMotionCnt[0]))) {
+		if ((motion - 1000) * 2 + 1 >= sateliteMotionCnt_COUNT) {
 			CCLOG("DrawPlayer: satelite 범위 밖 %d", motion - 1000);
 			return;
 		}

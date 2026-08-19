@@ -69,7 +69,7 @@ static const short statIcon_builtin[] = {
     ICON_GOLD,
     64 * 7 + 28,
 };
-const unsigned char menuOpened[] = {
+static const unsigned char menuOpened_builtin[] = {
     OPENED,     //MENU_PLAY
     OPENED,     //MENU_HERO
     OPENED,     //MENU_CREW
@@ -98,6 +98,7 @@ const unsigned char menuOpened[] = {
     CLOSED,     //MENU_RAID
     OPENED,     //MENU_GAMERESET
 };
+
 static const unsigned short listMenuIcon_builtin[] = {
     false,                      //MENU_PLAY
     ICON_EVENT_CROWN,           //MENU_HERO
@@ -3773,3 +3774,9 @@ const int* shakePosX = shakePosX_builtin;
 const int* shakePosY = shakePosY_builtin;
 const unsigned int* selectColor = selectColor_builtin;
 const int* goldQuestPositionData = goldQuestPositionData_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned char* menuOpened = menuOpened_builtin;

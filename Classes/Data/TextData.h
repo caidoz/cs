@@ -15,7 +15,8 @@ extern const unsigned short* itemNameStart;
 enum { itemNameStart_COUNT = 39 };
 
 
-extern const unsigned short alphaOff[TOTAL_ALPHA_TEXT + 1];
+extern const unsigned short* alphaOff;
+enum { alphaOff_COUNT = 497 };
 
 extern const signed short* alertText;
 enum { alertText_COUNT = 9 };

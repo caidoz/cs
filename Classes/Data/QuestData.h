@@ -39,7 +39,8 @@ extern const unsigned int* questRequestItem;
 enum { questRequestItem_COUNT = 496 };
 
 //퀘스트 요구 아이템
-extern const unsigned long long questRequestItemCntData[900];
+extern const unsigned long long* questRequestItemCntData;
+enum { questRequestItemCntData_COUNT = 900 };
 
 
 //코인레이드의 골드를 250으로 나누면 스케일이 맞다.

@@ -94,11 +94,21 @@ def tier_of(text, a, b, dims, name, sizeof_used):
     2번은 팩으로 못 바꾸므로 CDN으로도 못 고친다. 줄여야 할 목록이다.
     """
     if dims.count('[') > 1:
-        return 2, '2차원'
+        #2차원은 const T (*p)[COLS] 로 바꾸면 x[a][b] 색인이 그대로 동작한다.
+        #안쪽 크기가 적혀 있어야 그 형태를 만들 수 있다.
+        cols = re.findall(r'\[([^\]]*)\]', dims)
 
-    if re.search(r'^[ \t]*#[ \t]*(if|ifdef|ifndef|else|elif|endif)\b',
-                 text[a:b], re.M):
-        return 2, '전처리 분기'
+        if dims.count('[') == 2 and cols[1].strip():
+            return 4, ''
+
+        return 2, '2차원(안쪽 크기 없음)'
+
+    #배열 "안"의 #ifdef 는 막지 않는다. 컴파일러가 한쪽만 고르고 팩에는 그
+    #고른 값이 들어간다. 설정이 바뀐 클라이언트가 옛 팩을 쓰는 것만 막으면
+    #되는데, 그건 DataPack.h 의 ABI 지문이 한다(DATAPACK_ABI_FLAGS).
+    #
+    #배열이 전처리 블록 "안"에 통째로 들어 있는 경우는 다르다. 그건 같은
+    #이름이 여러 번 정의되는 것이라 datafiles.py 의 in_conditional 이 걸러낸다.
 
     if name in sizeof_used:
         return 2, 'sizeof 사용'

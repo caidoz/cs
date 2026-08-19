@@ -74,7 +74,7 @@ static const unsigned char demoAlpha_builtin[] = {
 	0,
 	0,
 };
-const unsigned char alphaData[TOTAL_ALPHA_OFF] = {
+static const unsigned char alphaData_builtin[] = {
 	L,	//ALPHA_L
 	F,	//ALPHA_F
 	H, P,	//ALPHA_HP
@@ -628,6 +628,7 @@ const unsigned char alphaData[TOTAL_ALPHA_OFF] = {
 	C, W,
 	C, X,
 };
+
 static const unsigned short alphaX_builtin[] = {
 	//알파벳 26개, COLON,SLA,PLUS,MINUS,STAR,POUND,PER,PAR_L,PAR_R,DOT
 	//FONT_SMALL
@@ -753,3 +754,9 @@ const unsigned short* alphaX = alphaX_builtin;
 const signed short* alpha2 = alpha2_builtin;
 const unsigned short* goldAlphaInfo = goldAlphaInfo_builtin;
 const unsigned short* alphaY = alphaY_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned char* alphaData = alphaData_builtin;

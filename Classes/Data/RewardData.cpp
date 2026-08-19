@@ -13,7 +13,7 @@
 #include "../Def.h"
 #include "../Cmf.h"
 
-const int battleRewardMedal[] = {
+static const int battleRewardMedal_builtin[] = {
 #ifdef BATTLEABSOLUTE
 	2,  //꽝
 	3,  //굳
@@ -24,6 +24,7 @@ const int battleRewardMedal[] = {
 	6,  //퍼펙트
 #endif
 };
+
 static const long long battleRewardGold_builtin[] = {
 	1000,
 	1200,
@@ -208,7 +209,7 @@ static const long long bossGold_builtin[] = {
 	770000000 * 3,
 	850000000 * 3,
 };
-const int raidRewardMedal[] = {
+static const int raidRewardMedal_builtin[] = {
 #ifdef RAIDABSOLUTE
 	3,  //굳
 	4,  //그레이트
@@ -219,6 +220,7 @@ const int raidRewardMedal[] = {
 	9,  //퍼펙트
 #endif
 };
+
 static const long long stageClearBox_builtin[] = {//TOTALSTAGE
 	BOX_REWARD0,//1
 	BOX_REWARD0,//2
@@ -1802,3 +1804,10 @@ const int* calendarMonthlyRewardDay = calendarMonthlyRewardDay_builtin;
 const long long* calendarInfo1Month = calendarInfo1Month_builtin;
 const long long* calendarInfo1Week = calendarInfo1Week_builtin;
 const int* collectionReward = collectionReward_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const int* battleRewardMedal = battleRewardMedal_builtin;
+const int* raidRewardMedal = raidRewardMedal_builtin;

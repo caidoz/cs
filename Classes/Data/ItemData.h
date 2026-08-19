@@ -426,8 +426,12 @@ enum { extraSetItem_COUNT = 576 };
 extern const signed int* newItemReward;
 enum { newItemReward_COUNT = 684 };
 
-extern const int upgradeCostCrew[6][2 * 14];
+extern const int (*upgradeCostCrew)[2 * 14];
+enum { upgradeCostCrew_ROWS = 6, upgradeCostCrew_COLS = (2 * 14),
+	   upgradeCostCrew_COUNT = upgradeCostCrew_ROWS * upgradeCostCrew_COLS };
 
-extern const int upgradeCostEquip[6][2 * 14];
+extern const int (*upgradeCostEquip)[2 * 14];
+enum { upgradeCostEquip_ROWS = 6, upgradeCostEquip_COLS = (2 * 14),
+	   upgradeCostEquip_COUNT = upgradeCostEquip_ROWS * upgradeCostEquip_COLS };
 
 #endif

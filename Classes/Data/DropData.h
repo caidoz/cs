@@ -4,7 +4,9 @@
 #ifndef _DATA_DROP_H_
 #define _DATA_DROP_H_
 
-extern const int boxDropProc[TOTAL_BOX][TOTAL_BOXDROP];
+extern const int (*boxDropProc)[TOTAL_BOXDROP];
+enum { boxDropProc_ROWS = 17, boxDropProc_COLS = (TOTAL_BOXDROP),
+	   boxDropProc_COUNT = boxDropProc_ROWS * boxDropProc_COLS };
 
 //확률 테이블
 extern const unsigned short* proc1;

@@ -299,7 +299,8 @@ enum { sunShineMI_COUNT = 504 };
 extern const unsigned char* sunShineMIC;
 enum { sunShineMIC_COUNT = 44 };
 
-extern const unsigned char sateliteMotionCnt[62];
+extern const unsigned char* sateliteMotionCnt;
+enum { sateliteMotionCnt_COUNT = 62 };
 
 
 extern const signed short* neutralData;

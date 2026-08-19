@@ -2375,7 +2375,7 @@ static const unsigned char sunShineMIC_builtin[] = {
 	111, 5,	//20
 	116, 10,	//21
 };
-const unsigned char sateliteMotionCnt[62] = {
+static const unsigned char sateliteMotionCnt_builtin[] = {
 	0, 8,	//205
 	8, 8,	//206
 	16, 8,	//207
@@ -2409,6 +2409,7 @@ const unsigned char sateliteMotionCnt[62] = {
 	191, 7,	//19
 	198, 6,	//20
 };
+
 static const signed short neutralData_builtin[] = {
 	//0 : Block
 	//1 : Shadow
@@ -2996,3 +2997,9 @@ const unsigned char* swampBubble = swampBubble_builtin;
 const signed char* sunShineMotion = sunShineMotion_builtin;
 const unsigned char* sewageFallHeight = sewageFallHeight_builtin;
 const unsigned char* tileEmpty = tileEmpty_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned char* sateliteMotionCnt = sateliteMotionCnt_builtin;

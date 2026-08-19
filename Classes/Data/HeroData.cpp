@@ -1886,7 +1886,7 @@ static const unsigned short maxxSkillClosingFrame_builtin[] = {
 	MAXX_SKILL_SIGH_START + MAXX_SKILL_SIGH_CNT - 1,
 	MAXX_SKILL_SPLIT_START + MAXX_SKILL_SPLIT_CNT - 1,
 };
-const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
+static const unsigned short robinSkillMotion_builtin[] = {
 	//모션, X/Y움직임, 효과, 사운드
 #ifdef ROBINDEFAULTATTACKSTING
 #ifdef ATTACK_INIT_DELAY
@@ -4100,7 +4100,8 @@ const unsigned short robinSkillMotion[ROBIN_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C0_REFLECTREADY2, 0, 0,	0,//34
 	0, 0, _ADDBUFF,	0,//35
 };
-const unsigned short dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
+
+static const unsigned short dianaSkillMotion_builtin[] = {
 	//일반공격
 #ifdef ATTACK_INIT_DELAY
 	PO_C1_3WAY0, 0, 0,	0,//0
@@ -6134,7 +6135,8 @@ const unsigned short dianaSkillMotion[DIANA_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C1_DENYREADY2, 0, 0,	0,//12
 	0, 0, _ADDBUFF,	0,//13
 };
-const unsigned short maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
+
+static const unsigned short maxxSkillMotion_builtin[] = {
 	//일반공격
 #ifdef ATTACK_INIT_DELAY
 	PO_C2_HELLMOTION0, 0, 0,	0,//0
@@ -7090,6 +7092,7 @@ const unsigned short maxxSkillMotion[MAXX_TOTAL_ATTACK_FRAME * 4] = {
 	PO_C2_SPLITREADY2, 0, 0,	0,//12
 	0, 0, _ADDBUFF,	0,//13
 };
+
 static const signed char dianaHelmPos_builtin[] = {
 	//디아나 투구 위치
 	0 * _2X, 0 * _2X,	//0
@@ -8209,3 +8212,11 @@ const signed short* equipSlotPos2 = equipSlotPos2_builtin;
 const unsigned char* statueInfo = statueInfo_builtin;
 const unsigned short* deadMotion = deadMotion_builtin;
 const unsigned short* motionData = motionData_builtin;
+
+//게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
+//팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
+//게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+const unsigned short* robinSkillMotion = robinSkillMotion_builtin;
+const unsigned short* dianaSkillMotion = dianaSkillMotion_builtin;
+const unsigned short* maxxSkillMotion = maxxSkillMotion_builtin;
