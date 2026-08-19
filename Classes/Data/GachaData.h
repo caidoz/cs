@@ -19,8 +19,6 @@ const unsigned short gachaRate[8] = {
 };
 #endif
 
-const int miniGachaDetailRate[] = {
-	//별1, 2, 3, 4, 5, 6, 7, 8 
-	9000, 900, 90, 9, 1, 0, 0, 0,
-};
+extern const int* miniGachaDetailRate;
+enum { miniGachaDetailRate_COUNT = 8 };
 #endif

@@ -23,6 +23,29 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Menu.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Movement.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Net.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/WaveData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/UIData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/TextData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/SkillData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/ShopData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/RouletteData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/RewardData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/QuestData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/ObjectData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/MapData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/ItemData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/ImgData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/HeroData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/GameData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/GachaData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/FontData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/DropData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/DemoData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/CollectionData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/CmfData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/CastleData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/BattleData.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Data/AlphaData.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/EnemyData.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/DataPack.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Object.cpp \

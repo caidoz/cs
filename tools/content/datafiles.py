@@ -56,17 +56,75 @@ def headers():
     return out
 
 
+def strip_directives(chunk):
+    """정의와 정의 사이의 텍스트에서 전처리 지시문 줄만 뺀다.
+
+    헤더에서 .cpp로 옮길 때 주변 주석은 살리고 싶지만, 그대로 옮기면
+    include 가드까지 딸려간다. 그러면 이런 꼴이 된다.
+
+        #include "WaveData.h"    <- 여기서 _DATA_WAVE_H_ 가 정의되고
+        #ifndef _DATA_WAVE_H_    <- 이미 정의됐으니 이하가 통째로 사라진다
+        static const int boss_builtin[] = { ... };
+
+    정의 안(text[a:b])의 #ifdef 는 건드리지 않는다. 그건 값의 일부다.
+    """
+    out = []
+
+    for line in chunk.split('\n'):
+        if re.match(r'^[ \t]*#', line):
+            continue
+
+        out.append(line)
+
+    return '\n'.join(out)
+
+
+def in_conditional(text, at):
+    """이 자리가 #if/#ifdef 블록 안인지.
+
+    ItemData.h 에는 #ifdef IRON / #else / #ifdef SETITEM 처럼 분기마다 같은
+    이름의 배열을 다시 정의하는 곳이 있다. 셋 다 최상위 const 정의라 그냥
+    긁으면 한 파일에 같은 이름이 세 번 들어가 재정의 오류가 난다.
+
+    이런 것은 옮기지도 바꾸지도 않고 헤더에 그대로 둔다(티어 3). 정의만
+    옮기면 감싸던 #ifdef 가 헤더에 남아 짝이 깨진다.
+    """
+    depth = 0
+
+    for line in text[:at].split('\n'):
+        m = re.match(r'^[ \t]*#[ \t]*(if|ifdef|ifndef|endif)\b', line)
+
+        if not m:
+            continue
+
+        if m.group(1) == 'endif':
+            depth -= 1
+        else:
+            depth += 1
+
+    #파일 전체를 감싸는 include 가드 한 겹은 빼고 센다.
+    return depth > 1
+
+
 def analyze(fname):
     """이 파일의 배열들을 티어별로 나눈다. 이미 갈라졌으면 .cpp 를 본다."""
     base = os.path.splitext(fname)[0]
     cpp = os.path.join(DATA, base + '.cpp')
-    src = cpp if os.path.isfile(cpp) else os.path.join(DATA, fname)
+    already = os.path.isfile(cpp)
+    src = cpp if already else os.path.join(DATA, fname)
 
     text = CT.read(src)
     defs = SD.find_defs(text)
     rows = []
 
     for a, b, typ, name, dims in defs:
+        #.cpp 에는 include 가드가 없으므로 한 겹 차이를 보정한다.
+        depth_at = a if already else a
+
+        if in_conditional(text, depth_at) if not already else False:
+            rows.append((a, b, typ, name, dims, 3, '전처리 블록 안', 0, ''))
+            continue
+
         tier, why = SD.tier_of(text, a, b, dims, name, SIZEOF_USED)
         m = SD.DECL_RE.search(text, a)
         elems, _e = CT.split_elems(text, m.end())
@@ -95,7 +153,24 @@ def convert(fname, write):
     decls = []
 
     for a, b, typ, name, dims, tier, why, cnt, head in rows:
-        out.append(text[at:a])
+        if tier == 3:
+            # 전처리 블록 안이라 손대지 않는다. 헤더에 그대로 남는다.
+            at = b
+            continue
+
+        # 정의 사이의 텍스트는 옮기지 않는다.
+        #
+        # 처음에는 주석을 살리려고 통째로 옮겼는데, 그러면 헤더의 다른 것까지
+        # 딸려간다. include 가드가 따라와 정의가 전처리로 사라졌고,
+        # UIData.h의 static std::string fontList[] 같은 const가 아닌 정의도
+        # 복사되어 컴파일이 깨졌다.
+        #
+        # 주석은 헤더에 그대로 둔다. 사람이 읽는 것은 선언 쪽이라 거기 있는
+        # 편이 낫다. 이미 갈라진 .cpp를 다시 다룰 때는 그 안의 텍스트가
+        # 전부 정의뿐이므로 그대로 옮긴다.
+        if already:
+            out.append(text[at:a])
+
         body = text[a:b]
 
         if tier == 1:
@@ -106,9 +181,10 @@ def convert(fname, write):
             decls.append(('arr', typ, name, cnt, dims))
 
         out.append(body.rstrip())
+        out.append(eol)
         at = b
 
-    out.append(text[at:])
+    out.append(text[at:] if already else '')
     ctext = ''.join(out).rstrip()
 
     ptrs = [d for d in decls if d[0] == 'ptr']
@@ -141,6 +217,12 @@ def convert(fname, write):
             '//tools/content/datafiles.py 가 갈랐다.',
             '',
             '#include "%s"' % fname,
+            #예전에는 Data.h 가 헤더 23개를 순서대로 끌어서, 앞선 헤더가
+            #가져온 것에 뒤 헤더가 얹혀 가는 의존이 있었다. 이제 파일마다
+            #따로 컴파일되므로 그 암묵적 의존이 끊긴다. 둘 다 cocos에서
+            #자유로우니 명시해 둔다.
+            '#include "../Def.h"',
+            '#include "../Cmf.h"',
             '',
             '',
         ]
@@ -169,6 +251,9 @@ def convert(fname, write):
         at = 0
 
         for a, b, typ, name, dims, tier, why, cnt, head in rows:
+            if tier == 3:
+                continue
+
             parts.append(htext[at:a])
 
             if tier == 1:
@@ -185,7 +270,7 @@ def convert(fname, write):
         htext = ''.join(parts)
 
     t1 = [r for r in rows if r[5] == 1]
-    t2 = [(fname, r[3], r[6]) for r in rows if r[5] == 2]
+    t2 = [(fname, r[3], r[6]) for r in rows if r[5] in (2, 3)]
 
     if write:
         with open(hp, 'w', encoding='utf-8-sig', newline='') as fp:
@@ -221,7 +306,7 @@ def main():
                 continue
 
             a = sum(1 for r in rows if r[5] == 1)
-            b = [(fname, r[3], r[6]) for r in rows if r[5] == 2]
+            b = [(fname, r[3], r[6]) for r in rows if r[5] in (2, 3)]
             print('%-18s 포인터 %3d  그대로 %d' % (fname, a, len(b)))
             total1 += a
             tier2 += b
