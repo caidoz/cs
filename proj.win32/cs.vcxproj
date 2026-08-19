@@ -298,6 +298,8 @@
     <ClCompile Include="..\Classes\Func_Menu.cpp" />
     <ClCompile Include="..\Classes\Func_Movement.cpp" />
     <ClCompile Include="..\Classes\Func_Net.cpp" />
+    <ClCompile Include="..\Classes\Data\DataPackCheck.cpp" />
+    <ClCompile Include="..\Classes\Data\DataCount.cpp" />
     <ClCompile Include="..\Classes\Data\WaveData.cpp" />
     <ClCompile Include="..\Classes\Data\UIData.cpp" />
     <ClCompile Include="..\Classes\Data\TextData.cpp" />

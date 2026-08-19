@@ -1099,10 +1099,10 @@ int GetDropLv(void)
 
 	if (castle < 0)
 		castle = 0;
-	else if (castle > TOTALCASTLE - 1)
-		castle = TOTALCASTLE - 1;
+	else if (castle > gTotalCastle - 1)
+		castle = gTotalCastle - 1;
 
-	return castle * 99 / (TOTALCASTLE - 1);
+	return castle * 99 / (gTotalCastle - 1);
 }
 
 int MakeItemDetail(int type, int lv)
@@ -1870,12 +1870,12 @@ long long GetCrewPower(int detail, int lv)
 	int valueIdx;
 	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
 
-	if (detail < 0 || detail >= TOTAL_CREW)
+	if (detail < 0 || detail >= gTotalCrew)
 		return 0;
 
 	skillIdx = crewData[detail * CREWDATASIZE + CREWDATA_SKILL1];
 
-	if (skillIdx < 0 || skillIdx >= TOTAL_SKILL)
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
 	valueIdx = lv - 1;

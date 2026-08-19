@@ -1911,7 +1911,7 @@ void NewGame(void)
 	}
 
 	k = 0;
-	for (i = 0; i < TOTAL_CREW; i++) {
+	for (i = 0; i < gTotalCrew; i++) {
 		MakeItem(&robin.inven[robin.count], ITEM_CREW, 0, 0, i, false);
 		robin.inven[robin.count].count = 0;
 		robin.inven[robin.count].lv = 0;
@@ -2704,7 +2704,7 @@ static int GetCrewStar(int crewId)
 
 static int GetRegionCount(void)
 {
-	return TOTALCASTLE;
+	return gTotalCastle;
 }
 
 static int ModI(int a, int m)
@@ -2727,7 +2727,7 @@ static void DrawCrewGridBackground(void)
 	// robin.getCrews[] 는 "히어로가 빠진 크루만" 배열이므로
 	// owned 체크에서만 (idx - TOTALCHAR) 보정을 한다.
 	// ------------------------------------------------------------
-	const int total = TOTAL_CREW;            // ✅ crewData 전체 길이(히어로 포함)
+	const int total = gTotalCrew;            // ✅ crewData 전체 길이(히어로 포함)
 	const int rows = (total / BG_COLS) + 1;
 
 	int cellW = 32 * _2X;
@@ -2952,7 +2952,7 @@ static inline int RegionFromCastlePos(int castlePos)
 	if (castlePos < FIRST) return -1;
 
 	int region = (castlePos - FIRST) / 9; // 지역당 9개 고정
-	if (region < 0 || region >= TOTALCASTLE) return -1;
+	if (region < 0 || region >= gTotalCastle) return -1;
 
 	return region; // 0..TOTALCASTLE-1
 }
@@ -3132,7 +3132,7 @@ void PickBattleCrew(
 	// ==============================
 	// 리더 0번 고정
 	// ==============================
-	std::vector<char> picked(TOTAL_CREW, 0);
+	std::vector<char> picked(CAP_CREW, 0);
 
 	if (hasLeader) {
 		outCrewIdList[0] = leaderCrewId;
@@ -3147,7 +3147,7 @@ void PickBattleCrew(
 	// STAR 풀 구성 (hero 3개 제외: key<3 제외)
 	// ==============================
 	std::vector<int> starPool[10];
-	for (int crewId = 0; crewId < TOTAL_CREW; crewId++) {
+	for (int crewId = 0; crewId < gTotalCrew; crewId++) {
 		//if (!robin.getCrews[crewId]) continue;
 		if (picked[crewId]) continue;
 
@@ -4466,7 +4466,7 @@ void SaveGame(void)
 		RefreshStat(&ao[i]);
 		memcpy((char*)&robin.charData[i].equip, &ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
 		memcpy((char*)&robin.charData[i].getSkillList, &ao[i].getSkillList, MAXCHARSKILL);
-		memcpy((char*)&robin.charData[i].skillLv, &ao[i].skillLv, TOTAL_SKILL);
+		memcpy((char*)&robin.charData[i].skillLv, &ao[i].skillLv, CAP_SKILL);
 
 		robin.charData[i].exps = ao[i].exps;
 		robin.charData[i].hp = ao[i].hp;

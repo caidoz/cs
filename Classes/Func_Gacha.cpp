@@ -288,7 +288,7 @@ static int GetBoxDetailCount(
 	switch (itemType)
 	{
 	case ITEM_CREW:
-		return TOTAL_CREW;
+		return gTotalCrew;
 
 	case ITEM_SWORD:
 		return TOTAL_SWORD;
@@ -802,8 +802,8 @@ int SelectCastleRewardBox(
 	if (castleIndex < 0)
 		castleIndex = 0;
 
-	if (castleIndex >= TOTALCASTLE)
-		castleIndex = TOTALCASTLE - 1;
+	if (castleIndex >= gTotalCastle)
+		castleIndex = gTotalCastle - 1;
 
 	int totalRate = 0;
 

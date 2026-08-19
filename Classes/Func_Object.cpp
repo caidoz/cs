@@ -2551,7 +2551,7 @@ void NeutralDraw(OBJECT* pObj)
 int GetTypeFromCmf(int cmf)
 {
 	int i;
-	for (i = 0; i < TOTALENEMY; i++) {
+	for (i = 0; i < gTotalEnemy; i++) {
 		if (enemyData[i * ENEMYDATASIZE + ENEMYDATA_CMF] == cmf)
 			return i;
 	}

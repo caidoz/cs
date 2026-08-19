@@ -8,7 +8,11 @@
 //팩에 들어가는 배열 목록이다. 로더(DataPack.cpp)와 팩 생성기가
 //이 하나를 같이 쓰므로 둘이 어긋날 수 없다.
 //
-//X(이름, 원소크기, 종류, 개수)
+//X(이름, 원소크기, 종류, 개수, 콘텐츠키, 폭, 시작번호)
+//
+//콘텐츠키가 DPK_KEY_NONE 이면 길이가 고정이라 팩과 내장본이 정확히
+//같아야 한다. 그 외에는 콘텐츠에 맞춰 길어지는 배열이라, 팩이 더
+//길어도 용량 안이면 받는다. 개수 = 개수 / 폭 + 시작번호.
 
 #include "AlphaData.h"
 #include "BattleData.h"
@@ -36,505 +40,505 @@
 #include "WaveData.h"
 
 #define DATA_LIST(X) \
-	X(demoAlpha, 1, DPK_UINT, 50) \
-	X(alphaData, 1, DPK_UINT, 2793) \
-	X(alphaX, 2, DPK_UINT, 296) \
-	X(alpha2, 2, DPK_INT, 222) \
-	X(goldAlphaInfo, 2, DPK_UINT, 444) \
-	X(alphaY, 2, DPK_UINT, 8) \
-	X(battleMotion, 4, DPK_INT, 90) \
-	X(houseGoldStage, 4, DPK_INT, 12) \
-	X(houseGold, 8, DPK_INT, 12) \
-	X(wheelCrewPos, 4, DPK_INT, 10) \
-	X(gameEventOpenStage, 2, DPK_UINT, 24) \
-	X(rouletteProb, 4, DPK_INT, 7) \
-	X(activeSkillProb, 4, DPK_INT, activeSkillProb_ROWS * activeSkillProb_COLS) \
-	X(popUpFrameData, 4, DPK_FLOAT, 8) \
-	X(hitAlpha, 2, DPK_INT, 3) \
-	X(raidAlpha, 2, DPK_INT, 3) \
-	X(battleData, 4, DPK_INT, 3) \
-	X(skillInitData, 4, DPK_INT, 18) \
-	X(arenaOff, 2, DPK_UINT, 72) \
-	X(arenaMI, 2, DPK_INT, 360) \
-	X(arenaMIC, 1, DPK_UINT, 46) \
-	X(castleOrder, 4, DPK_INT, 19) \
-	X(castleBoxZoom, 4, DPK_FLOAT, 19) \
-	X(castleBoxColor, 4, DPK_INT, 19) \
-	X(castleBoxGold, 8, DPK_INT, 19) \
-	X(castleStarLimit, 4, DPK_INT, 19) \
-	X(setHeroPos, 4, DPK_INT, 114) \
-	X(setEnemyPos, 4, DPK_INT, 114) \
-	X(castleCrewPosition, 4, DPK_INT, 228) \
-	X(c0mv, 2, DPK_INT, 28) \
-	X(c1mv, 2, DPK_INT, 28) \
-	X(c2mv, 2, DPK_INT, 28) \
-	X(c3mv, 2, DPK_INT, 550) \
-	X(c4mv, 2, DPK_INT, 376) \
-	X(c5mv, 2, DPK_INT, 788) \
-	X(c6mv, 2, DPK_INT, 328) \
-	X(c7mv, 2, DPK_INT, 660) \
-	X(c8mv, 2, DPK_INT, 758) \
-	X(c9mv, 2, DPK_INT, 302) \
-	X(c10mv, 2, DPK_INT, 420) \
-	X(c11mv, 2, DPK_INT, 750) \
-	X(c12mv, 2, DPK_INT, 432) \
-	X(c13mv, 2, DPK_INT, 716) \
-	X(c14mv, 2, DPK_INT, 750) \
-	X(c15mv, 2, DPK_INT, 488) \
-	X(c16mv, 2, DPK_INT, 496) \
-	X(c17mv, 2, DPK_INT, 984) \
-	X(c18mv, 2, DPK_INT, 514) \
-	X(c19mv, 2, DPK_INT, 304) \
-	X(c20mv, 2, DPK_INT, 428) \
-	X(c21mv, 2, DPK_INT, 1930) \
-	X(c22mv, 2, DPK_INT, 152) \
-	X(c23mv, 2, DPK_INT, 168) \
-	X(c24mv, 2, DPK_INT, 472) \
-	X(c25mv, 2, DPK_INT, 176) \
-	X(c26mv, 2, DPK_INT, 1268) \
-	X(c27mv, 2, DPK_INT, 1180) \
-	X(c28mv, 2, DPK_INT, 18) \
-	X(c29mv, 2, DPK_INT, 584) \
-	X(c30mv, 2, DPK_INT, 616) \
-	X(c31mv, 2, DPK_INT, 1190) \
-	X(c32mv, 2, DPK_INT, 626) \
-	X(c33mv, 2, DPK_INT, 248) \
-	X(c34mv, 2, DPK_INT, 1248) \
-	X(c35mv, 2, DPK_INT, 200) \
-	X(c36mv, 2, DPK_INT, 378) \
-	X(c37mv, 2, DPK_INT, 956) \
-	X(c38mv, 2, DPK_INT, 80) \
-	X(c39mv, 2, DPK_INT, 1026) \
-	X(c40mv, 2, DPK_INT, 942) \
-	X(c41mv, 2, DPK_INT, 424) \
-	X(c42mv, 2, DPK_INT, 348) \
-	X(c43mv, 2, DPK_INT, 826) \
-	X(c44mv, 2, DPK_INT, 372) \
-	X(c45mv, 2, DPK_INT, 422) \
-	X(c46mv, 2, DPK_INT, 266) \
-	X(c47mv, 2, DPK_INT, 446) \
-	X(c48mv, 2, DPK_INT, 1016) \
-	X(c49mv, 2, DPK_INT, 1064) \
-	X(c50mv, 2, DPK_INT, 1262) \
-	X(c51mv, 2, DPK_INT, 1342) \
-	X(c52mv, 2, DPK_INT, 52) \
-	X(c53mv, 2, DPK_INT, 52) \
-	X(c54mv, 2, DPK_INT, 162) \
-	X(c55mv, 2, DPK_INT, 212) \
-	X(c56mv, 2, DPK_INT, 162) \
-	X(c57mv, 2, DPK_INT, 262) \
-	X(c58mv, 2, DPK_INT, 212) \
-	X(c59mv, 2, DPK_INT, 212) \
-	X(c60mv, 2, DPK_INT, 162) \
-	X(c61mv, 2, DPK_INT, 262) \
-	X(c62mv, 2, DPK_INT, 250) \
-	X(c63mv, 2, DPK_INT, 100) \
-	X(c64mv, 2, DPK_INT, 162) \
-	X(c65mv, 2, DPK_INT, 162) \
-	X(c66mv, 2, DPK_INT, 162) \
-	X(c67mv, 2, DPK_INT, 52) \
-	X(c68mv, 2, DPK_INT, 52) \
-	X(c69mv, 2, DPK_INT, 52) \
-	X(c70mv, 2, DPK_INT, 52) \
-	X(c71mv, 2, DPK_INT, 162) \
-	X(c72mv, 2, DPK_INT, 162) \
-	X(c73mv, 2, DPK_INT, 686) \
-	X(c74mv, 2, DPK_INT, 10) \
-	X(c75mv, 2, DPK_INT, 52) \
-	X(c76mv, 2, DPK_INT, 362) \
-	X(c77mv, 2, DPK_INT, 500) \
-	X(c78mv, 2, DPK_INT, 646) \
-	X(c79mv, 2, DPK_INT, 150) \
-	X(c80mv, 2, DPK_INT, 2) \
-	X(c81mv, 2, DPK_INT, 200) \
-	X(c82mv, 2, DPK_INT, 52) \
-	X(c83mv, 2, DPK_INT, 150) \
-	X(c84mv, 2, DPK_INT, 444) \
-	X(c85mv, 2, DPK_INT, 52) \
-	X(c86mv, 2, DPK_INT, 224) \
-	X(c87mv, 2, DPK_INT, 196) \
-	X(c88mv, 2, DPK_INT, 102) \
-	X(c89mv, 2, DPK_INT, 52) \
-	X(c90mv, 2, DPK_INT, 52) \
-	X(c91mv, 2, DPK_INT, 150) \
-	X(c92mv, 2, DPK_INT, 102) \
-	X(c93mv, 2, DPK_INT, 150) \
-	X(c94mv, 2, DPK_INT, 52) \
-	X(c95mv, 2, DPK_INT, 446) \
-	X(c96mv, 2, DPK_INT, 358) \
-	X(c97mv, 2, DPK_INT, 246) \
-	X(c98mv, 2, DPK_INT, 52) \
-	X(c99mv, 2, DPK_INT, 162) \
-	X(c100mv, 2, DPK_INT, 52) \
-	X(c101mv, 2, DPK_INT, 212) \
-	X(c102mv, 2, DPK_INT, 212) \
-	X(c103mv, 2, DPK_INT, 312) \
-	X(c104mv, 2, DPK_INT, 52) \
-	X(c105mv, 2, DPK_INT, 150) \
-	X(c106mv, 2, DPK_INT, 446) \
-	X(c107mv, 2, DPK_INT, 102) \
-	X(c108mv, 2, DPK_INT, 114) \
-	X(c109mv, 2, DPK_INT, 1662) \
-	X(c110mv, 2, DPK_INT, 1500) \
-	X(c111mv, 2, DPK_INT, 598) \
-	X(c112mv, 2, DPK_INT, 1228) \
-	X(c113mv, 2, DPK_INT, 18) \
-	X(c114mv, 2, DPK_INT, 464) \
-	X(c115mv, 2, DPK_INT, 102) \
-	X(c116mv, 2, DPK_INT, 226) \
-	X(c117mv, 2, DPK_INT, 102) \
-	X(c118mv, 2, DPK_INT, 298) \
-	X(c119mv, 2, DPK_INT, 52) \
-	X(c120mv, 2, DPK_INT, 152) \
-	X(c121mv, 2, DPK_INT, 262) \
-	X(c122mv, 2, DPK_INT, 1924) \
-	X(cmfImgOff, 2, DPK_INT, 2145) \
-	X(cmfTotalMotion, 2, DPK_UINT, 429) \
-	X(cmfTotalOff, 2, DPK_UINT, 429) \
-	X(cmfVar, 2, DPK_UINT, 429) \
-	X(cmfMove, 2, DPK_INT, 429) \
-	X(costumeSize, 2, DPK_UINT, 36) \
-	X(costumeOff, 2, DPK_UINT, 600) \
-	X(collectionLvLimit, 4, DPK_INT, 24) \
-	X(collectionData, 4, DPK_INT, 720) \
-	X(collectionsCategoryInfo, 1, DPK_UINT, 72) \
-	X(demoData, 2, DPK_INT, 105) \
-	X(frameData, 2, DPK_INT, 162) \
-	X(demoItem, 2, DPK_UINT, 60) \
-	X(boxDropProc, 4, DPK_INT, boxDropProc_ROWS * boxDropProc_COLS) \
-	X(proc1, 2, DPK_UINT, 2) \
-	X(proc2, 2, DPK_UINT, 3) \
-	X(proc3, 2, DPK_UINT, 4) \
-	X(proc4, 2, DPK_UINT, 5) \
-	X(proc5, 2, DPK_UINT, 6) \
-	X(proc6, 2, DPK_UINT, 7) \
-	X(proc7, 2, DPK_UINT, 8) \
-	X(proc8, 2, DPK_UINT, 9) \
-	X(proc9, 2, DPK_UINT, 10) \
-	X(proc10, 2, DPK_UINT, 11) \
-	X(proc11, 2, DPK_UINT, 12) \
-	X(proc12, 2, DPK_UINT, 13) \
-	X(proc13, 2, DPK_UINT, 14) \
-	X(proc14, 2, DPK_UINT, 15) \
-	X(proc15, 2, DPK_UINT, 16) \
-	X(proc16, 2, DPK_UINT, 17) \
-	X(proc17, 2, DPK_UINT, 18) \
-	X(proc18, 2, DPK_UINT, 19) \
-	X(proc19, 2, DPK_UINT, 20) \
-	X(proc20, 2, DPK_UINT, 21) \
-	X(proc21, 2, DPK_UINT, 22) \
-	X(proc22, 2, DPK_UINT, 23) \
-	X(proc23, 2, DPK_UINT, 24) \
-	X(proc24, 2, DPK_UINT, 25) \
-	X(proc25, 2, DPK_UINT, 26) \
-	X(proc26, 2, DPK_UINT, 27) \
-	X(proc27, 2, DPK_UINT, 28) \
-	X(proc28, 2, DPK_UINT, 29) \
-	X(proc29, 2, DPK_UINT, 30) \
-	X(proc30, 2, DPK_UINT, 31) \
-	X(proc31, 2, DPK_UINT, 32) \
-	X(proc32, 2, DPK_UINT, 33) \
-	X(proc33, 2, DPK_UINT, 34) \
-	X(proc34, 2, DPK_UINT, 35) \
-	X(monStr, 8, DPK_INT, 500) \
-	X(bossHp, 8, DPK_INT, 100) \
-	X(bossStr, 8, DPK_INT, 100) \
-	X(summonMotion, 2, DPK_INT, 30) \
-	X(slimeMotion, 1, DPK_UINT, 8) \
-	X(enemyAttackPattern, 2, DPK_INT, 8620) \
-	X(enemyIconZoom, 4, DPK_FLOAT, 431) \
-	X(enemyZoom, 4, DPK_FLOAT, 431) \
-	X(enemyBossZoom, 4, DPK_FLOAT, 431) \
-	X(enemyData, 2, DPK_INT, 3448) \
-	X(enemyStatInfo, 8, DPK_INT, 1293) \
-	X(enemyAttr, 2, DPK_INT, 5136) \
-	X(goldNumData, 2, DPK_UINT, 60) \
-	X(largeNumData, 2, DPK_UINT, 40) \
-	X(mediumNumData, 2, DPK_UINT, 40) \
-	X(itemColorText, 1, DPK_INT, 6) \
-	X(fontInfo, 2, DPK_INT, 128) \
-	X(miniGachaDetailRate, 4, DPK_INT, 8) \
-	X(attackSequenceFrameData, 2, DPK_UINT, 7) \
-	X(betCoin, 1, DPK_UINT, 5) \
-	X(betHeart, 1, DPK_UINT, 7) \
-	X(skillUpgradeGold, 8, DPK_INT, 900) \
-	X(attrToDebuf, 1, DPK_INT, 6) \
-	X(attrEffect, 1, DPK_UINT, 120) \
-	X(playerMainStat, 1, DPK_UINT, 3) \
-	X(zoomData, 1, DPK_UINT, 5) \
-	X(debufToAttr, 1, DPK_UINT, 6) \
-	X(signCurve, 1, DPK_INT, 16) \
-	X(optionInfo, 1, DPK_UINT, 54) \
-	X(sin1024, 2, DPK_UINT, 91) \
-	X(tan1024, 2, DPK_UINT, 91) \
-	X(crewStarUpgradeGold, 8, DPK_INT, 2500) \
-	X(crewLvUpgradeGold, 8, DPK_UINT, 1600) \
-	X(monXYGap, 2, DPK_INT, 856) \
-	X(lvUpExp, 8, DPK_INT, 99) \
-	X(defaultStat, 4, DPK_INT, 3) \
-	X(attackDelayFrame, 4, DPK_INT, 3) \
-	X(attackDefaultFrame, 4, DPK_INT, 3) \
-	X(attackCountPerOnce, 4, DPK_INT, 3) \
-	X(skillEfficiency, 4, DPK_FLOAT, 3) \
-	X(dx_walk, 4, DPK_INT, 3) \
-	X(walkFrame, 1, DPK_UINT, 4) \
-	X(crewBulletLvUpDmgPercent, 4, DPK_INT, 10) \
-	X(crewData, 4, DPK_INT, 384) \
-	X(jumpUpMotion, 2, DPK_INT, 56) \
-	X(jumpDownMotion, 2, DPK_INT, 107) \
-	X(backHomeMotion, 2, DPK_INT, 105) \
-	X(jump, 1, DPK_INT, 20) \
-	X(jumpFullFrame, 2, DPK_INT, 11) \
-	X(alphaJumpFrame, 2, DPK_INT, 11) \
-	X(jumpFullFrame2, 2, DPK_INT, 7) \
-	X(charEtcData, 1, DPK_UINT, 6) \
-	X(robinSkillStartFrame, 2, DPK_UINT, 23) \
-	X(robinSkillClosingFrame, 2, DPK_UINT, 23) \
-	X(dianaSkillStartFrame, 2, DPK_UINT, 23) \
-	X(dianaSkillClosingFrame, 2, DPK_UINT, 23) \
-	X(maxxSkillStartFrame, 2, DPK_UINT, 22) \
-	X(maxxSkillClosingFrame, 2, DPK_UINT, 22) \
-	X(robinSkillMotion, 2, DPK_UINT, 8612) \
-	X(dianaSkillMotion, 2, DPK_UINT, 7964) \
-	X(maxxSkillMotion, 2, DPK_UINT, 3652) \
-	X(dianaHelmPos, 1, DPK_INT, 50) \
-	X(maxxHelmPos, 1, DPK_INT, 50) \
-	X(concentrateMotion, 2, DPK_UINT, 25) \
-	X(bombShotMotion, 2, DPK_UINT, 88) \
-	X(satelliteShotMotion, 2, DPK_UINT, 240) \
-	X(satelliteShotData, 2, DPK_INT, 15) \
-	X(hitMarkData, 1, DPK_UINT, 15) \
-	X(buffData, 2, DPK_UINT, 52) \
-	X(dianaBulletData, 2, DPK_UINT, 35) \
-	X(maxxBoomerangData, 2, DPK_INT, 119) \
-	X(normalboomerangData, 2, DPK_INT, 64) \
-	X(sateliteMotion, 2, DPK_INT, 816) \
-	X(levelUpMIC, 1, DPK_UINT, 40) \
-	X(debufStartFrame, 4, DPK_INT, 6) \
-	X(debufEffect, 1, DPK_UINT, 72) \
-	X(emoticonRate, 1, DPK_UINT, 26) \
-	X(scowlEffect, 1, DPK_INT, 8) \
-	X(sweatEffect, 1, DPK_INT, 7) \
-	X(questionEffect, 1, DPK_INT, 10) \
-	X(surpriseEffect, 1, DPK_INT, 5) \
-	X(stunMotion, 2, DPK_UINT, 10) \
-	X(equipSlotPos, 2, DPK_INT, 24) \
-	X(equipSlotPos2, 2, DPK_INT, 32) \
-	X(statueInfo, 1, DPK_UINT, 16) \
-	X(deadMotion, 2, DPK_UINT, 24) \
-	X(motionData, 2, DPK_UINT, 96) \
-	X(imgArray, 2, DPK_UINT, 340) \
-	X(neutralOff, 2, DPK_UINT, 32) \
-	X(logoOff, 2, DPK_UINT, 80) \
-	X(neutralOffset, 1, DPK_INT, 8) \
-	X(balloonPos, 1, DPK_INT, 6) \
-	X(imgTextPos, 1, DPK_INT, 20) \
-	X(imgTextFrame, 1, DPK_INT, 22) \
-	X(titleOff, 2, DPK_INT, 148) \
-	X(effectOff, 2, DPK_INT, 624) \
-	X(effectMI, 2, DPK_INT, 4288) \
-	X(hitOff, 2, DPK_INT, 220) \
-	X(titleMI, 2, DPK_INT, 216) \
-	X(tenbytenMI, 2, DPK_INT, 468) \
-	X(hitMI, 2, DPK_INT, 2096) \
-	X(objOff, 2, DPK_UINT, 1008) \
-	X(itemTypeCnt, 2, DPK_UINT, 34) \
-	X(swordInfoList, 4, DPK_INT, 4) \
-	X(newCardEffect, 2, DPK_INT, 84) \
-	X(equipDataType, 4, DPK_INT, 6) \
-	X(openedItemData, 2, DPK_UINT, 20) \
-	X(itemLevelLimit, 1, DPK_UINT, 16) \
-	X(itemExpAcce, 4, DPK_INT, 50) \
-	X(itemExp, 4, DPK_INT, 224) \
-	X(itemMaterialExpAcce, 4, DPK_INT, 50) \
-	X(itemMaterialExp, 4, DPK_INT, 225) \
-	X(itemEvolutionItem, 8, DPK_INT, 240) \
-	X(itemUpgradeHammer, 8, DPK_INT, 6) \
-	X(arenaFloorGold, 2, DPK_UINT, 200) \
-	X(revolutionMedal, 2, DPK_UINT, 8) \
-	X(itemColor, 4, DPK_UINT, 10) \
-	X(buffBlend, 4, DPK_UINT, 16) \
-	X(swordMaxBet, 1, DPK_UINT, 40) \
-	X(swordHeart, 1, DPK_UINT, 40) \
-	X(swordGold, 8, DPK_INT, 40) \
-	X(itemPrice, 8, DPK_UINT, 328) \
-	X(itemSellPrice, 4, DPK_UINT, 301) \
-	X(itemStar, 2, DPK_UINT, 559) \
-	X(itemStartCnt, 2, DPK_UINT, 41) \
-	X(boxEquipType, 1, DPK_UINT, 8) \
-	X(materialDropData, 1, DPK_UINT, 270) \
-	X(wasteDropData, 1, DPK_UINT, 1215) \
-	X(itemValueType, 4, DPK_INT, 20) \
-	X(itemValueTypeText, 4, DPK_INT, 20) \
-	X(itemEquipSlot, 1, DPK_UINT, 18) \
-	X(itemSlotEquip, 1, DPK_UINT, 8) \
-	X(wasteDrop, 1, DPK_UINT, 30) \
-	X(wasteValue, 1, DPK_UINT, 7) \
-	X(weaponRange, 1, DPK_UINT, 3) \
-	X(itemValue, 4, DPK_UINT, 171) \
-	X(gradeRatio, 1, DPK_UINT, 6) \
-	X(typeRatio, 1, DPK_UINT, 18) \
-	X(acceOptionStatMatch, 1, DPK_UINT, 12) \
-	X(acceDefaultStatValue, 4, DPK_UINT, 300) \
-	X(neckOptionStatValue, 4, DPK_UINT, 1400) \
-	X(ringOptionStatValue, 4, DPK_UINT, 900) \
-	X(gemOptionStatValue, 4, DPK_UINT, 300) \
-	X(itemUpgradeValue, 4, DPK_UINT, 2592) \
-	X(itemRatio, 1, DPK_UINT, 8) \
-	X(itemPow, 2, DPK_UINT, 220) \
-	X(itemLv, 1, DPK_UINT, 144) \
-	X(itemStat, 1, DPK_UINT, 144) \
-	X(enchantData, 4, DPK_UINT, 4320) \
-	X(itemCooltime, 1, DPK_UINT, 23) \
-	X(itemIconTable, 2, DPK_UINT, 447) \
-	X(neckOption, 4, DPK_UINT, 168) \
-	X(neckRingDefaultValue, 4, DPK_INT, 300) \
-	X(ringOption, 1, DPK_INT, 126) \
-	X(optionRange, 4, DPK_INT, 366) \
-	X(optionValue, 1, DPK_INT, 61) \
-	X(setItem, 1, DPK_UINT, 1302) \
-	X(setOption, 4, DPK_INT, 1404) \
-	X(legendItem, 4, DPK_UINT, 648) \
-	X(optionStat, 1, DPK_INT, 79) \
-	X(option_prefix, 1, DPK_INT, 128) \
-	X(option_suffix, 1, DPK_INT, 128) \
-	X(option_count_prefix, 1, DPK_UINT, 8) \
-	X(option_count_suffix, 1, DPK_UINT, 8) \
-	X(gemOption, 1, DPK_UINT, 81) \
-	X(gemPrice, 4, DPK_INT, 6) \
-	X(enchantRate, 4, DPK_INT, 300) \
-	X(extraSetItem, 1, DPK_UINT, 576) \
-	X(newItemReward, 4, DPK_INT, 684) \
-	X(upgradeCostCrew, 4, DPK_INT, upgradeCostCrew_ROWS * upgradeCostCrew_COLS) \
-	X(upgradeCostEquip, 4, DPK_INT, upgradeCostEquip_ROWS * upgradeCostEquip_COLS) \
-	X(mapRectSize, 4, DPK_UINT, 425) \
-	X(mapBackSize, 4, DPK_UINT, 425) \
-	X(mapObjSize, 4, DPK_UINT, 425) \
-	X(mapNeutralSize, 4, DPK_UINT, 425) \
-	X(mapEnemySize, 4, DPK_UINT, 425) \
-	X(mapColor, 4, DPK_UINT, 19) \
-	X(doorToKey, 1, DPK_INT, 16) \
-	X(doorArray, 1, DPK_UINT, 40) \
-	X(pushArray, 1, DPK_UINT, 2) \
-	X(boxStar, 1, DPK_UINT, 56) \
-	X(boxArray, 1, DPK_UINT, 4) \
-	X(markArray, 1, DPK_UINT, 7) \
-	X(itemArray, 1, DPK_UINT, 6) \
-	X(dianaStoneArray, 1, DPK_UINT, 1) \
-	X(magmaArray, 1, DPK_UINT, 1) \
-	X(wormHoleArray, 1, DPK_UINT, 3) \
-	X(warpArrayType, 1, DPK_UINT, 57) \
-	X(warpArray, 2, DPK_INT, 280) \
-	X(backObjImg, 2, DPK_UINT, 1148) \
-	X(bgObjOff, 2, DPK_UINT, 656) \
-	X(bgObjMI, 2, DPK_INT, 3220) \
-	X(sunShineOff, 2, DPK_UINT, 24) \
-	X(sunShineMI, 2, DPK_INT, 504) \
-	X(sunShineMIC, 1, DPK_UINT, 44) \
-	X(sateliteMotionCnt, 1, DPK_UINT, 62) \
-	X(neutralData, 2, DPK_INT, 506) \
-	X(mapBg, 2, DPK_UINT, 76) \
-	X(waterfallMI, 2, DPK_INT, 48) \
-	X(atlanticeImg, 2, DPK_UINT, 80) \
-	X(swampImg, 2, DPK_UINT, 52) \
-	X(swampSplash, 1, DPK_INT, 56) \
-	X(swampBubble, 1, DPK_UINT, 164) \
-	X(sunShineMotion, 1, DPK_INT, 48) \
-	X(sewageFallHeight, 1, DPK_UINT, 10) \
-	X(tileEmpty, 1, DPK_UINT, 1672) \
-	X(objMI, 2, DPK_INT, 5408) \
-	X(levelUpMI, 2, DPK_INT, 244) \
-	X(objectData, 2, DPK_INT, 423) \
-	X(boxNeutralAnimation, 1, DPK_INT, 4) \
-	X(boxOpenAnimation, 1, DPK_INT, 20) \
-	X(boxOpenItemFrameInfo, 4, DPK_FLOAT, 378) \
-	X(goldQuestBox, 4, DPK_INT, 10) \
-	X(goldQuestNpc, 4, DPK_INT, 10) \
-	X(goldQuestZokboIcon, 4, DPK_INT, 21) \
-	X(goldQuestZokboValue, 4, DPK_FLOAT, 10) \
-	X(goldQuestResultItem, 4, DPK_INT, 30) \
-	X(goldQuestReward, 8, DPK_INT, 150) \
-	X(pvpQuestInfo, 4, DPK_UINT, 510) \
-	X(pvpQuestRequest, 4, DPK_UINT, 5040) \
-	X(pvpQuestReward, 8, DPK_UINT, 20280) \
-	X(questRequestItem, 4, DPK_UINT, 496) \
-	X(questRequestItemCntData, 8, DPK_UINT, 900) \
-	X(questReward, 8, DPK_UINT, 3600) \
-	X(questInfo, 4, DPK_INT, 108) \
-	X(goldQuestDotPosition, 4, DPK_INT, 60) \
-	X(goldQuestZoomData, 4, DPK_FLOAT, 20) \
-	X(battleRewardMedal, 4, DPK_INT, 7) \
-	X(battleRewardGold, 8, DPK_INT, 80) \
-	X(bossGold, 8, DPK_INT, 100) \
-	X(raidRewardMedal, 4, DPK_INT, 7) \
-	X(stageClearBox, 8, DPK_INT, 51) \
-	X(levelUpCategory, 4, DPK_INT, 9) \
-	X(levelUpReward, 8, DPK_INT, 200) \
-	X(stageClearReward, 8, DPK_INT, 1200) \
-	X(equipGetRewardHeart, 8, DPK_INT, 432) \
-	X(crewReward, 8, DPK_UINT, 140) \
-	X(crewGetReward, 4, DPK_UINT, 132) \
-	X(bossReward, 8, DPK_INT, 400) \
-	X(calendarPos, 4, DPK_INT, 32) \
-	X(calendarMonthlyRewardDay, 4, DPK_INT, 4) \
-	X(calendarInfo1Month, 8, DPK_INT, 120) \
-	X(calendarInfo1Week, 8, DPK_INT, 40) \
-	X(collectionReward, 4, DPK_INT, 96) \
-	X(rouletteAttackStr, 1, DPK_UINT, 324) \
-	X(rouletteRaidStr, 1, DPK_UINT, 28) \
-	X(attackDelayPerType, 4, DPK_INT, 9) \
-	X(currencyShop, 4, DPK_INT, 126) \
-	X(quickShopData, 1, DPK_UINT, 162) \
-	X(skillData, 4, DPK_INT, 39846) \
-	X(barrierEtcData, 2, DPK_UINT, 15) \
-	X(berserkEtcData, 2, DPK_UINT, 15) \
-	X(skillToStat, 1, DPK_INT, 7) \
-	X(skillDescMod, 1, DPK_UINT, 27) \
-	X(crewBulletAni, 1, DPK_UINT, 78) \
-	X(areaName, 4, DPK_INT, 15) \
-	X(unicode_table, 2, DPK_UINT, 2350) \
-	X(itemNameStart, 2, DPK_UINT, 39) \
-	X(alphaOff, 2, DPK_UINT, 497) \
-	X(alertText, 2, DPK_INT, 9) \
-	X(colorSet, 4, DPK_INT, 52) \
-	X(currencyIcon, 2, DPK_UINT, 10) \
-	X(solidPosition, 4, DPK_INT, 8) \
-	X(openFrame, 4, DPK_INT, 7) \
-	X(statIcon, 2, DPK_INT, 6) \
-	X(menuOpened, 1, DPK_UINT, 24) \
-	X(listMenuIcon, 2, DPK_UINT, 22) \
-	X(crewPos, 2, DPK_INT, 2155) \
-	X(enemyIconPos, 2, DPK_INT, 1293) \
-	X(enemyBigIconPos, 2, DPK_INT, 1293) \
-	X(enemySkillIconPos, 2, DPK_INT, 1293) \
-	X(cardImgBg, 2, DPK_INT, 114) \
-	X(equipIconPos, 4, DPK_INT, 12) \
-	X(runMotion, 4, DPK_INT, 4) \
-	X(curtainPosX, 4, DPK_INT, 240) \
-	X(raidEquipPos, 2, DPK_INT, 12) \
-	X(scrollDx, 4, DPK_INT, 6) \
-	X(cardFrameColorData, 4, DPK_INT, 60) \
-	X(colorData, 4, DPK_INT, 56) \
-	X(activeSkillCardBg, 4, DPK_INT, 21) \
-	X(mainMenuWidth, 2, DPK_UINT, 5) \
-	X(titleMIC, 2, DPK_UINT, 6) \
-	X(effectMIC, 2, DPK_UINT, 556) \
-	X(hitMIC, 2, DPK_UINT, 102) \
-	X(objMIC, 2, DPK_UINT, 604) \
-	X(bgObjMIC, 2, DPK_UINT, 402) \
-	X(palette, 1, DPK_UINT, 2048) \
-	X(blindFrame, 1, DPK_UINT, 9) \
-	X(alertData, 2, DPK_UINT, 45) \
-	X(skillTreePos, 2, DPK_UINT, 360) \
-	X(fontGradiation, 4, DPK_UINT, 21) \
-	X(enemyWinPos, 2, DPK_INT, 8) \
-	X(shakePosX, 4, DPK_INT, 6) \
-	X(shakePosY, 4, DPK_INT, 6) \
-	X(selectColor, 4, DPK_UINT, 4) \
-	X(goldQuestPositionData, 4, DPK_INT, 20) \
-	X(boss, 4, DPK_INT, 18) \
-	X(wave, 4, DPK_INT, 9000) \
-	X(stageGold, 8, DPK_INT, 1000) \
+	X(demoAlpha, 1, DPK_UINT, 50, DPK_KEY_NONE, 0, 0) \
+	X(alphaData, 1, DPK_UINT, 2793, DPK_KEY_NONE, 0, 0) \
+	X(alphaX, 2, DPK_UINT, 296, DPK_KEY_NONE, 0, 0) \
+	X(alpha2, 2, DPK_INT, 222, DPK_KEY_NONE, 0, 0) \
+	X(goldAlphaInfo, 2, DPK_UINT, 444, DPK_KEY_NONE, 0, 0) \
+	X(alphaY, 2, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(battleMotion, 4, DPK_INT, 90, DPK_KEY_NONE, 0, 0) \
+	X(houseGoldStage, 4, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
+	X(houseGold, 8, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
+	X(wheelCrewPos, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(gameEventOpenStage, 2, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
+	X(rouletteProb, 4, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(activeSkillProb, 4, DPK_INT, activeSkillProb_ROWS * activeSkillProb_COLS, DPK_KEY_NONE, 0, 0) \
+	X(popUpFrameData, 4, DPK_FLOAT, 8, DPK_KEY_NONE, 0, 0) \
+	X(hitAlpha, 2, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(raidAlpha, 2, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(battleData, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(skillInitData, 4, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
+	X(arenaOff, 2, DPK_UINT, 72, DPK_KEY_NONE, 0, 0) \
+	X(arenaMI, 2, DPK_INT, 360, DPK_KEY_NONE, 0, 0) \
+	X(arenaMIC, 1, DPK_UINT, 46, DPK_KEY_NONE, 0, 0) \
+	X(castleOrder, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
+	X(castleBoxZoom, 4, DPK_FLOAT, 19, DPK_KEY_CASTLE, 1, 0) \
+	X(castleBoxColor, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
+	X(castleBoxGold, 8, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
+	X(castleStarLimit, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
+	X(setHeroPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
+	X(setEnemyPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
+	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
+	X(c0mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
+	X(c1mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
+	X(c2mv, 2, DPK_INT, 28, DPK_KEY_NONE, 0, 0) \
+	X(c3mv, 2, DPK_INT, 550, DPK_KEY_NONE, 0, 0) \
+	X(c4mv, 2, DPK_INT, 376, DPK_KEY_NONE, 0, 0) \
+	X(c5mv, 2, DPK_INT, 788, DPK_KEY_NONE, 0, 0) \
+	X(c6mv, 2, DPK_INT, 328, DPK_KEY_NONE, 0, 0) \
+	X(c7mv, 2, DPK_INT, 660, DPK_KEY_NONE, 0, 0) \
+	X(c8mv, 2, DPK_INT, 758, DPK_KEY_NONE, 0, 0) \
+	X(c9mv, 2, DPK_INT, 302, DPK_KEY_NONE, 0, 0) \
+	X(c10mv, 2, DPK_INT, 420, DPK_KEY_NONE, 0, 0) \
+	X(c11mv, 2, DPK_INT, 750, DPK_KEY_NONE, 0, 0) \
+	X(c12mv, 2, DPK_INT, 432, DPK_KEY_NONE, 0, 0) \
+	X(c13mv, 2, DPK_INT, 716, DPK_KEY_NONE, 0, 0) \
+	X(c14mv, 2, DPK_INT, 750, DPK_KEY_NONE, 0, 0) \
+	X(c15mv, 2, DPK_INT, 488, DPK_KEY_NONE, 0, 0) \
+	X(c16mv, 2, DPK_INT, 496, DPK_KEY_NONE, 0, 0) \
+	X(c17mv, 2, DPK_INT, 984, DPK_KEY_NONE, 0, 0) \
+	X(c18mv, 2, DPK_INT, 514, DPK_KEY_NONE, 0, 0) \
+	X(c19mv, 2, DPK_INT, 304, DPK_KEY_NONE, 0, 0) \
+	X(c20mv, 2, DPK_INT, 428, DPK_KEY_NONE, 0, 0) \
+	X(c21mv, 2, DPK_INT, 1930, DPK_KEY_NONE, 0, 0) \
+	X(c22mv, 2, DPK_INT, 152, DPK_KEY_NONE, 0, 0) \
+	X(c23mv, 2, DPK_INT, 168, DPK_KEY_NONE, 0, 0) \
+	X(c24mv, 2, DPK_INT, 472, DPK_KEY_NONE, 0, 0) \
+	X(c25mv, 2, DPK_INT, 176, DPK_KEY_NONE, 0, 0) \
+	X(c26mv, 2, DPK_INT, 1268, DPK_KEY_NONE, 0, 0) \
+	X(c27mv, 2, DPK_INT, 1180, DPK_KEY_NONE, 0, 0) \
+	X(c28mv, 2, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
+	X(c29mv, 2, DPK_INT, 584, DPK_KEY_NONE, 0, 0) \
+	X(c30mv, 2, DPK_INT, 616, DPK_KEY_NONE, 0, 0) \
+	X(c31mv, 2, DPK_INT, 1190, DPK_KEY_NONE, 0, 0) \
+	X(c32mv, 2, DPK_INT, 626, DPK_KEY_NONE, 0, 0) \
+	X(c33mv, 2, DPK_INT, 248, DPK_KEY_NONE, 0, 0) \
+	X(c34mv, 2, DPK_INT, 1248, DPK_KEY_NONE, 0, 0) \
+	X(c35mv, 2, DPK_INT, 200, DPK_KEY_NONE, 0, 0) \
+	X(c36mv, 2, DPK_INT, 378, DPK_KEY_NONE, 0, 0) \
+	X(c37mv, 2, DPK_INT, 956, DPK_KEY_NONE, 0, 0) \
+	X(c38mv, 2, DPK_INT, 80, DPK_KEY_NONE, 0, 0) \
+	X(c39mv, 2, DPK_INT, 1026, DPK_KEY_NONE, 0, 0) \
+	X(c40mv, 2, DPK_INT, 942, DPK_KEY_NONE, 0, 0) \
+	X(c41mv, 2, DPK_INT, 424, DPK_KEY_NONE, 0, 0) \
+	X(c42mv, 2, DPK_INT, 348, DPK_KEY_NONE, 0, 0) \
+	X(c43mv, 2, DPK_INT, 826, DPK_KEY_NONE, 0, 0) \
+	X(c44mv, 2, DPK_INT, 372, DPK_KEY_NONE, 0, 0) \
+	X(c45mv, 2, DPK_INT, 422, DPK_KEY_NONE, 0, 0) \
+	X(c46mv, 2, DPK_INT, 266, DPK_KEY_NONE, 0, 0) \
+	X(c47mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
+	X(c48mv, 2, DPK_INT, 1016, DPK_KEY_NONE, 0, 0) \
+	X(c49mv, 2, DPK_INT, 1064, DPK_KEY_NONE, 0, 0) \
+	X(c50mv, 2, DPK_INT, 1262, DPK_KEY_NONE, 0, 0) \
+	X(c51mv, 2, DPK_INT, 1342, DPK_KEY_NONE, 0, 0) \
+	X(c52mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c53mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c54mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c55mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
+	X(c56mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c57mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
+	X(c58mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
+	X(c59mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
+	X(c60mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c61mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
+	X(c62mv, 2, DPK_INT, 250, DPK_KEY_NONE, 0, 0) \
+	X(c63mv, 2, DPK_INT, 100, DPK_KEY_NONE, 0, 0) \
+	X(c64mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c65mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c66mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c67mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c68mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c69mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c70mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c71mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c72mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c73mv, 2, DPK_INT, 686, DPK_KEY_NONE, 0, 0) \
+	X(c74mv, 2, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(c75mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c76mv, 2, DPK_INT, 362, DPK_KEY_NONE, 0, 0) \
+	X(c77mv, 2, DPK_INT, 500, DPK_KEY_NONE, 0, 0) \
+	X(c78mv, 2, DPK_INT, 646, DPK_KEY_NONE, 0, 0) \
+	X(c79mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(c80mv, 2, DPK_INT, 2, DPK_KEY_NONE, 0, 0) \
+	X(c81mv, 2, DPK_INT, 200, DPK_KEY_NONE, 0, 0) \
+	X(c82mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c83mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(c84mv, 2, DPK_INT, 444, DPK_KEY_NONE, 0, 0) \
+	X(c85mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c86mv, 2, DPK_INT, 224, DPK_KEY_NONE, 0, 0) \
+	X(c87mv, 2, DPK_INT, 196, DPK_KEY_NONE, 0, 0) \
+	X(c88mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
+	X(c89mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c90mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c91mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(c92mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
+	X(c93mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(c94mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c95mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
+	X(c96mv, 2, DPK_INT, 358, DPK_KEY_NONE, 0, 0) \
+	X(c97mv, 2, DPK_INT, 246, DPK_KEY_NONE, 0, 0) \
+	X(c98mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c99mv, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(c100mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c101mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
+	X(c102mv, 2, DPK_INT, 212, DPK_KEY_NONE, 0, 0) \
+	X(c103mv, 2, DPK_INT, 312, DPK_KEY_NONE, 0, 0) \
+	X(c104mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c105mv, 2, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(c106mv, 2, DPK_INT, 446, DPK_KEY_NONE, 0, 0) \
+	X(c107mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
+	X(c108mv, 2, DPK_INT, 114, DPK_KEY_NONE, 0, 0) \
+	X(c109mv, 2, DPK_INT, 1662, DPK_KEY_NONE, 0, 0) \
+	X(c110mv, 2, DPK_INT, 1500, DPK_KEY_NONE, 0, 0) \
+	X(c111mv, 2, DPK_INT, 598, DPK_KEY_NONE, 0, 0) \
+	X(c112mv, 2, DPK_INT, 1228, DPK_KEY_NONE, 0, 0) \
+	X(c113mv, 2, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
+	X(c114mv, 2, DPK_INT, 464, DPK_KEY_NONE, 0, 0) \
+	X(c115mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
+	X(c116mv, 2, DPK_INT, 226, DPK_KEY_NONE, 0, 0) \
+	X(c117mv, 2, DPK_INT, 102, DPK_KEY_NONE, 0, 0) \
+	X(c118mv, 2, DPK_INT, 298, DPK_KEY_NONE, 0, 0) \
+	X(c119mv, 2, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(c120mv, 2, DPK_INT, 152, DPK_KEY_NONE, 0, 0) \
+	X(c121mv, 2, DPK_INT, 262, DPK_KEY_NONE, 0, 0) \
+	X(c122mv, 2, DPK_INT, 1924, DPK_KEY_NONE, 0, 0) \
+	X(cmfImgOff, 2, DPK_INT, 2145, DPK_KEY_NONE, 0, 0) \
+	X(cmfTotalMotion, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
+	X(cmfTotalOff, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
+	X(cmfVar, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \
+	X(cmfMove, 2, DPK_INT, 429, DPK_KEY_NONE, 0, 0) \
+	X(costumeSize, 2, DPK_UINT, 36, DPK_KEY_NONE, 0, 0) \
+	X(costumeOff, 2, DPK_UINT, 600, DPK_KEY_NONE, 0, 0) \
+	X(collectionLvLimit, 4, DPK_INT, 24, DPK_KEY_NONE, 0, 0) \
+	X(collectionData, 4, DPK_INT, 720, DPK_KEY_NONE, 0, 0) \
+	X(collectionsCategoryInfo, 1, DPK_UINT, 72, DPK_KEY_NONE, 0, 0) \
+	X(demoData, 2, DPK_INT, 105, DPK_KEY_NONE, 0, 0) \
+	X(frameData, 2, DPK_INT, 162, DPK_KEY_NONE, 0, 0) \
+	X(demoItem, 2, DPK_UINT, 60, DPK_KEY_NONE, 0, 0) \
+	X(boxDropProc, 4, DPK_INT, boxDropProc_ROWS * boxDropProc_COLS, DPK_KEY_NONE, 0, 0) \
+	X(proc1, 2, DPK_UINT, 2, DPK_KEY_NONE, 0, 0) \
+	X(proc2, 2, DPK_UINT, 3, DPK_KEY_NONE, 0, 0) \
+	X(proc3, 2, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
+	X(proc4, 2, DPK_UINT, 5, DPK_KEY_NONE, 0, 0) \
+	X(proc5, 2, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(proc6, 2, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
+	X(proc7, 2, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(proc8, 2, DPK_UINT, 9, DPK_KEY_NONE, 0, 0) \
+	X(proc9, 2, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
+	X(proc10, 2, DPK_UINT, 11, DPK_KEY_NONE, 0, 0) \
+	X(proc11, 2, DPK_UINT, 12, DPK_KEY_NONE, 0, 0) \
+	X(proc12, 2, DPK_UINT, 13, DPK_KEY_NONE, 0, 0) \
+	X(proc13, 2, DPK_UINT, 14, DPK_KEY_NONE, 0, 0) \
+	X(proc14, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
+	X(proc15, 2, DPK_UINT, 16, DPK_KEY_NONE, 0, 0) \
+	X(proc16, 2, DPK_UINT, 17, DPK_KEY_NONE, 0, 0) \
+	X(proc17, 2, DPK_UINT, 18, DPK_KEY_NONE, 0, 0) \
+	X(proc18, 2, DPK_UINT, 19, DPK_KEY_NONE, 0, 0) \
+	X(proc19, 2, DPK_UINT, 20, DPK_KEY_NONE, 0, 0) \
+	X(proc20, 2, DPK_UINT, 21, DPK_KEY_NONE, 0, 0) \
+	X(proc21, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
+	X(proc22, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(proc23, 2, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
+	X(proc24, 2, DPK_UINT, 25, DPK_KEY_NONE, 0, 0) \
+	X(proc25, 2, DPK_UINT, 26, DPK_KEY_NONE, 0, 0) \
+	X(proc26, 2, DPK_UINT, 27, DPK_KEY_NONE, 0, 0) \
+	X(proc27, 2, DPK_UINT, 28, DPK_KEY_NONE, 0, 0) \
+	X(proc28, 2, DPK_UINT, 29, DPK_KEY_NONE, 0, 0) \
+	X(proc29, 2, DPK_UINT, 30, DPK_KEY_NONE, 0, 0) \
+	X(proc30, 2, DPK_UINT, 31, DPK_KEY_NONE, 0, 0) \
+	X(proc31, 2, DPK_UINT, 32, DPK_KEY_NONE, 0, 0) \
+	X(proc32, 2, DPK_UINT, 33, DPK_KEY_NONE, 0, 0) \
+	X(proc33, 2, DPK_UINT, 34, DPK_KEY_NONE, 0, 0) \
+	X(proc34, 2, DPK_UINT, 35, DPK_KEY_NONE, 0, 0) \
+	X(monStr, 8, DPK_INT, 500, DPK_KEY_NONE, 0, 0) \
+	X(bossHp, 8, DPK_INT, 100, DPK_KEY_NONE, 0, 0) \
+	X(bossStr, 8, DPK_INT, 100, DPK_KEY_NONE, 0, 0) \
+	X(summonMotion, 2, DPK_INT, 30, DPK_KEY_NONE, 0, 0) \
+	X(slimeMotion, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(enemyAttackPattern, 2, DPK_INT, 8620, DPK_KEY_ENEMY, 20, 0) \
+	X(enemyIconZoom, 4, DPK_FLOAT, 431, DPK_KEY_ENEMY, 1, 0) \
+	X(enemyZoom, 4, DPK_FLOAT, 431, DPK_KEY_ENEMY, 1, 0) \
+	X(enemyBossZoom, 4, DPK_FLOAT, 431, DPK_KEY_ENEMY, 1, 0) \
+	X(enemyData, 2, DPK_INT, 3448, DPK_KEY_ENEMY, 8, 0) \
+	X(enemyStatInfo, 8, DPK_INT, 1293, DPK_KEY_ENEMY, 3, 0) \
+	X(enemyAttr, 2, DPK_INT, 5136, DPK_KEY_NONE, 0, 0) \
+	X(goldNumData, 2, DPK_UINT, 60, DPK_KEY_NONE, 0, 0) \
+	X(largeNumData, 2, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(mediumNumData, 2, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(itemColorText, 1, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(fontInfo, 2, DPK_INT, 128, DPK_KEY_NONE, 0, 0) \
+	X(miniGachaDetailRate, 4, DPK_INT, 8, DPK_KEY_NONE, 0, 0) \
+	X(attackSequenceFrameData, 2, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
+	X(betCoin, 1, DPK_UINT, 5, DPK_KEY_NONE, 0, 0) \
+	X(betHeart, 1, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
+	X(skillUpgradeGold, 8, DPK_INT, 900, DPK_KEY_NONE, 0, 0) \
+	X(attrToDebuf, 1, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(attrEffect, 1, DPK_UINT, 120, DPK_KEY_NONE, 0, 0) \
+	X(playerMainStat, 1, DPK_UINT, 3, DPK_KEY_NONE, 0, 0) \
+	X(zoomData, 1, DPK_UINT, 5, DPK_KEY_NONE, 0, 0) \
+	X(debufToAttr, 1, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(signCurve, 1, DPK_INT, 16, DPK_KEY_NONE, 0, 0) \
+	X(optionInfo, 1, DPK_UINT, 54, DPK_KEY_NONE, 0, 0) \
+	X(sin1024, 2, DPK_UINT, 91, DPK_KEY_NONE, 0, 0) \
+	X(tan1024, 2, DPK_UINT, 91, DPK_KEY_NONE, 0, 0) \
+	X(crewStarUpgradeGold, 8, DPK_INT, 2500, DPK_KEY_NONE, 0, 0) \
+	X(crewLvUpgradeGold, 8, DPK_UINT, 1600, DPK_KEY_NONE, 0, 0) \
+	X(monXYGap, 2, DPK_INT, 856, DPK_KEY_ENEMY, 2, 3) \
+	X(lvUpExp, 8, DPK_INT, 99, DPK_KEY_NONE, 0, 0) \
+	X(defaultStat, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(attackDelayFrame, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(attackDefaultFrame, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(attackCountPerOnce, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(skillEfficiency, 4, DPK_FLOAT, 3, DPK_KEY_NONE, 0, 0) \
+	X(dx_walk, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
+	X(walkFrame, 1, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
+	X(crewBulletLvUpDmgPercent, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(crewData, 4, DPK_INT, 384, DPK_KEY_CREW, 6, 0) \
+	X(jumpUpMotion, 2, DPK_INT, 56, DPK_KEY_NONE, 0, 0) \
+	X(jumpDownMotion, 2, DPK_INT, 107, DPK_KEY_NONE, 0, 0) \
+	X(backHomeMotion, 2, DPK_INT, 105, DPK_KEY_NONE, 0, 0) \
+	X(jump, 1, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(jumpFullFrame, 2, DPK_INT, 11, DPK_KEY_NONE, 0, 0) \
+	X(alphaJumpFrame, 2, DPK_INT, 11, DPK_KEY_NONE, 0, 0) \
+	X(jumpFullFrame2, 2, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(charEtcData, 1, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(robinSkillStartFrame, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(robinSkillClosingFrame, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(dianaSkillStartFrame, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(dianaSkillClosingFrame, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(maxxSkillStartFrame, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
+	X(maxxSkillClosingFrame, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
+	X(robinSkillMotion, 2, DPK_UINT, 8612, DPK_KEY_NONE, 0, 0) \
+	X(dianaSkillMotion, 2, DPK_UINT, 7964, DPK_KEY_NONE, 0, 0) \
+	X(maxxSkillMotion, 2, DPK_UINT, 3652, DPK_KEY_NONE, 0, 0) \
+	X(dianaHelmPos, 1, DPK_INT, 50, DPK_KEY_NONE, 0, 0) \
+	X(maxxHelmPos, 1, DPK_INT, 50, DPK_KEY_NONE, 0, 0) \
+	X(concentrateMotion, 2, DPK_UINT, 25, DPK_KEY_NONE, 0, 0) \
+	X(bombShotMotion, 2, DPK_UINT, 88, DPK_KEY_NONE, 0, 0) \
+	X(satelliteShotMotion, 2, DPK_UINT, 240, DPK_KEY_NONE, 0, 0) \
+	X(satelliteShotData, 2, DPK_INT, 15, DPK_KEY_NONE, 0, 0) \
+	X(hitMarkData, 1, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
+	X(buffData, 2, DPK_UINT, 52, DPK_KEY_NONE, 0, 0) \
+	X(dianaBulletData, 2, DPK_UINT, 35, DPK_KEY_NONE, 0, 0) \
+	X(maxxBoomerangData, 2, DPK_INT, 119, DPK_KEY_NONE, 0, 0) \
+	X(normalboomerangData, 2, DPK_INT, 64, DPK_KEY_NONE, 0, 0) \
+	X(sateliteMotion, 2, DPK_INT, 816, DPK_KEY_NONE, 0, 0) \
+	X(levelUpMIC, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(debufStartFrame, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(debufEffect, 1, DPK_UINT, 72, DPK_KEY_NONE, 0, 0) \
+	X(emoticonRate, 1, DPK_UINT, 26, DPK_KEY_NONE, 0, 0) \
+	X(scowlEffect, 1, DPK_INT, 8, DPK_KEY_NONE, 0, 0) \
+	X(sweatEffect, 1, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(questionEffect, 1, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(surpriseEffect, 1, DPK_INT, 5, DPK_KEY_NONE, 0, 0) \
+	X(stunMotion, 2, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
+	X(equipSlotPos, 2, DPK_INT, 24, DPK_KEY_NONE, 0, 0) \
+	X(equipSlotPos2, 2, DPK_INT, 32, DPK_KEY_NONE, 0, 0) \
+	X(statueInfo, 1, DPK_UINT, 16, DPK_KEY_NONE, 0, 0) \
+	X(deadMotion, 2, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
+	X(motionData, 2, DPK_UINT, 96, DPK_KEY_NONE, 0, 0) \
+	X(imgArray, 2, DPK_UINT, 340, DPK_KEY_NONE, 0, 0) \
+	X(neutralOff, 2, DPK_UINT, 32, DPK_KEY_NONE, 0, 0) \
+	X(logoOff, 2, DPK_UINT, 80, DPK_KEY_NONE, 0, 0) \
+	X(neutralOffset, 1, DPK_INT, 8, DPK_KEY_NONE, 0, 0) \
+	X(balloonPos, 1, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(imgTextPos, 1, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(imgTextFrame, 1, DPK_INT, 22, DPK_KEY_NONE, 0, 0) \
+	X(titleOff, 2, DPK_INT, 148, DPK_KEY_NONE, 0, 0) \
+	X(effectOff, 2, DPK_INT, 624, DPK_KEY_NONE, 0, 0) \
+	X(effectMI, 2, DPK_INT, 4288, DPK_KEY_NONE, 0, 0) \
+	X(hitOff, 2, DPK_INT, 220, DPK_KEY_NONE, 0, 0) \
+	X(titleMI, 2, DPK_INT, 216, DPK_KEY_NONE, 0, 0) \
+	X(tenbytenMI, 2, DPK_INT, 468, DPK_KEY_NONE, 0, 0) \
+	X(hitMI, 2, DPK_INT, 2096, DPK_KEY_NONE, 0, 0) \
+	X(objOff, 2, DPK_UINT, 1008, DPK_KEY_NONE, 0, 0) \
+	X(itemTypeCnt, 2, DPK_UINT, 34, DPK_KEY_NONE, 0, 0) \
+	X(swordInfoList, 4, DPK_INT, 4, DPK_KEY_NONE, 0, 0) \
+	X(newCardEffect, 2, DPK_INT, 84, DPK_KEY_NONE, 0, 0) \
+	X(equipDataType, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(openedItemData, 2, DPK_UINT, 20, DPK_KEY_NONE, 0, 0) \
+	X(itemLevelLimit, 1, DPK_UINT, 16, DPK_KEY_NONE, 0, 0) \
+	X(itemExpAcce, 4, DPK_INT, 50, DPK_KEY_NONE, 0, 0) \
+	X(itemExp, 4, DPK_INT, 224, DPK_KEY_NONE, 0, 0) \
+	X(itemMaterialExpAcce, 4, DPK_INT, 50, DPK_KEY_NONE, 0, 0) \
+	X(itemMaterialExp, 4, DPK_INT, 225, DPK_KEY_NONE, 0, 0) \
+	X(itemEvolutionItem, 8, DPK_INT, 240, DPK_KEY_NONE, 0, 0) \
+	X(itemUpgradeHammer, 8, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(arenaFloorGold, 2, DPK_UINT, 200, DPK_KEY_NONE, 0, 0) \
+	X(revolutionMedal, 2, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(itemColor, 4, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
+	X(buffBlend, 4, DPK_UINT, 16, DPK_KEY_NONE, 0, 0) \
+	X(swordMaxBet, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(swordHeart, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(swordGold, 8, DPK_INT, 40, DPK_KEY_NONE, 0, 0) \
+	X(itemPrice, 8, DPK_UINT, 328, DPK_KEY_NONE, 0, 0) \
+	X(itemSellPrice, 4, DPK_UINT, 301, DPK_KEY_NONE, 0, 0) \
+	X(itemStar, 2, DPK_UINT, 559, DPK_KEY_NONE, 0, 0) \
+	X(itemStartCnt, 2, DPK_UINT, 41, DPK_KEY_NONE, 0, 0) \
+	X(boxEquipType, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(materialDropData, 1, DPK_UINT, 270, DPK_KEY_NONE, 0, 0) \
+	X(wasteDropData, 1, DPK_UINT, 1215, DPK_KEY_NONE, 0, 0) \
+	X(itemValueType, 4, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(itemValueTypeText, 4, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(itemEquipSlot, 1, DPK_UINT, 18, DPK_KEY_NONE, 0, 0) \
+	X(itemSlotEquip, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(wasteDrop, 1, DPK_UINT, 30, DPK_KEY_NONE, 0, 0) \
+	X(wasteValue, 1, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
+	X(weaponRange, 1, DPK_UINT, 3, DPK_KEY_NONE, 0, 0) \
+	X(itemValue, 4, DPK_UINT, 171, DPK_KEY_NONE, 0, 0) \
+	X(gradeRatio, 1, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(typeRatio, 1, DPK_UINT, 18, DPK_KEY_NONE, 0, 0) \
+	X(acceOptionStatMatch, 1, DPK_UINT, 12, DPK_KEY_NONE, 0, 0) \
+	X(acceDefaultStatValue, 4, DPK_UINT, 300, DPK_KEY_NONE, 0, 0) \
+	X(neckOptionStatValue, 4, DPK_UINT, 1400, DPK_KEY_NONE, 0, 0) \
+	X(ringOptionStatValue, 4, DPK_UINT, 900, DPK_KEY_NONE, 0, 0) \
+	X(gemOptionStatValue, 4, DPK_UINT, 300, DPK_KEY_NONE, 0, 0) \
+	X(itemUpgradeValue, 4, DPK_UINT, 2592, DPK_KEY_NONE, 0, 0) \
+	X(itemRatio, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(itemPow, 2, DPK_UINT, 220, DPK_KEY_NONE, 0, 0) \
+	X(itemLv, 1, DPK_UINT, 144, DPK_KEY_NONE, 0, 0) \
+	X(itemStat, 1, DPK_UINT, 144, DPK_KEY_NONE, 0, 0) \
+	X(enchantData, 4, DPK_UINT, 4320, DPK_KEY_NONE, 0, 0) \
+	X(itemCooltime, 1, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
+	X(itemIconTable, 2, DPK_UINT, 447, DPK_KEY_NONE, 0, 0) \
+	X(neckOption, 4, DPK_UINT, 168, DPK_KEY_NONE, 0, 0) \
+	X(neckRingDefaultValue, 4, DPK_INT, 300, DPK_KEY_NONE, 0, 0) \
+	X(ringOption, 1, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \
+	X(optionRange, 4, DPK_INT, 366, DPK_KEY_NONE, 0, 0) \
+	X(optionValue, 1, DPK_INT, 61, DPK_KEY_NONE, 0, 0) \
+	X(setItem, 1, DPK_UINT, 1302, DPK_KEY_NONE, 0, 0) \
+	X(setOption, 4, DPK_INT, 1404, DPK_KEY_NONE, 0, 0) \
+	X(legendItem, 4, DPK_UINT, 648, DPK_KEY_NONE, 0, 0) \
+	X(optionStat, 1, DPK_INT, 79, DPK_KEY_NONE, 0, 0) \
+	X(option_prefix, 1, DPK_INT, 128, DPK_KEY_NONE, 0, 0) \
+	X(option_suffix, 1, DPK_INT, 128, DPK_KEY_NONE, 0, 0) \
+	X(option_count_prefix, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(option_count_suffix, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
+	X(gemOption, 1, DPK_UINT, 81, DPK_KEY_NONE, 0, 0) \
+	X(gemPrice, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(enchantRate, 4, DPK_INT, 300, DPK_KEY_NONE, 0, 0) \
+	X(extraSetItem, 1, DPK_UINT, 576, DPK_KEY_NONE, 0, 0) \
+	X(newItemReward, 4, DPK_INT, 684, DPK_KEY_NONE, 0, 0) \
+	X(upgradeCostCrew, 4, DPK_INT, upgradeCostCrew_ROWS * upgradeCostCrew_COLS, DPK_KEY_NONE, 0, 0) \
+	X(upgradeCostEquip, 4, DPK_INT, upgradeCostEquip_ROWS * upgradeCostEquip_COLS, DPK_KEY_NONE, 0, 0) \
+	X(mapRectSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
+	X(mapBackSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
+	X(mapObjSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
+	X(mapNeutralSize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
+	X(mapEnemySize, 4, DPK_UINT, 425, DPK_KEY_MAP, 1, 0) \
+	X(mapColor, 4, DPK_UINT, 19, DPK_KEY_NONE, 0, 0) \
+	X(doorToKey, 1, DPK_INT, 16, DPK_KEY_NONE, 0, 0) \
+	X(doorArray, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
+	X(pushArray, 1, DPK_UINT, 2, DPK_KEY_NONE, 0, 0) \
+	X(boxStar, 1, DPK_UINT, 56, DPK_KEY_NONE, 0, 0) \
+	X(boxArray, 1, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
+	X(markArray, 1, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
+	X(itemArray, 1, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(dianaStoneArray, 1, DPK_UINT, 1, DPK_KEY_NONE, 0, 0) \
+	X(magmaArray, 1, DPK_UINT, 1, DPK_KEY_NONE, 0, 0) \
+	X(wormHoleArray, 1, DPK_UINT, 3, DPK_KEY_NONE, 0, 0) \
+	X(warpArrayType, 1, DPK_UINT, 57, DPK_KEY_NONE, 0, 0) \
+	X(warpArray, 2, DPK_INT, 280, DPK_KEY_NONE, 0, 0) \
+	X(backObjImg, 2, DPK_UINT, 1148, DPK_KEY_NONE, 0, 0) \
+	X(bgObjOff, 2, DPK_UINT, 656, DPK_KEY_NONE, 0, 0) \
+	X(bgObjMI, 2, DPK_INT, 3220, DPK_KEY_NONE, 0, 0) \
+	X(sunShineOff, 2, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
+	X(sunShineMI, 2, DPK_INT, 504, DPK_KEY_NONE, 0, 0) \
+	X(sunShineMIC, 1, DPK_UINT, 44, DPK_KEY_NONE, 0, 0) \
+	X(sateliteMotionCnt, 1, DPK_UINT, 62, DPK_KEY_NONE, 0, 0) \
+	X(neutralData, 2, DPK_INT, 506, DPK_KEY_NONE, 0, 0) \
+	X(mapBg, 2, DPK_UINT, 76, DPK_KEY_NONE, 0, 0) \
+	X(waterfallMI, 2, DPK_INT, 48, DPK_KEY_NONE, 0, 0) \
+	X(atlanticeImg, 2, DPK_UINT, 80, DPK_KEY_NONE, 0, 0) \
+	X(swampImg, 2, DPK_UINT, 52, DPK_KEY_NONE, 0, 0) \
+	X(swampSplash, 1, DPK_INT, 56, DPK_KEY_NONE, 0, 0) \
+	X(swampBubble, 1, DPK_UINT, 164, DPK_KEY_NONE, 0, 0) \
+	X(sunShineMotion, 1, DPK_INT, 48, DPK_KEY_NONE, 0, 0) \
+	X(sewageFallHeight, 1, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
+	X(tileEmpty, 1, DPK_UINT, 1672, DPK_KEY_NONE, 0, 0) \
+	X(objMI, 2, DPK_INT, 5408, DPK_KEY_NONE, 0, 0) \
+	X(levelUpMI, 2, DPK_INT, 244, DPK_KEY_NONE, 0, 0) \
+	X(objectData, 2, DPK_INT, 423, DPK_KEY_NONE, 0, 0) \
+	X(boxNeutralAnimation, 1, DPK_INT, 4, DPK_KEY_NONE, 0, 0) \
+	X(boxOpenAnimation, 1, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(boxOpenItemFrameInfo, 4, DPK_FLOAT, 378, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestBox, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestNpc, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestZokboIcon, 4, DPK_INT, 21, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestZokboValue, 4, DPK_FLOAT, 10, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestResultItem, 4, DPK_INT, 30, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestReward, 8, DPK_INT, 150, DPK_KEY_NONE, 0, 0) \
+	X(pvpQuestInfo, 4, DPK_UINT, 510, DPK_KEY_NONE, 0, 0) \
+	X(pvpQuestRequest, 4, DPK_UINT, 5040, DPK_KEY_NONE, 0, 0) \
+	X(pvpQuestReward, 8, DPK_UINT, 20280, DPK_KEY_NONE, 0, 0) \
+	X(questRequestItem, 4, DPK_UINT, 496, DPK_KEY_NONE, 0, 0) \
+	X(questRequestItemCntData, 8, DPK_UINT, 900, DPK_KEY_NONE, 0, 0) \
+	X(questReward, 8, DPK_UINT, 3600, DPK_KEY_NONE, 0, 0) \
+	X(questInfo, 4, DPK_INT, 108, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestDotPosition, 4, DPK_INT, 60, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestZoomData, 4, DPK_FLOAT, 20, DPK_KEY_NONE, 0, 0) \
+	X(battleRewardMedal, 4, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(battleRewardGold, 8, DPK_INT, 80, DPK_KEY_NONE, 0, 0) \
+	X(bossGold, 8, DPK_INT, 100, DPK_KEY_NONE, 0, 0) \
+	X(raidRewardMedal, 4, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(stageClearBox, 8, DPK_INT, 51, DPK_KEY_NONE, 0, 0) \
+	X(levelUpCategory, 4, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
+	X(levelUpReward, 8, DPK_INT, 200, DPK_KEY_NONE, 0, 0) \
+	X(stageClearReward, 8, DPK_INT, 1200, DPK_KEY_NONE, 0, 0) \
+	X(equipGetRewardHeart, 8, DPK_INT, 432, DPK_KEY_NONE, 0, 0) \
+	X(crewReward, 8, DPK_UINT, 140, DPK_KEY_NONE, 0, 0) \
+	X(crewGetReward, 4, DPK_UINT, 132, DPK_KEY_NONE, 0, 0) \
+	X(bossReward, 8, DPK_INT, 400, DPK_KEY_NONE, 0, 0) \
+	X(calendarPos, 4, DPK_INT, 32, DPK_KEY_NONE, 0, 0) \
+	X(calendarMonthlyRewardDay, 4, DPK_INT, 4, DPK_KEY_NONE, 0, 0) \
+	X(calendarInfo1Month, 8, DPK_INT, 120, DPK_KEY_NONE, 0, 0) \
+	X(calendarInfo1Week, 8, DPK_INT, 40, DPK_KEY_NONE, 0, 0) \
+	X(collectionReward, 4, DPK_INT, 96, DPK_KEY_NONE, 0, 0) \
+	X(rouletteAttackStr, 1, DPK_UINT, 324, DPK_KEY_NONE, 0, 0) \
+	X(rouletteRaidStr, 1, DPK_UINT, 28, DPK_KEY_NONE, 0, 0) \
+	X(attackDelayPerType, 4, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
+	X(currencyShop, 4, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \
+	X(quickShopData, 1, DPK_UINT, 162, DPK_KEY_NONE, 0, 0) \
+	X(skillData, 4, DPK_INT, 39846, DPK_KEY_SKILL, 29, 0) \
+	X(barrierEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
+	X(berserkEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
+	X(skillToStat, 1, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(skillDescMod, 1, DPK_UINT, 27, DPK_KEY_NONE, 0, 0) \
+	X(crewBulletAni, 1, DPK_UINT, 78, DPK_KEY_NONE, 0, 0) \
+	X(areaName, 4, DPK_INT, 15, DPK_KEY_NONE, 0, 0) \
+	X(unicode_table, 2, DPK_UINT, 2350, DPK_KEY_NONE, 0, 0) \
+	X(itemNameStart, 2, DPK_UINT, 39, DPK_KEY_NONE, 0, 0) \
+	X(alphaOff, 2, DPK_UINT, 497, DPK_KEY_NONE, 0, 0) \
+	X(alertText, 2, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
+	X(colorSet, 4, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
+	X(currencyIcon, 2, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
+	X(solidPosition, 4, DPK_INT, 8, DPK_KEY_NONE, 0, 0) \
+	X(openFrame, 4, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
+	X(statIcon, 2, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(menuOpened, 1, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
+	X(listMenuIcon, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
+	X(crewPos, 2, DPK_INT, 2155, DPK_KEY_ENEMY, 5, 0) \
+	X(enemyIconPos, 2, DPK_INT, 1293, DPK_KEY_ENEMY, 3, 0) \
+	X(enemyBigIconPos, 2, DPK_INT, 1293, DPK_KEY_ENEMY, 3, 0) \
+	X(enemySkillIconPos, 2, DPK_INT, 1293, DPK_KEY_ENEMY, 3, 0) \
+	X(cardImgBg, 2, DPK_INT, 114, DPK_KEY_NONE, 0, 0) \
+	X(equipIconPos, 4, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
+	X(runMotion, 4, DPK_INT, 4, DPK_KEY_NONE, 0, 0) \
+	X(curtainPosX, 4, DPK_INT, 240, DPK_KEY_NONE, 0, 0) \
+	X(raidEquipPos, 2, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
+	X(scrollDx, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(cardFrameColorData, 4, DPK_INT, 60, DPK_KEY_NONE, 0, 0) \
+	X(colorData, 4, DPK_INT, 56, DPK_KEY_NONE, 0, 0) \
+	X(activeSkillCardBg, 4, DPK_INT, 21, DPK_KEY_NONE, 0, 0) \
+	X(mainMenuWidth, 2, DPK_UINT, 5, DPK_KEY_NONE, 0, 0) \
+	X(titleMIC, 2, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
+	X(effectMIC, 2, DPK_UINT, 556, DPK_KEY_NONE, 0, 0) \
+	X(hitMIC, 2, DPK_UINT, 102, DPK_KEY_NONE, 0, 0) \
+	X(objMIC, 2, DPK_UINT, 604, DPK_KEY_NONE, 0, 0) \
+	X(bgObjMIC, 2, DPK_UINT, 402, DPK_KEY_NONE, 0, 0) \
+	X(palette, 1, DPK_UINT, 2048, DPK_KEY_NONE, 0, 0) \
+	X(blindFrame, 1, DPK_UINT, 9, DPK_KEY_NONE, 0, 0) \
+	X(alertData, 2, DPK_UINT, 45, DPK_KEY_NONE, 0, 0) \
+	X(skillTreePos, 2, DPK_UINT, 360, DPK_KEY_NONE, 0, 0) \
+	X(fontGradiation, 4, DPK_UINT, 21, DPK_KEY_NONE, 0, 0) \
+	X(enemyWinPos, 2, DPK_INT, 8, DPK_KEY_NONE, 0, 0) \
+	X(shakePosX, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(shakePosY, 4, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
+	X(selectColor, 4, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
+	X(goldQuestPositionData, 4, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
+	X(boss, 4, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
+	X(wave, 4, DPK_INT, 9000, DPK_KEY_NONE, 0, 0) \
+	X(stageGold, 8, DPK_INT, 1000, DPK_KEY_NONE, 0, 0) \
 	/* 끝 */
 
 #endif

@@ -645,7 +645,7 @@ void PlayKey(int obj)
 		EquipItem(&ao[PLAYER], &robin.inven[systemKey - AVK_INVENTORY_SELECTITEM]);
 		winAniFrame = 1;
 	}
-	else if (systemKey >= AVK_CREW_DETAIL && systemKey < AVK_CREW_DETAIL + TOTAL_CREW) {
+	else if (systemKey >= AVK_CREW_DETAIL && systemKey < AVK_CREW_DETAIL + CAP_CREW) {
 		menuDepth = 1;
 		menuCur = systemKey - AVK_CREW_DETAIL;
 		memset(&ao[NPC], 0, sizeof(OBJECT));
@@ -659,7 +659,7 @@ void PlayKey(int obj)
 		ao[NPC].y = DY / 2;
 
 	}
-	else if (systemKey >= AVK_CREW_REWARD && systemKey < AVK_CREW_REWARD + TOTAL_CREW) {
+	else if (systemKey >= AVK_CREW_REWARD && systemKey < AVK_CREW_REWARD + CAP_CREW) {
 		//���⼭ ��ȭ�� ȹ������ش�?
 		crewIdx = GetCrewIdxFromType(ao[ENEMY + systemKey - AVK_CREW_REWARD].type);
 		itemType = crewReward[crewIdx * CREWREWARDDATASIZE + 0];
@@ -749,7 +749,7 @@ void PlayKey(int obj)
 	else if (systemKey >= AVK_COLLECTIONS_EQUIP && systemKey < AVK_COLLECTIONS_EQUIP + TOTALEQUIP) {
 		menuCur = systemKey - AVK_COLLECTIONS_EQUIP;
 	}
-	else if (systemKey >= AVK_MENUCUR_CREWSET && systemKey < AVK_MENUCUR_CREWSET + TOTAL_CREW) {
+	else if (systemKey >= AVK_MENUCUR_CREWSET && systemKey < AVK_MENUCUR_CREWSET + CAP_CREW) {
 		robin.slotCrew[menuCur] = crewData[(systemKey  - AVK_MENUCUR_CREWSET) *CREWDATASIZE + CREWDATA_TYPE];
 		SetBattleCrew();//다시 재설정.
 	}
@@ -2571,10 +2571,10 @@ void touchFunc(int func)
 
 		systemKey = AVK_EQUIP_INVENTORY + func - TOUCH_FUNC_EQUIP_INVENTORY;
 	}
-	else if (func >= TOUCH_FUNC_CREW_DETAIL && func < TOUCH_FUNC_CREW_DETAIL + TOTAL_CREW) {
+	else if (func >= TOUCH_FUNC_CREW_DETAIL && func < TOUCH_FUNC_CREW_DETAIL + CAP_CREW) {
 		systemKey = AVK_CREW_DETAIL + func - TOUCH_FUNC_CREW_DETAIL;
 	}
-	else if (func >= TOUCH_FUNC_CREW_REWARD && func < TOUCH_FUNC_CREW_REWARD + TOTAL_CREW) {
+	else if (func >= TOUCH_FUNC_CREW_REWARD && func < TOUCH_FUNC_CREW_REWARD + CAP_CREW) {
 		systemKey = AVK_CREW_REWARD + func - TOUCH_FUNC_CREW_REWARD;
 	}
 	else if (func >= TOUCH_FUNC_COLLECTIONS_DETAIL && func < TOUCH_FUNC_COLLECTIONS_DETAIL + TOTAL_COLLECTIONS) {
@@ -2586,7 +2586,7 @@ void touchFunc(int func)
 	else if (func >= TOUCH_FUNC_COLLECTIONS_EQUIP && func < TOUCH_FUNC_COLLECTIONS_EQUIP + TOTALEQUIP) {
 		systemKey = AVK_COLLECTIONS_EQUIP + func - TOUCH_FUNC_COLLECTIONS_EQUIP;
 	}
-	else if (func >= TOUCH_FUNC_MENUCUR_CREWSET && func < TOUCH_FUNC_MENUCUR_CREWSET + TOTAL_CREW) {
+	else if (func >= TOUCH_FUNC_MENUCUR_CREWSET && func < TOUCH_FUNC_MENUCUR_CREWSET + CAP_CREW) {
 		systemKey = AVK_MENUCUR_CREWSET + func - TOUCH_FUNC_MENUCUR_CREWSET;
 	}
 	else {

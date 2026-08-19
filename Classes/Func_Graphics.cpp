@@ -1854,8 +1854,8 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 void DrawDiorama(int x, int y, int type, float zoom)
 {
 	int i = 0, j = 0;
-	int sortedCrewIdx[TOTAL_CREW + TOTALCHAR];
-	int sortedCrewY[TOTAL_CREW + TOTALCHAR];
+	int sortedCrewIdx[CAP_CREW + TOTALCHAR];
+	int sortedCrewY[CAP_CREW + TOTALCHAR];
 	float zoomBefore = 1.0f;
 	int objStartY = STATUSWIN_Y + (rh - 4) * TSIZE;
 
@@ -5003,7 +5003,7 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 		{
 			int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
-			if (heroSkill < 0 || heroSkill >= TOTAL_SKILL)
+			if (heroSkill < 0 || heroSkill >= gTotalSkill)
 				heroSkill = skillIdx;
 
 			DrawSkillIcon(skillData[heroSkill * SKILLDATASIZE + SKILLDATA_ICON],
@@ -5291,7 +5291,7 @@ void DrawRewardCardRange(int type, int detail, int grade, long long startCnt, lo
 		}
 		//몬스터가 들어있는 박스
 		else if (detail <= BOX_REWARD1) {
-			icon = ICON_SUMMON + crewData[(frame % TOTAL_CREW) * CREWDATASIZE];
+			icon = ICON_SUMMON + crewData[(frame % gTotalCrew) * CREWDATASIZE];
 		}
 		//기타 박스
 		else {

@@ -359,7 +359,7 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 		//소환될 몬스터를 그대로 보여준다. 모션 번호는 룰렛 카드와 같은 표에서 온다.
 		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
-		if (enemyIdx >= 0 && enemyIdx < TOTALENEMY)
+		if (enemyIdx >= 0 && enemyIdx < gTotalEnemy)
 			DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
 				enemyBigIconPos[3 * enemyIdx + 0],
 				Loc(px + iconSize / 2), LocY(py + iconSize / 2),
@@ -371,7 +371,7 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 		//이 칸에는 스킬 자신이 아니라 발동시킬 히어로 스킬 번호가 들어 있다.
 		int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
 
-		if (heroSkill < 0 || heroSkill >= TOTAL_SKILL)
+		if (heroSkill < 0 || heroSkill >= gTotalSkill)
 			heroSkill = skillIdx;
 
 		DrawSkillIcon(skillData[heroSkill * SKILLDATASIZE + SKILLDATA_ICON],
@@ -426,7 +426,7 @@ static void SetCrewSkillDesc(int skillIdx, int lv)
 	case SUMMON:
 		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
-		if (sub >= 0 && sub < TOTALENEMY)
+		if (sub >= 0 && sub < gTotalEnemy)
 			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_SUMMON),
 				TEXTPTR(TEXT_MONSTERNAME_START + sub), value);
 		else
@@ -437,7 +437,7 @@ static void SetCrewSkillDesc(int skillIdx, int lv)
 		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
 
 		//히어로 스킬 이름표는 SKILL_ 열거와 같은 순서로 붙어 있다.
-		if (sub >= 0 && sub < TOTAL_SKILL)
+		if (sub >= 0 && sub < gTotalSkill)
 			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_HERO),
 				TEXTPTR(TEXT_SKILLNAME_COMMON_ROBIN1 + sub), value);
 		else
@@ -2756,7 +2756,7 @@ int GetScrollDy(int menuIdx)
 
 	switch (menuIdx) {
 	case MENU_PLAY:
-		scrollDy = (float)(DIORAMASIZE_Y * dioramaZoom + 32 * _2X) * (TOTALCASTLE + 1);
+		scrollDy = (float)(DIORAMASIZE_Y * dioramaZoom + 32 * _2X) * (gTotalCastle + 1);
 		break;
 		//case MENU_MAP:
 		//	scrollDy = TOTAL_STAGE * STAGELIST_Y + GNBHEIGHT + BOTTOMMENUHEIGHT;
@@ -2781,7 +2781,7 @@ int GetScrollDy(int menuIdx)
 		break;
 	case MENU_CASTLE:
 
-		scrollDy = (float)(CASTLE_GAP_Y) * (TOTALCASTLE - 1);
+		scrollDy = (float)(CASTLE_GAP_Y) * (gTotalCastle - 1);
 
 		break;
 	case MENU_LEADERBOARD:
@@ -5421,7 +5421,7 @@ void CastleMenuDraw(int x, int y, float zoom)
 
 	SetSectionClip(0, slotY, DX, slotY - (HOMEBAR_HEIGHT + 8 * _2X) * zoom, false);
 
-	for (i = 0; i < TOTALCASTLE; i++) {
+	for (i = 0; i < gTotalCastle; i++) {
 		slotX = x + (float)12 * zoom;
 		slotY = y - (float)(400 + CASTLE_GAP_Y * i - scY[MENU_CASTLE]) * zoom;
 

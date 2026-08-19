@@ -1,4 +1,4 @@
-#include "cocos2d.h"
+﻿#include "cocos2d.h"
 
 #ifndef _FUNC_H_
 #include "Func.h"
@@ -238,7 +238,7 @@ static void NetBuildDump(std::string& out)
 
 	//---- player_castle ----
 	TableBegin("player_castle", "user_id\tcastle_idx\tmax_stage\tmax_room");
-	for (i = 0; i < TOTALCASTLE; i++) {
+	for (i = 0; i < gTotalCastle; i++) {
 		if (robin.maxStage[i] == 0 && robin.maxRoom[i] == 0)
 			continue;
 
@@ -408,7 +408,7 @@ static void NetBuildDump(std::string& out)
 	//skillLv는 TOTAL_SKILL(=1787)칸짜리다. 0이 아닌 것만 넣는다.
 	TableBegin("hero_skill", "user_id\thero_idx\tskill_idx\tskill_lv");
 	for (i = 0; i < TOTALPLAYER; i++) {
-		for (j = 0; j < TOTAL_SKILL; j++) {
+		for (j = 0; j < gTotalSkill; j++) {
 			if (robin.charData[i].skillLv[j] == 0)
 				continue;
 
@@ -790,7 +790,7 @@ static void NetApplyDump(NetTableMap& tables)
 		for (r = 0; r < t.rows.size(); r++) {
 			i = (int)RowNum(t.rows[r], cIdx, -1);
 
-			if (i < 0 || i >= TOTALCASTLE)
+			if (i < 0 || i >= CAP_CASTLE)
 				continue;
 
 			robin.maxStage[i] = (int)RowNum(t.rows[r], cS, 0);
@@ -993,7 +993,7 @@ static void NetApplyDump(NetTableMap& tables)
 			i = (int)RowNum(t.rows[r], cH, -1);
 			j = (int)RowNum(t.rows[r], cS, -1);
 
-			if (i < 0 || i >= TOTALPLAYER || j < 0 || j >= TOTAL_SKILL)
+			if (i < 0 || i >= TOTALPLAYER || j < 0 || j >= CAP_SKILL)
 				continue;
 
 			robin.charData[i].skillLv[j] = (signed char)RowNum(t.rows[r], cL, 0);

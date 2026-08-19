@@ -263,7 +263,7 @@ static const REWARD_BOX_DATA rewardBoxData[8] =
 	}
 };
 
-const int castleRewardBoxRate[TOTALCASTLE][REWARD_BOX_COUNT] =
+const int castleRewardBoxRate[CAP_CASTLE][REWARD_BOX_COUNT] =
 {
 	// B0 B1 B2 B3 B4 B5 B6 B7
 

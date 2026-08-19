@@ -158,7 +158,7 @@ void DecideRouletteResult(void)
 		if (crewIndex < 0 || crewIndex >= crewCnt) return -1;
 
 		int type = robin.slotCrew[crewIndex];   // ✅ robin.slotCrew는 type
-		if (type < 0 || type >= TOTALENEMY) return -1;
+		if (type < 0 || type >= gTotalEnemy) return -1;
 
 		int k = FindCrewAoOffsetByType(type, used, MAXCREW);
 		if (k >= 0) {
@@ -1548,7 +1548,7 @@ int GetCrewIdxFromType(int type)
 
 	// TOTAL_CREW_DATA_KEY 같은 총 엔트리 수가 있다면 그걸 쓰고,
 	// 없으면 기존 TOTALCREWKEY / TOTALENEMYKEY 등 "crewData 엔트리 개수"로 돌려야 함.
-	for (int key = START_KEY; key < TOTAL_CREW; key++)
+	for (int key = START_KEY; key < gTotalCrew; key++)
 	{
 		int t = crewData[key * CREWDATASIZE + CREWDATA_TYPE];
 		if (t == type) return key; // ✅ key(=crewData 인덱스) 반환

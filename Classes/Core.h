@@ -190,7 +190,7 @@ typedef struct _obj {
 	long long int ps[TOTALPLAYERSTAT];
 	unsigned char setIndex[TOTALEQUIP];
 	unsigned char setCount[TOTALEQUIP];
-	signed char skillLv[TOTAL_SKILL];
+	signed char skillLv[CAP_SKILL];
 	signed short buff[TOTALBUFF];
 	unsigned char buffOwner[TOTALBUFF];
 	signed int debuf[TOTALDEBUF];
@@ -506,7 +506,7 @@ typedef struct _charData {
 	unsigned short ap;
 	unsigned char sp;
 
-	signed char skillLv[TOTAL_SKILL];
+	signed char skillLv[CAP_SKILL];
 	unsigned char getSkillList[MAXCHARSKILL];
 
 	//아래계열들은 RefreshStat한번 하면 자동으로 값이 할당되거나 전투중 임시 값이므로 패스
@@ -551,8 +551,8 @@ typedef struct _robin {
 
 	int stage;
 	int room; 
-	int maxStage[TOTALCASTLE];//현재 어디까지 갔는지.
-	int maxRoom[TOTALCASTLE];
+	int maxStage[CAP_CASTLE];//현재 어디까지 갔는지.
+	int maxRoom[CAP_CASTLE];
 
 	bool demoSeen[TOTALDEMO];
 

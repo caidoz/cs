@@ -61,6 +61,86 @@ SIZE = {'char': 1, 'signed char': 1, 'unsigned char': 1, 'bool': 1,
         'unsigned long long': 8, 'unsigned long long int': 8, 'double': 8}
 
 
+#--------------------------------------------------------------- 콘텐츠 키
+#
+# 배열이 무엇에 맞춰 길어지는가. 여기 있는 배열은 팩이 내장본보다 길어도
+# 된다(용량 안이면). 여기 없는 배열은 길이가 정확히 같아야 한다.
+#
+#   이름: (키, 폭, 시작번호)
+#     폭       : 콘텐츠 하나가 차지하는 칸 수
+#     시작번호 : 0번부터 안 담는 배열이 있다. monXYGap 은 3번(ENEMY_SNAIL)부터다.
+#                개수 = 칸수 / 폭 + 시작번호
+#
+# 추측으로 넣지 않는다. 색인식을 눈으로 확인한 것만 넣는다. 길이가 우연히
+# 배수인 배열이 많다(c19mv 는 304칸이라 19*16 이지만 성과 무관한 모션이다).
+# 확인 안 된 것은 안 넣는다. 안 넣으면 그 콘텐츠를 못 늘릴 뿐, 틀리지는 않는다.
+# 빠진 게 있으면 make_pack 이 "의심" 목록으로 알려준다.
+CONTENT_KEY = {
+    # 몬스터. 색인이 OBJECT.type 이다.
+    'enemyData':          ('DPK_KEY_ENEMY', 8, 0),
+    'enemyStatInfo':      ('DPK_KEY_ENEMY', 3, 0),
+    'enemyZoom':          ('DPK_KEY_ENEMY', 1, 0),
+    'enemyIconZoom':      ('DPK_KEY_ENEMY', 1, 0),
+    'enemyBossZoom':      ('DPK_KEY_ENEMY', 1, 0),
+    'enemyAttackPattern': ('DPK_KEY_ENEMY', 20, 0),
+    'enemyIconPos':       ('DPK_KEY_ENEMY', 3, 0),
+    'crewPos':            ('DPK_KEY_ENEMY', 5, 0),
+    'enemyBigIconPos':    ('DPK_KEY_ENEMY', 3, 0),
+    'enemySkillIconPos':  ('DPK_KEY_ENEMY', 3, 0),
+    'monXYGap':           ('DPK_KEY_ENEMY', 2, 3),
+
+    # 동료
+    'crewData':           ('DPK_KEY_CREW', 6, 0),
+
+    # 스킬
+    'skillData':          ('DPK_KEY_SKILL', 29, 0),
+
+    # 성. castleOrder[robin.castle] 처럼 성 번호로 색인한다.
+    'castleOrder':        ('DPK_KEY_CASTLE', 1, 0),
+    'castleBoxZoom':      ('DPK_KEY_CASTLE', 1, 0),
+    'castleBoxColor':     ('DPK_KEY_CASTLE', 1, 0),
+    'castleBoxGold':      ('DPK_KEY_CASTLE', 1, 0),
+    'castleStarLimit':    ('DPK_KEY_CASTLE', 1, 0),
+    'castleCrewPosition': ('DPK_KEY_CASTLE', 12, 0),
+    'setHeroPos':         ('DPK_KEY_CASTLE', 6, 0),
+    'setEnemyPos':        ('DPK_KEY_CASTLE', 6, 0),
+
+    # 맵. mapRectSize[idx] 처럼 맵 번호로 색인한다.
+    'mapRectSize':        ('DPK_KEY_MAP', 1, 0),
+    'mapBackSize':        ('DPK_KEY_MAP', 1, 0),
+    'mapObjSize':         ('DPK_KEY_MAP', 1, 0),
+    'mapNeutralSize':     ('DPK_KEY_MAP', 1, 0),
+    'mapEnemySize':       ('DPK_KEY_MAP', 1, 0),
+}
+
+#지금 개수. 분류 안 된 배열 중 의심스러운 것을 찾는 데만 쓴다.
+NOW = {'DPK_KEY_ENEMY': 431, 'DPK_KEY_CREW': 64, 'DPK_KEY_SKILL': 1374,
+       'DPK_KEY_CASTLE': 19, 'DPK_KEY_MAP': 425}
+
+
+def key_of(name):
+    return CONTENT_KEY.get(name, ('DPK_KEY_NONE', 0, 0))
+
+
+def report_suspects(entries):
+    """분류 안 됐는데 길이가 콘텐츠 개수의 배수인 배열을 알려준다.
+
+    전부 진짜는 아니다. 대부분 우연이다. 다만 새 배열이 들어왔을 때
+    분류를 빠뜨리지 않도록 눈에 띄게 해둔다.
+    """
+    out = []
+
+    for _h, _t, name, cnt, _sz, _k in entries:
+        if name in CONTENT_KEY or not isinstance(cnt, int):
+            continue
+
+        for key, tot in NOW.items():
+            if cnt % tot == 0 and 1 <= cnt // tot <= 32:
+                out.append((name, cnt, key, cnt // tot))
+
+    return out
+
+
 def kind_of(typ):
     if 'float' in typ or 'double' in typ:
         return 'DPK_FLOAT'
@@ -119,7 +199,11 @@ def write_list(entries, headers):
     L.append('//팩에 들어가는 배열 목록이다. 로더(DataPack.cpp)와 팩 생성기가')
     L.append('//이 하나를 같이 쓰므로 둘이 어긋날 수 없다.')
     L.append('//')
-    L.append('//X(이름, 원소크기, 종류, 개수)')
+    L.append('//X(이름, 원소크기, 종류, 개수, 콘텐츠키, 폭, 시작번호)')
+    L.append('//')
+    L.append('//콘텐츠키가 DPK_KEY_NONE 이면 길이가 고정이라 팩과 내장본이 정확히')
+    L.append('//같아야 한다. 그 외에는 콘텐츠에 맞춰 길어지는 배열이라, 팩이 더')
+    L.append('//길어도 용량 안이면 받는다. 개수 = 개수 / 폭 + 시작번호.')
     L.append('')
 
     for h in headers:
@@ -129,7 +213,9 @@ def write_list(entries, headers):
     L.append('#define DATA_LIST(X) \\')
 
     for _h, _t, name, cnt, sz, kind in entries:
-        L.append('\tX(%s, %d, %s, %s) \\' % (name, sz, kind, cnt))
+        key, w, base = key_of(name)
+        L.append('\tX(%s, %d, %s, %s, %s, %d, %d) \\'
+                 % (name, sz, kind, cnt, key, w, base))
 
     L.append('\t/* 끝 */')
     L.append('')
@@ -150,36 +236,10 @@ DUMPER = r'''
 #include <string.h>
 #include <stdlib.h>
 
-static unsigned int Crc32(const void* buf, unsigned int len)
-{
-    const unsigned char* p = (const unsigned char*)buf;
-    unsigned int crc = 0xFFFFFFFFu;
-    unsigned int i;
-    int k;
-
-    for (i = 0; i < len; i++) {
-        crc ^= p[i];
-
-        for (k = 0; k < 8; k++)
-            crc = (crc >> 1) ^ (0xEDB88320u & (0u - (crc & 1u)));
-    }
-
-    return ~crc;
-}
-
-unsigned int DataPackAbi(void)
-{
-    char buf[1024];
-    int at = 0;
-
-#define ABI_ONE(N) at += sprintf(buf + at, "%s=%d;", #N, (int)(N));
-    DATAPACK_ABI_LIST(ABI_ONE)
-#undef ABI_ONE
-
-    at += sprintf(buf + at, "%s", DATAPACK_ABI_FLAGS);
-
-    return Crc32(buf, (unsigned int)at);
-}
+//CRC와 ABI 지문은 Classes/Data/DataPackCheck.cpp 것을 그대로 쓴다.
+//여기서 다시 구현하면 클라이언트와 조용히 어긋날 수 있다. 실제로 한번
+//어긋났었다(DataPack.h 가 BuildConfig.h 보다 먼저 들어가는 곳에서 #ifdef
+//가 전부 거짓이 되어, 클라이언트만 다른 지문을 계산했다).
 
 int main(int argc, char** argv)
 {
@@ -189,13 +249,13 @@ int main(int argc, char** argv)
     }
 
     int count = 0;
-#define COUNT_ONE(N, SZ, K, C) count++;
+#define COUNT_ONE(N, SZ, K, C, KEY, W, B) count++;
     DATA_LIST(COUNT_ONE)
 #undef COUNT_ONE
 
     //본문 크기부터 잰다. 배열마다 8바이트 경계에 맞춘다.
     unsigned int body = 0;
-#define SIZE_ONE(N, SZ, K, C) body = (body + 7u) & ~7u; body += (unsigned int)(SZ) * (C);
+#define SIZE_ONE(N, SZ, K, C, KEY, W, B) body = (body + 7u) & ~7u; body += (unsigned int)(SZ) * (C);
     DATA_LIST(SIZE_ONE)
 #undef SIZE_ONE
 
@@ -219,7 +279,7 @@ int main(int argc, char** argv)
     unsigned int at = 0;
     int idx = 0;
 
-#define WRITE_ONE(N, SZ, K, C) \
+#define WRITE_ONE(N, SZ, K, C, KEY, W, B) \
     { \
         at = (at + 7u) & ~7u; \
         unsigned char* e = dir + (unsigned int)idx * DPK_ENTRYSIZE; \
@@ -237,7 +297,7 @@ int main(int argc, char** argv)
     DATA_LIST(WRITE_ONE)
 #undef WRITE_ONE
 
-    unsigned int crc = Crc32(out, total - 4);
+    unsigned int crc = DataPackCrc(out, total - 4);
     memcpy(out + total - 4, &crc, 4);
 
     FILE* fp = fopen(argv[1], "wb");
@@ -277,6 +337,9 @@ def build_and_run(entries, headers, out_pack):
         if not os.path.isfile(c):
             sys.stderr.write('%s 가 없다. split_data.py 로 먼저 갈라야 한다\n' % c)
             return 1
+
+    #CRC와 ABI 지문은 클라이언트와 같은 파일을 쓴다. 두 벌로 두면 어긋난다.
+    cpps.append(os.path.join(DATA, 'DataPackCheck.cpp'))
 
     args = ' '.join('"%s"' % c for c in [src] + cpps)
     cmd = ('call "%s" >nul 2>&1 && cl /nologo /EHsc /utf-8 /W0 /I "%s" %s '
@@ -378,7 +441,7 @@ int main(int argc, char** argv)
 
     int bad = 0, arrays = 0; long cells = 0;
 
-#define CMP_ONE(N, SZ, K, C) \
+#define CMP_ONE(N, SZ, K, C, KEY, W, B) \
     { \
         unsigned int c = 0; int s = 0, k2 = 0; \
         const unsigned char* e = FindEntry(dir, count, #N, &c, &s, &k2); \
@@ -418,6 +481,9 @@ def run_verifier(headers, pack):
 
     cpps = sorted({os.path.join(DATA, os.path.splitext(h)[0] + '.cpp')
                    for h in headers})
+    #CRC와 ABI 지문은 클라이언트와 같은 파일을 쓴다. 두 벌로 두면 어긋난다.
+    cpps.append(os.path.join(DATA, 'DataPackCheck.cpp'))
+
     args = ' '.join('"%s"' % c for c in [src] + cpps)
     cmd = ('call "%s" >nul 2>&1 && cl /nologo /EHsc /utf-8 /W0 /I "%s" %s '
            '/Fe:"%s"' % (vcvars, CLASSES, args,
@@ -454,6 +520,19 @@ def main():
         return 1
 
     print('배열 %d개' % len(entries))
+
+    keyed = sum(1 for e in entries if e[2] in CONTENT_KEY)
+    print('  콘텐츠에 맞춰 길어지는 배열 %d개 (나머지는 길이 고정)' % keyed)
+
+    sus = report_suspects(entries)
+
+    if sus:
+        print('  분류 안 됐는데 길이가 개수의 배수인 배열 %d개:' % len(sus))
+
+        for name, cnt, key, w in sus[:40]:
+            print('    %-24s %6d = %s * %d' % (name, cnt, key[8:], w))
+
+        print('  (대부분 우연이다. 진짜면 CONTENT_KEY 에 넣어라)')
 
     lp = write_list(entries, headers)
     print('  %s 생성' % os.path.relpath(lp, ROOT))

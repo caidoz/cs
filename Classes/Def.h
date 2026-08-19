@@ -8,6 +8,8 @@
 // 분리된 설정 파일들 include
 // ================================
 #include "Config/BuildConfig.h"
+#include "Config/Capacity.h"
+#include "Data/DataCount.h"
 #include "Config/GameConstants.h"
 #include "Config/RenderConstants.h"
 #include "Config/FileConstants.h"

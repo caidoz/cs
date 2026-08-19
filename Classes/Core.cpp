@@ -1132,7 +1132,7 @@ void PaintClet(int x, int y, int w, int h)
 			scRecoveryFrameY = 1;
 
 			// ★ 이 시점의 scY[curMenu] 기준으로 가장 가까운 성 index 계산
-			int divisor = GetScrollDy(curMenu) / (TOTALCASTLE + 1);
+			int divisor = GetScrollDy(curMenu) / (gTotalCastle + 1);
 
 			// 현재 위치가 몇 번째 성 사이쯤인지 (실수 인덱스)
 			float fIndex = -(float)scY[curMenu] / (float)divisor;
