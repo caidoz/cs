@@ -265,34 +265,87 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 }
 
 //==========================================================================
-// 동료 상세보기
+// 동료 상세보기 (팝업)
 //
-// 화면 비율이 1:1.33부터 1:2.2까지 벌어지므로, 고정 좌표로 찍으면 짧은 화면에서
-// 아래가 잘린다. 그래서 내용을 CD_DESIGNW x CD_DESIGNH 짜리 "판" 하나로 그리고,
-// 그 판을 남는 자리에 맞춰 통째로 축소해서 가운데에 놓는다. 어느 기기에서나
-// 같은 그림이 크기만 달라져 나온다.
+// 바탕을 어둡게 깔고 그 위에 판 하나를 띄운다. 판 안의 좌표는 전부 아래
+// CD_DESIGNW x CD_DESIGNH 짜리 "설계판" 기준이고, Loc()/LocY()가 화면
+// 좌표로 바꿔준다. 화면 비율이 1:1.33부터 1:2.2까지 벌어지므로 판을 통째로
+// 줄여 가운데에 놓는다. 어느 기기에서나 같은 그림이 크기만 달라져 나온다.
 //
-// 아래 좌표는 전부 그 판 안의 값이다. Loc()/LocY()가 화면 좌표로 바꿔준다.
+// 설계판 크기는 시안(1090x1450)을 그대로 쓴다. 시안에서 잰 좌표를 그대로
+// 적을 수 있어서, 나중에 시안과 견줘 고치기 쉽다.
+//
+// 그림은 Resources/res/win.png(WIN_IMG) 한 장에서 가져온다.
 //==========================================================================
+
+//win.png 안의 조각 자리. (x, y, 폭, 높이)
 enum {
-	CD_DESIGNW = 616,	//판의 폭
-	CD_DESIGNH = 620,	//판의 높이
-	CD_TOP = 152,		//타이틀/부제(CrewMenuDraw가 그린다) 아래부터
+	//팝업 본체. 베이지 판.
+	WP_BODY_X = 0, WP_BODY_Y = 0, WP_BODY_W = 512, WP_BODY_H = 507,
+	WP_BODY_CAP = 40,		//9조각으로 자를 때 모서리 크기
 
-	//A블록 : 카드 + 이름 + 장착 | 슬롯 등장 효능
-	CD_A_H = 340,
-	CD_COLW = 196,		//왼쪽(카드) 칸 폭
-	CD_CARD_H = 268,
-	CD_NAME_Y = 274,
-	CD_BTN_Y = 300,
-	CD_BTN_H = 38,
+	//타이틀 리본. 양끝이 말려 있어 늘리면 안 된다.
+	WP_TITLE_X = 512, WP_TITLE_Y = 0, WP_TITLE_W = 510, WP_TITLE_H = 111,
+	WP_TITLE_CAP = 130,
 
-	//B블록 : 강화하기
-	CD_B_Y = 358,
-	CD_B_H = CD_DESIGNH - CD_B_Y,
+	//구획 제목표(보라). 양끝에 마름모 장식이 있다.
+	WP_RIBBON_X = 512, WP_RIBBON_Y = 182, WP_RIBBON_W = 512, WP_RIBBON_H = 87,
+	WP_RIBBON_CAP = 70,
 
-	CD_RIBBONW = 176,	//UI_NEW_IMG의 이름표 원본 폭
-	CD_RIBBONH = 40,
+	//파란 버튼(장착).
+	WP_BLUE_X = 512, WP_BLUE_Y = 270, WP_BLUE_W = 512, WP_BLUE_H = 131,
+	WP_BLUE_CAP = 70,
+
+	//노란 버튼(업그레이드).
+	WP_YELLOW_X = 512, WP_YELLOW_Y = 113, WP_YELLOW_W = 216, WP_YELLOW_H = 68,
+	WP_YELLOW_CAP = 34,
+
+	//안쪽 칸. 금테 두른 베이지 판.
+	WP_INNER_X = 1, WP_INNER_Y = 509, WP_INNER_W = 398, WP_INNER_H = 176,
+	WP_INNER_CAP = 46,
+
+	//작은 사각틀. 스킬 아이콘 테두리.
+	WP_SLOT_X = 418, WP_SLOT_Y = 508, WP_SLOT_W = 198, WP_SLOT_H = 198,
+	WP_SLOT_CAP = 44,
+
+	//화살표와 닫기 버튼. 늘리지 않고 그대로 쓴다.
+	WP_ARROW_X = 663, WP_ARROW_Y = 403, WP_ARROW_W = 122, WP_ARROW_H = 116,
+	WP_CLOSE_X = 786, WP_CLOSE_Y = 402, WP_CLOSE_W = 193, WP_CLOSE_H = 190,
+};
+
+//설계판 좌표. 전부 시안(1090x1450)에서 잰 값이다.
+enum {
+	CD_DESIGNW = 1090,
+	CD_DESIGNH = 1450,
+
+	//---- 팝업 본체와 머리 ----
+	CD_BODY_X = 34, CD_BODY_Y = 40,
+	CD_BODY_W = CD_DESIGNW - CD_BODY_X * 2,
+	CD_BODY_H = CD_DESIGNH - CD_BODY_Y - 40,
+
+	CD_TITLE_W = 620, CD_TITLE_H = 135,	//타이틀 리본
+	CD_CLOSE = 100,				//닫기 버튼 한 변
+
+	//---- 카드 칸 ----
+	CD_CARD_X = 100, CD_CARD_Y = 175,
+	CD_CARD_H = 500,			//카드 그림 높이. 폭은 원본 비율로 정한다
+	CD_EQUIP_W = 240, CD_EQUIP_H = 80,
+	CD_EQUIP_Y = 660,
+
+	//---- 슬롯 등장 효능 ----
+	CD_SLOT_X = 490, CD_SLOT_Y = 200,
+	CD_SLOT_W = CD_DESIGNW - CD_SLOT_X - 110,
+	CD_SLOT_H = 530,
+
+	//---- 스킬 ----
+	CD_SKILL_X = 95, CD_SKILL_Y = 800,
+	CD_SKILL_W = CD_DESIGNW - CD_SKILL_X * 2,
+	CD_SKILL_H = 340,
+
+	//---- 업그레이드 ----
+	CD_UPG_X = 95, CD_UPG_Y = 1180,
+	CD_UPG_W = CD_DESIGNW - CD_UPG_X * 2,
+	CD_UPG_H = 200,
 };
 
 //판을 화면에 놓기 위한 값. CrewDetailDraw() 첫머리에서 매번 다시 잡는다.
@@ -310,6 +363,102 @@ static float sCrewEquipBtnY = 0.0f;
 static float sCrewEquipBtnW = 0.0f;
 static float sCrewEquipBtnH = 0.0f;
 
+//---- win.png 조각 그리기 ----
+//
+// 좌표는 전부 화면 좌표다. (x, y)는 왼쪽 위 모서리이고, cocos는 y가 위로
+// 자라므로 아래로 갈수록 y가 준다.
+
+//늘리지 않고 그대로. 크기는 zoom으로만 정한다.
+static void DrawWinFlat(int sx, int sy, int sw, int sh, float x, float y, float z)
+{
+	DrawImageScale(sw, sh, sx, sy, x, y,
+		false, false, false, false, false, z, z,
+		sprite[WIN_IMG], WIN_IMG);
+}
+
+//9조각. 네 모서리는 그대로 두고 변과 가운데만 늘린다.
+//모서리 장식이 찌그러지지 않는다.
+static void DrawWin9(int sx, int sy, int sw, int sh, int cap,
+	float x, float y, float w, float h, float z)
+{
+	float c = (float)cap * z;		//화면에서의 모서리 크기
+	int sm = sw - cap * 2;			//원본 가운데 폭
+	int tm = sh - cap * 2;			//원본 가운데 높이
+	float kx, ky;
+
+	if (sm <= 0 || tm <= 0)
+		return;
+
+	//가운데가 음수가 되면(칸이 모서리보다 작으면) 모서리를 줄여서 맞춘다.
+	if (w < c * 2) c = w / 2;
+	if (h < c * 2) c = h / 2;
+
+	kx = (w - c * 2) / (float)sm;
+	ky = (h - c * 2) / (float)tm;
+
+	//scap : 모서리를 c에 맞추기 위한 배율. z와 다를 수 있다(위에서 줄였을 때).
+	float sc = c / (float)cap;
+
+	float xl = x, xm = x + c, xr = x + w - c;
+	float yt = y, ym = y - c, yb = y - (h - c);
+
+	int rx = sx + sw - cap, by = sy + sh - cap;
+
+	//위
+	DrawImageScale(cap, cap, sx, sy, xl, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, cap, sx + cap, sy, xm, yt, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, cap, rx, sy, xr, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	//가운데
+	DrawImageScale(cap, tm, sx, sy + cap, xl, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, tm, sx + cap, sy + cap, xm, ym, false, false, false, false, false, kx, ky, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, tm, rx, sy + cap, xr, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
+	//아래
+	DrawImageScale(cap, cap, sx, by, xl, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, cap, sx + cap, by, xm, yb, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, cap, rx, by, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+}
+
+//가로로만 늘리는 3조각. 리본과 버튼처럼 높이가 정해진 것에 쓴다.
+static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
+	float x, float y, float w, float h, float z)
+{
+	float sc = h / (float)sh;		//높이에 맞춘 배율
+	float c = (float)cap * sc;
+	int sm = sw - cap * 2;
+	float kx;
+
+	if (sm <= 0)
+		return;
+
+	if (w < c * 2) c = w / 2;
+
+	kx = (w - c * 2) / (float)sm;
+
+	DrawImageScale(cap, sh, sx, sy, x, y, false, false, false, false, false, c / (float)cap, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, sh, sx + cap, sy, x + c, y, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, sh, sx + sw - cap, sy, x + w - c, y, false, false, false, false, false, c / (float)cap, sc, sprite[WIN_IMG], WIN_IMG);
+}
+
+//설계판 좌표로 부르는 껍데기들.
+static void DrawPanel(float px, float py, float pw, float ph)
+{
+	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+		Loc(px), LocY(py), pw * sCdU, ph * sCdU, sCdU);
+}
+
+//구획 제목표. 칸 윗변에 걸쳐 놓는다.
+static void DrawCrewRibbon(int textIdx, float cx, float topY, float plateW)
+{
+	float h = 62.0f;
+
+	DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H, WP_RIBBON_CAP,
+		Loc(cx - plateW / 2), LocY(topY), plateW * sCdU, h * sCdU, sCdU);
+
+	SetFontColor(COLOR_WHITE);
+	CenterText(textIdx, Loc(cx), LocY(topY + h * 0.30f), 1.15f * sCdU);
+	SetFontColor(COLOR_WHITE);
+}
+
 //이 동료가 이미 편성표에 들어가 있는지. 들어가 있으면 또 넣을 이유가 없다.
 //같은 동료가 두 칸을 차지하면 SetBattleCrew()가 같은 놈을 둘 세운다.
 static bool IsCrewInSlot(int crewType)
@@ -321,23 +470,6 @@ static bool IsCrewInSlot(int crewType)
 			return true;
 
 	return false;
-}
-
-//구획 제목표. UI_NEW_IMG(1,679)의 176x40 판을 원하는 폭으로 늘려 쓴다.
-//CrewMenuDraw가 "현재 편성" 표를 그릴 때 쓰는 것과 같은 그림이다.
-static void DrawCrewRibbon(int textIdx, float cx, float topY, float plateW)
-{
-	float sc = plateW / (float)CD_RIBBONW;
-
-	DrawImageScale(CD_RIBBONW, CD_RIBBONH, 1, 679,
-		Loc(cx) - plateW / 2 * sCdU, LocY(topY),
-		false, false, false, false, false,
-		sc * sCdU, sCdU,
-		sprite[UI_NEW_IMG], UI_NEW_IMG);
-
-	SetFontColor(COLOR_WHITE);
-	CenterText(textIdx, Loc(cx), LocY(topY + 11.0f), sCdU);
-	SetFontColor(COLOR_WHITE);
 }
 
 //동료 스킬 한 칸의 아이콘. 룰렛 카드(DrawSkillCard)와 같은 그림이 나와야 해서
@@ -384,6 +516,17 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 			Loc(px), LocY(py), iconZoom);
 		break;
 	}
+}
+
+//스킬 아이콘을 사각틀에 넣어 그린다. 시안의 스킬 칸 모양이다.
+static void DrawCrewSkillIconFramed(int skillIdx, float px, float py, float box)
+{
+	float pad = box * 0.12f;
+
+	DrawWin9(WP_SLOT_X, WP_SLOT_Y, WP_SLOT_W, WP_SLOT_H, WP_SLOT_CAP,
+		Loc(px), LocY(py), box * sCdU, box * sCdU, sCdU);
+
+	DrawCrewSkillSlotIcon(skillIdx, px + pad, py + pad, box - pad * 2);
 }
 
 //슬롯에 몇 명 뜨느냐에 따라 붙는 효능 이름.
@@ -484,34 +627,6 @@ static void DrawCrewSlotReel(int crewCmf, int crewType, int cnt, float px, float
 	}
 }
 
-//레벨 한 칸(현재 / 다음 레벨). 다음 칸은 오르는 값이라 초록으로 적는다.
-static void DrawCrewLevelBox(int titleIdx, int lv, long long power, bool next,
-	float px, float py, float w, float h)
-{
-	float cx = px + w / 2;
-
-	DrawFrame(Loc(px), LocY(py), w * sCdU, h * sCdU, FRAME_SHOPBALLOON);
-
-	//이름표는 칸 윗변에 걸친다.
-	DrawCrewRibbon(titleIdx, cx, py - 10.0f, w * 0.72f);
-
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), lv);
-
-	SetFontColor(next ? COLOR_GREEN : COLOR_BROWN);
-	CenterTextStrSolid(tempStr, Loc(cx), LocY(py + h * 0.40f), 1.5f * sCdU);
-
-	SetFontColor(COLOR_BROWN);
-	CenterText(TEXT_ATK, Loc(cx), LocY(py + h * 0.62f), 0.85f * sCdU);
-
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "%lld", power);
-
-	SetFontColor(next ? COLOR_GREEN : COLOR_BROWN);
-	CenterTextStrSolid(tempStr, Loc(cx), LocY(py + h * 0.88f), 1.3f * sCdU);
-	SetFontColor(COLOR_WHITE);
-}
-
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 {
 	int i;
@@ -524,29 +639,57 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 	//----------------------------------------------------------------------
 	// 판을 놓을 자리 정하기
 	//
-	// 남는 세로가 판보다 짧으면(1:1.33 같은 화면) 판을 통째로 줄인다.
-	// 가로도 같은 비율로 줄여야 그림이 안 찌그러지므로 배율은 하나만 쓴다.
+	// 팝업이므로 메뉴 창이 아니라 화면 전체를 기준으로 가운데에 놓는다.
+	// 가로/세로 중 더 빡빡한 쪽에 맞춰 통째로 줄인다. 배율이 하나라 그림이
+	// 안 찌그러진다.
 	//----------------------------------------------------------------------
-	float availH = winH / zoom - (float)CD_TOP;
-	float s = availH / (float)CD_DESIGNH;
+	{
+		float availW = (float)DX * 0.96f;
+		float availH = (float)DY * 0.94f;
+		float sx = availW / (float)CD_DESIGNW;
+		float sy = availH / (float)CD_DESIGNH;
 
-	//세로가 남아도는 화면(1:2 이상)에서는 조금 키워 빈 자리를 메우되, 글자가
-	//우스울 만큼 커지지 않게 여기서 끊는다. 남는 만큼은 위아래로 나눠 가운데에 둔다.
-	if (s > 1.25f)
-		s = 1.25f;
-
-	sCdU = zoom * s;
-	//가로 가운데 정렬. 세로는 남으면 조금 내려 균형을 잡는다.
-	sCdOx = x + (float)POPUPWINDOWSIZE_X / 2 * zoom - (float)CD_DESIGNW / 2 * sCdU;
-	sCdOy = y - (float)CD_TOP * zoom - (availH - (float)CD_DESIGNH * s) * zoom / 2;
+		sCdU = (sx < sy) ? sx : sy;
+		sCdOx = (float)DX / 2 - (float)CD_DESIGNW / 2 * sCdU;
+		sCdOy = (float)DY / 2 + (float)CD_DESIGNH / 2 * sCdU;
+	}
 
 	//----------------------------------------------------------------------
-	// A. 카드 + 이름 + 장착 | 슬롯 등장 효능
+	// 팝업 본체
 	//----------------------------------------------------------------------
-	//카드 원본은 242x340이다. 왼쪽 칸에 맞춰 배율을 잡는다.
+	DrawWin9(WP_BODY_X, WP_BODY_Y, WP_BODY_W, WP_BODY_H, WP_BODY_CAP,
+		Loc((float)CD_BODY_X), LocY((float)CD_BODY_Y),
+		(float)CD_BODY_W * sCdU, (float)CD_BODY_H * sCdU, sCdU);
+
+	//타이틀 리본. 본체 윗변에 걸친다.
+	DrawWin3(WP_TITLE_X, WP_TITLE_Y, WP_TITLE_W, WP_TITLE_H, WP_TITLE_CAP,
+		Loc((float)(CD_DESIGNW - CD_TITLE_W) / 2), LocY(0),
+		(float)CD_TITLE_W * sCdU, (float)CD_TITLE_H * sCdU, sCdU);
+
+	SetFontColor(COLOR_WHITE);
+	CenterText(TEXT_CREW_DETAIL_TITLE, Loc((float)CD_DESIGNW / 2),
+		LocY((float)CD_TITLE_H * 0.30f), 2.0f * sCdU);
+	SetFontColor(COLOR_WHITE);
+
+	//닫기 버튼. 누르면 뒤로가기와 같은 일을 한다(menuDepth를 하나 내린다).
+	{
+		float cx = (float)(CD_DESIGNW - CD_BODY_X) - (float)CD_CLOSE - 6.0f;
+		float cy = (float)CD_BODY_Y - 24.0f;
+
+		SetRectPoint(Loc(cx), LocY(cy),
+			(float)CD_CLOSE * sCdU, (float)CD_CLOSE * sCdU,
+			TOUCH_FUNC_CLOSEALERT);
+
+		DrawWinFlat(WP_CLOSE_X, WP_CLOSE_Y, WP_CLOSE_W, WP_CLOSE_H,
+			Loc(cx), LocY(cy), (float)CD_CLOSE / (float)WP_CLOSE_W * sCdU);
+	}
+
+	//----------------------------------------------------------------------
+	// 카드 + 장착
+	//----------------------------------------------------------------------
+	//카드 원본은 242x340이다. 정한 높이에 맞춰 배율을 잡는다.
 	float cardZoom = (float)CD_CARD_H / 340.0f;
 	float cardW = 242.0f * cardZoom;
-	float cardL = (float)(CD_COLW - cardW) / 2;
 
 	DrawItemCard(
 		ITEM_CREW,
@@ -555,8 +698,8 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 		crewLv,
 		it->count,
 		false,
-		Loc(cardL),
-		LocY(0),
+		Loc((float)CD_CARD_X),
+		LocY((float)CD_CARD_Y),
 		false,
 		cardZoom * sCdU,
 		true,
@@ -565,129 +708,182 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 		false,
 		0);
 
-	//동료 이름. 카드 아래쪽에는 조각 개수(1/2)가 찍히므로 이름이 따로 필요하다.
-	SetFontColor(COLOR_BROWN);
-	CenterTextStrSolid(textId[TEXT_MONSTERNAME_START + crewType],
-		Loc((float)CD_COLW / 2), LocY((float)CD_NAME_Y), 1.0f * sCdU);
-	SetFontColor(COLOR_WHITE);
-
 	//장착 버튼.
 	//누르면 편성표에서 고른 자리(menuX)에 이 동료가 들어간다.
 	// - 레벨 0은 아직 안 뽑은 동료라 넣을 수 없다.
 	// - 이미 편성돼 있으면 "편성중"으로 잠근다.
 	{
-		float ebW = (float)CD_COLW - 16.0f;
-		float ebL = ((float)CD_COLW - ebW) / 2;
+		float ebL = (float)CD_CARD_X + (cardW - (float)CD_EQUIP_W) / 2;
 
 		bool owned = (crewLv > 0);
 		bool inSlot = IsCrewInSlot(crewType);
 		bool canEquip = (owned && inSlot == false);
 
 		sCrewEquipBtnX = Loc(ebL);
-		sCrewEquipBtnY = LocY((float)CD_BTN_Y);
-		sCrewEquipBtnW = ebW * sCdU;
-		sCrewEquipBtnH = (float)CD_BTN_H * sCdU;
+		sCrewEquipBtnY = LocY((float)CD_EQUIP_Y);
+		sCrewEquipBtnW = (float)CD_EQUIP_W * sCdU;
+		sCrewEquipBtnH = (float)CD_EQUIP_H * sCdU;
 
-		DrawTouchLargeButton(
+		if (canEquip)
+			SetRectPoint(sCrewEquipBtnX, sCrewEquipBtnY,
+				sCrewEquipBtnW, sCrewEquipBtnH,
+				TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, it->grade));
+
+		DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
 			sCrewEquipBtnX, sCrewEquipBtnY,
-			ebW, CD_BTN_H,
-			textId[inSlot ? TEXT_CREW_EQUIPPED : TEXT_EQUIP],
-			canEquip ? TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, it->grade) : false,
-			canEquip ? FRAME_GREEN : FRAME_GREY,
-			sCdU);
+			sCrewEquipBtnW, sCrewEquipBtnH, sCdU);
+
+		//못 누르는 상태는 글자를 흐리게 해서 구분한다.
+		SetFontColor(canEquip ? COLOR_WHITE : COLOR_GREY);
+		CenterText(inSlot ? TEXT_CREW_EQUIPPED : TEXT_EQUIP,
+			Loc(ebL + (float)CD_EQUIP_W / 2),
+			LocY((float)CD_EQUIP_Y + (float)CD_EQUIP_H * 0.30f), 1.3f * sCdU);
+		SetFontColor(COLOR_WHITE);
 	}
 
-	//---- 슬롯 등장 효능 ----
-	float panelL = (float)CD_COLW + 12.0f;
-	float panelW = (float)CD_DESIGNW - panelL;
-
-	DrawFrame(Loc(panelL), LocY(0), panelW * sCdU, (float)CD_A_H * sCdU, FRAME_SHOPBALLOON);
-
-	DrawCrewRibbon(TEXT_CREW_SLOTEFFECT, panelL + panelW / 2, -10.0f, panelW * 0.66f);
+	//----------------------------------------------------------------------
+	// 슬롯 등장 효능
+	//
+	// 몇 명이 떴을 때 무엇이 나오는지만 보여준다. 무슨 효과인지는 아래
+	// 스킬 칸에서 글로 읽는다.
+	//----------------------------------------------------------------------
+	DrawPanel((float)CD_SLOT_X, (float)CD_SLOT_Y, (float)CD_SLOT_W, (float)CD_SLOT_H);
+	DrawCrewRibbon(TEXT_CREW_SLOTEFFECT,
+		(float)CD_SLOT_X + (float)CD_SLOT_W / 2, (float)CD_SLOT_Y - 30.0f,
+		(float)CD_SLOT_W * 0.80f);
 
 	{
-		float rowTop = 34.0f;
-		float rowH = ((float)CD_A_H - rowTop - 8.0f) / 3.0f;
-		float reelW = panelW * 0.40f;
-		float iconSize = rowH * 0.50f;
+		float rowTop = (float)CD_SLOT_Y + 62.0f;
+		float rowH = ((float)CD_SLOT_H - 74.0f) / 3.0f;
+		float reelW = (float)CD_SLOT_W * 0.46f;
+		float iconBox = rowH * 0.78f;
+
+		float reelL = (float)CD_SLOT_X + 18.0f;
+		float iconL = (float)CD_SLOT_X + (float)CD_SLOT_W - iconBox - 18.0f;
+		float arrowW = iconBox * 0.62f;
+		float arrowL = (reelL + reelW + iconL - arrowW) / 2;
 
 		for (i = 0; i < 3; i++) {
 			int skillIdx = crewData[crewDetail * CREWDATASIZE + CREWDATA_SKILL1 + i];
 			float ry = rowTop + rowH * i;
 
-			//i+1명이 뜬 룰렛
+			//i+1명이 뜬 룰렛. 전투에서 보는 것과 같은 판을 그대로 쓴다.
 			DrawCrewSlotReel(crewCmf, crewType, i + 1,
-				panelL + 6.0f, ry + rowH * 0.06f, reelW);
+				reelL, ry + rowH * 0.10f, reelW);
 
 			//화살표
-			SetFontColor(COLOR_GREY);
-			CenterTextStrSolid(">>", Loc(panelL + reelW + 18.0f),
-				LocY(ry + rowH * 0.42f), 1.0f * sCdU);
-			SetFontColor(COLOR_WHITE);
+			DrawWinFlat(WP_ARROW_X, WP_ARROW_Y, WP_ARROW_W, WP_ARROW_H,
+				Loc(arrowL), LocY(ry + (rowH - arrowW * (float)WP_ARROW_H / (float)WP_ARROW_W) / 2),
+				arrowW / (float)WP_ARROW_W * sCdU);
 
-			//스킬 아이콘
-			float iconL = panelL + reelW + 32.0f;
+			//무엇이 나오는지
+			DrawCrewSkillIconFramed(skillIdx, iconL, ry + (rowH - iconBox) / 2, iconBox);
+		}
+	}
 
-			DrawCrewSkillSlotIcon(skillIdx, iconL, ry + (rowH - iconSize) / 2, iconSize);
+	//----------------------------------------------------------------------
+	// 스킬
+	//
+	// 아이콘 | 이름 | 설명. 슬롯 칸에서 본 세 가지를 글로 풀어 준다.
+	//----------------------------------------------------------------------
+	DrawPanel((float)CD_SKILL_X, (float)CD_SKILL_Y, (float)CD_SKILL_W, (float)CD_SKILL_H);
+	DrawCrewRibbon(TEXT_SKILL, (float)CD_SKILL_X + 130.0f,
+		(float)CD_SKILL_Y - 30.0f, 220.0f);
 
-			//효능 이름과 그 효과. 이름 아래에 수치를 붙여 한 칸에서 다 읽히게 한다.
-			float textL = iconL + iconSize + 8.0f;
+	{
+		float rowTop = (float)CD_SKILL_Y + 52.0f;
+		float rowH = ((float)CD_SKILL_H - 64.0f) / 3.0f;
+		float iconBox = rowH * 0.82f;
+		float iconL = (float)CD_SKILL_X + 20.0f;
+		float nameL = iconL + iconBox + 24.0f;
+		float descL = nameL + 250.0f;
+		float descW = (float)CD_SKILL_X + (float)CD_SKILL_W - descL - 20.0f;
+
+		for (i = 0; i < 3; i++) {
+			int skillIdx = crewData[crewDetail * CREWDATASIZE + CREWDATA_SKILL1 + i];
+			float ry = rowTop + rowH * i;
+
+			DrawCrewSkillIconFramed(skillIdx, iconL, ry + (rowH - iconBox) / 2, iconBox);
 
 			SetFontColor(COLOR_BROWN);
 			DrawText(GetCrewSkillTitle(skillIdx, i),
-				Loc(textL), LocY(ry + rowH * 0.32f), 0.95f * sCdU);
+				Loc(nameL), LocY(ry + rowH * 0.34f), 1.15f * sCdU);
 
 			SetCrewSkillDesc(skillIdx, crewLv);
 
 			LineTextStrSolid(tempStr,
-				Loc(textL), LocY(ry + rowH * 0.60f),
-				((float)CD_DESIGNW - textL - 8.0f) * sCdU,
-				0, 2, 0.85f * sCdU);
+				Loc(descL), LocY(ry + rowH * 0.26f),
+				descW * sCdU, 0, 2, 0.95f * sCdU);
 			SetFontColor(COLOR_WHITE);
 		}
 	}
 
 	//----------------------------------------------------------------------
-	// B. 강화하기
+	// 업그레이드
+	//
+	// 왼쪽 : 올리면 공격력이 얼마가 되는지
+	// 가운데 : 드는 값
+	// 오른쪽 : 버튼
 	//----------------------------------------------------------------------
-	DrawFrame(Loc(0), LocY((float)CD_B_Y), (float)CD_DESIGNW * sCdU, (float)CD_B_H * sCdU, FRAME_SHOPBALLOON);
-
-	DrawCrewRibbon(TEXT_UPGRADE, 80.0f, (float)CD_B_Y - 10.0f, 140.0f);
+	DrawPanel((float)CD_UPG_X, (float)CD_UPG_Y, (float)CD_UPG_W, (float)CD_UPG_H);
+	DrawCrewRibbon(TEXT_UPGRADE, (float)CD_UPG_X + 160.0f,
+		(float)CD_UPG_Y - 30.0f, 290.0f);
 
 	{
 		bool canUp = CanCrewLevelUp(it);
 		bool maxLv = (crewLv >= GetCrewMaxLevel());
 
-		float boxW = 150.0f;
-		float boxH = 150.0f;
-		float boxY = (float)CD_B_Y + 46.0f;
-		float curL = 14.0f;
-		float nextL = curL + boxW + 36.0f;
-		float costL = nextL + boxW + 22.0f;
-		float costW = (float)CD_DESIGNW - costL - 14.0f;
+		float inTop = (float)CD_UPG_Y + 46.0f;
+		float inH = (float)CD_UPG_H - 62.0f;
 
-		DrawCrewLevelBox(TEXT_CREW_LEVELCUR, crewLv, GetCrewPower(crewDetail, crewLv), false,
-			curL, boxY, boxW, boxH);
+		float powW = 340.0f;
+		float powL = (float)CD_UPG_X + 20.0f;
+		float costW = 260.0f;
+		float costL = powL + powW + 20.0f;
+		float btnL = costL + costW + 20.0f;
+		float btnW = (float)CD_UPG_X + (float)CD_UPG_W - btnL - 20.0f;
+
+		//---- 공격력 상승 ----
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			Loc(powL), LocY(inTop), powW * sCdU, inH * sCdU, sCdU);
+
+		SetFontColor(COLOR_BROWN);
+		CenterText(TEXT_ATK, Loc(powL + powW / 2), LocY(inTop + inH * 0.26f), 1.0f * sCdU);
 
 		if (maxLv) {
-			DrawMaxButton(Loc(nextL), LocY(boxY + boxH * 0.34f),
-				boxW * sCdU, boxH * 0.34f * sCdU, ALPHA_MAX, sCdU);
+			memset(&tempStr, 0, sizeof(tempStr));
+			sprintf(tempStr, "%lld", GetCrewPower(crewDetail, crewLv));
+
+			SetFontColor(COLOR_BROWN);
+			CenterTextStrSolid(tempStr, Loc(powL + powW / 2),
+				LocY(inTop + inH * 0.72f), 1.6f * sCdU);
 		}
 		else {
-			SetFontColor(COLOR_GREEN);
-			CenterTextStrSolid(">>", Loc(curL + boxW + 18.0f),
-				LocY(boxY + boxH * 0.44f), 1.3f * sCdU);
-			SetFontColor(COLOR_WHITE);
+			//지금 값 >> 오를 값. 오를 쪽을 초록으로 적어 무엇이 좋아지는지 보인다.
+			memset(&tempStr, 0, sizeof(tempStr));
+			sprintf(tempStr, "%lld", GetCrewPower(crewDetail, crewLv));
 
-			DrawCrewLevelBox(TEXT_CREW_LEVELNEXT, crewLv + 1, GetCrewPower(crewDetail, crewLv + 1), true,
-				nextL, boxY, boxW, boxH);
+			SetFontColor(COLOR_BROWN);
+			DrawTextStrSystem(tempStr, Loc(powL + 24.0f),
+				LocY(inTop + inH * 0.72f), 1.4f * sCdU, LEFT, false);
+
+			SetFontColor(COLOR_GREEN);
+			CenterTextStrSolid(">>", Loc(powL + powW / 2),
+				LocY(inTop + inH * 0.70f), 1.2f * sCdU);
+
+			memset(&tempStr, 0, sizeof(tempStr));
+			sprintf(tempStr, "%lld", GetCrewPower(crewDetail, crewLv + 1));
+
+			DrawTextStrSystem(tempStr, Loc(powL + powW - 24.0f),
+				LocY(inTop + inH * 0.72f), 1.4f * sCdU, RIGHT, false);
 		}
 
-		//필요 재화 : 동료 조각과 골드 두 줄
-		float costH = 96.0f;
+		SetFontColor(COLOR_WHITE);
 
-		DrawFrame(Loc(costL), LocY(boxY), costW * sCdU, costH * sCdU, FRAME_SHOPBALLOON);
-		DrawCrewRibbon(TEXT_CREW_NEEDCURRENCY, costL + costW / 2, boxY - 10.0f, costW * 0.78f);
+		//---- 드는 값 ----
+		//동료 조각과 골드 두 줄. 시안의 금화/보석 자리와 같은 모양이다.
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			Loc(costL), LocY(inTop), costW * sCdU, inH * sCdU, sCdU);
 
 		if (maxLv == false) {
 			long long needPiece = GetCrewUpgradeCost(it, 0);
@@ -696,18 +892,18 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 			for (i = 0; i < 2; i++) {
 				long long need = i ? needGold : needPiece;
 				bool enough = i ? (robin.gold >= need) : ((long long)it->count >= need);
-				float ly = boxY + 34.0f + 30.0f * i;
+				float ly = inTop + inH * (i ? 0.68f : 0.30f);
 
 				//조각은 동료 얼굴, 골드는 골드 아이콘으로 구분한다.
 				if (i)
 					DrawIcon(ICON_GOLD + frame % GOLDICONFRAME,
-						Loc(costL + 12.0f), LocY(ly), 0.9f * sCdU,
+						Loc(costL + 24.0f), LocY(ly - inH * 0.12f), 1.1f * sCdU,
 						false, false, false, sCdU);
 				else
 					DrawCmfDetail(crewCmf, crewPos[crewType * 5 + 0],
-						Loc(costL + 12.0f + (float)ITEMICONSIZE * 0.45f),
-						LocY(ly + 2.0f), RIGHT, 0.55f * enemyIconZoom[crewType] * sCdU,
-						false, false);
+						Loc(costL + 24.0f + (float)ITEMICONSIZE * 0.55f),
+						LocY(ly - inH * 0.06f), RIGHT,
+						0.7f * enemyIconZoom[crewType] * sCdU, false, false);
 
 				memset(&tempStr, 0, sizeof(tempStr));
 				sprintf(tempStr, "%lld", need);
@@ -715,23 +911,33 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 				//모자란 쪽은 빨갛게 적어서 왜 못 누르는지 보이게 한다.
 				SetFontColor(enough ? COLOR_BROWN : COLOR_REALRED);
 				DrawTextStrSystem(tempStr,
-					Loc(costL + 20.0f + (float)ITEMICONSIZE * 0.9f),
-					LocY(ly - 4.0f), 1.0f * sCdU, LEFT, false);
+					Loc(costL + costW - 24.0f), LocY(ly),
+					1.2f * sCdU, RIGHT, false);
 				SetFontColor(COLOR_WHITE);
 			}
-
-			DrawTouchLargeButton(
-				Loc(costL + (costW - 150.0f) / 2), LocY(boxY + costH + 18.0f),
-				150, 44,
-				textId[TEXT_UPGRADE],
-				canUp ? TOUCH_FUNC_CREW_LEVELUP : false,
-				canUp ? FRAME_GREEN : FRAME_GREY,
-				sCdU);
 		}
 		else {
 			SetFontColor(COLOR_BROWN);
 			CenterText(TEXT_CREW_MAXLEVEL, Loc(costL + costW / 2),
-				LocY(boxY + costH * 0.6f), 1.1f * sCdU);
+				LocY(inTop + inH * 0.55f), 1.0f * sCdU);
+			SetFontColor(COLOR_WHITE);
+		}
+
+		//---- 버튼 ----
+		if (maxLv == false) {
+			float bh = inH * 0.62f;
+			float by = inTop + (inH - bh) / 2;
+
+			if (canUp)
+				SetRectPoint(Loc(btnL), LocY(by), btnW * sCdU, bh * sCdU,
+					TOUCH_FUNC_CREW_LEVELUP);
+
+			DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H, WP_YELLOW_CAP,
+				Loc(btnL), LocY(by), btnW * sCdU, bh * sCdU, sCdU);
+
+			SetFontColor(canUp ? COLOR_BROWN : COLOR_GREY);
+			CenterText(TEXT_UPGRADE, Loc(btnL + btnW / 2),
+				LocY(by + bh * 0.30f), 1.3f * sCdU);
 			SetFontColor(COLOR_WHITE);
 		}
 	}
@@ -4313,20 +4519,17 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 	switch (menuDepth) {
 	case 1:
+		//상세보기는 팝업이다. 뒤에 있는 동료 목록을 지우지 않고, 어둡게 깔기만
+		//한다. 그래야 "목록 위에 창이 떴다"로 읽힌다.
+		//
+		//터치영역을 먼저 비운다. 안 그러면 뒤에 깔린 목록의 칸들이 창 아래에서
+		//그대로 눌린다.
 		ResetRectPoint();
-		//ScreenDarken(SCREENDARKEN);
-		MemRect(x, y, WINX, WINY, 0xD8D6FB);
-		// 1. 배경 및 큰 UI
-		for (i = 0; i < 2; i++)
-			DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], crewMenuUiData[i * MENUUIDATACNT + 6]);
-
-		CenterText(TEXT_BORDERGUARD, x + (float)160 * _2X * zoom, y - (float)40 * zoom, 2.0f * zoom);
-		CenterText(TEXT_CREW_DETAIL_TITLE, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom);
+		ScreenDarken(SCREENDARKEN);
 
 		//장착 버튼과 업그레이드 버튼은 둘 다 CrewDetailDraw()가 그린다.
 		//장착은 초상화 카드 밑, 업그레이드는 업그레이드 칸 안이다.
-		//(예전에 하단에 있던 "강화하기" 버튼은 없앴다. 장착과 똑같은 터치기능을
-		// 달고 있어서 눌러도 강화가 되지 않던 자리다.)
+		//타이틀과 닫기 버튼도 그쪽이 그린다. 팝업 한 장이 통째로 들어 있다.
 		CrewDetailDraw(&robin.inven[menuItem], x, y, zoom, WINY - 16 * zoom);
 
 		//튜토리얼 3단: 장착 버튼을 누르게 한다.
