@@ -38,8 +38,12 @@ AppDelegate::AppDelegate()
 {
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
+	//콘텐츠를 받던 실이 있으면 멈추기를 기다린다. 안 기다리면 실이 살아 있는
+	//채로 프로세스가 끝나 파일이 반쪽으로 남을 수 있다.
+	ContentShutdown();
+
 #if USE_AUDIO_ENGINE
 	AudioEngine::end();
 #elif USE_SIMPLE_AUDIO_ENGINE
@@ -67,10 +71,11 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
-	//내려받은 콘텐츠 폴더를 검색 경로 맨 앞에 넣는다.
-	//리소스를 하나라도 읽기 전에 해야 한다. 나중에 하면 이미 읽어둔 것이
-	//앱에 딸려온 옛 파일로 굳는다.
-	ContentInstallSearchPath();
+	//뒤에서 다 받아둔 콘텐츠가 있으면 지금 넣고, 그 폴더를 검색 경로 맨 앞에
+	//놓는다. 리소스를 하나라도 읽기 전에 해야 한다. 나중에 하면 이미 읽어둔
+	//것이 앱에 딸려온 옛 파일로 굳는다.
+	//네트워크를 안 탄다. 파일 이름만 바꾸므로 순식간이다.
+	ContentBoot();
 
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::init();
