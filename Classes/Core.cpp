@@ -967,7 +967,10 @@ void Core::Run(float delta) {
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
 	NetUpdate();
 
-	//콘텐츠 갱신을 지켜본다. 받는 일은 딴 실이 하고 여기서는 보기만 한다.
+	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
+	//여기서 안 막힌다. 받은 것은 staging 에 쌓이고 반영은 다음 부팅 때 한다.
+	ContentUpdateStep();
+
 	//상태가 바뀔 때만 한 줄 남긴다. 매 프레임 찍으면 로그가 묻힌다.
 	{
 		static int sSeen = -1;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _CONTENT_H_
 #define _CONTENT_H_
@@ -33,7 +33,7 @@
 //
 // 그래서 받는 것과 쓰는 것을 갈랐다.
 //
-//     받기 : 뒤에서 staging 폴더로 내려받는다. 게임은 계속 돈다.
+//     받기 : 게임이 도는 동안 staging 폴더로 조금씩 내려받는다.
 //     쓰기 : 다음 부팅 때 파일 이름만 바꿔 넣는다. 순식간이고 안전하다.
 //
 // 이러면 로딩 화면으로 기다릴 일이 없다. 갱신이 있어도 이번 판은 그대로
@@ -82,8 +82,11 @@ enum ContentState {
 //뒤에서 갱신을 시작한다. 곧바로 돌아온다. 두 번 불러도 하나만 돈다.
 void ContentUpdateBegin(void);
 
+//게임 루프에서 매 프레임 부른다. 갱신을 한 칸 굴린다.
+//네트워크는 HttpClient 가 자기 실에서 하므로 여기서 안 막힌다.
+void ContentUpdateStep(void);
+
 //진행 상태. doneFiles/totalFiles 는 화면에 띄울 때 쓴다.
-//게임 루프에서 매 프레임 불러도 된다.
 ContentState ContentPoll(int* doneFiles, int* totalFiles);
 
 //무슨 일이 있었는지 한 줄. 화면에 띄우거나 로그로 남긴다.
@@ -92,7 +95,7 @@ const char* ContentLastMessage(void);
 //다 받아서 다음 부팅 때 반영될 것이 있는가.
 bool ContentHasStaged(void);
 
-//끝날 때 부른다. 받던 중이면 멈추기를 기다린다.
+//끝날 때 부른다. 받던 중이면 그만둔다.
 void ContentShutdown(void);
 
 #endif

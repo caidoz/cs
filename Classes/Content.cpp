@@ -1,14 +1,12 @@
-#include "cocos2d.h"
+﻿#include "cocos2d.h"
 
 #include "Content.h"
+#include "Config/ContentConfig.h"	//CONTENT_CDN_URL
+#include "network/HttpClient.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <atomic>
-#include <mutex>
-#include <thread>
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <direct.h>
@@ -25,9 +23,9 @@ USING_NS_CC;
 //
 //   1. 경로            - 어디에 받고 어디서 읽나
 //   2. 매니페스트      - 무슨 파일이 어떤 판인지 적은 표
-//   3. 임시 로컬 CDN   - ★ 진짜 CDN이 붙으면 여기만 갈아끼운다
+//   3. 받아오기        - CONTENT_CDN_URL 이 비면 폴더, 차면 HTTP
 //   4. 부팅            - 다 받아둔 것을 반영한다 (빠르다)
-//   5. 뒤에서 받기     - 딴 실 하나로 받는다. 게임은 계속 돈다
+//   5. 갱신 굴리기     - 게임 루프가 한 칸씩 굴린다
 //
 // 자세한 얼개는 Content.h 를 보라.
 //=============================================================================
@@ -45,20 +43,14 @@ USING_NS_CC;
 
 static long long sVersion = 0;
 
-//딴 실이 건드리는 것들. 읽는 쪽은 게임 루프다.
-static std::atomic<int> sState(CONTENT_IDLE);
-static std::atomic<int> sDone(0);
-static std::atomic<int> sTotal(0);
-static std::atomic<bool> sQuit(false);
+//전부 게임 루프 하나만 건드린다. 딴 실이 없으므로 잠글 것도 없다.
+static int sState = CONTENT_IDLE;
+static int sDone = 0;
+static int sTotal = 0;
 
-static std::mutex sMsgLock;
 static char sMessage[256] = "아직 갱신한 적 없다";
 
-static std::thread sWorker;
-static bool sStarted = false;
-
-//딴 실에서도 쓰므로 부팅 때 한 번 잡아 둔다.
-//FileUtils 를 딴 실에서 부르지 않기 위해서다.
+//부팅 때 한 번 잡아 둔다. 경로를 물을 때마다 FileUtils 를 안 타려는 것이다.
 static std::string sWritable;
 
 static void Say(const char* fmt, ...)
@@ -70,17 +62,13 @@ static void Say(const char* fmt, ...)
 	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 
-	{
-		std::lock_guard<std::mutex> lock(sMsgLock);
-		memcpy(sMessage, buf, sizeof(buf));
-	}
+	memcpy(sMessage, buf, sizeof(buf));
 
 	CCLOG("Content: %s", buf);
 }
 
 const char* ContentLastMessage(void)
 {
-	//짧은 문자열이라 그대로 돌려준다. 읽는 쪽은 게임 루프 하나뿐이다.
 	return sMessage;
 }
 
@@ -111,7 +99,7 @@ static std::string LiveDir(void) { return sWritable + CONTENT_DIR "/"; }
 static std::string StageDir(void) { return sWritable + STAGING_DIR "/"; }
 static std::string CdnDir(void) { return sWritable + "cdn/"; }
 
-//"a/b/c.png" 의 중간 폴더를 만든다. FileUtils 를 안 쓴다. 딴 실에서 부른다.
+//"a/b/c.png" 의 중간 폴더를 만든다. FileUtils 를 안 쓴다.
 static void MakeDirs(const std::string& full)
 {
 	size_t at = full.find('/');
@@ -274,7 +262,6 @@ static bool ReadLiveManifest(long long* ver, std::vector<ContentFile>* fs)
 
 	if (!ReadWhole(LiveDir() + CONTENT_MANIFEST, &text)) {
 		//앱에 딸려온 것은 apk 안에 있을 수 있어 FileUtils 로 읽는다.
-		//부팅 때만 부르므로 딴 실 문제가 없다.
 		text = FileUtils::getInstance()->getStringFromFile(CONTENT_MANIFEST);
 	}
 
@@ -288,31 +275,107 @@ static bool ReadLiveManifest(long long* ver, std::vector<ContentFile>* fs)
 }
 
 //=============================================================================
-// 3. 임시 로컬 CDN
+// 3. 받아오기
 //
-// ★ 진짜 CDN이 붙으면 이 구획만 갈아끼운다.
+// 어디서 받을지는 Config/ContentConfig.h 의 CONTENT_CDN_URL 이 정한다.
 //
-// 지금은 서버가 없다. 그래서 "먼 곳"을 폴더 하나로 흉내낸다.
+//   비어 있으면 : 쓰기 가능 경로의 cdn/ 폴더를 본다. 서버 없이 시험할 때.
+//   채워져 있으면 : 그 주소에 GET 을 보낸다.
 //
-//     cdn/manifest.tsv
-//     cdn/data/content.pack
-//     cdn/res/aa.png
-//
-// 진짜로 바꿀 때 고칠 것은 아래 둘뿐이다.
-//   CdnFetchManifest : GET <베이스>/manifest.tsv
-//   CdnFetchFile     : GET <베이스>/<경로>
-//
-// 이미 딴 실에서 불리므로, 막히는 HTTP 호출을 그대로 넣어도 게임은 안 멈춘다.
+// 요청 하나를 띄우고 곧바로 돌아온다. 답이 오면 Take() 로 꺼낸다. 네트워크는
+// HttpClient 가 자기 실에서 하므로 게임 루프는 안 막힌다.
 //=============================================================================
 
-static bool CdnFetchManifest(std::string* out)
+//받아오기 한 건의 상태.
+static bool sFetchBusy = false;		//답을 기다리는 중
+static bool sFetchDone = false;		//답이 왔다
+static bool sFetchOk = false;		//성공했나
+static std::string sFetchBody;
+static std::string sFetchWhat;		//무엇을 받는 중인지. 로그용
+
+static bool UsingNetwork(void)
 {
-	return ReadWhole(CdnDir() + CONTENT_MANIFEST, out);
+	return CONTENT_CDN_URL[0] != 0;
 }
 
-static bool CdnFetchFile(const std::string& path, std::string* out)
+//요청을 띄운다. 이미 기다리는 중이면 아무것도 안 한다.
+static void FetchBegin(const std::string& path)
 {
-	return ReadWhole(CdnDir() + path, out);
+	if (sFetchBusy)
+		return;
+
+	sFetchBusy = true;
+	sFetchDone = false;
+	sFetchOk = false;
+	sFetchWhat = path;
+	sFetchBody.clear();
+
+	if (!UsingNetwork()) {
+		//서버가 없을 때. 폴더에서 곧바로 읽는다.
+		sFetchOk = ReadWhole(CdnDir() + path, &sFetchBody);
+		sFetchDone = true;
+		return;
+	}
+
+	network::HttpRequest* req = new (std::nothrow) network::HttpRequest();
+
+	req->setUrl(std::string(CONTENT_CDN_URL) + path);
+	req->setRequestType(network::HttpRequest::Type::GET);
+	req->setResponseCallback([](network::HttpClient* /*c*/,
+		network::HttpResponse* res) {
+		//여기는 메인 실이다. HttpClient 가 게임 루프로 넘겨준다.
+		sFetchOk = false;
+
+		if (res && res->isSucceed()) {
+			long code = res->getResponseCode();
+
+			if (code == 200) {
+				std::vector<char>* d = res->getResponseData();
+
+				if (d->size() <= CONTENT_MAXFILE) {
+					sFetchBody.assign(d->begin(), d->end());
+					sFetchOk = true;
+				}
+				else {
+					CCLOG("Content: 받은 것이 너무 크다 (%d)", (int)d->size());
+				}
+			}
+			else {
+				CCLOG("Content: HTTP %ld", code);
+			}
+		}
+		else if (res) {
+			CCLOG("Content: 못 받았다 (%s)", res->getErrorBuffer());
+		}
+
+		sFetchDone = true;
+	});
+
+	network::HttpClient::getInstance()->send(req);
+	req->release();
+}
+
+//답이 왔으면 꺼낸다. 아직이면 false.
+static bool FetchTake(bool* ok, std::string* body)
+{
+	if (!sFetchBusy || !sFetchDone)
+		return false;
+
+	*ok = sFetchOk;
+	body->swap(sFetchBody);
+
+	sFetchBusy = false;
+	sFetchDone = false;
+	sFetchBody.clear();
+
+	return true;
+}
+
+static void FetchCancel(void)
+{
+	sFetchBusy = false;
+	sFetchDone = false;
+	sFetchBody.clear();
 }
 
 //=============================================================================
@@ -408,11 +471,25 @@ void ContentBoot(void)
 }
 
 //=============================================================================
-// 5. 뒤에서 받기
+// 5. 갱신 굴리기
 //
-// 딴 실 하나가 돈다. 게임 루프는 ContentPoll 로 상태만 본다.
-// 받은 것은 staging 에 쌓이고, 반영은 다음 부팅 때 한다.
+// 딴 실을 안 쓴다. 게임 루프가 매 프레임 ContentUpdateStep() 을 부르면 한
+// 칸씩 나아간다. 네트워크는 HttpClient 가 자기 실에서 하므로 안 막힌다.
+//
+// 딴 실을 안 쓰는 이유가 있다. HttpClient 는 답을 메인 실로 넘겨준다.
+// 딴 실에서 그 답을 기다리면, 앱이 백그라운드로 가서 메인 루프가 멈출 때
+// 영영 안 깨어난다. 상태기계로 두면 그런 일이 없다.
+//
+//     CHECKING -> 매니페스트를 받아 견준다
+//     DOWNLOADING -> 한 번에 한 파일씩 받아 staging 에 쓴다
+//     READY -> 매니페스트를 쓰고 끝낸다. 반영은 다음 부팅 때.
 //=============================================================================
+
+//받아야 할 것과 어디까지 했는지.
+static std::vector<ContentFile> sTodo;
+static std::vector<ContentFile> sRemote;
+static long long sRemoteVer = 0;
+static int sAt = 0;
 
 static void PickChanged(const std::vector<ContentFile>& want,
 	const std::vector<ContentFile>& have, std::vector<ContentFile>* out)
@@ -447,110 +524,129 @@ static void PickChanged(const std::vector<ContentFile>& want,
 	}
 }
 
-static void Worker(void)
-{
-	sState = CONTENT_CHECKING;
-
-	std::string text;
-
-	if (!CdnFetchManifest(&text)) {
-		Say("CDN 매니페스트를 못 읽었다. 지금 콘텐츠를 그대로 쓴다");
-		sState = CONTENT_FAILED;
-		return;
-	}
-
-	long long remoteVer = 0;
-	std::vector<ContentFile> remote;
-
-	if (!ParseManifest(text, &remoteVer, &remote)) {
-		Say("CDN 매니페스트 형식이 다르다");
-		sState = CONTENT_FAILED;
-		return;
-	}
-
-	long long localVer = 0;
-	std::vector<ContentFile> local;
-
-	ReadLiveManifest(&localVer, &local);
-
-	if (remoteVer == localVer) {
-		Say("최신이다 (판 %lld, 파일 %d개)", localVer, (int)local.size());
-		sState = CONTENT_UPTODATE;
-		return;
-	}
-
-	std::vector<ContentFile> todo;
-
-	PickChanged(remote, local, &todo);
-
-	sTotal = (int)todo.size();
-	sDone = 0;
-	sState = CONTENT_DOWNLOADING;
-
-	Say("판 %lld -> %lld, 받을 파일 %d개", localVer, remoteVer, (int)todo.size());
-
-	std::string stage = StageDir();
-
-	for (size_t i = 0; i < todo.size(); i++) {
-		if (sQuit) {
-			Say("받기를 멈췄다");
-			sState = CONTENT_IDLE;
-			return;
-		}
-
-		const ContentFile& f = todo[i];
-		std::string body;
-
-		if (!CdnFetchFile(f.path, &body)) {
-			Say("%s 를 못 받았다", f.path.c_str());
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		//받은 것이 온전한지 본다. 크기만 보면 내용이 바뀐 것을 못 잡는다.
-		if (body.size() != f.size) {
-			Say("%s 크기가 다르다 (받은 %u, 적힌 %u)",
-				f.path.c_str(), (unsigned int)body.size(), f.size);
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		if (ContentHash(body.data(), (unsigned int)body.size()) != f.hash) {
-			Say("%s 가 깨졌다 (지문 불일치)", f.path.c_str());
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		if (!WriteWhole(stage + f.path, body)) {
-			Say("%s 를 못 썼다", f.path.c_str());
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		sDone = (int)(i + 1);
-	}
-
-	//매니페스트를 맨 나중에 쓴다. 이게 있어야 "다 받았다"는 뜻이다.
-	//중간에 죽으면 이게 없어서 다음에 처음부터 다시 받는다.
-	if (!WriteWhole(stage + CONTENT_MANIFEST, BuildManifest(remoteVer, remote))) {
-		Say("매니페스트를 못 썼다. 다음에 다시 받는다");
-		sState = CONTENT_FAILED;
-		return;
-	}
-
-	Say("판 %lld 를 다 받았다 (파일 %d개). 다음에 켤 때 반영된다",
-		remoteVer, (int)todo.size());
-	sState = CONTENT_READY;
-}
-
 void ContentUpdateBegin(void)
 {
-	if (sStarted)
+	if (sState != CONTENT_IDLE)
 		return;
 
-	sStarted = true;
-	sQuit = false;
-	sWorker = std::thread(Worker);
+	sTodo.clear();
+	sRemote.clear();
+	sAt = 0;
+	sDone = 0;
+	sTotal = 0;
+	sState = CONTENT_CHECKING;
+
+	FetchBegin(CONTENT_MANIFEST);
+}
+
+//받은 파일 하나를 검사하고 staging 에 쓴다.
+static bool KeepFile(const ContentFile& f, const std::string& body)
+{
+	//받은 것이 온전한지 본다. 크기만 보면 내용이 바뀐 것을 못 잡는다.
+	if (body.size() != f.size) {
+		Say("%s 크기가 다르다 (받은 %u, 적힌 %u)",
+			f.path.c_str(), (unsigned int)body.size(), f.size);
+		return false;
+	}
+
+	if (ContentHash(body.data(), (unsigned int)body.size()) != f.hash) {
+		Say("%s 가 깨졌다 (지문 불일치)", f.path.c_str());
+		return false;
+	}
+
+	if (!WriteWhole(StageDir() + f.path, body)) {
+		Say("%s 를 못 썼다", f.path.c_str());
+		return false;
+	}
+
+	return true;
+}
+
+void ContentUpdateStep(void)
+{
+	bool ok = false;
+	std::string body;
+
+	if (sState == CONTENT_CHECKING) {
+		if (!FetchTake(&ok, &body))
+			return;
+
+		if (!ok) {
+			Say("CDN 매니페스트를 못 읽었다. 지금 콘텐츠를 그대로 쓴다");
+			sState = CONTENT_FAILED;
+			return;
+		}
+
+		if (!ParseManifest(body, &sRemoteVer, &sRemote)) {
+			Say("CDN 매니페스트 형식이 다르다");
+			sState = CONTENT_FAILED;
+			return;
+		}
+
+		long long localVer = 0;
+		std::vector<ContentFile> local;
+
+		ReadLiveManifest(&localVer, &local);
+
+		if (sRemoteVer == localVer) {
+			Say("최신이다 (판 %lld, 파일 %d개)", localVer, (int)local.size());
+			sState = CONTENT_UPTODATE;
+			return;
+		}
+
+		PickChanged(sRemote, local, &sTodo);
+
+		sAt = 0;
+		sDone = 0;
+		sTotal = (int)sTodo.size();
+		sState = CONTENT_DOWNLOADING;
+
+		Say("판 %lld -> %lld, 받을 파일 %d개",
+			localVer, sRemoteVer, (int)sTodo.size());
+	}
+
+	if (sState != CONTENT_DOWNLOADING)
+		return;
+
+	//다 받았으면 매니페스트를 쓰고 끝낸다.
+	if (sAt >= (int)sTodo.size()) {
+		//매니페스트를 맨 나중에 쓴다. 이게 있어야 "다 받았다"는 뜻이다.
+		//중간에 죽으면 이게 없어서 다음에 처음부터 다시 받는다.
+		if (!WriteWhole(StageDir() + CONTENT_MANIFEST,
+			BuildManifest(sRemoteVer, sRemote))) {
+			Say("매니페스트를 못 썼다. 다음에 다시 받는다");
+			sState = CONTENT_FAILED;
+			return;
+		}
+
+		Say("판 %lld 를 다 받았다 (파일 %d개). 다음에 켤 때 반영된다",
+			sRemoteVer, (int)sTodo.size());
+		sState = CONTENT_READY;
+		return;
+	}
+
+	//아직 안 띄웠으면 지금 띄운다.
+	if (!sFetchBusy) {
+		FetchBegin(sTodo[sAt].path);
+		return;
+	}
+
+	if (!FetchTake(&ok, &body))
+		return;
+
+	if (!ok) {
+		Say("%s 를 못 받았다", sTodo[sAt].path.c_str());
+		sState = CONTENT_FAILED;
+		return;
+	}
+
+	if (!KeepFile(sTodo[sAt], body)) {
+		sState = CONTENT_FAILED;
+		return;
+	}
+
+	sAt++;
+	sDone = sAt;
 }
 
 ContentState ContentPoll(int* doneFiles, int* totalFiles)
@@ -561,13 +657,13 @@ ContentState ContentPoll(int* doneFiles, int* totalFiles)
 	if (totalFiles)
 		*totalFiles = sTotal;
 
-	return (ContentState)sState.load();
+	return (ContentState)sState;
 }
 
 void ContentShutdown(void)
 {
-	sQuit = true;
-
-	if (sWorker.joinable())
-		sWorker.join();
+	//받던 것이 있으면 버린다. staging 에 매니페스트를 안 썼으므로 덜 받은
+	//것으로 남고, 다음에 켤 때 처음부터 다시 받는다.
+	FetchCancel();
+	sState = CONTENT_IDLE;
 }
