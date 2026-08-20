@@ -27,6 +27,7 @@ import tempfile
 import zlib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import cc
 import content_table as CT
 import dump_ids
 
@@ -349,12 +350,6 @@ int main(int argc, char** argv)
 
 
 def build_and_run(entries, headers, out_pack):
-    vcvars = dump_ids.find_vs()
-
-    if not vcvars:
-        sys.stderr.write('Visual Studio를 못 찾았다\n')
-        return 1
-
     work = tempfile.mkdtemp(prefix='pack_')
     src = os.path.join(work, 'dumper.cpp')
 
@@ -372,23 +367,19 @@ def build_and_run(entries, headers, out_pack):
     #CRC와 ABI 지문은 클라이언트와 같은 파일을 쓴다. 두 벌로 두면 어긋난다.
     cpps.append(os.path.join(DATA, 'DataPackCheck.cpp'))
 
-    args = ' '.join('"%s"' % c for c in [src] + cpps)
-    cmd = ('call "%s" >nul 2>&1 && cl /nologo /EHsc /utf-8 /W0 /I "%s" %s '
-           '/Fe:"%s"' % (vcvars, CLASSES, args, os.path.join(work, 'dumper.exe')))
+    exe = cc.build([src] + cpps, [CLASSES], work, 'dumper')
 
-    r = subprocess.run(cmd, shell=True, cwd=work,
-                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    exe = os.path.join(work, 'dumper.exe')
-
-    if not os.path.isfile(exe):
-        sys.stderr.write('덤퍼 빌드 실패:\n%s\n'
-                         % r.stdout.decode('utf-8', 'replace')[-2000:])
+    if exe is None:
+        sys.stderr.write('덤퍼 빌드 실패\n')
         return 1
 
-    r = subprocess.run([exe, out_pack], stdout=subprocess.PIPE)
-    print('  ' + r.stdout.decode('utf-8', 'replace').strip())
-    return r.returncode
+    out = cc.run(exe, [out_pack])
+
+    if out is None:
+        return 1
+
+    print('  ' + out.decode('utf-8', 'replace').strip())
+    return 0
 
 
 def verify(path, entries):
@@ -499,11 +490,6 @@ int main(int argc, char** argv)
 
 
 def run_verifier(headers, pack):
-    vcvars = dump_ids.find_vs()
-
-    if not vcvars:
-        return 1
-
     work = tempfile.mkdtemp(prefix='vpack_')
     src = os.path.join(work, 'verifier.cpp')
 
@@ -515,23 +501,19 @@ def run_verifier(headers, pack):
     #CRC와 ABI 지문은 클라이언트와 같은 파일을 쓴다. 두 벌로 두면 어긋난다.
     cpps.append(os.path.join(DATA, 'DataPackCheck.cpp'))
 
-    args = ' '.join('"%s"' % c for c in [src] + cpps)
-    cmd = ('call "%s" >nul 2>&1 && cl /nologo /EHsc /utf-8 /W0 /I "%s" %s '
-           '/Fe:"%s"' % (vcvars, CLASSES, args,
-                         os.path.join(work, 'verifier.exe')))
+    exe = cc.build([src] + cpps, [CLASSES], work, 'verifier')
 
-    r = subprocess.run(cmd, shell=True, cwd=work,
-                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    exe = os.path.join(work, 'verifier.exe')
-
-    if not os.path.isfile(exe):
-        sys.stderr.write('비교기 빌드 실패:\n%s\n'
-                         % r.stdout.decode('utf-8', 'replace')[-2000:])
+    if exe is None:
+        sys.stderr.write('비교기 빌드 실패\n')
         return 1
 
-    r = subprocess.run([exe, pack], stdout=subprocess.PIPE)
-    print('  ' + r.stdout.decode('utf-8', 'replace').strip().replace('\n', '\n  '))
-    return r.returncode
+    out = cc.run(exe, [pack])
+
+    if out is None:
+        return 1
+
+    print('  ' + out.decode('utf-8', 'replace').strip().replace('\n', '\n  '))
+    return 0
 
 def main():
     ap = argparse.ArgumentParser()

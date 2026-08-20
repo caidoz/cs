@@ -126,6 +126,20 @@ def scan_enums():
 
 
 def find_vs():
+    #맥/리눅스에는 Visual Studio 가 없다. 왜 안 되는지 분명히 알려준다.
+    #조용히 이상한 오류를 뱉는 것보다 낫다.
+    #
+    #팩을 내는 make_pack.py 는 tools/content/cc.py 를 써서 양쪽에서 돈다.
+    #여기를 거치는 도구들(check_pack, content_table, pack_cmf, pack_map,
+    #freeze_cmfvar, verify_*)은 아직 윈도우 전용이다. 맥에서 필요해지면
+    #cc.py 를 쓰도록 하나씩 옮기면 된다.
+    if os.name != 'nt':
+        sys.stderr.write(
+            '이 도구는 아직 윈도우 전용이다. cl.exe 로 소스를 컴파일해서\n'
+            '값을 받아오기 때문이다.\n'
+            '팩을 다시 내는 것(build_pack.py)은 맥에서도 된다.\n')
+        return None
+
     for p in VS_CANDIDATES:
         bat = os.path.join(p, r'VC\Auxiliary\Build\vcvars32.bat')
 
