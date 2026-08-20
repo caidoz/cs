@@ -1,3 +1,11 @@
+# 주의 : 게임은 Resources/data/content.pack 을 읽는다. Classes/Data/*.cpp 의
+# 내장 배열은 팩이 없거나 깨졌을 때만 쓰인다. 데이터를 고쳤으면 빌드 전에
+#
+#     python tools/content/build_pack.py
+#
+# 를 돌려야 한다. 안 돌리면 팩이 옛 값을 들고 있어서 고친 것이 안 나타난다.
+# win32 는 이걸 빌드 앞단계(PreBuildEvent)에서 자동으로 돌린다.
+
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)

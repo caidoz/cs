@@ -107,6 +107,17 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Message>데이터가 바뀌었으면 content.pack 을 다시 낸다</Message>
+      <Command>
+				rem 게임은 Resources/data/content.pack 을 읽는다. 내장 배열은 팩이
+				rem 없거나 깨졌을 때만 쓰인다. 이 단계가 없으면 Classes/Data/*.cpp 를
+				rem 고치고 빌드해도 화면이 안 바뀐다. 팩이 옛 값을 들고 있기 때문이다.
+				rem
+				rem 데이터가 그대로면 0.4초 안에 끝난다. 바뀌었을 때만 20초쯤 걸린다.
+				python "$(ProjectDir)..\tools\content\build_pack.py"
+			</Command>
+    </PreBuildEvent>
     <CustomBuildStep>
       <Command>
 				if not exist "$(OutDir)" mkdir "$(OutDir)"
