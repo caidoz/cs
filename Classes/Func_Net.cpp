@@ -1474,6 +1474,22 @@ static bool sDirty = false;			//올릴 변경이 쌓여 있는지
 static int sHold = 0;				//묶어 보내려고 기다리는 프레임
 static int sDirtyAge = 0;			//처음 변경이 생긴 뒤 지난 프레임
 
+//---- 충돌 복구 ----
+//저장이 거절되면 서버 것을 다시 받아야 한다. 그 일을 여기서 기억한다.
+static bool sNeedReload = false;	//충돌 때문에 다시 받아야 한다
+static int sReloadTry = 0;			//다시 받기를 몇 번 실패했나
+static int sReloadWait = 0;			//다음 시도까지 남은 프레임
+static bool sConflictNotice = false;	//사용자에게 아직 안 알렸다
+static int sConflictShow = 0;		//구석에 문구를 띄울 남은 프레임
+
+//다시 받기가 계속 실패할 때 얼마나 기다렸다 또 해볼지.
+//바로 다시 하면 서버가 죽어 있을 때 매 프레임 두드린다.
+enum {
+	NETRELOAD_WAIT = 60 * 3,	//3초
+	NETRELOAD_MAXTRY = 5,
+	NETCONFLICT_SHOWFRAME = 60 * 6,	//문구를 6초쯤 띄운다
+};
+
 void NetInit(void)
 {
 	sReq = NETREQ_NONE;
@@ -1483,7 +1499,20 @@ void NetInit(void)
 	sDirty = false;
 	sHold = 0;
 	sDirtyAge = 0;
+	sNeedReload = false;
+	sReloadTry = 0;
+	sReloadWait = 0;
+	sConflictNotice = false;
+	sConflictShow = 0;
 	sNetBody.clear();
+}
+
+bool NetTakeConflictNotice(void)
+{
+	bool had = sConflictNotice;
+
+	sConflictNotice = false;
+	return had;
 }
 
 bool NetIsBusy(void)
@@ -1566,13 +1595,71 @@ void NetUpdate(void)
 		sLastReq = sReq;
 		sReq = NETREQ_NONE;
 
+		//---- 저장이 거절됐다 ----
+		//
+		//다른 기기가 먼저 저장했다는 뜻이다. 이쪽이 들고 있는 revision 이
+		//낡았으므로, 그냥 두면 다음 저장도 또 거절당한다. 영영 안 맞는다.
+		//
+		//서버 것을 다시 받아 덮는 수밖에 없다. 먼저 저장한 쪽을 남기기로
+		//정했으니, 이 기기에서 마지막 저장 뒤에 한 일은 사라진다.
 		if (sLastResult == NETRESULT_ERR_CONFLICT) {
-			//거절당했다. 지금은 로컬 서버라 실제로는 안 생기지만,
-			//진짜 서버에서는 여기서 다시 받아 이어가는 흐름이 필요하다.
-			//TODO: NETREQ_LOAD로 서버 것을 받고 사용자에게 알린다.
-			CCLOG("NetUpdate: 저장이 거절됐다(다른 기기가 먼저 저장)");
+			CCLOG("NetUpdate: 저장이 거절됐다(다른 기기가 먼저 저장). 서버 것을 받는다");
+
+			sNeedReload = true;
+			sReloadTry = 0;
+			sReloadWait = 0;
+
+			//보내려고 쌓아둔 것은 버린다. 서버가 안 받은 것이므로 다시
+			//보내봐야 또 거절당하고, 곧 서버 것으로 덮일 값이다.
+			sDirty = false;
+			sHold = 0;
+			sDirtyAge = 0;
 		}
 
+		//---- 충돌 뒤 다시 받기가 끝났다 ----
+		if (sNeedReload && sLastReq == NETREQ_LOAD) {
+			if (sLastResult == NETRESULT_OK ||
+				sLastResult == NETRESULT_ERR_NOTFOUND) {
+				//받아서 덮었다. robin 이 서버 것으로 바뀌었다.
+				sNeedReload = false;
+				sConflictNotice = true;
+				sConflictShow = NETCONFLICT_SHOWFRAME;
+
+				//방금 덮은 것을 도로 올리면 안 된다. 서버와 같은 값이다.
+				sDirty = false;
+				sHold = 0;
+				sDirtyAge = 0;
+
+				CCLOG("NetUpdate: 서버 것으로 되돌렸다 (revision=%lld)", gNetRevision);
+			}
+			else {
+				//못 받았다. 잠시 뒤 다시 해본다. 바로 또 하면 서버가 죽어
+				//있을 때 매 프레임 두드린다.
+				sReloadTry++;
+				sReloadWait = NETRELOAD_WAIT;
+
+				if (sReloadTry >= NETRELOAD_MAXTRY) {
+					//그만 둔다. 다음에 저장할 일이 생기면 또 거절당하고
+					//여기로 돌아온다. 그때 다시 해보면 된다.
+					sNeedReload = false;
+					CCLOG("NetUpdate: 서버 것을 %d번 못 받았다. 나중에 다시 한다",
+						sReloadTry);
+				}
+			}
+		}
+
+		return;
+	}
+
+	//---- 충돌 때문에 다시 받아야 한다 ----
+	//저장보다 먼저 한다. 낡은 revision 으로 또 보내봐야 거절만 당한다.
+	if (sNeedReload) {
+		if (sReloadWait > 0) {
+			sReloadWait--;
+			return;
+		}
+
+		NetRequest(NETREQ_LOAD);
 		return;
 	}
 
@@ -1621,6 +1708,27 @@ void NetIndicatorDraw(void)
 	float x = DX - w - 4 * _2X;
 	float y = DY - 4 * _2X;
 	int dot;
+
+	//---- 충돌로 되돌렸다는 알림 ----
+	//진행이 사라진 것이라 조용히 넘기면 안 된다. 잠시 띄운다.
+	//게임 쪽에서 제대로 된 팝업을 붙이면 NetTakeConflictNotice()로 가져가고
+	//여기는 안 뜬다.
+	if (sConflictShow > 0) {
+		float bw = 200 * _2X;
+		float bh = 16 * _2X;
+		float bx = DX / 2 - bw / 2;
+		float by = DY - 24 * _2X;
+
+		sConflictShow--;
+
+		SetAlpha(26);
+		MemRect(bx, by, bw, bh, COLOR_BLACK);
+		SetAlpha(32);
+
+		SetFontColor(COLOR_WHITE);
+		CenterText(TEXT_NET_CONFLICT, DX / 2, by - 3 * _2X, 1.0f);
+		SetFontColor(COLOR_WHITE);
+	}
 
 	if (sReq == NETREQ_NONE)
 		return;

@@ -6273,6 +6273,9 @@ typedef enum _textDef {
 	//이미 편성표에 들어가 있는 동료의 장착 버튼에 적는 말
 	TEXT_CREW_EQUIPPED,
 
+	//다른 기기가 먼저 저장해서 이쪽 진행이 서버 것으로 되돌려졌을 때
+	TEXT_NET_CONFLICT,
+
 	TEXT_LENGTH,
 
 	MAXLABELCNT = TEXT_LENGTH,

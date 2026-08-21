@@ -10627,5 +10627,6 @@ const char* const textId[] = {
 	"용사님의 %s@데미지 |r%d",//TEXT_CREW_DESC_HERO
 	"아군의 능력이 |r%d|s 만큼 오른다",//TEXT_CREW_DESC_BUFF
 	"편성중",//TEXT_CREW_EQUIPPED
+	"다른 기기에서 진행되어 최신 상태를 불러왔습니다",//TEXT_NET_CONFLICT
 };
 #endif /* Text_h */

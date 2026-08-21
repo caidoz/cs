@@ -87,6 +87,19 @@ void NetFlush(void);
 //돌려주는 값은 NETRESULT_*. NETRESULT_ERR_NOTFOUND면 새 게임을 시작하면 된다.
 int NetBootstrap(void);
 
+//---- 충돌 ----
+//
+// 다른 기기가 먼저 저장하면 서버가 이쪽 저장을 거절한다(NETRESULT_ERR_CONFLICT).
+// 그러면 이 계층이 알아서 서버 것을 다시 받아 덮는다. 이 기기에서 마지막 저장
+// 뒤에 한 일은 사라진다. 먼저 저장한 쪽을 남기기로 정했기 때문이다.
+//
+// 사라진다는 것을 사용자가 알아야 한다. 아래 둘로 알린다.
+//   - NetIndicatorDraw()가 잠시 문구를 띄운다.
+//   - 게임 쪽에서 제대로 된 팝업을 띄우고 싶으면 NetTakeConflictNotice()를 쓴다.
+
+//충돌로 서버 것을 다시 받았는가. 한 번 물으면 지워진다(같은 것을 두 번 안 띄우게).
+bool NetTakeConflictNotice(void);
+
 //---- 화면 ----
 //통신 중이라는 것을 구석에 표시한다. 지연이 눈에 보여야 한다.
 void NetIndicatorDraw(void);
