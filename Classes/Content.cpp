@@ -286,34 +286,50 @@ static bool ReadLiveManifest(long long* ver, std::vector<ContentFile>* fs)
 // HttpClient 가 자기 실에서 하므로 게임 루프는 안 막힌다.
 //=============================================================================
 
-//받아오기 한 건의 상태.
-static bool sFetchBusy = false;		//답을 기다리는 중
-static bool sFetchDone = false;		//답이 왔다
-static bool sFetchOk = false;		//성공했나
-static std::string sFetchBody;
-static std::string sFetchWhat;		//무엇을 받는 중인지. 로그용
+//한 번에 몇 개까지 띄울지.
+//
+//처음에는 한 개씩만 받았다. 그런데 요청 하나에 프레임을 두세 개 쓰다 보니,
+//지연이 0인 localhost 에서도 903개에 48초가 걸렸다. 네트워크가 아니라
+//"한 프레임에 한 걸음"이 병목이었다.
+//
+//진짜 CDN 이면 여기에 왕복 지연이 파일마다 붙는다. 50ms 만 잡아도 903개면
+//45초가 더 든다. 여러 개를 겹쳐 띄우면 그 지연이 서로 가려진다.
+//
+//너무 크게 잡지 않는다. 모바일에서 연결을 많이 열면 오히려 느려지고,
+//받은 것을 메모리에 들고 있으므로 큰 파일이 여럿 겹치면 메모리도 는다.
+#define FETCH_SLOTS 6
+
+//받아오기 한 건.
+struct Fetch {
+	bool busy;			//답을 기다리는 중
+	bool done;			//답이 왔다
+	bool ok;			//성공했나
+	int at;				//sTodo 의 몇 번째인가. 매니페스트를 받을 때는 -1
+	std::string body;
+};
+
+static Fetch sFetch[FETCH_SLOTS];
 
 static bool UsingNetwork(void)
 {
 	return CONTENT_CDN_URL[0] != 0;
 }
 
-//요청을 띄운다. 이미 기다리는 중이면 아무것도 안 한다.
-static void FetchBegin(const std::string& path)
+//요청을 띄운다. 슬롯 번호를 넘긴다.
+static void FetchBegin(int slot, const std::string& path, int at)
 {
-	if (sFetchBusy)
-		return;
+	Fetch* f = &sFetch[slot];
 
-	sFetchBusy = true;
-	sFetchDone = false;
-	sFetchOk = false;
-	sFetchWhat = path;
-	sFetchBody.clear();
+	f->busy = true;
+	f->done = false;
+	f->ok = false;
+	f->at = at;
+	f->body.clear();
 
 	if (!UsingNetwork()) {
 		//서버가 없을 때. 폴더에서 곧바로 읽는다.
-		sFetchOk = ReadWhole(CdnDir() + path, &sFetchBody);
-		sFetchDone = true;
+		f->ok = ReadWhole(CdnDir() + path, &f->body);
+		f->done = true;
 		return;
 	}
 
@@ -321,10 +337,15 @@ static void FetchBegin(const std::string& path)
 
 	req->setUrl(std::string(CONTENT_CDN_URL) + path);
 	req->setRequestType(network::HttpRequest::Type::GET);
-	req->setResponseCallback([](network::HttpClient* /*c*/,
+
+	//어느 슬롯의 답인지 알아야 한다. 여러 개가 동시에 날아다니므로
+	//끝나는 차례가 보낸 차례와 다르다.
+	req->setResponseCallback([slot](network::HttpClient* /*c*/,
 		network::HttpResponse* res) {
 		//여기는 메인 실이다. HttpClient 가 게임 루프로 넘겨준다.
-		sFetchOk = false;
+		Fetch* g = &sFetch[slot];
+
+		g->ok = false;
 
 		if (res && res->isSucceed()) {
 			long code = res->getResponseCode();
@@ -333,8 +354,8 @@ static void FetchBegin(const std::string& path)
 				std::vector<char>* d = res->getResponseData();
 
 				if (d->size() <= CONTENT_MAXFILE) {
-					sFetchBody.assign(d->begin(), d->end());
-					sFetchOk = true;
+					g->body.assign(d->begin(), d->end());
+					g->ok = true;
 				}
 				else {
 					CCLOG("Content: 받은 것이 너무 크다 (%d)", (int)d->size());
@@ -348,34 +369,47 @@ static void FetchBegin(const std::string& path)
 			CCLOG("Content: 못 받았다 (%s)", res->getErrorBuffer());
 		}
 
-		sFetchDone = true;
+		g->done = true;
 	});
 
 	network::HttpClient::getInstance()->send(req);
 	req->release();
 }
 
-//답이 왔으면 꺼낸다. 아직이면 false.
-static bool FetchTake(bool* ok, std::string* body)
+//비어 있는 슬롯을 찾는다. 없으면 -1.
+static int FetchFreeSlot(void)
 {
-	if (!sFetchBusy || !sFetchDone)
-		return false;
+	int i;
 
-	*ok = sFetchOk;
-	body->swap(sFetchBody);
+	for (i = 0; i < FETCH_SLOTS; i++)
+		if (!sFetch[i].busy)
+			return i;
 
-	sFetchBusy = false;
-	sFetchDone = false;
-	sFetchBody.clear();
-
-	return true;
+	return -1;
 }
 
-static void FetchCancel(void)
+//띄워둔 것이 하나라도 있나.
+static bool FetchAnyBusy(void)
 {
-	sFetchBusy = false;
-	sFetchDone = false;
-	sFetchBody.clear();
+	int i;
+
+	for (i = 0; i < FETCH_SLOTS; i++)
+		if (sFetch[i].busy)
+			return true;
+
+	return false;
+}
+
+static void FetchClearAll(void)
+{
+	int i;
+
+	for (i = 0; i < FETCH_SLOTS; i++) {
+		sFetch[i].busy = false;
+		sFetch[i].done = false;
+		sFetch[i].at = -1;
+		sFetch[i].body.clear();
+	}
 }
 
 //=============================================================================
@@ -536,7 +570,8 @@ void ContentUpdateBegin(void)
 	sTotal = 0;
 	sState = CONTENT_CHECKING;
 
-	FetchBegin(CONTENT_MANIFEST);
+	FetchClearAll();
+	FetchBegin(0, CONTENT_MANIFEST, -1);
 }
 
 //받은 파일 하나를 검사하고 staging 에 쓴다.
@@ -562,91 +597,129 @@ static bool KeepFile(const ContentFile& f, const std::string& body)
 	return true;
 }
 
-void ContentUpdateStep(void)
+//매니페스트를 받아 무엇을 받을지 정한다.
+static void StepChecking(void)
 {
-	bool ok = false;
+	Fetch* f = &sFetch[0];
+
+	if (!f->busy || !f->done)
+		return;
+
+	bool ok = f->ok;
 	std::string body;
 
-	if (sState == CONTENT_CHECKING) {
-		if (!FetchTake(&ok, &body))
-			return;
-
-		if (!ok) {
-			Say("CDN 매니페스트를 못 읽었다. 지금 콘텐츠를 그대로 쓴다");
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		if (!ParseManifest(body, &sRemoteVer, &sRemote)) {
-			Say("CDN 매니페스트 형식이 다르다");
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		long long localVer = 0;
-		std::vector<ContentFile> local;
-
-		ReadLiveManifest(&localVer, &local);
-
-		if (sRemoteVer == localVer) {
-			Say("최신이다 (판 %lld, 파일 %d개)", localVer, (int)local.size());
-			sState = CONTENT_UPTODATE;
-			return;
-		}
-
-		PickChanged(sRemote, local, &sTodo);
-
-		sAt = 0;
-		sDone = 0;
-		sTotal = (int)sTodo.size();
-		sState = CONTENT_DOWNLOADING;
-
-		Say("판 %lld -> %lld, 받을 파일 %d개",
-			localVer, sRemoteVer, (int)sTodo.size());
-	}
-
-	if (sState != CONTENT_DOWNLOADING)
-		return;
-
-	//다 받았으면 매니페스트를 쓰고 끝낸다.
-	if (sAt >= (int)sTodo.size()) {
-		//매니페스트를 맨 나중에 쓴다. 이게 있어야 "다 받았다"는 뜻이다.
-		//중간에 죽으면 이게 없어서 다음에 처음부터 다시 받는다.
-		if (!WriteWhole(StageDir() + CONTENT_MANIFEST,
-			BuildManifest(sRemoteVer, sRemote))) {
-			Say("매니페스트를 못 썼다. 다음에 다시 받는다");
-			sState = CONTENT_FAILED;
-			return;
-		}
-
-		Say("판 %lld 를 다 받았다 (파일 %d개). 다음에 켤 때 반영된다",
-			sRemoteVer, (int)sTodo.size());
-		sState = CONTENT_READY;
-		return;
-	}
-
-	//아직 안 띄웠으면 지금 띄운다.
-	if (!sFetchBusy) {
-		FetchBegin(sTodo[sAt].path);
-		return;
-	}
-
-	if (!FetchTake(&ok, &body))
-		return;
+	body.swap(f->body);
+	f->busy = false;
+	f->done = false;
 
 	if (!ok) {
-		Say("%s 를 못 받았다", sTodo[sAt].path.c_str());
+		Say("CDN 매니페스트를 못 읽었다. 지금 콘텐츠를 그대로 쓴다");
 		sState = CONTENT_FAILED;
 		return;
 	}
 
-	if (!KeepFile(sTodo[sAt], body)) {
+	if (!ParseManifest(body, &sRemoteVer, &sRemote)) {
+		Say("CDN 매니페스트 형식이 다르다");
 		sState = CONTENT_FAILED;
 		return;
 	}
 
-	sAt++;
-	sDone = sAt;
+	long long localVer = 0;
+	std::vector<ContentFile> local;
+
+	ReadLiveManifest(&localVer, &local);
+
+	if (sRemoteVer == localVer) {
+		Say("최신이다 (판 %lld, 파일 %d개)", localVer, (int)local.size());
+		sState = CONTENT_UPTODATE;
+		return;
+	}
+
+	PickChanged(sRemote, local, &sTodo);
+
+	sAt = 0;
+	sDone = 0;
+	sTotal = (int)sTodo.size();
+	sState = CONTENT_DOWNLOADING;
+
+	Say("판 %lld -> %lld, 받을 파일 %d개",
+		localVer, sRemoteVer, (int)sTodo.size());
+}
+
+//받기. 빈 슬롯을 채우고, 답이 온 것을 거둔다.
+//
+//여러 개를 겹쳐 띄우므로 끝나는 차례가 보낸 차례와 다르다. 그래서 "몇 번째까지
+//했나"가 아니라 슬롯마다 자기가 맡은 파일 번호(at)를 들고 있는다.
+static void StepDownloading(void)
+{
+	int i;
+
+	//---- 답이 온 것 거두기 ----
+	for (i = 0; i < FETCH_SLOTS; i++) {
+		Fetch* f = &sFetch[i];
+
+		if (!f->busy || !f->done)
+			continue;
+
+		int at = f->at;
+		bool ok = f->ok;
+		std::string body;
+
+		body.swap(f->body);
+		f->busy = false;
+		f->done = false;
+
+		if (!ok) {
+			Say("%s 를 못 받았다", sTodo[at].path.c_str());
+			sState = CONTENT_FAILED;
+			return;
+		}
+
+		if (!KeepFile(sTodo[at], body)) {
+			sState = CONTENT_FAILED;
+			return;
+		}
+
+		sDone = sDone + 1;
+	}
+
+	//---- 빈 슬롯 채우기 ----
+	while (sAt < (int)sTodo.size()) {
+		int slot = FetchFreeSlot();
+
+		if (slot < 0)
+			break;
+
+		FetchBegin(slot, sTodo[sAt].path, sAt);
+		sAt++;
+	}
+
+	//---- 다 끝났나 ----
+	//보낼 것도 없고 기다리는 것도 없어야 끝이다.
+	if (sAt < (int)sTodo.size() || FetchAnyBusy())
+		return;
+
+	//매니페스트를 맨 나중에 쓴다. 이게 있어야 "다 받았다"는 뜻이다.
+	//중간에 죽으면 이게 없어서 다음에 처음부터 다시 받는다.
+	if (!WriteWhole(StageDir() + CONTENT_MANIFEST,
+		BuildManifest(sRemoteVer, sRemote))) {
+		Say("매니페스트를 못 썼다. 다음에 다시 받는다");
+		sState = CONTENT_FAILED;
+		return;
+	}
+
+	Say("판 %lld 를 다 받았다 (파일 %d개). 다음에 켤 때 반영된다",
+		sRemoteVer, (int)sTodo.size());
+	sState = CONTENT_READY;
+}
+
+void ContentUpdateStep(void)
+{
+	if (sState == CONTENT_CHECKING)
+		StepChecking();
+
+	if (sState == CONTENT_DOWNLOADING)
+		StepDownloading();
 }
 
 ContentState ContentPoll(int* doneFiles, int* totalFiles)
@@ -664,6 +737,6 @@ void ContentShutdown(void)
 {
 	//받던 것이 있으면 버린다. staging 에 매니페스트를 안 썼으므로 덜 받은
 	//것으로 남고, 다음에 켤 때 처음부터 다시 받는다.
-	FetchCancel();
+	FetchClearAll();
 	sState = CONTENT_IDLE;
 }
