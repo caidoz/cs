@@ -36,6 +36,26 @@ USING_NS_CC;
 long long gNetUserId = 0;
 long long gNetRevision = 0;
 
+//서버 시각 - 기기 시각. 서버에 못 붙었으면 0이라 기기 시계를 그대로 쓴다.
+//자세한 이유는 Func_Net.h 주석을 보라.
+long gNetTimeOffset = 0;
+
+void NetSetServerTime(long serverNow)
+{
+	long before = gNetTimeOffset;
+
+	//기기 시계 원본과 견준다. 여기서 MC_knlCurrentTimeStamp() 를 쓰면 이미
+	//더해둔 오프셋이 또 들어가서 값이 자기를 물고 커진다.
+	gNetTimeOffset = serverNow - MC_knlRawTimeStamp();
+
+	//많이 틀어져 있으면 남겨 둔다. 기기 시계가 이상하다는 뜻이라 나중에
+	//"왜 시간이 안 맞나" 를 볼 때 실마리가 된다. 1분 미만은 흔한 오차다.
+	if (gNetTimeOffset > 60 || gNetTimeOffset < -60)
+		CCLOG("NetSetServerTime: 기기 시계가 서버와 %ld초 차이난다", gNetTimeOffset);
+	else if (before != gNetTimeOffset)
+		CCLOG("NetSetServerTime: 오프셋 %ld초", gNetTimeOffset);
+}
+
 //서버가 마지막으로 준 몸통. 저장할 때 여기에 새로 만들어 넣고 보낸다.
 static std::string sNetBody;
 
@@ -1284,9 +1304,25 @@ static long long ServerReadRevision(void)
 	return atoll(text.substr(at, end - at).c_str());
 }
 
+//서버의 지금 시각.
+//
+//★ 진짜 서버가 붙으면 여기가 "응답에 실려 온 서버 시각" 을 돌려주게 된다.
+//지금은 임시 서버가 곧 이 기기라 기기 시계를 그대로 준다. 그래서 오프셋이
+//0이 나오고, 예전과 똑같이 동작한다. 얼개만 미리 깔아두는 것이다.
+//
+//여기서 MC_knlCurrentTimeStamp() 를 쓰면 안 된다. 그건 오프셋이 이미 더해진
+//값이라, 그걸로 오프셋을 다시 구하면 값이 자기를 물고 커진다.
+static long ServerNow(void)
+{
+	return MC_knlRawTimeStamp();
+}
+
 //---- 서버 : 로그인 ----
 static int ServerLogin(void)
 {
+	//서버에 닿았으니 시각을 맞춘다. 답을 주는 모든 길목에서 한다.
+	NetSetServerTime(ServerNow());
+
 	std::string text;
 	size_t at, end;
 
@@ -1295,7 +1331,7 @@ static int ServerLogin(void)
 		//진짜 서버라면 AUTO_INCREMENT가 번호를 준다. 여기서는 시간과 난수를
 		//섞어 만든다. 시간만 쓰면 같은 초에 만든 계정끼리 번호가 겹치고,
 		//로그에서 타임스탬프와 헷갈린다.
-		gNetUserId = (long long)MC_knlCurrentTimeStamp() * 1000 + Random(1000);
+		gNetUserId = (long long)MC_knlRawTimeStamp() * 1000 + Random(1000);
 		gNetRevision = 0;
 		return NETRESULT_ERR_NOTFOUND;
 	}
@@ -1315,6 +1351,9 @@ static int ServerLogin(void)
 //---- 서버 : 세이브 내려주기 ----
 static int ServerLoad(void)
 {
+	//서버에 닿았으니 시각을 맞춘다.
+	NetSetServerTime(ServerNow());
+
 	std::string text;
 	NetTableMap tables;
 	long long userId = 0, revision = 0;
@@ -1405,6 +1444,9 @@ static bool ServerSetPlayerRevision(std::string& text, long long newRev)
 //같아야 받아준다. 다르면 다른 기기가 먼저 저장한 것이므로 거절한다.
 static int ServerSave(const std::string& body)
 {
+	//서버에 닿았으니 시각을 맞춘다.
+	NetSetServerTime(ServerNow());
+
 	long long serverRev = ServerReadRevision();
 	long long sentRev = 0;
 	size_t at, end;
@@ -1505,6 +1547,10 @@ void NetInit(void)
 	sConflictNotice = false;
 	sConflictShow = 0;
 	sNetBody.clear();
+
+	//gNetTimeOffset 은 일부러 안 지운다. 한 번 서버와 맞춘 시각은 통신 상태와
+	//무관하게 계속 맞다. 여기서 0으로 되돌리면 재연결 사이에 시각이 기기
+	//시계로 튀었다가 다시 돌아온다. 그 사이에 일일 초기화가 걸리면 곤란하다.
 }
 
 bool NetTakeConflictNotice(void)

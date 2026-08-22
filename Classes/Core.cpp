@@ -2337,7 +2337,8 @@ long MC_knlCurrentTime()
 	return lMillisec;
 }
 
-long MC_knlCurrentTimeStamp()
+//기기 시계 그대로. 2000-01-01 부터의 초.
+long MC_knlRawTimeStamp()
 {
 	time_t timer;
 	struct tm y2k = { 0 };
@@ -2352,6 +2353,19 @@ long MC_knlCurrentTimeStamp()
 
 
 	return seconds;
+}
+
+//게임이 쓰는 시각.
+//
+//기기 시계에 서버 오프셋을 더한다. 이 한 줄 덕분에 시간을 보는 곳 서른몇
+//군데가 전부 서버와 같은 시각을 본다. 기기 시계를 앞으로 돌려 일일 초기화나
+//쿨타임을 건너뛰는 일이 안 생긴다.
+//
+//서버에 못 붙었으면 오프셋이 0이라 기기 시계를 그대로 쓴다. 그때는 예전과
+//똑같이 동작한다.
+long MC_knlCurrentTimeStamp()
+{
+	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
 
 

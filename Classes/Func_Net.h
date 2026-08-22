@@ -104,6 +104,28 @@ bool NetTakeConflictNotice(void);
 //통신 중이라는 것을 구석에 표시한다. 지연이 눈에 보여야 한다.
 void NetIndicatorDraw(void);
 
+//---- 서버 시간 ----
+//
+// 게임 시간을 기기 시계에 맡기면 안 된다. 시계를 앞으로 돌리면 일일 초기화,
+// 하트 회복, 쿨타임을 공짜로 건너뛴다. 뒤로 돌리면 반대로 꼬인다.
+//
+// 그래서 서버가 답할 때마다 서버의 지금 시각을 같이 받아, 기기 시계와의
+// 차이를 기억한다. MC_knlCurrentTimeStamp() 가 그 차이를 더해 돌려주므로
+// 시간을 보는 코드는 하나도 안 고쳐도 된다.
+//
+//     게임이 보는 시각 = 기기 시계 + gNetTimeOffset
+//
+// 서버에 못 붙었으면 0이다. 그러면 기기 시계를 그대로 쓴다. 오프라인에서도
+// 게임은 돌아야 하므로 막지는 않는다.
+
+//서버 시각 - 기기 시각. 초 단위.
+extern long gNetTimeOffset;
+
+//서버가 알려준 지금 시각으로 오프셋을 다시 잡는다.
+//임시 로컬 서버는 자기가 곧 이 기기라 오프셋이 0이 된다. 진짜 서버가 붙으면
+//여기서 처음으로 0이 아닌 값이 나온다.
+void NetSetServerTime(long serverNow);
+
 //서버가 준 것들
 extern long long gNetUserId;
 extern long long gNetRevision;
