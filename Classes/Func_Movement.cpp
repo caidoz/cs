@@ -14058,12 +14058,6 @@ void CrewMove(OBJECT* pObj)
 								objPtr->nx = objPtr->x = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1];
 								objPtr->ny = objPtr->y = ao[ROBIN].y;
 
-								CCLOG("[SUMMON] skill %d -> ao[%d] type %d / 실제자리(%d,%d) / 데이터값 x=%d, ROBIN.y=%d / 주인공(%d,%d)",
-									pObj->currentSkill, GetObjFromPtr(objPtr), objPtr->type,
-									(int)objPtr->x, (int)objPtr->y,
-									skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1], (int)ao[ROBIN].y,
-									(int)ao[PLAYER].x, (int)ao[PLAYER].y);
-
 								objPtr->dx = objPtr->dy = 0;
 
 								objPtr->active = true;

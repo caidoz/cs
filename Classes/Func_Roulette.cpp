@@ -37,7 +37,6 @@ void GetMarkHeadPos(int obj, int* outX, int* outY)
 	//여기까지 내려오지 않는다. 소환 중이라 아직 안 선 히어로는 nx/ny 가
 	//이미 정해져 있어 active 가 곧 서므로 자리가 맞는다.
 	if (obj < 0 || obj >= TOTALOBJECT || ao[obj].active == false) {
-		CCLOG("[MARK] obj %d 가 자리에 없다. 주인공으로 돌린다.", obj);
 		obj = PLAYER;
 	}
 
@@ -45,8 +44,6 @@ void GetMarkHeadPos(int obj, int* outX, int* outY)
 	GetMarkHeadPosAt((int)ao[obj].x, (int)ao[obj].y,
 		ao[obj].zoom, outX, outY);
 
-	CCLOG("[MARK] obj %d at(%d,%d) -> (%d,%d)",
-		obj, (int)ao[obj].x, (int)ao[obj].y, *outX, *outY);
 }
 
 //아직 만들어지지 않은 오브젝트의 머리 위 자리.
@@ -85,8 +82,6 @@ void GetMarkHeadPosAt(int footX, int footY, float zoom, int* outX, int* outY)
 	*outY = STATUSWIN_Y + (rh - 4) * TSIZE
 		- (footY - OBJIMGGAP) - ry + headUp - (int)floatOffsetY;
 
-	CCLOG("[MARK] foot(%d,%d) zoom=%.2f xOffset=%d rx=%d -> (%d,%d)",
-		footX, footY, zoom, xOffset, rx, *outX, *outY);
 }
 
 //동료 머리 위에 붙어 있던 카드를 정해진 화면 자리로 옮긴다.
@@ -133,9 +128,6 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 		ow = controlMark[i].owner;
 		z = controlMark[i].zoom2;		//지금 보이는 크기에서 이어 간다
 
-		CCLOG("[MARK] %d번 마크(주인 %d, 스킬 %d) (%d,%d) -> (%d,%d)",
-			i, ow, at, sx, sy, hx, hy);
-
 		controlMark[i].frame = 0;
 		controlMark[i].frame2 = 0;
 
@@ -159,7 +151,6 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 		return;
 	}
 
-	CCLOG("[MARK] 주인 %d 스킬 %d 인 마크를 못 찾았다", ownerObj, skillIdx);
 }
 
 //이미 자리에 서 있는 오브젝트 머리 위로 옮긴다.
