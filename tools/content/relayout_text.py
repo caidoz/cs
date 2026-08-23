@@ -48,7 +48,7 @@ GAPS = [
 #뒤에 텍스트를 새로 붙이면 둘 다 늘어난다. 그건 정상이라 여기 숫자도 같이
 #올린다. 예약 구간(6곳) 안쪽이 바뀐 게 아니면 다시 이사할 일은 없다.
 OLD_COUNT = 9817
-NEW_COUNT = 10310
+NEW_COUNT = 8176
 
 
 def mask_untaken(text):

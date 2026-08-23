@@ -2318,6 +2318,9 @@ extern int rouletteFrame;
 // 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
 extern bool gRouletteSkillDispatchStarted;
 
+//시연용. 타이틀에서 AVK_MAXGAME 으로 들어왔을 때만 선다.
+//룰렛이 편성 뒤쪽 세 명을 순서대로 뽑도록 고정한다.
+extern bool gDemoForceRoulette;
 extern bool gRouletteResultValid;
 
 extern int blState;

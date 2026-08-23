@@ -267,13 +267,22 @@ void TitleKey(void)
 			//robin.slotCrew[3] = NPC_AUNT;
 			//robin.slotCrew[4] = NPC_ADELKNIGHT;
 
-			//--- 6�?: ?�식 룰렛 ---------------------------------------------------
-			robin.slotCrew[0] = NPC_SEBASTIAN;
-			robin.slotCrew[1] = NPC_GIRL;
-			robin.slotCrew[2] = NPC_UNCLE;
-			robin.slotCrew[3] = NPC_AUNT;
-			robin.slotCrew[4] = NPC_ADELKNIGHT;
-			robin.slotCrew[5] = NPC_NOBLEMAN;
+			//--- 시연용 편성 : 표 맨 뒤 6명 ---------------------------------------
+			//
+			// 번호를 손으로 적으면 동료가 늘거나 순서가 바뀔 때마다 같이
+			// 고쳐야 한다. crewData 의 끝에서 여섯을 세어 온다.
+			//
+			// slotCrew 에 들어가는 값은 crewData 의 인덱스가 아니라 몬스터
+			// 타입이다(FindCrewAoOffsetByType 이 타입으로 찾는다).
+			for (i = 0; i < MAXCREW; i++) {
+				int c = gTotalCrew - MAXCREW + i;
+
+				robin.slotCrew[i] = (c >= 0)
+					? crewData[c * CREWDATASIZE + CREWDATA_TYPE] : -1;
+			}
+
+			//뒤 세 명이 릴에 순서대로 서게 한다. 시연에서만 선다.
+			gDemoForceRoulette = true;
 
 			crewCnt = GetSlotCrewCnt();
 
@@ -626,8 +635,15 @@ void PlayKey(int obj)
 		tutorialCrewGuide = false;
 
 		menuItem = systemKey - AVK_ITEMDETAIL;
-		menuDepth = 1;
-		ao[NPC].frame = 0;
+
+		//아직 안 얻은 장비는 상세보기로 안 들어간다. 보여줄 것이 "잠금"뿐이라
+		//들어가 봐야 할 일이 없다. EquipDetailDraw()도 얻은 것만 그린다.
+		if (IsEquipOwned(&robin.inven[menuItem])) {
+			menuDepth = 1;
+			ao[NPC].frame = 0;
+		}
+		else
+			PlayMusic(M_ERROR);
 	}
 	else if (systemKey >= AVK_EQUIPDETAIL && systemKey < AVK_EQUIPDETAIL + TOTALEQUIP) {
 		menuItem = systemKey - AVK_EQUIPDETAIL;

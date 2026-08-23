@@ -9,6 +9,7 @@
 // ================================
 #include "Config/BuildConfig.h"
 #include "Config/Capacity.h"
+#include "Config/BalanceConfig.h"
 #include "Data/DataCount.h"
 #include "Config/GameConstants.h"
 #include "Config/RenderConstants.h"

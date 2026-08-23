@@ -1724,6 +1724,13 @@ void PaintClet(int x, int y, int w, int h)
 				currencyMark[i].frame2++;
 			}
 			if (currencyMark[i].frame2 > 0) {
+				//전투 코인은 디오라마 위의 오브젝트 사이를 이동한다. 월드가 먼저
+				//그려진 뒤 처리되는 마크라서, 그리는 동안만 같은 줌 카메라 변환을 건다.
+				bool currencyWorldDrawing = (currencyMark[i].bar == BAR_BATTLECOIN
+					&& (drawHandle == MD_PLAY || drawHandle == MD_BATTLE));
+				bool worldDrawingBefore = worldDrawing;
+				if (currencyWorldDrawing)
+					worldDrawing = true;
 
 				if (currencyMark[i].icon == ICON_CROWN || currencyMark[i].icon == ICON_STAR) {
 					if (currencyMark[i].amount > 0) {
@@ -1740,6 +1747,8 @@ void PaintClet(int x, int y, int w, int h)
 				}
 				else
 					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame2 % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom2, currencyMark[i].zoom2, COLOR_WHITE, false, false, true);
+
+				worldDrawing = worldDrawingBefore;
 
 			}
 		}
@@ -1806,6 +1815,13 @@ void PaintClet(int x, int y, int w, int h)
 			}
 
 			if (currencyMark[i].frame > 0) {
+				//첫 이동 단계도 디오라마와 동일한 줌/카메라 X 이동을 적용한다.
+				bool currencyWorldDrawing = (currencyMark[i].bar == BAR_BATTLECOIN
+					&& (drawHandle == MD_PLAY || drawHandle == MD_BATTLE));
+				bool worldDrawingBefore = worldDrawing;
+				if (currencyWorldDrawing)
+					worldDrawing = true;
+
 				if (currencyMark[i].icon == ICON_CROWN || currencyMark[i].icon == ICON_STAR) {
 					if (currencyMark[i].amount > 0) {
 						DrawStarNum(currencyMark[i].icon, currencyMark[i].amount, currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom);
@@ -1821,6 +1837,8 @@ void PaintClet(int x, int y, int w, int h)
 				}
 				else
 					DrawIcon(currencyMark[i].icon + (currencyMark[i].icon == ICON_GOLD ? currencyMark[i].frame % GOLDICONFRAME : 0), currencyMark[i].x - (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].y + (float)(ITEMICONSIZE) / 2 * currencyMark[i].zoom, currencyMark[i].zoom, COLOR_WHITE, false, false, true);
+
+				worldDrawing = worldDrawingBefore;
 
 			}
 		}

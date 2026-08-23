@@ -2954,6 +2954,23 @@ static const unsigned char wasteDropData_builtin[] = {
 	17, 0, 0, 0, 0, 0, 0, 53, 3, 3, 3, 3, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0, 0, //바하무트
 	17, 0, 0, 0, 0, 0, 0, 53, 3, 3, 3, 3, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0, 0, //사신
 };
+//[장비 슬롯마다 하는 일이 다르다]
+//
+// 전에는 다섯 방어구 슬롯이 전부 PS_ARMOR 로 들어갔다. 그런데 PS_ARMOR 를
+// 읽는 곳이 전투에 없다(Func_Combat.cpp 를 보라). 그래서 무엇을 껴도 결과가
+// 같았다.
+//
+// 지금은 슬롯마다 다른 스탯으로 간다. 넷 다 엔진이 이미 읽고 있는 것들이라
+// 죽은 스탯을 되살리는 것보다 확실하다.
+//
+//     투구  PS_ABSORB   받는 피해 감소 %   (GetAbsorb, 75% 상한)
+//     갑옷  PS_VIT      최대 체력          (VIT_HP 배)
+//     장갑  PS_DMGMOD   공격력 %
+//     바지  PS_CRITDMG  치명타 피해 %
+//     신발  PS_GOLDMOD  골드 획득 %
+//
+// 실제로 나눠 넣는 곳은 Func_Combat.cpp 의 RefreshStat() 이다. 여기 표는
+// 상세창에 무엇이라 적을지만 정한다.
 static const int itemValueType_builtin[] = {
 	ALPHA_DAMAGE,	//ITEM_SWORD
 	ALPHA_DAMAGE,	//ITEM_GUN
@@ -2980,21 +2997,21 @@ static const int itemValueTypeText_builtin[] = {
 	TEXT_ALPHA_DAMAGE,	//ITEM_SWORD
 	TEXT_ALPHA_DAMAGE,	//ITEM_GUN
 	TEXT_ALPHA_DAMAGE,	//ITEM_BOOMERANG
-	TEXT_ALPHA_DEFENSE,	//ITEM_HELM
-	TEXT_ALPHA_DEFENSE,	//ITEM_HAT
-	TEXT_ALPHA_DEFENSE,	//ITEM_CAP
-	TEXT_ALPHA_VIT,	//ITEM_ARMOR
-	TEXT_ALPHA_VIT,	//ITEM_VEST
-	TEXT_ALPHA_VIT,	//ITEM_COAT
-	TEXT_ALPHA_STR,	//ITEM_GUNTLET
-	TEXT_ALPHA_STR,	//ITEM_ARMLET
-	TEXT_ALPHA_STR,	//ITEM_GLOVE
-	TEXT_ALPHA_INT,	//ITEM_KILT
-	TEXT_ALPHA_INT,	//ITEM_SKIRT
-	TEXT_ALPHA_INT,	//ITEM_PANTS
-	TEXT_ALPHA_AGI,	//ITEM_GREAVES
-	TEXT_ALPHA_AGI,	//ITEM_SHOES
-	TEXT_ALPHA_AGI,	//ITEM_BOOTS
+	TEXT_STAT_ABSORB,	//ITEM_HELM
+	TEXT_STAT_ABSORB,	//ITEM_HAT
+	TEXT_STAT_ABSORB,	//ITEM_CAP
+	TEXT_STAT_MAXHP,	//ITEM_ARMOR
+	TEXT_STAT_MAXHP,	//ITEM_VEST
+	TEXT_STAT_MAXHP,	//ITEM_COAT
+	TEXT_STAT_ATKMOD,	//ITEM_GUNTLET
+	TEXT_STAT_ATKMOD,	//ITEM_ARMLET
+	TEXT_STAT_ATKMOD,	//ITEM_GLOVE
+	TEXT_STAT_CRITDMG,	//ITEM_KILT
+	TEXT_STAT_CRITDMG,	//ITEM_SKIRT
+	TEXT_STAT_CRITDMG,	//ITEM_PANTS
+	TEXT_STAT_GOLDMOD,	//ITEM_GREAVES
+	TEXT_STAT_GOLDMOD,	//ITEM_SHOES
+	TEXT_STAT_GOLDMOD,	//ITEM_BOOTS
 	TEXT_ALPHA_OPTION,	//ITEM_NECK
 	TEXT_ALPHA_USE,	//ITEM_RING
 };
@@ -3079,231 +3096,247 @@ static const unsigned char weaponRange_builtin[] = {
 	20,	//총
 	15,	//부메랑
 };
+//[무기 공격력은 등비다]
+//
+// 검 35자루를 10 -> 999 로 깐다. 한 자루마다 x1.145 다. 총과 부메랑은 8자루
+// 뿐이라 같은 10 -> 999 구간을 x1.931 로 성큼성큼 건넌다.
+//
+// 등차가 아니라 등비인 이유는 강화가 이미 곱셈이기 때문이다.
+//
+//     value * (100 + cooldown * 10) / 100        (Func_Combat.cpp)
+//
+// 강화 5단계면 어느 무기든 정확히 1.5배가 된다. 그러니 무기 사이 간격도
+// 곱셈이어야 "다음 무기로 넘어가는 이득"이 구간마다 똑같이 느껴진다.
+// 옛 표(12~3100)는 초반이 x1.67, 후반이 x1.11 이라 후반에 무기를 바꿔도
+// 티가 안 났다.
+//
+// 방어구는 여기 있는 값이 PS_ARMOR 로만 들어가는데 PS_ARMOR 는 전투에서
+// 읽히지 않는다. 그래서 방어구 값은 아직 손대지 않았다.
 static const unsigned int itemValue_builtin[] = {
 	//검 : ITEM_SWORD																																																																																																				
-12	,//ITEM_SWORD_STICK = 0,//1//연습용 몽둥이																																																																																																				
-20	,//ITEM_SWORD_LONG,//2//롱소드																																																																																																				
-30	,//ITEM_SWORD_CUTTER,//3//처형자의 검																																																																																																				
-45	,//ITEM_SWORD_RUIN,//4//파멸의 참마도																																																																																																				
-60	,//ITEM_SWORD_SEEKER,//5//추적자의 검																																																																																																				
-80	,//ITEM_SWORD_DOUBLE,//6//격노의 양날검																																																																																																				
-120	,//ITEM_SWORD_ELVEN,//7//수호자의 검																																																																																																				
-150	,//ITEM_SWORD_ROYAL,//8//왕가의 수호자																																																																																																				
-180	,//ITEM_SWORD_GHOST,//9//나찰의 검																																																																																																				
-220	,//ITEM_SWORD_GHOST2,//10//소울 크래셔																																																																																																				
-260	,//ITEM_SWORD_FRAME,//11//플레임소드																																																																																																				
-300	,//ITEM_SWORD_ICE,//12//아이스소드																																																																																																				
-350	,//ITEM_SWORD_THUNDER,//13//썬더소드																																																																																																				
-400	,//ITEM_SWORD_EARTH,//14//어스소드																																																																																																				
-450	,//ITEM_SWORD_LAEVATEINN,//15//레바테인																																																																																																				
-500	,//ITEM_SWORD_STORMBRINGER,//16//스톰브링거																																																																																																				
-560	,//ITEM_SWORD_CALADBOLG,//17//칼라드볼그																																																																																																				
-620	,//ITEM_SWORD_BALMUNG,//18//발뭉																																																																																																				
-680	,//ITEM_SWORD_HRUNTING,//19//흐룬팅																																																																																																				
-750	,//ITEM_SWORD_GIANT,//20//거인의 칼																																																																																																				
-820	,//ITEM_SWORD_MISTILTEINN,//21//미스틸테인																																																																																																				
-900	,//ITEM_SWORD_EXCALIBUR,//22//엑스칼리버																																																																																																				
-1000	,//ITEM_SWORD_HOLY,//23//홀리소드																																																																																																				
-1100	,//ITEM_SWORD_DARK,//24//다크소드																																																																																																				
-1200	,//ITEM_SWORD_LEO,//25//레오소드																																																																																																				
-1300	,//ITEM_SWORD_DEATH,//26//사신의 낫																																																																																																				
-1400	,//ITEM_SWORD_DRAGONCLOW,//27//드래곤 클로우																																																																																																				
-1500	,//ITEM_SWORD_DRAGONTOOTH,//28//황룡의 어금니																																																																																																				
-1700	,//ITEM_SWORD_DRAGONGOD,//29//신룡마강검																																																																																																				
-1900	,//ITEM_SWORD_DRAGONSLAYER,//30//드래곤 슬레이어																																																																																																				
-2100	,//ITEM_SWORD_ULTIMATE,//31//얼티밋소드																																																																																																				
-2300	,//ITEM_SWORD_DIMENSIONAL,//32//차원의 검																																																																																																				
-2500	,//ITEM_SWORD_HEAVEN,//33//천공의 검																																																																																																				
-2800	,//ITEM_SWORD_STARDUST,//34//스타더스트																																																																																																				
-3100	,//ITEM_SWORD_KING,//35//패왕의 검																																																																																																				
+10	,//ITEM_SWORD_STICK = 0,//1//연습용 몽둥이																																																																																																				
+11	,//ITEM_SWORD_LONG,//2//롱소드																																																																																																				
+13	,//ITEM_SWORD_CUTTER,//3//처형자의 검																																																																																																				
+15	,//ITEM_SWORD_RUIN,//4//파멸의 참마도																																																																																																				
+17	,//ITEM_SWORD_SEEKER,//5//추적자의 검																																																																																																				
+20	,//ITEM_SWORD_DOUBLE,//6//격노의 양날검																																																																																																				
+23	,//ITEM_SWORD_ELVEN,//7//수호자의 검																																																																																																				
+26	,//ITEM_SWORD_ROYAL,//8//왕가의 수호자																																																																																																				
+30	,//ITEM_SWORD_GHOST,//9//나찰의 검																																																																																																				
+34	,//ITEM_SWORD_GHOST2,//10//소울 크래셔																																																																																																				
+39	,//ITEM_SWORD_FRAME,//11//플레임소드																																																																																																				
+44	,//ITEM_SWORD_ICE,//12//아이스소드																																																																																																				
+51	,//ITEM_SWORD_THUNDER,//13//썬더소드																																																																																																				
+58	,//ITEM_SWORD_EARTH,//14//어스소드																																																																																																				
+67	,//ITEM_SWORD_LAEVATEINN,//15//레바테인																																																																																																				
+76	,//ITEM_SWORD_STORMBRINGER,//16//스톰브링거																																																																																																				
+87	,//ITEM_SWORD_CALADBOLG,//17//칼라드볼그																																																																																																				
+100	,//ITEM_SWORD_BALMUNG,//18//발뭉																																																																																																				
+114	,//ITEM_SWORD_HRUNTING,//19//흐룬팅																																																																																																				
+131	,//ITEM_SWORD_GIANT,//20//거인의 칼																																																																																																				
+150	,//ITEM_SWORD_MISTILTEINN,//21//미스틸테인																																																																																																				
+172	,//ITEM_SWORD_EXCALIBUR,//22//엑스칼리버																																																																																																				
+197	,//ITEM_SWORD_HOLY,//23//홀리소드																																																																																																				
+225	,//ITEM_SWORD_DARK,//24//다크소드																																																																																																				
+258	,//ITEM_SWORD_LEO,//25//레오소드																																																																																																				
+295	,//ITEM_SWORD_DEATH,//26//사신의 낫																																																																																																				
+338	,//ITEM_SWORD_DRAGONCLOW,//27//드래곤 클로우																																																																																																				
+387	,//ITEM_SWORD_DRAGONTOOTH,//28//황룡의 어금니																																																																																																				
+443	,//ITEM_SWORD_DRAGONGOD,//29//신룡마강검																																																																																																				
+508	,//ITEM_SWORD_DRAGONSLAYER,//30//드래곤 슬레이어																																																																																																				
+581	,//ITEM_SWORD_ULTIMATE,//31//얼티밋소드																																																																																																				
+665	,//ITEM_SWORD_DIMENSIONAL,//32//차원의 검																																																																																																				
+762	,//ITEM_SWORD_HEAVEN,//33//천공의 검																																																																																																				
+872	,//ITEM_SWORD_STARDUST,//34//스타더스트																																																																																																				
+999	,//ITEM_SWORD_KING,//35//패왕의 검																																																																																																				
 //TOTAL_SWORD,																																																																																																				
 
 //총 : ITEM_GUN																																																																																																				
 10	,//ITEM_GUN_PISTOL = 0,//발화식 총																																																																																																				
-18	,//ITEM_GUN_REVOLVER,//리볼버 파이슨																																																																																																				
-27	,//ITEM_GUN_MAGNUM,//45구경 오토건 : 사일런트 킬러																																																																																																				
-40	,//ITEM_GUN_AUTOGUN45MM,//고져스 건 : 럭셔리 캐논																																																																																																				
-55	,//ITEM_GUN_JEWELGUN,//회천마도총 : 마도머신건																																																																																																				
-72	,//ITEM_GUN_EXPLOSION,//태양의 총 : 슈퍼노바																																																																																																				
-90	,//ITEM_GUN_CROSSFIRE,//헬파이어 건 : 인페르노 캐논 : 마룡열화포																																																																																																				
-108	,//ITEM_GUN_INFERNO,//크로스 파이어 : 테스타먼트 : 라그나로크																																																																																																				
+19	,//ITEM_GUN_REVOLVER,//리볼버 파이슨																																																																																																				
+37	,//ITEM_GUN_MAGNUM,//45구경 오토건 : 사일런트 킬러																																																																																																				
+72	,//ITEM_GUN_AUTOGUN45MM,//고져스 건 : 럭셔리 캐논																																																																																																				
+139	,//ITEM_GUN_JEWELGUN,//회천마도총 : 마도머신건																																																																																																				
+268	,//ITEM_GUN_EXPLOSION,//태양의 총 : 슈퍼노바																																																																																																				
+518	,//ITEM_GUN_CROSSFIRE,//헬파이어 건 : 인페르노 캐논 : 마룡열화포																																																																																																				
+999	,//ITEM_GUN_INFERNO,//크로스 파이어 : 테스타먼트 : 라그나로크																																																																																																				
 //TOTAL_GUN,																																																																																																				
 
 //부메랑 : ITEM_BOOMERANG																																																																																																				
-15	,//ITEM_BOOMERANG_BOOMERANG = 0,//사냥용 부메랑																																																																																																				
-23	,//ITEM_BOOMERANG_VOYAGER,//슬라이서																																																																																																				
-32	,//ITEM_BOOMERANG_WINDWALKER,//강철 부메랑 : 윈드 슬래셔																																																																																																				
-43	,//ITEM_BOOMERANG_DOUBLECROSS,//트라이 엣지 : 헬 트라이앵글																																																																																																				
-53	,//ITEM_BOOMERANG_THUNDERMASTER,//라이트닝 엣지 : 한탄의 부메랑																																																																																																				
-68	,//ITEM_BOOMERANG_SOULCHASER,//소울 체이서 : 둠 슬레이어																																																																																																				
-85	,//ITEM_BOOMERANG_GRYPHONWING,//그리폰 윙 : 윙 오브 데스 : 드래곤 윙																																																																																																				
-102	,//ITEM_BOOMERANG_MEGATRIAL,//로커스트 헌트 : 제노사이드 윙 : 디재스터 엣지																																																																																																				
+10	,//ITEM_BOOMERANG_BOOMERANG = 0,//사냥용 부메랑																																																																																																				
+19	,//ITEM_BOOMERANG_VOYAGER,//슬라이서																																																																																																				
+37	,//ITEM_BOOMERANG_WINDWALKER,//강철 부메랑 : 윈드 슬래셔																																																																																																				
+72	,//ITEM_BOOMERANG_DOUBLECROSS,//트라이 엣지 : 헬 트라이앵글																																																																																																				
+139	,//ITEM_BOOMERANG_THUNDERMASTER,//라이트닝 엣지 : 한탄의 부메랑																																																																																																				
+268	,//ITEM_BOOMERANG_SOULCHASER,//소울 체이서 : 둠 슬레이어																																																																																																				
+518	,//ITEM_BOOMERANG_GRYPHONWING,//그리폰 윙 : 윙 오브 데스 : 드래곤 윙																																																																																																				
+999	,//ITEM_BOOMERANG_MEGATRIAL,//로커스트 헌트 : 제노사이드 윙 : 디재스터 엣지																																																																																																				
 //TOTAL_BOOMERANG,																																																																																																				
 
 //헬멧 : ITEM_HELM																																																																																																				
-13	,//ITEM_HELM_BRONZE = 0,//헤드 가드																																																																																																			
-100	,//ITEM_HELM_BASINET,//바시넷																																																																																																				
-180	,//ITEM_HELM_DROW,//솔저헬름 : 센츄리온 헬멧																																																																																																			
-270	,//ITEM_HELM_SPIKEHEAD,//검투사의 투구 : 블러디 헬멧																																																																																																			
-360	,//ITEM_HELM_GLADITOR,//스파이크 헤드 : 귀신의 투구																																																																																																				
-450	,//ITEM_HELM_GIANT,//그랜드 헬름 : 성기사의 투구																																																																																																			
-540	,//ITEM_HELM_RUINED,//고대의 투구 : 환영의 투구 : 미라주 헬름																																																																																																			
-630	,//ITEM_HELM_TITANIUM,//용자의 투구 : 져지먼트 헬맷 : 오시리스 헬맷																																																																																																				
+3	,//ITEM_HELM_BRONZE = 0,//헤드 가드																																																																																																			
+6	,//ITEM_HELM_BASINET,//바시넷																																																																																																				
+9	,//ITEM_HELM_DROW,//솔저헬름 : 센츄리온 헬멧																																																																																																			
+13	,//ITEM_HELM_SPIKEHEAD,//검투사의 투구 : 블러디 헬멧																																																																																																			
+17	,//ITEM_HELM_GLADITOR,//스파이크 헤드 : 귀신의 투구																																																																																																				
+21	,//ITEM_HELM_GIANT,//그랜드 헬름 : 성기사의 투구																																																																																																			
+26	,//ITEM_HELM_RUINED,//고대의 투구 : 환영의 투구 : 미라주 헬름																																																																																																			
+32	,//ITEM_HELM_TITANIUM,//용자의 투구 : 져지먼트 헬맷 : 오시리스 헬맷																																																																																																				
 //TOTAL_HELM,																																																																																																				
 
 //모자 : ITEM_HAT																																																																																																				
-7	,//ITEM_HAT_COWBOY		= 0,//카우보이 모자																																																																																																		
-14	,//ITEM_HAT_RIDINGGOGGLE,//산책용 보닛																																																																																																				
-22	,//ITEM_HAT_BERET,//레인저 햇 : 무법자의 모자																																																																																																				
-30	,//ITEM_HAT_WESTERNROMANCE,//서클릿 : 골드 블레스																																																																																																				
-40	,//ITEM_HAT_SCOUT,//올드 윌로우 : 엘븐 햇																																																																																																				
-50	,//ITEM_HAT_SNIPERGOGGLE,//스나이퍼 고글 : 어쌔신 스코프																																																																																																				
-62	,//ITEM_HAT_ELVENCAP,//혼란의 모자 : 카오스 솔져 : 나이트메어 햇																																																																																																				
-76	,//ITEM_HAT_DRAGONSKULL,//프리에스테스 : 발키리 서클렛 : 오딘 크라운																																																																																																				
+3	,//ITEM_HAT_COWBOY		= 0,//카우보이 모자																																																																																																		
+6	,//ITEM_HAT_RIDINGGOGGLE,//산책용 보닛																																																																																																				
+9	,//ITEM_HAT_BERET,//레인저 햇 : 무법자의 모자																																																																																																				
+13	,//ITEM_HAT_WESTERNROMANCE,//서클릿 : 골드 블레스																																																																																																				
+17	,//ITEM_HAT_SCOUT,//올드 윌로우 : 엘븐 햇																																																																																																				
+21	,//ITEM_HAT_SNIPERGOGGLE,//스나이퍼 고글 : 어쌔신 스코프																																																																																																				
+26	,//ITEM_HAT_ELVENCAP,//혼란의 모자 : 카오스 솔져 : 나이트메어 햇																																																																																																				
+32	,//ITEM_HAT_DRAGONSKULL,//프리에스테스 : 발키리 서클렛 : 오딘 크라운																																																																																																				
 //TOTAL_HAT,																																																																																																				
 
 //두건 : ,//ITEM_CAP																																																																																																				
-10	,//ITEM_CAP_FEATHER = 0,//공작깃털 모자																																																																																																				
-21	,//ITEM_CAP_BEASTMANE,//귀족의 머리띠																																																																																																				
-32	,//ITEM_CAP_EXPLORERHAT,//거상의 모자 : 캐러벤 리더																																																																																																				
-45	,//ITEM_CAP_ACECAP,//사냥꾼 모자 : 로빈훗 캡																																																																																																				
-60	,//ITEM_CAP_LIONMANE,//투우사의 모자 : 미노타우르스																																																																																																				
-75	,//ITEM_CAP_GREAVE,//해적의 모자 : 졸리로져 캡																																																																																																				
-93	,//ITEM_CAP_DEATH,//에이스 캡 : 브레이브 캡 : 다이너스티 캡																																																																																																				
-114	,//ITEM_CAP_TROLLHEAD,//드래곤 레어캡 : 히드라 헤드 : 리바이어선 캡																																																																																																				
+3	,//ITEM_CAP_FEATHER = 0,//공작깃털 모자																																																																																																				
+6	,//ITEM_CAP_BEASTMANE,//귀족의 머리띠																																																																																																				
+9	,//ITEM_CAP_EXPLORERHAT,//거상의 모자 : 캐러벤 리더																																																																																																				
+13	,//ITEM_CAP_ACECAP,//사냥꾼 모자 : 로빈훗 캡																																																																																																				
+17	,//ITEM_CAP_LIONMANE,//투우사의 모자 : 미노타우르스																																																																																																				
+21	,//ITEM_CAP_GREAVE,//해적의 모자 : 졸리로져 캡																																																																																																				
+26	,//ITEM_CAP_DEATH,//에이스 캡 : 브레이브 캡 : 다이너스티 캡																																																																																																				
+32	,//ITEM_CAP_TROLLHEAD,//드래곤 레어캡 : 히드라 헤드 : 리바이어선 캡																																																																																																				
 //TOTAL_CAP,
 
 //갑옷 : ITEM_ARMOR																																																																																																				
-22	,//ITEM_ARMOR_BRONZE = 0,//헌터 튜닉																																																																																																			
-167	,//ITEM_ARMOR_SCALE,//미늘 갑옷																																																																																																					
-300	,//ITEM_ARMOR_BANDED,//하프 플레이트 : 밴디트 메일																																																																																																				
-450	,//ITEM_ARMOR_SKULL,//스컬 메일 : 마검사의 흉갑																																																																																																						
-700	,//ITEM_ARMOR_PLATE,//황금세공 갑옷 : 드워븐 아머																																																																																																					
-1000	,//ITEM_ARMOR_RUNIC,//미스릴 아머 : 요정의 갑주																																																																																																				
-1300	,//ITEM_ARMOR_MYTHRIL,//고대의 갑옷 : 불멸의 갑주 : 브리건딘																																																																																																			
-1600	,//ITEM_ARMOR_DRAGONSKIN,//용비늘 갑옷 : 황룡의 갑옷 : 바하무트 아머																																																																																																				
+20	,//ITEM_ARMOR_BRONZE = 0,//헌터 튜닉																																																																																																			
+45	,//ITEM_ARMOR_SCALE,//미늘 갑옷																																																																																																					
+80	,//ITEM_ARMOR_BANDED,//하프 플레이트 : 밴디트 메일																																																																																																				
+130	,//ITEM_ARMOR_SKULL,//스컬 메일 : 마검사의 흉갑																																																																																																						
+200	,//ITEM_ARMOR_PLATE,//황금세공 갑옷 : 드워븐 아머																																																																																																					
+300	,//ITEM_ARMOR_RUNIC,//미스릴 아머 : 요정의 갑주																																																																																																				
+450	,//ITEM_ARMOR_MYTHRIL,//고대의 갑옷 : 불멸의 갑주 : 브리건딘																																																																																																			
+650	,//ITEM_ARMOR_DRAGONSKIN,//용비늘 갑옷 : 황룡의 갑옷 : 바하무트 아머																																																																																																				
 //TOTAL_ARMOR,																																																																																																				
 
 //조끼 : ITEM_VEST																																																																																																				
-11	,//ITEM_VEST_WESTERN = 0,//카우보이 조끼																																																																																																				
-23	,//ITEM_VEST_LEOPARD,//실크 조끼																																																																																																				
-36	,//ITEM_VEST_SILK,//방랑자의 조끼 : 서바이벌 조끼																																																																																																				
-50	,//ITEM_VEST_PIRATE,//도적의 조끼 : 어쌔신 베스트																																																																																																				
-66	,//ITEM_VEST_BALL,//벨벳 셔츠 : 고딕 셔츠																																																																																																				
-84	,//ITEM_VEST_STAR,//귀족의 조끼 : 은사슬 조끼																																																																																																				
-104	,//ITEM_VEST_SPATIOTEMPORAL,//진홍빛 셔츠 : 불사의 셔츠 : 뱀파이어 로드																																																																																																				
-126	,//ITEM_VEST_QUEEN,//신관의 로브 : 세라핌 로브 : 루시펠 로브																																																																																																				
+20	,//ITEM_VEST_WESTERN = 0,//카우보이 조끼																																																																																																				
+45	,//ITEM_VEST_LEOPARD,//실크 조끼																																																																																																				
+80	,//ITEM_VEST_SILK,//방랑자의 조끼 : 서바이벌 조끼																																																																																																				
+130	,//ITEM_VEST_PIRATE,//도적의 조끼 : 어쌔신 베스트																																																																																																				
+200	,//ITEM_VEST_BALL,//벨벳 셔츠 : 고딕 셔츠																																																																																																				
+300	,//ITEM_VEST_STAR,//귀족의 조끼 : 은사슬 조끼																																																																																																				
+450	,//ITEM_VEST_SPATIOTEMPORAL,//진홍빛 셔츠 : 불사의 셔츠 : 뱀파이어 로드																																																																																																				
+650	,//ITEM_VEST_QUEEN,//신관의 로브 : 세라핌 로브 : 루시펠 로브																																																																																																				
 //TOTAL_VEST,																																																																																																				
 
 //코트 : ITEM_COAT																																																																																																				
-16	,//ITEM_COAT_SIMPLE = 0,//수수한 코트																																																																																																				
-34	,//ITEM_COAT_PADDING,//패딩 아머																																																																																																				
-54	,//ITEM_COAT_LEATHER,//털가죽 코트 : 그리즐리 스킨																																																																																																				
-75	,//ITEM_COAT_CUREBOIL,//큐어 보일 : 코아틀 스케일																																																																																																				
-99	,//ITEM_COAT_BEAST,//귀족의 코트 : 흑까마귀 코트																																																																																																				
-126	,//ITEM_COAT_GRIZZLY,//극지의 코트 : 블리자드 가드																																																																																																				
-156	,//ITEM_COAT_CROCODYLE,//윙 코트 : 가고일 코트 : 페가수스 코트																																																																																																				
-189	,//ITEM_COAT_HYDRASCALE,//바이스 코트 : 종말의 코트 : 카오스 엠페러																																																																																																				
+20	,//ITEM_COAT_SIMPLE = 0,//수수한 코트																																																																																																				
+45	,//ITEM_COAT_PADDING,//패딩 아머																																																																																																				
+80	,//ITEM_COAT_LEATHER,//털가죽 코트 : 그리즐리 스킨																																																																																																				
+130	,//ITEM_COAT_CUREBOIL,//큐어 보일 : 코아틀 스케일																																																																																																				
+200	,//ITEM_COAT_BEAST,//귀족의 코트 : 흑까마귀 코트																																																																																																				
+300	,//ITEM_COAT_GRIZZLY,//극지의 코트 : 블리자드 가드																																																																																																				
+450	,//ITEM_COAT_CROCODYLE,//윙 코트 : 가고일 코트 : 페가수스 코트																																																																																																				
+650	,//ITEM_COAT_HYDRASCALE,//바이스 코트 : 종말의 코트 : 카오스 엠페러																																																																																																				
 //TOTAL_COAT,																																																																																																				
 
 //건틀렛 : ITEM_GUNTLET
-4	,//ITEM_GUNTLET_IRON = 0,//핸드 가드
-33	,//ITEM_GUNTLET_CHAIN,//청동 장갑
-60	,//ITEM_GUNTLET_MONSTER,//체인 건틀렛 : 모험자의 장갑
-90	,//ITEM_GUNTLET_KNIGHT,//나이트 글로브 : 명성의 장갑
-130	,//ITEM_GUNTLET_EAGLECLAW,//비스트 핸드 : 오우거 건틀렛
-180	,//ITEM_GUNTLET_SINE,//라이징 건틀렛 : 무쌍의 장갑
-250	,//ITEM_GUNTLET_JUSTICEHAND,//광전사의 장갑 : 뇌격파수 : 시바의 손톱
-350	,//ITEM_GUNTLET_HOLYHAND,//드래곤 핸드 : 백룡의 장갑 : 바하무트 핸드
+5	,//ITEM_GUNTLET_IRON = 0,//핸드 가드
+11	,//ITEM_GUNTLET_CHAIN,//청동 장갑
+18	,//ITEM_GUNTLET_MONSTER,//체인 건틀렛 : 모험자의 장갑
+26	,//ITEM_GUNTLET_KNIGHT,//나이트 글로브 : 명성의 장갑
+36	,//ITEM_GUNTLET_EAGLECLAW,//비스트 핸드 : 오우거 건틀렛
+48	,//ITEM_GUNTLET_SINE,//라이징 건틀렛 : 무쌍의 장갑
+62	,//ITEM_GUNTLET_JUSTICEHAND,//광전사의 장갑 : 뇌격파수 : 시바의 손톱
+80	,//ITEM_GUNTLET_HOLYHAND,//드래곤 핸드 : 백룡의 장갑 : 바하무트 핸드
 //TOTAL_GUNTLET,
 
 
 //팔찌 : ITEM_ARMLET																																																																																																				
-2	,//ITEM_ARMLET_LEATHER		= 0,//사제의 묵주																																																																																																		
-5	,//ITEM_ARMLET_DESERT,//여행자의 팔찌																																																																																																				
-7	,//ITEM_ARMLET_EXPLORER,//백금 브레스렛 : 연인의 팔찌																																																																																																				
-10	,//ITEM_ARMLET_RAIDERS,//전사의 암렛 : 임프 암렛																																																																																																				
-13	,//ITEM_ARMLET_NOBLESS,//에메랄드 팔찌 : 노블레스 암렛																																																																																																				
-17	,//ITEM_ARMLET_DEVIL,//이블 암렛 : 몽마의 팔찌																																																																																																				
-21	,//ITEM_ARMLET_DIGNITY,//위엄의 팔찌 : 지배자의 팔찌 : 엠프레스 암렛																																																																																																				
-25	,//ITEM_ARMLET_HERO,//영웅의 팔찌 : 소울 브레스렛 : 갓 핸드																																																																																																				
+5	,//ITEM_ARMLET_LEATHER		= 0,//사제의 묵주																																																																																																		
+11	,//ITEM_ARMLET_DESERT,//여행자의 팔찌																																																																																																				
+18	,//ITEM_ARMLET_EXPLORER,//백금 브레스렛 : 연인의 팔찌																																																																																																				
+26	,//ITEM_ARMLET_RAIDERS,//전사의 암렛 : 임프 암렛																																																																																																				
+36	,//ITEM_ARMLET_NOBLESS,//에메랄드 팔찌 : 노블레스 암렛																																																																																																				
+48	,//ITEM_ARMLET_DEVIL,//이블 암렛 : 몽마의 팔찌																																																																																																				
+62	,//ITEM_ARMLET_DIGNITY,//위엄의 팔찌 : 지배자의 팔찌 : 엠프레스 암렛																																																																																																				
+80	,//ITEM_ARMLET_HERO,//영웅의 팔찌 : 소울 브레스렛 : 갓 핸드																																																																																																				
 //TOTAL_ARMLET,																																																																																																				
 
 //장갑 : ITEM_GLOVE																																																																																																				
-3	,//ITEM_GLOVE_TRAVELER		= 0,//여행자의 장갑																																																																																																		
-7	,//ITEM_GLOVE_DUALTIE,//이중매듭 장갑																																																																																																				
-10	,//ITEM_GLOVE_LINEN,//소매치기 장갑 : 섀도우 핸드																																																																																																				
-15	,//ITEM_GLOVE_RUNE,//실크 글로브 : 귀공자의 장갑																																																																																																				
-20	,//ITEM_GLOVE_FAIRY,//세공사의 장갑 : 마스터 글러브																																																																																																				
-25	,//ITEM_GLOVE_ROCKET,//마법문양 장갑 : 커스드 글로브																																																																																																				
-31	,//ITEM_GLOVE_LACEMITTEN,//심판의 손 : 구원의 손 : 이터널 져지																																																																																																				
-38	,//ITEM_GLOVE_GLORY,//성자의 장갑 : 팔라딘 글로브 : 홀리 핸드																																																																																																				
+5	,//ITEM_GLOVE_TRAVELER		= 0,//여행자의 장갑																																																																																																		
+11	,//ITEM_GLOVE_DUALTIE,//이중매듭 장갑																																																																																																				
+18	,//ITEM_GLOVE_LINEN,//소매치기 장갑 : 섀도우 핸드																																																																																																				
+26	,//ITEM_GLOVE_RUNE,//실크 글로브 : 귀공자의 장갑																																																																																																				
+36	,//ITEM_GLOVE_FAIRY,//세공사의 장갑 : 마스터 글러브																																																																																																				
+48	,//ITEM_GLOVE_ROCKET,//마법문양 장갑 : 커스드 글로브																																																																																																				
+62	,//ITEM_GLOVE_LACEMITTEN,//심판의 손 : 구원의 손 : 이터널 져지																																																																																																				
+80	,//ITEM_GLOVE_GLORY,//성자의 장갑 : 팔라딘 글로브 : 홀리 핸드																																																																																																				
 //TOTAL_GLOVE,																																																																																																				
 
 //킬트 : ITEM_KILT																																																																																																				
-18	,//ITEM_KILT_CHAIN		= 0,//밴딩 킬트																																																																																																					
-134	,//ITEM_KILT_DUALCHAIN,//체인 킬트																																																																																																				
-240	,//ITEM_KILT_BATTLE,//나이트 킬트 : 배틀 킬트																																																																																																			
-360	,//ITEM_KILT_NIGHTMARE,//스컬 킬트 : 사령의 바지																																																																																																			
-500	,//ITEM_KILT_BATTLEFIELD,//수령의 바지 : 토르의 바지																																																																																																				
-650	,//ITEM_KILT_DWARVEN,//미스릴 킬트 : 페어리 킬트																																																																																																					
-800	,//ITEM_KILT_DURAHAN,//에인션트 킬트 : 이터널 킬트 : 언리밋 킬트																																																																																																				
-1000	,//ITEM_KILT_EARTHQUAKE,//용수염 킬트 : 청룡의 킬트 : 용기사 바지																																																																																																				
+10	,//ITEM_KILT_CHAIN		= 0,//밴딩 킬트																																																																																																					
+22	,//ITEM_KILT_DUALCHAIN,//체인 킬트																																																																																																				
+36	,//ITEM_KILT_BATTLE,//나이트 킬트 : 배틀 킬트																																																																																																			
+52	,//ITEM_KILT_NIGHTMARE,//스컬 킬트 : 사령의 바지																																																																																																			
+72	,//ITEM_KILT_BATTLEFIELD,//수령의 바지 : 토르의 바지																																																																																																				
+96	,//ITEM_KILT_DWARVEN,//미스릴 킬트 : 페어리 킬트																																																																																																					
+124	,//ITEM_KILT_DURAHAN,//에인션트 킬트 : 이터널 킬트 : 언리밋 킬트																																																																																																				
+160	,//ITEM_KILT_EARTHQUAKE,//용수염 킬트 : 청룡의 킬트 : 용기사 바지																																																																																																				
 //TOTAL_KILT,																																																																																																				
 
 //바지 : ,//ITEM_SKIRT																																																																																																				
-9	,//ITEM_SKIRT_BROCADE = 0,//양단 스커트																																																																																																				
-18	,//ITEM_SKIRT_CARPSKIN,//빈티지 스커트																																																																																																				
-29	,//ITEM_SKIRT_VELVET,//단풍염색 치마 : 홍련의 스커트																																																																																																				
-40	,//ITEM_SKIRT_NOBLE,//벨벳 스커트 : 소공녀의 치마																																																																																																				
-53	,//ITEM_SKIRT_GENERAL,//폭풍의 스커트 : 무지개빛 치마																																																																																																				
-67	,//ITEM_SKIRT_GLORY,//금실의 치마 : 여제의 스커트																																																																																																				
-83	,//ITEM_SKIRT_CHAOS,//영광의 치마 : 현자의 치마 : 성령의 치마																																																																																																				
-101	,//ITEM_SKIRT_HERO,//사제의 스커트 : 비슈누 스커트 : 태양의 스커트																																																																																																				
+10	,//ITEM_SKIRT_BROCADE = 0,//양단 스커트																																																																																																				
+22	,//ITEM_SKIRT_CARPSKIN,//빈티지 스커트																																																																																																				
+36	,//ITEM_SKIRT_VELVET,//단풍염색 치마 : 홍련의 스커트																																																																																																				
+52	,//ITEM_SKIRT_NOBLE,//벨벳 스커트 : 소공녀의 치마																																																																																																				
+72	,//ITEM_SKIRT_GENERAL,//폭풍의 스커트 : 무지개빛 치마																																																																																																				
+96	,//ITEM_SKIRT_GLORY,//금실의 치마 : 여제의 스커트																																																																																																				
+124	,//ITEM_SKIRT_CHAOS,//영광의 치마 : 현자의 치마 : 성령의 치마																																																																																																				
+160	,//ITEM_SKIRT_HERO,//사제의 스커트 : 비슈누 스커트 : 태양의 스커트																																																																																																				
 //TOTAL_SKIRT,
 
 //바지 : ITEM_PANTS																																																																																																				
-13	,//ITEM_PANTS_RIDING = 0,//승마용 바지																																																																																																				
-27	,//ITEM_PANTS_VINTAGEJEAN,//카프스킨 팬츠																																																																																																				
-42	,//ITEM_PANTS_BLAZE,//망령의 팬츠 : 머미 밴디지																																																																																																				
-60	,//ITEM_PANTS_ASSASSIN,//흑단의 바지 : 어쌔신 팬츠																																																																																																				
-80	,//ITEM_PANTS_TEMPEST,//세일러 팬츠 : 제독의 바지																																																																																																				
-100	,//ITEM_PANTS_SCARLETLEGGINGS,//데저트 팬츠 : 캐러밴 팬츠																																																																																																				
-125	,//ITEM_PANTS_HEAVEN,//카오틱 팬츠 : 침묵의 바지 : 아비스 팬츠																																																																																																				
-152	,//ITEM_PANTS_SATANIC,//가디안 팬츠 : 켈베로스 레더 : 아누비스 바지																																																																																																				
+10	,//ITEM_PANTS_RIDING = 0,//승마용 바지																																																																																																				
+22	,//ITEM_PANTS_VINTAGEJEAN,//카프스킨 팬츠																																																																																																				
+36	,//ITEM_PANTS_BLAZE,//망령의 팬츠 : 머미 밴디지																																																																																																				
+52	,//ITEM_PANTS_ASSASSIN,//흑단의 바지 : 어쌔신 팬츠																																																																																																				
+72	,//ITEM_PANTS_TEMPEST,//세일러 팬츠 : 제독의 바지																																																																																																				
+96	,//ITEM_PANTS_SCARLETLEGGINGS,//데저트 팬츠 : 캐러밴 팬츠																																																																																																				
+124	,//ITEM_PANTS_HEAVEN,//카오틱 팬츠 : 침묵의 바지 : 아비스 팬츠																																																																																																				
+160	,//ITEM_PANTS_SATANIC,//가디안 팬츠 : 켈베로스 레더 : 아누비스 바지																																																																																																				
 //TOTAL_PANTS,																																																																																																				
 
 //장화 : ITEM_GREAVES																																																																																																				
-9	,//ITEM_GREAVES_TRAINER = 0,//코퍼 그리브																																																																																																			
-67	,//ITEM_GREAVES_CHAIN,//밴디트 그리브																																																																																																				
-120	,//ITEM_GREAVES_KNIGHT,//체인 그리브 : 나이트 그리브																																																																																																				
-180	,//ITEM_GREAVES_FROZEN,//프로즌 그리브 : 만년설의 신발																																																																																																				
-260	,//ITEM_GREAVES_GOLEM,//플레이트 부츠 : 드워븐 그리브																																																																																																					
-350	,//ITEM_GREAVES_GIANT,//빅풋 그리브 : 골렘 그리브																																																																																																						
-450	,//ITEM_GREAVES_GHOST,//마검사의 신발 : 사령의 신발 : 종말의 발소리																																																																																																				
-580	,//ITEM_GREAVES_LEGEND,//드래곤 그리브 : 마룡의 발자국 : 가이아 그리브																																																																																																				
+5	,//ITEM_GREAVES_TRAINER = 0,//코퍼 그리브																																																																																																			
+11	,//ITEM_GREAVES_CHAIN,//밴디트 그리브																																																																																																				
+18	,//ITEM_GREAVES_KNIGHT,//체인 그리브 : 나이트 그리브																																																																																																				
+26	,//ITEM_GREAVES_FROZEN,//프로즌 그리브 : 만년설의 신발																																																																																																				
+36	,//ITEM_GREAVES_GOLEM,//플레이트 부츠 : 드워븐 그리브																																																																																																					
+48	,//ITEM_GREAVES_GIANT,//빅풋 그리브 : 골렘 그리브																																																																																																						
+62	,//ITEM_GREAVES_GHOST,//마검사의 신발 : 사령의 신발 : 종말의 발소리																																																																																																				
+80	,//ITEM_GREAVES_LEGEND,//드래곤 그리브 : 마룡의 발자국 : 가이아 그리브																																																																																																				
 //TOTAL_GREAVES,																																																																																																				
 
 //신발 : ITEM_SHOES																																																																																																				
-4	,//ITEM_SHOES_CLEAN = 0,//웨스턴 슈즈																																																																																																				
-9	,//ITEM_SHOES_CHASER,//스웨이드 슈즈																																																																																																				
-14	,//ITEM_SHOES_LEATHER,//라이딩 슈즈 : 밀리터리 워커																																																																																																				
-20	,//ITEM_SHOES_ROCKY,//칠흑의 슈즈 : 마녀의 슈즈																																																																																																				
-26	,//ITEM_SHOES_CARVING,//귀부인의 신발 : 로얄 셀레브																																																																																																				
-33	,//ITEM_SHOES_NETHERWORLD,//리치 슈즈 : 팬텀 테일즈																																																																																																				
-41	,//ITEM_SHOES_INCARNATION,//프리즘 슈즈 : 미라클 슈즈 : 그라비티 슈즈																																																																																																				
-50	,//ITEM_SHOES_HEAVENS,//베이그란트 : 페이트 슈즈 : 데스티니 슈즈																																																																																																				
+5	,//ITEM_SHOES_CLEAN = 0,//웨스턴 슈즈																																																																																																				
+11	,//ITEM_SHOES_CHASER,//스웨이드 슈즈																																																																																																				
+18	,//ITEM_SHOES_LEATHER,//라이딩 슈즈 : 밀리터리 워커																																																																																																				
+26	,//ITEM_SHOES_ROCKY,//칠흑의 슈즈 : 마녀의 슈즈																																																																																																				
+36	,//ITEM_SHOES_CARVING,//귀부인의 신발 : 로얄 셀레브																																																																																																				
+48	,//ITEM_SHOES_NETHERWORLD,//리치 슈즈 : 팬텀 테일즈																																																																																																				
+62	,//ITEM_SHOES_INCARNATION,//프리즘 슈즈 : 미라클 슈즈 : 그라비티 슈즈																																																																																																				
+80	,//ITEM_SHOES_HEAVENS,//베이그란트 : 페이트 슈즈 : 데스티니 슈즈																																																																																																				
 //TOTAL_SHOES,																																																																																																				
 
 //부츠 : ITEM_BOOTS																																																																																																				
-6	,//ITEM_BOOTS_SUEDE = 0,//스니커즈																																																																																																				
-13	,//ITEM_BOOTS_WESTERN,//스캐빈저 부츠																																																																																																				
-21	,//ITEM_BOOTS_RIDING,//천둥가죽 신발 : 낙뢰의 자국																																																																																																				
-30	,//ITEM_BOOTS_RICH,//가드너 부츠 : 토렌트 루트																																																																																																				
-39	,//ITEM_BOOTS_OGRE,//세일러 부츠 : 캡틴 부츠																																																																																																				
-45	,//ITEM_BOOTS_DARK,//저승의 신발 : 헬 스트라이더																																																																																																				
+5	,//ITEM_BOOTS_SUEDE = 0,//스니커즈																																																																																																				
+11	,//ITEM_BOOTS_WESTERN,//스캐빈저 부츠																																																																																																				
+18	,//ITEM_BOOTS_RIDING,//천둥가죽 신발 : 낙뢰의 자국																																																																																																				
+26	,//ITEM_BOOTS_RICH,//가드너 부츠 : 토렌트 루트																																																																																																				
+36	,//ITEM_BOOTS_OGRE,//세일러 부츠 : 캡틴 부츠																																																																																																				
+48	,//ITEM_BOOTS_DARK,//저승의 신발 : 헬 스트라이더																																																																																																				
 62	,//ITEM_BOOTS_MIRACLE,//엘레멘탈 부츠 : 브리징 윈드 : 템페스트 부츠																																																																																																				
-76	,//ITEM_BOOTS_DESTINY,//에어워커 : 클라우드 부츠 : 헤븐리 부츠																																																																																																				
+80	,//ITEM_BOOTS_DESTINY,//에어워커 : 클라우드 부츠 : 헤븐리 부츠																																																																																																				
 //TOTAL_BOOTS,																																																																																																				
 
 };

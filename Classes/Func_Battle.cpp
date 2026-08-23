@@ -3595,7 +3595,27 @@ void SetBattleCrew()
 		crewIdx = GetCrewIdxFromType(ao[CREW + i].type);
 
 		if (crewIdx >= 0) {
-			ao[CREW + i].ps[PS_DMG] = ao[CREW + i].str = crewData[crewIdx * CREWDATASIZE + CREWDATA_STR];
+			//----------------------------------------------------------
+			// 동료의 공격력
+			//
+			// 전에는 crewData[CREWDATA_STR] 을 그대로 썼다. 그 칸은 10~73 이
+			// 차례로 들어있는 자리 번호에 가까웠고, 무엇보다 레벨을 안 봤다.
+			// 동료를 14레벨까지 올려도 전투에서 때리는 값이 그대로였다.
+			//
+			// 상세 팝업이 보여주는 값은 GetCrewPower() 였다. 즉 화면에 적힌
+			// 숫자와 실제로 때리는 숫자가 서로 다른 값이었다. 여기서 같은
+			// 것을 읽게 해서 둘을 하나로 묶는다.
+			//----------------------------------------------------------
+			int invenIdx = GetInvenIdx(ITEM_CREW, crewIdx, GRADE_NORMAL);
+			int crewLv = (invenIdx >= 0) ? (int)robin.inven[invenIdx].lv : 1;
+
+			//편성표에 있는데 인벤에 없는 경우는 없어야 하지만, 있더라도
+			//0으로 때리게 두지는 않는다.
+			if (crewLv < 1)
+				crewLv = 1;
+
+			ao[CREW + i].ps[PS_DMG] = ao[CREW + i].str =
+				(int)GetCrewPower(crewIdx, crewLv);
 
 			for (j = 0; j < TOTALREEL; j++)
 				ao[CREW + i].getSkillList[j] = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + j];

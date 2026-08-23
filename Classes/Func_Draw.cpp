@@ -492,7 +492,7 @@ void TitleDraw(void)
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + DX / 2 - DIORAMASIZE_X / 2, y - DY / 2 + DIORAMASIZE_Y / 2 + 72 * _2X, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + houseOrder[0]], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + houseOrder[0], false);
 		//NewCollectionDraw(0, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
 #else
-		MemRect(0, DY, DX, DY, COLOR_WHITE);
+		MemRect(0, DY, DX, DY, 0x000000);
 		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], TITLE_IMG);
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
@@ -1907,7 +1907,16 @@ void DrawPopUp(int idx)
 
 	//환경설정과 그 하위 창들은 창 자체의 타이틀바에 X버튼이 있으므로
 	//좌측상단 뒤로가기를 그리지 않는다.
-	if (p->zoom == 1.0f && (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER
+	//
+	//동료 상세(menuDepth 1)도 마찬가지다. 그 창은 제 오른쪽 위에 닫기 버튼을
+	//달고 있어서, 좌측상단 화살표까지 있으면 닫는 버튼이 둘이 된다. 게다가
+	//화살표는 창 밖에 떠 있어서 어느 창을 닫는 것인지도 헷갈린다.
+	//동료 상세와 장비 상세 둘 다 제 닫기 버튼을 달고 있다.
+	bool detailOpen = ((p->type == POPUPTYPE_CREWLIST || p->type == POPUPTYPE_COLLECTIONS)
+		&& menuDepth == 1);
+
+	if (p->zoom == 1.0f && detailOpen == false
+		&& (p->type != POPUPTYPE_ITEMCOMPARE && p->type != POPUPTYPE_STAGE && p->type != POPUPTYPE_GAMEOVER
 		&& p->type != POPUPTYPE_OPTION
 		&& p->type != POPUPTYPE_OPTION_LANGUAGE
 		&& p->type != POPUPTYPE_OPTION_PUSHALARM

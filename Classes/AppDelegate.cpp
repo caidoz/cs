@@ -89,8 +89,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 		// Set the design resolution
 		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
-		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
-		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 
 #else
 		glview = GLViewImpl::create("인삼남:인생이 삼일 남았다!");

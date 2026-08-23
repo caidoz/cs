@@ -124,6 +124,7 @@ void DrawXMark(int x, int y, float zoom);
 
 // Item Showing
 void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shadow, float thickness);
+int GetHeroSkillIcon(int heroSkillIdx);
 void DrawSkillIcon(int, int, int, float);
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom);
 int GetCrewBulletAni(int idx);

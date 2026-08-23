@@ -1644,6 +1644,26 @@ long long GetTotalEnemyHp(int stage)
 	return totalHp;
 }
 
+//몇 번째 계단의 기본 체력인가. WAVE_HP_BASE 에서 시작해 계단마다 x1.17 이다.
+//
+//곱셈을 반복해서 구한다. 100 으로 나누는 자리가 계단마다 잘리지만 그게
+//오히려 낫다 - 어느 기기에서 돌려도 똑같은 값이 나온다.
+long long GetWaveHpTier(int tier)
+{
+	long long v = WAVE_HP_BASE;
+	int i;
+
+	if (tier < 0)
+		tier = 0;
+	if (tier > WAVE_HP_MAX_TIER)
+		tier = WAVE_HP_MAX_TIER;
+
+	for (i = 0; i < tier; i++)
+		v = v * WAVE_HP_TIER_MUL / 100;
+
+	return v;
+}
+
 long long GetWaveHp(int waveIdx, int curWave)
 {
 	int monType = wave[waveIdx * WAVEDATASIZE * MAXENEMY + curWave * WAVEDATASIZE + 0];
@@ -1673,7 +1693,32 @@ long long GetWaveHp(int waveIdx, int curWave)
 		return 2 + waveIdx;
 	}
 
-	return 100 * (waveIdx + 10) * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 10;
+	//----------------------------------------------------------------------
+	// 등비로 오른다
+	//
+	// 무기 한 자루(WAVE_STAGE_PER_TIER 스테이지)마다 한 계단씩 x1.17 이다.
+	// 계단 안에서는 등차로 이어 붙여 다음 계단까지 매끄럽게 오른다.
+	//
+	// 왜 이 모양이어야 하는지는 Config/BalanceConfig.h 에 적어 뒀다.
+	//
+	// 전부 정수다. pow() 를 쓰면 기기마다 마지막 자리가 달라져 같은
+	// 스테이지의 몬스터 체력이 서로 다르게 나온다.
+	//----------------------------------------------------------------------
+	{
+		int tier = waveIdx / WAVE_STAGE_PER_TIER;
+		int within = waveIdx % WAVE_STAGE_PER_TIER;
+		long long lo = GetWaveHpTier(tier);
+		long long hi = GetWaveHpTier(tier + 1);
+		long long base = lo + (hi - lo) * within / WAVE_STAGE_PER_TIER;
+
+		//ADDHP 는 몬스터마다 붙는 덧살이다. 0 이면 그 계단의 기본 체력이고
+		//1900 이면 스무 배다. 보스가 이 칸으로 튄다.
+		//
+		//WAVE_HP_TEST_MUL 은 시연용 배수다(평소 1). 곡선은 그대로 두고
+		//전체를 같이 올려서 연출을 끝까지 볼 수 있게 한다.
+		return base * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 100
+			* WAVE_HP_TEST_MUL;
+	}
 }
 
 //아레나가 밑에서 계속 돌고 있는 모드인지.

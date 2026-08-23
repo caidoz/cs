@@ -404,10 +404,12 @@ void AddSimpleLog(int iconType, int a, int b, int c, int textIdx)
 {
 	int i;
 	char logStr[256];
-	//화면 위쪽, 상단 바(bar[BAR_GOLD] 등이 올라앉는 GNB) 아래에 띄운다.
-	//GNBHEIGHT가 그 상단 바의 높이라 DY - GNBHEIGHT가 그 아래쪽 경계이고,
-	//거기에 바로 붙이면 바와 겹쳐 보여서 한 칸 더 내린다.
-	int ty = DY - GNBHEIGHT - 28 * _2X;
+	//화면 맨 위. 상단 바(bar[BAR_GOLD] 등이 올라앉는 GNB)가 끝나는 자리다.
+	//y는 위로 갈수록 커지므로 DY - GNBHEIGHT 가 그 경계이고, 더하면 더 올라간다.
+	//
+	//LogDraw()가 g->y 를 상자 한가운데로 쓰므로, 절반을 더하면 상자 아래변이
+	//그 경계에 걸린다.
+	int ty = DY - GNBHEIGHT + LOG_Y / 2 - 16 * _2X;
 
 	memset(logStr, 0, sizeof(logStr));
 
@@ -3746,6 +3748,18 @@ void WhoIsNextTurn(void)
 {
 	int crewIdx;
 	int i;
+	int finishedTurn = turn;
+
+	//현재 동료의 액션이 완전히 끝나 다음 턴으로 넘어갈 때
+	//그 스킬의 컨트롤 마크를 페이드아웃시킨다.
+	if (attackSequence == ATTACKSEQUENCE_ACTION
+		&& finishedTurn >= CREW && finishedTurn < CREW + MAXCREW) {
+		for (i = 0; i < TOTALCONTROLMARK; i++) {
+			if (controlMark[i].owner == finishedTurn
+				&& controlMark[i].attackType == ao[finishedTurn].currentSkill)
+				controlMark[i].alpha = 1;
+		}
+	}
 
 	turnListIdx++;
 	//이러면 전투 속행이고

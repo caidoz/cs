@@ -395,7 +395,7 @@
 	X(attackDelayPerType, 4, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
 	X(currencyShop, 4, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \
 	X(quickShopData, 1, DPK_UINT, 162, DPK_KEY_NONE, 0, 0) \
-	X(skillData, 4, DPK_INT, 39846, DPK_KEY_SKILL, 29, 0) \
+	X(skillData, 4, DPK_INT, 8787, DPK_KEY_SKILL, 29, 0) \
 	X(barrierEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(berserkEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(skillToStat, 1, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \

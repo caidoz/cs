@@ -2,6 +2,188 @@
 #include "Data.h"
 #include "Func.h"
 
+//==========================================================================
+// 스킬 카드가 동료 머리 위에 내려앉는 크기
+//
+// 전에는 카드마다 달랐다. 마지막 비행에 넘기던 값이
+//
+//     controlMark[i].zoom - 0.3f
+//
+// 였는데, controlMark[i].zoom 은 그때까지 그 카드가 겪은 일에 따라 달라져
+// 있었다. 2/3 매치로 합쳐진 카드는 합칠 때 0.1 이 더 붙어서(1287행 근처)
+// 같은 자리에 같은 순간 내려앉아도 혼자 컸다.
+//
+// 최종 착지 크기. 직전 값 0.33792에서 zoom을 0.1 더 줄인다.
+//==========================================================================
+#define ROULETTE_CARD_SETTLE_ZOOM	0.60f	//릴에 놓였을 때(아래 z1 과 같아야 한다)
+#define ROULETTE_CARD_LAND_ZOOM		(ROULETTE_CARD_SETTLE_ZOOM * 1.10f * 0.80f * 0.80f * 0.80f - 0.10f)
+
+//오브젝트 머리 위에 카드를 얹을 자리.
+//
+//카드는 controlMark 의 x/y 를 한가운데로 삼아 그려지므로(Func_Battle 의
+//DrawSkillCard 호출부가 폭/높이의 절반을 뺀다) 카드 높이의 절반만큼 더
+//올려야 머리 위에 얹힌다.
+//
+//캐릭터가 그려지는 윗변(PxlUp = y + cpy)을 기준으로 잡는다. 예전에는
+//발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은 히어로 키에 맞춘 것이라
+//키가 다른 동료는 마크가 붕 떴다.
+void GetMarkHeadPos(int obj, int* outX, int* outY)
+{
+	//자리에 없는 오브젝트를 잡으면 좌표가 0이거나 남은 쓰레기값이라 카드가
+	//화면 밖으로 날아가 사라진다. 그렇게 되느니 주인공 위에 얹는 편이 낫다.
+	//
+	//다만 이건 마지막 방패일 뿐이다. 히어로 스킬은 부르는 쪽
+	//(Func_Movement 의 HEROSKILL)에서 그 히어로를 먼저 불러 세우므로
+	//여기까지 내려오지 않는다. 소환 중이라 아직 안 선 히어로는 nx/ny 가
+	//이미 정해져 있어 active 가 곧 서므로 자리가 맞는다.
+	if (obj < 0 || obj >= TOTALOBJECT || ao[obj].active == false) {
+		CCLOG("[MARK] obj %d 가 자리에 없다. 주인공으로 돌린다.", obj);
+		obj = PLAYER;
+	}
+
+	//DrawDiorama/DrawObj가 쓰는 화면 좌표와 같은 식을 쓴다.
+	GetMarkHeadPosAt((int)ao[obj].x, (int)ao[obj].y,
+		ao[obj].zoom, outX, outY);
+
+	CCLOG("[MARK] obj %d at(%d,%d) -> (%d,%d)",
+		obj, (int)ao[obj].x, (int)ao[obj].y, *outX, *outY);
+}
+
+//아직 만들어지지 않은 오브젝트의 머리 위 자리.
+//
+//소환은 "만들고 나서 옮기기"가 안 된다. SUMMONHERO 가 ao[SOLDIER] 를 채우기
+//전에는 그 칸에 앞서 쓰던 놈의 좌표가 남아 있어서, 그걸 읽으면 카드가 엉뚱한
+//데로 날아간다. 그래서 오브젝트를 보지 않고 "설 자리"에서 바로 계산한다.
+//
+//설 자리는 스킬 데이터가 들고 있다(SKILLDATA_RESERVED1 이 x, y 는 주인공과
+//같은 바닥). 발밑에서 머리까지의 높이는 주인공 것을 빌린다 - 소환될 히어로는
+//주인공과 같은 배율로 그려지기 때문이다(SUMMONHERO 가 zoom 을
+//ao[PLAYER].zoom 으로 잡는다).
+void GetMarkHeadPosAt(int footX, int footY, float zoom, int* outX, int* outY)
+{
+	//[게임이 원래 쓰는 식을 그대로 쓴다]
+	//
+	// 오브젝트 머리 위에 표식을 얹는 자리는 이 판에 이미 있다. 타격 표시가
+	// 그것이다(Func_Combat 의 SetHitMark 호출).
+	//
+	//     x : pDest->x
+	//     y : STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - 32 * _2X * pDest->zoom
+	//
+	// rx 도 ry 도 OBJIMGGAP 도 안 들어간다. 이 화면은 스크롤을 안 하기
+	// 때문이다. 그 식을 그대로 쓰고 카드 절반만큼만 더 올린다.
+	//
+	// [x 에 xOffset 을 넣지 않는다]
+	// 마크는 그릴 때 xOffset 을 다시 더한다(Func_Battle). 그래서 여기에
+	// 넣으면 두 번 더해진다. 메뉴가 열려 xOffset 이 -GAMEMENUWIN_X 가 되면
+	// 그 폭만큼 오른쪽으로 밀린다. 룰렛 칸에 놓이는 카드도 xOffset 없는
+	// 좌표를 쓴다.
+	int headUp = (int)(48.0f * _2X * zoom * dioramaZoom);
+
+	//DrawSkillCard 호출부가 xOffset과 floatOffsetY를 다시 더하므로
+	//여기서는 그 두 값을 뺀 좌표를 보관한다.
+	*outX = footX - rx;
+	*outY = STATUSWIN_Y + (rh - 4) * TSIZE
+		- (footY - OBJIMGGAP) - ry + headUp - (int)floatOffsetY;
+
+	CCLOG("[MARK] foot(%d,%d) zoom=%.2f xOffset=%d rx=%d -> (%d,%d)",
+		footX, footY, zoom, xOffset, rx, *outX, *outY);
+}
+
+//동료 머리 위에 붙어 있던 카드를 정해진 화면 자리로 옮긴다.
+//
+//히어로 스킬 카드는 "누가 뽑았는지"(동료)와 "누가 쓰는지"(히어로)가 다르다.
+//둘 다 보여주려고, 룰렛이 멈추면 뽑은 동료 위에 붙였다가 그 동료 차례가 와서
+//히어로가 실제로 스킬을 쓰는 순간 히어로 위로 한 번 더 날린다.
+//
+//이미 도착해 멈춘 마크를 다시 띄우는 것이므로 목적지만 갈아 끼우고 frame2 를
+//되살린다. Func_Battle 의 갱신 루프가 그때부터 다시 GotoPosition 을 돌린다.
+void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
+{
+	const int FLY_T = FPS / 3;
+	int i;
+
+	for (i = 0; i < TOTALCONTROLMARK; i++) {
+		int sx, sy, at, ow;
+		float z;
+
+		if (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
+			continue;
+
+		if (controlMark[i].owner != ownerObj)
+			continue;
+
+		//같은 동료가 여러 장을 들고 있을 수 있다. 지금 쓰는 그 스킬만 옮긴다.
+		if (skillIdx >= 0 && controlMark[i].attackType != skillIdx)
+			continue;
+
+		//------------------------------------------------------------------
+		// 다시 날릴 때는 SetControlMark() 로 새로 세운다
+		//
+		// 전에는 targetX/frame2 같은 칸을 손으로 몇 개만 바꿨다. 그러면 앞
+		// 비행이 남긴 나머지(dx/dy, zoom, zoomEnd, alpha, waitingFrame ...)가
+		// 그대로 남아 서로 안 맞는 상태가 된다.
+		//
+		// 이 판에서 마크를 날리는 자리(룰렛 끝, 매치 합치기)는 전부
+		// "frame 을 0으로 놓고 SetControlMark 를 다시 부른다"로 되어 있다.
+		// 여기도 같은 방식을 쓴다. 그래야 모든 칸이 한 번에 정해진다.
+		//------------------------------------------------------------------
+		sx = controlMark[i].x;
+		sy = controlMark[i].y;
+		at = controlMark[i].attackType;
+		ow = controlMark[i].owner;
+		z = controlMark[i].zoom2;		//지금 보이는 크기에서 이어 간다
+
+		CCLOG("[MARK] %d번 마크(주인 %d, 스킬 %d) (%d,%d) -> (%d,%d)",
+			i, ow, at, sx, sy, hx, hy);
+
+		controlMark[i].frame = 0;
+		controlMark[i].frame2 = 0;
+
+		SetControlMark(
+			sx, sy,
+			hx, hy + 8 * _2X,
+			hx, hy,
+			8 * _2X, 1 * _2X,
+			8 * _2X, 1 * _2X,
+			FLY_T, FLY_T,
+			false,
+			30, 1,
+			at, 1,
+			z, ROULETTE_CARD_LAND_ZOOM + 0.1f, 0.10f / MOTIONDIV,
+			ROULETTE_CARD_LAND_ZOOM + 0.1f, ROULETTE_CARD_LAND_ZOOM, -0.10f / MOTIONDIV,
+			false,
+			false, false, false,
+			ow,
+			false
+		);
+		return;
+	}
+
+	CCLOG("[MARK] 주인 %d 스킬 %d 인 마크를 못 찾았다", ownerObj, skillIdx);
+}
+
+//이미 자리에 서 있는 오브젝트 머리 위로 옮긴다.
+void MoveControlMarkToObj(int ownerObj, int skillIdx, int destObj)
+{
+	int hx, hy;
+
+	if (destObj < 0 || destObj >= TOTALOBJECT)
+		return;
+
+	GetMarkHeadPos(destObj, &hx, &hy);
+	MoveControlMarkTo(ownerObj, skillIdx, hx, hy);
+}
+
+//아직 없는 오브젝트가 "설 자리"로 옮긴다. 소환이 여기를 쓴다.
+void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY)
+{
+	int hx, hy;
+
+	//소환될 히어로는 주인공과 같은 배율로 그려진다(SUMMONHERO 가 zoom 을
+	//ao[PLAYER].zoom 으로 잡는다).
+	GetMarkHeadPosAt(footX, footY, ao[PLAYER].zoom, &hx, &hy);
+	MoveControlMarkTo(ownerObj, skillIdx, hx, hy);
+}
 
 // =========================
 // 캐릭터 점수 계산 (등급 기준)
@@ -60,6 +242,26 @@ void DecideRouletteResult(void)
 	}
 
 	if (crewCnt <= 0) return;
+
+	//----------------------------------------------------------------
+	// 시연용 고정
+	//
+	// 편성 여섯 명 중 뒤 세 명이 릴 0/1/2 에 순서대로 선다. 세 명이 각각
+	// 다른 히어로 스킬을 물고 있어서, 한 판만 돌려도 셋을 다 보여줄 수 있다.
+	//
+	// 타이틀에서 AVK_MAXGAME 으로 들어왔을 때만 켜진다. 일반 플레이에는
+	// 이 플래그가 서지 않는다.
+	//----------------------------------------------------------------
+	if (gDemoForceRoulette && crewCnt >= TOTALREEL) {
+		for (int r = 0; r < TOTALREEL; r++) {
+			gRouletteStartAoOffset[r] = r;
+			gRouletteResultAoOffset[r] = crewCnt - TOTALREEL + r;
+		}
+
+		gRouletteResultCnt = TOTALREEL;
+		gRouletteResultValid = true;
+		return;
+	}
 
 	//이번 판에 실제로 돌릴 릴 수. 동료가 3명이 안 되면 남는 릴은 -1로 남겨
 	//자물쇠만 그리고 턴에서도 건너뛴다.
@@ -993,7 +1195,7 @@ void RouletteDraw(int x, int y, float zoom)
 							gRouletteSkillIdx[i] = ao[CREW + gRouletteResultAoOffset[i]].getSkillList[0];
 
 							float z0 = 0.10f;
-							float z1 = 0.60f;
+							float z1 = ROULETTE_CARD_SETTLE_ZOOM;
 
 							int iconX = (int)centerX;
 							int iconY = (int)(centerY + 64 * _2X);
@@ -1440,42 +1642,48 @@ void RouletteDraw(int x, int y, float zoom)
 					//그만큼 아래로 내려앉아 캐릭터를 덮었다.
 					//날아가서 멈출 때의 배율은 아래 SetControlMark에 넘기는
 					//zoomEnd2(zoom - 0.3f)다. 그 크기로 계산해야 도착점이 맞는다.
-					float markZoom = Max(0.1f, controlMark[i].zoom - 0.3f);
-					int markLift = (int)((float)ROULETTECARDSIZE_Y * markZoom / 2);
+					int skillIdx = controlMark[i].attackType;
+					int skillType = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
 
-					int targetObj;
-					switch (skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
-					case ACTIVE:
-					case PASSIVE:
-					case HEROSKILL:
-						targetObj = skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_TARGET];
-						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
-						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
-						//여기서 더하면 그 폭만큼 옆으로 밀린다.
-						destX = ao[targetObj].x - rx;
-						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
-						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
-						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE
-							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
-
-						break;
+					switch (skillType) {
 					case SUMMON:
-						targetObj = skillData[controlMark[i].attackType * SKILLDATASIZE + SKILLDATA_TARGET];
-						destX = ao[targetObj].nx = ao[targetObj].x = DX / 2;//ao[ROBIN].x + TSIZE;
-						destY = ao[targetObj].ny = ao[targetObj].y = ao[ROBIN].y + monXYGap[(ao[targetObj].type - 3) * 2 + 1];// -32 * _2X;
+					{
+						int summonX = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1];
+
+						//기존 SUMMON 데이터는 x 칸이 예약값(4)으로 남아 있다.
+						//그 경우에만 실제 소환 로직이 쓰는 화면 중앙을 쓴다.
+						if (summonX == SKILLDATA_RESERVED1)
+							summonX = DX / 2;
+
+						GetMarkHeadPosAt(summonX, (int)ao[ROBIN].y,
+							SUMMONZOOM, &destX, &destY);
+						break;
+					}
+					case SUMMONHERO:
+						//소환 자체가 아니라 스킬 데이터에 기록된 소환 위치로 보낸다.
+						GetMarkHeadPosAt(
+							skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1],
+							(int)ao[ROBIN].y, ao[PLAYER].zoom, &destX, &destY);
+						break;
+					case HEROSKILL:
+						//히어로 스킬은 화면에 있는 첫 히어로(ROBIN) 위로 보낸다.
+						GetMarkHeadPos(ROBIN, &destX, &destY);
 						break;
 					default:
-						targetObj = controlMark[i].owner;
-						//그리는 쪽(DrawSkillCard 호출부)이 xOffset을 다시 더한다.
-						//슬롯에 놓이는 카드도 xOffset 없는 좌표(centerX)를 넣으므로
-						//여기서 더하면 그 폭만큼 옆으로 밀린다.
-						destX = ao[targetObj].x - rx;
-						//캐릭터가 그려지는 윗변(PxlUp = y + cpy)에서 카드 절반만큼 띄운다.
-						//예전에는 발밑(ao.y)에서 48*_2X 고정으로 올렸는데, 그 값은
-						//히어로 키에 맞춘 것이라 키가 다른 동료는 마크가 붕 떴다.
-						destY = STATUSWIN_Y + (rh - 4) * TSIZE
-							- (PxlUp(&ao[targetObj]) - OBJIMGGAP) - ry + markLift;
+						//----------------------------------------------------
+						// 카드는 그 카드를 뽑은 동료 위로 간다
+						//
+						// 전에는 ACTIVE / PASSIVE / HEROSKILL 이 따로 갈려서
+						// SKILLDATA_TARGET 을 오브젝트 번호로 썼다. 그런데
+						// HEROSKILL 행의 TARGET 은 "어느 히어로가 대신 쓰는가"
+						// (ROBIN=0 / DIANA=1 / MAXX=2)다. 그걸 ao[] 첨자로
+						// 쓰면 ao[0] = 주인공이 되어, 동료가 뽑은 카드가
+						// 주인공 머리 위로 날아갔다.
+						//
+						// 소환(SUMMON)만 예외다. 소환수가 설 자리로 가야 하니
+						// 위에서 따로 잡는다. 나머지는 전부 뽑은 동료 위다.
+						//----------------------------------------------------
+						GetMarkHeadPos(controlMark[i].owner, &destX, &destY);
 
 						break;
 					}
@@ -1494,8 +1702,9 @@ void RouletteDraw(int x, int y, float zoom)
 						false,
 						30, 1,
 						controlMark[i].attackType, 1,
-						controlMark[i].zoom, controlMark[i].zoom - 0.1f, controlMark[i].zoomIncrement,
-						controlMark[i].zoom - 0.1f, controlMark[i].zoom - 0.3f, controlMark[i].zoomIncrement2,
+						controlMark[i].zoom, ROULETTE_CARD_LAND_ZOOM,
+						(ROULETTE_CARD_LAND_ZOOM - controlMark[i].zoom) / (float)FLY_T,
+						ROULETTE_CARD_LAND_ZOOM, ROULETTE_CARD_LAND_ZOOM, 0.0f,
 						false,
 						false, false, false,
 						controlMark[i].owner,

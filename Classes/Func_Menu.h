@@ -100,6 +100,10 @@ void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);
 void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onlyInfo);
 //동료 상세보기. winH는 (x, y)부터 아래로 쓸 수 있는 높이(픽셀)다.
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH);
+
+//장비 상세보기(팝업). 동료 상세와 같은 틀을 쓴다.
+//얻지 않은 장비는 여기까지 오지 않는다(Func_Input.cpp에서 막는다).
+void EquipDetailDraw(ITEM* it);
 void ItemOptionCompareDraw(ITEM * it1, ITEM * it2, int x, int y, float zoom);
 void ItemOptionDraw(ITEM * it, int x, int y, float zoom, bool equipped);
 void EquipInfoDraw(ITEM * it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom);

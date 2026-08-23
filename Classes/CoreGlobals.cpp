@@ -1398,6 +1398,7 @@ int rouletteFrame;
 // 3개 다 확정 후 "한 번만" 합성/이동 연출 트리거
 bool gRouletteSkillDispatchStarted = false;
 
+bool gDemoForceRoulette = false;
 bool gRouletteResultValid = false;
 
 int blState = BL_REVEAL;

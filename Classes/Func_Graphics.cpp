@@ -58,6 +58,36 @@ static void HitZoomSetCenter(int x, int y)
 	}
 }
 
+//포커스 대상의 화면 X를 중앙으로 보내기 위한 실제 확대 중심을 계산한다.
+//HitZoomPoint()는 중심 자체를 고정하고 주변을 벌리는 방식이므로 대상 좌표를
+//그대로 중심으로 주면 카메라는 이동하지 않는다. 아래 역산으로 필요한 이동을
+//만들되, 디오라마의 왼쪽 끝이 0보다 오른쪽으로 들어와 빈 공간이 보이지 않게 한다.
+static void HitZoomSetFocusCenter(int focusX, int focusY, float targetZoom)
+{
+	float screenCenterX = (float)DX / 2;
+	float dioramaLeft = (float)xOffset + (float)DX / 2
+		- (float)DIORAMASIZE_X * dioramaZoom / 2;
+	float translationX;
+	float centerX;
+
+	if (targetZoom <= 1.001f) {
+		HitZoomSetCenter(focusX, focusY);
+		return;
+	}
+
+	//확대 뒤 좌표는 x * zoom + translation이다.
+	translationX = screenCenterX - (float)focusX * targetZoom;
+
+	//디오라마 왼쪽 끝: dioramaLeft * zoom + translation <= 0
+	translationX = Min(translationX, -dioramaLeft * targetZoom);
+	centerX = translationX / (1.0f - targetZoom);
+
+	HitZoomSetCenter((int)centerX, focusY);
+	//X축은 매 프레임 포커스 대상을 정확히 따라가야 하므로 기존의 절반 보간을
+	//적용하지 않는다. Y축의 부드러운 이동은 HitZoomSetCenter()에 그대로 둔다.
+	hitZoomCX = centerX;
+}
+
 //연출 줌을 건다. obj는 ao[] 인덱스이고, 그 대상을 FOCUSZOOMHOLD 동안 당겨 본다.
 //데모의 EFFECT_FOCUS처럼 카메라를 옮기는 자리에서 같이 불러주면 된다.
 //공격 줌이 걸려 있는 동안에는 무시한다 - 전투 연출이 우선이고, 두 줌이 같은
@@ -273,7 +303,47 @@ static int HitZoomAttacker(void)
 			return i;
 	}
 
+	//동료 스킬로 호출된 디아나/MAXX는 공용 SOLDIER 칸에서 공격한다.
+	//기존 TOTALCHAR 검색 범위 밖이라 히어로 공격 줌에서 빠져 있었다.
+	if (ao[SOLDIER].active && ao[SOLDIER].attack
+		&& (ao[SOLDIER].type == DIANA || ao[SOLDIER].type == MAXX))
+		return SOLDIER;
+
 	return -1;
+}
+
+//현재 공격자와 실제로 데미지를 받고 있는 몬스터가 한 화면에 들어오도록
+//X축 포커스와 허용 줌을 계산한다. 아직 히트가 없으면 공격자만 바라본다.
+static void HitZoomGetCombatView(int attacker, float* focusWX, float* zoomMax)
+{
+	int i;
+	int minX = (int)ao[attacker].x;
+	int maxX = minX;
+	bool targetFound = false;
+	float viewWidth;
+
+	for (i = 0; i < TOTALHITMARK; i++) {
+		int target = dmgInfo[i].pos;
+
+		//총탄은 owner가 공격 히어로가 아니라 탄환의 mom/별도 슬롯으로
+		//기록될 수 있다. 공격 연출 중 발생한 적의 피격은 소유자와 관계없이
+		//카메라에 포함해야 유도미사일과 부메랑 타격도 놓치지 않는다.
+		if (dmgInfo[i].type == 0)
+			continue;
+		//막타로 active가 먼저 꺼진 경우에도 데미지 숫자가 남아 있는 동안은
+		//마지막 피격 위치를 보여준다.
+		if (target < ENEMY || target >= NEUTRAL)
+			continue;
+
+		minX = Min(minX, (int)ao[target].x);
+		maxX = Max(maxX, (int)ao[target].x);
+		targetFound = true;
+	}
+
+	*focusWX = targetFound ? (float)(minX + maxX) / 2 : ao[attacker].x;
+	viewWidth = (float)(maxX - minX) + 96.0f * _2X;
+	*zoomMax = Min(HITZOOMMAX,
+		Max(1.0f, (float)(DX - 2 * xOffset) / viewWidth));
 }
 
 //한 프레임 진행. 공격이 시작되면 공격자를 중심으로 당기고, 공격이 진행되는
@@ -287,8 +357,20 @@ void HitZoomUpdate(void)
 
 	//어떤 이유로 attack이 안 풀려도 화면이 확대된 채 굳지 않게 상한을 둔다.
 	if (attacker >= 0 && hitZoomFrame < HITZOOMMAXHOLD) {
-		HitZoomSetCenter(xOffset + (int)ao[attacker].x - rx,
-			STATUSWIN_Y + (rh - 4) * TSIZE - (int)ao[attacker].y - ry);
+		float focusWX;
+		float combatZoomMax;
+		float nextZoom;
+
+		HitZoomGetCombatView(attacker, &focusWX, &combatZoomMax);
+		if (hitZoom > combatZoomMax)
+			nextZoom = combatZoomMax;
+		else
+			nextZoom = Min(combatZoomMax,
+				hitZoom + (HITZOOMMAX - 1.0f) / HITZOOMINFRAME);
+
+		HitZoomSetFocusCenter(xOffset + (int)focusWX - rx,
+			STATUSWIN_Y + (rh - 4) * TSIZE - (int)ao[attacker].y - ry,
+			nextZoom);
 
 		hitZoomFrame++;
 		hitStopFrame++;	//공격 중에는 월드를 절반 속도로 돌린다
@@ -296,9 +378,7 @@ void HitZoomUpdate(void)
 		//공격이 시작되면 연출 줌은 자리를 내준다.
 		ClearFocusZoom();
 
-		hitZoom += (HITZOOMMAX - 1.0f) / HITZOOMINFRAME;
-		if (hitZoom > HITZOOMMAX)
-			hitZoom = HITZOOMMAX;
+		hitZoom = nextZoom;
 	}
 	//연출 줌(EFFECT_FOCUS, 요청 큐). 대상이 사라지면 바로 놓는다.
 	else if (focusZoomFrame > 0
@@ -315,14 +395,15 @@ void HitZoomUpdate(void)
 			wy = ao[focusZoomObj].y;
 		}
 
-		HitZoomSetCenter(xOffset + (int)wx - rx,
-			STATUSWIN_Y + (rh - 4) * TSIZE - (int)wy - ry);
+		float nextZoom = Min(focusZoomMax,
+			hitZoom + (focusZoomMax - 1.0f) / FOCUSZOOMINFRAME);
+		HitZoomSetFocusCenter(xOffset + (int)wx - rx,
+			STATUSWIN_Y + (rh - 4) * TSIZE - (int)wy - ry,
+			nextZoom);
 
 		focusZoomFrame--;
 
-		hitZoom += (focusZoomMax - 1.0f) / FOCUSZOOMINFRAME;
-		if (hitZoom > focusZoomMax)
-			hitZoom = focusZoomMax;
+		hitZoom = nextZoom;
 	}
 	else {
 		hitZoomFrame = 0;
@@ -4891,6 +4972,33 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 	}
 }
 
+//히어로 스킬 한 줄에서 아이콘 번호를 꺼낸다.
+//
+// [칸의 뜻이 두 가지다]
+// skillData 는 한 배열에 두 종류의 줄이 섞여 있다.
+//
+//     히어로 스킬 줄(ACTIVE/PASSIVE, 0~1160)
+//         ACTIVE, 30, FPS*15, SKILL_ROBIN8, 5, 1, ...
+//                                              ^ 5번 칸이 아이콘
+//
+//     동료 스킬 줄(CREWBULLET/SUMMON/HEROSKILL, 1161~)
+//         CREWBULLET, ENEMY, ..., 51, GRADE_NORMAL
+//                                 ^ 27번 칸(SKILLDATA_ICON)이 아이콘
+//
+// 이름은 SKILLDATA_RESERVED2 라 "예약"처럼 보이지만 히어로 줄에서는 아이콘이다.
+// Func_Battle 의 전투 중 스킬 표시와 Func_Item 의 단축키 아이콘이 예전부터
+// 5번 칸을 읽고 있었다. 그쪽이 맞다.
+//
+// 이걸 모르고 히어로 줄에 SKILLDATA_ICON(27)을 쓰면 엉뚱한 숫자가 나온다.
+// 마구찌르기는 27번 칸이 50이라 sIcon.png 의 빈 칸을 그려서 아무것도 안 보였다.
+int GetHeroSkillIcon(int heroSkillIdx)
+{
+	if (heroSkillIdx < 0 || heroSkillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[heroSkillIdx * SKILLDATASIZE + SKILLDATA_RESERVED2];
+}
+
 void DrawSkillIcon(int idx, int x, int y, float zoom)
 {
 	DrawImage(SKILLICONSIZE, SKILLICONSIZE, (idx % 16) * SKILLICONSIZE, (idx / 16) * SKILLICONSIZE, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[SICON_IMG], SICON_IMG);
@@ -4949,6 +5057,35 @@ void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame)
 }
 
 //�ϴ� ��Ƽ�� ��ų�� ��쿡��?����Ѵ�?
+static void DrawSkillCardWinFrame(int x, int y, float w, float h, float z)
+{
+	const int sx = 418, sy = 508, sw = 198, sh = 198, cap = 44;
+	float c = (float)cap * z;
+	int sm = sw - cap * 2;
+	int tm = sh - cap * 2;
+
+	if (w < c * 2) c = w / 2;
+	if (h < c * 2) c = h / 2;
+
+	float kx = (w - c * 2) / (float)sm;
+	float ky = (h - c * 2) / (float)tm;
+	float sc = c / (float)cap;
+	float xl = (float)x, xm = x + c, xr = x + w - c;
+	float yt = (float)y, ym = y - c, yb = y - (h - c);
+	int srcRight = sx + sw - cap;
+	int srcBottom = sy + sh - cap;
+
+	DrawImageScale(cap, cap, sx, sy, xl, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, cap, sx + cap, sy, xm, yt, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, cap, srcRight, sy, xr, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, tm, sx, sy + cap, xl, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
+	//가운데 판은 그리지 않는다. 아이콘 위에는 win.png의 테두리 조각만 올린다.
+	DrawImageScale(cap, tm, srcRight, sy + cap, xr, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, cap, sx, srcBottom, xl, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(sm, cap, sx + cap, srcBottom, xm, yb, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
+	DrawImageScale(cap, cap, srcRight, srcBottom, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+}
+
 void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 {
 	float w = (float)SKILLCARDSIZE_X * zoom;
@@ -4963,10 +5100,6 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 	//curStar = maxStar = GetItemStar(type, detail, grade);
 	curStar = 0;
 	maxStar = ITEMMAXLEVEL;
-
-	DrawFrame(x, y, w, h, FRAME_SHOPBALLOON);
-
-
 
 	//아이콘은 카드 안쪽 폭(64픽셀)에 맞춘다. SKILLICONSIZE와 CREWBULLETICONSIZE가
 	//둘 다 32*_2X라 2배로 그리면 정확히 64픽셀 자리를 채운다.
@@ -5006,9 +5139,19 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 			if (heroSkill < 0 || heroSkill >= gTotalSkill)
 				heroSkill = skillIdx;
 
-			DrawSkillIcon(skillData[heroSkill * SKILLDATASIZE + SKILLDATA_ICON],
-				iconX, iconY, iconZoom);
+			//히어로 줄의 아이콘은 27번이 아니라 5번 칸이다.
+			DrawSkillIcon(GetHeroSkillIcon(heroSkill), iconX, iconY, iconZoom);
 		}
+		break;
+
+	case SUMMONHERO:
+		//히어로를 불러 세워서 쓰게 하는 카드. 무엇이 나오느냐보다 무슨
+		//스킬이 터지느냐가 먼저 보여야 하므로 그 스킬의 아이콘을 쓴다.
+		//히어로 스킬 번호는 OBJECTDETAILINFO 칸에 있다(SUMMONHERO 는
+		//OBJECTINFO 를 "어느 히어로"에 쓰기 때문이다).
+		DrawSkillIcon(GetHeroSkillIcon(
+			skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO]),
+			iconX, iconY, iconZoom);
 		break;
 
 	default:
@@ -5016,6 +5159,11 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 			iconX, iconY, iconZoom);
 		break;
 	}
+
+	//하얀 DrawFrame이 아니라 상세보기에서 쓰는 win.png 금테 조각만
+	//마지막에 올린다. 가운데는 투명하므로 아이콘을 가리지 않는다.
+	DrawSkillCardWinFrame(x, y, w, h, zoom);
+
 }
 
 

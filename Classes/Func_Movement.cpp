@@ -44,7 +44,11 @@ int GetSonObjCnt(int mom)
 	int i;
 	int cnt = 0;
 	for (i = BULLET; i < ENEMY; i++) {
-		if (ao[i].active && !ao[i].dead) {
+		//일반 탄환은 mom, 히어로 스킬 탄환은 target에 발사자를 보관한다.
+		//예전에는 mom 인자를 무시하고 화면의 모든 탄환을 세어서,
+		//관계없는 탄환 하나만 남아도 해당 캐릭터의 턴이 끝나지 않았다.
+		if (ao[i].active && !ao[i].dead
+			&& (ao[i].mom == mom || ao[i].target == mom)) {
 			cnt++;
 		}
 	}
@@ -1636,6 +1640,35 @@ void PlayerMove(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int height = 0;
 	int playerMoveKey = systemKey;
+	int callerSkill;
+
+	//동료의 HEROSKILL로 불러온 히어로는 turn 자체가 아니다.
+	//스킬 종료 순간에 유도탄이 남아 있었다면 기존 _END 분기는
+	//한 번만 검사하고 빠져나가므로, 마지막 탄이 사라진 뒤에도 여기서 재검사한다.
+	if (drawHandle == MD_PLAY && attackSequence == ATTACKSEQUENCE_ACTION
+		&& turn >= CREW && turn < CREW + MAXCREW
+		&& pObj->turnPosition == COMING && GetSonObjCnt(obj) == 0) {
+		callerSkill = ao[turn].currentSkill;
+
+		if (callerSkill >= 0 && callerSkill < gTotalSkill) {
+			int callerType = skillData[callerSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
+
+			if (callerType == HEROSKILL && obj >= 0 && obj < TOTALCHAR
+				&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_TARGET] == obj) {
+				pObj->turnPosition = HERE;
+				WhoIsNextTurn();
+				return;
+			}
+
+			if (callerType == SUMMONHERO && obj == SOLDIER) {
+				pObj->drawHandler = VANISHDRAW;
+				pObj->moveHandler = VANISHMOVE;
+				pObj->frame = 0;
+				onceDmgUpdateFrame = 2 * FPS;
+				return;
+			}
+		}
+	}
 
 	//if (pObj->invincible)
 	//	pObj->invincible--;
@@ -3727,6 +3760,7 @@ int PlayerMove_Attack(OBJECT* pObj, int released)
 
 void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 {
+	static int guidedShotCount[TOTALOBJECT] = { 0 };
 	int i, j, cnt;
 	int xy;
 	const short* sPtr;
@@ -3814,22 +3848,15 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			pObj->turnPosition = COMING;//다시 제위치로 복귀
 			//만약 소환이면
 			if (GetObjFromPtr(pObj) == SOLDIER) {
-				//솔져
-				j = 0;
-				if (pObj->type == MAXX) {
-					for (i = BULLET; i < ENEMYUSEROBJ; i++) {
-						if (ao[i].active == true)
-							j++;
-					}
-
-					if (j == 0) {
-						pObj->drawHandler = VANISHDRAW;
-						pObj->moveHandler = VANISHMOVE;
-						onceDmgUpdateFrame = 2 * FPS;
-						pObj->frame = 0;
-					}
-					return;
+				//소환 히어로는 종류와 관계없이 자신이 만든 탄환이 모두
+				//사라진 뒤 소멸하고, 동료의 DMGUPDATE 턴 타이머를 시작한다.
+				if (GetSonObjCnt(SOLDIER) == 0) {
+					pObj->drawHandler = VANISHDRAW;
+					pObj->moveHandler = VANISHMOVE;
+					onceDmgUpdateFrame = 2 * FPS;
+					pObj->frame = 0;
 				}
+				return;
 			}
 			//만약 주인공이고 동료들에 의해 스킬이 발동되었다면
 			else if (GetObjFromPtr(pObj) != turn && GetObjFromPtr(pObj) < TOTALCHAR && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
@@ -3953,6 +3980,20 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		}
 		break;
 	case _ADDBULLET:
+		if (pObj->attack == DIANA_SKILL_GUIDEDSHOT) {
+			//모든 이벤트를 사용해 정확히 8프레임마다 한 발씩 쏜다.
+			int guidedEvent = (pObj->attackFrame - DIANA_SKILL_GUIDEDSHOT_START - 36) / 8;
+			int shooter = GetObjFromPtr(pObj);
+
+			if (guidedEvent == 0 && shooter >= 0 && shooter < TOTALOBJECT)
+				guidedShotCount[shooter] = 0;
+
+			if (guidedEvent < 0 || guidedEvent > 51
+				|| shooter < 0 || shooter >= TOTALOBJECT
+				|| guidedShotCount[shooter] >= 30)
+				break;
+		}
+
 		for (cnt = -1, i = BULLET; i < ENEMY; i++) {
 			objPtr = &ao[i];
 
@@ -3995,7 +4036,21 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 				case DIANA_SKILL_GUIDEDSHOT:
 					objPtr->dx = DIR(objPtr->dirF) * 5 * _2X;
 					objPtr->dy = 3 * _2X - Random(7) * _2X;
-					objPtr->status = 12 + Random(6);
+					//status가 작을수록 128프레임 누적까지 오래 걸린다.
+					//최솟값 10으로 고정해 선회 모습을 충분히 보여준 뒤 유도한다.
+					objPtr->status = 10;
+
+					//30발째를 쏘면 남은 발사 이벤트를 건너뛰고 종료 동작으로 간다.
+					//미사일 자체의 15프레임 선회 시간은 그대로 유지한다.
+					{
+						int shooter = GetObjFromPtr(pObj);
+						if (shooter >= 0 && shooter < TOTALOBJECT) {
+							guidedShotCount[shooter]++;
+
+							if (guidedShotCount[shooter] == 30)
+								pObj->attackFrame = DIANA_SKILL_GUIDEDSHOT_START + 447;
+						}
+					}
 					break;
 				case DIANA_SKILL_SATELLITESHOT:
 					objPtr->dirX = (objPtr->x - rx > DX / 2) ? LEFT : RIGHT;
@@ -7837,6 +7892,11 @@ void BulletBombMove(OBJECT* pObj)
 void BulletGuidedMove(OBJECT* pObj)
 {
 	int rt;
+	int shooter = pObj->target;
+
+	//frame은 유도 가속에도 쓰여 수명 카운터로 쓸 수 없다.
+	//turn은 이 탄환에서 쓰지 않는 칸이므로 독립 수명으로 쓴다.
+	pObj->turn++;
 
 	if (pObj->status >= 10) {
 		pObj->frame += pObj->status;
@@ -7845,7 +7905,8 @@ void BulletGuidedMove(OBJECT* pObj)
 		if (pObj->dx)
 			pObj->dx -= DIR(pObj->dirF) * _2X;
 
-		if (pObj->frame >= 16 * 8) {
+		//생성된 뒤 15프레임 동안 선회한 다음 유도를 시작한다.
+		if (pObj->turn >= 15) {
 			pObj->status = 0;
 			pObj->frame = 2;
 
@@ -7877,8 +7938,16 @@ void BulletGuidedMove(OBJECT* pObj)
 			}
 
 
-			if (BoundaryCheck(pObj))
+			if (BoundaryCheck(pObj) || pObj->turn > 3 * FPS) {
 				memset(pObj, 0, sizeof(OBJECT));
+
+				//동료가 불러낸 디아나는 자신의 턴이 아니라서 복귀 루프에서
+				//다음 턴을 재검사하지 않는다. 마지막 미사일이면 여기서 넘긴다.
+				if (shooter >= 0 && shooter < TOTALCHAR && shooter != turn
+					&& ao[shooter].turnPosition == COMING && GetSonObjCnt(shooter) == 0)
+					WhoIsNextTurn();
+				return;
+			}
 		}
 		else if (pObj->attack != pObj->target) {
 
@@ -7948,7 +8017,22 @@ void BulletGuidedMove(OBJECT* pObj)
 #endif
 
 			memset(pObj, 0, sizeof(OBJECT));
+
+			if (shooter >= 0 && shooter < TOTALCHAR && shooter != turn
+				&& ao[shooter].turnPosition == COMING && GetSonObjCnt(shooter) == 0)
+				WhoIsNextTurn();
+			return;
 		}
+	}
+
+	//대상이 살아 있어도 충돌하지 못하고 지나치는 경우가 있다.
+	//그 경우도 유도탄을 정리해 턴이 무한히 멈추지 않게 한다.
+	if (pObj->turn > 3 * FPS) {
+		memset(pObj, 0, sizeof(OBJECT));
+
+		if (shooter >= 0 && shooter < TOTALCHAR && shooter != turn
+			&& ao[shooter].turnPosition == COMING && GetSonObjCnt(shooter) == 0)
+			WhoIsNextTurn();
 	}
 }
 
@@ -7989,6 +8073,10 @@ void BulletHealMove(OBJECT* pObj)
 void BulletBoomerangMove(OBJECT* pObj)
 {
 	int i, rt;
+
+	//부메랑의 충돌 검사는 이동 두 프레임마다 한 번만 수행한다.
+	//turn은 부메랑 오브젝트에서 사용하지 않으므로 독립 판정 타이머로 쓴다.
+	pObj->turn++;
 	
 	if (!pObj->motion) {
 		boomerangAway[pObj->target] = false;
@@ -8174,9 +8262,27 @@ void BulletBoomerangMove(OBJECT* pObj)
 		//for (i = PLAYER; i < PLAYERALL; i++) {
 		for (i = ROBIN; i < SOLDIER + 1; i++) {
 			if (pObj->target == i) {
-				if (ObjCrash(&ao[i], pObj)) {
+				//빠른 복귀 중에는 한 프레임 사이에 충돌 사각형을 통과할 수 있다.
+				//사각 충돌뿐 아니라 소유자 중심 근처까지 오면 잡힌 것으로 처리한다.
+				if (ObjCrash(&ao[i], pObj)
+					|| DistanceCheck(&ao[i], pObj, 24 * _2X)) {
 					pObj->active = false;
 					boomerangAway[pObj->target] = false;
+
+					//소환 MAXX는 부메랑을 받은 순간 공격이 끝난 것이다.
+					//비활성화된 부메랑은 다음 프레임에 이동 함수가 다시 불리지 않으므로,
+					//여기서 소멸 연출과 다음 턴 대기 타이머를 직접 시작한다.
+					if (i == SOLDIER && ao[i].type == MAXX
+						&& GetSonObjCnt(i) == 0) {
+						ao[i].attack = 0;
+						ao[i].attackFrame = 0;
+						ao[i].turnPosition = COMING;
+						ao[i].drawHandler = VANISHDRAW;
+						ao[i].moveHandler = VANISHMOVE;
+						ao[i].frame = 0;
+						onceDmgUpdateFrame = 2 * FPS;
+						return;
+					}
 
 					//부메랑을 받을때, 다람쥐로 변신한 상태라면 스탑모션을 하지 않는다.
 					if (ao[i].attack == 0) {
@@ -8212,8 +8318,22 @@ void BulletBoomerangMove(OBJECT* pObj)
 
 	InitMotion(pObj);
 
-	if (pObj->status || pObj->attack >= ATTACK_SKILL) {
+	if (pObj->hitCount < 35 && pObj->turn % 2 == 0
+		&& (pObj->status || pObj->attack >= ATTACK_SKILL)) {
 		rt = AttackEnemyCheck(GetObjFromPtr(pObj));
+
+		if (rt) {
+			pObj->hitCount++;
+
+			//35히트에 도달하면 공격 판정만 끝내고 MAXX에게 복귀시킨다.
+			//부메랑 오브젝트는 위의 복귀 충돌에서 MAXX가 잡을 때 제거된다.
+			if (pObj->hitCount >= 35) {
+				pObj->etc = 6;
+				pObj->status = 0;
+				pObj->frame = 5;
+			}
+		}
+
 		if (rt && pObj->attack == MAXX_SKILL_HORMING) {
 #ifdef HOMINGHUNTCURSE
 			ao[rt].debuf[CURSE] = CURSE_START_FRAME / 2;//적에게 걸 때는 절반
@@ -10739,6 +10859,16 @@ void VanishMove(OBJECT* pObj)
 	else {
 		startObj = ENEMY;
 		endObj = NEUTRAL;
+	}
+
+	//소환 MAXX가 사라지면 이 MAXX가 던진 부메랑도 같이 정리한다.
+	//부메랑은 target에 자신을 던진 히어로 오브젝트를 보관한다.
+	if (obj == SOLDIER && pObj->type == MAXX && pObj->frame == 0) {
+		for (i = BULLET; i < ENEMY; i++) {
+			if (ao[i].active && ao[i].moveHandler == BULLETBOOMERANGMOVE
+				&& ao[i].target == obj)
+				memset(&ao[i], 0, sizeof(OBJECT));
+		}
 	}
 
 	pObj->frame++;
@@ -13782,12 +13912,6 @@ void CrewMove(OBJECT* pObj)
 							pObj->target = NearEnemy(pObj);
 							pObj->turnPosition = THERE;//바로 결과로.
 
-							for (i = 0; i < TOTALCONTROLMARK; i++) {
-								if (controlMark[i].owner == obj && controlMark[i].attackType == pObj->currentSkill) {
-									controlMark[i].alpha = 1;
-								}
-							}
-
 							attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
 							switch (attackType) {
 							case CREWBULLET:
@@ -13899,13 +14023,32 @@ void CrewMove(OBJECT* pObj)
 
 								break;
 							case HEROSKILL:
+								//이미 자리에 서 있는 히어로가 자기 스킬을 쓴다.
+								//자리에 없는 히어로를 불러내는 것은 아래 SUMMONHERO 가 한다.
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
 								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
 								SetHotKey(objPtr, HOTKEY_SKILL, objPtr->currentSkill, 0);
 								HotKeyPress(objPtr, 0);
 								break;
 							case SUMMONHERO:
+								//----------------------------------------------------------
+								//카드를 먼저 띄운다.
+								//
+								//ao[SOLDIER] 는 아직 이 히어로가 아니다. 앞서 그 칸을 쓰던 놈의
+								//좌표가 남아 있어서, 만든 뒤에 그 오브젝트를 읽어 카드를 보내면
+								//엉뚱한 데(화면 밖)로 날아간다.
+								//
+								//설 자리는 스킬 데이터가 이미 들고 있다. 오브젝트를 보지 말고
+								//그 값으로 자리를 잡는다. 그러면 만들기 전에도 보낼 수 있다.
+								//----------------------------------------------------------
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
+
+								//SOLDIER 칸은 디아나/MAXX 등 소환 히어로가 공유한다.
+								//이전 소환의 중독, attack, status, turnPosition을 남겨두면
+								//다음 히어로가 중독된 COMING 상태로 시작해 공격 전에 사라진다.
+								memset(objPtr, 0, sizeof(OBJECT));
+
 								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
 								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
@@ -13915,12 +14058,19 @@ void CrewMove(OBJECT* pObj)
 								objPtr->nx = objPtr->x = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1];
 								objPtr->ny = objPtr->y = ao[ROBIN].y;
 
+								CCLOG("[SUMMON] skill %d -> ao[%d] type %d / 실제자리(%d,%d) / 데이터값 x=%d, ROBIN.y=%d / 주인공(%d,%d)",
+									pObj->currentSkill, GetObjFromPtr(objPtr), objPtr->type,
+									(int)objPtr->x, (int)objPtr->y,
+									skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1], (int)ao[ROBIN].y,
+									(int)ao[PLAYER].x, (int)ao[PLAYER].y);
+
 								objPtr->dx = objPtr->dy = 0;
-								
+
 								objPtr->active = true;
 
 								objPtr->target = pObj->target;
 								objPtr->frame = 0;
+
 								pObj->turnPosition = DMGUPDATE;//바로 결과로.
 								//임시장비세팅
 								for (i = EQUIP_WEAPON; i < EQUIP_BOOTS; i++) {

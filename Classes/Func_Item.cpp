@@ -1580,6 +1580,13 @@ int GetHeroIdx(int type)
 	return cnt;
 }
 
+//히어로를 가지고 있는가.
+//
+//게임을 시작할 때 자리에 서는 히어로를 고르는 값이다. 여기를 항상 참으로
+//바꿨더니 시작하자마자 셋이 다 서 버렸다. 그러면 안 된다.
+//
+//동료 스킬로 부르는 소환은 이 검사를 타지 않는다. 그쪽은 ao[SOLDIER] 칸에
+//따로 세우므로(Func_Movement 의 SUMMONHERO) 여기와 상관이 없다.
 bool IsGetHero(int type)
 {
 	//if (type != MAXX)
@@ -1886,6 +1893,78 @@ long long GetCrewPower(int detail, int lv)
 		valueIdx = maxValue - 1;
 
 	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+}
+
+//==========================================================================
+// 장비 강화
+//
+// 동료 쪽(GetCrewUpgradeCost 등)과 같은 얼개다. 비용표도 모양이 같다.
+//     upgradeCostEquip[별 - 1][레벨 * 2 + (0:조각, 1:골드)]
+//==========================================================================
+
+int GetEquipMaxLevel(void)
+{
+	//표의 한 줄이 레벨마다 두 칸(조각, 골드)을 쓴다.
+	return upgradeCostEquip_COLS / 2;
+}
+
+//이번 레벨업에 드는 값. what이 0이면 조각 수, 1이면 골드다.
+//올릴 수 없는 상태면 0을 준다.
+long long GetEquipUpgradeCost(ITEM* it, int what)
+{
+	int star;
+
+	if (it == NULL)
+		return 0;
+
+	if (it->lv <= 0 || it->lv >= GetEquipMaxLevel())
+		return 0;
+
+	star = GetItemStar(it->type, it->detail, it->grade);
+
+	//표는 1성부터 6성까지다. 데이터가 어긋나면 표 밖을 읽는다.
+	if (star < 1 || star > upgradeCostEquip_ROWS)
+		return 0;
+
+	return upgradeCostEquip[star - 1][it->lv * 2 + (what ? 1 : 0)];
+}
+
+//조각과 골드가 둘 다 모였는지.
+bool CanEquipLevelUp(ITEM* it)
+{
+	long long needPiece = GetEquipUpgradeCost(it, 0);
+	long long needGold = GetEquipUpgradeCost(it, 1);
+
+	//올릴 수 없는 상태(최대 레벨/미보유)면 비용이 0으로 온다.
+	if (needPiece == 0 && needGold == 0)
+		return false;
+
+	return (long long)it->count >= needPiece && robin.gold >= needGold;
+}
+
+//이 장비를 그 레벨에서 썼을 때의 공격력.
+//
+//GetItemValue()가 지금 레벨의 값을 주는데, 레벨을 바꿔가며 물어볼 수가 없다.
+//그래서 레벨만 잠깐 갈아끼워 물어보고 되돌린다. 사본을 쓰므로 원본은 안 바뀐다.
+long long GetEquipPower(ITEM* it, int lv)
+{
+	ITEM tmp;
+
+	if (it == NULL)
+		return 0;
+
+	tmp = *it;
+	tmp.lv = (signed char)lv;
+
+	return GetItemValue(&tmp);
+}
+
+//가지고 있는 장비인가.
+//
+//레벨 0은 아직 안 얻은 것이다. 동료와 같은 규칙이다.
+bool IsEquipOwned(ITEM* it)
+{
+	return it != NULL && it->type != EMPTY && it->lv > 0;
 }
 
 int GetItemStar(int type, int detail, int grade)

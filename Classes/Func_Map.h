@@ -19,6 +19,7 @@ void ObjectSkillSetting(OBJECT * pObj);
 void WaveControler(void);
 long long GetTotalWaveHp(int stage);
 long long GetTotalEnemyHp(int stage);
+long long GetWaveHpTier(int tier);
 long long GetWaveHp(int waveIdx, int curWave);
 int SetEnemy(OBJECT *);
 void SetNpc(OBJECT *);

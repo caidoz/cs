@@ -183,17 +183,58 @@ void RefreshStat(OBJECT* pObj)
 				}
 			}
 
-			//방어구 합산
+			//----------------------------------------------------------
+			// 방어구 합산
+			//
+			// 전에는 다섯 슬롯이 전부 PS_ARMOR 로 갔다. 그런데 PS_ARMOR 를
+			// 읽는 곳이 전투에 없다. 이 파일에서 PS_ARMOR 는 자기 자신을
+			// 깎거나(0 미만 방지) 배율을 곱하는 데만 쓰이고, 대미지 계산
+			// (AttackObj)은 쳐다보지도 않는다. 그래서 어떤 방어구를 껴도
+			// 결과가 같았다.
+			//
+			// 이제 슬롯마다 다른 스탯으로 보낸다. 넷 다 엔진이 이미 읽고
+			// 있는 것들이라, 죽은 PS_ARMOR 를 되살리는 것보다 확실하다.
+			//
+			//     투구  PS_ABSORB   받는 피해 감소 % (GetAbsorb, 75% 상한)
+			//     갑옷  PS_VIT      최대 체력 (VIT_HP 배로 HP가 된다)
+			//     장갑  PS_DMGMOD   공격력 %
+			//     바지  PS_CRITDMG  치명타 피해 %
+			//     신발  PS_GOLDMOD  골드 획득 %
+			//
+			// 상세창 이름표는 itemValueTypeText[] 가 같은 순서로 들고 있다.
+			// 둘 중 하나만 고치면 표기와 실제가 어긋나므로 같이 봐야 한다.
+			//----------------------------------------------------------
 			if (i > EQUIP_WEAPON && i < EQUIP_NECK) {
+				long long armorValue;
+
+				//강화 반영. 값이 작을 때 배율을 쓰면 소수점이 잘려서 한
+				//단계를 올려도 그대로다. 그래서 작은 값만 덧셈으로 올린다.
 				if (it->cooldown) {
 					if (it->value < 10)
-						pObj->ps[PS_ARMOR] += RoundDiv((it->value + it->cooldown) * mod, 100);
+						armorValue = RoundDiv((it->value + it->cooldown) * mod, 100);
 					else
-						pObj->ps[PS_ARMOR] += RoundDiv(RoundDiv(it->value * (100 + it->cooldown * 10), 100) * mod, 100);
+						armorValue = RoundDiv(RoundDiv(it->value * (100 + it->cooldown * 10), 100) * mod, 100);
 				}
 				else
-					pObj->ps[PS_ARMOR] += RoundDiv(it->value * mod, 100);
+					armorValue = RoundDiv(it->value * mod, 100);
 
+				switch (i) {
+				case EQUIP_HELM:
+					pObj->ps[PS_ABSORB] += armorValue;
+					break;
+				case EQUIP_ARMOR:
+					pObj->ps[PS_VIT] += armorValue;
+					break;
+				case EQUIP_GLOVE:
+					pObj->ps[PS_DMGMOD] += armorValue;
+					break;
+				case EQUIP_PANTS:
+					pObj->ps[PS_CRITDMG] += armorValue;
+					break;
+				case EQUIP_BOOTS:
+					pObj->ps[PS_GOLDMOD] += armorValue;
+					break;
+				}
 
 				extraArmor += it->detail + 1;
 			}

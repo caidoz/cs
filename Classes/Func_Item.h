@@ -41,6 +41,20 @@ int GetCrewMaxLevel(void);
 long long GetCrewUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
 bool CanCrewLevelUp(ITEM* it);
 long long GetCrewPower(int detail, int lv);
+
+//---- 장비 강화 ----
+//
+// 동료 쪽과 같은 얼개다. 비용표도 같은 모양이다.
+//     upgradeCostEquip[별 - 1][레벨 * 2 + (0:조각, 1:골드)]
+int GetEquipMaxLevel(void);
+long long GetEquipUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
+bool CanEquipLevelUp(ITEM* it);
+
+//이 장비를 그 레벨에서 썼을 때의 공격력.
+long long GetEquipPower(ITEM* it, int lv);
+
+//가지고 있는 장비인가. 안 가진 것은 상세보기로 안 들어간다.
+bool IsEquipOwned(ITEM* it);
 int GetCurWeaponCollectionsIndex(void);
 int GetHighestCollections(int);
 int GetItemCount(int, int, int);
