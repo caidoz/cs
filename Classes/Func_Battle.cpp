@@ -4,6 +4,111 @@
 #include "Text.h"
 
 // Battle 관련 함수
+static void GetRobin6MotionName(int motion, char* name)
+{
+	if (motion >= PO_C0_A0 && motion <= PO_C0_A11) {
+		sprintf(name, "PO_C0_A%d", motion - PO_C0_A0);
+	}
+	else if (motion >= PO_C0_A0_1 && motion <= PO_C0_A11_3) {
+		int offset = motion - PO_C0_A0_1;
+		sprintf(name, "PO_C0_A%d_%d", offset / 3, offset % 3 + 1);
+	}
+	else if (motion >= PO_C0_CRASH0 && motion <= PO_C0_CRASH4) {
+		sprintf(name, "PO_C0_CRASH%d", motion - PO_C0_CRASH0);
+	}
+	else if (motion >= PO_C0_CRASH0_1 && motion <= PO_C0_CRASH4_3) {
+		int offset = motion - PO_C0_CRASH0_1;
+		sprintf(name, "PO_C0_CRASH%d_%d", offset / 3, offset % 3 + 1);
+	}
+	else {
+		sprintf(name, "PO_C0_(%d)", motion);
+	}
+}
+
+static void DrawRobin6PartDiagnostic(void)
+{
+	OBJECT* pObj = &ao[ROBIN];
+	const signed short* part;
+	char str[256];
+	int count;
+	int swordCnt = 0;
+	int swordX[4] = { 0, 0, 0, 0 };
+	int swordY[4] = { 0, 0, 0, 0 };
+	int swordImg[4] = { 0, 0, 0, 0 };
+	int swordType[4] = { 0, 0, 0, 0 };
+	char motionName[64];
+	int visibleSwordCnt;
+	int diagnosticLineCnt;
+	int diagnosticLine = 0;
+	float diagnosticX = 10 * _2X;
+	float diagnosticTopY = DY - 40 * _2X;
+	float diagnosticFirstY = DY - 48 * _2X;
+	float diagnosticLineGap = 20 * _2X;
+
+	if (!gDemoForceRoulette || !gDemoSkillFrameStepActive
+		|| pObj->currentSkill != SKILL_ROBIN6
+		|| pObj->cmf != ROBIN || pObj->motion < 0
+		|| pObj->motion >= cmf_m_cnt[pObj->cmf])
+		return;
+
+	count = cmd_m_cnt[pObj->cmf][pObj->motion * 2 + 1];
+	part = &cmd_m_img[pObj->cmf][cmd_m_cnt[pObj->cmf][pObj->motion * 2] * 4];
+
+	for (int i = 0; i < count; i++, part += 4) {
+		if (part[0] != IMG_C0_108 && part[0] != IMG_C0_109)
+			continue;
+
+		if (swordCnt < 4) {
+			swordImg[swordCnt] = part[0];
+			swordX[swordCnt] = part[1];
+			swordY[swordCnt] = part[2];
+			swordType[swordCnt] = part[3];
+		}
+		swordCnt++;
+	}
+
+	GetRobin6MotionName(pObj->motion, motionName);
+	visibleSwordCnt = Min(swordCnt, 4);
+	diagnosticLineCnt = 7 + visibleSwordCnt * 5;
+
+	//확대된 진단 글자가 전투 화면에 묻히지 않도록 출력 영역만큼 반투명
+	//검은 판을 먼저 깐다. 항목마다 한 줄을 사용하므로 실제 줄 수만큼 늘린다.
+	SetAlpha(18);
+	MemRect(6 * _2X, diagnosticTopY, DX - 12 * _2X,
+		(16 + diagnosticLineCnt * 20) * _2X, COLOR_BLACK);
+	SetAlpha(32);
+
+	DrawTextStr("ROBIN6 MOTION DEBUG", diagnosticX,
+		diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.5f);
+	sprintf(str, "step = %d", pObj->frame);
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	sprintf(str, "motion = %s", motionName);
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	sprintf(str, "motion id = %d", pObj->motion);
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	sprintf(str, "parts = %d", count);
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	sprintf(str, "sword count = %d", swordCnt);
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	sprintf(str, "status = %s",
+		swordCnt == 0 ? "MISSING" : (swordCnt > 1 ? "DUPLICATE" : "OK"));
+	DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+
+	for (int i = 0; i < visibleSwordCnt; i++) {
+		sprintf(str, "sword[%d]", i);
+		DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+		sprintf(str, "  image = IMG_C0_%d", swordImg[i]);
+		DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+		sprintf(str, "  position x = %d", swordX[i]);
+		DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+		sprintf(str, "  position y = %d", swordY[i]);
+		DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+		sprintf(str, "  rotation = %d / type = 0x%02X",
+			((swordType[i] & 0x06) >> 1) * 90, swordType[i] & 0xff);
+		DrawTextStr(str, diagnosticX, diagnosticFirstY - diagnosticLine++ * diagnosticLineGap, 1.3f);
+	}
+}
+
 void Play(void)
 {
 	int i, j;
@@ -870,6 +975,10 @@ void Play(void)
 	}
 
 
+	//HEROSKILL 카드는 주인공 위에서 턴 순서대로 쌓이고, 앞 카드가 사라지면
+	//아래 빈자리로 부드럽게 내려온다.
+	UpdateHeroSkillControlMarkStack();
+
 	for (i = 0; i < TOTALCONTROLMARK; i++) {
 		if (controlMark[i].frame2 > 0) {
 			GotoPosition(controlMark[i].targetX2, controlMark[i].targetY2, i, controlMark[i].speed2, ICONMARK_CONTROLMARK);
@@ -1277,6 +1386,9 @@ void Play(void)
 		//if (battleStartFrame == 0)
 		//	GotoBattleLoading();
 	}
+
+	//배경/캐릭터보다 나중에 그려야 진단 글자가 가려지지 않는다.
+	DrawRobin6PartDiagnostic();
 }
 
 void AttackSequenceDraw(void)
@@ -1495,7 +1607,7 @@ void AttackSequenceDraw(void)
 				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2, 
 				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2,
 				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2,
-				16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, (bar[BAR_BATTLECOIN].count + bar[BAR_BATTLECOIN].add), CURRENCY_GOLD, 3.0f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10, BAR_GOLD);
+				16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, (bar[BAR_BATTLECOIN].count + bar[BAR_BATTLECOIN].add), CURRENCY_GOLD, 2.4f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10, BAR_GOLD);
 
 			/*
 			SetCurrencyMark(

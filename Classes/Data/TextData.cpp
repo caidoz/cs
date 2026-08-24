@@ -928,6 +928,8 @@ static const unsigned short alphaOff_builtin[] = {
 	ALPHA_NUM_CW_OFF,
 	ALPHA_NUM_CX_OFF,
 
+	ALPHA_FIRSTFIND_OFF,
+	ALPHA_LEGENDARY_OFF,
 
 	TOTAL_ALPHA_OFF
 };

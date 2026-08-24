@@ -171,12 +171,12 @@ STATEVAL = buildStateVals()
 
 # ---------------- cN.h ----------------
 class Cmf(object):
-    def __init__(self, n):
+    def __init__(self, n, source=None):
         self.n = n
         self.path = os.path.join(CMFDIR, 'c%d.h' % n)
         self.ok, self.why = True, ''
         try:
-            self.src = read(self.path)
+            self.src = source if source is not None else read(self.path)
             self._parse()
         except Skip as e:
             self.ok, self.why = False, str(e)
@@ -273,12 +273,10 @@ class Cmf(object):
                 pairs.append((fp, tp_[hit]))
             else:
                 pairs.append((fp, None))
-        left = [j for j in range(len(tp_)) if not usedTo[j]]
-        li = 0
-        for i, (fp, tp) in enumerate(pairs):
-            if tp is None and li < len(left):
-                pairs[i] = (fp, tp_[left[li]])
-                li += 1
+        # 이미지나 type이 다른 남은 파츠를 순서대로 강제 대응시키면 무기가
+        # 몸 파츠로 변하거나, 회전 기준점이 다른 무기의 좌표가 크게 튄다.
+        # 정확히 같은 파츠를 찾지 못한 경우에는 현재 원본 파츠를 보간 구간
+        # 끝까지 유지하고 다음 원본 모션에서 새 파츠로 전환한다.
         out = []
         for fp, tp in pairs:
             if tp is None:

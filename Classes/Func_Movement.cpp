@@ -1655,6 +1655,8 @@ void PlayerMove(OBJECT* pObj)
 
 			if (callerType == HEROSKILL && obj >= 0 && obj < TOTALCHAR
 				&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_TARGET] == obj) {
+				gDemoSkillFrameStepActive = false;
+				gDemoSkillFrameStepPermit = 0;
 				pObj->turnPosition = HERE;
 				WhoIsNextTurn();
 				return;
@@ -1667,6 +1669,22 @@ void PlayerMove(OBJECT* pObj)
 				onceDmgUpdateFrame = 2 * FPS;
 				return;
 			}
+		}
+	}
+
+	//HEROSKILL 발동 뒤에는 AVK_MAXGAME에서만 주인공의 스킬 모션을 멈춘다.
+	//터치 콜백이 permit을 하나 세운 프레임에만 아래 모션 로직을 한 번 통과한다.
+	if (gDemoForceRoulette && gDemoSkillFrameStepActive) {
+		callerSkill = (turn >= CREW && turn < CREW + MAXCREW)
+			? ao[turn].currentSkill : -1;
+
+		if (callerSkill >= 0 && callerSkill < gTotalSkill
+			&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == HEROSKILL
+			&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_TARGET] == obj) {
+			if (gDemoSkillFrameStepPermit <= 0)
+				return;
+
+			gDemoSkillFrameStepPermit--;
 		}
 	}
 
@@ -14027,6 +14045,11 @@ void CrewMove(OBJECT* pObj)
 								//자리에 없는 히어로를 불러내는 것은 아래 SUMMONHERO 가 한다.
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
 								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
+								if (gDemoForceRoulette) {
+									gDemoSkillFrameStepActive = true;
+									gDemoSkillFrameStepPermit = 0;
+								}
 
 								SetHotKey(objPtr, HOTKEY_SKILL, objPtr->currentSkill, 0);
 								HotKeyPress(objPtr, 0);

@@ -107,6 +107,14 @@ int DropItem(OBJECT* pObj, int type)
 					robin.castle);
 				pNew->drawHandler = BOXDRAW;
 				pNew->zoom = 0.2f + 0.02f * (pNew->etc - BOX_REWARD0);
+
+				//상자는 죽은 몬스터 자리(pObj)에 생기는데, 몬스터가 주인공보다 한 칸 위 라인에
+				//서 있었으면 상자도 그 윗칸에 떨어져서 주인공과 y가 어긋나 보인다.
+				//상자는 주인공이 서 있는 라인에 떨어지도록 y를 맞춰준다.
+				if (ao[PLAYER].active == true) {
+					pNew->y = ao[PLAYER].y;
+					pNew->ny = ao[PLAYER].y;
+				}
 			}
 			else {
 				//����Ʈ�� || ������ || �Ź� �� �������� �ٷ� �Ʒ��� ����߸���?(�����ɸ�)
@@ -1679,7 +1687,8 @@ int GetStageBossIdx(void)
 	int i;
 
 	for (i = 0; i < MAXWAVEENEMY; i++) {
-		if (wave[(robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE) + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS)
+		//소보스/중보스/대보스가 전부 보스 자리다. == 로 비교하면 소보스만 걸린다.
+		if (wave[(robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE) + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 2] >= MONSTERTYPE_BOSS)
 			return (robin.stage * MAXWAVE + robin.room + i);
 		//return wave[(robin.stage * MAXWAVE * WAVEDATASIZE) + i * WAVEDATASIZE + 0];
 	}

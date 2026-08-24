@@ -587,6 +587,11 @@ ICONMARK boxCardMark[TOTALCARDMARK];//보조박스에서 나온 리워드마크
 ICONMARK soulMark;
 ICONMARK goldAlphaMark[TOTALGOLDALPHAMARK];
 
+int gachaAlphaBannerIdx = -1;
+float gachaAlphaBannerX = 0;
+float gachaAlphaBannerY = 0;
+float gachaAlphaBannerZoom = 1.0f;
+
 //배틀에서 쓰이는 전투
 OBJECT ao[TOTALOBJECT];
 BAR bar[TOTAL_BAR];
@@ -1400,6 +1405,8 @@ bool gRouletteSkillDispatchStarted = false;
 
 bool gDemoForceRoulette = false;
 bool gRouletteResultValid = false;
+bool gDemoSkillFrameStepActive = false;
+int gDemoSkillFrameStepPermit = 0;
 
 int blState = BL_REVEAL;
 int blStateFrame = 0;

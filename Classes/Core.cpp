@@ -112,6 +112,13 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 	startTouchX = touchPoint.x;
 	startTouchY = touchPoint.y;
 
+	//AVK_MAXGAME의 HEROSKILL 모션 테스트 중에는 화면 어디를 눌러도
+	//게임 조작으로 보내지 않고 주인공 모션 한 프레임 진행 신호로만 쓴다.
+	if (gDemoSkillFrameStepActive) {
+		gDemoSkillFrameStepPermit = 1;
+		return true;
+	}
+
 	if (touch) {
 		touchX = touchPoint.x;
 		touchY = touchPoint.y;
@@ -2052,6 +2059,12 @@ void PaintClet(int x, int y, int w, int h)
 		}
 	}
 
+	//카드 위에 얹는 문구(처음 얻은 것 / 5성 이상). GachaDraw()가 세워 둔다.
+	//카드를 다 그린 다음이라야 글자가 카드에 안 덮인다.
+	if (gachaAlphaBannerIdx >= 0) {
+		DrawGoldAlpha(xOffset + gachaAlphaBannerX, gachaAlphaBannerY, gachaAlphaBannerIdx, FONT_GOLD_LARGE, gachaAlphaBannerZoom, CENTER, true, false);
+	}
+
 	//커런시 효과를 생성하는 함수
 	for (i = 0; i < TOTALCURRENCYMARKARR; i++) {
 		if (currencyMarkArr_PopUp[i].frame > 0) {
@@ -2385,7 +2398,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
 
 
 

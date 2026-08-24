@@ -1,6 +1,6 @@
 #content 1
-version	202608200118
-data/content.pack	2352372	68522c673a9e9cae
+version	202608241015
+data/content.pack	2559508	4ae6bb6e7ecc42d9
 res/.DS_Store	6148	dc5f0cdf06cb3f4d
 res/a0_0.png	2350	f243b2f644c6e7e6
 res/a0_1.png	964	73ed3482d9d72c94
@@ -735,11 +735,11 @@ res/profile6.png	8600	0460c98453af9431
 res/profile7.png	9677	a83aca7627dff996
 res/profile8.png	7703	c646a1fcc73331b3
 res/profile9.png	8333	2dbbe26ab420d653
-res/sIcon.png	894750	c6f211f1a90aff93
+res/sIcon.png	46959	8b88ef2f951eabc9
 res/shadow.png	1756	bb14e96c2a08c7dd
 res/shine.png	5054	d1ded6f250b3eda8
 res/slot.png	559233	8f7cbb6a599d7c23
-res/t.png	932585	ba8a7d26af6435e7
+res/t.png	589885	a6817236e23c3f88
 res/t0.png	25230	a32505287edf72dd
 res/t1.png	16327	17a86a468ab802df
 res/t10.png	34326	bf6cde799a02d357
@@ -828,7 +828,7 @@ res/w2_7.png	7362	aede5e6328895559
 res/w2_8.png	8891	4a93f581a158312e
 res/water.png	15277	4cd2ee6a6f527c63
 res/we.png	89681	c0398ccaded939fd
-res/win.png	803811	e7310d23027e03c8
+res/win.png	847015	6b2235f4c7222599
 res/x.png	151	152b0272f3a4c7bf
 sounds/.DS_Store	6148	dc5f0cdf06cb3f4d
 sounds/0.mp3	2448031	f3a0e1565f566096

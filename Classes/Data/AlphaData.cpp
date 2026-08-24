@@ -627,6 +627,8 @@ static const unsigned char alphaData_builtin[] = {
 	C, V,
 	C, W,
 	C, X,
+	F, I, R, S, T, SPC, F, I, N, D, SPC, EXCLAMATIONMARK,//ALPHA_FIRSTFIND
+	L, E, G, E, N, D, A, R, Y, SPC, EXCLAMATIONMARK, EXCLAMATIONMARK,//ALPHA_LEGENDARY
 };
 
 static const unsigned short alphaX_builtin[] = {

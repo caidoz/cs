@@ -332,6 +332,13 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	int tempAlpha = m_lgrpAlpha;
 	int centerX = 0;
 	int centerY = 0;
+	int skillWeaponPartIndex = 0;
+	int skillWeaponPartCursor = 0;
+	static int robin6LastSwordValid = false;
+	static signed short robin6LastSword[4] = { 0, 0, 0, 0 };
+	static int robin6LastMotion = -1;
+	static int robin6SelectedSwordIndex = 0;
+	static int robin6PreviousMotionHadDuplicate = false;
 
 	if (shadow == true)
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X, x - (float)(12 * _2X) * zoom, y + (float)(8 * _2X) * zoom, SHADOW_IMG, zoom);
@@ -378,6 +385,66 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		cPtr = &cmd_m_img[pObj->cmf][cmd_m_cnt[pObj->cmf][motion * 2] * 4];
 	}
 
+	//에어크래쉬의 보간 모션에 검 파츠가 둘 들어 있으면, 직전 검과 위치/각도가
+	//가까운 쪽을 현재 모션에 남기고 변화가 큰 쪽은 다음 모션에서 선택한다.
+	//새 자세의 검이 한 프레임 앞당겨 튀어나오는 현상을 막기 위한 처리다.
+	if (pObj->cmf == ROBIN && pObj->currentSkill == SKILL_ROBIN6) {
+		const signed short* swordPtr = cPtr;
+		const signed short* selectedSwordPtr = 0;
+		int swordCnt = 0;
+		int bestScore = robin6PreviousMotionHadDuplicate ? -1 : 0x7fffffff;
+		int motionChanged = motion != robin6LastMotion;
+
+		if (!motionChanged)
+			skillWeaponPartIndex = robin6SelectedSwordIndex;
+
+		for (int partIdx = 0; partIdx < i; partIdx++, swordPtr += 4) {
+			int score;
+
+			if (swordPtr[0] != IMG_C0_108 && swordPtr[0] != IMG_C0_109)
+				continue;
+
+			score = swordCnt;
+			if (robin6LastSwordValid) {
+				int dx = swordPtr[1] - robin6LastSword[1];
+				int dy = swordPtr[2] - robin6LastSword[2];
+				int oldRotation = robin6LastSword[3] & 0x06;
+				int newRotation = swordPtr[3] & 0x06;
+				int rotationGap = Abs(newRotation - oldRotation);
+
+				rotationGap = Min(rotationGap, 8 - rotationGap);
+				score = dx * dx + dy * dy + rotationGap * rotationGap * 256;
+			}
+
+			if (motionChanged && ((!robin6PreviousMotionHadDuplicate && score < bestScore)
+				|| (robin6PreviousMotionHadDuplicate && score > bestScore))) {
+				bestScore = score;
+				skillWeaponPartIndex = swordCnt;
+				selectedSwordPtr = swordPtr;
+			}
+			else if (!motionChanged && swordCnt == skillWeaponPartIndex) {
+				selectedSwordPtr = swordPtr;
+			}
+			swordCnt++;
+		}
+
+		if (selectedSwordPtr) {
+			memcpy(robin6LastSword, selectedSwordPtr, sizeof(robin6LastSword));
+			robin6LastSwordValid = true;
+		}
+		if (motionChanged) {
+			robin6LastMotion = motion;
+			robin6SelectedSwordIndex = skillWeaponPartIndex;
+			robin6PreviousMotionHadDuplicate = swordCnt > 1;
+		}
+	}
+	else {
+		robin6LastSwordValid = false;
+		robin6LastMotion = -1;
+		robin6SelectedSwordIndex = 0;
+		robin6PreviousMotionHadDuplicate = false;
+	}
+
 	//파트가 없으면 do-while이 한 번 돌면서 없는 파트를 그린다.
 	if (i <= 0)
 		return;
@@ -396,6 +463,17 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 		fixedImg = *cPtr;
 		type = *(cPtr + 3);
+
+		//에어크래쉬 중에는 위에서 직전 모션과 가장 자연스럽게 이어지는 검
+		//하나를 골랐다. 선택되지 않은(다음 자세에 가까운) 검은 그리지 않는다.
+		if (pObj->cmf == ROBIN && pObj->currentSkill == SKILL_ROBIN6
+			&& (fixedImg == IMG_C0_108 || fixedImg == IMG_C0_109)) {
+			if (skillWeaponPartCursor++ != skillWeaponPartIndex) {
+				cPtr += 4;
+				i--;
+				continue;
+			}
+		}
 
 		//���� ��
 		magnify = ((type >> 6) + 1) * zoom;

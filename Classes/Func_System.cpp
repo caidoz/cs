@@ -270,6 +270,8 @@ void InitGame(void)
 	tutorialAttackPending = false;
 	tutorialPendingDemo = -1;
 	tutorialPendingTouchFunc = 0;
+	gDemoSkillFrameStepActive = false;
+	gDemoSkillFrameStepPermit = 0;
 	tutorialCrewGuide = false;
 	talkShakeFrame = 0;
 

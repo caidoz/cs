@@ -8,6 +8,12 @@
 #define GACHA_BOX_BOUNCE_HEIGHT		(32 * _2X)		// 바운스 높이
 
 #define GACHA_MAX_REWARD_CARD     12
+
+//카드 위에 얹는 문구(ALPHA_FIRSTFIND / ALPHA_LEGENDARY) 배치.
+//GAP_Y 는 카드 중심에서 위로 얼마나 띄울지다 - 아이콘과 등급별을 가리면 안 된다.
+#define GACHA_BANNER_GAP_Y		(96 * _2X)
+#define GACHA_BANNER_ZOOM		0.8f
+#define GACHA_BANNER_ZOOM_BIG		1.2f
 #define REWARD_BOX_COUNT		8
 #define BOX_GRADE_COUNT			6
 
@@ -340,10 +346,13 @@ void MakeBoxGoldReward(
 	bool lucky);
 void UpgradeLuckyBoxCard(
 	int cardCount);
-void ShuffleBoxReward(
+int GetBoxRewardOrder(
+	const ITEM* item);
+void OrderBoxReward(
 	int cardCount);
 void CheckNewBoxReward(
 	int cardCount);
+int GetWaveRewardBoxTier(int waveIdx);
 int SelectCastleRewardBox(
 	int castleIndex);
 bool GenerateCastleBoxReward(

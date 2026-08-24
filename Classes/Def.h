@@ -1306,8 +1306,15 @@ enum JumpState {
 #define TOTALAI TOTAL_CREW
 #endif
 
+//wave[] 세번째 칸. 그 웨이브가 무슨 자리인지.
+//
+//체력 배수(BalanceConfig.h의 WAVE_HP_*_MUL)와 연출이 여기서 갈린다.
+//MONSTERTYPE_BOSS 이상이면 전부 보스 자리다 - 새 자리를 넣을 때는
+//반드시 JACO 뒤에 붙여서 그 부등호가 계속 성립하게 할 것.
 #define MONSTERTYPE_JACO	0
-#define MONSTERTYPE_BOSS	1
+#define MONSTERTYPE_BOSS	1	//소보스 : 5판마다
+#define MONSTERTYPE_MIDBOSS	2	//중보스 : 10판마다
+#define MONSTERTYPE_BIGBOSS	3	//대보스 : 100판마다
 
 #define BOOMERANGGAP		4
 

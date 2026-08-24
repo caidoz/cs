@@ -609,6 +609,14 @@ typedef enum _alphaDef {
 	ALPHA_NUM_CW,
 	ALPHA_NUM_CX,
 
+	//상자에서 카드를 깔 때 얹는 문구. DrawGoldAlpha() 로 그린다.
+	//
+	//번호는 alphaOff[] 의 색인이고 그 표는 이 열거 순서를 그대로 따른다
+	//(Data/TextData.cpp). 그래서 새 문구는 반드시 맨 끝에 붙여야 한다 -
+	//중간에 끼우면 그 뒤 문구가 전부 한 칸씩 밀려 엉뚱한 글자가 나온다.
+	ALPHA_FIRSTFIND,	//"FIRST FIND !"  처음 얻은 것
+	ALPHA_LEGENDARY,	//"LEGENDARY !!"  5성 이상
+
 	TOTAL_ALPHA_TEXT,
 
 	ALPHA_L_OFF = 0,
@@ -1168,7 +1176,13 @@ typedef enum _alphaDef {
 	ALPHA_NUM_CW_OFF = ALPHA_NUM_CV_OFF + 2,
 	ALPHA_NUM_CX_OFF = ALPHA_NUM_CW_OFF + 2,
 
-	TOTAL_ALPHA_OFF = ALPHA_NUM_CX_OFF + 2,
+	//글자 수가 곧 다음 칸까지의 거리다. DrawGoldAlpha() 가
+	//alphaOff[idx] ~ alphaOff[idx + 1] 을 훑으므로 여기가 틀리면
+	//옆 문구의 글자를 끌어다 그린다.
+	ALPHA_FIRSTFIND_OFF = ALPHA_NUM_CX_OFF + 2,
+	ALPHA_LEGENDARY_OFF = ALPHA_FIRSTFIND_OFF + 12,
+
+	TOTAL_ALPHA_OFF = ALPHA_LEGENDARY_OFF + 12,
 
 	END_ALPHADEF
 } ALPHADEF;

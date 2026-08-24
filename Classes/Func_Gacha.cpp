@@ -604,18 +604,46 @@ void MakeBoxHeartReward(
 	item->grade =
 		GRADE_NORMAL;
 
-	item->count =
-		GetWeightedNormalizedReward(
-			boxData->heartMin,
-			boxData->heartMax);
-
 	//----------------------------------------------------
-	// 럭키 보너스를 수량에 적용한다면 여기서 처리
-	//----------------------------------------------------
-	if (lucky)
+	// 하트는 "얼마를 주는가"가 아니라 "어디까지 채우는가"다.
+	//
+	// 하트는 공격 횟수라서(ONEHEARTONEATTACK) 잡몹 하나를 잡는 데 한 뭉치가
+	// 나간다. 상자가 딱 그만큼만 돌려주면 영원히 제자리라 아무것도 쌓이지
+	// 않고, 고정 수량으로 주면 맥스치(GetInitHeart())가 레벨을 따라 오르는
+	// 후반에 상자가 무의미해진다. 그래서 맥스치의 몇 % 까지 채울지로 적는다.
+	//
+	// 잡몹 상자는 꽉 채우고 조금 남기고(HEART_REFILL_PCT), 보스를 잡은
+	// 상자는 맥스의 두 배까지 얹어준다(HEART_REFILL_BOSS_PCT). 그 넘친 몫이
+	// 쌓여서 대보스(잡몹 체력 100배) 앞에서 한 번에 쓰인다.
+	//
+	// robin.waveIdx 는 상자를 다 열고 나서야 오르므로(Func_Gacha.cpp의
+	// OutOfGacha 부근) 여기서는 방금 잡은 웨이브를 그대로 가리킨다.
 	{
-		// 예: 20% 증가 후 지급 단위 재정규화
-		// 현재는 카드 추가 및 승급만 적용하므로 생략 가능
+		int maxHeart =
+			GetInitHeart();
+
+		int targetPct =
+			GetWaveKind(robin.waveIdx) >= MONSTERTYPE_BOSS ?
+			HEART_REFILL_BOSS_PCT :
+			HEART_REFILL_PCT;
+
+		//럭키 상자는 한 걸음 더 채운다. 카드 추가/승급만으로는 하트가 손해다.
+		if (lucky)
+			targetPct += HEART_REFILL_PCT - 100;
+
+		long long target =
+			(long long)maxHeart * targetPct / 100;
+
+		long long amount =
+			target - robin.heart;
+
+		//이미 목표보다 많이 들고 있어도 빈 카드를 낼 수는 없다.
+		//상자 표가 정한 최소치는 언제나 준다.
+		if (amount < boxData->heartMin)
+			amount = boxData->heartMin;
+
+		item->count =
+			(int)amount;
 	}
 
 	item->seen =
@@ -723,34 +751,81 @@ void UpgradeLuckyBoxCard(
 	}
 }
 
-void ShuffleBoxReward(
+//카드를 깔 순서를 잡는다. 하트 -> 골드 -> 동료 -> 장비.
+//
+//[왜 섞지 않는가]
+//전에는 무작위로 섞었다. 그러면 첫 장에 5성 장비가 나오고 마지막 장이
+//하트인 상자가 나온다. 그 상자는 첫 장에서 끝나 버리고 나머지는 치우는
+//작업이 된다. 순서를 고정하면 재화 -> 동료 -> 장비로 값이 올라가면서
+//끝까지 간다.
+//
+//[같은 무리 안에서는 약한 것부터]
+//동료끼리, 장비끼리는 등급이 낮은 것부터 깐다. 뒤로 갈수록 좋아지므로
+//마지막 한 장을 남겨둔 순간이 그 상자에서 가장 기대되는 자리가 된다.
+//같은 등급이면 원래 뽑힌 차례를 지킨다(안정 정렬).
+int GetBoxRewardOrder(
+	const ITEM* item)
+{
+	switch (item->type)
+	{
+	case ITEM_HEART:	return 0;
+	case ITEM_GOLD:		return 1;
+	case ITEM_CREW:		return 2;
+	}
+
+	return 3;
+}
+
+void OrderBoxReward(
 	int cardCount)
 {
-	for (int i = cardCount - 1;
-		i > 0;
-		i--)
+	//카드는 GACHA_MAX_REWARD_CARD 장뿐이라 삽입 정렬이면 충분하고,
+	//삽입 정렬은 그 자체로 안정 정렬이다.
+	for (int i = 1;
+		i < cardCount;
+		i++)
 	{
-		int target =
-			Random(i + 1);
-
-		if (target == i)
-			continue;
-
-		ITEM tempItem;
+		ITEM key;
 
 		memcpy(
-			&tempItem,
+			&key,
 			&boxCardItem[0][i],
 			sizeof(ITEM));
 
-		memcpy(
-			&boxCardItem[0][i],
-			&boxCardItem[0][target],
-			sizeof(ITEM));
+		int keyOrder =
+			GetBoxRewardOrder(
+				&key);
+
+		int j = i - 1;
+
+		while (j >= 0)
+		{
+			int order =
+				GetBoxRewardOrder(
+					&boxCardItem[0][j]);
+
+			//무리가 앞서면 그대로 두고, 같은 무리면 등급으로 가른다.
+			if (order < keyOrder)
+				break;
+
+			if (order == keyOrder &&
+				boxCardItem[0][j].grade <=
+				key.grade)
+			{
+				break;
+			}
+
+			memcpy(
+				&boxCardItem[0][j + 1],
+				&boxCardItem[0][j],
+				sizeof(ITEM));
+
+			j--;
+		}
 
 		memcpy(
-			&boxCardItem[0][target],
-			&tempItem,
+			&boxCardItem[0][j + 1],
+			&key,
 			sizeof(ITEM));
 	}
 }
@@ -796,9 +871,45 @@ void CheckNewBoxReward(
 }
 
 
+//상자 표(castleRewardBoxRate)의 몇 번째 줄을 쓸 것인가.
+//
+//원래는 robin.castle 만 봤다. 그런데 robin.castle 은 지금 아무 데서도
+//오르지 않는다(디버그 메뉴에서 0 이나 18 로 찍을 뿐이다). 그래서 표가
+//영원히 0번 줄에 머물렀고, 나무상자만 나오니 동료도 장비도 좋아지지
+//않았다 - "뒤로 갈수록 좋은 게 나온다"가 성립하지 않았다.
+//
+//웨이브 진행을 같이 본다. 10000 웨이브를 표의 줄 수에 고르게 나눠서,
+//끝까지 가면 마지막 줄에 닿는다. 성이 실제로 오르기 시작하면 둘 중
+//높은 쪽을 쓰므로 이 함수를 다시 고칠 필요가 없다.
+int GetWaveRewardBoxTier(int waveIdx)
+{
+	const int rows = wave_COUNT / (MAXWAVEENEMY * WAVEDATASIZE);
+
+	if (waveIdx <= 0 || rows <= 0)
+		return 0;
+
+	int tier =
+		(int)((long long)waveIdx * gTotalCastle / rows);
+
+	if (tier < 0)
+		tier = 0;
+
+	if (tier >= gTotalCastle)
+		tier = gTotalCastle - 1;
+
+	return tier;
+}
+
 int SelectCastleRewardBox(
 	int castleIndex)
 {
+	int waveTier =
+		GetWaveRewardBoxTier(
+			robin.waveIdx);
+
+	if (castleIndex < waveTier)
+		castleIndex = waveTier;
+
 	if (castleIndex < 0)
 		castleIndex = 0;
 
@@ -930,8 +1041,174 @@ static bool MakeTutorialBoxReward(int tutorialBoxIndex)
 
 	boxCardItemCnt[0] = writeIndex;
 
-	//순서는 시나리오대로 고정이므로 ShuffleBoxReward()를 부르지 않는다.
+	//순서는 시나리오대로 고정이므로 OrderBoxReward()를 부르지 않는다.
 	CheckNewBoxReward(boxCardItemCnt[0]);
+
+	return boxCardItemCnt[0] > 0;
+}
+
+//아직 안 가진 것 중에서 그 별에 해당하는 놈을 하나 고른다.
+//
+//시험용이다. 없으면 소유 여부를 포기하고 아무거나 그 별로 고른다 -
+//연출을 보려는 것이지 미보유 판정을 시험하려는 게 아니기 때문이다.
+static int FindUnownedBoxDetailByStar(
+	int itemType,
+	int itemGrade,
+	int targetStar)
+{
+	int detailCount =
+		GetBoxDetailCount(
+			itemType);
+
+	int fallback = -1;
+
+	for (int detail = 0;
+		detail < detailCount;
+		detail++)
+	{
+		if (GetItemStar(
+			itemType,
+			detail,
+			itemGrade) != targetStar)
+		{
+			continue;
+		}
+
+		if (fallback < 0)
+			fallback = detail;
+
+		if (GetInvenIdx(
+			itemType,
+			detail,
+			itemGrade) < 0)
+		{
+			return detail;
+		}
+	}
+
+	return fallback;
+}
+
+//시험용 상자. 하트 / 골드 / 미보유 5성 동료 / 미보유 5성 장비 네 장을 낸다.
+//
+//BalanceConfig.h 의 GACHA_TEST_FORCE_REWARD 로 켠다. 순서 규칙(하트 ->
+//골드 -> 동료 -> 장비)과 카드 문구(ALPHA_FIRSTFIND / ALPHA_LEGENDARY)를
+//한 번에 확인하려는 것이다.
+static bool MakeTestForceBoxReward(
+	const REWARD_BOX_DATA* boxData)
+{
+	memset(
+		&boxCardItem[0],
+		0,
+		sizeof(boxCardItem[0]));
+
+	boxCardItemCnt[0] = 0;
+
+	int writeIndex = 0;
+
+	MakeBoxHeartReward(
+		writeIndex++,
+		boxData,
+		false);
+
+	MakeBoxGoldReward(
+		writeIndex++,
+		boxData,
+		false);
+
+	//5성은 등급 4다(GetItemStar 가 1~6을 돌려주고 별 = 등급 + 1).
+	const int testGrade = 4;
+	const int testStar = testGrade + 1;
+
+	//------------------------------------------------------------
+	// 미보유 5성 동료
+	//------------------------------------------------------------
+	{
+		int detail =
+			FindUnownedBoxDetailByStar(
+				ITEM_CREW,
+				testGrade,
+				testStar);
+
+		if (detail >= 0)
+		{
+			ITEM* item =
+				&boxCardItem[0][
+					writeIndex];
+
+			item->type = ITEM_CREW;
+			item->detail = detail;
+			item->grade = testGrade;
+			item->count = 1;
+			item->lv = 1;
+			item->cooldown = 0;
+
+			item->seen =
+				GetInvenIdx(
+					item->type,
+					item->detail,
+					item->grade) >= 0;
+
+			writeIndex++;
+		}
+		else
+		{
+			CCLOG(
+				"MakeTestForceBoxReward: no crew at star=%d",
+				testStar);
+		}
+	}
+
+	//------------------------------------------------------------
+	// 미보유 5성 장비
+	//------------------------------------------------------------
+	{
+		int equipType =
+			MakeBoxEquipType();
+
+		int detail =
+			FindUnownedBoxDetailByStar(
+				equipType,
+				testGrade,
+				testStar);
+
+		if (detail >= 0)
+		{
+			ITEM* item =
+				&boxCardItem[0][
+					writeIndex];
+
+			item->type = equipType;
+			item->detail = detail;
+			item->grade = testGrade;
+			item->count = 1;
+			item->lv = 1;
+			item->cooldown = 0;
+
+			item->seen =
+				GetInvenIdx(
+					item->type,
+					item->detail,
+					item->grade) >= 0;
+
+			writeIndex++;
+		}
+		else
+		{
+			CCLOG(
+				"MakeTestForceBoxReward: no equip at star=%d type=%d",
+				testStar,
+				equipType);
+		}
+	}
+
+	boxCardItemCnt[0] = writeIndex;
+
+	OrderBoxReward(
+		boxCardItemCnt[0]);
+
+	CheckNewBoxReward(
+		boxCardItemCnt[0]);
 
 	return boxCardItemCnt[0] > 0;
 }
@@ -976,6 +1253,17 @@ bool GenerateCastleBoxReward(
 				tutorialBoxIndex);
 		}
 	}
+
+	//----------------------------------------------------
+	// 시험용 강제 보상 (BalanceConfig.h)
+	//----------------------------------------------------
+#if GACHA_TEST_FORCE_REWARD
+	gachaLuckyBox =
+		false;
+
+	return MakeTestForceBoxReward(
+		boxData);
+#endif
 
 	//----------------------------------------------------
 	// 럭키 상자 판정
@@ -1128,9 +1416,9 @@ bool GenerateCastleBoxReward(
 	}
 
 	//----------------------------------------------------
-	// 표시 순서 섞기
+	// 표시 순서 : 하트 -> 골드 -> 동료 -> 장비
 	//----------------------------------------------------
-	ShuffleBoxReward(
+	OrderBoxReward(
 		boxCardItemCnt[0]);
 
 	//----------------------------------------------------
@@ -1245,6 +1533,9 @@ int GetWeightedNormalizedReward(
 void GachaDraw(void)
 {
 	int i;
+
+	//문구는 매 프레임 다시 세운다. 카드가 넘어가면 저절로 사라진다.
+	gachaAlphaBannerIdx = -1;
 
 	//--------------------------------------------------------
 	// GotoGacha에서 생성 완료되지 않았으면 처리하지 않음
@@ -2307,6 +2598,23 @@ void GachaDraw(void)
 				GACHA_SPECIAL_GOOD;
 		}
 
+		//----------------------------------------------------
+		// 카드에 얹을 문구
+		//
+		// 처음 얻은 것과 5성 이상은 같은 카드라도 의미가 다르다. 카드 크기와
+		// 소리만으로는 그 둘이 구별되지 않아서 글자로 말해준다.
+		// 둘 다 해당하면 5성 쪽이 세므로 그쪽을 쓴다.
+		//
+		// 그리는 것은 Core::Run() 이 카드 마크를 다 그린 뒤에 한다. 여기서
+		// 바로 그리면 뒤이어 그려지는 카드에 덮인다.
+		//----------------------------------------------------
+		int bannerAlpha = -1;
+
+		if (isVeryHighGrade)
+			bannerAlpha = ALPHA_LEGENDARY;
+		else if (isNewCard)
+			bannerAlpha = ALPHA_FIRSTFIND;
+
 		int specialHoldFrame =
 			0;
 
@@ -2846,6 +3154,35 @@ void GachaDraw(void)
 				0;
 
 			card->motionFrame++;
+
+			//------------------------------------------------
+			// 앞면이 보이는 동안에만 문구를 얹는다. 카드 위쪽에 세워서
+			// 아이콘과 등급별을 가리지 않게 한다.
+			//------------------------------------------------
+			if (bannerAlpha >= 0 &&
+				card->openFrame == 0 &&
+				cardAnimFrame >= CARD_FLIP_END)
+			{
+				gachaAlphaBannerIdx =
+					bannerAlpha;
+
+				gachaAlphaBannerX =
+					drawCenterX;
+
+				gachaAlphaBannerY =
+					drawCenterY +
+					GACHA_BANNER_GAP_Y * drawZoom;
+
+				//5성은 더 크게, 그리고 숨쉬듯 흔들리게 세운다.
+				gachaAlphaBannerZoom =
+					(bannerAlpha == ALPHA_LEGENDARY ?
+						GACHA_BANNER_ZOOM_BIG :
+						GACHA_BANNER_ZOOM) *
+					drawZoom *
+					(1.0f +
+						sinf((float)(frame % 60) / 60.0f * 3.141592f * 2) *
+						0.05f);
+			}
 		}
 
 		//----------------------------------------------------

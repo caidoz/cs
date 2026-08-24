@@ -8,7 +8,7 @@ extern const unsigned char* demoAlpha;
 enum { demoAlpha_COUNT = 50 };
 
 extern const unsigned char* alphaData;
-enum { alphaData_COUNT = 2793 };
+enum { alphaData_COUNT = 2817 };
 
 
 extern const unsigned short* alphaX;

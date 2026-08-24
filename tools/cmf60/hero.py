@@ -8,7 +8,7 @@
 인덱스는 밀지 않는다. 중간모션은 전부 뒤에 덧붙이고,
 대신 '그룹의 n번째 포즈'를 찾아 쓰라고 c0Chain[] 표를 같이 뽑아준다.
 """
-import sys, re, io, os
+import sys, re, io, os, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cmflib import *
 
@@ -35,8 +35,41 @@ def groupsOf(c, n):
     return g, order
 
 
-def expandHero(n):
-    c = Cmf(n)
+def applyHeroPartFixes(c, n):
+    if n != 0:
+        return
+
+    fixes = {
+        'PO_C0_A11_1': (-4, -34, 5),
+        'PO_C0_A11_2': (-6, -36, 5),
+        'PO_C0_A11_3': (-8, -38, 5),
+        'PO_C0_CRASH0_1': (-2, -296, 0),
+        'PO_C0_CRASH0_2': (-4, -298, 0),
+        'PO_C0_CRASH0_3': (-6, -300, 0),
+        'PO_C0_CRASH1_1': (-10, -392, 7),
+        'PO_C0_CRASH1_2': (-12, -394, 7),
+        'PO_C0_CRASH1_3': (-14, -396, 7),
+        'PO_C0_CRASH4_1': (-302, -406, 6),
+        'PO_C0_CRASH4_2': (-304, -408, 6),
+        'PO_C0_CRASH4_3': (-306, -410, 6),
+    }
+    by_name = dict((name, i) for i, name in enumerate(c.newNames))
+    for name, (x, y, typ) in fixes.items():
+        idx = by_name[name]
+        parts = list(c.newMotions[idx])
+        for p, part in enumerate(parts):
+            if part[0] in (108, 109):
+                parts[p] = (108, x, y, str(typ))
+                break
+        else:
+            parts.insert(0, (108, x, y, str(typ)))
+        c.newMotions[idx] = parts
+        c.newMiRaw[idx] = [['IMG_C0_%d' % part[0], num(part[1]), num(part[2]), part[3]]
+                           for part in parts]
+
+
+def expandHero(n, source=None, write_output=True):
+    c = Cmf(n, source)
     if not c.ok:
         raise Skip('c%d 파싱 실패: %s' % (n, c.why))
     g, order = groupsOf(c, n)
@@ -75,6 +108,7 @@ def expandHero(n):
         loops.append((name, seq))
 
     c.nameTweens()
+    applyHeroPartFixes(c, n)
     text = c.render()
 
     L = ['', '//60프레임용 4배 확장 체인.',
@@ -109,13 +143,19 @@ def expandHero(n):
     L += ['};', '']
 
     text = text.replace('#endif', '\n'.join(L) + '#endif')
-    io.open(c.path, 'w', encoding='utf-8-sig', newline='\r\n').write(text)
+    if write_output:
+        io.open(c.path, 'w', encoding='utf-8-sig', newline='\r\n').write(text)
     return c, chains, loops
 
 
 if __name__ == '__main__':
-    for n in [int(a) for a in sys.argv[1:]] or [0]:
-        c, chains, loops = expandHero(n)
+    use_base = '--base' in sys.argv
+    for n in [int(a) for a in sys.argv[1:] if a.isdigit()] or [0]:
+        source = None
+        if use_base:
+            source = subprocess.check_output(
+                ['git', 'show', '05997da:Classes/Cmf/c%d.h' % n]).decode('utf-8-sig')
+        c, chains, loops = expandHero(n, source)
         print('c%d : 모션 %d -> %d, 체인 %d개' % (n, c.totalMotion, len(c.newNames), len(chains)))
         for pre, seq in chains:
             print('   %-18s %3d칸' % (pre, len(seq)))

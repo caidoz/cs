@@ -43,7 +43,7 @@
 
 #define DATA_LIST(X) \
 	X(demoAlpha, 1, DPK_UINT, 50, DPK_KEY_NONE, 0, 0) \
-	X(alphaData, 1, DPK_UINT, 2793, DPK_KEY_NONE, 0, 0) \
+	X(alphaData, 1, DPK_UINT, 2817, DPK_KEY_NONE, 0, 0) \
 	X(alphaX, 2, DPK_UINT, 296, DPK_KEY_NONE, 0, 0) \
 	X(alpha2, 2, DPK_INT, 222, DPK_KEY_NONE, 0, 0) \
 	X(goldAlphaInfo, 2, DPK_UINT, 444, DPK_KEY_NONE, 0, 0) \
@@ -404,7 +404,7 @@
 	X(areaName, 4, DPK_INT, 15, DPK_KEY_NONE, 0, 0) \
 	X(unicode_table, 2, DPK_UINT, 2350, DPK_KEY_NONE, 0, 0) \
 	X(itemNameStart, 2, DPK_UINT, 39, DPK_KEY_NONE, 0, 0) \
-	X(alphaOff, 2, DPK_UINT, 497, DPK_KEY_NONE, 0, 0) \
+	X(alphaOff, 2, DPK_UINT, 499, DPK_KEY_NONE, 0, 0) \
 	X(alertText, 2, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
 	X(colorSet, 4, DPK_INT, 52, DPK_KEY_NONE, 0, 0) \
 	X(currencyIcon, 2, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
@@ -443,7 +443,7 @@
 	X(selectColor, 4, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
 	X(goldQuestPositionData, 4, DPK_INT, 20, DPK_KEY_NONE, 0, 0) \
 	X(boss, 4, DPK_INT, 18, DPK_KEY_NONE, 0, 0) \
-	X(wave, 4, DPK_INT, 9000, DPK_KEY_NONE, 0, 0) \
+	X(wave, 4, DPK_INT, 90000, DPK_KEY_NONE, 0, 0) \
 	X(stageGold, 8, DPK_INT, 1000, DPK_KEY_NONE, 0, 0) \
 	/* 끝 */
 

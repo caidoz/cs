@@ -1531,6 +1531,14 @@ extern ICONMARK boxCardMark[TOTALCARDMARK];//보조박스에서 나온 리워드
 extern ICONMARK soulMark;
 extern ICONMARK goldAlphaMark[TOTALGOLDALPHAMARK];
 
+//상자 카드 위에 얹는 문구. GachaDraw()가 매 프레임 세우고 Core::Run()이
+//카드 마크를 다 그린 뒤에 그린다. -1 이면 이번 프레임에는 문구가 없다.
+//카드보다 늦게 그려야 하므로 상태를 여기 둔다.
+extern int gachaAlphaBannerIdx;
+extern float gachaAlphaBannerX;
+extern float gachaAlphaBannerY;
+extern float gachaAlphaBannerZoom;
+
 //배틀에서 쓰이는 전투
 extern OBJECT ao[TOTALOBJECT];
 extern BAR bar[TOTAL_BAR];
@@ -2322,6 +2330,10 @@ extern bool gRouletteSkillDispatchStarted;
 //룰렛이 편성 뒤쪽 세 명을 순서대로 뽑도록 고정한다.
 extern bool gDemoForceRoulette;
 extern bool gRouletteResultValid;
+
+//AVK_MAXGAME 스킬 모션 프레임 진행 테스트.
+extern bool gDemoSkillFrameStepActive;
+extern int gDemoSkillFrameStepPermit;
 
 extern int blState;
 extern int blStateFrame;

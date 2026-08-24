@@ -11,7 +11,7 @@ enum { boss_COUNT = 18 };
 //1: 등장 타이밍
 //2: 체력
 extern const int* wave;
-enum { wave_COUNT = 9000 };
+enum { wave_COUNT = 90000 };
 
 extern const long long* stageGold;
 enum { stageGold_COUNT = 1000 };

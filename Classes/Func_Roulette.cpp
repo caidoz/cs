@@ -176,6 +176,60 @@ void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY)
 	MoveControlMarkTo(ownerObj, skillIdx, hx, hy);
 }
 
+//주인공이 대신 사용하는 HEROSKILL 카드를 턴 순서대로 머리 위에 쌓는다.
+//맨 아래가 현재/가장 가까운 차례이며, 그 카드가 완전히 사라지면 남은 카드의
+//목표 높이가 한 칸씩 낮아져 자연스럽게 다음 차례를 알려준다.
+void UpdateHeroSkillControlMarkStack(void)
+{
+	bool arranged[TOTALCONTROLMARK] = { false };
+	int baseX, baseY;
+	int stack = 0;
+	int gap;
+
+	if (attackSequence != ATTACKSEQUENCE_ACTION)
+		return;
+
+	GetMarkHeadPos(ROBIN, &baseX, &baseY);
+	gap = (int)((float)ROULETTECARDSIZE_Y * ROULETTE_CARD_LAND_ZOOM) + 2 * _2X;
+
+	//turnList 순서로 찾으므로 배열 압축(ArrangeControlMark) 후에도 표시 순서는
+	//바뀌지 않는다. 페이드 중인 현재 카드도 완전히 지워질 때까지 포함해야
+	//다음 카드가 먼저 내려와 같은 자리에 겹치지 않는다.
+	for (int t = 0; t < totalTurn; t++) {
+		int owner = turnList[t];
+
+		if (owner < CREW || owner >= CREW + MAXCREW)
+			continue;
+
+		for (int i = 0; i < TOTALCONTROLMARK; i++) {
+			int skillIdx;
+			int destY;
+
+			if (arranged[i] || (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0))
+				continue;
+			if (controlMark[i].owner != owner)
+				continue;
+
+			skillIdx = controlMark[i].attackType;
+			if (skillIdx < 0 || skillIdx >= gTotalSkill
+				|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != HEROSKILL)
+				continue;
+
+			destY = baseY + stack * gap; //이 화면은 Y-up 좌표계다.
+			if (controlMark[i].targetX2 != baseX || controlMark[i].targetY2 != destY) {
+				controlMark[i].targetX = controlMark[i].targetX2 = baseX;
+				controlMark[i].targetY = controlMark[i].targetY2 = destY;
+				controlMark[i].speed2 = 2 * _2X;
+				controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+			}
+
+			arranged[i] = true;
+			stack++;
+			break;
+		}
+	}
+}
+
 // =========================
 // 캐릭터 점수 계산 (등급 기준)
 // =========================

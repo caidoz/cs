@@ -959,6 +959,49 @@ void SetEnemyUser()
 
 }
 
+//wave[] 의 몇 번째 행인가.
+//
+//행은 wave_COUNT / (MAXWAVEENEMY * WAVEDATASIZE) 개다(지금 10000). 마지막
+//웨이브를 넘어서면 그 뒤는 배열 밖이라 무엇이 읽힐지 알 수 없다. robin.waveIdx
+//는 상자를 열 때마다(Func_Gacha.cpp) 끝없이 오르므로 언젠가 반드시 넘는다.
+//체력 곡선(GetWaveHp)은 waveIdx 를 그대로 쓰니 계속 세지고, 등장하는 몬스터만
+//마지막 행에서 멈춘다.
+int GetWaveRow(int waveIdx)
+{
+	const int rows = wave_COUNT / (MAXWAVEENEMY * WAVEDATASIZE);
+
+	if (waveIdx < 0)
+		return 0;
+	if (waveIdx >= rows)
+		return rows - 1;
+
+	return waveIdx;
+}
+
+//그 웨이브가 무슨 자리인가(MONSTERTYPE_*). wave[] 세번째 칸이다.
+//
+//한 웨이브 안에서는 슬롯 0 이 자리를 대표한다 - 보스 자리는 언제나 한 마리고,
+//여러 마리가 나오는 자리는 전부 잡몹이다(tools/content/make_waves.py).
+int GetWaveKind(int waveIdx)
+{
+	return wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + 0 * WAVEDATASIZE + 2];
+}
+
+//그 자리가 잡몹 체력의 몇 배인가. 100 을 나눈 값이 아니라 그냥 배수다.
+int GetWaveHpMul(int waveIdx)
+{
+	switch (GetWaveKind(waveIdx)) {
+	case MONSTERTYPE_BOSS:
+		return WAVE_HP_SUBBOSS_MUL;
+	case MONSTERTYPE_MIDBOSS:
+		return WAVE_HP_MIDBOSS_MUL;
+	case MONSTERTYPE_BIGBOSS:
+		return WAVE_HP_BIGBOSS_MUL;
+	}
+
+	return 1;
+}
+
 int GetMaxWaveCnt(void)
 {
 	int i;
@@ -971,8 +1014,13 @@ int GetMaxWaveCnt(void)
 	if (robinmap == MAP_DIORAMA_TOLEM && !robin.demoSeen[DEMO_TUTORIAL_END])
 		return 1;
 
+	//WaveControler()가 스폰하는 행은 robin.waveIdx 다. 여기서 robin.stage/robin.room
+	//으로 다른 행을 읽으면 "몇 마리가 나오는가"와 "무엇이 나오는가"가 서로 다른
+	//웨이브에서 온다. robin.room 은 아무 데서도 오르지 않으므로 실제로는 늘
+	//stage*MAXWAVE 행만 읽혔고, 그래서 wave[] 에 두세 마리를 깔아도 한 마리만
+	//나왔다. 스폰하는 쪽과 같은 행을 본다.
 	for (i = 0; i < MAXWAVEENEMY; i++) {
-		if (wave[robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0] == false)
+		if (wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0] == false)
 			return i;
 	}
 
@@ -1181,8 +1229,8 @@ void WaveControler()
 	switch (drawHandle) {
 	case MD_DEMO:
 	case MD_PLAY:
-		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
-			pObj->type = wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
+		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
+			pObj->type = wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
 			//pObj->type = ENEMY_SLIME_GOLD;
 			pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
 			pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
@@ -1618,7 +1666,7 @@ long long GetTotalWaveHp(int waveIdx)
 	int monType;
 
 	for (i = 0; i < MAXWAVEENEMY; i++) {
-		monType = wave[waveIdx * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
+		monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
 		if (monType != false) {
 			curHp = GetWaveHp(waveIdx, i); 
 			
@@ -1666,7 +1714,10 @@ long long GetWaveHpTier(int tier)
 
 long long GetWaveHp(int waveIdx, int curWave)
 {
-	int monType = wave[waveIdx * WAVEDATASIZE * MAXENEMY + curWave * WAVEDATASIZE + 0];
+	//한 웨이브가 차지하는 칸은 MAXWAVEENEMY * WAVEDATASIZE 다. 여기만 MAXENEMY(50)
+	//로 잡혀 있어서 waveIdx 가 조금만 올라가도 배열 밖을 읽었고, 그 쓰레기 값을
+	//monType 으로 써서 ADDHP 를 가져왔다. 체력이 웨이브마다 널뛰던 원인이다.
+	int monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + curWave * WAVEDATASIZE + 0];
 
 	//인터랙티브 전투 튜토리얼은 몬스터 타입/스폰 타이밍만 wave[]를 그대로 쓰고 체력은 여기서
 	//웨이브 순번에 맞춰 한 대씩 늘려간다(0:2, 1:3, 2:4 ...). 정규 공식을 그대로 쓰면 수천 단위라
@@ -1716,7 +1767,10 @@ long long GetWaveHp(int waveIdx, int curWave)
 		//
 		//WAVE_HP_TEST_MUL 은 시연용 배수다(평소 1). 곡선은 그대로 두고
 		//전체를 같이 올려서 연출을 끝까지 볼 수 있게 한다.
+		//보스 자리는 그 자리 잡몹 체력에 배수를 곱한다(BalanceConfig.h).
+		//ADDHP 와 곱해지므로 덩치가 큰 놈이 보스로 서면 그만큼 더 두꺼워진다.
 		return base * (100 + enemyData[monType * ENEMYDATASIZE + ENEMYDATA_ADDHP]) / 100
+			* GetWaveHpMul(waveIdx)
 			* WAVE_HP_TEST_MUL;
 	}
 }

@@ -9,6 +9,7 @@ void GetMarkHeadPosAt(int footX, int footY, float zoom, int* outX, int* outY);
 void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy);
 void MoveControlMarkToObj(int ownerObj, int skillIdx, int destObj);
 void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY);
+void UpdateHeroSkillControlMarkStack(void);
 int GetUnitScore(OBJECT* pObj);
 void DecideRouletteResult();
 void InitRouletteJump(void);
