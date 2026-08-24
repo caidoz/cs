@@ -306,6 +306,9 @@ struct Fetch {
 	bool ok;			//성공했나
 	int at;				//sTodo 의 몇 번째인가. 매니페스트를 받을 때는 -1
 	std::string body;
+
+	//이 슬롯이 계속 쓰는 요청 객체. 만드는 이유는 FetchBegin() 주석 참고.
+	network::HttpRequest* req;
 };
 
 static Fetch sFetch[FETCH_SLOTS];
@@ -333,7 +336,27 @@ static void FetchBegin(int slot, const std::string& path, int at)
 		return;
 	}
 
-	network::HttpRequest* req = new (std::nothrow) network::HttpRequest();
+	//슬롯마다 요청 객체를 하나씩 만들어 계속 쓴다.
+	//
+	//매번 new 하면 안 된다. 지우는 것은 libcocos2d.dll 안의 Ref::release()
+	//인데 만드는 것은 이쪽(cs.exe)이다. 모듈이 다르면 힙이 어긋나서, 지우는
+	//순간 힙이 깨지거나 잠긴다. Func_Net.cpp 에서 그 증상으로 게임 루프가
+	//통째로 멈추는 것을 겪었다.
+	//
+	//슬롯 하나에는 한 번에 한 요청만 도므로(busy) 슬롯당 하나면 충분하다.
+	if (f->req == NULL) {
+		f->req = new (std::nothrow) network::HttpRequest();
+
+		if (f->req == NULL) {
+			f->done = true;
+			return;
+		}
+
+		//놓지 않는다. 계수가 0이 되면 위에 적은 그 delete 가 일어난다.
+		f->req->retain();
+	}
+
+	network::HttpRequest* req = f->req;
 
 	req->setUrl(std::string(CONTENT_CDN_URL) + path);
 	req->setRequestType(network::HttpRequest::Type::GET);
@@ -373,7 +396,6 @@ static void FetchBegin(int slot, const std::string& path, int at)
 	});
 
 	network::HttpClient::getInstance()->send(req);
-	req->release();
 }
 
 //비어 있는 슬롯을 찾는다. 없으면 -1.

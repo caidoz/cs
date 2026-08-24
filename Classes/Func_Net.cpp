@@ -16,6 +16,12 @@
 #include "Text.h"
 #endif
 
+#ifndef _CONFIG_NET_H_
+#include "Config/NetConfig.h"
+#endif
+
+#include "network/HttpClient.h"
+
 #include <map>
 #include <string>
 #include <vector>
@@ -25,12 +31,17 @@ USING_NS_CC;
 //=============================================================================
 // 서버 통신 계층
 //
-// 구역은 다섯이다.
+// 구역은 여섯이다.
 //   1. 문자열 유틸      - 덤프 형식의 이스케이프 규칙
 //   2. 덤프 만들기      - robin -> 텍스트
 //   3. 덤프 읽기        - 텍스트 -> robin
-//   4. 임시 로컬 서버   - ★ 진짜 서버가 붙으면 여기만 갈아끼운다
-//   5. 클라이언트 API   - 요청 큐와 지연
+//   4. 임시 로컬 서버   - NET_SERVER_URL 이 비어 있을 때 쓰는 길
+//   5. 진짜 서버        - HttpClient. NET_SERVER_URL 이 있을 때 쓰는 길
+//   6. 클라이언트 API   - 요청 큐와 지연
+//
+// 4와 5는 같은 일을 하는 두 갈래이고, 고르는 기준은 NET_SERVER_URL 한 줄이다
+// (Config/NetConfig.h). 비어 있으면 예전과 한 글자도 다르지 않게 동작한다.
+// Content.cpp 가 CDN 을 그렇게 다루고 있어서 같은 꼴로 맞췄다.
 //=============================================================================
 
 long long gNetUserId = 0;
@@ -1348,12 +1359,21 @@ static int ServerLogin(void)
 	return NETRESULT_OK;
 }
 
-//---- 서버 : 세이브 내려주기 ----
-static int ServerLoad(void)
+//---- 파일에 있는 것을 robin 에 올린다 ----
+//
+//임시 서버에게는 이것이 "세이브 내려주기"이고, 진짜 서버를 쓸 때는 서버에
+//못 붙었을 때 기대는 오프라인 캐시다. 하는 일이 같아서 하나로 둔다.
+//
+//wantUser 가 0이 아니면 캐시의 주인이 그 계정인지 본다. 기기를 갈거나 앱을
+//지웠다 깔면 열쇠가 새로 생기는데, 그때 남아 있던 지난 계정의 캐시를 올리면
+//남의 세이브를 자기 것으로 들고 있게 된다. 그 상태로 저장하면 서버가 403으로
+//거절한다.
+//
+//여기서 시각을 건드리지 않는 것은 일부러다. 캐시는 서버가 아니라서 "지금
+//몇 시인지" 를 알려줄 자격이 없다. NetInit() 이 gNetTimeOffset 을 남겨두는
+//것과 같은 이유다.
+static int LoadFromCache(long long wantUser)
 {
-	//서버에 닿았으니 시각을 맞춘다.
-	NetSetServerTime(ServerNow());
-
 	std::string text;
 	NetTableMap tables;
 	long long userId = 0, revision = 0;
@@ -1364,11 +1384,27 @@ static int ServerLoad(void)
 	if (!NetParseDump(text, tables, &userId, &revision))
 		return NETRESULT_ERR_FORMAT;
 
+	if (wantUser != 0 && userId != wantUser) {
+		CCLOG("LoadFromCache: 캐시가 다른 계정 것이다 (%lld, 지금은 %lld). 안 쓴다",
+			userId, wantUser);
+		return NETRESULT_ERR_FORMAT;
+	}
+
 	gNetUserId = userId;
 	gNetRevision = revision;
 
 	NetApplyDump(tables);
 	return NETRESULT_OK;
+}
+
+//---- 서버 : 세이브 내려주기 ----
+static int ServerLoad(void)
+{
+	//서버에 닿았으니 시각을 맞춘다.
+	NetSetServerTime(ServerNow());
+
+	//임시 서버는 이 기기가 곧 서버라 주인을 따질 것이 없다.
+	return LoadFromCache(0);
 }
 
 //덤프 안의 player 표에서 revision 칸만 새 값으로 갈아끼운다.
@@ -1504,13 +1540,411 @@ static int ServerSave(const std::string& body)
 }
 
 //=============================================================================
-// 5. 클라이언트 API
+// 5. 진짜 서버
+//
+// 구역 4와 하는 일이 같다. 다만 파일 대신 HTTP 를 탄다.
+//
+// 형식은 하나도 안 바뀐다. 보내는 것도 받는 것도 구역 2·3이 다루는 그 덤프
+// 텍스트 그대로다. JSON 으로 감싸지 않는 이유가 이것이다 — 감싸면 파서가
+// 양쪽에 하나씩 더 생긴다.
+//=============================================================================
+
+//서버를 쓰는가. NetConfig.h 의 한 줄이 정한다.
+static bool UsingServer(void)
+{
+	return NET_SERVER_URL[0] != '\0';
+}
+
+//---- 게스트 열쇠 ----
+//
+// 첫 실행에 UUID 를 하나 만들어 쓰기 가능 경로에 둔다. 이것이 계정의 유일한
+// 열쇠다. 예전에는 임시 서버가 user_id 를 시간과 난수로 지어냈는데, 진짜
+// 서버가 붙으면 번호는 AUTO_INCREMENT 가 주므로 그 자리가 통째로 사라진다.
+
+static std::string sGuestKey;
+
+//RFC 4122 v4. 난수 128비트에서 버전과 변형 비트만 정해준다.
+static std::string NetMakeUuid(void)
+{
+	static const char* hex = "0123456789abcdef";
+	char buf[37];
+	int i;
+
+	for (i = 0; i < 36; i++)
+		buf[i] = hex[Random(16)];
+
+	buf[8] = buf[13] = buf[18] = buf[23] = '-';
+	buf[14] = '4';					//버전 4
+	buf[19] = hex[8 + Random(4)];	//변형 10xx
+	buf[36] = 0;
+
+	return std::string(buf);
+}
+
+static const std::string& NetGuestKey(void)
+{
+	std::string text;
+
+	if (!sGuestKey.empty())
+		return sGuestKey;
+
+	if (ServerReadFile(NET_GUESTKEYFILE, text)) {
+		//앞뒤 공백을 턴다. 손으로 넣어보는 일이 있다.
+		size_t b = text.find_first_not_of(" \t\r\n");
+		size_t e = text.find_last_not_of(" \t\r\n");
+
+		if (b != std::string::npos)
+			sGuestKey = text.substr(b, e - b + 1);
+	}
+
+	if (sGuestKey.size() != 36) {
+		sGuestKey = NetMakeUuid();
+
+		//못 적으면 다음 실행에 계정이 새로 생긴다. 조용히 넘기면 안 된다.
+		if (ServerWriteFile(NET_GUESTKEYFILE, sGuestKey))
+			CCLOG("NetGuestKey: 새 열쇠를 만들었다");
+		else
+			CCLOG("NetGuestKey: 열쇠를 못 적었다. 다음 실행에 계정이 새로 생긴다");
+	}
+
+	return sGuestKey;
+}
+
+//---- 도는 요청 하나 ----
+//
+// 한 번에 하나만 돈다(구역 6이 그렇게 막는다). 그래서 상태를 하나만 둔다.
+
+enum {
+	NETHTTP_IDLE = 0,
+	NETHTTP_WAIT,
+	NETHTTP_DONE,
+};
+
+static int sHttpState = NETHTTP_IDLE;
+static long sHttpCode = 0;
+static bool sHttpReached = false;	//서버에 닿기는 했는가
+static std::string sHttpBody;
+
+//요청마다 번호를 매긴다. 늦게 도착한 지난 요청의 답을 지금 것으로 착각하면
+//안 된다. NetInit() 이 번호를 올려서 도는 것을 통째로 버리기도 한다.
+static int sHttpGen = 0;
+
+//요청 객체는 하나를 만들어 계속 쓴다.
+//
+//매번 new 하면 안 된다. 그 객체를 지우는 것은 libcocos2d.dll 안의
+//Ref::release() 인데, 만드는 것은 이쪽(cs.exe)이다. 모듈이 다르면 힙이
+//어긋나서, 지우는 순간 힙이 깨지거나 잠긴다. 실제로 그 증상으로 게임 루프가
+//통째로 멈췄다.
+//
+//한 번에 한 요청만 도는 것은 구역 6이 막아주므로(sReq), 하나면 충분하다.
+//덤으로 요청마다 할당이 없어진다.
+static network::HttpRequest* sHttpReq = NULL;
+
+static void HttpBegin(int reqType, const std::string& body)
+{
+	std::vector<std::string> headers;
+
+	if (sHttpReq == NULL) {
+		sHttpReq = new (std::nothrow) network::HttpRequest();
+
+		if (sHttpReq == NULL)
+			return;
+
+		//놓지 않는다. 계수가 0이 되면 위에 적은 그 delete 가 일어난다.
+		sHttpReq->retain();
+	}
+
+	network::HttpRequest* req = sHttpReq;
+	std::string url = NET_SERVER_URL;
+	int gen = ++sHttpGen;
+
+	sHttpState = NETHTTP_WAIT;
+	sHttpCode = 0;
+	sHttpReached = false;
+	sHttpBody.clear();
+
+	switch (reqType) {
+	case NETREQ_LOGIN:
+		url += "/v1/login";
+		req->setRequestType(network::HttpRequest::Type::POST);
+		req->setRequestData(NetGuestKey().c_str(), NetGuestKey().size());
+		break;
+
+	case NETREQ_LOAD:
+		url += "/v1/save";
+		req->setRequestType(network::HttpRequest::Type::GET);
+		break;
+
+	default:
+		url += "/v1/save";
+		req->setRequestType(network::HttpRequest::Type::POST);
+		req->setRequestData(body.c_str(), body.size());
+		break;
+	}
+
+	req->setUrl(url);
+
+	//---- 자격증명 ----
+	//
+	// 1단계는 게스트 열쇠를 그대로 보낸다. 3단계에서 세션 토큰으로 바뀌는데,
+	// 그때 고칠 곳은 아래 한 줄이다. 구글·애플 연동이 붙어도 이 구역의
+	// 나머지는 그대로 간다.
+	headers.push_back("Content-Type: text/plain; charset=utf-8");
+	headers.push_back(std::string("X-Guest-Key: ") + NetGuestKey());
+	req->setHeaders(headers);
+
+	req->setResponseCallback([gen](network::HttpClient* /*c*/,
+		network::HttpResponse* res) {
+
+		//여기는 메인 실이다. HttpClient 가 게임 루프로 넘겨준다.
+		//그래서 잠금이 필요 없다. Content.cpp 도 같은 얼개다.
+		if (gen != sHttpGen)
+			return;		//지나간 요청의 답이다. 버린다.
+
+		if (res && res->isSucceed()) {
+			std::vector<char>* d = res->getResponseData();
+
+			sHttpReached = true;
+			sHttpCode = res->getResponseCode();
+
+			if (d && !d->empty())
+				sHttpBody.assign(d->begin(), d->end());
+		}
+		else if (res) {
+			CCLOG("Net: 못 붙었다 (%s)", res->getErrorBuffer());
+		}
+
+		sHttpState = NETHTTP_DONE;
+	});
+
+	network::HttpClient::getInstance()->send(req);
+}
+
+//메타행 하나를 꺼낸다. 없으면 0.
+static long long NetPeekMeta(const std::string& text, const char* key)
+{
+	std::string tag = std::string(key) + "\t";
+	size_t at = text.find(tag);
+	size_t end;
+
+	//머리에 있어야 한다. 값 안에 우연히 같은 글자가 있을 수 있다.
+	if (at == std::string::npos)
+		return 0;
+
+	if (at != 0 && text[at - 1] != '\n')
+		return 0;
+
+	at += tag.size();
+	end = text.find('\n', at);
+
+	return atoll(text.substr(at, end - at).c_str());
+}
+
+//답 하나를 해석한다. 상태 코드와 NETRESULT_* 의 대응은 계획서의 표 그대로다.
+static int NetTakeResponse(int reqType)
+{
+	NetTableMap tables;
+	long long userId = 0, revision = 0;
+	long long now;
+
+	if (!sHttpReached)
+		return NETRESULT_ERR_NETWORK;
+
+	//어떤 답이든 #now 가 실려 온다. 무엇보다 먼저 시각을 맞춘다.
+	//거절당한 답에도 실려 있고, 그것도 맞는 시각이다.
+	now = NetPeekMeta(sHttpBody, "#now");
+
+	if (now > 0)
+		NetSetServerTime((long)now);
+
+	switch (sHttpCode) {
+	case 200:
+		break;
+
+	case 404:
+		//이 계정에 세이브가 없다. 클라이언트는 새 게임을 시작한다.
+		return NETRESULT_ERR_NOTFOUND;
+
+	case 409:
+		//다른 기기가 먼저 저장했다. 몸통에 서버가 들고 있는 덤프가 실려
+		//오지만, 지금은 구역 6의 재로드 경로를 그대로 쓴다. 왕복 한 번을
+		//아끼는 것은 나중에 정리할 일이고, 지금 고치면 검증할 것이 는다.
+		return NETRESULT_ERR_CONFLICT;
+
+	case 400:
+		CCLOG("Net: 서버가 규격 위반이라고 한다");
+		return NETRESULT_ERR_FORMAT;
+
+	case 401:
+	case 403:
+		//클라이언트에 인증 전용 결과값이 아직 없어서 "못 붙었다"로 뭉갠다.
+		//3단계에서 NETRESULT_ERR_AUTH 를 만들고 여기를 고친다.
+		CCLOG("Net: 인증이 거절됐다 (HTTP %ld)", sHttpCode);
+		return NETRESULT_ERR_NETWORK;
+
+	default:
+		CCLOG("Net: HTTP %ld", sHttpCode);
+		return NETRESULT_ERR_NETWORK;
+	}
+
+	switch (reqType) {
+	case NETREQ_LOGIN:
+		//메타행만 온다. 표는 없다.
+		gNetUserId = NetPeekMeta(sHttpBody, "#user");
+		gNetRevision = NetPeekMeta(sHttpBody, "#revision");
+
+		if (gNetUserId == 0) {
+			CCLOG("Net: 로그인 답에 #user 가 없다");
+			return NETRESULT_ERR_FORMAT;
+		}
+
+		return NETRESULT_OK;
+
+	case NETREQ_LOAD:
+		if (!NetParseDump(sHttpBody, tables, &userId, &revision))
+			return NETRESULT_ERR_FORMAT;
+
+		gNetUserId = userId;
+		gNetRevision = revision;
+
+		NetApplyDump(tables);
+
+		//받은 것을 오프라인 캐시로 남긴다. 서버가 정답이고 이 파일은 사본이다.
+		//다음에 서버에 못 붙으면 이것으로 계속 논다.
+		if (!ServerWriteFile(SERVERDBFILE, sHttpBody))
+			CCLOG("Net: 오프라인 캐시를 못 남겼다");
+
+		return NETRESULT_OK;
+
+	default:
+		//저장이 받아들여졌다. revision 은 서버가 정한다.
+		gNetRevision = NetPeekMeta(sHttpBody, "#revision");
+		return NETRESULT_OK;
+	}
+}
+
+//---- 두 갈래를 하나로 ----
+//
+// 구역 6은 어느 길로 가는지 몰라도 되게 한다.
+
+static void ServerBegin(int reqType, const std::string& body)
+{
+	if (UsingServer())
+		HttpBegin(reqType, body);
+}
+
+//답이 왔는지 본다. 아직이면 false 를 주고, 구역 6은 다음 프레임에 또 묻는다.
+static bool ServerPoll(int reqType, int* out)
+{
+	if (!UsingServer()) {
+		//임시 서버는 파일이라 그 자리에서 끝난다.
+		switch (reqType) {
+		case NETREQ_LOGIN:
+			*out = ServerLogin();
+			break;
+
+		case NETREQ_LOAD:
+			*out = ServerLoad();
+			break;
+
+		case NETREQ_SAVE:
+			*out = ServerSave(sNetBody);
+			break;
+
+		default:
+			*out = NETRESULT_ERR_NETWORK;
+			break;
+		}
+
+		return true;
+	}
+
+	if (sHttpState != NETHTTP_DONE)
+		return false;
+
+	sHttpState = NETHTTP_IDLE;
+	*out = NetTakeResponse(reqType);
+
+	return true;
+}
+
+//=============================================================================
+// 6. 클라이언트 API
 //=============================================================================
 
 static int sReq = NETREQ_NONE;		//지금 도는 요청
 static int sDelay = 0;				//남은 지연 프레임
+static bool sSent = false;			//그 요청을 이미 띄웠는가
 static int sLastReq = NETREQ_NONE;
 static int sLastResult = NETRESULT_NONE;
+
+//---- 부팅 ----
+//로그인 다음에 로드를 해야 하는데, 진짜 서버에서는 둘 다 답을 기다린다.
+//그 두 걸음을 여기서 센다.
+enum {
+	NETBOOT_NONE = 0,
+	NETBOOT_LOGIN,
+	NETBOOT_LOAD,
+	NETBOOT_DONE,
+};
+
+static int sBootStep = NETBOOT_NONE;
+static int sBootResult = NETRESULT_NONE;
+
+//---- 저장 재시도 ----
+//보내려다 못 보낸 것을 얼마나 기다렸다 또 해볼지. 바로 다시 하면 서버가
+//죽어 있을 때 매 프레임 두드린다.
+static int sSaveWait = 0;
+
+//서버에 세이브가 없다. 이 기기에 있던 것을 올린다.
+//
+//처음 서버에 붙는 기기가 여기로 온다. 그동안은 임시 서버가 serverdb.dat 으로
+//처리하고 있었고, SaveGame() 은 옛 save.dat 을 더 이상 쓰지 않는다. 그래서
+//지금까지 논 것은 그 파일에만 있다. 여기서 안 올리면 통째로 사라진다.
+//
+//형식이 같으므로 변환할 것이 없다. 그대로 올리면 된다.
+static int NetBootMigrate(void)
+{
+	long long serverUser = gNetUserId;
+
+	//주인을 안 따진다. 이 파일은 임시 서버가 쓴 것이라 그 안의 user_id 는
+	//서버가 준 번호가 아니다. 그것을 견주면 자기 세이브를 자기가 버린다.
+	if (LoadFromCache(0) != NETRESULT_OK)
+		return NETRESULT_ERR_NOTFOUND;
+
+	//번호는 이제 서버가 준다. 임시 서버가 시간과 난수로 지어낸 번호는 버린다.
+	//이것을 안 고치면 저장할 때 서버가 "남의 세이브다"로 거절한다.
+	gNetUserId = serverUser;
+
+	//서버에는 아직 아무것도 없으므로 0에서 시작한다.
+	gNetRevision = 0;
+
+	CCLOG("NetBootstrap: 서버에 없다. 이 기기의 세이브를 올린다 (user=%lld)", gNetUserId);
+
+	NetMarkDirty();
+	NetFlush();
+
+	return NETRESULT_OK;
+}
+
+//서버에 못 붙었다. 오프라인 캐시로 시작해 본다.
+static int NetBootFallback(int result)
+{
+	//"없다"는 못 붙은 것이 아니라 서버가 제대로 답한 것이다. 그때는 이
+	//기기에 있던 것을 올리는 쪽으로 간다.
+	if (result == NETRESULT_ERR_NOTFOUND)
+		return NetBootMigrate();
+
+	//로그인이 됐으면 그 계정 것인지 따진다. 로그인부터 실패했으면 따질
+	//기준이 없으므로 캐시를 그대로 믿는다.
+	if (LoadFromCache(gNetUserId) != NETRESULT_OK)
+		return result;
+
+	CCLOG("NetBootstrap: 서버에 못 붙었다. 오프라인 캐시로 시작한다 (revision=%lld)",
+		gNetRevision);
+
+	return NETRESULT_OK;
+}
 
 static bool sDirty = false;			//올릴 변경이 쌓여 있는지
 static int sHold = 0;				//묶어 보내려고 기다리는 프레임
@@ -1536,8 +1970,21 @@ void NetInit(void)
 {
 	sReq = NETREQ_NONE;
 	sDelay = 0;
+	sSent = false;
 	sLastReq = NETREQ_NONE;
 	sLastResult = NETRESULT_NONE;
+	sBootStep = NETBOOT_NONE;
+	sBootResult = NETRESULT_NONE;
+	sSaveWait = 0;
+
+	//도는 요청이 있으면 그 답을 버린다. 번호가 바뀌면 콜백이 스스로 물러난다.
+	sHttpGen++;
+	sHttpState = NETHTTP_IDLE;
+
+	//받는 데 오래 걸리면 포기한다. HttpClient 는 하나짜리라 이 값이
+	//콘텐츠 갱신에도 같이 걸린다. 기본값보다 짧지 않으므로 그쪽은 손해가 없다.
+	network::HttpClient::getInstance()->setTimeoutForConnect(NET_TIMEOUT_SEC);
+	network::HttpClient::getInstance()->setTimeoutForRead(NET_TIMEOUT_SEC);
 	sDirty = false;
 	sHold = 0;
 	sDirtyAge = 0;
@@ -1588,8 +2035,13 @@ bool NetRequest(int reqType)
 		NetBuildDump(sNetBody);
 
 	sReq = reqType;
-	sDelay = NETDELAY_MIN + Random(NETDELAY_MAX - NETDELAY_MIN + 1);
+	sSent = false;
 	sLastResult = NETRESULT_NONE;
+
+	//지연은 "기다림을 견디는 코드"를 미리 만들려고 넣은 흉내다. 진짜 서버가
+	//붙으면 진짜로 기다리게 되므로 흉내를 얹을 이유가 없다.
+	sDelay = UsingServer() ? 0
+		: NETDELAY_MIN + Random(NETDELAY_MAX - NETDELAY_MIN + 1);
 
 	return true;
 }
@@ -1612,6 +2064,7 @@ void NetFlush(void)
 
 void NetUpdate(void)
 {
+
 	//---- 도는 요청 진행 ----
 	if (sReq != NETREQ_NONE) {
 		if (sDelay > 0) {
@@ -1620,24 +2073,17 @@ void NetUpdate(void)
 		}
 
 		//지연이 다 됐다. 여기가 "서버에 닿는" 순간이다.
-		switch (sReq) {
-		case NETREQ_LOGIN:
-			sLastResult = ServerLogin();
-			break;
-
-		case NETREQ_LOAD:
-			sLastResult = ServerLoad();
-			break;
-
-		case NETREQ_SAVE:
-			sLastResult = ServerSave(sNetBody);
-			break;
-
-		default:
-			sLastResult = NETRESULT_ERR_NETWORK;
-			break;
+		if (!sSent) {
+			ServerBegin(sReq, sNetBody);
+			sSent = true;
 		}
 
+		//진짜 서버면 답이 몇 프레임 뒤에 온다. 그동안 게임은 계속 돈다.
+		if (!ServerPoll(sReq, &sLastResult))
+			return;
+
+
+		sSent = false;
 		sLastReq = sReq;
 		sReq = NETREQ_NONE;
 
@@ -1660,6 +2106,31 @@ void NetUpdate(void)
 			sDirty = false;
 			sHold = 0;
 			sDirtyAge = 0;
+		}
+
+		//---- 저장을 못 보냈다 ----
+		//
+		//충돌은 여기가 아니다. 그건 서버가 제대로 답한 것이고 위에서 다뤘다.
+		//여기는 못 붙었거나 서버가 잘못된 경우다.
+		//
+		//SaveGame() 은 더 이상 파일을 쓰지 않는다(Func_System.cpp). 그래서
+		//여기서 남기지 않으면 오프라인에서 논 판이 통째로 사라진다.
+		if (sLastReq == NETREQ_SAVE) {
+			if (sLastResult == NETRESULT_OK) {
+				sSaveWait = 0;
+			}
+			else if (sLastResult != NETRESULT_ERR_CONFLICT) {
+				if (ServerWriteFile(SERVERDBFILE, sNetBody))
+					CCLOG("NetUpdate: 저장을 못 보냈다. 캐시에 남긴다");
+				else
+					CCLOG("NetUpdate: 저장도 캐시도 못 했다");
+
+				//다시 보낸다. 보낼 것은 그때 새로 만든다(NetRequest 가 한다).
+				//지금 몸통을 그대로 아껴두는 것보다 그 시점의 robin 이 맞다.
+				sDirty = true;
+				sDirtyAge = 0;
+				sSaveWait = NETSAVE_RETRYWAIT;
+			}
 		}
 
 		//---- 충돌 뒤 다시 받기가 끝났다 ----
@@ -1694,6 +2165,24 @@ void NetUpdate(void)
 			}
 		}
 
+		//---- 부팅 한 걸음 ----
+		//로그인이 끝났으면 이어서 로드를 띄운다. 둘 다 끝나야 게임이 뜬다.
+		if (sBootStep == NETBOOT_LOGIN && sLastReq == NETREQ_LOGIN) {
+			if (sLastResult == NETRESULT_OK) {
+				sBootStep = NETBOOT_LOAD;
+				NetRequest(NETREQ_LOAD);
+			}
+			else {
+				sBootResult = NetBootFallback(sLastResult);
+				sBootStep = NETBOOT_DONE;
+			}
+		}
+		else if (sBootStep == NETBOOT_LOAD && sLastReq == NETREQ_LOAD) {
+			sBootResult = (sLastResult == NETRESULT_OK)
+				? NETRESULT_OK : NetBootFallback(sLastResult);
+			sBootStep = NETBOOT_DONE;
+		}
+
 		return;
 	}
 
@@ -1713,6 +2202,12 @@ void NetUpdate(void)
 	if (sDirty == false)
 		return;
 
+	//못 보내서 다시 해보는 중이면 기다린다.
+	if (sSaveWait > 0) {
+		sSaveWait--;
+		return;
+	}
+
 	sDirtyAge++;
 
 	//잠잠해지길 기다린다. 다만 계속 시끄러우면(전투 중 SaveGame()이 연달아
@@ -1728,22 +2223,36 @@ void NetUpdate(void)
 	}
 }
 
-//부팅. 여기만 지연 없이 즉시 처리한다.
-//게임이 아직 안 떠서 기다릴 화면이 없기 때문이다. 진짜 서버가 붙으면
-//이 함수가 로딩 화면을 띄우고 NETREQ_LOGIN -> NETREQ_LOAD를 비동기로 도는
-//흐름으로 바뀐다. 그때 바뀌는 것은 이 함수 하나뿐이다.
-int NetBootstrap(void)
+//부팅을 띄운다. 곧바로 돌아온다.
+//
+//임시 서버(NET_SERVER_URL 이 비었을 때)는 파일이라 그 자리에서 끝난다.
+//예전과 똑같이 동작한다. 진짜 서버면 로그인과 로드가 각각 답을 기다리므로
+//NetBootstrapPoll() 이 NETRESULT_NONE 을 주는 동안 부르는 쪽이 기다려야 한다.
+void NetBootstrapBegin(void)
 {
-	int result;
-
 	NetInit();
 
-	result = ServerLogin();
+	if (!UsingServer()) {
+		sBootResult = ServerLogin();
 
-	if (result != NETRESULT_OK)
-		return result;
+		if (sBootResult == NETRESULT_OK)
+			sBootResult = ServerLoad();
 
-	return ServerLoad();
+		sBootStep = NETBOOT_DONE;
+		return;
+	}
+
+	sBootStep = NETBOOT_LOGIN;
+	sBootResult = NETRESULT_NONE;
+
+	NetRequest(NETREQ_LOGIN);
+}
+
+//부팅이 끝났으면 결과를, 아직이면 NETRESULT_NONE 을 준다.
+//NetUpdate() 가 돌아야 진행된다.
+int NetBootstrapPoll(void)
+{
+	return sBootStep == NETBOOT_DONE ? sBootResult : NETRESULT_NONE;
 }
 
 //통신 중이라는 표시. 지연이 눈에 보여야 "기다리는 화면"을 만들 생각을 한다.

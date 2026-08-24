@@ -610,6 +610,10 @@ void Core::onExit()
 	Layer::onExit();
 }
 
+//부팅(로그인 + 첫 로드)이 끝나서 robin 이 채워졌는가.
+//init() 이 NetBootstrapBegin() 으로 띄우고, Run() 의 첫머리가 마무리한다.
+static bool netBooted = false;
+
 // on "init" you need to initialize your instance
 bool Core::init()
 {
@@ -914,24 +918,10 @@ bool Core::init()
 		//robin을 채우기 전에 런타임 상태를 세워 두어야 한다.
 		InitGame();
 
-		int netResult = NetBootstrap();
-
-		if (netResult == NETRESULT_OK) {
-			//서버가 준 값이 robin에 이미 들어가 있다. 나머지를 세운다.
-			LoadGameAfterNet();
-		}
-		else if (LoadFile(SAVEFILE, saveMem, sizeof(ROBINDATA))) {
-			//서버에는 없는데 예전 save.dat이 있다. 한 번만 옮겨 담는다.
-			//다음 저장부터는 서버(=새 형식)로만 나간다. save.dat은 그대로
-			//남겨두므로 문제가 생기면 되돌릴 수 있다.
-			CCLOG("NetBootstrap: 서버에 없다. 예전 save.dat을 옮겨 담는다");
-			LoadGame();
-			NetMarkDirty();
-			NetFlush();
-		}
-		else {
-			NewGame();
-		}
+		//띄우기만 하고 곧바로 돌아온다. 임시 서버면 이 한 줄로 끝나 있고,
+		//진짜 서버면 답을 기다려야 한다. 마무리는 Run()의 첫머리가 한다.
+		netBooted = false;
+		NetBootstrapBegin();
 	}
 
 	for (i = 0; i < MAXRENDERCNT; i++)
@@ -974,6 +964,40 @@ void Core::Run(float delta) {
 	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
 	NetUpdate();
+
+	//---- 부팅이 아직 안 끝났다 ----
+	//
+	//로그인과 첫 로드가 끝나야 robin 이 채워진다. 그 전에 아래를 돌리면
+	//빈 robin 으로 한 판이 그려진다. 예전에는 init() 안에서 파일로 즉시
+	//끝났으므로 이 자리가 필요 없었다.
+	//
+	//기다리는 동안은 그냥 돌아간다. 화면은 직전 그림 그대로다. 로딩 화면을
+	//제대로 붙이는 것은 여기에 그리면 된다.
+	if (!netBooted) {
+		int netResult = NetBootstrapPoll();
+
+		if (netResult == NETRESULT_NONE)
+			return;
+
+		netBooted = true;
+
+		if (netResult == NETRESULT_OK) {
+			//서버가 준 값이 robin에 이미 들어가 있다. 나머지를 세운다.
+			LoadGameAfterNet();
+		}
+		else if (LoadFile(SAVEFILE, saveMem, sizeof(ROBINDATA))) {
+			//서버에는 없는데 예전 save.dat이 있다. 한 번만 옮겨 담는다.
+			//다음 저장부터는 서버(=새 형식)로만 나간다. save.dat은 그대로
+			//남겨두므로 문제가 생기면 되돌릴 수 있다.
+			CCLOG("NetBootstrap: 서버에 없다. 예전 save.dat을 옮겨 담는다");
+			LoadGame();
+			NetMarkDirty();
+			NetFlush();
+		}
+		else {
+			NewGame();
+		}
+	}
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
 	//여기서 안 막힌다. 받은 것은 staging 에 쌓이고 반영은 다음 부팅 때 한다.
