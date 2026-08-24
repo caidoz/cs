@@ -112,12 +112,13 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 	startTouchX = touchPoint.x;
 	startTouchY = touchPoint.y;
 
-	//AVK_MAXGAME의 HEROSKILL 모션 테스트 중에는 화면 어디를 눌러도
-	//게임 조작으로 보내지 않고 주인공 모션 한 프레임 진행 신호로만 쓴다.
+	//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 터치를 가로채지 않는다.
+#if 0
 	if (gDemoSkillFrameStepActive) {
 		gDemoSkillFrameStepPermit = 1;
 		return true;
 	}
+#endif
 
 	if (touch) {
 		touchX = touchPoint.x;
@@ -1771,7 +1772,35 @@ void PaintClet(int x, int y, int w, int h)
 			if (currencyMark[i].zoomIncrement < 0 && currencyMark[i].zoom < currencyMark[i].zoomEnd)
 				currencyMark[i].zoom = currencyMark[i].zoomEnd;
 
-			if ((currencyMark[i].targetX - currencyMark[i].x) * (currencyMark[i].targetX - currencyMark[i].x) + (currencyMark[i].targetY - currencyMark[i].y) * (currencyMark[i].targetY - currencyMark[i].y) < 2 * currencyMark[i].speed * currencyMark[i].speed && currencyMark[i].frame >= currencyMark[i].waitingFrame) {
+			bool currencyReachedTarget =
+				(currencyMark[i].targetX - currencyMark[i].x) * (currencyMark[i].targetX - currencyMark[i].x) +
+				(currencyMark[i].targetY - currencyMark[i].y) * (currencyMark[i].targetY - currencyMark[i].y) <
+				2 * currencyMark[i].speed * currencyMark[i].speed;
+
+			//전투 동전이 상자 위치에 닿은 순간부터 상자를 연다. 이전에는 대기시간이
+			//끝난 뒤 두 번째 축소 구간으로 넘어갈 때 열어서, 멈춰 있는 동안 닫혀 보였다.
+			if (currencyReachedTarget &&
+				currencyMark[i].bar == BAR_BATTLECOIN &&
+				(drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
+				currencyMark[i].amount > 0) {
+				OBJECT* battleBox = &ao[NEUTRAL];
+				battleBox->levelUpFrame = FPS / 3;
+
+				//닫히는 중 새 동전이 오면 닫힌 그림을 거치지 않고 바로 다시 연다.
+				if (battleBox->motion == BOXSTATUS_CLOSING) {
+					battleBox->motion = BOXSTATUS_OPENED;
+					battleBox->status = BOXSTATUS_OPENED;
+					battleBox->frame = 0;
+				}
+				else if (battleBox->motion != BOXSTATUS_OPENING &&
+					battleBox->motion != BOXSTATUS_OPENED) {
+					battleBox->motion = BOXSTATUS_OPENING;
+					battleBox->status = BOXSTATUS_OPENING;
+					battleBox->frame = 0;
+				}
+			}
+
+			if (currencyReachedTarget && currencyMark[i].frame >= currencyMark[i].waitingFrame) {
 				//if (currencyMark[i].frame >= currencyMark[i].waitingFrame) {
 					PlayMusic(M_COIN);
 					//두번째 세팅이 있으면 
@@ -1788,9 +1817,6 @@ void PaintClet(int x, int y, int w, int h)
 							AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
 							break;
 						case BAR_BATTLECOIN:
-							//ao[NEUTRAL].status = BOXSTATUS_OPENED;
-							if (currencyMark[i].amount > 0)
-								OpenBox(&ao[NEUTRAL]);
 							AddBar(&bar[BAR_BATTLECOIN], currencyMark[i].amount, BARFRAME);
 							break;
 						}
@@ -2398,10 +2424,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
-
 
 
 

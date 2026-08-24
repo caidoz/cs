@@ -230,12 +230,10 @@ def run_dumper(src, work):
     #Cmf.h 가 Def.h 를 거쳐 CmfData.h 를 끌어온다. 거기 있는 표(cmfMoveInfo)가
     #Data/*.cpp 의 배열을 참조하므로 그것들도 링크해야 한다. 다시 컴파일하면
     #오래 걸리니 MSBuild가 이미 만들어 둔 .obj 를 쓴다.
-    objdir = os.path.join(ROOT, 'proj.win32', 'Debug.win32')
-    objs = [os.path.join(objdir, os.path.splitext(n)[0] + '.obj')
-            for n in sorted(os.listdir(DATA))
-            if n.endswith('.cpp') and n not in
-            ('DataPack.cpp', 'DataCount.cpp', 'DataPackCheck.cpp', 'CmfBlob.cpp',
-             'MapLink.cpp', 'MapBlob.cpp')]
+    #덤퍼가 읽는 CMF/이동 배열은 포함된 헤더 안의 static 데이터다. 게임의
+    #Data/*.obj를 링크하면 CmfLink.obj가 DataPack 런타임 심볼을 요구하고,
+    #오래된 증분 빌드 산출물 여부에 따라서도 결과가 달라진다.
+    objs = []
 
     missing = [o for o in objs if not os.path.isfile(o)]
 

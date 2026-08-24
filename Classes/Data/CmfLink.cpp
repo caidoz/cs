@@ -61,8 +61,8 @@ void CmfRelink(void)
 	if (n > CAP_CMF)
 		n = CAP_CMF;
 
-	int hcells = DataPackCount("cmfHeroLoopIdx");
-	int hn = (hcells > 1) ? hcells - 1 : CMF_HERO_COUNT;
+	int hcells = DataPackCount("cmfHeroLoopSlot");
+	int hn = (hcells > 0) ? hcells : CMF_HERO_COUNT;
 
 	if (hn > CAP_CMF_HERO)
 		hn = CAP_CMF_HERO;
@@ -73,7 +73,7 @@ void CmfRelink(void)
 	FILL(cmfMotionImgSize, cmfMotionImgSizeBlob, cmfMotionImgSizeSlot, CAP_CMF, n);
 	FILL(cmfCrashSize, cmfCrashSizeBlob, cmfCrashSizeSlot, CAP_CMF, n);
 	FILL(cmfMoveInfo, cmfMoveInfoBlob, cmfMoveInfoSlot, CAP_CMF, n);
-	FILL(cmfHeroLoop, cmfHeroLoopBlob, cmfHeroLoopIdx, CAP_CMF_HERO, hn);
+	FILL(cmfHeroLoop, cmfHeroLoopBlob, cmfHeroLoopSlot, CAP_CMF_HERO, hn);
 
 	cmfHeroLoopCnt = hn;
 	gTotalCmf = n;

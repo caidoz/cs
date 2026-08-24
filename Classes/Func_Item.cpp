@@ -108,13 +108,6 @@ int DropItem(OBJECT* pObj, int type)
 				pNew->drawHandler = BOXDRAW;
 				pNew->zoom = 0.2f + 0.02f * (pNew->etc - BOX_REWARD0);
 
-				//상자는 죽은 몬스터 자리(pObj)에 생기는데, 몬스터가 주인공보다 한 칸 위 라인에
-				//서 있었으면 상자도 그 윗칸에 떨어져서 주인공과 y가 어긋나 보인다.
-				//상자는 주인공이 서 있는 라인에 떨어지도록 y를 맞춰준다.
-				if (ao[PLAYER].active == true) {
-					pNew->y = ao[PLAYER].y;
-					pNew->ny = ao[PLAYER].y;
-				}
 			}
 			else {
 				//����Ʈ�� || ������ || �Ź� �� �������� �ٷ� �Ʒ��� ����߸���?(�����ɸ�)
@@ -316,6 +309,13 @@ int DropItem(OBJECT* pObj, int type)
 				pNew->ay = GetItemIcon(pNew->def, pNew->apx, pNew->apy);
 				pNew->name = TEXT_ITEMNAME_START + GetItemName(pNew->def, pNew->apx, pNew->apy);
 			}
+			//전투 드랍 상자와 금화는 생성 높이는 몬스터 위치 그대로 유지하되,
+			//낙하 종료선은 지형의 중간 단이 아니라 주인공이 서 있는 Y로 통일한다.
+			if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
+				ao[PLAYER].active == true &&
+				(pNew->def == ITEM_BOX || pNew->def == ITEM_GOLD))
+				pNew->ny = ao[PLAYER].y;
+
 			return i;
 		}
 	}

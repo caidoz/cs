@@ -29,6 +29,7 @@ void VersionDraw(void);
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
+void TitleSkillViewerCommand(int command);
 void OpeningDraw(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);

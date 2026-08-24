@@ -73,17 +73,17 @@
 	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
 	X(cmfOffBlob, 2, DPK_UINT, 12692, DPK_KEY_FREE, 0, 0) \
 	X(cmfOffSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
-	X(cmfMotionImgBlob, 2, DPK_INT, 311556, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgBlob, 2, DPK_INT, 306052, DPK_KEY_FREE, 0, 0) \
 	X(cmfMotionImgSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
-	X(cmfMotionImgCntBlob, 2, DPK_UINT, 18364, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgCntBlob, 2, DPK_UINT, 18002, DPK_KEY_FREE, 0, 0) \
 	X(cmfMotionImgCntSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
-	X(cmfMotionImgSizeBlob, 2, DPK_INT, 36728, DPK_KEY_FREE, 0, 0) \
+	X(cmfMotionImgSizeBlob, 2, DPK_INT, 36004, DPK_KEY_FREE, 0, 0) \
 	X(cmfMotionImgSizeSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
-	X(cmfCrashSizeBlob, 2, DPK_INT, 73456, DPK_KEY_FREE, 0, 0) \
+	X(cmfCrashSizeBlob, 2, DPK_INT, 72008, DPK_KEY_FREE, 0, 0) \
 	X(cmfCrashSizeSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
 	X(cmfHeroLoopBlob, 2, DPK_UINT, 192, DPK_KEY_FREE, 0, 0) \
-	X(cmfHeroLoopIdx, 4, DPK_UINT, 4, DPK_KEY_CMF_HERO, 1, -1) \
-	X(cmfMoveInfoBlob, 2, DPK_INT, 50382, DPK_KEY_FREE, 0, 0) \
+	X(cmfHeroLoopSlot, 4, DPK_UINT, 3, DPK_KEY_CMF_HERO, 1, 0) \
+	X(cmfMoveInfoBlob, 2, DPK_INT, 49476, DPK_KEY_FREE, 0, 0) \
 	X(cmfMoveInfoSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
 	X(cmfImgOff, 2, DPK_INT, 2145, DPK_KEY_NONE, 0, 0) \
 	X(cmfTotalMotion, 2, DPK_UINT, 429, DPK_KEY_NONE, 0, 0) \

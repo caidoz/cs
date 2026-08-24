@@ -6346,7 +6346,7 @@ void DrawCastleBox(OBJECT* pObj)
 		}
 	}
 
-	DrawCastleBoxXY(pObj->etc, openedImage, pObj->dirX, drawX, drawY, color, pObj->zoom);
+	DrawCastleBoxXY(pObj->etc, openedImage, pObj->dirX, drawX, drawY, color, drawZoom);
 }
 
 void BoxDraw(OBJECT* pObj)

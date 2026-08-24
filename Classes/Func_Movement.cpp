@@ -1672,8 +1672,8 @@ void PlayerMove(OBJECT* pObj)
 		}
 	}
 
-	//HEROSKILL 발동 뒤에는 AVK_MAXGAME에서만 주인공의 스킬 모션을 멈춘다.
-	//터치 콜백이 permit을 하나 세운 프레임에만 아래 모션 로직을 한 번 통과한다.
+	//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 시간에 따라 계속 갱신한다.
+#if 0
 	if (gDemoForceRoulette && gDemoSkillFrameStepActive) {
 		callerSkill = (turn >= CREW && turn < CREW + MAXCREW)
 			? ao[turn].currentSkill : -1;
@@ -1687,6 +1687,7 @@ void PlayerMove(OBJECT* pObj)
 			gDemoSkillFrameStepPermit--;
 		}
 	}
+#endif
 
 	//if (pObj->invincible)
 	//	pObj->invincible--;
@@ -4806,10 +4807,12 @@ START:
 	if (pObj->frame % ret == 0) {
 		switch (*(tPtr + 1) % 64) {
 		case SET_MAINFRAME_RANDOM8:
-			pObj->mainFrame = 16 + Random(8);
+			//30fps의 8~15프레임을 60fps의 16~31프레임으로 맞춘다.
+			pObj->mainFrame = 16 + Random(16);
 			break;
 		case SET_MAINFRAME_RANDOM12:
-			pObj->mainFrame = 24 + Random(12);
+			//30fps의 12~23프레임을 60fps의 24~47프레임으로 맞춘다.
+			pObj->mainFrame = 24 + Random(24);
 			break;
 		case RECOVER_HP:
 			//if (Random(10) == 0)
@@ -4912,7 +4915,8 @@ START:
 						cmp = pObj->mainFrame;
 						break;
 					default:
-						cmp = *(tPtr + 3);
+						//상태 전환표의 직접 프레임 값은 기존 30fps 단위다.
+						cmp = *(tPtr + 3) * 2;
 						break;
 					}
 
@@ -5035,10 +5039,12 @@ START:
 		//switch (*(tPtr + 1)) {
 		switch (*(tPtr + 1) & 0x3F) {
 		case SET_MAINFRAME_RANDOM8:
-			pObj->mainFrame = 8 + Random(8);
+			//30fps의 8~15프레임을 60fps의 16~31프레임으로 맞춘다.
+			pObj->mainFrame = 16 + Random(16);
 			break;
 		case SET_MAINFRAME_RANDOM12:
-			pObj->mainFrame = 12 + Random(12);
+			//30fps의 12~23프레임을 60fps의 24~47프레임으로 맞춘다.
+			pObj->mainFrame = 24 + Random(24);
 			break;
 			//case RECOVER_HP:
 			//	if (Random(10) == 0)
@@ -5162,7 +5168,8 @@ START:
 						cmp = pObj->mainFrame;
 						break;
 					default:
-						cmp = *(tPtr + 3);
+						//상태 전환표의 직접 프레임 값은 기존 30fps 단위다.
+						cmp = *(tPtr + 3) * 2;
 						break;
 					}
 
@@ -12157,6 +12164,7 @@ void RepulsionMove(OBJECT* pObj)
 void ItemMove(OBJECT* pObj)
 {
 	int i;
+	bool dropToPlayerLine;
 #ifdef GETITEMAUTO
 	int targetX, targetY;
 #endif
@@ -12165,9 +12173,35 @@ void ItemMove(OBJECT* pObj)
 	// 아이템 떨구기
 	// 우주에서는 둥실둥실 떠있음
 
+	dropToPlayerLine = (drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
+		ao[PLAYER].active == true &&
+		(pObj->def == ITEM_BOX || pObj->def == ITEM_GOLD) &&
+		pObj->ny == ao[PLAYER].y;
+
 	if (pObj->jumpFrame)
 		TileCheckX2(pObj);
-	TileCheckY2(pObj);
+
+	//전투 드랍은 상승 구간만 기존 충돌 처리를 사용한다. 하강이 시작된 뒤에는
+	//몬스터가 서 있던 중간 발판을 통과하고 주인공과 같은 Y에서 정확히 멈춘다.
+	if (dropToPlayerLine && pObj->status != JUMP) {
+		if (pObj->y < pObj->ny) {
+			pObj->dirY = DOWN;
+			if (pObj->jumpFrame < JUMPFRAME)
+				pObj->dy = jump[JUMPFRAME - 1 - pObj->jumpFrame];
+			else
+				pObj->dy = FREEFALL;
+			pObj->jumpFrame++;
+			pObj->y = Min(pObj->ny, pObj->y + pObj->dy);
+		}
+		else {
+			pObj->y = pObj->ny;
+			pObj->dy = 0;
+			pObj->jumpFrame = 0;
+			pObj->status = WALK;
+		}
+	}
+	else
+		TileCheckY2(pObj);
 
 	pObj->mainFrame++;
 
@@ -12207,7 +12241,7 @@ void ItemMove(OBJECT* pObj)
 
 				}
 
-				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2, 8 * _2X * 2, 2 * _2X * 2, 8 * _2X * 2, 2 * _2X * 2, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD, pObj->zoom * CURRENCYICON_STARTSIZE, pObj->zoom * CURRENCYICON_ENDSIZE2, 0.3f, pObj->zoom * CURRENCYICON_ENDSIZE2, pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, barName);
+				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2, 8 * _2X * 2, 2 * _2X * 2, 8 * _2X * 2, 2 * _2X * 2, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD, pObj->zoom * CURRENCYICON_STARTSIZE, pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, 0.3f, pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, barName);
 #else
 				targetX = DX / 2 - (GetNumDx(robin.gold, false, NUM_FONT_NORMAL, false) + 32 * _2X + 8 * _2X) / 2;
 				targetY = DY - GNBHEIGHT - 8 * _2X;
@@ -12599,6 +12633,45 @@ void BoxMove(OBJECT* pObj)
 {
 	if (curtainFrame > 0 || infoFrame > 0 || arenaFrame > 0 || areaFrame > 0)
 		return;
+
+	//성 상자는 열린/닫힌 두 이미지를 DrawCastleBox()가 motion 상태와 줌으로
+	//애니메이션한다. 아래 OBJ_BOX0~6 모션 처리로 덮어쓰지 않고 이 상태를 유지한다.
+	if (GetObjFromPtr(pObj) != ITEMBOX && pObj->etc != BOX_INGAME) {
+		if (pObj->motion > BOXSTATUS_SHOWGOLD)
+			pObj->motion = BOXSTATUS_CLOSED;
+
+		switch (pObj->motion) {
+		case BOXSTATUS_OPENING:
+			pObj->status = BOXSTATUS_OPENING;
+			break;
+		case BOXSTATUS_OPENED:
+			pObj->status = BOXSTATUS_OPENED;
+			if (pObj->levelUpFrame > 0)
+				pObj->levelUpFrame--;
+			else {
+				pObj->motion = BOXSTATUS_CLOSING;
+				pObj->status = BOXSTATUS_CLOSING;
+				pObj->frame = 0;
+			}
+			break;
+		case BOXSTATUS_CLOSING:
+			pObj->status = BOXSTATUS_CLOSING;
+			//동전 도착이 같은 프레임에 타이머를 갱신했으면 즉시 다시 연다.
+			if (pObj->levelUpFrame > 0) {
+				pObj->motion = BOXSTATUS_OPENED;
+				pObj->status = BOXSTATUS_OPENED;
+				pObj->frame = 0;
+			}
+			break;
+		case BOXSTATUS_CLOSED:
+		default:
+			pObj->status = BOXSTATUS_CLOSED;
+			pObj->zoom = pObj->defaultZoom > 0.0f ? pObj->defaultZoom : pObj->zoom;
+			break;
+		}
+		return;
+	}
+
 	if (GetObjFromPtr(pObj) == ITEMBOX) {
 		switch (pObj->status) {
 		case BOXSTATUS_APPEAR:
@@ -12634,8 +12707,10 @@ void BoxMove(OBJECT* pObj)
 			break;
 		case BOXSTATUS_OPENING:
 			pObj->motion = Min(OBJ_BOX5, OBJ_BOX0 + pObj->frame / 2 / MOTIONDIV);
-			if (pObj->motion == OBJ_BOX5 && pObj->frame == 2 * (OBJ_BOX5 - OBJ_BOX0 + 1))
-				OpenBox(pObj);
+			if (pObj->motion == OBJ_BOX5) {
+				pObj->status = BOXSTATUS_OPENED;
+				pObj->frame = 0;
+			}
 			break;
 		case BOXSTATUS_OPENED:
 			pObj->motion = OBJ_BOX6;
@@ -12659,8 +12734,9 @@ void BoxMove(OBJECT* pObj)
 			break;
 		case BOXSTATUS_OPENING:
 			pObj->motion = Min(OBJ_BOX5, OBJ_BOX0 + pObj->frame / 2 / MOTIONDIV);
-			if (pObj->motion == OBJ_BOX5 && pObj->frame == 2 * (OBJ_BOX5 - OBJ_BOX0 + 1)) {
-				OpenBox(pObj);
+			if (pObj->motion == OBJ_BOX5) {
+				pObj->status = BOXSTATUS_OPENED;
+				pObj->frame = 0;
 				SetPopUp(POPUPTYPE_GAMEOVER, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 					false, false, false, false, false,
 					false, false, false, false, false,
@@ -14046,10 +14122,13 @@ void CrewMove(OBJECT* pObj)
 								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
 								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
 
+								//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 켜지 않는다.
+#if 0
 								if (gDemoForceRoulette) {
 									gDemoSkillFrameStepActive = true;
 									gDemoSkillFrameStepPermit = 0;
 								}
+#endif
 
 								SetHotKey(objPtr, HOTKEY_SKILL, objPtr->currentSkill, 0);
 								HotKeyPress(objPtr, 0);

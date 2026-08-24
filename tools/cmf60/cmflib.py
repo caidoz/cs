@@ -387,6 +387,9 @@ def grabMv(n, data):
 def motionIdMap(cmf, allEnumVals):
     """자기 모션 이름 + 다른 cmf 이름(PO_C3_N0 같은 상호참조)을 인덱스로 푼다."""
     m = {nm: i for i, nm in enumerate(cmf.motNames)}
+    #일부 오래된 cNmv는 enum 이름 대신 숫자 motion id를 직접 쓴다.
+    for i in range(cmf.totalMotion):
+        m[str(i)] = i
     for nm, v in allEnumVals.items():
         if nm not in m and v < cmf.totalMotion:
             m[nm] = v

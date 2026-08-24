@@ -2,6 +2,25 @@
 #include "Func.h"
 #include "Cmf.h"
 
+//60fps 확장 데이터는 원본 한 프레임을 두 칸으로 늘렸다. 두 칸의 이동량을
+//기준 프레임(첫 칸)에 모두 모으고 보간 프레임(둘째 칸)은 움직이지 않게 한다.
+//두 칸의 합은 그대로 보존하므로 원본의 1 * _2X 이동량도 다시 2가 된다.
+static void FoldCmfMovePair(signed short* first, signed short* tween)
+{
+	if (*first >= 100 || *first <= -100) {
+		*tween = 0;
+		return;
+	}
+	if (*tween >= 100 || *tween <= -100) {
+		*first = *tween;
+		*tween = 0;
+		return;
+	}
+
+	*first = (signed short)((int)*first + (int)*tween);
+	*tween = 0;
+}
+
 void CmfRead(int wh, int idx)
 {
 
@@ -23,9 +42,22 @@ void CmfRead(int wh, int idx)
 	int dataIdx = 0;
 	int i;
 	while (cmfMoveInfo[idx][dataPos] >= 0) {
-		for (i = dataPos; i < dataPos + (cmfMoveInfo[idx][dataPos] * 3 + 2); i++)
+		int stateFrames = cmfMoveInfo[idx][dataPos];
+		for (i = dataPos; i < dataPos + (stateFrames * 3 + 2); i++)
 			cmf_status_data[wh][dataIdx][i - dataPos] = cmfMoveInfo[idx][i];
-		dataPos += cmfMoveInfo[idx][dataPos] * 3 + 2;
+
+		//[count, condition, motion[count], dx[count], dy[count]]에서 X/Y를
+		//각각 두 칸씩 접는다. 홀수 번째(보간) 프레임의 이동값은 항상 0이다.
+		for (i = 0; i < stateFrames; i += 2) {
+			int dxPos = 2 + stateFrames + i;
+			int dyPos = 2 + stateFrames * 2 + i;
+			if (i + 1 < stateFrames) {
+				FoldCmfMovePair(&cmf_status_data[wh][dataIdx][dxPos], &cmf_status_data[wh][dataIdx][dxPos + 1]);
+				FoldCmfMovePair(&cmf_status_data[wh][dataIdx][dyPos], &cmf_status_data[wh][dataIdx][dyPos + 1]);
+			}
+		}
+
+		dataPos += stateFrames * 3 + 2;
 		dataIdx++;
 	}
 

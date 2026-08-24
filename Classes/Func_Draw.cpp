@@ -434,6 +434,310 @@ void LoadingDraw(void)
 	CenterAlpha(DX / 2, DY / 2 - 8 * _2X, ALPHA_LOADING, FONT_SMALL, false, 1.0f);
 }
 
+namespace
+{
+	struct TitleSkillRange
+	{
+		int start;
+		int count;
+		int text;
+	};
+
+	const TitleSkillRange titleRobinSkills[] = {
+		{ ROBIN_ATTACK_AIRCRASH_START, ROBIN_ATTACK_AIRCRASH_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_AIRCRASH },
+		{ ROBIN_ATTACK_STAB_START, ROBIN_ATTACK_STAB_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_STAB },
+		{ ROBIN_ATTACK_BOOSTSLASH_START, ROBIN_ATTACK_BOOSTSLASH_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_BOOSTSLASH },
+		{ ROBIN_ATTACK_HYPERCHARGE_START, ROBIN_ATTACK_HYPERCHARGE_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_HYPERCHARGE },
+		{ ROBIN_ATTACK_SOULCRASH_START, ROBIN_ATTACK_SOULCRASH_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_SOULCRASH },
+		{ ROBIN_ATTACK_ABSOLUTEPIERCE_START, ROBIN_ATTACK_ABSOLUTEPIERCE_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_ABSOLUTEPIERCE },
+		{ ROBIN_ATTACK_KILLALL_START, ROBIN_ATTACK_KILLALL_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_KILLALL },
+		{ ROBIN_ATTACK_DEFENSE_START, ROBIN_ATTACK_DEFENSE_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_DEFENSE },
+		{ ROBIN_ATTACK_BARRIER_START, ROBIN_ATTACK_BARRIER_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_BARRIER },
+		{ ROBIN_ATTACK_HPRESTORE_START, ROBIN_ATTACK_HPRESTORE_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_HPRESTORE },
+		{ ROBIN_ATTACK_MPRESTORE_START, ROBIN_ATTACK_MPRESTORE_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_MPRESTORE },
+		{ ROBIN_ATTACK_REFLECTOR_START, ROBIN_ATTACK_REFLECTOR_CNT, TEXT_ACTIONCARD_SKILL_ROBIN_REFLECTOR }
+	};
+	const TitleSkillRange titleDianaSkills[] = {
+		{ DIANA_SKILL_3WAY_START, DIANA_SKILL_3WAY_CNT, TEXT_ACTIONCARD_SKILL_DIANA_3WAY },
+		{ DIANA_SKILL_LASER_START, DIANA_SKILL_LASER_CNT, TEXT_ACTIONCARD_SKILL_DIANA_LASER },
+		{ DIANA_SKILL_BOMBSHOT_START, DIANA_SKILL_BOMBSHOT_CNT, TEXT_ACTIONCARD_SKILL_DIANA_BOMBSHOT },
+		{ DIANA_SKILL_GUIDEDSHOT_START, DIANA_SKILL_GUIDEDSHOT_CNT, TEXT_ACTIONCARD_SKILL_DIANA_GUIDESHOT },
+		{ DIANA_SKILL_SPRAYSHOT_START, DIANA_SKILL_SPRAYSHOT_CNT, TEXT_ACTIONCARD_SKILL_DIANA_SPRAYSHOT },
+		{ DIANA_SKILL_SATELLITESHOT_START, DIANA_SKILL_SATELLITESHOT_CNT, TEXT_ACTIONCARD_SKILL_DIANA_SATELLITESHOT },
+		{ DIANA_SKILL_HEALSHOT_START, DIANA_SKILL_HEALSHOT_CNT, TEXT_ACTIONCARD_SKILL_DIANA_HEALSHOT },
+		{ DIANA_SKILL_FEELUP_START, DIANA_SKILL_FEELUP_CNT, TEXT_ACTIONCARD_SKILL_DIANA_FEELUP },
+		{ DIANA_SKILL_VAMPIRE_START, DIANA_SKILL_VAMPIRE_CNT, TEXT_ACTIONCARD_SKILL_DIANA_VAMPIRE },
+		{ DIANA_SKILL_FOCUS_START, DIANA_SKILL_FOCUS_CNT, TEXT_ACTIONCARD_SKILL_DIANA_FOCUS },
+		{ DIANA_SKILL_FAMAS_START, DIANA_SKILL_FAMAS_CNT, TEXT_ACTIONCARD_SKILL_DIANA_FAMAS }
+	};
+	const TitleSkillRange titleMaxxSkills[] = {
+		{ MAXX_SKILL_KICK_START, MAXX_SKILL_KICK_CNT, TEXT_ACTIONCARD_SKILL_MAXX_KICK },
+		{ MAXX_SKILL_SHORT_START, MAXX_SKILL_SHORT_CNT, TEXT_ACTIONCARD_SKILL_MAXX_SHORT },
+		{ MAXX_SKILL_AIR_START, MAXX_SKILL_AIR_CNT, TEXT_ACTIONCARD_SKILL_MAXX_AIR },
+		{ MAXX_SKILL_CAMPING_START, MAXX_SKILL_CAMPING_CNT, TEXT_ACTIONCARD_SKILL_MAXX_CAMPING },
+		{ MAXX_SKILL_HORMING_START, MAXX_SKILL_HORMING_CNT, TEXT_ACTIONCARD_SKILL_MAXX_HORMING },
+		{ MAXX_SKILL_CIRCLE_START, MAXX_SKILL_CIRCLE_CNT, TEXT_ACTIONCARD_SKILL_MAXX_CIRCLE },
+		{ MAXX_SKILL_MEGA_START, MAXX_SKILL_MEGA_CNT, TEXT_ACTIONCARD_SKILL_MAXX_MEGA },
+		{ MAXX_SKILL_BLOOD_START, MAXX_SKILL_BLOOD_CNT, TEXT_ACTIONCARD_SKILL_MAXX_BLOOD },
+		{ MAXX_SKILL_DAZZLE_START, MAXX_SKILL_DAZZLE_CNT, TEXT_ACTIONCARD_SKILL_MAXX_DAZZLE },
+		{ MAXX_SKILL_SIGH_START, MAXX_SKILL_SIGH_CNT, TEXT_ACTIONCARD_SKILL_MAXX_SIGH },
+		{ MAXX_SKILL_SPLIT_START, MAXX_SKILL_SPLIT_CNT, TEXT_ACTIONCARD_SKILL_MAXX_SPLIT }
+	};
+
+	int titleSkillHero = ROBIN;
+	int titleCmfWindowStart = 0;
+	int titleSkillIndex = 0;
+	int titleSkillFrame = 0;
+	bool titleSkillViewerActive = false;
+	bool titleSkillPlaying = false;
+	bool titleSkillPaused = false;
+	bool titleSkillReadyNext = false;
+
+	const TitleSkillRange* GetTitleSkillRanges(int hero, int* count)
+	{
+		if (hero == DIANA) {
+			*count = sizeof(titleDianaSkills) / sizeof(titleDianaSkills[0]);
+			return titleDianaSkills;
+		}
+		if (hero == MAXX) {
+			*count = sizeof(titleMaxxSkills) / sizeof(titleMaxxSkills[0]);
+			return titleMaxxSkills;
+		}
+		*count = sizeof(titleRobinSkills) / sizeof(titleRobinSkills[0]);
+		return titleRobinSkills;
+	}
+
+	const unsigned short* GetTitleSkillMotion(int hero)
+	{
+		if (hero == DIANA)
+			return dianaSkillMotion;
+		if (hero == MAXX)
+			return maxxSkillMotion;
+		return robinSkillMotion;
+	}
+
+	void GetTitleMotionDefineName(int hero, int motion, char* name)
+	{
+		//현재 리터칭/진단의 중심인 로빈 A/CRASH 보간 프레임은 실제 enum
+		//이름까지 복원한다. 다른 계열도 최소한 영웅 접두사와 실제 motion id가
+		//항상 보이게 해서 데이터와 바로 대조할 수 있게 한다.
+		if (hero == ROBIN && motion >= PO_C0_A0 && motion <= PO_C0_A24) {
+			sprintf(name, "PO_C0_A%d", motion - PO_C0_A0);
+		}
+		else if (hero == ROBIN && motion >= PO_C0_A0_1 && motion <= PO_C0_A23_3) {
+			int offset = motion - PO_C0_A0_1;
+			sprintf(name, "PO_C0_A%d_%d", offset / 3, offset % 3 + 1);
+		}
+		else if (hero == ROBIN && motion >= PO_C0_CRASH0 && motion <= PO_C0_CRASH5) {
+			sprintf(name, "PO_C0_CRASH%d", motion - PO_C0_CRASH0);
+		}
+		else if (hero == ROBIN && motion >= PO_C0_CRASH0_1 && motion <= PO_C0_CRASH4_3) {
+			int offset = motion - PO_C0_CRASH0_1;
+			sprintf(name, "PO_C0_CRASH%d_%d", offset / 3, offset % 3 + 1);
+		}
+		else {
+			sprintf(name, "PO_C%d_(%d)", hero, motion);
+		}
+	}
+
+	void DrawTitleSkillViewer()
+	{
+		const int tabW = 72 * _2X;
+		const int tabH = 58 * _2X;
+		const int tabY = DY - 12 * _2X;
+		const int tabX = xOffset + DX / 2 - tabW * 3 / 2;
+		int i;
+
+		for (i = 0; i < 3; i++) {
+			int cmf = titleCmfWindowStart + i;
+			char cmfNumber[16];
+			//저장 데이터에 아직 영웅이 없더라도 타이틀 뷰어에서는 각 영웅의
+			//고유 CMF를 사용한다. 그렇지 않으면 빈 OBJECT가 로빈처럼 그려질 수 있다.
+			if (cmf < TOTALPLAYER) {
+				ao[cmf].type = cmf;
+				ao[cmf].cmf = cmf;
+			}
+			MemRectBoth(tabX + tabW * i, tabY, tabW, tabH,
+				titleSkillViewerActive && titleSkillHero == cmf ? COLOR_YELLOW : COLOR_BLACK,
+				COLOR_WHITE);
+			if (cmf < TOTALPLAYER)
+				DrawPlayer(&ao[cmf], frame / 6 % 4,
+					tabX + tabW * i + tabW / 2, tabY - tabH + 10 * _2X,
+					RIGHT, 0.85f, false, false, false);
+			else
+				DrawCmfDetail(cmf, frame / 6 % Max(1, (int)cmf_m_cnt[cmf]),
+					tabX + tabW * i + tabW / 2, tabY - tabH + 10 * _2X,
+					RIGHT, 0.85f, false, false);
+			sprintf(cmfNumber, "%d", cmf);
+			SetFontColor(COLOR_WHITE);
+			CenterTextStrSolid(cmfNumber, tabX + tabW * i + tabW / 2,
+				tabY - 6 * _2X, 0.8f);
+			SetRectPoint(tabX + tabW * i, tabY, tabW, tabH,
+				TOUCH_FUNC_TITLE_SKILL_ROBIN + i);
+		}
+
+		if (!titleSkillViewerActive)
+			return;
+
+		int skillCount = 0;
+		const TitleSkillRange* ranges = titleSkillHero < TOTALPLAYER
+			? GetTitleSkillRanges(titleSkillHero, &skillCount) : 0;
+		if (titleSkillHero >= TOTALPLAYER) {
+			for (skillCount = 0; skillCount < MAXSTATUS; skillCount++) {
+				if (cmf_status_data[titleSkillHero][skillCount][0] <= 0)
+					break;
+			}
+			skillCount = Max(1, skillCount);
+			titleSkillIndex = Min(titleSkillIndex, skillCount - 1);
+		}
+		const TitleSkillRange* skill = ranges ? &ranges[titleSkillIndex] : 0;
+		const unsigned short* motions = titleSkillHero < TOTALPLAYER
+			? GetTitleSkillMotion(titleSkillHero) : 0;
+		int motionFrameCount = skill ? skill->count
+			: Max(1, (int)cmf_status_data[titleSkillHero][titleSkillIndex][0]);
+		int motion = 0;
+		int previewY = DY / 2 - 70 * _2X;
+		char motionDefine[64];
+
+		if (titleSkillPlaying || titleSkillReadyNext)
+			motion = skill ? motions[(skill->start + titleSkillFrame) * 4]
+				: cmf_status_data[titleSkillHero][titleSkillIndex][titleSkillFrame + 2];
+
+		//킬링존 후반은 RFIRE13에서 점프한 뒤 공중에서 아래로 사격한다.
+		//전투에서는 _JUMP0/_ADDJUMPFRAME2가 OBJECT 좌표를 움직이지만 타이틀
+		//뷰어는 DrawPlayer만 호출하므로 그 이동이 빠진다. 같은 구간에 미리보기
+		//용 포물선을 적용해 공중 사격 자세가 실제 흐름대로 보이게 한다.
+		if (titleSkillHero == DIANA && titleSkillIndex == 4 && titleSkillFrame >= 115) {
+			int jumpFrame = Min(titleSkillFrame - 115, 35);
+			int rise = jumpFrame <= 12 ? jumpFrame * 6 : Max(0, 72 - (jumpFrame - 12) * 3);
+			previewY += rise * _2X;
+		}
+
+		const int viewerX = xOffset + DX / 2 - 110 * _2X;
+		const int viewerY = DY / 2 + 150 * _2X;
+		const int viewerW = 220 * _2X;
+		const int viewerH = 300 * _2X;
+		SetAlpha(21);
+		MemRect(viewerX, viewerY, viewerW, viewerH, COLOR_NAVY);
+		SetAlpha(32);
+		if (titleSkillHero < TOTALPLAYER)
+			DrawPlayer(&ao[titleSkillHero], motion, xOffset + DX / 2, previewY,
+				RIGHT, 2.0f, false, false, true);
+		else
+			DrawCmfDetail(titleSkillHero, motion, xOffset + DX / 2, previewY,
+				RIGHT, 2.0f, false, false);
+		SetFontColor(COLOR_WHITE);
+		if (skill)
+			CenterTextSolid(skill->text, xOffset + DX / 2, viewerY - viewerH + 52 * _2X, 1.2f);
+		else
+		{
+			char stateText[32];
+			sprintf(stateText, "CMF STATE %d / %d", titleSkillIndex, skillCount - 1);
+			CenterTextStrSolid(stateText, xOffset + DX / 2,
+				viewerY - viewerH + 52 * _2X, 1.2f);
+		}
+		GetTitleMotionDefineName(titleSkillHero, motion, motionDefine);
+		CenterTextStrSolid(motionDefine, xOffset + DX / 2,
+			viewerY - viewerH + 30 * _2X, 0.95f);
+		char cmfText[32];
+		sprintf(cmfText, "CMF = %d / %d", titleSkillHero, MAXCMF - 1);
+		CenterTextStrSolid(cmfText, xOffset + DX / 2,
+			viewerY - viewerH + 12 * _2X, 0.9f);
+		if (titleSkillPaused)
+			CenterTextStrSolid("PAUSE", xOffset + DX / 2, viewerY - 18 * _2X, 1.0f);
+
+		//캐릭터 판 안은 재생/재개, 판 바깥은 일시정지다. 영웅 탭과 기존
+		//하단 NEW/MAX GAME 카드는 바깥 일시정지 영역에서 제외한다.
+		SetRectPoint(viewerX, viewerY, viewerW, viewerH, TOUCH_FUNC_TITLE_SKILL_PLAY);
+		SetRectPoint(xOffset, tabY - tabH, DX, tabY - tabH - viewerY,
+			TOUCH_FUNC_TITLE_SKILL_PAUSE);
+		SetRectPoint(xOffset, viewerY, viewerX - xOffset, viewerH,
+			TOUCH_FUNC_TITLE_SKILL_PAUSE);
+		SetRectPoint(viewerX + viewerW, viewerY, xOffset + DX - viewerX - viewerW, viewerH,
+			TOUCH_FUNC_TITLE_SKILL_PAUSE);
+		SetRectPoint(xOffset, viewerY - viewerH, DX, viewerY - viewerH - 60 * _2X,
+			TOUCH_FUNC_TITLE_SKILL_PAUSE);
+
+		if (titleSkillPlaying && !titleSkillPaused) {
+			titleSkillFrame++;
+			if (titleSkillFrame >= motionFrameCount) {
+				titleSkillFrame = motionFrameCount - 1;
+				titleSkillPlaying = false;
+				titleSkillReadyNext = true;
+			}
+		}
+
+		const int arrowW = 42 * _2X;
+		const int arrowH = 72 * _2X;
+		const int arrowY = DY / 2 + arrowH / 2;
+		MemRectBoth(xOffset + 8 * _2X, arrowY, arrowW, arrowH, COLOR_NAVY, COLOR_WHITE);
+		MemRectBoth(xOffset + DX - 8 * _2X - arrowW, arrowY, arrowW, arrowH, COLOR_NAVY, COLOR_WHITE);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("<", xOffset + 8 * _2X + arrowW / 2, arrowY - 18 * _2X, 1.8f);
+		CenterTextStrSolid(">", xOffset + DX - 8 * _2X - arrowW / 2, arrowY - 18 * _2X, 1.8f);
+		SetRectPoint(xOffset + 8 * _2X, arrowY, arrowW, arrowH, TOUCH_FUNC_TITLE_SKILL_PREV_CMF);
+		SetRectPoint(xOffset + DX - 8 * _2X - arrowW, arrowY, arrowW, arrowH, TOUCH_FUNC_TITLE_SKILL_NEXT_CMF);
+	}
+}
+
+void TitleSkillViewerCommand(int command)
+{
+	if (command >= TOUCH_FUNC_TITLE_SKILL_ROBIN && command <= TOUCH_FUNC_TITLE_SKILL_MAXX) {
+		titleSkillHero = titleCmfWindowStart
+			+ command - TOUCH_FUNC_TITLE_SKILL_ROBIN;
+		titleSkillIndex = 0;
+		titleSkillFrame = 0;
+		titleSkillPlaying = false;
+		titleSkillPaused = false;
+		titleSkillReadyNext = false;
+		titleSkillViewerActive = true;
+		return;
+	}
+	if (command == TOUCH_FUNC_TITLE_SKILL_PREV_CMF
+		|| command == TOUCH_FUNC_TITLE_SKILL_NEXT_CMF) {
+		int delta = command == TOUCH_FUNC_TITLE_SKILL_PREV_CMF ? -1 : 1;
+		int oldWindowStart = titleCmfWindowStart;
+		titleCmfWindowStart = Max(0, Min(MAXCMF - 3, titleCmfWindowStart + delta));
+		if (titleCmfWindowStart != oldWindowStart)
+			titleSkillHero = Max(titleCmfWindowStart,
+				Min(titleCmfWindowStart + 2, titleSkillHero + delta));
+		titleSkillIndex = 0;
+		titleSkillFrame = 0;
+		titleSkillPlaying = false;
+		titleSkillPaused = false;
+		titleSkillReadyNext = false;
+		titleSkillViewerActive = true;
+		return;
+	}
+
+	if (command == TOUCH_FUNC_TITLE_SKILL_PLAY && titleSkillViewerActive && !titleSkillPlaying) {
+		if (titleSkillReadyNext) {
+			if (titleSkillHero < TOTALPLAYER) {
+				int skillCount = 0;
+				GetTitleSkillRanges(titleSkillHero, &skillCount);
+				titleSkillIndex = (titleSkillIndex + 1) % skillCount;
+			}
+			else {
+				int stateCount = 0;
+				while (stateCount < MAXSTATUS
+					&& cmf_status_data[titleSkillHero][stateCount][0] > 0)
+					stateCount++;
+				titleSkillIndex = (titleSkillIndex + 1) % Max(1, stateCount);
+			}
+		}
+		titleSkillFrame = 0;
+		titleSkillPlaying = true;
+		titleSkillPaused = false;
+		titleSkillReadyNext = false;
+	}
+	else if (command == TOUCH_FUNC_TITLE_SKILL_PLAY && titleSkillPlaying) {
+		titleSkillPaused = false;
+	}
+	else if (command == TOUCH_FUNC_TITLE_SKILL_PAUSE && titleSkillPlaying) {
+		titleSkillPaused = true;
+	}
+}
+
 void TitleDraw(void)
 {
 	int i;
@@ -557,6 +861,7 @@ void TitleDraw(void)
 		default:
 
 			touchDisable = false;
+			DrawTitleSkillViewer();
 
 			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0);
 			

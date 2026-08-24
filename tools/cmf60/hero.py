@@ -49,9 +49,11 @@ def applyHeroPartFixes(c, n):
         'PO_C0_CRASH1_1': (-10, -392, 7),
         'PO_C0_CRASH1_2': (-12, -394, 7),
         'PO_C0_CRASH1_3': (-14, -396, 7),
-        'PO_C0_CRASH4_1': (-302, -406, 6),
-        'PO_C0_CRASH4_2': (-304, -408, 6),
-        'PO_C0_CRASH4_3': (-306, -410, 6),
+        #CRASH4에서 CRASH5로 넘어가는 동안 검은 잔상 기준점에 고정한다.
+        #보간 비율대로 좌상 이동시키면 검만 미끄러져 보인다.
+        'PO_C0_CRASH4_1': (-300, -404, 6),
+        'PO_C0_CRASH4_2': (-300, -404, 6),
+        'PO_C0_CRASH4_3': (-300, -404, 6),
     }
     by_name = dict((name, i) for i, name in enumerate(c.newNames))
     for name, (x, y, typ) in fixes.items():
@@ -63,6 +65,25 @@ def applyHeroPartFixes(c, n):
                 break
         else:
             parts.insert(0, (108, x, y, str(typ)))
+        c.newMotions[idx] = parts
+        c.newMiRaw[idx] = [['IMG_C0_%d' % part[0], num(part[1]), num(part[2]), part[3]]
+                           for part in parts]
+
+    #PO_C0_BUST0 -> BUST1 보간에서는 BUST1의 갑옷 이미지가 달라져 이미지
+    #번호 기반 보간이 대응 파츠를 찾지 못한다. 그 결과 64번 갑옷만 제자리에
+    #남고 머리/몸이 앞으로 간다. 갑옷을 다음 자세 이동량의 약 절반만 따라가게 한다.
+    armor_fixes = {
+        'PO_C0_BUST0_1': (-7, -29),
+        'PO_C0_BUST0_2': (-11, -28),
+        'PO_C0_BUST0_3': (-14, -27),
+    }
+    for name, (x, y) in armor_fixes.items():
+        idx = by_name[name]
+        parts = list(c.newMotions[idx])
+        for p, part in enumerate(parts):
+            if part[0] == 64:
+                parts[p] = (part[0], x, y, part[3])
+                break
         c.newMotions[idx] = parts
         c.newMiRaw[idx] = [['IMG_C0_%d' % part[0], num(part[1]), num(part[2]), part[3]]
                            for part in parts]

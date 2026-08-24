@@ -842,6 +842,7 @@ typedef enum _gameDef {
 #define CURRENCYICON_STARTSIZE 1.0f
 #define CURRENCYICON_ENDSIZE 1.5f
 #define CURRENCYICON_ENDSIZE2 2.0f
+#define BATTLECOIN_PEAKSIZE_SCALE 0.6f
 /*
 //달성도 관련 디파인
 typedef enum _reportDef {

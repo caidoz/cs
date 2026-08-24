@@ -483,6 +483,7 @@ void SetRoom_Neutral(void)
 					pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);// BOXZOOM;
 				else
 					pObj->zoom = BOXCASTLEZOOM * (1.0f + (float)0.05f * robin.castle);//dioramaZoom
+				pObj->defaultZoom = pObj->zoom;
 			}
 			else {
 				if (drawHandle == MD_BATTLE)

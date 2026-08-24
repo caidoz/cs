@@ -1551,7 +1551,7 @@ void AttackRobin(int obj, int dest)
 			
 			i = DropItem(&ao[dest], ITEM_GOLD);
 
-			ao[i].defaultZoom = ao[i].zoom = 1.5f + str * 0.5f;
+			ao[i].defaultZoom = ao[i].zoom = 1.5f + str * 0.3f;
 
 			if (dest < ENEMY) {
 				ao[i].target = obj;
@@ -3685,7 +3685,7 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 				str = 6;
 			//for (i = 0; i < 3; i++)
 			currencyObj = DropItem(&ao[obj], ITEM_GOLD);
-			ao[currencyObj].defaultZoom = ao[currencyObj].zoom = 1.5f + str * 0.5f;
+			ao[currencyObj].defaultZoom = ao[currencyObj].zoom = 1.5f + str * 0.3f;
 			ao[currencyObj].target = attacker;
 			if (obj < PLAYERALL)
 				ao[currencyObj].ax = -dmg;

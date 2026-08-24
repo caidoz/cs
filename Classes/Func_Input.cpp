@@ -2630,6 +2630,16 @@ void touchFunc(int func)
 		case TOUCH_FUNC_TITLE_NEWGAME:
 			systemKey = AVK_NEWGAME;
 			break;
+		case TOUCH_FUNC_TITLE_SKILL_ROBIN:
+		case TOUCH_FUNC_TITLE_SKILL_DIANA:
+		case TOUCH_FUNC_TITLE_SKILL_MAXX:
+		case TOUCH_FUNC_TITLE_SKILL_PLAY:
+		case TOUCH_FUNC_TITLE_SKILL_PAUSE:
+		case TOUCH_FUNC_TITLE_SKILL_PREV_CMF:
+		case TOUCH_FUNC_TITLE_SKILL_NEXT_CMF:
+			TitleSkillViewerCommand(func);
+			systemKey = 0;
+			break;
 
 		case TOUCH_FUNC_PLAY://플레이
 			systemKey = AVK_PLAY;
