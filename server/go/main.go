@@ -63,10 +63,24 @@ func main() {
 	// 구글·애플 연동. 우리 앱의 클라이언트 ID 를 넣어야 켜진다.
 	// 안 넣으면 그 연동은 501 로 답한다 — aud 를 확인하지 못하면 남의 앱
 	// 토큰으로 들어올 수 있어서, 모르는 채로 받아주느니 막는 편이 낫다.
+	//
+	// 신분증(JWT)을 주는 곳은 클라이언트 ID 만 있으면 된다.
 	SetAudiences(ProviderGoogle, os.Getenv("INSAM_GOOGLE_AUD"))
 	SetAudiences(ProviderApple, os.Getenv("INSAM_APPLE_AUD"))
+	SetAudiences(ProviderKakao, os.Getenv("INSAM_KAKAO_AUD"))
+	SetAudiences(ProviderLine, os.Getenv("INSAM_LINE_AUD"))
 
-	log.Printf("연동: 구글=%v 애플=%v", Enabled(ProviderGoogle), Enabled(ProviderApple))
+	// 물어봐야 하는 곳은 앱 비밀도 있어야 한다. 우리 자격으로 물어야
+	// "우리 앱에 준 토큰인가" 를 확인할 수 있기 때문이다.
+	SetAPIClient(ProviderFacebook,
+		os.Getenv("INSAM_FACEBOOK_ID"), os.Getenv("INSAM_FACEBOOK_SECRET"))
+	SetAPIClient(ProviderNaver,
+		os.Getenv("INSAM_NAVER_ID"), os.Getenv("INSAM_NAVER_SECRET"))
+
+	for _, p := range []Provider{ProviderGoogle, ProviderApple, ProviderKakao,
+		ProviderLine, ProviderFacebook, ProviderNaver} {
+		log.Printf("연동 %-9s %v", p.Name(), ProviderEnabled(p))
+	}
 
 	if *dsn == "" {
 		log.Fatal("DSN 이 없다. -dsn 이나 INSAM_DSN 을 준다")
@@ -395,18 +409,14 @@ func splitCred(body string) (Provider, string) {
 		return ProviderGuest, body
 	}
 
-	kind := strings.ToLower(strings.TrimSpace(body[:at]))
 	cred := strings.TrimSpace(body[at+1:])
 
-	switch kind {
-	case "google":
-		return ProviderGoogle, cred
-	case "apple":
-		return ProviderApple, cred
-	case "guest":
-		return ProviderGuest, cred
+	if p, ok := ProviderByName(body[:at]); ok {
+		return p, cred
 	}
 
+	// 모르는 이름이면 통째로 게스트 열쇠로 본다. 옛 클라이언트가 UUID 만
+	// 보내던 것과 같은 취급이다.
 	return ProviderGuest, body
 }
 
@@ -423,10 +433,10 @@ func (s *server) loginByProvider(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	uid, err := VerifyIDToken(p, idToken, time.Now())
+	uid, err := VerifyCredential(r.Context(), p, idToken, time.Now())
 
 	if err != nil {
-		log.Printf("login: 신분증을 못 믿겠다 (%v)", err)
+		log.Printf("login: %s 신분증을 못 믿겠다 (%v)", p.Name(), err)
 		writeText(w, http.StatusUnauthorized, "신분증이 아니다\n")
 		return
 	}
@@ -505,7 +515,7 @@ func (s *server) handleLink(w http.ResponseWriter, r *http.Request) {
 	uid, err := VerifyIDToken(p, idToken, time.Now())
 
 	if err != nil {
-		log.Printf("link: 신분증을 못 믿겠다 (%v)", err)
+		log.Printf("link: %s 신분증을 못 믿겠다 (%v)", p.Name(), err)
 		writeText(w, http.StatusUnauthorized, "신분증이 아니다\n")
 		return
 	}

@@ -18,7 +18,10 @@
 package main
 
 import (
+	"context"
 	"crypto"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/subtle"
@@ -55,7 +58,7 @@ type issuer struct {
 	aud     []string // 우리 앱의 클라이언트 ID. 여러 플랫폼이면 여러 개다.
 
 	mu      sync.Mutex
-	keys    map[string]*rsa.PublicKey
+	keys    map[string]any // *rsa.PublicKey 또는 *ecdsa.PublicKey
 	fetched time.Time
 }
 
@@ -69,6 +72,17 @@ var issuers = map[Provider]*issuer{
 		name:    "apple",
 		jwksURL: "https://appleid.apple.com/auth/keys",
 		iss:     []string{"https://appleid.apple.com"},
+	},
+	ProviderKakao: {
+		name:    "kakao",
+		jwksURL: "https://kauth.kakao.com/.well-known/jwks.json",
+		iss:     []string{"https://kauth.kakao.com"},
+	},
+	// 라인만 ES256 으로 서명한다. 그래서 아래 verifySig 가 두 가지를 다 안다.
+	ProviderLine: {
+		name:    "line",
+		jwksURL: "https://api.line.me/oauth2/v2.1/certs",
+		iss:     []string{"https://access.line.me"},
 	},
 }
 
@@ -123,8 +137,8 @@ func VerifyIDToken(p Provider, tok string, now time.Time) (string, error) {
 		Kid string `json:"kid"`
 	}
 
-	if json.Unmarshal(head, &h) != nil || h.Alg != "RS256" {
-		// alg 를 안 보면 "none" 을 적어 서명 없이 들어오는 길이 열린다.
+	// alg 를 안 보면 "none" 을 적어 서명 없이 들어오는 길이 열린다.
+	if json.Unmarshal(head, &h) != nil || (h.Alg != "RS256" && h.Alg != "ES256") {
 		return "", ErrBadIDToken
 	}
 
@@ -142,7 +156,7 @@ func VerifyIDToken(p Provider, tok string, now time.Time) (string, error) {
 
 	sum := sha256.Sum256([]byte(f[0] + "." + f[1]))
 
-	if rsa.VerifyPKCS1v15(key, crypto.SHA256, sum[:], sig) != nil {
+	if !verifySig(key, h.Alg, sum[:], sig) {
 		return "", ErrBadIDToken
 	}
 
@@ -200,7 +214,7 @@ func VerifyIDToken(p Provider, tok string, now time.Time) (string, error) {
 }
 
 // key 는 kid 에 맞는 공개키를 준다. 없으면 한 번 다시 받아본다.
-func (is *issuer) key(kid string) (*rsa.PublicKey, error) {
+func (is *issuer) key(kid string) (any, error) {
 	is.mu.Lock()
 	defer is.mu.Unlock()
 
@@ -240,6 +254,9 @@ func (is *issuer) refresh() error {
 			Kid string `json:"kid"`
 			N   string `json:"n"`
 			E   string `json:"e"`
+			Crv string `json:"crv"`
+			X   string `json:"x"`
+			Y   string `json:"y"`
 		} `json:"keys"`
 	}
 
@@ -247,31 +264,49 @@ func (is *issuer) refresh() error {
 		return fmt.Errorf("%s 공개키 형식이 다르다: %w", is.name, err)
 	}
 
-	keys := map[string]*rsa.PublicKey{}
+	keys := map[string]any{}
 
 	for _, k := range set.Keys {
-		if k.Kty != "RSA" {
-			continue
+		switch k.Kty {
+		case "RSA":
+			n, err1 := decodeSeg(k.N)
+			e, err2 := decodeSeg(k.E)
+
+			if err1 != nil || err2 != nil {
+				continue
+			}
+
+			ev := 0
+
+			for _, b := range e {
+				ev = ev<<8 | int(b)
+			}
+
+			if ev == 0 {
+				continue
+			}
+
+			keys[k.Kid] = &rsa.PublicKey{N: new(big.Int).SetBytes(n), E: ev}
+
+		case "EC":
+			// 라인이 이쪽이다. P-256 만 받는다 — ES256 이 그것이다.
+			if k.Crv != "P-256" {
+				continue
+			}
+
+			x, err1 := decodeSeg(k.X)
+			y, err2 := decodeSeg(k.Y)
+
+			if err1 != nil || err2 != nil {
+				continue
+			}
+
+			keys[k.Kid] = &ecdsa.PublicKey{
+				Curve: elliptic.P256(),
+				X:     new(big.Int).SetBytes(x),
+				Y:     new(big.Int).SetBytes(y),
+			}
 		}
-
-		n, err1 := decodeSeg(k.N)
-		e, err2 := decodeSeg(k.E)
-
-		if err1 != nil || err2 != nil {
-			continue
-		}
-
-		ev := 0
-
-		for _, b := range e {
-			ev = ev<<8 | int(b)
-		}
-
-		if ev == 0 {
-			continue
-		}
-
-		keys[k.Kid] = &rsa.PublicKey{N: new(big.Int).SetBytes(n), E: ev}
 	}
 
 	if len(keys) == 0 {
@@ -282,6 +317,30 @@ func (is *issuer) refresh() error {
 	is.fetched = time.Now()
 
 	return nil
+}
+
+// verifySig 는 열쇠 종류에 맞게 서명을 확인한다.
+//
+// alg 와 열쇠 종류가 어긋나면 거절한다. 그것을 안 보면 "RSA 공개키를
+// HMAC 열쇠인 척" 같은 오래된 수법이 통한다.
+func verifySig(key any, alg string, sum, sig []byte) bool {
+	switch k := key.(type) {
+	case *rsa.PublicKey:
+		return alg == "RS256" && rsa.VerifyPKCS1v15(k, crypto.SHA256, sum, sig) == nil
+
+	case *ecdsa.PublicKey:
+		// ES256 서명은 r 과 s 를 32바이트씩 이어 붙인 것이다.
+		if alg != "ES256" || len(sig) != 64 {
+			return false
+		}
+
+		r := new(big.Int).SetBytes(sig[:32])
+		s := new(big.Int).SetBytes(sig[32:])
+
+		return ecdsa.Verify(k, sum, r, s)
+	}
+
+	return false
 }
 
 func decodeSeg(s string) ([]byte, error) {
@@ -329,4 +388,32 @@ func readAud(raw json.RawMessage) ([]string, error) {
 	}
 
 	return nil, ErrBadIDToken
+}
+
+// -----------------------------------------------------------------------------
+// 창구 하나
+// -----------------------------------------------------------------------------
+
+// VerifyCredential 은 발급처가 무엇이든 확인해서 그쪽 계정 번호를 준다.
+//
+// 부르는 쪽은 이 발급처가 신분증을 주는지 물어봐야 하는지 몰라도 된다.
+// 그 차이는 provider.go 가 들고 있다.
+func VerifyCredential(ctx context.Context, p Provider, cred string, now time.Time) (string, error) {
+	if p.Kind() == kindOIDC {
+		return VerifyIDToken(p, cred, now)
+	}
+
+	return VerifyAPIToken(ctx, p, cred)
+}
+
+// ProviderEnabled 는 그 발급처를 쓸 수 있는지 본다.
+//
+// 켤 수 없으면 켜지 않는다. "우리 앱에 발급된 것인가" 를 확인할 설정이
+// 없는 채로 받아주면, 남의 앱에서 받아온 토큰이 그대로 통한다.
+func ProviderEnabled(p Provider) bool {
+	if p.Kind() == kindOIDC {
+		return Enabled(p)
+	}
+
+	return apiEnabled(p)
 }

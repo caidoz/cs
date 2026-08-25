@@ -2,6 +2,8 @@ package main
 
 import (
 	"crypto"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -286,5 +288,168 @@ func TestSplitCred(t *testing.T) {
 		if p != c.want || cred != c.cred {
 			t.Fatalf("%q -> (%d, %q), 바란 것은 (%d, %q)", c.in, p, cred, c.want, c.cred)
 		}
+	}
+}
+
+// -----------------------------------------------------------------------------
+// 라인은 ES256 으로 서명한다
+// -----------------------------------------------------------------------------
+
+type fakeECIssuer struct {
+	key *ecdsa.PrivateKey
+	srv *httptest.Server
+	kid string
+}
+
+func newFakeEC(t *testing.T) *fakeECIssuer {
+	t.Helper()
+
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	f := &fakeECIssuer{key: key, kid: "ec-kid-1"}
+
+	f.srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pad := func(b []byte) string {
+			out := make([]byte, 32)
+			copy(out[32-len(b):], b)
+
+			return base64.RawURLEncoding.EncodeToString(out)
+		}
+
+		fmt.Fprintf(w, `{"keys":[{"kty":"EC","crv":"P-256","kid":%q,"x":%q,"y":%q}]}`,
+			f.kid, pad(key.X.Bytes()), pad(key.Y.Bytes()))
+	}))
+
+	t.Cleanup(f.srv.Close)
+
+	return f
+}
+
+func (f *fakeECIssuer) sign(t *testing.T, alg string, claims map[string]any) string {
+	t.Helper()
+
+	seg := func(v any) string {
+		b, err := json.Marshal(v)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return base64.RawURLEncoding.EncodeToString(b)
+	}
+
+	body := seg(map[string]any{"alg": alg, "kid": f.kid}) + "." + seg(claims)
+	sum := sha256.Sum256([]byte(body))
+
+	r, s, err := ecdsa.Sign(rand.Reader, f.key, sum[:])
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// r 과 s 를 32바이트씩 이어 붙인다. 이게 ES256 서명 꼴이다.
+	sig := make([]byte, 64)
+	r.FillBytes(sig[:32])
+	s.FillBytes(sig[32:])
+
+	return body + "." + base64.RawURLEncoding.EncodeToString(sig)
+}
+
+func useFakeLine(t *testing.T, f *fakeECIssuer, aud string) {
+	t.Helper()
+
+	is := issuers[ProviderLine]
+	old := *is
+
+	is.jwksURL = f.srv.URL
+	is.iss = []string{"https://access.line.me"}
+	is.aud = []string{aud}
+	is.keys = nil
+	is.fetched = time.Time{}
+
+	t.Cleanup(func() {
+		is.jwksURL, is.iss, is.aud = old.jwksURL, old.iss, old.aud
+		is.keys, is.fetched = old.keys, old.fetched
+	})
+}
+
+func TestLineES256(t *testing.T) {
+	f := newFakeEC(t)
+	useFakeLine(t, f, "line-channel-id")
+
+	now := time.Now()
+	tok := f.sign(t, "ES256", map[string]any{
+		"iss": "https://access.line.me",
+		"sub": "U1234567890",
+		"aud": "line-channel-id",
+		"exp": now.Add(time.Hour).Unix(),
+	})
+
+	sub, err := VerifyIDToken(ProviderLine, tok, now)
+
+	if err != nil {
+		t.Fatalf("멀쩡한 라인 신분증을 거절했다: %v", err)
+	}
+
+	if sub != "U1234567890" {
+		t.Fatalf("sub 가 %q 다", sub)
+	}
+}
+
+// alg 와 열쇠 종류가 어긋나면 거절해야 한다. 이것을 안 보면 오래된
+// 수법(공개키를 다른 알고리즘의 열쇠인 척)이 통한다.
+func TestLineRejectAlgMismatch(t *testing.T) {
+	f := newFakeEC(t)
+	useFakeLine(t, f, "line-channel-id")
+
+	now := time.Now()
+	tok := f.sign(t, "RS256", map[string]any{
+		"iss": "https://access.line.me",
+		"sub": "U1234567890",
+		"aud": "line-channel-id",
+		"exp": now.Add(time.Hour).Unix(),
+	})
+
+	if _, err := VerifyIDToken(ProviderLine, tok, now); err == nil {
+		t.Fatal("EC 열쇠인데 RS256 이라고 적은 것을 받아들였다")
+	}
+}
+
+func TestLineRejectOtherChannel(t *testing.T) {
+	f := newFakeEC(t)
+	useFakeLine(t, f, "line-channel-id")
+
+	now := time.Now()
+	tok := f.sign(t, "ES256", map[string]any{
+		"iss": "https://access.line.me",
+		"sub": "U1234567890",
+		"aud": "남의채널",
+		"exp": now.Add(time.Hour).Unix(),
+	})
+
+	if _, err := VerifyIDToken(ProviderLine, tok, now); err == nil {
+		t.Fatal("남의 채널 토큰을 받아들였다")
+	}
+}
+
+func TestProviderNames(t *testing.T) {
+	for _, name := range []string{"google", "apple", "kakao", "line", "facebook", "naver", "guest"} {
+		p, ok := ProviderByName(name)
+
+		if !ok {
+			t.Fatalf("%s 를 모른다", name)
+		}
+
+		if p.Name() != name {
+			t.Fatalf("%s -> %d -> %s", name, p, p.Name())
+		}
+	}
+
+	if _, ok := ProviderByName("몰라"); ok {
+		t.Fatal("모르는 이름을 안다고 한다")
 	}
 }
