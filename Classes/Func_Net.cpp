@@ -2468,12 +2468,21 @@ void NetBootstrapBegin(void)
 
 	sBootResult = NETRESULT_NONE;
 
-	//약관부터다. 계정을 만들기 전에 동의를 받아야 한다 — 게스트 계정도
-	//기기가 만든 UUID 를 서버에 남기는 것이라 개인정보 처리에 해당한다.
+	//이 기기가 예전에 동의한 것이 있으면 읽어둔다. 건너뛰는 중이라도
+	//받아둔 동의는 서버에 남겨야 한다.
 	NetLoadTerms();
 
+#if NET_SKIP_TERMS
+	//약관 화면이 아직 없다. 그대로 두면 여기서 멈춰 검은 화면이 된다.
+	//NetConfig.h 의 그 줄을 0 으로 되돌리면 아래 원래 길로 간다.
+	sBootStep = NETBOOT_LOGIN;
+	NetRequest(NETREQ_LOGIN);
+#else
+	//약관부터다. 계정을 만들기 전에 동의를 받아야 한다 — 게스트 계정도
+	//기기가 만든 UUID 를 서버에 남기는 것이라 개인정보 처리에 해당한다.
 	sBootStep = NETBOOT_TERMS;
 	NetRequest(NETREQ_TERMS);
+#endif
 }
 
 //동의를 받았다. 남기고 부팅을 잇는다.
