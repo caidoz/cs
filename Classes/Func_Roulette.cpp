@@ -17,6 +17,7 @@
 //==========================================================================
 #define ROULETTE_CARD_SETTLE_ZOOM	0.60f	//릴에 놓였을 때(아래 z1 과 같아야 한다)
 #define ROULETTE_CARD_LAND_ZOOM		(ROULETTE_CARD_SETTLE_ZOOM * 1.10f * 0.80f * 0.80f * 0.80f - 0.10f)
+#define ROULETTE_BUFF_STACK_ZOOM	(ROULETTE_CARD_LAND_ZOOM * 2.0f)
 
 //오브젝트 머리 위에 카드를 얹을 자리.
 //
@@ -176,56 +177,196 @@ void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY)
 	MoveControlMarkTo(ownerObj, skillIdx, hx, hy);
 }
 
-//주인공이 대신 사용하는 HEROSKILL 카드를 턴 순서대로 머리 위에 쌓는다.
+int GetPersistentBuffBySkill(int skillIdx)
+{
+	// 컨트롤 마크에는 DIANA15 같은 실제 실행 스킬이 아니라
+	// NPC_EVAN_SKILL1 같은 SUMMONHERO 호출 스킬이 저장된다. 호출 스킬이면
+	// OBJECTDETAILINFO에 들어 있는 실제 히어로 스킬로 풀어서 판정한다.
+	if (skillIdx >= 0 && skillIdx < gTotalSkill
+		&& skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO) {
+		int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+		if (heroSkill != skillIdx)
+			return GetPersistentBuffBySkill(heroSkill);
+	}
+
+	if (skillIdx >= SKILL_ROBIN13 && skillIdx <= SKILL_ROBIN17)
+		return INC_VIT + skillIdx - SKILL_ROBIN13;
+	if (skillIdx >= SKILL_DIANA14 && skillIdx <= SKILL_DIANA17)
+		return BERSERK + skillIdx - SKILL_DIANA14;
+	if (skillIdx >= SKILL_MAXX14 && skillIdx <= SKILL_MAXX17)
+		return HPDRAIN + skillIdx - SKILL_MAXX14;
+	return -1;
+}
+
+// 사용이 끝난 지속 버프 카드를 왼쪽 상태 스택으로 보낸다.
+void MoveControlMarkToBuffStack(int ownerObj, int skillIdx)
+{
+	for (int i = 0; i < TOTALCONTROLMARK; i++) {
+		int markSkill;
+
+		if ((controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
+			|| controlMark[i].owner != ownerObj)
+			continue;
+
+		// 마크의 attackType은 바깥 SUMMONHERO 스킬이다. 실제 실행 스킬과
+		// 비교할 때만 OBJECTDETAILINFO를 사용하고, 카드 그림용 attackType은
+		// 원래 값 그대로 보존한다.
+		markSkill = controlMark[i].attackType;
+		if (markSkill >= 0 && markSkill < gTotalSkill
+			&& skillData[markSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO)
+			markSkill = skillData[markSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+		if (markSkill != skillIdx)
+			continue;
+
+		controlMark[i].manual = true; // 지속 버프 마크
+		controlMark[i].alpha = 0;
+		controlMark[i].frame2 = 1;
+		controlMark[i].speed2 = 4 * _2X;
+		controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+		controlMark[i].zoom2 = Max(controlMark[i].zoom2, ROULETTE_CARD_LAND_ZOOM);
+		controlMark[i].zoomEnd2 = ROULETTE_BUFF_STACK_ZOOM;
+		controlMark[i].zoomIncrement2 =
+			(ROULETTE_BUFF_STACK_ZOOM - controlMark[i].zoom2) / (float)(FPS / 3);
+		return;
+	}
+}
+
+void UpdatePersistentBuffControlMarkStack(void)
+{
+	int stack = 0;
+	// DrawSkillCard는 x를 카드 중심으로 사용한다. 확대된 카드 폭의 절반을
+	// 중심점으로 잡으면 카드의 왼쪽 변이 화면의 0픽셀에 정확히 붙는다.
+	const int baseX = (int)((float)ROULETTECARDSIZE_X * ROULETTE_BUFF_STACK_ZOOM / 2.0f);
+	const int baseY = STATUSWIN_Y + 104 * _2X;
+	const int gap = (int)((float)ROULETTECARDSIZE_Y * ROULETTE_BUFF_STACK_ZOOM) + 2 * _2X;
+
+	for (int i = 0; i < TOTALCONTROLMARK; i++) {
+		int buffIdx;
+
+		if (!controlMark[i].manual
+			|| (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0))
+			continue;
+
+		buffIdx = GetPersistentBuffBySkill(controlMark[i].attackType);
+		if (buffIdx < 0 || ao[PLAYER].buff[buffIdx] <= 0)
+			controlMark[i].alpha = Max(1, controlMark[i].alpha);
+
+		controlMark[i].targetX = controlMark[i].targetX2 = baseX;
+		controlMark[i].targetY = controlMark[i].targetY2 = baseY + stack * gap;
+		controlMark[i].zoomEnd2 = ROULETTE_BUFF_STACK_ZOOM;
+		stack++;
+	}
+}
+
+//각 히어로가 사용하는 HEROSKILL 카드를 턴 순서대로 해당 히어로 머리 위에 쌓는다.
 //맨 아래가 현재/가장 가까운 차례이며, 그 카드가 완전히 사라지면 남은 카드의
 //목표 높이가 한 칸씩 낮아져 자연스럽게 다음 차례를 알려준다.
 void UpdateHeroSkillControlMarkStack(void)
 {
 	bool arranged[TOTALCONTROLMARK] = { false };
-	int baseX, baseY;
-	int stack = 0;
-	int gap;
+	int gap = (int)((float)ROULETTECARDSIZE_Y * ROULETTE_CARD_LAND_ZOOM) + 2 * _2X;
 
 	if (attackSequence != ATTACKSEQUENCE_ACTION)
 		return;
 
-	GetMarkHeadPos(ROBIN, &baseX, &baseY);
-	gap = (int)((float)ROULETTECARDSIZE_Y * ROULETTE_CARD_LAND_ZOOM) + 2 * _2X;
+	// 로빈/디아나/맥스를 각각 독립된 세로 스택으로 관리한다.
+	for (int destObj = ROBIN; destObj <= MAXX; destObj++) {
+		int baseX, baseY;
+		int stack = 0;
 
-	//turnList 순서로 찾으므로 배열 압축(ArrangeControlMark) 후에도 표시 순서는
-	//바뀌지 않는다. 페이드 중인 현재 카드도 완전히 지워질 때까지 포함해야
-	//다음 카드가 먼저 내려와 같은 자리에 겹치지 않는다.
-	for (int t = 0; t < totalTurn; t++) {
-		int owner = turnList[t];
+		GetMarkHeadPos(destObj, &baseX, &baseY);
 
-		if (owner < CREW || owner >= CREW + MAXCREW)
-			continue;
+		// turnList 순서가 곧 아래에서 위로 쌓이는 실행 순서다.
+		for (int t = 0; t < totalTurn; t++) {
+			int owner = turnList[t];
 
-		for (int i = 0; i < TOTALCONTROLMARK; i++) {
-			int skillIdx;
-			int destY;
-
-			if (arranged[i] || (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0))
-				continue;
-			if (controlMark[i].owner != owner)
+			if (owner < CREW || owner >= CREW + MAXCREW)
 				continue;
 
-			skillIdx = controlMark[i].attackType;
-			if (skillIdx < 0 || skillIdx >= gTotalSkill
-				|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != HEROSKILL)
-				continue;
+			for (int i = 0; i < TOTALCONTROLMARK; i++) {
+				int skillIdx;
+				int destY;
 
-			destY = baseY + stack * gap; //이 화면은 Y-up 좌표계다.
-			if (controlMark[i].targetX2 != baseX || controlMark[i].targetY2 != destY) {
-				controlMark[i].targetX = controlMark[i].targetX2 = baseX;
-				controlMark[i].targetY = controlMark[i].targetY2 = destY;
-				controlMark[i].speed2 = 2 * _2X;
-				controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+				if (controlMark[i].manual || arranged[i] || (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0))
+					continue;
+				if (controlMark[i].owner != owner)
+					continue;
+
+				skillIdx = controlMark[i].attackType;
+				if (skillIdx < 0 || skillIdx >= gTotalSkill
+					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != HEROSKILL
+					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET] != destObj)
+					continue;
+
+				destY = baseY + stack * gap;
+				if (controlMark[i].targetX2 != baseX || controlMark[i].targetY2 != destY) {
+					controlMark[i].targetX = controlMark[i].targetX2 = baseX;
+					controlMark[i].targetY = controlMark[i].targetY2 = destY;
+					controlMark[i].speed2 = 2 * _2X;
+					controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+				}
+
+				arranged[i] = true;
+				stack++;
+				break;
 			}
+		}
+	}
 
-			arranged[i] = true;
-			stack++;
-			break;
+	// SUMMONHERO도 소환 종류별(로빈/디아나/맥스)로 같은 자리에 세로 적층한다.
+	// 스킬마다 테스트용 X 좌표가 조금씩 달라도 같은 캐릭터의 연속 액션이면
+	// 첫 카드의 위치를 기준으로 위에 쌓는다.
+	for (int summonType = ROBIN; summonType <= MAXX; summonType++) {
+		int baseX = 0;
+		int baseY = 0;
+		int stack = 0;
+		bool baseSet = false;
+
+		if (ao[SOLDIER].active && ao[SOLDIER].type == summonType) {
+			GetMarkHeadPos(SOLDIER, &baseX, &baseY);
+			baseSet = true;
+		}
+
+		for (int t = 0; t < totalTurn; t++) {
+			int owner = turnList[t];
+
+			if (owner < CREW || owner >= CREW + MAXCREW)
+				continue;
+
+			for (int i = 0; i < TOTALCONTROLMARK; i++) {
+				int skillIdx;
+				int destY;
+
+				if (controlMark[i].manual || arranged[i] || (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0))
+					continue;
+				if (controlMark[i].owner != owner)
+					continue;
+
+				skillIdx = controlMark[i].attackType;
+				if (skillIdx < 0 || skillIdx >= gTotalSkill
+					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != SUMMONHERO
+					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO] != summonType)
+					continue;
+
+				if (!baseSet) {
+					GetMarkHeadPosAt(
+						skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1],
+						ao[ROBIN].y, ao[PLAYER].zoom, &baseX, &baseY);
+					baseSet = true;
+				}
+
+				destY = baseY + stack * gap;
+				if (controlMark[i].targetX2 != baseX || controlMark[i].targetY2 != destY) {
+					controlMark[i].targetX = controlMark[i].targetX2 = baseX;
+					controlMark[i].targetY = controlMark[i].targetY2 = destY;
+					controlMark[i].speed2 = 2 * _2X;
+					controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+				}
+
+				arranged[i] = true;
+				stack++;
+				break;
+			}
 		}
 	}
 }
@@ -641,6 +782,23 @@ int GetSameRouletteCnt(int objIdx)
 	}
 
 	return j;
+}
+
+// 릴에서 화면에 확정해 둔 스킬을 실제 액션도 그대로 사용한다.
+// 같은 크루가 중복된 일반 룰렛은 기존 업그레이드 계산을 사용해야 하므로
+// 단일 선택일 때만 스냅샷을 돌려준다.
+int GetRouletteResultSkillForObj(int obj)
+{
+	if (obj < CREW || obj >= CREW + MAXCREW)
+		return -1;
+	if (GetSameRouletteCnt(obj - CREW) != 1)
+		return -1;
+
+	for (int r = 0; r < TOTALREEL; r++) {
+		if (gRouletteResultAoOffset[r] == obj - CREW)
+			return gRouletteSkillIdx[r];
+	}
+	return -1;
 }
 
 // count=1 -> 그대로, count=2 -> 레벨2, count=3 -> 레벨3
@@ -1235,9 +1393,36 @@ void RouletteDraw(int x, int y, float zoom)
 						rs.state = JS_HOLD;
 						rs.holdEndFrame = slotFrame + 8;
 
-						if (!controlMark[i].frame)
+						// controlMark[]는 첫 빈 전역 슬롯을 사용하므로 릴 번호 i와
+						// 실제 마크 슬롯 번호가 일치하지 않는다. 특히 2번 슬롯이 앞선
+						// 마크에 사용 중이면 마지막 릴의 아이콘 생성이 통째로 생략됐다.
+						// 이번 룰렛의 릴별 스냅샷으로 생성 여부를 판단한다.
+						if (gRouletteSkillIdx[i] < 0)
 						{
-							gRouletteSkillIdx[i] = ao[CREW + gRouletteResultAoOffset[i]].getSkillList[0];
+							int resultObj = CREW + gRouletteResultAoOffset[i];
+							int resultCrewIdx = GetCrewIdxFromType(ao[resultObj].type);
+
+							// 실제 턴 실행(RouletteAttackStart/WhoIsNextTurn)과 똑같이
+							// crewData 원본에서 스킬을 읽는다. OBJECT의 복사본
+							// getSkillList를 쓰면 초기화 시점이나 정수 폭 문제로 아이콘과
+							// 실제 실행 스킬이 달라질 수 있다.
+							if (resultCrewIdx < 0)
+								continue;
+
+							// AVK_MAXGAME의 테스트 세 릴은 표시/실행 스킬을 명시적으로
+							// 고정한다. 크루 복사본이나 저장 데이터가 끼어들어도 아이콘과
+							// 실제 액션이 서로 달라지지 않는다.
+							if (gDemoForceRoulette) {
+								static const int demoSkill[TOTALREEL] = {
+									NPC_EVAN_SKILL1, NPC_LORA_SKILL1, NPC_KING_SKILL1
+								};
+								gRouletteSkillIdx[i] = demoSkill[i];
+							}
+							else {
+								gRouletteSkillIdx[i] = crewData[
+									resultCrewIdx * CREWDATASIZE + CREWDATA_SKILL1];
+							}
+							ao[resultObj].currentSkill = gRouletteSkillIdx[i];
 
 							float z0 = 0.10f;
 							float z1 = ROULETTE_CARD_SETTLE_ZOOM;
@@ -1656,20 +1841,31 @@ void RouletteDraw(int x, int y, float zoom)
 
 			const int FLY_T = FPS / 3;
 
-			//살아 있는 마크를 먼저 적어둔다. 아래에서 마크를 하나 정리할 때마다
-			//SetControlMark()가 빈 칸을 새로 잡는데, 그 칸이 아직 안 지나간
-			//자리면 방금 만든 마크를 또 집어서 무한히 다시 날린다.
+			//이번 룰렛에서 확정된 마크만 먼저 적어둔다. controlMark에는 이전
+			//공격의 소멸 중인 카드와 좌측의 지속 버프 카드도 함께 들어 있다.
+			//단순히 살아 있는 마크를 전부 모으면 이전 로빈 스킬 카드까지 다시
+			//날아가며, 오래된 목적 좌표 때문에 화면 밖으로 빠진다.
 			int live[TOTALCONTROLMARK];
 			int liveCnt = 0;
 
-			//예전에는 i < TOTALREEL 만 돌면서 frame2 > 0 인 것만 봤다.
-			//셔플/스왑이 만든 마크는 릴 개수 밖의 칸에 잡히거나 아직 1단 이동
-			//(frame > 0) 중이라 이 루프에 안 걸렸고, 아무도 지우지 않아서
-			//룰렛 위에 그대로 남았다. alpha가 0이면 페이드 소멸도 안 돈다.
-			for (int i = 0; i < TOTALCONTROLMARK; i++)
-			{
-				if (controlMark[i].frame > 0 || controlMark[i].frame2 > 0)
+			for (int reel = 0; reel < TOTALREEL; reel++) {
+				int expectedOwner = (gRouletteResultAoOffset[reel] >= 0)
+					? CREW + gRouletteResultAoOffset[reel] : -1;
+				int expectedSkill = gRouletteSkillIdx[reel];
+
+				if (expectedOwner < 0 || expectedSkill < 0)
+					continue;
+
+				for (int i = 0; i < TOTALCONTROLMARK; i++) {
+					if (controlMark[i].manual
+						|| (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
+						|| controlMark[i].owner != expectedOwner
+						|| controlMark[i].attackType != expectedSkill)
+						continue;
+
 					live[liveCnt++] = i;
+					break;
+				}
 			}
 
 			for (int n = 0; n < liveCnt; n++)
@@ -1774,6 +1970,11 @@ void RouletteDraw(int x, int y, float zoom)
 		//turnList[0]도 같은 규칙으로 만들어져 있으므로(RouletteAttackStart) 그걸 그대로 쓴다.
 		turn = (totalTurn > 0) ? turnList[0] : PLAYER;
 		turnListIdx = 0;
+		{
+			int reelSkill = GetRouletteResultSkillForObj(turn);
+			if (reelSkill >= 0)
+				ao[turn].currentSkill = reelSkill;
+		}
 
 		//릴이 도는 동안(SLOT)에도 CrewMove()/PlayerMove()가 매 프레임 frame을 올린다.
 		//그대로 두면 ACTION 첫 프레임에서 "frame % ret == 0" 게이트에 걸리지 않아 공격 시작이

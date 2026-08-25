@@ -861,7 +861,9 @@ void TitleDraw(void)
 		default:
 
 			touchDisable = false;
-			DrawTitleSkillViewer();
+			// 타이틀 모션 테스트 코드는 유지하되 일반 화면에는 노출하지 않는다.
+			// 다시 테스트할 때 아래 호출만 복구하면 된다.
+			//DrawTitleSkillViewer();
 
 			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0);
 			

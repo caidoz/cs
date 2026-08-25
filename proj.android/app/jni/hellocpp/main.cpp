@@ -28,12 +28,22 @@
 #include <jni.h>
 
 #include "AppDelegate.h"
+#include "platform/android/jni/JniHelper.h"
 
 #define  LOG_TAG    "main"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 
 namespace {
 std::unique_ptr<AppDelegate> appDelegate;
+}
+
+void GetNativeSafeAreaInsets(int* topPx, int* bottomPx) {
+    if (topPx)
+        *topPx = cocos2d::JniHelper::callStaticIntMethod(
+            "org/cocos2dx/cpp/AppActivity", "getSafeInsetTopPx");
+    if (bottomPx)
+        *bottomPx = cocos2d::JniHelper::callStaticIntMethod(
+            "org/cocos2dx/cpp/AppActivity", "getSafeInsetBottomPx");
 }
 
 void cocos_android_app_init(JNIEnv* env) {

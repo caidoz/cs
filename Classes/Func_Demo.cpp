@@ -604,7 +604,7 @@ void Demo(void)
 
 		ActiveHelpDraw();
 
-		for (i = ROBIN; i < TOTALPLAYER; i++)
+		for (i = ROBIN; i < PLAYERALL; i++)
 			if (ao[i].hitCountFrame > 0) {
 				ao[i].hitCountFrame++;
 
@@ -618,11 +618,23 @@ void Demo(void)
 		float zoom = 1.0f;
 
 		if (waveStatus == WAVESTATUS_PLAY && attackSequence == ATTACKSEQUENCE_ACTION) {
-			if (ao[turn].hitCount > 0) {
-				int hitCountPosX = xOffset + ao[turn].x;
-				int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[turn].y) + floatOffsetY + 48 * _2X;
-				DrawGoldNum(ao[turn].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * zoom);
-				DrawGoldAlpha(hitCountPosX + 4 * _2X, hitCountPosY - 4 * _2X, ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
+			for (i = PLAYER; i < PLAYERALL; i++) {
+				if (ao[i].hitCount > 0) {
+					int hitCountPosX = xOffset + ao[i].x;
+					int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y + floatOffsetY + 48 * _2X;
+					float hitCountZoom = zoom;
+
+					if (hitZoom > 1.001f) {
+						hitCountPosX = (int)(hitZoomCX + ((float)hitCountPosX - hitZoomCX) * hitZoom);
+						hitCountPosY = (int)(hitZoomCY + ((float)hitCountPosY - hitZoomCY) * hitZoom);
+						hitCountZoom *= hitZoom;
+					}
+
+					DrawGoldNum(ao[i].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * hitCountZoom);
+					DrawGoldAlpha(hitCountPosX + (float)4 * _2X * hitCountZoom,
+						hitCountPosY - (float)4 * _2X * hitCountZoom,
+						ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * hitCountZoom, LEFT, false, false);
+				}
 			}
 		}
 

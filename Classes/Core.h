@@ -193,6 +193,8 @@ typedef struct _obj {
 	signed char skillLv[CAP_SKILL];
 	signed short buff[TOTALBUFF];
 	unsigned char buffOwner[TOTALBUFF];
+	unsigned char buffRemainTurn[TOTALBUFF];
+	unsigned char buffRemainUse[TOTALBUFF];
 	signed int debuf[TOTALDEBUF];
 	unsigned char debufOwner[TOTALDEBUF];
 	signed short cpx, cpy, cx, cy;
@@ -507,7 +509,10 @@ typedef struct _charData {
 	unsigned char sp;
 
 	signed char skillLv[CAP_SKILL];
-	unsigned char getSkillList[MAXCHARSKILL];
+	// NPC 스킬 인덱스는 255를 넘는다(NPC_KING_SKILL1=288 등).
+	// unsigned char로 두면 룰렛에 넣는 순간 288이 32로 잘려 로빈 스킬로
+	// 바뀌므로, 원래 스킬 번호를 보존할 수 있는 int를 사용한다.
+	int getSkillList[MAXCHARSKILL];
 
 	//아래계열들은 RefreshStat한번 하면 자동으로 값이 할당되거나 전투중 임시 값이므로 패스
 	//signed short buff[TOTALBUFF];

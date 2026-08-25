@@ -2483,5 +2483,3 @@ long MC_knlCurrentTimeStamp()
 
 
 
-
-

@@ -350,7 +350,9 @@ static void HitZoomGetCombatView(int attacker, float* focusWX, float* zoomMax)
 //동안 물고 있다가, 공격이 끝나면 놓는다. 들어갈 때와 나올 때의 속도가 다르다.
 void HitZoomUpdate(void)
 {
-	int attacker = HitZoomAttacker();
+	//MD_BATTLE은 고정된 전투 화면 구성을 유지해야 하므로 캐릭터 공격 줌과
+	//그에 딸린 히트스톱을 사용하지 않는다. 상자 드랍 등의 연출 줌은 유지한다.
+	int attacker = (drawHandle == MD_BATTLE) ? -1 : HitZoomAttacker();
 
 	//쌓인 연출 요청 중 하나를 고른다. 공격 줌이 걸려 있으면 안에서 알아서 기다린다.
 	FocusZoomPickRequest();
@@ -2747,11 +2749,13 @@ void DrawDiorama(int x, int y, int type, float zoom)
 					if (i < TOTALPLAYERBUFF) {
 						//��ų ����
 						const unsigned short* ptrBuff = &buffData[i * 4];
+						int buffFrame = (GetBuffDurationMode(i) == BUFF_DURATION_FRAME)
+							? ao[raidPlayer].buff[i] : Max(1, robin.playtime / MOTIONDIV);
 
-						if (i == INC_IGNORE && (ao[raidPlayer].buff[i] - 1) % 2 == 1)
+						if (i == INC_IGNORE && (buffFrame - 1) % 2 == 1)
 							ao[raidPlayer].motion = PO_C1_DENY1;
 						else
-							ao[raidPlayer].motion = *(ptrBuff + 3) + (ao[raidPlayer].buff[i] == 1 ? *(ptrBuff + 2) : ((ao[raidPlayer].buff[i] - 1) % *(ptrBuff + 2)));
+							ao[raidPlayer].motion = *(ptrBuff + 3) + (buffFrame == 1 ? *(ptrBuff + 2) : ((buffFrame - 1) % *(ptrBuff + 2)));
 
 						InitMotion(&ao[raidPlayer]);
 						SetAlpha(24);
@@ -2772,7 +2776,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						if (i >= INC_DAMAGE_ARENA)
 							bFrame = robin.playtime;
 						else
-							bFrame = ao[raidPlayer].buff[i];
+							bFrame = (GetBuffDurationMode(i) == BUFF_DURATION_FRAME)
+								? ao[raidPlayer].buff[i] : robin.playtime;
 
 						//반지버프
 						switch (i) {
@@ -2843,7 +2848,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		for (i = 0; i < TOTALHITMARK; i++) {
 			if (dmgInfo[i].frame > 0) {
 				SetColor(dmgInfo[i].color);
-				DrawNum2(dmgInfo[i].dmg, dmgInfo[i].x, dmgInfo[i].y, CENTER, false, MINUS, true, dmgInfo[i].zoom, false);
+				DrawNum2(dmgInfo[i].dmg, dmgInfo[i].x, dmgInfo[i].y, CENTER, false,
+					dmgInfo[i].type == 3 ? PLUS : MINUS, true, dmgInfo[i].zoom, false);
 				SetColor(false);
 
 				dmgInfo[i].frame++;

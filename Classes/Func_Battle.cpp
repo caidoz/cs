@@ -975,6 +975,9 @@ void Play(void)
 	}
 
 
+	//지속 버프 카드는 왼쪽에, HEROSKILL 카드는 히어로 위에 쌓는다.
+	UpdatePersistentBuffControlMarkStack();
+
 	//HEROSKILL 카드는 주인공 위에서 턴 순서대로 쌓이고, 앞 카드가 사라지면
 	//아래 빈자리로 부드럽게 내려온다.
 	UpdateHeroSkillControlMarkStack();
@@ -1003,10 +1006,13 @@ void Play(void)
 			}
 
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
-				//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
-				//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
-				worldDrawing = true;
-				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2);
+				// 지속 버프 마크는 도착 후의 상태 UI다. 카메라 줌과 화면 이동에
+				// 영향받지 않도록 xOffset/floatOffsetY 및 월드 변환을 제외한다.
+				worldDrawing = !controlMark[i].manual;
+				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
+					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2,
+					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2,
+					controlMark[i].zoom2);
 				worldDrawing = false;
 			}
 
@@ -1045,10 +1051,11 @@ void Play(void)
 			}
 
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
-				//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
-				//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
-				worldDrawing = true;
-				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom);
+				worldDrawing = !controlMark[i].manual;
+				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
+					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2,
+					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2,
+					controlMark[i].zoom);
 				worldDrawing = false;
 			}
 
@@ -1229,7 +1236,7 @@ void Play(void)
 
 	ActiveHelpDraw();
 
-	for (i = ROBIN; i < TOTALPLAYER; i++)
+	for (i = ROBIN; i < PLAYERALL; i++)
 		if (ao[i].hitCountFrame > 0) {
 			ao[i].hitCountFrame++;
 
@@ -1243,11 +1250,25 @@ void Play(void)
 	zoom = 1.0f;
 
 	if (waveStatus == WAVESTATUS_PLAY && attackSequence == ATTACKSEQUENCE_ACTION) {
-		if (ao[turn].hitCount > 0) {
-			int hitCountPosX = xOffset + ao[turn].x;
-			int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[turn].y) + floatOffsetY + 48 * _2X;
-			DrawGoldNum(ao[turn].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * zoom);
-			DrawGoldAlpha(hitCountPosX + 4 * _2X, hitCountPosY - 4 * _2X, ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * zoom, LEFT, false, false);
+		for (i = PLAYER; i < PLAYERALL; i++) {
+			if (ao[i].hitCount > 0) {
+				int hitCountPosX = xOffset + ao[i].x;
+				int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y + floatOffsetY + 80 * _2X;
+				float hitCountZoom = zoom;
+
+				// HIT 표시는 월드 패스 밖에서 그리므로 DrawImage의 자동 타격 줌을
+				// 받지 못한다. 캐릭터와 같은 중심/배율 변환을 직접 적용한다.
+				if (drawHandle != MD_BATTLE && hitZoom > 1.001f) {
+					hitCountPosX = (int)(hitZoomCX + ((float)hitCountPosX - hitZoomCX) * hitZoom);
+					hitCountPosY = (int)(hitZoomCY + ((float)hitCountPosY - hitZoomCY) * hitZoom);
+					hitCountZoom *= hitZoom;
+				}
+
+				DrawGoldNum(ao[i].hitCount, hitCountPosX, hitCountPosY, RIGHT, false, false, true, 1.2f * hitCountZoom);
+				DrawGoldAlpha(hitCountPosX + (float)4 * _2X * hitCountZoom,
+					hitCountPosY - (float)4 * _2X * hitCountZoom,
+					ALPHA_HIT, FONT_GOLD_LARGE, 0.8f * hitCountZoom, LEFT, false, false);
+			}
 		}
 	}
 
@@ -1466,7 +1487,7 @@ void AttackSequenceDraw(void)
 	it = &ao[turn].equip[EQUIP_WEAPON];
 	collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
-	for (i = 0; i < TOTALPLAYER; i++)
+	for (i = 0; i < PLAYERALL; i++)
 		ao[i].hitCountPlus = false;
 
 	if (GetEventMenuIdx(EVENTTYPE_QUEST) != -1)
@@ -3507,16 +3528,33 @@ void SetScreenRatio(void)
 {
 	GNBHEIGHT = GNB_INIT_HEIGHT;
 	BOTTOMMENUHEIGHT = BOTTOMMENU_INIT_HEIGHT;
+	NORCH_HEIGHT = 0;
+	HOMEBAR_HEIGHT = 0;
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	{
+		extern void GetNativeSafeAreaInsets(int* topPx, int* bottomPx);
+		int topPx = 0;
+		int bottomPx = 0;
+		GetNativeSafeAreaInsets(&topPx, &bottomPx);
+
+		// 네이티브 API는 실제 화면 픽셀, UI 배치는 DX/DY 게임 좌표를 쓴다.
+		// 프레임 폭을 기준으로 변환하면 해상도와 Retina/density에 무관하다.
+		auto glView = Director::getInstance()->getOpenGLView();
+		float frameWidth = glView ? glView->getFrameSize().width : 0.0f;
+		float nativeToGame = frameWidth > 0.0f ? (float)DX / frameWidth : 1.0f;
+
+		NORCH_HEIGHT = Max(0, (int)(topPx * nativeToGame + 0.5f));
+		HOMEBAR_HEIGHT = Max(0, (int)(bottomPx * nativeToGame + 0.5f));
+	}
+#endif
+
+	GNBHEIGHT += NORCH_HEIGHT;
+	BOTTOMMENUHEIGHT += HOMEBAR_HEIGHT;
 
 	if (SCREENRATIO <= 167) {//3:5
 	}
 
-	if (SCREENRATIO >= 200) {//9:18.5(!)
-		GNBHEIGHT += NORCH_HEIGHT;
-		BOTTOMMENUHEIGHT += HOMEBAR_HEIGHT;
-	}
-	else
-		HOMEBAR_HEIGHT = 0;
 #ifndef CENTERDISPLAY
 	if (SCREENRATIO <= 150)
 		MINDY -= GNBHEIGHT + BOTTOMMENUHEIGHT;

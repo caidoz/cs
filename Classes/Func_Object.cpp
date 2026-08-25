@@ -388,7 +388,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 	//에어크래쉬의 보간 모션에 검 파츠가 둘 들어 있으면, 직전 검과 위치/각도가
 	//가까운 쪽을 현재 모션에 남기고 변화가 큰 쪽은 다음 모션에서 선택한다.
 	//새 자세의 검이 한 프레임 앞당겨 튀어나오는 현상을 막기 위한 처리다.
-	if (pObj->cmf == ROBIN && pObj->currentSkill == SKILL_ROBIN6) {
+	if (pObj->type == ROBIN && pObj->currentSkill == SKILL_ROBIN6) {
 		const signed short* swordPtr = cPtr;
 		const signed short* selectedSwordPtr = 0;
 		int swordCnt = 0;
@@ -466,7 +466,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 		//에어크래쉬 중에는 위에서 직전 모션과 가장 자연스럽게 이어지는 검
 		//하나를 골랐다. 선택되지 않은(다음 자세에 가까운) 검은 그리지 않는다.
-		if (pObj->cmf == ROBIN && pObj->currentSkill == SKILL_ROBIN6
+		if (pObj->type == ROBIN && pObj->currentSkill == SKILL_ROBIN6
 			&& (fixedImg == IMG_C0_108 || fixedImg == IMG_C0_109)) {
 			if (skillWeaponPartCursor++ != skillWeaponPartIndex) {
 				cPtr += 4;
@@ -1754,11 +1754,13 @@ void PlayerDraw(OBJECT* pObj)
 				if (i < TOTALPLAYERBUFF) {
 					//��ų ����
 					const unsigned short* ptrBuff = &buffData[i * 4];
+					int buffFrame = (GetBuffDurationMode(i) == BUFF_DURATION_FRAME)
+						? pObj->buff[i] : Max(1, robin.playtime / MOTIONDIV);
 
-					if (i == INC_IGNORE && (pObj->buff[i] - 1) % 2 == 1)
+					if (i == INC_IGNORE && (buffFrame - 1) % 2 == 1)
 						pObj->motion = PO_C1_DENY1;
 					else
-						pObj->motion = *(ptrBuff + 3) + (pObj->buff[i] == 1 ? *(ptrBuff + 2) : ((pObj->buff[i] - 1) % *(ptrBuff + 2)));
+						pObj->motion = *(ptrBuff + 3) + (buffFrame == 1 ? *(ptrBuff + 2) : ((buffFrame - 1) % *(ptrBuff + 2)));
 
 					InitMotion(pObj);
 					SetAlpha(Max(4, 24 - (32 - tempAlpha)));
@@ -1774,7 +1776,7 @@ void PlayerDraw(OBJECT* pObj)
 					if (i >= INC_DAMAGE_ARENA)
 						bFrame = robin.playtime;
 					else
-						bFrame = pObj->buff[i];
+						bFrame = (GetBuffDurationMode(i) == BUFF_DURATION_FRAME) ? pObj->buff[i] : robin.playtime;
 
 					//반지버프
 					switch (i) {

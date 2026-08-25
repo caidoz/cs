@@ -579,6 +579,44 @@ void RefreshBuff(OBJECT* pObj)
 	int armorMod = 100;
 	int obj = GetObjFromPtr(pObj);
 
+	// DIANA14는 SUMMONHERO 디아나가 히어로에게 걸어 주는 버프이므로
+	// 대상 캐릭터의 type이 DIANA가 아니어도 효과가 나야 한다. 소환 테스트처럼
+	// 대상에게 스킬 레벨이 없으면 1레벨 수치를 사용한다.
+	if (pObj->buff[BERSERK]) {
+		int skillLv = GetSkillLv(obj, SKILL_DIANA14);
+		int skillValue = GetSkillValue(obj, SKILL_DIANA14);
+
+		if (skillLv <= 0) {
+			skillLv = 1;
+			skillValue = skillData[SKILL_DIANA14 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+		}
+
+		dmgMod += skillValue;
+		pObj->ps[PS_ARMOR] = RoundDiv(pObj->ps[PS_ARMOR]
+			* (100 - berserkEtcData[skillLv - 1]), 100);
+	}
+
+	// SUMMONHERO로 받은 디아나 버프는 실제 대상인 첫 번째 히어로의 type과
+	// 무관하게 적용한다. 대상에게 해당 스킬 레벨이 없으면 1레벨 값을 쓴다.
+	if (pObj->buff[MPDRAIN]) {
+		int value = GetSkillValue(obj, SKILL_DIANA15);
+		if (GetSkillLv(obj, SKILL_DIANA15) <= 0)
+			value = skillData[SKILL_DIANA15 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+		pObj->ps[PS_MPDRAIN] += value;
+	}
+	if (pObj->buff[INC_CRITICAL]) {
+		int value = GetSkillValue(obj, SKILL_DIANA16);
+		if (GetSkillLv(obj, SKILL_DIANA16) <= 0)
+			value = skillData[SKILL_DIANA16 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+		pObj->ps[PS_CRITICAL] += value;
+	}
+	if (pObj->buff[INC_IGNORE]) {
+		int value = GetSkillValue(obj, SKILL_DIANA17);
+		if (GetSkillLv(obj, SKILL_DIANA17) <= 0)
+			value = skillData[SKILL_DIANA17 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+		pObj->ps[PS_IGNORE] += value;
+	}
+
 	//캐릭터별 액티브 강화스킬 적용
 	switch (pObj->type) {
 		//로빈
@@ -587,29 +625,7 @@ void RefreshBuff(OBJECT* pObj)
 		if (pObj->buff[INC_VIT])
 			pObj->ps[PS_VIT] = RoundDiv(pObj->ps[PS_VIT] * (100 + GetSkillValue(obj, SKILL_ROBIN13)), 100);
 		break;
-		//디아나
-	case DIANA:
-		//흥분고조 : 방어력 저하 공격력 상승
-		if (pObj->buff[BERSERK]) {
-			//공격력 상승
-			dmgMod += GetSkillValue(obj, SKILL_DIANA14);
-			//방어력 하락
-			pObj->ps[PS_ARMOR] = RoundDiv(pObj->ps[PS_ARMOR] * (100 - berserkEtcData[GetSkillLv(obj, SKILL_DIANA14) - 1]), 100);
-		}
-
-		//필살집중 : 크리 상승
-		if (pObj->buff[INC_CRITICAL])
-			pObj->ps[PS_CRITICAL] += GetSkillValue(obj, SKILL_DIANA16);
-
-		//파마의직격 : 일정시간 적 방어 무시
-		if (pObj->buff[INC_IGNORE])
-			pObj->ps[PS_IGNORE] += GetSkillValue(obj, SKILL_DIANA17);
-
-		//흡마의 마탄 : 공격시 MP 흡수 -> 공격시 HP 흡수
-		if (pObj->buff[MPDRAIN])
-			pObj->ps[PS_MPDRAIN] += GetSkillValue(obj, SKILL_DIANA15);
-		break;
-		//맥스
+	//맥스
 	case MAXX:
 		//현란무도 : 일정시간 회피율 증가
 		if (pObj->buff[INC_EVASION])
@@ -3244,7 +3260,10 @@ int AttackEnemyCheck(int obj)
 							ao[obj].status = Max(0, ao[obj].status - 1);
 						}
 
-						break;
+						// 오비탈 레이저는 광역기이므로 첫 대상이 회피하거나 이미
+						// 처리된 경우에도 나머지 겹친 적의 판정을 계속한다.
+						if (ao[obj].moveHandler != BULLETSATELLITEMOVE)
+							break;
 					}
 				}
 			}
@@ -3704,10 +3723,15 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 	}
 
 	if (attacker < ENEMY) {
-		int realAttacker = turn;
+		int realAttacker = attacker;
 
-		//if (attacker >= BULLET && ao[attacker].target < TOTALCHAR)
-		//	realAttacker = ao[attacker].target;
+		// 탄환은 target에 실제 발사자를 보관한다. 동료의 일반탄은 동료,
+		// HEROSKILL은 해당 히어로, SUMMONHERO는 SOLDIER가 실제 공격자다.
+		if (attacker >= BULLET && attacker < ENEMY
+			&& ao[attacker].target >= PLAYER && ao[attacker].target < PLAYERALL)
+			realAttacker = ao[attacker].target;
+		else if (realAttacker < PLAYER || realAttacker >= PLAYERALL)
+			realAttacker = turn;
 
 		if (ao[realAttacker].hitCountPlus == false) {
 			//hitCount++; hitCountFrame = VANISHFRAME_DMG;
@@ -4346,7 +4370,14 @@ int SetControlMark(
 	int i;
 
 	for (i = 0; i < TOTALCONTROLMARK; i++) {
-		if (controlMark[i].frame == 0) {
+		// 1단 이동이 끝나면 frame은 0이 되지만 frame2로 카드가 계속
+		// 이동/표시된다. frame만 보고 빈 칸으로 판단하면 다음 룰렛 카드가
+		// 아직 살아 있는 앞 카드의 스킬 번호와 좌표를 덮어쓴다.
+		if (controlMark[i].frame == 0 && controlMark[i].frame2 == 0) {
+			// 버프용 manual 마크나 이전 이동의 부가 상태가 남은 슬롯을
+			// 일반 룰렛 카드가 재사용할 수 있다. 필드를 일부만 덮으면 새 카드가
+			// manual=true를 물려받아 디스패치 대상에서 빠지거나 옛 좌표로 이동한다.
+			memset(&controlMark[i], 0, sizeof(controlMark[i]));
 			controlMark[i].x = startPosX;
 			controlMark[i].y = startPosY;
 			controlMark[i].targetX = targetX;
@@ -4389,6 +4420,8 @@ int SetControlMark(
 			return i;
 		}
 	}
+
+	return -1;
 }
 
 int GetCardMarkCnt(void)
@@ -5022,7 +5055,7 @@ int TargetEnemy(int obj)
 				//화염방사기 같은 경우는 해당 쪽으로 이동한다.
 				//타겟이 없다면 타겟한테 이동
 				//적이 나오면 먼저 죽이러 간다.
-				if (obj == DIANA && ao[obj].currentSkill == SKILL_DIANA8 && attackSequence == ATTACKSEQUENCE_ACTION)
+				if (ao[obj].type == DIANA && ao[obj].currentSkill == SKILL_DIANA8 && attackSequence == ATTACKSEQUENCE_ACTION)
 					for (i = ENEMY; i < NEUTRAL; i++) {
 						if (ao[i].active && ao[i].hp > 0) {
 							switch (ao[i].moveHandler) {
@@ -5831,4 +5864,79 @@ long long GetCombatPower(OBJECT* pObj)
 
 
 	return value;
+}
+
+// 버프별 지속 방식 설정점. 지금은 요청한 초기 밸런스에 따라 모든 버프를
+// 다음 턴 종료형으로 둔다. 이후 특정 버프만 case로 USE_COUNT를 반환하면 된다.
+int GetBuffDurationMode(int buffIdx)
+{
+	if (buffIdx < 0 || buffIdx >= TOTALBUFF)
+		return BUFF_DURATION_FRAME;
+
+	switch (buffIdx) {
+	default:
+		return BUFF_DURATION_TURN;
+	}
+}
+
+void ActivateBuff(OBJECT* pObj, int buffIdx, int value)
+{
+	if (pObj == NULL || buffIdx < 0 || buffIdx >= TOTALBUFF)
+		return;
+
+	pObj->buff[buffIdx] = Max(1, value);
+	pObj->buffRemainTurn[buffIdx] = 0;
+	pObj->buffRemainUse[buffIdx] = 0;
+
+	if (GetBuffDurationMode(buffIdx) == BUFF_DURATION_TURN)
+		pObj->buffRemainTurn[buffIdx] = 2; // 현재 턴 끝 + 다음 턴 끝
+	else if (GetBuffDurationMode(buffIdx) == BUFF_DURATION_USE_COUNT)
+		pObj->buffRemainUse[buffIdx] = 1;
+}
+
+// 횟수형 버프가 실제 효과를 냈을 때 호출한다. 현재 설정은 전부 턴형이므로
+// 당장은 소모되지 않지만, 추후 설정만 바꾸면 이 경로를 사용할 수 있다.
+bool ConsumeBuffUse(OBJECT* pObj, int buffIdx)
+{
+	if (pObj == NULL || buffIdx < 0 || buffIdx >= TOTALBUFF
+		|| pObj->buff[buffIdx] <= 0)
+		return false;
+	if (GetBuffDurationMode(buffIdx) != BUFF_DURATION_USE_COUNT)
+		return true;
+
+	if (pObj->buffRemainUse[buffIdx] > 0)
+		pObj->buffRemainUse[buffIdx]--;
+	if (pObj->buffRemainUse[buffIdx] == 0) {
+		pObj->buff[buffIdx] = 0;
+		RefreshStat(pObj);
+	}
+	return true;
+}
+
+// 한 번의 전체 행동 순서가 끝났을 때만 호출된다. 발동 당시 2에서 시작하므로
+// 현재 턴 종료에는 1, 다음 턴 종료에는 0이 되어 해제된다.
+void AdvanceTurnBuffs(void)
+{
+	for (int obj = 0; obj < TOTALOBJECT; obj++) {
+		bool refresh = false;
+
+		if (!ao[obj].active)
+			continue;
+		for (int i = 0; i < TOTALBUFF; i++) {
+			if (ao[obj].buff[i] <= 0 || GetBuffDurationMode(i) != BUFF_DURATION_TURN)
+				continue;
+
+			// 이전 코드나 네트워크에서 직접 넣은 버프도 턴제로 흡수한다.
+			if (ao[obj].buffRemainTurn[i] == 0)
+				ao[obj].buffRemainTurn[i] = 2;
+			ao[obj].buffRemainTurn[i]--;
+			if (ao[obj].buffRemainTurn[i] == 0) {
+				ao[obj].buff[i] = 0;
+				ao[obj].buffRemainUse[i] = 0;
+				refresh = true;
+			}
+		}
+		if (refresh)
+			RefreshStat(&ao[obj]);
+	}
 }

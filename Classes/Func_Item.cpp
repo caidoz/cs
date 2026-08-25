@@ -2730,12 +2730,12 @@ void UseRing(OBJECT* pObj, int idx)
 		for (i = PLAYER; i < PLAYERALL; i++)
 			if (ao[i].active == true && ao[i].dead == false) {
 				ao[i].ringValue[ITEM_RING6] = UpDiv(ringOption[it->detail * RINGOPTIONDATASIZE + 2] * 12 * (100 + ao[i].ps[PS_BUFF]), 100);
-				ao[i].buff[useV] = ao[i].ringValue[ITEM_RING6];
+				ActivateBuff(&ao[i], useV, ao[i].ringValue[ITEM_RING6]);
 				ao[i].mpRestore = 1;//마나회복 효과지만 추가타격 효과로 일단 씀
 				RefreshStat(&ao[i]);
 			}
 #else
-		pObj->buff[useV] = UpDiv(ringOption[it->detail * RINGOPTIONDATASIZE + 2] * 12 * (100 + pObj->ps[PS_BUFF]), 100);
+		ActivateBuff(pObj, useV, UpDiv(ringOption[it->detail * RINGOPTIONDATASIZE + 2] * 12 * (100 + pObj->ps[PS_BUFF]), 100));
 		RefreshStat(pObj);
 #endif
 		break;
@@ -2842,12 +2842,12 @@ void UseRing(OBJECT* pObj, int idx)
 #ifdef USERINGFORALL
 			for (i = PLAYER; i < PLAYERALL; i++)
 				if (ao[i].active == true && ao[i].dead == false) {
-					pObj->buff[useV] = UpDiv(valueDiv10 * (100 + pObj->ps[PS_BUFF]), 100);
-					ao[i].ringValue[it->detail] = pObj->buff[useV] * 10;
+					ActivateBuff(&ao[i], useV, UpDiv(valueDiv10 * (100 + pObj->ps[PS_BUFF]), 100));
+					ao[i].ringValue[it->detail] = ao[i].buff[useV] * 10;
 					RefreshStat(pObj);
 				}
 #else
-			pObj->buff[useV] = UpDiv(ringOption[it->detail * RINGOPTIONDATASIZE + 2] * 12 * (100 + pObj->ps[PS_BUFF]), 100);
+			ActivateBuff(pObj, useV, UpDiv(ringOption[it->detail * RINGOPTIONDATASIZE + 2] * 12 * (100 + pObj->ps[PS_BUFF]), 100));
 			RefreshStat(pObj);
 #endif
 			break;
@@ -2917,7 +2917,11 @@ void FreeHotKey(OBJECT* pObj, int where)
 
 		//����ȿ���� �����ش�.
 		for (i = INC_DAMAGE_RING; i < INC_DAMAGE_ARENA; i++)
+		{
 			pObj->buff[i] = 0;
+			pObj->buffRemainTurn[i] = 0;
+			pObj->buffRemainUse[i] = 0;
+		}
 
 		if (pObj->attack == ATTACK_MAGIC) {
 			pObj->attack = false;

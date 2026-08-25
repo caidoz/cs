@@ -1048,7 +1048,8 @@ static void NetApplyDump(NetTableMap& tables)
 			if (i < 0 || i >= TOTALPLAYER || j < 0 || j >= MAXCHARSKILL)
 				continue;
 
-			robin.charData[i].getSkillList[j] = (unsigned char)RowNum(t.rows[r], cI, 0);
+			// NPC/확장 스킬 번호는 255를 넘을 수 있으므로 byte로 자르면 안 된다.
+			robin.charData[i].getSkillList[j] = (int)RowNum(t.rows[r], cI, 0);
 		}
 	}
 

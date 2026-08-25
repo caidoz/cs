@@ -115,7 +115,7 @@
 				rem 고치고 빌드해도 화면이 안 바뀐다. 팩이 옛 값을 들고 있기 때문이다.
 				rem
 				rem 데이터가 그대로면 0.4초 안에 끝난다. 바뀌었을 때만 20초쯤 걸린다.
-				python "$(ProjectDir)..\tools\content\build_pack.py"
+				"%LOCALAPPDATA%\Python\bin\python.exe" "$(ProjectDir)..\tools\content\build_pack.py"
 			</Command>
     </PreBuildEvent>
     <CustomBuildStep>

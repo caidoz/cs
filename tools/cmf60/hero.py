@@ -88,6 +88,23 @@ def applyHeroPartFixes(c, n):
         c.newMiRaw[idx] = [['IMG_C0_%d' % part[0], num(part[1]), num(part[2]), part[3]]
                            for part in parts]
 
+    #앱솔루트 피어스의 회전 잔상은 캐릭터 파츠가 아니라 IMG_C0_119로
+    #ABS2~ABS6에 들어 있다. 본체/검은 그대로 두고 잔상만 진행 방향으로
+    #12픽셀 더 내보낸다(원본 CMF 좌표는 _2X 단위이므로 24를 뺀다).
+    for name, idx in by_name.items():
+        if not re.match(r'^PO_C0_ABS[2-6](?:_[123])?$', name):
+            continue
+        parts = list(c.newMotions[idx])
+        changed = False
+        for p, part in enumerate(parts):
+            if part[0] == 119:
+                parts[p] = (part[0], part[1] - 48, part[2], part[3])
+                changed = True
+        if changed:
+            c.newMotions[idx] = parts
+            c.newMiRaw[idx] = [['IMG_C0_%d' % part[0], num(part[1]), num(part[2]), part[3]]
+                               for part in parts]
+
 
 def expandHero(n, source=None, write_output=True):
     c = Cmf(n, source)

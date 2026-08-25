@@ -302,11 +302,11 @@ static int GetBoxDetailCount(
 	case ITEM_GUNTLET:
 		return TOTAL_GUNTLET;
 
-	case ITEM_PANTS:
-		return TOTAL_PANTS;
+	case ITEM_KILT:
+		return TOTAL_KILT;
 
-	case ITEM_BOOTS:
-		return TOTAL_BOOTS;
+	case ITEM_GREAVES:
+		return TOTAL_GREAVES;
 	}
 
 	return 0;

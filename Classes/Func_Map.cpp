@@ -1007,6 +1007,10 @@ int GetMaxWaveCnt(void)
 {
 	int i;
 
+	//AVK_MAXGAME 시연에서는 스킬과 함께 몬스터 세 마리의 모션도 본다.
+	if (gDemoForceRoulette)
+		return 3;
+
 	//인터랙티브 전투 튜토리얼: 단계마다 몬스터를 딱 한 마리만 상대하게 한다.
 	//이 값은 WaveControler()의 스폰 상한이면서 동시에 VanishMove()의 상자 드롭 조건
 	//(robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0)과 Func_Combat.cpp의
@@ -1231,7 +1235,14 @@ void WaveControler()
 	case MD_DEMO:
 	case MD_PLAY:
 		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
-			pObj->type = wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
+			if (gDemoForceRoulette) {
+				static const int demoEnemy[3] = {
+					ENEMY_JELLYFISH, ENEMY_KNIGHT, ENEMY_SLIME
+				};
+				pObj->type = demoEnemy[Min(2, robin.curWaveIdx)];
+			}
+			else
+				pObj->type = wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
 			//pObj->type = ENEMY_SLIME_GOLD;
 			pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
 			pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];
@@ -1665,10 +1676,17 @@ long long GetTotalWaveHp(int waveIdx)
 	long long curHp;
 	long long totalHp = 0;
 	int monType;
+	int waveCount = MAXWAVEENEMY;
 
-	for (i = 0; i < MAXWAVEENEMY; i++) {
+	// AVK_MAXGAME에서는 원래 wave[]의 몬스터 수와 관계없이 세 마리를
+	// 강제로 소환한다. 현재 HP는 세 마리 모두 BAR_BOSSHP에 더해지므로
+	// 최대 HP도 같은 세 슬롯을 합산해야 바의 비율이 1을 넘지 않는다.
+	if (gDemoForceRoulette)
+		waveCount = GetMaxWaveCnt();
+
+	for (i = 0; i < waveCount; i++) {
 		monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
-		if (monType != false) {
+		if (monType != false || gDemoForceRoulette) {
 			curHp = GetWaveHp(waveIdx, i); 
 			
 			totalHp += curHp;

@@ -258,7 +258,8 @@ int BlockObj(OBJECT* pObj, int type)
 			case OBJ_DOOR:
 				if (pCompare->status < OPENED && type == 0 && ObjCrash(pObj, pCompare)) {
 					// 인벤이 꽉찼고, 강적보스를 물리치는 퀘라면, 문이 열리지 않는다.
-					if ((pObj == &ao[PLAYER] && robin.bossRoom == false) || pObj == &ao[DIANA] || pObj == &ao[MAXX]) {
+					if ((pObj->type == ROBIN && robin.bossRoom == false)
+						|| pObj->type == DIANA || pObj->type == MAXX) {
 						pCompare->cy++;
 						pCompare->status = OPEN;
 						pCompare->mainFrame = 1;
@@ -1156,7 +1157,7 @@ void MoveObj(OBJECT* pObj)
 				if (!isDemo) {
 					//for (i = 0; i < TOTALPLAYERBUFF; i++) {
 					for (i = 0; i < TOTALBUFF; i++) {
-						if (pObj->buff[i] > 0) {
+						if (pObj->buff[i] > 0 && GetBuffDurationMode(i) == BUFF_DURATION_FRAME) {
 							pObj->buff[i]--;
 
 							if (pObj->buff[i] == 0)
@@ -1536,7 +1537,7 @@ void MoveObj(OBJECT* pObj)
 		}
 
 		if (pObj->ax > 0) {
-			if ((pObj->attack >= ATTACK_NORMAL && pObj->attack != ATTACK_DASH) || (pObj->attack == ATTACK_NORMAL && ((pObj->cmf == ROBIN && pObj->attackFrame == 20 + ROBIN_ATTACK_DELAY) || (pObj->cmf == DIANA && pObj->attackFrame == 46 + DIANA_ATTACK_DELAY))))
+			if ((pObj->attack >= ATTACK_NORMAL && pObj->attack != ATTACK_DASH) || (pObj->attack == ATTACK_NORMAL && ((pObj->type == ROBIN && pObj->attackFrame == 20 + ROBIN_ATTACK_DELAY) || (pObj->type == DIANA && pObj->attackFrame == 46 + DIANA_ATTACK_DELAY))))
 				pObj->attackLv = 2;
 			else
 				pObj->attackLv = 1;
@@ -1662,7 +1663,9 @@ void PlayerMove(OBJECT* pObj)
 				return;
 			}
 
-			if (callerType == SUMMONHERO && obj == SOLDIER) {
+			//헬파이어는 자식 오브젝트가 생기지 않는 지속형 스킬이다.
+			//flamer 카운트가 남아 있는 동안에는 소환 전투를 종료하지 않는다.
+			if (callerType == SUMMONHERO && obj == SOLDIER && pObj->flamer == 0) {
 				pObj->drawHandler = VANISHDRAW;
 				pObj->moveHandler = VANISHMOVE;
 				pObj->frame = 0;
@@ -2745,13 +2748,16 @@ chk:
 					break;
 				}
 				else {
-					//중괄호가 없어서 flamer일 때 loopMotion이 갱신되지 않은 채
-					//아래에서 쓰였다. -1은 "60프레임 표가 없다"는 뜻이라
-					//원래 식으로 떨어진다.
-					loopMotion = pObj->flamer
-						? -1
-						: GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
-					pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+					//SUMMONHERO는 행동 중인 crew가 아니라 SOLDIER 슬롯에 있으므로
+					//위의 obj == turn 분기를 타지 않는다. 여기서 뉴트럴을 무조건
+					//대입하면 PlayerMove가 정한 화염 모션이 매 프레임 지워진다.
+					if (pObj->type == DIANA && pObj->flamer > 0) {
+						pObj->motion = PO_C1_FIREN0;
+					}
+					else {
+						loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL, pObj->frame);
+						pObj->motion = (loopMotion < 0) ? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+					}
 					pObj->dx = pObj->dy = 0;
 				}
 				//if (pObj->y != pObj->ny)
@@ -3901,7 +3907,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			break;
 		}
 		break;
-	case _ADDBUFF:
+	case _ADDBUFF: {
 		
 #ifndef WARIGARI
 		if (autoPlay == true && drawHandle == MD_PLAY) {
@@ -3910,25 +3916,58 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		}
 #endif
 
+		// SUMMONHERO의 지속 버프는 SOLDIER가 연출만 담당한다.
+		// 버프를 소환체에 넣으면 퇴장과 동시에 효과가 사라지므로 실제 전투
+		// 주체인 첫 번째 히어로에게 적용한다.
+		OBJECT* buffTarget = pObj;
+		int persistentBuff = GetPersistentBuffBySkill(pObj->currentSkill);
+		if (GetObjFromPtr(pObj) == SOLDIER && persistentBuff >= 0)
+			buffTarget = &ao[PLAYER];
+
+		// 이 이벤트 자체가 발동 조건이다. 프레임 표와 관계없이 소환 테스트의
+		// 지속 버프는 첫 번째 히어로에게 확실히 적용한다.
+		if (GetObjFromPtr(pObj) == SOLDIER && persistentBuff >= 0) {
+			ActivateBuff(buffTarget, persistentBuff, FPS * BUFFINITSECONDS);
+			buffTarget->statUpFrame = 1;
+			MoveControlMarkToBuffStack(turn, pObj->currentSkill);
+		}
+
 		for (i = 0; i < TOTALPLAYERBUFF; i++) {
 			const unsigned short* ptrBuff = &buffData[i * 4];
 
 			if (pObj->attackFrame == *ptrBuff) {
-				pObj->buff[i] = *(ptrBuff + 1);
+				ActivateBuff(buffTarget, i, *(ptrBuff + 1));
+				if (buffTarget != pObj)
+					buffTarget->statUpFrame = 1;
 			}
 		}
+
+		// 버프 배열만 바꾸면 현재 계산된 공격력/방어력에는 다음 RefreshStat
+		// 시점까지 반영되지 않는다. 발동한 프레임에 즉시 다시 계산한다.
+		if (buffTarget != pObj)
+			RefreshStat(buffTarget);
 
 		pObj->concentrate = 0;
 
 		pObj->attack = false;
 		pObj->attackFrame = 0;
 
-		pObj->turnPosition = HERE;
-		WhoIsNextTurn();
+		if (GetObjFromPtr(pObj) == SOLDIER) {
+			pObj->turnPosition = COMING;
+			pObj->drawHandler = VANISHDRAW;
+			pObj->moveHandler = VANISHMOVE;
+			pObj->frame = 0;
+			onceDmgUpdateFrame = 2 * FPS;
+		}
+		else {
+			pObj->turnPosition = HERE;
+			WhoIsNextTurn();
+		}
 
 		//attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
 		//attackDelay = attackDelayPerType[attackType];
 		break;
+	}
 	case _CONTINUE:
 		pObj->concentrate = 0;
 		break;
@@ -4072,6 +4111,31 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 					}
 					break;
 				case DIANA_SKILL_SATELLITESHOT:
+					// 위성의 중심을 현재 살아 있는 적 무리의 가로 중앙에 둔다.
+					// 고정 사거리만 더하던 기존 좌표는 적이 세 마리일 때 한쪽으로 치우쳤다.
+					{
+						int enemyMinX = 0;
+						int enemyMaxX = 0;
+						int enemyCnt = 0;
+
+						for (int enemyObj = ENEMY; enemyObj < NEUTRAL; enemyObj++) {
+							if (!ao[enemyObj].active || ao[enemyObj].dead || ao[enemyObj].maxhp <= 0)
+								continue;
+
+							int enemyCenterX = (PxlLeft(&ao[enemyObj]) + PxlRight(&ao[enemyObj])) / 2;
+							if (enemyCnt == 0) {
+								enemyMinX = enemyMaxX = enemyCenterX;
+							}
+							else {
+								enemyMinX = Min(enemyMinX, enemyCenterX);
+								enemyMaxX = Max(enemyMaxX, enemyCenterX);
+							}
+							enemyCnt++;
+						}
+
+						if (enemyCnt > 0)
+							objPtr->x = (enemyMinX + enemyMaxX) / 2;
+					}
 					objPtr->dirX = (objPtr->x - rx > DX / 2) ? LEFT : RIGHT;
 					GetTile(objPtr);
 					objPtr->y += GetObjHeight(objPtr);
@@ -4094,8 +4158,13 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		objPtr->drawHandler = BULLETHEALDRAW;
 		objPtr->mom = GetObjFromPtr(pObj);
 
-		attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
-		attackDelay = attackDelayPerType[attackType];
+		// 본인이 직접 쓰는 스킬만 일반 공격 결과 단계에 들어간다.
+		// 동료가 SUMMONHERO로 부른 디아나는 현재 turn이 아니므로 여기서
+		// 전역 시퀀스를 바꾸면 소환 히어로의 퇴장/다음 턴 분기가 막힌다.
+		if (GetObjFromPtr(pObj) == turn) {
+			attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
+			attackDelay = attackDelayPerType[attackType];
+		}
 		break;
 	case _DIRECTHEAL:
 		pObj->attack = false;
@@ -4253,7 +4322,7 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		break;
 	}
 
-	if (pObj->cmf == ROBIN && pObj->attackFrame == 30 + ROBIN_ATTACK_DELAY) {
+	if (pObj->type == ROBIN && pObj->attackFrame == 30 + ROBIN_ATTACK_DELAY) {
 		pObj->status = FALL;
 		pObj->jumpFrame = JUMPFRAME;
 		pObj->dirY = DOWN;
@@ -8063,13 +8132,45 @@ void BulletGuidedMove(OBJECT* pObj)
 
 void BulletSateliteMove(OBJECT* pObj)
 {
-	if (pObj->frame == DIANA_SKILL_SATELLITESHOT_CNT)
+	if (pObj->frame == DIANA_SKILL_SATELLITESHOT_CNT) {
 		memset(pObj, 0, sizeof(OBJECT));
+		return;
+	}
 	else if (pObj->frame >= 24 && pObj->frame < DIANA_SKILL_SATELLITESHOT_CNT) {
-		pObj->apx = -128 * _2X;
-		pObj->ax = 256 * _2X;
-		pObj->apy = -pObj->y;
-		pObj->ay = pObj->y;
+		int minX = pObj->x;
+		int maxX = pObj->x;
+		int minY = pObj->y;
+		int maxY = pObj->y;
+		bool foundEnemy = false;
+		const int margin = 16 * _2X;
+
+		// 레이저가 켜진 동안 살아 있는 적 세 마리의 피격 박스를 전부
+		// 감싸도록 공격 영역을 만든다. 적이 이동해도 매 프레임 따라간다.
+		for (int i = ENEMY; i < NEUTRAL; i++) {
+			if (!ao[i].active || ao[i].dead || ao[i].maxhp <= 0 || ao[i].cx <= 0 || ao[i].cy <= 0)
+				continue;
+
+			if (!foundEnemy) {
+				minX = PxlLeft(&ao[i]);
+				maxX = PxlRight(&ao[i]);
+				minY = PxlUp(&ao[i]);
+				maxY = PxlDown(&ao[i]);
+				foundEnemy = true;
+			}
+			else {
+				minX = Min(minX, PxlLeft(&ao[i]));
+				maxX = Max(maxX, PxlRight(&ao[i]));
+				minY = Min(minY, PxlUp(&ao[i]));
+				maxY = Max(maxY, PxlDown(&ao[i]));
+			}
+		}
+
+		if (foundEnemy) {
+			pObj->apx = minX - pObj->x - margin;
+			pObj->ax = maxX - minX + margin * 2;
+			pObj->apy = minY - pObj->y - margin;
+			pObj->ay = maxY - minY + margin * 2;
+		}
 	}
 
 	pObj->frame++;
@@ -8079,18 +8180,57 @@ void BulletSateliteMove(OBJECT* pObj)
 
 void BulletHealMove(OBJECT* pObj)
 {
-	int obj = GetObjFromPtr(pObj);
+	int shooter = pObj->mom;
 	pObj->motion = pObj->frame + PO_C1_HEAL9 - 1;
 
 	if (pObj->frame == 1) {
-		//여기서 힐
+		// 리커버리는 소환된 디아나 자신이 아니라 메인 히어로를 회복한다.
+		OBJECT* hero = &ao[PLAYER];
+		int recoverPercent = GetSkillValue(shooter, SKILL_DIANA13);
+		if (recoverPercent <= 0)
+			recoverPercent = skillData[SKILL_DIANA13 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+		long long requestedHp = RoundDiv(hero->ps[PS_HP] * recoverPercent, 100);
+		long long recoveredHp = Max(0LL, Min(requestedHp, hero->ps[PS_HP] - hero->hp));
 
-		PlusHp(&ao[pObj->mom], RoundDiv(ao[pObj->mom].ps[PS_HP] * GetSkillValue(pObj->mom, SKILL_DIANA13), 100));
-		if (!pObj->hpRestore)
-			pObj->hpRestore = 1;
+		// EFFECT_RESTORE 연출은 PLAYERDRAW가 이 값을 보고 히어로 위에 그린다.
+		// 만피 상태에서도 스킬이 발동했다는 시각 피드백은 보여준다.
+		hero->hpRestore = 1;
+
+		if (recoveredHp > 0)
+			PlusHp(hero, recoveredHp);
+
+		// 히어로 머리 위에 실제 회복량을 +숫자로 표시한다.
+		// 만피라 실제 회복량이 없을 때도 +0을 표시한다.
+		for (int i = 0; i < TOTALHITMARK; i++) {
+			if (dmgInfo[i].type == 0) {
+				dmgInfo[i].type = 3; // 회복 숫자
+				dmgInfo[i].frame = 0;
+				dmgInfo[i].dmg = recoveredHp;
+				dmgInfo[i].x = hero->x;
+				dmgInfo[i].y = STATUSWIN_Y + (rh - 4) * TSIZE
+					- (hero->y + hero->cpy - 32 * _2X) - ry;
+				dmgInfo[i].zoom = DMGNUMZOOM;
+				dmgInfo[i].pos = PLAYER;
+				dmgInfo[i].owner = shooter;
+				dmgInfo[i].color = 0x80FF80;
+				break;
+			}
+		}
 	}
-	else if (pObj->frame > 8)
+	else if (pObj->frame > 8) {
 		memset(pObj, 0, sizeof(OBJECT));
+
+		// SUMMONHERO의 회복탄이 끝나면 디아나를 퇴장시킨다. _ADDHEAL이
+		// ATTACKRESULT로 바꾸던 기존 흐름에서는 이 종료가 실행되지 않았다.
+		if (shooter == SOLDIER && ao[shooter].active
+			&& ao[shooter].turnPosition == COMING && GetSonObjCnt(shooter) == 0) {
+			ao[shooter].drawHandler = VANISHDRAW;
+			ao[shooter].moveHandler = VANISHMOVE;
+			ao[shooter].frame = 0;
+			onceDmgUpdateFrame = 2 * FPS;
+		}
+		return;
+	}
 
 	pObj->frame++;
 }
@@ -11257,7 +11397,10 @@ void RegenMove(OBJECT* pObj)
 					HotKeyPress(&ao[obj], 0);
 					switch (pObj->currentSkill) {
 					case SKILL_DIANA8://플레임
-						pObj->flamer = FPS * 2;
+						//HotKeyPress()와 같은 지속 프레임으로 확정한다.
+						//이 값이 0이 된 다음 SUMMONHERO 종료 분기가 실행된다.
+						pObj->attack = false;
+						pObj->flamer = FLAMER_START_FRAME;
 						break;
 					}
 				}
@@ -13029,7 +13172,7 @@ void DemoDarkMove(OBJECT* pObj)
 	int i;
 
 	for (i = PLAYER; i < TOTALCHAR; i++) {
-		if (ao[i].cmf == DIANA)
+		if (ao[i].type == DIANA)
 			break;
 	}
 
@@ -13973,6 +14116,7 @@ void CrewMove(OBJECT* pObj)
 	int speed = 4 * _2X;//미사일 스피드
 	int attackType;
 	OBJECT* objPtr;
+	ITEM summonItem;
 
 	tPtr = cmf_status_data[pObj->cmf][pObj->etc];
 
@@ -14001,9 +14145,16 @@ void CrewMove(OBJECT* pObj)
 			//현재 얘가 움직이는 턴이면
 			if (obj == turn) {
 				switch (pObj->turnPosition) {
-					case HERE:
-						if (pObj->frame % ret == 0) {
-							pObj->target = NearEnemy(pObj);
+				case HERE:
+					if (pObj->frame % ret == 0) {
+						//패킹 데이터나 저장된 currentSkill이 잘못되어도 skillData
+						//범위 밖 값을 대상 슬롯으로 사용하지 못하게 한다.
+						if (pObj->currentSkill < 0 || pObj->currentSkill >= gTotalSkill) {
+							pObj->turnPosition = DMGUPDATE;
+							onceDmgUpdateFrame = 2 * FPS;
+							break;
+						}
+						pObj->target = NearEnemy(pObj);
 							pObj->turnPosition = THERE;//바로 결과로.
 
 							attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
@@ -14144,16 +14295,41 @@ void CrewMove(OBJECT* pObj)
 								//설 자리는 스킬 데이터가 이미 들고 있다. 오브젝트를 보지 말고
 								//그 값으로 자리를 잡는다. 그러면 만들기 전에도 보낼 수 있다.
 								//----------------------------------------------------------
-								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
+								{
+									int summonTarget = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET];
+									int summonType = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+									int summonSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+
+									if (summonTarget != SOLDIER
+										|| summonTarget < 0 || summonTarget >= TOTALOBJECT
+										|| summonType < ROBIN || summonType > MAXX
+										|| summonSkill < 0 || summonSkill >= gTotalSkill) {
+										pObj->turnPosition = DMGUPDATE;
+										onceDmgUpdateFrame = 2 * FPS;
+										break;
+									}
+
+									objPtr = &ao[summonTarget];
+
+								// SOLDIER는 모든 SUMMONHERO가 공유하는 슬롯이다. 앞선 소환체가
+								// 발사한 유도탄 등이 이 슬롯을 target/mom으로 가진 채 남아 있으면,
+								// 다음 소환체의 자식으로 잘못 인식되고 탄환 슬롯도 계속 점유한다.
+								// 새 소환을 시작할 때 이전 SOLDIER에 연결된 탄환만 정리한다.
+								for (i = BULLET; i < ENEMY; i++) {
+									if (ao[i].active && (ao[i].target == summonTarget || ao[i].mom == summonTarget))
+										memset(&ao[i], 0, sizeof(OBJECT));
+								}
 
 								//SOLDIER 칸은 디아나/MAXX 등 소환 히어로가 공유한다.
 								//이전 소환의 중독, attack, status, turnPosition을 남겨두면
 								//다음 히어로가 중독된 COMING 상태로 시작해 공격 전에 사라진다.
 								memset(objPtr, 0, sizeof(OBJECT));
+								for (i = 0; i < TOTALEQUIP; i++)
+									objPtr->equip[i].type = EMPTY;
 
-								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								objPtr->type = summonType;
 								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
-								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+								objPtr->currentSkill = summonSkill;
 								objPtr->zoom = objPtr->defaultZoom = ao[PLAYER].zoom;
 								objPtr->moveHandler = REGENMOVE;
 								objPtr->drawHandler = REGENDRAW;
@@ -14169,20 +14345,34 @@ void CrewMove(OBJECT* pObj)
 
 								pObj->turnPosition = DMGUPDATE;//바로 결과로.
 								//임시장비세팅
-								for (i = EQUIP_WEAPON; i < EQUIP_BOOTS; i++) {
-									memset(&tempItem, 0, sizeof(tempItem));
-									tempItem.type = 3 * i + objPtr->type;
-									tempItem.detail = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED3 + i];
-									tempItem.grade = GRADE_NORMAL;
-									tempItem.lv = 1;
-									tempItem.count = 1;
-									EquipItem(objPtr, &tempItem);
+								for (i = EQUIP_WEAPON; i <= EQUIP_BOOTS; i++) {
+									int j;
+									int detail = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + i];
+									//SUMMONHERO 행의 lv1~lv6을 장비 detail 슬롯으로 사용한다.
+									//RESERVED3~8은 스킬 제어용 값이므로 장비로 읽으면 안 된다.
+									memset(&summonItem, 0, sizeof(summonItem));
+									for (j = 0; j < TOTALOPTION; j++)
+										summonItem.option[j][0] = EMPTYINT;
+									for (j = 0; j < 6; j++)
+										summonItem.socket[j] = EMPTYINT;
+									summonItem.type = 3 * i + objPtr->type;
+									summonItem.detail = detail;
+									summonItem.grade = GRADE_NORMAL;
+									summonItem.lv = 1;
+									summonItem.count = 1;
+									//EquipItem()은 메뉴/저장 처리와 고정 히어로의 equipImg까지
+									//건드린다. 공용 SOLDIER 슬롯에는 장비와 파츠 인덱스만 직접 넣는다.
+									memcpy(&objPtr->equip[i], &summonItem, sizeof(ITEM));
+									objPtr->equipImg[i] = summonItem.detail + 1;
 								}
+								//소환 테스트 장비는 외형용이다. memset 직후의 임시 OBJECT를
+								//전체 스탯/옵션 재계산기에 넘기지 않는다.
 								objPtr->ps[PS_DMG] = objPtr->ps[PS_STR] = pObj->ps[PS_DMG];
 
 #ifdef SPEEDTURN
 								WhoIsNextTurn();
 #endif
+								}
 								break;
 							}
 						}

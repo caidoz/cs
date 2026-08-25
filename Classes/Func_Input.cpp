@@ -2136,6 +2136,12 @@ void HotKeyPress(OBJECT* pObj, int idx)
 
 		switch (pObj->hotKey[idx].idx) {
 		case SKILL_DIANA14://��а���?: ��ų ������ ��
+			// SUMMONHERO는 SetHotKey() 직후라 0번 슬롯에 쿨타임이 이미 들어 있다.
+			// 임시 SOLDIER의 비어 있는 getSkillList로 아래 검사를 하면 항상
+			// j==0이 되어 모션 시작 전에 return한다. 이 검사는 실제 편성
+			// 캐릭터가 직접 사용할 때만 수행한다.
+			if (obj == SOLDIER)
+				break;
 			j = 0;
 			for (i = 0; i < MAXCHARSKILL; i++) {
 				if (pObj->getSkillList[i] != -1 && pObj->hotKey[pObj->getSkillList[i]].frame == 0) {

@@ -396,7 +396,11 @@ void BarDraw(BAR* barP, float zoom)
 	// 새로운 룰렛 시스템 UI
 	case BAR_DAY:
 		DayBarDraw(DAYS3 - (GetCurrentTimeMs() - robin.startTime), xOffset + barP->x, barP->y, zoom);
-		SetRectPoint(xOffset + barP->x - 32 * _2X, STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].ny - ry + 40 * _2X, 64 * _2X, 64 * _2X, TOUCH_FUNC_GOTOBATTLE);
+		SetRectPoint(xOffset + barP->x - (float)(32 * _2X) * zoom / 0.5f,
+			barP->y + (float)(40 * _2X) * zoom / 0.5f,
+			(float)(64 * _2X) * zoom / 0.5f,
+			(float)(64 * _2X) * zoom / 0.5f,
+			TOUCH_FUNC_GOTOBATTLE);
 		break;
 	case BAR_WAVE:
 		WaveBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom);
@@ -466,7 +470,9 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 	//count = 100;
 	//max = 200;
-	DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, (float)(count) / (float)max, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
+	float hpRatio = max > 0 ? (float)count / (float)max : 0.0f;
+	hpRatio = Max(0.0f, Min(hpRatio, 1.0f));
+	DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, hpRatio, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
 	
 	if (count > 0)
 		DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
@@ -793,8 +799,6 @@ void DayBarDraw(int day, int x, int y, float zoom)
 {
 	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
 	//emphasisScale = 1.3f * zoom;
-
-	y = STATUSWIN_Y + (rh - 4) * TSIZE - ao[ROBIN].ny - ry;
 
 	DrawNeutral(OBJ_BLACKHOLE0 + Abs(15 - frame) % 15, x, y + (float)20 * zoom, 0, emphasisScale * 2.0f);
 

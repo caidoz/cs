@@ -1627,23 +1627,24 @@ void InitBar(int type)
 	case BAR_DAY:
 		bar[type].active = true;
 		bar[type].x = DX + 32 * _2X;  // 왕관 옆
-		bar[type].y = STATUSWIN_Y;
+		// 보스 모드 버튼은 상단 재화/상태 바 바로 아래에 둔다.
+		bar[type].y = DY - GNBHEIGHT - 48 * _2X;
 		bar[type].count = robin.currentDay;
 		bar[type].drawFunc = BAR_DAY;
 		bar[type].front = true;
-		bar[type].zoom = 0.5f;
-		bar[type].zoom2 = 0.5f;
+		bar[type].zoom = 1.0f / 3.0f + 0.1f;
+		bar[type].zoom2 = 1.0f / 3.0f + 0.1f;
 
 		//bar[type].zoom = 2.0f;
 		//bar[type].zoom2 = 1.0f;
 
-		bar[type].targetX2 = bar[type].targetX = DX - 32 * _2X;
+		bar[type].targetX2 = bar[type].targetX = DX - 24 * _2X;
 		bar[type].targetY2 = bar[type].targetY = bar[type].y;
 
 		//bar[type].zoomEnd = 1.0f;
 		//bar[type].zoomEnd2 = 0.6f;
-		bar[type].zoomEnd = 0.5f;
-		bar[type].zoomEnd2 = 0.5f;
+		bar[type].zoomEnd = 1.0f / 3.0f + 0.1f;
+		bar[type].zoomEnd2 = 1.0f / 3.0f + 0.1f;
 
 		bar[type].speed = 8 * _2X;
 		bar[type].speed2 = 16 * _2X;
@@ -3758,7 +3759,8 @@ void WhoIsNextTurn(void)
 		&& finishedTurn >= CREW && finishedTurn < CREW + MAXCREW) {
 		for (i = 0; i < TOTALCONTROLMARK; i++) {
 			if (controlMark[i].owner == finishedTurn
-				&& controlMark[i].attackType == ao[finishedTurn].currentSkill)
+				&& controlMark[i].attackType == ao[finishedTurn].currentSkill
+				&& !controlMark[i].manual)
 				controlMark[i].alpha = 1;
 		}
 	}
@@ -3788,7 +3790,10 @@ void WhoIsNextTurn(void)
 				if (sameCnt < 1)
 					sameCnt = 1;
 
-				ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
+				int reelSkill = GetRouletteResultSkillForObj(turn);
+				ao[turn].currentSkill = (reelSkill >= 0)
+					? reelSkill
+					: crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
 
 				//인덱싱 규칙은 RouletteAttackStart()의 주석 참고. 스킬 블록 = sameCnt - 1,
 				//턴이 막 시작된 시점이므로 turnPosition은 HERE.
@@ -3802,6 +3807,9 @@ void WhoIsNextTurn(void)
 	}
 	//한턴이 종료됨.
 	else {
+		// 개별 액션이 아니라 전체 turnList가 끝나는 이 지점만 버프의 한 턴으로
+		// 센다. 현재 턴에 생긴 버프는 여기서 1이 되고 다음 턴 끝에 해제된다.
+		AdvanceTurnBuffs();
 		turnListIdx = 0;
 		turn = 0;
 		attackSequence = ATTACKSEQUENCE_COIN;
@@ -4481,7 +4489,8 @@ void SaveGame(void)
 	for (i = ROBIN; i < TOTALPLAYER; i++) {
 		RefreshStat(&ao[i]);
 		memcpy((char*)&robin.charData[i].equip, &ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
-		memcpy((char*)&robin.charData[i].getSkillList, &ao[i].getSkillList, MAXCHARSKILL);
+		memcpy(&robin.charData[i].getSkillList, &ao[i].getSkillList,
+			sizeof(robin.charData[i].getSkillList));
 		memcpy((char*)&robin.charData[i].skillLv, &ao[i].skillLv, CAP_SKILL);
 
 		robin.charData[i].exps = ao[i].exps;

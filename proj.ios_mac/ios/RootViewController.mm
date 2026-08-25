@@ -28,6 +28,31 @@
 #import "cocos2d.h"
 #import "platform/ios/CCEAGLView-ios.h"
 
+// UIKit safe area를 실제 backing pixel 단위로 C++에 전달한다.
+// C++의 SetScreenRatio()가 이 값을 게임 좌표계로 변환한다.
+void GetNativeSafeAreaInsets(int* topPx, int* bottomPx)
+{
+    if (topPx) *topPx = 0;
+    if (bottomPx) *bottomPx = 0;
+
+    UIView* view = nil;
+    UIWindow* keyWindow = [UIApplication sharedApplication].keyWindow;
+    if (keyWindow)
+        view = keyWindow.rootViewController.view;
+    if (!view)
+        return;
+
+    if (@available(iOS 11.0, *)) {
+        [view layoutIfNeeded];
+        UIEdgeInsets insets = view.safeAreaInsets;
+        CGFloat scale = view.contentScaleFactor;
+        if (scale <= 0.0)
+            scale = [UIScreen mainScreen].scale;
+        if (topPx) *topPx = (int)(insets.top * scale + 0.5);
+        if (bottomPx) *bottomPx = (int)(insets.bottom * scale + 0.5);
+    }
+}
+
 
 @implementation RootViewController
 

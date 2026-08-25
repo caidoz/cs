@@ -363,7 +363,11 @@ func useFakeLine(t *testing.T, f *fakeECIssuer, aud string) {
 	t.Helper()
 
 	is := issuers[ProviderLine]
-	old := *is
+
+	// 통째로 복사하면 안 된다. 안에 잠금이 들어 있어서 복사본이 그 상태를
+	// 같이 들고 간다. 필요한 칸만 따로 빼둔다.
+	oldURL, oldIss, oldAud := is.jwksURL, is.iss, is.aud
+	oldKeys, oldFetched := is.keys, is.fetched
 
 	is.jwksURL = f.srv.URL
 	is.iss = []string{"https://access.line.me"}
@@ -372,8 +376,8 @@ func useFakeLine(t *testing.T, f *fakeECIssuer, aud string) {
 	is.fetched = time.Time{}
 
 	t.Cleanup(func() {
-		is.jwksURL, is.iss, is.aud = old.jwksURL, old.iss, old.aud
-		is.keys, is.fetched = old.keys, old.fetched
+		is.jwksURL, is.iss, is.aud = oldURL, oldIss, oldAud
+		is.keys, is.fetched = oldKeys, oldFetched
 	})
 }
 

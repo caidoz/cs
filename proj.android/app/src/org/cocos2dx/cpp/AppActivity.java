@@ -29,11 +29,47 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 import android.os.Build;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.DisplayCutout;
+import android.view.View;
+import android.view.WindowInsets;
 
 public class AppActivity extends Cocos2dxActivity {
+	private static AppActivity instance;
+	private static int safeInsetTopPx;
+	private static int safeInsetBottomPx;
+
+	private void updateSafeInsets(WindowInsets insets) {
+		if (insets == null)
+			return;
+
+		int top = insets.getSystemWindowInsetTop();
+		int bottom = Math.max(insets.getSystemWindowInsetBottom(), insets.getStableInsetBottom());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			DisplayCutout cutout = insets.getDisplayCutout();
+			if (cutout != null) {
+				top = Math.max(top, cutout.getSafeInsetTop());
+				bottom = Math.max(bottom, cutout.getSafeInsetBottom());
+			}
+		}
+		safeInsetTopPx = Math.max(0, top);
+		safeInsetBottomPx = Math.max(0, bottom);
+	}
+
+	public static int getSafeInsetTopPx() {
+		if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			instance.updateSafeInsets(instance.getWindow().getDecorView().getRootWindowInsets());
+		return safeInsetTopPx;
+	}
+
+	public static int getSafeInsetBottomPx() {
+		if (instance != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			instance.updateSafeInsets(instance.getWindow().getDecorView().getRootWindowInsets());
+		return safeInsetBottomPx;
+	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		instance = this;
         super.setEnableVirtualButton(false);
         super.onCreate(savedInstanceState);
         // Workaround in https://stackoverflow.com/questions/16283079/re-launch-of-activity-on-home-button-but-only-the-first-time/16447508
@@ -52,7 +88,25 @@ public class AppActivity extends Cocos2dxActivity {
             getWindow().setAttributes(lp);
         }
         // DO OTHER INITIALIZATION BELOW
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			getWindow().getDecorView().setOnApplyWindowInsetsListener(
+				new View.OnApplyWindowInsetsListener() {
+					@Override
+					public WindowInsets onApplyWindowInsets(View view, WindowInsets insets) {
+						updateSafeInsets(insets);
+						return insets;
+					}
+				});
+			getWindow().getDecorView().requestApplyInsets();
+		}
         
     }
+
+	@Override
+	protected void onDestroy() {
+		if (instance == this)
+			instance = null;
+		super.onDestroy();
+	}
 
 }

@@ -420,6 +420,12 @@ typedef enum _gameDef {
 
 	TOTALBUFF,
 
+	// 버프 지속 방식. 현재 밸런스는 전부 TURN이며, 추후 버프별로
+	// USE_COUNT를 선택하면 실제 발동 횟수로 소모시킬 수 있다.
+	BUFF_DURATION_FRAME = 0,
+	BUFF_DURATION_TURN,
+	BUFF_DURATION_USE_COUNT,
+
 	//히트마크
 	HITMARK_SMALL = 0,
 	HITMARK_MEDIUM,

@@ -9,12 +9,16 @@ void GetMarkHeadPosAt(int footX, int footY, float zoom, int* outX, int* outY);
 void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy);
 void MoveControlMarkToObj(int ownerObj, int skillIdx, int destObj);
 void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY);
+int GetPersistentBuffBySkill(int skillIdx);
+void MoveControlMarkToBuffStack(int ownerObj, int skillIdx);
+void UpdatePersistentBuffControlMarkStack(void);
 void UpdateHeroSkillControlMarkStack(void);
 int GetUnitScore(OBJECT* pObj);
 void DecideRouletteResult();
 void InitRouletteJump(void);
 void RouletteAttackStart(void);
 int GetSameRouletteCnt(int objIdx);
+int GetRouletteResultSkillForObj(int obj);
 int UpgradeSkillIdx(int reelIdx, int count);
 //------------------------------------------------------------
 // 룰렛 미리보기(애니메이션 없음)
