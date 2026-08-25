@@ -20,6 +20,11 @@
 #include "Config/NetConfig.h"
 #endif
 
+#ifndef _CONFIG_CONTENT_H_
+//약관을 CDN 에서 받는다. 왜 게임 서버가 아닌지는 HttpBegin() 주석 참고.
+#include "Config/ContentConfig.h"
+#endif
+
 #include "network/HttpClient.h"
 
 #include <map>
@@ -1574,6 +1579,24 @@ static std::string sToken;
 //토큰이 거절당했다. 다음 요청 전에 다시 로그인해야 한다.
 static bool sNeedRelogin = false;
 
+//---- 약관 ----
+//
+// 동의를 이 파일에 남긴다. 서버에 남기는 것은 로그인 뒤라야 하는데
+// (남길 자리 user_id 가 그때 생긴다), 동의 자체는 그보다 먼저 받는다.
+// 그 사이를 이 파일이 잇는다. 앱이 죽어도 다시 안 묻는다.
+//
+// 담기는 꼴은 서버에 보낼 몸통과 같다. 형식을 하나 더 만들지 않으려는 것이고,
+// 덕분에 보낼 때 그대로 실어 보낸다.
+#define NET_TERMSFILE "terms.txt"
+
+static long long sTermsNow = 0;			//CDN 이 알려준 지금 판
+static long long sTermsAgreed = 0;		//이 기기가 동의한 판
+static std::string sTermsBody;			//서버로 보낼 동의 내용
+static std::string sTermsService;		//이용약관 전문 주소
+static std::string sTermsPrivacy;		//개인정보 처리방침 주소
+static bool sTermsSent = false;			//서버에 증빙을 남겼는가
+static bool sTermsWaiting = false;		//사람의 동의를 기다리는 중인가
+
 //RFC 4122 v4. 난수 128비트에서 버전과 변형 비트만 정해준다.
 static std::string NetMakeUuid(void)
 {
@@ -1686,6 +1709,22 @@ static void HttpBegin(int reqType, const std::string& body)
 		req->setRequestType(network::HttpRequest::Type::GET);
 		break;
 
+	case NETREQ_TERMS:
+		//약관만은 게임 서버가 아니라 CDN 에서 받는다.
+		//
+		//계정을 만들기 전에 봐야 하는 것이라 자격증명이 없고, 부팅마다
+		//보는 것이라 사람이 늘면 그 횟수가 그대로 는다. 엣지에서 끝나는
+		//편이 맞다.
+		url = std::string(CONTENT_CDN_URL) + "terms.tsv";
+		req->setRequestType(network::HttpRequest::Type::GET);
+		break;
+
+	case NETREQ_CONSENT:
+		url += "/v1/consent";
+		req->setRequestType(network::HttpRequest::Type::POST);
+		req->setRequestData(sTermsBody.c_str(), sTermsBody.size());
+		break;
+
 	default:
 		url += "/v1/save";
 		req->setRequestType(network::HttpRequest::Type::POST);
@@ -1780,6 +1819,44 @@ static long long NetPeekMeta(const std::string& text, const char* key)
 	return atoll(text.substr(at, end - at).c_str());
 }
 
+//---- 약관 ----
+
+//이 기기가 남겨둔 동의를 읽는다.
+static void NetLoadTerms(void)
+{
+	std::string text;
+	long long v;
+
+	sTermsAgreed = 0;
+	sTermsBody.clear();
+
+	if (!ServerReadFile(NET_TERMSFILE, text))
+		return;
+
+	v = NetPeekMeta(text, "#terms");
+
+	if (v <= 0)
+		return;
+
+	sTermsAgreed = v;
+	sTermsBody = text;
+}
+
+bool NetTermsPending(void)
+{
+	return sTermsWaiting;
+}
+
+long long NetTermsVersion(void)
+{
+	return sTermsNow;
+}
+
+const char* NetTermsUrl(bool privacy)
+{
+	return privacy ? sTermsPrivacy.c_str() : sTermsService.c_str();
+}
+
 //답 하나를 해석한다. 상태 코드와 NETRESULT_* 의 대응은 계획서의 표 그대로다.
 static int NetTakeResponse(int reqType)
 {
@@ -1828,6 +1905,24 @@ static int NetTakeResponse(int reqType)
 	}
 
 	switch (reqType) {
+	case NETREQ_TERMS:
+		//CDN 이 준 것이라 덤프가 아니다. 판번호와 전문 주소만 들어 있다.
+		sTermsNow = NetPeekMeta(sHttpBody, "#terms");
+		sTermsService = NetPeekMetaStr(sHttpBody, "url_service");
+		sTermsPrivacy = NetPeekMetaStr(sHttpBody, "url_privacy");
+
+		if (sTermsNow <= 0) {
+			CCLOG("Net: 약관 판번호가 없다");
+			return NETRESULT_ERR_FORMAT;
+		}
+
+		return NETRESULT_OK;
+
+	case NETREQ_CONSENT:
+		//남겼다. 다시 보낼 이유가 없다.
+		sTermsSent = true;
+		return NETRESULT_OK;
+
 	case NETREQ_LOGIN:
 		//메타행만 온다. 표는 없다.
 		gNetUserId = NetPeekMeta(sHttpBody, "#user");
@@ -1931,6 +2026,7 @@ static int sLastResult = NETRESULT_NONE;
 //그 두 걸음을 여기서 센다.
 enum {
 	NETBOOT_NONE = 0,
+	NETBOOT_TERMS,	//약관 판을 받아오고, 필요하면 사람의 동의를 기다린다
 	NETBOOT_LOGIN,
 	NETBOOT_LOAD,
 	NETBOOT_DONE,
@@ -2028,6 +2124,11 @@ void NetInit(void)
 	//토큰은 켤 때마다 로그인해서 새로 받는다. 남겨둘 이유가 없다.
 	sToken.clear();
 	sNeedRelogin = false;
+
+	//약관은 파일에 남아 있으므로 여기서는 이번 판의 상태만 비운다.
+	sTermsNow = 0;
+	sTermsWaiting = false;
+	sTermsSent = false;
 
 	//도는 요청이 있으면 그 답을 버린다. 번호가 바뀌면 콜백이 스스로 물러난다.
 	sHttpGen++;
@@ -2234,7 +2335,36 @@ void NetUpdate(void)
 		}
 
 		//---- 부팅 한 걸음 ----
-		//로그인이 끝났으면 이어서 로드를 띄운다. 둘 다 끝나야 게임이 뜬다.
+		//약관 -> 로그인 -> 로드. 셋이 다 끝나야 게임이 뜬다.
+		if (sBootStep == NETBOOT_TERMS && sLastReq == NETREQ_TERMS) {
+			if (sLastResult == NETRESULT_OK && sTermsAgreed < sTermsNow) {
+				//새 약관이다. 사람이 동의할 때까지 여기서 멈춘다.
+				//NetAgreeTerms() 가 불리면 이어진다.
+				CCLOG("NetUpdate: 약관 %lld 판 동의가 필요하다 (가진 것 %lld)",
+					sTermsNow, sTermsAgreed);
+
+				sTermsWaiting = true;
+				return;
+			}
+
+			//못 받았거나, 이미 동의한 판이다.
+			//
+			//못 받았는데 예전 동의가 있으면 그냥 간다. 지하철에서 신호가
+			//끊겼다고 게임을 못 하게 할 이유가 없다. 그런데 동의가 아예
+			//없으면 계정을 만들 수 없으므로 여기서 멈춘다.
+			if (sLastResult != NETRESULT_OK && sTermsAgreed <= 0) {
+				CCLOG("NetUpdate: 약관을 못 받았고 동의한 적도 없다. 계정을 못 만든다");
+
+				sBootResult = sLastResult;
+				sBootStep = NETBOOT_DONE;
+				return;
+			}
+
+			sBootStep = NETBOOT_LOGIN;
+			NetRequest(NETREQ_LOGIN);
+			return;
+		}
+
 		if (sBootStep == NETBOOT_LOGIN && sLastReq == NETREQ_LOGIN) {
 			if (sLastResult == NETRESULT_OK) {
 				sBootStep = NETBOOT_LOAD;
@@ -2251,6 +2381,16 @@ void NetUpdate(void)
 			sBootStep = NETBOOT_DONE;
 		}
 
+		return;
+	}
+
+	//---- 받아둔 동의를 아직 안 남겼다 ----
+	//
+	//부팅이 끝나고 한가할 때 보낸다. 게임 시작을 여기서 늦출 이유가 없다.
+	//토큰이 있어야 보낼 수 있으므로 로그인 뒤다.
+	if (!sTermsSent && !sTermsBody.empty() && !sToken.empty() &&
+		sBootStep == NETBOOT_DONE) {
+		NetRequest(NETREQ_CONSENT);
 		return;
 	}
 
@@ -2326,10 +2466,43 @@ void NetBootstrapBegin(void)
 		return;
 	}
 
-	sBootStep = NETBOOT_LOGIN;
 	sBootResult = NETRESULT_NONE;
 
-	NetRequest(NETREQ_LOGIN);
+	//약관부터다. 계정을 만들기 전에 동의를 받아야 한다 — 게스트 계정도
+	//기기가 만든 UUID 를 서버에 남기는 것이라 개인정보 처리에 해당한다.
+	NetLoadTerms();
+
+	sBootStep = NETBOOT_TERMS;
+	NetRequest(NETREQ_TERMS);
+}
+
+//동의를 받았다. 남기고 부팅을 잇는다.
+void NetAgreeTerms(bool ageOk, bool marketing, bool marketingNight)
+{
+	char buf[128];
+
+	if (sTermsNow <= 0)
+		return;
+
+	sprintf(buf, "#terms\t%lld\n#age_ok\t%d\n#marketing\t%d\n#marketing_night\t%d\n",
+		sTermsNow, ageOk ? 1 : 0, marketing ? 1 : 0, marketingNight ? 1 : 0);
+
+	sTermsBody = buf;
+	sTermsAgreed = sTermsNow;
+	sTermsSent = false;
+
+	//파일에 먼저 남긴다. 여기서 앱이 죽어도 다시 묻지 않기 위해서다.
+	//서버에 남기는 것은 로그인 뒤라야 하므로(user_id 가 그때 생긴다)
+	//그때까지 이 파일이 유일한 기록이다.
+	if (!ServerWriteFile(NET_TERMSFILE, sTermsBody))
+		CCLOG("NetAgreeTerms: 동의를 못 남겼다. 다음에 다시 묻게 된다");
+
+	sTermsWaiting = false;
+
+	if (sBootStep == NETBOOT_TERMS) {
+		sBootStep = NETBOOT_LOGIN;
+		NetRequest(NETREQ_LOGIN);
+	}
 }
 
 //부팅이 끝났으면 결과를, 아직이면 NETRESULT_NONE 을 준다.

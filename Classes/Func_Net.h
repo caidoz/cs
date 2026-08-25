@@ -31,6 +31,8 @@ typedef enum _netReq {
 	NETREQ_LOGIN,	//게스트 로그인. user_id를 받는다. 없으면 서버가 만든다.
 	NETREQ_LOAD,	//세이브 내려받기
 	NETREQ_SAVE,	//세이브 올리기
+	NETREQ_TERMS,	//지금 약관이 몇 판인지 CDN 에 묻는다. 계정이 필요 없다.
+	NETREQ_CONSENT,	//받아둔 동의를 서버에 남긴다. 로그인 뒤에 한다.
 	TOTALNETREQ,
 } NETREQDEF;
 
@@ -106,6 +108,41 @@ void NetFlush(void);
 // 없다는 뜻이므로 새 게임을 시작하면 된다.
 void NetBootstrapBegin(void);
 int NetBootstrapPoll(void);
+
+//---- 약관 ----
+//
+// 동의는 계정을 만들기 전에 받아야 한다. 게스트 계정도 기기가 만든 UUID 를
+// 서버에 남기는 것이라 개인정보 처리에 해당한다. 그래서 부팅이 로그인 앞에서
+// 한 번 멈춘다.
+//
+// 화면 쪽은 이렇게 쓴다.
+//
+//     if (NetTermsPending()) {
+//         //약관 화면을 띄운다. 전문 주소는 NetTermsUrl() 로 얻는다.
+//         //사용자가 동의하면
+//         NetAgreeTerms(ageOk, marketing, marketingNight);
+//     }
+//
+// 동의하면 부팅이 알아서 이어진다. 받아둔 동의는 로그인 뒤에 서버로 보내
+// 증빙으로 남는다. 그것까지 이 계층이 한다.
+//
+// 서버를 안 쓰는 빌드(NET_SERVER_URL 이 빈 줄)에서는 멈추지 않는다.
+// 밖으로 나가는 것이 없으므로 받을 것도 없다.
+
+//약관 동의를 기다리며 멈춰 있는가.
+bool NetTermsPending(void);
+
+//지금 약관 판. 화면에 "제1판" 같은 것을 띄울 때 쓴다.
+long long NetTermsVersion(void);
+
+//약관 전문 주소. privacy 가 true 면 개인정보 처리방침.
+const char* NetTermsUrl(bool privacy);
+
+//동의를 받았다. 부팅이 이어진다.
+//
+//ageOk 는 만 14세 이상 확인이다. 이것이 false 면 서버가 거절한다 —
+//미만은 법정대리인 동의가 따로 필요한데 그 흐름이 아직 없다.
+void NetAgreeTerms(bool ageOk, bool marketing, bool marketingNight);
 
 //---- 충돌 ----
 //
