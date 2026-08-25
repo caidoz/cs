@@ -67,7 +67,7 @@ def read_env(path):
 
 
 def read_manifest():
-    """올릴 목록. (버킷에 놓을 이름, 로컬 경로) 를 준다."""
+    """올릴 목록. (버킷에 놓을 이름, 로컬 경로, 지문) 을 준다."""
     path = os.path.join(RES, MANIFEST)
 
     with open(path, encoding='utf-8') as fp:
@@ -91,7 +91,7 @@ def read_manifest():
         if len(f) < 3:
             continue
 
-        items.append((f[0], os.path.join(RES, f[0].replace('/', os.sep))))
+        items.append((f[0], os.path.join(RES, f[0].replace('/', os.sep)), f[2]))
 
     if not ver:
         sys.exit('매니페스트에 판번호가 없다')
@@ -125,7 +125,7 @@ def main():
     total = 0
     missing = []
 
-    for key, local in items:
+    for key, local, _d in items:
         if os.path.isfile(local):
             total += os.path.getsize(local)
         else:
@@ -176,15 +176,38 @@ def main():
 
     print('버킷에 이미 %d개 있다' % len(have))
 
+    #무엇을 다시 안 올려도 되는가.
+    #
+    #크기로 거르면 안 된다. 팩은 값을 고쳐도 크기가 그대로인 일이 흔하다
+    #(칸 수가 안 변하니까). 그러면 매니페스트는 새 지문을 적어 내보내는데
+    #CDN 은 옛 파일을 들고 있게 되고, 받는 쪽은 지문이 안 맞는 파일을
+    #영영 다시 받는다.
+    #
+    #그래서 버킷에 놓인 매니페스트를 한 번 받아, 지문이 같은 것만 건너뛴다.
+    #왕복 한 번이면 902개를 정확히 가릴 수 있다.
+    remote = {}
+
+    try:
+        got = s3.get_object(Bucket=bucket, Key=MANIFEST)['Body'].read()
+
+        for line in got.decode('utf-8').split('\n'):
+            f = line.strip().split('\t')
+
+            if len(f) >= 3 and f[0] != 'version':
+                remote[f[0]] = f[2]
+
+        print('버킷의 매니페스트에 %d개 적혀 있다' % len(remote))
+    except Exception:
+        #매니페스트가 없으면 빈 버킷으로 본다. 다 올린다.
+        print('버킷에 매니페스트가 없다. 전부 올린다')
+
     lock = threading.Lock()
     done = [0]
     skipped = [0]
     failed = []
 
-    def put(key, local):
-        size = os.path.getsize(local)
-
-        if have.get(key) == size:
+    def put(key, local, digest):
+        if key in have and remote.get(key) == digest:
             with lock:
                 skipped[0] += 1
             return
@@ -206,14 +229,14 @@ def main():
                 print('  %d개 올림' % done[0])
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        list(ex.map(lambda t: put(t[0], t[1]), items))
+        list(ex.map(lambda t: put(t[0], t[1], t[2]), items))
 
     #매니페스트에 없는 것을 치운다.
     #
     #안 지우면 지난 판의 파일이 버킷에 영영 쌓인다. 주소에 지문이 붙어 있어서
     #누가 그것을 다시 받을 일은 없지만, 저장료를 계속 문다.
     if args.prune:
-        keep = set(k for k, _l in items)
+        keep = set(k for k, _l, _d in items)
         keep.add(MANIFEST)
         keep.add(VERSIONFILE)
 
@@ -247,11 +270,14 @@ def main():
 
         print('약관도 올렸다')
 
-    #약관 전문. 게임 안 설정 메뉴에서 웹뷰로 연다.
+    #약관 전문과 확률 정보. 게임 안 설정 메뉴에서 웹뷰로 연다.
+    #
+    #확률 정보는 게임 밖에서도 볼 수 있어야 한다(게임산업법 시행령). 그래서
+    #스토어 소개와 홈페이지가 가리킬 주소가 필요하고, 그 주소가 여기다.
     #
     #짧게 캐시한다. 약관은 고치는 일이 드물지만, 고쳤는데 엣지가 옛것을
     #들고 있으면 동의를 받아놓고 다른 글을 보여주는 꼴이 된다.
-    for name in ('terms.html', 'privacy.html'):
+    for name in ('terms.html', 'privacy.html', 'rates.html'):
         path = os.path.join(ROOT, 'server', 'web', name)
 
         if not os.path.isfile(path):

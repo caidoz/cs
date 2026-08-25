@@ -1035,6 +1035,10 @@ void PlayKey(int obj)
 			NetOpenTerms(true);
 			PlayMusic(M_SELECT);
 			break;
+		case AVK_OPTION_RATES:
+			NetOpenRates();
+			PlayMusic(M_SELECT);
+			break;
 		case AVK_CLR:
 			switch (drawHandle) {
 			case MD_PLAY:
@@ -2801,6 +2805,9 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_OPTION_PRIVACY:
 			systemKey = AVK_OPTION_PRIVACY;
+			break;
+		case TOUCH_FUNC_OPTION_RATES:
+			systemKey = AVK_OPTION_RATES;
 			break;
 		case TOUCH_FUNC_OPTION_COMMUNITY:
 			systemKey = AVK_OPTION_COMMNUNITY;

@@ -141,6 +141,14 @@ const char* NetTermsUrl(bool privacy);
 //약관을 바깥 브라우저로 연다. 설정 메뉴의 버튼이 부른다.
 void NetOpenTerms(bool privacy);
 
+//확률 정보 주소와, 그것을 바깥 브라우저로 여는 것.
+//
+//게임산업법이 확률형 아이템의 확률을 게임 안과 밖 양쪽에 알리라고 한다.
+//표는 tools/content/gacha_rates.py 가 확률 데이터에서 직접 뽑아 만들고
+//CDN 에 올린다 — 사람이 옮겨 적으면 밸런스를 고칠 때 반드시 어긋난다.
+const char* NetRatesUrl(void);
+void NetOpenRates(void);
+
 //동의를 받았다. 부팅이 이어진다.
 //
 //ageOk 는 만 14세 이상 확인이다. 이것이 false 면 서버가 거절한다 —

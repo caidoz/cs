@@ -65,6 +65,10 @@
 #define NET_TERMS_URL	"https://cdn.bigpixel.kr/terms.html"
 #define NET_PRIVACY_URL	"https://cdn.bigpixel.kr/privacy.html"
 
+//확률 정보. 게임산업법이 게임 안과 밖 양쪽에 알리라고 한다.
+//표는 tools/content/gacha_rates.py 가 확률 데이터에서 직접 뽑아 만든다.
+#define NET_RATES_URL	"https://cdn.bigpixel.kr/rates.html"
+
 //---- 기다리는 시간 ----
 //
 // 부팅은 길게 준다. 여기서 실패하면 오프라인 캐시로 시작해야 하는데,

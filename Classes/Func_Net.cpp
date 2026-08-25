@@ -1595,6 +1595,7 @@ static long long sTermsAgreed = 0;		//이 기기가 동의한 판
 static std::string sTermsBody;			//서버로 보낼 동의 내용
 static std::string sTermsService;		//이용약관 전문 주소
 static std::string sTermsPrivacy;		//개인정보 처리방침 주소
+static std::string sTermsRates;			//확률 정보 주소
 static bool sTermsSent = false;			//서버에 증빙을 남겼는가
 static bool sTermsWaiting = false;		//사람의 동의를 기다리는 중인가
 
@@ -1866,6 +1867,29 @@ const char* NetTermsUrl(bool privacy)
 	return privacy ? NET_PRIVACY_URL : NET_TERMS_URL;
 }
 
+//확률 정보 주소. 약관과 같은 자리(CDN 의 terms.tsv)에서 덮인다.
+//
+//확률은 밸런스를 고칠 때마다 바뀌는데, 그때마다 클라이언트를 다시 내보낼
+//수는 없다. 표는 CDN 에 올리고 주소만 들고 있는다.
+const char* NetRatesUrl(void)
+{
+	if (!sTermsRates.empty())
+		return sTermsRates.c_str();
+
+	return NET_RATES_URL;
+}
+
+//확률 정보를 바깥 브라우저로 연다.
+void NetOpenRates(void)
+{
+	const char* url = NetRatesUrl();
+
+	if (url == NULL || url[0] == 0)
+		return;
+
+	Application::getInstance()->openURL(url);
+}
+
 //약관을 바깥 브라우저로 연다. 설정 메뉴가 부른다.
 void NetOpenTerms(bool privacy)
 {
@@ -1930,6 +1954,7 @@ static int NetTakeResponse(int reqType)
 		sTermsNow = NetPeekMeta(sHttpBody, "#terms");
 		sTermsService = NetPeekMetaStr(sHttpBody, "url_service");
 		sTermsPrivacy = NetPeekMetaStr(sHttpBody, "url_privacy");
+		sTermsRates = NetPeekMetaStr(sHttpBody, "url_rates");
 
 		if (sTermsNow <= 0) {
 			CCLOG("Net: 약관 판번호가 없다");

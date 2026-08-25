@@ -3144,19 +3144,21 @@ void OptionDraw(int x, int y, float zoom)
 	SetFontColor(COLOR_WHITE);
 	DrawTextStrSystem("Ver 1.0.0", rowRight, cy - ROWH / 2 + (float)FONT_HEIGHT * OPTIONROWTEXTZOOM / 2, OPTIONROWTEXTZOOM, RIGHT, true);
 
-	//----- 하단 띠 + 버튼 3개 -----
+	//----- 하단 띠 + 버튼 4개 -----
 	DrawOptionPart9(OPT_FOOT_X, OPT_FOOT_Y, OPT_FOOT_W, OPT_FOOT_H, OPT_FOOT_EDGE, x + 12.0f * s, footY, w - 24.0f * s, footH, s);
 
 	{
-		const char* footText[3] = { "고객센터", "이용약관", "개인정보처리방침" };
-		const int footTouch[3] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY };
+		//확률 정보는 게임 안에서도 닿아야 한다. 게임산업법이 게임 밖(홈페이지,
+		//스토어 소개)과 게임 안 양쪽에 알리라고 하기 때문이다.
+		const char* footText[4] = { "고객센터", "이용약관", "개인정보처리방침", "확률정보" };
+		const int footTouch[4] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY, TOUCH_FUNC_OPTION_RATES };
 		float gap = 8.0f * zoom;
 		float bh2 = footH * 0.68f;
 		float by2 = footY - (footH - bh2) / 2;
 
-		bw = (innerW - gap * 2) / 3;
+		bw = (innerW - gap * 3) / 4;
 
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 4; i++) {
 			//글자는 섹션 제목 크기까지 키우되, 버튼을 넘칠 때만 그만큼 줄인다.
 			float tz = OPTIONTEXTZOOM;
 			float maxW = bw - 14.0f * zoom;
