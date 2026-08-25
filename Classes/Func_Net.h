@@ -42,6 +42,10 @@ typedef enum _netResult {
 	NETRESULT_ERR_NOTFOUND,	//서버에 데이터가 없다(첫 실행)
 	NETRESULT_ERR_CONFLICT,	//다른 기기가 먼저 저장했다. 이번 저장은 버려진다.
 	NETRESULT_ERR_FORMAT,	//받은 것이 규격에 안 맞는다
+	//토큰이 만료됐거나 거절당했다. 다시 로그인하면 이어진다.
+	//"못 붙었다"와 갈라 두는 이유는, 이쪽은 기다린다고 나아지지 않고
+	//로그인부터 다시 해야 풀리기 때문이다.
+	NETRESULT_ERR_AUTH,
 	TOTALNETRESULT,
 } NETRESULTDEF;
 

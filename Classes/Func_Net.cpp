@@ -1563,6 +1563,17 @@ static bool UsingServer(void)
 
 static std::string sGuestKey;
 
+//---- 세션 토큰 ----
+//
+// 로그인 답에 실려 온다. 기한이 있고, 그동안은 이것만 보낸다.
+//
+// 파일에 안 남긴다. 어차피 켤 때마다 로그인부터 하므로 남길 이유가 없고,
+// 남기면 열쇠를 하나 더 흘리는 셈이다.
+static std::string sToken;
+
+//토큰이 거절당했다. 다음 요청 전에 다시 로그인해야 한다.
+static bool sNeedRelogin = false;
+
 //RFC 4122 v4. 난수 128비트에서 버전과 변형 비트만 정해준다.
 static std::string NetMakeUuid(void)
 {
@@ -1686,11 +1697,18 @@ static void HttpBegin(int reqType, const std::string& body)
 
 	//---- 자격증명 ----
 	//
-	// 1단계는 게스트 열쇠를 그대로 보낸다. 3단계에서 세션 토큰으로 바뀌는데,
-	// 그때 고칠 곳은 아래 한 줄이다. 구글·애플 연동이 붙어도 이 구역의
-	// 나머지는 그대로 간다.
+	// 로그인은 게스트 열쇠로 한다. 그 답에 세션 토큰이 실려 오고, 그 뒤로는
+	// 토큰만 보낸다.
+	//
+	// 열쇠를 매 요청에 실어 보내지 않는 것이 요점이다. 그 열쇠는 계정 자체라
+	// 한 번 새면 계정을 통째로 잃는다. 토큰은 기한이 있어서 새도 그때뿐이다.
 	headers.push_back("Content-Type: text/plain; charset=utf-8");
-	headers.push_back(std::string("X-Guest-Key: ") + NetGuestKey());
+
+	if (!sToken.empty())
+		headers.push_back(std::string("Authorization: Bearer ") + sToken);
+	else
+		headers.push_back(std::string("X-Guest-Key: ") + NetGuestKey());
+
 	req->setHeaders(headers);
 
 	req->setResponseCallback([gen](network::HttpClient* /*c*/,
@@ -1721,6 +1739,28 @@ static void HttpBegin(int reqType, const std::string& body)
 }
 
 //메타행 하나를 꺼낸다. 없으면 0.
+//메타행 하나를 글자 그대로 꺼낸다. 없으면 빈 문자열.
+static std::string NetPeekMetaStr(const std::string& text, const char* key)
+{
+	std::string tag = std::string(key) + "	";
+	size_t at = text.find(tag);
+	size_t end;
+
+	if (at == std::string::npos)
+		return std::string();
+
+	if (at != 0 && text[at - 1] != '\n')
+		return std::string();
+
+	at += tag.size();
+	end = text.find('\n', at);
+
+	if (end == std::string::npos)
+		end = text.size();
+
+	return text.substr(at, end - at);
+}
+
 static long long NetPeekMeta(const std::string& text, const char* key)
 {
 	std::string tag = std::string(key) + "\t";
@@ -1777,10 +1817,10 @@ static int NetTakeResponse(int reqType)
 
 	case 401:
 	case 403:
-		//클라이언트에 인증 전용 결과값이 아직 없어서 "못 붙었다"로 뭉갠다.
-		//3단계에서 NETRESULT_ERR_AUTH 를 만들고 여기를 고친다.
+		//토큰이 만료됐거나 서버가 서명 열쇠를 바꿨다. 다시 로그인하면 된다.
+		//구역 6이 이 결과를 받아 로그인부터 다시 건다.
 		CCLOG("Net: 인증이 거절됐다 (HTTP %ld)", sHttpCode);
-		return NETRESULT_ERR_NETWORK;
+		return NETRESULT_ERR_AUTH;
 
 	default:
 		CCLOG("Net: HTTP %ld", sHttpCode);
@@ -1797,6 +1837,14 @@ static int NetTakeResponse(int reqType)
 			CCLOG("Net: 로그인 답에 #user 가 없다");
 			return NETRESULT_ERR_FORMAT;
 		}
+
+		//토큰이 실려 오면 그 뒤로는 이것만 보낸다. 없으면 예전처럼
+		//게스트 열쇠로 간다 — 서버가 옛 판일 수 있다.
+		sToken = NetPeekMetaStr(sHttpBody, "#token");
+		sNeedRelogin = false;
+
+		if (sToken.empty())
+			CCLOG("Net: 로그인 답에 토큰이 없다. 게스트 열쇠로 계속한다");
 
 		return NETRESULT_OK;
 
@@ -1977,6 +2025,10 @@ void NetInit(void)
 	sBootResult = NETRESULT_NONE;
 	sSaveWait = 0;
 
+	//토큰은 켤 때마다 로그인해서 새로 받는다. 남겨둘 이유가 없다.
+	sToken.clear();
+	sNeedRelogin = false;
+
 	//도는 요청이 있으면 그 답을 버린다. 번호가 바뀌면 콜백이 스스로 물러난다.
 	sHttpGen++;
 	sHttpState = NETHTTP_IDLE;
@@ -2108,6 +2160,22 @@ void NetUpdate(void)
 			sDirtyAge = 0;
 		}
 
+		//---- 토큰이 거절당했다 ----
+		//
+		//기다린다고 나아지지 않는다. 로그인부터 다시 해서 새 토큰을 받아야
+		//풀린다. 로그인 자체가 거절당한 것(차단된 계정 등)은 여기가 아니다.
+		if (sLastResult == NETRESULT_ERR_AUTH && sLastReq != NETREQ_LOGIN) {
+			CCLOG("NetUpdate: 토큰이 거절당했다. 다시 로그인한다");
+
+			sToken.clear();
+			sNeedRelogin = true;
+			sSaveWait = 0;
+		}
+
+		//다시 로그인이 됐다. 밀어둔 것을 곧바로 보낸다.
+		if (sLastReq == NETREQ_LOGIN && sLastResult == NETRESULT_OK)
+			sSaveWait = 0;
+
 		//---- 저장을 못 보냈다 ----
 		//
 		//충돌은 여기가 아니다. 그건 서버가 제대로 답한 것이고 위에서 다뤘다.
@@ -2183,6 +2251,22 @@ void NetUpdate(void)
 			sBootStep = NETBOOT_DONE;
 		}
 
+		return;
+	}
+
+	//---- 새 토큰을 받아야 한다 ----
+	//
+	//저장이든 재로드든, 자격증명이 없으면 어차피 거절당한다. 로그인이
+	//먼저다. 실패하면 잠시 쉬었다 또 해본다 — 서버가 죽어 있을 때
+	//매 프레임 두드리지 않으려는 것이다.
+	if (sNeedRelogin) {
+		if (sSaveWait > 0) {
+			sSaveWait--;
+			return;
+		}
+
+		sSaveWait = NETSAVE_RETRYWAIT;
+		NetRequest(NETREQ_LOGIN);
 		return;
 	}
 

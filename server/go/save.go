@@ -70,6 +70,10 @@ func (s *Store) SaveDump(ctx context.Context, userID int64, d *Dump) (int64, int
 
 	defer tx.Rollback()
 
+	// 지난 저장과 견줘 눈에 띄는 것을 남긴다. 막지는 않는다 — 왜 아직
+	// 안 막는지는 watch.go 머리주석에 적었다.
+	s.WatchSave(ctx, tx, userID, player)
+
 	// ---- 낙관적 잠금 ----
 	newRev, serverRev, err := s.bumpPlayer(ctx, tx, userID, d.Revision, player)
 

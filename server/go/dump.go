@@ -83,6 +83,10 @@ type Dump struct {
 	Written  int64
 	Now      int64 // 서버가 실어 보내는 지금 시각. 요청 덤프에는 없다.
 	Tables   []Table
+
+	// 로그인 답에만 실린다. 그 뒤로는 클라이언트가 이것을 보낸다.
+	Token    string
+	TokenExp int64
 }
 
 // DumpError 는 규격 위반이다. 이것이 나오면 400 으로 거절한다.
@@ -427,6 +431,14 @@ func (d *Dump) BuildMeta() string {
 // #now 는 응답하는 모든 길목에 실어야 한다. 하트 회복과 일일 초기화가 전부
 // 이 값 위에 서 있고, 클라이언트의 NetSetServerTime() 이 이것을 기다린다.
 func (d *Dump) metaLines() string {
-	return fmt.Sprintf("#insamdb\t%d\n#schema\t%d\n#user\t%d\n#revision\t%d\n#now\t%d\n",
+	out := fmt.Sprintf("#insamdb\t%d\n#schema\t%d\n#user\t%d\n#revision\t%d\n#now\t%d\n",
 		FormatVersion, d.Schema, d.User, d.Revision, d.Now)
+
+	// 토큰은 로그인 답에만 있다. 없으면 줄 자체를 안 쓴다 — 클라이언트는
+	// 모르는 메타행을 그냥 지나치므로 있고 없고가 문제되지 않는다.
+	if d.Token != "" {
+		out += fmt.Sprintf("#token\t%s\n#token_exp\t%d\n", d.Token, d.TokenExp)
+	}
+
+	return out
 }

@@ -51,6 +51,15 @@ func main() {
 
 	GameEpoch = *epoch
 
+	// 세션 토큰 서명에 쓰는 비밀. 바뀌면 돌아다니던 토큰이 전부 무효가 되고
+	// 클라이언트는 401 을 받아 다시 로그인한다. 죽지는 않지만 다들 한 번씩
+	// 다시 붙으므로, 한 번 넣고 안 바꾸는 것이 낫다.
+	tokenKey = []byte(os.Getenv("INSAM_TOKEN_KEY"))
+
+	if len(tokenKey) < 32 {
+		log.Fatal("INSAM_TOKEN_KEY 가 없거나 너무 짧다 (32글자 이상)")
+	}
+
 	if *dsn == "" {
 		log.Fatal("DSN 이 없다. -dsn 이나 INSAM_DSN 을 준다")
 	}
@@ -168,11 +177,15 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tok, exp := MakeToken(userID, time.Now())
+
 	d := &Dump{
 		Schema:   s.store.Schema().Version,
 		User:     userID,
 		Revision: revision,
 		Now:      gameNow(),
+		Token:    tok,
+		TokenExp: exp,
 	}
 
 	writeText(w, http.StatusOK, d.BuildMeta())
@@ -309,12 +322,29 @@ func (s *server) postSave(w http.ResponseWriter, r *http.Request) {
 // 클라이언트에 NETRESULT_ERR_AUTH 도 같이 생긴다. 지금은 401 이 클라이언트
 // 쪽에서 ERR_NETWORK 로 뭉개져 "못 붙었다" 로 보인다.
 func (s *server) auth(w http.ResponseWriter, r *http.Request) (int64, bool) {
+	// 토큰이 정식 길이다. 로그인 답에 실려 온 것을 그대로 보내면 된다.
+	if tok := bearer(r); tok != "" {
+		userID, _, err := ReadToken(tok, time.Now())
+
+		if err != nil {
+			writeText(w, http.StatusUnauthorized, "토큰이 만료됐거나 아니다\n")
+			return 0, false
+		}
+
+		return userID, true
+	}
+
+	// 게스트 열쇠도 아직 받는다. 옛 클라이언트가 남아 있을 수 있어서다.
+	// 다들 토큰으로 넘어가면 이 갈래를 없앤다 — 열쇠는 로그인 때만 쓰는
+	// 것이 맞고, 매 요청에 실어 보낼 물건이 아니다.
 	key := strings.TrimSpace(r.Header.Get("X-Guest-Key"))
 
 	if !guestKeyRe.MatchString(key) {
-		writeText(w, http.StatusUnauthorized, "guest_key 가 없다\n")
+		writeText(w, http.StatusUnauthorized, "자격증명이 없다\n")
 		return 0, false
 	}
+
+	log.Printf("auth: 아직 guest_key 로 온다 (%s)", r.URL.Path)
 
 	userID, _, err := s.store.Login(r.Context(), key)
 
@@ -335,6 +365,17 @@ func (s *server) auth(w http.ResponseWriter, r *http.Request) (int64, bool) {
 // -----------------------------------------------------------------------------
 // 거들이
 // -----------------------------------------------------------------------------
+
+// bearer 는 Authorization 헤더에서 토큰을 꺼낸다.
+func bearer(r *http.Request) string {
+	v := strings.TrimSpace(r.Header.Get("Authorization"))
+
+	if len(v) > 7 && strings.EqualFold(v[:7], "Bearer ") {
+		return strings.TrimSpace(v[7:])
+	}
+
+	return ""
+}
 
 // gameNow 는 게임 안 타임스탬프로 본 지금이다. 2000-01-01 부터의 초.
 func gameNow() int64 {
