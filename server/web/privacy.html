@@ -1,24 +1,24 @@
 <!--
-  코인소드 개인정보 처리방침.
+  인삼남 개인정보 처리방침.
 
   이 문서는 초안이다. 서비스를 열기 전에 법률 검토를 받아야 한다.
-  대괄호로 묶인 곳은 사실을 채워 넣어야 하는 자리다.
 
-  수집 항목과 보유 기간은 실제 구현에 맞춰 적었다. 코드가 바뀌면 여기도
-  같이 고쳐야 한다. 근거는 다음과 같다.
+  수집 항목과 보유 기간은 실제 구현에 맞춰 적었다. 여기 적힌 기간은
+  약속이므로, 아래 설정을 바꾸면 이 문서도 같이 고쳐야 한다.
 
-    server/schema.sql       account / account_link / account_consent / player
-    server/go/main.go       요청 기록에 남는 것
-    /opt/insam/backup.sh    백업 14벌
-    60-insam.cnf            binlog 7일
-    server/go/consent.go    탈퇴 예약 7일
+    server/schema.sql               무엇을 담는가
+    server/go/consent.go            탈퇴 예약 7일 (deleteGrace)
+    /opt/insam/backup.sh            백업 14벌 (KEEP)
+    /etc/mysql/.../60-insam.cnf     binlog 7일 (expire_logs_days)
+    /etc/logrotate.d/nginx          접속 기록 90일 (rotate)
+    /etc/systemd/journald.conf.d/   서버 기록 3개월 (MaxRetentionSec)
 -->
 <!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>코인소드 개인정보 처리방침</title>
+<title>인삼남 개인정보 처리방침</title>
 <style>
 :root {
   --bg: #ffffff;
@@ -117,15 +117,15 @@ footer {
 <body>
 <div class="wrap">
 
-<h1>코인소드 개인정보 처리방침</h1>
+<h1>인삼남 개인정보 처리방침</h1>
 <div class="meta">
   주식회사 빅픽셀<br>
-  시행일 <span class="fill">[출시일]</span>
+  시행일 2026년 10월 31일
 </div>
 
 <p>주식회사 빅픽셀(이하 &ldquo;회사&rdquo;)은 이용자의 개인정보를 소중히 여기며,
 「개인정보 보호법」 등 관련 법령을 준수합니다. 이 처리방침은 회사가 제공하는
-모바일 게임 &ldquo;코인소드&rdquo;(이하 &ldquo;서비스&rdquo;)에서 개인정보를 어떻게
+모바일 게임 &ldquo;인삼남: 인생이 삼일 남았다!&rdquo;(이하 &ldquo;서비스&rdquo;)에서 개인정보를 어떻게
 수집하고 이용하며 보관하는지를 설명합니다.</p>
 
 <h2>1. 수집하는 개인정보 항목</h2>
@@ -211,8 +211,8 @@ footer {
   </tr>
   <tr>
     <td>접속 기록</td>
-    <td><span class="fill">[보관 기간]</span></td>
-    <td>「통신비밀보호법」에 따른 보관</td>
+    <td>3개월</td>
+    <td>부정 이용 확인 및 장애 대응</td>
   </tr>
   <tr>
     <td>계약 또는 청약철회 등에 관한 기록</td>
@@ -306,9 +306,9 @@ IP 주소 등 접속 정보가 국외에서 처리될 수 있습니다.</p>
 <p>회사는 개인정보 처리에 관한 업무를 총괄하고 이용자의 불만을 처리하기 위하여
 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
 <ul>
-  <li>성명 <span class="fill">[성명]</span></li>
-  <li>직책 <span class="fill">[직책]</span></li>
-  <li>연락처 <span class="fill">[이메일]</span></li>
+  <li>성명 이규승</li>
+  <li>직책 팀장</li>
+  <li>연락처 polyphony.one@gmail.com</li>
 </ul>
 
 <p>개인정보 침해에 관한 상담이 필요한 경우 아래 기관에 문의할 수 있습니다.</p>
@@ -326,10 +326,10 @@ IP 주소 등 접속 정보가 국외에서 처리될 수 있습니다.</p>
 
 <footer>
   주식회사 빅픽셀<br>
-  대표자 <span class="fill">[대표자명]</span> ·
-  사업자등록번호 <span class="fill">[번호]</span><br>
-  주소 <span class="fill">[주소]</span><br>
-  문의 <span class="fill">[문의 이메일]</span>
+  대표자 이규승 ·
+  사업자등록번호 337-86-01263<br>
+  주소 경기도 성남시 분당구 판교로711번길 10, 402-제이4호(야탑동)<br>
+  문의 polyphony.one@gmail.com
 </footer>
 
 </div>
