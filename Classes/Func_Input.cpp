@@ -1026,9 +1026,13 @@ void PlayKey(int obj)
 			PlayMusic(M_BUTTON);
 			break;
 		case AVK_OPTION_POLICY:
-			menuDepth = 2;
-			menuCur = 2;
-
+			//바깥 브라우저로 연다. 게임 안에 웹뷰를 띄우면 그 화면의
+			//뒤로가기와 게임의 메뉴 흐름이 엉킨다.
+			NetOpenTerms(false);
+			PlayMusic(M_SELECT);
+			break;
+		case AVK_OPTION_PRIVACY:
+			NetOpenTerms(true);
 			PlayMusic(M_SELECT);
 			break;
 		case AVK_CLR:
@@ -2788,6 +2792,9 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_OPTION_POLICY:
 			systemKey = AVK_OPTION_POLICY;
+			break;
+		case TOUCH_FUNC_OPTION_PRIVACY:
+			systemKey = AVK_OPTION_PRIVACY;
 			break;
 		case TOUCH_FUNC_OPTION_COMMUNITY:
 			systemKey = AVK_OPTION_COMMNUNITY;

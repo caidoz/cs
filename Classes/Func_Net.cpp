@@ -1854,7 +1854,26 @@ long long NetTermsVersion(void)
 
 const char* NetTermsUrl(bool privacy)
 {
-	return privacy ? sTermsPrivacy.c_str() : sTermsService.c_str();
+	const std::string& got = privacy ? sTermsPrivacy : sTermsService;
+
+	//CDN 에서 받은 것이 있으면 그것을 쓴다. 못 받았으면 박아둔 주소로 간다 —
+	//설정의 약관 버튼은 오프라인에서도 눌리고, 그때 아무 일도 안 일어나면
+	//고장으로 보인다.
+	if (!got.empty())
+		return got.c_str();
+
+	return privacy ? NET_PRIVACY_URL : NET_TERMS_URL;
+}
+
+//약관을 바깥 브라우저로 연다. 설정 메뉴가 부른다.
+void NetOpenTerms(bool privacy)
+{
+	const char* url = NetTermsUrl(privacy);
+
+	if (url == NULL || url[0] == 0)
+		return;
+
+	Application::getInstance()->openURL(url);
 }
 
 //답 하나를 해석한다. 상태 코드와 NETRESULT_* 의 대응은 계획서의 표 그대로다.

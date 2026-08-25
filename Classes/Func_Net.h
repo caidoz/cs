@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 
 #ifndef _FUNC_NET_H_
@@ -137,6 +137,9 @@ long long NetTermsVersion(void);
 
 //약관 전문 주소. privacy 가 true 면 개인정보 처리방침.
 const char* NetTermsUrl(bool privacy);
+
+//약관을 바깥 브라우저로 연다. 설정 메뉴의 버튼이 부른다.
+void NetOpenTerms(bool privacy);
 
 //동의를 받았다. 부팅이 이어진다.
 //

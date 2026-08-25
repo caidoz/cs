@@ -3149,7 +3149,7 @@ void OptionDraw(int x, int y, float zoom)
 
 	{
 		const char* footText[3] = { "고객센터", "이용약관", "개인정보처리방침" };
-		const int footTouch[3] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_POLICY };
+		const int footTouch[3] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY };
 		float gap = 8.0f * zoom;
 		float bh2 = footH * 0.68f;
 		float by2 = footY - (footH - bh2) / 2;

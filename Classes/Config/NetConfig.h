@@ -58,6 +58,13 @@
 //   동의 없이 하게 된다.
 #define NET_SKIP_TERMS 1
 
+//---- 약관 전문 주소 ----
+//
+// CDN 의 terms.tsv 가 이 값을 덮는다. 여기 적어두는 것은 못 읽었을 때를
+// 위해서다 — 설정 메뉴의 약관 버튼은 오프라인에서도 눌린다.
+#define NET_TERMS_URL	"https://cdn.bigpixel.kr/terms.html"
+#define NET_PRIVACY_URL	"https://cdn.bigpixel.kr/privacy.html"
+
 //---- 기다리는 시간 ----
 //
 // 부팅은 길게 준다. 여기서 실패하면 오프라인 캐시로 시작해야 하는데,

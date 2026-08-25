@@ -247,6 +247,23 @@ def main():
 
         print('약관도 올렸다')
 
+    #약관 전문. 게임 안 설정 메뉴에서 웹뷰로 연다.
+    #
+    #짧게 캐시한다. 약관은 고치는 일이 드물지만, 고쳤는데 엣지가 옛것을
+    #들고 있으면 동의를 받아놓고 다른 글을 보여주는 꼴이 된다.
+    for name in ('terms.html', 'privacy.html'):
+        path = os.path.join(ROOT, 'server', 'web', name)
+
+        if not os.path.isfile(path):
+            continue
+
+        with open(path, 'rb') as fp:
+            s3.put_object(Bucket=bucket, Key=name, Body=fp,
+                          ContentType='text/html; charset=utf-8',
+                          CacheControl=CACHE_SHORT)
+
+        print('%s 올렸다' % name)
+
     #판번호는 맨 마지막이다. 클라이언트는 이것부터 보므로, 이게 바뀌는 순간
     #모두가 새 판을 보러 온다. 나머지가 다 올라간 뒤여야 한다.
     s3.put_object(Bucket=bucket, Key=VERSIONFILE,
