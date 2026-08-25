@@ -87,6 +87,11 @@ type Dump struct {
 	// 로그인 답에만 실린다. 그 뒤로는 클라이언트가 이것을 보낸다.
 	Token    string
 	TokenExp int64
+
+	// 이 유저가 동의한 약관 판. 0 이면 아직 안 받았다.
+	TermsOK int64
+	// 탈퇴가 예약돼 있으면 그 시각(게임 타임스탬프). 0 이면 없다.
+	DeleteAt int64
 }
 
 // DumpError 는 규격 위반이다. 이것이 나오면 400 으로 거절한다.
@@ -438,6 +443,18 @@ func (d *Dump) metaLines() string {
 	// 모르는 메타행을 그냥 지나치므로 있고 없고가 문제되지 않는다.
 	if d.Token != "" {
 		out += fmt.Sprintf("#token\t%s\n#token_exp\t%d\n", d.Token, d.TokenExp)
+	}
+
+	// 이 유저가 동의한 약관 판. 클라이언트는 이것과 지금 판을 견줘서
+	// 낮으면 약관을 다시 띄운다.
+	if d.TermsOK > 0 {
+		out += fmt.Sprintf("#terms_ok\t%d\n", d.TermsOK)
+	}
+
+	// 탈퇴가 걸려 있으면 반드시 알려야 한다. 모르고 지나가면 그날 계정이
+	// 사라진다. 취소할 기회를 주는 것이 이 한 줄이다.
+	if d.DeleteAt > 0 {
+		out += fmt.Sprintf("#delete_at\t%d\n", d.DeleteAt)
 	}
 
 	return out

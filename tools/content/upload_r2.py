@@ -234,6 +234,19 @@ def main():
         s3.put_object(Bucket=bucket, Key=MANIFEST, Body=fp,
                       ContentType=TYPES['.tsv'], CacheControl=CACHE_FOREVER)
 
+    #약관. 콘텐츠가 아니라 서비스 쪽 파일이라 매니페스트에 안 들어간다.
+    #
+    #계정을 만들기 전에 봐야 하는 것이라 CDN 에 둔다. 서버에 물으면 로그인
+    #전에는 자격증명이 없고, 부팅마다 물으면 백만 명이 백만 번 묻는다.
+    terms = os.path.join(ROOT, 'server', 'terms.tsv')
+
+    if os.path.isfile(terms):
+        with open(terms, 'rb') as fp:
+            s3.put_object(Bucket=bucket, Key='terms.tsv', Body=fp,
+                          ContentType=TYPES['.tsv'], CacheControl=CACHE_SHORT)
+
+        print('약관도 올렸다')
+
     #판번호는 맨 마지막이다. 클라이언트는 이것부터 보므로, 이게 바뀌는 순간
     #모두가 새 판을 보러 온다. 나머지가 다 올라간 뒤여야 한다.
     s3.put_object(Bucket=bucket, Key=VERSIONFILE,

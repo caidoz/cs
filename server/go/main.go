@@ -45,6 +45,8 @@ func main() {
 	addr := flag.String("addr", "127.0.0.1:8080", "들을 주소")
 	dsn := flag.String("dsn", os.Getenv("INSAM_DSN"), "MariaDB DSN (또는 INSAM_DSN 환경변수)")
 	dbName := flag.String("db", "insam", "스키마를 읽을 DB 이름")
+	purge := flag.Bool("purge", false,
+		"때가 된 탈퇴 예약을 실제로 지우고 끝낸다. 타이머가 부른다")
 	epoch := flag.Int64("epoch", GameEpoch,
 		"게임 타임스탬프 기준점의 unix 초. 클라이언트와 같아야 한다 (dump.go 주석 참고)")
 	flag.Parse()
@@ -114,6 +116,21 @@ func main() {
 
 	log.Printf("스키마 %d, 표 %d개를 읽었다", st.Schema().Version, len(st.Schema().Tables))
 
+	// 탈퇴 예약을 치우는 일. 서버로 안 뜨고 한 번 돌고 끝난다.
+	//
+	// 같은 프로그램 안에 두는 이유는, 지우는 규칙이 SQL 한 줄이라도 그
+	// 규칙이 코드와 따로 떨어지면 어긋나기 때문이다.
+	if *purge {
+		n, err := st.PurgeDeleted(ctx)
+
+		if err != nil {
+			log.Fatalf("탈퇴 처리 실패: %v", err)
+		}
+
+		log.Printf("탈퇴 예약 %d개를 지웠다", n)
+		return
+	}
+
 	s := &server{store: st}
 	mux := http.NewServeMux()
 
@@ -121,6 +138,8 @@ func main() {
 	mux.HandleFunc("/v1/login", s.handleLogin)
 	mux.HandleFunc("/v1/save", s.handleSave)
 	mux.HandleFunc("/v1/link", s.handleLink)
+	mux.HandleFunc("/v1/consent", s.handleConsent)
+	mux.HandleFunc("/v1/account", s.handleAccount)
 
 	srv := &http.Server{
 		Addr:              *addr,
@@ -208,6 +227,16 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	writeText(w, http.StatusOK, s.loginMeta(r.Context(), userID, revision))
+}
+
+// loginMeta 는 로그인 답을 만든다.
+//
+// 토큰 말고도 클라이언트가 곧바로 알아야 하는 것이 둘 있다.
+//
+//	#terms_ok   이 유저가 동의한 약관 판. 지금 판보다 낮으면 다시 받아야 한다
+//	#delete_at  탈퇴 예약이 걸려 있으면 그 시각. 취소할 기회를 줘야 한다
+func (s *server) loginMeta(ctx context.Context, userID, revision int64) string {
 	tok, exp := MakeToken(userID, time.Now())
 
 	d := &Dump{
@@ -219,7 +248,131 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		TokenExp: exp,
 	}
 
+	if v, err := s.store.AgreedTerms(ctx, userID); err == nil {
+		d.TermsOK = v
+	}
+
+	if t, err := s.store.PendingDelete(ctx, userID); err == nil && !t.IsZero() {
+		d.DeleteAt = t.Unix() - GameEpoch
+	}
+
+	return d.BuildMeta()
+}
+
+// POST /v1/consent — 받은 동의를 남긴다.
+//
+// 동의 자체는 계정이 생기기 전에 받는다. 여기는 그것을 증빙으로 남기는
+// 자리라 로그인 뒤에 온다. 자세한 순서는 consent.go 머리주석에 있다.
+func (s *server) handleConsent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeText(w, http.StatusMethodNotAllowed, "POST 만 받는다\n")
+		return
+	}
+
+	userID, ok := s.auth(w, r)
+
+	if !ok {
+		return
+	}
+
+	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 4096))
+
+	if err != nil {
+		writeText(w, http.StatusBadRequest, "본문을 못 읽었다\n")
+		return
+	}
+
+	m := readMetaRows(string(body))
+	c := Consent{
+		Terms:          metaInt(m, "terms"),
+		AgeOK:          metaBool(m, "age_ok"),
+		Marketing:      metaBool(m, "marketing"),
+		MarketingNight: metaBool(m, "marketing_night"),
+	}
+
+	if c.Terms <= 0 {
+		writeText(w, http.StatusBadRequest, "#terms 가 없다\n")
+		return
+	}
+
+	// 만 14세 미만은 법정대리인 동의가 따로 필요하다. 그 흐름을 만들기
+	// 전까지는 받지 않는다. 조용히 통과시키면 나중에 되돌릴 수 없다.
+	if !c.AgeOK {
+		writeText(w, http.StatusForbidden, "만 14세 이상 확인이 필요하다\n")
+		return
+	}
+
+	if err := s.store.SaveConsent(r.Context(), userID, c); err != nil {
+		log.Printf("consent: user=%d %v", userID, err)
+		writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+		return
+	}
+
+	log.Printf("consent: user=%d 약관 %d 동의 (마케팅 %d/%d)",
+		userID, c.Terms, boolToInt(c.Marketing), boolToInt(c.MarketingNight))
+
+	d := &Dump{
+		Schema:  s.store.Schema().Version,
+		User:    userID,
+		Now:     gameNow(),
+		TermsOK: c.Terms,
+	}
+
 	writeText(w, http.StatusOK, d.BuildMeta())
+}
+
+// /v1/account — 탈퇴 예약과 취소.
+//
+//	DELETE  예약한다. 며칠 뒤에 실제로 지운다
+//	POST    예약을 무른다
+func (s *server) handleAccount(w http.ResponseWriter, r *http.Request) {
+	userID, ok := s.auth(w, r)
+
+	if !ok {
+		return
+	}
+
+	switch r.Method {
+	case http.MethodDelete:
+		when, err := s.store.RequestDelete(r.Context(), userID)
+
+		if err != nil {
+			log.Printf("account: user=%d %v", userID, err)
+			writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+			return
+		}
+
+		log.Printf("account: user=%d 탈퇴 예약 (%s)", userID, when.Format("2006-01-02 15:04"))
+
+		d := &Dump{
+			Schema:   s.store.Schema().Version,
+			User:     userID,
+			Now:      gameNow(),
+			DeleteAt: when.Unix() - GameEpoch,
+		}
+
+		writeText(w, http.StatusOK, d.BuildMeta())
+
+	case http.MethodPost:
+		if err := s.store.CancelDelete(r.Context(), userID); err != nil {
+			log.Printf("account: user=%d %v", userID, err)
+			writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+			return
+		}
+
+		log.Printf("account: user=%d 탈퇴 예약을 물렀다", userID)
+
+		d := &Dump{
+			Schema: s.store.Schema().Version,
+			User:   userID,
+			Now:    gameNow(),
+		}
+
+		writeText(w, http.StatusOK, d.BuildMeta())
+
+	default:
+		writeText(w, http.StatusMethodNotAllowed, "DELETE 나 POST 만 받는다\n")
+	}
 }
 
 // GET  /v1/save — 덤프 전문을 내려준다.
@@ -463,18 +616,7 @@ func (s *server) loginByProvider(w http.ResponseWriter, r *http.Request,
 	_ = s.store.db.QueryRowContext(r.Context(),
 		`SELECT revision FROM player WHERE user_id = ?`, userID).Scan(&revision)
 
-	tok, exp := MakeToken(userID, time.Now())
-
-	d := &Dump{
-		Schema:   s.store.Schema().Version,
-		User:     userID,
-		Revision: revision,
-		Now:      gameNow(),
-		Token:    tok,
-		TokenExp: exp,
-	}
-
-	writeText(w, http.StatusOK, d.BuildMeta())
+	writeText(w, http.StatusOK, s.loginMeta(r.Context(), userID, revision))
 }
 
 // POST /v1/link — 지금 로그인한 계정에 구글·애플을 붙인다.

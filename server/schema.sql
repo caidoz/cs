@@ -72,6 +72,13 @@ CREATE TABLE account (
     last_login_at DATETIME        NULL,
     -- NULL이면 정상. 값이 있으면 그 시각까지 접속 차단.
     banned_until  DATETIME        NULL,
+    -- 탈퇴 예약. NULL이면 정상이고, 값이 있으면 그 시각에 지운다.
+    --
+    -- 곧바로 안 지우는 이유는 되돌릴 수 없기 때문이다. 잘못 눌렀다가
+    -- 진행도를 통째로 잃는 일이 실제로 일어난다. 그동안 다시 들어와서
+    -- 취소할 수 있게 며칠 둔다. 앱 안에서 탈퇴를 시작할 수 있어야 한다는
+    -- 애플 심사지침 5.1.1(v)은 이 방식으로도 충족된다.
+    delete_at     DATETIME        NULL,
     PRIMARY KEY (user_id),
     UNIQUE KEY uq_account_guest (guest_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -87,6 +94,29 @@ CREATE TABLE account_link (
     -- 같은 구글 계정이 두 유저에 붙는 것을 막는다.
     UNIQUE KEY uq_link_provider (provider, provider_uid),
     CONSTRAINT fk_link_account FOREIGN KEY (user_id)
+        REFERENCES account (user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 약관 동의 기록.
+--
+-- 판마다 한 행씩 남긴다. 지우고 덮어쓰지 않는 이유는 증빙이기 때문이다.
+-- "그때 무엇에 동의했는가" 를 물으면 답할 수 있어야 한다.
+--
+-- 약관이 개정되면 판번호가 올라가고, 클라이언트는 그 판에 동의한 행이
+-- 없으면 다시 받는다.
+CREATE TABLE account_consent (
+    user_id         BIGINT UNSIGNED  NOT NULL,
+    -- 동의한 약관 판. CDN 의 terms.tsv 가 지금 판을 알려준다.
+    terms_version   INT UNSIGNED     NOT NULL,
+    -- 만 14세 이상임을 확인했는가. 미만이면 법정대리인 동의가 따로 필요하다.
+    age_ok          TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    -- 광고성 정보 수신. 선택 항목이다.
+    marketing       TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    -- 야간(21~08시) 수신. 위와 따로 받아야 한다.
+    marketing_night TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    agreed_at       DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, terms_version),
+    CONSTRAINT fk_consent_account FOREIGN KEY (user_id)
         REFERENCES account (user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
