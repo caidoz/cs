@@ -72,6 +72,7 @@ long long ContentVersion(void);
 
 enum ContentState {
 	CONTENT_IDLE = 0,	//아직 시작 안 했다
+	CONTENT_CHECKVER,	//판번호만 먼저 보는 중
 	CONTENT_CHECKING,	//매니페스트를 보는 중
 	CONTENT_DOWNLOADING,	//받는 중
 	CONTENT_READY,		//다 받았다. 다음 부팅 때 반영된다

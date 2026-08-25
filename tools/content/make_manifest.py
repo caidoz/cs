@@ -142,6 +142,19 @@ def main():
               encoding='utf-8', newline='\n') as fp:
         fp.write(text)
 
+    #판번호만 든 파일. 클라이언트는 갱신 확인을 이것부터 한다.
+    #
+    #매니페스트는 32KB 인데 대개는 "안 바뀌었다"를 확인하려고 받는다.
+    #유저가 백만이면 그 확인만으로 달마다 수백 GB 가 나간다. 스무 바이트짜리를
+    #먼저 보게 하면 그게 거의 사라진다.
+    #
+    #올릴 때 캐시 설정을 나눠야 한다.
+    #    version.txt   짧게(60초쯤). 늘 새것을 봐야 하니까
+    #    그 밖의 파일  영원히(immutable). 주소에 지문이 붙어 있으니까
+    with open(os.path.join(stage, 'version.txt'), 'w',
+              encoding='utf-8', newline='\n') as fp:
+        fp.write('%d\n' % ver)
+
     for rel, _size, _crc in files:
         dst = os.path.join(stage, rel.replace('/', os.sep))
         d = os.path.dirname(dst)

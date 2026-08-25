@@ -38,10 +38,23 @@ USING_NS_CC;
 
 #define CONTENT_MANIFEST "manifest.tsv"
 
+//판번호 한 줄만 든 파일. 갱신 확인은 이것부터 본다.
+//
+//매니페스트는 32KB 인데 대개는 "안 바뀌었다"를 확인하려고 받는다. 유저가
+//백만이면 그 확인만으로 달마다 수백 GB 가 나간다. 스무 바이트짜리를 먼저
+//보면 그게 거의 사라진다.
+#define CONTENT_VERSIONFILE "version.txt"
+
 //한 파일이 이만큼 넘으면 이상한 것이다. 잘못된 매니페스트로 디스크를 안 채운다.
 #define CONTENT_MAXFILE (256 * 1024 * 1024)
 
 static long long sVersion = 0;
+
+//앱에 딸려온 목록. ContentBoot() 이 한 번 읽어 둔다.
+//
+//받을 것을 고를 때 쓴다. 앱 안에 이미 같은 파일이 있으면 받을 이유가 없다.
+static long long sBundledVer = 0;
+static std::vector<ContentFile> sBundled;
 
 //전부 게임 루프 하나만 건드린다. 딴 실이 없으므로 잠글 것도 없다.
 static int sState = CONTENT_IDLE;
@@ -319,7 +332,8 @@ static bool UsingNetwork(void)
 }
 
 //요청을 띄운다. 슬롯 번호를 넘긴다.
-static void FetchBegin(int slot, const std::string& path, int at)
+static void FetchBegin(int slot, const std::string& path, int at,
+	const char* tag = "")
 {
 	Fetch* f = &sFetch[slot];
 
@@ -358,7 +372,10 @@ static void FetchBegin(int slot, const std::string& path, int at)
 
 	network::HttpRequest* req = f->req;
 
-	req->setUrl(std::string(CONTENT_CDN_URL) + path);
+	//꼬리표는 그 파일의 지문이다. 내용이 바뀌면 주소도 바뀌므로 캐시를
+	//영원히 걸어둘 수 있다. 붙이지 않으면 주소는 그대로인데 내용이 바뀔 수
+	//있어서 캐시를 길게 못 건다.
+	req->setUrl(std::string(CONTENT_CDN_URL) + path + tag);
 	req->setRequestType(network::HttpRequest::Type::GET);
 
 	//어느 슬롯의 답인지 알아야 한다. 여러 개가 동시에 날아다니므로
@@ -462,9 +479,17 @@ static void CommitStaged(void)
 	if (!ParseManifest(text, &ver, &fs))
 		return;
 
+	//옮기기 전에 지금 목록을 들고 있는다. 새 목록에 없는 파일을 지우려면
+	//옛 목록이 있어야 한다.
+	long long oldVer = 0;
+	std::vector<ContentFile> old;
+
+	ReadLiveManifest(&oldVer, &old);
+
 	std::string stage = StageDir();
 	std::string live = LiveDir();
 	int moved = 0;
+	int gone = 0;
 
 	for (size_t i = 0; i < fs.size(); i++) {
 		std::string from = stage + fs[i].path;
@@ -484,26 +509,84 @@ static void CommitStaged(void)
 			moved++;
 	}
 
+	//새 목록에 없는 것은 지운다.
+	//
+	//이게 없으면 매니페스트에서 뺀 파일이 content/ 에 영영 남는다. 검색
+	//경로가 앞이라 앱에 들어 있는 원본을 계속 가리므로, "잘못 올린 그림을
+	//매니페스트에서 빼서 되돌리기"가 안 된다. 폐기된 것이 기기에 쌓이기도 한다.
+	for (size_t i = 0; i < old.size(); i++) {
+		bool still = false;
+
+		for (size_t j = 0; j < fs.size(); j++) {
+			if (fs[j].path == old[i].path) {
+				still = true;
+				break;
+			}
+		}
+
+		if (!still && remove((live + old[i].path).c_str()) == 0)
+			gone++;
+	}
+
 	//매니페스트를 맨 나중에 옮긴다. 중간에 죽으면 staging 매니페스트가
 	//남아서 다음 부팅 때 마저 옮긴다.
 	if (WriteWhole(live + CONTENT_MANIFEST, text))
 		remove((stage + CONTENT_MANIFEST).c_str());
 
 	sVersion = ver;
-	Say("판 %lld 로 바꿔 넣었다 (파일 %d개)", ver, moved);
+	Say("판 %lld 로 바꿔 넣었다 (바꾼 파일 %d개, 지운 파일 %d개)", ver, moved, gone);
+}
+
+//내려받은 것을 통째로 버린다.
+static void ClearLive(const std::vector<ContentFile>& fs)
+{
+	std::string live = LiveDir();
+
+	for (size_t i = 0; i < fs.size(); i++)
+		remove((live + fs[i].path).c_str());
+
+	remove((live + CONTENT_MANIFEST).c_str());
 }
 
 void ContentBoot(void)
 {
 	FileUtils* fu = FileUtils::getInstance();
+	long long bundledVer = 0;
 
 	sWritable = fu->getWritablePath();
 
 	MKDIR((sWritable + CONTENT_DIR).c_str());
 	MKDIR((sWritable + STAGING_DIR).c_str());
 
+	//앱에 딸려온 판번호를 먼저 본다. 아래에서 검색 경로에 LiveDir 을 넣기
+	//전이라 여기서는 앱 안의 것이 잡힌다.
+	{
+		std::string text = fu->getStringFromFile(CONTENT_MANIFEST);
+
+		if (!text.empty())
+			ParseManifest(text, &bundledVer, &sBundled);
+
+		sBundledVer = bundledVer;
+	}
+
 	//뒤에서 다 받아둔 것이 있으면 지금 넣는다. 게임이 아직 아무것도 안 읽었다.
 	CommitStaged();
+
+	//스토어로 새 앱이 깔렸는데 내려받은 것이 더 낡았으면 덧칠을 버린다.
+	//
+	//안 그러면 앱을 새로 올려도 옛 CDN 파일이 검색 경로 앞에서 계속 이긴다.
+	//1월에 A 를 넣고, 2월에 CDN 으로 A' 를 덮고, 3월에 앱으로 A'' 를 내보내도
+	//유저 화면에는 2월의 A' 가 그대로 남는 일이 생긴다.
+	{
+		long long liveVer = 0;
+		std::vector<ContentFile> live;
+
+		if (ReadLiveManifest(&liveVer, &live) && bundledVer > liveVer) {
+			ClearLive(live);
+			CCLOG("Content: 앱이 더 새것이다 (판 %lld > %lld). 내려받은 것을 버린다",
+				bundledVer, liveVer);
+		}
+	}
 
 	//맨 앞에 넣는다. 같은 이름이 있으면 내려받은 쪽이 이긴다.
 	//
@@ -575,6 +658,22 @@ static void PickChanged(const std::vector<ContentFile>& want,
 				same = false;
 		}
 
+		//내려받기 폴더에 없더라도, 앱에 딸려온 것과 같으면 받을 필요가 없다.
+		//FileUtils 가 앱 안에서 찾아준다.
+		//
+		//이게 없으면 첫 패치 때 안 바뀐 파일까지 전부 받는다. 유저 한 명당
+		//113MB 다. 백만 명이면 그것만으로 100TB 가 넘게 나간다.
+		if (!same) {
+			for (size_t k = 0; k < sBundled.size(); k++) {
+				if (sBundled[k].path == w.path) {
+					if (sBundled[k].hash == w.hash && sBundled[k].size == w.size)
+						same = true;
+
+					break;
+				}
+			}
+		}
+
 		if (!same)
 			out->push_back(w);
 	}
@@ -590,10 +689,12 @@ void ContentUpdateBegin(void)
 	sAt = 0;
 	sDone = 0;
 	sTotal = 0;
-	sState = CONTENT_CHECKING;
+	sState = CONTENT_CHECKVER;
 
 	FetchClearAll();
-	FetchBegin(0, CONTENT_MANIFEST, -1);
+
+	//판번호에는 꼬리표를 안 붙인다. 이것만은 늘 새것을 받아야 한다.
+	FetchBegin(0, CONTENT_VERSIONFILE, -1);
 }
 
 //받은 파일 하나를 검사하고 staging 에 쓴다.
@@ -617,6 +718,62 @@ static bool KeepFile(const ContentFile& f, const std::string& body)
 	}
 
 	return true;
+}
+
+//판번호만 먼저 본다. 같으면 여기서 끝이고 매니페스트를 안 받는다.
+static void StepCheckVersion(void)
+{
+	Fetch* f = &sFetch[0];
+	char tag[32];
+
+	if (!f->busy || !f->done)
+		return;
+
+	bool ok = f->ok;
+	std::string body;
+
+	body.swap(f->body);
+	f->busy = false;
+	f->done = false;
+
+	if (!ok) {
+		Say("CDN 판번호를 못 읽었다. 지금 콘텐츠를 그대로 쓴다");
+		sState = CONTENT_FAILED;
+		return;
+	}
+
+	sRemoteVer = atoll(body.c_str());
+
+	if (sRemoteVer <= 0) {
+		Say("CDN 판번호가 이상하다");
+		sState = CONTENT_FAILED;
+		return;
+	}
+
+	long long localVer = 0;
+	std::vector<ContentFile> local;
+
+	ReadLiveManifest(&localVer, &local);
+
+	//더 낡은 판은 받지 않는다.
+	//
+	//같을 때만 멈추면, 스토어로 새 앱이 깔린 뒤 CDN 이 아직 옛 판일 때
+	//"앱이 새것이라 내려받은 것을 버린다 -> 옛 CDN 판을 다시 받는다"를
+	//부팅마다 되풀이한다. 유저마다 무한히 받는 셈이다.
+	//
+	//되돌리고 싶으면 옛 내용을 새 판번호로 다시 올리면 된다.
+	if (sRemoteVer <= localVer) {
+		Say("최신이다 (판 %lld)", localVer);
+		sState = CONTENT_UPTODATE;
+		return;
+	}
+
+	//판이 다르다. 그제서야 매니페스트를 받는다. 판번호를 꼬리표로 달아
+	//판마다 캐시가 따로 잡히게 한다.
+	snprintf(tag, sizeof(tag), "?v=%lld", sRemoteVer);
+
+	sState = CONTENT_CHECKING;
+	FetchBegin(0, CONTENT_MANIFEST, -1, tag);
 }
 
 //매니페스트를 받아 무엇을 받을지 정한다.
@@ -651,7 +808,8 @@ static void StepChecking(void)
 
 	ReadLiveManifest(&localVer, &local);
 
-	if (sRemoteVer == localVer) {
+	//판번호 단계와 같은 이유로 더 낡은 판은 받지 않는다.
+	if (sRemoteVer <= localVer) {
 		Say("최신이다 (판 %lld, 파일 %d개)", localVer, (int)local.size());
 		sState = CONTENT_UPTODATE;
 		return;
@@ -712,7 +870,10 @@ static void StepDownloading(void)
 		if (slot < 0)
 			break;
 
-		FetchBegin(slot, sTodo[sAt].path, sAt);
+		char tag[32];
+
+		snprintf(tag, sizeof(tag), "?v=%016llx", sTodo[sAt].hash);
+		FetchBegin(slot, sTodo[sAt].path, sAt, tag);
 		sAt++;
 	}
 
@@ -737,6 +898,9 @@ static void StepDownloading(void)
 
 void ContentUpdateStep(void)
 {
+	if (sState == CONTENT_CHECKVER)
+		StepCheckVersion();
+
 	if (sState == CONTENT_CHECKING)
 		StepChecking();
 
