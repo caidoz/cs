@@ -60,6 +60,14 @@ func main() {
 		log.Fatal("INSAM_TOKEN_KEY 가 없거나 너무 짧다 (32글자 이상)")
 	}
 
+	// 구글·애플 연동. 우리 앱의 클라이언트 ID 를 넣어야 켜진다.
+	// 안 넣으면 그 연동은 501 로 답한다 — aud 를 확인하지 못하면 남의 앱
+	// 토큰으로 들어올 수 있어서, 모르는 채로 받아주느니 막는 편이 낫다.
+	SetAudiences(ProviderGoogle, os.Getenv("INSAM_GOOGLE_AUD"))
+	SetAudiences(ProviderApple, os.Getenv("INSAM_APPLE_AUD"))
+
+	log.Printf("연동: 구글=%v 애플=%v", Enabled(ProviderGoogle), Enabled(ProviderApple))
+
 	if *dsn == "" {
 		log.Fatal("DSN 이 없다. -dsn 이나 INSAM_DSN 을 준다")
 	}
@@ -98,6 +106,7 @@ func main() {
 	mux.HandleFunc("/healthz", s.handleHealth)
 	mux.HandleFunc("/v1/login", s.handleLogin)
 	mux.HandleFunc("/v1/save", s.handleSave)
+	mux.HandleFunc("/v1/link", s.handleLink)
 
 	srv := &http.Server{
 		Addr:              *addr,
@@ -154,7 +163,15 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	key := strings.TrimSpace(string(body))
+	kind, cred := splitCred(string(body))
+
+	// 구글·애플로 왔다. 붙어 있는 계정을 찾아 돌려준다.
+	if kind != ProviderGuest {
+		s.loginByProvider(w, r, kind, cred)
+		return
+	}
+
+	key := cred
 
 	if !guestKeyRe.MatchString(key) {
 		// 열쇠를 서버가 지어내지 않는다. 그것을 만들고 보관하는 것은
@@ -365,6 +382,157 @@ func (s *server) auth(w http.ResponseWriter, r *http.Request) (int64, bool) {
 // -----------------------------------------------------------------------------
 // 거들이
 // -----------------------------------------------------------------------------
+
+// splitCred 는 로그인 본문을 발급처와 자격증명으로 가른다.
+//
+//	<발급처>\t<자격증명>   google / apple / guest
+//	<uuid>                 발급처를 안 적으면 게스트로 본다 (옛 클라이언트)
+func splitCred(body string) (Provider, string) {
+	body = strings.TrimSpace(body)
+	at := strings.IndexAny(body, "\t ")
+
+	if at < 0 {
+		return ProviderGuest, body
+	}
+
+	kind := strings.ToLower(strings.TrimSpace(body[:at]))
+	cred := strings.TrimSpace(body[at+1:])
+
+	switch kind {
+	case "google":
+		return ProviderGoogle, cred
+	case "apple":
+		return ProviderApple, cred
+	case "guest":
+		return ProviderGuest, cred
+	}
+
+	return ProviderGuest, body
+}
+
+// loginByProvider 는 구글·애플로 로그인한다.
+//
+// 계정을 만들지 않는다. 계정은 언제나 게스트로 먼저 생기고, 여기는 이미
+// 붙어 있는 것을 찾아 돌려줄 뿐이다. 없으면 404 — 클라이언트는 "연동된
+// 계정이 없습니다" 를 띄우고 게스트로 계속하면 된다.
+func (s *server) loginByProvider(w http.ResponseWriter, r *http.Request,
+	p Provider, idToken string) {
+
+	if !Enabled(p) {
+		writeText(w, http.StatusNotImplemented, "이 연동은 아직 안 켰다\n")
+		return
+	}
+
+	uid, err := VerifyIDToken(p, idToken, time.Now())
+
+	if err != nil {
+		log.Printf("login: 신분증을 못 믿겠다 (%v)", err)
+		writeText(w, http.StatusUnauthorized, "신분증이 아니다\n")
+		return
+	}
+
+	userID, err := s.store.FindLinked(r.Context(), p, uid)
+
+	switch {
+	case errors.Is(err, ErrNoLink):
+		writeText(w, http.StatusNotFound, "연동된 계정이 없다\n")
+		return
+
+	case errors.Is(err, ErrBanned):
+		writeText(w, http.StatusForbidden, "차단된 계정이다\n")
+		return
+
+	case err != nil:
+		log.Printf("login: %v", err)
+		writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+		return
+	}
+
+	var revision int64
+
+	_ = s.store.db.QueryRowContext(r.Context(),
+		`SELECT revision FROM player WHERE user_id = ?`, userID).Scan(&revision)
+
+	tok, exp := MakeToken(userID, time.Now())
+
+	d := &Dump{
+		Schema:   s.store.Schema().Version,
+		User:     userID,
+		Revision: revision,
+		Now:      gameNow(),
+		Token:    tok,
+		TokenExp: exp,
+	}
+
+	writeText(w, http.StatusOK, d.BuildMeta())
+}
+
+// POST /v1/link — 지금 로그인한 계정에 구글·애플을 붙인다.
+//
+// 합치지 않는다. 그 구글이 이미 다른 계정에 붙어 있으면 409 다. 두 세이브를
+// 어떻게 합칠지는 코드가 아니라 게임이 정할 일이다.
+func (s *server) handleLink(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeText(w, http.StatusMethodNotAllowed, "POST 만 받는다\n")
+		return
+	}
+
+	userID, ok := s.auth(w, r)
+
+	if !ok {
+		return
+	}
+
+	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 8192))
+
+	if err != nil {
+		writeText(w, http.StatusBadRequest, "본문을 못 읽었다\n")
+		return
+	}
+
+	p, idToken := splitCred(string(body))
+
+	if p == ProviderGuest {
+		writeText(w, http.StatusBadRequest, "어느 쪽인지 적어야 한다 (google/apple)\n")
+		return
+	}
+
+	if !Enabled(p) {
+		writeText(w, http.StatusNotImplemented, "이 연동은 아직 안 켰다\n")
+		return
+	}
+
+	uid, err := VerifyIDToken(p, idToken, time.Now())
+
+	if err != nil {
+		log.Printf("link: 신분증을 못 믿겠다 (%v)", err)
+		writeText(w, http.StatusUnauthorized, "신분증이 아니다\n")
+		return
+	}
+
+	err = s.store.Link(r.Context(), userID, p, uid)
+
+	switch {
+	case errors.Is(err, ErrLinkTaken):
+		writeText(w, http.StatusConflict, "이미 다른 계정에 붙어 있다\n")
+		return
+
+	case err != nil:
+		log.Printf("link: user=%d %v", userID, err)
+		writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+		return
+	}
+
+	log.Printf("link: user=%d 에 %d 를 붙였다", userID, int(p))
+
+	d := &Dump{
+		Schema: s.store.Schema().Version,
+		User:   userID,
+		Now:    gameNow(),
+	}
+
+	writeText(w, http.StatusOK, d.BuildMeta())
+}
 
 // bearer 는 Authorization 헤더에서 토큰을 꺼낸다.
 func bearer(r *http.Request) string {
