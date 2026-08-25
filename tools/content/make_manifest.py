@@ -61,6 +61,10 @@ def fnv1a64(buf):
     return h
 
 
+#콘텐츠가 아닌 것. 매니페스트에 넣으면 유저 기기까지 따라간다.
+SKIP = ('.DS_Store', 'Thumbs.db', 'desktop.ini')
+
+
 def scan(dirs):
     """(상대경로, 크기, crc) 목록. 경로는 / 로 적는다."""
     out = []
@@ -73,6 +77,9 @@ def scan(dirs):
 
         for root, _sub, files in os.walk(base):
             for n in sorted(files):
+                if n in SKIP or n.startswith('.'):
+                    continue
+
                 full = os.path.join(root, n)
                 rel = os.path.relpath(full, RES).replace('\\', '/')
 

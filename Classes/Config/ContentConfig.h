@@ -26,6 +26,6 @@
 //     #define CONTENT_CDN_URL "https://cdn.example.com/cs/"
 //
 // https 를 쓸 것. http 로 두면 안드로이드와 iOS가 기본 설정에서 막는다.
-#define CONTENT_CDN_URL ""
+#define CONTENT_CDN_URL "https://cdn.bigpixel.kr/"
 
 #endif
