@@ -99,13 +99,13 @@
 //
 // 네 장을 강제로 낸다. 순서 규칙과 문구 연출을 한 번에 볼 수 있다.
 // 확인이 끝나면 0 으로 되돌린다.
-#define GACHA_TEST_FORCE_REWARD		1
+#define GACHA_TEST_FORCE_REWARD		0
 
 //
 // 몬스터가 한 대에 죽으면 룰렛과 스킬 연출을 끝까지 볼 수 없다. 곡선은
 // 그대로 두고 전체에 곱하기만 한다.
 //
 // 시연이 끝나면 1 로 되돌린다.
-#define WAVE_HP_TEST_MUL		300
+#define WAVE_HP_TEST_MUL		1
 
 #endif

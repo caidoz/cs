@@ -308,7 +308,14 @@ typedef enum _gameDef {
 
 	DEFAULT_EXPS = 1,
 
-	MAXUSERLEVEL = 150,
+	//유저 레벨의 끝. 경험치 표(lvUpExp)의 칸 수와 같아야 한다.
+	//
+	//150 이었는데 표는 99 칸뿐이라, 99 레벨부터 NextExp() 가 표 밖을 읽었다.
+	//지금까지 안 터진 것은 레벨이 오르는 길이 없었기 때문이다 - LevelUp()
+	//을 부르는 곳이 디버그 키 하나뿐이었다. 경험치를 붙이면 바로 닿는다.
+	//
+	//늘릴 때는 Data/HeroData.cpp 의 lvUpExp 를 먼저 늘린다.
+	MAXUSERLEVEL = 99,
 
 	IRONGOLDPER = 1,
 	SHIELDPERHP = 2,

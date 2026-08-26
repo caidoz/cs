@@ -758,10 +758,21 @@ void RefreshEnemyTime(void)
 // Combat Formula
 //특정 레벨 기준으로 그 다음 레벨에 도달하기 위한 총 경험치를 구한다.
 
+//표 밖을 안 읽는다.
+//
+//lvUpExp 는 lvUpExp_COUNT 칸뿐인데 예전에는 lv 를 그대로 믿고 더했다.
+//MAXUSERLEVEL 이 150 이고 표가 99 칸이라, 99 레벨부터 남의 메모리를 읽어
+//누적치가 아무 값이나 됐다.
+//
+//지금까지 안 닿은 것은 레벨이 오르는 길이 없었기 때문이다 - LevelUp() 을
+//부르는 곳이 디버그 키 하나뿐이었다. 경험치를 붙이면 바로 닿는다.
 long long NextExp(int lv)
 {
 	int i;
 	long long rt = 0;
+
+	if (lv >= lvUpExp_COUNT)
+		lv = lvUpExp_COUNT - 1;
 
 	for (i = 0; i < lv + 1; i++)
 		rt += lvUpExp[i];
