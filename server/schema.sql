@@ -145,6 +145,8 @@ CREATE TABLE player (
     star               BIGINT          NOT NULL DEFAULT 0,
     hammer             BIGINT          NOT NULL DEFAULT 0,
     coin               BIGINT          NOT NULL DEFAULT 0,
+    heart_pass_until   DATETIME        NULL,
+    growth_pass_until  DATETIME        NULL,
     shield             INT             NOT NULL DEFAULT 0,
 
     -- 진행도
@@ -573,8 +575,6 @@ CREATE TABLE save_conflict_log (
 CREATE TABLE product (
     product_id   VARCHAR(64)     NOT NULL,  -- 스토어에 등록한 그 ID 와 같아야 한다
     kind         VARCHAR(16)     NOT NULL,  -- consumable / noncon / subscription
-    grant_kind   VARCHAR(16)     NOT NULL,  -- coin / gold / heart / star / hammer
-    grant_amount BIGINT          NOT NULL,
     enabled      TINYINT(1)      NOT NULL DEFAULT 1,
     memo         VARCHAR(128)    NULL,
     created_at   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -592,8 +592,7 @@ CREATE TABLE purchase (
     product_id   VARCHAR(64)     NOT NULL,
     order_id     VARCHAR(128)    NOT NULL,  -- 스토어가 준 거래 고유값
     state        VARCHAR(16)     NOT NULL,  -- granted / rejected / refunded
-    grant_kind   VARCHAR(16)     NOT NULL,
-    grant_amount BIGINT          NOT NULL,
+    granted      VARCHAR(255)    NOT NULL DEFAULT '',  -- "coin:2000,heart:300"
     reason       VARCHAR(64)     NULL,      -- 거절이면 왜인지
     receipt      TEXT            NULL,      -- 스토어가 준 원문. 대조에 쓴다
     created_at   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -603,14 +602,22 @@ CREATE TABLE purchase (
     -- 두 번 주지 않는 자물쇠. 같은 스토어의 같은 거래는 하나뿐이다.
     UNIQUE KEY uq_order (platform, order_id),
 
-    KEY idx_purchase_user (user_id, created_at)
+    KEY idx_purchase_user (user_id, created_at),
+
+    -- 1 인 1 회 상품(noncon)을 서버가 확인할 때 쓴다.
+    KEY idx_purchase_once (user_id, product_id, state)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 시험용 상품. 실제 상품은 스토어에 등록한 뒤 여기에 넣는다.
-INSERT INTO product (product_id, kind, grant_kind, grant_amount, memo) VALUES
-    ('test_coin_100',  'consumable', 'coin',  100,  '시험용'),
-    ('test_gold_10k',  'consumable', 'gold',  10000, '시험용'),
-    ('test_heart_50',  'consumable', 'heart', 50,   '시험용');
+-- 상품이 무엇을 주는가. 한 상품이 여러 줄일 수 있다 - 스타터팩이 그렇다.
+CREATE TABLE product_grant (
+    product_id   VARCHAR(64)     NOT NULL,
+    seq          SMALLINT        NOT NULL,
+    grant_kind   VARCHAR(16)     NOT NULL,  -- coin/heart/... 또는 pass_*
+    grant_amount BIGINT          NOT NULL,  -- 재화면 수량, 패스면 날수
+    PRIMARY KEY (product_id, seq),
+    CONSTRAINT fk_grant_product FOREIGN KEY (product_id)
+        REFERENCES product (product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 스키마 버전. 마이그레이션의 기준점.
 CREATE TABLE schema_version (
@@ -619,4 +626,4 @@ CREATE TABLE schema_version (
     PRIMARY KEY (version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO schema_version (version) VALUES (3);
+INSERT INTO schema_version (version) VALUES (4);

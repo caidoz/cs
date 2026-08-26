@@ -20,11 +20,15 @@ func tempProduct(t *testing.T, s *Store, grant string, amount int64) string {
 
 	id := "test-" + randomHex(t, 8)
 
-	_, err := s.db.Exec(`
-		INSERT INTO product (product_id, kind, grant_kind, grant_amount, memo)
-		VALUES (?, 'consumable', ?, ?, '시험용')`, id, grant, amount)
+	if _, err := s.db.Exec(`
+		INSERT INTO product (product_id, kind, memo)
+		VALUES (?, 'consumable', '시험용')`, id); err != nil {
+		t.Fatal(err)
+	}
 
-	if err != nil {
+	if _, err := s.db.Exec(`
+		INSERT INTO product_grant (product_id, seq, grant_kind, grant_amount)
+		VALUES (?, 0, ?, ?)`, id, grant, amount); err != nil {
 		t.Fatal(err)
 	}
 
@@ -92,7 +96,7 @@ func TestPurchaseGrantsOnce(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if first.State != purchaseGranted || first.Amount != 100 {
+	if first.State != purchaseGranted || first.Granted != "coin:100" {
 		t.Fatalf("첫 결제가 이상하다: %+v", first)
 	}
 
@@ -212,6 +216,154 @@ func TestPurchaseMissingFields(t *testing.T) {
 
 		if res.State != purchaseRejected {
 			t.Fatalf("%+v 는 거절해야 한다", req)
+		}
+	}
+}
+
+// 1 인 1 회 상품은 두 번 못 산다.
+//
+// uq_order 로는 못 막는다. 거래 ID 가 다르기 때문이다. 스토어를 두 개 쓰거나
+// 스토어가 다시 팔아버리는 경우가 실제로 있어서, 서버가 따로 막아야 한다.
+func TestPurchaseOnceOnly(t *testing.T) {
+	s := linkTestStore(t)
+
+	ctx := context.Background()
+	user := tempPlayer(t, s)
+	prod := "test-" + randomHex(t, 8)
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product (product_id, kind, memo)
+		VALUES (?, 'noncon', '시험용 1회')`, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product_grant (product_id, seq, grant_kind, grant_amount)
+		VALUES (?, 0, 'coin', 500)`, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { s.db.Exec(`DELETE FROM product WHERE product_id = ?`, prod) })
+
+	first, err := s.Grant(ctx, verifierAllow{}, user, PurchaseReq{
+		Platform: "ios", ProductID: prod, OrderID: "o1-" + randomHex(t, 8)})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if first.State != purchaseGranted {
+		t.Fatalf("첫 구매가 되어야 한다: %+v", first)
+	}
+
+	//거래 ID 가 다르다. uq_order 로는 안 걸린다.
+	second, err := s.Grant(ctx, verifierAllow{}, user, PurchaseReq{
+		Platform: "ios", ProductID: prod, OrderID: "o2-" + randomHex(t, 8)})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if second.State != purchaseRejected {
+		t.Fatalf("두 번째는 거절해야 한다: %+v", second)
+	}
+
+	if got := coinOf(t, s, user); got != 500 {
+		t.Fatalf("두 번 줬다. 코인이 %d", got)
+	}
+}
+
+// 스타터팩처럼 여러 개를 주는 상품.
+func TestPurchaseMultiGrant(t *testing.T) {
+	s := linkTestStore(t)
+
+	ctx := context.Background()
+	user := tempPlayer(t, s)
+	prod := "test-" + randomHex(t, 8)
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product (product_id, kind, memo)
+		VALUES (?, 'consumable', '시험용 묶음')`, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product_grant (product_id, seq, grant_kind, grant_amount)
+		VALUES (?, 0, 'coin', 111), (?, 1, 'heart', 222)`, prod, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { s.db.Exec(`DELETE FROM product WHERE product_id = ?`, prod) })
+
+	res, err := s.Grant(ctx, verifierAllow{}, user, PurchaseReq{
+		Platform: "ios", ProductID: prod, OrderID: "m-" + randomHex(t, 8)})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Granted != "coin:111,heart:222" {
+		t.Fatalf("지급 내역이 이상하다: %q", res.Granted)
+	}
+
+	var coin, heart int64
+
+	if err := s.db.QueryRow(`SELECT coin, heart FROM player WHERE user_id = ?`,
+		user).Scan(&coin, &heart); err != nil {
+		t.Fatal(err)
+	}
+
+	if coin != 111 || heart != 222 {
+		t.Fatalf("coin=%d heart=%d (111/222 여야 한다)", coin, heart)
+	}
+}
+
+// 패스는 남은 기간에 이어 붙는다.
+func TestPurchasePassStacks(t *testing.T) {
+	s := linkTestStore(t)
+
+	ctx := context.Background()
+	user := tempPlayer(t, s)
+	prod := "test-" + randomHex(t, 8)
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product (product_id, kind, memo)
+		VALUES (?, 'consumable', '시험용 패스')`, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := s.db.Exec(`
+		INSERT INTO product_grant (product_id, seq, grant_kind, grant_amount)
+		VALUES (?, 0, 'pass_heart', 30)`, prod); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() { s.db.Exec(`DELETE FROM product WHERE product_id = ?`, prod) })
+
+	days := func() int64 {
+		var n int64
+
+		if err := s.db.QueryRow(`
+			SELECT COALESCE(DATEDIFF(heart_pass_until, NOW()), -1)
+			  FROM player WHERE user_id = ?`, user).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+
+		return n
+	}
+
+	for i := 1; i <= 2; i++ {
+		if _, err := s.Grant(ctx, verifierAllow{}, user, PurchaseReq{
+			Platform: "ios", ProductID: prod,
+			OrderID: "p-" + randomHex(t, 8)}); err != nil {
+			t.Fatal(err)
+		}
+
+		//DATEDIFF 는 날짜 차라 경계에서 하루 덜 나올 수 있다.
+		want := int64(30 * i)
+
+		if got := days(); got != want && got != want-1 {
+			t.Fatalf("%d번 산 뒤 남은 날이 %d (%d 여야 한다)", i, got, want)
 		}
 	}
 }

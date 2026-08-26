@@ -57,6 +57,16 @@ var grantColumn = map[string]string{
 	"star":   "star",
 	"hammer": "hammer",
 	"coin":   "coin",
+	"inven":  "max_inven",
+}
+
+// 패스. 수량이 아니라 날수를 준다.
+//
+// 남아 있는 동안 또 사면 남은 기간에 이어 붙는다. 그래서 지금 시각이 아니라
+// "지금과 남은 시각 중 늦은 쪽" 에서 더한다. 안 그러면 남은 기간이 날아간다.
+var grantPass = map[string]string{
+	"pass_heart":  "heart_pass_until",
+	"pass_growth": "growth_pass_until",
 }
 
 // 결제 상태.
@@ -66,13 +76,23 @@ const (
 	purchaseRefunded = "refunded"
 )
 
-// Product 는 상품 하나다.
+// Grant 는 지급 한 줄이다.
+type GrantLine struct {
+	Kind   string
+	Amount int64
+}
+
+// Product 는 상품 하나다. 지급이 여러 줄일 수 있다 - 스타터팩이 그렇다.
 type Product struct {
 	ID      string
 	Kind    string
-	Grant   string
-	Amount  int64
 	Enabled bool
+	Grants  []GrantLine
+}
+
+// Once 는 1 인 1 회 상품인가.
+func (p Product) Once() bool {
+	return p.Kind == "noncon"
 }
 
 // PurchaseReq 는 클라이언트가 보낸 것이다.
@@ -87,9 +107,11 @@ type PurchaseReq struct {
 
 // PurchaseResult 는 그 결과다.
 type PurchaseResult struct {
-	State  string
-	Grant  string
-	Amount int64
+	State string
+
+	// 무엇을 줬는지 사람이 읽을 수 있게 적은 것. "coin:2000,heart:300"
+	Granted string
+
 	Reason string
 
 	// 이미 처리된 거래였는가. 재시도로 다시 온 경우다. 지급은 안 하지만
@@ -117,15 +139,15 @@ func (verifierAllow) Verify(ctx context.Context, req PurchaseReq) error {
 	return nil
 }
 
-// LoadProduct 는 상품을 찾는다. 꺼져 있으면 없는 것으로 본다.
+// LoadProduct 는 상품과 그 지급 목록을 찾는다. 꺼져 있으면 없는 것으로 본다.
 func (s *Store) LoadProduct(ctx context.Context, id string) (Product, error) {
 	var p Product
 
 	err := s.db.QueryRowContext(ctx, `
-		SELECT product_id, kind, grant_kind, grant_amount, enabled
+		SELECT product_id, kind, enabled
 		  FROM product
 		 WHERE product_id = ?`, id).
-		Scan(&p.ID, &p.Kind, &p.Grant, &p.Amount, &p.Enabled)
+		Scan(&p.ID, &p.Kind, &p.Enabled)
 
 	if err == sql.ErrNoRows {
 		return p, errNoProduct
@@ -139,7 +161,135 @@ func (s *Store) LoadProduct(ctx context.Context, id string) (Product, error) {
 		return p, errNoProduct
 	}
 
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT grant_kind, grant_amount
+		  FROM product_grant
+		 WHERE product_id = ?
+		 ORDER BY seq`, id)
+
+	if err != nil {
+		return p, fmt.Errorf("product_grant 를 못 읽었다: %w", err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var g GrantLine
+
+		if err := rows.Scan(&g.Kind, &g.Amount); err != nil {
+			return p, err
+		}
+
+		p.Grants = append(p.Grants, g)
+	}
+
+	if err := rows.Err(); err != nil {
+		return p, err
+	}
+
+	// 아무것도 안 주는 상품은 팔면 안 된다. 돈만 받고 끝난다.
+	if len(p.Grants) == 0 {
+		return p, errNoProduct
+	}
+
 	return p, nil
+}
+
+// grantText 는 지급 내역을 사람이 읽을 글자로 만든다. 원장에 박아 둔다.
+func grantText(gs []GrantLine) string {
+	var b strings.Builder
+
+	for i, g := range gs {
+		if i > 0 {
+			b.WriteString(",")
+		}
+
+		fmt.Fprintf(&b, "%s:%d", g.Kind, g.Amount)
+	}
+
+	return b.String()
+}
+
+// applyGrants 는 트랜잭션 안에서 실제로 준다.
+//
+// 칸 이름은 grantColumn / grantPass 지도에서만 온다. 바깥에서 온 문자열을
+// SQL 에 이어붙이는 길이 없어야 한다.
+func applyGrants(ctx context.Context, tx *sql.Tx, userID int64, gs []GrantLine) error {
+	for _, g := range gs {
+		if col, ok := grantColumn[g.Kind]; ok {
+			_, err := tx.ExecContext(ctx, fmt.Sprintf(`
+				UPDATE player SET %s = %s + ? WHERE user_id = ?`, col, col),
+				g.Amount, userID)
+
+			if err != nil {
+				return fmt.Errorf("%s 를 못 줬다: %w", g.Kind, err)
+			}
+
+			continue
+		}
+
+		if col, ok := grantPass[g.Kind]; ok {
+			// 남아 있으면 그 뒤에 이어 붙인다. 지났으면 지금부터.
+			_, err := tx.ExecContext(ctx, fmt.Sprintf(`
+				UPDATE player
+				   SET %s = DATE_ADD(GREATEST(COALESCE(%s, NOW()), NOW()),
+				                     INTERVAL ? DAY)
+				 WHERE user_id = ?`, col, col), g.Amount, userID)
+
+			if err != nil {
+				return fmt.Errorf("%s 를 못 걸었다: %w", g.Kind, err)
+			}
+
+			continue
+		}
+
+		return fmt.Errorf("줄 수 없는 재화다: %s", g.Kind)
+	}
+
+	// 판이 바뀌었으니 revision 을 올린다. 지급마다 올리지 않고 한 번만 올린다.
+	_, err := tx.ExecContext(ctx, `
+		UPDATE player SET revision = revision + 1 WHERE user_id = ?`, userID)
+
+	return err
+}
+
+// knownGrants 는 줄 수 있는 것들인지 미리 본다.
+//
+// 트랜잭션을 열기 전에 본다. 절반 주고 실패하는 것보다 시작 전에 거절하는
+// 편이 낫다.
+func knownGrants(gs []GrantLine) bool {
+	for _, g := range gs {
+		_, a := grantColumn[g.Kind]
+		_, b := grantPass[g.Kind]
+
+		if !a && !b {
+			return false
+		}
+
+		if g.Amount <= 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
+// alreadyOwned 는 1 인 1 회 상품을 이미 받았는지 본다.
+func (s *Store) alreadyOwned(ctx context.Context, userID int64, productID string) (
+	bool, error) {
+
+	var n int
+
+	err := s.db.QueryRowContext(ctx, `
+		SELECT COUNT(*) FROM purchase
+		 WHERE user_id = ? AND product_id = ? AND state = ?`,
+		userID, productID, purchaseGranted).Scan(&n)
+
+	if err != nil {
+		return false, fmt.Errorf("이미 샀는지 못 봤다: %w", err)
+	}
+
+	return n > 0, nil
 }
 
 // Grant 는 결제 하나를 처리한다.
@@ -195,13 +345,33 @@ func (s *Store) Grant(ctx context.Context, v Verifier, userID int64,
 		return res, err
 	}
 
-	col, ok := grantColumn[p.Grant]
-
-	if !ok {
+	if !knownGrants(p.Grants) {
 		res.State = purchaseRejected
 		res.Reason = "줄 수 없는 재화"
 		s.logRejected(ctx, userID, req, res.Reason)
 		return res, nil
+	}
+
+	//---- 2-1. 1 인 1 회 상품이면 이미 받았는지 ----
+	//
+	// uq_order 는 "같은 거래" 를 막을 뿐, 같은 사람이 다른 거래로 또 사는
+	// 것은 안 막는다. 스타터팩과 영구 확장이 그 경우다.
+	//
+	// 스토어 쪽에서도 비소비성으로 등록하면 한 번만 팔리지만, 그것만 믿지
+	// 않는다. 여기서 막아야 어느 스토어를 쓰든 같게 동작한다.
+	if p.Once() {
+		owned, err := s.alreadyOwned(ctx, userID, req.ProductID)
+
+		if err != nil {
+			return res, err
+		}
+
+		if owned {
+			res.State = purchaseRejected
+			res.Reason = "이미 산 상품"
+			s.logRejected(ctx, userID, req, res.Reason)
+			return res, nil
+		}
 	}
 
 	//---- 3. 영수증 ----
@@ -224,13 +394,15 @@ func (s *Store) Grant(ctx context.Context, v Verifier, userID int64,
 
 	defer tx.Rollback()
 
+	text := grantText(p.Grants)
+
 	_, err = tx.ExecContext(ctx, `
 		INSERT INTO purchase
 			(user_id, platform, product_id, order_id, state,
-			 grant_kind, grant_amount, receipt, granted_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+			 granted, receipt, granted_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
 		userID, req.Platform, req.ProductID, req.OrderID, purchaseGranted,
-		p.Grant, p.Amount, nullIfEmpty(req.Receipt))
+		text, nullIfEmpty(req.Receipt))
 
 	if err != nil {
 		//uq_order 에 걸렸다. 1번과 여기 사이에 다른 요청이 먼저 끝냈다.
@@ -251,14 +423,8 @@ func (s *Store) Grant(ctx context.Context, v Verifier, userID int64,
 		return res, fmt.Errorf("purchase 를 못 적었다: %w", err)
 	}
 
-	//player 의 칸 이름은 grantColumn 에서만 온다. 바깥 문자열이 아니다.
-	_, err = tx.ExecContext(ctx, fmt.Sprintf(`
-		UPDATE player
-		   SET %s = %s + ?, revision = revision + 1
-		 WHERE user_id = ?`, col, col), p.Amount, userID)
-
-	if err != nil {
-		return res, fmt.Errorf("지급을 못 했다: %w", err)
+	if err := applyGrants(ctx, tx, userID, p.Grants); err != nil {
+		return res, err
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -266,8 +432,7 @@ func (s *Store) Grant(ctx context.Context, v Verifier, userID int64,
 	}
 
 	res.State = purchaseGranted
-	res.Grant = p.Grant
-	res.Amount = p.Amount
+	res.Granted = text
 
 	return res, nil
 }
@@ -280,10 +445,10 @@ func (s *Store) findPurchase(ctx context.Context, platform, orderID string) (
 	var reason sql.NullString
 
 	err := s.db.QueryRowContext(ctx, `
-		SELECT state, grant_kind, grant_amount, reason
+		SELECT state, granted, reason
 		  FROM purchase
 		 WHERE platform = ? AND order_id = ?`, platform, orderID).
-		Scan(&res.State, &res.Grant, &res.Amount, &reason)
+		Scan(&res.State, &res.Granted, &reason)
 
 	if err == sql.ErrNoRows {
 		return res, false, nil
@@ -310,9 +475,8 @@ func (s *Store) logRejected(ctx context.Context, userID int64,
 
 	_, err := s.db.ExecContext(ctx, `
 		INSERT IGNORE INTO purchase
-			(user_id, platform, product_id, order_id, state,
-			 grant_kind, grant_amount, reason, receipt)
-		VALUES (?, ?, ?, ?, ?, '', 0, ?, ?)`,
+			(user_id, platform, product_id, order_id, state, granted, reason, receipt)
+		VALUES (?, ?, ?, ?, ?, '', ?, ?)`,
 		userID, req.Platform, req.ProductID, req.OrderID, purchaseRejected,
 		reason, nullIfEmpty(req.Receipt))
 

@@ -399,8 +399,7 @@ func (s *server) handlePurchase(w http.ResponseWriter, r *http.Request) {
 
 	d.Now = gameNow()
 	d.PurchaseState = res.State
-	d.PurchaseGrant = res.Grant
-	d.PurchaseAmount = res.Amount
+	d.PurchaseGranted = res.Granted
 
 	writeText(w, http.StatusOK, d.Build())
 }

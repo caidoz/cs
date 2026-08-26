@@ -197,6 +197,7 @@ typedef struct _obj {
 	unsigned char buffRemainUse[TOTALBUFF];
 	signed int debuf[TOTALDEBUF];
 	unsigned char debufOwner[TOTALDEBUF];
+	unsigned char debufRemainTurn[TOTALDEBUF];
 	signed short cpx, cpy, cx, cy;
 	signed short apy, ax, ay;
 	long long int hp, maxhp;
@@ -570,7 +571,13 @@ typedef struct _robin {
 	long long star;//
 	long long hammer;//합성용
 	int shield;//방어
-	long long coin;//블록체인 코인
+	//유료 재화. 현금으로 사고, 게임 안에서 상자/골드/메달/부활에 쓴다.
+	//
+	//예전 주석은 "블록체인 코인" 이었다. 그 계획은 미정으로 남았고, 이 칸은
+	//유료 재화로 확정했다. 둘을 겸하면 안 된다 - 국내에서 유료 재화와 토큰을
+	//섞으면 그 자체로 사행성 심사 대상이 되고 등급분류가 막힌다. 블록체인을
+	//하게 되면 그때 칸을 따로 만든다.
+	long long coin;
 
 	long heartTimeStamp;
 
