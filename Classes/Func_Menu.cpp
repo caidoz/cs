@@ -2023,24 +2023,41 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 					SetAlpha(32);
 
 					if (menuFrame == FPS - 1) {
-						//골드 차감
-						robin.hammer -= GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv);
-						AddBar(&bar[BAR_HAMMER], -GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv), BARFRAME);
+						//----------------------------------------------
+						// 해머 차감
+						//
+						// 살 수 있는지 여기서 다시 본다. 버튼을 그릴 때
+						// 한 번 봤지만(위쪽 SetRectPoint), 그건 1초 전이다.
+						// 값을 내는 자리에서 값을 확인해야 한다.
+						//
+						// 모자라면 아무것도 안 한다. 재화만 빼고 효과를
+						// 안 주거나, 효과만 주고 재화를 안 빼는 쪽이
+						// 훨씬 나쁘다. 값과 효과는 같이 가야 한다.
+						//----------------------------------------------
+						long long upgradeCost = GetUpgradeHammer(itemType, itemDetail, itemGrade, itemLv);
 
-						it->cooldown++;
-
-						for (i = 0; i < TOTALEQUIP; i++) {
-							if (ao[PLAYER].equip[i].type == it->type && ao[PLAYER].equip[i].detail == it->detail && ao[PLAYER].equip[i].grade == it->grade)
-								ao[PLAYER].equip[i].cooldown = it->cooldown;
+						if (robin.hammer < upgradeCost) {
+							PlayMusic(M_ERROR);
 						}
+						else {
+							robin.hammer -= upgradeCost;
+							AddBar(&bar[BAR_HAMMER], -upgradeCost, BARFRAME);
 
-						//if (ao[PLAYER].equip[EQUIP])
+							it->cooldown++;
 
-						PlayMusic(M_CHEER);
+							for (i = 0; i < TOTALEQUIP; i++) {
+								if (ao[PLAYER].equip[i].type == it->type && ao[PLAYER].equip[i].detail == it->detail && ao[PLAYER].equip[i].grade == it->grade)
+									ao[PLAYER].equip[i].cooldown = it->cooldown;
+							}
 
-						RefreshStat(&ao[PLAYER]);
-						//SaveFlag(0);
-						SaveGame();
+							//if (ao[PLAYER].equip[EQUIP])
+
+							PlayMusic(M_CHEER);
+
+							RefreshStat(&ao[PLAYER]);
+							//SaveFlag(0);
+							SaveGame();
+						}
 					}
 
 				}
@@ -2130,28 +2147,46 @@ void EquipInfoDraw(ITEM* it, int x, int y, int itemType, int itemDetail, int ite
 						DrawSubText(textId[TEXT_ENCHANTING], 0, menuFrame % 7, x + DX / 2 - StringWidth(textId[TEXT_ENCHANTING], 1.0f) / 2, y - EQUIP_WIN_HEIGHT + 272 * _2X - 216 * _2X - 4 * _2X, 1.0f);
 
 					if (menuFrame == 21 * 2 - 1) {
-						//조합석 차감
-						robin.star -= itemEvolutionItem[itemDetail * TOTALGRADE * (ITEMMAXLEVEL + 1) + itemGrade * (ITEMMAXLEVEL + 1) + itemLv];
+						//----------------------------------------------
+						// 조합석 차감
+						//
+						// 값을 내는 자리에서 값을 다시 본다. 버튼을 그릴
+						// 때 한 번 봤지만 그건 42프레임 전이다.
+						//
+						// 조합석과 재료 카드를 둘 다 본다. 하나만 모자라도
+						// 진화는 없다. 재료만 빠지고 등급이 안 오르면
+						// 되돌릴 방법이 없다.
+						//----------------------------------------------
+						long long evolveCost = itemEvolutionItem[itemDetail * TOTALGRADE * (ITEMMAXLEVEL + 1) + itemGrade * (ITEMMAXLEVEL + 1) + itemLv];
+
 						it = GetItemPtr(ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + itemDetail * TOTALGRADE + itemGrade);
 
-						it->count -= ITEMHAMMERCNT;
-
-						//마지막 등급이면 디테일을 하나 올려준다.
-						if (itemGrade == GRADE_LEGEND) {
-							robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + (itemDetail + 1) * TOTALGRADE + 0].count++;
+						if (robin.star < evolveCost || it->count < ITEMHAMMERCNT) {
+							PlayMusic(M_ERROR);
 						}
-						//그렇지 않으면 그레이드를 하나 올려준다. 
 						else {
-							robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + itemDetail * TOTALGRADE + itemGrade++].count++;
+							robin.star -= evolveCost;
+							it->count -= ITEMHAMMERCNT;
+
+							//마지막 등급이면 디테일을 하나 올려준다.
+							if (itemGrade == GRADE_LEGEND) {
+								robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + (itemDetail + 1) * TOTALGRADE + 0].count++;
+							}
+							//그렇지 않으면 그레이드를 하나 올려준다. 
+							else {
+								robin.inven[ITEMPTR_INVEN + itemStartCnt[itemType / TOTALPLAYER] + itemDetail * TOTALGRADE + itemGrade++].count++;
+							}
+
+
+							PlayMusic(M_LEVELUP);
+
+							RefreshStat(&ao[PLAYER]);
+							//SaveFlag(0);
+							SaveGame();
 						}
 
-
-						PlayMusic(M_LEVELUP);
-
-						RefreshStat(&ao[PLAYER]);
-						//SaveFlag(0);
-						SaveGame();
-
+						//되든 안 되든 화면은 다음으로 간다. 여기서 안 넘기면
+						//연출이 그 프레임에 멈춘 채로 남는다.
 						depth = 3;
 					}
 				}
@@ -3334,6 +3369,9 @@ int GetBoxCurrency(int detail, int grade)
 	case BOX_CASTLE15:
 		return CURRENCY_GOLD;
 	}
+
+	//목록에 없는 상자. 없으면 쓰레기값이 재화 종류가 된다.
+	return CURRENCY_GOLD;
 }
 
 int GetBoxGold(int boxType)
@@ -3352,26 +3390,37 @@ int GetBoxHeartItem(int boxType)
 	return betHeart[boxType] * HEARTPER;
 }
 
-int GetBoxPrice(int detail, int grade)
+//상자 값. 못 파는 상자는 -1 이다.
+//
+//long long 인 이유. 값은 (10000 + stage*1000 + stage^2*1000) * 배수 로 커지는데
+//BOX_REWARD4 는 배수가 1000 이라, 성이 46 개가 되면 int 를 넘겨 값이 음수가 된다.
+//음수 값은 robin.gold 에서 빼는 순간 골드가 늘어난다. 지금은 성이 32 개라 아직
+//안 넘지만, 넘는 날 티가 안 나는 종류의 사고다. robin.gold 도 long long 이다.
+//
+//default 가 필요한 이유. 없으면 목록에 없는 상자에서 쓰레기값이 나오고, 그 값이
+//그대로 값이 된다. 못 파는 상자는 -1 로 답하고 부르는 쪽이 거른다.
+long long GetBoxPrice(int detail, int grade)
 {
 	switch (detail) {
 	case BOX_REWARD0:
-		return 10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000;
+		return 10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL;
 	case BOX_REWARD1:	//카드 한장	//BOX_CHEST1
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000);
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL);
 	case BOX_REWARD2:	//카드 두장	//BOX_CHEST2
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 10;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 10;
 	case BOX_REWARD3:	//카드 세장	//BOX_CHEST3
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 100;
 	case BOX_REWARD4:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 1000;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 1000;
 	case BOX_REWARD5:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 10000;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 10000;
 	case BOX_REWARD6:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 100;
 	case BOX_REWARD7:
-		return (10000 + robin.stage * 1000 + robin.stage * robin.stage * 1000) * 100;
+		return (10000LL + robin.stage * 1000LL + (long long)robin.stage * robin.stage * 1000LL) * 100;
 	}
+
+	return -1;
 }
 
 int GetItemCategoryCnt(int category) {

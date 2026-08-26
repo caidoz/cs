@@ -132,7 +132,7 @@ int GetBoxCurrency(int, int);
 int GetBoxGold(int boxType);
 int GetBoxQuestItem(int boxType);
 int GetBoxHeartItem(int boxType);
-int GetBoxPrice(int, int);
+long long GetBoxPrice(int, int);
 
 int GetItemCategoryCnt(int category);
 int GetScrollDy(int);

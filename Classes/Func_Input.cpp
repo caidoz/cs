@@ -903,10 +903,28 @@ void PlayKey(int obj)
 		case AVK_SOFT1:
 			break;
 		case AVK_RESURRECTION:
-			robin.coin -= (arenaDeadCount + 1) * 10;
+		{
+			//----------------------------------------------------
+			// 아레나 부활. 코인을 내고 다시 선다.
+			//
+			// 예전에는 확인도 저장도 없이 robin.coin 을 바로 깎았다. 코인이
+			// 모자라도 깎여서 음수가 됐다. 지금은 이 키로 오는 길이 없어
+			// (TOUCH_FUNC_RESURRECTION 이 없다) 아무도 안 겪었지만, 길이
+			// 생기는 순간 드러나는 종류다.
+			//----------------------------------------------------
+			long long cost = (long long)(arenaDeadCount + 1) * 10;
+
+			if (robin.coin < cost) {
+				PlayMusic(M_ERROR);
+				break;
+			}
+
+			robin.coin -= cost;
 			ResurrectionEffect(&ao[raidPlayer]);
 			arenaDeadCount++;
 			PlayMusic(M_POWERUP);
+			SaveGame();
+		}
 			break;
 		case AVK_AUTOOFF:
 			autoPlay = false;
@@ -1468,8 +1486,22 @@ void PlayKey(int obj)
 		}
 		break;
 		case AVK_SKILLUPGRADE:
-			robin.gold -= skillUpgradeGold[menuCur * MAXSKILLLV + ao[PLAYER].skillLv[curSkill]] * GetBetHeart(collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 1], collectionData[menuCur * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 2], bet);
-			winUpgradeFrame = 1;
+			//----------------------------------------------------
+			// 스킬 강화는 아직 없다.
+			//
+			// 여기 있던 코드는 골드를 빼고 winUpgradeFrame 을 1 로 놓는
+			// 것이 전부였다. skillLv 는 어디서도 안 오르고 winUpgradeFrame
+			// 은 아무도 안 읽는다. 즉 골드만 가져가고 아무 일도 안 했다.
+			// 저장도 안 해서, 언제 사라지는지도 그때그때 달랐다.
+			//
+			// 지금은 TOUCH_FUNC_SKILL_UPGRADE 에 버튼이 안 붙어 있어 여기까지
+			// 못 온다. 그래서 아무도 손해를 안 봤다. 버튼을 붙이는 날 사고가
+			// 나므로, 기능을 만들 때까지 재화를 안 건드린다.
+			//
+			// 만들 때 할 일 - 값 확인, skillLv 올리기, GetItem 으로 차감,
+			// SaveGame. 넷이 한 자리에 있어야 한다.
+			//----------------------------------------------------
+			PlayMusic(M_ERROR);
 			break;
 		case AVK_GETREWARDSTART:
 			sequenceDelay = ATTACKDELAY_REWARD_TABTOCOLLECT + 1;
@@ -1535,10 +1567,36 @@ void PlayKey(int obj)
 			turn = PLAYER;
 			break;
 		case AVK_GOTOBATTLE:
+		{
+			//----------------------------------------------------
+			// 배틀 입장료
+			//
+			// 예전에는 AddBar 하나뿐이었다. 바는 연출이라 robin.heart 를
+			// 안 건드린다. 그래서 화면에서만 하트가 줄고, 다음에 바를
+			// robin 과 맞추는 순간(Func_System.cpp 의
+			// bar[BAR_HEART].count = robin.heart) 되돌아왔다.
+			// 입장료가 한 번도 걷힌 적이 없다 — GetStageAdmissionHeart()
+			// 를 쓰는 자리가 그 AddBar 하나였다.
+			//
+			// 값은 GetItem() 으로 뺀다. 바는 그 뒤를 따라가는 그림일 뿐이다.
+			//----------------------------------------------------
+			long long admission = GetStageAdmissionHeart(robin.stage);
+
+			if (robin.heart < admission) {
+				PlayMusic(M_ERROR);
+				break;
+			}
+
 			battleStartFrame = BATTLESTARTFRAME;
 			touchDisable = true;
-			AddBar(&bar[BAR_HEART], -GetStageAdmissionHeart(robin.stage), BARFRAME);
-			GotoBattle(); 
+
+			GetItem(ITEM_HEART, false, false, false, -admission, false);
+			AddBar(&bar[BAR_HEART], -admission, BARFRAME);
+
+			SaveGame();
+
+			GotoBattle();
+		}
 			break;
 		case AVK_NEWGAME:
 			NewGame();
@@ -1828,16 +1886,44 @@ void PlayKey(int obj)
 		case AVK_SHOP_BUYBOX1:
 		case AVK_SHOP_BUYBOX2:
 		case AVK_SHOP_BUYBOX3:
-			robin.gold -= GetBoxPrice(BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1, GRADE_NORMAL);
+		{
+			//----------------------------------------------------
+			// 상자 구매
+			//
+			// 살 수 있는지 여기서 다시 본다. 지금까지는 그리는 쪽에서만
+			// 봤는데(Func_Menu.cpp 의 SetRectPoint), 그 사이에 골드가 줄면
+			// 눌린 버튼이 그대로 처리된다. 값을 내는 자리에서 값을 확인해야
+			// 한다.
+			//
+			// 그리고 골드를 GetItem() 으로 뺀다. robin.gold 를 직접 만지면
+			// 음수 방어(Func_Item.cpp 의 ITEM_GOLD 처리)를 건너뛴다.
+			//
+			// 마지막으로 저장한다. 예전에는 여기서 골드만 빠지고 저장이
+			// 없었다. 상자를 여는 화면으로 넘어간 뒤 어딘가에서 저장이
+			// 돌면 골드는 나갔는데 상자는 못 받은 상태로 남는다.
+			//----------------------------------------------------
+			int boxDetail = BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1;
+			long long boxPrice = GetBoxPrice(boxDetail, GRADE_NORMAL);
+
+			if (boxPrice < 0 || robin.gold < boxPrice) {
+				PlayMusic(M_ERROR);
+				break;
+			}
+
+			GetItem(ITEM_GOLD, false, false, false, -boxPrice, false);
+
 			memset(&rewardItem, 0, sizeof(rewardItem));
 			memset(&rewardMark, 0, sizeof(rewardMark));
 			rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
-			rewardMark[0].detail = BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1;
+			rewardMark[0].detail = boxDetail;
 			rewardMark[0].grade = GRADE_NORMAL;
 			rewardItemCnt = 1;
 			boxCnt = 0;
 
+			SaveGame();
+
 			GotoGacha();
+		}
 			break;
 		case AVK_HOTKEYPRESS1:
 		case AVK_HOTKEYPRESS2:

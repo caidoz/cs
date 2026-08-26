@@ -2513,16 +2513,35 @@ void EnemySequenceDraw(void)
 			else if (attackDelay > ENEMYDELAY_COIN_PLAYER_ATTACK) {
 
 				if (attackDelay == ENEMYDELAY_COIN_ARMOR_RESULT - 1) {
-					if (bar[BAR_GOLD].count < -(bar[BAR_COIN].count + bar[BAR_COIN].add)) {
-						AddBar(&bar[BAR_GOLD], -(-(bar[BAR_COIN].count + bar[BAR_COIN].add) - bar[BAR_GOLD].count), BARFRAME);
-						//골드를 빼주고
-						GetItem(ITEM_GOLD, false, false, false, -(-(bar[BAR_COIN].count + bar[BAR_COIN].add) - bar[BAR_GOLD].count), false);
+					//------------------------------------------------
+					// 뺏긴(또는 얻은) 골드를 확정한다.
+					//
+					// 지금 이 값은 언제나 0 이다. BAR_COIN 에 바탕값을
+					// 넣던 줄이 주석 처리되어 있어서(Func_Movement.cpp 의
+					// AddBar(&bar[BAR_COIN], -dmgInfo[dmgIndex].dmg)),
+					// 살아 있는 코드 중에 이 바를 0 아닌 값으로 만드는
+					// 것이 하나도 없다. 위의 갑옷 계산도 0 에 비율을
+					// 곱하니 0 이다. 즉 이 자리는 아무 골드도 안 옮긴다.
+					//
+					// 그래도 고쳐 둔다. 그 줄을 다시 살리는 날, 아래 둘이
+					// 그대로면 조용히 틀린다.
+					//
+					//   - 자르는 기준이 robin.gold 가 아니라 화면에서
+					//     굴러가고 있는 골드 바였다. 바는 연출이라 실제
+					//     골드보다 늦다. 늦은 값으로 자르면 액수가 달라진다.
+					//   - 저장이 없었다. 골드는 옮겨졌는데 저장은 그 뒤
+					//     아무데나에 맡겨져 있었다.
+					//------------------------------------------------
+					long long coin = bar[BAR_COIN].count + bar[BAR_COIN].add;
 
-					}
-					else {
-						AddBar(&bar[BAR_GOLD], (bar[BAR_COIN].count + bar[BAR_COIN].add), BARFRAME);
-						GetItem(ITEM_GOLD, false, false, false, (bar[BAR_COIN].count + bar[BAR_COIN].add), false);
+					//음수면 뺏기는 것이다. 가진 것보다 더 뺏길 수는 없다.
+					if (coin < 0)
+						coin = -Min(-coin, robin.gold);
 
+					if (coin != 0) {
+						AddBar(&bar[BAR_GOLD], coin, BARFRAME);
+						GetItem(ITEM_GOLD, false, false, false, coin, false);
+						SaveGame();
 					}
 				}
 
@@ -2983,8 +3002,17 @@ void RaidSequenceDraw(void)
 		//10. 철수 준비를 한 다음에
 		else if (attackDelay > ATTACKDELAY_RAIDREWARD_WARP) {
 			if (attackDelay == ATTACKDELAY_RAIDREWARD_GOLDTIME - 1) {
-				AddBar(&bar[BAR_GOLD], (bar[BAR_COIN].count + bar[BAR_COIN].add), BARFRAME);
-				GetItem(ITEM_GOLD, false, false, false, (bar[BAR_COIN].count + bar[BAR_COIN].add), false);
+				//약탈해 온 골드를 확정한다. 위(EnemySequenceDraw)와 같은
+				//이유로 지금은 언제나 0 이고, 같은 이유로 고쳐 둔다.
+				//
+				//이 길은 하우스(MD_RAID) 쪽이라 PvP 를 만들 때 다시 본다.
+				long long coin = bar[BAR_COIN].count + bar[BAR_COIN].add;
+
+				if (coin != 0) {
+					AddBar(&bar[BAR_GOLD], coin, BARFRAME);
+					GetItem(ITEM_GOLD, false, false, false, coin, false);
+					SaveGame();
+				}
 			}
 		}
 		//16. 워프로 달려가면 된다. FPS
