@@ -1369,6 +1369,26 @@ int MakeItemValue(int type, int detail, int grade, int lv)
 	return rt;
 }
 
+//itemUpgradeValue의 detail 축은 장비군마다 0~7 단계다. 로빈 검만 외형이
+//0~35로 세분되어 있으므로 검 외형 세 칸을 능력치 한 단계로 환산한다.
+int GetItemUpgradeValue(int type, int detail, int grade, int lv)
+{
+	if (type < 0 || type >= ITEM_NECK)
+		return 0;
+
+	if (type == ITEM_SWORD)
+		detail /= 3;
+
+	detail = Max(0, Min(TOTAL_COLLECTIONS - 1, detail));
+	lv = Max(0, Min(ITEMMAXLEVEL, lv));
+
+	//실제 표 크기는 18종 * 24 detail * 6 level이다. grade 축은 존재하지 않는다.
+	//예전 식은 grade를 끼워 넣어 detail이 커질수록 다음 장비군/배열 밖을 읽었다.
+	(void)grade;
+	return itemUpgradeValue[type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1)
+		+ detail * (ITEMMAXLEVEL + 1) + lv];
+}
+
 int MakeItemId(void)
 {
 	//아이템 고유 아이디를 넣어준다.
@@ -1829,7 +1849,52 @@ int GetItemPow(int type, int detail, int cooldown)
 		ratio = itemRatio[EQUIP_RING];
 		break;
 	}
-	value = itemPow[itemLevelLimit[2 * detail + 1] + cooldown] * ratio / 100;
+	//----------------------------------------------------------------------
+	// 이 무기가 몇 번째 자루인가. itemPow 에서 그 자리를 찾는다.
+	//
+	// 예전에는 itemLevelLimit[2 * detail + 1] 을 그대로 썼다. 그 표는 16 칸
+	// (여덟 자루분)뿐인데 검은 detail 이 35 개다. 여덟 자루째부터 남의
+	// 메모리를 읽어 공격력이 아무 값이나 됐다.
+	//
+	// 표 안이면 표를 따르고, 밖이면 그 표가 그리던 규칙을 잇는다 - 자루
+	// 하나에 다섯 칸씩이다(0, 5, 10, ... 35). itemPow 는 220 칸이라 마흔네
+	// 자루까지 닿는다.
+	//----------------------------------------------------------------------
+	{
+		int base;
+		long long raw;
+
+		if (2 * detail + 1 < itemLevelLimit_COUNT)
+			base = itemLevelLimit[2 * detail + 1];
+		else
+			base = detail * ITEMPOW_PER_TIER;
+
+		if (base < 0)
+			base = 0;
+
+		if (base >= itemPow_COUNT)
+			base = itemPow_COUNT - 1;
+
+		//------------------------------------------------------------------
+		// 강화는 표를 한 칸씩 밀지 않는다. 배율을 곱한다.
+		//
+		// 예전에는 itemPow[base + cooldown] 이었다. 그 표가 +1 씩 오르는
+		// 등차라, 다섯 레벨을 올려도 +4 였다. 그런데 자루 사이는 +5 다.
+		// 강화보다 새 자루를 줍는 편이 언제나 나아서 강화할 이유가 없었다.
+		//
+		// 방어구와 같은 표를 본다(EquipLevelMul). 같은 "레벨 5" 가 부위마다
+		// 다른 뜻이면 밸런스를 잡을 수 없다.
+		//------------------------------------------------------------------
+		raw = (long long)itemPow[base] * ratio / 100;
+
+		if (cooldown > 0) {
+			long long scaled = RoundDiv(raw * EquipLevelMul(cooldown), 100);
+
+			raw = Max(raw + cooldown, scaled);
+		}
+
+		value = (int)raw;
+	}
 
 	return value;
 }
@@ -1885,6 +1950,9 @@ long long GetCrewPower(int detail, int lv)
 	int skillIdx;
 	int valueIdx;
 	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
+	long long rawValue;
+	long long minValue = 0x7fffffffffffffffLL;
+	long long maxCrewValue = 0;
 
 	if (detail < 0 || detail >= gTotalCrew)
 		return 0;
@@ -1901,7 +1969,25 @@ long long GetCrewPower(int detail, int lv)
 	if (valueIdx >= maxValue)
 		valueIdx = maxValue - 1;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+	rawValue = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+
+	for (int i = 0; i < gTotalCrew; i++) {
+		int crewSkill = crewData[i * CREWDATASIZE + CREWDATA_SKILL1];
+		if (crewSkill < 0 || crewSkill >= gTotalSkill)
+			continue;
+		long long v = skillData[crewSkill * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+		minValue = Min(minValue, v);
+		maxCrewValue = Max(maxCrewValue, v);
+	}
+
+	//기존 공격력 표는 동료의 강약 순서로 쓰고, 실제 범위는 10부터
+	//로빈의 가장 강한 검 기본 공격력의 절반까지 선형 배치한다.
+	long long strongestCrew = Max(10LL,
+		(long long)MakeItemValue(ITEM_SWORD, TOTAL_SWORD - 1, GRADE_NORMAL, 1) / 2);
+	if (minValue == 0x7fffffffffffffffLL || maxCrewValue <= minValue)
+		return Max(10LL, Min(strongestCrew, rawValue));
+
+	return 10 + (rawValue - minValue) * (strongestCrew - 10) / (maxCrewValue - minValue);
 }
 
 //==========================================================================
@@ -1915,6 +2001,43 @@ int GetEquipMaxLevel(void)
 {
 	//표의 한 줄이 레벨마다 두 칸(조각, 골드)을 쓴다.
 	return upgradeCostEquip_COLS / 2;
+}
+
+//강화 배율. 표는 Config/BalanceConfig.h 에 있다.
+int EquipLevelMul(int lv)
+{
+	static const unsigned short mul[] = { EQUIP_LEVEL_MUL_LIST };
+	const int cnt = (int)(sizeof(mul) / sizeof(mul[0]));
+
+	if (lv < 0)
+		lv = 0;
+
+	if (lv >= cnt)
+		lv = cnt - 1;
+
+	return mul[lv];
+}
+
+//강화까지 반영한 장비 한 점의 값.
+//
+//곱하기만 하면 작은 값이 제자리걸음을 한다. 값이 5 인 장비를 한 레벨
+//올리면 5 * 104 / 100 = 5 다. 올렸는데 그대로면 고장으로 보인다.
+//그래서 적어도 레벨 수만큼은 오르게 한다.
+long long GetEquipValue(ITEM* it)
+{
+	long long base, scaled;
+
+	if (it == NULL || it->type == EMPTY)
+		return 0;
+
+	base = it->value;
+
+	if (it->cooldown <= 0)
+		return base;
+
+	scaled = RoundDiv(base * EquipLevelMul(it->cooldown), 100);
+
+	return Max(base + it->cooldown, scaled);
 }
 
 //이번 레벨업에 드는 값. what이 0이면 조각 수, 1이면 골드다.

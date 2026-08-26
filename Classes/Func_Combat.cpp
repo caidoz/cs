@@ -216,16 +216,13 @@ void RefreshStat(OBJECT* pObj)
 			if (i > EQUIP_WEAPON && i < EQUIP_NECK) {
 				long long armorValue;
 
-				//강화 반영. 값이 작을 때 배율을 쓰면 소수점이 잘려서 한
-				//단계를 올려도 그대로다. 그래서 작은 값만 덧셈으로 올린다.
-				if (it->cooldown) {
-					if (it->value < 10)
-						armorValue = RoundDiv((it->value + it->cooldown) * mod, 100);
-					else
-						armorValue = RoundDiv(RoundDiv(it->value * (100 + it->cooldown * 10), 100) * mod, 100);
-				}
-				else
-					armorValue = RoundDiv(it->value * mod, 100);
+				//강화 반영. 무기와 같은 표를 본다(EquipLevelMul).
+				//
+				//예전에는 여기가 레벨당 +10% 였고 무기는 +1 씩 등차였다.
+				//같은 "레벨 5" 가 부위마다 다른 뜻이라 밸런스를 잡을 수
+				//없었다. 작은 값이 제자리걸음 하는 것도 GetEquipValue 가
+				//한 곳에서 막는다.
+				armorValue = RoundDiv(GetEquipValue(it) * mod, 100);
 
 				switch (i) {
 				case EQUIP_HELM:

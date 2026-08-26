@@ -17,6 +17,7 @@ int MakeItemLevel(int, int);
 int MakeItemDetail(int, int);
 int MakeItemGrade(int, int, int);
 int MakeItemValue(int, int, int, int);
+int GetItemUpgradeValue(int type, int detail, int grade, int lv);
 int MakeItemId(void);
 int GetItem(int, int, int, int, long long, int);
 int GetHeroCnt(void);
@@ -47,6 +48,19 @@ long long GetCrewPower(int detail, int lv);
 // 동료 쪽과 같은 얼개다. 비용표도 같은 모양이다.
 //     upgradeCostEquip[별 - 1][레벨 * 2 + (0:조각, 1:골드)]
 int GetEquipMaxLevel(void);
+
+//강화 배율. 기본 수치에 이것을 곱하면 그 레벨의 값이다. 100 이 등가다.
+//
+//무기와 방어구가 같은 표를 본다. 예전에는 무기는 등차(+1/레벨), 방어구는
+//등비(+10%/레벨)로 서로 다르게 굴어서, 같은 "레벨 5" 가 부위마다 다른 뜻
+//이었다. 표는 Config/BalanceConfig.h 에 있다.
+int EquipLevelMul(int lv);
+
+//강화까지 반영한 장비 한 점의 값.
+//
+//부르는 쪽이 배율을 직접 곱하지 않게 한다. 곱하는 자리가 여럿이면 한 곳을
+//고치고 다른 곳을 잊는다 - 실제로 무기와 방어구가 그렇게 갈라져 있었다.
+long long GetEquipValue(ITEM* it);
 long long GetEquipUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
 bool CanEquipLevelUp(ITEM* it);
 
