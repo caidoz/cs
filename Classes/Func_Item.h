@@ -56,6 +56,9 @@ int GetEquipMaxLevel(void);
 //이었다. 표는 Config/BalanceConfig.h 에 있다.
 int EquipLevelMul(int lv);
 
+//동료 강화 배율. 장비와 같은 표를 본다.
+int CrewLevelMul(int lv);
+
 //강화까지 반영한 장비 한 점의 값.
 //
 //부르는 쪽이 배율을 직접 곱하지 않게 한다. 곱하는 자리가 여럿이면 한 곳을

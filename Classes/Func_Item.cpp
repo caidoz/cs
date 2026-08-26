@@ -334,8 +334,9 @@ void MakeBoxDropPercent(void)
 	int i, j;
 
 	for (i = 0; i < TOTAL_BOX; i++) {
+		int sourceRow = Min(i, boxDropProc_ROWS - 1);
 		for (j = 0; j < TOTAL_BOXDROP; j++) {
-			boxDropPercent[i][j] = (j == 0 ? (float)boxDropProc[i][j] / 100 : (float)(boxDropProc[i][j] - boxDropProc[i][j - 1]) / 100);
+			boxDropPercent[i][j] = (j == 0 ? (float)boxDropProc[sourceRow][j] / 100 : (float)(boxDropProc[sourceRow][j] - boxDropProc[sourceRow][j - 1]) / 100);
 		}
 	}
 }
@@ -1943,16 +1944,49 @@ bool CanCrewLevelUp(ITEM* it)
 	return (long long)it->count >= needPiece && robin.gold >= needGold;
 }
 
-//동료의 공격력. 동료의 첫 번째 스킬이 레벨별로 들고 있는 값이 그대로 공격력이다
-//(SKILLDATA_VALUE_LV1..LV15). lv는 1부터라 첨자는 하나 뺀다.
+//동료 강화 배율. 장비와 같은 표다. Config/BalanceConfig.h 에 있다.
+int CrewLevelMul(int lv)
+{
+	static const unsigned short mul[] = { CREW_LEVEL_MUL_LIST };
+	const int cnt = (int)(sizeof(mul) / sizeof(mul[0]));
+
+	//동료 레벨은 1 부터다. 1 이 강화 안 한 것이라 첨자를 하나 뺀다.
+	lv--;
+
+	if (lv < 0)
+		lv = 0;
+
+	if (lv >= cnt)
+		lv = cnt - 1;
+
+	return mul[lv];
+}
+
+//동료의 공격력.
+//
+//그 동료의 기본 수치(첫 스킬의 LV1 값)에 강화 배율을 곱한다. 그것이 전부다.
+//
+//[여기 있던 것을 왜 걷어냈나]
+//
+//전에는 두 가지를 식으로 하고 있었다.
+//
+//  1. 레벨마다 모든 동료의 최소/최대를 다시 재서 [10, S] 구간으로 폈다.
+//  2. S 는 로빈의 가장 강한 검 기본값의 절반이었다.
+//
+//1 번 탓에 동료 레벨업이 공격력을 거의 안 올렸다. 레벨이 올라도 그 레벨의
+//최소/최대로 다시 펴니, 동료들 사이의 순위가 같으면 lv1 이나 lv15 나 같은
+//값이 나왔다. 카드와 골드를 태워도 세지지 않았다.
+//
+//2 번은 "동료가 로빈보다 세면 안 된다" 는 규칙을 식에 박은 것이다. 규칙을
+//식에 박으면 데이터를 아무리 고쳐도 식이 도로 눌러버린다. 강약은 데이터가
+//말해야 한다 - 낮은 장비를 낀 로빈이 좋은 동료를 얻었으면 동료가 더 센 것이
+//맞다.
+//
+//동료 사이의 강약도 데이터에 있다. skillData 의 LV1 값이 그 순서다.
 long long GetCrewPower(int detail, int lv)
 {
 	int skillIdx;
-	int valueIdx;
-	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
-	long long rawValue;
-	long long minValue = 0x7fffffffffffffffLL;
-	long long maxCrewValue = 0;
+	long long base;
 
 	if (detail < 0 || detail >= gTotalCrew)
 		return 0;
@@ -1962,32 +1996,13 @@ long long GetCrewPower(int detail, int lv)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	valueIdx = lv - 1;
+	base = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
 
-	if (valueIdx < 0)
-		valueIdx = 0;
-	if (valueIdx >= maxValue)
-		valueIdx = maxValue - 1;
+	if (base <= 0)
+		return 0;
 
-	rawValue = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
-
-	for (int i = 0; i < gTotalCrew; i++) {
-		int crewSkill = crewData[i * CREWDATASIZE + CREWDATA_SKILL1];
-		if (crewSkill < 0 || crewSkill >= gTotalSkill)
-			continue;
-		long long v = skillData[crewSkill * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
-		minValue = Min(minValue, v);
-		maxCrewValue = Max(maxCrewValue, v);
-	}
-
-	//기존 공격력 표는 동료의 강약 순서로 쓰고, 실제 범위는 10부터
-	//로빈의 가장 강한 검 기본 공격력의 절반까지 선형 배치한다.
-	long long strongestCrew = Max(10LL,
-		(long long)MakeItemValue(ITEM_SWORD, TOTAL_SWORD - 1, GRADE_NORMAL, 1) / 2);
-	if (minValue == 0x7fffffffffffffffLL || maxCrewValue <= minValue)
-		return Max(10LL, Min(strongestCrew, rawValue));
-
-	return 10 + (rawValue - minValue) * (strongestCrew - 10) / (maxCrewValue - minValue);
+	//작은 값이 제자리걸음 하지 않게. 장비(GetEquipValue)와 같은 규칙이다.
+	return Max(base + (lv - 1), RoundDiv(base * CrewLevelMul(lv), 100));
 }
 
 //==========================================================================
