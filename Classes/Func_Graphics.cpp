@@ -4671,13 +4671,21 @@ int GetMaxShield(void)
 	//return Min(MAXSHIELD, MINSHIELD + (robin.stage * TOTALROOM + robin.room) / 10);
 }
 
-//하트 상한.
+//하트 상한. 레벨 하나에 HEART_MAX_PER_LEVEL 씩 는다.
 //
-//하트 패스가 켜져 있으면 50 을 더 준다. 상한이 늘면 자리를 비우러 자주
-//들어올 필요가 줄고, 한 번에 오래 놀 수 있다. 그것이 이 상품이 파는 것이다.
+//열 레벨마다 한 계단씩 밟았었다.
+//
+//    50 + ((robin.lv + 1) / 10) * 10
+//
+//레벨이 오르는 길이 아예 없던 동안에는 어느 쪽이든 같았다. 이제 적을 잡으면
+//오르므로, 계단이면 아홉 번은 올려도 아무 일이 없고 열 번째만 뛴다. 올린
+//보람이 열 번에 한 번만 오는 셈이다.
+//
+//하트 패스가 켜져 있으면 더 준다. 상한이 늘면 자리를 비우러 자주 들어올
+//필요가 줄고 한 번에 오래 놀 수 있다. 그것이 그 상품이 파는 것이다.
 int GetInitHeart(void)
 {
-	int init = 50 + ((robin.lv + 1) / 10) * 10;
+	int init = HEART_MAX_BASE + robin.lv * HEART_MAX_PER_LEVEL;
 
 	if (IapHeartPass())
 		init += HEARTPASS_MAXBONUS;
@@ -4685,12 +4693,13 @@ int GetInitHeart(void)
 	return init;
 }
 
-//시간이 지날 때 차오르는 양.
+//시간이 지날 때 차오르는 양. 레벨 하나에 HEART_REGEN_PER_LEVEL 씩 는다.
 //
-//하트 패스가 켜져 있으면 두 배다.
+//상한과 같은 이유로 계단을 없앴다. 상한만 레벨마다 늘고 회복은 열 레벨마다
+//늘면, 레벨이 오를수록 가득 채우는 데 걸리는 시간이 길어진다.
 int GetHeartAmount(void)
 {
-	int amount = 10 + ((robin.lv + 1) / 10);
+	int amount = HEART_REGEN_BASE + robin.lv * HEART_REGEN_PER_LEVEL;
 
 	if (IapHeartPass())
 		amount *= HEARTPASS_REGENMUL;
