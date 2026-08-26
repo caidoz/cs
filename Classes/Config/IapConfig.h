@@ -81,22 +81,37 @@ enum {
 //글자 하나까지 같아야 한다. 서버의 product 표의 product_id 와도 같다.
 //셋이 어긋나면 결제는 되고 지급이 안 된다 — 제일 나쁜 고장이다.
 //서버의 product 표와 글자 하나까지 같아야 한다.
+//서버의 product 표, 그리고 스토어에 등록할 ID 와 글자 하나까지 같아야 한다.
+//
+//셋째 칸은 스토어가 답하기 전에 띄울 이름이다. 스토어가 답하면 그쪽
+//이름으로 바뀐다 - 나라마다 다른 말로 보여야 하기 때문이다.
 #define IAP_PRODUCT_LIST \
-	X(IAP_COIN_01,     "coin_01") \
-	X(IAP_COIN_02,     "coin_02") \
-	X(IAP_COIN_03,     "coin_03") \
-	X(IAP_COIN_04,     "coin_04") \
-	X(IAP_COIN_05,     "coin_05") \
-	X(IAP_COIN_06,     "coin_06") \
-	X(IAP_HEART_01,    "heart_01") \
-	X(IAP_HEART_02,    "heart_02") \
-	X(IAP_HEART_03,    "heart_03") \
-	X(IAP_HEART_04,    "heart_04") \
-	X(IAP_HEART_05,    "heart_05") \
-	X(IAP_HEART_06,    "heart_06") \
-	X(IAP_PASS_HEART,  "pass_heart_30") \
-	X(IAP_PASS_GROWTH, "pass_growth_30") \
-	X(IAP_STARTER,     "starter") \
-	X(IAP_INVEN_20,    "inven_20")
+	X(IAP_COIN_01,     "coin_01",        "코인 1,000") \
+	X(IAP_COIN_02,     "coin_02",        "코인 2,200") \
+	X(IAP_COIN_03,     "coin_03",        "코인 6,000") \
+	X(IAP_COIN_04,     "coin_04",        "코인 25,000") \
+	X(IAP_COIN_05,     "coin_05",        "코인 65,000") \
+	X(IAP_COIN_06,     "coin_06",        "코인 140,000") \
+	X(IAP_HEART_01,    "heart_01",       "하트 100") \
+	X(IAP_HEART_02,    "heart_02",       "하트 300") \
+	X(IAP_HEART_03,    "heart_03",       "하트 1,000") \
+	X(IAP_HEART_04,    "heart_04",       "하트 5,000") \
+	X(IAP_HEART_05,    "heart_05",       "하트 15,000") \
+	X(IAP_HEART_06,    "heart_06",       "하트 50,000") \
+	X(IAP_PASS_HEART,  "pass_heart_30",  "하트 패스 30일") \
+	X(IAP_PASS_GROWTH, "pass_growth_30", "성장 패스 30일") \
+	X(IAP_STARTER,     "starter",        "초심자 패키지") \
+	X(IAP_INVEN_20,    "inven_20",       "가방 +20칸")
+
+//상품 번호.
+//
+//목록과 같은 자리에 둔다. TouchKeyDef.h 가 상품 개수만큼 터치 자리를
+//잡아야 해서, Func_Iap.h 보다 앞에서 알 수 있어야 한다.
+#define X(name, id, label)	name,
+typedef enum _iapProduct {
+	IAP_PRODUCT_LIST
+	TOTALIAPPRODUCT,
+} IAPPRODUCTDEF;
+#undef X
 
 #endif

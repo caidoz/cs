@@ -1892,6 +1892,23 @@ void PlayKey(int obj)
 			stageInfoDepth = STAGEINFO_STAGECLEAR;
 			stageInfoFrame = 0;
 			break;
+		}
+
+		//----------------------------------------------------------------
+		// 현금 상품
+		//
+		// 여기서는 시작만 한다. 스토어 답을 기다리고, 서버에 영수증을
+		// 보내고, 못 보내면 다시 보내는 것은 전부 Func_Iap.cpp 가 한다.
+		// 그쪽이 대기 장부를 들고 있어서, 여기서 앱이 죽어도 이어진다.
+		//----------------------------------------------------------------
+		if (systemKey >= AVK_SHOP_IAP && systemKey <= AVK_SHOP_IAP_END) {
+			if (IapBuy(systemKey - AVK_SHOP_IAP))
+				PlayMusic(M_SELECT);
+			else
+				PlayMusic(M_ERROR);
+		}
+
+		switch (systemKey) {
 		case AVK_SHOP_BUYBOX1:
 		case AVK_SHOP_BUYBOX2:
 		case AVK_SHOP_BUYBOX3:
@@ -3269,6 +3286,13 @@ void touchFunc(int func)
 		case TOUCH_FUNC_NEWSTAGE:
 			systemKey = AVK_NEWSTAGE;
 			break;
+		}
+
+		//현금 상품. 자리가 상품 수만큼이라 범위로 받는다.
+		if (func >= TOUCH_FUNC_SHOP_IAP && func <= TOUCH_FUNC_SHOP_IAP_END)
+			systemKey = AVK_SHOP_IAP + (func - TOUCH_FUNC_SHOP_IAP);
+
+		switch (func) {
 		case TOUCH_FUNC_SHOP_BUYBOX1:
 		case TOUCH_FUNC_SHOP_BUYBOX2:
 		case TOUCH_FUNC_SHOP_BUYBOX3:

@@ -37,11 +37,44 @@ static int sRetryWait = 0;
 static int sSending = -1;		//지금 서버에 보내는 중인 대기 번호. 없으면 -1
 
 //상품 문자열 표.
-#define X(name, id)		id,
+#define X(name, id, label)		id,
 static const char* sProductId[TOTALIAPPRODUCT] = {
 	IAP_PRODUCT_LIST
 };
 #undef X
+
+//스토어가 답하기 전에 띄울 이름.
+#define X(name, id, label)		label,
+static const char* sProductLabel[TOTALIAPPRODUCT] = {
+	IAP_PRODUCT_LIST
+};
+#undef X
+
+//스토어가 준 것. 답하기 전에는 비어 있다.
+//
+//나라마다 다른 말과 값으로 보여야 하므로 이쪽이 정답이다. 여기 값을 클라
+//이언트에 적어두면 해외에서 틀린 값이 뜬다.
+static std::string sStoreName[TOTALIAPPRODUCT];
+static std::string sStorePrice[TOTALIAPPRODUCT];
+
+const char* IapProductName(int product)
+{
+	if (product < 0 || product >= TOTALIAPPRODUCT)
+		return "";
+
+	if (!sStoreName[product].empty())
+		return sStoreName[product].c_str();
+
+	return sProductLabel[product];
+}
+
+const char* IapPriceText(int product)
+{
+	if (product < 0 || product >= TOTALIAPPRODUCT)
+		return "";
+
+	return sStorePrice[product].c_str();
+}
 
 //---- 패스 ----
 //

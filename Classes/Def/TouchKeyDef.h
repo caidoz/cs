@@ -3,6 +3,9 @@
 #ifndef _DEF_TOUCHKEY_H_
 #define _DEF_TOUCHKEY_H_
 
+//현금 상품 자리를 상품 개수만큼 잡는다.
+#include "../Config/IapConfig.h"
+
 typedef enum _touchFuncDef {
 
 	BOSSRAID_ROYALFAMILY = 0,	//로얄패밀리
@@ -315,6 +318,10 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_STAGEFAILED,
 	TOUCH_FUNC_NEWSTAGE,
 
+	//현금 상품. 상품 하나에 자리 하나다. 목록은 Config/IapConfig.h 에 있다.
+	TOUCH_FUNC_SHOP_IAP,
+	TOUCH_FUNC_SHOP_IAP_END = TOUCH_FUNC_SHOP_IAP + TOTALIAPPRODUCT - 1,
+
 	TOUCH_FUNC_SHOP_BUYBOX1,
 	TOUCH_FUNC_SHOP_BUYBOX2,
 	TOUCH_FUNC_SHOP_BUYBOX3,
@@ -510,6 +517,10 @@ typedef enum _touchKeyDef {
 	AVK_STAGEREWARD,
 	AVK_STAGEFAILED,
 	AVK_NEWSTAGE,
+
+	//현금 상품. 상품 하나에 키 하나다.
+	AVK_SHOP_IAP,
+	AVK_SHOP_IAP_END = AVK_SHOP_IAP + TOTALIAPPRODUCT - 1,
 
 	AVK_SHOP_BUYBOX1,
 	AVK_SHOP_BUYBOX2,

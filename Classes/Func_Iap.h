@@ -44,14 +44,6 @@
 // 클라이언트는 그것으로 덮는다. 더하는 자리가 하나뿐이면 두 번 더할 일이 없다.
 //=============================================================================
 
-//상품 번호. 문자열은 IapConfig.h 에 있다.
-#define X(name, id)		name,
-typedef enum _iapProduct {
-	IAP_PRODUCT_LIST
-	TOTALIAPPRODUCT,
-} IAPPRODUCTDEF;
-#undef X
-
 //대기 한 건의 상태.
 typedef enum _iapState {
 	IAPSTATE_NONE = 0,
@@ -110,7 +102,21 @@ bool IapGrowthPass(void);
 //패스가 언제까지인지. 화면에 "n일 남음" 을 띄울 때 쓴다. 없으면 0.
 long IapPassUntil(bool growth);
 
-//상품의 스토어 ID. 화면과 로그에 쓴다.
+//상품의 스토어 ID. 로그와 서버에 보낼 때 쓴다.
 const char* IapProductId(int product);
+
+//화면에 띄울 이름.
+//
+//스토어가 답했으면 스토어가 준 이름이다. 아직이면 IapConfig.h 에 적어둔
+//것을 쓴다. 나라마다 다른 말로 보여야 하므로 스토어 쪽이 정답이다.
+const char* IapProductName(int product);
+
+//화면에 띄울 값.
+//
+//스토어가 준 현지 통화 문자열이다("₩5,500", "$3.99"). 아직이면 빈 문자열이다.
+//
+//값을 클라이언트에 적어두면 안 된다. 스토어가 나라와 환율에 따라 정하고
+//바꾼다. 적어둔 숫자를 띄우면 해외에서 틀린 값이 뜨고 심사에서도 걸린다.
+const char* IapPriceText(int product);
 
 #endif

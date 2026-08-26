@@ -5969,6 +5969,143 @@ void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 }
 
 
+//=============================================================================
+// 현금 상점
+//
+// 값과 이름을 여기 적지 않는다. 스토어가 준 것을 그대로 띄운다. 나라마다
+// 다른 말과 통화로 보여야 하고, 애플과 구글이 환율에 따라 바꾸기 때문이다.
+// 스토어가 아직 답을 안 했으면 IapConfig.h 에 적어둔 이름과 "준비 중" 을
+// 띄운다.
+//
+// 사용자가 돈을 낸 뒤 화면에 아무 말이 없는 것이 제일 나쁘다. 그래서 아직
+// 못 받은 결제가 있으면 맨 위에 그것부터 알린다.
+//=============================================================================
+
+//한 칸의 높이와 사이 간격.
+static const float SHOPIAP_ROWH = 46.0f;
+static const float SHOPIAP_GAP = 4.0f;
+
+//구역 제목과 그 구역의 첫 상품, 상품 수.
+typedef struct _shopIapGroup {
+	const char* title;
+	int first;
+	int count;
+} SHOPIAPGROUP;
+
+static const SHOPIAPGROUP shopIapGroup[] = {
+	{ "코인",   IAP_COIN_01,    6 },
+	{ "하트",   IAP_HEART_01,   6 },
+	{ "패스",   IAP_PASS_HEART, 2 },
+	{ "특별",   IAP_STARTER,    2 },
+};
+
+//한 줄을 그리고 터치 자리를 잡는다.
+static void ShopIapRow(int product, float x, float y, float w, float h, float zoom)
+{
+	const char* name = IapProductName(product);
+	const char* price = IapPriceText(product);
+	float pad = 10.0f * zoom;
+
+	//바탕
+	MemRect(x, y, w, h, 0x4A3018);
+	MemRectFrameThick(x, y, w, h, 0x6E4A28, 1.0f * zoom);
+
+	//이름
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem(name, x + pad, y - h / 2 + (float)FONT_HEIGHT * zoom / 2, zoom, LEFT, true);
+
+	//값. 스토어가 아직 답을 안 했으면 그렇다고 적는다.
+	//
+	//빈칸으로 두면 "공짜인가" 로 읽힌다. 값을 모른다는 것을 말해야 한다.
+	{
+		const char* right = (price && price[0]) ? price : "준비 중";
+		float bw = 92.0f * zoom;
+		float bx = x + w - pad - bw;
+
+		//살 수 있는 상태인가. 스토어가 아직이거나 다른 결제가 도는 중이면 못 산다.
+		bool can = (price && price[0]) && !IapIsBusy();
+
+		MemRect(bx, y - (h - 12.0f * zoom) / 2 + (h - 12.0f * zoom) / 2,
+			bw, h - 12.0f * zoom, can ? 0x2E7D32 : 0x555555);
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStr(right, bx + bw / 2,
+			y - h / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+
+		if (can)
+			SetRectPoint(bx, y, bw, h - 12.0f * zoom, TOUCH_FUNC_SHOP_IAP + product);
+	}
+}
+
+//현금 상점 전체.
+static void ShopIapDraw(float x, float y, float w, float h, float zoom)
+{
+	float pad = 14.0f * zoom;
+	float rowW = w - pad * 2;
+	float cy = y - 118.0f * zoom;		//제목 아래에서 시작한다
+	float bottom = y - h + pad;
+	char buf[128];
+	int g, i;
+
+	//---- 아직 못 받은 결제 ----
+	//
+	//돈은 나갔는데 아직 못 받은 것이 있으면 그것부터 알린다. 조용히 있으면
+	//사용자는 돈만 날린 줄 안다.
+	if (IapPendingCount() > 0) {
+		float bh = 34.0f * zoom;
+
+		MemRect(x + pad, cy, rowW, bh, 0x8A5A12);
+		SetFontColor(COLOR_WHITE);
+		sprintf(buf, "받는 중입니다 (%d건)", IapPendingCount());
+		CenterTextStr(buf, x + w / 2, cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+
+		cy -= bh + SHOPIAP_GAP * zoom;
+	}
+
+	//---- 패스가 켜져 있으면 남은 날 ----
+	for (i = 0; i < 2; i++) {
+		bool on = i == 0 ? IapHeartPass() : IapGrowthPass();
+		long until = IapPassUntil(i != 0);
+		float bh = 28.0f * zoom;
+
+		if (!on)
+			continue;
+
+		MemRect(x + pad, cy, rowW, bh, 0x2B4A6E);
+		SetFontColor(COLOR_WHITE);
+		sprintf(buf, "%s 남은 %d일", i == 0 ? "하트 패스" : "성장 패스",
+			(int)((until - (long)MC_knlCurrentTimeStamp()) / 86400) + 1);
+		CenterTextStr(buf, x + w / 2, cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+
+		cy -= bh + SHOPIAP_GAP * zoom;
+	}
+
+	//---- 상품 ----
+	for (g = 0; g < (int)(sizeof(shopIapGroup) / sizeof(shopIapGroup[0])); g++) {
+		float rh = SHOPIAP_ROWH * zoom;
+
+		if (cy - 24.0f * zoom < bottom)
+			break;
+
+		SetFontColor(COLOR_YELLOW);
+		DrawTextStrSystem(shopIapGroup[g].title, x + pad,
+			cy - 20.0f * zoom + (float)FONT_HEIGHT * zoom / 2, zoom, LEFT, true);
+
+		cy -= 24.0f * zoom;
+
+		for (i = 0; i < shopIapGroup[g].count; i++) {
+			//아래로 넘치면 그만 그린다. 스크롤은 다음에 붙인다.
+			if (cy - rh < bottom)
+				break;
+
+			ShopIapRow(shopIapGroup[g].first + i, x + pad, cy, rowW, rh, zoom);
+			cy -= rh + SHOPIAP_GAP * zoom;
+		}
+	}
+
+	SetFontColor(COLOR_WHITE);
+}
+
 void ShopDraw(int x, int y, float zoom)
 {
 	int i;
@@ -5990,6 +6127,8 @@ void ShopDraw(int x, int y, float zoom)
 	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
 	//그안에 테두리
 	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
+
+	ShopIapDraw(x, y, WINX, WINY, zoom);
 
 	return;
 
