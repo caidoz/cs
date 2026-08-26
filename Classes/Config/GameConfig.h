@@ -18,7 +18,9 @@ typedef enum _gameConfig {
 	STATUS_CHANGE_DATA3,
 	STATUS_CHANGE_LENGTH,
 
-	MAXSTATUS = 19,
+	//실제 CMF 상태 수는 c102가 최대 29개다. 19칸일 때 CmfRead()가
+	//다음 CMF의 [0] 상태까지 덮어써서(c11 -> c12 등) 뉴트럴 모션이 뒤섞였다.
+	MAXSTATUS = 32,
 
 	//초기화 플래그 디파인
 	SET_DIR_PLAYER = 64,

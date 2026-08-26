@@ -43,6 +43,11 @@ void CmfRead(int wh, int idx)
 	int i;
 	while (cmfMoveInfo[idx][dataPos] >= 0) {
 		int stateFrames = cmfMoveInfo[idx][dataPos];
+		if (dataIdx >= MAXSTATUS || stateFrames * 3 + 2 > 1024) {
+			CCLOG("CmfRead: cmf %d state %d exceeds runtime buffer (frames=%d)",
+				idx, dataIdx, stateFrames);
+			break;
+		}
 		for (i = dataPos; i < dataPos + (stateFrames * 3 + 2); i++)
 			cmf_status_data[wh][dataIdx][i - dataPos] = cmfMoveInfo[idx][i];
 

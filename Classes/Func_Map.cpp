@@ -1231,14 +1231,38 @@ void WaveControler()
 	if (pObj == nullptr)
 		return;
 
+	// AVK_MAXGAME 전투 테스트도 정식 wave[]와 같은 단위를 쓴다.
+	// 값은 프레임이며 아래 등장 조건에서 FPS로 나눠 초로 환산한다.
+	static const int demoEnemy[3] = {
+		ENEMY_SLING, ENEMY_BOAR, ENEMY_FLAME
+	};
+	static const int demoEnemySpawnFrame[3] = {
+		0, 100, 200
+	};
+
 	switch (drawHandle) {
 	case MD_DEMO:
 	case MD_PLAY:
-		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false && (MC_knlCurrentTimeStamp() - robin.waveTimeStamp >= wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS/* || AliveEnemyCnt() == 0*/)) {
+		// wave[]의 적 한 칸은 [종류, 등장 프레임, 몬스터 등급] 순서다.
+		// AVK_MAXGAME 테스트에서는 종류만 덮어쓰고 등장 프레임은 원본 wave[]를
+		// 읽고 있었기 때문에, 원본 세 슬롯의 시간이 같으면 세 마리가 동시에 나왔다.
+		// 테스트 적도 원본과 똑같이 프레임값으로 등장 시간을 지정한다.
+		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false &&
+			(MC_knlCurrentTimeStamp() - robin.waveTimeStamp >=
+				(gDemoForceRoulette
+					? demoEnemySpawnFrame[Min(2, robin.curWaveIdx)] / FPS
+					: wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS)
+				/* || AliveEnemyCnt() == 0*/)) {
+			//비활성 슬롯을 새 몬스터에 재사용할 때 전역 turn이 그 슬롯 번호를
+			//가리키고 있으면, 생성 직후부터 자기 차례로 오인해 MOVE가 시작된다.
+			//비활성 객체를 가리키는 turn은 유효한 전투 턴이 아니므로 정리한다.
+			if (turn == obj && pObj->active == false) {
+				turn = NEUTRAL;
+				turnFrame = 0;
+				attackSequence = ATTACKSEQUENCE_READY;
+			}
+
 			if (gDemoForceRoulette) {
-				static const int demoEnemy[3] = {
-					ENEMY_JELLYFISH, ENEMY_KNIGHT, ENEMY_SLIME
-				};
 				pObj->type = demoEnemy[Min(2, robin.curWaveIdx)];
 			}
 			else
@@ -1824,6 +1848,11 @@ int SetEnemy(OBJECT *pObj)
 
 	pObj->active = true;
 	pObj->dead = false;
+	pObj->turnPosition = HERE;
+	pObj->frame = 0;
+	pObj->mainFrame = 0;
+	pObj->dx = 0;
+	pObj->dy = 0;
 
 	pObj->dirY = DOWN;
 

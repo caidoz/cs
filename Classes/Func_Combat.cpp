@@ -927,13 +927,24 @@ int GetAttackRange(int obj)
 	else
 	{
 		//크류면
-		if (obj >= TOTALCHAR && obj < PLAYERALL)
+		//SOLDIER는 SUMMONHERO가 사용하는 임시 전투 캐릭터다. 일반 크루와
+		//같이 화면 전체 사거리를 주면 소환 위치에서 곧바로 공격해 버린다.
+		if (obj >= TOTALCHAR && obj < PLAYERALL && obj != SOLDIER)
 			range = sqrt(DX * DX + DY * DY);
 		//스킬이면
 		else if (pObj->type < ENEMY_SNAIL) {
 			switch (ao[obj].currentSkill) {
 			case SKILL_MAXX7:
 				range = 2 * TSIZE;
+				break;
+			case SKILL_MAXX10: //캠핑헌트
+				range = 200;
+				break;
+			case SKILL_MAXX11: //호밍헌트
+				range = 160;
+				break;
+			case SKILL_MAXX12: //써클헌트
+				range = 80;
 				break;
 			default:
 				range = (float)attackRange[ao[obj].type] * ao[obj].zoom;
@@ -956,6 +967,15 @@ int GetAttackRange(int obj)
 		else
 			range = ao[obj].cx / 2;
 	}
+
+	//SUMMONHERO는 장비 detail이 큰 고급 무기를 써도 화면 밖에서 공격하지
+	//않도록 실제 접근 사거리를 2타일(64px)로 제한한다.
+	if (obj == SOLDIER
+		&& pObj->currentSkill != SKILL_MAXX10
+		&& pObj->currentSkill != SKILL_MAXX11
+		&& pObj->currentSkill != SKILL_MAXX12)
+		range = Min(range, 2 * TSIZE);
+
 	//else if (attackType <= ROULETTE_SKILL) {
 	//	range = float(actionCardData[actionCardIdx * ACTIONCARDDATASIZE + 8]) * pObj->zoom;
 	//}
@@ -1042,7 +1062,9 @@ int GetSpeed(int obj)
 
 	switch (drawHandle) {
 	default:
-		return speed / MOTIONDIV;
+		//기본값은 ROBIN/DIANA/MAXX 순으로 장비 보정 전 8/10/12px이다.
+		//장비 보정까지 포함한 최종 이동량을 절반으로 낮춘다.
+		return Max(1, speed / (2 * MOTIONDIV));
 	}
 }
 

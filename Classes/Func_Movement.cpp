@@ -1666,6 +1666,25 @@ void PlayerMove(OBJECT* pObj)
 			//헬파이어는 자식 오브젝트가 생기지 않는 지속형 스킬이다.
 			//flamer 카운트가 남아 있는 동안에는 소환 전투를 종료하지 않는다.
 			if (callerType == SUMMONHERO && obj == SOLDIER && pObj->flamer == 0) {
+				//스킬과 남은 투사체가 모두 끝난 뒤에는 소환 위치(nx, ny)까지
+				//직접 복귀한다. 예전에는 여기서 곧바로 VANISHMOVE로 바뀌어
+				//부메랑을 받은 자리에서 사라졌다.
+				if ((int)pObj->x != pObj->nx || (int)pObj->y != pObj->ny) {
+					int returnDir = (pObj->nx >= pObj->x) ? RIGHT : LEFT;
+					GotoObjXY(pObj, pObj->nx, pObj->ny, Max(SPEED_MIN, GetSpeed(obj)));
+					pObj->x += pObj->dx;
+					pObj->y += pObj->dy;
+					pObj->dirX = pObj->dirF = returnDir;
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_WALK, pObj->frame);
+					pObj->motion = (loopMotion < 0)
+						? PO_C0_W0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+					pObj->frame++;
+					pObj->mainFrame++;
+					return;
+				}
+
+				pObj->x = pObj->nx;
+				pObj->y = pObj->ny;
 				pObj->drawHandler = VANISHDRAW;
 				pObj->moveHandler = VANISHMOVE;
 				pObj->frame = 0;
@@ -1697,6 +1716,53 @@ void PlayerMove(OBJECT* pObj)
 
 	if (fadeFrame > (FPS - 8) || fadeFrame < -(FPS - 8))
 		return;
+
+	//SUMMONHERO도 고정 히어로와 같은 위치 상태를 사용한다.
+	//HERE에서 출발하고 GOING에서 사거리까지 이동한 뒤 THERE에서만
+	//스킬을 발동한다. 스킬 종료는 COMING으로 넘어가 위 복귀 분기가 맡는다.
+	if (drawHandle == MD_PLAY && attackSequence == ATTACKSEQUENCE_ACTION
+		&& obj == SOLDIER && turn >= CREW && turn < CREW + MAXCREW) {
+		int caller = ao[turn].currentSkill;
+
+		if (caller >= 0 && caller < gTotalSkill
+			&& skillData[caller * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO) {
+			if (pObj->turnPosition == HERE)
+				pObj->turnPosition = GOING;
+
+			if (pObj->turnPosition == GOING) {
+				pObj->target = NearEnemy(pObj);
+
+				if (pObj->target < ENEMY || pObj->target >= NEUTRAL
+					|| !ao[pObj->target].active || ao[pObj->target].dead) {
+					pObj->turnPosition = COMING;
+					return;
+				}
+
+				if (GetDistance(pObj, &ao[pObj->target]) > GetAttackRange(obj)) {
+					int attackDir = (ao[pObj->target].x >= pObj->x) ? RIGHT : LEFT;
+					GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, GetSpeed(obj)));
+					pObj->x += pObj->dx;
+					pObj->y += pObj->dy;
+					pObj->dirX = pObj->dirF = attackDir;
+					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_WALK, pObj->frame);
+					pObj->motion = (loopMotion < 0)
+						? PO_C0_W0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+					pObj->frame++;
+					pObj->mainFrame++;
+					return;
+				}
+
+				pObj->dx = pObj->dy = 0;
+				pObj->dirX = pObj->dirF =
+					(ao[pObj->target].x >= pObj->x) ? RIGHT : LEFT;
+				pObj->turnPosition = THERE;
+				pObj->frame = 0;
+				pObj->mainFrame = 0;
+				HotKeyPress(pObj, 0);
+				return;
+			}
+		}
+	}
 
 	if ((obj == DIANA || obj == MAXX) && IsGetHero(obj) == false) {
 		InitMotion(pObj);
@@ -3873,14 +3939,8 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			pObj->turnPosition = COMING;//다시 제위치로 복귀
 			//만약 소환이면
 			if (GetObjFromPtr(pObj) == SOLDIER) {
-				//소환 히어로는 종류와 관계없이 자신이 만든 탄환이 모두
-				//사라진 뒤 소멸하고, 동료의 DMGUPDATE 턴 타이머를 시작한다.
-				if (GetSonObjCnt(SOLDIER) == 0) {
-					pObj->drawHandler = VANISHDRAW;
-					pObj->moveHandler = VANISHMOVE;
-					onceDmgUpdateFrame = 2 * FPS;
-					pObj->frame = 0;
-				}
+				//투사체가 남아 있으면 COMING 상태에서 기다리고, 모두 끝나면
+				//PlayerMove 시작부가 원래 소환 위치까지 복귀시킨 뒤 소멸시킨다.
 				return;
 			}
 			//만약 주인공이고 동료들에 의해 스킬이 발동되었다면
@@ -8435,17 +8495,12 @@ void BulletBoomerangMove(OBJECT* pObj)
 					boomerangAway[pObj->target] = false;
 
 					//소환 MAXX는 부메랑을 받은 순간 공격이 끝난 것이다.
-					//비활성화된 부메랑은 다음 프레임에 이동 함수가 다시 불리지 않으므로,
-					//여기서 소멸 연출과 다음 턴 대기 타이머를 직접 시작한다.
+					//소멸시키지 않고 COMING으로 넘겨 원래 소환 위치까지 복귀시킨다.
 					if (i == SOLDIER && ao[i].type == MAXX
 						&& GetSonObjCnt(i) == 0) {
 						ao[i].attack = 0;
 						ao[i].attackFrame = 0;
 						ao[i].turnPosition = COMING;
-						ao[i].drawHandler = VANISHDRAW;
-						ao[i].moveHandler = VANISHMOVE;
-						ao[i].frame = 0;
-						onceDmgUpdateFrame = 2 * FPS;
 						return;
 					}
 
@@ -10104,7 +10159,7 @@ void EnemyMoveTurn(OBJECT* pObj)
 	//DX
 	tPtr += ret;
 
-	if (turn == obj) {
+	if (turn == obj && attackSequence == ATTACKSEQUENCE_ACTION) {
 		switch (pObj->turnPosition) {
 		case HERE://출발전
 			pObj->dirF = pObj->dirX = LEFT;
@@ -10163,11 +10218,29 @@ void EnemyMoveTurn(OBJECT* pObj)
 
 			//한번 루프가 돌았으면 다음 턴으로 넘겨준다.
 			if (pObj->frame % ret == 0) {
+				int patternBase;
+				float attackRange;
+
 				pObj->currentSkill = 0;
-				pObj->etc = enemyAttackPattern[pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + pObj->currentSkill * ATTACKPATTERNDATASIZE + pObj->turnPosition];
+				patternBase = pObj->type * ATTACKPATTERNTOTALDATASIZE
+					+ 2 + pObj->currentSkill * ATTACKPATTERNDATASIZE;
+				attackRange = enemyAttackPattern[patternBase + 5] * pObj->zoom;
+
+				//기존에는 거리를 확인하기 전에 HERE 상태값을 넣었다. 슬링의
+				//HERE 값은 SLING_MOVE(1)라 이미 사거리 안에 있어도 한 번은
+				//뉴트럴(0)에서 워크(1)로 바뀌었다. 이동이 필요 없으면 GOING
+				//상태값(공격 모션)을 바로 사용한다.
+				if (Abs(pObj->x - ao[pObj->target].x) <= attackRange) {
+					pObj->etc = enemyAttackPattern[patternBase + GOING];
+					pObj->turnPosition = THERE;
+					pObj->dx = 0;
+				}
+				else {
+					pObj->etc = enemyAttackPattern[patternBase + HERE];
+					pObj->turnPosition = GOING;
+				}
 				pObj->frame = 0;
 				pObj->mainFrame = 0;
-				pObj->turnPosition = GOING;
 			}
 			break;
 		case GOING://가는중
@@ -10480,6 +10553,12 @@ void EnemyMoveTurn(OBJECT* pObj)
 				pObj->dx = 0;
 				pObj->dy = 0;
 				pObj->dirX = pObj->dirF = LEFT;
+				//복귀용 MOVE 모션을 유지한 채 데미지 정산을 기다리면 제자리에서
+				//계속 걷는 것처럼 보인다. 원위치에 닿은 즉시 기본 상태로 돌린다.
+				pObj->etc = enemyAttackPattern[
+					pObj->type * ATTACKPATTERNTOTALDATASIZE + 0];
+				pObj->frame = 0;
+				pObj->mainFrame = 0;
 				if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
 					onceDmgUpdateFrame = 2 * FPS;
 					pObj->turnPosition = DMGUPDATE;
@@ -11391,16 +11470,14 @@ void RegenMove(OBJECT* pObj)
 					}
 				}
 
-				//솔져면 스킬이야.
+				//솔져면 소환 히어로 스킬이다. 착지 즉시 공격하지 않고
+				//PlayerMove의 HERE -> GOING -> THERE 흐름에서 사거리까지 간다.
 				if (obj == SOLDIER) {
 					SetHotKey(&ao[obj], HOTKEY_SKILL, pObj->currentSkill, 0);
-					HotKeyPress(&ao[obj], 0);
+					pObj->turnPosition = HERE;
 					switch (pObj->currentSkill) {
 					case SKILL_DIANA8://플레임
-						//HotKeyPress()와 같은 지속 프레임으로 확정한다.
-						//이 값이 0이 된 다음 SUMMONHERO 종료 분기가 실행된다.
-						pObj->attack = false;
-						pObj->flamer = FLAMER_START_FRAME;
+						//실제 발동 시 HotKeyPress()가 지속 프레임을 설정한다.
 						break;
 					}
 				}
