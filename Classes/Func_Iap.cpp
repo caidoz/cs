@@ -37,18 +37,33 @@ static int sRetryWait = 0;
 static int sSending = -1;		//지금 서버에 보내는 중인 대기 번호. 없으면 -1
 
 //상품 문자열 표.
-#define X(name, id, label)		id,
+#define X(name, id, label, icon)		id,
 static const char* sProductId[TOTALIAPPRODUCT] = {
 	IAP_PRODUCT_LIST
 };
 #undef X
 
 //스토어가 답하기 전에 띄울 이름.
-#define X(name, id, label)		label,
+#define X(name, id, label, icon)		label,
 static const char* sProductLabel[TOTALIAPPRODUCT] = {
 	IAP_PRODUCT_LIST
 };
 #undef X
+
+//카드에 그릴 아이콘.
+#define X(name, id, label, icon)		icon,
+static const int sProductIcon[TOTALIAPPRODUCT] = {
+	IAP_PRODUCT_LIST
+};
+#undef X
+
+int IapProductIcon(int product)
+{
+	if (product < 0 || product >= TOTALIAPPRODUCT)
+		return ICON_GOLD;
+
+	return sProductIcon[product];
+}
 
 //스토어가 준 것. 답하기 전에는 비어 있다.
 //

@@ -5972,135 +5972,262 @@ void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom)
 //=============================================================================
 // 현금 상점
 //
-// 값과 이름을 여기 적지 않는다. 스토어가 준 것을 그대로 띄운다. 나라마다
-// 다른 말과 통화로 보여야 하고, 애플과 구글이 환율에 따라 바꾸기 때문이다.
-// 스토어가 아직 답을 안 했으면 IapConfig.h 에 적어둔 이름과 "준비 중" 을
-// 띄운다.
+// 짜임새는 코인소드관련자료/메뉴_상점.png 를 따랐다.
 //
-// 사용자가 돈을 낸 뒤 화면에 아무 말이 없는 것이 제일 나쁘다. 그래서 아직
-// 못 받은 결제가 있으면 맨 위에 그것부터 알린다.
+//     배너      지금 밀고 있는 상품 하나. 누르면 바로 산다
+//     탭        재화 / 상자 / 패스
+//     리본      구역 제목
+//     카드      3열. 이름, 그림, 값 버튼
+//
+// 그림은 새로 그리지 않았다. 게임에 이미 있는 아이콘과 상자 그림을 빌려
+// 쓴다(Def/IconDef.h, DrawCastleBoxXY). 상품 그림이 생기면 그 자리만
+// 바꾸면 된다.
+//
+// 값과 이름은 스토어가 준 것을 그대로 띄운다. 나라마다 다른 말과 통화로
+// 보여야 하고, 애플과 구글이 환율에 따라 바꾸기 때문이다. 아직 답을 안
+// 했으면 "준비 중" 이라 적고 버튼을 잠근다 - 빈칸으로 두면 공짜로 읽힌다.
 //=============================================================================
 
-//한 칸의 높이와 사이 간격.
-static const float SHOPIAP_ROWH = 46.0f;
-static const float SHOPIAP_GAP = 4.0f;
-
-//구역 제목과 그 구역의 첫 상품, 상품 수.
-typedef struct _shopIapGroup {
-	const char* title;
-	int first;
-	int count;
-} SHOPIAPGROUP;
-
-static const SHOPIAPGROUP shopIapGroup[] = {
-	{ "코인",   IAP_COIN_01,    6 },
-	{ "하트",   IAP_HEART_01,   6 },
-	{ "패스",   IAP_PASS_HEART, 2 },
-	{ "특별",   IAP_STARTER,    2 },
+enum {
+	SHOPTAB_CURRENCY = 0,	//재화 : 코인과 하트
+	SHOPTAB_BOX,			//상자 : 코인으로 산다
+	SHOPTAB_PASS,			//패스와 특별 상품
+	TOTALSHOPTAB,
 };
 
-//한 줄을 그리고 터치 자리를 잡는다.
-static void ShopIapRow(int product, float x, float y, float w, float h, float zoom)
+//지금 보고 있는 탭. 상점을 닫아도 남는다 - 다시 열었을 때 보던 자리다.
+int shopTab = SHOPTAB_CURRENCY;
+
+//탭 이름.
+static const char* const shopTabName[TOTALSHOPTAB] = {
+	"재화", "상자", "패스",
+};
+
+//배너에 띄울 상품.
+//
+//나중에 서버가 정하게 하려면 이 함수만 바꾸면 된다 - 카탈로그에 "지금 미는
+//상품" 한 줄을 두고 그것을 읽으면 그만이다.
+static int ShopBannerProduct(void)
+{
+	return IAP_STARTER;
+}
+
+//구역 제목 리본.
+static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
+{
+	float h = 26.0f * zoom;
+
+	MemRectRound(cx - w / 2, y, w, h, COLOR_BROWN, 2);
+	SetFontColor(COLOR_YELLOW);
+	CenterTextStr(title, cx, y - h / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+	SetFontColor(COLOR_WHITE);
+}
+
+//카드 하나. 이름 / 그림 / 값 버튼.
+//
+//살 수 없으면(스토어가 아직이거나 다른 결제가 도는 중) 버튼을 회색으로 두고
+//터치를 안 건다. 눌리는데 아무 일도 안 일어나는 것이 제일 나쁘다.
+static void ShopCard(int product, float x, float y, float w, float h, float zoom)
 {
 	const char* name = IapProductName(product);
 	const char* price = IapPriceText(product);
-	float pad = 10.0f * zoom;
+	bool can = (price && price[0]) && !IapIsBusy();
+	float bh = 24.0f * zoom;
+	float by = y - h + bh + 4.0f * zoom;
 
-	//바탕
-	MemRect(x, y, w, h, 0x4A3018);
-	MemRectFrameThick(x, y, w, h, 0x6E4A28, 1.0f * zoom);
+	MemRectRound(x, y, w, h, COLOR_BROWN, 2);
 
-	//이름
 	SetFontColor(COLOR_WHITE);
-	DrawTextStrSystem(name, x + pad, y - h / 2 + (float)FONT_HEIGHT * zoom / 2, zoom, LEFT, true);
+	CenterTextStr(name, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
 
-	//값. 스토어가 아직 답을 안 했으면 그렇다고 적는다.
-	//
-	//빈칸으로 두면 "공짜인가" 로 읽힌다. 값을 모른다는 것을 말해야 한다.
-	{
-		const char* right = (price && price[0]) ? price : "준비 중";
-		float bw = 92.0f * zoom;
-		float bx = x + w - pad - bw;
+	DrawIcon(IapProductIcon(product), x + w / 2, y - h / 2 + 6.0f * zoom,
+		2.2f * zoom, false, false, true, 1);
 
-		//살 수 있는 상태인가. 스토어가 아직이거나 다른 결제가 도는 중이면 못 산다.
-		bool can = (price && price[0]) && !IapIsBusy();
+	MemRectRound(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
+		can ? COLOR_GREEN : COLOR_DARKGREY, 2);
 
-		MemRect(bx, y - (h - 12.0f * zoom) / 2 + (h - 12.0f * zoom) / 2,
-			bw, h - 12.0f * zoom, can ? 0x2E7D32 : 0x555555);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStr((price && price[0]) ? price : "준비 중",
+		x + w / 2, by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2, zoom * 0.85f);
 
-		SetFontColor(COLOR_WHITE);
-		CenterTextStr(right, bx + bw / 2,
-			y - h / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+	if (can)
+		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
+			TOUCH_FUNC_SHOP_IAP + product);
+}
 
-		if (can)
-			SetRectPoint(bx, y, bw, h - 12.0f * zoom, TOUCH_FUNC_SHOP_IAP + product);
-	}
+//코인으로 사는 상자 한 칸.
+//
+//이쪽은 현금이 아니라 코인이다. 그래서 값을 스토어가 아니라 게임이 안다
+//(GetBoxPrice). 사는 길도 다르다 - AVK_SHOP_BUYBOX 로 간다.
+static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
+{
+	int detail = BOX_REWARD2 + i;
+	long long price = GetBoxPrice(detail, GRADE_NORMAL);
+	bool can = price >= 0 && robin.gold >= price;
+	float bh = 24.0f * zoom;
+	float by = y - h + bh + 4.0f * zoom;
+
+	MemRectRound(x, y, w, h, COLOR_BROWN, 2);
+
+	SetFontColor(COLOR_WHITE);
+	CenterText(TEXT_ITEMNAME_BOX + detail, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
+
+	DrawCastleBoxXY(detail, false, LEFT, x + w / 2 - 24.0f * zoom,
+		y - 22.0f * zoom, COLOR_WHITE, 0.10f * zoom);
+
+	MemRectRound(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
+		can ? COLOR_GREEN : COLOR_DARKGREY, 2);
+
+	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by - 2.0f * zoom, 0.8f * zoom,
+		false, false, false, 1);
+
+	SetFontColor(COLOR_WHITE);
+	DrawNum(price, x + w - 10.0f * zoom,
+		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.8f / 2,
+		NUM_FONT_NORMAL, RIGHT, false, false, true, zoom * 0.8f, false);
+
+	if (can)
+		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
+			TOUCH_FUNC_SHOP_BUYBOX1 + i);
 }
 
 //현금 상점 전체.
 static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 {
-	float pad = 14.0f * zoom;
-	float rowW = w - pad * 2;
-	float cy = y - 118.0f * zoom;		//제목 아래에서 시작한다
+	float pad = 12.0f * zoom;
+	float innerW = w - pad * 2;
+	float cy = y - 112.0f * zoom;
 	float bottom = y - h + pad;
 	char buf[128];
-	int g, i;
+	int i;
 
 	//---- 아직 못 받은 결제 ----
 	//
-	//돈은 나갔는데 아직 못 받은 것이 있으면 그것부터 알린다. 조용히 있으면
-	//사용자는 돈만 날린 줄 안다.
+	//값을 치렀는데 화면이 조용한 것이 제일 나쁘다. 무엇보다 먼저 알린다.
 	if (IapPendingCount() > 0) {
-		float bh = 34.0f * zoom;
+		float bh = 26.0f * zoom;
 
-		MemRect(x + pad, cy, rowW, bh, 0x8A5A12);
+		MemRectRound(x + pad, cy, innerW, bh, COLOR_RED, 2);
 		SetFontColor(COLOR_WHITE);
 		sprintf(buf, "받는 중입니다 (%d건)", IapPendingCount());
 		CenterTextStr(buf, x + w / 2, cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
 
-		cy -= bh + SHOPIAP_GAP * zoom;
+		cy -= bh + 4.0f * zoom;
+	}
+
+	//---- 배너 ----
+	{
+		int p = ShopBannerProduct();
+		const char* price = IapPriceText(p);
+		bool can = (price && price[0]) && !IapIsBusy();
+		float bh = 54.0f * zoom;
+
+		MemRectRound(x + pad, cy, innerW, bh, COLOR_NAVY, 2);
+
+		DrawIcon(IapProductIcon(p), x + pad + 28.0f * zoom, cy - 10.0f * zoom,
+			1.6f * zoom, false, false, true, 1);
+
+		SetFontColor(COLOR_YELLOW);
+		DrawTextStrSystem("추천 상품", x + pad + 56.0f * zoom,
+			cy - 16.0f * zoom, zoom * 0.8f, LEFT, true);
+
+		SetFontColor(COLOR_WHITE);
+		DrawTextStrSystem(IapProductName(p), x + pad + 56.0f * zoom,
+			cy - 36.0f * zoom, zoom, LEFT, true);
+
+		CenterTextStr((price && price[0]) ? price : "준비 중",
+			x + w - pad - 44.0f * zoom, cy - 32.0f * zoom, zoom);
+
+		if (can)
+			SetRectPoint(x + pad, cy, innerW, bh, TOUCH_FUNC_SHOP_IAP + p);
+
+		cy -= bh + 6.0f * zoom;
+	}
+
+	//---- 탭 ----
+	{
+		float th = 28.0f * zoom;
+		float tw = (innerW - 8.0f * zoom) / TOTALSHOPTAB;
+
+		for (i = 0; i < TOTALSHOPTAB; i++) {
+			float tx = x + pad + (tw + 4.0f * zoom) * i;
+
+			MemRectRound(tx, cy, tw, th,
+				i == shopTab ? COLOR_ORANGE : COLOR_BROWN, 2);
+
+			SetFontColor(COLOR_WHITE);
+			CenterTextStr(shopTabName[i], tx + tw / 2,
+				cy - th / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
+
+			SetRectPoint(tx, cy, tw, th, TOUCH_FUNC_SHOP_TAB + i);
+		}
+
+		cy -= th + 6.0f * zoom;
+	}
+
+	//---- 카드 ----
+	{
+		const int COL = 3;
+		float cw = (innerW - 8.0f * zoom * (COL - 1)) / COL;
+		float ch = 92.0f * zoom;
+		int first = 0, count = 0, box = 0;
+
+		switch (shopTab) {
+		case SHOPTAB_CURRENCY:
+			ShopRibbon("재화", x + w / 2, cy, 120.0f * zoom, zoom);
+			first = IAP_COIN_01;
+			count = 12;
+			break;
+
+		case SHOPTAB_BOX:
+			ShopRibbon("상자", x + w / 2, cy, 120.0f * zoom, zoom);
+			box = 3;
+			break;
+
+		default:
+			ShopRibbon("패스와 특별", x + w / 2, cy, 150.0f * zoom, zoom);
+			first = IAP_PASS_HEART;
+			count = 4;
+			break;
+		}
+
+		cy -= 30.0f * zoom;
+
+		for (i = 0; i < box; i++) {
+			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);
+			float ry = cy - (ch + 8.0f * zoom) * (i / COL);
+
+			if (ry - ch < bottom)
+				break;
+
+			ShopBoxCard(i, cx, ry, cw, ch, zoom);
+		}
+
+		for (i = 0; i < count; i++) {
+			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);
+			float ry = cy - (ch + 8.0f * zoom) * (i / COL);
+
+			//아래로 넘치면 그만 그린다. 스크롤은 아직 없다.
+			if (ry - ch < bottom)
+				break;
+
+			ShopCard(first + i, cx, ry, cw, ch, zoom);
+		}
 	}
 
 	//---- 패스가 켜져 있으면 남은 날 ----
 	for (i = 0; i < 2; i++) {
 		bool on = i == 0 ? IapHeartPass() : IapGrowthPass();
 		long until = IapPassUntil(i != 0);
-		float bh = 28.0f * zoom;
 
 		if (!on)
 			continue;
 
-		MemRect(x + pad, cy, rowW, bh, 0x2B4A6E);
-		SetFontColor(COLOR_WHITE);
+		SetFontColor(COLOR_YELLOW);
 		sprintf(buf, "%s 남은 %d일", i == 0 ? "하트 패스" : "성장 패스",
 			(int)((until - (long)MC_knlCurrentTimeStamp()) / 86400) + 1);
-		CenterTextStr(buf, x + w / 2, cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
-
-		cy -= bh + SHOPIAP_GAP * zoom;
-	}
-
-	//---- 상품 ----
-	for (g = 0; g < (int)(sizeof(shopIapGroup) / sizeof(shopIapGroup[0])); g++) {
-		float rh = SHOPIAP_ROWH * zoom;
-
-		if (cy - 24.0f * zoom < bottom)
-			break;
-
-		SetFontColor(COLOR_YELLOW);
-		DrawTextStrSystem(shopIapGroup[g].title, x + pad,
-			cy - 20.0f * zoom + (float)FONT_HEIGHT * zoom / 2, zoom, LEFT, true);
-
-		cy -= 24.0f * zoom;
-
-		for (i = 0; i < shopIapGroup[g].count; i++) {
-			//아래로 넘치면 그만 그린다. 스크롤은 다음에 붙인다.
-			if (cy - rh < bottom)
-				break;
-
-			ShopIapRow(shopIapGroup[g].first + i, x + pad, cy, rowW, rh, zoom);
-			cy -= rh + SHOPIAP_GAP * zoom;
-		}
+		DrawTextStrSystem(buf, x + pad, bottom + (18.0f * zoom) * (i + 1),
+			zoom * 0.8f, LEFT, true);
 	}
 
 	SetFontColor(COLOR_WHITE);

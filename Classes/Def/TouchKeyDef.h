@@ -318,6 +318,10 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_STAGEFAILED,
 	TOUCH_FUNC_NEWSTAGE,
 
+	//상점 탭. 재화 / 상자 / 패스.
+	TOUCH_FUNC_SHOP_TAB,
+	TOUCH_FUNC_SHOP_TAB_END = TOUCH_FUNC_SHOP_TAB + 2,
+
 	//현금 상품. 상품 하나에 자리 하나다. 목록은 Config/IapConfig.h 에 있다.
 	TOUCH_FUNC_SHOP_IAP,
 	TOUCH_FUNC_SHOP_IAP_END = TOUCH_FUNC_SHOP_IAP + TOTALIAPPRODUCT - 1,

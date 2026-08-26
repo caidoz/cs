@@ -3292,6 +3292,12 @@ void touchFunc(int func)
 		if (func >= TOUCH_FUNC_SHOP_IAP && func <= TOUCH_FUNC_SHOP_IAP_END)
 			systemKey = AVK_SHOP_IAP + (func - TOUCH_FUNC_SHOP_IAP);
 
+		//상점 탭. 화면만 바뀌는 것이라 키로 넘기지 않고 여기서 끝낸다.
+		if (func >= TOUCH_FUNC_SHOP_TAB && func <= TOUCH_FUNC_SHOP_TAB_END) {
+			shopTab = func - TOUCH_FUNC_SHOP_TAB;
+			PlayMusic(M_BUTTON);
+		}
+
 		switch (func) {
 		case TOUCH_FUNC_SHOP_BUYBOX1:
 		case TOUCH_FUNC_SHOP_BUYBOX2:

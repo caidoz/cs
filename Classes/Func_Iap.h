@@ -119,4 +119,7 @@ const char* IapProductName(int product);
 //바꾼다. 적어둔 숫자를 띄우면 해외에서 틀린 값이 뜨고 심사에서도 걸린다.
 const char* IapPriceText(int product);
 
+//카드에 그릴 아이콘(Def/IconDef.h).
+int IapProductIcon(int product);
+
 #endif
