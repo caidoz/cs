@@ -1378,6 +1378,50 @@ static int ServerLogin(void)
 //여기서 시각을 건드리지 않는 것은 일부러다. 캐시는 서버가 아니라서 "지금
 //몇 시인지" 를 알려줄 자격이 없다. NetInit() 이 gNetTimeOffset 을 남겨두는
 //것과 같은 이유다.
+//캐시에 "아직 서버가 못 받은 것"이라고 표시해 남긴다.
+//
+//캐시는 원래 서버에 못 붙었을 때만 쓰는 사본이라, 그냥 남기면 다음에
+//온라인으로 켤 때 서버의 옛 것이 이긴다. 표시가 있어야 부팅이 이쪽을
+//고르고 다시 올린다.
+//
+//표시를 헤더에 끼우면 꼬리의 체크섬이 안 맞으므로 다시 계산한다.
+//ServerSave() 가 revision 을 고칠 때 하는 것과 같은 일이다.
+//캐시가 지금 "못 보낸 것"으로 표시되어 있는가.
+//
+//표시를 지우는 것은 저장이 받아들여진 그 순간뿐이다. 안 지우면 다음
+//부팅이 또 그 캐시를 최신으로 알고 올려서, 그 사이 다른 기기가 한 것을
+//덮어버린다.
+static bool sCacheUnsent = false;
+
+static bool NetWriteUnsentCache(const std::string& body)
+{
+	char buf[64];
+	std::string text = body;
+	size_t at;
+
+	at = text.find("#revision\t");
+
+	if (at == std::string::npos)
+		return false;
+
+	text.insert(at, "#unsent\t1\n");
+
+	at = text.rfind("#end\t");
+
+	if (at != std::string::npos) {
+		std::string head = text.substr(0, at);
+
+		sprintf(buf, "#end\t%08x\n", NetCrc32(head.c_str(), head.size()));
+		text = head + buf;
+	}
+
+	if (!ServerWriteFile(SERVERDBFILE, text))
+		return false;
+
+	sCacheUnsent = true;
+	return true;
+}
+
 static int LoadFromCache(long long wantUser)
 {
 	std::string text;
@@ -1401,6 +1445,51 @@ static int LoadFromCache(long long wantUser)
 
 	NetApplyDump(tables);
 	return NETRESULT_OK;
+}
+
+//캐시에 "아직 못 보낸 판"이 들어 있으면 그것을 쓴다.
+//
+//썼으면 true. 그때는 부르는 쪽이 서버 것을 적용하지 않는다.
+//
+//revision 은 서버가 준 값으로 둔다. 캐시에 적힌 revision 은 서버가 받아준
+//적이 없는 값이라, 그걸로 올리면 잠금이 안 맞아 거절당한다.
+static long long NetPeekMeta(const std::string& text, const char* key);
+
+static bool NetTakeUnsentCache(long long serverUser, long long serverRev)
+{
+	std::string text;
+	NetTableMap tables;
+	long long userId = 0, revision = 0;
+
+	if (!ServerReadFile(SERVERDBFILE, text))
+		return false;
+
+	if (NetPeekMeta(text, "#unsent") != 1)
+		return false;
+
+	if (!NetParseDump(text, tables, &userId, &revision))
+		return false;
+
+	//남의 계정 것이면 안 쓴다. 기기를 넘겨줬을 수 있다.
+	if (userId != serverUser) {
+		CCLOG("NetTakeUnsentCache: 캐시가 다른 계정 것이다 (%lld, 지금은 %lld)",
+			userId, serverUser);
+		return false;
+	}
+
+	NetApplyDump(tables);
+
+	gNetUserId = serverUser;
+	gNetRevision = serverRev;
+
+	CCLOG("NetTakeUnsentCache: 못 보낸 판이 있다. 그것으로 시작하고 다시 올린다 "
+		"(서버 revision=%lld)", serverRev);
+
+	//다시 올려야 한다. 올라가면 캐시의 #unsent 표시도 지워진다.
+	sCacheUnsent = true;
+	NetMarkDirty();
+
+	return true;
 }
 
 //---- 서버 : 세이브 내려주기 ----
@@ -1995,12 +2084,25 @@ static int NetTakeResponse(int reqType)
 		gNetUserId = userId;
 		gNetRevision = revision;
 
+		//---- 못 보낸 것이 남아 있으면 그쪽이 최신이다 ----
+		//
+		//앱이 백그라운드에서 정리됐거나 저장을 못 보낸 채 꺼졌으면, 캐시에
+		//서버가 모르는 판이 들어 있다. 그냥 서버 것을 덮으면 그 판이 사라진다.
+		//
+		//revision 은 서버 것을 쓴다. 그 값은 서버가 정하는 것이고, 다시 올릴
+		//때 이 값으로 잠금을 맞춰야 받아들여진다. 그 사이 다른 기기가 저장
+		//했다면 충돌로 거절당하고, 그건 이미 다루고 있다.
+		if (NetTakeUnsentCache(userId, revision))
+			return NETRESULT_OK;
+
 		NetApplyDump(tables);
 
 		//받은 것을 오프라인 캐시로 남긴다. 서버가 정답이고 이 파일은 사본이다.
 		//다음에 서버에 못 붙으면 이것으로 계속 논다.
 		if (!ServerWriteFile(SERVERDBFILE, sHttpBody))
 			CCLOG("Net: 오프라인 캐시를 못 남겼다");
+		else
+			sCacheUnsent = false;
 
 		return NETRESULT_OK;
 
@@ -2256,6 +2358,33 @@ void NetMarkDirty(void)
 	sHold = NETSAVE_HOLDFRAME;
 }
 
+//앱이 화면 밖으로 나간다. 돌아오지 못할 수도 있다.
+//
+//여기서 안 남기면 마지막 몇 초가 날아간다. SaveGame() 은 파일을 안 쓰고
+//"보낼 것이 생겼다"고 표시만 하며, 실제 전송은 NetUpdate() 가 한다. 그런데
+//백그라운드로 가면 메인 루프가 멎어 NetUpdate() 가 안 돈다.
+//
+//그래서 여기서 직접 남긴다. 보내지는 못하니 "아직 못 보냈다"고 표시해
+//캐시에 둔다. 다음 부팅이 그것을 보고 서버 것 대신 이쪽을 쓴 다음 올린다.
+//
+//돌아오는 경우도 있다. 그때를 위해 묶기를 풀어 두면 바로 나간다.
+void NetSuspend(void)
+{
+	std::string body;
+
+	if (sDirty == false)
+		return;
+
+	NetBuildDump(body);
+
+	if (NetWriteUnsentCache(body))
+		CCLOG("NetSuspend: 못 보낸 판을 캐시에 남겼다");
+	else
+		CCLOG("NetSuspend: 캐시를 못 남겼다");
+
+	NetFlush();
+}
+
 void NetFlush(void)
 {
 	sHold = 0;
@@ -2337,9 +2466,23 @@ void NetUpdate(void)
 		if (sLastReq == NETREQ_SAVE) {
 			if (sLastResult == NETRESULT_OK) {
 				sSaveWait = 0;
+
+				//서버가 받아줬다. 캐시의 "못 보냈다" 표시를 지운다.
+				//
+				//안 지우면 다음 부팅이 이 캐시를 최신으로 알고 또 올린다.
+				//그 사이 다른 기기가 논 것이 있으면 그것을 덮는다.
+				//
+				//표시가 붙어 있을 때만 쓴다. 저장이 잘 되는 동안에는 캐시를
+				//건드릴 이유가 없다 — 매번 쓰면 판마다 파일을 쓰게 된다.
+				if (sCacheUnsent) {
+					if (ServerWriteFile(SERVERDBFILE, sNetBody))
+						CCLOG("NetUpdate: 밀린 판이 올라갔다. 캐시 표시를 지운다");
+
+					sCacheUnsent = false;
+				}
 			}
 			else if (sLastResult != NETRESULT_ERR_CONFLICT) {
-				if (ServerWriteFile(SERVERDBFILE, sNetBody))
+				if (NetWriteUnsentCache(sNetBody))
 					CCLOG("NetUpdate: 저장을 못 보냈다. 캐시에 남긴다");
 				else
 					CCLOG("NetUpdate: 저장도 캐시도 못 했다");

@@ -5,6 +5,7 @@
 #include "Content.h"
 #include "AppDelegate.h"
 #include "CoreClass.h"
+#include "Func_Net.h"
 //#define SDKBOX_ENABLED
 #ifdef SDKBOX_ENABLED
 #include "PluginAdMob/PluginAdMob.h"
@@ -154,6 +155,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 // This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
 void AppDelegate::applicationDidEnterBackground() {
+	//루프를 세우기 전에 남긴다. 세우고 나면 NetUpdate() 가 안 돌아서
+	//쌓인 변경을 내보낼 기회가 없다.
+	NetSuspend();
+
 	Director::getInstance()->stopAnimation();
 
 #if USE_AUDIO_ENGINE

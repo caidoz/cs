@@ -96,8 +96,15 @@ int NetLastResult(void);
 //실제 전송은 NetUpdate()가 NETSAVE_HOLDFRAME 뒤에 묶어서 한다.
 void NetMarkDirty(void);
 
-//지금 당장 보낸다. 앱이 백그라운드로 갈 때처럼 기다릴 수 없을 때 쓴다.
+//지금 당장 보낸다. 기다릴 수 없을 때 쓴다.
 void NetFlush(void);
+
+//앱이 화면 밖으로 나간다. AppDelegate 가 부른다.
+//
+//백그라운드로 가면 메인 루프가 멎어 NetUpdate() 가 안 돈다. 그래서 쌓인
+//변경을 여기서 직접 캐시에 남긴다. 돌아오지 못하고 정리당해도, 다음
+//부팅이 그 캐시를 보고 이어간다.
+void NetSuspend(void);
 
 //---- 한 판을 한 덩어리로 ----
 //
