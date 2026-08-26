@@ -145,8 +145,10 @@ CREATE TABLE player (
     star               BIGINT          NOT NULL DEFAULT 0,
     hammer             BIGINT          NOT NULL DEFAULT 0,
     coin               BIGINT          NOT NULL DEFAULT 0,
-    heart_pass_until   DATETIME        NULL,
-    growth_pass_until  DATETIME        NULL,
+    -- 패스가 언제까지인가. 0 이면 없다.
+    -- *_ts 라 덤프에 실려 클라이언트로 간다 (이 파일 맨 위의 규칙).
+    heart_pass_ts      BIGINT          NOT NULL DEFAULT 0,
+    growth_pass_ts     BIGINT          NOT NULL DEFAULT 0,
     shield             INT             NOT NULL DEFAULT 0,
 
     -- 진행도
@@ -626,4 +628,4 @@ CREATE TABLE schema_version (
     PRIMARY KEY (version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO schema_version (version) VALUES (4);
+INSERT INTO schema_version (version) VALUES (5);

@@ -58,14 +58,45 @@ enum {
 	IAP_RETRYWAIT = 60 * 10,
 };
 
+//패스가 무엇을 해주는가.
+//
+//서버가 주는 것은 "언제까지" 하나뿐이다(player.heart_pass_ts). 그 기간에
+//무엇이 달라지는지는 게임이 정한다 - 값이 아니라 규칙이라 클라이언트에 둔다.
+//
+//서버가 지급량을 쥐는 것과 어긋나 보이지만 다르다. 지급량은 돈과 바로
+//바꾸는 값이라 속이면 이득이 되고, 이 배율은 기간 안에서만 도는 규칙이라
+//고쳐봐야 기간이 늘지 않는다. 기간은 서버가 쥐고 있다.
+enum {
+	//하트 패스 : 상한 +50, 회복 2배
+	HEARTPASS_MAXBONUS = 50,
+	HEARTPASS_REGENMUL = 2,
+
+	//성장 패스 : 전투 골드 +20%
+	GROWTHPASS_GOLDPER = 20,
+};
+
 //상품 목록.
 //
 //문자열은 스토어(App Store Connect / Play Console)에 등록한 상품 ID 와
 //글자 하나까지 같아야 한다. 서버의 product 표의 product_id 와도 같다.
 //셋이 어긋나면 결제는 되고 지급이 안 된다 — 제일 나쁜 고장이다.
+//서버의 product 표와 글자 하나까지 같아야 한다.
 #define IAP_PRODUCT_LIST \
-	X(IAP_COIN_100,  "test_coin_100") \
-	X(IAP_GOLD_10K,  "test_gold_10k") \
-	X(IAP_HEART_50,  "test_heart_50")
+	X(IAP_COIN_01,     "coin_01") \
+	X(IAP_COIN_02,     "coin_02") \
+	X(IAP_COIN_03,     "coin_03") \
+	X(IAP_COIN_04,     "coin_04") \
+	X(IAP_COIN_05,     "coin_05") \
+	X(IAP_COIN_06,     "coin_06") \
+	X(IAP_HEART_01,    "heart_01") \
+	X(IAP_HEART_02,    "heart_02") \
+	X(IAP_HEART_03,    "heart_03") \
+	X(IAP_HEART_04,    "heart_04") \
+	X(IAP_HEART_05,    "heart_05") \
+	X(IAP_HEART_06,    "heart_06") \
+	X(IAP_PASS_HEART,  "pass_heart_30") \
+	X(IAP_PASS_GROWTH, "pass_growth_30") \
+	X(IAP_STARTER,     "starter") \
+	X(IAP_INVEN_20,    "inven_20")
 
 #endif

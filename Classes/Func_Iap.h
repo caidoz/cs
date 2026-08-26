@@ -97,6 +97,19 @@ int IapLastProduct(void);
 //사용자가 돈을 냈는데 화면에 아무 말이 없으면 그것이 제일 나쁘다.
 int IapPendingCount(void);
 
+//---- 패스 ----
+//
+// 30일권이다. 자동갱신 구독이 아니라, 사면 그만큼 기간이 밀리고 지나면 꺼진다.
+// 남아 있을 때 또 사면 서버가 남은 기간 뒤에 이어 붙인다.
+//
+// 켜져 있는지는 게임 시각으로 본다. MC_knlCurrentTimeStamp() 는 서버와
+// 맞춰진 시각이라(Func_Net.h 의 gNetTimeOffset), 기기 시계를 돌려도 안 늘어난다.
+bool IapHeartPass(void);
+bool IapGrowthPass(void);
+
+//패스가 언제까지인지. 화면에 "n일 남음" 을 띄울 때 쓴다. 없으면 0.
+long IapPassUntil(bool growth);
+
 //상품의 스토어 ID. 화면과 로그에 쓴다.
 const char* IapProductId(int product);
 

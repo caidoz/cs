@@ -236,7 +236,8 @@ static void NetBuildDump(std::string& out)
 
 	//---- player ----
 	TableBegin("player",
-		"user_id\trevision\tnickname\tlv\texps\tgold\theart\tmedal\tstar\thammer\tcoin\tshield"
+		"user_id\trevision\tnickname\tlv\texps\tgold\theart\tmedal\tstar\thammer\tcoin"
+		"\theart_pass_ts\tgrowth_pass_ts\tshield"
 		"\tcastle\tstage\troom\tboss_room\tmax_inven\tmax_status_cnt\tplaytime\tevent_cnt"
 		"\tcurrent_day\tlife_remaining\tcrew_miss_cnt\tequip_miss_cnt"
 		"\tstart_ts\theart_ts\tfree_reward_ts\tcalendar_ts\tcalendar_month_day");
@@ -251,6 +252,8 @@ static void NetBuildDump(std::string& out)
 	PutNum(robin.star);
 	PutNum(robin.hammer);
 	PutNum(robin.coin);
+	PutNum(robin.heartPassTs);
+	PutNum(robin.growthPassTs);
 	PutNum(robin.shield);
 	PutNum(robin.castle);
 	PutNum(robin.stage);
@@ -798,6 +801,8 @@ static void NetApplyDump(NetTableMap& tables)
 		robin.star = RowNum(v, ColIdx(t, "star"), 0);
 		robin.hammer = RowNum(v, ColIdx(t, "hammer"), 0);
 		robin.coin = RowNum(v, ColIdx(t, "coin"), 0);
+		robin.heartPassTs = (long)RowNum(v, ColIdx(t, "heart_pass_ts"), 0);
+		robin.growthPassTs = (long)RowNum(v, ColIdx(t, "growth_pass_ts"), 0);
 		robin.shield = (int)RowNum(v, ColIdx(t, "shield"), 0);
 		robin.castle = (int)RowNum(v, ColIdx(t, "castle"), 0);
 		robin.stage = (int)RowNum(v, ColIdx(t, "stage"), 0);

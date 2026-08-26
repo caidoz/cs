@@ -4671,15 +4671,31 @@ int GetMaxShield(void)
 	//return Min(MAXSHIELD, MINSHIELD + (robin.stage * TOTALROOM + robin.room) / 10);
 }
 
+//하트 상한.
+//
+//하트 패스가 켜져 있으면 50 을 더 준다. 상한이 늘면 자리를 비우러 자주
+//들어올 필요가 줄고, 한 번에 오래 놀 수 있다. 그것이 이 상품이 파는 것이다.
 int GetInitHeart(void)
 {
-	return 50 + ((robin.lv + 1) / 10) * 10;
+	int init = 50 + ((robin.lv + 1) / 10) * 10;
+
+	if (IapHeartPass())
+		init += HEARTPASS_MAXBONUS;
+
+	return init;
 }
 
+//시간이 지날 때 차오르는 양.
+//
+//하트 패스가 켜져 있으면 두 배다.
 int GetHeartAmount(void)
 {
-	return 10 + ((robin.lv + 1) / 10);
-	//return 1;
+	int amount = 10 + ((robin.lv + 1) / 10);
+
+	if (IapHeartPass())
+		amount *= HEARTPASS_REGENMUL;
+
+	return amount;
 }
 
 void LoadingBarDraw(int x, int y, int loadingBarFrame)
@@ -5507,7 +5523,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 	//grade = 0;
 
 	if (type < ITEM_GEM) {
-		realValue = itemUpgradeValue[type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + grade * (ITEMMAXLEVEL + 1) + lv];
+		realValue = GetItemUpgradeValue(type, detail, grade, lv);
 	}
 	else if (type == ITEM_CREW)
 		realValue = crewReward[detail * CREWREWARDDATASIZE + 3];
@@ -5800,7 +5816,7 @@ void DrawItemValue(int itemType, int itemDetail, int itemGrade, int itemLv, int 
 
 	switch (itemEquipSlot[itemType]) {
 	default:
-		realValue = itemUpgradeValue[itemType * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + itemDetail * TOTALGRADE * (ITEMMAXLEVEL + 1) + itemGrade * (ITEMMAXLEVEL + 1) + itemLv];
+		realValue = GetItemUpgradeValue(itemType, itemDetail, itemGrade, itemLv);
 		break;
 	}
 

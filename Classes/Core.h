@@ -579,6 +579,13 @@ typedef struct _robin {
 	//하게 되면 그때 칸을 따로 만든다.
 	long long coin;
 
+	//패스가 언제까지인가. 게임 타임스탬프이고 0 이면 없다.
+	//
+	//자동갱신 구독이 아니라 30 일권이라, 지나면 그냥 꺼진다. 남아 있을 때
+	//또 사면 서버가 남은 기간 뒤에 이어 붙인다.
+	long heartPassTs;
+	long growthPassTs;
+
 	long heartTimeStamp;
 
 	int buffItem[TOTAL_WASTE];

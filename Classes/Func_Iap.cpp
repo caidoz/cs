@@ -43,6 +43,31 @@ static const char* sProductId[TOTALIAPPRODUCT] = {
 };
 #undef X
 
+//---- 패스 ----
+//
+//기기 시계가 아니라 게임 시각으로 본다. MC_knlCurrentTimeStamp() 는 서버가
+//알려준 시각으로 맞춰져 있어서(gNetTimeOffset), 시계를 앞으로 돌려도 패스가
+//늘어나지 않고 뒤로 돌려도 줄지 않는다.
+static bool IapPassOn(long until)
+{
+	return until > 0 && (long)MC_knlCurrentTimeStamp() < until;
+}
+
+bool IapHeartPass(void)
+{
+	return IapPassOn(robin.heartPassTs);
+}
+
+bool IapGrowthPass(void)
+{
+	return IapPassOn(robin.growthPassTs);
+}
+
+long IapPassUntil(bool growth)
+{
+	return growth ? robin.growthPassTs : robin.heartPassTs;
+}
+
 const char* IapProductId(int product)
 {
 	if (product < 0 || product >= TOTALIAPPRODUCT)

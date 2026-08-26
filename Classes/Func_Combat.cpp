@@ -911,6 +911,81 @@ long long int GetAbsorb(OBJECT* pObj, long long int damage)
 		return damage;
 }
 
+//현재 기본공격/스킬이 실제로 사용하는 CMF 모션들의 공격 박스를 훑는다.
+//스킬별 숫자를 따로 관리하면 모션 데이터를 고친 뒤 사거리만 옛 값으로 남으므로,
+//공격 시작점은 이 값에서 자동으로 따라오게 한다.
+static int GetMotionAttackRange(const OBJECT* pObj)
+{
+	const unsigned short* startFrame = NULL;
+	const unsigned short* closingFrame = NULL;
+	const unsigned short* motionData = NULL;
+	int attackCount = 0;
+	int motionCount = 0;
+	int attack = ATTACK_NORMAL;
+	int range = 0;
+
+	if (pObj == NULL || pObj->cmf < 0 || pObj->cmf >= REALMAXCMF
+		|| cmd_m_crash[pObj->cmf] == NULL)
+		return 0;
+
+	switch (pObj->type) {
+	case ROBIN:
+		startFrame = robinSkillStartFrame;
+		closingFrame = robinSkillClosingFrame;
+		motionData = robinSkillMotion;
+		attackCount = robinSkillStartFrame_COUNT;
+		motionCount = robinSkillMotion_COUNT / 4;
+		break;
+	case DIANA:
+		startFrame = dianaSkillStartFrame;
+		closingFrame = dianaSkillClosingFrame;
+		motionData = dianaSkillMotion;
+		attackCount = dianaSkillStartFrame_COUNT;
+		motionCount = dianaSkillMotion_COUNT / 4;
+		break;
+	case MAXX:
+		startFrame = maxxSkillStartFrame;
+		closingFrame = maxxSkillClosingFrame;
+		motionData = maxxSkillMotion;
+		attackCount = maxxSkillStartFrame_COUNT;
+		motionCount = maxxSkillMotion_COUNT / 4;
+		break;
+	default:
+		return 0;
+	}
+
+	if (pObj->currentSkill >= 0 && pObj->currentSkill < gTotalSkill)
+		attack = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATASIZE - 3];
+	if (attack <= 0 || attack >= attackCount)
+		attack = ATTACK_NORMAL;
+
+	for (int frameIdx = Max(1, (int)startFrame[attack]);
+		frameIdx <= (int)closingFrame[attack] && frameIdx <= motionCount;
+		frameIdx++) {
+		int motion = motionData[(frameIdx - 1) * 4];
+		if (motion < 0 || motion >= cmf_m_cnt[pObj->cmf])
+			continue;
+
+		const signed short* crash = &cmd_m_crash[pObj->cmf][motion * 8];
+		if (crash[6] <= 0)
+			continue;
+
+		int reach = Max(Abs((int)crash[4]), Abs((int)crash[4] + (int)crash[6]));
+		range = Max(range, (int)(reach * pObj->zoom));
+	}
+
+	//InitMotion()과 같은 장비 크기 보정. 특히 로빈의 큰 검도 접근 거리에 반영한다.
+	if (range > 0 && pObj->equip[EQUIP_WEAPON].type != EMPTY) {
+		int detail = pObj->equip[EQUIP_WEAPON].detail * 2 * _2X;
+		if (pObj->type == ROBIN || pObj->type == DIANA)
+			range += 2 * detail;
+		else if (pObj->type == MAXX)
+			range += detail;
+	}
+
+	return range;
+}
+
 int GetAttackRange(int obj)
 {
 	int range;
@@ -918,8 +993,6 @@ int GetAttackRange(int obj)
 	//주소 계산일 뿐이라 조건 없이 잡아도 된다. 예전에는 type < TOTALCHAR일 때만
 	//대입해서, 아래 ROBIN/DIANA/MAXX 분기가 그 조건과 같은 뜻인데도 컴파일러가
 	//짝을 못 지어 초기화 안 된 포인터로 보였다.
-	ITEM* it = &pObj->equip[EQUIP_WEAPON];
-
 	//몬스터의 사정거리도 따져준다.
 	if (obj >= ENEMY) {
 		range = ao[obj].cx / 2;
@@ -933,48 +1006,18 @@ int GetAttackRange(int obj)
 			range = sqrt(DX * DX + DY * DY);
 		//스킬이면
 		else if (pObj->type < ENEMY_SNAIL) {
-			switch (ao[obj].currentSkill) {
-			case SKILL_MAXX7:
-				range = 2 * TSIZE;
-				break;
-			case SKILL_MAXX10: //캠핑헌트
-				range = 200;
-				break;
-			case SKILL_MAXX11: //호밍헌트
-				range = 160;
-				break;
-			case SKILL_MAXX12: //써클헌트
-				range = 80;
-				break;
-			default:
-				range = (float)attackRange[ao[obj].type] * ao[obj].zoom;
-				switch (pObj->type) {
-				case ROBIN:
-					range += it->detail * 1 * _2X;
-					break;
-				case DIANA:
-					range += it->detail * 2 * _2X;
-					break;
-				case MAXX:
-					range += it->detail * 4 * _2X;
-					break;
-				}
-				break;
-			}
+			int motionRange = GetMotionAttackRange(pObj);
+			int fallbackRange = (int)((float)attackRange[pObj->type] * pObj->zoom);
+			range = motionRange > 0 ? motionRange : fallbackRange;
 
+			//캠핑헌트의 판정은 별도 부메랑 OBJECT에 있어 본체 CMF만 읽으면 짧다.
+			if (pObj->currentSkill == SKILL_MAXX10)
+				range = Max(range, 200);
 		}
 		//몬스터면
 		else
 			range = ao[obj].cx / 2;
 	}
-
-	//SUMMONHERO는 장비 detail이 큰 고급 무기를 써도 화면 밖에서 공격하지
-	//않도록 실제 접근 사거리를 2타일(64px)로 제한한다.
-	if (obj == SOLDIER
-		&& pObj->currentSkill != SKILL_MAXX10
-		&& pObj->currentSkill != SKILL_MAXX11
-		&& pObj->currentSkill != SKILL_MAXX12)
-		range = Min(range, 2 * TSIZE);
 
 	//else if (attackType <= ROULETTE_SKILL) {
 	//	range = float(actionCardData[actionCardIdx * ACTIONCARDDATASIZE + 8]) * pObj->zoom;
@@ -1046,7 +1089,7 @@ int GetSpeed(int obj)
 	if (it->type == EMPTY)
 		realValue = 0;
 	else
-		realValue = itemUpgradeValue[it->type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + it->detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + it->grade * (ITEMMAXLEVEL + 1) + it->cooldown];
+		realValue = GetItemUpgradeValue(it->type, it->detail, it->grade, it->cooldown);
 
 	//장비의 픽셀
 	speed += realValue;
@@ -1308,8 +1351,8 @@ void AttackRobin(int obj, int dest)
 			//턴제로 바꿔주기
 			if (Random(1000) < gap * 5 && ao[dest].buff[INC_MAGIC_ARENA] == 0) {//check 스턴적용
 				ad = 1 << ATTACK_STUN;
-				ao[dest].debuf[STUN] = debufStartFrame[STUN] * (100 - *(attackerPs + PS_DEBUF)) / 100;
-				ao[dest].debufOwner[STUN] = obj;
+				ActivateDebuf(&ao[dest], STUN,
+					debufStartFrame[STUN] * (100 - *(attackerPs + PS_DEBUF)) / 100, obj);
 			}
 			//무기의 기본대미지를 구한다.
 			//몬스터는 str의 80~120%사이의 공격력을 가진다.
@@ -1705,7 +1748,7 @@ int AttackRobin_Back(int obj, int dest)
 		//고드름에 맞은 경우
 		damage = RoundDiv(ao[dest].ps[PS_HP], 20);
 		ao[dest].attr = FROST;
-		ao[dest].debuf[SLOW] = SLOW_START_FRAME;
+		ActivateDebuf(&ao[dest], SLOW, SLOW_START_FRAME, obj);
 		break;
 	case ATTACKTYPE_POISON:
 		damage = Min(ao[dest].hp - 1, Max(1, ao[dest].ps[PS_HP] * POISONDMGPER / 100));
@@ -2086,7 +2129,7 @@ int AttackObj(long long int attacker, int dest)
 				break;
 			default:
 				if (robin.bossRoom != true) {
-					pDest->debuf[STUN] = STUN_START_FRAME;
+					ActivateDebuf(pDest, STUN, STUN_START_FRAME, attacker);
 					effect.shake = 3;
 
 					//아드레날린 : 기절공격 성공시 MP 회복량 상승
@@ -2286,7 +2329,8 @@ int AttackObj(long long int attacker, int dest)
 				break;
 			default:
 				if (robin.bossRoom != true)
-					pDest->debuf[STUN] = STUN_START_FRAME + pAttack->concentrate * FPS;
+					ActivateDebuf(pDest, STUN,
+						STUN_START_FRAME + pAttack->concentrate * FPS, attacker);
 				break;
 			}
 		}
@@ -2647,8 +2691,7 @@ int AttackObj(long long int attacker, int dest)
 			//속성공격시 20% 확률로 디버프 걸어주기
 			if (robin.bossRoom == false && Random(100) < *(attackerPs + PS_HPDRAIN)) {
 				i = attrToDebuf[attackAttr];
-				pDest->debuf[i] = debufStartFrame[i];
-				pDest->debufOwner[i] = attacker;
+				ActivateDebuf(pDest, i, debufStartFrame[i], attacker);
 			}
 		}
 	}
@@ -2660,8 +2703,7 @@ int AttackObj(long long int attacker, int dest)
 			i = attrToDebuf[pAttack->attr];
 
 			if (Random(2) <= pAttack->etc) {
-				pDest->debuf[i] = debufStartFrame[i];
-				pDest->debufOwner[i] = pAttack->target;
+				ActivateDebuf(pDest, i, debufStartFrame[i], pAttack->target);
 			}
 		}
 	}
@@ -2781,11 +2823,10 @@ NEXT:
 
 	}
 
-	if (ao[dest].debuf[STUN]) {
-		ao[dest].debuf[STUN] = false;
-		ao[dest].attacked = false;
-		ao[dest].attackedFrame = false;
-	}
+	//소울크래쉬가 실제로 피해를 준 대상에게 확정 스턴을 건다.
+	if (damage > 0 && realAttacker >= PLAYER && realAttacker < PLAYERALL
+		&& ao[realAttacker].currentSkill == SKILL_ROBIN10)
+		ActivateDebuf(&ao[dest], STUN, STUN_START_FRAME, realAttacker);
 
 	switch (drawHandle) {
 	case MD_PLAY:
@@ -3734,7 +3775,18 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 				ao[currencyObj].ax = dmg;
 			//SetCurrencyMarkGold(startX, startY, str);
 			//AddBar(&bar[BAR_GOLD], dmg, BARFRAME);
-			GetItem(ITEM_GOLD, false, false, false, dmg, false);
+			//----------------------------------------------------
+			// 성장 패스가 켜져 있으면 더 준다.
+			//
+			// 버는 쪽에만 건다. 맞아서 잃는 쪽(아래 else)에는 안 건다 -
+			// 패스가 손해까지 키우면 사고도 손해가 되는 상품이 된다.
+			//----------------------------------------------------
+			long long getGold = dmg;
+
+			if (IapGrowthPass())
+				getGold += getGold * GROWTHPASS_GOLDPER / 100;
+
+			GetItem(ITEM_GOLD, false, false, false, getGold, false);
 
 		}
 		else {
@@ -5960,5 +6012,60 @@ void AdvanceTurnBuffs(void)
 		}
 		if (refresh)
 			RefreshStat(&ao[obj]);
+	}
+}
+
+static int GetDebufTurnCount(int debufIdx)
+{
+	switch (debufIdx) {
+	case POISON: return 3;
+	case SLOW: return 2;
+	case BLIND: return 2;
+	case CURSE: return 2;
+	case STUN: return 1;
+	default: return 1;
+	}
+}
+
+void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner)
+{
+	if (pObj == NULL || debufIdx < 0 || debufIdx >= TOTALDEBUF)
+		return;
+	pObj->debuf[debufIdx] = Max(1, frameValue);
+	pObj->debufOwner[debufIdx] = (unsigned char)Max(0, owner);
+	//현재 진행 중인 턴 종료에서 바로 소모되지 않도록 한 칸을 더 둔다.
+	pObj->debufRemainTurn[debufIdx] = (unsigned char)(GetDebufTurnCount(debufIdx) + 1);
+}
+
+void AdvanceTurnDebuffs(void)
+{
+	for (int obj = 0; obj < TOTALOBJECT; obj++) {
+		OBJECT* pObj = &ao[obj];
+		if (!pObj->active || pObj->dead)
+			continue;
+
+		for (int i = 0; i < TOTALDEBUF; i++) {
+			//넉백은 위치를 밀어내는 짧은 물리 연출이므로 기존 프레임 처리를 유지한다.
+			if (i == KNOCKBACK || pObj->debuf[i] <= 0)
+				continue;
+
+			if (pObj->debufRemainTurn[i] == 0)
+				pObj->debufRemainTurn[i] = (unsigned char)(GetDebufTurnCount(i) + 1);
+
+			//부여된 바로 그 턴에는 독 피해를 주지 않고, 다음 턴부터 1회씩 준다.
+			if (i == POISON && pObj->debufRemainTurn[i] <= GetDebufTurnCount(i)) {
+				if (obj < PLAYERALL)
+					AttackRobin(ATTACKTYPE_POISON, obj);
+				else
+					AttackObj(ATTACKTYPE_POISON, obj);
+			}
+
+			if (pObj->debufRemainTurn[i] > 0)
+				pObj->debufRemainTurn[i]--;
+			if (pObj->debufRemainTurn[i] == 0) {
+				pObj->debuf[i] = 0;
+				pObj->debufOwner[i] = 0;
+			}
+		}
 	}
 }

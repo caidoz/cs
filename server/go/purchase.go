@@ -65,8 +65,8 @@ var grantColumn = map[string]string{
 // 남아 있는 동안 또 사면 남은 기간에 이어 붙는다. 그래서 지금 시각이 아니라
 // "지금과 남은 시각 중 늦은 쪽" 에서 더한다. 안 그러면 남은 기간이 날아간다.
 var grantPass = map[string]string{
-	"pass_heart":  "heart_pass_until",
-	"pass_growth": "growth_pass_until",
+	"pass_heart":  "heart_pass_ts",
+	"pass_growth": "growth_pass_ts",
 }
 
 // 결제 상태.
@@ -230,11 +230,14 @@ func applyGrants(ctx context.Context, tx *sql.Tx, userID int64, gs []GrantLine) 
 
 		if col, ok := grantPass[g.Kind]; ok {
 			// 남아 있으면 그 뒤에 이어 붙인다. 지났으면 지금부터.
+			//
+			// 게임 타임스탬프다. 서버의 NOW() 가 아니라 gameNow() 를 쓴다 -
+			// 클라이언트가 보는 시계와 같아야 "언제까지" 가 맞는다.
 			_, err := tx.ExecContext(ctx, fmt.Sprintf(`
 				UPDATE player
-				   SET %s = DATE_ADD(GREATEST(COALESCE(%s, NOW()), NOW()),
-				                     INTERVAL ? DAY)
-				 WHERE user_id = ?`, col, col), g.Amount, userID)
+				   SET %s = GREATEST(%s, ?) + ?
+				 WHERE user_id = ?`, col, col),
+				gameNow(), g.Amount*86400, userID)
 
 			if err != nil {
 				return fmt.Errorf("%s 를 못 걸었다: %w", g.Kind, err)

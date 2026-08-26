@@ -2021,6 +2021,9 @@ void NewGame(void)
 	robin.heroesSetting[DIANA] = false;
 	robin.heroesSetting[MAXX] = false;
 
+	robin.heartPassTs = 0;
+	robin.growthPassTs = 0;
+
 	robin.heart = GetInitHeart();
 	robin.heartTimeStamp = MC_knlCurrentTimeStamp();
 
@@ -3810,6 +3813,7 @@ void WhoIsNextTurn(void)
 		// 개별 액션이 아니라 전체 turnList가 끝나는 이 지점만 버프의 한 턴으로
 		// 센다. 현재 턴에 생긴 버프는 여기서 1이 되고 다음 턴 끝에 해제된다.
 		AdvanceTurnBuffs();
+		AdvanceTurnDebuffs();
 		turnListIdx = 0;
 		turn = 0;
 		attackSequence = ATTACKSEQUENCE_COIN;

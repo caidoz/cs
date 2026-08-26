@@ -340,16 +340,16 @@ func TestPurchasePassStacks(t *testing.T) {
 
 	t.Cleanup(func() { s.db.Exec(`DELETE FROM product WHERE product_id = ?`, prod) })
 
+	//남은 날. 게임 타임스탬프끼리 빼서 하루로 나눈다.
 	days := func() int64 {
 		var n int64
 
 		if err := s.db.QueryRow(`
-			SELECT COALESCE(DATEDIFF(heart_pass_until, NOW()), -1)
-			  FROM player WHERE user_id = ?`, user).Scan(&n); err != nil {
+			SELECT heart_pass_ts FROM player WHERE user_id = ?`, user).Scan(&n); err != nil {
 			t.Fatal(err)
 		}
 
-		return n
+		return (n - gameNow()) / 86400
 	}
 
 	for i := 1; i <= 2; i++ {
@@ -359,7 +359,7 @@ func TestPurchasePassStacks(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		//DATEDIFF 는 날짜 차라 경계에서 하루 덜 나올 수 있다.
+		//나눗셈이 내림이라 하루 덜 나올 수 있다.
 		want := int64(30 * i)
 
 		if got := days(); got != want && got != want-1 {
