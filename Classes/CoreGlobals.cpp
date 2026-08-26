@@ -563,6 +563,11 @@ EFFECT effect;
 MOVIE movie;
 POPTALK talk;
 DMGINFO dmgInfo[TOTALHITMARK];
+
+//밸런스 재기. BalanceConfig.h 의 BALANCE_LOG 가 켜져 있을 때만 채워진다.
+long long gBalHitCnt[TOTALOBJECT];
+long long gBalDmgSum[TOTALOBJECT];
+long long gBalHeartUsed;
 DMGINFO imgText[TOTALHITMARK];
 HITMARK hitMark[TOTALHITMARK];
 ICONMARKARR currencyMarkArr[TOTALCURRENCYMARKARR];

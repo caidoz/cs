@@ -2765,6 +2765,20 @@ int AttackObj(long long int attacker, int dest)
 
 NEXT:
 
+#if BALANCE_LOG
+	//밸런스를 재려고 센다. 몇 대에 잡히는가가 모든 것의 출발점이다.
+	//
+	//오브젝트마다 따로 센다. 한 판에 여럿이 나오면 섞이기 때문이다.
+	{
+		int di = GetObjFromPtr(pDest);
+
+		if (di >= 0 && di < TOTALOBJECT) {
+			gBalHitCnt[di]++;
+			gBalDmgSum[di] += damage;
+		}
+	}
+#endif
+
 	//--------------------------------------------------------------------------
 	// 적의 방어력을 뺀다. 절대값이다.
 	//
@@ -3198,6 +3212,33 @@ NEXT:
 			if (exp > 0)
 				LevelUp((int)Min(exp, (long long)0x7fffffff));
 		}
+
+#if BALANCE_LOG
+		//밸런스 한 줄. 이 값들이 하트 리듬 전체의 바탕이다.
+		{
+			int di = GetObjFromPtr(pDest);
+			long long hits = (di >= 0 && di < TOTALOBJECT) ? gBalHitCnt[di] : 0;
+			long long sum = (di >= 0 && di < TOTALOBJECT) ? gBalDmgSum[di] : 0;
+			int kind = GetWaveKind(robin.waveIdx);
+			const char* kindName =
+				kind >= MONSTERTYPE_BIGBOSS ? "대보스" :
+				kind >= MONSTERTYPE_MIDBOSS ? "중보스" :
+				kind >= MONSTERTYPE_BOSS ? "소보스" : "잡몹";
+
+			CCLOG("BAL: w=%d %s hp=%lld 맞은수=%lld 한대평균=%lld "
+				"베팅=%d 하트쓴것=%lld 남은하트=%lld 상한=%d",
+				robin.waveIdx, kindName, (long long)pDest->maxhp, hits,
+				hits > 0 ? sum / hits : 0, betHeart[bet],
+				gBalHeartUsed, robin.heart, GetInitHeart());
+
+			if (di >= 0 && di < TOTALOBJECT) {
+				gBalHitCnt[di] = 0;
+				gBalDmgSum[di] = 0;
+			}
+
+			gBalHeartUsed = 0;
+		}
+#endif
 
 		//잔챙이들 다 없애주기
 		for (i = GetObjFromPtr(pDest) + 1; i < NEUTRAL; i++) {

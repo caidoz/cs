@@ -675,6 +675,12 @@ void RouletteAttackStart(void)
 
 		GetItem(ITEM_HEART, false, false, false, -betCost, false);
 		AddBar(&bar[BAR_HEART], -betCost, BARFRAME);
+
+#if BALANCE_LOG
+		//몬스터 하나를 잡는 데 하트를 얼마나 썼는지. 죽는 자리에서 읽고
+		//거기서 0 으로 되돌린다(Func_Combat.cpp 의 ENEMYDIE).
+		gBalHeartUsed += betCost;
+#endif
 	}
 	//방어가 되는 케이스
 	//애초에 공격을 당해서 생산불능인 상태면 대상에서 제외

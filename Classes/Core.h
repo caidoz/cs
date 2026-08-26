@@ -1526,6 +1526,15 @@ extern EFFECT effect;
 extern MOVIE movie;
 extern POPTALK talk;
 extern DMGINFO dmgInfo[TOTALHITMARK];
+
+//---- 밸런스 재기 (BalanceConfig.h 의 BALANCE_LOG) ----
+//
+//몬스터 하나를 잡는 데 몇 대가 들었고 하트를 얼마나 썼는지 센다.
+//밸런스를 다 잡으면 BALANCE_LOG 를 0 으로 두면 되고, 그때 이 값들은
+//아무도 안 쓰게 된다.
+extern long long gBalHitCnt[TOTALOBJECT];
+extern long long gBalDmgSum[TOTALOBJECT];
+extern long long gBalHeartUsed;
 extern DMGINFO imgText[TOTALHITMARK];
 extern HITMARK hitMark[TOTALHITMARK];
 extern ICONMARKARR currencyMarkArr[TOTALCURRENCYMARKARR];
