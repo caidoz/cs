@@ -17,6 +17,7 @@
 #include "Func_Menu.h"
 #include "Func_Movement.h"
 #include "Func_Net.h"
+#include "Func_Iap.h"
 #include "Func_Object.h"
 #include "Func_Roulette.h"
 #include "Func_Sound.h"

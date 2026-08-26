@@ -39,6 +39,9 @@ var guestKeyRe = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{
 
 type server struct {
 	store *Store
+
+	// 영수증을 보는 것. 지금은 다 통과시키는 것이 들어 있다.
+	verifier Verifier
 }
 
 func main() {
@@ -131,7 +134,11 @@ func main() {
 		return
 	}
 
-	s := &server{store: st}
+	// 영수증 검증은 아직 자리만 있다. 이 상태로 밖에 열어두면 아무나
+	// 아무 상품이나 받아간다. 그래서 뜰 때마다 크게 알린다.
+	log.Printf("!! 영수증 검증이 꺼져 있다. 스토어를 붙이기 전까지 결제를 열지 마라")
+
+	s := &server{store: st, verifier: verifierAllow{}}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/healthz", s.handleHealth)
@@ -140,6 +147,7 @@ func main() {
 	mux.HandleFunc("/v1/link", s.handleLink)
 	mux.HandleFunc("/v1/consent", s.handleConsent)
 	mux.HandleFunc("/v1/account", s.handleAccount)
+	mux.HandleFunc("/v1/purchase", s.handlePurchase)
 
 	srv := &http.Server{
 		Addr:              *addr,
@@ -319,6 +327,92 @@ func (s *server) handleConsent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeText(w, http.StatusOK, d.BuildMeta())
+}
+
+// /v1/purchase — 결제 하나를 처리한다.
+//
+// 클라이언트가 보내는 것
+//
+//	#platform    ios / android
+//	#product_id  스토어에 등록한 상품 ID
+//	#order_id    스토어가 준 거래 고유값
+//	#receipt     스토어가 준 영수증 원문
+//
+// 지급량을 안 받는 것에 주목. 그건 서버가 product 표에서 찾는다.
+//
+// 돌려주는 것은 갱신된 세이브 덤프 전부다. 결과만 주고 클라이언트가 알아서
+// 더하게 하면, 그 덧셈이 틀리거나 두 번 되는 길이 생긴다. 서버가 계산한 뒤
+// 통째로 주면 클라이언트는 이미 있는 파서로 덮기만 하면 된다.
+//
+// 답에는 #purchase 로 결과가 실린다. granted 든 rejected 든 "그 거래는
+// 끝났다" 는 뜻이라, 클라이언트는 둘 다 대기 장부에서 지운다. 답이 아예
+// 안 오는 것만 다시 보낸다.
+func (s *server) handlePurchase(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeText(w, http.StatusMethodNotAllowed, "POST 만 받는다\n")
+		return
+	}
+
+	userID, ok := s.auth(w, r)
+
+	if !ok {
+		return
+	}
+
+	// 영수증이 길다. Apple 의 것은 수십 KB 가 되기도 한다.
+	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 256*1024))
+
+	if err != nil {
+		writeText(w, http.StatusBadRequest, "본문을 못 읽었다\n")
+		return
+	}
+
+	m := readMetaRows(string(body))
+	req := PurchaseReq{
+		Platform:  m["platform"],
+		ProductID: m["product_id"],
+		OrderID:   m["order_id"],
+		Receipt:   m["receipt"],
+	}
+
+	res, err := s.store.Grant(r.Context(), s.verifier, userID, req)
+
+	if err != nil {
+		log.Printf("purchase: user=%d order=%s %v", userID, req.OrderID, err)
+		writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+		return
+	}
+
+	log.Printf("purchase: user=%d %s %s order=%s -> %s%s",
+		userID, req.Platform, req.ProductID, req.OrderID, res.State,
+		repeatMark(res.Repeat))
+
+	// 지급이 됐으면 바뀐 판을 통째로 돌려준다. 거절이면 바뀐 것이 없으니
+	// 지금 판을 그대로 준다. 어느 쪽이든 클라이언트가 받는 모양은 같다.
+	d, err := s.store.LoadDump(r.Context(), userID)
+
+	if err != nil {
+		log.Printf("purchase: user=%d 덤프를 못 만들었다 %v", userID, err)
+		writeText(w, http.StatusInternalServerError, "서버가 잘못됐다\n")
+		return
+	}
+
+	d.Now = gameNow()
+	d.PurchaseState = res.State
+	d.PurchaseGrant = res.Grant
+	d.PurchaseAmount = res.Amount
+
+	writeText(w, http.StatusOK, d.Build())
+}
+
+// 재시도로 다시 온 것인지 로그에 표시한다. 잦으면 클라이언트가 장부를
+// 안 지우고 있다는 뜻이다.
+func repeatMark(repeat bool) string {
+	if repeat {
+		return " (재시도)"
+	}
+
+	return ""
 }
 
 // /v1/account — 탈퇴 예약과 취소.

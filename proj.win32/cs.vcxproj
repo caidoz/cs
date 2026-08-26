@@ -308,6 +308,7 @@
     <ClCompile Include="..\Classes\Func_Math.cpp" />
     <ClCompile Include="..\Classes\Func_Menu.cpp" />
     <ClCompile Include="..\Classes\Func_Movement.cpp" />
+    <ClCompile Include="..\Classes\Func_Iap.cpp" />
     <ClCompile Include="..\Classes\Func_Net.cpp" />
     <ClCompile Include="..\Classes\Content.cpp" />
     <ClCompile Include="..\Classes\Data\MapLink.cpp" />
@@ -429,6 +430,8 @@
     <ClInclude Include="..\Classes\Func_Math.h" />
     <ClInclude Include="..\Classes\Func_Menu.h" />
     <ClInclude Include="..\Classes\Func_Movement.h" />
+    <ClInclude Include="..\Classes\Func_Iap.h" />
+    <ClInclude Include="..\Classes\Config\IapConfig.h" />
     <ClInclude Include="..\Classes\Func_Net.h" />
     <ClInclude Include="..\Classes\Data\DataList.h" />
     <ClInclude Include="..\Classes\Data\DataPack.h" />

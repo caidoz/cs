@@ -1685,6 +1685,8 @@ static std::string sTermsBody;			//서버로 보낼 동의 내용
 static std::string sTermsService;		//이용약관 전문 주소
 static std::string sTermsPrivacy;		//개인정보 처리방침 주소
 static std::string sTermsRates;			//확률 정보 주소
+static std::string sPurchaseBody;	//보낼 결제 요청
+static std::string sPurchaseState;	//서버가 답한 결과
 static bool sTermsSent = false;			//서버에 증빙을 남겼는가
 static bool sTermsWaiting = false;		//사람의 동의를 기다리는 중인가
 
@@ -1814,6 +1816,12 @@ static void HttpBegin(int reqType, const std::string& body)
 		url += "/v1/consent";
 		req->setRequestType(network::HttpRequest::Type::POST);
 		req->setRequestData(sTermsBody.c_str(), sTermsBody.size());
+		break;
+
+	case NETREQ_PURCHASE:
+		url += "/v1/purchase";
+		req->setRequestType(network::HttpRequest::Type::POST);
+		req->setRequestData(sPurchaseBody.c_str(), sPurchaseBody.size());
 		break;
 
 	default:
@@ -1979,6 +1987,74 @@ void NetOpenRates(void)
 	Application::getInstance()->openURL(url);
 }
 
+//---- 결제 ----
+
+//이 기기가 어느 스토어를 쓰는가.
+//
+//서버는 이 값과 스토어가 준 거래 ID 를 짝지어 "같은 결제인가" 를 판단한다.
+//두 스토어의 거래 ID 가 우연히 같을 수 있으므로 플랫폼이 함께 있어야 한다.
+const char* NetPlatformName(void)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	return "ios";
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	return "android";
+#else
+	//win32 개발 빌드. 진짜 스토어가 없다.
+	return "test";
+#endif
+}
+
+//값 안의 탭과 줄바꿈을 죽인다.
+//
+//영수증에는 무엇이든 들어올 수 있다. 탭이 하나 섞이면 서버가 칸을 잘못
+//끊어 읽고, 줄바꿈이 섞이면 아예 다른 줄이 된다. 덤프 형식과 같은 규칙이다.
+static std::string NetEscapeMeta(const char* s)
+{
+	std::string out;
+
+	if (s == NULL)
+		return out;
+
+	for (const char* p = s; *p; p++) {
+		switch (*p) {
+		case '\\': out += "\\\\"; break;
+		case '\t': out += "\\t"; break;
+		case '\n': out += "\\n"; break;
+		case '\r': out += "\\r"; break;
+		default:   out += *p; break;
+		}
+	}
+
+	return out;
+}
+
+bool NetPurchaseBegin(const char* platform, const char* productId,
+	const char* orderId, const char* receipt)
+{
+	if (!UsingServer())
+		return false;
+
+	sPurchaseBody = "#platform\t" + NetEscapeMeta(platform) + "\n"
+		+ "#product_id\t" + NetEscapeMeta(productId) + "\n"
+		+ "#order_id\t" + NetEscapeMeta(orderId) + "\n"
+		+ "#receipt\t" + NetEscapeMeta(receipt) + "\n";
+
+	sPurchaseState.clear();
+
+	return NetRequest(NETREQ_PURCHASE);
+}
+
+const char* NetTakePurchaseState(void)
+{
+	static std::string got;
+
+	got = sPurchaseState;
+	sPurchaseState.clear();
+
+	return got.c_str();
+}
+
 //약관을 바깥 브라우저로 연다. 설정 메뉴가 부른다.
 void NetOpenTerms(bool privacy)
 {
@@ -2055,6 +2131,23 @@ static int NetTakeResponse(int reqType)
 	case NETREQ_CONSENT:
 		//남겼다. 다시 보낼 이유가 없다.
 		sTermsSent = true;
+		return NETRESULT_OK;
+
+	case NETREQ_PURCHASE:
+		//답은 갱신된 판 전부다. 지급이 됐든 거절이 됐든 지금 판이 실려 온다.
+		//클라이언트가 더하지 않는다 — 서버가 더한 것을 그대로 덮는다.
+		if (!NetParseDump(sHttpBody, tables, &userId, &revision))
+			return NETRESULT_ERR_FORMAT;
+
+		gNetUserId = userId;
+		gNetRevision = revision;
+
+		NetApplyDump(tables);
+
+		sPurchaseState = NetPeekMetaStr(sHttpBody, "#purchase");
+
+		CCLOG("Net: 결제 답 %s (revision=%lld)", sPurchaseState.c_str(), gNetRevision);
+
 		return NETRESULT_OK;
 
 	case NETREQ_LOGIN:

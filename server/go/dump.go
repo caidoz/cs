@@ -64,6 +64,8 @@ var TableOrder = []string{
 // 서버가 저 혼자 쓰는 표. 유저 덤프에 넣지 않는다.
 var serverOnlyTables = map[string]bool{
 	"save_conflict_log": true,
+	"product":           true,
+	"purchase":          true,
 	"schema_version":    true,
 }
 
@@ -92,6 +94,15 @@ type Dump struct {
 	TermsOK int64
 	// 탈퇴가 예약돼 있으면 그 시각(게임 타임스탬프). 0 이면 없다.
 	DeleteAt int64
+
+	// 결제 결과. /v1/purchase 의 답에만 실린다.
+	//
+	// 클라이언트는 이것을 보고 대기 장부를 지운다. 지급이 됐든 거절이 됐든
+	// "그 거래는 끝났다" 는 뜻이라 둘 다 장부에서 빠져야 한다. 답이 아예
+	// 안 오는 것만 다시 보낸다.
+	PurchaseState  string
+	PurchaseGrant  string
+	PurchaseAmount int64
 }
 
 // DumpError 는 규격 위반이다. 이것이 나오면 400 으로 거절한다.
@@ -455,6 +466,11 @@ func (d *Dump) metaLines() string {
 	// 사라진다. 취소할 기회를 주는 것이 이 한 줄이다.
 	if d.DeleteAt > 0 {
 		out += fmt.Sprintf("#delete_at\t%d\n", d.DeleteAt)
+	}
+
+	if d.PurchaseState != "" {
+		out += fmt.Sprintf("#purchase\t%s\n#grant_kind\t%s\n#grant_amount\t%d\n",
+			d.PurchaseState, d.PurchaseGrant, d.PurchaseAmount)
 	}
 
 	return out

@@ -33,6 +33,7 @@ typedef enum _netReq {
 	NETREQ_SAVE,	//세이브 올리기
 	NETREQ_TERMS,	//지금 약관이 몇 판인지 CDN 에 묻는다. 계정이 필요 없다.
 	NETREQ_CONSENT,	//받아둔 동의를 서버에 남긴다. 로그인 뒤에 한다.
+	NETREQ_PURCHASE,	//영수증을 보내 지급받는다. 답은 갱신된 판 전부다.
 	TOTALNETREQ,
 } NETREQDEF;
 
@@ -222,6 +223,26 @@ extern long gNetTimeOffset;
 //임시 로컬 서버는 자기가 곧 이 기기라 오프셋이 0이 된다. 진짜 서버가 붙으면
 //여기서 처음으로 0이 아닌 값이 나온다.
 void NetSetServerTime(long serverNow);
+
+//---- 결제 ----
+//
+// 영수증을 서버에 보내고, 서버가 지급한 뒤 돌려주는 판으로 덮는다.
+// 지급량은 안 보낸다 — 그건 서버가 product 표에서 찾는다.
+//
+// 부르는 쪽은 Func_Iap.cpp 하나뿐이다. 대기 장부를 들고 있는 것도 그쪽이라
+// 여기서는 한 건을 보내고 답을 주는 것까지만 한다.
+//
+// 시작되면 true. 이미 다른 요청이 도는 중이면 false.
+bool NetPurchaseBegin(const char* platform, const char* productId,
+	const char* orderId, const char* receipt);
+
+// 서버가 답한 결제 결과. "granted" / "rejected" / 빈 문자열(아직).
+//
+// 한 번 물으면 지워진다.
+const char* NetTakePurchaseState(void);
+
+// 이 기기가 어느 스토어를 쓰는가. "ios" / "android" / "test".
+const char* NetPlatformName(void);
 
 //서버가 준 것들
 extern long long gNetUserId;
