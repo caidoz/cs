@@ -3179,6 +3179,29 @@ NEXT:
 			break;
 		}
 	ENEMYDIE:
+		//----------------------------------------------------------------
+		// 경험치
+		//
+		// 유저 레벨(robin.lv)이 오르는 유일한 자리다. 그동안은 오르는 길이
+		// 아예 없었다 - LevelUp() 을 부르는 곳이 디버그 키 하나뿐이었다.
+		//
+		// 값을 표에서 안 읽는다. enemy.tsv 의 add_exp 는 360 마리가 전부
+		// 0 이고, 표에 적어두면 체력 곡선을 고칠 때마다 같이 고쳐야 하며
+		// 잊으면 조용히 어긋난다. 그 자리 잡몹 체력에서 나눈다 - 체력이
+		// 이미 등비로 오르므로(WAVE_HP_TIER_MUL) 경험치도 같이 오른다.
+		//
+		// 보스는 체력이 배수만큼 많으니 경험치도 같은 배수다. 잡는 데 든
+		// 하트도 그 배수라, "들인 만큼 받는다" 가 어디서나 같다.
+		//
+		// LevelUp() 이 안에서 SaveGame() 을 한다. 값을 얻은 그 자리에서
+		// 남기는 것이라 이 파일의 다른 자리와 규칙이 같다.
+		if (GetObjFromPtr(pDest) >= ENEMY && GetObjFromPtr(pDest) < NEUTRAL) {
+			long long exp = pDest->maxhp / ENEMY_EXP_DIV;
+
+			if (exp > 0)
+				LevelUp((int)Min(exp, (long long)0x7fffffff));
+		}
+
 		//잔챙이들 다 없애주기
 		for (i = GetObjFromPtr(pDest) + 1; i < NEUTRAL; i++) {
 			if (ao[i].mom == GetObjFromPtr(pDest))

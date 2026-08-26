@@ -1234,7 +1234,7 @@ void WaveControler()
 	// AVK_MAXGAME 전투 테스트도 정식 wave[]와 같은 단위를 쓴다.
 	// 값은 프레임이며 아래 등장 조건에서 FPS로 나눠 초로 환산한다.
 	static const int demoEnemy[3] = {
-		ENEMY_SLING, ENEMY_BOAR, ENEMY_FLAME
+		ENEMY_PHOENIX, ENEMY_FACE, ENEMY_SNOWMAN
 	};
 	static const int demoEnemySpawnFrame[3] = {
 		0, 100, 200
@@ -2220,7 +2220,17 @@ int SetEnemy(OBJECT *pObj)
 
 void SetNpc(OBJECT *pObj)
 {
-	pObj->active = enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDEXP];
+	//NPC 는 세우면 곧바로 살아 있다.
+	//
+	//여기 있던 것은 이랬다.
+	//
+	//    pObj->active = enemyData[... + ENEMYDATA_ADDEXP];
+	//
+	//경험치 칸을 "살아 있는가" 에 넣고 있었다. add_exp 가 0 인 NPC 는
+	//세워도 비활성으로 시작한다는 뜻이 되는데, 지금 360 마리가 전부
+	//0 이라 모든 NPC 가 그랬다. 경험치를 실제로 쓰기 시작하면 이번에는
+	//반대로 아무 값이나 active 에 들어간다.
+	pObj->active = true;
 	pObj->motion = crewPos[pObj->type * 5 + 0];
 
 	pObj->dirY = DOWN;

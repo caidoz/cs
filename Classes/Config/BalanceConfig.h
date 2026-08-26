@@ -120,9 +120,11 @@
 // 소보스가 45 를 주니 첫 보스에서 두어 레벨이 오른다. 97 레벨 구간은
 // lvUpExp 가 20 만이고 그 구간 잡몹이 2 천쯤을 주므로 백 마리다.
 #define ENEMY_EXP_DIV			30
-#define WAVE_EXP_SUBBOSS_MUL	5
-#define WAVE_EXP_MIDBOSS_MUL	10
-#define WAVE_EXP_BIGBOSS_MUL	100
+//
+// 보스 배수를 따로 두지 않는다. 보스는 maxhp 자체가 이미 배수만큼
+// 크므로(GetWaveHpMul) 여기서 나누면 경험치도 저절로 그 배수다.
+// 아무 일도 안 하는 손잡이를 두면 나중에 그것을 돌려보고 안 듣는다고
+// 한참 헤맨다.
 
 //---- 시험용 ----
 //
