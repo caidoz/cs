@@ -60,6 +60,16 @@ typedef enum _statDef {
 	PS_DEBUFREGIST,
 	PS_DMG,
 
+	//허리와 신발이 더해 놓는 값. 이것 자체가 체력은 아니다.
+	//
+	//RefreshStat 의 "체력 결정" 이 HERO_HP_PER_ARMOR 배로 부풀려 PS_HP 에
+	//더한다. 부위마다 그 자리에서 바로 더하면 계수가 여러 군데로 흩어져
+	//"장비가 체력의 몇 할인가" 를 만질 수가 없다.
+	//
+	//ps[] 는 RefreshStat 이 매번 memset 하고 다시 채운다. 저장에도 안 들어
+	//가므로 칸을 늘려도 옛 세이브와 어긋나지 않는다.
+	PS_HPEQUIP,
+
 	TOTALPLAYERSTAT,
 
 	NOWEAPON = -1,

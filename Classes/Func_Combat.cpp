@@ -192,14 +192,23 @@ void RefreshStat(OBJECT* pObj)
 			// (AttackObj)은 쳐다보지도 않는다. 그래서 어떤 방어구를 껴도
 			// 결과가 같았다.
 			//
-			// 이제 슬롯마다 다른 스탯으로 보낸다. 넷 다 엔진이 이미 읽고
-			// 있는 것들이라, 죽은 PS_ARMOR 를 되살리는 것보다 확실하다.
+			// 한동안은 슬롯마다 다른 스탯(ABSORB/VIT/DMGMOD/CRITDMG/GOLDMOD)
+			// 으로 흩뿌려 두었다. 죽은 PS_ARMOR 를 되살리는 것보다 확실했기
+			// 때문이다. 이제 되살린다.
 			//
-			//     투구  PS_ABSORB   받는 피해 감소 % (GetAbsorb, 75% 상한)
-			//     갑옷  PS_VIT      최대 체력 (VIT_HP 배로 HP가 된다)
-			//     장갑  PS_DMGMOD   공격력 %
-			//     바지  PS_CRITDMG  치명타 피해 %
-			//     신발  PS_GOLDMOD  골드 획득 %
+			//     투구  PS_ARMOR    받는 피해에서 뺀다 (절대값)
+			//     갑옷  PS_ARMOR    같이 더해진다
+			//     장갑  PS_DMG      주는 피해에 더한다 (절대값)
+			//     허리  PS_HP       최대 체력 (절대값)
+			//     신발  PS_HP       같이 더해진다
+			//
+			// 왜 절대값인가. 퍼센트는 눈에 안 보인다. "방어 30" 이면 30 을
+			// 덜 맞고, "공격 +12" 면 12 를 더 준다. 몇 대 버티는지 몇 대에
+			// 잡는지를 종이에 적어 계산할 수 있어야 밸런스를 잡을 수 있다.
+			//
+			// 퍼센트가 아주 없어지는 것은 아니다. 액세서리가 들어올 때 낮은
+			// 수준의 % 를 그쪽에 준다. 그때는 바탕이 되는 절대값이 이미
+			// 자리를 잡고 있으므로 % 가 얹히는 값이 분명하다.
 			//
 			// 상세창 이름표는 itemValueTypeText[] 가 같은 순서로 들고 있다.
 			// 둘 중 하나만 고치면 표기와 실제가 어긋나므로 같이 봐야 한다.
@@ -220,19 +229,18 @@ void RefreshStat(OBJECT* pObj)
 
 				switch (i) {
 				case EQUIP_HELM:
-					pObj->ps[PS_ABSORB] += armorValue;
-					break;
 				case EQUIP_ARMOR:
-					pObj->ps[PS_VIT] += armorValue;
+					pObj->ps[PS_ARMOR] += armorValue;
 					break;
 				case EQUIP_GLOVE:
-					pObj->ps[PS_DMGMOD] += armorValue;
+					pObj->ps[PS_DMG] += armorValue;
 					break;
 				case EQUIP_PANTS:
-					pObj->ps[PS_CRITDMG] += armorValue;
-					break;
 				case EQUIP_BOOTS:
-					pObj->ps[PS_GOLDMOD] += armorValue;
+					//체력은 여기서 바로 안 더한다. 아래 "체력 결정" 에서
+					//HERO_HP_PER_ARMOR 배로 부풀려 더한다. 그 계수가 한
+					//자리에 있어야 "장비가 체력의 몇 할인가" 를 만질 수 있다.
+					pObj->ps[PS_HPEQUIP] += armorValue;
 					break;
 				}
 
@@ -369,8 +377,30 @@ void RefreshStat_Sub(OBJECT* pObj)
 	//강화효과
 	RefreshBuff(pObj);
 
-	//체력 결정
-	pObj->ps[PS_HP] += (pObj->ps[PS_VIT] * VIT_HP + pObj->lv * LVUP_HP + 15);
+	//----------------------------------------------------------------------
+	// 체력 결정
+	//
+	//     기본 + 유저레벨 + 장비(허리 + 신발)
+	//
+	// 레벨이 pObj->lv 가 아니라 robin.lv 인 것에 주의. pObj->lv 는 히어로
+	// 오브젝트의 레벨이고, 화면 좌상단에 뜨는 것은 robin.lv 다. 사용자가
+	// 보는 레벨과 체력이 같이 움직여야 성장이 눈에 보인다.
+	//
+	// 비율은 만렙 기준으로 장비가 일곱, 기본과 레벨이 셋이다. 초반에는
+	// 레벨이 바닥을 깔고, 뒤로 갈수록 장비가 대부분을 가져간다. 장비를
+	// 갈아끼우는 것이 곧 체력이 되어야 "좋은 걸 끼면 세진다" 가 보인다.
+	//
+	// 히어로가 아닌 것(동료, 적)은 예전 식을 그대로 쓴다. robin.lv 는
+	// 사용자의 레벨이라 그들에게 얹을 값이 아니다.
+	//----------------------------------------------------------------------
+	if (obj >= ROBIN && obj < TOTALPLAYER) {
+		pObj->ps[PS_HP] += HERO_BASE_HP
+			+ robin.lv * HERO_HP_PER_LEVEL
+			+ RoundDiv(pObj->ps[PS_HPEQUIP] * HERO_HP_PER_ARMOR, 100);
+	}
+	else {
+		pObj->ps[PS_HP] += (pObj->ps[PS_VIT] * VIT_HP + pObj->lv * LVUP_HP + 15);
+	}
 
 	//마력 결정
 	pObj->ps[PS_MP] += pObj->ps[PS_INT] * INT_MP + pObj->lv * LVUP_MP;
@@ -569,7 +599,11 @@ void RefreshSkill(OBJECT* pObj)
 	}
 
 	//패시브스킬을 적용시킨 로빈의 공격력
-	pObj->ps[PS_DMG] = RoundDiv(pObj->ps[PS_WEAPONDMG] * (pObj->ps[PS_DMGSKILLMOD] + 100), 100);
+	//
+	//더한다. 대입하면 안 된다. 장갑이 PS_DMG 에 얹어 놓은 절대값이 여기서
+	//지워졌었다(RefreshStat 의 장비 합산 참고). 무기는 곱셈으로 오르고
+	//장갑은 덧셈으로 얹히는 것이라, 순서가 이렇게 되어야 둘 다 산다.
+	pObj->ps[PS_DMG] += RoundDiv(pObj->ps[PS_WEAPONDMG] * (pObj->ps[PS_DMGSKILLMOD] + 100), 100);
 }
 
 void RefreshBuff(OBJECT* pObj)
@@ -1488,6 +1522,19 @@ void AttackRobin(int obj, int dest)
 			if (attackAttr)
 				damage = RoundDiv(damage * (100 - (Min(ao[obj].lv, *(attackerPs + PS_FIRE - 1 + attackAttr)) * 75 / Max(1, ao[obj].lv))), 66);
 #endif
+
+			//--------------------------------------------------------------
+			// 방어력을 뺀다. 절대값이다.
+			//
+			// 투구와 갑옷이 더해 놓은 PS_ARMOR 를 여기서 처음으로 읽는다.
+			// 그동안 이 값은 계산만 되고 아무도 안 봐서, 어떤 방어구를 껴도
+			// 맞는 값이 같았다.
+			//
+			// 0 으로 만들지 않는다. 방어를 아무리 올려도 한 대는 들어와야
+			// 한다 - 안 그러면 어느 순간부터 절대 안 죽는 구간이 생기고,
+			// 그 구간을 넘는 적이 나오면 갑자기 죽는다. 그 사이가 없다.
+			//--------------------------------------------------------------
+			damage = Max(1, damage - ao[dest].ps[PS_ARMOR]);
 
 #ifndef NOABSORBDMG
 			//대미지 감소율에 따라서 대미지를 줄여준다.
@@ -2720,6 +2767,18 @@ int AttackObj(long long int attacker, int dest)
 	}
 
 NEXT:
+
+	//--------------------------------------------------------------------------
+	// 적의 방어력을 뺀다. 절대값이다.
+	//
+	// enemy.tsv 의 stat_def 가 여기까지 온다(Func_Map.cpp 의 SetEnemy 가
+	// ps[PS_ARMOR] 에 넣는다). 그 값도 그동안 아무도 안 읽었다.
+	//
+	// 베팅을 곱하기 전에 뺀다. 뒤에 빼면 베팅을 올릴수록 방어가 무의미해져,
+	// "크게 걸면 방어를 뚫는다" 가 아니라 "크게 걸면 방어가 사라진다" 가
+	// 된다. 앞에서 빼면 한 대의 값이 줄고 그것이 베팅만큼 곱해진다.
+	//--------------------------------------------------------------------------
+	damage = Max(1, damage - ao[dest].ps[PS_ARMOR]);
 
 	if (damage < 1)
 		damage = 1;
