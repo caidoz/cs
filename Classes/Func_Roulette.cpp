@@ -647,6 +647,35 @@ void RouletteAttackStart(void)
 
 	if (attackDelay)
 		return;
+
+	//----------------------------------------------------------------------
+	// 하트를 낸다. 공격 한 번의 값이다.
+	//
+	// 예전에는 이 함수 맨 아래에 AddBar 한 줄이 전부였다. 바는 연출이라
+	// robin.heart 를 안 건드린다. 그래서 화면에서만 하트가 줄고, 바를 robin
+	// 과 맞추는 순간 되돌아왔다 — 수동 공격은 하트를 한 번도 안 썼다.
+	// robin.heart 를 줄이는 코드가 온 프로젝트에 BoxOpen() 안의 한 줄뿐이었고
+	// 그 길은 자동 플레이에서만 지나간다.
+	//
+	// 값은 여기서 낸다. 공격이 시작되는 자리다. 못 내면 시작하지 않는다.
+	//
+	// 여기서 그냥 return 하면 attackSequence 가 ATTACKSEQUENCE_READY 로 남는다.
+	// 부르는 쪽은 그것을 보고 시작 여부를 판단한다(Func_Map.cpp 의 주석 참고).
+	//----------------------------------------------------------------------
+	{
+		long long betCost = GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail,
+			ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
+
+		if (robin.heart < betCost) {
+			autoPlay = false;
+			autoFrame = -1;
+			PlayMusic(M_ERROR);
+			return;
+		}
+
+		GetItem(ITEM_HEART, false, false, false, -betCost, false);
+		AddBar(&bar[BAR_HEART], -betCost, BARFRAME);
+	}
 	//방어가 되는 케이스
 	//애초에 공격을 당해서 생산불능인 상태면 대상에서 제외
 	//생산가능한 상태인 대상을 공격했을 때 방어막이 있으면 실패
@@ -764,7 +793,10 @@ void RouletteAttackStart(void)
 
 	InitRouletteJump();
 
-	AddBar(&bar[BAR_HEART], -betHeart[bet], BARFRAME);
+	//하트는 이 함수 맨 앞에서 이미 냈다. 여기서 또 깎으면 두 번 깎인다.
+
+	//판이 시작됐다. 낸 값과 함께 남긴다.
+	SaveGame();
 }
 
 //현재 캐릭터 타입과 같은 개수를 구해라

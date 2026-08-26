@@ -1420,8 +1420,17 @@ void PlayKey(int obj)
 		case AVK_ATTACK:
 			if (drawHandle == MD_PLAY || drawHandle == MD_DEMO) {
 				RouletteAttackStart();
-				bar[BAR_PLAY].aniFrame = 1;
-				touchDisable = true;
+
+				//시작됐을 때만 화면을 잠근다.
+				//
+				//RouletteAttackStart()는 시작하지 못하면(공격이 이미 돌고
+				//있거나, 하트가 모자라거나) 아무것도 안 하고 돌아온다. 그때도
+				//touchDisable 을 걸면 공격은 안 되는데 다시 누를 수도 없는
+				//교착이 된다. Func_Map.cpp 의 같은 자리는 이미 이렇게 한다.
+				if (attackSequence != ATTACKSEQUENCE_READY) {
+					bar[BAR_PLAY].aniFrame = 1;
+					touchDisable = true;
+				}
 			}
 			break;
 		case AVK_MOVE:
@@ -3347,8 +3356,28 @@ void BoxOpen(void)
 	//TEST
 	//���⼭ ���ڿ��� ���� �������� ������ش�?
 
-	GetItem(ITEM_HEART, false, false, false, -1, false);
-	AddBar(&bar[BAR_HEART], -betHeart[bet], BARFRAME);
+	//----------------------------------------------------------------------
+	// 하트를 낸다.
+	//
+	// 화면에서는 betHeart[bet] 만큼 깎으면서 robin 에서는 1 만 뺐다. 베팅을
+	// 올려도 실제로 나가는 것은 늘 하나였다. 둘을 같은 값으로 맞춘다.
+	//
+	// 이 길은 자동 플레이에서만 지나간다. 수동 공격은
+	// RouletteAttackStart()(Func_Roulette.cpp)가 같은 값을 낸다.
+	//----------------------------------------------------------------------
+	{
+		long long betCost = GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail,
+			ao[PLAYER].equip[EQUIP_WEAPON].grade, bet);
+
+		if (robin.heart < betCost) {
+			autoPlay = false;
+			autoFrame = -1;
+			return;
+		}
+
+		GetItem(ITEM_HEART, false, false, false, -betCost, false);
+		AddBar(&bar[BAR_HEART], -betCost, BARFRAME);
+	}
 
 	bar[BAR_ITEM].frame = 0;
 	bar[BAR_ITEM].add = 0;
