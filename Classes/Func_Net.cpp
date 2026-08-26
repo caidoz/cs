@@ -2138,6 +2138,7 @@ static int NetBootFallback(int result)
 static bool sDirty = false;			//올릴 변경이 쌓여 있는지
 static int sHold = 0;				//묶어 보내려고 기다리는 프레임
 static int sDirtyAge = 0;			//처음 변경이 생긴 뒤 지난 프레임
+static int sTurnHeld = 0;			//판이 끝나길 기다린 프레임
 
 //---- 충돌 복구 ----
 //저장이 거절되면 서버 것을 다시 받아야 한다. 그 일을 여기서 기억한다.
@@ -2258,6 +2259,10 @@ void NetMarkDirty(void)
 void NetFlush(void)
 {
 	sHold = 0;
+
+	//판 묶기도 푼다. 이 함수는 "지금 당장 보내라"는 뜻이라, 판이 도는
+	//중이라는 이유로 미루면 부르는 쪽의 뜻을 어기는 것이 된다.
+	sTurnHeld = NETSAVE_TURNHOLDMAX;
 }
 
 void NetUpdate(void)
@@ -2479,6 +2484,27 @@ void NetUpdate(void)
 
 	sDirtyAge++;
 
+	//---- 판이 도는 중이면 기다린다 ----
+	//
+	//공격은 하트를 내고 시작해서 여러 프레임에 걸쳐 결과가 쌓인다. 그
+	//중간을 서버에 남기면 "값은 치렀는데 결과는 없는" 상태가 저장된다.
+	//거기서 앱이 죽으면 그게 그대로 정답이 된다.
+	//
+	//판이 끝날 때까지 안 보내면, 죽더라도 마지막으로 저장된 것은 판이
+	//시작하기 전이다. 하트도 안 나갔고 결과도 없다. 앞뒤가 맞는다.
+	//
+	//상한을 두는 이유. 판이 어딘가에서 멎으면 영영 못 보낸다. 그때는
+	//묶기를 포기한다 — 앞뒤가 안 맞더라도 안 보내는 것보다 낫다.
+	if (NetTurnHolding()) {
+		sTurnHeld++;
+
+		if (sTurnHeld < NETSAVE_TURNHOLDMAX)
+			return;
+	}
+	else {
+		sTurnHeld = 0;
+	}
+
 	//잠잠해지길 기다린다. 다만 계속 시끄러우면(전투 중 SaveGame()이 연달아
 	//불리는 경우) 영영 못 보내므로 상한을 둔다.
 	if (sHold > 0 && sDirtyAge < NETSAVE_MAXHOLDFRAME) {
@@ -2489,7 +2515,18 @@ void NetUpdate(void)
 	if (NetRequest(NETREQ_SAVE)) {
 		sDirty = false;
 		sDirtyAge = 0;
+		sTurnHeld = 0;
 	}
+}
+
+//판이 도는 중인가.
+//
+//attackSequence 가 ATTACKSEQUENCE_READY 면 아무 판도 안 돌고 있다는 뜻이다.
+//부르는 쪽들이 이미 이 값으로 "시작됐는가"를 판단한다(Func_Map.cpp,
+//Func_Input.cpp 의 AVK_ATTACK). 같은 값을 여기서도 본다.
+bool NetTurnHolding(void)
+{
+	return attackSequence != ATTACKSEQUENCE_READY;
 }
 
 //부팅을 띄운다. 곧바로 돌아온다.
