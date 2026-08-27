@@ -13,6 +13,8 @@ int GetBuffDurationMode(int buffIdx);
 void ActivateBuff(OBJECT *pObj, int buffIdx, int value);
 bool ConsumeBuffUse(OBJECT *pObj, int buffIdx);
 void AdvanceTurnBuffs(void);
+void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner);
+void AdvanceTurnDebuffs(void);
 void RefreshQuestTime(void);
 void RefreshHeartTime(void);
 void RefreshEnemyTime(void);

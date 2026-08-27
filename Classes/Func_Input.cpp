@@ -1912,6 +1912,9 @@ void PlayKey(int obj)
 		case AVK_SHOP_BUYBOX1:
 		case AVK_SHOP_BUYBOX2:
 		case AVK_SHOP_BUYBOX3:
+		case AVK_SHOP_BUYBOX4:
+		case AVK_SHOP_BUYBOX5:
+		case AVK_SHOP_BUYBOX6:
 		{
 			//----------------------------------------------------
 			// 상자 구매
@@ -1928,7 +1931,7 @@ void PlayKey(int obj)
 			// 없었다. 상자를 여는 화면으로 넘어간 뒤 어딘가에서 저장이
 			// 돌면 골드는 나갔는데 상자는 못 받은 상태로 남는다.
 			//----------------------------------------------------
-			int boxDetail = BOX_REWARD2 + systemKey - AVK_SHOP_BUYBOX1;
+			int boxDetail = BOX_PAID0 + systemKey - AVK_SHOP_BUYBOX1;
 			long long boxPrice = GetBoxPrice(boxDetail, GRADE_NORMAL);
 
 			if (boxPrice < 0 || robin.gold < boxPrice) {
@@ -3292,16 +3295,13 @@ void touchFunc(int func)
 		if (func >= TOUCH_FUNC_SHOP_IAP && func <= TOUCH_FUNC_SHOP_IAP_END)
 			systemKey = AVK_SHOP_IAP + (func - TOUCH_FUNC_SHOP_IAP);
 
-		//상점 탭. 화면만 바뀌는 것이라 키로 넘기지 않고 여기서 끝낸다.
-		if (func >= TOUCH_FUNC_SHOP_TAB && func <= TOUCH_FUNC_SHOP_TAB_END) {
-			shopTab = func - TOUCH_FUNC_SHOP_TAB;
-			PlayMusic(M_BUTTON);
-		}
-
 		switch (func) {
 		case TOUCH_FUNC_SHOP_BUYBOX1:
 		case TOUCH_FUNC_SHOP_BUYBOX2:
 		case TOUCH_FUNC_SHOP_BUYBOX3:
+		case TOUCH_FUNC_SHOP_BUYBOX4:
+		case TOUCH_FUNC_SHOP_BUYBOX5:
+		case TOUCH_FUNC_SHOP_BUYBOX6:
 			systemKey = AVK_SHOP_BUYBOX1 + func - TOUCH_FUNC_SHOP_BUYBOX1;
 			break;
 		case TOUCH_FUNC_HOTKEYPRESS1:

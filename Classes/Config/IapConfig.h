@@ -105,6 +105,12 @@ enum {
 	X(IAP_HEART_04,    "heart_04",       "하트 5,000",        ICON_HEART) \
 	X(IAP_HEART_05,    "heart_05",       "하트 15,000",       ICON_HEART) \
 	X(IAP_HEART_06,    "heart_06",       "하트 50,000",       ICON_HEART) \
+	X(IAP_CASH_01,     "cash_01",        "캐시 코인 60",      ICON_STAR) \
+	X(IAP_CASH_02,     "cash_02",        "캐시 코인 180",     ICON_STAR) \
+	X(IAP_CASH_03,     "cash_03",        "캐시 코인 600",     ICON_STAR) \
+	X(IAP_CASH_04,     "cash_04",        "캐시 코인 1,500",   ICON_STAR) \
+	X(IAP_CASH_05,     "cash_05",        "캐시 코인 3,500",   ICON_STAR) \
+	X(IAP_CASH_06,     "cash_06",        "캐시 코인 8,000",   ICON_STAR) \
 	X(IAP_PASS_HEART,  "pass_heart_30",  "하트 패스 30일",       ICON_HEART) \
 	X(IAP_PASS_GROWTH, "pass_growth_30", "성장 패스 30일",       ICON_CROWN) \
 	X(IAP_STARTER,     "starter",        "초심자 패키지",         ITEM_GACHABOX_ICON) \

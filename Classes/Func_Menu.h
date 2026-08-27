@@ -173,7 +173,4 @@ int GetCrewInventoryIdx(int type);
 void CrewMenuDraw(int x, int y, float zoom);
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY);
 
-//상점에서 지금 보고 있는 탭. Func_Input.cpp 의 탭 터치가 바꾼다.
-extern int shopTab;
-
 #endif

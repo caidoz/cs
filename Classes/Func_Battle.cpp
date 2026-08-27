@@ -1563,7 +1563,7 @@ void AttackSequenceDraw(void)
 	rewardGap = 16 * _2X;
 
 	if (pObj->equip[EQUIP_GLOVE].type != EMPTY)
-		gloveValue = itemUpgradeValue[pObj->equip[EQUIP_GLOVE].type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_GLOVE].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_GLOVE].grade * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_GLOVE].cooldown];
+		gloveValue = GetItemUpgradeValue(pObj->equip[EQUIP_GLOVE].type, pObj->equip[EQUIP_GLOVE].detail, pObj->equip[EQUIP_GLOVE].grade, pObj->equip[EQUIP_GLOVE].cooldown);
 
 	switch (attackSequence) {
 	case ATTACKSEQUENCE_READY:
@@ -2428,7 +2428,7 @@ void EnemySequenceDraw(void)
 	ret = *tPtr;
 
 	if (pObj->equip[EQUIP_ARMOR].type != EMPTY)
-		armorValue = itemUpgradeValue[pObj->equip[EQUIP_ARMOR].type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_ARMOR].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_ARMOR].grade * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_ARMOR].cooldown];
+		armorValue = GetItemUpgradeValue(pObj->equip[EQUIP_ARMOR].type, pObj->equip[EQUIP_ARMOR].detail, pObj->equip[EQUIP_ARMOR].grade, pObj->equip[EQUIP_ARMOR].cooldown);
 
 	//항상 터치가 안되도록 한다.
 	touchDisable = true;
@@ -2608,7 +2608,7 @@ void RaidSequenceDraw(void)
 	float iconZoom;
 
 	if (ao[PLAYER].equip[EQUIP_BOOTS].type != EMPTY)
-		bootsValue = itemUpgradeValue[pObj->equip[EQUIP_BOOTS].type * TOTAL_COLLECTIONS * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_BOOTS].detail * TOTALGRADE * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_BOOTS].grade * (ITEMMAXLEVEL + 1) + pObj->equip[EQUIP_BOOTS].cooldown];
+		bootsValue = GetItemUpgradeValue(pObj->equip[EQUIP_BOOTS].type, pObj->equip[EQUIP_BOOTS].detail, pObj->equip[EQUIP_BOOTS].grade, pObj->equip[EQUIP_BOOTS].cooldown);
 
 	switch (attackSequence) {
 	case ATTACKSEQUENCE_READY:

@@ -544,6 +544,10 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 					default:
 						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT;
 						break;
+					case MENU_SHOP:
+						//상점은 전체 상품 목록의 실제 끝 좌표로 ShopIapDraw가
+						//단말기별 스크롤 한계를 계산한다.
+						break;
 					case MENU_CREW:
 						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 406 - 112;
 						break;
@@ -790,6 +794,14 @@ bool Core::init()
 	LoadImg(NUM2_IMG);
 	LoadTexture(NUM2_IMG);
 
+	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
+	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
+	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
+	for (i = SHOP_BANNER_GOLD_IMG; i <= SHOP_CASH_ICON_IMG; i++) {
+		LoadImg(i);
+		LoadTexture(i);
+	}
+
 	LoadOption();
 	LoadAiHouse();
 
@@ -1009,6 +1021,7 @@ void Core::Run(float delta) {
 	//robin 이 아직 안 채워져 있다. 서버가 준 판으로 덮는 것이 결제의 마무리라
 	//그 전에 도착하면 빈 판을 덮게 된다.
 	IapUpdate();
+
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
 	//여기서 안 막힌다. 받은 것은 staging 에 쌓이고 반영은 다음 부팅 때 한다.
@@ -2459,11 +2472,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
-
-
 
 
 

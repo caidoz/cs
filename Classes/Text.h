@@ -1150,6 +1150,12 @@ const char* const textId[] = {
 	"보상박스5",
 	"보상박스6",
 	"보상박스7",
+	"브론즈 유료 상자",
+	"실버 유료 상자",
+	"크리스탈 유료 상자",
+	"아케인 유료 상자",
+	"로열 유료 상자",
+	"레전드 유료 상자",
 
 	////투기장 2 전용 아이템(나중에 프리미엄으로 주면 될듯)
 	////검 : ITEM_SWORD	
@@ -1768,6 +1774,12 @@ const char* const textId[] = {
 	"보상박스5설명",
 	"보상박스6설명",
 	"보상박스7설명",
+	"브론즈 유료 상자 설명",
+	"실버 유료 상자 설명",
+	"크리스탈 유료 상자 설명",
+	"아케인 유료 상자 설명",
+	"로열 유료 상자 설명",
+	"레전드 유료 상자 설명",
 
 	"견습 기사",//TEXT_SETNAME_START
 	"왕가의 수호자",
@@ -3225,6 +3237,12 @@ const char* const textId[] = {
 	"box24",
 	"box25",
 	"box26",
+	"box27",
+	"box28",
+	"box29",
+	"box30",
+	"box31",
+	"box32",
 
 	"theater",
 	"goldFont",
@@ -3370,6 +3388,14 @@ const char* const textId[] = {
 
 	"dot",//BUFFER_CREWUPGRADEBUTTON_GREEN_IMG
 	"dot",//BUFFER_CREWUPGRADEBUTTON_GREY_IMG
+
+	"shop_banner_gold",
+	"shop_banner_heart",
+	"shop_banner_cash",
+	"shop_banner_box",
+	"shop_card_box",
+	"shop_cash_coin",
+	"shop_cash_icon",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

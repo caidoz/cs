@@ -77,6 +77,12 @@ int GetRewardBoxIndex(int boxDetail)
 	case BOX_REWARD5:		return 5;
 	case BOX_REWARD6:		return 6;
 	case BOX_REWARD7:		return 7;
+	case BOX_PAID0:			return 2;
+	case BOX_PAID1:			return 3;
+	case BOX_PAID2:			return 4;
+	case BOX_PAID3:			return 5;
+	case BOX_PAID4:			return 6;
+	case BOX_PAID5:			return 7;
 	}
 
 	return -1;
@@ -642,6 +648,8 @@ void MakeBoxHeartReward(
 		if (amount < boxData->heartMin)
 			amount = boxData->heartMin;
 
+		amount = Max(10LL, ((amount + 9) / 10) * 10);
+
 		item->count =
 			(int)amount;
 	}
@@ -677,6 +685,8 @@ void MakeBoxGoldReward(
 		GetWeightedNormalizedReward(
 			boxData->goldMin,
 			boxData->goldMax);
+
+	item->count = Max(100, ((item->count + 99) / 100) * 100);
 
 	if (lucky)
 	{

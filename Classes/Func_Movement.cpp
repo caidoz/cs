@@ -788,34 +788,8 @@ void MoveObj(OBJECT* pObj)
 
 		//디버프 처리
 		if (pObj->dead == false) {
-			if (pObj->debuf[SLOW])
-				pObj->debuf[SLOW]--;
-
-			if (pObj->debuf[POISON]) {
-				pObj->debuf[POISON]--;
-
-				if (pObj->debuf[POISON] % FPS == 1) {
-					//주인공 캐릭터가 중독이 되었을 때
-					if (obj < PLAYERALL) {
-						AttackRobin(ATTACKTYPE_POISON, obj);
-					}
-					else {
-						//몬스터가 중독이 되었을 때
-						AttackObj(ATTACKTYPE_POISON, obj);
-					}
-				}
-			}
-
-			if (pObj->debuf[BLIND]) {
-				pObj->debuf[BLIND]--;
-			}
-
-			if (pObj->debuf[CURSE])
-				pObj->debuf[CURSE]--;
-
 			if (obj >= PLAYERALL) {
 				if (pObj->debuf[STUN]) {
-					pObj->debuf[STUN]--;
 					pObj->attack = false;
 					effect.alpha = 0;
 
@@ -1738,9 +1712,19 @@ void PlayerMove(OBJECT* pObj)
 					return;
 				}
 
-				if (GetDistance(pObj, &ao[pObj->target]) > GetAttackRange(obj)) {
+				//턴제 접근 이동은 공중 몬스터의 표시용 y좌표를 따라가지 않는다.
+				//점프/상승 공격의 y이동은 THERE 이후 각 스킬 모션이 직접 처리한다.
+				//직접 조작하는 보스전에서는 기존의 2축 추적을 그대로 유지한다.
+				int targetDistance = (robin.bossRoom == false)
+					? Abs(ao[pObj->target].x - pObj->x)
+					: GetDistance(pObj, &ao[pObj->target]);
+
+				if (targetDistance > GetAttackRange(obj)) {
 					int attackDir = (ao[pObj->target].x >= pObj->x) ? RIGHT : LEFT;
-					GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, GetSpeed(obj)));
+					if (robin.bossRoom == false)
+						GotoObjXY(pObj, ao[pObj->target].x, pObj->y, Max(SPEED_MIN, GetSpeed(obj)));
+					else
+						GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, GetSpeed(obj)));
 					pObj->x += pObj->dx;
 					pObj->y += pObj->dy;
 					pObj->dirX = pObj->dirF = attackDir;
@@ -1886,7 +1870,6 @@ void PlayerMove(OBJECT* pObj)
 		}
 		else {
 			pObj->dx = 0;
-			pObj->debuf[STUN]--;
 
 			goto chk;
 		}
@@ -2754,14 +2737,20 @@ chk:
 					pObj->turnPosition = GOING;
 					break;
 				case GOING:
-					GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, pObj->pDx));
+					//턴제 자동 접근은 적의 높이를 따라가지 않고 X축으로만 이동한다.
+					//공중 공격 등 의도된 Y축 이동은 공격 상태(THERE)의 스킬 코드가 맡는다.
+					if (robin.bossRoom == false)
+						GotoObjXY(pObj, ao[pObj->target].x, pObj->y, Max(SPEED_MIN, pObj->pDx));
+					else
+						GotoObj(&ao[pObj->target], pObj, Max(SPEED_MIN, pObj->pDx));
 					pObj->x += pObj->dx;
 					pObj->y += pObj->dy;
 					loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_WALK, pObj->frame);
 					pObj->motion = (loopMotion < 0) ? PO_C0_W0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 					if (pObj->x + GetAttackRange(obj) >= ao[pObj->target].x) {
 						pObj->x = Max(ao[pObj->target].x - GetAttackRange(obj), pObj->nx);
-						pObj->y = ao[pObj->target].y;
+						if (robin.bossRoom == true)
+							pObj->y = ao[pObj->target].y;
 						pObj->turnPosition = THERE;
 						pObj->attack = ATTACK_NORMAL;
 					}
@@ -2968,7 +2957,6 @@ void EnemyPlayerMove(OBJECT* pObj)
 		}
 		else {
 			pObj->dx = 0;
-			pObj->debuf[STUN]--;
 
 			goto chk;
 		}
@@ -3901,6 +3889,29 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		}
 	}
 
+	//하이퍼차지는 현재 지정 대상에서 멈추지 않고 적 진형의 가장 뒤쪽을
+	//완전히 관통한다. 스킬 종료 뒤의 공통 COMING 흐름이 nx, ny로 복귀시킨다.
+	if (pObj->type == ROBIN && pObj->currentSkill == SKILL_ROBIN9) {
+		int farthestX = pObj->x;
+		bool foundEnemy = false;
+		for (i = ENEMY; i < NEUTRAL; i++) {
+			if (!ao[i].active)
+				continue;
+			farthestX = Max(farthestX, PxlRight(&ao[i]));
+			foundEnemy = true;
+		}
+
+		if (foundEnemy && PxlLeft(pObj) <= farthestX + 8 * _2X) {
+			pObj->mx = true;
+			pObj->dirX = pObj->dirF = RIGHT;
+			pObj->pDx = pObj->dx = Max(pObj->dx, 12 * _2X);
+		}
+		else if (foundEnemy) {
+			pObj->mx = false;
+			pObj->pDx = pObj->dx = 0;
+		}
+	}
+
 	if (pObj->continueAttack == false && released == false && systemKey == AVK_5) {
 		if (pObj->type != ROBIN || pObj->attackFrame > attackDelayFrame[pObj->type] + 3)
 			PlayRelease(pObj);
@@ -4620,7 +4631,6 @@ void PlayerGolemMove(OBJECT* pObj)
 		}
 		else {
 			pObj->dx = 0;
-			pObj->debuf[STUN]--;
 
 			goto chk;
 		}
@@ -8035,7 +8045,7 @@ void BulletBombMove(OBJECT* pObj)
 
 		switch (ao[loop].type) {
 		default:
-			ao[loop].debuf[STUN] = STUN_START_FRAME;
+			ActivateDebuf(&ao[loop], STUN, STUN_START_FRAME, pObj->target);
 			break;
 		}
 	}
@@ -8166,8 +8176,7 @@ void BulletGuidedMove(OBJECT* pObj)
 			//pObj //미사일
 			//pObj->attack //타겟
 			//미사일에 맞으면 중독을 발생시킨다.
-			ao[rt].debuf[POISON] = POISON_START_FRAME;
-			ao[rt].debufOwner[POISON] = pObj->target;
+			ActivateDebuf(&ao[rt], POISON, POISON_START_FRAME, pObj->target);
 #endif
 
 			memset(pObj, 0, sizeof(OBJECT));
@@ -8556,8 +8565,7 @@ void BulletBoomerangMove(OBJECT* pObj)
 
 		if (rt && pObj->attack == MAXX_SKILL_HORMING) {
 #ifdef HOMINGHUNTCURSE
-			ao[rt].debuf[CURSE] = CURSE_START_FRAME / 2;//적에게 걸 때는 절반
-			ao[rt].debufOwner[CURSE] = pObj->target;
+			ActivateDebuf(&ao[rt], CURSE, CURSE_START_FRAME / 2, pObj->target);
 #endif
 		}
 	}
@@ -14444,6 +14452,8 @@ void CrewMove(OBJECT* pObj)
 								}
 								//소환 테스트 장비는 외형용이다. memset 직후의 임시 OBJECT를
 								//전체 스탯/옵션 재계산기에 넘기지 않는다.
+								//소환 히어로의 기본 공격력은 호출한 동료의 실제 공격력과 같다.
+								objPtr->ps[PS_WEAPONDMG] = pObj->ps[PS_DMG];
 								objPtr->ps[PS_DMG] = objPtr->ps[PS_STR] = pObj->ps[PS_DMG];
 
 #ifdef SPEEDTURN

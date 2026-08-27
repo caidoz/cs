@@ -1055,6 +1055,10 @@ int GetAttackRange(int obj)
 			//캠핑헌트의 판정은 별도 부메랑 OBJECT에 있어 본체 CMF만 읽으면 짧다.
 			if (pObj->currentSkill == SKILL_MAXX10)
 				range = Max(range, 200);
+			//오비탈레이저는 소환 위치에서 위성을 지정하는 원거리 스킬이다.
+			//본체가 적 앞으로 달려갈 필요가 없도록 전장 절반을 사거리로 둔다.
+			if (pObj->currentSkill == SKILL_DIANA12)
+				range = Max(range, 320);
 		}
 		//몬스터면
 		else
