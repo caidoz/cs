@@ -65,6 +65,29 @@ unsigned long long ContentHash(const void* buf, unsigned int len);
 //  2. 내려받은 폴더를 검색 경로 맨 앞에 넣는다.
 void ContentBoot(void);
 
+//---- 손으로 덮어쓰기 (개발용) ----
+//
+// 아래 폴더에 파일을 넣으면 그것이 이긴다. 팩이든 그림이든 소리든,
+// 이름만 같으면 된다.
+//
+//     <쓰기가능경로>/override/
+//         data/content.pack      <- 팩을 통째로 갈아끼운다
+//         res/aa.png             <- 그림 한 장만 바꾼다
+//
+// 쓰기 가능 경로는 부팅 로그가 알려준다(Content: 내려받기 폴더 ...).
+// win32 라면 C:/Users/<이름>/AppData/Local/cs/override/ 다.
+//
+// 왜 필요한가. 데이터를 하나 고쳐 보려면 지금은 팩을 다시 내고 프로젝트를
+// 다시 빌드해야 한다. 밸런스처럼 값 하나를 바꿔 보고 되돌리기를 반복하는
+// 일에는 그 왕복이 너무 길다.
+//
+// 켜져 있으면 부팅 로그에 크게 남는다. 조용히 다른 데이터로 도는 것이
+// 제일 나쁘다 - 왜 안 고쳐지는지 한참 헤매게 된다.
+void ContentOverrideBoot(void);
+
+//덮어쓰기 폴더가 켜져 있는가. 화면에 표시하고 싶을 때 쓴다.
+bool ContentOverrideOn(void);
+
 //지금 갖고 있는 콘텐츠 판번호. 0이면 앱에 딸려온 것 그대로다.
 long long ContentVersion(void);
 

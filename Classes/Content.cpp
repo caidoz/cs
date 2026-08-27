@@ -111,6 +111,7 @@ unsigned long long ContentHash(const void* buf, unsigned int len)
 static std::string LiveDir(void) { return sWritable + CONTENT_DIR "/"; }
 static std::string StageDir(void) { return sWritable + STAGING_DIR "/"; }
 static std::string CdnDir(void) { return sWritable + "cdn/"; }
+static std::string OverrideDir(void) { return sWritable + "override/"; }
 
 //"a/b/c.png" 의 중간 폴더를 만든다. FileUtils 를 안 쓴다.
 static void MakeDirs(const std::string& full)
@@ -548,6 +549,51 @@ static void ClearLive(const std::vector<ContentFile>& fs)
 	remove((live + CONTENT_MANIFEST).c_str());
 }
 
+//---- 손으로 덮어쓰기 (개발용) ----
+//
+// override/ 폴더를 탐색 경로 맨 앞에 넣는다. 그 한 줄이 전부다.
+//
+// 파일을 이름으로 찾는 일은 전부 FileUtils 가 한다. "data/content.pack" 도
+// "res/aa.png" 도 마찬가지다. 그래서 맨 앞에 폴더 하나를 끼우면 그 안에
+// 있는 것은 무엇이든 이긴다 - 읽는 쪽 코드는 한 줄도 안 고친다.
+//
+// 내려받은 콘텐츠(LiveDir)보다도 앞이다. 손으로 넣은 것이 서버가 준 것에
+// 지면 덮어쓰기라고 할 수가 없다.
+static bool sOverrideOn = false;
+
+bool ContentOverrideOn(void)
+{
+	return sOverrideOn;
+}
+
+void ContentOverrideBoot(void)
+{
+	FileUtils* fu = FileUtils::getInstance();
+	std::string dir = OverrideDir();
+
+	//폴더가 없으면 아무 일도 안 한다. 만들지도 않는다 - 빈 폴더가 늘
+	//있으면 "켜져 있나" 를 눈으로 알 수 없다. 쓸 사람이 만들면 된다.
+	if (!fu->isDirectoryExist(dir))
+		return;
+
+	std::vector<std::string> paths = fu->getSearchPaths();
+
+	if (std::find(paths.begin(), paths.end(), dir) == paths.end()) {
+		paths.insert(paths.begin(), dir);
+		fu->setSearchPaths(paths);
+	}
+
+	sOverrideOn = true;
+
+	//크게 남긴다. 조용히 다른 데이터로 도는 것이 제일 나쁘다 - 왜 안
+	//고쳐지는지, 혹은 왜 고친 적 없는 값이 다른지 한참 헤매게 된다.
+	CCLOG("========================================================");
+	CCLOG("!! 덮어쓰기 폴더가 켜져 있다: %s", dir.c_str());
+	CCLOG("!! 이 안의 파일이 팩과 내려받은 것보다 먼저 쓰인다.");
+	CCLOG("!! 폴더를 지우면 원래대로 돌아간다.");
+	CCLOG("========================================================");
+}
+
 void ContentBoot(void)
 {
 	FileUtils* fu = FileUtils::getInstance();
@@ -595,10 +641,17 @@ void ContentBoot(void)
 	std::string dir = LiveDir();
 	std::vector<std::string> paths = fu->getSearchPaths();
 
+#ifdef _DEBUG
+	//개발 빌드는 프로젝트 Resources의 데이터/이미지를 검증해야 한다.
+	//다운로드 폴더를 앞에 두면 새로 만든 content.pack보다 서버의 이전 팩이
+	//우선되어, C++ 웨이브는 바뀌는데 SkillData만 예전 값인 혼합 상태가 된다.
+	CCLOG("Content: Debug build uses bundled content instead of downloaded content (%s)", dir.c_str());
+#else
 	if (std::find(paths.begin(), paths.end(), dir) == paths.end()) {
 		paths.insert(paths.begin(), dir);
 		fu->setSearchPaths(paths);
 	}
+#endif
 
 	long long ver = 0;
 	std::vector<ContentFile> fs;

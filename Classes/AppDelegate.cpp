@@ -78,6 +78,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	//네트워크를 안 탄다. 파일 이름만 바꾸므로 순식간이다.
 	ContentBoot();
 
+	//손으로 덮어쓰기(개발용). ContentBoot 이 쓰기 가능 경로를 잡은 뒤라야
+	//폴더 자리를 알 수 있어서 바로 뒤에 둔다.
+	//
+	//내려받은 콘텐츠보다 앞에 끼워야 하므로 ContentBoot 뒤가 맞다. 앞에서
+	//넣으면 ContentBoot 이 자기 폴더를 다시 맨 앞에 꽂아 뒤로 밀려난다.
+	ContentOverrideBoot();
+
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::init();
 #endif
@@ -89,9 +96,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 		glview = GLViewImpl::createWithRect("인삼남:인생이 삼일 남았다!", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
 		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
-		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
-		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 
 #else
 		glview = GLViewImpl::create("인삼남:인생이 삼일 남았다!");
