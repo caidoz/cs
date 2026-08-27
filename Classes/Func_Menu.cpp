@@ -5273,8 +5273,24 @@ void DrawItemCard(
 		grayScale = 0;
 
 		if (itemLv == 0) {
-			if (drawHandle == MD_PLAY)
-				CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom);
+			//아직 없는 카드에는 물음표를 찍는다. 다만 상자에서 아예 안 나오는
+			//것에는 물음표 대신 자물쇠를 찍는다.
+			//
+			//물음표는 "아직 안 얻었다" 는 말이라, 뽑으면 언젠가 나온다는 뜻으로
+			//읽힌다. 6 성 검은 아무리 뽑아도 안 나오므로 그렇게 두면 확률이
+			//극악한 것으로 오해한다. 없는 것은 없다고 보여야 한다.
+			//
+			//카드 자체는 검게 남는다. 등급 테두리도 그대로 둔다 - 이게 제일
+			//좋은 검이라는 것은 보여야 얻고 싶어진다.
+			if (drawHandle == MD_PLAY) {
+				if (IsBoxLockedItem(itemType, itemDetail, itemGrade))
+					DrawIcon(ICON_EVENT_LOCK,
+						x + (float)(120) * zoom - (float)(16 * _2X) * zoom,
+						y - (float)(170) * zoom,
+						2.0f * zoom, COLOR_BROWN, false, true, (float)1 * zoom);
+				else
+					CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom);
+			}
 		
 			//SetAlpha(24);
 			//SetAlpha(32);
@@ -6000,7 +6016,7 @@ enum {
 	SHOPTAB_HEART,			//하트 재화 6종
 	SHOPTAB_CASH,			//무지개 캐시 코인 6종
 	SHOPTAB_BOX,			//상자 : 코인으로 산다
-	SHOPTAB_PASS,			//패스와 특별 상품
+	SHOPTAB_PASS,			//스페셜 패스 상품
 	TOTALSHOPTAB,
 };
 
@@ -6026,15 +6042,57 @@ static int ShopBannerProduct(int banner)
 	}
 }
 
+static const char* ShopProductName(int product)
+{
+	static const char* rainbowName[6] = {
+		"레인보우 코인 60", "레인보우 코인 180", "레인보우 코인 600",
+		"레인보우 코인 1,500", "레인보우 코인 3,500", "레인보우 코인 8,000"
+	};
+
+	if (product >= IAP_CASH_01 && product <= IAP_CASH_06)
+		return rainbowName[product - IAP_CASH_01];
+	return IapProductName(product);
+}
+
+//스토어 메타데이터가 도착하기 전에도 카드가 가격 버튼의 형태를 유지하도록
+//현지 가격 대신 표시할 기본 원화 가격. 실제 가격이 오면 즉시 그 값이 우선한다.
+static const char* ShopPriceText(int product, bool* storeReady)
+{
+	static const char* tier[6] = {
+		"1,200원", "2,500원", "5,900원", "12,000원", "25,000원", "59,000원"
+	};
+	const char* storePrice = IapPriceText(product);
+
+	*storeReady = storePrice && storePrice[0];
+	if (*storeReady)
+		return storePrice;
+	if (product >= IAP_COIN_01 && product <= IAP_COIN_06)
+		return tier[product - IAP_COIN_01];
+	if (product >= IAP_HEART_01 && product <= IAP_HEART_06)
+		return tier[product - IAP_HEART_01];
+	if (product >= IAP_CASH_01 && product <= IAP_CASH_06)
+		return tier[product - IAP_CASH_01];
+
+	switch (product) {
+	case IAP_PASS_HEART:  return "9,900원";
+	case IAP_PASS_GROWTH: return "14,900원";
+	case IAP_STARTER:     return "5,900원";
+	case IAP_INVEN_20:    return "2,500원";
+	default:              return "가격 확인";
+	}
+}
+
 //구역 제목 리본.
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
 {
 	float h = 44.0f * zoom;
+	float ribbonW = w * 1.1f;
+	float ribbonH = h * 1.1f;
 
 	//win.png 안에 이미 들어 있는 보라색/금색 리본 영역을 재사용한다.
-	DrawImageScale(512, 112, 512, 0, cx - w / 2, y,
+	DrawImageScale(512, 112, 512, 0, cx - ribbonW / 2, y + (ribbonH - h) / 2,
 		false, false, false, false, false,
-		w / 512.0f, h / 112.0f,
+		ribbonW / 512.0f, ribbonH / 112.0f,
 		sprite[WIN_IMG], WIN_IMG);
 	SetFontColor(COLOR_WHITE);
 	CenterTextStr(title, cx,
@@ -6049,9 +6107,10 @@ static void ShopRibbon(const char* title, float cx, float y, float w, float zoom
 //터치를 안 건다. 눌리는데 아무 일도 안 일어나는 것이 제일 나쁘다.
 static void ShopCard(int product, float x, float y, float w, float h, float zoom)
 {
-	const char* name = IapProductName(product);
-	const char* price = IapPriceText(product);
-	bool can = (price && price[0]) && !IapIsBusy();
+	const char* name = ShopProductName(product);
+	bool storeReady = false;
+	const char* price = ShopPriceText(product, &storeReady);
+	bool canTouch = !IapIsBusy();
 	float bh = 28.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
 	float artSize = Min(w - 14.0f * zoom, h - 82.0f * zoom);
@@ -6070,25 +6129,32 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 
 	if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
-		DrawImage(512, 512, 0, 0, artX, artY,
-			false, false, false, false, false, artSize / 512.0f,
+		//생성 원화 가장자리의 다음 상품 조각을 제외한 중앙 안전영역만 쓴다.
+		DrawImage(448, 448, 32, 0, artX, artY,
+			false, false, false, false, false, artSize / 448.0f,
 			sprite[COIN_0_IMG + variant], COIN_0_IMG + variant);
 	}
 	else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
 		int variant = product - IAP_HEART_01;
-		DrawImage(512, 512, 0, 0, artX, artY,
-			false, false, false, false, false, artSize / 512.0f,
+		DrawImage(448, 448, 32, 0, artX, artY,
+			false, false, false, false, false, artSize / 448.0f,
 			sprite[HEART_0_IMG + variant], HEART_0_IMG + variant);
 	}
 	else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
 		int variant = product - IAP_CASH_01;
-		float coinSize = artSize * (0.62f + 0.045f * variant);
-		//배너의 장미금 테두리와 오팔 무지개 면을 그대로 아이콘화한 재화.
-		DrawImage(1280, 1280, 0, 0,
-			x + (w - coinSize) / 2,
-			artY - (artSize - coinSize) / 2,
-			false, false, false, false, false, coinSize / 1280.0f,
-			sprite[SHOP_CASH_ICON_IMG], SHOP_CASH_ICON_IMG);
+		int sx = (variant % 3) * 512;
+		int sy = (variant / 3) * 512;
+		DrawImage(512, 512, sx, sy, artX, artY,
+			false, false, false, false, false, artSize / 512.0f,
+			sprite[SHOP_CASH_PILES_IMG], SHOP_CASH_PILES_IMG);
+	}
+	else if (product >= IAP_PASS_HEART && product <= IAP_INVEN_20) {
+		int pass = product - IAP_PASS_HEART;
+		int sx = (pass % 2) * 640;
+		int sy = (pass / 2) * 640;
+		DrawImage(640, 640, sx, sy, artX, artY,
+			false, false, false, false, false, artSize / 640.0f,
+			sprite[SHOP_PASS_ART_IMG], SHOP_PASS_ART_IMG);
 	}
 	else {
 		DrawIcon(IapProductIcon(product), x + w / 2 - 16.0f * zoom,
@@ -6096,13 +6162,13 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	}
 
 	MemRectRound(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
-		can ? COLOR_GREEN : COLOR_DARKGREY, 2);
+		storeReady && canTouch ? COLOR_GREEN : COLOR_DARKGREY, 2);
 
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr((price && price[0]) ? price : "준비 중",
+	CenterTextStr(price,
 		x + w / 2, by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2, zoom * 0.85f);
 
-	if (can)
+	if (canTouch)
 		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
 			TOUCH_FUNC_SHOP_IAP + product);
 }
@@ -6280,7 +6346,7 @@ static void ShopIapDrawTabbed(float x, float y, float w, float h, float zoom)
 			break;
 
 		default:
-			ShopRibbon("패스와 특별", x + w / 2, cy, 150.0f * zoom, zoom);
+			ShopRibbon("스페셜 패스", x + w / 2, cy, 150.0f * zoom, zoom);
 			first = IAP_PASS_HEART;
 			count = 4;
 			break;
@@ -6334,7 +6400,8 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 {
 	float pad = 12.0f * zoom;
 	float innerW = w - pad * 2;
-	float viewTop = y - 112.0f * zoom;
+	//상점 간판의 하단 장식과 겹치지 않도록 배너/목록 시작점을 내린다.
+	float viewTop = y - 160.0f * zoom;
 	float bottom = y - h + pad;
 	float cy = viewTop + (float)scY[MENU_SHOP];
 	char buf[128];
@@ -6364,8 +6431,7 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 		int banner = ShopBannerIndex();
 		int bannerImg = SHOP_BANNER_GOLD_IMG + banner;
 		int product = ShopBannerProduct(banner);
-		const char* price = IapPriceText(product);
-		bool can = (price && price[0]) && !IapIsBusy();
+		bool can = !IapIsBusy();
 		//배너 원화가 눌려 보이지 않도록 실제 화면에서도 128px 높이를 쓴다.
 		float bh = 128.0f * zoom;
 		static const int bannerW[4] = { 1983, 1774, 1983, 1983 };
@@ -6403,13 +6469,25 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 		DrawTextStrSystem("추천 상품", x + pad + 82.0f * zoom,
 			cy - 38.0f * zoom, zoom, LEFT, true);
 		SetFontColor(COLOR_WHITE);
-		DrawTextStrSystem(IapProductName(product), x + pad + 82.0f * zoom,
+		DrawTextStrSystem(ShopProductName(product), x + pad + 82.0f * zoom,
 			cy - 70.0f * zoom, zoom * 1.15f, LEFT, true);
-		CenterTextStr((price && price[0]) ? price : "준비 중",
-			x + w - pad - 60.0f * zoom, cy - 82.0f * zoom, zoom * 1.1f);
 		if (can)
 			SetRectPoint(x + pad, cy, innerW, bh, TOUCH_FUNC_SHOP_IAP + product);
-		cy -= bh + 10.0f * zoom;
+
+		//배너 아래 16px 페이지 표시 영역. 선택된 배너만 밝고 크게 그린다.
+		float indicatorH = 16.0f * zoom;
+		float dotSize = 6.0f * zoom;
+		float dotGap = 8.0f * zoom;
+		float dotsW = dotSize * 4 + dotGap * 3;
+		float dotsX = x + w / 2 - dotsW / 2;
+		float dotsY = cy - bh - (indicatorH - dotSize) / 2;
+		for (int dot = 0; dot < 4; dot++) {
+			float size = dot == banner ? dotSize + 2.0f * zoom : dotSize;
+			MemRectRound(dotsX + dot * (dotSize + dotGap) - (size - dotSize) / 2,
+				dotsY + (size - dotSize) / 2, size, size,
+				dot == banner ? COLOR_YELLOW : COLOR_GREY, size / 2);
+		}
+		cy -= bh + indicatorH + 10.0f * zoom;
 	}
 
 	struct ShopSection {
@@ -6421,9 +6499,9 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 	static const ShopSection sections[] = {
 		{ "골드 상품", IAP_COIN_01, 6, false },
 		{ "하트 상품", IAP_HEART_01, 6, false },
-		{ "캐시 상품", IAP_CASH_01, 6, false },
+		{ "레인보우 코인", IAP_CASH_01, 6, false },
 		{ "상자 상품", 0, 6, true },
-		{ "패스와 특별", IAP_PASS_HEART, 4, false },
+		{ "스페셜 패스", IAP_PASS_HEART, 4, false },
 	};
 
 	for (int section = 0; section < (int)(sizeof(sections) / sizeof(sections[0])); section++) {

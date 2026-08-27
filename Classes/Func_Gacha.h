@@ -330,6 +330,9 @@ static int GetRandomBoxDetailByStar(
 	int detailCount);
 static int GetBoxDetailCount(
 	int itemType);
+//상자에서 절대 안 나오는 장비인가(6 성 검). 목록에 자물쇠를 붙인다.
+bool IsBoxLockedItem(int itemType, int itemDetail, int itemGrade);
+
 void MakeBoxCrewReward(
 	int cardIndex,
 	int boxIndex);

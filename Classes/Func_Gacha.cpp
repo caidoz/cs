@@ -331,6 +331,29 @@ static int GetBoxDetailCount(
 	return 0;
 }
 
+//상자에서 절대 안 나오는 장비인가.
+//
+//지금은 6 성 검 열한 자루(레오소드~왕의 검)가 여기 걸린다. 나중에
+//특별한 방법으로 얻게 할 것들이라 상자 풀에서 빼 두었다.
+//
+//번호가 아니라 별로 묻는다. GetBoxDetailCount 가 개수로 자르는 것과
+//같은 경계를 보되(레오소드부터 6 성), 목록 쪽은 카드 하나만 들고
+//있으면 되므로 별이 더 편하다. 검을 더 그려 넣어도 별만 6 으로 주면
+//상자에서 빠지는 것과 자물쇠가 붙는 것이 같이 따라온다.
+//
+//장비 목록에서 자물쇠를 붙일지 정하는 데 쓴다(Func_Menu.cpp).
+bool IsBoxLockedItem(
+	int itemType,
+	int itemDetail,
+	int itemGrade)
+{
+	if (itemType != ITEM_SWORD)
+		return false;
+
+	return GetItemStar(itemType, itemDetail, itemGrade) >
+		EQUIP_BOX_SWORD_STAR_MAX;
+}
+
 void MakeBoxCrewReward(
 	int cardIndex,
 	int boxIndex)
