@@ -2520,8 +2520,52 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//적 그리기
+		//몸집을 꺼낸다. 아직 안 재둔 것이면 지금 재서 채운다.
+		//
+		//안 재둔 경우가 둘 있다. 이어하기로 들어와 CopyEnemyObj 가 적을
+		//되살렸을 때(세이브에 안 들어가는 값이다), 그리고 SetEnemy 를 안
+		//거치고 세워지는 자리가 있을 때다. 어느 쪽이든 처음 그리는 그
+		//순간의 몸집으로 굳으므로 그 뒤로는 흔들리지 않는다.
+		#define DrawSizeOf(o) \
+			(gDrawSizeAtSpawn[o] ? gDrawSizeAtSpawn[o] \
+				: (gDrawSizeAtSpawn[o] = GetDrawSize(&ao[o])))
+
+		//적 그리기: 번호가 아니라 몸집으로 정렬한다.
+		//먼저 그린 것이 뒤에 놓이므로 큰 적부터 그리고 작은 적을 나중에 그린다.
+		//
+		//몸집은 소환될 때 한 번 재둔 값을 쓴다(gDrawSizeAtSpawn). 매 프레임
+		//지금 모션으로 재면 순서가 흔들린다 - 때리는 동안에는 팔을 뻗어
+		//커지고 웅크리면 작아지므로 그때마다 앞뒤가 뒤집힌다..
+		int enemyDrawOrder[NEUTRAL - ENEMY];
+		int enemyDrawCount = 0;
 		for (i = ENEMY; i < NEUTRAL; i++) {
+			if (ao[i].active && ao[i].type != NPC_SHIP
+				&& (ao[i].mom == i || ao[i].mom < ENEMY || ao[i].mom >= NEUTRAL))
+				enemyDrawOrder[enemyDrawCount++] = i;
+		}
+
+		for (int a = 1; a < enemyDrawCount; a++) {
+			int key = enemyDrawOrder[a];
+			int keySize = DrawSizeOf(key);
+			int b = a - 1;
+
+			while (b >= 0) {
+				int cur = enemyDrawOrder[b];
+
+				if (DrawSizeOf(cur) >= keySize)
+					break;
+
+				enemyDrawOrder[b + 1] = cur;
+				b--;
+			}
+
+			enemyDrawOrder[b + 1] = key;
+		}
+
+		#undef DrawSizeOf
+
+		for (int enemyDrawIdx = 0; enemyDrawIdx < enemyDrawCount; enemyDrawIdx++) {
+			i = enemyDrawOrder[enemyDrawIdx];
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 #ifdef HITMARKWHITE
 				if (ao[i].attacked)
@@ -2546,7 +2590,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 							ao[i].zoom /= dioramaZoom;
 						}
 
-					i += 4;
 				}
 				else if (ao[i].type == ENEMY_DARKDRAGON
 					|| ao[i].type == ENEMY_DARKDRAGON_RED
@@ -2566,7 +2609,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 						}
 					}
 
-					i += ao[i].status;
 				}
 				else {
 					ao[i].zoom *= dioramaZoom;
@@ -2580,9 +2622,15 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		
-		//히어로 그리기(주석이 한 칸씩 밀려 있었다. 이 구간은 0..CREW-1, 즉 히어로다)
+		//고정 히어로와 SOLDIER 칸의 소환 히어로를 통틀어 현재 공격자를
+		//마지막에 한 번 더 그릴 수 있도록 일반 순서에서는 제외한다.
+		int frontHeroObj = HitZoomAttacker();
+
+		//히어로 그리기
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
+				if (i == frontHeroObj)
+					continue;
 
 				if (playerHeadZoom) {
 					ao[i].head = true;
@@ -2608,6 +2656,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//소환수 그리기(SOLDIER 칸과 그 부속. 위 "동료 그리기"는 이 구간을 건너뛴다)
 		for (i = SOLDIER + MAXENEMYOBJ - 1; i >= SOLDIER; i--) {
 			if (ao[i].active) {
+				if (i == frontHeroObj)
+					continue;
 
 				if (playerHeadZoom) {
 					ao[i].head = true;
@@ -2628,6 +2678,21 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 
 			}
+		}
+
+		//현재 공격 중인 히어로/소환 히어로는 모든 아군 뒤에 마지막으로
+		//그려서 객체 번호와 관계없이 항상 최전면에 둔다.
+		if (frontHeroObj >= 0 && ao[frontHeroObj].active) {
+			if (playerHeadZoom)
+				ao[frontHeroObj].head = true;
+
+			ao[frontHeroObj].zoom *= dioramaZoom;
+			DrawObj(&ao[frontHeroObj]);
+			ao[frontHeroObj].zoom /= dioramaZoom;
+			ao[frontHeroObj].head = false;
+
+			grayScale = 0;
+			SetColor(false);
 		}
 
 		//탄환 그리기

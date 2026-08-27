@@ -565,6 +565,9 @@ POPTALK talk;
 DMGINFO dmgInfo[TOTALHITMARK];
 
 //밸런스 재기. BalanceConfig.h 의 BALANCE_LOG 가 켜져 있을 때만 채워진다.
+//적을 그리는 차례. 소환될 때 잰 크기다.
+int gDrawSizeAtSpawn[TOTALOBJECT];
+
 long long gBalHitCnt[TOTALOBJECT];
 long long gBalDmgSum[TOTALOBJECT];
 long long gBalHeartUsed;

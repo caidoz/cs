@@ -27,6 +27,40 @@ void GetMotionPtr(OBJECT* pObj)
 	}
 }
 
+//그 오브젝트가 화면에서 차지하는 크기.
+//
+//지금 모션의 그림 한 장이 폭 얼마 높이 얼마인지를 더한 값에 배율을 곱한다.
+//넓이(폭 x 높이)가 아니라 합인 것은, 가로로 긴 놈과 세로로 긴 놈을 비슷하게
+//보려는 것이다. 넓이로 재면 길쭉한 뱀이 뚱뚱한 곰보다 작게 나온다.
+//
+//적을 그리는 차례를 정하는 데 쓴다(Func_Graphics.cpp). 소환될 때 한 번
+//재서 gDrawSizeAtSpawn 에 넣어 두고, 그 뒤로는 그 값을 쓴다.
+int GetDrawSize(OBJECT* pObj)
+{
+	int motion;
+
+	if (pObj == NULL || pObj->cmf < 0 || pObj->cmf >= MAXCMF)
+		return 0;
+
+	motion = pObj->motion;
+
+	if (motion < 0 || motion >= cmf_m_cnt[pObj->cmf])
+		motion = 0;
+
+	//배율이 아직 0 이면 크기도 0 이 되어 정렬이 뒤집힌다. 세울 때
+	//부르므로 대개 1 이지만, 0 이면 배율을 빼고 몸집만 본다.
+	{
+		int w = cmfMotionImgSize[pObj->cmf][motion * 4 + 2];
+		int h = cmfMotionImgSize[pObj->cmf][motion * 4 + 3];
+		int z = (int)(pObj->zoom * 100.0f);
+
+		if (z <= 0)
+			z = 100;
+
+		return (w + h) * z;
+	}
+}
+
 void DrawObj(OBJECT* pObj)
 {
 	int i;
@@ -294,7 +328,7 @@ void DrawObj(OBJECT* pObj)
 		i = 0;
 
 		do {
-			int dMotion = debufEffect[i * 12 + ((debufStartFrame[i] - pObj->debuf[i]) / MOTIONDIV) % 12];
+			int dMotion = debufEffect[i * 12 + (robin.playtime / MOTIONDIV) % 12];
 
 			if (pObj->debuf[i] && dMotion > 0)
 				DrawEffect(dMotion, xOffset + pObj->x - rx +
@@ -463,6 +497,25 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 		fixedImg = *cPtr;
 		type = *(cPtr + 3);
+
+		//개구리의 혀 공격 프레임은 본체의 기존 입(IMG_C5_9) 위에
+		//아래턱/입 파츠(IMG_C5_14)를 한 번 더 겹쳐 놓은 구성이다.
+		//혀 오브젝트가 붙는 동안에는 이 추가 입만 빼서 이중으로 보이지 않게 한다.
+		if (fixedImg == IMG_C5_14
+			&& (motion == PO_C5_A2 || motion == PO_C5_A2_1
+				|| motion == PO_C5_A2_2 || motion == PO_C5_A2_3)
+			&& pObj->cmf >= 0 && pObj->cmf < REALMAXCMF
+			&& (cmfLoaded[pObj->cmf] == CMF_FROG
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_RED
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_BLUE
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_PURPLE
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_GREEN
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_GOLD
+				|| cmfLoaded[pObj->cmf] == CMF_FROG_BLACK)) {
+			cPtr += 4;
+			i--;
+			continue;
+		}
 
 		//에어크래쉬 중에는 위에서 직전 모션과 가장 자연스럽게 이어지는 검
 		//하나를 골랐다. 선택되지 않은(다음 자세에 가까운) 검은 그리지 않는다.
@@ -1752,12 +1805,23 @@ void PlayerDraw(OBJECT* pObj)
 		for (i = 0; i < TOTALBUFF; i++) {
 			if (pObj->buff[i] > 0) {
 				if (i < TOTALPLAYERBUFF) {
-					//��ų ����
+					int buffHero = (i < BERSERK) ? ROBIN
+						: ((i < HPDRAIN) ? DIANA : MAXX);
 					const unsigned short* ptrBuff = &buffData[i * 4];
+
+					//버프는 핑크/옐로/블루/레드 네 색이 캐릭터마다 같은 순서다.
+					//디아나/맥스가 로빈에게 건 버프는 해당 캐릭터의 파츠 모션을
+					//억지로 그리지 않고, 같은 색의 로빈 버프 모션으로 바꿔 그린다.
+					if (pObj->type == ROBIN && buffHero != ROBIN) {
+						int colorIdx = (buffHero == DIANA) ? i - BERSERK : i - HPDRAIN;
+						ptrBuff = &buffData[colorIdx * 4];
+					}
+
+					//��ų ����
 					int buffFrame = (GetBuffDurationMode(i) == BUFF_DURATION_FRAME)
 						? pObj->buff[i] : Max(1, robin.playtime / MOTIONDIV);
 
-					if (i == INC_IGNORE && (buffFrame - 1) % 2 == 1)
+					if (pObj->type == DIANA && i == INC_IGNORE && (buffFrame - 1) % 2 == 1)
 						pObj->motion = PO_C1_DENY1;
 					else
 						pObj->motion = *(ptrBuff + 3) + (buffFrame == 1 ? *(ptrBuff + 2) : ((buffFrame - 1) % *(ptrBuff + 2)));

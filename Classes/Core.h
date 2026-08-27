@@ -1532,6 +1532,21 @@ extern DMGINFO dmgInfo[TOTALHITMARK];
 //몬스터 하나를 잡는 데 몇 대가 들었고 하트를 얼마나 썼는지 센다.
 //밸런스를 다 잡으면 BALANCE_LOG 를 0 으로 두면 되고, 그때 이 값들은
 //아무도 안 쓰게 된다.
+//---- 적을 그리는 차례 ----
+//
+//큰 놈이 뒤, 작은 놈이 앞이다. 그 "크기" 를 소환될 때 한 번 재서 여기 둔다.
+//
+//매 프레임 지금 모션으로 재면 순서가 흔들린다. 몬스터는 모션마다 그림
+//크기가 다르고, 때리는 동안에는 팔을 뻗어 커지고 웅크리면 작아진다.
+//그때마다 앞뒤가 바뀌면 눈에 거슬린다.
+//
+//OBJECT 에 칸을 늘리지 않고 따로 둔다. OBJECT 는 ROBINDATA 안에 배열로
+//들어 있어서, 크기가 바뀌면 예전 save.dat 을 읽는 자리가 어긋난다.
+//
+//0 이면 아직 안 잰 것이다. 그리는 쪽이 그때 재서 채운다 - 세이브에 안
+//들어가므로 이어하기로 들어오면 0 으로 시작한다.
+extern int gDrawSizeAtSpawn[TOTALOBJECT];
+
 extern long long gBalHitCnt[TOTALOBJECT];
 extern long long gBalDmgSum[TOTALOBJECT];
 extern long long gBalHeartUsed;

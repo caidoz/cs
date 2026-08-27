@@ -6,6 +6,9 @@
 // Object 그리기 관련
 void GetMotionPtr(OBJECT* pObj);
 void DrawObj(OBJECT *);
+
+//화면에서 차지하는 크기. 적을 그리는 차례를 정하는 데 쓴다.
+int GetDrawSize(OBJECT* pObj);
 void DrawPlayer(OBJECT *, int motion, int x, int y, int dirF, float zoom, float rotation, bool center, bool shadow);
 void DrawCmf(OBJECT *pObj, float rotation, float zoom, bool center);
 void DrawCmfDetail(int cmf, int motion, int x, int y, int dirF, float zoom, float rotation, bool center);

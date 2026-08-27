@@ -1234,10 +1234,10 @@ void WaveControler()
 	// AVK_MAXGAME 전투 테스트도 정식 wave[]와 같은 단위를 쓴다.
 	// 값은 프레임이며 아래 등장 조건에서 FPS로 나눠 초로 환산한다.
 	static const int demoEnemy[3] = {
-		ENEMY_PHOENIX, ENEMY_FACE, ENEMY_SNOWMAN
+		ENEMY_SNAIL, ENEMY_SKELETON, ENEMY_FROG
 	};
 	static const int demoEnemySpawnFrame[3] = {
-		0, 100, 200
+		0, 200, 400
 	};
 
 	switch (drawHandle) {
@@ -1711,7 +1711,9 @@ long long GetTotalWaveHp(int waveIdx)
 	for (i = 0; i < waveCount; i++) {
 		monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
 		if (monType != false || gDemoForceRoulette) {
-			curHp = GetWaveHp(waveIdx, i); 
+			curHp = GetWaveHp(waveIdx, i);
+			if (gDemoForceRoulette)
+				curHp *= 100;
 			
 			totalHp += curHp;
 		}
@@ -1883,6 +1885,8 @@ int SetEnemy(OBJECT *pObj)
 		//pObj->maxhp = pObj->hp = (50 + pObj->lv * 23 + pObj->lv * pObj->lv * 12 / 10) * 10;
 		//TEST
 		pObj->maxhp = pObj->hp = GetWaveHp(robin.waveIdx, robin.curWaveIdx);
+		if (gDemoForceRoulette)
+			pObj->maxhp = pObj->hp = pObj->maxhp * 100;
 		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
 		//if (wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
 		//	pObj->maxhp *= 5;
@@ -2209,6 +2213,18 @@ int SetEnemy(OBJECT *pObj)
 		pObj->id = MC_knlCurrentTimeStamp() + 3600;
 
 	pObj->coolTime = MC_knlCurrentTimeStamp();
+
+	//----------------------------------------------------------------------
+	// 그리는 차례를 정할 크기를 여기서 한 번 잰다.
+	//
+	// 큰 놈이 뒤, 작은 놈이 앞이다(Func_Graphics.cpp 의 적 그리기).
+	//
+	// 매 프레임 지금 모션으로 재면 순서가 흔들린다. 때리는 동안에는 팔을
+	// 뻗어 커지고 웅크리면 작아지므로, 그때마다 앞뒤가 뒤집힌다. 소환될
+	// 때의 몸집은 그 몬스터가 무엇인지를 말하는 값이라 변할 이유가 없다.
+	//----------------------------------------------------------------------
+	if (obj >= 0 && obj < TOTALOBJECT)
+		gDrawSizeAtSpawn[obj] = GetDrawSize(pObj);
 
 	//소환된 몬스터를 보여준다. 보스방은 한 번뿐이라 우선순위를 올리고,
 	//일반 몬스터는 수십 번 반복되므로 가장 낮게 둔다 - 겹치면 밀려서 그냥 넘어간다.
