@@ -283,10 +283,23 @@ static int GetRandomBoxDetailByStar(
 }
 
 //--------------------------------------------------------
-// 아이템 타입별 실제 detail 개수
+// 상자에서 나올 수 있는 detail 개수
 //
-// 아래 상수명은 프로젝트에 존재하는 실제 개수 상수로
-// 반드시 교체해야 한다.
+// "그 종류가 몇 개인가" 가 아니라 "상자가 어디까지 낼 수
+// 있는가" 다. 둘이 다른 것이 검이다.
+//
+// 검은 35 자루인데 상자에서는 24 자루(0~23, 홀리소드와
+// 다크소드까지)만 나온다. 그 위 열한 자루는 나중에 특별한
+// 방법으로 얻게 할 것들이라, 상자에서 미리 나오면 그 방법이
+// 생겼을 때 줄 것이 없다.
+//
+// 경계를 별과 겹쳐 두었다. 레오소드의 별을 5 에서 6 으로
+// 올렸으므로(Data/ItemData.cpp) 상자 풀은 정확히 1~5 성이고
+// 6 성 검은 하나도 없다. 그래서 규칙이 "상자는 5 성까지" 한
+// 줄로 끝난다 - 자루 번호를 외울 필요가 없다.
+//
+// 6 성 장비를 뽑았는데 부위가 검으로 걸리면 낼 것이 없다.
+// 그 처리는 MakeBoxEquipReward 가 한다.
 //--------------------------------------------------------
 static int GetBoxDetailCount(
 	int itemType)
@@ -297,7 +310,7 @@ static int GetBoxDetailCount(
 		return gTotalCrew;
 
 	case ITEM_SWORD:
-		return TOTAL_SWORD;
+		return Min(TOTAL_SWORD, EQUIP_BOX_SWORD_MAX);
 
 	case ITEM_HELM:
 		return TOTAL_HELM;
@@ -494,6 +507,24 @@ void MakeBoxEquipReward(
 		//------------------------------------------------
 		type =
 			MakeBoxEquipType();
+
+		//------------------------------------------------
+		// 6 성에는 검이 없다.
+		//
+		// 상자 풀이 1~5 성까지라(EQUIP_BOX_SWORD_MAX) 6 성
+		// 검이 하나도 없다. 그냥 두면 아래에서 detail 이
+		// -1 로 나와 백 번을 다시 뽑다가 다른 부위로 흘러
+		// 간다. 결과는 같지만 왜 그런지가 코드에 안 적혀
+		// 있어서, 나중에 보면 우연히 도는 것처럼 보인다.
+		//
+		// 여기서 미리 갈라 둔다. 검이 걸리면 다시 뽑는다.
+		//------------------------------------------------
+		if (type == ITEM_SWORD &&
+			targetStar > EQUIP_BOX_SWORD_STAR_MAX)
+		{
+			retryCount++;
+			continue;
+		}
 
 		int detailCount =
 			GetBoxDetailCount(

@@ -2163,7 +2163,9 @@ static const unsigned short itemStar_builtin[] = {
 	500,//ITEM_SWORD_EXCALIBUR00,//22//엑스칼리버
 	500,//ITEM_SWORD_HOLY00,//23//홀리소드
 	500,//ITEM_SWORD_DARK00,//24//다크소드
-	500,//ITEM_SWORD_LEO00,//25//레오소드
+	//레오소드부터 위는 상자에서 안 나온다(EQUIP_BOX_SWORD_MAX). 별을 6 으로
+	//올려 그 경계가 별과 정확히 겹치게 한다 - "상자는 5성까지" 한 줄로 끝난다.
+	600,//ITEM_SWORD_LEO00,//25//레오소드
 	600,//ITEM_SWORD_DEATH00,//26//사신의 낫
 	600,//ITEM_SWORD_DRAGONCLOW00,//27//드래곤 클로우
 	600,//ITEM_SWORD_DRAGONTOOTH00,//28//황룡의 어금니
