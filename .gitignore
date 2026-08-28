@@ -45,3 +45,6 @@ cocos2d/
 # 파이썬 도구 캐시
 __pycache__/
 *.pyc
+
+# 엑셀이 열어두는 동안 만드는 잠금 파일
+content/~$*.xlsx
