@@ -41,8 +41,6 @@ int GetItemStar(int, int, int);
 int GetCrewMaxLevel(void);
 long long GetCrewUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
 bool CanCrewLevelUp(ITEM* it);
-//스킬 하나가 그 레벨에서 내는 값. 전투와 설명문이 같이 쓴다.
-long long GetSkillPower(int skillIdx, int star, int lv);
 long long GetCrewPower(int detail, int lv);
 
 //---- 장비 강화 ----

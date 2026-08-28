@@ -790,7 +790,7 @@ static int GetCrewSkillTitle(int skillIdx, int slot)
 }
 
 //효능 설명을 tempStr에 만든다. 수치는 전투가 쓰는 값 그대로다.
-static void SetCrewSkillDesc(int skillIdx, int star, int lv)
+static void SetCrewSkillDesc(int skillIdx, int crewDetail, int lv)
 {
 	int value;
 	int sub;
@@ -801,7 +801,7 @@ static void SetCrewSkillDesc(int skillIdx, int star, int lv)
 	//안 보고 LV1 에 곡선을 곱한다. 213 행 중 210 행이 서로 달라서, 화면에
 	//적힌 수가 실제와 다른 상태였다. 보여주는 자리와 값을 내는 자리는 같아야
 	//한다.
-	value = (int)GetSkillPower(skillIdx, star, lv);
+	value = (int)GetCrewPower(crewDetail, lv);
 
 	memset(&tempStr, 0, sizeof(tempStr));
 
@@ -1042,8 +1042,7 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 			DrawCrewSkillIconFramed(skillIdx, iconL, ry + (rowH - iconBox) / 2, iconBox);
 
 			//지금 효능. 베이지 판 위라 짙은 글씨로 쓴다.
-			SetCrewSkillDesc(skillIdx,
-				GetItemStar(ITEM_CREW, crewDetail, GRADE_NORMAL), crewLv);
+			SetCrewSkillDesc(skillIdx, crewDetail, crewLv);
 			SetFontColor(CD_INK);
 			LineTextStrSolid(tempStr,
 				Loc(curL), LocY(ry + rowH * 0.18f),
@@ -1051,8 +1050,7 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 
 			//올린 뒤 효능. 오르는 쪽이라 짙은 초록이다.
 			if (maxLv == false) {
-				SetCrewSkillDesc(skillIdx,
-					GetItemStar(ITEM_CREW, crewDetail, GRADE_NORMAL), crewLv + 1);
+				SetCrewSkillDesc(skillIdx, crewDetail, crewLv + 1);
 				SetFontColor(CD_UP);
 				LineTextStrSolid(tempStr,
 					Loc(nextL), LocY(ry + rowH * 0.18f),
@@ -6107,6 +6105,8 @@ static const char* ShopPriceText(int product, bool* storeReady)
 	}
 }
 
+static void ShopRibbon(const char* title, float cx, float y, float w, float zoom);
+
 //동료 상세보기와 같은 프레임 계열을 사용하는 구매 확인창.
 void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 {
@@ -6141,12 +6141,16 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 
 	CdBody(name, (float)CD_DESIGNW / 2, 225.0f, 2.15f, CENTER, CD_INK);
 
-	float artSize = 590.0f;
+	float artSize = isBox ? 430.0f : 540.0f;
 	float artX = ((float)CD_DESIGNW - artSize) / 2;
 	float artY = 305.0f;
 	if (isBox) {
-		DrawCastleBoxXY(detail, false, LEFT, Loc(artX), LocY(artY),
-			COLOR_WHITE, artSize / 512.0f * sCdU);
+		//DrawCastleBoxXY의 피격광 4중 잔상은 큰 UI에서 왼쪽 조각처럼 보인다.
+		//상점 상세에서는 상자 원본 한 장만 정확한 오프셋으로 그린다.
+		int boxImg = BOX0_IMG + detail - BOX_CASTLE0;
+		DrawImage(512, 512, 0, 0, Loc(artX), LocY(artY), false, false,
+			false, false, false, artSize / 512.0f * sCdU,
+			sprite[boxImg], boxImg);
 	}
 	else if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
@@ -6175,19 +6179,31 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			sprite[SHOP_PASS_ART_IMG], SHOP_PASS_ART_IMG);
 	}
 
-	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-		Loc(180.0f), LocY(900.0f), 730.0f * sCdU, 175.0f * sCdU, sCdU);
 	if (isBox) {
 		int boxIndex = GetRewardBoxIndex(detail);
 		const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
-		DrawItemCardBack(1, (int)Loc(230.0f), (int)LocY(930.0f), 0.30f * sCdU, 1);
-		sprintf(tempStr, "+ %d~%d", box.minCard, box.maxCard);
-		CdBody(tempStr, 520.0f, 940.0f, 1.9f, LEFT, CD_INK);
-		CdBody("상세 확률표 보기", 760.0f, 1025.0f, 1.55f, CENTER, COLOR_PURPLE);
-		SetRectPoint(Loc(560.0f), LocY(995.0f), 400.0f * sCdU, 70.0f * sCdU,
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			Loc(175.0f), LocY(710.0f), 740.0f * sCdU, 330.0f * sCdU, sCdU);
+		DrawItemCardBack(1, (int)Loc(235.0f), (int)LocY(735.0f), 0.19f * sCdU, 1);
+		sprintf(tempStr, "카드 %d~%d장", box.minCard, box.maxCard);
+		CdText(tempStr, 455.0f, 750.0f, 1.55f, LEFT, COLOR_WHITE);
+		DrawIcon(ICON_HEART, Loc(255.0f), LocY(835.0f), 1.25f * sCdU, false, false, true, 1);
+		sprintf(tempStr, "%d~%d", box.heartMin, box.heartMax);
+		CdText(tempStr, 455.0f, 850.0f, 1.55f, LEFT, COLOR_WHITE);
+		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
+			Loc(255.0f), LocY(925.0f), 1.25f * sCdU, false, false, true, 1);
+		sprintf(tempStr, "%d~%d (%d%%)", box.goldMin, box.goldMax, box.goldRate);
+		CdText(tempStr, 455.0f, 940.0f, 1.55f, LEFT, COLOR_WHITE);
+		MemRectRound(Loc(245.0f), LocY(1005.0f), 54.0f * sCdU, 54.0f * sCdU,
+			COLOR_PURPLE, 27.0f * sCdU);
+		CdText("?", 272.0f, 1005.0f, 1.55f, CENTER, COLOR_WHITE);
+		CdText("상세 확률표 보기", 455.0f, 1008.0f, 1.45f, LEFT, COLOR_WHITE);
+		SetRectPoint(Loc(225.0f), LocY(990.0f), 640.0f * sCdU, 70.0f * sCdU,
 			TOUCH_FUNC_SHOP_GACHA_RATES);
 	}
 	else {
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			Loc(180.0f), LocY(900.0f), 730.0f * sCdU, 175.0f * sCdU, sCdU);
 		static const long long coinAmount[6] = { 1000, 2200, 6000, 25000, 65000, 140000 };
 		static const long long heartAmount[6] = { 100, 300, 1000, 5000, 15000, 50000 };
 		static const long long cashAmount[6] = { 60, 180, 600, 1500, 3500, 8000 };
@@ -6203,9 +6219,9 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
 			amount = cashAmount[product - IAP_CASH_01];
 			int cashFrame = (frame / 5) % 10;
-			DrawImage(32, 32, (cashFrame % 8) * 32, (cashFrame / 8) * 32,
+			DrawImage(32, 32, cashFrame * 32, 0,
 				Loc(310.0f), LocY(935.0f), false, false, false, false, false,
-				2.0f * sCdU, sprite[ITEM_IMG + 6], ITEM_IMG + 6);
+				2.0f * sCdU, sprite[SHOP_CASH_COIN_IMG], SHOP_CASH_COIN_IMG);
 		}
 		if (amount) {
 			sprintf(tempStr, "%lld", amount);
@@ -6215,9 +6231,11 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	if (isBox) {
 		long long boxPrice = GetBoxPrice(detail, GRADE_NORMAL);
 		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
-			Loc(385.0f), LocY(1070.0f), 1.8f * sCdU, false, false, true, 1);
-		DrawNum(boxPrice, Loc(760.0f), LocY(1090.0f), NUM_FONT_NORMAL,
-			RIGHT, false, false, true, 1.45f * sCdU, false);
+			Loc(305.0f), LocY(1060.0f), 2.7f * sCdU, false, false, true, 1);
+		SetFontColor(COLOR_WHITE);
+		DrawBigNumTTF(boxPrice, (int)Loc(805.0f), (int)LocY(1090.0f),
+			NUM_FONT_NORMAL, RIGHT, false, false, 430.0f * sCdU,
+			true, 2.15f * sCdU, true);
 	}
 	else
 		CdBody(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, CD_INK);
@@ -6245,28 +6263,56 @@ void GachaRatesDraw(int boxDetail)
 		return;
 	const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
 	CdBeginBoard();
+	ScreenDarken(SCREENDARKEN);
 	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
-	DrawPanel(120.0f, 210.0f, (float)CD_DESIGNW - 240.0f, 820.0f);
-	CdBody("상세 확률표", (float)CD_DESIGNW / 2, 250.0f, 2.2f, CENTER, CD_INK);
-	sprintf(tempStr, "카드 %d~%d장  ·  동료 %d%%  ·  장비 %d%%",
-		box.minCard, box.maxCard, box.crewRate, box.equipRate);
-	CdBody(tempStr, (float)CD_DESIGNW / 2, 335.0f, 1.55f, CENTER, CD_INK);
-	sprintf(tempStr, "하트 %d~%d  ·  골드 %d~%d (%d%%)",
-		box.heartMin, box.heartMax, box.goldMin, box.goldMax, box.goldRate);
-	CdBody(tempStr, (float)CD_DESIGNW / 2, 400.0f, 1.45f, CENTER, CD_INK);
+	DrawPanel(90.0f, 185.0f, (float)CD_DESIGNW - 180.0f, 980.0f);
+	CdText("상세 확률표", (float)CD_DESIGNW / 2, 220.0f, 2.0f, CENTER, COLOR_WHITE);
+	const float clipTop = 285.0f;
+	const float clipBottom = 1125.0f;
+	SetSectionClip((int)Loc(105.0f), (int)LocY(clipTop),
+		(int)(880.0f * sCdU), (int)((clipBottom - clipTop) * sCdU), false);
+	float py = 315.0f - (float)scY[MENU_SHOP] / sCdU;
+	static const int equipTypes[6] = {
+		ITEM_SWORD, ITEM_HELM, ITEM_ARMOR, ITEM_GUNTLET, ITEM_KILT, ITEM_GREAVES
+	};
 	for (int grade = 0; grade < BOX_GRADE_COUNT; grade++) {
-		sprintf(tempStr, "%d성     동료 %d%%     장비 %d%%", grade + 1,
-			box.crewGradeRate[grade], box.equipGradeRate[grade]);
-		CdBody(tempStr, (float)CD_DESIGNW / 2, 500.0f + grade * 72.0f,
-			1.55f, CENTER, CD_INK);
+		float totalRate = (box.crewRate * box.crewGradeRate[grade]
+			+ box.equipRate * box.equipGradeRate[grade]) / 100.0f;
+		ShopRibbon("획득 가능 카드", 545.0f, py, 520.0f, 1.0f);
+		DrawItemCardBack(grade + 1, (int)Loc(150.0f), (int)LocY(py + 5.0f),
+			0.18f * sCdU, 1);
+		sprintf(tempStr, "★ %d     %.2f%%", grade + 1, totalRate);
+		CdBody(tempStr, 800.0f, py + 18.0f, 1.35f, RIGHT, CD_INK);
+		py += 95.0f;
+		int col = 0;
+		int crewCount = GetBoxCandidateCountByStar(ITEM_CREW, grade + 1);
+		for (int i = 0; i < crewCount; i++) {
+			int detail = GetBoxCandidateDetailByStar(ITEM_CREW, grade + 1, i);
+			DrawItemCard(ITEM_CREW, detail, grade, 1, 1, false,
+				(int)Loc(135.0f + (col % 7) * 118.0f),
+				(int)LocY(py + (col / 7) * 170.0f), false,
+				0.34f * sCdU, false, false, false, false, 0);
+			col++;
+		}
+		for (int t = 0; t < 6; t++) {
+			int count = GetBoxCandidateCountByStar(equipTypes[t], grade + 1);
+			for (int i = 0; i < count; i++) {
+				int detail = GetBoxCandidateDetailByStar(equipTypes[t], grade + 1, i);
+				DrawItemCard(equipTypes[t], detail, grade, 1, 1, false,
+					(int)Loc(135.0f + (col % 7) * 118.0f),
+					(int)LocY(py + (col / 7) * 170.0f), false,
+					0.34f * sCdU, false, false, false, false, 0);
+				col++;
+			}
+		}
+		py += Max(1, (col + 6) / 7) * 170.0f + 45.0f;
 	}
-	float bx = 255.0f, by = 945.0f, bw = 570.0f, bh = 82.0f;
-	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
-		WP_YELLOW_CAP, Loc(bx), LocY(by), bw * sCdU, bh * sCdU, sCdU);
-	CdText("전체 아이템별 확률 보기", (float)CD_DESIGNW / 2,
-		by + bh * 0.27f, 1.65f, CENTER, COLOR_WHITE);
-	SetRectPoint(Loc(bx), LocY(by), bw * sCdU, bh * sCdU,
-		TOUCH_FUNC_SHOP_GACHA_RATES_WEB);
+	UnSectionClip(false);
+	int contentHeight = (int)(py + (float)scY[MENU_SHOP] / sCdU - clipTop);
+	scT[MENU_SHOP] = Max(0, contentHeight - (int)(clipBottom - clipTop));
+	if (scY[MENU_SHOP] > scT[MENU_SHOP]) scY[MENU_SHOP] = scT[MENU_SHOP];
+	DrawScroll((int)Loc(960.0f), (int)LocY(clipTop),
+		(int)((clipBottom - clipTop) * sCdU), MENU_SHOP);
 }
 
 //구역 제목 리본.

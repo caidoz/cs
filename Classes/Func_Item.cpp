@@ -1977,34 +1977,6 @@ int CrewLevelMul(int star, int lv)
 	return mul[star][lv];
 }
 
-//스킬 하나가 그 레벨에서 내는 값.
-//
-//기준값은 skillData 의 LV1 이고, 거기에 동료 강화 배율을 곱한다.
-//
-//[LV2~LV15 칸을 왜 안 보나]
-//원래 그 칸들이 레벨별 값이었다. 그런데 전투는 그 칸을 한 번도 읽지
-//않는다 - LV1 에 곡선을 곱해서 쓴다. 그러면서 동료 설명문만 그 칸을
-//읽고 있었다. 213 행을 대조해 보니 210 행이 서로 달랐다. 화면에 적힌
-//수와 실제로 맞는 수가 다르다는 뜻이다.
-//
-//그래서 값을 내는 곳을 여기 하나로 모았다. 전투도 설명문도 이 함수를
-//부른다. 이제 둘이 어긋날 자리가 없다.
-long long GetSkillPower(int skillIdx, int star, int lv)
-{
-	long long base;
-
-	if (skillIdx < 0 || skillIdx >= gTotalSkill)
-		return 0;
-
-	base = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
-
-	if (base <= 0)
-		return 0;
-
-	//작은 값이 제자리걸음 하지 않게. 장비(GetEquipValue)와 같은 규칙이다.
-	return Max(base + (lv - 1), RoundDiv(base * CrewLevelMul(star, lv), 100));
-}
-
 //동료의 공격력.
 //
 //그 동료의 기본 수치(첫 스킬의 LV1 값)에 강화 배율을 곱한다. 그것이 전부다.
@@ -2028,19 +2000,21 @@ long long GetSkillPower(int skillIdx, int star, int lv)
 //동료 사이의 강약도 데이터에 있다. skillData 의 LV1 값이 그 순서다.
 long long GetCrewPower(int detail, int lv)
 {
-	int skillIdx;
 	long long base;
 
 	if (detail < 0 || detail >= gTotalCrew)
 		return 0;
 
-	skillIdx = crewData[detail * CREWDATASIZE + CREWDATA_SKILL1];
 
-	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+	base = crewData[detail * CREWDATASIZE + CREWDATA_STR];
+
+	if (base <= 0)
 		return 0;
 
-	return GetSkillPower(skillIdx,
-		GetItemStar(ITEM_CREW, detail, GRADE_NORMAL), lv);
+	//작은 값이 제자리걸음 하지 않게. 장비(GetEquipValue)와 같은 규칙이다.
+	return Max(base + (lv - 1),
+		RoundDiv(base * CrewLevelMul(
+			GetItemStar(ITEM_CREW, detail, GRADE_NORMAL), lv), 100));
 }
 
 //==========================================================================
