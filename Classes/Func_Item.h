@@ -42,7 +42,7 @@ int GetCrewMaxLevel(void);
 long long GetCrewUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
 bool CanCrewLevelUp(ITEM* it);
 //스킬 하나가 그 레벨에서 내는 값. 전투와 설명문이 같이 쓴다.
-long long GetSkillPower(int skillIdx, int lv);
+long long GetSkillPower(int skillIdx, int star, int lv);
 long long GetCrewPower(int detail, int lv);
 
 //---- 장비 강화 ----
@@ -56,10 +56,10 @@ int GetEquipMaxLevel(void);
 //무기와 방어구가 같은 표를 본다. 예전에는 무기는 등차(+1/레벨), 방어구는
 //등비(+10%/레벨)로 서로 다르게 굴어서, 같은 "레벨 5" 가 부위마다 다른 뜻
 //이었다. 표는 Config/BalanceConfig.h 에 있다.
-int EquipLevelMul(int lv);
+int EquipLevelMul(int star, int lv);
 
 //동료 강화 배율. 장비와 같은 표를 본다.
-int CrewLevelMul(int lv);
+int CrewLevelMul(int star, int lv);
 
 //강화까지 반영한 장비 한 점의 값.
 //

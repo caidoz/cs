@@ -790,7 +790,7 @@ static int GetCrewSkillTitle(int skillIdx, int slot)
 }
 
 //효능 설명을 tempStr에 만든다. 수치는 전투가 쓰는 값 그대로다.
-static void SetCrewSkillDesc(int skillIdx, int lv)
+static void SetCrewSkillDesc(int skillIdx, int star, int lv)
 {
 	int value;
 	int sub;
@@ -801,7 +801,7 @@ static void SetCrewSkillDesc(int skillIdx, int lv)
 	//안 보고 LV1 에 곡선을 곱한다. 213 행 중 210 행이 서로 달라서, 화면에
 	//적힌 수가 실제와 다른 상태였다. 보여주는 자리와 값을 내는 자리는 같아야
 	//한다.
-	value = (int)GetSkillPower(skillIdx, lv);
+	value = (int)GetSkillPower(skillIdx, star, lv);
 
 	memset(&tempStr, 0, sizeof(tempStr));
 
@@ -1042,7 +1042,8 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 			DrawCrewSkillIconFramed(skillIdx, iconL, ry + (rowH - iconBox) / 2, iconBox);
 
 			//지금 효능. 베이지 판 위라 짙은 글씨로 쓴다.
-			SetCrewSkillDesc(skillIdx, crewLv);
+			SetCrewSkillDesc(skillIdx,
+				GetItemStar(ITEM_CREW, crewDetail, GRADE_NORMAL), crewLv);
 			SetFontColor(CD_INK);
 			LineTextStrSolid(tempStr,
 				Loc(curL), LocY(ry + rowH * 0.18f),
@@ -1050,7 +1051,8 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 
 			//올린 뒤 효능. 오르는 쪽이라 짙은 초록이다.
 			if (maxLv == false) {
-				SetCrewSkillDesc(skillIdx, crewLv + 1);
+				SetCrewSkillDesc(skillIdx,
+					GetItemStar(ITEM_CREW, crewDetail, GRADE_NORMAL), crewLv + 1);
 				SetFontColor(CD_UP);
 				LineTextStrSolid(tempStr,
 					Loc(nextL), LocY(ry + rowH * 0.18f),
@@ -2250,12 +2252,12 @@ void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom)
 		false, false, false, false, barAlpha,
 		fillZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	//i6.png의 첫 10칸: 평면 회전이 아니라 정면/옆면이 바뀌는 동전 애니메이션.
+	//레인보우 코인 전용 10프레임 시트. i6의 첫 줄은 일반 골드라 쓰지 않는다.
 	int coinFrame = (frame / (MOTIONDIV * 2)) % 10;
-	DrawImage(32, 32, (coinFrame % 8) * 32, (coinFrame / 8) * 32,
+	DrawImage(32, 32, coinFrame * 32, 0,
 		x + (float)(5 * _2X) * zoom, y - (float)(3 * _2X) * zoom,
 		false, false, false, false, false, 1.4f * zoom,
-		sprite[ITEM_IMG + 6], ITEM_IMG + 6);
+		sprite[SHOP_CASH_COIN_IMG], SHOP_CASH_COIN_IMG);
 #ifdef NUMTTF
 	DrawBigNumTTF(pow, x + (wide - 10 * _2X) * zoom,
 		y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
@@ -6174,11 +6176,51 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	}
 
 	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-		Loc(180.0f), LocY(930.0f), 730.0f * sCdU, 125.0f * sCdU, sCdU);
-	CdBody(price, (float)CD_DESIGNW / 2, CdMidY(930.0f, 125.0f, 2.15f),
-		2.15f, CENTER, CD_INK);
-	CdBodyId(TEXT_ASKBUY, (float)CD_DESIGNW / 2, 1100.0f,
-		1.65f, CENTER, CD_INK);
+		Loc(180.0f), LocY(900.0f), 730.0f * sCdU, 175.0f * sCdU, sCdU);
+	if (isBox) {
+		int boxIndex = GetRewardBoxIndex(detail);
+		const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
+		DrawItemCardBack(1, (int)Loc(230.0f), (int)LocY(930.0f), 0.30f * sCdU, 1);
+		sprintf(tempStr, "+ %d~%d", box.minCard, box.maxCard);
+		CdBody(tempStr, 520.0f, 940.0f, 1.9f, LEFT, CD_INK);
+		CdBody("상세 확률표 보기", 760.0f, 1025.0f, 1.55f, CENTER, COLOR_PURPLE);
+		SetRectPoint(Loc(560.0f), LocY(995.0f), 400.0f * sCdU, 70.0f * sCdU,
+			TOUCH_FUNC_SHOP_GACHA_RATES);
+	}
+	else {
+		static const long long coinAmount[6] = { 1000, 2200, 6000, 25000, 65000, 140000 };
+		static const long long heartAmount[6] = { 100, 300, 1000, 5000, 15000, 50000 };
+		static const long long cashAmount[6] = { 60, 180, 600, 1500, 3500, 8000 };
+		long long amount = 0;
+		if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
+			amount = coinAmount[product - IAP_COIN_01];
+			DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME, Loc(310.0f), LocY(935.0f), 2.0f * sCdU, false, false, true, 1);
+		}
+		else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
+			amount = heartAmount[product - IAP_HEART_01];
+			DrawIcon(ICON_HEART, Loc(310.0f), LocY(935.0f), 2.0f * sCdU, false, false, true, 1);
+		}
+		else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
+			amount = cashAmount[product - IAP_CASH_01];
+			int cashFrame = (frame / 5) % 10;
+			DrawImage(32, 32, (cashFrame % 8) * 32, (cashFrame / 8) * 32,
+				Loc(310.0f), LocY(935.0f), false, false, false, false, false,
+				2.0f * sCdU, sprite[ITEM_IMG + 6], ITEM_IMG + 6);
+		}
+		if (amount) {
+			sprintf(tempStr, "%lld", amount);
+			CdBody(tempStr, 435.0f, 955.0f, 2.15f, LEFT, CD_INK);
+		}
+	}
+	if (isBox) {
+		long long boxPrice = GetBoxPrice(detail, GRADE_NORMAL);
+		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
+			Loc(385.0f), LocY(1070.0f), 1.8f * sCdU, false, false, true, 1);
+		DrawNum(boxPrice, Loc(760.0f), LocY(1090.0f), NUM_FONT_NORMAL,
+			RIGHT, false, false, true, 1.45f * sCdU, false);
+	}
+	else
+		CdBody(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, CD_INK);
 
 	float buttonW = 610.0f;
 	float buttonX = ((float)CD_DESIGNW - buttonW) / 2;
@@ -6193,24 +6235,57 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		buttonW * sCdU, buttonH * sCdU, sCdU);
 	CdText("구매하기", (float)CD_DESIGNW / 2,
 		buttonY + buttonH * 0.28f, 2.04f, CENTER,
-		canBuy ? CD_INK : COLOR_GREY);
+		canBuy ? COLOR_WHITE : COLOR_GREY);
+}
+
+void GachaRatesDraw(int boxDetail)
+{
+	int boxIndex = GetRewardBoxIndex(boxDetail);
+	if (boxIndex < 0 || boxIndex >= REWARD_BOX_COUNT)
+		return;
+	const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
+	CdBeginBoard();
+	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
+	DrawPanel(120.0f, 210.0f, (float)CD_DESIGNW - 240.0f, 820.0f);
+	CdBody("상세 확률표", (float)CD_DESIGNW / 2, 250.0f, 2.2f, CENTER, CD_INK);
+	sprintf(tempStr, "카드 %d~%d장  ·  동료 %d%%  ·  장비 %d%%",
+		box.minCard, box.maxCard, box.crewRate, box.equipRate);
+	CdBody(tempStr, (float)CD_DESIGNW / 2, 335.0f, 1.55f, CENTER, CD_INK);
+	sprintf(tempStr, "하트 %d~%d  ·  골드 %d~%d (%d%%)",
+		box.heartMin, box.heartMax, box.goldMin, box.goldMax, box.goldRate);
+	CdBody(tempStr, (float)CD_DESIGNW / 2, 400.0f, 1.45f, CENTER, CD_INK);
+	for (int grade = 0; grade < BOX_GRADE_COUNT; grade++) {
+		sprintf(tempStr, "%d성     동료 %d%%     장비 %d%%", grade + 1,
+			box.crewGradeRate[grade], box.equipGradeRate[grade]);
+		CdBody(tempStr, (float)CD_DESIGNW / 2, 500.0f + grade * 72.0f,
+			1.55f, CENTER, CD_INK);
+	}
+	float bx = 255.0f, by = 945.0f, bw = 570.0f, bh = 82.0f;
+	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
+		WP_YELLOW_CAP, Loc(bx), LocY(by), bw * sCdU, bh * sCdU, sCdU);
+	CdText("전체 아이템별 확률 보기", (float)CD_DESIGNW / 2,
+		by + bh * 0.27f, 1.65f, CENTER, COLOR_WHITE);
+	SetRectPoint(Loc(bx), LocY(by), bw * sCdU, bh * sCdU,
+		TOUCH_FUNC_SHOP_GACHA_RATES_WEB);
 }
 
 //구역 제목 리본.
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
 {
 	float h = 44.0f * zoom;
-	float ribbonW = w * 1.1f;
-	float ribbonH = h * 1.1f;
+	float ribbonW = w * 1.155f;
+	float ribbonH = h * 1.155f;
+	float lift = h * 0.05f;
 
 	//win.png 안에 이미 들어 있는 보라색/금색 리본 영역을 재사용한다.
-	DrawImageScale(512, 112, 512, 0, cx - ribbonW / 2, y + (ribbonH - h) / 2,
+	DrawImageScale(512, 112, 512, 0, cx - ribbonW / 2,
+		y + (ribbonH - h) / 2 + lift,
 		false, false, false, false, false,
 		ribbonW / 512.0f, ribbonH / 112.0f,
 		sprite[WIN_IMG], WIN_IMG);
 	SetFontColor(COLOR_WHITE);
 	CenterTextStr(title, cx,
-		y - h / 2 + (float)FONT_HEIGHT * zoom * 1.3f / 2,
+		y - h / 2 + (float)FONT_HEIGHT * zoom * 1.3f / 2 + 4.0f * zoom,
 		zoom * 1.3f);
 	SetFontColor(COLOR_WHITE);
 }
@@ -6225,7 +6300,7 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	bool storeReady = false;
 	const char* price = ShopPriceText(product, &storeReady);
 	bool canTouch = !IapIsBusy();
-	float bh = 32.0f * zoom;
+	float bh = 36.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
 	float artSize = Min(w - 14.0f * zoom, h - 112.0f * zoom);
 	float artX = x + (w - artSize) / 2;
@@ -6277,14 +6352,15 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 
 	//가격은 버튼 위에 따로 두고, 동료 강화창과 같은 노란 버튼을 쓴다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(price, x + w / 2, by + 22.0f * zoom, zoom * 0.85f);
+	DrawTextStrSystem(price, x + w / 2, by + 32.0f * zoom,
+		zoom * 0.85f, CENTER, true);
 	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
 		WP_YELLOW_CAP, x + 6.0f * zoom, by,
 		w - 12.0f * zoom, bh, zoom);
-	SetFontColor(canTouch ? CD_INK : COLOR_GREY);
-	CenterTextStr("구매하기", x + w / 2,
+	SetFontColor(canTouch ? COLOR_WHITE : COLOR_GREY);
+	DrawTextStrSystem("구매하기", x + w / 2,
 		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
-		zoom * 0.85f);
+		zoom * 0.85f, CENTER, true);
 	SetFontColor(COLOR_WHITE);
 
 	if (canTouch)
@@ -6301,7 +6377,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	int detail = BOX_PAID0 + i;
 	long long price = GetBoxPrice(detail, GRADE_NORMAL);
 	bool can = price >= 0 && robin.gold >= price;
-	float bh = 32.0f * zoom;
+	float bh = 36.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
 	float panelSize = Min(w - 8.0f * zoom, h - 112.0f * zoom);
 	float panelX = x + (w - panelSize) / 2;
@@ -6319,20 +6395,20 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	DrawCastleBoxXY(detail, false, LEFT, x + (w - boxSize) / 2,
 		panelY - (panelSize - boxSize) / 2, COLOR_WHITE, boxSize / 512.0f);
 
-	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by + 22.0f * zoom, 0.8f * zoom,
+	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by + 32.0f * zoom, 0.8f * zoom,
 		false, false, false, 1);
 
 	SetFontColor(COLOR_WHITE);
 	DrawNum(price, x + w - 10.0f * zoom,
-		by + 22.0f * zoom,
+		by + 32.0f * zoom,
 		NUM_FONT_NORMAL, RIGHT, false, false, true, zoom * 0.8f, false);
 	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
 		WP_YELLOW_CAP, x + 6.0f * zoom, by,
 		w - 12.0f * zoom, bh, zoom);
-	SetFontColor(can ? CD_INK : COLOR_GREY);
-	CenterTextStr("구매하기", x + w / 2,
+	SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
+	DrawTextStrSystem("구매하기", x + w / 2,
 		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
-		zoom * 0.85f);
+		zoom * 0.85f, CENTER, true);
 	SetFontColor(COLOR_WHITE);
 
 	if (can)
@@ -6525,7 +6601,7 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 	float pad = 12.0f * zoom;
 	float innerW = w - pad * 2;
 	//상점 간판의 하단 장식과 겹치지 않도록 배너/목록 시작점을 내린다.
-	float viewTop = y - 160.0f * zoom;
+	float viewTop = y - 136.0f * zoom;
 	float bottom = y - h + pad;
 	float cy = viewTop + (float)scY[MENU_SHOP];
 	char buf[128];
@@ -6600,8 +6676,8 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 
 		//배너 아래 16px 페이지 표시 영역. 선택된 배너만 밝고 크게 그린다.
 		float indicatorH = 16.0f * zoom;
-		float dotSize = 6.0f * zoom;
-		float dotGap = 8.0f * zoom;
+		float dotSize = 9.9f * zoom;
+		float dotGap = 14.4f * zoom;
 		float dotsW = dotSize * 4 + dotGap * 3;
 		float dotsX = x + w / 2 - dotsW / 2;
 		float dotsY = cy - bh - (indicatorH - dotSize) / 2;

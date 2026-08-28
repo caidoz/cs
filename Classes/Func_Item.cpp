@@ -1889,7 +1889,8 @@ int GetItemPow(int type, int detail, int cooldown)
 		raw = (long long)itemPow[base] * ratio / 100;
 
 		if (cooldown > 0) {
-			long long scaled = RoundDiv(raw * EquipLevelMul(cooldown), 100);
+			long long scaled = RoundDiv(raw *
+				EquipLevelMul(GetItemStar(type, detail, GRADE_NORMAL), cooldown), 100);
 
 			raw = Max(raw + cooldown, scaled);
 		}
@@ -1944,11 +1945,25 @@ bool CanCrewLevelUp(ITEM* it)
 	return (long long)it->count >= needPiece && robin.gold >= needGold;
 }
 
-//동료 강화 배율. 장비와 같은 표다. Config/BalanceConfig.h 에 있다.
-int CrewLevelMul(int lv)
+//동료 강화 배율. 별마다 줄이 다르다. Config/BalanceConfig.h 에 있다.
+//
+//별이 높으면 올릴 레벨이 적은 대신 한 레벨이 크고, 만렙 배율도 조금
+//높다(10 배 ~ 15 배). 클래시로얄이 등급마다 만렙 번호가 다른 것과 같다.
+//표는 만렙 뒤를 만렙 값으로 채워 두었으므로, 레벨이 넘쳐도 0 이 되지
+//않고 만렙 값에서 멈춘다.
+int CrewLevelMul(int star, int lv)
 {
-	static const unsigned short mul[] = { CREW_LEVEL_MUL_LIST };
-	const int cnt = (int)(sizeof(mul) / sizeof(mul[0]));
+	static const unsigned short mul[CREW_LEVEL_MUL_ROWS][CREW_LEVEL_MUL_COLS] =
+		{ CREW_LEVEL_MUL_LIST };
+
+	//별은 1 부터다. 데이터가 어긋나도 표 밖을 읽지 않는다.
+	star--;
+
+	if (star < 0)
+		star = 0;
+
+	if (star >= CREW_LEVEL_MUL_ROWS)
+		star = CREW_LEVEL_MUL_ROWS - 1;
 
 	//동료 레벨은 1 부터다. 1 이 강화 안 한 것이라 첨자를 하나 뺀다.
 	lv--;
@@ -1956,10 +1971,10 @@ int CrewLevelMul(int lv)
 	if (lv < 0)
 		lv = 0;
 
-	if (lv >= cnt)
-		lv = cnt - 1;
+	if (lv >= CREW_LEVEL_MUL_COLS)
+		lv = CREW_LEVEL_MUL_COLS - 1;
 
-	return mul[lv];
+	return mul[star][lv];
 }
 
 //스킬 하나가 그 레벨에서 내는 값.
@@ -1974,7 +1989,7 @@ int CrewLevelMul(int lv)
 //
 //그래서 값을 내는 곳을 여기 하나로 모았다. 전투도 설명문도 이 함수를
 //부른다. 이제 둘이 어긋날 자리가 없다.
-long long GetSkillPower(int skillIdx, int lv)
+long long GetSkillPower(int skillIdx, int star, int lv)
 {
 	long long base;
 
@@ -1987,7 +2002,7 @@ long long GetSkillPower(int skillIdx, int lv)
 		return 0;
 
 	//작은 값이 제자리걸음 하지 않게. 장비(GetEquipValue)와 같은 규칙이다.
-	return Max(base + (lv - 1), RoundDiv(base * CrewLevelMul(lv), 100));
+	return Max(base + (lv - 1), RoundDiv(base * CrewLevelMul(star, lv), 100));
 }
 
 //동료의 공격력.
@@ -2024,7 +2039,8 @@ long long GetCrewPower(int detail, int lv)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return GetSkillPower(skillIdx, lv);
+	return GetSkillPower(skillIdx,
+		GetItemStar(ITEM_CREW, detail, GRADE_NORMAL), lv);
 }
 
 //==========================================================================
@@ -2041,18 +2057,27 @@ int GetEquipMaxLevel(void)
 }
 
 //강화 배율. 표는 Config/BalanceConfig.h 에 있다.
-int EquipLevelMul(int lv)
+int EquipLevelMul(int star, int lv)
 {
-	static const unsigned short mul[] = { EQUIP_LEVEL_MUL_LIST };
-	const int cnt = (int)(sizeof(mul) / sizeof(mul[0]));
+	static const unsigned short mul[EQUIP_LEVEL_MUL_ROWS][EQUIP_LEVEL_MUL_COLS] =
+		{ EQUIP_LEVEL_MUL_LIST };
 
+	star--;
+
+	if (star < 0)
+		star = 0;
+
+	if (star >= EQUIP_LEVEL_MUL_ROWS)
+		star = EQUIP_LEVEL_MUL_ROWS - 1;
+
+	//장비 강화 레벨은 0 이 강화 안 한 것이라 그대로 쓴다.
 	if (lv < 0)
 		lv = 0;
 
-	if (lv >= cnt)
-		lv = cnt - 1;
+	if (lv >= EQUIP_LEVEL_MUL_COLS)
+		lv = EQUIP_LEVEL_MUL_COLS - 1;
 
-	return mul[lv];
+	return mul[star][lv];
 }
 
 //강화까지 반영한 장비 한 점의 값.
@@ -2072,7 +2097,8 @@ long long GetEquipValue(ITEM* it)
 	if (it->cooldown <= 0)
 		return base;
 
-	scaled = RoundDiv(base * EquipLevelMul(it->cooldown), 100);
+	scaled = RoundDiv(base * EquipLevelMul(
+		GetItemStar(it->type, it->detail, it->grade), it->cooldown), 100);
 
 	return Max(base + it->cooldown, scaled);
 }
