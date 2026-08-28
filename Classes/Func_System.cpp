@@ -160,7 +160,7 @@ void InitMenu(void)
 	InitBar(BAR_MEDAL);
 	//TEST
 	//InitBar(BAR_QUEST);
-	InitBar(BAR_SHIELD);
+	//InitBar(BAR_SHIELD); //상단 PVP 방패 바는 사용하지 않는다.
 	//InitBar(BAR_COMBATPOWERALL);
 	InitBar(BAR_STAR);
 	InitBar(BAR_DAY);
@@ -612,7 +612,8 @@ void InitBar(int type)
 		bar[BAR_HAMMER].zoom = BAR_HAMMER_ZOOM;
 		break;
 	case BAR_SHIELD:
-		bar[BAR_SHIELD].active = true;
+		//상단의 방패/PVP 방어 바 자리를 레인보우 코인 바에 넘긴다.
+		bar[BAR_SHIELD].active = false;
 		bar[BAR_SHIELD].type = BAR_SHIELD;
 
 		bar[BAR_SHIELD].count = robin.shield;
@@ -1401,11 +1402,11 @@ void InitBar(int type)
 		bar[BAR_STAR].active = true;
 		bar[BAR_STAR].type = BAR_STAR;
 
-		bar[BAR_STAR].count = 0;
+		bar[BAR_STAR].count = robin.coin;
 		bar[BAR_STAR].add = 0;
 		bar[BAR_STAR].countFrame = 0;
 
-		bar[BAR_STAR].icon = ICON_STAR;
+		bar[BAR_STAR].icon = ITEM_CASH_ICON;
 		bar[BAR_STAR].iconFrame = 0;
 
 		bar[BAR_STAR].frame = 0;
@@ -4690,7 +4691,8 @@ void MakeAiHouse(void)
 		}
 
 		//현재 공격하는 유저의 상태에 따라 결정해 준다.
-		//스테이지 기준 houseGoldStage
+		//집 종류로 정한다. 스테이지로 정하는 표(houseGoldStage)도 있었는데
+		//아무도 읽지 않아 지웠다.
 		houseGoldTier = aiUserHouse[i].houseType;
 		aiUserHouse[i].gold = houseGold[aiUserHouse[i].houseType] + Random(houseGold[aiUserHouse[i + 1].houseType] - houseGold[aiUserHouse[i].houseType]);
 	}

@@ -98,7 +98,6 @@ CONTENT_KEY = {
 
     # 성. castleOrder[robin.castle] 처럼 성 번호로 색인한다.
     'castleOrder':        ('DPK_KEY_CASTLE', 1, 0),
-    'castleBoxZoom':      ('DPK_KEY_CASTLE', 1, 0),
     'castleBoxColor':     ('DPK_KEY_CASTLE', 1, 0),
     'castleBoxGold':      ('DPK_KEY_CASTLE', 1, 0),
     'castleStarLimit':    ('DPK_KEY_CASTLE', 1, 0),

@@ -34,27 +34,6 @@ static const int castleOrder_builtin[] = {
 	CASTLE_SPACE,//17//18
 	CASTLE_ARENA,//18//1
 };
-static const float castleBoxZoom_builtin[] = {
-	1.00f,//CASTLE_TOLEM = 0,//0//0
-	0xF3D58F,//CASTLE_ARENA,//1//18
-	1.05f,//CASTLE_SWAMP,//2//1
-	1.10f,//CASTLE_VALLEY,//3//2
-	1.15f,//CASTLE_ATLANTICE,//4//3
-	0.90f,//CASTLE_SEWAGE,//5//8
-	0xFFFFFF,//CASTLE_ADELINE,//6//15
-	1.20f,//CASTLE_PLAIN,//7//4
-	1.25f,//CASTLE_ELF,//8//5
-	0.80f,//CASTLE_FLAME,//9//6
-	0.85f,//CASTLE_FROST,//10//7
-	0.95f,//CASTLE_THUNDER,//11//9
-	0xFDCE4D,//CASTLE_LIGHT,//12//12
-	80,//CASTLE_GOLEMVALLEY,//13//10
-	0xFFFFFF,//CASTLE_DARKNESS,//14//11
-	0x5E4272,//CASTLE_DRAGON,//15//14
-	0x592965,//CASTLE_GHOST,//16//13
-	0xFFFFFF,//CASTLE_DEVILCASTLE,//17//16
-	0xFFFFFF,//CASTLE_SPACE,//18//17
-};
 static const int castleBoxColor_builtin[] = {
 	0xDBBA8F,//CASTLE_TOLEM = 0,//0
 	0xF3D58F,//CASTLE_ARENA,//1
@@ -453,7 +432,6 @@ static const int castleCrewPosition_builtin[] = {
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
 
 const int* castleOrder = castleOrder_builtin;
-const float* castleBoxZoom = castleBoxZoom_builtin;
 const int* castleBoxColor = castleBoxColor_builtin;
 const long long* castleBoxGold = castleBoxGold_builtin;
 const int* castleStarLimit = castleStarLimit_builtin;

@@ -44,9 +44,6 @@ enum { itemEvolutionItem_COUNT = 240 };
 extern const long long* itemUpgradeHammer;
 enum { itemUpgradeHammer_COUNT = 6 };
 
-extern const unsigned short* arenaFloorGold;
-enum { arenaFloorGold_COUNT = 200 };
-
 extern const unsigned short* revolutionMedal;
 enum { revolutionMedal_COUNT = 8 };
 

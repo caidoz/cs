@@ -149,8 +149,9 @@ SPECS = {
     # 보상과 재화. 아래는 전부 열거가 없는 표다 - 배열을 그대로 폈다.
     # 한 표에 길이가 같고 색인의 뜻이 같은 배열만 모았다.
     #
-    # castleBoxZoom, rouletteProb, arenaFloorGold, houseGoldStage 는
-    # 읽는 곳이 없어서 넣지 않았다. 쓰게 되면 그때 표로 뺀다.
+    # castleBoxZoom, rouletteProb, arenaFloorGold, houseGoldStage 는 읽는
+    # 곳이 없어서 아예 지웠다(2026-08-28). 표에 넣으면 고치면 뭔가 달라지는
+    # 값처럼 보이는데 실제로는 아니어서다.
 
     # 한 행이 성 하나다
     'castle': {

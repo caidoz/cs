@@ -105,20 +105,6 @@ static const int battleMotion_builtin[] = {
     PO_C0_STOP3,//89
     PO_C0_STOP3,//90
 };
-static const int houseGoldStage_builtin[] = {
-    0,//1
-    10,//2
-    20,//3
-    30,//4
-    50,//5
-    70,//6
-    100,//7
-    120,//8
-    150,//9
-    200,//10
-    250,//11
-    300,//12
-};
 static const long long houseGold_builtin[] = {
     100000,//1
     300000,//2
@@ -172,15 +158,6 @@ static const unsigned short gameEventOpenStage_builtin[] = {
 };
 
 
-static const int rouletteProb_builtin[] = {
-    PROB_COIN,// = 700,
-    PROB_COIN + PROB_COINBAG,// = 600,
-    PROB_COIN + PROB_COINBAG + PROB_HEART,// = 100,
-    PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL,// = 200,
-    PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL + PROB_QUEST,// = 500,
-    PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL + PROB_QUEST + PROB_HIT,// = 400,
-    PROB_COIN + PROB_COINBAG + PROB_HEART + PROB_SKILL + PROB_QUEST + PROB_HIT + PROB_RAID,// = 300,
-};
 static const int activeSkillProb_builtin[][2 * MAXCHARSKILL] = {
     //로빈
     {
@@ -441,10 +418,8 @@ static const unsigned char arenaMIC_builtin[] = {
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
 
 const int* battleMotion = battleMotion_builtin;
-const int* houseGoldStage = houseGoldStage_builtin;
 const long long* houseGold = houseGold_builtin;
 const int* wheelCrewPos = wheelCrewPos_builtin;
-const int* rouletteProb = rouletteProb_builtin;
 const float* popUpFrameData = popUpFrameData_builtin;
 const short* hitAlpha = hitAlpha_builtin;
 const short* raidAlpha = raidAlpha_builtin;

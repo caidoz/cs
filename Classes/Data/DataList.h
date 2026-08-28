@@ -49,11 +49,9 @@
 	X(goldAlphaInfo, 2, DPK_UINT, 444, DPK_KEY_NONE, 0, 0) \
 	X(alphaY, 2, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
 	X(battleMotion, 4, DPK_INT, 90, DPK_KEY_NONE, 0, 0) \
-	X(houseGoldStage, 4, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
 	X(houseGold, 8, DPK_INT, 12, DPK_KEY_NONE, 0, 0) \
 	X(wheelCrewPos, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
 	X(gameEventOpenStage, 2, DPK_UINT, 24, DPK_KEY_NONE, 0, 0) \
-	X(rouletteProb, 4, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \
 	X(activeSkillProb, 4, DPK_INT, activeSkillProb_ROWS * activeSkillProb_COLS, DPK_KEY_NONE, 0, 0) \
 	X(popUpFrameData, 4, DPK_FLOAT, 8, DPK_KEY_NONE, 0, 0) \
 	X(hitAlpha, 2, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
@@ -64,7 +62,6 @@
 	X(arenaMI, 2, DPK_INT, 360, DPK_KEY_NONE, 0, 0) \
 	X(arenaMIC, 1, DPK_UINT, 46, DPK_KEY_NONE, 0, 0) \
 	X(castleOrder, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
-	X(castleBoxZoom, 4, DPK_FLOAT, 19, DPK_KEY_CASTLE, 1, 0) \
 	X(castleBoxColor, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
 	X(castleBoxGold, 8, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
 	X(castleStarLimit, 4, DPK_INT, 19, DPK_KEY_CASTLE, 1, 0) \
@@ -246,7 +243,6 @@
 	X(itemMaterialExp, 4, DPK_INT, 225, DPK_KEY_NONE, 0, 0) \
 	X(itemEvolutionItem, 8, DPK_INT, 240, DPK_KEY_NONE, 0, 0) \
 	X(itemUpgradeHammer, 8, DPK_INT, 6, DPK_KEY_NONE, 0, 0) \
-	X(arenaFloorGold, 2, DPK_UINT, 200, DPK_KEY_NONE, 0, 0) \
 	X(revolutionMedal, 2, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
 	X(itemColor, 4, DPK_UINT, 10, DPK_KEY_NONE, 0, 0) \
 	X(buffBlend, 4, DPK_UINT, 16, DPK_KEY_NONE, 0, 0) \

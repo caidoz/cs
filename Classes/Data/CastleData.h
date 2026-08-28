@@ -7,9 +7,6 @@
 extern const int* castleOrder;
 enum { castleOrder_COUNT = 19 };
 
-extern const float* castleBoxZoom;
-enum { castleBoxZoom_COUNT = 19 };
-
 extern const int* castleBoxColor;
 enum { castleBoxColor_COUNT = 19 };
 

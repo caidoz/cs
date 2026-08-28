@@ -9,9 +9,6 @@
 extern const int* battleMotion;
 enum { battleMotion_COUNT = 90 };
 
-extern const int* houseGoldStage;
-enum { houseGoldStage_COUNT = 12 };
-
 extern const long long* houseGold;
 enum { houseGold_COUNT = 12 };
 
@@ -20,9 +17,6 @@ enum { wheelCrewPos_COUNT = 10 };
 
 extern const unsigned short* gameEventOpenStage;
 enum { gameEventOpenStage_COUNT = 24 };
-
-extern const int* rouletteProb;
-enum { rouletteProb_COUNT = 7 };
 
 extern const int (*activeSkillProb)[2 * MAXCHARSKILL];
 enum { activeSkillProb_ROWS = 3, activeSkillProb_COLS = (2 * MAXCHARSKILL),
