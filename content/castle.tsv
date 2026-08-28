@@ -1,0 +1,24 @@
+#한 행이 하나다. 여러 파일 여러 배열에 흩어져 있던 것을 모은 것.
+#값은 소스에 적힌 글자 그대로다. 이름을 숫자로 바꾸지 않는다.
+#id는 계약이다. 중간에 끼우지 말고 항상 맨 끝에 (content/README.md).
+#\N은 그 배열에 이 번호가 없다는 뜻이다.
+id	enum_name	label	star_limit	order
+0			20	CASTLE_TOLEM
+1			110	CASTLE_SWAMP
+2			25	CASTLE_VALLEY
+3			30	CASTLE_ATLANTICE
+4			35	CASTLE_PLAIN
+5			40	CASTLE_ELF
+6			45	CASTLE_FLAME
+7			50	CASTLE_FROST
+8			115	CASTLE_SEWAGE
+9			55	CASTLE_THUNDER
+10			60	CASTLE_GOLEMVALLEY
+11			70	CASTLE_DARKNESS
+12			75	CASTLE_LIGHT
+13			80	CASTLE_GHOST
+14			85	CASTLE_DRAGON
+15			90	CASTLE_ADELINE
+16			95	CASTLE_DEVILCASTLE
+17			100	CASTLE_SPACE
+18			105	CASTLE_ARENA

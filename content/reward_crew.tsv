@@ -1,0 +1,145 @@
+#한 행이 하나다. 여러 파일 여러 배열에 흩어져 있던 것을 모은 것.
+#값은 소스에 적힌 글자 그대로다. 이름을 숫자로 바꾸지 않는다.
+#id는 계약이다. 중간에 끼우지 말고 항상 맨 끝에 (content/README.md).
+#\N은 그 배열에 이 번호가 없다는 뜻이다.
+id	enum_name	label	value
+0			ITEM_GOLD
+1			false
+2			false
+3			10000
+4			86400 * 1
+5			ITEM_GOLD
+6			false
+7			false
+8			20000
+9			86400 * 2
+10			ITEM_BOX
+11			BOX_REWARD0
+12			false
+13			1
+14			86400 * 3
+15			ITEM_GOLD
+16			false
+17			false
+18			50000
+19			86400 * 4
+20			ITEM_HEART
+21			false
+22			false
+23			100
+24			86400 * 5
+25			ITEM_GOLD
+26			false
+27			false
+28			10000
+29			86400 * 1
+30			ITEM_GOLD
+31			false
+32			false
+33			20000
+34			86400 * 2
+35			ITEM_BOX
+36			BOX_REWARD0
+37			false
+38			1
+39			86400 * 3
+40			ITEM_GOLD
+41			false
+42			false
+43			50000
+44			86400 * 4
+45			ITEM_HEART
+46			false
+47			false
+48			100
+49			86400 * 5
+50			ITEM_GOLD
+51			false
+52			false
+53			10000
+54			86400 * 1
+55			ITEM_GOLD
+56			false
+57			false
+58			20000
+59			86400 * 2
+60			ITEM_BOX
+61			BOX_REWARD0
+62			false
+63			1
+64			86400 * 3
+65			ITEM_GOLD
+66			false
+67			false
+68			50000
+69			86400 * 4
+70			ITEM_HEART
+71			false
+72			false
+73			100
+74			86400 * 5
+75			ITEM_GOLD
+76			false
+77			false
+78			10000
+79			86400 * 1
+80			ITEM_GOLD
+81			false
+82			false
+83			20000
+84			86400 * 2
+85			ITEM_BOX
+86			BOX_REWARD0
+87			false
+88			1
+89			86400 * 3
+90			ITEM_GOLD
+91			false
+92			false
+93			50000
+94			86400 * 4
+95			ITEM_HEART
+96			false
+97			false
+98			100
+99			86400 * 5
+100			ITEM_GOLD
+101			false
+102			false
+103			10000
+104			86400 * 1
+105			ITEM_GOLD
+106			false
+107			false
+108			20000
+109			86400 * 2
+110			ITEM_BOX
+111			BOX_REWARD0
+112			false
+113			1
+114			86400 * 3
+115			ITEM_GOLD
+116			false
+117			false
+118			50000
+119			86400 * 4
+120			ITEM_HEART
+121			false
+122			false
+123			100
+124			86400 * 5
+125			ITEM_GOLD
+126			false
+127			false
+128			10000
+129			86400 * 1
+130			ITEM_GOLD
+131			false
+132			false
+133			20000
+134			86400 * 2
+135			ITEM_BOX
+136			BOX_REWARD0
+137			false
+138			1
+139			86400 * 3

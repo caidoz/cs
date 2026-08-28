@@ -146,6 +146,230 @@ SPECS = {
         'rules': [],
     },
 
+    # 보상과 재화. 아래는 전부 열거가 없는 표다 - 배열을 그대로 폈다.
+    # 한 표에 길이가 같고 색인의 뜻이 같은 배열만 모았다.
+    #
+    # castleBoxZoom, rouletteProb, arenaFloorGold, houseGoldStage 는
+    # 읽는 곳이 없어서 넣지 않았다. 쓰게 되면 그때 표로 뺀다.
+
+    # 한 행이 성 하나다
+    'castle': {
+        'total': 'castleStarLimit_COUNT',
+        'includes': ['Data/CastleData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('castleStarLimit', 'CastleData.h', 1, 0, ['star_limit']),
+            ('castleOrder', 'CastleData.h', 1, 0, ['order']),
+        ],
+        'rules': [],
+    },
+
+    # 한 행이 진행 순서 자리다. castleOrder[성] 이 가리키는 곳
+    'castle_box': {
+        'total': 'castleBoxGold_COUNT',
+        'includes': ['Data/CastleData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('castleBoxGold', 'CastleData.h', 1, 0, ['box_gold']),
+            ('castleBoxColor', 'CastleData.h', 1, 0, ['box_color']),
+        ],
+        'rules': [],
+    },
+
+    # 레벨업 보상
+    'reward_levelup': {
+        'total': 'levelUpReward_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('levelUpReward', 'RewardData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
+    # 보스를 잡을 때 주는 골드
+    'reward_bossgold': {
+        'total': 'bossGold_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('bossGold', 'RewardData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
+    # 전투 보상 골드
+    'reward_battlegold': {
+        'total': 'battleRewardGold_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('battleRewardGold', 'RewardData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
+    # 스테이지 클리어 보상
+    'reward_stageclear': {
+        'total': 'stageClearReward_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('stageClearReward', 'RewardData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
+    # 보스 보상
+    'reward_boss': {
+        'total': 'bossReward_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('bossReward', 'RewardData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
+    # 동료 보상
+    'reward_crew': {
+        'total': 'crewReward_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('crewReward', 'RewardData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
+    # 장비를 얻을 때 주는 하트
+    'reward_equipheart': {
+        'total': 'equipGetRewardHeart_COUNT',
+        'includes': ['Data/RewardData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('equipGetRewardHeart', 'RewardData.h', 1, 0, ['heart']),
+        ],
+        'rules': [],
+    },
+
+    # 베팅 단계별 배수. betHeart[bet]
+    'bet_heart': {
+        'total': 'betHeart_COUNT',
+        'includes': ['Data/GameData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('betHeart', 'GameData.h', 1, 0, ['mul']),
+        ],
+        'rules': [],
+    },
+
+    # 코인 베팅
+    'bet_coin': {
+        'total': 'betCoin_COUNT',
+        'includes': ['Data/GameData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('betCoin', 'GameData.h', 1, 0, ['mul']),
+        ],
+        'rules': [],
+    },
+
+    # 스테이지별 골드. stage * TOTALROOM + room
+    'gold_stage': {
+        'total': 'stageGold_COUNT',
+        'includes': ['Data/WaveData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('stageGold', 'WaveData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
+    # 스킬 강화 골드
+    'gold_skill': {
+        'total': 'skillUpgradeGold_COUNT',
+        'includes': ['Data/GameData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('skillUpgradeGold', 'GameData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
+    # 동료 별 올리기 골드
+    'gold_crewstar': {
+        'total': 'crewStarUpgradeGold_COUNT',
+        'includes': ['Data/HeroData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('crewStarUpgradeGold', 'HeroData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
+    # 아이템 살 값
+    'item_price': {
+        'total': 'itemPrice_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('itemPrice', 'ItemData.h', 1, 0, ['price']),
+        ],
+        'rules': [],
+    },
+
+    # 아이템 팔 값
+    'item_sell': {
+        'total': 'itemSellPrice_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('itemSellPrice', 'ItemData.h', 1, 0, ['price']),
+        ],
+        'rules': [],
+    },
+
+    # 재화 상점
+    'shop_currency': {
+        'total': 'currencyShop_COUNT',
+        'includes': ['Data/ShopData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('currencyShop', 'ShopData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
+    # 빠른 상점
+    'shop_quick': {
+        'total': 'quickShopData_COUNT',
+        'includes': ['Data/ShopData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('quickShopData', 'ShopData.h', 1, 0, ['value']),
+        ],
+        'rules': [],
+    },
+
     # 스킬. 몬스터 한 마리가 3개씩 쓰므로 몬스터를 추가하면 여기도 늘어난다.
     'skill': {
         'total': 'TOTAL_SKILL',
