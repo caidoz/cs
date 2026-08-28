@@ -1,0 +1,12 @@
+#여기 적은 웨이브는 생성기가 깐 것을 덮는다. 규칙으로 안 되는 자리를
+#손으로 잡을 때 쓴다.
+#
+#  wave   몇 번째 웨이브인가. 사람이 세는 번호(1 부터).
+#  slot   그 웨이브의 몇 번째 자리인가(1~3).
+#  enemy  몬스터 열거 이름. ENEMY_SNAIL_RED 처럼 색까지 적는다.
+#  kind   MONSTERTYPE_JACO / _BOSS / _MIDBOSS / _BIGBOSS
+#  note   왜 손으로 잡았는지. 안 적으면 나중에 아무도 모른다.
+#
+#줄은 맨 끝에 붙이면 된다. 이 표는 늘어나도 된다.
+wave	slot	enemy	kind	note
+7	1	ENEMY_SKELETON_GOLD	MONSTERTYPE_BOSS	7판을 손으로 잡는다

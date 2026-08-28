@@ -1,0 +1,10 @@
+#컬러가 곧 단계다. 몬스터 열거가 이 순서로 끊겨 있다(Def/EnemyDef.h).
+#suffix 가 빈 줄이 기본색이다.
+order	suffix	label
+0		기본
+1	_RED	레드
+2	_BLUE	블루
+3	_PURPLE	퍼플
+4	_GREEN	그린
+5	_GOLD	골드
+6	_BLACK	블랙

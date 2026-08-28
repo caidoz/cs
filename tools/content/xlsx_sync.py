@@ -61,6 +61,13 @@ BOOKS = {
         'tables': ['item_pow', 'item_star', 'equip_value', 'sword'],
         'note': '로빈이 얼마나 세지는가. 시트마다 한 행의 뜻이 다르다 - item_pow 는 티어 하나, item_star 는 아이템 하나, equip_value 는 장비 한 점, sword 는 검 x 등급 한 칸이다.',
     },
+    'wave': {
+        'title': '웨이브',
+        'note': '적을 언제 만나는가. wave[] 90000 칸은 여기 규칙으로 make_waves.py 가 깐다 - 결과가 아니라 손잡이를 고치는 곳이다. 규칙으로 안 되는 자리는 wave_fix 에 한 줄씩 적으면 생성기를 이긴다.',
+        'tables': ['wave_rule', 'wave_region', 'wave_color', 'wave_fix'],
+        'grow': ['wave_fix'],
+        'build': 'make_waves.py',
+    },
 }
 
 #열 설명. 없는 열은 이름만 나온다.
@@ -92,6 +99,18 @@ DESC = {
         'skill3': '슬롯에 3 개 떴을 때',
         'card_bg': '카드 뒷그림',
     },
+    'wave_rule': {'name': '손잡이 이름. 고치지 말 것',
+                  'value': '이 값을 고치고 다시 깐다',
+                  'note': '무엇을 정하는 값인가'},
+    'wave_region': {'order': '진행 순서. 앞이 약하다',
+                    'castle': 'CastleDef.h 의 이름. 함부로 고치면 안 된다'},
+    'wave_color': {'order': '단계. 0 이 기본색이다',
+                   'suffix': '몬스터 이름에 붙는 꼬리. 빈 줄이 기본색'},
+    'wave_fix': {'wave': '몇 번째 웨이브인가 (1 부터)',
+                 'slot': '그 웨이브의 몇 번째 자리인가 (1~3)',
+                 'enemy': '몬스터 열거 이름. 색까지 적는다',
+                 'kind': 'MONSTERTYPE_JACO / _BOSS / _MIDBOSS / _BIGBOSS',
+                 'note': '왜 손으로 잡았는지. 안 적으면 나중에 아무도 모른다'},
     'item_pow': {'pow': '그 티어의 기본 위력. GetItemPow 가 본다'},
     'item_star': {'star': '별 x 100. 600 이면 6 성이다'},
     'equip_value': {'value': '장비 한 점의 기본값. 강화 배율이 여기 곱해진다'},
@@ -311,21 +330,28 @@ def do_import(book, build):
             sys.exit('%s : 열 이름이 다르다\n  표 %s\n  엑셀 %s'
                      % (name, cols, got))
 
-        if ws.max_row - 1 != len(rows):
+        grow = name in BOOKS[book].get('grow', [])
+
+        if not grow and ws.max_row - 1 != len(rows):
             sys.exit('%s : 줄이 %d개여야 하는데 %d개다'
                      % (name, len(rows), ws.max_row - 1))
 
         new = []
 
-        for r in range(2, len(rows) + 2):
+        for r in range(2, (ws.max_row + 1) if grow else (len(rows) + 2)):
             vals = []
 
             for c in range(1, len(cols) + 1):
                 v = ws.cell(r, c).value
                 vals.append('' if v is None else str(v).strip())
 
+            #통째로 빈 줄은 버린다. 엑셀은 지운 줄을 빈 줄로 남긴다.
+            if grow and not any(v for v in vals):
+                continue
+
             #id 가 제자리인가. 정렬을 여기서 잡는다.
-            if vals[0] != rows[r - 2][0]:
+            #늘어나도 되는 표는 있던 줄까지만 본다.
+            if r - 2 < len(rows) and vals[0] != rows[r - 2][0]:
                 sys.exit('%s : %d번째 줄의 id 가 %s 여야 하는데 %s 다.\n'
                          '정렬했거나 줄을 옮긴 것 같다. 아무것도 쓰지 않았다.'
                          % (name, r - 1, rows[r - 2][0], vals[0]))
@@ -341,10 +367,17 @@ def do_import(book, build):
         print('  %-8s %d칸 바뀜' % (name, changed))
 
     if build:
-        for name in BOOKS[book]['tables']:
-            subprocess.check_call([sys.executable,
-                                   os.path.join(HERE, 'content_table.py'),
-                                   name, 'generate', '--write'])
+        #표마다 소스를 내는 도구가 다르다. 웨이브는 규칙에서 까는 것이라
+        #content_table 이 아니라 make_waves 가 낸다.
+        tool = BOOKS[book].get('build')
+
+        if tool:
+            subprocess.check_call([sys.executable, os.path.join(HERE, tool)])
+        else:
+            for name in BOOKS[book]['tables']:
+                subprocess.check_call([sys.executable,
+                                       os.path.join(HERE, 'content_table.py'),
+                                       name, 'generate', '--write'])
 
         subprocess.check_call([sys.executable,
                                os.path.join(HERE, 'build_pack.py')])

@@ -74,48 +74,79 @@ UI_CPP = os.path.join(CLASSES, 'Data', 'UIData.cpp')
 MOVE_CPP = os.path.join(CLASSES, 'Func_Movement.cpp')
 
 #---- 손잡이 ---------------------------------------------------------------
+#
+#값은 content/ 의 tsv 에 있다. 엑셀(wave.xlsx)에서 고치고 이 도구를 돌리면
+#wave[] 가 다시 깔린다. 여기 상수로 박아 두면 엑셀에서 못 고친다.
 
-TOTAL_WAVE = 10000      #깔 웨이브 수
-MAXWAVEENEMY = 3        #Def.h 와 같아야 한다
-WAVEDATASIZE = 3        #Def.h 와 같아야 한다
-TUTORIAL_ROWS = 4       #앞에서 그대로 보존할 행 수
+CONTENT = os.path.join(ROOT, "content")
 
-BIGBOSS_EVERY = 100     #대보스 자리
-MIDBOSS_EVERY = 10      #중보스 자리
-SUBBOSS_EVERY = 5       #소보스 자리
 
-#보스가 제 바퀴보다 몇 단 위의 색으로 서는가. 0 이면 색이 안 섞인다.
-COLOR_BUMP_MIDBOSS = 1
-COLOR_BUMP_BIGBOSS = 2
-MULTI2_EVERY = 4        #두 마리
-MULTI3_EVERY = 13       #세 마리
+def load_tsv(name):
+    """(열이름, 행들). 주석줄은 버린다."""
+    p = os.path.join(CONTENT, name + ".tsv")
 
-#컬러가 곧 단계다. 열거가 이 순서로 51마리씩 끊겨 있다(Def/EnemyDef.h).
-COLORS = ['', '_RED', '_BLUE', '_PURPLE', '_GREEN', '_GOLD', '_BLACK']
+    with io.open(p, encoding="utf-8", newline="") as fp:
+        raw = fp.read()
+
+    lines = raw.replace(chr(13) + chr(10), chr(10)).split(chr(10))
+    lines = [l for l in lines if l and not l.startswith(chr(35))]
+
+    return lines[0].split(chr(9)), [l.split(chr(9)) for l in lines[1:]]
+
+
+def load_rules():
+    _c, rows = load_tsv("wave_rule")
+
+    return {r[0]: int(r[1]) for r in rows}
+
+
+_R = load_rules()
+
+TOTAL_WAVE = _R["total_wave"]
+TUTORIAL_ROWS = _R["tutorial_rows"]
+BIGBOSS_EVERY = _R["bigboss_every"]
+MIDBOSS_EVERY = _R["midboss_every"]
+SUBBOSS_EVERY = _R["subboss_every"]
+COLOR_BUMP_MIDBOSS = _R["color_bump_midboss"]
+COLOR_BUMP_BIGBOSS = _R["color_bump_bigboss"]
+MULTI2_EVERY = _R["multi2_every"]
+MULTI3_EVERY = _R["multi3_every"]
+
+#Def.h 와 같아야 한다. 엑셀에서 고칠 것이 아니라 소스가 정한다.
+MAXWAVEENEMY = 3
+WAVEDATASIZE = 3
+
+#컬러가 곧 단계다. 열거가 이 순서로 끊겨 있다(Def/EnemyDef.h).
+_c, _rows = load_tsv("wave_color")
+COLORS = [r[1] for r in _rows]
+COLOR_NAME = {r[1]: r[2] for r in _rows}
 
 #CastleDef.h 의 순서. 몬스터가 사는 곳만 추린다. 앞이 약하고 뒤가 세다.
-REGION_ORDER = [
-    'CASTLE_SWAMP', 'CASTLE_VALLEY', 'CASTLE_ATLANTICE', 'CASTLE_SEWAGE',
-    'CASTLE_PLAIN', 'CASTLE_FLAME', 'CASTLE_FROST', 'CASTLE_THUNDER',
-    'CASTLE_LIGHT', 'CASTLE_GOLEMVALLEY', 'CASTLE_DARKNESS', 'CASTLE_DRAGON',
-    'CASTLE_GHOST', 'CASTLE_DEVILCASTLE', 'CASTLE_SPACE',
-]
-
-REGION_NAME = {
-    'CASTLE_SWAMP': '늪', 'CASTLE_VALLEY': '계곡', 'CASTLE_ATLANTICE': '아틀란티스',
-    'CASTLE_SEWAGE': '하수도', 'CASTLE_PLAIN': '평원', 'CASTLE_FLAME': '화염',
-    'CASTLE_FROST': '빙설', 'CASTLE_THUNDER': '뇌전', 'CASTLE_LIGHT': '빛',
-    'CASTLE_GOLEMVALLEY': '골렘계곡', 'CASTLE_DARKNESS': '암흑',
-    'CASTLE_DRAGON': '드래곤', 'CASTLE_GHOST': '망령', 'CASTLE_DEVILCASTLE': '마성',
-    'CASTLE_SPACE': '우주',
-}
-
-COLOR_NAME = {'': '기본', '_RED': '레드', '_BLUE': '블루', '_PURPLE': '퍼플',
-              '_GREEN': '그린', '_GOLD': '골드', '_BLACK': '블랙'}
+_c, _rows = load_tsv("wave_region")
+REGION_ORDER = [r[1] for r in _rows]
+REGION_NAME = {r[1]: r[2] for r in _rows}
 
 #쓰지 않을 몬스터를 여기 적는다(기본색 이름으로). 지금은 없다.
 EXCLUDE = set()
 
+
+def load_fix():
+    """손으로 정한 웨이브. 생성기가 깐 것을 덮는다.
+
+    {(웨이브 번호, 자리): (몬스터, 종류, 왜)} 로 돌려준다.
+    웨이브 번호는 사람이 세는 번호(1 부터)다.
+    """
+    _c, rows = load_tsv("wave_fix")
+    out = {}
+
+    for r in rows:
+        if len(r) < 4 or not r[0].strip():
+            continue
+
+        out[(int(r[0]), int(r[1]))] = (r[2], r[3],
+                                       r[4] if len(r) > 4 else "")
+
+    return out
 
 def read(path):
     return io.open(path, encoding='utf-8-sig').read()
@@ -263,6 +294,48 @@ def make_waves(pool):
     return waves
 
 
+def apply_fix(waves):
+    """손으로 정한 웨이브로 덮는다.
+
+    규칙으로 안 되는 자리가 반드시 나온다 - 특정 웨이브에 이 몬스터를
+    세우고 싶다든가. 그럴 때 생성기를 고치는 대신 content/wave_fix.tsv 에
+    한 줄 적는다. 규칙은 규칙대로 두고 예외만 따로 적어 두는 것이다.
+
+    자리가 비어 있으면(생성기가 그 자리에 아무도 안 세웠으면) 새로 만든다.
+    """
+    fix = load_fix()
+
+    if not fix:
+        return waves, 0
+
+    done = 0
+
+    for (n, slot), (enemy, kind, note) in sorted(fix.items()):
+        if n < 1 or n > len(waves):
+            sys.exit("wave_fix : %d 번 웨이브는 없다 (1 ~ %d)"
+                     % (n, len(waves)))
+
+        if slot < 1 or slot > MAXWAVEENEMY:
+            sys.exit("wave_fix : %d 번 웨이브의 %d 번 자리는 없다 (1 ~ %d)"
+                     % (n, slot, MAXWAVEENEMY))
+
+        head, slots, labels = waves[n - 1]
+        slots = list(slots)
+        labels = list(labels)
+
+        while len(slots) < slot:
+            slots.append((enemy, kind))
+            labels.append(note or "손으로 넣음")
+
+        slots[slot - 1] = (enemy, kind)
+        labels[slot - 1] = note or "손으로 넣음"
+        head = head + "  [손]"
+        waves[n - 1] = (head, slots, labels)
+        done += 1
+
+    return waves, done
+
+
 def render(waves, tutorial_text):
     out = [tutorial_text.rstrip('\n'), '']
     for head, slots, labels in waves[TUTORIAL_ROWS:]:
@@ -301,6 +374,10 @@ def main():
     big = load_big()
     pool = build_pool(mon, big)
     waves = make_waves(pool)
+    waves, fixed = apply_fix(waves)
+
+    if fixed:
+        print("  손으로 정한 자리 %d 곳을 덮었다" % fixed)
 
     total = TOTAL_WAVE * MAXWAVEENEMY * WAVEDATASIZE
 

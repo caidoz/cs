@@ -1,0 +1,18 @@
+#앞이 약하고 뒤가 세다. 순서를 바꾸면 진행 순서가 바뀐다.
+#castle 은 Def/CastleDef.h 의 이름이라 함부로 고치면 안 된다.
+order	castle	label
+0	CASTLE_SWAMP	늪
+1	CASTLE_VALLEY	계곡
+2	CASTLE_ATLANTICE	아틀란티스
+3	CASTLE_SEWAGE	하수도
+4	CASTLE_PLAIN	평원
+5	CASTLE_FLAME	화염
+6	CASTLE_FROST	빙설
+7	CASTLE_THUNDER	뇌전
+8	CASTLE_LIGHT	빛
+9	CASTLE_GOLEMVALLEY	골렘계곡
+10	CASTLE_DARKNESS	암흑
+11	CASTLE_DRAGON	드래곤
+12	CASTLE_GHOST	망령
+13	CASTLE_DEVILCASTLE	마성
+14	CASTLE_SPACE	우주

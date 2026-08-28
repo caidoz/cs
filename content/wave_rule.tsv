@@ -1,0 +1,12 @@
+#웨이브를 까는 규칙. tools/content/make_waves.py 가 읽는다.
+#값을 고치고 make_waves.py 를 돌리면 wave[] 가 다시 깔린다.
+name	value	note
+total_wave	10000	깔 웨이브 수
+tutorial_rows	4	앞에서 그대로 보존할 행 수
+bigboss_every	100	대보스 자리
+midboss_every	10	중보스 자리
+subboss_every	5	소보스 자리
+color_bump_midboss	1	중보스가 제 바퀴보다 몇 단 위 색으로 서는가
+color_bump_bigboss	2	대보스가 제 바퀴보다 몇 단 위 색으로 서는가
+multi2_every	4	두 마리가 나오는 자리
+multi3_every	13	세 마리가 나오는 자리
