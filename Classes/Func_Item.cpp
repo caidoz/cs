@@ -3031,7 +3031,7 @@ void SetHotKey(OBJECT* pObj, int type, int idx, int where)
 
 	switch (type) {
 	case HOTKEY_SKILL:
-		pObj->hotKey[where].inven = RoundDiv(skillData[pObj->hotKey[where].idx * SKILLDATASIZE + 2] * (100 - pObj->ps[PS_DELAY]), 100);
+		pObj->hotKey[where].inven = RoundDiv(skillData[pObj->hotKey[where].idx * SKILLDATASIZE + SKILLDATA_OBJECTINFO] * (100 - pObj->ps[PS_DELAY]), 100);
 		if (pObj->hotKey[where].idx == SKILL_MAXX16) {
 			pObj->hotKey[where].inven -= GetSkillValue(GetObjFromPtr(pObj), SKILL_MAXX16);
 		}

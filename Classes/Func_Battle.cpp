@@ -1218,8 +1218,8 @@ void Play(void)
 
 		//if (curSkill < 100)//스킬이면
 		//	DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
-		if (skillData[curSkill * SKILLDATASIZE + 0] == SUMMON) {
-			enemyIdx = skillData[curSkill * SKILLDATASIZE + 1];
+		if (skillData[curSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMON) {
+			enemyIdx = skillData[curSkill * SKILLDATASIZE + SKILLDATA_TARGET];
 
 			float zoom = 2.0f;
 			SetSectionClip(xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, (float)(SKILLICONSIZE)*zoom, (float)(SKILLICONSIZE)*zoom, false);

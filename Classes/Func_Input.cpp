@@ -125,6 +125,9 @@ void TitleKey(void)
 
 			AddBar(&bar[BAR_GOLD], 10000000, BARFRAME);
 			GetItem(ITEM_GOLD, false, false, false, 10000000, false);
+			//상점 결제/소비 UI 테스트용 유료 재화.
+			robin.coin = 10000000;
+			InitBar(BAR_STAR);
 			AddBar(&bar[BAR_HEART], 9999, BARFRAME);
 			GetItem(ITEM_HEART, false, false, false, 9999, false);
 			AddBar(&bar[BAR_HAMMER], 9999, BARFRAME);
@@ -1902,11 +1905,48 @@ void PlayKey(int obj)
 		// 그쪽이 대기 장부를 들고 있어서, 여기서 앱이 죽어도 이어진다.
 		//----------------------------------------------------------------
 		if (systemKey >= AVK_SHOP_IAP && systemKey <= AVK_SHOP_IAP_END) {
-			if (IapBuy(systemKey - AVK_SHOP_IAP))
-				PlayMusic(M_SELECT);
-			else
-				PlayMusic(M_ERROR);
+			int product = systemKey - AVK_SHOP_IAP;
+			SetPopUp(POPUPTYPE_IAP_CONFIRM, DX / 2, POPUPPOSITION_Y,
+				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, product, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
 		}
+		else if (systemKey == AVK_SHOP_IAP_CONFIRM) {
+			POPUP* confirm = (popUpCnt > 0 && popUp[popUpCnt - 1].type == POPUPTYPE_IAP_CONFIRM)
+				? &popUp[popUpCnt - 1] : NULL;
+			if (confirm && confirm->itemType == ITEM_BOX) {
+				int boxDetail = confirm->itemDetail;
+				long long boxPrice = GetBoxPrice(boxDetail, GRADE_NORMAL);
+				if (boxPrice < 0 || robin.gold < boxPrice) {
+					PlayMusic(M_ERROR);
+				}
+				else {
+					GetItem(ITEM_GOLD, false, false, false, -boxPrice, false);
+					memset(&rewardItem, 0, sizeof(rewardItem));
+					memset(&rewardMark, 0, sizeof(rewardMark));
+					rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
+					rewardMark[0].detail = boxDetail;
+					rewardMark[0].grade = GRADE_NORMAL;
+					rewardItemCnt = 1;
+					boxCnt = 0;
+					SaveGame();
+					ClosePopUp();
+					GotoGacha();
+				}
+			}
+			else {
+				int product = confirm ? confirm->itemDetail : -1;
+				if (IapBuy(product)) {
+					ClosePopUp();
+					PlayMusic(M_SELECT);
+				}
+				else
+					PlayMusic(M_ERROR);
+			}
+		}
+		else if (systemKey == AVK_SHOP_IAP_CANCEL)
+			ClosePopUp();
 
 		switch (systemKey) {
 		case AVK_SHOP_BUYBOX1:
@@ -1916,42 +1956,12 @@ void PlayKey(int obj)
 		case AVK_SHOP_BUYBOX5:
 		case AVK_SHOP_BUYBOX6:
 		{
-			//----------------------------------------------------
-			// 상자 구매
-			//
-			// 살 수 있는지 여기서 다시 본다. 지금까지는 그리는 쪽에서만
-			// 봤는데(Func_Menu.cpp 의 SetRectPoint), 그 사이에 골드가 줄면
-			// 눌린 버튼이 그대로 처리된다. 값을 내는 자리에서 값을 확인해야
-			// 한다.
-			//
-			// 그리고 골드를 GetItem() 으로 뺀다. robin.gold 를 직접 만지면
-			// 음수 방어(Func_Item.cpp 의 ITEM_GOLD 처리)를 건너뛴다.
-			//
-			// 마지막으로 저장한다. 예전에는 여기서 골드만 빠지고 저장이
-			// 없었다. 상자를 여는 화면으로 넘어간 뒤 어딘가에서 저장이
-			// 돌면 골드는 나갔는데 상자는 못 받은 상태로 남는다.
-			//----------------------------------------------------
 			int boxDetail = BOX_PAID0 + systemKey - AVK_SHOP_BUYBOX1;
-			long long boxPrice = GetBoxPrice(boxDetail, GRADE_NORMAL);
-
-			if (boxPrice < 0 || robin.gold < boxPrice) {
-				PlayMusic(M_ERROR);
-				break;
-			}
-
-			GetItem(ITEM_GOLD, false, false, false, -boxPrice, false);
-
-			memset(&rewardItem, 0, sizeof(rewardItem));
-			memset(&rewardMark, 0, sizeof(rewardMark));
-			rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
-			rewardMark[0].detail = boxDetail;
-			rewardMark[0].grade = GRADE_NORMAL;
-			rewardItemCnt = 1;
-			boxCnt = 0;
-
-			SaveGame();
-
-			GotoGacha();
+			SetPopUp(POPUPTYPE_IAP_CONFIRM, DX / 2, POPUPPOSITION_Y,
+				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, ITEM_BOX, boxDetail, GRADE_NORMAL,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
 		}
 			break;
 		case AVK_HOTKEYPRESS1:
@@ -2281,7 +2291,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 			break;
 		}
 
-		pObj->attack = skillData[SKILLDATASIZE * pObj->hotKey[idx].idx + SKILLDATASIZE - 3];
+		pObj->attack = skillData[SKILLDATASIZE * pObj->hotKey[idx].idx + SKILLDATA_RESERVED8];
 		pObj->attackFrame = skillStartFrame[pObj->attack];
 
 		HitCountCheck(pObj);
@@ -3294,6 +3304,10 @@ void touchFunc(int func)
 		//현금 상품. 자리가 상품 수만큼이라 범위로 받는다.
 		if (func >= TOUCH_FUNC_SHOP_IAP && func <= TOUCH_FUNC_SHOP_IAP_END)
 			systemKey = AVK_SHOP_IAP + (func - TOUCH_FUNC_SHOP_IAP);
+		else if (func == TOUCH_FUNC_SHOP_IAP_CONFIRM)
+			systemKey = AVK_SHOP_IAP_CONFIRM;
+		else if (func == TOUCH_FUNC_SHOP_IAP_CANCEL)
+			systemKey = AVK_SHOP_IAP_CANCEL;
 
 		switch (func) {
 		case TOUCH_FUNC_SHOP_BUYBOX1:

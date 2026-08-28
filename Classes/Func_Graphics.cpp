@@ -5680,7 +5680,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 		EnemyProfileDraw(x + w / 2 - (float)(36 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 38 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, crewData[detail * CREWDATASIZE + 0], false, false, zoom);
 		break;
 	case ITEM_SKILL:
-		DrawSkillIcon(skillData[detail * SKILLDATASIZE + 5], x + w / 2 - (float)(32 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 36 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, 2 * zoom);
+		DrawSkillIcon(skillData[detail * SKILLDATASIZE + SKILLDATA_RESERVED2], x + w / 2 - (float)(32 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 36 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, 2 * zoom);
 		break;
 	}
 
@@ -5780,7 +5780,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			case ITEM_STATUE_DRAGON:
 				for (i = 0; i < 6; i++) {
 					if (skillInitData[i * 3 + 2] == detail) {
-						realValue = skillData[skillInitData[i * 3 + 0] * SKILLDATASIZE + 6];
+						realValue = skillData[skillInitData[i * 3 + 0] * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
 
 					}
 				}
@@ -5821,7 +5821,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			}
 			break;
 		case ITEM_SKILL:
-			DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 2 * _2X) * zoom, skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], skillData[detail * SKILLDATASIZE + SKILLDATASIZE - 1], CENTER, true, zoom * 0.45f);
+			DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 2 * _2X) * zoom, skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], CENTER, true, zoom * 0.45f);
 
 			DrawXNumGold(10, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 34 * _2X / 2) * zoom, false, 0.35f * zoom, CENTER, false);
 			break;

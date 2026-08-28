@@ -343,6 +343,37 @@ typedef enum _skillDef {
 
 	//액티브스킬인지, 패시브스킬인지, 몬스터를 소환하는건지, 히어로 스킬을 사용하는건지.
 	//실제값 ACTIVE / PASSIVE / CREWBULLET / CREWSUMMON / HEROSKILL
+//[예약이라 적혀 있지만 예약이 아닌 칸들]
+//
+//이름이 RESERVED 라 안 쓰는 칸처럼 보이지만, 셋은 실제로 읽고 있다.
+//코드가 이름 대신 숫자로 칸을 짚고 있어서 안 보였을 뿐이다
+//(skillData[i * SKILLDATASIZE + SKILLDATASIZE - 3] 같은 식이었다).
+//그 자리들은 이름으로 바꿔 두었다.
+//
+//  RESERVED1  소환체가 설 x 좌표. SUMMONHERO 가 쓴다
+//             (Func_Roulette.cpp, Func_Movement.cpp)
+//  RESERVED2  히어로 줄의 아이콘 (Func_Graphics.cpp)
+//  RESERVED8  그 스킬이 어떤 공격으로 나가는가. ROBIN_SKILL_AIRCRASH
+//             같은 공격 타입 값이다 (Func_Combat.cpp, Func_Input.cpp)
+//
+//RESERVED3~7 만 정말로 읽는 곳이 없다. 그런데 값은 들어 있다.
+//303 행을 훑어보면 이렇게 갈린다.
+//
+//  히어로 90 행 : 5 개가 계속 커지는 수다. 0~95 안에 있고
+//                 5|15|30|50|80, 15|30|45|60|80 같은 식이다.
+//                 5 단짜리 곡선을 만들려던 자리로 보인다.
+//  동료 213 행 : 164 행이 30|40|55|70|85|MAXX_SKILL_SPLIT 로 똑같다.
+//                 마지막 칸이 맥스의 마지막 스킬인 것으로 보아,
+//                 SKILL_MAXX17 줄을 그대로 복사해 쓴 흔적이다.
+//                 즉 동료 쪽 값에는 뜻이 없다.
+//
+//표를 쪼갤 때 히어로 쪽 5 단 수는 살려 두고 동료 쪽은 버리면 된다.
+//
+//[칸을 숫자로 짚지 말 것]
+//이 배열은 폭이 29 다. 칸을 숫자로 짚으면 폭이나 순서가 바뀔 때
+//컴파일은 그냥 되고 읽는 값만 조용히 어긋난다. 반드시 아래 이름을
+//쓴다. 폭(SKILLDATASIZE)은 DATAPACK_ABI_LIST 에 들어 있어서, 바뀌면
+//옛 팩은 거부되고 내장본이 쓰인다(Data/DataPack.h).
 	SKILLDATA_ACTIVEPASSIVE = 0,//0
 
 	//타겟

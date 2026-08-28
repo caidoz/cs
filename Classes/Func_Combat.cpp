@@ -997,7 +997,7 @@ static int GetMotionAttackRange(const OBJECT* pObj)
 	}
 
 	if (pObj->currentSkill >= 0 && pObj->currentSkill < gTotalSkill)
-		attack = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATASIZE - 3];
+		attack = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED8];
 	if (attack <= 0 || attack >= attackCount)
 		attack = ATTACK_NORMAL;
 

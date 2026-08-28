@@ -15460,7 +15460,7 @@ bool IsHitPossible(OBJECT* pObj, OBJECT* mObj)
 	switch (pObj->attack) {
 
 	}
-	if (ao[turn].hitCount < skillData[mObj->currentSkill * SKILLDATASIZE + 1])
+	if (ao[turn].hitCount < skillData[mObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET])
 		return true;
 
 	return false;
