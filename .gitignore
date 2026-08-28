@@ -48,3 +48,4 @@ __pycache__/
 
 # 엑셀이 열어두는 동안 만드는 잠금 파일
 content/~$*.xlsx
+backup/

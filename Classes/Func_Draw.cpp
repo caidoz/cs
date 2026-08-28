@@ -2123,6 +2123,12 @@ void DrawPopUp(int idx)
 	case POPUPTYPE_SHOPINFO:
 		ShopDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
+	case POPUPTYPE_IAP_CONFIRM:
+		IapConfirmDraw(p->itemType, p->itemDetail, p->x, p->y, p->zoom);
+		break;
+	case POPUPTYPE_GACHA_RATES:
+		GachaRatesDraw(p->itemDetail);
+		break;
 	case POPUPTYPE_CASTLEMENU:
 		CastleMenuDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, DY - GNBHEIGHT, p->zoom);
 		break;
@@ -2227,7 +2233,9 @@ void DrawPopUp(int idx)
 		&& p->type != POPUPTYPE_OPTION
 		&& p->type != POPUPTYPE_OPTION_LANGUAGE
 		&& p->type != POPUPTYPE_OPTION_PUSHALARM
-		&& p->type != POPUPTYPE_OPTION_HELP)) {
+		&& p->type != POPUPTYPE_OPTION_HELP
+		&& p->type != POPUPTYPE_IAP_CONFIRM
+		&& p->type != POPUPTYPE_GACHA_RATES)) {
 		float xMarkZoom = 1.0f;
 		DrawXMark((float)(18) * p->zoom, DY - GNBHEIGHT - (float)(22) * p->zoom, xMarkZoom* p->zoom);
 

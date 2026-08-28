@@ -314,6 +314,8 @@ const int castleRewardBoxRate[CAP_CASTLE][REWARD_BOX_COUNT] =
 };
 
 int GetRewardBoxIndex(int boxDetail);
+int GetBoxCandidateCountByStar(int itemType, int star);
+int GetBoxCandidateDetailByStar(int itemType, int star, int candidateIndex);
 int BoxRandomRange(int minValue, int maxValue);
 int RollBoxGrade(
 	const int gradeRate[BOX_GRADE_COUNT],

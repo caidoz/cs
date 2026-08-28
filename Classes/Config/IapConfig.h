@@ -21,7 +21,7 @@
 //★ 출시 전에 확인할 것: 서버의 영수증 검증(server/go/purchase.go 의
 //   Verifier)이 아직 다 통과시키는 상태다. 그걸 붙이기 전에 이 값을 1 로
 //   두면 아무나 아무 상품이나 받아간다.
-#define IAP_ENABLED 0
+#define IAP_ENABLED 1
 
 //시험용 가짜 스토어.
 //

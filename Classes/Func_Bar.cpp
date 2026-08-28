@@ -39,11 +39,12 @@ void BarDraw(BAR* barP, float zoom)
 	//누른 지점이 이 사각형 안일 때만 1이 아닌 값이 오므로, 크기가 다른
 	//골드바나 하트바는 저절로 걸러진다. 눌린 뒤에 터치영역이 같이 줄어드는
 	//것은 상관없다 - 취소 판정은 누를 때 잡아둔 사각형으로 하기 때문이다.
-	zoom *= GetButtonPressScale(
-		xOffset + barP->x - (float)MAINMENU_X / 2 * zoom,
-		barP->y + (float)MAINMENU_Y / 2 * zoom,
-		(float)MAINMENU_X * zoom,
-		(float)MAINMENU_Y * zoom);
+	if (barP->drawFunc != BAR_GOLD && barP->drawFunc != BAR_STAR)
+		zoom *= GetButtonPressScale(
+			xOffset + barP->x - (float)MAINMENU_X / 2 * zoom,
+			barP->y + (float)MAINMENU_Y / 2 * zoom,
+			(float)MAINMENU_X * zoom,
+			(float)MAINMENU_Y * zoom);
 
 	long long count = barP->count;
 	int max;//퀘스트에서 맥스값 숫자 적어줄 때 쓰는 변수
@@ -68,7 +69,10 @@ void BarDraw(BAR* barP, float zoom)
 		if (count < 0)
 			count = 0;
 
-		GoldBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom);
+		GoldBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, true);
+		SetRectPoint(xOffset + barP->x + (float)(GOLDBARWIDTH - 48) * zoom,
+			barP->y - 10.0f * zoom, 40.0f * zoom, 40.0f * zoom,
+			TOUCH_FUNC_GOTO_GOLD_IAP);
 
 		if (barP->addView)
 			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true);
@@ -81,16 +85,12 @@ void BarDraw(BAR* barP, float zoom)
 			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(CROWNBARWIDTH - 4 * _2X) * zoom, barP->y - (float)CROWNBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true);
 
 		break;
-	case BAR_HAMMER:
 	case BAR_SHIELD:
-
+		//PVP 방패 바는 상단 UI에서 제거했다. 수치는 전투 로직에만 남긴다.
+		break;
+	case BAR_HAMMER:
 		DrawIcon(barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x + (HAMMERBARWIDTH - ITEMICONSIZE * 1.5f) / 2 * zoom, barP->y - 2 * _2X, 1.5f * zoom, COLOR_WHITE, false, false, 2);
-		if (barP->drawFunc == BAR_SHIELD) {
-			DrawSlashNum(barP->count, GetMaxShield(), xOffset + barP->x + (float)(HAMMERBARWIDTH / 2 + 2 * _2X) * zoom, barP->y - (float)(7 * _2X + ITEMICONSIZE * 1.5f) * zoom, (float)ITEMICONSIZE * 3, zoom * 0.8f);
-		}
-		else {
-			DrawBigNumTTF(count, xOffset + barP->x + (float)(ITEMICONSIZE * 1.5f / 2) * zoom + (HAMMERBARWIDTH - ITEMICONSIZE * 1.5f) / 2 * zoom, barP->y - (float)(2 * _2X + ITEMICONSIZE * 1.5f) * zoom, NUM_FONT_NORMAL, CENTER, false, false, (float)HAMMERBARWIDTH * zoom, false, 0.7f * zoom, true);
-		}
+		DrawBigNumTTF(count, xOffset + barP->x + (float)(ITEMICONSIZE * 1.5f / 2) * zoom + (HAMMERBARWIDTH - ITEMICONSIZE * 1.5f) / 2 * zoom, barP->y - (float)(2 * _2X + ITEMICONSIZE * 1.5f) * zoom, NUM_FONT_NORMAL, CENTER, false, false, (float)HAMMERBARWIDTH * zoom, false, 0.7f * zoom, true);
 		break;
 	case BAR_BOX:
 
@@ -381,7 +381,10 @@ void BarDraw(BAR* barP, float zoom)
 		if (count < 0)
 			count = 0;
 
-		StarBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom);
+		StarBarDraw(count, barP->icon + (barP->iconFrame > 0 ? barP->aniFrame % barP->iconFrame : 0), xOffset + barP->x, barP->y, false, zoom, true);
+		SetRectPoint(xOffset + barP->x + (float)(GOLDBARWIDTH - 10 * _2X - 48) * zoom,
+			barP->y - 10.0f * zoom, 40.0f * zoom, 40.0f * zoom,
+			TOUCH_FUNC_GOTO_RAINBOW_IAP);
 
 		if (barP->addView)
 			DrawNum2AutoSpaceing(barP->addViewSum, xOffset + barP->x + (float)(GOLDBARWIDTH - 4 * _2X) * zoom, barP->y - (float)GOLDBARHEIGHT * zoom - (float)(1 * _2X) * zoom, RIGHT, false, barP->addViewSum >= 0 ? PLUS : MINUS, GOLDBARWIDTH, true, 0.3f * zoom, false, true);
@@ -658,15 +661,31 @@ void DevilHeartDraw(int x, int y, float zoom)
 
 }
 
-void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom)
+void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom, bool shopPlus)
 {
 	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom);
 	DrawIcon(icon, x + (float)(6 * _2X) * zoom, y - (float)(6 * _2X) * zoom, 1.2f * zoom, COLOR_BROWN, false, false, 1);
 #ifdef NUMTTF
-	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - 0 * _2X) * zoom, true, zoom, true);
+	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - (shopPlus ? 72 : 10 * _2X)) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - (shopPlus ? 90 : 0 * _2X)) * zoom, true, zoom, true);
 #else
-	DrawNum2AutoSpaceing(count, x + (float)(GOLDBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true);
+	DrawBigNum2Bold(count, x + (float)(GOLDBARWIDTH - 26 * _2X) * zoom,
+		y - (float)(12 * _2X) * zoom, RIGHT, false, false,
+		(float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 32 * _2X) * zoom,
+		true, NUM2ZOOM * 1.0f * zoom, true);
+	//DrawNum2AutoSpaceing(count, x + (float)(GOLDBARWIDTH - 24 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 32 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true);
 #endif
+	if (shopPlus) {
+		float plusX = x + (float)(GOLDBARWIDTH - 48) * zoom;
+		float plusY = y - 11.0f * zoom;
+		float press = GetButtonScale(TOUCH_FUNC_GOTO_GOLD_IAP,
+			plusX, plusY, 40.0f * zoom, 40.0f * zoom);
+		float size = 40.0f * zoom * press;
+		DrawImage(64, 64, 521, 640,
+			plusX + (40.0f * zoom - size) / 2,
+			plusY - (40.0f * zoom - size) / 2,
+			false, false, false, false, false, size / 64.0f,
+			sprite[UI_NEW_IMG], UI_NEW_IMG);
+	}
 }
 
 void BattleCoinBarDraw(long long count, int icon, int x, int y, int alpha, float zoom)

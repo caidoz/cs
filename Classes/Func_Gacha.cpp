@@ -331,6 +331,33 @@ static int GetBoxDetailCount(
 	return 0;
 }
 
+int GetBoxCandidateCountByStar(int itemType, int star)
+{
+	int count = 0;
+	int grade = star - 1;
+	int detailCount = GetBoxDetailCount(itemType);
+	for (int detail = 0; detail < detailCount; detail++) {
+		if (GetItemStar(itemType, detail, grade) == star
+			&& !IsBoxLockedItem(itemType, detail, grade))
+			count++;
+	}
+	return count;
+}
+
+int GetBoxCandidateDetailByStar(int itemType, int star, int candidateIndex)
+{
+	int grade = star - 1;
+	int detailCount = GetBoxDetailCount(itemType);
+	for (int detail = 0; detail < detailCount; detail++) {
+		if (GetItemStar(itemType, detail, grade) != star
+			|| IsBoxLockedItem(itemType, detail, grade))
+			continue;
+		if (candidateIndex-- == 0)
+			return detail;
+	}
+	return -1;
+}
+
 //상자에서 절대 안 나오는 장비인가.
 //
 //지금은 6 성 검 열한 자루(레오소드~왕의 검)가 여기 걸린다. 나중에

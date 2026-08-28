@@ -797,7 +797,7 @@ bool Core::init()
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
-	for (i = SHOP_BANNER_GOLD_IMG; i <= SHOP_CASH_ICON_IMG; i++) {
+	for (i = SHOP_BANNER_GOLD_IMG; i <= SHOP_PASS_ART_IMG; i++) {
 		LoadImg(i);
 		LoadTexture(i);
 	}
@@ -2472,7 +2472,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
 
 
 

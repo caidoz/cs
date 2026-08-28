@@ -1184,6 +1184,19 @@ void PlayKey(int obj)
 				false, false, false, false, false,
 				false, false, false, false, false);
 			break;
+		case AVK_GOTO_GOLD_IAP:
+		case AVK_GOTO_RAINBOW_IAP:
+			ShopJumpToIapSection(systemKey == AVK_GOTO_GOLD_IAP ? 0 : 2);
+			curMenuBack = curMenu;
+			curMenu = MENU_SHOP;
+			menuDepth = 0;
+			menuX = 0;
+			popUpFrame = 1;
+			SetPopUp(POPUPTYPE_SHOPINFO, DX / 2, POPUPPOSITION_Y,
+				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false, false, false, false,
+				false, false, false, false, false, false, false);
+			break;
 		case AVK_STARSHOP:
 			curMenuBack = curMenu;
 			curMenu = MENU_STARSHOP;
@@ -3222,6 +3235,12 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_GOTOSHOP:
 			systemKey = AVK_GOTOSHOP;
+			break;
+		case TOUCH_FUNC_GOTO_GOLD_IAP:
+			systemKey = AVK_GOTO_GOLD_IAP;
+			break;
+		case TOUCH_FUNC_GOTO_RAINBOW_IAP:
+			systemKey = AVK_GOTO_RAINBOW_IAP;
 			break;
 		case TOUCH_FUNC_DAILYQUEST:
 			systemKey = AVK_DAILYQUEST;

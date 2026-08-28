@@ -3396,6 +3396,8 @@ const char* const textId[] = {
 	"shop_card_box",
 	"shop_cash_coin",
 	"shop_cash_icon",
+	"shop_cash_piles",
+	"shop_pass_art",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

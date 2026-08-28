@@ -3071,7 +3071,7 @@ void RaidSequenceDraw(void)
 			bar[BAR_GOLD].active = true;
 			bar[BAR_CROWN].active = true;
 			bar[BAR_HAMMER].active = true;
-			bar[BAR_SHIELD].active = true;
+			bar[BAR_SHIELD].active = false;
 			bar[BAR_QUEST].active = true;
 
 			bar[BAR_COIN].y = STATUSWIN_Y + DRAWROULETTENUMGAP_SUB;

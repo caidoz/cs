@@ -2233,41 +2233,63 @@ void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoo
 
 }
 
-void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom)
+void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, bool rainbowShop)
 {
-	const float wide = (float)(COMBATPOWBARWIDTH + SHIELDBARWIDTH);
-	const float rawWide = wide * 2.0f;
-	float frameZoomX = rawWide / 272.0f * 0.5f * zoom;
-	float fillZoomX = (rawWide - 33.0f) / 239.0f * 0.5f * zoom;
-	int barAlpha = alpha == false ? false : alpha;
+	if (!rainbowShop) {
+		DrawRoundBar(x, y, 1.0f, ROUNDBAR_SMALL, BARCOLOR_PURPLE,
+			alpha, 0.5f * zoom);
+		DrawIcon(icon, x + (float)(5 * _2X) * zoom,
+			y - (float)(5 * _2X) * zoom, 1.4f * zoom,
+			COLOR_BROWN, false, false, 1);
+		DrawBigNumTTF(pow, x + (float)(COMBATPOWBARWIDTH - 10 * _2X) * zoom,
+			y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
+			false, false,
+			(float)(COMBATPOWBARWIDTH - ITEMICONSIZE - 8 * _2X * 2) * zoom,
+			true, zoom, true);
+		return;
+	}
+	const float wide = (float)(GOLDBARWIDTH - 10 * _2X);
 
-	//하나의 작은 바 이미지를 X축으로만 늘려 방패 자리까지 채운다.
-	DrawImageScale(272, 129, 747, 1, x, y,
-		false, false, false, false, barAlpha,
-		frameZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	DrawImageScale(239, 94, 763, 132 + 95 * BARCOLOR_PURPLE,
-		x + (float)(8 * _2X) * zoom, y - (float)(8 * _2X) * zoom,
-		false, false, false, false, barAlpha,
-		fillZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	//기존 큰 바 원본의 좌표를 그대로 쓰고 X축만 줄인다. 채움 inset도
+	//동일 비율이라 프레임과 보라색 판이 어긋나지 않는다.
+	float zx = wide / 444.0f * zoom;
+	float zy = 0.5f * zoom;
+	DrawImageScale(444, 129, 302, 1, x, y,
+		false, false, false, false, alpha == false ? false : alpha,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImageScale(411, 94, 318, 132 + 95 * BARCOLOR_PURPLE,
+		x + 16.0f * zx, y - 16.0f * zy,
+		false, false, false, false, alpha == false ? false : alpha,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 	//i7.png의 빈 하단 영역에 넣은 64x64 레인보우 코인 10프레임.
-	int coinFrame = (frame / (MOTIONDIV * 2)) % 10;
+	int coinFrame = 0; //상단에서는 정면 이미지로 고정한다.
 	DrawImage(64, 64, (coinFrame % 4) * 65, 198 + (coinFrame / 4) * 65,
 		x + (float)(5 * _2X) * zoom, y - (float)(3 * _2X) * zoom,
-		false, false, false, false, false, 0.7f * zoom,
+		false, false, false, false, false, 0.78f * zoom,
 		sprite[ITEM_IMG + 7], ITEM_IMG + 7);
 #ifdef NUMTTF
-	DrawBigNumTTF(pow, x + (wide - 10 * _2X) * zoom,
+	DrawBigNumTTF(pow, x + (wide - 72) * zoom,
 		y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
-		false, false, (wide - ITEMICONSIZE - 8 * _2X * 2) * zoom,
+		false, false, (wide - ITEMICONSIZE - 90) * zoom,
 		true, zoom, true);
 #else
-	DrawBigNum2Bold(pow, x + (wide - 7 * _2X) * zoom,
-		y - (float)(10 * _2X) * zoom, RIGHT, false, false,
-		(wide - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom,
-		true, NUM2ZOOM * 1.2f * zoom, true);
+	DrawBigNum2Bold(pow, x + (wide - 26 * _2X) * zoom,
+		y - (float)(12 * _2X) * zoom, RIGHT, false, false,
+		(wide - ITEMICONSIZE * 1.2f - 36 * _2X) * zoom,
+		true, NUM2ZOOM * 1.0f * zoom, true);
 
 #endif
+	float plusX = x + (wide - 48.0f) * zoom;
+	float plusY = y - 11.0f * zoom;
+	float press = GetButtonScale(TOUCH_FUNC_GOTO_RAINBOW_IAP,
+		plusX, plusY, 40.0f * zoom, 40.0f * zoom);
+	float size = 40.0f * zoom * press;
+	DrawImage(64, 64, 521, 640,
+		plusX + (40.0f * zoom - size) / 2,
+		plusY - (40.0f * zoom - size) / 2,
+		false, false, false, false, false, size / 64.0f,
+		sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 }
 
@@ -6656,6 +6678,23 @@ static void ShopIapDrawTabbed(float x, float y, float w, float h, float zoom)
 }
 #endif
 
+static int sShopIapJumpSection = -1;
+static int sShopIapScrollTarget = -1;
+static int sShopIapScrollDelay = 0;
+static float sShopIapAnimatedY = 0.0f;
+
+void ShopJumpToIapSection(int section)
+{
+	sShopIapJumpSection = Max(0, Min(4, section));
+	sShopIapScrollTarget = -1;
+	sShopIapScrollDelay = 8;
+	sShopIapAnimatedY = 0.0f;
+	autoScroll = 0;
+	scAccelY = 0;
+	scRecoveryFrameY = 0;
+	scY[MENU_SHOP] = 0;
+}
+
 //상점 전체 상품을 한 목록으로 이어서 그린다.
 static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 {
@@ -6671,6 +6710,34 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 	//클래시로얄식 세로 카드 비율. 기존 92px 카드의 정확히 3배다.
 	float ch = 276.0f * zoom;
 	float rowStep = ch + 8.0f * zoom;
+	if (sShopIapScrollTarget >= 0) {
+		//상점 전용 위치를 기준으로 움직인다. Core가 관성/복귀 과정에서
+		//scY를 바꿔도 다음 그리기에서 이 값으로 다시 덮어쓴다.
+		autoScroll = 0;
+		scAccelY = 0;
+		scRecoveryFrameY = 0;
+		if (sShopIapScrollDelay > 0)
+			sShopIapScrollDelay--;
+		else {
+			// scT는 이 함수의 맨 끝에서 전체 상품을 모두 배치한 뒤 확정된다.
+			// 여기서 이전 프레임의 scT로 목표를 자르면 팝업이 열리는 동안
+			// 기록된 작은 값에서 자동 스크롤이 곧바로 종료된다.
+			float target = (float)sShopIapScrollTarget;
+			float remain = target - sShopIapAnimatedY;
+			if (remain <= 2.0f) {
+				sShopIapAnimatedY = target;
+				sShopIapScrollTarget = -1;
+			}
+			else
+				sShopIapAnimatedY += Max(8.0f, remain / 6.0f);
+		}
+		scY[MENU_SHOP] = (int)sShopIapAnimatedY;
+		cy = viewTop + (float)scY[MENU_SHOP];
+	}
+	else if (sShopIapJumpSection >= 0) {
+		scY[MENU_SHOP] = 0;
+		cy = viewTop;
+	}
 
 	//제목 아래 영역만 스크롤한다. SetRectPoint도 이 clip을 따르므로 화면
 	//밖으로 나간 구매 버튼은 눌리지 않는다.
@@ -6768,6 +6835,16 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 	for (int section = 0; section < (int)(sizeof(sections) / sizeof(sections[0])); section++) {
 		const ShopSection& data = sections[section];
 		int rows = (data.count + COL - 1) / COL;
+		//팝업은 처음 7프레임 동안 작은 크기에서 1.0까지 확대된다.
+		//그 도중의 zoom으로 누적 높이를 구하면 목표가 실제 거리의 일부만
+		//계산되어 몇 픽셀 움직이고 끝난다. 최종 크기가 된 뒤 계산한다.
+		if (sShopIapJumpSection == section && zoom >= 0.999f) {
+			//공식으로 높이를 추정하지 않고 실제로 그려진 리본의 누적 위치를
+			//목표로 쓴다. 상품 높이가 바뀌어도 정확한 구역까지 이동한다.
+			sShopIapScrollTarget = Max(0,
+				(int)(viewTop + (float)scY[MENU_SHOP] - cy));
+			sShopIapJumpSection = -1;
+		}
 
 		ShopRibbon(data.title, x + w / 2, cy, 280.0f * zoom, zoom);
 		cy -= 48.0f * zoom;
@@ -6807,8 +6884,11 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 	int maxScroll = Max(0, (int)((viewTop + (float)scY[MENU_SHOP] - cy)
 		- (viewTop - bottom)));
 	scT[MENU_SHOP] = maxScroll;
-	if (scY[MENU_SHOP] > maxScroll)
+	if (scY[MENU_SHOP] > maxScroll) {
 		scY[MENU_SHOP] = maxScroll;
+		if (sShopIapScrollTarget >= 0)
+			sShopIapAnimatedY = (float)maxScroll;
+	}
 	if (scY[MENU_SHOP] < 0)
 		scY[MENU_SHOP] = 0;
 

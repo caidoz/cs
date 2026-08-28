@@ -95,8 +95,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 		glview = GLViewImpl::createWithRect("인삼남:인생이 삼일 남았다!", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
-		//glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
-		glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 
