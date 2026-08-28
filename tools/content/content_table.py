@@ -97,6 +97,55 @@ SPECS = {
         'rules': [],
     },
 
+    # 장비. 아래 넷은 열거가 없다 - 배열을 그대로 편 표다.
+    # 한 표에 길이가 같은 배열만 모을 수 있어서(그래야 한 행이 한 뜻이다)
+    # 길이별로 나뉘어 있다. itemStar 는 559, itemValue 는 171 인 식이다.
+
+    # 아이템의 별. 색인은 itemStartCnt[type] + detail 이다.
+    'item_star': {
+        'total': 'itemStar_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [('itemStar', 'ItemData.h', 1, 0, ['star'])],
+        'rules': [],
+    },
+
+    # 티어별 기본 위력. GetItemPow 가 이 표를 본다.
+    'item_pow': {
+        'total': 'itemPow_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [('itemPow', 'ItemData.h', 1, 0, ['pow'])],
+        'rules': [],
+    },
+
+    # 장비 한 점의 기본값. 18 개 장비 부위(검~부츠)까지만 있다.
+    'equip_value': {
+        'total': 'itemValue_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [('itemValue', 'ItemData.h', 1, 0, ['value'])],
+        'rules': [],
+    },
+
+    # 검 전용. 셋 다 길이가 같아 한 표에 든다.
+    # 색인은 detail * TOTALGRADE + grade 다.
+    'sword': {
+        'total': 'swordHeart_COUNT',
+        'includes': ['Data/ItemData.h'],
+        'label_base': None,
+        'id_table': None,
+        'layout': [
+            ('swordMaxBet', 'ItemData.h', 1, 0, ['max_bet']),
+            ('swordHeart', 'ItemData.h', 1, 0, ['heart']),
+            ('swordGold', 'ItemData.h', 1, 0, ['gold']),
+        ],
+        'rules': [],
+    },
+
     # 스킬. 몬스터 한 마리가 3개씩 쓰므로 몬스터를 추가하면 여기도 늘어난다.
     'skill': {
         'total': 'TOTAL_SKILL',
@@ -346,7 +395,7 @@ def resolve(spec):
         if isinstance(base, str):
             want.add(base)
 
-    vals = dump_ids.ask_compiler(sorted(want))
+    vals = dump_ids.ask_compiler(sorted(want), spec.get('includes'))
 
     if vals is None:
         return None
@@ -429,6 +478,10 @@ def load_labels(spec, vals):
 
 
 def id_names(spec):
+    #열거가 없는 표도 있다. 배열을 그대로 펴 놓은 것들이 그렇다.
+    if not spec['id_table']:
+        return {}
+
     path = os.path.join(ROOT, 'content', 'ids', spec['id_table'] + '.tsv')
     out = {}
 

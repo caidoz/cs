@@ -74,8 +74,14 @@ enum { itemPrice_COUNT = 328 };
 extern const unsigned int* itemSellPrice;
 enum { itemSellPrice_COUNT = 301 };
 
+//선언이 559 였는데 ItemData.cpp 의 값은 565 개다. 뒤 여섯 개가 선언
+//밖이라 팩에는 안 실리고 내장본에만 있었다 - 팩을 쓰는 실기와 안 쓰는
+//경우가 다른 값을 읽을 수 있는 상태였다. 실제에 맞춘다.
+//
+//주석을 extern 과 enum 사이에 두면 안 된다. make_pack.py 가 그 둘을
+//짝으로 읽어서, 사이가 갈리면 배열이 통째로 팩에서 빠진다.
 extern const unsigned short* itemStar;
-enum { itemStar_COUNT = 559 };
+enum { itemStar_COUNT = 565 };
 
 extern const unsigned short* itemStartCnt;
 enum { itemStartCnt_COUNT = 41 };

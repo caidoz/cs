@@ -149,7 +149,7 @@ def find_vs():
     return None
 
 
-def ask_compiler(names):
+def ask_compiler(names, includes=None):
     """이름 목록의 실제 값을 컴파일러에게 물어본다. {이름: 값} 을 돌려준다."""
     vcvars = find_vs()
 
@@ -161,7 +161,15 @@ def ask_compiler(names):
     src = os.path.join(work, 'probe.cpp')
 
     with open(src, 'w', encoding='utf-8') as fp:
-        fp.write('#include "Def.h"\n#include <stdio.h>\n')
+        fp.write(chr(35) + 'include "Def.h"' + chr(10))
+
+        #배열 길이 상수(itemPow_COUNT 같은 것)는 Data/ 의 헤더에 있다.
+        #Data.h 를 통째로 끌면 UIData.h 의 std::string 때문에 cocos2d.h 가
+        #필요해지므로, 묻는 쪽이 필요한 헤더만 지목한다.
+        for h in (includes or []):
+            fp.write(chr(35) + 'include "%s"' % h + chr(10))
+
+        fp.write(chr(35) + 'include <stdio.h>' + chr(10))
         fp.write('int main() {\n')
 
         for n in names:

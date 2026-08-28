@@ -255,7 +255,7 @@
 	X(swordGold, 8, DPK_INT, 40, DPK_KEY_NONE, 0, 0) \
 	X(itemPrice, 8, DPK_UINT, 328, DPK_KEY_NONE, 0, 0) \
 	X(itemSellPrice, 4, DPK_UINT, 301, DPK_KEY_NONE, 0, 0) \
-	X(itemStar, 2, DPK_UINT, 559, DPK_KEY_NONE, 0, 0) \
+	X(itemStar, 2, DPK_UINT, 565, DPK_KEY_NONE, 0, 0) \
 	X(itemStartCnt, 2, DPK_UINT, 41, DPK_KEY_NONE, 0, 0) \
 	X(boxEquipType, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
 	X(materialDropData, 1, DPK_UINT, 270, DPK_KEY_NONE, 0, 0) \
@@ -395,7 +395,7 @@
 	X(attackDelayPerType, 4, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
 	X(currencyShop, 4, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \
 	X(quickShopData, 1, DPK_UINT, 162, DPK_KEY_NONE, 0, 0) \
-	X(skillData, 4, DPK_INT, 8787, DPK_KEY_SKILL, 29, 0) \
+	X(skillData, 4, DPK_INT, 6666, DPK_KEY_SKILL, 29, 0) \
 	X(barrierEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(berserkEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(skillToStat, 1, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \

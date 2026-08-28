@@ -56,6 +56,11 @@ BOOKS = {
         'tables': ['enemy', 'crew', 'skill'],
         'note': '적이 얼마나 센가. 동료가 무엇을 하는가.',
     },
+    'hero': {
+        'title': '장비',
+        'tables': ['item_pow', 'item_star', 'equip_value', 'sword'],
+        'note': '로빈이 얼마나 세지는가. 시트마다 한 행의 뜻이 다르다 - item_pow 는 티어 하나, item_star 는 아이템 하나, equip_value 는 장비 한 점, sword 는 검 x 등급 한 칸이다.',
+    },
 }
 
 #열 설명. 없는 열은 이름만 나온다.
@@ -87,6 +92,10 @@ DESC = {
         'skill3': '슬롯에 3 개 떴을 때',
         'card_bg': '카드 뒷그림',
     },
+    'item_pow': {'pow': '그 티어의 기본 위력. GetItemPow 가 본다'},
+    'item_star': {'star': '별 x 100. 600 이면 6 성이다'},
+    'equip_value': {'value': '장비 한 점의 기본값. 강화 배율이 여기 곱해진다'},
+    'sword': {'max_bet': '최대 베팅', 'heart': '하트 소모', 'gold': '골드'},
     'enemy': {
         'cmf': '그림 묶음',
         'star': '등급',
