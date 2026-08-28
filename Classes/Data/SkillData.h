@@ -14,7 +14,7 @@
 //스킬이 몇성짜리인지 확인
 //스킬이 하트 몇개 이상 베팅해야 나오는지 확인
 extern const signed int* skillData;
-enum { skillData_COUNT = 6363 };
+enum { skillData_COUNT = 6666 };
 
 extern const unsigned short* barrierEtcData;
 enum { barrierEtcData_COUNT = 15 };

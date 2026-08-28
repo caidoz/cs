@@ -105,11 +105,12 @@ SPECS = {
         'layout': [
             # 칸 하나에 뜻 하나다. 전에는 29 칸이었는데 같은 칸이 kind 마다
             # 다른 것을 뜻했다(Def/SkillDef.h 참고). 안 쓰는 줄에서는 0 이다.
-            ('skillData', 'SkillData.h', 21, 0,
+            ('skillData', 'SkillData.h', 22, 0,
              ['kind', 'value', 'hit_max', 'cooldown', 'icon', 'icon_kind', 'star',
               'attack_type', 'host_obj', 'summon_enemy', 'hero_type',
               'hero_skill', 'summon_x', 'bullet_obj', 'bullet_icon']
-             + ['equip%d' % (i + 1) for i in range(6)]),
+             + ['equip%d' % (i + 1) for i in range(6)]
+             + ['dmg_pct']),
         ],
         'rules': [],
     },

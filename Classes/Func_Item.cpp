@@ -2130,6 +2130,21 @@ int SkillBulletObj(int skillIdx)
 	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_BULLETOBJ];
 }
 
+//이 스킬 한 대가 기본공격의 몇 % 인가. 100 이 기본공격 그대로다.
+//
+//값이 없으면(0) 100 으로 본다. 안 적어 둔 줄이 0 배가 되면 안 된다.
+int SkillDamagePct(int skillIdx)
+{
+	int v;
+
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 100;
+
+	v = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_DMGPCT];
+
+	return (v > 0) ? v : 100;
+}
+
 //이 스킬의 재사용 대기. 히어로 스킬만 뜻이 있다(FPS * 10 같은 값).
 int SkillCooldown(int skillIdx)
 {

@@ -59,6 +59,7 @@ int SkillStar(int skillIdx);
 int SkillIcon(int skillIdx);
 int SkillIconKind(int skillIdx);
 int SkillCooldown(int skillIdx);
+int SkillDamagePct(int skillIdx);
 
 long long GetCrewPower(int detail, int lv);
 

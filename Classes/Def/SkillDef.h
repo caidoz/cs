@@ -401,7 +401,15 @@ typedef enum _skillDef {
 	SKILLDATA_EQUIP5,			//19
 	SKILLDATA_EQUIP6,			//20
 
-	SKILLDATASIZE,				//21
+	//기본공격의 몇 %. 100 이 기본공격 그대로다.
+	//
+	//동료는 슬롯에 몇 개 떴는지로 skill1/2/3 이 갈린다(Func_Roulette).
+	//1 개면 skill1, 2 개면 skill2 다. 둘 다 한 발로 끝나고 세기만
+	//다르다 - 지금은 skill2 가 3 배다. 연타로 세게 하는 것이 아니라
+	//한 대가 세다.
+	SKILLDATA_DMGPCT,			//21
+
+	SKILLDATASIZE,				//22
 	SKILLINFODATASIZE = 2,
 
 	SKILL_COMMON_ROBIN1 = 0,	//힘단련 : STR 상승
