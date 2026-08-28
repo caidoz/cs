@@ -2002,7 +2002,7 @@ int SkillKind(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_KIND];
 }
 
 //한 번 발동에 몇 대까지 때리는가. ACTIVE 만 뜻이 있다.
@@ -2012,7 +2012,7 @@ int SkillHitMax(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_HITMAX];
 }
 
 //날아가는 총알의 그림 번호. CREWBULLET 만 뜻이 있다.
@@ -2021,7 +2021,7 @@ int SkillBulletIcon(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_BULLETICON];
 }
 
 //이 스킬이 어느 오브젝트 칸에서 벌어지는가.
@@ -2031,7 +2031,7 @@ int SkillHostObj(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_HOSTOBJ];
 }
 
 //불러내는 몬스터. SUMMON 과 CREWSUMMON 이 쓴다.
@@ -2046,7 +2046,7 @@ int SkillSummonEnemy(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return -1;
 
-	sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+	sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_SUMMONENEMY];
 
 	if (sub < 0 || sub >= gTotalEnemy)
 		return -1;
@@ -2063,10 +2063,7 @@ int SkillHeroSkill(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return -1;
 
-	if (SkillKind(skillIdx) == SUMMONHERO)
-		return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
-
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_HEROSKILL];
 }
 
 //소환체가 설 x 좌표. SUMMONHERO 만 뜻이 있다.
@@ -2075,7 +2072,7 @@ int SkillSummonX(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_SUMMONX];
 }
 
 //이 스킬이 어떤 공격으로 나가는가. ROBIN_SKILL_AIRCRASH 같은 값이다.
@@ -2084,7 +2081,7 @@ int SkillAttackType(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED8];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ATTACKTYPE];
 }
 
 //소환 히어로에게 입힐 장비. SUMMONHERO 가 여섯 부위를 들고 있다.
@@ -2096,7 +2093,7 @@ int SkillSummonEquip(int skillIdx, int slot)
 	if (slot < 0 || slot >= SKILL_SUMMON_EQUIP_CNT)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + slot];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_EQUIP1 + slot];
 }
 
 //이 스킬의 효능 수치.
@@ -2108,7 +2105,7 @@ int SkillValue(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE];
 }
 
 //불러낼 히어로가 누구인가. SUMMONHERO 만 뜻이 있다(MAXX 등).
@@ -2120,7 +2117,7 @@ int SkillSummonHeroType(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return -1;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_HEROTYPE];
 }
 
 //총알로 날아갈 오브젝트 종류. CREWBULLET 이 쓴다(ADDOBJ_SLING 등).
@@ -2130,7 +2127,25 @@ int SkillBulletObj(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_BULLETOBJ];
+}
+
+//이 스킬의 재사용 대기. 히어로 스킬만 뜻이 있다(FPS * 10 같은 값).
+int SkillCooldown(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_COOLDOWN];
+}
+
+//아이콘이 어느 그림판에서 오는가. ICONKIND_* 다.
+int SkillIconKind(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return ICONKIND_SKILL;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICONKIND];
 }
 
 //스킬 카드의 별.
@@ -2139,7 +2154,7 @@ int SkillStar(int skillIdx)
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 1;
 
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_GRADE];
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_STAR];
 }
 
 //스킬 아이콘.
@@ -2150,15 +2165,8 @@ int SkillStar(int skillIdx)
 //나중에 한 칸으로 합칠 자리다.
 int SkillIcon(int skillIdx)
 {
-	int v;
-
 	if (skillIdx < 0 || skillIdx >= gTotalSkill)
 		return 0;
-
-	v = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED2];
-
-	if (v > 0)
-		return v;
 
 	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON];
 }
@@ -3217,7 +3225,7 @@ void SetHotKey(OBJECT* pObj, int type, int idx, int where)
 
 	switch (type) {
 	case HOTKEY_SKILL:
-		pObj->hotKey[where].inven = RoundDiv(skillData[pObj->hotKey[where].idx * SKILLDATASIZE + SKILLDATA_OBJECTINFO] * (100 - pObj->ps[PS_DELAY]), 100);
+		pObj->hotKey[where].inven = RoundDiv(SkillCooldown(pObj->hotKey[where].idx) * (100 - pObj->ps[PS_DELAY]), 100);
 		if (pObj->hotKey[where].idx == SKILL_MAXX16) {
 			pObj->hotKey[where].inven -= GetSkillValue(GetObjFromPtr(pObj), SKILL_MAXX16);
 		}

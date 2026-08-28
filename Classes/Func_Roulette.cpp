@@ -1929,9 +1929,14 @@ void RouletteDraw(int x, int y, float zoom)
 					{
 						int summonX = SkillSummonX(skillIdx);
 
-						//기존 SUMMON 데이터는 x 칸이 예약값(4)으로 남아 있다.
-						//그 경우에만 실제 소환 로직이 쓰는 화면 중앙을 쓴다.
-						if (summonX == SKILLDATA_RESERVED1)
+						//SUMMON 줄은 x 를 안 적어 둔다. 0 이면 실제 소환 로직이
+						//쓰는 화면 중앙을 쓴다.
+						//
+						//전에는 이 자리가 summonX == SKILLDATA_RESERVED1 이었다. 표의
+						//빈 칸에 칸 이름을 적어 두던 버릇 탓에 값이 4 였고, 그래서
+						//"값이 4 면 안 정해진 것"이라는 비교가 우연히 맞았다. 표를
+						//고치면서 빈 칸은 전부 0 이 되었다.
+						if (summonX == 0)
 							summonX = DX / 2;
 
 						GetMarkHeadPosAt(summonX, (int)ao[ROBIN].y,

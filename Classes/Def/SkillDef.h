@@ -344,92 +344,64 @@ typedef enum _skillDef {
 	//액티브스킬인지, 패시브스킬인지, 몬스터를 소환하는건지, 히어로 스킬을 사용하는건지.
 	//실제값 ACTIVE / PASSIVE / CREWBULLET / CREWSUMMON / HEROSKILL
 //SUMMONHERO 가 소환 히어로에게 입히는 장비 부위 수.
-//LV1 부터 여섯 칸을 장비 detail 로 쓴다(SkillSummonEquip).
 #define SKILL_SUMMON_EQUIP_CNT	6
 
-//[예약이라 적혀 있지만 예약이 아닌 칸들]
+//아이콘이 어느 그림판에서 오는가.
 //
-//이름이 RESERVED 라 안 쓰는 칸처럼 보이지만, 셋은 실제로 읽고 있다.
-//코드가 이름 대신 숫자로 칸을 짚고 있어서 안 보였을 뿐이다
-//(skillData[i * SKILLDATASIZE + SKILLDATASIZE - 3] 같은 식이었다).
-//그 자리들은 이름으로 바꿔 두었다.
+//판마다 칸 크기와 줄당 개수가 달라서 번호 하나로는 못 가리킨다.
+//그래서 번호(icon)와 판(icon_kind)을 같이 둔다.
+	ICONKIND_SKILL = 0,	//스킬 아이콘판  DrawSkillIcon
+	ICONKIND_BULLET,		//총알 아이콘판  DrawCrewBulletIcon
+	ICONKIND_MONSTER,	//몬스터 그림     enemyBigIconPos
+
+//---- skillData 의 칸 ----
 //
-//  RESERVED1  소환체가 설 x 좌표. SUMMONHERO 가 쓴다
-//             (Func_Roulette.cpp, Func_Movement.cpp)
-//  RESERVED2  히어로 줄의 아이콘 (Func_Graphics.cpp)
-//  RESERVED8  그 스킬이 어떤 공격으로 나가는가. ROBIN_SKILL_AIRCRASH
-//             같은 공격 타입 값이다 (Func_Combat.cpp, Func_Input.cpp)
+//칸 하나에 뜻 하나다. 전에는 29 칸이었는데 같은 칸이 kind 마다 다른
+//것을 뜻했다 - target 하나가 연타수이기도 하고 총알 그림이기도 하고
+//오브젝트 번호이기도 했다. 그래서 표를 봐도 무엇인지 알 수 없었고,
+//실제로 두 곳이 SUMMON 의 몬스터를 엉뚱한 칸에서 읽고 있었다.
 //
-//RESERVED3~7 만 정말로 읽는 곳이 없다. 그런데 값은 들어 있다.
-//303 행을 훑어보면 이렇게 갈린다.
+//지금은 갈래를 다 펴서 칸을 나눴다. 안 쓰는 줄에서는 0 이다. 빈 칸이
+//늘어난 대신, 어느 줄이든 같은 칸이 같은 것을 뜻한다.
 //
-//  히어로 90 행 : 5 개가 계속 커지는 수다. 0~95 안에 있고
-//                 5|15|30|50|80, 15|30|45|60|80 같은 식이다.
-//                 5 단짜리 곡선을 만들려던 자리로 보인다.
-//  동료 213 행 : 164 행이 30|40|55|70|85|MAXX_SKILL_SPLIT 로 똑같다.
-//                 마지막 칸이 맥스의 마지막 스킬인 것으로 보아,
-//                 SKILL_MAXX17 줄을 그대로 복사해 쓴 흔적이다.
-//                 즉 동료 쪽 값에는 뜻이 없다.
+//없앤 것
+//    lv2~lv15   레벨별 값. 읽는 곳이 없었다. 동료의 세기는 이제
+//               crewData 의 str 이 말한다.
+//    r3~r7      5 단짜리 곡선을 만들려던 자리. 읽는 곳이 없었다.
+//    obj_detail 이것도 kind 마다 달랐다. 총알 오브젝트(CREWBULLET)와
+//               히어로 스킬(SUMMONHERO)만 읽히고 있어서 그 둘은
+//               bullet_obj 와 hero_skill 로 옮겼다. 나머지 kind 에
+//               들어 있던 것 - ACTIVE/PASSIVE 는 다른 스킬 이름,
+//               CREWSUMMON 은 TSIZE * 3 같은 거리, SUMMON 은 ENEMY -
+//               는 읽는 곳이 없어 버렸다.
 //
-//표를 쪼갤 때 히어로 쪽 5 단 수는 살려 두고 동료 쪽은 버리면 된다.
-//
-//[칸을 숫자로 짚지 말 것]
-//이 배열은 폭이 29 다. 칸을 숫자로 짚으면 폭이나 순서가 바뀔 때
-//컴파일은 그냥 되고 읽는 값만 조용히 어긋난다. 반드시 아래 이름을
-//쓴다. 폭(SKILLDATASIZE)은 DATAPACK_ABI_LIST 에 들어 있어서, 바뀌면
-//옛 팩은 거부되고 내장본이 쓰인다(Data/DataPack.h).
-	SKILLDATA_ACTIVEPASSIVE = 0,//0
+//폭(SKILLDATASIZE)은 DATAPACK_ABI_LIST 에 들어 있다. 바뀌면 옛 팩은
+//거부되고 내장본이 쓰인다(Data/DataPack.h).
+	SKILLDATA_KIND = 0,		//0  ACTIVE PASSIVE CREWBULLET ...
+	SKILLDATA_VALUE,			//1  효능 수치 (히어로 스킬)
+	SKILLDATA_HITMAX,			//2  한 번에 몇 대까지 (ACTIVE)
+	SKILLDATA_COOLDOWN,			//3  재사용 대기 (히어로 스킬)
+	SKILLDATA_ICON,				//4  아이콘 번호
+	SKILLDATA_ICONKIND,			//5  어느 그림판 (ICONKIND_*)
+	SKILLDATA_STAR,				//6  카드의 별
+	SKILLDATA_ATTACKTYPE,		//7  어떤 공격으로 나가는가
+	SKILLDATA_HOSTOBJ,			//8  어느 오브젝트 칸에서
+	SKILLDATA_SUMMONENEMY,		//9  불러낼 몬스터 (SUMMON)
+	SKILLDATA_HEROTYPE,			//10  불러낼 히어로 (SUMMONHERO)
+	SKILLDATA_HEROSKILL,		//11 발동시킬 히어로 스킬
+	SKILLDATA_SUMMONX,			//12 소환체가 설 x
+	SKILLDATA_BULLETOBJ,		//13 총알 오브젝트 (CREWBULLET)
+	SKILLDATA_BULLETICON,		//14 총알 그림 (CREWBULLET)
 
-	//타겟
-	//CREWBULLET 이면 타겟은 살아있는 적중에 중에 하나
-	//- ENEMY 면 제일 가까운것, ENEMY + 1이면 센터, ENEMY + 2 면 마지막
-	//SUMMON 이면
-	//- 어떤 오브젝트에 세팅하느냐.
-	//HEROSKILL 이면
-	// - 히어로 스킬 인덱스 SKILL_COMMON_ROBIN1~SKILL_ROBIN17
-	SKILLDATA_TARGET,//1
+	//소환 히어로에게 입힐 장비 여섯 부위. SUMMONHERO 만 쓴다.
+	SKILLDATA_EQUIP1,			//15
+	SKILLDATA_EQUIP2,			//16
+	SKILLDATA_EQUIP3,			//17
+	SKILLDATA_EQUIP4,			//18
+	SKILLDATA_EQUIP5,			//19
+	SKILLDATA_EQUIP6,			//20
 
-	//오브젝트 정보
-	//CREWBULLET 이면
-	//- ADDOBJ_PHOENIX~ADDOBJ_CREWBULLET
-	//SUMMON이면
-	// - ENEMY_BAHAMUT
-	// , HEROSKILL 이면
-	//- 필요없음
-	SKILLDATA_OBJECTINFO,//2
-
-	SKILLDATA_OBJECTDETAILINFO,//3
-	SKILLDATA_RESERVED1,//4
-	SKILLDATA_RESERVED2,//5
-
-	//
-	SKILLDATA_VALUE_LV1,//6
-	SKILLDATA_VALUE_LV2,//7
-	SKILLDATA_VALUE_LV3,//8
-	SKILLDATA_VALUE_LV4,//9
-	SKILLDATA_VALUE_LV5,//10
-	SKILLDATA_VALUE_LV6,//11
-	SKILLDATA_VALUE_LV7,//12
-	SKILLDATA_VALUE_LV8,//13
-	SKILLDATA_VALUE_LV9,//14
-	SKILLDATA_VALUE_LV10,//15
-	SKILLDATA_VALUE_LV11,//16
-	SKILLDATA_VALUE_LV12,//17
-	SKILLDATA_VALUE_LV13,//18
-	SKILLDATA_VALUE_LV14,//19
-	SKILLDATA_VALUE_LV15,//20
-
-	SKILLDATA_RESERVED3,//21
-	SKILLDATA_RESERVED4,//22
-	SKILLDATA_RESERVED5,//23
-	SKILLDATA_RESERVED6,//24
-	SKILLDATA_RESERVED7,//25
-	SKILLDATA_RESERVED8,//26
-
-	SKILLDATA_ICON,//27
-	SKILLDATA_GRADE,//28
-
-	SKILLDATASIZE,//29
+	SKILLDATASIZE,				//21
 	SKILLINFODATASIZE = 2,
 
 	SKILL_COMMON_ROBIN1 = 0,	//힘단련 : STR 상승

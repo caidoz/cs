@@ -57,6 +57,8 @@ int SkillSummonHeroType(int skillIdx);
 int SkillBulletObj(int skillIdx);
 int SkillStar(int skillIdx);
 int SkillIcon(int skillIdx);
+int SkillIconKind(int skillIdx);
+int SkillCooldown(int skillIdx);
 
 long long GetCrewPower(int detail, int lv);
 

@@ -103,10 +103,13 @@ SPECS = {
         'label_base': 'TEXT_SKILLNAME_COMMON_ROBIN1',
         'id_table': 'skill',
         'layout': [
-            ('skillData', 'SkillData.h', 29, 0,
-             ['kind', 'target', 'obj_info', 'obj_detail', 'r1', 'r2']
-             + lv_cols(15)
-             + ['r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'icon', 'grade']),
+            # 칸 하나에 뜻 하나다. 전에는 29 칸이었는데 같은 칸이 kind 마다
+            # 다른 것을 뜻했다(Def/SkillDef.h 참고). 안 쓰는 줄에서는 0 이다.
+            ('skillData', 'SkillData.h', 21, 0,
+             ['kind', 'value', 'hit_max', 'cooldown', 'icon', 'icon_kind', 'star',
+              'attack_type', 'host_obj', 'summon_enemy', 'hero_type',
+              'hero_skill', 'summon_x', 'bullet_obj', 'bullet_icon']
+             + ['equip%d' % (i + 1) for i in range(6)]),
         ],
         'rules': [],
     },
