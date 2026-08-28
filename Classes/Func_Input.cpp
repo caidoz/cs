@@ -1947,6 +1947,19 @@ void PlayKey(int obj)
 		}
 		else if (systemKey == AVK_SHOP_IAP_CANCEL)
 			ClosePopUp();
+		else if (systemKey == AVK_SHOP_GACHA_RATES) {
+			POPUP* confirm = (popUpCnt > 0 && popUp[popUpCnt - 1].type == POPUPTYPE_IAP_CONFIRM)
+				? &popUp[popUpCnt - 1] : NULL;
+			if (confirm && confirm->itemType == ITEM_BOX) {
+				scY[MENU_SHOP] = 0;
+				SetPopUp(POPUPTYPE_GACHA_RATES, DX / 2, POPUPPOSITION_Y,
+					POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, ITEM_BOX, confirm->itemDetail, false,
+					false, false, false, false, false, false, false, false, false, false,
+					false, false, false, false, false);
+			}
+		}
+		else if (systemKey == AVK_SHOP_GACHA_RATES_WEB)
+			NetOpenRates();
 
 		switch (systemKey) {
 		case AVK_SHOP_BUYBOX1:
@@ -2291,7 +2304,7 @@ void HotKeyPress(OBJECT* pObj, int idx)
 			break;
 		}
 
-		pObj->attack = skillData[SKILLDATASIZE * pObj->hotKey[idx].idx + SKILLDATA_RESERVED8];
+		pObj->attack = SkillAttackType(pObj->hotKey[idx].idx);
 		pObj->attackFrame = skillStartFrame[pObj->attack];
 
 		HitCountCheck(pObj);
@@ -3308,6 +3321,10 @@ void touchFunc(int func)
 			systemKey = AVK_SHOP_IAP_CONFIRM;
 		else if (func == TOUCH_FUNC_SHOP_IAP_CANCEL)
 			systemKey = AVK_SHOP_IAP_CANCEL;
+		else if (func == TOUCH_FUNC_SHOP_GACHA_RATES)
+			systemKey = AVK_SHOP_GACHA_RATES;
+		else if (func == TOUCH_FUNC_SHOP_GACHA_RATES_WEB)
+			systemKey = AVK_SHOP_GACHA_RATES_WEB;
 
 		switch (func) {
 		case TOUCH_FUNC_SHOP_BUYBOX1:

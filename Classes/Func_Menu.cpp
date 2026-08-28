@@ -709,17 +709,17 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 	float iconZoom = iconSize / (float)SKILLICONSIZE * sCdU;
 	int enemyIdx;
 
-	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	switch (SkillKind(skillIdx)) {
 	case CREWBULLET:
 		//날아가는 총탄 그림. AddObject()가 총탄의 icon을 SKILLDATA_TARGET에서
 		//가져오므로 여기서도 같은 자리를 본다.
-		DrawCrewBulletIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET],
+		DrawCrewBulletIcon(SkillBulletIcon(skillIdx),
 			Loc(px), LocY(py), iconZoom);
 		break;
 
 	case SUMMON:
 		//소환될 몬스터를 그대로 보여준다. 모션 번호는 룰렛 카드와 같은 표에서 온다.
-		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		enemyIdx = SkillSummonEnemy(skillIdx);
 
 		if (enemyIdx >= 0 && enemyIdx < gTotalEnemy)
 			DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
@@ -734,7 +734,7 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 		//TARGET 칸은 "어느 히어로가 쓰는가"(ROBIN/DIANA/MAXX)라서 그걸 읽으면
 		//늘 0~2번 스킬 아이콘이 나온다. Func_Graphics 쪽은 처음부터 맞게
 		//읽고 있었고 여기만 틀려서, 룰렛 카드와 상세창 아이콘이 달랐다.
-		int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		int heroSkill = SkillHeroSkill(skillIdx);
 
 		if (heroSkill < 0 || heroSkill >= gTotalSkill)
 			heroSkill = skillIdx;
@@ -748,12 +748,12 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 		//SUMMONHERO 는 OBJECTINFO 가 "어느 히어로"라서 스킬 번호가
 		//OBJECTDETAILINFO 로 한 칸 밀려 있다.
 		DrawSkillIcon(GetHeroSkillIcon(
-			skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO]),
+			SkillHeroSkill(skillIdx)),
 			Loc(px), LocY(py), iconZoom);
 		break;
 
 	default:
-		DrawSkillIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON],
+		DrawSkillIcon(SkillIcon(skillIdx),
 			Loc(px), LocY(py), iconZoom);
 		break;
 	}
@@ -774,7 +774,7 @@ static void DrawCrewSkillIconFramed(int skillIdx, float px, float py, float box)
 //총탄이면 몇 명이 겹쳤는지로 세기가 갈리고, 그 밖이면 스킬 종류가 이름이 된다.
 static int GetCrewSkillTitle(int skillIdx, int slot)
 {
-	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	switch (SkillKind(skillIdx)) {
 	case SUMMON:
 		return TEXT_CREW_SKILL_SUMMON;
 	case HEROSKILL:
@@ -805,9 +805,9 @@ static void SetCrewSkillDesc(int skillIdx, int crewDetail, int lv)
 
 	memset(&tempStr, 0, sizeof(tempStr));
 
-	switch (skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE]) {
+	switch (SkillKind(skillIdx)) {
 	case SUMMON:
-		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		sub = SkillSummonEnemy(skillIdx);
 
 		if (sub >= 0 && sub < gTotalEnemy)
 			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_SUMMON),
@@ -817,7 +817,7 @@ static void SetCrewSkillDesc(int skillIdx, int crewDetail, int lv)
 		break;
 
 	case HEROSKILL:
-		sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		sub = SkillHeroSkill(skillIdx);
 
 		//히어로 스킬 이름표는 SKILL_ 열거와 같은 순서로 붙어 있다.
 		if (sub >= 0 && sub < gTotalSkill)
@@ -2250,12 +2250,12 @@ void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom)
 		false, false, false, false, barAlpha,
 		fillZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	//레인보우 코인 전용 10프레임 시트. i6의 첫 줄은 일반 골드라 쓰지 않는다.
+	//i7.png의 빈 하단 영역에 넣은 64x64 레인보우 코인 10프레임.
 	int coinFrame = (frame / (MOTIONDIV * 2)) % 10;
-	DrawImage(32, 32, coinFrame * 32, 0,
+	DrawImage(64, 64, (coinFrame % 4) * 65, 198 + (coinFrame / 4) * 65,
 		x + (float)(5 * _2X) * zoom, y - (float)(3 * _2X) * zoom,
-		false, false, false, false, false, 1.4f * zoom,
-		sprite[SHOP_CASH_COIN_IMG], SHOP_CASH_COIN_IMG);
+		false, false, false, false, false, 0.7f * zoom,
+		sprite[ITEM_IMG + 7], ITEM_IMG + 7);
 #ifdef NUMTTF
 	DrawBigNumTTF(pow, x + (wide - 10 * _2X) * zoom,
 		y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
@@ -6219,9 +6219,9 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
 			amount = cashAmount[product - IAP_CASH_01];
 			int cashFrame = (frame / 5) % 10;
-			DrawImage(32, 32, cashFrame * 32, 0,
+			DrawImage(64, 64, (cashFrame % 4) * 65, 198 + (cashFrame / 4) * 65,
 				Loc(310.0f), LocY(935.0f), false, false, false, false, false,
-				2.0f * sCdU, sprite[SHOP_CASH_COIN_IMG], SHOP_CASH_COIN_IMG);
+				1.0f * sCdU, sprite[ITEM_IMG + 7], ITEM_IMG + 7);
 		}
 		if (amount) {
 			sprintf(tempStr, "%lld", amount);
@@ -6288,20 +6288,35 @@ void GachaRatesDraw(int boxDetail)
 		int crewCount = GetBoxCandidateCountByStar(ITEM_CREW, grade + 1);
 		for (int i = 0; i < crewCount; i++) {
 			int detail = GetBoxCandidateDetailByStar(ITEM_CREW, grade + 1, i);
+			float cardX = 135.0f + (col % 7) * 118.0f;
+			float cardY = py + (col / 7) * 170.0f;
 			DrawItemCard(ITEM_CREW, detail, grade, 1, 1, false,
-				(int)Loc(135.0f + (col % 7) * 118.0f),
-				(int)LocY(py + (col / 7) * 170.0f), false,
+				(int)Loc(cardX), (int)LocY(cardY), false,
 				0.34f * sCdU, false, false, false, false, 0);
+			float itemRate = crewCount > 0
+				? box.crewRate * box.crewGradeRate[grade] / 100.0f / crewCount : 0.0f;
+			sprintf(tempStr, "%.3f%%", itemRate);
+			CdBody(tempStr, cardX + 40.0f, cardY + 125.0f, 0.85f, CENTER, CD_INK);
 			col++;
 		}
+		int validEquipTypes = 0;
+		for (int t = 0; t < 6; t++)
+			if (GetBoxCandidateCountByStar(equipTypes[t], grade + 1) > 0)
+				validEquipTypes++;
 		for (int t = 0; t < 6; t++) {
 			int count = GetBoxCandidateCountByStar(equipTypes[t], grade + 1);
 			for (int i = 0; i < count; i++) {
 				int detail = GetBoxCandidateDetailByStar(equipTypes[t], grade + 1, i);
+				float cardX = 135.0f + (col % 7) * 118.0f;
+				float cardY = py + (col / 7) * 170.0f;
 				DrawItemCard(equipTypes[t], detail, grade, 1, 1, false,
-					(int)Loc(135.0f + (col % 7) * 118.0f),
-					(int)LocY(py + (col / 7) * 170.0f), false,
+					(int)Loc(cardX), (int)LocY(cardY), false,
 					0.34f * sCdU, false, false, false, false, 0);
+				float itemRate = count > 0 && validEquipTypes > 0
+					? box.equipRate * box.equipGradeRate[grade] / 100.0f
+					/ validEquipTypes / count : 0.0f;
+				sprintf(tempStr, "%.3f%%", itemRate);
+				CdBody(tempStr, cardX + 40.0f, cardY + 125.0f, 0.85f, CENTER, CD_INK);
 				col++;
 			}
 		}

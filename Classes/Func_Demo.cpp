@@ -585,9 +585,10 @@ void Demo(void)
 			int enemyIdx;
 
 			//if (curSkill < 100)//스킬이면
-			//	DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
-			if (skillData[curSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMON) {
-				enemyIdx = skillData[curSkill * SKILLDATASIZE + SKILLDATA_TARGET];
+			//	DrawSkillIcon(SkillIcon(curSkill), xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
+			if (SkillKind(curSkill) == SUMMON) {
+				//몬스터는 obj_info 다. Func_Battle.cpp 와 같은 자리다.
+				enemyIdx = SkillSummonEnemy(curSkill);
 
 				float zoom = 2.0f;
 				SetSectionClip(xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, (float)(SKILLICONSIZE)*zoom, (float)(SKILLICONSIZE)*zoom, false);
@@ -598,7 +599,7 @@ void Demo(void)
 				UnSectionClip(false);
 			}
 			else
-				DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2);
+				DrawSkillIcon(SkillIcon(curSkill), xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2);
 		}
 
 
@@ -3030,7 +3031,7 @@ void DemoCore_Effect_TutorialInitBar(void)
 	InitBar(BAR_GOLD);
 	InitBar(BAR_CROWN);
 	InitBar(BAR_MEDAL);
-	InitBar(BAR_SHIELD);
+	//InitBar(BAR_SHIELD); //상단 PVP 방패 바는 사용하지 않는다.
 	InitBar(BAR_CREW);
 	InitBar(BAR_EQUIP);
 	InitBar(BAR_CASTLE);

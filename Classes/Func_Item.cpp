@@ -1977,6 +1977,192 @@ int CrewLevelMul(int star, int lv)
 	return mul[star][lv];
 }
 
+//==========================================================================
+// 스킬 표를 뜻으로 읽는다
+//
+// skillData 는 폭이 29 인데, 같은 칸이 kind 마다 다른 것을 뜻한다.
+// target 하나만 해도 네 가지다.
+//
+//     ACTIVE      연타수 상한
+//     CREWBULLET  총알 그림 번호
+//     HEROSKILL   어느 히어로가 쓰는가 (오브젝트 칸)
+//     SUMMONHERO  어디에 세우는가 (오브젝트 칸)
+//
+// 그래서 skillData[i * SKILLDATASIZE + SKILLDATA_TARGET] 라고 적힌 곳을
+// 봐도 그게 무엇인지 알 수 없다. kind 를 같이 봐야 안다. 실제로 그 탓에
+// 두 곳이 SUMMON 의 몬스터를 엉뚱한 칸에서 읽고 있었다.
+//
+// 뜻마다 함수를 하나씩 둔다. 읽는 쪽은 kind 를 몰라도 되고, 나중에 표를
+// kind 별로 쪼갤 때 고칠 곳은 이 함수들 안뿐이다.
+//==========================================================================
+
+//이 스킬이 어떤 종류인가. ACTIVE PASSIVE CREWBULLET ...
+int SkillKind(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
+}
+
+//한 번 발동에 몇 대까지 때리는가. ACTIVE 만 뜻이 있다.
+//IsHitPossible() 이 이것으로 연타를 끊는다.
+int SkillHitMax(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+}
+
+//날아가는 총알의 그림 번호. CREWBULLET 만 뜻이 있다.
+int SkillBulletIcon(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+}
+
+//이 스킬이 어느 오브젝트 칸에서 벌어지는가.
+//HEROSKILL 이면 그 히어로 자신(ROBIN), SUMMONHERO 면 소환칸(SOLDIER) 이다.
+int SkillHostObj(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET];
+}
+
+//불러내는 몬스터. SUMMON 과 CREWSUMMON 이 쓴다.
+//
+//target 이 아니라 obj_info 다. 표를 보면 SUMMON 줄은
+//    SUMMON, SOLDIER, NPC_SHIP, ...
+//이고 몬스터는 셋째 칸이다. 둘째 칸은 어디에 세울지를 말한다.
+int SkillSummonEnemy(int skillIdx)
+{
+	int sub;
+
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return -1;
+
+	sub = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+
+	if (sub < 0 || sub >= gTotalEnemy)
+		return -1;
+
+	return sub;
+}
+
+//이 스킬이 대신 발동시키는 히어로 스킬.
+//
+//HEROSKILL 은 obj_info 에, SUMMONHERO 는 obj_detail 에 들어 있다. 칸이
+//다른 것에 뜻은 없다 - 그냥 그렇게 적혀 있다.
+int SkillHeroSkill(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return -1;
+
+	if (SkillKind(skillIdx) == SUMMONHERO)
+		return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+}
+
+//소환체가 설 x 좌표. SUMMONHERO 만 뜻이 있다.
+int SkillSummonX(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1];
+}
+
+//이 스킬이 어떤 공격으로 나가는가. ROBIN_SKILL_AIRCRASH 같은 값이다.
+int SkillAttackType(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED8];
+}
+
+//소환 히어로에게 입힐 장비. SUMMONHERO 가 여섯 부위를 들고 있다.
+int SkillSummonEquip(int skillIdx, int slot)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	if (slot < 0 || slot >= SKILL_SUMMON_EQUIP_CNT)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + slot];
+}
+
+//이 스킬의 효능 수치.
+//
+//히어로 스킬이 버프 % 나 흡혈 % 같은 것을 여기 들고 있다. 동료 쪽은
+//이제 안 쓴다 - 동료의 세기는 crewData 의 str 이다.
+int SkillValue(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+}
+
+//불러낼 히어로가 누구인가. SUMMONHERO 만 뜻이 있다(MAXX 등).
+//
+//같은 obj_info 칸인데 SUMMON 은 몬스터를, SUMMONHERO 는 히어로를 넣는다.
+//둘을 한 함수로 묶으면 몬스터 번호와 히어로 번호가 섞이므로 나눠 둔다.
+int SkillSummonHeroType(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return -1;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+}
+
+//총알로 날아갈 오브젝트 종류. CREWBULLET 이 쓴다(ADDOBJ_SLING 등).
+//그림은 SkillBulletIcon 이 따로 들고 있다.
+int SkillBulletObj(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+}
+
+//스킬 카드의 별.
+int SkillStar(int skillIdx)
+{
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 1;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_GRADE];
+}
+
+//스킬 아이콘.
+//
+//칸이 둘이다. 히어로 줄은 reserved2 를 쓰고 동료 줄은 icon 을 쓴다.
+//어느 쪽이 채워져 있는지로 고른다 - 히어로 90 행 중 88 행이 reserved2 를
+//들고 있고, 동료 213 행 중 185 행은 둘 다 비어 있다(총알 그림을 쓴다).
+//나중에 한 칸으로 합칠 자리다.
+int SkillIcon(int skillIdx)
+{
+	int v;
+
+	if (skillIdx < 0 || skillIdx >= gTotalSkill)
+		return 0;
+
+	v = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED2];
+
+	if (v > 0)
+		return v;
+
+	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON];
+}
+
 //동료의 공격력.
 //
 //그 동료의 기본 수치(첫 스킬의 LV1 값)에 강화 배율을 곱한다. 그것이 전부다.

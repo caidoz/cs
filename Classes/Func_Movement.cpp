@@ -1626,10 +1626,10 @@ void PlayerMove(OBJECT* pObj)
 		callerSkill = ao[turn].currentSkill;
 
 		if (callerSkill >= 0 && callerSkill < gTotalSkill) {
-			int callerType = skillData[callerSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
+			int callerType = SkillKind(callerSkill);
 
 			if (callerType == HEROSKILL && obj >= 0 && obj < TOTALCHAR
-				&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_TARGET] == obj) {
+				&& SkillHostObj(callerSkill) == obj) {
 				gDemoSkillFrameStepActive = false;
 				gDemoSkillFrameStepPermit = 0;
 				pObj->turnPosition = HERE;
@@ -1675,8 +1675,8 @@ void PlayerMove(OBJECT* pObj)
 			? ao[turn].currentSkill : -1;
 
 		if (callerSkill >= 0 && callerSkill < gTotalSkill
-			&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == HEROSKILL
-			&& skillData[callerSkill * SKILLDATASIZE + SKILLDATA_TARGET] == obj) {
+			&& SkillKind(callerSkill) == HEROSKILL
+			&& SkillHostObj(callerSkill) == obj) {
 			if (gDemoSkillFrameStepPermit <= 0)
 				return;
 
@@ -1699,7 +1699,7 @@ void PlayerMove(OBJECT* pObj)
 		int caller = ao[turn].currentSkill;
 
 		if (caller >= 0 && caller < gTotalSkill
-			&& skillData[caller * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO) {
+			&& SkillKind(caller) == SUMMONHERO) {
 			if (pObj->turnPosition == HERE)
 				pObj->turnPosition = GOING;
 
@@ -4342,12 +4342,12 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		break;
 	case _ADDMON:
 		objPtr = &ao[SOLDIER];
-		objPtr->type = skillData[objPtr->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		objPtr->type = SkillSummonEnemy(objPtr->currentSkill);
 		objPtr->zoom = SUMMONZOOM * 4;
 		SetEnemy(objPtr);
 		objPtr->moveHandler = null;
 		objPtr->nx = objPtr->x = DX / 2;
-		objPtr->ny = objPtr->y = ao[ROBIN].y + monXYGap[(ao[skillData[objPtr->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]].type - 3) * 2 + 1];
+		objPtr->ny = objPtr->y = ao[ROBIN].y + monXYGap[(ao[SkillHostObj(objPtr->currentSkill)].type - 3) * 2 + 1];
 
 		switch (objPtr->type) {
 		case ENEMY_FOGRA:
@@ -8257,7 +8257,7 @@ void BulletHealMove(OBJECT* pObj)
 		OBJECT* hero = &ao[PLAYER];
 		int recoverPercent = GetSkillValue(shooter, SKILL_DIANA13);
 		if (recoverPercent <= 0)
-			recoverPercent = skillData[SKILL_DIANA13 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+			recoverPercent = SkillValue(SKILL_DIANA13);
 		long long requestedHp = RoundDiv(hero->ps[PS_HP] * recoverPercent, 100);
 		long long recoveredHp = Max(0LL, Min(requestedHp, hero->ps[PS_HP] - hero->hp));
 
@@ -14242,7 +14242,7 @@ void CrewMove(OBJECT* pObj)
 						pObj->target = NearEnemy(pObj);
 							pObj->turnPosition = THERE;//바로 결과로.
 
-							attackType = skillData[pObj->currentSkill * SKILLDATASIZE];
+							attackType = SkillKind(pObj->currentSkill);
 							switch (attackType) {
 							case CREWBULLET:
 							{
@@ -14289,8 +14289,8 @@ void CrewMove(OBJECT* pObj)
 							}
 								break;
 							case SUMMON:
-								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
-								objPtr->type = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								objPtr = &ao[SkillHostObj(pObj->currentSkill)];
+								objPtr->type = SkillSummonEnemy(pObj->currentSkill);
 								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
 								objPtr->zoom = objPtr->defaultZoom = SUMMONZOOM;
 								SetEnemy(objPtr);
@@ -14355,8 +14355,8 @@ void CrewMove(OBJECT* pObj)
 							case HEROSKILL:
 								//이미 자리에 서 있는 히어로가 자기 스킬을 쓴다.
 								//자리에 없는 히어로를 불러내는 것은 아래 SUMMONHERO 가 한다.
-								objPtr = &ao[skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET]];
-								objPtr->currentSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+								objPtr = &ao[SkillHostObj(pObj->currentSkill)];
+								objPtr->currentSkill = SkillHeroSkill(pObj->currentSkill);
 
 								//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 켜지 않는다.
 #if 0
@@ -14381,9 +14381,9 @@ void CrewMove(OBJECT* pObj)
 								//그 값으로 자리를 잡는다. 그러면 만들기 전에도 보낼 수 있다.
 								//----------------------------------------------------------
 								{
-									int summonTarget = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET];
-									int summonType = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
-									int summonSkill = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+									int summonTarget = SkillHostObj(pObj->currentSkill);
+									int summonType = SkillSummonHeroType(pObj->currentSkill);
+									int summonSkill = SkillHeroSkill(pObj->currentSkill);
 
 									if (summonTarget != SOLDIER
 										|| summonTarget < 0 || summonTarget >= TOTALOBJECT
@@ -14418,7 +14418,7 @@ void CrewMove(OBJECT* pObj)
 								objPtr->zoom = objPtr->defaultZoom = ao[PLAYER].zoom;
 								objPtr->moveHandler = REGENMOVE;
 								objPtr->drawHandler = REGENDRAW;
-								objPtr->nx = objPtr->x = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED1];
+								objPtr->nx = objPtr->x = SkillSummonX(pObj->currentSkill);
 								objPtr->ny = objPtr->y = ao[ROBIN].y;
 
 								objPtr->dx = objPtr->dy = 0;
@@ -14432,7 +14432,7 @@ void CrewMove(OBJECT* pObj)
 								//임시장비세팅
 								for (i = EQUIP_WEAPON; i <= EQUIP_BOOTS; i++) {
 									int j;
-									int detail = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + i];
+									int detail = SkillSummonEquip(pObj->currentSkill, i);
 									//SUMMONHERO 행의 lv1~lv6을 장비 detail 슬롯으로 사용한다.
 									//RESERVED3~8은 스킬 제어용 값이므로 장비로 읽으면 안 된다.
 									memset(&summonItem, 0, sizeof(summonItem));
@@ -15460,7 +15460,7 @@ bool IsHitPossible(OBJECT* pObj, OBJECT* mObj)
 	switch (pObj->attack) {
 
 	}
-	if (ao[turn].hitCount < skillData[mObj->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET])
+	if (ao[turn].hitCount < SkillHitMax(mObj->currentSkill))
 		return true;
 
 	return false;

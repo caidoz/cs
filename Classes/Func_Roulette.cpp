@@ -183,8 +183,8 @@ int GetPersistentBuffBySkill(int skillIdx)
 	// NPC_EVAN_SKILL1 같은 SUMMONHERO 호출 스킬이 저장된다. 호출 스킬이면
 	// OBJECTDETAILINFO에 들어 있는 실제 히어로 스킬로 풀어서 판정한다.
 	if (skillIdx >= 0 && skillIdx < gTotalSkill
-		&& skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO) {
-		int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+		&& SkillKind(skillIdx) == SUMMONHERO) {
+		int heroSkill = SkillHeroSkill(skillIdx);
 		if (heroSkill != skillIdx)
 			return GetPersistentBuffBySkill(heroSkill);
 	}
@@ -213,8 +213,8 @@ void MoveControlMarkToBuffStack(int ownerObj, int skillIdx)
 		// 원래 값 그대로 보존한다.
 		markSkill = controlMark[i].attackType;
 		if (markSkill >= 0 && markSkill < gTotalSkill
-			&& skillData[markSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMONHERO)
-			markSkill = skillData[markSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+			&& SkillKind(markSkill) == SUMMONHERO)
+			markSkill = SkillHeroSkill(markSkill);
 		if (markSkill != skillIdx)
 			continue;
 
@@ -294,8 +294,8 @@ void UpdateHeroSkillControlMarkStack(void)
 
 				skillIdx = controlMark[i].attackType;
 				if (skillIdx < 0 || skillIdx >= gTotalSkill
-					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != HEROSKILL
-					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET] != destObj)
+					|| SkillKind(skillIdx) != HEROSKILL
+					|| SkillHostObj(skillIdx) != destObj)
 					continue;
 
 				destY = baseY + stack * gap;
@@ -344,13 +344,13 @@ void UpdateHeroSkillControlMarkStack(void)
 
 				skillIdx = controlMark[i].attackType;
 				if (skillIdx < 0 || skillIdx >= gTotalSkill
-					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] != SUMMONHERO
-					|| skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO] != summonType)
+					|| SkillKind(skillIdx) != SUMMONHERO
+					|| SkillSummonHeroType(skillIdx) != summonType)
 					continue;
 
 				if (!baseSet) {
 					GetMarkHeadPosAt(
-						skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1],
+						SkillSummonX(skillIdx),
 						ao[ROBIN].y, ao[PLAYER].zoom, &baseX, &baseY);
 					baseSet = true;
 				}
@@ -1922,12 +1922,12 @@ void RouletteDraw(int x, int y, float zoom)
 					//날아가서 멈출 때의 배율은 아래 SetControlMark에 넘기는
 					//zoomEnd2(zoom - 0.3f)다. 그 크기로 계산해야 도착점이 맞는다.
 					int skillIdx = controlMark[i].attackType;
-					int skillType = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE];
+					int skillType = SkillKind(skillIdx);
 
 					switch (skillType) {
 					case SUMMON:
 					{
-						int summonX = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1];
+						int summonX = SkillSummonX(skillIdx);
 
 						//기존 SUMMON 데이터는 x 칸이 예약값(4)으로 남아 있다.
 						//그 경우에만 실제 소환 로직이 쓰는 화면 중앙을 쓴다.
@@ -1941,7 +1941,7 @@ void RouletteDraw(int x, int y, float zoom)
 					case SUMMONHERO:
 						//소환 자체가 아니라 스킬 데이터에 기록된 소환 위치로 보낸다.
 						GetMarkHeadPosAt(
-							skillData[skillIdx * SKILLDATASIZE + SKILLDATA_RESERVED1],
+							SkillSummonX(skillIdx),
 							(int)ao[ROBIN].y, ao[PLAYER].zoom, &destX, &destY);
 						break;
 					case HEROSKILL:

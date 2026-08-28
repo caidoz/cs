@@ -1217,9 +1217,11 @@ void Play(void)
 		int enemyIdx;
 
 		//if (curSkill < 100)//스킬이면
-		//	DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
-		if (skillData[curSkill * SKILLDATASIZE + SKILLDATA_ACTIVEPASSIVE] == SUMMON) {
-			enemyIdx = skillData[curSkill * SKILLDATASIZE + SKILLDATA_TARGET];
+		//	DrawSkillIcon(SkillIcon(curSkill), xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2, gScreenBuffer, gScreenLayer, false);
+		if (SkillKind(curSkill) == SUMMON) {
+			//몬스터는 obj_info 다. 전에는 target 을 읽어서 SOLDIER(오브젝트
+			//칸 번호)를 몬스터 번호로 쓰고 있었다 - 엉뚱한 놈이 그려졌다.
+			enemyIdx = SkillSummonEnemy(curSkill);
 
 			float zoom = 2.0f;
 			SetSectionClip(xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, (float)(SKILLICONSIZE)*zoom, (float)(SKILLICONSIZE)*zoom, false);
@@ -1230,7 +1232,7 @@ void Play(void)
 			UnSectionClip(false);
 		}
 		else
-			DrawSkillIcon(skillData[SKILLDATASIZE * curSkill + 5], xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2);
+			DrawSkillIcon(SkillIcon(curSkill), xOffset + DX / 2 - width / 2 + 8 * _2X, STATUSWIN_Y + SKILLTEXT_Y + 8 * _2X, 2);
 	}
 
 

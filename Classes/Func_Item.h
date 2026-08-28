@@ -41,6 +41,23 @@ int GetItemStar(int, int, int);
 int GetCrewMaxLevel(void);
 long long GetCrewUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
 bool CanCrewLevelUp(ITEM* it);
+//---- 스킬 표를 뜻으로 읽는다 (Func_Item.cpp) ----
+//같은 칸이 kind 마다 다른 것을 뜻하므로 직접 읽지 말 것.
+int SkillKind(int skillIdx);
+int SkillHitMax(int skillIdx);
+int SkillBulletIcon(int skillIdx);
+int SkillHostObj(int skillIdx);
+int SkillSummonEnemy(int skillIdx);
+int SkillHeroSkill(int skillIdx);
+int SkillSummonX(int skillIdx);
+int SkillAttackType(int skillIdx);
+int SkillSummonEquip(int skillIdx, int slot);
+int SkillValue(int skillIdx);
+int SkillSummonHeroType(int skillIdx);
+int SkillBulletObj(int skillIdx);
+int SkillStar(int skillIdx);
+int SkillIcon(int skillIdx);
+
 long long GetCrewPower(int detail, int lv);
 
 //---- 장비 강화 ----

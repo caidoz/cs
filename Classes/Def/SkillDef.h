@@ -343,6 +343,10 @@ typedef enum _skillDef {
 
 	//액티브스킬인지, 패시브스킬인지, 몬스터를 소환하는건지, 히어로 스킬을 사용하는건지.
 	//실제값 ACTIVE / PASSIVE / CREWBULLET / CREWSUMMON / HEROSKILL
+//SUMMONHERO 가 소환 히어로에게 입히는 장비 부위 수.
+//LV1 부터 여섯 칸을 장비 detail 로 쓴다(SkillSummonEquip).
+#define SKILL_SUMMON_EQUIP_CNT	6
+
 //[예약이라 적혀 있지만 예약이 아닌 칸들]
 //
 //이름이 RESERVED 라 안 쓰는 칸처럼 보이지만, 셋은 실제로 읽고 있다.

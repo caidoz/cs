@@ -2338,10 +2338,10 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	memset(pObj, 0, sizeof(OBJECT));
 	//크류가 쏘는 총알
 	if (tempIdx == ADDOBJ_CREWBULLET) {
-		idx = skillData[pMom->currentSkill * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO];
+		idx = SkillBulletObj(pMom->currentSkill);
 		scPtr = &objectData[idx * OBJDATA_SIZE];
 		//TEST
-		pObj->icon = skillData[pMom->currentSkill * SKILLDATASIZE + SKILLDATA_TARGET];
+		pObj->icon = SkillBulletIcon(pMom->currentSkill);
 	}
 
 	pObj->active = true;

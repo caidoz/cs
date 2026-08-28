@@ -619,7 +619,7 @@ void RefreshBuff(OBJECT* pObj)
 
 		if (skillLv <= 0) {
 			skillLv = 1;
-			skillValue = skillData[SKILL_DIANA14 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+			skillValue = SkillValue(SKILL_DIANA14);
 		}
 
 		dmgMod += skillValue;
@@ -632,19 +632,19 @@ void RefreshBuff(OBJECT* pObj)
 	if (pObj->buff[MPDRAIN]) {
 		int value = GetSkillValue(obj, SKILL_DIANA15);
 		if (GetSkillLv(obj, SKILL_DIANA15) <= 0)
-			value = skillData[SKILL_DIANA15 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+			value = SkillValue(SKILL_DIANA15);
 		pObj->ps[PS_MPDRAIN] += value;
 	}
 	if (pObj->buff[INC_CRITICAL]) {
 		int value = GetSkillValue(obj, SKILL_DIANA16);
 		if (GetSkillLv(obj, SKILL_DIANA16) <= 0)
-			value = skillData[SKILL_DIANA16 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+			value = SkillValue(SKILL_DIANA16);
 		pObj->ps[PS_CRITICAL] += value;
 	}
 	if (pObj->buff[INC_IGNORE]) {
 		int value = GetSkillValue(obj, SKILL_DIANA17);
 		if (GetSkillLv(obj, SKILL_DIANA17) <= 0)
-			value = skillData[SKILL_DIANA17 * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+			value = SkillValue(SKILL_DIANA17);
 		pObj->ps[PS_IGNORE] += value;
 	}
 
@@ -997,7 +997,7 @@ static int GetMotionAttackRange(const OBJECT* pObj)
 	}
 
 	if (pObj->currentSkill >= 0 && pObj->currentSkill < gTotalSkill)
-		attack = skillData[pObj->currentSkill * SKILLDATASIZE + SKILLDATA_RESERVED8];
+		attack = SkillAttackType(pObj->currentSkill);
 	if (attack <= 0 || attack >= attackCount)
 		attack = ATTACK_NORMAL;
 

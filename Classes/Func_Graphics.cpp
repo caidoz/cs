@@ -5092,7 +5092,7 @@ int GetHeroSkillIcon(int heroSkillIdx)
 	if (heroSkillIdx < 0 || heroSkillIdx >= gTotalSkill)
 		return 0;
 
-	return skillData[heroSkillIdx * SKILLDATASIZE + SKILLDATA_RESERVED2];
+	return SkillIcon(heroSkillIdx);
 }
 
 void DrawSkillIcon(int idx, int x, int y, float zoom)
@@ -5204,10 +5204,10 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 	float iconX = x + w / 2 - iconSize / 2;
 	float iconY = y - h / 2 + iconSize / 2;
 
-	switch (skillData[skillIdx * SKILLDATASIZE]) {
+	switch (SkillKind(skillIdx)) {
 	case SUMMON:
 		//몬스터 소환 : 소환될 몬스터를 그대로 보여준다.
-		enemyIdx = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+		enemyIdx = SkillSummonEnemy(skillIdx);
 
 		SetSectionClip(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)(2 * _2X) * zoom, h - (float)(2 * _2X) * zoom, false);
 		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y - h / 2 + (float)(8 * _2X) * zoom, SHADOW_IMG, zoom);
@@ -5221,7 +5221,7 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 		//동료 총탄 : 실제로 날아가는 그 총탄을 보여준다.
 		//AddObject()가 총탄 오브젝트의 icon을 SKILLDATA_TARGET에서 가져오므로
 		//여기서도 같은 자리를 봐야 카드와 날아가는 그림이 일치한다.
-		DrawCrewBulletIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_TARGET],
+		DrawCrewBulletIcon(SkillBulletIcon(skillIdx),
 			iconX, iconY, iconZoom);
 		break;
 
@@ -5230,7 +5230,7 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 		//이 칸에는 스킬 자신의 아이콘이 아니라 SKILLDATA_OBJECTINFO가 가리키는
 		//히어로 스킬 번호가 들어 있다.
 		{
-			int heroSkill = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTINFO];
+			int heroSkill = SkillHeroSkill(skillIdx);
 
 			if (heroSkill < 0 || heroSkill >= gTotalSkill)
 				heroSkill = skillIdx;
@@ -5246,12 +5246,12 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 		//히어로 스킬 번호는 OBJECTDETAILINFO 칸에 있다(SUMMONHERO 는
 		//OBJECTINFO 를 "어느 히어로"에 쓰기 때문이다).
 		DrawSkillIcon(GetHeroSkillIcon(
-			skillData[skillIdx * SKILLDATASIZE + SKILLDATA_OBJECTDETAILINFO]),
+			SkillHeroSkill(skillIdx)),
 			iconX, iconY, iconZoom);
 		break;
 
 	default:
-		DrawSkillIcon(skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICON],
+		DrawSkillIcon(SkillIcon(skillIdx),
 			iconX, iconY, iconZoom);
 		break;
 	}
@@ -5680,7 +5680,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 		EnemyProfileDraw(x + w / 2 - (float)(36 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 38 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, crewData[detail * CREWDATASIZE + 0], false, false, zoom);
 		break;
 	case ITEM_SKILL:
-		DrawSkillIcon(skillData[detail * SKILLDATASIZE + SKILLDATA_RESERVED2], x + w / 2 - (float)(32 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 36 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, 2 * zoom);
+		DrawSkillIcon(SkillIcon(detail), x + w / 2 - (float)(32 * _2X / 2) * zoom, y + (float)(-REWARDCARDSIZE_Y + ITEMICONSIZE + 36 * _2X) * zoom + (float)(cardFrame == false ? -4 * _2X : 0) * zoom, 2 * zoom);
 		break;
 	}
 
@@ -5780,7 +5780,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			case ITEM_STATUE_DRAGON:
 				for (i = 0; i < 6; i++) {
 					if (skillInitData[i * 3 + 2] == detail) {
-						realValue = skillData[skillInitData[i * 3 + 0] * SKILLDATASIZE + SKILLDATA_VALUE_LV1];
+						realValue = SkillValue(skillInitData[i * 3 + 0]);
 
 					}
 				}
@@ -5821,7 +5821,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 			}
 			break;
 		case ITEM_SKILL:
-			DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 2 * _2X) * zoom, skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], skillData[detail * SKILLDATASIZE + SKILLDATA_GRADE], CENTER, true, zoom * 0.45f);
+			DrawStar(ICON_STAR, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + REWARDCARDSIZE_Y + 2 * _2X) * zoom, SkillStar(detail), SkillStar(detail), SkillStar(detail), CENTER, true, zoom * 0.45f);
 
 			DrawXNumGold(10, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 34 * _2X / 2) * zoom, false, 0.35f * zoom, CENTER, false);
 			break;
