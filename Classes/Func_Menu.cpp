@@ -553,7 +553,7 @@ static void CdBeginBoard(void)
 }
 
 //팝업 본체와 타이틀 리본, 닫기 버튼. 두 팝업이 같이 쓴다.
-static void CdDrawFrame(int titleTextIdx)
+static void CdDrawFrame(int titleTextIdx, int closeTouchFunc = TOUCH_FUNC_CLOSEALERT)
 {
 	DrawWin9(WP_BODY_X, WP_BODY_Y, WP_BODY_W, WP_BODY_H, WP_BODY_CAP,
 		Loc((float)CD_BODY_X), LocY((float)CD_BODY_Y),
@@ -575,7 +575,7 @@ static void CdDrawFrame(int titleTextIdx)
 
 		SetRectPoint(Loc(cx), LocY(cy),
 			(float)CD_CLOSE * sCdU, (float)CD_CLOSE * sCdU,
-			TOUCH_FUNC_CLOSEALERT);
+			closeTouchFunc);
 
 		DrawWinFlat(WP_CLOSE_X, WP_CLOSE_Y, WP_CLOSE_W, WP_CLOSE_H,
 			Loc(cx), LocY(cy), (float)CD_CLOSE / (float)WP_CLOSE_W * sCdU);
@@ -789,20 +789,19 @@ static int GetCrewSkillTitle(int skillIdx, int slot)
 	}
 }
 
-//효능 설명을 tempStr에 만든다. 수치는 지금 레벨의 값을 그대로 쓴다.
+//효능 설명을 tempStr에 만든다. 수치는 전투가 쓰는 값 그대로다.
 static void SetCrewSkillDesc(int skillIdx, int lv)
 {
-	int maxValue = SKILLDATA_VALUE_LV15 - SKILLDATA_VALUE_LV1 + 1;
-	int valueIdx = lv - 1;
 	int value;
 	int sub;
 
-	if (valueIdx < 0)
-		valueIdx = 0;
-	if (valueIdx >= maxValue)
-		valueIdx = maxValue - 1;
-
-	value = skillData[skillIdx * SKILLDATASIZE + SKILLDATA_VALUE_LV1 + valueIdx];
+	//전투가 쓰는 그 함수로 값을 낸다.
+	//
+	//전에는 skillData 의 LV1+레벨 칸을 직접 읽었다. 그런데 전투는 그 칸을
+	//안 보고 LV1 에 곡선을 곱한다. 213 행 중 210 행이 서로 달라서, 화면에
+	//적힌 수가 실제와 다른 상태였다. 보여주는 자리와 값을 내는 자리는 같아야
+	//한다.
+	value = (int)GetSkillPower(skillIdx, lv);
 
 	memset(&tempStr, 0, sizeof(tempStr));
 
@@ -2236,13 +2235,37 @@ void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoo
 
 void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom)
 {
-	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_SMALL, BARCOLOR_PURPLE, alpha, 0.5f * zoom);
+	const float wide = (float)(COMBATPOWBARWIDTH + SHIELDBARWIDTH);
+	const float rawWide = wide * 2.0f;
+	float frameZoomX = rawWide / 272.0f * 0.5f * zoom;
+	float fillZoomX = (rawWide - 33.0f) / 239.0f * 0.5f * zoom;
+	int barAlpha = alpha == false ? false : alpha;
 
-	DrawIcon(icon, x + (float)(5 * _2X) * zoom, y - (float)5 * _2X * zoom, 1.4f * zoom, COLOR_BROWN, false, false, 1);
+	//하나의 작은 바 이미지를 X축으로만 늘려 방패 자리까지 채운다.
+	DrawImageScale(272, 129, 747, 1, x, y,
+		false, false, false, false, barAlpha,
+		frameZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImageScale(239, 94, 763, 132 + 95 * BARCOLOR_PURPLE,
+		x + (float)(8 * _2X) * zoom, y - (float)(8 * _2X) * zoom,
+		false, false, false, false, barAlpha,
+		fillZoomX, 0.5f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+
+	//i6.png의 첫 10칸: 평면 회전이 아니라 정면/옆면이 바뀌는 동전 애니메이션.
+	int coinFrame = (frame / (MOTIONDIV * 2)) % 10;
+	DrawImage(32, 32, (coinFrame % 8) * 32, (coinFrame / 8) * 32,
+		x + (float)(5 * _2X) * zoom, y - (float)(3 * _2X) * zoom,
+		false, false, false, false, false, 1.4f * zoom,
+		sprite[ITEM_IMG + 6], ITEM_IMG + 6);
 #ifdef NUMTTF
-	DrawBigNumTTF(pow, x + (float)(COMBATPOWBARWIDTH - 10 * _2X) * zoom, y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE - 8 * _2X * 2) * zoom, true, zoom, true);
+	DrawBigNumTTF(pow, x + (wide - 10 * _2X) * zoom,
+		y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
+		false, false, (wide - ITEMICONSIZE - 8 * _2X * 2) * zoom,
+		true, zoom, true);
 #else
-	DrawBigNum2Bold(pow, x + (float)(COMBATPOWBARWIDTH - 7 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(COMBATPOWBARWIDTH - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true);
+	DrawBigNum2Bold(pow, x + (wide - 7 * _2X) * zoom,
+		y - (float)(10 * _2X) * zoom, RIGHT, false, false,
+		(wide - ITEMICONSIZE * 1.2f - 13 * _2X) * zoom,
+		true, NUM2ZOOM * 1.2f * zoom, true);
 
 #endif
 
@@ -6082,6 +6105,97 @@ static const char* ShopPriceText(int product, bool* storeReady)
 	}
 }
 
+//동료 상세보기와 같은 프레임 계열을 사용하는 구매 확인창.
+void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
+{
+	bool isBox = itemType == ITEM_BOX;
+	int product = detail;
+	if ((!isBox && (product < 0 || product >= TOTALIAPPRODUCT))
+		|| (isBox && (detail < BOX_PAID0 || detail > BOX_PAID5)))
+		return;
+
+	CdBeginBoard();
+	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
+
+	float panelX = 92.0f;
+	float panelY = 175.0f;
+	float panelW = (float)CD_DESIGNW - panelX * 2;
+	float panelH = 900.0f;
+	DrawPanel(panelX, panelY, panelW, panelH);
+
+	const char* name;
+	const char* price;
+	char priceBuf[64];
+	bool storeReady = false;
+	if (isBox) {
+		name = textId[TEXT_ITEMNAME_BOX + detail];
+		sprintf(priceBuf, "%lld 골드", GetBoxPrice(detail, GRADE_NORMAL));
+		price = priceBuf;
+	}
+	else {
+		name = ShopProductName(product);
+		price = ShopPriceText(product, &storeReady);
+	}
+
+	CdBody(name, (float)CD_DESIGNW / 2, 225.0f, 2.15f, CENTER, CD_INK);
+
+	float artSize = 590.0f;
+	float artX = ((float)CD_DESIGNW - artSize) / 2;
+	float artY = 305.0f;
+	if (isBox) {
+		DrawCastleBoxXY(detail, false, LEFT, Loc(artX), LocY(artY),
+			COLOR_WHITE, artSize / 512.0f * sCdU);
+	}
+	else if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
+		int variant = product - IAP_COIN_01;
+		DrawImage(448, 448, 32, 0, Loc(artX), LocY(artY),
+			false, false, false, false, false, artSize / 448.0f * sCdU,
+			sprite[COIN_0_IMG + variant], COIN_0_IMG + variant);
+	}
+	else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
+		int variant = product - IAP_HEART_01;
+		DrawImage(448, 448, 32, 0, Loc(artX), LocY(artY),
+			false, false, false, false, false, artSize / 448.0f * sCdU,
+			sprite[HEART_0_IMG + variant], HEART_0_IMG + variant);
+	}
+	else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
+		int variant = product - IAP_CASH_01;
+		DrawImage(512, 512, (variant % 3) * 512, (variant / 3) * 512,
+			Loc(artX), LocY(artY), false, false, false, false, false,
+			artSize / 512.0f * sCdU,
+			sprite[SHOP_CASH_PILES_IMG], SHOP_CASH_PILES_IMG);
+	}
+	else {
+		int pass = product - IAP_PASS_HEART;
+		DrawImage(640, 640, (pass % 2) * 640, (pass / 2) * 640,
+			Loc(artX), LocY(artY), false, false, false, false, false,
+			artSize / 640.0f * sCdU,
+			sprite[SHOP_PASS_ART_IMG], SHOP_PASS_ART_IMG);
+	}
+
+	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+		Loc(180.0f), LocY(930.0f), 730.0f * sCdU, 125.0f * sCdU, sCdU);
+	CdBody(price, (float)CD_DESIGNW / 2, CdMidY(930.0f, 125.0f, 2.15f),
+		2.15f, CENTER, CD_INK);
+	CdBodyId(TEXT_ASKBUY, (float)CD_DESIGNW / 2, 1100.0f,
+		1.65f, CENTER, CD_INK);
+
+	float buttonW = 610.0f;
+	float buttonX = ((float)CD_DESIGNW - buttonW) / 2;
+	float buttonY = (float)CD_BTN_Y;
+	float buttonH = (float)CD_BTN_H;
+	bool canBuy = !IapIsBusy();
+	if (canBuy)
+		SetRectPoint(Loc(buttonX), LocY(buttonY), buttonW * sCdU,
+			buttonH * sCdU, TOUCH_FUNC_SHOP_IAP_CONFIRM);
+	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
+		WP_YELLOW_CAP, Loc(buttonX), LocY(buttonY),
+		buttonW * sCdU, buttonH * sCdU, sCdU);
+	CdText("구매하기", (float)CD_DESIGNW / 2,
+		buttonY + buttonH * 0.28f, 2.04f, CENTER,
+		canBuy ? CD_INK : COLOR_GREY);
+}
+
 //구역 제목 리본.
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
 {
@@ -6111,9 +6225,9 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	bool storeReady = false;
 	const char* price = ShopPriceText(product, &storeReady);
 	bool canTouch = !IapIsBusy();
-	float bh = 28.0f * zoom;
+	float bh = 32.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
-	float artSize = Min(w - 14.0f * zoom, h - 82.0f * zoom);
+	float artSize = Min(w - 14.0f * zoom, h - 112.0f * zoom);
 	float artX = x + (w - artSize) / 2;
 	float artY = y - 38.0f * zoom;
 
@@ -6161,12 +6275,17 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 			y - h / 2 + 28.0f * zoom, 4.0f * zoom, false, false, true, 1);
 	}
 
-	MemRectRound(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
-		storeReady && canTouch ? COLOR_GREEN : COLOR_DARKGREY, 2);
-
+	//가격은 버튼 위에 따로 두고, 동료 강화창과 같은 노란 버튼을 쓴다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr(price,
-		x + w / 2, by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2, zoom * 0.85f);
+	CenterTextStr(price, x + w / 2, by + 22.0f * zoom, zoom * 0.85f);
+	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
+		WP_YELLOW_CAP, x + 6.0f * zoom, by,
+		w - 12.0f * zoom, bh, zoom);
+	SetFontColor(canTouch ? CD_INK : COLOR_GREY);
+	CenterTextStr("구매하기", x + w / 2,
+		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
+		zoom * 0.85f);
+	SetFontColor(COLOR_WHITE);
 
 	if (canTouch)
 		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
@@ -6182,9 +6301,9 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	int detail = BOX_PAID0 + i;
 	long long price = GetBoxPrice(detail, GRADE_NORMAL);
 	bool can = price >= 0 && robin.gold >= price;
-	float bh = 28.0f * zoom;
+	float bh = 32.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
-	float panelSize = Min(w - 8.0f * zoom, h - 76.0f * zoom);
+	float panelSize = Min(w - 8.0f * zoom, h - 112.0f * zoom);
 	float panelX = x + (w - panelSize) / 2;
 	float panelY = y - 38.0f * zoom;
 
@@ -6200,16 +6319,21 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	DrawCastleBoxXY(detail, false, LEFT, x + (w - boxSize) / 2,
 		panelY - (panelSize - boxSize) / 2, COLOR_WHITE, boxSize / 512.0f);
 
-	MemRectRound(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
-		can ? COLOR_GREEN : COLOR_DARKGREY, 2);
-
-	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by - 2.0f * zoom, 0.8f * zoom,
+	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by + 22.0f * zoom, 0.8f * zoom,
 		false, false, false, 1);
 
 	SetFontColor(COLOR_WHITE);
 	DrawNum(price, x + w - 10.0f * zoom,
-		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.8f / 2,
+		by + 22.0f * zoom,
 		NUM_FONT_NORMAL, RIGHT, false, false, true, zoom * 0.8f, false);
+	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
+		WP_YELLOW_CAP, x + 6.0f * zoom, by,
+		w - 12.0f * zoom, bh, zoom);
+	SetFontColor(can ? CD_INK : COLOR_GREY);
+	CenterTextStr("구매하기", x + w / 2,
+		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
+		zoom * 0.85f);
+	SetFontColor(COLOR_WHITE);
 
 	if (can)
 		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
