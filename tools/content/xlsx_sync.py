@@ -217,15 +217,49 @@ def write_tsv(name, head, cols, rows, nl):
 ICON_DIR = os.path.join(CONTENT, 'icon')
 
 
+_enemyId = None
+
+
+def enemy_id(name):
+    """ENEMY_BAHAMUT 같은 이름을 몬스터 번호로. 모르면 None."""
+    global _enemyId
+
+    if _enemyId is None:
+        _enemyId = {}
+
+        try:
+            _h, cols, rows, _n = read_tsv('enemy')
+            i = cols.index('enum_name')
+
+            for r in rows:
+                _enemyId[r[i]] = r[0]
+        except Exception:
+            pass
+
+    return _enemyId.get(name)
+
+
 def skill_icon(col, row):
     """스킬 한 줄이 어느 그림을 쓰는가. 없으면 None."""
     kind = row[col['icon_kind']]
     idx = row[col['icon']]
 
+    #몬스터를 부르는 줄은 icon 칸에 몬스터 이름이 들어 있다. 게임이 떨군
+    #enemy_N.png 를 쓰려면 이름을 번호로 바꿔야 한다.
+    if kind == 'ICONKIND_MONSTER':
+        n = enemy_id(idx) or (idx if idx.isdigit() else None)
+
+        if n is None:
+            return None
+
+        p = os.path.join(ICON_DIR, 'enemy_%s.png' % n)
+
+        return p if os.path.isfile(p) else None
+
     sheet = {'ICONKIND_SKILL': 'skill', 'ICONKIND_BULLET': 'bullet'}.get(kind)
 
     if sheet is None:
-        return None            #몬스터는 게임이 그려 줘야 한다(2 단계)
+        return None
 
     p = os.path.join(ICON_DIR, '%s_%s.png' % (sheet, idx))
 
