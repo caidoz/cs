@@ -790,14 +790,10 @@ bool Core::init()
 
 	LoadImg(EFFECT_IMG);
 	LoadTexture(EFFECT_IMG);
-
-	LoadImg(NUM2_IMG);
-	LoadTexture(NUM2_IMG);
-
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
-	for (i = SHOP_BANNER_GOLD_IMG; i <= SHOP_PASS_ART_IMG; i++) {
+	for (i = SHOP_BANNER_GOLD_IMG; i <= GACHA_PAID_BG_IMG; i++) {
 		LoadImg(i);
 		LoadTexture(i);
 	}
@@ -976,6 +972,12 @@ void Core::Run(float delta) {
 	int i;
 	//항상 현재 시간을 세팅해 준다.
 	currentTimeStamp = MC_knlCurrentTimeStamp();
+
+#if DUMP_CMF_PNG
+	//캐릭터 그림을 뽑는 중이면 그것만 한다. 게임은 돌리지 않는다.
+	DumpCmfStep();
+	return;
+#endif
 
 	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
@@ -1925,7 +1927,11 @@ void PaintClet(int x, int y, int w, int h)
 		}
 	}
 
-	if (popUpCnt > 0) {
+	//가챠는 자체 전체화면 입력을 쓴다. 상점에서 진입하면 아래쪽
+	//SHOPINFO 팝업이 스택에 남아 있는데, 이를 여기서 그리면 GachaDraw가
+	//등록한 카드 터치 영역을 ResetRectPoint로 모두 지워버린다.
+	//스택 자체는 보존해 가챠 종료 뒤 원래 상점으로 자연스럽게 돌아간다.
+	if (popUpCnt > 0 && drawHandle != MD_GACHA) {
 		ScreenDarken(SCREENDARKEN);
 		ResetRectPoint();
 
@@ -2136,7 +2142,9 @@ void PaintClet(int x, int y, int w, int h)
 	//카드 위에 얹는 문구(처음 얻은 것 / 5성 이상). GachaDraw()가 세워 둔다.
 	//카드를 다 그린 다음이라야 글자가 카드에 안 덮인다.
 	if (gachaAlphaBannerIdx >= 0) {
-		DrawGoldAlpha(xOffset + gachaAlphaBannerX, gachaAlphaBannerY, gachaAlphaBannerIdx, FONT_GOLD_LARGE, gachaAlphaBannerZoom, CENTER, true, false);
+		DrawGoldAlpha((int)(xOffset + gachaAlphaBannerX),
+			(int)gachaAlphaBannerY, gachaAlphaBannerIdx, FONT_GOLD_LARGE,
+			gachaAlphaBannerZoom, CENTER, true, false);
 	}
 
 	//커런시 효과를 생성하는 함수
@@ -2472,13 +2480,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
-
-
-
-
 
 
 

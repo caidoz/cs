@@ -232,8 +232,26 @@ def skill_icon(col, row):
     return p if os.path.isfile(p) else None
 
 
+
+def cmf_icon(kind):
+    """동료/몬스터 그림을 고르는 함수를 만든다.
+
+    게임이 DUMP_CMF_PNG 로 떨군 것을 icon_dump.py 가 content/icon 으로
+    옮겨 둔다. 아직 안 뽑았으면 그냥 빈 칸이다 - 그림이 없다고 표가
+    안 열리면 안 된다.
+    """
+    def fn(col, row):
+        p = os.path.join(ICON_DIR, '%s_%s.png' % (kind, row[col['id']]))
+
+        return p if os.path.isfile(p) else None
+
+    return fn
+
+
 DISPLAY = {
     'skill': [(3, '그림', skill_icon)],
+    'crew': [(3, '그림', cmf_icon('crew'))],
+    'enemy': [(3, '그림', cmf_icon('enemy'))],
 }
 
 IMG_PX = 32                     #그림 한 변

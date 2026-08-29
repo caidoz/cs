@@ -26,6 +26,11 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);
 
 void VersionDraw(void);
+
+#if DUMP_CMF_PNG
+//캐릭터 그림을 한 프레임에 한 장씩 PNG 로 떨군다(Config/BuildConfig.h).
+void DumpCmfStep(void);
+#endif
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);

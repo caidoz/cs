@@ -202,6 +202,115 @@ void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffs
 }
 
 // Draw�ڵ�
+#if DUMP_CMF_PNG
+//==========================================================================
+// 캐릭터 그림 뽑기
+//
+// 한 프레임에 한 장씩 뽑는다. RenderTexture::saveToFile 이 그리기가 끝난
+// 뒤에 저장하는 방식이라, 한 프레임에 여러 장을 걸면 앞의 것이 덮인다.
+//
+// 동료 먼저, 그 다음 몬스터. 다 끝나면 스스로 멈춘다.
+//==========================================================================
+
+static cocos2d::RenderTexture* gDumpRT = nullptr;
+static int  gDumpIdx = 0;
+static bool gDumpDone = false;
+
+//한 장 그려 저장한다. cmf 가 없으면 아무것도 안 하고 false.
+static bool DumpOneCmf(int cmf, int motion, const char* name)
+{
+	if (cmf < 0 || cmf >= MAXCMF)
+		return false;
+
+	//히어로(0~2)는 DrawCmfDetail 이 DrawPlayer 로 넘긴다. 그건 ao[] 를
+	//읽는데, 뽑기 중에는 게임을 안 돌려 ao[] 가 비어 있다. 건너뛴다.
+	if (cmf < TOTALCHAR)
+		return false;
+
+	if (motion < 0 || motion >= cmf_m_cnt[cmf])
+		motion = 0;
+
+	//가운데에 놓는다. center 를 켜면 그림의 한가운데가 이 자리에 온다.
+	PushRenderTarget(gDumpRT, nullptr, true);
+	DrawCmfDetail(cmf, motion,
+		DUMP_CMF_SIZE / 2, DUMP_CMF_SIZE / 2,
+		RIGHT, DUMP_CMF_ZOOM, 0, true);
+	PopRenderTarget();
+
+	gDumpRT->saveToFile(name, cocos2d::Image::Format::PNG, true);
+
+	return true;
+}
+
+//한 프레임에 한 걸음. Core::Run 이 부른다.
+void DumpCmfStep(void)
+{
+	char name[64];
+
+	if (gDumpDone)
+		return;
+
+	if (gDumpRT == nullptr) {
+		gDumpRT = cocos2d::RenderTexture::create(DUMP_CMF_SIZE, DUMP_CMF_SIZE);
+
+		if (gDumpRT == nullptr) {
+			CCLOG("[DUMP] RenderTexture 를 못 만들었다");
+			gDumpDone = true;
+			return;
+		}
+
+		gDumpRT->retain();
+
+		//떨군 자리를 한 번 알려 준다. 이걸 봐야 파일을 찾을 수 있다.
+		CCLOG("[DUMP] 시작. 저장 위치 : %sdump/",
+			cocos2d::FileUtils::getInstance()->getWritablePath().c_str());
+	}
+
+	//---- 동료 ----
+	if (gDumpIdx < gTotalCrew) {
+		const int i = gDumpIdx;
+		const int type = crewData[i * CREWDATASIZE + CREWDATA_TYPE];
+		const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
+
+		//대기 모션의 첫 장. crewPos 의 0 번이 그 자리다.
+		sprintf(name, "dump/crew_%d.png", i);
+		DumpOneCmf(cmf, crewPos[type * 5 + 0], name);
+
+		gDumpIdx++;
+
+		if (gDumpIdx % 20 == 0)
+			CCLOG("[DUMP] 동료 %d / %d", gDumpIdx, gTotalCrew);
+
+		return;
+	}
+
+	//---- 몬스터 ----
+	{
+		//몬스터 번호는 3 부터다. 0~2 는 히어로가 쓴다(content/README.md).
+		const int e = (gDumpIdx - gTotalCrew) + ENEMY_SNAIL;
+
+		if (e >= gTotalEnemy) {
+			CCLOG("[DUMP] 끝. 동료 %d, 몬스터 %d 장. "
+				"BuildConfig.h 의 DUMP_CMF_PNG 를 0 으로 되돌려라.",
+				gTotalCrew, gTotalEnemy - ENEMY_SNAIL);
+			gDumpDone = true;
+			return;
+		}
+
+		const int cmf = enemyData[e * ENEMYDATASIZE + ENEMYDATA_CMF];
+
+		sprintf(name, "dump/enemy_%d.png", e);
+		DumpOneCmf(cmf, crewPos[e * 5 + 0], name);
+
+		gDumpIdx++;
+
+		if ((e - ENEMY_SNAIL) % 50 == 0)
+			CCLOG("[DUMP] 몬스터 %d / %d", e - ENEMY_SNAIL, gTotalEnemy - ENEMY_SNAIL);
+	}
+}
+#endif
+
+
 void VersionDraw(void)
 {
 	int y;
@@ -276,8 +385,6 @@ void LogoDraw(void)
 			bufferTexture[BUFFER_SHOP]->setPosition(0, DY);
 
 			PushRenderTarget(bufferTexture[BUFFER_SHOP], bufferLayer[BUFFER_SHOP]);
-			DrawImage(640 * _2X, 512 * _2X, 0 * _2X, 0 * _2X, xOffset, DY, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_UP_IMG], UI_PAPER_BG_UP_IMG);
-			DrawImage(640 * _2X, 362 * _2X, 0 * _2X, 0 * _2X, xOffset, DY - 512 * _2X, false, false, false, false, false, 1.0f, sprite[UI_PAPER_BG_DOWN_IMG], UI_PAPER_BG_DOWN_IMG);
 			PopRenderTarget();
 
 
@@ -1882,7 +1989,6 @@ void GoldQuestMenuDraw(int x, int y, float zoom)
 
 	float degree = 90.0f - atan((float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 1] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 1]) / (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 0] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 0])) * 180 / M_PI;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 
 	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom);
@@ -2304,7 +2410,6 @@ void GameMenuDraw(int x, int y, float zoom)
 				DrawIcon(listMenuIcon[i], x + 12 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2, 2, false, false, false, true);
 				break;
 			case MENU_FRIENDS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X, 0 * _2X, x + 10 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_HERO:
 				DrawBarIcon(BAR_CASTLE, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
@@ -2319,16 +2424,12 @@ void GameMenuDraw(int x, int y, float zoom)
 				DrawBarIcon(BAR_MAINSHOP, x, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 - 8 * _2X + (float)(MAINMENU_Y / 2) * zoom, 0.8f * zoom);
 				break;
 			case MENU_NEWS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 5, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_GIFTS:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 6, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_CALENDAR:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 7, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_SETTING:
-				DrawImage(40 * _2X, 40 * _2X, 40 * _2X * 8, 0 * _2X, x + 8 * _2X, y - dy * j - (dy - ITEMICONSIZE * 2) / 2 + ITEMICONSIZE / 2 + 2 * _2X, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 				break;
 			case MENU_GAMERESET:
 				//�����̱� ������ �׳� �ؽ�Ʈ�� ����ش�.

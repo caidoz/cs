@@ -94,14 +94,76 @@ def is_blank(im):
     return a is not None and a.getbbox() is None
 
 
+def collect_dump():
+    """게임이 떨군 캐릭터 PNG 를 content/icon 으로 옮긴다.
+
+    BuildConfig.h 의 DUMP_CMF_PNG 를 1 로 두고 한 번 실행하면 게임이
+    쓰기 가능 경로의 dump/ 에 crew_N.png / enemy_N.png 를 떨군다.
+    그걸 엑셀에 넣을 크기로 줄여 옮긴다.
+    """
+    import glob
+
+    cands = []
+
+    for base in (os.environ.get('LOCALAPPDATA', ''), os.path.expanduser('~')):
+        if base:
+            cands.append(os.path.join(base, 'cs', 'dump'))
+
+    cands.append(os.path.join(ROOT, 'proj.win32', 'Debug.win32', 'dump'))
+    cands.append(os.path.join(ROOT, 'dump'))
+
+    src = None
+
+    for c in cands:
+        if os.path.isdir(c) and glob.glob(os.path.join(c, '*.png')):
+            src = c
+            break
+
+    if src is None:
+        print('게임이 떨군 dump 폴더를 못 찾았다. 찾아본 곳:')
+
+        for c in cands:
+            print('   ' + c)
+
+        print('게임 로그의 "[DUMP] 시작. 저장 위치" 줄을 보고 그 폴더를')
+        print('content/icon 으로 직접 옮겨도 된다.')
+        return 0
+
+    n = 0
+
+    for p in sorted(glob.glob(os.path.join(src, '*.png'))):
+        im = Image.open(p).convert('RGBA')
+
+        #투명한 여백을 잘라낸다. 128 짜리 판에 그린 것이라 대개 남는다.
+        box = im.getchannel('A').getbbox()
+
+        if box is None:
+            continue
+
+        im = im.crop(box)
+        im.thumbnail((THUMB, THUMB), Image.LANCZOS)
+        im.save(os.path.join(OUT, os.path.basename(p)))
+        n += 1
+
+    print('  %s 에서 %d장 옮김' % (src, n))
+
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument('--collect', action='store_true',
+                    help='게임이 떨군 캐릭터 PNG 를 거둬 온다')
     ap.add_argument('--all', action='store_true',
                     help='쓰는 칸만이 아니라 시트를 통째로 자른다')
     a = ap.parse_args()
 
     if not os.path.isdir(OUT):
         os.makedirs(OUT)
+
+    if a.collect:
+        collect_dump()
+        return
 
     if a.all:
         want = None

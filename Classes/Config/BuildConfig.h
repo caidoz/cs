@@ -96,3 +96,21 @@
 #define SLOTINITZOOM               0.5f    // 슬롯 초기 줌
 #define SLOTZOOM                   0.6f    // 슬롯 줌
 #define JOYSTICKZOOM               2.0f     // 조이스틱 줌
+
+//---- 캐릭터 그림 뽑기 ----
+//
+//1 로 두고 한 번 실행하면 동료와 몬스터를 한 마리씩 PNG 로 떨구고
+//그만둔다. 밸런스 엑셀에 그림을 넣으려고 만든 것이다.
+//
+//왜 게임이 그리나. 캐릭터 한 장은 조각을 겹쳐 그린 것이라
+//(DrawCmfDetail 이 부위마다 확대/반전/반투명/라이튼을 걸며 조립한다)
+//바깥에서 흉내내면 언젠가 어긋난다. 이미 그릴 줄 아는 쪽이 그린다.
+//
+//떨군 자리는 로그에 찍힌다. 윈도우면 대개
+//    C:/Users/<이름>/AppData/Local/cs/dump/
+//뽑고 나면 다시 0 으로 되돌린다. 켜 두면 게임이 안 돈다.
+#define DUMP_CMF_PNG               0
+
+//한 장의 크기와 배율. 엑셀에 넣을 것이라 크게 뽑을 필요가 없다.
+#define DUMP_CMF_SIZE              128
+#define DUMP_CMF_ZOOM              1.0f
