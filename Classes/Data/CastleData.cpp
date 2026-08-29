@@ -14,88 +14,100 @@
 #include "../Cmf.h"
 
 static const int castleOrder_builtin[] = {
-	CASTLE_TOLEM,//0//0
-	CASTLE_SWAMP,//1//2
-	CASTLE_VALLEY,//2//3
-	CASTLE_ATLANTICE,//3//4
-	CASTLE_PLAIN,//4//7
-	CASTLE_ELF,//5//8
-	CASTLE_FLAME,//6//9
-	CASTLE_FROST,//7//10
-	CASTLE_SEWAGE,//8//5
-	CASTLE_THUNDER,//9//11
-	CASTLE_GOLEMVALLEY,//10//13
-	CASTLE_DARKNESS,//11//14
-	CASTLE_LIGHT,//12//12
-	CASTLE_GHOST,//13//16
-	CASTLE_DRAGON,//14//15
-	CASTLE_ADELINE,//15//6
-	CASTLE_DEVILCASTLE,//16//17
-	CASTLE_SPACE,//17//18
-	CASTLE_ARENA,//18//1
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	CASTLE_TOLEM,	//0 (무명)
+	CASTLE_SWAMP,	//1 (무명)
+	CASTLE_VALLEY,	//2 (무명)
+	CASTLE_ATLANTICE,	//3 (무명)
+	CASTLE_PLAIN,	//4 (무명)
+	CASTLE_ELF,	//5 (무명)
+	CASTLE_FLAME,	//6 (무명)
+	CASTLE_FROST,	//7 (무명)
+	CASTLE_SEWAGE,	//8 (무명)
+	CASTLE_THUNDER,	//9 (무명)
+	CASTLE_GOLEMVALLEY,	//10 (무명)
+	CASTLE_DARKNESS,	//11 (무명)
+	CASTLE_LIGHT,	//12 (무명)
+	CASTLE_GHOST,	//13 (무명)
+	CASTLE_DRAGON,	//14 (무명)
+	CASTLE_ADELINE,	//15 (무명)
+	CASTLE_DEVILCASTLE,	//16 (무명)
+	CASTLE_SPACE,	//17 (무명)
+	CASTLE_ARENA,	//18 (무명)
 };
 static const int castleBoxColor_builtin[] = {
-	0xDBBA8F,//CASTLE_TOLEM = 0,//0
-	0xF3D58F,//CASTLE_ARENA,//1
-	0x00FF00,//CASTLE_SWAMP,//2
-	0x54BBF7,//CASTLE_VALLEY,//3
-	0xF8DFA8,//CASTLE_ATLANTICE,//4
-	0x888D6D,//CASTLE_SEWAGE,//5
-	0xFFFFFF,//CASTLE_ADELINE,//6
-	0xB9F3FD,//CASTLE_PLAIN,//7
-	0xD9F567,//CASTLE_ELF,//8
-	0xF56A15,//CASTLE_FLAME,//9
-	0xFFFFFF,//CASTLE_FROST,//10
-	0x511C6B,//CASTLE_THUNDER,//11
-	0xFDCE4D,//CASTLE_LIGHT,//12
-	0xC5B9AE,//CASTLE_GOLEMVALLEY,//13
-	0xFCE9BD,//CASTLE_DARKNESS,//14
-	0x5E4272,//CASTLE_DRAGON,//15
-	0x592965,//CASTLE_GHOST,//16
-	0xFFFFFF,//CASTLE_DEVILCASTLE,//17
-	0xFFFFFF,//CASTLE_SPACE,//18
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	0xDBBA8F,	//0 (무명)
+	0xF3D58F,	//1 (무명)
+	0x00FF00,	//2 (무명)
+	0x54BBF7,	//3 (무명)
+	0xF8DFA8,	//4 (무명)
+	0x888D6D,	//5 (무명)
+	0xFFFFFF,	//6 (무명)
+	0xB9F3FD,	//7 (무명)
+	0xD9F567,	//8 (무명)
+	0xF56A15,	//9 (무명)
+	0xFFFFFF,	//10 (무명)
+	0x511C6B,	//11 (무명)
+	0xFDCE4D,	//12 (무명)
+	0xC5B9AE,	//13 (무명)
+	0xFCE9BD,	//14 (무명)
+	0x5E4272,	//15 (무명)
+	0x592965,	//16 (무명)
+	0xFFFFFF,	//17 (무명)
+	0xFFFFFF,	//18 (무명)
 };
 static const long long castleBoxGold_builtin[] = {
-	10000,//CASTLE_TOLEM = 0,//0//0
-	500000000,//CASTLE_ARENA,//1//18
-	50000,//CASTLE_SWAMP,//2//1
-	100000,//CASTLE_VALLEY,//3//2
-	200000,//CASTLE_ATLANTICE,//4//3
-	6000000,//CASTLE_SEWAGE,//5//8
-	100000000,//CASTLE_ADELINE,//6//15
-	500000,//CASTLE_PLAIN,//7//4
-	1000000,//CASTLE_ELF,//8//5
-	2000000,//CASTLE_FLAME,//9//6
-	3500000,//CASTLE_FROST,//10//7
-	10000000,//CASTLE_THUNDER,//11//9
-	35000000,//CASTLE_LIGHT,//12//12
-	15000000,//CASTLE_GOLEMVALLEY,//13//10
-	23000000,//CASTLE_DARKNESS,//14//11
-	70000000,//CASTLE_DRAGON,//15//14
-	50000000,//CASTLE_GHOST,//16//13
-	150000000,//CASTLE_DEVILCASTLE,//17//16
-	300000000,//CASTLE_SPACE,//18//17
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	10000,	//0 (무명)
+	500000000,	//1 (무명)
+	50000,	//2 (무명)
+	100000,	//3 (무명)
+	200000,	//4 (무명)
+	6000000,	//5 (무명)
+	100000000,	//6 (무명)
+	500000,	//7 (무명)
+	1000000,	//8 (무명)
+	2000000,	//9 (무명)
+	3500000,	//10 (무명)
+	10000000,	//11 (무명)
+	35000000,	//12 (무명)
+	15000000,	//13 (무명)
+	23000000,	//14 (무명)
+	70000000,	//15 (무명)
+	50000000,	//16 (무명)
+	150000000,	//17 (무명)
+	300000000,	//18 (무명)
 };
 static const int castleStarLimit_builtin[] = {
-	20,//CASTLE_TOLEM = 0,//0
-	110,//CASTLE_ARENA,//1
-	25,//CASTLE_SWAMP,//2
-	30,//CASTLE_VALLEY,//3
-	35,//CASTLE_ATLANTICE,//4
-	40,//CASTLE_SEWAGE,//5
-	45,//CASTLE_ADELINE,//6
-	50,//CASTLE_PLAIN,//7
-	115,//CASTLE_ELF,//8
-	55,//CASTLE_FLAME,//9
-	60,//CASTLE_FROST,//10
-	70,//CASTLE_THUNDER,//11
-	75,//CASTLE_LIGHT,//12
-	80,//CASTLE_GOLEMVALLEY,//13
-	85,//CASTLE_DARKNESS,//14
-	90,//CASTLE_DRAGON,//15
-	95,//CASTLE_GHOST,//16
-	100,//CASTLE_DEVILCASTLE,//17
-	105,//CASTLE_SPACE,//18
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	20,	//0 (무명)
+	110,	//1 (무명)
+	25,	//2 (무명)
+	30,	//3 (무명)
+	35,	//4 (무명)
+	40,	//5 (무명)
+	45,	//6 (무명)
+	50,	//7 (무명)
+	115,	//8 (무명)
+	55,	//9 (무명)
+	60,	//10 (무명)
+	70,	//11 (무명)
+	75,	//12 (무명)
+	80,	//13 (무명)
+	85,	//14 (무명)
+	90,	//15 (무명)
+	95,	//16 (무명)
+	100,	//17 (무명)
+	105,	//18 (무명)
 };
 static const int setHeroPos_builtin[] = {
 	//CASTLE_TOLEM

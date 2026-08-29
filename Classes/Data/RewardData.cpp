@@ -26,188 +26,194 @@ static const int battleRewardMedal_builtin[] = {
 };
 
 static const long long battleRewardGold_builtin[] = {
-	1000,
-	1200,
-	1400,
-	1600,
-	1800,
-	2000,
-	2200,
-	2400,
-	2800,
-	3000,
-	3400,
-	3800,
-	4200,
-	4600,
-	5200,
-	5800,
-	6400,
-	7000,
-	7800,
-	8600,
-	10000,
-	11000,
-	13000,
-	15000,
-	17000,
-	19000,
-	21000,
-	24000,
-	27000,
-	30000,
-	33000,
-	37000,
-	41000,
-	46000,
-	51000,
-	28500,
-	31500,
-	35000,
-	38500,
-	42500,
-	50000,
-	55000,
-	65000,
-	75000,
-	85000,
-	95000,
-	105000,
-	120000,
-	135000,
-	150000,
-	165000,
-	185000,
-	205000,
-	230000,
-	255000,
-	285000,
-	315000,
-	350000,
-	385000,
-	425000,
-	500000,
-	550000,
-	650000,
-	750000,
-	850000,
-	950000,
-	10500000,
-	12000000,
-	13500000,
-	15000000,
-	16500000,
-	18500000,
-	20500000,
-	23000000,
-	25500000,
-	28500000,
-	31500000,
-	35000000,
-	38500000,
-	42500000,
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	1000,	//0 (무명)
+	1200,	//1 (무명)
+	1400,	//2 (무명)
+	1600,	//3 (무명)
+	1800,	//4 (무명)
+	2000,	//5 (무명)
+	2200,	//6 (무명)
+	2400,	//7 (무명)
+	2800,	//8 (무명)
+	3000,	//9 (무명)
+	3400,	//10 (무명)
+	3800,	//11 (무명)
+	4200,	//12 (무명)
+	4600,	//13 (무명)
+	5200,	//14 (무명)
+	5800,	//15 (무명)
+	6400,	//16 (무명)
+	7000,	//17 (무명)
+	7800,	//18 (무명)
+	8600,	//19 (무명)
+	10000,	//20 (무명)
+	11000,	//21 (무명)
+	13000,	//22 (무명)
+	15000,	//23 (무명)
+	17000,	//24 (무명)
+	19000,	//25 (무명)
+	21000,	//26 (무명)
+	24000,	//27 (무명)
+	27000,	//28 (무명)
+	30000,	//29 (무명)
+	33000,	//30 (무명)
+	37000,	//31 (무명)
+	41000,	//32 (무명)
+	46000,	//33 (무명)
+	51000,	//34 (무명)
+	28500,	//35 (무명)
+	31500,	//36 (무명)
+	35000,	//37 (무명)
+	38500,	//38 (무명)
+	42500,	//39 (무명)
+	50000,	//40 (무명)
+	55000,	//41 (무명)
+	65000,	//42 (무명)
+	75000,	//43 (무명)
+	85000,	//44 (무명)
+	95000,	//45 (무명)
+	105000,	//46 (무명)
+	120000,	//47 (무명)
+	135000,	//48 (무명)
+	150000,	//49 (무명)
+	165000,	//50 (무명)
+	185000,	//51 (무명)
+	205000,	//52 (무명)
+	230000,	//53 (무명)
+	255000,	//54 (무명)
+	285000,	//55 (무명)
+	315000,	//56 (무명)
+	350000,	//57 (무명)
+	385000,	//58 (무명)
+	425000,	//59 (무명)
+	500000,	//60 (무명)
+	550000,	//61 (무명)
+	650000,	//62 (무명)
+	750000,	//63 (무명)
+	850000,	//64 (무명)
+	950000,	//65 (무명)
+	10500000,	//66 (무명)
+	12000000,	//67 (무명)
+	13500000,	//68 (무명)
+	15000000,	//69 (무명)
+	16500000,	//70 (무명)
+	18500000,	//71 (무명)
+	20500000,	//72 (무명)
+	23000000,	//73 (무명)
+	25500000,	//74 (무명)
+	28500000,	//75 (무명)
+	31500000,	//76 (무명)
+	35000000,	//77 (무명)
+	38500000,	//78 (무명)
+	42500000,	//79 (무명)
 };
 static const long long bossGold_builtin[] = {
-	10000 * 3,
-	11000 * 3,
-	13000 * 3,
-	15000 * 3,
-	17000 * 3,
-	19000 * 3,
-	21000 * 3,
-	24000 * 3,
-	27000 * 3,
-	30000 * 3,
-	33000 * 3,
-	37000 * 3,
-	41000 * 3,
-	46000 * 3,
-	51000 * 3,
-	57000 * 3,
-	63000 * 3,
-	70000 * 3,
-	77000 * 3,
-	85000 * 3,
-	100000 * 3,
-	110000 * 3,
-	130000 * 3,
-	150000 * 3,
-	170000 * 3,
-	190000 * 3,
-	210000 * 3,
-	240000 * 3,
-	270000 * 3,
-	300000 * 3,
-	330000 * 3,
-	370000 * 3,
-	410000 * 3,
-	460000 * 3,
-	510000 * 3,
-	570000 * 3,
-	630000 * 3,
-	700000 * 3,
-	770000 * 3,
-	850000 * 3,
-	1000000 * 3,
-	1100000 * 3,
-	1300000 * 3,
-	1500000 * 3,
-	1700000 * 3,
-	1900000 * 3,
-	2100000 * 3,
-	2400000 * 3,
-	2700000 * 3,
-	3000000 * 3,
-	3300000 * 3,
-	3700000 * 3,
-	4100000 * 3,
-	4600000 * 3,
-	5100000 * 3,
-	5700000 * 3,
-	6300000 * 3,
-	7000000 * 3,
-	7700000 * 3,
-	8500000 * 3,
-	10000000 * 3,
-	11000000 * 3,
-	13000000 * 3,
-	15000000 * 3,
-	17000000 * 3,
-	19000000 * 3,
-	21000000 * 3,
-	24000000 * 3,
-	27000000 * 3,
-	30000000 * 3,
-	33000000 * 3,
-	37000000 * 3,
-	41000000 * 3,
-	46000000 * 3,
-	51000000 * 3,
-	57000000 * 3,
-	63000000 * 3,
-	70000000 * 3,
-	77000000 * 3,
-	85000000 * 3,
-	100000000 * 3,
-	110000000 * 3,
-	130000000 * 3,
-	150000000 * 3,
-	170000000 * 3,
-	190000000 * 3,
-	210000000 * 3,
-	240000000 * 3,
-	270000000 * 3,
-	300000000 * 3,
-	330000000 * 3,
-	370000000 * 3,
-	410000000 * 3,
-	460000000 * 3,
-	510000000 * 3,
-	570000000 * 3,
-	630000000 * 3,
-	700000000 * 3,
-	770000000 * 3,
-	850000000 * 3,
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	10000 * 3,	//0 (무명)
+	11000 * 3,	//1 (무명)
+	13000 * 3,	//2 (무명)
+	15000 * 3,	//3 (무명)
+	17000 * 3,	//4 (무명)
+	19000 * 3,	//5 (무명)
+	21000 * 3,	//6 (무명)
+	24000 * 3,	//7 (무명)
+	27000 * 3,	//8 (무명)
+	30000 * 3,	//9 (무명)
+	33000 * 3,	//10 (무명)
+	37000 * 3,	//11 (무명)
+	41000 * 3,	//12 (무명)
+	46000 * 3,	//13 (무명)
+	51000 * 3,	//14 (무명)
+	57000 * 3,	//15 (무명)
+	63000 * 3,	//16 (무명)
+	70000 * 3,	//17 (무명)
+	77000 * 3,	//18 (무명)
+	85000 * 3,	//19 (무명)
+	100000 * 3,	//20 (무명)
+	110000 * 3,	//21 (무명)
+	130000 * 3,	//22 (무명)
+	150000 * 3,	//23 (무명)
+	170000 * 3,	//24 (무명)
+	190000 * 3,	//25 (무명)
+	210000 * 3,	//26 (무명)
+	240000 * 3,	//27 (무명)
+	270000 * 3,	//28 (무명)
+	300000 * 3,	//29 (무명)
+	330000 * 3,	//30 (무명)
+	370000 * 3,	//31 (무명)
+	410000 * 3,	//32 (무명)
+	460000 * 3,	//33 (무명)
+	510000 * 3,	//34 (무명)
+	570000 * 3,	//35 (무명)
+	630000 * 3,	//36 (무명)
+	700000 * 3,	//37 (무명)
+	770000 * 3,	//38 (무명)
+	850000 * 3,	//39 (무명)
+	1000000 * 3,	//40 (무명)
+	1100000 * 3,	//41 (무명)
+	1300000 * 3,	//42 (무명)
+	1500000 * 3,	//43 (무명)
+	1700000 * 3,	//44 (무명)
+	1900000 * 3,	//45 (무명)
+	2100000 * 3,	//46 (무명)
+	2400000 * 3,	//47 (무명)
+	2700000 * 3,	//48 (무명)
+	3000000 * 3,	//49 (무명)
+	3300000 * 3,	//50 (무명)
+	3700000 * 3,	//51 (무명)
+	4100000 * 3,	//52 (무명)
+	4600000 * 3,	//53 (무명)
+	5100000 * 3,	//54 (무명)
+	5700000 * 3,	//55 (무명)
+	6300000 * 3,	//56 (무명)
+	7000000 * 3,	//57 (무명)
+	7700000 * 3,	//58 (무명)
+	8500000 * 3,	//59 (무명)
+	10000000 * 3,	//60 (무명)
+	11000000 * 3,	//61 (무명)
+	13000000 * 3,	//62 (무명)
+	15000000 * 3,	//63 (무명)
+	17000000 * 3,	//64 (무명)
+	19000000 * 3,	//65 (무명)
+	21000000 * 3,	//66 (무명)
+	24000000 * 3,	//67 (무명)
+	27000000 * 3,	//68 (무명)
+	30000000 * 3,	//69 (무명)
+	33000000 * 3,	//70 (무명)
+	37000000 * 3,	//71 (무명)
+	41000000 * 3,	//72 (무명)
+	46000000 * 3,	//73 (무명)
+	51000000 * 3,	//74 (무명)
+	57000000 * 3,	//75 (무명)
+	63000000 * 3,	//76 (무명)
+	70000000 * 3,	//77 (무명)
+	77000000 * 3,	//78 (무명)
+	85000000 * 3,	//79 (무명)
+	100000000 * 3,	//80 (무명)
+	110000000 * 3,	//81 (무명)
+	130000000 * 3,	//82 (무명)
+	150000000 * 3,	//83 (무명)
+	170000000 * 3,	//84 (무명)
+	190000000 * 3,	//85 (무명)
+	210000000 * 3,	//86 (무명)
+	240000000 * 3,	//87 (무명)
+	270000000 * 3,	//88 (무명)
+	300000000 * 3,	//89 (무명)
+	330000000 * 3,	//90 (무명)
+	370000000 * 3,	//91 (무명)
+	410000000 * 3,	//92 (무명)
+	460000000 * 3,	//93 (무명)
+	510000000 * 3,	//94 (무명)
+	570000000 * 3,	//95 (무명)
+	630000000 * 3,	//96 (무명)
+	700000000 * 3,	//97 (무명)
+	770000000 * 3,	//98 (무명)
+	850000000 * 3,	//99 (무명)
 };
 static const int raidRewardMedal_builtin[] = {
 #ifdef RAIDABSOLUTE
@@ -288,1041 +294,1996 @@ static const int levelUpCategory_builtin[] = {
 
 };
 static const signed long long levelUpReward_builtin[] = {
-	LVUPREWARD_AUTOROLL, MAXLV, //1//Automatic dice rolling
-	LVUPREWARD_COLLECTIONS, MAXLV, //2//Albums
-	LVUPREWARD_DAILYREWARDS, MAXLV, //3//Everyday gifts
-	LVUPREWARD_DAILYQUEST, MAXLV, //4//Quick wins
-	LVUPREWARD_HEARTMAX, 40,//5//Number of throws
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_AIRCRASH,//6//Case d챕part
-	LVUPREWARD_GETHERO, DIANA,//7//Rent targets 
-	LVUPREWARD_GETSKILL, DIANA_SKILL_3WAY,//8//Closing
-	LVUPREWARD_SHILED, 4,//9//Shields 
-	LVUPREWARD_GETHERO, MAXX,//10//Bank robbery
-
-	LVUPREWARD_HEARTMAX, 50,//11//Number of throws
-	LVUPREWARD_GETSKILL, MAXX_SKILL_KICK,//12//Properties
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_STAB,//13//Chance card
-	LVUPREWARD_HEARTPERHOUR, 6,//14//Throw regeneration 
-	LVUPREWARD_GETSKILL, DIANA_SKILL_LASER,//15//Stickers for rewards
-
-	LVUPREWARD_GETSKILL, MAXX_SKILL_SHORT,//16//Increase in daily gifts
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_BOOSTSLASH,//17//Closing 
-	LVUPREWARD_HEART, 300,//18// 350 dice + Number of throws 
-	LVUPREWARD_HEARTMAX, 60,//19//RENT
-	LVUPREWARD_GETSKILL, DIANA_SKILL_FLAMER,//20//Rent targets
-
-	LVUPREWARD_HEART, 400,//21//
-	LVUPREWARD_HEARTMAX, 70,//22
-	LVUPREWARD_HEART, 1000,//23
-	LVUPREWARD_HEART, 500,//24
-	LVUPREWARD_HEARTPERHOUR, 7,//25
-
-	LVUPREWARD_GETSKILL, MAXX_SKILL_AIR,//26//Closing 
-	LVUPREWARD_HEART, 500,//27//
-	LVUPREWARD_HEARTMAX, 80,//28//Number of throws The maximum number of throws is increased from 70 to 80.
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_HYPERCHARGE,//29//Stickers for rewards
-	LVUPREWARD_GETSKILL, DIANA_SKILL_BOMBSHOT,//30//Bank robbery
-
-	LVUPREWARD_SHILED, 5,//31//Shields 
-	LVUPREWARD_HEART, 500,//32
-	LVUPREWARD_HEARTPERHOUR, 8,//33//hrow regeneration Generates 9 dice per hour
-	LVUPREWARD_GETSKILL, MAXX_SKILL_CAMPING,//34//Chance card
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_SOULCRASH,//35//Properties
-
-	LVUPREWARD_HEART, 2000,//36
-	LVUPREWARD_HEARTMAX, 90,//37//Compagnie de Service Public
-	LVUPREWARD_GETSKILL, DIANA_SKILL_GUIDEDSHOT,//38//Rent //Case d챕part : Bonus when you pass the starting square +500K
-	LVUPREWARD_HEART, 3000,//39
-	LVUPREWARD_HEARTPERHOUR, 9,//40
-
-	LVUPREWARD_GETSKILL, MAXX_SKILL_HORMING,//41
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_ABSOLUTEPIERCE,//42
-	LVUPREWARD_GETSKILL, DIANA_SKILL_SPRAYSHOT,//43
-	LVUPREWARD_HEARTMAX, 100,//44
-	LVUPREWARD_GETSKILL, MAXX_SKILL_CIRCLE,//45
-
-	LVUPREWARD_GETSKILL, ROBIN_SKILL_KILLALL,//46
-	LVUPREWARD_GETSKILL, DIANA_SKILL_SATELLITESHOT,//47
-	LVUPREWARD_HEARTPERHOUR, 10,//48
-	LVUPREWARD_GETSKILL, MAXX_SKILL_MEGA,//49
-	LVUPREWARD_HEART, 5000,//50
-
-	-1, -1,//51
-	-1, -1,//52
-	-1, -1,//53
-	-1, -1,//54
-	-1, -1,//55
-
-	-1, -1,//56
-	-1, -1,//57
-	-1, -1,//58
-	-1, -1,//59
-	-1, -1,//60
-
-	-1, -1,//61
-	-1, -1,//62
-	-1, -1,//63
-	-1, -1,//64
-	-1, -1,//65
-
-	-1, -1,//66
-	-1, -1,//67
-	-1, -1,//68
-	-1, -1,//69
-	-1, -1,//70
-
-	-1, -1,//71
-	-1, -1,//72
-	-1, -1,//73
-	-1, -1,//74
-	-1, -1,//75
-
-	-1, -1,//76
-	-1, -1,//77
-	-1, -1,//78
-	-1, -1,//79
-	-1, -1,//80
-
-	-1, -1,//81
-	-1, -1,//82
-	-1, -1,//83
-	-1, -1,//84
-	-1, -1,//85
-
-	-1, -1,//86
-	-1, -1,//87
-	-1, -1,//88
-	-1, -1,//89
-	-1, -1,//90
-
-	-1, -1,//91
-	-1, -1,//92
-	-1, -1,//93
-	-1, -1,//94
-	-1, -1,//95
-
-	-1, -1,//96
-	-1, -1,//97
-	-1, -1,//98
-	-1, -1,//99
-	-1, -1,//100
-
-
+	LVUPREWARD_AUTOROLL,	//0 (무명)
+	MAXLV,	//1 (무명)
+	LVUPREWARD_COLLECTIONS,	//2 (무명)
+	MAXLV,	//3 (무명)
+	LVUPREWARD_DAILYREWARDS,	//4 (무명)
+	MAXLV,	//5 (무명)
+	LVUPREWARD_DAILYQUEST,	//6 (무명)
+	MAXLV,	//7 (무명)
+	LVUPREWARD_HEARTMAX,	//8 (무명)
+	40,	//9 (무명)
+	LVUPREWARD_GETSKILL,	//10 (무명)
+	ROBIN_SKILL_AIRCRASH,	//11 (무명)
+	LVUPREWARD_GETHERO,	//12 (무명)
+	DIANA,	//13 (무명)
+	LVUPREWARD_GETSKILL,	//14 (무명)
+	DIANA_SKILL_3WAY,	//15 (무명)
+	LVUPREWARD_SHILED,	//16 (무명)
+	4,	//17 (무명)
+	LVUPREWARD_GETHERO,	//18 (무명)
+	MAXX,	//19 (무명)
+	LVUPREWARD_HEARTMAX,	//20 (무명)
+	50,	//21 (무명)
+	LVUPREWARD_GETSKILL,	//22 (무명)
+	MAXX_SKILL_KICK,	//23 (무명)
+	LVUPREWARD_GETSKILL,	//24 (무명)
+	ROBIN_SKILL_STAB,	//25 (무명)
+	LVUPREWARD_HEARTPERHOUR,	//26 (무명)
+	6,	//27 (무명)
+	LVUPREWARD_GETSKILL,	//28 (무명)
+	DIANA_SKILL_LASER,	//29 (무명)
+	LVUPREWARD_GETSKILL,	//30 (무명)
+	MAXX_SKILL_SHORT,	//31 (무명)
+	LVUPREWARD_GETSKILL,	//32 (무명)
+	ROBIN_SKILL_BOOSTSLASH,	//33 (무명)
+	LVUPREWARD_HEART,	//34 (무명)
+	300,	//35 (무명)
+	LVUPREWARD_HEARTMAX,	//36 (무명)
+	60,	//37 (무명)
+	LVUPREWARD_GETSKILL,	//38 (무명)
+	DIANA_SKILL_FLAMER,	//39 (무명)
+	LVUPREWARD_HEART,	//40 (무명)
+	400,	//41 (무명)
+	LVUPREWARD_HEARTMAX,	//42 (무명)
+	70,	//43 (무명)
+	LVUPREWARD_HEART,	//44 (무명)
+	1000,	//45 (무명)
+	LVUPREWARD_HEART,	//46 (무명)
+	500,	//47 (무명)
+	LVUPREWARD_HEARTPERHOUR,	//48 (무명)
+	7,	//49 (무명)
+	LVUPREWARD_GETSKILL,	//50 (무명)
+	MAXX_SKILL_AIR,	//51 (무명)
+	LVUPREWARD_HEART,	//52 (무명)
+	500,	//53 (무명)
+	LVUPREWARD_HEARTMAX,	//54 (무명)
+	80,	//55 (무명)
+	LVUPREWARD_GETSKILL,	//56 (무명)
+	ROBIN_SKILL_HYPERCHARGE,	//57 (무명)
+	LVUPREWARD_GETSKILL,	//58 (무명)
+	DIANA_SKILL_BOMBSHOT,	//59 (무명)
+	LVUPREWARD_SHILED,	//60 (무명)
+	5,	//61 (무명)
+	LVUPREWARD_HEART,	//62 (무명)
+	500,	//63 (무명)
+	LVUPREWARD_HEARTPERHOUR,	//64 (무명)
+	8,	//65 (무명)
+	LVUPREWARD_GETSKILL,	//66 (무명)
+	MAXX_SKILL_CAMPING,	//67 (무명)
+	LVUPREWARD_GETSKILL,	//68 (무명)
+	ROBIN_SKILL_SOULCRASH,	//69 (무명)
+	LVUPREWARD_HEART,	//70 (무명)
+	2000,	//71 (무명)
+	LVUPREWARD_HEARTMAX,	//72 (무명)
+	90,	//73 (무명)
+	LVUPREWARD_GETSKILL,	//74 (무명)
+	DIANA_SKILL_GUIDEDSHOT,	//75 (무명)
+	LVUPREWARD_HEART,	//76 (무명)
+	3000,	//77 (무명)
+	LVUPREWARD_HEARTPERHOUR,	//78 (무명)
+	9,	//79 (무명)
+	LVUPREWARD_GETSKILL,	//80 (무명)
+	MAXX_SKILL_HORMING,	//81 (무명)
+	LVUPREWARD_GETSKILL,	//82 (무명)
+	ROBIN_SKILL_ABSOLUTEPIERCE,	//83 (무명)
+	LVUPREWARD_GETSKILL,	//84 (무명)
+	DIANA_SKILL_SPRAYSHOT,	//85 (무명)
+	LVUPREWARD_HEARTMAX,	//86 (무명)
+	100,	//87 (무명)
+	LVUPREWARD_GETSKILL,	//88 (무명)
+	MAXX_SKILL_CIRCLE,	//89 (무명)
+	LVUPREWARD_GETSKILL,	//90 (무명)
+	ROBIN_SKILL_KILLALL,	//91 (무명)
+	LVUPREWARD_GETSKILL,	//92 (무명)
+	DIANA_SKILL_SATELLITESHOT,	//93 (무명)
+	LVUPREWARD_HEARTPERHOUR,	//94 (무명)
+	10,	//95 (무명)
+	LVUPREWARD_GETSKILL,	//96 (무명)
+	MAXX_SKILL_MEGA,	//97 (무명)
+	LVUPREWARD_HEART,	//98 (무명)
+	5000,	//99 (무명)
+	-1,	//100 (무명)
+	-1,	//101 (무명)
+	-1,	//102 (무명)
+	-1,	//103 (무명)
+	-1,	//104 (무명)
+	-1,	//105 (무명)
+	-1,	//106 (무명)
+	-1,	//107 (무명)
+	-1,	//108 (무명)
+	-1,	//109 (무명)
+	-1,	//110 (무명)
+	-1,	//111 (무명)
+	-1,	//112 (무명)
+	-1,	//113 (무명)
+	-1,	//114 (무명)
+	-1,	//115 (무명)
+	-1,	//116 (무명)
+	-1,	//117 (무명)
+	-1,	//118 (무명)
+	-1,	//119 (무명)
+	-1,	//120 (무명)
+	-1,	//121 (무명)
+	-1,	//122 (무명)
+	-1,	//123 (무명)
+	-1,	//124 (무명)
+	-1,	//125 (무명)
+	-1,	//126 (무명)
+	-1,	//127 (무명)
+	-1,	//128 (무명)
+	-1,	//129 (무명)
+	-1,	//130 (무명)
+	-1,	//131 (무명)
+	-1,	//132 (무명)
+	-1,	//133 (무명)
+	-1,	//134 (무명)
+	-1,	//135 (무명)
+	-1,	//136 (무명)
+	-1,	//137 (무명)
+	-1,	//138 (무명)
+	-1,	//139 (무명)
+	-1,	//140 (무명)
+	-1,	//141 (무명)
+	-1,	//142 (무명)
+	-1,	//143 (무명)
+	-1,	//144 (무명)
+	-1,	//145 (무명)
+	-1,	//146 (무명)
+	-1,	//147 (무명)
+	-1,	//148 (무명)
+	-1,	//149 (무명)
+	-1,	//150 (무명)
+	-1,	//151 (무명)
+	-1,	//152 (무명)
+	-1,	//153 (무명)
+	-1,	//154 (무명)
+	-1,	//155 (무명)
+	-1,	//156 (무명)
+	-1,	//157 (무명)
+	-1,	//158 (무명)
+	-1,	//159 (무명)
+	-1,	//160 (무명)
+	-1,	//161 (무명)
+	-1,	//162 (무명)
+	-1,	//163 (무명)
+	-1,	//164 (무명)
+	-1,	//165 (무명)
+	-1,	//166 (무명)
+	-1,	//167 (무명)
+	-1,	//168 (무명)
+	-1,	//169 (무명)
+	-1,	//170 (무명)
+	-1,	//171 (무명)
+	-1,	//172 (무명)
+	-1,	//173 (무명)
+	-1,	//174 (무명)
+	-1,	//175 (무명)
+	-1,	//176 (무명)
+	-1,	//177 (무명)
+	-1,	//178 (무명)
+	-1,	//179 (무명)
+	-1,	//180 (무명)
+	-1,	//181 (무명)
+	-1,	//182 (무명)
+	-1,	//183 (무명)
+	-1,	//184 (무명)
+	-1,	//185 (무명)
+	-1,	//186 (무명)
+	-1,	//187 (무명)
+	-1,	//188 (무명)
+	-1,	//189 (무명)
+	-1,	//190 (무명)
+	-1,	//191 (무명)
+	-1,	//192 (무명)
+	-1,	//193 (무명)
+	-1,	//194 (무명)
+	-1,	//195 (무명)
+	-1,	//196 (무명)
+	-1,	//197 (무명)
+	-1,	//198 (무명)
+	-1,	//199 (무명)
 };
-static const signed long long stageClearReward_builtin[] = {//TOTALSTAGE * BOX1MAXREWARDITEM * REWARDDATASIZE
-	ITEM_SKILL, SKILL_ROBIN8, false,  1,//1
-	-1, false, false, false,
-	-1, false, false, false,
-
-	ITEM_CREW, NPC_BOY, false,  1,//2
-	-1, false, false, false,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//3
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//4
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//5
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//6
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//7
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//8
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//9
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//10
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//1
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//2
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//3
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//4
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//5
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//6
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//7
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//8
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//9
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//10
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//1
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//2
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//3
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//4
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//5
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//6
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//7
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//8
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//9
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false,  30,//10
-	ITEM_GOLD, false, false,  1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//1
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//2
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//3
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//4
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//5
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//6
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//7
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//8
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//9
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
-
-	ITEM_HEART, false, false, 30,//10
-	ITEM_GOLD, false, false, 1000,
-	-1, false, false, false,
+static const signed long long stageClearReward_builtin[] = {
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
+
+	ITEM_SKILL,	//0 (무명)
+	SKILL_ROBIN8,	//1 (무명)
+	false,	//2 (무명)
+	1,	//3 (무명)
+	-1,	//4 (무명)
+	false,	//5 (무명)
+	false,	//6 (무명)
+	false,	//7 (무명)
+	-1,	//8 (무명)
+	false,	//9 (무명)
+	false,	//10 (무명)
+	false,	//11 (무명)
+	ITEM_CREW,	//12 (무명)
+	NPC_BOY,	//13 (무명)
+	false,	//14 (무명)
+	1,	//15 (무명)
+	-1,	//16 (무명)
+	false,	//17 (무명)
+	false,	//18 (무명)
+	false,	//19 (무명)
+	-1,	//20 (무명)
+	false,	//21 (무명)
+	false,	//22 (무명)
+	false,	//23 (무명)
+	ITEM_HEART,	//24 (무명)
+	false,	//25 (무명)
+	false,	//26 (무명)
+	30,	//27 (무명)
+	ITEM_GOLD,	//28 (무명)
+	false,	//29 (무명)
+	false,	//30 (무명)
+	1000,	//31 (무명)
+	-1,	//32 (무명)
+	false,	//33 (무명)
+	false,	//34 (무명)
+	false,	//35 (무명)
+	ITEM_HEART,	//36 (무명)
+	false,	//37 (무명)
+	false,	//38 (무명)
+	30,	//39 (무명)
+	ITEM_GOLD,	//40 (무명)
+	false,	//41 (무명)
+	false,	//42 (무명)
+	1000,	//43 (무명)
+	-1,	//44 (무명)
+	false,	//45 (무명)
+	false,	//46 (무명)
+	false,	//47 (무명)
+	ITEM_HEART,	//48 (무명)
+	false,	//49 (무명)
+	false,	//50 (무명)
+	30,	//51 (무명)
+	ITEM_GOLD,	//52 (무명)
+	false,	//53 (무명)
+	false,	//54 (무명)
+	1000,	//55 (무명)
+	-1,	//56 (무명)
+	false,	//57 (무명)
+	false,	//58 (무명)
+	false,	//59 (무명)
+	ITEM_HEART,	//60 (무명)
+	false,	//61 (무명)
+	false,	//62 (무명)
+	30,	//63 (무명)
+	ITEM_GOLD,	//64 (무명)
+	false,	//65 (무명)
+	false,	//66 (무명)
+	1000,	//67 (무명)
+	-1,	//68 (무명)
+	false,	//69 (무명)
+	false,	//70 (무명)
+	false,	//71 (무명)
+	ITEM_HEART,	//72 (무명)
+	false,	//73 (무명)
+	false,	//74 (무명)
+	30,	//75 (무명)
+	ITEM_GOLD,	//76 (무명)
+	false,	//77 (무명)
+	false,	//78 (무명)
+	1000,	//79 (무명)
+	-1,	//80 (무명)
+	false,	//81 (무명)
+	false,	//82 (무명)
+	false,	//83 (무명)
+	ITEM_HEART,	//84 (무명)
+	false,	//85 (무명)
+	false,	//86 (무명)
+	30,	//87 (무명)
+	ITEM_GOLD,	//88 (무명)
+	false,	//89 (무명)
+	false,	//90 (무명)
+	1000,	//91 (무명)
+	-1,	//92 (무명)
+	false,	//93 (무명)
+	false,	//94 (무명)
+	false,	//95 (무명)
+	ITEM_HEART,	//96 (무명)
+	false,	//97 (무명)
+	false,	//98 (무명)
+	30,	//99 (무명)
+	ITEM_GOLD,	//100 (무명)
+	false,	//101 (무명)
+	false,	//102 (무명)
+	1000,	//103 (무명)
+	-1,	//104 (무명)
+	false,	//105 (무명)
+	false,	//106 (무명)
+	false,	//107 (무명)
+	ITEM_HEART,	//108 (무명)
+	false,	//109 (무명)
+	false,	//110 (무명)
+	30,	//111 (무명)
+	ITEM_GOLD,	//112 (무명)
+	false,	//113 (무명)
+	false,	//114 (무명)
+	1000,	//115 (무명)
+	-1,	//116 (무명)
+	false,	//117 (무명)
+	false,	//118 (무명)
+	false,	//119 (무명)
+	ITEM_HEART,	//120 (무명)
+	false,	//121 (무명)
+	false,	//122 (무명)
+	30,	//123 (무명)
+	ITEM_GOLD,	//124 (무명)
+	false,	//125 (무명)
+	false,	//126 (무명)
+	1000,	//127 (무명)
+	-1,	//128 (무명)
+	false,	//129 (무명)
+	false,	//130 (무명)
+	false,	//131 (무명)
+	ITEM_HEART,	//132 (무명)
+	false,	//133 (무명)
+	false,	//134 (무명)
+	30,	//135 (무명)
+	ITEM_GOLD,	//136 (무명)
+	false,	//137 (무명)
+	false,	//138 (무명)
+	1000,	//139 (무명)
+	-1,	//140 (무명)
+	false,	//141 (무명)
+	false,	//142 (무명)
+	false,	//143 (무명)
+	ITEM_HEART,	//144 (무명)
+	false,	//145 (무명)
+	false,	//146 (무명)
+	30,	//147 (무명)
+	ITEM_GOLD,	//148 (무명)
+	false,	//149 (무명)
+	false,	//150 (무명)
+	1000,	//151 (무명)
+	-1,	//152 (무명)
+	false,	//153 (무명)
+	false,	//154 (무명)
+	false,	//155 (무명)
+	ITEM_HEART,	//156 (무명)
+	false,	//157 (무명)
+	false,	//158 (무명)
+	30,	//159 (무명)
+	ITEM_GOLD,	//160 (무명)
+	false,	//161 (무명)
+	false,	//162 (무명)
+	1000,	//163 (무명)
+	-1,	//164 (무명)
+	false,	//165 (무명)
+	false,	//166 (무명)
+	false,	//167 (무명)
+	ITEM_HEART,	//168 (무명)
+	false,	//169 (무명)
+	false,	//170 (무명)
+	30,	//171 (무명)
+	ITEM_GOLD,	//172 (무명)
+	false,	//173 (무명)
+	false,	//174 (무명)
+	1000,	//175 (무명)
+	-1,	//176 (무명)
+	false,	//177 (무명)
+	false,	//178 (무명)
+	false,	//179 (무명)
+	ITEM_HEART,	//180 (무명)
+	false,	//181 (무명)
+	false,	//182 (무명)
+	30,	//183 (무명)
+	ITEM_GOLD,	//184 (무명)
+	false,	//185 (무명)
+	false,	//186 (무명)
+	1000,	//187 (무명)
+	-1,	//188 (무명)
+	false,	//189 (무명)
+	false,	//190 (무명)
+	false,	//191 (무명)
+	ITEM_HEART,	//192 (무명)
+	false,	//193 (무명)
+	false,	//194 (무명)
+	30,	//195 (무명)
+	ITEM_GOLD,	//196 (무명)
+	false,	//197 (무명)
+	false,	//198 (무명)
+	1000,	//199 (무명)
+	-1,	//200 (무명)
+	false,	//201 (무명)
+	false,	//202 (무명)
+	false,	//203 (무명)
+	ITEM_HEART,	//204 (무명)
+	false,	//205 (무명)
+	false,	//206 (무명)
+	30,	//207 (무명)
+	ITEM_GOLD,	//208 (무명)
+	false,	//209 (무명)
+	false,	//210 (무명)
+	1000,	//211 (무명)
+	-1,	//212 (무명)
+	false,	//213 (무명)
+	false,	//214 (무명)
+	false,	//215 (무명)
+	ITEM_HEART,	//216 (무명)
+	false,	//217 (무명)
+	false,	//218 (무명)
+	30,	//219 (무명)
+	ITEM_GOLD,	//220 (무명)
+	false,	//221 (무명)
+	false,	//222 (무명)
+	1000,	//223 (무명)
+	-1,	//224 (무명)
+	false,	//225 (무명)
+	false,	//226 (무명)
+	false,	//227 (무명)
+	ITEM_HEART,	//228 (무명)
+	false,	//229 (무명)
+	false,	//230 (무명)
+	30,	//231 (무명)
+	ITEM_GOLD,	//232 (무명)
+	false,	//233 (무명)
+	false,	//234 (무명)
+	1000,	//235 (무명)
+	-1,	//236 (무명)
+	false,	//237 (무명)
+	false,	//238 (무명)
+	false,	//239 (무명)
+	ITEM_HEART,	//240 (무명)
+	false,	//241 (무명)
+	false,	//242 (무명)
+	30,	//243 (무명)
+	ITEM_GOLD,	//244 (무명)
+	false,	//245 (무명)
+	false,	//246 (무명)
+	1000,	//247 (무명)
+	-1,	//248 (무명)
+	false,	//249 (무명)
+	false,	//250 (무명)
+	false,	//251 (무명)
+	ITEM_HEART,	//252 (무명)
+	false,	//253 (무명)
+	false,	//254 (무명)
+	30,	//255 (무명)
+	ITEM_GOLD,	//256 (무명)
+	false,	//257 (무명)
+	false,	//258 (무명)
+	1000,	//259 (무명)
+	-1,	//260 (무명)
+	false,	//261 (무명)
+	false,	//262 (무명)
+	false,	//263 (무명)
+	ITEM_HEART,	//264 (무명)
+	false,	//265 (무명)
+	false,	//266 (무명)
+	30,	//267 (무명)
+	ITEM_GOLD,	//268 (무명)
+	false,	//269 (무명)
+	false,	//270 (무명)
+	1000,	//271 (무명)
+	-1,	//272 (무명)
+	false,	//273 (무명)
+	false,	//274 (무명)
+	false,	//275 (무명)
+	ITEM_HEART,	//276 (무명)
+	false,	//277 (무명)
+	false,	//278 (무명)
+	30,	//279 (무명)
+	ITEM_GOLD,	//280 (무명)
+	false,	//281 (무명)
+	false,	//282 (무명)
+	1000,	//283 (무명)
+	-1,	//284 (무명)
+	false,	//285 (무명)
+	false,	//286 (무명)
+	false,	//287 (무명)
+	ITEM_HEART,	//288 (무명)
+	false,	//289 (무명)
+	false,	//290 (무명)
+	30,	//291 (무명)
+	ITEM_GOLD,	//292 (무명)
+	false,	//293 (무명)
+	false,	//294 (무명)
+	1000,	//295 (무명)
+	-1,	//296 (무명)
+	false,	//297 (무명)
+	false,	//298 (무명)
+	false,	//299 (무명)
+	ITEM_HEART,	//300 (무명)
+	false,	//301 (무명)
+	false,	//302 (무명)
+	30,	//303 (무명)
+	ITEM_GOLD,	//304 (무명)
+	false,	//305 (무명)
+	false,	//306 (무명)
+	1000,	//307 (무명)
+	-1,	//308 (무명)
+	false,	//309 (무명)
+	false,	//310 (무명)
+	false,	//311 (무명)
+	ITEM_HEART,	//312 (무명)
+	false,	//313 (무명)
+	false,	//314 (무명)
+	30,	//315 (무명)
+	ITEM_GOLD,	//316 (무명)
+	false,	//317 (무명)
+	false,	//318 (무명)
+	1000,	//319 (무명)
+	-1,	//320 (무명)
+	false,	//321 (무명)
+	false,	//322 (무명)
+	false,	//323 (무명)
+	ITEM_HEART,	//324 (무명)
+	false,	//325 (무명)
+	false,	//326 (무명)
+	30,	//327 (무명)
+	ITEM_GOLD,	//328 (무명)
+	false,	//329 (무명)
+	false,	//330 (무명)
+	1000,	//331 (무명)
+	-1,	//332 (무명)
+	false,	//333 (무명)
+	false,	//334 (무명)
+	false,	//335 (무명)
+	ITEM_HEART,	//336 (무명)
+	false,	//337 (무명)
+	false,	//338 (무명)
+	30,	//339 (무명)
+	ITEM_GOLD,	//340 (무명)
+	false,	//341 (무명)
+	false,	//342 (무명)
+	1000,	//343 (무명)
+	-1,	//344 (무명)
+	false,	//345 (무명)
+	false,	//346 (무명)
+	false,	//347 (무명)
+	ITEM_HEART,	//348 (무명)
+	false,	//349 (무명)
+	false,	//350 (무명)
+	30,	//351 (무명)
+	ITEM_GOLD,	//352 (무명)
+	false,	//353 (무명)
+	false,	//354 (무명)
+	1000,	//355 (무명)
+	-1,	//356 (무명)
+	false,	//357 (무명)
+	false,	//358 (무명)
+	false,	//359 (무명)
+	ITEM_HEART,	//360 (무명)
+	false,	//361 (무명)
+	false,	//362 (무명)
+	30,	//363 (무명)
+	ITEM_GOLD,	//364 (무명)
+	false,	//365 (무명)
+	false,	//366 (무명)
+	1000,	//367 (무명)
+	-1,	//368 (무명)
+	false,	//369 (무명)
+	false,	//370 (무명)
+	false,	//371 (무명)
+	ITEM_HEART,	//372 (무명)
+	false,	//373 (무명)
+	false,	//374 (무명)
+	30,	//375 (무명)
+	ITEM_GOLD,	//376 (무명)
+	false,	//377 (무명)
+	false,	//378 (무명)
+	1000,	//379 (무명)
+	-1,	//380 (무명)
+	false,	//381 (무명)
+	false,	//382 (무명)
+	false,	//383 (무명)
+	ITEM_HEART,	//384 (무명)
+	false,	//385 (무명)
+	false,	//386 (무명)
+	30,	//387 (무명)
+	ITEM_GOLD,	//388 (무명)
+	false,	//389 (무명)
+	false,	//390 (무명)
+	1000,	//391 (무명)
+	-1,	//392 (무명)
+	false,	//393 (무명)
+	false,	//394 (무명)
+	false,	//395 (무명)
+	ITEM_HEART,	//396 (무명)
+	false,	//397 (무명)
+	false,	//398 (무명)
+	30,	//399 (무명)
+	ITEM_GOLD,	//400 (무명)
+	false,	//401 (무명)
+	false,	//402 (무명)
+	1000,	//403 (무명)
+	-1,	//404 (무명)
+	false,	//405 (무명)
+	false,	//406 (무명)
+	false,	//407 (무명)
+	ITEM_HEART,	//408 (무명)
+	false,	//409 (무명)
+	false,	//410 (무명)
+	30,	//411 (무명)
+	ITEM_GOLD,	//412 (무명)
+	false,	//413 (무명)
+	false,	//414 (무명)
+	1000,	//415 (무명)
+	-1,	//416 (무명)
+	false,	//417 (무명)
+	false,	//418 (무명)
+	false,	//419 (무명)
+	ITEM_HEART,	//420 (무명)
+	false,	//421 (무명)
+	false,	//422 (무명)
+	30,	//423 (무명)
+	ITEM_GOLD,	//424 (무명)
+	false,	//425 (무명)
+	false,	//426 (무명)
+	1000,	//427 (무명)
+	-1,	//428 (무명)
+	false,	//429 (무명)
+	false,	//430 (무명)
+	false,	//431 (무명)
+	ITEM_HEART,	//432 (무명)
+	false,	//433 (무명)
+	false,	//434 (무명)
+	30,	//435 (무명)
+	ITEM_GOLD,	//436 (무명)
+	false,	//437 (무명)
+	false,	//438 (무명)
+	1000,	//439 (무명)
+	-1,	//440 (무명)
+	false,	//441 (무명)
+	false,	//442 (무명)
+	false,	//443 (무명)
+	ITEM_HEART,	//444 (무명)
+	false,	//445 (무명)
+	false,	//446 (무명)
+	30,	//447 (무명)
+	ITEM_GOLD,	//448 (무명)
+	false,	//449 (무명)
+	false,	//450 (무명)
+	1000,	//451 (무명)
+	-1,	//452 (무명)
+	false,	//453 (무명)
+	false,	//454 (무명)
+	false,	//455 (무명)
+	ITEM_HEART,	//456 (무명)
+	false,	//457 (무명)
+	false,	//458 (무명)
+	30,	//459 (무명)
+	ITEM_GOLD,	//460 (무명)
+	false,	//461 (무명)
+	false,	//462 (무명)
+	1000,	//463 (무명)
+	-1,	//464 (무명)
+	false,	//465 (무명)
+	false,	//466 (무명)
+	false,	//467 (무명)
+	ITEM_HEART,	//468 (무명)
+	false,	//469 (무명)
+	false,	//470 (무명)
+	30,	//471 (무명)
+	ITEM_GOLD,	//472 (무명)
+	false,	//473 (무명)
+	false,	//474 (무명)
+	1000,	//475 (무명)
+	-1,	//476 (무명)
+	false,	//477 (무명)
+	false,	//478 (무명)
+	false,	//479 (무명)
+	ITEM_HEART,	//480 (무명)
+	false,	//481 (무명)
+	false,	//482 (무명)
+	30,	//483 (무명)
+	ITEM_GOLD,	//484 (무명)
+	false,	//485 (무명)
+	false,	//486 (무명)
+	1000,	//487 (무명)
+	-1,	//488 (무명)
+	false,	//489 (무명)
+	false,	//490 (무명)
+	false,	//491 (무명)
+	ITEM_HEART,	//492 (무명)
+	false,	//493 (무명)
+	false,	//494 (무명)
+	30,	//495 (무명)
+	ITEM_GOLD,	//496 (무명)
+	false,	//497 (무명)
+	false,	//498 (무명)
+	1000,	//499 (무명)
+	-1,	//500 (무명)
+	false,	//501 (무명)
+	false,	//502 (무명)
+	false,	//503 (무명)
+	ITEM_HEART,	//504 (무명)
+	false,	//505 (무명)
+	false,	//506 (무명)
+	30,	//507 (무명)
+	ITEM_GOLD,	//508 (무명)
+	false,	//509 (무명)
+	false,	//510 (무명)
+	1000,	//511 (무명)
+	-1,	//512 (무명)
+	false,	//513 (무명)
+	false,	//514 (무명)
+	false,	//515 (무명)
+	ITEM_HEART,	//516 (무명)
+	false,	//517 (무명)
+	false,	//518 (무명)
+	30,	//519 (무명)
+	ITEM_GOLD,	//520 (무명)
+	false,	//521 (무명)
+	false,	//522 (무명)
+	1000,	//523 (무명)
+	-1,	//524 (무명)
+	false,	//525 (무명)
+	false,	//526 (무명)
+	false,	//527 (무명)
+	ITEM_HEART,	//528 (무명)
+	false,	//529 (무명)
+	false,	//530 (무명)
+	30,	//531 (무명)
+	ITEM_GOLD,	//532 (무명)
+	false,	//533 (무명)
+	false,	//534 (무명)
+	1000,	//535 (무명)
+	-1,	//536 (무명)
+	false,	//537 (무명)
+	false,	//538 (무명)
+	false,	//539 (무명)
+	ITEM_HEART,	//540 (무명)
+	false,	//541 (무명)
+	false,	//542 (무명)
+	30,	//543 (무명)
+	ITEM_GOLD,	//544 (무명)
+	false,	//545 (무명)
+	false,	//546 (무명)
+	1000,	//547 (무명)
+	-1,	//548 (무명)
+	false,	//549 (무명)
+	false,	//550 (무명)
+	false,	//551 (무명)
+	ITEM_HEART,	//552 (무명)
+	false,	//553 (무명)
+	false,	//554 (무명)
+	30,	//555 (무명)
+	ITEM_GOLD,	//556 (무명)
+	false,	//557 (무명)
+	false,	//558 (무명)
+	1000,	//559 (무명)
+	-1,	//560 (무명)
+	false,	//561 (무명)
+	false,	//562 (무명)
+	false,	//563 (무명)
+	ITEM_HEART,	//564 (무명)
+	false,	//565 (무명)
+	false,	//566 (무명)
+	30,	//567 (무명)
+	ITEM_GOLD,	//568 (무명)
+	false,	//569 (무명)
+	false,	//570 (무명)
+	1000,	//571 (무명)
+	-1,	//572 (무명)
+	false,	//573 (무명)
+	false,	//574 (무명)
+	false,	//575 (무명)
+	ITEM_HEART,	//576 (무명)
+	false,	//577 (무명)
+	false,	//578 (무명)
+	30,	//579 (무명)
+	ITEM_GOLD,	//580 (무명)
+	false,	//581 (무명)
+	false,	//582 (무명)
+	1000,	//583 (무명)
+	-1,	//584 (무명)
+	false,	//585 (무명)
+	false,	//586 (무명)
+	false,	//587 (무명)
+	ITEM_HEART,	//588 (무명)
+	false,	//589 (무명)
+	false,	//590 (무명)
+	30,	//591 (무명)
+	ITEM_GOLD,	//592 (무명)
+	false,	//593 (무명)
+	false,	//594 (무명)
+	1000,	//595 (무명)
+	-1,	//596 (무명)
+	false,	//597 (무명)
+	false,	//598 (무명)
+	false,	//599 (무명)
+	ITEM_HEART,	//600 (무명)
+	false,	//601 (무명)
+	false,	//602 (무명)
+	30,	//603 (무명)
+	ITEM_GOLD,	//604 (무명)
+	false,	//605 (무명)
+	false,	//606 (무명)
+	1000,	//607 (무명)
+	-1,	//608 (무명)
+	false,	//609 (무명)
+	false,	//610 (무명)
+	false,	//611 (무명)
+	ITEM_HEART,	//612 (무명)
+	false,	//613 (무명)
+	false,	//614 (무명)
+	30,	//615 (무명)
+	ITEM_GOLD,	//616 (무명)
+	false,	//617 (무명)
+	false,	//618 (무명)
+	1000,	//619 (무명)
+	-1,	//620 (무명)
+	false,	//621 (무명)
+	false,	//622 (무명)
+	false,	//623 (무명)
+	ITEM_HEART,	//624 (무명)
+	false,	//625 (무명)
+	false,	//626 (무명)
+	30,	//627 (무명)
+	ITEM_GOLD,	//628 (무명)
+	false,	//629 (무명)
+	false,	//630 (무명)
+	1000,	//631 (무명)
+	-1,	//632 (무명)
+	false,	//633 (무명)
+	false,	//634 (무명)
+	false,	//635 (무명)
+	ITEM_HEART,	//636 (무명)
+	false,	//637 (무명)
+	false,	//638 (무명)
+	30,	//639 (무명)
+	ITEM_GOLD,	//640 (무명)
+	false,	//641 (무명)
+	false,	//642 (무명)
+	1000,	//643 (무명)
+	-1,	//644 (무명)
+	false,	//645 (무명)
+	false,	//646 (무명)
+	false,	//647 (무명)
+	ITEM_HEART,	//648 (무명)
+	false,	//649 (무명)
+	false,	//650 (무명)
+	30,	//651 (무명)
+	ITEM_GOLD,	//652 (무명)
+	false,	//653 (무명)
+	false,	//654 (무명)
+	1000,	//655 (무명)
+	-1,	//656 (무명)
+	false,	//657 (무명)
+	false,	//658 (무명)
+	false,	//659 (무명)
+	ITEM_HEART,	//660 (무명)
+	false,	//661 (무명)
+	false,	//662 (무명)
+	30,	//663 (무명)
+	ITEM_GOLD,	//664 (무명)
+	false,	//665 (무명)
+	false,	//666 (무명)
+	1000,	//667 (무명)
+	-1,	//668 (무명)
+	false,	//669 (무명)
+	false,	//670 (무명)
+	false,	//671 (무명)
+	ITEM_HEART,	//672 (무명)
+	false,	//673 (무명)
+	false,	//674 (무명)
+	30,	//675 (무명)
+	ITEM_GOLD,	//676 (무명)
+	false,	//677 (무명)
+	false,	//678 (무명)
+	1000,	//679 (무명)
+	-1,	//680 (무명)
+	false,	//681 (무명)
+	false,	//682 (무명)
+	false,	//683 (무명)
+	ITEM_HEART,	//684 (무명)
+	false,	//685 (무명)
+	false,	//686 (무명)
+	30,	//687 (무명)
+	ITEM_GOLD,	//688 (무명)
+	false,	//689 (무명)
+	false,	//690 (무명)
+	1000,	//691 (무명)
+	-1,	//692 (무명)
+	false,	//693 (무명)
+	false,	//694 (무명)
+	false,	//695 (무명)
+	ITEM_HEART,	//696 (무명)
+	false,	//697 (무명)
+	false,	//698 (무명)
+	30,	//699 (무명)
+	ITEM_GOLD,	//700 (무명)
+	false,	//701 (무명)
+	false,	//702 (무명)
+	1000,	//703 (무명)
+	-1,	//704 (무명)
+	false,	//705 (무명)
+	false,	//706 (무명)
+	false,	//707 (무명)
+	ITEM_HEART,	//708 (무명)
+	false,	//709 (무명)
+	false,	//710 (무명)
+	30,	//711 (무명)
+	ITEM_GOLD,	//712 (무명)
+	false,	//713 (무명)
+	false,	//714 (무명)
+	1000,	//715 (무명)
+	-1,	//716 (무명)
+	false,	//717 (무명)
+	false,	//718 (무명)
+	false,	//719 (무명)
+	ITEM_HEART,	//720 (무명)
+	false,	//721 (무명)
+	false,	//722 (무명)
+	30,	//723 (무명)
+	ITEM_GOLD,	//724 (무명)
+	false,	//725 (무명)
+	false,	//726 (무명)
+	1000,	//727 (무명)
+	-1,	//728 (무명)
+	false,	//729 (무명)
+	false,	//730 (무명)
+	false,	//731 (무명)
+	ITEM_HEART,	//732 (무명)
+	false,	//733 (무명)
+	false,	//734 (무명)
+	30,	//735 (무명)
+	ITEM_GOLD,	//736 (무명)
+	false,	//737 (무명)
+	false,	//738 (무명)
+	1000,	//739 (무명)
+	-1,	//740 (무명)
+	false,	//741 (무명)
+	false,	//742 (무명)
+	false,	//743 (무명)
+	ITEM_HEART,	//744 (무명)
+	false,	//745 (무명)
+	false,	//746 (무명)
+	30,	//747 (무명)
+	ITEM_GOLD,	//748 (무명)
+	false,	//749 (무명)
+	false,	//750 (무명)
+	1000,	//751 (무명)
+	-1,	//752 (무명)
+	false,	//753 (무명)
+	false,	//754 (무명)
+	false,	//755 (무명)
+	ITEM_HEART,	//756 (무명)
+	false,	//757 (무명)
+	false,	//758 (무명)
+	30,	//759 (무명)
+	ITEM_GOLD,	//760 (무명)
+	false,	//761 (무명)
+	false,	//762 (무명)
+	1000,	//763 (무명)
+	-1,	//764 (무명)
+	false,	//765 (무명)
+	false,	//766 (무명)
+	false,	//767 (무명)
+	ITEM_HEART,	//768 (무명)
+	false,	//769 (무명)
+	false,	//770 (무명)
+	30,	//771 (무명)
+	ITEM_GOLD,	//772 (무명)
+	false,	//773 (무명)
+	false,	//774 (무명)
+	1000,	//775 (무명)
+	-1,	//776 (무명)
+	false,	//777 (무명)
+	false,	//778 (무명)
+	false,	//779 (무명)
+	ITEM_HEART,	//780 (무명)
+	false,	//781 (무명)
+	false,	//782 (무명)
+	30,	//783 (무명)
+	ITEM_GOLD,	//784 (무명)
+	false,	//785 (무명)
+	false,	//786 (무명)
+	1000,	//787 (무명)
+	-1,	//788 (무명)
+	false,	//789 (무명)
+	false,	//790 (무명)
+	false,	//791 (무명)
+	ITEM_HEART,	//792 (무명)
+	false,	//793 (무명)
+	false,	//794 (무명)
+	30,	//795 (무명)
+	ITEM_GOLD,	//796 (무명)
+	false,	//797 (무명)
+	false,	//798 (무명)
+	1000,	//799 (무명)
+	-1,	//800 (무명)
+	false,	//801 (무명)
+	false,	//802 (무명)
+	false,	//803 (무명)
+	ITEM_HEART,	//804 (무명)
+	false,	//805 (무명)
+	false,	//806 (무명)
+	30,	//807 (무명)
+	ITEM_GOLD,	//808 (무명)
+	false,	//809 (무명)
+	false,	//810 (무명)
+	1000,	//811 (무명)
+	-1,	//812 (무명)
+	false,	//813 (무명)
+	false,	//814 (무명)
+	false,	//815 (무명)
+	ITEM_HEART,	//816 (무명)
+	false,	//817 (무명)
+	false,	//818 (무명)
+	30,	//819 (무명)
+	ITEM_GOLD,	//820 (무명)
+	false,	//821 (무명)
+	false,	//822 (무명)
+	1000,	//823 (무명)
+	-1,	//824 (무명)
+	false,	//825 (무명)
+	false,	//826 (무명)
+	false,	//827 (무명)
+	ITEM_HEART,	//828 (무명)
+	false,	//829 (무명)
+	false,	//830 (무명)
+	30,	//831 (무명)
+	ITEM_GOLD,	//832 (무명)
+	false,	//833 (무명)
+	false,	//834 (무명)
+	1000,	//835 (무명)
+	-1,	//836 (무명)
+	false,	//837 (무명)
+	false,	//838 (무명)
+	false,	//839 (무명)
+	ITEM_HEART,	//840 (무명)
+	false,	//841 (무명)
+	false,	//842 (무명)
+	30,	//843 (무명)
+	ITEM_GOLD,	//844 (무명)
+	false,	//845 (무명)
+	false,	//846 (무명)
+	1000,	//847 (무명)
+	-1,	//848 (무명)
+	false,	//849 (무명)
+	false,	//850 (무명)
+	false,	//851 (무명)
+	ITEM_HEART,	//852 (무명)
+	false,	//853 (무명)
+	false,	//854 (무명)
+	30,	//855 (무명)
+	ITEM_GOLD,	//856 (무명)
+	false,	//857 (무명)
+	false,	//858 (무명)
+	1000,	//859 (무명)
+	-1,	//860 (무명)
+	false,	//861 (무명)
+	false,	//862 (무명)
+	false,	//863 (무명)
+	ITEM_HEART,	//864 (무명)
+	false,	//865 (무명)
+	false,	//866 (무명)
+	30,	//867 (무명)
+	ITEM_GOLD,	//868 (무명)
+	false,	//869 (무명)
+	false,	//870 (무명)
+	1000,	//871 (무명)
+	-1,	//872 (무명)
+	false,	//873 (무명)
+	false,	//874 (무명)
+	false,	//875 (무명)
+	ITEM_HEART,	//876 (무명)
+	false,	//877 (무명)
+	false,	//878 (무명)
+	30,	//879 (무명)
+	ITEM_GOLD,	//880 (무명)
+	false,	//881 (무명)
+	false,	//882 (무명)
+	1000,	//883 (무명)
+	-1,	//884 (무명)
+	false,	//885 (무명)
+	false,	//886 (무명)
+	false,	//887 (무명)
+	ITEM_HEART,	//888 (무명)
+	false,	//889 (무명)
+	false,	//890 (무명)
+	30,	//891 (무명)
+	ITEM_GOLD,	//892 (무명)
+	false,	//893 (무명)
+	false,	//894 (무명)
+	1000,	//895 (무명)
+	-1,	//896 (무명)
+	false,	//897 (무명)
+	false,	//898 (무명)
+	false,	//899 (무명)
+	ITEM_HEART,	//900 (무명)
+	false,	//901 (무명)
+	false,	//902 (무명)
+	30,	//903 (무명)
+	ITEM_GOLD,	//904 (무명)
+	false,	//905 (무명)
+	false,	//906 (무명)
+	1000,	//907 (무명)
+	-1,	//908 (무명)
+	false,	//909 (무명)
+	false,	//910 (무명)
+	false,	//911 (무명)
+	ITEM_HEART,	//912 (무명)
+	false,	//913 (무명)
+	false,	//914 (무명)
+	30,	//915 (무명)
+	ITEM_GOLD,	//916 (무명)
+	false,	//917 (무명)
+	false,	//918 (무명)
+	1000,	//919 (무명)
+	-1,	//920 (무명)
+	false,	//921 (무명)
+	false,	//922 (무명)
+	false,	//923 (무명)
+	ITEM_HEART,	//924 (무명)
+	false,	//925 (무명)
+	false,	//926 (무명)
+	30,	//927 (무명)
+	ITEM_GOLD,	//928 (무명)
+	false,	//929 (무명)
+	false,	//930 (무명)
+	1000,	//931 (무명)
+	-1,	//932 (무명)
+	false,	//933 (무명)
+	false,	//934 (무명)
+	false,	//935 (무명)
+	ITEM_HEART,	//936 (무명)
+	false,	//937 (무명)
+	false,	//938 (무명)
+	30,	//939 (무명)
+	ITEM_GOLD,	//940 (무명)
+	false,	//941 (무명)
+	false,	//942 (무명)
+	1000,	//943 (무명)
+	-1,	//944 (무명)
+	false,	//945 (무명)
+	false,	//946 (무명)
+	false,	//947 (무명)
+	ITEM_HEART,	//948 (무명)
+	false,	//949 (무명)
+	false,	//950 (무명)
+	30,	//951 (무명)
+	ITEM_GOLD,	//952 (무명)
+	false,	//953 (무명)
+	false,	//954 (무명)
+	1000,	//955 (무명)
+	-1,	//956 (무명)
+	false,	//957 (무명)
+	false,	//958 (무명)
+	false,	//959 (무명)
+	ITEM_HEART,	//960 (무명)
+	false,	//961 (무명)
+	false,	//962 (무명)
+	30,	//963 (무명)
+	ITEM_GOLD,	//964 (무명)
+	false,	//965 (무명)
+	false,	//966 (무명)
+	1000,	//967 (무명)
+	-1,	//968 (무명)
+	false,	//969 (무명)
+	false,	//970 (무명)
+	false,	//971 (무명)
+	ITEM_HEART,	//972 (무명)
+	false,	//973 (무명)
+	false,	//974 (무명)
+	30,	//975 (무명)
+	ITEM_GOLD,	//976 (무명)
+	false,	//977 (무명)
+	false,	//978 (무명)
+	1000,	//979 (무명)
+	-1,	//980 (무명)
+	false,	//981 (무명)
+	false,	//982 (무명)
+	false,	//983 (무명)
+	ITEM_HEART,	//984 (무명)
+	false,	//985 (무명)
+	false,	//986 (무명)
+	30,	//987 (무명)
+	ITEM_GOLD,	//988 (무명)
+	false,	//989 (무명)
+	false,	//990 (무명)
+	1000,	//991 (무명)
+	-1,	//992 (무명)
+	false,	//993 (무명)
+	false,	//994 (무명)
+	false,	//995 (무명)
+	ITEM_HEART,	//996 (무명)
+	false,	//997 (무명)
+	false,	//998 (무명)
+	30,	//999 (무명)
+	ITEM_GOLD,	//1000 (무명)
+	false,	//1001 (무명)
+	false,	//1002 (무명)
+	1000,	//1003 (무명)
+	-1,	//1004 (무명)
+	false,	//1005 (무명)
+	false,	//1006 (무명)
+	false,	//1007 (무명)
+	ITEM_HEART,	//1008 (무명)
+	false,	//1009 (무명)
+	false,	//1010 (무명)
+	30,	//1011 (무명)
+	ITEM_GOLD,	//1012 (무명)
+	false,	//1013 (무명)
+	false,	//1014 (무명)
+	1000,	//1015 (무명)
+	-1,	//1016 (무명)
+	false,	//1017 (무명)
+	false,	//1018 (무명)
+	false,	//1019 (무명)
+	ITEM_HEART,	//1020 (무명)
+	false,	//1021 (무명)
+	false,	//1022 (무명)
+	30,	//1023 (무명)
+	ITEM_GOLD,	//1024 (무명)
+	false,	//1025 (무명)
+	false,	//1026 (무명)
+	1000,	//1027 (무명)
+	-1,	//1028 (무명)
+	false,	//1029 (무명)
+	false,	//1030 (무명)
+	false,	//1031 (무명)
+	ITEM_HEART,	//1032 (무명)
+	false,	//1033 (무명)
+	false,	//1034 (무명)
+	30,	//1035 (무명)
+	ITEM_GOLD,	//1036 (무명)
+	false,	//1037 (무명)
+	false,	//1038 (무명)
+	1000,	//1039 (무명)
+	-1,	//1040 (무명)
+	false,	//1041 (무명)
+	false,	//1042 (무명)
+	false,	//1043 (무명)
+	ITEM_HEART,	//1044 (무명)
+	false,	//1045 (무명)
+	false,	//1046 (무명)
+	30,	//1047 (무명)
+	ITEM_GOLD,	//1048 (무명)
+	false,	//1049 (무명)
+	false,	//1050 (무명)
+	1000,	//1051 (무명)
+	-1,	//1052 (무명)
+	false,	//1053 (무명)
+	false,	//1054 (무명)
+	false,	//1055 (무명)
+	ITEM_HEART,	//1056 (무명)
+	false,	//1057 (무명)
+	false,	//1058 (무명)
+	30,	//1059 (무명)
+	ITEM_GOLD,	//1060 (무명)
+	false,	//1061 (무명)
+	false,	//1062 (무명)
+	1000,	//1063 (무명)
+	-1,	//1064 (무명)
+	false,	//1065 (무명)
+	false,	//1066 (무명)
+	false,	//1067 (무명)
+	ITEM_HEART,	//1068 (무명)
+	false,	//1069 (무명)
+	false,	//1070 (무명)
+	30,	//1071 (무명)
+	ITEM_GOLD,	//1072 (무명)
+	false,	//1073 (무명)
+	false,	//1074 (무명)
+	1000,	//1075 (무명)
+	-1,	//1076 (무명)
+	false,	//1077 (무명)
+	false,	//1078 (무명)
+	false,	//1079 (무명)
+	ITEM_HEART,	//1080 (무명)
+	false,	//1081 (무명)
+	false,	//1082 (무명)
+	30,	//1083 (무명)
+	ITEM_GOLD,	//1084 (무명)
+	false,	//1085 (무명)
+	false,	//1086 (무명)
+	1000,	//1087 (무명)
+	-1,	//1088 (무명)
+	false,	//1089 (무명)
+	false,	//1090 (무명)
+	false,	//1091 (무명)
+	ITEM_HEART,	//1092 (무명)
+	false,	//1093 (무명)
+	false,	//1094 (무명)
+	30,	//1095 (무명)
+	ITEM_GOLD,	//1096 (무명)
+	false,	//1097 (무명)
+	false,	//1098 (무명)
+	1000,	//1099 (무명)
+	-1,	//1100 (무명)
+	false,	//1101 (무명)
+	false,	//1102 (무명)
+	false,	//1103 (무명)
+	ITEM_HEART,	//1104 (무명)
+	false,	//1105 (무명)
+	false,	//1106 (무명)
+	30,	//1107 (무명)
+	ITEM_GOLD,	//1108 (무명)
+	false,	//1109 (무명)
+	false,	//1110 (무명)
+	1000,	//1111 (무명)
+	-1,	//1112 (무명)
+	false,	//1113 (무명)
+	false,	//1114 (무명)
+	false,	//1115 (무명)
+	ITEM_HEART,	//1116 (무명)
+	false,	//1117 (무명)
+	false,	//1118 (무명)
+	30,	//1119 (무명)
+	ITEM_GOLD,	//1120 (무명)
+	false,	//1121 (무명)
+	false,	//1122 (무명)
+	1000,	//1123 (무명)
+	-1,	//1124 (무명)
+	false,	//1125 (무명)
+	false,	//1126 (무명)
+	false,	//1127 (무명)
+	ITEM_HEART,	//1128 (무명)
+	false,	//1129 (무명)
+	false,	//1130 (무명)
+	30,	//1131 (무명)
+	ITEM_GOLD,	//1132 (무명)
+	false,	//1133 (무명)
+	false,	//1134 (무명)
+	1000,	//1135 (무명)
+	-1,	//1136 (무명)
+	false,	//1137 (무명)
+	false,	//1138 (무명)
+	false,	//1139 (무명)
+	ITEM_HEART,	//1140 (무명)
+	false,	//1141 (무명)
+	false,	//1142 (무명)
+	30,	//1143 (무명)
+	ITEM_GOLD,	//1144 (무명)
+	false,	//1145 (무명)
+	false,	//1146 (무명)
+	1000,	//1147 (무명)
+	-1,	//1148 (무명)
+	false,	//1149 (무명)
+	false,	//1150 (무명)
+	false,	//1151 (무명)
+	ITEM_HEART,	//1152 (무명)
+	false,	//1153 (무명)
+	false,	//1154 (무명)
+	30,	//1155 (무명)
+	ITEM_GOLD,	//1156 (무명)
+	false,	//1157 (무명)
+	false,	//1158 (무명)
+	1000,	//1159 (무명)
+	-1,	//1160 (무명)
+	false,	//1161 (무명)
+	false,	//1162 (무명)
+	false,	//1163 (무명)
+	ITEM_HEART,	//1164 (무명)
+	false,	//1165 (무명)
+	false,	//1166 (무명)
+	30,	//1167 (무명)
+	ITEM_GOLD,	//1168 (무명)
+	false,	//1169 (무명)
+	false,	//1170 (무명)
+	1000,	//1171 (무명)
+	-1,	//1172 (무명)
+	false,	//1173 (무명)
+	false,	//1174 (무명)
+	false,	//1175 (무명)
+	ITEM_HEART,	//1176 (무명)
+	false,	//1177 (무명)
+	false,	//1178 (무명)
+	30,	//1179 (무명)
+	ITEM_GOLD,	//1180 (무명)
+	false,	//1181 (무명)
+	false,	//1182 (무명)
+	1000,	//1183 (무명)
+	-1,	//1184 (무명)
+	false,	//1185 (무명)
+	false,	//1186 (무명)
+	false,	//1187 (무명)
+	ITEM_HEART,	//1188 (무명)
+	false,	//1189 (무명)
+	false,	//1190 (무명)
+	30,	//1191 (무명)
+	ITEM_GOLD,	//1192 (무명)
+	false,	//1193 (무명)
+	false,	//1194 (무명)
+	1000,	//1195 (무명)
+	-1,	//1196 (무명)
+	false,	//1197 (무명)
+	false,	//1198 (무명)
+	false,	//1199 (무명)
 };
 static const long long equipGetRewardHeart_builtin[] = {
-	//ITEM_SWORD
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	//ITEM_GUN
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_BOOMERANG
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_HELM
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_HAT
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_CAP
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_ARMOR
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_VEST
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_COAT
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_GUNTLET
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_ARMLET
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_GLOVE
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_KILT
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_SKIRT
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_PANTS
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_GREAVES
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_SHOES
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
-	//ITEM_BOOTS
-	100,//1
-	200,//2
-	300,//3
-	400,//4
-	500,//5
-	600,//6
-	700,//7
-	800,//8
-	900,//9
-	1000,//10
-	1100,//11
-	1200,//12
-	1300,//13
-	1400,//14
-	1500,//15
-	1600,//16
-	1700,//17
-	1800,//18
-	1900,//19
-	2000,//20
-	2100,//21
-	2200,//22
-	2300,//23
-	2400,//24
-
+	100,	//0 (무명)
+	200,	//1 (무명)
+	300,	//2 (무명)
+	400,	//3 (무명)
+	500,	//4 (무명)
+	600,	//5 (무명)
+	700,	//6 (무명)
+	800,	//7 (무명)
+	900,	//8 (무명)
+	1000,	//9 (무명)
+	1100,	//10 (무명)
+	1200,	//11 (무명)
+	1300,	//12 (무명)
+	1400,	//13 (무명)
+	1500,	//14 (무명)
+	1600,	//15 (무명)
+	1700,	//16 (무명)
+	1800,	//17 (무명)
+	1900,	//18 (무명)
+	2000,	//19 (무명)
+	2100,	//20 (무명)
+	2200,	//21 (무명)
+	2300,	//22 (무명)
+	2400,	//23 (무명)
+	100,	//24 (무명)
+	200,	//25 (무명)
+	300,	//26 (무명)
+	400,	//27 (무명)
+	500,	//28 (무명)
+	600,	//29 (무명)
+	700,	//30 (무명)
+	800,	//31 (무명)
+	900,	//32 (무명)
+	1000,	//33 (무명)
+	1100,	//34 (무명)
+	1200,	//35 (무명)
+	1300,	//36 (무명)
+	1400,	//37 (무명)
+	1500,	//38 (무명)
+	1600,	//39 (무명)
+	1700,	//40 (무명)
+	1800,	//41 (무명)
+	1900,	//42 (무명)
+	2000,	//43 (무명)
+	2100,	//44 (무명)
+	2200,	//45 (무명)
+	2300,	//46 (무명)
+	2400,	//47 (무명)
+	100,	//48 (무명)
+	200,	//49 (무명)
+	300,	//50 (무명)
+	400,	//51 (무명)
+	500,	//52 (무명)
+	600,	//53 (무명)
+	700,	//54 (무명)
+	800,	//55 (무명)
+	900,	//56 (무명)
+	1000,	//57 (무명)
+	1100,	//58 (무명)
+	1200,	//59 (무명)
+	1300,	//60 (무명)
+	1400,	//61 (무명)
+	1500,	//62 (무명)
+	1600,	//63 (무명)
+	1700,	//64 (무명)
+	1800,	//65 (무명)
+	1900,	//66 (무명)
+	2000,	//67 (무명)
+	2100,	//68 (무명)
+	2200,	//69 (무명)
+	2300,	//70 (무명)
+	2400,	//71 (무명)
+	100,	//72 (무명)
+	200,	//73 (무명)
+	300,	//74 (무명)
+	400,	//75 (무명)
+	500,	//76 (무명)
+	600,	//77 (무명)
+	700,	//78 (무명)
+	800,	//79 (무명)
+	900,	//80 (무명)
+	1000,	//81 (무명)
+	1100,	//82 (무명)
+	1200,	//83 (무명)
+	1300,	//84 (무명)
+	1400,	//85 (무명)
+	1500,	//86 (무명)
+	1600,	//87 (무명)
+	1700,	//88 (무명)
+	1800,	//89 (무명)
+	1900,	//90 (무명)
+	2000,	//91 (무명)
+	2100,	//92 (무명)
+	2200,	//93 (무명)
+	2300,	//94 (무명)
+	2400,	//95 (무명)
+	100,	//96 (무명)
+	200,	//97 (무명)
+	300,	//98 (무명)
+	400,	//99 (무명)
+	500,	//100 (무명)
+	600,	//101 (무명)
+	700,	//102 (무명)
+	800,	//103 (무명)
+	900,	//104 (무명)
+	1000,	//105 (무명)
+	1100,	//106 (무명)
+	1200,	//107 (무명)
+	1300,	//108 (무명)
+	1400,	//109 (무명)
+	1500,	//110 (무명)
+	1600,	//111 (무명)
+	1700,	//112 (무명)
+	1800,	//113 (무명)
+	1900,	//114 (무명)
+	2000,	//115 (무명)
+	2100,	//116 (무명)
+	2200,	//117 (무명)
+	2300,	//118 (무명)
+	2400,	//119 (무명)
+	100,	//120 (무명)
+	200,	//121 (무명)
+	300,	//122 (무명)
+	400,	//123 (무명)
+	500,	//124 (무명)
+	600,	//125 (무명)
+	700,	//126 (무명)
+	800,	//127 (무명)
+	900,	//128 (무명)
+	1000,	//129 (무명)
+	1100,	//130 (무명)
+	1200,	//131 (무명)
+	1300,	//132 (무명)
+	1400,	//133 (무명)
+	1500,	//134 (무명)
+	1600,	//135 (무명)
+	1700,	//136 (무명)
+	1800,	//137 (무명)
+	1900,	//138 (무명)
+	2000,	//139 (무명)
+	2100,	//140 (무명)
+	2200,	//141 (무명)
+	2300,	//142 (무명)
+	2400,	//143 (무명)
+	100,	//144 (무명)
+	200,	//145 (무명)
+	300,	//146 (무명)
+	400,	//147 (무명)
+	500,	//148 (무명)
+	600,	//149 (무명)
+	700,	//150 (무명)
+	800,	//151 (무명)
+	900,	//152 (무명)
+	1000,	//153 (무명)
+	1100,	//154 (무명)
+	1200,	//155 (무명)
+	1300,	//156 (무명)
+	1400,	//157 (무명)
+	1500,	//158 (무명)
+	1600,	//159 (무명)
+	1700,	//160 (무명)
+	1800,	//161 (무명)
+	1900,	//162 (무명)
+	2000,	//163 (무명)
+	2100,	//164 (무명)
+	2200,	//165 (무명)
+	2300,	//166 (무명)
+	2400,	//167 (무명)
+	100,	//168 (무명)
+	200,	//169 (무명)
+	300,	//170 (무명)
+	400,	//171 (무명)
+	500,	//172 (무명)
+	600,	//173 (무명)
+	700,	//174 (무명)
+	800,	//175 (무명)
+	900,	//176 (무명)
+	1000,	//177 (무명)
+	1100,	//178 (무명)
+	1200,	//179 (무명)
+	1300,	//180 (무명)
+	1400,	//181 (무명)
+	1500,	//182 (무명)
+	1600,	//183 (무명)
+	1700,	//184 (무명)
+	1800,	//185 (무명)
+	1900,	//186 (무명)
+	2000,	//187 (무명)
+	2100,	//188 (무명)
+	2200,	//189 (무명)
+	2300,	//190 (무명)
+	2400,	//191 (무명)
+	100,	//192 (무명)
+	200,	//193 (무명)
+	300,	//194 (무명)
+	400,	//195 (무명)
+	500,	//196 (무명)
+	600,	//197 (무명)
+	700,	//198 (무명)
+	800,	//199 (무명)
+	900,	//200 (무명)
+	1000,	//201 (무명)
+	1100,	//202 (무명)
+	1200,	//203 (무명)
+	1300,	//204 (무명)
+	1400,	//205 (무명)
+	1500,	//206 (무명)
+	1600,	//207 (무명)
+	1700,	//208 (무명)
+	1800,	//209 (무명)
+	1900,	//210 (무명)
+	2000,	//211 (무명)
+	2100,	//212 (무명)
+	2200,	//213 (무명)
+	2300,	//214 (무명)
+	2400,	//215 (무명)
+	100,	//216 (무명)
+	200,	//217 (무명)
+	300,	//218 (무명)
+	400,	//219 (무명)
+	500,	//220 (무명)
+	600,	//221 (무명)
+	700,	//222 (무명)
+	800,	//223 (무명)
+	900,	//224 (무명)
+	1000,	//225 (무명)
+	1100,	//226 (무명)
+	1200,	//227 (무명)
+	1300,	//228 (무명)
+	1400,	//229 (무명)
+	1500,	//230 (무명)
+	1600,	//231 (무명)
+	1700,	//232 (무명)
+	1800,	//233 (무명)
+	1900,	//234 (무명)
+	2000,	//235 (무명)
+	2100,	//236 (무명)
+	2200,	//237 (무명)
+	2300,	//238 (무명)
+	2400,	//239 (무명)
+	100,	//240 (무명)
+	200,	//241 (무명)
+	300,	//242 (무명)
+	400,	//243 (무명)
+	500,	//244 (무명)
+	600,	//245 (무명)
+	700,	//246 (무명)
+	800,	//247 (무명)
+	900,	//248 (무명)
+	1000,	//249 (무명)
+	1100,	//250 (무명)
+	1200,	//251 (무명)
+	1300,	//252 (무명)
+	1400,	//253 (무명)
+	1500,	//254 (무명)
+	1600,	//255 (무명)
+	1700,	//256 (무명)
+	1800,	//257 (무명)
+	1900,	//258 (무명)
+	2000,	//259 (무명)
+	2100,	//260 (무명)
+	2200,	//261 (무명)
+	2300,	//262 (무명)
+	2400,	//263 (무명)
+	100,	//264 (무명)
+	200,	//265 (무명)
+	300,	//266 (무명)
+	400,	//267 (무명)
+	500,	//268 (무명)
+	600,	//269 (무명)
+	700,	//270 (무명)
+	800,	//271 (무명)
+	900,	//272 (무명)
+	1000,	//273 (무명)
+	1100,	//274 (무명)
+	1200,	//275 (무명)
+	1300,	//276 (무명)
+	1400,	//277 (무명)
+	1500,	//278 (무명)
+	1600,	//279 (무명)
+	1700,	//280 (무명)
+	1800,	//281 (무명)
+	1900,	//282 (무명)
+	2000,	//283 (무명)
+	2100,	//284 (무명)
+	2200,	//285 (무명)
+	2300,	//286 (무명)
+	2400,	//287 (무명)
+	100,	//288 (무명)
+	200,	//289 (무명)
+	300,	//290 (무명)
+	400,	//291 (무명)
+	500,	//292 (무명)
+	600,	//293 (무명)
+	700,	//294 (무명)
+	800,	//295 (무명)
+	900,	//296 (무명)
+	1000,	//297 (무명)
+	1100,	//298 (무명)
+	1200,	//299 (무명)
+	1300,	//300 (무명)
+	1400,	//301 (무명)
+	1500,	//302 (무명)
+	1600,	//303 (무명)
+	1700,	//304 (무명)
+	1800,	//305 (무명)
+	1900,	//306 (무명)
+	2000,	//307 (무명)
+	2100,	//308 (무명)
+	2200,	//309 (무명)
+	2300,	//310 (무명)
+	2400,	//311 (무명)
+	100,	//312 (무명)
+	200,	//313 (무명)
+	300,	//314 (무명)
+	400,	//315 (무명)
+	500,	//316 (무명)
+	600,	//317 (무명)
+	700,	//318 (무명)
+	800,	//319 (무명)
+	900,	//320 (무명)
+	1000,	//321 (무명)
+	1100,	//322 (무명)
+	1200,	//323 (무명)
+	1300,	//324 (무명)
+	1400,	//325 (무명)
+	1500,	//326 (무명)
+	1600,	//327 (무명)
+	1700,	//328 (무명)
+	1800,	//329 (무명)
+	1900,	//330 (무명)
+	2000,	//331 (무명)
+	2100,	//332 (무명)
+	2200,	//333 (무명)
+	2300,	//334 (무명)
+	2400,	//335 (무명)
+	100,	//336 (무명)
+	200,	//337 (무명)
+	300,	//338 (무명)
+	400,	//339 (무명)
+	500,	//340 (무명)
+	600,	//341 (무명)
+	700,	//342 (무명)
+	800,	//343 (무명)
+	900,	//344 (무명)
+	1000,	//345 (무명)
+	1100,	//346 (무명)
+	1200,	//347 (무명)
+	1300,	//348 (무명)
+	1400,	//349 (무명)
+	1500,	//350 (무명)
+	1600,	//351 (무명)
+	1700,	//352 (무명)
+	1800,	//353 (무명)
+	1900,	//354 (무명)
+	2000,	//355 (무명)
+	2100,	//356 (무명)
+	2200,	//357 (무명)
+	2300,	//358 (무명)
+	2400,	//359 (무명)
+	100,	//360 (무명)
+	200,	//361 (무명)
+	300,	//362 (무명)
+	400,	//363 (무명)
+	500,	//364 (무명)
+	600,	//365 (무명)
+	700,	//366 (무명)
+	800,	//367 (무명)
+	900,	//368 (무명)
+	1000,	//369 (무명)
+	1100,	//370 (무명)
+	1200,	//371 (무명)
+	1300,	//372 (무명)
+	1400,	//373 (무명)
+	1500,	//374 (무명)
+	1600,	//375 (무명)
+	1700,	//376 (무명)
+	1800,	//377 (무명)
+	1900,	//378 (무명)
+	2000,	//379 (무명)
+	2100,	//380 (무명)
+	2200,	//381 (무명)
+	2300,	//382 (무명)
+	2400,	//383 (무명)
+	100,	//384 (무명)
+	200,	//385 (무명)
+	300,	//386 (무명)
+	400,	//387 (무명)
+	500,	//388 (무명)
+	600,	//389 (무명)
+	700,	//390 (무명)
+	800,	//391 (무명)
+	900,	//392 (무명)
+	1000,	//393 (무명)
+	1100,	//394 (무명)
+	1200,	//395 (무명)
+	1300,	//396 (무명)
+	1400,	//397 (무명)
+	1500,	//398 (무명)
+	1600,	//399 (무명)
+	1700,	//400 (무명)
+	1800,	//401 (무명)
+	1900,	//402 (무명)
+	2000,	//403 (무명)
+	2100,	//404 (무명)
+	2200,	//405 (무명)
+	2300,	//406 (무명)
+	2400,	//407 (무명)
+	100,	//408 (무명)
+	200,	//409 (무명)
+	300,	//410 (무명)
+	400,	//411 (무명)
+	500,	//412 (무명)
+	600,	//413 (무명)
+	700,	//414 (무명)
+	800,	//415 (무명)
+	900,	//416 (무명)
+	1000,	//417 (무명)
+	1100,	//418 (무명)
+	1200,	//419 (무명)
+	1300,	//420 (무명)
+	1400,	//421 (무명)
+	1500,	//422 (무명)
+	1600,	//423 (무명)
+	1700,	//424 (무명)
+	1800,	//425 (무명)
+	1900,	//426 (무명)
+	2000,	//427 (무명)
+	2100,	//428 (무명)
+	2200,	//429 (무명)
+	2300,	//430 (무명)
+	2400,	//431 (무명)
 };
 static const unsigned long long crewReward_builtin[] = {
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	//HOUSE_SWAMP
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_BOY
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_GIRL
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//ENEMY_SNAIL
-	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_GRANDFA
-	ITEM_HEART, false, false, 100, 86400 * 5,//ENEMY_TREE
-
-	//HOUSE_VALLEY
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_WOMAN
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_MAN
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//ENEMY_ONEEYE
-	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_MONICA
-	ITEM_HEART, false, false, 100, 86400 * 5,//ENEMY_SKELETON
-
-	//HOUSE_ATLANTICE
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_SEASOLDIER
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_LUISE
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DARIAN
-	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_FRAUD
-	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_FISHING
-
-	//HOUSE_SEWAGE
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_CREW
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//ENEMY_SLIME
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DOBEL
-	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_GAGEL
-	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_CAPTAIN
-
-	//HOUSE_CASTLE
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//NPC_ADELKNIGHT
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_MAID
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_SEBASTIAN
-	ITEM_GOLD, false, false, 50000, 86400 * 4,//NPC_LORA
-	ITEM_HEART, false, false, 100, 86400 * 5,//NPC_KING
-
-	//HOUSE_PLAIN
-	ITEM_GOLD, false, false, 10000, 86400 * 1,//ENEMY_SLING
-	ITEM_GOLD, false, false, 20000, 86400 * 2,//NPC_GALLAND
-	ITEM_BOX, BOX_REWARD0, false, 1, 86400 * 3,//NPC_DURAK
-
+	ITEM_GOLD,	//0 (무명)
+	false,	//1 (무명)
+	false,	//2 (무명)
+	10000,	//3 (무명)
+	86400 * 1,	//4 (무명)
+	ITEM_GOLD,	//5 (무명)
+	false,	//6 (무명)
+	false,	//7 (무명)
+	20000,	//8 (무명)
+	86400 * 2,	//9 (무명)
+	ITEM_BOX,	//10 (무명)
+	BOX_REWARD0,	//11 (무명)
+	false,	//12 (무명)
+	1,	//13 (무명)
+	86400 * 3,	//14 (무명)
+	ITEM_GOLD,	//15 (무명)
+	false,	//16 (무명)
+	false,	//17 (무명)
+	50000,	//18 (무명)
+	86400 * 4,	//19 (무명)
+	ITEM_HEART,	//20 (무명)
+	false,	//21 (무명)
+	false,	//22 (무명)
+	100,	//23 (무명)
+	86400 * 5,	//24 (무명)
+	ITEM_GOLD,	//25 (무명)
+	false,	//26 (무명)
+	false,	//27 (무명)
+	10000,	//28 (무명)
+	86400 * 1,	//29 (무명)
+	ITEM_GOLD,	//30 (무명)
+	false,	//31 (무명)
+	false,	//32 (무명)
+	20000,	//33 (무명)
+	86400 * 2,	//34 (무명)
+	ITEM_BOX,	//35 (무명)
+	BOX_REWARD0,	//36 (무명)
+	false,	//37 (무명)
+	1,	//38 (무명)
+	86400 * 3,	//39 (무명)
+	ITEM_GOLD,	//40 (무명)
+	false,	//41 (무명)
+	false,	//42 (무명)
+	50000,	//43 (무명)
+	86400 * 4,	//44 (무명)
+	ITEM_HEART,	//45 (무명)
+	false,	//46 (무명)
+	false,	//47 (무명)
+	100,	//48 (무명)
+	86400 * 5,	//49 (무명)
+	ITEM_GOLD,	//50 (무명)
+	false,	//51 (무명)
+	false,	//52 (무명)
+	10000,	//53 (무명)
+	86400 * 1,	//54 (무명)
+	ITEM_GOLD,	//55 (무명)
+	false,	//56 (무명)
+	false,	//57 (무명)
+	20000,	//58 (무명)
+	86400 * 2,	//59 (무명)
+	ITEM_BOX,	//60 (무명)
+	BOX_REWARD0,	//61 (무명)
+	false,	//62 (무명)
+	1,	//63 (무명)
+	86400 * 3,	//64 (무명)
+	ITEM_GOLD,	//65 (무명)
+	false,	//66 (무명)
+	false,	//67 (무명)
+	50000,	//68 (무명)
+	86400 * 4,	//69 (무명)
+	ITEM_HEART,	//70 (무명)
+	false,	//71 (무명)
+	false,	//72 (무명)
+	100,	//73 (무명)
+	86400 * 5,	//74 (무명)
+	ITEM_GOLD,	//75 (무명)
+	false,	//76 (무명)
+	false,	//77 (무명)
+	10000,	//78 (무명)
+	86400 * 1,	//79 (무명)
+	ITEM_GOLD,	//80 (무명)
+	false,	//81 (무명)
+	false,	//82 (무명)
+	20000,	//83 (무명)
+	86400 * 2,	//84 (무명)
+	ITEM_BOX,	//85 (무명)
+	BOX_REWARD0,	//86 (무명)
+	false,	//87 (무명)
+	1,	//88 (무명)
+	86400 * 3,	//89 (무명)
+	ITEM_GOLD,	//90 (무명)
+	false,	//91 (무명)
+	false,	//92 (무명)
+	50000,	//93 (무명)
+	86400 * 4,	//94 (무명)
+	ITEM_HEART,	//95 (무명)
+	false,	//96 (무명)
+	false,	//97 (무명)
+	100,	//98 (무명)
+	86400 * 5,	//99 (무명)
+	ITEM_GOLD,	//100 (무명)
+	false,	//101 (무명)
+	false,	//102 (무명)
+	10000,	//103 (무명)
+	86400 * 1,	//104 (무명)
+	ITEM_GOLD,	//105 (무명)
+	false,	//106 (무명)
+	false,	//107 (무명)
+	20000,	//108 (무명)
+	86400 * 2,	//109 (무명)
+	ITEM_BOX,	//110 (무명)
+	BOX_REWARD0,	//111 (무명)
+	false,	//112 (무명)
+	1,	//113 (무명)
+	86400 * 3,	//114 (무명)
+	ITEM_GOLD,	//115 (무명)
+	false,	//116 (무명)
+	false,	//117 (무명)
+	50000,	//118 (무명)
+	86400 * 4,	//119 (무명)
+	ITEM_HEART,	//120 (무명)
+	false,	//121 (무명)
+	false,	//122 (무명)
+	100,	//123 (무명)
+	86400 * 5,	//124 (무명)
+	ITEM_GOLD,	//125 (무명)
+	false,	//126 (무명)
+	false,	//127 (무명)
+	10000,	//128 (무명)
+	86400 * 1,	//129 (무명)
+	ITEM_GOLD,	//130 (무명)
+	false,	//131 (무명)
+	false,	//132 (무명)
+	20000,	//133 (무명)
+	86400 * 2,	//134 (무명)
+	ITEM_BOX,	//135 (무명)
+	BOX_REWARD0,	//136 (무명)
+	false,	//137 (무명)
+	1,	//138 (무명)
+	86400 * 3,	//139 (무명)
 };
 static const unsigned int crewGetReward_builtin[] = {
 	//0
@@ -1363,116 +2324,410 @@ static const unsigned int crewGetReward_builtin[] = {
 	ITEM_HEART, false, false, 19000,
 	ITEM_HEART, false, false, 20000,
 };
-static const long long bossReward_builtin[] = {//TOTALSTAGE * MONSTERREWARDDATASIZE
-	ITEM_GOLD, null, null, 100000,//0
-	ITEM_GOLD, null, null, 100000,//1
-	ITEM_GOLD, null, null, 100000,//2
-	ITEM_GOLD, null, null, 100000,//3
-	ITEM_GOLD, null, null, 100000,//4
-	ITEM_GOLD, null, null, 100000,//5
-	ITEM_GOLD, null, null, 100000,//6
-	ITEM_GOLD, null, null, 100000,//7
-	ITEM_GOLD, null, null, 100000,//8
-	ITEM_GOLD, null, null, 100000,//9
+static const long long bossReward_builtin[] = {
+	//이 배열은 content/ 의 tsv에서 생성된다. 직접 고치지 말 것.
+	//고치려면 tsv를 고치고 tools/content/content_table.py 를 돌린다.
 
-	ITEM_GOLD, null, null, 100000,//10
-	ITEM_GOLD, null, null, 100000,//11
-	ITEM_GOLD, null, null, 100000,//12
-	ITEM_GOLD, null, null, 100000,//13
-	ITEM_GOLD, null, null, 100000,//14
-	ITEM_GOLD, null, null, 100000,//15
-	ITEM_GOLD, null, null, 100000,//16
-	ITEM_GOLD, null, null, 100000,//17
-	ITEM_GOLD, null, null, 100000,//18
-	ITEM_GOLD, null, null, 100000,//19
-
-	ITEM_GOLD, null, null, 100000,//20
-	ITEM_GOLD, null, null, 100000,//21
-	ITEM_GOLD, null, null, 100000,//22
-	ITEM_GOLD, null, null, 100000,//23
-	ITEM_GOLD, null, null, 100000,//24
-	ITEM_GOLD, null, null, 100000,//25
-	ITEM_GOLD, null, null, 100000,//26
-	ITEM_GOLD, null, null, 100000,//27
-	ITEM_GOLD, null, null, 100000,//28
-	ITEM_GOLD, null, null, 100000,//29
-
-	ITEM_GOLD, null, null, 100000,//30
-	ITEM_GOLD, null, null, 100000,//31
-	ITEM_GOLD, null, null, 100000,//32
-	ITEM_GOLD, null, null, 100000,//33
-	ITEM_GOLD, null, null, 100000,//34
-	ITEM_GOLD, null, null, 100000,//35
-	ITEM_GOLD, null, null, 100000,//36
-	ITEM_GOLD, null, null, 100000,//37
-	ITEM_GOLD, null, null, 100000,//38
-	ITEM_GOLD, null, null, 100000,//39
-
-	ITEM_GOLD, null, null, 100000,//40
-	ITEM_GOLD, null, null, 100000,//41
-	ITEM_GOLD, null, null, 100000,//42
-	ITEM_GOLD, null, null, 100000,//43
-	ITEM_GOLD, null, null, 100000,//44
-	ITEM_GOLD, null, null, 100000,//45
-	ITEM_GOLD, null, null, 100000,//46
-	ITEM_GOLD, null, null, 100000,//47
-	ITEM_GOLD, null, null, 100000,//48
-	ITEM_GOLD, null, null, 100000,//49
-
-	ITEM_GOLD, null, null, 100000,//50
-	ITEM_GOLD, null, null, 100000,//51
-	ITEM_GOLD, null, null, 100000,//52
-	ITEM_GOLD, null, null, 100000,//53
-	ITEM_GOLD, null, null, 100000,//54
-	ITEM_GOLD, null, null, 100000,//55
-	ITEM_GOLD, null, null, 100000,//56
-	ITEM_GOLD, null, null, 100000,//57
-	ITEM_GOLD, null, null, 100000,//58
-	ITEM_GOLD, null, null, 100000,//59
-
-	ITEM_GOLD, null, null, 100000,//60
-	ITEM_GOLD, null, null, 100000,//61
-	ITEM_GOLD, null, null, 100000,//62
-	ITEM_GOLD, null, null, 100000,//63
-	ITEM_GOLD, null, null, 100000,//64
-	ITEM_GOLD, null, null, 100000,//65
-	ITEM_GOLD, null, null, 100000,//66
-	ITEM_GOLD, null, null, 100000,//67
-	ITEM_GOLD, null, null, 100000,//68
-	ITEM_GOLD, null, null, 100000,//69
-
-	ITEM_GOLD, null, null, 100000,//70
-	ITEM_GOLD, null, null, 100000,//71
-	ITEM_GOLD, null, null, 100000,//72
-	ITEM_GOLD, null, null, 100000,//73
-	ITEM_GOLD, null, null, 100000,//74
-	ITEM_GOLD, null, null, 100000,//75
-	ITEM_GOLD, null, null, 100000,//76
-	ITEM_GOLD, null, null, 100000,//77
-	ITEM_GOLD, null, null, 100000,//78
-	ITEM_GOLD, null, null, 100000,//79
-
-	ITEM_GOLD, null, null, 100000,//80
-	ITEM_GOLD, null, null, 100000,//81
-	ITEM_GOLD, null, null, 100000,//82
-	ITEM_GOLD, null, null, 100000,//83
-	ITEM_GOLD, null, null, 100000,//84
-	ITEM_GOLD, null, null, 100000,//85
-	ITEM_GOLD, null, null, 100000,//86
-	ITEM_GOLD, null, null, 100000,//87
-	ITEM_GOLD, null, null, 100000,//88
-	ITEM_GOLD, null, null, 100000,//89
-
-	ITEM_GOLD, null, null, 100000,//90
-	ITEM_GOLD, null, null, 100000,//91
-	ITEM_GOLD, null, null, 100000,//92
-	ITEM_GOLD, null, null, 100000,//93
-	ITEM_GOLD, null, null, 100000,//94
-	ITEM_GOLD, null, null, 100000,//95
-	ITEM_GOLD, null, null, 100000,//96
-	ITEM_GOLD, null, null, 100000,//97
-	ITEM_GOLD, null, null, 100000,//98
-	ITEM_GOLD, null, null, 100000,//99
+	ITEM_GOLD,	//0 (무명)
+	null,	//1 (무명)
+	null,	//2 (무명)
+	100000,	//3 (무명)
+	ITEM_GOLD,	//4 (무명)
+	null,	//5 (무명)
+	null,	//6 (무명)
+	100000,	//7 (무명)
+	ITEM_GOLD,	//8 (무명)
+	null,	//9 (무명)
+	null,	//10 (무명)
+	100000,	//11 (무명)
+	ITEM_GOLD,	//12 (무명)
+	null,	//13 (무명)
+	null,	//14 (무명)
+	100000,	//15 (무명)
+	ITEM_GOLD,	//16 (무명)
+	null,	//17 (무명)
+	null,	//18 (무명)
+	100000,	//19 (무명)
+	ITEM_GOLD,	//20 (무명)
+	null,	//21 (무명)
+	null,	//22 (무명)
+	100000,	//23 (무명)
+	ITEM_GOLD,	//24 (무명)
+	null,	//25 (무명)
+	null,	//26 (무명)
+	100000,	//27 (무명)
+	ITEM_GOLD,	//28 (무명)
+	null,	//29 (무명)
+	null,	//30 (무명)
+	100000,	//31 (무명)
+	ITEM_GOLD,	//32 (무명)
+	null,	//33 (무명)
+	null,	//34 (무명)
+	100000,	//35 (무명)
+	ITEM_GOLD,	//36 (무명)
+	null,	//37 (무명)
+	null,	//38 (무명)
+	100000,	//39 (무명)
+	ITEM_GOLD,	//40 (무명)
+	null,	//41 (무명)
+	null,	//42 (무명)
+	100000,	//43 (무명)
+	ITEM_GOLD,	//44 (무명)
+	null,	//45 (무명)
+	null,	//46 (무명)
+	100000,	//47 (무명)
+	ITEM_GOLD,	//48 (무명)
+	null,	//49 (무명)
+	null,	//50 (무명)
+	100000,	//51 (무명)
+	ITEM_GOLD,	//52 (무명)
+	null,	//53 (무명)
+	null,	//54 (무명)
+	100000,	//55 (무명)
+	ITEM_GOLD,	//56 (무명)
+	null,	//57 (무명)
+	null,	//58 (무명)
+	100000,	//59 (무명)
+	ITEM_GOLD,	//60 (무명)
+	null,	//61 (무명)
+	null,	//62 (무명)
+	100000,	//63 (무명)
+	ITEM_GOLD,	//64 (무명)
+	null,	//65 (무명)
+	null,	//66 (무명)
+	100000,	//67 (무명)
+	ITEM_GOLD,	//68 (무명)
+	null,	//69 (무명)
+	null,	//70 (무명)
+	100000,	//71 (무명)
+	ITEM_GOLD,	//72 (무명)
+	null,	//73 (무명)
+	null,	//74 (무명)
+	100000,	//75 (무명)
+	ITEM_GOLD,	//76 (무명)
+	null,	//77 (무명)
+	null,	//78 (무명)
+	100000,	//79 (무명)
+	ITEM_GOLD,	//80 (무명)
+	null,	//81 (무명)
+	null,	//82 (무명)
+	100000,	//83 (무명)
+	ITEM_GOLD,	//84 (무명)
+	null,	//85 (무명)
+	null,	//86 (무명)
+	100000,	//87 (무명)
+	ITEM_GOLD,	//88 (무명)
+	null,	//89 (무명)
+	null,	//90 (무명)
+	100000,	//91 (무명)
+	ITEM_GOLD,	//92 (무명)
+	null,	//93 (무명)
+	null,	//94 (무명)
+	100000,	//95 (무명)
+	ITEM_GOLD,	//96 (무명)
+	null,	//97 (무명)
+	null,	//98 (무명)
+	100000,	//99 (무명)
+	ITEM_GOLD,	//100 (무명)
+	null,	//101 (무명)
+	null,	//102 (무명)
+	100000,	//103 (무명)
+	ITEM_GOLD,	//104 (무명)
+	null,	//105 (무명)
+	null,	//106 (무명)
+	100000,	//107 (무명)
+	ITEM_GOLD,	//108 (무명)
+	null,	//109 (무명)
+	null,	//110 (무명)
+	100000,	//111 (무명)
+	ITEM_GOLD,	//112 (무명)
+	null,	//113 (무명)
+	null,	//114 (무명)
+	100000,	//115 (무명)
+	ITEM_GOLD,	//116 (무명)
+	null,	//117 (무명)
+	null,	//118 (무명)
+	100000,	//119 (무명)
+	ITEM_GOLD,	//120 (무명)
+	null,	//121 (무명)
+	null,	//122 (무명)
+	100000,	//123 (무명)
+	ITEM_GOLD,	//124 (무명)
+	null,	//125 (무명)
+	null,	//126 (무명)
+	100000,	//127 (무명)
+	ITEM_GOLD,	//128 (무명)
+	null,	//129 (무명)
+	null,	//130 (무명)
+	100000,	//131 (무명)
+	ITEM_GOLD,	//132 (무명)
+	null,	//133 (무명)
+	null,	//134 (무명)
+	100000,	//135 (무명)
+	ITEM_GOLD,	//136 (무명)
+	null,	//137 (무명)
+	null,	//138 (무명)
+	100000,	//139 (무명)
+	ITEM_GOLD,	//140 (무명)
+	null,	//141 (무명)
+	null,	//142 (무명)
+	100000,	//143 (무명)
+	ITEM_GOLD,	//144 (무명)
+	null,	//145 (무명)
+	null,	//146 (무명)
+	100000,	//147 (무명)
+	ITEM_GOLD,	//148 (무명)
+	null,	//149 (무명)
+	null,	//150 (무명)
+	100000,	//151 (무명)
+	ITEM_GOLD,	//152 (무명)
+	null,	//153 (무명)
+	null,	//154 (무명)
+	100000,	//155 (무명)
+	ITEM_GOLD,	//156 (무명)
+	null,	//157 (무명)
+	null,	//158 (무명)
+	100000,	//159 (무명)
+	ITEM_GOLD,	//160 (무명)
+	null,	//161 (무명)
+	null,	//162 (무명)
+	100000,	//163 (무명)
+	ITEM_GOLD,	//164 (무명)
+	null,	//165 (무명)
+	null,	//166 (무명)
+	100000,	//167 (무명)
+	ITEM_GOLD,	//168 (무명)
+	null,	//169 (무명)
+	null,	//170 (무명)
+	100000,	//171 (무명)
+	ITEM_GOLD,	//172 (무명)
+	null,	//173 (무명)
+	null,	//174 (무명)
+	100000,	//175 (무명)
+	ITEM_GOLD,	//176 (무명)
+	null,	//177 (무명)
+	null,	//178 (무명)
+	100000,	//179 (무명)
+	ITEM_GOLD,	//180 (무명)
+	null,	//181 (무명)
+	null,	//182 (무명)
+	100000,	//183 (무명)
+	ITEM_GOLD,	//184 (무명)
+	null,	//185 (무명)
+	null,	//186 (무명)
+	100000,	//187 (무명)
+	ITEM_GOLD,	//188 (무명)
+	null,	//189 (무명)
+	null,	//190 (무명)
+	100000,	//191 (무명)
+	ITEM_GOLD,	//192 (무명)
+	null,	//193 (무명)
+	null,	//194 (무명)
+	100000,	//195 (무명)
+	ITEM_GOLD,	//196 (무명)
+	null,	//197 (무명)
+	null,	//198 (무명)
+	100000,	//199 (무명)
+	ITEM_GOLD,	//200 (무명)
+	null,	//201 (무명)
+	null,	//202 (무명)
+	100000,	//203 (무명)
+	ITEM_GOLD,	//204 (무명)
+	null,	//205 (무명)
+	null,	//206 (무명)
+	100000,	//207 (무명)
+	ITEM_GOLD,	//208 (무명)
+	null,	//209 (무명)
+	null,	//210 (무명)
+	100000,	//211 (무명)
+	ITEM_GOLD,	//212 (무명)
+	null,	//213 (무명)
+	null,	//214 (무명)
+	100000,	//215 (무명)
+	ITEM_GOLD,	//216 (무명)
+	null,	//217 (무명)
+	null,	//218 (무명)
+	100000,	//219 (무명)
+	ITEM_GOLD,	//220 (무명)
+	null,	//221 (무명)
+	null,	//222 (무명)
+	100000,	//223 (무명)
+	ITEM_GOLD,	//224 (무명)
+	null,	//225 (무명)
+	null,	//226 (무명)
+	100000,	//227 (무명)
+	ITEM_GOLD,	//228 (무명)
+	null,	//229 (무명)
+	null,	//230 (무명)
+	100000,	//231 (무명)
+	ITEM_GOLD,	//232 (무명)
+	null,	//233 (무명)
+	null,	//234 (무명)
+	100000,	//235 (무명)
+	ITEM_GOLD,	//236 (무명)
+	null,	//237 (무명)
+	null,	//238 (무명)
+	100000,	//239 (무명)
+	ITEM_GOLD,	//240 (무명)
+	null,	//241 (무명)
+	null,	//242 (무명)
+	100000,	//243 (무명)
+	ITEM_GOLD,	//244 (무명)
+	null,	//245 (무명)
+	null,	//246 (무명)
+	100000,	//247 (무명)
+	ITEM_GOLD,	//248 (무명)
+	null,	//249 (무명)
+	null,	//250 (무명)
+	100000,	//251 (무명)
+	ITEM_GOLD,	//252 (무명)
+	null,	//253 (무명)
+	null,	//254 (무명)
+	100000,	//255 (무명)
+	ITEM_GOLD,	//256 (무명)
+	null,	//257 (무명)
+	null,	//258 (무명)
+	100000,	//259 (무명)
+	ITEM_GOLD,	//260 (무명)
+	null,	//261 (무명)
+	null,	//262 (무명)
+	100000,	//263 (무명)
+	ITEM_GOLD,	//264 (무명)
+	null,	//265 (무명)
+	null,	//266 (무명)
+	100000,	//267 (무명)
+	ITEM_GOLD,	//268 (무명)
+	null,	//269 (무명)
+	null,	//270 (무명)
+	100000,	//271 (무명)
+	ITEM_GOLD,	//272 (무명)
+	null,	//273 (무명)
+	null,	//274 (무명)
+	100000,	//275 (무명)
+	ITEM_GOLD,	//276 (무명)
+	null,	//277 (무명)
+	null,	//278 (무명)
+	100000,	//279 (무명)
+	ITEM_GOLD,	//280 (무명)
+	null,	//281 (무명)
+	null,	//282 (무명)
+	100000,	//283 (무명)
+	ITEM_GOLD,	//284 (무명)
+	null,	//285 (무명)
+	null,	//286 (무명)
+	100000,	//287 (무명)
+	ITEM_GOLD,	//288 (무명)
+	null,	//289 (무명)
+	null,	//290 (무명)
+	100000,	//291 (무명)
+	ITEM_GOLD,	//292 (무명)
+	null,	//293 (무명)
+	null,	//294 (무명)
+	100000,	//295 (무명)
+	ITEM_GOLD,	//296 (무명)
+	null,	//297 (무명)
+	null,	//298 (무명)
+	100000,	//299 (무명)
+	ITEM_GOLD,	//300 (무명)
+	null,	//301 (무명)
+	null,	//302 (무명)
+	100000,	//303 (무명)
+	ITEM_GOLD,	//304 (무명)
+	null,	//305 (무명)
+	null,	//306 (무명)
+	100000,	//307 (무명)
+	ITEM_GOLD,	//308 (무명)
+	null,	//309 (무명)
+	null,	//310 (무명)
+	100000,	//311 (무명)
+	ITEM_GOLD,	//312 (무명)
+	null,	//313 (무명)
+	null,	//314 (무명)
+	100000,	//315 (무명)
+	ITEM_GOLD,	//316 (무명)
+	null,	//317 (무명)
+	null,	//318 (무명)
+	100000,	//319 (무명)
+	ITEM_GOLD,	//320 (무명)
+	null,	//321 (무명)
+	null,	//322 (무명)
+	100000,	//323 (무명)
+	ITEM_GOLD,	//324 (무명)
+	null,	//325 (무명)
+	null,	//326 (무명)
+	100000,	//327 (무명)
+	ITEM_GOLD,	//328 (무명)
+	null,	//329 (무명)
+	null,	//330 (무명)
+	100000,	//331 (무명)
+	ITEM_GOLD,	//332 (무명)
+	null,	//333 (무명)
+	null,	//334 (무명)
+	100000,	//335 (무명)
+	ITEM_GOLD,	//336 (무명)
+	null,	//337 (무명)
+	null,	//338 (무명)
+	100000,	//339 (무명)
+	ITEM_GOLD,	//340 (무명)
+	null,	//341 (무명)
+	null,	//342 (무명)
+	100000,	//343 (무명)
+	ITEM_GOLD,	//344 (무명)
+	null,	//345 (무명)
+	null,	//346 (무명)
+	100000,	//347 (무명)
+	ITEM_GOLD,	//348 (무명)
+	null,	//349 (무명)
+	null,	//350 (무명)
+	100000,	//351 (무명)
+	ITEM_GOLD,	//352 (무명)
+	null,	//353 (무명)
+	null,	//354 (무명)
+	100000,	//355 (무명)
+	ITEM_GOLD,	//356 (무명)
+	null,	//357 (무명)
+	null,	//358 (무명)
+	100000,	//359 (무명)
+	ITEM_GOLD,	//360 (무명)
+	null,	//361 (무명)
+	null,	//362 (무명)
+	100000,	//363 (무명)
+	ITEM_GOLD,	//364 (무명)
+	null,	//365 (무명)
+	null,	//366 (무명)
+	100000,	//367 (무명)
+	ITEM_GOLD,	//368 (무명)
+	null,	//369 (무명)
+	null,	//370 (무명)
+	100000,	//371 (무명)
+	ITEM_GOLD,	//372 (무명)
+	null,	//373 (무명)
+	null,	//374 (무명)
+	100000,	//375 (무명)
+	ITEM_GOLD,	//376 (무명)
+	null,	//377 (무명)
+	null,	//378 (무명)
+	100000,	//379 (무명)
+	ITEM_GOLD,	//380 (무명)
+	null,	//381 (무명)
+	null,	//382 (무명)
+	100000,	//383 (무명)
+	ITEM_GOLD,	//384 (무명)
+	null,	//385 (무명)
+	null,	//386 (무명)
+	100000,	//387 (무명)
+	ITEM_GOLD,	//388 (무명)
+	null,	//389 (무명)
+	null,	//390 (무명)
+	100000,	//391 (무명)
+	ITEM_GOLD,	//392 (무명)
+	null,	//393 (무명)
+	null,	//394 (무명)
+	100000,	//395 (무명)
+	ITEM_GOLD,	//396 (무명)
+	null,	//397 (무명)
+	null,	//398 (무명)
+	100000,	//399 (무명)
 };
 static const int calendarPos_builtin[] = {
 	16 * _2X, -20 * _2X, POPUPWINDOWSIZE_X - 32 * _2X, REWARDCARDSIZE_Y + 24 * _2X, //타이틀
