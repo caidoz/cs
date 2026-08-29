@@ -261,9 +261,19 @@ void DumpCmfStep(void)
 
 		gDumpRT->retain();
 
-		//떨군 자리를 한 번 알려 준다. 이걸 봐야 파일을 찾을 수 있다.
-		CCLOG("[DUMP] 시작. 저장 위치 : %sdump/",
-			cocos2d::FileUtils::getInstance()->getWritablePath().c_str());
+		//폴더를 먼저 만든다. saveToFile 은 fopen 만 하므로 폴더가 없으면
+		//아무 말 없이 실패한다. 파일이 안 생기고 오류도 안 뜬다.
+		{
+			cocos2d::FileUtils* fu = cocos2d::FileUtils::getInstance();
+			const std::string dir = fu->getWritablePath() + "dump/";
+
+			if (!fu->isDirectoryExist(dir))
+				fu->createDirectory(dir);
+
+			//떨군 자리를 한 번 알려 준다. 이걸 봐야 파일을 찾을 수 있다.
+			CCLOG("[DUMP] 시작. 저장 위치 : %s  (폴더 %s)",
+				dir.c_str(), fu->isDirectoryExist(dir) ? "있음" : "못 만듦");
+		}
 	}
 
 	//---- 동료 ----

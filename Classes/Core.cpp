@@ -973,11 +973,6 @@ void Core::Run(float delta) {
 	//항상 현재 시간을 세팅해 준다.
 	currentTimeStamp = MC_knlCurrentTimeStamp();
 
-#if DUMP_CMF_PNG
-	//캐릭터 그림을 뽑는 중이면 그것만 한다. 게임은 돌리지 않는다.
-	DumpCmfStep();
-	return;
-#endif
 
 	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
@@ -1361,6 +1356,32 @@ void PaintClet(int x, int y, int w, int h)
 	//터치영역을 새로 쌓기 전에 튜토리얼 제한을 정해둔다. 이 프레임에 등록되는
 	//모든 SetRectPoint()가 같은 기준으로 걸러진다.
 	gTutorialTouchFunc = GetTutorialTouchFunc();
+
+#if DUMP_CMF_PNG
+	//캐릭터 그림 뽑기.
+	//
+	//로고 화면에서 텍스처를 단계별로 올린다(LogoDraw 의 case 1~40).
+	//그 전에 그리면 sprite[] 가 비어 있어 죽는다. 로고를 벗어난 뒤부터
+	//뽑고, 다 뽑을 때까지 게임은 돌리지 않는다.
+	//
+	//mustRefresh 안쪽에 두지 않는다. 그 조건은 화면이 바뀔 때만 참이라
+	//한 장 뽑는 데 몇 초씩 걸릴 수 있다.
+	//어디까지 왔는지 한 번씩 알려 준다. 안 뽑히면 이 줄로 원인을 안다.
+	{
+		static int lastHandle = -1;
+
+		if (drawHandle != lastHandle) {
+			lastHandle = drawHandle;
+			CCLOG("[DUMP] 화면 %d (로고는 %d). netBooted=%d",
+				drawHandle, (int)MD_LOGO, (int)netBooted);
+		}
+	}
+
+	if (drawHandle != MD_LOGO) {
+		DumpCmfStep();
+		return;
+	}
+#endif
 
 	//버튼 눌림/튀어오름을 한 칸 진행시킨다. 터치영역을 다시 등록하기 전에
 	//돌려야 이번 프레임에 그리는 버튼이 지금 상태로 그려진다.
