@@ -19,6 +19,8 @@ void InitRouletteJump(void);
 void RouletteAttackStart(void);
 int GetSameRouletteCnt(int objIdx);
 int GetRouletteResultSkillForObj(int obj);
+int GetDemoSummonEnemyForSlot(int slot);
+int GetDemoSummonEnemyForOwner(int ownerObj);
 int UpgradeSkillIdx(int reelIdx, int count);
 //------------------------------------------------------------
 // 룰렛 미리보기(애니메이션 없음)

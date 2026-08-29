@@ -79,6 +79,7 @@ float GetAlphaWidth(int, int, float);
 float GetAlphaWidth2(int, float);
 float GetGoldAlphaWidth(int idx, int type, float zoom);
 void DrawGoldAlpha(int x, int y, int idx, int type, float zoom, int align, bool ani, float rotation);
+void DrawGoldAlphaText(int x, int y, const char* text, int type, float zoom, int align, bool ani, float rotation);
 void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation);
 void DrawAlpha2(int x, int y, int idx, float zoom, float rotation);
 void CenterAlpha(int, int, int, int, float, float);
@@ -130,7 +131,7 @@ void DrawCrewBulletIcon(int idx, int x, int y, float zoom);
 int GetCrewBulletAni(int idx);
 //x, y는 아이콘의 한가운데다(DrawCrewBulletIcon()은 좌상단).
 void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame);
-void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom);
+void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverride = 0);
 void DrawLock(int lv, int x, int y, float zoom);
 void DrawPercent(float num, int x, int y, float zoom, int align);
 void DrawLv(int lv, int x, int y, float zoom, int align);

@@ -10568,7 +10568,8 @@ void EnemyMoveTurn(OBJECT* pObj)
 				pObj->frame = 0;
 				pObj->mainFrame = 0;
 				if (GetObjFromPtr(pObj) == turn && GetSonObjCnt(GetObjFromPtr(pObj)) == 0) {
-					onceDmgUpdateFrame = 2 * FPS;
+					// 적 한 명의 행동이 끝난 뒤 다음 적으로 넘어가는 대기만 짧게 둔다.
+					onceDmgUpdateFrame = Max(2, FPS / 4);
 					pObj->turnPosition = DMGUPDATE;
 				}
 
@@ -10599,7 +10600,9 @@ void EnemyMoveTurn(OBJECT* pObj)
 						//	break;
 					}
 				}
-				else
+				// 적이 연속 행동하는 중에는 매 적마다 디스크 저장을 하지 않는다.
+				// 마지막 적까지 끝난 시점에만 저장해 턴 교체 순간의 멈춤을 없앤다.
+				else if (turn < ENEMY || turn >= NEUTRAL)
 					SaveGame();
 			}
 			break;
@@ -10737,6 +10740,25 @@ END:
 
 }
 
+static int FindNearestSummonTarget(const OBJECT* pObj)
+{
+	int nearest = 0;
+	int nearestDistance = 0x7fffffff;
+
+	for (int i = ENEMY; i < NEUTRAL; ++i) {
+		if (!ao[i].active || ao[i].dead || ao[i].mom != i)
+			continue;
+
+		int distance = Abs((int)ao[i].x - (int)pObj->x);
+		if (distance < nearestDistance) {
+			nearestDistance = distance;
+			nearest = i;
+		}
+	}
+
+	return nearest;
+}
+
 void SummonMove(OBJECT* pObj)
 {
 	const signed short* tPtr;
@@ -10756,18 +10778,26 @@ void SummonMove(OBJECT* pObj)
 
 	ret = *tPtr;
 
-	if (!pObj->target) {
-		//진짜 적이면 아군을 공격한다.
-		//distance = DX;
+	// ENEMY는 단지 배열의 첫 슬롯일 뿐 화면에서 가장 앞선 적이라는 뜻이
+	// 아니다. 소환 위치에서 x 거리가 가장 가까운 살아 있는 적 본체를 잡고,
+	// 기존 대상이 죽거나 사라지면 즉시 다시 찾는다.
+	if (pObj->target < ENEMY || pObj->target >= NEUTRAL
+		|| !ao[pObj->target].active || ao[pObj->target].dead)
+		pObj->target = FindNearestSummonTarget(pObj);
 
-		//for (i = ENEMY; i < NEUTRAL; i++) {
-		//	if (Abs(ao[i].x - pObj->x) < distance && ao[i].active == true && ao[i].dead == false) {
-		//		distance = Abs(ao[i].x - pObj->x);
-		//		pObj->target = i;
-		//	}
-		//}
-		pObj->target = ao[PLAYER].target;
+	if (pObj->target == 0) {
+		pObj->attack = false;
+		//소환수가 마지막 적을 쓰러뜨린 경우에는 새 타겟을 기다리며 필드에
+		//남지 않는다. 공격을 마친 일회성 소환수이므로 즉시 퇴장시킨다.
+		pObj->moveHandler = VANISHMOVE;
+		pObj->drawHandler = VANISHDRAW;
+		pObj->frame = 0;
+		goto END;
 	}
+
+	//공격 줌 탐색기가 소환 몬스터도 공격자로 인식할 수 있게 실제 공격
+	//모션(THERE) 동안만 attack 플래그를 유지한다.
+	pObj->attack = (pObj->turnPosition == THERE);
 
 	//Motion
 	tPtr += (2 + (pObj->frame % ret));
@@ -11065,8 +11095,8 @@ void SummonMove(OBJECT* pObj)
 			pObj->moveHandler = VANISHMOVE;
 			pObj->drawHandler = VANISHDRAW;
 			pObj->frame = 0;
-			//CrewMove에서는 DMGUPDATE만 설정해주고 프레임 활성화는 여기서 해주고 1이 되면 다음턴으로 넘어간다.
-			onceDmgUpdateFrame = 2 * FPS;
+			//다음 턴 타이머는 여기서 시작하지 않는다. VANISHMOVE가 실제로
+			//끝난 시점에 시작해야 다음 소환이 사라지는 소환수를 덮어쓰지 않는다.
 			//WhoIsNextTurn();
 
 			/*
@@ -11098,6 +11128,9 @@ void VanishMove(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int startObj;
 	int endObj;
+	//VanishDraw는 FPS/2까지만 보인다. 소환수만 그 시점에 같이 종료해야
+	//화면에서 사라진 뒤 다음 소환 전까지 멈춘 것처럼 보이는 공백이 없다.
+	const int vanishEndFrame = (obj == SOLDIER) ? Max(2, FPS * 9 / 10 + 8) : FPS;
 
 	if (obj < PLAYERALL) {
 		startObj = BULLET;
@@ -11133,13 +11166,13 @@ void VanishMove(OBJECT* pObj)
 		}
 	}
 
-	if (pObj->frame == FPS && obj >= ENEMY) {
+	if (pObj->frame == vanishEndFrame && obj >= ENEMY) {
 		//여기서 보스를 날려버리는 곳으로 이동시킬것
 		//if (robin.bossRoom == true) {
 		//	GotoStageClear();
 		//}
 	}
-	else if (pObj->frame > FPS) {
+	else if (pObj->frame > vanishEndFrame) {
 		if (obj >= ENEMY)
 			switch (pObj->type) {
 			case ENEMY_CASTLE_BOSS3:
@@ -11309,6 +11342,11 @@ void VanishMove(OBJECT* pObj)
 		// 투기장에서 몬스터를 다 죽이면 다음 방으로 넘겨준다.
 		//몬스터들을 다 죽였는지 체크
 		pObj->active = false;
+		if (obj == SOLDIER) {
+			//소환수의 VANISHMOVE/VANISHDRAW가 모두 끝난 뒤에만 호출 동료의
+			//DMGUPDATE를 풀어 다음 소환 턴으로 진행한다.
+			onceDmgUpdateFrame = 2;
+		}
 		//if (obj == SOLDIER && pObj->type == MAXX)
 		//	WhoIsNextTurn();
 #ifdef ENEMYHPBAR
@@ -11334,10 +11372,26 @@ void VanishMove(OBJECT* pObj)
 	}
 }
 
+static void FinishSummonControlMark(int owner, int skill)
+{
+	for (int i = 0; i < TOTALCONTROLMARK; ++i) {
+		if (!controlMark[i].manual
+			&& (controlMark[i].frame > 0 || controlMark[i].frame2 > 0)
+			&& controlMark[i].owner == owner
+			&& controlMark[i].attackType == skill) {
+			//DrawControlMark 갱신부가 같은 프레임에 슬롯을 정상 정리한다.
+			controlMark[i].alpha = ROULETTE_TRANSPARENCY;
+			return;
+		}
+	}
+}
+
 void RegenMove(OBJECT* pObj)
 {
 	int i, j;
 	int obj = GetObjFromPtr(pObj);
+	const int regenMotionFrame =
+		(obj == SOLDIER) ? Max(2, FPS * 9 / 20 + 8) : FPS / 2;
 
 	pObj->frame++;
 	//부활전에는 
@@ -11375,7 +11429,7 @@ void RegenMove(OBJECT* pObj)
 		}
 		//여기서 부활전에 슬롯머신에서 점프하면서 커지면서 좌우로 왔다갔다하는 식의 것을 그대로 zoom, y, dirX를 조절한다.
 		//참고로 여기 ny는 시작포인트.
-		if (pObj->frame < FPS / 2) {
+		if (pObj->frame < regenMotionFrame) {
 			if (obj < PLAYERALL) {
 				// 0) 최초 프레임에서 기본값 저장
 				static int   baseDir = 1;
@@ -11391,7 +11445,7 @@ void RegenMove(OBJECT* pObj)
 				const float zoomUpAmp = pObj->defaultZoom * 0.35f; // 확대 더 급격
 				const float zoomDownAmp = pObj->defaultZoom * 0.18f; // 축소(살짝 줄어드는 느낌) 원치 않으면 0으로
 
-				float t = (float)(pObj->frame - 1) / (float)(FPS / 2 - 1);
+				float t = (float)(pObj->frame - 1) / (float)(regenMotionFrame - 1);
 				if (t < 0.f) t = 0.f;
 				if (t > 1.f) t = 1.f;
 
@@ -11427,8 +11481,8 @@ void RegenMove(OBJECT* pObj)
 
 				int faceDir;
 
-				if (pObj->frame < FPS / 2 * 0.25f)       faceDir = (pObj->frame / 2) % 2;
-				else if (pObj->frame < FPS / 2 * 0.50f)  faceDir = (pObj->frame) % 2;
+				if (pObj->frame < regenMotionFrame * 0.25f)       faceDir = (pObj->frame / 2) % 2;
+				else if (pObj->frame < regenMotionFrame * 0.50f)  faceDir = (pObj->frame) % 2;
 				else                                         faceDir = (pObj->frame / 2) % 2;
 
 				//faceDir = pObj->frame % 2;
@@ -11437,14 +11491,35 @@ void RegenMove(OBJECT* pObj)
 				pObj->dirF = faceDir;
 			}
 		}
-		else if (pObj->frame == FPS / 2) {
+		else if (pObj->frame == regenMotionFrame) {
 			pObj->dead = false;
 			pObj->frame = 0;
 			pObj->zoom = pObj->defaultZoom;
 			pObj->x = pObj->nx;
 			pObj->y = pObj->ny;
 			pObj->dirX = pObj->dirF = RIGHT;
-			if (pObj->cmf < TOTALCHAR) {
+			// SOLDIER 칸에는 히어로뿐 아니라 SUMMON 몬스터도 들어온다.
+			// 몬스터 CMF 번호가 TOTALCHAR보다 작다는 이유로 PLAYERMOVE에
+			// 들어가면 소환 직후 제자리에 멈춘다. 타입을 먼저 보고 전용 AI로 보낸다.
+			if (obj == SOLDIER
+				&& pObj->type >= ENEMY_SNAIL
+				&& pObj->type < gTotalEnemy) {
+				if (pObj->actionOwner >= CREW
+					&& pObj->actionOwner < CREW + MAXCREW)
+					FinishSummonControlMark(pObj->actionOwner,
+						pObj->actionSkill);
+				//같은 SOLDIER 슬롯을 다음 소환수가 재사용하므로 이전 소환수의
+				//HIT 카운트가 새 소환수로 이어지지 않게 생성 완료 시 초기화한다.
+				pObj->hitCount = 0;
+				pObj->hitCountFrame = 0;
+				pObj->hitDmg = 0;
+				pObj->hitCountPlus = false;
+				pObj->hitCountAtFeet = false;
+				pObj->moveHandler = SUMMONMOVE;
+				pObj->drawHandler = ENEMYDRAW;
+				pObj->turnPosition = HERE;
+			}
+			else if (pObj->cmf < TOTALCHAR) {
 				//pObj->hp = pObj->ps[PS_HP];
 				pObj->moveHandler = PLAYERMOVE;
 				pObj->drawHandler = PLAYERDRAW;
@@ -12433,16 +12508,28 @@ void ItemMove(OBJECT* pObj)
 
 	pObj->mainFrame++;
 
+	//DropItem 골드는 실제로 바닥에 착지한 뒤 잠시 보이고 나서 흡수된다.
+	//mainFrame은 공중에 있는 시간까지 포함하므로 그것만 검사하면 낙하 도중
+	//상자나 적에게 날아가기 시작한다. 사용하지 않던 frame을 착지 후 대기
+	//카운터로 쓰고, 다시 공중에 뜨면 초기화한다.
+	if (pObj->def == ITEM_GOLD) {
+		if (pObj->jumpFrame == 0 && pObj->dy == 0)
+			pObj->frame++;
+		else
+			pObj->frame = 0;
+	}
+
 	switch (pObj->def) {
 	default:
-		itemStatusFrame = FPS;
+		itemStatusFrame = FPS / 4;
 		break;
 	case ITEM_BOX:
 		itemStatusFrame = 1 * FPS;
 		break;
 	}
 #ifdef GETITEMAUTO
-	if (pObj->mainFrame > itemStatusFrame) {
+	if (pObj->mainFrame > itemStatusFrame
+		&& (pObj->def != ITEM_GOLD || pObj->frame > 28)) {
 		switch (drawHandle) {
 		case MD_PLAY:
 		case MD_BATTLE:
@@ -12469,7 +12556,14 @@ void ItemMove(OBJECT* pObj)
 
 				}
 
-				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2, 8 * _2X * 2, 2 * _2X * 2, 8 * _2X * 2, 2 * _2X * 2, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD, pObj->zoom * CURRENCYICON_STARTSIZE, pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, 0.3f, pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, barName);
+				SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2,
+					8.0f * _2X, 2.0f * _2X,
+					8.0f * _2X, 2.0f * _2X,
+					FPS / 8, FPS / 8, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD,
+					pObj->zoom * CURRENCYICON_STARTSIZE,
+					pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, 0.3f,
+					pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE,
+					pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, barName);
 #else
 				targetX = DX / 2 - (GetNumDx(robin.gold, false, NUM_FONT_NORMAL, false) + 32 * _2X + 8 * _2X) / 2;
 				targetY = DY - GNBHEIGHT - 8 * _2X;
@@ -14289,8 +14383,11 @@ void CrewMove(OBJECT* pObj)
 							}
 								break;
 							case SUMMON:
+								onceDmgUpdateFrame = 0;
 								objPtr = &ao[SkillHostObj(pObj->currentSkill)];
-								objPtr->type = SkillSummonEnemy(pObj->currentSkill);
+								objPtr->type = gDemoForceRoulette
+									? GetDemoSummonEnemyForOwner(GetObjFromPtr(pObj))
+									: SkillSummonEnemy(pObj->currentSkill);
 								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
 								objPtr->zoom = objPtr->defaultZoom = SUMMONZOOM;
 								SetEnemy(objPtr);
@@ -14345,9 +14442,11 @@ void CrewMove(OBJECT* pObj)
 									objPtr->dirX = objPtr->dirF = RIGHT;
 									break;
 								}
-								objPtr->active = true;
+				objPtr->active = true;
+				objPtr->actionOwner = obj;
+				objPtr->actionSkill = pObj->currentSkill;
 
-								objPtr->target = pObj->target;
+				objPtr->target = FindNearestSummonTarget(objPtr);
 								objPtr->frame = 0;
 								pObj->turnPosition = DMGUPDATE;//바로 결과로.
 

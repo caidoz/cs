@@ -18,6 +18,13 @@
 #define ROULETTE_CARD_SETTLE_ZOOM	0.60f	//릴에 놓였을 때(아래 z1 과 같아야 한다)
 #define ROULETTE_CARD_LAND_ZOOM		(ROULETTE_CARD_SETTLE_ZOOM * 1.10f * 0.80f * 0.80f * 0.80f - 0.10f)
 #define ROULETTE_BUFF_STACK_ZOOM	(ROULETTE_CARD_LAND_ZOOM * 2.0f)
+#define ROULETTE_CARD_ACTION_ZOOM	(ROULETTE_CARD_LAND_ZOOM * 1.20f)
+
+// AVK_MAXGAME에서 이번 공격의 세 룰이 실제로 소환할 몬스터.
+// 스킬 데이터는 공통 SUMMON 템플릿을 쓰고, 몬스터 종류만 실행 주체별로 바꾼다.
+static int gDemoSummonEnemy[TOTALREEL] = {
+	ENEMY_SNAIL, ENEMY_TREE, ENEMY_ONEEYE
+};
 
 //오브젝트 머리 위에 카드를 얹을 자리.
 //
@@ -99,7 +106,7 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 	int i;
 
 	for (i = 0; i < TOTALCONTROLMARK; i++) {
-		int sx, sy, at, ow;
+		int sx, sy, at, ow, icon;
 		float z;
 
 		if (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
@@ -127,6 +134,7 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 		sy = controlMark[i].y;
 		at = controlMark[i].attackType;
 		ow = controlMark[i].owner;
+		icon = controlMark[i].icon;
 		z = controlMark[i].zoom2;		//지금 보이는 크기에서 이어 간다
 
 		controlMark[i].frame = 0;
@@ -139,7 +147,7 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 			8 * _2X, 1 * _2X,
 			8 * _2X, 1 * _2X,
 			FLY_T, FLY_T,
-			false,
+			icon,
 			30, 1,
 			at, 1,
 			z, ROULETTE_CARD_LAND_ZOOM + 0.1f, 0.10f / MOTIONDIV,
@@ -298,7 +306,7 @@ void UpdateHeroSkillControlMarkStack(void)
 					|| SkillHostObj(skillIdx) != destObj)
 					continue;
 
-				destY = baseY + stack * gap;
+					destY = baseY + stack * gap;
 				if (controlMark[i].targetX2 != baseX || controlMark[i].targetY2 != destY) {
 					controlMark[i].targetX = controlMark[i].targetX2 = baseX;
 					controlMark[i].targetY = controlMark[i].targetY2 = destY;
@@ -365,6 +373,63 @@ void UpdateHeroSkillControlMarkStack(void)
 
 				arranged[i] = true;
 				stack++;
+				break;
+			}
+		}
+	}
+
+	//몬스터 SUMMON은 모두 같은 SOLDIER 슬롯을 차례로 재사용한다. 따라서
+	//종류가 달라도 하나의 세로 스택으로 관리한다. 맨 아래 카드가 소환 완료와
+	//함께 제거되면 이 함수가 다음 프레임에 나머지를 한 칸씩 아래로 당긴다.
+	{
+		int baseX = 0;
+		int baseY = 0;
+		int stack = 0;
+		bool baseSet = false;
+
+		for (int t = 0; t < totalTurn; ++t) {
+			int owner = turnList[t];
+
+			if (owner < CREW || owner >= CREW + MAXCREW)
+				continue;
+
+			for (int i = 0; i < TOTALCONTROLMARK; ++i) {
+				int skillIdx;
+				int destY;
+
+				if (controlMark[i].manual || arranged[i]
+					|| (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
+					|| controlMark[i].owner != owner)
+					continue;
+
+				skillIdx = controlMark[i].attackType;
+				if (skillIdx < 0 || skillIdx >= gTotalSkill
+					|| SkillKind(skillIdx) != SUMMON)
+					continue;
+
+				if (!baseSet) {
+					int summonX = SkillSummonX(skillIdx);
+					if (summonX == 0)
+						summonX = DX / 2;
+					//소환수가 출발한 뒤에도 카드는 따라가지 않는다. 룰렛에서
+					//정한 최초 소환 위치를 이 스택의 고정 기준점으로 사용한다.
+					GetMarkHeadPosAt(summonX, (int)ao[ROBIN].y,
+						SUMMONZOOM, &baseX, &baseY);
+					baseSet = true;
+				}
+
+				//SUMMON 카드는 도착 크기가 20% 크므로 스택 간격도 같이 넓힌다.
+				destY = baseY + stack * (int)(gap * 1.20f);
+				if (controlMark[i].targetX2 != baseX
+					|| controlMark[i].targetY2 != destY) {
+					controlMark[i].targetX = controlMark[i].targetX2 = baseX;
+					controlMark[i].targetY = controlMark[i].targetY2 = destY;
+					controlMark[i].speed2 = 2 * _2X;
+					controlMark[i].speedIncrement2 = 1.0f / MOTIONDIV;
+				}
+
+				arranged[i] = true;
+				++stack;
 				break;
 			}
 		}
@@ -682,6 +747,18 @@ void RouletteAttackStart(void)
 		gBalHeartUsed += betCost;
 #endif
 	}
+
+	// AVK_MAXGAME 소환 테스트: 기존 웨이브는 건드리지 않고, 이번 공격에서
+	// 세 릴이 소환할 몬스터만 3종씩 전진시킨다.
+	if (gDemoForceRoulette) {
+		static int nextEnemy = ENEMY_SNAIL;
+		for (int slot = 0; slot < TOTALREEL; ++slot) {
+			gDemoSummonEnemy[slot] = nextEnemy;
+			nextEnemy++;
+			if (nextEnemy > ENEMY_CASTLE_BOSS4)
+				nextEnemy = ENEMY_SNAIL;
+		}
+	}
 	//방어가 되는 케이스
 	//애초에 공격을 당해서 생산불능인 상태면 대상에서 제외
 	//생산가능한 상태인 대상을 공격했을 때 방어막이 있으면 실패
@@ -839,6 +916,22 @@ int GetRouletteResultSkillForObj(int obj)
 	return -1;
 }
 
+int GetDemoSummonEnemyForSlot(int slot)
+{
+	if (slot < 0 || slot >= TOTALREEL)
+		return ENEMY_SNAIL;
+	return gDemoSummonEnemy[slot];
+}
+
+int GetDemoSummonEnemyForOwner(int ownerObj)
+{
+	for (int slot = 0; slot < TOTALREEL; ++slot) {
+		if (CREW + gRouletteResultAoOffset[slot] == ownerObj)
+			return gDemoSummonEnemy[slot];
+	}
+	return ENEMY_SNAIL;
+}
+
 // count=1 -> 그대로, count=2 -> 레벨2, count=3 -> 레벨3
 int UpgradeSkillIdx(int reelIdx, int count)
 {
@@ -956,6 +1049,23 @@ void RouletteDrawSimple3Slots(
 
 void RouletteDraw(int x, int y, float zoom)
 {
+	//룰렛이 실제로 도는 동안 슬롯판과 그 안의 캐릭터만 살짝 확대한다.
+	//ACTION으로 넘어가면 같은 속도로 원래 크기로 돌아온다.
+	static float roulettePlayZoom = 1.0f;
+	const float rouletteZoomTarget =
+		(attackSequence == ATTACKSEQUENCE_SLOT) ? 1.20f : 1.0f;
+	const float rouletteZoomStep = 0.025f;
+	const float rouletteBaseZoom = zoom;
+	const float rouletteCenterY = y + (float)SLOTSIZE_Y * rouletteBaseZoom / 2.0f;
+
+	if (roulettePlayZoom < rouletteZoomTarget)
+		roulettePlayZoom = Min(rouletteZoomTarget, roulettePlayZoom + rouletteZoomStep);
+	else if (roulettePlayZoom > rouletteZoomTarget)
+		roulettePlayZoom = Max(rouletteZoomTarget, roulettePlayZoom - rouletteZoomStep);
+
+	zoom = rouletteBaseZoom * roulettePlayZoom;
+	y = (int)(rouletteCenterY - (float)SLOTSIZE_Y * zoom / 2.0f);
+
 	// -----------------------------
 	// [CFG] 점프 연출 파라미터 (짧고 탄력)
 	// -----------------------------
@@ -1452,7 +1562,7 @@ void RouletteDraw(int x, int y, float zoom)
 							// 실제 액션이 서로 달라지지 않는다.
 							if (gDemoForceRoulette) {
 								static const int demoSkill[TOTALREEL] = {
-									NPC_EVAN_SKILL1, NPC_LORA_SKILL1, NPC_KING_SKILL1
+									NPC_CAPTAIN_SKILL3, NPC_GIRL_SKILL2, NPC_SCHOLAR_SKILL3
 								};
 								gRouletteSkillIdx[i] = demoSkill[i];
 							}
@@ -1485,6 +1595,8 @@ void RouletteDraw(int x, int y, float zoom)
 								CREW + gRouletteResultAoOffset[i],
 								false
 							);
+							if (gDemoForceRoulette && markId >= 0)
+								controlMark[markId].icon = ICON_SUMMON + GetDemoSummonEnemyForSlot(i);
 						}
 					}
 				}
@@ -1644,7 +1756,7 @@ void RouletteDraw(int x, int y, float zoom)
 						4 * _2X, 1 * _2X,
 						0, 0,            // ✅ 2단 제거
 						MOVE_T, 0,        // ✅ time2=0 (1단만)
-						false,
+						controlMark[from].icon,
 						30, 1,
 						controlMark[from].attackType, 1,
 						controlMark[from].zoom, controlMark[from].zoomEnd, controlMark[from].zoomIncrement,
@@ -1975,6 +2087,10 @@ void RouletteDraw(int x, int y, float zoom)
 
 					controlMark[i].frame = 0;
 					controlMark[i].frame2 = 0;
+					//SUMMON 카드는 소환 위치에 도착했을 때만 일반 액션 카드보다
+					//20% 크게 보인다. 이동 도중 값을 다시 덮어쓰지 않는다.
+					const float actionMarkZoom = ROULETTE_CARD_ACTION_ZOOM
+						* (skillType == SUMMON ? 1.20f : 1.0f);
 
 					SetControlMark(
 						controlMark[i].x, controlMark[i].y,
@@ -1983,12 +2099,12 @@ void RouletteDraw(int x, int y, float zoom)
 						8 * _2X, 1 * _2X,
 						8 * _2X, 1 * _2X,            // ✅ 2단 제거
 						FLY_T, FLY_T,         // ✅ time2=0
-						false,
+						controlMark[i].icon,
 						30, 1,
 						controlMark[i].attackType, 1,
-						controlMark[i].zoom, ROULETTE_CARD_LAND_ZOOM,
-						(ROULETTE_CARD_LAND_ZOOM - controlMark[i].zoom) / (float)FLY_T,
-						ROULETTE_CARD_LAND_ZOOM, ROULETTE_CARD_LAND_ZOOM, 0.0f,
+						controlMark[i].zoom, actionMarkZoom,
+						(actionMarkZoom - controlMark[i].zoom) / (float)FLY_T,
+						actionMarkZoom, actionMarkZoom, 0.0f,
 						false,
 						false, false, false,
 						controlMark[i].owner,

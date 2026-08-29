@@ -228,6 +228,10 @@ typedef struct _obj {
 	float zoom, defaultZoom;
 	unsigned short mom;
 	unsigned short target;
+	//일회성 소환 공격을 실행시킨 동료와 호출 스킬. 몬스터의 공격 패턴용
+	//currentSkill과 섞지 않고 소환 오브젝트 자체에 별도로 보관한다.
+	unsigned short actionOwner;
+	int actionSkill;
 	
 	int pressedKey[3];
 	int released;
@@ -327,6 +331,7 @@ typedef struct _obj {
 	long long hitDmg;
 
 	bool hitCountPlus;
+	bool hitCountAtFeet;
 
 	int turnPosition;
 

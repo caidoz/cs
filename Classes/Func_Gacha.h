@@ -9,7 +9,7 @@
 
 #define GACHA_MAX_REWARD_CARD     12
 
-//카드 위에 얹는 문구(ALPHA_FIRSTFIND / ALPHA_LEGENDARY) 배치.
+//카드 위에 얹는 문구(ALPHA_NEWCREW / ALPHA_NEWITEM / ALPHA_LEGENDARY) 배치.
 //GAP_Y 는 카드 중심에서 위로 얼마나 띄울지다 - 아이콘과 등급별을 가리면 안 된다.
 #define GACHA_BANNER_GAP_Y		(96 * _2X)
 #define GACHA_BANNER_ZOOM		0.8f
@@ -369,6 +369,7 @@ int GetWeightedNormalizedReward(
 	int maxValue);
 
 void GachaDraw(void);
+void GachaBackdropDraw(void);
 
 bool IsGachaBigReward(const ITEM* item);
 

@@ -2418,8 +2418,7 @@ const char* const textId[] = {
 	"touch",//1
 	"t",//2
 	"c",//3
-	"f",//4
-	"num",//5
+	"num",//숫자 이미지
 	"i0",//5
 	"i1",//6
 	"i2",//7
@@ -3183,16 +3182,6 @@ const char* const textId[] = {
 	"cardBg",
 	"win",
 
-	"ui_card_large_back",
-	"ui_card_large_front",
-	"ui_card_small_back",
-	"ui_card_small_front",
-	"ui_paper_bg_down",
-	"ui_paper_bg_up",
-	"ui_paper_popup",
-	"ui_store_back",
-	"ui_store_front",
-
 	"heart_0",
 	"heart_1",
 	"heart_2",
@@ -3206,8 +3195,6 @@ const char* const textId[] = {
 	"coin_3",
 	"coin_4",
 	"coin_5",
-
-	"menuIcon",
 
 	"box0",
 	"box1",
@@ -3251,11 +3238,9 @@ const char* const textId[] = {
 	"shadow",
 
 	"ui_new",
-	"num2",//6
+	"num2",
 
 	"slot",
-	"tree",
-	"flag",
 
 	"menu",
 
@@ -3272,95 +3257,6 @@ const char* const textId[] = {
 	"t0",
 	"bg0",
 	"dot",
-	"f2",
-
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-	"f",
-
-	"profile0",
-	"profile1",
-	"profile2",
-	"profile3",
-	"profile4",
-	"profile5",
-	"profile6",
-	"profile7",
-	"profile8",
-	"profile9",
-	"profile10",
-	"profile11",
-	"profile12",
-	"profile13",
-	"profile14",
-	"profile15",
-	"profile16",
-	"profile17",
-	"profile18",
-	"profile19",
-	"profile20",
-	"profile21",
-	"profile22",
-	"profile23",
-	"profile24",
-	"profile25",
-	"profile26",
-	"profile27",
-	"profile28",
-	"profile29",
-	"profile30",
-
 	"dot",//0
 	"dot",//1
 	"dot",//2
@@ -3398,6 +3294,7 @@ const char* const textId[] = {
 	"shop_cash_icon",
 	"shop_cash_piles",
 	"shop_pass_art",
+	"gacha_paid_bg",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

@@ -1500,10 +1500,8 @@ void DrawNeutral(int idx, int x, int y, int dirF, float zoom)
 			imgFile = MAP_OBJ_IMG + 15;//bg15
 		else if (*cPtr < IMG_OBJ_192)
 			imgFile = MAP_OBJ_IMG + 18;//bg18
-		else if (*cPtr < IMG_OBJ_222)
-			imgFile = TREE_IMG;
-		else 
-			imgFile = FLAG_IMG;
+		else
+			imgFile = MAP_OBJ_IMG + 18;
 
 
 		//type = *(cPtr + 3) & 0xFF;
@@ -2336,10 +2334,15 @@ void GhostDraw(OBJECT* pObj)
 
 void VanishDraw(OBJECT* pObj)
 {
-	if (pObj->frame < FPS / 2) {
-		if (pObj->frame >= FPS / 3 - 2 * 4) {
-			SetBlend(16 + (pObj->frame - (FPS / 3 - 2 * 4)) / 2, COLOR_WHITE);
-			SetAlpha(32 - (pObj->frame - (FPS / 3 - 2 * 4)) / 2);
+	const int obj = GetObjFromPtr(pObj);
+	const int vanishDrawFrame = FPS / 2 + (obj == SOLDIER ? 8 : 0);
+	//추가된 8프레임에서는 마지막 유효 소멸 그림을 유지한다. 효과 이미지
+	//인덱스까지 계속 증가시켜 다음 효과 영역을 침범하지 않게 한다.
+	const int drawFrame = Min(pObj->frame, FPS / 2 - 1);
+	if (pObj->frame < vanishDrawFrame) {
+		if (drawFrame >= FPS / 3 - 2 * 4) {
+			SetBlend(16 + (drawFrame - (FPS / 3 - 2 * 4)) / 2, COLOR_WHITE);
+			SetAlpha(32 - (drawFrame - (FPS / 3 - 2 * 4)) / 2);
 		}
 		if (pObj->type < TOTALCHAR)
 			PlayerDraw(pObj);
@@ -2347,10 +2350,10 @@ void VanishDraw(OBJECT* pObj)
 			DrawCmf(pObj, false, pObj->zoom, false);
 		SetAlpha(32);
 
-		if (pObj->frame >= FPS / 3 - 2 * 4)
-			DrawEffect((pObj->frame - (FPS / 3 - 2 * 4)) / 2 + HIT_DEAD1, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
+		if (drawFrame >= FPS / 3 - 2 * 4)
+			DrawEffect((drawFrame - (FPS / 3 - 2 * 4)) / 2 + HIT_DEAD1, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 		else
-			DrawEffect(HIT_ITEM_LARGE0 + 1000 - 1 + pObj->frame % 5, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
+			DrawEffect(HIT_ITEM_LARGE0 + 1000 - 1 + drawFrame % 5, xOffset + PxlLeft(pObj) + pObj->cx / 2 - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (PxlUp(pObj) + pObj->cy / 2 - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
 	}
 
 

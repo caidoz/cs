@@ -1052,9 +1052,14 @@ int GetAttackRange(int obj)
 			int fallbackRange = (int)((float)attackRange[pObj->type] * pObj->zoom);
 			range = motionRange > 0 ? motionRange : fallbackRange;
 
-			//캠핑헌트의 판정은 별도 부메랑 OBJECT에 있어 본체 CMF만 읽으면 짧다.
+			//소환 히어로가 거는 지속 버프는 적에게 접근해서 발동할 이유가 없다.
+			//실행 주체(SOLDIER)의 실제 히어로 스킬을 기준으로 전장 전체 사거리를 준다.
+			if (GetPersistentBuffBySkill(pObj->currentSkill) >= 0)
+				range = 320;
+
+			//캠핑헌트는 관통형 부메랑이므로 소환 위치에서 바로 던진다.
 			if (pObj->currentSkill == SKILL_MAXX10)
-				range = Max(range, 200);
+				range = Max(range, 320);
 			//오비탈레이저는 소환 위치에서 위성을 지정하는 원거리 스킬이다.
 			//본체가 적 앞으로 달려갈 필요가 없도록 전장 절반을 사거리로 둔다.
 			if (pObj->currentSkill == SKILL_DIANA12)
@@ -1662,7 +1667,7 @@ void AttackRobin(int obj, int dest)
 	}
 
 	if (damage > 0) {
-		SetHitMark(ao[dest].x, STATUSWIN_Y + (rh - 4) * TSIZE - ao[dest].y, RIGHT, HITMARK_SMALL, 0, obj, HITMARKZOOM/*ao[obj].zoom*/);
+		SetHitMark(ao[dest].x, ao[dest].y, RIGHT, HITMARK_SMALL, 0, obj, HITMARKZOOM/*ao[obj].zoom*/);
 		curPlayer = dest;
 
 		SetDmgNum(obj, dest, damage, 1, attackType, DMGNUMZOOM);
@@ -2437,7 +2442,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 			pAttack->attackFrame += attackFrameSkip;
 			SetImgText(attackerObj, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2449,7 +2454,7 @@ int AttackObj(long long int attacker, int dest)
 			ad += 1 << ATTACK_PIERCE;
 
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.hpShake = true;
@@ -2460,7 +2465,7 @@ int AttackObj(long long int attacker, int dest)
 
 			ad += 1 << ATTACK_PIERCE;
 			SetImgText(dest, EFFECT_TEXT_PIERCE, IMGTEXTZOOM);
-			SetHitMark(pDest->x, STATUSWIN_Y + (rh - 4) * TSIZE - pDest->y - (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
+			SetHitMark(pDest->x, pDest->y + (float)32 * _2X * pDest->zoom, (pAttack->x <= pDest->x) ? LEFT : RIGHT, HITMARK_PIERCE, 0, attacker < PLAYERALL ? attacker : ao[attacker].target, HITMARKZOOM/*pDest->zoom*/);
 			//i = DropItem(pAttack, ITEM_GOLD);
 			//ao[i].target = attacker;
 			effect.shake = 4;
@@ -3964,6 +3969,9 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 		else if (realAttacker < PLAYER || realAttacker >= PLAYERALL)
 			realAttacker = turn;
 
+		//소환 몬스터의 공격은 SOLDIER 자신에게 귀속한다. 따라서 HIT 표시는
+		//스킬을 호출한 동료의 발이 아니라 실제 공격한 소환 몬스터 머리 위에 뜬다.
+
 		if (ao[realAttacker].hitCountPlus == false) {
 			//hitCount++; hitCountFrame = VANISHFRAME_DMG;
 			ao[realAttacker].hitCountPlus = true;
@@ -3971,6 +3979,7 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 
 		//if (ao[realAttacker].attack >= ATTACK_SKILL) {
 			ao[realAttacker].hitCount++;
+			ao[realAttacker].hitCountAtFeet = false;
 			if (ao[realAttacker].hitCountFrame == 0)
 				ao[realAttacker].hitCountFrame = 1;
 			else if (ao[realAttacker].hitCountFrame >= 11)

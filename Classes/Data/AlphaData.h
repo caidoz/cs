@@ -7,8 +7,9 @@
 extern const unsigned char* demoAlpha;
 enum { demoAlpha_COUNT = 50 };
 
-extern const unsigned char* alphaData;
-enum { alphaData_COUNT = 2817 };
+//ALPHA_* 인덱스와 1:1로 대응하는 완성 문자열 테이블.
+extern const char* const* alphaText;
+enum { alphaText_COUNT = TOTAL_ALPHA_TEXT };
 
 
 extern const unsigned short* alphaX;

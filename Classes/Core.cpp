@@ -457,7 +457,9 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 	}
 
 	//조이스틱을 일정시간 누르고 있으면
-	if (autoPlay == false && touchedFrame >= AUTOPLAYFRAME && GetTouchFunc(touchX, touchY) == TOUCH_FUNC_USE_HEART) {
+	int heldTouchFunc = GetTouchFunc(touchX, touchY);
+	if (autoPlay == false && touchedFrame >= AUTOPLAYFRAME
+		&& (heldTouchFunc == TOUCH_FUNC_USE_HEART || heldTouchFunc == TOUCH_FUNC_ATTACK)) {
 		autoPlay = true;
 		autoButtonText = false;
 	}
@@ -2501,7 +2503,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
 
 
 

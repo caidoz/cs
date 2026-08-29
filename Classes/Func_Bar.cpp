@@ -307,13 +307,11 @@ void BarDraw(BAR* barP, float zoom)
 		EnemyUserProfileDraw_Box(&enemyHouse, xOffset + barP->x - (float)RAIDGOLDBARWIDTH / 2 * zoom, barP->y + (float)RAIDGOLDBARHEIGHT / 2 * zoom, zoom);
 		break;
 	case BAR_DAILYQUEST:
-		DrawImage(40 * _2X, 40 * _2X, 40 * _2X * MENUICON_DAILYQUEST, 0 * _2X, xOffset + barP->x - (float)REWARDCARDSIZE_X / 2 * zoom, barP->y + (float)REWARDCARDSIZE_Y / 2 * zoom, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 		MemRectRound(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE) * zoom, (float)MAINMENU_X * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X);
 		CenterText(TEXT_DAILYQUEST, xOffset + barP->x, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE - 2 * _2X) * zoom, 0.8f * zoom);
 		SetRectPoint(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)MAINMENU_Y / 2 * zoom, (float)MAINMENU_X * zoom, (float)MAINMENU_Y * zoom, TOUCH_FUNC_DAILYQUEST);
 		break;
 	case BAR_CREWUPGRADE:
-		DrawImage(40 * _2X, 40 * _2X, 40 * _2X * MENUICON_GUILD, 0 * _2X, xOffset + barP->x - (float)REWARDCARDSIZE_X / 2 * zoom, barP->y + (float)REWARDCARDSIZE_Y / 2 * zoom, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 		MemRectRound(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE) * zoom, (float)MAINMENU_X * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X);
 		CenterText(TEXT_BORDERGUARD, xOffset + barP->x, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE - 2 * _2X) * zoom, 0.8f * zoom);
 		SetRectPoint(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)MAINMENU_Y / 2 * zoom, (float)MAINMENU_X * zoom, (float)MAINMENU_Y * zoom, TOUCH_FUNC_POPUP_CREWUPGRADE);
@@ -327,7 +325,6 @@ void BarDraw(BAR* barP, float zoom)
 		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom, TOUCH_FUNC_SHOP);
 		break;
 	case BAR_FRIENDS:
-		DrawImage(40 * _2X, 40 * _2X, 40 * _2X * MENUICON_HERO, 0 * _2X, xOffset + barP->x - (float)REWARDCARDSIZE_X / 2 * zoom, barP->y + (float)REWARDCARDSIZE_Y / 2 * zoom, false, false, false, false, 32, 1, sprite[MENUICON_IMG], MENUICON_IMG);
 		MemRectRound(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE) * zoom, (float)MAINMENU_X * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X);
 		CenterText(TEXT_MENU_FRIENDS, xOffset + barP->x, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE - 2 * _2X) * zoom, 0.8f * zoom);
 		SetRectPoint(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)MAINMENU_Y / 2 * zoom, (float)MAINMENU_X * zoom, (float)MAINMENU_Y * zoom, TOUCH_FUNC_FRIENDS);

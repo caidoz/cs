@@ -1132,12 +1132,21 @@ void ObjectSkillSetting(OBJECT * pObj)
 	}
 }
 
+static int demoEnemyCurrent[3] = {
+	ENEMY_SNAIL, ENEMY_SKELETON, ENEMY_FROG
+};
+
 void WaveControler()
 {
 	int i;
 	OBJECT * pObj = nullptr;
 	int obj = 0;
 	int positionX, positionY;
+	//AVK_MAXGAME 테스트 웨이브는 초 단위 시스템 시각이 아니라 실제 게임
+	//프레임을 기준으로 한다. 화면 전환에 걸린 시간이 등장 지연에 섞이면
+	//0/200프레임 몬스터가 사실상 동시에 생성되기 때문이다.
+	static bool demoSpawnClockActive = false;
+	static int demoSpawnStartFrame = 0;
 
 	//인터랙티브 전투 튜토리얼: 스폰한 몬스터가 RegenMove() 점프 연출을 다 마치고 moveHandler가
 	//ENEMYMOVETURN이 될 때까지 touchDisable을 true로 묶어둔다. 그 전에 공격하면 몬스터가 아직
@@ -1233,12 +1242,18 @@ void WaveControler()
 
 	// AVK_MAXGAME 전투 테스트도 정식 wave[]와 같은 단위를 쓴다.
 	// 값은 프레임이며 아래 등장 조건에서 FPS로 나눠 초로 환산한다.
-	static const int demoEnemy[3] = {
-		ENEMY_SNAIL, ENEMY_SKELETON, ENEMY_FROG
-	};
 	static const int demoEnemySpawnFrame[3] = {
-		0, 200, 400
+		0, 50, 100
 	};
+
+	if (!gDemoForceRoulette) {
+		demoSpawnClockActive = false;
+	}
+	else if (!demoSpawnClockActive && robin.curWaveIdx == 0
+		&& robin.waveActive[0] == false) {
+		demoSpawnClockActive = true;
+		demoSpawnStartFrame = robin.playtime;
+	}
 
 	switch (drawHandle) {
 	case MD_DEMO:
@@ -1248,11 +1263,11 @@ void WaveControler()
 		// 읽고 있었기 때문에, 원본 세 슬롯의 시간이 같으면 세 마리가 동시에 나왔다.
 		// 테스트 적도 원본과 똑같이 프레임값으로 등장 시간을 지정한다.
 		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false &&
-			(MC_knlCurrentTimeStamp() - robin.waveTimeStamp >=
-				(gDemoForceRoulette
-					? demoEnemySpawnFrame[Min(2, robin.curWaveIdx)] / FPS
-					: wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS)
-				/* || AliveEnemyCnt() == 0*/)) {
+			(gDemoForceRoulette
+				? robin.playtime - demoSpawnStartFrame >= demoEnemySpawnFrame[Min(2, robin.curWaveIdx)]
+				: MC_knlCurrentTimeStamp() - robin.waveTimeStamp >=
+					wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS)
+				/* || AliveEnemyCnt() == 0*/) {
 			//비활성 슬롯을 새 몬스터에 재사용할 때 전역 turn이 그 슬롯 번호를
 			//가리키고 있으면, 생성 직후부터 자기 차례로 오인해 MOVE가 시작된다.
 			//비활성 객체를 가리키는 turn은 유효한 전투 턴이 아니므로 정리한다.
@@ -1263,7 +1278,7 @@ void WaveControler()
 			}
 
 			if (gDemoForceRoulette) {
-				pObj->type = demoEnemy[Min(2, robin.curWaveIdx)];
+				pObj->type = demoEnemyCurrent[Min(2, robin.curWaveIdx)];
 			}
 			else
 				pObj->type = wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
@@ -1452,6 +1467,8 @@ void WaveControler()
 			robin.waveActive[robin.curWaveIdx] = true;
 
 			robin.curWaveIdx++;
+			if (gDemoForceRoulette && robin.curWaveIdx >= GetMaxWaveCnt())
+				demoSpawnClockActive = false;
 
 			SaveGame();
 

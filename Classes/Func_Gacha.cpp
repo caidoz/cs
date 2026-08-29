@@ -1183,7 +1183,7 @@ static int FindUnownedBoxDetailByStar(
 //시험용 상자. 하트 / 골드 / 미보유 5성 동료 / 미보유 5성 장비 네 장을 낸다.
 //
 //BalanceConfig.h 의 GACHA_TEST_FORCE_REWARD 로 켠다. 순서 규칙(하트 ->
-//골드 -> 동료 -> 장비)과 카드 문구(ALPHA_FIRSTFIND / ALPHA_LEGENDARY)를
+//골드 -> 동료 -> 장비)과 카드 문구(ALPHA_NEWCREW / ALPHA_NEWITEM / ALPHA_LEGENDARY)를
 //한 번에 확인하려는 것이다.
 static bool MakeTestForceBoxReward(
 	const REWARD_BOX_DATA* boxData)
@@ -1621,6 +1621,54 @@ int GetWeightedNormalizedReward(
 	return minValue;
 }
 
+static bool IsPaidGachaBox(void)
+{
+	return gachaBoxDetail >= BOX_PAID0 && gachaBoxDetail <= BOX_PAID5;
+}
+
+//유료 가챠는 이전 메뉴가 비치지 않게 먼저 완전한 단색으로 지우고,
+//1:2 원화를 비율 유지한 채 화면 중앙을 기준으로 cover 배치한다.
+static void DrawPaidGachaBackdrop(void)
+{
+	if (IsPaidGachaBox() == false)
+		return;
+
+	MemRect(xOffset, DY, DX, DY, 0x080716);
+
+	const float srcW = 887.0f;
+	const float srcH = 1774.0f;
+	const float scale = Max((float)DX / srcW, (float)DY / srcH);
+	const float drawW = srcW * scale;
+	const float drawH = srcH * scale;
+	const float drawX = xOffset + ((float)DX - drawW) / 2.0f;
+	const float drawY = (float)DY + (drawH - (float)DY) / 2.0f;
+
+	SetAlpha(32);
+	DrawImage(887, 1774, 0, 0, drawX, drawY,
+		false, false, false, false, false, scale,
+		sprite[GACHA_PAID_BG_IMG], GACHA_PAID_BG_IMG);
+}
+
+//GachaDraw의 카드/상자 연출보다 먼저 호출하는 유료 배경 패스.
+void GachaBackdropDraw(void)
+{
+	if (drawHandle != MD_GACHA || gachaPrepared == false ||
+		IsPaidGachaBox() == false)
+		return;
+
+	if (gachaDepth == GACHA_DEPTH_FLYTOBAR ||
+		gachaDepth == GACHA_DEPTH_GETITEM)
+		return;
+
+	DrawPaidGachaBackdrop();
+}
+
+static void DrawGachaTouchPrompt(float x, float y)
+{
+	DrawGoldAlpha((int)x, (int)y, ALPHA_TABTOCOLLECT,
+		FONT_GOLD_LARGE, 1.0f, CENTER, false, false);
+}
+
 void GachaDraw(void)
 {
 	int i;
@@ -1718,6 +1766,11 @@ void GachaDraw(void)
 	ScreenDarken(
 		gachaScreenDarken);
 
+	//가챠 중에는 Core가 상점 팝업 패스를 생략하므로 여기서 배경을 먼저
+	//그려도 다시 덮이지 않는다. 반드시 switch보다 앞에 있어야 아래에서
+	//GachaDraw가 직접 그리는 하단 정렬 카드와 종합 카드가 배경 위에 남는다.
+	GachaBackdropDraw();
+
 	switch (gachaDepth)
 	{
 		//--------------------------------------------------------
@@ -1725,13 +1778,20 @@ void GachaDraw(void)
 		//--------------------------------------------------------
 	case GACHA_DEPTH_BOX:
 	{
-		const int WAIT_END = 8;
-		const int SQUASH_END = 13;
-		const int RISE_END = 19;
-		const int APEX_END = 23;
-		const int FALL_END = 29;
-		const int LAND_END = 33;
-		const int FINISH_END = 43;
+		const bool paidGacha =
+			gachaBoxDetail >= BOX_PAID0 &&
+			gachaBoxDetail <= BOX_PAID5;
+
+		//상승/개봉/착지 운동은 기본 스테이지 가챠와 완전히 같다.
+		//유료 상자는 시작 전에 6프레임만 더 기다려 기대감만 더한다.
+		const int paidHold = paidGacha ? 6 : 0;
+		const int WAIT_END = 8 + paidHold;
+		const int SQUASH_END = 13 + paidHold;
+		const int RISE_END = 19 + paidHold;
+		const int APEX_END = 23 + paidHold;
+		const int FALL_END = 29 + paidHold;
+		const int LAND_END = 33 + paidHold;
+		const int FINISH_END = 43 + paidHold;
 
 		//----------------------------------------------------
 		// 상자 최하단 위치
@@ -2472,15 +2532,7 @@ void GachaDraw(void)
 					32 -
 					16));
 
-			DrawGoldAlpha(
-				xOffset + DX / 2,
-				BOTTOMMENUHEIGHT,
-				ALPHA_TABTOCOLLECT,
-				FONT_GOLD_LARGE,
-				1,
-				CENTER,
-				false,
-				false);
+			DrawGachaTouchPrompt(xOffset + DX / 2, BOTTOMMENUHEIGHT);
 
 			SetAlpha(32);
 
@@ -2704,7 +2756,7 @@ void GachaDraw(void)
 		if (isVeryHighGrade)
 			bannerAlpha = ALPHA_LEGENDARY;
 		else if (isNewCard)
-			bannerAlpha = ALPHA_FIRSTFIND;
+			bannerAlpha = isCrew ? ALPHA_NEWCREW : ALPHA_NEWITEM;
 
 		int specialHoldFrame =
 			0;
@@ -3305,15 +3357,7 @@ void GachaDraw(void)
 						32 -
 						16));
 
-				DrawGoldAlpha(
-					xOffset + DX / 2,
-					BOTTOMMENUHEIGHT,
-					ALPHA_TABTOCOLLECT,
-					FONT_GOLD_LARGE,
-					1,
-					CENTER,
-					false,
-					false);
+				DrawGachaTouchPrompt(xOffset + DX / 2, BOTTOMMENUHEIGHT);
 
 				SetAlpha(32);
 
@@ -3940,15 +3984,7 @@ void GachaDraw(void)
 					32 -
 					16));
 
-			DrawGoldAlpha(
-				(int)panelCX,
-				BOTTOMMENUHEIGHT,
-				ALPHA_TABTOCOLLECT,
-				FONT_GOLD_LARGE,
-				1,
-				CENTER,
-				false,
-				false);
+			DrawGachaTouchPrompt(panelCX, BOTTOMMENUHEIGHT);
 
 			SetAlpha(32);
 

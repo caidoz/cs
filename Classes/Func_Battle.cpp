@@ -3,7 +3,6 @@
 #include "Func.h"
 #include "Text.h"
 
-// Battle 관련 함수
 static void GetRobin6MotionName(int motion, char* name)
 {
 	if (motion >= PO_C0_A0 && motion <= PO_C0_A11) {
@@ -1012,7 +1011,7 @@ void Play(void)
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
 					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2,
 					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2,
-					controlMark[i].zoom2);
+					controlMark[i].zoom2, controlMark[i].icon);
 				worldDrawing = false;
 			}
 
@@ -1055,7 +1054,7 @@ void Play(void)
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
 					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2,
 					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2,
-					controlMark[i].zoom);
+					controlMark[i].zoom, controlMark[i].icon);
 				worldDrawing = false;
 			}
 
@@ -1246,6 +1245,7 @@ void Play(void)
 				ao[i].hitCountFrame = 0;
 				ao[i].hitCount = 0;
 				ao[i].hitDmg = 0;
+				ao[i].hitCountAtFeet = false;
 			}
 		}
 
@@ -1257,6 +1257,14 @@ void Play(void)
 				int hitCountPosX = xOffset + ao[i].x;
 				int hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE - ao[i].y + floatOffsetY + 80 * _2X;
 				float hitCountZoom = zoom;
+
+				//특수 발밑 표시는 지속 버프 등 별도 용도에만 남긴다.
+				if (ao[i].hitCountAtFeet) {
+					hitCountPosX = xOffset + ao[i].x - rx;
+					hitCountPosY = STATUSWIN_Y + (rh - 4) * TSIZE
+						- (ao[i].y - OBJIMGGAP) - ry + floatOffsetY - 8 * _2X;
+					hitCountZoom *= 0.90f;
+				}
 
 				// HIT 표시는 월드 패스 밖에서 그리므로 DrawImage의 자동 타격 줌을
 				// 받지 못한다. 캐릭터와 같은 중심/배율 변환을 직접 적용한다.
@@ -1620,7 +1628,7 @@ void AttackSequenceDraw(void)
 		break;
 		//코인 결과를 정리하는 타이밍
 	case ATTACKSEQUENCE_COIN:
-		if (turnFrame == 2 * FPS) {
+		if (turnFrame == 1) {
 			//BAR_BATTLECOIN에서 BAR_GOLD로 이동하게 수정
 			ao[NEUTRAL].motion = BOXSTATUS_OPENED;
 			SetCurrencyMarkArr(
@@ -1630,7 +1638,7 @@ void AttackSequenceDraw(void)
 				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2, 
 				bar[BAR_GOLD].x + 6 * _2X + ITEMICONSIZE / 2,
 				bar[BAR_GOLD].y - 6 * _2X - ITEMICONSIZE / 2,
-				16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, CURRENCYWAITINGFRAMEMAX, CURRENCYWAITINGFRAMEMAX, ICON_GOLD, 30, (bar[BAR_BATTLECOIN].count + bar[BAR_BATTLECOIN].add), CURRENCY_GOLD, 2.4f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10, BAR_GOLD);
+				16 * _2X / MOTIONDIV, 2 * _2X / MOTIONDIV, 8 * _2X / MOTIONDIV, 4 * _2X / MOTIONDIV, FPS / 8, FPS / 8, ICON_GOLD, 30, (bar[BAR_BATTLECOIN].count + bar[BAR_BATTLECOIN].add), CURRENCY_GOLD, 2.4f, 2.0f, -0.2f / MOTIONDIV, 2.0f, 1.0f, -0.2f / MOTIONDIV, 10, BAR_GOLD);
 
 			/*
 			SetCurrencyMark(
@@ -1651,7 +1659,7 @@ void AttackSequenceDraw(void)
 			);
 			*/
 		}
-		else if (turnFrame == 3 * FPS) {
+		else if (turnFrame == FPS / 4) {
 			bar[BAR_BATTLECOIN].targetX = bar[BAR_BATTLECOIN].targetX2 = bar[BAR_BATTLECOIN].x;
 			bar[BAR_BATTLECOIN].targetY = bar[BAR_BATTLECOIN].y - 32 * _2X;
 			bar[BAR_BATTLECOIN].targetY2 = DY + 80 * _2X;
@@ -1666,7 +1674,7 @@ void AttackSequenceDraw(void)
 
 			ao[NEUTRAL].motion = BOXSTATUS_CLOSED;
 		}
-		else if (turnFrame == 4 * FPS) {
+		else if (turnFrame == FPS / 2) {
 			attackSequence = ATTACKSEQUENCE_READY;
 			turnFrame = 0;
 			touchDisable = false;
@@ -1674,6 +1682,9 @@ void AttackSequenceDraw(void)
 			memset(&ao[SOLDIER], 0, sizeof(OBJECT) * MAXENEMYOBJ);
 			for (i = 0; i < PLAYERALL; i++)
 				ao[i].turnPosition = HERE;
+
+			if (autoPlay)
+				BoxOpen();
 		}
 		break;
 	case ATTACKSEQUENCE_ATTACKRESULT:
@@ -2082,7 +2093,6 @@ void AttackSequenceDraw(void)
 						startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
 						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
 
-						DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], MENUICON_IMG);
 
 					}
 					else if (equipMenuDraw == false) {
@@ -2091,7 +2101,6 @@ void AttackSequenceDraw(void)
 						startX = xOffset + DX / 2 - 150 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
 						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
 
-						DrawImage(40 * _2X, 40 * _2X, 0 * _2X, 0 * _2X, startX, startY, false, false, false, false, false, menuZoom, sprite[MENUICON_IMG], MENUICON_IMG);
 					}
 
 					if (sequenceDelay == ATTACKDELAY_REWARD_TABTOCOLLECT) {
@@ -3360,7 +3369,6 @@ void DiscountMenuDraw(int x, int y, float zoom)
 	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_DEBTDISCOUNT)];
 	int collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	DrawWindow5(x + (float)(16 * _2X) * zoom, y - (float)(124 * _2X) * zoom, (float)(POPUPWINDOWSIZE_X - 32 * _2X) * zoom, (float)(POPUPWINDOWSIZE_Y - 152 * _2X) * zoom, TOLEMHOUSE2, zoom, 0);
 
@@ -3391,7 +3399,6 @@ void PvpQuestMenuDraw(int x, int y, float zoom)
 
 	gEvent->barStatus = EVENT_BAR_REWARDGET;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	CenterText(TEXT_PVPQUESTNAME0 + robin.pvpQuest, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X + 8 * _2X) * zoom, zoom);
 
@@ -3433,7 +3440,6 @@ void QuestMenuDraw(int x, int y, float zoom)
 
 	icon = gEvent->icon;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	CenterText(TEXT_QUESTNAME0 + robin.quest, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(28 * _2X - 16 * _2X) * zoom, zoom);
 
@@ -3678,7 +3684,6 @@ void SetHero(void)
 			InitStatue(&ao[PLAYER + i]);
 
 			ao[PLAYER + i].name = TEXT_MONSTERNAME_START + i;// +TEXT_NICKNAME + Random(100);
-			profileImg[0] = PROFILE_IMG;
 			//ao[PLAYER + i].active = true;
 			//SetEnemy(&ao[MAXPLAYER + i]);
 

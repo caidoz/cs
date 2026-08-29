@@ -190,7 +190,6 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 
 
 	DrawFrame(x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom + (float)-1 * _2X * zoom, y - (float)(23 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * 0.85f * zoom, (float)(PROFILEIMG_Y + 2 * _2X) * 0.8f * zoom, FRAME_SHOPBALLOON);
-	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom, y - (float)(24 * _2X) * zoom, false, false, false, false, false, zoom * 0.85f, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], PROFILE_IMG + housePtr->userProfileImgIdx);
 
 
 
@@ -221,7 +220,6 @@ void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom)
 
 
 	DrawFrame(x - width / 2, y - (float)(1 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * profileZoom, (float)(PROFILEIMG_Y + 2 * _2X) * profileZoom, FRAME_SHOPBALLOON);
-	DrawImage(PROFILEIMG_X, PROFILEIMG_Y, 0, 0, x - width / 2 + (float)1 * _2X * profileZoom, y - (float)(2 * _2X) * zoom, false, false, false, false, false, profileZoom, sprite[PROFILE_IMG + housePtr->userProfileImgIdx], PROFILE_IMG + housePtr->userProfileImgIdx);
 
 	
 	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y - (float)(32 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true);

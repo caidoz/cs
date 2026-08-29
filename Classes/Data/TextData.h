@@ -15,9 +15,6 @@ extern const unsigned short* itemNameStart;
 enum { itemNameStart_COUNT = 39 };
 
 
-extern const unsigned short* alphaOff;
-enum { alphaOff_COUNT = 499 };
-
 extern const signed short* alertText;
 enum { alertText_COUNT = 9 };
 #endif

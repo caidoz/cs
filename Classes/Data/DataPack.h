@@ -109,8 +109,8 @@ int DataPackCapOf(int key);
 //값이 아니라 "정의됐는지"만 보는 것들.
 //
 // 배열 안에 #ifdef 분기가 있어서 설정에 따라 값이 달라지는 것들이 있다
-// (alphaData, gameEventOpenStage, robinSkillMotion, battleRewardMedal,
-//  skillDescMod, alphaOff, menuOpened).
+// (gameEventOpenStage, robinSkillMotion, battleRewardMedal,
+//  skillDescMod, menuOpened).
 // 팩에는 만들 때의 설정으로 정해진 값이 들어가므로, 설정이 바뀐 클라이언트가
 // 옛 팩을 쓰면 조용히 틀린 값이 된다. 지문에 넣어 막는다.
 //

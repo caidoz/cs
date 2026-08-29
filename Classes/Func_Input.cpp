@@ -1434,6 +1434,7 @@ void PlayKey(int obj)
 			bar[BAR_COMBATPOWER].front = false;
 			break;
 		case AVK_ATTACK:
+
 			if (drawHandle == MD_PLAY || drawHandle == MD_DEMO) {
 				RouletteAttackStart();
 
@@ -1938,9 +1939,15 @@ void PlayKey(int obj)
 					GetItem(ITEM_GOLD, false, false, false, -boxPrice, false);
 					memset(&rewardItem, 0, sizeof(rewardItem));
 					memset(&rewardMark, 0, sizeof(rewardMark));
+					memset(&boxMark, 0, sizeof(boxMark));
 					rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
 					rewardMark[0].detail = boxDetail;
 					rewardMark[0].grade = GRADE_NORMAL;
+					//GotoGacha()는 rewardMark가 아니라 boxMark[0]에서 열 상자를
+					//읽는다. 상점 구매 경로에서도 실제 입력 구조를 채워야 한다.
+					boxMark[0].type = ITEM_BOX;
+					boxMark[0].detail = boxDetail;
+					boxMark[0].grade = GRADE_NORMAL;
 					rewardItemCnt = 1;
 					boxCnt = 0;
 					SaveGame();
@@ -3428,6 +3435,15 @@ bool menuPressPossible(void)
 
 void BoxOpen(void)
 {
+	//턴제 전투의 Auto Hold는 예전 슬롯 보상(BoxOpen) 자동 실행이 아니라
+	//현재 공격 버튼과 똑같은 룰렛 공격을 반복해야 한다. 진행 중 호출은 무시하고,
+	//한 사이클이 READY로 돌아온 뒤에만 다음 하트를 지불한다.
+	if (option.gameMode == TURNRPG) {
+		if (autoPlay && attackSequence == ATTACKSEQUENCE_READY)
+			RouletteAttackStart();
+		return;
+	}
+
 	int i;
 	int itemType, itemDetail, itemGrade, itemLv;
 	int rand = Random(ITEMDETAILSEED);

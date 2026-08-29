@@ -8,13 +8,11 @@
 //뉴스 드로우
 void NewsDraw(int x, int y, float zoom)
 {
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
 //선물함 드로우
 void GiftDraw(int x, int y, float zoom)
 {
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
 
@@ -23,7 +21,6 @@ void GuildEventDraw(int x, int y, float zoom)
 {
 	int i;
 
-	DrawImage((float)POPUPWINDOWSIZE_X * zoom, (float)(POPUPWINDOWSIZE_Y)*zoom, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	switch (menuDepth) {
 
@@ -60,7 +57,6 @@ void DailyQuestDraw(int x, int y, float zoom)
 	int stageBossType = GetStageBossType();
 
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	switch (menuDepth) {
 
@@ -2423,7 +2419,6 @@ void RemainedTurnDraw(int x, int y, int current, int progress, float zoom)
 
 void HowToGetHeroesDraw(int x, int y, float zoom)
 {
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	//일단 히어로를 획득하는 조건을 정리하자.
 	//1번 레벨, 2번 스테이지
@@ -2437,7 +2432,6 @@ void HowToGetHeroesDraw(int x, int y, float zoom)
 
 void HowToGetCrewsDraw(int x, int y, float zoom)
 {
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	//일단 크류자리를 오픈하는 조건을 정리하자.
 	//1번 레벨, 2번 스테이지
@@ -2453,7 +2447,6 @@ void CalendarDraw(int x, int y, float zoom)
 	int week = 0;
 	int dayOfMonth = robin.calendarMonthDay;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	//밑에 일주일짜리 스케쥴 표
 	for (i = 0; i < WEEK + 1; i++) {
@@ -3273,7 +3266,6 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
 {
 	int i;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 
 	ExpBarWideDraw(robin.lv, robin.exps, x + (float)(POPUPWINDOWSIZE_X - CROWNBARWIDTH_WIDE) / 2 * zoom, y - (float)0 * _2X * zoom, zoom);
@@ -3366,7 +3358,6 @@ void DeptDiscountDraw(int x, int y, float zoom)
 	float bigNumWidth = (float)ITEMICONSIZE * itemValueZoom * zoom * 1.7f;
 	int type;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
 
@@ -3384,7 +3375,6 @@ void DoubleGoldDraw(int x, int y, float zoom)
 	float bigNumWidth = (float)ITEMICONSIZE * itemValueZoom * zoom * 1.7f;
 	int type;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 }
 
@@ -3954,7 +3944,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 	switch (stageInfoDepth) {
 	case STAGEINFO_CREWDROP:
-		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 		//보스 정보
 		DrawStageLabel(x + (float)(DX / 2) * zoom, y + (float)(8 * _2X) * zoom, TEXT_STAGE, robin.stage, robin.room, true, zoom);
@@ -4049,7 +4038,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 
 		SetAlpha(Max(0, 32 - stageInfoFrame));
-		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 		SetAlpha(32);
 
 
@@ -4153,7 +4141,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 							startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
 							startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
 
-							DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], MENUICON_IMG);
 
 						}
 					}
@@ -4445,7 +4432,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 						startX = xOffset + DX / 2 + 108 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
 						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
 
-						DrawImage(40 * _2X, 40 * _2X, 80 * _2X, 0 * _2X, startX, startY, false, false, false, false, 32, menuZoom, sprite[MENUICON_IMG], MENUICON_IMG);
 
 					}
 					else if (equipMenuDraw == false) {
@@ -4454,7 +4440,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 						startX = xOffset + DX / 2 - 150 * _2X + 40 * _2X / 2 - (float)(40 * _2X) * menuZoom / 2;
 						startY = STATUSWIN_Y + JOYSTICKGAP + 83 * _2X + (float)(40 * _2X) * menuZoom / 2;
 
-						DrawImage(40 * _2X, 40 * _2X, 0 * _2X, 0 * _2X, startX, startY, false, false, false, false, false, menuZoom, sprite[MENUICON_IMG], MENUICON_IMG);
 					}
 
 					if (stageInfoCurFrame == STAGECLEARDELAY_GETREWARD - 1) {
@@ -4595,7 +4580,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 	case STAGEINFO_NEWSTAGE:
 
-		DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 
 		//세입자
@@ -6141,12 +6125,6 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	CdBeginBoard();
 	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
 
-	float panelX = 92.0f;
-	float panelY = 175.0f;
-	float panelW = (float)CD_DESIGNW - panelX * 2;
-	float panelH = 900.0f;
-	DrawPanel(panelX, panelY, panelW, panelH);
-
 	const char* name;
 	const char* price;
 	char priceBuf[64];
@@ -6161,7 +6139,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		price = ShopPriceText(product, &storeReady);
 	}
 
-	CdBody(name, (float)CD_DESIGNW / 2, 225.0f, 2.15f, CENTER, CD_INK);
+	CdText(name, (float)CD_DESIGNW / 2, 225.0f, 2.15f, CENTER, COLOR_WHITE);
 
 	float artSize = isBox ? 430.0f : 540.0f;
 	float artX = ((float)CD_DESIGNW - artSize) / 2;
@@ -6204,8 +6182,6 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	if (isBox) {
 		int boxIndex = GetRewardBoxIndex(detail);
 		const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
-		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-			Loc(175.0f), LocY(710.0f), 740.0f * sCdU, 330.0f * sCdU, sCdU);
 		DrawItemCardBack(1, (int)Loc(235.0f), (int)LocY(735.0f), 0.19f * sCdU, 1);
 		sprintf(tempStr, "카드 %d~%d장", box.minCard, box.maxCard);
 		CdText(tempStr, 455.0f, 750.0f, 1.55f, LEFT, COLOR_WHITE);
@@ -6224,8 +6200,6 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			TOUCH_FUNC_SHOP_GACHA_RATES);
 	}
 	else {
-		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-			Loc(180.0f), LocY(900.0f), 730.0f * sCdU, 175.0f * sCdU, sCdU);
 		static const long long coinAmount[6] = { 1000, 2200, 6000, 25000, 65000, 140000 };
 		static const long long heartAmount[6] = { 100, 300, 1000, 5000, 15000, 50000 };
 		static const long long cashAmount[6] = { 60, 180, 600, 1500, 3500, 8000 };
@@ -6247,7 +6221,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		}
 		if (amount) {
 			sprintf(tempStr, "%lld", amount);
-			CdBody(tempStr, 435.0f, 955.0f, 2.15f, LEFT, CD_INK);
+			CdText(tempStr, 435.0f, 955.0f, 2.15f, LEFT, COLOR_WHITE);
 		}
 	}
 	if (isBox) {
@@ -6260,7 +6234,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			true, 2.15f * sCdU, true);
 	}
 	else
-		CdBody(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, CD_INK);
+		CdText(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, COLOR_WHITE);
 
 	float buttonW = 610.0f;
 	float buttonX = ((float)CD_DESIGNW - buttonW) / 2;
@@ -6693,6 +6667,8 @@ void ShopJumpToIapSection(int section)
 	scAccelY = 0;
 	scRecoveryFrameY = 0;
 	scY[MENU_SHOP] = 0;
+	scT[MENU_SHOP] = 0;
+	snapTargetY[MENU_SHOP] = 0;
 }
 
 //상점 전체 상품을 한 목록으로 이어서 그린다.
@@ -6922,7 +6898,6 @@ void ShopDraw(int x, int y, float zoom)
 
 	return;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y - (float)(POPUPSTORE_Y + 16 * _2X) * zoom, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	switch (menuDepth) {
 	case 0:

@@ -306,7 +306,8 @@ static int HitZoomAttacker(void)
 	//동료 스킬로 호출된 디아나/MAXX는 공용 SOLDIER 칸에서 공격한다.
 	//기존 TOTALCHAR 검색 범위 밖이라 히어로 공격 줌에서 빠져 있었다.
 	if (ao[SOLDIER].active && ao[SOLDIER].attack
-		&& (ao[SOLDIER].type == DIANA || ao[SOLDIER].type == MAXX))
+		&& (ao[SOLDIER].type == DIANA || ao[SOLDIER].type == MAXX
+			|| (ao[SOLDIER].type >= ENEMY_SNAIL && ao[SOLDIER].type < gTotalEnemy)))
 		return SOLDIER;
 
 	return -1;
@@ -321,6 +322,15 @@ static void HitZoomGetCombatView(int attacker, float* focusWX, float* zoomMax)
 	int maxX = minX;
 	bool targetFound = false;
 	float viewWidth;
+
+	//첫 타격 마크가 생기기 전에도 공격자와 현재 타겟을 함께 담는다.
+	int attackTarget = ao[attacker].target;
+	if (attackTarget >= ENEMY && attackTarget < NEUTRAL
+		&& ao[attackTarget].active && !ao[attackTarget].dead) {
+		minX = Min(minX, (int)ao[attackTarget].x);
+		maxX = Max(maxX, (int)ao[attackTarget].x);
+		targetFound = true;
+	}
 
 	for (i = 0; i < TOTALHITMARK; i++) {
 		int target = dmgInfo[i].pos;
@@ -375,7 +385,12 @@ void HitZoomUpdate(void)
 			nextZoom);
 
 		hitZoomFrame++;
-		hitStopFrame++;	//공격 중에는 월드를 절반 속도로 돌린다
+		//줌이 실제로 변하는 진입 구간에서만 모션을 절반 속도로 한다.
+		//최대 배율에 도달한 뒤까지 계속 늦추면 전투 텀이 과하게 길어진다.
+		if (fabsf(nextZoom - hitZoom) > 0.001f)
+			hitStopFrame++;
+		else
+			hitStopFrame = 0;
 
 		//공격이 시작되면 연출 줌은 자리를 내준다.
 		ClearFocusZoom();
@@ -3048,13 +3063,62 @@ void SetAlpha(int alpha)
 	m_lgrpAlpha = alpha;
 }
 
+static int GetAlphaGlyph(char value)
+{
+	if (value >= 'A' && value <= 'Z') return value - 'A';
+	if (value >= 'a' && value <= 'z') return value - 'a';
+	switch (value) {
+	case ':': return COLON;
+	case '/': return SLA;
+	case '+': return PLUS;
+	case '-': return MINUS;
+	case '*': return STAR;
+	case '#': return POUND;
+	case '%': return PER;
+	case '(': return PAR_L;
+	case ')': return PAR_R;
+	case '.': return DOT;
+	case ',': return COMMA;
+	case ';': return SEMICOLON;
+	case '@': return AT;
+	case '!': return EXCLAMATIONMARK;
+	case '?': return QUESTIONMARK;
+	default: return SPC;
+	}
+}
+
+static const char* GetAlphaText(int idx)
+{
+	return idx >= 0 && idx < alphaText_COUNT ? alphaText[idx] : "";
+}
+
+//goldFont.png의 느낌표는 기존 PER(%) 별칭 좌표와 전혀 다른 위치에 있다.
+//문자열 파서에서 느낌표만 실제 아틀라스 영역을 직접 사용한다.
+static void GetGoldAlphaGlyphInfo(char value, int type,
+	int& w, int& h, int& srcX, int& srcY)
+{
+	if (value == '!') {
+		w = 24;
+		h = 43;
+		srcX = 419;
+		srcY = 288;
+		return;
+	}
+
+	int glyph = GetAlphaGlyph(value);
+	int base = TOTALALPHA * 6 * type;
+	w = goldAlphaInfo[base + TOTALALPHA * 0 + glyph];
+	h = goldAlphaInfo[base + TOTALALPHA * 1 + glyph];
+	srcX = goldAlphaInfo[base + TOTALALPHA * 2 + glyph];
+	srcY = goldAlphaInfo[base + TOTALALPHA * 3 + glyph];
+}
+
 float GetAlphaWidth(int idx, int type, float zoom)
 {
-	int i;
 	float w = 0;
 
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		w += alphaX[TOTALALPHA * (type * 2 + 1) + alphaData[i]];
+	for (const char* text = GetAlphaText(idx); *text; text++) {
+		w += alphaX[TOTALALPHA * (type * 2 + 1) + GetAlphaGlyph(*text)];
 
 		switch (type) {
 		default:
@@ -3073,11 +3137,10 @@ float GetAlphaWidth(int idx, int type, float zoom)
 //일단 대문자만 하자. 소문자는 나중에 필요하면
 float GetAlphaWidth2(int idx, float zoom)
 {
-	int i;
 	float w = 0;
 
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		w += alpha2[alphaData[i] * 6];
+	for (const char* text = GetAlphaText(idx); *text; text++) {
+		w += alpha2[GetAlphaGlyph(*text) * 6];
 		w += 2 * _2X;
 	}
 
@@ -3086,11 +3149,12 @@ float GetAlphaWidth2(int idx, float zoom)
 
 float GetGoldAlphaWidth(int idx, int type, float zoom)
 {
-	int i;
 	float w = 0;
 
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		w += goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 0 + alphaData[i]];
+	for (const char* text = GetAlphaText(idx); *text; text++) {
+		int glyphW, glyphH, srcX, srcY;
+		GetGoldAlphaGlyphInfo(*text, type, glyphW, glyphH, srcX, srcY);
+		w += glyphW;
 
 		//switch (type) {
 		//default:
@@ -3104,40 +3168,45 @@ float GetGoldAlphaWidth(int idx, int type, float zoom)
 
 void DrawGoldAlpha(int x, int y, int idx, int type, float zoom, int align, bool ani, float rotation)
 {
-	int i, j;
-	float w;
-	int h, srcX, srcY, gapX, gapY;
-	float width = 0;
+	DrawGoldAlphaText(x, y, GetAlphaText(idx), type, zoom, align, ani, rotation);
+}
 
-	width = GetGoldAlphaWidth(idx, type, zoom);
+//완성된 영문 문자열을 문자 이미지로 파싱해 그린다.
+void DrawGoldAlphaText(int x, int y, const char* text, int type, float zoom, int align, bool ani, float rotation)
+{
+	if (text == NULL)
+		return;
 
-	switch (align) {
-	case LEFT:
-		break;
-	case CENTER:
-		x -= width / 2;
-		break;
-	case RIGHT:
-		x -= width;
-		break;
+	float width = 1.0f;
+	for (const char* p = text; *p; p++) {
+		int w, h, srcX, srcY;
+		GetGoldAlphaGlyphInfo(*p, type, w, h, srcX, srcY);
+		width += w * zoom;
 	}
 
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		w = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 0 + alphaData[i]];
-		h = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 1 + alphaData[i]];
-		srcX = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 2 + alphaData[i]];
-		srcY = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 3 + alphaData[i]];
-		gapX = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 4 + alphaData[i]] * zoom;
-		gapY = goldAlphaInfo[TOTALALPHA * 6 * type + TOTALALPHA * 5 + alphaData[i]] * zoom;
+	if (align == CENTER) x -= width / 2.0f;
+	else if (align == RIGHT) x -= width;
 
-		if (alphaData[i] != SPC) {
+	int charIndex = 0;
+	for (const char* p = text; *p; p++, charIndex++) {
+		int ch = GetAlphaGlyph(*p);
+
+		int w, h, srcX, srcY;
+		GetGoldAlphaGlyphInfo(*p, type, w, h, srcX, srcY);
+		float jumpY = ani ? alphaJumpFrame[(charIndex + frame / MOTIONDIV) % 11] / _2X * zoom : 0.0f;
+
+		if (ch != SPC) {
 			SetColor(COLOR_BROWN);
-			for (j = 0; j < 4; j++) {
-				DrawImage(w, h, srcX, srcY, x + (float)solidPosition[2 * j + 0] * zoom, y + (float)solidPosition[2 * j + 1] * zoom + (ani == true ? alphaJumpFrame[(i - alphaOff[idx] + frame / MOTIONDIV) % 11] / _2X * zoom : 0), false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-			}
+			for (int j = 0; j < 4; j++)
+				DrawImage(w, h, srcX, srcY,
+					x + (float)solidPosition[2 * j] * zoom,
+					y + (float)solidPosition[2 * j + 1] * zoom + jumpY,
+					false, false, false, false, false, zoom,
+					sprite[GOLDFONT_IMG], GOLDFONT_IMG);
 			SetColor(false);
-			DrawImage(w, h, srcX, srcY, x, y + (ani == true ? alphaJumpFrame[(i - alphaOff[idx] + frame / MOTIONDIV) % 11] / _2X * zoom : 0), false, false, false, false, false, zoom, sprite[GOLDFONT_IMG], GOLDFONT_IMG);
-
+			DrawImage(w, h, srcX, srcY, x, y + jumpY,
+				false, false, false, false, false, zoom,
+				sprite[GOLDFONT_IMG], GOLDFONT_IMG);
 		}
 		x += (float)(w - 1 * _2X) * zoom;
 	}
@@ -3145,7 +3214,7 @@ void DrawGoldAlpha(int x, int y, int idx, int type, float zoom, int align, bool 
 
 void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 {
-	int i, w;
+	int w;
 
 
 	//#ifdef TTFFONT
@@ -3154,20 +3223,21 @@ void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 
 	//	return;
 
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		w = alphaX[TOTALALPHA * (type * 2 + 1) + alphaData[i]];
+	for (const char* text = GetAlphaText(idx); *text; text++) {
+		int glyph = GetAlphaGlyph(*text);
+		w = alphaX[TOTALALPHA * (type * 2 + 1) + glyph];
 
-		switch (alphaData[i]) {
+		switch (glyph) {
 		case SPC:
 			break;
 		case DOT:
 			if (type == FONT_LARGE)
 				DrawImage(3 * _2X, 11 * _2X, 106 * _2X, 196 * _2X, x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			else if (type == FONT_SMALL)
-				DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + alphaData[i]], alphaY[type], x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
+				DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + glyph], alphaY[type], x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			break;
 		default:
-			DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + alphaData[i]], alphaY[type], x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
+			DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + glyph], alphaY[type], x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 			break;
 		}
 
@@ -3184,18 +3254,18 @@ void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation)
 
 void DrawAlpha2(int x, int y, int idx, float zoom, float rotation)
 {
-	int i;
-
-	for (i = alphaOff[idx]; i < alphaOff[idx + 1]; i++) {
-		switch (alphaData[i]) {
-		case SPC:
-			break;
-		default:
-			DrawImage(alpha2[alphaData[i] * 6], alpha2[alphaData[i] * 6 + 1], alpha2[alphaData[i] * 6 + 2], alpha2[alphaData[i] * 6 + 3], x + (float)alpha2[alphaData[i] * 6 + 4] * zoom, y + (float)alpha2[alphaData[i] * 6 + 5] * zoom, false, false, false, false, false, zoom, sprite[NUM2_IMG], NUM2_IMG);
-			break;
+	for (const char* text = GetAlphaText(idx); *text; ++text) {
+		int glyph = GetAlphaGlyph(*text);
+		if (glyph != SPC) {
+			DrawImage(alpha2[glyph * 6 + 0], alpha2[glyph * 6 + 1],
+				alpha2[glyph * 6 + 2], alpha2[glyph * 6 + 3],
+				x + (float)alpha2[glyph * 6 + 4] * zoom,
+				y + (float)alpha2[glyph * 6 + 5] * zoom,
+				false, false, false, false, false, zoom,
+				sprite[NUM2_IMG], NUM2_IMG);
 		}
 
-		x += (float)(alpha2[alphaData[i] * 6] + 1 * _2X) * zoom;
+		x += (float)(alpha2[glyph * 6 + 0] + 1 * _2X) * zoom;
 	}
 }
 
@@ -3208,26 +3278,28 @@ void CenterAlpha(int x, int y, int idx, int type, float rotation, float zoom)
 //������ �����ӿ� ���� ��µ�?ù���ڴ� �빮��, �ڿ� ���ڴ� �ҹ��ڷ� ���?�Լ�
 void DrawAlphaFrame(int x, int y, int idx, int frame, int font, float rotaion, float zoom)
 {
-	int i, w;
+	int i = 0, w;
 	int type;
+	const char* phrase = GetAlphaText(idx);
 
-	for (i = alphaOff[idx]; i < ((alphaOff[idx] + frame) < alphaOff[idx + 1] ? (alphaOff[idx] + frame) : alphaOff[idx + 1]); i++) {
-		if (i == alphaOff[idx] || alphaData[i - 1] == SPC)//대문자
+	for (const char* text = phrase; *text && i < frame; text++, i++) {
+		int glyph = GetAlphaGlyph(*text);
+		if (i == 0 || GetAlphaGlyph(text[-1]) == SPC)//대문자
 			type = font;
 		else
 			type = font;
 
-		w = alphaX[TOTALALPHA * (type * 2 + 1) + alphaData[i]];
+		w = alphaX[TOTALALPHA * (type * 2 + 1) + glyph];
 
-		if (alphaData[i] != SPC)
-			DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + alphaData[i]], alphaY[type], x, y - (type == FONT_SMALL ? 4 : 0) * _2X, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
+		if (glyph != SPC)
+			DrawImage(w, alphaY[4 + type], alphaX[TOTALALPHA * type * 2 + glyph], alphaY[type], x, y - (type == FONT_SMALL ? 4 : 0) * _2X, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
 
 		switch (type) {
 		default:
 			x += (float)(w - 1 * _2X) * zoom;
 			break;
 		case FONT_LARGE:
-			if (i == 201)		//Exit Dungeon �� ���?���̰� ���?���ڰ� ���ĺ��̹Ƿ�,,
+			if (idx == ALPHA_EXITDUNGEON && i == 1)
 				x += (float)(w + 1 * _2X) * zoom;
 			else
 				x += (float)(w - 1 * _2X) * zoom;
@@ -5009,7 +5081,13 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 
 		SetSectionClip(x + (float)ITEMICONSIZE * zoom / 2 - (float)(ITEMICONSIZE + 6 * _2X) * zoom / 2, y + (float)8 * _2X * zoom, (float)(ITEMICONSIZE + 6 * _2X) * zoom, (float)(REWARDCARDSIZE_Y - 2 * _2X) * zoom, false);
 
-		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)ITEMICONSIZE * zoom / 2/* + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom*/, y + (float)(-ITEMICONSIZE /*+ enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X*/) * zoom, RIGHT, zoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx], false, false);
+		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
+			enemyBigIconPos[3 * enemyIdx + 0],
+			x + (float)ITEMICONSIZE * zoom / 2
+				+ (float)enemyBigIconPos[3 * enemyIdx + 1] * zoom,
+			y + (float)(-ITEMICONSIZE + enemyBigIconPos[3 * enemyIdx + 2]
+				+ 4 * _2X) * zoom,
+			RIGHT, zoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx], false, false);
 
 		UnSectionClip(false);
 	}
@@ -5182,7 +5260,35 @@ static void DrawSkillCardWinFrame(int x, int y, float w, float h, float z)
 	DrawImageScale(cap, cap, srcRight, srcBottom, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
 }
 
-void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
+static void DrawSkillCardSummonMonster(int enemyIdx, int x, int y,
+	float w, float h, float zoom)
+{
+	if (enemyIdx < 0 || enemyIdx >= gTotalEnemy)
+		return;
+
+	const float inset = (float)(2 * _2X) * zoom;
+	const float innerW = w - inset * 2.0f;
+	const float innerH = h - inset * 2.0f;
+
+	// 배경 -> 몬스터 -> 호출부의 금색 테두리 순서다.
+	MemRect(x + inset, y - inset, innerW, innerH, COLOR_WHITE);
+
+	// DrawIcon도 내부에서 별도의 클립을 열기 때문에 컨트롤 마크의 카드
+	// 클립과 중첩되면 큰 몬스터(특히 가운데 공주 슬롯)가 통째로 잘릴 수 있다.
+	// DrawIcon의 SUMMON 배치식은 그대로 재사용하되 CMF를 한 번의 클립 안에
+	// 직접 그린다.
+	const float iconZoom = zoom * 4.0f;
+	const float footY = y - h + (float)(12 * _2X) * zoom;
+	const float monsterZoom = iconZoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx];
+
+	DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
+		enemyBigIconPos[3 * enemyIdx + 0],
+		x + w / 2.0f + (float)enemyBigIconPos[3 * enemyIdx + 1] * monsterZoom,
+		footY + (float)(enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * monsterZoom,
+		RIGHT, monsterZoom, false, false);
+}
+
+void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverride)
 {
 	float w = (float)SKILLCARDSIZE_X * zoom;
 	float h = (float)SKILLCARDSIZE_Y * zoom;
@@ -5204,17 +5310,16 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom)
 	float iconX = x + w / 2 - iconSize / 2;
 	float iconY = y - h / 2 + iconSize / 2;
 
-	switch (SkillKind(skillIdx)) {
+	if (iconOverride >= ICON_SUMMON && iconOverride < ICON_WEAPON) {
+		DrawSkillCardSummonMonster(iconOverride - ICON_SUMMON,
+			x, y, w, h, zoom);
+	}
+	else switch (SkillKind(skillIdx)) {
 	case SUMMON:
 		//몬스터 소환 : 소환될 몬스터를 그대로 보여준다.
 		enemyIdx = SkillSummonEnemy(skillIdx);
 
-		SetSectionClip(x + (float)2 * _2X * zoom, y - (float)2 * _2X * zoom, w - (float)(2 * _2X) * zoom, h - (float)(2 * _2X) * zoom, false);
-		ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + w / 2 - (float)(40 * _2X / 2) * zoom, y - h / 2 + (float)(8 * _2X) * zoom, SHADOW_IMG, zoom);
-
-		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + w / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y - h / 2 + (float)(enemyBigIconPos[3 * enemyIdx + 2] + 2 * _2X) * zoom, LEFT, 1.2f * zoom, false, false);
-
-		UnSectionClip(false);
+		DrawSkillCardSummonMonster(enemyIdx, x, y, w, h, zoom);
 		break;
 
 	case CREWBULLET:
@@ -5442,13 +5547,11 @@ void DrawLevelUpCard(int type, int lv, bool locked, int x, int y, float zoom)
 		DrawNeutral(OBJ_BOX0 + (locked == false ? ((frame / (MOTIONDIV * 2 * 2)) % 6) : 0), x + (float)(34 * _2X) * zoom, y - (float)(80 * _2X) * zoom, LEFT, 2.0f * zoom);
 		break;
 	case LVUPREWARD_COLLECTIONS:
-		DrawImage(40 * _2X, 40 * _2X, 40 * _2X * MENUICON_COLLECTIONS, 0 * _2X, x + (float)(13 * _2X) * zoom, y - (float)(31 * _2X) * zoom, false, false, false, false, 32, zoom, sprite[MENUICON_IMG], MENUICON_IMG);
 		break;
 	case LVUPREWARD_DAILYREWARDS:
 		DrawIcon(ICON_EVENT_GREENBOOK, x + (float)(18 * _2X) * zoom, y - (float)(36 * _2X) * zoom, 2.0f * zoom, COLOR_WHITE, locked == false ? true : false, false, true);
 		break;
 	case LVUPREWARD_DAILYQUEST:
-		DrawImage(40 * _2X, 40 * _2X, 40 * _2X * MENUICON_DAILYQUEST, 0 * _2X, x + (float)(13 * _2X) * zoom, y - (float)(31 * _2X) * zoom, false, false, false, false, 32, zoom, sprite[MENUICON_IMG], MENUICON_IMG);
 		break;
 	case LVUPREWARD_HEARTMAX:
 		DrawIcon(ICON_HEART, x + (float)(18 * _2X) * zoom, y - (float)(36 * _2X) * zoom, 2.0f * zoom, COLOR_WHITE, locked == false ? true : false, false, true);
@@ -6145,7 +6248,6 @@ void BoxInfoDraw(int boxType, int x, int y, float zoom)
 	int plusY = 32 * _2X;
 	float width;
 
-	DrawImage(POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[UI_PAPER_POPUP_IMG], UI_PAPER_POPUP_IMG);
 
 	DrawBox(boxType, x + (float)POPUPWINDOWSIZE_X / 2 * zoom, y + plusY - (float)64 * _2X * zoom, boxNeutralAnimation[((frame / (MOTIONDIV * 2 * 2)) % 4)], LEFT, false, true, false, true, 2.0f * zoom);
 	CenterText(TEXT_ITEMNAME_BOX + boxType, x + (float)POPUPWINDOWSIZE_X / 2 * zoom, y + plusY - (float)72 * _2X * zoom, zoom);
