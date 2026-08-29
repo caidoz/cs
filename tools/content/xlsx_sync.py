@@ -40,6 +40,7 @@ import sys
 import openpyxl
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
+from openpyxl.drawing.image import Image as XLImage
 from openpyxl.worksheet.datavalidation import DataValidation
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -201,13 +202,84 @@ def write_tsv(name, head, cols, rows, nl):
         fp.write(nl.join(out) + nl)
 
 
+
+#---------------------------------------------------------------- 그림 열
+#
+#숫자만 보고 밸런스를 잡기는 어렵다. 그래서 시트에 그림을 한 열 끼운다.
+#
+#이 열은 tsv 에 없다. 보기만 하는 열이라 import 가 읽지 않고 버린다.
+#엑셀에서 그림은 셀 값이 아니라 시트에 떠 있는 개체라, 값만 읽는 import
+#입장에서는 애초에 보이지도 않는다. 머리글만 이름으로 걸러 내면 된다.
+#
+#  (끼울 자리, 머리글, 그림을 고르는 함수)
+#자리는 0 부터 세는 tsv 열 번호다. 3 이면 label 다음이다.
+
+ICON_DIR = os.path.join(CONTENT, 'icon')
+
+
+def skill_icon(col, row):
+    """스킬 한 줄이 어느 그림을 쓰는가. 없으면 None."""
+    kind = row[col['icon_kind']]
+    idx = row[col['icon']]
+
+    sheet = {'ICONKIND_SKILL': 'skill', 'ICONKIND_BULLET': 'bullet'}.get(kind)
+
+    if sheet is None:
+        return None            #몬스터는 게임이 그려 줘야 한다(2 단계)
+
+    p = os.path.join(ICON_DIR, '%s_%s.png' % (sheet, idx))
+
+    return p if os.path.isfile(p) else None
+
+
+DISPLAY = {
+    'skill': [(3, '그림', skill_icon)],
+}
+
+IMG_PX = 32                     #그림 한 변
+IMG_ROW_H = 26                  #그림이 들어가는 줄 높이(포인트)
+IMG_COL_W = 6
+
+
+def display_of(name):
+    return DISPLAY.get(name, [])
+
+
+def header_with_display(name, cols):
+    """tsv 열 이름에 그림 열을 끼운 머리글과, 끼운 자리 목록."""
+    out = list(cols)
+    at = []
+
+    for pos, title, _fn in sorted(display_of(name), reverse=True):
+        out.insert(pos, title)
+
+    for i, h in enumerate(out):
+        if any(h == t for _p, t, _f in display_of(name)):
+            at.append(i)
+
+    return out, at
+
+
 #---------------------------------------------------------------- 내보내기
 
 def sheet_from(wb, name):
     head, cols, rows, _ = read_tsv(name)
     ws = wb.create_sheet(name)
 
-    for c, col in enumerate(cols, start=1):
+    full, dispAt = header_with_display(name, cols)
+
+    #tsv 열이 시트의 몇 번째 칸으로 가는가(1 부터)
+    colAt = []
+    k = 0
+
+    for i in range(len(full)):
+        if i in dispAt:
+            continue
+
+        colAt.append(i + 1)
+        k += 1
+
+    for c, col in enumerate(full, start=1):
         cell = ws.cell(1, c, col)
         cell.font = FONT_HEAD
         cell.fill = PatternFill('solid', start_color=color_of(col),
@@ -222,7 +294,8 @@ def sheet_from(wb, name):
             cell.comment = openpyxl.comments.Comment(d, 'xlsx_sync')
 
     for r, row in enumerate(rows, start=2):
-        for c, v in enumerate(row, start=1):
+        for i, v in enumerate(row):
+            c = colAt[i]
             cell = ws.cell(r, c, num(v))
             cell.border = BORDER
 
@@ -232,31 +305,66 @@ def sheet_from(wb, name):
             else:
                 cell.font = FONT_CELL
 
+    put_images(ws, name, cols, rows, dispAt)
+
     #머리글과 이름 세 칸을 붙들어 둔다
     ws.freeze_panes = 'D2'
     ws.auto_filter.ref = None       #필터를 달면 정렬을 부른다. 달지 않는다
 
     #kind 같은 칸은 지금 표에 있는 값만 고르게 한다
-    for c, col in enumerate(cols, start=1):
-        vals = sorted(set(r[c - 1] for r in rows))
+    for i, col in enumerate(cols):
+        vals = sorted(set(r[i] for r in rows))
 
         if col in ('kind', 'icon_kind') and 1 < len(vals) <= 20:
+            L = get_column_letter(colAt[i])
             dv = DataValidation(type='list',
                                 formula1='"%s"' % ','.join(vals),
                                 allow_blank=False)
             ws.add_data_validation(dv)
-            dv.add('%s2:%s%d' % (get_column_letter(c), get_column_letter(c),
-                                 len(rows) + 1))
+            dv.add('%s2:%s%d' % (L, L, len(rows) + 1))
 
     #열 너비
-    for c, col in enumerate(cols, start=1):
+    for i, col in enumerate(cols):
         w = max(len(col) + 2,
-                max((len(str(r[c - 1])) for r in rows), default=4) + 2)
-        ws.column_dimensions[get_column_letter(c)].width = min(w, 30)
+                max((len(str(r[i])) for r in rows), default=4) + 2)
+        ws.column_dimensions[get_column_letter(colAt[i])].width = min(w, 30)
+
+    for i in dispAt:
+        ws.column_dimensions[get_column_letter(i + 1)].width = IMG_COL_W
 
     ws.row_dimensions[1].height = 30
 
     return len(rows), len(cols)
+
+
+def put_images(ws, name, cols, rows, dispAt):
+    """그림 열에 낱장 PNG 를 얹는다. 파일이 없으면 그냥 빈 칸이다."""
+    spec = display_of(name)
+
+    if not spec:
+        return
+
+    col = {c: i for i, c in enumerate(cols)}
+    n = 0
+
+    for (pos, _title, fn), at in zip(sorted(spec), dispAt):
+        letter = get_column_letter(at + 1)
+
+        for r, row in enumerate(rows, start=2):
+            p = fn(col, row)
+
+            if not p:
+                continue
+
+            img = XLImage(p)
+            img.width = IMG_PX
+            img.height = IMG_PX
+            ws.add_image(img, '%s%d' % (letter, r))
+            ws.row_dimensions[r].height = IMG_ROW_H
+            n += 1
+
+    if n:
+        print('    그림 %d개' % n)
 
 
 def guide(wb, book):
@@ -344,7 +452,11 @@ def do_import(book, build):
         ws = wb[name]
         head, cols, rows, nl = read_tsv(name)
 
-        got = [ws.cell(1, c).value for c in range(1, len(cols) + 1)]
+        full, dispAt = header_with_display(name, cols)
+        got = [ws.cell(1, c).value for c in range(1, len(full) + 1)]
+
+        #그림 열은 보기만 하는 열이다. 버리고 나머지를 표와 맞춘다.
+        got = [v for i, v in enumerate(got) if i not in dispAt]
 
         if got != cols:
             sys.exit('%s : 열 이름이 다르다\n  표 %s\n  엑셀 %s'
@@ -361,7 +473,10 @@ def do_import(book, build):
         for r in range(2, (ws.max_row + 1) if grow else (len(rows) + 2)):
             vals = []
 
-            for c in range(1, len(cols) + 1):
+            for c in range(1, len(full) + 1):
+                if (c - 1) in dispAt:
+                    continue
+
                 v = ws.cell(r, c).value
                 vals.append('' if v is None else str(v).strip())
 

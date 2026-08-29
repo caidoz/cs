@@ -49,3 +49,6 @@ __pycache__/
 # 엑셀이 열어두는 동안 만드는 잠금 파일
 content/~$*.xlsx
 backup/
+
+# 아이콘 낱장. icon_dump.py 가 시트에서 다시 뽑는다
+content/icon/
