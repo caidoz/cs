@@ -78,6 +78,7 @@ void SetAlpha(int);
 float GetAlphaWidth(int, int, float);
 float GetAlphaWidth2(int, float);
 float GetGoldAlphaWidth(int idx, int type, float zoom);
+float GetGoldAlphaTextWidth(const char* text, int type, float zoom);
 void DrawGoldAlpha(int x, int y, int idx, int type, float zoom, int align, bool ani, float rotation);
 void DrawGoldAlphaText(int x, int y, const char* text, int type, float zoom, int align, bool ani, float rotation);
 void DrawAlpha(int x, int y, int idx, int type, float zoom, float rotation);

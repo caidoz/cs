@@ -2322,17 +2322,34 @@ bool CanEquipLevelUp(ITEM* it)
 
 //이 장비를 그 레벨에서 썼을 때의 공격력.
 //
-//GetItemValue()가 지금 레벨의 값을 주는데, 레벨을 바꿔가며 물어볼 수가 없다.
-//그래서 레벨만 잠깐 갈아끼워 물어보고 되돌린다. 사본을 쓰므로 원본은 안 바뀐다.
+//사본에 레벨을 갈아끼워 물어보고 되돌린다. 원본은 안 바뀐다.
+//
+//[강화 레벨은 lv 이 아니라 cooldown 칸이다]
+//
+//ITEM 의 주석에 "장비의 경우 강화레벨" 이라고 적혀 있고, 값을 내는
+//GetItemValue() 와 GetEquipValue() 가 둘 다 그 칸을 본다. 전에는 여기서
+//lv 만 갈아끼워서, 값을 내는 쪽이 안 보는 칸을 바꾸고 있었다. 그래서
+//상세보기의 Lv1 -> Lv2 가 같은 수를 내놨다.
+//
+//두 칸이 늘 같이 움직인다는 보장이 없으므로 통째로 넣지 않고 차이만
+//더한다. 지금 레벨을 물으면 지금 값이 그대로 나온다.
 long long GetEquipPower(ITEM* it, int lv)
 {
 	ITEM tmp;
+	int step;
 
 	if (it == NULL)
 		return 0;
 
 	tmp = *it;
-	tmp.lv = (signed char)lv;
+	tmp.lv = (unsigned char)lv;
+
+	step = (int)it->cooldown + (lv - (int)it->lv);
+
+	if (step < 0)
+		step = 0;
+
+	tmp.cooldown = (unsigned short)step;
 
 	return GetItemValue(&tmp);
 }

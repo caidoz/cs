@@ -20,6 +20,7 @@ int GetSkillCnt(int acquiredSkills[MAXCHARSKILL]);
 int selectRandomSkill(int characterID, int acquiredSkills[MAXCHARSKILL]);
 void ObjectSkillSetting(OBJECT * pObj);
 void WaveControler(void);
+void DrawWaveAnnouncement(void);
 long long GetTotalWaveHp(int stage);
 long long GetTotalEnemyHp(int stage);
 long long GetWaveHpTier(int tier);

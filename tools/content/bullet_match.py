@@ -119,6 +119,13 @@ def read_tsv(name):
 
 
 def main():
+	#2026-08-30 부터 동료와 아이콘이 1:1 이다. 시트가 한 사람에 두 칸을
+	#갖고 번호가 식으로 떨어지므로 이 손 대응표는 쓰지 않는다. 그대로
+	#돌리면 예전 26 벌 기준으로 되돌려 버린다.
+	raise SystemExit('이제 bullet_assign.py 를 써라. '
+	                 '이 표는 26 벌을 나눠 쓰던 시절의 것이다.')
+
+def _old_main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--write', action='store_true', help='실제로 고친다')
     a = ap.parse_args()

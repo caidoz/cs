@@ -1576,10 +1576,22 @@ void RouletteDraw(int x, int y, float zoom)
 							float z1 = ROULETTE_CARD_SETTLE_ZOOM;
 
 							int iconX = (int)centerX;
-							int iconY = (int)(centerY + 64 * _2X);
+							//카드가 내려앉는 자리. 릴 가운데보다 이만큼 위다.
+							//64 -> 48 -> 56 -> 60 으로 왔다(한 칸이 _2X 라 4 가 8픽셀).
+							int iconY = (int)(centerY + 60 * _2X);
+
+							//카드가 처음 튀어나오는 자리.
+							//
+							//iconY 에서 이만큼 빼므로 릴 가운데를 기준으로 하면
+							//    시작 = centerY + 60*_2X - spawnBelow
+							//이다. 예전에는 iconY 도 spawnBelow 도 64 여서 시작이
+							//릴 가운데(centerY)에 딱 붙어 있었고, 캐릭터 몸과 겹쳤다.
+							//64 -> 48 -> 32 -> 28 로 줄여 왔다. 지금은 릴 가운데보다
+							//화면 56픽셀 위에서 생긴다.
+							const int spawnBelow = 28 * _2X;
 
 							int markId = SetControlMark(
-								iconX, iconY - 64 * _2X,
+								iconX, iconY - spawnBelow,
 								iconX, iconY,
 								iconX, iconY,
 								8 * _2X, 1 * _2X,

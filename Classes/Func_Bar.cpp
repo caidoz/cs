@@ -103,7 +103,9 @@ void BarDraw(BAR* barP, float zoom)
 		else
 			barP->iconFrame = 0;
 
-		if (ao[ITEMBOX].status == BOXSTATUS_CLOSED) {
+		//상자를 거두는 중이면 조이스틱도 안 나온다. 상자 상태만 보면 뚜껑이
+		//닫힌 뒤 카드가 날아가는 동안이 빠진다.
+		if (ao[ITEMBOX].status == BOXSTATUS_CLOSED && IsBoxRewardBusy() == false) {
 			PushButtonDraw(bet, xOffset + barP->x, barP->y, barP->iconFrame, zoom + (GetRectPoint(touchX, touchY, xOffset + barP->x - (float)BOXSIZE_X * zoom / 2, barP->y + (float)BOXSIZE_Y * 2 / 3 * zoom, (float)BOXSIZE_X * zoom, (float)BOXSIZE_Y * 2 / 3 * zoom) == true && touchedFrame > 1 ? Min(0.1f, (float)touchedFrame * 0.01f) : 0), true);
 
 			//그리는건 Bar Heart에서 책임진다.
@@ -478,6 +480,114 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 		DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
 
 	DevilHeartDraw(x - (float)(BOSSHPBARWIDTH / 2) * zoom, y + (float)0 * _2X * zoom, 2.5f * zoom);
+
+	//큰 웨이브 타이틀이 퇴장한 뒤에는 같은 문구 전체를 HP바 바로 위 중앙에 남긴다.
+	if (waveAnnounceNumber > 0 && waveAnnounceFrame == 0) {
+		char suffix[3] = "th";
+		int mod100 = waveAnnounceNumber % 100;
+		if (mod100 < 11 || mod100 > 13) {
+			switch (waveAnnounceNumber % 10) {
+			case 1: strcpy(suffix, "st"); break;
+			case 2: strcpy(suffix, "nd"); break;
+			case 3: strcpy(suffix, "rd"); break;
+			}
+		}
+
+		char title[32];
+		sprintf(title, "%d%s WAVE", waveAnnounceNumber, suffix);
+		int length = (int)strlen(title);
+		int digitCount = GetNumFigure(waveAnnounceNumber);
+		float glyphWidth[32] = { 0 };
+		float glyphOffset[32] = { 0 };
+		float titleWidth = 0.0f;
+
+		for (int i = 0; i < length; i++) {
+			//축소된 리본 안쪽 높이에 여백을 두고 들어가는 배율.
+			float glyphZoom = (i < digitCount ? 2.1f : 1.2f) * zoom;
+			if (title[i] == ' ')
+				glyphWidth[i] = 7.0f * _2X * glyphZoom;
+			else if (title[i] >= '0' && title[i] <= '9')
+				glyphWidth[i] = GetGoldNumDx(title[i] - '0', false, false, false, glyphZoom);
+			else {
+				char glyph[2] = { title[i], 0 };
+				glyphWidth[i] = GetGoldAlphaTextWidth(glyph, FONT_GOLD_LARGE, glyphZoom);
+			}
+			glyphOffset[i] = titleWidth;
+			titleWidth += glyphWidth[i];
+		}
+
+		//10만 단위 이상의 긴 웨이브도 화면 절반 안에 들어오게 문구 전체를 비례 축소한다.
+		const float maxFrameW = DX * 3.0f / 4.0f;
+		const float framePadX = 10.0f * _2X * zoom;
+		float badgeScale = titleWidth > maxFrameW - framePadX * 2.0f
+			? (maxFrameW - framePadX * 2.0f) / titleWidth : 1.0f;
+		if (badgeScale < 1.0f) {
+			for (int i = 0; i < length; i++) {
+				glyphWidth[i] *= badgeScale;
+				glyphOffset[i] *= badgeScale;
+			}
+			titleWidth *= badgeScale;
+		}
+
+		float badgeCenterX = xOffset + DX / 2.0f;
+		float frameW = Min(maxFrameW, Max(180.0f * _2X * zoom,
+			titleWidth + framePadX * 2.0f));
+		float frameTop = DY - GNBHEIGHT + 4.0f * _2X;
+		float startX = badgeCenterX - titleWidth / 2.0f;
+		//win.png 우측 상단 리본 원본 영역(512, 0, 512, 112)을 폭에 맞춰 축소한다.
+		const float ribbonSourceW = 512.0f;
+		const float ribbonSourceH = 112.0f;
+		//문구 배치 폭은 그대로 두고 실제 리본 이미지만 1.5배 크게 그린다.
+		float ribbonW = frameW * 1.5f;
+		float ribbonZoom = ribbonW / ribbonSourceW;
+		float ribbonH = ribbonSourceH * ribbonZoom;
+		float titleY = frameTop - ribbonH * 0.25f;
+		const int glyphDelay = Max(2, FPS / 10);
+		const int sparkleFrames = Max(6, FPS / 4);
+
+		DrawImage(512, 112, 512, 0,
+			badgeCenterX - ribbonW / 2.0f, frameTop,
+			false, false, false, false, false, ribbonZoom,
+			sprite[WIN_IMG], WIN_IMG);
+
+		for (int i = 0; i < length; i++) {
+			if (title[i] == ' ')
+				continue;
+
+			int age = waveBadgeFrame - i * glyphDelay;
+			if (age < 0)
+				continue;
+
+			float finalZoom = (i < digitCount ? 2.1f : 1.2f) * zoom * badgeScale;
+			float drawZoom = finalZoom;
+			float drawX = startX + glyphOffset[i];
+			float drawY = titleY;
+
+			//처음 나타날 때 크게 번쩍였다가 제자리 크기로 가라앉는다.
+			if (age < sparkleFrames) {
+				float t = (float)age / sparkleFrames;
+				float flash = sinf(t * 3.14159265f);
+				drawZoom *= 1.0f + flash * 0.65f;
+				drawX -= glyphWidth[i] * flash * 0.325f;
+				drawY += 4.0f * _2X * flash;
+				SetAlpha(Min(TRANSPARENCY_MAX, 8 + age * 4));
+			}
+
+			if (title[i] >= '0' && title[i] <= '9')
+				DrawGoldNum(title[i] - '0', drawX - 4.0f * _2X,
+					drawY + 4.0f * _2X * drawZoom,
+					LEFT, false, false, false, drawZoom);
+			else {
+				char glyph[2] = { title[i], 0 };
+				DrawGoldAlphaText(drawX, drawY, glyph,
+					FONT_GOLD_LARGE, drawZoom, LEFT, false, false);
+			}
+			SetAlpha(TRANSPARENCY_MAX);
+		}
+
+		if (waveBadgeFrame > 0 && waveBadgeFrame < FPS * 10)
+			waveBadgeFrame++;
+	}
 
 
 

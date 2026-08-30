@@ -552,6 +552,25 @@ void Play(void)
 
 		StatusDraw(xOffset, 0, 1.0f);
 
+		//월드와 상태 UI 위에 웨이브 타이틀을 얹는다.
+		DrawWaveAnnouncement();
+
+		//타이틀 퇴장뿐 아니라 이번 웨이브의 마지막 몬스터 착지까지 끝나야 조작 가능하다.
+		if (waveAnnounceTouchLock && waveAnnounceFrame == 0
+			&& robin.curWaveIdx >= GetMaxWaveCnt()) {
+			bool spawning = false;
+			for (i = ENEMY; i < NEUTRAL; i++) {
+				if (ao[i].type != 0 && ao[i].moveHandler == REGENMOVE) {
+					spawning = true;
+					break;
+				}
+			}
+			if (!spawning && !tutorialWaitingEnemyLand) {
+				waveAnnounceTouchLock = false;
+				touchDisable = false;
+			}
+		}
+
 		switch (drawHandle) {
 		case MD_PLAY:
 

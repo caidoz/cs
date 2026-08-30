@@ -1379,10 +1379,18 @@ void PaintClet(int x, int y, int w, int h)
 		}
 	}
 
-	if (drawHandle != MD_LOGO) {
+	//return 하지 않는다.
+	//
+	//전에는 여기서 곧바로 돌아갔다. 그러면 아래에 있는 프레임 뒷정리를
+	//건너뛴다. 그 자리가 스프라이트 풀(sameRenderSpriteCur, curRenderCnt)을
+	//비우는 곳이라, 안 비우면 풀이 꽉 차서 그 뒤로는 그리라고 해도 아무
+	//것도 안 그려진다. 판은 앞의 그림을 그대로 들고 있고, 그것이 다음
+	//장으로 저장된다.
+	//
+	//실제로 492 장 중 서로 다른 그림이 355 장뿐이었다. 42 장이 똑같은
+	//묶음도 있었는데, 서로 다른 몬스터인데도 한 장으로 나온 것이다.
+	if (drawHandle != MD_LOGO)
 		DumpCmfStep();
-		return;
-	}
 #endif
 
 	//버튼 눌림/튀어오름을 한 칸 진행시킨다. 터치영역을 다시 등록하기 전에

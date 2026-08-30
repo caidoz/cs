@@ -2457,6 +2457,11 @@ extern int levelUpFrame;
 extern int maxUserLv;
 extern bool bossOn;
 extern int touchDisable;
+//웨이브 시작 타이틀과 그 타이틀이 소유한 입력 잠금 상태.
+extern int waveAnnounceFrame;
+extern int waveAnnounceNumber;
+extern bool waveAnnounceTouchLock;
+extern int waveBadgeFrame;
 extern bool tutorialWaitingEnemyLand;//인터랙티브 전투 튜토리얼: 스폰한 몬스터의 착지 연출을 기다리는 중인지(WaveControler()의 touchDisable 자동 해제 조건 전용, 공격 후 쿨다운 touchDisable과 혼동되면 안 됨)
 extern bool tutorialAttackPending;//인터랙티브 전투 튜토리얼: 세바스찬 안내 대사를 닫는 데 쓰인 공격버튼 입력을, 전투 준비가 끝나면 실제 첫 공격으로 실행하기 위한 예약 플래그
 extern int tutorialPendingDemo;

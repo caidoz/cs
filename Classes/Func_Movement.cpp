@@ -11341,6 +11341,16 @@ void VanishMove(OBJECT* pObj)
 		//투기장이면
 		// 투기장에서 몬스터를 다 죽이면 다음 방으로 넘겨준다.
 		//몬스터들을 다 죽였는지 체크
+		if (obj == SOLDIER) {
+			//소환수의 퇴장 연출이 끝나는 프레임에 머리 위 HIT 카운트도
+			//함께 제거한다. 전역 표시시간이 남아 있어도 다음 소환수에게
+			//이전 카운트가 이어지지 않는다.
+			pObj->hitCount = 0;
+			pObj->hitCountFrame = 0;
+			pObj->hitDmg = 0;
+			pObj->hitCountPlus = false;
+			pObj->hitCountAtFeet = false;
+		}
 		pObj->active = false;
 		if (obj == SOLDIER) {
 			//소환수의 VANISHMOVE/VANISHDRAW가 모두 끝난 뒤에만 호출 동료의
@@ -12512,7 +12522,10 @@ void ItemMove(OBJECT* pObj)
 	//mainFrame은 공중에 있는 시간까지 포함하므로 그것만 검사하면 낙하 도중
 	//상자나 적에게 날아가기 시작한다. 사용하지 않던 frame을 착지 후 대기
 	//카운터로 쓰고, 다시 공중에 뜨면 초기화한다.
-	if (pObj->def == ITEM_GOLD) {
+	//
+	//상자도 같은 카운터를 쓴다. 전에는 mainFrame 이 3초를 넘었는지만 봐서,
+	//바닥에 닿고도 남은 시간만큼 멀뚱히 서 있었다.
+	if (pObj->def == ITEM_GOLD || pObj->def == ITEM_BOX) {
 		if (pObj->jumpFrame == 0 && pObj->dy == 0)
 			pObj->frame++;
 		else
@@ -12579,7 +12592,9 @@ void ItemMove(OBJECT* pObj)
 				//팝업창이 안열려있으면
 				if (popUpCnt == 0) {
 
-					if (pObj->mainFrame > 3 * FPS) {
+					//바닥에 닿고 세 프레임 뒤에 연다. 착지가 눈에 보일 만큼만
+					//두고 곧바로 넘긴다. 위에서 frame 이 착지 뒤로만 오른다.
+					if (pObj->frame >= BOX_LAND_TO_GACHA) {
 						//여기서 처리
 
 						//DropItem()은 ITEMOBJ부터 훑어서 "빈 슬롯"에 아이템을 배치하는데(Func_Item.cpp),

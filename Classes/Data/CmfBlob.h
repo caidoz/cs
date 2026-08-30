@@ -61,7 +61,11 @@ extern const unsigned int* cmfMoveInfoSlot;
 enum { cmfMoveInfoSlot_COUNT = 429 };
 
 //슬롯 개수. 표를 채울 때 쓴다. 서로 다른 자료 수가 아니다.
-enum { CMF_BUILTIN_COUNT = 123, CMF_HERO_COUNT = 3 };
+//슬롯 칸수다. 자료 가짓수(123)가 아니다. 몬스터 변종은 앞 cmf 의 자료를
+//나눠 쓰므로 자료는 123 벌뿐이지만 슬롯은 429 칸이다. 여기에 123 을 적으면
+//CmfRelink 가 123 번 이후 슬롯을 전부 0 번으로 접어, 색만 다른 변종이
+//죄다 cmf 0 의 그림으로 나온다.
+enum { CMF_BUILTIN_COUNT = 429, CMF_HERO_COUNT = 3 };
 
 #endif
 

@@ -28,6 +28,10 @@ void RaiseHeartBet(void)
 	else
 		bet = 0;
 
+	//누른 것이 먹혔는지 소리로 알려 준다. 하트 숫자만 바뀌어서는 눌렸는지
+	//아닌지 손끝으로 알 수가 없다.
+	PlayMusic(M_HEART);
+
 	//튜토리얼: 베팅을 배우는 구간(HEARTBET 봄 ~ ROULETTE 보기 전)에만 무슨 일이 일어났는지 알려준다.
 	if (IsTutorialPlaying() && robin.demoSeen[DEMO_TUTORIAL_HEARTBET] && !robin.demoSeen[DEMO_TUTORIAL_ROULETTE])
 		AddSimpleLog(LOGICON_ICON, ICON_HEART, 0, 0, TEXT_TUTORIAL_BETUP);
@@ -284,8 +288,17 @@ void TitleKey(void)
 					? crewData[c * CREWDATASIZE + CREWDATA_TYPE] : -1;
 			}
 
-			//뒤 세 명이 릴에 순서대로 서게 한다. 시연에서만 선다.
-			gDemoForceRoulette = true;
+			//시연용 강제 세팅을 끈다.
+			//
+			//이 깃발 하나가 세 가지를 한꺼번에 덮어썼다.
+			//  - 웨이브에 나올 몬스터 (Func_Map.cpp)
+			//  - 스킬이 불러낼 소환수 (Func_Movement.cpp 의 SUMMON)
+			//  - 룰렛 릴에 서는 동료 (Func_Roulette.cpp)
+			//
+			//셋 다 꺼야 실제 게임과 같은 것이 나온다. 깃발을 지우지 않고
+			//false 로 두는 이유는, 각 자리가 이미 "켜져 있으면 시연값,
+			//아니면 진짜값" 으로 갈라져 있어서 이 한 줄이면 충분해서다.
+			gDemoForceRoulette = false;
 
 			crewCnt = GetSlotCrewCnt();
 
@@ -2662,6 +2675,19 @@ bool IsTouchFuncEnabled(int func)
 	if (touchDisable)
 		return false;
 
+	//가챠나 팝업이 떠 있으면 밑에 깔린 버튼은 없는 것으로 친다.
+	//
+	//터치영역은 GachaDraw()가 ResetRectPoint 로 지우지만, 버튼 그림에 붙는
+	//손 안내는 이 함수의 답을 보고 그린다. 그래서 못 누르는데 손만 까딱이는
+	//꼴이 됐다. 누를 수 없으면 가리키지도 않아야 한다.
+	if (drawHandle == MD_GACHA || popUpCnt > 0)
+		return false;
+
+	//상자가 떨어져 가챠로 넘어가기 전까지도 마찬가지다. 아직 MD_PLAY 라
+	//위 조건에 안 걸린다.
+	if (IsBoxRewardBusy())
+		return false;
+
 	if (gTutorialTouchFunc != TUTORIAL_TOUCH_FREE && func != gTutorialTouchFunc)
 		return false;
 
@@ -3394,12 +3420,54 @@ void SaveFlag(int which)
 
 // JoyStick 관련
 
+//상자를 여닫고 보상을 거두는 중인가.
+//
+//몬스터를 잡으면 상자가 떨어지고, 열고, 카드가 날아가 인벤으로 들어간다.
+//그 사이에 공격이나 베팅이 먹히면 다음 웨이브가 시작되기도 전에 턴이
+//돌아가서, 적도 없는데 헛스윙을 하고 뒤늦게 몬스터가 나타난다.
+//
+//상자 상태만 봐서는 모자란다. 뚜껑이 닫힌 뒤에도 카드가 아직 날아가는
+//중일 수 있어서 날아다니는 마크도 같이 센다.
+bool IsBoxRewardBusy(void)
+{
+	int i;
+
+	if (ao[ITEMBOX].active && ao[ITEMBOX].status != BOXSTATUS_CLOSED)
+		return true;
+
+	//바닥에 떨어진 상자와 아이템. 적이 죽고 상자가 떨어져 가챠로 넘어가기
+	//전까지가 여기에 잡힌다. 그 사이가 비어 있어서 상자가 떨어지는 동안
+	//공격 버튼이 눌렸다.
+	//
+	//Func_Battle.cpp 의 튜토리얼 대기 조건도 같은 자리를 같은 식으로 센다.
+	for (i = ITEMOBJ; i < TOTALOBJECT; i++) {
+		if (ao[i].active)
+			return true;
+	}
+
+	for (i = 0; i < TOTALBOXMARK; i++) {
+		if (boxMark[i].frame > 0 || boxMark[i].frame2 > 0)
+			return true;
+	}
+
+	for (i = 0; i < TOTALCARDMARK; i++) {
+		if (boxCardMark[i].frame > 0 || boxCardMark[i].frame2 > 0)
+			return true;
+	}
+
+	return false;
+}
+
 bool JoyStickPressPossible(void)
 {
 
 	switch (drawHandle) {
 	case MD_PLAY:
 	case MD_BATTLE:
+		//상자를 거두는 동안은 못 누른다. 다 거둔 뒤에 다음 웨이브가 선다.
+		if (IsBoxRewardBusy())
+			return false;
+
 		if (((autoPlay == false && !curtainFrame) || autoPlay == true) && infoFrame == 0 && areaFrame == 0 && attackSequence == ATTACKSEQUENCE_READY && arenaStatus == STATUS_PLAY && ao[PLAYER].dead == false && robin.heart >= GetBetHeart(ao[PLAYER].equip[EQUIP_WEAPON].detail, ao[PLAYER].equip[EQUIP_WEAPON].grade, bet))
 			return true;
 		else

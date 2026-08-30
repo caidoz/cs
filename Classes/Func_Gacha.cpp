@@ -1673,6 +1673,18 @@ void GachaDraw(void)
 {
 	int i;
 
+	//밑에 깔린 터치영역을 지운다.
+	//
+	//Core.cpp 의 MD_GACHA 는 Play() 를 먼저 부르고 그 다음 여기로 온다.
+	//Play() 가 공격 버튼과 하트 버튼의 터치영역을 등록해 두므로, 지우지
+	//않으면 상자가 떨어지는 동안에도 그것들이 눌린다. 눌리면 다음 웨이브가
+	//서기 전에 턴이 돌아가 헛스윙이 나온다.
+	//
+	//지운 뒤 이 화면이 쓸 것만 다시 등록한다. 상자가 다 떨어지기 전에는
+	//바로 아래 gachaPrepared 에서 돌아가므로 아무것도 안 눌린다.
+	//MD_STAGECLEAR 도 같은 자리에서 같은 일을 한다.
+	ResetRectPoint();
+
 	//문구는 매 프레임 다시 세운다. 카드가 넘어가면 저절로 사라진다.
 	gachaAlphaBannerIdx = -1;
 
@@ -4928,6 +4940,23 @@ void GachaDraw(void)
 			robin.waveIdx++;
 			robin.curWaveIdx = 0;
 			memset(&robin.waveActive, 0, sizeof(robin.waveActive));
+
+			//다음 웨이브를 지금부터 센다.
+			//
+			//등장 조건이 "waveTimeStamp 로부터 몇 초가 지났나" 라서, 안 고치면
+			//가챠에 머문 시간까지 흘러간 것으로 쳐서 다음 웨이브가 한꺼번에
+			//튀어나온다.
+			robin.waveTimeStamp = MC_knlCurrentTimeStamp();
+
+			//웨이브를 다시 돌게 한다.
+			//
+			//WaveControler() 는 waveStatus 가 PLAY 일 때만 돈다. 마지막 적을
+			//눕히면서 END 로 바뀌는데(Func_Combat.cpp) 여기서 되돌리지 않아,
+			//가챠가 끝나도 아무도 안 나왔다. 공격 버튼을 누르면 주인공이 다시
+			//서면서 다른 경로가 PLAY 로 바꿔 주는 바람에, 헛스윙 뒤에 몬스터가
+			//뒤늦게 튀어나오는 모양이 됐다.
+			waveStatus = WAVESTATUS_PLAY;
+
 			bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 			return;
 		}

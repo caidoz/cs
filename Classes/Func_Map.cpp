@@ -1491,6 +1491,16 @@ void WaveControler()
 			pObj->dead = true;
 			pObj->active = false;
 
+			//첫 몬스터가 실제 소환 상태(REGENDRAW/REGENMOVE)에 들어간 바로 이 프레임부터
+			//웨이브 타이틀을 띄운다. 타이틀과 모든 몬스터의 착지가 끝날 때까지 입력도 막는다.
+			if (robin.curWaveIdx == 1) {
+				waveAnnounceFrame = 1;
+				waveAnnounceNumber = robin.waveIdx + 1;
+				waveAnnounceTouchLock = true;
+				waveBadgeFrame = 0;
+				touchDisable = true;
+			}
+
 			//웨이브 총합은 놔두고, 현재값만 올려준다.
 			BackUpEnemyObj();
 			SaveGame();
@@ -1708,6 +1718,103 @@ void WaveControler()
 			bar[BAR_DAY].active = false;
 		}
 		break;
+	}
+}
+
+void DrawWaveAnnouncement(void)
+{
+	if (waveAnnounceFrame <= 0)
+		return;
+
+	const int moveFrames = Max(1, FPS * 3 / 2);
+	const int holdFrames = Max(1, FPS * 3 / 2);
+	const int totalFrames = moveFrames * 2 + holdFrames;
+	const float targetX = DX / 2.0f;
+	const float targetY = DY / 2.0f + 144.0f * _2X;
+
+	char suffix[3] = "th";
+	int mod100 = waveAnnounceNumber % 100;
+	if (mod100 < 11 || mod100 > 13) {
+		switch (waveAnnounceNumber % 10) {
+		case 1: strcpy(suffix, "st"); break;
+		case 2: strcpy(suffix, "nd"); break;
+		case 3: strcpy(suffix, "rd"); break;
+		}
+	}
+
+	char title[32];
+	sprintf(title, "%d%s WAVE", waveAnnounceNumber, suffix);
+	int length = (int)strlen(title);
+	int digitCount = GetNumFigure(waveAnnounceNumber);
+	float baseZoom[32] = { 0 };
+	float glyphWidth[32] = { 0 };
+	float targetOffset[32] = { 0 };
+	float titleWidth = 0.0f;
+
+	//도착했을 때의 각 글자 폭과 자리를 먼저 구한다. 숫자는 나머지 글자보다 크게 유지한다.
+	for (int i = 0; i < length; i++) {
+		baseZoom[i] = i < digitCount ? 2.4f : 1.3f;
+		if (title[i] == ' ')
+			glyphWidth[i] = 7.0f * _2X * baseZoom[i];
+		else if (title[i] >= '0' && title[i] <= '9')
+			glyphWidth[i] = GetGoldNumDx(title[i] - '0', false, false, false, baseZoom[i]);
+		else
+			glyphWidth[i] = GetGoldAlphaTextWidth(&title[i], FONT_GOLD_LARGE, baseZoom[i])
+				- GetGoldAlphaTextWidth(&title[i + 1], FONT_GOLD_LARGE, baseZoom[i]);
+
+		targetOffset[i] = titleWidth;
+		titleWidth += glyphWidth[i];
+	}
+
+	const float trail = 0.055f;
+	for (int i = 0; i < length; i++) {
+		if (title[i] == ' ')
+			continue;
+
+		float x = targetX - titleWidth / 2.0f + targetOffset[i];
+		float y = targetY;
+		float zoom = baseZoom[i];
+		float delay = Min(0.48f, i * trail);
+
+		if (waveAnnounceFrame <= moveFrames) {
+			float globalT = (float)waveAnnounceFrame / moveFrames;
+			float t = Max(0.0f, Min(1.0f, (globalT - delay) / (1.0f - delay)));
+			float eased = 0.5f - 0.5f * cosf(t * 3.14159265f);
+			float startX = DX + (150.0f + i * 12.0f) * _2X;
+			x = startX + (x - startX) * eased;
+			y = (DY + (80.0f + i * 8.0f) * _2X) +
+				(y - (DY + (80.0f + i * 8.0f) * _2X)) * eased +
+				sinf(t * 3.14159265f * 2.0f) * 42.0f * _2X;
+			zoom = baseZoom[i] * (0.25f + 0.75f * eased);
+		}
+		else if (waveAnnounceFrame > moveFrames + holdFrames) {
+			float globalT = (float)(waveAnnounceFrame - moveFrames - holdFrames) / moveFrames;
+			float t = Max(0.0f, Min(1.0f, (globalT - delay) / (1.0f - delay)));
+			float eased = 0.5f - 0.5f * cosf(t * 3.14159265f);
+			x += (-180.0f * _2X - x - i * 12.0f * _2X) * eased;
+			y += (-100.0f * _2X - y - i * 8.0f * _2X) * eased +
+				sinf(t * 3.14159265f * 2.0f) * 42.0f * _2X;
+			zoom = baseZoom[i] * (1.0f + 1.4f * eased);
+		}
+
+		//숫자는 이동 전 구간에서 뒤따르는 s보다 왼쪽 8px, 아래 8px에 놓는다.
+		if (title[i] >= '0' && title[i] <= '9') {
+			x -= 8.0f * _2X;
+			y -= 8.0f * _2X;
+			//숫자 폰트 자체의 기준선 차이만 보정한다.
+			y += 10.0f * _2X * zoom;
+			DrawGoldNum(title[i] - '0', x, y, LEFT, false, false, false, zoom);
+		}
+		else {
+			char glyph[2] = { title[i], 0 };
+			DrawGoldAlphaText(x, y, glyph, FONT_GOLD_LARGE, zoom, LEFT, false, false);
+		}
+	}
+
+	waveAnnounceFrame++;
+	if (waveAnnounceFrame > totalFrames) {
+		waveAnnounceFrame = 0;
+		waveBadgeFrame = 1;
 	}
 }
 

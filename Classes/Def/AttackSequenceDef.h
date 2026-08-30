@@ -156,6 +156,10 @@ typedef enum _attackSequenceDef {
 
 
 	//보상
+	//상자가 바닥에 닿고 가챠로 넘어가기까지의 프레임.
+	//전에는 떨어진 시각과 상관없이 3초를 기다렸다.
+	BOX_LAND_TO_GACHA = 3,
+
 	ATTACKDELAY_REWARD_COLLECTING = 1 * FPS,//
 	ATTACKDELAY_REWARD_TABTOCOLLECT = ATTACKDELAY_REWARD_COLLECTING + 1 * FPS,//보상획득
 	ATTACKDELAY_REWARD_START = ATTACKDELAY_REWARD_TABTOCOLLECT + 1 * FPS,//

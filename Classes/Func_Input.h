@@ -30,6 +30,7 @@ void RaiseHeartBet(void);
 void SaveFlag(int whitch);
 
 // JoyStick 관련
+bool IsBoxRewardBusy(void);
 bool JoyStickPressPossible(void);
 bool menuPressPossible(void);
 void JoyStickPressGoldQuest(void);

@@ -216,8 +216,23 @@ static cocos2d::RenderTexture* gDumpRT = nullptr;
 static int  gDumpIdx = 0;
 static bool gDumpDone = false;
 
-//한 장 그려 저장한다. cmf 가 없으면 아무것도 안 하고 false.
-static bool DumpOneCmf(int cmf, int motion, const char* name)
+/* 그리기는 그 자리에서 일어나지 않는다.
+ *
+ * DrawImage 도 RenderTexture::begin 도 렌더 큐에 명령을 쌓아 둘 뿐이고,
+ * 실제로 그려지는 것은 프레임 끝이다. 그래서 그린 직후에 newImage 로
+ * 읽으면 아직 아무것도 안 그려진 판을 읽는다 - 앞 프레임 것이 나온다.
+ *
+ * 처음에는 saveToFile 을 썼는데 그것도 큐에 걸리는 것이라 마찬가지였다.
+ * 492 장을 뽑아 서로 다른 그림이 355 장뿐이었고, 파일 번호가 통째로 한
+ * 칸씩 밀려 있었다.
+ *
+ * 그래서 두 프레임에 나눈다. 이번 프레임에 그려 두고, 다음 프레임에
+ * 읽는다. 그 사이에 프레임이 끝나므로 큐가 비워진다. */
+static int  gDumpPending = -1;
+static char gDumpPendingName[64] = { 0 };
+
+//한 장 그린다. 읽는 것은 다음 프레임이다.
+static bool DumpDrawCmf(int cmf, int motion)
 {
 	if (cmf < 0 || cmf >= MAXCMF)
 		return false;
@@ -226,6 +241,13 @@ static bool DumpOneCmf(int cmf, int motion, const char* name)
 	//읽는데, 뽑기 중에는 게임을 안 돌려 ao[] 가 비어 있다. 건너뛴다.
 	if (cmf < TOTALCHAR)
 		return false;
+
+	//슬롯을 먼저 채운다. cmf_i_div / cmf_m_cnt / cmd_i_offset 은 모두
+	//CmfRead 가 채워 주는 것이라, 이걸 빼면 게임이 마침 그 자리에
+	//읽어 둔 남의 cmf 를 그린다. 색만 다른 변종들이 죄다 같은 그림으로
+	//나온 까닭이 이것이었다.
+	if (cmfLoaded[cmf] != cmf)
+		CmfRead(cmf, cmf);
 
 	if (motion < 0 || motion >= cmf_m_cnt[cmf])
 		motion = 0;
@@ -237,16 +259,31 @@ static bool DumpOneCmf(int cmf, int motion, const char* name)
 		RIGHT, DUMP_CMF_ZOOM, 0, true);
 	PopRenderTarget();
 
-	gDumpRT->saveToFile(name, cocos2d::Image::Format::PNG, true);
-
 	return true;
+}
+
+//지난 프레임에 그려 둔 것을 읽어 파일로 낸다.
+static void DumpSavePending(void)
+{
+	if (gDumpPending < 0)
+		return;
+
+	gDumpPending = -1;
+
+	cocos2d::Image* img = gDumpRT->newImage(true);
+
+	if (img) {
+		const std::string full =
+			cocos2d::FileUtils::getInstance()->getWritablePath() + gDumpPendingName;
+
+		img->saveToFile(full, false);
+		img->release();
+	}
 }
 
 //한 프레임에 한 걸음. Core::Run 이 부른다.
 void DumpCmfStep(void)
 {
-	char name[64];
-
 	if (gDumpDone)
 		return;
 
@@ -261,62 +298,80 @@ void DumpCmfStep(void)
 
 		gDumpRT->retain();
 
-		//폴더를 먼저 만든다. saveToFile 은 fopen 만 하므로 폴더가 없으면
-		//아무 말 없이 실패한다. 파일이 안 생기고 오류도 안 뜬다.
+		//폴더를 먼저 만든다. 저장은 fopen 만 하므로 폴더가 없으면 아무
+		//말 없이 실패한다. 파일이 안 생기고 오류도 안 뜬다.
+		cocos2d::FileUtils* fu = cocos2d::FileUtils::getInstance();
+		const std::string dir = fu->getWritablePath() + "dump/";
+
+		if (!fu->isDirectoryExist(dir))
+			fu->createDirectory(dir);
+
+		CCLOG("[DUMP] 시작. 저장 위치 : %s  (폴더 %s)",
+			dir.c_str(), fu->isDirectoryExist(dir) ? "있음" : "못 만듦");
+
+		//어느 파일을 읽고 있는지 확인한다. 깨진 그림이 나오면 여기가
+		//기대와 다른지부터 본다.
 		{
-			cocos2d::FileUtils* fu = cocos2d::FileUtils::getInstance();
-			const std::string dir = fu->getWritablePath() + "dump/";
+			const int probe[] = { 3, 4, 123, 124, 243, 249 };
 
-			if (!fu->isDirectoryExist(dir))
-				fu->createDirectory(dir);
+			for (int k = 0; k < 6; k++) {
+				const int c = probe[k];
+				const int img = MONSTER_IMG + c;
+				const std::string fn = GetResourceName(RES_IMG, img);
+				cocos2d::Sprite* sp = sprite[img];
 
-			//떨군 자리를 한 번 알려 준다. 이걸 봐야 파일을 찾을 수 있다.
-			CCLOG("[DUMP] 시작. 저장 위치 : %s  (폴더 %s)",
-				dir.c_str(), fu->isDirectoryExist(dir) ? "있음" : "못 만듦");
+				CCLOG("[DUMP] cmf %d -> img %d, 파일 %s, 스프라이트 %s %dx%d",
+					c, img, fn.c_str(), sp ? "있음" : "없음",
+					sp ? (int)sp->getTexture()->getPixelsWide() : -1,
+					sp ? (int)sp->getTexture()->getPixelsHigh() : -1);
+			}
 		}
 	}
 
-	//---- 동료 ----
+	//① 지난 프레임에 그려 둔 것을 먼저 읽는다.
+	DumpSavePending();
+
+	//② 이번 프레임에 다음 것을 그린다.
+	const int total = gTotalCrew + (gTotalEnemy - ENEMY_SNAIL);
+
+	if (gDumpIdx >= total) {
+		CCLOG("[DUMP] 끝. 동료 %d, 몬스터 %d 장. "
+			"BuildConfig.h 의 DUMP_CMF_PNG 를 0 으로 되돌려라.",
+			gTotalCrew, gTotalEnemy - ENEMY_SNAIL);
+		gDumpDone = true;
+		return;
+	}
+
 	if (gDumpIdx < gTotalCrew) {
 		const int i = gDumpIdx;
 		const int type = crewData[i * CREWDATASIZE + CREWDATA_TYPE];
 		const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
 
 		//대기 모션의 첫 장. crewPos 의 0 번이 그 자리다.
-		sprintf(name, "dump/crew_%d.png", i);
-		DumpOneCmf(cmf, crewPos[type * 5 + 0], name);
-
-		gDumpIdx++;
-
-		if (gDumpIdx % 20 == 0)
-			CCLOG("[DUMP] 동료 %d / %d", gDumpIdx, gTotalCrew);
-
-		return;
-	}
-
-	//---- 몬스터 ----
-	{
-		//몬스터 번호는 3 부터다. 0~2 는 히어로가 쓴다(content/README.md).
-		const int e = (gDumpIdx - gTotalCrew) + ENEMY_SNAIL;
-
-		if (e >= gTotalEnemy) {
-			CCLOG("[DUMP] 끝. 동료 %d, 몬스터 %d 장. "
-				"BuildConfig.h 의 DUMP_CMF_PNG 를 0 으로 되돌려라.",
-				gTotalCrew, gTotalEnemy - ENEMY_SNAIL);
-			gDumpDone = true;
-			return;
+		if (DumpDrawCmf(cmf, crewPos[type * 5 + 0])) {
+			sprintf(gDumpPendingName, "dump/crew_%d.png", i);
+			gDumpPending = i;
 		}
 
+		if ((i + 1) % 20 == 0)
+			CCLOG("[DUMP] 동료 %d / %d", i + 1, gTotalCrew);
+	}
+	else {
+		//몬스터 번호는 3 부터다. 0~2 는 히어로가 쓴다(content/README.md).
+		const int e = (gDumpIdx - gTotalCrew) + ENEMY_SNAIL;
 		const int cmf = enemyData[e * ENEMYDATASIZE + ENEMYDATA_CMF];
 
-		sprintf(name, "dump/enemy_%d.png", e);
-		DumpOneCmf(cmf, crewPos[e * 5 + 0], name);
-
-		gDumpIdx++;
+		if (DumpDrawCmf(cmf, crewPos[e * 5 + 0])) {
+			sprintf(gDumpPendingName, "dump/enemy_%d.png", e);
+			gDumpPending = e;
+		}
 
 		if ((e - ENEMY_SNAIL) % 50 == 0)
-			CCLOG("[DUMP] 몬스터 %d / %d", e - ENEMY_SNAIL, gTotalEnemy - ENEMY_SNAIL);
+			CCLOG("[DUMP] 몬스터 %d / %d",
+				e - ENEMY_SNAIL, gTotalEnemy - ENEMY_SNAIL);
 	}
+
+	gDumpIdx++;
 }
 #endif
 

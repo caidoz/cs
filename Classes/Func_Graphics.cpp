@@ -3149,9 +3149,14 @@ float GetAlphaWidth2(int idx, float zoom)
 
 float GetGoldAlphaWidth(int idx, int type, float zoom)
 {
+	return GetGoldAlphaTextWidth(GetAlphaText(idx), type, zoom);
+}
+
+float GetGoldAlphaTextWidth(const char* text, int type, float zoom)
+{
 	float w = 0;
 
-	for (const char* text = GetAlphaText(idx); *text; text++) {
+	for (; text != NULL && *text; text++) {
 		int glyphW, glyphH, srcX, srcY;
 		GetGoldAlphaGlyphInfo(*text, type, glyphW, glyphH, srcX, srcY);
 		w += glyphW;
@@ -5260,6 +5265,19 @@ static void DrawSkillCardWinFrame(int x, int y, float w, float h, float z)
 	DrawImageScale(cap, cap, srcRight, srcBottom, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
 }
 
+//카드 속을 흰색으로 채운다.
+//
+//스킬 아이콘은 그림 자체가 네모난 판이라 카드를 채우지만, 총탄과 몬스터는
+//잘라낸 그림이라 뒤가 비어 카드 뒤에 있는 것이 그대로 비친다. 그래서 먼저
+//깔아 준다.
+static void DrawSkillCardPlate(int x, int y, float w, float h, float zoom)
+{
+	const float inset = (float)(2 * _2X) * zoom;
+
+	MemRect(x + inset, y - inset, w - inset * 2.0f, h - inset * 2.0f,
+		COLOR_WHITE);
+}
+
 static void DrawSkillCardSummonMonster(int enemyIdx, int x, int y,
 	float w, float h, float zoom)
 {
@@ -5271,7 +5289,7 @@ static void DrawSkillCardSummonMonster(int enemyIdx, int x, int y,
 	const float innerH = h - inset * 2.0f;
 
 	// 배경 -> 몬스터 -> 호출부의 금색 테두리 순서다.
-	MemRect(x + inset, y - inset, innerW, innerH, COLOR_WHITE);
+	DrawSkillCardPlate(x, y, w, h, zoom);
 
 	// DrawIcon도 내부에서 별도의 클립을 열기 때문에 컨트롤 마크의 카드
 	// 클립과 중첩되면 큰 몬스터(특히 가운데 공주 슬롯)가 통째로 잘릴 수 있다.
@@ -5326,6 +5344,11 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 		//동료 총탄 : 실제로 날아가는 그 총탄을 보여준다.
 		//AddObject()가 총탄 오브젝트의 icon을 SKILLDATA_TARGET에서 가져오므로
 		//여기서도 같은 자리를 봐야 카드와 날아가는 그림이 일치한다.
+		//
+		//소환수와 마찬가지로 잘라낸 그림이라 흰 판을 먼저 깐다. 여기만
+		//빠져 있어서 총탄 카드만 뒤가 비쳤다.
+		DrawSkillCardPlate(x, y, w, h, zoom);
+
 		DrawCrewBulletIcon(SkillBulletIcon(skillIdx),
 			iconX, iconY, iconZoom);
 		break;
