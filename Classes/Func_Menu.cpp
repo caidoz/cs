@@ -921,6 +921,7 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 	//같은 까닭으로 흰 판을 먼저 깐다.
 	switch (SkillKind(skillIdx)) {
 	case CREWBULLET:
+	case CREWSUMMON:
 	case SUMMON:
 	{
 		float inset = 2.0f * _2X * sCdU;
@@ -933,6 +934,7 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 
 	switch (SkillKind(skillIdx)) {
 	case CREWBULLET:
+	case CREWSUMMON:
 	{
 		//날아가는 총탄 그림. AddObject()가 총탄의 icon을 SKILLDATA_TARGET에서
 		//가져오므로 여기서도 같은 자리를 본다.
@@ -1017,19 +1019,10 @@ static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSi
 //스킬 아이콘을 사각틀에 넣어 그린다. 시안의 스킬 칸 모양이다.
 static void DrawCrewSkillIconFramed(int skillIdx, float px, float py, float box)
 {
-	//속을 먼저 채우고 테두리를 마지막에 올린다.
-	//
-	//전에는 테두리를 먼저 그렸다. 그러면 총탄과 소환수 밑에 까는 흰 판이
-	//테두리 안쪽을 덮어서 금테가 잘려 보인다. 룰렛 카드도 같은 까닭으로
-	//배경 -> 그림 -> 테두리 순서다.
-	//
-	//칸은 통째로 넘긴다. 여백은 안에서 그림 종류별로 다르게 준다. 전에는
-	//여기서 12% 를 일괄로 물렸는데, 룰렛 카드는 총탄과 몬스터를 카드 폭
-	//그대로 그린다. 그래서 같은 크기 틀인데도 상세보기 쪽만 24% 작았다.
-	DrawCrewSkillSlotIcon(skillIdx, px, py, box);
-
-	DrawWin9Frame(WP_SLOT_X, WP_SLOT_Y, WP_SLOT_W, WP_SLOT_H, WP_SLOT_CAP,
-		Loc(px), LocY(py), box * sCdU, box * sCdU, sCdU);
+	//controlMark가 그리는 카드와 아이콘 선택, 여백, 흰 배경, 금테까지
+	//완전히 같아야 한다. 별도 복제 렌더러를 쓰지 않고 같은 함수를 호출한다.
+	const float cardZoom = box * sCdU / (float)SKILLCARDSIZE_X;
+	DrawSkillCard(skillIdx, 1, Loc(px), LocY(py), cardZoom, 0);
 }
 
 
@@ -4835,7 +4828,6 @@ void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, 
 
 
 			if (getHeartNum > 0 && stageInfoCurFrame == STAGECLEARDELAY_TABREWARD + FPS / 2) {
-				AddBar(&bar[BAR_BOX], getHeartNum, BARFRAME);
 				GetItem(ITEM_HEART, false, false, false, getHeartNum, false);
 			}
 

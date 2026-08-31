@@ -184,6 +184,9 @@ typedef struct _obj {
 	int turn;//캐릭터가 몇번째 공격을 하고 있는지 보여주는 변수
 	int x, y;
 	int nx, ny;//게임시작시 위치, 공격한 뒤에 다시 돌아가는 위치
+	//CREWSUMMON 시작 순간의 동료 대기 위치. nx/ny는 다른 이동 처리에서도
+	//사용되므로 전투 종료/가챠 전환 중 바뀌어도 난입 복귀점은 흔들리지 않는다.
+	int crewReturnX, crewReturnY;
 	int type;
 	int etc;
 	int apx;
@@ -928,6 +931,7 @@ typedef struct _iconMark {
 
 	int bar;//어떤 바를 향해 가야 하는지.
 	bool manual;
+	bool screenSpace;//룰렛 UI 위에 머무는 동안 xOffset/디오라마 floatOffsetY를 적용하지 않는다.
 	int motion;
 	int motionFrame;
 } ICONMARK;
@@ -2461,6 +2465,8 @@ extern int touchDisable;
 extern int waveAnnounceFrame;
 extern int waveAnnounceNumber;
 extern bool waveAnnounceTouchLock;
+//마지막 적 사망부터 상자/가챠 종료까지 새 전투 턴의 시작을 막는다.
+extern bool battleRewardTransitionLock;
 extern int waveBadgeFrame;
 extern bool tutorialWaitingEnemyLand;//인터랙티브 전투 튜토리얼: 스폰한 몬스터의 착지 연출을 기다리는 중인지(WaveControler()의 touchDisable 자동 해제 조건 전용, 공격 후 쿨다운 touchDisable과 혼동되면 안 됨)
 extern bool tutorialAttackPending;//인터랙티브 전투 튜토리얼: 세바스찬 안내 대사를 닫는 데 쓰인 공격버튼 입력을, 전투 준비가 끝나면 실제 첫 공격으로 실행하기 위한 예약 플래그

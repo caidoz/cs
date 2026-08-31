@@ -2820,8 +2820,25 @@ NEXT:
 	// 동료와 소환 히어로한테만 건다. 히어로의 currentSkill 은 평타 중에도
 	// 옛 값이 남아 있을 수 있어서, 그것까지 곱하면 평타가 배로 나간다.
 	//----------------------------------------------------------------------
-	if (turn >= CREW && turn < PLAYERALL)
-		damage = RoundDiv(damage * SkillDamagePct(ao[turn].currentSkill), 100);
+	//실제 공격자를 기준으로 동료 스킬 배수를 찾는다. 전역 turn은 막타 직후
+	//먼저 바뀔 수 있어서 일섬 같은 본체 공격이 1000% 대신 100%로 들어갔다.
+	//총탄은 mom, 소환체는 actionOwner가 실제 스킬 소유자다.
+	{
+		int skillOwner = -1;
+
+		if (attacker >= CREW && attacker < CREW + MAXCREW)
+			skillOwner = attacker;
+		else if (attacker >= 0 && attacker < TOTALOBJECT
+			&& ao[attacker].mom >= CREW && ao[attacker].mom < CREW + MAXCREW)
+			skillOwner = ao[attacker].mom;
+		else if (attacker >= 0 && attacker < TOTALOBJECT
+			&& ao[attacker].actionOwner >= CREW
+			&& ao[attacker].actionOwner < CREW + MAXCREW)
+			skillOwner = ao[attacker].actionOwner;
+
+		if (skillOwner >= 0)
+			damage = RoundDiv(damage * SkillDamagePct(ao[skillOwner].currentSkill), 100);
+	}
 
 	//최저 데미지는 1 이다. 배수를 곱한 뒤라야 뜻이 있다 - 5 의 10% 는
 	//0 이 되기 때문이다.
@@ -3281,6 +3298,18 @@ NEXT:
 		pDest->dead = true;
 		memset(&robin.enemyObj, 0, sizeof(OBJECT));
 		pDest->frame = 0;
+
+		//마지막 적의 사망 판정 순간부터 보상 전환 구간이다. 실제 상자는
+		//VANISHMOVE가 끝난 뒤에 떨어지므로, 그때까지 ACTION이 남아 있으면
+		//복귀를 마친 CREWSUMMON이 WhoIsNextTurn으로 다시 호출될 수 있다.
+		if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
+			&& AliveEnemyCnt() == 0
+			&& robin.curWaveIdx == GetMaxWaveCnt()) {
+			battleRewardTransitionLock = true;
+			touchDisable = true;
+			attackSequence = ATTACKSEQUENCE_BOX;
+			turnFrame = 0;
+		}
 
 		//인터랙티브 전투 튜토리얼: 다이오라마방에서 몬스터가 죽을 때마다 다음 안 본 튜토리얼 컷씬을 재생한다.
 		//순서는 AfterDemo()의 GotoPlay() 핸드오프 지점과 1:1로 맞물려 있어 항상 올바른 다음 단계만 걸린다.
@@ -4605,7 +4634,8 @@ int SetControlMark(
 	int alpha,
 	bool text, bool value, bool ani,
 	int owner,
-	bool openFrame)
+	bool openFrame,
+	bool screenSpace)
 {
 	int i;
 
@@ -4654,6 +4684,7 @@ int SetControlMark(
 			controlMark[i].ani = false; //controlMark[i].ani = ani;
 			controlMark[i].owner = owner;
 			controlMark[i].openFrame = openFrame;
+			controlMark[i].screenSpace = screenSpace;
 
 			PlayMusic(M_CARDSPLIT);
 

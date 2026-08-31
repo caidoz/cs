@@ -2474,7 +2474,9 @@ void AddObject(OBJECT *pObj, OBJECT *pMom, int idx)
 	if (tempIdx == ADDOBJ_CREWBULLET) {
 		pObj->cmf = enemyData[*(scPtr + OBJDATA_TYPE) * ENEMYDATASIZE + ENEMYDATA_CMF];
 		pObj->type = GetTypeFromCmf(pObj->cmf);
-		pObj->zoom = CREWBULLETZOOM + (float)0.25f * CREWBULLETZOOM * (pObj->icon % 3);// 1.0f;// enemyZoom[pObj->type] * ENEMYICONZOOM/* pMom->zoom*/;
+		//아이콘별 기본 확대식을 유지하되 실제 비행 총탄의 최종 크기만 1.5배로 한다.
+		pObj->zoom = (CREWBULLETZOOM
+			+ (float)0.25f * CREWBULLETZOOM * (pObj->icon % 3)) * 1.5f;
 
 	}
 	else {

@@ -1665,7 +1665,8 @@ void GachaBackdropDraw(void)
 
 static void DrawGachaTouchPrompt(float x, float y)
 {
-	DrawGoldAlpha((int)x, (int)y, ALPHA_TABTOCOLLECT,
+	//월드/UI 좌표는 Y가 클수록 위다. 안내 문구를 화면 아래로 12픽셀 내린다.
+	DrawGoldAlpha((int)x, (int)y - 12, ALPHA_TABTOCOLLECT,
 		FONT_GOLD_LARGE, 1.0f, CENTER, false, false);
 }
 
@@ -4937,6 +4938,24 @@ void GachaDraw(void)
 			memset(controlMark, 0, sizeof(controlMark));
 
 			OutOfGacha();
+
+			//종료 화면에서 이전 ACTION/turnList를 되살리지 않는다. 다음 웨이브는
+			//새 READY 상태에서 시작하며, 몬스터 소환/웨이브 타이틀의 입력 잠금은
+			//waveAnnounceTouchLock이 이어서 담당한다.
+			attackSequence = ATTACKSEQUENCE_READY;
+			attackSequenceBefore = 0;
+			turnListIdx = 0;
+			totalTurn = 0;
+			turn = PLAYER;
+			turnFrame = 0;
+			sequenceFrame = 0;
+			memset(turnList, 0, sizeof(turnList));
+			for (int crewObj = CREW; crewObj < PLAYERALL; crewObj++) {
+				ao[crewObj].turnPosition = HERE;
+				ao[crewObj].attack = 0;
+				ao[crewObj].actionOwner = 0;
+			}
+			battleRewardTransitionLock = false;
 			robin.waveIdx++;
 			robin.curWaveIdx = 0;
 			memset(&robin.waveActive, 0, sizeof(robin.waveActive));
@@ -4956,6 +4975,12 @@ void GachaDraw(void)
 			//서면서 다른 경로가 PLAY 로 바꿔 주는 바람에, 헛스윙 뒤에 몬스터가
 			//뒤늦게 튀어나오는 모양이 됐다.
 			waveStatus = WAVESTATUS_PLAY;
+
+			//보상 상자를 닫은 직후부터 다음 웨이브의 첫 몬스터가 실제로
+			//등장하고 웨이브 타이틀 연출까지 끝날 때까지 입력 공백이 없어야 한다.
+			//첫 몬스터 생성 시 Func_Map.cpp가 같은 잠금을 이어받아 해제한다.
+			waveAnnounceTouchLock = true;
+			touchDisable = true;
 
 			bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 			return;

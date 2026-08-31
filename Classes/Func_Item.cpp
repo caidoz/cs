@@ -1519,7 +1519,23 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 		break;
 	case ITEM_HEART:
 		itemObj = EMPTY;
+		{
+			long long oldHeart = robin.heart;
 		robin.heart += count;
+
+			//하트 획득은 보상 화면, 상자, 컬렉션 등 진입점이 여러 개다.
+			//각 호출부가 바를 따로 갱신하면 빠지는 경로가 생기므로 실제 재화가
+			//늘어나는 이 자리에서 표시 바도 같은 증가량으로 맞춘다.
+			//소비 경로는 호출부의 기존 감소 연출을 그대로 사용한다.
+			//가챠에서는 카드에서 날아간 currencyMark가 목적 바에 닿는 순간
+			//AddBar를 실행한다. 여기서도 다시 갱신하면 하트바가 두 번 차므로
+			//실제 수치만 지급하고, 그 외 획득 경로만 이 공통 처리로 표시한다.
+			if (count > 0 && drawHandle != MD_GACHA) {
+				bar[BAR_HEART].count = oldHeart;
+				bar[BAR_HEART].add = 0;
+				AddBar(&bar[BAR_HEART], robin.heart - oldHeart, BARFRAME);
+			}
+		}
 		//heartFrame = FPS / 2;
 		break;
 	case ITEM_MEDAL:

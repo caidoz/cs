@@ -464,6 +464,8 @@ void BarAddStop(BAR * barP)
 }
 
 
+static bool drawingWaveBadgePrepass = false;
+
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 {
 	float width = StringWidth(textId[TEXT_STAGE], zoom) + (float)(4 * _2X) * zoom + GetNumDx(robin.stage + 1, false, NUM_FONT_NORMAL, false, false, zoom, false) + GetNumDx(robin.room + 1, MINUS, NUM_FONT_NORMAL, false, false, zoom, false);
@@ -474,15 +476,17 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 	//max = 200;
 	float hpRatio = max > 0 ? (float)count / (float)max : 0.0f;
 	hpRatio = Max(0.0f, Min(hpRatio, 1.0f));
-	DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, hpRatio, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
-	
-	if (count > 0)
-		DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
+	if (!drawingWaveBadgePrepass) {
+		DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, hpRatio, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
 
-	DevilHeartDraw(x - (float)(BOSSHPBARWIDTH / 2) * zoom, y + (float)0 * _2X * zoom, 2.5f * zoom);
+		if (count > 0)
+			DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
+
+		DevilHeartDraw(x - (float)(BOSSHPBARWIDTH / 2) * zoom, y + (float)0 * _2X * zoom, 2.5f * zoom);
+	}
 
 	//큰 웨이브 타이틀이 퇴장한 뒤에는 같은 문구 전체를 HP바 바로 위 중앙에 남긴다.
-	if (waveAnnounceNumber > 0 && waveAnnounceFrame == 0) {
+	if (drawingWaveBadgePrepass && waveAnnounceNumber > 0 && waveAnnounceFrame == 0) {
 		char suffix[3] = "th";
 		int mod100 = waveAnnounceNumber % 100;
 		if (mod100 < 11 || mod100 > 13) {
@@ -591,6 +595,19 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 
 
+}
+
+void WaveBadgeDrawBeforeBars(void)
+{
+	if (!bar[BAR_BOSSHP].active)
+		return;
+
+	float zoom = bar[BAR_BOSSHP].frame2 > 0
+		? bar[BAR_BOSSHP].zoom2 : bar[BAR_BOSSHP].zoom;
+	drawingWaveBadgePrepass = true;
+	BossHpBarDraw(0, 1, xOffset + bar[BAR_BOSSHP].x,
+		bar[BAR_BOSSHP].y, zoom);
+	drawingWaveBadgePrepass = false;
 }
 
 void MedalBarDraw(int x, int y, long long amount, bool ani, float zoom)

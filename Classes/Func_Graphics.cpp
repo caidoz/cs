@@ -112,6 +112,17 @@ void ClearFocusZoom(void)
 	focusZoomMax = FOCUSZOOMMAX;
 }
 
+//난입/소환 액션이 완전히 끝났을 때 전투 포커스를 즉시 기본 화면으로 돌린다.
+void ClearCombatZoom(void)
+{
+	ClearFocusZoom();
+	hitZoomFrame = 0;
+	hitStopFrame = 0;
+	hitZoom = 1.0f;
+	hitZoomCX = (float)DX / 2;
+	hitZoomCY = (float)DY / 2;
+}
+
 //----------------------------------------------------------------------
 // 연출 줌 요청 큐
 //
@@ -300,6 +311,15 @@ static int HitZoomAttacker(void)
 
 	for (i = PLAYER; i < TOTALCHAR; i++) {
 		if (ao[i].active && ao[i].attack)
+			return i;
+	}
+
+	//CREWSUMMON은 동료 본체가 등장해서 접근하고 공격한다. 등장 순간부터
+	//피해가 끝날 때까지 attack을 유지하므로 히어로와 같은 줌 대상으로 본다.
+	for (i = CREW; i < PLAYERALL; i++) {
+		if (ao[i].active && ao[i].attack
+			&& ao[i].currentSkill >= 0 && ao[i].currentSkill < gTotalSkill
+			&& SkillKind(ao[i].currentSkill) == CREWSUMMON)
 			return i;
 	}
 
@@ -2911,18 +2931,6 @@ void DrawDiorama(int x, int y, int type, float zoom)
 				DrawFrame(ao[i].x + 2 * _2X * DIR(ao[i].dirF) - rx - 24 * _2X, objStartY - (ao[i].y + ao[i].cpy - 19 * _2X - OBJIMGGAP) - ry, 48 * _2X, 20 * _2X, FRAME_SHOPBALLOON);
 			}
 
-			//생성 그리기
-			for (i = SOLDIER; i < NEUTRAL; i++) {
-				if (ao[i].active && ao[i].drawHandler == REGENDRAW && ao[i].type != NPC_SHIP) {
-					//소환 연출로 덧그리는 마왕의 심장. 몬스터 배율을 그대로 쓰면
-					//몬스터를 덮을 만큼 커서 소환 대상이 안 보인다.
-					float heartZoom = ao[i].zoom * dioramaZoom * SUMMONHEARTZOOM;
-
-					DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, ao[i].frame)], ao[i].x - rx, objStartY + (float)64 * _2X * heartZoom - (PxlUp(&ao[i]) + ao[i].cy / 2 - OBJIMGGAP) - ry, LEFT, heartZoom, false, false);
-				}
-			}
-
-
 		}
 
 		for (i = 0; i < TOTALHITMARK; i++) {
@@ -5201,7 +5209,7 @@ int GetCrewBulletAni(int idx)
 //DrawCrewBulletIcon()과 달리 x, y는 아이콘의 한가운데다 - 회전/확대가 중심 기준이라야
 //총탄이 제자리에서 돌고 커진다(좌상단 기준으로 돌리면 궤도를 그리며 흔들린다).
 //aniFrame은 계속 늘어나는 값이면 된다. 회전각과 맥동 위상의 기준으로만 쓴다.
-void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame)
+void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame, int dirX)
 {
 	int xs = (idx % CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
 	int ys = (idx / CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
@@ -5227,10 +5235,13 @@ void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame)
 	}
 	default:
 		//그냥 날아간다. 기존 그리기를 그대로 쓰되 중심좌표를 좌상단으로 되돌려 넘긴다.
-		DrawCrewBulletIcon(idx,
+		//엘케인의 검광탄/일섬은 원본이 오른쪽을 향한다. 진행 방향이 왼쪽이면 뒤집는다.
+		DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys,
 			x - (float)(CREWBULLETICONSIZE / 2) * zoom,
 			y + (float)(CREWBULLETICONSIZE / 2) * zoom,
-			zoom);
+			(idx == 128 || idx == 129) && dirX == LEFT,
+			false, false, false, m_lgrpAlpha, zoom,
+			sprite[CREWBULLET_IMG], CREWBULLET_IMG);
 		break;
 	}
 }
@@ -5341,7 +5352,9 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 		break;
 
 	case CREWBULLET:
+	case CREWSUMMON:
 		//동료 총탄 : 실제로 날아가는 그 총탄을 보여준다.
+		//동료 난입도 같은 아틀라스의 전용 스킬 아이콘을 사용한다.
 		//AddObject()가 총탄 오브젝트의 icon을 SKILLDATA_TARGET에서 가져오므로
 		//여기서도 같은 자리를 봐야 카드와 날아가는 그림이 일치한다.
 		//
@@ -5349,8 +5362,19 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 		//빠져 있어서 총탄 카드만 뒤가 비쳤다.
 		DrawSkillCardPlate(x, y, w, h, zoom);
 
-		DrawCrewBulletIcon(SkillBulletIcon(skillIdx),
-			iconX, iconY, iconZoom);
+		{
+			int bulletIcon = SkillBulletIcon(skillIdx);
+			float bulletIconX = iconX;
+
+			//crewBullet.png의 흰 날개(120번)는 64x64 셀 안의 시각 중심이
+			//왼쪽으로 약 8픽셀 치우쳐 있다. 원본 아틀라스는 건드리지 않고
+			//스킬 카드에서만 그만큼 오른쪽으로 보정한다.
+			if (bulletIcon == 120)
+				bulletIconX += (float)(4 * _2X) * iconZoom;
+
+			DrawCrewBulletIcon(bulletIcon,
+				(int)bulletIconX, iconY, iconZoom);
+		}
 		break;
 
 	case HEROSKILL:

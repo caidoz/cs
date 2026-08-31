@@ -22,6 +22,9 @@ typedef enum _attackSequenceDef {
 	ATTACKSEQUENCE_BOSS,//10번째 전투가 끝나서 보스전투 가는것
 	ATTACKSEQUENCE_STAGECLEAR,//보스를 클리어하고 다음 전투로 가는 것
 	ATTACKSEQUENCE_BOSSRAID,//골드 이벤트
+	//마지막 적 사망 후 상자가 떨어지고 가챠로 넘어가기 전까지의 정리 상태.
+	//ACTION을 유지하면 복귀한 크루가 같은 공격 모션/턴을 다시 시작한다.
+	ATTACKSEQUENCE_BOX,
 
 
 	TOTAL_ATTACKSEQUENCE_TYPE,

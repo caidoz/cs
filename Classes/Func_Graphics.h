@@ -11,6 +11,7 @@ void HitZoomPause(void);
 void HitZoomResume(void);
 void SetFocusZoom(int obj);
 void ClearFocusZoom(void);
+void ClearCombatZoom(void);
 void RequestFocusZoom(int obj, int priority);
 void ClearFocusZoomRequest(void);
 
@@ -131,7 +132,7 @@ void DrawSkillIcon(int, int, int, float);
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom);
 int GetCrewBulletAni(int idx);
 //x, y는 아이콘의 한가운데다(DrawCrewBulletIcon()은 좌상단).
-void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame);
+void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame, int dirX);
 void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverride = 0);
 void DrawLock(int lv, int x, int y, float zoom);
 void DrawPercent(float num, int x, int y, float zoom, int align);

@@ -20,6 +20,11 @@
 #define ROULETTE_BUFF_STACK_ZOOM	(ROULETTE_CARD_LAND_ZOOM * 2.0f)
 #define ROULETTE_CARD_ACTION_ZOOM	(ROULETTE_CARD_LAND_ZOOM * 1.20f)
 
+//합성 연출 확인용 임시 결과 순서. 테스트가 끝나면 false로 바꾸면 즉시
+//아래의 정식 독립 확률 추첨으로 돌아간다.
+static const bool ROULETTE_MATCH_SEQUENCE_TEST = true;
+static int sRouletteMatchTestSpin = 0;
+
 // AVK_MAXGAME에서 이번 공격의 세 룰이 실제로 소환할 몬스터.
 // 스킬 데이터는 공통 SUMMON 템플릿을 쓰고, 몬스터 종류만 실행 주체별로 바꾼다.
 static int gDemoSummonEnemy[TOTALREEL] = {
@@ -52,6 +57,58 @@ void GetMarkHeadPos(int obj, int* outX, int* outY)
 	GetMarkHeadPosAt((int)ao[obj].x, (int)ao[obj].y,
 		ao[obj].zoom, outX, outY);
 
+}
+
+//룰렛 위(screen space)의 스킬 카드 한 장을 실제 사용 위치(world space)로 보낸다.
+//2:1 매치에서 외톨이 카드를 먼저 날릴 때와 최종 일괄 발사에서 같은 규칙을 쓴다.
+static int DispatchRouletteMark(int mark)
+{
+	if (mark < 0 || mark >= TOTALCONTROLMARK)
+		return -1;
+
+	int destX, destY;
+	int skillIdx = controlMark[mark].attackType;
+	int skillType = SkillKind(skillIdx);
+
+	switch (skillType) {
+	case SUMMON:
+	{
+		int summonX = SkillSummonX(skillIdx);
+		if (summonX == 0) summonX = DX / 2;
+		GetMarkHeadPosAt(summonX, (int)ao[ROBIN].y, SUMMONZOOM, &destX, &destY);
+		break;
+	}
+	case SUMMONHERO:
+		GetMarkHeadPosAt(SkillSummonX(skillIdx), (int)ao[ROBIN].y,
+			ao[PLAYER].zoom, &destX, &destY);
+		break;
+	case HEROSKILL:
+		GetMarkHeadPos(SkillHostObj(skillIdx), &destX, &destY);
+		break;
+	default:
+		GetMarkHeadPos(controlMark[mark].owner, &destX, &destY);
+		break;
+	}
+
+	int sx = controlMark[mark].x - (controlMark[mark].screenSpace ? (int)xOffset : 0);
+	int sy = controlMark[mark].y - (controlMark[mark].screenSpace ? (int)floatOffsetY : 0);
+	int icon = controlMark[mark].icon;
+	int owner = controlMark[mark].owner;
+	float startZoom = controlMark[mark].zoom2;
+	const int FLY_T = FPS / 2;
+	const float actionZoom = ROULETTE_CARD_ACTION_ZOOM
+		* (skillType == SUMMON ? 1.20f : 1.0f);
+
+	controlMark[mark].frame = 0;
+	controlMark[mark].frame2 = 0;
+
+	return SetControlMark(
+		sx, sy, destX, destY + 8 * _2X, destX, destY,
+		8 * _2X, 1 * _2X, 8 * _2X, 1 * _2X,
+		FLY_T, FLY_T, icon, 30, 1, skillIdx, 1,
+		startZoom, actionZoom, (actionZoom - startZoom) / (float)FLY_T,
+		actionZoom, actionZoom, 0.0f,
+		false, false, false, false, owner, false, false);
 }
 
 //아직 만들어지지 않은 오브젝트의 머리 위 자리.
@@ -155,6 +212,7 @@ void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy)
 			false,
 			false, false, false,
 			ow,
+			false,
 			false
 		);
 		return;
@@ -483,6 +541,13 @@ static int FindCrewAoOffsetByType(int type, bool used[], int maxCrew)
 
 void DecideRouletteResult(void)
 {
+	//직전 룰렛 결과는 이번 회전의 출발 상태다. 아래 초기화 전에 보관한다.
+	//첫 회전에는 gRouletteResultValid가 false이므로 편성 슬롯 3명을 사용한다.
+	bool hasPreviousResult = gRouletteResultValid;
+	int previousResultAoOffset[TOTALREEL];
+	for (int r = 0; r < TOTALREEL; r++)
+		previousResultAoOffset[r] = gRouletteResultAoOffset[r];
+
 	gRouletteResultValid = false;
 	gRouletteResultCnt = 0;
 
@@ -493,26 +558,6 @@ void DecideRouletteResult(void)
 	}
 
 	if (crewCnt <= 0) return;
-
-	//----------------------------------------------------------------
-	// 시연용 고정
-	//
-	// 편성 여섯 명 중 뒤 세 명이 릴 0/1/2 에 순서대로 선다. 세 명이 각각
-	// 다른 히어로 스킬을 물고 있어서, 한 판만 돌려도 셋을 다 보여줄 수 있다.
-	//
-	// 타이틀에서 AVK_MAXGAME 으로 들어왔을 때만 켜진다. 일반 플레이에는
-	// 이 플래그가 서지 않는다.
-	//----------------------------------------------------------------
-	if (gDemoForceRoulette && crewCnt >= TOTALREEL) {
-		for (int r = 0; r < TOTALREEL; r++) {
-			gRouletteStartAoOffset[r] = r;
-			gRouletteResultAoOffset[r] = crewCnt - TOTALREEL + r;
-		}
-
-		gRouletteResultCnt = TOTALREEL;
-		gRouletteResultValid = true;
-		return;
-	}
 
 	//이번 판에 실제로 돌릴 릴 수. 동료가 3명이 안 되면 남는 릴은 -1로 남겨
 	//자물쇠만 그리고 턴에서도 건너뛴다.
@@ -579,84 +624,93 @@ void DecideRouletteResult(void)
 		return;
 	}
 
-	// 로딩에서 뽑힌 크루 수(최대 9)가 crewCnt라고 가정
-	// (리더 포함 9칸)
-	if (crewCnt < MINCREW) return;
+	//----------------------------------------------------------------
+	// 정식 룰렛 확률
+	//
+	// 각 릴은 현재 전투에 실제로 올라온 동료 전체에서 독립적으로 한 명을
+	// 균등 추첨한다. 중복을 허용하므로 같은 동료가 두세 번 뽑히는 매치와
+	// 그에 따른 2/3레벨 스킬도 본래 확률대로 발생한다.
+	//----------------------------------------------------------------
+	int activeCrewOffset[MAXCREW];
+	int activeCrewCnt = 0;
 
-	// -----------------------------
-	// 1) robin.slotCrew[0..crewCnt-1]를 점수로 정렬 (오름차순)
-	// -----------------------------
-	std::vector<int> idx;
-	idx.reserve(crewCnt);
-	for (int i = 0; i < crewCnt; i++) idx.push_back(i);
-
-	std::sort(idx.begin(), idx.end(), [&](int a, int b) {
-		int keyA = robin.slotCrew[a]; // crewDataKey
-		int keyB = robin.slotCrew[b];
-		int sA = ScoreFromCrewKey(keyA);
-		int sB = ScoreFromCrewKey(keyB);
-		if (sA != sB) return sA < sB;
-		// tie-break: crewId나 인덱스로 안정화
-		return a < b;
-		});
-
-	// -----------------------------
-	// 2) 정렬된 robin.slotCrew 인덱스 -> 실제 aoOffset(k)로 매핑
-	// -----------------------------
-	// 룰렛 시스템은 gRouletteStartAoOffset / gRouletteResultAoOffset에
-	// "CREW 배열 내부의 offset(k)"를 넣어야 함.
-	bool used[MAXCREW] = { false, };
-
-	auto MapCrewIndexToAoOffset = [&](int crewIndex)->int {
-		if (crewIndex < 0 || crewIndex >= crewCnt) return -1;
-
-		int type = robin.slotCrew[crewIndex];   // ✅ robin.slotCrew는 type
-		if (type < 0 || type >= gTotalEnemy) return -1;
-
-		int k = FindCrewAoOffsetByType(type, used, MAXCREW);
-		if (k >= 0) {
-			used[k] = true;
-			return k;
-		}
-
-		// ✅ fallback 1: 남아있는 아무 ao 슬롯이라도 하나 집기 (중복 방지)
-		for (int t = 0; t < MAXCREW; ++t) {
-			if (used[t]) continue;
-			if (!ao[CREW + t].active) continue;
-			used[t] = true;
-			return t;
-		}
-
-		// ✅ fallback 2: 그냥 실패 처리(그 프레임 스킵)
-		return -1;
-		};
-
-	//튜토리얼 보스전의 트리플 매치 강제는 이 함수 맨 앞으로 옮겼다.
-	//여기(crewCnt >= MAXCREW 경로)에 두면 동료가 덜 모인 경우를 놓친다.
-
-	// 시작 3명 = 최약 3개 (crewIndex 저장)
-	for (int r = 0; r < TOTALREEL; r++) {
-		gRouletteStartAoOffset[r] = idx[r]; // <-- crewIndex
+	for (int offset = 0; offset < MAXCREW; offset++) {
+		if (ao[CREW + offset].active)
+			activeCrewOffset[activeCrewCnt++] = offset;
 	}
 
-	// 결과 3명 = 최강 3개 (crewIndex 저장)
+	if (activeCrewCnt <= 0) return;
+
+	//첫 회전 전에는 편성 슬롯의 앞 세 칸에 세팅된 동료를 그대로 보여준다.
+	//두 번째 회전부터는 직전 결과가 그대로 서 있는 상태에서 다시 회전한다.
+	//ao[]의 배치 순서가 robin.slotCrew[]와 같다는 보장이 없으므로 첫 회전은 type으로 찾는다.
+	bool startUsed[MAXCREW] = { false, };
 	for (int r = 0; r < TOTALREEL; r++) {
-		gRouletteResultAoOffset[r] = idx[crewCnt - TOTALREEL + r]; // <-- crewIndex
+		int startOffset = -1;
+
+		if (hasPreviousResult
+			&& previousResultAoOffset[r] >= 0
+			&& previousResultAoOffset[r] < MAXCREW
+			&& ao[CREW + previousResultAoOffset[r]].active) {
+			//직전 결과는 중복될 수 있으므로 startUsed 검사 없이 그대로 이어받는다.
+			startOffset = previousResultAoOffset[r];
+		}
+		else if (!hasPreviousResult && r < crewCnt) {
+			int startType = robin.slotCrew[r];
+			for (int offset = 0; offset < MAXCREW; offset++) {
+				if (startUsed[offset] || !ao[CREW + offset].active)
+					continue;
+				if (ao[CREW + offset].type == startType) {
+					startOffset = offset;
+					break;
+				}
+			}
+		}
+
+		//세이브나 전투 배열이 잠시 어긋난 경우에도 빈 릴이 생기지 않게 한다.
+		if (startOffset < 0) {
+			for (int n = 0; n < activeCrewCnt; n++) {
+				if (!startUsed[activeCrewOffset[n]]) {
+					startOffset = activeCrewOffset[n];
+					break;
+				}
+			}
+		}
+
+		if (startOffset < 0)
+			startOffset = activeCrewOffset[r % activeCrewCnt];
+
+		if (!hasPreviousResult)
+			startUsed[startOffset] = true;
+		gRouletteStartAoOffset[r] = startOffset;
+		gRouletteResultAoOffset[r] = activeCrewOffset[Random(activeCrewCnt)];
 	}
 
-	// -----------------------------
-	// 5) 유효
-	// -----------------------------
+	if (ROULETTE_MATCH_SEQUENCE_TEST && activeCrewCnt >= 3) {
+		int labeth = -1;
+		int other[2] = { -1, -1 };
+		int otherCnt = 0;
+
+		for (int n = 0; n < activeCrewCnt; n++) {
+			int offset = activeCrewOffset[n];
+			if (ao[CREW + offset].type == NPC_LABETH)
+				labeth = offset;
+			else if (otherCnt < 2)
+				other[otherCnt++] = offset;
+		}
+
+		if (labeth >= 0 && otherCnt >= 2) {
+			int testStep = sRouletteMatchTestSpin++ % 3;
+
+			//라베스가 항상 첫 릴에 나오며, 회전마다 1/2/3중복을 순서대로 확인한다.
+			gRouletteResultAoOffset[0] = labeth;
+			gRouletteResultAoOffset[1] = (testStep >= 1) ? labeth : other[0];
+			gRouletteResultAoOffset[2] = (testStep >= 2) ? labeth : other[1];
+		}
+	}
+
+	gRouletteResultCnt = TOTALREEL;
 	gRouletteResultValid = true;
-
-	//TEST
-	gRouletteStartAoOffset[0] = 0;
-	gRouletteStartAoOffset[1] = 1;
-	gRouletteStartAoOffset[2] = 2;
-	//TEST
-	//gRouletteResultAoOffset[0] = 0;
-	//gRouletteResultAoOffset[1] = 1;
-	//gRouletteResultAoOffset[2] = 2;
 }
 
 void InitRouletteJump(void)
@@ -835,13 +889,12 @@ void RouletteAttackStart(void)
 
 			ao[turn].currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
 
-			//enemyAttackPattern[]의 한 행 = [0]기본상태 [1]쿨타임 + 스킬블록 3개(각 ATTACKPATTERNDATASIZE칸).
-			//블록 안은 offset 0~3이 turnPosition(HERE/GOING/THERE/COMING)별 상태, 4가 히트수, 5가 사거리다.
-			//적 쪽(Func_Battle.cpp의 EnemySequenceDraw)은 "2 + 스킬 * DATASIZE + turnPosition"으로 읽는데,
-			//여기는 괄호가 빠져서 "2 + DATASIZE * sameCnt - 1"이 되어 있었다. sameCnt가 1이면 블록0의
-			//offset 5(사거리 칸)를 상태값으로 읽어버려서 공격 모션이 엉뚱하게 나온다.
-			//스킬 블록 번호는 sameCnt - 1이고, 턴이 막 시작된 시점이므로 turnPosition은 HERE다.
-			ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+			//엘케인/라베스처럼 단계별 모션이 있는 동료는 해당 블록을 쓰고,
+			//일반 동료처럼 2/3단계 블록이 비어 있을 때만 첫 블록으로 대체한다.
+			int patternBase = ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2;
+			int patternState = enemyAttackPattern[patternBase
+				+ ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+			ao[turn].etc = patternState ? patternState : enemyAttackPattern[patternBase + HERE];
 		}
 	}
 
@@ -900,18 +953,23 @@ int GetSameRouletteCnt(int objIdx)
 }
 
 // 릴에서 화면에 확정해 둔 스킬을 실제 액션도 그대로 사용한다.
-// 같은 크루가 중복된 일반 룰렛은 기존 업그레이드 계산을 사용해야 하므로
-// 단일 선택일 때만 스냅샷을 돌려준다.
+// 카드 생성 과정에서 같은 캐릭터의 currentSkill이 매 카드의 기본 스킬로
+// 다시 덮일 수 있으므로, 중복 결과도 여기서 2/3단계 스킬로 확정해 돌려준다.
 int GetRouletteResultSkillForObj(int obj)
 {
 	if (obj < CREW || obj >= CREW + MAXCREW)
 		return -1;
-	if (GetSameRouletteCnt(obj - CREW) != 1)
+
+	int sameCnt = GetSameRouletteCnt(obj - CREW);
+	if (sameCnt < 1)
 		return -1;
 
 	for (int r = 0; r < TOTALREEL; r++) {
-		if (gRouletteResultAoOffset[r] == obj - CREW)
+		if (gRouletteResultAoOffset[r] == obj - CREW) {
+			if (sameCnt > 1)
+				return UpgradeSkillIdx(r, Min(3, sameCnt));
 			return gRouletteSkillIdx[r];
+		}
 	}
 	return -1;
 }
@@ -1243,6 +1301,11 @@ void RouletteDraw(int x, int y, float zoom)
 	static int sImpactFrames = 0;
 	static int sEndDelayFrames = 10;
 	static int sEndDelayLeft = -1;
+	static int sReelMarkId[TOTALREEL] = { -1, -1, -1 };
+	static int sDispatchMarkId[TOTALREEL] = { -1, -1, -1 };
+	static int sDispatchMarkCnt = 0;
+	static int sCurrentMatchLevel = 1;
+	static int sMatchRepReel = -1;
 
 	// “유니크 스킬 그룹” 정보(최대 3그룹)
 	static int sGroupCount = 0;                    // 1~3
@@ -1304,6 +1367,8 @@ void RouletteDraw(int x, int y, float zoom)
 		sMergePlanBuilt = false;
 
 		for (int i = 0; i < 3; i++) {
+			sReelMarkId[i] = -1;
+			sDispatchMarkId[i] = -1;
 			sGroupBaseSkill[i] = -1;
 			sGroupDupCount[i] = 1;
 			sGroupUpSkill[i] = -1;
@@ -1320,6 +1385,9 @@ void RouletteDraw(int x, int y, float zoom)
 		}
 
 		sDispatched = false;
+		sDispatchMarkCnt = 0;
+		sCurrentMatchLevel = 1;
+		sMatchRepReel = -1;
 		gRouletteSkillDispatchStarted = false;
 
 		// [EDIT-A] 모으기/리프트 상태 초기화
@@ -1348,8 +1416,50 @@ void RouletteDraw(int x, int y, float zoom)
 		}
 		else
 		{
+			//첫 룰렛 전에는 gRouletteStartAoOffset[]가 아직 -1이다.
+			//그 값을 그대로 CREW에 더하면 CREW-1(MAXX)을 가리켜 세 칸 모두
+			//맥스로 보인다. 대기 화면에서도 편성 슬롯 앞 세 명을 type으로
+			//실제 CREW ao 슬롯에 매핑해 둔다.
+			bool startUsed[MAXCREW] = { false, };
+			for (int reel = 0; reel < TOTALREEL; reel++) {
+				int startOffset = gRouletteStartAoOffset[reel];
+				bool validStart = startOffset >= 0 && startOffset < MAXCREW
+					&& ao[CREW + startOffset].active;
+
+				if (!validStart) {
+					startOffset = -1;
+					int startType = (reel < crewCnt) ? robin.slotCrew[reel] : -1;
+					for (int offset = 0; offset < MAXCREW; offset++) {
+						if (startUsed[offset] || !ao[CREW + offset].active)
+							continue;
+						if (ao[CREW + offset].type == startType) {
+							startOffset = offset;
+							break;
+						}
+					}
+
+					if (startOffset < 0) {
+						for (int offset = 0; offset < MAXCREW; offset++) {
+							if (!startUsed[offset] && ao[CREW + offset].active) {
+								startOffset = offset;
+								break;
+							}
+						}
+					}
+
+					gRouletteStartAoOffset[reel] = startOffset;
+				}
+
+				if (startOffset >= 0)
+					startUsed[startOffset] = true;
+			}
+
 			for (int i = 0; i < TOTALREEL; i++)
 			{
+				if (gRouletteStartAoOffset[i] < 0
+					|| gRouletteStartAoOffset[i] >= MAXCREW)
+					continue;
+
 				float centerX = x - (float)SLOTSIZE_X * zoom / 2 + (float)reelPostion[i * 2 + 0] * zoom;
 				float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
 
@@ -1409,12 +1519,17 @@ void RouletteDraw(int x, int y, float zoom)
 		sLiftStartFrame = 0;
 
 		for (int i = 0; i < 3; i++) {
+			sReelMarkId[i] = -1;
+			sDispatchMarkId[i] = -1;
 			sGroupMerged[i] = false;
 			sGroupArrived[i] = 0;
 			sGroupMemberCnt[i] = 0;
 			sMergeStep[i] = MS_NONE;
 			for (int k = 0; k < 3; k++) sGroupMembers[i][k] = -1;
 		}
+		sDispatchMarkCnt = 0;
+		sCurrentMatchLevel = 1;
+		sMatchRepReel = -1;
 
 		for (int r = 0; r < TOTALREEL; r++) {
 			ReelJumpState& rs = gReelJump[r];
@@ -1577,8 +1692,9 @@ void RouletteDraw(int x, int y, float zoom)
 
 							int iconX = (int)centerX;
 							//카드가 내려앉는 자리. 릴 가운데보다 이만큼 위다.
-							//64 -> 48 -> 56 -> 60 으로 왔다(한 칸이 _2X 라 4 가 8픽셀).
-							int iconY = (int)(centerY + 60 * _2X);
+							//64 -> 48 -> 56 -> 60 으로 왔다가 화면 기준 16픽셀 더 올린다.
+							//이 좌표계는 위쪽이 +이고 _2X 배율이므로 논리 좌표 8을 더한다.
+							int iconY = (int)(centerY + 68 * _2X);
 
 							//카드가 처음 튀어나오는 자리.
 							//
@@ -1605,8 +1721,10 @@ void RouletteDraw(int x, int y, float zoom)
 								false,
 								false, false, false,
 								CREW + gRouletteResultAoOffset[i],
-								false
+								false,
+								true
 							);
+							sReelMarkId[i] = markId;
 							if (gDemoForceRoulette && markId >= 0)
 								controlMark[markId].icon = ICON_SUMMON + GetDemoSummonEnemyForSlot(i);
 						}
@@ -1750,35 +1868,6 @@ void RouletteDraw(int x, int y, float zoom)
 			if (sMoveCount > 0) {
 				sMergeMoveCalled = true;
 				sMergeMoveStartFrame = slotFrame;
-
-				const int MOVE_T = FPS / 2;
-
-				for (int m = 0; m < sMoveCount; m++)
-				{
-					int from = sMoveFrom[m];
-					int to = sMoveTo[m];
-
-					controlMark[from].frame = 0;
-					controlMark[from].frame2 = 0;
-
-					SetControlMark(
-						controlMark[from].x, controlMark[from].y,
-						controlMark[to].x, controlMark[to].y,
-						controlMark[to].x, controlMark[to].y,
-						4 * _2X, 1 * _2X,
-						0, 0,            // ✅ 2단 제거
-						MOVE_T, 0,        // ✅ time2=0 (1단만)
-						controlMark[from].icon,
-						30, 1,
-						controlMark[from].attackType, 1,
-						controlMark[from].zoom, controlMark[from].zoomEnd, controlMark[from].zoomIncrement,
-						controlMark[from].zoom2, controlMark[from].zoomEnd2, controlMark[from].zoomIncrement2,
-						false,
-						false, false, false,
-						controlMark[from].owner,
-						false
-					);
-				}
 			}
 		}
 
@@ -1820,7 +1909,12 @@ void RouletteDraw(int x, int y, float zoom)
 		for (int g = 0; g < sGroupCount; g++) {
 			if (sGroupDupCount[g] > maxDup) maxDup = sGroupDupCount[g];
 			sGroupUpSkill[g] = sGroupBaseSkill[g] + sGroupDupCount[g] - 1;
+			if (sGroupDupCount[g] > 1)
+				sMatchRepReel = sGroupRepReel[g];
 		}
+		sCurrentMatchLevel = maxDup;
+		if (maxDup > 1 && sMoveCount > 0)
+			sMatchRepReel = sMoveTo[0];
 
 		// 3) 시간(1/2/3에 따라 길어짐)
 		if (maxDup == 1) {
@@ -1838,14 +1932,29 @@ void RouletteDraw(int x, int y, float zoom)
 			// SP_NONE 블록 나가서 아래 DISPATCH 로직이 같은 프레임에 실행되게
 		}
 		else if (maxDup == 2) {
-			sMergeFrames = 10 * 3 * 2;
-			sImpactFrames = 16 * 2;
-			sEndDelayFrames = 12 * 2;
+			sMergeFrames = FPS + FPS / 2;
+			sImpactFrames = FPS / 2;
+			sEndDelayFrames = FPS / 4;
 		}
 		else {
-			sMergeFrames = 12 * 3 * 2;
-			sImpactFrames = 26 * 2;
-			sEndDelayFrames = 16 * 2;
+			sMergeFrames = FPS * 2;
+			sImpactFrames = FPS * 2 / 3;
+			sEndDelayFrames = FPS / 3;
+		}
+
+		//2:1에서는 외톨이 카드가 먼저 자기 캐릭터에게 날아간다. 남은 두 장만
+		//룰렛 위에 남아 꿈틀거리며 합쳐지므로 어떤 공격이 1단/2단인지 분명해진다.
+		if (maxDup == 2) {
+			for (int g = 0; g < sGroupCount; g++) {
+				if (sGroupDupCount[g] != 1)
+					continue;
+				int singleReel = sGroupRepReel[g];
+				int singleMark = (singleReel >= 0) ? sReelMarkId[singleReel] : -1;
+				int dispatched = DispatchRouletteMark(singleMark);
+				if (dispatched >= 0)
+					sReelMarkId[singleReel] = dispatched;
+				break;
+			}
 		}
 
 		// ============================================================
@@ -1857,44 +1966,53 @@ void RouletteDraw(int x, int y, float zoom)
 			sLiftStartFrame = slotFrame;
 			sLiftHideApplied = false;
 
-			for (int b = 0; b < TOTALREEL; b++)
-			{
-				int skillKey = gRouletteSkillIdx[b];
+			//대표 카드는 위로 치고 올라가고, 나머지 카드는 양옆에서 그 지점으로
+			//한 박자 길게 빨려 들어간다. 릴 번호가 아니라 실제 controlMark ID를 쓴다.
+			const int MOVE_T = FPS;
+			int targetReel = sMoveTo[0];
+			int targetMark = (targetReel >= 0) ? sReelMarkId[targetReel] : -1;
 
-				int gFound = -1;
-				for (int g = 0; g < sGroupCount; g++) {
-					if (sGroupBaseSkill[g] == skillKey) { gFound = g; break; }
+			if (targetMark >= 0) {
+				int mergeX = controlMark[targetMark].x;
+				int mergeY = controlMark[targetMark].y + (32 * _2X);
+
+				int movingMark[TOTALREEL];
+				int movingCnt = 0;
+				movingMark[movingCnt++] = targetMark;
+				for (int m = 0; m < sMoveCount; m++) {
+					int sourceMark = sReelMarkId[sMoveFrom[m]];
+					if (sourceMark >= 0)
+						movingMark[movingCnt++] = sourceMark;
 				}
-				if (gFound < 0) continue;
 
-				if (sGroupDupCount[gFound] < 2) continue;
+				for (int n = 0; n < movingCnt; n++) {
+					int mark = movingMark[n];
+					int sx = controlMark[mark].x;
+					int sy = controlMark[mark].y;
+					int icon = controlMark[mark].icon;
+					int attackType = controlMark[mark].attackType;
+					int owner = controlMark[mark].owner;
+					float startZoom = controlMark[mark].zoom2;
 
-				controlMark[b].frame = 0;
-				controlMark[b].frame2 = 0;
+					controlMark[mark].frame = 0;
+					controlMark[mark].frame2 = 0;
+					int newMark = SetControlMark(
+						sx, sy, mergeX, mergeY, mergeX, mergeY,
+						1 * _2X, 0.10f * _2X, 0, 0,
+						MOVE_T, 0, icon, 30, 1, attackType, 1,
+						startZoom, startZoom + (mark == targetMark ? 0.25f : 0.10f),
+						(mark == targetMark ? 0.25f : 0.10f) / (float)MOVE_T,
+						startZoom, startZoom, 0.0f,
+						false, false, false, false, owner, false, true);
 
-				int sx = controlMark[b].x;
-				int sy = controlMark[b].y;
-
-				int tx = sx;
-				int ty = sy + (32 * _2X);
-
-				SetControlMark(
-					sx, sy,
-					tx, ty,
-					tx, ty,
-					4 * _2X, 1 * _2X,
-					4 * _2X, 1 * _2X,               // ✅ 2단 제거
-					FPS / 2, FPS / 2,          // ✅ time2=0
-					false,
-					30, 1,
-					controlMark[b].attackType, 1,
-					controlMark[b].zoom, controlMark[b].zoomEnd + 0.1f, controlMark[b].zoomIncrement,
-					controlMark[b].zoom2 + 0.1f, controlMark[b].zoomEnd2 + 0.1f, controlMark[b].zoomIncrement2,
-					false,
-					false, false, false,
-					controlMark[b].owner,
-					false
-				);
+					if (mark == targetMark)
+						sReelMarkId[targetReel] = newMark;
+					else {
+						for (int m = 0; m < sMoveCount; m++)
+							if (sReelMarkId[sMoveFrom[m]] == mark)
+								sReelMarkId[sMoveFrom[m]] = newMark;
+					}
+				}
 			}
 		}
 
@@ -1912,14 +2030,15 @@ void RouletteDraw(int x, int y, float zoom)
 		// ============================================================
 		if (sMergeMoveCalled && !sMergePostDone)
 		{
-			const int MOVE_T = FPS / 2;
+			const int MOVE_T = FPS;
 
 			if (slotFrame - sMergeMoveStartFrame >= MOVE_T)
 			{
 				// 이동된 애들만 투명 처리
 				for (int m = 0; m < sMoveCount; m++) {
-					int from = sMoveFrom[m];
-					if (from >= 0) controlMark[from].alpha = 1;
+					int fromReel = sMoveFrom[m];
+					int fromMark = (fromReel >= 0) ? sReelMarkId[fromReel] : -1;
+					if (fromMark >= 0) controlMark[fromMark].alpha = 1;
 				}
 
 				// 합쳐진(남은) 타겟을 업그레이드로 변경
@@ -1931,8 +2050,12 @@ void RouletteDraw(int x, int y, float zoom)
 
 				if (target >= 0) {
 					int upSkill = UpgradeSkillIdx(target, dup);
-					controlMark[target].attackType = upSkill;
-					controlMark[target].attackStr = 1;
+					int targetMark = sReelMarkId[target];
+					if (targetMark >= 0) {
+						controlMark[targetMark].attackType = upSkill;
+						controlMark[targetMark].attackStr = 1;
+						controlMark[targetMark].grade = dup;
+					}
 				}
 
 				sMergePostDone = true;
@@ -1954,38 +2077,59 @@ void RouletteDraw(int x, int y, float zoom)
 	if (sSkillPhase == SP_IMPACT)
 	{
 		int local = slotFrame - sSkillPhaseStartFrame;
-		float t = (sImpactFrames > 0) ? (float)local / (float)sImpactFrames : 1.0f;
-		if (t < 0) t = 0; if (t > 1) t = 1;
-
-		float pulse = sinf(t * 3.141592f);
-
-		for (int g = 0; g < sGroupCount; g++) {
-			if (sGroupDupCount[g] < 2) continue;
-
-			int gx = controlMark[sMoveTo[0]].x;
-			int gy = controlMark[sMoveTo[0]].y + 64 * _2X;
-
-			int alphaIdx = (sGroupDupCount[g] == 2) ? ALPHA_GOOD : ALPHA_GREAT;
-
-			float gZoom = (sGroupDupCount[g] == 2)
-				? (1.00f + 0.20f * pulse) * 2
-				: (1.15f + 0.35f * pulse) * 2;
-
-			float rot = (sGroupDupCount[g] == 3) ? (sinf(t * 6.28318f) * 0.08f) : 0.0f;
-
-			DrawGoldAlpha(
-				gx, gy,
-				alphaIdx,
-				FONT_GOLD_LARGE,
-				gZoom * zoom,
-				CENTER,
-				(sGroupDupCount[g] == 3),
-				rot);
-		}
 
 		if (local >= sImpactFrames) {
 			sSkillPhase = SP_DISPATCH;
 			sSkillPhaseStartFrame = slotFrame;
+		}
+	}
+
+	//2/3매치 완성형 표시. 두 줄 문구를 화면 중앙에 두고, 합쳐진 카드에는
+	//마왕의 심장 이미지 대신 맥동하는 금색 링 오라를 덧그린다.
+	if ((sSkillPhase == SP_MERGE || sSkillPhase == SP_IMPACT)
+		&& sCurrentMatchLevel > 1 && sMatchRepReel >= 0) {
+		int repMark = sReelMarkId[sMatchRepReel];
+		if (repMark >= 0 && repMark < TOTALCONTROLMARK) {
+			int local = slotFrame - sSkillPhaseStartFrame;
+			float pulse = 0.5f + 0.5f * sinf((float)local * 0.32f);
+			float textZoom = (sCurrentMatchLevel == 3 ? 2.55f : 2.15f)
+				* (0.92f + 0.12f * pulse);
+			int textY = STATUSWIN_Y + (DY - STATUSWIN_Y) * 2 / 3;
+
+			const char* mergeText = (sCurrentMatchLevel == 3) ? "TRIPLE" : "DOUBLE";
+			float maxTextWidth = (float)(DX - 24 * _2X);
+			float textWidth = GetGoldAlphaTextWidth(mergeText, FONT_GOLD_LARGE, textZoom);
+			if (textWidth > maxTextWidth)
+				textZoom *= maxTextWidth / textWidth;
+			float lineGap = 26.0f * _2X * textZoom;
+			DrawGoldAlphaText(DX / 2, (int)(textY + lineGap / 2), mergeText,
+				FONT_GOLD_LARGE, textZoom, CENTER,
+				sCurrentMatchLevel == 3, 0.0f);
+			DrawGoldAlphaText(DX / 2, (int)(textY - lineGap / 2), "MERGE",
+				FONT_GOLD_LARGE, textZoom * 0.92f, CENTER,
+				sCurrentMatchLevel == 3, 0.0f);
+
+			int ringCnt = (sCurrentMatchLevel == 3) ? 3 : 2;
+			for (int ring = 0; ring < ringCnt; ring++) {
+				float ringPhase = fmodf((float)local * 0.055f + (float)ring / ringCnt, 1.0f);
+				float ringZoom = controlMark[repMark].zoom2
+					* (0.75f + ringPhase * (sCurrentMatchLevel == 3 ? 1.15f : 0.85f));
+				SetAlpha((int)(28.0f * (1.0f - ringPhase)));
+				DrawGoldAlpha(controlMark[repMark].x, controlMark[repMark].y,
+					ALPHA_RING, FONT_GOLD_LARGE, ringZoom, CENTER,
+					sCurrentMatchLevel == 3, (float)local * 0.04f + ring);
+			}
+			SetAlpha(32);
+
+			//흡수가 끝난 뒤 대표 카드가 숨 쉬듯 꿈틀거리며 커진 상태를 유지한다.
+			if (sMergePostDone && sSkillPhase == SP_MERGE) {
+				float baseZoom = ROULETTE_CARD_SETTLE_ZOOM
+					+ (sCurrentMatchLevel == 3 ? 0.48f : 0.30f);
+				float wriggle = sinf((float)local * 0.45f)
+					* (sCurrentMatchLevel == 3 ? 0.08f : 0.05f);
+				controlMark[repMark].zoom = baseZoom + wriggle;
+				controlMark[repMark].zoom2 = baseZoom + wriggle;
+			}
 		}
 	}
 
@@ -2007,27 +2151,31 @@ void RouletteDraw(int x, int y, float zoom)
 			//공격의 소멸 중인 카드와 좌측의 지속 버프 카드도 함께 들어 있다.
 			//단순히 살아 있는 마크를 전부 모으면 이전 로빈 스킬 카드까지 다시
 			//날아가며, 오래된 목적 좌표 때문에 화면 밖으로 빠진다.
-			int live[TOTALCONTROLMARK];
+			int live[TOTALREEL];
 			int liveCnt = 0;
 
 			for (int reel = 0; reel < TOTALREEL; reel++) {
-				int expectedOwner = (gRouletteResultAoOffset[reel] >= 0)
-					? CREW + gRouletteResultAoOffset[reel] : -1;
-				int expectedSkill = gRouletteSkillIdx[reel];
-
-				if (expectedOwner < 0 || expectedSkill < 0)
+				int mark = sReelMarkId[reel];
+				if (mark < 0 || mark >= TOTALCONTROLMARK
+					|| (controlMark[mark].frame <= 0 && controlMark[mark].frame2 <= 0)
+					|| controlMark[mark].alpha != 0)
 					continue;
 
-				for (int i = 0; i < TOTALCONTROLMARK; i++) {
-					if (controlMark[i].manual
-						|| (controlMark[i].frame <= 0 && controlMark[i].frame2 <= 0)
-						|| controlMark[i].owner != expectedOwner
-						|| controlMark[i].attackType != expectedSkill)
-						continue;
-
-					live[liveCnt++] = i;
-					break;
+				//2:1의 외톨이 카드는 합성 전에 이미 월드로 출발했다.
+				if (!controlMark[mark].screenSpace) {
+					bool tracked = false;
+					for (int n = 0; n < sDispatchMarkCnt; n++)
+						if (sDispatchMarkId[n] == mark) tracked = true;
+					if (!tracked && sDispatchMarkCnt < TOTALREEL)
+						sDispatchMarkId[sDispatchMarkCnt++] = mark;
+					continue;
 				}
+
+				bool alreadyAdded = false;
+				for (int n = 0; n < liveCnt; n++)
+					if (live[n] == mark) alreadyAdded = true;
+				if (!alreadyAdded)
+					live[liveCnt++] = mark;
 			}
 
 			for (int n = 0; n < liveCnt; n++)
@@ -2045,6 +2193,16 @@ void RouletteDraw(int x, int y, float zoom)
 					//그만큼 아래로 내려앉아 캐릭터를 덮었다.
 					//날아가서 멈출 때의 배율은 아래 SetControlMark에 넘기는
 					//zoomEnd2(zoom - 0.3f)다. 그 크기로 계산해야 도착점이 맞는다.
+					//합성 과정에서는 controlMark 슬롯을 여러 번 비우고 다시 만든다.
+					//대표 마크가 기본 카드 값을 물려받았더라도 발사 직전에 소유자의
+					//실제 룰렛 결과로 최종 스킬을 다시 확정한다. 목적지와 실제 액션이
+					//반드시 같은 스킬을 보게 하는 마지막 단일 기준점이다.
+					int finalSkill = GetRouletteResultSkillForObj(controlMark[i].owner);
+					if (finalSkill >= 0) {
+						controlMark[i].attackType = finalSkill;
+						controlMark[i].attackStr = 1;
+					}
+
 					int skillIdx = controlMark[i].attackType;
 					int skillType = SkillKind(skillIdx);
 
@@ -2074,8 +2232,8 @@ void RouletteDraw(int x, int y, float zoom)
 							(int)ao[ROBIN].y, ao[PLAYER].zoom, &destX, &destY);
 						break;
 					case HEROSKILL:
-						//히어로 스킬은 화면에 있는 첫 히어로(ROBIN) 위로 보낸다.
-						GetMarkHeadPos(ROBIN, &destX, &destY);
+						//실제로 이 스킬을 발동할 히어로 위로 보낸다.
+						GetMarkHeadPos(SkillHostObj(skillIdx), &destX, &destY);
 						break;
 					default:
 						//----------------------------------------------------
@@ -2101,11 +2259,17 @@ void RouletteDraw(int x, int y, float zoom)
 					controlMark[i].frame2 = 0;
 					//SUMMON 카드는 소환 위치에 도착했을 때만 일반 액션 카드보다
 					//20% 크게 보인다. 이동 도중 값을 다시 덮어쓰지 않는다.
+					float matchZoom = 1.0f;
+					if (sCurrentMatchLevel == 2 && i == sReelMarkId[sMatchRepReel])
+						matchZoom = 1.25f;
+					else if (sCurrentMatchLevel == 3 && i == sReelMarkId[sMatchRepReel])
+						matchZoom = 1.55f;
 					const float actionMarkZoom = ROULETTE_CARD_ACTION_ZOOM
-						* (skillType == SUMMON ? 1.20f : 1.0f);
+						* (skillType == SUMMON ? 1.20f : 1.0f) * matchZoom;
 
-					SetControlMark(
-						controlMark[i].x, controlMark[i].y,
+					int dispatchedMark = SetControlMark(
+						controlMark[i].x - (int)xOffset,
+						controlMark[i].y - (int)floatOffsetY,
 						destX, destY + 8 * _2X,
 						destX, destY,
 						8 * _2X, 1 * _2X,
@@ -2120,21 +2284,54 @@ void RouletteDraw(int x, int y, float zoom)
 						false,
 						false, false, false,
 						controlMark[i].owner,
+						false,
 						false
 					);
+					if (dispatchedMark >= 0 && sDispatchMarkCnt < TOTALREEL)
+					{
+						bool isMatchRepresentative = sMatchRepReel >= 0
+							&& i == sReelMarkId[sMatchRepReel];
+						controlMark[dispatchedMark].grade = isMatchRepresentative
+							? sCurrentMatchLevel : 1;
+						sDispatchMarkId[sDispatchMarkCnt++] = dispatchedMark;
+					}
 				}
 			}
 
 			sEndDelayLeft = sEndDelayFrames;
 		}
 
-		if (sEndDelayLeft > 0) sEndDelayLeft--;
-		else sSkillPhase = SP_DONE;
+		bool allDispatchedMarksArrived = (sDispatchMarkCnt > 0);
+		for (int n = 0; n < sDispatchMarkCnt; n++) {
+			int mark = sDispatchMarkId[n];
+			if (mark < 0 || mark >= TOTALCONTROLMARK
+				|| controlMark[mark].x != controlMark[mark].targetX2
+				|| controlMark[mark].y != controlMark[mark].targetY2
+				|| controlMark[mark].frame2 <= 0) {
+				allDispatchedMarksArrived = false;
+				break;
+			}
+		}
+
+		//모든 카드가 각 캐릭터 머리 위에 도착한 뒤 짧게 한 박자 쉬고 전투를 시작한다.
+		if (!allDispatchedMarksArrived)
+			sEndDelayLeft = sEndDelayFrames;
+		else if (sEndDelayLeft > 0)
+			sEndDelayLeft--;
+		else
+			sSkillPhase = SP_DONE;
 	}
 
 	// DONE
 	if (sSkillPhase == SP_DONE && attackSequence == ATTACKSEQUENCE_SLOT)
 	{
+		//카드가 내려앉은 뒤 SLOT 화면을 빠져나가면 비회전 상태의 슬롯판은
+		//gRouletteStartAoOffset[]을 다시 그린다. 여기에 이전 출발값이 남아 있으면
+		//확정된 캐릭터가 그 순간 갑자기 전 캐릭터로 되돌아가므로, 현재 결과를
+		//다음 회전의 출발 표시이자 대기 표시로 확정한다.
+		for (int r = 0; r < TOTALREEL; r++)
+			gRouletteStartAoOffset[r] = gRouletteResultAoOffset[r];
+
 		attackSequence = ATTACKSEQUENCE_ACTION;
 
 		//첫 턴은 "채워진" 첫 릴이다. 자물쇠 칸이 앞에 올 수도 있으므로 인덱스 0을 그냥 쓰면 안 된다.
@@ -2143,8 +2340,19 @@ void RouletteDraw(int x, int y, float zoom)
 		turnListIdx = 0;
 		{
 			int reelSkill = GetRouletteResultSkillForObj(turn);
-			if (reelSkill >= 0)
+			if (reelSkill >= 0) {
 				ao[turn].currentSkill = reelSkill;
+
+				//합성 단계는 currentSkill에 반영하고, 동료 모션은 enemy.tsv에
+				//실제로 정의된 공통(첫 번째) 공격 패턴으로 시작한다.
+				if (turn >= CREW && turn < PLAYERALL) {
+					int sameCnt = Max(1, Min(3, GetSameRouletteCnt(turn - CREW)));
+					int patternBase = ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2;
+					int patternState = enemyAttackPattern[patternBase
+						+ ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+					ao[turn].etc = patternState ? patternState : enemyAttackPattern[patternBase + HERE];
+				}
+			}
 		}
 
 		//릴이 도는 동안(SLOT)에도 CrewMove()/PlayerMove()가 매 프레임 frame을 올린다.

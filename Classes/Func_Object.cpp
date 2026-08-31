@@ -2036,12 +2036,12 @@ void BulletCrewDraw(OBJECT* pObj)
 		DrawCrewBulletAni(pObj->icon,
 			bulletCx + (float)solidPosition[2 * i + 0] * 8 * pObj->zoom,
 			bulletCy + (float)solidPosition[2 * i + 1] * 8 * pObj->zoom,
-			pObj->zoom, bulletAni, bulletAniFrame);
+			pObj->zoom, bulletAni, bulletAniFrame, pObj->dirX);
 	}
 
 	SetColor(false);
 
-	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame);
+	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame, pObj->dirX);
 	//else
 
 	return;

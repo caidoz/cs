@@ -668,6 +668,10 @@ void Play(void)
 			}
 		}
 
+		//상단 웨이브 배지는 모든 Bar보다 먼저 그린다. Bar의 수치 증가 및
+		//이동 애니메이션은 그 뒤에 올라와 서로 가리지 않는다.
+		WaveBadgeDrawBeforeBars();
+
 		for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
 			if (bar[i].active == true && bar[i].front == false) {
 				if (bar[i].frame2 > 0) {
@@ -1026,11 +1030,24 @@ void Play(void)
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
 				// 지속 버프 마크는 도착 후의 상태 UI다. 카메라 줌과 화면 이동에
 				// 영향받지 않도록 xOffset/floatOffsetY 및 월드 변환을 제외한다.
-				worldDrawing = !controlMark[i].manual;
+				bool uiSpace = controlMark[i].manual || controlMark[i].screenSpace;
+				worldDrawing = !uiSpace;
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
-					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2,
-					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2,
+					(uiSpace ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2,
+					controlMark[i].y + (uiSpace ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2,
 					controlMark[i].zoom2, controlMark[i].icon);
+				if (controlMark[i].grade >= 2) {
+					float cardLeft = (uiSpace ? 0 : xOffset) + controlMark[i].x
+						- (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2;
+					float cardTop = controlMark[i].y + (uiSpace ? 0 : floatOffsetY)
+						+ (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2;
+					int frameColor = controlMark[i].grade >= 3
+						? itemColor[(frame / 2) % 6] : COLOR_PURPLE;
+					MemRectFrameThick((int)cardLeft, (int)cardTop,
+						(int)((float)ROULETTECARDSIZE_X * controlMark[i].zoom2),
+						(int)((float)ROULETTECARDSIZE_Y * controlMark[i].zoom2),
+						frameColor, (int)((controlMark[i].grade >= 3 ? 3 : 2) * _2X));
+				}
 				worldDrawing = false;
 			}
 
@@ -1069,11 +1086,24 @@ void Play(void)
 			}
 
 			if (Max(0, TRANSPARENCY_MAX - controlMark[i].alpha) > 0) {
-				worldDrawing = !controlMark[i].manual;
+				bool uiSpace = controlMark[i].manual || controlMark[i].screenSpace;
+				worldDrawing = !uiSpace;
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
-					(controlMark[i].manual ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2,
-					controlMark[i].y + (controlMark[i].manual ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2,
+					(uiSpace ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2,
+					controlMark[i].y + (uiSpace ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2,
 					controlMark[i].zoom, controlMark[i].icon);
+				if (controlMark[i].grade >= 2) {
+					float cardLeft = (uiSpace ? 0 : xOffset) + controlMark[i].x
+						- (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2;
+					float cardTop = controlMark[i].y + (uiSpace ? 0 : floatOffsetY)
+						+ (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2;
+					int frameColor = controlMark[i].grade >= 3
+						? itemColor[(frame / 2) % 6] : COLOR_PURPLE;
+					MemRectFrameThick((int)cardLeft, (int)cardTop,
+						(int)((float)ROULETTECARDSIZE_X * controlMark[i].zoom),
+						(int)((float)ROULETTECARDSIZE_Y * controlMark[i].zoom),
+						frameColor, (int)((controlMark[i].grade >= 3 ? 3 : 2) * _2X));
+				}
 				worldDrawing = false;
 			}
 
@@ -2156,7 +2186,6 @@ void AttackSequenceDraw(void)
 
 
 			if (getHeartNum > 0 && sequenceDelay == ATTACKDELAY_REWARD_COLLECTING + FPS / 2) {
-				AddBar(&bar[BAR_BOX], getHeartNum, BARFRAME);
 				GetItem(ITEM_HEART, false, false, false, getHeartNum, false);
 			}
 

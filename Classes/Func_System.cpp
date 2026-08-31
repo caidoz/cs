@@ -2467,6 +2467,11 @@ void OutOfGacha(void)
 {
 	int i;
 
+	//가챠 중 남았거나 새로 들어온 포커스 요청까지 전부 버리고, 전투 화면은
+	//항상 기본 1배 줌에서 다시 시작한다.
+	ClearFocusZoomRequest();
+	ClearCombatZoom();
+
 	drawHandle = before_DrawHandle_Gacha;
 	keyHandle = before_KeyHandle_Gacha;
 	curMenu = before_CurMenu_Gacha;
@@ -3789,19 +3794,26 @@ void WhoIsNextTurn(void)
 				//GetSameRouletteCnt()는 gRouletteResultAoOffset[]를 세는 함수라 룰렛을 실제로 돌린
 				//경우(ATTACKSEQUENCE_SLOT)에만 유효하고, 룰렛을 안 도는 ACTION 경로(크루 0~5명)에서는
 				//항상 0을 반환한다. 그대로 쓰면 currentSkill이 crewData의 CREWDATA_STR 칸을 읽는다.
-				int sameCnt = (attackSequence == ATTACKSEQUENCE_SLOT) ? GetSameRouletteCnt(turn - CREW) : 1;
+				//전투가 시작되면 attackSequence는 이미 ACTION이다. SLOT일 때만
+				//세면 두 번째 크루부터 무조건 1단계 모션으로 돌아가 합성 스킬의
+				//SUMMON/SUMMONHERO/HEROSKILL 준비가 깨진다.
+				int sameCnt = GetSameRouletteCnt(turn - CREW);
 
 				if (sameCnt < 1)
 					sameCnt = 1;
+				if (sameCnt > 3)
+					sameCnt = 3;
 
 				int reelSkill = GetRouletteResultSkillForObj(turn);
 				ao[turn].currentSkill = (reelSkill >= 0)
 					? reelSkill
 					: crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + sameCnt - 1];
 
-				//인덱싱 규칙은 RouletteAttackStart()의 주석 참고. 스킬 블록 = sameCnt - 1,
-				//턴이 막 시작된 시점이므로 turnPosition은 HERE.
-				ao[turn].etc = enemyAttackPattern[ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2 + ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+				//단계별 모션이 있으면 사용하고, 빈 블록인 일반 동료만 첫 모션으로 대체한다.
+				int patternBase = ao[turn].type * ATTACKPATTERNTOTALDATASIZE + 2;
+				int patternState = enemyAttackPattern[patternBase
+					+ ATTACKPATTERNDATASIZE * (sameCnt - 1) + HERE];
+				ao[turn].etc = patternState ? patternState : enemyAttackPattern[patternBase + HERE];
 			}
 		}
 		ao[turn].attackFrame = 0;
@@ -3936,6 +3948,15 @@ void GotoGacha()
 
 		return;
 	}
+
+	//유효한 보상 가챠에 진입한 뒤부터 끝날 때까지 새 전투 액션은 금지한다.
+	battleRewardTransitionLock = true;
+	touchDisable = true;
+
+	//막타 순간의 공격 줌을 가챠 화면으로 넘기지 않는다. 공격자가 죽거나
+	//사라져도 hitZoom 자체는 남을 수 있으므로 화면 전환 전에 즉시 초기화한다.
+	ClearFocusZoomRequest();
+	ClearCombatZoom();
 
 	gachaPrepared =
 		false;

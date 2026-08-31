@@ -62,3 +62,4 @@ void SetPopUp(int type, int x, int y, int w, int h,
 void DrawPopUp(int idx);
 void GameMenuDraw(int, int, float zoom);
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom);
+void WaveBadgeDrawBeforeBars(void);

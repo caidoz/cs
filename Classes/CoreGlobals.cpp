@@ -1491,6 +1491,7 @@ int touchDisable = 3 * FPS;
 int waveAnnounceFrame = 0;
 int waveAnnounceNumber = 0;
 bool waveAnnounceTouchLock = false;
+bool battleRewardTransitionLock = false;
 int waveBadgeFrame = 0;
 bool tutorialWaitingEnemyLand = false;
 bool tutorialAttackPending = false;

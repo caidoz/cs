@@ -1887,20 +1887,18 @@ void PaintClet(int x, int y, int w, int h)
 					//두번째 세팅이 있으면 
 				if (currencyMark[i].targetX2 != 0 || currencyMark[i].targetY2 != 0) {
 					currencyMark[i].frame2 = 1;
-					switch (drawHandle) {
+					//도착한 화면이 아니라 마크에 기록된 실제 목적 바를 갱신한다.
+					//기존 default는 MD_GACHA의 하트까지 BAR_GOLD로 보내고 있었다.
+					switch (currencyMark[i].bar) {
+					case BAR_HEART:
+						AddBar(&bar[BAR_HEART], currencyMark[i].amount, BARFRAME);
+						break;
+					case BAR_BATTLECOIN:
+						AddBar(&bar[BAR_BATTLECOIN], currencyMark[i].amount, BARFRAME);
+						break;
+					case BAR_GOLD:
 					default:
 						AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
-						break;
-					case MD_PLAY:
-					case MD_BATTLE:
-						switch (currencyMark[i].bar) {
-						case BAR_GOLD:
-							AddBar(&bar[BAR_GOLD], currencyMark[i].amount, BARFRAME);
-							break;
-						case BAR_BATTLECOIN:
-							AddBar(&bar[BAR_BATTLECOIN], currencyMark[i].amount, BARFRAME);
-							break;
-						}
 						break;
 					}
 				}
@@ -2511,9 +2509,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
 
 
 

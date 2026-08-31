@@ -6129,6 +6129,23 @@ void StraightMove(OBJECT* pObj)
 		break;
 	}
 
+	//라베스 마법진이 쏘는 수직 3way 화염탄은 ENEMY_LABETH 외형을
+	//공유해서 타입만으로 진영을 판단할 수 없다. 탄환 -> 마법진 -> 라베스의
+	//소유 슬롯을 따라가 아군 소환이면 적, 적 소환이면 플레이어를 판정한다.
+	if (pObj->motion >= PO_C109_FLAME_M0 && pObj->motion <= PO_C109_FLAME_M2
+		&& pObj->mom >= 0 && pObj->mom < TOTALOBJECT) {
+		int caster = ao[pObj->mom].mom;
+		if (caster >= PLAYER && caster < PLAYERALL) {
+			if (AttackEnemyCheck(GetObjFromPtr(pObj))) {
+				memset(pObj, 0, sizeof(OBJECT));
+				return;
+			}
+		}
+		else {
+			AttackPlayerCheck(pObj);
+		}
+	}
+
 	if (BoundaryCheck(pObj) && pObj->drawHandler != LASERDRAW &&
 		(pObj->type != ENEMY_CASTLE_BOSS1
 			&& pObj->type != ENEMY_CASTLE_BOSS1_RED
@@ -8607,7 +8624,9 @@ void FollowMove(OBJECT* pObj)
 {
 	int rt = 0;
 
-	GotoObj(&ao[pObj->target], pObj, 6 * _2X);
+	//룰렛에서 발사되는 동료 총탄의 공통 추적 속도. 개별 탄 데이터와
+	//무관하게 모두 같은 경로를 지나므로 여기서 기존 속도의 절반으로 낮춘다.
+	GotoObj(&ao[pObj->target], pObj, 3 * _2X);
 	pObj->x += pObj->dx;
 	pObj->y += pObj->dy;
 	InitMotion(pObj);
@@ -9005,32 +9024,94 @@ void Bullet4wayMove(OBJECT* pObj)
 void LabethMagicMove(OBJECT* pObj)
 {
 	int i, cnt;
-	int nearObj = NearPlayer(pObj);
+	const bool alliedMagic = pObj->mom >= PLAYER && pObj->mom < PLAYERALL;
+	int targetObj = 0;
 
-	if (pObj->frame < 15) {
-		ao[nearObj].y -= 100 * _2X * pObj->zoom;
-		if (ao[nearObj].y - pObj->y < 10 * _2X * pObj->zoom) {
-			GotoObj(&ao[nearObj], pObj, 10 * _2X * pObj->zoom);
+	if (alliedMagic) {
+		int aliveCnt = 0;
+		int nearestObj = 0;
+		long long nearestDis = 0x7fffffffffffffffLL;
+
+		for (i = ENEMY; i < NEUTRAL; i++) {
+			if (!ao[i].active || ao[i].dead)
+				continue;
+
+			aliveCnt++;
+			long long dx = (long long)ao[i].x - pObj->x;
+			long long dy = (long long)ao[i].y - pObj->y;
+			long long dis = dx * dx + dy * dy;
+			if (dis < nearestDis) {
+				nearestDis = dis;
+				nearestObj = i;
+			}
+		}
+
+		//한두 마리는 가장 가까운 적, 세 마리 이상은 X축상 가운데 적을 고른다.
+		if (aliveCnt < 3) {
+			targetObj = nearestObj;
+		}
+		else {
+			long long bestSpread = 0x7fffffffffffffffLL;
+			for (i = ENEMY; i < NEUTRAL; i++) {
+				if (!ao[i].active || ao[i].dead)
+					continue;
+
+				long long spread = 0;
+				for (int j = ENEMY; j < NEUTRAL; j++) {
+					if (ao[j].active && !ao[j].dead)
+						spread += Abs(ao[j].x - ao[i].x);
+				}
+				if (spread < bestSpread) {
+					bestSpread = spread;
+					targetObj = i;
+				}
+			}
+		}
+	}
+	else {
+		targetObj = NearPlayer(pObj);
+	}
+
+	if (pObj->frame < 60) {
+		if (targetObj > 0) {
+			//이 오브젝트의 이동 좌표는 화면 표시와 Y 부호가 반대다.
+			//대상의 머리 위 100픽셀은 대상 Y에서 빼야 하며, 더하면 화면 아래로 이탈한다.
+			int targetY = ao[targetObj].y - 100 * _2X * ao[targetObj].zoom;
+			GotoObjXY(pObj, ao[targetObj].x, targetY,
+				(float)(5 * _2X) * 0.5f * pObj->zoom);
 			pObj->x += pObj->dx;
 			pObj->y += pObj->dy;
 		}
-		ao[nearObj].y += 100 * _2X * pObj->zoom;
 	}
-	else if (pObj->frame == 15) {
+	else if (pObj->frame == 60) {
+		//마법진이 자리를 잡으면 라베스 공격 포커스만 먼저 놓는다.
+		//HitZoomUpdate()의 기존 16프레임 줌 아웃 보간을 그대로 사용해
+		//화염탄 발사 전에 전장 전체가 자연스럽게 다시 보이게 한다.
+		if (alliedMagic && pObj->mom >= CREW && pObj->mom < PLAYERALL)
+			ao[pObj->mom].attack = 0;
+	}
+	else if (pObj->frame == 76) {
 		//미사일 쏘기
-		for (i = ENEMY, cnt = 0; i < NEUTRAL; i++) {
+		const int startObj = alliedMagic ? BULLET : ENEMY;
+		const int endObj = alliedMagic ? ENEMYUSEROBJ : NEUTRAL;
+		for (i = startObj, cnt = 0; i < endObj; i++) {
 			if (ao[i].active == false) {
 
 				AddObject(&ao[i], pObj, ADDOBJ_LABETHBULLET);
 				ao[i].motion += cnt;
-				ao[i].dx = 6 * (cnt - 1) * _2X * pObj->zoom;
+				//대미지 계산도 중간 마법진이 아니라 실제 시전자 라베스의
+				//공격력과 2단계 스킬 배율을 사용한다.
+				ao[i].actionOwner = alliedMagic ? pObj->mom : 0;
+				//3way 화염탄도 기존 속도의 절반으로 이동한다.
+				ao[i].dx = 1.5f * (cnt - 1) * _2X * pObj->zoom;
+				ao[i].dy *= 0.25f;
 				cnt++;
 				if (cnt > 2)
 					break;
 			}
 		}
 	}
-	else if (pObj->frame < 20) {}
+	else if (pObj->frame < 96) {}
 	else {
 		memset(pObj, 0, sizeof(OBJECT));
 		return;
@@ -9278,6 +9359,15 @@ void EnemyMove_AddObj(OBJECT* pObj)
 			break;
 		case PO_C109_MAGIC6:
 			//움직이는 마법진 생성
+			//같은 모션 그림이 여러 게임 프레임 유지되어도 한 시전에는 하나만 만든다.
+			for (i = startObj; i < endObj; i++) {
+				if (ao[i].active && ao[i].moveHandler == LABETHMAGICMOVE
+					&& ao[i].mom == obj)
+					break;
+			}
+			if (i < endObj)
+				break;
+
 			for (i = startObj; i < endObj; i++) {
 				if (ao[i].active == false) {
 					AddObject(&ao[i], pObj, ADDOBJ_LABETHMAGIC);
@@ -12595,6 +12685,25 @@ void ItemMove(OBJECT* pObj)
 					//바닥에 닿고 세 프레임 뒤에 연다. 착지가 눈에 보일 만큼만
 					//두고 곧바로 넘긴다. 위에서 frame 이 착지 뒤로만 오른다.
 					if (pObj->frame >= BOX_LAND_TO_GACHA) {
+						//상자가 먼저 착지해도 난입 동료가 공격 지점에서 복귀 중이면
+						//가챠로 넘어가지 않는다. ACTION을 중간 상태로 백업했다가 종료 후
+						//복원하면 같은 동료가 HERE에서 공격을 다시 시작하는 원인이 된다.
+						bool crewActionFinishing = false;
+						for (int crewObj = CREW; crewObj < PLAYERALL; crewObj++) {
+							if (ao[crewObj].active
+								&& ao[crewObj].currentSkill >= 0
+								&& ao[crewObj].currentSkill < gTotalSkill
+								&& SkillKind(ao[crewObj].currentSkill) == CREWSUMMON
+								&& ao[crewObj].turnPosition != HERE) {
+								crewActionFinishing = true;
+								break;
+							}
+						}
+						if (crewActionFinishing) {
+							touchDisable = true;
+							return;
+						}
+
 						//여기서 처리
 
 						//DropItem()은 ITEMOBJ부터 훑어서 "빈 슬롯"에 아이템을 배치하는데(Func_Item.cpp),
@@ -14324,7 +14433,154 @@ void CrewMove(OBJECT* pObj)
 	pObj->motion = *tPtr;
 
 	switch (drawHandle) {
+	case MD_GACHA:
 	case MD_PLAY:
+		//CREWSUMMON의 공격 마무리와 복귀는 ACTION 시퀀스에만 묶으면 안 된다.
+		//특히 일섬으로 마지막 적을 쓰러뜨리면 전투 시퀀스가 먼저 바뀌어서
+		//엘케인이 공격 지점에 그대로 남는다. 이미 시작한 난입 액션은 시퀀스가
+		//바뀌어도 끝까지 재생하고 원래 동료 자리로 돌려보낸다.
+		if (SkillKind(pObj->currentSkill) == CREWSUMMON) {
+			if (pObj->turnPosition == THERE) {
+				const bool elkeinDash = pObj->type == NPC_ELKEIN
+					&& pObj->etc == ELKEIN_DASH;
+				const bool labethMagic = pObj->type == NPC_LABETH
+					&& pObj->etc == LABETH_MAGIC;
+
+				//마법진이 생성된 뒤에는 다음 공격 루프를 돌지 않고 손을 든
+				//MAGIC6 자세로 고정한다. 마법진/화염탄 연출(96프레임)이 모두
+				//끝난 뒤에만 복귀를 시작한다.
+				if (labethMagic) {
+					if (pObj->attackFrame == 0) {
+						const int motionFrame = Min(ret - 1, pObj->mainFrame);
+						pObj->motion = cmf_status_data[pObj->cmf][pObj->etc]
+							[2 + motionFrame];
+						EnemyMove_AddObj(pObj);
+
+						if (pObj->motion == PO_C109_MAGIC6)
+							pObj->attackFrame = 1;
+					}
+					else {
+						pObj->motion = PO_C109_MAGIC6;
+						pObj->attackFrame++;
+					}
+
+					pObj->mainFrame++;
+					if (pObj->attackFrame >= 96) {
+						pObj->apx = pObj->x;
+						pObj->apy = pObj->y;
+						pObj->target = 0;
+						pObj->dirX = pObj->dirF = RIGHT;
+						pObj->turnPosition = COMING;
+						pObj->frame = 0;
+						pObj->mainFrame = 0;
+						pObj->attackFrame = 0;
+						PlayMusic(M_WARP);
+					}
+					goto END;
+				}
+
+				const int attackFrames = Max(1, ret) * (elkeinDash ? 2 : 1);
+				const int finishHoldFrames = elkeinDash ? 30 : 0;
+
+				//첫 공격 사이클에만 판정을 낸다. 이후 30프레임은 베고 지나간
+				//마지막 자세를 유지해 일섬의 여운만 보여주고 재타격하지 않는다.
+				//일섬은 CMF 한 프레임을 두 게임 프레임 동안 유지해 이동/모션을
+				//모두 절반 속도로 재생한다. 발사체 생성과 판정은 원래 프레임에만 한다.
+				if (pObj->mainFrame < attackFrames) {
+					const int motionFrame = elkeinDash
+						? pObj->mainFrame / 2 : pObj->mainFrame;
+					pObj->motion = cmf_status_data[pObj->cmf][pObj->etc]
+						[2 + Min(ret - 1, motionFrame)];
+					if (!elkeinDash || pObj->mainFrame % 2 == 0) {
+						EnemyMove_AddObj(pObj);
+						AttackEnemyCheck(obj);
+					}
+				}
+				else {
+					pObj->motion = cmf_status_data[pObj->cmf][pObj->etc][2 + ret - 1];
+				}
+				pObj->mainFrame++;
+
+				if (pObj->mainFrame >= attackFrames + finishHoldFrames) {
+					pObj->apx = pObj->x;
+					pObj->apy = pObj->y;
+					pObj->target = 0; //죽은 적을 계속 바라보지 않고 복귀 방향을 사용한다.
+					pObj->dirX = pObj->dirF = RIGHT;
+					pObj->turnPosition = COMING;
+					pObj->frame = 0;
+					pObj->mainFrame = 0;
+					PlayMusic(M_WARP);
+				}
+				goto END;
+			}
+
+			if (pObj->turnPosition == COMING) {
+				const int returnFrames = Max(12, FPS / 2);
+				const int entryType = SkillSummonHeroType(pObj->currentSkill);
+				const int returnX = pObj->crewReturnX;
+				const int returnY = pObj->crewReturnY;
+				float t = Min(1.0f, (float)pObj->frame / (float)returnFrames);
+
+				if (entryType == CREWSUMMON_ENTRY_JUMP) {
+					pObj->x = pObj->apx + (int)((returnX - pObj->apx) * t);
+					pObj->y = pObj->apy + (int)((returnY - pObj->apy) * t
+						+ sinf((float)M_PI * t) * 96 * _2X);
+					pObj->dirX = pObj->dirF = (returnX < pObj->apx) ? LEFT : RIGHT;
+				}
+				else {
+					float half = returnFrames * 0.5f;
+					if (pObj->frame < half) {
+						pObj->zoom = pObj->defaultZoom * Max(0.05f, 1.0f - pObj->frame / half);
+					}
+					else {
+						pObj->x = returnX;
+						pObj->y = returnY;
+						pObj->zoom = pObj->defaultZoom * Min(1.0f, (pObj->frame - half) / half);
+					}
+				}
+
+				if (pObj->frame >= returnFrames) {
+					bool advanceTurn = (!battleRewardTransitionLock
+						&& obj == turn && attackSequence == ATTACKSEQUENCE_ACTION);
+					pObj->x = returnX;
+					pObj->y = returnY;
+					//이후 일반 대기 이동도 같은 위치를 기준으로 하게 해 복귀 직후
+					//성/전장 쪽으로 한 번 더 내려가는 움직임을 차단한다.
+					pObj->nx = returnX;
+					pObj->ny = returnY;
+					pObj->zoom = pObj->defaultZoom;
+					pObj->attack = 0;
+					pObj->actionOwner = 0;
+					pObj->target = 0;
+					pObj->dirX = pObj->dirF = RIGHT;
+					pObj->turnPosition = HERE;
+					pObj->frame = 0;
+					pObj->motion = crewPos[pObj->type * 5];
+					ClearCombatZoom();
+					if (advanceTurn)
+						WhoIsNextTurn();
+					return;
+				}
+				goto END;
+			}
+		}
+
+		//마지막 적 사망 뒤에는 이미 진행 중인 THERE/COMING 복귀만 위에서
+		//마무리한다. HERE로 돌아온 동료를 남은 turnList가 다시 난입시키는
+		//경로는 상자 낙하부터 가챠 종료까지 원천 차단한다.
+		if (battleRewardTransitionLock) {
+			pObj->attack = 0;
+			pObj->target = 0;
+			pObj->motion = crewPos[pObj->type * 5 + 0]
+				+ pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
+			goto END;
+		}
+
+		//가챠 화면에서는 이미 시작된 CREWSUMMON의 THERE/COMING 마무리만
+		//위에서 계속 진행한다. 새 전투 턴이나 공격은 시작하지 않는다.
+		if (drawHandle == MD_GACHA)
+			goto END;
+
 		switch (attackSequence) {
 		case ATTACKSEQUENCE_READY:
 		//룰렛이 도는 동안에도 크루는 제자리에서 대기 모션이어야 한다.
@@ -14333,14 +14589,15 @@ void CrewMove(OBJECT* pObj)
 		//남아 크루가 룰렛 내내 달리는 모션을 재생했다.
 		case ATTACKSEQUENCE_SLOT:
 		case ATTACKSEQUENCE_COIN:
+		case ATTACKSEQUENCE_BOX:
 			pObj->motion = crewPos[pObj->type * 5 + 0] + pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
 			break;
-		case ATTACKSEQUENCE_ACTION:
-			//현재 얘가 움직이는 턴이면
-			if (obj == turn) {
-				switch (pObj->turnPosition) {
-				case HERE:
-					if (pObj->frame % ret == 0) {
+				case ATTACKSEQUENCE_ACTION:
+					//현재 얘가 움직이는 턴이면
+					if (obj == turn) {
+						switch (pObj->turnPosition) {
+						case HERE:
+							if (pObj->frame % ret == 0) {
 						//패킹 데이터나 저장된 currentSkill이 잘못되어도 skillData
 						//범위 밖 값을 대상 슬롯으로 사용하지 못하게 한다.
 						if (pObj->currentSkill < 0 || pObj->currentSkill >= gTotalSkill) {
@@ -14348,12 +14605,36 @@ void CrewMove(OBJECT* pObj)
 							onceDmgUpdateFrame = 2 * FPS;
 							break;
 						}
-						pObj->target = NearEnemy(pObj);
-							pObj->turnPosition = THERE;//바로 결과로.
+							pObj->target = NearEnemy(pObj);
+								pObj->turnPosition = THERE;//바로 결과로.
 
-							attackType = SkillKind(pObj->currentSkill);
-							switch (attackType) {
-							case CREWBULLET:
+								attackType = SkillKind(pObj->currentSkill);
+								switch (attackType) {
+				case CREWSUMMON:
+									//카드가 동료 머리에 닿은 순간 없애고, 동료 본체가 데이터에
+									//지정된 진입 방식으로 전장에 난입한다. nx/ny는 원래 동료 자리다.
+									for (i = 0; i < TOTALCONTROLMARK; i++) {
+										if (controlMark[i].owner == obj
+											&& controlMark[i].attackType == pObj->currentSkill
+											&& !controlMark[i].manual)
+											controlMark[i].alpha = ROULETTE_TRANSPARENCY;
+									}
+					pObj->turnPosition = GOING;
+					pObj->crewReturnX = pObj->x;
+					pObj->crewReturnY = pObj->y;
+					//전투 중 축소된 값이 defaultZoom에 남았더라도 동료 대기열의
+					//정규 배율로 시작하고 같은 크기로 복귀한다.
+					pObj->defaultZoom = (float)enemyIconZoom[pObj->type] * CREWZOOM;
+					pObj->zoom = pObj->defaultZoom;
+									pObj->actionOwner = 0; //0=등장 연출, 1=사거리 접근 완료 대기
+									pObj->attack = 1;     //등장부터 공격 종료까지 카메라 하이라이트 유지
+									pObj->frame = 0;
+									pObj->mainFrame = 0;
+									pObj->attackFrame = 0;
+									pObj->dx = pObj->dy = 0;
+									PlayMusic(M_WARP);
+									goto END;
+								case CREWBULLET:
 							{
 								//총알을 실제로 만들었는지 추적한다.
 								//바로 위에서 turnPosition을 THERE로 바꿔놨는데, THERE에는 아무 처리가 없고
@@ -14397,7 +14678,7 @@ void CrewMove(OBJECT* pObj)
 								}
 							}
 								break;
-							case SUMMON:
+			case SUMMON:
 								onceDmgUpdateFrame = 0;
 								objPtr = &ao[SkillHostObj(pObj->currentSkill)];
 								objPtr->type = gDemoForceRoulette
@@ -14405,7 +14686,16 @@ void CrewMove(OBJECT* pObj)
 									: SkillSummonEnemy(pObj->currentSkill);
 								objPtr->cmf = enemyData[objPtr->type * ENEMYDATASIZE + ENEMYDATA_CMF];
 								objPtr->zoom = objPtr->defaultZoom = SUMMONZOOM;
-								SetEnemy(objPtr);
+				SetEnemy(objPtr);
+				//SUMMON 몬스터는 자신의 밸런스 공격력이 아니라 호출 동료의
+				//실제 공격력을 그대로 사용한다.
+				objPtr->ps[PS_WEAPONDMG] = pObj->ps[PS_DMG];
+				objPtr->ps[PS_DMG] = objPtr->ps[PS_STR] = pObj->ps[PS_DMG];
+				objPtr->str = pObj->ps[PS_DMG];
+				//소환 카드 번호를 몬스터 공격 패턴 번호로 쓰면 배열 밖을 읽고
+				//돌진-복귀를 반복한다. 소환수는 첫 공격 패턴을 정확히 한 번 쓴다.
+				objPtr->currentSkill = 0;
+				objPtr->turnPosition = HERE;
 								objPtr->moveHandler = REGENMOVE;
 								objPtr->drawHandler = REGENDRAW;
 								objPtr->nx = objPtr->x = DX / 2;//ao[ROBIN].x + TSIZE;
@@ -14579,11 +14869,147 @@ void CrewMove(OBJECT* pObj)
 						}
 						break;
 					case GOING:
+						if (SkillKind(pObj->currentSkill) == CREWSUMMON) {
+							const int entryFrames = FPS;
+							const bool elkeinDash = pObj->type == NPC_ELKEIN
+								&& SkillSummonEnemy(pObj->currentSkill) == ELKEIN_DASH;
+							const bool labethSummon = pObj->type == NPC_LABETH;
+							//일섬은 화면 고정 좌표가 아니라 로빈의 등 뒤 32픽셀에서 시작한다.
+							//좌우를 보고 있는 방향의 반대쪽이 항상 '뒤'가 된다.
+							//라베스의 두 난입 스킬도 같은 기준으로 로빈 뒤 80픽셀에 나타난다.
+							const int entryX = (elkeinDash || labethSummon)
+								? ao[ROBIN].x - (elkeinDash ? 32 : 80) * DIR(ao[ROBIN].dirF)
+								: (SkillSummonX(pObj->currentSkill) != 0
+									? SkillSummonX(pObj->currentSkill) : 320 * _2X);
+							//난입 전투선은 로빈의 현재 Y를 따른다. 동료의 대기열 Y를
+							//그대로 쓰면 화면 중앙 X로만 움직이고 위아래 위치는 변하지 않았다.
+							const int entryY = ao[ROBIN].y;
+							const int entryType = SkillSummonHeroType(pObj->currentSkill);
+							float t = Min(1.0f, (float)pObj->frame / (float)entryFrames);
+
+							if (pObj->actionOwner == 0 && entryType == CREWSUMMON_ENTRY_JUMP) {
+								pObj->x = pObj->crewReturnX + (int)((entryX - pObj->crewReturnX) * t);
+								pObj->y = pObj->crewReturnY + (int)((entryY - pObj->crewReturnY) * t
+									+ sinf((float)M_PI * t) * 96 * _2X);
+							}
+							else if (pObj->actionOwner == 0) {
+								float half = entryFrames * 0.5f;
+								if (pObj->frame < half) {
+									pObj->zoom = pObj->defaultZoom * Max(0.05f, 1.0f - pObj->frame / half);
+								}
+								else {
+									pObj->x = entryX;
+									pObj->y = entryY;
+									pObj->zoom = pObj->defaultZoom * Min(1.0f, (pObj->frame - half) / half);
+								}
+							}
+
+							if (pObj->actionOwner == 0 && pObj->frame >= entryFrames) {
+								pObj->x = entryX;
+								pObj->y = entryY;
+								pObj->zoom = pObj->defaultZoom;
+								pObj->actionOwner = 1;
+								pObj->frame = 0;
+								pObj->mainFrame = 0;
+							}
+
+							if (pObj->actionOwner == 1) {
+								int crewIdx = GetCrewIdxFromType(pObj->type);
+								int skillLevel = 0;
+								if (crewIdx >= 0) {
+									for (int level = 0; level < 3; level++) {
+										if (crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + level]
+											== pObj->currentSkill) {
+											skillLevel = level;
+											break;
+										}
+									}
+								}
+
+								int patternBase = pObj->type * ATTACKPATTERNTOTALDATASIZE + 2
+									+ skillLevel * ATTACKPATTERNDATASIZE;
+								int attackRange = enemyAttackPattern[patternBase + 5];
+								pObj->target = NearEnemy(pObj);
+
+								if (pObj->target >= ENEMY && pObj->target < NEUTRAL
+									&& Abs(ao[pObj->target].x - pObj->x) > attackRange * pObj->zoom) {
+									int moveSpeed = Max(SPEED_MIN, GetSpeed(obj));
+									if (elkeinDash)
+										moveSpeed = Max(1, moveSpeed / 2);
+									int moveDir = (ao[pObj->target].x >= pObj->x) ? RIGHT : LEFT;
+									GotoObjXY(pObj, ao[pObj->target].x, pObj->y, moveSpeed);
+									pObj->x += pObj->dx;
+									pObj->dirX = pObj->dirF = moveDir;
+									pObj->etc = enemyAttackPattern[patternBase + GOING];
+								}
+								else {
+									pObj->dx = pObj->dy = 0;
+									pObj->etc = SkillSummonEnemy(pObj->currentSkill);
+									pObj->turnPosition = THERE;
+									pObj->frame = 0;
+									pObj->mainFrame = 0;
+								}
+							}
+							goto END;
+						}
 						break;
 					case THERE:
+						if (SkillKind(pObj->currentSkill) == CREWSUMMON) {
+							//해당 CMF 상태의 한 사이클 동안 기존 적 공격 판정/발사체
+							//생성기를 그대로 사용한다.
+							EnemyMove_AddObj(pObj);
+							AttackEnemyCheck(obj);
+							pObj->mainFrame++;
 
+							//AttackEnemyCheck나 상태별 처리에서 frame을 되돌리는 모션도 있다.
+							//독립 타이머인 mainFrame으로 정확히 한 상태 사이클 뒤 복귀한다.
+							if (pObj->mainFrame >= Max(1, ret)) {
+								pObj->apx = pObj->x;
+								pObj->apy = pObj->y;
+								pObj->turnPosition = COMING;
+								pObj->frame = 0;
+								pObj->mainFrame = 0;
+								PlayMusic(M_WARP);
+							}
+							goto END;
+						}
 						break;
 					case COMING:
+						if (SkillKind(pObj->currentSkill) == CREWSUMMON) {
+							const int returnFrames = Max(12, FPS / 2);
+							const int entryType = SkillSummonHeroType(pObj->currentSkill);
+							float t = Min(1.0f, (float)pObj->frame / (float)returnFrames);
+
+							if (entryType == CREWSUMMON_ENTRY_JUMP) {
+								pObj->x = pObj->apx + (int)((pObj->nx - pObj->apx) * t);
+								pObj->y = pObj->apy + (int)((pObj->ny - pObj->apy) * t
+									+ sinf((float)M_PI * t) * 96 * _2X);
+							}
+							else {
+								float half = returnFrames * 0.5f;
+								if (pObj->frame < half) {
+									pObj->zoom = pObj->defaultZoom * Max(0.05f, 1.0f - pObj->frame / half);
+								}
+								else {
+									pObj->x = pObj->nx;
+									pObj->y = pObj->ny;
+									pObj->zoom = pObj->defaultZoom * Min(1.0f, (pObj->frame - half) / half);
+								}
+							}
+
+							if (pObj->frame >= returnFrames) {
+								pObj->x = pObj->nx;
+								pObj->y = pObj->ny;
+								pObj->zoom = pObj->defaultZoom;
+								pObj->attack = 0;
+								pObj->actionOwner = 0;
+								pObj->turnPosition = HERE;
+								pObj->frame = 0;
+								WhoIsNextTurn();
+								return;
+							}
+							goto END;
+						}
 						break;
 					case DMGUPDATE:
 						if (onceDmgUpdateFrame == 1)
@@ -14640,7 +15066,13 @@ START:
 	pObj->dy = 0;
 
 END:
-	if (pObj->target == false || pObj->lv == false)
+	//일섬은 적을 베고 지나간 뒤에도 진행 방향을 유지해야 한다. 매 프레임
+	//죽은 타깃을 다시 바라보게 하면 마지막 여운 중 왼쪽으로 홱 돌아선다.
+	if (SkillKind(pObj->currentSkill) == CREWSUMMON
+		&& (pObj->turnPosition == THERE || pObj->turnPosition == COMING)) {
+		//위 상태 처리에서 정한 방향을 그대로 둔다.
+	}
+	else if (pObj->target == false || pObj->lv == false)
 		pObj->dirX = pObj->dirF = RIGHT;
 	else {
 		if (ao[pObj->target].x < pObj->x)

@@ -346,6 +346,11 @@ typedef enum _skillDef {
 //SUMMONHERO 가 소환 히어로에게 입히는 장비 부위 수.
 #define SKILL_SUMMON_EQUIP_CNT	6
 
+//CREWSUMMON 전용 진입 연출. skillData의 hero_type 칸을 이 종류에서만
+//재사용한다. 이 파일의 해당 영역은 큰 enum 내부이므로 매크로 상수로 둔다.
+#define CREWSUMMON_ENTRY_WARP 0
+#define CREWSUMMON_ENTRY_JUMP 1
+
 //아이콘이 어느 그림판에서 오는가.
 //
 //판마다 칸 크기와 줄당 개수가 달라서 번호 하나로는 못 가리킨다.
@@ -387,9 +392,9 @@ typedef enum _skillDef {
 	SKILLDATA_ATTACKTYPE,		//7  어떤 공격으로 나가는가
 	SKILLDATA_HOSTOBJ,			//8  어느 오브젝트 칸에서
 	SKILLDATA_SUMMONENEMY,		//9  불러낼 몬스터 (SUMMON)
-	SKILLDATA_HEROTYPE,			//10  불러낼 히어로 (SUMMONHERO)
+	SKILLDATA_HEROTYPE,			//10  불러낼 히어로 (SUMMONHERO), 진입 타입 (CREWSUMMON)
 	SKILLDATA_HEROSKILL,		//11 발동시킬 히어로 스킬
-	SKILLDATA_SUMMONX,			//12 소환체가 설 x
+	SKILLDATA_SUMMONX,			//12 소환체/난입 동료가 설 x
 	SKILLDATA_BULLETOBJ,		//13 총알 오브젝트 (CREWBULLET)
 	SKILLDATA_BULLETICON,		//14 총알 그림 (CREWBULLET)
 
