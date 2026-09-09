@@ -15,6 +15,7 @@ bool ConsumeBuffUse(OBJECT *pObj, int buffIdx);
 void AdvanceTurnBuffs(void);
 void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner);
 void AdvanceTurnDebuffs(void);
+bool AdvanceActorDebuffs(int obj);
 void RefreshQuestTime(void);
 void RefreshHeartTime(void);
 void RefreshEnemyTime(void);
@@ -72,3 +73,56 @@ int TargetEnemy(int);
 
 long long GetCombatPowerAll(int who);
 long long GetCombatPower(OBJECT* pObj);
+
+//전투 확률 눈금을 비운다. 개체가 새로 설 때 부른다.
+void ClearProcAcc(int obj);
+
+/*---------------------------------------------------------------------------
+ * 데미지 계산에 들어가는 값.
+ *
+ * AttackObj 가 여기저기서 긁어 쓰던 것을 한 자리에 모았다. 이 구조체가 곧
+ * "한 대의 데미지를 내려면 무엇을 알아야 하는가"의 답이고, 나중에 서버가
+ * 같은 값을 내려면 넘겨받아야 할 목록이기도 하다.
+ *-------------------------------------------------------------------------*/
+typedef struct _dmgInput {
+	//때리는 쪽
+	long long int atk;		//GetAtk(공격자)
+	int dmgPct;			//ps[PS_DMG]
+	int critDmgPct;			//ps[PS_CRITDMG]
+	int extraSkillPct;		//회전력상승. 안 걸렸으면 0
+	int attackerLv;
+	int attackerType;		//weaponRange 를 찾는 자리
+	bool cursed;			//공격자가 저주에 걸렸나
+
+	//맞는 쪽
+	int destLv;
+	int destType;
+	int destEtc;
+	int destMotion;
+	long long int destArmor;	//ps[PS_ARMOR]
+
+	//이번 한 대의 성질
+	bool critical;
+	bool ignoreArmor;
+	int attackAttr;			//0 이면 무속성
+
+	//바깥에서 정해지는 배수
+	int betMul;			//betHeart[bet]
+	int skillPct;			//동료 스킬 배수. 없으면 100
+} DMGINPUT;
+
+//셋을 차례로 밟는다. 중간에 낄 일이 없는 쪽(룰렛 시점 예측)은 이것만 부른다.
+long long int CalcDamage(const DMGINPUT* in);
+
+long long int CalcBaseDamage(const DMGINPUT* in, long long int* outBeforeRange);
+long long int CalcGuardReduction(long long int damage, const DMGINPUT* in);
+long long int CalcArmorBetSkill(long long int damage, const DMGINPUT* in);
+
+//액션 계획. 룰렛이 확정될 때 세우고, 턴이 끝날 때 지운다.
+//자세한 설명은 Func_Combat.cpp 의 정의부에 있다.
+void ActionPlanBegin(int owner, int skill);
+void ActionPlanEnd(void);
+long long int ActionPlanTake(int attacker, int dest, long long int oneHit);
+
+//계획이 정해 둔 치명타 여부. 계획에 속하지 않으면 false 를 준다.
+bool ActionPlanCriticalOf(int attacker, bool* outCritical);

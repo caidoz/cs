@@ -80,6 +80,7 @@ typedef enum _uiDef {
 	BAR_ENEMYUSER = BAR_SKILL + TOTALCHAR,//상대방 유저
 	BAR_ENEMYUSER_BOX,//박스에서 튀어나오는 상대방 유저
 	BAR_MAINSHOP,//메인샵
+	BAR_SOCIAL,//소셜. MAINSHOP과 같은 하단 슬롯/등장 타이밍을 사용한다.
 	BAR_DAILYQUEST,//일일퀘스트
 	BAR_CREWUPGRADE,//크류(여기는 동료들을 업그레이드 해주는곳)
 	BAR_EQUIP,//컬렉션(히어로별 장비, 스킬, 별상점)

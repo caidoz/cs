@@ -185,6 +185,12 @@ void NetOpenRates(void);
 //미만은 법정대리인 동의가 따로 필요한데 그 흐름이 아직 없다.
 void NetAgreeTerms(bool ageOk, bool marketing, bool marketingNight);
 
+//첫 동의 직후 로그인 방식을 고르는 동안 true다. 현재 서버 인증은 게스트
+//UUID만 구현되어 있으므로 provider는 TOTAL_LOGIN의 순서를 받고, 지원하지
+//않는 방식이면 false를 돌려준다.
+bool NetLoginChoicePending(void);
+bool NetChooseLogin(int provider);
+
 //---- 충돌 ----
 //
 // 다른 기기가 먼저 저장하면 서버가 이쪽 저장을 거절한다(NETRESULT_ERR_CONFLICT).
@@ -249,3 +255,7 @@ extern long long gNetUserId;
 extern long long gNetRevision;
 
 #endif
+
+//서버에서 받아 둔 히어로 상태이상을 ao[] 에 얹는다.
+//히어로를 다 세운 뒤에 한 번 부른다.
+void NetApplyHeroEffects(void);

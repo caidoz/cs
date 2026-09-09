@@ -560,6 +560,32 @@ static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
 	DrawImageScale(cap, sh, sx + sw - cap, sy, xr, y, false, false, false, false, false, (xe - xr) / (float)cap, sc, sprite[WIN_IMG], WIN_IMG);
 }
 
+void DrawPvpCrewPanel(int x, int y, int w, int h)
+{
+	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H,
+		WP_INNER_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
+}
+
+void DrawPvpHeroPanel(int x, int y, int w, int h)
+{
+	//보라색 리본 창을 바깥 판으로 먼저 그리고 중앙만 왼쪽 금장 창의
+	//베이지 질감으로 채운다. 슬롯 테두리를 썼을 때 나오던 파란 보석과
+	//금색 모서리는 히어로 창의 테두리가 아니므로 사용하지 않는다.
+	DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H,
+		WP_RIBBON_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
+
+	const int insetX = 9 * _2X;
+	const int insetY = 7 * _2X;
+	const int fillSx = WP_INNER_X + WP_INNER_CAP;
+	const int fillSy = WP_INNER_Y + WP_INNER_CAP;
+	const int fillSw = WP_INNER_W - WP_INNER_CAP * 2;
+	const int fillSh = WP_INNER_H - WP_INNER_CAP * 2;
+	DrawImageScale(fillSw, fillSh, fillSx, fillSy,
+		x + insetX, y - insetY, false, false, false, false, false,
+		(float)(w - insetX * 2) / fillSw,
+		(float)(h - insetY * 2) / fillSh, sprite[WIN_IMG], WIN_IMG);
+}
+
 //---- 글자 ----
 //
 // 테두리는 DrawTextStrSystem 의 마지막 인자(bold)가 켤 때만 나온다. 다른 글자
@@ -597,7 +623,7 @@ static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
 // 글자 두 줄의 가운데보다 조금 위에 놓는다. 14 가 화면 8픽셀쯤.
 // [스킬 칸 아이콘]
 // 글자 두 줄의 가운데보다 조금 위에 놓는다. 14 가 화면 8픽셀쯤.
-#define CD_SKILL_ICON_UP	14.0f
+#define CD_SKILL_ICON_UP	6.0f
 
 // [슬롯 칸 아이콘]
 // 줄 가운데에서 왼쪽으로 밀고 아래로 내린다. 7 이 화면 4픽셀쯤.
@@ -701,19 +727,29 @@ static void CdBeginBoard(void)
 }
 
 //팝업 본체와 타이틀 리본, 닫기 버튼. 두 팝업이 같이 쓴다.
-static void CdDrawFrame(int titleTextIdx, int closeTouchFunc = TOUCH_FUNC_CLOSEALERT)
+//제목을 글자로 직접 받는 판. 텍스트표에 없는 제목이 있어서 갈라 뒀다.
+//본체(베이지 판)만. 내용보다 먼저 깔린다.
+static void CdDrawBody(void)
 {
 	DrawWin9(WP_BODY_X, WP_BODY_Y, WP_BODY_W, WP_BODY_H, WP_BODY_CAP,
 		Loc((float)CD_BODY_X), LocY((float)CD_BODY_Y),
 		(float)CD_BODY_W * sCdU, (float)CD_BODY_H * sCdU, sCdU);
+}
 
+//타이틀 리본과 닫기 버튼.
+//
+//본체와 갈라 둔 것은 그리는 차례를 부르는 쪽이 정하게 하기 위해서다.
+//칸 안의 그림이 칸 밖으로 넘칠 수 있는데(보스 얼굴이 그렇다) 리본을
+//먼저 그려두면 그 그림이 리본을 덮는다. 맨 나중에 그리면 안 덮인다.
+static void CdDrawTitleStr(const char* title, int closeTouchFunc)
+{
 	//타이틀 리본. 본체 윗변에 걸친다.
 	DrawWin3(WP_TITLE_X, WP_TITLE_Y, WP_TITLE_W, WP_TITLE_H, WP_TITLE_CAP,
 		Loc((float)(CD_DESIGNW - CD_TITLE_W) / 2), LocY(-CD_TITLE_UP),
 		(float)CD_TITLE_W * sCdU, (float)CD_TITLE_H * sCdU, sCdU);
 
 	//리본 그림의 속이 판 한가운데보다 살짝 위라서 글자도 그만큼 올린다.
-	CdTextId(titleTextIdx, (float)CD_DESIGNW / 2,
+	CdText(title, (float)CD_DESIGNW / 2,
 		(float)CD_TITLE_H * 0.30f - 8.0f - CD_TITLE_UP,
 		2.4f, CENTER, CD_PAPER);
 
@@ -729,6 +765,17 @@ static void CdDrawFrame(int titleTextIdx, int closeTouchFunc = TOUCH_FUNC_CLOSEA
 		DrawWinFlat(WP_CLOSE_X, WP_CLOSE_Y, WP_CLOSE_W, WP_CLOSE_H,
 			Loc(cx), LocY(cy), (float)CD_CLOSE / (float)WP_CLOSE_W * sCdU);
 	}
+}
+
+//둘을 잇달아 그린다. 넘치는 그림이 없는 창은 이걸 그대로 쓰면 된다.
+static void CdDrawFrameStr(const char* title, int closeTouchFunc)
+{
+	CdDrawBody();
+	CdDrawTitleStr(title, closeTouchFunc);
+}
+static void CdDrawFrame(int titleTextIdx, int closeTouchFunc = TOUCH_FUNC_CLOSEALERT)
+{
+	CdDrawFrameStr(textId[titleTextIdx], closeTouchFunc);
 }
 
 //드는 값 칸과 강화 버튼. 동료 상세와 장비 상세가 같이 쓴다.
@@ -848,13 +895,19 @@ static void DrawPanel(float px, float py, float pw, float ph)
 //판 크기와 글자 크기를 따로 받는다. 같은 리본이라도 "강화하기"처럼 눈에 먼저
 //들어와야 하는 것은 더 크게 단다. dy 는 글자만 위아래로 미세하게 미는 값이다
 //(리본 그림의 가운데가 판 한가운데가 아니라서 눈으로 맞춘다).
-static void DrawCdRibbon(int textIdx, float cx, float topY, float plateW,
+static void DrawCdRibbonStr(const char* s, float cx, float topY, float plateW,
 	float plateH, float z, float dy)
 {
 	DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H, WP_RIBBON_CAP,
 		Loc(cx - plateW / 2), LocY(topY), plateW * sCdU, plateH * sCdU, sCdU);
 
-	CdTextId(textIdx, cx, topY + plateH * 0.30f + dy, z, CENTER, CD_PAPER);
+	CdText(s, cx, topY + plateH * 0.30f + dy, z, CENTER, CD_PAPER);
+}
+
+static void DrawCdRibbon(int textIdx, float cx, float topY, float plateW,
+	float plateH, float z, float dy)
+{
+	DrawCdRibbonStr(textId[textIdx], cx, topY, plateW, plateH, z, dy);
 }
 
 static void DrawCrewRibbon(int textIdx, float cx, float topY, float plateW)
@@ -1174,6 +1227,278 @@ static void DrawCrewSlotReel(int crewCmf, int crewType, int cnt, float px, float
 	}
 }
 
+//==========================================================================
+// 멸망전 입장창
+//
+// 동료 상세와 같은 조각(win.png)과 같은 설계판(1090x1330)을 쓴다. 두 창이
+// 같은 자를 쓰므로 크기와 여백이 저절로 맞는다.
+//
+// 자리를 인자로 안 받는다. CdBeginBoard() 가 화면을 보고 스스로 잡는다.
+//==========================================================================
+enum {
+	BR_PANEL_X = 70,
+	BR_PANEL_W = CD_DESIGNW - BR_PANEL_X * 2,
+
+	//보스 칸. 왼쪽에 얼굴, 오른쪽 여백에 수치를 적는다.
+	BR_FACE_Y = 150, BR_FACE_H = 470,
+
+	//돌격대 칸. 히어로 한 칸 + 동료 여섯 칸.
+	//캐릭터를 키운 만큼 칸도 키웠다.
+	BR_TEAM_Y = 690, BR_TEAM_H = 320,
+
+	//입장 비용. 칸(테두리) 없이 글자만 버튼 위에 가운데로 놓는다.
+	BR_COST_Y = 1062,
+
+	//입장 버튼.
+	BR_BTN_W = 520, BR_BTN_H = 118, BR_BTN_Y = 1140,
+};
+
+//보스를 칸 안에 앉히는 배율. 설계판 단위라 화면이 달라져도 비율이 같다.
+#define BR_FACE_ZOOM	3.1f
+
+//발밑이 기준이라 칸 아래끝에서 조금 띄운 자리에 세운다.
+#define BR_FACE_FOOT	60.0f
+
+//얼굴을 칸 한가운데에서 왼쪽으로 민 양. 화면 픽셀이다.
+//오른쪽에 수치 세 줄이 들어갈 자리를 비우려고 민다.
+#define BR_FACE_LEFT	80.0f
+
+//수치가 시작하는 자리. 칸 폭의 몇 할 지점인가.
+#define BR_STAT_LEFT	0.52f
+
+//구획 리본은 두 칸이 같은 크기여야 한다. 따로 적으면 한쪽만 고치고
+//다른 쪽을 잊는다.
+#define BR_RIBBON_W	0.52f
+#define BR_RIBBON_H	76.0f
+#define BR_RIBBON_Z	1.95f
+
+//---- 동료 여섯 칸 판 ----
+//
+//동료 메뉴가 쓰는 그 판이다. slot.png 의 (0,217) 에 1024x220 으로 들어
+//있고, 금테 여섯 칸이 한 장으로 그려져 있다.
+//
+//칸 자리를 손으로 적지 않는다. 동료 메뉴는 16 과 102 라는 값을 박아
+//두었는데 그건 그 화면 폭(DX)에 맞춰 잰 값이라 여기서는 안 맞는다.
+//판 그림 자체의 비율에서 뽑으면 판을 키우든 줄이든 칸이 따라온다.
+#define BR_SLOT_SX	0
+#define BR_SLOT_SY	217
+#define BR_SLOT_SW	1024.0f
+#define BR_SLOT_SH	220.0f
+
+//판 테두리 두께가 원본에서 14 픽셀이다. 그 안쪽을 여섯으로 나눈다.
+#define BR_SLOT_EDGE	(14.0f / BR_SLOT_SW)
+
+//캐릭터가 서는 줄. 판 높이의 몇 할 지점인가.
+//동료 메뉴의 88 / (220 * 0.61) 을 그대로 옮긴 값이다.
+#define BR_SLOT_FOOT	0.656f
+
+//동료 메뉴가 쓰는 캐릭터 배율(enemyZoom * 1.3)을 판 폭으로 환산한 것.
+//판이 커지면 캐릭터도 같이 커진다.
+#define BR_SLOT_CHAR	(1.3f / (BR_SLOT_SW * 0.61f))
+
+//동료만 조금 더 키운다. 칸에 비해 작아 보여서다.
+//히어로는 제 배율이 따로 있으므로 여기 안 걸린다.
+#define BR_SLOT_CREWUP	1.10f
+
+void BossRaidDetailDraw(void)
+{
+	const int eventIdx = GetEventMenuIdx(EVENTTYPE_BOSSRAID);
+	const GAMEEVENT* eventPtr = eventIdx >= 0 ? &robin.gameEvent[eventIdx] : NULL;
+
+	//보스 배지(DayBarDraw)와 같은 값을 봐야 얼굴이 어긋나지 않는다.
+	const int bossType = GetStageBossFace();
+
+	const long long remain = eventPtr
+		? Max((long long)0, eventPtr->limitTime
+			- (MC_knlCurrentTimeStamp() - eventPtr->timeStamp))
+		: 0;
+
+	// 입장료는 폐기했다. 이벤트 대기시간만 입장 가능 여부를 결정한다.
+	const bool canEnter = remain <= 0;
+
+	const float cx = (float)BR_PANEL_X + (float)BR_PANEL_W / 2;
+
+	char buf[64];
+	int i;
+
+	CdBeginBoard();
+
+	//여기서부터는 화면 픽셀로 받은 값을 설계판 단위로 바꿔 쓴다.
+	//sCdU 는 CdBeginBoard() 가 잡으므로 그 뒤라야 나눌 수 있다.
+	//
+	//    down	골드와 버튼을 내리는 양
+	//    statPush	보스 수치를 오른쪽으로 미는 양
+	const float down = 16.0f / sCdU;
+	const float statPush = 80.0f / sCdU;
+	const float btnY = (float)BR_BTN_Y + down;
+
+	//본체만 먼저 깔고 타이틀 리본은 맨 끝에서 그린다. 칸 안의 그림이
+	//넘치더라도 리본을 덮지 않게 하기 위해서다.
+	CdDrawBody();
+
+	//---------------------------------------------------------------
+	// 보스
+	//---------------------------------------------------------------
+	DrawPanel((float)BR_PANEL_X, (float)BR_FACE_Y,
+		(float)BR_PANEL_W, (float)BR_FACE_H);
+
+	DrawCmfDetailShadow(enemyData[bossType * ENEMYDATASIZE + ENEMYDATA_CMF],
+		enemyBigIconPos[bossType * 3],
+		Loc(cx) - BR_FACE_LEFT,
+		LocY((float)BR_FACE_Y + (float)BR_FACE_H - BR_FACE_FOOT),
+		LEFT, BR_FACE_ZOOM * sCdU);
+
+	//이름은 칸 윗변 리본에 얹는다. 칸 안에 또 쓰면 얼굴을 가린다.
+	DrawCdRibbon(TEXT_MONSTERNAME_START + bossType, cx,
+		(float)BR_FACE_Y - 38.0f, (float)BR_PANEL_W * BR_RIBBON_W,
+		BR_RIBBON_H, BR_RIBBON_Z, -8.0f);
+
+	//---- 오른쪽 여백의 수치 세 줄 ----
+	//
+	// 이 창에서 정하는 값이 아니다. SetEnemy() 가 MD_BOSSRAID 에서 쓰는
+	// 바로 그 식을 그대로 읽는다. 여기서 따로 계산하면 화면에 적힌 값과
+	// 실제로 맞붙는 값이 갈라진다.
+	{
+		//HP 를 오른쪽으로 밀고 아래 두 줄도 같은 자리에 맞춘다.
+		const float sl = (float)BR_PANEL_X + (float)BR_PANEL_W * BR_STAT_LEFT
+			+ statPush;
+		const float sr = (float)BR_PANEL_X + (float)BR_PANEL_W - 40.0f;
+		//글자를 키워도 줄 사이는 그대로 둔다.
+		const float rowGap = 92.0f;
+
+		//이 게임의 글자는 기본이 테두리 있는 흰색이다. CdBody 는 테두리가
+		//없어서 여기서는 안 쓴다.
+		const float statZ = 2.13f;
+		float ry = (float)BR_FACE_Y + 96.0f;
+
+		const long long bossHp = eventPtr
+			? goldQuestNpc[eventPtr->barStatus * BOSSRAIDSIZE + 3
+				+ eventPtr->barFrame * 15]
+			: 0;
+
+		//MD_BOSSRAID 는 str 을 따로 안 잡는다. 일반 전투와 같은 식이다.
+		const long long bossStr = (long long)(robin.stage + 10) * 10;
+
+		CdText("HP", sl, ry, statZ, LEFT, CD_PAPER);
+		sprintf(buf, "%lld", bossHp);
+		CdText(buf, sr, ry, statZ, RIGHT, CD_PAPER);
+
+		ry += rowGap;
+		CdText("STR", sl, ry, statZ, LEFT, CD_PAPER);
+		sprintf(buf, "%lld", bossStr);
+		CdText(buf, sr, ry, statZ, RIGHT, CD_PAPER);
+
+		//---- 남은 시간 ----
+		ry += rowGap;
+
+		DrawIcon(ICON_EVENT_CLOCK, Loc(sl), LocY(ry - 12.0f),
+			56.0f / (float)ITEMICONSIZE * sCdU, false, true, false, sCdU);
+
+		if (remain > 0) {
+			sprintf(buf, "%02lldH:%02lldM:%02lldS",
+				remain / 3600, (remain / 60) % 60, remain % 60);
+			CdText(buf, sr, ry, statZ * 0.92f, RIGHT, CD_PAPER);
+		}
+		else {
+			//시간이 다 됐다는 것은 좋은 소식이라 초록으로 둔다.
+			CdText("입장 가능", sr, ry, statZ, RIGHT, COLOR_GREEN);
+		}
+	}
+
+	//---------------------------------------------------------------
+	// 돌격대
+	//
+	// 맨 왼쪽이 히어로, 그 오른쪽이 편성한 동료 여섯이다. 히어로를 따로
+	// 빼는 것은 그 자리가 비는 일이 없고 나머지와 성격이 다르기 때문이다.
+	//---------------------------------------------------------------
+	DrawPanel((float)BR_PANEL_X, (float)BR_TEAM_Y,
+		(float)BR_PANEL_W, (float)BR_TEAM_H);
+
+	DrawCdRibbonStr("돌격대", cx,
+		(float)BR_TEAM_Y - 38.0f, (float)BR_PANEL_W * BR_RIBBON_W,
+		BR_RIBBON_H, BR_RIBBON_Z, -8.0f);
+
+	{
+		//---- 여섯 칸 판 ----
+		//히어로 자리를 왼쪽에 떼어 놓고, 남은 폭을 판이 다 쓴다.
+		const float heroX = (float)BR_PANEL_X + 88.0f;
+		const float frameL = (float)BR_PANEL_X + 176.0f;
+		const float frameW = (float)BR_PANEL_X + (float)BR_PANEL_W - 24.0f
+			- frameL;
+		const float frameH = frameW * BR_SLOT_SH / BR_SLOT_SW;
+
+		//리본 밑에서 칸 안에 세로 가운데로 놓고, 화면 12픽셀만큼 내린다.
+		//
+		//판과 캐릭터를 따로 내리지 않는다. footY 가 frameTop 에서 나오므로
+		//여기 한 줄만 내리면 안의 것이 다 같이 내려간다.
+		const float frameTop = (float)BR_TEAM_Y
+			+ ((float)BR_TEAM_H - frameH) / 2 + 12.0f / sCdU;
+
+		//캐릭터가 서는 줄. 히어로도 같은 줄에 세워야 나란해 보인다.
+		const float footY = frameTop + frameH * BR_SLOT_FOOT;
+
+		//칸 하나의 폭. 테두리 안쪽을 여섯으로 나눈 것이다.
+		const float cellW = frameW * (1.0f - BR_SLOT_EDGE * 2) / (float)MAXCREW;
+		const float cellL = frameL + frameW * BR_SLOT_EDGE;
+
+		DrawImage((int)BR_SLOT_SW, (int)BR_SLOT_SH, BR_SLOT_SX, BR_SLOT_SY,
+			Loc(frameL), LocY(frameTop),
+			false, false, false, false, false,
+			frameW * sCdU / BR_SLOT_SW, sprite[SLOT_IMG], SLOT_IMG);
+
+		//히어로는 판 밖에 선다. 자리가 비는 일이 없고 동료와 성격이 달라
+		//같은 칸에 넣지 않는다. 동료보다 조금 크게 세운다.
+		DrawPlayer(&ao[ROBIN], motionData[0],
+			(int)(Loc(heroX)), (int)(LocY(footY)),
+			RIGHT, frameW * sCdU * BR_SLOT_CHAR * 1.35f, 0, false, true);
+
+		for (i = 0; i < MAXCREW; i++) {
+			const int crewType = robin.slotCrew[i];
+
+			//빈 칸은 판만 두고 비운다. 자리는 칸이 잡고 있으므로 편성이
+			//바뀌어도 남은 동료가 좌우로 안 움직인다.
+			if (crewType <= 0)
+				continue;
+
+			DrawCmfDetailShadow(
+				enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF],
+				crewPos[crewType * 5 + 0],
+				Loc(cellL + cellW * ((float)i + 0.5f)), LocY(footY), RIGHT,
+				frameW * sCdU * BR_SLOT_CHAR * BR_SLOT_CREWUP
+					* enemyZoom[crewType]);
+		}
+	}
+
+	//---------------------------------------------------------------
+	// 입장
+	//---------------------------------------------------------------
+	{
+		const float bl = cx - (float)BR_BTN_W / 2;
+
+		if (canEnter)
+			SetRectPoint(Loc(bl), LocY(btnY),
+				(float)BR_BTN_W * sCdU, (float)BR_BTN_H * sCdU,
+				TOUCH_FUNC_GOTOBOSSRAID);
+		else
+			grayScale = CD_DISABLE_GREY;
+
+		DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
+			Loc(bl), LocY(btnY),
+			(float)BR_BTN_W * sCdU, (float)BR_BTN_H * sCdU, sCdU);
+
+		CdText(canEnter ? "입장!" : "입장 불가", cx,
+			btnY + (float)BR_BTN_H * 0.28f, 2.04f, CENTER,
+			canEnter ? CD_PAPER : COLOR_GREY);
+
+		grayScale = 0;
+	}
+
+	//맨 나중에 그린다. 위 그림들이 넘쳐도 리본이 위에 남는다.
+	//멸망전은 ALERT가 아니라 POPUPTYPE_BOSSRAID로 열린다. 알림 닫기 명령은
+	//OutOfAlert()로 가므로 이 X는 일반 팝업 닫기 경로에 직접 연결한다.
+	CdDrawTitleStr("멸망전", TOUCH_FUNC_POPUP_CLOSE);
+}
+
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 {
 	int i;
@@ -1305,6 +1630,26 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 			//무엇이 나오는지
 			DrawCrewSkillIconFramed(skillIdx, iconL - CD_SLOT_ICON_LEFT,
 				ry + (rowH - iconBox) / 2 + CD_SLOT_ICON_DOWN, iconBox);
+		}
+
+		//---- 보스전 쿨타임 ----
+		//
+		//보스전은 턴이 없어 동료마다 제 시계로 돈다. 그 시계가 이 동료의
+		//특성이라 여기 같이 보여준다.
+		//
+		//값은 crew.tsv 의 boss_cool 열에서 온다. 프레임이라 초로 바꿔 적는다.
+		//세 줄이 끝나는 자리(rowTop + rowH * 3) 아래 남은 여백에 놓는다.
+		{
+			const int cool = crewData[crewDetail * CREWDATASIZE
+				+ CREWDATA_BOSSCOOL];
+			const float coolY = rowTop + rowH * 3.0f + 4.0f;
+			char coolText[32];
+
+			CdBody("보스전 쿨타임", reelL, coolY, 1.30f, LEFT, CD_INK);
+
+			sprintf(coolText, "%.1f초", (float)cool / (float)FPS);
+			CdBody(coolText, (float)CD_SLOT_X + (float)CD_SLOT_W - 18.0f,
+				coolY, 1.30f, RIGHT, CD_INK);
 		}
 	}
 
@@ -3435,6 +3780,7 @@ void OptionHelpDraw(int x, int y, float zoom)
 
 void OptionDraw(int x, int y, float zoom)
 {
+	const bool titleMode = (drawHandle == MD_TITLE);
 	const float w = (float)POPUPWINDOWSIZE_X * zoom;
 	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
 	const float s = w / (float)OPT_WIN_W;		//창을 팝업 폭에 맞춘 배율
@@ -3449,7 +3795,13 @@ void OptionDraw(int x, int y, float zoom)
 	float innerR = x + w - 22.0f * s;
 	float innerW = innerR - innerL;
 
-	float footH = (float)OPT_FOOT_H * s;
+	//타이틀 화면에는 하단 띠를 두지 않는다.
+	//
+	//고객센터 / 이용약관 / 개인정보처리방침 / 확률정보는 계정과 게임이
+	//있어야 뜻이 있는 것들이다. 시작 화면에서는 갈 곳이 없다.
+	//
+	//높이를 0 으로 두면 본문 패널이 그만큼 내려와 빈 자리가 안 생긴다.
+	float footH = titleMode ? 0.0f : (float)OPT_FOOT_H * s;
 	float footY = y - h + 20.0f * s + footH;	//하단 띠의 위쪽 좌표
 	float panelTop = y - 82.0f * s;
 	float panelBottom = footY + 4.0f * s;
@@ -3465,12 +3817,31 @@ void OptionDraw(int x, int y, float zoom)
 	DrawOptionWindow(x, y, w, h);
 	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE, innerL, panelTop, innerW, panelH, s * 0.5f);
 
-	//타이틀. 가운데의 기어 방패를 피해 왼쪽으로 빼고 조금 내려 그린다.
+	//제목은 타이틀바 한가운데다.
+	//
+	//전에는 가운데의 기어 방패를 피해 왼쪽으로 180 빼놨는데, 이 창은 그
+	//방패를 안 그린다. 피할 것이 없는데 비켜 있으니 한쪽으로 쏠려 보였다.
 	SetFontColor(COLOR_WHITE);
-	CenterTextStr("환경설정", x + w / 2 - 180.0f * zoom, y - 30.0f * s - 32.0f * zoom + (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2, OPTIONTITLEZOOM);
+	CenterTextStr(titleMode ? "시작 환경설정" : "환경설정", x + w / 2,
+		y - 30.0f * s - 32.0f * zoom + (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2,
+		OPTIONTITLEZOOM);
 
-	//타이틀바의 X버튼은 창 이미지에 이미 그려져 있다. 터치영역만 얹는다.
-	SetRectPoint(x + (float)OPT_CLOSE_X * s, y - (float)OPT_CLOSE_Y * s, (float)OPT_CLOSE_W * s, (float)OPT_CLOSE_H * s, TOUCH_FUNC_POPUP_CLOSE);
+	//닫기 버튼. 창 그림에는 X 가 없어서 직접 얹는다.
+	//
+	//전에는 그림에 있다고 보고 터치영역만 잡아뒀다. 그래서 누를 수는 있는데
+	//눈에는 아무것도 없었다. 하위 팝업(고객센터/약관)이 쓰는 그 X 를 같이
+	//쓴다 - 같은 창에서 닫는 자리가 둘로 보이면 안 된다.
+	{
+		const float xh = 52.0f * zoom;
+		const float xsc = xh / (float)OPT_XBTN_H;
+		const float xw = (float)OPT_XBTN_W * xsc;
+		const float xbx = x + w - 26.0f * s - xw;
+		const float xby = y - 14.0f * s;
+
+		DrawOptionPart(OPT_XBTN_X, OPT_XBTN_Y, OPT_XBTN_W, OPT_XBTN_H,
+			xbx, xby, xsc);
+		SetRectPoint(xbx, xby, xw, xh, TOUCH_FUNC_POPUP_CLOSE);
+	}
 
 	//글자와 버튼을 키워야 해서 좌우 여백을 최대한 줄여 쓴다.
 	innerL += 7.0f * zoom;
@@ -3495,6 +3866,8 @@ void OptionDraw(int x, int y, float zoom)
 	DrawOptionToggle(option.se != 0, rowRight, cy - ROWH / 2, TOGGLEH, TOUCH_FUNC_OPTION_SE);
 	cy -= ROWH + SECTIONGAP;
 
+	//알림과 세부 푸시 설정은 로그인 뒤 게임 설정에서만 보인다.
+	if (!titleMode) {
 	//----- 알림 -----
 	DrawOptionRibbon("알림", innerL, cy, RIBBONW, RIBBONH, s * 0.6f);
 	cy -= RIBBONH + 4 * zoom;
@@ -3528,6 +3901,7 @@ void OptionDraw(int x, int y, float zoom)
 	}
 	//늘어난 알림 패널만큼 기타 섹션 전체를 아래로 내린다.
 	cy -= ROWH + SECTIONGAP + 16.0f * zoom;
+	}
 
 	//----- 기타 -----
 	DrawOptionRibbon("기타", innerL, cy, RIBBONW, RIBBONH, s * 0.6f);
@@ -3563,9 +3937,12 @@ void OptionDraw(int x, int y, float zoom)
 	//버전 정보
 	DrawOptionRowLabel(OPT_ICONCOL1, OPT_ICONROW2, "버전 정보", innerL, cy, ROWH);
 	SetFontColor(COLOR_WHITE);
-	DrawTextStrSystem("Ver 1.0.0", rowRight, cy - ROWH / 2 + (float)FONT_HEIGHT * OPTIONROWTEXTZOOM / 2, OPTIONROWTEXTZOOM, RIGHT, true);
+	DrawTextStrSystem(textId[TEXT_VERSION], rowRight, cy - ROWH / 2 + (float)FONT_HEIGHT * OPTIONROWTEXTZOOM / 2, OPTIONROWTEXTZOOM, RIGHT, true);
 
 	//----- 하단 띠 + 버튼 4개 -----
+	//
+	//타이틀 화면에서는 통째로 없다. footH 를 0 으로 둔 것과 짝이다.
+	if (!titleMode) {
 	DrawOptionPart9(OPT_FOOT_X, OPT_FOOT_Y, OPT_FOOT_W, OPT_FOOT_H, OPT_FOOT_EDGE, x + 12.0f * s, footY, w - 24.0f * s, footH, s);
 
 	{
@@ -3599,10 +3976,368 @@ void OptionDraw(int x, int y, float zoom)
 			SetRectPoint(bx, by2, bw, bh2, footTouch[i]);
 		}
 	}
+	}
 
 	SetFontColor(COLOR_WHITE);
 }
 
+//소셜 서버가 붙기 전의 표시 모델. 화면 코드는 이 배열만 읽도록 두어
+//응답 DTO가 정해지면 배열 채우는 부분만 교체한다.
+static const char* socialFriendName[5] = {
+	"용감한 왕", "기사단장 루카스", "마법사 엘리아", "숲의 궁수 테오", "성직자 리아"
+};
+static const char* socialCastleName[5] = {
+	"용기의 성", "빛의 요새", "별빛 마법탑", "녹색 숲 성채", "성스러운 대성당"
+};
+static const int socialFriendLv[5] = { 35, 32, 31, 28, 30 };
+
+//0:허브, 1:선물함, 2~6:친구 방문.
+static int socialView = 0;
+static int socialTab = 0;
+static int socialSubTab = 0;
+
+void SocialSetTab(int tab)
+{
+	socialTab = Max(0, Min(2, tab));
+	socialView = 0;
+	socialSubTab = 0;
+	scY[MENU_FRIENDS] = 0;
+}
+
+void SocialSetView(int view)
+{
+	if (view < 0) {
+		if (socialView != 0)
+			socialView = 0;
+		else
+			ClosePopUp();
+	}
+	else
+		socialView = Max(0, Min(6, view));
+	scY[MENU_FRIENDS] = 0;
+}
+
+void SocialSetSubTab(int tab)
+{
+	socialSubTab = Max(0, Min(2, tab));
+	scY[MENU_FRIENDS] = 0;
+}
+
+static void SocialButton(float x, float y, float w, float h, const char* text,
+	int touch, bool selected, float zoom)
+{
+	const bool plainTab = touch >= TOUCH_FUNC_SOCIAL_TAB_FRIENDS
+		&& touch <= TOUCH_FUNC_SOCIAL_TAB_INVITE && !selected;
+	DrawButton((int)x, (int)y, plainTab ? BUTTON_COLOR_WHITE : BUTTON_COLOR_PURPLE,
+		0, 0, 0, false, w / 176.0f, h / 40.0f);
+	float textZoom = 0.9f * zoom;
+	float textWidth = StringWidth(text, textZoom);
+	if (textWidth > w - 12.0f * zoom && textWidth > 0)
+		textZoom *= (w - 12.0f * zoom) / textWidth;
+	//탭과 버튼 문자는 밝은 배경에서도 같은 인상을 유지하도록 흰색 외곽선을 쓴다.
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem(text, x + w / 2,
+		y - h / 2 + (float)FONT_HEIGHT * textZoom / 2, textZoom, CENTER, true);
+	if (touch)
+		SetRectPoint(x, y, w, h, touch);
+}
+
+static void SocialProfile(int idx, float x, float y, float size, float zoom)
+{
+	//실제 서비스에서는 URL 텍스처를 원형 ClippingNode로 자른 뒤 이 금색 프레임
+	//안에 넣는다. 현재는 다운로드 이미지가 없어 캐릭터 프로필을 대체 표시한다.
+	DrawFrame(x, y, size, size, FRAME_SHOPBALLOON);
+	EnemyProfileDraw((int)x, (int)y, idx % TOTALCHAR, false, false,
+		(size / (36.0f * _2X)) * zoom);
+}
+
+static void SocialUserRow(int dataIdx, int rank, float x, float y, float w,
+	float h, float zoom, float optionScale, const char* action, int touch)
+{
+	char buf[32];
+	int idx = dataIdx % 5;
+	//EnemyProfileDraw 안에도 클리핑이 있어 호출 뒤 바깥 목록 클립을 반드시 복원한다.
+	int listClipX = clipX, listClipY = clipY;
+	int listClipX2 = clipX2, listClipY2 = clipY2;
+
+	DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H,
+		OPT_GROUP_EDGE, x, y, w, h, optionScale);
+	DrawButton((int)(x + 7.0f * zoom), (int)(y - 5.0f * zoom),
+		BUTTON_COLOR_PURPLE, 0, 0, 0, false,
+		58.0f * zoom / 176.0f, 27.0f * zoom / 40.0f);
+	sprintf(buf, "%d위", rank);
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem(buf, x + 36.0f * zoom, y - 9.0f * zoom,
+		0.80f * zoom, CENTER, true);
+	SocialProfile(idx, x + 10.0f * zoom, y - 35.0f * zoom, 70.0f * zoom, 1.0f);
+	clipX = listClipX; clipY = listClipY;
+	clipX2 = listClipX2; clipY2 = listClipY2;
+
+	SetFontColor(0x38203F);
+	sprintf(buf, "Lv.%d", socialFriendLv[idx]);
+	DrawTextStrSystem(buf, x + 90.0f * zoom, y - 14.0f * zoom,
+		0.84f * zoom, LEFT, false);
+	DrawTextStrSystem(socialFriendName[idx], x + 90.0f * zoom,
+		y - 59.0f * zoom, 0.98f * zoom, LEFT, false);
+
+	int castleImg = MAP_DIORAMA_IMG + castleOrder[Min(idx, Max(0, gTotalCastle - 1))];
+	const float castleZoom = 86.4f * zoom / (float)DIORAMASIZE_X;
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		x + w - 354.0f * zoom, y - 18.0f * zoom,
+		false, false, false, false, false, castleZoom, sprite[castleImg], castleImg);
+	for (int j = 0; j < 6; j++)
+	{
+		int crewType = crewData[j * CREWDATASIZE + CREWDATA_TYPE];
+		EnemyProfileDraw((int)(x + w - 230.0f * zoom + (j % 3) * 47.0f * zoom),
+			(int)(y - (8.0f + (j / 3) * 56.0f) * zoom),
+			crewType, false, false, 0.624f * zoom);
+		clipX = listClipX; clipY = listClipY;
+		clipX2 = listClipX2; clipY2 = listClipY2;
+	}
+	SocialButton(x + w - 92.0f * zoom, y - 29.0f * zoom,
+		74.0f * zoom, 48.0f * zoom, action, touch, false, zoom);
+}
+
+static void SocialTitle(float x, float y, float w, const char* title, const char* sub,
+	float zoom)
+{
+	//menu.png 마지막 줄의 우주 배경과 은색 소셜 제목판.
+	DrawImageScale(640, 136, 0, 606, x, y, false, false, false, false, false,
+		w / 640.0f, 190.0f * zoom / 136.0f, sprite[MENU_IMG], MENU_IMG);
+	const float titleZoom = 1.08f * zoom;
+	DrawImage(294, 130, 640, 606, x + w / 2 - 147.0f * titleZoom,
+		y - 26.0f * zoom, false, false, false, false, false, titleZoom, sprite[MENU_IMG], MENU_IMG);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStr(title, x + w / 2, y - 64.0f * zoom, 2.0f * zoom);
+	CenterTextStr(sub, x + w / 2, y - 139.0f * zoom, 0.70f * zoom);
+}
+
+static void SocialDrawGift(float x, float y, float w, float h, float zoom)
+{
+	char buf[64];
+	SocialTitle(x, y, w, "선물함", "친구의 마음을 확인하세요", zoom);
+	float top = y - 200.0f * zoom;
+	float bottom = y - h + 22.0f * zoom;
+	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE,
+		x + 18.0f * zoom, top, w - 36.0f * zoom, top - bottom, zoom * 0.55f);
+	SetFontColor(COLOR_DARKGREY);
+	DrawTextStrSystem("받은 선물 3/20", x + 38.0f * zoom, top - 30.0f * zoom,
+		0.9f, LEFT, false);
+	SocialButton(x + w - 172.0f * zoom, top - 12.0f * zoom, 132.0f * zoom,
+		38.0f * zoom, "모두 받기", 0, false, zoom);
+	for (int i = 0; i < 5; i++) {
+		float ry = top - (62.0f + i * 74.0f) * zoom;
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			x + 34.0f * zoom, ry, w - 68.0f * zoom, 66.0f * zoom, zoom * 0.45f);
+		SocialProfile(i, x + 46.0f * zoom, ry - 7.0f * zoom, 48.0f * zoom, 1.0f);
+		SetFontColor(COLOR_DARKGREY);
+		DrawTextStrSystem(socialFriendName[i], x + 105.0f * zoom, ry - 25.0f * zoom,
+			0.78f, LEFT, false);
+		sprintf(buf, i % 2 ? "골드 x%d" : "하트 x%d", i % 2 ? 5000 : 3);
+		DrawTextStrSystem(buf, x + 250.0f * zoom, ry - 25.0f * zoom, 0.74f, LEFT, false);
+		SocialButton(x + w - 136.0f * zoom, ry - 13.0f * zoom, 88.0f * zoom,
+			40.0f * zoom, i < 3 ? "받기" : "받음", 0, i >= 3, zoom);
+	}
+	SetFontColor(COLOR_DARKGREY);
+	CenterTextStr("선물은 7일 뒤 사라지며 하루 수령 한도가 있습니다.",
+		x + w / 2, bottom + 30.0f * zoom, 0.66f);
+}
+
+static void SocialDrawVisit(int idx, float x, float y, float w, float h, float zoom)
+{
+	char buf[64];
+	idx = Max(0, Min(4, idx));
+	SocialTitle(x, y, w, "친구의 왕국", socialCastleName[idx], zoom);
+	float sceneTop = y - 200.0f * zoom;
+	float sceneH = 238.0f * zoom;
+	DrawFrame(x + 18.0f * zoom, sceneTop, w - 36.0f * zoom, sceneH, FRAME_SHOPBALLOON);
+	MemRect(x + 24.0f * zoom, sceneTop - 6.0f * zoom,
+		w - 48.0f * zoom, sceneH - 12.0f * zoom, 0x7EC8EE);
+	DrawBarIcon(BAR_CASTLE, x + w / 2 - 86.0f * zoom,
+		sceneTop - 40.0f * zoom, 1.35f * zoom);
+	for (int i = 0; i < 3; i++)
+		EnemyProfileDraw((int)(x + w / 2 - 100.0f * zoom + i * 72.0f * zoom),
+			(int)(sceneTop - 142.0f * zoom), (idx + i) % TOTALCHAR, true,
+			socialFriendLv[idx] - i, 0.55f * zoom);
+	SocialProfile(idx, x + 36.0f * zoom, sceneTop - 24.0f * zoom, 72.0f * zoom, 1.0f);
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem(socialFriendName[idx], x + 36.0f * zoom,
+		sceneTop - 112.0f * zoom, 0.95f, LEFT, false);
+	sprintf(buf, "Lv.%d  ·  관람 중", socialFriendLv[idx]);
+	DrawTextStrSystem(buf, x + 36.0f * zoom, sceneTop - 139.0f * zoom,
+		0.72f, LEFT, false);
+	float infoTop = sceneTop - sceneH - 8.0f * zoom;
+	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE,
+		x + 18.0f * zoom, infoTop, w - 36.0f * zoom,
+		infoTop - (y - h + 22.0f * zoom), zoom * 0.55f);
+	SetFontColor(COLOR_DARKGREY);
+	sprintf(buf, "성 레벨  %d", socialFriendLv[idx]);
+	DrawTextStrSystem(buf, x + 46.0f * zoom, infoTop - 38.0f * zoom, 0.9f, LEFT, false);
+	DrawTextStrSystem(socialCastleName[idx], x + w / 2, infoTop - 38.0f * zoom,
+		0.9f, CENTER, false);
+	sprintf(buf, "총 전투력  %d", 1257840 - idx * 93610);
+	DrawTextStrSystem(buf, x + w - 46.0f * zoom, infoTop - 38.0f * zoom,
+		0.86f, RIGHT, false);
+	SetFontColor(COLOR_DARKGREY);
+	CenterTextStr("배치 동료", x + w / 2, infoTop - 82.0f * zoom, 0.82f);
+	for (int i = 0; i < 3; i++)
+		EnemyProfileDraw((int)(x + w / 2 - 110.0f * zoom + i * 82.0f * zoom),
+			(int)(infoTop - 100.0f * zoom), (idx + i) % TOTALCHAR, true,
+			socialFriendLv[idx] - i, 0.68f * zoom);
+	SocialButton(x + w / 2 - 122.0f * zoom, y - h + 72.0f * zoom,
+		244.0f * zoom, 48.0f * zoom, "응원 보내기", 0, false, zoom);
+}
+
+void SocialDraw(int x, int y, float zoom)
+{
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const float s = w / (float)OPT_WIN_W;
+	const float innerL = x + 22.0f * s;
+	const float innerW = w - 44.0f * s;
+	const char* tabName[3] = { "친구", "리더보드", "초대" };
+	const int tabTouch[3] = { TOUCH_FUNC_SOCIAL_TAB_FRIENDS,
+		TOUCH_FUNC_SOCIAL_TAB_RANKING, TOUCH_FUNC_SOCIAL_TAB_INVITE };
+	char buf[96];
+
+	MemRect(x, y, w, h, 0x342044);
+	if (socialView == 1) {
+		SocialDrawGift(x, y, w, h, zoom);
+		return;
+	}
+	if (socialView >= 2) {
+		SocialDrawVisit(socialView - 2, x, y, w, h, zoom);
+		return;
+	}
+
+	SocialTitle(x, y, w, "소셜", "친구와 함께하는 왕국", zoom);
+	float tabTop = y - 194.0f * zoom;
+	float tabGap = 6.0f * zoom;
+	float tabH = 45.0f * zoom;
+	float tabW = (innerW - tabGap * 2) / 3;
+	for (int i = 0; i < 3; i++)
+		SocialButton(innerL + (tabW + tabGap) * i, tabTop, tabW, tabH,
+			tabName[i], tabTouch[i], socialTab == i, zoom);
+
+	float panelTop = tabTop - tabH - 7.0f * zoom;
+	float panelBottom = y - h + 22.0f * zoom;
+	DrawOptionPart9(OPT_PANEL_X, OPT_PANEL_Y, OPT_PANEL_W, OPT_PANEL_H, OPT_PANEL_EDGE,
+		innerL, panelTop, innerW, panelTop - panelBottom, s * 0.5f);
+
+	if (socialTab == 0) {
+		SetFontColor(COLOR_DARKGREY);
+		DrawTextStrSystem("친구 23/50", innerL + 18.0f * zoom,
+			panelTop - 28.0f * zoom, 0.9f, LEFT, false);
+		SocialButton(innerL + innerW - 176.0f * zoom, panelTop - 10.0f * zoom,
+			104.0f * zoom, 38.0f * zoom, "선물함 3", TOUCH_FUNC_SOCIAL_GIFTBOX, false, zoom);
+		SocialButton(innerL + innerW - 66.0f * zoom, panelTop - 10.0f * zoom,
+			52.0f * zoom, 38.0f * zoom, "정렬", 0, false, zoom);
+		float listTop = panelTop - 56.0f * zoom;
+		SocialButton(innerL + innerW - 294.0f * zoom, panelTop - 10.0f * zoom,
+			112.0f * zoom, 38.0f * zoom, "친구 추가", TOUCH_FUNC_SOCIAL_FRIEND_ADD, false, zoom);
+		float listBottom = panelBottom + 12.0f * zoom;
+		const float rowGap = 4.0f * zoom;
+		//초기 화면에 네 패널이 목록의 위·아래 끝을 정확히 채우도록 높이를 계산한다.
+		float rowH = (listTop - listBottom - rowGap * 3.0f) / 4.0f;
+		const int socialTestCount = 23;
+		scT[MENU_FRIENDS] = Max(0, (int)(socialTestCount * (rowH + rowGap)
+			- rowGap - (listTop - listBottom)));
+		scY[MENU_FRIENDS] = Max(0, Min(scY[MENU_FRIENDS], scT[MENU_FRIENDS]));
+		SetSectionClip((int)(x + 8.0f * zoom), (int)listTop,
+			(int)(w - 16.0f * zoom), (int)(listTop - listBottom), false);
+		for (int i = 0; i < socialTestCount; i++) {
+			float ry = listTop - i * (rowH + rowGap) + scY[MENU_FRIENDS];
+			if (ry < listBottom || ry - rowH > listTop) continue;
+			int touch = i < 5 && ry - 29.0f * zoom <= listTop
+				&& ry - 77.0f * zoom >= listBottom ? TOUCH_FUNC_SOCIAL_VISIT_1 + i : 0;
+			SocialUserRow(i, i + 1, x + 8.0f * zoom, ry,
+				w - 16.0f * zoom, rowH, zoom, s * 0.55f, "방문", touch);
+		}
+		UnSectionClip(false);
+		DrawScroll((int)(x + w - 8.0f * zoom), (int)listTop,
+			(int)(listTop - listBottom), MENU_FRIENDS);
+	}
+	else if (socialTab == 1) {
+		const char* sub[3] = { "친구", "국내", "전체" };
+		const int subTouch[3] = { TOUCH_FUNC_SOCIAL_RANK_FRIEND,
+			TOUCH_FUNC_SOCIAL_RANK_COUNTRY, TOUCH_FUNC_SOCIAL_RANK_GLOBAL };
+		float sw = (innerW - 28.0f * zoom) / 3;
+		for (int i = 0; i < 3; i++)
+			SocialButton(innerL + 14.0f * zoom + i * sw, panelTop - 12.0f * zoom,
+				sw, 37.0f * zoom, sub[i], subTouch[i], socialSubTab == i, zoom);
+		float listTop = panelTop - 58.0f * zoom;
+		float listBottom = panelBottom + 62.0f * zoom;
+		const int rankTestCount = 23;
+		const float rowGap = 4.0f * zoom;
+		float rowH = (listTop - listBottom - rowGap * 3.0f) / 4.0f;
+		scT[MENU_FRIENDS] = Max(0, (int)(rankTestCount * (rowH + rowGap)
+			- rowGap - (listTop - listBottom)));
+		scY[MENU_FRIENDS] = Max(0, Min(scY[MENU_FRIENDS], scT[MENU_FRIENDS]));
+		SetSectionClip((int)(x + 8.0f * zoom), (int)listTop,
+			(int)(w - 16.0f * zoom), (int)(listTop - listBottom), false);
+		for (int i = 0; i < rankTestCount; i++) {
+			float ry = listTop - i * (rowH + rowGap) + scY[MENU_FRIENDS];
+			if (ry < listBottom || ry - rowH > listTop) continue;
+			SocialUserRow(i, i + 1, x + 8.0f * zoom, ry,
+				w - 16.0f * zoom, rowH, zoom, s * 0.55f, "정보", 0);
+		}
+		UnSectionClip(false);
+		DrawScroll((int)(x + w - 8.0f * zoom), (int)listTop,
+			(int)(listTop - listBottom), MENU_FRIENDS);
+		//내 순위도 목록과 동일한 패널 규격으로 하단에 고정한다.
+		DrawOptionPart9(OPT_SELROW_X, OPT_SELROW_Y, OPT_SELROW_W, OPT_SELROW_H,
+			OPT_SELROW_EDGE, innerL + 8.0f * zoom, panelBottom + 50.0f * zoom,
+			innerW - 16.0f * zoom, 46.0f * zoom, s * 0.45f);
+		SetFontColor(COLOR_WHITE);
+		DrawTextStrSystem("내 순위 17위", innerL + 28.0f * zoom,
+			panelBottom + 38.0f * zoom, 0.78f, LEFT, false);
+		DrawTextStrSystem("5,430", innerL + innerW - 28.0f * zoom,
+			panelBottom + 38.0f * zoom, 0.78f, RIGHT, false);
+	}
+	else {
+		SetFontColor(COLOR_DARKGREY);
+		DrawTextStrSystem("친구 23/50", innerL + 18.0f * zoom,
+			panelTop - 27.0f * zoom, 0.86f, LEFT, false);
+		DrawTextStrSystem("내 친구 코드  8A7C-5D3E", innerL + innerW - 18.0f * zoom,
+			panelTop - 27.0f * zoom, 0.72f, RIGHT, false);
+		DrawOptionPart9(OPT_GROUP_X, OPT_GROUP_Y, OPT_GROUP_W, OPT_GROUP_H, OPT_GROUP_EDGE,
+			innerL + 16.0f * zoom, panelTop - 48.0f * zoom,
+			innerW - 112.0f * zoom, 40.0f * zoom, s * 0.4f);
+		SetFontColor(COLOR_DARKGREY);
+		DrawTextStrSystem("닉네임 또는 친구 코드", innerL + 32.0f * zoom,
+			panelTop - 65.0f * zoom, 0.68f, LEFT, false);
+		SocialButton(innerL + innerW - 88.0f * zoom, panelTop - 48.0f * zoom,
+			72.0f * zoom, 40.0f * zoom, "검색", 0, false, zoom);
+		const char* sub[3] = { "받은 요청 3", "보낸 요청 2", "추천 친구" };
+		const int subTouch[3] = { TOUCH_FUNC_SOCIAL_INVITE_RECEIVED,
+			TOUCH_FUNC_SOCIAL_INVITE_SENT, TOUCH_FUNC_SOCIAL_INVITE_RECOMMEND };
+		float sw = (innerW - 28.0f * zoom) / 3;
+		for (int i = 0; i < 3; i++)
+			SocialButton(innerL + 14.0f * zoom + i * sw, panelTop - 96.0f * zoom,
+				sw, 37.0f * zoom, sub[i], subTouch[i], socialSubTab == i, zoom);
+		float listTop = panelTop - 140.0f * zoom;
+		float listBottom = panelBottom + 12.0f * zoom;
+		const int inviteTestCount = 23;
+		const float rowGap = 4.0f * zoom;
+		float rowH = (listTop - listBottom - rowGap * 3.0f) / 4.0f;
+		scT[MENU_FRIENDS] = Max(0, (int)(inviteTestCount * (rowH + rowGap)
+			- rowGap - (listTop - listBottom)));
+		scY[MENU_FRIENDS] = Max(0, Min(scY[MENU_FRIENDS], scT[MENU_FRIENDS]));
+		SetSectionClip((int)(x + 8.0f * zoom), (int)listTop,
+			(int)(w - 16.0f * zoom), (int)(listTop - listBottom), false);
+		const char* inviteAction = socialSubTab == 0 ? "수락" : socialSubTab == 1 ? "취소" : "요청";
+		for (int i = 0; i < inviteTestCount; i++) {
+			float ry = listTop - i * (rowH + rowGap) + scY[MENU_FRIENDS];
+			if (ry < listBottom || ry - rowH > listTop) continue;
+			SocialUserRow(i, i + 1, x + 8.0f * zoom, ry,
+				w - 16.0f * zoom, rowH, zoom, s * 0.55f, inviteAction, 0);
+		}
+		UnSectionClip(false);
+		DrawScroll((int)(x + w - 8.0f * zoom), (int)listTop,
+			(int)(listTop - listBottom), MENU_FRIENDS);
+	}
+	SetFontColor(COLOR_WHITE);
+}
 
 void JokboDraw(int x, int y, float zoom)
 {
@@ -6484,7 +7219,11 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	char priceBuf[64];
 	bool storeReady = false;
 	if (isBox) {
-		name = textId[TEXT_ITEMNAME_BOX + detail];
+		static const char* paidBoxName[6] = {
+			"브론즈 상자", "실버 상자", "크리스탈 상자",
+			"아케인 상자", "로열 상자", "레전드 상자"
+		};
+		name = paidBoxName[detail - BOX_PAID0];
 		sprintf(priceBuf, "%lld 골드", GetBoxPrice(detail, GRADE_NORMAL));
 		price = priceBuf;
 	}
@@ -6493,18 +7232,21 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		price = ShopPriceText(product, &storeReady);
 	}
 
-	CdText(name, (float)CD_DESIGNW / 2, 225.0f, 2.15f, CENTER, COLOR_WHITE);
+	//판 좌표다. 아래 자리들도 모두 같은 단위로 잡는다.
+	CdText(name, (float)CD_DESIGNW / 2, 161.0f, 2.15f, CENTER, COLOR_WHITE);
 
 	float artSize = isBox ? 430.0f : 540.0f;
 	float artX = ((float)CD_DESIGNW - artSize) / 2;
-	float artY = 305.0f;
+	float artY = 209.0f;
 	if (isBox) {
 		//DrawCastleBoxXY의 피격광 4중 잔상은 큰 UI에서 왼쪽 조각처럼 보인다.
 		//상점 상세에서는 상자 원본 한 장만 정확한 오프셋으로 그린다.
 		int boxImg = BOX0_IMG + detail - BOX_CASTLE0;
-		DrawImage(512, 512, 0, 0, Loc(artX), LocY(artY), false, false,
-			false, false, false, artSize / 512.0f * sCdU,
-			sprite[boxImg], boxImg);
+		//텍스처 오른쪽 절반은 열린 상자다. 경계 필터링으로 그 조각이 보이지
+		//않도록 닫힌 상자의 오른쪽 2px을 제외해서 그린다.
+		DrawImageScale(510, 512, 0, 0, Loc(artX), LocY(artY), false, false,
+			false, false, false, artSize / 510.0f * sCdU,
+			artSize / 512.0f * sCdU, sprite[boxImg], boxImg);
 	}
 	else if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
@@ -6527,31 +7269,101 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	}
 	else {
 		int pass = product - IAP_PASS_HEART;
-		DrawImage(640, 640, (pass % 2) * 640, (pass / 2) * 640,
+		const int passCell = 627; //shop_pass_art.png는 1254x1254, 2x2 시트다.
+		DrawImage(passCell, passCell, (pass % 2) * passCell, (pass / 2) * passCell,
 			Loc(artX), LocY(artY), false, false, false, false, false,
-			artSize / 640.0f * sCdU,
+			artSize / (float)passCell * sCdU,
 			sprite[SHOP_PASS_ART_IMG], SHOP_PASS_ART_IMG);
 	}
 
 	if (isBox) {
 		int boxIndex = GetRewardBoxIndex(detail);
 		const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
-		DrawItemCardBack(1, (int)Loc(235.0f), (int)LocY(735.0f), 0.19f * sCdU, 1);
+		//---- 보상 목록 ----
+		//
+		//줄마다 x 를 따로 적어서 235 / 255 / 255 / 245 로 어긋나 있었다.
+		//아이콘 가운데와 글자 왼쪽을 열로 못 박고 모든 줄이 그것만 본다.
+		//
+		//그리는 함수마다 기준점이 다르다(DrawIcon 은 왼쪽 위, 카드는 제 폭
+		//기준). 그래서 열은 가운데로 정하고, 각자 제 크기의 절반만큼 왼쪽으로
+		//물러나 그린다. 크기를 바꿔도 가운데가 안 흔들린다.
+		const float LIST_X = 150.0f;		//판 왼쪽
+		const float LIST_W = 790.0f;
+		const float LIST_Y = 660.0f;		//판 위
+		const float LIST_H = 396.0f;
+		const float ROW_CX = 275.0f;		//아이콘 가운데 열
+		const float ROW_TX = 420.0f;		//글자 왼쪽 열
+		const float ROW_GAP = 92.0f;
+		const float ROW_CY = 712.0f;		//첫 줄 가운데
+		const float ROW_TZ = 1.90f;			//보상 글자 크기
+		const float ICON_Z = 1.70f;			//아이콘 크기
+		const float ICON_H = (float)ITEMICONSIZE * ICON_Z;
+
+		//글자를 아이콘 가운데에 맞춘다. CdText 의 y 는 윗선이라 글자 높이의
+		//절반만큼 내려야 두 개의 가운데가 같아진다.
+		const float ROW_TDY = -(float)FONT_HEIGHT * ROW_TZ / 2;
+
+		//목록 뒤에 판을 깐다. 상자 그림과 목록이 붙어 있으면 어디까지가
+		//상품이고 어디부터가 내용물인지 구분이 안 된다.
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			Loc(LIST_X), LocY(LIST_Y), LIST_W * sCdU, LIST_H * sCdU, sCdU);
+
+		//카드
+		{
+			const float cardZ = 0.24f;
+			const float cardW = 240.0f * cardZ;
+			const float cardH = 332.0f * cardZ;
+
+			DrawItemCardBack(1, (int)Loc(ROW_CX - cardW / 2),
+				(int)LocY(ROW_CY - cardH / 2), cardZ * sCdU, 1);
+		}
 		sprintf(tempStr, "카드 %d~%d장", box.minCard, box.maxCard);
-		CdText(tempStr, 455.0f, 750.0f, 1.55f, LEFT, COLOR_WHITE);
-		DrawIcon(ICON_HEART, Loc(255.0f), LocY(835.0f), 1.25f * sCdU, false, false, true, 1);
+		CdText(tempStr, ROW_TX, ROW_CY + ROW_TDY, ROW_TZ, LEFT, COLOR_WHITE);
+
+		//하트
+		DrawIcon(ICON_HEART, Loc(ROW_CX - ICON_H / 2),
+			LocY(ROW_CY + ROW_GAP - ICON_H / 2), ICON_Z * sCdU,
+			false, false, true, 1);
 		sprintf(tempStr, "%d~%d", box.heartMin, box.heartMax);
-		CdText(tempStr, 455.0f, 850.0f, 1.55f, LEFT, COLOR_WHITE);
+		CdText(tempStr, ROW_TX, ROW_CY + ROW_GAP + ROW_TDY, ROW_TZ, LEFT,
+			COLOR_WHITE);
+
+		//골드
 		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
-			Loc(255.0f), LocY(925.0f), 1.25f * sCdU, false, false, true, 1);
+			Loc(ROW_CX - ICON_H / 2),
+			LocY(ROW_CY + ROW_GAP * 2 - ICON_H / 2), ICON_Z * sCdU,
+			false, false, true, 1);
 		sprintf(tempStr, "%d~%d (%d%%)", box.goldMin, box.goldMax, box.goldRate);
-		CdText(tempStr, 455.0f, 940.0f, 1.55f, LEFT, COLOR_WHITE);
-		MemRectRound(Loc(245.0f), LocY(1005.0f), 54.0f * sCdU, 54.0f * sCdU,
-			COLOR_PURPLE, 27.0f * sCdU);
-		CdText("?", 272.0f, 1005.0f, 1.55f, CENTER, COLOR_WHITE);
-		CdText("상세 확률표 보기", 455.0f, 1008.0f, 1.45f, LEFT, COLOR_WHITE);
-		SetRectPoint(Loc(225.0f), LocY(990.0f), 640.0f * sCdU, 70.0f * sCdU,
-			TOUCH_FUNC_SHOP_GACHA_RATES);
+		CdText(tempStr, ROW_TX, ROW_CY + ROW_GAP * 2 + ROW_TDY, ROW_TZ, LEFT,
+			COLOR_WHITE);
+
+		//---- 상세 확률표 ----
+		//
+		//글자만 있으면 눌러서 가는 곳인지 알 수가 없다. 다른 화면이 쓰는
+		//파란 버튼을 그대로 깔아 누르는 것임을 보인다.
+		{
+			const float btnY = ROW_CY + ROW_GAP * 3 - 32.0f;	//버튼 가운데
+			const float btnH = 78.0f;
+			const float btnX = LIST_X + 26.0f;
+			const float btnW = LIST_W - 52.0f;
+			const float qz = 2.10f;					//물음표 크기
+			const float qd = 66.0f;					//물음표 동그라미 지름
+			const float tz = 1.80f;
+
+			DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
+				Loc(btnX), LocY(btnY - btnH / 2), btnW * sCdU, btnH * sCdU,
+				sCdU);
+
+			MemRectRound(Loc(ROW_CX - qd / 2), LocY(btnY - qd / 2),
+				qd * sCdU, qd * sCdU, COLOR_PURPLE, qd / 2 * sCdU);
+			CdText("?", ROW_CX, btnY - (float)FONT_HEIGHT * qz / 2, qz,
+				CENTER, COLOR_WHITE);
+			CdText("상세 확률표 보기", ROW_TX,
+				btnY - (float)FONT_HEIGHT * tz / 2, tz, LEFT, COLOR_WHITE);
+
+			SetRectPoint(Loc(btnX), LocY(btnY - btnH / 2), btnW * sCdU,
+				btnH * sCdU, TOUCH_FUNC_SHOP_GACHA_RATES);
+		}
 	}
 	else {
 		static const long long coinAmount[6] = { 1000, 2200, 6000, 25000, 65000, 140000 };
@@ -6580,10 +7392,11 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	}
 	if (isBox) {
 		long long boxPrice = GetBoxPrice(detail, GRADE_NORMAL);
+		//목록 판이 1056 까지 내려왔다. 가격은 그 아래로 물러난다.
 		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
-			Loc(305.0f), LocY(1060.0f), 2.7f * sCdU, false, false, true, 1);
+			Loc(305.0f), LocY(1097.0f), 2.7f * sCdU, false, false, true, 1);
 		SetFontColor(COLOR_WHITE);
-		DrawBigNumTTF(boxPrice, (int)Loc(805.0f), (int)LocY(1090.0f),
+		DrawBigNumTTF(boxPrice, (int)Loc(805.0f), (int)LocY(1127.0f),
 			NUM_FONT_NORMAL, RIGHT, false, false, 430.0f * sCdU,
 			true, 2.15f * sCdU, true);
 	}
@@ -6614,39 +7427,52 @@ void GachaRatesDraw(int boxDetail)
 	const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
 	CdBeginBoard();
 	ScreenDarken(SCREENDARKEN);
-	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
-	DrawPanel(90.0f, 185.0f, (float)CD_DESIGNW - 180.0f, 980.0f);
-	CdText("상세 확률표", (float)CD_DESIGNW / 2, 220.0f, 2.0f, CENTER, COLOR_WHITE);
-	const float clipTop = 285.0f;
-	const float clipBottom = 1125.0f;
-	SetSectionClip((int)Loc(105.0f), (int)LocY(clipTop),
-		(int)(880.0f * sCdU), (int)((clipBottom - clipTop) * sCdU), false);
-	float py = 315.0f - (float)scY[MENU_SHOP] / sCdU;
+	//확률표는 별도 창을 쓰지 않고 어두워진 상점 화면 전체 위에 표시한다.
+	CdText("상세 확률표", (float)CD_DESIGNW / 2, 38.0f,
+		2.35f, CENTER, COLOR_WHITE);
+	const float closeSize = 82.0f;
+	const float closeX = (float)CD_DESIGNW - closeSize - 22.0f;
+	const float closeY = 16.0f;
+	SetRectPoint(Loc(closeX), LocY(closeY), closeSize * sCdU,
+		closeSize * sCdU, TOUCH_FUNC_SHOP_IAP_CANCEL);
+	DrawWinFlat(WP_CLOSE_X, WP_CLOSE_Y, WP_CLOSE_W, WP_CLOSE_H,
+		Loc(closeX), LocY(closeY), closeSize / (float)WP_CLOSE_W * sCdU);
+
+	const float clipTop = 122.0f;
+	const float clipBottom = (float)CD_DESIGNH - 12.0f;
+	SetSectionClip((int)Loc(18.0f), (int)LocY(clipTop),
+		(int)(((float)CD_DESIGNW - 36.0f) * sCdU),
+		(int)((clipBottom - clipTop) * sCdU), false);
+	float py = clipTop + 18.0f - (float)scY[MENU_SHOP] / sCdU;
 	static const int equipTypes[6] = {
 		ITEM_SWORD, ITEM_HELM, ITEM_ARMOR, ITEM_GUNTLET, ITEM_KILT, ITEM_GREAVES
 	};
 	for (int grade = 0; grade < BOX_GRADE_COUNT; grade++) {
 		float totalRate = (box.crewRate * box.crewGradeRate[grade]
 			+ box.equipRate * box.equipGradeRate[grade]) / 100.0f;
-		ShopRibbon("획득 가능 카드", 545.0f, py, 520.0f, 1.0f);
-		DrawItemCardBack(grade + 1, (int)Loc(150.0f), (int)LocY(py + 5.0f),
-			0.18f * sCdU, 1);
-		sprintf(tempStr, "★ %d     %.2f%%", grade + 1, totalRate);
-		CdBody(tempStr, 800.0f, py + 18.0f, 1.35f, RIGHT, CD_INK);
-		py += 95.0f;
+		//등급마다 큰 리본을 반복하면 다음 카드 행 위를 덮는다. 작은 등급 헤더만 둔다.
+		if (py >= clipTop && py + 78.0f <= clipBottom) {
+			DrawItemCardBack(grade + 1, (int)Loc(68.0f), (int)LocY(py + 5.0f),
+				0.22f * sCdU, 1);
+			sprintf(tempStr, "★ %d     %.2f%%", grade + 1, totalRate);
+			CdBody(tempStr, 1000.0f, py + 24.0f, 1.60f, RIGHT, COLOR_WHITE);
+		}
+		py += 88.0f;
 		int col = 0;
 		int crewCount = GetBoxCandidateCountByStar(ITEM_CREW, grade + 1);
 		for (int i = 0; i < crewCount; i++) {
 			int detail = GetBoxCandidateDetailByStar(ITEM_CREW, grade + 1, i);
-			float cardX = 135.0f + (col % 7) * 118.0f;
-			float cardY = py + (col / 7) * 170.0f;
-			DrawItemCard(ITEM_CREW, detail, grade, 1, 1, false,
-				(int)Loc(cardX), (int)LocY(cardY), false,
-				0.34f * sCdU, false, false, false, false, 0);
+			float cardX = 38.0f + (col % 5) * 210.0f;
+			float cardY = py + (col / 5) * 260.0f;
 			float itemRate = crewCount > 0
 				? box.crewRate * box.crewGradeRate[grade] / 100.0f / crewCount : 0.0f;
-			sprintf(tempStr, "%.3f%%", itemRate);
-			CdBody(tempStr, cardX + 40.0f, cardY + 125.0f, 0.85f, CENTER, CD_INK);
+			if (cardY + 220.0f >= clipTop && cardY <= clipBottom) {
+				DrawItemCard(ITEM_CREW, detail, grade, 1, 1, false,
+					(int)Loc(cardX), (int)LocY(cardY), false,
+					0.68f * sCdU, false, false, false, false, 0);
+				sprintf(tempStr, "%.3f%%", itemRate);
+				CdBody(tempStr, cardX + 82.0f, cardY + 214.0f, 1.10f, CENTER, COLOR_WHITE);
+			}
 			col++;
 		}
 		int validEquipTypes = 0;
@@ -6657,26 +7483,29 @@ void GachaRatesDraw(int boxDetail)
 			int count = GetBoxCandidateCountByStar(equipTypes[t], grade + 1);
 			for (int i = 0; i < count; i++) {
 				int detail = GetBoxCandidateDetailByStar(equipTypes[t], grade + 1, i);
-				float cardX = 135.0f + (col % 7) * 118.0f;
-				float cardY = py + (col / 7) * 170.0f;
-				DrawItemCard(equipTypes[t], detail, grade, 1, 1, false,
-					(int)Loc(cardX), (int)LocY(cardY), false,
-					0.34f * sCdU, false, false, false, false, 0);
+				float cardX = 38.0f + (col % 5) * 210.0f;
+				float cardY = py + (col / 5) * 260.0f;
 				float itemRate = count > 0 && validEquipTypes > 0
 					? box.equipRate * box.equipGradeRate[grade] / 100.0f
 					/ validEquipTypes / count : 0.0f;
-				sprintf(tempStr, "%.3f%%", itemRate);
-				CdBody(tempStr, cardX + 40.0f, cardY + 125.0f, 0.85f, CENTER, CD_INK);
+				if (cardY + 220.0f >= clipTop && cardY <= clipBottom) {
+					DrawItemCard(equipTypes[t], detail, grade, 1, 1, false,
+						(int)Loc(cardX), (int)LocY(cardY), false,
+						0.68f * sCdU, false, false, false, false, 0);
+					sprintf(tempStr, "%.3f%%", itemRate);
+					CdBody(tempStr, cardX + 82.0f, cardY + 214.0f, 1.10f, CENTER, COLOR_WHITE);
+				}
 				col++;
 			}
 		}
-		py += Max(1, (col + 6) / 7) * 170.0f + 45.0f;
+		py += Max(1, (col + 4) / 5) * 260.0f + 54.0f;
 	}
 	UnSectionClip(false);
-	int contentHeight = (int)(py + (float)scY[MENU_SHOP] / sCdU - clipTop);
-	scT[MENU_SHOP] = Max(0, contentHeight - (int)(clipBottom - clipTop));
+	float contentHeight = py + (float)scY[MENU_SHOP] / sCdU - clipTop;
+	//scY/scT는 화면 픽셀 단위다. 설계판 높이를 실제 배율로 바꿔 스크롤 범위를 잡는다.
+	scT[MENU_SHOP] = Max(0, (int)((contentHeight - (clipBottom - clipTop)) * sCdU));
 	if (scY[MENU_SHOP] > scT[MENU_SHOP]) scY[MENU_SHOP] = scT[MENU_SHOP];
-	DrawScroll((int)Loc(960.0f), (int)LocY(clipTop),
+	DrawScroll((int)Loc(1060.0f), (int)LocY(clipTop),
 		(int)((clipBottom - clipTop) * sCdU), MENU_SHOP);
 }
 
@@ -6750,10 +7579,11 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	}
 	else if (product >= IAP_PASS_HEART && product <= IAP_INVEN_20) {
 		int pass = product - IAP_PASS_HEART;
-		int sx = (pass % 2) * 640;
-		int sy = (pass / 2) * 640;
-		DrawImage(640, 640, sx, sy, artX, artY,
-			false, false, false, false, false, artSize / 640.0f,
+		const int passCell = 627;
+		int sx = (pass % 2) * passCell;
+		int sy = (pass / 2) * passCell;
+		DrawImage(passCell, passCell, sx, sy, artX, artY,
+			false, false, false, false, false, artSize / (float)passCell,
 			sprite[SHOP_PASS_ART_IMG], SHOP_PASS_ART_IMG);
 	}
 	else {
@@ -7013,7 +7843,9 @@ static float sShopIapAnimatedY = 0.0f;
 
 void ShopJumpToIapSection(int section)
 {
-	sShopIapJumpSection = Max(0, Min(4, section));
+	//구역이 늘면 이 상한도 같이 올라가야 한다. 못 박아 두면 새 구역으로
+	//뛰라고 해도 조용히 마지막 구역으로 간다.
+	sShopIapJumpSection = Max(0, Min(TOTALSHOPSEC - 1, section));
 	sShopIapScrollTarget = -1;
 	sShopIapScrollDelay = 8;
 	sShopIapAnimatedY = 0.0f;
@@ -7153,13 +7985,20 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 		int first;
 		int count;
 		bool box;
+
+		//상품이 아니라 다른 화면으로 들어가는 갈래. 카드 대신 버튼 하나를
+		//놓는다. 성처럼 규격이 다른 것을 목록에 끼울 때 쓴다.
+		const char* link;
+		int linkFunc;
 	};
 	static const ShopSection sections[] = {
-		{ "골드 상품", IAP_COIN_01, 6, false },
-		{ "하트 상품", IAP_HEART_01, 6, false },
-		{ "레인보우 코인", IAP_CASH_01, 6, false },
-		{ "상자 상품", 0, 6, true },
-		{ "스페셜 패스", IAP_PASS_HEART, 4, false },
+		//성이 맨 앞이다. 순서는 Func_Menu.h 의 SHOPSEC_* 와 같아야 한다.
+		{ "성", 0, 0, false, "UPGRADE CASTLE", TOUCH_FUNC_POPUP_CASTLEMENU },
+		{ "골드 상품", IAP_COIN_01, 6, false, 0, 0 },
+		{ "하트 상품", IAP_HEART_01, 6, false, 0, 0 },
+		{ "레인보우 코인", IAP_CASH_01, 6, false, 0, 0 },
+		{ "상자 상품", 0, 6, true, 0, 0 },
+		{ "스페셜 패스", IAP_PASS_HEART, 4, false, 0, 0 },
 	};
 
 	for (int section = 0; section < (int)(sizeof(sections) / sizeof(sections[0])); section++) {
@@ -7178,6 +8017,67 @@ static void ShopIapDraw(float x, float y, float w, float h, float zoom)
 
 		ShopRibbon(data.title, x + w / 2, cy, 280.0f * zoom, zoom);
 		cy -= 48.0f * zoom;
+
+		//---- 다른 화면으로 가는 갈래 ----
+		//
+		//상품 카드가 아니라 버튼 하나다. 성은 골드로 올리는 별도 화면이라
+		//상품 규격에 안 맞는다. 목록에는 자리만 두고 그 화면으로 보낸다.
+		if (data.link) {
+			//성 메뉴 맨 위에 깔리는 그 일러스트를 배너로 쓴다. 성을 팔면서
+			//성 화면과 다른 그림을 보여주면 어디로 가는 버튼인지 흐려진다.
+			//
+			//castleMenuUiData 의 0번이 그 상단창이다. 폭을 배너에 맞추고
+			//세로는 원래 비율대로 따라온다. 늘여 붙이면 성이 찌그러진다.
+			const int bgW = castleMenuUiData[0];
+			const int bgH = castleMenuUiData[1];
+			const float bs = innerW / (float)bgW;
+			const float bh = (float)bgH * bs;
+
+			if (cy >= bottom && cy - bh <= viewTop) {
+				DrawImageScale(bgW, bgH,
+					castleMenuUiData[2], castleMenuUiData[3],
+					x + pad, cy, false, false, false, false, false,
+					bs, bs,
+					sprite[castleMenuUiData[6]], castleMenuUiData[6]);
+
+				//---- 배너 위에 얹는 버튼 ----
+				//
+				//다른 버튼과 같은 버튼 이미지를 쓴다. 직접 그린 네모는 이
+				//화면에서 혼자 다른 물건으로 보인다.
+				const float lw = innerW * 0.56f;
+				const float lh = 52.0f * zoom;
+				const float lx = x + w / 2 - lw / 2;
+				const float ly = cy - bh + lh + 12.0f * zoom;
+
+				DrawButton(lx, ly, BUTTON_COLOR_BROWN, 0, 0, 0, false,
+					lw / (float)buttonImgData[0],
+					lh / (float)buttonImgData[1]);
+
+				{
+					//글자를 버튼 안에 맞춘다. 못 박은 배율로 그리면 문구가
+					//길어지는 순간 버튼 밖으로 흘러나간다. 여기 문구는
+					//공용이라 언제든 바뀐다.
+					const float room = lw - 24.0f * zoom;
+					float tz = 0.62f * zoom;
+					float tw = GetGoldAlphaTextWidth(data.link,
+						FONT_GOLD_LARGE, tz);
+
+					if (tw > room) {
+						tz *= room / tw;
+						tw = room;
+					}
+
+					DrawGoldAlphaText(x + w / 2 - tw / 2,
+						ly - lh / 2 + 14.0f * zoom, data.link,
+						FONT_GOLD_LARGE, tz, LEFT, false, false);
+				}
+
+				SetRectPoint(lx, ly, lw, lh, data.linkFunc);
+			}
+
+			cy -= bh + 12.0f * zoom;
+			continue;
+		}
 
 		for (int i = 0; i < data.count; i++) {
 			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);

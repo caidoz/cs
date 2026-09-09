@@ -9,6 +9,80 @@
 #define CREWZOOM                   1.5f           // 크루 줌
 #define MONSTERZOOM                1.5f           // 몬스터 줌
 #define BOSSZOOM                   2.5f           // 보스 줌
+
+// --- 보스 등장 연출 ---
+//
+// 아주 작게 나타나 제 크기까지 부풀어 오른다. 그동안 스폿라이트가 따라
+// 붙고 체력바가 0 에서 최대치까지 찬다.
+#define BOSSENTER_ZOOMFROM         0.15f          // 처음 배율(제 크기 대비)
+#define BOSSENTER_SPOT_INNER       1.10f          // 스폿 안쪽 반경(몸 대비)
+#define BOSSENTER_SPOT_OUTER       2.20f          // 스폿 바깥 반경(몸 대비)
+#define BOSSENTER_SPOT_DARK        0.62f          // 둘레를 얼마나 어둡게
+#define BOSSENTER_SHAKE            5              // 다 커졌을 때 화면 흔듦
+
+// --- 보스전 동료 스킬 포커싱 ---
+//
+// 판을 멈춘 동안 치는 동료에게만 빛을 남기고 둘레를 어둡게 한다.
+// 보스 등장에 쓰는 그 스폿라이트를 그대로 쓴다.
+#define BOSSRAID_SKILLSPOT_INNER   1.40f          // 안쪽 반경(몸 대비)
+#define BOSSRAID_SKILLSPOT_OUTER   3.00f          // 바깥 반경(몸 대비)
+#define BOSSRAID_SKILLSPOT_DARK    0.55f          // 둘레를 얼마나 어둡게
+#define BOSSRAID_SKILLSPOT_IN      8              // 어두워지는 데 걸리는 프레임
+
+// --- PVP 하단 HUD 한 줄 ---
+//
+// 한 줄이 [얼굴][스킬1][스킬2][스킬3] 이다. 얼굴과 아이콘이 세로로 같은
+// 가운데에 오도록 줄 높이는 둘 중 큰 것을 따른다.
+#define PVPHUD_PORTRAIT            (24 * _2X)
+#define PVPHUD_ICON                (16 * _2X)
+#define PVPHUD_GAP                 (2 * _2X)
+
+// --- 몬스터 점프와 착지 ---
+//
+// jump[] 는 한 프레임에 오르는 양이고 다 더하면 81 이다. 그 값을 몸집
+// (zoom)에 곱해 큰 몬스터가 제 키에 맞게 높이 뛰게 한다. 곱하지 않으면
+// 2.5배 보스가 보통 몬스터와 같은 81픽셀만 떠서 안 뛰는 것처럼 보인다.
+#define ENEMYJUMP_ZOOMPOWER        1              // 1이면 몸집에 비례
+
+// 착지할 때 화면을 흔든다. 이 배율보다 큰 몬스터만.
+#define ENEMYLAND_SHAKEZOOM        1.6f           // 이보다 크면 흔든다
+#define ENEMYLAND_SHAKE            3              // 흔드는 세기
+
+// --- 개구리 혀 마디 사이 ---
+//
+// 입에 붙는 자리는 objectData 의 ADDOBJ_FROG 행이 정한다. 여기 있는 것은
+// 마디와 마디 사이뿐이다. 그림에 매인 값이라 데이터로 안 뺀다.
+//
+// 마디 그림이 64 폭이라 이 값(×_2X)이 그보다 크면 마디 사이가 벌어진다.
+// 지금은 24 × _2X = 48 이라 16 만큼 겹친다. 겹침을 늘리면 마디 사이가
+// 더 촘촘해지는 대신 같은 거리를 덮는 데 마디가 더 든다.
+#define FROGTONGUE_PITCH           24             // 마디 사이
+
+// 혀 몸통 마디 수. 끝(SHOT0) 한 장이 뒤에 더 붙으므로 화면에는
+// 이 값 + 1 장이 나온다.
+//
+// 예전에는 GetDistanceTile() 로 닿는 데까지만 뻗었다. 그러면 벽이나
+// 대상까지의 거리에 따라 혀 길이가 매번 달라져 같은 공격이 다르게
+// 보였다. 길이를 못 박고 충돌도 그 다섯 마디로만 본다.
+#define FROGTONGUE_BODY            3              // 혀 몸통 마디 수
+// 보스전 하트바는 일반 하트바와 같은 그림을 조금 크게 그린다.
+// --- 보스전 스킬 카드가 동료에게서 내려오는 연출 ---
+//
+// 한 장씩 어긋나게 떠나는 간격(프레임). 0 이면 여섯이 한 덩어리로
+// 움직여서 카드가 아니라 판 하나가 내려온 것처럼 보인다.
+#define BOSSRAID_CARD_STAGGER      4
+
+// 한 장이 날아가는 데 걸리는 프레임. 마지막 장은 여기에
+// STAGGER * 5 가 더 붙는다.
+#define BOSSRAID_CARD_FLIGHT       48
+
+// 포물선의 높이. 바깥 열일수록 이 값에 배수가 붙어 더 크게 휜다.
+//
+// 크게 잡으면 꽂히는 것이 아니라 빙 돌아 들어가는 것으로 보인다.
+#define BOSSRAID_CARD_ARCH         (24.0f * _2X)
+#define BOSSRAID_CARD_ARCH_SIDE    0.35f
+
+#define BOSSHEARTBARZOOM           1.25f          // 보스 하트바 줌
 #define LOBBYZOOM                  1.2f           // 로비 줌
 #define BATTLEZOOM                 1.5f          // 배틀 줌
 #define SUMMONZOOM                 1.5f           // 소환 줌
@@ -23,8 +97,31 @@
 #define HEROCASTLEZOOM             1.5f           // 영웅 성 줌
 #define CREWCASTLEZOOM             1.2f           // 크루 성 줌
 #define HITMARKZOOM                0.5f           // 히트마크 줌
+
+// --- 오브젝트에 붙는 표시(디버프/속성)의 크기 ---
+//
+// 전에는 그 오브젝트의 zoom 을 그대로 썼다. 그러면 2.5배 보스에게 붙는
+// 디버프 연기와 속성 불꽃이 같이 2.5배가 되어 화면을 덮는다.
+//
+// 그림이 커지는 것과 거기 붙는 표시가 커지는 것은 다른 문제다. 표시는
+// "무슨 일이 일어났는가"를 알리는 것이라, 누구에게 붙든 같은 크기여야
+// 한눈에 읽힌다. 히트마크가 HITMARKZOOM 하나로 고정인 것과 같은 이유다.
+//
+// 0 이면 예전처럼 오브젝트 크기를 따라간다.
+#define OBJDEBUFFXZOOM             1.0f           // 붙는 표시의 크기
+
+// --- 좌상단 성 구매유도 버튼 ---
+//
+// 하단 메뉴가 네모인 것과 달리 동그랗게 둔다. 같은 모양이면 메뉴 하나가
+// 더 있는 것으로 읽혀서 유도가 안 된다.
+#define CASTLEPROMO_R              26             // 반지름
+#define CASTLEPROMO_PULSE          0.10f          // 숨쉬는 폭
+#define CASTLEPROMO_SPEED          0.09f          // 숨쉬는 속도
+
+
 #define DIORAMAZOOM                0.77f          // 디오라마 줌
 #define DIORAMAZOOM_BATTLE         0.77f//1.0f//          // 디오라마 배틀 줌
+#define DIORAMAZOOM_BOSSRAID       0.70f                 // 3일 보스전 전체 전장 줌
 #define DIORAMAZOOM_REMAINDER      1.5f           // 디오라마 나머지 줌
 #define BATTLEWEAPONZOOM           6.0f           // 배틀 무기 줌
 // --- 버튼 감촉
@@ -74,6 +171,22 @@
 // 연출이므로 공격 줌보다 약하게, 느리게 들어가고 나온다.
 #define FOCUSZOOMMAX               1.35f          // 포커스 대상 확대 배율
 #define FOCUSZOOMINFRAME           16             // 최대 배율까지 올라가는 프레임
+#define STATUSZOOMMAX              1.75f          // 상태이상은 일반 포커스보다 강하게 확대
+// 상태이상 부여 연출은 두 마디로 나뉜다.
+//   1초 : 아이콘이 튀어나와 흔들린다. 이때 턴 숫자는 아직 없다.
+//   1초 : 아이콘 한가운데에서 턴 숫자가 튀어나와 자리를 잡는다.
+// 해제 연출은 이 순서를 그대로 거꾸로 밟는다.
+#define STATUSAPPLYSHAKE           60             // 아이콘만 흔드는 마디
+#define STATUSAPPLYNUM             60             // 턴 숫자가 튀어나오는 마디
+#define STATUSAPPLYHOLD            (STATUSAPPLYSHAKE + STATUSAPPLYNUM)
+#define STATUSRECOVERFRAME         (STATUSAPPLYNUM + STATUSAPPLYSHAKE)
+
+// 상태이상 아이콘은 지금보다 조금 작게 그린다.
+#define STATUSICONSHRINK           0.72f
+
+// 같은 상태이상이 쌓일 수 있는 최대 턴. 골드 숫자 한 자리에 들어가야 한다.
+#define DEBUF_MAXTURN              9
+#define STATUSAPPLYFRAME           (FOCUSZOOMINFRAME + STATUSAPPLYHOLD)
 #define FOCUSZOOMHOLD              (FPS * 4 / 5)  // 당긴 채로 물고 있는 프레임
 #define FOCUSZOOMCOOL              (FPS * 3 / 2)  // 다음 연출을 받기까지의 쿨다운
 #define FOCUSZOOM_MAXREQ           16             // 한 번에 쌓아둘 수 있는 요청 수
@@ -86,6 +199,7 @@
 #define FOCUSPRI_CREWCHANGE        35             // 동료 교체
 #define FOCUSPRI_BOSSSUMMON        30             // 보스/특수 몬스터 소환
 #define FOCUSPRI_BOXDROP           20             // 상자 드랍
+#define FOCUSPRI_STATUS            25             // 턴 시작 상태이상
 #define FOCUSPRI_SUMMON            10             // 일반 몬스터 소환
 
 // ---
@@ -113,6 +227,7 @@
 #define BAR_ENEMYUSER_ZOOM         1.0f           // 적 유저 바 줌
 #define BAR_ENEMYUSER_BOX_ZOOM     1.0f           // 적 유저 박스 바 줌
 #define BAR_MAINSHOP_ZOOM          0.95f           // 메인샵 바 줌
+#define BAR_SOCIAL_ZOOM            BAR_MAINSHOP_ZOOM // 소셜 바는 메인샵과 같은 규격
 #define BAR_DAILYQUEST_ZOOM        1.0f           // 일일퀘스트 바 줌
 #define BAR_CREWUPGRADE_ZOOM       1.0f           // 크루 업그레이드 바 줌
 #define BAR_COLLECTIONS_ZOOM       0.95f           // 컬렉션 바 줌

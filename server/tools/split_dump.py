@@ -40,6 +40,7 @@ TABLE_ORDER = [
     'battle_session',
     'battle_enemy',
     'battle_enemy_effect',
+    'hero_effect',
     'pvp_house',
     'pvp_house_crew',
     'pvp_house_look',

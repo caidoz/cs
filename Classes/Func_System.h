@@ -16,6 +16,7 @@ int AddLog(unsigned char type, unsigned short cmf, unsigned short cmf2, unsigned
 void AddSimpleLog(int iconType, int a, int b, int c, int textIdx);
 
 void AddBar(BAR *, signed long long, int countFrame);
+void ClampBarCount(BAR* barP);
 void InitTarget(void);
 void ArrangeEnemyTarget(void);
 void ArrangeEnemyHpBar(void);

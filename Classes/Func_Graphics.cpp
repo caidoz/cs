@@ -25,7 +25,10 @@ void HitZoomResume(void)
 //곱셈이 계속 걸려 화면 전체가 1픽셀씩 미세하게 떨린다.
 bool HitZoomOn(void)
 {
-	return worldDrawing && !hitZoomHold && (hitZoom > 1.001f);
+	//3일 보스전은 로빈과 여섯 동료, 보스를 한눈에 보면서 조작하는 모드다.
+	//공격/스킬/상태이상 포커스가 걸려도 월드 확대는 적용하지 않는다.
+	return drawHandle != MD_BOSSRAID
+		&& worldDrawing && !hitZoomHold && (hitZoom > 1.001f);
 }
 
 //화면좌표를 타격 줌이 걸린 자리로 옮긴다. 줌 중심에서 hitZoom배 만큼 밀어낸다.
@@ -297,6 +300,26 @@ static void FocusZoomPickRequest(void)
 //지금 공격 중인 아군을 찾는다. 없으면 -1.
 //pObj->attack은 공격이 시작될 때 켜지고 스킬표의 _END에서 꺼지므로
 //공격의 시작과 끝을 그대로 알려준다.
+/* 이번 턴에 공격 줌을 써도 되는가.
+ *
+ * 룰렛이 셋 다 같은 동료로 맞은 턴에서만 쓴다.
+ *
+ * 한 라운드에 동료가 여러 번 치는데 1~2개짜리 평타까지 화면을 당기니
+ * 예닐곱 번씩 줌이 들락거려 어지러웠다. 셋이 맞는 것은 그 라운드의 한
+ * 장면이므로 그때만 당긴다.
+ *
+ * 히어로 턴은 룰렛이 정하는 것이 아니므로 지금까지대로 둔다.
+ *
+ * 상태이상이 걸리는 순간은 이 판단을 거치지 않는다. HitZoomUpdate 가
+ * statusApplyFxFrame 을 먼저 보고 더 강하게(STATUSZOOMMAX) 당긴다. */
+static bool RouletteZoomAllowed(void)
+{
+	if (turn < CREW || turn >= CREW + MAXCREW)
+		return true;
+
+	return GetSameRouletteCnt(turn - CREW) >= 3;
+}
+
 static int HitZoomAttacker(void)
 {
 	int i;
@@ -305,9 +328,40 @@ static int HitZoomAttacker(void)
 	case MD_PLAY:
 	case MD_BATTLE:
 		break;
+
+	case MD_BOSSRAID:
+		//---- 보스전 ----
+		//
+		//보스전은 턴이 없다. 여섯이 저마다 제 시계로 친다. 치는 놈을 아무나
+		//무는 방식(아래 attack 검사)을 그대로 쓰면 카메라가 쉬지 않고
+		//흔들려서 아무것도 안 보인다.
+		//
+		//사람이 눌러서 판을 세운 그 스킬 하나만 본다. 멈춘 이유와 보는
+		//대상이 같아야 한다.
+		//
+		//여기서 값을 내주면 나머지는 일반 전투와 같은 길로 간다.
+		//
+		//    HitZoomGetCombatView  맞는 적까지 한 화면에 담는다
+		//    HitZoomUpdate         들어갈 때/나올 때 속도가 다르다
+		//    DrawDiorama           이 값을 최전면에 그린다
+		//
+		//스킬이 끝나면 -1 이 되고, 그 세 가지가 한꺼번에 제자리로 돌아간다.
+		{
+			const int owner = GetBossRaidSkillFreezeOwner();
+
+			if (owner < 0 || !ao[CREW + owner].active
+				|| ao[CREW + owner].dead)
+				return -1;
+
+			return CREW + owner;
+		}
+
 	default:
 		return -1;
 	}
+
+	if (!RouletteZoomAllowed())
+		return -1;
 
 	for (i = PLAYER; i < TOTALCHAR; i++) {
 		if (ao[i].active && ao[i].attack)
@@ -382,7 +436,99 @@ void HitZoomUpdate(void)
 {
 	//MD_BATTLE은 고정된 전투 화면 구성을 유지해야 하므로 캐릭터 공격 줌과
 	//그에 딸린 히트스톱을 사용하지 않는다. 상자 드랍 등의 연출 줌은 유지한다.
-	int attacker = (drawHandle == MD_BATTLE) ? -1 : HitZoomAttacker();
+	int attacker;
+	int statusObj = -1;
+
+	//상태이상은 대부분 공격의 데미지 판정 안에서 걸린다. 일반 포커스 큐는
+	//공격 시퀀스가 끝날 때까지 기다리기 때문에, 그 사이 0.5초짜리 적용 연출이
+	//먼저 끝나 버렸다. 적용 타이머가 살아 있는 동안에는 공격 줌보다 우선해서
+	//대상을 직접 바라본다. 이러면 캐릭터 정지/점멸과 카메라가 같은 프레임을 쓴다.
+	//살아 있는 적용 타이머를 모은다. 카메라는 그중 하나만 본다.
+	//
+	//주인이 죽거나 빠졌는데 타이머만 남으면, 그 개체의 MoveObj 가 매 프레임
+	//일찍 돌아오면서 아무도 그 타이머를 줄이지 않는다. 그러면 턴이 영영
+	//안 넘어간다. 그런 것은 여기서 지운다.
+	//중첩 팝은 멈춤 없이 흘려보낸다. 화면을 굳히지 않으므로 여기서 먼저
+	//줄이고 아래 판단에는 넣지 않는다.
+	for (int i = PLAYER; i < NEUTRAL; i++) {
+		if (statusStackFxFrame[i] <= 0)
+			continue;
+
+		if (!ao[i].active || ao[i].dead)
+			statusStackFxFrame[i] = 0;
+		else
+			statusStackFxFrame[i]--;
+	}
+
+	//부여와 해제를 같은 자리에서 몬다. 해제도 부여를 거꾸로 돌리는 연출이라
+	//같은 길이 동안 월드를 멈추고 대상을 봐야 한다.
+	for (int i = PLAYER; i < NEUTRAL; i++) {
+		if (statusApplyFxFrame[i] <= 0 && statusRecoverFxFrame[i] <= 0)
+			continue;
+
+		if (!ao[i].active || ao[i].dead) {
+			statusApplyFxFrame[i] = 0;
+			statusRecoverFxFrame[i] = 0;
+			continue;
+		}
+
+		//부여가 있으면 그쪽을 먼저 본다. 해제는 기다렸다 나온다.
+		if (statusObj < 0 || (statusApplyFxFrame[i] > 0
+			&& statusApplyFxFrame[statusObj] <= 0))
+			statusObj = i;
+	}
+
+	if (statusObj >= 0) {
+		float nextZoom = Min(STATUSZOOMMAX,
+			hitZoom + (STATUSZOOMMAX - 1.0f) / FOCUSZOOMINFRAME);
+
+		HitZoomSetFocusCenter(xOffset + (int)ao[statusObj].x - rx,
+			STATUSWIN_Y + (rh - 4) * TSIZE - (int)ao[statusObj].y - ry,
+			nextZoom);
+
+		//진행 중이던 공격 줌이 다음 프레임에 다시 대상을 빼앗지 않게 한다.
+		hitZoomFrame = 0;
+		//상태이상 관찰 중에는 월드 갱신을 완전히 멈춘다. 타이머는 여기서
+		//직접 진행해 MoveObj가 멈춰도 60프레임 뒤 정상적으로 빠져나간다.
+		hitStopFrame = 1;
+		hitZoom = nextZoom;
+
+		//살아 있는 타이머를 전부 진행시킨다.
+		//
+		//전에는 카메라가 보는 하나만 줄였다. 둘이 동시에 걸리면 뒤엣것은
+		//앞엣것이 끝날 때까지 그대로 멈춰 있고, 그동안 그 개체의 MoveObj 가
+		//매 프레임 일찍 돌아와 턴이 안 넘어갔다.
+		int remain = 0;
+
+		for (int i = PLAYER; i < NEUTRAL; i++) {
+			if (statusApplyFxFrame[i] > 0) {
+				statusApplyFxFrame[i]--;
+
+				if (statusApplyFxFrame[i] > 0)
+					remain++;
+				else
+					statusApplyFxFrame[i] = 0;
+			}
+
+			if (statusRecoverFxFrame[i] > 0) {
+				statusRecoverFxFrame[i]--;
+
+				if (statusRecoverFxFrame[i] > 0)
+					remain++;
+				else
+					statusRecoverFxFrame[i] = 0;
+			}
+		}
+
+		//다 끝난 프레임에 정지 플래그까지 같이 풀어, 다음 동료의 MoveObj 가
+		//같은 프레임부터 다시 진행되게 한다.
+		if (remain == 0)
+			hitStopFrame = 0;
+
+		return;
+	}
+
+	attacker = (drawHandle == MD_BATTLE) ? -1 : HitZoomAttacker();
 
 	//쌓인 연출 요청 중 하나를 고른다. 공격 줌이 걸려 있으면 안에서 알아서 기다린다.
 	FocusZoomPickRequest();
@@ -773,13 +919,32 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 
 	int tempAlpha = m_lgrpAlpha;
 
+	//그릴 자리를 실수로도 들고 간다.
+	//
+	//x, y 는 정수인데 그려질 크기는 w * zoom 이라 소수다. 그래서 옆으로
+	//이어 붙이는 그림(개구리 혀, 위성 레이저 기둥, 성보스 팔)은 한 장마다
+	//끝이 조금씩 모자라 실틈이 보였다. 맨 아래에서 양쪽 끝을 같은 규칙으로
+	//격자에 맞춰 그 틈을 없앤다.
+	float fx = (float)x;
+	float fy = (float)y;
+	int preClipX;
+	int preClipY;
+
 	//타격 줌. 클리핑보다 먼저 옮겨야 한다. clipX/clipY는 화면상의 플레이영역이라
 	//줌과 무관하게 그대로 두는 것이 맞고, 옮긴 뒤 그 영역으로 잘라야 한다.
 	if (HitZoomOn()) {
-		HitZoomPoint(&x, &y);
+		//HitZoomPoint 와 같은 식이되 소수를 버리지 않는다. 여기서 깎으면
+		//이어 붙인 두 장의 맞닿는 끝이 서로 다른 값으로 떨어진다.
+		fx = hitZoomCX + (fx - hitZoomCX) * hitZoom;
+		fy = hitZoomCY + (fy - hitZoomCY) * hitZoom;
+		x = (int)fx;
+		y = (int)fy;
 		zoomX *= hitZoom;
 		zoomY *= hitZoom;
 	}
+
+	preClipX = x;
+	preClipY = y;
 
 #ifdef CLIPPING
 
@@ -962,6 +1127,35 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 
 #endif
 
+	//클리핑이 자리를 옮겼으면 그 값이 곧 정답이다(clipX/clipY 는 정수다).
+	if (x != preClipX)
+		fx = (float)x;
+	if (y != preClipY)
+		fy = (float)y;
+
+	//양쪽 끝을 픽셀 격자에 맞춘다.
+	//
+	//크기를 반올림하는 게 아니라 "끝나는 자리"를 반올림하고 그 차이를 크기로
+	//삼는 것이 요점이다. 이어 붙인 두 장은 앞 장의 끝과 뒷 장의 시작이
+	//실수로는 같은 값이므로, 같은 규칙으로 반올림하면 정수로도 같은 값이
+	//되어 틈도 겹침도 안 생긴다.
+	//
+	//돌려 그리는 그림은 축이 어긋나 이 셈이 성립하지 않으므로 건드리지
+	//않는다. 앵커가 (0,1)이라 x 는 왼쪽, y 는 위쪽 끝이다.
+	if (cmfRotation == 0 && rotation == 0.0f && w > 0 && h > 0) {
+		float left = floorf(fx + 0.5f);
+		float top = floorf(fy + 0.5f);
+		float right = floorf(fx + (float)w * zoomX + 0.5f);
+		float bottom = floorf(fy - (float)h * zoomY + 0.5f);
+
+		if (right - left >= 1.0f && top - bottom >= 1.0f) {
+			zoomX = (right - left) / (float)w;
+			zoomY = (top - bottom) / (float)h;
+			fx = left;
+			fy = top;
+		}
+	}
+
 	if (alpha > 0) {
 		SetAlpha(alpha);
 	}
@@ -1045,7 +1239,7 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 	}
 
 	renderSprite[getSpriteIdx]->setTextureRect(Rect(xs, ys, w, h));
-	renderSprite[getSpriteIdx]->setPosition(Vec2(x, y));
+	renderSprite[getSpriteIdx]->setPosition(Vec2(fx, fy));
 
 	if (baseColor) {
 		if (baseColor == 0xFFFFFF && !grayScale) {
@@ -1976,12 +2170,19 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	int sortedCrewY[CAP_CREW + TOTALCHAR];
 	float zoomBefore = 1.0f;
 	int objStartY = STATUSWIN_Y + (rh - 4) * TSIZE;
+	float worldXBack[TOTALOBJECT];
+	float worldYBack[TOTALOBJECT];
+	float worldNyBack[TOTALOBJECT];
+	bool bossWorldScaled = false;
 
 	memset(&sortedCrewIdx, -1, sizeof(sortedCrewIdx));
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
-	
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
+
+	// PVP는 상대 성 디오라마 자체가 전장 배경이다. 아래의 일반 방 타일/버퍼를
+	// 다시 얹으면 초기화된 버퍼의 검은 판이 성을 덮으므로 환경 레이어만 건너뛴다.
+	if (drawHandle != MD_PVP) {
 #ifdef MAPTEST
 	SetAlpha(8);
 	SetSectionClip(xOffset, DY, DX - 2 * xOffset, DY - STATUSWIN_Y, false);
@@ -2081,6 +2282,25 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	//#endif
 	SetAlpha(32);
 #endif
+	}
+
+	// 디오라마 이미지만 축소하면 캐릭터와 상자가 원래 화면 좌표에 남는다.
+	// 보스전에서는 진입 직전 배치를 기준으로 위치도 같은 비율로 변환하고,
+	// 그리는 동안만 값을 바꾼 뒤 물리 좌표는 즉시 복원한다.
+	const float bossWorldScale = GetBossRaidWorldScale();
+	if (bossRaidMode && Abs(bossWorldScale - 1.0f) > 0.001f) {
+		const float centerX = (float)(rw - 4) * TSIZE / 2.0f;
+		const float floorY = (float)(rh - 4) * TSIZE;
+		for (i = 0; i < TOTALOBJECT; ++i) {
+			worldXBack[i] = ao[i].x;
+			worldYBack[i] = ao[i].y;
+			worldNyBack[i] = ao[i].ny;
+			ao[i].x = centerX + (ao[i].x - centerX) * bossWorldScale;
+			ao[i].y = floorY - (floorY - ao[i].y) * bossWorldScale;
+			ao[i].ny = floorY - (floorY - ao[i].ny) * bossWorldScale;
+		}
+		bossWorldScaled = true;
+	}
 
 	//if (drawHandle == MD_PLAY)
 	switch (drawHandle) {
@@ -2088,6 +2308,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	case MD_PLAY:
 	case MD_BATTLE:
 	case MD_GACHA:
+	case MD_PVP:
+	case MD_BOSSRAID:
 		
 		if (!effect.color)
 			for (i = NEUTRAL; i < ITEMOBJ; i++) {
@@ -2527,9 +2749,18 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//
 		//빠지는 것은 앞서 그리던 한 장뿐이고 뒤쪽 루프가 그대로 그리므로,
 		//겹치지 않던 화면에서는 보이는 결과가 달라지지 않는다.
+		//
+		//최전면 대상은 여기서 정한다. 보스전에서는 동료 칸이 그 대상이 되므로
+		//이 루프보다 앞에서 알고 있어야 걸러낼 수 있다.
+		const int frontHeroObj = HitZoomAttacker();
+
 		for (i = NPC; i >= CREW; i--) {
 			//소환수 칸과 그 부속은 아래 전용 루프가 그린다.
 			if (i >= SOLDIER && i < SOLDIER + MAXENEMYOBJ)
+				continue;
+
+			//최전면에 그릴 것은 여기서 빼둔다. 아래에서 마지막에 한 번 그린다.
+			if (i == frontHeroObj)
 				continue;
 
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
@@ -2571,11 +2802,50 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//몸집은 소환될 때 한 번 재둔 값을 쓴다(gDrawSizeAtSpawn). 매 프레임
 		//지금 모션으로 재면 순서가 흔들린다 - 때리는 동안에는 팔을 뻗어
 		//커지고 웅크리면 작아지므로 그때마다 앞뒤가 뒤집힌다..
+		//부모가 묶어서 그리는 칸만 목록에서 뺀다.
+		//
+		//배와 흑룡은 뒤따르는 칸들을 부모가 제 몸으로 한꺼번에 그린다. 정렬
+		//전에는 그리고 나서 i 를 그 칸수만큼 건너뛰어 넘겼는데, 정렬한 뒤로는
+		//순서가 섞여 건너뛸 수가 없다. 그래서 목록에 넣을 때 빼둔다.
+		//
+		//전에는 "부모가 적 범위에 있으면 뺀다"로 잡았다. 그러면 개구리 혀처럼
+		//스스로 그려져야 하는 자식까지 같이 빠져서 아예 안 보였다. 부모가
+		//실제로 묶어 그리는 두 종류만 짚는다.
+		bool groupPart[NEUTRAL - ENEMY] = { false };
+
+		for (i = ENEMY; i < NEUTRAL; i++) {
+			int parts = 0;
+			int j;
+
+			if (!ao[i].active)
+				continue;
+
+			if (ao[i].type == ENEMY_SHIP
+				|| ao[i].type == ENEMY_SHIP_RED
+				|| ao[i].type == ENEMY_SHIP_BLUE
+				|| ao[i].type == ENEMY_SHIP_PURPLE
+				|| ao[i].type == ENEMY_SHIP_GREEN
+				|| ao[i].type == ENEMY_SHIP_GOLD
+				|| ao[i].type == ENEMY_SHIP_BLACK)
+				parts = 4;
+			else if (ao[i].type == ENEMY_DARKDRAGON
+				|| ao[i].type == ENEMY_DARKDRAGON_RED
+				|| ao[i].type == ENEMY_DARKDRAGON_BLUE
+				|| ao[i].type == ENEMY_DARKDRAGON_PURPLE
+				|| ao[i].type == ENEMY_DARKDRAGON_GREEN
+				|| ao[i].type == ENEMY_DARKDRAGON_GOLD
+				|| ao[i].type == ENEMY_DARKDRAGON_BLACK)
+				parts = ao[i].status;
+
+			for (j = i + 1; j <= i + parts && j < NEUTRAL; j++)
+				groupPart[j - ENEMY] = true;
+		}
+
 		int enemyDrawOrder[NEUTRAL - ENEMY];
 		int enemyDrawCount = 0;
 		for (i = ENEMY; i < NEUTRAL; i++) {
 			if (ao[i].active && ao[i].type != NPC_SHIP
-				&& (ao[i].mom == i || ao[i].mom < ENEMY || ao[i].mom >= NEUTRAL))
+				&& !groupPart[i - ENEMY])
 				enemyDrawOrder[enemyDrawCount++] = i;
 		}
 
@@ -2598,6 +2868,32 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		#undef DrawSizeOf
+
+		//---- 스킬 대상은 맨 앞으로 ----
+		//
+		//판을 멈추고 한 명만 치는 동안, 맞는 쪽이 다른 적 뒤에 가리면 무엇을
+		//때렸는지 안 보인다. 크기 순서를 무시하고 맨 나중에 그린다.
+		//
+		//치는 쪽(frontHeroObj)을 맨 앞으로 빼는 것과 같은 이유다. 둘이 같이
+		//앞으로 나와야 한 장면이 된다.
+		{
+			const int skillOwner = GetBossRaidSkillFreezeOwner();
+			const int hitTarget = skillOwner >= 0
+				? ao[CREW + skillOwner].target : 0;
+
+			if (hitTarget >= ENEMY && hitTarget < NEUTRAL) {
+				for (int a = 0; a < enemyDrawCount; a++) {
+					if (enemyDrawOrder[a] != hitTarget)
+						continue;
+
+					for (int b = a; b + 1 < enemyDrawCount; b++)
+						enemyDrawOrder[b] = enemyDrawOrder[b + 1];
+
+					enemyDrawOrder[enemyDrawCount - 1] = hitTarget;
+					break;
+				}
+			}
+		}
 
 		for (int enemyDrawIdx = 0; enemyDrawIdx < enemyDrawCount; enemyDrawIdx++) {
 			i = enemyDrawOrder[enemyDrawIdx];
@@ -2659,7 +2955,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		
 		//고정 히어로와 SOLDIER 칸의 소환 히어로를 통틀어 현재 공격자를
 		//마지막에 한 번 더 그릴 수 있도록 일반 순서에서는 제외한다.
-		int frontHeroObj = HitZoomAttacker();
+		//frontHeroObj 는 동료 루프 앞에서 이미 정해뒀다.
 
 		//히어로 그리기
 		for (i = CREW - 1; i >= 0; i--) {
@@ -2756,7 +3052,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 
 		//체력바
-		for (i = ITEMOBJ - 1; i >= 0; i--) {
+		for (i = ITEMOBJ - 1; drawHandle != MD_PVP && i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP && ((i < TOTALCHAR && ao[i].ps[PS_HP] > 0) || (i >= ENEMY && i < NEUTRAL && ao[i].maxhp > 0)) && ao[i].moveHandler != REGENMOVE) {
 
 				zoomBefore = ao[i].zoom;
@@ -2925,12 +3221,29 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			}
 		}
 
-		//���� ���� �ð� �׷��ֱ�
-		for (i = ENEMY; i < NEUTRAL; i++) {
-			if (ao[i].active && ao[i].moveHandler < BULLET3WAYMOVE && ao[i].skillIdx > 0) {
-				DrawFrame(ao[i].x + 2 * _2X * DIR(ao[i].dirF) - rx - 24 * _2X, objStartY - (ao[i].y + ao[i].cpy - 19 * _2X - OBJIMGGAP) - ry, 48 * _2X, 20 * _2X, FRAME_SHOPBALLOON);
-			}
+		//적의 스킬 시전 말풍선은 지웠다.
+		//
+		//DrawFrame 으로 빈 틀만 그리고 안에 아무것도 안 넣는 코드였다.
+		//이름은 "스킬 시간"인데 시간을 그리는 줄이 없었다 - 만들다 만 자리다.
+		//
+		//일반 플레이에서는 동료가 앞쪽 칸에 있어 이 범위(ENEMY..NEUTRAL)를
+		//안 타서 드러나지 않았다. PVP 는 수비측 동료를 적 칸에 세우므로,
+		//일반 플레이에서 켜져 있던 skillIdx 가 그대로 넘어와 빈 말풍선이
+		//머리마다 떴다.
 
+		//생성 그리기
+		//
+		//99e5b44 에서 이 블록이 통째로 지워졌다. SUMMONHEARTZOOM 은 정의만
+		//남아 아무 데서도 안 쓰이고 있었고, 그래서 몬스터가 소환될 때 심장이
+		//안 그려졌다.
+		for (i = SOLDIER; i < NEUTRAL; i++) {
+			if (ao[i].active && ao[i].drawHandler == REGENDRAW && ao[i].type != NPC_SHIP) {
+				//소환 연출로 덧그리는 마왕의 심장. 몬스터 배율을 그대로 쓰면
+				//몬스터를 덮을 만큼 커서 소환 대상이 안 보인다.
+				float heartZoom = ao[i].zoom * dioramaZoom * SUMMONHEARTZOOM;
+
+				DrawCmfDetail(CMF_NPC_HEART, summonMotion[Min(19, ao[i].frame)], ao[i].x - rx, objStartY + (float)64 * _2X * heartZoom - (PxlUp(&ao[i]) + ao[i].cy / 2 - OBJIMGGAP) - ry, LEFT, heartZoom, false, false);
+			}
 		}
 
 		for (i = 0; i < TOTALHITMARK; i++) {
@@ -2956,6 +3269,14 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			EffectDraw(x + (float)STATUSWIN_Y, zoom);
 
 		break;
+	}
+
+	if (bossWorldScaled) {
+		for (i = 0; i < TOTALOBJECT; ++i) {
+			ao[i].x = worldXBack[i];
+			ao[i].y = worldYBack[i];
+			ao[i].ny = worldNyBack[i];
+		}
 	}
 }
 
@@ -5211,15 +5532,23 @@ int GetCrewBulletAni(int idx)
 //aniFrame은 계속 늘어나는 값이면 된다. 회전각과 맥동 위상의 기준으로만 쓴다.
 void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame, int dirX)
 {
-	int xs = (idx % CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
-	int ys = (idx / CREWBULLETICONPERLINE) * CREWBULLETICONSIZE;
+	//한 칸에서 테두리 한 겹을 빼고 쓴다.
+	//
+	//돌리거나 키우면서 그리면 칸의 가장자리 바로 바깥까지 같이 읽는다.
+	//원본 이미지가 칸끼리 붙어 있어서 옆 칸이 잔상으로 딸려 나온다.
+	//
+	//한 픽셀을 안으로 들이면 읽는 자리가 칸 안에 머문다.
+	const int inset = 1;
+	const int cut = CREWBULLETICONSIZE - inset * 2;
+	int xs = (idx % CREWBULLETICONPERLINE) * CREWBULLETICONSIZE + inset;
+	int ys = (idx / CREWBULLETICONPERLINE) * CREWBULLETICONSIZE + inset;
 
 	if (aniFrame < 0)
 		aniFrame = -aniFrame;
 
 	switch (ani) {
 	case CREWBULLETANI_SPIN:
-		RotateImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys, x, y, false,
+		RotateImage(cut, cut, xs, ys, x, y, false,
 			(float)(aniFrame % CREWBULLET_SPINFRAME) * 360.0f / (float)CREWBULLET_SPINFRAME,
 			false, false, zoom, Vec2(0.5f, 0.5f), sprite[CREWBULLET_IMG], CREWBULLET_IMG);
 		break;
@@ -5229,16 +5558,16 @@ void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame,
 		float pulse = 1.0f + CREWBULLET_PULSEAMP
 			* sinf(3.141592f * 2.0f * (float)(aniFrame % CREWBULLET_PULSEFRAME) / (float)CREWBULLET_PULSEFRAME);
 
-		RotateImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys, x, y, false, 0.0f,
+		RotateImage(cut, cut, xs, ys, x, y, false, 0.0f,
 			false, false, zoom * pulse, Vec2(0.5f, 0.5f), sprite[CREWBULLET_IMG], CREWBULLET_IMG);
 		break;
 	}
 	default:
 		//그냥 날아간다. 기존 그리기를 그대로 쓰되 중심좌표를 좌상단으로 되돌려 넘긴다.
 		//엘케인의 검광탄/일섬은 원본이 오른쪽을 향한다. 진행 방향이 왼쪽이면 뒤집는다.
-		DrawImage(CREWBULLETICONSIZE, CREWBULLETICONSIZE, xs, ys,
-			x - (float)(CREWBULLETICONSIZE / 2) * zoom,
-			y + (float)(CREWBULLETICONSIZE / 2) * zoom,
+		DrawImage(cut, cut, xs, ys,
+			x - (float)(cut / 2) * zoom,
+			y + (float)(cut / 2) * zoom,
 			(idx == 128 || idx == 129) && dirX == LEFT,
 			false, false, false, m_lgrpAlpha, zoom,
 			sprite[CREWBULLET_IMG], CREWBULLET_IMG);
@@ -5276,17 +5605,78 @@ static void DrawSkillCardWinFrame(int x, int y, float w, float h, float z)
 	DrawImageScale(cap, cap, srcRight, srcBottom, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
 }
 
-//카드 속을 흰색으로 채운다.
-//
-//스킬 아이콘은 그림 자체가 네모난 판이라 카드를 채우지만, 총탄과 몬스터는
-//잘라낸 그림이라 뒤가 비어 카드 뒤에 있는 것이 그대로 비친다. 그래서 먼저
-//깔아 준다.
-static void DrawSkillCardPlate(int x, int y, float w, float h, float zoom)
+//상태이상 전용 64x64 카드. centerX/centerY는 화면상의 카드 중심이다.
+//줌이 변할 때 좌상단을 반 크기만큼 같이 보정해 화면에서 밀리지 않는다.
+void DrawBuffCard(int debuffIdx, int centerX, int centerY, float zoom, float rotation)
+{
+	if (debuffIdx < 0 || debuffIdx >= TOTALDEBUF)
+		return;
+
+	const float w = (float)SKILLCARDSIZE_X * zoom;
+	const float h = (float)SKILLCARDSIZE_Y * zoom;
+	const float iconZoom = zoom * 2.0f;
+	const float x = (float)centerX - w / 2.0f;
+	const float y = (float)centerY + h / 2.0f;
+
+	MemRect(x, y, w, h, COLOR_WHITE);
+	RotateImage(64, 64, (debuffIdx % 3) * 64, (debuffIdx / 3) * 64,
+		centerX, centerY, false, rotation, false, false, iconZoom,
+		Vec2(0.5f, 0.5f), sprite[STATUSICON_IMG], STATUSICON_IMG);
+	DrawSkillCardWinFrame((int)x, (int)y, w, h, zoom);
+}
+
+static int GetSkillCardBackground(int ownerObj)
+{
+	if (ownerObj < CREW || ownerObj >= CREW + MAXCREW)
+		return -1;
+
+	int crewIdx = GetCrewIdxFromType(ao[ownerObj].type);
+	if (crewIdx < 0)
+		return -1;
+
+	return crewData[crewIdx * CREWDATASIZE + CREWDATA_CARDBG];
+}
+
+// 모든 스킬 카드는 여기서 바닥을 먼저 만든다. 동료가 소유한 카드라면
+// 동료 카드와 같은 CARDBG의 중앙을 잘라 쓰고, 소유자가 없는 카드만 기존
+// 흰 바닥을 사용한다.
+static void DrawSkillCardPlate(int x, int y, float w, float h, float zoom,
+	int backgroundIndex)
 {
 	const float inset = (float)(2 * _2X) * zoom;
+	if (backgroundIndex >= 0) {
+		// 실제 동료 카드가 쓰는 CARDBG_IMG의 198x288 셀 중앙에서
+		// 스킬 아이콘 크기의 정사각형만 잘라 카드 안쪽에 먼저 깐다.
+		const int cellW = 198;
+		const int cellH = 288;
+		const int crop = Min(cellW, SKILLICONSIZE);
+		const int xs = cellW * (backgroundIndex % 5) + (cellW - crop) / 2;
+		const int ys = cellH * (backgroundIndex / 5) + (cellH - crop) / 2;
+		DrawImageScale(crop, crop, xs, ys,
+			x + inset, y - inset, false, false, false, false, false,
+			(w - inset * 2.0f) / crop,
+			(h - inset * 2.0f) / crop,
+			sprite[CARDBG_IMG], CARDBG_IMG);
+	}
+	else
+		MemRect(x + inset, y - inset, w - inset * 2.0f, h - inset * 2.0f,
+			COLOR_WHITE);
+}
 
-	MemRect(x + inset, y - inset, w - inset * 2.0f, h - inset * 2.0f,
-		COLOR_WHITE);
+static bool IsBahamutSkillCardEnemy(int enemyIdx)
+{
+	switch (enemyIdx) {
+	case ENEMY_BAHAMUT:
+	case ENEMY_BAHAMUT_RED:
+	case ENEMY_BAHAMUT_BLUE:
+	case ENEMY_BAHAMUT_PURPLE:
+	case ENEMY_BAHAMUT_GREEN:
+	case ENEMY_BAHAMUT_GOLD:
+	case ENEMY_BAHAMUT_BLACK:
+		return true;
+	default:
+		return false;
+	}
 }
 
 static void DrawSkillCardSummonMonster(int enemyIdx, int x, int y,
@@ -5299,25 +5689,37 @@ static void DrawSkillCardSummonMonster(int enemyIdx, int x, int y,
 	const float innerW = w - inset * 2.0f;
 	const float innerH = h - inset * 2.0f;
 
-	// 배경 -> 몬스터 -> 호출부의 금색 테두리 순서다.
-	DrawSkillCardPlate(x, y, w, h, zoom);
-
-	// DrawIcon도 내부에서 별도의 클립을 열기 때문에 컨트롤 마크의 카드
-	// 클립과 중첩되면 큰 몬스터(특히 가운데 공주 슬롯)가 통째로 잘릴 수 있다.
-	// DrawIcon의 SUMMON 배치식은 그대로 재사용하되 CMF를 한 번의 클립 안에
-	// 직접 그린다.
+	// DrawIcon의 SUMMON 배치식은 그대로 재사용하되 CMF만 카드 안쪽에서
+	// 잘라 낸다. 배경은 DrawSkillCard 진입부에서 이미 그렸고 호출부가
+	// 이 뒤에 금색 테두리를 그린다.
 	const float iconZoom = zoom * 4.0f;
 	const float footY = y - h + (float)(12 * _2X) * zoom;
-	const float monsterZoom = iconZoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx];
+	float monsterZoom = iconZoom * ENEMYICONZOOM * enemyIconZoom[enemyIdx];
+	float monsterX = x + w / 2.0f
+		+ (float)enemyBigIconPos[3 * enemyIdx + 1] * monsterZoom;
+
+	// 티어맷은 몸 전체보다 얼굴이 카드에 크게 보이도록 별도 보정한다.
+	if (IsBahamutSkillCardEnemy(enemyIdx)) {
+		monsterZoom *= 2.0f;
+		monsterX = x + w / 2.0f
+			+ (float)enemyBigIconPos[3 * enemyIdx + 1] * monsterZoom
+			- (float)(64 * _2X) * zoom;
+	}
+
+	SetSectionClip((int)(x + inset), (int)(y - inset),
+		(int)innerW, (int)innerH, false);
 
 	DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
 		enemyBigIconPos[3 * enemyIdx + 0],
-		x + w / 2.0f + (float)enemyBigIconPos[3 * enemyIdx + 1] * monsterZoom,
+		monsterX,
 		footY + (float)(enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * monsterZoom,
 		RIGHT, monsterZoom, false, false);
+
+	UnSectionClip(false);
 }
 
-void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverride)
+void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom,
+	int iconOverride, int ownerObj)
 {
 	float w = (float)SKILLCARDSIZE_X * zoom;
 	float h = (float)SKILLCARDSIZE_Y * zoom;
@@ -5326,14 +5728,16 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 	float itemValueZoom = 0.8f;
 	float bigNumWidth = (float)(SKILLCARDSIZE_X - ITEMICONSIZE - 1 * _2X) * itemValueZoom * zoom;
 	int enemyIdx;
+	const int backgroundIndex = GetSkillCardBackground(ownerObj);
+	// 기본 규칙: 배경을 무조건 가장 먼저 그린다.
+	DrawSkillCardPlate(x, y, w, h, zoom, backgroundIndex);
 
 
 	//curStar = maxStar = GetItemStar(type, detail, grade);
 	curStar = 0;
 	maxStar = ITEMMAXLEVEL;
 
-	//아이콘은 카드 안쪽 폭(64픽셀)에 맞춘다. SKILLICONSIZE와 CREWBULLETICONSIZE가
-	//둘 다 32*_2X라 2배로 그리면 정확히 64픽셀 자리를 채운다.
+	//배경 다음에는 투명 스킬 아이콘을 원래 크기로 그린다.
 	float iconZoom = zoom * 2.0f;
 	float iconSize = (float)SKILLICONSIZE * iconZoom;
 	float iconX = x + w / 2 - iconSize / 2;
@@ -5358,10 +5762,6 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 		//AddObject()가 총탄 오브젝트의 icon을 SKILLDATA_TARGET에서 가져오므로
 		//여기서도 같은 자리를 봐야 카드와 날아가는 그림이 일치한다.
 		//
-		//소환수와 마찬가지로 잘라낸 그림이라 흰 판을 먼저 깐다. 여기만
-		//빠져 있어서 총탄 카드만 뒤가 비쳤다.
-		DrawSkillCardPlate(x, y, w, h, zoom);
-
 		{
 			int bulletIcon = SkillBulletIcon(skillIdx);
 			float bulletIconX = iconX;
@@ -5413,7 +5813,6 @@ void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverr
 	DrawSkillCardWinFrame(x, y, w, h, zoom);
 
 }
-
 
 void DrawLock(int lv, int x, int y, float zoom)
 {
@@ -6370,7 +6769,18 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 		case BOX_REWARD5:
 		case BOX_REWARD6:
 		case BOX_REWARD7:
-			ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x - (float)40 * _2X / 2 * zoom, y + (float)12 * _2X * zoom, SHADOW_IMG, 2.0f * zoom);
+			//성/보상 상자의 그림자는 2 배로 그린다. 그런데 가운데로 미는
+			//값은 1 배 zoom 을 쓰고 있었다.
+			//
+			//크기와 자리가 다른 배율을 보면 그림자가 상자 밑이 아니라 한쪽으로
+			//비켜 앉는다. 상자를 크게 그릴수록 더 벌어진다.
+			{
+				const float sz = 2.0f * zoom;
+
+				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X,
+					x - (float)40 * _2X / 2 * sz, y + (float)12 * _2X * sz,
+					SHADOW_IMG, sz);
+			}
 			break;
 		}
 	}

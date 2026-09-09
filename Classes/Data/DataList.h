@@ -171,7 +171,7 @@
 	X(dx_walk, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
 	X(walkFrame, 1, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
 	X(crewBulletLvUpDmgPercent, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
-	X(crewData, 4, DPK_INT, 384, DPK_KEY_CREW, 6, 0) \
+	X(crewData, 4, DPK_INT, 448, DPK_KEY_CREW, 6, 0) \
 	X(jumpUpMotion, 2, DPK_INT, 56, DPK_KEY_NONE, 0, 0) \
 	X(jumpDownMotion, 2, DPK_INT, 107, DPK_KEY_NONE, 0, 0) \
 	X(backHomeMotion, 2, DPK_INT, 105, DPK_KEY_NONE, 0, 0) \

@@ -1008,7 +1008,7 @@ int GetMaxWaveCnt(void)
 	int i;
 
 	//AVK_MAXGAME 시연에서는 스킬과 함께 몬스터 세 마리의 모션도 본다.
-	if (gDemoForceRoulette)
+	if (gCombatStatusTest)
 		return 3;
 
 	//인터랙티브 전투 튜토리얼: 단계마다 몬스터를 딱 한 마리만 상대하게 한다.
@@ -1133,7 +1133,7 @@ void ObjectSkillSetting(OBJECT * pObj)
 }
 
 static int demoEnemyCurrent[3] = {
-	ENEMY_SNAIL, ENEMY_SKELETON, ENEMY_FROG
+	ENEMY_SNAIL, ENEMY_TREE, ENEMY_FROG
 };
 
 void WaveControler()
@@ -1243,10 +1243,10 @@ void WaveControler()
 	// AVK_MAXGAME 전투 테스트도 정식 wave[]와 같은 단위를 쓴다.
 	// 값은 프레임이며 아래 등장 조건에서 FPS로 나눠 초로 환산한다.
 	static const int demoEnemySpawnFrame[3] = {
-		0, 50, 100
+		0, 0, 0
 	};
 
-	if (!gDemoForceRoulette) {
+	if (!gCombatStatusTest) {
 		demoSpawnClockActive = false;
 	}
 	else if (!demoSpawnClockActive && robin.curWaveIdx == 0
@@ -1263,7 +1263,7 @@ void WaveControler()
 		// 읽고 있었기 때문에, 원본 세 슬롯의 시간이 같으면 세 마리가 동시에 나왔다.
 		// 테스트 적도 원본과 똑같이 프레임값으로 등장 시간을 지정한다.
 		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false &&
-			(gDemoForceRoulette
+			(gCombatStatusTest
 				? robin.playtime - demoSpawnStartFrame >= demoEnemySpawnFrame[Min(2, robin.curWaveIdx)]
 				: MC_knlCurrentTimeStamp() - robin.waveTimeStamp >=
 					wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS)
@@ -1277,7 +1277,7 @@ void WaveControler()
 				attackSequence = ATTACKSEQUENCE_READY;
 			}
 
-			if (gDemoForceRoulette) {
+			if (gCombatStatusTest) {
 				pObj->type = demoEnemyCurrent[Min(2, robin.curWaveIdx)];
 			}
 			else
@@ -1467,7 +1467,7 @@ void WaveControler()
 			robin.waveActive[robin.curWaveIdx] = true;
 
 			robin.curWaveIdx++;
-			if (gDemoForceRoulette && robin.curWaveIdx >= GetMaxWaveCnt())
+			if (gCombatStatusTest && robin.curWaveIdx >= GetMaxWaveCnt())
 				demoSpawnClockActive = false;
 
 			SaveGame();
@@ -1730,7 +1730,8 @@ void DrawWaveAnnouncement(void)
 	const int holdFrames = Max(1, FPS * 3 / 2);
 	const int totalFrames = moveFrames * 2 + holdFrames;
 	const float targetX = DX / 2.0f;
-	const float targetY = DY / 2.0f + 144.0f * _2X;
+	const float targetY = DY / 2.0f + 144.0f * _2X
+		+ GetBossRaidEntranceProgress() * 220.0f * _2X;
 
 	char suffix[3] = "th";
 	int mod100 = waveAnnounceNumber % 100;
@@ -1818,6 +1819,66 @@ void DrawWaveAnnouncement(void)
 	}
 }
 
+static int turnPhaseAnnounceFrame = 0;
+static bool turnPhaseAnnounceEnemy = false;
+static bool turnPhaseTouchLock = false;
+
+void StartTurnPhaseAnnouncement(bool enemyPhase)
+{
+	turnPhaseAnnounceEnemy = enemyPhase;
+	turnPhaseAnnounceFrame = 1;
+	if (!enemyPhase) {
+		turnPhaseTouchLock = true;
+		touchDisable = true;
+	}
+}
+
+bool IsTurnPhaseAnnouncementActive(void)
+{
+	return turnPhaseAnnounceFrame > 0;
+}
+
+void DrawTurnPhaseAnnouncement(void)
+{
+	if (turnPhaseAnnounceFrame <= 0)
+		return;
+
+	const int moveFrames = Max(1, FPS / 2);
+	const int holdFrames = Max(1, FPS);
+	const int totalFrames = moveFrames * 2 + holdFrames;
+	const char* text = turnPhaseAnnounceEnemy ? "ENEMY PHASE" : "ALLY PHASE";
+	const float zoom = turnPhaseAnnounceEnemy ? 1.35f : 1.45f;
+	const float textWidth = GetGoldAlphaTextWidth(text, FONT_GOLD_LARGE, zoom);
+	const float centerX = DX / 2.0f;
+	const float centerY = DY / 2.0f + 72.0f * _2X;
+	float x = centerX;
+
+	if (turnPhaseAnnounceFrame <= moveFrames) {
+		float t = (float)turnPhaseAnnounceFrame / moveFrames;
+		float eased = 0.5f - 0.5f * cosf(t * 3.14159265f);
+		x = -textWidth / 2.0f + (centerX + textWidth / 2.0f) * eased;
+	}
+	else if (turnPhaseAnnounceFrame > moveFrames + holdFrames) {
+		float t = (float)(turnPhaseAnnounceFrame - moveFrames - holdFrames) / moveFrames;
+		float eased = 0.5f - 0.5f * cosf(t * 3.14159265f);
+		x = centerX + (DX + textWidth / 2.0f - centerX) * eased;
+	}
+
+	DrawGoldAlphaText((int)x, (int)centerY, text, FONT_GOLD_LARGE,
+		zoom, CENTER, turnPhaseAnnounceEnemy, false);
+
+	turnPhaseAnnounceFrame++;
+	if (turnPhaseAnnounceFrame > totalFrames) {
+		turnPhaseAnnounceFrame = 0;
+		if (turnPhaseTouchLock) {
+			turnPhaseTouchLock = false;
+			if (!waveAnnounceTouchLock && !tutorialWaitingEnemyLand
+				&& !battleRewardTransitionLock)
+				touchDisable = false;
+		}
+	}
+}
+
 long long GetTotalWaveHp(int waveIdx)
 {
 	int i;
@@ -1829,14 +1890,14 @@ long long GetTotalWaveHp(int waveIdx)
 	// AVK_MAXGAME에서는 원래 wave[]의 몬스터 수와 관계없이 세 마리를
 	// 강제로 소환한다. 현재 HP는 세 마리 모두 BAR_BOSSHP에 더해지므로
 	// 최대 HP도 같은 세 슬롯을 합산해야 바의 비율이 1을 넘지 않는다.
-	if (gDemoForceRoulette)
+	if (gCombatStatusTest)
 		waveCount = GetMaxWaveCnt();
 
 	for (i = 0; i < waveCount; i++) {
 		monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 0];
-		if (monType != false || gDemoForceRoulette) {
+		if (monType != false || gCombatStatusTest) {
 			curHp = GetWaveHp(waveIdx, i);
-			if (gDemoForceRoulette)
+			if (gCombatStatusTest)
 				curHp *= 100;
 			
 			totalHp += curHp;
@@ -1888,29 +1949,22 @@ long long GetWaveHp(int waveIdx, int curWave)
 	//monType 으로 써서 ADDHP 를 가져왔다. 체력이 웨이브마다 널뛰던 원인이다.
 	int monType = wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + curWave * WAVEDATASIZE + 0];
 
-	//인터랙티브 전투 튜토리얼은 몬스터 타입/스폰 타이밍만 wave[]를 그대로 쓰고 체력은 여기서
-	//웨이브 순번에 맞춰 한 대씩 늘려간다(0:2, 1:3, 2:4 ...). 정규 공식을 그대로 쓰면 수천 단위라
-	//튜토리얼에서 몇 대를 때려도 안 죽는다.
-	//튜토리얼 4연전은 정규 공식(수천 단위)을 쓰면 몇 대를 때려도 안 죽는다.
-	//단계마다 "무엇을 배웠는지"가 드러나도록 체력을 직접 잡는다.
+	//인터랙티브 전투 튜토리얼은 몬스터 타입/스폰 타이밍만 wave[]를 그대로
+	//쓰고 체력은 4연전마다 따로 잡는다. 공격 데미지는 AttackObj()의 정규식을
+	//그대로 쓰므로 단계별 진행 속도는 체력 쪽에서만 조절한다.
 	if (IsTutorialPlaying()) {
 		switch (waveIdx) {
 		case TUTORIAL_WAVEIDX_1ST:
-			//"세바스찬이 때린다 -> HP가 남는다 -> 주인공이 마무리한다"를 보여줘야 해서 최소 2가 필요하다.
-			//크루의 공격이 마지막 1을 못 깎게 막는 처리는 AttackObj()에 있다.
-			return 2;
+			return TUTORIAL_WAVE_HP_1ST;
 		case TUTORIAL_WAVEIDX_2ND:
-			//동료가 한 명 늘었으니 그만큼만 더 준다.
-			return 3;
+			return TUTORIAL_WAVE_HP_2ND;
 		case TUTORIAL_WAVEIDX_3RD:
-			//하트 3배 베팅 공격에만 죽도록.
-			return 100;
+			return TUTORIAL_WAVE_HP_3RD;
 		case TUTORIAL_WAVEIDX_BOSS:
-			//동료 3중첩 강공격 한 방에 죽도록.
-			return TUTORIAL_BOSS_HP;
+			return TUTORIAL_WAVE_HP_BOSS;
 		}
 
-		return 2 + waveIdx;
+		return TUTORIAL_WAVE_HP_1ST;
 	}
 
 	//----------------------------------------------------------------------
@@ -1957,6 +2011,7 @@ bool IsArenaRunning(void)
 	case MD_PLAY:
 	case MD_DEMO:
 	case MD_GACHA:
+	case MD_PVP:
 	case MD_STAGECLEAR:
 		return true;
 	}
@@ -1975,6 +2030,10 @@ int SetEnemy(OBJECT *pObj)
 	pObj->active = true;
 	pObj->dead = false;
 	pObj->turnPosition = HERE;
+
+	//전투 확률 눈금을 비운다. 앞 웨이브에서 반쯤 찬 눈금이 남아 있으면
+	//새 몬스터의 첫 대에 치명타가 터져 유저가 셀 수 없다.
+	ClearProcAcc(GetObjFromPtr(pObj));
 	pObj->frame = 0;
 	pObj->mainFrame = 0;
 	pObj->dx = 0;
@@ -2009,7 +2068,7 @@ int SetEnemy(OBJECT *pObj)
 		//pObj->maxhp = pObj->hp = (50 + pObj->lv * 23 + pObj->lv * pObj->lv * 12 / 10) * 10;
 		//TEST
 		pObj->maxhp = pObj->hp = GetWaveHp(robin.waveIdx, robin.curWaveIdx);
-		if (gDemoForceRoulette)
+		if (gCombatStatusTest)
 			pObj->maxhp = pObj->hp = pObj->maxhp * 100;
 		//pObj->maxhp = pObj->hp = (robin.stage + 10) * (100 + enemyData[pObj->type * ENEMYDATASIZE + ENEMYDATA_ADDHP]);
 		//if (wave[robin.waveIdx * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 2] == MONSTERTYPE_BOSS) {
@@ -3566,6 +3625,8 @@ void DrawScreen(int x, int y, float zoom)
 	case MD_PLAY:
 	case MD_BATTLE:
 	case MD_GACHA:
+	case MD_PVP:
+	case MD_BOSSRAID:
 
 		SetScreenRatio();
 

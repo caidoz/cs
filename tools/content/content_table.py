@@ -91,8 +91,9 @@ SPECS = {
         'label_base': None,
         'id_table': 'crew',
         'layout': [
-            ('crewData', 'HeroData.h', 6, 0,
-             ['enemy_type', 'str', 'skill1', 'skill2', 'skill3', 'card_bg']),
+            ('crewData', 'HeroData.h', 7, 0,
+             ['enemy_type', 'str', 'skill1', 'skill2', 'skill3', 'card_bg',
+              'boss_cool']),
         ],
         'rules': [],
     },

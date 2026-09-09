@@ -35,9 +35,17 @@ void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
 void TitleSkillViewerCommand(int command);
+void TitleTermsCommand(int command);
 void OpeningDraw(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
+void StartPvpTest(void);
+void StartPvpTestBattle(void);
+bool IsPvpCrewActing(int crewSlot);
+int GetPvpSkillFreezeObj(void);
+void PvpFinishCrewSkill(OBJECT* pObj);
+void ExitPvpTest(void);
+void PvpTestDraw(void);
 void ActiveHelpDraw();
 void LogDraw(LOG *);
 void KeepLogFromDarken(LOG *);
@@ -62,4 +70,6 @@ void SetPopUp(int type, int x, int y, int w, int h,
 void DrawPopUp(int idx);
 void GameMenuDraw(int, int, float zoom);
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom);
+void VsHpBarDraw(long long count, long long max, int x, int y, int color,
+	float zoom);
 void WaveBadgeDrawBeforeBars(void);

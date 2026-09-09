@@ -61,11 +61,427 @@ int GetDrawSize(OBJECT* pObj)
 	}
 }
 
+/* 뉴트럴(0번) 모션으로 그렸을 때의 높이.
+ *
+ * 상태이상 아이콘을 머리 위에 놓는 데 쓴다.
+ *
+ * enemyData 의 YPOS 를 쓰면 안 된다. 그건 그 몬스터가 차지하는 타일 자리라
+ * 그린 크기와 다르다. 슬라임은 YPOS 가 TSIZE*3 인데 배율이 4 라 384px 위로
+ * 떠서, 아이콘이 슬라임보다 훨씬 높은 데 있었다.
+ *
+ * 지금 모션이 아니라 0 번 모션으로 재는 것은, 때리느라 팔을 뻗거나 웅크릴
+ * 때마다 아이콘이 위아래로 들썩이지 않게 하기 위해서다. */
+static float GetNeutralDrawHeight(const OBJECT* pObj)
+{
+	if (pObj == NULL || pObj->cmf < 0 || pObj->cmf >= MAXCMF)
+		return (float)(42 * _2X);
+
+	return (float)cmfMotionImgSize[pObj->cmf][3];
+}
+
+static int GetRotatingVisibleDebuff(const OBJECT* pObj)
+{
+	int active[TOTALDEBUF];
+	int count = 0;
+
+	for (int i = 0; i < TOTALDEBUF; i++) {
+		if (i != KNOCKBACK && pObj->debuf[i] > 0)
+			active[count++] = i;
+	}
+
+	if (count == 0)
+		return -1;
+	return active[(robin.playtime / FPS) % count];
+}
+
+static int GetBuffSourceSkill(int buffIdx)
+{
+	if (buffIdx >= INC_VIT && buffIdx < BERSERK)
+		return SKILL_ROBIN13 + (buffIdx - INC_VIT);
+	if (buffIdx >= BERSERK && buffIdx < HPDRAIN)
+		return SKILL_DIANA14 + (buffIdx - BERSERK);
+	if (buffIdx >= HPDRAIN && buffIdx < TOTALPLAYERBUFF)
+		return SKILL_MAXX14 + (buffIdx - HPDRAIN);
+	return -1;
+}
+
+static int GetDebuffDisplayTurn(const OBJECT* pObj, int debuffIdx)
+{
+	int turnCount = pObj->debufRemainTurn[debuffIdx];
+
+	if (turnCount > 1)
+		turnCount--;
+	return Max(1, turnCount);
+}
+
+static float GetStatusApplyIconScale(int remainFrame)
+{
+	const int appearFrame = 12;
+	const int settleFrame = 18;
+	int elapsed = STATUSAPPLYFRAME - remainFrame;
+	int effectElapsed = elapsed - FOCUSZOOMINFRAME;
+
+	if (effectElapsed < 0)
+		return 0.0f;
+	if (effectElapsed < appearFrame) {
+		float t = (float)effectElapsed / Max(1, appearFrame);
+		float eased = 1.0f - (1.0f - t) * (1.0f - t);
+		return 0.15f + 2.10f * eased;
+	}
+	if (effectElapsed < appearFrame + settleFrame) {
+		float t = (float)(effectElapsed - appearFrame) / Max(1, settleFrame);
+		float eased = 0.5f - 0.5f * cosf(t * 3.14159265f);
+		return 2.25f + (1.0f - 2.25f) * eased;
+	}
+
+	return 1.0f + 0.08f * sinf((float)effectElapsed * 0.35f);
+}
+
+static float GetStatusApplyIconRotation(int remainFrame)
+{
+	const int appearFrame = 12;
+	const int shakeFrame = STATUSAPPLYSHAKE - appearFrame;
+	int effectElapsed = STATUSAPPLYFRAME - remainFrame - FOCUSZOOMINFRAME;
+
+	if (effectElapsed < appearFrame || effectElapsed >= appearFrame + shakeFrame)
+		return 0.0f;
+
+	float t = (float)(effectElapsed - appearFrame) / (float)shakeFrame;
+	float damp = 1.0f - t;
+	return 30.0f * damp
+		* sinf((float)(effectElapsed - appearFrame) * 3.14159265f / 6.0f);
+}
+
+/* 부여 연출에서 턴 숫자가 나오는 크기.
+ *
+ * 앞 1초(STATUSAPPLYSHAKE)는 아이콘만 흔든다. 숫자는 0 을 돌려받아 아예
+ * 그려지지 않는다. 뒤 1초에 아이콘 한가운데에서 0 부터 부풀어 튀어나온 뒤
+ * 제 크기로 내려앉는다. 그리는 자리가 이미 아이콘 한가운데라, 가운데에서
+ * 크기만 키우면 그대로 "튀어나오는" 모양이 된다. */
+static float GetStatusApplyNumScale(int remainFrame)
+{
+	const int popFrame = 10;
+	const int settleFrame = 20;
+	int elapsed = STATUSAPPLYFRAME - remainFrame - FOCUSZOOMINFRAME;
+	int t;
+
+	if (elapsed < STATUSAPPLYSHAKE)
+		return 0.0f;
+
+	t = elapsed - STATUSAPPLYSHAKE;
+
+	if (t < popFrame) {
+		float f = (float)t / Max(1, popFrame);
+		return 1.9f * (1.0f - (1.0f - f) * (1.0f - f));
+	}
+
+	if (t < popFrame + settleFrame) {
+		float f = (float)(t - popFrame) / Max(1, settleFrame);
+		float eased = 0.5f - 0.5f * cosf(f * 3.14159265f);
+		return 1.9f + (1.0f - 1.9f) * eased;
+	}
+
+	return 1.0f;
+}
+
+/* 해제 연출. 부여를 그대로 거꾸로 밟는다.
+ *
+ * 남은 프레임을 부여 쪽 경과로 뒤집어 넣으면, 곡선을 따로 만들지 않아도
+ * 같은 모양이 역방향으로 재생된다. 두 벌을 따로 두면 한쪽만 고치고
+ * 다른 쪽을 잊는다. */
+static int RecoverToApplyRemain(int remainFrame)
+{
+	//해제가 흐른 만큼이 곧 부여의 "남은" 만큼이다. 그래서 해제가 시작될 때는
+	//부여가 다 끝난 모습에서 출발해, 해제가 끝나면 부여가 시작되기 전 모습
+	//(크기 0)으로 돌아간다.
+	return STATUSAPPLYHOLD - remainFrame;
+}
+
+static float GetStatusRecoverIconScale(int remainFrame)
+{
+	return GetStatusApplyIconScale(RecoverToApplyRemain(remainFrame));
+}
+
+static float GetStatusRecoverIconRotation(int remainFrame)
+{
+	return GetStatusApplyIconRotation(RecoverToApplyRemain(remainFrame));
+}
+
+static float GetStatusRecoverNumScale(int remainFrame)
+{
+	return GetStatusApplyNumScale(RecoverToApplyRemain(remainFrame));
+}
+
+/* 골드 숫자 한 글자의 높이(원본 픽셀).
+ *
+ * DrawGoldNum 은 넘긴 y 를 글자의 윗변으로 삼고 아래로 그린다. 그래서
+ * 아이콘 한가운데에 놓으려면 글자 높이의 절반만큼 내려서 넘겨야 한다.
+ * goldNumData 의 높이 칸이 숫자마다 37~40 이라 가운데값을 쓴다. */
+#define GOLDNUM_H	38.0f
+
+/* 상태이상 한 칸(아이콘 + 턴 숫자)을 그린다.
+ *
+ * 아이콘과 숫자를 늘 붙여 다녀야 하므로 한 자리에서 그린다. 전에는 부르는
+ * 곳마다 따로 그려서, 숫자만 옛 규칙으로 남는 일이 생겼다.
+ *
+ * numScale 이 0 이면 숫자는 그리지 않는다. 부여 연출의 앞 1초가 그렇다. */
+static void DrawStatusIconCell(int debuffIdx, int turnNumber,
+	float cx, float cy, float cardZoom, float rotation,
+	float numBaseZoom, float numScale)
+{
+	float numZoom;
+
+	if (debuffIdx < 0 || debuffIdx >= TOTALDEBUF || cardZoom <= 0.0f)
+		return;
+
+	DrawBuffCard(debuffIdx, (int)cx, (int)cy, cardZoom, rotation);
+
+	if (numScale <= 0.0f || turnNumber <= 0)
+		return;
+
+	//DrawGoldNum 은 넘긴 y 를 글자의 윗변으로 삼는다. 아이콘 한가운데에
+	//놓으려면 글자 높이의 절반만큼 내려서 넘긴다.
+	numZoom = numBaseZoom * numScale;
+
+	DrawGoldNum(turnNumber, (int)cx, (int)(cy + GOLDNUM_H * numZoom / 2.0f),
+		CENTER, false, false, false, numZoom);
+}
+
+/* 상태이상 연출을 대상의 머리 위에 그린다.
+ *
+ * 왼쪽 상태 줄은 "지금 무엇이 걸려 있나"를 읽는 곳이고, 여기는 "방금 무슨
+ * 일이 났나"를 보는 곳이다. 몬스터는 목록 자체가 머리 위라 연출이 보였지만,
+ * 히어로는 목록이 화면 구석에만 있어서 걸리는 순간이 눈에 띄지 않았다.
+ * 둘을 같은 연출로 맞춘다.
+ *
+ * 높이는 enemyData 의 YPOS(설계상 몸 높이)를 쓴다. 고정값을 쓰면 개구리처럼
+ * 큰 몬스터에서 아이콘이 몸 한가운데에 박힌다. */
+static void DrawStatusFxOverObject(OBJECT* pObj, int obj)
+{
+	const float fxZoom = 0.5f;
+	int debuffIdx;
+	float scale;
+	float rotation;
+	float numScale;
+	float bodyH;
+
+	if (statusApplyFxFrame[obj] > 0) {
+		debuffIdx = statusApplyDebuff[obj];
+		scale = GetStatusApplyIconScale(statusApplyFxFrame[obj]);
+		rotation = GetStatusApplyIconRotation(statusApplyFxFrame[obj]);
+		numScale = GetStatusApplyNumScale(statusApplyFxFrame[obj]);
+	}
+	else if (statusRecoverFxFrame[obj] > 0) {
+		debuffIdx = statusRecoverDebuff[obj];
+		scale = GetStatusRecoverIconScale(statusRecoverFxFrame[obj]);
+		rotation = GetStatusRecoverIconRotation(statusRecoverFxFrame[obj]);
+		numScale = GetStatusRecoverNumScale(statusRecoverFxFrame[obj]);
+	}
+	else if (statusStackFxFrame[obj] > 0) {
+		//턴이 하나 쌓였을 뿐이므로 아이콘은 제 크기 그대로 두고 숫자만 튄다.
+		debuffIdx = statusStackDebuff[obj];
+		scale = 1.0f;
+		rotation = 0.0f;
+		numScale = GetStatusApplyNumScale(statusStackFxFrame[obj]);
+	}
+	else
+		return;
+
+	if (scale <= 0.0f)
+		return;
+
+	bodyH = GetNeutralDrawHeight(pObj) * pObj->zoom;
+
+	DrawStatusIconCell(debuffIdx, GetDebuffDisplayTurn(pObj, debuffIdx),
+		xOffset + pObj->x - rx,
+		STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry
+			//스턴 별/중독 연기보다 위에 떠서 캐릭터 상태 연출을 가리지 않는다.
+			+ bodyH + (float)(32 * _2X),
+		fxZoom * STATUSICONSHRINK * scale, rotation, 1.05f, numScale);
+}
+
+static void DrawCombatStateIcons(OBJECT* pObj)
+{
+	const int obj = GetObjFromPtr(pObj);
+	const int maxColumn = 4;
+	//스킬 원본은 64px, 상태이상 원본은 32px라 같은 zoom을 쓰면 크기가
+	//두 배 차이 난다. 화면상 둘 다 48px가 되도록 각각 맞춘다.
+	const float playerSkillZoom = 0.5f;
+	//DrawBuffCard가 DrawSkillCard와 같은 카드 배율을 사용한다.
+	const float playerZoom = 0.5f;
+	const float enemyZoom = 0.35f;
+	//크기는 1.5배로 키우되 피치는 그보다 작게 잡아 아이콘끼리 붙여 보인다.
+	const float playerPitch = (float)(28 * _2X);
+	const float enemyPitch = (float)(18 * _2X);
+	const float playerRowPitch = (float)(30 * _2X);
+	const float enemyRowPitch = (float)(20 * _2X);
+	float x;
+	float y;
+	int slot = 0;
+	float pulseScale = 1.0f;
+	if (obj >= 0 && obj < TOTALOBJECT && statusTurnFxFrame[obj] > 0)
+		pulseScale += 0.14f * sinf((float)statusTurnFxFrame[obj] * 0.45f);
+
+	if (obj >= PLAYER && obj < CREW) {
+		x = xOffset + (float)(4 * _2X) + SKILLCARDSIZE_X * playerZoom / 2.0f;
+		y = STATUSWIN_Y + (float)((rh - 4) * TSIZE - 8 * _2X)
+			- SKILLCARDSIZE_Y * playerZoom / 2.0f
+			- (float)(obj - PLAYER) * (22 * _2X);
+
+		//지속 버프는 발동시킨 원래 스킬 아이콘으로, 상태이상은 공용
+		//디버프 아이콘으로 그려 같은 상태 줄 안에서 함께 읽히게 한다.
+		for (int i = 0; i < TOTALPLAYERBUFF; i++) {
+			int skillIdx;
+			int column;
+			int row;
+
+			if (pObj->buff[i] <= 0)
+				continue;
+			skillIdx = GetBuffSourceSkill(i);
+			column = slot % maxColumn;
+			row = slot / maxColumn;
+			if (skillIdx >= 0) {
+				float cardZoom = playerSkillZoom * pulseScale;
+				float centerX = x + column * playerPitch;
+				float centerY = y - row * playerRowPitch;
+				DrawSkillCard(skillIdx, 0,
+					(int)(centerX - SKILLCARDSIZE_X * cardZoom / 2.0f),
+					(int)(centerY + SKILLCARDSIZE_Y * cardZoom / 2.0f),
+					cardZoom, -1);
+			}
+			slot++;
+		}
+
+		for (int i = 0; i < TOTALDEBUF; i++) {
+			int column;
+			int row;
+			float iconX;
+			float iconY;
+			float applyScale = 1.0f;
+			float applyRotation = 0.0f;
+
+			if (i == KNOCKBACK || pObj->debuf[i] <= 0)
+				continue;
+			column = slot % maxColumn;
+			row = slot / maxColumn;
+			iconX = x + column * playerPitch;
+			iconY = y - row * playerRowPitch;
+			//연출은 머리 위(DrawStatusFxOverObject)에서 따로 한다. 여기 목록은
+			//무엇이 걸려 있는지만 차분히 보여준다. 다만 턴이 쌓이는 순간은
+			//목록의 숫자도 같이 튀어야 눈에 들어온다.
+			float listNumScale = (statusStackFxFrame[obj] > 0
+				&& statusStackDebuff[obj] == i)
+				? GetStatusApplyNumScale(statusStackFxFrame[obj]) : 1.0f;
+
+			DrawStatusIconCell(i, GetDebuffDisplayTurn(pObj, i), iconX, iconY,
+				playerZoom * STATUSICONSHRINK * pulseScale * applyScale,
+				applyRotation, 1.05f, listNumScale);
+			slot++;
+		}
+
+		DrawStatusFxOverObject(pObj, obj);
+	}
+	else if (obj >= ENEMY && obj < NEUTRAL) {
+		// 보스레이드에서는 상태이상 마크를 주인공 위에만 표시한다.
+		// 보스의 큰 bodyH/zoom으로 그리면 화면 중앙에 거대한 카드가 중복된다.
+		if (drawHandle == MD_BOSSRAID)
+			return;
+
+		int count = 0;
+
+		for (int i = 0; i < TOTALDEBUF; i++)
+			if (i != KNOCKBACK && pObj->debuf[i] > 0)
+				count++;
+		if (statusRecoverFxFrame[obj] > 0)
+			count++;
+		if (count == 0)
+			return;
+
+		//세로 기준은 그 몬스터를 실제로 그린 높이다. 고정값을 쓰면 몸집이
+		//큰 놈은 아이콘이 몸에 박히고, 배율이 큰 놈은 한참 위로 뜬다.
+		float bodyH = GetNeutralDrawHeight(pObj) * pObj->zoom;
+
+		x = xOffset + pObj->x - rx - (Min(count, maxColumn) - 1) * enemyPitch / 2.0f;
+		y = STATUSWIN_Y + (rh - 4) * TSIZE
+			- (pObj->y - OBJIMGGAP) - ry + bodyH + (float)(32 * _2X);
+
+		for (int i = 0; i < TOTALDEBUF; i++) {
+			int column;
+			int row;
+			float iconX;
+			float iconY;
+			float applyScale = 1.0f;
+			float applyRotation = 0.0f;
+
+			if (i == KNOCKBACK || pObj->debuf[i] <= 0)
+				continue;
+			column = slot % maxColumn;
+			row = slot / maxColumn;
+			iconX = x + column * enemyPitch;
+			//첫 줄이 몬스터에 가장 가깝고, 넘치면 위로 쌓는다. 전에는 반대라
+			//아이콘 하나뿐일 때도 두 줄치 높이에 떠 있었다.
+			iconY = y + row * enemyRowPitch;
+			float numScale = 1.0f;
+
+			if (statusApplyFxFrame[obj] > 0 && statusApplyDebuff[obj] == i) {
+				applyScale = GetStatusApplyIconScale(statusApplyFxFrame[obj]);
+				applyRotation = GetStatusApplyIconRotation(statusApplyFxFrame[obj]);
+				//앞 1초는 아이콘만 흔들고, 뒤 1초에 숫자가 한가운데에서 나온다.
+				numScale = GetStatusApplyNumScale(statusApplyFxFrame[obj]);
+			}
+			else if (statusStackFxFrame[obj] > 0 && statusStackDebuff[obj] == i) {
+				//턴이 하나 쌓였다. 아이콘은 그대로 두고 숫자만 다시 튀어나온다.
+				numScale = GetStatusApplyNumScale(statusStackFxFrame[obj]);
+			}
+
+			DrawStatusIconCell(i, GetDebuffDisplayTurn(pObj, i), iconX, iconY,
+				enemyZoom * STATUSICONSHRINK * pulseScale * applyScale,
+				applyRotation, 0.75f, numScale);
+			slot++;
+		}
+
+		if (statusRecoverFxFrame[obj] > 0) {
+			//부여 곡선을 거꾸로 재생한다. 숫자가 먼저 한가운데로 빨려 들어가고,
+			//그 다음 아이콘이 흔들리며 사라진다.
+			int column = slot % maxColumn;
+			int row = slot / maxColumn;
+
+			DrawStatusIconCell(statusRecoverDebuff[obj],
+				GetDebuffDisplayTurn(pObj, statusRecoverDebuff[obj]),
+				x + column * enemyPitch, y + row * enemyRowPitch,
+				enemyZoom * STATUSICONSHRINK
+					* GetStatusRecoverIconScale(statusRecoverFxFrame[obj]),
+				GetStatusRecoverIconRotation(statusRecoverFxFrame[obj]), 0.75f,
+				GetStatusRecoverNumScale(statusRecoverFxFrame[obj]));
+		}
+	}
+}
+
 void DrawObj(OBJECT* pObj)
 {
 	int i;
 	int obj = GetObjFromPtr(pObj);
 	int tempGrayScale;
+	int visibleDebuff = GetRotatingVisibleDebuff(pObj);
+	if (obj >= 0 && obj < TOTALOBJECT && statusApplyFxFrame[obj] > 0) {
+		int elapsed = STATUSAPPLYFRAME - statusApplyFxFrame[obj];
+		int effectElapsed = Max(0, elapsed - FOCUSZOOMINFRAME);
+		int interval = Max(1, 6 - effectElapsed * 5 / Max(1, STATUSAPPLYHOLD));
+		//부여될 때는 정상/이상 모습을 점점 빠르게 번갈아 보인 뒤,
+		//프레임이 끝나면 GetRotatingVisibleDebuff()의 이상 모습으로 확정된다.
+		visibleDebuff = (elapsed < FOCUSZOOMINFRAME
+			|| (effectElapsed / interval) % 2 == 0)
+			? -1 : statusApplyDebuff[obj];
+	}
+	if (obj >= 0 && obj < TOTALOBJECT && statusRecoverFxFrame[obj] > 0) {
+		int elapsed = STATUSRECOVERFRAME - statusRecoverFxFrame[obj];
+		//해제는 부여의 역순이므로 점멸도 거꾸로다. 촘촘하게 시작해서
+		//점점 뜸해지다 정상 모습으로 굳는다.
+		int interval = Max(1, 1 + elapsed * 5 / Max(1, STATUSRECOVERFRAME));
+		//이상 상태 이미지와 정상 이미지를 번갈아 보여주고, 간격을 점점 좁힌다.
+		visibleDebuff = ((elapsed / interval) % 2 == 0)
+			? statusRecoverDebuff[obj] : -1;
+	}
 
 	if (obj < ITEMOBJ) {
 		if (pObj->zoom >= 2) {
@@ -78,17 +494,14 @@ void DrawObj(OBJECT* pObj)
 		if (pObj->attacked)
 			SetBlend(Max(0, (pObj->attackedFrame - 2) << 2), 0xCCCCCC);
 
-		if (pObj->debuf[POISON])
+		if (visibleDebuff == POISON)
 			SetBlend(8 + Abs(3 - (pObj->debuf[POISON] % 5)) * 4, 0x006600);
 
-		if (pObj->debuf[CURSE])
+		if (visibleDebuff == CURSE)
 			SetBlend(8 + Abs(3 - (pObj->debuf[CURSE] % 5)) * 4, 0x330066);
 
-		if (pObj->debuf[SLOW])
+		if (visibleDebuff == SLOW)
 			grayScale = 24;
-
-		if (pObj->debuf[STUN])
-			grayScale = 32;
 
 		//티어맷 검은색 입히기
 		if (pObj->type == ENEMY_BAHAMUT
@@ -320,7 +733,8 @@ void DrawObj(OBJECT* pObj)
 			}
 
 			aType--;
-			DrawEffect(attrEffect[aType * 20 + aFrame], pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
+			//붙는 표시는 몸집을 안 따른다(OBJDEBUFFXZOOM 주석 참고).
+			DrawEffect(attrEffect[aType * 20 + aFrame], pObj->x - rx, STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry, pObj->dirF, false, OBJDEBUFFXZOOM);
 			UnSetBlend();
 		}
 
@@ -330,7 +744,7 @@ void DrawObj(OBJECT* pObj)
 		do {
 			int dMotion = debufEffect[i * 12 + (robin.playtime / MOTIONDIV) % 12];
 
-			if (pObj->debuf[i] && dMotion > 0)
+			if (i == visibleDebuff && dMotion > 0)
 				DrawEffect(dMotion, xOffset + pObj->x - rx +
 					(((pObj->type == ENEMY_CASTLE_BOSS3
 						|| pObj->type == ENEMY_CASTLE_BOSS3_RED
@@ -339,13 +753,15 @@ void DrawObj(OBJECT* pObj)
 						|| pObj->type == ENEMY_CASTLE_BOSS3_GREEN
 						|| pObj->type == ENEMY_CASTLE_BOSS3_GOLD
 						|| pObj->type == ENEMY_CASTLE_BOSS3_BLACK)
-						&& pObj->moveHandler != BUGMOVE) ? (float)35 * _2X * pObj->zoom : 0 * _2X), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y + (i == SLOW ? Abs(3 - (float)(pObj->debuf[SLOW] % 5) * _2X * pObj->zoom) - 4 * _2X * pObj->zoom : 0) - OBJIMGGAP) - ry, pObj->dirF, false, pObj->zoom);
+						&& pObj->moveHandler != BUGMOVE) ? (float)35 * _2X * pObj->zoom : 0 * _2X), STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y + (i == SLOW ? Abs(3 - (float)(pObj->debuf[SLOW] % 5) * _2X * pObj->zoom) - 4 * _2X * pObj->zoom : 0) - OBJIMGGAP) - ry, pObj->dirF, false, OBJDEBUFFXZOOM);
 
 			i++;
 		} while (i < TOTALDEBUF);
 
 		SetAlpha(32);
 	}
+
+	DrawCombatStateIcons(pObj);
 
 	//�浹���� �׸���
 #ifdef GUIDELINE
@@ -2025,21 +2441,13 @@ void BulletCrewDraw(OBJECT* pObj)
 	//같은 종류가 여러 발 날아갈 때 전부 같은 각도로 도는 것을 피하려고 오브젝트 번호만큼 위상을 민다.
 	int bulletAniFrame = frame + GetObjFromPtr(pObj) * 7;
 
-	//테두리와 본체가 같은 각도/크기여야 하므로 중심좌표를 한 번만 구해서 같이 쓴다.
 	int bulletCx = xOffset - rx + pObj->x;
 	int bulletCy = STATUSWIN_Y + (rh - 4) * TSIZE - (pObj->y - OBJIMGGAP) - ry;
 
-	//if (pObj->status == 0)
-	SetColor(itemColor[frame / 2 % 6]);
-
-	for (i = 0; i < 4; i++) {
-		DrawCrewBulletAni(pObj->icon,
-			bulletCx + (float)solidPosition[2 * i + 0] * 8 * pObj->zoom,
-			bulletCy + (float)solidPosition[2 * i + 1] * 8 * pObj->zoom,
-			pObj->zoom, bulletAni, bulletAniFrame, pObj->dirX);
-	}
-
-	SetColor(false);
+	//테두리는 안 그린다.
+	//
+	//전에는 본체를 네 방향으로 조금씩 밀어 무지개색으로 한 번씩 더 그려
+	//둘레를 만들었다. 총알이 무엇인지보다 둘레가 먼저 보인다.
 
 	DrawCrewBulletAni(pObj->icon, bulletCx, bulletCy, pObj->zoom, bulletAni, bulletAniFrame, pObj->dirX);
 	//else
@@ -2061,12 +2469,27 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 {
 	DrawFrame(x, y, (float)(36 * _2X) * zoom, (float)(36 * _2X) * zoom, FRAME_SHOPBALLOON);
 
-	clipX3 = clipX;
-	clipY3 = clipY;
-	clipX4 = clipX2;
-	clipY4 = clipY2;
-
-	SetSectionClip(x + (float)(2 * _2X) * zoom, y - (float)(2 * _2X) * zoom, (float)(36 * _2X - 4 * _2X) * zoom, (float)(36 * _2X - 4 * _2X) * zoom, false);
+	//프로필 안쪽 클립은 바깥 목록 클립과 교집합을 써야 한다. 이전 방식은
+	//목록 클립을 교체해서 스크롤 경계 밖의 캐릭터가 다시 나타났다.
+	const int savedClipX = clipX;
+	const int savedClipY = clipY;
+	const int savedClipX2 = clipX2;
+	const int savedClipY2 = clipY2;
+	const int profileX = (int)(x + (float)(2 * _2X) * zoom);
+	const int profileY = (int)(y - (float)(2 * _2X) * zoom);
+	const int profileW = (int)((float)(36 * _2X - 4 * _2X) * zoom);
+	const int profileH = (int)((float)(36 * _2X - 4 * _2X) * zoom);
+	clipX = Max(savedClipX, profileX);
+	clipY = Min(savedClipY, profileY);
+	clipX2 = Min(savedClipX2, profileX + profileW);
+	clipY2 = Max(savedClipY2, profileY - profileH);
+	if (clipX >= clipX2 || clipY <= clipY2) {
+		clipX = savedClipX;
+		clipY = savedClipY;
+		clipX2 = savedClipX2;
+		clipY2 = savedClipY2;
+		return;
+	}
 	ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(36 * _2X / 2 - 20 * _2X) * zoom, y + (float)(-32 * _2X + 8 * _2X) * zoom, SHADOW_IMG, zoom);
 
 	if (enemyIdx < ENEMY_SNAIL)
@@ -2083,18 +2506,16 @@ void EnemyProfileDraw(int x, int y, int enemyIdx, int star, int lv, float zoom)
 	else
 		DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF], enemyBigIconPos[3 * enemyIdx + 0], x + (float)(36 * _2X / 2 + enemyBigIconPos[3 * enemyIdx + 1]) * zoom, y + (float)(-32 * _2X + enemyBigIconPos[3 * enemyIdx + 2] + 4 * _2X) * zoom, LEFT, zoom, false, false);
 
-	UnSectionClip(false);
+	clipX = savedClipX;
+	clipY = savedClipY;
+	clipX2 = savedClipX2;
+	clipY2 = savedClipY2;
 
 	if (star)
 		DrawStar(ICON_STAR, x + (float)(18 * _2X) * zoom, y + (float)(ITEMICONSIZE / 2 * 0.6f + ITEMICONSIZE * 0.6f / 2) * zoom, star, star, star, CENTER, true, 0.6f * zoom);
 
 	if (lv)
 		DrawLv(lv, x + (float)(20 * _2X) * zoom, y - (float)36 * _2X * zoom, 0.8f * zoom, CENTER);
-
-	clipX = clipX3;
-	clipY = clipY3;
-	clipX2 = clipX4;
-	clipY2 = clipY4;
 
 }
 
@@ -2120,8 +2541,6 @@ void EnemyDraw(OBJECT* pObj)
 
 	if (pObj->hp * 5 < pObj->maxhp)
 		SetBlend(4 + Abs(3 - (robin.playtime % 5)) * 4, 0xFF0000);
-	else if (pObj->debuf[STUN] > 0)
-		SetBlend(4 + Abs(3 - (robin.playtime % 5)) * 4, 0x333333);
 
 	if ((pObj->type == ENEMY_CASTLE_BOSS1
 		|| pObj->type == ENEMY_CASTLE_BOSS1_RED

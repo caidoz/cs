@@ -25,6 +25,16 @@
 static const bool ROULETTE_MATCH_SEQUENCE_TEST = true;
 static int sRouletteMatchTestSpin = 0;
 
+namespace RoulettePvpTiming {
+	const int FirstHit = FPS + FPS / 2;
+	const int HitGap = FPS / 2;
+	const int LastHit = FirstHit + HitGap * (TOTALREEL - 1);
+	const int Pulse = LastHit + FPS / 3;
+	const int Title = LastHit + FPS * 5 / 6;
+	const int Banner = Title + FPS / 2;
+	const int Exit = Banner - FPS / 3;
+}
+
 // AVK_MAXGAME에서 이번 공격의 세 룰이 실제로 소환할 몬스터.
 // 스킬 데이터는 공통 SUMMON 템플릿을 쓰고, 몬스터 종류만 실행 주체별로 바꾼다.
 static int gDemoSummonEnemy[TOTALREEL] = {
@@ -541,6 +551,7 @@ static int FindCrewAoOffsetByType(int type, bool used[], int maxCrew)
 
 void DecideRouletteResult(void)
 {
+	gRoulettePvpResult = false;
 	//직전 룰렛 결과는 이번 회전의 출발 상태다. 아래 초기화 전에 보관한다.
 	//첫 회전에는 gRouletteResultValid가 false이므로 편성 슬롯 3명을 사용한다.
 	bool hasPreviousResult = gRouletteResultValid;
@@ -558,6 +569,12 @@ void DecideRouletteResult(void)
 	}
 
 	if (crewCnt <= 0) return;
+
+	//강제 테스트는 튜토리얼/데모 예외보다 우선한다. 실제 확률만 정식 전투에서 제한한다.
+	if (ROULETTE_PVP_FORCE_TEST
+		|| (!IsTutorialPlaying() && !gDemoForceRoulette
+			&& Random(10000) < ROULETTE_PVP_CHANCE_PERMYRIAD))
+		gRoulettePvpResult = true;
 
 	//이번 판에 실제로 돌릴 릴 수. 동료가 3명이 안 되면 남는 릴은 -1로 남겨
 	//자물쇠만 그리고 턴에서도 건너뛴다.
@@ -868,6 +885,7 @@ void RouletteAttackStart(void)
 	//어떤놈이 시작할거냐.
 	turnListIdx = 0;
 	turn = turnList[turnListIdx];
+	AdvanceActorDebuffs(turn);
 
 	//첫 턴이 크루가 아닐 수 있다. 위에서 turnList에는 active한 크루만 넣는데, 크루가 아직 등장
 	//연출(REGENMOVE) 중이면 한 명도 안 들어가서 turnList[0]이 주인공이나 적이 된다.
@@ -897,6 +915,12 @@ void RouletteAttackStart(void)
 			ao[turn].etc = patternState ? patternState : enemyAttackPattern[patternBase + HERE];
 		}
 	}
+
+	/* 이번 액션이 줄 총 데미지를 여기서 못 박는다.
+	 *
+	 * currentSkill 이 정해진 바로 뒤다. 이 뒤로는 어떤 타격도 총액을 새로
+	 * 셈하지 않고 여기서 정한 몫에서 나눠 가진다. */
+	ActionPlanBegin(turn, ao[turn].currentSkill);
 
 	//턴 시작 시 위치 상태는 항상 HERE에서 출발해야 한다. 이전 전투에서 COMING/DMGUPDATE로 끝난
 	//값이 남아 있으면 CrewMove()/PlayerMove()의 ACTION 분기가 HERE 케이스를 타지 못해 멈춘다.
@@ -1107,14 +1131,17 @@ void RouletteDrawSimple3Slots(
 
 void RouletteDraw(int x, int y, float zoom)
 {
+	const int rouletteHomeY = y;
 	//룰렛이 실제로 도는 동안 슬롯판과 그 안의 캐릭터만 살짝 확대한다.
 	//ACTION으로 넘어가면 같은 속도로 원래 크기로 돌아온다.
 	static float roulettePlayZoom = 1.0f;
 	const float rouletteZoomTarget =
-		(attackSequence == ATTACKSEQUENCE_SLOT) ? 1.20f : 1.0f;
+		(attackSequence == ATTACKSEQUENCE_SLOT)
+		? (gRoulettePvpResult ? 1.0f : 1.20f) : 1.0f;
 	const float rouletteZoomStep = 0.025f;
 	const float rouletteBaseZoom = zoom;
-	const float rouletteCenterY = y + (float)SLOTSIZE_Y * rouletteBaseZoom / 2.0f;
+	//위쪽이 +인 좌표계에서 y는 룰렛 판의 위쪽이다.
+	const float rouletteCenterY = y - (float)SLOTSIZE_Y * rouletteBaseZoom / 2.0f;
 
 	if (roulettePlayZoom < rouletteZoomTarget)
 		roulettePlayZoom = Min(rouletteZoomTarget, roulettePlayZoom + rouletteZoomStep);
@@ -1122,7 +1149,7 @@ void RouletteDraw(int x, int y, float zoom)
 		roulettePlayZoom = Max(rouletteZoomTarget, roulettePlayZoom - rouletteZoomStep);
 
 	zoom = rouletteBaseZoom * roulettePlayZoom;
-	y = (int)(rouletteCenterY - (float)SLOTSIZE_Y * zoom / 2.0f);
+	y = (int)(rouletteCenterY + (float)SLOTSIZE_Y * zoom / 2.0f);
 
 	// -----------------------------
 	// [CFG] 점프 연출 파라미터 (짧고 탄력)
@@ -1277,18 +1304,230 @@ void RouletteDraw(int x, int y, float zoom)
 	// [FRAME] slotFrame 증가는 SLOT일 때만
 	// -----------------------------
 	if (attackSequence == ATTACKSEQUENCE_SLOT) {
-		ScreenDarken(SCREENDARKEN);
 		bar[BAR_ROULETTE].front = true;
 		slotFrame++;
 	}
 
-	// -----------------------------
-	// [DRAW] 슬롯 베이스
-	// -----------------------------
-	DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
-		x - (float)SLOTSIZE_X / 2 * zoom, y,
-		false, false, false, false, false,
-		zoom, sprite[SLOT_IMG], SLOT_IMG);
+	//PVP 매치업 배너가 시작되면 룰렛은 퇴장한다.
+	//슬롯/프로필/VS를 겹쳐 그리면 어느 쪽도 읽히지 않는다.
+	const int pvpBannerStartFrame = RoulettePvpTiming::Banner;
+	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
+		&& slotFrame >= RoulettePvpTiming::Exit) {
+		//배너 전환 전까지도 룰렛 좌표와 배율은 바꾸지 않는다.
+	}
+	const bool drawRouletteBoard = !gRoulettePvpResult
+		|| attackSequence != ATTACKSEQUENCE_SLOT
+		|| slotFrame < pvpBannerStartFrame;
+	if (drawRouletteBoard) {
+		DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
+			x - (float)SLOTSIZE_X / 2 * zoom, y,
+			false, false, false, false, false,
+			zoom, sprite[SLOT_IMG], SLOT_IMG);
+	}
+
+	// PVP 당첨은 일반 스킬 카드/턴 상태머신으로 들어가지 않는다.
+	// 세 슬롯이 적당한 속도로 섞인 뒤 c122 마왕의 심장이 차례로 박히고, 상대 카드가
+	// 룰렛 위로 올라온 다음 기존 PVP 화면으로 자연스럽게 넘긴다.
+	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT) {
+		const int heartEnd = RoulettePvpTiming::Title;
+		const int bannerStart = RoulettePvpTiming::Banner;
+		const int vsStart = bannerStart + FPS / 2;
+		const int wipeStart = vsStart + FPS / 2;
+		const int revealEnd = wipeStart + FPS * 2 / 3;
+		int spinCrew[MAXCREW];
+		int spinCrewCnt = 0;
+		for (int offset = 0; offset < MAXCREW; offset++)
+			if (ao[CREW + offset].active)
+				spinCrew[spinCrewCnt++] = offset;
+
+		//일반 동료 선택과 같은 ReelJumpState, 중력, 첫 착지 바운스를 그대로
+		//사용한다. 차이는 확정 결과를 동료 대신 마왕의 심장으로 그리는 것뿐이다.
+		int activeReel = -1;
+		for (int r = 0; r < TOTALREEL; r++) {
+			ReelJumpState& rs = gReelJump[r];
+			if (slotFrame < reelStartFrame[r])
+				continue;
+			if (rs.state == JS_HOLD) {
+				if (slotFrame < rs.holdEndFrame) {
+					activeReel = r;
+					break;
+				}
+				rs.state = JS_DONE;
+			}
+			if (rs.state != JS_DONE) {
+				activeReel = r;
+				break;
+			}
+		}
+
+		for (int i = 0; i < TOTALREEL && slotFrame < bannerStart; i++) {
+			float centerX = x - (float)SLOTSIZE_X * zoom / 2
+				+ (float)reelPostion[i * 2] * zoom;
+			float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
+			ReelJumpState& rs = gReelJump[i];
+			const bool shouldAnimate = (i == activeReel
+				&& slotFrame >= reelStartFrame[i]);
+
+			if (shouldAnimate) {
+				if (!rs.started) {
+					rs.started = true;
+					rs.state = JS_SPINNING;
+					rs.jumpY = 0.0f;
+					rs.jumpV = JUMP_V0;
+					rs.maxJumpY = MAX_JUMP_Y;
+					rs.lastSwapF = -9999;
+					rs.lastFlipF = -9999;
+					rs.flipSquashEndF = -1;
+					rs.flipSquashLen = 3;
+					rs.bounceLeft = 1;
+					rs.curShowPos = spinCrewCnt > 0 ? spinCrew[i % spinCrewCnt] : 0;
+					rs.landedPos = rs.curShowPos;
+				}
+
+				if (rs.state == JS_SPINNING || rs.state == JS_LANDING) {
+					rs.jumpY += rs.jumpV;
+					rs.jumpV -= GRAVITY;
+					if (rs.jumpV < 0.0f && rs.state == JS_SPINNING)
+						rs.state = JS_LANDING;
+					if (rs.jumpY <= 0.0f) {
+						rs.jumpY = 0.0f;
+						if (rs.bounceLeft > 0) {
+							rs.bounceLeft--;
+							rs.jumpV = JUMP_V0 * 0.25f;
+							rs.state = JS_LANDING;
+							PlayMusic(M_KUNG);
+						}
+						else {
+							rs.jumpV = 0.0f;
+							rs.state = JS_HOLD;
+							rs.holdEndFrame = slotFrame + 8;
+						}
+					}
+				}
+
+				if (rs.jumpY > 0.01f && rs.bounceLeft > 0
+					&& slotFrame - rs.lastSwapF >= GetSwapInterval(false)) {
+					rs.lastSwapF = slotFrame;
+					int pool = (slotFrame * 37 + i * 101) % Max(1, spinCrewCnt);
+					rs.curShowPos = spinCrewCnt > 0 ? spinCrew[pool] : 0;
+					rs.flipLR = !rs.flipLR;
+				}
+			}
+
+			float ratio = rs.jumpY /
+				(rs.maxJumpY > 0.01f ? rs.maxJumpY : 1.0f);
+			ratio = Max(0.0f, Min(ratio, 1.0f));
+			float yPos = centerY + rs.jumpY * zoom;
+			const bool heartSelected = rs.started && rs.bounceLeft == 0;
+
+			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+				centerX - (float)12 * _2X * 2.5f * zoom,
+				centerY + (float)8 * _2X * 2.5f * zoom,
+				SHADOW_IMG, 2.5f * zoom);
+
+			if (heartSelected) {
+				//일반 동료의 기본 착지 크기와 같은 2.5 배율이다.
+				DrawCmfDetail(CMF_NPC_HEART, PO_C122_HEART,
+					(int)centerX, (int)yPos, RIGHT, 2.5f * zoom, false, false);
+			}
+			else {
+				int offset = rs.curShowPos;
+				if (offset < 0 || offset >= MAXCREW || !ao[CREW + offset].active)
+					offset = spinCrewCnt > 0 ? spinCrew[i % spinCrewCnt] : 0;
+				OBJECT* u = &ao[CREW + offset];
+				float baseScale = 2.5f * zoom * enemyIconZoom[u->type];
+				float maxScale = 4.0f * zoom * enemyIconZoom[u->type];
+				float drawScale = baseScale
+					+ (maxScale - baseScale) * sinf(ratio * M_PI * 0.5f);
+				DrawCmfDetail(u->cmf, crewPos[u->type * 5], centerX, yPos,
+					rs.flipLR ? LEFT : RIGHT, drawScale, false, false);
+			}
+		}
+
+		//GoldAlpha PVP 선언. 작게 시작해 한 번 과장되게 커진 뒤 고정한다.
+		if (slotFrame >= heartEnd) {
+			float titleT = Min(1.0f,
+				(float)(slotFrame - heartEnd) / (float)Max(1, FPS / 6));
+			float titleZoom = (1.0f + 2.7f * titleT)
+				+ 0.35f * sinf(titleT * M_PI);
+			DrawGoldAlphaText(DX / 2, DY - 76 * _2X, "PVP",
+				FONT_GOLD_LARGE, titleZoom, CENTER, true, 0.0f);
+			if (slotFrame == heartEnd)
+				PlayMusic(M_KUNG);
+		}
+
+		//우리 진영은 왼쪽, 상대 진영은 오른쪽 화면 밖에서 동시에 돌격한다.
+		if (slotFrame >= bannerStart) {
+			float bannerT = Min(1.0f,
+				(float)(slotFrame - bannerStart) / (float)Max(1, FPS / 3));
+			float ease = 1.0f - powf(1.0f - bannerT, 3.0f);
+			int bannerW = DX / 2 - 10 * _2X;
+			int bannerH = 112 * _2X;
+			int bannerY = DY / 2 + bannerH / 2;
+			int leftX = (int)(-bannerW + (bannerW + 8 * _2X) * ease);
+			int rightX = (int)(DX - 8 * _2X + (-bannerW) * ease);
+			MemRectRound(leftX, bannerY, bannerW, bannerH, 0x163E79, 12 * _2X);
+			MemRectRound(rightX, bannerY, bannerW, bannerH, 0x7A1830, 12 * _2X);
+			MemRectRound(leftX + 8 * _2X, bannerY - 8 * _2X,
+				88 * _2X, 88 * _2X, 0x245DA9, 44 * _2X);
+			MemRectRound(rightX + bannerW - 96 * _2X, bannerY - 8 * _2X,
+				88 * _2X, 88 * _2X, 0xA52B48, 44 * _2X);
+			DrawCmfDetail(ROBIN, crewPos[ROBIN * 5], leftX + 52 * _2X,
+				bannerY - 63 * _2X, RIGHT, 1.85f, false, false);
+			DrawCmfDetail(ROBIN, crewPos[ROBIN * 5], rightX + bannerW - 52 * _2X,
+				bannerY - 63 * _2X, LEFT, 1.85f, false, false);
+			SetFontColor(COLOR_WHITE);
+			CenterTextStrSolid("MY CASTLE", leftX + bannerW * 2 / 3,
+				bannerY - 38 * _2X, 0.92f);
+			const char* rivalName = robin.nickname.empty() ? "RIVAL" : robin.nickname.c_str();
+			CenterTextStrSolid(rivalName, rightX + bannerW / 3,
+				bannerY - 38 * _2X, 0.92f);
+			char detail[64];
+			sprintf(detail, "CASTLE %d  LV %d", robin.castle + 1,
+				Max(1, robin.castle + 1));
+			SetFontColor(0xFFD36A);
+			CenterTextStrSolid(detail, rightX + bannerW / 3,
+				bannerY - 76 * _2X, 0.62f);
+			SetFontColor(COLOR_WHITE);
+			if (slotFrame == bannerStart + FPS / 3)
+				PlayMusic(M_KUNG);
+		}
+
+		//배너가 부딪힌 뒤 VS가 두 번 튀며 중앙에 박힌다.
+		if (slotFrame >= vsStart) {
+			int local = slotFrame - vsStart;
+			float vsT = Min(1.0f, (float)local / (float)Max(1, FPS / 6));
+			float vsZoom = 1.2f + 3.2f * vsT + 0.65f * sinf(vsT * M_PI);
+			if (local > FPS / 5)
+				vsZoom += 0.24f * sinf((float)(local - FPS / 5) * 0.7f)
+					* Max(0.0f, 1.0f - (float)(local - FPS / 5) / (float)(FPS / 4));
+			DrawGoldAlphaText(DX / 2, DY / 2 + 15 * _2X, "VS",
+				FONT_GOLD_LARGE, vsZoom, CENTER, true, -7.0f);
+			if (local == 0 || local == FPS / 5) {
+				PlayMusic(M_KUNG);
+				SetAlpha(local == 0 ? 20 : 28);
+				MemRect(0, DY, DX, DY, COLOR_WHITE);
+				SetAlpha(32);
+			}
+		}
+
+		//중앙의 어두운 셔터가 화면을 덮는 순간 실제 PVP 씬으로 교체한다.
+		if (slotFrame >= wipeStart) {
+			float wipeT = Min(1.0f,
+				(float)(slotFrame - wipeStart) / (float)Max(1, revealEnd - wipeStart));
+			wipeT = wipeT * wipeT;
+			int halfW = (int)((DX / 2 + 2 * _2X) * wipeT);
+			MemRect(DX / 2 - halfW, DY, halfW * 2, DY, 0x08040D);
+		}
+
+		if (slotFrame >= revealEnd) {
+			gRoulettePvpResult = false;
+			roulettePlayZoom = 1.0f;
+			bar[BAR_ROULETTE].front = false;
+			StartPvpTest();
+		}
+		return;
+	}
 
 	// ============================================================
 	// [SKILL PHASE] 합성/임팩트/발사 상태 머신
@@ -1406,7 +1645,28 @@ void RouletteDraw(int x, int y, float zoom)
 		// 정족수(MAXCREW)가 차기 전에는 룰렛이 실제로 안 돌고(RouletteAttackStart의 crewCnt<MAXCREW 분기)
 		// gRouletteStartAoOffset도 신뢰할 수 없으므로, 현재 보유한 크루를 그대로 슬롯에 채워서
 		// RouletteDrawSimple3Slots로 잠금 표시(그레이스케일 + 자물쇠)까지 그려준다.
-		if (crewCnt < MAXCREW)
+		if (attackSequence == ATTACKSEQUENCE_BOSSRAID)
+		{
+			// 보스 난입 퇴장 중에는 룰렛 상태를 새로 계산하지 않는다. 현재
+			// 편성된 캐릭터 세 명을 원색으로 유지한 채 바 전체가 빠져나간다.
+			//
+			// [ao[].active 로 세면 안 된다]
+			//
+			// 자물쇠는 "그 자리에 동료가 없다"는 표시다. 그런데 여기서
+			// ao[].active 로 셌더니, 난입 전환 중 동료 오브젝트가 잠깐
+			// 비활성인 프레임에 세 칸이 전부 자물쇠로 바뀌었다. 편성은
+			// 그대로인데 화면만 "동료 없음"이 된 것이다.
+			//
+			// 편성표를 본다. 그 값은 전환 중에 흔들리지 않는다.
+			int slotCrewIdx[3] = { -1, -1, -1 };
+			int filled = 0;
+			for (int offset = 0; offset < MAXCREW && filled < 3; ++offset) {
+				if (robin.slotCrew[offset] != -1)
+					slotCrewIdx[filled++] = offset;
+			}
+			RouletteDrawSimple3Slots(x, y, zoom, slotCrewIdx, 3);
+		}
+		else if (crewCnt < MAXCREW)
 		{
 			int slotCrewIdx[3];
 			for (int i = 0; i < 3; i++)
@@ -1590,9 +1850,33 @@ void RouletteDraw(int x, int y, float zoom)
 		float centerX = x - (float)SLOTSIZE_X * zoom / 2 + (float)reelPostion[i * 2 + 0] * zoom;
 		float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
 
+		//릴에 세울 동료.
+		//
+		//[룰렛이 안 돌았을 때]
+		//
+		//isSlotPlaying 은 attackSequence >= ATTACKSEQUENCE_SLOT 로 잡는데,
+		//ATTACKSEQUENCE_BOSSRAID 가 10 이라 보스 난입 전환도 "도는 중"이
+		//된다. 그런데 그때 룰렛은 실제로 돌지 않아 확정값이 -1 이고,
+		//세 칸이 전부 자물쇠로 그려졌다.
+		//
+		//자물쇠는 편성이 빈 자리에만 나와야 한다. 확정값이 없으면 편성표의
+		//같은 자리를 대신 세운다.
+		int reelOffset = gRouletteResultAoOffset[i];
+
+		if (reelOffset < 0 && i < MAXCREW && robin.slotCrew[i] != -1) {
+			reelOffset = i;
+
+			//아래 그리기가 보는 값도 같이 맞춘다. 확인하는 자리와 값을
+			//내는 자리가 같아야 한다.
+			if (rs.curShowPos < 0)
+				rs.curShowPos = reelOffset;
+			if (rs.landedPos < 0)
+				rs.landedPos = reelOffset;
+		}
+
 		//동료가 아직 3명이 안 되어 비어있는 릴. 돌리지 않고 자물쇠만 그린 뒤 넘어간다.
 		//완료 판정(allDone/allMarksReady)과 턴 구성에서도 제외된다.
-		if (gRouletteResultAoOffset[i] < 0)
+		if (reelOffset < 0)
 		{
 			rs.state = JS_DONE;
 			rs.started = true;
@@ -1694,7 +1978,7 @@ void RouletteDraw(int x, int y, float zoom)
 							//카드가 내려앉는 자리. 릴 가운데보다 이만큼 위다.
 							//64 -> 48 -> 56 -> 60 으로 왔다가 화면 기준 16픽셀 더 올린다.
 							//이 좌표계는 위쪽이 +이고 _2X 배율이므로 논리 좌표 8을 더한다.
-							int iconY = (int)(centerY + 68 * _2X);
+							int iconY = (int)(centerY + 76 * _2X);
 
 							//카드가 처음 튀어나오는 자리.
 							//

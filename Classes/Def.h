@@ -705,6 +705,13 @@ typedef enum _gameDef {
 	CREWDATA_SKILL2,
 	CREWDATA_SKILL3,
 	CREWDATA_CARDBG,//카드로 나왔을 때 어떻게 되는지.
+
+	//보스전에서 이 동료가 다시 칠 때까지 걸리는 프레임.
+	//
+	//보스전은 턴이 없어 저마다 제 시계로 돈다. 그 시계가 동료의 특성이다.
+	//60프레임이 1초다.
+	CREWDATA_BOSSCOOL,
+
 	CREWDATASIZE,
 	//TYPE, STAR, PRICE, BULLETDATA
 	CMFFRAMEPOSITIONDATASIZE = 6,

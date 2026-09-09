@@ -92,6 +92,21 @@ void GiftDraw(int x, int y, float zoom);
 void GuildEventDraw(int x, int y, float zoom);
 void DailyQuestDraw(int x, int y, float zoom);
 void ShopDraw(int, int, float zoom);
+
+//상점 목록의 구역 번호. ShopJumpToIapSection() 에 넘긴다.
+//
+//성은 상품이 아니라 갈래다. 카드 대신 들어가는 버튼 하나만 놓는다.
+//좌상단 구매유도 버튼이 이 번호로 뛰어온다.
+//성이 맨 앞이다. 가장 중요한 판매 요소라 골드 상품보다 위에 둔다.
+enum {
+	SHOPSEC_CASTLE = 0,
+	SHOPSEC_GOLD,
+	SHOPSEC_HEART,
+	SHOPSEC_CASH,
+	SHOPSEC_BOX,
+	SHOPSEC_PASS,
+	TOTALSHOPSEC,
+};
 void CastleMenuDraw(int x, int y, float zoom);
 void StarShopDraw(int, int);
 void CrewListDraw(int x, int y, float zoom);
@@ -100,6 +115,9 @@ void HeroStatDraw(OBJECT * pObj, int x, int y, float zoom);
 void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onlyInfo);
 //동료 상세보기. winH는 (x, y)부터 아래로 쓸 수 있는 높이(픽셀)다.
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH);
+void BossRaidDetailDraw(void);
+void DrawPvpCrewPanel(int x, int y, int w, int h);
+void DrawPvpHeroPanel(int x, int y, int w, int h);
 
 //장비 상세보기(팝업). 동료 상세와 같은 틀을 쓴다.
 //얻지 않은 장비는 여기까지 오지 않는다(Func_Input.cpp에서 막는다).
@@ -126,6 +144,10 @@ void OptionDraw(int, int, float zoom);
 void OptionLanguageDraw(int x, int y, float zoom);
 void OptionPushAlarmDraw(int x, int y, float zoom);
 void OptionHelpDraw(int x, int y, float zoom);
+void SocialDraw(int x, int y, float zoom);
+void SocialSetTab(int tab);
+void SocialSetView(int view);
+void SocialSetSubTab(int tab);
 void JokboDraw(int, int, float zoom);
 void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom);
 void DeptDiscountDraw(int x, int y, float zoom);

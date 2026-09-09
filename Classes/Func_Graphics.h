@@ -129,11 +129,15 @@ void DrawXMark(int x, int y, float zoom);
 void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shadow, float thickness);
 int GetHeroSkillIcon(int heroSkillIdx);
 void DrawSkillIcon(int, int, int, float);
+void DrawBuffCard(int debuffIdx, int centerX, int centerY, float zoom, float rotation = 0.0f);
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom);
 int GetCrewBulletAni(int idx);
 //x, y는 아이콘의 한가운데다(DrawCrewBulletIcon()은 좌상단).
 void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame, int dirX);
-void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom, int iconOverride = 0);
+// ownerObj가 동료이면 해당 동료 카드의 배경을 먼저 그리고 스킬 아이콘과
+// 프레임을 차례로 올린다. 카드 렌더링 순서는 이 함수 하나가 책임진다.
+void DrawSkillCard(int skillIdx, int lv, int x, int y, float zoom,
+	int iconOverride = 0, int ownerObj = -1);
 void DrawLock(int lv, int x, int y, float zoom);
 void DrawPercent(float num, int x, int y, float zoom, int align);
 void DrawLv(int lv, int x, int y, float zoom, int align);

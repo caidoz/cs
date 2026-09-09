@@ -12,11 +12,14 @@ void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom,
 void BattleCoinBarDraw(long long count, int icon, int x, int y, int alpha, float zoom);
 void ExpBarWideDraw(int lv, long long count, int x, int y, float zoom);
 void HeartBarDraw(int count, int max, int x, int y, int alpha, float zoom);
+void BossHeartBarDraw(long long count, long long max, int x, int y, int alpha,
+	float zoom);
 void ExpBarDraw(int lv, long long count, int x, int y, int alpha, float zoom);
 void ShieldBarDraw(long long count, long long max, int x, int y, float zoom, int hpColor);
 void SimpleHpBarDraw(long long count, long long max, int x, int y, float zoom, int hpColor);
 void HpBarDraw(int type, long long count, long long max, int x, int y, float zoom);
 void DayBarDraw(int day, int x, int y, float zoom);
+void CastlePromoDraw(int x, int y, float zoom);
 void WaveBarDraw(int life, int maxLife, int x, int y, float zoom);
 void BarAddStop(BAR* barP);
 

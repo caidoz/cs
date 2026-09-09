@@ -21,6 +21,7 @@ typedef enum _handlerInfo {
 	MD_NEWSKILL,
 	MD_STAGECLEAR,
 	MD_BATTLELOADING,
+	MD_PVP,//다른 유저의 성을 공략하는 비동기 PVP
 
 	MK_TITLE = 1,
 	MK_PLAY,
@@ -36,6 +37,7 @@ typedef enum _handlerInfo {
 	MK_NEWCOLLECTION,
 	MK_NEWCARD,
 	MK_STAGECLEAR,
+	MK_PVP,
 	//릴리즈 핸들
 	MR_PLAY = 1,
 
@@ -149,6 +151,15 @@ typedef enum _handlerInfo {
 	ITEMGOTOBOXMOVE,
 	FOLLOWMOVE,
 	TREEMOVE,
+
+	//PVP 수비측이 쏘는 총알.
+	//
+	//기존 총알은 전부 "아군이 적을 친다" 방향이다. AttackEnemyCheck 가
+	//언제나 ENEMYUSEROBJ..NEUTRAL 만 훑기 때문에, 적 칸의 개체가 쏜 총알도
+	//적만 때린다. 수비측 총알이 우리 히어로를 못 때리던 까닭이다.
+	//
+	//반대 방향이 없어서 하나 만든다. 맞으면 AttackRobin 을 부른다.
+	PVPFOEBULLETMOVE,
 
 	//드로우핸들러
 	PLAYERDRAW = 1,

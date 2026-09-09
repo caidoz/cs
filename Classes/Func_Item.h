@@ -30,6 +30,7 @@ long long GetUpgradeHammer(int, int, int, int);
 int GetStageBossObjectIdx(void);
 int GetStageBossIdx(void);
 int GetStageBossType();
+int GetStageBossFace(void);
 long long GetStageAdmissionFee(void);
 long long GetStageAdmissionHeart(int stage);
 int GetItemPrice(ITEM * it);

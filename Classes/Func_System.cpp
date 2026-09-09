@@ -173,6 +173,7 @@ void InitMenu(void)
 	InitBar(BAR_CREW);
 	InitBar(BAR_EQUIP);
 	InitBar(BAR_MAINSHOP);
+	InitBar(BAR_SOCIAL);
 
 	InitBar(BAR_ROULETTE);
 	
@@ -444,6 +445,21 @@ void AddSimpleLog(int iconType, int a, int b, int c, int textIdx)
 	gameLog[i].iconC = c;
 }
 
+//바 값을 0 과 최대값 사이로 되돌린다.
+//
+//이 바들은 AddBar 로 더해서 쌓는다. 더하는 자리가 여럿이라 한 곳만 어긋나도
+//최대값을 넘고, 넘은 채로 그리면 게이지가 꽉 찬 채로 굳는다.
+//
+//max 가 0 인 바는 상한을 안 정한 것이므로 건드리지 않는다.
+void ClampBarCount(BAR* barP)
+{
+	if (barP->count < 0)
+		barP->count = 0;
+
+	if (barP->max > 0 && barP->count > barP->max)
+		barP->count = barP->max;
+}
+
 void AddBar(BAR* barP, signed long long add, int countFrame)
 {
 	if (barP->type == BAR_ITEM) {
@@ -451,9 +467,20 @@ void AddBar(BAR* barP, signed long long add, int countFrame)
 	}
 
 	barP->active = true;
+
+#if BOSSHP_BAR_LOG
+	//보스전에서 이 바에 들어오는 값을 전부 찍는다. 넘치는 값이 어디서
+	//오는지 알아야 그 자리를 고칠 수 있다.
+	if (bossRaidMode && barP == &bar[BAR_BOSSHP])
+		CCLOG("BOSSHP add=%lld  count=%lld pend=%lld max=%lld  bossHp=%lld mode=%d",
+			(long long)add, (long long)barP->count, (long long)barP->add,
+			(long long)barP->max, (long long)ao[ENEMY].hp, drawHandle);
+#endif
+
 	//이미 더하고 있는게 있으면
 	if (barP->add) {
 		barP->count += barP->add;
+		ClampBarCount(barP);
 	}
 	barP->add = add;
 	
@@ -728,7 +755,10 @@ void InitBar(int type)
 		bar[BAR_BOSSHP].active = true;
 		bar[BAR_BOSSHP].type = BAR_BOSSHP;
 
-		bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
+		//보스레이드는 웨이브가 아니다. 여기서 웨이브 체력을 넣으면
+		//GotoBoss() 가 세워둔 100만이 지워진다.
+		bar[BAR_BOSSHP].max = bossRaidMode
+			? BOSSRAID_BOSS_HP : GetTotalWaveHp(robin.waveIdx);
 		bar[BAR_BOSSHP].add = 0;
 		bar[BAR_BOSSHP].countFrame = 0;
 
@@ -836,7 +866,7 @@ void InitBar(int type)
 		bar[BAR_CREW].frame2 = 0;
 		bar[BAR_CREW].aniFrame = 0;
 
-		bar[BAR_CREW].x = MAINMENU_X / 2;
+		bar[BAR_CREW].x = MAINMENU_X + (MAINMENU_X / 2);
 		bar[BAR_CREW].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
 		bar[BAR_CREW].targetX = 0;
@@ -865,7 +895,7 @@ void InitBar(int type)
 
 		bar[BAR_EQUIP].zoom = BAR_COLLECTIONS_ZOOM;
 
-		bar[BAR_EQUIP].x = MAINMENU_X + (MAINMENU_X / 2);
+		bar[BAR_EQUIP].x = DX - MAINMENU_X - (MAINMENU_X / 2);
 		bar[BAR_EQUIP].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
 		bar[BAR_EQUIP].targetX = 0;
@@ -1156,6 +1186,8 @@ void InitBar(int type)
 
 		break;
 	case BAR_CASTLE:
+		//성은 하단 칸에서 뺐다. 상점 안의 한 갈래로 들어간다.
+		//대신 이 바가 좌상단의 동그란 구매유도 버튼이 된다.
 		bar[BAR_CASTLE].active = true;
 		bar[BAR_CASTLE].type = BAR_CASTLE;
 
@@ -1170,8 +1202,12 @@ void InitBar(int type)
 		bar[BAR_CASTLE].frame2 = 0;
 		bar[BAR_CASTLE].aniFrame = 0;
 
-		bar[BAR_CASTLE].x = DX - MAINMENU_X - (MAINMENU_X / 2);//DX - 48 * _2X;// DX / 2 - (float)(RAIDGOLDBARWIDTH)* bar[BAR_MAINSHOP].zoom / 2;
-		bar[BAR_CASTLE].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
+		//왼쪽 상단. 오른쪽 보스 배지와 같은 높이로 마주 본다. BAR_DAY 와
+		//같은 식을 봐야 두 배지가 한 줄에 선다.
+		//
+		//퀵버튼 두 개가 쓰던 자리다. 그 둘은 지웠다.
+		bar[BAR_CASTLE].x = 24 * _2X;
+		bar[BAR_CASTLE].y = DY - GNBHEIGHT - 48 * _2X;
 
 		bar[BAR_CASTLE].targetX = 0;
 		bar[BAR_CASTLE].targetY = 0;
@@ -1180,9 +1216,13 @@ void InitBar(int type)
 
 		bar[BAR_CASTLE].drawFunc = BAR_CASTLE;
 
-		bar[BAR_CASTLE].zoom = BAR_HERO_ZOOM;
+		//보스 배지와 같은 배율이다. 둘이 다르면 한 줄로 안 읽힌다.
+		bar[BAR_CASTLE].zoom = 1.0f / 3.0f + 0.1f;
 		break;
 	case BAR_MAINSHOP:
+		//하단 네 번째 슬롯은 BAR_SOCIAL이 사용한다. 상점은 GNBDraw()에서
+		//플레이 화면 좌상단 퀵버튼으로 별도 표시한다.
+		//하단 네 칸의 첫 자리. 상점 / 동료 / 장비 / 소셜 순이다.
 		bar[BAR_MAINSHOP].active = true;
 		bar[BAR_MAINSHOP].type = BAR_MAINSHOP;
 
@@ -1199,7 +1239,7 @@ void InitBar(int type)
 
 		bar[BAR_MAINSHOP].zoom = BAR_MAINSHOP_ZOOM;
 
-		bar[BAR_MAINSHOP].x = DX - MAINMENU_X / 2;
+		bar[BAR_MAINSHOP].x = MAINMENU_X / 2;
 		bar[BAR_MAINSHOP].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
 
 		bar[BAR_MAINSHOP].targetX = 0;
@@ -1209,6 +1249,27 @@ void InitBar(int type)
 
 		bar[BAR_MAINSHOP].drawFunc = BAR_MAINSHOP;
 
+		break;
+
+	case BAR_SOCIAL:
+		bar[BAR_SOCIAL].active = true;
+		bar[BAR_SOCIAL].type = BAR_SOCIAL;
+		bar[BAR_SOCIAL].count = 0;
+		bar[BAR_SOCIAL].add = 0;
+		bar[BAR_SOCIAL].countFrame = 0;
+		bar[BAR_SOCIAL].icon = ITEM_SMILE_ICON;
+		bar[BAR_SOCIAL].iconFrame = 0;
+		bar[BAR_SOCIAL].frame = 0;
+		bar[BAR_SOCIAL].frame2 = 0;
+		bar[BAR_SOCIAL].aniFrame = 0;
+		bar[BAR_SOCIAL].zoom = BAR_SOCIAL_ZOOM;
+		//상점이 좌상단 퀵메뉴로 이동하기 전까지는 의도적으로 같은 슬롯이다.
+		bar[BAR_SOCIAL].x = DX - MAINMENU_X / 2;
+		bar[BAR_SOCIAL].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
+		bar[BAR_SOCIAL].targetX = 0;
+		bar[BAR_SOCIAL].targetY = 0;
+		bar[BAR_SOCIAL].front = false;
+		bar[BAR_SOCIAL].drawFunc = BAR_SOCIAL;
 		break;
 
 	case BAR_DAILYQUEST:
@@ -2571,22 +2632,87 @@ void GotoBoss(void)
 	ao[SOLDIER].active = false;
 
 	robin.bossRoom = true;
+	// 3일 보스전은 일반 웨이브가 아니라 실시간 전용 모드로 유지한다.
+	// SetRoom/SetEnemy도 이 값을 보고 보스레이드 체력 데이터를 읽는다.
+	if (bossRaidMode) {
+		drawHandle = MD_BOSSRAID;
+		keyHandle = MK_BOSSRAID;
+	}
 
 	raidPlayer = PLAYER;
 
 	menuDepth = 0;
 	frame = 0;
 
-	loadedMap = -1;
-
 	oldMap = playmap = robinmap;
-	robinmap = BOSSROOM;
+	// 3일 보스전도 유저가 보고 있던 성을 전장으로 그대로 사용한다.
+	// BOSSROOM은 SPACE2라 배경이 검게 보였고, 기존 성 오브젝트도 모두
+	// 사라졌다. 일반 보스전만 종전의 전용 보스룸으로 이동한다.
+	robinmap = bossRaidMode ? playmap : BOSSROOM;
 
-	SetRoom();
-
+	if (!bossRaidMode) {
+		loadedMap = -1;
+		SetRoom();
+		SetHero();
+	}
+	if (bossRaidMode) {
+		// 기존 적이 화면 밖으로 완전히 퇴장한 뒤 투사체까지 함께 정리한다.
+		for (i = BULLET; i < NEUTRAL; ++i)
+			memset(&ao[i], 0, sizeof(OBJECT));
+		// 성 맵에는 전용 보스가 없으므로 입장창에 표시한 보스를 전장 오른쪽에
+		// 직접 세운다. SetRoom()이 오브젝트를 비운 뒤에 만들어야 한다.
+		OBJECT* bossObj = &ao[ENEMY];
+		bossObj->type = GetStageBossFace();
+		bossObj->nx = bossObj->x = ao[PLAYER].x + 144 * _2X;
+		bossObj->ny = bossObj->y = ao[PLAYER].y;
+		bossObj->dirX = bossObj->dirF = LEFT;
+		bossObj->defaultZoom = bossObj->zoom = BOSSZOOM;
+		bossObj->mom = ENEMY;
+		SetEnemy(bossObj);
+	}
 	SetStageBoss();
+	if (bossRaidMode) {
+		// 이벤트 밸런스가 확정되기 전까지 보스레이드는 현재/최대 체력을
+		// 명시적으로 100만으로 고정한다. 일반 스테이지 HP 테이블의 0 또는
+		// 낮은 값이 들어와 시작하자마자 사망 연출이 나는 것도 막는다.
+		ao[ENEMY].maxhp = BOSSRAID_BOSS_HP;
+		ao[ENEMY].hp = BOSSRAID_BOSS_HP;
+		ao[ENEMY].active = true;
+		ao[ENEMY].dead = false;
+		// 보스레이드도 턴제 전용 ENEMYMOVETURN이나 별도 1px 이동기가 아니라
+		// 기존 실시간 몬스터 AI가 이동과 주인공 공격을 모두 담당한다.
+		ao[ENEMY].moveHandler = ENEMYMOVE;
+		ao[ENEMY].drawHandler = ENEMYDRAW;
+		InitMotion(&ao[ENEMY]);
+		//등장 연출이 0 에서 최대치까지 채운다. 처음부터 꽉 채워두면
+		//차오르는 것이 안 보인다.
+		bar[BAR_BOSSHP].max = BOSSRAID_BOSS_HP;
+		bar[BAR_BOSSHP].count = 0;
 
-	fadeFrame = FPS;
+		//아주 작게 나타난다. 제 크기까지는 DrawBossRaidMercenaryUI() 가 키운다.
+		ao[ENEMY].zoom = ao[ENEMY].defaultZoom * BOSSENTER_ZOOMFROM;
+	}
+	crewCnt = GetSlotCrewCnt();
+
+	// 보스레이드는 성 화면에 난입하는 전투다. 여기서 동료를 다시 구성하면
+	// 성 위의 자리와 포즈가 재설정되어, 서 있던 공주와 왕이 갑자기
+	// 옮겨 선다. 일반 보스룸 전환에서만 부른다.
+	//
+	// 한 번 여기서 부르게 고쳤다가 되돌렸다. 동료가 공격을 안 하던 것은
+	// 이 줄 때문이 아니라 턴 게이트 때문이었다(UpdateBossRaidCombatLoop).
+	if (!bossRaidMode)
+		SetBattleCrew();
+
+	if (bossRaidMode) {
+		// 줌과 신규 컨트롤 등장은 StartBossRaidBattleIntro()가 순서대로 한다.
+		bar[BAR_ROULETTE].targetX = DX / 2;
+		bar[BAR_ROULETTE].targetY = (float)SLOTSIZE_Y * SLOTINITZOOM
+			+ BOTTOMMENUHEIGHT - 2 * _2X;
+	}
+
+	// 같은 성 장면을 이어 쓰는 보스레이드에는 암전/페이드가 없어야 한다.
+	// 일반 보스룸 이동만 종전 페이드인을 유지한다.
+	fadeFrame = bossRaidMode ? 0 : FPS;
 	arenaStatus = STATUS_READY;
 
 	raidPlayer = focus = PLAYER;
@@ -2615,11 +2741,17 @@ void GotoBoss(void)
 		controlerSpread[i] = true;
 
 	attackSequence = ATTACKSEQUENCE_READY;
+	touchDisable = false;
 
-	drawHandle = MD_PLAY;
-	keyHandle = MK_PLAY;
+	if (!bossRaidMode) {
+		drawHandle = MD_PLAY;
+		keyHandle = MK_PLAY;
+	}
 
-	PlayMusic(M_BOSS);
+	if (bossRaidMode)
+		StartBossRaidBattleIntro();
+	else
+		PlayMusic(M_BOSS);
 	bar[BAR_BOSSHP].count = 0;
 	bar[BAR_BOSSHP].add = 0;
 	AddBar(&bar[BAR_BOSSHP], ao[GetEnemyBarIdx(ENEMY)].hp, BARFRAME);
@@ -3560,6 +3692,12 @@ void GotoBattle(void)
 	bar[BAR_MAINSHOP].speedIncrement2 = bar[BAR_MAINSHOP].speedIncrement = 1 * _2X;
 	bar[BAR_MAINSHOP].frame = 1;
 
+	bar[BAR_SOCIAL].targetX = bar[BAR_SOCIAL].targetX2 = bar[BAR_SOCIAL].x;
+	bar[BAR_SOCIAL].targetY = bar[BAR_SOCIAL].targetY2 = bar[BAR_SOCIAL].y - 120 * _2X;
+	bar[BAR_SOCIAL].speed2 = bar[BAR_SOCIAL].speed = 8 * _2X;
+	bar[BAR_SOCIAL].speedIncrement2 = bar[BAR_SOCIAL].speedIncrement = 1 * _2X;
+	bar[BAR_SOCIAL].frame = 1;
+
 	//bar[BAR_EQUIP].active = false;
 	bar[BAR_EQUIP].targetX = bar[BAR_EQUIP].targetX2 = bar[BAR_EQUIP].x;
 	bar[BAR_EQUIP].targetY = bar[BAR_EQUIP].targetY2 = bar[BAR_EQUIP].y - 120 * _2X;
@@ -3762,6 +3900,11 @@ void WhoIsNextTurn(void)
 	int i;
 	int finishedTurn = turn;
 
+	//이번 액션의 계획은 여기서 끝난다. 남겨 두면 다음 턴의 타격이 지난
+	//턴의 잔액을 보고 0 을 맞는다.
+	ActionPlanEnd();
+	int previousTurnListIdx = turnListIdx;
+
 	//현재 동료의 액션이 완전히 끝나 다음 턴으로 넘어갈 때
 	//그 스킬의 컨트롤 마크를 페이드아웃시킨다.
 	if (attackSequence == ATTACKSEQUENCE_ACTION
@@ -3775,6 +3918,18 @@ void WhoIsNextTurn(void)
 	}
 
 	turnListIdx++;
+	//중간에 스턴이 걸린 대상도 행동 없이 건너뛴다. 전원이 스턴인 경우에도
+	//인덱스가 totalTurn까지 도달해 정상적으로 라운드를 종료한다.
+	while (turnListIdx < totalTurn) {
+		int nextActor = turnList[turnListIdx];
+		if (!AdvanceActorDebuffs(nextActor))
+			break;
+		//스턴은 자신의 행동 기회를 소비한 뒤 다음 대상에게 넘긴다.
+		turnListIdx++;
+	}
+	if (previousTurnListIdx < enemyTurnStartIdx
+		&& turnListIdx >= enemyTurnStartIdx && turnListIdx < totalTurn)
+		StartTurnPhaseAnnouncement(true);
 	//이러면 전투 속행이고
 	if (turnListIdx < totalTurn) {
 		turn = turnList[turnListIdx];//누구턴인지 결정
@@ -3826,7 +3981,6 @@ void WhoIsNextTurn(void)
 		// 개별 액션이 아니라 전체 turnList가 끝나는 이 지점만 버프의 한 턴으로
 		// 센다. 현재 턴에 생긴 버프는 여기서 1이 되고 다음 턴 끝에 해제된다.
 		AdvanceTurnBuffs();
-		AdvanceTurnDebuffs();
 		turnListIdx = 0;
 		turn = 0;
 		attackSequence = ATTACKSEQUENCE_COIN;

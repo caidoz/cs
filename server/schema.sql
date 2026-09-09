@@ -488,9 +488,26 @@ CREATE TABLE battle_enemy_effect (
     eff_idx  SMALLINT UNSIGNED NOT NULL,
     remain   INT               NOT NULL,  -- 남은 프레임/횟수
     owner    TINYINT UNSIGNED  NOT NULL DEFAULT 0,  -- 건 사람
+    remain_turn TINYINT UNSIGNED NOT NULL DEFAULT 0,  -- 남은 턴 수
     PRIMARY KEY (user_id, slot, kind, eff_idx),
     CONSTRAINT fk_beffect_enemy FOREIGN KEY (user_id, slot)
         REFERENCES battle_enemy (user_id, slot) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 히어로에게 걸린 상태이상.
+--
+-- 적 쪽과 달리 buff 를 담지 않는다. 히어로의 버프는 장비와 스킬에서 다시
+-- 계산되지만, 상태이상은 맞은 결과라 어디서도 다시 나오지 않는다.
+CREATE TABLE hero_effect (
+    user_id     BIGINT UNSIGNED   NOT NULL,
+    hero_idx    TINYINT UNSIGNED  NOT NULL,  -- 0=로빈 1=디아나 2=맥스
+    eff_idx     SMALLINT UNSIGNED NOT NULL,  -- TOTALDEBUF 안의 번호
+    remain      INT               NOT NULL,  -- 남은 프레임
+    owner       TINYINT UNSIGNED  NOT NULL DEFAULT 0,  -- 건 사람
+    remain_turn TINYINT UNSIGNED  NOT NULL DEFAULT 0,  -- 남은 턴 수
+    PRIMARY KEY (user_id, hero_idx, eff_idx),
+    CONSTRAINT fk_heffect_player FOREIGN KEY (user_id)
+        REFERENCES player (user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =============================================================================
@@ -628,4 +645,4 @@ CREATE TABLE schema_version (
     PRIMARY KEY (version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO schema_version (version) VALUES (5);
+INSERT INTO schema_version (version) VALUES (6);

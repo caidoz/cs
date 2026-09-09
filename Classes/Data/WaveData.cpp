@@ -14,7 +14,7 @@
 #include "../Cmf.h"
 
 static const int boss_builtin[] = {
-	ENEMY_CASTLE_BOSS4,//ENEMY_FROG,
+	ENEMY_FROG,
 	ENEMY_LARVA,
 	ENEMY_SALAMANDER,
 	ENEMY_GIANT,

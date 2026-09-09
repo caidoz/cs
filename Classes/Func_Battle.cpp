@@ -3,6 +3,967 @@
 #include "Func.h"
 #include "Text.h"
 
+namespace {
+	int bossRaidCrewGauge[MAXCREW] = { 0, };
+	int bossRaidCrewAttackCooldown[MAXCREW] = { 0, };
+	//다음에 때릴 동료의 순번. 여섯이 돌아가며 치도록 자리를 기억한다.
+	int bossRaidCrewTurn = 0;
+
+	//지금 실제로 치고 있는 동료. CrewMove 가 "내 차례인가"를 물을 때
+	//이 값을 본다. 턴이 없으므로 전역 turn 하나로는 여섯을 못 가린다.
+	bool bossRaidCrewActing[MAXCREW] = { false, };
+
+	//동료 i 가 다시 칠 때까지 걸리는 프레임.
+	//
+	//동료의 특성이다. crew.tsv 의 boss_cool 열에서 온다.
+	//
+	//전에는 자리 번호로 편차를 주는 임시 식이었다. 그러면 같은 동료라도
+	//편성 칸을 옮기면 속도가 달라져 특성이라 할 수 없다.
+	//
+	//전역 잠금은 두지 않는다. 주기가 저마다 다르므로 저절로 흩어지고,
+	//한 곳이 막히면 전부 멈추는 구조가 아예 없다.
+	inline int BossRaidCrewCooldown(int crewSlot)
+	{
+		const int idx = GetCrewIdxFromType(ao[CREW + crewSlot].type);
+
+		if (idx < 0)
+			return BOSSRAID_CREW_COOLDOWN;
+
+		const int cool = crewData[idx * CREWDATASIZE + CREWDATA_BOSSCOOL];
+
+		//데이터가 비어 있으면(0) 기본값으로 돈다.
+		return cool > 0 ? cool : BOSSRAID_CREW_COOLDOWN;
+	}
+	bool bossRaidCrewSkillRunning = false;
+
+	//---- 스킬 정지 ----
+	//
+	//사용자가 스킬 버튼을 누르면 판 전체가 멈추고, 그 스킬이 끝나야 다시
+	//돈다. 실시간이라 여섯이 동시에 쏘는 와중에는 제 스킬이 무엇을 했는지
+	//안 보인다. 멈춰야 보인다.
+	//
+	//저절로 나가는 기본공격(1단)은 멈추지 않는다. 그것까지 멈추면 판이
+	//끊임없이 정지한다. 멈추는 것은 사람이 누른 것뿐이다.
+	//
+	//-1 이면 아무도 안 멈춰 있다.
+	int bossRaidSkillFreezeOwner = -1;
+	int bossRaidSkillFreezeFrame = 0;
+	//BOSSRAID_CREW_COOLDOWN 은 BalanceConfig.h 로 옮겼다.
+	int bossRaidBattleFrame = 0;
+	int bossRaidTimeoutFrame = 0;
+	int bossRaidEarnedHeart = 0;
+	int bossRaidIntroFrame = 0;
+	bool bossRaidWaitingForControl = false;
+
+	//판이 실제로 시작됐는가.
+	//
+	//bossRaidWaitingForControl 로는 이걸 못 가린다. 그 값은 인트로가 다
+	//끝나야 true 가 되므로, 인트로가 도는 7초 동안은 false 다. 그 사이를
+	//"대기 중이 아니다"로 읽어서 몬스터가 움직이고 판이 시작돼 버렸다.
+	//
+	//첫 터치 하나만 이 값을 켠다.
+	bool bossRaidStarted = false;
+	bool bossRaidGameOver = false;
+	float bossRaidEntranceZoom = DIORAMAZOOM;
+	bool bossRaidExitBar[TOTAL_BAR] = { false, };
+	float bossRaidExitStartX[TOTAL_BAR] = { 0, };
+	float bossRaidExitStartY[TOTAL_BAR] = { 0, };
+	float bossRaidExitTargetX[TOTAL_BAR] = { 0, };
+	float bossRaidExitTargetY[TOTAL_BAR] = { 0, };
+
+	bool IsBossRaidVisibleBar(int barIndex)
+	{
+		// 1단계 퇴장 중에는 기존 바를 실제로 그려야 화면 밖으로 튕겨 나가는
+		// 모습이 보인다. 보스 생성과 MD 전환이 끝난 뒤에만 전용 HUD로 거른다.
+		if (attackSequence == ATTACKSEQUENCE_BOSSRAID)
+			return true;
+		if (drawHandle != MD_BOSSRAID)
+			return true;
+
+		// 보스전에서는 일반 플레이/GNB/하단 메뉴 바를 모두 숨기고,
+		// 전투에 직접 필요한 체력 및 액션 컨트롤만 공용 Bar 패스에 남긴다.
+		return (barIndex >= BAR_PLAYERHP && barIndex < BAR_ENEMYHP)
+			|| barIndex == BAR_BOSSHP
+			|| barIndex == BAR_HEART
+			|| barIndex == BAR_PLAY
+			|| barIndex == BAR_JOYSTICK
+			|| barIndex == BAR_JUMP;
+	}
+}
+
+float GetBossRaidEntranceProgress(void)
+{
+	if (attackSequence != ATTACKSEQUENCE_BOSSRAID)
+		return 0.0f;
+	return Max(0.0f, Min(1.0f,
+		1.0f - (float)sequenceDelay / (float)BOSSRAID_EXIT_FRAMES));
+}
+
+float GetBossRaidWorldScale(void)
+{
+	if (!bossRaidMode || bossRaidEntranceZoom <= 0.001f)
+		return 1.0f;
+	return dioramaZoom / bossRaidEntranceZoom;
+}
+
+static void BossRaidMoveBar(int idx, float tx, float ty)
+{
+	bossRaidExitBar[idx] = true;
+	bossRaidExitStartX[idx] = bar[idx].x;
+	bossRaidExitStartY[idx] = bar[idx].y;
+	bossRaidExitTargetX[idx] = tx;
+	bossRaidExitTargetY[idx] = ty;
+	// 공용 GotoPositionBar와 중복 갱신되지 않게 하고 전환 프레임에서 직접 보간한다.
+	bar[idx].frame = bar[idx].frame2 = 0;
+}
+
+static void UpdateBossRaidExitBars(void)
+{
+	const float u = GetBossRaidEntranceProgress();
+	// 처음에는 안쪽으로 눌렸다가 바닥/화면 밖으로 튕겨 나간다.
+	//
+	// back 이 클수록 더 깊이 눌렸다가 더 세게 튄다. 표준값 1.70158 은
+	// 점잖아서 느릿해 보였다.
+	const float back = 2.60000f;
+	const float eased = (back + 1.0f) * u * u * u - back * u * u;
+	for (int i = 0; i < TOTAL_BAR; ++i) {
+		if (!bossRaidExitBar[i])
+			continue;
+		bar[i].x = bossRaidExitStartX[i]
+			+ (bossRaidExitTargetX[i] - bossRaidExitStartX[i]) * eased;
+		bar[i].y = bossRaidExitStartY[i]
+			+ (bossRaidExitTargetY[i] - bossRaidExitStartY[i]) * eased;
+	}
+}
+
+void BeginBossRaidEntrance(void)
+{
+	bossRaidEntranceZoom = dioramaZoom;
+	bossRaidIntroFrame = 0;
+	memset(bossRaidExitBar, 0, sizeof(bossRaidExitBar));
+
+	const int topBars[] = { BAR_GOLD, BAR_CROWN, BAR_BOX, BAR_STAR,
+		BAR_STAGEPROGRESS, BAR_WAVE };
+	for (int i = 0; i < (int)(sizeof(topBars) / sizeof(topBars[0])); ++i)
+		BossRaidMoveBar(topBars[i], bar[topBars[i]].x, DY + 160 * _2X);
+
+	//바는 제가 서 있던 쪽으로 나간다. 아래 것은 아래로, 옆의 것은 옆으로.
+	//서 있던 자리와 나가는 쪽이 어긋나면 화면을 가로질러 날아간다.
+	//
+	//하단 네 칸은 상점 / 동료 / 장비 / 소셜이다. 성은 거기서 빠져 좌상단
+	//배지가 됐으므로 아래가 아니라 왼쪽으로 나간다.
+	const int bottomBars[] = { BAR_HEART, BAR_HEARTBET, BAR_ROULETTE,
+		BAR_MAINSHOP, BAR_CREW, BAR_EQUIP, BAR_SOCIAL };
+	for (int i = 0; i < (int)(sizeof(bottomBars) / sizeof(bottomBars[0])); ++i)
+		BossRaidMoveBar(bottomBars[i], bar[bottomBars[i]].x, -160 * _2X);
+
+	BossRaidMoveBar(BAR_DAY, DX + 160 * _2X, bar[BAR_DAY].y);
+
+	//공격 버튼도 오른쪽으로 나갔다가 인트로에서 같은 쪽으로 돌아온다.
+	//
+	//InitBar(BAR_PLAY) 가 화면 밖 오른쪽(DX + 128 * _2X)에서 시작하도록
+	//되어 있다. 들어오는 연출은 이미 있는데 나가는 연출만 없어서, 버튼이
+	//그 자리에서 툭 사라졌다.
+	BossRaidMoveBar(BAR_PLAY, DX + 160 * _2X, bar[BAR_PLAY].y);
+	BossRaidMoveBar(BAR_DAILYQUEST, -160 * _2X, bar[BAR_DAILYQUEST].y);
+	BossRaidMoveBar(BAR_CASTLE, -160 * _2X, bar[BAR_CASTLE].y);
+}
+
+void StartBossRaidBattleIntro(void)
+{
+	bossRaidIntroFrame = 1;
+	bossRaidWaitingForControl = false;
+	touchDisable = true;
+}
+
+bool IsBossRaidWaitingForControl(void)
+{
+	//인트로가 도는 동안도 "아직 안 시작"이다. 시작시키는 것은 첫 터치뿐이다.
+	return bossRaidMode && drawHandle == MD_BOSSRAID && !bossRaidStarted;
+}
+
+bool IsBossRaidCrewActing(int crewSlot)
+{
+	if (crewSlot < 0 || crewSlot >= MAXCREW)
+		return false;
+
+	return bossRaidCrewActing[crewSlot];
+}
+
+bool BossRaidNotifyControlInput(void)
+{
+	if (!bossRaidMode || drawHandle != MD_BOSSRAID || !bossRaidWaitingForControl)
+		return false;
+	bossRaidWaitingForControl = false;
+	bossRaidStarted = true;
+	// 일반 TURNRPG 시작 루틴으로 넘어가지 않고 실시간 보스레이드 모드를
+	// 끝까지 유지한다.
+	drawHandle = MD_BOSSRAID;
+	keyHandle = MK_BOSSRAID;
+	arenaStatus = STATUS_PLAY;
+	waveStatus = WAVESTATUS_PLAY;
+	attackSequence = ATTACKSEQUENCE_READY;
+	systemKey = null;
+	PlayMusic(M_BOSS);
+	return true;
+}
+
+static int GetBossRaidFundY(void)
+{
+	const int fundFrame = Max(0, bossRaidIntroFrame - FPS * 2);
+	const float fundT = Min(1.0f, (float)fundFrame / (float)(FPS * 2));
+	const float back = 1.70158f;
+	const float entered = 1.0f + (back + 1.0f) * powf(fundT - 1.0f, 3.0f)
+		+ back * powf(fundT - 1.0f, 2.0f);
+	const float targetY = DY - 8.0f * _2X;
+	return (int)(DY + 80.0f * _2X
+		+ (targetY - (DY + 80.0f * _2X)) * entered);
+}
+
+static void DrawBossRaidStartButterfly(int titleFrame, int moveFrames,
+	int holdFrames)
+{
+	const char* title = "BOSSRAID START!";
+	const int length = (int)strlen(title);
+	float widths[32] = { 0, };
+	float offsets[32] = { 0, };
+	float totalWidth = 0.0f;
+	for (int i = 0; i < length; ++i) {
+		char glyph[2] = { title[i], 0 };
+		widths[i] = title[i] == ' ' ? 7.0f * _2X
+			: GetGoldAlphaTextWidth(glyph, FONT_GOLD_LARGE, 1.05f);
+		offsets[i] = totalWidth;
+		totalWidth += widths[i];
+	}
+	for (int i = 0; i < length; ++i) {
+		if (title[i] == ' ')
+			continue;
+		float x = DX / 2.0f - totalWidth / 2.0f + offsets[i];
+		float y = DY / 2.0f + 80.0f * _2X;
+		float z = 1.05f;
+		const float delay = Min(0.48f, i * 0.055f);
+		if (titleFrame <= moveFrames) {
+			float gt = (float)titleFrame / moveFrames;
+			float t = Max(0.0f, Min(1.0f, (gt - delay) / (1.0f - delay)));
+			float e = 0.5f - 0.5f * cosf(t * 3.14159265f);
+			float sx = DX + (150.0f + i * 12.0f) * _2X;
+			float sy = DY + (80.0f + i * 8.0f) * _2X;
+			x = sx + (x - sx) * e;
+			y = sy + (y - sy) * e + sinf(t * 6.2831853f) * 42.0f * _2X;
+			z *= 0.25f + 0.75f * e;
+		}
+		else if (titleFrame > moveFrames + holdFrames) {
+			float gt = (float)(titleFrame - moveFrames - holdFrames) / moveFrames;
+			float t = Max(0.0f, Min(1.0f, (gt - delay) / (1.0f - delay)));
+			float e = 0.5f - 0.5f * cosf(t * 3.14159265f);
+			x += (-180.0f * _2X - x - i * 12.0f * _2X) * e;
+			y += (-100.0f * _2X - y - i * 8.0f * _2X) * e
+				+ sinf(t * 6.2831853f) * 42.0f * _2X;
+			z *= 1.0f + 1.4f * e;
+		}
+		char glyph[2] = { title[i], 0 };
+		DrawGoldAlphaText(x, y, glyph, FONT_GOLD_LARGE, z, LEFT, false, false);
+	}
+}
+
+static void DrawBossRaidCrewPortrait(int crewSlot, int cardX, int cardY,
+	float cardZoom)
+{
+	const int obj = CREW + crewSlot;
+	const int cardW = (int)(SKILLCARDSIZE_X * cardZoom);
+	const int cardH = (int)(SKILLCARDSIZE_Y * cardZoom);
+	const int enemyIdx = ao[obj].type;
+	if (enemyIdx < 0 || enemyIdx >= gTotalEnemy)
+		return;
+
+	// 작은 우하단 배지 대신 카드 안쪽 전체를 캐릭터 썸네일로 쓴다.
+	// 금색 프레임은 DrawSkillCard가 먼저 그려 두었으므로 안쪽만 클립한다.
+	const int inset = Max(1, (int)(2 * _2X * cardZoom));
+	const int innerW = Max(1, cardW - inset * 2);
+	const int innerH = Max(1, cardH - inset * 2);
+	SetSectionClip(cardX + inset, cardY - inset, innerW, innerH, false);
+	const float portraitZoom = (float)innerW / (float)(48 * _2X) * 1.8f;
+	DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
+		enemyBigIconPos[3 * enemyIdx + 0],
+		cardX + cardW / 2.0f
+			+ enemyBigIconPos[3 * enemyIdx + 1] * portraitZoom,
+		//화면에서 딱 32픽셀 내린다. 배율을 곱하지 않는다 - 눈으로 보는
+		//것이 화면 픽셀이므로 재는 자리도 화면이어야 한다.
+		cardY - cardH + (enemyBigIconPos[3 * enemyIdx + 2] + 8 * _2X)
+			* portraitZoom - 32.0f,
+		LEFT, portraitZoom, false, false);
+	UnSectionClip(false);
+}
+
+void InitBossRaidMercenarySystem(void)
+{
+	memset(bossRaidCrewGauge, 0, sizeof(bossRaidCrewGauge));
+	memset(bossRaidCrewAttackCooldown, 0, sizeof(bossRaidCrewAttackCooldown));
+
+	//여섯의 출발선을 어긋나게 둔다. 같이 차오르면 우르르 나간다.
+	for (int i = 0; i < MAXCREW; ++i)
+		bossRaidCrewAttackCooldown[i] = -(i * BOSSRAID_CREW_STAGGER);
+
+	bossRaidCrewTurn = 0;
+	memset(bossRaidCrewActing, 0, sizeof(bossRaidCrewActing));
+	bossRaidCrewSkillRunning = false;
+	bossRaidSkillFreezeOwner = -1;
+	bossRaidSkillFreezeFrame = 0;
+	bossRaidBattleFrame = 0;
+	bossRaidTimeoutFrame = 0;
+	bossRaidEarnedHeart = 0;
+	bossRaidIntroFrame = 0;
+	bossRaidWaitingForControl = false;
+	bossRaidStarted = false;
+	bossRaidGameOver = false;
+	menuX = 0;
+}
+
+void ResetBossRaidMercenarySystem(void)
+{
+	memset(bossRaidCrewGauge, 0, sizeof(bossRaidCrewGauge));
+	memset(bossRaidCrewAttackCooldown, 0, sizeof(bossRaidCrewAttackCooldown));
+
+	//여섯의 출발선을 어긋나게 둔다. 같이 차오르면 우르르 나간다.
+	for (int i = 0; i < MAXCREW; ++i)
+		bossRaidCrewAttackCooldown[i] = -(i * BOSSRAID_CREW_STAGGER);
+
+	bossRaidCrewTurn = 0;
+	memset(bossRaidCrewActing, 0, sizeof(bossRaidCrewActing));
+	bossRaidCrewSkillRunning = false;
+	bossRaidSkillFreezeOwner = -1;
+	bossRaidSkillFreezeFrame = 0;
+	bossRaidBattleFrame = 0;
+	bossRaidTimeoutFrame = 0;
+	bossRaidEarnedHeart = 0;
+	bossRaidWaitingForControl = false;
+	bossRaidStarted = false;
+	bossRaidGameOver = false;
+}
+
+void AddBossRaidEarnedHeart(int count)
+{
+	if (bossRaidMode && count > 0)
+		bossRaidEarnedHeart += count;
+}
+
+int GetBossRaidEarnedHeart(void)
+{
+	return bossRaidEarnedHeart;
+}
+
+long long GetBossRaidHeartMax(void)
+{
+	//보스의 최대 체력에서 뽑는다. 지금 체력이 아니다 - 그러면 때릴수록
+	//분모가 줄어 이미 먹은 하트가 갑자기 꽉 찬 것처럼 보인다.
+	const long long hp = ao[ENEMY].maxhp > 0 ? ao[ENEMY].maxhp : BOSSRAID_BOSS_HP;
+
+	//0 으로 나누는 자리가 되면 안 된다. 바가 0/0 이 되면 진행률이 NaN 이다.
+	return Max((long long)1, hp / BOSSRAID_HEART_DIV);
+}
+
+bool BossRaidConsumeBasicShot(int crewSlot)
+{
+	if (!bossRaidMode || crewSlot < 0 || crewSlot >= MAXCREW)
+		return false;
+	bossRaidCrewGauge[crewSlot] = Min(BOSSRAID_GAUGE_MAX,
+		bossRaidCrewGauge[crewSlot] + BOSSRAID_GAUGE_PER_SHOT);
+	return true;
+}
+
+bool BossRaidActivateCrewSkill(int crewSlot, int skillLevel)
+{
+	//bossRaidCrewSkillRunning 을 안 본다. 실시간이므로 남이 치는 중이라도
+	//제 쿨타임이 찬 동료는 나갈 수 있다. 스킬 버튼도 즉각 나가야 한다.
+	if (!bossRaidMode || drawHandle != MD_BOSSRAID
+		|| crewSlot < 0 || crewSlot >= MAXCREW || skillLevel < 1 || skillLevel > 3)
+		return false;
+
+	//---- 멈춰 있는 동안은 아무도 새로 못 나간다 ----
+	//
+	//멈춘 것은 그 스킬 하나를 보여주기 위해서다. 그 위에 another 스킬이
+	//겹치면 멈춘 이유가 없어진다.
+	//
+	//자동 공격 루프는 이미 멈춰 있지만 스킬 버튼은 아니다. 카드의 터치
+	//영역이 그대로 살아 있어서, 멈춘 동안 한 번 더 누르면 나가던 동료가
+	//처음부터 다시 나갔다.
+	if (bossRaidSkillFreezeOwner >= 0)
+		return false;
+	int need = skillLevel == 1 ? 0
+		: (skillLevel == 2 ? BOSSRAID_SKILL2_NEED : BOSSRAID_SKILL3_NEED);
+	OBJECT* pObj = &ao[CREW + crewSlot];
+	if (!pObj->active || pObj->dead || bossRaidCrewGauge[crewSlot] < need)
+		return false;
+
+	//---- 자리를 비운 동료는 다시 안 내보낸다 ----
+	//
+	//전역 잠금은 안 본다. 남이 치는 중이라도 제 쿨타임이 찬 동료는 나가야
+	//한다. 막는 것은 "저 자신이 아직 안 돌아온" 경우뿐이다.
+	//
+	//여기서 다시 걸면 turnPosition 이 HERE 로, frame 이 0 으로 되돌아간다.
+	//소환 스킬(CREWSUMMON)은 전장으로 걸어 나갔다가 걸어 돌아오는데, 그
+	//복귀가 중간에 끊겨 동료가 한복판에 남았다.
+	//
+	//GOING / COMING 만 본다. 이 둘은 몸이 줄을 떠나 있는 상태이고, 프레임
+	//수로 반드시 진행되므로 언젠가 풀린다.
+	//
+	//THERE(총알이 날아가는 중)는 일부러 안 막는다. 그건 총알이 맞아야
+	//풀리는데 맞을 것이 없으면 영영 안 풀린다. 여기서 막으면 그 동료가
+	//다시는 못 쏜다.
+	if (pObj->turnPosition == GOING || pObj->turnPosition == COMING)
+		return false;
+	int crewIdx = GetCrewIdxFromType(pObj->type);
+	if (crewIdx < 0)
+		return false;
+	int skill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + skillLevel - 1];
+	if (skill < 0 || skill >= gTotalSkill)
+		return false;
+
+	if (need > 0)
+		bossRaidCrewGauge[crewSlot] -= need;
+	else
+		//기본 공격은 게이지를 채운다. 이걸 아무도 안 불러서 게이지가 0 에
+		//머물렀고, 스킬 카드가 영영 어두운 채였다.
+		BossRaidConsumeBasicShot(crewSlot);
+	bossRaidCrewSkillRunning = true;
+	bossRaidCrewActing[crewSlot] = true;
+
+	//1단은 쿨타임이 차면 저절로 나가는 기본공격이다. 그것까지 멈추면 판이
+	//쉬지 않고 정지한다. 사람이 누른 2단 이상만 판을 세운다.
+	if (skillLevel >= 2) {
+		bossRaidSkillFreezeOwner = crewSlot;
+		bossRaidSkillFreezeFrame = 0;
+	}
+	pObj->currentSkill = skill;
+	int patternBase = pObj->type * ATTACKPATTERNTOTALDATASIZE + 2
+		+ (skillLevel - 1) * ATTACKPATTERNDATASIZE;
+	pObj->etc = enemyAttackPattern[patternBase + HERE];
+	if (!pObj->etc)
+		pObj->etc = enemyAttackPattern[pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + HERE];
+	pObj->turnPosition = HERE;
+	pObj->frame = pObj->mainFrame = pObj->attackFrame = 0;
+	//전역 turn / attackSequence 를 건드리지 않는다.
+	//
+	//보스전은 턴이 없다. 누가 치는지는 bossRaidCrewActing[] 이 들고 있고,
+	//CrewMove 는 보스전이면 attackSequence 를 아예 안 본다.
+	//
+	//여기서 ACTION 으로 바꿔 놓으면 히어로 공격이 막힌다. 히어로는 그 값이
+	//READY 여야 나간다.
+
+	//계획의 주인은 치는 그 동료다. 전역 turn 을 넘기고 있었는데, 보스전에서
+	//그 값은 언제나 히어로(PLAYER)다.
+	//
+	//주인이 어긋나면 연타(hit_max 2 이상) 스킬의 총액이 히어로 기준으로
+	//잡히고 치명타도 히어로의 확률로 굴러간다. 일반 전투는 룰렛이 넘긴
+	//turn 이 곧 치는 동료라 이 값이 맞았다.
+	ActionPlanBegin(CREW + crewSlot, skill);
+	PlayMusic(M_POWERUP);
+	return true;
+}
+
+void BossRaidFinishCrewSkill(OBJECT* pObj)
+{
+	if (!bossRaidMode || drawHandle != MD_BOSSRAID)
+		return;
+
+	//---- 몸이 나가 있으면 아직 못 끝낸다 ----
+	//
+	//CREWSUMMON 은 전장으로 걸어 나간다. 그런데 끝맺음을 부르는 자리는
+	//여럿이다 - 총알 판정, 데미지 갱신(DMGUPDATE) 쪽에서도 들어온다.
+	//
+	//나가 있는데 여기서 끝내 버리면 두 가지가 한꺼번에 어긋난다.
+	//
+	//    복귀 연출이 통째로 잘린다. 전장 한복판에서 사라진다.
+	//    제자리도 아닌 곳에서 HERE 가 되어 다음 프레임에 다시 나간다.
+	//
+	//끝내는 대신 집으로 보낸다. 도착하면 그쪽에서 다시 부른다. 끝맺음을
+	//아는 자리는 제자리 도착 한 곳뿐이어야 한다.
+	//
+	//COMING(걸어 돌아오는 중)도 아직 끝이 아니다. 복귀를 시작한 자리에서
+	//곧바로 여기를 부르면 판이 다시 돌아, 동료가 걸어 올라오는 동안 전투가
+	//재개된다.
+	//
+	//끝난 것은 오직 제자리에 도착했을 때(HERE)다. 복귀 완료 자리가 HERE 로
+	//바꿔 놓고 부르므로, 그 한 번만 이 줄을 통과한다.
+	if (pObj->currentSkill >= 0 && pObj->currentSkill < gTotalSkill
+		&& SkillKind(pObj->currentSkill) == CREWSUMMON
+		&& pObj->turnPosition != HERE) {
+		//이미 집으로 가는 중이면 건드리지 않는다. 부를 때마다 frame 을 0 으로
+		//되돌리면 영영 도착하지 못한다.
+		if (pObj->turnPosition != COMING) {
+			pObj->apx = pObj->x;
+			pObj->apy = pObj->y;
+			pObj->target = 0;
+			pObj->dirX = pObj->dirF = RIGHT;
+			pObj->turnPosition = COMING;
+			pObj->frame = 0;
+			pObj->mainFrame = 0;
+			pObj->attackFrame = 0;
+		}
+
+		return;
+	}
+
+	{
+		const int slot = GetObjFromPtr(pObj) - CREW;
+
+		if (slot >= 0 && slot < MAXCREW)
+			bossRaidCrewActing[slot] = false;
+
+		//판을 세운 그 동료가 끝났을 때만 푼다. 다른 동료의 기본공격이
+		//끝난 것으로 풀면 스킬이 아직 나가는 중에 판이 다시 돈다.
+		if (slot == bossRaidSkillFreezeOwner) {
+			bossRaidSkillFreezeOwner = -1;
+			bossRaidSkillFreezeFrame = 0;
+		}
+	}
+	pObj->attack = 0;
+	pObj->target = 0;
+	pObj->turnPosition = HERE;
+	pObj->frame = pObj->mainFrame = pObj->attackFrame = 0;
+	bossRaidCrewSkillRunning = false;
+
+	//이번 액션의 계획은 여기서 끝난다. 일반 전투는 WhoIsNextTurn() 이
+	//닫아 주는데, 보스전은 그 함수를 안 부르므로 아무도 안 닫고 있었다.
+	//
+	//남겨 두면 다음 타격이 지난 액션의 잔액을 보고 0 을 맞는다.
+	ActionPlanEnd();
+
+	//전역 값은 애초에 안 건드렸으므로 되돌릴 것도 없다.
+	turn = PLAYER;
+}
+
+//지금 스킬 때문에 판이 멈춰 있는가. 멈춘 동료의 자리 번호를 준다.
+//
+//-1 이면 안 멈춰 있다. 보스전이 아니면 언제나 -1 이다. 일반 전투는
+//이 구조를 아예 안 탄다.
+int GetBossRaidSkillFreezeOwner(void)
+{
+	if (!bossRaidMode || drawHandle != MD_BOSSRAID)
+		return -1;
+
+	return bossRaidSkillFreezeOwner;
+}
+
+//스킬 카드에 붙는 두 가지 표시. 뜻이 서로 다르다.
+//
+//    안쪽 회색   아직 차는 중이다. 위에서 아래로 걷힌다.
+//    바깥 테두리 다 찼다. 눌러 달라고 반짝인다.
+//
+//전에는 둘 다 같은 progress 로 그렸다. 테두리가 시계방향으로 도는 것과
+//안쪽이 걷히는 것이 같은 말을 두 번 하는 셈이라, 다 찼는지가 눈에 안
+//들어왔다. 액티브 스킬은 "지금 누를 수 있다"가 가장 중요한 정보다.
+static void DrawBossRaidCooldown(int x, int y, float zoom, float progress)
+{
+	const int w = (int)(SKILLCARDSIZE_X * zoom);
+	const int h = (int)(SKILLCARDSIZE_Y * zoom);
+	const int thick = Max(1, (int)(2 * _2X * zoom));
+
+	progress = Max(0.0f, Min(1.0f, progress));
+
+	if (progress < 1.0f) {
+		//---- 아직 차는 중 : 안쪽만 ----
+		const int covered = (int)(h * (1.0f - progress));
+
+		if (covered > 0) {
+			SetAlpha(17);
+			MemRect(x, y, w, covered, 0x303030);
+			SetAlpha(32);
+		}
+
+		return;
+	}
+
+	//---- 다 찼다 : 테두리가 반짝인다 ----
+	//
+	//sinf 로 밝기를 오르내린다. 깜빡 꺼지게 하지 않는다 - 테두리가 사라지는
+	//순간이 있으면 카드가 눌리지 않는 것처럼 보인다.
+	const float pulse = 0.5f + 0.5f * sinf((float)frame * 0.22f);
+
+	SetAlpha(20 + (int)(12.0f * pulse));
+	MemRect(x, y, w, thick, 0xFFD34E);
+	MemRect(x, y - h + thick, w, thick, 0xFFD34E);
+	MemRect(x, y, thick, h, 0xFFD34E);
+	MemRect(x + w - thick, y, thick, h, 0xFFD34E);
+	SetAlpha(32);
+}
+
+static void UpdateBossRaidCombatLoop(void)
+{
+	//인트로 중에도 막아야 한다. bossRaidWaitingForControl 은 인트로가 끝나야
+	//true 라서 그 값만 보면 인트로 7초 동안 판이 돌아간다.
+	if (!bossRaidStarted || bossRaidGameOver
+		|| arenaStatus != STATUS_PLAY)
+		return;
+
+	//---- 스킬이 나가는 동안은 판이 멈춘다 ----
+	//
+	//쿨타임도, 경과 프레임도, 다음 동료를 내보내는 것도 전부 여기서 막힌다.
+	//스킬이 끝나면 이 줄을 지나 원래대로 돈다.
+	//
+	//정지는 한 판 전체를 덮는다. 나가고(GOING), 때리고(THERE), 데미지가
+	//뜨고(DMGUPDATE), 걸어 돌아와(COMING) 제자리에 설 때까지다.
+	//
+	//중간 단계를 골라서 가리지 않는다. 그러면 고른 단계 사이사이에 판이
+	//다시 돌아 동료가 전장 한복판에서 끊긴다.
+	//
+	//푸는 것은 BossRaidFinishCrewSkill 하나다. 그것이 제자리 도착을 안다.
+	//
+	//아래 상한은 그 신호가 안 오는 길이 있을 때를 위한 보험이다. 한 판이
+	//이 값을 넘을 일은 없으므로 걸렸다면 고칠 곳이 따로 있다는 뜻이다.
+	if (bossRaidSkillFreezeOwner >= 0) {
+		const OBJECT* owner = &ao[CREW + bossRaidSkillFreezeOwner];
+
+		//주인이 사라졌으면 아무도 정지를 안 푼다. 여기서 푼다.
+		if (owner->active && !owner->dead) {
+			bossRaidSkillFreezeFrame++;
+
+			if (bossRaidSkillFreezeFrame < BOSSRAID_SKILL_FREEZE_MAX)
+				return;
+
+			CCLOG("BOSSRAID skill freeze timeout: crew %d turnPos %d",
+				bossRaidSkillFreezeOwner, (int)owner->turnPosition);
+		}
+
+		bossRaidSkillFreezeOwner = -1;
+		bossRaidSkillFreezeFrame = 0;
+	}
+
+	//저마다 제 상한까지 찬다. 상한이 다르므로 준비되는 시점이 어긋난다.
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (ao[CREW + i].active && !ao[CREW + i].dead)
+			bossRaidCrewAttackCooldown[i] = Min(BossRaidCrewCooldown(i),
+				bossRaidCrewAttackCooldown[i] + 1);
+	}
+
+	//전투 경과. 제한시간과 로그가 이 값을 보는데 아무도 안 늘려서
+	//0 에 머물러 있었다.
+	bossRaidBattleFrame++;
+
+	//CREWLOG : 왜 여섯이 다 안 나가는지 보려고 1초에 한 줄 남긴다.
+	//원인 잡으면 지운다.
+	if (bossRaidBattleFrame % FPS == 0) {
+		for (int i = 0; i < MAXCREW; ++i) {
+			const OBJECT* c = &ao[CREW + i];
+
+			CCLOG("CREW%d slot=%d type=%d act=%d dead=%d idx=%d cool=%d/%d",
+				i, (int)robin.slotCrew[i], (int)c->type,
+				(int)c->active, (int)c->dead,
+				GetCrewIdxFromType(c->type),
+				bossRaidCrewAttackCooldown[i], BOSSRAID_CREW_COOLDOWN);
+		}
+	}
+
+	// 공용 CREWMOVE ACTION은 한 명씩 실행되는 구조이므로 준비가 끝난
+	// 동료 중 하나를 보내고, 복귀 완료 후 다음 준비 동료를 보낸다.
+	//---- 쿨타임이 차면 나간다 ----
+	//
+	//[턴을 안 본다]
+	//
+	//전에는 attackSequence 가 READY 로 돌아와야만 다음 동료를 내보냈다.
+	//그건 턴제의 규칙이다. 보스전은 실시간이라 그 조건이 맞지 않는다.
+	//누가 한 번 나갔다가 끝맺음을 못 하면 나머지 다섯이 영영 멈춘다.
+	//
+	//이제 각자 제 쿨타임만 본다. 히어로만 사용자가 조작하고 나머지는
+	//자기 페이즈대로 돈다.
+	for (int n = 0; n < MAXCREW; ++n) {
+		const int i = (bossRaidCrewTurn + n) % MAXCREW;
+
+		if (bossRaidCrewAttackCooldown[i] < BossRaidCrewCooldown(i))
+			continue;
+
+		if (BossRaidActivateCrewSkill(i, 1)) {
+			bossRaidCrewAttackCooldown[i] = 0;
+			bossRaidCrewTurn = (i + 1) % MAXCREW;
+			break;
+		}
+	}
+}
+
+void DrawBossRaidMercenaryUI(void)
+{
+	if (!bossRaidMode || drawHandle != MD_BOSSRAID)
+		return;
+
+	const int zoomFrames = FPS * 2;
+	const int controlFrames = FPS * 2;
+	const int titleMove = FPS;
+	const int titleHold = FPS;
+	const int titleTotal = titleMove * 2 + titleHold;
+	if (bossRaidIntroFrame > 0) {
+		const int intro = bossRaidIntroFrame;
+		float zoomU = Min(1.0f, (float)intro / (float)zoomFrames);
+		float zoomEase = 0.5f - 0.5f * cosf(zoomU * 3.14159265f);
+		dioramaZoom = bossRaidEntranceZoom
+			+ (DIORAMAZOOM_BOSSRAID + dioramaZoomGap - bossRaidEntranceZoom) * zoomEase;
+
+		//---- 보스 등장 ----
+		//
+		//화면 줌과 같은 곡선(zoomEase)을 쓴다. 카메라가 다가가는 것과 보스가
+		//부풀어 오르는 것이 한 동작으로 읽혀야 한다.
+		{
+			OBJECT* boss = &ao[ENEMY];
+
+			if (boss->active && boss->defaultZoom > 0.0f) {
+				boss->zoom = boss->defaultZoom
+					* (BOSSENTER_ZOOMFROM
+						+ (1.0f - BOSSENTER_ZOOMFROM) * zoomEase);
+
+				//스폿라이트. 몸 크기에 맞춰 같이 커지고 다 크면 걷힌다.
+				if (zoomU < 1.0f) {
+					const float body = 48.0f * _2X * boss->zoom * dioramaZoom;
+
+					SetSpotlight(
+						xOffset + boss->x - rx,
+						STATUSWIN_Y + (rh - 4) * TSIZE - boss->y - ry,
+						body * BOSSENTER_SPOT_INNER,
+						body * BOSSENTER_SPOT_OUTER,
+						BOSSENTER_SPOT_DARK * (1.0f - zoomU));
+				}
+			}
+
+			//체력바가 0 에서 최대치까지 같이 찬다.
+			//
+			//차오르는 동안만이다. bossRaidIntroFrame 은 인트로가 끝나도 0 이
+			//되지 않고 마지막 값에 멈춰 서 있어서, 이 블록은 판이 끝날 때까지
+			//매 프레임 돈다.
+			//
+			//다 커지고 나면 zoomEase 가 1 이므로, 막지 않으면 체력바가 매
+			//프레임 최대치로 다시 채워진다. 아무리 때려도 안 줄어든다.
+			if (zoomU < 1.0f)
+				bar[BAR_BOSSHP].count =
+					(long long)(bar[BAR_BOSSHP].max * zoomEase);
+
+			//나타나기 시작할 때 한 번.
+			if (intro == 1)
+				PlayMusic(M_OPENWINDOW);
+
+			//다 커지는 순간 한 번 쿵 한다.
+			if (intro == zoomFrames) {
+				if (boss->active)
+					boss->zoom = boss->defaultZoom;
+
+				bar[BAR_BOSSHP].count = bar[BAR_BOSSHP].max;
+				effect.shake = BOSSENTER_SHAKE;
+				PlayMusic(M_BOSS);
+			}
+		}
+
+		int controlFrame = Max(0, intro - zoomFrames);
+		float u = Min(1.0f, (float)controlFrame / (float)controlFrames);
+		float eased = 1.0f - (1.0f - u) * (1.0f - u);
+		if (intro == zoomFrames) {
+			// 입장료바가 빠진 상단 중앙에는 획득 하트가 실제로 빨려 들어갈
+			// 하트바를 전용 HUD로 다시 진입시킨다.
+			InitBar(BAR_HEART);
+			bar[BAR_HEART].x = DX / 2;
+			bar[BAR_HEART].y = DY + 64 * _2X;
+			bar[BAR_HEART].targetX = bar[BAR_HEART].targetX2 = DX / 2;
+			bar[BAR_HEART].targetY = bar[BAR_HEART].targetY2
+				= DY - 8 * _2X;
+			bar[BAR_HEART].waitingFrame = bar[BAR_HEART].waitingFrame2 = 0;
+			InitBar(BAR_JOYSTICK);
+			InitBar(BAR_JUMP);
+			InitBar(BAR_PLAY);
+			// 점프와 공격 버튼이 같은 우측 자리를 쓰지 않게 위아래로 나눈다.
+			bar[BAR_PLAY].targetX = bar[BAR_PLAY].targetX2 = DX - 72 * _2X;
+			bar[BAR_PLAY].targetY = bar[BAR_PLAY].targetY2
+				= bar[BAR_JUMP].targetY + 72 * _2X;
+			// 파란 점프 버튼은 공격 버튼 바로 아래 같은 X축에 둔다.
+			bar[BAR_JUMP].targetX = bar[BAR_JUMP].targetX2
+				= bar[BAR_PLAY].targetX;
+		}
+		//---- 카드가 동료에게서 내려온다 ----
+		//
+		//여섯이 한 몸으로 움직이면 카드 여섯 장이 아니라 판 하나가 내려온
+		//것으로 보인다. 한 장씩 어긋나게 떠나 차례로 꽂힌다.
+		//
+		//바깥의 u / eased 는 안 쓴다. 그것은 여섯이 공유하는 시계다.
+		//
+		//비행 시간은 controlFrames 에서 떼어 왔다. 그 값에 묶어 두면 간격을
+		//바꿀 때마다 비행 시간이 딸려 움직여서 둘을 따로 못 맞춘다.
+		const int flightFrames = BOSSRAID_CARD_FLIGHT;
+
+		if (controlFrame > 0) for (int i = 0; i < MAXCREW; ++i) {
+			if (!ao[CREW + i].active)
+				continue;
+
+			//제 차례가 오기 전에는 아직 동료가 들고 있다. 안 그린다.
+			const int myFrame = controlFrame - BOSSRAID_CARD_STAGGER * i;
+
+			if (myFrame <= 0)
+				continue;
+
+			const float u = Min(1.0f, (float)myFrame / (float)flightFrames);
+
+			//내려갈수록 빨라진다. 떠서 가속해 그대로 꽂힌다.
+			//
+			//전에는 자리를 지나쳤다가 되돌아오게 했다. 그러면 한 장이 두 번
+			//들어간 것처럼 보인다. 지나치는 것이 없어야 꽂힌 것이 된다.
+			const float eased = u * u;
+
+			const float finalCardZoom = 0.55f;
+
+			//크기도 같은 곡선을 본다. 자리와 크기가 다른 속도로 움직이면
+			//카드가 날아온 것이 아니라 따로 부풀어 오른 것으로 보인다.
+			const float cardZoom = finalCardZoom * (0.12f + 0.88f * eased);
+			// 룰렛이 빠진 중앙 공간에 3열 x 2단으로 고정한다.
+			const float finalCardW = SKILLCARDSIZE_X * finalCardZoom;
+			const float finalCardH = SKILLCARDSIZE_Y * finalCardZoom;
+			const float gapX = finalCardW + 4.0f * _2X;
+			const float gapY = finalCardH + 4.0f * _2X;
+			const int col = i % 3;
+			const int row = i / 3;
+			const float targetCenterX = bar[BAR_ROULETTE].targetX
+				+ (col - 1) * gapX;
+			// 입장료 바는 상단으로 옮겼으므로 스킬은 하단 중앙의 독립된 2단 HUD다.
+			// 아래줄의 바닥이 화면 바닥에서 정확히 4px 위에 오고,
+			// 첫 줄은 그 위로 카드 높이만큼 쌓인다.
+			const float bottomGap = 4.0f * _2X;
+			const float targetCenterY = bottomGap + finalCardH
+				+ (1 - row) * gapY - finalCardH / 2.0f;
+			// 각 카드가 담당 NPC에게서 조그맣게 출발해 위로 휘는 포물선을
+			// 그리며 HUD 자리로 확대·착지한다.
+			const float startCenterX = xOffset + ao[CREW + i].x - rx;
+			const float startCenterY = STATUSWIN_Y + (rh - 4) * TSIZE
+				- ao[CREW + i].y - ry + OBJIMGGAP;
+			//바깥 열일수록 더 크게 휜다. 여섯이 같은 궤적을 그리면 한 장을
+			//여러 번 본 것처럼 밋밋하다.
+			const float arch = BOSSRAID_CARD_ARCH
+				* (1.0f + BOSSRAID_CARD_ARCH_SIDE * (float)Abs(col - 1));
+			const float centerX = startCenterX
+				+ (targetCenterX - startCenterX) * eased;
+			const float centerY = startCenterY
+				+ (targetCenterY - startCenterY) * eased
+				+ arch * 4.0f * u * (1.0f - u);
+			const int cardX = (int)(centerX
+				- SKILLCARDSIZE_X * cardZoom / 2.0f);
+			const int cardY = (int)(centerY
+				+ SKILLCARDSIZE_Y * cardZoom / 2.0f);
+			DrawSkillCard(ao[CREW + i].getSkillList[1], 1,
+				cardX, cardY, cardZoom, 0, CREW + i);
+			// 1초마다 카드 전체가 스킬과 담당 동료 썸네일을 교차한다.
+			// 10프레임(0.17초)은 너무 빨라 둘 다 안 읽혔다.
+			if ((robin.playtime / FPS) % 2 != 0)
+				DrawBossRaidCrewPortrait(i, cardX, cardY, cardZoom);
+
+			// 이 카드는 스킬 카드다. 그런데 표시는 기본공격 쿨타임
+			// (bossRaidCrewAttackCooldown)을 보고 있었다. 기본공격은 알아서
+			// 나가는 것이라 여기 그릴 것이 아니고, 그 탓에 스킬이 언제
+			// 준비되는지는 어디에도 안 나왔다.
+			//
+			// 카드가 부르는 것과 카드가 보여주는 것이 같아야 한다.
+			// 눌렀을 때 나가는 것은 2단 스킬이므로 그 게이지를 본다.
+			DrawBossRaidCooldown(cardX, cardY, cardZoom,
+				(float)bossRaidCrewGauge[i] / (float)BOSSRAID_SKILL2_NEED);
+			if (intro > controlFrames + titleTotal)
+				SetRectPoint(cardX, cardY, (int)(SKILLCARDSIZE_X * cardZoom),
+					(int)(SKILLCARDSIZE_Y * cardZoom), TOUCH_FUNC_BOSSRAID_CREW_1 + i);
+		}
+
+		if (intro > zoomFrames + controlFrames) {
+			int tf = intro - zoomFrames - controlFrames;
+			DrawBossRaidStartButterfly(tf, titleMove, titleHold);
+		}
+
+		bossRaidIntroFrame++;
+		if (bossRaidIntroFrame == zoomFrames + controlFrames + titleTotal + 1) {
+			touchDisable = false;
+			arenaStatus = STATUS_READY;
+			bossRaidWaitingForControl = true;
+		}
+		if (bossRaidIntroFrame > zoomFrames + controlFrames + titleTotal)
+			bossRaidIntroFrame = zoomFrames + controlFrames + titleTotal + 1;
+	}
+	if (bossRaidWaitingForControl) {
+		const char* startText = "TAP TO START";
+		const float pulse = 1.0f + 0.06f
+			* sinf((float)bossRaidIntroFrame * 0.12f);
+
+		//앞서 그린 것이 grayScale 을 켜둔 채 넘어오면 글자까지 회색이 된다.
+		//여기서 한 번 끄고 그린다.
+		const int keepGray = grayScale;
+
+		grayScale = 0;
+
+		//알파로 깜빡이지 않는다. 32 가 아니면 금색 글자가 배경에 묻혀
+		//회색으로 톤다운된 것처럼 보인다. 크기(pulse)로만 숨쉬게 한다.
+		SetAlpha(32);
+		const float textWidth = GetGoldAlphaTextWidth(startText,
+			FONT_GOLD_LARGE, pulse);
+		DrawGoldAlphaText(DX / 2.0f - textWidth / 2.0f,
+			DY / 2.0f + 24.0f * _2X, startText,
+			FONT_GOLD_LARGE, pulse, LEFT, false, false);
+		SetAlpha(32);
+		grayScale = keepGray;
+	}
+
+	//---- 스킬 포커싱 ----
+	//
+	//판을 멈춘 동안 치는 동료에게만 빛을 남기고 둘레를 어둡게 한다.
+	//보스 등장에 쓰는 그 스폿라이트다.
+	//
+	//멈추기만 하면 여섯이 다 같은 밝기로 서 있어서 누가 치는지 안 보인다.
+	//
+	//다가가는 동안만이다. 치기 시작하면 걷는다 - 그때부터는 일반 전투와
+	//같은 타격 줌이 대상까지 한 화면에 담는데, 둘레가 어두우면 맞는 쪽이
+	//안 보인다. 하나를 보여주는 방법이 두 개면 서로 가린다.
+	//
+	//SetSpotlight 은 한 프레임짜리다. EndScreenBuffer 가 쓰고 지우므로
+	//멈춘 동안 매 프레임 다시 세워야 한다.
+	{
+		const int spotOwner = GetBossRaidSkillFreezeOwner();
+		const bool approaching = spotOwner >= 0
+			&& (ao[CREW + spotOwner].turnPosition == HERE
+				|| ao[CREW + spotOwner].turnPosition == GOING);
+
+		if (approaching && ao[CREW + spotOwner].active) {
+			const OBJECT* c = &ao[CREW + spotOwner];
+			const float body = 48.0f * _2X * c->zoom * dioramaZoom;
+
+			//갑자기 어두워지면 깜빡인 것으로 보인다. 몇 프레임에 걸쳐 든다.
+			const float spotU = Min(1.0f, (float)bossRaidSkillFreezeFrame
+				/ (float)BOSSRAID_SKILLSPOT_IN);
+
+			SetSpotlight(
+				xOffset + c->x - rx,
+				STATUSWIN_Y + (rh - 4) * TSIZE - c->y - ry,
+				body * BOSSRAID_SKILLSPOT_INNER,
+				body * BOSSRAID_SKILLSPOT_OUTER,
+				BOSSRAID_SKILLSPOT_DARK * spotU);
+		}
+	}
+
+	UpdateBossRaidCombatLoop();
+
+	// 제한시간 대신 보스가 성의 상자 방향으로 아주 천천히 전진한다.
+	if (bossRaidStarted && !bossRaidGameOver
+		&& arenaStatus == STATUS_PLAY) {
+		int targetObj = -1;
+		float targetX = ao[PLAYER].x;
+		for (int obj = 0; obj < TOTALOBJECT; ++obj) {
+			if (ao[obj].active && ao[obj].type == OBJ_BOX
+				&& ao[obj].x < ao[ENEMY].x
+				&& (targetObj < 0 || ao[obj].x > targetX)) {
+				targetObj = obj;
+				targetX = ao[obj].x;
+			}
+		}
+		const bool reachedBox = targetObj >= 0
+			&& Abs(ao[ENEMY].x - targetX) <= 24.0f * _2X;
+		if (reachedBox || ao[PLAYER].dead) {
+			bossRaidGameOver = true;
+			touchDisable = true;
+			arenaStatus = STATUS_READY;
+			SetPopUp(POPUPTYPE_GAMEOVER, DX / 2, POPUPPOSITION_Y,
+				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false, false, false, false,
+				false, false, false, false, false, false, false);
+			gameOverFrame = 0;
+		}
+	}
+}
+
 static void GetRobin6MotionName(int motion, char* name)
 {
 	if (motion >= PO_C0_A0 && motion <= PO_C0_A11) {
@@ -415,12 +1376,28 @@ void Play(void)
 	//아래 갱신 게이트가 이 프레임의 hitStopFrame을 보고 판단하므로 먼저 돌린다.
 	HitZoomUpdate();
 
-	if ((drawHandle == MD_PLAY && curMenu == MENU_PLAY) || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID) {
+	if ((drawHandle == MD_PLAY && curMenu == MENU_PLAY) || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID || drawHandle == MD_PVP) {
 		//if (!attackDelay || (attackSequence == ATTACKSEQUENCE_ATTACKRESULT && (attackDelay > FPS * 12 / 4 && attackType == ROULETTE_BATTLE))) {
 		//공격 중에는 한 프레임 걸러 한 번만 갱신한다. 같은 화면이 두 번 그려져
 		//체감 속도가 절반이 된다. bar와 UI는 이 게이트 밖이라 계속 움직인다.
-		if (!attackDelay && !(hitStopFrame & 1)) {
-			if (waveStatus == WAVESTATUS_PLAY) {
+		//---- 스킬로 판을 멈춘 동안 ----
+		//
+		//멈춘다는 것은 "치는 동료만 움직인다"는 뜻이다. 그 동료까지 멈추면
+		//스킬이 아예 진행되지 않는다.
+		//
+		//그런데 아래 게이트는 월드 전체를 세우거나(attackDelay) 절반 속도로
+		//만든다(hitStopFrame). 둘 다 치는 동료에게도 걸린다.
+		//
+		//그래서 멈춘 동안에는 이 게이트를 지나가게 한다. 누가 서고 누가
+		//움직이는지는 MoveObj 안의 게이트 하나가 정한다. 판단하는 자리를
+		//둘로 나누면 서로 어긋난다.
+		const bool skillFreeze = GetBossRaidSkillFreezeOwner() >= 0
+			|| GetPvpSkillFreezeObj() >= 0;
+
+		if (skillFreeze || (!attackDelay && !(hitStopFrame & 1))) {
+			//쿨타임은 멈춘 동안 안 돈다. 눈에 안 보이는 값이라도 정지 중에
+			//흐르면 스킬 한 번에 반지가 한 바퀴 돈다.
+			if (!skillFreeze && waveStatus == WAVESTATUS_PLAY) {
 				for (i = PLAYER; i < TOTALCHAR; i++) {
 					//단축스킬 쿨타임
 					for (j = MAXHOTKEY; j >= 0; j--) {
@@ -463,16 +1440,21 @@ void Play(void)
 
 			//SetRoom();
 
-			MoveBG();
+			//배경과 카메라는 MoveObj 게이트를 안 탄다. 여기서 따로 세운다.
+			//아무도 안 움직여도 배경이 흐르면 화면이 도는 것으로 보인다.
+			if (!skillFreeze)
+				MoveBG();
 
 			for (i = ITEMOBJ - 1; i >= 0; i--) {
 				if (ao[i].active)
 					MoveObj(&ao[i]);
-				else if (ao[i].dead == true && ao[i].moveHandler == REGENMOVE)
+				else if (!skillFreeze && ao[i].dead == true
+					&& ao[i].moveHandler == REGENMOVE)
 					RegenMove(&ao[i]);
 			}
 
-			SetCamera();
+			if (!skillFreeze)
+				SetCamera();
 
 			//보스방에서 대화안되게//아이템과 npc가 같은자리에 있을때 아이템 우선 처리
 			if (robin.bossRoom == false && itemFrame <= 20 && !escort.active)
@@ -489,10 +1471,14 @@ void Play(void)
 			}
 		}
 
-		if (attackDelay > 0)
-			attackDelay--;
-		if (sequenceDelay > 0)
-			sequenceDelay--;
+		//상태이상 부여 연출로 월드를 멈춘 동안 액션 타이머만 먼저 끝나면
+		//MoveObj의 상태와 어긋나 다음 동료 턴으로 넘어가지 못한다.
+		if (!(hitStopFrame & 1)) {
+			if (attackDelay > 0)
+				attackDelay--;
+			if (sequenceDelay > 0)
+				sequenceDelay--;
+		}
 
 	}
 
@@ -529,6 +1515,14 @@ void Play(void)
 	DrawScreen(DX / 2 + scX, DY / 2 + scY[MENU_PLAY], screenZoom);
 	worldDrawing = false;
 
+	// PVP의 진행/UI만 별도이며, 월드와 캐릭터는 위의 공용 OBJECT 렌더러가 그린다.
+	if (drawHandle == MD_PVP) {
+		PvpTestDraw();
+		// 일반 플레이용 StatusDraw/웨이브/룰렛/하단 4메뉴는 PVP 화면에
+		// 들어오면 안 된다. PVP 오버레이가 GNB와 단일 공격 버튼을 책임진다.
+		return;
+	}
+
 	grayScale = 0;
 
 	offX = 0;
@@ -552,8 +1546,11 @@ void Play(void)
 
 		StatusDraw(xOffset, 0, 1.0f);
 
-		//월드와 상태 UI 위에 웨이브 타이틀을 얹는다.
-		DrawWaveAnnouncement();
+		//보스레이드는 단일 제한시간 전투라 일반 웨이브/페이즈 안내를 쓰지 않는다.
+		if (drawHandle != MD_BOSSRAID) {
+			DrawWaveAnnouncement();
+			DrawTurnPhaseAnnouncement();
+		}
 
 		//타이틀 퇴장뿐 아니라 이번 웨이브의 마지막 몬스터 착지까지 끝나야 조작 가능하다.
 		if (waveAnnounceTouchLock && waveAnnounceFrame == 0
@@ -567,7 +1564,9 @@ void Play(void)
 			}
 			if (!spawning && !tutorialWaitingEnemyLand) {
 				waveAnnounceTouchLock = false;
-				touchDisable = false;
+				//웨이브 준비가 모두 끝난 뒤 아군 페이즈를 먼저 알린다.
+				//터치는 DrawTurnPhaseAnnouncement()의 퇴장 완료 시점에 풀린다.
+				StartTurnPhaseAnnouncement(false);
 			}
 		}
 
@@ -668,11 +1667,19 @@ void Play(void)
 			}
 		}
 
+		//룰렛 암전판은 front=false/front=true로 나뉜 두 Bar 패스보다도
+		//먼저 그린다. 두 패스 사이에 두면 첫 패스에서 그린 룰렛/머지 이펙트를
+		//암전판이 다시 덮어 버린다.
+		if (attackSequence == ATTACKSEQUENCE_SLOT)
+			ScreenDarken(SCREENDARKEN);
+
 		//상단 웨이브 배지는 모든 Bar보다 먼저 그린다. Bar의 수치 증가 및
 		//이동 애니메이션은 그 뒤에 올라와 서로 가리지 않는다.
 		WaveBadgeDrawBeforeBars();
 
 		for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
+			if (!IsBossRaidVisibleBar(i))
+				continue;
 			if (bar[i].active == true && bar[i].front == false) {
 				if (bar[i].frame2 > 0) {
 					GotoPositionBar(&bar[i], bar[i].targetX2, bar[i].targetY2, bar[i].speed2);
@@ -860,6 +1867,8 @@ void Play(void)
 
 		switch (drawHandle) {
 		case MD_PLAY://여기서는 몬스터와의 전투
+			// 보스 난입 중에도 설정 버튼은 고정하고, 상점만 GNBDraw 안에서
+			// 왼쪽으로 미끄러져 나가게 한다.
 			GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 
 			if (curMenu == MENU_PLAY && JoyStickPressPossible() == true)
@@ -908,11 +1917,14 @@ void Play(void)
 		case MD_BOSSRAID:
 			GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 			AttackSequenceDraw();
+			DrawBossRaidMercenaryUI();
 			break;
 		}
 	}
 
 	for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
+		if (!IsBossRaidVisibleBar(i))
+			continue;
 		if (bar[i].active == true && bar[i].front == true) {
 			if (bar[i].frame2 > 0) {
 				GotoPositionBar(&bar[i], bar[i].targetX2, bar[i].targetY2, bar[i].speed2);
@@ -1035,7 +2047,8 @@ void Play(void)
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
 					(uiSpace ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2,
 					controlMark[i].y + (uiSpace ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2,
-					controlMark[i].zoom2, controlMark[i].icon);
+					controlMark[i].zoom2, controlMark[i].icon,
+					controlMark[i].owner);
 				if (controlMark[i].grade >= 2) {
 					float cardLeft = (uiSpace ? 0 : xOffset) + controlMark[i].x
 						- (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2;
@@ -1091,7 +2104,8 @@ void Play(void)
 				DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr,
 					(uiSpace ? 0 : xOffset) + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2,
 					controlMark[i].y + (uiSpace ? 0 : floatOffsetY) + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2,
-					controlMark[i].zoom, controlMark[i].icon);
+					controlMark[i].zoom, controlMark[i].icon,
+					controlMark[i].owner);
 				if (controlMark[i].grade >= 2) {
 					float cardLeft = (uiSpace ? 0 : xOffset) + controlMark[i].x
 						- (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2;
@@ -1386,7 +2400,6 @@ void Play(void)
 		case MENU_LEADERBOARD:
 			break;
 		case MENU_FRIENDS:
-			GuildEventDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 		case MENU_INVITEFREINDS:
 
@@ -1654,11 +2667,18 @@ void AttackSequenceDraw(void)
 		//정확히 포개져 안 보였지만, 줌이 월드 안에만 걸리는 지금은 큰 것(월드)과
 		//작은 것(여기)이 따로 보인다. 월드를 안 그리는 보스레이드에서는 여기가
 		//유일한 드로우라 그대로 그려야 한다.
+		//
+		//[보스레이드도 월드를 그린다]
+		//
+		//위 문장은 보스레이드가 전용 화면일 때 적은 것이다. 지금은 성 화면에
+		//난입하는 방식이라 DrawDiorama 가 ao[turn] 을 이미 그린다. 그래서
+		//동료가 총탄을 쏘는 순간 같은 캐릭터가 한 장 더 겹쳐 보였다.
 		switch (drawHandle) {
 		case MD_DEMO:
 		case MD_PLAY:
 		case MD_BATTLE:
 		case MD_GACHA:
+		case MD_BOSSRAID:
 			break;
 		default:
 			ao[turn].zoom *= dioramaZoom;
@@ -2363,9 +3383,18 @@ void AttackSequenceDraw(void)
 		}
 		break;
 	case ATTACKSEQUENCE_BOSSRAID:
-		//effect.color2 = COLOR_BLACK;
-		//speed = 14 * _2X;
+		UpdateBossRaidExitBars();
+		//기존 전장의 몬스터는 오른쪽으로 퇴장한다. 일반 HUD는 위의
+		//MD_PLAY 분기에서 숨기고, 전환이 끝나면 보스 전용 HUD로 교체한다.
+		for (int enemy = ENEMY; enemy < NEUTRAL; ++enemy) {
+			if (!ao[enemy].active)
+				continue;
+			ao[enemy].x += 12 * _2X;
+			if (ao[enemy].x > DIORAMASIZE_X + 96 * _2X)
+				ao[enemy].active = false;
+		}
 		if (sequenceDelay == 1) {
+			GotoBoss();
 			return;
 		}
 		break;
@@ -3740,6 +4769,14 @@ void SetHero(void)
 
 		}
 	}
+
+	/* 서버에서 받아 둔 히어로 상태이상을 여기서 얹는다.
+	 *
+	 * LoadHeroObj() 가 InitStat/RefreshStat 으로 ao[] 를 새로 만들기 때문에
+	 * 그 전에 넣어 두면 지워진다. 히어로가 다 선 이 자리가 맞다.
+	 *
+	 * 받아 둔 것이 없으면 아무 일도 안 한다. */
+	NetApplyHeroEffects();
 
 	switch (drawHandle) {
 	case MD_PLAY:

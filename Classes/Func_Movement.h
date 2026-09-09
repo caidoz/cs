@@ -28,6 +28,11 @@ void PressObjCheck(OBJECT *);
 void MoveBG(void);
 void MoveObj(OBJECT *);
 void PlayerMove(OBJECT *);
+void PvpHeroStep(OBJECT *);
+void PvpFoeBulletMove(OBJECT *);
+void PvpFoeShoot(int obj);
+void PvpAllyShoot(int obj);
+void PvpHeroResetCool(void);
 void EnemyPlayerMove(OBJECT *);
 int PlayerMove_Attack(OBJECT *, int);
 void PlayerMove_SkillAttack(OBJECT *, int);
@@ -152,3 +157,6 @@ int IsBigMonster(int);
 int IsBigCmf(int);
 int CanRunPlayer(int);
 #endif
+
+//동료가 공격에 쓸 모션. 그런 포즈가 없으면 -1 을 준다.
+int GetCrewAttackMotion(int cmf, int elapsed);

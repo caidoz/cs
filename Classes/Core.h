@@ -2381,7 +2381,11 @@ extern bool gRouletteSkillDispatchStarted;
 //시연용. 타이틀에서 AVK_MAXGAME 으로 들어왔을 때만 선다.
 //룰렛이 편성 뒤쪽 세 명을 순서대로 뽑도록 고정한다.
 extern bool gDemoForceRoulette;
+//AVK_MAXGAME 전투 밸런스/상태이상 확인용. 룰렛 확률 강제와 분리한다.
+extern bool gCombatStatusTest;
 extern bool gRouletteResultValid;
+//이번 일반 룰렛이 동료 공격 대신 PVP 매칭으로 당첨됐는가.
+extern bool gRoulettePvpResult;
 
 //AVK_MAXGAME 스킬 모션 프레임 진행 테스트.
 extern bool gDemoSkillFrameStepActive;
@@ -2467,6 +2471,19 @@ extern int waveAnnounceNumber;
 extern bool waveAnnounceTouchLock;
 //마지막 적 사망부터 상자/가챠 종료까지 새 전투 턴의 시작을 막는다.
 extern bool battleRewardTransitionLock;
+extern int statusTurnFxFrame[TOTALOBJECT];
+extern int statusApplyFxFrame[TOTALOBJECT];
+extern int statusApplyDebuff[TOTALOBJECT];
+extern int statusRecoverFxFrame[TOTALOBJECT];
+extern int statusRecoverDebuff[TOTALOBJECT];
+//같은 상태이상을 또 맞아 턴이 하나 쌓일 때의 숫자 팝. 부여/해제와 달리
+//월드를 멈추지 않는다. 관통하는 탄이 여러 번 때리면 그때마다 화면이
+//1초씩 굳어 버리기 때문이다.
+extern int statusStackFxFrame[TOTALOBJECT];
+extern int statusStackDebuff[TOTALOBJECT];
+
+//동료가 공격 연출 중인 프레임.
+extern int crewAtkFxFrame[TOTALOBJECT];
 extern int waveBadgeFrame;
 extern bool tutorialWaitingEnemyLand;//인터랙티브 전투 튜토리얼: 스폰한 몬스터의 착지 연출을 기다리는 중인지(WaveControler()의 touchDisable 자동 해제 조건 전용, 공격 후 쿨다운 touchDisable과 혼동되면 안 됨)
 extern bool tutorialAttackPending;//인터랙티브 전투 튜토리얼: 세바스찬 안내 대사를 닫는 데 쓰인 공격버튼 입력을, 전투 준비가 끝나면 실제 첫 공격으로 실행하기 위한 예약 플래그

@@ -1412,7 +1412,9 @@ int rouletteFrame;
 bool gRouletteSkillDispatchStarted = false;
 
 bool gDemoForceRoulette = false;
+bool gCombatStatusTest = false;
 bool gRouletteResultValid = false;
+bool gRoulettePvpResult = false;
 bool gDemoSkillFrameStepActive = false;
 int gDemoSkillFrameStepPermit = 0;
 
@@ -1492,6 +1494,16 @@ int waveAnnounceFrame = 0;
 int waveAnnounceNumber = 0;
 bool waveAnnounceTouchLock = false;
 bool battleRewardTransitionLock = false;
+int statusTurnFxFrame[TOTALOBJECT] = { 0 };
+int statusApplyFxFrame[TOTALOBJECT] = { 0 };
+int statusApplyDebuff[TOTALOBJECT] = { 0 };
+int statusRecoverFxFrame[TOTALOBJECT] = { 0 };
+int statusRecoverDebuff[TOTALOBJECT] = { 0 };
+int statusStackFxFrame[TOTALOBJECT] = { 0 };
+int statusStackDebuff[TOTALOBJECT] = { 0 };
+
+//동료가 공격 연출 중인 프레임. 0 이면 안 하는 중이다.
+int crewAtkFxFrame[TOTALOBJECT] = { 0 };
 int waveBadgeFrame = 0;
 bool tutorialWaitingEnemyLand = false;
 bool tutorialAttackPending = false;

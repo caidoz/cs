@@ -774,6 +774,30 @@ void MoveObj(OBJECT* pObj)
 	int i;
 	int tempSystemKey = systemKey;
 
+	//---- 스킬이 나가는 동안 판을 세운다 ----
+	//
+	//치는 개체 하나만 움직이고 나머지는 선다. 보스전과 PVP 가 같은 규칙을
+	//쓰되, 세울 개체를 정하는 주인이 서로 다르다. 둘 다 해당 모드가 아니면
+	//언제나 -1 을 준다.
+	{
+		const int raidOwner = GetBossRaidSkillFreezeOwner();
+		const int freezeObj = raidOwner >= 0
+			? CREW + raidOwner : GetPvpSkillFreezeObj();
+
+		//치는 개체의 부속칸(총알)도 같이 움직여야 한다. 적 칸의 개체는
+		//제 뒤 MAXENEMYOBJ - 1 칸을 총알 자리로 쓴다.
+		const bool ownPart = freezeObj >= ENEMY && freezeObj < NEUTRAL
+			&& obj > freezeObj && obj < freezeObj + MAXENEMYOBJ;
+
+		if (freezeObj >= 0 && obj != freezeObj && !ownPart
+			&& !(obj >= BULLET && obj < ENEMYUSEROBJ)) {
+			//완전히 세운다. 프레임도 안 돌린다 - 반만 멈추면 멈춘 것이
+			//아니라 느려진 것으로 보인다.
+			pObj->dx = pObj->dy = 0;
+			return;
+		}
+	}
+
 	if (pObj->invincible)
 		pObj->invincible--;
 
@@ -1376,6 +1400,10 @@ void MoveObj(OBJECT* pObj)
 	case LABETHMAGICMOVE:
 		LabethMagicMove(pObj);
 		break;
+	//PVP 수비측 총알. 이 게임에서 유일하게 "적 -> 아군" 으로 가는 총알이다.
+	case PVPFOEBULLETMOVE:
+		PvpFoeBulletMove(pObj);
+		break;
 	case VANISHMOVE:
 		VanishMove(pObj);
 		break;
@@ -1603,6 +1631,295 @@ NEXT:
 				break;
 			}
 		}
+	}
+}
+
+//==========================================================================
+// PVP (MD_PVP)
+//
+//다른 유저의 성을 치러 가는 판이다. 양쪽 다 히어로와 동료 여섯인데, 수비측은
+//"적 칸(ENEMY..NEUTRAL)에 사는 아군 형태"로 세워 둔다. 적 칸이어야
+//NearEnemy / AttackEnemyCheck 가 그들을 찾기 때문이다.
+//
+//그 탓에 기존 코드와 어긋나는 자리가 몇 군데 있어 여기 따로 모았다.
+//==========================================================================
+
+//히어로가 다시 칠 때까지 재는 시계. [0] 공격측, [1] 수비측.
+//
+//동료는 저마다 다른 boss_cool 을 갖는데 히어로는 그 표에 없다. 쿨타임이
+//없으면 붙는 순간부터 쉬지 않고 쳐서 동료 스킬이 묻힌다.
+static int pvpHeroCool[2] = { 0, 0 };
+
+void PvpHeroResetCool(void)
+{
+	pvpHeroCool[0] = pvpHeroCool[1] = 0;
+}
+
+//---- PVP 수비측 총알 ----
+//
+//성벽에서 우리 히어로에게 곧장 날아가 맞으면 사라진다.
+//
+//기존 총알 코드를 못 쓴다. AttackEnemyCheck 는 obj 가 누구든 언제나
+//ENEMYUSEROBJ..NEUTRAL(적 칸)만 훑는다. 즉 이 게임의 총알은 전부
+//"아군 -> 적" 한 방향이고, 반대 방향이 아예 없다.
+//
+//그래서 이 총알만 제 손으로 움직이고 제 손으로 때린다.
+void PvpFoeBulletMove(OBJECT* pObj)
+{
+	OBJECT* foe = &ao[PVP_ATTACKER_ROBIN];
+
+	pObj->frame++;
+
+	//주인이 사라졌거나 너무 오래 날았으면 지운다. 안 지우면 칸이 막혀
+	//다음 총알이 안 나간다.
+	if (!foe->active || foe->dead || pObj->frame > FPS * 3) {
+		memset(pObj, 0, sizeof(OBJECT));
+		return;
+	}
+
+	//목표를 향해 곧장 간다. 성벽에서 쏘면 비스듬히 내려온다.
+	GotoObj(foe, pObj, PVP_FOEBULLET_SPEED);
+	pObj->x += pObj->dx;
+	pObj->y += pObj->dy;
+	pObj->dirX = pObj->dirF = (foe->x >= pObj->x) ? RIGHT : LEFT;
+
+	if (GetDistance(foe, pObj) > PVP_FOEBULLET_HIT)
+		return;
+
+	//맞았다. 히어로에게 피해를 주는 길은 AttackRobin 하나뿐이다.
+	//
+	//첫 인자는 공격 타입이 아니라 "때린 객체"다. 그 안에서 obj >= ENEMY
+	//인지 보고 피해를 셈하므로, 공격 타입을 넘기면 그 검사에 걸려 아무 일도
+	//안 일어난다.
+	AttackRobin(pObj->mom, PVP_ATTACKER_ROBIN);
+	memset(pObj, 0, sizeof(OBJECT));
+}
+
+//---- 수비 동료 하나가 한 발 쏜다 ----
+//
+//총알은 그 동료의 뒤 칸(MAXENEMYOBJ - 1 자리)에만 넣는다. 남의 칸을 쓰면
+//다른 동료를 덮어쓴다.
+void PvpFoeShoot(int obj)
+{
+	if (obj < ENEMY || obj >= NEUTRAL)
+		return;
+
+	OBJECT* mom = &ao[obj];
+	const int crewIdx = GetCrewIdxFromType(mom->type);
+
+	if (crewIdx < 0)
+		return;
+
+	//총알 모양은 1 차 스킬을 따른다. AddObject 가 currentSkill 을 보고
+	//고르므로 넣어 두고 부른다.
+	mom->currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1];
+
+	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
+		return;
+
+	for (int i = obj + 1; i < obj + MAXENEMYOBJ && i < NEUTRAL; ++i) {
+		if (ao[i].active)
+			continue;
+
+		//생김새는 아군 총알과 같은 길로 만든다. 스킬별 그림과 아이콘을
+		//고르는 규칙이 거기 다 들어 있어서, 손으로 채우면 그것을 두 벌
+		//유지하게 된다.
+		AddObject(&ao[i], mom, ADDOBJ_CREWBULLET);
+
+		//가는 길만 우리 것으로 바꾼다. FOLLOWMOVE 는 "아군 -> 적" 이다.
+		ao[i].moveHandler = PVPFOEBULLETMOVE;
+		ao[i].mom = obj;
+		ao[i].target = PVP_ATTACKER_ROBIN;
+		ao[i].dirX = ao[i].dirF = LEFT;
+
+		//성벽 위에서 쏜다. 몸 한가운데가 아니라 조금 위에서 나가야
+		//던지는 것으로 보인다.
+		ao[i].y = mom->y - PVP_BULLET_UP;
+		ao[i].zoom *= PVP_FOEBULLET_ZOOM;
+		break;
+	}
+}
+
+//---- 아군 동료 한 명이 한 발 쏜다 ----
+//
+//수비측과 같은 방식이다. 제자리에 서서 상대 히어로에게 총알을 보낸다.
+//
+//다만 총알은 기존 동료 총알(ADDOBJ_CREWBULLET)을 그대로 쓴다. 이쪽은
+//"아군 -> 적" 방향이라 AttackEnemyCheck 가 알아서 적 칸을 때린다.
+//수비측만 반대 방향이 없어서 따로 만들었다.
+void PvpAllyShoot(int obj)
+{
+	if (obj < CREW || obj >= CREW + MAXCREW)
+		return;
+
+	OBJECT* mom = &ao[obj];
+	const int crewIdx = GetCrewIdxFromType(mom->type);
+
+	if (crewIdx < 0)
+		return;
+
+	//총알 모양은 1 차 스킬을 따른다. AddObject 가 currentSkill 을 보고
+	//고르므로 넣어 두고 부른다.
+	mom->currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1];
+
+	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
+		return;
+
+	mom->target = PVP_DEFENDER_ROBIN;
+	mom->dirX = mom->dirF = RIGHT;
+
+	for (int i = BULLET; i < ENEMYUSEROBJ; ++i) {
+		if (ao[i].active)
+			continue;
+
+		AddObject(&ao[i], mom, ADDOBJ_CREWBULLET);
+		ao[i].target = PVP_DEFENDER_ROBIN;
+		ao[i].dirX = ao[i].dirF = RIGHT;
+
+		//수비측과 같은 높이에서 나간다.
+		ao[i].y = mom->y - PVP_BULLET_UP;
+		break;
+	}
+}
+
+//---- PVP 히어로 한 걸음 ----
+//
+//일반전투(MD_PLAY)의 턴과 같은 왕복이다.
+//
+//    HERE   제자리에서 다음 차례를 기다린다
+//    GOING  사거리까지 달려간다
+//    THERE  한 대 친다 (모션표가 몬다)
+//    COMING 제자리로 돌아온다 -> HERE
+//
+//전에는 붙은 자리에 서서 계속 쳤다. 두 히어로가 같은 코드로 마주 걸어오는데
+//멈출 자리를 안 물려서 한 걸음에 서로를 지나쳤고, 그 순간 보는 방향이 뒤집혀
+//오른쪽을 치다 왼쪽으로 돌아섰다. 무엇을 하는 중인지도 안 보였다.
+//
+//일반전투와 다른 것은 다음 차례로 넘어가는 방법 하나다. 거기는 공격 버튼이
+//그 일을 하지만 여기는 실시간이라 누를 자리가 없다. 쿨타임
+//(PVP_HERO_COOLDOWN)이 그 몫을 대신해, 집에 돌아와 그것이 차면 저절로
+//다음 차례가 나간다.
+void PvpHeroStep(OBJECT* pObj)
+{
+	const int obj = GetObjFromPtr(pObj);
+	const int foe = pObj->target;
+
+	if (foe <= 0 || !ao[foe].active || ao[foe].dead)
+		return;
+
+	const int side = (obj >= ENEMY) ? 1 : 0;
+
+	if (pvpHeroCool[side] < PVP_HERO_COOLDOWN)
+		pvpHeroCool[side]++;
+
+	const int speed = Max(SPEED_MIN, pObj->pDx);
+	const int range = GetAttackRange(obj);
+	const int dir = (ao[foe].x >= pObj->x) ? RIGHT : LEFT;
+
+	//사거리에서 멈출 자리. 상대의 x 를 그대로 좇으면 한 걸음에 지나쳐 서로
+	//자리가 뒤바뀐다. 나가는 쪽에서 미리 물려 두면 지나칠 일이 없다.
+	const int stopX = (dir == RIGHT) ? ao[foe].x - range : ao[foe].x + range;
+	int loopMotion;
+
+	switch (pObj->turnPosition) {
+	case HERE:
+		//기다리는 자리다. 상대를 보고 선다.
+		pObj->dx = pObj->dy = 0;
+		pObj->dirX = pObj->dirF = dir;
+		loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL,
+			pObj->frame);
+		pObj->motion = (loopMotion < 0)
+			? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+
+		//쿨타임이 차야 나간다. 이것이 "다음 턴" 이다.
+		if (pvpHeroCool[side] < PVP_HERO_COOLDOWN)
+			break;
+
+		pvpHeroCool[side] = 0;
+		pObj->turnPosition = GOING;
+		break;
+
+	case GOING:
+		//아직 멀면 달려간다.
+		if ((dir == RIGHT) ? (pObj->x < stopX) : (pObj->x > stopX)) {
+			//GotoObjXY 가 dirX 를 제 손으로 세우므로 부른 뒤에 다시 잡는다.
+			GotoObjXY(pObj, stopX, pObj->y, speed);
+			pObj->x += pObj->dx;
+
+			//한 걸음이 넘치면 딱 물린다.
+			if ((dir == RIGHT) ? (pObj->x > stopX) : (pObj->x < stopX))
+				pObj->x = stopX;
+
+			//이동은 여기서 끝난다. 남겨 두면 TileCheckX 가 다음 프레임에
+			//한 번 더 밀어 두 배로 간다.
+			pObj->dx = pObj->dy = 0;
+			pObj->dirX = pObj->dirF = dir;
+			loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_RUN,
+				pObj->frame);
+			pObj->motion = (loopMotion < 0)
+				? PO_C0_R0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+			break;
+		}
+
+		//닿았다. 친다.
+		pObj->x = stopX;
+		pObj->dx = pObj->dy = 0;
+		pObj->dirX = pObj->dirF = dir;
+
+		//attack 과 attackFrame 은 한 쌍이다. attack 만 켜면 attackFrame 이
+		//지난 공격이 남긴 값이라, 모션표의 엉뚱한 자리부터 재생된다.
+		pObj->turnPosition = THERE;
+		pObj->attack = ATTACK_NORMAL;
+		GetMotionPtr(pObj);
+		pObj->attackFrame = skillStartFrame[ATTACK_NORMAL];
+		HitCountCheck(pObj);
+		break;
+
+	case THERE:
+		//치는 동안은 모션표가 몬다. 방향도 안 건드린다 - 표에 뒷걸음질이
+		//들어 있으면 그것이 dirX 를 쓰기 때문이다.
+		//
+		//끝나면 모션표의 _END 가 COMING 으로 넘긴다. 여기 검사는 다른
+		//이유로 공격이 꺼진 경우(빗맞음 처리 등)를 위한 안전판이다.
+		if (!pObj->attack)
+			pObj->turnPosition = COMING;
+		break;
+
+	case COMING:
+		//제자리로 돌아온다. 가는 쪽을 보고 달린다 - 일반전투와 같다.
+		if (Abs(pObj->x - pObj->nx) > speed
+			|| Abs(pObj->y - pObj->ny) > speed) {
+			GotoObjXY(pObj, pObj->nx, pObj->ny, speed);
+			pObj->x += pObj->dx;
+			pObj->y += pObj->dy;
+			pObj->dx = pObj->dy = 0;
+			pObj->dirX = pObj->dirF = (pObj->nx >= pObj->x) ? RIGHT : LEFT;
+			loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_RUN,
+				pObj->frame);
+			pObj->motion = (loopMotion < 0)
+				? PO_C0_R0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+			break;
+		}
+
+		//돌아왔다. 다시 상대를 본다.
+		pObj->x = pObj->nx;
+		pObj->y = pObj->ny;
+		pObj->dx = pObj->dy = 0;
+		pObj->attack = false;
+		pObj->attackFrame = 0;
+		ReleasePlayer(pObj);
+		pObj->dirX = pObj->dirF = dir;
+		loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL,
+			pObj->frame);
+		pObj->motion = (loopMotion < 0)
+			? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
+		pObj->turnPosition = HERE;
+		break;
+
+	default:
+		//DMGUPDATE 처럼 여기서 안 쓰는 자리로 가 있으면 집으로 돌린다.
+		pObj->turnPosition = COMING;
+		break;
 	}
 }
 
@@ -2729,6 +3046,11 @@ chk:
 			default:
 				TileCheckX(pObj);
 				TileCheckY(pObj);
+				break;
+			case MD_PVP:
+				//일반전투와 같은 왕복으로 다가가 치고 돌아온다.
+				//턴 대신 쿨타임이 차례를 넘긴다.
+				PvpHeroStep(pObj);
 				break;
 			case MD_PLAY:
 				if (attackSequence == ATTACKSEQUENCE_ACTION && obj == turn)
@@ -3966,6 +4288,27 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 			}
 #endif
 
+			break;
+
+		case MD_PVP:
+			//---- PVP 도 여기서 끝맺는다 ----
+			//
+			//_END 는 "이 공격이 끝났다"는 뜻이고 그것을 알리는 값이
+			//attack / attackFrame 이다. PVP 갈래가 없어서 아무도 안 껐고,
+			//그러면 attackFrame 이 표 끝을 넘어 계속 올라간다. 그 뒤에는
+			//대시 / 공중공격 / 스킬 표가 이어져 있어서, 기본공격 한 번에
+			//스킬 모션까지 줄줄이 재생된다.
+			pObj->concentrate = 0;
+
+			if (pObj->attack >= ATTACK_SKILL)
+				ObjectSkillSetting(pObj);
+
+			pObj->attack = false;
+			pObj->attackFrame = 0;
+
+			//제자리로 돌아간다. PvpHeroStep 이 집까지 데려가고, 거기서
+			//쿨타임이 차면 다음 차례가 나간다.
+			pObj->turnPosition = COMING;
 			break;
 
 		case MD_RAID:

@@ -148,7 +148,11 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 			if (touchModeOld == null) {
 				startTouchCheck = true;
 
-				ExecTouchFunc(touchPressedKey[0][0], touchPressedKey[0][1]);
+				// 보스레이드의 첫 화면 터치는 전투 시작만 담당한다. 같은 터치가
+				// 일반 공격/메뉴 처리까지 관통하면 MD_PLAY로 복귀하거나 엉뚱한
+				// UI가 열릴 수 있으므로 여기서 반드시 소비한다.
+				if (!BossRaidNotifyControlInput())
+					ExecTouchFunc(touchPressedKey[0][0], touchPressedKey[0][1]);
 
 				startTouchCheck = false;
 
@@ -619,6 +623,9 @@ void Core::onExit()
 //부팅(로그인 + 첫 로드)이 끝나서 robin 이 채워졌는가.
 //init() 이 NetBootstrapBegin() 으로 띄우고, Run() 의 첫머리가 마무리한다.
 static bool netBooted = false;
+//로고에서는 로컬 리소스만 준비한다. 약관/CDN/로그인/DB 로드는 리소스가
+//전부 올라간 뒤 타이틀에 도착해서 시작한다.
+static bool netBootStarted = false;
 
 // on "init" you need to initialize your instance
 bool Core::init()
@@ -931,7 +938,7 @@ bool Core::init()
 		//띄우기만 하고 곧바로 돌아온다. 임시 서버면 이 한 줄로 끝나 있고,
 		//진짜 서버면 답을 기다려야 한다. 마무리는 Run()의 첫머리가 한다.
 		netBooted = false;
-		NetBootstrapBegin();
+		netBootStarted = false;
 
 		//대기 장부를 읽는다. 지난번에 돈은 나갔는데 못 받은 것이 있으면
 		//여기서 되살아나고, 부팅이 끝나는 대로 다시 보낸다.
@@ -978,7 +985,13 @@ void Core::Run(float delta) {
 
 	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
-	NetUpdate();
+	if (!netBootStarted && drawHandle == MD_TITLE) {
+		netBootStarted = true;
+		NetBootstrapBegin();
+	}
+
+	if (netBootStarted)
+		NetUpdate();
 
 	//---- 부팅이 아직 안 끝났다 ----
 	//
@@ -988,13 +1001,18 @@ void Core::Run(float delta) {
 	//
 	//기다리는 동안은 그냥 돌아간다. 화면은 직전 그림 그대로다. 로딩 화면을
 	//제대로 붙이는 것은 여기에 그리면 된다.
-	if (!netBooted) {
+	if (netBootStarted && !netBooted) {
 		int netResult = NetBootstrapPoll();
 
-		if (netResult == NETRESULT_NONE)
-			return;
+		if (netResult == NETRESULT_NONE) {
+			//약관을 기다리는 동안에는 타이틀과 약관 UI를 계속 그리고 입력도
+			//받는다. 그 밖의 화면으로는 아직 갈 수 없다.
+			if (drawHandle != MD_TITLE)
+				return;
+		}
+		else {
 
-		netBooted = true;
+			netBooted = true;
 
 		if (netResult == NETRESULT_OK) {
 			//서버가 준 값이 robin에 이미 들어가 있다. 나머지를 세운다.
@@ -1012,6 +1030,7 @@ void Core::Run(float delta) {
 		else {
 			NewGame();
 		}
+		}
 	}
 
 	//결제를 한 칸 굴린다. 스토어 답을 받고, 못 보낸 영수증을 다시 보낸다.
@@ -1019,7 +1038,8 @@ void Core::Run(float delta) {
 	//부팅 뒤에 둔다. 그 전에는 토큰이 없어서 보내봐야 거절당하고, 무엇보다
 	//robin 이 아직 안 채워져 있다. 서버가 준 판으로 덮는 것이 결제의 마무리라
 	//그 전에 도착하면 빈 판을 덮게 된다.
-	IapUpdate();
+	if (netBooted)
+		IapUpdate();
 
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
@@ -1420,6 +1440,9 @@ void PaintClet(int x, int y, int w, int h)
 					for (i = 0; i < M_ROULETTEUP; i++)
 						AudioEngine::setVolume(audioID[i], VOLUME_BGM_MUTE);
 				}
+				break;
+			case MD_PVP:
+				Play();
 				break;
 			case MD_RAID:
 				Play();
@@ -2509,10 +2532,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
-
 
 
 

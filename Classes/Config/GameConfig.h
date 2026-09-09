@@ -187,6 +187,35 @@ typedef enum _gameConfig {
 	ITEMOBJ = NEUTRAL + MAXNEUTRAL,
 	TOTALOBJECT = ITEMOBJ + CAP_CREW + TOTALCHAR,
 
+	// PVP 오브젝트 번호표
+	//
+	// ENEMYUSEROBJ는 적 진영의 시작 경계값일 뿐, 기존 DrawDiorama의 적 루트
+	// 순회에는 들어가지 않는다. 따라서 실제 캐릭터를 그 칸에 놓지 않는다.
+	// 적 로빈과 동료는 몬스터와 똑같이 MAXENEMYOBJ(루트 1 + 부속/총탄 4)
+	// 단위로 예약한다. Debug/MAXPLAYER=3 기준 실제 번호는 다음과 같다.
+	//
+	//   0       : 공격자 로빈
+	//   3..8    : 공격자 동료(현재 PVP에서는 미사용)
+	//   16..45  : 공격자 총탄 풀
+	//   46      : ENEMYUSEROBJ 진영 경계(사용 금지)
+	//   47..51  : 수비 로빈 루트 + 부속/총탄
+	//   52..56  : 수비 동료 0 루트 + 부속/총탄
+	//   57..61  : 수비 동료 1 루트 + 부속/총탄
+	//   62..66  : 수비 동료 2 루트 + 부속/총탄
+	//   297     : 약탈 상자(NEUTRAL)
+	PVP_ATTACKER_ROBIN = PLAYER,
+	PVP_ATTACKER_CREW = CREW,
+	PVP_ATTACKER_BULLET_BEGIN = BULLET,
+	PVP_ATTACKER_BULLET_END = ENEMYUSEROBJ,
+	PVP_DEFENDER_ROBIN = ENEMY,
+	PVP_DEFENDER_ROBIN_PART_BEGIN = PVP_DEFENDER_ROBIN + 1,
+	PVP_DEFENDER_CREW = ENEMY + MAXENEMYOBJ,
+	PVP_DEFENDER_CREW0 = PVP_DEFENDER_CREW,
+	PVP_DEFENDER_CREW1 = PVP_DEFENDER_CREW0 + MAXENEMYOBJ,
+	PVP_DEFENDER_CREW2 = PVP_DEFENDER_CREW1 + MAXENEMYOBJ,
+	PVP_DEFENDER_OBJECT_END = PVP_DEFENDER_CREW2 + MAXENEMYOBJ,
+	PVP_DEFENDER_CHEST = NEUTRAL,
+
 	//컨트롤마크
 	TOTALCONTROLMARK = (TOTALCHAR + MAXCREW) * TOTALREEL,
 	//카드마크

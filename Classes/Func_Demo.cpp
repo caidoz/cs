@@ -477,7 +477,7 @@ void Demo(void)
 					//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
 					//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
 					worldDrawing = true;
-					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2);
+					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom2 / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom2 / 2, controlMark[i].zoom2, 0, controlMark[i].owner);
 					worldDrawing = false;
 				}
 
@@ -519,7 +519,7 @@ void Demo(void)
 					//공격 줌/연출 줌이 걸리면 마크도 월드와 같이 움직이고 커져야 한다.
 					//마크의 x/y는 월드 오브젝트와 같은 화면좌표라 그대로 변환이 먹는다.
 					worldDrawing = true;
-					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom);
+					DrawSkillCard(controlMark[i].attackType, controlMark[i].attackStr, xOffset + controlMark[i].x - (float)ROULETTECARDSIZE_X * controlMark[i].zoom / 2, controlMark[i].y + floatOffsetY + (float)ROULETTECARDSIZE_Y * controlMark[i].zoom / 2, controlMark[i].zoom, 0, controlMark[i].owner);
 					worldDrawing = false;
 				}
 
@@ -690,7 +690,6 @@ void Demo(void)
 		case MENU_LEADERBOARD:
 			break;
 		case MENU_FRIENDS:
-			GuildEventDraw(xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * zoom, POPUPPOSITION_Y + (float)POPUPWINDOWSIZE_Y / 2 * zoom, zoom);
 			break;
 		case MENU_INVITEFREINDS:
 
@@ -3036,6 +3035,7 @@ void DemoCore_Effect_TutorialInitBar(void)
 	InitBar(BAR_EQUIP);
 	InitBar(BAR_CASTLE);
 	InitBar(BAR_MAINSHOP);
+	InitBar(BAR_SOCIAL);
 	InitBar(BAR_HEART);
 	InitBar(BAR_STAR);
 	//BAR_HEARTBET/BAR_PLAY는 여기서 InitBar하지 않는다. BAR_ROULETTE가 활성화되면 RouletteDraw()가

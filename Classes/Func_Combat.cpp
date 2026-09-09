@@ -2,6 +2,89 @@
 #include "Func.h"
 #include "Data.h"
 
+/*===========================================================================
+ * 전투의 확률을 정해진 차례로 바꾼다.
+ *
+ * 이 게임은 유저가 결과를 정확히 셀 수 있어야 한다. 주사위를 굴리면 같은
+ * 판을 같은 순서로 둬도 결과가 달라져서, 무엇을 언제 쓸지 계획할 수가 없다.
+ *
+ * 그래서 굴리는 대신 눈금을 채운다. 확률 p 면 때릴 때마다 눈금에 p 를 더하고,
+ * 눈금이 한 바퀴(scale)를 채우면 한 번 발동시키고 그만큼 덜어낸다.
+ *
+ *     25%  ->  정확히 네 번에 한 번
+ *     60%  ->  다섯 번에 세 번
+ *
+ * 오래 보면 발동 비율이 확률과 같으므로 기존 밸런스가 그대로 간다. 달라지는
+ * 것은 "언제"뿐이고, 그 언제를 유저가 셀 수 있다는 것이 이 게임이 원하는 바다.
+ *
+ * 눈금은 개체마다 따로 센다. 한 통에 모으면 A 를 때려서 찬 눈금이 B 를 칠 때
+ * 터져 버린다.
+ *=========================================================================*/
+enum {
+	PROC_EVASION = 0,
+	PROC_MISS,
+	PROC_CRITICAL,
+	PROC_PARRY,
+	PROC_STUN,
+	PROC_MONSTERSTUN,
+	PROC_CONCENTRATE,
+	PROC_EXTRA,
+	PROC_IGNORE,
+	PROC_PIERCE,
+	PROC_DEBUF,
+	PROC_DEBUFREGIST,
+	PROC_HPDRAINDEBUF,
+	PROC_ITEMDEBUF,
+	PROC_ATTR,		//속성 5칸을 이어서 쓴다
+
+	PROC_TOTAL = PROC_ATTR + 5
+};
+
+static int gProcAcc[TOTALOBJECT][PROC_TOTAL];
+
+//chance / scale 의 확률로 발동한다.
+static bool ProcHit(int obj, int kind, int chance, int scale)
+{
+	int* acc;
+
+	if (scale <= 0 || chance <= 0)
+		return false;
+
+	//확정인 것은 눈금을 쓸 것도 없다.
+	if (chance >= scale)
+		return true;
+
+	//자리를 못 잡으면 확정만 인정한다. 눈금 없이 매번 터뜨리면 안 된다.
+	if (obj < 0 || obj >= TOTALOBJECT || kind < 0 || kind >= PROC_TOTAL)
+		return false;
+
+	acc = &gProcAcc[obj][kind];
+	*acc += chance;
+
+	if (*acc < scale)
+		return false;
+
+	*acc -= scale;
+	return true;
+}
+
+//개체가 새로 서면 눈금도 새로 시작한다. 앞 웨이브에서 반쯤 찬 눈금이
+//다음 몬스터의 첫 대에 터지면 셀 수가 없다.
+void ClearProcAcc(int obj)
+{
+	int i;
+
+	if (obj < 0 || obj >= TOTALOBJECT)
+		return;
+
+	for (i = 0; i < PROC_TOTAL; i++)
+		gProcAcc[obj][i] = 0;
+}
+
+//정의는 상태이상 처리 쪽(ActivateDebuf 근처)에 모아 두었다. 부르는 자리가
+//그보다 앞이라 여기서 먼저 알린다.
+static void ClearAllDebuffs(void);
+
 // Stat Calculating
 void InitStat(OBJECT* pObj)
 {
@@ -1158,7 +1241,13 @@ int GetSpeed(int obj)
 	default:
 		//기본값은 ROBIN/DIANA/MAXX 순으로 장비 보정 전 8/10/12px이다.
 		//장비 보정까지 포함한 최종 이동량을 절반으로 낮춘다.
-		return Max(1, speed / (2 * MOTIONDIV));
+		speed = Max(1, speed / (2 * MOTIONDIV));
+
+		//보스전은 실시간이라 턴제 속도로 뛰면 조작이 따라가기 어렵다.
+		if (bossRaidMode)
+			speed = Max(1, speed * BOSSRAID_HERO_SPEED_PCT / 100);
+
+		return speed;
 	}
 }
 
@@ -1316,7 +1405,6 @@ void AttackRobin(int obj, int dest)
 	long long int* attackerPs = ao[dest].ps;
 	int attackerType = ao[dest].type;
 	int defenseAttr = 0;
-	long long recoverHp;
 
 	ITEM* it = &ao[obj].equip[EQUIP_ARMOR];
 
@@ -1329,13 +1417,22 @@ void AttackRobin(int obj, int dest)
 
 
 	if (dest < BULLET && obj >= ENEMY && obj < TOTALOBJECT) {
-		if (ao[dest].attackedFrame)
+		//---- 맞은 직후의 무적 ----
+		//
+		//PVP 는 동료 여섯이 저마다 총알을 던진다. 1 초짜리 무적을 그대로
+		//쓰면 초당 한 대만 들어가서, 눈에는 다 맞는데 체력이 한 번밖에
+		//안 준다. 같은 프레임에 겹치는 것만 막으면 된다.
+		if (ao[dest].attackedFrame > ((drawHandle == MD_PVP)
+			? ATTACKEDFRAME - PVP_ATTACKED_FRAME : 0))
 			return;
 		gap = (ao[obj].lv - attackerLv) + (robin.bossRoom == true ? 15 : 0) + (ao[obj].zoom == 2 ? 10 : 0) + (IsBigMonster(ao[obj].type) ? 5 : 0);
-		ad = Random(10000);
+		//주사위를 굴리지 않는다. 회피/빗맞음/치명은 모두 눈금으로 정한다.
+		ad = 0;
 #ifndef NOMISS
-		if (ao[dest].debuf[STUN] == 0 && ao[dest].debuf[KNOCKBACK] == 0)
-			ad -= Max(0, *(attackerPs + PS_EVASION) * 100 - gap * 50);
+		if (ao[dest].debuf[STUN] == 0 && ao[dest].debuf[KNOCKBACK] == 0
+			&& ProcHit(dest, PROC_EVASION,
+				Max(0, *(attackerPs + PS_EVASION) * 100 - gap * 50), 10000))
+			ad = -1;
 #endif
 		//test
 		//if (ad < 0)
@@ -1378,7 +1475,9 @@ void AttackRobin(int obj, int dest)
 		ad -= ao[obj].debuf[BLIND] == 0 ? 0 : 10000;
 #else
 		//블라인드인 경우 50% 빗맞힘 확률이 증가한다.
-		ad -= Max(0, (ao[obj].debuf[BLIND] == 0 ? 1500 : 6500) - gap * 50);
+		if (ad >= 0 && ProcHit(obj, PROC_MISS,
+			Max(0, (ao[obj].debuf[BLIND] == 0 ? 1500 : 6500) - gap * 50), 10000))
+			ad = -1;
 #endif
 #endif
 		if (ad < 0) {
@@ -1387,28 +1486,51 @@ void AttackRobin(int obj, int dest)
 			SetImgText(dest, EFFECT_TEXT_MISS, IMGTEXTZOOM);
 		}
 		else {
-			//치명타 계산식
-			//몬스터의 기본 치명률은 10%, 플레이어의 기본 치명률은 0%이며, 플레이어의 치명율로 올릴수 있다.
-			//레벨차이당 0.5%의 치명확률이 증가한다.
+			/* 치명타 계산식
+			 * 몬스터의 기본 치명률은 10%, 플레이어의 기본 치명률은 0% 이며,
+			 * 플레이어의 치명율로 올릴 수 있다.
+			 * 레벨차이당 0.5% 의 치명확률이 증가한다.
+			 *
+			 * [예전에는 몬스터가 늘 치명타였다]
+			 *
+			 * 위에서 NOMISS 가 켜져 있으면 ad 를 0 으로 덮는다. 그 상태로
+			 * ad < 1000 + gap*50 을 보면 언제나 참이라, 몬스터의 모든 공격이
+			 * 치명타로 들어갔다. 굴린 값을 버린 뒤 그 자리에 남은 0 을 두고
+			 * 비교한 탓이지 의도한 밸런스가 아니었다.
+			 *
+			 * 이제 눈금으로 제 확률만큼만 터진다. 몬스터 데미지가 그만큼
+			 * 내려가므로, 물러졌다 싶으면 MONCRITICAL_BASE 를 올려 조절한다.
+			 * MONCRITICAL_ALWAYS 를 켜면 예전 동작으로 돌아간다. */
 #ifndef NOMONCRITICAL
-			if (ad < 1000 + gap * 50)
-				ad = 1;
-			else
-				ad = 0;
+#ifdef MONCRITICAL_ALWAYS
+			ad = 1;
+#elif MONCRITICAL_BASE <= 0
+			//몬스터는 치명타가 없다. 레벨차 보정도 안 붙인다.
+			ad = 0;
+#else
+			ad = ProcHit(obj, PROC_CRITICAL, MONCRITICAL_BASE + gap * 50, 10000)
+				? 1 : 0;
+#endif
 #endif
 
 			//몬스터가 타격시
 			//기절공격 계산식
 			//턴제로 바꿔주기
-			if (Random(1000) < gap * 5 && ao[dest].buff[INC_MAGIC_ARENA] == 0) {//check 스턴적용
+			if (ProcHit(obj, PROC_MONSTERSTUN, gap * 5, 1000)
+				&& ao[dest].buff[INC_MAGIC_ARENA] == 0) {//check 스턴적용
 				ad = 1 << ATTACK_STUN;
 				ActivateDebuf(&ao[dest], STUN,
 					debufStartFrame[STUN] * (100 - *(attackerPs + PS_DEBUF)) / 100, obj);
 			}
 			//무기의 기본대미지를 구한다.
 			//몬스터는 str의 80~120%사이의 공격력을 가진다.
-			damage = (ao[obj].str - extraArmor) * 80 + Random((ao[obj].str - extraArmor) * 40);
-			damage = RoundDiv(damage, 180);// (ao[obj].str) * 80 + Random((ao[obj].str) * 40);
+			//진폭의 한가운데로 고정한다. Random(N) 의 평균이 N/2 이므로
+			//기대값은 그대로고 결과만 늘 같아진다.
+			//80% 와 120% 의 한가운데는 100% 다. 두 조각을 더하면 str * 100
+			//이므로 100 으로 나눠야 str 그대로가 된다. 180 으로 나누고 있어
+			//몬스터가 제 공격력의 0.55 배로만 때렸다.
+			damage = (ao[obj].str - extraArmor) * 80 + (ao[obj].str - extraArmor) * 20;
+			damage = RoundDiv(damage, 100);
 			//damage = (ao[obj].str);
 
 			//엘케인 대쉬공격일 경우 무조건 크리대미지
@@ -1540,7 +1662,20 @@ void AttackRobin(int obj, int dest)
 			// 한다 - 안 그러면 어느 순간부터 절대 안 죽는 구간이 생기고,
 			// 그 구간을 넘는 적이 나오면 갑자기 죽는다. 그 사이가 없다.
 			//--------------------------------------------------------------
-			damage = Max(1, damage - ao[dest].ps[PS_ARMOR]);
+			//---- 방어력은 이미 위에서 뺐다 ----
+			//
+			//바로 위 "주인공 방어도에 따라서 대미지를 줄여준다" 가 PS_ARMOR 로
+			//최대 75% 를 깎는다. 여기서 같은 값을 절대값으로 또 빼면 두 번
+			//빼는 것이다.
+			//
+			//PS_ARMOR 는 AGI + STR * 3 에 장비까지 더한 값이라 히어로 기준으로
+			//수백~수천이다. 몬스터 한 대의 원 데미지를 통째로 잡아먹어서, 누가
+			//때리든 하한인 1 만 들어갔다. PVP 처럼 양쪽이 다 히어로면 서로
+			//1 씩만 주고받는다.
+			//
+			//퍼센트 감소만 남긴다. 하한 1 은 그대로 둔다 - 방어를 아무리
+			//올려도 한 대는 들어와야 "절대 안 죽는 구간" 이 안 생긴다.
+			damage = Max(1, damage);
 
 #ifndef NOABSORBDMG
 			//대미지 감소율에 따라서 대미지를 줄여준다.
@@ -1552,7 +1687,7 @@ void AttackRobin(int obj, int dest)
 				damage = UpDiv(damage * 75, 100);
 #endif
 			//긴급방어에 따라서 방어를 시킨다.
-			if (Random(100) < *(attackerPs + PS_PARRY)) {
+			if (ProcHit(dest, PROC_PARRY, *(attackerPs + PS_PARRY), 100)) {
 				damage = UpDiv(damage * (100 - *(attackerPs + PS_PARRYMOD)), 100);
 
 				if ((effectOnlyPlayer == true && (dest == raidPlayer || ao[dest].soldier == true)) || effectOnlyPlayer == false)
@@ -1606,10 +1741,16 @@ void AttackRobin(int obj, int dest)
 				break;
 
 			ad += *usPtr % ATTRWORD;
-			if (Random(100) < ad && (ao[obj].motion == *(usPtr + 1) || ao[obj].motion == *(usPtr + 2) || ao[obj].motion == *(usPtr + 3) || ao[obj].motion == *(usPtr + 4) || ao[obj].motion == *(usPtr + 5)) && !ao[obj].debuf[CURSE]) {
+			if (ProcHit(obj, PROC_DEBUF, ad, 100) && (ao[obj].motion == *(usPtr + 1) || ao[obj].motion == *(usPtr + 2) || ao[obj].motion == *(usPtr + 3) || ao[obj].motion == *(usPtr + 4) || ao[obj].motion == *(usPtr + 5)) && !ao[obj].debuf[CURSE]) {
 				gap = *usPtr / ATTRWORD;
 
-				if (ao[dest].buff[INC_MAGIC_ARENA] == 0 && Random(100 - *(attackerPs + PS_DEBUFREGIST)) >= UpDiv(*(attackerPs + debufToAttr[gap] + PS_FIRE - 1) * 3, 4)) {
+				//원래는 0..span-1 을 굴려 thr 이상이면 걸렸다. 걸릴 확률이
+				//(span - thr) / span 이므로 그대로 눈금으로 옮긴다.
+				int span = 100 - *(attackerPs + PS_DEBUFREGIST);
+				int thr = UpDiv(*(attackerPs + debufToAttr[gap] + PS_FIRE - 1) * 3, 4);
+
+				if (ao[dest].buff[INC_MAGIC_ARENA] == 0
+					&& ProcHit(dest, PROC_DEBUFREGIST, span - thr, span)) {
 					ao[dest].debuf[gap] = debufStartFrame[gap] * (100 - *(attackerPs + PS_DEBUF)) / 100;
 					ao[dest].debufOwner[gap] = obj;
 					SetBit(&game.monsterDebuf[ao[ao[obj].mom].type], gap);
@@ -1647,13 +1788,18 @@ void AttackRobin(int obj, int dest)
 		
 		ao[dest].hp -= damage;
 
-		recoverHp = Min(damage, ao[obj].maxhp - ao[obj].hp);
-
-		if (recoverHp > 0) {
-			ao[obj].hp += recoverHp;
-			AddBar(&bar[ENEMYHPBAR + GetEnemyBarIdx(obj)], recoverHp, BARFRAME);
-			AddBar(&bar[BAR_BOSSHP], recoverHp, BARFRAME);
-		}
+		//---- 몬스터는 회복하지 않는다 ----
+		//
+		//여기는 몬스터가 주인공을 때린 자리다. 전에는 조건 없이 준 피해만큼
+		//제 체력을 채웠다. 흡혈 속성이나 스킬로 걸린 것이 아니라 모든 공격이
+		//그랬다.
+		//
+		//그 회복분이 보스 체력바에도 더해져서, 최대치까지 채워 둔 바에 값이
+		//계속 얹혔다. 100만이 최대인데 100만을 넘긴 이유다.
+		//
+		//흡혈이 필요하면 PS_HPDRAIN 을 쓴다. 그쪽은 스탯이 0 보다 클 때만
+		//돌고, PlusHp() 를 거쳐 최대치를 안 넘고, 회복 연출도 나온다.
+		//여기를 조건 없는 전체 회복으로 되돌리지는 않는다.
 
 		ao[dest].attr = attackAttr;
 
@@ -1829,6 +1975,193 @@ int AttackRobin_Back(int obj, int dest)
 	return damage;
 }
 
+/*===========================================================================
+ * 데미지 계산을 부작용 없는 함수로 뽑아냈다.
+ *
+ * [왜]
+ *
+ * 지금 전투는 결과가 연출에 매여 있다. 타격 판정이 모션 프레임에서 나오고,
+ * 진행 속도가 히트스톱에 좌우된다. 그래서 룰렛이 도는 순간 결과를 미리 정할
+ * 수도 없고, 서버가 같은 답을 낼 수도 없다.
+ *
+ * 여기 있는 것들은 화면도 상태이상도 소리도 건드리지 않고 숫자만 돌려준다.
+ * AttackObj 가 줄줄이 이어서 하던 셈을 그대로 옮긴 것이라 값이 달라지지
+ * 않는다. 옮기기만 했다는 것이 요점이다.
+ *
+ * [왜 세 토막인가]
+ *
+ * AttackObj 는 이 셈 사이사이에 다른 일을 한다. HP/MP 흡수는 방어 자세를
+ * 반영하기 전의 값을 쓰고, 방어력/베팅/스킬 배수는 실드 처리 뒤에 붙는다.
+ * 그 순서를 지켜야 하므로 한 덩어리로 합치지 않는다.
+ *=========================================================================*/
+
+//공격력 -> 회전력상승 -> 치명 -> 방어도 -> 속성저항 -> 저주 -> 무기 진폭.
+//outBeforeRange 는 무기 진폭을 먹이기 전 값이다(타격 마크를 고르는 데 쓴다).
+long long int CalcBaseDamage(const DMGINPUT* in, long long int* outBeforeRange)
+{
+	long long int damage;
+	int maxAttackerLv;
+	int maxDestLv;
+
+	damage = RoundDiv(in->dmgPct * in->atk, 100);
+
+	//회전력상승 : 추가 공격 성공시 해당 공격에 대해서 데미지 상승
+	if (in->extraSkillPct)
+		damage = RoundDiv(damage * (100 + in->extraSkillPct), 100);
+
+	if (in->critical)
+		damage = RoundDiv(damage * (200 + in->critDmgPct), 100);
+
+	maxAttackerLv = Min(120, in->attackerLv);
+	maxDestLv = Min(120, in->destLv);
+
+	//방어도 무시 공격이 아니라면 방어도에 따른 감소율을 정한다 (0~100%).
+	//방어도로 인한 대미지 감소는 최대 75%까지이다.
+	if (!in->ignoreArmor)
+		damage = damage * (25 + Max(0, 75 - RoundDiv(maxDestLv * 36 * 75,
+			maxAttackerLv * (144 - maxAttackerLv)))) / 100;
+
+	//속성공격인 경우 : 몬스터의 레벨과 종류에 따른 저항치를 구한다.
+	if (in->attackAttr) {
+		const signed short* scPtr =
+			&enemyAttr[(in->destType - TOTALPLAYER) * ENEMYATTRDATASIZE + in->attackAttr];
+		int i = (*scPtr < 0)
+			? (69 + maxDestLv) * *scPtr / 100 + (maxDestLv - 31)
+			: (131 - maxDestLv) * *scPtr / 100 + (maxDestLv - 31);
+
+		//저항으로 인한 대미지 감소는 최대 75%까지이다.
+		damage = (i < 0) ? RoundDiv(damage * (100 - i * 2), 100)
+			: RoundDiv(damage * (100 - i * 3 / 4), 100);
+	}
+
+	if (in->cursed)
+		damage = UpDiv(damage * 75, 100);
+
+	if (outBeforeRange)
+		*outBeforeRange = damage;
+
+	//무기에 따라서 최소~최대대미지 사이값을 구한다.
+	//최소~최대의 한가운데. 위아래로 같은 폭이라 접으면 기준 데미지가 된다.
+	damage = RoundDiv(damage * (100 - weaponRange[in->attackerType]), 100)
+		+ RoundDiv(damage * weaponRange[in->attackerType], 100);
+
+	return damage;
+}
+
+//맞는 쪽이 방어 자세면 깎거나 아예 막는다.
+long long int CalcGuardReduction(long long int damage, const DMGINPUT* in)
+{
+	switch (in->destType) {
+	case ENEMY_GOLEM:
+	case ENEMY_GOLEM_RED:
+	case ENEMY_GOLEM_BLUE:
+	case ENEMY_GOLEM_PURPLE:
+	case ENEMY_GOLEM_GREEN:
+	case ENEMY_GOLEM_GOLD:
+	case ENEMY_GOLEM_BLACK:
+		if (in->destEtc == GOLEM_GUARD)		//골렘 가드모드일때
+			damage = 0;
+		break;
+	case ENEMY_KNIGHT:
+	case ENEMY_KNIGHT_RED:
+	case ENEMY_KNIGHT_BLUE:
+	case ENEMY_KNIGHT_PURPLE:
+	case ENEMY_KNIGHT_GREEN:
+	case ENEMY_KNIGHT_GOLD:
+	case ENEMY_KNIGHT_BLACK:
+		if (in->destEtc == KNIGHT_GUARDED)
+			damage = 0;
+		break;
+	case ENEMY_KIMERA:
+	case ENEMY_KIMERA_RED:
+	case ENEMY_KIMERA_BLUE:
+	case ENEMY_KIMERA_PURPLE:
+	case ENEMY_KIMERA_GREEN:
+	case ENEMY_KIMERA_GOLD:
+	case ENEMY_KIMERA_BLACK:
+		if (in->destEtc == KIMERA_SPINED)
+			damage = 0;
+		break;
+	case ENEMY_SPIDER:
+	case ENEMY_SPIDER_RED:
+	case ENEMY_SPIDER_BLUE:
+	case ENEMY_SPIDER_PURPLE:
+	case ENEMY_SPIDER_GREEN:
+	case ENEMY_SPIDER_GOLD:
+	case ENEMY_SPIDER_BLACK:
+		if (in->destEtc == SPIDER_GUARD)
+			damage = 0;
+		break;
+	case ENEMY_ELKEIN:
+	case ENEMY_ELKEIN_RED:
+	case ENEMY_ELKEIN_BLUE:
+	case ENEMY_ELKEIN_PURPLE:
+	case ENEMY_ELKEIN_GREEN:
+	case ENEMY_ELKEIN_GOLD:
+	case ENEMY_ELKEIN_BLACK:
+		//데미지 줄여주는 버젼
+		if (in->destEtc == ELKEIN_GUARD)
+			damage /= (1 + PO_C110_BOSS_G5 - in->destMotion);
+		break;
+		//달팽이가 몸을 움츠린 상태이면, 데미지 25%로 감소
+	case ENEMY_SNAIL:
+	case ENEMY_SNAIL_RED:
+	case ENEMY_SNAIL_BLUE:
+	case ENEMY_SNAIL_PURPLE:
+	case ENEMY_SNAIL_GREEN:
+	case ENEMY_SNAIL_GOLD:
+	case ENEMY_SNAIL_BLACK:
+		if (in->destMotion == PO_C3_D2)
+			damage /= 4;
+		break;
+	}
+
+	return damage;
+}
+
+//방어력을 빼고, 베팅을 곱하고, 마지막에 동료 스킬 배수를 먹인다.
+//
+//순서가 뜻을 갖는다. 방어력은 베팅 앞에서 빼야 크게 걸수록 방어가 무의미해지는
+//일이 안 생기고, 스킬 배수는 맨 뒤라야 동료가 언제나 기본공격의 정확히 N 배다.
+long long int CalcArmorBetSkill(long long int damage, const DMGINPUT* in)
+{
+	//---- 절대값 차감은 몬스터에게만 ----
+	//
+	//enemy.tsv 의 stat_def 를 빼는 자리다. 몬스터의 방어력은 그 표가 정한
+	//작은 값이라 뺄셈이 성립한다.
+	//
+	//표적이 히어로면 이야기가 다르다. 히어로의 PS_ARMOR 는 AGI + STR * 3 에
+	//장비까지 더한 값이라 자릿수가 다르고, 그것을 빼면 어떤 공격이든 하한인
+	//1 만 남는다. PVP 에서 양쪽이 서로 1 씩만 때린 까닭이다.
+	//
+	//히어로 쪽 감소는 CalcBaseDamage 의 레벨 대비 방어도 식이 이미 맡는다.
+	if (in->destType >= TOTALPLAYER)
+		damage = Max(1, damage - in->destArmor);
+	else
+		damage = Max(1, damage);
+	damage *= in->betMul;
+	damage = RoundDiv(damage * in->skillPct, 100);
+
+	//최저 데미지는 1 이다. 배수를 곱한 뒤라야 뜻이 있다 - 5 의 10% 는
+	//0 이 되기 때문이다.
+	if (damage < 1)
+		damage = 1;
+
+	return damage;
+}
+
+//셋을 차례로 밟는다. 룰렛 시점에 결과를 미리 재는 쪽은 중간에 낄 일이
+//없으므로 이것만 부르면 된다.
+long long int CalcDamage(const DMGINPUT* in)
+{
+	long long int damage = CalcBaseDamage(in, NULL);
+
+	damage = CalcGuardReduction(damage, in);
+	damage = CalcArmorBetSkill(damage, in);
+
+	return damage;
+}
+
 int AttackObj(long long int attacker, int dest)
 {
 	long long int damage = 0;
@@ -1836,6 +2169,7 @@ int AttackObj(long long int attacker, int dest)
 	int gap = 0, tempVal = 0, attackAttr = 0;
 	int extra = 0;
 	long long int dmgOrigin = 0;
+	DMGINPUT dmgIn = { 0 };
 	OBJECT* pAttack;
 	OBJECT* pDest = &ao[dest];
 	//특수타격(기절/추가/방무/관통/치명)이 터지면 공격자의 공격프레임을 건너뛴다.
@@ -1951,7 +2285,8 @@ int AttackObj(long long int attacker, int dest)
 	//QUEST_STUN,
 	//ATTACK_IGNORE,
 	//ATTACK_KNOCKBACK,
-	ad = Random(10000);
+	//주사위를 굴리지 않는다. 빗맞음도 치명도 아래에서 눈금으로 정한다.
+	ad = 0;
 
 	//몬스터의 기본 적중률은 100%, 기본 회피율은 5%이며, 플레이어의 적중으로 줄일수 있다.
 	//플레이어의 기본 적중률은 80%, 기본 회피율은 10%이며, 플레이어의 적중으로 올릴수 있다.
@@ -1978,7 +2313,9 @@ int AttackObj(long long int attacker, int dest)
 	//		dmgOrigin = 50;
 	//#endif
 
-	ad -= ((tempVal + dmgOrigin) * 10 - *(attackerPs + PS_HIT) * 100);
+	if (ProcHit(attacker, PROC_MISS,
+		(tempVal + dmgOrigin) * 10 - *(attackerPs + PS_HIT) * 100, 10000))
+		ad = -1;
 #ifdef NOMISS
 	if (ad < 0)
 		ad = 0;
@@ -2001,10 +2338,24 @@ int AttackObj(long long int attacker, int dest)
 		//몬스터의 기본 치명률은 10%, 플레이어의 기본 치명률은 0%이며, 플레이어의 치명율로 올릴수 있다.
 		//레벨차이당 0.5%의 치명확률이 증가한다.
 		//ad = (ad < *(attackerPs + PS_CRITICAL) * 100 + gap * 50);
-		ad = (ad < (DEFAULTCRITICAL + *(attackerPs + PS_CRITICAL)) * 100);
+		/* 치명도 눈금이다. 전에는 빗맞음을 뺀 나머지로 다시 판단해서 두 확률이
+		 * 서로 얽혀 있었는데, 이제 설계값 그대로의 비율로 나온다.
+		 *
+		 * 계획이 있으면 그 액션이 이미 정해 둔 값을 따른다. 연타의 대마다
+		 * 따로 굴리면 총액이 첫 대의 결과에 좌우되기 때문이다. */
+		{
+			bool planCrit = false;
+
+			if (ActionPlanCriticalOf((int)attacker, &planCrit))
+				ad = planCrit ? 1 : 0;
+			else
+				ad = ProcHit(attacker, PROC_CRITICAL,
+					(DEFAULTCRITICAL + *(attackerPs + PS_CRITICAL)) * 100, 10000) ? 1 : 0;
+		}
 
 		//기절공격 계산식
-		if (!pDest->debuf[STUN] && (Random(100) < *(attackerPs + PS_STUN) + gap)) {
+		if (!pDest->debuf[STUN]
+			&& ProcHit(attacker, PROC_STUN, *(attackerPs + PS_STUN) + gap, 100)) {
 			refreshRate = FPSDOWN_STUN;
 
 			ad += 1 << ATTACK_STUN;
@@ -2207,7 +2558,7 @@ int AttackObj(long long int attacker, int dest)
 				break;
 			}
 		}
-		else if (Random(48) < pAttack->concentrate) {
+		else if (ProcHit(attacker, PROC_CONCENTRATE, pAttack->concentrate, 48)) {
 			refreshRate = FPSDOWN_STUN;
 
 			ad += 1 << ATTACK_STUN;
@@ -2400,7 +2751,8 @@ int AttackObj(long long int attacker, int dest)
 		}
 
 		//추가공격 계산식
-		if (extra == 0 && Random(1000) < *(attackerPs + PS_EXTRA) * 10 + gap * 5) {
+		if (extra == 0 && ProcHit(attacker, PROC_EXTRA,
+			*(attackerPs + PS_EXTRA) * 10 + gap * 5, 1000)) {
 			refreshRate = FPSDOWN_EXTRA;
 
 			ad += 1 << ATTACK_EXTRA;
@@ -2420,7 +2772,7 @@ int AttackObj(long long int attacker, int dest)
 			attackAttr = FIRE;
 		else {
 			for (i = 0; i < 5; i++) {
-				if (Random(100) < *(attackerPs + PS_FIREATTACK + i)) {
+				if (ProcHit(attacker, PROC_ATTR + i, *(attackerPs + PS_FIREATTACK + i), 100)) {
 					attackAttr = i + 1;
 					break;
 				}
@@ -2428,7 +2780,8 @@ int AttackObj(long long int attacker, int dest)
 		}
 
 		//방어도 무시공격 계산식
-		if (attackAttr == 0 && Random(1000) < *(attackerPs + PS_IGNORE) * 10 + gap * 5) {
+		if (attackAttr == 0 && ProcHit(attacker, PROC_IGNORE,
+			*(attackerPs + PS_IGNORE) * 10 + gap * 5, 1000)) {
 			refreshRate = FPSDOWN_IGNORE;
 
 			ad += 1 << ATTACK_IGNORE;
@@ -2436,7 +2789,7 @@ int AttackObj(long long int attacker, int dest)
 		}
 
 		//관통공격 계산식
-		if (Random(1000) < *(attackerPs + PS_PIERCE) * 10) {
+		if (ProcHit(attacker, PROC_PIERCE, *(attackerPs + PS_PIERCE) * 10, 1000)) {
 			refreshRate = FPSDOWN_PIERCE;
 
 			ad += 1 << ATTACK_PIERCE;
@@ -2470,54 +2823,35 @@ int AttackObj(long long int attacker, int dest)
 			//ao[i].target = attacker;
 			effect.shake = 4;
 		}
-		//디펜스 타워의 데미지 구하기
-		damage = RoundDiv(*(attackerPs + PS_DMG) * GetAtk(attacker), 100);
+		//데미지 셈은 CalcBaseDamage 로 옮겼다. 여기서는 값만 모아 넘긴다.
+		dmgIn.atk = GetAtk(attacker);
+		dmgIn.dmgPct = (int)*(attackerPs + PS_DMG);
+		dmgIn.critDmgPct = (int)*(attackerPs + PS_CRITDMG);
+		dmgIn.extraSkillPct = (extra && pAttack->skillLv[SKILL_MAXX4])
+			? GetSkillValue(attacker, SKILL_MAXX4) : 0;
+		dmgIn.attackerLv = attackerLv;
+		dmgIn.attackerType = attackerType;
+		dmgIn.cursed = ao[attackerObj].debuf[CURSE] != 0;
+		dmgIn.destLv = pDest->lv;
+		dmgIn.destType = pDest->type;
+		dmgIn.critical = (ad % 2 == 1);
+		dmgIn.ignoreArmor = ((ad >> ATTACK_IGNORE) % 2 != 0);
+		dmgIn.attackAttr = attackAttr;
 
-		//회전력상승 : 추가 공격 성공시 해당 공격에 대해서 데미지 상승
-		if (extra && pAttack->skillLv[SKILL_MAXX4])
-			damage = RoundDiv(damage * (100 + GetSkillValue(attacker, SKILL_MAXX4)), 100);
-
-		//치명타인경우
-		if (ad % 2 == 1) {
+		//치명타일 때의 화면 쪽 처리는 셈과 별개라 여기 남는다.
+		if (dmgIn.critical) {
 			refreshRate = FPSDOWN_CRITICAL;
-
-			damage = RoundDiv(damage * (200 + *(attackerPs + PS_CRITDMG)), 100);
-			//i = DropItem(pAttack, ITEM_GOLD);
-			//ao[i].target = attacker;
-			//SetImgText(attackerObj, EFFECT_TEXT_CRITICAL, IMGTEXTZOOM);
 			pAttack->attackFrame += attackFrameSkip;
 			pAttack->attackLv++;
 		}
 
-		maxAttackerLv = Min(120, attackerLv);
-		maxDestLv = Min(120, pDest->lv);
-
-		//방어도 무시 공격이 아니라면 방어도에 따른 감소율을 정한다 (0~100%).
-		if ((ad >> ATTACK_IGNORE) % 2 == 0)
-			//방어도로 인한 대미지 감소는 최대 75%까지이다.
-			damage = damage * (25 + Max(0, 75 - RoundDiv(maxDestLv * 36 * 75, maxAttackerLv * (144 - maxAttackerLv)))) / 100;
-
-		//속성공격인 경우
-		if (attackAttr) {
-			//몬스터의 레벨과 종류에 따라서 각 속성에 해당하는 저항치를 구한다.
-			scPtr = &enemyAttr[(pDest->type - TOTALPLAYER) * ENEMYATTRDATASIZE + attackAttr];
-			i = (*scPtr < 0) ? (69 + maxDestLv) * *scPtr / 100 + (maxDestLv - 31) : (131 - maxDestLv) * *scPtr / 100 + (maxDestLv - 31);
-
-			//저항으로 인한 대미지 감소는 최대 75%까지이다.
-			damage = (i < 0) ? RoundDiv(damage * (100 - i * 2), 100) : RoundDiv(damage * (100 - i * 3 / 4), 100);
-		}
-
-		if (ao[attackerObj].debuf[CURSE])
-			damage = UpDiv(damage * 75, 100);
-
-		dmgOrigin = damage;
+		damage = CalcBaseDamage(&dmgIn, &dmgOrigin);
 
 		//일부러 없앴나?@@
 		//if (pAttack->moveHandler == BULLETBOOMERANGMOVE && pAttack->etc != 6)
 		//	damage = RoundDiv(damage, pAttack->mom + 1 - pAttack->status);
 
-		//무기에 따라서 최소~최대대미지 사이값을 구한다.
-		damage = RoundDiv(damage * (100 - weaponRange[attackerType]), 100) + Random(RoundDiv(damage * weaponRange[attackerType] * 2, 100) + 1);
+		//무기 진폭까지가 CalcBaseDamage 의 몫이다.
 
 		//HP흡수
 		if (*(attackerPs + PS_HPDRAIN) > 0) {
@@ -2674,76 +3008,10 @@ int AttackObj(long long int attacker, int dest)
 	//#endif
 
 	//#else
-	switch (pDest->type) {
-	case ENEMY_GOLEM:
-	case ENEMY_GOLEM_RED:
-	case ENEMY_GOLEM_BLUE:
-	case ENEMY_GOLEM_PURPLE:
-	case ENEMY_GOLEM_GREEN:
-	case ENEMY_GOLEM_GOLD:
-	case ENEMY_GOLEM_BLACK:
-		if (pDest->etc == GOLEM_GUARD) {//골렘 가드모드일때)
-			damage = 0;
-		}
-		break;
-	case ENEMY_KNIGHT:
-	case ENEMY_KNIGHT_RED:
-	case ENEMY_KNIGHT_BLUE:
-	case ENEMY_KNIGHT_PURPLE:
-	case ENEMY_KNIGHT_GREEN:
-	case ENEMY_KNIGHT_GOLD:
-	case ENEMY_KNIGHT_BLACK:
-		if (pDest->etc == KNIGHT_GUARDED) {
-			damage = 0;
-		}
-		break;
-	case ENEMY_KIMERA:
-	case ENEMY_KIMERA_RED:
-	case ENEMY_KIMERA_BLUE:
-	case ENEMY_KIMERA_PURPLE:
-	case ENEMY_KIMERA_GREEN:
-	case ENEMY_KIMERA_GOLD:
-	case ENEMY_KIMERA_BLACK:
-		if (pDest->etc == KIMERA_SPINED) {
-			damage = 0;
-		}
-		break;
-	case ENEMY_SPIDER:
-	case ENEMY_SPIDER_RED:
-	case ENEMY_SPIDER_BLUE:
-	case ENEMY_SPIDER_PURPLE:
-	case ENEMY_SPIDER_GREEN:
-	case ENEMY_SPIDER_GOLD:
-	case ENEMY_SPIDER_BLACK:
-		if (pDest->etc == SPIDER_GUARD) {
-			damage = 0;
-		}
-		break;
-		//case NPC_ELKEIN:
-	case ENEMY_ELKEIN:
-	case ENEMY_ELKEIN_RED:
-	case ENEMY_ELKEIN_BLUE:
-	case ENEMY_ELKEIN_PURPLE:
-	case ENEMY_ELKEIN_GREEN:
-	case ENEMY_ELKEIN_GOLD:
-	case ENEMY_ELKEIN_BLACK:
-		//데미지 줄여주는 버젼
-		if (pDest->etc == ELKEIN_GUARD)
-			damage /= (1 + PO_C110_BOSS_G5 - pDest->motion);
-		break;
-		//달팽이가 몸을 움츠린 상태이면, 데미지 25%로 감소
-	case ENEMY_SNAIL:
-	case ENEMY_SNAIL_RED:
-	case ENEMY_SNAIL_BLUE:
-	case ENEMY_SNAIL_PURPLE:
-	case ENEMY_SNAIL_GREEN:
-	case ENEMY_SNAIL_GOLD:
-	case ENEMY_SNAIL_BLACK:
-		if (pDest->motion == PO_C3_D2) {
-			damage /= 4;
-		}
-		break;
-	}
+	//맞는 쪽의 방어 자세는 CalcGuardReduction 이 본다.
+	dmgIn.destEtc = pDest->etc;
+	dmgIn.destMotion = pDest->motion;
+	damage = CalcGuardReduction(damage, &dmgIn);
 
 	//속성공격 이펙트 적용 및 디버프 처리
 	if (damage > 0 && attacker < BULLET) {
@@ -2753,7 +3021,8 @@ int AttackObj(long long int attacker, int dest)
 			pDest->attr = attackAttr;
 
 			//속성공격시 20% 확률로 디버프 걸어주기
-			if (robin.bossRoom == false && Random(100) < *(attackerPs + PS_HPDRAIN)) {
+			if (robin.bossRoom == false && ProcHit(attacker, PROC_HPDRAINDEBUF,
+				*(attackerPs + PS_HPDRAIN), 100)) {
 				i = attrToDebuf[attackAttr];
 				ActivateDebuf(pDest, i, debufStartFrame[i], attacker);
 			}
@@ -2766,7 +3035,9 @@ int AttackObj(long long int attacker, int dest)
 		if (pAttack->moveHandler == BULLETITEMMOVE && robin.bossRoom == false) {
 			i = attrToDebuf[pAttack->attr];
 
-			if (Random(2) <= pAttack->etc) {
+			//원래 Random(2) <= etc 였다. etc 가 1 이상이면 늘, 0 이면 절반이다.
+			if (ProcHit(pAttack->target, PROC_ITEMDEBUF,
+				pAttack->etc >= 1 ? 2 : 1, 2)) {
 				ActivateDebuf(pDest, i, debufStartFrame[i], pAttack->target);
 			}
 		}
@@ -2798,36 +3069,16 @@ NEXT:
 	// "크게 걸면 방어를 뚫는다" 가 아니라 "크게 걸면 방어가 사라진다" 가
 	// 된다. 앞에서 빼면 한 대의 값이 줄고 그것이 베팅만큼 곱해진다.
 	//--------------------------------------------------------------------------
-	damage = Max(1, damage - ao[dest].ps[PS_ARMOR]);
-
-	if (damage < 1)
-		damage = 1;
-
-	//betHeart
-	damage *= betHeart[bet];
-
-	//----------------------------------------------------------------------
-	// 스킬 배수. 식의 맨 끝이다.
+	//방어력 차감 -> 베팅 배수 -> 동료 스킬 배수. 셋 다 CalcArmorBetSkill 안이다.
 	//
-	// 동료는 슬롯에 몇 개 떴는지로 skill1/2/3 이 갈린다. 셋 다 그 동료의
-	// 기본공격(crewData 의 str)에서 출발하고, 여기서 배수만 다르게 먹는다.
-	// 지금은 skill2 가 3 배다.
-	//
-	// 방어와 베팅 뒤에 붙인다. 앞에 붙이면 방어력이 두 번 작용해서(비율로
-	// 줄인 값에서 절대값을 또 빼니) 방어 높은 적한테 동료가 그냥 1 이 된다.
-	// 뒤에 붙이면 동료는 언제나 기본공격의 정확히 N 배다.
-	//
-	// 동료와 소환 히어로한테만 건다. 히어로의 currentSkill 은 평타 중에도
-	// 옛 값이 남아 있을 수 있어서, 그것까지 곱하면 평타가 배로 나간다.
-	//----------------------------------------------------------------------
-	//실제 공격자를 기준으로 동료 스킬 배수를 찾는다. 전역 turn은 막타 직후
-	//먼저 바뀔 수 있어서 일섬 같은 본체 공격이 1000% 대신 100%로 들어갔다.
-	//총탄은 mom, 소환체는 actionOwner가 실제 스킬 소유자다.
+	//스킬 배수의 주인을 여기서 찾는다. 전역 turn 은 막타 직후 먼저 바뀔 수
+	//있어서 일섬 같은 본체 공격이 1000% 대신 100% 로 들어갔다. 총탄은 mom,
+	//소환체는 actionOwner 가 실제 스킬 소유자다.
 	{
 		int skillOwner = -1;
 
 		if (attacker >= CREW && attacker < CREW + MAXCREW)
-			skillOwner = attacker;
+			skillOwner = (int)attacker;
 		else if (attacker >= 0 && attacker < TOTALOBJECT
 			&& ao[attacker].mom >= CREW && ao[attacker].mom < CREW + MAXCREW)
 			skillOwner = ao[attacker].mom;
@@ -2836,14 +3087,20 @@ NEXT:
 			&& ao[attacker].actionOwner < CREW + MAXCREW)
 			skillOwner = ao[attacker].actionOwner;
 
-		if (skillOwner >= 0)
-			damage = RoundDiv(damage * SkillDamagePct(ao[skillOwner].currentSkill), 100);
+		dmgIn.destArmor = ao[dest].ps[PS_ARMOR];
+		dmgIn.betMul = betHeart[bet];
+		dmgIn.skillPct = (skillOwner >= 0)
+			? SkillDamagePct(ao[skillOwner].currentSkill) : 100;
 	}
 
-	//최저 데미지는 1 이다. 배수를 곱한 뒤라야 뜻이 있다 - 5 의 10% 는
-	//0 이 되기 때문이다.
-	if (damage < 1)
-		damage = 1;
+	damage = CalcArmorBetSkill(damage, &dmgIn);
+
+	/* 계획이 있으면 그 몫에서 가져간다.
+	 *
+	 * 여기까지가 "이 한 대는 원래 얼마인가" 다. 계획은 그 값을 그대로 쓰지
+	 * 않고, 이번 액션에 배정된 총액 안에서 넘치지도 모자라지도 않게 나눈다.
+	 * 계획이 없으면(한 대짜리 공격, 적의 공격 등) 그대로 통과한다. */
+	damage = ActionPlanTake((int)attacker, dest, damage);
 
 	//인터랙티브 전투 튜토리얼의 첫 몬스터: "세바스찬(크루)이 먼저 공격 -> HP가 남아있으면 주인공이
 	//마무리"라는 순서를 스크립트대로 보여줘야 한다. 크루가 한 방에 죽여버리면 주인공의 공격 턴이
@@ -2924,6 +3181,35 @@ NEXT:
 	int realAttacker = attacker;
 	if (realAttacker >= BULLET && ao[realAttacker].target < TOTALCHAR)
 		realAttacker = ao[realAttacker].target;
+
+	//3일 보스전은 동전 대신 타격 보상으로 하트를 흩뿌린다. 피해 100당
+	//한 개를 기준으로 하되, 한 번의 명중은 최소 한 개를 보장한다.
+	if (drawHandle == MD_BOSSRAID && damage > 0
+		&& realAttacker >= PLAYER && realAttacker < ENEMY
+		&& dest >= ENEMY && dest < NEUTRAL) {
+		int heart = Max(1, damage / BOSSRAID_HEART_DAMAGE);
+		GetItem(ITEM_HEART, false, false, false, heart, false);
+		AddBossRaidEarnedHeart(heart);
+		// 골드와 동일하게 실제 아이템 오브젝트로 튀어 오른 뒤, 착지하고
+		// ITEMMOVE에서 하트바로 빨려 들어가게 한다.
+		int heartObj = DropItem(pDest, ITEM_HEART);
+		if (heartObj >= ITEMOBJ && heartObj < TOTALOBJECT) {
+			// 골드 드롭과 같은 피해량 자릿수 배율을 사용한다. 이 zoom은
+			// ITEMMOVE의 SetCurrencyMark에도 그대로 전달되어 흡수 연출까지 이어진다.
+			int heartZoomLevel = 0;
+			if (damage >= 1000000) heartZoomLevel = 6;
+			else if (damage >= 100000) heartZoomLevel = 5;
+			else if (damage >= 10000) heartZoomLevel = 4;
+			else if (damage >= 1000) heartZoomLevel = 3;
+			else if (damage >= 100) heartZoomLevel = 2;
+			else if (damage >= 10) heartZoomLevel = 1;
+			const float heartDropZoom = 1.5f + heartZoomLevel * 0.3f;
+			ao[heartObj].defaultZoom = ao[heartObj].zoom = heartDropZoom;
+			ao[heartObj].target = realAttacker;
+			ao[heartObj].ax = heart;
+			ao[heartObj].ay = ICON_HEART;
+		}
+	}
 
 
 	//if (ao[realAttacker].attack >= ATTACK_SKILL) {
@@ -3302,6 +3588,12 @@ NEXT:
 		//마지막 적의 사망 판정 순간부터 보상 전환 구간이다. 실제 상자는
 		//VANISHMOVE가 끝난 뒤에 떨어지므로, 그때까지 ACTION이 남아 있으면
 		//복귀를 마친 CREWSUMMON이 WhoIsNextTurn으로 다시 호출될 수 있다.
+		//웨이브를 물리쳤으면 걸려 있던 상태이상을 모두 푼다. 마지막
+		//웨이브인지와 무관하게, 적이 다 죽은 그 순간이 한 판의 끝이다.
+		if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
+			&& AliveEnemyCnt() == 0)
+			ClearAllDebuffs();
+
 		if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE)
 			&& AliveEnemyCnt() == 0
 			&& robin.curWaveIdx == GetMaxWaveCnt()) {
@@ -3309,6 +3601,14 @@ NEXT:
 			touchDisable = true;
 			attackSequence = ATTACKSEQUENCE_BOX;
 			turnFrame = 0;
+		}
+
+		// 실시간 3일 보스전은 개별 공격 종료가 아니라 보스가 실제로 죽은
+		// 이 순간에만 결과/보상 단계로 넘어간다.
+		if (drawHandle == MD_BOSSRAID && AliveEnemyCnt() == 0) {
+			touchDisable = true;
+			attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
+			attackDelay = ATTACKDELAY_BOSSREWARD_START + 2 * FPS / ROULETTEDIV;
 		}
 
 		//인터랙티브 전투 튜토리얼: 다이오라마방에서 몬스터가 죽을 때마다 다음 안 본 튜토리얼 컷씬을 재생한다.
@@ -4033,7 +4333,15 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 
 			dmgInfo[i].frame = 0;
 			dmgInfo[i].dmg = dmg;
-			dmgInfo[i].x = ao[obj].x;
+			//x 도 y 와 같은 변환을 거쳐야 한다.
+			//
+			//y 는 STATUSWIN_Y + (rh - 4) * TSIZE - ... - ry 로 화면 좌표를
+			//만드는데 x 만 월드 좌표를 그대로 넣고 있었다. 그리는 쪽
+			//(DrawNum2)은 둘 다 화면 좌표로 읽는다.
+			//
+			//rx 가 0 인 화면에서는 우연히 맞아서 안 보였다. 카메라가 움직이는
+			//판에서는 숫자가 엉뚱한 데 뜨거나 화면 밖으로 나간다.
+			dmgInfo[i].x = xOffset + ao[obj].x - rx;
 			//dmgInfo[i].y = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[obj].y - (obj >= ENEMY ? 64 * _2X : 48 * _2X) - Random(8 * _2X)) - ry;// - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;
 			dmgInfo[i].y = STATUSWIN_Y + (rh - 4) * TSIZE - (ao[obj].y + ao[obj].cpy - 32 * _2X) - ry;// + DMGNUM_Y;//
 
@@ -6224,14 +6532,407 @@ static int GetDebufTurnCount(int debufIdx)
 	}
 }
 
+/* 걸려 있던 상태이상을 모두 푼다.
+ *
+ * 웨이브를 물리친 자리에서 부른다. 웨이브 사이는 한 판이 끝난 지점이라,
+ * 앞 판에서 얻은 독이나 저주를 다음 판까지 끌고 가면 새 웨이브의 첫 턴을
+ * 이미 진 상태로 시작하게 된다.
+ *
+ * 연출 없이 조용히 지운다. 여기는 상자와 가챠로 넘어가는 길목이라 해제
+ * 연출(2초)을 켜면 상자가 그만큼 늦게 떨어진다. 남아 있던 연출 타이머도
+ * 같이 끈다. 주인이 사라진 타이머는 아무도 줄여주지 않는다. */
+static void ClearAllDebuffs(void)
+{
+	int i, j;
+
+	for (i = PLAYER; i < NEUTRAL; i++) {
+		for (j = 0; j < TOTALDEBUF; j++) {
+			ao[i].debuf[j] = 0;
+			ao[i].debufOwner[j] = 0;
+			ao[i].debufRemainTurn[j] = 0;
+		}
+
+		statusApplyFxFrame[i] = 0;
+		statusRecoverFxFrame[i] = 0;
+		statusStackFxFrame[i] = 0;
+		statusTurnFxFrame[i] = 0;
+	}
+}
+
+/*===========================================================================
+ * 액션 계획 (action plan)
+ *
+ * [무엇]
+ *
+ * 룰렛이 확정되는 순간, 이번 액션이 대상마다 줄 총 데미지를 정해 둔다.
+ * 그 뒤의 타격은 "얼마를 때릴까"를 다시 셈하지 않고 정해 둔 총액에서
+ * 나눠 준다. 마지막 대가 남은 것을 전부 정산한다.
+ *
+ * [왜]
+ *
+ * 지금 전투는 결과가 연출에 매여 있다. 총알이 몇 번 맞느냐, 히트스톱이
+ * 몇 프레임 걸리느냐에 따라 총 데미지가 달라진다. 그래서 같은 판을 같은
+ * 순서로 둬도 결과가 달라지고, 서버가 같은 답을 낼 수도 없다.
+ *
+ * 결과를 먼저 정하고 연출을 그 소비자로 두면 그 고리가 끊긴다.
+ *
+ * [어떻게]
+ *
+ *   룰렛 확정   ActionPlanBegin(주인, 스킬)     - 총 히트 수 N 을 적어 둔다
+ *   첫 접촉     그 대상의 한 대 값 D 를 재고    - 총액 = D x N 로 못 박는다
+ *   매 타격     min(잔액, D) 를 준다            - 넘칠 수 없다
+ *   마지막 대   잔액을 전부 준다                - 모자랄 수 없다
+ *   턴 종료     ActionPlanEnd()
+ *
+ * 마지막 대인지는 IsMidComboHit() 이 판단한다. 상태이상을 마지막 대에만
+ * 거는 규칙과 같은 자를 쓴다. 둘이 어긋나면 "상태이상은 걸렸는데 데미지는
+ * 아직 남았다" 같은 일이 생긴다.
+ *
+ * [끄는 법]
+ *
+ * USE_ACTIONPLAN 을 0 으로 두면 계획을 세우지도 쓰지도 않는다. 데미지는
+ * 예전처럼 매 타격 그 자리에서 셈한 값이 그대로 나간다.
+ *=========================================================================*/
+#define USE_ACTIONPLAN 1
+
+#define PLAN_MAXTARGET 8
+
+typedef struct _planTarget {
+	int obj;
+	long long int total;	//이 대상에게 줄 총액
+	long long int paid;	//지금까지 준 것
+} PLANTARGET;
+
+static struct {
+	bool active;
+	int owner;		//이 계획의 주인(동료/히어로 슬롯)
+	int skill;
+	int hits;		//총 히트 수
+	bool critical;		//이 액션이 치명타인가. 대마다 굴리지 않는다
+	int count;
+	PLANTARGET t[PLAN_MAXTARGET];
+} gPlan;
+
+void ActionPlanBegin(int owner, int skill)
+{
+#if USE_ACTIONPLAN
+	int hits;
+
+	memset(&gPlan, 0, sizeof(gPlan));
+
+	/* 동료까지 본다.
+	 *
+	 * TOTALCHAR 는 3 이라 히어로(0~2)만 걸렸다. 룰렛이 넘기는 turn 은 대개
+	 * 동료(3~8)라, 정작 연타를 하는 쪽에는 계획이 한 번도 안 잡혔다. */
+	if (owner < PLAYER || owner >= PLAYERALL)
+		return;
+
+	hits = SkillHitMax(skill);
+
+	//한 대짜리는 나눌 것이 없다. 계획을 세워 봐야 그 한 대가 전부다.
+	if (hits <= 1)
+		return;
+
+	gPlan.active = true;
+	gPlan.owner = owner;
+	gPlan.skill = skill;
+	gPlan.hits = hits;
+
+	/* 치명타는 이 액션에 한 번만 판정한다.
+	 *
+	 * 대마다 따로 굴리면 총액이 첫 대의 결과에 좌우된다. 계획은 "한 대 값 x
+	 * 히트 수" 로 총액을 못 박는데, 그 한 대가 치명타였으면 전부 치명타인
+	 * 셈이 되고 아니면 전부 평타인 셈이 된다.
+	 *
+	 * 연타는 여러 대지만 공격은 한 번이다. 그러니 치명타도 한 번이다.
+	 * 상태이상을 마지막 대에만 거는 규칙과 같은 원칙이다. */
+	gPlan.critical = ProcHit(owner, PROC_CRITICAL,
+		(int)((DEFAULTCRITICAL + ao[owner].ps[PS_CRITICAL]) * 100), 10000);
+#endif
+}
+
+void ActionPlanEnd(void)
+{
+#if USE_ACTIONPLAN
+#if BALANCE_LOG
+	/* 계획이 지켜졌는지 한 줄 남긴다.
+	 *
+	 * 계획은 "총액을 미리 못 박고 타격마다 나눠 준다" 는 약속이다. 그 약속이
+	 * 실제로 지켜지는지는 눈으로 볼 수가 없다 - 화면에는 나눠진 숫자만 뜬다.
+	 *
+	 * 정한 값과 실제로 준 값이 다르면 여기 찍힌다. 다를 수 있는 경우는 하나,
+	 * 연출이 마지막 대까지 통째로 흘렸을 때다. 그것이 얼마나 자주 나는지
+	 * 알아야 다음 손질을 정할 수 있다.
+	 *
+	 * BALANCE_LOG 를 끄면 통째로 빠진다. */
+	if (gPlan.active) {
+		int i;
+
+		for (i = 0; i < gPlan.count; i++) {
+			if (gPlan.t[i].paid == gPlan.t[i].total)
+				continue;
+
+			CCLOG("PLAN: 주인=%d 스킬=%d 히트=%d 대상=%d "
+				"정한값=%lld 준값=%lld 차이=%lld",
+				gPlan.owner, gPlan.skill, gPlan.hits, gPlan.t[i].obj,
+				gPlan.t[i].total, gPlan.t[i].paid,
+				gPlan.t[i].total - gPlan.t[i].paid);
+		}
+	}
+#endif
+
+	memset(&gPlan, 0, sizeof(gPlan));
+#endif
+}
+
+#if USE_ACTIONPLAN
+//이 타격이 계획에 속하는가. 총탄과 소환체는 주인을 따라간다.
+static int PlanOwnerOf(int attacker)
+{
+	if (attacker < 0 || attacker >= TOTALOBJECT)
+		return -1;
+
+	if (attacker >= PLAYER && attacker < PLAYERALL)
+		return attacker;
+
+	if (ao[attacker].mom >= PLAYER && ao[attacker].mom < PLAYERALL)
+		return ao[attacker].mom;
+
+	if (ao[attacker].actionOwner >= PLAYER && ao[attacker].actionOwner < PLAYERALL)
+		return ao[attacker].actionOwner;
+
+	return -1;
+}
+
+static PLANTARGET* PlanSlotOf(int dest, long long int oneHit)
+{
+	int i;
+
+	for (i = 0; i < gPlan.count; i++) {
+		if (gPlan.t[i].obj == dest)
+			return &gPlan.t[i];
+	}
+
+	if (gPlan.count >= PLAN_MAXTARGET)
+		return NULL;
+
+	//처음 닿는 대상이다. 여기서 총액을 못 박는다.
+	gPlan.t[gPlan.count].obj = dest;
+	gPlan.t[gPlan.count].total = oneHit * gPlan.hits;
+	gPlan.t[gPlan.count].paid = 0;
+
+	return &gPlan.t[gPlan.count++];
+}
+#endif
+
+/* 이번 타격이 실제로 줄 데미지.
+ *
+ * oneHit 은 지금 자리에서 셈한 한 대 값이다. 계획이 없으면 그대로 돌려준다.
+ */
+/* 이 타격이 계획에 속하면 그 계획이 정해 둔 치명타 여부를 준다.
+ *
+ * 속하지 않으면 false 를 주고, 부르는 쪽은 예전처럼 제가 판정한다.
+ * 적의 공격과 한 대짜리 공격이 그 길로 간다. */
+bool ActionPlanCriticalOf(int attacker, bool* outCritical)
+{
+#if USE_ACTIONPLAN
+	if (!gPlan.active || outCritical == NULL)
+		return false;
+
+	if (PlanOwnerOf(attacker) != gPlan.owner)
+		return false;
+
+	*outCritical = gPlan.critical;
+
+	return true;
+#else
+	return false;
+#endif
+}
+
+long long int ActionPlanTake(int attacker, int dest, long long int oneHit)
+{
+#if USE_ACTIONPLAN
+	PLANTARGET* p;
+	long long int left;
+	long long int pay;
+
+	if (!gPlan.active || oneHit <= 0)
+		return oneHit;
+
+	if (PlanOwnerOf(attacker) != gPlan.owner)
+		return oneHit;
+
+	if (dest < 0 || dest >= TOTALOBJECT)
+		return oneHit;
+
+	p = PlanSlotOf(dest, oneHit);
+
+	if (p == NULL)
+		return oneHit;
+
+	left = p->total - p->paid;
+
+	if (left <= 0)
+		return 0;	//이미 계획한 만큼 다 줬다. 더 때려도 0 이다.
+
+	/* 남은 것을 남은 대수로 나눠 준다.
+	 *
+	 * 처음에는 "한 대 값 만큼 주다가 마지막 대에 나머지를 몰아준다" 로 했다.
+	 * 그러면 연출이 히트를 몇 번 흘렸을 때 마지막 대에 큰 숫자가 튀고, 마지막
+	 * 대마저 안 맞으면 그만큼이 통째로 사라진다.
+	 *
+	 * 남은 대수로 나누면 스스로 맞춰진다. 앞에서 한 대를 흘리면 뒤엣것들이
+	 * 조금씩 더 가져가고, 마지막 대에서는 나누는 수가 1 이라 자연히 잔액을
+	 * 전부 가져간다. 따로 정산하는 자리가 필요 없다.
+	 *
+	 *     hitCount 는 이번 대를 넣기 전까지 센 수다. 그래서 이번 대를 포함해
+	 *     앞으로 남은 대수가 (hits - hitCount) 다.
+	 *
+	 * 연출이 마지막 대까지 통째로 흘리면 그만큼은 안 들어간다. 그건 계획이
+	 * 없던 예전과 같은 상태이므로 더 나빠지는 것은 없다. */
+	{
+		int remainHits = gPlan.hits - ao[gPlan.owner].hitCount;
+
+		if (remainHits < 1)
+			remainHits = 1;
+
+		pay = Min(left, UpDiv(left, remainHits));
+	}
+
+	if (pay < 1)
+		pay = 1;
+
+	p->paid += pay;
+
+	return pay;
+#else
+	return oneHit;
+#endif
+}
+
+/* 연타의 중간 타격인가.
+ *
+ * 연타는 여러 대를 때리지만 공격은 한 번이다. 그러니 상태이상도 한 번이어야
+ * 한다. 매 대마다 걸면 턴이 우수수 쌓이고 숫자 연출도 대마다 다시 튄다.
+ *
+ * 마지막 대에서 걸고, 그 앞의 대들은 데미지만 준다. 처음 대가 아니라 마지막
+ * 대인 것은, 걸리는 순간이 그 공격의 마무리로 보여야 하기 때문이다.
+ *
+ * 연타수를 아는 것은 스킬을 쓴 본인뿐이므로 히어로/동료 자리만 본다. 적이나
+ * 총알이 거는 것은 지금까지대로 둔다. */
+static bool IsMidComboHit(int owner)
+{
+	int hitMax;
+
+	if (owner < PLAYER || owner >= TOTALCHAR)
+		return false;
+
+	if (ao[owner].attack < ATTACK_SKILL)
+		return false;
+
+	hitMax = SkillHitMax(ao[owner].currentSkill);
+
+	if (hitMax <= 1)
+		return false;
+
+	//hitCount 는 지금 대를 넣기 전까지 센 수다. 그래서 +1 이 이번 대다.
+	return ao[owner].hitCount + 1 < hitMax;
+}
+
 void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner)
 {
+	int obj;
+	bool newlyApplied;
+
 	if (pObj == NULL || debufIdx < 0 || debufIdx >= TOTALDEBUF)
 		return;
+
+	obj = GetObjFromPtr(pObj);
+	if (!((obj >= PLAYER && obj < CREW)
+		|| (obj >= ENEMY && obj < NEUTRAL)))
+		return;
+
+	//연타 중이면 마지막 대까지 기다린다. 중간 대는 데미지만 준다.
+	if (IsMidComboHit(owner))
+		return;
+
+	newlyApplied = pObj->debuf[debufIdx] <= 0;
 	pObj->debuf[debufIdx] = Max(1, frameValue);
 	pObj->debufOwner[debufIdx] = (unsigned char)Max(0, owner);
-	//현재 진행 중인 턴 종료에서 바로 소모되지 않도록 한 칸을 더 둔다.
-	pObj->debufRemainTurn[debufIdx] = (unsigned char)(GetDebufTurnCount(debufIdx) + 1);
+
+	if (newlyApplied) {
+		pObj->debufRemainTurn[debufIdx] = (unsigned char)GetDebufTurnCount(debufIdx);
+		statusApplyFxFrame[obj] = STATUSAPPLYFRAME;
+		statusApplyDebuff[obj] = debufIdx;
+	}
+	else {
+		//이미 걸려 있는 것을 또 맞으면 턴을 하나 쌓는다.
+		//
+		//전에는 처음 값으로 되돌리기만 했다. 세 턴짜리 독을 두 턴 남았을 때
+		//다시 맞아도 세 턴으로 돌아갈 뿐이라, 계속 맞히는 보람이 없고 화면에도
+		//아무 일이 안 일어났다.
+		int stacked = (int)pObj->debufRemainTurn[debufIdx] + 1;
+
+		if (stacked > DEBUF_MAXTURN)
+			stacked = DEBUF_MAXTURN;
+
+		pObj->debufRemainTurn[debufIdx] = (unsigned char)stacked;
+
+		//연출은 부여의 뒷마디만 다시 튼다. 아이콘은 이미 자리에 있어 흔들
+		//것이 없고, 숫자만 한가운데에서 다시 튀어나온다.
+		//
+		//부여/해제와 달리 월드를 멈추지 않는 별도 타이머를 쓴다. 관통하는
+		//탄이 한 대상을 여러 번 때리면 그때마다 화면이 1초씩 굳는다.
+		statusStackFxFrame[obj] = STATUSAPPLYNUM;
+		statusStackDebuff[obj] = debufIdx;
+	}
+	//적용 연출은 HitZoomUpdate()가 statusApplyFxFrame과 직접 동기화한다.
+	//일반 요청 큐에도 넣으면 공격 종료 뒤 같은 대상을 다시 줌인하게 된다.
+}
+
+bool AdvanceActorDebuffs(int obj)
+{
+	OBJECT* pObj;
+	bool wasStunned;
+	bool hasDebuff = false;
+
+	if (obj < 0 || obj >= TOTALOBJECT)
+		return false;
+	pObj = &ao[obj];
+	if (!pObj->active || pObj->dead)
+		return false;
+
+	wasStunned = pObj->debuf[STUN] > 0;
+	for (int i = 0; i < TOTALDEBUF; i++) {
+		if (i == KNOCKBACK || pObj->debuf[i] <= 0)
+			continue;
+		hasDebuff = true;
+		if (pObj->debufRemainTurn[i] == 0)
+			pObj->debufRemainTurn[i] = (unsigned char)GetDebufTurnCount(i);
+
+		if (i == POISON) {
+			if (obj < PLAYERALL)
+				AttackRobin(ATTACKTYPE_POISON, obj);
+			else
+				AttackObj(ATTACKTYPE_POISON, obj);
+		}
+
+		if (pObj->debufRemainTurn[i] > 0)
+			pObj->debufRemainTurn[i]--;
+		if (pObj->debufRemainTurn[i] == 0) {
+			pObj->debuf[i] = 0;
+			pObj->debufOwner[i] = 0;
+			statusRecoverFxFrame[obj] = STATUSRECOVERFRAME;
+			statusRecoverDebuff[obj] = i;
+		}
+	}
+
+	if (hasDebuff) {
+		statusTurnFxFrame[obj] = FPS / 2;
+		RequestFocusZoom(obj, FOCUSPRI_STATUS);
+	}
+	return wasStunned;
 }
 
 void AdvanceTurnDebuffs(void)
@@ -6247,7 +6948,7 @@ void AdvanceTurnDebuffs(void)
 				continue;
 
 			if (pObj->debufRemainTurn[i] == 0)
-				pObj->debufRemainTurn[i] = (unsigned char)(GetDebufTurnCount(i) + 1);
+				pObj->debufRemainTurn[i] = (unsigned char)GetDebufTurnCount(i);
 
 			//부여된 바로 그 턴에는 독 피해를 주지 않고, 다음 턴부터 1회씩 준다.
 			if (i == POISON && pObj->debufRemainTurn[i] <= GetDebufTurnCount(i)) {

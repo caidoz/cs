@@ -311,9 +311,11 @@ int DropItem(OBJECT* pObj, int type)
 			}
 			//전투 드랍 상자와 금화는 생성 높이는 몬스터 위치 그대로 유지하되,
 			//낙하 종료선은 지형의 중간 단이 아니라 주인공이 서 있는 Y로 통일한다.
-			if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
+			if ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE
+				|| drawHandle == MD_BOSSRAID) &&
 				ao[PLAYER].active == true &&
-				(pNew->def == ITEM_BOX || pNew->def == ITEM_GOLD))
+				(pNew->def == ITEM_BOX || pNew->def == ITEM_GOLD
+					|| pNew->def == ITEM_HEART))
 				pNew->ny = ao[PLAYER].y;
 
 			return i;
@@ -1530,7 +1532,8 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 			//가챠에서는 카드에서 날아간 currencyMark가 목적 바에 닿는 순간
 			//AddBar를 실행한다. 여기서도 다시 갱신하면 하트바가 두 번 차므로
 			//실제 수치만 지급하고, 그 외 획득 경로만 이 공통 처리로 표시한다.
-			if (count > 0 && drawHandle != MD_GACHA) {
+			if (count > 0 && drawHandle != MD_GACHA
+				&& drawHandle != MD_BOSSRAID) {
 				bar[BAR_HEART].count = oldHeart;
 				bar[BAR_HEART].add = 0;
 				AddBar(&bar[BAR_HEART], robin.heart - oldHeart, BARFRAME);
@@ -1723,19 +1726,54 @@ int GetStageBossIdx(void)
 {
 	int i;
 
+	//이 방의 첫 칸이 wave[] 에서 몇 번째 원소인가.
+	//
+	//아래 루프가 읽는 자리를 WAVEDATASIZE 로 묶어내면 그대로 이 식이다.
+	//전에는 읽는 식과 돌려주는 식을 따로 적었고, 돌려주는 쪽에
+	//MAXWAVEENEMY 가 빠져 있었다(stage*100+room 대 stage*300+room*3).
+	//그래서 방금 "보스가 맞다"고 확인한 칸이 아니라 엉뚱한 칸의 번호를
+	//주었고, 두 식이 우연히 같아지는 stage 0 / room 0 에서만 맞았다.
+	//
+	//확인하는 자리와 값을 내는 자리가 같아야 한다. 한 번만 적어둔다.
+	const int roomHead = robin.stage * MAXWAVE * MAXWAVEENEMY
+		+ robin.room * MAXWAVEENEMY;
+
 	for (i = 0; i < MAXWAVEENEMY; i++) {
 		//소보스/중보스/대보스가 전부 보스 자리다. == 로 비교하면 소보스만 걸린다.
-		if (wave[(robin.stage * MAXWAVE * MAXWAVEENEMY * WAVEDATASIZE) + robin.room * MAXWAVEENEMY * WAVEDATASIZE + i * WAVEDATASIZE + 2] >= MONSTERTYPE_BOSS)
-			return (robin.stage * MAXWAVE + robin.room + i);
-		//return wave[(robin.stage * MAXWAVE * WAVEDATASIZE) + i * WAVEDATASIZE + 0];
+		if (wave[(roomHead + i) * WAVEDATASIZE + 2] >= MONSTERTYPE_BOSS)
+			return roomHead + i;
 	}
 
-	return (robin.stage * MAXWAVE + robin.room * MAXWAVEENEMY + i);
+	//이 방에 보스가 없다. 예전 코드도 루프를 빠져나온 i(=MAXWAVEENEMY)를
+	//그대로 썼으므로 다음 방의 첫 칸을 가리킨다. 그 뜻은 건드리지 않는다.
+	//
+	//다만 맨 끝 방(stage 99 / room 99)에서는 그 "다음 방"이 없다.
+	//wave_COUNT 가 90000 이라 마지막 원소가 29999 인데 30000 이 나온다.
+	//부르는 쪽이 곧바로 wave[] 를 읽으므로 여기서 막아둔다.
+	const int lastIdx = wave_COUNT / WAVEDATASIZE - 1;
+
+	return Min(roomHead + i, lastIdx);
 }
 
 int GetStageBossType()
 {
 	return wave[GetStageBossIdx() * WAVEDATASIZE + 0];
+}
+
+//이 스테이지의 보스. 화면에 얼굴과 이름으로 나오는 그 보스다.
+//
+//GetStageBossType() 과 다르다. 그쪽은 "지금 방"의 wave 에서 보스를 찾으므로,
+//로비나 0번 방에서 부르면 그 방의 잡몹(달팽이)이 나온다. 스테이지 0 의 보스는
+//개구리인데 입장창에 달팽이가 떴던 것이 그래서다.
+//
+//보스 배지(DayBarDraw)와 멸망전 입장창이 같은 값을 보게 하려고 한 곳에 둔다.
+//따로 적으면 한쪽만 고치고 다른 쪽을 잊는다.
+int GetStageBossFace(void)
+{
+	//boss[] 는 18 개뿐인데 스테이지는 그보다 많이 갈 수 있다.
+	const int idx = Max(0, Min(robin.stage, boss_COUNT - 1));
+
+	return boss[idx];
 }
 
 int GetItemPrice(ITEM* it)

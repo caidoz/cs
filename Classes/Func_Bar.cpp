@@ -27,6 +27,14 @@ void DrawBarIcon(int type, int x, int y, float zoom)
 		//SetFontColor(fontColor);
 		//SetFontColor(COLOR_WHITE);
 		break;
+	case BAR_SOCIAL:
+		//theater.png에 추가한 단순화된 3인 소셜 픽토그램 셀.
+		DrawImage(128, 128, 128 * 4, 0,
+			x + (float)(MAINMENU_X / 2) * zoom - (float)128 * 0.4f * zoom,
+			y - (float)(MAINMENU_Y / 2) * zoom + (float)128 * 0.4f * zoom,
+			false, false, false, false, 32, 0.8f * zoom,
+			sprite[THEATER_IMG], THEATER_IMG);
+		break;
 	}
 }
 
@@ -155,6 +163,17 @@ void BarDraw(BAR* barP, float zoom)
 		DrawRouletteNumIcon(count, barP->icon, xOffset + barP->x, barP->y, true, CENTER, barP->zoom);
 		break;
 	case BAR_HEART:
+		//보스전의 하트는 robin.heart 에 더해 가는 것이 아니라 이 판에서
+		//먹은 양이다. 분모도 보스 체력에서 나온다.
+		if (bossRaidMode) {
+			const float bz = barP->zoom * BOSSHEARTBARZOOM;
+
+			BossHeartBarDraw(GetBossRaidEarnedHeart(), GetBossRaidHeartMax(),
+				xOffset + barP->x - (float)HEARTBARWIDTH / 2 * bz, barP->y,
+				false, bz);
+			break;
+		}
+
 		HeartBarDraw(count, GetInitHeart(), xOffset + barP->x - (float)HEARTBARWIDTH / 2 * barP->zoom, barP->y, false, barP->zoom);
 
 		SetFontColor(COLOR_WHITE);
@@ -291,8 +310,15 @@ void BarDraw(BAR* barP, float zoom)
 
 		break;
 	case BAR_CASTLE:
-		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
-		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom, TOUCH_FUNC_POPUP_CASTLEMENU);
+		//---- 성 구매유도 배지 ----
+		//
+		//하단 네 칸에서 빠져 오른쪽 보스 배지 아래로 왔다. 성은 이제 상점
+		//안의 한 갈래라, 여기서는 "가 보라"고만 한다.
+		//
+		//보스 배지와 같은 차림을 한다. 소용돌이를 깔고 그 위에 그림을 얹고
+		//아래에 금색 글자를 놓는다. 같은 차림이어야 눌러서 들어가는 곳으로
+		//읽힌다.
+		CastlePromoDraw(xOffset + barP->x, barP->y, zoom);
 		break;
 	case BAR_CREW:
 		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
@@ -325,6 +351,10 @@ void BarDraw(BAR* barP, float zoom)
 	case BAR_MAINSHOP:
 		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
 		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom, TOUCH_FUNC_SHOP);
+		break;
+	case BAR_SOCIAL:
+		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
+		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom, TOUCH_FUNC_FRIENDS);
 		break;
 	case BAR_FRIENDS:
 		MemRectRound(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)(MAINMENU_Y / 2 - MAINMENU_Y + TSIZE) * zoom, (float)MAINMENU_X * zoom, (float)14 * _2X * zoom, COLOR_NAVY, 1 * _2X);
@@ -398,11 +428,20 @@ void BarDraw(BAR* barP, float zoom)
 	// 새로운 룰렛 시스템 UI
 	case BAR_DAY:
 		DayBarDraw(DAYS3 - (GetCurrentTimeMs() - robin.startTime), xOffset + barP->x, barP->y, zoom);
+
+		//보스 배지는 입장창을 띄운다. 곧바로 들어가면 안 된다.
+		//
+		//TOUCH_FUNC_GOTOBATTLE 은 확인 절차 없이 하트를 걷고 전투를
+		//시작하는 명령이다. 잘못 누르면 되돌릴 방법이 없다.
+		//
+		//TOUCH_FUNC_EVENT_BOSSRAID 는 POPUPTYPE_BOSSRAID(멸망전 입장창)를
+		//띄운다. 거기서 보스와 남은 시간, 입장 비용을 보고 확인을 누르면
+		//그 버튼이 TOUCH_FUNC_GOTOBOSSRAID 로 실제 입장을 시킨다.
 		SetRectPoint(xOffset + barP->x - (float)(32 * _2X) * zoom / 0.5f,
 			barP->y + (float)(40 * _2X) * zoom / 0.5f,
 			(float)(64 * _2X) * zoom / 0.5f,
 			(float)(64 * _2X) * zoom / 0.5f,
-			TOUCH_FUNC_GOTOBATTLE);
+			TOUCH_FUNC_EVENT_BOSSRAID);
 		break;
 	case BAR_WAVE:
 		WaveBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom);
@@ -434,6 +473,7 @@ void BarAddStop(BAR * barP)
 {
 	barP->aniFrame = barP->countFrame = 0;
 	barP->count += barP->add;
+	ClampBarCount(barP);
 	barP->add = 0;
 	barP->addView = false;
 	barP->addViewSum = 0;
@@ -466,6 +506,30 @@ void BarAddStop(BAR * barP)
 
 static bool drawingWaveBadgePrepass = false;
 
+static void DrawBossHpBarBody(long long count, long long max, int x, int y,
+	int color, float zoom)
+{
+	float hpRatio = max > 0 ? (float)count / (float)max : 0.0f;
+	hpRatio = Max(0.0f, Min(hpRatio, 1.0f));
+	DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom,
+		y + (float)BOSSHPBARHEIGHT * zoom, hpRatio,
+		ROUNDBAR_BIG, color, false, zoom);
+
+	if (count > 0)
+		DrawNum2AutoSpaceing(count,
+			x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom,
+			y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom,
+			RIGHT, false, false,
+			(float)(BOSSHPBARWIDTH - 16 * _2X) * zoom,
+			true, 0.6f * zoom, false, 2 * _2X);
+}
+
+void VsHpBarDraw(long long count, long long max, int x, int y, int color,
+	float zoom)
+{
+	DrawBossHpBarBody(count, max, x, y, color, zoom);
+}
+
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 {
 	float width = StringWidth(textId[TEXT_STAGE], zoom) + (float)(4 * _2X) * zoom + GetNumDx(robin.stage + 1, false, NUM_FONT_NORMAL, false, false, zoom, false) + GetNumDx(robin.room + 1, MINUS, NUM_FONT_NORMAL, false, false, zoom, false);
@@ -474,14 +538,8 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 	//count = 100;
 	//max = 200;
-	float hpRatio = max > 0 ? (float)count / (float)max : 0.0f;
-	hpRatio = Max(0.0f, Min(hpRatio, 1.0f));
 	if (!drawingWaveBadgePrepass) {
-		DrawRoundBar(x - (float)BOSSHPBARWIDTH / 2 * zoom, y + (float)BOSSHPBARHEIGHT * zoom, hpRatio, ROUNDBAR_BIG, BARCOLOR_RED, false, zoom);
-
-		if (count > 0)
-			DrawNum2AutoSpaceing(count, x + (float)(BOSSHPBARWIDTH / 2 - 12 * _2X) * zoom, y + (float)(BOSSHPBARHEIGHT / 2 + 12 * _2X) * zoom, RIGHT, false, false, (float)(BOSSHPBARWIDTH - 16 * _2X) * zoom, true, 0.6f * zoom, false, 2 * _2X);
-
+		DrawBossHpBarBody(count, max, x, y, BARCOLOR_RED, zoom);
 		DevilHeartDraw(x - (float)(BOSSHPBARWIDTH / 2) * zoom, y + (float)0 * _2X * zoom, 2.5f * zoom);
 	}
 
@@ -599,6 +657,9 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 void WaveBadgeDrawBeforeBars(void)
 {
+	// 보스 난입이 시작되면 기존 일반전투의 nTH WAVE 리본은 더 이상 그리지 않는다.
+	if (bossRaidMode || attackSequence == ATTACKSEQUENCE_BOSSRAID)
+		return;
 	if (!bar[BAR_BOSSHP].active)
 		return;
 
@@ -770,7 +831,15 @@ void DevilHeartDraw(int x, int y, float zoom)
 	float defaultAngle;
 	float radius = (float)ROULETTERADIUS * zoom;//반경
 
-	if (curtainFrame == 0 && areaFrame == 0 && GetCardMarkCnt() == maxRouletteCnt && arenaStatus == STATUS_READY)
+	//보스전이 첫 터치를 기다리는 동안에는 여기서 판을 시작시키지 않는다.
+	//
+	//난입 연출이 끝나면 arenaStatus 를 STATUS_READY 로 두고 TAP TO START 를
+	//띄운다. 그런데 이 줄이 READY 를 보자마자 PLAY 로 넘겨버려서, 손도 안
+	//댔는데 몬스터와 동료가 움직이기 시작했다.
+	//
+	//시작시키는 것은 BossRaidNotifyControlInput() 하나여야 한다.
+	if (curtainFrame == 0 && areaFrame == 0 && GetCardMarkCnt() == maxRouletteCnt
+		&& arenaStatus == STATUS_READY && !IsBossRaidWaitingForControl())
 		arenaStatus = STATUS_PLAY;
 
 	//defaultAngle = 360 / maxRouletteCnt;
@@ -849,6 +918,34 @@ void HeartBarDraw(int count, int max, int x, int y, int alpha, float zoom)
 	DrawSlashNum(count, max, x + (float)(HEARTBARWIDTH / 2 + 2 * _2X) * zoom, y - (float)(10 * _2X) * zoom, HEARTBARWIDTH, 1.2f * zoom);
 	SetFontColor(false);
 #endif
+}
+
+//보스전 하트바.
+//
+//일반 하트바와 같은 그림을 쓴다. 다른 것은 셋뿐이다.
+//
+//    - 분모가 GetInitHeart() 가 아니라 보스 체력에서 나온다
+//    - 1000 을 넘을 수 있어 long long 으로 받는다
+//    - 조금 크게 그린다(BOSSHEARTBARZOOM)
+//
+//HeartBarDraw() 를 고치면 여기도 같이 고쳐야 한다. 두 벌로 두는 것은
+//일반 하트바의 자릿수와 분모 규칙을 건드리지 않기 위해서다.
+void BossHeartBarDraw(long long count, long long max, int x, int y, int alpha,
+	float zoom)
+{
+	if (max <= 0)
+		max = 1;
+
+	DrawRoundBar(x, y, (float)Min(count, max) / (float)max, ROUNDBAR_BIG,
+		BARCOLOR_RED, alpha, 0.5f * zoom);
+
+	DrawIcon(ICON_HEART, x, y, 1.0f * zoom, COLOR_WHITE, false, false, 3.0f);
+
+	SetFontColor(COLOR_WHITE);
+	DrawSlashNum((int)count, (int)max,
+		x + (float)(HEARTBARWIDTH / 2 + 2 * _2X) * zoom,
+		y - (float)(10 * _2X) * zoom, HEARTBARWIDTH, 1.2f * zoom);
+	SetFontColor(false);
 }
 
 void ExpBarDraw(int lv, long long count, int x, int y, int alpha, float zoom)
@@ -938,6 +1035,34 @@ void HpBarDraw(int type, long long count, long long max, int x, int y, float zoo
 // ============================================================================
 // Day 표시 함수 - 강조된 Day 카운터
 // ============================================================================
+//성 구매유도 배지. DayBarDraw() 의 보스 배지와 같은 차림이다.
+void CastlePromoDraw(int x, int y, float zoom)
+{
+	//숨쉬듯 커졌다 작아진다. 보스 배지와 같은 숨결이다.
+	const float emphasisScale = (1.0f + sinf(frame * CASTLEPROMO_SPEED)
+		* CASTLEPROMO_PULSE) * zoom;
+
+	//뒤에 도는 금빛 소용돌이. 배지가 배경에 묻히지 않게 한다.
+	DrawNeutral(OBJ_CYCLON0 + frame / 4 % 10, x, y + (float)20 * zoom, 0,
+		emphasisScale * 2.0f);
+
+	//성 그림은 하단 메뉴에서 쓰던 그 칸이다. 자리만 옮겼지 그림은 같아야
+	//사용자가 같은 것으로 알아본다.
+	DrawBarIcon(BAR_CASTLE, x - (float)(MAINMENU_X / 2) * emphasisScale * 2.0f,
+		y + (float)(MAINMENU_Y / 2) * emphasisScale * 2.0f,
+		emphasisScale * 2.0f);
+
+	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_CASTLE, FONT_GOLD_LARGE,
+		zoom, CENTER, false, false);
+
+	//터치영역은 보스 배지와 같은 크기로 잡는다.
+	SetRectPoint(x - (float)(32 * _2X) * zoom / 0.5f,
+		y + (float)(40 * _2X) * zoom / 0.5f,
+		(float)(64 * _2X) * zoom / 0.5f,
+		(float)(64 * _2X) * zoom / 0.5f,
+		TOUCH_FUNC_CASTLE_PROMO);
+}
+
 void DayBarDraw(int day, int x, int y, float zoom)
 {
 	float emphasisScale = (1.0f + sinf(frame * 0.05f) * 0.05f) * zoom;
@@ -945,7 +1070,10 @@ void DayBarDraw(int day, int x, int y, float zoom)
 
 	DrawNeutral(OBJ_BLACKHOLE0 + Abs(15 - frame) % 15, x, y + (float)20 * zoom, 0, emphasisScale * 2.0f);
 
-	DrawCmfDetailShadow(enemyData[boss[robin.stage] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[boss[robin.stage] * 5 + 0] + (frame / 4 % crewPos[boss[robin.stage] * 5 + 1]), x, y, LEFT, emphasisScale);
+	//입장창과 같은 값을 봐야 한다. 세 번 부르지 않도록 한 번만 받아둔다.
+	const int bossType = GetStageBossFace();
+
+	DrawCmfDetailShadow(enemyData[bossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[bossType * 5 + 0] + (frame / 4 % crewPos[bossType * 5 + 1]), x, y, LEFT, emphasisScale);
 	DrawRemainTime(x, y - (float)8 * _2X * zoom, day, CENTER, emphasisScale * 2.0f);
 	
 	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_BOSS, FONT_GOLD_LARGE, zoom, CENTER, false, false);

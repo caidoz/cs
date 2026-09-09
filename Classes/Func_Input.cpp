@@ -99,6 +99,77 @@ void KeyCore(void)
 void TitleKey(void)
 {
 	int i, j, k;
+
+	//타이틀에서도 게임 안과 같은 환경설정 팝업을 쓴다. 로그인 전에는
+	//계정 데이터와 무관한 기기 설정/약관만 OptionDraw()가 골라 그린다.
+	switch (systemKey) {
+	case AVK_OPTIONOPEN:
+		SetPopUp(POPUPTYPE_OPTION, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false);
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_POPUP_CLOSE:
+		ClosePopUp();
+		PlayMusic(M_BUTTON);
+		return;
+	case AVK_OPTION_BGM:
+		option.bgm = !option.bgm;
+		SaveOption();
+		if (option.bgm)
+			TimerMusic();
+		else
+			for (i = 0; i < TOTALMUSIC; i++) AudioEngine::stop(audioID[i]);
+		return;
+	case AVK_OPTION_SE:
+		option.se = !option.se;
+		SaveOption();
+		if (option.se) PlayMusic(M_COIN);
+		return;
+	case AVK_OPTION_VIBRATION:
+		option.vibration = !option.vibration;
+		SaveOption();
+		PlayMusic(M_BUTTON);
+		return;
+	case AVK_OPTION_LANGUAGE:
+		SetPopUp(POPUPTYPE_OPTION_LANGUAGE, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false);
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_OPTION_HELP:
+		SetPopUp(POPUPTYPE_OPTION_HELP, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false,
+			false, false, false, false, false);
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_OPTION_HELP_MAIL:
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_OPTION_POLICY:
+		NetOpenTerms(false);
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_OPTION_PRIVACY:
+		NetOpenTerms(true);
+		PlayMusic(M_SELECT);
+		return;
+	case AVK_OPTION_RATES:
+		NetOpenRates();
+		PlayMusic(M_SELECT);
+		return;
+	}
+
+	if (systemKey >= AVK_OPTION_LANGUAGE_SELECT && systemKey <= AVK_OPTION_LANGUAGE_SELECT_END) {
+		option.language = (unsigned char)(systemKey - AVK_OPTION_LANGUAGE_SELECT);
+		SaveOption();
+		PlayMusic(M_BUTTON);
+		return;
+	}
+
 	switch (curMenu) {
 	case MENU_LOADING://�� ó���� 100 ������ ȭ�鿬��
 		switch (systemKey) {
@@ -299,6 +370,8 @@ void TitleKey(void)
 			//false 로 두는 이유는, 각 자리가 이미 "켜져 있으면 시연값,
 			//아니면 진짜값" 으로 갈라져 있어서 이 한 줄이면 충분해서다.
 			gDemoForceRoulette = false;
+			//룰렛 결과는 실제 확률을 유지하되, 전투 대상만 테스트 세팅을 쓴다.
+			gCombatStatusTest = true;
 
 			crewCnt = GetSlotCrewCnt();
 
@@ -331,6 +404,7 @@ void TitleKey(void)
 			GotoPlay();
 			break;
 		case AVK_NEWGAME:
+			gCombatStatusTest = false;
 			NewGame();
 			GotoPlay();
 			for (i = 0; i < TOTAL_BAR; i++)
@@ -366,20 +440,17 @@ void TitleKey(void)
 	case MENU_LOGIN://로그인 이력이 없으면 로그인선택
 		switch (systemKey) {
 		case AVK_LOGIN_FACEBOOK:
-			menuResult = 0;
-			PlayMusic(M_SELECT);
-			break;
 		case AVK_LOGIN_GOOGLE:
-			menuResult = 0;
-			PlayMusic(M_SELECT);
-			break;
 		case AVK_LOGIN_APPLE:
-			menuResult = 0;
-			PlayMusic(M_SELECT);
-			break;
 		case AVK_LOGIN_GUEST:
-			menuResult = 0;
-			PlayMusic(M_SELECT);
+			{
+				const int provider = systemKey - AVK_LOGIN_FACEBOOK;
+				if (NetChooseLogin(provider)) {
+				menuResult = 0;
+				curMenu = MENU_LOADING;
+				PlayMusic(M_LEVELUP);
+				}
+			}
 			break;
 		}
 		break;
@@ -826,7 +897,10 @@ void PlayKey(int obj)
 		switch (systemKey) {
 		case AVK_4:
 		case AVK_6:
-			if (pObj->debuf[STUN] || pObj->debuf[KNOCKBACK])
+			//몸이 굳는 것만 이동을 막는다. 넉백은 턴제에서만 한 턴을 날리는
+			//뜻이고, 실시간에서는 그냥 조작이 안 먹는 것이 된다.
+			if (pObj->debuf[STUN]
+				|| (drawHandle != MD_BOSSRAID && pObj->debuf[KNOCKBACK]))
 				break;
 
 			if (darkStone) {
@@ -866,20 +940,51 @@ void PlayKey(int obj)
 
 					pObj->continueAttack = false;
 
-					if (pObj->playerRun == true) {
+#if ROBIN_ATTACK_TABLE_LOG
+					//누르는 순간 무엇을 고르는지 그 자리에서 찍는다.
+					//
+					//status 가 WALK 가 아니면 찌르기가 아니라 공중공격이 나간다.
+					//누른 뒤에 보면 이미 늦다 - 고르는 순간을 봐야 한다.
+					if (pObj->cmf == ROBIN)
+						CCLOG("ATKPRESS status=%d WALK=%d jumpF=%d dirY=%d inTile=%d run=%d boom=%d mode=%d",
+							(int)pObj->status, (int)WALK, pObj->jumpFrame,
+							(int)pObj->dirY, (int)pObj->inTile,
+							(int)pObj->playerRun, (int)boomerangAway[obj], drawHandle);
+#endif
+					//---- 보스전은 누르면 반드시 나간다 ----
+					//
+					//아래 갈래는 조건이 하나도 안 맞으면 아무것도 안 하고 끝난다.
+					//달리는 중도 아니고(playerRun) 부메랑이 나가 있으면
+					//(boomerangAway) 눌러도 attack 이 안 붙는다.
+					//
+					//일반 전투는 이 길을 안 탄다. 턴이 오면 PRESSATTACK2 가 찌르기로
+					//강제로 보내므로 조건을 안 본다. 보스전만 버튼이 직접 몰아서,
+					//짧게 누르면 준비 자세만 스치고 사라졌다.
+					//
+					//여기서도 같은 값을 강제로 넣는다. 공중이면 공중 공격이다 -
+					//점프 버튼이 따로 있으므로 그것만 남긴다.
+					if (drawHandle == MD_BOSSRAID) {
+						pObj->attack = ATTACK_NORMAL;
+						pObj->attackFrame = skillStartFrame[pObj->attack];
+						pObj->dx = pObj->dy = 0;
+						HitCountCheck(pObj);
+					}
+					else if (pObj->playerRun == true) {
 						pObj->attack = ATTACK_DASH;
 						pObj->attackFrame = skillStartFrame[ATTACK_DASH];
 						HitCountCheck(pObj);
 					}
 					else if (boomerangAway[obj] == false) {
-						if (pObj->status == WALK) {
-							pObj->attack = ATTACK_NORMAL;
-							pObj->attackFrame = skillStartFrame[ATTACK_NORMAL];
-						}
-						else {
-							pObj->attack = ATTACK_AIR;
-							pObj->attackFrame = skillStartFrame[ATTACK_AIR];
-						}
+						//---- 공중에서도 찌르기 ----
+						//
+						//전에는 땅이면 찌르기, 공중이면 점프공격으로 갈랐다. 기본
+						//공격은 하나여야 한다 - 같은 버튼이 발밑에 따라 다른 것을
+						//내면 무엇이 나올지 예측할 수가 없다.
+						//
+						//점프공격 표(ATTACK_AIR)는 지운 것이 아니라 이 버튼에서만
+						//빠졌다. 다른 경로가 부르면 그대로 나온다.
+						pObj->attack = ATTACK_NORMAL;
+						pObj->attackFrame = skillStartFrame[ATTACK_NORMAL];
 						HitCountCheck(pObj);
 					}
 
@@ -1179,6 +1284,7 @@ void PlayKey(int obj)
 		case AVK_BOSSRAIDOUT:
 			attackSequence = ATTACKSEQUENCE_ATTACKRESULT;
 			bossRaidMode = false;
+			ResetBossRaidMercenarySystem();
 			break;
 		case AVK_PLAY:
 
@@ -1249,6 +1355,7 @@ void PlayKey(int obj)
 			menuDepth = 0;
 			menuX = 0;
 			popUpFrame = 1;
+			SocialSetTab(1);
 			SetPopUp(POPUPTYPE_READERBOARD, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false,
@@ -1260,6 +1367,7 @@ void PlayKey(int obj)
 			menuDepth = 0;
 			menuX = 0;
 			popUpFrame = 1;
+			SocialSetTab(0);
 			SetPopUp(POPUPTYPE_FRIENDS, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false,
@@ -1271,6 +1379,7 @@ void PlayKey(int obj)
 			menuDepth = 0;
 			menuX = 0;
 			popUpFrame = 1;
+			SocialSetTab(2);
 			SetPopUp(POPUPTYPE_FRIENDS, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
 				false, false, false, false, false,
 				false, false, false, false, false,
@@ -1363,16 +1472,13 @@ void PlayKey(int obj)
 			}
 			break;
 		case AVK_EVENT_BOSSRAID:
-			if (autoPlay == true) {
-				autoPlay = false;
-			}
-			else {
-
-				SetPopUp(POPUPTYPE_BOSSRAID, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
-					false, false, false, false, false,
-					false, false, false, false, false,
-					false, false, false, false, false);
-			}
+			// 자동전투 중 첫 터치는 자동전투 해제만 하고 끝내던 기존 이벤트
+			// 규칙을 적용하지 않는다. 보스 아이콘을 누르면 언제나 입장창이 뜬다.
+			autoPlay = false;
+			SetPopUp(POPUPTYPE_BOSSRAID, DX / 2, POPUPPOSITION_Y, POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
 			break;
 		case AVK_ATTACK_REWARD:
 			if (sequenceDelay > 0)
@@ -1589,6 +1695,12 @@ void PlayKey(int obj)
 			sequenceDelay = ATTACKDELAY_RAIDREWARD_WARP + 1;
 			break;
 		case AVK_GOTOBOSSRAID:
+		{
+			// 입장료/용병 자금 시스템은 폐기했다. 보유 골드와 관계없이 입장하고
+			// 동료의 자동공격도 비용 없이 쿨타임만으로 반복한다.
+			InitBossRaidMercenarySystem();
+			bossRaidMode = true;
+			SaveGame();
 			if ((popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO || popUp[popUpCnt - 1].type == POPUPTYPE_PVPQUESTINFO)) {
 				if (popUp[popUpCnt - 1].type == POPUPTYPE_QUESTINFO) {
 				}
@@ -1600,10 +1712,20 @@ void PlayKey(int obj)
 
 			//����̺��?������ �̵�
 			attackSequence = ATTACKSEQUENCE_BOSSRAID;
-			sequenceDelay = CURTAINFRAME / CURTAINSPEED + 1;
+			//기존 몬스터와 일반 HUD가 빠져나가는 시간을 확보한다.
+			sequenceDelay = BOSSRAID_EXIT_FRAMES;
+			touchDisable = true;
+			BeginBossRaidEntrance();
 
 			bar[BAR_BOX].front = false;
 			turn = PLAYER;
+			break;
+		}
+		case AVK_BOSSRAID_SKILL2:
+			BossRaidActivateCrewSkill(menuX, 2);
+			break;
+		case AVK_BOSSRAID_SKILL3:
+			BossRaidActivateCrewSkill(menuX, 3);
 			break;
 		case AVK_GOTOBATTLE:
 		{
@@ -1638,6 +1760,7 @@ void PlayKey(int obj)
 		}
 			break;
 		case AVK_NEWGAME:
+			gCombatStatusTest = false;
 			NewGame();
 
 			PlayMusic(M_POWERUP);
@@ -2287,7 +2410,12 @@ void HotKeyPress(OBJECT* pObj, int idx)
 		//����3 ���� ����ϴ�?��ų�� ���?�´� ��ų�ΰ�
 	case HOTKEY_SKILL:
 		/*
-		if (pObj->dead == true || pObj->hotKey[idx].frame != 0 || pObj->debuf[KNOCKBACK] || pObj->debuf[CURSE] || pObj->debuf[STUN] || pObj->attack >= ATTACK_SKILL) {
+		//넉백은 보스전에서 스킬을 막지 않는다. 저주는 그대로 막는다 - 그건
+		//"몸이 굳는" 것이 아니라 스킬 자체를 못 쓰게 하는 뜻이다.
+		if (pObj->dead == true || pObj->hotKey[idx].frame != 0
+			|| (drawHandle != MD_BOSSRAID && pObj->debuf[KNOCKBACK])
+			|| pObj->debuf[CURSE] || pObj->debuf[STUN]
+			|| pObj->attack >= ATTACK_SKILL) {
 			if (obj < TOTALPLAYER) {
 				infoFrame = INFOFRAME;
 				if (pObj->dead == true)
@@ -2387,7 +2515,10 @@ void HotKeyPress(OBJECT* pObj, int idx)
 
 		break;
 	case HOTKEY_RING:
-		if (pObj->dead == true || pObj->attack >= ATTACK_SKILL || pObj->hotKey[idx].frame != 0 || pObj->debuf[KNOCKBACK] || (pObj->debuf[STUN] && pObj->equip[EQUIP_RING].detail != ITEM_RING3)) {
+		if (pObj->dead == true || pObj->attack >= ATTACK_SKILL
+			|| pObj->hotKey[idx].frame != 0
+			|| (drawHandle != MD_BOSSRAID && pObj->debuf[KNOCKBACK])
+			|| (pObj->debuf[STUN] && pObj->equip[EQUIP_RING].detail != ITEM_RING3)) {
 			if (obj == raidPlayer && (drawHandle == MD_PLAY || drawHandle == MD_BATTLE || drawHandle == MD_RAID || drawHandle == MD_BOSSRAID)) {
 				infoFrame = INFOFRAME;
 				if (pObj->dead == true)
@@ -2494,6 +2625,10 @@ void ReleaseCore(bool dispatchKey)
 		AlertKey();
 		break;
 	case MK_PLAY:
+		PlayKey(raidPlayer);
+		break;
+	case MK_PVP:
+		//PVP 전용 GO/뒤로가기 역시 공용 터치 사각형 명령을 사용한다.
 		PlayKey(raidPlayer);
 		break;
 	case MK_BATTLE:
@@ -2672,7 +2807,15 @@ void ResetRectPoint(void)
 //한 곳에 모아 둔다. 튜토리얼 안내 중에는 눌러야 하는 것 하나만 살아 있다.
 bool IsTouchFuncEnabled(int func)
 {
-	if (touchDisable)
+	if (touchDisable || IsTurnPhaseAnnouncementActive())
+		return false;
+
+	//웨이브 타이틀(1st WAVE)이 뜬 동안과, 그 뒤 몬스터가 다 내려앉을
+	//때까지도 막는다.
+	//
+	//아군 페이즈만 막아 놓았더니 그 앞 구간이 비어 있었다. 여기서 누르면
+	//적이 아직 서지도 않았는데 턴이 돌아간다.
+	if (waveAnnounceFrame > 0 || waveAnnounceTouchLock)
 		return false;
 
 	//가챠나 팝업이 떠 있으면 밑에 깔린 버튼은 없는 것으로 친다.
@@ -2735,7 +2878,13 @@ void touchFunc(int func)
 
 
 	//현재 터치하면 안되면
-	if (touchDisable)
+	//
+	//웨이브 타이틀 구간도 같이 막는다. 그리는 쪽(IsTouchFuncEnabled)과
+	//받는 쪽이 같은 조건을 봐야, 손이 안 보이는데 눌리는 일이 없다.
+	if (touchDisable || IsTurnPhaseAnnouncementActive())
+		return;
+
+	if (waveAnnounceFrame > 0 || waveAnnounceTouchLock)
 		return;
 
 	//�κ��丮���� Ű�� 1:1������ �ȵǴ� �͵��� ���⼭ �ٷ� ó���Ѵ�.
@@ -2750,6 +2899,12 @@ void touchFunc(int func)
 	else if (func >= TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO && func < TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO + BOSSRAIDSIZE)
 	{
 		systemKey = AVK_BOSSRAID_REWARDINFO + (func - TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO);
+	}
+	else if (func >= TOUCH_FUNC_BOSSRAID_CREW_1 && func < TOUCH_FUNC_BOSSRAID_CREW_END) {
+		menuX = func - TOUCH_FUNC_BOSSRAID_CREW_1;
+		PlayMusic(M_SELECT);
+		BossRaidActivateCrewSkill(menuX, 2);
+		return;
 	}
 	else if (func >= TOUCH_FUNC_HIT_ATTACK && func < TOUCH_FUNC_HIT_ATTACK + MAXCREW) {
 		systemKey = AVK_HIT_ATTACK + func - TOUCH_FUNC_HIT_ATTACK;
@@ -2822,7 +2977,23 @@ void touchFunc(int func)
 			systemKey = AVK_LOGIN_APPLE;
 			break;
 		case TOUCH_FUNC_TITLE_LOGIN_GUEST:
-			systemKey = AVK_LOGIN_GUEST;
+			//게스트만 여기서 곧바로 처리한다.
+			//
+			//다른 버튼처럼 systemKey 에 담아 두면 ReleaseCore() 가
+			//keyHandle 로 TitleKey() 를 부르고, 거기서 다시 curMenu 가
+			//MENU_LOGIN 이어야 비로소 눌린 것이 된다. 그 curMenu 는
+			//TitleDraw() 안에서 정해지므로, 그리는 차례와 누르는 차례가
+			//어긋나면 눌러도 아무 일이 안 일어난다.
+			//
+			//확인하는 자리와 값을 내는 자리가 같아야 한다. 게스트는
+			//네트워크도 메뉴 상태도 안 따지는 길이라 여기서 끝낸다.
+			systemKey = 0;
+
+			if (NetChooseLogin(LOGIN_GUEST)) {
+				menuResult = 0;
+				curMenu = MENU_LOADING;
+				PlayMusic(M_LEVELUP);
+			}
 			break;
 
 		case TOUCH_FUNC_TITLE_NEWGAME:
@@ -2835,8 +3006,21 @@ void touchFunc(int func)
 		case TOUCH_FUNC_TITLE_SKILL_PAUSE:
 		case TOUCH_FUNC_TITLE_SKILL_PREV_CMF:
 		case TOUCH_FUNC_TITLE_SKILL_NEXT_CMF:
+		case TOUCH_FUNC_TITLE_SKILL_STEP:
 			TitleSkillViewerCommand(func);
 			systemKey = 0;
+			break;
+		case TOUCH_FUNC_TITLE_TERMS_REQUIRED:
+		case TOUCH_FUNC_TITLE_TERMS_MARKETING:
+		case TOUCH_FUNC_TITLE_TERMS_NIGHT:
+		case TOUCH_FUNC_TITLE_TERMS_SERVICE:
+		case TOUCH_FUNC_TITLE_TERMS_PRIVACY:
+		case TOUCH_FUNC_TITLE_TERMS_ACCEPT:
+			TitleTermsCommand(func);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_TITLE_OPTION:
+			systemKey = AVK_OPTIONOPEN;
 			break;
 
 		case TOUCH_FUNC_PLAY://플레이
@@ -2850,6 +3034,18 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_SHOP://상점
 			systemKey = AVK_SHOP;
+			break;
+		case TOUCH_FUNC_PVP_TEST:
+			StartPvpTest();
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_PVP_TEST_GO:
+			StartPvpTestBattle();
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_PVP_TEST_BACK:
+			ExitPvpTest();
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_STARSHOP://상점
 			systemKey = AVK_STARSHOP;
@@ -2907,6 +3103,12 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_BOSSRAID_OUT:
 			systemKey = AVK_BOSSRAIDOUT;
+			break;
+		case TOUCH_FUNC_BOSSRAID_SKILL2:
+			systemKey = AVK_BOSSRAID_SKILL2;
+			break;
+		case TOUCH_FUNC_BOSSRAID_SKILL3:
+			systemKey = AVK_BOSSRAID_SKILL3;
 			break;
 		case TOUCH_FUNC_HOME_LEFT:
 			systemKey = AVK_HOME_LEFT;
@@ -2995,6 +3197,59 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_OPTION_COMMUNITY:
 			systemKey = AVK_OPTION_COMMNUNITY;
+			break;
+		case TOUCH_FUNC_SOCIAL_TAB_FRIENDS:
+			SocialSetTab(0);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_TAB_RANKING:
+			SocialSetTab(1);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_TAB_INVITE:
+			SocialSetTab(2);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_BACK:
+			SocialSetView(-1);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_GIFTBOX:
+			SocialSetView(1);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_FRIEND_ADD:
+			SocialSetTab(2);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_VISIT_1:
+		case TOUCH_FUNC_SOCIAL_VISIT_1 + 1:
+		case TOUCH_FUNC_SOCIAL_VISIT_1 + 2:
+		case TOUCH_FUNC_SOCIAL_VISIT_1 + 3:
+		case TOUCH_FUNC_SOCIAL_VISIT_1 + 4:
+			SocialSetView(2 + func - TOUCH_FUNC_SOCIAL_VISIT_1);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_RANK_FRIEND:
+		case TOUCH_FUNC_SOCIAL_RANK_COUNTRY:
+		case TOUCH_FUNC_SOCIAL_RANK_GLOBAL:
+			SocialSetSubTab(func - TOUCH_FUNC_SOCIAL_RANK_FRIEND);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_SOCIAL_INVITE_RECEIVED:
+		case TOUCH_FUNC_SOCIAL_INVITE_SENT:
+		case TOUCH_FUNC_SOCIAL_INVITE_RECOMMEND:
+			SocialSetSubTab(func - TOUCH_FUNC_SOCIAL_INVITE_RECEIVED);
+			PlayMusic(M_BUTTON);
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_GAMEMENU_NEWS:
 			systemKey = AVK_GAMEMENU_NEWS;
@@ -3107,7 +3362,12 @@ void touchFunc(int func)
 			systemKey = AVK_TARGETENEMY5;
 			break;
 		case TOUCH_FUNC_ATTACK:
-			if (option.gameMode == TURNRPG) {
+			// MD_BOSSRAID는 설정의 TURNRPG 여부와 무관한 실시간 조작 모드다.
+			// 일반 플레이에만 룰렛 공격 전환을 적용한다.
+			if (drawHandle == MD_BOSSRAID) {
+				systemKey = AVK_5;
+			}
+			else if (option.gameMode == TURNRPG) {
 				systemKey = AVK_ATTACK;
 				drawHandle = MD_PLAY;
 				keyHandle = MK_PLAY;
@@ -3342,6 +3602,17 @@ void touchFunc(int func)
 		case TOUCH_FUNC_POPUP_CREWLIST:
 			systemKey = AVK_POPUP_CREWLIST;
 			break;
+		case TOUCH_FUNC_CASTLE_PROMO:
+			//---- 구매유도 버튼 ----
+			//
+			//상점을 열고 성 갈래까지 스스로 굴러간다. 상점을 연 다음 사용자가
+			//성을 다시 찾아 내려가야 하면 유도가 아니라 숙제가 된다.
+			//
+			//여는 것은 AVK_SHOP 이 하고, 어디로 갈지는 여기서 미리 적어둔다.
+			ShopJumpToIapSection(SHOPSEC_CASTLE);
+			systemKey = AVK_SHOP;
+			break;
+
 		case TOUCH_FUNC_POPUP_CASTLEMENU:
 			systemKey = AVK_POPUP_CASTLEMENU;
 			break;

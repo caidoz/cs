@@ -3253,6 +3253,7 @@ const char* const textId[] = {
 	"crewBullet",
 	"gacha",
 	"option",
+	"statusIcon",
 
 	"t0",
 	"bg0",

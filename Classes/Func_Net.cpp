@@ -216,6 +216,19 @@ static void TableEnd(std::string& body)
 	}
 }
 
+/* 서버에서 받아 둔 히어로 상태이상.
+ *
+ * 받는 시점과 쓰는 시점이 다르다. 받을 때는 아직 히어로가 없고, 나중에
+ * LoadHeroObj() 가 ao[] 를 새로 만들며 InitStat/RefreshStat 으로 상태를
+ * 지운다. 그래서 여기 담아 두었다가 히어로가 다 선 뒤에 얹는다. */
+static struct {
+	int frame;
+	int owner;
+	int turn;
+} gHeroEffect[TOTALPLAYER][TOTALDEBUF];
+
+static bool gHeroEffectLoaded = false;
+
 //---- robin 전체를 덤프 문자열로 ----
 static void NetBuildDump(std::string& out)
 {
@@ -588,7 +601,11 @@ static void NetBuildDump(std::string& out)
 
 	//---- battle_enemy_effect ----
 	//걸린 것만. 이걸 빼면 재접속으로 독과 기절이 풀린다.
-	TableBegin("battle_enemy_effect", "user_id\tslot\tkind\teff_idx\tremain\towner");
+	//remain 은 프레임, remain_turn 은 남은 턴 수다. 둘은 다른 값이고 화면에
+	//숫자로 보이는 것은 턴 쪽이다. 전에는 턴을 안 넣어서 재접속하면
+	//아이콘은 남는데 숫자가 0 으로 돌아갔다.
+	TableBegin("battle_enemy_effect",
+		"user_id\tslot\tkind\teff_idx\tremain\towner\tremain_turn");
 	for (i = 0; i < MAXENEMY * MAXENEMYOBJ; i++) {
 		if (robin.enemyObj[i].active == false)
 			continue;
@@ -600,6 +617,7 @@ static void NetBuildDump(std::string& out)
 			PutNum(gNetUserId); PutNum(i); PutNum(0); PutNum(j);
 			PutNum(robin.enemyObj[i].buff[j]);
 			PutNum(robin.enemyObj[i].buffOwner[j]);
+			PutNum(0);		//버프에는 턴 수가 없다
 			RowEnd();
 		}
 
@@ -610,6 +628,36 @@ static void NetBuildDump(std::string& out)
 			PutNum(gNetUserId); PutNum(i); PutNum(1); PutNum(j);
 			PutNum(robin.enemyObj[i].debuf[j]);
 			PutNum(robin.enemyObj[i].debufOwner[j]);
+			PutNum(robin.enemyObj[i].debufRemainTurn[j]);
+			RowEnd();
+		}
+	}
+	TableEnd(body);
+
+	/*---- hero_effect ----
+	 *
+	 * 히어로에게 걸린 상태이상. 전에는 아예 안 담았다.
+	 *
+	 * CHARDATA 에는 buff/debuf 칸이 주석으로 막혀 있는데, RefreshStat 한 번
+	 * 하면 다시 채워지는 임시값 이라는 이유였다. 버프는 장비와 스킬에서
+	 * 다시 계산되니 맞는 말이지만, 상태이상은 맞은 결과라 어디서도 안 나온다.
+	 * 그래서 재접속하면 히어로만 멀쩡해졌다.
+	 *
+	 * 구조체를 늘리지 않고 ao[] 에서 바로 읽는다. ROBINDATA 크기가 바뀌면
+	 * 예전 save.dat 을 읽는 자리가 어긋나기 때문이다. */
+	TableBegin("hero_effect", "user_id\thero_idx\teff_idx\tremain\towner\tremain_turn");
+
+	for (i = PLAYER; i < CREW; i++) {
+		for (j = 0; j < TOTALDEBUF; j++) {
+			if (ao[i].debuf[j] == 0)
+				continue;
+
+			PutNum(gNetUserId);
+			PutNum(i - PLAYER);
+			PutNum(j);
+			PutNum(ao[i].debuf[j]);
+			PutNum(ao[i].debufOwner[j]);
+			PutNum(ao[i].debufRemainTurn[j]);
 			RowEnd();
 		}
 	}
@@ -1200,6 +1248,7 @@ static void NetApplyDump(NetTableMap& tables)
 		NetTableIn& t = it->second;
 		int cS = ColIdx(t, "slot"), cK = ColIdx(t, "kind"), cI = ColIdx(t, "eff_idx");
 		int cR = ColIdx(t, "remain"), cO = ColIdx(t, "owner");
+		int cT = ColIdx(t, "remain_turn");	//옛 저장본에는 없다
 
 		for (r = 0; r < t.rows.size(); r++) {
 			i = (int)RowNum(t.rows[r], cS, -1);
@@ -1220,8 +1269,45 @@ static void NetApplyDump(NetTableMap& tables)
 				if (j < TOTALDEBUF) {
 					p->debuf[j] = (signed int)RowNum(t.rows[r], cR, 0);
 					p->debufOwner[j] = (unsigned char)RowNum(t.rows[r], cO, 0);
+
+					/* 옛 저장본에는 이 칸이 없다. 그러면 1 턴으로 둔다. 0 이면
+					 * 다음 턴에 곧바로 풀려, 걸려 있던 것이 재접속 한 번으로
+					 * 사라진다. */
+					long long int rt = RowNum(t.rows[r], cT, -1);
+
+					p->debufRemainTurn[j] = (unsigned char)((rt >= 0) ? rt : 1);
 				}
 			}
+		}
+	}
+
+	/* hero_effect
+	 *
+	 * 히어로 상태이상은 ao[] 에 바로 넣지 않고 여기 담아 둔다. 이 시점에는
+	 * 아직 히어로가 세워지지 않았고, 나중에 LoadHeroObj() 가 InitStat/
+	 * RefreshStat 을 돌려 ao[] 를 새로 만들기 때문이다. 거기서 덮여 사라진다.
+	 *
+	 * 히어로가 다 선 뒤에 NetApplyHeroEffects() 를 부르면 그때 얹힌다. */
+	memset(gHeroEffect, 0, sizeof(gHeroEffect));
+	gHeroEffectLoaded = false;
+
+	if ((it = tables.find("hero_effect")) != tables.end()) {
+		NetTableIn& t = it->second;
+		int cH = ColIdx(t, "hero_idx"), cI = ColIdx(t, "eff_idx");
+		int cR = ColIdx(t, "remain"), cO = ColIdx(t, "owner");
+		int cT = ColIdx(t, "remain_turn");
+
+		for (r = 0; r < t.rows.size(); r++) {
+			i = (int)RowNum(t.rows[r], cH, -1);
+			j = (int)RowNum(t.rows[r], cI, -1);
+
+			if (i < 0 || i >= TOTALPLAYER || j < 0 || j >= TOTALDEBUF)
+				continue;
+
+			gHeroEffect[i][j].frame = (int)RowNum(t.rows[r], cR, 0);
+			gHeroEffect[i][j].owner = (int)RowNum(t.rows[r], cO, 0);
+			gHeroEffect[i][j].turn = (int)RowNum(t.rows[r], cT, 1);
+			gHeroEffectLoaded = true;
 		}
 	}
 }
@@ -1694,6 +1780,7 @@ static std::string sPurchaseBody;	//보낼 결제 요청
 static std::string sPurchaseState;	//서버가 답한 결과
 static bool sTermsSent = false;			//서버에 증빙을 남겼는가
 static bool sTermsWaiting = false;		//사람의 동의를 기다리는 중인가
+static bool sLoginChoiceWaiting = false;	//첫 동의 뒤 로그인 선택을 기다리는가
 
 //RFC 4122 v4. 난수 128비트에서 버전과 변형 비트만 정해준다.
 static std::string NetMakeUuid(void)
@@ -2651,8 +2738,13 @@ void NetUpdate(void)
 				return;
 			}
 
+			#if NET_FORCE_LOGIN_CHOICE_TEST
+			//로그인 선택 UI 테스트 중에는 저장된 동의가 있어도 여기서 멈춘다.
+			sLoginChoiceWaiting = true;
+			#else
 			sBootStep = NETBOOT_LOGIN;
 			NetRequest(NETREQ_LOGIN);
+			#endif
 			return;
 		}
 
@@ -2778,6 +2870,31 @@ bool NetTurnHolding(void)
 void NetBootstrapBegin(void)
 {
 	NetInit();
+	sLoginChoiceWaiting = false;
+
+	//---- 로그인을 통째로 건너뛴다 ----
+	//
+	//약관도 로그인 선택도 안 거치고 곧장 게임으로 간다. 서버를 안 쓸
+	//때(NET_SERVER_URL 이 빈 문자열) 가는 길과 같은 길이므로, 여기서
+	//따로 만드는 것은 없다. 아래 블록을 그대로 타게만 한다.
+	//
+	//NetLoadTerms() 는 그대로 부른다. 이미 받아둔 동의를 잊으면 나중에
+	//이 줄을 0 으로 되돌렸을 때 사람에게 또 묻게 된다.
+	#if NET_SKIP_LOGIN
+	NetLoadTerms();
+
+	sBootResult = ServerLogin();
+
+	if (sBootResult == NETRESULT_OK)
+		sBootResult = ServerLoad();
+
+	//못 읽었어도 멈추지 않는다. Core::Run() 이 이 값을 보고 예전
+	//save.dat 을 옮기거나 새 판을 만든다.
+	sBootStep = NETBOOT_DONE;
+	CCLOG("NetBootstrapBegin: 로그인을 건너뛰고 바로 시작한다 (result=%d)",
+		sBootResult);
+	return;
+	#endif
 
 	if (!UsingServer()) {
 		sBootResult = ServerLogin();
@@ -2832,9 +2949,91 @@ void NetAgreeTerms(bool ageOk, bool marketing, bool marketingNight)
 	sTermsWaiting = false;
 
 	if (sBootStep == NETBOOT_TERMS) {
-		sBootStep = NETBOOT_LOGIN;
-		NetRequest(NETREQ_LOGIN);
+		//계정을 만들기 전에 어떤 로그인 방식을 쓸지 타이틀 화면에서 고른다.
+		//선택 전에는 게스트 키도 서버로 보내지 않는다.
+		sLoginChoiceWaiting = true;
 	}
+}
+
+bool NetLoginChoicePending(void)
+{
+	return sLoginChoiceWaiting;
+}
+
+bool NetChooseLogin(int provider)
+{
+	//---- 게스트는 문턱을 안 넘는다 ----
+	//
+	//아래 sLoginChoiceWaiting 검사부터 이 함수의 나머지는 모두 부팅이
+	//약관 응답을 받고 로그인 선택 단계까지 왔다는 것을 전제한다. 서버에
+	//못 붙으면 그 전제가 안 서고, 버튼은 그려지는데 눌러도 아무 일이
+	//안 일어난다. 서버가 없을 때 쓰라는 버튼이 서버를 타는 셈이었다.
+	//
+	//그래서 게스트만 여기서 먼저 끊는다. 약관 대기든 로그인 선택 대기든
+	//상태를 따지지 않고, 이 기기에 있는 것으로 그 자리에서 부팅을 끝낸다.
+	#if NET_GUEST_LOCAL_PASS
+	if (provider == LOGIN_GUEST) {
+		//두 게이트를 같이 내린다. 하나만 내리면 다른 하나가 화면을 덮는다.
+		sLoginChoiceWaiting = false;
+		sTermsWaiting = false;
+
+		//둘 다 serverdb.dat 만 읽는다. 여기서 HTTP 가 안 나간다.
+		int guestResult = ServerLogin();
+
+		if (guestResult == NETRESULT_OK)
+			guestResult = ServerLoad();
+
+		//NetBootFallback() 을 안 거치는 것은 일부러다. 그 안의
+		//NetBootMigrate() 가 NetFlush() 로 서버에 저장을 밀어넣는데,
+		//"네트워크를 안 탄다"는 이 길의 뜻이 거기서 깨진다.
+		//
+		//못 읽었어도 멈추지 않는다. Core::Run() 이 이 값을 보고 예전
+		//save.dat 을 옮기거나 새 판을 만든다.
+		sBootResult = guestResult;
+		sBootStep = NETBOOT_DONE;
+
+		CCLOG("NetChooseLogin: 게스트로 바로 시작한다 (result=%d)", guestResult);
+		return true;
+	}
+	#endif
+
+	if (!sLoginChoiceWaiting)
+		return false;
+
+	//TOTAL_LOGIN 순서: Facebook, Google, Apple, Guest.
+	//UI 시험 중에는 어느 것을 골라도 게스트 인증으로 진행한다. 실제 OAuth를
+	//붙이면 시험 플래그를 끄고 각 provider의 credential을 보내야 한다.
+	#if !NET_SOCIAL_LOGIN_UI_TEST
+	if (provider != LOGIN_GUEST)
+		return false;
+	#endif
+
+	#if NET_SOCIAL_LOGIN_UI_TEST
+	// 현재 로그인 선택 화면은 OAuth 연동 전의 UI 시험 단계다. 사용자가
+	// 선택하면 서버 응답을 기다리지 말고 이 기기의 게스트/캐시 데이터로
+	// 즉시 부팅을 끝낸다. "아무거나 누르면 게임으로"라는 시험 규칙이며,
+	// 실제 소셜 로그인을 붙일 때 이 블록은 설정값과 함께 빠진다.
+	sLoginChoiceWaiting = false;
+	int localResult = ServerLogin();
+	if (localResult == NETRESULT_OK)
+		localResult = ServerLoad();
+	if (localResult != NETRESULT_OK)
+		localResult = NetBootFallback(localResult);
+	sBootResult = localResult;
+	sBootStep = NETBOOT_DONE;
+	return true;
+	#else
+
+	// 요청을 실제로 큐에 넣기 전에 선택 화면을 닫으면, 다른 HTTP 요청이
+	// 아직 사용 중인 경우 로그인 요청은 사라지고 버튼만 눌렸다 풀린 것처럼
+	// 보인다. 접수에 성공한 뒤에만 입력을 잠그고 로딩 화면으로 넘어간다.
+	if (!NetRequest(NETREQ_LOGIN))
+		return false;
+
+	sLoginChoiceWaiting = false;
+	sBootStep = NETBOOT_LOGIN;
+	return true;
+	#endif
 }
 
 //부팅이 끝났으면 결과를, 아직이면 NETRESULT_NONE 을 준다.
@@ -2891,4 +3090,29 @@ void NetIndicatorDraw(void)
 
 	DrawTextStrSystem(tempStr, x + 4 * _2X, y - 2 * _2X, 1.0f, LEFT, false);
 	SetFontColor(COLOR_WHITE);
+}
+
+/* 받아 둔 히어로 상태이상을 지금 ao[] 에 얹는다.
+ *
+ * 히어로를 다 세운 뒤(LoadHeroObj) 한 번만 부른다. 두 번 얹으면 안 되므로
+ * 얹고 나서 표시를 내린다. */
+void NetApplyHeroEffects(void)
+{
+	int i, j;
+
+	if (!gHeroEffectLoaded)
+		return;
+
+	for (i = 0; i < TOTALPLAYER; i++) {
+		for (j = 0; j < TOTALDEBUF; j++) {
+			if (gHeroEffect[i][j].frame == 0)
+				continue;
+
+			ao[PLAYER + i].debuf[j] = gHeroEffect[i][j].frame;
+			ao[PLAYER + i].debufOwner[j] = (unsigned char)gHeroEffect[i][j].owner;
+			ao[PLAYER + i].debufRemainTurn[j] = (unsigned char)gHeroEffect[i][j].turn;
+		}
+	}
+
+	gHeroEffectLoaded = false;
 }

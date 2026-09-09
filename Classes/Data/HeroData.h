@@ -56,7 +56,7 @@ enum { crewBulletLvUpDmgPercent_COUNT = 10 };
 //2 DMG
 //3 DATA_SLING
 extern const int* crewData;
-enum { crewData_COUNT = 384 };
+enum { crewData_COUNT = 448 };
 
 
 

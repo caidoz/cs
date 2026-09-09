@@ -78,9 +78,14 @@ typedef enum _tutorialEquipStep {
 #define TUTORIAL_WAVEIDX_3RD				2	//TREE		하트 3배 베팅 대상
 #define TUTORIAL_WAVEIDX_BOSS				3	//SNAIL_GREEN	마무리 보스(2배 크기)
 
-//튜토리얼 마무리 보스(2배 크기 초록 달팽이)의 체력.
-//동료 3명이 겹친 강한 공격 한 방에 죽어야 하므로 넉넉하지 않게 잡는다.
-#define TUTORIAL_BOSS_HP					300
+//튜토리얼 4연전 전용 체력.
+//데미지는 정규 전투식을 그대로 쓰고, 튜토리얼의 진행 속도만 이 체력으로
+//맞춘다. 첫 두 전투는 동료와 주인공의 공격이 차례로 보일 정도, 3차전은
+//하트 3배 공격, 마지막 보스는 3중첩 동료 공격을 확인할 정도로 잡는다.
+#define TUTORIAL_WAVE_HP_1ST				60
+#define TUTORIAL_WAVE_HP_2ND				100
+#define TUTORIAL_WAVE_HP_3RD				100
+#define TUTORIAL_WAVE_HP_BOSS			300
 
 //마무리 보스를 몇 배로 키울지.
 #define TUTORIAL_BOSS_ZOOM					2.0f
