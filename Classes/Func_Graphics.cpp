@@ -2173,7 +2173,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	float worldXBack[TOTALOBJECT];
 	float worldYBack[TOTALOBJECT];
 	float worldNyBack[TOTALOBJECT];
-	bool bossWorldScaled = false;
+	bool worldScaled = false;
 
 	memset(&sortedCrewIdx, -1, sizeof(sortedCrewIdx));
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
@@ -2299,7 +2299,30 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			ao[i].y = floorY - (floorY - ao[i].y) * bossWorldScale;
 			ao[i].ny = floorY - (floorY - ao[i].ny) * bossWorldScale;
 		}
-		bossWorldScaled = true;
+		worldScaled = true;
+	}
+	else if (drawHandle == MD_PVP) {
+		//PVP 진입에서는 디오라마만 작아지는 것이 아니라 그 위에 선 히어로,
+		//동료, 상자도 같은 로컬 좌표계에서 함께 작아져야 한다. 일반 오브젝트
+		//렌더러는 크기에는 dioramaZoom을 곱하지만 위치는 화면 좌표 그대로 쓰므로,
+		//그리는 동안만 현재 전투 줌에 대한 비율로 위치를 변환한다.
+		const float targetZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
+		const float pvpWorldScale = targetZoom > 0.001f
+			? dioramaZoom / targetZoom : 1.0f;
+
+		if (Abs(pvpWorldScale - 1.0f) > 0.001f) {
+			const float centerX = (float)DX / 2.0f;
+			for (i = 0; i < TOTALOBJECT; ++i) {
+				worldXBack[i] = ao[i].x;
+				worldYBack[i] = ao[i].y;
+				worldNyBack[i] = ao[i].ny;
+				ao[i].x = centerX + (ao[i].x - centerX) * pvpWorldScale;
+				//y는 화면 위에서 잰 좌표가 아니라 전장 바닥에서 올라간 높이다.
+				ao[i].y *= pvpWorldScale;
+				ao[i].ny *= pvpWorldScale;
+			}
+			worldScaled = true;
+		}
 	}
 
 	//if (drawHandle == MD_PLAY)
@@ -3271,7 +3294,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		break;
 	}
 
-	if (bossWorldScaled) {
+	if (worldScaled) {
 		for (i = 0; i < TOTALOBJECT; ++i) {
 			ao[i].x = worldXBack[i];
 			ao[i].y = worldYBack[i];

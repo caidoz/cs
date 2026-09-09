@@ -33,6 +33,8 @@ void PvpFoeBulletMove(OBJECT *);
 void PvpFoeShoot(int obj);
 void PvpAllyShoot(int obj);
 void PvpHeroResetCool(void);
+void PvpHeroGiveTurn(int obj);
+bool PvpHeroTurnBusy(int obj);
 void EnemyPlayerMove(OBJECT *);
 int PlayerMove_Attack(OBJECT *, int);
 void PlayerMove_SkillAttack(OBJECT *, int);

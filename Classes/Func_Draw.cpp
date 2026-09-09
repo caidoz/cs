@@ -1440,7 +1440,19 @@ void DrawCmfPopUp(int cmf, int textIdx, int x, int y, int dx, int dy, int textDx
 // StartPvpTest()에서 현재 robin 복사 대신 응답 데이터를 보관하면 된다.
 //=============================================================================
 static int pvpTestFrame = 0;
-static int pvpTestState = 0; // 0 구름 진입, 1 GO 대기, 2 교전, 3 상자 이동, 4 약탈 완료, 5 패배
+//0 격돌/구름/디오라마 줌 진입, 1 GO 대기, 2 교전, 3 상자로 이동해 내리치기, 4 약탈,
+//5 패배, 6 닫고 복귀
+static int pvpTestState = 0;
+
+//---- 약탈 ----
+//
+//상자를 연 뒤 동전을 몇 개 남겼는지, 얼마를 남겼는지 센다. 한 프레임에
+//조금씩만 내보내므로 그동안 들고 있어야 한다.
+static int pvpLootBox = -1;
+static int pvpLootCoinLeft = 0;
+static long long pvpLootLeft = 0;
+static long long pvpLootCoinUnit = 0;
+static bool pvpLootSwing = false;
 static long long pvpTestPlayerHp = 1000;
 static long long pvpTestPlayerMaxHp = 1000;
 static long long pvpTestEnemyHp = 1000;
@@ -1467,6 +1479,27 @@ static bool pvpCrewActing[MAXCREW] = { false, };
 
 //수비측도 같은 시계를 돈다. 편성이 같으니 규칙도 같아야 한다.
 static int pvpFoeCool[MAXCREW][3] = { { 0, }, };
+
+//---- 차례표 ----
+//
+//    0..5    아군 동료
+//    6       아군 히어로
+//    7..12   적 동료
+//    13      적 히어로
+//
+//한 바퀴가 열넷이다. 빈 자리와 쓰러진 자리는 건너뛴다.
+enum {
+	PVP_TURN_ALLY_CREW = 0,
+	PVP_TURN_ALLY_HERO = MAXCREW,
+	PVP_TURN_FOE_CREW,
+	PVP_TURN_FOE_HERO = PVP_TURN_FOE_CREW + MAXCREW,
+	PVP_TURN_TOTAL
+};
+
+static int pvpTurnSlot = 0;
+static int pvpTurnFrame = 0;
+static int pvpTurnGap = 0;
+static bool pvpTurnActing = false;
 static BAR pvpHeroHudBar[2];
 static BAR pvpCrewHudBar[2][MAXCREW];
 static bool pvpHudBarsReady = false;
@@ -1706,6 +1739,40 @@ static void SetupPvpCombatObjects(void)
 		ao[dst].y = ao[dst].ny = ao[PVP_ATTACKER_ROBIN].y;
 	}
 
+	//---- 두 히어로의 체력 ----
+	//
+	//ps[PS_HP] 를 그대로 쓰면 한두 대에 눕는다. 그 값은 몬스터 하나를
+	//상대하는 체력인데, 여기서는 동료 여섯이 한 바퀴마다 같이 때린다.
+	//
+	//한 바퀴에 들어오는 피해를 세서 그 몇 배로 잡는다. 곧 "몇 바퀴 만에
+	//눕는가" 가 값이 된다. 장비가 좋아져 피해가 커지면 체력도 같이 커지므로
+	//나중에 손으로 다시 잡을 일이 없다.
+	//
+	//양쪽에 같은 값을 준다. 편성이 같은 판이라 기준이 다르면 그 자체가
+	//유불리가 된다.
+	{
+		long long round = Max((long long)1,
+			ao[PVP_ATTACKER_ROBIN].ps[PS_DMG]);
+
+		for (int i = 0; i < MAXCREW; i++) {
+			const int ally = PVP_ATTACKER_CREW + i;
+			const int foe = PVP_DEFENDER_CREW + i * MAXENEMYOBJ;
+
+			if (ao[ally].active)
+				round += Max((long long)1, ao[ally].ps[PS_DMG]);
+
+			if (ao[foe].active)
+				round += Max((long long)1, ao[foe].ps[PS_DMG]);
+		}
+
+		//양쪽 동료를 다 더했으므로 절반이 한 편의 한 바퀴다.
+		const long long heroHp = Max((long long)1,
+			round / 2 * PVP_HERO_ROUNDS_TO_KILL);
+
+		ao[PVP_ATTACKER_ROBIN].hp = ao[PVP_ATTACKER_ROBIN].maxhp = heroHp;
+		ao[PVP_DEFENDER_ROBIN].hp = ao[PVP_DEFENDER_ROBIN].maxhp = heroHp;
+	}
+
 	//---- 지킬 상자 ----
 	//
 	//개체로 세운다. 화면에 직접 그리지 않는다.
@@ -1779,7 +1846,9 @@ void StartPvpTest(void)
 	SetupPvpCombatObjects();
 	rx = ry = 0;
 	waveStatus = WAVESTATUS_PLAY;
-	dioramaZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
+	//격돌 화면 뒤에서 전장이 먼저 보이지 않게 아주 작은 디오라마로 시작한다.
+	//구름이 화면을 덮은 뒤 PvpTestDraw가 현재 전투 줌까지 키운다.
+	dioramaZoom = (DIORAMAZOOM_BATTLE + dioramaZoomGap) * 0.12f;
 	drawHandle = MD_PVP;
 	keyHandle = MK_PVP;
 	curMenu = MENU_PLAY;
@@ -1841,6 +1910,107 @@ static bool PvpActivateCrewSkill(int slot, int level)
 	return true;
 }
 
+//차례 번호를 개체 번호로 옮긴다.
+static int PvpTurnObj(int slot)
+{
+	if (slot >= PVP_TURN_ALLY_CREW && slot < PVP_TURN_ALLY_HERO)
+		return CREW + slot;
+
+	if (slot == PVP_TURN_ALLY_HERO)
+		return PVP_ATTACKER_ROBIN;
+
+	if (slot >= PVP_TURN_FOE_CREW && slot < PVP_TURN_FOE_HERO)
+		return PVP_DEFENDER_CREW
+			+ (slot - PVP_TURN_FOE_CREW) * MAXENEMYOBJ;
+
+	return PVP_DEFENDER_ROBIN;
+}
+
+//---- 한 차례를 시작한다 ----
+//
+//나설 수 없는 자리(빈 슬롯, 쓰러진 개체)면 false 를 준다. 부르는 쪽이
+//다음 자리로 넘긴다.
+static bool PvpTurnBegin(int slot)
+{
+	const int obj = PvpTurnObj(slot);
+	OBJECT* pObj = &ao[obj];
+
+	if (!pObj->active || pObj->dead)
+		return false;
+
+	if (slot == PVP_TURN_ALLY_HERO || slot == PVP_TURN_FOE_HERO) {
+		PvpHeroGiveTurn(obj);
+		return true;
+	}
+
+	//동료는 제자리에서 한 발 쏘는 것이 한 차례다.
+	{
+		const bool ally = (slot < PVP_TURN_ALLY_HERO);
+		const int i = ally ? slot : (slot - PVP_TURN_FOE_CREW);
+		int* shot = ally ? &pvpCrewShot[i] : &pvpFoeShot[i];
+
+		//쏘는 자세로 쓸 공격패턴 상태. 없으면 대기 자세 그대로 둔다.
+		pObj->etc = enemyAttackPattern[
+			pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
+
+		if (pObj->etc > 0)
+			*shot = PVP_FOE_SHOTMOTION;
+
+		if (ally)
+			PvpAllyShoot(CREW + i);
+		else
+			PvpFoeShoot(obj);
+	}
+
+	return true;
+}
+
+//이 차례가 끝났는가.
+static bool PvpTurnDone(int slot, int frame)
+{
+	if (slot == PVP_TURN_ALLY_HERO || slot == PVP_TURN_FOE_HERO) {
+		//달려가 치고 제자리로 돌아와 서면 끝이다. 한 명 때문에 판이 서지
+		//않게 한계도 둔다.
+		return PvpHeroTurnBusy(PvpTurnObj(slot)) == false
+			|| frame > PVP_TURN_TIMEOUT;
+	}
+
+	return frame >= PVP_TURN_CREW_FRAME;
+}
+
+//---- 차례표를 한 칸 굴린다 ----
+static void PvpTurnStep(void)
+{
+	if (pvpTurnGap > 0) {
+		pvpTurnGap--;
+		return;
+	}
+
+	if (pvpTurnActing) {
+		pvpTurnFrame++;
+
+		if (PvpTurnDone(pvpTurnSlot, pvpTurnFrame) == false)
+			return;
+
+		pvpTurnActing = false;
+		pvpTurnSlot = (pvpTurnSlot + 1) % PVP_TURN_TOTAL;
+		pvpTurnGap = PVP_TURN_GAP;
+		return;
+	}
+
+	//나설 사람을 찾는다. 한 바퀴를 다 돌아도 아무도 없으면 이번 프레임은
+	//그냥 넘긴다 - 다음 프레임에 다시 본다.
+	for (int n = 0; n < PVP_TURN_TOTAL; ++n) {
+		if (PvpTurnBegin(pvpTurnSlot)) {
+			pvpTurnActing = true;
+			pvpTurnFrame = 0;
+			return;
+		}
+
+		pvpTurnSlot = (pvpTurnSlot + 1) % PVP_TURN_TOTAL;
+	}
+}
+
 //---- 한 프레임 ----
 //
 //동료마다 시계가 셋이다. 1 차는 짧고 2 차는 꽤 길고 3 차는 아주 길다.
@@ -1891,148 +2061,108 @@ static void UpdatePvpCombatLoop(void)
 		ao[PVP_DEFENDER_CREW + i * MAXENEMYOBJ].invincible = 2;
 	}
 
-	//---- 동료의 세 시계 ----
-	for (int i = 0; i < MAXCREW; ++i) {
-		OBJECT* pObj = &ao[CREW + i];
+	//---- 자세 ----
+	//
+	//차례와 상관없이 매 프레임 돈다. 쏜 직후에는 쏘는 자세, 아니면 대기
+	//자세다. 안 두면 총알만 나가고 사람은 가만히 서 있어서 누가 쐈는지
+	//안 보인다.
+	for (int side = 0; side < 2; ++side) {
+		for (int i = 0; i < MAXCREW; ++i) {
+			const int obj = (side == 0) ? (CREW + i)
+				: (PVP_DEFENDER_CREW + i * MAXENEMYOBJ);
+			OBJECT* pObj = &ao[obj];
+			int* shot = (side == 0) ? &pvpCrewShot[i] : &pvpFoeShot[i];
 
-		if (!pObj->active || pObj->dead)
-			continue;
+			if (!pObj->active || pObj->dead)
+				continue;
 
-		const int crewIdx = GetCrewIdxFromType(pObj->type);
-		int base = BOSSRAID_CREW_COOLDOWN;
+			//보는 쪽은 늘 표적이다. 못 박아 두면 히어로가 지나쳐 간 뒤에도
+			//엉뚱한 데를 보고 쏜다.
+			pObj->dirX = pObj->dirF = (side == 0) ? RIGHT
+				: ((ao[PVP_ATTACKER_ROBIN].x >= pObj->x) ? RIGHT : LEFT);
+			pObj->frame++;
 
-		if (crewIdx >= 0) {
-			const int cool = crewData[crewIdx * CREWDATASIZE + CREWDATA_BOSSCOOL];
+			if (*shot > 0) {
+				const signed short* st = cmf_status_data[pObj->cmf][pObj->etc];
+				const int cnt = Max(1, (int)st[0]);
+				const int at = Min(cnt - 1, PVP_FOE_SHOTMOTION - *shot);
 
-			if (cool > 0)
-				base = cool;
+				pObj->motion = st[2 + at];
+				(*shot)--;
+			}
+			else if (crewPos[pObj->type * 5 + 1] > 0) {
+				pObj->motion = crewPos[pObj->type * 5]
+					+ pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
+			}
+
+			InitMotion(pObj);
 		}
-
-		const int need[3] = { base, base * PVP_SKILL2_MULT,
-			base * PVP_SKILL3_MULT };
-
-		for (int k = 0; k < 3; ++k)
-			pvpCrewCool[i][k] = Min(need[k], pvpCrewCool[i][k] + 1);
-
-		//---- 자세 ----
-		pObj->frame++;
-
-		if (pvpCrewShot[i] > 0) {
-			const signed short* st = cmf_status_data[pObj->cmf][pObj->etc];
-			const int cnt = Max(1, (int)st[0]);
-			const int at = Min(cnt - 1, PVP_FOE_SHOTMOTION - pvpCrewShot[i]);
-
-			pObj->motion = st[2 + at];
-			pvpCrewShot[i]--;
-		}
-		else if (crewPos[pObj->type * 5 + 1] > 0) {
-			pObj->motion = crewPos[pObj->type * 5]
-				+ pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
-		}
-
-		InitMotion(pObj);
-
-		//---- 쿨타임이 차면 한 발 ----
-		//
-		//수비측과 같은 규칙이다. 1 차만 총알이고 2 / 3 차는 아직 없다.
-		if (pvpCrewCool[i][0] < Max(1, need[0] / PVP_SKILL1_DIV))
-			continue;
-
-		pvpCrewCool[i][0] = 0;
-		pObj->dirX = pObj->dirF = RIGHT;
-
-		pObj->etc = enemyAttackPattern[
-			pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
-
-		if (pObj->etc > 0)
-			pvpCrewShot[i] = PVP_FOE_SHOTMOTION;
-
-		PvpAllyShoot(CREW + i);
 	}
 
-	//---- 수비측 동료 ----
+	//---- 한 명씩 차례로 ----
 	//
-	//성벽에 선 채로 쿨타임마다 우리 히어로에게 총알 한 발을 보낸다.
-	//
-	//몬스터 AI 를 안 쓴다. 두 가지가 안 맞아서다.
-	//
-	//    그 코드는 다가와서 때리는 것이라 성벽에 세우면 방향이 어긋난다
-	//    동료 타입(NPC_*)에는 몬스터 발사체 데이터가 아예 없다
-	//
-	//쿨타임 씨앗은 아군과 같은 boss_cool 이다.
-	for (int i = 0; i < MAXCREW; ++i) {
-		const int obj = PVP_DEFENDER_CREW + i * MAXENEMYOBJ;
-		OBJECT* pObj = &ao[obj];
+	//아군 동료 여섯 -> 아군 히어로 -> 적 동료 여섯 -> 적 히어로. 이것이
+	//한 바퀴다. 저마다 제 쿨타임으로 치던 것을 여기 하나로 모았다.
+	PvpTurnStep();
+}
 
-		if (!pObj->active || pObj->dead)
-			continue;
-
-		const int crewIdx = GetCrewIdxFromType(pObj->type);
-		int base = BOSSRAID_CREW_COOLDOWN;
-
-		if (crewIdx >= 0) {
-			const int cool = crewData[crewIdx * CREWDATASIZE + CREWDATA_BOSSCOOL];
-
-			if (cool > 0)
-				base = cool;
-		}
-
-		const int need[3] = { base, base * PVP_SKILL2_MULT,
-			base * PVP_SKILL3_MULT };
-
-		for (int k = 0; k < 3; ++k)
-			pvpFoeCool[i][k] = Min(need[k], pvpFoeCool[i][k] + 1);
-
-		//---- 자세 ----
-		//
-		//쏜 뒤 잠깐은 공격 자세, 나머지는 대기 자세다. 안 두면 총알만 나가고
-		//사람은 가만히 서 있어서 누가 쐈는지 안 보인다.
-		//
-		//보는 쪽은 늘 표적이다. 못 박아 두면 히어로가 지나쳐 간 뒤에도
-		//엉뚱한 데를 보고 쏜다.
-		pObj->dirX = pObj->dirF =
-			(ao[PVP_ATTACKER_ROBIN].x >= pObj->x) ? RIGHT : LEFT;
-		pObj->frame++;
-
-		if (pvpFoeShot[i] > 0) {
-			const signed short* st = cmf_status_data[pObj->cmf][pObj->etc];
-			const int cnt = Max(1, (int)st[0]);
-			const int at = Min(cnt - 1, PVP_FOE_SHOTMOTION - pvpFoeShot[i]);
-
-			pObj->motion = st[2 + at];
-			pvpFoeShot[i]--;
-		}
-		else if (crewPos[pObj->type * 5 + 1] > 0) {
-			pObj->motion = crewPos[pObj->type * 5]
-				+ pObj->frame / 4 % crewPos[pObj->type * 5 + 1];
-		}
-
-		InitMotion(pObj);
-
-		//---- 쿨타임이 차면 한 발 ----
-		//
-		//성벽에 선 채로 쏜다. 내려오지 않는다 - 지킬 자리를 떠나면 성 배치가
-		//뜻이 없다.
-		//
-		//boss_cool 은 보스전 스킬 한 방을 재는 값이라 기본 총알로 쓰기엔
-		//너무 길다. PVP_SKILL1_DIV 로 나눠 간격만 줄인다 - 동료별 개성은
-		//그대로 남는다.
-		//
-		//1 차만 총알이다. 2 / 3 차 스킬은 아직 안 붙였다.
-		if (pvpFoeCool[i][0] < Max(1, need[0] / PVP_SKILL1_DIV))
-			continue;
-
-		pvpFoeCool[i][0] = 0;
-
-		//쏘는 자세로 쓸 공격패턴 상태. 없으면 대기 자세 그대로 둔다.
-		pObj->etc = enemyAttackPattern[
-			pObj->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
-
-		if (pObj->etc > 0)
-			pvpFoeShot[i] = PVP_FOE_SHOTMOTION;
-
-		PvpFoeShoot(obj);
+//---- 지킬 상자를 찾는다 ----
+//
+//SetupPvpCombatObjects 가 중립 칸에 하나만 세워 둔다. 번호를 기억해 두지
+//않고 그때그때 찾는다 - 어느 칸에 들어갈지는 저장된 배치가 정한다.
+static int PvpLootBoxObj(void)
+{
+	for (int i = NEUTRAL; i < ITEMOBJ; i++) {
+		if (ao[i].active && ao[i].type == OBJ_BOX)
+			return i;
 	}
+
+	return -1;
+}
+
+//떨어진 동전이 아직 남아 있는가.
+static bool PvpLootCoinAlive(void)
+{
+	for (int i = ITEMOBJ; i < TOTALOBJECT; i++) {
+		if (ao[i].active && ao[i].def == ITEM_GOLD)
+			return true;
+	}
+
+	return false;
+}
+
+//---- 상자를 연다 ----
+//
+//뺏을 금액을 동전 몇 개로 나눌지 여기서 정한다. 최대 PVP_LOOT_COIN_MAX 개고,
+//나누어 떨어지지 않고 남는 몫은 마지막 한 개에 붙인다. 금액이 개수보다 적으면
+//그 금액만큼만 만든다 - 0 원짜리는 뿌리지 않는다.
+//
+//골드는 여기서 한 번에 지급한다. 동전은 그것을 보여주는 연출이다. 전투에서
+//몬스터를 칠 때도 같은 순서다(먼저 GetItem, 그 다음 동전).
+static void PvpOpenLootBox(int box)
+{
+	pvpLootBox = box;
+	pvpTestLoot = Max((long long)0, pvpTestDefender.gold);
+
+	if (box >= 0) {
+		ao[box].motion = BOXSTATUS_OPENING;
+		ao[box].status = BOXSTATUS_OPENING;
+		ao[box].frame = 0;
+
+		//약탈이 끝날 때까지 열어 둔다. BoxMove 가 이 값을 깎다가 0 이 되면
+		//저절로 닫는다.
+		ao[box].levelUpFrame = FPS;
+	}
+
+	pvpLootCoinLeft = (int)Min((long long)PVP_LOOT_COIN_MAX, pvpTestLoot);
+	pvpLootLeft = pvpTestLoot;
+	pvpLootCoinUnit = (pvpLootCoinLeft > 0)
+		? pvpLootLeft / pvpLootCoinLeft : 0;
+
+	if (pvpTestLoot > 0)
+		GetItem(ITEM_GOLD, false, false, false, pvpTestLoot, false);
+
+	PlayMusic(M_OPENWINDOW);
 }
 
 void StartPvpTestBattle(void)
@@ -2047,6 +2177,17 @@ void StartPvpTestBattle(void)
 	memset(pvpFoeShot, 0, sizeof(pvpFoeShot));
 	memset(pvpCrewShot, 0, sizeof(pvpCrewShot));
 	PvpHeroResetCool();
+
+	pvpTurnSlot = 0;
+	pvpTurnFrame = 0;
+	pvpTurnGap = 0;
+	pvpTurnActing = false;
+
+	pvpLootBox = -1;
+	pvpLootCoinLeft = 0;
+	pvpLootLeft = 0;
+	pvpLootCoinUnit = 0;
+	pvpLootSwing = false;
 	pvpFreezeObj = -1;
 	pvpFreezeFrame = 0;
 
@@ -2186,16 +2327,20 @@ static void PvpDrawCrewHud(int slot, bool defender, BAR* hudBar)
 		crewX, y - 27 * _2X,
 		defender ? LEFT : RIGHT, 0.76f * enemyIconZoom[crewType]);
 
-	//쿨타임 식은 UpdatePvpCombatLoop 과 같아야 한다. 보여주는 값과 실제로
-	//도는 값이 다르면 게이지가 거짓말을 한다.
-	int base = crewData[crewIdx * CREWDATASIZE + CREWDATA_BOSSCOOL];
+	//---- 게이지는 차례표를 보여준다 ----
+	//
+	//쿨타임으로 돌 때는 남은 시간이었다. 이제 한 명씩 차례로 치므로,
+	//"내 차례가 얼마나 가까운가" 가 그 자리에 온다. 제 차례에 가득 찬다.
+	//
+	//보여주는 값과 실제로 도는 값이 다르면 게이지가 거짓말을 한다. 그래서
+	//UpdatePvpCombatLoop 이 쓰는 그 차례표를 그대로 읽는다.
+	const int need[3] = { PVP_TURN_TOTAL, PVP_TURN_TOTAL, PVP_TURN_TOTAL };
+	const int mySlot = defender ? (PVP_TURN_FOE_CREW + slot) : slot;
+	const int away = (mySlot - pvpTurnSlot + PVP_TURN_TOTAL) % PVP_TURN_TOTAL;
 
-	if (base <= 0)
-		base = BOSSRAID_CREW_COOLDOWN;
-
-	const int need[3] = { base, base * PVP_SKILL2_MULT,
-		base * PVP_SKILL3_MULT };
-	const int* cool = defender ? pvpFoeCool[slot] : pvpCrewCool[slot];
+	//2 / 3 차 스킬은 아직 없다. 빈 시계로 둔다.
+	const int turnClock[3] = { PVP_TURN_TOTAL - away, 0, 0 };
+	const int* cool = turnClock;
 	const int iconY = y - (rowH - iconSize) / 2;
 	const int iconX = defender ? x + 3 * _2X : x + 27 * _2X;
 
@@ -2312,19 +2457,78 @@ static void PvpDrawCombatHud(void)
 
 static void PvpTestCloudDraw(int transitionFrame)
 {
-	//룰렛의 중앙 암전 셔터와 이어진다. 검은 양쪽 문이 열리며 상대 성을
-	//정찰하듯 드러내고, 경계의 청색/적색 선이 양 진영 방향을 남긴다.
+	//cloud.png 두 열을 좌우로 밀어낸다. transitionFrame 0은 완전히 덮인
+	//상태, total은 화면 밖으로 모두 빠진 상태다.
 	const int total = FPS + FPS / 2;
 	float open = Min(1.0f, (float)transitionFrame / (float)Max(1, total));
 	open = open * open * (3.0f - 2.0f * open);
-	int panelW = DX / 2 + 4 * _2X;
-	int shift = (int)((panelW + 12 * _2X) * open);
-	MemRect(-shift, DY, panelW, DY, 0x08040D);
-	MemRect(DX / 2 + shift, DY, panelW, DY, 0x08040D);
-	SetAlpha((int)(28.0f * (1.0f - open)));
-	MemRect(DX / 2 - shift - 3 * _2X, DY, 3 * _2X, DY, 0x3B87FF);
-	MemRect(DX / 2 + shift, DY, 3 * _2X, DY, 0xFF3158);
+	const float cloudZoom = (float)(DX / 2 + 8 * _2X) / 512.0f;
+	const int cloudW = (int)(512.0f * cloudZoom);
+	const int cloudH = (int)(512.0f * cloudZoom);
+	const int shift = (int)((cloudW + 24 * _2X) * open);
+	const int rows = DY / Max(1, cloudH) + 2;
+
+	for (int row = 0; row < rows; ++row) {
+		const int cloudY = DY - row * (cloudH - 28 * _2X);
+		DrawImage(512, 512, 0, 0, -shift, cloudY,
+			false, false, false, false, false, cloudZoom,
+			sprite[CLOUD_IMG], CLOUD_IMG);
+		DrawImage(512, 512, 0, 0, DX - cloudW + shift, cloudY,
+			true, false, false, false, false, cloudZoom,
+			sprite[CLOUD_IMG], CLOUD_IMG);
+	}
+}
+
+static void PvpDrawClashScreen(void)
+{
+	UnSectionClip(false);
+	SetAlpha(29);
+	MemRect(0, DY, DX, DY, 0x071229);
 	SetAlpha(32);
+
+	const int half = DX / 2;
+	const int pad = 10 * _2X;
+	const int top = DY - 18 * _2X;
+	const int profileZoom = 1.15f;
+
+	//기존 프로필 프레임과 캐릭터 렌더러만 쓴다. 실제 서버 프로필 이미지가
+	//연결되면 이 두 EnemyProfileDraw 호출만 교체하면 된다.
+	EnemyProfileDraw(pad, top, ROBIN, false, false, profileZoom);
+	EnemyProfileDraw(DX - pad - (int)(36 * _2X * profileZoom), top,
+		ROBIN, false, false, profileZoom);
+	SetFontColor(COLOR_WHITE);
+	const char* myName = robin.nickname.empty() ? "MY ROBIN" : robin.nickname.c_str();
+	DrawTextStrSystem(myName, pad + 48 * _2X, top - 8 * _2X,
+		0.9f, LEFT, true);
+	DrawTextStrSystem("RIVAL COPY", DX - pad - 48 * _2X,
+		top - 8 * _2X, 0.9f, RIGHT, true);
+
+	const int heroY = DY - 112 * _2X;
+	DrawPlayer(&ao[PVP_ATTACKER_ROBIN], motionData[0], half / 2, heroY,
+		RIGHT, 1.35f, 0, false, true);
+	DrawPlayer(&ao[PVP_DEFENDER_ROBIN], motionData[0], half + half / 2,
+		heroY, LEFT, 1.35f, 0, false, true);
+
+	//각 진영의 실제 편성 여섯 명. 3열 2행으로 히어로 아래에 모은다.
+	for (int i = 0; i < MAXCREW; ++i) {
+		const int col = i % 3;
+		const int row = i / 3;
+		const int ally = PVP_ATTACKER_CREW + i;
+		const int foe = PVP_DEFENDER_CREW + i * MAXENEMYOBJ;
+		const int allyX = 42 * _2X + col * 52 * _2X;
+		const int foeX = DX - 42 * _2X - col * 52 * _2X;
+		const int crewY = DY - (176 + row * 48) * _2X;
+
+		if (ao[ally].active)
+			DrawCmfDetailShadow(ao[ally].cmf, crewPos[ao[ally].type * 5],
+				allyX, crewY, RIGHT, 0.9f * enemyIconZoom[ao[ally].type]);
+		if (ao[foe].active)
+			DrawCmfDetailShadow(ao[foe].cmf, crewPos[ao[foe].type * 5],
+				foeX, crewY, LEFT, 0.9f * enemyIconZoom[ao[foe].type]);
+	}
+
+	DrawGoldAlphaText(DX / 2, DY / 2 + 18 * _2X, "VS",
+		FONT_GOLD_LARGE, 4.4f, CENTER, true, -6.0f);
 }
 
 void PvpTestDraw(void)
@@ -2340,24 +2544,44 @@ void PvpTestDraw(void)
 
 		pvpTestPlayerHp = Max((long long)0, ao[PVP_ATTACKER_ROBIN].hp);
 		pvpTestEnemyHp = Max((long long)0, ao[PVP_DEFENDER_ROBIN].hp);
-		PvpDrawCombatHud();
+		if (pvpTestState != 0)
+			PvpDrawCombatHud();
 
-		BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
-		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
-		BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
-		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+		//격돌 화면에는 양 팀 정보와 VS만 남긴다. 전투용 GNB는 구름 전환이
+		//끝나 실제 교전 상태에 들어간 뒤부터 표시한다.
+		if (pvpTestState != 0) {
+			BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
+			BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+			BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
+			GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+		}
 
 		if (pvpTestState == 0) {
-			PvpTestCloudDraw(pvpTestFrame);
-			float titleIn = Min(1.0f, (float)pvpTestFrame / (float)Max(1, FPS / 4));
-			DrawGoldAlphaText(DX / 2, DY - 92 * _2X, "RIVAL CASTLE",
-				FONT_GOLD_LARGE, 1.35f * titleIn, CENTER, true, 0.0f);
-			char scoutText[64];
-			sprintf(scoutText, "CASTLE %d   LV %d",
-				pvpTestDefender.houseType + 1, Max(1, pvpTestDefender.houseType + 1));
-			SetFontColor(COLOR_WHITE);
-			CenterTextStrSolid(scoutText, DX / 2, DY - 124 * _2X, 0.74f * titleIn);
-			if (pvpTestFrame >= FPS + FPS / 2) {
+			const int clashHold = FPS;
+			const int cloudClose = FPS / 2;
+			const int reveal = FPS + FPS / 2;
+			const int closeEnd = clashHold + cloudClose;
+			const int revealEnd = closeEnd + reveal;
+			const float battleZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
+
+			if (pvpTestFrame < closeEnd)
+				PvpDrawClashScreen();
+
+			if (pvpTestFrame >= clashHold && pvpTestFrame < closeEnd) {
+				const int closeFrame = pvpTestFrame - clashHold;
+				PvpTestCloudDraw((FPS + FPS / 2)
+					* Max(0, cloudClose - closeFrame) / Max(1, cloudClose));
+			}
+			else if (pvpTestFrame >= closeEnd) {
+				float t = Min(1.0f, (float)(pvpTestFrame - closeEnd)
+					/ (float)Max(1, reveal));
+				const float ease = 1.0f - powf(1.0f - t, 3.0f);
+				dioramaZoom = battleZoom * (0.12f + 0.88f * ease);
+				PvpTestCloudDraw((int)((FPS + FPS / 2) * t));
+			}
+
+			if (pvpTestFrame >= revealEnd) {
+				dioramaZoom = battleZoom;
 				pvpTestState = 1;
 				pvpTestFrame = 0;
 				StartPvpTestBattle();
@@ -2373,7 +2597,12 @@ void PvpTestDraw(void)
 			if (ao[PVP_DEFENDER_ROBIN].dead || ao[PVP_DEFENDER_ROBIN].hp <= 0) {
 				pvpTestState = 3;
 				pvpTestFrame = 0;
-				ao[PVP_ATTACKER_ROBIN].moveHandler = null;
+				pvpLootSwing = false;
+
+				//moveHandler 는 그대로 둔다. 상자 앞에서 한 대 쳐야 하는데,
+				//공격 모션을 넘기는 것이 PlayerMove 다. 끄면 칼을 든 자세로
+				//굳는다. 표적(수비 히어로)이 죽었으므로 PvpHeroStep 은 첫 줄에서
+				//되돌아가고, 여기서 정한 자리와 모션만 남는다.
 				for (int i = 0; i < MAXCREW; i++)
 					ao[PVP_DEFENDER_CREW + i * MAXENEMYOBJ].active = false;
 			}
@@ -2383,24 +2612,111 @@ void PvpTestDraw(void)
 			}
 		}
 		else if (pvpTestState == 3) {
-			ao[PVP_ATTACKER_ROBIN].dirX = ao[PVP_ATTACKER_ROBIN].dirF = RIGHT;
-			ao[PVP_ATTACKER_ROBIN].x = Min((float)(DX - 118 * _2X),
-				ao[PVP_ATTACKER_ROBIN].x + 4 * _2X);
-			ao[PVP_ATTACKER_ROBIN].nx = ao[PVP_ATTACKER_ROBIN].x;
-			CenterTextStrSolid("TREASURE!", DX / 2, DY - 112 * _2X, 1.35f);
-			if (ao[PVP_ATTACKER_ROBIN].x >= DX - 118 * _2X) {
+			//---- 상자 앞까지 가서 한 대 친다 ----
+			//
+			//상대를 눕혔다고 상자가 저절로 열리지는 않는다. 걸어가서 내리쳐야
+			//열린다 - 전투가 끝나고도 한 번 더 할 일이 남아 있어야 약탈이
+			//약탈로 보인다.
+			OBJECT* hero = &ao[PVP_ATTACKER_ROBIN];
+			const int box = PvpLootBoxObj();
+			const int stopX = (box >= 0)
+				? ao[box].x - GetAttackRange(PVP_ATTACKER_ROBIN)
+				: (int)(DX - 118 * _2X);
+			int loopMotion;
+
+			hero->dirX = hero->dirF = RIGHT;
+
+			if (hero->attack) {
+				//치는 중이다. 모션은 PlayerMove 가 넘긴다.
+			}
+			else if (hero->x < stopX) {
+				hero->x = Min(stopX, hero->x + PVP_HERO_SPEED);
+				hero->nx = hero->x;
+				hero->frame++;
+				loopMotion = GetHeroLoopMotion(hero->cmf, HEROLOOP_RUN,
+					hero->frame);
+				hero->motion = (loopMotion < 0)
+					? PO_C0_R0 + walkFrame[hero->frame / 2 % 4] : loopMotion;
+			}
+			else if (pvpLootSwing == false) {
+				//상자 앞이다. 한 대.
+				pvpLootSwing = true;
+				hero->x = hero->nx = stopX;
+				hero->attack = ATTACK_NORMAL;
+				GetMotionPtr(hero);
+				hero->attackFrame = skillStartFrame[ATTACK_NORMAL];
+				HitCountCheck(hero);
+			}
+			else {
+				//다 쳤다. 뚜껑이 열린다.
+				PvpOpenLootBox(box);
 				pvpTestState = 4;
 				pvpTestFrame = 0;
-				pvpTestLoot = Max((long long)0, pvpTestDefender.gold);
-				PlayMusic(M_OPENWINDOW);
 			}
+
+			CenterTextStrSolid("TREASURE!", DX / 2, DY - 112 * _2X, 1.35f);
 		}
 		else if (pvpTestState == 4) {
+			//---- 동전이 쏟아지고 골드바로 빨려 들어간다 ----
+			//
+			//한꺼번에 다 내보내지 않는다. 개체 칸이 모자라기도 하고, 무엇보다
+			//한 프레임에 다 나오면 쏟아지는 것으로 안 보인다.
+			for (int n = 0; n < PVP_LOOT_SPAWN_PER_FRAME
+				&& pvpLootCoinLeft > 0 && pvpLootBox >= 0; n++) {
+				//마지막 한 개가 남은 몫을 다 가져간다. 나누어 떨어지지 않아
+				//생기는 잔돈이 사라지지 않게.
+				const long long amount = (pvpLootCoinLeft > 1)
+					? pvpLootCoinUnit : pvpLootLeft;
+				const int coin = DropItem(&ao[pvpLootBox], ITEM_GOLD);
+
+				//빈 칸이 없으면 다음 프레임에 다시 온다.
+				if (coin < ITEMOBJ)
+					break;
+
+				ao[coin].defaultZoom = ao[coin].zoom = 1.5f;
+				ao[coin].ax = (int)amount;
+
+				//ENEMY 보다 작은 번호는 "우리가 먹는다" 는 뜻이다.
+				ao[coin].target = PVP_ATTACKER_ROBIN;
+
+				pvpLootLeft -= amount;
+				pvpLootCoinLeft--;
+			}
+
+			//동전이 다 나올 때까지 뚜껑을 열어 둔다.
+			if (pvpLootBox >= 0 && pvpLootCoinLeft > 0)
+				ao[pvpLootBox].levelUpFrame = FPS;
+
 			char lootText[64];
 			sprintf(lootText, "GOLD +%lld", pvpTestLoot);
 			SetFontColor(0xFFD43B);
 			CenterTextStrSolid("RAID SUCCESS", DX / 2, DY - 112 * _2X, 1.55f);
 			CenterTextStrSolid(lootText, DX / 2, DY - 142 * _2X, 1.2f);
+			SetFontColor(COLOR_WHITE);
+
+			//마지막 한 닢까지 골드바에 들어가야 끝난다. 땅에 남은 동전과
+			//날아가는 중인 표시를 둘 다 본다.
+			if (pvpLootCoinLeft == 0 && currencyMarkCnt == 0
+				&& PvpLootCoinAlive() == false) {
+				pvpTestState = 6;
+				pvpTestFrame = 0;
+			}
+		}
+		else if (pvpTestState == 6) {
+			//---- 들어올 때처럼 닫고 나간다 ----
+			//
+			//열리며 들어왔으니 닫히며 나간다. 같은 그림을 거꾸로 돌린다.
+			const int total = FPS + FPS / 2;
+
+			CenterTextStrSolid("RAID SUCCESS", DX / 2, DY - 112 * _2X, 1.55f);
+			PvpTestCloudDraw(total
+				* Max(0, PVP_LOOT_CLOSE_FRAME - pvpTestFrame)
+				/ PVP_LOOT_CLOSE_FRAME);
+
+			if (pvpTestFrame >= PVP_LOOT_CLOSE_FRAME) {
+				ExitPvpTest();
+				return;
+			}
 		}
 		else {
 			SetFontColor(0xFF7777);

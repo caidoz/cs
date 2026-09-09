@@ -1650,9 +1650,46 @@ NEXT:
 //없으면 붙는 순간부터 쉬지 않고 쳐서 동료 스킬이 묻힌다.
 static int pvpHeroCool[2] = { 0, 0 };
 
+//한 대 치는 동안 서 있을 자리. 치면서 앞으로 밀리지 않게 붙들어 둔다.
+static int pvpHeroAnchorX[2] = { 0, 0 };
+
+//---- 차례를 받았는가 ----
+//
+//전에는 쿨타임이 차면 저절로 나갔다. 그러면 동료와 히어로가 저마다 제
+//시계로 움직여서 누구 차례인지가 화면에 안 보인다 - 특히 히어로는 갔다
+//오는 데 시간이 걸려 쉬지 않고 걸어다니는 것으로 보였다.
+//
+//이제 차례표(Func_Draw.cpp 의 PvpTurnStep)가 한 명씩 내보낸다. 여기는
+//"나가라"는 신호만 받는다.
+static bool pvpHeroGo[2] = { false, false };
+
 void PvpHeroResetCool(void)
 {
 	pvpHeroCool[0] = pvpHeroCool[1] = 0;
+	pvpHeroAnchorX[0] = pvpHeroAnchorX[1] = 0;
+	pvpHeroGo[0] = pvpHeroGo[1] = false;
+}
+
+//차례가 왔다. 집에서 기다리고 있다면 다음 프레임에 나간다.
+void PvpHeroGiveTurn(int obj)
+{
+	const int side = (obj >= ENEMY) ? 1 : 0;
+
+	pvpHeroGo[side] = true;
+
+	//어쩌다 집 밖에 서 있으면 먼저 돌아오게 한다. 그래야 나가는 자리가
+	//언제나 같다.
+	if (ao[obj].turnPosition != HERE && ao[obj].attack == false)
+		ao[obj].turnPosition = COMING;
+}
+
+//아직 제 차례를 치르는 중인가.
+bool PvpHeroTurnBusy(int obj)
+{
+	const int side = (obj >= ENEMY) ? 1 : 0;
+
+	return pvpHeroGo[side] || ao[obj].turnPosition != HERE
+		|| ao[obj].attack != false;
 }
 
 //---- PVP 수비측 총알 ----
@@ -1808,10 +1845,6 @@ void PvpHeroStep(OBJECT* pObj)
 		return;
 
 	const int side = (obj >= ENEMY) ? 1 : 0;
-
-	if (pvpHeroCool[side] < PVP_HERO_COOLDOWN)
-		pvpHeroCool[side]++;
-
 	const int speed = Max(SPEED_MIN, pObj->pDx);
 	const int range = GetAttackRange(obj);
 	const int dir = (ao[foe].x >= pObj->x) ? RIGHT : LEFT;
@@ -1831,11 +1864,11 @@ void PvpHeroStep(OBJECT* pObj)
 		pObj->motion = (loopMotion < 0)
 			? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 
-		//쿨타임이 차야 나간다. 이것이 "다음 턴" 이다.
-		if (pvpHeroCool[side] < PVP_HERO_COOLDOWN)
+		//차례가 와야 나간다. 안 오면 계속 기다린다.
+		if (pvpHeroGo[side] == false)
 			break;
 
-		pvpHeroCool[side] = 0;
+		pvpHeroGo[side] = false;
 		pObj->turnPosition = GOING;
 		break;
 
@@ -1868,6 +1901,7 @@ void PvpHeroStep(OBJECT* pObj)
 
 		//attack 과 attackFrame 은 한 쌍이다. attack 만 켜면 attackFrame 이
 		//지난 공격이 남긴 값이라, 모션표의 엉뚱한 자리부터 재생된다.
+		pvpHeroAnchorX[side] = pObj->x;
 		pObj->turnPosition = THERE;
 		pObj->attack = ATTACK_NORMAL;
 		GetMotionPtr(pObj);
@@ -1876,6 +1910,13 @@ void PvpHeroStep(OBJECT* pObj)
 		break;
 
 	case THERE:
+		//---- 친 자리에 못 박는다 ----
+		//
+		//전진량은 PlayerMove_SkillAttack 에서 이미 지웠다. 그래도 스킬마다
+		//제 손으로 x 를 만지는 것이 있어서, 한 대 치는 동안의 자리는 여기서
+		//한 번 더 붙들어 둔다.
+		pObj->x = pvpHeroAnchorX[side];
+
 		//치는 동안은 모션표가 몬다. 방향도 안 건드린다 - 표에 뒷걸음질이
 		//들어 있으면 그것이 dirX 를 쓰기 때문이다.
 		//
@@ -4191,6 +4232,18 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 	if (xy & 0x0F) {
 		pObj->mx = true;
 		pObj->pDx = pObj->dx = (xy & 0x0F) << 1;
+
+		//---- PVP 는 제자리에서 친다 ----
+		//
+		//모션표에는 칸마다 전진량이 들어 있다. 액션에서는 그것이 파고드는
+		//맛이지만, 여기는 둘이 마주 서서 번갈아 치는 판이라 칠 때마다 앞으로
+		//밀려 자리가 어긋난다. 밀린 만큼 다음 차례의 사거리 계산도 달라진다.
+		//
+		//전진량만 지운다. 모션 자체는 그대로 나온다.
+		if (drawHandle == MD_PVP) {
+			pObj->mx = false;
+			pObj->pDx = pObj->dx = 0;
+		}
 
 		if (pObj->concentrate > 8) {
 			pObj->pDx += pObj->concentrate / 3 * _2X;
@@ -11801,7 +11854,12 @@ void VanishMove(OBJECT* pObj)
 
 		//SetBox(pObj, BOX_CASTLE0 + castleOrder[robin.castle]);
 
-		if (robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0) {
+		//PVP 는 이 길로 끝내지 않는다. 수비 히어로도 적 칸에 살아서 쓰러지면
+		//여기까지 오는데, 그러면 상자가 떨어지고 일반전투의 코인 시퀀스가
+		//시작된다. PVP 의 상자는 성에 놓인 것 하나뿐이고, 그것은 주인공이
+		//걸어가 직접 열어야 한다.
+		if (drawHandle != MD_PVP
+			&& robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0) {
 			//여기서 획득한 
 			
 			DropItem(pObj, ITEM_BOX);
@@ -12919,10 +12977,14 @@ void ItemMove(OBJECT* pObj)
 	// 아이템 떨구기
 	// 우주에서는 둥실둥실 떠있음
 
-	dropToPlayerLine = (drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
+	dropToPlayerLine = ((drawHandle == MD_PLAY || drawHandle == MD_BATTLE) &&
 		ao[PLAYER].active == true &&
 		(pObj->def == ITEM_BOX || pObj->def == ITEM_GOLD) &&
-		pObj->ny == ao[PLAYER].y;
+		pObj->ny == ao[PLAYER].y)
+		//PVP 약탈 동전. 성 그림 위에는 밟을 지형이 없어서 TileCheckY2 에
+		//맡기면 바닥을 못 찾고 계속 떨어진다. 나온 자리(상자)의 높이로
+		//되돌아오게 한다 - 전투 골드가 주인공 발밑으로 모이는 것과 같다.
+		|| (drawHandle == MD_PVP && pObj->def == ITEM_GOLD);
 
 	if (pObj->jumpFrame)
 		TileCheckX2(pObj);
@@ -12977,6 +13039,33 @@ void ItemMove(OBJECT* pObj)
 	if (pObj->mainFrame > itemStatusFrame
 		&& (pObj->def != ITEM_GOLD || pObj->frame > 28)) {
 		switch (drawHandle) {
+		//---- PVP 약탈 동전 ----
+		//
+		//상자에서 쏟아진 동전이다. 떨어지는 모양은 전투 골드와 같고, 가는
+		//곳만 다르다 - 전투에서는 제 상자로 들어가지만 여기서는 뺏어오는
+		//것이라 화면 위 골드바로 곧장 날아간다.
+		case MD_PVP:
+			if (pObj->def != ITEM_GOLD)
+				break;
+
+			startX = xOffset + pObj->x;
+			startY = STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP;
+
+			targetX = targetX2 = bar[BAR_GOLD].x + 8 * _2X + ITEMICONSIZE / 2;
+			targetY = targetY2 = bar[BAR_GOLD].y - 8 * _2X - ITEMICONSIZE / 2;
+
+			SetCurrencyMark(startX, startY, targetX, targetY, targetX2, targetY2,
+				8.0f * _2X, 2.0f * _2X,
+				8.0f * _2X, 2.0f * _2X,
+				FPS / 8, FPS / 8, ICON_GOLD, 30, pObj->ax, CURRENCY_GOLD,
+				pObj->zoom * CURRENCYICON_STARTSIZE,
+				pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE, 0.3f,
+				pObj->zoom * CURRENCYICON_ENDSIZE2 * BATTLECOIN_PEAKSIZE_SCALE,
+				pObj->zoom * CURRENCYICON_STARTSIZE, -0.2f, BAR_GOLD);
+
+			pObj->active = false;
+			break;
+
 		case MD_PLAY:
 		case MD_BATTLE:
 			switch (pObj->def) {
