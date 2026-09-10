@@ -3296,6 +3296,7 @@ const char* const textId[] = {
 	"shop_cash_piles",
 	"shop_pass_art",
 	"gacha_paid_bg",
+	"social_profile_default",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

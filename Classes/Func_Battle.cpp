@@ -1544,10 +1544,11 @@ void Play(void)
 
 		//게임버튼
 
-		StatusDraw(xOffset, 0, 1.0f);
+		if (!gPvpCosmicTransition)
+			StatusDraw(xOffset, 0, 1.0f);
 
 		//보스레이드는 단일 제한시간 전투라 일반 웨이브/페이즈 안내를 쓰지 않는다.
-		if (drawHandle != MD_BOSSRAID) {
+		if (drawHandle != MD_BOSSRAID && !gPvpCosmicTransition) {
 			DrawWaveAnnouncement();
 			DrawTurnPhaseAnnouncement();
 		}
@@ -1678,6 +1679,8 @@ void Play(void)
 		WaveBadgeDrawBeforeBars();
 
 		for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
+			if (gPvpCosmicTransition && i != BAR_ROULETTE)
+				continue;
 			if (!IsBossRaidVisibleBar(i))
 				continue;
 			if (bar[i].active == true && bar[i].front == false) {
@@ -1869,7 +1872,8 @@ void Play(void)
 		case MD_PLAY://여기서는 몬스터와의 전투
 			// 보스 난입 중에도 설정 버튼은 고정하고, 상점만 GNBDraw 안에서
 			// 왼쪽으로 미끄러져 나가게 한다.
-			GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+			if (!gPvpCosmicTransition)
+				GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 
 			if (curMenu == MENU_PLAY && JoyStickPressPossible() == true)
 				EventScheduler();
@@ -1923,6 +1927,8 @@ void Play(void)
 	}
 
 	for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
+		if (gPvpCosmicTransition && i != BAR_ROULETTE)
+			continue;
 		if (!IsBossRaidVisibleBar(i))
 			continue;
 		if (bar[i].active == true && bar[i].front == true) {

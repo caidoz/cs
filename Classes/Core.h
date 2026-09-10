@@ -2386,6 +2386,9 @@ extern bool gCombatStatusTest;
 extern bool gRouletteResultValid;
 //이번 일반 룰렛이 동료 공격 대신 PVP 매칭으로 당첨됐는가.
 extern bool gRoulettePvpResult;
+//룰렛 PVP 당첨 뒤 현재 디오라마가 우주맵 속 성으로 축소되는 동안 true.
+extern bool gPvpCosmicTransition;
+extern float gPvpCosmicBaseZoom;
 
 //AVK_MAXGAME 스킬 모션 프레임 진행 테스트.
 extern bool gDemoSkillFrameStepActive;

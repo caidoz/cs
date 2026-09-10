@@ -551,6 +551,10 @@ static int FindCrewAoOffsetByType(int type, bool used[], int maxCrew)
 
 void DecideRouletteResult(void)
 {
+	if (gPvpCosmicTransition) {
+		dioramaZoom = gPvpCosmicBaseZoom;
+		gPvpCosmicTransition = false;
+	}
 	gRoulettePvpResult = false;
 	//직전 룰렛 결과는 이번 회전의 출발 상태다. 아래 초기화 전에 보관한다.
 	//첫 회전에는 gRouletteResultValid가 false이므로 편성 슬롯 3명을 사용한다.
@@ -1129,6 +1133,108 @@ void RouletteDrawSimple3Slots(
 	//잠금 표시는 위의 빈 슬롯 자물쇠만으로 한다.
 }
 
+//룰렛의 세 심장 당첨을 "여러 우주의 성 중 상대를 찾는다"는 화면으로 잇는다.
+//신규 리소스 없이 기존 성 디오라마를 축소 배치하고 별은 작은 광점으로만 만든다.
+static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
+{
+	UnSectionClip(false);
+	float buildT = Min(1.0f, (float)localFrame / (float)Max(1, buildFrame));
+	buildT = 1.0f - powf(1.0f - buildT, 3.0f);
+	SetAlpha((int)(32.0f * buildT));
+	MemRect(0, DY, DX, DY, 0x05071D);
+
+	//고정된 좌표를 써서 프레임마다 별이 흔들리지 않게 한다.
+	static const int starPos[][2] = {
+		{ 5, 88 }, { 11, 63 }, { 17, 91 }, { 23, 38 }, { 29, 72 },
+		{ 35, 52 }, { 41, 84 }, { 48, 29 }, { 54, 68 }, { 61, 93 },
+		{ 67, 43 }, { 73, 78 }, { 80, 57 }, { 86, 89 }, { 92, 34 },
+		{ 8, 24 }, { 20, 15 }, { 33, 27 }, { 46, 11 }, { 58, 22 },
+		{ 70, 13 }, { 82, 25 }, { 95, 18 }
+	};
+	for (int i = 0; i < (int)(sizeof(starPos) / sizeof(starPos[0])); ++i) {
+		const int twinkle = 18 + Abs((frame + i * 7) % 20 - 10);
+		SetAlpha((int)(twinkle * buildT));
+		const int size = ((i + frame / 8) % 5 == 0) ? 2 * _2X : 1 * _2X;
+		MemRectRound(DX * starPos[i][0] / 100, DY * starPos[i][1] / 100,
+			size, size, 0xDCEBFF, size / 2);
+	}
+	SetAlpha(32);
+
+	//화면 면적에 맞춰 친구 성 수를 자동으로 늘린다. 기본 가로 화면에서는
+	//약 15~24개가 보이고, 초광폭/고해상도에서는 열과 행이 함께 늘어난다.
+	const int cellW = 98 * _2X;
+	const int cellH = 82 * _2X;
+	const int cols = Max(4, DX / Max(1, cellW));
+	const int rows = Max(3, DY / Max(1, cellH));
+	const int centerCol = cols / 2;
+	const int centerRow = rows / 2;
+	const int totalFriends = cols * rows - 1;
+	int friendIndex = 0;
+
+	for (int row = 0; row < rows; ++row) {
+		for (int col = 0; col < cols; ++col) {
+			if (row == centerRow && col == centerCol)
+				continue;
+
+			float appear = Min(1.0f, Max(0.0f,
+				((buildT - 0.30f) * 2.4f
+					- (float)friendIndex / Max(1, totalFriends) * 0.55f)));
+			if (appear <= 0.0f || gTotalCastle <= 0) {
+				friendIndex++;
+				continue;
+			}
+
+			const int castleListIdx = (robin.castle + friendIndex + 1) % gTotalCastle;
+			const int castleType = castleOrder[castleListIdx];
+			const int jitterX = ((friendIndex * 37) % 17 - 8) * _2X;
+			const int jitterY = ((friendIndex * 53) % 13 - 6) * _2X;
+			const int cx = (col * 2 + 1) * DX / (cols * 2) + jitterX;
+			const int cy = (row * 2 + 1) * DY / (rows * 2) + jitterY;
+			const float castleZoom = (0.058f + 0.012f * (friendIndex % 3)) * appear;
+			const float profileSize = (18.0f + 2.0f * (friendIndex % 2)) * _2X;
+			const float profileZoom = profileSize / 256.0f * appear;
+
+			SetAlpha((int)(32.0f * appear));
+			DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+				cx - (float)DIORAMASIZE_X * castleZoom / 2,
+				cy + (float)DIORAMASIZE_Y * castleZoom / 2,
+				false, false, false, false, false, castleZoom,
+				sprite[MAP_DIORAMA_IMG + castleType], MAP_DIORAMA_IMG + castleType);
+			DrawImage(256, 256, 0, 0,
+				cx - profileSize * appear / 2,
+				cy + (float)DIORAMASIZE_Y * castleZoom / 2
+					+ profileSize * appear + 2 * _2X,
+				false, false, false, false, false, profileZoom,
+				sprite[SOCIAL_PROFILE_DEFAULT_IMG], SOCIAL_PROFILE_DEFAULT_IMG);
+			friendIndex++;
+		}
+	}
+	SetAlpha(32);
+
+	//실제 DrawDiorama가 축소를 끝낼 무렵에만 작은 성 그림으로 교차시킨다.
+	//초반부터 이것을 그리면 실제 오브젝트가 든 성 위에 빈 성이 겹쳐 보인다.
+	const float mapBlend = Min(1.0f, Max(0.0f, (buildT - 0.72f) / 0.28f));
+	const float myZoom = 0.16f;
+	SetAlpha((int)(14.0f * mapBlend));
+	MemRectRound(DX / 2 - 60 * _2X, DY / 2 + 60 * _2X,
+		120 * _2X, 120 * _2X, 0x264DA8, 60 * _2X);
+	SetAlpha((int)(32.0f * mapBlend));
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		DX / 2 - (float)DIORAMASIZE_X * myZoom / 2,
+		DY / 2 + (float)DIORAMASIZE_Y * myZoom / 2,
+		false, false, false, false, false, myZoom,
+		sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]],
+		MAP_DIORAMA_IMG + castleOrder[robin.castle]);
+	const float myProfileSize = 26.0f * _2X;
+	DrawImage(256, 256, 0, 0,
+		DX / 2 - myProfileSize / 2,
+		DY / 2 + (float)DIORAMASIZE_Y * myZoom / 2
+			+ myProfileSize + 3 * _2X,
+		false, false, false, false, false, myProfileSize / 256.0f * mapBlend,
+		sprite[SOCIAL_PROFILE_DEFAULT_IMG], SOCIAL_PROFILE_DEFAULT_IMG);
+	SetAlpha(32);
+}
+
 void RouletteDraw(int x, int y, float zoom)
 {
 	const int rouletteHomeY = y;
@@ -1311,7 +1417,10 @@ void RouletteDraw(int x, int y, float zoom)
 	//세 심장이 모두 꽂힌 뒤 룰렛 전체가 화면 중앙으로 확대된다. 이후 프로필,
 	//히어로, 동료, VS 순으로 격돌 화면을 완성하고 네 구름으로 씬을 가린다.
 	const int pvpHeartEnd = RoulettePvpTiming::Title;
-	const int pvpProfileStart = pvpHeartEnd + FPS / 2;
+	const int pvpCosmicStart = pvpHeartEnd + FPS / 2;
+	const int pvpCosmicBuild = FPS * 3 / 4;
+	const int pvpCosmicHold = FPS + FPS / 2;
+	const int pvpProfileStart = pvpCosmicStart + pvpCosmicBuild + pvpCosmicHold;
 	const int pvpNameStart = pvpProfileStart + FPS / 4;
 	const int pvpHeroStart = pvpNameStart + FPS / 3;
 	const int pvpCrewStart = pvpHeroStart + FPS / 3;
@@ -1322,9 +1431,22 @@ void RouletteDraw(int x, int y, float zoom)
 	const int pvpCloudEnd = pvpCloudStart + FPS * 2 / 3;
 
 	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
-		&& slotFrame >= pvpHeartEnd && slotFrame < pvpProfileStart) {
+		&& slotFrame == pvpCosmicStart) {
+		gPvpCosmicBaseZoom = dioramaZoom;
+		gPvpCosmicTransition = true;
+	}
+	if (gPvpCosmicTransition && slotFrame >= pvpCosmicStart
+		&& slotFrame < pvpProfileStart) {
+		float t = Min(1.0f, (float)(slotFrame - pvpCosmicStart)
+			/ (float)Max(1, pvpCosmicBuild));
+		t = t * t * (3.0f - 2.0f * t);
+		dioramaZoom = gPvpCosmicBaseZoom * (1.0f - 0.84f * t);
+	}
+
+	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
+		&& slotFrame >= pvpHeartEnd && slotFrame < pvpCosmicStart) {
 		float t = Min(1.0f, (float)(slotFrame - pvpHeartEnd)
-			/ (float)Max(1, pvpProfileStart - pvpHeartEnd));
+			/ (float)Max(1, pvpCosmicStart - pvpHeartEnd));
 		t = 1.0f - powf(1.0f - t, 3.0f);
 		const float baseZoom = zoom;
 		const float targetZoom = Min((float)DX / (float)SLOTSIZE_X * 0.82f,
@@ -1336,7 +1458,7 @@ void RouletteDraw(int x, int y, float zoom)
 	}
 	const bool drawRouletteBoard = !gRoulettePvpResult
 		|| attackSequence != ATTACKSEQUENCE_SLOT
-		|| slotFrame < pvpProfileStart;
+		|| slotFrame < pvpCosmicStart;
 	if (drawRouletteBoard) {
 		DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
 			x - (float)SLOTSIZE_X / 2 * zoom, y,
@@ -1375,7 +1497,7 @@ void RouletteDraw(int x, int y, float zoom)
 			}
 		}
 
-		for (int i = 0; i < TOTALREEL && slotFrame < pvpProfileStart; i++) {
+		for (int i = 0; i < TOTALREEL && slotFrame < pvpCosmicStart; i++) {
 			float centerX = x - (float)SLOTSIZE_X * zoom / 2
 				+ (float)reelPostion[i * 2] * zoom;
 			float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
@@ -1458,6 +1580,11 @@ void RouletteDraw(int x, int y, float zoom)
 					rs.flipLR ? LEFT : RIGHT, drawScale, false, false);
 			}
 		}
+
+		//확대된 룰렛이 사라지는 자리에 현재 성이 이어서 나타나 작아지고,
+		//주변 친구 성이 채워진다. 완성된 우주맵은 잠시 그대로 보여준다.
+		if (slotFrame >= pvpCosmicStart && slotFrame < pvpProfileStart)
+			DrawPvpCosmicCastleMap(slotFrame - pvpCosmicStart, pvpCosmicBuild);
 
 		//격돌 정보는 기존 프로필/캐릭터 리소스만으로 순서대로 등장한다.
 		if (slotFrame >= pvpProfileStart) {
@@ -1562,6 +1689,9 @@ void RouletteDraw(int x, int y, float zoom)
 			gRoulettePvpResult = false;
 			roulettePlayZoom = 1.0f;
 			bar[BAR_ROULETTE].front = false;
+			//StartPvpTest가 복귀 배율을 저장하기 전에 원래 성 줌을 복원한다.
+			dioramaZoom = gPvpCosmicBaseZoom;
+			gPvpCosmicTransition = false;
 			StartPvpTest();
 		}
 		return;
