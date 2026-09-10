@@ -1308,16 +1308,35 @@ void RouletteDraw(int x, int y, float zoom)
 		slotFrame++;
 	}
 
-	//PVP 매치업 배너가 시작되면 룰렛은 퇴장한다.
-	//슬롯/프로필/VS를 겹쳐 그리면 어느 쪽도 읽히지 않는다.
-	const int pvpBannerStartFrame = RoulettePvpTiming::Banner;
+	//세 심장이 모두 꽂힌 뒤 룰렛 전체가 화면 중앙으로 확대된다. 이후 프로필,
+	//히어로, 동료, VS 순으로 격돌 화면을 완성하고 네 구름으로 씬을 가린다.
+	const int pvpHeartEnd = RoulettePvpTiming::Title;
+	const int pvpProfileStart = pvpHeartEnd + FPS / 2;
+	const int pvpNameStart = pvpProfileStart + FPS / 4;
+	const int pvpHeroStart = pvpNameStart + FPS / 3;
+	const int pvpCrewStart = pvpHeroStart + FPS / 3;
+	const int pvpCrewDropGap = Max(1, FPS / 12);
+	const int pvpCrewDone = pvpCrewStart + pvpCrewDropGap * (MAXCREW - 1) + FPS / 3;
+	const int pvpVsStart = pvpCrewDone;
+	const int pvpCloudStart = pvpVsStart + FPS / 2;
+	const int pvpCloudEnd = pvpCloudStart + FPS * 2 / 3;
+
 	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
-		&& slotFrame >= RoulettePvpTiming::Exit) {
-		//배너 전환 전까지도 룰렛 좌표와 배율은 바꾸지 않는다.
+		&& slotFrame >= pvpHeartEnd && slotFrame < pvpProfileStart) {
+		float t = Min(1.0f, (float)(slotFrame - pvpHeartEnd)
+			/ (float)Max(1, pvpProfileStart - pvpHeartEnd));
+		t = 1.0f - powf(1.0f - t, 3.0f);
+		const float baseZoom = zoom;
+		const float targetZoom = Min((float)DX / (float)SLOTSIZE_X * 0.82f,
+			(float)DY / (float)SLOTSIZE_Y * 0.72f);
+		zoom = baseZoom + (targetZoom - baseZoom) * t;
+		const float targetY = (float)DY / 2.0f
+			+ (float)SLOTSIZE_Y * zoom / 2.0f;
+		y = (int)((float)y + (targetY - (float)y) * t);
 	}
 	const bool drawRouletteBoard = !gRoulettePvpResult
 		|| attackSequence != ATTACKSEQUENCE_SLOT
-		|| slotFrame < pvpBannerStartFrame;
+		|| slotFrame < pvpProfileStart;
 	if (drawRouletteBoard) {
 		DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
 			x - (float)SLOTSIZE_X / 2 * zoom, y,
@@ -1329,11 +1348,7 @@ void RouletteDraw(int x, int y, float zoom)
 	// 세 슬롯이 적당한 속도로 섞인 뒤 c122 마왕의 심장이 차례로 박히고, 상대 카드가
 	// 룰렛 위로 올라온 다음 기존 PVP 화면으로 자연스럽게 넘긴다.
 	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT) {
-		const int heartEnd = RoulettePvpTiming::Title;
-		const int bannerStart = RoulettePvpTiming::Banner;
-		const int vsStart = bannerStart + FPS / 2;
-		const int wipeStart = vsStart + FPS / 2;
-		const int revealEnd = wipeStart + FPS * 2 / 3;
+		const int heartEnd = pvpHeartEnd;
 		int spinCrew[MAXCREW];
 		int spinCrewCnt = 0;
 		for (int offset = 0; offset < MAXCREW; offset++)
@@ -1360,7 +1375,7 @@ void RouletteDraw(int x, int y, float zoom)
 			}
 		}
 
-		for (int i = 0; i < TOTALREEL && slotFrame < bannerStart; i++) {
+		for (int i = 0; i < TOTALREEL && slotFrame < pvpProfileStart; i++) {
 			float centerX = x - (float)SLOTSIZE_X * zoom / 2
 				+ (float)reelPostion[i * 2] * zoom;
 			float centerY = y + (float)reelPostion[i * 2 + 1] * zoom;
@@ -1444,58 +1459,83 @@ void RouletteDraw(int x, int y, float zoom)
 			}
 		}
 
-		//GoldAlpha PVP 선언. 작게 시작해 한 번 과장되게 커진 뒤 고정한다.
-		if (slotFrame >= heartEnd) {
-			float titleT = Min(1.0f,
-				(float)(slotFrame - heartEnd) / (float)Max(1, FPS / 6));
-			float titleZoom = (1.0f + 2.7f * titleT)
-				+ 0.35f * sinf(titleT * M_PI);
-			DrawGoldAlphaText(DX / 2, DY - 76 * _2X, "PVP",
-				FONT_GOLD_LARGE, titleZoom, CENTER, true, 0.0f);
-			if (slotFrame == heartEnd)
-				PlayMusic(M_KUNG);
+		//격돌 정보는 기존 프로필/캐릭터 리소스만으로 순서대로 등장한다.
+		if (slotFrame >= pvpProfileStart) {
+			SetAlpha(27);
+			MemRect(0, DY, DX, DY, 0x071229);
+			SetAlpha(32);
+
+			float profileT = Min(1.0f, (float)(slotFrame - pvpProfileStart)
+				/ (float)Max(1, FPS / 3));
+			float profileEase = 1.0f - powf(1.0f - profileT, 3.0f);
+			const float profileZoom = 1.15f;
+			const int profileW = (int)(36 * _2X * profileZoom);
+			const int profileY = DY - 18 * _2X;
+			const int leftProfileX = (int)(-profileW
+				+ (12 * _2X + profileW) * profileEase);
+			const int rightProfileX = (int)(DX
+				- (12 * _2X + profileW) * profileEase);
+			EnemyProfileDraw(leftProfileX, profileY, ROBIN,
+				false, false, profileZoom);
+			EnemyProfileDraw(rightProfileX, profileY, ROBIN,
+				false, false, profileZoom);
+
+			if (slotFrame >= pvpNameStart) {
+				SetFontColor(COLOR_WHITE);
+				const char* myName = robin.nickname.empty()
+					? "MY ROBIN" : robin.nickname.c_str();
+				DrawTextStrSystem(myName, 62 * _2X, profileY - 9 * _2X,
+					0.9f, LEFT, true);
+				DrawTextStrSystem("RIVAL COPY", DX - 62 * _2X,
+					profileY - 9 * _2X, 0.9f, RIGHT, true);
+			}
+
+			if (slotFrame >= pvpHeroStart) {
+				float heroT = Min(1.0f, (float)(slotFrame - pvpHeroStart)
+					/ (float)Max(1, FPS / 3));
+				float heroEase = 1.0f - powf(1.0f - heroT, 3.0f);
+				const int heroY = DY / 2 + 76 * _2X;
+				const int leftHeroX = (int)(-64 * _2X
+					+ (DX / 4 + 64 * _2X) * heroEase);
+				const int rightHeroX = DX - leftHeroX;
+				DrawPlayer(&ao[PLAYER], motionData[0], leftHeroX, heroY,
+					RIGHT, 1.4f, 0, false, true);
+				DrawPlayer(&ao[PLAYER], motionData[0], rightHeroX, heroY,
+					LEFT, 1.4f, 0, false, true);
+			}
+
+			if (slotFrame >= pvpCrewStart) {
+				for (int i = 0; i < MAXCREW; ++i) {
+					if (!ao[CREW + i].active)
+						continue;
+					const int local = slotFrame - pvpCrewStart - i * pvpCrewDropGap;
+					if (local < 0)
+						continue;
+					float t = Min(1.0f, (float)local / (float)Max(1, FPS / 3));
+					float land = 1.0f - powf(1.0f - t, 3.0f);
+					const int col = i % 3;
+					const int row = i / 3;
+					const int leftX = 40 * _2X + col * 54 * _2X;
+					const int rightX = DX - leftX;
+					const int targetY = DY / 2 - (12 + row * 50) * _2X;
+					const int startY = DY + 96 * _2X;
+					const int crewY = (int)(startY + (targetY - startY) * land);
+					const int type = ao[CREW + i].type;
+					const float crewZoom = (2.7f - 1.8f * land)
+						* enemyIconZoom[type];
+					DrawCmfDetailShadow(ao[CREW + i].cmf, crewPos[type * 5],
+						leftX, crewY, RIGHT, crewZoom);
+					DrawCmfDetailShadow(ao[CREW + i].cmf, crewPos[type * 5],
+						rightX, crewY, LEFT, crewZoom);
+					if (local == FPS / 3)
+						PlayMusic(M_KUNG);
+				}
+			}
 		}
 
-		//우리 진영은 왼쪽, 상대 진영은 오른쪽 화면 밖에서 동시에 돌격한다.
-		if (slotFrame >= bannerStart) {
-			float bannerT = Min(1.0f,
-				(float)(slotFrame - bannerStart) / (float)Max(1, FPS / 3));
-			float ease = 1.0f - powf(1.0f - bannerT, 3.0f);
-			int bannerW = DX / 2 - 10 * _2X;
-			int bannerH = 112 * _2X;
-			int bannerY = DY / 2 + bannerH / 2;
-			int leftX = (int)(-bannerW + (bannerW + 8 * _2X) * ease);
-			int rightX = (int)(DX - 8 * _2X + (-bannerW) * ease);
-			MemRectRound(leftX, bannerY, bannerW, bannerH, 0x163E79, 12 * _2X);
-			MemRectRound(rightX, bannerY, bannerW, bannerH, 0x7A1830, 12 * _2X);
-			MemRectRound(leftX + 8 * _2X, bannerY - 8 * _2X,
-				88 * _2X, 88 * _2X, 0x245DA9, 44 * _2X);
-			MemRectRound(rightX + bannerW - 96 * _2X, bannerY - 8 * _2X,
-				88 * _2X, 88 * _2X, 0xA52B48, 44 * _2X);
-			DrawCmfDetail(ROBIN, crewPos[ROBIN * 5], leftX + 52 * _2X,
-				bannerY - 63 * _2X, RIGHT, 1.85f, false, false);
-			DrawCmfDetail(ROBIN, crewPos[ROBIN * 5], rightX + bannerW - 52 * _2X,
-				bannerY - 63 * _2X, LEFT, 1.85f, false, false);
-			SetFontColor(COLOR_WHITE);
-			CenterTextStrSolid("MY CASTLE", leftX + bannerW * 2 / 3,
-				bannerY - 38 * _2X, 0.92f);
-			const char* rivalName = robin.nickname.empty() ? "RIVAL" : robin.nickname.c_str();
-			CenterTextStrSolid(rivalName, rightX + bannerW / 3,
-				bannerY - 38 * _2X, 0.92f);
-			char detail[64];
-			sprintf(detail, "CASTLE %d  LV %d", robin.castle + 1,
-				Max(1, robin.castle + 1));
-			SetFontColor(0xFFD36A);
-			CenterTextStrSolid(detail, rightX + bannerW / 3,
-				bannerY - 76 * _2X, 0.62f);
-			SetFontColor(COLOR_WHITE);
-			if (slotFrame == bannerStart + FPS / 3)
-				PlayMusic(M_KUNG);
-		}
-
-		//배너가 부딪힌 뒤 VS가 두 번 튀며 중앙에 박힌다.
-		if (slotFrame >= vsStart) {
-			int local = slotFrame - vsStart;
+		//모든 인원이 도착한 뒤 중앙에는 VS만 크게 남긴다.
+		if (slotFrame >= pvpVsStart) {
+			int local = slotFrame - pvpVsStart;
 			float vsT = Min(1.0f, (float)local / (float)Max(1, FPS / 6));
 			float vsZoom = 1.2f + 3.2f * vsT + 0.65f * sinf(vsT * M_PI);
 			if (local > FPS / 5)
@@ -1511,16 +1551,14 @@ void RouletteDraw(int x, int y, float zoom)
 			}
 		}
 
-		//중앙의 어두운 셔터가 화면을 덮는 순간 실제 PVP 씬으로 교체한다.
-		if (slotFrame >= wipeStart) {
-			float wipeT = Min(1.0f,
-				(float)(slotFrame - wipeStart) / (float)Max(1, revealEnd - wipeStart));
-			wipeT = wipeT * wipeT;
-			int halfW = (int)((DX / 2 + 2 * _2X) * wipeT);
-			MemRect(DX / 2 - halfW, DY, halfW * 2, DY, 0x08040D);
+		//네 장의 cloud.png가 사방에서 모여 씬 교체와 로딩을 완전히 감춘다.
+		if (slotFrame >= pvpCloudStart) {
+			float closeT = Min(1.0f, (float)(slotFrame - pvpCloudStart)
+				/ (float)Max(1, pvpCloudEnd - pvpCloudStart));
+			PvpTransitionCloudDraw((int)((FPS + FPS / 2) * (1.0f - closeT)));
 		}
 
-		if (slotFrame >= revealEnd) {
+		if (slotFrame >= pvpCloudEnd) {
 			gRoulettePvpResult = false;
 			roulettePlayZoom = 1.0f;
 			bar[BAR_ROULETTE].front = false;

@@ -1692,6 +1692,55 @@ bool PvpHeroTurnBusy(int obj)
 		|| ao[obj].attack != false;
 }
 
+//---- 이 동료의 몇 차 스킬 ----
+//
+//그 칸이 비어 있거나 데이터 밖이면 1 차로 내린다. 편성표에는 있는데 스킬은
+//아직 안 채운 동료가 있어서, 그때 아무것도 안 쏘면 제 차례를 통째로 거른다.
+int PvpCrewSkillIdx(int type, int level)
+{
+	const int crewIdx = GetCrewIdxFromType(type);
+
+	if (crewIdx < 0)
+		return -1;
+
+	for (int lv = Max(1, Min(3, level)); lv >= 1; --lv) {
+		const int skill =
+			crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1 + lv - 1];
+
+		if (skill >= 0 && skill < gTotalSkill)
+			return skill;
+	}
+
+	return -1;
+}
+
+//---- 이 동료가 쏜 것이 아직 날아다니는가 ----
+//
+//차례를 넘기는 기준이다. 쏘는 자세만 보고 넘기면 총알이 채 닿기도 전에
+//다음 사람이 나서서, 데미지 숫자가 누구 것인지 알 수 없게 된다.
+bool PvpCrewBulletAlive(int obj)
+{
+	//아군 동료의 총알은 공용 총알 칸에 산다.
+	if (obj >= CREW && obj < CREW + MAXCREW) {
+		for (int i = BULLET; i < ENEMYUSEROBJ; ++i) {
+			if (ao[i].active && ao[i].mom == obj)
+				return true;
+		}
+
+		return false;
+	}
+
+	//수비 동료의 총알은 제 뒤 칸에 산다.
+	if (obj >= ENEMY && obj < NEUTRAL) {
+		for (int i = obj + 1; i < obj + MAXENEMYOBJ && i < NEUTRAL; ++i) {
+			if (ao[i].active)
+				return true;
+		}
+	}
+
+	return false;
+}
+
 //---- PVP 수비측 총알 ----
 //
 //성벽에서 우리 히어로에게 곧장 날아가 맞으면 사라진다.
@@ -1736,7 +1785,7 @@ void PvpFoeBulletMove(OBJECT* pObj)
 //
 //총알은 그 동료의 뒤 칸(MAXENEMYOBJ - 1 자리)에만 넣는다. 남의 칸을 쓰면
 //다른 동료를 덮어쓴다.
-void PvpFoeShoot(int obj)
+void PvpFoeShoot(int obj, int level)
 {
 	if (obj < ENEMY || obj >= NEUTRAL)
 		return;
@@ -1747,9 +1796,9 @@ void PvpFoeShoot(int obj)
 	if (crewIdx < 0)
 		return;
 
-	//총알 모양은 1 차 스킬을 따른다. AddObject 가 currentSkill 을 보고
-	//고르므로 넣어 두고 부른다.
-	mom->currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1];
+	//총알 모양도 피해도 이 스킬을 따른다. AddObject 가 currentSkill 을 보고
+	//총알을 고르고, 피해 쪽은 AttackRobin 이 같은 값을 읽는다.
+	mom->currentSkill = PvpCrewSkillIdx(mom->type, level);
 
 	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
 		return;
@@ -1784,7 +1833,7 @@ void PvpFoeShoot(int obj)
 //다만 총알은 기존 동료 총알(ADDOBJ_CREWBULLET)을 그대로 쓴다. 이쪽은
 //"아군 -> 적" 방향이라 AttackEnemyCheck 가 알아서 적 칸을 때린다.
 //수비측만 반대 방향이 없어서 따로 만들었다.
-void PvpAllyShoot(int obj)
+void PvpAllyShoot(int obj, int level)
 {
 	if (obj < CREW || obj >= CREW + MAXCREW)
 		return;
@@ -1795,9 +1844,10 @@ void PvpAllyShoot(int obj)
 	if (crewIdx < 0)
 		return;
 
-	//총알 모양은 1 차 스킬을 따른다. AddObject 가 currentSkill 을 보고
-	//고르므로 넣어 두고 부른다.
-	mom->currentSkill = crewData[crewIdx * CREWDATASIZE + CREWDATA_SKILL1];
+	//총알 모양도 피해도 이 스킬을 따른다. AddObject 가 currentSkill 을 보고
+	//총알을 고르고, 피해 배수는 AttackObj 가 총알의 주인에게서 같은 값을
+	//읽어 간다.
+	mom->currentSkill = PvpCrewSkillIdx(mom->type, level);
 
 	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
 		return;

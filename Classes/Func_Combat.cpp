@@ -1531,6 +1531,16 @@ void AttackRobin(int obj, int dest)
 			//몬스터가 제 공격력의 0.55 배로만 때렸다.
 			damage = (ao[obj].str - extraArmor) * 80 + (ao[obj].str - extraArmor) * 20;
 			damage = RoundDiv(damage, 100);
+
+			//---- PVP 수비 동료의 스킬 배수 ----
+			//
+			//아군이 칠 때는 AttackObj 가 총알 주인의 currentSkill 을 보고
+			//배수를 먹인다. 이쪽(적 -> 아군)은 그 길을 안 지나므로 여기서
+			//같은 값을 읽는다. 안 그러면 3 차 스킬이 기본 공격과 같은
+			//피해로 들어간다.
+			if (drawHandle == MD_PVP && ao[obj].currentSkill >= 0)
+				damage = RoundDiv(
+					damage * SkillDamagePct(ao[obj].currentSkill), 100);
 			//damage = (ao[obj].str);
 
 			//엘케인 대쉬공격일 경우 무조건 크리대미지

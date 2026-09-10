@@ -46,6 +46,7 @@ int GetPvpSkillFreezeObj(void);
 void PvpFinishCrewSkill(OBJECT* pObj);
 void ExitPvpTest(void);
 void PvpTestDraw(void);
+void PvpTransitionCloudDraw(int transitionFrame);
 void ActiveHelpDraw();
 void LogDraw(LOG *);
 void KeepLogFromDarken(LOG *);
