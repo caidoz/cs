@@ -13057,6 +13057,14 @@ void ItemMove(OBJECT* pObj)
 			if (pObj->def != ITEM_GOLD)
 				break;
 
+			//여기로 오는 동전은 상자에서 나온 약탈금뿐이어야 한다. 어쩌다
+			//다른 자리에서 떨어진 것(피격 손실 동전 등)이 섞이면 골드바에
+			//마이너스가 들어가므로, 값이 양수일 때만 보낸다.
+			if (pObj->ax <= 0) {
+				pObj->active = false;
+				break;
+			}
+
 			startX = xOffset + pObj->x;
 			startY = STATUSWIN_Y + (rh - 4) * TSIZE - pObj->y - ry + OBJIMGGAP;
 

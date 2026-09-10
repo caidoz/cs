@@ -1831,6 +1831,18 @@ void AttackRobin(int obj, int dest)
 		if (dest < PLAYERALL && robin.gold < damage)
 			damage = robin.gold;
 
+		//---- PVP 는 맞아도 골드를 안 흘린다 ----
+		//
+		//일반전투는 맞은 만큼 골드를 뺏기고 그것이 동전으로 떨어진다.
+		//이 판의 규칙은 다르다. 뺏고 뺏기는 것은 이겨서 상자를 털 때 한
+		//번이고, 그 사이에 오가는 것은 피해뿐이다.
+		//
+		//그냥 두면 그 동전이 ax 에 마이너스를 달고 떨어지는데, PVP 의 동전은
+		//전부 골드바로 날아가므로 맞을 때마다 골드가 줄었다. 상자를 털고도
+		//총액이 마이너스가 된 까닭이다.
+		if (drawHandle == MD_PVP)
+			damage = 0;
+
 		if (damage > 0) {
 			int str;
 
