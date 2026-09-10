@@ -231,6 +231,19 @@ void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom)
 
 }
 
+void SocialProfileImageDraw(int profileIdx, int x, int y, float size)
+{
+	//profile.png: 1024x1024, 256x256 프로필 4열 x 4행.
+	profileIdx %= 16;
+	if (profileIdx < 0)
+		profileIdx += 16;
+	const int srcX = (profileIdx % 4) * 256;
+	const int srcY = (profileIdx / 4) * 256;
+	DrawImage(256, 256, srcX, srcY, x, y,
+		false, false, false, false, false, size / 256.0f,
+		sprite[PROFILE_IMG], PROFILE_IMG);
+}
+
 void EffectDrawOnlyBg(int yPos, float zoom)
 {
 	int i, j, y;

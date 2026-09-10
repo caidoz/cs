@@ -4843,7 +4843,7 @@ void MakeAiHouse(void)
 	//일단 적 순서대로 넣고, 세기 및 티어를 먹인다.
 	for (i = 0; i < TOTALAI; i++) {
 		aiUserHouse[i].userId = MakeItemId();
-		aiUserHouse[i].userProfileImgIdx = i % 31;
+		aiUserHouse[i].userProfileImgIdx = i % 16;
 		aiUserHouse[i].userName = TEXT_NICKNAME + Random(100);
 		for (j = 0; j < TOTALCHAR; j++) {
 			for (k = 0; k < TOTALEQUIP; k++) {

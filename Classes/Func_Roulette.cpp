@@ -1192,7 +1192,6 @@ static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 			const int cy = (row * 2 + 1) * DY / (rows * 2) + jitterY;
 			const float castleZoom = (0.058f + 0.012f * (friendIndex % 3)) * appear;
 			const float profileSize = (18.0f + 2.0f * (friendIndex % 2)) * _2X;
-			const float profileZoom = profileSize / 256.0f * appear;
 
 			SetAlpha((int)(32.0f * appear));
 			DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
@@ -1200,12 +1199,11 @@ static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 				cy + (float)DIORAMASIZE_Y * castleZoom / 2,
 				false, false, false, false, false, castleZoom,
 				sprite[MAP_DIORAMA_IMG + castleType], MAP_DIORAMA_IMG + castleType);
-			DrawImage(256, 256, 0, 0,
+			SocialProfileImageDraw((friendIndex + 1) % 16,
 				cx - profileSize * appear / 2,
 				cy + (float)DIORAMASIZE_Y * castleZoom / 2
 					+ profileSize * appear + 2 * _2X,
-				false, false, false, false, false, profileZoom,
-				sprite[SOCIAL_PROFILE_DEFAULT_IMG], SOCIAL_PROFILE_DEFAULT_IMG);
+				profileSize * appear);
 			friendIndex++;
 		}
 	}
@@ -1226,12 +1224,11 @@ static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 		sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]],
 		MAP_DIORAMA_IMG + castleOrder[robin.castle]);
 	const float myProfileSize = 26.0f * _2X;
-	DrawImage(256, 256, 0, 0,
+	SocialProfileImageDraw(profileImg[0],
 		DX / 2 - myProfileSize / 2,
 		DY / 2 + (float)DIORAMASIZE_Y * myZoom / 2
 			+ myProfileSize + 3 * _2X,
-		false, false, false, false, false, myProfileSize / 256.0f * mapBlend,
-		sprite[SOCIAL_PROFILE_DEFAULT_IMG], SOCIAL_PROFILE_DEFAULT_IMG);
+		myProfileSize * mapBlend);
 	SetAlpha(32);
 }
 

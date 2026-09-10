@@ -1643,37 +1643,6 @@ static void PvpMakeFighter(int dst, const OBJECT& src, bool isHero,
 	InitMotion(&ao[dst]);
 }
 
-//---- 동료 한 명이 한 차례에 넣는 평균 피해 ----
-//
-//스킬이 섞이므로 한 주기(PVP_SKILL3_EVERY 차례)를 통째로 세서 나눈다.
-//기본 공격만으로 재면 스킬 배수만큼 실제 피해가 더 커서, 체력을 그 기준으로
-//잡으면 판이 계산보다 훨씬 빨리 끝난다 - 뒤쪽 스킬은 나오지도 못한다.
-//
-//그 칸이 비어 있는 동료는 PvpCrewSkillIdx 가 1 차로 내려주므로, 여기서도
-//저절로 기본 공격 값이 된다.
-static long long PvpCrewTurnDamage(const OBJECT* pObj)
-{
-	if (!pObj->active || pObj->dead)
-		return 0;
-
-	const long long atk = Max((long long)1, pObj->ps[PS_DMG]);
-	long long sum = 0;
-
-	for (int t = 1; t <= PVP_SKILL3_EVERY; ++t) {
-		int level = 1;
-
-		if (t % PVP_SKILL3_EVERY == 0)
-			level = 3;
-		else if (t % PVP_SKILL2_EVERY == 0)
-			level = 2;
-
-		sum += atk
-			* SkillDamagePct(PvpCrewSkillIdx(pObj->type, level)) / 100;
-	}
-
-	return Max((long long)1, sum / PVP_SKILL3_EVERY);
-}
-
 static void SetupPvpCombatObjects(void)
 {
 	const int castleIdx = castleOrder[robin.castle];
@@ -1775,36 +1744,6 @@ static void SetupPvpCombatObjects(void)
 		ao[dst].x = ao[dst].nx = ao[PVP_ATTACKER_ROBIN].x
 			- (float)(PVP_ALLY_GAP * (i + 1));
 		ao[dst].y = ao[dst].ny = ao[PVP_ATTACKER_ROBIN].y;
-	}
-
-	//---- 두 히어로의 체력 ----
-	//
-	//ps[PS_HP] 를 그대로 쓰면 한두 대에 눕는다. 그 값은 몬스터 하나를
-	//상대하는 체력인데, 여기서는 동료 여섯이 한 바퀴마다 같이 때린다.
-	//
-	//한 바퀴에 "들어오는" 피해를 세서 그 몇 배로 잡는다. 곧 몇 바퀴 만에
-	//눕는가가 값이 된다. 장비가 좋아져 피해가 커지면 체력도 같이 커지므로
-	//나중에 손으로 다시 잡을 일이 없다.
-	//
-	//받는 쪽 기준으로 따로 센다. 공격측 히어로는 수비 동료에게 맞고 수비측
-	//히어로는 아군 동료에게 맞는다. 한 값을 나눠 쓰면 편성이 갈릴 때
-	//한쪽만 오래 버틴다.
-	{
-		long long toDefender = Max((long long)1,
-			ao[PVP_ATTACKER_ROBIN].ps[PS_DMG]);
-		long long toAttacker = Max((long long)1,
-			ao[PVP_DEFENDER_ROBIN].ps[PS_DMG]);
-
-		for (int i = 0; i < MAXCREW; i++) {
-			toDefender += PvpCrewTurnDamage(&ao[PVP_ATTACKER_CREW + i]);
-			toAttacker += PvpCrewTurnDamage(
-				&ao[PVP_DEFENDER_CREW + i * MAXENEMYOBJ]);
-		}
-
-		ao[PVP_ATTACKER_ROBIN].hp = ao[PVP_ATTACKER_ROBIN].maxhp =
-			Max((long long)1, toAttacker * PVP_HERO_ROUNDS_TO_KILL);
-		ao[PVP_DEFENDER_ROBIN].hp = ao[PVP_DEFENDER_ROBIN].maxhp =
-			Max((long long)1, toDefender * PVP_HERO_ROUNDS_TO_KILL);
 	}
 
 	//---- 지킬 상자 ----

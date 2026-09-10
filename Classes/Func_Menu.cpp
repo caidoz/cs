@@ -4044,11 +4044,7 @@ static void SocialButton(float x, float y, float w, float h, const char* text,
 
 static void SocialProfile(int idx, float x, float y, float size, float zoom)
 {
-	//실제 서비스에서는 URL 텍스처를 원형 ClippingNode로 자른 뒤 이 금색 프레임
-	//안에 넣는다. 현재는 다운로드 이미지가 없어 캐릭터 프로필을 대체 표시한다.
-	DrawFrame(x, y, size, size, FRAME_SHOPBALLOON);
-	EnemyProfileDraw((int)x, (int)y, idx % TOTALCHAR, false, false,
-		(size / (36.0f * _2X)) * zoom);
+	SocialProfileImageDraw(idx, (int)x, (int)y, size * zoom);
 }
 
 static void SocialUserRow(int dataIdx, int rank, float x, float y, float w,

@@ -3258,6 +3258,7 @@ const char* const textId[] = {
 	"t0",
 	"bg0",
 	"dot",
+	"profile",
 	"dot",//0
 	"dot",//1
 	"dot",//2
@@ -3296,7 +3297,6 @@ const char* const textId[] = {
 	"shop_cash_piles",
 	"shop_pass_art",
 	"gacha_paid_bg",
-	"social_profile_default",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

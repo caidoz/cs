@@ -2973,6 +2973,9 @@ bool NetChooseLogin(int provider)
 	//상태를 따지지 않고, 이 기기에 있는 것으로 그 자리에서 부팅을 끝낸다.
 	#if NET_GUEST_LOCAL_PASS
 	if (provider == LOGIN_GUEST) {
+		//Guest는 소셜 사진이 없으므로 4x4 기본 프로필 중 하나를 이번 로그인의
+		//대표 이미지로 고른다. 서버 프로필이 연결되면 그 인덱스로 덮어쓴다.
+		profileImg[0] = Random(16);
 		//두 게이트를 같이 내린다. 하나만 내리면 다른 하나가 화면을 덮는다.
 		sLoginChoiceWaiting = false;
 		sTermsWaiting = false;
