@@ -1199,7 +1199,7 @@ static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 				cy + (float)DIORAMASIZE_Y * castleZoom / 2,
 				false, false, false, false, false, castleZoom,
 				sprite[MAP_DIORAMA_IMG + castleType], MAP_DIORAMA_IMG + castleType);
-			SocialProfileImageDraw((friendIndex + 1) % 16,
+			SocialProfileImageDraw((int)aiUserHouse[friendIndex % TOTALAI].userProfileImgIdx,
 				cx - profileSize * appear / 2,
 				cy + (float)DIORAMASIZE_Y * castleZoom / 2
 					+ profileSize * appear + 2 * _2X,
@@ -1599,10 +1599,10 @@ void RouletteDraw(int x, int y, float zoom)
 				+ (12 * _2X + profileW) * profileEase);
 			const int rightProfileX = (int)(DX
 				- (12 * _2X + profileW) * profileEase);
-			EnemyProfileDraw(leftProfileX, profileY, ROBIN,
-				false, false, profileZoom);
-			EnemyProfileDraw(rightProfileX, profileY, ROBIN,
-				false, false, profileZoom);
+			SocialProfileImageDraw(profileImg[0], leftProfileX, profileY,
+				(float)profileW);
+			SocialProfileImageDraw((int)enemyHouse.userProfileImgIdx,
+				rightProfileX, profileY, (float)profileW);
 
 			if (slotFrame >= pvpNameStart) {
 				SetFontColor(COLOR_WHITE);

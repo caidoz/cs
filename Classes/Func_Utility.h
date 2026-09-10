@@ -19,6 +19,9 @@ void StatusDraw(int x, int y, float zoom);
 void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom);
 void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom);
 void SocialProfileImageDraw(int profileIdx, int x, int y, float size);
+void UserProfileNameDraw(int profileIdx, const char* nickname,
+	int imageX, int imageY, float imageSize,
+	float nameX, float nameY, float textZoom, int align);
 void EffectDrawOnlyBg(int, float zoom);
 void EffectDraw(int, float zoom);
 void DrawTouchPoint(void);

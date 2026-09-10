@@ -566,13 +566,14 @@ void DrawPvpCrewPanel(int x, int y, int w, int h)
 		WP_INNER_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
 }
 
-void DrawPvpHeroPanel(int x, int y, int w, int h)
+void DrawPvpHeroPanel(int x, int y, int w, int h,
+	int profileIdx, const char* nickname, bool defender)
 {
 	//보라색 리본 창을 바깥 판으로 먼저 그리고 중앙만 왼쪽 금장 창의
 	//베이지 질감으로 채운다. 슬롯 테두리를 썼을 때 나오던 파란 보석과
 	//금색 모서리는 히어로 창의 테두리가 아니므로 사용하지 않는다.
-	DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H,
-		WP_RIBBON_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
+	//DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H,
+	//	WP_RIBBON_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
 
 	const int insetX = 9 * _2X;
 	const int insetY = 7 * _2X;
@@ -584,6 +585,19 @@ void DrawPvpHeroPanel(int x, int y, int w, int h)
 		x + insetX, y - insetY, false, false, false, false, false,
 		(float)(w - insetX * 2) / fillSw,
 		(float)(h - insetY * 2) / fillSh, sprite[WIN_IMG], WIN_IMG);
+
+	const float profileSize = 28.0f * _2X;
+	const int profileY = y - 9 * _2X;
+	if (defender) {
+		const int profileX = x + w - 5 * _2X - (int)profileSize;
+		UserProfileNameDraw(profileIdx, nickname, profileX, profileY, profileSize,
+			(float)(profileX - 6 * _2X), y - 8 * _2X, 0.88f, RIGHT);
+	}
+	else {
+		const int profileX = x + 5 * _2X;
+		UserProfileNameDraw(profileIdx, nickname, profileX, profileY, profileSize,
+			(float)(profileX + profileSize + 6 * _2X), y - 8 * _2X, 0.88f, LEFT);
+	}
 }
 
 //---- 글자 ----
@@ -3825,6 +3839,17 @@ void OptionDraw(int x, int y, float zoom)
 	CenterTextStr(titleMode ? "시작 환경설정" : "환경설정", x + w / 2,
 		y - 30.0f * s - 32.0f * zoom + (float)FONT_HEIGHT * OPTIONTITLEZOOM / 2,
 		OPTIONTITLEZOOM);
+	if (!titleMode) {
+		const float profileSize = 50.0f * zoom;
+		const float profileX = x + 30.0f * s;
+		const float profileY = y - 20.0f * s;
+		SocialProfileImageDraw(profileImg[0], (int)profileX, (int)profileY, profileSize);
+		SetFontColor(COLOR_WHITE);
+		DrawTextStrSystem(robin.nickname.empty() ? "Guest" : robin.nickname.c_str(),
+			profileX + profileSize + 10.0f * zoom,
+			profileY - profileSize / 2 + (float)FONT_HEIGHT * 0.72f / 2,
+			0.72f, LEFT, true);
+	}
 
 	//닫기 버튼. 창 그림에는 X 가 없어서 직접 얹는다.
 	//
@@ -4044,7 +4069,7 @@ static void SocialButton(float x, float y, float w, float h, const char* text,
 
 static void SocialProfile(int idx, float x, float y, float size, float zoom)
 {
-	SocialProfileImageDraw(idx, (int)x, (int)y, size * zoom);
+	SocialProfileImageDraw(idx % 16, (int)x, (int)y, size * zoom);
 }
 
 static void SocialUserRow(int dataIdx, int rank, float x, float y, float w,

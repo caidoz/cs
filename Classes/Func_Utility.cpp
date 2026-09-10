@@ -190,6 +190,9 @@ void EnemyUserProfileDraw_Box(HOUSE* housePtr, int x, int y, float zoom)
 
 
 	DrawFrame(x + (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom + (float)-1 * _2X * zoom, y - (float)(23 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * 0.85f * zoom, (float)(PROFILEIMG_Y + 2 * _2X) * 0.8f * zoom, FRAME_SHOPBALLOON);
+	SocialProfileImageDraw((int)housePtr->userProfileImgIdx,
+		x + (int)((RAIDGOLDBARWIDTH - PROFILEIMG_X * 0.85f) / 2 * zoom),
+		y - (int)(22 * _2X * zoom), PROFILEIMG_X * 0.85f * zoom);
 
 
 
@@ -214,12 +217,13 @@ void EnemyUserProfileDraw(HOUSE* housePtr, int x, int y, float zoom)
 
 	width = (float)PROFILEIMG_X * profileZoom + (float)(ITEMICONSIZE + 2 * _2X) * iconZoom + GetBigNumDx(betCnt, false, NUM_FONT_NORMAL, false, true, (float)(RAIDGOLDBARWIDTH - PROFILEIMG_X) * zoom, zoom * 1.5f, false);
 
-	return;
-
 	DrawLabel(x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y, TEXT_NICKNAME + robin.enemyUserIdx, zoom);
 
 
 	DrawFrame(x - width / 2, y - (float)(1 * _2X) * zoom, (float)(PROFILEIMG_X + 2 * _2X) * profileZoom, (float)(PROFILEIMG_Y + 2 * _2X) * profileZoom, FRAME_SHOPBALLOON);
+	SocialProfileImageDraw((int)housePtr->userProfileImgIdx,
+		(int)(x - width / 2 + _2X * zoom),
+		(int)(y - 2 * _2X * zoom), PROFILEIMG_X * profileZoom);
 
 	
 	DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x - width / 2 + (float)(PROFILEIMG_X + 4 * _2X) * profileZoom, y - (float)(32 * _2X) * zoom, iconZoom, COLOR_BROWN, false, false, true);
@@ -242,6 +246,15 @@ void SocialProfileImageDraw(int profileIdx, int x, int y, float size)
 	DrawImage(256, 256, srcX, srcY, x, y,
 		false, false, false, false, false, size / 256.0f,
 		sprite[PROFILE_IMG], PROFILE_IMG);
+}
+
+void UserProfileNameDraw(int profileIdx, const char* nickname,
+	int imageX, int imageY, float imageSize,
+	float nameX, float nameY, float textZoom, int align)
+{
+	SocialProfileImageDraw(profileIdx, imageX, imageY, imageSize);
+	SetFontColor(COLOR_WHITE);
+	DrawTextStrSystem(nickname, nameX, nameY, textZoom, align, true);
 }
 
 void EffectDrawOnlyBg(int yPos, float zoom)

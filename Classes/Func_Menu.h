@@ -117,7 +117,8 @@ void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onl
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH);
 void BossRaidDetailDraw(void);
 void DrawPvpCrewPanel(int x, int y, int w, int h);
-void DrawPvpHeroPanel(int x, int y, int w, int h);
+void DrawPvpHeroPanel(int x, int y, int w, int h,
+	int profileIdx, const char* nickname, bool defender);
 
 //장비 상세보기(팝업). 동료 상세와 같은 틀을 쓴다.
 //얻지 않은 장비는 여기까지 오지 않는다(Func_Input.cpp에서 막는다).

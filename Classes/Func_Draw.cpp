@@ -2295,10 +2295,11 @@ static void PvpDrawSkillClock(int skill, int cool, int need, int x, int y,
 // option.png에 한 쌍으로 들어 있는 청색/적색 패널을 쓴다. 색을 억지로
 // 바꾸지 않으므로 양 진영의 재질과 명암이 같고, 원본 한 조각을 지정한
 // 사각형 안에 그려 장식이 화면 좌우로 삐져나오지 않는다.
-static void PvpDrawPanel(int x, int y, int w, int h, bool hero)
+static void PvpDrawPanel(int x, int y, int w, int h, bool hero,
+	int profileIdx = 0, const char* nickname = "", bool defender = false)
 {
 	if (hero)
-		DrawPvpHeroPanel(x, y, w, h);
+		DrawPvpHeroPanel(x, y, w, h, profileIdx, nickname, defender);
 	else
 		DrawPvpCrewPanel(x, y, w, h);
 }
@@ -2431,18 +2432,21 @@ static void PvpDrawCombatHud(void)
 	}
 	//샘플처럼 하단을 짙은 남색으로 묶고, 각 팀의 히어로 정보는 서로
 	//떨어진 플로팅 패널로 올린다.
-	SetAlpha(30);
-	MemRect(0, hudTop, DX, hudTop, 0x071229);
-	SetAlpha(32);
+	//SetAlpha(30);
+	//MemRect(0, hudTop, DX, hudTop, 0x071229);
+	//SetAlpha(32);
 	const int heroPanelPad = 2 * _2X;
 	const int heroPanelW = DX / 2 - heroPanelPad * 2;
 	const int heroPanelH = 47 * _2X;
 	const int leftPanelX = pvpHeroHudBar[0].x + heroPanelPad;
 	const int rightPanelX = pvpHeroHudBar[1].x + heroPanelPad;
+	const char* myNickname = robin.nickname.empty()
+		? "Guest" : robin.nickname.c_str();
 	PvpDrawPanel(leftPanelX, hudTop - 2 * _2X,
-		heroPanelW, heroPanelH, true);
+		heroPanelW, heroPanelH, true, profileImg[0], myNickname, false);
 	PvpDrawPanel(rightPanelX, hudTop - 2 * _2X,
-		heroPanelW, heroPanelH, true);
+		heroPanelW, heroPanelH, true, (int)enemyHouse.userProfileImgIdx,
+		"RIVAL COPY", true);
 	const int heroY = hudTop - 43 * _2X;
 	const int leftHeroX = pvpHeroHudBar[0].x + 25 * _2X;
 	const int rightHeroX = pvpHeroHudBar[1].x + heroPanelW - 21 * _2X;
@@ -2451,11 +2455,6 @@ static void PvpDrawCombatHud(void)
 	DrawPlayer(&ao[PVP_DEFENDER_ROBIN], motionData[0], rightHeroX, heroY,
 		LEFT, 0.72f, 0, false, true);
 
-	SetFontColor(COLOR_WHITE);
-	DrawTextStrSystem("MY ROBIN", leftPanelX + 48 * _2X,
-		hudTop - 8 * _2X, 0.88f, LEFT, true);
-	DrawTextStrSystem("RIVAL COPY", rightPanelX + heroPanelW - 48 * _2X,
-		hudTop - 8 * _2X, 0.88f, RIGHT, true);
 	//보스 바의 원본 가로세로 비율은 그대로 둔다. 이름 줄 아래에서 시작해
 	//프레임 하단까지 쓰도록 내려 이름과 체력 숫자가 겹치지 않게 한다.
 	const float hpZoom = 0.38f;
