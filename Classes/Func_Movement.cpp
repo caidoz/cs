@@ -1677,10 +1677,17 @@ void PvpHeroGiveTurn(int obj)
 
 	pvpHeroGo[side] = true;
 
-	//어쩌다 집 밖에 서 있으면 먼저 돌아오게 한다. 그래야 나가는 자리가
-	//언제나 같다.
-	if (ao[obj].turnPosition != HERE && ao[obj].attack == false)
-		ao[obj].turnPosition = COMING;
+	//---- 서 있는 자리에서 곧장 나간다 ----
+	//
+	//전에는 집 밖에 있으면 COMING 으로 돌려보내고 시작했다. 그러면 차례가
+	//오는 순간 뒤로 물러났다가 다시 앞으로 나가서, 시작이 "뒤로 빠지는"
+	//것으로 보인다.
+	//
+	//돌아오는 것은 한 대 친 뒤의 몫이다. 차례의 시작은 언제나 전진이다.
+	if (ao[obj].turnPosition != HERE && ao[obj].attack == false) {
+		pvpHeroGo[side] = false;
+		ao[obj].turnPosition = GOING;
+	}
 }
 
 //아직 제 차례를 치르는 중인가.
@@ -1895,7 +1902,17 @@ void PvpHeroStep(OBJECT* pObj)
 		return;
 
 	const int side = (obj >= ENEMY) ? 1 : 0;
-	const int speed = Max(SPEED_MIN, pObj->pDx);
+
+	//---- 걸음 속도 ----
+	//
+	//pObj->pDx 를 쓰면 안 된다. 그 값은 PlayerMove 가 매 프레임 dx 를
+	//베껴 넣는 것인데, 여기서는 한 걸음 옮기고 나서 dx 를 0 으로 지운다.
+	//TileCheckX 가 다음 프레임에 한 번 더 밀지 않게 하려는 것이다.
+	//
+	//그래서 pDx 가 언제나 0 이 되고 속도는 하한(SPEED_MIN)으로 떨어졌다.
+	//두 히어로 사이를 그 속도로 건너면 한 차례가 몇 초씩 걸려서, 차례가
+	//시간 안에 안 끝나고 다음 바퀴로 넘어갔다.
+	const int speed = Max(SPEED_MIN, PVP_HERO_SPEED);
 	const int range = GetAttackRange(obj);
 	const int dir = (ao[foe].x >= pObj->x) ? RIGHT : LEFT;
 
