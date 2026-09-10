@@ -1653,6 +1653,9 @@ static int pvpHeroCool[2] = { 0, 0 };
 //한 대 치는 동안 서 있을 자리. 치면서 앞으로 밀리지 않게 붙들어 둔다.
 static int pvpHeroAnchorX[2] = { 0, 0 };
 
+//이번 차례에 이미 때렸는가. 한 차례에 한 번만 들어간다.
+static bool pvpHeroHit[2] = { false, false };
+
 //---- 차례를 받았는가 ----
 //
 //전에는 쿨타임이 차면 저절로 나갔다. 그러면 동료와 히어로가 저마다 제
@@ -1668,6 +1671,7 @@ void PvpHeroResetCool(void)
 	pvpHeroCool[0] = pvpHeroCool[1] = 0;
 	pvpHeroAnchorX[0] = pvpHeroAnchorX[1] = 0;
 	pvpHeroGo[0] = pvpHeroGo[1] = false;
+	pvpHeroHit[0] = pvpHeroHit[1] = false;
 }
 
 //차례가 왔다. 집에서 기다리고 있다면 다음 프레임에 나간다.
@@ -1677,17 +1681,10 @@ void PvpHeroGiveTurn(int obj)
 
 	pvpHeroGo[side] = true;
 
-	//---- 서 있는 자리에서 곧장 나간다 ----
-	//
-	//전에는 집 밖에 있으면 COMING 으로 돌려보내고 시작했다. 그러면 차례가
-	//오는 순간 뒤로 물러났다가 다시 앞으로 나가서, 시작이 "뒤로 빠지는"
-	//것으로 보인다.
-	//
-	//돌아오는 것은 한 대 친 뒤의 몫이다. 차례의 시작은 언제나 전진이다.
-	if (ao[obj].turnPosition != HERE && ao[obj].attack == false) {
-		pvpHeroGo[side] = false;
-		ao[obj].turnPosition = GOING;
-	}
+	//어디에 서 있든 자리는 안 건드린다. 히어로는 제자리에서 치므로 차례를
+	//받는 데 준비 동작이 없다.
+	if (ao[obj].turnPosition != HERE && ao[obj].attack == false)
+		ao[obj].turnPosition = HERE;
 }
 
 //아직 제 차례를 치르는 중인가.
@@ -1902,73 +1899,64 @@ void PvpHeroStep(OBJECT* pObj)
 		return;
 
 	const int side = (obj >= ENEMY) ? 1 : 0;
-
-	//---- 걸음 속도 ----
-	//
-	//pObj->pDx 를 쓰면 안 된다. 그 값은 PlayerMove 가 매 프레임 dx 를
-	//베껴 넣는 것인데, 여기서는 한 걸음 옮기고 나서 dx 를 0 으로 지운다.
-	//TileCheckX 가 다음 프레임에 한 번 더 밀지 않게 하려는 것이다.
-	//
-	//그래서 pDx 가 언제나 0 이 되고 속도는 하한(SPEED_MIN)으로 떨어졌다.
-	//두 히어로 사이를 그 속도로 건너면 한 차례가 몇 초씩 걸려서, 차례가
-	//시간 안에 안 끝나고 다음 바퀴로 넘어갔다.
-	const int speed = Max(SPEED_MIN, PVP_HERO_SPEED);
-	const int range = GetAttackRange(obj);
-	const int dir = (ao[foe].x >= pObj->x) ? RIGHT : LEFT;
-
-	//사거리에서 멈출 자리. 상대의 x 를 그대로 좇으면 한 걸음에 지나쳐 서로
-	//자리가 뒤바뀐다. 나가는 쪽에서 미리 물려 두면 지나칠 일이 없다.
-	const int stopX = (dir == RIGHT) ? ao[foe].x - range : ao[foe].x + range;
 	int loopMotion;
 
+	//보는 쪽은 늘 상대다.
+	pObj->dirX = pObj->dirF = (ao[foe].x >= pObj->x) ? RIGHT : LEFT;
+	pObj->dx = pObj->dy = 0;
+
 	switch (pObj->turnPosition) {
+	case THERE:
+		//---- 치는 중 ----
+		//
+		//자리를 못 박는다. 모션표의 전진량은 PlayerMove_SkillAttack 에서
+		//이미 지웠지만, 제 손으로 x 를 만지는 스킬이 있어서 한 번 더 붙든다.
+		pObj->x = pvpHeroAnchorX[side];
+
+		//---- 때리는 순간 ----
+		//
+		//충돌 판정에 맡기지 않는다. 둘은 세팅된 자리에 서서 치는 것이고
+		//서로 몸이 닿지 않는다. 판정을 기다리면 아무 일도 안 일어난다.
+		//
+		//가는 길이 방향마다 다르다. 우리 히어로가 칠 때는 상대가 적 칸에
+		//있으니 AttackObj 고, 반대는 주인공을 때리는 유일한 길인
+		//AttackRobin 이다.
+		if (pvpHeroHit[side] == false
+			&& pObj->attackFrame >= skillStartFrame[ATTACK_NORMAL]
+				+ PVP_HERO_HIT_FRAME) {
+			pvpHeroHit[side] = true;
+
+			if (side == 0)
+				AttackObj(obj, foe);
+			else
+				AttackRobin(obj, foe);
+		}
+
+		if (pObj->attack == false)
+			pObj->turnPosition = HERE;
+		break;
+
 	case HERE:
-		//기다리는 자리다. 상대를 보고 선다.
-		pObj->dx = pObj->dy = 0;
-		pObj->dirX = pObj->dirF = dir;
+		//---- 제 차례를 기다린다 ----
 		loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL,
 			pObj->frame);
 		pObj->motion = (loopMotion < 0)
 			? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
 
-		//차례가 와야 나간다. 안 오면 계속 기다린다.
 		if (pvpHeroGo[side] == false)
 			break;
 
+		//---- 제자리에서 친다 ----
+		//
+		//다가가지 않는다. 두 히어로는 판이 열릴 때 이미 서로를 칠 수 있는
+		//자리에 선다. 거기서 걸어 나가면 자리가 매 차례 흐트러지고, 무엇보다
+		//"뒤에서 걸어 나오는" 것으로 보인다.
 		pvpHeroGo[side] = false;
-		pObj->turnPosition = GOING;
-		break;
-
-	case GOING:
-		//아직 멀면 달려간다.
-		if ((dir == RIGHT) ? (pObj->x < stopX) : (pObj->x > stopX)) {
-			//GotoObjXY 가 dirX 를 제 손으로 세우므로 부른 뒤에 다시 잡는다.
-			GotoObjXY(pObj, stopX, pObj->y, speed);
-			pObj->x += pObj->dx;
-
-			//한 걸음이 넘치면 딱 물린다.
-			if ((dir == RIGHT) ? (pObj->x > stopX) : (pObj->x < stopX))
-				pObj->x = stopX;
-
-			//이동은 여기서 끝난다. 남겨 두면 TileCheckX 가 다음 프레임에
-			//한 번 더 밀어 두 배로 간다.
-			pObj->dx = pObj->dy = 0;
-			pObj->dirX = pObj->dirF = dir;
-			loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_RUN,
-				pObj->frame);
-			pObj->motion = (loopMotion < 0)
-				? PO_C0_R0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
-			break;
-		}
-
-		//닿았다. 친다.
-		pObj->x = stopX;
-		pObj->dx = pObj->dy = 0;
-		pObj->dirX = pObj->dirF = dir;
+		pvpHeroHit[side] = false;
+		pvpHeroAnchorX[side] = pObj->x;
 
 		//attack 과 attackFrame 은 한 쌍이다. attack 만 켜면 attackFrame 이
 		//지난 공격이 남긴 값이라, 모션표의 엉뚱한 자리부터 재생된다.
-		pvpHeroAnchorX[side] = pObj->x;
 		pObj->turnPosition = THERE;
 		pObj->attack = ATTACK_NORMAL;
 		GetMotionPtr(pObj);
@@ -1976,57 +1964,11 @@ void PvpHeroStep(OBJECT* pObj)
 		HitCountCheck(pObj);
 		break;
 
-	case THERE:
-		//---- 친 자리에 못 박는다 ----
-		//
-		//전진량은 PlayerMove_SkillAttack 에서 이미 지웠다. 그래도 스킬마다
-		//제 손으로 x 를 만지는 것이 있어서, 한 대 치는 동안의 자리는 여기서
-		//한 번 더 붙들어 둔다.
-		pObj->x = pvpHeroAnchorX[side];
-
-		//치는 동안은 모션표가 몬다. 방향도 안 건드린다 - 표에 뒷걸음질이
-		//들어 있으면 그것이 dirX 를 쓰기 때문이다.
-		//
-		//끝나면 모션표의 _END 가 COMING 으로 넘긴다. 여기 검사는 다른
-		//이유로 공격이 꺼진 경우(빗맞음 처리 등)를 위한 안전판이다.
-		if (!pObj->attack)
-			pObj->turnPosition = COMING;
-		break;
-
-	case COMING:
-		//제자리로 돌아온다. 가는 쪽을 보고 달린다 - 일반전투와 같다.
-		if (Abs(pObj->x - pObj->nx) > speed
-			|| Abs(pObj->y - pObj->ny) > speed) {
-			GotoObjXY(pObj, pObj->nx, pObj->ny, speed);
-			pObj->x += pObj->dx;
-			pObj->y += pObj->dy;
-			pObj->dx = pObj->dy = 0;
-			pObj->dirX = pObj->dirF = (pObj->nx >= pObj->x) ? RIGHT : LEFT;
-			loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_RUN,
-				pObj->frame);
-			pObj->motion = (loopMotion < 0)
-				? PO_C0_R0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
-			break;
-		}
-
-		//돌아왔다. 다시 상대를 본다.
-		pObj->x = pObj->nx;
-		pObj->y = pObj->ny;
-		pObj->dx = pObj->dy = 0;
-		pObj->attack = false;
-		pObj->attackFrame = 0;
-		ReleasePlayer(pObj);
-		pObj->dirX = pObj->dirF = dir;
-		loopMotion = GetHeroLoopMotion(pObj->cmf, HEROLOOP_NEUTRAL,
-			pObj->frame);
-		pObj->motion = (loopMotion < 0)
-			? PO_C0_N0 + walkFrame[pObj->frame / 2 % 4] : loopMotion;
-		pObj->turnPosition = HERE;
-		break;
-
 	default:
-		//DMGUPDATE 처럼 여기서 안 쓰는 자리로 가 있으면 집으로 돌린다.
-		pObj->turnPosition = COMING;
+		//_END 가 COMING 으로 넘기거나, 빗맞음 처리(AfterAttack)가 다른 자리로
+		//돌려놓는 일이 있다. 어느 쪽이든 여기서는 제자리 대기로 돌아온다 -
+		//움직이지 않으니 돌아올 길도 없다.
+		pObj->turnPosition = HERE;
 		break;
 	}
 }
