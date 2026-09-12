@@ -32,7 +32,7 @@
 //
 // 서버 없이 돌려보고 싶으면 이 줄을 "" 로 비우면 된다. 그러면 예전처럼
 // 클라이언트 안의 임시 서버가 serverdb.dat 으로 처리한다.
-#define NET_SERVER_URL "https://api.bigpixel.kr"
+#define NET_SERVER_URL ""
 
 //---- 게스트 열쇠를 담아둘 파일 ----
 //

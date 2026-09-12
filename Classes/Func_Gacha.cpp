@@ -4,6 +4,24 @@
 #include "Text.h"
 #include "Data.h"
 
+// 보상 창은 menu.png에서 win.png로 옮겨졌다. 배치 크기는 유지하고
+// 본체와 분리된 제목 리본을 함께 그려 열기/닫기 연출이 같은 그림을 쓴다.
+static void DrawGachaRewardPanel(float cx, float cy, float w, float h)
+{
+	float top = cy + h / 2.0f;
+	DrawImageScale(512, 507, 0, 0, cx - w / 2.0f, top,
+		false, false, false, false, false, w / 512.0f, h / 507.0f,
+		sprite[WIN_IMG], WIN_IMG);
+
+	float ribbonW = w * 0.78f;
+	float ribbonZoom = ribbonW / 510.0f;
+	float ribbonH = 111.0f * ribbonZoom;
+	DrawImageScale(510, 111, 512, 0, cx - ribbonW / 2.0f,
+		top - h * 0.058f + ribbonH / 2.0f,
+		false, false, false, false, false, ribbonZoom, ribbonZoom,
+		sprite[WIN_IMG], WIN_IMG);
+}
+
 static float GachaClamp01(float value)
 {
 	if (value < 0.0f)
@@ -3408,28 +3426,22 @@ void GachaDraw(void)
 	case GACHA_DEPTH_SUMMARY:
 	{
 		//----------------------------------------------------
-		// MENU_IMG 창
+		// 보상 창 배치 크기 (원본 이미지 크기와 별개)
 		//----------------------------------------------------
-		const int PANEL_SRC_X =
-			0;
-
-		const int PANEL_SRC_Y =
-			606;
-
-		const int PANEL_SRC_W =
+		const int PANEL_LAYOUT_W =
 			400;
 
-		const int PANEL_SRC_H =
+		const int PANEL_LAYOUT_H =
 			409;
 
 		//----------------------------------------------------
-		// MENU_IMG 확인 버튼
+		// WIN_IMG 확인 버튼
 		//----------------------------------------------------
 		const int BTN_SRC_X =
-			401;
+			512;
 
 		const int BTN_SRC_Y =
-			606;
+			113;
 
 		const int BTN_SRC_W =
 			216;
@@ -3557,11 +3569,11 @@ void GachaDraw(void)
 		}
 
 		float panelDisplayW =
-			PANEL_SRC_W *
+			PANEL_LAYOUT_W *
 			panelZoom;
 
 		float panelDisplayH =
-			PANEL_SRC_H *
+			PANEL_LAYOUT_H *
 			panelZoom * 1.15f;
 
 		float panelCX =
@@ -3594,36 +3606,12 @@ void GachaDraw(void)
 		//----------------------------------------------------
 		// 팝업 출력
 		//----------------------------------------------------
-		DrawImageScale(
-			PANEL_SRC_W,
-			PANEL_SRC_H,
-			PANEL_SRC_X,
-			PANEL_SRC_Y,
-
-			panelCX -
-			panelDisplayW /
-			2.0f,
-
-			panelCY +
-			panelDisplayH /
-			2.0f,
-
-			false,
-			false,
-			false,
-			false,
-			false,
-
-			panelZoom,
-			panelZoom * 1.15f,
-
-			sprite[MENU_IMG],
-			MENU_IMG);
+		DrawGachaRewardPanel(panelCX, panelCY, panelDisplayW, panelDisplayH);
 
 		//----------------------------------------------------
 		// 리본 제목
 		//
-		// 창 그림 위쪽에 파란 리본이 붙어 있는데 글자가 없어서 비어 보였다.
+		// win.png의 보라색 리본 위에 보상 제목을 올린다.
 		// 위치와 크기를 창 크기에서 뽑아 쓰므로 창이 커지거나 연출로
 		// 확대되는 동안에도 리본 한가운데를 따라간다.
 		//----------------------------------------------------
@@ -3691,11 +3679,11 @@ void GachaDraw(void)
 		// 팝업 최종 크기를 기준으로 카드 크기 계산
 		//----------------------------------------------------
 		float finalPanelW =
-			PANEL_SRC_W *
+			PANEL_LAYOUT_W *
 			PANEL_FINAL_ZOOM;
 
 		float finalPanelH =
-			PANEL_SRC_H *
+			PANEL_LAYOUT_H *
 			PANEL_FINAL_ZOOM;
 
 		float popupGapX =
@@ -3984,8 +3972,8 @@ void GachaDraw(void)
 				false,
 				false,
 				btnZoom,
-				sprite[MENU_IMG],
-				MENU_IMG);
+				sprite[WIN_IMG],
+				WIN_IMG);
 
 			CenterText(TEXT_CONFIRM, btnX + (float)BTN_SRC_W * btnZoom / 2, btnY - (float)BTN_SRC_H * btnZoom / 2 + (float)8 * _2X * btnZoom, 1.5f * btnZoom);
 
@@ -4058,27 +4046,21 @@ void GachaDraw(void)
 		//----------------------------------------------------
 		// 팝업 정보
 		//----------------------------------------------------
-		const int PANEL_SRC_X =
-			0;
-
-		const int PANEL_SRC_Y =
-			606;
-
-		const int PANEL_SRC_W =
+		const int PANEL_LAYOUT_W =
 			400;
 
-		const int PANEL_SRC_H =
+		const int PANEL_LAYOUT_H =
 			409;
 
 		const float PANEL_FINAL_ZOOM =
-			1.5f;
+			1.6f;
 
 		float panelCX =
 			xOffset +
 			DX / 2.0f;
 
 		float panelCY =
-			DY / 2.0f;
+			DY / 2.0f + 24 * _2X;
 
 		int rewardCount =
 			boxCardItemCnt[0];
@@ -4338,37 +4320,14 @@ void GachaDraw(void)
 		if (panelZoom > 0.03f)
 		{
 			float panelDisplayW =
-				PANEL_SRC_W *
+				PANEL_LAYOUT_W *
 				panelZoom;
 
 			float panelDisplayH =
-				PANEL_SRC_H *
-				panelZoom;
+				PANEL_LAYOUT_H *
+				panelZoom * 1.15f;
 
-			DrawImage(
-				PANEL_SRC_W,
-				PANEL_SRC_H,
-				PANEL_SRC_X,
-				PANEL_SRC_Y,
-
-				panelCX -
-				panelDisplayW /
-				2.0f,
-
-				panelCY +
-				panelDisplayH /
-				2.0f,
-
-				false,
-				false,
-				false,
-				false,
-				false,
-
-				panelZoom,
-
-				sprite[MENU_IMG],
-				MENU_IMG);
+			DrawGachaRewardPanel(panelCX, panelCY, panelDisplayW, panelDisplayH);
 		}
 
 		//----------------------------------------------------

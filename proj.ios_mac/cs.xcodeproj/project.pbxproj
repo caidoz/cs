@@ -39,7 +39,9 @@
 		52B47A471A53D09C004E4C60 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B47A461A53D09B004E4C60 /* Security.framework */; };
 		8262943E1AAF051F00CB7CF7 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8262943D1AAF051F00CB7CF7 /* Security.framework */; };
 		AA01B48730122B38001FF0F2 /* Func_Gacha.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA01B48630122B38001FF0F2 /* Func_Gacha.cpp */; };
+		B8F1C1033B20000100C0FFEE /* Func_Iap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8F1C1023B20000100C0FFEE /* Func_Iap.cpp */; };
 		AA01B48830122B38001FF0F2 /* Func_Gacha.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA01B48630122B38001FF0F2 /* Func_Gacha.cpp */; };
+		B8F1C1043B20000100C0FFEE /* Func_Iap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8F1C1023B20000100C0FFEE /* Func_Iap.cpp */; };
 		B8F1C0033B20000100C0FFEE /* Func_Net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8F1C0023B20000100C0FFEE /* Func_Net.cpp */; };
 		AA01B68730126A5F001FF0F2 /* sounds in Resources */ = {isa = PBXBuildFile; fileRef = AA01B68630126A5F001FF0F2 /* sounds */; };
 		AAEBF3D63001114B0082A5D4 /* Func_Cmf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAEBF3AE3001114B0082A5D4 /* Func_Cmf.cpp */; };
@@ -241,7 +243,9 @@
 		52B47A461A53D09B004E4C60 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 		8262943D1AAF051F00CB7CF7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AA01B48530122B38001FF0F2 /* Func_Gacha.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Func_Gacha.h; sourceTree = "<group>"; };
+		B8F1C1013B20000100C0FFEE /* Func_Iap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Func_Iap.h; sourceTree = "<group>"; };
 		AA01B48630122B38001FF0F2 /* Func_Gacha.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Func_Gacha.cpp; sourceTree = "<group>"; };
+		B8F1C1023B20000100C0FFEE /* Func_Iap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Func_Iap.cpp; sourceTree = "<group>"; };
 		AA01B68630126A5F001FF0F2 /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sounds; path = ../Resources/sounds; sourceTree = "<group>"; };
 		AAEBF2E63001114B0082A5D4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AAEBF2E73001114B0082A5D4 /* AppDelegate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AppDelegate.cpp; sourceTree = "<group>"; };
@@ -755,7 +759,9 @@
 				AAEBF36B3001114B0082A5D4 /* Config */,
 				AAEBF36C3001114B0082A5D4 /* Core.h */,
 				AA01B48530122B38001FF0F2 /* Func_Gacha.h */,
+				B8F1C1013B20000100C0FFEE /* Func_Iap.h */,
 				AA01B48630122B38001FF0F2 /* Func_Gacha.cpp */,
+				B8F1C1023B20000100C0FFEE /* Func_Iap.cpp */,
 				AAEBF36D3001114B0082A5D4 /* Core.cpp */,
 				AAEBF36E3001114B0082A5D4 /* CoreClass.h */,
 				AAEBF36F3001114B0082A5D4 /* CoreGlobals.cpp */,
@@ -1300,6 +1306,7 @@
 				AAEBF3DF3001114B0082A5D4 /* Func_Combat.cpp in Sources */,
 				AAEBF3E03001114B0082A5D4 /* Func_Math.cpp in Sources */,
 				AA01B48730122B38001FF0F2 /* Func_Gacha.cpp in Sources */,
+				B8F1C1033B20000100C0FFEE /* Func_Iap.cpp in Sources */,
 				AAEBF3E23001114B0082A5D4 /* Func_Sound.cpp in Sources */,
 				AAEBF3E33001114B0082A5D4 /* Func_Menu.cpp in Sources */,
 				AAEBF3E43001114B0082A5D4 /* Func_Battle.cpp in Sources */,
@@ -1365,6 +1372,7 @@
 				AAEBF3F83001114B0082A5D4 /* Func_Demo.cpp in Sources */,
 				AAEBF3F93001114B0082A5D4 /* Func_Draw.cpp in Sources */,
 				AA01B48830122B38001FF0F2 /* Func_Gacha.cpp in Sources */,
+				B8F1C1043B20000100C0FFEE /* Func_Iap.cpp in Sources */,
 				AAEBF3FA3001114B0082A5D4 /* Func_Map.cpp in Sources */,
 				AAEBF3FC3001114B0082A5D4 /* Func_Combat.cpp in Sources */,
 				AAEBF3FD3001114B0082A5D4 /* Func_Math.cpp in Sources */,
