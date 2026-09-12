@@ -22,7 +22,7 @@
 
 //합성 연출 확인용 임시 결과 순서. 테스트가 끝나면 false로 바꾸면 즉시
 //아래의 정식 독립 확률 추첨으로 돌아간다.
-static const bool ROULETTE_MATCH_SEQUENCE_TEST = true;
+static const bool ROULETTE_MATCH_SEQUENCE_TEST = false;
 static int sRouletteMatchTestSpin = 0;
 
 namespace RoulettePvpTiming {
@@ -1232,6 +1232,98 @@ static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 	SetAlpha(32);
 }
 
+static float pvpUiBarStartX[TOTAL_BAR];
+static float pvpUiBarStartY[TOTAL_BAR];
+static bool pvpUiBarsMoving = false;
+
+static bool IsPvpBottomBar(int idx)
+{
+	return idx == BAR_HEART || idx == BAR_HEARTBET || idx == BAR_MAINSHOP
+		|| idx == BAR_CREW || idx == BAR_EQUIP || idx == BAR_SOCIAL;
+}
+
+static void BeginPvpUiExit(void)
+{
+	for (int i = 0; i < TOTAL_BAR; ++i) {
+		pvpUiBarStartX[i] = bar[i].x;
+		pvpUiBarStartY[i] = bar[i].y;
+	}
+	pvpUiBarsMoving = true;
+}
+
+static void UpdatePvpUiExit(float progress)
+{
+	if (!pvpUiBarsMoving)
+		return;
+	const float back = 2.6f;
+	const float t = Min(1.0f, Max(0.0f, progress));
+	const float eased = (back + 1.0f) * t * t * t - back * t * t;
+	for (int i = 0; i < TOTAL_BAR; ++i) {
+		if (i == BAR_ROULETTE)
+			continue;
+		float tx = pvpUiBarStartX[i];
+		float ty = pvpUiBarStartY[i];
+		if (IsPvpBottomBar(i))
+			ty = -160 * _2X;
+		else if (i == BAR_DAY || i == BAR_PLAY)
+			tx = DX + 160 * _2X;
+		else if (i == BAR_DAILYQUEST || i == BAR_CASTLE)
+			tx = -160 * _2X;
+		else
+			ty = DY + 160 * _2X;
+		bar[i].x = pvpUiBarStartX[i] + (tx - pvpUiBarStartX[i]) * eased;
+		bar[i].y = pvpUiBarStartY[i] + (ty - pvpUiBarStartY[i]) * eased;
+	}
+}
+
+static void RestorePvpUiBars(void)
+{
+	if (!pvpUiBarsMoving)
+		return;
+	for (int i = 0; i < TOTAL_BAR; ++i) {
+		bar[i].x = pvpUiBarStartX[i];
+		bar[i].y = pvpUiBarStartY[i];
+	}
+	pvpUiBarsMoving = false;
+}
+
+static void DrawPvpSelectedCastles(int localFrame, int totalFrame)
+{
+	DrawPvpCosmicCastleMap(totalFrame, totalFrame);
+	float t = Min(1.0f, (float)localFrame / (float)Max(1, totalFrame));
+	t = 1.0f - powf(1.0f - t, 3.0f);
+	SetAlpha((int)(22.0f * t));
+	MemRect(0, DY, DX, DY, 0x02040F);
+	SetAlpha(32);
+
+	const float castleZoom = 0.16f + 0.18f * t;
+	const int leftX = (int)(DX / 2 + (DX / 4 - DX / 2) * t);
+	const int rightX = DX - leftX;
+	const int castleY = DY / 2 + (int)(DIORAMASIZE_Y * castleZoom / 2);
+	const int myCastle = castleOrder[robin.castle];
+	const int foeCastle = enemyHouse.houseType >= 0
+		? (int)enemyHouse.houseType : myCastle;
+
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		leftX - DIORAMASIZE_X * castleZoom / 2, castleY,
+		false, false, false, false, false, castleZoom,
+		sprite[MAP_DIORAMA_IMG + myCastle], MAP_DIORAMA_IMG + myCastle);
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		rightX - DIORAMASIZE_X * castleZoom / 2, castleY,
+		true, false, false, false, false, castleZoom,
+		sprite[MAP_DIORAMA_IMG + foeCastle], MAP_DIORAMA_IMG + foeCastle);
+
+	const float profileSize = 30.0f * _2X;
+	UserProfileNameDraw(profileImg[0], robin.nickname.empty() ? "Guest" : robin.nickname.c_str(),
+		leftX - 72 * _2X, DY - 30 * _2X, profileSize,
+		leftX - 36 * _2X, DY - 42 * _2X, 0.82f, LEFT);
+	UserProfileNameDraw((int)enemyHouse.userProfileImgIdx, "RIVAL COPY",
+		rightX + 72 * _2X - (int)profileSize, DY - 30 * _2X, profileSize,
+		rightX + 36 * _2X, DY - 42 * _2X, 0.82f, RIGHT);
+	DrawGoldAlphaText(DX / 2, DY / 2 + 10 * _2X, "VS",
+		FONT_GOLD_LARGE, 2.4f + 0.4f * sinf(t * M_PI), CENTER, true, -7.0f);
+}
+
 void RouletteDraw(int x, int y, float zoom)
 {
 	const int rouletteHomeY = y;
@@ -1411,21 +1503,23 @@ void RouletteDraw(int x, int y, float zoom)
 		slotFrame++;
 	}
 
-	//세 심장이 모두 꽂힌 뒤 룰렛 전체가 화면 중앙으로 확대된다. 이후 프로필,
-	//히어로, 동료, VS 순으로 격돌 화면을 완성하고 네 구름으로 씬을 가린다.
+	//세 심장이 모두 꽂히면 쉬지 않고 룰렛과 기존 HUD가 퇴장 연출을 시작한다.
 	const int pvpHeartEnd = RoulettePvpTiming::Title;
-	const int pvpCosmicStart = pvpHeartEnd + FPS / 2;
+	const int pvpCenterEnd = pvpHeartEnd + Max(1, FPS / 4);
+	const int pvpBannerExit = pvpCenterEnd + Max(1, FPS / 4);
+	const int pvpCosmicStart = pvpCenterEnd + Max(1, FPS / 2);
 	const int pvpCosmicBuild = FPS * 3 / 4;
-	const int pvpCosmicHold = FPS + FPS / 2;
-	const int pvpProfileStart = pvpCosmicStart + pvpCosmicBuild + pvpCosmicHold;
-	const int pvpNameStart = pvpProfileStart + FPS / 4;
-	const int pvpHeroStart = pvpNameStart + FPS / 3;
-	const int pvpCrewStart = pvpHeroStart + FPS / 3;
-	const int pvpCrewDropGap = Max(1, FPS / 12);
-	const int pvpCrewDone = pvpCrewStart + pvpCrewDropGap * (MAXCREW - 1) + FPS / 3;
-	const int pvpVsStart = pvpCrewDone;
-	const int pvpCloudStart = pvpVsStart + FPS / 2;
-	const int pvpCloudEnd = pvpCloudStart + FPS * 2 / 3;
+	const int pvpCosmicHold = FPS / 2;
+	const int pvpMatchStart = pvpCosmicStart + pvpCosmicBuild + pvpCosmicHold;
+	const int pvpMatchDuration = FPS * 3 / 4;
+	const int pvpModeStart = pvpMatchStart + pvpMatchDuration;
+
+	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
+		&& slotFrame == pvpHeartEnd)
+		BeginPvpUiExit();
+	if (slotFrame >= pvpHeartEnd && slotFrame < pvpCosmicStart)
+		UpdatePvpUiExit((float)(slotFrame - pvpHeartEnd)
+			/ (float)Max(1, pvpCosmicStart - pvpHeartEnd));
 
 	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
 		&& slotFrame == pvpCosmicStart) {
@@ -1433,7 +1527,7 @@ void RouletteDraw(int x, int y, float zoom)
 		gPvpCosmicTransition = true;
 	}
 	if (gPvpCosmicTransition && slotFrame >= pvpCosmicStart
-		&& slotFrame < pvpProfileStart) {
+		&& slotFrame < pvpMatchStart) {
 		float t = Min(1.0f, (float)(slotFrame - pvpCosmicStart)
 			/ (float)Max(1, pvpCosmicBuild));
 		t = t * t * (3.0f - 2.0f * t);
@@ -1442,16 +1536,22 @@ void RouletteDraw(int x, int y, float zoom)
 
 	if (gRoulettePvpResult && attackSequence == ATTACKSEQUENCE_SLOT
 		&& slotFrame >= pvpHeartEnd && slotFrame < pvpCosmicStart) {
-		float t = Min(1.0f, (float)(slotFrame - pvpHeartEnd)
-			/ (float)Max(1, pvpCosmicStart - pvpHeartEnd));
-		t = 1.0f - powf(1.0f - t, 3.0f);
+		float centerT = Min(1.0f, (float)(slotFrame - pvpHeartEnd)
+			/ (float)Max(1, pvpCenterEnd - pvpHeartEnd));
+		centerT = 1.0f - powf(1.0f - centerT, 3.0f);
 		const float baseZoom = zoom;
 		const float targetZoom = Min((float)DX / (float)SLOTSIZE_X * 0.82f,
 			(float)DY / (float)SLOTSIZE_Y * 0.72f);
-		zoom = baseZoom + (targetZoom - baseZoom) * t;
+		zoom = baseZoom + (targetZoom - baseZoom) * centerT;
+		if (slotFrame >= pvpBannerExit) {
+			float burst = (float)(slotFrame - pvpBannerExit)
+				/ (float)Max(1, pvpCosmicStart - pvpBannerExit);
+			burst = burst * burst;
+			zoom = targetZoom * (1.0f + 3.5f * burst);
+		}
 		const float targetY = (float)DY / 2.0f
 			+ (float)SLOTSIZE_Y * zoom / 2.0f;
-		y = (int)((float)y + (targetY - (float)y) * t);
+		y = (int)((float)y + (targetY - (float)y) * centerT);
 	}
 	const bool drawRouletteBoard = !gRoulettePvpResult
 		|| attackSequence != ATTACKSEQUENCE_SLOT
@@ -1461,6 +1561,27 @@ void RouletteDraw(int x, int y, float zoom)
 			x - (float)SLOTSIZE_X / 2 * zoom, y,
 			false, false, false, false, false,
 			zoom, sprite[SLOT_IMG], SLOT_IMG);
+	}
+	if (gRoulettePvpResult && slotFrame >= pvpCenterEnd
+		&& slotFrame < pvpCosmicStart) {
+		const int local = slotFrame - pvpCenterEnd;
+		const int duration = pvpCosmicStart - pvpCenterEnd;
+		float t = Min(1.0f, (float)local / (float)Max(1, duration));
+		float bannerX;
+		float bannerY;
+		if (t < 0.5f) {
+			float enter = 1.0f - powf(1.0f - t * 2.0f, 3.0f);
+			bannerX = DX + 220 * _2X + (DX / 2 - (DX + 220 * _2X)) * enter;
+			bannerY = DY + 80 * _2X + (DY / 2 + 120 * _2X - (DY + 80 * _2X)) * enter;
+		}
+		else {
+			float exit = (t - 0.5f) * 2.0f;
+			exit = exit * exit;
+			bannerX = DX / 2 + (-260 * _2X - DX / 2) * exit;
+			bannerY = DY / 2 + 120 * _2X + (-120 * _2X - (DY / 2 + 120 * _2X)) * exit;
+		}
+		DrawGoldAlphaText((int)bannerX, (int)bannerY, "SIEGE BATTLE!",
+			FONT_GOLD_LARGE, 1.65f, CENTER, true, -7.0f);
 	}
 
 	// PVP 당첨은 일반 스킬 카드/턴 상태머신으로 들어가지 않는다.
@@ -1580,115 +1701,18 @@ void RouletteDraw(int x, int y, float zoom)
 
 		//확대된 룰렛이 사라지는 자리에 현재 성이 이어서 나타나 작아지고,
 		//주변 친구 성이 채워진다. 완성된 우주맵은 잠시 그대로 보여준다.
-		if (slotFrame >= pvpCosmicStart && slotFrame < pvpProfileStart)
+		if (slotFrame >= pvpCosmicStart && slotFrame < pvpMatchStart)
 			DrawPvpCosmicCastleMap(slotFrame - pvpCosmicStart, pvpCosmicBuild);
+		if (slotFrame >= pvpMatchStart && slotFrame < pvpModeStart)
+			DrawPvpSelectedCastles(slotFrame - pvpMatchStart, pvpMatchDuration);
 
-		//격돌 정보는 기존 프로필/캐릭터 리소스만으로 순서대로 등장한다.
-		if (slotFrame >= pvpProfileStart) {
-			SetAlpha(27);
-			MemRect(0, DY, DX, DY, 0x071229);
-			SetAlpha(32);
-
-			float profileT = Min(1.0f, (float)(slotFrame - pvpProfileStart)
-				/ (float)Max(1, FPS / 3));
-			float profileEase = 1.0f - powf(1.0f - profileT, 3.0f);
-			const float profileZoom = 1.15f;
-			const int profileW = (int)(36 * _2X * profileZoom);
-			const int profileY = DY - 18 * _2X;
-			const int leftProfileX = (int)(-profileW
-				+ (12 * _2X + profileW) * profileEase);
-			const int rightProfileX = (int)(DX
-				- (12 * _2X + profileW) * profileEase);
-			SocialProfileImageDraw(profileImg[0], leftProfileX, profileY,
-				(float)profileW);
-			SocialProfileImageDraw((int)enemyHouse.userProfileImgIdx,
-				rightProfileX, profileY, (float)profileW);
-
-			if (slotFrame >= pvpNameStart) {
-				SetFontColor(COLOR_WHITE);
-				const char* myName = robin.nickname.empty()
-					? "MY ROBIN" : robin.nickname.c_str();
-				DrawTextStrSystem(myName, 62 * _2X, profileY - 9 * _2X,
-					0.9f, LEFT, true);
-				DrawTextStrSystem("RIVAL COPY", DX - 62 * _2X,
-					profileY - 9 * _2X, 0.9f, RIGHT, true);
-			}
-
-			if (slotFrame >= pvpHeroStart) {
-				float heroT = Min(1.0f, (float)(slotFrame - pvpHeroStart)
-					/ (float)Max(1, FPS / 3));
-				float heroEase = 1.0f - powf(1.0f - heroT, 3.0f);
-				const int heroY = DY / 2 + 76 * _2X;
-				const int leftHeroX = (int)(-64 * _2X
-					+ (DX / 4 + 64 * _2X) * heroEase);
-				const int rightHeroX = DX - leftHeroX;
-				DrawPlayer(&ao[PLAYER], motionData[0], leftHeroX, heroY,
-					RIGHT, 1.4f, 0, false, true);
-				DrawPlayer(&ao[PLAYER], motionData[0], rightHeroX, heroY,
-					LEFT, 1.4f, 0, false, true);
-			}
-
-			if (slotFrame >= pvpCrewStart) {
-				for (int i = 0; i < MAXCREW; ++i) {
-					if (!ao[CREW + i].active)
-						continue;
-					const int local = slotFrame - pvpCrewStart - i * pvpCrewDropGap;
-					if (local < 0)
-						continue;
-					float t = Min(1.0f, (float)local / (float)Max(1, FPS / 3));
-					float land = 1.0f - powf(1.0f - t, 3.0f);
-					const int col = i % 3;
-					const int row = i / 3;
-					const int leftX = 40 * _2X + col * 54 * _2X;
-					const int rightX = DX - leftX;
-					const int targetY = DY / 2 - (12 + row * 50) * _2X;
-					const int startY = DY + 96 * _2X;
-					const int crewY = (int)(startY + (targetY - startY) * land);
-					const int type = ao[CREW + i].type;
-					const float crewZoom = (2.7f - 1.8f * land)
-						* enemyIconZoom[type];
-					DrawCmfDetailShadow(ao[CREW + i].cmf, crewPos[type * 5],
-						leftX, crewY, RIGHT, crewZoom);
-					DrawCmfDetailShadow(ao[CREW + i].cmf, crewPos[type * 5],
-						rightX, crewY, LEFT, crewZoom);
-					if (local == FPS / 3)
-						PlayMusic(M_KUNG);
-				}
-			}
-		}
-
-		//모든 인원이 도착한 뒤 중앙에는 VS만 크게 남긴다.
-		if (slotFrame >= pvpVsStart) {
-			int local = slotFrame - pvpVsStart;
-			float vsT = Min(1.0f, (float)local / (float)Max(1, FPS / 6));
-			float vsZoom = 1.2f + 3.2f * vsT + 0.65f * sinf(vsT * M_PI);
-			if (local > FPS / 5)
-				vsZoom += 0.24f * sinf((float)(local - FPS / 5) * 0.7f)
-					* Max(0.0f, 1.0f - (float)(local - FPS / 5) / (float)(FPS / 4));
-			DrawGoldAlphaText(DX / 2, DY / 2 + 15 * _2X, "VS",
-				FONT_GOLD_LARGE, vsZoom, CENTER, true, -7.0f);
-			if (local == 0 || local == FPS / 5) {
-				PlayMusic(M_KUNG);
-				SetAlpha(local == 0 ? 20 : 28);
-				MemRect(0, DY, DX, DY, COLOR_WHITE);
-				SetAlpha(32);
-			}
-		}
-
-		//네 장의 cloud.png가 사방에서 모여 씬 교체와 로딩을 완전히 감춘다.
-		if (slotFrame >= pvpCloudStart) {
-			float closeT = Min(1.0f, (float)(slotFrame - pvpCloudStart)
-				/ (float)Max(1, pvpCloudEnd - pvpCloudStart));
-			PvpTransitionCloudDraw((int)((FPS + FPS / 2) * (1.0f - closeT)));
-		}
-
-		if (slotFrame >= pvpCloudEnd) {
+		if (slotFrame >= pvpModeStart) {
 			gRoulettePvpResult = false;
 			roulettePlayZoom = 1.0f;
 			bar[BAR_ROULETTE].front = false;
-			//StartPvpTest가 복귀 배율을 저장하기 전에 원래 성 줌을 복원한다.
 			dioramaZoom = gPvpCosmicBaseZoom;
 			gPvpCosmicTransition = false;
+			RestorePvpUiBars();
 			StartPvpTest();
 		}
 		return;

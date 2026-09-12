@@ -534,10 +534,10 @@
 
 //일반 공격 룰렛에서 PVP 매칭이 등장할 확률(만분율).
 //500은 5%. 튜토리얼/데모 강제 룰렛에서는 적용하지 않는다.
-#define ROULETTE_PVP_CHANCE_PERMYRIAD	500
+#define ROULETTE_PVP_CHANCE_PERMYRIAD	100
 
 //연출 확인용. 1이면 조건이 되는 모든 일반 룰렛을 PVP로 만든다.
-#define ROULETTE_PVP_FORCE_TEST		1
+#define ROULETTE_PVP_FORCE_TEST		0
 
 #endif
 

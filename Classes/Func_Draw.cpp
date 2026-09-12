@@ -1781,7 +1781,8 @@ void StartPvpTest(void)
 	pvpSavedDioramaZoom = dioramaZoom;
 	pvpSavedWaveStatus = waveStatus;
 	pvpTestFrame = 0;
-	pvpTestState = 0;
+	//두 성의 VS 대치 화면을 먼저 보여 준 뒤 구름 전환과 실제 전투로 간다.
+	pvpTestState = -1;
 	pvpHudBarsReady = false;
 	//실제 플레이어 능력치를 PVP 테스트 전투의 기준값으로 사용한다.
 	//상대는 서버 HOUSE가 없으므로 현재 로빈의 복사본이다.
@@ -2501,9 +2502,160 @@ void PvpTransitionCloudDraw(int transitionFrame)
 		false, true, false, false, false, cloudZoom, sprite[CLOUD_IMG], CLOUD_IMG);
 }
 
+static void PvpCastleStandOffDraw(void)
+{
+	SetAlpha(32);
+	MemRect(0, DY, DX, DY, 0x05071D);
+	for (int i = 0; i < 36; ++i) {
+		const int sx = (i * 193 + 37) % Max(1, DX);
+		const int sy = (i * 107 + 61) % Max(1, DY);
+		const int size = (i % 7 == 0) ? 2 * _2X : 1 * _2X;
+		SetAlpha(18 + (i + frame / 6) % 14);
+		MemRectRound(sx, sy, size, size, 0xDCEBFF, size / 2);
+	}
+	SetAlpha(32);
+
+	//큰 성은 빠르게 흔들면 가벼워 보인다. 진폭은 작게, 주기는 길게 둔다.
+	const float floatY = sinf((float)pvpTestFrame * 0.012f) * 1.5f * _2X;
+	//아군 성은 왼쪽 위, 적군 성은 오른쪽 아래로 엇갈린다. 같은 높이에 놓을
+	//때보다 서로 침범하는 면적이 줄어 사선 구분을 유지하면서 조금 더 키울 수 있다.
+	const float castleZoom = Min(0.60f,
+		(float)DX * 0.60f / (float)DIORAMASIZE_X);
+	const int leftX = (int)(DX * 0.18f);
+	const int rightX = (int)(DX * 0.82f);
+	//DrawImage의 y는 이미지 상단이고 아래쪽 끝은 y-height*zoom이다.
+	//오른쪽 성의 하단을 하단 메뉴 윗선에 정확히 맞추고 왼쪽 성은 대치
+	//구도를 유지할 만큼만 위에 둔다.
+	const int rightCastleY = BOTTOMMENUHEIGHT
+		+ (int)(DIORAMASIZE_Y * castleZoom);
+	//현재 2배 좌표계에서 실제 화면 약 100픽셀만큼 위로 올린다.
+	const int castleRaiseY = 50 * _2X;
+	const int castleY[2] = {
+		rightCastleY + castleRaiseY + (int)(DY * 0.28f + floatY),
+		rightCastleY + castleRaiseY - (int)floatY
+	};
+	const int myCastle = castleOrder[robin.castle];
+	const int foeCastle = pvpTestDefender.houseType;
+
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		leftX - DIORAMASIZE_X * castleZoom / 2, castleY[0],
+		false, false, false, false, false, castleZoom,
+		sprite[MAP_DIORAMA_IMG + myCastle], MAP_DIORAMA_IMG + myCastle);
+	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
+		rightX - DIORAMASIZE_X * castleZoom / 2, castleY[1],
+		true, false, false, false, false, castleZoom,
+		sprite[MAP_DIORAMA_IMG + foeCastle], MAP_DIORAMA_IMG + foeCastle);
+
+	//원래 DrawDiorama가 사용하던 화면 좌표를 디오라마 내부의 0~1 좌표로
+	//바꾼 뒤 각 성의 위치/배율에 다시 투영한다. 성을 움직이거나 띄워도
+	//히어로와 동료는 성에 배치되어 있던 자리를 그대로 따라간다.
+	const float sourceZoom = Max(0.001f, pvpSavedDioramaZoom);
+	const float sourceLeft = xOffset + DX / 2.0f
+		- DIORAMASIZE_X * sourceZoom / 2.0f;
+	const float sourceTop = STATUSWIN_Y + DIORAMASIZE_Y * sourceZoom;
+	const float sourceFloorY = STATUSWIN_Y + (rh - 4) * TSIZE;
+	const float targetLeft[2] = {
+		leftX - DIORAMASIZE_X * castleZoom / 2.0f,
+		rightX - DIORAMASIZE_X * castleZoom / 2.0f
+	};
+
+	auto GetCastleObjectPoint = [&](const OBJECT* obj, int side,
+		int* drawX, int* drawY) {
+		const float sourceScreenX = xOffset + obj->x - pvpSavedRx;
+		const float sourceScreenY = sourceFloorY
+			- (obj->y - OBJIMGGAP) - pvpSavedRy;
+		float localX = (sourceScreenX - sourceLeft)
+			/ (DIORAMASIZE_X * sourceZoom);
+		const float localY = (sourceTop - sourceScreenY)
+			/ (DIORAMASIZE_Y * sourceZoom);
+		if (side == 1)
+			localX = 1.0f - localX;
+		*drawX = (int)(targetLeft[side]
+			+ localX * DIORAMASIZE_X * castleZoom);
+		*drawY = (int)(castleY[side]
+			- localY * DIORAMASIZE_Y * castleZoom);
+	};
+
+	for (int side = 0; side < 2; ++side) {
+		int heroX, heroY;
+		GetCastleObjectPoint(&pvpSavedObjects[PLAYER], side, &heroX, &heroY);
+		OBJECT hero = pvpSavedObjects[PLAYER];
+		DrawPlayer(&hero, motionData[0], heroX, heroY,
+			side == 0 ? RIGHT : LEFT,
+			castleZoom * DIORAMAZOOM_REMAINDER, 0, false, true);
+
+		for (int i = 0; i < MAXCREW; ++i) {
+			const OBJECT* crew = &pvpSavedObjects[CREW + i];
+			if (!crew->active)
+				continue;
+			int crewX, crewY;
+			GetCastleObjectPoint(crew, side, &crewX, &crewY);
+			DrawCmfDetailShadow(crew->cmf, crewPos[crew->type * 5],
+				crewX, crewY, side == 0 ? RIGHT : LEFT,
+				castleZoom * DIORAMAZOOM_REMAINDER * enemyIconZoom[crew->type]);
+		}
+	}
+
+	//좌하단에서 우상단으로 이어지는 연속 분할대. 가로 선분을 촘촘히 이어
+	//한 장의 사선 마스크처럼 만들고, 성이 겹치는 중앙 부분을 이 암부로 가린다.
+	const int pulse = (int)(2 * _2X
+		* (0.5f + 0.5f * sinf(frame * 0.08f)));
+	const int crackBottom = 0;
+	const int crackTop = DY;
+	const int crackBandHalf = 9 * _2X;
+	const int scanH = Max(1, 2 * _2X);
+	for (int crackY = crackBottom; crackY < crackTop; crackY += scanH) {
+		const float t = (float)(crackY - crackBottom)
+			/ (float)Max(1, crackTop - crackBottom);
+		const int crackX = (int)(DX * (0.31f + 0.38f * t));
+		SetAlpha(26);
+		MemRect(crackX - crackBandHalf, crackY + scanH,
+			crackBandHalf * 2, scanH + 1, 0x01020A);
+		SetAlpha(15 + pulse);
+		MemRect(crackX - crackBandHalf - 1 * _2X, crackY + scanH,
+			2 * _2X, scanH + 1, 0x43A9FF);
+		MemRect(crackX + crackBandHalf - 1 * _2X, crackY + scanH,
+			2 * _2X, scanH + 1, 0xFF496B);
+	}
+	SetAlpha(32);
+
+	const float profileSize = 36.0f * _2X;
+	const int leftProfileY = Min(DY - 48 * _2X,
+		castleY[0] - 8 * _2X);
+	const int rightProfileY = rightCastleY + castleRaiseY
+		- (int)(DIORAMASIZE_Y * castleZoom)
+		+ (int)profileSize + 8 * _2X;
+	UserProfileNameDraw(profileImg[0], robin.nickname.empty() ? "Guest" : robin.nickname.c_str(),
+		8 * _2X, leftProfileY, profileSize,
+		48 * _2X, leftProfileY - 16 * _2X, 0.90f, LEFT);
+	UserProfileNameDraw((int)enemyHouse.userProfileImgIdx, "RIVAL COPY",
+		DX - 8 * _2X - (int)profileSize, rightProfileY, profileSize,
+		DX - 48 * _2X, rightProfileY - 16 * _2X, 0.90f, RIGHT);
+	if (pvpTestFrame < FPS + FPS / 2) {
+		SetAlpha(Min(32, Max(0, (FPS + FPS / 2 - pvpTestFrame) * 32 / Max(1, FPS / 2))));
+		DrawGoldAlphaText(DX / 2, DY - 18 * _2X, "SIEGE READY",
+			FONT_GOLD_LARGE, 0.72f, CENTER, true, -7.0f);
+		SetAlpha(32);
+	}
+	DrawGoldAlphaText(DX / 2, DY / 2 + 18 * _2X, "VS",
+		FONT_GOLD_LARGE,
+		1.75f + 0.10f * sinf((float)pvpTestFrame * 0.08f),
+		CENTER, true, -7.0f);
+}
+
 void PvpTestDraw(void)
 {
 	ResetRectPoint();
+	if (pvpObjectsSaved && pvpTestState == -1) {
+		//두 성과 승무원 배치를 잠깐 보여 준 뒤 실제 적 성 전장으로 전환한다.
+		PvpCastleStandOffDraw();
+		pvpTestFrame++;
+		if (pvpTestFrame >= FPS * 2) {
+			pvpTestState = 0;
+			pvpTestFrame = 0;
+		}
+		return;
+	}
 
 	// 월드/캐릭터/총탄/피격 이펙트는 Play()->DrawScreen()->DrawDiorama가
 	// 실제 ao[]를 기준으로 이미 그렸다. 이 함수는 PVP 진행과 화면 UI만 담당한다.
