@@ -1003,9 +1003,76 @@ int GetWaveHpMul(int waveIdx)
 	return 1;
 }
 
+//==========================================================================
+// 3일 주기
+//
+// [규칙]
+// 판 하나를 깨면 반나절이 지난다. 낮 한 판, 밤 한 판이면 하루다.
+// 네 판(2 + 2)을 깨면 3일차가 오고, 그 다섯 번째 판이 마지막 날이다.
+//
+//     판 0   DAY 1  낮
+//     판 1   DAY 1  밤
+//     판 2   DAY 2  낮
+//     판 3   DAY 2  밤
+//     판 4   DAY 3         마지막 날
+//
+// 주기는 다섯 판마다 처음으로 돌아간다.
+//
+// [마지막 날도 그냥 판이다]
+// 다섯 번째 판은 다른 모드가 아니다. 싸우는 방식은 앞의 네 판과 똑같고,
+// 다른 것은 어떻게 보여주느냐뿐이다 - 마지막 날이라고 알리는 것.
+//
+// MD_BOSSRAID(조이스틱으로 직접 움직여 싸우는 실시간 모드)로 넘기지
+// 않는다. 그쪽은 쓰지 않기로 했다. 여기서 모드를 갈아타면 같은 주기
+// 안에서 조작법이 바뀌어, 다섯 판이 한 줄로 읽히지 않는다.
+//
+// [왜 시계가 아니라 판으로 세는가]
+// 예전에는 robin.startTime 으로부터 실제로 흐른 시간을 셌다
+// (Func_Bar.cpp 의 BAR_DAY 는 아직 그쪽을 본다). 그러면 손을 놓고 있는
+// 동안에도 날이 가서, 남은 날이 실력이 아니라 접속 간격으로 정해진다.
+// 판으로 세면 "몇 판 안에 성을 얼마나 키웠나"가 곧 남은 날이 된다.
+//
+// [robin.stage 를 세는 이유]
+// 한 판이 끝나는 자리가 robin.stage++ 하나뿐이다
+// (Func_Battle.cpp 의 ATTACKSEQUENCE_STAGECLEAR). 날짜를 따로 저장하면
+// 그 자리와 어긋날 수 있어서, 세는 대신 계산한다.
+//==========================================================================
+int GetStageCycleIdx(void)
+{
+	return robin.stage % STAGE_PER_CYCLE;
+}
+
+//1 부터 3 까지.
+int GetStageDay(void)
+{
+	return GetStageCycleIdx() / STAGE_PER_DAY + 1;
+}
+
+//마지막 날에는 낮도 밤도 없다. 그 하루는 통째로 하나다.
+bool IsStageNight(void)
+{
+	if (IsFinalDayStage())
+		return false;
+
+	return (GetStageCycleIdx() % STAGE_PER_DAY) != 0;
+}
+
+bool IsFinalDayStage(void)
+{
+	return GetStageCycleIdx() == STAGE_PER_CYCLE - 1;
+}
+
+//마지막 날까지 몇 판 남았는가. 마지막 날이면 0 이다.
+int GetStagesUntilFinalDay(void)
+{
+	return (STAGE_PER_CYCLE - 1) - GetStageCycleIdx();
+}
+
 int GetMaxWaveCnt(void)
 {
 	int i;
+	if (drawHandle == MD_PLAY || drawHandle == MD_LOBBY)
+		return 1;
 
 	//AVK_MAXGAME 시연에서는 스킬과 함께 몬스터 세 마리의 모션도 본다.
 	if (gCombatStatusTest)

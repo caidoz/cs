@@ -3090,7 +3090,17 @@ void touchFunc(int func)
 			systemKey = AVK_EVENT_DOUBLE;
 			break;
 		case TOUCH_FUNC_EVENT_BOSSRAID:
-			systemKey = AVK_EVENT_BOSSRAID;
+			//---- 멸망전 입장을 막는다 ----
+			//
+			//조이스틱으로 직접 움직여 싸우는 실시간 모드(MD_BOSSRAID)는
+			//쓰지 않기로 했다. 마지막 날도 앞의 네 판과 같은 턴제 전투다.
+			//
+			//배지 쪽 터치영역은 아예 등록하지 않는다(Func_Bar.cpp 의
+			//BAR_DAY). 여기까지 닿는 것은 기존 세이브에 남아 있는 이벤트
+			//아이콘뿐이라, 들어가는 문만 닫아 둔다.
+			//
+			//모드 코드는 지우지 않았다. 되살리려면 이 case 를 원래대로
+			//systemKey = AVK_EVENT_BOSSRAID; 로 돌리면 된다.
 			break;
 		case TOUCH_FUNC_BOXINFO:
 			systemKey = AVK_BOXINFO;

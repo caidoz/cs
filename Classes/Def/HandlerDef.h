@@ -22,6 +22,7 @@ typedef enum _handlerInfo {
 	MD_STAGECLEAR,
 	MD_BATTLELOADING,
 	MD_PVP,//다른 유저의 성을 공략하는 비동기 PVP
+	MD_LOBBY,//타이틀 다음의 비전투 로비
 
 	MK_TITLE = 1,
 	MK_PLAY,

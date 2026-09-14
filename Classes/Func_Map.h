@@ -16,6 +16,21 @@ int GetWaveRow(int waveIdx);
 int GetWaveKind(int waveIdx);
 int GetWaveHpMul(int waveIdx);
 int GetMaxWaveCnt(void);
+
+//---- 3일 주기 ----
+//
+// 자세한 것은 Func_Map.cpp 의 GetStageCycleIdx() 위에 적어 두었다.
+enum {
+	STAGE_PER_DAY = 2,		//낮 한 판, 밤 한 판
+	STAGE_PER_CYCLE = 5,	//2 + 2 + 보스 레이드
+	CYCLE_DAYS = 3,
+};
+
+int GetStageCycleIdx(void);
+int GetStageDay(void);
+bool IsStageNight(void);
+bool IsFinalDayStage(void);
+int GetStagesUntilFinalDay(void);
 int GetSkillCnt(int acquiredSkills[MAXCHARSKILL]);
 int selectRandomSkill(int characterID, int acquiredSkills[MAXCHARSKILL]);
 void ObjectSkillSetting(OBJECT * pObj);

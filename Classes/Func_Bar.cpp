@@ -427,21 +427,19 @@ void BarDraw(BAR* barP, float zoom)
 		
 	// 새로운 룰렛 시스템 UI
 	case BAR_DAY:
-		DayBarDraw(DAYS3 - (GetCurrentTimeMs() - robin.startTime), xOffset + barP->x, barP->y, zoom);
+		//날짜는 판으로 센다. 예전에는 남은 밀리초를 넘겨 시계로 그렸다
+		//(DAYS3 - 흐른 시간). 그러면 손을 놓고 있는 동안에도 날이 가서,
+		//남은 날이 실력이 아니라 접속 간격으로 정해진다.
+		DayBarDraw(GetStageDay(), xOffset + barP->x, barP->y, zoom);
 
-		//보스 배지는 입장창을 띄운다. 곧바로 들어가면 안 된다.
+		//---- 눌러서 들어가는 길은 없앴다 ----
 		//
-		//TOUCH_FUNC_GOTOBATTLE 은 확인 절차 없이 하트를 걷고 전투를
-		//시작하는 명령이다. 잘못 누르면 되돌릴 방법이 없다.
+		//전에는 이 배지가 멸망전 입장창(POPUPTYPE_BOSSRAID)을 띄웠고,
+		//거기서 확인을 누르면 조이스틱으로 직접 움직여 싸우는 실시간
+		//모드(MD_BOSSRAID)로 들어갔다. 그 모드는 쓰지 않기로 했다.
 		//
-		//TOUCH_FUNC_EVENT_BOSSRAID 는 POPUPTYPE_BOSSRAID(멸망전 입장창)를
-		//띄운다. 거기서 보스와 남은 시간, 입장 비용을 보고 확인을 누르면
-		//그 버튼이 TOUCH_FUNC_GOTOBOSSRAID 로 실제 입장을 시킨다.
-		SetRectPoint(xOffset + barP->x - (float)(32 * _2X) * zoom / 0.5f,
-			barP->y + (float)(40 * _2X) * zoom / 0.5f,
-			(float)(64 * _2X) * zoom / 0.5f,
-			(float)(64 * _2X) * zoom / 0.5f,
-			TOUCH_FUNC_EVENT_BOSSRAID);
+		//이제 이것은 며칠째인지 알리는 표지일 뿐이다. 날은 판을 깨야
+		//가고, 마지막 날도 앞의 네 판과 같은 턴제 전투다.
 		break;
 	case BAR_WAVE:
 		WaveBarDraw(count, barP->max, xOffset + barP->x, barP->y, zoom);
@@ -1074,10 +1072,17 @@ void DayBarDraw(int day, int x, int y, float zoom)
 	const int bossType = GetStageBossFace();
 
 	DrawCmfDetailShadow(enemyData[bossType * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[bossType * 5 + 0] + (frame / 4 % crewPos[bossType * 5 + 1]), x, y, LEFT, emphasisScale);
-	DrawRemainTime(x, y - (float)8 * _2X * zoom, day, CENTER, emphasisScale * 2.0f);
-	
-	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_BOSS, FONT_GOLD_LARGE, zoom, CENTER, false, false);
 
+	//---- Day 2 처럼 적는다 ----
+	//
+	//day 는 이제 남은 밀리초가 아니라 며칠째인가(1 ~ 3)다. 시계를
+	//지운 것은 판을 깨는 것 말고는 날이 가지 않기 때문이다 - 볼 시간이
+	//없는데 시계를 두면 멈춘 시계로 보인다.
+	//
+	//글자와 수를 쌓는 자리는 WaveBarDraw 와 똑같이 잡았다. 두 배지가
+	//나란히 서므로 글줄이 어긋나면 눈에 띈다.
+	DrawGoldAlpha(x, y + (float)132 * zoom, ALPHA_DAY, FONT_GOLD_LARGE, zoom, CENTER, false, false);
+	DrawGoldNum(day, x, y + (float)108 * zoom, CENTER, false, false, false, 0.5f * zoom);
 }
 
 // ============================================================================
