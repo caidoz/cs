@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -83,7 +83,7 @@ void ClearProcAcc(int obj)
 
 //정의는 상태이상 처리 쪽(ActivateDebuf 근처)에 모아 두었다. 부르는 자리가
 //그보다 앞이라 여기서 먼저 알린다.
-static void ClearAllDebuffs(void);
+void ClearAllDebuffs(void);
 
 // Stat Calculating
 void InitStat(OBJECT* pObj)
@@ -6563,7 +6563,7 @@ static int GetDebufTurnCount(int debufIdx)
  * 연출 없이 조용히 지운다. 여기는 상자와 가챠로 넘어가는 길목이라 해제
  * 연출(2초)을 켜면 상자가 그만큼 늦게 떨어진다. 남아 있던 연출 타이머도
  * 같이 끈다. 주인이 사라진 타이머는 아무도 줄여주지 않는다. */
-static void ClearAllDebuffs(void)
+void ClearAllDebuffs(void)
 {
 	int i, j;
 

@@ -103,6 +103,8 @@ typedef enum _uiDef {
 	BAR_JOYSTICK,//움직임 컨트롤러
 	BAR_JUMP,//점프버튼
 
+	BAR_LOBBY_ADVENTURE,
+	BAR_LOBBY_DUNGEON,
 	TOTAL_BAR,
 
 	PLAYERHPBARCOLOR = COLOR_REALGREEN,
@@ -220,6 +222,20 @@ typedef enum _uiDef {
 
 	COLLECTIONCARDSIZE_X = 102 * _2X,
 	COLLECTIONCARDSIZE_Y = 102 * _2X,
+
+	//---- bottomMenu.png 의 칸 번호 ----
+	//
+	//한 줄에 128x128 칸이 일곱 개 늘어서 있다. 왼쪽부터 순서대로다.
+	//번호를 손으로 적으면 그림을 한 칸 옮길 때마다 부르는 쪽을 전부
+	//찾아다녀야 한다. 여기 한 곳만 고치면 되도록 이름을 붙인다.
+	BOTTOMMENU_CELL = 128,
+	BOTTOMMENU_CELL_EQUIP = 0,
+	BOTTOMMENU_CELL_CREW,
+	BOTTOMMENU_CELL_SHOP,
+	BOTTOMMENU_CELL_CASTLE,
+	BOTTOMMENU_CELL_SOCIAL,
+	BOTTOMMENU_CELL_ADVENTURE,
+	BOTTOMMENU_CELL_DUNGEON,
 
 	MAINMENU_X = 48 * _2X,
 	MAINMENU_Y = 48 * _2X,

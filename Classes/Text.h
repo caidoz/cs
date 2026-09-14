@@ -3231,7 +3231,7 @@ const char* const textId[] = {
 	"box31",
 	"box32",
 
-	"theater",
+	"bottomMenu",
 	"goldFont",
 	"button",
 	"playButton",

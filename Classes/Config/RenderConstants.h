@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // =============================================================
 // RENDER CONSTANTS
 // 실제 사용되는 렌더링 상수만 유지
@@ -84,6 +84,10 @@
 
 #define BOSSHEARTBARZOOM           1.25f          // 보스 하트바 줌
 #define LOBBYZOOM                  1.2f           // 로비 줌
+#define LOBBY_CREW_ZOOM_SCALE      0.85f          // 로비 보유 동료 기본 줌 배율 (전투와 독립)
+#define LOBBY_CREW_ZOOM_SPIRE      0.90f          // 로비 첨탑 동료 줌 배율 (원근감)
+#define LOBBY_CREW_ZOOM_WALL       0.95f          // 로비 성벽 동료 줌 배율
+#define LOBBY_CREW_ZOOM_GROUND     1.00f          // 로비 성 바닥 동료 줌 배율
 #define BATTLEZOOM                 1.5f          // 배틀 줌
 #define SUMMONZOOM                 1.5f           // 소환 줌
 #define DROPITEMZOOM               2.0f           // 드롭 아이템 줌
@@ -228,6 +232,12 @@
 #define BAR_ENEMYUSER_BOX_ZOOM     1.0f           // 적 유저 박스 바 줌
 #define BAR_MAINSHOP_ZOOM          0.95f           // 메인샵 바 줌
 #define BAR_SOCIAL_ZOOM            BAR_MAINSHOP_ZOOM // 소셜 바는 메인샵과 같은 규격
+//로비 하단 다섯 칸. 모험은 가운데라 한눈에 크게 보이도록 조금 키운다.
+//나머지 네 칸은 상점과 같은 규격이어야 줄이 맞는다.
+#define BAR_LOBBY_ADVENTURE_ZOOM   (BAR_MAINSHOP_ZOOM * 1.10f)
+#define BAR_LOBBY_DUNGEON_ZOOM     BAR_MAINSHOP_ZOOM
+//가운데 칸만 살짝 올려 앉힌다. 키운 만큼 아래로 처져 보이기 때문이다.
+#define BAR_LOBBY_ADVENTURE_LIFT   (8 * _2X)
 #define BAR_DAILYQUEST_ZOOM        1.0f           // 일일퀘스트 바 줌
 #define BAR_CREWUPGRADE_ZOOM       1.0f           // 크루 업그레이드 바 줌
 #define BAR_COLLECTIONS_ZOOM       0.95f           // 컬렉션 바 줌

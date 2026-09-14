@@ -1,4 +1,4 @@
-﻿//이 파일은 CastleData.h 에 있던 배열 정의를 옮겨 담은 것이다.
+//이 파일은 CastleData.h 에 있던 배열 정의를 옮겨 담은 것이다.
 //
 //헤더에 const로 정의하면 내부 링크라 포함하는 .cpp마다 복제되고,
 //무엇보다 런타임에 채울 수가 없다. 정의는 여기 한 곳에만 둔다.
@@ -439,6 +439,29 @@ static const int castleCrewPosition_builtin[] = {
 	TSIZE * 16, TSIZE * 9 + TSIZE * 3 / 4,
 };
 
+// x, y, width, height. castleOrder가 가리키는 실제 성 번호 순서다.
+static const int lobbyCrewArea_builtin[] = {
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // TOLEM courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // ARENA courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // SWAMP courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // VALLEY courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // ATLANTICE courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // SEWAGE courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // ADELINE courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // PLAIN courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // ELF courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // FLAME courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // FROST courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // THUNDER courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // LIGHT courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // GOLEMVALLEY courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // DARKNESS courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // DRAGON courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // GHOST courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // DEVILCASTLE courtyard: y grows downwards
+	TSIZE * 3, TSIZE * 16 + TSIZE / 2, TSIZE * 14, TSIZE * 5 / 2, // SPACE courtyard: y grows downwards
+};
+
 //게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
 //팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
@@ -450,3 +473,4 @@ const int* castleStarLimit = castleStarLimit_builtin;
 const int* setHeroPos = setHeroPos_builtin;
 const int* setEnemyPos = setEnemyPos_builtin;
 const int* castleCrewPosition = castleCrewPosition_builtin;
+const int* lobbyCrewArea = lobbyCrewArea_builtin;

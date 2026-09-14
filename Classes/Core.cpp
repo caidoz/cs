@@ -448,6 +448,10 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 			is_key_released = true;
 			is_release_finished = false;
 
+			//격자 시험판의 끌기도 여기서 끝난다. 손을 떼는 자리가 둘이라
+			//한쪽만 넣으면 스크롤로 끝난 터치에서 카드가 손에 붙어 남는다.
+			GridTestRelease();
+
 			joyPressed = false;
 			joyReturning = true;
 
@@ -587,6 +591,10 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 			isTouchKey = TOUCH_RELEASE;
 			is_key_released = true;
 			is_release_finished = false;
+
+			//격자 시험판의 끌기도 여기서 끝난다. 손을 떼는 자리가 둘이라
+			//한쪽만 넣으면 스크롤로 끝난 터치에서 카드가 손에 붙어 남는다.
+			GridTestRelease();
 
 			joyPressed = false;
 			joyReturning = true;
@@ -1429,9 +1437,24 @@ void PaintClet(int x, int y, int w, int h)
 			case MD_OPENING:
 				OpeningDraw();
 				break;
+			case MD_LOBBY:
+				LobbyDraw();
+				break;
 			case MD_PLAY:
 			case MD_BATTLE:
 				Play();
+
+				//---- 성 격자 인벤토리 시험판 ----
+				//
+				//Play() 뒤에 부른다. 터치영역은 뒤에 등록한 것이 먼저
+				//걸리므로(GetTouchFunc 가 끝에서부터 찾는다) 격자가
+				//전투 버튼에 먹히지 않는다.
+				//
+				//시험이 끝나면 이 세 줄과 Func_Draw.cpp 의 블록을 지운다.
+				HitZoomPause();
+				GridTestDraw();
+				HitZoomResume();
+
 				if (curMenu == MENU_PLAY) {
 					for (i = 0; i < M_ROULETTEUP; i++)
 						AudioEngine::setVolume(audioID[i], VOLUME_BGM);
@@ -2532,7 +2555,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
 
 
 

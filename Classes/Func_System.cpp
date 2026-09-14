@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -174,6 +174,8 @@ void InitMenu(void)
 	InitBar(BAR_EQUIP);
 	InitBar(BAR_MAINSHOP);
 	InitBar(BAR_SOCIAL);
+	InitBar(BAR_LOBBY_ADVENTURE);
+	InitBar(BAR_LOBBY_DUNGEON);
 
 	InitBar(BAR_ROULETTE);
 	
@@ -1270,6 +1272,72 @@ void InitBar(int type)
 		bar[BAR_SOCIAL].targetY = 0;
 		bar[BAR_SOCIAL].front = false;
 		bar[BAR_SOCIAL].drawFunc = BAR_SOCIAL;
+		break;
+
+	//---- 로비 하단 모험 / 던전 ----
+	//
+	//다섯 칸의 자리는 상점 - 히어로 - 모험 - 동료 - 던전 이다. 가운데가
+	//모험이므로 x 는 DX / 2 이고, 좌우가 대칭이 되도록 나머지를 잡는다.
+	//
+	//로비가 제 손으로 BAR 를 만들어 쓰고 있었다. 그러면 InitBar 를 안 타므로
+	//zoom 과 자리를 그릴 때마다 다시 적어야 하고, 화면을 여닫을 때 나가고
+	//들어오는 연출(BossRaidMoveBar 등)도 이 둘만 비켜 간다. 다른 칸과 같이
+	//bar[] 에 자리를 잡아 준다.
+	case BAR_LOBBY_ADVENTURE:
+		bar[BAR_LOBBY_ADVENTURE].active = true;
+		bar[BAR_LOBBY_ADVENTURE].type = BAR_LOBBY_ADVENTURE;
+
+		bar[BAR_LOBBY_ADVENTURE].count = 0;
+		bar[BAR_LOBBY_ADVENTURE].add = 0;
+		bar[BAR_LOBBY_ADVENTURE].countFrame = 0;
+
+		bar[BAR_LOBBY_ADVENTURE].icon = 0;
+		bar[BAR_LOBBY_ADVENTURE].iconFrame = 0;
+
+		bar[BAR_LOBBY_ADVENTURE].frame = 0;
+		bar[BAR_LOBBY_ADVENTURE].frame2 = 0;
+		bar[BAR_LOBBY_ADVENTURE].aniFrame = 0;
+
+		bar[BAR_LOBBY_ADVENTURE].zoom = BAR_LOBBY_ADVENTURE_ZOOM;
+
+		bar[BAR_LOBBY_ADVENTURE].x = DX / 2;
+		bar[BAR_LOBBY_ADVENTURE].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2
+			+ BAR_LOBBY_ADVENTURE_LIFT;
+
+		bar[BAR_LOBBY_ADVENTURE].targetX = 0;
+		bar[BAR_LOBBY_ADVENTURE].targetY = 0;
+
+		bar[BAR_LOBBY_ADVENTURE].front = false;
+
+		bar[BAR_LOBBY_ADVENTURE].drawFunc = BAR_LOBBY_ADVENTURE;
+		break;
+
+	case BAR_LOBBY_DUNGEON:
+		bar[BAR_LOBBY_DUNGEON].active = true;
+		bar[BAR_LOBBY_DUNGEON].type = BAR_LOBBY_DUNGEON;
+
+		bar[BAR_LOBBY_DUNGEON].count = 0;
+		bar[BAR_LOBBY_DUNGEON].add = 0;
+		bar[BAR_LOBBY_DUNGEON].countFrame = 0;
+
+		bar[BAR_LOBBY_DUNGEON].icon = 0;
+		bar[BAR_LOBBY_DUNGEON].iconFrame = 0;
+
+		bar[BAR_LOBBY_DUNGEON].frame = 0;
+		bar[BAR_LOBBY_DUNGEON].frame2 = 0;
+		bar[BAR_LOBBY_DUNGEON].aniFrame = 0;
+
+		bar[BAR_LOBBY_DUNGEON].zoom = BAR_LOBBY_DUNGEON_ZOOM;
+
+		bar[BAR_LOBBY_DUNGEON].x = DX - MAINMENU_X / 2;
+		bar[BAR_LOBBY_DUNGEON].y = BOTTOMMENUHEIGHT - MAINMENU_Y / 2;
+
+		bar[BAR_LOBBY_DUNGEON].targetX = 0;
+		bar[BAR_LOBBY_DUNGEON].targetY = 0;
+
+		bar[BAR_LOBBY_DUNGEON].front = false;
+
+		bar[BAR_LOBBY_DUNGEON].drawFunc = BAR_LOBBY_DUNGEON;
 		break;
 
 	case BAR_DAILYQUEST:
@@ -2410,18 +2478,58 @@ void GotoTitle(void)
 #endif
 }
 
+void GotoLobby(void)
+{
+	oldMap = robinmap;
+	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
+	SetRoom();
+	SetScreenRatio();
+	dioramaZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
+	SetHero();
+
+	drawHandle = MD_LOBBY;
+	keyHandle = MK_PLAY;
+	curMenu = MENU_PLAY;
+	frame = 0;
+	xOffset = 0;
+	touchDisable = false;
+	attackSequence = ATTACKSEQUENCE_READY;
+	arenaStatus = STATUS_PLAY;
+
+	// 로비에는 전투 오브젝트와 전투 바를 가져오지 않는다. 영웅은 기존
+	// DrawDiorama/setHeroPos 경로로 그리고, 보유 동료는 LobbyDraw가 성별
+	// castleCrewPosition을 기준으로 별도 표시한다.
+	for (int i = 0; i < TOTAL_BAR; i++)
+		bar[i].active = false;
+	for (int i = CREW; i < TOTALOBJECT; i++)
+		ao[i].active = false;
+
+	// 로비에는 메인 영웅인 로빈 1명만 세운다 (돌발/소환 캐릭터인 디아나, 맥스는 비활성화)
+	for (int i = 0; i < MAXPLAYER; ++i) {
+		ao[PLAYER + i].active = false;
+	}
+	if (IsGetHero(ROBIN)) {
+		ao[PLAYER + ROBIN].active = true;
+		ao[PLAYER + ROBIN].dead = false;
+		ao[PLAYER + ROBIN].moveHandler = PLAYERMOVE;
+		ao[PLAYER + ROBIN].drawHandler = PLAYERDRAW;
+		ao[PLAYER + ROBIN].motion = PO_C0_N0;
+		ao[PLAYER + ROBIN].frame = 0;
+	}
+	ResetRectPoint();
+}
+
 void GotoPlay(bool forceReload)
 {
 	int i;
-
-	//InitMenu();
-	robin.stage = 0;
 
 	//memset(&ao[NPC], 0, sizeof(OBJECT));
 	ao[NPC].active = false;
 
 	drawHandle = MD_PLAY;
 	keyHandle = MK_PLAY;
+	if (!sprite[BATTLE_BG_BOTTOM_IMG]) LoadImg(BATTLE_BG_BOTTOM_IMG);
+	if (!sprite[BATTLE_BG_TOP_IMG]) LoadImg(BATTLE_BG_TOP_IMG);
 	frame = 0;
 
 	//forceReload=false인 경우(인터랙티브 전투 튜토리얼의 GotoPlay(false))는 loadedMap을 그대로 둬서,

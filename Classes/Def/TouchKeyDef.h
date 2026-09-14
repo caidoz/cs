@@ -404,7 +404,37 @@ typedef enum _touchFuncDef {
 	//좌상단 구매유도 버튼. 상점을 열고 성 갈래로 데려간다.
 	TOUCH_FUNC_CASTLE_PROMO,
 
-	TOTALTOUCHCNT = TOUCH_FUNC_CASTLE_PROMO + 1,
+	//로비 하단 다섯 칸 중 가운데(모험)와 오른쪽 끝(던전).
+	//나머지 세 칸은 상점/히어로/동료가 기존 TOUCH_FUNC 를 그대로 쓴다.
+	//위와 같은 이유로 맨 끝에 붙인다.
+	TOUCH_FUNC_LOBBY_ADVENTURE,
+	TOUCH_FUNC_LOBBY_DUNGEON,
+
+	//---- 성 격자 인벤토리 시험판 ----
+	//
+	//시험이 끝나면 통째로 지울 자리다. 맨 끝에 모아 둔 것은 지울 때도
+	//앞쪽 값이 안 밀리게 하기 위해서다.
+	//
+	//GRIDTEST_* 개수는 Func_Draw.cpp 의 시험 모듈과 짝이다. 한쪽만
+	//바꾸면 터치 번호가 겹쳐서 엉뚱한 칸이 눌린다.
+	//격자 크기는 성마다 다르다. 여기 있는 것은 상한 - 배열을 잡는 데만
+	//쓴다. 실제 크기는 Func_Draw.cpp 의 GridCastleBox() 가 정한다.
+	GRIDTEST_W = 12,
+	GRIDTEST_H = 5,
+	GRIDTEST_SHOPCNT = 10,//살 수 있는 물건 가짓수(표 크기)
+	GRIDTEST_OFFERCNT = 3,//전투가 끝나고 내미는 갈래 수
+	GRIDTEST_MAXCOMBO = 5,//연참 최대 대수
+	GRIDTEST_MAXITEM = 40,
+
+	//★ 위 GRIDTEST_* 처럼 값을 박은 항목 뒤에는 번호가 거기서부터 다시
+	//세어진다. 그냥 이어 쓰면 GRIDTEST_MAXITEM(40) 다음인 41번이 되어
+	//앞쪽 TOUCH_FUNC 와 겹친다. 반드시 앞 항목에서 이어 붙인다.
+	TOUCH_FUNC_GRIDTEST_TOGGLE = TOUCH_FUNC_LOBBY_DUNGEON + 1,
+	TOUCH_FUNC_GRIDTEST_SKIP,//세 갈래를 안 사고 넘긴다
+	TOUCH_FUNC_GRIDTEST_OFFER,
+	TOUCH_FUNC_GRIDTEST_ITEM = TOUCH_FUNC_GRIDTEST_OFFER + GRIDTEST_OFFERCNT,
+
+	TOTALTOUCHCNT = TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM,
 
 	END_TOUCHFUNCDEF
 } TOUCHFUNCDEF;
@@ -725,6 +755,10 @@ typedef enum _touchKeyDef {
 	AVK_BOSSRAID_CREW_END = AVK_BOSSRAID_CREW_1 + MAXCREW,
 	AVK_BOSSRAID_SKILL2,
 	AVK_BOSSRAID_SKILL3,
+
+	//로비 하단 모험/던전 칸
+	AVK_LOBBY_ADVENTURE,
+	AVK_LOBBY_DUNGEON,
 
 	TOTALAVK,
 

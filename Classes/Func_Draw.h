@@ -37,6 +37,18 @@ void TitleDraw(void);
 void TitleSkillViewerCommand(int command);
 void TitleTermsCommand(int command);
 void OpeningDraw(void);
+void LobbyDraw(void);
+
+//---- 성 격자 인벤토리 시험판 (Func_Draw.cpp) ----
+//시험이 끝나면 이 네 줄과 Func_Draw.cpp 의 블록을 통째로 지운다.
+void GridTestDraw(void);
+int GetStageInventoryTop(void);
+void GridTestPick(int n, bool fromShop);
+void GridTestRelease(void);
+void GridTestToggle(void);
+void GridTestSkipOffer(void);
+bool GridTestBeginOffer(void);
+bool GridTestIsOpen(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
 void StartPvpTest(void);

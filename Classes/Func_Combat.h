@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Core.h"
 
 // Stat Calculating
@@ -16,6 +16,7 @@ void AdvanceTurnBuffs(void);
 void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner);
 void AdvanceTurnDebuffs(void);
 bool AdvanceActorDebuffs(int obj);
+void ClearAllDebuffs(void);
 void RefreshQuestTime(void);
 void RefreshHeartTime(void);
 void RefreshEnemyTime(void);

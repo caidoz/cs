@@ -30,6 +30,7 @@ void SetPvpQuestReward(int);
 int GetSlotCrewCnt(void);
 void NewGame(void);
 void GotoTitle(void);
+void GotoLobby(void);
 void GotoPlay(bool forceReload = true);
 void OutOfGacha(void);
 void OutOfNewCard(void);

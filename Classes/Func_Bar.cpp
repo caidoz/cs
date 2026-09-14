@@ -3,43 +3,73 @@
 #include "Func.h"
 #include "Text.h"
 
+//---- 하단 메뉴 칸 하나 ----
+//
+//bottomMenu.png 는 128x128 칸이 한 줄로 늘어선 그림판이다. 하단 메뉴는
+//어느 칸이든 "칸 하나를 통째로, 같은 자리에, 같은 배율로" 그리면 된다.
+//
+//호출부마다 이 식을 따로 적고 있었다. 그러다 보니 칸마다 값이 조금씩
+//어긋났고, 모험과 던전은 아예 다른 방식으로 조립돼 있었다. 한 곳에 둔다.
+//
+//x, y 는 바의 왼쪽 아래다(BarDraw 가 그렇게 넘긴다).
+static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
+{
+	const float z = 0.8f * zoom;
+	const float left = x + (float)(MAINMENU_X / 2) * zoom - (float)BOTTOMMENU_CELL * z / 2;
+	const float top = y - (float)(MAINMENU_Y / 2) * zoom + (float)BOTTOMMENU_CELL * z / 2;
+
+	DrawImage(BOTTOMMENU_CELL, BOTTOMMENU_CELL, BOTTOMMENU_CELL * cell, 0,
+		left, top, false, false, false, false, 32, z,
+		sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
+}
+
 void DrawBarIcon(int type, int x, int y, float zoom)
 {
 	int fontColor = 0x555555;
 
 	switch (type) {
+	//---- 로비 하단 모험 / 던전 ----
+	//
+	//전에는 여기서 bottomMenu.png 의 테두리 조각을 네 번 잘라 붙이고
+	//가운데를 MemRect 로 메운 뒤, 그림만 76x98 로 도려내 얹었다.
+	//그림판에는 모험(5)과 던전(6) 칸이 이미 통째로 그려져 있는데도
+	//그랬다. 그래서 이 두 칸만 테두리 두께와 안쪽 색이 나머지와 달랐다.
+	//
+	//다른 네 칸과 같은 규칙으로 되돌린다 - 칸 하나를 통째로 한 번 그린다.
+	case BAR_LOBBY_ADVENTURE:
+	case BAR_LOBBY_DUNGEON:
+		DrawBottomMenuCell(type == BAR_LOBBY_ADVENTURE
+			? BOTTOMMENU_CELL_ADVENTURE : BOTTOMMENU_CELL_DUNGEON, x, y, zoom);
+		break;
 	case BAR_CASTLE:
-		DrawImage(128, 128, 128 * 3, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
 		//SetFontColor(fontColor);
 		//SetFontColor(COLOR_WHITE);
+		DrawBottomMenuCell(BOTTOMMENU_CELL_CASTLE, x, y, zoom);
 		break;
 	case BAR_CREW:
-		DrawImage(128, 128, 128 * 1, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
 		//SetFontColor(fontColor);
 		//SetFontColor(COLOR_WHITE);
+		DrawBottomMenuCell(BOTTOMMENU_CELL_CREW, x, y, zoom);
 		break;
 	case BAR_EQUIP:
-		DrawImage(128, 128, 128 * 0, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
+		DrawBottomMenuCell(BOTTOMMENU_CELL_EQUIP, x, y, zoom);
 		break;
 	case BAR_MAINSHOP:
-		DrawImage(128, 128, 128 * 2, 0, x + (float)(MAINMENU_X / 2) * zoom - (float)(128) * 0.4f * zoom, y - (float)(MAINMENU_Y / 2) * zoom + (float)(128) * 0.4f * zoom + (float)(0 * _2X) * zoom, false, false, false, false, 32, 0.8f * zoom, sprite[THEATER_IMG], THEATER_IMG);
-
 		//SetFontColor(fontColor);
 		//SetFontColor(COLOR_WHITE);
+		DrawBottomMenuCell(BOTTOMMENU_CELL_SHOP, x, y, zoom);
 		break;
 	case BAR_SOCIAL:
-		//theater.png에 추가한 단순화된 3인 소셜 픽토그램 셀.
-		DrawImage(128, 128, 128 * 4, 0,
-			x + (float)(MAINMENU_X / 2) * zoom - (float)128 * 0.4f * zoom,
-			y - (float)(MAINMENU_Y / 2) * zoom + (float)128 * 0.4f * zoom,
-			false, false, false, false, 32, 0.8f * zoom,
-			sprite[THEATER_IMG], THEATER_IMG);
+		//bottomMenu.png에 추가한 단순화된 3인 소셜 픽토그램 셀.
+		DrawBottomMenuCell(BOTTOMMENU_CELL_SOCIAL, x, y, zoom);
 		break;
 	}
 }
 
 void BarDraw(BAR* barP, float zoom)
 {
+	if (drawHandle == MD_PLAY && (barP->drawFunc == BAR_HEART || barP->drawFunc == BAR_HEARTBET))
+		return;
 	//메뉴형 바(동료/장비/성/상점/일일퀘스트 등)는 모두 같은 크기의 터치영역을
 	//쓰고, 그 영역의 한가운데가 barP->x/y다. 여기서 zoom 하나만 눌림 배율로
 	//곱해두면 아래 그리기가 전부 제자리에서 줄었다 튀어오른다.
@@ -324,6 +354,18 @@ void BarDraw(BAR* barP, float zoom)
 		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
 		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom, barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom, (float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom, TOUCH_FUNC_POPUP_CREWLIST);
 		break;
+	case BAR_LOBBY_ADVENTURE:
+	case BAR_LOBBY_DUNGEON:
+		//나머지 하단 칸과 같은 자리 계산, 같은 터치영역을 쓴다. 전에는
+		//그리기만 하고 터치영역을 안 잡아서 눌러도 아무 일이 없었다.
+		DrawBarIcon(barP->drawFunc, xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom,
+			barP->y + (float)(MAINMENU_Y / 2) * zoom, zoom);
+		SetRectPoint(xOffset + barP->x - (float)(MAINMENU_X / 2) * zoom,
+			barP->y + (float)(MAINMENU_Y / 2 + 12 * _2X) * zoom,
+			(float)(MAINMENU_X)*zoom, (float)(MAINMENU_Y + 16 * _2X) * zoom,
+			barP->drawFunc == BAR_LOBBY_ADVENTURE
+				? TOUCH_FUNC_LOBBY_ADVENTURE : TOUCH_FUNC_LOBBY_DUNGEON);
+		break;
 	case BAR_MEDAL:
 		DrawRouletteNumIcon(count, barP->icon, xOffset + barP->x, barP->y, true, zoom * 2, CENTER);
 		break;
@@ -362,7 +404,7 @@ void BarDraw(BAR* barP, float zoom)
 		SetRectPoint(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)MAINMENU_Y / 2 * zoom, (float)MAINMENU_X * zoom, (float)MAINMENU_Y * zoom, TOUCH_FUNC_FRIENDS);
 		break;
 	case BAR_NPC:
-		DrawImage(207, 33, 0, 953, xOffset + barP->x + shakePosX[effect.hpShake], barP->y - 12 * _2X + shakePosY[effect.hpShake], false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+		DrawImage(207, 33, 0, 953, xOffset + barP->x + shakePosX[effect.hpShake], barP->y - 12 * _2X + shakePosY[effect.hpShake], false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		EnemyProfileDraw(xOffset + barP->x + (float)(4 * _2X) * zoom, barP->y - (float)(14 * _2X) * zoom, ao[ENEMY].type, zoom, false, false);
 
 		//채워지는 폭. HpBarDraw()와 같은 식이다. 예전에는 val을 대입하는 줄이 아예

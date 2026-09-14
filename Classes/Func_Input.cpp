@@ -389,7 +389,7 @@ void TitleKey(void)
 			}
 
 			//SetRoom();
-			GotoPlay();
+			GotoLobby();
 
 			SaveGame();
 
@@ -401,12 +401,12 @@ void TitleKey(void)
 			waveStatus = WAVESTATUS_READY;
 			break;
 		case AVK_GOTOPLAY:
-			GotoPlay();
+			GotoLobby();
 			break;
 		case AVK_NEWGAME:
 			gCombatStatusTest = false;
 			NewGame();
-			GotoPlay();
+			GotoLobby();
 			for (i = 0; i < TOTAL_BAR; i++)
 				bar[i].active = false;
 			SetDemo(0);
@@ -485,7 +485,7 @@ void TalkKey(void)
 			robin.castle = 18;
 			robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 
-			GotoPlay();
+			GotoLobby();
 
 			arenaStatus = STATUS_PLAY;
 
@@ -1292,6 +1292,21 @@ void PlayKey(int obj)
 			menuX = 0;
 			break;
 
+		//---- 로비 하단 모험 / 던전 ----
+		//
+		//모험은 지금 보고 있는 화면이다. 열려 있는 팝업만 닫아 로비로
+		//되돌린다. 눌러도 아무 반응이 없으면 죽은 버튼처럼 보인다.
+		case AVK_LOBBY_ADVENTURE:
+			if (popUpCnt > 0)
+				ClosePopUp();
+			break;
+
+		//던전 화면은 아직 없다. 들어갈 곳이 생기면 여기서 연결한다.
+		//빈 case 를 두는 것은, 없으면 위의 기본 처리로 흘러가 엉뚱한 곳이
+		//열릴 수 있기 때문이다.
+		case AVK_LOBBY_DUNGEON:
+			break;
+
 		case AVK_SHOP:
 			curMenuBack = curMenu;
 			curMenu = MENU_SHOP;
@@ -1756,7 +1771,9 @@ void PlayKey(int obj)
 
 			SaveGame();
 
-			GotoBattle();
+			bossRaidMode = false;
+			robin.bossRoom = false;
+			GotoPlay();
 		}
 			break;
 		case AVK_NEWGAME:
@@ -2888,6 +2905,35 @@ void touchFunc(int func)
 		return;
 
 	//�κ��丮���� Ű�� 1:1������ �ȵǴ� �͵��� ���⼭ �ٷ� ó���Ѵ�.
+	//---- 성 격자 인벤토리 시험판 ----
+	//
+	//끌기는 누르는 순간 시작한다. systemKey 를 태우지 않는 것은, 이
+	//두 가지가 "화면을 바꾸는 명령"이 아니라 손에 무엇을 쥐는 동작이라
+	//다음 프레임까지 기다릴 이유가 없어서다.
+	if (func == TOUCH_FUNC_GRIDTEST_TOGGLE) {
+		GridTestToggle();
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_GRIDTEST_SKIP) {
+		GridTestSkipOffer();
+		systemKey = 0;
+		return;
+	}
+
+	if (func >= TOUCH_FUNC_GRIDTEST_OFFER && func < TOUCH_FUNC_GRIDTEST_OFFER + GRIDTEST_OFFERCNT) {
+		GridTestPick(func - TOUCH_FUNC_GRIDTEST_OFFER, true);
+		systemKey = 0;
+		return;
+	}
+
+	if (func >= TOUCH_FUNC_GRIDTEST_ITEM && func < TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM) {
+		GridTestPick(func - TOUCH_FUNC_GRIDTEST_ITEM, false);
+		systemKey = 0;
+		return;
+	}
+
 	if (func >= TOUCH_FUNC_BATTLE_TARGET && func < TOUCH_FUNC_BATTLE_TARGET + MAXCREW)
 	{
 		systemKey = AVK_BATTLE_TARGET + (func - TOUCH_FUNC_BATTLE_TARGET);
@@ -3034,6 +3080,12 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_SHOP://상점
 			systemKey = AVK_SHOP;
+			break;
+		case TOUCH_FUNC_LOBBY_ADVENTURE://로비 하단 가운데. 지금 보고 있는 화면이다.
+			systemKey = AVK_LOBBY_ADVENTURE;
+			break;
+		case TOUCH_FUNC_LOBBY_DUNGEON:
+			systemKey = AVK_LOBBY_DUNGEON;
 			break;
 		case TOUCH_FUNC_PVP_TEST:
 			StartPvpTest();

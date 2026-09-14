@@ -1501,7 +1501,7 @@ void WaveControler()
 			}
 
 			pObj->dirX = pObj->dirF = LEFT;
-			pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
+			pObj->defaultZoom = pObj->zoom = MONSTERZOOM * (drawHandle == MD_PLAY ? 2.0f : 1.0f);
 
 			//튜토리얼 마무리 보스는 같은 달팽이라도 두 배로 커야 "보스"로 보인다.
 			//wave[] 한 줄에는 타입/등장타이밍/몬스터종류 세 값뿐이라 크기를 적어둘 자리가 없다.
@@ -1509,6 +1509,10 @@ void WaveControler()
 			if (IsTutorialPlaying() && robin.waveIdx == TUTORIAL_WAVEIDX_BOSS)
 				pObj->defaultZoom = pObj->zoom = MONSTERZOOM * TUTORIAL_BOSS_ZOOM;
 
+			if (drawHandle == MD_PLAY) {
+				pObj->nx = pObj->x = positionX = DX * 0.72f + rx;
+				pObj->ny = pObj->y = positionY = ao[PLAYER].ny;
+			}
 			pObj->mom = obj;
 
 			SetEnemy(pObj);
@@ -3694,6 +3698,7 @@ void DrawScreen(int x, int y, float zoom)
 	case MD_GACHA:
 	case MD_PVP:
 	case MD_BOSSRAID:
+	case MD_LOBBY:
 
 		SetScreenRatio();
 
@@ -3705,10 +3710,15 @@ void DrawScreen(int x, int y, float zoom)
 		castleY = (float)(STATUSWIN_Y - 16 * _2X) * zoom + (float)DIORAMASIZE_Y * dioramaZoomOnScreen;
 
 		// 부유 효과 적용
-		floatOffsetY = GetDioramaFloatY(frame);
+		floatOffsetY = drawHandle == MD_PLAY ? 0 : GetDioramaFloatY(frame);
 		castleY += floatOffsetY * zoom;
 		//STATUSWIN_Y = STATUSWIN_Y_INIT;
 		STATUSWIN_Y += floatOffsetY * zoom;
+		if (drawHandle == MD_PLAY) {
+			const int heroGroundY = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + 1];
+			STATUSWIN_Y = GetStageGroundY() - (rh - 4) * TSIZE
+				+ heroGroundY - OBJIMGGAP + ry;
+		}
 
 		//robin.castle = 1;
 
@@ -3731,7 +3741,7 @@ void TheaterDraw()
 	offY = 0;
 	//본체
 	if (curtainFrame == 0)
-		DrawImage(525, 707, 0, 0, xOffset + DX / 2 - 525 * _2X / 2, /*DY / 2 + 707 * _2X / 2*/707 * _2X, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+		DrawImage(525, 707, 0, 0, xOffset + DX / 2 - 525 * _2X / 2, /*DY / 2 + 707 * _2X / 2*/707 * _2X, false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 	else
 		ResetRectPoint();
 
@@ -3739,11 +3749,11 @@ void TheaterDraw()
 	if (curtainFrame > 0) {
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] - CURTAINSTARTPOSX - 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		}
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[(CURTAINFRAME - curtainFrame) * 3 + i] + CURTAINSTARTPOSX + 64 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		}
 
 		curtainFrame -= CURTAINSPEED;
@@ -3755,12 +3765,12 @@ void TheaterDraw()
 	else if (curtainFrame < 0) {
 		//왼쪽 커튼
 		for (i = 0; i < 3; i++) {
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 50 * _2X + curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		}
 
 		//오른쪽 커튼
 		for (i = 0; i < 3; i++) {
-			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+			DrawImage(71, 424, 527, 0, xOffset + DX / 2 - 525 * _2X / 2 + 404 * _2X - curtainPosX[Abs(curtainFrame + 1) * 3 + i], Max(DY / 2 + 707 * _2X / 2 - 16 * _2X - 114 * _2X, DY - 114 * _2X), true, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		}
 
 		curtainFrame += CURTAINSPEED;
@@ -3770,7 +3780,7 @@ void TheaterDraw()
 	}
 
 	//상단 장막
-	DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X, DY), false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+	DrawImage(487, 243, 0, 708, xOffset + DX / 2 - 525 * _2X / 2 + 19 * _2X, Max(DY / 2 + 707 * _2X / 2 - 16 * _2X, DY), false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 
 	offX = tempOffX;
 	offX = tempOffY;

@@ -2371,6 +2371,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	case MD_GACHA:
 	case MD_PVP:
 	case MD_BOSSRAID:
+	case MD_LOBBY:
 		
 		if (!effect.color)
 			for (i = NEUTRAL; i < ITEMOBJ; i++) {
@@ -2454,6 +2455,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 				break;
 
 			if (ao[i].active) {
+				if (drawHandle == MD_LOBBY && i < CREW && i != ROBIN)
+					continue;
 				if (ao[i].moveHandler == PLAYERMOVE) {
 					//��Ƴ�?�ڴ� ����϶�?�׸��� �׸��� ����
 					if ((ao[i].type == DIANA && ao[i].motion == PO_C1_SLEEP) || ao[i].motion == PO_C0_WARP5)
@@ -3021,6 +3024,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//히어로 그리기
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
+				if (drawHandle == MD_LOBBY && i != ROBIN)
+					continue;
 				if (i == frontHeroObj)
 					continue;
 
@@ -3075,16 +3080,21 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		//현재 공격 중인 히어로/소환 히어로는 모든 아군 뒤에 마지막으로
 		//그려서 객체 번호와 관계없이 항상 최전면에 둔다.
 		if (frontHeroObj >= 0 && ao[frontHeroObj].active) {
-			if (playerHeadZoom)
-				ao[frontHeroObj].head = true;
+			if (drawHandle == MD_LOBBY && frontHeroObj < CREW && frontHeroObj != ROBIN) {
+				// 로비에서는 로빈 외의 영웅은 최전면 렌더링 제외
+			}
+			else {
+				if (playerHeadZoom)
+					ao[frontHeroObj].head = true;
 
-			ao[frontHeroObj].zoom *= dioramaZoom;
-			DrawObj(&ao[frontHeroObj]);
-			ao[frontHeroObj].zoom /= dioramaZoom;
-			ao[frontHeroObj].head = false;
+				ao[frontHeroObj].zoom *= dioramaZoom;
+				DrawObj(&ao[frontHeroObj]);
+				ao[frontHeroObj].zoom /= dioramaZoom;
+				ao[frontHeroObj].head = false;
 
-			grayScale = 0;
-			SetColor(false);
+				grayScale = 0;
+				SetColor(false);
+			}
 		}
 
 		//탄환 그리기
@@ -5241,7 +5251,7 @@ int GetHeartAmount(void)
 
 void LoadingBarDraw(int x, int y, int loadingBarFrame)
 {
-	DrawImage(165, 21, 180, 519, x, y, false, false, false, false, false, 2.0f, sprite[THEATER_IMG], THEATER_IMG);
+	DrawImage(165, 21, 180, 519, x, y, false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 	MemRect(x + 3 * _2X, y - 3 * _2X, Min(159 * _2X, loadingBarFrame * 5 * _2X), 16 * _2X, COLOR_ORANGE);
 
 	//SetFontColor(COLOR_DARKGREY);

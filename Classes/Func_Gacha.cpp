@@ -4933,13 +4933,34 @@ void GachaDraw(void)
 			//가챠가 끝나도 아무도 안 나왔다. 공격 버튼을 누르면 주인공이 다시
 			//서면서 다른 경로가 PLAY 로 바꿔 주는 바람에, 헛스윙 뒤에 몬스터가
 			//뒤늦게 튀어나오는 모양이 됐다.
-			waveStatus = WAVESTATUS_PLAY;
+			//---- 성 격자 인벤토리 시험판 ----
+			//
+			//보상을 닫은 이 자리가 한 판의 끝이다. 다음 웨이브를 세우기
+			//전에 세 갈래를 내민다.
+			//
+			//고르는 동안 웨이브가 서면 안 된다. 전투가 도는 중에 카드를
+			//끌면 손이 둘로 갈라진다. 입력 잠금도 걸지 않는다 - 걸어
+			//두면 카드가 눌리지도 않는다.
+			//
+			//다 고르거나 넘기면 GridTestDraw() 쪽에서 아래 else 가 하는
+			//일을 그대로 한다. 시험을 걷어낼 때는 if 갈래만 지우면
+			//원래 코드로 돌아간다.
+			if (GridTestBeginOffer()) {
+				//OutOfGacha() 안에 waveStatus 를 PLAY 로 되돌리는 갈래가
+				//있다. 판을 내미는 동안에는 도로 눕혀 둔다.
+				waveStatus = WAVESTATUS_END;
+				waveAnnounceTouchLock = false;
+				touchDisable = false;
+			}
+			else {
+				waveStatus = WAVESTATUS_PLAY;
 
-			//보상 상자를 닫은 직후부터 다음 웨이브의 첫 몬스터가 실제로
-			//등장하고 웨이브 타이틀 연출까지 끝날 때까지 입력 공백이 없어야 한다.
-			//첫 몬스터 생성 시 Func_Map.cpp가 같은 잠금을 이어받아 해제한다.
-			waveAnnounceTouchLock = true;
-			touchDisable = true;
+				//보상 상자를 닫은 직후부터 다음 웨이브의 첫 몬스터가 실제로
+				//등장하고 웨이브 타이틀 연출까지 끝날 때까지 입력 공백이 없어야 한다.
+				//첫 몬스터 생성 시 Func_Map.cpp가 같은 잠금을 이어받아 해제한다.
+				waveAnnounceTouchLock = true;
+				touchDisable = true;
+			}
 
 			bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 			return;

@@ -26,4 +26,9 @@ enum { setEnemyPos_COUNT = 114 };
 //나머지는 
 extern const int* castleCrewPosition;
 enum { castleCrewPosition_COUNT = 228 };
+
+// 로비 동료의 시작점(x, y)과 자유 이동 범위(width, height).
+// 성마다 한 줄씩 있으므로 로비 배치를 손볼 때 이 표만 조절하면 된다.
+extern const int* lobbyCrewArea;
+enum { lobbyCrewArea_COUNT = TOTALCASTLE * 4 };
 #endif

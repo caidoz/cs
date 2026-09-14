@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -258,6 +258,8 @@ static void DrawStatusIconCell(int debuffIdx, int turnNumber,
  * 큰 몬스터에서 아이콘이 몸 한가운데에 박힌다. */
 static void DrawStatusFxOverObject(OBJECT* pObj, int obj)
 {
+	if (drawHandle == MD_LOBBY)
+		return;
 	const float fxZoom = 0.5f;
 	int debuffIdx;
 	float scale;
@@ -302,6 +304,8 @@ static void DrawStatusFxOverObject(OBJECT* pObj, int obj)
 
 static void DrawCombatStateIcons(OBJECT* pObj)
 {
+	if (drawHandle == MD_LOBBY)
+		return;
 	const int obj = GetObjFromPtr(pObj);
 	const int maxColumn = 4;
 	//스킬 원본은 64px, 상태이상 원본은 32px라 같은 zoom을 쓰면 크기가
@@ -463,6 +467,8 @@ void DrawObj(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int tempGrayScale;
 	int visibleDebuff = GetRotatingVisibleDebuff(pObj);
+	if (drawHandle == MD_LOBBY)
+		visibleDebuff = -1;
 	if (obj >= 0 && obj < TOTALOBJECT && statusApplyFxFrame[obj] > 0) {
 		int elapsed = STATUSAPPLYFRAME - statusApplyFxFrame[obj];
 		int effectElapsed = Max(0, elapsed - FOCUSZOOMINFRAME);
