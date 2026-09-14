@@ -1,6 +1,6 @@
 #content 1
-version	202609131535
-data/content.pack	2528732	c58e659e1e1a7354
+version	202609141444
+data/content.pack	2528732	09fb5ce65724573a
 data/rates.tsv	18253	b80f376b3df80c57
 res/a0_0.png	2350	f243b2f644c6e7e6
 res/a0_1.png	964	73ed3482d9d72c94
@@ -50,6 +50,8 @@ res/b7.png	35658	95ac79b10c0515d4
 res/b8.png	59078	1bcd8db432efc96b
 res/b9.png	33630	9f8d0cf5c0b32869
 res/bg0.png	81162	3e5abef2bb0b012d
+res/bg0_bottom.png	479508	e00989d5b2345535
+res/bg0_top.png	1189277	8b38a375d4d10702
 res/bg1.png	44300	313390f4dbd69b7a
 res/bg10.png	25494	9df298ceeedc5756
 res/bg11.png	11621	5b1d28608a0f0635
@@ -68,7 +70,7 @@ res/bg6.png	66467	a430b636493e2b03
 res/bg7.png	15954	62fcce9dc9389816
 res/bg8.png	56625	601cc903c35cd0f3
 res/bg9.png	20555	3945520922a157ff
-res/bottomMenu.png	267318	57126c8248ce3332
+res/bottomMenu.png	212457	0eb93b35563122af
 res/box0.png	586218	94d7c78da3362d7e
 res/box1.png	697040	fab59493c917bdc2
 res/box10.png	483176	dfe28f9cfd4b599b
