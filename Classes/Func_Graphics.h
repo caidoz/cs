@@ -68,6 +68,8 @@ float DrawRouletteNumIcon(long long, int, int, int, bool, int align, float zoom)
 void DrawLabelStr(int x, int y, char* str, float zoom);
 void DrawLabel(int, int, int, float zoom);
 void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, float zoom);
+float GetStageGroundZoom(void);
+int GetStageGroundY(void);
 void DrawDiorama(int x, int y, int type, float zoom);
 void DrawDioramaEnemy(int x, int y, int stage, int room, float zoom, int dropFrame);
 void DrawDioramaCrew(HOUSE* housePtr, int x, int y, float zoom, int dropFrame, bool hand, bool star, int emoticon);

@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
@@ -2163,6 +2163,22 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 //�ϳ��� ����󸶸�?�׸��� �Լ�
 //����󸶾���?������Ʈ�� �޾Ƽ� �׷��ִµ�, ��ġ�� �ٸ���. 
 //
+float GetStageGroundZoom(void)
+{
+	if (!sprite[BATTLE_BG_BOTTOM_IMG]) LoadImg(BATTLE_BG_BOTTOM_IMG);
+	const auto size = sprite[BATTLE_BG_BOTTOM_IMG]->getContentSize();
+	const int availableHeight = Max(1, DY - GetStageInventoryTop() - 16 * _2X);
+	return Min((float)DX / size.width, (float)availableHeight / size.height);
+}
+
+int GetStageGroundY(void)
+{
+	const float groundZoom = GetStageGroundZoom();
+	const auto size = sprite[BATTLE_BG_BOTTOM_IMG]->getContentSize();
+	// The walkable center lies halfway up bg0_bottom, above its water border.
+	return GetStageInventoryTop() + 16 * _2X + (int)(size.height * groundZoom * 0.5f);
+}
+
 void DrawDiorama(int x, int y, int type, float zoom)
 {
 	int i = 0, j = 0;
@@ -2178,11 +2194,32 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	memset(&sortedCrewIdx, -1, sizeof(sortedCrewIdx));
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
+	if (drawHandle == MD_PLAY) {
+		HitZoomPause();
+		SetAlpha(32);
+		MemRect(0, DY, DX, DY, COLOR_BLACK);
+		const int backgroundImages[] = { BATTLE_BG_TOP_IMG, BATTLE_BG_BOTTOM_IMG };
+		for (int layer = 0; layer < 2; ++layer) {
+			const int image = backgroundImages[layer];
+			if (!sprite[image]) LoadImg(image);
+			const auto size = sprite[image]->getContentSize();
+			const bool ground = image == BATTLE_BG_BOTTOM_IMG;
+			const float backgroundZoom = ground ? GetStageGroundZoom() : (float)DX / size.width;
+			const int topY = ground
+				? GetStageInventoryTop() + 16 * _2X + (int)(size.height * backgroundZoom) : DY;
+			const int leftX = (int)(DX - size.width * backgroundZoom) / 2;
+			DrawImage((int)size.width, (int)size.height, 0, 0, leftX, topY,
+				false, false, false, false, false, backgroundZoom, sprite[image], image);
+		}
+		HitZoomResume();
+	}
+	else {
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
+	}
 
 	// PVP는 상대 성 디오라마 자체가 전장 배경이다. 아래의 일반 방 타일/버퍼를
 	// 다시 얹으면 초기화된 버퍼의 검은 판이 성을 덮으므로 환경 레이어만 건너뛴다.
-	if (drawHandle != MD_PVP) {
+	if (drawHandle != MD_PVP && drawHandle != MD_PLAY) {
 #ifdef MAPTEST
 	SetAlpha(8);
 	SetSectionClip(xOffset, DY, DX - 2 * xOffset, DY - STATUSWIN_Y, false);

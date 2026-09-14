@@ -4174,7 +4174,7 @@ void RaidSequenceDraw(void)
 			if (drawHandle == MD_BATTLE)
 				ao[PLAYER].zoom = BATTLEZOOM;
 			else
-				ao[PLAYER].zoom = LOBBYZOOM;
+				ao[PLAYER].zoom = drawHandle == MD_PLAY ? ao[PLAYER].defaultZoom : LOBBYZOOM;
 			bar[BAR_COIN].front = false;
 
 			bar[BAR_COIN].y -= 20 * _2X;
@@ -4671,9 +4671,6 @@ void SetScreenRatio(void)
 	GNBHEIGHT += NORCH_HEIGHT;
 	BOTTOMMENUHEIGHT += HOMEBAR_HEIGHT;
 
-	if (SCREENRATIO <= 167) {//3:5
-	}
-
 #ifndef CENTERDISPLAY
 	if (SCREENRATIO <= 150)
 		MINDY -= GNBHEIGHT + BOTTOMMENUHEIGHT;
@@ -4692,7 +4689,7 @@ void SetScreenRatio(void)
 		PLAYAREA_Y = 22 * TSIZE;
 		REALDY = PLAYAREA_Y;
 		//STATUSWIN_Y = DY / 2 + (float)(-360 * _2X + DIORAMA_GAPY) * dioramaZoom + 16 * _2X;
-		STATUSWIN_Y = STATUSWIN_Y_INIT = DY - GNBHEIGHT + (float)(-DIORAMASIZE_Y) * DIORAMAZOOM_BATTLE + 108 * _2X - (SCREENRATIO - 134) * 3;
+		STATUSWIN_Y = STATUSWIN_Y_INIT = DY - GNBHEIGHT + (float)(-DIORAMASIZE_Y) * DIORAMAZOOM_BATTLE + 108 * _2X - (SCREENRATIO - 134) * 5;
 		STATUSWIN_Y2 = STATUSWIN_Y - 64 * _2X;
 		//PLAYAREA_Y = 22 * TSIZE;
 		//REALDY = PLAYAREA_Y;
@@ -4727,7 +4724,11 @@ void SetHero(void)
 {
 	int i;
 	int doorY = 256 * _2X;
-	int playerCnt = MAXPLAYER;
+	int playerCnt = drawHandle == MD_PLAY ? 1 : MAXPLAYER;
+	if (drawHandle == MD_PLAY) {
+		for (int slot = 1; slot < MAXPLAYER; ++slot)
+			memset(&ao[PLAYER + slot], 0, sizeof(OBJECT));
+	}
 
 	//3명을 모두 세팅한다.
 	for (i = 0; i < playerCnt; i++) {
@@ -4749,7 +4750,7 @@ void SetHero(void)
 			default:
 				ao[PLAYER + i].nx = ao[PLAYER + i].x = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 0];
 				ao[PLAYER + i].ny = ao[PLAYER + i].y = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 1];// doorY + TSIZE;
-				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[i] * HEROZOOM;
+				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[i] * HEROZOOM * (drawHandle == MD_PLAY ? 2.0f : 1.0f);
 				ao[PLAYER + i].dirF = ao[PLAYER + i].dirX = RIGHT;
 				ao[PLAYER + i].moveHandler = REGENMOVE;
 				ao[PLAYER + i].drawHandler = REGENDRAW;
@@ -4759,6 +4760,8 @@ void SetHero(void)
 
 				break;
 			}
+			if (drawHandle == MD_PLAY)
+				ao[PLAYER + i].nx = ao[PLAYER + i].x = DX * 0.28f + rx;
 			ao[PLAYER + i].playerRun = false;
 			ao[PLAYER + i].dx = 0;
 			ao[PLAYER + i].flamer = null;
@@ -4802,6 +4805,11 @@ void SetHero(void)
 //몬스터나 NPC 동료를 추가
 void SetBattleCrew()
 {
+	if (drawHandle == MD_PLAY) {
+		for (int slot = 0; slot < MAXCREW; ++slot)
+			memset(&ao[CREW + slot], 0, sizeof(OBJECT));
+		return;
+	}
 	int i, j = 0;
 	int crewIdx;
 	int newCnt = 0;
