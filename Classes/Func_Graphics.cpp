@@ -2254,12 +2254,10 @@ float GetStageGroundZoom(void)
 
 int GetStageGroundY(void)
 {
-	//히어로가 서는 줄. 발판 그림의 높이로 재면 발판을 가로에 맞춰 키운
-	//지금은 줄이 화면 위로 올라가 히어로가 잘린다. 전투 화면(격자 위부터
-	//화면 끝까지)의 아래쪽 STAGE_GROUND_RATE 자리에 세운다.
+	//성과 적 몬스터가 나오는 위치는 하단 인벤토리 바로 위
 	const int top = GetStageInventoryTop();
 
-	return top + 16 * _2X + (int)((DY - top) * STAGE_GROUND_RATE);
+	return top + 4 * _2X;
 }
 
 void DrawDiorama(int x, int y, int type, float zoom)
@@ -3096,6 +3094,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		for (i = CREW - 1; i >= 0; i--) {
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 				if (drawHandle == MD_LOBBY && i != ROBIN)
+					continue;
+				if (drawHandle == MD_PLAY && i == ROBIN)
 					continue;
 				if (i == frontHeroObj)
 					continue;

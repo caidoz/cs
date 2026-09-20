@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -67,6 +67,7 @@ struct StageSword {
 	bool gear;		//아웃게임에서 장착하고 들어온 검. 히어로가 휘두른다
 };
 int GridTestSwords(StageSword* out, int maxCnt);
+int GridTestTotalItemCount(void);
 int StageGearList(int obj, StageSword* out, int maxCnt);	//누구든 장비 목록
 int StageFoeGearList(StageSword* out, int maxCnt);	//지금 몬스터 장비
 long long StageGearArmor(int obj);					//방어구 값의 합

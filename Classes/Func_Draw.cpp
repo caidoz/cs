@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Data/CmfData.h"
 #include "Func.h"
@@ -2847,6 +2847,15 @@ int GridTestSwords(StageSword* out, int maxCnt)
 	}
 
 	return n;
+}
+
+int GridTestTotalItemCount(void)
+{
+	int cnt = 0;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used) cnt++;
+	}
+	return cnt;
 }
 
 //---- 판이 새로 시작할 때 ----
