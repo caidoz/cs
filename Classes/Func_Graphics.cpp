@@ -3,6 +3,12 @@
 #include "Text.h"
 #include "Data.h"
 #include "Data/SwordSprites.h"
+#include "BattleMobileCastle.h"
+
+void BattleMobileCastleUpdate(float delta)
+{
+	BattleMobileCastle::Update(delta);
+}
 
 //타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미
 //화면 절대좌표인 것들(전체화면 이펙트, 레터박스, DX/2 기준으로 놓는 강타격 연출)에 쓴다.
@@ -2272,26 +2278,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
 	if (drawHandle == MD_PLAY) {
-		//발판과 배경도 히어로와 같은 줌을 탄다. 예전에는 여기서 줌을
-		//멈춰서 캐릭터만 커지고 바닥은 가만히 있었다.
-		SetAlpha(32);
-		MemRect(0, DY, DX, DY, COLOR_BLACK);
-		const int backgroundImages[] = { BATTLE_BG_TOP_IMG, BATTLE_BG_BOTTOM_IMG };
-		for (int layer = 0; layer < 2; ++layer) {
-			const int image = backgroundImages[layer];
-			if (!sprite[image]) LoadImg(image);
-			const auto size = sprite[image]->getContentSize();
-			const bool ground = image == BATTLE_BG_BOTTOM_IMG;
-			const float backgroundZoom = ground ? GetStageGroundZoom() : (float)DX / size.width;
-			//발판은 히어로가 서는 줄에 맞춘다. 격자 위에 얹어 두면 발판이
-			//전투 화면 위쪽에 떠서, 히어로가 서는 자리와 그림의 바닥이
-			//따로 논다. 아래로 넘치는 부분은 뒤이어 그리는 격자가 덮는다.
-			const int topY = ground
-				? GetStageGroundY() + (int)(size.height * backgroundZoom * 0.5f) : DY;
-			const int leftX = (int)(DX - size.width * backgroundZoom) / 2;
-			DrawImage((int)size.width, (int)size.height, 0, 0, leftX, topY,
-				false, false, false, false, false, backgroundZoom, sprite[image], image);
-		}
+		BattleMobileCastle::Draw(GetStageGroundY(), GetStageInventoryTop());
 	}
 	else {
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
@@ -2561,6 +2548,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 		//적 그림자
 		for (i = ENEMY; i < TOTALOBJECT; i++) {
+			if (drawHandle == MD_PLAY && i < NEUTRAL)
+				continue;
 			if (ao[i].active && ao[i].moveHandler < BULLET3WAYMOVE) {
 				//몬스터 그림자는 자기 발밑이 아니라 주인공과 같은 바닥선에 그린다.
 				//ENEMY_ONEEYE처럼 공중에 뜬 적은 자기 y에 붙이면 그림자까지 같이 떠버리고,
@@ -3041,6 +3030,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 		for (int enemyDrawIdx = 0; enemyDrawIdx < enemyDrawCount; enemyDrawIdx++) {
 			i = enemyDrawOrder[enemyDrawIdx];
+			if (drawHandle == MD_PLAY && i >= ENEMY && i < NEUTRAL)
+				continue;
 			if (ao[i].active && ao[i].type != NPC_SHIP) {
 #ifdef HITMARKWHITE
 				if (ao[i].attacked)

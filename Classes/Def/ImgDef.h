@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef _DEF_IMG_H_
 #define _DEF_IMG_H_
@@ -575,6 +575,7 @@ typedef enum _imgDef {
 	LOBBY_LANDSCAPE_IMG,
 	LOBBY_CLOUD_IMG,
 	LOBBY_FOOTHILLS_IMG,
+	CASTLE_WHEEL_IMG,
 
 	TOTALIMG,
 #ifdef GAMELOGWRITE

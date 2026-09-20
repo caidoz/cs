@@ -1,4 +1,4 @@
-﻿/*----------------------------------------------------------------------------
+/*----------------------------------------------------------------------------
 **			PRE-DEFINITIONS FOR MODULE
 **--------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -1009,6 +1009,9 @@ bool Core::init()
 
 void Core::Run(float delta) {
 	LobbySkyUpdate(delta);
+	if (drawHandle == MD_PLAY) {
+		BattleMobileCastleUpdate(delta);
+	}
 
 	int i;
 	//항상 현재 시간을 세팅해 준다.

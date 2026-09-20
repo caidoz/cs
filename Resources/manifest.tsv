@@ -1,6 +1,6 @@
 #content 1
-version	202609191718
-data/content.pack	76852	0d5cecd53339deb4
+version	202609201222
+data/content.pack	2530580	060c261150fe55d7
 data/rates.tsv	18253	b80f376b3df80c57
 res/a0_0.png	2350	f243b2f644c6e7e6
 res/a0_1.png	964	73ed3482d9d72c94
@@ -548,6 +548,7 @@ res/castle6.png	1234311	d9e2189e0988b085
 res/castle7.png	1530338	0f05eee05d5c75e3
 res/castle8.png	1891329	81b1f42548381ce5
 res/castle9.png	2344057	7a1b3db8b301ca5b
+res/castle_wheel.png	2301	723d219e82632fee
 res/cc.png	37522	2409fb6301c07a23
 res/cloud.png	132877	d54225fb3c5da7a3
 res/coin_0.png	465070	8b4c692e64729d1e
@@ -585,39 +586,24 @@ res/d2_5.png	4946	6c49e30abc5ef024
 res/d2_6.png	4704	d65e7c6ce15f18c4
 res/d2_7.png	4706	e9a9afe64306682e
 res/d2_8.png	4895	1cc18158f4cadda4
-res/diorama0 - 복사본.png	1640612	52d2307a3ac90346
 res/diorama0.png	1640612	52d2307a3ac90346
-res/diorama1 - 복사본.png	1964075	d56dd646f2e806c7
 res/diorama1.png	1358742	b2ddbfe2c239b7e7
-res/diorama10 - 복사본.png	1640608	02296f49187834f3
 res/diorama10.png	1640608	02296f49187834f3
-res/diorama11 - 복사본.png	1460333	29ef7bae34a7549e
 res/diorama11.png	1460333	29ef7bae34a7549e
-res/diorama12 - 복사본.png	1540523	1bd8f30a17845677
 res/diorama12.png	1540523	1bd8f30a17845677
-res/diorama13 - 복사본.png	1782951	d400911a8a518c7f
 res/diorama13.png	1782951	d400911a8a518c7f
-res/diorama14 - 복사본.png	2146919	b12c79aa13db2a76
 res/diorama14.png	2146919	b12c79aa13db2a76
 res/diorama15.png	1592432	03e8517673001da0
 res/diorama16.png	1568965	3d0c0777906e6091
 res/diorama17.png	1381951	3e07c5ea39e8e626
 res/diorama18.png	1721778	68ecd7815a90f51c
-res/diorama2 - 복사본.png	1577311	48fe69245d66c48e
 res/diorama2.png	1577311	48fe69245d66c48e
-res/diorama3 - 복사본.png	1918087	5ff76133da977d05
 res/diorama3.png	1918087	5ff76133da977d05
-res/diorama4 - 복사본.png	1426333	63243d5d92f53c91
 res/diorama4.png	1426333	63243d5d92f53c91
-res/diorama5 - 복사본.png	1660231	6f31a186e8491429
 res/diorama5.png	1660231	6f31a186e8491429
-res/diorama6 - 복사본.png	1486519	2346336fe960dacc
 res/diorama6.png	1486519	2346336fe960dacc
-res/diorama7 - 복사본.png	1621986	821f538b367b50b2
 res/diorama7.png	1621986	821f538b367b50b2
-res/diorama8 - 복사본.png	1711238	80bbb17b1d952598
 res/diorama8.png	1711238	80bbb17b1d952598
-res/diorama9 - 복사본.png	1456036	1d2c56ed1698d642
 res/diorama9.png	1456036	1d2c56ed1698d642
 res/door.png	37900	fdec4b0cfd49ab62
 res/dot.png	185	639ec1de2fa75fd8

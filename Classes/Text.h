@@ -3474,6 +3474,7 @@ const char* const textId[] = {
 	"lobby_landscape",
 	"lobby_cloud",
 	"lobby_foothills",
+	"castle_wheel",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

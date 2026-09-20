@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Core.h"
 
 // Battle 관련 함수
@@ -21,6 +21,7 @@ void SetBattleCrew(void);
 bool IsStageRealtime(void);
 void StageRtBegin(void);
 void UpdateStageRealtime(void);
+void BattleMobileCastleUpdate(float delta);
 void StageRtToggleAuto(void);
 void StageRtSetAuto(bool on);
 bool StageRtAutoOn(void);
