@@ -2277,9 +2277,10 @@ void DrawDiorama(int x, int y, int type, float zoom)
 
 	if (drawHandle == MD_PLAY) {
 		BattleMobileCastle::Draw(GetStageGroundY(), GetStageInventoryTop());
+		return;
 	}
 	else {
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
+		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
 	}
 
 	// PVP는 상대 성 디오라마 자체가 전장 배경이다. 아래의 일반 방 타일/버퍼를

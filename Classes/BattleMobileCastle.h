@@ -387,8 +387,8 @@ inline void DrawInventoryCastleReflections(int castleIdx, float castleLeft, floa
 
 // Greatly enlarged Mobile Castle with wheels and Hero stationed at lobby position
 inline void DrawCastle(int groundY) {
-	const int castleIdx = castleOrder[robin.castle];
-	const int castleImg = MAP_DIORAMA_IMG + castleIdx;
+	const int curCastle = Max(0, Min(robin.castle, 9));
+	const int castleImg = CASTLE0_IMG + curCastle;
 	if (!sprite[castleImg]) LoadImg(castleImg);
 	if (!sprite[castleImg]) return;
 
@@ -413,21 +413,20 @@ inline void DrawCastle(int groundY) {
 	            (int)(groundY + 8 * _2X),
 	            SHADOW_IMG, scale * 1.15f);
 
-	// 2. Castle Sprite
+	// 2. Castle Sprite (Actual Lobby Castle: castle0.png ~ castle9.png)
 	DrawImage((int)rawW, (int)rawH, 0, 0,
 	          (int)castleLeft, (int)castleTop,
 	          false, false, false, false, false, scale,
 	          sprite[castleImg], castleImg);
 
 	// 3. Castle Chassis Wheels with Physical Rotation & Dust Emitter
-	CastleWheels::DrawCastleWheels(robin.castle, castleLeft, castleBottom,
+	CastleWheels::DrawCastleWheels(curCastle, castleLeft, castleBottom,
 	                              rawW, scale, (float)groundY, true);
 
 	// 4. Inventory items reflected on the castle (Mounted weapons & Aegis shield)
-	DrawInventoryCastleReflections(castleIdx, castleLeft, castleTop, rawW, rawH, scale);
+	DrawInventoryCastleReflections(curCastle, castleLeft, castleTop, rawW, rawH, scale);
 
 	// 5. Hero (Robin) stationed at the exact lobby castle position (kCastleHeroPos), facing RIGHT!
-	const int curCastle = Max(0, Min(robin.castle, 9));
 	const float heroU = kCastleHeroPos[curCastle].u;
 	const float heroV = kCastleHeroPos[curCastle].v;
 	const float heroX = castleLeft + heroU * rawW * scale;

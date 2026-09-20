@@ -1,4 +1,4 @@
-﻿#include "Func.h"
+#include "Func.h"
 #include "Write.h"
 #include "Data.h"
 
@@ -3746,8 +3746,11 @@ void DrawScreen(int x, int y, float zoom)
 	
 	//for (i = 0; i < TOTALCASTLE; i++)
 	switch (drawHandle) {
-	case MD_DEMO:
 	case MD_PLAY:
+		DrawDiorama(0, 0, 0, 1.0f);
+		break;
+
+	case MD_DEMO:
 	case MD_BATTLE:
 	case MD_GACHA:
 	case MD_PVP:
