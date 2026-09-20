@@ -102,10 +102,11 @@
 //     레벨  1   상한  60   회복 11/시간   가득까지 5.5 시간
 //     레벨 20   상한 250   회복 30/시간   가득까지 8.3 시간
 //     레벨 99   상한 1040  회복 109/시간  가득까지 9.5 시간
-#define HEART_MAX_BASE			50
-#define HEART_MAX_PER_LEVEL		10
-#define HEART_REGEN_BASE		10
-#define HEART_REGEN_PER_LEVEL	1
+#define HEART_MAX_BASE			20
+#define HEART_MAX_PER_CASTLE	1
+#define HEART_MAX_PER_LEVEL		0
+#define HEART_REGEN_BASE		1
+#define HEART_REGEN_PER_LEVEL	0
 
 #define HEART_REFILL_PCT		110		//잡몹 상자 : 맥스의 110%까지
 #define HEART_REFILL_BOSS_PCT	200		//보스 상자 : 맥스의 200%까지
@@ -527,6 +528,60 @@
 //쓸 때 ao[].y 에서 빼야 위로 간다. 개체의 y 는 위로 갈수록 마이너스다
 //(화면 좌표는 반대로 위가 +).
 #define PVP_BULLET_UP				64
+
+//---- 스테이지 실시간 전투 (Func_Battle.cpp) ----
+//
+//아무도 걷지 않고 저마다 제 시계로 친다. 동료의 시계는 crew.tsv 의
+//boss_cool 을 그대로 쓰고(멸망전과 같다), 히어로와 몬스터만 여기서 정한다.
+
+//히어로가 다시 휘두를 때까지. 동료보다 짧다 - 판은 히어로 혼자 시작하므로
+//처음 몇 마리는 히어로 손으로만 눕혀야 한다.
+#define STAGE_HERO_COOLDOWN			(FPS)
+
+//몬스터가 다시 칠 때까지. 히어로보다 길다 - 짧으면 동료가 한 명도 없는
+//첫 판에서 버틸 수가 없다.
+#define STAGE_FOE_COOLDOWN			(FPS * 3 / 2)
+
+//몬스터가 치는 자세의 몇 프레임째에 맞는가. 자세가 끝날 때 맞으면 이미
+//돌아서는 중이라 누가 때렸는지 안 보인다.
+#define STAGE_FOE_HIT_AT			(PVP_FOE_SHOTMOTION / 2)
+
+//검 한 자루가 다시 칠 때까지. 검의 길이(세로 칸)에서 온다.
+//
+//    쿨타임 = STAGE_SWORD_COOL_BASE + 길이 * STAGE_SWORD_COOL_PER_ROW
+//
+//길이는 2 ~ 12 칸이라 0.8초 ~ 2.5초다. 긴 검일수록 묵직하게 늦게 친다.
+//장착 검(히어로의 휘두름)과 격자의 검이 같은 식을 쓴다 - 같은 검이면 어디에
+//있든 같은 빠르기다.
+#define STAGE_SWORD_COOL_BASE		(FPS / 2)
+#define STAGE_SWORD_COOL_PER_ROW	(FPS / 6)
+
+//새로 놓인 검의 시계를 칸 번호에 따라 늦게 건다. 모두 0 에서 출발하면 같은
+//길이의 검이 같은 프레임에 쳐서 데미지 숫자가 한 자리에 겹친다.
+#define STAGE_SWORD_STAGGER			(FPS / 8)
+#define STAGE_SWORD_STAGGER_SLOTS	5
+
+//쿨타임이 다 찬 검이 번쩍이는 시간. 이 시간이 지나야 공격이 나간다.
+//
+//차오름이 끝나는 것과 치는 것 사이에 틈이 있어야 "이제 친다"가 눈에
+//들어온다. 차는 순간 바로 치면 번쩍임과 데미지 숫자가 겹쳐 둘 다 안 보인다.
+#define STAGE_SWORD_FLASH			(FPS / 5)
+
+//히어로 뒤에 선 동료의 간격. 앞줄 셋, 뒷줄 셋이다.
+//히어로가 서는 줄. 전투 화면 높이의 이만큼 위다(0 이면 격자 바로 위).
+#define STAGE_GROUND_RATE 0.30f
+
+//방어구가 쌓일 때 피해가 줄어드는 완만함. 이만큼 쌓이면 피해가 절반이다.
+#define STAGE_ARMOR_SOFT 400
+
+//몬스터 한 마리를 눕힐 때 떨어지는 골드. 판이 오를수록 같이 오른다.
+#define STAGE_KILL_GOLD 20
+
+//몬스터가 칠 때 히어로 쪽으로 내미는 거리
+#define STAGE_FOE_LUNGE (14 * _2X)
+
+#define STAGE_CREW_GAP_X			(30 * _2X)
+#define STAGE_CREW_GAP_Y			(10 * _2X)
 
 
 

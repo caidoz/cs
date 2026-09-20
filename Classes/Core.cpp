@@ -109,6 +109,11 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 	auto touchPoint = touch->getLocation();
 	//log("onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touchPoint.x, touchPoint.y);
 
+	//로비 성 카메라. 두 번째 손가락이면 핀치라 일반 터치로 넘기지 않는다.
+	if (drawHandle == MD_LOBBY
+		&& LobbyCamTouchBegan(touch->getID(), touchPoint.x, touchPoint.y))
+		return true;
+
 	startTouchX = touchPoint.x;
 	startTouchY = touchPoint.y;
 
@@ -173,6 +178,11 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 	rapidSwipe = false;
 
 	auto touchPoint = touch->getLocation();
+
+	//로비 성 카메라. 핀치 중이면 여기서 끝낸다.
+	if (drawHandle == MD_LOBBY
+		&& LobbyCamTouchMoved(touch->getID(), touchPoint.x, touchPoint.y))
+		return;
 
 	//log("onTouchMoved id = %d, x = %f, y = %f", touch->getID(), touchPoint.x, touchPoint.y);
 	if (touch) {
@@ -412,6 +422,10 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 	auto touchPoint = touch->getLocation();
 	rapidSwipe = false;
 
+	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
+	if (LobbyCamTouchEnded(touch->getID()))
+		return;
+
 	endTouchX = touchPoint.x;
 	endTouchY = touchPoint.y;
 
@@ -476,6 +490,10 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
 	rapidSwipe = false;
+
+	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
+	if (LobbyCamTouchEnded(touch->getID()))
+		return;
 
 	auto touchPoint = touch->getLocation();
 
@@ -814,6 +832,11 @@ bool Core::init()
 		LoadImg(i);
 		LoadTexture(i);
 	}
+	//로비 성. 로비가 첫 화면이라 처음부터 읽어 둔다.
+	for (i = CASTLE0_IMG; i <= LOBBY_FOOTHILLS_IMG; i++) {
+		LoadImg(i);
+		LoadTexture(i);
+	}
 
 	LoadOption();
 	LoadAiHouse();
@@ -985,6 +1008,7 @@ bool Core::init()
 }
 
 void Core::Run(float delta) {
+	LobbySkyUpdate(delta);
 
 	int i;
 	//항상 현재 시간을 세팅해 준다.
@@ -1453,6 +1477,8 @@ void PaintClet(int x, int y, int w, int h)
 				//시험이 끝나면 이 세 줄과 Func_Draw.cpp 의 블록을 지운다.
 				HitZoomPause();
 				GridTestDraw();
+				StageFoeShotDraw();
+				StageRtDrawButton();
 				HitZoomResume();
 
 				if (curMenu == MENU_PLAY) {
@@ -2555,9 +2581,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
 
 
 

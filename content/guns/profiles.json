@@ -1,0 +1,317 @@
+[
+  {
+    "id": 1,
+    "filename": "w1_1.png",
+    "name": "발화식 총",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 2,
+    "filename": "w1_2.png",
+    "name": "더블 데린저",
+    "width": 30,
+    "height": 24,
+    "grip_x": 18,
+    "grip_y": 16
+  },
+  {
+    "id": 3,
+    "filename": "w1_3.png",
+    "name": "포켓 플린처",
+    "width": 32,
+    "height": 24,
+    "grip_x": 19,
+    "grip_y": 16
+  },
+  {
+    "id": 4,
+    "filename": "w1_4.png",
+    "name": "리볼버 파이슨",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 5,
+    "filename": "w1_5.png",
+    "name": "피스메이커",
+    "width": 36,
+    "height": 24,
+    "grip_x": 20,
+    "grip_y": 16
+  },
+  {
+    "id": 6,
+    "filename": "w1_6.png",
+    "name": "헌팅 매그넘",
+    "width": 36,
+    "height": 26,
+    "grip_x": 20,
+    "grip_y": 17
+  },
+  {
+    "id": 7,
+    "filename": "w1_7.png",
+    "name": "45구경 오토건",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 8,
+    "filename": "w1_8.png",
+    "name": "듀얼 트리거",
+    "width": 38,
+    "height": 26,
+    "grip_x": 22,
+    "grip_y": 17
+  },
+  {
+    "id": 9,
+    "filename": "w1_9.png",
+    "name": "소드오프 샷건",
+    "width": 38,
+    "height": 26,
+    "grip_x": 22,
+    "grip_y": 17
+  },
+  {
+    "id": 10,
+    "filename": "w1_10.png",
+    "name": "고져스 건",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 11,
+    "filename": "w1_11.png",
+    "name": "로열 머스킷",
+    "width": 42,
+    "height": 26,
+    "grip_x": 24,
+    "grip_y": 17
+  },
+  {
+    "id": 12,
+    "filename": "w1_12.png",
+    "name": "듀얼링 플린트",
+    "width": 38,
+    "height": 26,
+    "grip_x": 22,
+    "grip_y": 17
+  },
+  {
+    "id": 13,
+    "filename": "w1_13.png",
+    "name": "회천마도총",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 14,
+    "filename": "w1_14.png",
+    "name": "프로스트 레이",
+    "width": 40,
+    "height": 26,
+    "grip_x": 23,
+    "grip_y": 17
+  },
+  {
+    "id": 15,
+    "filename": "w1_15.png",
+    "name": "볼틱 블래스터",
+    "width": 42,
+    "height": 28,
+    "grip_x": 24,
+    "grip_y": 18
+  },
+  {
+    "id": 16,
+    "filename": "w1_16.png",
+    "name": "태양의 총",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 17,
+    "filename": "w1_17.png",
+    "name": "이클립스 라이플",
+    "width": 46,
+    "height": 26,
+    "grip_x": 26,
+    "grip_y": 17
+  },
+  {
+    "id": 18,
+    "filename": "w1_18.png",
+    "name": "루미너스 캐넌",
+    "width": 46,
+    "height": 28,
+    "grip_x": 26,
+    "grip_y": 18
+  },
+  {
+    "id": 19,
+    "filename": "w1_19.png",
+    "name": "헬파이어 건",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 20,
+    "filename": "w1_20.png",
+    "name": "아비스 바주카",
+    "width": 48,
+    "height": 30,
+    "grip_x": 27,
+    "grip_y": 19
+  },
+  {
+    "id": 21,
+    "filename": "w1_21.png",
+    "name": "베히모스 런처",
+    "width": 50,
+    "height": 30,
+    "grip_x": 28,
+    "grip_y": 19
+  },
+  {
+    "id": 22,
+    "filename": "w1_22.png",
+    "name": "크로스 파이어",
+    "width": 34,
+    "height": 28,
+    "grip_x": 17,
+    "grip_y": 20
+  },
+  {
+    "id": 23,
+    "filename": "w1_23.png",
+    "name": "테스타먼트",
+    "width": 50,
+    "height": 30,
+    "grip_x": 28,
+    "grip_y": 19
+  },
+  {
+    "id": 24,
+    "filename": "w1_24.png",
+    "name": "라그나로크",
+    "width": 52,
+    "height": 30,
+    "grip_x": 29,
+    "grip_y": 19
+  },
+  {
+    "id": 25,
+    "filename": "w1_25.png",
+    "name": "드래곤 브레스",
+    "width": 54,
+    "height": 32,
+    "grip_x": 30,
+    "grip_y": 20
+  },
+  {
+    "id": 26,
+    "filename": "w1_26.png",
+    "name": "묵시록의 나팔",
+    "width": 54,
+    "height": 32,
+    "grip_x": 30,
+    "grip_y": 20
+  },
+  {
+    "id": 27,
+    "filename": "w1_27.png",
+    "name": "레비아탄 하푼",
+    "width": 56,
+    "height": 32,
+    "grip_x": 31,
+    "grip_y": 20
+  },
+  {
+    "id": 28,
+    "filename": "w1_28.png",
+    "name": "발키리 레일건",
+    "width": 58,
+    "height": 32,
+    "grip_x": 32,
+    "grip_y": 20
+  },
+  {
+    "id": 29,
+    "filename": "w1_29.png",
+    "name": "하데스 익스큐셔너",
+    "width": 58,
+    "height": 34,
+    "grip_x": 32,
+    "grip_y": 21
+  },
+  {
+    "id": 30,
+    "filename": "w1_30.png",
+    "name": "차원붕괴포",
+    "width": 60,
+    "height": 34,
+    "grip_x": 33,
+    "grip_y": 21
+  },
+  {
+    "id": 31,
+    "filename": "w1_31.png",
+    "name": "슈퍼노바 블래스터",
+    "width": 62,
+    "height": 34,
+    "grip_x": 34,
+    "grip_y": 21
+  },
+  {
+    "id": 32,
+    "filename": "w1_32.png",
+    "name": "천상신의 징벌",
+    "width": 62,
+    "height": 36,
+    "grip_x": 34,
+    "grip_y": 22
+  },
+  {
+    "id": 33,
+    "filename": "w1_33.png",
+    "name": "아스트랄 블래스터",
+    "width": 64,
+    "height": 36,
+    "grip_x": 35,
+    "grip_y": 22
+  },
+  {
+    "id": 34,
+    "filename": "w1_34.png",
+    "name": "인피니티 싱귤래리티",
+    "width": 64,
+    "height": 36,
+    "grip_x": 35,
+    "grip_y": 22
+  },
+  {
+    "id": 35,
+    "filename": "w1_35.png",
+    "name": "신살자의 총",
+    "width": 66,
+    "height": 38,
+    "grip_x": 36,
+    "grip_y": 23
+  }
+]

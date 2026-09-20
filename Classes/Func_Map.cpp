@@ -469,8 +469,16 @@ void SetRoom_Neutral(void)
 		const signed short* sPtr;
 
 		if (i < mapData[8]) {
-			pObj->active = true;
 			pObj->type = mapNeutralObj[i * 4];
+
+			//판 전투에는 맵에 놓인 상자를 두지 않는다. 판이 끝날 때
+			//떨어지는 상자 하나만 상자여야 "끝났구나"가 헷갈리지 않는다.
+			if (pObj->type == OBJ_BOX && drawHandle == MD_PLAY) {
+				pObj->active = false;
+				continue;
+			}
+
+			pObj->active = true;
 			pObj->x = mapNeutralObj[i * 4 + 1];
 			pObj->y = mapNeutralObj[i * 4 + 2];
 			pObj->etc = mapNeutralObj[i * 4 + 3];
@@ -967,16 +975,50 @@ void SetEnemyUser()
 //는 상자를 열 때마다(Func_Gacha.cpp) 끝없이 오르므로 언젠가 반드시 넘는다.
 //체력 곡선(GetWaveHp)은 waveIdx 를 그대로 쓰니 계속 세지고, 등장하는 몬스터만
 //마지막 행에서 멈춘다.
+//---- 표에 실제로 깔려 있는 줄 수 ----
+//
+//첫 몬스터 종류가 0 인 줄이 나오면 거기가 표의 끝이다. 배열은 10000 줄
+//이지만 그 뒤는 비어 있고, 빈 줄을 집으면 아무도 안 나와 전투가 멈춘다.
+//
+//매 프레임 세면 낭비라 한 번만 세어 들고 있는다. 표는 게임이 도는 동안
+//바뀌지 않는다.
+static int GetFilledWaveRowCnt(void)
+{
+	static int cached = 0;
+
+	if (cached > 0)
+		return cached;
+
+	if (wave == nullptr)
+		return 1;
+
+	const int rows = wave_COUNT / (MAXWAVEENEMY * WAVEDATASIZE);
+	int n = 0;
+
+	while (n < rows && wave[n * MAXWAVEENEMY * WAVEDATASIZE] != 0)
+		n++;
+
+	//한 줄도 못 찾아도 0 으로 나누지 않게 한 줄은 있는 것으로 친다.
+	cached = Max(1, n);
+
+	return cached;
+}
+
 int GetWaveRow(int waveIdx)
 {
-	const int rows = wave_COUNT / (MAXWAVEENEMY * WAVEDATASIZE);
+	//---- 판이 오르면 표에서도 그만큼 뒤로 간다 ----
+	//
+	//전에는 waveIdx 를 그대로 줄 번호로 썼다. waveIdx 는 판이 시작할 때마다
+	//0 으로 돌아가므로(GotoBattle), 스테이지가 올라도 늘 표의 앞머리부터
+	//읽었다. 백 판째에도 첫 판과 같은 몬스터가 나왔다.
+	//
+	//한 판이 몬스터 STAGE_MONSTER_CNT 마리이므로, 판 하나가 표에서 그만큼을
+	//차지한다. 판이 오르면 그 다음 묶음으로 넘어간다.
+	const int row = robin.stage * STAGE_MONSTER_CNT + Max(0, waveIdx);
 
-	if (waveIdx < 0)
-		return 0;
-	if (waveIdx >= rows)
-		return rows - 1;
-
-	return waveIdx;
+	//표를 다 쓰면 처음으로 돌아간다. 판은 끝없이 오르는데 표는 유한하다.
+	//마지막 줄에 붙잡아 두면 그 한 마리만 끝없이 되풀이된다.
+	return row % GetFilledWaveRowCnt();
 }
 
 //그 웨이브가 무슨 자리인가(MONSTERTYPE_*). wave[] 세번째 칸이다.
@@ -1071,6 +1113,18 @@ int GetStagesUntilFinalDay(void)
 int GetMaxWaveCnt(void)
 {
 	int i;
+
+	//---- 한 판은 한 마리씩 열다섯 번이다 ----
+	//
+	//몬스터를 한꺼번에 세우지 않는다. 한 마리를 눕히면 세 갈래를 고르고,
+	//그 다음 한 마리가 선다. 이것을 STAGE_MONSTER_CNT 번 되풀이하면 판이
+	//끝난다(Func_Movement 의 VanishMove).
+	//
+	//스테이지 판은 MD_PLAY 다(로비의 START 가 GotoPlay 로 간다).
+	//
+	//이 값은 세 군데가 같이 본다 - WaveControler 의 스폰 상한,
+	//GridTestAdvanceWave 의 줄 넘김 조건, Func_Combat 의 waveStatus 끝
+	//판정. 그래서 여기 하나만 1 로 두면 셋이 함께 한 마리씩 돈다.
 	if (drawHandle == MD_PLAY || drawHandle == MD_LOBBY)
 		return 1;
 
@@ -1501,7 +1555,7 @@ void WaveControler()
 			}
 
 			pObj->dirX = pObj->dirF = LEFT;
-			pObj->defaultZoom = pObj->zoom = MONSTERZOOM * (drawHandle == MD_PLAY ? 2.0f : 1.0f);
+			pObj->defaultZoom = pObj->zoom = MONSTERZOOM;
 
 			//튜토리얼 마무리 보스는 같은 달팽이라도 두 배로 커야 "보스"로 보인다.
 			//wave[] 한 줄에는 타입/등장타이밍/몬스터종류 세 값뿐이라 크기를 적어둘 자리가 없다.
@@ -1509,10 +1563,6 @@ void WaveControler()
 			if (IsTutorialPlaying() && robin.waveIdx == TUTORIAL_WAVEIDX_BOSS)
 				pObj->defaultZoom = pObj->zoom = MONSTERZOOM * TUTORIAL_BOSS_ZOOM;
 
-			if (drawHandle == MD_PLAY) {
-				pObj->nx = pObj->x = positionX = DX * 0.72f + rx;
-				pObj->ny = pObj->y = positionY = ao[PLAYER].ny;
-			}
 			pObj->mom = obj;
 
 			SetEnemy(pObj);
@@ -1801,8 +1851,12 @@ void DrawWaveAnnouncement(void)
 	const int holdFrames = Max(1, FPS * 3 / 2);
 	const int totalFrames = moveFrames * 2 + holdFrames;
 	const float targetX = DX / 2.0f;
-	const float targetY = DY / 2.0f + 144.0f * _2X
-		+ GetBossRaidEntranceProgress() * 220.0f * _2X;
+	//판 전투에서는 화면 맨 위에 붙인다. 전투 장면 한가운데를 가리면
+	//히어로와 몬스터가 안 보인다.
+	const float targetY = IsStageRealtime()
+		? DY - 16.0f * _2X
+		: DY / 2.0f + 144.0f * _2X
+			+ GetBossRaidEntranceProgress() * 220.0f * _2X;
 
 	char suffix[3] = "th";
 	int mod100 = waveAnnounceNumber % 100;

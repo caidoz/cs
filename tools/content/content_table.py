@@ -647,7 +647,7 @@ def data_file(fn):
     return os.path.join(CLASSES, 'Data', fn)
 
 
-def load_arrays(spec, vals):
+def load_arrays(spec, vals, strict_len=True):
     cache = {}
     out = {}
     total = vals[spec['total']]
@@ -664,7 +664,7 @@ def load_arrays(spec, vals):
 
         want = (total - base_of(base, vals)) * stride
 
-        if len(elems) != want:
+        if strict_len and len(elems) != want:
             sys.stderr.write('%s : 원소가 %d개여야 하는데 %d개다\n'
                              % (name, want, len(elems)))
             return None
@@ -937,7 +937,7 @@ def make_body(spec, name, stride, base, rows, eol):
 
 
 def cmd_generate(entity, spec, vals, write):
-    orig = load_arrays(spec, vals)
+    orig = load_arrays(spec, vals, strict_len=False)
 
     if orig is None:
         return 1

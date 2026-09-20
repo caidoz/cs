@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 
 // ===== Shader 문자열 정의 =====
 const char* vsh_gray = R"(
@@ -1105,7 +1105,7 @@ int miniGachaGradeFrom;
 int miniGachaGradeTo;
 int miniGachaFloor;
 
-int HEARTTIME = 60 * 60;
+int HEARTTIME = 10 * 60;
 int FREEITEMTIME = 18 * 60 * 60;
 int realPlayerCnt;
 

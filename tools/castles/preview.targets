@@ -1,0 +1,8 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup Condition="'$(MSBuildProjectName)' == 'cs'">
+    <Link>
+      <OutputFile>$(ProjectDir)Debug.win32\cs-sky-preview.exe</OutputFile>
+      <ProgramDatabaseFile>$(ProjectDir)Debug.win32\cs-sky-preview.pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

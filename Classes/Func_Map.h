@@ -22,8 +22,15 @@ int GetMaxWaveCnt(void);
 // 자세한 것은 Func_Map.cpp 의 GetStageCycleIdx() 위에 적어 두었다.
 enum {
 	STAGE_PER_DAY = 2,		//낮 한 판, 밤 한 판
-	STAGE_PER_CYCLE = 5,	//2 + 2 + 보스 레이드
+	STAGE_PER_CYCLE = 5,	//2 + 2 + 마지막 날
 	CYCLE_DAYS = 3,
+
+	//한 판에 나오는 몬스터 수. 이 수를 채우면 판이 끝난다.
+	//
+	//웨이브 한 줄에 최대 MAXWAVEENEMY(3) 마리가 서므로 다섯 줄쯤이 한
+	//판이다. 줄 수가 아니라 마리 수로 세는 것은, 줄마다 마리 수가 달라도
+	//판의 길이가 같아야 하기 때문이다.
+	STAGE_MONSTER_CNT = 15,
 };
 
 int GetStageCycleIdx(void);

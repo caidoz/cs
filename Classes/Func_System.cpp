@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -2480,6 +2480,9 @@ void GotoTitle(void)
 
 void GotoLobby(void)
 {
+	//자동전투는 판을 떠나면 끈다. 다음에 들어와서는 전투 버튼을 눌러야 싸운다.
+	StageRtSetAuto(false);
+
 	oldMap = robinmap;
 	robinmap = MAP_DIORAMA_TOLEM + castleOrder[robin.castle];
 	SetRoom();

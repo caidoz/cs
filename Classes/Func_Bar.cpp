@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -634,7 +634,9 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 		float badgeCenterX = xOffset + DX / 2.0f;
 		float frameW = Min(maxFrameW, Max(180.0f * _2X * zoom,
 			titleWidth + framePadX * 2.0f));
-		float frameTop = DY - GNBHEIGHT + 4.0f * _2X;
+		//판 전투에서는 리본을 화면 맨 위(DY)에 붙인다. GNB 를 그리지
+		//않으므로 그만큼 내려 둘 까닭이 없다.
+		float frameTop = IsStageRealtime() ? (float)DY : DY - GNBHEIGHT + 4.0f * _2X;
 		float startX = badgeCenterX - titleWidth / 2.0f;
 		//win.png 우측 상단 리본 원본 영역(512, 0, 512, 112)을 폭에 맞춰 축소한다.
 		const float ribbonSourceW = 512.0f;
@@ -948,7 +950,7 @@ void ExpBarWideDraw(int lv, long long count, int x, int y, float zoom)
 
 void HeartBarDraw(int count, int max, int x, int y, int alpha, float zoom)
 {
-	DrawRoundBar(x, y, (float)Min(count, max) / max, ROUNDBAR_BIG, BARCOLOR_RED, alpha, 0.5f * zoom);
+	DrawRoundBar(x, y, (float)Min(count, max) / max, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom);
 
 	DrawIcon(ICON_HEART, x + (float)0 * _2X * zoom, y - (float)0 * _2X * zoom, 1.0f * zoom, COLOR_WHITE, false, false, 3.0f);
 #ifdef NUMTTF

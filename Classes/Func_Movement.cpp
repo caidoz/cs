@@ -1839,7 +1839,19 @@ void PvpFoeShoot(int obj, int level)
 //수비측만 반대 방향이 없어서 따로 만들었다.
 void PvpAllyShoot(int obj, int level)
 {
+	AllyShootAt(obj, level, PVP_DEFENDER_ROBIN);
+}
+
+//---- 아군 동료 한 명이 표적에게 한 발 쏜다 ----
+//
+//PVP 와 스테이지 실시간 전투가 같이 쓴다. 둘이 다른 것은 표적뿐이다 -
+//PVP 는 상대 히어로, 스테이지는 지금 선 몬스터다.
+void AllyShootAt(int obj, int level, int target)
+{
 	if (obj < CREW || obj >= CREW + MAXCREW)
+		return;
+
+	if (target <= 0 || target >= TOTALOBJECT)
 		return;
 
 	OBJECT* mom = &ao[obj];
@@ -1856,7 +1868,7 @@ void PvpAllyShoot(int obj, int level)
 	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
 		return;
 
-	mom->target = PVP_DEFENDER_ROBIN;
+	mom->target = target;
 	mom->dirX = mom->dirF = RIGHT;
 
 	for (int i = BULLET; i < ENEMYUSEROBJ; ++i) {
@@ -1864,7 +1876,7 @@ void PvpAllyShoot(int obj, int level)
 			continue;
 
 		AddObject(&ao[i], mom, ADDOBJ_CREWBULLET);
-		ao[i].target = PVP_DEFENDER_ROBIN;
+		ao[i].target = target;
 		ao[i].dirX = ao[i].dirF = RIGHT;
 
 		//수비측과 같은 높이에서 나간다.
@@ -3103,6 +3115,13 @@ chk:
 				PvpHeroStep(pObj);
 				break;
 			case MD_PLAY:
+				//스테이지 실시간 판은 PVP 와 같이 제자리에서 친다. 나가라는
+				//신호는 UpdateStageRealtime 이 쿨타임으로 준다.
+				if (IsStageRealtime() && obj == PLAYER) {
+					PvpHeroStep(pObj);
+					break;
+				}
+
 				if (attackSequence == ATTACKSEQUENCE_ACTION && obj == turn)
 				switch (pObj->turnPosition) {
 				case HERE:
@@ -4249,7 +4268,8 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		//밀려 자리가 어긋난다. 밀린 만큼 다음 차례의 사거리 계산도 달라진다.
 		//
 		//전진량만 지운다. 모션 자체는 그대로 나온다.
-		if (drawHandle == MD_PVP) {
+		//스테이지 실시간 판도 같다. 아무도 걷지 않는다.
+		if (drawHandle == MD_PVP || IsStageRealtime()) {
 			pObj->mx = false;
 			pObj->pDx = pObj->dx = 0;
 		}
@@ -4320,7 +4340,9 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		pObj->status = FALL2;
 		//본드
 	case _END:
-		switch (drawHandle) {
+		//스테이지 실시간 판은 턴이 없다. 여기서 WhoIsNextTurn 을 부르면 차례표가
+		//살아나 턴제로 되돌아간다. PVP 와 같은 끝맺음을 탄다.
+		switch (IsStageRealtime() ? (int)MD_PVP : drawHandle) {
 		case MD_PLAY:
 		case MD_BATTLE:
 			pObj->concentrate = 0;
@@ -11867,17 +11889,47 @@ void VanishMove(OBJECT* pObj)
 		//여기까지 오는데, 그러면 상자가 떨어지고 일반전투의 코인 시퀀스가
 		//시작된다. PVP 의 상자는 성에 놓인 것 하나뿐이고, 그것은 주인공이
 		//걸어가 직접 열어야 한다.
-		if (drawHandle != MD_PVP
-			&& robin.curWaveIdx == GetMaxWaveCnt() && AliveEnemyCnt() == 0) {
-			//여기서 획득한 
-			
-			DropItem(pObj, ITEM_BOX);
-			//여기서 코인은 획득하게 해준다.
-			turnListIdx = 0;
-			turn = 0;
-			turnFrame = 1;
-			attackSequence = ATTACKSEQUENCE_COIN;
-			//GotoStageClear();
+		//---- 한 마리 잡을 때마다 ----
+		//
+		//전에는 웨이브 한 줄을 다 눕혀야 상자가 떨어졌다. 그래서 보상이
+		//세 마리에 한 번 왔고, 그 사이에는 고를 것이 없었다.
+		//
+		//이제는 한 마리마다 세 갈래를 내민다. 상자는 판의 마지막
+		//몬스터에서만 떨어진다 - 판이 끝났다는 신호가 상자 하나뿐이어야
+		//"이번 판이 끝났구나"가 헷갈리지 않는다.
+		if (drawHandle != MD_PVP) {
+			if (arenaKill >= STAGE_MONSTER_CNT) {
+				//마지막 몬스터다. 전투가 끝나면서 상자가 열린다.
+				DropItem(pObj, ITEM_BOX);
+				//여기서 코인은 획득하게 해준다.
+				turnListIdx = 0;
+				turn = 0;
+				turnFrame = 1;
+				attackSequence = ATTACKSEQUENCE_COIN;
+			}
+			else {
+				//---- 눕힌 놈이 흘리는 골드 ----
+				//
+				//동전 하나가 떨어져 골드바로 날아간다. 그 사이에 룰렛이
+				//돈다 - 무엇을 살 수 있는지와 얼마가 들어왔는지가 같은
+				//순간에 보여야 "이걸로 무엇을 살까"가 이어진다.
+				const int coin = DropItem(pObj, ITEM_GOLD);
+
+				if (coin >= 0) {
+					ao[coin].target = PLAYER;
+					ao[coin].ax = STAGE_KILL_GOLD * (robin.stage + 1);
+					ao[coin].defaultZoom = ao[coin].zoom = 2.0f;
+				}
+
+				//아직 판이 남았다. 세 갈래를 내밀고, 고르는 동안 다음
+				//몬스터는 세우지 않는다(GridTestBeginOffer 가 눕힌다).
+				//
+				//격자를 접어 두면 판이 안 열린다. 그때는 세 갈래 없이
+				//바로 다음 몬스터로 간다 - 판을 닫을 손이 없는데 멈춰
+				//두면 전투가 영영 안 이어진다.
+				if (GridTestBeginOffer(pObj->type) == false)
+					GridTestAdvanceWave();
+			}
 		}
 	}
 }

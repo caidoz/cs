@@ -17,6 +17,23 @@ void SetScreenRatio(void);
 void SetHero(void);
 void SetBattleCrew(void);
 
+//스테이지 실시간 전투 (Func_Battle.cpp)
+bool IsStageRealtime(void);
+void StageRtBegin(void);
+void UpdateStageRealtime(void);
+void StageRtToggleAuto(void);
+void StageRtSetAuto(bool on);
+bool StageRtAutoOn(void);
+int StageRtFoe(void);		//지금 서 있는 몬스터. 없으면 -1
+void StageFoeShotDraw(void);	//몬스터가 날린 검
+void StageRtDrawButton(void);
+int StageSwordCooldown(int detail);
+bool StageRtSwordCharge(int slot, float* charge, int* flash);
+int StageRtCrewType(int slot);
+bool StageRtHasCrew(int type);
+bool StageRtCrewFull(void);
+bool StageRtAddCrew(int type);
+
 // 3-day boss raid combat state (no admission fee or attack cost).
 void InitBossRaidMercenarySystem(void);
 void ResetBossRaidMercenarySystem(void);

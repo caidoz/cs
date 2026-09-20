@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../Def.h"
 
 #ifndef _DATA_ITEM_H_
@@ -66,7 +66,7 @@ extern const long long* swordGold;
 enum { swordGold_COUNT = 40 };
 
 extern const unsigned long long* itemPrice;
-enum { itemPrice_COUNT = 328 };
+enum { itemPrice_COUNT = 382 };
 
 extern const unsigned int* itemSellPrice;
 enum { itemSellPrice_COUNT = 301 };
@@ -78,7 +78,7 @@ enum { itemSellPrice_COUNT = 301 };
 //주석을 extern 과 enum 사이에 두면 안 된다. make_pack.py 가 그 둘을
 //짝으로 읽어서, 사이가 갈리면 배열이 통째로 팩에서 빠진다.
 extern const unsigned short* itemStar;
-enum { itemStar_COUNT = 565 };
+enum { itemStar_COUNT = 619 };
 
 extern const unsigned short* itemStartCnt;
 enum { itemStartCnt_COUNT = 41 };
@@ -117,7 +117,7 @@ enum { weaponRange_COUNT = 3 };
 
 //초기무기 - 공격력 : 7/5/10 요구레벨 : 1 요구스탯 : 1
 extern const unsigned int* itemValue;
-enum { itemValue_COUNT = 171 };
+enum { itemValue_COUNT = 225 };
 
 extern const unsigned char* gradeRatio;
 enum { gradeRatio_COUNT = 6 };

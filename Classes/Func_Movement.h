@@ -32,6 +32,7 @@ void PvpHeroStep(OBJECT *);
 void PvpFoeBulletMove(OBJECT *);
 void PvpFoeShoot(int obj, int level);
 void PvpAllyShoot(int obj, int level);
+void AllyShootAt(int obj, int level, int target);
 int PvpCrewSkillIdx(int type, int level);
 bool PvpCrewBulletAlive(int obj);
 void PvpHeroResetCool(void);

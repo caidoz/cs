@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -507,6 +507,10 @@ void RefreshStat_Sub(OBJECT* pObj)
 	//체력보정
 	pObj->hp = Min(pObj->hp, pObj->ps[PS_HP]);
 	pObj->mp = Min(pObj->mp, pObj->ps[PS_MP]);
+
+	//판 전투의 가방 장비. 히어로는 격자, 동료와 몬스터는 표에서 온다.
+	//장착 칸만 보는 위쪽 계산 뒤에 한 점씩 더한다.
+	StageGearApplyStat(pObj);
 
 	if (pObj->ps[PS_ARMOR] < 0)
 		pObj->ps[PS_ARMOR] = 0;
@@ -1794,6 +1798,11 @@ void AttackRobin(int obj, int dest)
 #ifdef ATTACKEDINVINCIBLE
 		ao[dest].invincible = ATTACKEDFRAME;
 #endif	
+		//판 전투에서는 맞는 쪽의 방어구가 피해를 깎는다. 히어로든
+		//동료든 몬스터든 같은 자로 잰다.
+		if (IsStageRealtime())
+			damage = (int)StageGearReduce(dest, damage);
+
 		AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
 		
 		ao[dest].hp -= damage;
@@ -1841,6 +1850,13 @@ void AttackRobin(int obj, int dest)
 		//전부 골드바로 날아가므로 맞을 때마다 골드가 줄었다. 상자를 털고도
 		//총액이 마이너스가 된 까닭이다.
 		if (drawHandle == MD_PVP)
+			damage = 0;
+
+		//---- 칠 때마다 떨어지던 골드 ----
+		//
+		//판 전투에서는 눕혔을 때만 골드가 나온다. 때릴 때마다 쏟아지면
+		//동전이 화면을 덮어 무엇을 맞았는지 안 보인다.
+		if (IsStageRealtime())
 			damage = 0;
 
 		if (damage > 0) {
@@ -3177,6 +3193,9 @@ NEXT:
 	else {
 
 		//AddBar(&bar[BAR_ENEMYHP + GetEnemyBarIdx(dest)], Min(-damage, ao[dest].maxhp - ao[dest].hp), BARFRAME);
+		if (IsStageRealtime())
+			damage = (int)StageGearReduce(dest, damage);
+
 		if (damage > ao[dest].hp)
 			damage = ao[dest].hp;
 		ao[dest].hp -= damage;

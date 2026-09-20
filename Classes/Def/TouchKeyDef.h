@@ -420,9 +420,9 @@ typedef enum _touchFuncDef {
 	//격자 크기는 성마다 다르다. 여기 있는 것은 상한 - 배열을 잡는 데만
 	//쓴다. 실제 크기는 Func_Draw.cpp 의 GridCastleBox() 가 정한다.
 	GRIDTEST_W = 12,
-	GRIDTEST_H = 5,
+	GRIDTEST_H = 6,
 	GRIDTEST_SHOPCNT = 10,//살 수 있는 물건 가짓수(표 크기)
-	GRIDTEST_OFFERCNT = 3,//전투가 끝나고 내미는 갈래 수
+	GRIDTEST_OFFERCNT = 3,//전투가 끝나고 내미는 갈래 수(룰렛 칸 수)
 	GRIDTEST_MAXCOMBO = 5,//연참 최대 대수
 	GRIDTEST_MAXITEM = 40,
 
@@ -434,7 +434,18 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_GRIDTEST_OFFER,
 	TOUCH_FUNC_GRIDTEST_ITEM = TOUCH_FUNC_GRIDTEST_OFFER + GRIDTEST_OFFERCNT,
 
-	TOTALTOUCHCNT = TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM,
+	//스테이지 실시간 전투의 전투 버튼. 누르면 자동전투가 켜지고 꺼진다.
+	//위의 GRIDTEST_ITEM 묶음이 끝나는 자리에서 이어 붙인다.
+	TOUCH_FUNC_STAGE_AUTOBATTLE = TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM,
+
+	//하단 상점 줄. 다시 뽑기와 아래 두 칸(지도 / 도감)이다.
+	TOUCH_FUNC_STAGE_REROLL,
+	TOUCH_FUNC_STAGE_MAP,
+	TOUCH_FUNC_STAGE_BOOK,
+
+	TOUCH_FUNC_LOBBY_CASTLE = TOUCH_FUNC_STAGE_BOOK + 1,
+	TOUCH_FUNC_LOBBY_CASTLE_CLOSE,
+	TOTALTOUCHCNT,
 
 	END_TOUCHFUNCDEF
 } TOUCHFUNCDEF;

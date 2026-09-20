@@ -2,6 +2,8 @@
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
+#include "Data/SwordSprites.h"
+#include "Data/FoeGearData.h"
 
 namespace {
 	int bossRaidCrewGauge[MAXCREW] = { 0, };
@@ -1069,6 +1071,745 @@ static void DrawRobin6PartDiagnostic(void)
 	}
 }
 
+//==========================================================================
+// 스테이지 실시간 전투
+//
+// [규칙]
+//   - 판마다 히어로 혼자 선다. 몬스터를 한 마리 눕힐 때마다 세 갈래를
+//     골드로 사고(Func_Draw 의 격자 모듈), 고른 동료와 몬스터는 곧바로
+//     히어로 곁에 선다. 판이 끝나면 뽑은 것은 다 사라진다.
+//   - 아무도 걷지 않는다. 제자리에서 저마다 제 쿨타임으로 친다.
+//   - 히어로는 장착한 검으로 친다. 격자에 놓인 검이 한 자루에 한 대씩
+//     뒤따르고, 대마다 그 검의 값만큼 더 들어간다.
+//
+// [어디서 왔나]
+//   제자리에서 치고 쏘는 것은 PVP 에서 가져왔다(PvpHeroStep, AllyShootAt).
+//   저마다 제 시계로 도는 것은 멸망전에서 가져왔다(crew.tsv 의 boss_cool).
+//
+//   PVP 는 원래 실시간이었다가 한 명씩 도는 차례제로 바뀌었다. 여럿이 한꺼번에
+//   쏘면 데미지 숫자가 누구 것인지 안 보여서다. 이 판은 그걸 알고도
+//   실시간으로 간다 - 조작 없이 계속 치고받는 것이 이 판의 뼈대다.
+//
+// [켜지는 때]
+//   MD_PLAY 의 일반 판뿐이다. 튜토리얼, 시연, 옛 보스방은 턴제 그대로 둔다.
+//   그쪽은 차례표에 맞춘 연출(대사, 손 안내, 보스 듀얼)이 얽혀 있다.
+//==========================================================================
+namespace {
+	//이번 판에 선 동료의 타입. 0 이면 빈 칸이다.
+	int stageRunCrew[MAXCREW] = { 0, };
+
+	int stageHeroCool = 0;
+	int stageCrewCool[MAXCREW] = { 0, };
+	int stageCrewShot[MAXCREW] = { 0, };	//쏘는 자세가 남은 프레임
+	int stageCrewShotCnt[MAXCREW] = { 0, };	//쏜 수. 몇 번째에 2 / 3 차를 낼지
+
+	int stageFoeCool = 0;
+	int stageFoeShot = 0;		//치는 자세가 남은 프레임
+	int stageFoeObj = -1;		//지금 치고 있는 몬스터
+	bool stageFoeHit = false;	//이번 자세에서 이미 때렸는가
+
+	//격자의 검. 격자 칸 번호마다 제 시계를 든다.
+	int stageSwordCool[GRIDTEST_MAXITEM] = { 0, };
+
+	//그 칸에 있던 검(GridTestSwords 의 열쇠 + 1, 0 은 없음). 바뀌면 시계를
+	//새로 건다. 팔고 다른 검을 놓았는데 앞 검의 시계를 이어 쓰면 새 검이
+	//놓자마자 친다.
+	int stageSwordPart[GRIDTEST_MAXITEM] = { 0, };
+
+	//다 찬 검이 번쩍이는 남은 프레임. 0 이 되는 순간 친다.
+	int stageSwordFlash[GRIDTEST_MAXITEM] = { 0, };
+
+	//시계의 상한. 그림이 차오른 비율을 셀 때 쓴다.
+	int stageSwordMax[GRIDTEST_MAXITEM] = { 0, };
+
+	//전투 버튼으로 켜고 끈다. 꺼져 있으면 몬스터가 서 있어도 아무도 안 친다.
+	//
+	//판이 바뀌어도 그대로 둔다. 한 번 켜면 스테이지를 넘기며 계속 싸우는
+	//것이 자동전투다. 로비로 나가면 꺼진다(GotoLobby).
+	bool stageAutoBattle = false;
+}
+
+//타이틀의 테스트 시작(gCombatStatusTest)은 막지 않는다. 그 깃발은 나올
+//몬스터만 시험용으로 바꾸고(Func_Map 의 WaveControler) 싸우는 방식은
+//건드리지 않는다. 막아 두었더니 테스트 시작으로 들어간 판이 통째로 옛
+//턴제로 돌고 전투 버튼도 안 떴다.
+bool IsStageRealtime(void)
+{
+	return drawHandle == MD_PLAY
+		&& !bossRaidMode
+		&& !robin.bossRoom
+		&& !IsTutorialPlaying();
+}
+
+//---- 판을 새로 연다 ----
+//
+//로비에서 START 를 누른 자리와 스테이지 클리어 뒤에서 부른다. GotoPlay 에서
+//부르지 않는 것은, 그 함수가 판 한가운데서도 여러 길로 불려(메뉴를 닫을 때
+//등) 거기서 지우면 산 동료와 잡은 수가 판 중간에 사라지기 때문이다.
+void StageRtBegin(void)
+{
+	memset(stageRunCrew, 0, sizeof(stageRunCrew));
+	memset(stageCrewCool, 0, sizeof(stageCrewCool));
+	memset(stageCrewShot, 0, sizeof(stageCrewShot));
+	memset(stageCrewShotCnt, 0, sizeof(stageCrewShotCnt));
+
+	stageHeroCool = 0;
+	stageFoeCool = 0;
+	stageFoeShot = 0;
+	stageFoeObj = -1;
+	stageFoeHit = false;
+
+	memset(stageSwordCool, 0, sizeof(stageSwordCool));
+	memset(stageSwordPart, 0, sizeof(stageSwordPart));
+	memset(stageSwordFlash, 0, sizeof(stageSwordFlash));
+	memset(stageSwordMax, 0, sizeof(stageSwordMax));
+
+	//STAGE_MONSTER_CNT 마리를 채우면 판이 끝난다(Func_Movement 의 VanishMove).
+	//안 지우면 지난 판의 수가 남아 들어서자마자 상자가 떨어진다.
+	arenaKill = 0;
+	robin.waveIdx = 0;
+	robin.curWaveIdx = 0;
+	memset(&robin.waveActive, 0, sizeof(robin.waveActive));
+	robin.waveTimeStamp = MC_knlCurrentTimeStamp();
+
+	PvpHeroResetCool();
+	GridTestResetStage();
+}
+
+void StageRtToggleAuto(void)
+{
+	if (!IsStageRealtime())
+		return;
+
+	stageAutoBattle = !stageAutoBattle;
+	PlayMusic(M_BUTTON);
+}
+
+void StageRtSetAuto(bool on)
+{
+	stageAutoBattle = on;
+}
+
+//---- 전투 버튼 ----
+//
+//격자 위에 앉는다. 세 갈래가 떠 있거나 상자/클리어 연출 중에는 숨긴다 -
+//그때는 눌러도 싸울 것이 없고, 세 갈래와 같은 자리를 쓴다.
+//
+//Play() 뒤에 그린다(Core.cpp). 터치영역은 뒤에 등록한 것이 먼저 걸리므로
+//아래 깔린 전투 UI 에 먹히지 않는다.
+void StageRtDrawButton(void)
+{
+	if (!IsStageRealtime())
+		return;
+
+	if (attackSequence != ATTACKSEQUENCE_READY)
+		return;
+
+	//하단 상점 줄 가운데. 자리는 Func_Draw 가 정한다 - 룰렛과 값표가
+	//같은 판에 있으므로 한 곳에서 재야 어긋나지 않는다.
+	int x, y, w, h;
+
+	StageShopBtnRect(&x, &y, &w, &h);
+
+	//룰렛이 돌아간 뒤에는 "전투 시작"이다. 고르기를 끝내고 다음 놈을
+	//세운다. 싸우는 중에는 자동전투를 켜고 끄는 버튼이다.
+	//DrawTouchLargeButton 은 192 x 62 그림을 zoom 만 곱해 그린다. 글자는
+	//넘겨준 w 로 가운데를 잡으므로, w 를 192 로 두고 배율로 크기를 맞춰야
+	//글자가 버튼 한가운데에 온다.
+	const bool offer = GridTestOfferOpen();
+	const float zoom = (float)w / 192.0f;
+
+	const char* label = offer ? "전투 시작" : (stageAutoBattle ? "멈춤" : "전투");
+
+	//글자는 버튼에 맡기지 않고 직접 화면 한가운데에 찍는다. 버튼 함수의
+	//글자 자리는 원본 그림(192)과 배율을 섞어 재는 탓에 가운데가 아니다.
+	DrawTouchLargeButton(x, y, 192, 62, "",
+		offer ? TOUCH_FUNC_GRIDTEST_SKIP : TOUCH_FUNC_STAGE_AUTOBATTLE,
+		(offer || !stageAutoBattle) ? FRAME_GREEN : FRAME_RED,
+		zoom);
+
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(label, DX / 2, y - h / 2 + 7 * _2X, 0.8f);
+}
+
+//======================================================================
+// 몬스터가 날리는 검
+//
+// 히어로와 같은 규칙이다. 장착 무기는 제 공격 모션으로 치고(아래 몬스터
+// 차례), 가방에 든 검은 저마다 제 쿨타임으로 날아가서 친다.
+//
+// 총알 오브젝트를 쓰지 않는다. 몬스터마다 쏘는 자세와 총알 표가 따로
+// 있어서, 없는 놈이 태반이라 그 길로는 절반이 아무것도 못 던진다.
+//======================================================================
+#define STAGE_FOESHOT_MAX	8
+#define STAGE_FOESHOT_FLY	(FPS / 3)	//날아가는 데 걸리는 시간
+
+struct StageFoeShot {
+	bool on;
+	int detail;			//검 번호
+	int value;			//위력(상점 값)
+	int foe;			//쏜 놈(히어로 쪽 동료일 수도 있다)
+	int hit;			//맞는 놈
+	int frame;			//날아간 시간
+	float sx, sy;		//떠난 자리
+	float tx, ty;		//닿을 자리
+};
+
+static StageFoeShot stageFoeShotList[STAGE_FOESHOT_MAX];
+
+//쿨타임은 객체마다 따로 센다. 히어로의 격자 검과 같은 규칙이다.
+static int stageGearCool[MAXCREW + 1][FOEGEAR_BAGMAX + 1];
+static int stageGearPart[MAXCREW + 1][FOEGEAR_BAGMAX + 1];
+
+static void StageFoeShotClear(void)
+{
+	memset(stageFoeShotList, 0, sizeof(stageFoeShotList));
+	memset(stageGearCool, 0, sizeof(stageGearCool));
+	memset(stageGearPart, 0, sizeof(stageGearPart));
+}
+
+//한 자루를 날린다.
+static void StageFoeShotFire(int foe, int hit, int detail, int value)
+{
+	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
+		StageFoeShot* s = &stageFoeShotList[i];
+
+		if (s->on)
+			continue;
+
+		s->on = true;
+		s->detail = detail;
+		s->value = value;
+		s->foe = foe;
+		s->hit = hit;
+		s->frame = 0;
+		s->sx = ao[foe].x;
+		s->sy = ao[foe].y + 24 * _2X;
+		s->tx = ao[hit].x;
+		s->ty = ao[hit].y + 24 * _2X;
+		return;
+	}
+}
+
+//몬스터의 한 대를 검의 위력으로 바꿔 때린다. 히어로 쪽 StageRtSwordHit 과
+//같은 식이다 - 장착 무기의 값을 1 로 보고 그 비로 곱한다.
+static void StageFoeShotHit(const StageFoeShot* s)
+{
+	OBJECT* e = &ao[s->foe];
+
+	if (!e->active || e->dead || !ao[s->hit].active || ao[s->hit].dead)
+		return;
+
+	StageSword gear[FOEGEAR_BAGMAX + 1];
+	const int cnt = StageGearList(s->foe, gear, FOEGEAR_BAGMAX + 1);
+	const int base = (cnt > 0 && gear[0].gear) ? Max(1, gear[0].value) : 100;
+	const long long keep = e->ps[PS_DMG];
+
+	e->ps[PS_DMG] = Max(1LL, keep * s->value / base);
+
+	//히어로를 때리는 길과 몬스터를 때리는 길이 다르다.
+	if (s->hit < PLAYERALL)
+		AttackRobin(s->foe, s->hit);
+	else
+		AttackObj(s->foe, s->hit);
+
+	e->ps[PS_DMG] = keep;
+}
+
+//---- 한 객체의 가방 검을 돌린다 ----
+//
+//히어로의 격자 검과 같다. 저마다 제 쿨타임으로 차고, 차면 날아간다.
+//slot 은 쿨타임을 기억할 칸이다(히어로 0, 동료 1 ~).
+static void StageGearShotStep(int obj, int target, int slot, bool running)
+{
+	StageSword gear[FOEGEAR_BAGMAX + 1];
+	const int cnt = StageGearList(obj, gear, FOEGEAR_BAGMAX + 1);
+
+	if (slot < 0 || slot > MAXCREW)
+		return;
+
+	for (int k = 0; k < cnt && k <= FOEGEAR_BAGMAX; k++) {
+		const StageSword* g = &gear[k];
+
+		//장착 무기는 제 공격 모션으로 친다. 여기는 가방만 본다.
+		if (g->gear || kShopPartIsSword(g->part) == false)
+			continue;
+
+		if (stageGearPart[slot][k] != g->part + 1) {
+			stageGearPart[slot][k] = g->part + 1;
+			stageGearCool[slot][k] = -k * STAGE_SWORD_STAGGER;
+		}
+
+		if (!running || target < 0)
+			continue;
+
+		if (++stageGearCool[slot][k] < StageSwordCooldown(g->detail))
+			continue;
+
+		stageGearCool[slot][k] = 0;
+		StageFoeShotFire(obj, target, g->detail, g->value);
+	}
+}
+
+//날아가는 검을 옮기고, 닿으면 친다.
+static void StageFoeShotStep(void)
+{
+	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
+		StageFoeShot* s = &stageFoeShotList[i];
+
+		if (!s->on)
+			continue;
+
+		if (++s->frame < STAGE_FOESHOT_FLY)
+			continue;
+
+		s->on = false;
+		StageFoeShotHit(s);
+	}
+}
+
+void StageFoeShotDraw(void)
+{
+	if (!IsStageRealtime())
+		return;
+
+	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
+		const StageFoeShot* s = &stageFoeShotList[i];
+
+		if (!s->on)
+			continue;
+
+		//떠난 자리에서 닿을 자리로. 칼끝이 가는 쪽을 본다.
+		const float t = (float)s->frame / STAGE_FOESHOT_FLY;
+		const float x = s->sx + (s->tx - s->sx) * t;
+		const float y = s->sy + (s->ty - s->sy) * t;
+		const float sx = xOffset + x - rx;
+		const float sy = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry;
+
+		DrawSwordAtHand(s->detail, sx, sy, -90.0f, true, 0.7f, ALPHA_MAX, 0);
+	}
+}
+
+//자동전투가 켜져 있는가. 화면을 내리는 연출이 이 값을 본다.
+bool StageRtAutoOn(void)
+{
+	return stageAutoBattle;
+}
+
+int StageRtCrewType(int slot)
+{
+	if (slot < 0 || slot >= MAXCREW)
+		return 0;
+
+	return stageRunCrew[slot];
+}
+
+bool StageRtHasCrew(int type)
+{
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (stageRunCrew[i] > 0 && stageRunCrew[i] == type)
+			return true;
+	}
+
+	return false;
+}
+
+bool StageRtCrewFull(void)
+{
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (stageRunCrew[i] <= 0)
+			return false;
+	}
+
+	return true;
+}
+
+//---- 산 동료를 세운다 ----
+//
+//빈 칸 하나에 넣고 SetBattleCrew 로 세운다. 이미 선 동료는 그 함수가 건드리지
+//않으므로 새로 산 하나만 떨어져 내린다.
+bool StageRtAddCrew(int type)
+{
+	if (type <= 0 || GetCrewIdxFromType(type) < 0)
+		return false;
+
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (stageRunCrew[i] > 0)
+			continue;
+
+		stageRunCrew[i] = type;
+		stageCrewCool[i] = 0;
+		stageCrewShot[i] = 0;
+		stageCrewShotCnt[i] = 0;
+
+		SetBattleCrew();
+		return true;
+	}
+
+	return false;
+}
+
+//---- 지금 칠 몬스터 ----
+//
+//한 판에 한 마리씩 서므로(GetMaxWaveCnt) 살아 있는 첫 놈이 곧 상대다.
+//떨어져 내리는 중(REGENMOVE)이거나 쓰러지는 중이면 아직 상대가 아니다.
+//
+//칸을 건너뛰지 않고 다 본다. WaveControler 는 적 칸 중 빈 곳 아무 데나
+//넣는다 - 앞 놈이 칸을 채 비우기 전에 다음 놈이 서면 사이 칸에 들어간다.
+//건너뛰며 보면 그놈을 못 찾아 아무도 안 싸운다.
+//
+//대신 몬스터 본인만 고른다. 웨이브로 선 몬스터는 mom 이 자기 자신이고
+//(WaveControler), 그놈이 쏜 것은 mom 이 주인이다.
+int StageRtFoe(void)
+{
+	for (int obj = ENEMY; obj < NEUTRAL; obj++) {
+		const OBJECT* e = &ao[obj];
+
+		if (!e->active || e->dead || e->type <= 0 || e->mom != obj)
+			continue;
+
+		if (e->moveHandler == VANISHMOVE || e->moveHandler == REGENMOVE)
+			continue;
+
+		return obj;
+	}
+
+	return -1;
+}
+
+//---- 검 한 자루의 쿨타임 ----
+//
+//검의 길이(세로 칸)에서 온다. 표 밖의 번호면 히어로 기본값을 준다.
+int StageSwordCooldown(int detail)
+{
+	const int rows = (int)(sizeof(swordTileSize) / sizeof(swordTileSize[0]) / 2);
+
+	if (detail < 0 || detail >= rows)
+		return STAGE_HERO_COOLDOWN;
+
+	return STAGE_SWORD_COOL_BASE + swordTileSize[detail * 2 + 1] * STAGE_SWORD_COOL_PER_ROW;
+}
+
+//히어로의 휘두름은 장착한 검의 빠르기다. 검이 아니면(맨손 등) 기본값이다.
+static int StageHeroCooldown(void)
+{
+	const ITEM* weapon = &ao[PLAYER].equip[EQUIP_WEAPON];
+
+	if (weapon->type != ITEM_SWORD)
+		return STAGE_HERO_COOLDOWN;
+
+	return StageSwordCooldown(weapon->detail);
+}
+
+//---- 격자 칸의 검이 얼마나 찼는가 ----
+//
+//격자 그리기가 묻는다(Func_Draw 의 GridDrawCharge). 이 칸에서 시계가 도는
+//검이 없으면 false 다.
+bool StageRtSwordCharge(int slot, float* charge, int* flash)
+{
+	if (slot < 0 || slot >= GRIDTEST_MAXITEM || stageSwordPart[slot] == 0)
+		return false;
+
+	const int max = Max(1, stageSwordMax[slot]);
+
+	*charge = (float)Max(0, stageSwordCool[slot]) / (float)max;
+	*flash = stageSwordFlash[slot];
+	return true;
+}
+
+//쓰러졌거나 쓰러지는 중이면 더 치지 않는다. 한 프레임에 여러 자루가 치는데
+//앞의 한 대가 눕혔으면 뒤의 것이 사망 처리를 한 번 더 돌린다.
+static bool StageRtFoeAlive(int foe)
+{
+	if (foe < 0)
+		return false;
+
+	const OBJECT* e = &ao[foe];
+
+	return e->active && !e->dead && e->moveHandler != VANISHMOVE;
+}
+
+//---- 격자의 검 한 자루가 친다 ----
+//
+//데미지는 공격자의 PS_DMG 를 백분율로 쓴다(AttackObj). 그 값은 장착 무기의
+//값에서 나왔으므로, 이 검의 값에 비례해 잠깐 바꿔 한 번 더 치고 되돌린다.
+//스탯을 새로 셈하는 길(RefreshStat)을 타면 장비와 스킬이 다 다시 걸려 한
+//대마다 무거워진다.
+static void StageRtSwordHit(int foe, int swordValue)
+{
+	OBJECT* hero = &ao[PLAYER];
+	const ITEM* weapon = &hero->equip[EQUIP_WEAPON];
+	const long long equipValue = (weapon->type != EMPTY)
+		? Max(1LL, GetEquipValue((ITEM*)weapon))
+		: Max(1LL, (long long)hero->lv);
+	const long long keep = hero->ps[PS_DMG];
+
+	hero->ps[PS_DMG] = Max(1LL, keep * swordValue / equipValue);
+	AttackObj(PLAYER, foe);
+	hero->ps[PS_DMG] = keep;
+}
+
+void UpdateStageRealtime(void)
+{
+	if (!IsStageRealtime())
+		return;
+
+	//판이 멈춰 있을 때(세 갈래를 고르는 중, 상자, 클리어)는 아무도 안 친다.
+	//시계도 멈춘다 - 멈춘 사이에 차 두면 다시 서자마자 한꺼번에 쏟아진다.
+	const bool running = stageAutoBattle
+		&& (waveStatus == WAVESTATUS_PLAY)
+		&& attackSequence == ATTACKSEQUENCE_READY
+		&& !ao[PLAYER].dead;
+
+	const int foe = StageRtFoe();
+	OBJECT* hero = &ao[PLAYER];
+
+	//---- 아무도 걷지 않는다 ----
+	//
+	//떨어져 내린 뒤 붙는 AI 가 턴제용이라 표적과 자리를 스스로 다시 정한다.
+	//세워 둔 것을 매 프레임 흐트러뜨리므로 떼어 낸다(PVP 와 같다). 맞아서
+	//쓰러질 때는 전투 코드가 VANISHMOVE 를 다시 붙이므로 그 길은 산다.
+	for (int i = 0; i < MAXCREW; ++i) {
+		OBJECT* c = &ao[CREW + i];
+
+		if (c->active && (c->moveHandler == CREWMOVE || c->moveHandler == NPCMOVE))
+			c->moveHandler = null;
+	}
+
+	if (foe >= 0) {
+		OBJECT* e = &ao[foe];
+
+		if (e->moveHandler == ENEMYMOVETURN || e->moveHandler == ENEMYMOVE)
+			e->moveHandler = null;
+	}
+
+	//---- 히어로 ----
+	//
+	//때리는 순간은 PvpHeroStep 이 안다(PlayerMove 가 부른다). 여기서는 표적과
+	//"나가라"만 준다.
+	hero->target = (foe >= 0) ? foe : 0;
+
+	StageSword swords[GRIDTEST_MAXITEM];
+	const int swordCnt = GridTestSwords(swords, GRIDTEST_MAXITEM);
+	bool gearSword = false;
+
+	for (int k = 0; k < swordCnt; ++k)
+		gearSword = gearSword || swords[k].gear;
+
+	//장착 검이 가방에 없으면(자리가 없어 못 넣었거나 맨손) 예전처럼 제
+	//시계로 휘두른다. 안 그러면 히어로가 아무것도 안 해 첫 판을 못 넘긴다.
+	if (!gearSword && running && foe >= 0) {
+		//장착한 검의 빠르기로 휘두른다. 격자의 검과 같은 식이다.
+		if (stageHeroCool < StageHeroCooldown())
+			stageHeroCool++;
+		else if (PvpHeroTurnBusy(PLAYER) == false) {
+			PvpHeroGiveTurn(PLAYER);
+			stageHeroCool = 0;
+		}
+	}
+	else if (foe < 0 && hero->attack == false) {
+		//칠 상대가 없으면 PvpHeroStep 이 첫 줄에서 돌아가 자세가 굳는다.
+		//그동안은 여기서 숨을 쉬게 한다.
+		const int loop = GetHeroLoopMotion(hero->cmf, HEROLOOP_NEUTRAL, hero->frame);
+
+		hero->motion = (loop < 0) ? PO_C0_N0 + frame / MOTIONDIV % 4 : loop;
+	}
+
+	//---- 가방의 검 ----
+	//
+	//저마다 제 쿨타임으로 친다. 템빨용사에서 장착 무기와 가방 무기가 각자
+	//공격하는 것과 같다.
+	//
+	//한 자루의 한 바퀴:
+	//    차오른다  시계가 상한까지 찬다. 그림은 아래에서부터 밝아진다
+	//    번쩍인다  STAGE_SWORD_FLASH 동안
+	//    친다      번쩍임이 끝나는 순간. 시계는 0 으로
+	//
+	//장착 검(아웃게임에서 끼고 들어온 검)은 치는 대신 히어로를 휘두르게 한다.
+	//히어로가 아직 앞 휘두름 중이면 번쩍임을 붙들고 기다린다.
+	//
+	//새로 놓인 검은 칸 번호만큼 시계를 늦게 건다. 모두 0 에서 출발하면 같은
+	//길이의 검이 같은 프레임에 쳐서 데미지 숫자가 한 자리에 겹친다.
+	for (int k = 0; k < swordCnt; ++k) {
+		const StageSword* s = &swords[k];
+		const int slot = s->slot;
+
+		stageSwordMax[slot] = StageSwordCooldown(s->detail);
+
+		if (stageSwordPart[slot] != s->part + 1) {
+			stageSwordPart[slot] = s->part + 1;
+			stageSwordFlash[slot] = 0;
+			stageSwordCool[slot] =
+				-(slot % STAGE_SWORD_STAGGER_SLOTS) * STAGE_SWORD_STAGGER;
+		}
+
+		if (!running || !StageRtFoeAlive(foe))
+			continue;
+
+		if (stageSwordFlash[slot] > 0) {
+			if (--stageSwordFlash[slot] > 0)
+				continue;
+
+			if (s->gear) {
+				if (PvpHeroTurnBusy(PLAYER)) {
+					stageSwordFlash[slot] = 1;
+					continue;
+				}
+
+				PvpHeroGiveTurn(PLAYER);
+			}
+			else
+				StageRtSwordHit(foe, s->value);
+
+			stageSwordCool[slot] = 0;
+			continue;
+		}
+
+		if (stageSwordCool[slot] < stageSwordMax[slot]) {
+			if (++stageSwordCool[slot] >= stageSwordMax[slot])
+				stageSwordFlash[slot] = STAGE_SWORD_FLASH;
+		}
+	}
+
+	//---- 동료 ----
+	for (int i = 0; i < MAXCREW; ++i) {
+		OBJECT* c = &ao[CREW + i];
+
+		if (!c->active || c->dead)
+			continue;
+
+		c->dirX = c->dirF = RIGHT;
+		c->frame++;
+
+		if (running && foe >= 0) {
+			if (stageCrewCool[i] < BossRaidCrewCooldown(i))
+				stageCrewCool[i]++;
+			else {
+				//몇 차 스킬인가. PVP 와 같은 자로 잰다 - 쏜 횟수다.
+				const int done = ++stageCrewShotCnt[i];
+				const int level = (done % PVP_SKILL3_EVERY == 0) ? 3
+					: (done % PVP_SKILL2_EVERY == 0) ? 2 : 1;
+				const int patternBase = c->type * ATTACKPATTERNTOTALDATASIZE + 2
+					+ (level - 1) * ATTACKPATTERNDATASIZE;
+
+				c->etc = enemyAttackPattern[patternBase + THERE];
+
+				if (c->etc <= 0)
+					c->etc = enemyAttackPattern[
+						c->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
+
+				if (c->etc > 0)
+					stageCrewShot[i] = PVP_FOE_SHOTMOTION;
+
+				AllyShootAt(CREW + i, level, foe);
+				stageCrewCool[i] = 0;
+			}
+		}
+
+		//가방 검. 히어로, 몬스터와 같은 규칙이다.
+		StageGearShotStep(CREW + i, foe, i + 1, running);
+
+		//자세. 쏜 직후에는 쏘는 자세, 아니면 대기 자세다. 안 두면 총알만
+		//나가고 사람은 서 있기만 해서 누가 쏜 것인지 안 보인다.
+		if (stageCrewShot[i] > 0 && c->etc > 0) {
+			const signed short* st = cmf_status_data[c->cmf][c->etc];
+			const int cnt = Max(1, (int)st[0]);
+			const int at = Min(cnt - 1, PVP_FOE_SHOTMOTION - stageCrewShot[i]);
+
+			c->motion = st[2 + at];
+			stageCrewShot[i]--;
+		}
+		else if (crewPos[c->type * 5 + 1] > 0) {
+			c->motion = crewPos[c->type * 5]
+				+ c->frame / 4 % crewPos[c->type * 5 + 1];
+		}
+
+		InitMotion(c);
+	}
+
+	//---- 몬스터 ----
+	//
+	//동료 표에 없는 몬스터도 많아서 총알을 못 쏘는 놈이 있다. 그래서 몬스터는
+	//쏘지 않고 제자리에서 치는 자세를 하고, 그 한가운데서 히어로를 직접 때린다.
+	//히어로를 때리는 길은 AttackRobin 하나뿐이다.
+	if (foe >= 0) {
+		OBJECT* e = &ao[foe];
+
+		//표적이 바뀌면 치던 자세를 버린다. 다른 놈의 자세 번호로 새 놈을
+		//그리면 엉뚱한 그림이 나온다.
+		if (stageFoeObj != foe) {
+			stageFoeObj = foe;
+			stageFoeShot = 0;
+			stageFoeCool = 0;
+			StageFoeShotClear();
+		}
+
+		e->dirX = e->dirF = LEFT;
+		e->frame++;
+
+		//가방 검. 몬스터도 동료와 같은 규칙으로 날린다.
+		StageGearShotStep(foe, PLAYER, 0, running);
+		StageFoeShotStep();
+
+		if (running && stageFoeShot == 0) {
+			if (stageFoeCool < STAGE_FOE_COOLDOWN)
+				stageFoeCool++;
+			else {
+				e->etc = enemyAttackPattern[e->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
+				stageFoeShot = PVP_FOE_SHOTMOTION;
+				stageFoeHit = false;
+				stageFoeCool = 0;
+			}
+		}
+
+		if (stageFoeShot > 0) {
+			if (e->etc > 0) {
+				const signed short* st = cmf_status_data[e->cmf][e->etc];
+				const int cnt = Max(1, (int)st[0]);
+				const int at = Min(cnt - 1, PVP_FOE_SHOTMOTION - stageFoeShot);
+
+				e->motion = st[2 + at];
+			}
+
+			//---- 내지르기 ----
+			//
+			//칠 자세가 없는 몬스터가 많다. 그때는 자세가 대기 그대로라
+			//때리는지 서 있는지 구별이 안 된다. 히어로 쪽으로 몸을 내밀었다
+			//돌아오게 해서 "지금 쳤다"를 눈으로 보이게 한다.
+			{
+				const int step = PVP_FOE_SHOTMOTION - stageFoeShot;
+				const int half = Max(1, PVP_FOE_SHOTMOTION / 2);
+				const int lunge = STAGE_FOE_LUNGE
+					* (step < half ? step : Max(0, PVP_FOE_SHOTMOTION - step))
+					/ half;
+
+				e->x = e->nx - lunge;
+			}
+
+			if (stageFoeHit == false
+				&& PVP_FOE_SHOTMOTION - stageFoeShot >= STAGE_FOE_HIT_AT) {
+				stageFoeHit = true;
+
+				if (running)
+					AttackRobin(foe, PLAYER);
+			}
+
+			stageFoeShot--;
+		}
+		else if (crewPos[e->type * 5 + 1] > 0) {
+			e->x = e->nx;
+			e->motion = crewPos[e->type * 5]
+				+ e->frame / 4 % crewPos[e->type * 5 + 1];
+		}
+
+		InitMotion(e);
+	}
+	else {
+		stageFoeObj = -1;
+		stageFoeShot = 0;
+	}
+}
+
 void Play(void)
 {
 	int i, j;
@@ -1501,6 +2242,9 @@ void Play(void)
 	case MD_PLAY:
 		if (waveStatus == WAVESTATUS_PLAY)
 			WaveControler();
+
+		//조작 없이 서로 치고받는다. 턴제 판이면 첫 줄에서 돌아간다.
+		UpdateStageRealtime();
 		break;
 	case MD_BATTLE:
 		
@@ -3481,6 +4225,15 @@ void AttackSequenceDraw(void)
 				swipeIndex = 0;
 			}
 
+			//---- 새 판은 히어로 혼자 시작한다 ----
+			//
+			//지난 판에 산 동료와 격자의 장비는 여기서 사라진다. 판마다 새로
+			//뽑는 것이 이 판의 규칙이다.
+			if (IsStageRealtime()) {
+				StageRtBegin();
+				SetBattleCrew();
+			}
+
 			attackSequence = ATTACKSEQUENCE_READY;
 
 			return;
@@ -4750,7 +5503,7 @@ void SetHero(void)
 			default:
 				ao[PLAYER + i].nx = ao[PLAYER + i].x = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 0];
 				ao[PLAYER + i].ny = ao[PLAYER + i].y = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 1];// doorY + TSIZE;
-				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[i] * HEROZOOM * (drawHandle == MD_PLAY ? 2.0f : 1.0f);
+				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[i] * HEROZOOM;
 				ao[PLAYER + i].dirF = ao[PLAYER + i].dirX = RIGHT;
 				ao[PLAYER + i].moveHandler = REGENMOVE;
 				ao[PLAYER + i].drawHandler = REGENDRAW;
@@ -4760,8 +5513,6 @@ void SetHero(void)
 
 				break;
 			}
-			if (drawHandle == MD_PLAY)
-				ao[PLAYER + i].nx = ao[PLAYER + i].x = DX * 0.28f + rx;
 			ao[PLAYER + i].playerRun = false;
 			ao[PLAYER + i].dx = 0;
 			ao[PLAYER + i].flamer = null;
@@ -4805,14 +5556,19 @@ void SetHero(void)
 //몬스터나 NPC 동료를 추가
 void SetBattleCrew()
 {
-	if (drawHandle == MD_PLAY) {
-		for (int slot = 0; slot < MAXCREW; ++slot)
-			memset(&ao[CREW + slot], 0, sizeof(OBJECT));
-		return;
-	}
 	int i, j = 0;
 	int crewIdx;
 	int newCnt = 0;
+
+	//---- 스테이지 판에는 이번 판에 산 동료만 선다 ----
+	//
+	//아웃게임 편성(robin.slotCrew)은 세우지 않는다. 판은 히어로 혼자
+	//시작하고, 몬스터를 눕히며 산 동료가 하나씩 곁에 선다(아래의 스테이지
+	//실시간 전투). 실시간 판이 아니면(튜토리얼 등) 전처럼 아무도 안 세운다.
+	//
+	//세우는 길은 편성 동료와 같다. 스탯과 스킬을 채우는 코드를 두 벌 두면
+	//한쪽만 고쳐졌을 때 판에서 산 동료만 다르게 때린다.
+	const bool stageRun = (drawHandle == MD_PLAY);
 
 	//예전에는 맨 앞에서 ao[CREW..CREW+MAXCREW)를 전부 memset하고 다시 만들면서 모든 동료에게
 	//REGENMOVE(등장 낙하 연출)를 걸었다. 그런데 이 함수는 동료를 새로 하나 얻을 때마다 불린다
@@ -4821,22 +5577,30 @@ void SetBattleCrew()
 	//지금은 슬롯 단위로 보고, "새로 배치되는 슬롯"만 등장 연출을 태운다.
 	for (i = 0; i < MAXCREW; i++) {
 		bool keep;
+		const int slotType = stageRun
+			? (IsStageRealtime() ? StageRtCrewType(i) : 0)
+			: robin.slotCrew[i];
 
 		//빈 슬롯은 비워둔다.
-		if (i >= crewCnt || robin.slotCrew[i] == -1) {
+		//
+		//스테이지 판의 빈 칸은 0 이다. 동료 표에 없는 타입도 비운다 - 스킬도
+		//총알도 없어서 서 있기만 한다.
+		if (stageRun
+			? (slotType <= 0 || GetCrewIdxFromType(slotType) < 0)
+			: (i >= crewCnt || robin.slotCrew[i] == -1)) {
 			memset(&ao[CREW + i], false, sizeof(OBJECT));
 			continue;
 		}
 
 		//같은 동료가 이미 이 슬롯에 자리잡고 있으면(서 있거나 등장 연출 진행 중) 오브젝트를
 		//다시 만들지 않는다.
-		keep = (ao[CREW + i].type == robin.slotCrew[i]
+		keep = (ao[CREW + i].type == slotType
 			&& (ao[CREW + i].active == true || ao[CREW + i].moveHandler == REGENMOVE));
 
 		if (keep == false) {
 			memset(&ao[CREW + i], false, sizeof(OBJECT));
 
-			ao[CREW + i].type = robin.slotCrew[i];
+			ao[CREW + i].type = slotType;
 			ao[CREW + i].cmf = enemyData[ao[CREW + i].type * ENEMYDATASIZE + ENEMYDATA_CMF];
 
 			//SetNpc()는 active/motion/moveHandler/drawHandler/hp까지 덮어쓰므로
@@ -4863,6 +5627,20 @@ void SetBattleCrew()
 		//위치와 스탯/스킬은 유지되는 슬롯도 최신값으로 맞춰준다(성이 바뀌면 자리 좌표가 달라진다).
 		ao[CREW + i].nx = (float)castleCrewPosition[castleOrder[robin.castle] * MAXCREW * 2 + i * 2 + 0];
 		ao[CREW + i].ny = (float)castleCrewPosition[castleOrder[robin.castle] * MAXCREW * 2 + i * 2 + 1];
+
+		//스테이지 판은 성벽이 아니라 히어로 뒤에 선다. 히어로가 성 밖 들판에
+		//홀로 서 있으므로(SetHero) 성벽 자리는 화면 밖이다.
+		//
+		//앞줄 셋, 뒷줄 셋. 뒷줄은 반 칸 어긋나 앞줄에 가리지 않고, 개체의 y 는
+		//위가 마이너스라 뒷줄일수록 뺀다.
+		if (stageRun) {
+			const int col = i % 3;
+			const int row = i / 3;
+
+			ao[CREW + i].nx = ao[PLAYER].nx - (float)(STAGE_CREW_GAP_X * (col + 1))
+				- (float)(row * STAGE_CREW_GAP_X / 2);
+			ao[CREW + i].ny = ao[PLAYER].ny - (float)(STAGE_CREW_GAP_Y * row);
+		}
 
 		//등장 연출 중에는 현재 좌표를 건드리지 않는다(공중에서 순간이동해 보인다).
 		if (ao[CREW + i].moveHandler != REGENMOVE) {

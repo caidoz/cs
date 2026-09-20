@@ -4915,8 +4915,18 @@ void GachaDraw(void)
 				ao[crewObj].actionOwner = 0;
 			}
 			battleRewardTransitionLock = false;
-			robin.waveIdx++;
+
+			//---- 상자를 닫은 자리가 곧 판의 끝이다 ----
+			//
+			//상자는 이제 판의 마지막 몬스터에서만 떨어진다
+			//(Func_Movement 의 VanishMove). 그 사이의 보상은 몬스터마다
+			//내미는 세 갈래가 맡는다.
+			//
+			//그래서 여기서 다음 줄을 세울 이유가 없다. 줄은 세 갈래를
+			//닫는 자리에서 넘어가고, 여기는 판을 마무리한다.
+			robin.waveIdx = 0;
 			robin.curWaveIdx = 0;
+			arenaKill = 0;
 			memset(&robin.waveActive, 0, sizeof(robin.waveActive));
 
 			//다음 웨이브를 지금부터 센다.
@@ -4945,22 +4955,24 @@ void GachaDraw(void)
 			//다 고르거나 넘기면 GridTestDraw() 쪽에서 아래 else 가 하는
 			//일을 그대로 한다. 시험을 걷어낼 때는 if 갈래만 지우면
 			//원래 코드로 돌아간다.
-			if (GridTestBeginOffer()) {
-				//OutOfGacha() 안에 waveStatus 를 PLAY 로 되돌리는 갈래가
-				//있다. 판을 내미는 동안에는 도로 눕혀 둔다.
-				waveStatus = WAVESTATUS_END;
-				waveAnnounceTouchLock = false;
-				touchDisable = false;
-			}
-			else {
-				waveStatus = WAVESTATUS_PLAY;
+			waveStatus = WAVESTATUS_PLAY;
+			waveAnnounceTouchLock = true;
+			touchDisable = true;
 
-				//보상 상자를 닫은 직후부터 다음 웨이브의 첫 몬스터가 실제로
-				//등장하고 웨이브 타이틀 연출까지 끝날 때까지 입력 공백이 없어야 한다.
-				//첫 몬스터 생성 시 Func_Map.cpp가 같은 잠금을 이어받아 해제한다.
-				waveAnnounceTouchLock = true;
-				touchDisable = true;
-			}
+			//---- 스테이지 클리어로 보낸다 ----
+			//
+			//전에는 이 자리에서 다음 줄을 세워, 판이 끝없이 이어졌다.
+			//스테이지 클리어는 보스방에서만 걸렸다(Func_Battle 의
+			//robin.bossRoom 갈래).
+			//
+			//이제 판은 몬스터 STAGE_MONSTER_CNT 마리로 끝난다. 그 끝이
+			//여기이므로 여기서 클리어로 보낸다. 날짜가 반나절 가는 것도
+			//그 뒤 robin.stage++ 에 달려 있다(Func_Map 의 GetStageDay).
+			attackSequence = ATTACKSEQUENCE_STAGECLEAR;
+			sequenceDelay = ATTACKDELAY_STAGECLEAR_START + 2 * FPS / ROULETTEDIV;
+			bar[BAR_BOX].front = false;
+			stageInfoDepth = STAGEINFO_CREWGACHA;
+			stageInfoFrame = 0;
 
 			bar[BAR_BOSSHP].max = GetTotalWaveHp(robin.waveIdx);
 			return;

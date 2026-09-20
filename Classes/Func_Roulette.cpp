@@ -788,6 +788,12 @@ void RouletteAttackStart(void)
 	if (attackDelay)
 		return;
 
+	//스테이지 실시간 판에는 누르는 공격이 없다. 저마다 제 쿨타임으로 친다
+	//(Func_Battle 의 UpdateStageRealtime). 여기서 차례표를 세우면 턴제가
+	//살아나 둘이 한 판에서 겹친다. 자동 플레이도 이 길로 오므로 한 곳만 막는다.
+	if (IsStageRealtime())
+		return;
+
 	//----------------------------------------------------------------------
 	// 하트를 낸다. 공격 한 번의 값이다.
 	//

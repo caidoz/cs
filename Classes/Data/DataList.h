@@ -67,6 +67,7 @@
 	X(setHeroPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(setEnemyPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
+	X(castleGridCell, 1, DPK_INT, 1044, DPK_KEY_NONE, 0, 0) \
 	X(cmfOffBlob, 2, DPK_UINT, 12692, DPK_KEY_FREE, 0, 0) \
 	X(cmfOffSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
 	X(cmfMotionImgBlob, 2, DPK_INT, 306052, DPK_KEY_FREE, 0, 0) \
@@ -248,9 +249,9 @@
 	X(swordMaxBet, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
 	X(swordHeart, 1, DPK_UINT, 40, DPK_KEY_NONE, 0, 0) \
 	X(swordGold, 8, DPK_INT, 40, DPK_KEY_NONE, 0, 0) \
-	X(itemPrice, 8, DPK_UINT, 328, DPK_KEY_NONE, 0, 0) \
+	X(itemPrice, 8, DPK_UINT, 382, DPK_KEY_NONE, 0, 0) \
 	X(itemSellPrice, 4, DPK_UINT, 301, DPK_KEY_NONE, 0, 0) \
-	X(itemStar, 2, DPK_UINT, 565, DPK_KEY_NONE, 0, 0) \
+	X(itemStar, 2, DPK_UINT, 619, DPK_KEY_NONE, 0, 0) \
 	X(itemStartCnt, 2, DPK_UINT, 41, DPK_KEY_NONE, 0, 0) \
 	X(boxEquipType, 1, DPK_UINT, 8, DPK_KEY_NONE, 0, 0) \
 	X(materialDropData, 1, DPK_UINT, 270, DPK_KEY_NONE, 0, 0) \
@@ -262,7 +263,7 @@
 	X(wasteDrop, 1, DPK_UINT, 30, DPK_KEY_NONE, 0, 0) \
 	X(wasteValue, 1, DPK_UINT, 7, DPK_KEY_NONE, 0, 0) \
 	X(weaponRange, 1, DPK_UINT, 3, DPK_KEY_NONE, 0, 0) \
-	X(itemValue, 4, DPK_UINT, 171, DPK_KEY_NONE, 0, 0) \
+	X(itemValue, 4, DPK_UINT, 225, DPK_KEY_NONE, 0, 0) \
 	X(gradeRatio, 1, DPK_UINT, 6, DPK_KEY_NONE, 0, 0) \
 	X(typeRatio, 1, DPK_UINT, 18, DPK_KEY_NONE, 0, 0) \
 	X(acceOptionStatMatch, 1, DPK_UINT, 12, DPK_KEY_NONE, 0, 0) \

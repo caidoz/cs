@@ -1,6 +1,9 @@
 #include "Core.h"
 #include "Func.h"
 #include "Data.h"
+#include "Data/SwordSprites.h"
+#include "Data/RobinSwordTrack.h"
+#include "Data/DianaGunData.h"
 
 // Object 그리기 관련
 void GetMotionPtr(OBJECT* pObj)
@@ -841,10 +844,21 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		cPtr = &cmd_m_img[pObj->cmf][cmd_m_cnt[pObj->cmf][motion * 2] * 4];
 	}
 
+	const SwordSpriteInfo* swordSprite = pObj->cmf == ROBIN && pObj->equip[EQUIP_WEAPON].type != EMPTY
+		? GetSwordSpriteInfo(pObj->equip[EQUIP_WEAPON].detail) : 0;
+	CmfSwordPose swordPose = {};
+	bool swordDrawn = false;
+	if (swordSprite && motion >= 0 && motion < (int)(sizeof(kRobinSwordTrack) / sizeof(kRobinSwordTrack[0]))) {
+		const CmfSwordTrackEntry& entry = kRobinSwordTrack[motion];
+		// A downloaded CMF can differ from the built-in data. Never apply a stale track.
+		if (entry.pose.valid && entry.signature == SwordMotionSignature(cPtr, i))
+			swordPose = entry.pose;
+	}
+
 	//에어크래쉬의 보간 모션에 검 파츠가 둘 들어 있으면, 직전 검과 위치/각도가
 	//가까운 쪽을 현재 모션에 남기고 변화가 큰 쪽은 다음 모션에서 선택한다.
 	//새 자세의 검이 한 프레임 앞당겨 튀어나오는 현상을 막기 위한 처리다.
-	if (pObj->type == ROBIN && pObj->currentSkill == SKILL_ROBIN6) {
+	if (!swordSprite && pObj->type == ROBIN && pObj->currentSkill == SKILL_ROBIN6) {
 		const signed short* swordPtr = cPtr;
 		const signed short* selectedSwordPtr = 0;
 		int swordCnt = 0;
@@ -919,6 +933,28 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 		fixedImg = *cPtr;
 		type = *(cPtr + 3);
+
+		if (swordSprite && (fixedImg == IMG_C0_108 || fixedImg == IMG_C0_109)) {
+			if (!swordDrawn) {
+				const CmfSwordPose pose = swordPose.valid ? swordPose : DecodeLegacySwordPose(cPtr);
+				const float hx = (dirF == RIGHT ? -1.0f : 1.0f) * (pose.handX + centerX) * zoom;
+				const float hy = (pose.handY + centerY) * zoom;
+				const float radians = CC_DEGREES_TO_RADIANS(rotation);
+				const int swordAlpha = (int)(m_lgrpAlpha * pose.opacity);
+				if (swordAlpha > 0) {
+					DrawSwordAtHand(pObj->equip[EQUIP_WEAPON].detail,
+						x + hx * cos(radians) - hy * sin(radians),
+						y - hx * sin(radians) - hy * cos(radians),
+						rotation + (dirF == RIGHT ? -pose.angleDegrees : pose.angleDegrees),
+						pose.flipX != (dirF == RIGHT), zoom * pose.scale, swordAlpha, (type & 8) != 0);
+				}
+				swordDrawn = true;
+			}
+			// One interpolated sword replaces both legacy orientation copies.
+			cPtr += 4;
+			--i;
+			continue;
+		}
 
 		//개구리의 혀 공격 프레임은 본체의 기존 입(IMG_C5_9) 위에
 		//아래턱/입 파츠(IMG_C5_14)를 한 번 더 겹쳐 놓은 구성이다.
@@ -1146,6 +1182,110 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 				dx = cmd_i_offset[pObj->cmf][fixedImg * 4 + 3];
 			}
 			break;
+		}
+
+		// 맥스 부메랑 동적 크기(35종) 및 단일화 지원:
+		// 날아갈 때 쓰는 큰 부메랑 이미지 1개만 있는 텍스처(폭 < 160)인 경우,
+		// 손에 쥐고 있을 때(IMG_C2_82)와 날아갈 때(IMG_C2_83) 모두 단일 텍스처 영역을 동적 참조.
+		static unsigned short kDynamicBoomerangPart[4] = { 0, 0, 86, 70 };
+		if (pObj->cmf == MAXX && (fixedImg == IMG_C2_82 || fixedImg == IMG_C2_83) && sprite[imgFile]) {
+			const float texW = sprite[imgFile]->getContentSize().width;
+			const float texH = sprite[imgFile]->getContentSize().height;
+			if (texW > 0.0f && texW < 160.0f) {
+				kDynamicBoomerangPart[2] = (unsigned short)texW;
+				kDynamicBoomerangPart[3] = (unsigned short)texH;
+				ucPtr = kDynamicBoomerangPart;
+
+				const float halfW = texW * 0.5f;
+				const float halfH = texH * 0.5f;
+
+				if (fixedImg == IMG_C2_83) {
+					// 날아가는 투사체: 1.0배율 정상 렌더링
+					dx = (partsRotation == 90 || partsRotation == 270) && dirF == RIGHT ? texH : texW;
+				}
+				else if (fixedImg == IMG_C2_82) {
+					// 손에 쥔 부메랑: 0.58배 축소 및 손 중심 피벗 정밀 보정
+					const float kHandScale = 0.58f;
+					magnify *= kHandScale;
+
+					float offX = 0.0f;
+					float offY = 0.0f;
+					if (partsRotation == 0 || partsRotation == 180) {
+						offX = (35.0f - halfW * kHandScale) * zoom;
+						offY = -(30.0f - halfH * kHandScale) * zoom;
+						dx = texW * kHandScale;
+					}
+					else {
+						offX = (30.0f - halfH * kHandScale) * zoom;
+						offY = -(35.0f - halfW * kHandScale) * zoom;
+						dx = texH * kHandScale;
+					}
+
+					imgOffsetX += (dirF == RIGHT ? -offX : offX);
+					imgOffsetY += offY;
+				}
+			}
+		}
+
+		// 다이애나 총 단일화 및 동적 크기(35종) 지원
+		static unsigned short kDynamicGunPart[4] = { 0, 0, 34, 28 };
+		if (pObj->cmf == DIANA && (fixedImg == IMG_C1_94 || fixedImg == IMG_C1_95) && sprite[imgFile]) {
+			const int gunIdx = imgFile - COSTUME_WEAPON_DIANA_IMG - 1;
+			if (gunIdx >= 0 && gunIdx < 35) {
+				const DianaGunInfo& gun = kDianaGuns[gunIdx];
+				kDynamicGunPart[0] = 0;
+				kDynamicGunPart[1] = 0;
+				kDynamicGunPart[2] = (unsigned short)gun.width;
+				kDynamicGunPart[3] = (unsigned short)gun.height;
+				ucPtr = kDynamicGunPart;
+
+				if (fixedImg == IMG_C1_95) {
+					// 기존 가로 총 모션: 손잡이 위치를 원본 손 위치(17, 20)에 맞춤
+					dx = gun.width;
+					if ((partsRotation == 90 || partsRotation == 270) && dirF == RIGHT) {
+						dx = gun.height;
+					}
+					const float offX = (float)(gun.gripX - 17);
+					const float offY = (float)(gun.gripY - 20);
+					if (dirF == 0) {
+						imgOffsetX -= offX;
+					} else {
+						imgOffsetX += (float)((gun.width - gun.gripX) - 17);
+					}
+					imgOffsetY -= offY;
+				}
+				else if (fixedImg == IMG_C1_94) {
+					// 기존 대각 총 모션: 손잡이 기준점을 중심으로 -40도 회전
+					const int q = (type & 6) >> 1;
+					const float angle_cmf = (dirX ? -1.0f : 1.0f) * (q * 90.0f - 40.0f);
+					const float totalAngle = rotation + angle_cmf;
+
+					// Part 94의 원본 박스(30x28) 손 중심점을 화면 좌표로 계산
+					const float localX = *(cPtr + 1) + 15.0f;
+					const float localY = *(cPtr + 2) + 14.0f;
+					const float rad = CC_DEGREES_TO_RADIANS(rotation);
+					float cx = 0.0f;
+					float cy = 0.0f;
+					if (dirF == 0) {
+						cx = x + ((localX + centerX) * zoom * extra * cos(rad) - (localY + centerY) * zoom * extra * sin(rad)) + imgOffsetX;
+						cy = y - ((localX + centerX) * zoom * extra * sin(rad) + (localY + centerY) * zoom * extra * cos(rad)) + imgOffsetY;
+					}
+					else {
+						cx = x + ((-(localX + centerX)) * zoom * extra * cos(rad) - (localY + centerY) * zoom * extra * sin(rad)) + imgOffsetX;
+						cy = y - ((-(localX + centerX)) * zoom * extra * sin(rad) + (localY + centerY) * zoom * extra * cos(rad)) + imgOffsetY;
+					}
+
+					const float ax = (float)gun.gripX / (float)gun.width;
+					const float ay = 1.0f - ((float)gun.gripY / (float)gun.height);
+					const Vec2 anchor(dirX ? 1.0f - ax : ax, ay);
+
+					RotateImage(gun.width, gun.height, 0, 0, (int)cx, (int)cy, dirX, totalAngle, pxl, tempAlpha, magnify, anchor, sprite[imgFile], imgFile);
+
+					cPtr += 4;
+					i--;
+					continue;
+				}
+			}
 		}
 
 		if (extra && pObj->head) {

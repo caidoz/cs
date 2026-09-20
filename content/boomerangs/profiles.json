@@ -1,0 +1,317 @@
+[
+  {
+    "id": 0,
+    "filename": "w2_1.png",
+    "name": "사냥용 부메랑",
+    "tier": 1,
+    "star": 100,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 1,
+    "filename": "w2_2.png",
+    "name": "본 부메랑",
+    "tier": 1,
+    "star": 100,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 2,
+    "filename": "w2_3.png",
+    "name": "플린트 크레센트",
+    "tier": 1,
+    "star": 100,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 3,
+    "filename": "w2_4.png",
+    "name": "슬라이서",
+    "tier": 2,
+    "star": 100,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 4,
+    "filename": "w2_5.png",
+    "name": "윈드 커터",
+    "tier": 2,
+    "star": 100,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 5,
+    "filename": "w2_6.png",
+    "name": "팔콘 윙",
+    "tier": 2,
+    "star": 200,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 6,
+    "filename": "w2_7.png",
+    "name": "강철 부메랑",
+    "tier": 3,
+    "star": 200,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 7,
+    "filename": "w2_8.png",
+    "name": "크로스 블레이드",
+    "tier": 3,
+    "star": 200,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 8,
+    "filename": "w2_9.png",
+    "name": "바브드 팽",
+    "tier": 3,
+    "star": 200,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 9,
+    "filename": "w2_10.png",
+    "name": "트라이 엣지",
+    "tier": 4,
+    "star": 200,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 10,
+    "filename": "w2_11.png",
+    "name": "쉐도우 차크람",
+    "tier": 4,
+    "star": 300,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 11,
+    "filename": "w2_12.png",
+    "name": "플레임 윙",
+    "tier": 4,
+    "star": 300,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 12,
+    "filename": "w2_13.png",
+    "name": "라이트닝 엣지",
+    "tier": 5,
+    "star": 300,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 13,
+    "filename": "w2_14.png",
+    "name": "프로스트 팽",
+    "tier": 5,
+    "star": 300,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 14,
+    "filename": "w2_15.png",
+    "name": "베놈 스파이크",
+    "tier": 5,
+    "star": 300,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 15,
+    "filename": "w2_16.png",
+    "name": "소울 체이서",
+    "tier": 6,
+    "star": 400,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 16,
+    "filename": "w2_17.png",
+    "name": "블러드 리퍼",
+    "tier": 6,
+    "star": 400,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 17,
+    "filename": "w2_18.png",
+    "name": "미스틱 룬",
+    "tier": 6,
+    "star": 400,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 18,
+    "filename": "w2_19.png",
+    "name": "그리폰 윙",
+    "tier": 7,
+    "star": 400,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 19,
+    "filename": "w2_20.png",
+    "name": "피닉스 테일",
+    "tier": 7,
+    "star": 400,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 20,
+    "filename": "w2_21.png",
+    "name": "드래곤 크레스트",
+    "tier": 7,
+    "star": 500,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 21,
+    "filename": "w2_22.png",
+    "name": "로커스트 헌트",
+    "tier": 8,
+    "star": 500,
+    "width": 86,
+    "height": 70
+  },
+  {
+    "id": 22,
+    "filename": "w2_23.png",
+    "name": "카오스 스파이럴",
+    "tier": 8,
+    "star": 500,
+    "width": 88,
+    "height": 70
+  },
+  {
+    "id": 23,
+    "filename": "w2_24.png",
+    "name": "타이탄 브레이커",
+    "tier": 8,
+    "star": 500,
+    "width": 90,
+    "height": 70
+  },
+  {
+    "id": 24,
+    "filename": "w2_25.png",
+    "name": "발키리 크레센트",
+    "tier": 9,
+    "star": 600,
+    "width": 90,
+    "height": 70
+  },
+  {
+    "id": 25,
+    "filename": "w2_26.png",
+    "name": "보이드 소용돌이",
+    "tier": 9,
+    "star": 600,
+    "width": 92,
+    "height": 72
+  },
+  {
+    "id": 26,
+    "filename": "w2_27.png",
+    "name": "솔라 플레어",
+    "tier": 9,
+    "star": 600,
+    "width": 92,
+    "height": 74
+  },
+  {
+    "id": 27,
+    "filename": "w2_28.png",
+    "name": "루나 이클립스",
+    "tier": 9,
+    "star": 600,
+    "width": 94,
+    "height": 72
+  },
+  {
+    "id": 28,
+    "filename": "w2_29.png",
+    "name": "템페스트 스톰",
+    "tier": 9,
+    "star": 600,
+    "width": 94,
+    "height": 76
+  },
+  {
+    "id": 29,
+    "filename": "w2_30.png",
+    "name": "아비수스 리퍼",
+    "tier": 9,
+    "star": 600,
+    "width": 96,
+    "height": 76
+  },
+  {
+    "id": 30,
+    "filename": "w2_31.png",
+    "name": "세라핌 윙",
+    "tier": 9,
+    "star": 600,
+    "width": 98,
+    "height": 78
+  },
+  {
+    "id": 31,
+    "filename": "w2_32.png",
+    "name": "제네시스 크로스",
+    "tier": 9,
+    "star": 600,
+    "width": 98,
+    "height": 80
+  },
+  {
+    "id": 32,
+    "filename": "w2_33.png",
+    "name": "아마게돈 엣지",
+    "tier": 9,
+    "star": 600,
+    "width": 100,
+    "height": 80
+  },
+  {
+    "id": 33,
+    "filename": "w2_34.png",
+    "name": "크로노스 스피어",
+    "tier": 9,
+    "star": 600,
+    "width": 102,
+    "height": 82
+  },
+  {
+    "id": 34,
+    "filename": "w2_35.png",
+    "name": "데우스 엑스 마키나",
+    "tier": 9,
+    "star": 600,
+    "width": 106,
+    "height": 84
+  }
+]

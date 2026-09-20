@@ -31,4 +31,11 @@ enum { castleCrewPosition_COUNT = 228 };
 // 성마다 한 줄씩 있으므로 로비 배치를 손볼 때 이 표만 조절하면 된다.
 extern const int* lobbyCrewArea;
 enum { lobbyCrewArea_COUNT = TOTALCASTLE * 4 };
+
+// 성의 가방 칸. castleGridCellStart[성] 부터 castleGridCellCnt[성] 개의
+// {열, 행} 쌍이다(CastleData.cpp 의 표 설명 참고).
+extern const int castleGridCellCnt[TOTALCASTLE];
+extern const int castleGridCellStart[TOTALCASTLE];
+extern const signed char* castleGridCell;
+enum { castleGridCell_COUNT = 1044 };	//배열 길이. 칸 수의 두 배다
 #endif

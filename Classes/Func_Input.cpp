@@ -1773,6 +1773,10 @@ void PlayKey(int obj)
 
 			bossRaidMode = false;
 			robin.bossRoom = false;
+
+			//새 판을 연다. 히어로 혼자, 잡은 수 0 에서 시작한다. GotoPlay 가
+			//세우는 동료는 이 표를 읽으므로 그보다 먼저 비운다.
+			StageRtBegin();
 			GotoPlay();
 		}
 			break;
@@ -2934,6 +2938,26 @@ void touchFunc(int func)
 		return;
 	}
 
+	//전투 버튼. 화면을 바꾸는 명령이 아니라 켜고 끄는 스위치라 systemKey 를
+	//태우지 않고 그 자리에서 뒤집는다.
+	if (func == TOUCH_FUNC_STAGE_REROLL) {
+		GridTestReroll();
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_STAGE_MAP || func == TOUCH_FUNC_STAGE_BOOK) {
+		GridTestShopSide(func == TOUCH_FUNC_STAGE_BOOK);
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_STAGE_AUTOBATTLE) {
+		StageRtToggleAuto();
+		systemKey = 0;
+		return;
+	}
+
 	if (func >= TOUCH_FUNC_BATTLE_TARGET && func < TOUCH_FUNC_BATTLE_TARGET + MAXCREW)
 	{
 		systemKey = AVK_BATTLE_TARGET + (func - TOUCH_FUNC_BATTLE_TARGET);
@@ -3080,6 +3104,11 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_SHOP://상점
 			systemKey = AVK_SHOP;
+			break;
+		case TOUCH_FUNC_LOBBY_CASTLE:
+		case TOUCH_FUNC_LOBBY_CASTLE_CLOSE:
+			LobbyCastleMenuCommand(func);
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_LOBBY_ADVENTURE://로비 하단 가운데. 지금 보고 있는 화면이다.
 			systemKey = AVK_LOBBY_ADVENTURE;
@@ -3662,6 +3691,7 @@ void touchFunc(int func)
 			systemKey = AVK_POPUP_CREWUPGRADE;
 			break;
 		case TOUCH_FUNC_POPUP_CREWLIST:
+			LobbyCastleMenuCommand(func);
 			systemKey = AVK_POPUP_CREWLIST;
 			break;
 		case TOUCH_FUNC_CASTLE_PROMO:
@@ -3676,6 +3706,7 @@ void touchFunc(int func)
 			break;
 
 		case TOUCH_FUNC_POPUP_CASTLEMENU:
+			LobbyCastleMenuCommand(func);
 			systemKey = AVK_POPUP_CASTLEMENU;
 			break;
 		case TOUCH_FUNC_POPUP_CLOSE:

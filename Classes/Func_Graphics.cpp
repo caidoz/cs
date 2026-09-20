@@ -2,6 +2,7 @@
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
+#include "Data/SwordSprites.h"
 
 //타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미
 //화면 절대좌표인 것들(전체화면 이펙트, 레터박스, DX/2 기준으로 놓는 강타격 연출)에 쓴다.
@@ -27,7 +28,9 @@ bool HitZoomOn(void)
 {
 	//3일 보스전은 로빈과 여섯 동료, 보스를 한눈에 보면서 조작하는 모드다.
 	//공격/스킬/상태이상 포커스가 걸려도 월드 확대는 적용하지 않는다.
-	return drawHandle != MD_BOSSRAID
+	//판 전투(MD_PLAY)도 뺀다. 한 자리에 서서 서로 치는 싸움이라 칠
+	//때마다 화면이 커졌다 작아지면 발판과 격자까지 같이 흔들린다.
+	return drawHandle != MD_BOSSRAID && drawHandle != MD_PLAY
 		&& worldDrawing && !hitZoomHold && (hitZoom > 1.001f);
 }
 
@@ -81,8 +84,17 @@ static void HitZoomSetFocusCenter(int focusX, int focusY, float targetZoom)
 	//확대 뒤 좌표는 x * zoom + translation이다.
 	translationX = screenCenterX - (float)focusX * targetZoom;
 
-	//디오라마 왼쪽 끝: dioramaLeft * zoom + translation <= 0
-	translationX = Min(translationX, -dioramaLeft * targetZoom);
+	//---- 화면 밖으로 밀리지 않게 ----
+	//
+	//판 전투의 배경은 화면 폭을 꽉 채운다. 디오라마 폭으로 막으면 그
+	//폭이 화면보다 좁아서 확대할 때마다 그림이 왼쪽으로 끌려간다.
+	//여기서는 화면 양 끝이 빈 자리 없이 덮이는 범위로만 막는다.
+	if (drawHandle == MD_PLAY)
+		translationX = Max((float)DX * (1.0f - targetZoom),
+			Min(translationX, 0.0f));
+	else
+		//디오라마 왼쪽 끝: dioramaLeft * zoom + translation <= 0
+		translationX = Min(translationX, -dioramaLeft * targetZoom);
 	centerX = translationX / (1.0f - targetZoom);
 
 	HitZoomSetCenter((int)centerX, focusY);
@@ -609,6 +621,11 @@ void LoadImg(int index)
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
 		sprite[index] = Sprite::create(fileName);
+		if (!sprite[index]) {
+			cocos2d::log("LoadImg failed: index=%d, file=%s, resolved=%s", index,
+				fileName.c_str(), FileUtils::getInstance()->fullPathForFilename(fileName).c_str());
+			return;
+		}
 
 		sprite[index]->retain();
 		sprite[index]->getTexture()->setAliasTexParameters();
@@ -623,6 +640,14 @@ void LoadTexture(int index)
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
 		texture[index] = Director::getInstance()->getTextureCache()->addImage(fileName);
+
+		//그림 파일이 없으면 여기서 널이 온다. 그냥 두면 바로 아래 retain 에서
+		//부팅이 통째로 죽는다. 그림 한 장이 빠졌다고 게임이 안 뜨면 안 된다.
+		if (!texture[index]) {
+			cocos2d::log("LoadTexture failed: index=%d, file=%s", index, fileName.c_str());
+			return;
+		}
+
 		//texture[index]->setDefaultAlphaPixelFormat(kCCTexture2DPixelFormat_RGBA4444);
 		texture[index]->retain();
 		//sprite[index]->setAnchorPoint(Vec2(0, 0));
@@ -826,6 +851,7 @@ void DrawArray(int index, int x, int y, float zoom)
 
 void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite* src, int srcIdx)
 {
+	if (!src || w <= 0 || h <= 0 || zoom <= 0) return;
 	int tempAlpha = m_lgrpAlpha;
 
 	if (alpha > 0) {
@@ -896,6 +922,52 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	SetAlpha(tempAlpha);
 }
 
+void DrawSwordAtHand(int detail, float x, float y, float rotation, bool flipX, float zoom, int alpha, int effect)
+{
+	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
+	if (!info || zoom <= 0 || alpha <= 0) return;
+	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return;
+	const float anchorX = info->pivotX / info->width;
+	RotateImage(info->width, info->height, 0, 0, (int)x, (int)y,
+		flipX, rotation, effect, alpha, zoom,
+		Vec2(flipX ? 1.0f - anchorX : anchorX, 1.0f - info->pivotY / info->height), sprite[img], img);
+}
+
+//---- 눕힌 검을 칸에 맞춰 그린다 ----
+//
+//가방 안에서 90도 돌려 놓은 검이다. 칼끝이 오른쪽을 본다. 돌리면 가로와
+//세로가 바뀌므로 그 모양으로 칸에 맞춘다. 칸 한가운데를 중심으로 돌린다.
+bool DrawSwordInBoxRot(int detail, int x, int y, int w, int h, int alpha)
+{
+	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
+	if (!info || w <= 0 || h <= 0) return false;
+	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return false;
+	if (alpha <= 0) return true;
+	const float zoom = Min((float)w / info->height, (float)h / info->width);
+	RotateImage(info->width, info->height, 0, 0, x + w / 2, y - h / 2,
+		false, 90.0f, 0, alpha, zoom, Vec2(0.5f, 0.5f), sprite[img], img);
+	return true;
+}
+
+bool DrawSwordInBox(int detail, int x, int y, int w, int h, int alpha)
+{
+	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
+	if (!info || w <= 0 || h <= 0) return false;
+	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return false;
+	if (alpha <= 0) return true;
+	const float zoom = Min((float)w / info->width, (float)h / info->height);
+	DrawImage(info->width, info->height, 0, 0,
+		x + (w - info->width * zoom) / 2, y - (h - info->height * zoom) / 2,
+		false, 0, 0, 0, alpha, zoom, sprite[img], img);
+	return true;
+}
+
 void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoom, cocos2d::Sprite* src, int srcIdx)
 {
 	DrawImageScale(
@@ -914,6 +986,8 @@ void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRo
 
 void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoomX, float zoomY, cocos2d::Sprite* src, int srcIdx)
 {
+	if (!src)
+		return;
 	if (zoomX <= 0.0f || zoomY <= 0.0f)
 		return;
 
@@ -2167,16 +2241,19 @@ float GetStageGroundZoom(void)
 {
 	if (!sprite[BATTLE_BG_BOTTOM_IMG]) LoadImg(BATTLE_BG_BOTTOM_IMG);
 	const auto size = sprite[BATTLE_BG_BOTTOM_IMG]->getContentSize();
-	const int availableHeight = Max(1, DY - GetStageInventoryTop() - 16 * _2X);
-	return Min((float)DX / size.width, (float)availableHeight / size.height);
+	//가로를 꽉 채운다. 높이에 맞추면 발판이 화면 한가운데에 작게 떠서
+	//싸우는 자리가 좁아 보인다. 넘치는 위쪽은 전투 장면이 덮는다.
+	return (float)DX / size.width;
 }
 
 int GetStageGroundY(void)
 {
-	const float groundZoom = GetStageGroundZoom();
-	const auto size = sprite[BATTLE_BG_BOTTOM_IMG]->getContentSize();
-	// The walkable center lies halfway up bg0_bottom, above its water border.
-	return GetStageInventoryTop() + 16 * _2X + (int)(size.height * groundZoom * 0.5f);
+	//히어로가 서는 줄. 발판 그림의 높이로 재면 발판을 가로에 맞춰 키운
+	//지금은 줄이 화면 위로 올라가 히어로가 잘린다. 전투 화면(격자 위부터
+	//화면 끝까지)의 아래쪽 STAGE_GROUND_RATE 자리에 세운다.
+	const int top = GetStageInventoryTop();
+
+	return top + 16 * _2X + (int)((DY - top) * STAGE_GROUND_RATE);
 }
 
 void DrawDiorama(int x, int y, int type, float zoom)
@@ -2195,7 +2272,8 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
 	if (drawHandle == MD_PLAY) {
-		HitZoomPause();
+		//발판과 배경도 히어로와 같은 줌을 탄다. 예전에는 여기서 줌을
+		//멈춰서 캐릭터만 커지고 바닥은 가만히 있었다.
 		SetAlpha(32);
 		MemRect(0, DY, DX, DY, COLOR_BLACK);
 		const int backgroundImages[] = { BATTLE_BG_TOP_IMG, BATTLE_BG_BOTTOM_IMG };
@@ -2205,13 +2283,15 @@ void DrawDiorama(int x, int y, int type, float zoom)
 			const auto size = sprite[image]->getContentSize();
 			const bool ground = image == BATTLE_BG_BOTTOM_IMG;
 			const float backgroundZoom = ground ? GetStageGroundZoom() : (float)DX / size.width;
+			//발판은 히어로가 서는 줄에 맞춘다. 격자 위에 얹어 두면 발판이
+			//전투 화면 위쪽에 떠서, 히어로가 서는 자리와 그림의 바닥이
+			//따로 논다. 아래로 넘치는 부분은 뒤이어 그리는 격자가 덮는다.
 			const int topY = ground
-				? GetStageInventoryTop() + 16 * _2X + (int)(size.height * backgroundZoom) : DY;
+				? GetStageGroundY() + (int)(size.height * backgroundZoom * 0.5f) : DY;
 			const int leftX = (int)(DX - size.width * backgroundZoom) / 2;
 			DrawImage((int)size.width, (int)size.height, 0, 0, leftX, topY,
 				false, false, false, false, false, backgroundZoom, sprite[image], image);
 		}
-		HitZoomResume();
 	}
 	else {
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
@@ -5225,9 +5305,10 @@ int GetMaxShield(void)
 //
 //하트 패스가 켜져 있으면 더 준다. 상한이 늘면 자리를 비우러 자주 들어올
 //필요가 줄고 한 번에 오래 놀 수 있다. 그것이 그 상품이 파는 것이다.
+//하트(스태미나) 상한. 기본 HEART_MAX_BASE(20)에 성 단계(0~9)마다 +1씩 는다.
 int GetInitHeart(void)
 {
-	int init = HEART_MAX_BASE + robin.lv * HEART_MAX_PER_LEVEL;
+	int init = HEART_MAX_BASE + Max(0, Min((int)robin.castle, 9)) * HEART_MAX_PER_CASTLE;
 
 	if (IapHeartPass())
 		init += HEARTPASS_MAXBONUS;
@@ -5235,13 +5316,10 @@ int GetInitHeart(void)
 	return init;
 }
 
-//시간이 지날 때 차오르는 양. 레벨 하나에 HEART_REGEN_PER_LEVEL 씩 는다.
-//
-//상한과 같은 이유로 계단을 없앴다. 상한만 레벨마다 늘고 회복은 열 레벨마다
-//늘면, 레벨이 오를수록 가득 채우는 데 걸리는 시간이 길어진다.
+//시간이 지날 때 차오르는 양. 10분마다 1개(HEART_REGEN_BASE)씩 회복된다.
 int GetHeartAmount(void)
 {
-	int amount = HEART_REGEN_BASE + robin.lv * HEART_REGEN_PER_LEVEL;
+	int amount = HEART_REGEN_BASE;
 
 	if (IapHeartPass())
 		amount *= HEARTPASS_REGENMUL;
