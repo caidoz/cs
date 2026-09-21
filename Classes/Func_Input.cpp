@@ -1976,6 +1976,16 @@ void PlayKey(int obj)
 			menuDepth = 0;
 			menuX = 0;
 			break;
+		case AVK_SELLITEM:
+		{
+			//일반 등급을 한 번에 턴다. 착용 중인 것은 빠진다.
+			const long long got = SellNormalItems();
+
+			OutOfAlert();
+			PlayMusic(got > 0 ? M_COIN : M_ERROR);
+			break;
+		}
+
 		case AVK_SELECT_HERO + ROBIN:
 		case AVK_SELECT_HERO + DIANA:
 		case AVK_SELECT_HERO + MAXX:
@@ -2816,9 +2826,18 @@ int GetRectPoint(int x, int y, int rx, int ry, int width, int height)
 	return 0;
 }
 
+//팝업이 떠 있는 동안 참. 이 뒤로는 터치영역을 더 받지 않는다.
+//
+//GetTouchFunc 는 나중에 등록된 것부터 찾는다. 팝업을 그린 뒤에 바(골드)와
+//아래 탭이 자기 영역을 등록하면 그것들이 팝업 위에 얹혀서, 닫기(X)가 안
+//먹고 뒤의 목록이 눌렸다.
+bool gTouchRectLocked = false;
+
 void ResetRectPoint(void)
 {
 	int i;
+
+	gTouchRectLocked = false;
 	for (i = 0; i < TOTALTOUCHCNT; i++)
 		memset(touchRect, 0, sizeof(touchRect));
 	touchIndex = 0;
@@ -2860,6 +2879,10 @@ bool IsTouchFuncEnabled(int func)
 
 void SetRectPoint(int rx, int ry, int width, int height, int func)
 {
+	//팝업이 잠갔으면 더 받지 않는다.
+	if (gTouchRectLocked)
+		return;
+
 	//튜토리얼 안내 중에는 지금 눌러야 하는 것 말고는 터치영역 자체를 만들지 않는다.
 	//모든 터치영역이 이 함수를 거치므로 메뉴마다 따로 막을 필요가 없다.
 	if (gTutorialTouchFunc != TUTORIAL_TOUCH_FREE && func != gTutorialTouchFunc)
@@ -3077,6 +3100,7 @@ void touchFunc(int func)
 		case TOUCH_FUNC_TITLE_SKILL_PREV_CMF:
 		case TOUCH_FUNC_TITLE_SKILL_NEXT_CMF:
 		case TOUCH_FUNC_TITLE_SKILL_STEP:
+		case TOUCH_FUNC_TITLE_GEAR:
 			TitleSkillViewerCommand(func);
 			systemKey = 0;
 			break;
@@ -3682,6 +3706,33 @@ void touchFunc(int func)
 		case TOUCH_FUNC_POPUP_HEROSTAT + 2:
 			systemKey = AVK_POPUP_HEROSTAT + func - TOUCH_FUNC_POPUP_HEROSTAT;
 			break;
+		case TOUCH_FUNC_EQUIPTAB_MERGE:
+		{
+			//합성은 좋아지는 쪽이라 따로 묻지 않는다. 결과는 목록에
+			//바로 보인다.
+			const int done = MergeItems(true);
+
+			PlayMusic(done > 0 ? M_CARDSPLIT : M_ERROR);
+			systemKey = 0;
+			return;
+		}
+
+		case TOUCH_FUNC_EQUIPTAB_SELL:
+			//파는 것은 되돌릴 수 없다. 한 번 묻는다.
+			SetAlert(ALERT_SELL);
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_EQUIPTAB:
+		case TOUCH_FUNC_EQUIPTAB + 1:
+		case TOUCH_FUNC_EQUIPTAB + 2:
+			//탭은 화면을 바꾸는 명령이 아니라 같은 화면의 갈피다.
+			//systemKey 를 태우지 않고 그 자리에서 넘긴다.
+			curEquipTab = func - TOUCH_FUNC_EQUIPTAB;
+			menuDepth = 0;
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_SELECT_HERO:
 		case TOUCH_FUNC_SELECT_HERO + 1:
 		case TOUCH_FUNC_SELECT_HERO + 2:

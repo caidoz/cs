@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Data/CmfData.h"
 #include "Func.h"
@@ -730,59 +730,178 @@ namespace
 	// 원래 끼고 있던 장비는 처음 누를 때 받아 두고, 0 단으로 돌아올 때
 	// 그대로 되돌린다 - 디버그 때문에 세이브의 장비가 사라지면 안 된다.
 	//======================================================================
-	enum { TITLE_GEAR_STEP = 4 };	//0 = 원래대로, 1 ~ 3 = 점점 좋은 장비
+	//한 번 누를 때마다 한 칸씩 간다.
+	//	0      원래 장비(세이브 그대로)
+	//	1      맨몸. 아무것도 안 낀 모습
+	//	2 이상  장비 번호 0, 1, 2 ... 그 부위의 마지막 그림까지
+	//
+	//부위마다 그림 수가 달라서(검이 제일 많다) 짧은 부위는 제 마지막에서
+	//멈추고, 검만 끝까지 올라간다. 한 바퀴 돌면 0 으로 돌아온다.
+	enum { TITLE_GEAR_BARE = 1, TITLE_GEAR_FIRST = 2 };
 
-	static int titleGearStep = 0;
-	static bool titleGearSaved = false;
-	static ITEM titleGearBackup[TOTALEQUIP];
+	//단계와 원래 장비는 히어로마다 따로 센다. 로빈을 3단까지 올려 두고
+	//다이애나로 넘어갔을 때 다이애나가 3단에서 시작하면 안 된다.
+	static int titleGearStep[TOTALPLAYER] = { 0, };
+	static bool titleGearSaved[TOTALPLAYER] = { false, };
+	static ITEM titleGearBackup[TOTALPLAYER][TOTALEQUIP];
 
-	//여섯 칸에 들어갈 물건. 칸 순서는 EQUIP_WEAPON ~ EQUIP_BOOTS 다.
-	static const int kTitleGearType[6] = {
-		ITEM_SWORD, ITEM_HELM, ITEM_ARMOR, ITEM_GLOVE, ITEM_PANTS, ITEM_BOOTS
-	};
-
-	//칸마다 그림이 있는 마지막 번호. 이 값까지 올라간다.
-	static const int kTitleGearLast[6] = {
-		TOTALSWORD - 1, TOTALHELM - 1, TOTALARMOR - 1, 5, 5, 5
-	};
-
-	void TitleGearApply(int step)
+	//---- 히어로마다 다른 장비 ----
+	//
+	//장비 종류는 셋이 한 벌이다(검/총/부메랑, 투구/모자/캡 ...). 그래서
+	//ItemDef 의 번호가 3 칸씩 끊어져 있고, 나머지가 곧 히어로 번호다
+	//(RefreshStat_Fuck 의 it->type % 3 == pObj->type 과 같은 규칙).
+	//
+	//	로빈   : 검   투구 갑옷 건틀릿 킬트  그리브
+	//	다이애나: 총   모자 조끼 암릿   스커트 슈즈
+	//	맥스   : 부메랑 캡  코트 장갑   바지  부츠
+	int TitleGearType(int hero, int slot)
 	{
-		OBJECT* hero = &ao[ROBIN];
+		return slot * 3 + hero;
+	}
+
+	//부위별 코스튬 그림의 첫 번호. 칸 순서는 EQUIP_WEAPON ~ EQUIP_BOOTS 다.
+	static const int kCostumeBase[TOTALPLAYER][6] = {
+		{ COSTUME_WEAPON_ROBIN_IMG, COSTUME_HELM_ROBIN_IMG, COSTUME_ARMOR_ROBIN_IMG,
+		  COSTUME_GLOVE_ROBIN_IMG, COSTUME_PANTS_ROBIN_IMG, COSTUME_BOOTS_ROBIN_IMG },
+		{ COSTUME_WEAPON_DIANA_IMG, COSTUME_HELM_DIANA_IMG, COSTUME_ARMOR_DIANA_IMG,
+		  COSTUME_GLOVE_DIANA_IMG, COSTUME_PANTS_DIANA_IMG, COSTUME_BOOTS_DIANA_IMG },
+		{ COSTUME_WEAPON_MAXX_IMG, COSTUME_HELM_MAXX_IMG, COSTUME_ARMOR_MAXX_IMG,
+		  COSTUME_GLOVE_MAXX_IMG, COSTUME_PANTS_MAXX_IMG, COSTUME_BOOTS_MAXX_IMG },
+	};
+
+	//그 부위의 마지막 그림 번호. 다음 히어로의 첫 번호 바로 앞이다.
+	//맥스는 다음이 없으므로 부위별 끝을 따로 적는다.
+	static const int kCostumeLastMaxx[6] = {
+		COSTUME_HELM_ROBIN_IMG - 1, COSTUME_ARMOR_ROBIN_IMG - 1,
+		COSTUME_PANTS_ROBIN_IMG - 1, COSTUME_BOOTS_ROBIN_IMG - 1,
+		COSTUME_GLOVE_ROBIN_IMG - 1, ETC_IMG - 1
+	};
+
+	int TitleCostumeLast(int hero, int slot)
+	{
+		if (hero < TOTALPLAYER - 1)
+			return kCostumeBase[hero + 1][slot] - 1;
+
+		return kCostumeLastMaxx[slot];
+	}
+
+	//그 부위에 장비 그림이 몇 장인가. 첫 번호는 "안 낌" 자리라 뺀다.
+	int TitleCostumeCnt(int hero, int slot)
+	{
+		return Max(1, TitleCostumeLast(hero, slot) - kCostumeBase[hero][slot]);
+	}
+
+	//이 히어로의 단계 수. 제일 그림이 많은 부위(대개 무기)에 맞춘다.
+	int TitleGearStepCnt(int hero)
+	{
+		int most = 1;
+
+		for (int i = 0; i < 6; i++)
+			most = Max(most, TitleCostumeCnt(hero, i));
+
+		return TITLE_GEAR_FIRST + most;
+	}
+
+	//---- 코스튬 그림을 읽어 둔다 ----
+	//
+	//캐릭터를 그리는 쪽(Func_Object)은 그림이 아직 없으면 그 조각을 그냥
+	//건너뛴다. 그래서 장비만 바꾸고 그림을 안 읽으면 "장비를 바꿨는데
+	//겉모습이 그대로" 로 보인다. 부위마다 이 자리에서 읽어 둔다.
+	//
+	//부위 그림은 저마다 개수가 달라서, 없는 번호를 부르면 조용히 빠진다.
+	//있는 번호를 만날 때까지 한 칸씩 내려가며 찾는다.
+	int TitleGearLoadCostume(int baseImg, int lastImg, int detail)
+	{
+		int img = baseImg + detail + 1;
+
+		if (img > lastImg)
+			img = lastImg;
+
+		while (img > baseImg) {
+			if (!sprite[img]) {
+				LoadImg(img);
+				LoadTexture(img);
+			}
+
+			if (sprite[img])
+				return img - baseImg - 1;
+
+			img--;
+		}
+
+		return -1;
+	}
+
+	//지금 뷰어에서 고른 히어로. 히어로가 아닌 CMF 를 보고 있으면 로빈이다.
+	int TitleGearHero(void)
+	{
+		return (titleSkillHero >= 0 && titleSkillHero < TOTALPLAYER)
+			? titleSkillHero : ROBIN;
+	}
+
+	void TitleGearApply(int who, int step)
+	{
+		OBJECT* hero = &ao[who];
 		int i;
 
 		//처음 만지는 순간에 원래 장비를 받아 둔다.
-		if (!titleGearSaved) {
-			memcpy(titleGearBackup, hero->equip, sizeof(titleGearBackup));
-			titleGearSaved = true;
+		if (!titleGearSaved[who]) {
+			memcpy(titleGearBackup[who], hero->equip, sizeof(titleGearBackup[who]));
+			titleGearSaved[who] = true;
 		}
 
+		//0 단은 원래 장비로 되돌린다.
 		if (step <= 0) {
-			memcpy(hero->equip, titleGearBackup, sizeof(titleGearBackup));
+			memcpy(hero->equip, titleGearBackup[who], sizeof(titleGearBackup[who]));
+			RefreshStat(hero);
+			return;
+		}
+
+		//1 단은 맨몸이다. 아무것도 안 낀 모습부터 보여야 어디가 어떻게
+		//달라지는지 견줄 수 있다.
+		if (step == TITLE_GEAR_BARE) {
+			for (i = 0; i < 6; i++)
+				memset(&hero->equip[i], 0, sizeof(ITEM));
+
+			for (i = 0; i < 6; i++)
+				hero->equip[i].type = EMPTY;
+
 			RefreshStat(hero);
 			return;
 		}
 
 		for (i = 0; i < 6; i++) {
-			//단이 오를수록 번호도 등급도 끝으로 간다.
-			const int detail = kTitleGearLast[i] * step / (TITLE_GEAR_STEP - 1);
-			const int grade = Min(TOTALGRADE - 1,
-				(TOTALGRADE - 1) * step / (TITLE_GEAR_STEP - 1));
+			const int base = kCostumeBase[who][i];
+			const int last = TitleCostumeLast(who, i);
+			const int cnt = TitleCostumeCnt(who, i);
 
-			MakeItem(&hero->equip[i], kTitleGearType[i], ITEMMAXLEVEL,
-				grade, Max(0, detail), EMPTY);
+			//번호는 한 칸씩. 그림이 적은 부위는 제 마지막에서 멈춘다.
+			const int detail = Min(cnt - 1, step - TITLE_GEAR_FIRST);
+
+			//등급도 번호를 따라 같이 오른다. 마지막 번호가 전설이다.
+			const int grade = Min(TOTALGRADE - 1,
+				(TOTALGRADE - 1) * detail / Max(1, cnt - 1));
+
+			//그림이 있는 번호로 내려 잡는다. 그 번호로 장비를 만든다.
+			const int shown = TitleGearLoadCostume(base, last, Max(0, detail));
+
+			MakeItem(&hero->equip[i], TitleGearType(who, i), ITEMMAXLEVEL,
+				grade, Max(0, shown), EMPTY);
 		}
 
+		//옷을 갈아입었으면 들고 있는 검 그림도 다시 읽는다.
 		RefreshStat(hero);
 	}
 
 	//버튼 자리. 모션 뷰어의 영웅 탭 바로 아래다.
 	void TitleGearBtnRect(int* x, int* y, int* w, int* h)
 	{
-		*w = 72 * _2X;
-		*h = 20 * _2X;
+		//눈에 띄어야 하는 디버그 버튼이다. 영웅 탭 세 개 바로 아래,
+		//화면 가운데에 크게 둔다.
+		*w = 200 * _2X;
+		*h = 36 * _2X;
 		*x = xOffset + DX / 2 - *w / 2;
-		*y = DY - 12 * _2X - 58 * _2X - 4 * _2X;
+		*y = DY - 12 * _2X - 58 * _2X - 6 * _2X;
 	}
 
 	void DrawTitleGearButton(void)
@@ -792,23 +911,35 @@ namespace
 
 		TitleGearBtnRect(&x, &y, &w, &h);
 
-		MemRectBoth(x, y, w, h, titleGearStep > 0 ? COLOR_BROWN : COLOR_BLACK, COLOR_WHITE);
+		MemRectBoth(x, y, w, h,
+			titleGearStep[TitleGearHero()] > 0 ? COLOR_BROWN : COLOR_BLACK, COLOR_WHITE);
 		SetFontColor(COLOR_WHITE);
 
-		if (titleGearStep <= 0)
-			sprintf(str, "장비 없음");
-		else
-			sprintf(str, "장비 %d/%d", titleGearStep, TITLE_GEAR_STEP - 1);
+		{
+			const int who = TitleGearHero();
+			const int step = titleGearStep[who];
+			const int last = TitleGearStepCnt(who) - 1;
 
-		CenterTextStrSolid(str, x + w / 2, y - h + 5 * _2X, 0.6f);
+			if (step <= 0)
+				sprintf(str, "장비교체 (원래대로)");
+			else if (step == TITLE_GEAR_BARE)
+				sprintf(str, "장비교체 (맨몸)");
+			else
+				sprintf(str, "장비교체 %d / %d",
+					step - TITLE_GEAR_FIRST, last - TITLE_GEAR_FIRST);
+		}
+
+		CenterTextStrSolid(str, x + w / 2, y - h + 10 * _2X, 1.0f);
 		SetRectPoint(x, y, w, h, TOUCH_FUNC_TITLE_GEAR);
 	}
 
 	//버튼을 눌렀다. 한 단 올리고, 끝까지 갔으면 처음으로 돌아온다.
 	void TitleGearNext(void)
 	{
-		titleGearStep = (titleGearStep + 1) % TITLE_GEAR_STEP;
-		TitleGearApply(titleGearStep);
+		const int who = TitleGearHero();
+
+		titleGearStep[who] = (titleGearStep[who] + 1) % TitleGearStepCnt(who);
+		TitleGearApply(who, titleGearStep[who]);
 	}
 
 	void DrawTitleSkillViewer()
@@ -847,8 +978,6 @@ namespace
 				TOUCH_FUNC_TITLE_SKILL_ROBIN + i);
 		}
 
-		//장비를 갈아 끼우는 버튼. 탭 아래에 늘 보인다.
-		DrawTitleGearButton();
 
 		if (!titleSkillViewerActive)
 			return;
@@ -900,6 +1029,26 @@ namespace
 		else
 			DrawCmfDetail(titleSkillHero, motion, xOffset + DX / 2, previewY,
 				RIGHT, 2.0f, false, false);
+		//지금 무엇을 들고 있는지. 총/검이 엉뚱한 자리에 붙을 때 어느 번호가
+		//문제인지 바로 읽으려고 적어 둔다.
+		if (titleSkillHero < TOTALPLAYER) {
+			const ITEM* w = &ao[titleSkillHero].equip[EQUIP_WEAPON];
+			const int wimg = (w->type == EMPTY) ? -1
+				: kCostumeBase[titleSkillHero][0] + w->detail + 1;
+			char gearText[96];
+
+			if (wimg >= 0 && sprite[wimg])
+				sprintf(gearText, "무기 %d  그림 %d  %dx%d", w->detail, wimg,
+					(int)sprite[wimg]->getContentSize().width,
+					(int)sprite[wimg]->getContentSize().height);
+			else
+				sprintf(gearText, "무기 없음");
+
+			SetFontColor(COLOR_YELLOW);
+			CenterTextStrSolid(gearText, xOffset + DX / 2,
+				viewerY - viewerH + 68 * _2X, 0.7f);
+		}
+
 		SetFontColor(COLOR_WHITE);
 		if (skill)
 			CenterTextSolid(skill->text, xOffset + DX / 2, viewerY - viewerH + 52 * _2X, 1.2f);
@@ -1401,6 +1550,11 @@ void TitleDraw(void)
 #if SHOW_TITLE_MOTION_VIEWER
 			// 스킬 모션을 한 프레임씩 넘겨 보는 개발용 화면.
 			DrawTitleSkillViewer();
+
+			//장비 버튼은 맨 마지막에 그린다. 뷰어가 켜지면 재생용 큰
+			//터치영역이 뒤에 등록되는데, GetTouchFunc 는 나중에 등록된
+			//것부터 찾으므로 먼저 그리면 그 영역에 덮여 안 눌린다.
+			DrawTitleGearButton();
 #endif
 
 			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0);
@@ -4496,6 +4650,16 @@ void LobbyDraw(void)
 	ResetRectPoint();
 	LobbyCastlePrepare();
 	LobbySky::draw();
+
+	//---- 가방이 찼다는 알림 ----
+	//
+	//못 받은 것이 있으면 로비로 나온 뒤 한 번만 띄운다. 전투 중에 띄우면
+	//판이 끊기고, 가방을 정리할 길도 그 자리에는 없다.
+	if (gInvenFullNotice && drawHandle == MD_LOBBY) {
+		gInvenFullNotice = false;
+		SetAlert(ALERT_INVENFULL);
+		return;
+	}
 
 	// 디오라마 대신 성 그림 한 장을 카메라(확대/이동)로 그린다.
 	LobbyCastleDraw();

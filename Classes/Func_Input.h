@@ -23,6 +23,7 @@ int GetTouchFunc(int, int);
 void ExecTouchFunc(int, int);
 int GetRectPoint(int, int, int, int, int, int);
 void ResetRectPoint(void);
+extern bool gTouchRectLocked;	//팝업이 떠 있으면 참
 bool IsTouchFuncEnabled(int func);
 void SetRectPoint(int rx, int ry, int width, int height, int func);
 void touchFunc(int func);

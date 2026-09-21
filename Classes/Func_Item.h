@@ -20,6 +20,11 @@ int MakeItemValue(int, int, int, int);
 int GetItemUpgradeValue(int type, int detail, int grade, int lv);
 int MakeItemId(void);
 int GetItem(int, int, int, int, long long, int);
+bool IsEquipItemType(int type);		//무기 ~ 반지. 한 점씩 따로 들어간다
+int GetMaxInven(void);				//성이 정하는 가방 칸 수
+long long SellNormalItems(void);	//일반 등급을 한 번에 판다
+int MergeItems(bool doMerge);		//같은 장비 셋을 한 등급 위로
+extern bool gInvenFullNotice;		//가방이 차서 못 받은 것이 있다
 int GetHeroCnt(void);
 int GetHeroIdx(int type);
 bool IsGetHero(int type);

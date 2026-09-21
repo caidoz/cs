@@ -2157,7 +2157,8 @@ void NewGame(void)
 	robin.heart = GetInitHeart();
 	robin.heartTimeStamp = MC_knlCurrentTimeStamp();
 
-	robin.maxInven = option.maxInven;//현재 인벤토리의 최대 아이템 크기
+	//가방 칸은 성이 정한다. 세이브에 든 옛 값이 있어도 성 기준으로 맞춘다.
+	robin.maxInven = (unsigned short)GetMaxInven();
 
 	//포션3개주기
 	//GetItem(ITEM_WASTE, 0, ITEM_WASTE_STAR, 0, 3, 0);
@@ -2490,6 +2491,9 @@ void GotoLobby(void)
 	dioramaZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
 	SetHero();
 
+	//가방 칸은 성이 정한다. 성을 올렸으면 여기서 늘어난다.
+	robin.maxInven = (unsigned short)GetMaxInven();
+
 	drawHandle = MD_LOBBY;
 	keyHandle = MK_PLAY;
 	curMenu = MENU_PLAY;
@@ -2531,8 +2535,11 @@ void GotoPlay(bool forceReload)
 
 	drawHandle = MD_PLAY;
 	keyHandle = MK_PLAY;
-	if (!sprite[BATTLE_BG_BOTTOM_IMG]) LoadImg(BATTLE_BG_BOTTOM_IMG);
-	if (!sprite[BATTLE_BG_TOP_IMG]) LoadImg(BATTLE_BG_TOP_IMG);
+	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
+	if (!sprite[BATTLE_BG_FAR_IMG]) LoadImg(BATTLE_BG_FAR_IMG);
+	if (!sprite[BATTLE_BG_MID_IMG]) LoadImg(BATTLE_BG_MID_IMG);
+	for (i = CASTLE_WHEEL0_IMG; i <= CASTLE_WHEEL9_IMG; ++i)
+		if (!sprite[i]) LoadImg(i);
 	frame = 0;
 
 	//forceReload=false인 경우(인터랙티브 전투 튜토리얼의 GotoPlay(false))는 loadedMap을 그대로 둬서,

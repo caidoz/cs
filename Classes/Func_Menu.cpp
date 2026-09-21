@@ -732,12 +732,15 @@ static void CdBeginBoard(void)
 	sCdU = (sx < sy) ? sx : sy;
 	sCdOx = (float)DX / 2 - (float)CD_DESIGNW / 2 * sCdU;
 
-	//판 윗변을 목록 창 윗변에 맞추고 아래로 채운다. 리본은 이 선 위로
-	//CD_TITLE_UP 만큼 나가서 띠 안쪽 여백에 걸친다.
-	//
-	//가운데에 놓지 않는다. 위는 띠가, 아래는 화면 끝이 자르는데 그 사이가
-	//판보다 넉넉한 적이 없다. 한쪽을 못 박아야 어디가 잘릴지 알 수 있다.
-	sCdOy = band;
+	//판을 띠 안의 가운데에 놓는다. 폭에 맞춰 줄어든 판은 높이가 띠보다
+	//작아서, 윗변을 못 박으면 아래가 휑하게 남고 판이 위로 치우쳐 보인다.
+	//남는 높이를 위아래로 반씩 나눈다.
+	{
+		const float used = (float)CD_DESIGNH * sCdU;
+		const float rest = band - used;
+
+		sCdOy = band - (rest > 0 ? rest / 2 : 0);
+	}
 }
 
 //팝업 본체와 타이틀 리본, 닫기 버튼. 두 팝업이 같이 쓴다.
@@ -6530,6 +6533,178 @@ void DrawItemCard(
 	}
 }
 
+//======================================================================
+// 가방 한 칸
+//
+// 같은 장비가 여러 점 쌓이는 가방이다. 카드처럼 화려하게 그리면 목록이
+// 시끄러워서 무엇이 좋은 것인지 눈에 안 들어온다. 아이콘 하나와 단색
+// 테두리로 줄인다.
+//
+// 신호는 하나씩만 준다:
+//	테두리 색  등급
+//	왼쪽 위    강화 레벨(0 이면 안 적는다)
+//	아래       착용중
+//	오른쪽 위  아직 안 본 새 것
+//
+// 별은 그리지 않는다. 등급과 같은 말을 두 번 하는 셈이라 둘 다 안 읽힌다.
+//======================================================================
+static const int kInvenGradeColor[TOTALGRADE] = {
+	0x9AA0B5,	//일반
+	0x63C57A,	//고급
+	0x5B8DE8,	//희귀
+	0x3FC9C3,	//세트
+	0xB05FE8,	//에픽
+	0xFFC83C,	//전설
+};
+
+//이 장비를 누가 끼고 있는가. 안 끼고 있으면 -1
+static int InvenEquippedBy(int invenIdx)
+{
+	for (int h = 0; h < TOTALCHAR; h++)
+		for (int e = 0; e < TOTALEQUIP; e++)
+			if (ao[h].equip[e].type != EMPTY
+				&& ao[h].equip[e].id == robin.inven[invenIdx].id)
+				return h;
+
+	return -1;
+}
+
+static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
+{
+	const ITEM* it = &robin.inven[invenIdx];
+	const int grade = Min(TOTALGRADE - 1, Max(0, (int)it->grade));
+	const int col = kInvenGradeColor[grade];
+	const int wearer = InvenEquippedBy(invenIdx);
+	char str[24];
+
+	//바탕은 단색. 등급이 높을수록 아주 조금만 밝다.
+	MemRect(x, y, w, h, 0x1A1712 + grade * 0x040404);
+	MemRectFrame(x, y, w, h, col);
+
+	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
+	//"지금 끼고 있는 것"이 제일 먼저 보여야 한다.
+	if (wearer >= 0)
+		MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
+
+	DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
+		x + w / 2 - ITEMICONSIZE / 2, y - h / 2 + ITEMICONSIZE / 2,
+		1.0f * zoom, false, false, false, true);
+
+	//강화 레벨. 장비는 cooldown 칸에 들어간다(ITEM 주석 참고).
+	if (it->cooldown > 0) {
+		SetFontColor(COLOR_WHITE);
+		sprintf(str, "+%d", it->cooldown);
+		LineTextStrSolid(str, x + 3 * _2X, y - 3 * _2X, w, -1, -1, 0.5f * zoom);
+	}
+
+	if (wearer >= 0) {
+		SetFontColor(COLOR_YELLOW);
+		CenterTextStrSolid("착용중", x + w / 2, y - h + 4 * _2X, 0.46f * zoom);
+	}
+
+	//아직 상세를 안 본 것. 점 하나면 된다.
+	if (it->seen == false)
+		MemRect(x + w - 8 * _2X, y - 3 * _2X, 5 * _2X, 5 * _2X, 0xFF5544);
+}
+
+//======================================================================
+// 장비 메뉴의 탭
+//
+// 한 화면에서 [장비][동료][능력치] 를 오간다. 히어로를 고르고 그 자리에서
+// 입히고 편성하는 것이 한 동선이라, 메뉴를 나눠 두면 고른 히어로를 들고
+// 화면을 옮겨 다녀야 한다.
+//
+// 자리는 히어로 줄 바로 아래다. 그리는 곳과 누르는 곳이 같은 값을 쓴다.
+//======================================================================
+static const char* kEquipTabName[EQUIPTAB_CNT] = { "장비", "동료", "능력치" };
+
+static void EquipTabRect(int n, float zoom, int* x, int* y, int* w, int* h)
+{
+	const int gap = 4 * _2X;
+
+	*w = (DX - gap * (EQUIPTAB_CNT + 1)) / EQUIPTAB_CNT;
+	*h = 26 * _2X;
+	*x = gap + n * (*w + gap);
+	*y = DY - GNBHEIGHT - 52 * _2X;
+}
+
+//일괄 판매 버튼. 탭 줄 오른쪽 끝에 붙는다.
+static void EquipSellBtnRect(int* x, int* y, int* w, int* h)
+{
+	*w = 62 * _2X;
+	*h = 20 * _2X;
+	*x = DX - *w - 6 * _2X;
+	*y = DY - GNBHEIGHT - 28 * _2X;
+}
+
+//합성 버튼. 판매 버튼 왼쪽에 나란히 둔다.
+static void EquipMergeBtnRect(int* x, int* y, int* w, int* h)
+{
+	EquipSellBtnRect(x, y, w, h);
+	*x -= *w + 4 * _2X;
+}
+
+static void EquipMergeBtnDraw(void)
+{
+	char str[24];
+	int x, y, w, h;
+	const int can = MergeItems(false);
+
+	EquipMergeBtnRect(&x, &y, &w, &h);
+
+	//몇 번 할 수 있는지 버튼에 적는다. 눌러 보기 전에 알아야 한다.
+	MemRect(x, y, w, h, can > 0 ? 0x1B2E3A : 0x16161F);
+	MemRectFrame(x, y, w, h, can > 0 ? 0x5FA0B0 : 0x555566);
+	SetFontColor(can > 0 ? COLOR_WHITE : COLOR_GREY);
+
+	if (can > 0)
+		sprintf(str, "합성 %d", can);
+	else
+		sprintf(str, "합성");
+
+	CenterTextStrSolid(str, x + w / 2, y - h + 5 * _2X, 0.52f);
+
+	if (can > 0)
+		SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB_MERGE);
+}
+
+static void EquipSellBtnDraw(void)
+{
+	int x, y, w, h;
+
+	EquipMergeBtnDraw();
+	EquipSellBtnRect(&x, &y, &w, &h);
+
+	MemRect(x, y, w, h, 0x2A1A1A);
+	MemRectFrame(x, y, w, h, 0xB05F6B);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid("일반 판매", x + w / 2, y - h + 5 * _2X, 0.52f);
+	SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB_SELL);
+}
+
+static void EquipTabDraw(float zoom)
+{
+	int i, x, y, w, h;
+
+	EquipSellBtnDraw();
+
+	for (i = 0; i < EQUIPTAB_CNT; i++) {
+		const bool on = (curEquipTab == i);
+
+		EquipTabRect(i, zoom, &x, &y, &w, &h);
+
+		//고른 탭은 밝게, 나머지는 가라앉힌다. 지금 어디를 보고 있는지가
+		//글자를 읽기 전에 보여야 한다.
+		MemRect(x, y, w, h, on ? 0x6A521A : 0x241A10);
+		MemRectFrame(x, y, w, h, on ? 0xFFD700 : 0x6B573A);
+		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid(kEquipTabName[i], x + w / 2, y - h + 7 * _2X, 0.8f);
+
+		if (!on)
+			SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB + i);
+	}
+}
+
 void CollectionsDraw(int x, int y, float zoom)
 {
 	int i, j;
@@ -6547,6 +6722,32 @@ void CollectionsDraw(int x, int y, float zoom)
 	int menuText[] = { TEXT_EQUIPMENT, TEXT_SKILL };
 
 	MemRect(x, y, WINX, WINY, 0x3B2513);
+
+	//---- 동료 탭 ----
+	//
+	//편성은 동료 메뉴가 이미 다 하고 있다. 같은 것을 여기 옮겨 그리면
+	//두 곳을 같이 고쳐야 하므로, 그리는 일은 저쪽에 그대로 맡긴다.
+	if (curEquipTab == EQUIPTAB_CREW) {
+		CrewMenuDraw(x, y, zoom);
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+			zoom, curHero, menuDepth == 0, true);
+		EquipTabDraw(zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		return;
+	}
+
+	//---- 능력치 탭 ----
+	//
+	//장비를 바꾸면 무엇이 얼마나 변하는지 보는 곳이다. 숫자는 ps[] 를
+	//그대로 읽는다 - 전투가 보는 값과 다른 값을 보여주면 안 된다.
+	if (curEquipTab == EQUIPTAB_STAT) {
+		HeroStatDraw(&ao[curHero], x, y - (float)120 * _2X * zoom, zoom);
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+			zoom, curHero, menuDepth == 0, true);
+		EquipTabDraw(zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		return;
+	}
 
 	for (i = 0; i < 2; i++)
 		DrawImage(equipMenuUiData[i * MENUUIDATACNT + 0], equipMenuUiData[i * MENUUIDATACNT + 1], equipMenuUiData[i * MENUUIDATACNT + 2], equipMenuUiData[i * MENUUIDATACNT + 3], x + (float)equipMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(equipMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[equipMenuUiData[i * MENUUIDATACNT + 6]], equipMenuUiData[i * MENUUIDATACNT + 6]);
@@ -6566,7 +6767,7 @@ void CollectionsDraw(int x, int y, float zoom)
 
 		DrawButton(slotX + (float)(20) * zoom, slotY + (float)(24) * zoom, BUTTON_COLOR_BROWN, 64, false, TEXT_CATEGORY_ITEM_SWORD + i * 3, false, 0.4f * zoom, 0.8f * zoom);
 
-		if (ao[ROBIN].equip[i].type == EMPTY) {
+		if (ao[curHero].equip[i].type == EMPTY) {
 			DrawItemCard(
 				EMPTY,
 				0,
@@ -6586,9 +6787,9 @@ void CollectionsDraw(int x, int y, float zoom)
 		}
 		else {
 			itemType = i * 3;
-			itemDetail = ao[ROBIN].equip[i].detail;
-			itemGrade = ao[ROBIN].equip[i].grade;
-			itemLv = ao[ROBIN].equip[i].lv;
+			itemDetail = ao[curHero].equip[i].detail;
+			itemGrade = ao[curHero].equip[i].grade;
+			itemLv = ao[curHero].equip[i].lv;
 			itemCnt = 1;
 
 			DrawItemCard(
@@ -6687,8 +6888,6 @@ void CollectionsDraw(int x, int y, float zoom)
 	// 3. 장비 리스트
 	SetSectionClip(0, y - (float)560 * zoom, DX, WINY - (float)600 * zoom, false);
 
-	curHero = ROBIN;
-
 	int itemInvenIdxList[TOTALINVENTORY];
 
 
@@ -6698,6 +6897,32 @@ void CollectionsDraw(int x, int y, float zoom)
 			itemInvenIdxList[j] = i;
 			j++;
 		}
+	}
+
+	//---- 정렬 ----
+	//
+	//같은 장비가 여러 점 쌓이므로 순서가 없으면 좋은 것을 눈으로 찾아야
+	//한다. 등급 -> 대표값 -> 나중에 얻은 것 순으로 세운다. 개수가 많아야
+	//수십이라 단순 삽입정렬로 충분하다.
+	for (i = 1; i < j; i++) {
+		const int key = itemInvenIdxList[i];
+		const ITEM* a = &robin.inven[key];
+		int m = i - 1;
+
+		while (m >= 0) {
+			const ITEM* b = &robin.inven[itemInvenIdxList[m]];
+			const bool after = (b->grade < a->grade)
+				|| (b->grade == a->grade && b->value < a->value)
+				|| (b->grade == a->grade && b->value == a->value && b->id < a->id);
+
+			if (!after)
+				break;
+
+			itemInvenIdxList[m + 1] = itemInvenIdxList[m];
+			m--;
+		}
+
+		itemInvenIdxList[m + 1] = key;
 	}
 
 	int INVENTORY_COL_CNT = 4;
@@ -6714,22 +6939,18 @@ void CollectionsDraw(int x, int y, float zoom)
 		itemGrade = robin.inven[itemInvenIdxList[i]].grade;
 		itemLv = robin.inven[itemInvenIdxList[i]].lv;
 
-		DrawItemCard(
-			itemType,
-			itemDetail,
-			itemGrade,
-			itemLv,
-			itemCnt,
-			false,
-			cardX,
-			cardY,
-			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
-			CARDDEFAULTZOOM * 0.9f * zoom,
-			false,
-			itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
-			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
-			false,
-			0);
+		//카드 대신 단순한 칸. 자리는 예전 카드가 쓰던 그대로라 줄 간격이
+		//흔들리지 않는다.
+		{
+			const int cw = (int)((float)(INVENTORY_GAP_X - 12) * zoom);
+			const int ch = (int)((float)(INVENTORY_GAP_Y - 12) * zoom);
+
+			DrawInvenSlot(itemInvenIdxList[i], cardX, cardY, cw, ch, zoom);
+
+			if (menuDepth == 0)
+				SetRectPoint(cardX, cardY, cw, ch,
+					TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i]);
+		}
 
 		//튜토리얼 2단: 새로 얻은 장비 카드만 밝게 남기고 나머지를 어둡게 덮는다.
 		//사각형은 DrawItemCard()가 카드 터치영역으로 등록하는 것과 같은 값이다.
@@ -6782,6 +7003,10 @@ void CollectionsDraw(int x, int y, float zoom)
 
 			EquipDetailDraw(&robin.inven[menuItem]);
 
+			//여기부터는 터치영역을 더 받지 않는다. 뒤이어 그려지는 골드바와
+			//아래 탭이 팝업 위에 얹히면 닫기(X)가 안 먹는다.
+			gTouchRectLocked = true;
+
 			//튜토리얼 3단: 장착 버튼을 누르게 한다.
 			//
 			//동료 상세(CrewMenuDraw)와 같은 얼개다. 여기 이 블록이 없어서
@@ -6813,6 +7038,14 @@ void CollectionsDraw(int x, int y, float zoom)
 			}
 
 			break;
+	}
+
+	//히어로 줄과 탭. 팝업이 떠 있으면(menuDepth 1) 누를 수 없다 - 팝업이
+	//터치를 잠그므로 그려만 두면 눌린 것처럼 보이고 안 먹는다.
+	if (menuDepth == 0) {
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+			zoom, curHero, true, true);
+		EquipTabDraw(zoom);
 	}
 
 	//골드바. 동료 메뉴(CrewMenuDraw)는 그리는데 여기만 빠져 있었다.

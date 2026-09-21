@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 #include "Data/SwordSprites.h"
@@ -1206,20 +1206,35 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 					dx = (partsRotation == 90 || partsRotation == 270) && dirF == RIGHT ? texH : texW;
 				}
 				else if (fixedImg == IMG_C2_82) {
-					// 손에 쥔 부메랑: 0.58배 축소 및 손 중심 피벗 정밀 보정
+					//---- 손에 쥔 부메랑 ----
+					//
+					//검과 총은 손잡이 좌표표가 있는데 부메랑은 없다. 그래서
+					//그림 한가운데를 손에 맞춰 왔고, V 자의 한복판이 손에
+					//걸려 "가운데를 집은" 모양이 됐다.
+					//
+					//잡는 점을 그림의 오른쪽 아래로 옮긴다. 그만큼 부메랑은
+					//왼쪽 위로 간다. 값은 반쪽 크기에 대한 몫이라 35종
+					//어느 크기에서도 같은 비율로 움직인다.
 					const float kHandScale = 0.58f;
+					const float kGripX = 0.20f;	//+ 면 그림이 왼쪽으로
+					const float kGripY = 0.20f;	//+ 면 그림이 위로
+
 					magnify *= kHandScale;
 
 					float offX = 0.0f;
 					float offY = 0.0f;
 					if (partsRotation == 0 || partsRotation == 180) {
-						offX = (35.0f - halfW * kHandScale) * zoom;
-						offY = -(30.0f - halfH * kHandScale) * zoom;
+						offX = (35.0f - halfW * kHandScale) * zoom
+							+ halfW * kHandScale * kGripX * zoom;
+						offY = -(30.0f - halfH * kHandScale) * zoom
+							- halfH * kHandScale * kGripY * zoom;
 						dx = texW * kHandScale;
 					}
 					else {
-						offX = (30.0f - halfH * kHandScale) * zoom;
-						offY = -(35.0f - halfW * kHandScale) * zoom;
+						offX = (30.0f - halfH * kHandScale) * zoom
+							+ halfH * kHandScale * kGripX * zoom;
+						offY = -(35.0f - halfW * kHandScale) * zoom
+							- halfW * kHandScale * kGripY * zoom;
 						dx = texH * kHandScale;
 					}
 
@@ -1232,7 +1247,10 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		// 다이애나 총 단일화 및 동적 크기(35종) 지원
 		static unsigned short kDynamicGunPart[4] = { 0, 0, 34, 28 };
 		if (pObj->cmf == DIANA && (fixedImg == IMG_C1_94 || fixedImg == IMG_C1_95) && sprite[imgFile]) {
-			const int gunIdx = imgFile - COSTUME_WEAPON_DIANA_IMG - 1;
+			//표는 w1_1 ~ w1_35(번호 0 ~ 34)까지다. 마지막 총(신살자의 총,
+			//번호 35)은 그림도 표도 없어서, 그대로 두면 손잡이 보정이
+			//통째로 빠져 총이 엉뚱한 자리에 크게 그려진다. 표의 끝으로 민다.
+			const int gunIdx = Min(34, imgFile - COSTUME_WEAPON_DIANA_IMG - 1);
 			if (gunIdx >= 0 && gunIdx < 35) {
 				const DianaGunInfo& gun = kDianaGuns[gunIdx];
 				// Gun PNGs are stored vertically (muzzle up) for inventory placement.

@@ -1412,6 +1412,169 @@ int MakeItemId(void)
 	return (int)(tms);
 }
 
+//---- 합성 ----
+//
+//같은 것(종류 · 번호 · 등급)이 ITEM_MERGE_COUNT 점 모이면 한 등급 위
+//한 점이 된다. 옵션은 새로 굴린다 - 등급이 오르면 붙을 수 있는 옵션의
+//폭도 달라지기 때문이다.
+//
+//착용 중인 것은 재료로 쓰지 않는다. 합성하고 나서 맨몸이 되면 안 된다.
+//전설은 더 올라갈 데가 없으므로 건드리지 않는다.
+//
+//doMerge 가 false 면 세지기만 한다. 버튼에 "몇 번 할 수 있는가" 를 적는
+//데 쓴다 - 눌러 보기 전에 알 수 있어야 한다.
+static bool ItemWorn(const ITEM* it)
+{
+	for (int h = 0; h < TOTALCHAR; h++)
+		for (int e = 0; e < TOTALEQUIP; e++)
+			if (ao[h].equip[e].type != EMPTY && ao[h].equip[e].id == it->id)
+				return true;
+
+	return false;
+}
+
+int MergeItems(bool doMerge)
+{
+	int done = 0;
+	bool again = true;
+
+	//한 번 합치면 그 결과가 또 재료가 될 수 있다(일반 아홉 점 -> 고급 셋
+	//-> 희귀 하나). 더 합칠 것이 없을 때까지 돈다.
+	while (again) {
+		again = false;
+
+		for (int i = 0; i < TOTALINVENTORY; i++) {
+			ITEM* head = &robin.inven[i];
+			int found[ITEM_MERGE_COUNT];
+			int cnt = 0;
+
+			if (head->type == EMPTY || IsEquipItemType(head->type) == false)
+				continue;
+
+			if (head->grade >= GRADE_LEGEND || ItemWorn(head))
+				continue;
+
+			found[cnt++] = i;
+
+			for (int k = i + 1; k < TOTALINVENTORY && cnt < ITEM_MERGE_COUNT; k++) {
+				const ITEM* it = &robin.inven[k];
+
+				if (it->type != head->type || it->detail != head->detail
+					|| it->grade != head->grade)
+					continue;
+
+				if (ItemWorn(it))
+					continue;
+
+				found[cnt++] = k;
+			}
+
+			if (cnt < ITEM_MERGE_COUNT)
+				continue;
+
+			done++;
+
+			if (!doMerge)
+				continue;
+
+			//재료를 비우고, 첫 칸에 한 등급 위를 새로 만든다.
+			const int type = head->type;
+			const int detail = head->detail;
+			const int grade = head->grade + 1;
+			const int lv = Max(1, (int)head->lv);
+
+			for (int k = 1; k < ITEM_MERGE_COUNT; k++) {
+				memset(&robin.inven[found[k]], 0, sizeof(ITEM));
+				robin.inven[found[k]].type = EMPTY;
+
+				if (robin.count > 0)
+					robin.count--;
+			}
+
+			MakeItem(head, type, lv, grade, detail, EMPTY);
+			head->id = MakeItemId();
+			head->seen = false;
+
+			again = true;
+			break;
+		}
+	}
+
+	return done;
+}
+
+//---- 일반 등급 일괄 판매 ----
+//
+//가방이 좁은데 일반 등급이 계속 쌓인다. 한 점씩 팔면 손이 남아나지
+//않으므로 한 번에 턴다.
+//
+//파는 값은 그 장비의 값(gold)의 절반이다. 되사기가 없으므로 반값이면
+//"버리기보다는 낫다" 정도가 된다.
+//
+//착용 중인 것은 건드리지 않는다. 판 뒤에 빈손이 되면 안 된다.
+long long SellNormalItems(void)
+{
+	long long got = 0;
+
+	for (int i = 0; i < TOTALINVENTORY; i++) {
+		ITEM* it = &robin.inven[i];
+		bool worn = false;
+
+		if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+			continue;
+
+		if (it->grade != GRADE_NORMAL)
+			continue;
+
+		for (int h = 0; h < TOTALCHAR && !worn; h++)
+			for (int e = 0; e < TOTALEQUIP; e++)
+				if (ao[h].equip[e].type != EMPTY && ao[h].equip[e].id == it->id) {
+					worn = true;
+					break;
+				}
+
+		if (worn)
+			continue;
+
+		got += Max(1, (int)(it->gold / 2));
+		memset(it, 0, sizeof(ITEM));
+		it->type = EMPTY;
+
+		if (robin.count > 0)
+			robin.count--;
+	}
+
+	if (got > 0)
+		GetItem(ITEM_GOLD, false, false, false, got, false);
+
+	return got;
+}
+
+//---- 지금 쓸 수 있는 가방 칸 ----
+//
+//성이 커지면 같이 늘어난다. 세이브에 든 값(robin.maxInven)은 이 식으로
+//다시 채운다 - 성을 올렸는데 칸이 그대로면 올린 보람이 없다.
+int GetMaxInven(void)
+{
+	const int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE;
+
+	return Max(1, Min((int)TOTALINVENTORY, slot));
+}
+
+//가방이 가득 차서 못 받은 것이 있는가. 전투 중에는 알림을 띄우지 않고
+//표시만 해 두었다가, 로비로 나온 뒤에 한 번 알린다.
+bool gInvenFullNotice = false;
+
+//---- 장비인가 ----
+//
+//무기부터 반지까지(ITEM_SWORD ~ ITEM_RING)가 장비다. 재료나 재화와 달리
+//한 점 한 점이 제 옵션과 등급을 가지므로, 같은 종류라도 수량으로 합치면
+//안 된다.
+bool IsEquipItemType(int type)
+{
+	return type >= ITEM_SWORD && type <= ITEM_RING;
+}
+
 int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 {
 	int i;
@@ -1433,6 +1596,16 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 		//case ITEM_ESSENCE:
 		//case ITEM_QUEST:
 	chk1:
+
+		//---- 장비는 합치지 않는다 ----
+		//
+		//같은 검을 두 자루 얻으면 "검 x2" 가 아니라 두 자루가 따로 있어야
+		//한다. 옵션이 저마다 다르게 굴려지고 등급도 제각각이기 때문이다.
+		//같은 칸에 수량만 올리면 나중에 얻은 것의 옵션이 통째로 사라진다.
+		//
+		//재료와 재화는 지금처럼 수량을 더한다.
+		if (IsEquipItemType(type))
+			goto chk2;
 
 		//같은종류가 있으면 수량을 더해준다.
 		for (i = 0; i < robin.maxInven; i++) {
@@ -1461,17 +1634,29 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 	case -1:
 	chk2:
 
-		//비어있는 인벤토리를 찾는다.
-		//for (i = 0, temp = robin.maxInven; i < robin.maxInven; i++) {
-		for (i = 0, temp = TOTALINVENTORY; i < TOTALINVENTORY; i++) {
-			if (robin.inven[i].type == EMPTY) {
-				temp = i;
-				break;
+		//---- 빈 칸 찾기 ----
+		//
+		//가방 크기는 성이 정한다(GetMaxInven). 전에는 배열 끝까지 훑어서
+		//칸 수가 사실상 무제한이었다 - 그러면 창고를 키울 까닭이 없다.
+		{
+			const int cap = GetMaxInven();
+
+			robin.maxInven = (unsigned short)cap;
+
+			for (i = 0, temp = cap; i < cap; i++) {
+				if (robin.inven[i].type == EMPTY) {
+					temp = i;
+					break;
+				}
+			}
+
+			if (temp >= cap) {
+				//가방 풀. 조용히 버리지 않고 알린다.
+				gInvenFullNotice = true;
+				return 0;
 			}
 		}
 
-		//최대값이 가장 큰
-		//if (temp < robin.maxInven) {
 		if (temp < TOTALINVENTORY) {
 			//������ �κ��丮�� �������� �ִ´�.
 			itemObj = temp;

@@ -1702,6 +1702,7 @@ extern signed char stageInfoDepth;
 extern signed int curMenu;//타이틀메뉴, 게임메뉴의 메인값
 extern signed int curHouse;//현재 선택되어 있는 집
 extern signed int curHero;//현재 히어로
+extern int curEquipTab;
 extern signed int curMenuBack;
 extern signed int curEventIdx;//현재 이벤트
 extern int menuFrame;//메뉴 프레임

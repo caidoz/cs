@@ -47,6 +47,7 @@ bool LobbyCamTouchEnded(int id);
 //시험이 끝나면 이 네 줄과 Func_Draw.cpp 의 블록을 통째로 지운다.
 void GridTestDraw(void);
 int GetStageInventoryTop(void);
+float GetStageWorldLift(void);
 void GridTestPick(int n, bool fromShop);
 void GridTestRelease(void);
 void GridTestToggle(void);

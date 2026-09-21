@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 
 // ===== Shader 문자열 정의 =====
 const char* vsh_gray = R"(
@@ -711,6 +711,9 @@ signed char stageInfoDepth;
 signed int curMenu;//타이틀메뉴, 게임메뉴의 메인값
 signed int curHouse;//현재 선택되어 있는 집
 signed int curHero;//현재 히어로
+
+//장비 메뉴 안에서 지금 보고 있는 탭. EQUIPTAB_GEAR / CREW / STAT
+int curEquipTab = 0;
 signed int curMenuBack;
 signed int curEventIdx;//현재 이벤트
 int menuFrame;//메뉴 프레임

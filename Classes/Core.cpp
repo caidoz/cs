@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------
+﻿/*----------------------------------------------------------------------------
 **			PRE-DEFINITIONS FOR MODULE
 **--------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -297,7 +297,8 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 
 				//튜토리얼 중에는 스와이프로 화면이 밀리면 안 된다. 안내하는 버튼이나 카드가
 				//스팟라이트 밖으로 나가버려서 무엇을 눌러야 하는지 알 수 없게 된다.
-				if (keyHandle == MK_PLAY && swipeLock == false && IsTutorialPlaying() == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
+				if (keyHandle == MK_PLAY && swipeLock == false && gTouchRectLocked == false
+					&& IsTutorialPlaying() == false && scRecoveryFrameX == 0 && (curMenu == MENU_COLLECTIONS || curMenu == MENU_SHOP || curMenu == MENU_CREW || curMenu == MENU_CASTLE || curMenu == MENU_PLAY)) {
 					touchFrame = TOUCHPOINTFRAME;
 
 					if (scDir == SCROLL_NOTHING) {
@@ -1404,6 +1405,10 @@ void PaintClet(int x, int y, int w, int h)
 	effect.sound = -1;
 	touchIndex = 0;//인덱스 초기화
 	swipeIndex = 0;
+
+	//팝업이 걸어 둔 터치 잠금도 여기서 푼다. ResetRectPoint 를 부르지 않는
+	//화면(타이틀 등)으로 넘어가면 잠금이 남아 아무것도 안 눌렸다.
+	gTouchRectLocked = false;
 
 	//동료 편성 안내(장착 -> 편성칸 연출 -> 뒤로가기 -> 성 위 등장)의 시간 진행.
 	//터치 제한을 정하기 전에 돌려야 이번 프레임의 단계로 제한이 걸린다.

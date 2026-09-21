@@ -45,7 +45,32 @@ static float s_hitFlash = 0.0f;
 
 // Continuous horizontal travel distance along the road
 static float s_scrollDist = 0.0f;
-static float s_scrollSpeed = 75.0f; // px/sec at 1x
+static float s_scrollSpeed = 24.0f; // deliberately slow mobile-fortress travel
+
+inline bool IsMoving() {
+	// Auto battle is the travel switch.  Offer/foe state changes briefly between
+	// waves and must not freeze the chassis or its wheels.
+	return StageRtAutoOn();
+}
+
+inline float CastleScaleFor(int castleIdx, float rawW) {
+	// Cache the transform used when the castle first appears.  Starting combat
+	// may rebuild UI/layout state, but it must never change this world transform.
+	static float fixedScale[10] = {};
+	const int idx = Max(0, Min(castleIdx, 9));
+	if (fixedScale[idx] <= 0.0f && rawW > 1.0f)
+		// Largest castle: another 20% increase from the previous 52.8% view.
+		fixedScale[idx] = DX * 0.634f / rawW;
+	return fixedScale[idx] > 0.0f ? fixedScale[idx] : 0.20f;
+}
+
+inline int VisualGroundY(int layoutGroundY) {
+	(void)layoutGroundY;
+	// Fixed battle arena: UI/grid animation must never move or resize the world.
+	// Y grows upward in this renderer.  A smaller value moves the road, castle
+	// and monster down toward the centre of the visible cobblestone lane.
+	return (int)(DY * 0.31f);
+}
 
 // Hero Position on Castle (u: horizontal ratio 0~1, v: vertical ratio from top 0~1)
 // Exactly matching the lobby hero positions from Func_Draw.cpp:4218
@@ -178,85 +203,16 @@ inline int GetSwordColor(int detail) {
 inline void Update(float delta) {
 	if (!std::isfinite(delta) || delta <= 0.0f) return;
 	const float dt = (delta > 0.1f) ? 0.1f : delta;
+	const bool moving = IsMoving();
+	const float currentSpeed = moving ? s_scrollSpeed * (float)_2X : 0.0f;
+	if (moving) s_scrollDist += currentSpeed * dt;
 
-	// 1. Advance horizontal road travel distance
-	const float currentSpeed = s_scrollSpeed * (float)_2X;
-	s_scrollDist += currentSpeed * dt;
-
-	// Scale for wheel rotation
-	const float castleScale = 0.65f;
-	CastleWheels::Update(s_scrollDist, dt, currentSpeed, castleScale);
-
-	// 2. Smooth Boss HP easing
-	if (s_bossDisplayHp > s_bossHp) {
-		s_bossDisplayHp -= (s_bossDisplayHp - s_bossHp) * 0.08f;
-	} else if (s_bossDisplayHp < s_bossHp) {
-		s_bossDisplayHp = s_bossHp;
-	}
-
-	if (s_hitFlash > 0.0f) {
-		s_hitFlash -= dt * 3.5f;
-		if (s_hitFlash < 0.0f) s_hitFlash = 0.0f;
-	}
-
-	// 3. Castle defense projectile firing loop
-	s_attackTimer++;
-	const float castleRightX = 14.0f * (float)_2X + 270.0f * (float)_2X * 0.65f;
-	const float castleCenterY = (float)GetStageGroundY() + 100.0f * (float)_2X;
-	const float bossTargetX = (float)DX - 110.0f * (float)_2X;
-
-	// Read swords in the inventory to fire active battlements slashes!
-	StageSword invenSwords[16];
-	const int swordCnt = GridTestSwords(invenSwords, 16);
-
-	if (s_attackTimer % 24 == 0) {
-		// Robin hero attack volley
-		SpawnProjectile(castleRightX - 10.0f * (float)_2X, castleCenterY + 20.0f * (float)_2X, 0);
-	}
-	if (s_attackTimer % 38 == 12) {
-		// Castle gunner / turret tracer
-		SpawnProjectile(castleRightX - 15.0f * (float)_2X, castleCenterY - 10.0f * (float)_2X, 1);
-	}
-	if (swordCnt > 0 && (s_attackTimer % 32 == 16)) {
-		// Mounted inventory sword slash wave
-		const int sIdx = (s_attackTimer / 32) % swordCnt;
-		const int sColor = GetSwordColor(invenSwords[sIdx].detail);
-		SpawnProjectile(castleRightX - 5.0f * (float)_2X, castleCenterY + 45.0f * (float)_2X, 3, sColor);
-	}
-
-	// 4. Update flying projectiles
-	for (int i = 0; i < MAX_PROJECTILES; ++i) {
-		if (!s_projectiles[i].active) continue;
-		s_projectiles[i].x += s_projectiles[i].vx * (float)_2X * (dt * 60.0f);
-		s_projectiles[i].y += s_projectiles[i].vy * (float)_2X * (dt * 60.0f);
-		s_projectiles[i].life -= dt;
-
-		// Impact on Giant Monster body
-		if (s_projectiles[i].x >= bossTargetX - 22.0f * (float)_2X || s_projectiles[i].life <= 0.0f) {
-			s_projectiles[i].active = false;
-			if (s_projectiles[i].x >= bossTargetX - 50.0f * (float)_2X) {
-				const bool crit = (rand() % 4 == 0);
-				const int dmg = crit ? (16500 + rand() % 9800) : (6800 + rand() % 4200);
-				s_bossHp -= (float)dmg;
-				s_hitFlash = 0.55f;
-
-				if (s_bossHp <= 100000.0f) {
-					NextBoss();
-				}
-				SpawnDamage(bossTargetX - 15.0f * (float)_2X, s_projectiles[i].y, dmg, crit);
-			}
-		}
-	}
-
-	// 5. Update floating damage numbers
-	for (int i = 0; i < MAX_DAMAGE_TEXTS; ++i) {
-		if (!s_damages[i].active) continue;
-		s_damages[i].y += 0.85f * (float)_2X * (dt * 60.0f);
-		s_damages[i].life -= dt;
-		if (s_damages[i].life <= 0.0f) {
-			s_damages[i].active = false;
-		}
-	}
+	const int castleIdx = Max(0, Min(robin.castle, 9));
+	float rawW = 416.0f;
+	if (sprite[CASTLE0_IMG + castleIdx])
+		rawW = sprite[CASTLE0_IMG + castleIdx]->getContentSize().width;
+	CastleWheels::Update(s_scrollDist, dt, currentSpeed, castleIdx,
+		CastleScaleFor(castleIdx, rawW));
 }
 
 // 4-Layer Continuous Horizontal Parallax Background
@@ -264,13 +220,16 @@ inline void DrawBackground(int groundY, int invenTop) {
 	// Base atmospheric fill for the battle sky
 	SetAlpha(32);
 	MemRect(0, DY, DX, DY - invenTop, 0x1A1E2E);
+	// An opaque ground bed is always present, even while the authored texture is
+	// loading.  This also makes the arena boundary unambiguous behind the road.
+	MemRect(0, groundY, DX, Max(1, groundY - invenTop), 0x39522B);
 
 	// Layer 1: Distant Mountains / Sky Landscape (slow parallax ~0.15x)
-	const int bgImg = LOBBY_LANDSCAPE_IMG;
+	const int bgImg = BATTLE_BG_FAR_IMG;
 	if (!sprite[bgImg]) LoadImg(bgImg);
 	if (sprite[bgImg]) {
 		const auto sz = sprite[bgImg]->getContentSize();
-		const float zoom = (float)DX / sz.width;
+		const float zoom = Max((float)DX / sz.width, (float)(DY-invenTop) / sz.height);
 		const float tileW = sz.width * zoom;
 		const float offX = -std::fmod(s_scrollDist * 0.15f, tileW);
 		const int topY = DY;
@@ -281,32 +240,14 @@ inline void DrawBackground(int groundY, int invenTop) {
 		}
 	}
 
-	// Layer 2: Drifting Atmosphere Clouds (parallax ~0.35x + wind)
-	const int cloudImg = LOBBY_CLOUD_IMG;
-	if (!sprite[cloudImg]) LoadImg(cloudImg);
-	if (sprite[cloudImg]) {
-		const auto sz = sprite[cloudImg]->getContentSize();
-		const float zoom = 1.0f * (float)_2X;
-		const float tileW = sz.width * zoom;
-		const float offX = -std::fmod(s_scrollDist * 0.35f + (float)frame * 0.25f, tileW);
-		const int cloudY = DY - 30 * _2X;
-
-		SetAlpha(22);
-		for (float x = offX; x < (float)DX; x += tileW) {
-			DrawImage((int)sz.width, (int)sz.height, 0, 0, (int)x, cloudY,
-			          false, false, false, false, false, zoom, sprite[cloudImg], cloudImg);
-		}
-		SetAlpha(32);
-	}
-
-	// Layer 3: Midground Foothills / Hills (mid parallax ~0.55x)
-	const int footImg = LOBBY_FOOTHILLS_IMG;
+	// Layer 2: midground hills. The road does not move until combat starts.
+	const int footImg = BATTLE_BG_MID_IMG;
 	if (!sprite[footImg]) LoadImg(footImg);
 	if (sprite[footImg]) {
 		const auto sz = sprite[footImg]->getContentSize();
 		const float zoom = (float)DX / sz.width;
 		const float tileW = sz.width * zoom;
-		const float offX = -std::fmod(s_scrollDist * 0.55f, tileW);
+		const float offX = -std::fmod(s_scrollDist * 0.32f, tileW);
 		const int footY = groundY + (int)(sz.height * zoom * 0.85f);
 
 		for (float x = offX; x < (float)DX; x += tileW) {
@@ -315,16 +256,17 @@ inline void DrawBackground(int groundY, int invenTop) {
 		}
 	}
 
-	// Layer 4: Battlefield Road / Ground Bed (1.0x scroll speed along groundY)
+	// Layer 3: Battlefield Road / Ground Bed (slowest readable foreground travel)
 	// GroundY is placed right above the bottom inventory (invenTop + 4 * _2X)
-	const int roadImg = BATTLE_BG_BOTTOM_IMG;
+	const int roadImg = BATTLE_BG_GROUND_IMG;
 	if (!sprite[roadImg]) LoadImg(roadImg);
 	if (sprite[roadImg]) {
 		const auto sz = sprite[roadImg]->getContentSize();
 		const float zoom = GetStageGroundZoom();
 		const float tileW = sz.width * zoom;
-		const float offX = -std::fmod(s_scrollDist, tileW);
-		const int topY = groundY + (int)(sz.height * zoom * 0.40f);
+		const float offX = -std::fmod(s_scrollDist * 0.58f, tileW);
+		// The authored cobblestone contact line is about 59% down the image.
+		const int topY = groundY + (int)(sz.height * zoom * 0.59f);
 
 		for (float x = offX; x < (float)DX; x += tileW) {
 			DrawImage((int)sz.width, (int)sz.height, 0, 0, (int)x, topY,
@@ -396,24 +338,20 @@ inline void DrawCastle(int groundY) {
 	const float rawW = sz.width;
 	const float rawH = sz.height;
 
-	// Greatly enlarged castle scale: dynamic fit up to ~0.65x
-	const float maxH = (float)(DY - groundY - 45 * _2X);
-	float scale = Min(0.65f, maxH / rawH);
-	if (scale < 0.32f) scale = 0.32f;
+	const float scale = CastleScaleFor(curCastle, rawW);
+	// Keep the road fixed.  Only the fortress assembly is lowered so the wheel
+	// bottoms sit into the road surface instead of floating above it.
+	const float wheelGroundY = (float)groundY - 10.0f * _2X;
 
-	const float castleLeft = 14.0f * (float)_2X;
-	const float wheelRadius = CastleWheels::GetWheelRadius(scale);
+	// Compact left-side fortress, leaving the center lane and right monster clear.
+	const float castleLeft = 6.0f * (float)_2X;
+	const float wheelRadius = CastleWheels::GetWheelRadius(curCastle, scale);
 	const float suspensionY = CastleWheels::GetSuspensionY();
-	const float castleBottom = (float)groundY + wheelRadius * 1.4f + suspensionY;
+	const float castleBottom = wheelGroundY + wheelRadius * 1.4f + suspensionY;
 	const float castleTop = castleBottom + rawH * scale;
 
-	// 1. Castle Body Ground Shadow
-	ShadowImage((int)(rawW * scale * 1.05f), 18 * _2X, 1 * _2X, 1 * _2X,
-	            (int)(castleLeft - 4 * _2X),
-	            (int)(groundY + 8 * _2X),
-	            SHADOW_IMG, scale * 1.15f);
-
-	// 2. Castle Sprite (Actual Lobby Castle: castle0.png ~ castle9.png)
+	// Castle sprite (castle0.png ~ castle9.png).  A separate ground shadow made
+	// the chassis look detached from the road, so the wheels provide the contact.
 	DrawImage((int)rawW, (int)rawH, 0, 0,
 	          (int)castleLeft, (int)castleTop,
 	          false, false, false, false, false, scale,
@@ -421,7 +359,7 @@ inline void DrawCastle(int groundY) {
 
 	// 3. Castle Chassis Wheels with Physical Rotation & Dust Emitter
 	CastleWheels::DrawCastleWheels(curCastle, castleLeft, castleBottom,
-	                              rawW, scale, (float)groundY, true);
+	                              rawW, scale, wheelGroundY, IsMoving());
 
 	// 4. Inventory items reflected on the castle (Mounted weapons & Aegis shield)
 	DrawInventoryCastleReflections(curCastle, castleLeft, castleTop, rawW, rawH, scale);
@@ -431,37 +369,40 @@ inline void DrawCastle(int groundY) {
 	const float heroV = kCastleHeroPos[curCastle].v;
 	const float heroX = castleLeft + heroU * rawW * scale;
 	const float heroY = castleTop - heroV * rawH * scale;
-	const float heroZoom = HEROZOOM * (scale / 0.35f) * 0.70f;
+	// Use the same castle-relative character scale as LobbyCharZoom().
+	const float charZoom = DIORAMAZOOM * 0.70f * scale * 922.0f / DX;
+	const float heroZoom = ao[ROBIN].zoom * charZoom;
 
 	if (ao[ROBIN].active) {
 		const int heroMotion = (ao[ROBIN].motion >= 0) ? ao[ROBIN].motion : (PO_C0_N0 + (frame / 4) % 4);
 		DrawPlayer(&ao[ROBIN], heroMotion, (int)heroX, (int)heroY, RIGHT, heroZoom, 0.0f, false, true);
 	}
+
+	// Draw the actual realtime party. Their motion is advanced by
+	// UpdateStageRealtime(), so attacks shown here are the attacks that deal damage.
+	static const SlotUV crewSlots[MAXCREW] = {
+		{ 0.28f, 0.77f }, { 0.72f, 0.77f }, { 0.37f, 0.62f }, { 0.63f, 0.62f }
+	};
+	for (int i = 0; i < MAXCREW; ++i) {
+		const OBJECT* crew = &ao[CREW + i];
+		if (!crew->active || crew->dead) continue;
+		const float cx = castleLeft + crewSlots[i].u * rawW * scale;
+		const float cy = castleTop - crewSlots[i].v * rawH * scale;
+		DrawCmfDetailShadow(crew->cmf, crew->motion, (int)cx, (int)cy, RIGHT,
+			enemyIconZoom[crew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * 0.90f * charZoom);
+	}
 }
 
 // Giant Boss Monster on the right facing left, right above bottom inventory
 inline void DrawBossMonster(int groundY) {
-	const GiantBossDef& def = kBosses[s_curBossIdx];
-	const int cmf = enemyData[def.enemyType * ENEMYDATASIZE + ENEMYDATA_CMF];
-	const int idleStart = crewPos[def.enemyType * 5 + 0];
-	const int idleCount = Max(1, (int)crewPos[def.enemyType * 5 + 1]);
-
-	// Idle breathing animation
-	const int motion = idleStart + ((frame / 6) % idleCount);
-	const float breatheY = std::sin((float)frame * 0.08f) * 2.5f * (float)_2X;
-	const float bossX = (float)DX - 110.0f * (float)_2X;
-	const float finalY = (float)groundY + breatheY;
-
-	// Render Giant Boss facing LEFT towards the Mobile Castle
-	DrawCmfDetailShadow(cmf, motion, (int)bossX, (int)finalY, LEFT, def.scale);
-
-	// Hit spark flash when taking damage
-	if (s_hitFlash > 0.0f) {
-		const int sparkX = (int)(bossX - 18.0f * (float)_2X);
-		const int sparkY = (int)(finalY + 45.0f * (float)_2X);
-		MemRect(sparkX - 8 * _2X, sparkY + 8 * _2X, 16 * _2X, 16 * _2X, 0xFFE080);
-		MemRectFrame(sparkX - 14 * _2X, sparkY + 14 * _2X, 28 * _2X, 28 * _2X, 0xFF8820);
-	}
+	const int foe = StageRtFoe();
+	if (foe < 0) return;
+	const OBJECT* monster = &ao[foe];
+	// Requested logical X is 512 on the 640-wide base canvas.
+	const float bossX = Min((float)DX - 32 * _2X, 256.0f * _2X);
+	DrawCmfDetailShadow(monster->cmf, monster->motion, (int)bossX,
+		groundY - 3 * _2X,
+		LEFT, enemyIconZoom[monster->type] * 1.75f);
 }
 
 // In-flight Combat Projectiles (arrows, gunfire tracers, arcane bolts, slash waves)
@@ -549,15 +490,17 @@ inline void DrawBossUI() {
 
 // Main Entry Point for MD_PLAY in DrawDiorama
 inline void Draw(int groundY, int invenTop) {
-	// Clip strictly to the upper battle arena so lower inventory is preserved
-	SetSectionClip(0, DY, DX, DY - invenTop, false);
+	groundY = VisualGroundY(groundY) + (int)GetStageWorldLift();
+	// Keep enough space below the contact line to show the road thickness.
+	// Inventory is drawn later and covers this fixed arena where necessary.
+	const int arenaBottom = Max(0, groundY - 85 * _2X);
+	SetSectionClip(0, DY, DX, DY - arenaBottom, false);
 
-	DrawBackground(groundY, invenTop);
+	DrawBackground(groundY, arenaBottom);
 	DrawCastle(groundY);
 	DrawBossMonster(groundY);
-	DrawProjectiles();
-	DrawDamageTexts();
-	DrawBossUI();
+	// Existing realtime combat owns damage, attack timing and flying bag weapons.
+	StageFoeShotDraw();
 
 	UnSectionClip(false);
 }

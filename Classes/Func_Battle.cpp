@@ -1182,6 +1182,9 @@ void StageRtToggleAuto(void)
 		return;
 
 	stageAutoBattle = !stageAutoBattle;
+	// Starting realtime combat must not inherit or trigger an entrance zoom.
+	if (stageAutoBattle)
+		ClearCombatZoom();
 	PlayMusic(M_BUTTON);
 }
 

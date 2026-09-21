@@ -6,6 +6,16 @@
 //현금 상품 자리를 상품 개수만큼 잡는다.
 #include "../Config/IapConfig.h"
 
+//장비 메뉴 안의 탭. 터치 번호(TOUCH_FUNC_EQUIPTAB)가 개수를 쓰므로 같은
+//헤더에 둔다. 다만 아래 큰 enum 안에 넣으면 = 0 때문에 그 뒤 번호가 모두
+//다시 세어져 앞쪽 터치키와 겹친다. 그래서 따로 뺀다.
+enum {
+	EQUIPTAB_GEAR = 0,	//장비를 끼운다
+	EQUIPTAB_CREW,		//동료를 편성한다
+	EQUIPTAB_STAT,		//지금 능력치를 본다
+	EQUIPTAB_CNT,
+};
+
 typedef enum _touchFuncDef {
 
 	BOSSRAID_ROYALFAMILY = 0,	//로얄패밀리
@@ -80,6 +90,7 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_TITLE_SKILL_PAUSE,
 	TOUCH_FUNC_TITLE_SKILL_PREV_CMF,
 	TOUCH_FUNC_TITLE_SKILL_NEXT_CMF,
+	TOUCH_FUNC_TITLE_GEAR,//타이틀 디버그: 히어로 장비를 한 단 올린다
 	TOUCH_FUNC_TITLE_TERMS_REQUIRED,
 	TOUCH_FUNC_TITLE_TERMS_MARKETING,
 	TOUCH_FUNC_TITLE_TERMS_NIGHT,
@@ -445,6 +456,16 @@ typedef enum _touchFuncDef {
 
 	TOUCH_FUNC_LOBBY_CASTLE = TOUCH_FUNC_STAGE_BOOK + 1,
 	TOUCH_FUNC_LOBBY_CASTLE_CLOSE,
+
+	//장비 메뉴 안의 탭. 장비 / 동료 / 능력치
+	//
+	//★ 위 LOBBY_CASTLE 처럼 값을 박은 항목 뒤에 이어 붙인다. 앞쪽에
+	//끼워 넣으면 번호가 겹친다.
+	TOUCH_FUNC_EQUIPTAB_SELL,	//일반 등급 일괄 판매
+	TOUCH_FUNC_EQUIPTAB_MERGE,	//같은 장비 셋을 한 등급 위로
+	TOUCH_FUNC_EQUIPTAB,
+	TOUCH_FUNC_EQUIPTAB_END = TOUCH_FUNC_EQUIPTAB + EQUIPTAB_CNT,
+
 	TOTALTOUCHCNT,
 
 	END_TOUCHFUNCDEF
