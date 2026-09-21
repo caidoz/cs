@@ -3576,6 +3576,15 @@ const char* const textId[] = {
 	"item_armor_robin6",
 	"item_armor_robin7",
 
+	"item_vest_diana0",
+	"item_vest_diana1",
+	"item_vest_diana2",
+	"item_vest_diana3",
+	"item_vest_diana4",
+	"item_vest_diana5",
+	"item_vest_diana6",
+	"item_vest_diana7",
+
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
 	"새로하기",//TEXT_NEWGAME

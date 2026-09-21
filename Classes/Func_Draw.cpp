@@ -2494,7 +2494,7 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
-	if (p->type == ITEM_ARMOR) {
+	if (p->type == ITEM_ARMOR || p->type == ITEM_VEST) {
 		if (DrawArmorInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha))
 			return;
 	}
@@ -3265,9 +3265,9 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	switch (it->type) {
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
 		out->w = 2; out->h = 2; break;
-	case ITEM_ARMOR:
+	case ITEM_ARMOR: case ITEM_VEST:
 		out->w = 2; out->h = (it->detail < 4) ? 2 : 3; break;
-	case ITEM_VEST: case ITEM_COAT:
+	case ITEM_COAT:
 		out->w = 2; out->h = 3; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
 		out->w = 2; out->h = 2; break;
@@ -3757,7 +3757,7 @@ void GridTestDraw(void)
 					drawn = DrawPantsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 				else if (f->type == ITEM_GUNTLET || f->type == ITEM_ARMLET || f->type == ITEM_GLOVE)
 					drawn = DrawGloveInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-				else if (f->type == ITEM_ARMOR)
+				else if (f->type == ITEM_ARMOR || f->type == ITEM_VEST)
 					drawn = DrawArmorInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 
 				if (!drawn) {
@@ -3818,7 +3818,7 @@ void GridTestDraw(void)
 				drawn = DrawPantsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 			else if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE)
 				drawn = DrawGloveInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-			else if (p->type == ITEM_ARMOR)
+			else if (p->type == ITEM_ARMOR || p->type == ITEM_VEST)
 				drawn = DrawArmorInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 
 			if (!drawn) {

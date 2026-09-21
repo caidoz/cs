@@ -1103,6 +1103,9 @@ bool DrawArmorInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 	if (type == ITEM_ARMOR) {
 		img = ITEM_ARMOR_ROBIN0_IMG + d;
 	}
+	else if (type == ITEM_VEST) {
+		img = ITEM_VEST_DIANA0_IMG + d;
+	}
 	else {
 		return false;
 	}

@@ -1,5 +1,5 @@
 #content 1
-version	202609211202
+version	202609211211
 data/content.pack	2530692	2b173989e026ac76
 data/rates.tsv	18253	b80f376b3df80c57
 res/a0_0.png	2350	f243b2f644c6e7e6
@@ -750,6 +750,14 @@ res/item_pants_robin4.png	8876	d4636d334a66922c
 res/item_pants_robin5.png	8763	a81cc8264240f1f6
 res/item_pants_robin6.png	8999	9b5615e216869a2f
 res/item_pants_robin7.png	9008	0b5f730844350fbd
+res/item_vest_diana0.png	8597	5cf0d662e2b3a148
+res/item_vest_diana1.png	8732	e3095ada60b288fc
+res/item_vest_diana2.png	8625	5244f7467397a6b8
+res/item_vest_diana3.png	8440	fc8a315635c5f804
+res/item_vest_diana4.png	11568	1eaef62a2c8acda6
+res/item_vest_diana5.png	10899	584cb8267994a7a8
+res/item_vest_diana6.png	11903	7ba0f793b85d4529
+res/item_vest_diana7.png	12523	de4736e3d211ac2d
 res/l0_0.png	5773	0ea021bff118f2d9
 res/l0_1.png	2453	513384aa59e9cb28
 res/l0_2.png	2509	cec58cd2bc0f6cb2
