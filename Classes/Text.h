@@ -3567,6 +3567,15 @@ const char* const textId[] = {
 	"item_glove_maxx6",
 	"item_glove_maxx7",
 
+	"item_armor_robin0",
+	"item_armor_robin1",
+	"item_armor_robin2",
+	"item_armor_robin3",
+	"item_armor_robin4",
+	"item_armor_robin5",
+	"item_armor_robin6",
+	"item_armor_robin7",
+
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
 	"새로하기",//TEXT_NEWGAME

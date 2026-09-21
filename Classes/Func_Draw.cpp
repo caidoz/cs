@@ -720,6 +720,97 @@ namespace
 		}
 	}
 
+	//======================================================================
+	// 타이틀 장비 디버그
+	//
+	// 누를 때마다 여섯 칸(무기 ~ 신발)의 장비가 한 단씩 좋아진다. 그림이
+	// 바뀌는 것을 눈으로 보려는 것이라, 능력치가 아니라 detail 과 등급을
+	// 끝까지 올린다. 마지막 단에서 한 번 더 누르면 처음(맨몸)으로 돌아온다.
+	//
+	// 원래 끼고 있던 장비는 처음 누를 때 받아 두고, 0 단으로 돌아올 때
+	// 그대로 되돌린다 - 디버그 때문에 세이브의 장비가 사라지면 안 된다.
+	//======================================================================
+	enum { TITLE_GEAR_STEP = 4 };	//0 = 원래대로, 1 ~ 3 = 점점 좋은 장비
+
+	static int titleGearStep = 0;
+	static bool titleGearSaved = false;
+	static ITEM titleGearBackup[TOTALEQUIP];
+
+	//여섯 칸에 들어갈 물건. 칸 순서는 EQUIP_WEAPON ~ EQUIP_BOOTS 다.
+	static const int kTitleGearType[6] = {
+		ITEM_SWORD, ITEM_HELM, ITEM_ARMOR, ITEM_GLOVE, ITEM_PANTS, ITEM_BOOTS
+	};
+
+	//칸마다 그림이 있는 마지막 번호. 이 값까지 올라간다.
+	static const int kTitleGearLast[6] = {
+		TOTALSWORD - 1, TOTALHELM - 1, TOTALARMOR - 1, 5, 5, 5
+	};
+
+	void TitleGearApply(int step)
+	{
+		OBJECT* hero = &ao[ROBIN];
+		int i;
+
+		//처음 만지는 순간에 원래 장비를 받아 둔다.
+		if (!titleGearSaved) {
+			memcpy(titleGearBackup, hero->equip, sizeof(titleGearBackup));
+			titleGearSaved = true;
+		}
+
+		if (step <= 0) {
+			memcpy(hero->equip, titleGearBackup, sizeof(titleGearBackup));
+			RefreshStat(hero);
+			return;
+		}
+
+		for (i = 0; i < 6; i++) {
+			//단이 오를수록 번호도 등급도 끝으로 간다.
+			const int detail = kTitleGearLast[i] * step / (TITLE_GEAR_STEP - 1);
+			const int grade = Min(TOTALGRADE - 1,
+				(TOTALGRADE - 1) * step / (TITLE_GEAR_STEP - 1));
+
+			MakeItem(&hero->equip[i], kTitleGearType[i], ITEMMAXLEVEL,
+				grade, Max(0, detail), EMPTY);
+		}
+
+		RefreshStat(hero);
+	}
+
+	//버튼 자리. 모션 뷰어의 영웅 탭 바로 아래다.
+	void TitleGearBtnRect(int* x, int* y, int* w, int* h)
+	{
+		*w = 72 * _2X;
+		*h = 20 * _2X;
+		*x = xOffset + DX / 2 - *w / 2;
+		*y = DY - 12 * _2X - 58 * _2X - 4 * _2X;
+	}
+
+	void DrawTitleGearButton(void)
+	{
+		char str[32];
+		int x, y, w, h;
+
+		TitleGearBtnRect(&x, &y, &w, &h);
+
+		MemRectBoth(x, y, w, h, titleGearStep > 0 ? COLOR_BROWN : COLOR_BLACK, COLOR_WHITE);
+		SetFontColor(COLOR_WHITE);
+
+		if (titleGearStep <= 0)
+			sprintf(str, "장비 없음");
+		else
+			sprintf(str, "장비 %d/%d", titleGearStep, TITLE_GEAR_STEP - 1);
+
+		CenterTextStrSolid(str, x + w / 2, y - h + 5 * _2X, 0.6f);
+		SetRectPoint(x, y, w, h, TOUCH_FUNC_TITLE_GEAR);
+	}
+
+	//버튼을 눌렀다. 한 단 올리고, 끝까지 갔으면 처음으로 돌아온다.
+	void TitleGearNext(void)
+	{
+		titleGearStep = (titleGearStep + 1) % TITLE_GEAR_STEP;
+		TitleGearApply(titleGearStep);
+	}
+
 	void DrawTitleSkillViewer()
 	{
 		const int tabW = 72 * _2X;
@@ -755,6 +846,9 @@ namespace
 			SetRectPoint(tabX + tabW * i, tabY, tabW, tabH,
 				TOUCH_FUNC_TITLE_SKILL_ROBIN + i);
 		}
+
+		//장비를 갈아 끼우는 버튼. 탭 아래에 늘 보인다.
+		DrawTitleGearButton();
 
 		if (!titleSkillViewerActive)
 			return;
@@ -914,6 +1008,11 @@ void TitleSkillViewerCommand(int command)
 		titleSkillPaused = false;
 		titleSkillReadyNext = false;
 		titleSkillViewerActive = true;
+		return;
+	}
+
+	if (command == TOUCH_FUNC_TITLE_GEAR) {
+		TitleGearNext();
 		return;
 	}
 
@@ -1546,7 +1645,7 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 
 	//---- 방어구 · 장신구 ----
 	{ ITEM_HELM,    1, GRADE_SUPERIOR, 2, 2,  80, "강철투구" },
-	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 2, 3, 140, "판금갑옷" },
+	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 2, 2, 140, "판금갑옷" },
 	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   2, 2,  40, "건틀릿" },
 	{ ITEM_KILT,    1, GRADE_NORMAL,   2, 2,  70, "판금바지" },
 	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 2,  40, "강철장화" },
@@ -2395,6 +2494,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
+	if (p->type == ITEM_ARMOR) {
+		if (DrawArmorInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha))
+			return;
+	}
+
 	//아이콘은 카드 한가운데. DrawIcon 의 x, y 는 왼쪽 위다.
 	DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 		x + w / 2 - ITEMICONSIZE / 2,
@@ -3161,7 +3265,9 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	switch (it->type) {
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
 		out->w = 2; out->h = 2; break;
-	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
+	case ITEM_ARMOR:
+		out->w = 2; out->h = (it->detail < 4) ? 2 : 3; break;
+	case ITEM_VEST: case ITEM_COAT:
 		out->w = 2; out->h = 3; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
 		out->w = 2; out->h = 2; break;
@@ -3393,6 +3499,45 @@ static void GridPlaceGear(void)
 			}
 		}
 	}
+
+	// 화면에서 갑옷 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
+	// 장착된 갑옷이 없으면 현재 영웅 타입에 맞는 갑옷을 인벤토리에 넣어준다.
+	bool hasArmor = false;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_ARMOR ||
+			gGridItem[i].part.type == ITEM_VEST || gGridItem[i].part.type == ITEM_COAT)) {
+			hasArmor = true;
+			break;
+		}
+	}
+	if (!hasArmor) {
+		int armorType = ITEM_ARMOR;
+		if (hero->type == DIANA) armorType = ITEM_VEST;
+		else if (hero->type == MAXX) armorType = ITEM_COAT;
+
+		GridPart armorPart;
+		memset(&armorPart, 0, sizeof(GridPart));
+		armorPart.type = armorType;
+		armorPart.detail = 1;
+		armorPart.grade = GRADE_RARE;
+		armorPart.w = 2;
+		armorPart.h = 2;
+		armorPart.name = (armorType == ITEM_ARMOR) ? "비늘 갑옷" : (armorType == ITEM_VEST ? "가죽 조끼" : "전투 코트");
+
+		int col, row;
+		if (GridFindSpot(&armorPart, &col, &row)) {
+			const int slot = GridTestFreeSlot();
+			if (slot >= 0) {
+				gGridItem[slot].part = armorPart;
+				gGridItem[slot].shop = -1;
+				gGridItem[slot].equip = -1;
+				gGridItem[slot].col = col;
+				gGridItem[slot].row = row;
+				gGridItem[slot].used = true;
+				MakeItem(&gGridItem[slot].item, armorType, 1, armorPart.grade, armorPart.detail, 0);
+			}
+		}
+	}
 }
 
 void GridTestDraw(void)
@@ -3612,6 +3757,8 @@ void GridTestDraw(void)
 					drawn = DrawPantsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 				else if (f->type == ITEM_GUNTLET || f->type == ITEM_ARMLET || f->type == ITEM_GLOVE)
 					drawn = DrawGloveInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
+				else if (f->type == ITEM_ARMOR)
+					drawn = DrawArmorInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 
 				if (!drawn) {
 					DrawIcon(GetItemIcon(f->type, f->detail, f->grade),
@@ -3671,6 +3818,8 @@ void GridTestDraw(void)
 				drawn = DrawPantsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 			else if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE)
 				drawn = DrawGloveInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
+			else if (p->type == ITEM_ARMOR)
+				drawn = DrawArmorInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 
 			if (!drawn) {
 				DrawIcon(GetItemIcon(p->type, p->detail, p->grade),

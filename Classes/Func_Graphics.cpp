@@ -1093,6 +1093,31 @@ bool DrawGloveInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 	return true;
 }
 
+bool DrawArmorInBox(int type, int detail, int x, int y, int w, int h, int alpha)
+{
+	int img = -1;
+	const int d = Max(0, Min(detail, 7));
+	const float imgW = 64.0f;
+	const float imgH = (d < 4) ? 64.0f : 96.0f;
+
+	if (type == ITEM_ARMOR) {
+		img = ITEM_ARMOR_ROBIN0_IMG + d;
+	}
+	else {
+		return false;
+	}
+
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return false;
+	if (alpha <= 0) return true;
+
+	const float zoom = Min((float)w / imgW, (float)h / imgH);
+	DrawImage((int)imgW, (int)imgH, 0, 0,
+		x + (int)((w - imgW * zoom) / 2.0f), y - (int)((h - imgH * zoom) / 2.0f),
+		false, 0, 0, 0, alpha, zoom, sprite[img], img);
+	return true;
+}
+
 void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoom, cocos2d::Sprite* src, int srcIdx)
 {
 	DrawImageScale(
@@ -5667,6 +5692,31 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 	int dMotion;
 	OBJECT* pObj;
 
+	// Extended i7 weapon atlas. The legacy icon encoding can address only
+	// 64 cells per texture, while Diana and Maxx now need 70 distinct cells.
+	if ((idx & 0xFF80) == 0x8000) {
+		int local = idx & 0x7F;
+		int sx = 1 + (local & 0x07) * 33;
+		int sy = 398 + (local >> 3) * 33;
+		if (shadow)
+			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+				x + (float)(ITEMICONSIZE / 2 - 12 * _2X) * zoom,
+				y + (float)(-ITEMICONSIZE + 10 * _2X) * zoom, SHADOW_IMG, zoom);
+		if (solid) {
+			SetColor(ani ? itemColor[frame / 2 % 6] : solid);
+			for (i = 0; i < 4; i++)
+				DrawImage(32, 32, sx, sy,
+					x + (float)solidPosition[2 * i + 0] * thickness * zoom,
+					y + (float)solidPosition[2 * i + 1] * thickness * zoom,
+					false, false, false, false, false, zoom,
+					sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+			SetColor(beforeColor);
+		}
+		DrawImage(32, 32, sx, sy, x, y, false, false, false, false, false,
+			zoom, sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+		return;
+	}
+
 	if (idx >= ICON_BOX) {
 		DrawBox(idx - ICON_BOX, x + (float)ITEMICONSIZE * zoom / 2, y - (float)ITEMICONSIZE * zoom / 2, LEFT, false, solid, false, false, true, zoom);
 	}
@@ -6139,10 +6189,24 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 		SetAlpha(16);
 		MemRect(x, y, (float)16 * _2X * zoom, (float)16 * _2X * zoom, 0x000000);
 		SetAlpha(32);
-		DrawImage(10 * _2X, 10 * _2X, 1 + (16 * _2X + 1) * (type & 0x07), 1 + (16 * _2X + 1) * ((type & 0x3F) >> 3), x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[ITEM_IMG + (type >> 6)], ITEM_IMG + (type >> 6));
+		if ((type & 0xFF80) == 0x8000) {
+			int local = type & 0x7F;
+			DrawImage(32, 32, 1 + (local & 0x07) * 33, 398 + (local >> 3) * 33,
+				x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom,
+				false, false, false, false, false, zoom * (20.0f / 32.0f),
+				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+		}
+		else
+			DrawImage(10 * _2X, 10 * _2X, 1 + (16 * _2X + 1) * (type & 0x07), 1 + (16 * _2X + 1) * ((type & 0x3F) >> 3), x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[ITEM_IMG + (type >> 6)], ITEM_IMG + (type >> 6));
 	}
 	else if (it->type == ITEM_SKILL) {
 		DrawSkillIcon(it->detail, x, y, zoom);
+	}
+	else if ((it->icon & 0xFF80) == 0x8000) {
+		int local = it->icon & 0x7F;
+		DrawImage(32, 32, 1 + (local & 0x07) * 33, 398 + (local >> 3) * 33,
+			x, y, false, false, false, false, false, zoom,
+			sprite[ITEM_IMG + 7], ITEM_IMG + 7);
 	}
 	else
 		DrawImage(16 * _2X, 16 * _2X, 1 + (16 * _2X + 1) * (it->icon & 0x07), 1 + (16 * _2X + 1) * ((it->icon & 0x3F) >> 3), x, y, false, false, false, false, false, zoom, sprite[ITEM_IMG + (it->icon >> 6)], ITEM_IMG + (it->icon >> 6));
