@@ -3513,6 +3513,33 @@ const char* const textId[] = {
 	"item_boots_maxx6",
 	"item_boots_maxx7",
 
+	"item_pants_robin0",
+	"item_pants_robin1",
+	"item_pants_robin2",
+	"item_pants_robin3",
+	"item_pants_robin4",
+	"item_pants_robin5",
+	"item_pants_robin6",
+	"item_pants_robin7",
+
+	"item_pants_diana0",
+	"item_pants_diana1",
+	"item_pants_diana2",
+	"item_pants_diana3",
+	"item_pants_diana4",
+	"item_pants_diana5",
+	"item_pants_diana6",
+	"item_pants_diana7",
+
+	"item_pants_maxx0",
+	"item_pants_maxx1",
+	"item_pants_maxx2",
+	"item_pants_maxx3",
+	"item_pants_maxx4",
+	"item_pants_maxx5",
+	"item_pants_maxx6",
+	"item_pants_maxx7",
+
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
 	"새로하기",//TEXT_NEWGAME

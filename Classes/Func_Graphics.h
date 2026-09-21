@@ -32,6 +32,7 @@ bool DrawSwordInBox(int detail, int x, int y, int w, int h, int alpha);
 bool DrawSwordInBoxRot(int detail, int x, int y, int w, int h, int alpha);
 bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha);
 bool DrawBootsInBoxRot(int type, int detail, int x, int y, int w, int h, int alpha);
+bool DrawPantsInBox(int type, int detail, int x, int y, int w, int h, int alpha);
 void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoom, cocos2d::Sprite * src, int srcIdx);
 void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoomX, float zoomY, cocos2d::Sprite* src, int srcIdx);
 void ShadowImage(int, int, int, int, int, int, int, float);
@@ -134,7 +135,8 @@ void DrawXMark(int x, int y, float zoom);
 
 // Item Showing
 void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shadow, float thickness);
-int GetHeroSkillIcon(int heroSkillIdx);
+int GetHeroSkillIcon(int heroSkillIdx);
+
 void DrawSkillIcon(int, int, int, float);
 void DrawBuffCard(int debuffIdx, int centerX, int centerY, float zoom, float rotation = 0.0f);
 void DrawCrewBulletIcon(int idx, int x, int y, float zoom);

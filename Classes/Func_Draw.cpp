@@ -2385,6 +2385,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
+	if (p->type == ITEM_KILT || p->type == ITEM_SKIRT || p->type == ITEM_PANTS) {
+		if (DrawPantsInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha))
+			return;
+	}
+
 	//아이콘은 카드 한가운데. DrawIcon 의 x, y 는 왼쪽 위다.
 	DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 		x + w / 2 - ITEMICONSIZE / 2,
@@ -3305,6 +3310,45 @@ static void GridPlaceGear(void)
 			}
 		}
 	}
+
+	// 화면에서 하의(바지/치마/킬트) 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
+	// 장착된 하의가 없으면 현재 영웅 타입에 맞는 하의를 인벤토리에 넣어준다.
+	bool hasPants = false;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_KILT ||
+			gGridItem[i].part.type == ITEM_SKIRT || gGridItem[i].part.type == ITEM_PANTS)) {
+			hasPants = true;
+			break;
+		}
+	}
+	if (!hasPants) {
+		int pantsType = ITEM_KILT;
+		if (hero->type == DIANA) pantsType = ITEM_SKIRT;
+		else if (hero->type == MAXX) pantsType = ITEM_PANTS;
+
+		GridPart pantsPart;
+		memset(&pantsPart, 0, sizeof(GridPart));
+		pantsPart.type = pantsType;
+		pantsPart.detail = 1;
+		pantsPart.grade = GRADE_RARE;
+		pantsPart.w = 2;
+		pantsPart.h = 2;
+		pantsPart.name = (pantsType == ITEM_KILT) ? "체인 킬트" : (pantsType == ITEM_SKIRT ? "빈티지 스커트" : "카프스킨 팬츠");
+
+		int col, row;
+		if (GridFindSpot(&pantsPart, &col, &row)) {
+			const int slot = GridTestFreeSlot();
+			if (slot >= 0) {
+				gGridItem[slot].part = pantsPart;
+				gGridItem[slot].shop = -1;
+				gGridItem[slot].equip = -1;
+				gGridItem[slot].col = col;
+				gGridItem[slot].row = row;
+				gGridItem[slot].used = true;
+				MakeItem(&gGridItem[slot].item, pantsType, 1, pantsPart.grade, pantsPart.detail, 0);
+			}
+		}
+	}
 }
 
 void GridTestDraw(void)
@@ -3520,6 +3564,8 @@ void GridTestDraw(void)
 					drawn = DrawSwordInBox(f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 				else if (f->type == ITEM_GREAVES || f->type == ITEM_SHOES || f->type == ITEM_BOOTS)
 					drawn = DrawBootsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
+				else if (f->type == ITEM_KILT || f->type == ITEM_SKIRT || f->type == ITEM_PANTS)
+					drawn = DrawPantsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 
 				if (!drawn) {
 					DrawIcon(GetItemIcon(f->type, f->detail, f->grade),
@@ -3575,6 +3621,8 @@ void GridTestDraw(void)
 				drawn = DrawSwordInBox(p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 			else if (p->type == ITEM_GREAVES || p->type == ITEM_SHOES || p->type == ITEM_BOOTS)
 				drawn = DrawBootsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
+			else if (p->type == ITEM_KILT || p->type == ITEM_SKIRT || p->type == ITEM_PANTS)
+				drawn = DrawPantsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 
 			if (!drawn) {
 				DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
