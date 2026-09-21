@@ -3585,6 +3585,15 @@ const char* const textId[] = {
 	"item_vest_diana6",
 	"item_vest_diana7",
 
+	"item_coat_maxx0",
+	"item_coat_maxx1",
+	"item_coat_maxx2",
+	"item_coat_maxx3",
+	"item_coat_maxx4",
+	"item_coat_maxx5",
+	"item_coat_maxx6",
+	"item_coat_maxx7",
+
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
 	"새로하기",//TEXT_NEWGAME

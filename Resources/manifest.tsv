@@ -1,5 +1,5 @@
 #content 1
-version	202609211211
+version	202609211219
 data/content.pack	2530692	2b173989e026ac76
 data/rates.tsv	18253	b80f376b3df80c57
 res/a0_0.png	2350	f243b2f644c6e7e6
@@ -702,6 +702,14 @@ res/item_boots_robin4.png	3133	30f5b380ecc50d2f
 res/item_boots_robin5.png	2320	984ff33adf3f0b4e
 res/item_boots_robin6.png	3273	6510717021aa7636
 res/item_boots_robin7.png	3443	4ae9c1b2b9e01268
+res/item_coat_maxx0.png	7720	f9799bc50443342e
+res/item_coat_maxx1.png	7644	165030ada3fd0d8e
+res/item_coat_maxx2.png	7260	17a39cb0a28a5ffc
+res/item_coat_maxx3.png	7693	b10041c350cf3074
+res/item_coat_maxx4.png	9928	af0e0891ecae6538
+res/item_coat_maxx5.png	10176	4bb2d14db1174982
+res/item_coat_maxx6.png	10595	c4044daa328fd0a3
+res/item_coat_maxx7.png	10086	fc8233b24e7ea05a
 res/item_glove_diana0.png	7350	ec7877f42ceb4b7a
 res/item_glove_diana1.png	7448	64e092421f15c406
 res/item_glove_diana2.png	7778	7cc4235194855dd0
