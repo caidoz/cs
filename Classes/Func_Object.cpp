@@ -1185,13 +1185,15 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		}
 
 		// 맥스 부메랑 동적 크기(35종) 및 단일화 지원:
-		// 날아갈 때 쓰는 큰 부메랑 이미지 1개만 있는 텍스처(폭 < 160)인 경우,
-		// 손에 쥐고 있을 때(IMG_C2_82)와 날아갈 때(IMG_C2_83) 모두 단일 텍스처 영역을 동적 참조.
+		// 세로 단일 이미지로 통일된 35종 부메랑은 손 장착(IMG_C2_82)과
+		// 비행(IMG_C2_83) 모두 실제 텍스처 전체 영역을 동적으로 참조한다.
 		static unsigned short kDynamicBoomerangPart[4] = { 0, 0, 86, 70 };
 		if (pObj->cmf == MAXX && (fixedImg == IMG_C2_82 || fixedImg == IMG_C2_83) && sprite[imgFile]) {
 			const float texW = sprite[imgFile]->getContentSize().width;
 			const float texH = sprite[imgFile]->getContentSize().height;
-			if (texW > 0.0f && texW < 160.0f) {
+			// All 35 w2 resources are now one vertical, full-canvas boomerang.
+			// Large late-tier images must use their actual texture dimensions too.
+			if (texW > 0.0f && texH > 0.0f) {
 				kDynamicBoomerangPart[2] = (unsigned short)texW;
 				kDynamicBoomerangPart[3] = (unsigned short)texH;
 				ucPtr = kDynamicBoomerangPart;
@@ -1233,6 +1235,13 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 			const int gunIdx = imgFile - COSTUME_WEAPON_DIANA_IMG - 1;
 			if (gunIdx >= 0 && gunIdx < 35) {
 				const DianaGunInfo& gun = kDianaGuns[gunIdx];
+				// Gun PNGs are stored vertically (muzzle up) for inventory placement.
+				// Convert the rotated canvas/grip back to the former horizontal basis
+				// while attaching it to Diana's hand.
+				const int horizontalWidth = gun.height;
+				const int horizontalHeight = gun.width;
+				const int horizontalGripX = gun.gripY;
+				const int horizontalGripY = gun.width - 1 - gun.gripX;
 				kDynamicGunPart[0] = 0;
 				kDynamicGunPart[1] = 0;
 				kDynamicGunPart[2] = (unsigned short)gun.width;
@@ -1241,28 +1250,29 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 				if (fixedImg == IMG_C1_95) {
 					// 기존 가로 총 모션: 손잡이 위치를 원본 손 위치(17, 20)에 맞춤
-					dx = gun.width;
+					dx = horizontalWidth;
 					if ((partsRotation == 90 || partsRotation == 270) && dirF == RIGHT) {
-						dx = gun.height;
+						dx = horizontalHeight;
 					}
-					const float offX = (float)(gun.gripX - 17);
-					const float offY = (float)(gun.gripY - 20);
+					const float offX = (float)(horizontalGripX - 17);
+					const float offY = (float)(horizontalGripY - 20);
 					if (dirF == 0) {
 						imgOffsetX -= offX;
 					} else {
-						imgOffsetX += (float)((gun.width - gun.gripX) - 17);
+						imgOffsetX += (float)((horizontalWidth - horizontalGripX) - 17);
 					}
 					imgOffsetY -= offY;
+					partsRotation = (partsRotation + (dirX ? 90 : 270)) % 360;
 				}
 				else if (fixedImg == IMG_C1_94) {
-					// 기존 대각 총 모션: 손잡이 기준점을 중심으로 -40도 회전
+					// 기존 대각 총 모션: 원본 30x28 박스 내 손잡이 기준점(10, 20)을 중심으로 +35도 기본 각도 및 CMF 90도 회전 적용
 					const int q = (type & 6) >> 1;
-					const float angle_cmf = (dirX ? -1.0f : 1.0f) * (q * 90.0f - 40.0f);
+					const float angle_cmf = (dirX ? -1.0f : 1.0f) * (35.0f + q * 90.0f);
 					const float totalAngle = rotation + angle_cmf;
 
-					// Part 94의 원본 박스(30x28) 손 중심점을 화면 좌표로 계산
-					const float localX = *(cPtr + 1) + 15.0f;
-					const float localY = *(cPtr + 2) + 14.0f;
+					const float handBoxX = dirX ? 19.0f : 10.0f;
+					const float localX = *(cPtr + 1) + (dirF == 0 ? handBoxX : (30.0f - handBoxX));
+					const float localY = *(cPtr + 2) + 20.0f;
 					const float rad = CC_DEGREES_TO_RADIANS(rotation);
 					float cx = 0.0f;
 					float cy = 0.0f;
