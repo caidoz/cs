@@ -379,8 +379,8 @@
     "rows": 7,
     "width": 64,
     "height": 224,
-    "pivotX": 31.5,
-    "pivotY": 164.5,
+    "pivotX": 29.5,
+    "pivotY": 191.5,
     "sourceRect": [
       8,
       381,
@@ -445,8 +445,8 @@
     "rows": 9,
     "width": 160,
     "height": 288,
-    "pivotX": 85.5,
-    "pivotY": 186.5,
+    "pivotX": 80.5,
+    "pivotY": 253.5,
     "sourceRect": [
       8,
       329,
@@ -556,7 +556,7 @@
     "width": 96,
     "height": 320,
     "pivotX": 48.5,
-    "pivotY": 249.5,
+    "pivotY": 291.5,
     "sourceRect": [
       8,
       363,

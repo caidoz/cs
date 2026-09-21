@@ -278,7 +278,7 @@
 	X(itemStat, 1, DPK_UINT, 144, DPK_KEY_NONE, 0, 0) \
 	X(enchantData, 4, DPK_UINT, 4320, DPK_KEY_NONE, 0, 0) \
 	X(itemCooltime, 1, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
-	X(itemIconTable, 2, DPK_UINT, 447, DPK_KEY_NONE, 0, 0) \
+	X(itemIconTable, 2, DPK_UINT, 501, DPK_KEY_NONE, 0, 0) \
 	X(neckOption, 4, DPK_UINT, 168, DPK_KEY_NONE, 0, 0) \
 	X(neckRingDefaultValue, 4, DPK_INT, 300, DPK_KEY_NONE, 0, 0) \
 	X(ringOption, 1, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \

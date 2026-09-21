@@ -62,15 +62,15 @@ static const SwordSpriteInfo kSwordSprites[36] = {
     {swordTileSize[28], swordTileSize[29], 64, 160, 30.5f, 143.5f}, // w0_15
     {swordTileSize[30], swordTileSize[31], 96, 192, 48.5f, 181.5f}, // w0_16
     {swordTileSize[32], swordTileSize[33], 96, 224, 51.5f, 202.5f}, // w0_17
-    {swordTileSize[34], swordTileSize[35], 64, 224, 31.5f, 164.5f}, // w0_18
+    {swordTileSize[34], swordTileSize[35], 64, 224, 29.5f, 191.5f}, // w0_18
     {swordTileSize[36], swordTileSize[37], 96, 256, 38.5f, 219.5f}, // w0_19
     {swordTileSize[38], swordTileSize[39], 160, 256, 76.5f, 238.5f}, // w0_20
-    {swordTileSize[40], swordTileSize[41], 160, 288, 85.5f, 186.5f}, // w0_21
+    {swordTileSize[40], swordTileSize[41], 160, 288, 80.5f, 253.5f}, // w0_21
     {swordTileSize[42], swordTileSize[43], 128, 288, 64.5f, 256.5f}, // w0_22
     {swordTileSize[44], swordTileSize[45], 128, 224, 66.5f, 200.5f}, // w0_23
     {swordTileSize[46], swordTileSize[47], 96, 224, 48.5f, 203.5f}, // w0_24
     {swordTileSize[48], swordTileSize[49], 96, 288, 48.5f, 267.5f}, // w0_25
-    {swordTileSize[50], swordTileSize[51], 96, 320, 48.5f, 249.5f}, // w0_26
+    {swordTileSize[50], swordTileSize[51], 96, 320, 48.5f, 291.5f}, // w0_26
     {swordTileSize[52], swordTileSize[53], 160, 320, 98.5f, 295.5f}, // w0_27
     {swordTileSize[54], swordTileSize[55], 128, 320, 91.5f, 288.5f}, // w0_28
     {swordTileSize[56], swordTileSize[57], 192, 352, 95.5f, 328.5f}, // w0_29

@@ -361,7 +361,7 @@ enum { itemCooltime_COUNT = 23 };
 
 //아이템 종류-아이콘 매칭 테이블
 extern const unsigned short* itemIconTable;
-enum { itemIconTable_COUNT = 447 };
+enum { itemIconTable_COUNT = 501 };
 
 extern const unsigned int* neckOption;
 enum { neckOption_COUNT = 168 };
