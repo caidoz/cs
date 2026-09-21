@@ -1547,7 +1547,7 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 	//---- 방어구 · 장신구 ----
 	{ ITEM_HELM,    1, GRADE_SUPERIOR, 2, 2,  80, "강철투구" },
 	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 2, 3, 140, "판금갑옷" },
-	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 2,  40, "건틀릿" },
+	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   2, 2,  40, "건틀릿" },
 	{ ITEM_KILT,    1, GRADE_NORMAL,   2, 2,  70, "판금바지" },
 	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 2,  40, "강철장화" },
 	{ ITEM_RING,    0, GRADE_EPIC,     1, 1, 200, "룬반지" },
@@ -2390,6 +2390,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
+	if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE) {
+		if (DrawGloveInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha))
+			return;
+	}
+
 	//아이콘은 카드 한가운데. DrawIcon 의 x, y 는 왼쪽 위다.
 	DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 		x + w / 2 - ITEMICONSIZE / 2,
@@ -3159,7 +3164,7 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
 		out->w = 2; out->h = 3; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
-		out->w = 1; out->h = 2; break;
+		out->w = 2; out->h = 2; break;
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
 		out->w = 2; out->h = 2; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
@@ -3346,6 +3351,45 @@ static void GridPlaceGear(void)
 				gGridItem[slot].row = row;
 				gGridItem[slot].used = true;
 				MakeItem(&gGridItem[slot].item, pantsType, 1, pantsPart.grade, pantsPart.detail, 0);
+			}
+		}
+	}
+
+	// 화면에서 장갑/건틀릿/팔찌 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
+	// 장착된 장갑이 없으면 현재 영웅 타입에 맞는 장갑을 인벤토리에 넣어준다.
+	bool hasGlove = false;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_GUNTLET ||
+			gGridItem[i].part.type == ITEM_ARMLET || gGridItem[i].part.type == ITEM_GLOVE)) {
+			hasGlove = true;
+			break;
+		}
+	}
+	if (!hasGlove) {
+		int gloveType = ITEM_GUNTLET;
+		if (hero->type == DIANA) gloveType = ITEM_ARMLET;
+		else if (hero->type == MAXX) gloveType = ITEM_GLOVE;
+
+		GridPart glovePart;
+		memset(&glovePart, 0, sizeof(GridPart));
+		glovePart.type = gloveType;
+		glovePart.detail = 1;
+		glovePart.grade = GRADE_RARE;
+		glovePart.w = 2;
+		glovePart.h = 2;
+		glovePart.name = (gloveType == ITEM_GUNTLET) ? "체인 건틀릿" : (gloveType == ITEM_ARMLET ? "사막 팔찌" : "이중매듭 장갑");
+
+		int col, row;
+		if (GridFindSpot(&glovePart, &col, &row)) {
+			const int slot = GridTestFreeSlot();
+			if (slot >= 0) {
+				gGridItem[slot].part = glovePart;
+				gGridItem[slot].shop = -1;
+				gGridItem[slot].equip = -1;
+				gGridItem[slot].col = col;
+				gGridItem[slot].row = row;
+				gGridItem[slot].used = true;
+				MakeItem(&gGridItem[slot].item, gloveType, 1, glovePart.grade, glovePart.detail, 0);
 			}
 		}
 	}
@@ -3566,6 +3610,8 @@ void GridTestDraw(void)
 					drawn = DrawBootsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 				else if (f->type == ITEM_KILT || f->type == ITEM_SKIRT || f->type == ITEM_PANTS)
 					drawn = DrawPantsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
+				else if (f->type == ITEM_GUNTLET || f->type == ITEM_ARMLET || f->type == ITEM_GLOVE)
+					drawn = DrawGloveInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
 
 				if (!drawn) {
 					DrawIcon(GetItemIcon(f->type, f->detail, f->grade),
@@ -3623,6 +3669,8 @@ void GridTestDraw(void)
 				drawn = DrawBootsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 			else if (p->type == ITEM_KILT || p->type == ITEM_SKIRT || p->type == ITEM_PANTS)
 				drawn = DrawPantsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
+			else if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE)
+				drawn = DrawGloveInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
 
 			if (!drawn) {
 				DrawIcon(GetItemIcon(p->type, p->detail, p->grade),

@@ -1063,6 +1063,36 @@ bool DrawPantsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 	return true;
 }
 
+bool DrawGloveInBox(int type, int detail, int x, int y, int w, int h, int alpha)
+{
+	int img = -1;
+	const int d = Max(0, Min(detail, 7));
+	if (type == ITEM_GUNTLET) {
+		img = ITEM_GLOVE_ROBIN0_IMG + d;
+	}
+	else if (type == ITEM_ARMLET) {
+		img = ITEM_GLOVE_DIANA0_IMG + d;
+	}
+	else if (type == ITEM_GLOVE) {
+		img = ITEM_GLOVE_MAXX0_IMG + d;
+	}
+	else {
+		return false;
+	}
+
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return false;
+	if (alpha <= 0) return true;
+
+	const float imgW = 64.0f;
+	const float imgH = 64.0f;
+	const float zoom = Min((float)w / imgW, (float)h / imgH);
+	DrawImage((int)imgW, (int)imgH, 0, 0,
+		x + (int)((w - imgW * zoom) / 2.0f), y - (int)((h - imgH * zoom) / 2.0f),
+		false, 0, 0, 0, alpha, zoom, sprite[img], img);
+	return true;
+}
+
 void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoom, cocos2d::Sprite* src, int srcIdx)
 {
 	DrawImageScale(
