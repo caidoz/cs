@@ -5,6 +5,7 @@
 #include "Text.h"
 #include "Data/SwordSprites.h"
 #include "Data/FoeGearData.h"
+#include "CastleWheelManager.h"
 
 
 //���
@@ -1548,7 +1549,7 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 2, 3, 140, "판금갑옷" },
 	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 2,  40, "건틀릿" },
 	{ ITEM_KILT,    1, GRADE_NORMAL,   2, 2,  70, "판금바지" },
-	{ ITEM_GREAVES, 1, GRADE_NORMAL,   2, 1,  40, "강철장화" },
+	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 2,  40, "강철장화" },
 	{ ITEM_RING,    0, GRADE_EPIC,     1, 1, 200, "룬반지" },
 };
 
@@ -1810,6 +1811,13 @@ int GetStageInventoryTop(void)
 	//전투 장면이 딛는 줄이다. 격자가 내려앉으면 장면도 같이 내려와
 	//위쪽이 빈다 - 그 자리에 적의 가방이 뜬다.
 	return gGridBottom + gGridH * gGridCell + GRIDTEST_HUDH;
+}
+
+float GetStageWorldLift(void)
+{
+	// Preparation uses the tall inventory. Keep the complete battlefield 144
+	// screen pixels higher, then return smoothly as the UI slides away.
+	return (1.0f - gStageUiSlide) * 72.0f * _2X;
 }
 
 static inline int GridCellX(int col) { return gGridX + col * gGridCell; }
@@ -2368,6 +2376,15 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
+	if (p->type == ITEM_GREAVES || p->type == ITEM_SHOES || p->type == ITEM_BOOTS) {
+		const bool drawn = p->rot
+			? DrawBootsInBoxRot(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha)
+			: DrawBootsInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha);
+
+		if (drawn)
+			return;
+	}
+
 	//아이콘은 카드 한가운데. DrawIcon 의 x, y 는 왼쪽 위다.
 	DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 		x + w / 2 - ITEMICONSIZE / 2,
@@ -2778,6 +2795,10 @@ void GridTestSkipOffer(void)
 		return;
 
 	GridOfferResume();
+	StageRtSetAuto(true);
+	// This green start button bypasses StageRtToggleAuto, so clear the
+	// cinematic combat zoom on this path too.
+	ClearCombatZoom();
 	GridTestSay("이번 판은 넘겼다");
 }
 
@@ -3069,6 +3090,7 @@ void GridTestRelease(void)
 		else {
 			//자리만 옮긴다. 값은 오가지 않는다.
 			gGridItem[from].used = true;
+			gGridItem[from].part = held;
 			gGridItem[from].col = gGridDragCol;
 			gGridItem[from].row = gGridDragRow;
 		}
@@ -3136,7 +3158,7 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
 		out->w = 2; out->h = 2; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
-		out->w = 2; out->h = 1; break;
+		out->w = 1; out->h = 2; break;
 	default:
 		break;
 	}
@@ -3243,6 +3265,45 @@ static void GridPlaceGear(void)
 	if (missed > 0) {
 		snprintf(gGridMsg, sizeof(gGridMsg), "장비 %d개가 성에 안 들어갔다", missed);
 		gGridMsgFrame = FPS * 3;
+	}
+
+	// 화면에서 신발 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
+	// 장착된 신발이 없으면 현재 영웅 타입에 맞는 신발을 인벤토리에 넣어준다.
+	bool hasBoots = false;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_GREAVES ||
+			gGridItem[i].part.type == ITEM_SHOES || gGridItem[i].part.type == ITEM_BOOTS)) {
+			hasBoots = true;
+			break;
+		}
+	}
+	if (!hasBoots) {
+		int bootType = ITEM_GREAVES;
+		if (hero->type == DIANA) bootType = ITEM_SHOES;
+		else if (hero->type == MAXX) bootType = ITEM_BOOTS;
+
+		GridPart bootPart;
+		memset(&bootPart, 0, sizeof(GridPart));
+		bootPart.type = bootType;
+		bootPart.detail = 1;
+		bootPart.grade = GRADE_RARE;
+		bootPart.w = 1;
+		bootPart.h = 2;
+		bootPart.name = (bootType == ITEM_GREAVES) ? "체인 그리브" : (bootType == ITEM_SHOES ? "가죽 부츠" : "전투화");
+
+		int col, row;
+		if (GridFindSpot(&bootPart, &col, &row)) {
+			const int slot = GridTestFreeSlot();
+			if (slot >= 0) {
+				gGridItem[slot].part = bootPart;
+				gGridItem[slot].shop = -1;
+				gGridItem[slot].equip = -1;
+				gGridItem[slot].col = col;
+				gGridItem[slot].row = row;
+				gGridItem[slot].used = true;
+				MakeItem(&gGridItem[slot].item, bootType, 1, bootPart.grade, bootPart.detail, 0);
+			}
+		}
 	}
 }
 
@@ -3454,8 +3515,13 @@ void GridTestDraw(void)
 				SetAlpha(ALPHA_MAX);
 				MemRectFrame(x, y, w, h, 0xFFD700);
 
-				if (f->type != ITEM_SWORD || !DrawSwordInBox(f->detail,
-					x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20)) {
+				bool drawn = false;
+				if (f->type == ITEM_SWORD)
+					drawn = DrawSwordInBox(f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
+				else if (f->type == ITEM_GREAVES || f->type == ITEM_SHOES || f->type == ITEM_BOOTS)
+					drawn = DrawBootsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
+
+				if (!drawn) {
 					DrawIcon(GetItemIcon(f->type, f->detail, f->grade),
 						x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
 						1.0f, false, false, false, true);
@@ -3504,8 +3570,13 @@ void GridTestDraw(void)
 			SetAlpha(ALPHA_MAX);
 			MemRectFrame(x, y, w, h, kGradeColor[p->grade]);
 
-			if (p->type != ITEM_SWORD || !DrawSwordInBox(p->detail,
-				x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX)) {
+			bool drawn = false;
+			if (p->type == ITEM_SWORD)
+				drawn = DrawSwordInBox(p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
+			else if (p->type == ITEM_GREAVES || p->type == ITEM_SHOES || p->type == ITEM_BOOTS)
+				drawn = DrawBootsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
+
+			if (!drawn) {
 				DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 					x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
 					1.0f, false, false, false, true);
@@ -3845,21 +3916,25 @@ static const int kCastleBtnGap = 1 * _2X;
 
 static int LobbyCastleBtnY(void)
 {
-	return BOTTOMMENUHEIGHT + 21 * _2X;
+	return BOTTOMMENUHEIGHT + 4 * _2X;
 }
 
 static int LobbyCastleBtnX(int n)
 {
-	const int totalW = 10 * kCastleBtnW + 9 * kCastleBtnGap;
-	const int startX = 3 * _2X;
-	return startX + n * (kCastleBtnW + kCastleBtnGap);
+	(void)n;
+	return 3 * _2X;
+}
+
+static int LobbyCastleBtnItemY(int n)
+{
+	return LobbyCastleBtnY() + (n + 1) * (kCastleBtnH + kCastleBtnGap);
 }
 
 static int LobbyCastleBtnHit(float x, float y)
 {
-	const int btnY = LobbyCastleBtnY();
 	for (int n = 0; n < 10; n++) {
-		if (GetRectPoint((int)x, (int)y, LobbyCastleBtnX(n), btnY, kCastleBtnW, kCastleBtnH))
+		if (GetRectPoint((int)x, (int)y, LobbyCastleBtnX(n), LobbyCastleBtnItemY(n),
+			kCastleBtnW, kCastleBtnH))
 			return n;
 	}
 	return -1;
@@ -3894,12 +3969,12 @@ static void LobbyCastleToggleDraw(void)
 
 static void LobbyCastleButtonsDraw(void)
 {
-	const int btnY = LobbyCastleBtnY();
 	const int curCastle = Max(0, Min(robin.castle, 9));
 	char str[16];
 
 	for (int n = 0; n < 10; n++) {
 		const int btnX = LobbyCastleBtnX(n);
+		const int btnY = LobbyCastleBtnItemY(n);
 		const bool selected = (curCastle == n);
 
 		MemRect(btnX, btnY, kCastleBtnW, kCastleBtnH, selected ? 0x6A521A : 0x1A1E2E);
@@ -3919,7 +3994,7 @@ static const int kLobbyZoomBtnH = 18 * _2X;
 
 static int LobbyZoomBtnY(void)
 {
-	return LobbyCastleBtnY();
+	return BOTTOMMENUHEIGHT + 12 * _2X;
 }
 
 static int LobbyCastleToggleX(void)
@@ -3934,13 +4009,19 @@ static int LobbyCastleToggleY(void)
 
 static int LobbyZoomBtnX(int n)
 {
-	return DX - 3 * _2X - kLobbyZoomBtnW - (1 - n) * (kLobbyZoomBtnW + 2 * _2X);
+	(void)n;
+	return DX - 3 * _2X - kLobbyZoomBtnW;
+}
+
+static int LobbyZoomBtnItemY(int n)
+{
+	return LobbyZoomBtnY() + (n + 1) * (kLobbyZoomBtnH + 2 * _2X);
 }
 
 static int LobbyZoomBtnHit(float x, float y)
 {
 	for (int n = 0; n < 2; n++) {
-		if (GetRectPoint((int)x, (int)y, LobbyZoomBtnX(n), LobbyZoomBtnY(),
+		if (GetRectPoint((int)x, (int)y, LobbyZoomBtnX(n), LobbyZoomBtnItemY(n),
 			kLobbyZoomBtnW, kLobbyZoomBtnH))
 			return n == 0 ? -1 : +1;
 	}
@@ -3967,12 +4048,6 @@ bool LobbyCamTouchBegan(int id, float x, float y)
 		gLobbyPinchOn = false;
 		gLobbyZoomHold = 0;
 #if LOBBY_CAM_DEBUG_BUTTONS
-		if (!gLobbyCastleMenuOpen && LobbyCastleToggleHit(x, y)) {
-			robin.castle = (Max(0, Min(robin.castle, 9)) + 1) % 10;
-			gLobbyCamImg = -1;
-			gLobbyPanBlocked = true;
-			return true;
-		}
 		const int castleHit = gLobbyCastleMenuOpen ? -1 : LobbyCastleBtnHit(x, y);
 		if (castleHit >= 0) {
 			robin.castle = castleHit;
@@ -4110,9 +4185,34 @@ static void LobbyCastleDraw(void)
 	const float s = LobbyCamScale(w);
 	const int left = (int)(DX / 2.0f - gLobbyCamX * s);
 	const int top = (int)(LobbyViewCY() + gLobbyCamY * s);
+	const int castleIdx = Max(0, Min(robin.castle, 9));
+	const float imageBottom = top - h * s;
+	const float radius = CastleWheels::GetWheelRadius(castleIdx, s);
+	// Tuck the upper part of the wheel into the base.  This removes the long
+	// hanging axle seen when the whole wheel was placed below the image.
+	const float wheelGround = imageBottom - radius * 1.20f;
+
+	// Give the lobby castle an actual ground plane. It belongs to the castle
+	// presentation and is drawn before the castle and its front wheels.
+	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
+	if (sprite[BATTLE_BG_GROUND_IMG]) {
+		const auto groundSize = sprite[BATTLE_BG_GROUND_IMG]->getContentSize();
+		const float groundScale = Max((float)DX / groundSize.width, 0.55f);
+		// The visible grass edge in this asset sits below its nominal contact row.
+		// Raise only the lobby ground so the grass meets the wheel bottoms.
+		const int groundTop = (int)(wheelGround + groundSize.height * groundScale * 0.59f)
+			+ 10 * _2X;
+		DrawImage((int)groundSize.width, (int)groundSize.height, 0, 0,
+			0, groundTop, false, false, false, false, false, groundScale,
+			sprite[BATTLE_BG_GROUND_IMG], BATTLE_BG_GROUND_IMG);
+	}
 
 	DrawImage((int)w, (int)h, 0, 0, left, top,
 		false, false, false, false, false, s, sprite[img], img);
+
+	// Only the visible front-side wheels are drawn, above the castle sprite.
+	CastleWheels::DrawCastleWheels(castleIdx, (float)left, imageBottom,
+		w, s, wheelGround, false);
 
 	gLobbyCastleLeft = (float)left;
 	gLobbyCastleTop = (float)top;
@@ -4125,10 +4225,10 @@ static void LobbyCastleDraw(void)
 static void LobbyZoomButtonsDraw(void)
 {
 	char str[32];
-	const int y = LobbyZoomBtnY();
 
 	for (int n = 0; n < 2; n++) {
 		const int x = LobbyZoomBtnX(n);
+		const int y = LobbyZoomBtnItemY(n);
 		const bool held = gLobbyZoomHold == (n == 0 ? -1 : +1);
 
 		MemRect(x, y, kLobbyZoomBtnW, kLobbyZoomBtnH, held ? 0x5A4A20 : 0x202030);
@@ -4142,8 +4242,8 @@ static void LobbyZoomButtonsDraw(void)
 	const double skyHour = LobbySkyCycle::hour(LobbySky::seconds);
 	sprintf(str, "x%.2f  %02d:%02d / 5m", gLobbyCamZoom,
 		(int)skyHour, (int)(skyHour * 60) % 60);
-	CenterTextStrSolid(str, LobbyZoomBtnX(0) + kLobbyZoomBtnW + 4 * _2X,
-		y + 8 * _2X, 0.36f);
+	CenterTextStrSolid(str, LobbyZoomBtnX(0) + kLobbyZoomBtnW / 2,
+		LobbyZoomBtnItemY(1) + 9 * _2X, 0.36f);
 }
 #endif
 
@@ -4759,7 +4859,6 @@ void LobbyDraw(void)
 #if LOBBY_CAM_DEBUG_BUTTONS
 	LobbyZoomButtonsDraw();
 	LobbyCastleButtonsDraw();
-	LobbyCastleToggleDraw();
 #endif
 
 	// 기존 플레이 화면의 상단 GNB와 자원 바를 그대로 쓴다.
@@ -4819,7 +4918,7 @@ void LobbyDraw(void)
 		const float width = Min((float)DX * .50f, 164.0f * _2X);
 		const float height = width * 131.0f / 512.0f;
 		const int x = (int)((DX - width) / 2);
-		const int y = BOTTOMMENUHEIGHT + 70 * _2X;
+		const int y = BOTTOMMENUHEIGHT + 48 * _2X;
 		const float press = GetButtonScale(TOUCH_FUNC_GOTOBATTLE, x, y, width, height);
 		DrawImage(512, 131, 512, 272, x - (int)(width * (press - 1) / 2),
 			y + (int)(height * (press - 1) / 2), false, false, false, false, false,
