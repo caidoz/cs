@@ -1215,7 +1215,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 					//잡는 점을 그림의 오른쪽 아래로 옮긴다. 그만큼 부메랑은
 					//왼쪽 위로 간다. 값은 반쪽 크기에 대한 몫이라 35종
 					//어느 크기에서도 같은 비율로 움직인다.
-					const float kHandScale = 0.58f;
+					const float kHandScale = 0.68f;
 					const float kGripX = 0.20f;	//+ 면 그림이 왼쪽으로
 					const float kGripY = 0.20f;	//+ 면 그림이 위로
 
@@ -1253,66 +1253,38 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 			const int gunIdx = Min(34, imgFile - COSTUME_WEAPON_DIANA_IMG - 1);
 			if (gunIdx >= 0 && gunIdx < 35) {
 				const DianaGunInfo& gun = kDianaGuns[gunIdx];
-				// Gun PNGs are stored vertically (muzzle up) for inventory placement.
-				// Convert the rotated canvas/grip back to the former horizontal basis
-				// while attaching it to Diana's hand.
-				const int horizontalWidth = gun.height;
-				const int horizontalHeight = gun.width;
-				const int horizontalGripX = gun.gripY;
-				const int horizontalGripY = gun.width - 1 - gun.gripX;
 				kDynamicGunPart[0] = 0;
 				kDynamicGunPart[1] = 0;
 				kDynamicGunPart[2] = (unsigned short)gun.width;
 				kDynamicGunPart[3] = (unsigned short)gun.height;
 				ucPtr = kDynamicGunPart;
-
-				if (fixedImg == IMG_C1_95) {
-					// 기존 가로 총 모션: 손잡이 위치를 원본 손 위치(17, 20)에 맞춤
-					dx = horizontalWidth;
-					if ((partsRotation == 90 || partsRotation == 270) && dirF == RIGHT) {
-						dx = horizontalHeight;
-					}
-					const float offX = (float)(horizontalGripX - 17);
-					const float offY = (float)(horizontalGripY - 20);
-					if (dirF == 0) {
-						imgOffsetX -= offX;
-					} else {
-						imgOffsetX += (float)((horizontalWidth - horizontalGripX) - 17);
-					}
-					imgOffsetY -= offY;
-					partsRotation = (partsRotation + (dirX ? 90 : 270)) % 360;
-				}
-				else if (fixedImg == IMG_C1_94) {
-					// 기존 대각 총 모션: 원본 30x28 박스 내 손잡이 기준점(10, 20)을 중심으로 +35도 기본 각도 및 CMF 90도 회전 적용
-					const int q = (type & 6) >> 1;
-					const float angle_cmf = (dirX ? -1.0f : 1.0f) * (35.0f + q * 90.0f);
-					const float totalAngle = rotation + angle_cmf;
-
-					const float handBoxX = dirX ? 19.0f : 10.0f;
-					const float localX = *(cPtr + 1) + (dirF == 0 ? handBoxX : (30.0f - handBoxX));
-					const float localY = *(cPtr + 2) + 20.0f;
-					const float rad = CC_DEGREES_TO_RADIANS(rotation);
-					float cx = 0.0f;
-					float cy = 0.0f;
-					if (dirF == 0) {
-						cx = x + ((localX + centerX) * zoom * extra * cos(rad) - (localY + centerY) * zoom * extra * sin(rad)) + imgOffsetX;
-						cy = y - ((localX + centerX) * zoom * extra * sin(rad) + (localY + centerY) * zoom * extra * cos(rad)) + imgOffsetY;
-					}
-					else {
-						cx = x + ((-(localX + centerX)) * zoom * extra * cos(rad) - (localY + centerY) * zoom * extra * sin(rad)) + imgOffsetX;
-						cy = y - ((-(localX + centerX)) * zoom * extra * sin(rad) + (localY + centerY) * zoom * extra * cos(rad)) + imgOffsetY;
-					}
-
-					const float ax = (float)gun.gripX / (float)gun.width;
-					const float ay = 1.0f - ((float)gun.gripY / (float)gun.height);
-					const Vec2 anchor(dirX ? 1.0f - ax : ax, ay);
-
-					RotateImage(gun.width, gun.height, 0, 0, (int)cx, (int)cy, dirX, totalAngle, pxl, tempAlpha, magnify, anchor, sprite[imgFile], imgFile);
-
-					cPtr += 4;
-					i--;
-					continue;
-				}
+				// Both CMF weapon parts use the same hand pivot. The old horizontal
+				// path used unscaled offsets, so padding in a 32 px canvas moved the
+				// gun away from the hand as weapon sizes changed.
+				const bool neutral = motion >= PO_C1_N0 && motion <= PO_C1_N3;
+				const int q = (type & 6) >> 1;
+				const float diagonalAngles[4] = { 35.0f, 65.0f, -65.0f, -35.0f };
+				const float horizontalAngles[4] = { 65.0f, 90.0f, -90.0f, -65.0f };
+				const float poseAngle = neutral ? 25.0f :
+					(fixedImg == IMG_C1_94 ? diagonalAngles[q] : horizontalAngles[q]);
+				const float totalAngle = rotation + (dirX ? -poseAngle : poseAngle);
+				const float handBoxX = fixedImg == IMG_C1_94 ? 10.0f : 17.0f;
+				const float localX = *(cPtr + 1) + (dirF == 0 ? handBoxX : (30.0f - handBoxX));
+				const float localY = *(cPtr + 2) + 20.0f;
+				const float rad = CC_DEGREES_TO_RADIANS(rotation);
+				const float handX = (dirF == 0 ? localX + centerX : -(localX + centerX)) * zoom * extra;
+				const float handY = (localY + centerY) * zoom * extra;
+				const float cx = x + handX * cos(rad) - handY * sin(rad) + imgOffsetX;
+				const float cy = y - handX * sin(rad) - handY * cos(rad) + imgOffsetY
+					+ (neutral ? 8.0f * zoom * extra : 0.0f);
+				const float ax = (float)gun.gripX / (float)gun.width;
+				const float ay = 1.0f - (float)gun.gripY / (float)gun.height;
+				RotateImage(gun.width, gun.height, 0, 0, (int)cx, (int)cy, dirX,
+					totalAngle, pxl, tempAlpha, magnify,
+					Vec2(dirX ? 1.0f - ax : ax, ay), sprite[imgFile], imgFile);
+				cPtr += 4;
+				i--;
+				continue;
 			}
 		}
 

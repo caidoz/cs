@@ -1556,7 +1556,16 @@ long long SellNormalItems(void)
 //다시 채운다 - 성을 올렸는데 칸이 그대로면 올린 보람이 없다.
 int GetMaxInven(void)
 {
-	const int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE;
+	//성 단계에 가방 파츠(창고 · 보물고 등)를 더한다. 올리면 그 자리에서
+	//칸이 는다. 어느 요소가 가방을 올리는지는 성마다 다르므로 종류로 찾는다.
+	int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE;
+
+	for (int i = 0; i < CastlePartCnt(robin.castle); i++) {
+		const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+
+		if (p && p->effectType == CPE_BAG)
+			slot += CastlePartBonus(robin.castle, i, robin.castlePartLv[i]);
+	}
 
 	return Max(1, Min((int)TOTALINVENTORY, slot));
 }

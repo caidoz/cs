@@ -5,6 +5,7 @@
 
 //현금 상품 자리를 상품 개수만큼 잡는다.
 #include "../Config/IapConfig.h"
+#include "../Data/CastlePartData.h"	//CASTLE_PART_CNT
 
 //장비 메뉴 안의 탭. 터치 번호(TOUCH_FUNC_EQUIPTAB)가 개수를 쓰므로 같은
 //헤더에 둔다. 다만 아래 큰 enum 안에 넣으면 = 0 때문에 그 뒤 번호가 모두
@@ -451,6 +452,7 @@ typedef enum _touchFuncDef {
 
 	//하단 상점 줄. 다시 뽑기와 아래 두 칸(지도 / 도감)이다.
 	TOUCH_FUNC_STAGE_REROLL,
+	TOUCH_FUNC_STAGE_REFRESH,	//시험용. 값 없이 다시 돌린다
 	TOUCH_FUNC_STAGE_MAP,
 	TOUCH_FUNC_STAGE_BOOK,
 
@@ -461,6 +463,14 @@ typedef enum _touchFuncDef {
 	//
 	//★ 위 LOBBY_CASTLE 처럼 값을 박은 항목 뒤에 이어 붙인다. 앞쪽에
 	//끼워 넣으면 번호가 겹친다.
+	//성 메뉴. 탭 / 파츠 강화 / 증축
+	TOUCH_FUNC_CASTLETAB,
+	TOUCH_FUNC_CASTLETAB_END = TOUCH_FUNC_CASTLETAB + 2,
+	TOUCH_FUNC_CASTLE_PARTUP,
+	TOUCH_FUNC_CASTLE_PARTUP_END = TOUCH_FUNC_CASTLE_PARTUP + CASTLE_PART_MAX,
+	TOUCH_FUNC_CASTLE_UPGRADE,
+	TOUCH_FUNC_CASTLE_FINISH,	//캐시로 목표치까지 채운다
+
 	TOUCH_FUNC_EQUIPTAB_SELL,	//일반 등급 일괄 판매
 	TOUCH_FUNC_EQUIPTAB_MERGE,	//같은 장비 셋을 한 등급 위로
 	TOUCH_FUNC_EQUIPTAB,

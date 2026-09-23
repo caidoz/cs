@@ -2963,6 +2963,12 @@ void touchFunc(int func)
 
 	//전투 버튼. 화면을 바꾸는 명령이 아니라 켜고 끄는 스위치라 systemKey 를
 	//태우지 않고 그 자리에서 뒤집는다.
+	if (func == TOUCH_FUNC_STAGE_REFRESH) {
+		GridTestRefresh();
+		systemKey = 0;
+		return;
+	}
+
 	if (func == TOUCH_FUNC_STAGE_REROLL) {
 		GridTestReroll();
 		systemKey = 0;
@@ -3706,6 +3712,112 @@ void touchFunc(int func)
 		case TOUCH_FUNC_POPUP_HEROSTAT + 2:
 			systemKey = AVK_POPUP_HEROSTAT + func - TOUCH_FUNC_POPUP_HEROSTAT;
 			break;
+		case TOUCH_FUNC_CASTLETAB:
+		case TOUCH_FUNC_CASTLETAB + 1:
+			curCastleTab = func - TOUCH_FUNC_CASTLETAB;
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_CASTLE_PARTUP:
+		case TOUCH_FUNC_CASTLE_PARTUP + 1:
+		case TOUCH_FUNC_CASTLE_PARTUP + 2:
+		case TOUCH_FUNC_CASTLE_PARTUP + 3:
+		{
+			//파츠 한 단 올리기. 값은 그 자리에서 빠진다.
+			const int part = func - TOUCH_FUNC_CASTLE_PARTUP;
+			const int lv = robin.castlePartLv[part];
+			const int cost = CastlePartCost(robin.castle, part, lv);
+			const CastlePartInfo* info = CastlePartAt(robin.castle, part);
+
+			if (info && lv < info->maxLv && robin.gold >= cost) {
+				robin.gold -= cost;
+				robin.castlePartLv[part]++;
+				robin.maxInven = (unsigned short)GetMaxInven();
+				PlayMusic(M_COIN);
+			}
+			else
+				PlayMusic(M_ERROR);
+
+			systemKey = 0;
+			return;
+		}
+
+		case TOUCH_FUNC_CASTLE_FINISH:
+		{
+			//---- 캐시로 목표치까지 ----
+			//
+			//먼저 계산만 해서 값을 낸다. 올려 놓고 모자라면 되돌려야 하는데,
+			//되돌리다 한 군데라도 빠지면 공짜로 오른 성이 남는다.
+			//
+			//올리는 순서는 그때그때 제일 싼 단이다. 화면에 적힌 값과 같은
+			//식이라(Func_Menu 의 CastleRestGold) 본 값과 낼 값이 어긋나지 않는다.
+			const int cnt = CastlePartCnt(robin.castle);
+			int lv[CASTLE_PART_MAX];
+			int order[CASTLE_PART_MAX * 8];
+			int steps = 0;
+			long long need = 0;
+			int left = CastleGoalStep(robin.castle);
+
+			for (int i = 0; i < cnt; i++) {
+				lv[i] = robin.castlePartLv[i];
+				left -= lv[i];
+			}
+
+			while (left > 0 && steps < (int)(sizeof(order) / sizeof(order[0]))) {
+				int pick = -1;
+				int best = 0;
+
+				for (int i = 0; i < cnt; i++) {
+					const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+					const int cost = CastlePartCost(robin.castle, i, lv[i]);
+
+					if (!p || lv[i] >= p->maxLv)
+						continue;
+
+					if (pick < 0 || cost < best) {
+						pick = i;
+						best = cost;
+					}
+				}
+
+				if (pick < 0)
+					break;
+
+				need += best;
+				lv[pick]++;
+				order[steps++] = pick;
+				left--;
+			}
+
+			{
+				const long long cash = (need + CASTLE_CASH_PER_GOLD - 1) / CASTLE_CASH_PER_GOLD;
+
+				if (steps > 0 && robin.coin >= cash) {
+					robin.coin -= cash;
+
+					for (int i = 0; i < steps; i++)
+						robin.castlePartLv[order[i]]++;
+
+					robin.maxInven = (unsigned short)GetMaxInven();
+					PlayMusic(M_COIN);
+				}
+				else
+					PlayMusic(M_ERROR);
+			}
+
+			systemKey = 0;
+			return;
+		}
+
+		case TOUCH_FUNC_CASTLE_UPGRADE:
+			//증축. 성이 한 단계 오르고 파츠는 처음으로 돌아간다.
+			robin.castle++;
+			memset(robin.castlePartLv, 0, sizeof(robin.castlePartLv));
+			robin.maxInven = (unsigned short)GetMaxInven();
+			PlayMusic(M_CARDSPLIT);
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_EQUIPTAB_MERGE:
 		{
 			//합성은 좋아지는 쪽이라 따로 묻지 않는다. 결과는 목록에

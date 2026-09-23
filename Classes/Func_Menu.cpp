@@ -8510,6 +8510,265 @@ void ShopDraw(int x, int y, float zoom)
 	}
 }
 
+//======================================================================
+// 성 증축 탭
+//
+// 성 단계와 단계 사이를 메우는 화면이다. 파츠 넷을 골드로 올리고, 넷이
+// 다 차고 판·동료 조건까지 맞으면 증축 버튼이 켜진다.
+//
+// 조건은 그냥 나열하지 않고 "채웠나"를 표시로 먼저 보여준다. 무엇이
+// 모자라서 못 넘어가는지가 한눈에 보여야 다음에 무엇을 할지 정한다.
+//======================================================================
+//가진 동료 수. 편성한 수가 아니라 모은 수다.
+static int CastleOwnedCrew(void)
+{
+	int n = 0;
+
+	for (int i = 0; i < gTotalCrew; i++) {
+		const int idx = GetInvenIdx(ITEM_CREW, i, GRADE_NORMAL);
+
+		if (idx >= 0 && robin.inven[idx].count >= 1)
+			n++;
+	}
+
+	return n;
+}
+
+//지금까지 올린 단의 합.
+static int CastleStepSum(void)
+{
+	int sum = 0;
+
+	for (int i = 0; i < CastlePartCnt(robin.castle); i++)
+		sum += robin.castlePartLv[i];
+
+	return sum;
+}
+
+//목표치까지 남은 골드. 그때그때 제일 싼 단부터 올린다고 본다.
+static long long CastleRestGold(void)
+{
+	int lv[CASTLE_PART_MAX];
+	const int cnt = CastlePartCnt(robin.castle);
+	int left = CastleGoalStep(robin.castle) - CastleStepSum();
+	long long need = 0;
+
+	for (int i = 0; i < cnt; i++)
+		lv[i] = robin.castlePartLv[i];
+
+	while (left > 0) {
+		int pick = -1;
+		int best = 0;
+
+		for (int i = 0; i < cnt; i++) {
+			const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+			const int cost = CastlePartCost(robin.castle, i, lv[i]);
+
+			if (!p || lv[i] >= p->maxLv)
+				continue;
+
+			if (pick < 0 || cost < best) {
+				pick = i;
+				best = cost;
+			}
+		}
+
+		if (pick < 0)
+			break;
+
+		need += best;
+		lv[pick]++;
+		left--;
+	}
+
+	return need;
+}
+
+static bool CastleCanUpgrade(void)
+{
+	if (robin.castle + 1 >= gTotalCastle)
+		return false;
+
+	if (robin.stage + 1 < CastleNeedStage(robin.castle))
+		return false;
+
+	if (CastleOwnedCrew() < CastleNeedCrew(robin.castle))
+		return false;
+
+	return CastleStepSum() >= CastleGoalStep(robin.castle);
+}
+
+//조건 한 줄. 채웠으면 초록 표시를 앞에 단다.
+static void CastleCondLine(const char* text, bool done, int x, int y)
+{
+	MemRect(x, y, 10 * _2X, 10 * _2X, done ? 0x3FA65A : 0x3A3A48);
+	SetFontColor(done ? COLOR_WHITE : COLOR_GREY);
+	LineTextStrSolid(text, x + 16 * _2X, y, DX, -1, -1, 0.6f);
+}
+
+static void CastleUpgradeTabDraw(int x, int y, float zoom)
+{
+	char str[96];
+	int i;
+	const int top = y - 150 * _2X;
+	const CastleStageInfo* stage = CastleStageAt(robin.castle);
+
+	//---- 조건 ----
+	SetFontColor(COLOR_WHITE);
+	sprintf(str, "%s   %d칸", stage->title, stage->cell);
+	CenterTextStrSolid(str, x + DX / 2, top + 36 * _2X, 0.8f);
+	SetFontColor(COLOR_GREY);
+	CenterTextStrSolid("증축 조건", x + DX / 2, top + 22 * _2X, 0.6f);
+
+	sprintf(str, "스테이지 %d 클리어  (지금 %d)",
+		CastleNeedStage(robin.castle), robin.stage + 1);
+	CastleCondLine(str, robin.stage + 1 >= CastleNeedStage(robin.castle),
+		x + 16 * _2X, top);
+
+	sprintf(str, "동료 %d명  (지금 %d명)",
+		CastleNeedCrew(robin.castle), CastleOwnedCrew());
+	CastleCondLine(str, CastleOwnedCrew() >= CastleNeedCrew(robin.castle),
+		x + 16 * _2X, top - 16 * _2X);
+
+	//---- 파츠 ----
+	for (i = 0; i < CastlePartCnt(robin.castle); i++) {
+		const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+		const int lv = robin.castlePartLv[i];
+		const bool full = lv >= p->maxLv;
+		const int cost = CastlePartCost(robin.castle, i, lv);
+		const bool afford = robin.gold >= cost;
+		const int rowY = top - (44 + i * 40) * _2X;
+		const int bw = 60 * _2X;
+		const int bh = 24 * _2X;
+		const int bx = x + DX - bw - 16 * _2X;
+
+		MemRect(x + 12 * _2X, rowY, DX - 24 * _2X, 36 * _2X, 0x1B1B2E);
+		MemRectFrame(x + 12 * _2X, rowY, DX - 24 * _2X, 36 * _2X,
+			full ? 0xC9A227 : 0x556688);
+
+		SetFontColor(COLOR_WHITE);
+		sprintf(str, "%s  Lv%d / %d", p->name, lv, p->maxLv);
+		LineTextStrSolid(str, x + 20 * _2X, rowY - 4 * _2X, DX, -1, -1, 0.62f);
+
+		SetFontColor(COLOR_GREY);
+		sprintf(str, p->effect, CastlePartBonus(robin.castle, i, lv));
+		LineTextStrSolid(str, x + 20 * _2X, rowY - 20 * _2X, DX, -1, -1, 0.5f);
+
+		//---- 강화 버튼 ----
+		//
+		//다 올렸으면 값을 적지 않는다. 더 낼 곳이 없는데 값이 보이면
+		//아직 올릴 수 있는 것처럼 읽힌다.
+		if (full) {
+			SetFontColor(COLOR_YELLOW);
+			CenterTextStrSolid("완료", bx + bw / 2, rowY - 14 * _2X, 0.56f);
+			continue;
+		}
+
+		MemRect(bx, rowY - 6 * _2X, bw, bh, afford ? 0x2C2A18 : 0x241A1A);
+		MemRectFrame(bx, rowY - 6 * _2X, bw, bh, afford ? 0xC9A227 : 0x77404A);
+		SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
+		sprintf(str, "%d", cost);
+		CenterTextStrSolid(str, bx + bw / 2, rowY - 12 * _2X, 0.5f);
+
+		if (afford)
+			SetRectPoint(bx, rowY - 6 * _2X, bw, bh, TOUCH_FUNC_CASTLE_PARTUP + i);
+	}
+
+	//---- 진척 막대 ----
+	//
+	//전부 올릴 필요는 없다. 목표치만 넘으면 증축할 수 있고, 못 올린 것은
+	//이 성을 떠나면 끝이다. 그래서 "얼마나 왔나" 가 늘 보여야 한다.
+	{
+		const int done = CastleStepSum();
+		const int goal = CastleGoalStep(robin.castle);
+		const int total = CastlePartTotal(robin.castle);
+		const int bw = DX - 32 * _2X;
+		const int bh = 12 * _2X;
+		const int bx = x + 16 * _2X;
+		const int by = top - (44 + CastlePartCnt(robin.castle) * 40 + 8) * _2X;
+
+		MemRect(bx, by, bw, bh, 0x1B1B2E);
+		MemRect(bx, by, bw * Min(done, total) / Max(1, total), bh,
+			done >= goal ? 0xC9A227 : 0x5B8DE8);
+		MemRectFrame(bx, by, bw, bh, 0x778899);
+
+		//목표치 눈금. 여기를 넘으면 증축이 열린다.
+		MemRect(bx + bw * goal / Max(1, total) - _2X, by + 2 * _2X, 2 * _2X,
+			bh + 4 * _2X, 0xFFFFFF);
+
+		SetFontColor(COLOR_WHITE);
+		sprintf(str, "%d / %d 단   (증축 %d단)", done, total, goal);
+		CenterTextStrSolid(str, x + DX / 2, by - bh - 2 * _2X, 0.5f);
+	}
+
+	//---- 증축 / 즉시 완성 ----
+	{
+		const bool can = CastleCanUpgrade();
+		const bool last = (robin.castle + 1 >= gTotalCastle);
+		const long long rest = CastleRestGold();
+		const long long cash = (rest + CASTLE_CASH_PER_GOLD - 1) / CASTLE_CASH_PER_GOLD;
+		const int bh = 34 * _2X;
+		const int bw = (DX - 48 * _2X) / 2;
+		const int by = top - (44 + CastlePartCnt(robin.castle) * 40 + 40) * _2X;
+		const int bx = x + 16 * _2X;
+
+		MemRect(bx, by, bw, bh, can ? 0x2C2A18 : 0x1A1A22);
+		MemRectFrame(bx, by, bw, bh, can ? 0xFFD700 : 0x555566);
+		SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
+
+		if (last)
+			sprintf(str, "마지막 성");
+		else
+			sprintf(str, "증축  %d칸", CastleStageAt(robin.castle + 1)->cell);
+
+		CenterTextStrSolid(str, bx + bw / 2, by - 12 * _2X, 0.6f);
+
+		if (can)
+			SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_CASTLE_UPGRADE);
+
+		//---- 즉시 완성 ----
+		//
+		//목표치까지만 채운다. 만렙까지 채워 주면 캐시를 쓴 쪽만 모든
+		//요소를 갖게 되어 "무엇을 포기할까" 라는 설계가 무너진다.
+		if (!last && rest > 0) {
+			const int cx = bx + bw + 16 * _2X;
+			const bool afford = robin.coin >= cash;
+
+			MemRect(cx, by, bw, bh, afford ? 0x2A1A3A : 0x1A1A22);
+			MemRectFrame(cx, by, bw, bh, afford ? 0xB05FE8 : 0x555566);
+			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
+			sprintf(str, "즉시 완성  %lld", cash);
+			CenterTextStrSolid(str, cx + bw / 2, by - 12 * _2X, 0.56f);
+
+			if (afford)
+				SetRectPoint(cx, by, bw, bh, TOUCH_FUNC_CASTLE_FINISH);
+		}
+	}
+}
+
+//성 메뉴 탭. 증축 / 성 목록
+static void CastleTabDraw(void)
+{
+	static const char* name[2] = { "증축", "성 목록" };
+	int i;
+
+	for (i = 0; i < 2; i++) {
+		const bool on = (curCastleTab == i);
+		const int w = 100 * _2X;
+		const int h = 24 * _2X;
+		const int bx = DX / 2 - w - 4 * _2X + i * (w + 8 * _2X);
+		const int by = DY - GNBHEIGHT - 112 * _2X;
+
+		MemRect(bx, by, w, h, on ? 0x6A521A : 0x241A10);
+		MemRectFrame(bx, by, w, h, on ? 0xFFD700 : 0x6B573A);
+		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid(name[i], bx + w / 2, by - h + 6 * _2X, 0.7f);
+
+		if (!on)
+			SetRectPoint(bx, by, w, h, TOUCH_FUNC_CASTLETAB + i);
+	}
+}
+
 void CastleMenuDraw(int x, int y, float zoom)
 {
 	int i;
@@ -8526,6 +8785,16 @@ void CastleMenuDraw(int x, int y, float zoom)
 
 	CenterText(TEXT_CASTLE, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom);
 	CenterText(TEXT_CASTLE_LISTSELECT, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom);
+
+	CastleTabDraw();
+
+	//증축 탭은 제 화면을 그리고 끝낸다. 성 목록과 한 화면에 같이 두면
+	//무엇을 보고 있는지 섞인다.
+	if (curCastleTab == 0) {
+		CastleUpgradeTabDraw(x, y, zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		return;
+	}
 	//현재 성
 	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)(132) * zoom, false, false, false, false, false, 4.9f * zoom, 2.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)16 * zoom, y - (float)124 * zoom, false, false, false, false, false, 0.25f * zoom, sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]], MAP_DIORAMA_IMG + castleOrder[robin.castle]);

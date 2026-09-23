@@ -1767,7 +1767,49 @@ struct GridPart {
 	int price;
 	const char* name;
 	bool rot;		//90도 눕혔는가. 그릴 때 돌린다
+	unsigned short cells; // bit (row * 4 + col), bottom row first; 0 = full rectangle
 };
+
+static bool GridPartCell(const GridPart* p, int col, int row)
+{
+	if (col < 0 || row < 0 || col >= p->w || row >= p->h)
+		return false;
+	return p->cells == 0 || (p->cells & (1u << (row * 4 + col))) != 0;
+}
+
+static int GridPartCellCount(const GridPart* p)
+{
+	int count = 0;
+	for (int row = 0; row < p->h; ++row)
+		for (int col = 0; col < p->w; ++col)
+			if (GridPartCell(p, col, row)) ++count;
+	return count;
+}
+
+// Keep the whole sprite visible. A hole is only valid when the art itself
+// leaves that tile empty; the former tier masks cut through weapon art.
+static void GridWeaponShape(GridPart* p)
+{
+	const int d = Max(0, Min(34, p->detail));
+	p->cells = 0;
+	if (p->type == ITEM_SWORD) {
+		// The sprite canvas is quantized to 32 px tiles. Use that exact
+		// footprint for placement as well as for drawing.
+		const SwordSpriteInfo* info = GetSwordSpriteInfo(d);
+		p->w = info ? info->cols : 1;
+		p->h = info ? info->rows : 2;
+		return;
+	}
+	if (p->type == ITEM_BOOMERANG) {
+		p->w = d < 9 ? 3 : 4;
+		p->h = p->w;
+		return;
+	}
+	// Some starter guns are wider than a single tile. Give those silhouettes
+	// a 2x2 footprint rather than shrinking their visible art.
+	p->w = d < 5 && d != 1 && d != 2 && d != 4 ? 1 : 2;
+	p->h = d < 5 ? 2 : 3;
+}
 
 //---- 눕히기 ----
 //
@@ -1780,6 +1822,13 @@ static GridPart GridPartRotated(const GridPart& p)
 	r.w = p.h;
 	r.h = p.w;
 	r.rot = !p.rot;
+	if (p.cells != 0) {
+		r.cells = 0;
+		for (int row = 0; row < p.h; ++row)
+			for (int col = 0; col < p.w; ++col)
+				if (GridPartCell(&p, col, row))
+					r.cells |= (1u << (col * 4 + (p.h - 1 - row)));
+	}
 	return r;
 }
 
@@ -1792,17 +1841,17 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 	//
 	//detail 은 ItemDef 의 검 번호다. 번호가 클수록 좋은 검이라, 연참
 	//차례를 매길 때 이 번호를 그대로 쓴다.
-	{ ITEM_SWORD,   1, GRADE_NORMAL, swordTileSize[1 * 2], swordTileSize[1 * 2 + 1],  60, "롱소드" },
-	{ ITEM_SWORD,  10, GRADE_RARE, swordTileSize[10 * 2], swordTileSize[10 * 2 + 1], 180, "플레임소드" },
-	{ ITEM_SWORD,  11, GRADE_RARE, swordTileSize[11 * 2], swordTileSize[11 * 2 + 1], 200, "아이스소드" },
-	{ ITEM_SWORD,  21, GRADE_LEGEND, swordTileSize[21 * 2], swordTileSize[21 * 2 + 1], 600, "엑스칼리버" },
+	{ ITEM_SWORD,   1, GRADE_NORMAL, swordTileSize[2], swordTileSize[3],  60, "롱소드" },
+	{ ITEM_SWORD,  10, GRADE_RARE, swordTileSize[20], swordTileSize[21], 180, "플레임소드" },
+	{ ITEM_SWORD,  11, GRADE_RARE, swordTileSize[22], swordTileSize[23], 200, "아이스소드" },
+	{ ITEM_SWORD,  21, GRADE_LEGEND, swordTileSize[42], swordTileSize[43], 600, "엑스칼리버" },
 
 	//---- 방어구 · 장신구 ----
-	{ ITEM_HELM,    1, GRADE_SUPERIOR, 2, 2,  80, "강철투구" },
-	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 2, 2, 140, "판금갑옷" },
-	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   2, 2,  40, "건틀릿" },
-	{ ITEM_KILT,    1, GRADE_NORMAL,   2, 2,  70, "판금바지" },
-	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 2,  40, "강철장화" },
+	{ ITEM_HELM,    1, GRADE_SUPERIOR, 1, 1,  80, "강철투구" },
+	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 1, 140, "판금갑옷" },
+	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 1,  40, "건틀릿" },
+	{ ITEM_KILT,    1, GRADE_NORMAL,   1, 1,  70, "판금바지" },
+	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 1,  40, "강철장화" },
 	{ ITEM_RING,    0, GRADE_EPIC,     1, 1, 200, "룬반지" },
 };
 
@@ -1925,6 +1974,9 @@ static GridPart gGridDragDesc;		//손에 든 것
 static int gGridDragShop = -1;		//상점에서 집었다면 그 kShopPart 번호
 static int gGridDragFrom = -1;		//-1 이면 상점에서 새로 사는 것
 
+//손에 든 것이 동료라면 그 룰렛 칸 번호. 아니면 -1
+static int gGridDragCrew = -1;
+
 //판이 새로 열렸고 아직 장착 장비를 가방에 넣지 않았다.
 static bool gGridGearPending = false;
 
@@ -1955,6 +2007,11 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 
 //격자 바로 위에 얹는 한 줄. 연참 미리보기와 골드/칸이 여기 들어간다.
 #define GRIDTEST_HUDH (36 * _2X)
+
+//집어 든 장비를 그리는 투명도. 32 가 불투명이다.
+//
+//옅게 그려 봤더니 무엇을 들고 있는지 잘 안 보였다. 그대로 그린다.
+#define GRIDTEST_DRAGALPHA ALPHA_MAX
 
 //격자가 화면에서 차지할 수 있는 높이. 몫에 더해 주는 값만큼 칸이
 //커진다. 나머지 높이는 전투 화면과 아래 상점 줄이 나눠 쓴다.
@@ -2040,9 +2097,8 @@ static int StageGridDrop(void)
 static void GridTestLayout(void)
 {
 	GridLoadCells(robin.castle);
-	//칸은 한 변 24 * _2X 까지 키운다. 12 * _2X 에서는 칸이 손가락보다 작아
-	//끌어다 놓기가 어려웠다. 가장 넓은 성(12칸)이 화면 폭 안에 들어오는 것이
-	//상한이다 - 그보다 크게 잡으면 폭에 맞춘 값이 대신 걸린다.
+	// PNG와 같은 32px 칸을 쓴다. 가장 넓은 성(12칸)이 화면 폭에
+	// 안 들어갈 때에만 한 칸의 화면 표시 크기를 줄인다.
 	//---- 칸 크기 ----
 	//
 	//폭과 높이 둘 다에 맞춘다. 폭만 보고 잡으면 줄이 많은 성에서 격자가
@@ -2051,8 +2107,11 @@ static void GridTestLayout(void)
 	const int roomH = (int)(DY * GRIDTEST_MAXRATE) + GRIDTEST_EXTRAH - GRIDTEST_HUDH;
 	const int fitH = Max(1, roomH / Max(1, gGridH));
 
-	gGridCell = Max(10 * _2X,
-		Min(Min(24 * _2X, (DX - 24 * _2X) / kGridMaxW), fitH)) & ~1;
+	// A stage inventory cell is 32x32 screen pixels, the same size as an
+	// equipment PNG tile. Shrink only on a display that cannot fit the grid.
+	gGridCell = Min(SWORD_TILE_SIZE,
+		Min((DX - 24 * _2X) / kGridMaxW, fitH)) & ~1;
+	gGridCell = Max(2, gGridCell);
 	gGridX = DX / 2 - gGridCell * gGridW / 2;
 	gGridBottom = StageShopTopBase() - StageGridDrop();
 }
@@ -2149,7 +2208,7 @@ static void GridTestSay(const char* msg)
 #define STAGE_FOE_INVEN_H	2
 #define STAGE_FOE_INVEN_MAX	FOEGEAR_BAGMAX
 
-static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha);
+static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true);
 
 //---- 몬스터 장비 목록 ----
 //
@@ -2573,9 +2632,9 @@ static bool GridTestCanPlace(const GridPart* p, int col, int row, int skip)
 	if (col < 0 || row < 0 || col + p->w > gGridW || row + p->h > gGridH)
 		return false;
 
-	for (cy = row; cy < row + p->h; cy++) {
-		for (cx = col; cx < col + p->w; cx++) {
-			if (GridMaskAt(cx, cy) == false)
+	for (cy = 0; cy < p->h; cy++) {
+		for (cx = 0; cx < p->w; cx++) {
+			if (GridPartCell(p, cx, cy) && GridMaskAt(col + cx, row + cy) == false)
 				return false;
 		}
 	}
@@ -2586,9 +2645,13 @@ static bool GridTestCanPlace(const GridPart* p, int col, int row, int skip)
 
 		const GridPart* o = &gGridItem[i].part;
 
-		if (col < gGridItem[i].col + o->w && gGridItem[i].col < col + p->w &&
-			row < gGridItem[i].row + o->h && gGridItem[i].row < row + p->h)
-			return false;
+		for (cy = 0; cy < p->h; ++cy)
+			for (cx = 0; cx < p->w; ++cx) {
+				if (!GridPartCell(p, cx, cy)) continue;
+				const int ox = col + cx - gGridItem[i].col;
+				const int oy = row + cy - gGridItem[i].row;
+				if (GridPartCell(o, ox, oy)) return false;
+			}
 	}
 
 	return true;
@@ -2611,22 +2674,66 @@ static int GridTestFreeSlot(void)
 //
 //검은 전투와 같은 세로 스프라이트를 칸 규격에 맞춰 그린다.
 //다른 장비는 기존 아이콘을 사용한다.
-static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha)
+//---- 장비 한 점 그리기 ----
+//
+//box 가 참이면 어두운 판과 등급 테두리를 먼저 깔고 그 위에 그림을 얹는다.
+//손에 들고 끄는 동안에는 그 판이 있어야 어디에 놓일지가 보인다.
+//
+//격자에 이미 놓인 것에는 깔지 않는다. 판이 그림을 덮어서 무엇을 끼고
+//있는지 안 보였다 - 칸 테두리는 격자가 따로 그린다.
+static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box)
 {
 	const int col = kGradeColor[Min(TOTALGRADE - 1, Max(0, p->grade))];
 
-	SetAlpha(alpha);
-	MemRect(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, 0x1B1B2E);
-	MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
-	SetAlpha(ALPHA_MAX);
+	if (box) {
+		SetAlpha(alpha);
+		MemRect(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, 0x1B1B2E);
+		MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
+		SetAlpha(ALPHA_MAX);
+	}
 
-	if (p->type == ITEM_SWORD) {
-		const bool drawn = p->rot
-			? DrawSwordInBoxRot(p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha)
-			: DrawSwordInBox(p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha);
+	//---- 동료 ----
+	//
+	//아이템 그림이 없다. 그 몸을 칸 크기에 맞춰 세운다 - 누가 오는지는
+	//얼굴로 알아봐야 한다.
+	if (p->type == ITEM_CREW) {
+		const int type = p->detail;
+		const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
+		const int idle = crewPos[type * 5]
+			+ frame / 8 % Max(1, (int)crewPos[type * 5 + 1]);
 
-		if (drawn)
-			return;
+		DrawCmfDetailShadow(cmf, idle, x + w / 2, y - h + 4 * _2X, RIGHT,
+			enemyIconZoom[type] * 0.5f * Min(w, h) / (24.0f * _2X));
+		return;
+	}
+
+	if (p->type == ITEM_SWORD || p->type == ITEM_GUN || p->type == ITEM_BOOMERANG) {
+		const int base = p->type == ITEM_SWORD ? COSTUME_WEAPON_ROBIN_IMG :
+			(p->type == ITEM_GUN ? COSTUME_WEAPON_DIANA_IMG : COSTUME_WEAPON_MAXX_IMG);
+		const int img = base + p->detail + 1;
+		if (!sprite[img]) LoadImg(img);
+		if (sprite[img]) {
+			const int iw = (int)sprite[img]->getContentSize().width;
+			const int ih = (int)sprite[img]->getContentSize().height;
+			if (iw > 0 && ih > 0) {
+				// All weapon PNGs use the same 32 px tile scale in the bag.
+				// Fit only when a rotated or irregular silhouette needs extra room.
+				const float tileZoom = Min((float)w / Max(1, p->w),
+					(float)h / Max(1, p->h)) / (float)SWORD_TILE_SIZE;
+				const float fitZoom = p->rot ? Min((float)(w - 2 * _2X) / ih,
+					(float)(h - 2 * _2X) / iw) : Min((float)(w - 2 * _2X) / iw,
+					(float)(h - 2 * _2X) / ih);
+				const float zoom = Min(tileZoom, fitZoom);
+				if (p->rot)
+					RotateImage(iw, ih, 0, 0, x + w / 2, y - h / 2, false,
+						90.0f, 0, alpha, zoom, Vec2(0.5f, 0.5f), sprite[img], img);
+				else
+					DrawImage(iw, ih, 0, 0, x + (int)((w - iw * zoom) / 2),
+						y - (int)((h - ih * zoom) / 2), false, 0, 0, 0,
+						alpha, zoom, sprite[img], img);
+				return;
+			}
+		}
 	}
 
 	if (p->type == ITEM_GREAVES || p->type == ITEM_SHOES || p->type == ITEM_BOOTS) {
@@ -2641,6 +2748,33 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 	if (p->type == ITEM_KILT || p->type == ITEM_SKIRT || p->type == ITEM_PANTS) {
 		if (DrawPantsInBox(p->type, p->detail, x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, alpha))
 			return;
+	}
+
+	//---- 투구 ----
+	//
+	//투구는 가방용 그림이 따로 없다. 무기와 마찬가지로 코스튬 그림
+	//(h0_* / h1_* / h2_*)이 곧 가방에 놓이는 모습이다.
+	if (p->type == ITEM_HELM || p->type == ITEM_HAT || p->type == ITEM_CAP) {
+		const int base = p->type == ITEM_HELM ? COSTUME_HELM_ROBIN_IMG :
+			(p->type == ITEM_HAT ? COSTUME_HELM_DIANA_IMG : COSTUME_HELM_MAXX_IMG);
+		const int img = base + p->detail + 1;
+
+		if (!sprite[img]) LoadImg(img);
+
+		if (sprite[img]) {
+			const int iw = (int)sprite[img]->getContentSize().width;
+			const int ih = (int)sprite[img]->getContentSize().height;
+
+			if (iw > 0 && ih > 0) {
+				const float zoom = Min((float)(w - 2 * _2X) / iw,
+					(float)(h - 2 * _2X) / ih);
+
+				DrawImage(iw, ih, 0, 0, x + (int)((w - iw * zoom) / 2),
+					y - (int)((h - ih * zoom) / 2), false, 0, 0, 0,
+					alpha, zoom, sprite[img], img);
+				return;
+			}
+		}
 	}
 
 	if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE) {
@@ -2658,6 +2792,29 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		x + w / 2 - ITEMICONSIZE / 2,
 		y - h / 2 + ITEMICONSIZE / 2,
 		1.0f, false, false, false, true);
+}
+
+// Render only occupied cells. Reusing one fitted image under a per-cell clip
+// keeps the silhouette continuous while leaving the holes genuinely empty.
+static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true)
+{
+	if (p->cells == 0) { GridTestDrawCard(p, x, y, w, h, alpha, box); return; }
+	const int cw = w / p->w;
+	const int ch = h / p->h;
+	for (int row = 0; row < p->h; ++row)
+		for (int col = 0; col < p->w; ++col) {
+			if (!GridPartCell(p, col, row)) continue;
+			const int cx = x + col * cw;
+			const int cy = y - (p->h - 1 - row) * ch;
+			SetSectionClip(cx, cy, cw, ch, false);
+			GridTestDrawCard(p, x, y, w, h, alpha, box);
+			UnSectionClip(false);
+
+			//칸 테두리는 등급 색으로 늘 두른다. 어디까지가 한 점인지는
+			//판이 없어도 보여야 한다.
+			MemRectFrame(cx, cy, cw - 1, ch - 1,
+				kGradeColor[Min(TOTALGRADE - 1, Max(0, p->grade))]);
+		}
 }
 
 //---- 쿨타임 ----
@@ -2782,7 +2939,7 @@ static void GridTestDrawCombo(int topY)
 
 		//크기와 빠르기. 몇 초마다 치는지가 그 검의 성격이다.
 		SetFontColor(COLOR_WHITE);
-		sprintf(str, "%dx%d %.1f초", p->w, p->h,
+		sprintf(str, "%d칸 %.1f초", GridPartCellCount(p),
 			StageSwordCooldown(p->detail) / (float)FPS);
 		CenterTextStrSolid(str, x + cw / 2, cardY - ch + 10 * _2X, 0.45f);
 	}
@@ -2949,6 +3106,19 @@ static bool GridOfferSpinning(int n)
 	return n >= 0 && n < GRIDTEST_OFFERCNT && gOfferSpin[n] > 0;
 }
 
+//---- 시험용 리프레시 ----
+//
+//값 없이 세 칸을 다시 돌린다. 끌어놓기를 시험하는 동안 원하는 장비가
+//나올 때까지 돌려 보려는 것이라, 골드도 안 들고 룰렛이 닫혀 있으면
+//열면서 돌린다.
+void GridTestRefresh(void)
+{
+	GridOfferRoll(-1);
+	waveStatus = WAVESTATUS_END;
+	waveAnnounceTouchLock = false;
+	touchDisable = false;
+}
+
 //---- 다시 뽑기 ----
 //
 //값을 치르고 네 칸을 새로 돌린다. 원하는 것이 없을 때 골드를 쓰는
@@ -3074,6 +3244,29 @@ void GridTestSkipOffer(void)
 //
 //끌어다 놓을 자리가 없다. 격자가 아니라 히어로 곁에 서기 때문이다.
 //그래서 누르는 순간 값을 치르고 세운다.
+//---- 동료 한 점 ----
+//
+//동료도 성에 자리를 차지한다. 사람이 설 자리가 곧 칸이라, 검과 같은
+//규칙으로 끌어다 놓는다. 크기는 두 칸 네모다 - 장비와 섞여도 자리를
+//가늠하기 쉬운 크기다.
+//
+//type 에 ITEM_CREW 를 쓰고 detail 에 몬스터 종류를 담는다. 그리는 쪽이
+//이 둘을 보고 사람을 그린다.
+#define GRID_CREW_W 2
+#define GRID_CREW_H 2
+
+static void GridCrewPart(const OfferCard* c, GridPart* out)
+{
+	memset(out, 0, sizeof(GridPart));
+	out->type = ITEM_CREW;
+	out->detail = c->crewType;
+	out->grade = GRADE_NORMAL;
+	out->w = GRID_CREW_W;
+	out->h = GRID_CREW_H;
+	out->price = c->price;
+	out->name = textId[TEXT_MONSTERNAME_START + c->crewType];
+}
+
 static void GridOfferBuyCrew(const OfferCard* c)
 {
 	if (robin.gold < c->price) {
@@ -3161,6 +3354,7 @@ void GridTestResetStage(void)
 	gGridDragOn = false;
 	gGridDragShop = -1;
 	gGridDragFrom = -1;
+	gGridDragCrew = -1;
 	gGridDragRot = false;
 	gGridMsgFrame = 0;
 }
@@ -3207,13 +3401,24 @@ void GridTestPick(int n, bool fromShop)
 		if (GridOfferSpinning(n))
 			return;
 
+		//---- 동료도 끌어서 놓는다 ----
+		//
+		//전에는 누르는 순간 바로 합류했다. 그러면 성에 자리가 없는데도
+		//데려오게 되고, 장비와 같은 손놀림이 아니라 규칙이 둘이 된다.
 		if (gOffer[n].kind != OFFER_PART) {
-			GridOfferBuyCrew(&gOffer[n]);
+			GridCrewPart(&gOffer[n], &gGridDragDesc);
+			gGridDragOn = true;
+			gGridDragShop = -1;
+			gGridDragCrew = n;
+			gGridDragFrom = -1;
+			gGridPressX = touchX;
+			gGridPressY = touchY;
 			return;
 		}
 
 		//장비 값은 놓는 순간에 치른다. 집기만 하고 도로 놓을 수 있어야 한다.
 		gGridDragOn = true;
+		gGridDragCrew = -1;
 		gGridDragDesc = kShopPart[gOffer[n].part];
 		gGridDragShop = gOffer[n].part;
 		gGridDragFrom = -1;
@@ -3323,6 +3528,18 @@ void GridTestRelease(void)
 				return;
 			}
 
+			//---- 동료를 놓았다 ----
+			//
+			//자리에 세우지 못하면 값을 받지 않는다. 받고 못 세우면 골드만
+			//사라진다.
+			if (p->type == ITEM_CREW) {
+				if (StageRtAddCrew(p->detail) == false) {
+					PlayMusic(M_ERROR);
+					GridTestSay("더 설 자리가 없다");
+					return;
+				}
+			}
+
 			robin.gold -= p->price;
 
 			//---- 같은 것이 이미 있으면 겹친다 ----
@@ -3391,14 +3608,11 @@ static void GridSetGearItem(GridSlot* s, const ITEM* it)
 
 //---- 장착 장비 한 점의 모양 ----
 //
-//검은 전투 스프라이트의 칸 규격(swordTileSize)을 그대로 쓴다. 상점의 검과
-//같은 표라, 같은 검이면 장착했든 샀든 같은 크기다.
+//무기는 가방 전용 점유 모양을 쓴다. 전투용 원본 이미지는 축소하지 않는다.
 //
 //나머지는 부위의 생김새로 정한다. 상점의 같은 부위와 같은 크기다.
 static void GridGearPart(const ITEM* it, GridPart* out)
 {
-	const int swordCnt = (int)(sizeof(swordTileSize) / sizeof(swordTileSize[0]) / 2);
-
 	memset(out, 0, sizeof(GridPart));
 	out->type = it->type;
 	out->detail = it->detail;
@@ -3408,25 +3622,27 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	out->w = 1;
 	out->h = 1;
 
-	if (it->type == ITEM_SWORD) {
-		if (it->detail >= 0 && it->detail < swordCnt) {
-			out->w = swordTileSize[it->detail * 2];
-			out->h = swordTileSize[it->detail * 2 + 1];
-		}
+	if (it->type == ITEM_SWORD || it->type == ITEM_GUN || it->type == ITEM_BOOMERANG) {
+		GridWeaponShape(out);
 		return;
 	}
 
+	//---- 부위별 크기 ----
+	//
+	// Match the requested limits for each equipment category. Keep a full
+	// rectangle until a transparent, item-specific cell mask is available.
 	switch (it->type) {
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
-		out->w = 2; out->h = 2; break;
+		out->h = it->detail >= 5 ? 2 : 1; break;
 	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
-		out->w = 2; out->h = (it->detail < 4) ? 2 : 3; break;
+		out->w = it->detail >= 5 ? 2 : 1;
+		out->h = it->detail >= 5 ? 2 : 1; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
-		out->w = 2; out->h = 2; break;
+		out->h = it->detail >= 5 ? 2 : 1; break;
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
-		out->w = 2; out->h = 2; break;
+		out->h = it->detail >= 5 ? 2 : 1; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
-		out->w = 1; out->h = 2; break;
+		out->h = it->detail >= 5 ? 2 : 1; break;
 	default:
 		break;
 	}
@@ -3479,13 +3695,13 @@ static void GridPlaceGear(void)
 	for (int i = 1; i < n; ++i) {
 		const int key = order[i];
 		const bool keyWeapon = (key == EQUIP_WEAPON);
-		const int keyArea = parts[key].w * parts[key].h;
+		const int keyArea = GridPartCellCount(&parts[key]);
 		int j = i - 1;
 
 		while (j >= 0) {
 			const int o = order[j];
 			const bool before = keyWeapon
-				|| (o != EQUIP_WEAPON && parts[o].w * parts[o].h < keyArea);
+				|| (o != EQUIP_WEAPON && GridPartCellCount(&parts[o]) < keyArea);
 
 			if (!before)
 				break;
@@ -3556,7 +3772,7 @@ static void GridPlaceGear(void)
 		bootPart.detail = 1;
 		bootPart.grade = GRADE_RARE;
 		bootPart.w = 1;
-		bootPart.h = 2;
+		bootPart.h = 1;
 		bootPart.name = (bootType == ITEM_GREAVES) ? "체인 그리브" : (bootType == ITEM_SHOES ? "가죽 부츠" : "전투화");
 
 		int col, row;
@@ -3594,8 +3810,8 @@ static void GridPlaceGear(void)
 		pantsPart.type = pantsType;
 		pantsPart.detail = 1;
 		pantsPart.grade = GRADE_RARE;
-		pantsPart.w = 2;
-		pantsPart.h = 2;
+		pantsPart.w = 1;
+		pantsPart.h = 1;
 		pantsPart.name = (pantsType == ITEM_KILT) ? "체인 킬트" : (pantsType == ITEM_SKIRT ? "빈티지 스커트" : "카프스킨 팬츠");
 
 		int col, row;
@@ -3633,8 +3849,8 @@ static void GridPlaceGear(void)
 		glovePart.type = gloveType;
 		glovePart.detail = 1;
 		glovePart.grade = GRADE_RARE;
-		glovePart.w = 2;
-		glovePart.h = 2;
+		glovePart.w = 1;
+		glovePart.h = 1;
 		glovePart.name = (gloveType == ITEM_GUNTLET) ? "체인 건틀릿" : (gloveType == ITEM_ARMLET ? "사막 팔찌" : "이중매듭 장갑");
 
 		int col, row;
@@ -3672,8 +3888,8 @@ static void GridPlaceGear(void)
 		armorPart.type = armorType;
 		armorPart.detail = 1;
 		armorPart.grade = GRADE_RARE;
-		armorPart.w = 2;
-		armorPart.h = 2;
+		armorPart.w = 1;
+		armorPart.h = 1;
 		armorPart.name = (armorType == ITEM_ARMOR) ? "비늘 갑옷" : (armorType == ITEM_VEST ? "가죽 조끼" : "전투 코트");
 
 		int col, row;
@@ -3797,15 +4013,24 @@ void GridTestDraw(void)
 		w = p->w * gGridCell;
 		h = p->h * gGridCell;
 
-		GridTestDrawCard(p, x, y, w, h, ALPHA_MAX);
+		GridDrawShapedCard(p, x, y, w, h, ALPHA_MAX, false);
 
 		//검은 쿨타임을 덮어 그린다. 가방 안에서 치는 것은 검뿐이다.
 		if (p->type == ITEM_SWORD) {
 			float charge = 0.0f;
 			int flash = 0;
 
-			if (StageRtSwordCharge(i, &charge, &flash))
-				GridDrawCharge(x, y, w, h, charge, flash);
+			if (StageRtSwordCharge(i, &charge, &flash)) {
+				for (int row = 0; row < p->h; ++row)
+					for (int col = 0; col < p->w; ++col) {
+						if (!GridPartCell(p, col, row)) continue;
+						SetSectionClip(x + col * gGridCell,
+							y - (p->h - 1 - row) * gGridCell,
+							gGridCell, gGridCell, false);
+						GridDrawCharge(x, y, w, h, charge, flash);
+						UnSectionClip(false);
+					}
+			}
 		}
 
 		//아웃게임에서 끼고 들어온 장비. 팔 수 없다는 것이 눈에 보여야 한다.
@@ -3825,7 +4050,12 @@ void GridTestDraw(void)
 		}
 
 		//집어 갈 수 있는 자리. 그린 자리와 같은 사각형이어야 한다.
-		SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_ITEM + i);
+		for (int row = 0; row < p->h; ++row)
+			for (int col = 0; col < p->w; ++col)
+				if (GridPartCell(p, col, row))
+					SetRectPoint(x + col * gGridCell,
+						y - (p->h - 1 - row) * gGridCell,
+						gGridCell, gGridCell, TOUCH_FUNC_GRIDTEST_ITEM + i);
 	}
 
 	//---- 놓일 자리 미리보기 ----
@@ -3842,10 +4072,18 @@ void GridTestDraw(void)
 		w = p->w * gGridCell;
 		h = p->h * gGridCell;
 
-		SetAlpha(14);
-		MemRect(x, y, w, h, gGridDragValid ? 0x33FF66 : 0xFF3344);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(x, y, w, h, gGridDragValid ? 0x33FF66 : 0xFF3344);
+		for (int row = 0; row < p->h; ++row)
+			for (int col = 0; col < p->w; ++col) {
+				if (!GridPartCell(p, col, row)) continue;
+				const int cx = x + col * gGridCell;
+				const int cy = y - (p->h - 1 - row) * gGridCell;
+				SetAlpha(14);
+				MemRect(cx, cy, gGridCell, gGridCell,
+					gGridDragValid ? 0x33FF66 : 0xFF3344);
+				SetAlpha(ALPHA_MAX);
+				MemRectFrame(cx, cy, gGridCell, gGridCell,
+					gGridDragValid ? 0x33FF66 : 0xFF3344);
+			}
 	}
 
 	//---- 싸우는 동안은 아래를 내린다 ----
@@ -3961,31 +4199,38 @@ void GridTestDraw(void)
 			SetAlpha(ALPHA_MAX);
 			MemRectFrame(x, y, w, h, kGradeColor[p->grade]);
 
-			bool drawn = false;
-			if (p->type == ITEM_SWORD)
-				drawn = DrawSwordInBox(p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-			else if (p->type == ITEM_GREAVES || p->type == ITEM_SHOES || p->type == ITEM_BOOTS)
-				drawn = DrawBootsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-			else if (p->type == ITEM_KILT || p->type == ITEM_SKIRT || p->type == ITEM_PANTS)
-				drawn = DrawPantsInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-			else if (p->type == ITEM_GUNTLET || p->type == ITEM_ARMLET || p->type == ITEM_GLOVE)
-				drawn = DrawGloveInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-			else if (p->type == ITEM_ARMOR || p->type == ITEM_VEST || p->type == ITEM_COAT)
-				drawn = DrawArmorInBox(p->type, p->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 40 * _2X, ALPHA_MAX);
-
-			if (!drawn) {
-				DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
-					x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
-					1.0f, false, false, false, true);
-			}
+			//---- 칸은 아이콘으로 ----
+			//
+			//가방에 놓인 모습(실제 크기의 그림)은 집어 든 순간에 보여준다.
+			//고르는 동안에는 크기가 제각각인 그림보다 같은 크기의 아이콘이
+			//견주기 쉽다.
+			DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
+				x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
+				1.0f, false, false, false, true);
 
 			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
 			CenterTextStrSolid(p->name, x + w / 2, y - h + 14 * _2X, 0.52f);
-			sprintf(str, "%dx%d", p->w, p->h);
+			sprintf(str, "%dx%d / %d칸", p->w, p->h, GridPartCellCount(p));
 			CenterTextStrSolid(str, x + w / 2, y - h + 4 * _2X, 0.46f);
 			GridShopPriceStrip(i, p->price, afford);
 
 			SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
+		}
+
+		//---- 시험용 리프레시 ----
+		//
+		//칸 줄 바로 위 오른쪽. 칸과 겹치면 칸을 누르려다 눌린다.
+		{
+			const int rw = 34 * _2X;
+			const int rh = 14 * _2X;
+			const int rx = DX - rw - 4 * _2X;
+			const int ry = StageShopSlotTop() + rh + 2 * _2X;
+
+			MemRect(rx, ry, rw, rh, 0x1B2E3A);
+			MemRectFrame(rx, ry, rw, rh, 0x5FA0B0);
+			SetFontColor(COLOR_WHITE);
+			CenterTextStrSolid("다시", rx + rw / 2, ry - rh / 2 - 4 * _2X, 0.5f);
+			SetRectPoint(rx, ry, rw, rh, TOUCH_FUNC_STAGE_REFRESH);
 		}
 
 		//---- 나오는 몫 ----
@@ -4082,7 +4327,7 @@ void GridTestDraw(void)
 
 	for (i = 0; i < GRIDTEST_MAXITEM; i++) {
 		if (gGridItem[i].used)
-			usedCell += gGridItem[i].part.w * gGridItem[i].part.h;
+			usedCell += GridPartCellCount(&gGridItem[i].part);
 	}
 
 	//칸 수도 표에서 읽는다.
@@ -4112,7 +4357,9 @@ void GridTestDraw(void)
 		w = p->w * gGridCell;
 		h = p->h * gGridCell;
 
-		GridTestDrawCard(p, touchX - w / 2, touchY + h / 2, w, h, 26);
+		//집어 든 것은 가방에 놓일 실제 모습이다. 그대로 그린다 - 놓일
+		//자리는 아래의 초록/빨강 테두리가 따로 알려 준다.
+		GridDrawShapedCard(p, touchX - w / 2, touchY + h / 2, w, h, GRIDTEST_DRAGALPHA);
 	}
 
 	//---- 접기 ----

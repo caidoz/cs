@@ -714,6 +714,9 @@ signed int curHero;//현재 히어로
 
 //장비 메뉴 안에서 지금 보고 있는 탭. EQUIPTAB_GEAR / CREW / STAT
 int curEquipTab = 0;
+
+//성 메뉴 안에서 지금 보고 있는 탭. 0 증축, 1 성 목록
+int curCastleTab = 0;
 signed int curMenuBack;
 signed int curEventIdx;//현재 이벤트
 int menuFrame;//메뉴 프레임

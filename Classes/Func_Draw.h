@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -52,7 +52,8 @@ void GridTestPick(int n, bool fromShop);
 void GridTestRelease(void);
 void GridTestToggle(void);
 void GridTestSkipOffer(void);
-void GridTestReroll(void);				//값을 치르고 룰렛을 다시 돌린다
+void GridTestReroll(void);
+void GridTestRefresh(void);			//시험용. 값 없이 세 칸을 다시 돌린다				//값을 치르고 룰렛을 다시 돌린다
 void GridTestShopSide(bool book);		//하단 지도 / 도감 자리
 void StageShopBtnRect(int* x, int* y, int* w, int* h);	//전투 시작 버튼 자리
 bool GridTestBeginOffer(int killedType);
