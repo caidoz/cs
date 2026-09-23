@@ -9,35 +9,35 @@ static const int swordTileSize[35 * 2] = {
     2, 2, //w0_4
     1, 2, //w0_5
     2, 3, //w0_6
-    2, 4, //w0_7
-    2, 4, //w0_8
-    2, 4, //w0_9
-    2, 4, //w0_10
-    2, 5, //w0_11
-    2, 5, //w0_12
-    2, 5, //w0_13
-    2, 5, //w0_14
-    2, 5, //w0_15
-    3, 6, //w0_16
-    3, 7, //w0_17
-    2, 7, //w0_18
-    3, 8, //w0_19
-    5, 8, //w0_20
-    5, 9, //w0_21
-    4, 9, //w0_22
-    4, 7, //w0_23
-    3, 7, //w0_24
-    3, 9, //w0_25
-    3, 10, //w0_26
-    5, 10, //w0_27
-    4, 10, //w0_28
-    6, 11, //w0_29
-    4, 11, //w0_30
-    4, 11, //w0_31
-    4, 12, //w0_32
-    6, 12, //w0_33
-    3, 12, //w0_34
-    3, 12, //w0_35
+    2, 3, //w0_7
+    2, 3, //w0_8
+    2, 3, //w0_9
+    2, 3, //w0_10
+    2, 3, //w0_11
+    2, 3, //w0_12
+    2, 3, //w0_13
+    2, 3, //w0_14
+    2, 3, //w0_15
+    2, 3, //w0_16
+    2, 3, //w0_17
+    2, 3, //w0_18
+    2, 4, //w0_19
+    2, 4, //w0_20
+    2, 4, //w0_21
+    2, 4, //w0_22
+    2, 4, //w0_23
+    2, 4, //w0_24
+    2, 4, //w0_25
+    2, 4, //w0_26
+    2, 4, //w0_27
+    2, 4, //w0_28
+    2, 4, //w0_29
+    2, 4, //w0_30
+    2, 4, //w0_31
+    2, 4, //w0_32
+    2, 4, //w0_33
+    2, 4, //w0_34
+    2, 4, //w0_35
 };
 struct SwordSpriteInfo {
     int cols, rows, width, height;
@@ -50,36 +50,36 @@ static const SwordSpriteInfo kSwordSprites[36] = {
     {swordTileSize[4], swordTileSize[5], 32, 64, 16.5f, 56.5f}, // w0_3
     {swordTileSize[6], swordTileSize[7], 64, 64, 32.5f, 53.5f}, // w0_4
     {swordTileSize[8], swordTileSize[9], 32, 64, 17.5f, 60.5f}, // w0_5
-    {swordTileSize[10], swordTileSize[11], 64, 96, 30.5f, 91.5f}, // w0_6
-    {swordTileSize[12], swordTileSize[13], 64, 128, 31.5f, 102.5f}, // w0_7
-    {swordTileSize[14], swordTileSize[15], 64, 128, 32.5f, 104.5f}, // w0_8
-    {swordTileSize[16], swordTileSize[17], 64, 128, 32.5f, 113.5f}, // w0_9
-    {swordTileSize[18], swordTileSize[19], 64, 128, 32.5f, 113.5f}, // w0_10
-    {swordTileSize[20], swordTileSize[21], 64, 160, 33.5f, 149.5f}, // w0_11
-    {swordTileSize[22], swordTileSize[23], 64, 160, 34.5f, 148.5f}, // w0_12
-    {swordTileSize[24], swordTileSize[25], 64, 160, 32.5f, 150.5f}, // w0_13
-    {swordTileSize[26], swordTileSize[27], 64, 160, 36.5f, 153.5f}, // w0_14
-    {swordTileSize[28], swordTileSize[29], 64, 160, 30.5f, 143.5f}, // w0_15
-    {swordTileSize[30], swordTileSize[31], 96, 192, 48.5f, 181.5f}, // w0_16
-    {swordTileSize[32], swordTileSize[33], 96, 224, 51.5f, 202.5f}, // w0_17
-    {swordTileSize[34], swordTileSize[35], 64, 224, 29.5f, 191.5f}, // w0_18
-    {swordTileSize[36], swordTileSize[37], 96, 256, 38.5f, 219.5f}, // w0_19
-    {swordTileSize[38], swordTileSize[39], 160, 256, 76.5f, 238.5f}, // w0_20
-    {swordTileSize[40], swordTileSize[41], 160, 288, 80.5f, 253.5f}, // w0_21
-    {swordTileSize[42], swordTileSize[43], 128, 288, 64.5f, 256.5f}, // w0_22
-    {swordTileSize[44], swordTileSize[45], 128, 224, 66.5f, 200.5f}, // w0_23
-    {swordTileSize[46], swordTileSize[47], 96, 224, 48.5f, 203.5f}, // w0_24
-    {swordTileSize[48], swordTileSize[49], 96, 288, 48.5f, 267.5f}, // w0_25
-    {swordTileSize[50], swordTileSize[51], 96, 320, 48.5f, 291.5f}, // w0_26
-    {swordTileSize[52], swordTileSize[53], 160, 320, 98.5f, 295.5f}, // w0_27
-    {swordTileSize[54], swordTileSize[55], 128, 320, 91.5f, 288.5f}, // w0_28
-    {swordTileSize[56], swordTileSize[57], 192, 352, 95.5f, 328.5f}, // w0_29
-    {swordTileSize[58], swordTileSize[59], 128, 352, 78.5f, 327.5f}, // w0_30
-    {swordTileSize[60], swordTileSize[61], 128, 352, 62.5f, 305.5f}, // w0_31
-    {swordTileSize[62], swordTileSize[63], 128, 384, 68.5f, 360.5f}, // w0_32
-    {swordTileSize[64], swordTileSize[65], 192, 384, 101.5f, 357.5f}, // w0_33
-    {swordTileSize[66], swordTileSize[67], 96, 384, 41.5f, 358.5f}, // w0_34
-    {swordTileSize[68], swordTileSize[69], 96, 384, 47.5f, 356.5f}, // w0_35
+    {swordTileSize[10], swordTileSize[11], 64, 96, 30.4f, 80.6f}, // w0_6
+    {swordTileSize[12], swordTileSize[13], 64, 96, 31.7f, 70.1f}, // w0_7
+    {swordTileSize[14], swordTileSize[15], 64, 96, 32.3f, 71.9f}, // w0_8
+    {swordTileSize[16], swordTileSize[17], 64, 96, 32.3f, 78.1f}, // w0_9
+    {swordTileSize[18], swordTileSize[19], 64, 96, 32.3f, 78.8f}, // w0_10
+    {swordTileSize[20], swordTileSize[21], 64, 96, 32.3f, 83.6f}, // w0_11
+    {swordTileSize[22], swordTileSize[23], 64, 96, 33.3f, 83.9f}, // w0_12
+    {swordTileSize[24], swordTileSize[25], 64, 96, 31.8f, 85.8f}, // w0_13
+    {swordTileSize[26], swordTileSize[27], 64, 96, 34.0f, 88.4f}, // w0_14
+    {swordTileSize[28], swordTileSize[29], 64, 96, 31.2f, 83.7f}, // w0_15
+    {swordTileSize[30], swordTileSize[31], 64, 96, 32.2f, 89.0f}, // w0_16
+    {swordTileSize[32], swordTileSize[33], 64, 96, 33.5f, 86.0f}, // w0_17
+    {swordTileSize[34], swordTileSize[35], 64, 96, 30.4f, 82.1f}, // w0_18
+    {swordTileSize[36], swordTileSize[37], 64, 128, 27.8f, 99.0f}, // w0_19
+    {swordTileSize[38], swordTileSize[39], 64, 128, 30.6f, 107.2f}, // w0_20
+    {swordTileSize[40], swordTileSize[41], 64, 128, 31.7f, 102.8f}, // w0_21
+    {swordTileSize[42], swordTileSize[43], 64, 128, 32.2f, 104.6f}, // w0_22
+    {swordTileSize[44], swordTileSize[45], 64, 128, 33.2f, 105.0f}, // w0_23
+    {swordTileSize[46], swordTileSize[47], 64, 128, 32.2f, 107.2f}, // w0_24
+    {swordTileSize[48], swordTileSize[49], 64, 128, 32.2f, 110.2f}, // w0_25
+    {swordTileSize[50], swordTileSize[51], 64, 128, 31.7f, 109.1f}, // w0_26
+    {swordTileSize[52], swordTileSize[53], 64, 128, 38.5f, 111.3f}, // w0_27
+    {swordTileSize[54], swordTileSize[55], 64, 128, 41.9f, 109.7f}, // w0_28
+    {swordTileSize[56], swordTileSize[57], 64, 128, 31.8f, 114.2f}, // w0_29
+    {swordTileSize[58], swordTileSize[59], 64, 128, 36.4f, 114.7f}, // w0_30
+    {swordTileSize[60], swordTileSize[61], 64, 128, 31.5f, 108.1f}, // w0_31
+    {swordTileSize[62], swordTileSize[63], 64, 128, 32.9f, 117.5f}, // w0_32
+    {swordTileSize[64], swordTileSize[65], 64, 128, 33.8f, 117.4f}, // w0_33
+    {swordTileSize[66], swordTileSize[67], 64, 128, 29.8f, 118.6f}, // w0_34
+    {swordTileSize[68], swordTileSize[69], 64, 128, 31.8f, 118.8f}, // w0_35
 };
 inline const SwordSpriteInfo* GetSwordSpriteInfo(int detail) {
     return detail >= 0 && detail < 35 ? &kSwordSprites[detail + 1] : 0;
