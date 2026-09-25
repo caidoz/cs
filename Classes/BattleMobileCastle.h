@@ -56,11 +56,10 @@ inline bool IsMoving() {
 inline float CastleScaleFor(int castleIdx, float rawW) {
 	// Cache the transform used when the castle first appears.  Starting combat
 	// may rebuild UI/layout state, but it must never change this world transform.
-	static float fixedScale[10] = {};
-	const int idx = Max(0, Min(castleIdx, 9));
+	static float fixedScale[20] = {};
+	const int idx = Max(0, Min(castleIdx, 19));
 	if (fixedScale[idx] <= 0.0f && rawW > 1.0f)
-		// Largest castle: another 20% increase from the previous 52.8% view.
-		fixedScale[idx] = DX * 0.634f / rawW;
+		fixedScale[idx] = DX * (0.40f + 0.014f * idx) / rawW;
 	return fixedScale[idx] > 0.0f ? fixedScale[idx] : 0.20f;
 }
 
@@ -207,7 +206,7 @@ inline void Update(float delta) {
 	const float currentSpeed = moving ? s_scrollSpeed * (float)_2X : 0.0f;
 	if (moving) s_scrollDist += currentSpeed * dt;
 
-	const int castleIdx = Max(0, Min(robin.castle, 9));
+	const int castleIdx = Max(0, Min(gMobileCastleVisual, 19));
 	float rawW = 416.0f;
 	if (sprite[CASTLE0_IMG + castleIdx])
 		rawW = sprite[CASTLE0_IMG + castleIdx]->getContentSize().width;
@@ -329,7 +328,7 @@ inline void DrawInventoryCastleReflections(int castleIdx, float castleLeft, floa
 
 // Greatly enlarged Mobile Castle with wheels and Hero stationed at lobby position
 inline void DrawCastle(int groundY) {
-	const int curCastle = Max(0, Min(robin.castle, 9));
+	const int curCastle = Max(0, Min(gMobileCastleVisual, 19));
 	const int castleImg = CASTLE0_IMG + curCastle;
 	if (!sprite[castleImg]) LoadImg(castleImg);
 	if (!sprite[castleImg]) return;
@@ -345,8 +344,8 @@ inline void DrawCastle(int groundY) {
 
 	// Compact left-side fortress, leaving the center lane and right monster clear.
 	const float castleLeft = 6.0f * (float)_2X;
-	const float wheelRadius = CastleWheels::GetWheelRadius(curCastle, scale);
-	const float suspensionY = CastleWheels::GetSuspensionY();
+	const float wheelRadius = CastleWheels::GetWheelRadius(curCastle, rawW, scale);
+	const float suspensionY = CastleWheels::GetBodyMotionY(curCastle, IsMoving());
 	const float castleBottom = wheelGroundY + wheelRadius * 1.4f + suspensionY;
 	const float castleTop = castleBottom + rawH * scale;
 
@@ -365,8 +364,8 @@ inline void DrawCastle(int groundY) {
 	DrawInventoryCastleReflections(curCastle, castleLeft, castleTop, rawW, rawH, scale);
 
 	// 5. Hero (Robin) stationed at the exact lobby castle position (kCastleHeroPos), facing RIGHT!
-	const float heroU = kCastleHeroPos[curCastle].u;
-	const float heroV = kCastleHeroPos[curCastle].v;
+	const float heroU = kCastleHeroPos[Min(curCastle, 9)].u;
+	const float heroV = kCastleHeroPos[Min(curCastle, 9)].v;
 	const float heroX = castleLeft + heroU * rawW * scale;
 	const float heroY = castleTop - heroV * rawH * scale;
 	// Use the same castle-relative character scale as LobbyCharZoom().

@@ -1950,17 +1950,20 @@ static bool turnPhaseTouchLock = false;
 
 void StartTurnPhaseAnnouncement(bool enemyPhase)
 {
+	//실시간 성 전투에서는 턴 문구를 띄우지 않는다. 이 함수는 웨이브 준비가
+	//끝난 자리에서도 호출되므로, 예전에 문구 퇴장이 맡던 입력 잠금 해제만
+	//즉시 수행한다.
 	turnPhaseAnnounceEnemy = enemyPhase;
-	turnPhaseAnnounceFrame = 1;
-	if (!enemyPhase) {
-		turnPhaseTouchLock = true;
-		touchDisable = true;
-	}
+	turnPhaseAnnounceFrame = 0;
+	turnPhaseTouchLock = false;
+	if (!waveAnnounceTouchLock && !tutorialWaitingEnemyLand
+		&& !battleRewardTransitionLock)
+		touchDisable = false;
 }
 
 bool IsTurnPhaseAnnouncementActive(void)
 {
-	return turnPhaseAnnounceFrame > 0;
+	return false;
 }
 
 void DrawTurnPhaseAnnouncement(void)

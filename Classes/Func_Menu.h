@@ -123,6 +123,15 @@ void DrawPvpHeroPanel(int x, int y, int w, int h,
 //장비 상세보기(팝업). 동료 상세와 같은 틀을 쓴다.
 //얻지 않은 장비는 여기까지 오지 않는다(Func_Input.cpp에서 막는다).
 void EquipDetailDraw(ITEM* it);
+
+//---- 도감 ----
+int CodexScrollDy(void);			//목록 길이로 잡은 스크롤 한계
+void CodexPick(int slot);			//보이는 칸 번호로 상세를 연다
+void CodexClose(void);				//상세 -> 덮개 차례로 닫는다
+void CodexReset(void);
+bool CodexOverlayOpen(void);
+void CodexOverlaySetOpen(bool on);
+void CodexOverlayDraw(void);		//전투 화면 위에 얹는 도감
 void ItemOptionCompareDraw(ITEM * it1, ITEM * it2, int x, int y, float zoom);
 void ItemOptionDraw(ITEM * it, int x, int y, float zoom, bool equipped);
 void EquipInfoDraw(ITEM * it, int x, int y, int itemType, int itemDetail, int itemGrade, int depth, int menuX, float zoom);
@@ -142,6 +151,7 @@ void CollectionsDraw(int x, int y, float zoom);
 void CollectionDetailListDraw(int x, int y, int collectionIdx, float zoom);
 void CalendarDraw(int, int, float zoom);
 void OptionDraw(int, int, float zoom);
+void BattleAbandonCommand(void);
 void OptionLanguageDraw(int x, int y, float zoom);
 void OptionPushAlarmDraw(int x, int y, float zoom);
 void OptionHelpDraw(int x, int y, float zoom);

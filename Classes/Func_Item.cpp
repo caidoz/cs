@@ -1451,7 +1451,7 @@ int MergeItems(bool doMerge)
 			if (head->type == EMPTY || IsEquipItemType(head->type) == false)
 				continue;
 
-			if (head->grade >= GRADE_LEGEND || ItemWorn(head))
+			if (head->grade >= GRADE_LEGEND || ItemWorn(head) || head->locked)
 				continue;
 
 			found[cnt++] = i;
@@ -1463,7 +1463,7 @@ int MergeItems(bool doMerge)
 					|| it->grade != head->grade)
 					continue;
 
-				if (ItemWorn(it))
+				if (ItemWorn(it) || it->locked)
 					continue;
 
 				found[cnt++] = k;
@@ -1483,7 +1483,19 @@ int MergeItems(bool doMerge)
 			const int grade = head->grade + 1;
 			const int lv = Max(1, (int)head->lv);
 
+			//---- 합성 보너스 ----
+			//
+			//성의 상징이 있으면 그 확률로 재료 하나가 남는다. 결과를 더
+			//좋게 만들지 않고 드는 값을 깎는 쪽으로 준다 - 결과를 건드리면
+			//등급 체계가 통째로 흔들린다.
+			const bool keep = CastleBonusOf(CPE_MERGE_BONUS) > 0
+				&& Random(100) < CastleBonusOf(CPE_MERGE_BONUS);
+
 			for (int k = 1; k < ITEM_MERGE_COUNT; k++) {
+				//마지막 재료 하나는 남긴다.
+				if (keep && k == ITEM_MERGE_COUNT - 1)
+					break;
+
 				memset(&robin.inven[found[k]], 0, sizeof(ITEM));
 				robin.inven[found[k]].type = EMPTY;
 
@@ -1526,6 +1538,10 @@ long long SellNormalItems(void)
 		if (it->grade != GRADE_NORMAL)
 			continue;
 
+		//자물쇠를 건 것은 털지 않는다.
+		if (it->locked)
+			continue;
+
 		for (int h = 0; h < TOTALCHAR && !worn; h++)
 			for (int e = 0; e < TOTALEQUIP; e++)
 				if (ao[h].equip[e].type != EMPTY && ao[h].equip[e].id == it->id) {
@@ -1550,6 +1566,102 @@ long long SellNormalItems(void)
 	return got;
 }
 
+//---- 잠금 ----
+//
+//아끼는 장비에 자물쇠를 건다. 일괄 판매와 합성이 이 표시를 보고 건너뛴다.
+//장착 중인 것은 어차피 빠지므로 따로 걸 필요가 없다.
+void ItemToggleLock(int invenIdx)
+{
+	if (invenIdx < 0 || invenIdx >= TOTALINVENTORY)
+		return;
+
+	ITEM* it = &robin.inven[invenIdx];
+
+	if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+		return;
+
+	it->locked = !it->locked;
+}
+
+//---- 성 파츠가 주는 값 ----
+//
+//지금 성의 요소 중에서 그 종류인 것을 모아 더한다. 성마다 요소 이름이
+//다르므로(창고 · 보물창고 · 보물고) 이름이 아니라 종류로 찾아야 한다.
+//
+//쓰는 쪽은 이 한 줄만 부르면 된다. 어느 성에서 무엇이 그 값을 올리는지는
+//표(CastlePartData.h)가 혼자 안다.
+int CastleBonusOf(int effectType)
+{
+	int sum = 0;
+
+	for (int i = 0; i < CastlePartCnt(robin.castle); i++) {
+		const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+
+		if (p && p->effectType == effectType)
+			sum += CastlePartBonus(robin.castle, i, robin.castlePartLv[i]);
+	}
+
+	return sum;
+}
+
+//---- 성 수금 ----
+//
+//1분에 쌓이는 양. 백성이 곧 동료라, 모은 동료가 많을수록 빨리 찬다.
+//집무실 · 의회실이 그 위에 비율로 얹힌다.
+long long CastleIncomePerMin(void)
+{
+	int crew = 0;
+
+	for (int i = 0; i < gTotalCrew; i++) {
+		const int idx = GetInvenIdx(ITEM_CREW, i, GRADE_NORMAL);
+
+		if (idx >= 0 && robin.inven[idx].count >= 1)
+			crew++;
+	}
+
+	const long long base = INCOME_PER_MIN + (long long)INCOME_PER_CREW * crew;
+
+	return base * (100 + CastleBonusOf(CPE_INCOME_PCT)) / 100;
+}
+
+//금고 상한. 생산 시설이 올린다.
+long long CastleIncomeCap(void)
+{
+	return (long long)INCOME_CAP_BASE * (100 + CastleBonusOf(CPE_INCOME_CAP_PCT)) / 100;
+}
+
+//지금 금고에 쌓여 있는 양. 마지막으로 걷은 뒤 흐른 시간으로 센다.
+long long CastleIncomeNow(void)
+{
+	const long now = MC_knlCurrentTimeStamp();
+
+	//처음 들어왔거나 시계가 거꾸로 갔다. 지금을 기준으로 다시 잡는다.
+	if (robin.castleIncomeTs <= 0 || robin.castleIncomeTs > now) {
+		robin.castleIncomeTs = now;
+		return 0;
+	}
+
+	long sec = now - robin.castleIncomeTs;
+
+	if (sec > INCOME_MAX_SEC)
+		sec = INCOME_MAX_SEC;
+
+	return Min(CastleIncomeCap(), CastleIncomePerMin() * sec / 60);
+}
+
+//금고를 걷는다. 걷은 양을 돌려준다.
+long long CastleIncomeTake(void)
+{
+	const long long got = CastleIncomeNow();
+
+	robin.castleIncomeTs = MC_knlCurrentTimeStamp();
+
+	if (got > 0)
+		GetItem(ITEM_GOLD, false, false, false, got, false);
+
+	return got;
+}
+
 //---- 지금 쓸 수 있는 가방 칸 ----
 //
 //성이 커지면 같이 늘어난다. 세이브에 든 값(robin.maxInven)은 이 식으로
@@ -1557,15 +1669,9 @@ long long SellNormalItems(void)
 int GetMaxInven(void)
 {
 	//성 단계에 가방 파츠(창고 · 보물고 등)를 더한다. 올리면 그 자리에서
-	//칸이 는다. 어느 요소가 가방을 올리는지는 성마다 다르므로 종류로 찾는다.
-	int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE;
-
-	for (int i = 0; i < CastlePartCnt(robin.castle); i++) {
-		const CastlePartInfo* p = CastlePartAt(robin.castle, i);
-
-		if (p && p->effectType == CPE_BAG)
-			slot += CastlePartBonus(robin.castle, i, robin.castlePartLv[i]);
-	}
+	//칸이 는다.
+	const int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE
+		+ CastleBonusOf(CPE_BAG);
 
 	return Max(1, Min((int)TOTALINVENTORY, slot));
 }

@@ -22,6 +22,12 @@ int MakeItemId(void);
 int GetItem(int, int, int, int, long long, int);
 bool IsEquipItemType(int type);		//무기 ~ 반지. 한 점씩 따로 들어간다
 int GetMaxInven(void);				//성이 정하는 가방 칸 수
+void ItemToggleLock(int invenIdx);	//자물쇠를 걸고 푼다
+int CastleBonusOf(int effectType);	//성 파츠가 주는 값(CPE_*)
+long long CastleIncomePerMin(void);	//1분에 쌓이는 골드
+long long CastleIncomeCap(void);	//금고 상한
+long long CastleIncomeNow(void);	//지금 쌓여 있는 양
+long long CastleIncomeTake(void);	//걷는다. 걷은 양을 돌려준다
 long long SellNormalItems(void);	//일반 등급을 한 번에 판다
 int MergeItems(bool doMerge);		//같은 장비 셋을 한 등급 위로
 extern bool gInvenFullNotice;		//가방이 차서 못 받은 것이 있다

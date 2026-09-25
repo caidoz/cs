@@ -27,6 +27,9 @@ extern int gTotalEnemy;
 extern int gTotalCrew;
 extern int gTotalSkill;
 extern int gTotalCastle;
+// 20종 이동 성의 외형 선택. 지역 진행도(robin.castle)와 분리하여
+// 마지막 외형을 골라도 19개 지역 데이터 배열을 넘지 않는다.
+extern int gMobileCastleVisual;
 extern int gTotalMap;
 extern int gTotalCmf;
 

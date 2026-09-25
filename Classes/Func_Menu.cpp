@@ -3976,8 +3976,9 @@ void OptionDraw(int x, int y, float zoom)
 	{
 		//확률 정보는 게임 안에서도 닿아야 한다. 게임산업법이 게임 밖(홈페이지,
 		//스토어 소개)과 게임 안 양쪽에 알리라고 하기 때문이다.
-		const char* footText[4] = { "고객센터", "이용약관", "개인정보처리방침", "확률정보" };
-		const int footTouch[4] = { TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY, TOUCH_FUNC_OPTION_RATES };
+		const bool battleOption = IsStageRealtime();
+		const char* footText[4] = { battleOption ? "전투 포기" : "고객센터", "이용약관", "개인정보처리방침", "확률정보" };
+		const int footTouch[4] = { battleOption ? TOUCH_FUNC_BATTLE_ABANDON : TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY, TOUCH_FUNC_OPTION_RATES };
 		float gap = 8.0f * zoom;
 		float bh2 = footH * 0.68f;
 		float by2 = footY - (footH - bh2) / 2;
@@ -4007,6 +4008,17 @@ void OptionDraw(int x, int y, float zoom)
 	}
 
 	SetFontColor(COLOR_WHITE);
+}
+
+void BattleAbandonCommand(void)
+{
+	if (!IsStageRealtime())
+		return;
+
+	ClosePopUp();
+	StageRtSetAuto(false);
+	GotoLobby();
+	PlayMusic(M_BUTTON);
 }
 
 //소셜 서버가 붙기 전의 표시 모델. 화면 코드는 이 배열만 읽도록 두어
@@ -4609,6 +4621,13 @@ int GetScrollDy(int menuIdx)
 		scrollDy = (float)(CREW_GAP_Y) * (itemCategoryCnt / INVEN_HCNT + 1 - (itemCategoryCnt % INVEN_HCNT == 0 ? 1 : 0)) - 16;
 		break;
 	case MENU_COLLECTIONS:
+		//도감은 늘어놓는 것이 가방이 아니라 세상에 있는 장비 전부다.
+		//길이를 따로 센다.
+		if (curEquipTab == EQUIPTAB_CODEX) {
+			scrollDy = CodexScrollDy();
+			break;
+		}
+
 		//현재 스크롤 기준으로 아이템이 몇개인지 확인
 		itemCategoryCnt = GetItemCategoryCnt(menuX * TOTALCHAR + curHero);
 
@@ -5899,7 +5918,8 @@ void CrewMenuDraw(int x, int y, float zoom)
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
-	float WINY = (float)(DY - (GNBHEIGHT) - (BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	// Keep the persistent lobby navigation completely outside this window.
+	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
 	int itemType, itemDetail, itemGrade, itemLv, itemStar;
 	long itemCnt;
 
@@ -6534,6 +6554,370 @@ void DrawItemCard(
 }
 
 //======================================================================
+// 메뉴 버튼 한 개
+//
+// 버튼 그림(buttonImgData)은 176 x 40 한 장이다. 원하는 크기로 늘려
+// 그리고 그 위에 글자를 얹는다. 사각형을 직접 그리면 이 화면만 다른
+// 물건으로 보인다 - 다른 메뉴가 전부 이 그림을 쓴다.
+//
+// 못 누르는 버튼은 색을 흰색(가라앉은 색)으로 바꾸고 글자를 회색으로
+// 둔다. 누를 수 있는 것과 없는 것이 색으로 갈려야 한다.
+//======================================================================
+static void MenuButton(int x, int y, int w, int h, const char* label,
+	int color, bool enabled, int func, float textZoom = 0.62f)
+{
+	const float press = func && enabled
+		? GetButtonScale(func, x, y, w, h) : 1.0f;
+	const float zx = (float)w / (float)buttonImgData[0] * press;
+	const float zy = (float)h / (float)buttonImgData[1] * press;
+	const float gapX = (float)w * (press - 1.0f) / 2;
+	const float gapY = (float)h * (press - 1.0f) / 2;
+
+	DrawButton(x - gapX, y + gapY, enabled ? color : BUTTON_COLOR_WHITE,
+		0, 0, 0, false, zx, zy);
+
+	//---- 글자를 버튼 한가운데에 ----
+	//
+	//글자 함수의 CENTER 는 가로만 가운데다. DrawTextStrSystem 이 앵커를
+	//(0.5, 1.0) 으로 잡으므로 넘기는 y 는 글자의 윗변이다. 세로 가운데에
+	//놓으려면 글자 높이를 재서 직접 내려 잡아야 한다 - 눈대중으로 몇
+	//픽셀 빼 두면 배율이나 버튼 높이가 바뀌는 순간 어긋난다.
+	const float textH = (float)FONT_HEIGHT * textZoom;
+
+	SetFontColor(enabled ? COLOR_WHITE : COLOR_GREY);
+	CenterTextStrSolid(label, x + w / 2,
+		(int)((float)y - ((float)h - textH) / 2), textZoom);
+
+	if (func && enabled)
+		SetRectPoint(x, y, w, h, func);
+}
+
+//======================================================================
+// 도감
+//
+// 세상에 있는 장비를 부위별로 늘어놓는다. 얻어 본 것은 밝게, 아직 못 본
+// 것은 검은 실루엣으로 둔다 - 무엇이 남았는지가 한눈에 보여야 모으는
+// 재미가 생긴다.
+//
+// 얻은 기록은 robin.equipGet 에 이미 쌓이고 있다(GetItem 이 켠다).
+// 자리는 itemStartCnt[부위] + 번호 다.
+//======================================================================
+struct CodexGroup {
+	const char* name;
+	int type;
+	int count;
+};
+
+static int CodexGroups(CodexGroup* out, int max)
+{
+	static const int kType[] = {
+		ITEM_SWORD, ITEM_GUN, ITEM_BOOMERANG,
+		ITEM_HELM, ITEM_HAT, ITEM_CAP,
+		ITEM_ARMOR, ITEM_VEST, ITEM_COAT,
+		ITEM_GUNTLET, ITEM_ARMLET, ITEM_GLOVE,
+		ITEM_KILT, ITEM_SKIRT, ITEM_PANTS,
+		ITEM_GREAVES, ITEM_SHOES, ITEM_BOOTS,
+		ITEM_NECK, ITEM_RING,
+	};
+	static const char* kName[] = {
+		"검", "총", "부메랑",
+		"투구", "모자", "캡",
+		"갑옷", "조끼", "코트",
+		"건틀릿", "암릿", "장갑",
+		"킬트", "스커트", "바지",
+		"그리브", "슈즈", "부츠",
+		"목걸이", "반지",
+	};
+	const int cnt = (int)(sizeof(kType) / sizeof(kType[0]));
+	int n = 0;
+
+	for (int i = 0; i < cnt && n < max; i++) {
+		//부위마다 몇 가지가 있는지는 시작 번호의 차이로 안다.
+		const int start = itemStartCnt[kType[i]];
+		const int next = itemStartCnt[kType[i] + 1];
+		const int total = next - start;
+
+		if (total <= 0)
+			continue;
+
+		out[n].name = kName[i];
+		out[n].type = kType[i];
+		out[n].count = total;
+		n++;
+	}
+
+	return n;
+}
+
+//부위 이름 하나. 상세 창이 "검 12번" 처럼 적는 데 쓴다.
+static const char* CodexTypeName(int type)
+{
+	CodexGroup group[24];
+	const int groups = CodexGroups(group, 24);
+
+	for (int g = 0; g < groups; g++)
+		if (group[g].type == type)
+			return group[g].name;
+
+	return "장비";
+}
+
+//---- 지금 화면에 자리를 잡은 칸 ----
+//
+//그리면서 채우고, 누른 쪽이 번호로 되찾는다. 목록이 스크롤을 타므로
+//가방 번호처럼 고정된 자리를 줄 수가 없다.
+static short gCodexSlotType[CODEX_SLOT_MAX];
+static short gCodexSlotIdx[CODEX_SLOT_MAX];
+static int gCodexSlotCnt = 0;
+
+//상세 창에 띄운 것. 없으면 -1 이다.
+static int gCodexPickType = -1;
+static int gCodexPickIdx = -1;
+
+//전투 화면에서 도감 버튼으로 연 덮개.
+static bool gCodexOverlay = false;
+
+//목록 전체가 몇 픽셀인가. 스크롤 한계를 잡는 데 쓴다.
+static int CodexContentHeight(void)
+{
+	CodexGroup group[24];
+	const int groups = CodexGroups(group, 24);
+	const int cell = 34 * _2X;
+	const int cols = Max(1, (DX - 24 * _2X) / cell);
+	int h = 0;
+
+	for (int g = 0; g < groups; g++)
+		h += 14 * _2X + ((group[g].count + cols - 1) / cols) * cell + 8 * _2X;
+
+	return h;
+}
+
+//Core.cpp 가 scT = (이 값) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500 으로
+//한계를 잡는다. 거꾸로 맞춰 돌려준다 - 그래야 목록 끝에서 멈춘다.
+int CodexScrollDy(void)
+{
+	const int view = (DY - 150 * _2X) - (BOTTOMMENUHEIGHT + 20 * _2X);
+	int over = CodexContentHeight() - view;
+
+	if (over < 0)
+		over = 0;
+
+	return over + DY - GNBHEIGHT - BOTTOMMENUHEIGHT - 500;
+}
+
+//---- 상세 창 ----
+void CodexPick(int slot)
+{
+	if (slot < 0 || slot >= gCodexSlotCnt)
+		return;
+
+	gCodexPickType = gCodexSlotType[slot];
+	gCodexPickIdx = gCodexSlotIdx[slot];
+	PlayMusic(M_SELECT);
+}
+
+//닫기 한 번에 상세부터 접는다. 덮개까지 같이 닫으면 상세를 보려다
+//도감이 통째로 사라진다.
+void CodexClose(void)
+{
+	if (gCodexPickType >= 0) {
+		gCodexPickType = -1;
+		gCodexPickIdx = -1;
+		return;
+	}
+
+	gCodexOverlay = false;
+}
+
+bool CodexOverlayOpen(void)			{ return gCodexOverlay; }
+void CodexOverlaySetOpen(bool on)	{ gCodexOverlay = on; if (on) scY[MENU_COLLECTIONS] = 0; }
+
+//탭을 바꾸거나 화면을 떠날 때. 남아 있던 상세가 다음에 그대로 뜬다.
+void CodexReset(void)
+{
+	gCodexPickType = -1;
+	gCodexPickIdx = -1;
+	gCodexSlotCnt = 0;
+	scY[MENU_COLLECTIONS] = 0;
+}
+
+static void CodexPopupDraw(void)
+{
+	char str[96];
+
+	if (gCodexPickType < 0)
+		return;
+
+	{
+		const int start = itemStartCnt[gCodexPickType];
+		const bool got = robin.equipGet[start + gCodexPickIdx];
+		const int w = 250 * _2X;
+		const int h = 84 * _2X;
+		const int px = DX / 2 - w / 2;
+		const int py = DY / 2 + h / 2;
+
+		//뒤에 깔린 칸들이 창 아래에서 눌리지 않게 먼저 비운다.
+		ResetRectPoint();
+		ScreenDarken(SCREENDARKEN);
+		SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_CODEX_CLOSE);
+
+		SetAlpha(30);
+		MemRect(px, py, w, h, 0x141426);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrameThick(px, py, w, h, got ? 0xBBAA66 : 0x556677, _2X);
+
+		DrawIcon(GetItemIcon(gCodexPickType, gCodexPickIdx, GRADE_NORMAL),
+			px + 30 * _2X - ITEMICONSIZE / 2, py - h / 2 + ITEMICONSIZE / 2,
+			1.4f, got ? false : COLOR_BLACK, false, false, true);
+
+		//아직 못 본 것은 이름도 알려 주지 않는다. 그래야 채우고 싶어진다.
+		SetFontColor(got ? COLOR_WHITE : COLOR_GREY);
+		sprintf(str, "%s", got
+			? textId[TEXT_ITEMNAME_START
+				+ GetItemName(gCodexPickType, gCodexPickIdx, GRADE_NORMAL)]
+			: "???");
+		LineTextStrSolid(str, px + 62 * _2X, py - 16 * _2X, w - 72 * _2X, -1, -1, 0.7f);
+
+		SetFontColor(COLOR_GREY);
+		sprintf(str, "%s  %d번", CodexTypeName(gCodexPickType), gCodexPickIdx + 1);
+		LineTextStrSolid(str, px + 62 * _2X, py - 36 * _2X, w - 72 * _2X, -1, -1, 0.5f);
+
+		SetFontColor(got ? COLOR_YELLOW : COLOR_RED);
+		LineTextStrSolid(got ? "얻어 보았다" : "아직 못 얻었다",
+			px + 62 * _2X, py - 54 * _2X, w - 72 * _2X, -1, -1, 0.55f);
+
+		//---- 닫기 ----
+		{
+			const int bw = 20 * _2X;
+			const int bx = px + w - bw - 4 * _2X;
+			const int by = py - 4 * _2X;
+
+			MemRect(bx, by, bw, bw, 0x442233);
+			MemRectFrame(bx, by, bw, bw, 0xCC6688);
+			SetFontColor(COLOR_WHITE);
+			CenterTextStrSolid("X", bx + bw / 2, by - bw + 5 * _2X, 0.6f);
+			SetRectPoint(bx, by, bw, bw, TOUCH_FUNC_CODEX_CLOSE);
+		}
+
+		gTouchRectLocked = true;
+	}
+}
+
+static void CodexDraw(int x, int y, float zoom)
+{
+	char str[64];
+	CodexGroup group[24];
+	const int groups = CodexGroups(group, 24);
+	const int cell = 34 * _2X;
+	const int cols = Max(1, (DX - 24 * _2X) / cell);
+	const int left = x + (DX - cols * cell) / 2;
+	int top = y - 150 * _2X + scY[MENU_COLLECTIONS];
+	int have = 0;
+	int all = 0;
+
+	for (int g = 0; g < groups; g++) {
+		const int start = itemStartCnt[group[g].type];
+
+		for (int i = 0; i < group[g].count; i++) {
+			all++;
+			if (robin.equipGet[start + i])
+				have++;
+		}
+	}
+
+	SetFontColor(COLOR_WHITE);
+	sprintf(str, "도감  %d / %d", have, all);
+	CenterTextStrSolid(str, x + DX / 2, y - 130 * _2X, 0.7f);
+
+	SetSectionClip(0, y - 150 * _2X, DX,
+		(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) - 30 * _2X, false);
+
+	gCodexSlotCnt = 0;
+
+	for (int g = 0; g < groups; g++) {
+		const int start = itemStartCnt[group[g].type];
+		int shown = 0;
+
+		//부위 이름 한 줄
+		SetFontColor(COLOR_YELLOW);
+		sprintf(str, "%s  %d", group[g].name, group[g].count);
+		LineTextStrSolid(str, left, top, DX, -1, -1, 0.5f);
+		top -= 14 * _2X;
+
+		for (int i = 0; i < group[g].count; i++) {
+			const int col = shown % cols;
+			const int row = shown / cols;
+			const int cx = left + col * cell;
+			const int cy = top - row * cell;
+			const bool got = robin.equipGet[start + i];
+
+			shown++;
+
+			//화면 밖은 그리지 않는다. 목록이 길어서 매 프레임 다 그리면
+			//헛일이 많다.
+			if (cy > DY || cy < BOTTOMMENUHEIGHT - cell)
+				continue;
+
+			SetAlpha(got ? 26 : 10);
+			MemRect(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
+				got ? 0x2A2A44 : 0x14141F);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
+				got ? 0x8899BB : 0x333344);
+
+			//못 얻은 것은 그림자만. 얻은 것과 한눈에 갈려야 한다.
+			DrawIcon(GetItemIcon(group[g].type, i, GRADE_NORMAL),
+				cx + cell / 2 - ITEMICONSIZE / 2, cy - cell / 2 + ITEMICONSIZE / 2,
+				0.9f, got ? false : COLOR_BLACK, false, false, true);
+
+			//눌러서 상세를 본다. 보이는 칸에만 자리를 준다.
+			if (gCodexSlotCnt < CODEX_SLOT_MAX) {
+				gCodexSlotType[gCodexSlotCnt] = (short)group[g].type;
+				gCodexSlotIdx[gCodexSlotCnt] = (short)i;
+				SetRectPoint(cx, cy, cell, cell,
+					TOUCH_FUNC_CODEX_CELL + gCodexSlotCnt);
+				gCodexSlotCnt++;
+			}
+		}
+
+		top -= ((group[g].count + cols - 1) / cols) * cell + 8 * _2X;
+	}
+
+	UnSectionClip(false);
+}
+
+//전투 화면의 도감 버튼이 여는 덮개. 판을 떠나지 않고 그 위에 얹는다.
+void CodexOverlayDraw(void)
+{
+	if (gCodexOverlay == false)
+		return;
+
+	//뒤의 격자와 룰렛이 덮개 아래에서 눌리면 안 된다.
+	ResetRectPoint();
+	ScreenDarken(SCREENDARKEN);
+
+	CodexDraw(0, DY, 1.0f);
+
+	//---- 닫기 ----
+	{
+		const int w = 30 * _2X;
+		const int h = 16 * _2X;
+		const int bx = DX - w - 6 * _2X;
+		const int by = DY - 6 * _2X;
+
+		MemRect(bx, by, w, h, 0x442233);
+		MemRectFrame(bx, by, w, h, 0xCC6688);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("닫기", bx + w / 2, by - h + 4 * _2X, 0.6f);
+		SetRectPoint(bx, by, w, h, TOUCH_FUNC_CODEX_CLOSE);
+	}
+
+	CodexPopupDraw();
+
+	gTouchRectLocked = true;
+}
+
+//======================================================================
 // 가방 한 칸
 //
 // 같은 장비가 여러 점 쌓이는 가방이다. 카드처럼 화려하게 그리면 목록이
@@ -6605,6 +6989,18 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	//아직 상세를 안 본 것. 점 하나면 된다.
 	if (it->seen == false)
 		MemRect(x + w - 8 * _2X, y - 3 * _2X, 5 * _2X, 5 * _2X, 0xFF5544);
+
+	//---- 자물쇠 ----
+	//
+	//잠근 것은 일괄 판매와 합성에서 빠진다. 왼쪽 위에 작은 고리 하나로
+	//보여준다 - 글자를 쓰면 좁은 칸에서 아이콘을 덮는다.
+	if (it->locked) {
+		const int lx = x + 3 * _2X;
+		const int ly = y - 3 * _2X;
+
+		MemRect(lx, ly, 8 * _2X, 6 * _2X, 0xF2CA64);
+		MemRectFrame(lx + 2 * _2X, ly + 4 * _2X, 4 * _2X, 4 * _2X, 0xF2CA64);
+	}
 }
 
 //======================================================================
@@ -6616,7 +7012,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 //
 // 자리는 히어로 줄 바로 아래다. 그리는 곳과 누르는 곳이 같은 값을 쓴다.
 //======================================================================
-static const char* kEquipTabName[EQUIPTAB_CNT] = { "장비", "동료", "능력치" };
+static const char* kEquipTabName[EQUIPTAB_CNT] = { "장비", "동료", "능력치", "도감" };
 
 static void EquipTabRect(int n, float zoom, int* x, int* y, int* w, int* h)
 {
@@ -6653,19 +7049,13 @@ static void EquipMergeBtnDraw(void)
 	EquipMergeBtnRect(&x, &y, &w, &h);
 
 	//몇 번 할 수 있는지 버튼에 적는다. 눌러 보기 전에 알아야 한다.
-	MemRect(x, y, w, h, can > 0 ? 0x1B2E3A : 0x16161F);
-	MemRectFrame(x, y, w, h, can > 0 ? 0x5FA0B0 : 0x555566);
-	SetFontColor(can > 0 ? COLOR_WHITE : COLOR_GREY);
-
 	if (can > 0)
 		sprintf(str, "합성 %d", can);
 	else
 		sprintf(str, "합성");
 
-	CenterTextStrSolid(str, x + w / 2, y - h + 5 * _2X, 0.52f);
-
-	if (can > 0)
-		SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB_MERGE);
+	MenuButton(x, y, w, h, str, BUTTON_COLOR_BLUE, can > 0,
+		TOUCH_FUNC_EQUIPTAB_MERGE, 0.52f);
 }
 
 static void EquipSellBtnDraw(void)
@@ -6675,11 +7065,8 @@ static void EquipSellBtnDraw(void)
 	EquipMergeBtnDraw();
 	EquipSellBtnRect(&x, &y, &w, &h);
 
-	MemRect(x, y, w, h, 0x2A1A1A);
-	MemRectFrame(x, y, w, h, 0xB05F6B);
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid("일반 판매", x + w / 2, y - h + 5 * _2X, 0.52f);
-	SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB_SELL);
+	MenuButton(x, y, w, h, "일반 판매", BUTTON_COLOR_BROWN, true,
+		TOUCH_FUNC_EQUIPTAB_SELL, 0.52f);
 }
 
 static void EquipTabDraw(float zoom)
@@ -6695,13 +7082,11 @@ static void EquipTabDraw(float zoom)
 
 		//고른 탭은 밝게, 나머지는 가라앉힌다. 지금 어디를 보고 있는지가
 		//글자를 읽기 전에 보여야 한다.
-		MemRect(x, y, w, h, on ? 0x6A521A : 0x241A10);
-		MemRectFrame(x, y, w, h, on ? 0xFFD700 : 0x6B573A);
-		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid(kEquipTabName[i], x + w / 2, y - h + 7 * _2X, 0.8f);
-
-		if (!on)
-			SetRectPoint(x, y, w, h, TOUCH_FUNC_EQUIPTAB + i);
+		//고른 탭은 보라, 나머지는 갈색이다. 고른 것은 눌러도 할 일이
+		//없으므로 터치를 걸지 않는다.
+		MenuButton(x, y, w, h, kEquipTabName[i],
+			on ? BUTTON_COLOR_PURPLE : BUTTON_COLOR_BROWN, true,
+			on ? 0 : TOUCH_FUNC_EQUIPTAB + i, 0.7f);
 	}
 }
 
@@ -6711,7 +7096,8 @@ void CollectionsDraw(int x, int y, float zoom)
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
-	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	// Keep the persistent lobby navigation completely outside this window.
+	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
 	
 	int repItem = 0;
 	int setItemCnt = 0;
@@ -6733,6 +7119,19 @@ void CollectionsDraw(int x, int y, float zoom)
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
 		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		return;
+	}
+
+	//---- 도감 탭 ----
+	if (curEquipTab == EQUIPTAB_CODEX) {
+		CodexDraw(x, y, zoom);
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+			zoom, curHero, menuDepth == 0, true);
+		EquipTabDraw(zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+
+		//상세는 맨 위다. 탭과 골드바를 그린 뒤라야 그 위에 얹힌다.
+		CodexPopupDraw();
 		return;
 	}
 
@@ -8386,7 +8785,8 @@ void ShopDraw(int x, int y, float zoom)
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
-	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	// Keep the persistent lobby navigation completely outside this window.
+	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
 
 
 	MemRect(x, y, WINX, WINY, 0x3B2513);
@@ -8606,144 +9006,163 @@ static void CastleCondLine(const char* text, bool done, int x, int y)
 	LineTextStrSolid(text, x + 16 * _2X, y, DX, -1, -1, 0.6f);
 }
 
+struct CastleUpgradeStory {
+	const char* name;
+	const char* facility;
+	const char* line1;
+	const char* line2;
+};
+
+static const CastleUpgradeStory castleUpgradeStory[CASTLE_STAGE_CNT] = {
+	{ "터의 시작", "기초 요새", "최소한의 방어 시설", "성문의 기초" },
+	{ "생활의 기반", "작은 성채", "주거 시설 추가", "기본 병사 배치" },
+	{ "병영 건설", "병영의 시작", "병영과 훈련장", "동료 수용 시작" },
+	{ "수비 강화", "수비 강화", "방어 타워 증축", "성벽 보강" },
+	{ "행정 구역", "왕국의 기틀", "집무실과 식당", "왕국의 기틀 마련" },
+	{ "상업 지구", "상업의 발전", "상점과 창고", "자원 생산 시설" },
+	{ "마법 연구", "마법의 탑", "마법 탑과 연구실", "특수 동료 수용" },
+	{ "왕국의 중심", "왕국의 심장", "왕좌와 의회실", "왕국의 상징 완성" },
+	{ "천공의 확장", "천공의 요새", "공중 정원과 전망대", "특수 기능 시설" },
+	{ "전설의 왕국", "전설의 왕국", "모든 시설의 완성", "최대 인원의 수용" },
+};
+
 static void CastleUpgradeTabDraw(int x, int y, float zoom)
 {
-	char str[96];
-	int i;
-	const int top = y - 150 * _2X;
-	const CastleStageInfo* stage = CastleStageAt(robin.castle);
+	char str[128];
+	const int castle = CastleStageIdx(robin.castle);
+	const CastleStageInfo* stage = CastleStageAt(castle);
+	const CastleUpgradeStory* story = &castleUpgradeStory[castle];
+	const int panelX = x + 12 * _2X;
+	const int panelW = DX - 24 * _2X;
+	const int top = y - 146 * _2X;
 
-	//---- 조건 ----
+	//10단계 성장선. 현재 위치와 이미 지난 단계를 한 줄에서 읽는다.
+	for (int i = 0; i < CASTLE_STAGE_CNT; i++) {
+		const int gap = panelW / CASTLE_STAGE_CNT;
+		const int cx = panelX + gap / 2 + gap * i;
+		const bool passed = i <= castle;
+		if (i < CASTLE_STAGE_CNT - 1)
+			MemRect(cx, top + 5 * _2X, gap, 2 * _2X, i < castle ? 0xD7A92F : 0x435064);
+		MemRect(cx - 7 * _2X, top, 14 * _2X, 14 * _2X, passed ? 0xC99424 : 0x273346);
+		MemRectFrame(cx - 7 * _2X, top, 14 * _2X, 14 * _2X, i == castle ? 0xFFF0A0 : 0x758296);
+		SetFontColor(i == castle ? COLOR_WHITE : COLOR_GREY);
+		sprintf(str, "%d", i + 1);
+		CenterTextStrSolid(str, cx, top - 3 * _2X, 0.42f);
+	}
+
+	//증축 일러스트와 이번 단계의 설계 의도.
+	const int cardY = top - 22 * _2X;
+	const int artSize = 104 * _2X;
+	MemRect(panelX, cardY, panelW, artSize, 0x111A29);
+	MemRectFrame(panelX, cardY, panelW, artSize, 0xC89A35);
+	DrawImage(384, 384, 0, 0, panelX + 4 * _2X, cardY - 4 * _2X,
+		false, false, false, false, false, (float)(artSize - 8 * _2X) / 384.0f,
+		sprite[CASTLE_UPGRADE0_IMG + castle], CASTLE_UPGRADE0_IMG + castle);
+
+	const int textX = panelX + artSize + 10 * _2X;
+	SetFontColor(COLOR_YELLOW);
+	sprintf(str, "LV.%d  %s", castle + 1, story->facility);
+	LineTextStrSolid(str, textX, cardY - 8 * _2X, DX, -1, -1, 0.72f);
 	SetFontColor(COLOR_WHITE);
-	sprintf(str, "%s   %d칸", stage->title, stage->cell);
-	CenterTextStrSolid(str, x + DX / 2, top + 36 * _2X, 0.8f);
+	LineTextStrSolid(story->name, textX, cardY - 30 * _2X, DX, -1, -1, 0.62f);
 	SetFontColor(COLOR_GREY);
-	CenterTextStrSolid("증축 조건", x + DX / 2, top + 22 * _2X, 0.6f);
+	sprintf(str, "· %s", story->line1);
+	LineTextStrSolid(str, textX, cardY - 52 * _2X, DX, -1, -1, 0.5f);
+	sprintf(str, "· %s", story->line2);
+	LineTextStrSolid(str, textX, cardY - 68 * _2X, DX, -1, -1, 0.5f);
+	SetFontColor(COLOR_WHITE);
+	sprintf(str, "성 가방  %d칸", stage->cell);
+	LineTextStrSolid(str, textX, cardY - 88 * _2X, DX, -1, -1, 0.55f);
 
-	sprintf(str, "스테이지 %d 클리어  (지금 %d)",
-		CastleNeedStage(robin.castle), robin.stage + 1);
-	CastleCondLine(str, robin.stage + 1 >= CastleNeedStage(robin.castle),
-		x + 16 * _2X, top);
+	//금고는 한 줄로 줄여 강화 선택 영역을 넓혔다.
+	const int incomeY = cardY - artSize - 8 * _2X;
+	const long long income = CastleIncomeNow();
+	const long long cap = Max(1LL, CastleIncomeCap());
+	const int collectW = 52 * _2X;
+	MemRect(panelX, incomeY, panelW, 20 * _2X, 0x182237);
+	MemRect(panelX, incomeY, (panelW - collectW) * (int)Min(income, cap) / (int)cap,
+		20 * _2X, income >= cap ? 0xC99424 : 0x356D91);
+	MemRectFrame(panelX, incomeY, panelW, 20 * _2X, 0x61728A);
+	SetFontColor(COLOR_WHITE);
+	sprintf(str, "왕국 금고  %lld / %lld", income, cap);
+	LineTextStrSolid(str, panelX + 8 * _2X, incomeY - 3 * _2X, DX, -1, -1, 0.5f);
+	MenuButton(panelX + panelW - collectW, incomeY, collectW, 20 * _2X,
+		"수금", BUTTON_COLOR_GREEN, income > 0, 0, 0.5f);
+	if (income > 0)
+		SetRectPoint(panelX + panelW - collectW, incomeY, collectW, 20 * _2X, TOUCH_FUNC_CASTLE_INCOME);
 
-	sprintf(str, "동료 %d명  (지금 %d명)",
-		CastleNeedCrew(robin.castle), CastleOwnedCrew());
-	CastleCondLine(str, CastleOwnedCrew() >= CastleNeedCrew(robin.castle),
-		x + 16 * _2X, top - 16 * _2X);
+	//증축 조건은 성공 여부를 먼저 보이게 한다.
+	const int condY = incomeY - 28 * _2X;
+	sprintf(str, "스테이지 %d  (현재 %d)", CastleNeedStage(castle), robin.stage + 1);
+	CastleCondLine(str, robin.stage + 1 >= CastleNeedStage(castle), panelX, condY);
+	sprintf(str, "동료 %d명  (현재 %d명)", CastleNeedCrew(castle), CastleOwnedCrew());
+	CastleCondLine(str, CastleOwnedCrew() >= CastleNeedCrew(castle), panelX + panelW / 2, condY);
 
-	//---- 파츠 ----
-	for (i = 0; i < CastlePartCnt(robin.castle); i++) {
-		const CastlePartInfo* p = CastlePartAt(robin.castle, i);
+	//시설 강화 카드는 2열로 배치한다. 네 시설이어도 세로 길이가 일정하다.
+	const int partTop = condY - 24 * _2X;
+	const int colGap = 6 * _2X;
+	const int partW = (panelW - colGap) / 2;
+	const int partH = 38 * _2X;
+	for (int i = 0; i < CastlePartCnt(castle); i++) {
+		const CastlePartInfo* part = CastlePartAt(castle, i);
 		const int lv = robin.castlePartLv[i];
-		const bool full = lv >= p->maxLv;
-		const int cost = CastlePartCost(robin.castle, i, lv);
+		const bool full = lv >= part->maxLv;
+		const int cost = CastlePartCost(castle, i, lv);
 		const bool afford = robin.gold >= cost;
-		const int rowY = top - (44 + i * 40) * _2X;
-		const int bw = 60 * _2X;
-		const int bh = 24 * _2X;
-		const int bx = x + DX - bw - 16 * _2X;
-
-		MemRect(x + 12 * _2X, rowY, DX - 24 * _2X, 36 * _2X, 0x1B1B2E);
-		MemRectFrame(x + 12 * _2X, rowY, DX - 24 * _2X, 36 * _2X,
-			full ? 0xC9A227 : 0x556688);
-
+		const int bx = panelX + (i % 2) * (partW + colGap);
+		const int by = partTop - (i / 2) * (partH + 5 * _2X);
+		//줄 배경은 다른 메뉴가 쓰는 9분할 패널이다. 직접 그린 네모는
+		//이 화면만 다른 물건으로 보인다.
+		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+			(float)bx, (float)by, (float)partW, (float)partH, 1.0f);
 		SetFontColor(COLOR_WHITE);
-		sprintf(str, "%s  Lv%d / %d", p->name, lv, p->maxLv);
-		LineTextStrSolid(str, x + 20 * _2X, rowY - 4 * _2X, DX, -1, -1, 0.62f);
-
+		sprintf(str, "%s  %d/%d", part->name, lv, part->maxLv);
+		LineTextStrSolid(str, bx + 6 * _2X, by - 4 * _2X, DX, -1, -1, 0.48f);
 		SetFontColor(COLOR_GREY);
-		sprintf(str, p->effect, CastlePartBonus(robin.castle, i, lv));
-		LineTextStrSolid(str, x + 20 * _2X, rowY - 20 * _2X, DX, -1, -1, 0.5f);
-
-		//---- 강화 버튼 ----
-		//
-		//다 올렸으면 값을 적지 않는다. 더 낼 곳이 없는데 값이 보이면
-		//아직 올릴 수 있는 것처럼 읽힌다.
-		if (full) {
-			SetFontColor(COLOR_YELLOW);
-			CenterTextStrSolid("완료", bx + bw / 2, rowY - 14 * _2X, 0.56f);
-			continue;
-		}
-
-		MemRect(bx, rowY - 6 * _2X, bw, bh, afford ? 0x2C2A18 : 0x241A1A);
-		MemRectFrame(bx, rowY - 6 * _2X, bw, bh, afford ? 0xC9A227 : 0x77404A);
-		SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-		sprintf(str, "%d", cost);
-		CenterTextStrSolid(str, bx + bw / 2, rowY - 12 * _2X, 0.5f);
-
-		if (afford)
-			SetRectPoint(bx, rowY - 6 * _2X, bw, bh, TOUCH_FUNC_CASTLE_PARTUP + i);
+		sprintf(str, part->effect, CastlePartBonus(castle, i, lv));
+		LineTextStrSolid(str, bx + 6 * _2X, by - 20 * _2X, DX, -1, -1, 0.4f);
+		const int buttonW = 42 * _2X;
+		if (full) sprintf(str, "완료"); else sprintf(str, "%d", cost);
+		MenuButton(bx + partW - buttonW, by, buttonW, partH, str,
+			full ? BUTTON_COLOR_BEIGE : BUTTON_COLOR_GREEN,
+			full || afford, 0, 0.43f);
+		if (!full && afford)
+			SetRectPoint(bx + partW - buttonW, by, buttonW, partH, TOUCH_FUNC_CASTLE_PARTUP + i);
 	}
 
-	//---- 진척 막대 ----
-	//
-	//전부 올릴 필요는 없다. 목표치만 넘으면 증축할 수 있고, 못 올린 것은
-	//이 성을 떠나면 끝이다. 그래서 "얼마나 왔나" 가 늘 보여야 한다.
-	{
-		const int done = CastleStepSum();
-		const int goal = CastleGoalStep(robin.castle);
-		const int total = CastlePartTotal(robin.castle);
-		const int bw = DX - 32 * _2X;
-		const int bh = 12 * _2X;
-		const int bx = x + 16 * _2X;
-		const int by = top - (44 + CastlePartCnt(robin.castle) * 40 + 8) * _2X;
+	const int rows = (CastlePartCnt(castle) + 1) / 2;
+	const int progressY = partTop - rows * (partH + 5 * _2X) - 3 * _2X;
+	const int done = CastleStepSum();
+	const int goal = CastleGoalStep(castle);
+	const int total = CastlePartTotal(castle);
+	MemRect(panelX, progressY, panelW, 10 * _2X, 0x171D29);
+	MemRect(panelX, progressY, panelW * Min(done, total) / Max(1, total), 10 * _2X,
+		done >= goal ? 0xD2A62D : 0x447DB8);
+	MemRectFrame(panelX, progressY, panelW, 10 * _2X, 0x68778B);
+	MemRect(panelX + panelW * goal / Max(1, total) - _2X, progressY + _2X,
+		2 * _2X, 12 * _2X, 0xFFFFFF);
+	SetFontColor(COLOR_WHITE);
+	sprintf(str, "증축 준비  %d / %d", done, goal);
+	CenterTextStrSolid(str, x + DX / 2, progressY - 13 * _2X, 0.48f);
 
-		MemRect(bx, by, bw, bh, 0x1B1B2E);
-		MemRect(bx, by, bw * Min(done, total) / Max(1, total), bh,
-			done >= goal ? 0xC9A227 : 0x5B8DE8);
-		MemRectFrame(bx, by, bw, bh, 0x778899);
+	const int buttonY = progressY - 28 * _2X;
+	const int buttonGap = 6 * _2X;
+	const int buttonW = (panelW - buttonGap) / 2;
+	const bool last = castle + 1 >= gTotalCastle;
+	const bool can = CastleCanUpgrade();
+	if (last) sprintf(str, "최고 단계 완성");
+	else sprintf(str, "LV.%d로 증축  ·  %d칸", castle + 2, CastleStageAt(castle + 1)->cell);
+	MenuButton(panelX, buttonY, buttonW, 30 * _2X, str, BUTTON_COLOR_GREEN,
+		can, TOUCH_FUNC_CASTLE_UPGRADE, 0.52f);
 
-		//목표치 눈금. 여기를 넘으면 증축이 열린다.
-		MemRect(bx + bw * goal / Max(1, total) - _2X, by + 2 * _2X, 2 * _2X,
-			bh + 4 * _2X, 0xFFFFFF);
-
-		SetFontColor(COLOR_WHITE);
-		sprintf(str, "%d / %d 단   (증축 %d단)", done, total, goal);
-		CenterTextStrSolid(str, x + DX / 2, by - bh - 2 * _2X, 0.5f);
-	}
-
-	//---- 증축 / 즉시 완성 ----
-	{
-		const bool can = CastleCanUpgrade();
-		const bool last = (robin.castle + 1 >= gTotalCastle);
-		const long long rest = CastleRestGold();
-		const long long cash = (rest + CASTLE_CASH_PER_GOLD - 1) / CASTLE_CASH_PER_GOLD;
-		const int bh = 34 * _2X;
-		const int bw = (DX - 48 * _2X) / 2;
-		const int by = top - (44 + CastlePartCnt(robin.castle) * 40 + 40) * _2X;
-		const int bx = x + 16 * _2X;
-
-		MemRect(bx, by, bw, bh, can ? 0x2C2A18 : 0x1A1A22);
-		MemRectFrame(bx, by, bw, bh, can ? 0xFFD700 : 0x555566);
-		SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
-
-		if (last)
-			sprintf(str, "마지막 성");
-		else
-			sprintf(str, "증축  %d칸", CastleStageAt(robin.castle + 1)->cell);
-
-		CenterTextStrSolid(str, bx + bw / 2, by - 12 * _2X, 0.6f);
-
-		if (can)
-			SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_CASTLE_UPGRADE);
-
-		//---- 즉시 완성 ----
-		//
-		//목표치까지만 채운다. 만렙까지 채워 주면 캐시를 쓴 쪽만 모든
-		//요소를 갖게 되어 "무엇을 포기할까" 라는 설계가 무너진다.
-		if (!last && rest > 0) {
-			const int cx = bx + bw + 16 * _2X;
-			const bool afford = robin.coin >= cash;
-
-			MemRect(cx, by, bw, bh, afford ? 0x2A1A3A : 0x1A1A22);
-			MemRectFrame(cx, by, bw, bh, afford ? 0xB05FE8 : 0x555566);
-			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-			sprintf(str, "즉시 완성  %lld", cash);
-			CenterTextStrSolid(str, cx + bw / 2, by - 12 * _2X, 0.56f);
-
-			if (afford)
-				SetRectPoint(cx, by, bw, bh, TOUCH_FUNC_CASTLE_FINISH);
-		}
-	}
+	const long long rest = CastleRestGold();
+	const long long cash = (rest + CASTLE_CASH_PER_GOLD - 1) / CASTLE_CASH_PER_GOLD;
+	const int quickX = panelX + buttonW + buttonGap;
+	const bool quick = !last && rest > 0 && robin.coin >= cash;
+	if (last || rest <= 0) sprintf(str, "모든 준비 완료");
+	else sprintf(str, "즉시 완성  %lld", cash);
+	MenuButton(quickX, buttonY, buttonW, 30 * _2X, str, BUTTON_COLOR_PURPLE,
+		quick, TOUCH_FUNC_CASTLE_FINISH, 0.52f);
 }
 
 //성 메뉴 탭. 증축 / 성 목록
@@ -8759,13 +9178,9 @@ static void CastleTabDraw(void)
 		const int bx = DX / 2 - w - 4 * _2X + i * (w + 8 * _2X);
 		const int by = DY - GNBHEIGHT - 112 * _2X;
 
-		MemRect(bx, by, w, h, on ? 0x6A521A : 0x241A10);
-		MemRectFrame(bx, by, w, h, on ? 0xFFD700 : 0x6B573A);
-		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid(name[i], bx + w / 2, by - h + 6 * _2X, 0.7f);
-
-		if (!on)
-			SetRectPoint(bx, by, w, h, TOUCH_FUNC_CASTLETAB + i);
+		MenuButton(bx, by, w, h, name[i],
+			on ? BUTTON_COLOR_PURPLE : BUTTON_COLOR_BROWN, true,
+			on ? 0 : TOUCH_FUNC_CASTLETAB + i, 0.7f);
 	}
 }
 
@@ -8775,7 +9190,8 @@ void CastleMenuDraw(int x, int y, float zoom)
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
-	float WINY = (float)(DY - (GNBHEIGHT)-(BOTTOMMENUHEIGHT - BOTTOMMENU_INIT_HEIGHT)) * zoom;
+	// Keep the persistent lobby navigation completely outside this window.
+	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
 
 
 	MemRect(x, y, WINX, WINY, 0xB4D4F2);

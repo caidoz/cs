@@ -1297,17 +1297,27 @@ void PlayKey(int obj)
 		//모험은 지금 보고 있는 화면이다. 열려 있는 팝업만 닫아 로비로
 		//되돌린다. 눌러도 아무 반응이 없으면 죽은 버튼처럼 보인다.
 		case AVK_LOBBY_ADVENTURE:
-			if (popUpCnt > 0)
+			while (popUpCnt > 0) {
+				menuDepth = 0;
 				ClosePopUp();
+			}
 			break;
 
 		//던전 화면은 아직 없다. 들어갈 곳이 생기면 여기서 연결한다.
 		//빈 case 를 두는 것은, 없으면 위의 기본 처리로 흘러가 엉뚱한 곳이
 		//열릴 수 있기 때문이다.
 		case AVK_LOBBY_DUNGEON:
+			while (popUpCnt > 0) {
+				menuDepth = 0;
+				ClosePopUp();
+			}
 			break;
 
 		case AVK_SHOP:
+			while (popUpCnt > 0) {
+				menuDepth = 0;
+				ClosePopUp();
+			}
 			curMenuBack = curMenu;
 			curMenu = MENU_SHOP;
 			menuDepth = 0;
@@ -2012,6 +2022,10 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_COLLECTIONS:
+			while (popUpCnt > 0) {
+				menuDepth = 0;
+				ClosePopUp();
+			}
 			curMenuBack = curMenu;
 			curMenu = MENU_COLLECTIONS;
 			menuDepth = 0;
@@ -2026,6 +2040,10 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_POPUP_CASTLEMENU:
+			while (popUpCnt > 0) {
+				menuDepth = 0;
+				ClosePopUp();
+			}
 			curMenuBack = curMenu;
 			curMenu = MENU_CASTLE;
 			menuDepth = 0;
@@ -2963,6 +2981,36 @@ void touchFunc(int func)
 
 	//전투 버튼. 화면을 바꾸는 명령이 아니라 켜고 끄는 스위치라 systemKey 를
 	//태우지 않고 그 자리에서 뒤집는다.
+	if (func >= TOUCH_FUNC_CODEX_CELL
+		&& func < TOUCH_FUNC_CODEX_CELL + CODEX_SLOT_MAX) {
+		CodexPick(func - TOUCH_FUNC_CODEX_CELL);
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_CODEX_CLOSE) {
+		CodexClose();
+		systemKey = 0;
+		return;
+	}
+
+	if (func >= TOUCH_FUNC_LOADOUT_ITEM
+		&& func < TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX) {
+		//화면에 늘어놓은 차례대로 가방 칸을 찾는다. 그리는 쪽과 같은
+		//차례를 써야 누른 것과 골라지는 것이 맞는다.
+		//그리는 쪽과 같은 목록을 쓴다. 차례가 다르면 누른 것과 골라지는
+		//것이 어긋난다.
+		const int at = func - TOUCH_FUNC_LOADOUT_ITEM;
+		int list[LOADOUT_PICKMAX];
+		const int cnt = LoadoutList(list, LOADOUT_PICKMAX);
+
+		if (at < cnt && LoadoutToggle(list[at]) == false)
+			PlayMusic(M_ERROR);
+
+		systemKey = 0;
+		return;
+	}
+
 	if (func == TOUCH_FUNC_STAGE_REFRESH) {
 		GridTestRefresh();
 		systemKey = 0;
@@ -3136,6 +3184,16 @@ void touchFunc(int func)
 			systemKey = AVK_SHOP;
 			break;
 		case TOUCH_FUNC_LOBBY_CASTLE:
+			//---- 성으로 들어간다 ----
+			//
+			//전에는 작은 팝업(성 업그레이드 / 동료)을 먼저 띄웠다. 갈래가
+			//둘뿐인데 한 단계를 더 거치는 셈이고, 들어가서 보면 그 안에도
+			//탭이 있어 층이 둘로 겹쳤다. 바로 성 메뉴로 보내고, 그 안의
+			//탭으로 증축과 성 목록을 오간다. 동료는 장비 메뉴의 동료 탭에 있다.
+			LobbyCastleMenuCommand(TOUCH_FUNC_LOBBY_CASTLE_CLOSE);
+			systemKey = AVK_POPUP_CASTLEMENU;
+			break;
+
 		case TOUCH_FUNC_LOBBY_CASTLE_CLOSE:
 			LobbyCastleMenuCommand(func);
 			systemKey = 0;
@@ -3181,6 +3239,19 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_SETTING://
 			systemKey = AVK_SETTING;
+			break;
+		case TOUCH_FUNC_BATTLE_MINIMAP:
+			SetPopUp(POPUPTYPE_BATTLE_MINIMAP, DX / 2, POPUPPOSITION_Y,
+				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false,
+				false, false, false, false, false);
+			PlayMusic(M_SELECT);
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_BATTLE_ABANDON:
+			BattleAbandonCommand();
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_LIST:
 			systemKey = AVK_LIST;
@@ -3638,8 +3709,32 @@ void touchFunc(int func)
 		case TOUCH_FUNC_GOTOBOSSRAID:
 			systemKey = AVK_GOTOBOSSRAID;
 			break;
-		case TOUCH_FUNC_GOTOBATTLE:
+		case TOUCH_FUNC_LOADOUT_TAB:
+		case TOUCH_FUNC_LOADOUT_TAB + 1:
+		case TOUCH_FUNC_LOADOUT_TAB + 2:
+		case TOUCH_FUNC_LOADOUT_TAB + 3:
+			LoadoutSetTab(func - TOUCH_FUNC_LOADOUT_TAB);
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_LOADOUT_CLOSE:
+			LoadoutSetOpen(false);
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_LOADOUT_GO:
+			//고르기를 끝냈다. 여기서부터는 예전 START 와 같은 길이다.
+			LoadoutSetOpen(false);
 			systemKey = AVK_GOTOBATTLE;
+			return;
+
+		case TOUCH_FUNC_GOTOBATTLE:
+			//---- 출정 준비를 먼저 연다 ----
+			//
+			//무엇을 들고 갈지 고르는 것이 이 판의 첫 선택이다. 고르고
+			//[출정] 을 누르면 그때 들어간다.
+			LoadoutSetOpen(true);
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_GOTONEWCARD:
 			systemKey = AVK_GOTONEWCARD;
@@ -3742,6 +3837,16 @@ void touchFunc(int func)
 			return;
 		}
 
+		case TOUCH_FUNC_CASTLE_INCOME:
+		{
+			//금고를 걷는다. 걷은 뒤부터 다시 쌓인다.
+			const long long got = CastleIncomeTake();
+
+			PlayMusic(got > 0 ? M_COIN : M_ERROR);
+			systemKey = 0;
+			return;
+		}
+
 		case TOUCH_FUNC_CASTLE_FINISH:
 		{
 			//---- 캐시로 목표치까지 ----
@@ -3838,10 +3943,14 @@ void touchFunc(int func)
 		case TOUCH_FUNC_EQUIPTAB:
 		case TOUCH_FUNC_EQUIPTAB + 1:
 		case TOUCH_FUNC_EQUIPTAB + 2:
+		case TOUCH_FUNC_EQUIPTAB + 3:
 			//탭은 화면을 바꾸는 명령이 아니라 같은 화면의 갈피다.
 			//systemKey 를 태우지 않고 그 자리에서 넘긴다.
 			curEquipTab = func - TOUCH_FUNC_EQUIPTAB;
 			menuDepth = 0;
+
+			//탭마다 늘어놓는 것이 달라 스크롤 자리가 안 맞는다. 되돌린다.
+			CodexReset();
 			systemKey = 0;
 			return;
 

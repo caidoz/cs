@@ -1940,6 +1940,7 @@ struct OfferCard {
 	int part;		//OFFER_PART 일 때 kShopPart 번호
 	int crewType;	//그 밖일 때 서는 개체의 타입. 동료도 몬스터 타입이다
 	int price;
+	int grade;		//성 파츠로 오른 뒤의 등급
 };
 
 static OfferCard gOffer[GRIDTEST_OFFERCNT];
@@ -2259,9 +2260,21 @@ void StageGearApplyStat(OBJECT* pObj)
 	//히어로는 격자에 놓인 것이 그대로 가방이다.
 	if (obj == PLAYER) {
 		for (int i = 0; i < GRIDTEST_MAXITEM; i++) {
-			//장착 칸의 장비는 RefreshStat 이 이미 더했다. 두 번 더하면
-			//끼고 들어온 장비만 두 배가 된다.
-			if (gGridItem[i].used == false || gGridItem[i].equip >= 0)
+			if (gGridItem[i].used == false)
+				continue;
+
+			//---- 두 번 더하지 않는다 ----
+			//
+			//들고 들어온 장비는 가방의 것이라 여기서 더한다. 다만 그것을
+			//밖에서 끼고도 있으면 RefreshStat 이 이미 더했으므로 건너뛴다.
+			bool worn = false;
+
+			for (int e = 0; e < TOTALEQUIP && !worn; e++)
+				if (pObj->equip[e].type != EMPTY
+					&& pObj->equip[e].id == gGridItem[i].item.id)
+					worn = true;
+
+			if (worn)
 				continue;
 
 			StageGearAddItem(pObj, &gGridItem[i].item);
@@ -2315,10 +2328,33 @@ long long StageGearReduce(int obj, long long damage)
 {
 	const long long armor = StageGearArmor(obj);
 
-	if (armor <= 0 || damage <= 0)
+	if (damage <= 0)
 		return damage;
 
-	return Max(1LL, damage * STAGE_ARMOR_SOFT / (STAGE_ARMOR_SOFT + armor));
+	if (armor > 0)
+		damage = Max(1LL, damage * STAGE_ARMOR_SOFT / (STAGE_ARMOR_SOFT + armor));
+
+	//성문을 보강하면 히어로 쪽이 덜 맞는다. 성은 히어로의 것이므로
+	//몬스터에게는 붙지 않는다.
+	if (obj < PLAYERALL) {
+		const int cut = Min(80, CastleBonusOf(CPE_DMG_TAKEN_PCT));
+
+		if (cut > 0)
+			damage = Max(1LL, damage * (100 - cut) / 100);
+	}
+
+	return damage;
+}
+
+//---- 룰렛에서 내는 값 ----
+//
+//성의 상점 요소가 값을 깎는다. 화면에 적는 값과 실제로 내는 값이 반드시
+//같아야 하므로, 두 곳 다 이 함수를 거친다.
+int GridShopPrice(int base)
+{
+	const int cut = Min(80, CastleBonusOf(CPE_SHOP_PRICE_PCT));
+
+	return Max(1, base * (100 - cut) / 100);
 }
 
 //상점 표의 그 번호가 검인가. 검만 날아간다.
@@ -3089,6 +3125,14 @@ static void GridOfferRoll(int killedType)
 		}
 
 		c->price = kShopPart[c->part].price;
+
+		//---- 성이 올려 주는 등급 ----
+		//
+		//무기고 · 연구실 · 성좌가 있으면 나오는 장비의 등급이 그만큼
+		//오른다. 값은 등급을 따라가지 않는다 - 같은 값에 더 좋은 것이
+		//나오는 것이 이 파츠의 값어치다.
+		c->grade = Min(TOTALGRADE - 1,
+			kShopPart[c->part].grade + CastleBonusOf(CPE_GEAR_GRADE));
 	}
 
 	//칸마다 조금씩 늦게 멈춘다.
@@ -3123,6 +3167,9 @@ void GridTestRefresh(void)
 //
 //값을 치르고 네 칸을 새로 돌린다. 원하는 것이 없을 때 골드를 쓰는
 //길이다. 골드가 모자라면 아무 일도 없다.
+//이번 판에서 공짜로 돌린 횟수. 성의 마법 탑이 준다.
+static int gGridFreeRoll = 0;
+
 void GridTestReroll(void)
 {
 	if (gOfferOn == false)
@@ -3131,6 +3178,17 @@ void GridTestReroll(void)
 	for (int i = 0; i < GRIDTEST_OFFERCNT; i++)
 		if (gOfferSpin[i] > 0)
 			return;
+
+	//---- 공짜로 도는 횟수 ----
+	//
+	//마법 탑이 있으면 판마다 그만큼은 값 없이 돌린다. 다 쓰면 그때부터
+	//골드를 낸다.
+	if (gGridFreeRoll < CastleBonusOf(CPE_REROLL_FREE)) {
+		gGridFreeRoll++;
+		GridTestSay("무료 다시 뽑기");
+		GridOfferRoll(-1);
+		return;
+	}
 
 	if (robin.gold < STAGE_REROLL_GOLD) {
 		PlayMusic(M_ERROR);
@@ -3142,10 +3200,15 @@ void GridTestReroll(void)
 	GridOfferRoll(-1);
 }
 
-//지도와 도감. 자리만 잡아 두었다.
+//지도와 도감. 도감은 판을 떠나지 않고 화면 위에 덮개로 연다.
 void GridTestShopSide(bool book)
 {
-	GridTestSay(book ? "도감은 아직이다" : "지도는 아직이다");
+	if (book) {
+		CodexOverlaySetOpen(true);
+		return;
+	}
+
+	GridTestSay("지도는 아직이다");
 }
 
 //---- 판을 연다 ----
@@ -3269,7 +3332,7 @@ static void GridCrewPart(const OfferCard* c, GridPart* out)
 
 static void GridOfferBuyCrew(const OfferCard* c)
 {
-	if (robin.gold < c->price) {
+	if (robin.gold < GridShopPrice(c->price)) {
 		GridTestSay("골드가 모자란다");
 		return;
 	}
@@ -3280,10 +3343,10 @@ static void GridOfferBuyCrew(const OfferCard* c)
 		return;
 	}
 
-	robin.gold -= c->price;
+	robin.gold -= GridShopPrice(c->price);
 
 	snprintf(gGridMsg, sizeof(gGridMsg), "%s 합류  -%d",
-		textId[TEXT_MONSTERNAME_START + c->crewType], c->price);
+		textId[TEXT_MONSTERNAME_START + c->crewType], GridShopPrice(c->price));
 	gGridMsgFrame = FPS * 2;
 
 	GridOfferResume();
@@ -3345,6 +3408,9 @@ int GridTestTotalItemCount(void)
 //뽑은 것은 그 판에서만 산다. 격자와 떠 있던 세 갈래를 비운다.
 void GridTestResetStage(void)
 {
+	//공짜 다시 뽑기는 판마다 새로 찬다.
+	gGridFreeRoll = 0;
+
 	memset(gGridItem, 0, sizeof(gGridItem));
 
 	//장착 장비는 다음에 격자를 그릴 때 넣는다. 지금은 히어로가 아직 안
@@ -3420,6 +3486,7 @@ void GridTestPick(int n, bool fromShop)
 		gGridDragOn = true;
 		gGridDragCrew = -1;
 		gGridDragDesc = kShopPart[gOffer[n].part];
+		gGridDragDesc.grade = gOffer[n].grade;	//성이 올려 준 등급으로
 		gGridDragShop = gOffer[n].part;
 		gGridDragFrom = -1;
 	}
@@ -3513,7 +3580,7 @@ void GridTestRelease(void)
 	//---- 격자 ----
 	if (gGridDragValid && gGridDragCol >= 0 && gGridDragRow >= 0) {
 		if (from < 0) {
-			if (robin.gold < p->price) {
+			if (robin.gold < GridShopPrice(p->price)) {
 				//살 수 없다. 소리로도 알린다 - 격자에 놓으려던 손은
 				//글자를 읽고 있지 않다.
 				PlayMusic(M_ERROR);
@@ -3540,7 +3607,7 @@ void GridTestRelease(void)
 				}
 			}
 
-			robin.gold -= p->price;
+			robin.gold -= GridShopPrice(p->price);
 
 			//---- 같은 것이 이미 있으면 겹친다 ----
 			//
@@ -3565,7 +3632,7 @@ void GridTestRelease(void)
 			gGridItem[slot].row = gGridDragRow;
 			GridMakeItem(&gGridItem[slot]);
 
-			sprintf(gGridMsg, "%s 구입  -%d", p->name, p->price);
+			sprintf(gGridMsg, "%s 구입  -%d", p->name, GridShopPrice(p->price));
 			gGridMsgFrame = FPS * 2;
 
 			//한 판에 하나만 산다. 골랐으면 나머지 두 갈래는 사라지고
@@ -3674,34 +3741,340 @@ static bool GridFindSpot(const GridPart* p, int* outCol, int* outRow)
 //
 //자리가 없어 못 넣은 장비는 이번 판에 가방에 없다. 몇 개인지 알린다 -
 //말없이 빠지면 장비가 사라진 것으로 보인다.
+//출정 준비 화면이 열려 있는가. START 를 누르면 열리고, 출정하면 닫힌다.
+static bool gLoadoutOpen = false;
+
+//---- 분류 ----
+//
+//장비가 스무 점만 넘어도 한 줄로 늘어놓으면 찾을 수가 없다. 부위로
+//나눠 보고, 그 안에서는 좋은 것부터 세운다.
+static int gLoadoutTab = 0;
+
+enum {
+	LOADOUT_TAB_ALL = 0,
+	LOADOUT_TAB_WEAPON,
+	LOADOUT_TAB_ARMOR,
+	LOADOUT_TAB_ACC,
+};
+
+static const char* kLoadoutTabName[LOADOUT_TAB_CNT] = {
+	"전체", "무기", "방어구", "장신구"
+};
+
+static bool LoadoutTabHas(int tab, int type)
+{
+	switch (tab) {
+	case LOADOUT_TAB_WEAPON:
+		return type == ITEM_SWORD || type == ITEM_GUN || type == ITEM_BOOMERANG;
+	case LOADOUT_TAB_ARMOR:
+		return type >= ITEM_HELM && type <= ITEM_BOOTS;
+	case LOADOUT_TAB_ACC:
+		return type == ITEM_NECK || type == ITEM_RING;
+	default:
+		return true;
+	}
+}
+
+void LoadoutSetTab(int tab)
+{
+	if (tab >= 0 && tab < LOADOUT_TAB_CNT)
+		gLoadoutTab = tab;
+}
+
+//지금 탭에 보이는 가방 칸을 좋은 것부터 담는다. 담은 수를 돌려준다.
+int LoadoutList(int* out, int max)
+{
+	int n = 0;
+
+	for (int i = 0; i < TOTALINVENTORY && n < max; i++) {
+		const ITEM* it = &robin.inven[i];
+
+		if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+			continue;
+
+		if (!LoadoutTabHas(gLoadoutTab, it->type))
+			continue;
+
+		out[n++] = i;
+	}
+
+	//고른 것 -> 등급 -> 값 순. 고른 것을 앞에 두면 무엇을 들고 가는지
+	//목록 맨 앞에서 바로 보인다.
+	for (int i = 1; i < n; i++) {
+		const int key = out[i];
+		const ITEM* a = &robin.inven[key];
+		const bool keyPick = LoadoutFind(key) >= 0;
+		int m = i - 1;
+
+		while (m >= 0) {
+			const ITEM* b = &robin.inven[out[m]];
+			const bool bPick = LoadoutFind(out[m]) >= 0;
+			const bool after = (!bPick && keyPick)
+				|| (bPick == keyPick && b->grade < a->grade)
+				|| (bPick == keyPick && b->grade == a->grade && b->value < a->value);
+
+			if (!after)
+				break;
+
+			out[m + 1] = out[m];
+			m--;
+		}
+
+		out[m + 1] = key;
+	}
+
+	return n;
+}
+
+bool LoadoutOpen(void)		{ return gLoadoutOpen; }
+void LoadoutSetOpen(bool on){ gLoadoutOpen = on; }
+
+//======================================================================
+// 출정 점수
+//
+// 한 점이 드는 점수는 그것이 성에서 차지할 칸으로 잰다. 칸을 적게 먹는
+// 것은 싸게, 대검처럼 크게 먹는 것은 비싸게 든다.
+//======================================================================
+int LoadoutCost(const ITEM* it)
+{
+	GridPart part;
+
+	if (!it || it->type == EMPTY)
+		return 0;
+
+	GridGearPart(it, &part);
+
+	const int cells = GridPartCellCount(&part);
+
+	return Max(1, (cells + LOADOUT_CELL_PER_POINT - 1) / LOADOUT_CELL_PER_POINT);
+}
+
+//이번 판에 쓸 수 있는 점수. 성이 오르면 는다.
+int LoadoutPoint(void)
+{
+	return LOADOUT_BASE + robin.castle + CastleBonusOf(CPE_LOADOUT);
+}
+
+//지금 고른 것이 드는 점수의 합.
+int LoadoutUsed(void)
+{
+	int sum = 0;
+
+	for (int i = 0; i < gLoadoutCnt; i++)
+		sum += LoadoutCost(&robin.inven[gLoadout[i]]);
+
+	return sum;
+}
+
+//이 가방 칸을 골랐는가. 고른 자리를 돌려준다(없으면 -1).
+int LoadoutFind(int invenIdx)
+{
+	for (int i = 0; i < gLoadoutCnt; i++)
+		if (gLoadout[i] == invenIdx)
+			return i;
+
+	return -1;
+}
+
+//고르고 뺀다. 점수가 모자라면 고르지 않는다.
+bool LoadoutToggle(int invenIdx)
+{
+	const int at = LoadoutFind(invenIdx);
+
+	if (at >= 0) {
+		for (int i = at; i + 1 < gLoadoutCnt; i++)
+			gLoadout[i] = gLoadout[i + 1];
+
+		gLoadoutCnt--;
+		return true;
+	}
+
+	if (gLoadoutCnt >= LOADOUT_MAX)
+		return false;
+
+	const ITEM* it = &robin.inven[invenIdx];
+
+	if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+		return false;
+
+	if (LoadoutUsed() + LoadoutCost(it) > LoadoutPoint())
+		return false;
+
+	gLoadout[gLoadoutCnt++] = invenIdx;
+	return true;
+}
+
+//======================================================================
+// 출정 준비
+//
+// 가방에 있는 것을 다 들고 갈 수는 없다. 점수 안에서 고르고, 고른 것이
+// 성 격자에 어떻게 들어갈지를 옆에서 바로 본다 - 큰 검 하나를 넣으면
+// 남는 칸이 확 주는 것이 보여야 "이걸 두고 짧은 검 둘을 넣을까" 가 된다.
+//======================================================================
+static int LoadoutCellUsed(void)
+{
+	int sum = 0;
+
+	for (int i = 0; i < gLoadoutCnt; i++) {
+		GridPart part;
+
+		GridGearPart(&robin.inven[gLoadout[i]], &part);
+		sum += GridPartCellCount(&part);
+	}
+
+	return sum;
+}
+
+void LoadoutDraw(void)
+{
+	char str[96];
+	int list[LOADOUT_PICKMAX];
+	int cnt = 0;
+
+	if (!gLoadoutOpen)
+		return;
+
+	//뒤의 로비를 어둡게 깔고, 바깥을 누르면 닫는다.
+	SetAlpha(24);
+	MemRect(0, DY, DX, DY, 0x000000);
+	SetAlpha(ALPHA_MAX);
+	SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_LOADOUT_CLOSE);
+
+	cnt = LoadoutList(list, LOADOUT_PICKMAX);
+
+	//---- 머리말 ----
+	const int top = DY - GNBHEIGHT - 20 * _2X;
+	const int point = LoadoutPoint();
+	const int used = LoadoutUsed();
+	const int cell = GridTestCellCnt(robin.castle);
+
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid("출정 준비", DX / 2, top, 0.9f);
+
+	SetFontColor(used > point ? COLOR_RED : COLOR_YELLOW);
+	sprintf(str, "출정 점수  %d / %d", used, point);
+	CenterTextStrSolid(str, DX / 2, top - 22 * _2X, 0.66f);
+
+	SetFontColor(COLOR_GREY);
+	sprintf(str, "성 %d칸 중  %d칸을 들고 간다", cell, LoadoutCellUsed());
+	CenterTextStrSolid(str, DX / 2, top - 38 * _2X, 0.52f);
+
+	//---- 분류 탭 ----
+	for (int t = 0; t < LOADOUT_TAB_CNT; t++) {
+		const int tw = (DX - 20 * _2X) / LOADOUT_TAB_CNT;
+		const int th = 18 * _2X;
+		const int tx = 10 * _2X + t * tw;
+		const int ty = top - 44 * _2X;
+		const bool on = (gLoadoutTab == t);
+
+		SetAlpha(on ? 30 : 14);
+		MemRect(tx, ty, tw - 2 * _2X, th, on ? 0x6A521A : 0x241A10);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(tx, ty, tw - 2 * _2X, th, on ? 0xFFD700 : 0x6B573A);
+		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid(kLoadoutTabName[t], tx + tw / 2 - _2X,
+			(int)((float)ty - ((float)th - FONT_HEIGHT * 0.5f) / 2), 0.5f);
+
+		if (!on)
+			SetRectPoint(tx, ty, tw - 2 * _2X, th, TOUCH_FUNC_LOADOUT_TAB + t);
+	}
+
+	//---- 가방 ----
+	//
+	//고른 것은 테두리가 밝아지고 드는 점수가 붙는다.
+	const int cw = 56 * _2X;
+	const int ch = 56 * _2X;
+	const int cols = Max(1, (DX - 16 * _2X) / (cw + 4 * _2X));
+	const int left = (DX - (cw + 4 * _2X) * cols) / 2;
+	const int listTop = top - 70 * _2X;
+
+	for (int i = 0; i < cnt; i++) {
+		const int col = i % cols;
+		const int row = i / cols;
+		const int x = left + col * (cw + 4 * _2X);
+		const int y = listTop - row * (ch + 4 * _2X);
+		const ITEM* it = &robin.inven[list[i]];
+		const bool on = LoadoutFind(list[i]) >= 0;
+
+		if (y - ch < BOTTOMMENUHEIGHT + 60 * _2X)
+			break;
+
+		SetAlpha(on ? 30 : 16);
+		MemRect(x, y, cw, ch, 0x1B1B2E);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(x, y, cw, ch, on ? 0xFFD700 : 0x556688);
+
+		DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
+			x + cw / 2 - ITEMICONSIZE / 2, y - ch / 2 + ITEMICONSIZE / 2,
+			1.0f, false, false, false, true);
+
+		SetFontColor(on ? COLOR_YELLOW : COLOR_GREY);
+		sprintf(str, "%d점", LoadoutCost(it));
+		CenterTextStrSolid(str, x + cw / 2, y - ch + 12 * _2X, 0.44f);
+
+		SetRectPoint(x, y, cw, ch, TOUCH_FUNC_LOADOUT_ITEM + i);
+	}
+
+	//---- 출정 ----
+	{
+		const int bw = 132 * _2X;
+		const int bh = bw * 62 / 192;
+		const int bx = DX / 2 - bw / 2;
+		const int by = BOTTOMMENUHEIGHT + 44 * _2X;
+
+		DrawTouchLargeButton(bx, by, 192, 62, "", TOUCH_FUNC_LOADOUT_GO,
+			FRAME_GREEN, (float)bw / 192.0f);
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("출 정", DX / 2,
+			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.8f) / 2), 0.8f);
+	}
+}
+
 static void GridPlaceGear(void)
 {
+	//---- 무엇을 들고 들어왔나 ----
+	//
+	//전에는 착용 칸 여섯을 통째로 넣었다. 지금은 출정 준비에서 고른
+	//것만 들어온다 - 무엇을 두고 갈지가 이 판의 첫 선택이다.
+	//
+	//hero 는 아래의 기본 장비 보정(맨발이면 신발 한 켤레)이 쓴다.
 	const OBJECT* hero = &ao[PLAYER];
-	int order[TOTALEQUIP];
-	GridPart parts[TOTALEQUIP];
+	int order[LOADOUT_MAX];
+	GridPart parts[LOADOUT_MAX];
 	int n = 0;
 	int missed = 0;
 
 	gGridGearPending = false;
 
-	for (int e = 0; e < TOTALEQUIP; ++e) {
-		if (hero->equip[e].type == EMPTY)
+	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; ++i) {
+		const ITEM* it = &robin.inven[gLoadout[i]];
+
+		if (it->type == EMPTY)
 			continue;
 
-		GridGearPart(&hero->equip[e], &parts[e]);
-		order[n++] = e;
+		GridGearPart(it, &parts[n]);
+		order[n] = n;
+		n++;
 	}
 
+	//---- 넣는 차례 ----
+	//
+	//무기가 먼저, 그다음은 큰 것부터다. 작은 것을 먼저 흩어 놓으면 큰
+	//것이 들어갈 자리가 남지 않는다.
 	for (int i = 1; i < n; ++i) {
 		const int key = order[i];
-		const bool keyWeapon = (key == EQUIP_WEAPON);
+		const bool keyWeapon = parts[key].type == ITEM_SWORD
+			|| parts[key].type == ITEM_GUN || parts[key].type == ITEM_BOOMERANG;
 		const int keyArea = GridPartCellCount(&parts[key]);
 		int j = i - 1;
 
 		while (j >= 0) {
 			const int o = order[j];
-			const bool before = keyWeapon
-				|| (o != EQUIP_WEAPON && GridPartCellCount(&parts[o]) < keyArea);
+			const bool oWeapon = parts[o].type == ITEM_SWORD
+				|| parts[o].type == ITEM_GUN || parts[o].type == ITEM_BOOMERANG;
+			const bool before = (keyWeapon && !oWeapon)
+				|| (keyWeapon == oWeapon && GridPartCellCount(&parts[o]) < keyArea);
 
 			if (!before)
 				break;
@@ -3735,15 +4108,14 @@ static void GridPlaceGear(void)
 
 		gGridItem[slot].part = parts[e];
 		gGridItem[slot].shop = -1;
-		gGridItem[slot].equip = e;
+		gGridItem[slot].equip = gLoadout[e];	//가방의 어느 칸에서 왔는가
 		gGridItem[slot].col = col;
 		gGridItem[slot].row = row;
 		gGridItem[slot].used = true;
 
-		//끼고 들어온 장비는 인벤토리의 진짜 ITEM 그대로다. 옵션도 그대로
-		//따라 들어온다. 스탯은 RefreshStat 이 이미 더했으므로 여기 것은
-		//그리기와 겹치기에만 쓰인다.
-		GridSetGearItem(&gGridItem[slot], &hero->equip[e]);
+		//들고 들어온 장비는 가방의 진짜 ITEM 그대로다. 옵션도 그대로
+		//따라 들어온다 - 스탯은 StageGearApplyStat 이 같은 것을 읽는다.
+		GridSetGearItem(&gGridItem[slot], &robin.inven[gLoadout[e]]);
 	}
 
 	if (missed > 0) {
@@ -3906,6 +4278,35 @@ static void GridPlaceGear(void)
 			}
 		}
 	}
+
+	//전투 상태 시험으로 들어온 판에는 서로 크기와 쿨타임이 다른 네 검을
+	//실제 격자 배치 규칙으로 넣는다. 빈 모양을 무시하거나 좌표를 강제로
+	//잡지 않으며, 들어갈 자리가 없으면 그 검만 건너뛴다.
+	if (gCombatStatusTest) {
+		for (int shop = 0; shop < 4; ++shop) {
+			GridPart part = kShopPart[shop];
+			int col, row;
+
+			if (!GridFindSpot(&part, &col, &row)) {
+				GridPart turned = GridPartRotated(part);
+				if (!GridFindSpot(&turned, &col, &row))
+					continue;
+				part = turned;
+			}
+
+			const int slot = GridTestFreeSlot();
+			if (slot < 0)
+				break;
+
+			gGridItem[slot].part = part;
+			gGridItem[slot].shop = shop;
+			gGridItem[slot].equip = -1;
+			gGridItem[slot].col = col;
+			gGridItem[slot].row = row;
+			gGridItem[slot].used = true;
+			GridMakeItem(&gGridItem[slot]);
+		}
+	}
 }
 
 void GridTestDraw(void)
@@ -3913,8 +4314,12 @@ void GridTestDraw(void)
 	char str[96];
 	int i, x, y, w, h;
 
-	if (gGridOpen == false)
+	if (gGridOpen == false) {
+		//판을 떠나면 도감도 접는다. 켜 둔 채로 두면 다음 판을 열자마자
+		//도감이 화면을 덮는다.
+		CodexOverlaySetOpen(false);
 		return;
+	}
 
 	GridTestLayout();
 
@@ -4088,7 +4493,20 @@ void GridTestDraw(void)
 
 	//---- 싸우는 동안은 아래를 내린다 ----
 	StageUiSlideStep();
-	StageFoeInvenDraw((int)(ALPHA_MAX * gStageUiSlide));
+
+	//---- 적의 가방 ----
+	//
+	//싸우는 동안에는 늘 보인다(아래가 내려간 만큼 진하게).
+	//
+	//성에 전망대가 있으면 고르는 동안에도 보여준다. 다음 놈이 무엇을
+	//끼고 있는지 알고 고르는 것과 모르고 고르는 것은 다른 게임이다 -
+	//그것이 이 파츠의 값어치다.
+	{
+		const int slide = (int)(ALPHA_MAX * gStageUiSlide);
+		const int preview = CastleBonusOf(CPE_FOE_PREVIEW) > 0 ? ALPHA_MAX / 2 : 0;
+
+		StageFoeInvenDraw(Max(slide, preview));
+	}
 
 	//---- 하단 상점 줄 ----
 	//
@@ -4165,7 +4583,7 @@ void GridTestDraw(void)
 			//아이콘이 없으므로 그 몸을 작게 세운다. 누가 오는지는 얼굴로
 			//알아봐야 한다.
 			if (c->kind != OFFER_PART) {
-				const bool afford = (robin.gold >= c->price);
+				const bool afford = (robin.gold >= GridShopPrice(c->price));
 				const int type = c->crewType;
 				const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
 				const int idle = crewPos[type * 5]
@@ -4185,14 +4603,18 @@ void GridTestDraw(void)
 					x + w / 2, y - h + 14 * _2X, 0.52f);
 				CenterTextStrSolid(c->kind == OFFER_CREW ? "동료" : "몬스터",
 					x + w / 2, y - h + 4 * _2X, 0.46f);
-				GridShopPriceStrip(i, c->price, afford);
+				GridShopPriceStrip(i, GridShopPrice(c->price), afford);
 
 				SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
 				continue;
 			}
 
-			const GridPart* p = &kShopPart[c->part];
-			const bool afford = (robin.gold >= p->price);
+			GridPart shown = kShopPart[c->part];
+			const GridPart* p = &shown;
+			const bool afford = (robin.gold >= GridShopPrice(p->price));
+
+			//성이 올려 준 등급으로 보여준다. 테두리 색이 곧 등급이다.
+			shown.grade = c->grade;
 
 			SetAlpha(afford ? 30 : 14);
 			MemRect(x, y, w, h, 0x22223C);
@@ -4212,7 +4634,7 @@ void GridTestDraw(void)
 			CenterTextStrSolid(p->name, x + w / 2, y - h + 14 * _2X, 0.52f);
 			sprintf(str, "%dx%d / %d칸", p->w, p->h, GridPartCellCount(p));
 			CenterTextStrSolid(str, x + w / 2, y - h + 4 * _2X, 0.46f);
-			GridShopPriceStrip(i, p->price, afford);
+			GridShopPriceStrip(i, GridShopPrice(p->price), afford);
 
 			SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
 		}
@@ -4378,6 +4800,9 @@ void GridTestDraw(void)
 	SetFontColor(COLOR_WHITE);
 	CenterTextStrSolid("접기", x + w / 2, y - h + 4 * _2X, 0.6f);
 	SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_TOGGLE);
+
+	//도감 덮개는 무엇보다 위다. 열려 있을 때만 그린다.
+	CodexOverlayDraw();
 }
 
 //======================================================================
@@ -4417,6 +4842,7 @@ static bool gLobbyPinchOn = false;
 static float gLobbyPinchDist = 1.0f;
 static float gLobbyPinchZoom = 1.0f;
 static int gLobbyZoomHold = 0;			//디버그 버튼: +1 확대, -1 축소
+static bool gLobbyVisualReady = false;
 
 //이번 프레임에 성을 그린 자리. 캐릭터를 성 위에 세울 때 쓴다.
 static float gLobbyCastleLeft = 0;
@@ -4461,7 +4887,11 @@ static float LobbyCharZoom(void)
 
 static int LobbyCastleImg(void)
 {
-	return CASTLE0_IMG + Max(0, Min(robin.castle, CASTLE9_IMG - CASTLE0_IMG));
+	if (!gLobbyVisualReady) {
+		gMobileCastleVisual = Max(0, Min(robin.castle, 19));
+		gLobbyVisualReady = true;
+	}
+	return CASTLE0_IMG + Max(0, Min(gMobileCastleVisual, 19));
 }
 
 //그림 크기. 아직 못 읽었으면 false
@@ -4478,10 +4908,18 @@ static bool LobbyCastleSize(float* w, float* h)
 	return *w > 0 && *h > 0;
 }
 
+static float LobbyViewBottom(void);
+
 //지금 배율에서 그림 1픽셀이 화면 몇 픽셀인가
-static float LobbyCamScale(float imgW)
+static float LobbyCamScale(float imgW, float imgH)
 {
-	return (float)DX / imgW * gLobbyCamZoom;
+	const float tier = Max(0, Min(gMobileCastleVisual, 19)) / 19.0f;
+	const float viewW = DX - 16.0f * _2X;
+	const float viewH = DY - LobbyViewBottom() - GNBHEIGHT - 8.0f * _2X;
+	const float fit = Min(viewW / imgW, viewH / imgH);
+	// The authored PNGs are all trimmed close to their alpha bounds.  Fit both
+	// axes first, then use the tier itself to make later castles visibly larger.
+	return fit * (0.58f + 0.40f * tier) * gLobbyCamZoom;
 }
 
 //성을 보여 주는 세로 영역. 하단 메뉴 위부터 화면 위 끝까지다.
@@ -4516,7 +4954,7 @@ static void LobbyCamClamp(void)
 
 	gLobbyCamZoom = Max(LOBBY_CAM_ZOOM_MIN, Min(LOBBY_CAM_ZOOM_MAX, gLobbyCamZoom));
 
-	const float s = LobbyCamScale(w);
+	const float s = LobbyCamScale(w, h);
 	const float halfW = DX / 2.0f / s;
 	const float halfH = (DY - LobbyViewBottom()) / 2.0f / s;
 
@@ -4540,13 +4978,13 @@ static void LobbyCamZoomAt(float zoom, float px, float py)
 	if (!LobbyCastleSize(&w, &h))
 		return;
 
-	const float s0 = LobbyCamScale(w);
+	const float s0 = LobbyCamScale(w, h);
 	const float ix = gLobbyCamX + (px - DX / 2.0f) / s0;
 	const float iy = gLobbyCamY - (py - LobbyViewCY()) / s0;
 
 	gLobbyCamZoom = Max(LOBBY_CAM_ZOOM_MIN, Min(LOBBY_CAM_ZOOM_MAX, zoom));
 
-	const float s1 = LobbyCamScale(w);
+	const float s1 = LobbyCamScale(w, h);
 	gLobbyCamX = ix - (px - DX / 2.0f) / s1;
 	gLobbyCamY = iy + (py - LobbyViewCY()) / s1;
 	LobbyCamClamp();
@@ -4584,6 +5022,36 @@ static int LobbyCastleBtnHit(float x, float y)
 	return -1;
 }
 
+static const int kCastleArrowW = 28 * _2X;
+static const int kCastleArrowH = 48 * _2X;
+
+static int LobbyCastleArrowHit(float x, float y)
+{
+	const int cy = (int)LobbyViewCY();
+	if (GetRectPoint((int)x, (int)y, 3 * _2X, cy + kCastleArrowH/2,
+		kCastleArrowW, kCastleArrowH)) return -1;
+	if (GetRectPoint((int)x, (int)y, DX-3*_2X-kCastleArrowW, cy+kCastleArrowH/2,
+		kCastleArrowW, kCastleArrowH)) return 1;
+	return 0;
+}
+
+static void LobbyCastleArrowsDraw(void)
+{
+	const int cy = (int)LobbyViewCY();
+	for (int side = 0; side < 2; ++side) {
+		const int x = side == 0 ? 3*_2X : DX-3*_2X-kCastleArrowW;
+		const int y = cy+kCastleArrowH/2;
+		MemRect(x, y, kCastleArrowW, kCastleArrowH, 0x18263D);
+		MemRectFrame(x, y, kCastleArrowW, kCastleArrowH, 0xE7BD4E);
+		const int cx = x+kCastleArrowW/2;
+		for (int row = -6; row <= 6; ++row) {
+			const int half = 6-abs(row);
+			const int px = side == 0 ? cx-half*_2X/2 : cx+half*_2X/2;
+			MemRect(px-2*_2X, cy-row*_2X, 4*_2X, 2*_2X, 0xFFFFFF);
+		}
+	}
+}
+
 //---- 성 토글 버튼 ----
 //누를 때마다 castle0 -> castle1 -> ... -> castle9 -> castle0 으로 넘긴다.
 //확대/축소 버튼 왼쪽에 같은 크기로 둔다.
@@ -4613,7 +5081,7 @@ static void LobbyCastleToggleDraw(void)
 
 static void LobbyCastleButtonsDraw(void)
 {
-	const int curCastle = Max(0, Min(robin.castle, 9));
+	const int curCastle = Max(0, Min(gMobileCastleVisual, 19));
 	char str[16];
 
 	for (int n = 0; n < 10; n++) {
@@ -4692,9 +5160,9 @@ bool LobbyCamTouchBegan(int id, float x, float y)
 		gLobbyPinchOn = false;
 		gLobbyZoomHold = 0;
 #if LOBBY_CAM_DEBUG_BUTTONS
-		const int castleHit = gLobbyCastleMenuOpen ? -1 : LobbyCastleBtnHit(x, y);
-		if (castleHit >= 0) {
-			robin.castle = castleHit;
+		const int castleStep = gLobbyCastleMenuOpen ? 0 : LobbyCastleArrowHit(x, y);
+		if (castleStep != 0) {
+			gMobileCastleVisual = (gMobileCastleVisual + castleStep + 20) % 20;
 			gLobbyCamImg = -1;
 			gLobbyPanBlocked = true;
 			return true;
@@ -4759,8 +5227,8 @@ bool LobbyCamTouchMoved(int id, float x, float y)
 		return false;
 
 	//손가락을 따라 그림을 민다. 화면은 y 가 위로, 그림은 아래로 늘어난다.
-	gLobbyCamX -= (x - oldX) / LobbyCamScale(w);
-	gLobbyCamY += (y - oldY) / LobbyCamScale(w);
+	gLobbyCamX -= (x - oldX) / LobbyCamScale(w, h);
+	gLobbyCamY += (y - oldY) / LobbyCamScale(w, h);
 	LobbyCamClamp();
 	return false;
 }
@@ -4826,29 +5294,33 @@ static void LobbyCastleDraw(void)
 	const int img = LobbyCastleImg();
 	if (!LobbyCastleSize(&w, &h)) return;
 
-	const float s = LobbyCamScale(w);
+	const float s = LobbyCamScale(w, h);
 	const int left = (int)(DX / 2.0f - gLobbyCamX * s);
-	const int top = (int)(LobbyViewCY() + gLobbyCamY * s);
-	const int castleIdx = Max(0, Min(robin.castle, 9));
-	const float imageBottom = top - h * s;
-	const float radius = CastleWheels::GetWheelRadius(castleIdx, s);
+	const int castleIdx = Max(0, Min(gMobileCastleVisual, 19));
+	const int baseTop = (int)(LobbyViewCY() + gLobbyCamY * s);
+	const int top = baseTop + (int)CastleWheels::GetBodyMotionY(castleIdx, true);
+	const float imageBottom = baseTop - h * s;
+	const float radius = CastleWheels::GetWheelRadius(castleIdx, w, s);
 	// Tuck the upper part of the wheel into the base.  This removes the long
 	// hanging axle seen when the whole wheel was placed below the image.
-	const float wheelGround = imageBottom - radius * 1.20f;
+	//바퀴의 접지점을 성 하단보다 충분히 아래로 내린다. 지면도 이 값을
+	//그대로 사용하므로 카메라 배율이 바뀌어도 바퀴와 땅 사이가 벌어지지 않는다.
+	const float wheelGround = imageBottom - radius * 1.42f - 2 * _2X;
 
-	// Give the lobby castle an actual ground plane. It belongs to the castle
-	// presentation and is drawn before the castle and its front wheels.
-	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
-	if (sprite[BATTLE_BG_GROUND_IMG]) {
-		const auto groundSize = sprite[BATTLE_BG_GROUND_IMG]->getContentSize();
-		const float groundScale = Max((float)DX / groundSize.width, 0.55f);
-		// The visible grass edge in this asset sits below its nominal contact row.
-		// Raise only the lobby ground so the grass meets the wheel bottoms.
-		const int groundTop = (int)(wheelGround + groundSize.height * groundScale * 0.59f)
-			+ 10 * _2X;
-		DrawImage((int)groundSize.width, (int)groundSize.height, 0, 0,
-			0, groundTop, false, false, false, false, false, groundScale,
-			sprite[BATTLE_BG_GROUND_IMG], BATTLE_BG_GROUND_IMG);
+	//t2.png의 32px 타일로 로비 지면을 만든다. 첫 줄은 잔디 접지면,
+	//둘째 줄은 암반층이라 긴 화면에서도 잘린 그림처럼 보이지 않는다.
+	const int lobbyTileImg = MAP_TILE_IMG + 2;
+	if (!sprite[lobbyTileImg]) LoadImg(lobbyTileImg);
+	if (sprite[lobbyTileImg]) {
+		const int tile = 32;
+		const int groundTop = (int)wheelGround + 1 * _2X;
+		for (int tx = 0; tx < DX + tile; tx += tile) {
+			const int variant = (tx / tile) % 4;
+			DrawImage(tile, tile, variant * tile, 0, tx, groundTop,
+				false, false, false, false, false, 1.0f, sprite[lobbyTileImg], lobbyTileImg);
+			DrawImage(tile, tile, variant * tile, tile, tx, groundTop - tile,
+				false, false, false, false, false, 1.0f, sprite[lobbyTileImg], lobbyTileImg);
+		}
 	}
 
 	DrawImage((int)w, (int)h, 0, 0, left, top,
@@ -4856,7 +5328,7 @@ static void LobbyCastleDraw(void)
 
 	// Only the visible front-side wheels are drawn, above the castle sprite.
 	CastleWheels::DrawCastleWheels(castleIdx, (float)left, imageBottom,
-		w, s, wheelGround, false);
+		w, s, wheelGround, true);
 
 	gLobbyCastleLeft = (float)left;
 	gLobbyCastleTop = (float)top;
@@ -4890,6 +5362,70 @@ static void LobbyZoomButtonsDraw(void)
 		LobbyZoomBtnItemY(1) + 9 * _2X, 0.36f);
 }
 #endif
+
+static int LobbyBottomNavActive(void)
+{
+	if (gLobbyCastleMenuOpen) return 3;
+	if (popUpCnt <= 0) return 2;
+
+	switch (popUp[popUpCnt - 1].type) {
+	case POPUPTYPE_SHOPINFO:
+	case POPUPTYPE_EVENTSHOP:
+		return 0;
+	case POPUPTYPE_COLLECTIONS:
+	case POPUPTYPE_CREWLIST:
+	case POPUPTYPE_CREWUPGRADE:
+		return 1;
+	case POPUPTYPE_CASTLEMENU:
+		return 3;
+	default:
+		return 2;
+	}
+}
+
+static void LobbyBottomNavDraw(void)
+{
+	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
+		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
+	const int actions[] = { TOUCH_FUNC_SHOP, TOUCH_FUNC_COLLECTIONS,
+		TOUCH_FUNC_LOBBY_ADVENTURE, TOUCH_FUNC_LOBBY_CASTLE, TOUCH_FUNC_LOBBY_DUNGEON };
+	const int active = LobbyBottomNavActive();
+	const float activeShare = 0.28f;
+	const float normalShare = (1.0f - activeShare) / 4.0f;
+
+	// This pass is intentionally after all popup windows.  The main navigation
+	// remains visible and its hit areas are registered last.
+	MemRect(0, BOTTOMMENUHEIGHT + 4 * _2X, DX, BOTTOMMENUHEIGHT + 4 * _2X, 0x0D1728);
+	MemRect(0, BOTTOMMENUHEIGHT, DX, BOTTOMMENUHEIGHT, 0x183052);
+	MemRect(0, BOTTOMMENUHEIGHT, DX, 2 * _2X, 0x8CB4E8);
+
+	int left = 0;
+	for (int i = 0; i < 5; ++i) {
+		const float share = i == active ? activeShare : normalShare;
+		const int right = i == 4 ? DX : left + (int)(DX * share + 0.5f);
+		const int cx = (left + right) / 2;
+		const bool selected = i == active;
+		const int top = BOTTOMMENUHEIGHT + (selected ? 7 * _2X : 1 * _2X);
+
+		if (selected) {
+			MemRect(left + 2 * _2X, top, right - left - 4 * _2X, top, 0x315B91);
+			MemRect(left + 2 * _2X, top, right - left - 4 * _2X, 3 * _2X, 0xFFD76A);
+		}
+		if (left > 0)
+			MemRect(left, BOTTOMMENUHEIGHT - 3 * _2X, 1, BOTTOMMENUHEIGHT - 6 * _2X, 0x315174);
+
+		// With labels removed, almost the complete bar height can be used.  This
+		// makes the icons about 50 percent larger than the former layout.
+		const float iconSize = Min((float)(right - left - 4 * _2X),
+			(float)BOTTOMMENUHEIGHT - 4 * _2X);
+		const float press = GetButtonScale(actions[i], left, top, right - left, top);
+		const float size = iconSize * (selected ? 1.08f : 1.0f) * press;
+		DrawImage(128, 128, 0, 0, cx - (int)(size / 2), top - 1 * _2X,
+			false, false, false, false, false, size / 128.0f, sprite[navImgs[i]], navImgs[i]);
+		SetRectPoint(left, top, right - left, top, actions[i]);
+		left = right;
+	}
+}
 
 void LobbyDraw(void)
 {
@@ -4975,25 +5511,17 @@ void LobbyDraw(void)
 		float maxRoamX;   // 배회 가로 반경
 	};
 
-	const int curCastle = Max(0, Min(robin.castle, 9));
+	const int curCastle = Max(0, Min(gMobileCastleVisual, 19));
 
 	// 성별 히어로 기본 위치 (대문 앞 계단/양탄자 중심)
-	static const struct { float u, v; } kCastleHeroPos[10] = {
-		{ 0.50f, 0.88f }, // Castle 0
-		{ 0.50f, 0.90f }, // Castle 1
-		{ 0.50f, 0.91f }, // Castle 2
-		{ 0.50f, 0.92f }, // Castle 3
-		{ 0.50f, 0.93f }, // Castle 4
-		{ 0.50f, 0.93f }, // Castle 5
-		{ 0.50f, 0.94f }, // Castle 6
-		{ 0.50f, 0.94f }, // Castle 7
-		{ 0.54f, 0.95f }, // Castle 8
-		{ 0.52f, 0.95f }, // Castle 9
+	static const float kCastleDeckV[20] = {
+		.55f,.60f,.55f,.55f,.60f, .48f,.55f,.60f,.58f,.52f,
+		.43f,.58f,.58f,.56f,.58f, .58f,.50f,.58f,.58f,.60f,
 	};
 
 	// 히어로 자리
 	float heroCenterX, heroY;
-	LobbyCastleToObj(kCastleHeroPos[curCastle].u, kCastleHeroPos[curCastle].v, &heroCenterX, &heroY);
+	LobbyCastleToObj(.50f, kCastleDeckV[curCastle], &heroCenterX, &heroY);
 
 	const float charZoom = LobbyCharZoom();
 
@@ -5271,6 +5799,31 @@ void LobbyDraw(void)
 		int count;
 	};
 
+	// The twenty mobile-castle images are horizontal side views.  The former
+	// tables below describe the retired tall dioramas, so reusing table 9 for
+	// stages 10~19 placed people in the sky and on locomotion parts.  These slots
+	// stay on the central decks that exist across the new side-view silhouettes.
+	static const CastleSlotDef kMobileCastleSlots[] = {
+		{LOBBY_ROLE_GROUND_LEFT,  .32f,.68f,true,  6.0f*_2X},
+		{LOBBY_ROLE_GROUND_RIGHT, .68f,.68f,true,  6.0f*_2X},
+		{LOBBY_ROLE_GROUND_LEFT,  .42f,.66f,false, 0.0f},
+		{LOBBY_ROLE_GROUND_RIGHT, .58f,.66f,false, 0.0f},
+		{LOBBY_ROLE_WALL_MID,     .30f,.55f,true,  5.0f*_2X},
+		{LOBBY_ROLE_WALL_MID,     .70f,.55f,true,  5.0f*_2X},
+		{LOBBY_ROLE_WALL_MID,     .40f,.53f,false, 0.0f},
+		{LOBBY_ROLE_WALL_MID,     .60f,.53f,false, 0.0f},
+		{LOBBY_ROLE_WALL_TOP,     .34f,.43f,false, 0.0f},
+		{LOBBY_ROLE_WALL_TOP,     .50f,.42f,true,  4.0f*_2X},
+		{LOBBY_ROLE_WALL_TOP,     .66f,.43f,false, 0.0f},
+		{LOBBY_ROLE_SPIRE,        .40f,.34f,false, 0.0f},
+		{LOBBY_ROLE_SPIRE,        .60f,.34f,false, 0.0f},
+		{LOBBY_ROLE_WALL_MID,     .24f,.61f,false, 0.0f},
+		{LOBBY_ROLE_WALL_MID,     .76f,.61f,false, 0.0f},
+		{LOBBY_ROLE_WALL_TOP,     .27f,.47f,false, 0.0f},
+		{LOBBY_ROLE_WALL_TOP,     .73f,.47f,false, 0.0f},
+		{LOBBY_ROLE_SPIRE,        .50f,.30f,false, 0.0f},
+	};
+
 	static const CastleSlotTable kCastleSlotTables[10] = {
 		{ kCastleSlots0, sizeof(kCastleSlots0) / sizeof(kCastleSlots0[0]) },
 		{ kCastleSlots1, sizeof(kCastleSlots1) / sizeof(kCastleSlots1[0]) },
@@ -5284,7 +5837,16 @@ void LobbyDraw(void)
 		{ kCastleSlots9, sizeof(kCastleSlots9) / sizeof(kCastleSlots9[0]) },
 	};
 
-	const CastleSlotTable& slotTable = kCastleSlotTables[curCastle];
+	CastleSlotDef stageSlots[12];
+	const int mobileSlotCount = 6 + curCastle * 6 / 19;
+	for (int n = 0; n < mobileSlotCount; ++n) {
+		const float u = .20f + .60f * n / Max(1, mobileSlotCount - 1);
+		stageSlots[n] = {
+			n < mobileSlotCount / 2 ? LOBBY_ROLE_GROUND_LEFT : LOBBY_ROLE_GROUND_RIGHT,
+			u, kCastleDeckV[curCastle], n < 4, n < 4 ? 4.0f * _2X : 0.0f
+		};
+	}
+	const CastleSlotTable slotTable = { stageSlots, mobileSlotCount };
 
 	LobbySlotInstance walkSlots[24];
 	int walkSlotsCount = 0;
@@ -5512,7 +6074,7 @@ void LobbyDraw(void)
 
 #if LOBBY_CAM_DEBUG_BUTTONS
 	LobbyZoomButtonsDraw();
-	LobbyCastleButtonsDraw();
+	LobbyCastleArrowsDraw();
 #endif
 
 	// 기존 플레이 화면의 상단 GNB와 자원 바를 그대로 쓴다.
@@ -5524,46 +6086,71 @@ void LobbyDraw(void)
 	GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 
 	//======================================================================
-	// 임시 패널 - 자리만 잡아 둔 사각형
-	//
-	// 목업(docs/design/lobby_mockup-v2.png)에 있는 판들이다. 그림이
-	// 아직 없어서 사각형과 글자로만 세워 둔다. 자리와 크기가 맞는지
-	// 먼저 보고, 그림이 나오면 MemRect 를 DrawImage 로 바꾸면 된다.
-	//
-	// 값은 아직 표에서 오지 않는다. 어디서 와야 하는지만 주석으로
-	// 적어 둔다 - 수를 지어내면 나중에 진짜 값과 구별이 안 된다.
+	// 날짜와 현재 진행 위치
 	//======================================================================
 	{
 		const int panelTop = DY - GNBHEIGHT - 4 * _2X;
 
-		//---- 상단 DAY 및 문페이즈 (낮/밤) 표시 ----
+		//---- 상단 DAY 및 낮/밤 표시 ----
 		{
-			const int dayW = 84 * _2X;
-			const int dayH = 20 * _2X;
+			const int dayW = 118 * _2X;
+			const int dayH = 34 * _2X;
 			const int dayX = DX / 2 - dayW / 2;
 			const int dayY = panelTop;
 
-			// 다크 캡슐 배경 & 은은한 골드 테두리
-			MemRect(dayX, dayY, dayW, dayH, 0x1B1428);
-			MemRectFrame(dayX, dayY, dayW, dayH, 0xC9A227);
+			//두 겹의 왕실 명패. 단색 사각형보다 성의 금장 톤과 맞는다.
+			MemRect(dayX - 2 * _2X, dayY + 2 * _2X, dayW + 4 * _2X, dayH + 4 * _2X, 0x0D1424);
+			MemRectFrame(dayX - 2 * _2X, dayY + 2 * _2X, dayW + 4 * _2X, dayH + 4 * _2X, 0x7B5A19);
+			MemRect(dayX, dayY, dayW, dayH, 0x24193A);
+			MemRectFrame(dayX, dayY, dayW, dayH, 0xF2C85B);
 
-			// 문페이즈 아이콘 (menu.png에 추가한 32x32 아이콘)
-			// 낮: 700, 780 / 밤: 740, 780 / 마지막 날: 780, 780
-			int phaseSrcX = 700;
-			if (IsFinalDayStage())
-				phaseSrcX = 780;
-			else if (IsStageNight())
-				phaseSrcX = 740;
+			const int phaseImg = IsStageNight() ? LOBBY_NIGHT_IMG : LOBBY_DAY_IMG;
+			const int phaseSize = 28 * _2X;
+			DrawImage(128, 128, 0, 0, dayX + 5 * _2X, dayY - 3 * _2X,
+				false, false, false, false, false, phaseSize / 128.0f,
+				sprite[phaseImg], phaseImg);
 
-			const float phaseZoom = 0.82f;
-			const int iconX = dayX + 3 * _2X;
-			const int iconY = dayY - 2 * _2X;
-			DrawImage(32, 32, phaseSrcX, 780, iconX, iconY, false, false, false, false, false, phaseZoom, sprite[MENU_IMG], MENU_IMG);
-
-			// DAY 텍스트
 			SetFontColor(COLOR_WHITE);
-			sprintf(str, "DAY %d / %d", GetStageDay(), CYCLE_DAYS);
-			CenterTextStrSolid(str, dayX + 16 * _2X + (dayW - 16 * _2X) / 2, dayY - 14 * _2X, 0.68f);
+			sprintf(str, "%d일차  /  %d일", GetStageDay(), CYCLE_DAYS);
+			CenterTextStrSolid(str, dayX + phaseSize + (dayW - phaseSize) / 2,
+				dayY - 12 * _2X, 0.92f);
+			SetFontColor(COLOR_REALYELLOW);
+			CenterTextStrSolid(IsStageNight() ? "밤" : "낮",
+				dayX + phaseSize + (dayW - phaseSize) / 2, dayY - 27 * _2X, 0.48f);
+
+			//현재 진행 중인 스테이지를 날짜 명패 바로 아래에 붙인다.
+			const int stageW = 92 * _2X;
+			const int stageH = 20 * _2X;
+			const int stageX = DX / 2 - stageW / 2;
+			const int stageY = dayY - dayH - 5 * _2X;
+			MemRect(stageX, stageY, stageW, stageH, 0x17263E);
+			MemRectFrame(stageX, stageY, stageW, stageH, 0x6E91C5);
+			SetFontColor(COLOR_WHITE);
+			sprintf(str, "현재 스테이지  %d", robin.stage + 1);
+			CenterTextStrSolid(str, DX / 2, stageY - 7 * _2X, 0.62f);
+		}
+	}
+
+	//---- 이번 판에 나갈 히어로 ----
+	//
+	//누구를 데리고 들어가는지는 START 를 누르기 전에 보여야 한다. 고르는
+	//곳은 장비 메뉴라, 여기 얼굴을 누르면 그리로 보낸다.
+	{
+		const int who = (curHero >= 0 && curHero < TOTALCHAR) ? curHero : ROBIN;
+		const int w = 44 * _2X;
+		const int h = 44 * _2X;
+		const int x = DX / 2 - w / 2;
+		const int y = BOTTOMMENUHEIGHT + 100 * _2X;
+
+		if (ao[who].active || IsGetHero(who)) {
+			DrawPlayer(&ao[who], frame / 6 % 4, x + w / 2, y - h + 6 * _2X,
+				RIGHT, 0.8f, false, false, true);
+
+			SetFontColor(COLOR_WHITE);
+			//히어로 이름은 동료와 같은 이름표를 쓴다(히어로도 타입 0~2 다).
+			CenterTextStrSolid(textId[TEXT_MONSTERNAME_START + who], x + w / 2,
+				y - h, 0.5f);
+			SetRectPoint(x, y, w, h, TOUCH_FUNC_COLLECTIONS);
 		}
 	}
 
@@ -5578,52 +6165,36 @@ void LobbyDraw(void)
 			y + (int)(height * (press - 1) / 2), false, false, false, false, false,
 			width / 512.0f * press, sprite[WIN_IMG], WIN_IMG);
 		SetRectPoint(x, y, width, height, TOUCH_FUNC_GOTOBATTLE);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("게임 시작", DX / 2, y - (int)(height * .23f), .80f * press);
 		const long long admission = GetStageAdmissionHeart(robin.stage);
 		sprintf(str, "%lld", admission);
-		const float feeZoom = .56f;
-		const int numberW = (int)StringWidth(str, feeZoom);
-		const float iconZoom = (12.0f * _2X) / Max(1, imgArray[IMG_LIGHTNING * 4 + 3]);
-		const int iconW = (int)(imgArray[IMG_LIGHTNING * 4 + 2] * iconZoom);
-		const int feeX = (DX - numberW - iconW - 4 * _2X) / 2;
-		const int feeY = y - (int)(height * .59f);
-		DrawArray(IMG_LIGHTNING, feeX, feeY, iconZoom);
+
+		// One row, one top coordinate: lightning + price + label.  Both DrawImage
+		// and CenterTextStrSolid use their supplied Y as the top edge, so no
+		// independent vertical offsets belong here.
+		const char* title = "게임 시작";
+		const float rowZoom = 1.42f * press;
+		const int iconH = (int)((FONT_HEIGHT + 1 * _2X) * rowZoom);
+		const float buttonTop = y + height * (press - 1.0f) / 2.0f;
+		const float buttonHeight = height * press;
+		const int rowY = (int)(buttonTop - (buttonHeight - iconH) / 2.0f);
+		const int gap = 4 * _2X;
+		const int numberW = (int)StringWidth(str, rowZoom);
+		const int titleW = (int)StringWidth(title, rowZoom);
+		const int rowW = iconH + gap + numberW + gap + titleW;
+		const int rowX = (DX - rowW) / 2;
+
+		DrawImage(128, 128, 0, 0, rowX, rowY,
+			false, false, false, false, false, iconH / 128.0f,
+			sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
 		SetFontColor(robin.heart >= admission ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid(str, feeX + iconW + 4 * _2X + numberW / 2,
-			feeY - 2 * _2X, feeZoom);
+		CenterTextStrSolid(str, rowX + iconH + gap + numberW / 2, rowY, rowZoom);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(title,
+			rowX + iconH + gap + numberW + gap + titleW / 2, rowY, rowZoom);
 	}
 
-	// Continuous navigation strip; the current adventure tab is raised.
-	const int cells[] = { BOTTOMMENU_CELL_SHOP, BOTTOMMENU_CELL_EQUIP,
-		BOTTOMMENU_CELL_ADVENTURE, BOTTOMMENU_CELL_CASTLE, BOTTOMMENU_CELL_DUNGEON };
-	const int actions[] = { TOUCH_FUNC_SHOP, TOUCH_FUNC_COLLECTIONS,
-		TOUCH_FUNC_LOBBY_ADVENTURE, TOUCH_FUNC_LOBBY_CASTLE, TOUCH_FUNC_LOBBY_DUNGEON };
-	const char* names[] = { "상점", "장비", "모험", "성", "던전" };
-	MemRect(0, BOTTOMMENUHEIGHT, DX, BOTTOMMENUHEIGHT, 0x17263E);
-	MemRect(0, BOTTOMMENUHEIGHT, DX, 2 * _2X, 0x7794BC);
-	for (int i = 0; i < 5; ++i) {
-		const int left = DX * i / 5;
-		const int right = DX * (i + 1) / 5;
-		const int cx = (left + right) / 2;
-		const bool active = gLobbyCastleMenuOpen ? i == 3 : i == 2;
-		const int lift = active ? 6 * _2X : 0;
-		const int top = BOTTOMMENUHEIGHT + lift;
-		if (active) {
-			MemRect(left + 2, top, right - left - 4, top, 0x294976);
-			MemRect(left + 2, top, right - left - 4, 2 * _2X, 0xF2CA64);
-		}
-		if (i) MemRect(left, BOTTOMMENUHEIGHT - 4, 1, BOTTOMMENUHEIGHT - 8, 0x3B5273);
-		const float iconSize = Min((float)(right - left - 12), (float)BOTTOMMENUHEIGHT - 20 * _2X);
-		const float press = GetButtonScale(actions[i], left, top, right - left, top);
-		const float size = iconSize * (active ? 1.14f : 1.0f) * press;
-		DrawImage(BOTTOMMENU_CELL, BOTTOMMENU_CELL, BOTTOMMENU_CELL * cells[i], 0,
-			cx - (int)(size / 2), top - 2 * _2X, false, false, false, false, false,
-			size / BOTTOMMENU_CELL, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
-		SetRectPoint(left, top, right - left, top, actions[i]);
-		SetFontColor(active ? COLOR_REALYELLOW : COLOR_WHITE);
-		CenterTextStrSolid(names[i], cx, 10 * _2X, .62f);
-	}
+	//출정 준비. 로비 위에 얹는다.
+	LoadoutDraw();
 
 	if (popUpCnt > 0) gLobbyCastleMenuOpen = false;
 	if (gLobbyCastleMenuOpen) {
@@ -5658,6 +6229,10 @@ void LobbyDraw(void)
 	// MD_PLAY로 바꾸지 않으므로 팝업을 닫아도 전투 화면으로 새지 않는다.
 	for (int i = 0; i < popUpCnt; i++)
 		DrawPopUp(i);
+
+	// Always keep the primary navigation above menu windows and register its
+	// hit areas last, so every lobby screen can switch sections directly.
+	LobbyBottomNavDraw();
 
 	frame++;
 }
@@ -7332,6 +7907,14 @@ void GNBDraw(int x, int y)
 
 	//�޴���ư
 	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	if (IsStageRealtime()) {
+		//톱니바퀴와 같은 상단 기준선에 둔다. 버튼 함수에 넘긴 y를 그대로
+		//사용하며 별도의 세로 보정은 하지 않는다.
+		const float mapZoom = 0.34f;
+		const int mapW = (int)(192 * mapZoom);
+		DrawTouchLargeButton(x + DX - 36 * _2X - mapW - 4 * _2X, y,
+			192, 62, "지도", TOUCH_FUNC_BATTLE_MINIMAP, FRAME_BLUE, mapZoom);
+	}
 	switch (drawHandle) {
 	default:
 		if (curMenu == MENU_PLAY) {
@@ -7354,6 +7937,43 @@ void GNBDraw(int x, int y)
 			TOUCH_FUNC_SETTING);
 		break;
 	}
+}
+
+void BattleMinimapDraw(int x, int y, float zoom)
+{
+	const float w = (float)POPUPWINDOWSIZE_X * zoom;
+	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
+	const int total = 15;
+	const int reached = Max(1, Min(total, robin.curWaveIdx + 1));
+	const float left = x + 38.0f * zoom;
+	const float right = x + w - 38.0f * zoom;
+	const float lineY = y - h * 0.48f;
+	char label[48];
+
+	SetAlpha(ALPHA_MAX);
+	MemRect((int)x, (int)y, (int)w, (int)h, 0x101A2A);
+	MemRectFrame((int)x, (int)y, (int)w, (int)h, 0xD5A62B);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid("15 스테이지 진행도", (int)(x + w / 2),
+		(int)(y - 34.0f * zoom), 1.0f * zoom);
+
+	MemRect((int)left, (int)lineY, (int)(right - left), Max(2, (int)(3 * zoom)), 0x465269);
+	for (int i = 0; i < total; ++i) {
+		const float px = left + (right - left) * i / (total - 1);
+		const bool done = i + 1 < reached;
+		const bool current = i + 1 == reached;
+		const int size = (int)((current ? 18.0f : 13.0f) * zoom);
+		const int color = current ? 0xFFD044 : (done ? 0x52CF78 : 0x526078);
+		MemRect((int)(px - size / 2), (int)(lineY + size / 2), size, size, color);
+	}
+
+	snprintf(label, sizeof(label), "현재 %d / %d", reached, total);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(label, (int)(x + w / 2),
+		(int)(lineY - 42.0f * zoom), 0.9f * zoom);
+	DrawTouchLargeButton((int)(x + w / 2 - 96.0f * 0.7f * zoom),
+		(int)(y - h + 38.0f * zoom), 192, 62, "닫기",
+		TOUCH_FUNC_POPUP_CLOSE, FRAME_BLUE, 0.7f * zoom);
 }
 
 void ActiveHelpDraw()
@@ -8585,6 +9205,10 @@ void DrawPopUp(int idx)
 		break;
 	case POPUPTYPE_OPTION_HELP:
 		OptionHelpDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
+		break;
+	case POPUPTYPE_BATTLE_MINIMAP:
+		BattleMinimapDraw(DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom,
+			p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;
 	case POPUPTYPE_ENEMYUSER:
 		EnemyUserProfileDraw(&enemyHouse, DX / 2 - (float)(RAIDGOLDBARWIDTH / 2) * p->zoom * 1.5f, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom - (float)52 * _2X * p->zoom + (float)RAIDGOLDBARHEIGHT / 2 * p->zoom * 1.5f, p->zoom * 1.5f);

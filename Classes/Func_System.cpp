@@ -2538,7 +2538,7 @@ void GotoPlay(bool forceReload)
 	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
 	if (!sprite[BATTLE_BG_FAR_IMG]) LoadImg(BATTLE_BG_FAR_IMG);
 	if (!sprite[BATTLE_BG_MID_IMG]) LoadImg(BATTLE_BG_MID_IMG);
-	for (i = CASTLE_WHEEL0_IMG; i <= CASTLE_WHEEL9_IMG; ++i)
+	for (i = CASTLE_MOVE0_IMG; i <= CASTLE_MOVE19_IMG; ++i)
 		if (!sprite[i]) LoadImg(i);
 	frame = 0;
 

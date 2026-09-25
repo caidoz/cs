@@ -1,148 +1,104 @@
 #pragma once
-// CastleWheelManager.h
-// Draws the visible front wheels as part of each Mobile Castle (0~9).
 
 #include <cmath>
 
 namespace CastleWheels {
 
-struct WheelLayout {
-	int count;
-	float u[8]; // X-ratio relative to castle width (0.0f = left, 1.0f = right)
+enum MoveKind { MOVE_WHEEL, MOVE_WALK, MOVE_FLOAT, MOVE_BODY };
+struct MoveLayout { MoveKind kind; int count; float u[4]; float partScale; };
+
+static const MoveLayout kMove[20] = {
+	// The values below describe the authored castle_moveN resources.  partScale
+	// is the width of one part as a fraction of the rendered castle width.
+	{MOVE_WHEEL, 2,{.22f,.78f},            .15f}, //  0 wooden wheels
+	{MOVE_WHEEL, 2,{.20f,.80f},            .15f}, //  1 reinforced wheels
+	{MOVE_WHEEL, 2,{.19f,.81f},            .15f}, //  2 iron-rim wheels
+	{MOVE_WHEEL, 3,{.16f,.50f,.84f},       .14f}, //  3 siege wheels
+	{MOVE_WALK,  1,{.50f},                 .42f}, //  4 snail foot
+	{MOVE_WHEEL, 3,{.15f,.50f,.85f},       .14f}, //  5 cog wheels
+	{MOVE_WHEEL, 3,{.15f,.50f,.85f},       .14f}, //  6 royal wheels
+	{MOVE_WALK,  2,{.34f,.66f},            .27f}, //  7 tree legs
+	{MOVE_WALK,  2,{.34f,.66f},            .25f}, //  8 mushroom roots
+	{MOVE_WALK,  2,{.34f,.66f},            .23f}, //  9 armoured feet
+	{MOVE_WALK,  2,{.31f,.69f},            .28f}, // 10 crab legs
+	{MOVE_WALK,  2,{.34f,.66f},            .23f}, // 11 mechanical feet
+	{MOVE_WALK,  2,{.35f,.65f},            .22f}, // 12 paddle feet
+	{MOVE_WALK,  2,{.34f,.66f},            .24f}, // 13 beast paws
+	{MOVE_WALK,  2,{.34f,.66f},            .26f}, // 14 stone legs
+	{MOVE_FLOAT, 2,{.32f,.68f},            .29f}, // 15 cloud runners
+	{MOVE_WALK,  2,{.34f,.66f},            .24f}, // 16 dark iron legs
+	{MOVE_FLOAT, 3,{.23f,.50f,.77f},       .20f}, // 17 crystal engines
+	{MOVE_FLOAT, 3,{.23f,.50f,.77f},       .18f}, // 18 blue thrusters
+	{MOVE_WALK,  2,{.34f,.66f},            .25f}, // 19 celestial legs
 };
 
-// Wheel configurations tailored to each castle's width and architecture:
-static const WheelLayout kWheelLayouts[10] = {
-	// Castle 0: 416x448 (Stone keep) - 3 sturdy siege wheels
-	{ 2, { 0.20f, 0.80f } },
-	// Castle 1: 491x683 (2-Tier Fortress) - 3 wheels
-	{ 2, { 0.18f, 0.82f } },
-	// Castle 2: keep the silhouette readable with only a front and rear wheel
-	{ 2, { 0.17f, 0.83f } },
-	// Castle 3: 543x943 (Spire Bastion) - 4 wheels
-	{ 3, { 0.15f, 0.50f, 0.85f } },
-	// Castle 4: 553x1021 (Alchemy Stronghold) - 4 wheels
-	{ 3, { 0.15f, 0.50f, 0.85f } },
-	// Castle 5: 558x1127 (Clocktower Keep) - 4 wheels
-	{ 3, { 0.14f, 0.50f, 0.86f } },
-	// Castle 6: 561x1362 (Archmage Tower) - 4 wheels
-	{ 4, { 0.12f, 0.37f, 0.63f, 0.88f } },
-	// Castle 7: 676x1388 (Cathedral Citadel) - 5 heavy wheels
-	{ 4, { 0.11f, 0.37f, 0.63f, 0.89f } },
-	// Castle 8: 781x1481 (Grand Royal Palace) - 5 heavy wheels
-	{ 4, { 0.10f, 0.36f, 0.64f, 0.90f } },
-	// Castle 9: 922x1700 (Celestial High Fortress) - 6 massive siege dreadnought wheels
-	{ 4, { 0.09f, 0.36f, 0.64f, 0.91f } },
-};
+inline int ClampStage(int stage) { return Max(0, Min(stage, 19)); }
+inline float GetPartScale(int stage, float castleW, float castleScale, float cellW)
+{
+	return castleW * castleScale * kMove[ClampStage(stage)].partScale / Max(1.0f, cellW);
+}
+inline float GetWheelRadius(int stage, float castleW, float castleScale)
+{
+	const int idx = ClampStage(stage);
+	const int img = CASTLE_MOVE0_IMG + idx;
+	if (kMove[idx].kind == MOVE_BODY) return 0.0f;
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return castleW * castleScale * .07f;
+	const auto size = sprite[img]->getContentSize();
+	const float cellW = kMove[idx].kind == MOVE_WHEEL ? size.width : size.width / 4.0f;
+	const float scale = GetPartScale(idx, castleW, castleScale, cellW);
+	return size.height * scale * .5f;
+}
+inline float GetSuspensionY() { return std::sin((float)frame * .22f) * 1.5f * (float)_2X; }
+inline float GetWheelAngle() { return std::fmod((float)frame * 6.0f, 360.0f); }
+inline void Update(float, float, float, int, float) {}
 
-static float s_wheelAngle = 0.0f;
-static float s_suspensionY = 0.0f;
-static float s_lastScrollDist = 0.0f;
-
-inline float GetWheelScale(int castleIdx, float castleScale) {
-	// Wheel zoom follows the castle zoom exactly.  The previous reference-scale
-	// division cancelled part of the lobby camera zoom and made the wheels look
-	// detached from the castle.
-	const int tierIdx = Max(0, Min(castleIdx, 9));
-	const float tier = 1.0f + tierIdx / 18.0f;
-	return 0.38f * tier * castleScale;
+inline float GetBodyMotionY(int stage, bool moving)
+{
+	if (!moving) return 0.0f;
+	const int idx = ClampStage(stage);
+	const bool floating = kMove[idx].kind == MOVE_FLOAT;
+	const float amplitude = (floating ? 3.0f : 1.5f) * (float)_2X;
+	return std::sin((float)frame * (floating ? .10f : .18f)) * amplitude;
 }
 
-inline float GetWheelRadius(int castleIdx, float castleScale) {
-	// All ten authored resources are normalized to 128x128.
-	return 64.0f * GetWheelScale(castleIdx, castleScale);
-}
+inline void DrawCastleWheels(int stage, float castleLeft, float castleBottom,
+	float castleW, float castleScale, float groundY, bool isMoving)
+{
+	const int idx = ClampStage(stage);
+	const MoveLayout& layout = kMove[idx];
+	if (layout.kind == MOVE_BODY) return;
+	const int img = CASTLE_MOVE0_IMG + idx;
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return;
+	const auto size = sprite[img]->getContentSize();
+	const int cellW = layout.kind == MOVE_WHEEL ? (int)size.width : (int)size.width / 4;
+	const float scale = GetPartScale(idx, castleW, castleScale, (float)cellW);
 
-inline float GetSuspensionY() {
-	return s_suspensionY;
-}
-
-inline float GetWheelAngle() {
-	return s_wheelAngle;
-}
-
-inline void DrawWheelCentered(int wheelImg, float centerX, float centerY,
-	float scale, float angle) {
-	if (!sprite[wheelImg]) return;
-	// RotateImage positions the supplied anchor at (x,y).  A 0.5/0.5 anchor
-	// therefore makes the axle the invariant rotation pivot.
-	RotateImage(128, 128, 0, 0,
-		(int)centerX, (int)centerY, false, angle, 0, 0, scale,
-		cocos2d::Vec2(0.5f, 0.5f), sprite[wheelImg], wheelImg);
-}
-
-inline void Update(float currentScrollDist, float delta, float scrollSpeed, int castleIdx, float castleScale) {
-	(void)castleIdx;
-	(void)castleScale;
-	s_lastScrollDist = currentScrollDist;
-
-	// This manager is updated only in MD_PLAY.  Advance unconditionally so UI,
-	// offer and auto-battle state can never freeze a wheel that is on screen.
-	if (delta > 0.0f) {
-		s_wheelAngle += 180.0f * delta;
-		s_wheelAngle = std::fmod(s_wheelAngle, 360.0f);
+	if (layout.kind == MOVE_WHEEL) {
+		for (int n = 0; n < layout.count; ++n) {
+			const float cx = castleLeft + layout.u[n] * castleW * castleScale;
+			const float radius = size.width * scale * .5f;
+			const float bob = isMoving ? std::sin((float)frame*.20f+n*1.7f)*1.2f*_2X : 0.0f;
+			RotateImage((int)size.width, (int)size.height, 0, 0,
+				(int)cx, (int)(groundY+radius+bob), false, GetWheelAngle(), 0, 0, scale,
+				cocos2d::Vec2(.5f,.5f), sprite[img], img);
+		}
+		return;
 	}
 
-	// Castle chassis suspension vibration (war machine rumble)
-	if (scrollSpeed > 0.0f) {
-		s_suspensionY = std::sin((float)frame * 0.22f) * 1.5f * (float)_2X;
-	} else {
-		s_suspensionY = 0.0f;
+	const int cellH = (int)size.height;
+	const float partW = cellW * scale;
+	const float partH = cellH * scale;
+	const float bob = layout.kind == MOVE_FLOAT ? std::sin((float)frame*.12f)*2.0f*_2X : 0.0f;
+	for (int n = 0; n < layout.count; ++n) {
+		const int pose = isMoving ? ((frame / 5) + n * 2) % 4 : 0;
+		const float cx = castleLeft + layout.u[n] * castleW * castleScale;
+		DrawImage(cellW, cellH, pose*cellW, 0,
+			(int)(cx-partW*.5f), (int)(groundY+partH+bob),
+			false, false, false, false, false, scale, sprite[img], img);
 	}
-
-}
-
-inline void DrawCastleWheels(int castleIdx, float castleLeft, float castleBottom,
-                             float castleW, float castleScale, float groundY,
-                             bool isMoving) {
-	const int clampedIdx = Max(0, Min(castleIdx, 9));
-	const WheelLayout& layout = kWheelLayouts[clampedIdx];
-	const float wheelScale = GetWheelScale(clampedIdx, castleScale);
-	const float wheelRadius = GetWheelRadius(clampedIdx, castleScale);
-	const int wheelImg = CASTLE_WHEEL0_IMG + clampedIdx;
-	if (!sprite[wheelImg]) LoadImg(wheelImg);
-	// MD_PLAY uses the global render frame as the single source of truth.
-	// At 30 fps this is 180 degrees/sec and cannot be stopped by combat/UI state.
-	const float drawAngle = drawHandle == MD_PLAY
-		? std::fmod((float)frame * 6.0f, 360.0f)
-		: s_wheelAngle;
-
-	for (int i = 0; i < layout.count; ++i) {
-		const float u = layout.u[i];
-		const float cx = castleLeft + u * castleW * castleScale;
-		const float terrainBob = isMoving
-			? std::sin(drawAngle * 3.14159265f / 180.0f + i * 1.7f) * 1.2f * _2X
-			: 0.0f;
-		const float cy = groundY + wheelRadius + terrainBob;
-
-		// Axle bracket is part of the castle assembly, not a world/tile object.
-		const int strutW = 6 * _2X;
-		const int strutH = Max(4, (int)(castleBottom - cy + 4 * _2X));
-		MemRect((int)(cx - strutW / 2), (int)(castleBottom + 2 * _2X), strutW, strutH, 0x24201C);
-		MemRectFrame((int)(cx - strutW / 2), (int)(castleBottom + 2 * _2X), strutW, strutH, 0x4A423A);
-
-		// Front-side wheel sprite. There is intentionally no rear wheel pass.
-		DrawWheelCentered(wheelImg, cx, cy, wheelScale, drawAngle);
-
-		// The authored wheels are close to rotationally symmetric.  A small bolt
-		// fixed to the wheel face makes the centre-pivot rotation readable.
-		const float angleRad = drawAngle * 3.14159265f / 180.0f;
-		const float markerR = wheelRadius * 0.56f;
-		const int markerSize = Max(2, (int)(3.0f * _2X * wheelScale));
-		const int markerX = (int)(cx + std::cos(angleRad) * markerR);
-		const int markerY = (int)(cy + std::sin(angleRad) * markerR);
-		MemRect(markerX - markerSize / 2, markerY + markerSize / 2,
-			markerSize, markerSize, 0xFFF1A0);
-		MemRectFrame(markerX - markerSize / 2, markerY + markerSize / 2,
-			markerSize, markerSize, 0x8B5A10);
-
-		// 4. Center Bronze Hub Cap with rivet
-		const int hubR = Max(2, (int)(4 * _2X * wheelScale));
-		const int hubColor = clampedIdx < 3 ? 0x8A6338 : clampedIdx < 7 ? 0xB77A35 : 0xFFD45A;
-		const int rimColor = clampedIdx < 3 ? 0x4B3422 : clampedIdx < 7 ? 0x80552A : 0xA86F12;
-		MemRect((int)(cx - hubR), (int)(cy + hubR), hubR * 2, hubR * 2, hubColor);
-		MemRectFrame((int)(cx - hubR), (int)(cy + hubR), hubR * 2, hubR * 2, rimColor);
-	}
+	(void)castleBottom;
 }
 
 } // namespace CastleWheels

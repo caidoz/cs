@@ -11916,8 +11916,12 @@ void VanishMove(OBJECT* pObj)
 				const int coin = DropItem(pObj, ITEM_GOLD);
 
 				if (coin >= 0) {
+					//깃발이 있으면 더 떨어진다.
+					const int gold = STAGE_KILL_GOLD * (robin.stage + 1)
+						* (100 + CastleBonusOf(CPE_GOLD_PCT)) / 100;
+
 					ao[coin].target = PLAYER;
-					ao[coin].ax = STAGE_KILL_GOLD * (robin.stage + 1);
+					ao[coin].ax = gold;
 					ao[coin].defaultZoom = ao[coin].zoom = 2.0f;
 				}
 

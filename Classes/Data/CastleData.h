@@ -37,5 +37,5 @@ enum { lobbyCrewArea_COUNT = TOTALCASTLE * 4 };
 extern const int castleGridCellCnt[TOTALCASTLE];
 extern const int castleGridCellStart[TOTALCASTLE];
 extern const signed char* castleGridCell;
-enum { castleGridCell_COUNT = 1044 };	//배열 길이. 칸 수의 두 배다
+enum { castleGridCell_COUNT = 726 };	//배열 길이. 칸 수(363)의 두 배다
 #endif

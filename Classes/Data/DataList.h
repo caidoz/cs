@@ -67,7 +67,7 @@
 	X(setHeroPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(setEnemyPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
-	X(castleGridCell, 1, DPK_INT, 1044, DPK_KEY_NONE, 0, 0) \
+	X(castleGridCell, 1, DPK_INT, 726, DPK_KEY_NONE, 0, 0) \
 	X(cmfOffBlob, 2, DPK_UINT, 12692, DPK_KEY_FREE, 0, 0) \
 	X(cmfOffSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
 	X(cmfMotionImgBlob, 2, DPK_INT, 306052, DPK_KEY_FREE, 0, 0) \

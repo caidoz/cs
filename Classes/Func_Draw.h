@@ -38,6 +38,16 @@ void TitleSkillViewerCommand(int command);
 void TitleTermsCommand(int command);
 void OpeningDraw(void);
 void LobbyDraw(void);
+void LoadoutDraw(void);				//출정 준비 화면
+bool LoadoutOpen(void);
+void LoadoutSetOpen(bool on);
+int LoadoutPoint(void);				//이번 판에 쓸 수 있는 점수
+int LoadoutUsed(void);
+int LoadoutCost(const ITEM* it);
+int LoadoutFind(int invenIdx);
+bool LoadoutToggle(int invenIdx);
+void LoadoutSetTab(int tab);		//전체 / 무기 / 방어구 / 장신구
+int LoadoutList(int* out, int max);	//지금 탭에 보이는 가방 칸
 void LobbySkyUpdate(float delta);
 bool LobbyCamTouchBegan(int id, float x, float y);
 bool LobbyCamTouchMoved(int id, float x, float y);
@@ -53,7 +63,8 @@ void GridTestRelease(void);
 void GridTestToggle(void);
 void GridTestSkipOffer(void);
 void GridTestReroll(void);
-void GridTestRefresh(void);			//시험용. 값 없이 세 칸을 다시 돌린다				//값을 치르고 룰렛을 다시 돌린다
+void GridTestRefresh(void);			//시험용. 값 없이 세 칸을 다시 돌린다
+int GridShopPrice(int base);		//성 할인을 거친 값				//값을 치르고 룰렛을 다시 돌린다
 void GridTestShopSide(bool book);		//하단 지도 / 도감 자리
 void StageShopBtnRect(int* x, int* y, int* w, int* h);	//전투 시작 버튼 자리
 bool GridTestBeginOffer(int killedType);
@@ -84,6 +95,7 @@ void GridTestAdvanceWave(void);
 bool GridTestIsOpen(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
+void BattleMinimapDraw(int x, int y, float zoom);
 void StartPvpTest(void);
 void StartPvpTestBattle(void);
 bool IsPvpCrewActing(int crewSlot);

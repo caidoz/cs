@@ -12,6 +12,7 @@ int gTotalEnemy = TOTALENEMY;
 int gTotalCrew = TOTAL_CREW;
 int gTotalSkill = TOTAL_SKILL;
 int gTotalCastle = TOTALCASTLE;
+int gMobileCastleVisual = 0;
 int gTotalMap = TOTALMAP;
 
 //cmf 개수는 CmfRelink() 가 잡는다. 표를 채우면서 같이 정해지기 때문이다.
@@ -49,6 +50,13 @@ void DataCountRefresh(void)
 	gTotalCrew = CountFromPack("crewData", CREWDATASIZE, CAP_CREW, TOTAL_CREW);
 	gTotalSkill = CountFromPack("skillData", SKILLDATASIZE, CAP_SKILL, TOTAL_SKILL);
 	gTotalCastle = CountFromPack("castleOrder", 1, CAP_CASTLE, TOTALCASTLE);
+
+	//---- 성은 열 단계다 ----
+	//
+	//성 그림(castle0~9)과 파츠 표(CastlePartData.h)가 열 단계로 짜여 있다.
+	//옛 표(19개)가 데이터에 남아 있어도 그 앞의 열까지만 쓴다.
+	if (gTotalCastle > CASTLE_STAGE_CNT)
+		gTotalCastle = CASTLE_STAGE_CNT;
 
 	//맵 데이터는 아직 Classes/Write.h 에 있어서 팩에 안 들어갔다.
 	//그쪽을 팩으로 옮기면 여기도 CountFromPack 으로 바꾼다.

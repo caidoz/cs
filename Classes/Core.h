@@ -151,6 +151,13 @@ typedef struct _item {
 	int exp;//현재 누적된 경험치
 	bool seen;//상세정보를 확인했는지
 
+	//---- 잠금 ----
+	//
+	//아끼는 장비에 자물쇠를 건다. 일괄 판매와 합성이 이 칸을 보고 건너뛴다.
+	//가방이 좁아 한 번에 터는 일이 잦은데, 그때 아끼던 것이 같이 사라지면
+	//되돌릴 길이 없다.
+	bool locked;
+
 	template <class Archive>
 	void serialize(Archive& ar)
 	{
@@ -173,7 +180,11 @@ typedef struct _item {
 			option[12][2],
 			name[40],
 			exp,
-			seen
+			seen,
+
+			//★ 새 항목은 끝에 붙인다. 가운데에 끼우면 저장 순서가 밀려
+			//옛 세이브를 못 읽는다.
+			locked
 		);
 	}
 } ITEM;
@@ -680,6 +691,9 @@ typedef struct _robin {
 	//증축하면 0 으로 돌아간다 - 못 올린 것은 그 성을 떠나면 끝이다.
 	int castlePartLv[CASTLE_PART_MAX];
 
+	//마지막으로 금고를 걷은 시각. 여기서부터 지금까지가 쌓인 시간이다.
+	long castleIncomeTs;
+
 	long long startTime;
 
 	//--------------------------------------------------------
@@ -766,7 +780,8 @@ typedef struct _robin {
 
 			//★ 새 항목은 반드시 끝에 붙인다. 가운데에 끼우면 저장 순서가
 			//밀려서 옛 세이브를 못 읽는다.
-			castlePartLv
+			castlePartLv,
+			castleIncomeTs
 		);
 	}
 } ROBINDATA;
@@ -1713,6 +1728,8 @@ extern signed int curHouse;//현재 선택되어 있는 집
 extern signed int curHero;//현재 히어로
 extern int curEquipTab;
 extern int curCastleTab;
+extern int gLoadout[LOADOUT_MAX];	//출정에 들고 갈 가방 칸 번호
+extern int gLoadoutCnt;
 extern signed int curMenuBack;
 extern signed int curEventIdx;//현재 이벤트
 extern int menuFrame;//메뉴 프레임

@@ -717,6 +717,13 @@ int curEquipTab = 0;
 
 //성 메뉴 안에서 지금 보고 있는 탭. 0 증축, 1 성 목록
 int curCastleTab = 0;
+
+//---- 출정에 들고 갈 장비 ----
+//
+//가방(robin.inven)의 칸 번호다. 판을 시작할 때 이 목록만 성 격자에
+//들어간다. 판마다 다시 고르는 것이라 세이브에는 넣지 않는다.
+int gLoadout[LOADOUT_MAX] = { 0, };
+int gLoadoutCnt = 0;
 signed int curMenuBack;
 signed int curEventIdx;//현재 이벤트
 int menuFrame;//메뉴 프레임

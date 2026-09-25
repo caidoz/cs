@@ -486,6 +486,22 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 		autoPlay = true;
 		autoButtonText = false;
 	}
+
+	//---- 가방 칸을 길게 누르면 잠근다 ----
+	//
+	//짧게 누르면 상세보기가 열린다. 잠금은 그 길 위에 얹을 자리가 없어서
+	//길게 누르기로 둔다. 잠근 것은 일괄 판매와 합성에서 빠진다.
+	if (touchedFrame >= AUTOPLAYFRAME
+		&& heldTouchFunc >= TOUCH_FUNC_ITEMDETAIL
+		&& heldTouchFunc < TOUCH_FUNC_ITEMDETAIL + TOTALINVENTORY) {
+		ItemToggleLock(heldTouchFunc - TOUCH_FUNC_ITEMDETAIL);
+		PlayMusic(M_BUTTON);
+
+		//상세보기까지 같이 열리지 않게 이 터치는 여기서 끝낸다.
+		systemKey = 0;
+		is_key_released = false;
+		is_release_finished = true;
+	}
 }
 
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
@@ -835,6 +851,18 @@ bool Core::init()
 	}
 	//로비 성. 로비가 첫 화면이라 처음부터 읽어 둔다.
 	for (i = CASTLE0_IMG; i <= LOBBY_FOOTHILLS_IMG; i++) {
+		LoadImg(i);
+		LoadTexture(i);
+	}
+	for (i = CASTLE_MOVE0_IMG; i <= CASTLE_MOVE19_IMG; i++) {
+		LoadImg(i);
+		LoadTexture(i);
+	}
+	for (i = CASTLE_UPGRADE0_IMG; i <= CASTLE_UPGRADE9_IMG; i++) {
+		LoadImg(i);
+		LoadTexture(i);
+	}
+	for (i = LOBBY_NAV_SHOP_IMG; i <= LOBBY_NIGHT_IMG; i++) {
 		LoadImg(i);
 		LoadTexture(i);
 	}
@@ -2041,10 +2069,22 @@ void PaintClet(int x, int y, int w, int h)
 	//등록한 카드 터치 영역을 ResetRectPoint로 모두 지워버린다.
 	//스택 자체는 보존해 가챠 종료 뒤 원래 상점으로 자연스럽게 돌아간다.
 	if (popUpCnt > 0 && drawHandle != MD_GACHA) {
-		ScreenDarken(SCREENDARKEN);
-		ResetRectPoint();
+		const int topPopupType = popUp[popUpCnt - 1].type;
+		// These are persistent lobby sections, not modal dialogs. LobbyDraw has
+		// already rendered them inside the area above BOTTOMMENUHEIGHT and then
+		// drawn the navigation bar. Running the generic popup pass here used to
+		// darken that bar, erase its hit areas, and draw the same window twice.
+		const bool lobbySection = drawHandle == MD_LOBBY && popUpCnt == 1 && menuDepth == 0
+			&& (topPopupType == POPUPTYPE_SHOPINFO
+				|| topPopupType == POPUPTYPE_COLLECTIONS
+				|| topPopupType == POPUPTYPE_CREWLIST
+				|| topPopupType == POPUPTYPE_CASTLEMENU);
 
-		DrawPopUp(popUpCnt - 1);
+		if (!lobbySection) {
+			ScreenDarken(SCREENDARKEN);
+			ResetRectPoint();
+			DrawPopUp(popUpCnt - 1);
+		}
 	}
 
 	int boxMotion = OBJ_BOX0;
@@ -2589,11 +2629,6 @@ long MC_knlCurrentTimeStamp()
 {
 	return MC_knlRawTimeStamp() + gNetTimeOffset;
 }
-
-
-
-
-
 
 
 

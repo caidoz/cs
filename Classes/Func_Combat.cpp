@@ -512,6 +512,43 @@ void RefreshStat_Sub(OBJECT* pObj)
 	//장착 칸만 보는 위쪽 계산 뒤에 한 점씩 더한다.
 	StageGearApplyStat(pObj);
 
+	//---- 성 파츠: 동료 ----
+	//
+	//훈련장과 식당은 동료에게 붙는다. 성에서 먹이고 가르친 것이므로
+	//몬스터에게는 가지 않는다.
+	{
+		const int obj = GetObjFromPtr(pObj);
+
+		if (obj >= CREW && obj < CREW + MAXCREW) {
+			const int dmgPct = CastleBonusOf(CPE_CREW_DMG_PCT);
+			const int hpPct = CastleBonusOf(CPE_CREW_HP_PCT);
+
+			if (dmgPct > 0)
+				pObj->ps[PS_DMG] += pObj->ps[PS_DMG] * dmgPct / 100;
+
+			if (hpPct > 0)
+				pObj->ps[PS_HP] += pObj->ps[PS_HP] * hpPct / 100;
+		}
+	}
+
+	//---- 성 파츠 ----
+	//
+	//성은 히어로의 것이다. 동료와 몬스터에게는 붙이지 않는다.
+	if (GetObjFromPtr(pObj) == PLAYER) {
+		const int hpPct = CastleBonusOf(CPE_HP_PCT) + CastleBonusOf(CPE_ALLSTAT_PCT);
+		const int allPct = CastleBonusOf(CPE_ALLSTAT_PCT);
+
+		pObj->ps[PS_ARMOR] += CastleBonusOf(CPE_DEF);
+
+		if (hpPct > 0)
+			pObj->ps[PS_HP] += pObj->ps[PS_HP] * hpPct / 100;
+
+		if (allPct > 0) {
+			pObj->ps[PS_DMG] += pObj->ps[PS_DMG] * allPct / 100;
+			pObj->ps[PS_ARMOR] += pObj->ps[PS_ARMOR] * allPct / 100;
+		}
+	}
+
 	if (pObj->ps[PS_ARMOR] < 0)
 		pObj->ps[PS_ARMOR] = 0;
 

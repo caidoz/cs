@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 
 // Battle 관련 함수
@@ -33,6 +33,7 @@ bool StageRtSwordCharge(int slot, float* charge, int* flash);
 int StageRtCrewType(int slot);
 bool StageRtHasCrew(int type);
 bool StageRtCrewFull(void);
+int StageRtCrewLimit(void);		//성이 정하는 동료 자리 수
 bool StageRtAddCrew(int type);
 
 // 3-day boss raid combat state (no admission fee or attack cost).

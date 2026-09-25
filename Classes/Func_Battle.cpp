@@ -1148,6 +1148,17 @@ bool IsStageRealtime(void)
 //등) 거기서 지우면 산 동료와 잡은 수가 판 중간에 사라지기 때문이다.
 void StageRtBegin(void)
 {
+	//---- 판 시작 골드 ----
+	//
+	//망루가 있으면 판에 들어가면서 골드를 얹어 준다. 첫 룰렛에서 무엇을
+	//살 수 있느냐가 달라진다.
+	{
+		const int extra = CastleBonusOf(CPE_STARTGOLD);
+
+		if (extra > 0)
+			GetItem(ITEM_GOLD, false, false, false, extra, false);
+	}
+
 	memset(stageRunCrew, 0, sizeof(stageRunCrew));
 	memset(stageCrewCool, 0, sizeof(stageCrewCool));
 	memset(stageCrewShot, 0, sizeof(stageCrewShot));
@@ -1417,9 +1428,21 @@ bool StageRtHasCrew(int type)
 	return false;
 }
 
+//---- 설 수 있는 동료 수 ----
+//
+//성의 안뜰 · 소환진 · 문장이 자리를 늘린다. 배열 크기(MAXCREW)를 넘지는
+//못한다 - 그 이상은 세울 칸 자체가 없다.
+int StageRtCrewLimit(void)
+{
+	return Max(1, Min((int)MAXCREW,
+		STAGE_CREW_BASE + CastleBonusOf(CPE_CREWSLOT)));
+}
+
 bool StageRtCrewFull(void)
 {
-	for (int i = 0; i < MAXCREW; ++i) {
+	const int limit = StageRtCrewLimit();
+
+	for (int i = 0; i < limit; ++i) {
 		if (stageRunCrew[i] <= 0)
 			return false;
 	}
@@ -1653,16 +1676,10 @@ void UpdateStageRealtime(void)
 			if (--stageSwordFlash[slot] > 0)
 				continue;
 
-			if (s->gear) {
-				if (PvpHeroTurnBusy(PLAYER)) {
-					stageSwordFlash[slot] = 1;
-					continue;
-				}
-
-				PvpHeroGiveTurn(PLAYER);
-			}
-			else
-				StageRtSwordHit(foe, s->value);
+			//장착 검도 캐릭터 모션을 기다리지 않는다. 모든 검은 자기 시계가
+			//끝난 순간 히어로 위치에서 목표로 날아가며, 도착할 때 피해를 준다.
+			//따라서 여러 검의 쿨타임과 연출이 서로를 막지 않는다.
+			StageFoeShotFire(PLAYER, foe, s->detail, s->value);
 
 			stageSwordCool[slot] = 0;
 			continue;

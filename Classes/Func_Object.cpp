@@ -1247,9 +1247,7 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 		// 다이애나 총 단일화 및 동적 크기(35종) 지원
 		static unsigned short kDynamicGunPart[4] = { 0, 0, 34, 28 };
 		if (pObj->cmf == DIANA && (fixedImg == IMG_C1_94 || fixedImg == IMG_C1_95) && sprite[imgFile]) {
-			//표는 w1_1 ~ w1_35(번호 0 ~ 34)까지다. 마지막 총(신살자의 총,
-			//번호 35)은 그림도 표도 없어서, 그대로 두면 손잡이 보정이
-			//통째로 빠져 총이 엉뚱한 자리에 크게 그려진다. 표의 끝으로 민다.
+			//표는 w1_1 ~ w1_35(번호 0 ~ 34)까지다.
 			const int gunIdx = Min(34, imgFile - COSTUME_WEAPON_DIANA_IMG - 1);
 			if (gunIdx >= 0 && gunIdx < 35) {
 				const DianaGunInfo& gun = kDianaGuns[gunIdx];
@@ -1275,8 +1273,10 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 				const float handX = (dirF == 0 ? localX + centerX : -(localX + centerX)) * zoom * extra;
 				const float handY = (localY + centerY) * zoom * extra;
 				const float cx = x + handX * cos(rad) - handY * sin(rad) + imgOffsetX;
+				//중립 자세도 손 위치를 그대로 기준으로 삼는다. 예전의 +8 보정은
+				//큰 총일수록 총 전체를 우하단으로 밀어 손이 몸통을 잡아 보였다.
 				const float cy = y - handX * sin(rad) - handY * cos(rad) + imgOffsetY
-					+ (neutral ? 8.0f * zoom * extra : 0.0f);
+					- (neutral ? 3.0f * zoom * extra : 0.0f);
 				const float ax = (float)gun.gripX / (float)gun.width;
 				const float ay = 1.0f - (float)gun.gripY / (float)gun.height;
 				RotateImage(gun.width, gun.height, 0, 0, (int)cx, (int)cy, dirX,

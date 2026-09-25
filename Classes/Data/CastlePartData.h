@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //======================================================================
 // 성 파츠
@@ -50,6 +50,7 @@ enum {
 	CPE_ALLSTAT_PCT,	//모든 능력치 +%
 	CPE_MERGE_BONUS,	//합성 보너스
 	CPE_FOE_PREVIEW,	//적 장비 미리보기
+	CPE_LOADOUT,		//출정 점수 +
 };
 
 struct CastlePartInfo {
