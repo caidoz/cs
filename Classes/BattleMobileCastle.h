@@ -349,16 +349,22 @@ inline void DrawCastle(int groundY) {
 	const float castleBottom = wheelGroundY + wheelRadius * 1.4f + suspensionY;
 	const float castleTop = castleBottom + rawH * scale;
 
-	// Castle sprite (castle0.png ~ castle9.png).  A separate ground shadow made
-	// the chassis look detached from the road, so the wheels provide the contact.
-	DrawImage((int)rawW, (int)rawH, 0, 0,
-	          (int)castleLeft, (int)castleTop,
-	          false, false, false, false, false, scale,
-	          sprite[castleImg], castleImg);
-
-	// 3. Castle Chassis Wheels with Physical Rotation & Dust Emitter
-	CastleWheels::DrawCastleWheels(curCastle, castleLeft, castleBottom,
-	                              rawW, scale, wheelGroundY, IsMoving());
+	if (CastleWheels::IsCompositedMotion(curCastle)) {
+		const int motionImg = CASTLE_MOVE0_IMG + curCastle;
+		if (!sprite[motionImg]) LoadImg(motionImg);
+		const int pose = IsMoving() ? (frame / 5) % 4 : 0;
+		const float motionScale = scale / .8f;
+		DrawImage(1024, 1024, pose * 1024, 0, (int)castleLeft,
+			(int)(castleTop + 72 * motionScale), false, false, false, false,
+			false, motionScale, sprite[motionImg], motionImg);
+	}
+	else {
+		CastleWheels::DrawCastleWheels(curCastle, castleLeft, castleBottom,
+			rawW, scale, wheelGroundY, IsMoving());
+		DrawImage((int)rawW, (int)rawH, 0, 0,
+			(int)castleLeft, (int)castleTop, false, false, false, false, false,
+			scale, sprite[castleImg], castleImg);
+	}
 
 	// 4. Inventory items reflected on the castle (Mounted weapons & Aegis shield)
 	DrawInventoryCastleReflections(curCastle, castleLeft, castleTop, rawW, rawH, scale);

@@ -3200,15 +3200,138 @@ void GridTestReroll(void)
 	GridOfferRoll(-1);
 }
 
-//지도와 도감. 도감은 판을 떠나지 않고 화면 위에 덮개로 연다.
-void GridTestShopSide(bool book)
+//======================================================================
+// 지도
+//
+// 이 판은 몬스터 STAGE_MONSTER_CNT 마리다. 그런데 화면에는 지금 선 한
+// 마리만 보여서, 다섯 번째에 소보스가 있는지 열 번째에 중보스가 있는지를
+// 알 수가 없었다. 무엇을 사 둘지가 그걸 알아야 정해진다 - 대보스가 두
+// 자리 앞이면 지금 골드를 쓰지 않고 아낀다.
+//
+// 판을 떠나지 않고 화면 위에 덮는다. 도감과 같은 얼개다.
+//======================================================================
+static bool gStageMapOpen = false;
+
+void StageMapSetOpen(bool on)	{ gStageMapOpen = on; }
+bool StageMapOpen(void)			{ return gStageMapOpen; }
+
+//그 자리가 무슨 자리인가. 이름과 색을 같이 준다.
+static const char* StageMapKindName(int kind, int* color)
 {
-	if (book) {
-		CodexOverlaySetOpen(true);
-		return;
+	switch (kind) {
+	case MONSTERTYPE_BIGBOSS:
+		*color = COLOR_RED;
+		return "대보스";
+	case MONSTERTYPE_MIDBOSS:
+		*color = COLOR_YELLOW;
+		return "중보스";
+	case MONSTERTYPE_BOSS:
+		*color = COLOR_WHITE;
+		return "소보스";
 	}
 
-	GridTestSay("지도는 아직이다");
+	*color = COLOR_GREY;
+	return "";
+}
+
+void StageMapOverlayDraw(void)
+{
+	char str[96];
+
+	if (gStageMapOpen == false)
+		return;
+
+	//뒤의 격자와 룰렛이 덮개 아래에서 눌리면 안 된다.
+	ResetRectPoint();
+	ScreenDarken(SCREENDARKEN);
+
+	//---- 머리말 ----
+	{
+		SetFontColor(COLOR_WHITE);
+		sprintf(str, "지도  -  %d판", robin.stage + 1);
+		CenterTextStrSolid(str, DX / 2, DY - 24 * _2X, 0.8f);
+
+		SetFontColor(COLOR_GREY);
+		sprintf(str, "%d / %d 자리를 지났다", robin.waveIdx, STAGE_MONSTER_CNT);
+		CenterTextStrSolid(str, DX / 2, DY - 44 * _2X, 0.52f);
+	}
+
+	//---- 자리 열다섯 ----
+	{
+		const int rh = 21 * _2X;
+		const int top = DY - 62 * _2X;
+		const int left = 14 * _2X;
+		const int w = DX - 28 * _2X;
+
+		for (int i = 0; i < STAGE_MONSTER_CNT; i++) {
+			const int y = top - i * rh;
+			const int kind = GetWaveKind(i);
+			const int type = wave[GetWaveRow(i) * MAXWAVEENEMY * WAVEDATASIZE
+				+ 0 * WAVEDATASIZE + 0];
+			const bool done = (i < robin.waveIdx);
+			const bool now = (i == robin.waveIdx);
+			int kindColor = COLOR_GREY;
+			const char* kindName = StageMapKindName(kind, &kindColor);
+
+			//지금 자리만 밝다. 지난 것은 흐리고 앞은 그 중간이다 -
+			//어디까지 왔는지가 한눈에 보여야 지도다.
+			SetAlpha(now ? 30 : (done ? 8 : 16));
+			MemRect(left, y, w, rh - 3 * _2X,
+				now ? 0x2A3A5A : (done ? 0x101018 : 0x181826));
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(left, y, w, rh - 3 * _2X,
+				now ? 0xFFD700 : (done ? 0x222230 : 0x394058));
+
+			//번호
+			SetFontColor(now ? COLOR_YELLOW : (done ? COLOR_GREY : COLOR_WHITE));
+			sprintf(str, "%2d", i + 1);
+			LineTextStrSolid(str, left + 6 * _2X, y - 4 * _2X, 20 * _2X, -1, -1, 0.5f);
+
+			//이름
+			SetFontColor(done ? COLOR_GREY : COLOR_WHITE);
+			LineTextStrSolid(textId[TEXT_MONSTERNAME_START + type],
+				left + 30 * _2X, y - 4 * _2X, w - 120 * _2X, -1, -1, 0.5f);
+
+			//자리와 체력 배수. 잡몹은 적지 않는다 - 열두 줄에 같은 말이
+			//붙어 있으면 보스가 눈에 안 띈다.
+			if (kind > MONSTERTYPE_JACO) {
+				SetFontColor(done ? COLOR_GREY : kindColor);
+				sprintf(str, "%s  x%d", kindName, GetWaveHpMul(i));
+				LineTextStrSolid(str, left + w - 78 * _2X, y - 4 * _2X,
+					74 * _2X, -1, -1, 0.5f);
+			}
+			else if (done) {
+				SetFontColor(COLOR_GREY);
+				LineTextStrSolid("눕혔다", left + w - 78 * _2X, y - 4 * _2X,
+					74 * _2X, -1, -1, 0.44f);
+			}
+		}
+	}
+
+	//---- 닫기 ----
+	{
+		const int w = 30 * _2X;
+		const int h = 16 * _2X;
+		const int bx = DX - w - 6 * _2X;
+		const int by = DY - 6 * _2X;
+
+		MemRect(bx, by, w, h, 0x442233);
+		MemRectFrame(bx, by, w, h, 0xCC6688);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("닫기", bx + w / 2, by - h + 4 * _2X, 0.6f);
+		SetRectPoint(bx, by, w, h, TOUCH_FUNC_STAGEMAP_CLOSE);
+	}
+
+	gTouchRectLocked = true;
+}
+
+//지도와 도감. 둘 다 판을 떠나지 않고 화면 위에 덮개로 연다.
+void GridTestShopSide(bool book)
+{
+	if (book)
+		CodexOverlaySetOpen(true);
+	else
+		StageMapSetOpen(true);
 }
 
 //---- 판을 연다 ----
@@ -3761,6 +3884,50 @@ static const char* kLoadoutTabName[LOADOUT_TAB_CNT] = {
 	"전체", "무기", "방어구", "장신구"
 };
 
+//---- 목록 넘기기 ----
+//
+//전에는 화면 밑에 닿으면 그리기를 끊었다. 가방에 장비가 스무 점만 넘어도
+//뒤쪽은 고를 수가 없었다. 줄 단위로 밀어 본다.
+static int gLoadoutRow = 0;
+
+//지금 화면에 자리를 잡은 칸. 그리면서 채우고 누른 쪽이 번호로 되찾는다.
+//밀어 본 만큼 차례가 어긋나므로 목록 번호를 그대로 쓸 수 없다.
+static short gLoadoutSlot[LOADOUT_PICKMAX];
+static int gLoadoutSlotCnt = 0;
+
+//한 줄에 몇 칸, 몇 줄이 보이는가. 그리는 쪽과 넘기는 쪽이 같은 값을
+//봐야 끝에서 멈춘다.
+static int gLoadoutCols = 1;
+static int gLoadoutRows = 1;
+static int gLoadoutRowTotal = 1;
+
+void LoadoutScrollRow(int dir)
+{
+	gLoadoutRow += dir;
+
+	if (gLoadoutRow > gLoadoutRowTotal - gLoadoutRows)
+		gLoadoutRow = gLoadoutRowTotal - gLoadoutRows;
+
+	if (gLoadoutRow < 0)
+		gLoadoutRow = 0;
+}
+
+//고른 것이 목록 앞으로 올라오므로, 탭을 바꾸거나 화면을 열 때는
+//처음으로 돌린다.
+void LoadoutScrollReset(void)
+{
+	gLoadoutRow = 0;
+}
+
+//누른 칸이 가방 몇 번인가. 없으면 -1 이다.
+int LoadoutSlotInven(int slot)
+{
+	if (slot < 0 || slot >= gLoadoutSlotCnt)
+		return -1;
+
+	return gLoadoutSlot[slot];
+}
+
 static bool LoadoutTabHas(int tab, int type)
 {
 	switch (tab) {
@@ -3777,8 +3944,10 @@ static bool LoadoutTabHas(int tab, int type)
 
 void LoadoutSetTab(int tab)
 {
-	if (tab >= 0 && tab < LOADOUT_TAB_CNT)
+	if (tab >= 0 && tab < LOADOUT_TAB_CNT) {
 		gLoadoutTab = tab;
+		gLoadoutRow = 0;
+	}
 }
 
 //지금 탭에 보이는 가방 칸을 좋은 것부터 담는다. 담은 수를 돌려준다.
@@ -3827,7 +3996,15 @@ int LoadoutList(int* out, int max)
 }
 
 bool LoadoutOpen(void)		{ return gLoadoutOpen; }
-void LoadoutSetOpen(bool on){ gLoadoutOpen = on; }
+void LoadoutSetOpen(bool on)
+{
+	gLoadoutOpen = on;
+
+	//열 때마다 목록 맨 위부터 본다. 지난번에 밀어 둔 자리에서 열리면
+	//무엇을 보고 있는지 알 수가 없다.
+	if (on)
+		gLoadoutRow = 0;
+}
 
 //======================================================================
 // 출정 점수
@@ -3925,10 +4102,243 @@ static int LoadoutCellUsed(void)
 	return sum;
 }
 
+//======================================================================
+// 격자 미리보기
+//
+// 점수만 맞춰 고르고 판에 들어가서야 "안 들어가는데?" 를 알게 되면, 고르는
+// 화면이 있어도 고른 것이 아니다. 여기서 같은 규칙으로 미리 넣어 본다.
+//
+// 판에 들어갈 때 실제로 넣는 것은 GridPlaceGear 다. 규칙이 갈라지면
+// 미리보기가 거짓말을 하므로, 차례(무기 먼저 · 큰 것 먼저)와 눕혀 보기를
+// 그쪽과 똑같이 맞춰 두었다.
+//======================================================================
+
+//목록 대신 격자를 보고 있는가.
+static bool gLoadoutGridView = false;
+
+void LoadoutToggleView(void)	{ gLoadoutGridView = !gLoadoutGridView; }
+
+//occ 는 0 이 빈 칸, 그 밖에는 (장비 번호 + 1) 이다. 칸마다 누가 차지했는지
+//알아야 장비별로 색을 나눠 그릴 수 있다.
+static bool LoadoutPreviewCanPlace(const GridPart* p, int col, int row,
+	const unsigned char occ[GRIDTEST_H][GRIDTEST_W])
+{
+	if (p == nullptr || p->w <= 0 || p->h <= 0)
+		return false;
+
+	if (col < 0 || row < 0 || col + p->w > gGridW || row + p->h > gGridH)
+		return false;
+
+	for (int cy = 0; cy < p->h; cy++)
+		for (int cx = 0; cx < p->w; cx++) {
+			if (GridPartCell(p, cx, cy) == false)
+				continue;
+
+			if (GridMaskAt(col + cx, row + cy) == false)
+				return false;
+
+			if (occ[row + cy][col + cx] != 0)
+				return false;
+		}
+
+	return true;
+}
+
+//고른 것을 성에 넣어 본다. 들어간 것은 parts/at 에 남고, 못 들어간 수를
+//돌려준다.
+static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
+	GridPart* parts, int* atCol, int* atRow, bool* fit)
+{
+	int order[LOADOUT_MAX];
+	int n = 0;
+	int missed = 0;
+
+	GridLoadCells(robin.castle);
+	memset(occ, 0, sizeof(unsigned char) * GRIDTEST_H * GRIDTEST_W);
+
+	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; i++) {
+		const ITEM* it = &robin.inven[gLoadout[i]];
+
+		if (it->type == EMPTY)
+			continue;
+
+		GridGearPart(it, &parts[n]);
+		fit[n] = false;
+		order[n] = n;
+		n++;
+	}
+
+	//넣는 차례. GridPlaceGear 와 같아야 한다 - 무기가 먼저, 그다음 큰 것
+	//부터다. 작은 것을 먼저 흩어 놓으면 큰 것이 들어갈 자리가 없다.
+	for (int i = 1; i < n; i++) {
+		const int key = order[i];
+		const bool keyWeapon = parts[key].type == ITEM_SWORD
+			|| parts[key].type == ITEM_GUN || parts[key].type == ITEM_BOOMERANG;
+		const int keyArea = GridPartCellCount(&parts[key]);
+		int j = i - 1;
+
+		while (j >= 0) {
+			const int o = order[j];
+			const bool oWeapon = parts[o].type == ITEM_SWORD
+				|| parts[o].type == ITEM_GUN || parts[o].type == ITEM_BOOMERANG;
+			const bool before = (keyWeapon && !oWeapon)
+				|| (keyWeapon == oWeapon && GridPartCellCount(&parts[o]) < keyArea);
+
+			if (before == false)
+				break;
+
+			order[j + 1] = o;
+			j--;
+		}
+
+		order[j + 1] = key;
+	}
+
+	for (int k = 0; k < n; k++) {
+		const int e = order[k];
+		int col = 0, row = 0;
+		bool found = false;
+
+		for (int r = 0; r < gGridH && found == false; r++)
+			for (int c = 0; c < gGridW && found == false; c++)
+				if (LoadoutPreviewCanPlace(&parts[e], c, r, occ)) {
+					col = c;
+					row = r;
+					found = true;
+				}
+
+		//세워서 안 들어가면 눕혀 본다. 성보다 긴 검이 여기서 들어간다.
+		if (found == false) {
+			const GridPart turned = GridPartRotated(parts[e]);
+
+			for (int r = 0; r < gGridH && found == false; r++)
+				for (int c = 0; c < gGridW && found == false; c++)
+					if (LoadoutPreviewCanPlace(&turned, c, r, occ)) {
+						col = c;
+						row = r;
+						found = true;
+					}
+
+			if (found)
+				parts[e] = turned;
+		}
+
+		if (found == false) {
+			missed++;
+			continue;
+		}
+
+		for (int cy = 0; cy < parts[e].h; cy++)
+			for (int cx = 0; cx < parts[e].w; cx++)
+				if (GridPartCell(&parts[e], cx, cy))
+					occ[row + cy][col + cx] = (unsigned char)(e + 1);
+
+		atCol[e] = col;
+		atRow[e] = row;
+		fit[e] = true;
+	}
+
+	return missed;
+}
+
+//출정 버튼. 목록 보기와 격자 보기가 같은 자리에 같은 것을 그린다.
+static void LoadoutGoButtonDraw(void)
+{
+	const int bw = 132 * _2X;
+	const int bh = bw * 62 / 192;
+	const int bx = DX / 2 - bw / 2;
+	const int by = BOTTOMMENUHEIGHT + 44 * _2X;
+
+	DrawTouchLargeButton(bx, by, 192, 62, "", TOUCH_FUNC_LOADOUT_GO,
+		FRAME_GREEN, (float)bw / 192.0f);
+
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid("출 정", DX / 2,
+		(int)((float)by - ((float)bh - FONT_HEIGHT * 0.8f) / 2), 0.8f);
+}
+
+//격자를 그린다. 맨 아래 줄이 화면에서도 아래다(row 0 이 바닥).
+static void LoadoutGridDraw(int top, int bottom)
+{
+	char str[96];
+	unsigned char occ[GRIDTEST_H][GRIDTEST_W];
+	GridPart parts[LOADOUT_MAX];
+	int atCol[LOADOUT_MAX];
+	int atRow[LOADOUT_MAX];
+	bool fit[LOADOUT_MAX];
+	const int missed = LoadoutPreviewPack(occ, parts, atCol, atRow, fit);
+	const int areaH = top - bottom;
+	int cell;
+	int left, base;
+	int free = 0;
+
+	if (gGridW <= 0 || gGridH <= 0)
+		return;
+
+	cell = Min((DX - 20 * _2X) / gGridW, areaH / gGridH);
+
+	if (cell < 8 * _2X)
+		cell = 8 * _2X;
+
+	left = (DX - cell * gGridW) / 2;
+	base = bottom + cell * gGridH;	//맨 윗 줄의 위쪽 변
+
+	//---- 빈 칸과 성의 생김새 ----
+	for (int row = 0; row < gGridH; row++)
+		for (int col = 0; col < gGridW; col++) {
+			const int cx = left + col * cell;
+			const int cy = base - (gGridH - 1 - row) * cell;
+
+			if (GridMaskAt(col, row) == false)
+				continue;
+
+			if (occ[row][col] == 0)
+				free++;
+
+			SetAlpha(occ[row][col] ? 22 : 12);
+			MemRect(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
+				occ[row][col] ? 0x2A2A44 : 0x14141F);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
+				occ[row][col] ? 0x8899BB : 0x333344);
+		}
+
+	//---- 들어간 장비 ----
+	//
+	//판에서 보는 것과 같은 그림으로 그린다. 아이콘으로 바꿔 그리면
+	//"이게 저렇게 들어가는구나" 가 안 보인다.
+	for (int i = 0; i < LOADOUT_MAX; i++) {
+		if (fit[i] == false)
+			continue;
+
+		const int w = parts[i].w * cell;
+		const int h = parts[i].h * cell;
+		const int cx = left + atCol[i] * cell;
+		const int cy = base - (gGridH - 1 - atRow[i]) * cell + (parts[i].h - 1) * cell;
+
+		GridDrawShapedCard(&parts[i], cx, cy, w, h, ALPHA_MAX, false);
+	}
+
+	//---- 결과 한 줄 ----
+	//
+	//안 들어간 것이 있으면 그것부터 말한다. 출정을 눌렀을 때가 아니라
+	//여기서 알아야 두고 갈 것을 바꿀 수 있다.
+	if (missed > 0) {
+		SetFontColor(COLOR_RED);
+		sprintf(str, "장비 %d점이 성에 안 들어간다", missed);
+	}
+	else {
+		SetFontColor(COLOR_GREY);
+		sprintf(str, "빈 칸 %d", free);
+	}
+
+	CenterTextStrSolid(str, DX / 2, top - 2 * _2X, 0.55f);
+}
+
 void LoadoutDraw(void)
 {
 	char str[96];
-	int list[LOADOUT_PICKMAX];
+	static int list[TOTALINVENTORY];
 	int cnt = 0;
 
 	if (!gLoadoutOpen)
@@ -3940,7 +4350,7 @@ void LoadoutDraw(void)
 	SetAlpha(ALPHA_MAX);
 	SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_LOADOUT_CLOSE);
 
-	cnt = LoadoutList(list, LOADOUT_PICKMAX);
+	cnt = LoadoutList(list, TOTALINVENTORY);
 
 	//---- 머리말 ----
 	const int top = DY - GNBHEIGHT - 20 * _2X;
@@ -3958,6 +4368,32 @@ void LoadoutDraw(void)
 	SetFontColor(COLOR_GREY);
 	sprintf(str, "성 %d칸 중  %d칸을 들고 간다", cell, LoadoutCellUsed());
 	CenterTextStrSolid(str, DX / 2, top - 38 * _2X, 0.52f);
+
+	//---- 보기 바꾸기 ----
+	//
+	//둘을 한 화면에 넣으면 둘 다 못 읽는다. 갈아 본다.
+	{
+		const int bw = 52 * _2X;
+		const int bh = 16 * _2X;
+		const int bx = DX - bw - 8 * _2X;
+		const int by = top + 2 * _2X;
+
+		SetAlpha(gLoadoutGridView ? 30 : 14);
+		MemRect(bx, by, bw, bh, gLoadoutGridView ? 0x2A3A5A : 0x14141F);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(bx, by, bw, bh, gLoadoutGridView ? 0x99BBEE : 0x556688);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(gLoadoutGridView ? "목록" : "격자", bx + bw / 2,
+			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
+		SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_LOADOUT_VIEW);
+	}
+
+	//---- 격자를 보고 있으면 목록은 접는다 ----
+	if (gLoadoutGridView) {
+		LoadoutGridDraw(top - 52 * _2X, BOTTOMMENUHEIGHT + 84 * _2X);
+		LoadoutGoButtonDraw();
+		return;
+	}
 
 	//---- 분류 탭 ----
 	for (int t = 0; t < LOADOUT_TAB_CNT; t++) {
@@ -3987,16 +4423,33 @@ void LoadoutDraw(void)
 	const int cols = Max(1, (DX - 16 * _2X) / (cw + 4 * _2X));
 	const int left = (DX - (cw + 4 * _2X) * cols) / 2;
 	const int listTop = top - 70 * _2X;
+	const int listBot = BOTTOMMENUHEIGHT + 84 * _2X;
+	const int rows = Max(1, (listTop - listBot) / (ch + 4 * _2X));
 
-	for (int i = 0; i < cnt; i++) {
-		const int col = i % cols;
-		const int row = i / cols;
+	//넘기는 쪽이 볼 값. 목록이 줄면 밀어 둔 자리가 빈 화면이 되므로
+	//여기서 되돌린다.
+	gLoadoutCols = cols;
+	gLoadoutRows = rows;
+	gLoadoutRowTotal = Max(1, (cnt + cols - 1) / cols);
+
+	if (gLoadoutRow > gLoadoutRowTotal - rows)
+		gLoadoutRow = gLoadoutRowTotal - rows;
+
+	if (gLoadoutRow < 0)
+		gLoadoutRow = 0;
+
+	gLoadoutSlotCnt = 0;
+
+	for (int i = gLoadoutRow * cols; i < cnt; i++) {
+		const int at = i - gLoadoutRow * cols;
+		const int col = at % cols;
+		const int row = at / cols;
 		const int x = left + col * (cw + 4 * _2X);
 		const int y = listTop - row * (ch + 4 * _2X);
 		const ITEM* it = &robin.inven[list[i]];
 		const bool on = LoadoutFind(list[i]) >= 0;
 
-		if (y - ch < BOTTOMMENUHEIGHT + 60 * _2X)
+		if (row >= rows || gLoadoutSlotCnt >= LOADOUT_PICKMAX)
 			break;
 
 		SetAlpha(on ? 30 : 16);
@@ -4012,23 +4465,49 @@ void LoadoutDraw(void)
 		sprintf(str, "%d점", LoadoutCost(it));
 		CenterTextStrSolid(str, x + cw / 2, y - ch + 12 * _2X, 0.44f);
 
-		SetRectPoint(x, y, cw, ch, TOUCH_FUNC_LOADOUT_ITEM + i);
+		gLoadoutSlot[gLoadoutSlotCnt] = (short)list[i];
+		SetRectPoint(x, y, cw, ch, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
+		gLoadoutSlotCnt++;
+	}
+
+	//---- 넘기기 ----
+	//
+	//목록이 한 쪽에 다 들어가면 그리지 않는다. 누를 데가 없는 버튼은
+	//고장난 것처럼 보인다.
+	if (gLoadoutRowTotal > rows) {
+		const int bw = 26 * _2X;
+		const int bh = 18 * _2X;
+		const int by = listBot - 2 * _2X;
+		const int page = gLoadoutRow / Max(1, rows) + 1;
+		const int pageAll = (gLoadoutRowTotal + rows - 1) / rows;
+		const bool upOn = (gLoadoutRow > 0);
+		const bool downOn = (gLoadoutRow < gLoadoutRowTotal - rows);
+
+		//위로
+		MemRect(DX / 2 - 52 * _2X, by, bw, bh, upOn ? 0x243044 : 0x1A1A22);
+		MemRectFrame(DX / 2 - 52 * _2X, by, bw, bh, upOn ? 0x8899BB : 0x333344);
+		SetFontColor(upOn ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid("▲", DX / 2 - 52 * _2X + bw / 2, by - bh + 4 * _2X, 0.5f);
+
+		//아래로
+		MemRect(DX / 2 + 26 * _2X, by, bw, bh, downOn ? 0x243044 : 0x1A1A22);
+		MemRectFrame(DX / 2 + 26 * _2X, by, bw, bh, downOn ? 0x8899BB : 0x333344);
+		SetFontColor(downOn ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid("▼", DX / 2 + 26 * _2X + bw / 2, by - bh + 4 * _2X, 0.5f);
+
+		SetFontColor(COLOR_GREY);
+		sprintf(str, "%d / %d  (%d점)", page, pageAll, cnt);
+		CenterTextStrSolid(str, DX / 2, by - bh + 5 * _2X, 0.46f);
+
+		if (upOn)
+			SetRectPoint(DX / 2 - 52 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_UP);
+
+		if (downOn)
+			SetRectPoint(DX / 2 + 26 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_DOWN);
 	}
 
 	//---- 출정 ----
-	{
-		const int bw = 132 * _2X;
-		const int bh = bw * 62 / 192;
-		const int bx = DX / 2 - bw / 2;
-		const int by = BOTTOMMENUHEIGHT + 44 * _2X;
-
-		DrawTouchLargeButton(bx, by, 192, 62, "", TOUCH_FUNC_LOADOUT_GO,
-			FRAME_GREEN, (float)bw / 192.0f);
-
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("출 정", DX / 2,
-			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.8f) / 2), 0.8f);
-	}
+	LoadoutGoButtonDraw();
 }
 
 static void GridPlaceGear(void)
@@ -4315,9 +4794,10 @@ void GridTestDraw(void)
 	int i, x, y, w, h;
 
 	if (gGridOpen == false) {
-		//판을 떠나면 도감도 접는다. 켜 둔 채로 두면 다음 판을 열자마자
-		//도감이 화면을 덮는다.
+		//판을 떠나면 덮개도 접는다. 켜 둔 채로 두면 다음 판을 열자마자
+		//도감이나 지도가 화면을 덮는다.
 		CodexOverlaySetOpen(false);
+		StageMapSetOpen(false);
 		return;
 	}
 
@@ -4801,7 +5281,8 @@ void GridTestDraw(void)
 	CenterTextStrSolid("접기", x + w / 2, y - h + 4 * _2X, 0.6f);
 	SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_TOGGLE);
 
-	//도감 덮개는 무엇보다 위다. 열려 있을 때만 그린다.
+	//덮개는 무엇보다 위다. 열려 있을 때만 그린다.
+	StageMapOverlayDraw();
 	CodexOverlayDraw();
 }
 
@@ -5323,12 +5804,26 @@ static void LobbyCastleDraw(void)
 		}
 	}
 
-	DrawImage((int)w, (int)h, 0, 0, left, top,
-		false, false, false, false, false, s, sprite[img], img);
-
-	// Only the visible front-side wheels are drawn, above the castle sprite.
-	CastleWheels::DrawCastleWheels(castleIdx, (float)left, imageBottom,
-		w, s, wheelGround, true);
+	if (CastleWheels::IsCompositedMotion(castleIdx)) {
+		// castle_move4 is a 4x1 sheet of complete 1024x1024 snail-castle
+		// frames.  The source body was reduced to 80% and placed 72px below
+		// the cell top, so undo that transform to preserve the lobby camera.
+		const int motionImg = CASTLE_MOVE0_IMG + castleIdx;
+		if (!sprite[motionImg]) LoadImg(motionImg);
+		const int pose = (frame / 5) % 4;
+		const float motionScale = s / .8f;
+		DrawImage(1024, 1024, pose * 1024, 0, left,
+			top + (int)(72 * motionScale), false, false, false, false, false,
+			motionScale, sprite[motionImg], motionImg);
+	}
+	else {
+		// Locomotion parts go behind the body.  Their upper attachment area is
+		// intentionally covered by the chassis so no detached seam is visible.
+		CastleWheels::DrawCastleWheels(castleIdx, (float)left, imageBottom,
+			w, s, wheelGround, true);
+		DrawImage((int)w, (int)h, 0, 0, left, top,
+			false, false, false, false, false, s, sprite[img], img);
+	}
 
 	gLobbyCastleLeft = (float)left;
 	gLobbyCastleTop = (float)top;

@@ -22,6 +22,9 @@ enum {
 //들어오는 것만 자리를 잡으면 된다.
 enum { CODEX_SLOT_MAX = 96 };
 
+//도감 거르기. 전체 / 무기 / 방어구 / 장신구
+enum { CODEX_TAB_CNT = 4 };
+
 typedef enum _touchFuncDef {
 
 	BOSSRAID_ROYALFAMILY = 0,	//로얄패밀리
@@ -486,6 +489,10 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_LOADOUT_TAB,
 	TOUCH_FUNC_LOADOUT_TAB_END = TOUCH_FUNC_LOADOUT_TAB + LOADOUT_TAB_CNT,
 
+	//목록 넘기기. 위의 _END 가 값을 박아 두므로 그 뒤에 붙인다.
+	TOUCH_FUNC_LOADOUT_UP,
+	TOUCH_FUNC_LOADOUT_DOWN,
+
 	TOUCH_FUNC_EQUIPTAB_SELL,	//일반 등급 일괄 판매
 	TOUCH_FUNC_EQUIPTAB_MERGE,	//같은 장비 셋을 한 등급 위로
 	TOUCH_FUNC_EQUIPTAB,
@@ -497,6 +504,17 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_CODEX_CELL,
 	TOUCH_FUNC_CODEX_CELL_END = TOUCH_FUNC_CODEX_CELL + CODEX_SLOT_MAX,
 	TOUCH_FUNC_CODEX_CLOSE,
+
+	//거르기. 분류 넷과 '안 얻은 것만'.
+	TOUCH_FUNC_CODEX_TAB,
+	TOUCH_FUNC_CODEX_TAB_END = TOUCH_FUNC_CODEX_TAB + CODEX_TAB_CNT,
+	TOUCH_FUNC_CODEX_MISS,
+
+	//지도 닫기
+	TOUCH_FUNC_STAGEMAP_CLOSE,
+
+	//출정 준비의 보기 바꾸기(목록 <-> 격자)
+	TOUCH_FUNC_LOADOUT_VIEW,
 
 	TOTALTOUCHCNT,
 

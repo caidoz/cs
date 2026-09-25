@@ -39,6 +39,9 @@ void TitleTermsCommand(int command);
 void OpeningDraw(void);
 void LobbyDraw(void);
 void LoadoutDraw(void);				//출정 준비 화면
+void StageMapOverlayDraw(void);		//이 판의 자리 열다섯
+void StageMapSetOpen(bool on);
+bool StageMapOpen(void);
 bool LoadoutOpen(void);
 void LoadoutSetOpen(bool on);
 int LoadoutPoint(void);				//이번 판에 쓸 수 있는 점수
@@ -48,6 +51,10 @@ int LoadoutFind(int invenIdx);
 bool LoadoutToggle(int invenIdx);
 void LoadoutSetTab(int tab);		//전체 / 무기 / 방어구 / 장신구
 int LoadoutList(int* out, int max);	//지금 탭에 보이는 가방 칸
+void LoadoutScrollRow(int dir);		//목록을 한 줄씩 밀어 본다
+void LoadoutScrollReset(void);
+void LoadoutToggleView(void);		//목록 <-> 격자
+int LoadoutSlotInven(int slot);		//화면에 보이는 칸 -> 가방 번호
 void LobbySkyUpdate(float delta);
 bool LobbyCamTouchBegan(int id, float x, float y);
 bool LobbyCamTouchMoved(int id, float x, float y);

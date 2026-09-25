@@ -2994,17 +2994,34 @@ void touchFunc(int func)
 		return;
 	}
 
+	if (func >= TOUCH_FUNC_CODEX_TAB
+		&& func < TOUCH_FUNC_CODEX_TAB + CODEX_TAB_CNT) {
+		CodexSetTab(func - TOUCH_FUNC_CODEX_TAB);
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_CODEX_MISS) {
+		CodexToggleMiss();
+		systemKey = 0;
+		return;
+	}
+
+	if (func == TOUCH_FUNC_STAGEMAP_CLOSE) {
+		StageMapSetOpen(false);
+		systemKey = 0;
+		return;
+	}
+
 	if (func >= TOUCH_FUNC_LOADOUT_ITEM
 		&& func < TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX) {
 		//화면에 늘어놓은 차례대로 가방 칸을 찾는다. 그리는 쪽과 같은
 		//차례를 써야 누른 것과 골라지는 것이 맞는다.
-		//그리는 쪽과 같은 목록을 쓴다. 차례가 다르면 누른 것과 골라지는
-		//것이 어긋난다.
-		const int at = func - TOUCH_FUNC_LOADOUT_ITEM;
-		int list[LOADOUT_PICKMAX];
-		const int cnt = LoadoutList(list, LOADOUT_PICKMAX);
+		//그리는 쪽이 남긴 자리표를 그대로 쓴다. 목록을 다시 세면 밀어 본
+		//만큼 차례가 어긋나 누른 것과 골라지는 것이 달라진다.
+		const int idx = LoadoutSlotInven(func - TOUCH_FUNC_LOADOUT_ITEM);
 
-		if (at < cnt && LoadoutToggle(list[at]) == false)
+		if (idx >= 0 && LoadoutToggle(idx) == false)
 			PlayMusic(M_ERROR);
 
 		systemKey = 0;
@@ -3709,6 +3726,21 @@ void touchFunc(int func)
 		case TOUCH_FUNC_GOTOBOSSRAID:
 			systemKey = AVK_GOTOBOSSRAID;
 			break;
+		case TOUCH_FUNC_LOADOUT_VIEW:
+			LoadoutToggleView();
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_LOADOUT_UP:
+			LoadoutScrollRow(-1);
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_LOADOUT_DOWN:
+			LoadoutScrollRow(+1);
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_LOADOUT_TAB:
 		case TOUCH_FUNC_LOADOUT_TAB + 1:
 		case TOUCH_FUNC_LOADOUT_TAB + 2:

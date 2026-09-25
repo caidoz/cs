@@ -6608,6 +6608,60 @@ struct CodexGroup {
 	int count;
 };
 
+//---- 거르개 ----
+//
+//장비가 사백 점을 넘는다. 부위별로 묶어 놓아도 통째로는 못 읽는다.
+//분류로 좁히고, '안 얻은 것만' 으로 남은 것만 본다 - 도감을 켜는 이유가
+//대개 "뭐가 없더라" 이기 때문이다.
+enum {
+	CODEXTAB_ALL = 0,
+	CODEXTAB_WEAPON,
+	CODEXTAB_ARMOR,
+	CODEXTAB_ACC,
+};
+
+static const char* kCodexTabName[CODEX_TAB_CNT] = {
+	"전체", "무기", "방어구", "장신구"
+};
+
+static int gCodexTab = 0;
+static bool gCodexMissOnly = false;
+
+static bool CodexTabHas(int type)
+{
+	switch (gCodexTab) {
+	case CODEXTAB_WEAPON:
+		return type == ITEM_SWORD || type == ITEM_GUN || type == ITEM_BOOMERANG;
+	case CODEXTAB_ARMOR:
+		return type >= ITEM_HELM && type <= ITEM_BOOTS;
+	case CODEXTAB_ACC:
+		return type == ITEM_NECK || type == ITEM_RING;
+	default:
+		return true;
+	}
+}
+
+//이 칸을 늘어놓는가. '안 얻은 것만' 일 때는 이미 얻은 것을 접는다.
+static bool CodexCellShown(int type, int i)
+{
+	if (gCodexMissOnly == false)
+		return true;
+
+	return robin.equipGet[itemStartCnt[type] + i] == false;
+}
+
+//거르고 나서 이 묶음에 남는 칸 수.
+static int CodexGroupShown(int type, int count)
+{
+	int n = 0;
+
+	for (int i = 0; i < count; i++)
+		if (CodexCellShown(type, i))
+			n++;
+
+	return n;
+}
+
 static int CodexGroups(CodexGroup* out, int max)
 {
 	static const int kType[] = {
@@ -6637,7 +6691,7 @@ static int CodexGroups(CodexGroup* out, int max)
 		const int next = itemStartCnt[kType[i] + 1];
 		const int total = next - start;
 
-		if (total <= 0)
+		if (total <= 0 || CodexTabHas(kType[i]) == false)
 			continue;
 
 		out[n].name = kName[i];
@@ -6686,8 +6740,15 @@ static int CodexContentHeight(void)
 	const int cols = Max(1, (DX - 24 * _2X) / cell);
 	int h = 0;
 
-	for (int g = 0; g < groups; g++)
-		h += 14 * _2X + ((group[g].count + cols - 1) / cols) * cell + 8 * _2X;
+	for (int g = 0; g < groups; g++) {
+		const int shown = CodexGroupShown(group[g].type, group[g].count);
+
+		//다 얻은 묶음은 '안 얻은 것만' 에서 이름줄까지 통째로 빠진다.
+		if (shown <= 0)
+			continue;
+
+		h += 14 * _2X + ((shown + cols - 1) / cols) * cell + 8 * _2X;
+	}
 
 	return h;
 }
@@ -6696,7 +6757,7 @@ static int CodexContentHeight(void)
 //한계를 잡는다. 거꾸로 맞춰 돌려준다 - 그래야 목록 끝에서 멈춘다.
 int CodexScrollDy(void)
 {
-	const int view = (DY - 150 * _2X) - (BOTTOMMENUHEIGHT + 20 * _2X);
+	const int view = (DY - 168 * _2X) - (BOTTOMMENUHEIGHT + 20 * _2X);
 	int over = CodexContentHeight() - view;
 
 	if (over < 0)
@@ -6727,6 +6788,23 @@ void CodexClose(void)
 	}
 
 	gCodexOverlay = false;
+}
+
+void CodexSetTab(int tab)
+{
+	if (tab < 0 || tab >= CODEX_TAB_CNT)
+		return;
+
+	gCodexTab = tab;
+
+	//늘어놓는 것이 달라지면 밀어 둔 자리가 엉뚱한 곳이 된다.
+	scY[MENU_COLLECTIONS] = 0;
+}
+
+void CodexToggleMiss(void)
+{
+	gCodexMissOnly = !gCodexMissOnly;
+	scY[MENU_COLLECTIONS] = 0;
 }
 
 bool CodexOverlayOpen(void)			{ return gCodexOverlay; }
@@ -6811,7 +6889,7 @@ static void CodexDraw(int x, int y, float zoom)
 	const int cell = 34 * _2X;
 	const int cols = Max(1, (DX - 24 * _2X) / cell);
 	const int left = x + (DX - cols * cell) / 2;
-	int top = y - 150 * _2X + scY[MENU_COLLECTIONS];
+	int top = y - 168 * _2X + scY[MENU_COLLECTIONS];
 	int have = 0;
 	int all = 0;
 
@@ -6827,20 +6905,66 @@ static void CodexDraw(int x, int y, float zoom)
 
 	SetFontColor(COLOR_WHITE);
 	sprintf(str, "도감  %d / %d", have, all);
-	CenterTextStrSolid(str, x + DX / 2, y - 130 * _2X, 0.7f);
+	CenterTextStrSolid(str, x + DX / 2, y - 126 * _2X, 0.7f);
 
-	SetSectionClip(0, y - 150 * _2X, DX,
-		(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) - 30 * _2X, false);
+	//---- 거르개 ----
+	//
+	//목록 위에 고정한다. 같이 밀리면 한 쪽만 내려가도 안 보인다.
+	{
+		const int fh = 16 * _2X;
+		const int fy = y - 142 * _2X;
+		const int mw = 52 * _2X;
+		const int tw = (DX - 16 * _2X - mw) / CODEX_TAB_CNT;
+
+		for (int t = 0; t < CODEX_TAB_CNT; t++) {
+			const int tx = x + 8 * _2X + t * tw;
+			const bool on = (gCodexTab == t);
+
+			SetAlpha(on ? 30 : 14);
+			MemRect(tx, fy, tw - 2 * _2X, fh, on ? 0x2A3A5A : 0x14141F);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(tx, fy, tw - 2 * _2X, fh, on ? 0x99BBEE : 0x333344);
+			SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
+			CenterTextStrSolid(kCodexTabName[t], tx + tw / 2 - _2X,
+				(int)((float)fy - ((float)fh - FONT_HEIGHT * 0.46f) / 2), 0.46f);
+
+			if (on == false)
+				SetRectPoint(tx, fy, tw - 2 * _2X, fh, TOUCH_FUNC_CODEX_TAB + t);
+		}
+
+		//안 얻은 것만
+		{
+			const int mx = x + DX - 8 * _2X - mw;
+
+			SetAlpha(gCodexMissOnly ? 30 : 14);
+			MemRect(mx, fy, mw, fh, gCodexMissOnly ? 0x5A2A2A : 0x14141F);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(mx, fy, mw, fh, gCodexMissOnly ? 0xEE9999 : 0x333344);
+			SetFontColor(gCodexMissOnly ? COLOR_WHITE : COLOR_GREY);
+			CenterTextStrSolid("미획득", mx + mw / 2,
+				(int)((float)fy - ((float)fh - FONT_HEIGHT * 0.46f) / 2), 0.46f);
+			SetRectPoint(mx, fy, mw, fh, TOUCH_FUNC_CODEX_MISS);
+		}
+	}
+
+	SetSectionClip(0, y - 168 * _2X, DX,
+		(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) - 48 * _2X, false);
 
 	gCodexSlotCnt = 0;
 
 	for (int g = 0; g < groups; g++) {
 		const int start = itemStartCnt[group[g].type];
+		const int total = CodexGroupShown(group[g].type, group[g].count);
 		int shown = 0;
+
+		//다 얻은 묶음은 '안 얻은 것만' 에서 통째로 접는다. 빈 이름줄만
+		//늘어놓으면 남은 것이 오히려 안 보인다.
+		if (total <= 0)
+			continue;
 
 		//부위 이름 한 줄
 		SetFontColor(COLOR_YELLOW);
-		sprintf(str, "%s  %d", group[g].name, group[g].count);
+		sprintf(str, "%s  %d", group[g].name, total);
 		LineTextStrSolid(str, left, top, DX, -1, -1, 0.5f);
 		top -= 14 * _2X;
 
@@ -6850,6 +6974,9 @@ static void CodexDraw(int x, int y, float zoom)
 			const int cx = left + col * cell;
 			const int cy = top - row * cell;
 			const bool got = robin.equipGet[start + i];
+
+			if (CodexCellShown(group[g].type, i) == false)
+				continue;
 
 			shown++;
 
@@ -6880,7 +7007,7 @@ static void CodexDraw(int x, int y, float zoom)
 			}
 		}
 
-		top -= ((group[g].count + cols - 1) / cols) * cell + 8 * _2X;
+		top -= ((total + cols - 1) / cols) * cell + 8 * _2X;
 	}
 
 	UnSectionClip(false);

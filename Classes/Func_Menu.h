@@ -128,6 +128,8 @@ void EquipDetailDraw(ITEM* it);
 int CodexScrollDy(void);			//목록 길이로 잡은 스크롤 한계
 void CodexPick(int slot);			//보이는 칸 번호로 상세를 연다
 void CodexClose(void);				//상세 -> 덮개 차례로 닫는다
+void CodexSetTab(int tab);			//전체 / 무기 / 방어구 / 장신구
+void CodexToggleMiss(void);			//안 얻은 것만 보기
 void CodexReset(void);
 bool CodexOverlayOpen(void);
 void CodexOverlaySetOpen(bool on);

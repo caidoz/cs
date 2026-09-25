@@ -149,6 +149,10 @@ def four_frames(area):
     cell_h = 256
     sheet = Image.new("RGBA", (cell_w*4, cell_h))
     for n, f in enumerate(frames):
+        # A generated pose can carry a disconnected flag/tower fragment from the
+        # body half of the source sheet.  Keep only the pose's connected island
+        # before packing it into the runtime cell.
+        f = largest_island(f)
         f.thumbnail((cell_w-16, cell_h-16), Image.Resampling.NEAREST)
         sheet.alpha_composite(f, (n*cell_w+(cell_w-f.width)//2, cell_h-8-f.height))
     return sheet
