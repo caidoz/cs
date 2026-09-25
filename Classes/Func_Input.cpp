@@ -3726,6 +3726,13 @@ void touchFunc(int func)
 		case TOUCH_FUNC_GOTOBOSSRAID:
 			systemKey = AVK_GOTOBOSSRAID;
 			break;
+		case TOUCH_FUNC_ITEM_LOCK:
+			//고른 칸은 장비 상세를 띄운 쪽이 menuItem 으로 들고 있다.
+			ItemToggleLock(menuItem);
+			PlayMusic(M_SELECT);
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_LOADOUT_AUTO:
 			LoadoutAuto();
 			PlayMusic(M_SELECT);

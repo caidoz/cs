@@ -518,6 +518,9 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_LOADOUT_AUTO,	//점수 안에서 좋은 것부터 담는다
 	TOUCH_FUNC_LOADOUT_CLEAR,
 
+	//장비 상세의 자물쇠. 고른 칸은 menuItem 이다.
+	TOUCH_FUNC_ITEM_LOCK,
+
 	TOTALTOUCHCNT,
 
 	END_TOUCHFUNCDEF

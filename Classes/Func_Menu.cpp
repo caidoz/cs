@@ -1970,110 +1970,81 @@ void EquipDetailDraw(ITEM* it)
 	}
 
 	//----------------------------------------------------------------------
-	// 아래 칸 : 업그레이드
+	// 아래 칸 : 합성과 자물쇠
 	//
-	// 왼쪽이 지금, 오른쪽이 올린 뒤. 무엇이 좋아지는지 나란히 놓고 본다.
+	// 여기는 강화(조각 + 골드로 레벨을 올리는 칸)였다. 가방으로 되돌리면서
+	// "장비는 합치지 않는다" 로 바꾼 뒤(GetItem) 장비의 수량이 늘 1 이
+	// 되어, 조각을 재료로 쓰는 강화는 영원히 켜지지 않는 버튼이 되었다.
+	// 같은 것 셋을 한 등급 위로 올리는 합성이 그 자리를 대신한다.
+	//
+	// 그래서 이 칸은 "이 장비를 어떻게 할 것인가" 를 말한다 - 합성까지 몇
+	// 점이 남았는지, 그리고 실수로 팔지 않게 자물쇠를 걸었는지.
 	//----------------------------------------------------------------------
 	DrawPanel((float)CD_BODY_X + 26.0f, (float)ED_UPG_Y,
 		(float)CD_BODY_W - 52.0f, (float)ED_UPG_H);
 
-	//이 팝업에서 제일 먼저 눈에 들어와야 하는 제목이라 다른 리본보다 크다.
-	DrawCdRibbon(TEXT_UPGRADE, (float)CD_DESIGNW / 2,
+	DrawCdRibbonStr("합성", (float)CD_DESIGNW / 2,
 		(float)ED_UPG_Y - 40.0f, 420.0f, 76.0f, 1.95f, -4.0f);
 
 	{
-		bool maxLv = (itemLv >= GetEquipMaxLevel());
-		bool canUp = CanEquipLevelUp(it);
+		int same = 0;
 
-		float inL = (float)CD_BODY_X + 56.0f;
-		float inW = (float)CD_DESIGNW - inL * 2;
-		//리본 바로 밑에 붙인다. 전에는 56 을 띄워 리본과 표 사이가 떠 보였다.
-		float inTop = (float)ED_UPG_Y + 40.0f;
+		//같은 것(종류 · 번호 · 등급)이 몇 점인가. MergeItems 가 세는 것과
+		//같은 기준이다.
+		for (i = 0; i < TOTALINVENTORY; i++) {
+			const ITEM* o = &robin.inven[i];
 
-		float colL = inL + inW * 0.28f;		//"현재" 칸 가운데
-		float colR = inL + inW * 0.78f;		//"레벨업 후" 칸 가운데
-		float arrowX = inL + inW * 0.53f;
+			if (o->type == itemType && o->detail == itemDetail
+				&& o->grade == itemGrade)
+				same++;
+		}
 
-		//숫자가 상자 아래끝에 걸쳐 잘려 보여서 세로로 늘렸다. 전에는 190.
-		float tabH = 240.0f;
-
-		//---- 표 ----
-		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-			Loc(inL), LocY(inTop), inW * sCdU, tabH * sCdU, sCdU);
-
-		//---- 레벨 줄 ----
-		//
-		//"현재 / 다음 레벨" 이라는 머리글과 그 밑의 "Lv 1 / Lv 2" 는 같은 말을
-		//두 번 하는 것이었다. 머리글을 버리고 레벨만 남긴다.
+		//---- 몇 점 모였나 ----
 		{
-			float rTop = inTop + 24.0f;
+			const float inL = (float)CD_BODY_X + 56.0f;
+			const float inW = (float)CD_DESIGNW - inL * 2;
+			const float inTop = (float)ED_UPG_Y + 40.0f;
+			const bool ready = (same >= ITEM_MERGE_COUNT);
 
-			float ly = CdMidY(rTop, (float)ED_ROW_H, 1.8f) - 16.0f;
+			DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
+				Loc(inL), LocY(inTop), inW * sCdU, 200.0f * sCdU, sCdU);
 
 			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), itemLv);
-			CdBody(tempStr, colL, ly, 1.8f, CENTER, CD_INK);
+			sprintf(tempStr, "같은 장비  %d / %d", Min(same, ITEM_MERGE_COUNT),
+				ITEM_MERGE_COUNT);
+			CdText(tempStr, (float)CD_DESIGNW / 2, inTop + 74.0f, 2.1f, CENTER,
+				ready ? CD_UP : COLOR_WHITE);
 
-			if (maxLv == false) {
-				memset(&tempStr, 0, sizeof(tempStr));
-				sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), itemLv + 1);
-				CdBody(tempStr, colR, ly, 1.8f, CENTER, CD_INK);
-			}
-			else {
-				CdBodyId(TEXT_CREW_MAXLEVEL, colR, ly, 1.5f, CENTER, COLOR_GREY);
-			}
+			CdBody(ready
+				? "장비 목록의 합성 버튼이 한 등급 위로 올린다"
+				: "셋이 모이면 한 등급 위로 올릴 수 있다",
+				(float)CD_DESIGNW / 2, inTop + 142.0f, 1.3f, CENTER, CD_INK);
 		}
 
-		//---- 공격력 줄 ----
-		//라벨을 왼쪽에만 달면 오른쪽 숫자가 무엇인지 눈으로 다시 짚어야 한다.
-		//양쪽에 똑같이 단다.
-		{
-			float rTop = inTop + 24.0f + (float)ED_ROW_H;
-
-			float ay = rTop - 22.0f;	//라벨
-			float vy = rTop + 34.0f;	//숫자
-
-			//이 표의 주인공이라 금액과 같은 대접을 한다. 테두리를 둘러 판에서
-			//떼어내고 속은 흰색으로 채운다. 오르는 쪽만 짙은 초록이다.
-			CdBodyId(TEXT_ATK, colL, ay, 1.56f, CENTER, CD_INK);
-
-			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "+%lld", GetEquipPower(it, itemLv));
-			CdText(tempStr, colL, vy, 2.26f, CENTER, COLOR_WHITE);
-
-			if (maxLv == false) {
-				long long now = GetEquipPower(it, itemLv);
-				long long next = GetEquipPower(it, itemLv + 1);
-
-				CdBodyId(TEXT_ATK, colR, ay, 1.56f, CENTER, CD_INK);
-
-				memset(&tempStr, 0, sizeof(tempStr));
-				sprintf(tempStr, "+%lld", next);
-				CdText(tempStr, colR, vy, 2.26f, CENTER,
-					next > now ? CD_UP : COLOR_WHITE);
-			}
-		}
-
-		//---- 화살표 ----
-		//표 한가운데에 하나만 둔다. 좌우로 오가게 해서 "이쪽으로 간다"는 것을
-		//가만히 있는 그림보다 먼저 알아채게 한다.
+		//---- 자물쇠 ----
 		//
-		//frame 을 삼각파로 접어 쓴다. sin 을 쓰지 않아도 같은 왕복이 나오고
-		//주기가 프레임 수로 딱 떨어져서 튀는 곳이 없다.
-		if (maxLv == false) {
-			float aw = (float)WP_ARROW_W * 0.63f;
-			float ah = (float)WP_ARROW_H * 0.63f;
-			float sway = (float)(Abs(16 - (frame / 2) % 32) - 8) * 1.6f;
+		//일반 등급 일괄 판매에 휩쓸려 사라지는 것을 막는 칸이다. 전에는
+		//목록에서 길게 누르는 길밖에 없었다 - 알려주지 않으면 아무도 모른다.
+		//
+		//고른 칸은 부른 쪽이 menuItem 으로 들고 있다. 누르는 쪽도 그것을
+		//본다(Func_Input.cpp).
+		{
+			const bool locked = it->locked;
+			const float bw = (float)ED_EQUIP_W;
+			const float bh = (float)ED_EQUIP_H;
+			const float bl = ((float)CD_DESIGNW - bw) / 2;
+			const float by = (float)ED_UPG_Y + (float)ED_UPG_H - bh - 40.0f;
 
-			DrawWinFlat(WP_ARROW_X, WP_ARROW_Y, WP_ARROW_W, WP_ARROW_H,
-				Loc(arrowX - aw / 2 + sway), LocY(inTop + (tabH - ah) / 2),
-				0.63f * sCdU);
+			DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
+				Loc(bl), LocY(by), bw * sCdU, bh * sCdU, sCdU);
+
+			CdText(locked ? "자물쇠를 푼다" : "자물쇠를 건다",
+				bl + bw / 2, by + bh * 0.30f, 1.7f, CENTER,
+				locked ? COLOR_YELLOW : CD_PAPER);
+
+			SetRectPoint(Loc(bl), LocY(by), (int)(bw * sCdU), (int)(bh * sCdU),
+				TOUCH_FUNC_ITEM_LOCK);
 		}
-
-		//---- 드는 값과 버튼 ----
-		if (maxLv == false)
-			DrawCdCost(GetEquipUpgradeCost(it, 0), (long long)it->count,
-				GetEquipUpgradeCost(it, 1), canUp, TOUCH_FUNC_ITEM_UPGRADE);
 	}
 }
 
