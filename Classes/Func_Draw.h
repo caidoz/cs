@@ -54,6 +54,9 @@ int LoadoutList(int* out, int max);	//지금 탭에 보이는 가방 칸
 void LoadoutScrollRow(int dir);		//목록을 한 줄씩 밀어 본다
 void LoadoutScrollReset(void);
 void LoadoutToggleView(void);		//목록 <-> 격자
+void LoadoutAuto(void);				//점수 안에서 좋은 것부터 담는다
+void LoadoutClear(void);
+int LoadoutTab(void);
 int LoadoutSlotInven(int slot);		//화면에 보이는 칸 -> 가방 번호
 void LobbySkyUpdate(float delta);
 bool LobbyCamTouchBegan(int id, float x, float y);

@@ -515,6 +515,8 @@ typedef enum _touchFuncDef {
 
 	//출정 준비의 보기 바꾸기(목록 <-> 격자)
 	TOUCH_FUNC_LOADOUT_VIEW,
+	TOUCH_FUNC_LOADOUT_AUTO,	//점수 안에서 좋은 것부터 담는다
+	TOUCH_FUNC_LOADOUT_CLEAR,
 
 	TOTALTOUCHCNT,
 

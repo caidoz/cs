@@ -353,9 +353,12 @@ inline void DrawCastle(int groundY) {
 		const int motionImg = CASTLE_MOVE0_IMG + curCastle;
 		if (!sprite[motionImg]) LoadImg(motionImg);
 		const int pose = IsMoving() ? (frame / 5) % 4 : 0;
-		const float motionScale = scale / .8f;
-		DrawImage(1024, 1024, pose * 1024, 0, (int)castleLeft,
-			(int)(castleTop + 72 * motionScale), false, false, false, false,
+		const auto& composite = CastleWheels::GetCompositeLayout(curCastle);
+		const float motionScale = scale / composite.bodyScale;
+		DrawImage(1024, 1024, pose * 1024, 0,
+			(int)(castleLeft - composite.bodyX * motionScale),
+			(int)(castleTop + composite.bodyY * motionScale),
+			false, false, false, false,
 			false, motionScale, sprite[motionImg], motionImg);
 	}
 	else {

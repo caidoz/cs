@@ -3942,6 +3942,11 @@ static bool LoadoutTabHas(int tab, int type)
 	}
 }
 
+int LoadoutTab(void)
+{
+	return gLoadoutTab;
+}
+
 void LoadoutSetTab(int tab)
 {
 	if (tab >= 0 && tab < LOADOUT_TAB_CNT) {
@@ -4100,6 +4105,72 @@ static int LoadoutCellUsed(void)
 	}
 
 	return sum;
+}
+
+//---- 한 번에 비운다 ----
+//
+//고른 것을 하나씩 다시 눌러 빼게 두면, 다시 고르는 것보다 빼는 데 손이
+//더 간다.
+void LoadoutClear(void)
+{
+	gLoadoutCnt = 0;
+}
+
+//---- 자동으로 채운다 ----
+//
+//장비가 예순 점인데 판마다 여덟 번씩 눌러 고르게 하면, 고르는 것이
+//선택이 아니라 일이 된다. 무기 한 점을 먼저 잡고 - 무기 없이 들어가면
+//그 판은 버리는 판이다 - 나머지는 좋은 것부터 점수가 닿는 대로 담는다.
+//
+//자동은 시작점이다. 여기서 한두 점을 바꿔 끼우는 것이 이 화면의 일이다.
+void LoadoutAuto(void)
+{
+	static int list[TOTALINVENTORY];
+	int cnt;
+	int best = -1;
+
+	LoadoutClear();
+
+	//거르개를 걷어내고 가방 전체에서 고른다. 지금 '장신구' 탭을 보고
+	//있다고 해서 반지만 들고 갈 이유는 없다.
+	{
+		const int keep = LoadoutTab();
+
+		LoadoutSetTab(LOADOUT_TAB_ALL);
+		cnt = LoadoutList(list, TOTALINVENTORY);
+		LoadoutSetTab(keep);
+	}
+
+	//---- 무기 한 점 ----
+	for (int i = 0; i < cnt; i++) {
+		const ITEM* it = &robin.inven[list[i]];
+
+		if (it->type != ITEM_SWORD && it->type != ITEM_GUN
+			&& it->type != ITEM_BOOMERANG)
+			continue;
+
+		//LoadoutList 가 등급 -> 값 순으로 세워 주므로 처음 만나는 것이
+		//가장 좋은 무기다.
+		best = list[i];
+		break;
+	}
+
+	if (best >= 0)
+		LoadoutToggle(best);
+
+	//---- 나머지 ----
+	//
+	//점수가 모자라 안 들어가는 것은 그냥 지나간다. 값싼 것이 뒤에 오므로
+	//뒤로 갈수록 빈 점수에 끼워 넣기가 된다.
+	for (int i = 0; i < cnt; i++) {
+		if (list[i] == best)
+			continue;
+
+		if (LoadoutFind(list[i]) >= 0)
+			continue;
+
+		LoadoutToggle(list[i]);
+	}
 }
 
 //======================================================================
@@ -4369,6 +4440,34 @@ void LoadoutDraw(void)
 	sprintf(str, "성 %d칸 중  %d칸을 들고 간다", cell, LoadoutCellUsed());
 	CenterTextStrSolid(str, DX / 2, top - 38 * _2X, 0.52f);
 
+	//---- 자동 · 비우기 ----
+	{
+		const int bw = 40 * _2X;
+		const int bh = 16 * _2X;
+		const int by = top + 2 * _2X;
+		const bool any = (gLoadoutCnt > 0);
+
+		SetAlpha(14);
+		MemRect(8 * _2X, by, bw, bh, 0x1A2A1A);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(8 * _2X, by, bw, bh, 0x88BB88);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("자동", 8 * _2X + bw / 2,
+			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
+		SetRectPoint(8 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_AUTO);
+
+		SetAlpha(any ? 14 : 8);
+		MemRect(52 * _2X, by, bw, bh, 0x2A1A1A);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(52 * _2X, by, bw, bh, any ? 0xBB8888 : 0x443333);
+		SetFontColor(any ? COLOR_WHITE : COLOR_GREY);
+		CenterTextStrSolid("비우기", 52 * _2X + bw / 2,
+			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
+
+		if (any)
+			SetRectPoint(52 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_CLEAR);
+	}
+
 	//---- 보기 바꾸기 ----
 	//
 	//둘을 한 화면에 넣으면 둘 다 못 읽는다. 갈아 본다.
@@ -4517,8 +4616,6 @@ static void GridPlaceGear(void)
 	//전에는 착용 칸 여섯을 통째로 넣었다. 지금은 출정 준비에서 고른
 	//것만 들어온다 - 무엇을 두고 갈지가 이 판의 첫 선택이다.
 	//
-	//hero 는 아래의 기본 장비 보정(맨발이면 신발 한 켤레)이 쓴다.
-	const OBJECT* hero = &ao[PLAYER];
 	int order[LOADOUT_MAX];
 	GridPart parts[LOADOUT_MAX];
 	int n = 0;
@@ -4600,162 +4697,6 @@ static void GridPlaceGear(void)
 	if (missed > 0) {
 		snprintf(gGridMsg, sizeof(gGridMsg), "장비 %d개가 성에 안 들어갔다", missed);
 		gGridMsgFrame = FPS * 3;
-	}
-
-	// 화면에서 신발 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
-	// 장착된 신발이 없으면 현재 영웅 타입에 맞는 신발을 인벤토리에 넣어준다.
-	bool hasBoots = false;
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_GREAVES ||
-			gGridItem[i].part.type == ITEM_SHOES || gGridItem[i].part.type == ITEM_BOOTS)) {
-			hasBoots = true;
-			break;
-		}
-	}
-	if (!hasBoots) {
-		int bootType = ITEM_GREAVES;
-		if (hero->type == DIANA) bootType = ITEM_SHOES;
-		else if (hero->type == MAXX) bootType = ITEM_BOOTS;
-
-		GridPart bootPart;
-		memset(&bootPart, 0, sizeof(GridPart));
-		bootPart.type = bootType;
-		bootPart.detail = 1;
-		bootPart.grade = GRADE_RARE;
-		bootPart.w = 1;
-		bootPart.h = 1;
-		bootPart.name = (bootType == ITEM_GREAVES) ? "체인 그리브" : (bootType == ITEM_SHOES ? "가죽 부츠" : "전투화");
-
-		int col, row;
-		if (GridFindSpot(&bootPart, &col, &row)) {
-			const int slot = GridTestFreeSlot();
-			if (slot >= 0) {
-				gGridItem[slot].part = bootPart;
-				gGridItem[slot].shop = -1;
-				gGridItem[slot].equip = -1;
-				gGridItem[slot].col = col;
-				gGridItem[slot].row = row;
-				gGridItem[slot].used = true;
-				MakeItem(&gGridItem[slot].item, bootType, 1, bootPart.grade, bootPart.detail, 0);
-			}
-		}
-	}
-
-	// 화면에서 하의(바지/치마/킬트) 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
-	// 장착된 하의가 없으면 현재 영웅 타입에 맞는 하의를 인벤토리에 넣어준다.
-	bool hasPants = false;
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_KILT ||
-			gGridItem[i].part.type == ITEM_SKIRT || gGridItem[i].part.type == ITEM_PANTS)) {
-			hasPants = true;
-			break;
-		}
-	}
-	if (!hasPants) {
-		int pantsType = ITEM_KILT;
-		if (hero->type == DIANA) pantsType = ITEM_SKIRT;
-		else if (hero->type == MAXX) pantsType = ITEM_PANTS;
-
-		GridPart pantsPart;
-		memset(&pantsPart, 0, sizeof(GridPart));
-		pantsPart.type = pantsType;
-		pantsPart.detail = 1;
-		pantsPart.grade = GRADE_RARE;
-		pantsPart.w = 1;
-		pantsPart.h = 1;
-		pantsPart.name = (pantsType == ITEM_KILT) ? "체인 킬트" : (pantsType == ITEM_SKIRT ? "빈티지 스커트" : "카프스킨 팬츠");
-
-		int col, row;
-		if (GridFindSpot(&pantsPart, &col, &row)) {
-			const int slot = GridTestFreeSlot();
-			if (slot >= 0) {
-				gGridItem[slot].part = pantsPart;
-				gGridItem[slot].shop = -1;
-				gGridItem[slot].equip = -1;
-				gGridItem[slot].col = col;
-				gGridItem[slot].row = row;
-				gGridItem[slot].used = true;
-				MakeItem(&gGridItem[slot].item, pantsType, 1, pantsPart.grade, pantsPart.detail, 0);
-			}
-		}
-	}
-
-	// 화면에서 장갑/건틀릿/팔찌 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
-	// 장착된 장갑이 없으면 현재 영웅 타입에 맞는 장갑을 인벤토리에 넣어준다.
-	bool hasGlove = false;
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_GUNTLET ||
-			gGridItem[i].part.type == ITEM_ARMLET || gGridItem[i].part.type == ITEM_GLOVE)) {
-			hasGlove = true;
-			break;
-		}
-	}
-	if (!hasGlove) {
-		int gloveType = ITEM_GUNTLET;
-		if (hero->type == DIANA) gloveType = ITEM_ARMLET;
-		else if (hero->type == MAXX) gloveType = ITEM_GLOVE;
-
-		GridPart glovePart;
-		memset(&glovePart, 0, sizeof(GridPart));
-		glovePart.type = gloveType;
-		glovePart.detail = 1;
-		glovePart.grade = GRADE_RARE;
-		glovePart.w = 1;
-		glovePart.h = 1;
-		glovePart.name = (gloveType == ITEM_GUNTLET) ? "체인 건틀릿" : (gloveType == ITEM_ARMLET ? "사막 팔찌" : "이중매듭 장갑");
-
-		int col, row;
-		if (GridFindSpot(&glovePart, &col, &row)) {
-			const int slot = GridTestFreeSlot();
-			if (slot >= 0) {
-				gGridItem[slot].part = glovePart;
-				gGridItem[slot].shop = -1;
-				gGridItem[slot].equip = -1;
-				gGridItem[slot].col = col;
-				gGridItem[slot].row = row;
-				gGridItem[slot].used = true;
-				MakeItem(&gGridItem[slot].item, gloveType, 1, glovePart.grade, glovePart.detail, 0);
-			}
-		}
-	}
-
-	// 화면에서 갑옷 드래그 앤 드롭 및 배치를 즉시 확인할 수 있도록,
-	// 장착된 갑옷이 없으면 현재 영웅 타입에 맞는 갑옷을 인벤토리에 넣어준다.
-	bool hasArmor = false;
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (gGridItem[i].used && (gGridItem[i].part.type == ITEM_ARMOR ||
-			gGridItem[i].part.type == ITEM_VEST || gGridItem[i].part.type == ITEM_COAT)) {
-			hasArmor = true;
-			break;
-		}
-	}
-	if (!hasArmor) {
-		int armorType = ITEM_ARMOR;
-		if (hero->type == DIANA) armorType = ITEM_VEST;
-		else if (hero->type == MAXX) armorType = ITEM_COAT;
-
-		GridPart armorPart;
-		memset(&armorPart, 0, sizeof(GridPart));
-		armorPart.type = armorType;
-		armorPart.detail = 1;
-		armorPart.grade = GRADE_RARE;
-		armorPart.w = 1;
-		armorPart.h = 1;
-		armorPart.name = (armorType == ITEM_ARMOR) ? "비늘 갑옷" : (armorType == ITEM_VEST ? "가죽 조끼" : "전투 코트");
-
-		int col, row;
-		if (GridFindSpot(&armorPart, &col, &row)) {
-			const int slot = GridTestFreeSlot();
-			if (slot >= 0) {
-				gGridItem[slot].part = armorPart;
-				gGridItem[slot].shop = -1;
-				gGridItem[slot].equip = -1;
-				gGridItem[slot].col = col;
-				gGridItem[slot].row = row;
-				gGridItem[slot].used = true;
-				MakeItem(&gGridItem[slot].item, armorType, 1, armorPart.grade, armorPart.detail, 0);
-			}
-		}
 	}
 
 	//전투 상태 시험으로 들어온 판에는 서로 크기와 쿨타임이 다른 네 검을
@@ -5805,15 +5746,17 @@ static void LobbyCastleDraw(void)
 	}
 
 	if (CastleWheels::IsCompositedMotion(castleIdx)) {
-		// castle_move4 is a 4x1 sheet of complete 1024x1024 snail-castle
-		// frames.  The source body was reduced to 80% and placed 72px below
-		// the cell top, so undo that transform to preserve the lobby camera.
+		// castle_moveN is a 4x1 sheet of complete 1024x1024 frames. Undo the
+		// offline body transform so changing frames cannot move the camera.
 		const int motionImg = CASTLE_MOVE0_IMG + castleIdx;
 		if (!sprite[motionImg]) LoadImg(motionImg);
 		const int pose = (frame / 5) % 4;
-		const float motionScale = s / .8f;
-		DrawImage(1024, 1024, pose * 1024, 0, left,
-			top + (int)(72 * motionScale), false, false, false, false, false,
+		const auto& composite = CastleWheels::GetCompositeLayout(castleIdx);
+		const float motionScale = s / composite.bodyScale;
+		DrawImage(1024, 1024, pose * 1024, 0,
+			left - (int)(composite.bodyX * motionScale),
+			top + (int)(composite.bodyY * motionScale),
+			false, false, false, false, false,
 			motionScale, sprite[motionImg], motionImg);
 	}
 	else {

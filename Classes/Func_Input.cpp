@@ -3726,6 +3726,18 @@ void touchFunc(int func)
 		case TOUCH_FUNC_GOTOBOSSRAID:
 			systemKey = AVK_GOTOBOSSRAID;
 			break;
+		case TOUCH_FUNC_LOADOUT_AUTO:
+			LoadoutAuto();
+			PlayMusic(M_SELECT);
+			systemKey = 0;
+			return;
+
+		case TOUCH_FUNC_LOADOUT_CLEAR:
+			LoadoutClear();
+			PlayMusic(M_SELECT);
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_LOADOUT_VIEW:
 			LoadoutToggleView();
 			systemKey = 0;

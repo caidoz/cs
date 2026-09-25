@@ -33,7 +33,20 @@ static const MoveLayout kMove[20] = {
 };
 
 inline int ClampStage(int stage) { return Max(0, Min(stage, 19)); }
-inline bool IsCompositedMotion(int stage) { return ClampStage(stage) == 4; }
+struct CompositeLayout { float bodyScale; int bodyX; int bodyY; };
+static const CompositeLayout kComposite[20] = {
+	{0.87890625f,62,32}, {0.87890625f,62,32}, {0.80708661f,99,32},
+	{0.87890625f,62,32}, {0.80000000f,0,72},  {0.87890625f,62,32},
+	{0.87890625f,62,32}, {0.87420043f,64,32}, {0.87890625f,62,32},
+	{0.87890625f,62,32}, {0.87890625f,62,32}, {0.87890625f,62,32},
+	{0.87890625f,62,32}, {0.87890625f,62,32}, {0.87326944f,65,32},
+	{0.87890625f,62,32}, {0.87890625f,62,32}, {0.87890625f,62,32},
+	{0.86315789f,70,32}, {0.87890625f,62,32},
+};
+inline bool IsCompositedMotion(int) { return true; }
+inline const CompositeLayout& GetCompositeLayout(int stage) {
+	return kComposite[ClampStage(stage)];
+}
 inline float GetPartScale(int stage, float castleW, float castleScale, float cellW)
 {
 	return castleW * castleScale * kMove[ClampStage(stage)].partScale / Max(1.0f, cellW);
