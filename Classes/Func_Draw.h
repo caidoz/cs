@@ -34,6 +34,12 @@ void DumpCmfStep(void);
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
+#ifdef GAMEDEBUG
+bool TitleCastleDebugDraw(void);
+void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
+void TitleCastleDebugButton(void);
+bool TitleCastleDebugCommand(int command);
+#endif
 void TitleSkillViewerCommand(int command);
 void TitleTermsCommand(int command);
 void OpeningDraw(void);

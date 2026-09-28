@@ -2933,6 +2933,13 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
+	// Handle this isolated title tool even while network login is pending.
+#ifdef GAMEDEBUG
+	if (TitleCastleDebugCommand(func)) {
+		systemKey = 0;
+		return;
+	}
+#endif
 	int i, j;
 	int x = DX / 2 - STATUSWIN_X / 2;
 	int y = DY / 2 + MINDY / 2;

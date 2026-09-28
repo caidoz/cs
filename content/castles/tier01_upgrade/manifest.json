@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "tier": 1,
+  "view": "orthographic_side",
+  "coordinateSystem": "top-left origin, pixels, clockwise rotation",
+  "scene": {
+    "width": 1672,
+    "height": 1128,
+    "contentOffset": {
+      "x": 0,
+      "y": 48
+    },
+    "groundY": 1009
+  },
+  "wheelMounts": [
+    {
+      "x": 476,
+      "y": 776
+    },
+    {
+      "x": 1227,
+      "y": 776
+    }
+  ],
+  "wheelDisplayRadius": 185,
+  "variants": {
+    "basic": {
+      "body": {
+        "file": "body_basic.png",
+        "width": 1672,
+        "height": 941,
+        "scale": 1,
+        "x": 0,
+        "y": 0
+      },
+      "wheel": {
+        "file": "wheel_basic.png",
+        "width": 1254,
+        "height": 1254,
+        "pivot": {
+          "x": 627,
+          "y": 627
+        },
+        "scale": 0.3274336283185841
+      }
+    },
+    "full": {
+      "body": {
+        "file": "body_full.png",
+        "width": 1671,
+        "height": 941,
+        "scale": 0.9628205128205128,
+        "x": 45.61923076923074,
+        "y": -2.921794871794873,
+        "sourceAxles": [
+          {
+            "x": 447,
+            "y": 809
+          },
+          {
+            "x": 1227,
+            "y": 809
+          }
+        ]
+      },
+      "wheel": {
+        "file": "wheel_full.png",
+        "width": 1254,
+        "height": 1254,
+        "pivot": {
+          "x": 627,
+          "y": 627
+        },
+        "scale": 0.3067993366500829
+      }
+    }
+  },
+  "drawOrder": [
+    "body",
+    "wheels"
+  ],
+  "animation": {
+    "formula": "radians += travelDistance / 185",
+    "sharedWheelAngle": true
+  },
+  "scope": "Basic and full endpoint artwork. Armor, cannons, spire and interior are baked into each body; wheels are independent rotating sprites. Intermediate upgrade levels and independent body-part sprites are not included.",
+  "generator": "built-in image_gen"
+}

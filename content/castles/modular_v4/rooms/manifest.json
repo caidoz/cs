@@ -1,0 +1,25 @@
+{
+  "version": 4,
+  "room_size": [
+    512,
+    128
+  ],
+  "aspect_ratio": "4:1",
+  "floor_count": 10,
+  "upgrade_count": 5,
+  "states_per_floor": 6,
+  "asset_count": 60,
+  "themes": [
+    "food production",
+    "forge / armory",
+    "barracks / training",
+    "alchemy laboratory",
+    "engineering workshop",
+    "healing infirmary",
+    "command room",
+    "crystal reactor",
+    "shadow sanctum",
+    "celestial observatory"
+  ],
+  "assembly_rule": "castle N contains floors 1 through N; previous floors are level 5"
+}

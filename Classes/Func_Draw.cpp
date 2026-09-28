@@ -6,6 +6,9 @@
 #include "Data/SwordSprites.h"
 #include "Data/FoeGearData.h"
 #include "CastleWheelManager.h"
+#ifdef GAMEDEBUG
+#include "CastleModularDebug.h"
+#endif
 
 
 //���
@@ -1426,6 +1429,9 @@ void TitleTermsCommand(int command)
 
 void TitleDraw(void)
 {
+#ifdef GAMEDEBUG
+	if (TitleCastleDebugDraw()) return;
+#endif
 	int i;
 	std::string fileName;
 	int x = 0, y = MINDY_MIN / 2 + DY / 2 + (MINDY_MIN - MINDY) / 2;
@@ -1618,6 +1624,10 @@ void TitleDraw(void)
 	}
 	else if (NetBootstrapPoll() == NETRESULT_NONE)
 		DrawTitleBootLoading();
+
+#ifdef GAMEDEBUG
+	TitleCastleDebugButton();
+#endif
 
 }
 
@@ -5307,26 +5317,28 @@ static float LobbyCharZoom(void)
 #define LOBBY_GROUND_V_BACK		0.925f
 #define LOBBY_GROUND_V_FRONT	0.975f
 
-static int LobbyCastleImg(void)
+//로비 성도 파츠로 그린다. 성 그림 한 장(castle0~19)을 읽던 자리다 -
+//그 그림들은 지웠고, 이제 증축 탭·파츠 뷰어와 같은 조각을 쓴다.
+//
+//성 단계는 열, 파츠는 다섯 단이라 둘씩 묶는다.
+static int LobbyCastleLevel(void)
 {
 	if (!gLobbyVisualReady) {
-		gMobileCastleVisual = Max(0, Min(robin.castle, 19));
+		gMobileCastleVisual = Max(0, Min(robin.castle, CASTLE_STAGE_CNT - 1));
 		gLobbyVisualReady = true;
 	}
-	return CASTLE0_IMG + Max(0, Min(gMobileCastleVisual, 19));
+
+	return Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1)) + 1;
 }
 
 //그림 크기. 아직 못 읽었으면 false
+//카메라가 쓰는 성의 크기. 조립표가 적어 둔 네모다.
 static bool LobbyCastleSize(float* w, float* h)
 {
-	const int img = LobbyCastleImg();
+	const CastleParts::Box& b = CastleParts::kBox[LobbyCastleLevel() - 1];
 
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return false;
-
-	const auto size = sprite[img]->getContentSize();
-	*w = size.width;
-	*h = size.height;
+	*w = (float)b.w;
+	*h = (float)b.h;
 	return *w > 0 && *h > 0;
 }
 
@@ -5688,7 +5700,9 @@ bool LobbyCamTouchEnded(int id)
 static void LobbyCastlePrepare(void)
 {
 	float w, h;
-	const int img = LobbyCastleImg();
+	//성이 바뀌면 카메라를 다시 잡는다. 전에는 그림 번호로 알아봤는데
+	//이제 그림이 없으니 파츠 단으로 본다.
+	const int img = LobbyCastleLevel();
 
 	if (!LobbyCastleSize(&w, &h))
 		return;
@@ -5713,21 +5727,13 @@ static void LobbyCastlePrepare(void)
 static void LobbyCastleDraw(void)
 {
 	float w, h;
-	const int img = LobbyCastleImg();
+
 	if (!LobbyCastleSize(&w, &h)) return;
 
 	const float s = LobbyCamScale(w, h);
 	const int left = (int)(DX / 2.0f - gLobbyCamX * s);
-	const int castleIdx = Max(0, Min(gMobileCastleVisual, 19));
-	const int baseTop = (int)(LobbyViewCY() + gLobbyCamY * s);
-	const int top = baseTop + (int)CastleWheels::GetBodyMotionY(castleIdx, true);
-	const float imageBottom = baseTop - h * s;
-	const float radius = CastleWheels::GetWheelRadius(castleIdx, w, s);
-	// Tuck the upper part of the wheel into the base.  This removes the long
-	// hanging axle seen when the whole wheel was placed below the image.
-	//바퀴의 접지점을 성 하단보다 충분히 아래로 내린다. 지면도 이 값을
-	//그대로 사용하므로 카메라 배율이 바뀌어도 바퀴와 땅 사이가 벌어지지 않는다.
-	const float wheelGround = imageBottom - radius * 1.42f - 2 * _2X;
+	const int top = (int)(LobbyViewCY() + gLobbyCamY * s);
+	const float bottom = top - h * s;
 
 	//t2.png의 32px 타일로 로비 지면을 만든다. 첫 줄은 잔디 접지면,
 	//둘째 줄은 암반층이라 긴 화면에서도 잘린 그림처럼 보이지 않는다.
@@ -5735,7 +5741,7 @@ static void LobbyCastleDraw(void)
 	if (!sprite[lobbyTileImg]) LoadImg(lobbyTileImg);
 	if (sprite[lobbyTileImg]) {
 		const int tile = 32;
-		const int groundTop = (int)wheelGround + 1 * _2X;
+		const int groundTop = (int)bottom + 1 * _2X;
 		for (int tx = 0; tx < DX + tile; tx += tile) {
 			const int variant = (tx / tile) % 4;
 			DrawImage(tile, tile, variant * tile, 0, tx, groundTop,
@@ -5745,34 +5751,15 @@ static void LobbyCastleDraw(void)
 		}
 	}
 
-	if (CastleWheels::IsCompositedMotion(castleIdx)) {
-		// castle_moveN is a 4x1 sheet of complete 1024x1024 frames. Undo the
-		// offline body transform so changing frames cannot move the camera.
-		const int motionImg = CASTLE_MOVE0_IMG + castleIdx;
-		if (!sprite[motionImg]) LoadImg(motionImg);
-		const int pose = (frame / 5) % 4;
-		const auto& composite = CastleWheels::GetCompositeLayout(castleIdx);
-		const float motionScale = s / composite.bodyScale;
-		DrawImage(1024, 1024, pose * 1024, 0,
-			left - (int)(composite.bodyX * motionScale),
-			top + (int)(composite.bodyY * motionScale),
-			false, false, false, false, false,
-			motionScale, sprite[motionImg], motionImg);
-	}
-	else {
-		// Locomotion parts go behind the body.  Their upper attachment area is
-		// intentionally covered by the chassis so no detached seam is visible.
-		CastleWheels::DrawCastleWheels(castleIdx, (float)left, imageBottom,
-			w, s, wheelGround, true);
-		DrawImage((int)w, (int)h, 0, 0, left, top,
-			false, false, false, false, false, s, sprite[img], img);
-	}
+	//조각을 그 자리에서 조립한다. 바퀴도 여기서 돈다.
+	CastlePartsDrawRect(LobbyCastleLevel(), left, top, (int)(w * s), (int)(h * s));
 
 	gLobbyCastleLeft = (float)left;
 	gLobbyCastleTop = (float)top;
 	gLobbyCastleScale = s;
 	gLobbyCastleW = w;
 	gLobbyCastleH = h;
+
 }
 
 #if LOBBY_CAM_DEBUG_BUTTONS

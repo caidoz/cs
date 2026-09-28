@@ -9153,9 +9153,13 @@ static void CastleUpgradeTabDraw(int x, int y, float zoom)
 	const int artSize = 104 * _2X;
 	MemRect(panelX, cardY, panelW, artSize, 0x111A29);
 	MemRectFrame(panelX, cardY, panelW, artSize, 0xC89A35);
-	DrawImage(384, 384, 0, 0, panelX + 4 * _2X, cardY - 4 * _2X,
-		false, false, false, false, false, (float)(artSize - 8 * _2X) / 384.0f,
-		sprite[CASTLE_UPGRADE0_IMG + castle], CASTLE_UPGRADE0_IMG + castle);
+	//성 그림은 파츠를 그 자리에서 조립해 그린다. 전에는 단계마다 구워 둔
+	//castle_upgrade 한 장을 읽었는데, 파츠를 손볼 때마다 그 그림이 묵은
+	//것이 되어 메뉴와 뷰어가 어긋났다.
+	//
+	//성 단계는 열인데 파츠는 다섯 단이라 둘씩 묶는다.
+	CastlePartsDrawRect(castle + 1, panelX + 4 * _2X, cardY - 4 * _2X,
+		artSize - 8 * _2X, artSize - 8 * _2X);
 
 	const int textX = panelX + artSize + 10 * _2X;
 	SetFontColor(COLOR_YELLOW);

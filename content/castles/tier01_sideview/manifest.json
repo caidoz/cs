@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "tier": 1,
+  "variant": "basic",
+  "view": "orthographic_side",
+  "assetType": "body_with_independently_rotating_wheels",
+  "coordinates": "pixels, origin top-left, x right, y down",
+  "scene": {
+    "width": 1672,
+    "height": 1080,
+    "groundY": 961
+  },
+  "body": {
+    "file": "body.png",
+    "width": 1672,
+    "height": 941,
+    "x": 0,
+    "y": 0,
+    "zOrder": 0
+  },
+  "wheel": {
+    "file": "wheel.png",
+    "width": 1254,
+    "height": 1254,
+    "pivot": {
+      "x": 627,
+      "y": 627
+    },
+    "visualRadiusPx": 565,
+    "renderScale": 0.3274336283,
+    "zOrder": 1,
+    "mounts": [
+      {
+        "x": 476,
+        "y": 776
+      },
+      {
+        "x": 1227,
+        "y": 776
+      }
+    ]
+  },
+  "animation": {
+    "formula": "angleRadians += travelDistancePixels / renderedWheelRadiusPixels",
+    "renderedWheelRadiusPixels": 185,
+    "positiveAngle": "clockwise in screen coordinates",
+    "note": "Both wheels reuse wheel.png and rotate about the stated pivot. Body stays fixed. Mount coordinates are authored for these exact source dimensions."
+  },
+  "generator": "built-in image_gen",
+  "integration": "Standalone assets; existing castle runtime resources are not replaced."
+}

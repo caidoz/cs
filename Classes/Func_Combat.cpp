@@ -3716,7 +3716,7 @@ NEXT:
 			//보스(ENEMY_CASTLE_BOSS4)를 잡으면 튜토리얼 에필로그: 골드 대량 지급 + 성 메뉴 강제 오픈.
 			//DEMO_TUTORIAL_END는 실제 데모 컨텐츠 없이 "에필로그 지급 완료" 1회성 플래그로만 사용한다.
 			else if (pDest->type == ENEMY_CASTLE_BOSS4 && robin.demoSeen[DEMO_TUTORIAL_BOSS] && !robin.demoSeen[DEMO_TUTORIAL_END]) {
-				GetItem(ITEM_GOLD, 1, 0, 0, 1000000, false);	//TODO: 실제 지급량 밸런스 확인
+				GetItem(ITEM_GOLD, 1, 0, 0, TUTORIAL_END_GOLD, false);
 				robin.demoSeen[DEMO_TUTORIAL_END] = true;
 
 				curMenuBack = curMenu;

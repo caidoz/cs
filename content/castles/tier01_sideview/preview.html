@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1번 성 · 정측면 바퀴 회전</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#182329;color:#eef1e9;font:16px system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:24px}h1{font-size:23px;margin:0 0 8px}p{color:#b7c5ca;margin:8px 0 18px}canvas{display:block;width:100%;height:auto;background:#24343d;border:1px solid #50606a;border-radius:10px}nav{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:18px 0}button{padding:9px 18px;border:0;border-radius:6px;background:#dcab60;color:#1d2327;font-weight:700;cursor:pointer}input{vertical-align:middle}a{color:#f1c989}footer{font-size:14px;color:#b7c5ca}#error{color:#ffaaaa}
+</style><main><h1>1번 성 · 기본형 · 정측면</h1><p>본체 1장 + 원형 바퀴 1장을 두 축에 배치. 바퀴는 이동 속도에 맞춰 회전합니다.</p>
+<canvas id="stage" width="1672" height="1080" aria-label="정측면 성과 회전하는 두 바퀴"></canvas>
+<nav><button id="toggle">일시정지</button><label>이동 속도 <input id="speed" type="range" min="-400" max="400" step="10" value="120"> <output id="value">120</output> px/s</label><label><input id="guides" type="checkbox"> 회전축 표시</label><label>배경 <select id="background"><option value="#24343d">어두움</option><option value="#e7e3da">밝음</option></select></label></nav>
+<p id="error" role="alert"></p><footer><a href="body.png">본체 PNG</a> · <a href="wheel.png">바퀴 PNG</a> · <a href="manifest.json">배치 정보</a><br>바퀴 반지름 185px · 축 (476, 776), (1227, 776) · 회전량 = 이동 거리 ÷ 반지름</footer></main>
+<script>
+const layout={"version":1,"tier":1,"variant":"basic","view":"orthographic_side","assetType":"body_with_independently_rotating_wheels","coordinates":"pixels, origin top-left, x right, y down","scene":{"width":1672,"height":1080,"groundY":961},"body":{"file":"body.png","width":1672,"height":941,"x":0,"y":0,"zOrder":0},"wheel":{"file":"wheel.png","width":1254,"height":1254,"pivot":{"x":627,"y":627},"visualRadiusPx":565,"renderScale":0.3274336283,"zOrder":1,"mounts":[{"x":476,"y":776},{"x":1227,"y":776}]},"animation":{"formula":"angleRadians += travelDistancePixels / renderedWheelRadiusPixels","renderedWheelRadiusPixels":185,"positiveAngle":"clockwise in screen coordinates","note":"Both wheels reuse wheel.png and rotate about the stated pivot. Body stays fixed. Mount coordinates are authored for these exact source dimensions."},"generator":"built-in image_gen","integration":"Standalone assets; existing castle runtime resources are not replaced."};
+const canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d');
+const body=new Image(),wheel=new Image();
+const speed=document.querySelector('#speed'),guides=document.querySelector('#guides');
+let paused=false,angle=0,distance=0,last=0,ready=false;
+document.querySelector('#toggle').onclick=()=>{paused=!paused;document.querySelector('#toggle').textContent=paused?'재생':'일시정지';};
+speed.oninput=()=>document.querySelector('#value').textContent=speed.value;
+document.querySelector('#background').onchange=e=>canvas.style.background=e.target.value;
+function frame(time){
+ const dt=last?Math.min((time-last)/1000,0.05):0;last=time;
+ if(!paused){const travel=Number(speed.value)*dt;distance+=travel;angle+=travel/185;}
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.strokeStyle='#78857e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,961);ctx.lineTo(1672,961);ctx.stroke();
+ ctx.strokeStyle='#637367';const offset=((distance%80)+80)%80;
+ for(let x=-offset;x<1672;x+=80){ctx.beginPath();ctx.moveTo(x,962);ctx.lineTo(x-18,980);ctx.stroke();}
+ ctx.drawImage(body,0,0);
+ for(const m of layout.wheel.mounts){
+   ctx.save();ctx.translate(m.x,m.y);ctx.rotate(angle);ctx.scale(layout.wheel.renderScale,layout.wheel.renderScale);ctx.drawImage(wheel,-627,-627);ctx.restore();
+   if(guides.checked){ctx.strokeStyle='#64ffbd';ctx.lineWidth=2;ctx.beginPath();ctx.arc(m.x,m.y,185,0,Math.PI*2);ctx.moveTo(m.x-24,m.y);ctx.lineTo(m.x+24,m.y);ctx.moveTo(m.x,m.y-24);ctx.lineTo(m.x,m.y+24);ctx.stroke();}
+ }
+ document.body.dataset.ready='true';
+ requestAnimationFrame(frame);
+}
+Promise.all([new Promise((resolve,reject)=>{body.onload=resolve;body.onerror=reject;body.src='body.png';}),new Promise((resolve,reject)=>{wheel.onload=resolve;wheel.onerror=reject;wheel.src='wheel.png';})]).then(()=>{ready=true;requestAnimationFrame(frame);}).catch(()=>document.querySelector('#error').textContent='이미지를 불러오지 못했습니다. PNG 파일과 preview.html을 같은 폴더에 두세요.');
+</script></html>

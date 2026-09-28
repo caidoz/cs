@@ -202,11 +202,11 @@ def build():
         if idx in (0, 1, 2, 3, 5, 6):
             wheel = largest_island(parts)
             wheel.thumbnail((256, 256), Image.Resampling.NEAREST)
-            wheel.save(OUT/f"castle_move{idx}.png", optimize=True)
+            wheel.save(OUT/f"castle_part{idx}.png", optimize=True)
         else:
             motion = four_frames(parts)
-            motion.save(OUT/f"castle_move{idx}.png", optimize=True)
-        print(idx, body.size, (OUT/f"castle_move{idx}.png").name)
+            motion.save(OUT/f"castle_part{idx}.png", optimize=True)
+        print(idx, body.size, (OUT/f"castle_part{idx}.png").name)
 
 
 if __name__ == "__main__":

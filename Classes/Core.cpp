@@ -854,14 +854,6 @@ bool Core::init()
 		LoadImg(i);
 		LoadTexture(i);
 	}
-	for (i = CASTLE_MOVE0_IMG; i <= CASTLE_MOVE19_IMG; i++) {
-		LoadImg(i);
-		LoadTexture(i);
-	}
-	for (i = CASTLE_UPGRADE0_IMG; i <= CASTLE_UPGRADE9_IMG; i++) {
-		LoadImg(i);
-		LoadTexture(i);
-	}
 	for (i = LOBBY_NAV_SHOP_IMG; i <= LOBBY_NIGHT_IMG; i++) {
 		LoadImg(i);
 		LoadTexture(i);

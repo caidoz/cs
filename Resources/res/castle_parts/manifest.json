@@ -1,0 +1,60 @@
+{
+  "version": 2,
+  "castle_count": 10,
+  "level_count": 5,
+  "part_count": 5,
+  "source_size": [
+    1536,
+    1024
+  ],
+  "parts": {
+    "roof": {
+      "size": [
+        384,
+        150
+      ],
+      "anchor": "bottom"
+    },
+    "trim": {
+      "size": [
+        384,
+        72
+      ],
+      "anchor": "stretch"
+    },
+    "room": {
+      "size": [
+        384,
+        112
+      ],
+      "anchor": "stretch"
+    },
+    "cannon": {
+      "size": [
+        168,
+        104
+      ],
+      "anchor": "bottom"
+    },
+    "mobility": {
+      "size": [
+        384,
+        144
+      ],
+      "anchor": "assembled"
+    }
+  },
+  "themes": [
+    "food production",
+    "armory / forge",
+    "barracks / training",
+    "alchemy laboratory",
+    "engineering workshop",
+    "healing infirmary",
+    "command room",
+    "crystal reactor",
+    "shadow sanctum",
+    "celestial observatory"
+  ],
+  "rule": "floors below the selected castle are level 5; the selected top floor uses its chosen level"
+}

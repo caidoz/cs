@@ -1,0 +1,37 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>1번 성 파츠 업그레이드 비교</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#182329;color:#eef1e9;font:16px system-ui,sans-serif}main{max-width:1480px;margin:auto;padding:24px}h1{font-size:25px;margin:0 0 8px}p{color:#b7c5ca;line-height:1.7}.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}article{border:1px solid #50606a;border-radius:12px;overflow:hidden;background:#24343d}h2{font-size:18px;margin:0;padding:15px 20px;background:#1d2c33}canvas{display:block;width:100%;height:auto}nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin:20px 0}button{padding:10px 20px;border:0;border-radius:6px;background:#dcab60;color:#182329;font-weight:bold;cursor:pointer}input{vertical-align:middle}a{color:#f1c989}.parts{display:flex;gap:12px;flex-wrap:wrap}.parts span{background:#2a3b42;border-radius:6px;padding:10px 14px}#error{color:#ffaaaa}@media(max-width:760px){.pair{grid-template-columns:1fr}}</style>
+<main><h1>1번 성 · 기본형 → 풀업그레이드</h1><p>정측면과 바퀴 축을 맞춘 비교. 두 성의 바퀴는 같은 이동 속도로 회전합니다.</p>
+<div class="pair"><article><h2>기본형</h2><canvas id="basic" width="1672" height="1128"></canvas></article><article><h2>풀업그레이드</h2><canvas id="full" width="1672" height="1128"></canvas></article></div>
+<nav><button id="pause">일시정지</button><label>이동 속도 <input id="speed" type="range" min="-400" max="400" value="120" step="10"> <output id="value">120</output> px/s</label><label><input id="guides" type="checkbox"> 축 표시</label><label><input id="light" type="checkbox"> 밝은 배경</label></nav>
+<div class="parts"><span>장갑 · 두꺼운 돌벽 + 철제 보강</span><span>대포 · 대형 공성포</span><span>바퀴 · 철제 살대 + 이중 리벳</span><span>첨탑 · 강화 망루 + 경보종</span><span>내부 · 다단 재배 + 관개 장치</span></div>
+<p>본체와 바퀴는 별도 PNG입니다. 장갑·대포·첨탑·내부 강화는 본체 이미지에 함께 반영되어 있습니다.<br><a href="body_full.png">강화 본체</a> · <a href="wheel_full.png">강화 바퀴</a> · <a href="manifest.json">배치 정보</a> · <a href="README.md">사용 안내</a></p><p id="error" role="alert"></p></main>
+<script>
+const layout={"version":1,"tier":1,"view":"orthographic_side","coordinateSystem":"top-left origin, pixels, clockwise rotation","scene":{"width":1672,"height":1128,"contentOffset":{"x":0,"y":48},"groundY":1009},"wheelMounts":[{"x":476,"y":776},{"x":1227,"y":776}],"wheelDisplayRadius":185,"variants":{"basic":{"body":{"file":"body_basic.png","width":1672,"height":941,"scale":1,"x":0,"y":0},"wheel":{"file":"wheel_basic.png","width":1254,"height":1254,"pivot":{"x":627,"y":627},"scale":0.3274336283185841}},"full":{"body":{"file":"body_full.png","width":1671,"height":941,"scale":0.9628205128205128,"x":45.61923076923074,"y":-2.921794871794873,"sourceAxles":[{"x":447,"y":809},{"x":1227,"y":809}]},"wheel":{"file":"wheel_full.png","width":1254,"height":1254,"pivot":{"x":627,"y":627},"scale":0.3067993366500829}}},"drawOrder":["body","wheels"],"animation":{"formula":"radians += travelDistance / 185","sharedWheelAngle":true},"scope":"Basic and full endpoint artwork. Armor, cannons, spire and interior are baked into each body; wheels are independent rotating sprites. Intermediate upgrade levels and independent body-part sprites are not included.","generator":"built-in image_gen"};
+const images={};let paused=false,last=0,angle=0,distance=0,frames=0;
+const speed=document.querySelector('#speed'),guides=document.querySelector('#guides');
+document.querySelector('#pause').onclick=e=>{paused=!paused;e.target.textContent=paused?'재생':'일시정지';};
+speed.oninput=()=>document.querySelector('#value').value=speed.value;
+document.querySelector('#light').onchange=e=>document.querySelectorAll('canvas').forEach(c=>c.style.background=e.target.checked?'#e7e3da':'#24343d');
+function render(time){
+ const dt=last?Math.min((time-last)/1000,.05):0;last=time;
+ if(!paused){const delta=Number(speed.value)*dt;distance+=delta;angle+=delta/185;}
+ for(const key of ['basic','full']){
+  const c=document.querySelector('#'+key),ctx=c.getContext('2d'),v=layout.variants[key];
+  ctx.clearRect(0,0,c.width,c.height);ctx.save();ctx.translate(0,48);
+  ctx.strokeStyle='#7c8c87';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,961);ctx.lineTo(1672,961);ctx.stroke();
+  const offset=((distance%80)+80)%80;
+  for(let x=-offset;x<1672;x+=80){ctx.beginPath();ctx.moveTo(x,962);ctx.lineTo(x-16,978);ctx.stroke();}
+  ctx.save();ctx.translate(v.body.x,v.body.y);ctx.scale(v.body.scale,v.body.scale);ctx.drawImage(images[key].body,0,0);ctx.restore();
+  for(const p of layout.wheelMounts){
+   ctx.save();ctx.translate(p.x,p.y);ctx.rotate(angle);ctx.scale(v.wheel.scale,v.wheel.scale);ctx.drawImage(images[key].wheel,-v.wheel.pivot.x,-v.wheel.pivot.y);ctx.restore();
+   if(guides.checked){ctx.strokeStyle='#55ffb3';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,185,0,Math.PI*2);ctx.moveTo(p.x-24,p.y);ctx.lineTo(p.x+24,p.y);ctx.moveTo(p.x,p.y-24);ctx.lineTo(p.x,p.y+24);ctx.stroke();}
+  }
+  ctx.restore();
+ }
+ document.body.dataset.ready='true';document.body.dataset.frames=String(++frames);document.body.dataset.angle=angle.toFixed(4);
+ requestAnimationFrame(render);
+}
+const promises=[];
+for(const key of ['basic','full']){images[key]={};for(const part of ['body','wheel']){const im=new Image();images[key][part]=im;promises.push(new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=()=>reject(new Error(layout.variants[key][part].file));im.src=layout.variants[key][part].file;}));}}
+Promise.all(promises).then(()=>requestAnimationFrame(render)).catch(e=>document.querySelector('#error').textContent='이미지 로드 실패: '+e.message);
+</script></html>

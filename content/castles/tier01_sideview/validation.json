@@ -1,0 +1,28 @@
+﻿{
+    "body":  {
+                 "width":  1672,
+                 "height":  941,
+                 "clearPixels":  995185,
+                 "opaquePixels":  570,
+                 "partialAlphaPixels":  577597,
+                 "visibleBounds":  [
+                                       84,
+                                       44,
+                                       1621,
+                                       815
+                                   ]
+             },
+    "wheel":  {
+                  "width":  1254,
+                  "height":  1254,
+                  "clearPixels":  795366,
+                  "opaquePixels":  2521,
+                  "partialAlphaPixels":  774629,
+                  "visibleBounds":  [
+                                        62,
+                                        62,
+                                        1192,
+                                        1187
+                                    ]
+              }
+}
