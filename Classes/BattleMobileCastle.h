@@ -16,6 +16,7 @@
 void CastlePartsDrawRect(int castleLevel, int x, int yTop, int w, int h);
 void CastlePartsNaturalSize(int castleLevel, float* w, float* h);
 float CastlePartsWheelSink(void);
+float CastlePartsRoomScale(void);
 
 namespace BattleMobileCastle {
 
@@ -135,12 +136,10 @@ inline void DrawCastle(int groundY) {
 	float naturalW = 0.0f, naturalH = 0.0f;
 	CastlePartsNaturalSize(curCastle + 1, &naturalW, &naturalH);
 
-	//폭만 보고 키우면 층이 쌓일수록 화면 위로 잘려 나간다. 열 층짜리는
-	//자연 높이가 1520 이라 폭 300 에 맞추면 891 이 되어 전장을 넘는다.
-	//그래서 폭과 높이 중 작은 쪽을 따른다 - 로비 카메라와 같은 식이다.
-	const float fitW = 150.0f * (float)_2X / naturalW;
-	const float fitH = (float)Max(1, DY - groundY - 24 * _2X) / naturalH;
-	const float scale = fitW < fitH ? fitW : fitH;
+	//배율은 붙박이다. 방 폭 320 을 지킨다. 화면에 맞춰 줄이면 층이
+	//쌓일수록 성이 작아져서, 키운 보람이 화면에서 사라진다. 높은 성은
+	//위가 잘린다 - 잘리더라도 방은 제 크기로 보여야 한다.
+	const float scale = CastlePartsRoomScale();
 	const float castleW = naturalW * scale;
 	const float castleH = naturalH * scale;
 

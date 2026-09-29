@@ -165,6 +165,9 @@ void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  if(w) *w=castle==0?672.0f:512.0f;
  if(h) *h=(castle+1)*128.0f+NaturalLowerH(castle)+NaturalUpperH(castle);
 }
+//방 그림은 늘 320 픽셀 폭으로 그린다. 화면이 좁다고 줄이면 방 안이
+//안 보인다 - 성은 들여다보는 물건이다. 넘치면 잘리거나 카메라로 민다.
+float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW / 512.0f; }
 //바퀴가 땅에 닿는 자리는 조립 네모의 밑변보다 이만큼 위다. 바퀴는 아래쪽
 //껍데기 안으로 파묻혀 있어서, 네모 밑변을 땅에 맞추면 성이 떠 보인다.
 //성을 세우는 쪽(로비 · 전투)이 다 이 값을 쓴다.

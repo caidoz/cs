@@ -30,7 +30,7 @@ namespace StageBg {
 
 // ---- 지역이 공유하는 설계 좌표 (layer/*/layout.json) ----
 static const float kDesignW  = 1088.0f;
-static const float kSkyW     = 1088.0f;                      // 원경 · 중경
+static const float kSkyW     = 1088.0f, kSkyH = 1445.0f;     // 원경 · 중경
 static const float kRailW    = 1088.0f, kRailH = 438.0f;
 static const float kRailTopY =  840.0f;
 //선로 그림에서 레일 윗면은 위에서 6.35% 지점이다. 여기가 딛는 줄이다.
@@ -55,6 +55,7 @@ enum BossFx { FxSwap, FxGlow };
 
 struct Region {
 	int   abyss;                  // 화면 아래를 채우는 색
+	int   sky;                    // 원경 위가 모자랄 때 잇는 색
 	float bossX, bossY;           // 보스 그림 좌상단 (설계 좌표)
 	float bossW, bossH;
 	float motionSec;              // 몸이 한 번 부풀었다 가라앉는 데 걸리는 시간
@@ -67,10 +68,10 @@ struct Region {
 
 static const Region kRegion[] = {
 	// 늪지대 - 개구리가 숨을 쉬고 6.7 초마다 한 번 눈을 감는다.
-	{ 0x81B0BC, 512.0f, 155.0f, 560.0f, 373.333f,
+	{ 0x81B0BC, 0x4AA1D5, 512.0f, 155.0f, 560.0f, 373.333f,
 	  4.2f, 0.009f, 0.018f, 0.0f, FxSwap, 6.7f, 6.40f, 6.62f },
 	// 금단의 계곡 - 웜은 거의 움직이지 않고 눈만 3.8 초 주기로 밝아진다.
-	{ 0xA68D91, 350.0f, 125.0f, 780.0f, 520.0f,
+	{ 0xA68D91, 0xE9CFAF, 350.0f, 125.0f, 780.0f, 520.0f,
 	  4.2f, 0.004f, 0.004f, 2.0f, FxGlow, 3.8f, 0.0f, 0.0f },
 };
 
@@ -112,21 +113,18 @@ inline void Update(float dt, bool moving) {
 //하므로 직접 접는다.
 inline int WrapEven(int q) { return ((q % 2) + 2) % 2; }
 
-inline float Scale(int groundY) {
-	//배율은 붙박이다. 딛는 줄은 출정 준비에서 위로 들리고 로비에서는
-	//카메라를 따라 오르내리는데, 배율까지 같이 변하면 성 크기는 그대로인
-	//채 배경만 줌해서 어긋나 보인다.
+inline float Scale(void) {
+	//배율은 붙박이다. 딛는 줄은 출정 준비에서 들리고 로비에서는 카메라를
+	//따라 오르내리는데, 배율까지 같이 변하면 성 크기는 그대로인 채 배경만
+	//줌해서 어긋나 보인다.
 	//
 	//폭을 채우되, 기준 높이에서 원경 꼭대기가 화면 위를 넘을 만큼 키운다.
+	//땅이 기준보다 올라가 원경 위가 모자라면 배율을 키우는 대신 하늘색을
+	//이어 붙인다(Draw). 배율로 메우면 카메라를 밀 때마다 배경이 숨쉰다.
 	const float byWidth = (float)DX / kDesignW;
 	const float byRef   = (float)Max(1, DY - (int)(DY * kGroundRef)) / kDeckY;
-	float s = byWidth > byRef ? byWidth : byRef;
 
-	//땅이 기준보다 낮게 내려간 때만 더 키운다. 안 그러면 하늘 자리에
-	//빈 띠가 남는다.
-	const float cover = (float)Max(1, DY - groundY) / kDeckY;
-
-	return s > cover ? s : cover;
+	return byWidth > byRef ? byWidth : byRef;
 }
 
 //설계 y 를 화면 y 로 옮긴다. 화면 y 는 사각형의 윗변이고 위로 갈수록 크다.
@@ -222,10 +220,17 @@ inline void Boss(int groundY, float s) {
 // 전투 장면 배경 한 판.  groundY 는 성과 적이 딛는 줄, arenaBottom 은
 // 아래 인벤토리가 덮기 시작하는 줄이다.
 inline void Draw(int groundY, int arenaBottom) {
+	const float s = Scale();
+
 	//심연색을 먼저 깐다. 원경 아래로 화면이 길어져도 색이 이어진다.
 	MemRect(0, DY, DX, Max(1, DY - arenaBottom), Cur().abyss);
 
-	const float s = Scale(groundY);
+	//원경 꼭대기가 화면 위에 못 미치면 - 카메라를 위로 밀어 땅이 기준보다
+	//올라간 때다 - 그 위는 하늘색으로 잇는다. 원경 맨 윗줄이 그 색이라
+	//이음매가 안 보인다.
+	const int farTop = TopOf(groundY, 0.0f, s);
+	if (farTop < DY) MemRect(0, DY, DX, DY - farTop, Cur().sky);
+
 	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  groundY, s);
 	Boss(groundY, s);
 	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  groundY, s);

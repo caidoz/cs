@@ -5349,13 +5349,16 @@ static float LobbyViewBottom(void);
 //지금 배율에서 그림 1픽셀이 화면 몇 픽셀인가
 static float LobbyCamScale(float imgW, float imgH)
 {
-	const float tier = Max(0, Min(gMobileCastleVisual, 19)) / 19.0f;
-	const float viewW = DX - 16.0f * _2X;
-	const float viewH = DY - LobbyViewBottom() - GNBHEIGHT - 8.0f * _2X;
-	const float fit = Min(viewW / imgW, viewH / imgH);
-	// The authored PNGs are all trimmed close to their alpha bounds.  Fit both
-	// axes first, then use the tier itself to make later castles visibly larger.
-	return fit * (0.58f + 0.40f * tier) * gLobbyCamZoom;
+	(void)imgW;
+	(void)imgH;
+
+	//화면에 맞춰 줄이지 않는다. 방 폭은 늘 320 이다.
+	//
+	//예전에는 성 전체를 화면에 욱여넣었다. 그러면 층이 쌓일수록 성이
+	//작아져서, 열 층짜리는 방 폭이 128 까지 줄어 안이 안 보였다. 키운
+	//보람이 화면에서 사라진다. 이제 높은 성은 화면을 넘고, 넘는 만큼은
+	//카메라로 밀어 본다.
+	return CastlePartsRoomScale() * gLobbyCamZoom;
 }
 
 //성을 보여 주는 세로 영역. 하단 메뉴 위부터 화면 위 끝까지다.
@@ -5399,8 +5402,10 @@ static void LobbyCamClamp(void)
 	else
 		gLobbyCamX = Max(halfW, Min(w - halfW, gLobbyCamX));
 
-	//영역보다 낮은 성은 바닥(하단 메뉴 위)에 붙인다.
-	if (h <= halfH * 2)
+	//바닥(하단 메뉴 위)에 붙인다. 영역보다 높은 성도 처음에는 바닥부터
+	//본다 - 가운데를 잡으면 땅도 바퀴도 안 보이는 데서 시작한다.
+	//위층은 밀어 올려 본다.
+	if (h <= halfH * 2 || gLobbyCamY < 0)
 		gLobbyCamY = h - halfH;
 	else
 		gLobbyCamY = Max(halfH, Min(h - halfH, gLobbyCamY));
