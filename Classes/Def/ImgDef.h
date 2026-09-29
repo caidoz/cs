@@ -785,6 +785,15 @@ typedef enum _imgDef {
 	CASTLE_ROOF_01_FIRST_IMG,
 	CASTLE_ROOF_01_LAST_IMG = CASTLE_ROOF_01_FIRST_IMG + 6 - 1,
 
+	// 성열차가 달리는 지역의 배경. 한 지역이 다섯 장 한 벌이고
+	// 원경 - 보스 - 중경 - 선로 차례로 겹친다. 순서와 장수가 곧
+	// StageBackground.h 의 지역 표이므로 한 벌씩 통째로 덧붙인다.
+	//   0 늪지대   1 금단의 계곡
+	STAGEBG_FIRST_IMG,
+	STAGEBG_PER_REGION = 5,
+	STAGEBG_REGION_CNT = 2,
+	STAGEBG_LAST_IMG = STAGEBG_FIRST_IMG + STAGEBG_PER_REGION * STAGEBG_REGION_CNT - 1,
+
 	TOTALIMG,
 #ifdef GAMELOGWRITE
 	MAXRENDERCNT = TOTALIMG * 100,

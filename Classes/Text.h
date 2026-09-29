@@ -3653,6 +3653,19 @@ const char* const textId[] = {
 #include "CastleMobilityNames.inc"
 #include "CastleExteriorNames.inc"
 
+	//지역 배경. 한 벌 다섯 장, ImgDef.h 의 STAGEBG_FIRST_IMG 와 같은 차례다.
+	"bg1_far",
+	"bg1_mid",
+	"bg1_rail",
+	"bg1_boss",
+	"bg1_boss_fx",
+
+	"bg2_far",
+	"bg2_mid",
+	"bg2_rail",
+	"bg2_boss",
+	"bg2_boss_fx",
+
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
 	"새로하기",//TEXT_NEWGAME
