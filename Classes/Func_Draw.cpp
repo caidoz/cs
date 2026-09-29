@@ -5759,6 +5759,25 @@ static int LobbyCastleGroundY(void)
 	return (int)(rectBottom + CastlePartsWheelSink() * s);
 }
 
+//배경에 넘길 카메라. 근경(선로) 기준의 밀기와 배율이다.
+//
+//성이 놓이는 자리와 같은 식으로 센다. 선로는 깊이 1 이라 이 값을 그대로
+//받아 성과 함께 움직이고, 먼 층은 깊이만큼만 따라온다.
+static StageBg::Camera LobbyCamera(void)
+{
+	StageBg::Camera cam = StageBg::FixedCam(LobbyCastleGroundY());
+	float w, h;
+
+	if (!LobbyCastleSize(&w, &h)) return cam;
+
+	const float s = LobbyCamScale(w, h);
+
+	cam.panX = (DX / 2.0f - gLobbyCamX * s) - StageBg::kCastleLeft;
+	cam.zoom = gLobbyCamZoom;
+
+	return cam;
+}
+
 static void LobbyCastleDraw(void)
 {
 	float w, h;
@@ -6226,7 +6245,10 @@ void LobbyDraw(void)
 	//
 	//원경이 불투명해서 LobbySky 의 하늘 · 구름 · 낮밤은 이 아래로
 	//완전히 가린다. 그래서 부르지 않는다.
-	StageBg::Draw(LobbyCastleGroundY(), 0);
+	//
+	//카메라를 넘겨 배경도 같이 밀리고 커지게 한다. 층마다 깊이만큼만
+	//따라가므로 하늘은 거의 안 움직인다.
+	StageBg::Draw(LobbyCamera(), 0);
 
 	//---- 가방이 찼다는 알림 ----
 	//

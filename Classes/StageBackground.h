@@ -132,6 +132,37 @@ inline void Update(float dt, bool moving) {
 //하므로 직접 접는다.
 inline int WrapEven(int q) { return ((q % 2) + 2) % 2; }
 
+// 카메라. 근경(선로) 기준으로 얼마나 밀렸고 얼마나 커졌는가.
+//
+// 로비는 성을 잡고 밀거나 키울 수 있다. 전투는 붙박이라 기본값을 쓴다.
+struct Camera {
+	float panX;     // 근경이 옆으로 밀린 화면 거리
+	int   groundY;  // 근경이 딛는 줄
+	float zoom;     // 근경 배율. 1 이면 붙박이
+};
+
+inline Camera FixedCam(int groundY) {
+	Camera c = { 0.0f, groundY, 1.0f };
+	return c;
+}
+
+// 층마다 카메라를 얼마나 따라가나.
+//
+// [미는 것은 흐르는 속도 그대로다]
+// 원경이 선로의 50 분의 1 로 흐르는 것은 그만큼 멀리 있다는 뜻이다.
+// 카메라를 밀 때도 그만큼만 따라와야 앞뒤가 맞는다. 예전에는 모든 층이
+// 딛는 줄을 1:1 로 따라가서, 성을 잡고 밀면 하늘이 성만큼 움직였다 -
+// 그러면 멀리 있는 것으로 안 보인다.
+//
+// [키우는 것은 따로 둔다]
+// 같은 비로 키우면 원경이 50 분의 1 이라 하늘이 사실상 안 커진다. 성만
+// 커지고 배경은 멈춘 그림이 된다. 눈에 보이는 만큼은 따라 커지도록
+// 완만한 값을 따로 준다.
+struct Depth { float pan, zoom; };
+static const Depth kDepthFar  = { kSpeedFar / kSpeedRail, 0.25f };
+static const Depth kDepthMid  = { kSpeedMid / kSpeedRail, 0.55f };
+static const Depth kDepthRail = { 1.0f,                   1.00f };
+
 inline float Scale(void) {
 	//배율은 붙박이다. 딛는 줄은 출정 준비에서 들리고 로비에서는 카메라를
 	//따라 오르내리는데, 배율까지 같이 변하면 성 크기는 그대로인 채 배경만
@@ -146,7 +177,19 @@ inline float Scale(void) {
 	return byWidth > byRef ? byWidth : byRef;
 }
 
+//기준 높이. 카메라가 안 밀렸을 때 근경이 딛는 줄이다.
+inline float GroundRef(void) { return (float)(int)(DY * kGroundRef); }
+
+//이 층이 그려질 배율과 딛는 줄. 깊이만큼만 카메라를 따라간다.
+inline float LayerScale(const Camera& cam, const Depth& d) {
+	return Scale() * (1.0f + (cam.zoom - 1.0f) * d.zoom);
+}
+inline int LayerGround(const Camera& cam, const Depth& d) {
+	return (int)(GroundRef() + ((float)cam.groundY - GroundRef()) * d.pan);
+}
+
 //지금까지 흘려보낸 선로 거리(화면 픽셀). 바퀴가 이만큼 굴러야 한다.
+//선로는 깊이 1 이라 카메라 배율을 그대로 받는다.
 inline float RailTravelPx(void) {
 	return kSpeedRail * s_travel * Scale();
 }
@@ -162,20 +205,23 @@ inline float Swell(float sec) {
 }
 
 inline void Layer(int img, float designW, float designTopY, float speed,
-                  int groundY, float s) {
+                  const Camera& cam, const Depth& d) {
 	if (!sprite[img]) LoadImg(img);
 	if (!sprite[img]) return;
 
 	const auto sz = sprite[img]->getContentSize();
 	if (sz.width < 1.0f) return;
 
+	const float s     = LayerScale(cam, d);
 	const float tileW = designW * s;
 	const float zoom  = tileW / sz.width;
-	const float dist  = speed * s_travel * s;
+	//흘러간 거리에서 카메라가 민 만큼을 뺀다. 미는 쪽과 흐르는 쪽이 같은
+	//축이라 한 값으로 합쳐 놓아야 타일 이음매가 어긋나지 않는다.
+	const float dist  = speed * s_travel * s - cam.panX * d.pan;
 
 	const int   q     = (int)std::floor(dist / tileW);
 	const float first = -(dist - q * tileW);
-	const int   top   = TopOf(groundY, designTopY, s);
+	const int   top   = TopOf(LayerGround(cam, d), designTopY, s);
 
 	for (int j = 0; first + j * tileW < (float)DX; j++) {
 		DrawImage((int)sz.width, (int)sz.height, 0, 0,
@@ -187,8 +233,12 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 
 //보스는 원경에 붙어 있다. 한 마리뿐이라 반복하지 않고, 원경 타일 중
 //뒤집히지 않은 것 위에만 얹는다. 뒤집힌 타일에 얹으면 얼굴이 돌아간다.
-inline void Boss(int groundY, float s) {
+inline void Boss(const Camera& cam) {
 	const Region& r = Cur();
+	//보스는 원경에 붙어 있다. 원경과 같은 배율 · 같은 깊이로 움직여야
+	//붙어 있는 것으로 보인다.
+	const float s       = LayerScale(cam, kDepthFar);
+	const int   groundY = LayerGround(cam, kDepthFar);
 
 	const int baseImg = Img(SlotBoss);
 	const int fxImg   = Img(SlotBossFx);
@@ -213,7 +263,7 @@ inline void Boss(int groundY, float s) {
 	const int   img   = (swap && sprite[fxImg]) ? fxImg : baseImg;
 
 	const float tileW = kSkyW * s;
-	const float dist  = kSpeedFar * s_travel * s;
+	const float dist  = kSpeedFar * s_travel * s - cam.panX * kDepthFar.pan;
 	const int   q     = (int)std::floor(dist / tileW);
 	const float first = -(dist - q * tileW);
 
@@ -243,22 +293,26 @@ inline void Boss(int groundY, float s) {
 
 // 전투 장면 배경 한 판.  groundY 는 성과 적이 딛는 줄, arenaBottom 은
 // 아래 인벤토리가 덮기 시작하는 줄이다.
-inline void Draw(int groundY, int arenaBottom) {
-	const float s = Scale();
-
+inline void Draw(const Camera& cam, int arenaBottom) {
 	//심연색을 먼저 깐다. 원경 아래로 화면이 길어져도 색이 이어진다.
 	MemRect(0, DY, DX, Max(1, DY - arenaBottom), Cur().abyss);
 
 	//원경 꼭대기가 화면 위에 못 미치면 - 카메라를 위로 밀어 땅이 기준보다
 	//올라간 때다 - 그 위는 하늘색으로 잇는다. 원경 맨 윗줄이 그 색이라
 	//이음매가 안 보인다.
-	const int farTop = TopOf(groundY, 0.0f, s);
+	const int farTop = TopOf(LayerGround(cam, kDepthFar), 0.0f,
+	                         LayerScale(cam, kDepthFar));
 	if (farTop < DY) MemRect(0, DY, DX, DY - farTop, Cur().sky);
 
-	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  groundY, s);
-	Boss(groundY, s);
-	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  groundY, s);
-	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, groundY, s);
+	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  cam, kDepthFar);
+	Boss(cam);
+	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  cam, kDepthMid);
+	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
+}
+
+//카메라를 안 쓰는 화면(전투)용.
+inline void Draw(int groundY, int arenaBottom) {
+	Draw(FixedCam(groundY), arenaBottom);
 }
 
 } // namespace StageBg
