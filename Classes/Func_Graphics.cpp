@@ -28,6 +28,12 @@ void BattleMobileCastleUpdate(float delta)
 //예전에는 자동 전투가 켜졌을 때만 흘렸다. 그러면 웨이브 사이 룰렛이
 //열릴 때마다 세계가 멈춰 섰다. 싸움은 달리면서 하는 것이고, 무엇을
 //살지 고르는 동안에도 열차는 간다.
+//배경이 지금까지 흘려보낸 거리. 바퀴가 이 거리를 굴러야 미끄러지지 않는다.
+float StageBgRailTravelPx(void)
+{
+	return StageBg::RailTravelPx();
+}
+
 void StageBgUpdate(float delta)
 {
 	StageBg::SetRegionForStage(robin.stage);

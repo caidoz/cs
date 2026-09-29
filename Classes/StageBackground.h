@@ -145,6 +145,11 @@ inline float Scale(void) {
 	return byWidth > byRef ? byWidth : byRef;
 }
 
+//지금까지 흘려보낸 선로 거리(화면 픽셀). 바퀴가 이만큼 굴러야 한다.
+inline float RailTravelPx(void) {
+	return kSpeedRail * s_travel * Scale();
+}
+
 //설계 y 를 화면 y 로 옮긴다. 화면 y 는 사각형의 윗변이고 위로 갈수록 크다.
 inline int TopOf(int groundY, float designY, float s) {
 	return groundY + (int)((kDeckY - designY) * s);

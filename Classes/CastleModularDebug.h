@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <cmath>
 
+//배경이 지금까지 흘려보낸 거리(화면 픽셀). StageBackground 가 센다.
+float StageBgRailTravelPx(void);
+
 namespace CastleParts {
 struct Box { int x,y,w,h; };
 static const Box kBox[CastleCount] = {
@@ -42,11 +45,19 @@ static void DrawFixedAsset(int img,int sourceW,int sourceH,float x,float yTop,fl
  if(!sprite[img]) { missingAsset=true; return; }
  DrawImage(sourceW,sourceH,0,0,(int)x,(int)yTop,false,0,0,0,0,scale,sprite[img],img);
 }
-static float WheelAngleNow() {
- // PaintClet advances this engine counter after every rendered frame.  Using
- // it keeps the debug animation on the same clock as every other game sprite
- // and avoids a wall-clock value being hidden by the renderer's sprite pool.
- return std::fmod((float)frame*0.5f,360.0f);
+//바퀴 그림 128 칸 안쪽의 투명 여백. 실제 바퀴는 이만큼 작다. 이걸 빼먹고
+//칸 크기로 맞추면 바퀴가 땅에서 뜬 채로 돈다.
+static const float kWheelPad=7.0f;
+
+//바퀴가 땅을 구르는 각도. 속도를 따로 정하지 않는다.
+//
+//예전에는 frame*0.5(초당 30도) 였다. 땅은 초당 75 픽셀쯤 흐르는데 지름
+//76 픽셀짜리 바퀴가 30 도만 돌면 바퀴가 미끄러진다. 굴러간 거리를
+//반지름으로 나누면 각도가 그대로 나온다 - 배율이나 속도를 고쳐도 다시
+//맞출 일이 없다.
+static float WheelAngleNow(float radiusPx) {
+ if(radiusPx<0.5f) return 0.0f;
+ return std::fmod(StageBgRailTravelPx()/radiusPx*57.29578f,360.0f);
 }
 static void DrawWheelAsset(int img,float centerX,float centerY,float scale,float angle) {
  if(!sprite[img]) LoadImg(img);
@@ -150,15 +161,15 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
  // Draw the wheels last.  The title screen buffer preserves visit order, so
  // this is the foreground pass over the lower hull.
  if(castle<6) {
-  //바퀴를 키워 조립 밑변에 닿게 놓는다. 밑변이 곧 레일 윗면이므로
-  //(성을 세우는 쪽이 그렇게 맞춘다) 바퀴가 선로를 딛는다.
-  //
-  //예전에는 작은 바퀴가 아래쪽 껍데기 안에 파묻혀 있어서, 땅에 닿는
-  //자리를 따로 9.87 만큼 보정해 줘야 했다. 이제 바퀴 반지름이 곧
-  //보정값이다.
-  const float wheelScale=scale*(2.0f/3.0f)*0.80f*1.5f;
-  const float wheelY=assemblyBottom+64.0f*wheelScale;
-  const float wheelAngle=WheelAngleNow();
+  //바퀴는 아래쪽 껍데기 밑단에 걸려 땅까지 닿는다. 크기를 숫자로 따로
+  //주면 방 높이나 성 배율을 고칠 때마다 다시 맞춰야 하므로, 메워야 할
+  //틈에서 거꾸로 구한다. 껍데기 밑단(kRoomStackLift-64)부터 땅(0)까지가
+  //그 틈이고, 그 길이가 곧 바퀴의 보이는 지름이다.
+  const float gap=kRoomStackLift-64.0f;
+  const float wheelScale=scale*gap/(128.0f-kWheelPad*2.0f);
+  const float radiusPx=(64.0f-kWheelPad)*wheelScale;
+  const float wheelY=assemblyBottom+radiusPx;
+  const float wheelAngle=WheelAngleNow(radiusPx);
   DrawWheelAsset(WheelAssetId(castle,stage),left+128.0f*scale,wheelY,wheelScale,wheelAngle);
   DrawWheelAsset(WheelAssetId(castle,stage),left+384.0f*scale,wheelY,wheelScale,wheelAngle);
  }
