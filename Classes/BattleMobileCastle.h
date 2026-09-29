@@ -145,7 +145,7 @@ inline void DrawCastle(int groundY) {
 
 	const float shudderY = (s_hitFlash > 0.0f) ? ((rand() % 5) - 2) * 1.5f * (float)_2X : 0.0f;
 	const float rumbleY = IsMoving() ? (std::sin((float)frame * 0.40f) * 1.0f * (float)_2X) : 0.0f;
-	const float castleLeft = 6.0f * (float)_2X;
+	const float castleLeft = StageBg::kCastleLeft;
 	const float assemblyBottom = (float)groundY - CastlePartsWheelSink() * scale + shudderY + rumbleY;
 	const float yTop = assemblyBottom + castleH;
 

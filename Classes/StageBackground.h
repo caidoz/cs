@@ -39,6 +39,10 @@ static const float kDeckY    = kRailTopY + kRailH * 0.0635f; // 867.8
 // 흐르는 속도. 설계 폭 1088 기준 초당 픽셀.
 static const float kSpeedFar = 2.2f, kSpeedMid = 15.4f, kSpeedRail = 110.0f;
 
+//성의 왼쪽 여백. 성은 왼쪽에 서고 오른쪽이 싸우는 자리다. 로비와 전투가
+//같은 값을 써야 넘어갈 때 성이 옆으로 미끄러지지 않는다.
+static const float kCastleLeft = 6.0f * (float)_2X;
+
 //장면이 딛는 줄의 기준 높이. 배율은 여기서만 정한다.
 //
 //로비와 전투가 우연이 아니라 이 값으로 같은 자리에 선다 - 로비 카메라가

@@ -5397,8 +5397,10 @@ static void LobbyCamClamp(void)
 	const float halfW = DX / 2.0f / s;
 	const float halfH = (DY - LobbyViewBottom()) / 2.0f / s;
 
+	//전투와 같은 자리에 붙인다. 가운데에 두면 로비에서 전투로 넘어갈 때
+	//성이 옆으로 미끄러진다.
 	if (w <= halfW * 2)
-		gLobbyCamX = w / 2;
+		gLobbyCamX = (DX / 2.0f - StageBg::kCastleLeft) / s;
 	else
 		gLobbyCamX = Max(halfW, Min(w - halfW, gLobbyCamX));
 
