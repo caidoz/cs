@@ -5,6 +5,8 @@
 
 //배경이 지금까지 흘려보낸 거리(화면 픽셀). StageBackground 가 센다.
 float StageBgRailTravelPx(void);
+//성 본체보다 바퀴를 이만큼 덜 내린다. 둘의 내림값은 StageBackground 에 있다.
+float CastleWheelLiftPx(void);
 
 namespace CastleParts {
 struct Box { int x,y,w,h; };
@@ -168,7 +170,9 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
   const float gap=kRoomStackLift-64.0f;
   const float wheelScale=scale*gap/(128.0f-kWheelPad*2.0f);
   const float radiusPx=(64.0f-kWheelPad)*wheelScale;
-  const float wheelY=assemblyBottom+radiusPx;
+  //본체는 더 내려앉히고 바퀴는 덜 내린다. 같이 내리면 바퀴가 선로
+  //아래로 파묻힌다.
+  const float wheelY=assemblyBottom+radiusPx+CastleWheelLiftPx();
   const float wheelAngle=WheelAngleNow(radiusPx);
   DrawWheelAsset(WheelAssetId(castle,stage),left+128.0f*scale,wheelY,wheelScale,wheelAngle);
   DrawWheelAsset(WheelAssetId(castle,stage),left+384.0f*scale,wheelY,wheelScale,wheelAngle);
