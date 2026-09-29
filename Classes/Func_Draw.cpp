@@ -5532,7 +5532,7 @@ static void LobbyCastleToggleDraw(void)
 
 static void LobbyCastleButtonsDraw(void)
 {
-	const int curCastle = Max(0, Min(gMobileCastleVisual, 19));
+	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
 	char str[16];
 
 	for (int n = 0; n < 10; n++) {
@@ -5613,7 +5613,11 @@ bool LobbyCamTouchBegan(int id, float x, float y)
 #if LOBBY_CAM_DEBUG_BUTTONS
 		const int castleStep = gLobbyCastleMenuOpen ? 0 : LobbyCastleArrowHit(x, y);
 		if (castleStep != 0) {
-			gMobileCastleVisual = (gMobileCastleVisual + castleStep + 20) % 20;
+			//성은 열 개다. 스무 개짜리 그림(castle0~19)을 쓰던 때의
+			//수가 남아 있어서, 화살표가 없는 성 열한 번째부터 스무
+			//번째까지를 지나갔다.
+			gMobileCastleVisual = (gMobileCastleVisual + castleStep + CASTLE_STAGE_CNT)
+			                    % CASTLE_STAGE_CNT;
 			gLobbyCamImg = -1;
 			gLobbyPanBlocked = true;
 			return true;

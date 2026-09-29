@@ -78,7 +78,15 @@ static void DrawAsset(int castle,int part,int level,float x,float yTop,float sca
  const int partH=part==Roof?164+(castle+1)*92:(part==Mobility&&castle>=7?176:kPartH[part]);
  DrawImage(kPartW[part],partH,0,0,(int)x,(int)yTop,false,0,0,0,0,scale,sprite[img],img);
 }
-static float NaturalLowerH(int castle) { return castle<6?104.0f:240.0f; }
+//첫 방의 밑변이 조립 밑변에서 얼마나 떠 있나. 바퀴성이든 부유성이든
+//같다.
+//
+//예전에는 바퀴성 104, 부유성 240 으로 갈렸다. 그러면 성 단계를 넘길 때
+//첫 방이 오르내려서 같은 성의 같은 층으로 안 읽힌다. 둘의 가운데인
+//172 로 모은다. 남는 아래 공간은 바퀴성은 커진 바퀴가, 부유성은 엔진과
+//불꽃이 채운다.
+static const float kRoomStackLift=172.0f;
+static float NaturalLowerH(int castle) { (void)castle; return kRoomStackLift; }
 static float NaturalUpperH(int castle) { return castle==0?192.0f:0.0f; }
 static float HoverPhase() { return std::fmod((float)frame,180.0f)/180.0f; }
 static float HoverLift(int castle) {
@@ -142,8 +150,14 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
  // Draw the wheels last.  The title screen buffer preserves visit order, so
  // this is the foreground pass over the lower hull.
  if(castle<6) {
-  const float wheelScale=scale*(2.0f/3.0f)*0.80f;
-  const float wheelY=bottom-60.0f*scale;
+  //바퀴를 키워 조립 밑변에 닿게 놓는다. 밑변이 곧 레일 윗면이므로
+  //(성을 세우는 쪽이 그렇게 맞춘다) 바퀴가 선로를 딛는다.
+  //
+  //예전에는 작은 바퀴가 아래쪽 껍데기 안에 파묻혀 있어서, 땅에 닿는
+  //자리를 따로 9.87 만큼 보정해 줘야 했다. 이제 바퀴 반지름이 곧
+  //보정값이다.
+  const float wheelScale=scale*(2.0f/3.0f)*0.80f*1.5f;
+  const float wheelY=assemblyBottom+64.0f*wheelScale;
   const float wheelAngle=WheelAngleNow();
   DrawWheelAsset(WheelAssetId(castle,stage),left+128.0f*scale,wheelY,wheelScale,wheelAngle);
   DrawWheelAsset(WheelAssetId(castle,stage),left+384.0f*scale,wheelY,wheelScale,wheelAngle);
@@ -174,10 +188,12 @@ float CastlePartsUpperH(int castleLevel) {
 	return NaturalUpperH(Max(1, Min(CastleCount, castleLevel)) - 1);
 }
 float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW / 512.0f; }
-//바퀴가 땅에 닿는 자리는 조립 네모의 밑변보다 이만큼 위다. 바퀴는 아래쪽
-//껍데기 안으로 파묻혀 있어서, 네모 밑변을 땅에 맞추면 성이 떠 보인다.
-//성을 세우는 쪽(로비 · 전투)이 다 이 값을 쓴다.
-float CastlePartsWheelSink(void) { return 9.87f; }
+//조립 네모의 밑변이 곧 땅에 닿는 줄이다. 바퀴가 딱 그 자리까지 내려오게
+//그려지므로(DrawCastle) 따로 파묻을 값이 없다.
+//
+//예전에는 작은 바퀴가 아래쪽 껍데기 안에 숨어 있어서 9.87 만큼 내려
+//놓아야 했다. 바퀴를 키워 밖으로 꺼내면서 그 보정이 사라졌다.
+float CastlePartsWheelSink(void) { return 0.0f; }
 float CastlePartsFloatOffset(int castleLevel) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;
