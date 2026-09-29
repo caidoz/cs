@@ -1030,6 +1030,7 @@ bool Core::init()
 
 void Core::Run(float delta) {
 	LobbySkyUpdate(delta);
+	StageBgUpdate(delta);
 	if (drawHandle == MD_PLAY) {
 		BattleMobileCastleUpdate(delta);
 	}

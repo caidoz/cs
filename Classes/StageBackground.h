@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // StageBackground.h
 // 성열차가 달리는 지역의 배경. 원경 - 보스 - 중경 - 선로 를 서로 다른
 // 속도로 흘려 깊이를 낸다.
@@ -38,6 +38,13 @@ static const float kDeckY    = kRailTopY + kRailH * 0.0635f; // 867.8
 
 // 흐르는 속도. 설계 폭 1088 기준 초당 픽셀.
 static const float kSpeedFar = 2.2f, kSpeedMid = 15.4f, kSpeedRail = 110.0f;
+
+//장면이 딛는 줄의 기준 높이. 배율은 여기서만 정한다.
+//
+//로비와 전투가 우연이 아니라 이 값으로 같은 자리에 선다 - 로비 카메라가
+//성을 놓는 자리를 세어 보면 화면 높이의 0.31 쯤이고, 전투도 같은 값을
+//쓴다(VisualGroundY).
+static const float kGroundRef = 0.31f;
 
 // ---- 지역마다 다른 것 ----
 
@@ -106,11 +113,20 @@ inline void Update(float dt, bool moving) {
 inline int WrapEven(int q) { return ((q % 2) + 2) % 2; }
 
 inline float Scale(int groundY) {
-	//폭을 채우되, 원경 꼭대기가 화면 위를 넘도록 더 키운다. 모자라면
-	//하늘 자리에 빈 띠가 남는다.
-	const float byWidth  = (float)DX / kDesignW;
-	const float byHeight = (float)Max(1, DY - groundY) / kDeckY;
-	return byWidth > byHeight ? byWidth : byHeight;
+	//배율은 붙박이다. 딛는 줄은 출정 준비에서 위로 들리고 로비에서는
+	//카메라를 따라 오르내리는데, 배율까지 같이 변하면 성 크기는 그대로인
+	//채 배경만 줌해서 어긋나 보인다.
+	//
+	//폭을 채우되, 기준 높이에서 원경 꼭대기가 화면 위를 넘을 만큼 키운다.
+	const float byWidth = (float)DX / kDesignW;
+	const float byRef   = (float)Max(1, DY - (int)(DY * kGroundRef)) / kDeckY;
+	float s = byWidth > byRef ? byWidth : byRef;
+
+	//땅이 기준보다 낮게 내려간 때만 더 키운다. 안 그러면 하늘 자리에
+	//빈 띠가 남는다.
+	const float cover = (float)Max(1, DY - groundY) / kDeckY;
+
+	return s > cover ? s : cover;
 }
 
 //설계 y 를 화면 y 로 옮긴다. 화면 y 는 사각형의 윗변이고 위로 갈수록 크다.

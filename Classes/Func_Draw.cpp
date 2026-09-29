@@ -7,6 +7,7 @@
 #include "Data/FoeGearData.h"
 #ifdef GAMEDEBUG
 #include "CastleModularDebug.h"
+#include "StageBackground.h"
 // CastleModularDebug also exposes its active state to Core so animated title
 // previews can request continuous redraws.
 #endif
@@ -5725,6 +5726,20 @@ static void LobbyCastlePrepare(void)
 
 }
 
+//성이 딛는 줄. 배경의 레일 윗면을 여기에 맞춘다. LobbyCastleDraw 가
+//성을 놓는 자리와 같은 식이어야 하므로 한 군데서만 센다.
+static int LobbyCastleGroundY(void)
+{
+	float w, h;
+
+	if (!LobbyCastleSize(&w, &h)) return (int)(DY * StageBg::kGroundRef);
+
+	const float s = LobbyCamScale(w, h);
+	const float rectBottom = LobbyViewCY() + gLobbyCamY * s - h * s;
+
+	return (int)(rectBottom + CastlePartsWheelSink() * s);
+}
+
 static void LobbyCastleDraw(void)
 {
 	float w, h;
@@ -5736,21 +5751,8 @@ static void LobbyCastleDraw(void)
 	const int top = (int)(LobbyViewCY() + gLobbyCamY * s);
 	const float bottom = top - h * s;
 
-	//t2.png의 32px 타일로 로비 지면을 만든다. 첫 줄은 잔디 접지면,
-	//둘째 줄은 암반층이라 긴 화면에서도 잘린 그림처럼 보이지 않는다.
-	const int lobbyTileImg = MAP_TILE_IMG + 2;
-	if (!sprite[lobbyTileImg]) LoadImg(lobbyTileImg);
-	if (sprite[lobbyTileImg]) {
-		const int tile = 32;
-		const int groundTop = (int)bottom + 1 * _2X;
-		for (int tx = 0; tx < DX + tile; tx += tile) {
-			const int variant = (tx / tile) % 4;
-			DrawImage(tile, tile, variant * tile, 0, tx, groundTop,
-				false, false, false, false, false, 1.0f, sprite[lobbyTileImg], lobbyTileImg);
-			DrawImage(tile, tile, variant * tile, tile, tx, groundTop - tile,
-				false, false, false, false, false, 1.0f, sprite[lobbyTileImg], lobbyTileImg);
-		}
-	}
+	//지면은 LobbyDraw 가 먼저 깐 선로다. 성은 그 위에 선다.
+	(void)bottom;
 
 	//조각을 그 자리에서 조립한다. 바퀴도 여기서 돈다.
 	CastlePartsDrawRect(LobbyCastleLevel(), left, top, (int)(w * s), (int)(h * s));
@@ -5858,7 +5860,14 @@ void LobbyDraw(void)
 	char str[96];
 	ResetRectPoint();
 	LobbyCastlePrepare();
-	LobbySky::draw();
+
+	//로비도 전투와 같은 선로 위다. 성은 멈춰 서 있는 건물이 아니라
+	//늘 달리는 열차이고, 바퀴도 로비에서 돈다. 배경이 다르면 로비에서
+	//전투로 넘어갈 때 다른 세계로 순간이동한 것처럼 보인다.
+	//
+	//원경이 불투명해서 LobbySky 의 하늘 · 구름 · 낮밤은 이 아래로
+	//완전히 가린다. 그래서 부르지 않는다.
+	StageBg::Draw(LobbyCastleGroundY(), 0);
 
 	//---- 가방이 찼다는 알림 ----
 	//
@@ -5872,7 +5881,6 @@ void LobbyDraw(void)
 
 	// 디오라마 대신 성 그림 한 장을 카메라(확대/이동)로 그린다.
 	LobbyCastleDraw();
-	LobbySky::drawFront();
 
 	// 히어로와 동료는 성 그림 위 비율 자리(LobbyCastleToObj)에 세운다.
 	// 확대/이동하면 성과 같이 움직이고 같이 커진다.

@@ -10,6 +10,18 @@ void BattleMobileCastleUpdate(float delta)
 	BattleMobileCastle::Update(delta);
 }
 
+//배경이 흐르는 시계. 로비 · 출정 준비 · 전투가 같은 선로를 쓰므로
+//화면과 상관없이 한 자리에서 굴린다.
+//
+//로비에서도 흐르게 두는 것은 성의 바퀴가 늘 돌기 때문이다. 바퀴는
+//도는데 선로가 서 있으면 성이 헛도는 것으로 보인다. 전투에서는 자동
+//전투가 곧 달리는 스위치라 그때만 흐른다.
+void StageBgUpdate(float delta)
+{
+	StageBg::SetRegionForStage(robin.stage);
+	StageBg::Update(delta, drawHandle == MD_LOBBY || StageRtAutoOn());
+}
+
 //타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미
 //화면 절대좌표인 것들(전체화면 이펙트, 레터박스, DX/2 기준으로 놓는 강타격 연출)에 쓴다.
 //이런 것들에 월드 변환을 걸면 줌 중심에서 멀수록 크게 밀려나고, 소프트웨어 클리핑이

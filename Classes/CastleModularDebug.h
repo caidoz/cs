@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CastlePartState.h"
 #include <cstdlib>
 #include <cmath>
@@ -165,6 +165,10 @@ void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  if(w) *w=castle==0?672.0f:512.0f;
  if(h) *h=(castle+1)*128.0f+NaturalLowerH(castle)+NaturalUpperH(castle);
 }
+//바퀴가 땅에 닿는 자리는 조립 네모의 밑변보다 이만큼 위다. 바퀴는 아래쪽
+//껍데기 안으로 파묻혀 있어서, 네모 밑변을 땅에 맞추면 성이 떠 보인다.
+//성을 세우는 쪽(로비 · 전투)이 다 이 값을 쓴다.
+float CastlePartsWheelSink(void) { return 9.87f; }
 float CastlePartsFloatOffset(int castleLevel) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;

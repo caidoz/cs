@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // BattleMobileCastle.h
 // Manages the Mobile Fortress Battle Scene in MD_PLAY:
 // - Left: Player's Modular Mobile Castle (1~10 floors, drawn via CastlePartsDrawRect)
@@ -14,6 +14,8 @@
 
 // Forward declaration of canonical modular castle renderer (defined in CastleModularDebug.h)
 void CastlePartsDrawRect(int castleLevel, int x, int yTop, int w, int h);
+void CastlePartsNaturalSize(int castleLevel, float* w, float* h);
+float CastlePartsWheelSink(void);
 
 namespace BattleMobileCastle {
 
@@ -27,7 +29,9 @@ inline bool IsMoving() {
 
 inline int VisualGroundY(int layoutGroundY) {
 	(void)layoutGroundY;
-	return (int)(DY * 0.31f);
+	//전장은 고정이다. 격자가 오르내려도 세계가 따라 움직이면 안 된다.
+	//로비도 성을 같은 줄에 놓는다(StageBg::kGroundRef).
+	return (int)(DY * StageBg::kGroundRef);
 }
 
 struct SlotUV { float u, v; };
@@ -73,8 +77,6 @@ inline void Update(float delta) {
 
 	if (s_hitFlash > 0.0f) s_hitFlash = Max(0.0f, s_hitFlash - dt * 3.0f);
 
-	StageBg::SetRegionForStage(robin.stage);
-	StageBg::Update(dt, moving);
 }
 
 inline void DrawBackground(int groundY, int invenTop) {
@@ -125,19 +127,27 @@ inline void DrawInventoryCastleReflections(int castleIdx, float castleLeft, floa
 
 inline void DrawCastle(int groundY) {
 	const int curCastle = Max(0, Min((int)robin.castle, 9));
-	const int floorCount = curCastle + 1;
 	const float lowerH = curCastle < 6 ? 104.0f : 240.0f;
-	const float naturalW = curCastle == 0 ? 672.0f : 512.0f;
-	const float naturalH = (float)floorCount * 128.0f + lowerH;
 
-	const float castleW = 150.0f * (float)_2X;
-	const float scale = castleW / naturalW;
+	//조립표가 적어 둔 네모. 성 1 은 지붕이 방보다 높아 윗여유가 따로 있다.
+	//여기서 빠뜨리면 CastlePartsDrawRect 가 네모 안에서 다시 가운데로
+	//맞추면서 성이 땅에서 뜬다.
+	float naturalW = 0.0f, naturalH = 0.0f;
+	CastlePartsNaturalSize(curCastle + 1, &naturalW, &naturalH);
+
+	//폭만 보고 키우면 층이 쌓일수록 화면 위로 잘려 나간다. 열 층짜리는
+	//자연 높이가 1520 이라 폭 300 에 맞추면 891 이 되어 전장을 넘는다.
+	//그래서 폭과 높이 중 작은 쪽을 따른다 - 로비 카메라와 같은 식이다.
+	const float fitW = 150.0f * (float)_2X / naturalW;
+	const float fitH = (float)Max(1, DY - groundY - 24 * _2X) / naturalH;
+	const float scale = fitW < fitH ? fitW : fitH;
+	const float castleW = naturalW * scale;
 	const float castleH = naturalH * scale;
 
 	const float shudderY = (s_hitFlash > 0.0f) ? ((rand() % 5) - 2) * 1.5f * (float)_2X : 0.0f;
 	const float rumbleY = IsMoving() ? (std::sin((float)frame * 0.40f) * 1.0f * (float)_2X) : 0.0f;
 	const float castleLeft = 6.0f * (float)_2X;
-	const float assemblyBottom = (float)groundY - 9.87f * scale + shudderY + rumbleY;
+	const float assemblyBottom = (float)groundY - CastlePartsWheelSink() * scale + shudderY + rumbleY;
 	const float yTop = assemblyBottom + castleH;
 
 	CastlePartsDrawRect(curCastle + 1, (int)castleLeft, (int)yTop, (int)castleW, (int)castleH);
