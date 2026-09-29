@@ -17,6 +17,7 @@ void CastlePartsDrawRect(int castleLevel, int x, int yTop, int w, int h);
 void CastlePartsNaturalSize(int castleLevel, float* w, float* h);
 float CastlePartsWheelSink(void);
 float CastlePartsRoomScale(void);
+float CastlePartsFloatOffset(int castleLevel);
 
 namespace BattleMobileCastle {
 
@@ -25,7 +26,10 @@ static float s_scrollSpeed = 24.0f;
 static float s_hitFlash = 0.0f;
 
 inline bool IsMoving() {
-	return StageRtAutoOn();
+	//달리는 것과 싸우는 것은 별개다. 열차는 웨이브 사이에도 간다.
+	//배경이 흐르는 조건(StageBgUpdate)과 같아야 차체 흔들림이 땅과
+	//따로 놀지 않는다.
+	return drawHandle == MD_PLAY;
 }
 
 inline int VisualGroundY(int layoutGroundY) {
@@ -146,36 +150,21 @@ inline void DrawCastle(int groundY) {
 	const float shudderY = (s_hitFlash > 0.0f) ? ((rand() % 5) - 2) * 1.5f * (float)_2X : 0.0f;
 	const float rumbleY = IsMoving() ? (std::sin((float)frame * 0.40f) * 1.0f * (float)_2X) : 0.0f;
 	const float castleLeft = StageBg::kCastleLeft;
-	const float assemblyBottom = (float)groundY - CastlePartsWheelSink() * scale + shudderY + rumbleY;
+	const float assemblyBottom = (float)groundY - CastlePartsWheelSink() * scale
+	                           - StageBg::kCastleDropPx + shudderY + rumbleY;
 	const float yTop = assemblyBottom + castleH;
 
 	CastlePartsDrawRect(curCastle + 1, (int)castleLeft, (int)yTop, (int)castleW, (int)castleH);
 
 	DrawInventoryCastleReflections(curCastle, castleLeft, yTop, naturalW, naturalH, scale);
 
-	const float bottom = assemblyBottom + lowerH * scale;
-	const float charZoom = DIORAMAZOOM * 0.70f * scale * 512.0f / DX;
-	const float heroZoom = ao[ROBIN].zoom * charZoom;
-	const float heroX = castleLeft + 256.0f * scale;
-	const float heroY = bottom + 14.0f * scale;
-
-	if (ao[ROBIN].active) {
-		const int heroMotion = (ao[ROBIN].motion >= 0) ? ao[ROBIN].motion : (PO_C0_N0 + (frame / 4) % 4);
-		DrawPlayer(&ao[ROBIN], heroMotion, (int)heroX, (int)heroY, RIGHT, heroZoom, 0.0f, false, true);
-	}
-
-	static const struct { float u; int floorOffset; } crewSlots[MAXCREW] = {
-		{ 0.28f, 0 }, { 0.72f, 0 }, { 0.35f, 1 }, { 0.65f, 1 }
-	};
-	for (int i = 0; i < MAXCREW; ++i) {
-		const OBJECT* crew = &ao[CREW + i];
-		if (!crew->active || crew->dead) continue;
-		const int crewFloor = Min(crewSlots[i].floorOffset, curCastle);
-		const float cx = castleLeft + crewSlots[i].u * naturalW * scale;
-		const float cy = bottom + ((float)crewFloor * 128.0f + 14.0f) * scale;
-		DrawCmfDetailShadow(crew->cmf, crew->motion, (int)cx, (int)cy, RIGHT,
-			enemyIconZoom[crew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * 0.90f * charZoom);
-	}
+	//성 안의 사람은 로비와 똑같이 세운다. 전에는 여기서만 네 자리에
+	//party 를 세우고 크기 기준도 달라서(512 대 922), 같은 동료가 두
+	//화면에서 두 배 차이로 나왔다. 성이 같으면 안에 있는 사람도 같다.
+	//나가는 동료만 이 안에서 1.5 배가 된다.
+	CastleCrewDrawAt(castleLeft, yTop + CastlePartsFloatOffset(curCastle + 1) * scale,
+	                 naturalW, naturalH, scale, curCastle, true);
+	(void)lowerH;
 }
 
 inline void DrawBossMonster(int groundY) {
@@ -189,7 +178,9 @@ inline void DrawBossMonster(int groundY) {
 }
 
 inline void Draw(int groundY, int invenTop) {
-	groundY = VisualGroundY(groundY) + (int)GetStageWorldLift();
+	//UI 가 내려간다고 장면까지 들어올리지 않는다. 싸움이 시작될 때마다
+	//세계가 위로 솟으면 같은 자리를 달리는 열차로 안 읽힌다.
+	groundY = VisualGroundY(groundY);
 	const int arenaBottom = Max(0, groundY - 85 * _2X);
 	SetSectionClip(0, DY, DX, DY - arenaBottom, false);
 

@@ -76,6 +76,10 @@ bool LobbyCamTouchEnded(int id);
 //시험이 끝나면 이 네 줄과 Func_Draw.cpp 의 블록을 통째로 지운다.
 void GridTestDraw(void);
 int GetStageInventoryTop(void);
+//성 안의 히어로와 동료. 로비와 전투가 같이 쓴다.
+void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
+                      int castle, bool battle);
+float CastlePartsUpperH(int castleLevel);
 float GetStageWorldLift(void);
 void GridTestPick(int n, bool fromShop);
 void GridTestRelease(void);

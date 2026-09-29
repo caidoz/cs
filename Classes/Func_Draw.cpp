@@ -5308,6 +5308,9 @@ static void LobbyCastleToObj(float u, float v, float* x, float* y)
 //크기(DIORAMAZOOM * 0.70)가 되게 잡았다.
 #define LOBBY_CHAR_REF_W		922.0f	//castle9 가로
 
+//이번 판에 나가는 동료를 얼마나 키우나. 성 안에 그냥 있을 때가 기준이다.
+#define CASTLE_CREW_BATTLE_ZOOM	1.5f
+
 static float LobbyCharZoom(void)
 {
 	return DIORAMAZOOM * 0.70f * gLobbyCastleScale * LOBBY_CHAR_REF_W / DX;
@@ -5327,7 +5330,12 @@ static float LobbyCharZoom(void)
 static int LobbyCastleLevel(void)
 {
 	if (!gLobbyVisualReady) {
-		gMobileCastleVisual = Max(0, Min(robin.castle, CASTLE_STAGE_CNT - 1));
+		//0 단계부터 본다. 화살표로 올려 가며 확인한다.
+		//
+		//원래는 robin.castle 을 따랐는데, 제목 화면의 이어하기가
+		//디버그 최대치라 늘 열 층짜리로 들어왔다. 실제 진행을 따르게
+		//하려면 아래 줄을 robin.castle 로 되돌리면 된다.
+		gMobileCastleVisual = 0;
 		gLobbyVisualReady = true;
 	}
 
@@ -5755,7 +5763,8 @@ static void LobbyCastleDraw(void)
 
 	const float s = LobbyCamScale(w, h);
 	const int left = (int)(DX / 2.0f - gLobbyCamX * s);
-	const int top = (int)(LobbyViewCY() + gLobbyCamY * s);
+	//선로 자리는 그대로 두고 성만 내린다. 전투와 같은 값이다.
+	const int top = (int)(LobbyViewCY() + gLobbyCamY * s - StageBg::kCastleDropPx);
 	const float bottom = top - h * s;
 
 	//지면은 LobbyDraw 가 먼저 깐 선로다. 성은 그 위에 선다.
@@ -5862,32 +5871,30 @@ static void LobbyBottomNavDraw(void)
 	}
 }
 
-void LobbyDraw(void)
+//성 안의 히어로와 동료를 그린다. 로비와 전투가 같이 쓴다.
+//
+//[왜 나눠 쓰나]
+//예전에는 로비가 성 슬롯표대로 64 명을 세우고, 전투는 따로 네 자리에
+//party 만 세웠다. 크기 기준도 달라서(로비 922, 전투 512) 같은 동료가
+//두 화면에서 두 배 차이로 나왔다. 성이 같은 성이면 안에 있는 사람도
+//같은 자리에 같은 크기로 있어야 한다.
+//
+//[전투에서만 다른 것]
+//이번 판에 나가는 동료만 1.5 배로 키우고 전투 모션을 준다. 나머지는
+//로비에서와 똑같이 서 있거나 걷는다. 누가 싸우러 나갔는지가 성 그림
+//안에서 바로 읽힌다.
+//
+//left/top/w/h/scale 은 성이 그려진 자리다. 로비는 카메라가, 전투는
+//전장이 정한다. 안에서 gLobbyCastle* 에 넣어 두므로 LobbyCastleToObj
+//가 두 화면에서 같이 동작한다.
+void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
+                      int curCastleIn, bool battle)
 {
-	char str[96];
-	ResetRectPoint();
-	LobbyCastlePrepare();
-
-	//로비도 전투와 같은 선로 위다. 성은 멈춰 서 있는 건물이 아니라
-	//늘 달리는 열차이고, 바퀴도 로비에서 돈다. 배경이 다르면 로비에서
-	//전투로 넘어갈 때 다른 세계로 순간이동한 것처럼 보인다.
-	//
-	//원경이 불투명해서 LobbySky 의 하늘 · 구름 · 낮밤은 이 아래로
-	//완전히 가린다. 그래서 부르지 않는다.
-	StageBg::Draw(LobbyCastleGroundY(), 0);
-
-	//---- 가방이 찼다는 알림 ----
-	//
-	//못 받은 것이 있으면 로비로 나온 뒤 한 번만 띄운다. 전투 중에 띄우면
-	//판이 끊기고, 가방을 정리할 길도 그 자리에는 없다.
-	if (gInvenFullNotice && drawHandle == MD_LOBBY) {
-		gInvenFullNotice = false;
-		SetAlert(ALERT_INVENFULL);
-		return;
-	}
-
-	// 디오라마 대신 성 그림 한 장을 카메라(확대/이동)로 그린다.
-	LobbyCastleDraw();
+	gLobbyCastleLeft = left;
+	gLobbyCastleTop = top;
+	gLobbyCastleW = w;
+	gLobbyCastleH = h;
+	gLobbyCastleScale = scale;
 
 	// 히어로와 동료는 성 그림 위 비율 자리(LobbyCastleToObj)에 세운다.
 	// 확대/이동하면 성과 같이 움직이고 같이 커진다.
@@ -5943,11 +5950,16 @@ void LobbyDraw(void)
 		float maxRoamX;   // 배회 가로 반경
 	};
 
-	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
+	const int curCastle = Max(0, Min(curCastleIn, CASTLE_STAGE_CNT - 1));
 
 	// 성별 히어로 기본 위치 (1층 바닥 가운데)
+	//슬롯표는 방 더미 안의 0~1 로 적혀 있다. 성 전체 좌표로 옮기려면
+	//방 더미 위에 얹힌 지붕(성 1 만 192)만큼 내려야 한다. 이걸 빼먹어서
+	//성 1 의 동료가 방이 아니라 지붕 위에 올라서 있었다. 성 10 은 지붕
+	//여유가 0 이라 멀쩡해 보였다.
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
-	const float heroV = ((float)curCastle * 128.0f + 114.0f) / gLobbyCastleH;
+	const float upperH = CastlePartsUpperH(curCastle + 1);
+	const float heroV = (upperH + (float)curCastle * 128.0f + 114.0f) / gLobbyCastleH;
 
 	// 히어로 자리
 	float heroCenterX, heroY;
@@ -5968,7 +5980,7 @@ void LobbyDraw(void)
 		// Slot tables are authored in the room stack's old 0..1 space.  The
 		// castle bounds now also include its lower hull, so remap the vertical
 		// coordinate into the complete shared local space.
-		const float castleV=def.v*roomStackH/gLobbyCastleH;
+		const float castleV=(upperH+def.v*roomStackH)/gLobbyCastleH;
 		LobbyCastleToObj(def.u, castleV, &x, &y);
 		LobbySlotInstance inst = {
 			def.role,
@@ -6116,6 +6128,24 @@ void LobbyDraw(void)
 			pCrew->motion = crewPos[pCrew->type * 5] + (frame / 6 + owned) % idleFrames;
 		}
 
+		//이번 판에 나가는 동료는 실제로 싸우는 그 개체의 모션을 그대로
+		//가져온다. 흉내 낸 모션을 따로 만들면 성 안의 동료와 전장의
+		//동료가 다른 동작을 해서 같은 사람으로 안 읽힌다.
+		const OBJECT* live = nullptr;
+		if (battle) {
+			for (int c = 0; c < MAXCREW; ++c) {
+				const OBJECT* o = &ao[CREW + c];
+				if (o->active && !o->dead && o->type == pCrew->type) {
+					live = o;
+					break;
+				}
+			}
+		}
+		if (live) {
+			pCrew->motion = live->motion;
+			pCrew->dirX = pCrew->dirF = live->dirF;
+		}
+
 		// 모션 유효성 안전 보정 (스프라이트가 없는 모션 번호 방지)
 		if (cmd_m_cnt[pCrew->cmf] == nullptr || cmd_m_cnt[pCrew->cmf][pCrew->motion * 2 + 1] == 0) {
 			pCrew->motion = crewPos[pCrew->type * 5];
@@ -6123,9 +6153,10 @@ void LobbyDraw(void)
 
 		pCrew->nx = pCrew->x;
 		pCrew->ny = pCrew->y;
-		pCrew->frame = frame + owned * MOTIONDIV;
-		// 전투와 독립된 로비 전용 확대 배율 적용
+		pCrew->frame = live ? live->frame : frame + owned * MOTIONDIV;
 		pCrew->zoom = enemyIconZoom[pCrew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * roleZoomScale * charZoom;
+		//싸우러 나간 동료만 키운다. 성 안에 그대로 서 있되 눈에 띈다.
+		if (live) pCrew->zoom *= CASTLE_CREW_BATTLE_ZOOM;
 		owned++;
 	}
 
@@ -6177,6 +6208,38 @@ void LobbyDraw(void)
 
 		hero->x = bx; hero->y = by; hero->nx = bnx; hero->ny = bny; hero->zoom = bz;
 	}
+}
+
+void LobbyDraw(void)
+{
+	char str[96];
+	ResetRectPoint();
+	LobbyCastlePrepare();
+
+	//로비도 전투와 같은 선로 위다. 성은 멈춰 서 있는 건물이 아니라
+	//늘 달리는 열차이고, 바퀴도 로비에서 돈다. 배경이 다르면 로비에서
+	//전투로 넘어갈 때 다른 세계로 순간이동한 것처럼 보인다.
+	//
+	//원경이 불투명해서 LobbySky 의 하늘 · 구름 · 낮밤은 이 아래로
+	//완전히 가린다. 그래서 부르지 않는다.
+	StageBg::Draw(LobbyCastleGroundY(), 0);
+
+	//---- 가방이 찼다는 알림 ----
+	//
+	//못 받은 것이 있으면 로비로 나온 뒤 한 번만 띄운다. 전투 중에 띄우면
+	//판이 끊기고, 가방을 정리할 길도 그 자리에는 없다.
+	if (gInvenFullNotice && drawHandle == MD_LOBBY) {
+		gInvenFullNotice = false;
+		SetAlert(ALERT_INVENFULL);
+		return;
+	}
+
+	// 디오라마 대신 성 그림 한 장을 카메라(확대/이동)로 그린다.
+	LobbyCastleDraw();
+
+	CastleCrewDrawAt(gLobbyCastleLeft, gLobbyCastleTop, gLobbyCastleW,
+	                 gLobbyCastleH, gLobbyCastleScale,
+	                 Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1)), false);
 
 #if LOBBY_CAM_DEBUG_BUTTONS
 	LobbyZoomButtonsDraw();
