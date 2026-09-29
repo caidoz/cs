@@ -5,6 +5,13 @@
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
 
+//배경 시계의 실체. 헤더는 extern 으로만 들고 있다 - 까닭은 거기 적어 두었다.
+namespace StageBg {
+float s_travel = 0.0f;
+float s_clock  = 0.0f;
+int   s_region = 0;
+}
+
 void BattleMobileCastleUpdate(float delta)
 {
 	BattleMobileCastle::Update(delta);
@@ -13,13 +20,18 @@ void BattleMobileCastleUpdate(float delta)
 //배경이 흐르는 시계. 로비 · 출정 준비 · 전투가 같은 선로를 쓰므로
 //화면과 상관없이 한 자리에서 굴린다.
 //
-//로비에서도 흐르게 두는 것은 성의 바퀴가 늘 돌기 때문이다. 바퀴는
-//도는데 선로가 서 있으면 성이 헛도는 것으로 보인다. 전투에서는 자동
-//전투가 곧 달리는 스위치라 그때만 흐른다.
+//[언제 달리나]
+//성은 열차다. 바퀴는 늘 돈다(WheelAngleNow 가 frame 만 본다). 그러니
+//선로도 늘 흘러야 한다 - 바퀴는 도는데 땅이 서 있으면 헛도는 것으로
+//보인다.
+//
+//예전에는 자동 전투가 켜졌을 때만 흘렸다. 그러면 웨이브 사이 룰렛이
+//열릴 때마다 세계가 멈춰 섰다. 싸움은 달리면서 하는 것이고, 무엇을
+//살지 고르는 동안에도 열차는 간다.
 void StageBgUpdate(float delta)
 {
 	StageBg::SetRegionForStage(robin.stage);
-	StageBg::Update(delta, drawHandle == MD_LOBBY || StageRtAutoOn());
+	StageBg::Update(delta, drawHandle == MD_LOBBY || drawHandle == MD_PLAY);
 }
 
 //타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미

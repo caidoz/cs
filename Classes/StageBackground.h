@@ -43,6 +43,11 @@ static const float kSpeedFar = 2.2f, kSpeedMid = 15.4f, kSpeedRail = 110.0f;
 //같은 값을 써야 넘어갈 때 성이 옆으로 미끄러지지 않는다.
 static const float kCastleLeft = 6.0f * (float)_2X;
 
+//성을 딛는 줄보다 이만큼 내려 놓는다. 조립표대로 바퀴를 줄에 딱 맞추면
+//성이 선로 위에 얹힌 것이 아니라 떠 있는 것으로 보인다. 조금 파묻어야
+//무게가 실린다. 화면 픽셀이고, 성 배율이 붙박이라 층수와 상관없이 같다.
+static const float kCastleDropPx = 32.0f;
+
 //장면이 딛는 줄의 기준 높이. 배율은 여기서만 정한다.
 //
 //로비와 전투가 우연이 아니라 이 값으로 같은 자리에 선다 - 로비 카메라가
@@ -85,9 +90,15 @@ static const float kBossAncU = 0.5f, kBossAncV = 0.85f;
 
 //달린 시간과 흐른 시간을 따로 센다. 성이 멈추면 배경도 멈추지만 보스는
 //계속 숨쉬고 눈을 깜빡여야 살아 있어 보인다.
-static float s_travel = 0.0f;
-static float s_clock  = 0.0f;
-static int   s_region = 0;
+//
+//[왜 헤더에 두지 않나]
+//static 으로 두면 이 헤더를 넣은 .cpp 마다 제 복사본을 갖는다. 시계를
+//굴리는 쪽(Func_Graphics.cpp)과 로비를 그리는 쪽(Func_Draw.cpp)이 서로
+//다른 값을 보게 되어, 로비 배경이 영영 0 초에 멈춰 있었다.
+//정의는 Func_Graphics.cpp 한 군데다.
+extern float s_travel;
+extern float s_clock;
+extern int   s_region;
 
 inline const Region& Cur(void) {
 	return kRegion[Max(0, Min(s_region, STAGEBG_REGION_CNT - 1))];
