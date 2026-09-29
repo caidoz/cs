@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -2538,8 +2538,10 @@ void GotoPlay(bool forceReload)
 	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
 	if (!sprite[BATTLE_BG_FAR_IMG]) LoadImg(BATTLE_BG_FAR_IMG);
 	if (!sprite[BATTLE_BG_MID_IMG]) LoadImg(BATTLE_BG_MID_IMG);
-	for (i = CASTLE_MOVE0_IMG; i <= CASTLE_MOVE19_IMG; ++i)
-		if (!sprite[i]) LoadImg(i);
+	for (i = 0; i <= Max(0, Min(robin.castle, 9)); ++i) {
+		int rImg = CASTLE_ROOM_V4_FIRST_IMG + i * 6 + ((i == robin.castle) ? 0 : 5);
+		if (!sprite[rImg]) LoadImg(rImg);
+	}
 	frame = 0;
 
 	//forceReload=false인 경우(인터랙티브 전투 튜토리얼의 GotoPlay(false))는 loadedMap을 그대로 둬서,

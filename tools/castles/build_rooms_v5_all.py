@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_ROOT = ROOT / "content/castles/modular_v5"
-RUNTIME = ROOT / "Resources/res/castle_rooms_v4"
+RUNTIME = ROOT / "Resources/res/castle_rooms"
 ROOM_SIZE = (512, 128)
 MASTER_SIZE = (1024, 1536)
 

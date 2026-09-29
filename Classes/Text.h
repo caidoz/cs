@@ -3650,6 +3650,8 @@ const char* const textId[] = {
 
 #include "CastleModularNames.inc"
 #include "CastleRoomV4Names.inc"
+#include "CastleMobilityNames.inc"
+#include "CastleExteriorNames.inc"
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

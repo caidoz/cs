@@ -1201,7 +1201,14 @@ void Core::Run(float delta) {
 		RefreshHeartTime();
 		RefreshEnemyTime();
 
-		if (running == true) {
+		bool drawThisFrame = (running == true);
+#ifdef GAMEDEBUG
+		//System dialogs can pause the normal game-running flag while the title
+		//debug preview remains visible.  Its wheel animation still needs a frame.
+		if (drawHandle == MD_TITLE && TitleCastleDebugActive())
+			drawThisFrame = true;
+#endif
+		if (drawThisFrame) {
 			//한 프레임의 모든 드로우를 화면버퍼에 모은 뒤 한 번만 화면에 표시한다.
 			BeginScreenBuffer();
 			PaintClet(0, DY, DX, DY);
@@ -1476,6 +1483,14 @@ void PaintClet(int x, int y, int w, int h)
 	//버튼 눌림/튀어오름을 한 칸 진행시킨다. 터치영역을 다시 등록하기 전에
 	//돌려야 이번 프레임에 그리는 버튼이 지금 상태로 그려진다.
 	UpdateButtonPress();
+
+#ifdef GAMEDEBUG
+	//The title castle preview contains animated running gear.  Ordinary title
+	//screens only redraw after input, so explicitly keep this debug preview
+	//refreshing while it is open.
+	if (drawHandle == MD_TITLE && TitleCastleDebugActive())
+		mustRefresh = true;
+#endif
 
 	if (mustRefresh == true) {
 		if (isScreenShot == false) {

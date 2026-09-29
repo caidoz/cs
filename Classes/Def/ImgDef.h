@@ -763,6 +763,27 @@ typedef enum _imgDef {
 	// Ten floors x (base state + five upgrades), fixed at 512 x 128.
 	CASTLE_ROOM_V4_FIRST_IMG,
 	CASTLE_ROOM_V4_LAST_IMG = CASTLE_ROOM_V4_FIRST_IMG + 10 * 6 - 1,
+	// Ten castle bases, six stages each (512 x 64).
+	CASTLE_BASE_FIRST_IMG,
+	CASTLE_BASE_LAST_IMG = CASTLE_BASE_FIRST_IMG + 10 * 6 - 1,
+	// Ground castles 1-6, six wheel stages each (128 x 128).
+	CASTLE_WHEEL_FIRST_IMG,
+	CASTLE_WHEEL_LAST_IMG = CASTLE_WHEEL_FIRST_IMG + 6 * 6 - 1,
+	// Floating castles 7-10, six hover stages each (512 x 64).
+	CASTLE_HOVER_FIRST_IMG,
+	CASTLE_HOVER_LAST_IMG = CASTLE_HOVER_FIRST_IMG + 4 * 6 - 1,
+	CASTLE_HOVER_EXHAUST_07_09_IMG,
+	CASTLE_HOVER_EXHAUST_10_IMG,
+	// Floating castles 7-10, integrated hull and engines (512 x 128).
+	CASTLE_FLIGHTBASE_FIRST_IMG,
+	CASTLE_FLIGHTBASE_LAST_IMG = CASTLE_FLIGHTBASE_FIRST_IMG + 4 * 6 - 1,
+	// Castle 1 commander balcony: base state plus five upgrades (192 x 128).
+	CASTLE_BALCONY_01_FIRST_IMG,
+	CASTLE_BALCONY_01_LAST_IMG = CASTLE_BALCONY_01_FIRST_IMG + 6 - 1,
+	CASTLE_WALL_01_FIRST_IMG,
+	CASTLE_WALL_01_LAST_IMG = CASTLE_WALL_01_FIRST_IMG + 6 - 1,
+	CASTLE_ROOF_01_FIRST_IMG,
+	CASTLE_ROOF_01_LAST_IMG = CASTLE_ROOF_01_FIRST_IMG + 6 - 1,
 
 	TOTALIMG,
 #ifdef GAMELOGWRITE

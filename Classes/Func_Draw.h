@@ -36,7 +36,10 @@ void LoadingDraw(void);
 void TitleDraw(void);
 #ifdef GAMEDEBUG
 bool TitleCastleDebugDraw(void);
+bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
+void CastlePartsNaturalSize(int level, float* w, float* h);
+float CastlePartsFloatOffset(int level);
 void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
 #endif

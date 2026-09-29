@@ -5,10 +5,12 @@
 #include "Text.h"
 #include "Data/SwordSprites.h"
 #include "Data/FoeGearData.h"
-#include "CastleWheelManager.h"
 #ifdef GAMEDEBUG
 #include "CastleModularDebug.h"
+// CastleModularDebug also exposes its active state to Core so animated title
+// previews can request continuous redraws.
 #endif
+#include "CastleSlotData.h"
 
 
 //���
@@ -5335,10 +5337,9 @@ static int LobbyCastleLevel(void)
 //카메라가 쓰는 성의 크기. 조립표가 적어 둔 네모다.
 static bool LobbyCastleSize(float* w, float* h)
 {
-	const CastleParts::Box& b = CastleParts::kBox[LobbyCastleLevel() - 1];
+	const int level = LobbyCastleLevel();
 
-	*w = (float)b.w;
-	*h = (float)b.h;
+	CastlePartsNaturalSize(level, w, h);
 	return *w > 0 && *h > 0;
 }
 
@@ -5755,7 +5756,7 @@ static void LobbyCastleDraw(void)
 	CastlePartsDrawRect(LobbyCastleLevel(), left, top, (int)(w * s), (int)(h * s));
 
 	gLobbyCastleLeft = (float)left;
-	gLobbyCastleTop = (float)top;
+	gLobbyCastleTop = (float)top + CastlePartsFloatOffset(LobbyCastleLevel()) * s;
 	gLobbyCastleScale = s;
 	gLobbyCastleW = w;
 	gLobbyCastleH = h;
@@ -5919,15 +5920,6 @@ void LobbyDraw(void)
 		return true;
 	};
 
-	// 성내 포지션 구분
-	enum LobbyCrewRole {
-		LOBBY_ROLE_SPIRE        = 0, // 첨탑 꼭대기 망루 -> 완전 고정
-		LOBBY_ROLE_WALL_TOP     = 1, // 성벽 상단 외곽/회랑 난간
-		LOBBY_ROLE_WALL_MID     = 2, // 중앙 발코니 / 회랑
-		LOBBY_ROLE_GROUND_LEFT  = 3, // 바닥 좌측 안뜰 (히어로 좌측 독립 셀)
-		LOBBY_ROLE_GROUND_RIGHT = 4, // 바닥 우측 안뜰 (히어로 우측 독립 셀)
-	};
-
 	struct LobbySlotInstance {
 		LobbyCrewRole role;
 		float baseX;
@@ -5936,352 +5928,33 @@ void LobbyDraw(void)
 		float maxRoamX;   // 배회 가로 반경
 	};
 
-	const int curCastle = Max(0, Min(gMobileCastleVisual, 19));
+	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
 
-	// 성별 히어로 기본 위치 (대문 앞 계단/양탄자 중심)
-	static const float kCastleDeckV[20] = {
-		.55f,.60f,.55f,.55f,.60f, .48f,.55f,.60f,.58f,.52f,
-		.43f,.58f,.58f,.56f,.58f, .58f,.50f,.58f,.58f,.60f,
-	};
+	// 성별 히어로 기본 위치 (1층 바닥 가운데)
+	const float roomStackH = (float)(curCastle + 1) * 128.0f;
+	const float heroV = ((float)curCastle * 128.0f + 114.0f) / gLobbyCastleH;
 
 	// 히어로 자리
 	float heroCenterX, heroY;
-	LobbyCastleToObj(.50f, kCastleDeckV[curCastle], &heroCenterX, &heroY);
+	LobbyCastleToObj(.50f, heroV, &heroCenterX, &heroY);
 
 	const float charZoom = LobbyCharZoom();
 
-	struct CastleSlotDef {
-		LobbyCrewRole role;
-		float u;
-		float v;
-		bool allowPatrol;
-		float maxRoamX;
-	};
+	const CastleSlotTable& slotTable = kCastleSlotTables[curCastle];
 
-	// Castle 0: 1층 원형 석조 성채 (416x448)
-	static const CastleSlotDef kCastleSlots0[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 4)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.88f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.87f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.87f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.80f, 0.88f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.92f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.88f, 0.92f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.26f, 0.82f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.74f, 0.82f, false,  0.0f },
-		// 2층 옥상 성벽 (순찰 2, 고정 3)
-		{ LOBBY_ROLE_WALL_TOP,     0.25f, 0.37f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.72f, 0.37f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_SPIRE,        0.38f, 0.32f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.63f, 0.35f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.38f, false,  0.0f },
-	};
-
-	// Castle 1: 2층 구조 성채 (491x683)
-	static const CastleSlotDef kCastleSlots1[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 3)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.90f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.90f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.90f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.82f, 0.90f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.10f, 0.93f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.93f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.76f, 0.85f, false,  0.0f },
-		// 2층 성벽 테라스 (순찰 3, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.25f, 0.53f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.35f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.65f, 0.52f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.76f, 0.52f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.54f, false,  0.0f },
-		// 3층 주탑 망루 (고정 3)
-		{ LOBBY_ROLE_SPIRE,        0.40f, 0.30f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.60f, 0.30f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.50f, 0.30f, false,  0.0f },
-	};
-
-	// Castle 2: 포탑 성채 (507x818)
-	static const CastleSlotDef kCastleSlots2[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 4)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.91f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.91f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.91f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.82f, 0.92f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.10f, 0.94f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.94f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.18f, 0.85f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.76f, 0.86f, false,  0.0f },
-		// 2층 정원 테라스 및 포탑 (순찰 2, 고정 3)
-		{ LOBBY_ROLE_WALL_MID,     0.34f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.65f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.54f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.22f, 0.45f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.78f, 0.45f, false,  0.0f },
-		// 3층 주탑 (고정 3)
-		{ LOBBY_ROLE_SPIRE,        0.42f, 0.24f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.58f, 0.24f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.50f, 0.23f, false,  0.0f },
-	};
-
-	// Castle 3: 차양/상점 성 (543x943)
-	static const CastleSlotDef kCastleSlots3[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 3)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.92f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.92f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.92f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.84f, 0.92f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.85f, false,  0.0f },
-		// 2층 테라스 & 포탑 (순찰 2, 고정 3)
-		{ LOBBY_ROLE_WALL_MID,     0.35f, 0.51f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.65f, 0.51f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.52f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.16f, 0.49f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.84f, 0.49f, false,  0.0f },
-		// 3층 발코니 (순찰 1, 고정 2)
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.36f, true,   5.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.38f, 0.35f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.62f, 0.35f, false,  0.0f },
-		// 4층 주탑 망루 (고정 3)
-		{ LOBBY_ROLE_SPIRE,        0.44f, 0.16f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.56f, 0.16f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.74f, 0.28f, false,  0.0f },
-	};
-
-	// Castle 4: 연금술 요새 (553x1021)
-	static const CastleSlotDef kCastleSlots4[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 3)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.93f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.84f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.10f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.76f, 0.74f, false,  0.0f },
-		// 2층 중앙 테라스 (순찰 2, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.34f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.62f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.53f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.78f, 0.52f, false,  0.0f },
-		// 3층 좌탑 & 크레인 (순찰 1, 고정 1)
-		{ LOBBY_ROLE_WALL_TOP,     0.42f, 0.39f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.24f, 0.29f, false,  0.0f },
-		// 4층 중앙탑 & 첨탑 (고정 4)
-		{ LOBBY_ROLE_SPIRE,        0.54f, 0.17f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.62f, 0.17f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.80f, 0.30f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.34f, 0.22f, false,  0.0f },
-	};
-
-	// Castle 5: 도르래/시계탑 요새 (558x1127)
-	static const CastleSlotDef kCastleSlots5[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 2)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.93f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.84f, 0.93f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.95f, false,  0.0f },
-		// 2층 오픈 살롱 (순찰 2, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.20f, 0.48f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.45f, 0.56f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.55f, 0.56f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.70f, 0.56f, false,  0.0f },
-		// 3층 크레인 데크 & 제단 (순찰 1, 고정 2)
-		{ LOBBY_ROLE_WALL_TOP,     0.45f, 0.38f, true,   5.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.30f, 0.43f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.74f, 0.42f, false,  0.0f },
-		// 4층 회랑 & 첨탑 (고정 3)
-		{ LOBBY_ROLE_SPIRE,        0.65f, 0.23f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.43f, 0.18f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.65f, 0.08f, false,  0.0f },
-	};
-
-	// Castle 6: 마법사 6층 타워 (561x1362)
-	static const CastleSlotDef kCastleSlots6[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 2)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.94f, true,  10.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.32f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.82f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.80f, 0.82f, false,  0.0f },
-		// 2층 마도서 도서관 (순찰 2, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.45f, 0.71f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.55f, 0.71f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.38f, 0.70f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.76f, 0.69f, false,  0.0f },
-		// 3층 실험실 제단 (순찰 1, 고정 2)
-		{ LOBBY_ROLE_WALL_TOP,     0.48f, 0.56f, true,   5.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.28f, 0.56f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.74f, 0.56f, false,  0.0f },
-		// 4층 서재 (고정 1)
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.45f, false,  0.0f },
-		// 5층 점성술 테라스 (순찰 1, 고정 2)
-		{ LOBBY_ROLE_WALL_TOP,     0.44f, 0.34f, true,   5.0f * _2X },
-		{ LOBBY_ROLE_SPIRE,        0.26f, 0.28f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.73f, 0.28f, false,  0.0f },
-		// 6층 수정첨탑 (고정 1)
-		{ LOBBY_ROLE_SPIRE,        0.56f, 0.20f, false,  0.0f },
-	};
-
-	// Castle 7: 폭포 대성당 요새 (676x1388)
-	static const CastleSlotDef kCastleSlots7[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 2)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.23f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.35f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.65f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.78f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.88f, 0.95f, false,  0.0f },
-		// 2층 정원 성벽 (순찰 3, 고정 1)
-		{ LOBBY_ROLE_WALL_MID,     0.18f, 0.68f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.45f, 0.66f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.55f, 0.66f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.80f, 0.68f, false,  0.0f },
-		// 3층 대계단 / 천문대 (순찰 2, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.28f, 0.52f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.65f, 0.52f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.53f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.86f, 0.54f, false,  0.0f },
-		// 4층 성전 발코니 (고정 3)
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.41f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.25f, 0.35f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.72f, 0.35f, false,  0.0f },
-		// 5층 고층 성소 / 첨탑 (고정 2)
-		{ LOBBY_ROLE_SPIRE,        0.50f, 0.27f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.52f, 0.15f, false,  0.0f },
-	};
-
-	// Castle 8: 붉은 지붕 대궁전 (781x1481)
-	static const CastleSlotDef kCastleSlots8[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 2)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.22f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.36f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.70f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.82f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.12f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.88f, 0.95f, false,  0.0f },
-		// 2층 아치형 회랑 (순찰 3, 고정 1)
-		{ LOBBY_ROLE_WALL_MID,     0.20f, 0.70f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.42f, 0.70f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.62f, 0.70f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.82f, 0.69f, false,  0.0f },
-		// 3층 살롱 / 티테이블 (순찰 2, 고정 3)
-		{ LOBBY_ROLE_WALL_MID,     0.40f, 0.60f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.55f, 0.60f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.65f, 0.60f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.16f, 0.58f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.84f, 0.54f, false,  0.0f },
-		// 4층 연회장 (순찰 2, 고정 2)
-		{ LOBBY_ROLE_WALL_TOP,     0.48f, 0.50f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.58f, 0.50f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.30f, 0.45f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.15f, 0.42f, false,  0.0f },
-		// 5층 집무실 (고정 1)
-		{ LOBBY_ROLE_WALL_TOP,     0.52f, 0.40f, false,  0.0f },
-		// 6층 붉은 원뿔 첨탑 (고정 3)
-		{ LOBBY_ROLE_SPIRE,        0.32f, 0.25f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.52f, 0.25f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.72f, 0.25f, false,  0.0f },
-	};
-
-	// Castle 9: 구름 위 천상 성채 (922x1700)
-	static const CastleSlotDef kCastleSlots9[] = {
-		// 1층 바닥 안뜰 (보행 4, 고정 2)
-		{ LOBBY_ROLE_GROUND_LEFT,  0.20f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.36f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.68f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.82f, 0.94f, true,   8.0f * _2X },
-		{ LOBBY_ROLE_GROUND_LEFT,  0.10f, 0.95f, false,  0.0f },
-		{ LOBBY_ROLE_GROUND_RIGHT, 0.90f, 0.95f, false,  0.0f },
-		// 2층 수정 성소 (순찰 3, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.73f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.40f, 0.72f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.60f, 0.72f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.18f, 0.72f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.82f, 0.72f, false,  0.0f },
-		// 3층 샹들리에 회랑 (순찰 3, 고정 2)
-		{ LOBBY_ROLE_WALL_MID,     0.50f, 0.62f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.40f, 0.61f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.60f, 0.61f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_MID,     0.20f, 0.60f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_MID,     0.80f, 0.60f, false,  0.0f },
-		// 4층 대제단 티어 (순찰 1, 고정 4)
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.53f, true,   6.0f * _2X },
-		{ LOBBY_ROLE_WALL_TOP,     0.30f, 0.46f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.70f, 0.46f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.12f, 0.52f, false,  0.0f },
-		{ LOBBY_ROLE_WALL_TOP,     0.84f, 0.52f, false,  0.0f },
-		// 5층~7층 왕실 문장 발코니 및 천상 첨탑 (고정 3)
-		{ LOBBY_ROLE_WALL_TOP,     0.50f, 0.43f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.25f, 0.20f, false,  0.0f },
-		{ LOBBY_ROLE_SPIRE,        0.75f, 0.20f, false,  0.0f },
-	};
-
-	struct CastleSlotTable {
-		const CastleSlotDef* slots;
-		int count;
-	};
-
-	// The twenty mobile-castle images are horizontal side views.  The former
-	// tables below describe the retired tall dioramas, so reusing table 9 for
-	// stages 10~19 placed people in the sky and on locomotion parts.  These slots
-	// stay on the central decks that exist across the new side-view silhouettes.
-	static const CastleSlotDef kMobileCastleSlots[] = {
-		{LOBBY_ROLE_GROUND_LEFT,  .32f,.68f,true,  6.0f*_2X},
-		{LOBBY_ROLE_GROUND_RIGHT, .68f,.68f,true,  6.0f*_2X},
-		{LOBBY_ROLE_GROUND_LEFT,  .42f,.66f,false, 0.0f},
-		{LOBBY_ROLE_GROUND_RIGHT, .58f,.66f,false, 0.0f},
-		{LOBBY_ROLE_WALL_MID,     .30f,.55f,true,  5.0f*_2X},
-		{LOBBY_ROLE_WALL_MID,     .70f,.55f,true,  5.0f*_2X},
-		{LOBBY_ROLE_WALL_MID,     .40f,.53f,false, 0.0f},
-		{LOBBY_ROLE_WALL_MID,     .60f,.53f,false, 0.0f},
-		{LOBBY_ROLE_WALL_TOP,     .34f,.43f,false, 0.0f},
-		{LOBBY_ROLE_WALL_TOP,     .50f,.42f,true,  4.0f*_2X},
-		{LOBBY_ROLE_WALL_TOP,     .66f,.43f,false, 0.0f},
-		{LOBBY_ROLE_SPIRE,        .40f,.34f,false, 0.0f},
-		{LOBBY_ROLE_SPIRE,        .60f,.34f,false, 0.0f},
-		{LOBBY_ROLE_WALL_MID,     .24f,.61f,false, 0.0f},
-		{LOBBY_ROLE_WALL_MID,     .76f,.61f,false, 0.0f},
-		{LOBBY_ROLE_WALL_TOP,     .27f,.47f,false, 0.0f},
-		{LOBBY_ROLE_WALL_TOP,     .73f,.47f,false, 0.0f},
-		{LOBBY_ROLE_SPIRE,        .50f,.30f,false, 0.0f},
-	};
-
-	static const CastleSlotTable kCastleSlotTables[10] = {
-		{ kCastleSlots0, sizeof(kCastleSlots0) / sizeof(kCastleSlots0[0]) },
-		{ kCastleSlots1, sizeof(kCastleSlots1) / sizeof(kCastleSlots1[0]) },
-		{ kCastleSlots2, sizeof(kCastleSlots2) / sizeof(kCastleSlots2[0]) },
-		{ kCastleSlots3, sizeof(kCastleSlots3) / sizeof(kCastleSlots3[0]) },
-		{ kCastleSlots4, sizeof(kCastleSlots4) / sizeof(kCastleSlots4[0]) },
-		{ kCastleSlots5, sizeof(kCastleSlots5) / sizeof(kCastleSlots5[0]) },
-		{ kCastleSlots6, sizeof(kCastleSlots6) / sizeof(kCastleSlots6[0]) },
-		{ kCastleSlots7, sizeof(kCastleSlots7) / sizeof(kCastleSlots7[0]) },
-		{ kCastleSlots8, sizeof(kCastleSlots8) / sizeof(kCastleSlots8[0]) },
-		{ kCastleSlots9, sizeof(kCastleSlots9) / sizeof(kCastleSlots9[0]) },
-	};
-
-	CastleSlotDef stageSlots[12];
-	const int mobileSlotCount = 6 + curCastle * 6 / 19;
-	for (int n = 0; n < mobileSlotCount; ++n) {
-		const float u = .20f + .60f * n / Max(1, mobileSlotCount - 1);
-		stageSlots[n] = {
-			n < mobileSlotCount / 2 ? LOBBY_ROLE_GROUND_LEFT : LOBBY_ROLE_GROUND_RIGHT,
-			u, kCastleDeckV[curCastle], n < 4, n < 4 ? 4.0f * _2X : 0.0f
-		};
-	}
-	const CastleSlotTable slotTable = { stageSlots, mobileSlotCount };
-
-	LobbySlotInstance walkSlots[24];
+	LobbySlotInstance walkSlots[CAP_CREW];
 	int walkSlotsCount = 0;
-	LobbySlotInstance fixedSlots[24];
+	LobbySlotInstance fixedSlots[CAP_CREW];
 	int fixedSlotsCount = 0;
 
 	for (int s = 0; s < slotTable.count; ++s) {
 		const CastleSlotDef& def = slotTable.slots[s];
 		float x, y;
-		LobbyCastleToObj(def.u, def.v, &x, &y);
+		// Slot tables are authored in the room stack's old 0..1 space.  The
+		// castle bounds now also include its lower hull, so remap the vertical
+		// coordinate into the complete shared local space.
+		const float castleV=def.v*roomStackH/gLobbyCastleH;
+		LobbyCastleToObj(def.u, castleV, &x, &y);
 		LobbySlotInstance inst = {
 			def.role,
 			x,
@@ -6290,39 +5963,23 @@ void LobbyDraw(void)
 			def.maxRoamX * charZoom / (DIORAMAZOOM * 0.70f)
 		};
 		if (def.allowPatrol) {
-			if (walkSlotsCount < 24)
+			if (walkSlotsCount < CAP_CREW)
 				walkSlots[walkSlotsCount++] = inst;
 		}
 		else {
-			if (fixedSlotsCount < 24)
+			if (fixedSlotsCount < CAP_CREW)
 				fixedSlots[fixedSlotsCount++] = inst;
 		}
 	}
 
-	// 1단계: 로비에 등장할 보유 크루 선별 (슬롯 장착 크루 우선, 그 후 보유한 크루)
-	static int candidateCrew[24];
+	// 1단계: 로비에 등장할 크루 선별 (최대 64명)
+	// 각성 시 모든 동료가 성에 들어올 수 있으므로, 보유 크루를 우선 등록하고 슬롯을 채움
+	static int candidateCrew[CAP_CREW];
 	int candidateCount = 0;
 	bool selected[CAP_CREW] = { false };
 
-	// 1순위: 전투 슬롯에 장착된 크루 (최우선 배치)
-	for (int s = 0; s < MAXCREW && candidateCount < 24; ++s) {
-		const int enemyType = robin.slotCrew[s];
-		if (enemyType < 0)
-			continue;
-		const int crewIdx = GetCrewIdxFromType(enemyType);
-		if (crewIdx < 0 || crewIdx >= gTotalCrew)
-			continue;
-		// 비행선/탑승물은 로비 동료에서 제외
-		if (crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
-			continue;
-		int invenIdx = GetInvenIdx(ITEM_CREW, crewIdx, GRADE_NORMAL);
-		if (invenIdx >= 0 && robin.inven[invenIdx].count >= 1 && !selected[crewIdx]) {
-			candidateCrew[candidateCount++] = crewIdx;
-			selected[crewIdx] = true;
-		}
-	}
-	// 2순위: 인벤토리에 보유 중인 나머지 크루 (최대 정원 24명까지 중복 없이 등록)
-	for (int i = 0; i < gTotalCrew && candidateCount < 24; ++i) {
+	// 1순위: 인벤토리에 보유 중인 크루 등록
+	for (int i = 0; i < gTotalCrew && candidateCount < CAP_CREW; ++i) {
 		if (selected[i])
 			continue;
 		if (crewData[i * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
@@ -6333,11 +5990,20 @@ void LobbyDraw(void)
 			selected[i] = true;
 		}
 	}
+	// 2순위: 각성 시 모든 동료가 다 들어갈 수 있도록 남은 슬롯 전체를 보유 외 동료로 채움
+	for (int i = 0; i < gTotalCrew && candidateCount < slotTable.count; ++i) {
+		if (selected[i])
+			continue;
+		if (crewData[i * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
+			continue;
+		candidateCrew[candidateCount++] = i;
+		selected[i] = true;
+	}
 
 	// 2단계: 크루 성향(보행 가능 vs 고정 대기)에 따라 슬롯 분배
-	int walkingCrew[24];
+	int walkingCrew[CAP_CREW];
 	int walkingCrewCount = 0;
-	int standingCrew[24];
+	int standingCrew[CAP_CREW];
 	int standingCrewCount = 0;
 
 	for (int i = 0; i < candidateCount; ++i) {
@@ -6358,13 +6024,13 @@ void LobbyDraw(void)
 		int crewIdx;
 		LobbySlotInstance slot;
 	};
-	AssignedCrew assigned[24];
+	AssignedCrew assigned[CAP_CREW];
 	int assignedCount = 0;
 
 	int walkSlotIdx = 0;
 	int fixedSlotIdx = 0;
 
-	// 걷기 가능한 크루는 걷기 허용 슬롯(바닥 안뜰, 성벽 순찰로)에 우선 배치
+	// 걷기 가능한 크루는 걷기 허용 슬롯에 우선 배치
 	for (int i = 0; i < walkingCrewCount; ++i) {
 		if (walkSlotIdx < walkSlotsCount) {
 			assigned[assignedCount++] = { walkingCrew[i], walkSlots[walkSlotIdx++] };
@@ -6374,7 +6040,7 @@ void LobbyDraw(void)
 		}
 	}
 
-	// 걷기 모션이 없는 고정/대기 크루는 고정 슬롯(첨탑 망루, 성벽 초소)에 우선 배치
+	// 걷기 모션이 없는 고정/대기 크루는 고정 슬롯에 우선 배치
 	for (int i = 0; i < standingCrewCount; ++i) {
 		if (fixedSlotIdx < fixedSlotsCount) {
 			assigned[assignedCount++] = { standingCrew[i], fixedSlots[fixedSlotIdx++] };
@@ -6556,28 +6222,11 @@ void LobbyDraw(void)
 		}
 	}
 
-	//---- 이번 판에 나갈 히어로 ----
+	//---- 성 밑의 히어로 표시는 없앴다 ----
 	//
-	//누구를 데리고 들어가는지는 START 를 누르기 전에 보여야 한다. 고르는
-	//곳은 장비 메뉴라, 여기 얼굴을 누르면 그리로 보낸다.
-	{
-		const int who = (curHero >= 0 && curHero < TOTALCHAR) ? curHero : ROBIN;
-		const int w = 44 * _2X;
-		const int h = 44 * _2X;
-		const int x = DX / 2 - w / 2;
-		const int y = BOTTOMMENUHEIGHT + 100 * _2X;
-
-		if (ao[who].active || IsGetHero(who)) {
-			DrawPlayer(&ao[who], frame / 6 % 4, x + w / 2, y - h + 6 * _2X,
-				RIGHT, 0.8f, false, false, true);
-
-			SetFontColor(COLOR_WHITE);
-			//히어로 이름은 동료와 같은 이름표를 쓴다(히어로도 타입 0~2 다).
-			CenterTextStrSolid(textId[TEXT_MONSTERNAME_START + who], x + w / 2,
-				y - h, 0.5f);
-			SetRectPoint(x, y, w, h, TOUCH_FUNC_COLLECTIONS);
-		}
-	}
+	//성에 이미 히어로가 서 있어서 같은 사람이 두 번 나왔다. 여기를 눌러
+	//장비 메뉴로 가는 지름길도 같이 사라지지만, 세팅은 성 메뉴에서 하고
+	//하단 메뉴에도 장비 탭이 따로 있다.
 
 	// Keep the castle base above the footer, including its characters.
 	{

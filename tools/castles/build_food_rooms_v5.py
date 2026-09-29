@@ -4,7 +4,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "content/castles/modular_v5/food_room"
-RUNTIME = ROOT / "Resources/res/castle_rooms_v5"
+RUNTIME = ROOT / "Resources/res/castle_rooms"
 
 
 def alpha_box(image: Image.Image):

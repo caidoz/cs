@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
@@ -2396,6 +2396,9 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 float GetStageGroundZoom(void)
 {
 	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
+	//그림이 없을 수도 있다. 없으면 1 배로 둔다 - 여기서 터지면 전투가
+	//시작되지 않는다.
+	if (!sprite[BATTLE_BG_GROUND_IMG]) return 1.0f;
 	const auto size = sprite[BATTLE_BG_GROUND_IMG]->getContentSize();
 	//가로를 꽉 채운다. 높이에 맞추면 발판이 화면 한가운데에 작게 떠서
 	//싸우는 자리가 좁아 보인다. 넘치는 위쪽은 전투 장면이 덮는다.
