@@ -5320,6 +5320,12 @@ static float LobbyCharZoom(void)
 //그 바닥 띠에 세운다. 발코니 같은 성마다 다른 자리는 아직 표가 없다.
 #define LOBBY_HERO_U			0.50f
 #define LOBBY_HERO_V			0.965f
+
+//히어로는 지휘대 난간 안쪽에 선다. 방 바닥에 그대로 세우면 난간에
+//가려 가슴 위만 보인다. 발판 높이만큼 올린다. 성 그림 기준 픽셀이다.
+#define LOBBY_HERO_LIFT			24.0f
+//성에 하나뿐인 사람이라 동료와 같은 크기면 묻힌다.
+#define LOBBY_HERO_ZOOM			1.5f
 #define LOBBY_GROUND_V_BACK		0.925f
 #define LOBBY_GROUND_V_FRONT	0.975f
 
@@ -5982,11 +5988,21 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//여유가 0 이라 멀쩡해 보였다.
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
 	const float upperH = CastlePartsUpperH(curCastle + 1);
-	const float heroV = (upperH + (float)curCastle * 128.0f + 114.0f) / gLobbyCastleH;
+	const float heroV = (upperH + (float)curCastle * 128.0f + 114.0f - LOBBY_HERO_LIFT)
+	                  / gLobbyCastleH;
 
-	// 히어로 자리
+	// 방 슬롯은 512px 방 좌표로 작성되어 있다. 성 외장 전체 폭(736px)을
+	// 그대로 곱하면 동료가 좌우 외장과 지휘대로 퍼진다. 중앙 방 aperture
+	// (x=64..575) 안으로만 다시 매핑한다.
+	auto RoomUToCastleU = [](float roomU) -> float {
+		return (64.0f + roomU * 512.0f) / gLobbyCastleW;
+	};
+
+	// 지휘관은 최상층 방 중앙이 아니라 우측 지휘대의 보행 가능한 난간
+	// 안쪽에 선다. 지휘대는 전체 조립 좌표 x=544..735에 있다.
 	float heroCenterX, heroY;
-	LobbyCastleToObj(.50f, heroV, &heroCenterX, &heroY);
+	const float commanderU = 660.0f / gLobbyCastleW;
+	LobbyCastleToObj(commanderU, heroV, &heroCenterX, &heroY);
 
 	const float charZoom = LobbyCharZoom();
 
@@ -6004,7 +6020,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		// castle bounds now also include its lower hull, so remap the vertical
 		// coordinate into the complete shared local space.
 		const float castleV=(upperH+def.v*roomStackH)/gLobbyCastleH;
-		LobbyCastleToObj(def.u, castleV, &x, &y);
+		LobbyCastleToObj(RoomUToCastleU(def.u), castleV, &x, &y);
 		LobbySlotInstance inst = {
 			def.role,
 			x,
@@ -6221,7 +6237,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 		hero->x = hero->nx = heroCenterX;
 		hero->y = hero->ny = heroY;
-		hero->zoom = bz * charZoom;
+		hero->zoom = bz * charZoom * LOBBY_HERO_ZOOM;
 
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
 			hero->x - 12.0f * _2X * hero->zoom,

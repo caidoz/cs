@@ -49,7 +49,7 @@ static const float kCastleLeft = 6.0f * (float)_2X;
 //본체와 바퀴가 따로다. 둘 다 같은 만큼 내리면 바퀴가 선로 아래로 그만큼
 //파묻힌다. 본체만 더 내려앉혀 무게를 실으면서, 바퀴는 레일에 얹힌 느낌만
 //남도록 덜 내린다.
-static const float kCastleDropPx = 32.0f;
+static const float kCastleDropPx = 48.0f;
 static const float kWheelDropPx  = 16.0f;
 
 //장면이 딛는 줄의 기준 높이. 배율은 여기서만 정한다.
@@ -63,8 +63,9 @@ static const float kGroundRef = 0.31f;
 
 // 보스의 눈 연출.
 //  Swap - 감은 그림으로 통째로 갈아 끼운다 (늪지대 개구리).
-//  Glow - 평소 그림 위에 발광만 옅게서 진하게 얹는다 (계곡 웜).
-enum BossFx { FxSwap, FxGlow };
+//  Glow - 평소 그림 위에 발광만 옅게서 진하게 얹는다 (계곡 웜, 아틀란티스 아귀).
+//  None - 별도 연출 없음 (지하수로 짐승).
+enum BossFx { FxSwap, FxGlow, FxNone };
 
 struct Region {
 	int   abyss;                  // 화면 아래를 채우는 색
@@ -86,6 +87,21 @@ static const Region kRegion[] = {
 	// 금단의 계곡 - 웜은 거의 움직이지 않고 눈만 3.8 초 주기로 밝아진다.
 	{ 0xA68D91, 0xE9CFAF, 350.0f, 125.0f, 780.0f, 520.0f,
 	  4.2f, 0.004f, 0.004f, 2.0f, FxGlow, 3.8f, 0.0f, 0.0f },
+	// 아틀란티스 - 심해의 거대 아귀가 유영하며 3.8 초 주기로 초롱불 촉수가 밝아진다.
+	{ 0x24536B, 0x26A1C8, 390.0f, 170.0f, 730.0f, 486.667f,
+	  4.2f, 0.004f, 0.004f, 3.0f, FxGlow, 3.8f, 0.0f, 0.0f },
+	// 지하수로 - 짐승형 가시 갑주 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x36574D, 0x2D433D, 300.0f, 160.0f, 800.0f, 533.333f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 아델라인 평원 - 갑주 거인 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0xAFC2AC, 0x64B4F8, 240.0f, 140.0f, 900.0f, 600.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 화염지대 - 화염 정령 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x66485F, 0x371B3A, 240.0f, 120.0f, 900.0f, 600.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 얼음지대 - 얼음 갑각 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x8197BD, 0x6D84B6, 260.0f, 140.0f, 850.0f, 566.667f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
 };
 
 //보스 그림의 기준점. 그림 좌상단에서 잰 비율이라 밑동이 안개에 박힌 채로
@@ -243,7 +259,7 @@ inline void Boss(const Camera& cam) {
 	const int baseImg = Img(SlotBoss);
 	const int fxImg   = Img(SlotBossFx);
 	if (!sprite[baseImg]) LoadImg(baseImg);
-	if (!sprite[fxImg])   LoadImg(fxImg);
+	if (r.fx != FxNone && !sprite[fxImg]) LoadImg(fxImg);
 	if (!sprite[baseImg]) return;
 
 	const auto sz = sprite[baseImg]->getContentSize();
