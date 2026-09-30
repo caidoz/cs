@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // StageBackground.h
 // 성열차가 달리는 지역의 배경. 원경 - 보스 - 중경 - 선로 를 서로 다른
 // 속도로 흘려 깊이를 낸다.
@@ -52,12 +52,19 @@ static const float kCastleLeft = 6.0f * (float)_2X;
 static const float kCastleDropPx = 48.0f;
 static const float kWheelDropPx  = 16.0f;
 
-//장면이 딛는 줄의 기준 높이. 배율은 여기서만 정한다.
+//장면이 딛는 줄의 기준 높이. 화면 아래에서 잰 비율이다. 배율도 여기서
+//정한다.
+//
+//0.31 -> 0.385 -> 0.46 으로 올렸다(64 픽셀씩 두 번). 전투 화면의 아래
+//UI - 격자와 상점 줄 - 가 선로와 성 아랫도리를 가렸다.
+//
+//로비도 이 줄에 성을 세운다(LobbyCamClamp). 두 화면이 같은 값을 봐야
+//넘어갈 때 장면이 안 튄다.
 //
 //로비와 전투가 우연이 아니라 이 값으로 같은 자리에 선다 - 로비 카메라가
 //성을 놓는 자리를 세어 보면 화면 높이의 0.31 쯤이고, 전투도 같은 값을
 //쓴다(VisualGroundY).
-static const float kGroundRef = 0.31f;
+static const float kGroundRef = 0.46f;
 
 // ---- 지역마다 다른 것 ----
 
@@ -102,6 +109,24 @@ static const Region kRegion[] = {
 	// 얼음지대 - 얼음 갑각 보스가 5.2 초 주기로 숨을 쉰다.
 	{ 0x8197BD, 0x6D84B6, 260.0f, 140.0f, 850.0f, 566.667f,
 	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 번개지대 - 번개 정령 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x524861, 0x473851, 270.0f, 130.0f, 850.0f, 566.667f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 빛의 지대 - 금빛 수호자 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x69A4AC, 0x577982, 260.0f, 140.0f, 850.0f, 566.667f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 골렘협곡 - 골렘 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x9D9895, 0xADB3C3, 270.0f, 150.0f, 820.0f, 546.667f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 어둠의 협곡 - 거대 어둠 괴수 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x244D55, 0x0E3C4D, 240.0f, 130.0f, 900.0f, 600.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 드래곤 협곡 - 고대 드래곤 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x746474, 0x746395, 240.0f, 150.0f, 900.0f, 600.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 망자의 도시 - 거대 사신 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x625B76, 0x4E2F6D, 230.0f, 130.0f, 900.0f, 600.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
 };
 
 //보스 그림의 기준점. 그림 좌상단에서 잰 비율이라 밑동이 안개에 박힌 채로
@@ -120,6 +145,12 @@ extern float s_travel;
 extern float s_clock;
 extern int   s_region;
 
+//디버그로 고른 지역. -1 이면 판 번호를 따른다.
+//
+//지역은 판이 정하므로(SetRegionForStage) 그냥은 지금 판의 지역 하나밖에
+//못 본다. 다른 지역 그림을 확인하려면 잠시 붙잡아 둘 자리가 필요하다.
+extern int   s_regionPick;
+
 inline const Region& Cur(void) {
 	return kRegion[Max(0, Min(s_region, STAGEBG_REGION_CNT - 1))];
 }
@@ -134,7 +165,34 @@ enum { SlotFar, SlotMid, SlotRail, SlotBoss, SlotBossFx };
 //다음 지역으로 넘어간다. 한 판마다 갈아타면 같은 사흘인데 배경만 바뀌어
 //어디까지 왔는지가 안 읽힌다.
 inline void SetRegionForStage(int stage) {
-	s_region = (stage / STAGE_PER_CYCLE) % STAGEBG_REGION_CNT;
+	s_region = s_regionPick >= 0
+	         ? s_regionPick % STAGEBG_REGION_CNT
+	         : (stage / STAGE_PER_CYCLE) % STAGEBG_REGION_CNT;
+}
+
+//다음 지역으로 넘긴다. 마지막을 지나면 다시 판을 따른다 - 눌러서 한 바퀴
+//돌면 원래대로 돌아오므로 고정해 둔 것을 잊고 지나갈 일이 없다.
+inline void DebugNextRegion(void) {
+	s_regionPick = (s_regionPick + 1 >= STAGEBG_REGION_CNT) ? -1 : s_regionPick + 1;
+	if (s_regionPick >= 0)
+		s_region = s_regionPick;
+}
+inline int DebugRegionPick(void) { return s_regionPick; }
+inline int CurRegion(void)       { return s_region; }
+
+inline const char* DebugRegionLabel(void) {
+	static const char* const kNames[STAGEBG_REGION_CNT] = {
+		"1.늪지대", "2.금단의계곡", "3.아틀란티스", "4.지하수로",
+		"5.아델라인평원", "6.화염지대", "7.얼음지대", "8.번개지대", "9.빛의지대", "10.골렘협곡",
+		"11.어둠의협곡", "12.드래곤협곡", "13.망자의도시"
+	};
+	if (s_regionPick >= 0 && s_regionPick < STAGEBG_REGION_CNT) {
+		return kNames[s_regionPick];
+	}
+	return "자동(스테이지)";
+}
+inline void CycleDebugRegion(void) {
+	DebugNextRegion();
 }
 
 inline void Update(float dt, bool moving) {
@@ -265,9 +323,21 @@ inline void Boss(const Camera& cam) {
 	const auto sz = sprite[baseImg]->getContentSize();
 	if (sz.width < 1.0f) return;
 
+	//가로 세로를 한 배율로 낸다.
+	//
+	//따로 내면 스프라이트에 scaleX != scaleY 가 남는다. 숨쉬기 비율이
+	//달라서만이 아니라, w/폭 과 h/높이 를 따로 나누면 부동소수 끝자리가
+	//어긋나기 때문이다. 그 스프라이트를 나중에 누가 getScale() 로 읽으면
+	//엔진이 "어느 쪽을 줘야 하나" 하고 단언에 걸려 게임이 멈춘다
+	//(CCNode.cpp 의 getScale).
+	//
+	//구운 그림은 설계 비율 그대로라(0.75 배) 한 배율로 맞는다. 숨쉬기는
+	//가로 세로 평균을 쓴다 - 원본의 0.9% 와 1.8% 차이는 눈에 안 띈다.
 	const float swell = Swell(r.motionSec);
-	const float w = r.bossW * s * (1.0f + swell * r.scaleX);
-	const float h = r.bossH * s * (1.0f + swell * r.scaleY);
+	const float grow  = 1.0f + swell * (r.scaleX + r.scaleY) * .5f;
+	const float w = r.bossW * s * grow;
+	const float h = r.bossH * s * grow;
+	const float z = w / sz.width;
 
 	//눈 연출. 감는 쪽은 구간 안에서만 갈아 끼우고, 밝아지는 쪽은 늘
 	//얹되 진하기가 오르내린다.
@@ -295,13 +365,13 @@ inline void Boss(const Camera& cam) {
 
 		DrawImageScale((int)sz.width, (int)sz.height, 0, 0, x, y,
 		               false, false, false, false, false,
-		               w / sz.width, h / sz.height, sprite[img], img);
+		               z, z, sprite[img], img);
 
 		if (glow > 0) {
 			SetAlpha(glow);
 			DrawImageScale((int)sz.width, (int)sz.height, 0, 0, x, y,
 			               false, false, false, false, false,
-			               w / sz.width, h / sz.height, sprite[fxImg], fxImg);
+			               z, z, sprite[fxImg], fxImg);
 			SetAlpha(32);
 		}
 	}

@@ -3636,6 +3636,10 @@ void touchFunc(int func)
 		case TOUCH_FUNC_DEBUG_MAXSTATUS:
 			systemKey = AVK_MAXGAME;
 			break;
+		case TOUCH_FUNC_DEBUG_STAGEBG:
+			StageBgDebugNextRegion();
+			PlayMusic(M_BUTTON);
+			break;
 		case TOUCH_FUNC_DEBUG_ENEMYATTACK:
 			systemKey = AVK_ENEMYATTACK;
 			break;

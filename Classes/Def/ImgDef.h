@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef _DEF_IMG_H_
 #define _DEF_IMG_H_
@@ -784,15 +784,38 @@ typedef enum _imgDef {
 	CASTLE_WALL_01_LAST_IMG = CASTLE_WALL_01_FIRST_IMG + 6 - 1,
 	CASTLE_ROOF_01_FIRST_IMG,
 	CASTLE_ROOF_01_LAST_IMG = CASTLE_ROOF_01_FIRST_IMG + 6 - 1,
+	CASTLE_WALL_02_FIRST_IMG,
+	CASTLE_WALL_02_LAST_IMG = CASTLE_WALL_02_FIRST_IMG + 6 - 1,
+	CASTLE_ROOF_02_FIRST_IMG,
+	CASTLE_ROOF_02_LAST_IMG = CASTLE_ROOF_02_FIRST_IMG + 6 - 1,
+	CASTLE_BALCONY_02_FIRST_IMG,
+	CASTLE_BALCONY_02_LAST_IMG = CASTLE_BALCONY_02_FIRST_IMG + 6 - 1,
+	// Castles 3-10: wall, commander balcony and roof, six stages each.
+	CASTLE_EXTERIOR_03_FIRST_IMG,
+	CASTLE_EXTERIOR_10_LAST_IMG = CASTLE_EXTERIOR_03_FIRST_IMG + 8 * 18 - 1,
+	CASTLE_03_HOLLOW_FIRST_IMG,
+	CASTLE_03_HOLLOW_LAST_IMG = CASTLE_03_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_03_LION_IMG,
+	CASTLE_01_HOLLOW_FIRST_IMG,
+	CASTLE_01_HOLLOW_LAST_IMG = CASTLE_01_HOLLOW_FIRST_IMG + 6 - 1,
 
 	// 성열차가 달리는 지역의 배경. 한 지역이 다섯 장 한 벌이고
 	// 원경 - 보스 - 중경 - 선로 차례로 겹친다. 순서와 장수가 곧
 	// StageBackground.h 의 지역 표이므로 한 벌씩 통째로 덧붙인다.
-	//   0 늪지대   1 금단의 계곡
+	//   0 늪지대   1 금단의 계곡   2 아틀란티스   3 지하수로   4 아델라인 평원   5 화염지대   6 얼음지대   7 번개지대   8 빛의 지대   9 골렘협곡   10 어둠의 협곡   11 드래곤 협곡   12 망자의 도시   13 마왕성
 	STAGEBG_FIRST_IMG,
 	STAGEBG_PER_REGION = 5,
-	STAGEBG_REGION_CNT = 2,
+	//열넷이다. res 에 bg1 ~ bg14 가 있고 Text.h 이름표도 70 줄(14 x 5),
+	//StageBackground.h 의 kRegion 과 이름 표도 열넷이다.
+	STAGEBG_REGION_CNT = 14,
 	STAGEBG_LAST_IMG = STAGEBG_FIRST_IMG + STAGEBG_PER_REGION * STAGEBG_REGION_CNT - 1,
+
+	// 성 단계별 가방 테두리. grid0 이 1 단계다 - 성 번호와 짝이다.
+	// 모양은 Data/CastleData.cpp 의 castleGridCell 표를 따르고, 그림은
+	// tools/bag/build_frames.py 가 그 표를 읽어 낸다.
+	GRID_FRAME_FIRST_IMG,
+	//열 장. 여기는 Def 헤더라 CASTLE_STAGE_CNT 가 아직 안 보인다.
+	GRID_FRAME_LAST_IMG = GRID_FRAME_FIRST_IMG + 10 - 1,
 
 	TOTALIMG,
 #ifdef GAMELOGWRITE

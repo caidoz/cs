@@ -16,11 +16,12 @@
 
 [보스 연출은 두 장으로 만든다]
 
-늪지대 개구리는 눈을 감았다 뜨고, 금단의 계곡 웜은 눈이 밝아졌다 어두워
-진다. 둘 다 '평소' 한 장과 '연출' 한 장을 겹쳐 내면 된다 -
+늪지대 개구리는 눈을 감았다 뜨고, 금단의 계곡 웜과 아틀란티스 아귀는
+눈/촉수가 밝아졌다 어두워진다. '평소' 한 장과 '연출' 한 장을 겹쳐 내면 된다 -
   감는 쪽(swap)  : 연출 장을 통째로 바꿔 그린다.
   밝아지는 쪽(glow): 연출 장을 평소 장 위에 옅게서 진하게 얹는다.
-연출 장은 달라지는 자리(눈)만 남기고 다 지운다. 그래야 옅게 얹었을 때
+  없음(none)     : 연출 장은 투명하게 비워 둔다.
+연출 장은 달라지는 자리만 남기고 다 지운다. 그래야 옅게 얹었을 때
 몸통까지 같이 흐려지지 않는다.
 
 [선로는 잘라서 내보낸다]
@@ -37,7 +38,7 @@
 import json
 import os
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance
 
 SRC = r"C:\Users\polyp\Desktop\layer"
 RES = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -49,6 +50,14 @@ EXPORT = 0.75      # 설계 크기 대비 내보내는 배율
 REGIONS = [
     ("늪지대",                            "bg1", "swap"),
     ("금단의계곡(forbidden_valley_layers)", "bg2", "glow"),
+    ("atlantis_layers",                   "bg3", "glow"),
+    ("sewer_layers",                      "bg4", "none"),
+    ("adelaine_plains_layers",            "bg5", "none"),
+    ("crimson_flame_layers",              "bg6", "none"),
+    ("ice_region_layers",                 "bg7", "none"),
+    ("lightning_region_layers",           "bg8", "none"),
+    ("light_region_layers",               "bg9", "none"),
+    ("golem_gorge_layers",                "bg10", "none"),
 ]
 
 # 연출 장을 만드는 법. 프리뷰(preview.html)의 makeFrog 와 같은 값이다.
@@ -58,10 +67,13 @@ SWAP_EYES = {   # 감은 그림으로 갈아 끼울 타원 (cx, cy, rx, ry)
 GLOW = {        # 발광 원 (cx, cy, r) 과 안팎 색
     "bg2": {"circles": [(324, 241, 38), (514, 342, 43)],
             "inner": (230, 255, 145, 0.6), "outer": (170, 255, 40, 0.0),
-            #프리뷰가 발광을 오려 내는 타원. 여기 바깥은 평소 그림 그대로다.
+            # 프리뷰가 발광을 오려 내는 타원. 여기 바깥은 평소 그림 그대로다.
             "clip": [(324, 241, 40, 40), (514, 342, 45, 45)]},
+    "bg3": {"circles": [(475, 104, 38)],
+            "inner": (216, 255, 239, 0.55), "outer": (157, 237, 240, 0.0),
+            "clip": [(475, 104, 42, 42)]},
 }
-TINT = {"bg1": 0.25, "bg2": 0.32}   # 보스에 얹는 대기색 비율
+TINT = {"bg1": 0.25, "bg2": 0.32, "bg3": 0.60, "bg4": 0.67, "bg5": 0.60, "bg6": 0.55, "bg7": 0.63, "bg8": 0.65, "bg9": 0.64, "bg10": 0.66}   # 보스에 얹는 대기색 비율
 
 
 def out(name, im):
@@ -129,22 +141,26 @@ def bake_rail(lay, pre):
 
 def bake_boss(lay, pre, fx):
     b = lay["boss"]
-    ab = hexcol(lay["abyssColor"])
+    tint_col = tuple(b["atmosphericTint"]["rgb"]) if "atmosphericTint" in b else hexcol(lay["abyssColor"])
+    tint_ratio = b["atmosphericTint"]["alpha"] if "atmosphericTint" in b else TINT.get(pre, 0.30)
     base = Image.open(os.path.join(SRC, b["file"])).convert("RGBA")
+    if "saturation" in b:
+        base = ImageEnhance.Color(base).enhance(b["saturation"])
 
     def finish(im):
-        return Image.fromarray(fade_alpha(tinted(im, ab, TINT[pre]),
+        return Image.fromarray(fade_alpha(tinted(im, tint_col, tint_ratio),
                                           *b["alphaFadeSourceY"]), "RGBA")
 
     out("%s_boss.png" % pre, finish(base).resize(sized(*b["size"]), Image.LANCZOS))
 
     if fx == "swap":
-        #눈 타원 안쪽만 감은 그림으로 바꾼다. 꽃과 몸통은 그대로 둔다.
+        # 눈 타원 안쪽만 감은 그림으로 바꾼다. 꽃과 몸통은 그대로 둔다.
         blink = Image.open(os.path.join(SRC, b["blinkFile"])).convert("RGBA")
         im = base.copy()
         im.paste(blink, (0, 0), ellipse_mask(im.size, SWAP_EYES[pre]))
         im = finish(im)
-    else:
+        out("%s_boss_fx.png" % pre, im.resize(sized(*b["size"]), Image.LANCZOS))
+    elif fx == "glow":
         g = GLOW[pre]
         lit = base.copy()
         halo = Image.new("RGBA", lit.size, (0, 0, 0, 0))
@@ -152,32 +168,35 @@ def bake_boss(lay, pre, fx):
         ir, ig, ib, ia = g["inner"]
         orr, og, ob, oa = g["outer"]
         for cx, cy, r in g["circles"]:
-            #바깥에서 안쪽으로 한 겹씩 채워 방사 그라디언트를 만든다.
+            # 바깥에서 안쪽으로 한 겹씩 채워 방사 그라디언트를 만든다.
             for k in range(r, 0, -1):
                 t = k / float(r)
                 col = (int(orr * t + ir * (1 - t)), int(og * t + ig * (1 - t)),
                        int(ob * t + ib * (1 - t)),
                        int(255 * (oa * t + ia * (1 - t))))
                 hd.ellipse((cx - k, cy - k, cx + k, cy + k), fill=col)
-        #source-atop - 몸 위에만 얹는다. 허공으로 새어 나가지 않는다.
+        # source-atop - 몸 위에만 얹는다. 허공으로 새어 나가지 않는다.
         lit.alpha_composite(Image.composite(
             halo, Image.new("RGBA", lit.size, (0, 0, 0, 0)),
             Image.fromarray(np.array(lit)[:, :, 3])))
-        #달라진 자리(눈)만 남긴다. 나머지는 평소 그림과 같으므로 지운다.
+        # 달라진 자리(눈)만 남긴다. 나머지는 평소 그림과 같으므로 지운다.
         im = finish(lit)
         keep = np.array(im)
         keep[:, :, 3] = (keep[:, :, 3].astype(np.float32) *
                          (np.array(ellipse_mask(im.size, g["clip"]))
                           .astype(np.float32) / 255.0)).astype(np.uint8)
         im = Image.fromarray(keep, "RGBA")
-
-    out("%s_boss_fx.png" % pre, im.resize(sized(*b["size"]), Image.LANCZOS))
+        out("%s_boss_fx.png" % pre, im.resize(sized(*b["size"]), Image.LANCZOS))
+    else:
+        # 연출 없음: 투명 이미지
+        im = Image.new("RGBA", sized(*b["size"]), (0, 0, 0, 0))
+        out("%s_boss_fx.png" % pre, im)
 
 
 def main():
     for folder, pre, fx in REGIONS:
         lay = json.load(open(os.path.join(SRC, folder, "layout.json"), encoding="utf-8"))
-        #layout 안의 경로는 그 지역 폴더 기준이다.
+        # layout 안의 경로는 그 지역 폴더 기준이다.
         for k in ("far", "mid", "rail", "boss"):
             lay[k]["file"] = os.path.join(folder, lay[k]["file"])
             if "blinkFile" in lay[k]:

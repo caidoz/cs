@@ -115,23 +115,25 @@ inline void DrawInventoryCastleReflections(int castleIdx, float castleLeft, floa
 		MemRect((int)(wx - 2 * _2X), (int)(bladeY - bladeH + 2 * _2X), 4 * _2X, 4 * _2X, 0x483218);
 	}
 
-	const int totalItems = GridTestTotalItemCount();
-	if (totalItems > swordCnt) {
-		const int barrierAlpha = 12 + (int)(std::sin((float)frame * 0.08f) * 6.0f);
-		SetAlpha(barrierAlpha);
-		const int pad = 8 * _2X;
-		MemRectFrame((int)(castleLeft - pad), (int)(castleTop + pad),
-		             (int)(naturalW * scale + pad * 2),
-		             (int)(naturalH * scale + pad * 2), 0x50C8FF);
-		MemRectFrame((int)(castleLeft - pad + 1), (int)(castleTop + pad - 1),
-		             (int)(naturalW * scale + pad * 2 - 2),
-		             (int)(naturalH * scale + pad * 2 - 2), 0x99EEFF);
-		SetAlpha(32);
-	}
+	//성 보호막은 그리지 않는다.
+	//
+	//가방에 검 말고 다른 것이 있으면 성의 조립 네모를 따라 테두리를
+	//두 겹 그렸다. 성은 열차 모양이라 네모와 안 맞고, 배경 위에 뜬
+	//희미한 사각형으로만 보였다 - 이펙트가 아니라 디버그 상자로 읽힌다.
+	//보호막을 다시 넣는다면 성 윤곽을 따라가는 그림이어야 한다.
+	(void)castleTop;
+	(void)naturalW;
+	(void)naturalH;
 }
 
 inline void DrawCastle(int groundY) {
-	const int curCastle = Max(0, Min((int)robin.castle, 9));
+	//로비가 보여 주는 성을 그대로 쓴다. robin.castle 을 따르면 로비에서
+	//1 단계를 보다가 전투에 들어가는 순간 열 층짜리로 바뀐다 - 같은 성이
+	//아닌 것으로 읽힌다. 로비 화살표로 단계를 넘기면 전투도 같이 바뀐다.
+	//
+	//실제 진행을 따르게 하려면 여기와 LobbyCastleLevel 의 한 줄을 같이
+	//robin.castle 로 되돌리면 된다.
+	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
 	const float lowerH = curCastle < 6 ? 104.0f : 240.0f;
 
 	//조립표가 적어 둔 네모. 성 1 은 지붕이 방보다 높아 윗여유가 따로 있다.
@@ -181,7 +183,13 @@ inline void Draw(int groundY, int invenTop) {
 	//UI 가 내려간다고 장면까지 들어올리지 않는다. 싸움이 시작될 때마다
 	//세계가 위로 솟으면 같은 자리를 달리는 열차로 안 읽힌다.
 	groundY = VisualGroundY(groundY);
-	const int arenaBottom = Max(0, groundY - 85 * _2X);
+	//장면은 화면 바닥까지 그린다.
+	//
+	//예전에는 딛는 줄 아래 170 픽셀에서 잘랐다. 그 아래는 아무것도 안
+	//그려져 검게 남는데, 인벤토리가 그 위를 덮어 주리라 본 것이다. 판
+	//바닥을 걷어내면서 그 검은 자리가 그대로 드러났다. 선로 아래 교각과
+	//안개가 화면 끝까지 이어지는 편이 낫다.
+	const int arenaBottom = 0;
 	SetSectionClip(0, DY, DX, DY - arenaBottom, false);
 
 	DrawBackground(groundY, arenaBottom);

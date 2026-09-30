@@ -1,4 +1,4 @@
-﻿/*----------------------------------------------------------------------------
+/*----------------------------------------------------------------------------
 **			PRE-DEFINITIONS FOR MODULE
 **--------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -2597,6 +2597,9 @@ void PaintClet(int x, int y, int w, int h)
 	NetIndicatorDraw();
 
 	VersionDraw();
+#ifdef GAMEDEBUG
+	StageBgDebugDrawButton();
+#endif
 }
 
 long MC_knlCurrentTime()

@@ -23,6 +23,8 @@ void StageRtBegin(void);
 void UpdateStageRealtime(void);
 void BattleMobileCastleUpdate(float delta);
 void StageBgUpdate(float delta);
+void StageBgDebugDrawButton(void);
+void StageBgDebugNextRegion(void);
 void StageRtToggleAuto(void);
 void StageRtSetAuto(bool on);
 bool StageRtAutoOn(void);

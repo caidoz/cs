@@ -12,6 +12,7 @@
 // previews can request continuous redraws.
 #endif
 #include "CastleSlotData.h"
+#include "GridFrameMetrics.inc"
 
 
 //���
@@ -1716,9 +1717,25 @@ static int gGridCastle = -1;	//gGridMask 가 어느 성의 것인가
 //표를 한 번 펼쳐 둔 것. 칸이 쓰이는지를 매번 표에서 찾지 않는다.
 static bool gGridMask[GRIDTEST_H][GRIDTEST_W];
 
+//성 단계 수(10)로 자른다. TOTALCASTLE(19) 이 아니다.
+//
+//칸 표는 열 단계 뒤도 채워 두었지만 쓰지 않는 자리이고, 테두리 그림은
+//열 장뿐이다. 19 로 자르면 디버그 최대치(robin.castle = 18)에서 그림
+//번호가 표 끝을 넘어 sprite[] 바깥을 읽는다.
 static int GridCastleIdx(int castle)
 {
-	return Min(TOTALCASTLE - 1, Max(0, castle));
+	return Min(CASTLE_STAGE_CNT - 1, Max(0, castle));
+}
+
+//지금 보고 있는 성의 단계.
+//
+//가방은 성이 정한다 - 칸 배치도, 테두리 그림도. 성 그림이 따르는 값과
+//같은 것을 봐야 둘이 안 어긋난다. 전에는 가방만 robin.castle 을 보고
+//성 그림은 gMobileCastleVisual 을 봐서, 1 단계 성에 10 단계 가방이
+//붙었다.
+static int GridCastleStage(void)
+{
+	return GridCastleIdx(gMobileCastleVisual);
 }
 
 //이 성의 가방 칸 수. 로비의 판 설명도 이 값을 쓴다.
@@ -2110,7 +2127,7 @@ static int StageGridDrop(void)
 
 static void GridTestLayout(void)
 {
-	GridLoadCells(robin.castle);
+	GridLoadCells(GridCastleStage());
 	// PNG와 같은 32px 칸을 쓴다. 가장 넓은 성(12칸)이 화면 폭에
 	// 안 들어갈 때에만 한 칸의 화면 표시 크기를 줄인다.
 	//---- 칸 크기 ----
@@ -4237,7 +4254,7 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 	int n = 0;
 	int missed = 0;
 
-	GridLoadCells(robin.castle);
+	GridLoadCells(GridCastleStage());
 	memset(occ, 0, sizeof(unsigned char) * GRIDTEST_H * GRIDTEST_W);
 
 	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; i++) {
@@ -4440,7 +4457,7 @@ void LoadoutDraw(void)
 	const int top = DY - GNBHEIGHT - 20 * _2X;
 	const int point = LoadoutPoint();
 	const int used = LoadoutUsed();
-	const int cell = GridTestCellCnt(robin.castle);
+	const int cell = GridTestCellCnt(GridCastleStage());
 
 	SetFontColor(COLOR_WHITE);
 	CenterTextStrSolid("출정 준비", DX / 2, top, 0.9f);
@@ -4816,26 +4833,29 @@ void GridTestDraw(void)
 
 	//---- 격자 ----
 	//
-	//표의 칸을 하나씩 그린다(castleGridCell). 네모를 다 훑으며 빈 칸을 거르지
-	//않는다 - 그려지는 것이 곧 표에 적힌 것이어야 한다.
+	//가방 테두리를 그림 한 장으로 그린다(grid0 ~ grid9).
+	//
+	//전에는 표의 칸마다 네모를 하나씩 찍었다. 칸은 맞지만 성벽으로는 안
+	//보였고, 이어진 테나 발광 같은 것을 낼 수가 없었다. 그림은 같은 표를
+	//읽어 만든 것이라(tools/bag/build_frames.py) 칸과 어긋나지 않는다.
+	//
+	//그림 안의 칸 간격과 바깥 여백은 GridFrameMetrics.inc 가 들고 있다.
+	//그 파일도 같은 도구가 내므로 그림을 다시 뽑으면 같이 바뀐다.
 	{
-		const int castle = GridCastleIdx(robin.castle);
-		const int start = castleGridCellStart[castle];
+		const int castle = GridCastleStage();
+		const int img = GRID_FRAME_FIRST_IMG + castle;
 
-		for (i = 0; i < castleGridCellCnt[castle]; i++) {
-			const int cx = castleGridCell[(start + i) * 2];
-			const int cy = castleGridCell[(start + i) * 2 + 1];
+		if (!sprite[img]) LoadImg(img);
+		if (sprite[img]) {
+			const auto sz = sprite[img]->getContentSize();
+			const float zoom = (float)gGridCell / (float)GRID_FRAME_CELL;
+			//격자의 왼쪽 위 모서리에 그림의 칸 영역 왼쪽 위를 맞춘다.
+			const int left = gGridX - (int)(GRID_FRAME_PAD * zoom);
+			const int top = gGridBottom + gGridH * gGridCell
+			              + (int)(GRID_FRAME_PAD * zoom);
 
-			if (GridMaskAt(cx, cy) == false)
-				continue;
-
-			x = GridCellX(cx);
-			y = GridCellY(cy);
-
-			SetAlpha(20);
-			MemRect(x, y, gGridCell - 1 * _2X, gGridCell - 1 * _2X, 0x3A3A5C);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(x, y, gGridCell - 1 * _2X, gGridCell - 1 * _2X, 0x555580);
+			DrawImage((int)sz.width, (int)sz.height, 0, 0, left, top,
+			          false, false, false, false, false, zoom, sprite[img], img);
 		}
 	}
 
@@ -4951,10 +4971,12 @@ void GridTestDraw(void)
 	//
 	//싸우는 동안에도 판은 그 자리에 있다. 칸만 잠겨 있다.
 	{
-		//판 바닥
-		SetAlpha(24);
-		MemRect(0, StageShopTop(), DX, StageShopTop(), 0x14121F);
-		SetAlpha(ALPHA_MAX);
+		//판 바닥은 깔지 않는다.
+		//
+		//예전에는 여기에 화면 폭짜리 어두운 판을 알파 24 로 깔았다.
+		//자리 카드를 읽기 좋게 하려던 것인데, 높이가 화면 바닥까지라
+		//선로와 성 아랫도리까지 통째로 덮었다. 카드마다 제 테두리와
+		//바탕이 있으므로 판 없이도 읽힌다.
 
 		for (i = 0; i < GRIDTEST_OFFERCNT; i++) {
 			const OfferCard* c = &gOffer[i];
@@ -5187,7 +5209,7 @@ void GridTestDraw(void)
 	}
 
 	//칸 수도 표에서 읽는다.
-	const int totalCell = GridTestCellCnt(robin.castle);
+	const int totalCell = GridTestCellCnt(GridCastleStage());
 
 	//쓴 칸과 골드는 아래 상점 줄에서 본다. 여기 또 적으면 같은 수가
 	//화면에 둘이 되어 어느 쪽이 맞는지 헷갈린다.
@@ -5387,9 +5409,14 @@ void LobbyCastleMenuCommand(int func)
         gLobbyCastleMenuOpen = false;
 }
 
+//로비에서 성이 딛는 줄. 카메라는 성을 여기에 붙인다(LobbyCamClamp).
+//
+//전투와 같은 값을 쓴다. 예전에는 하단 메뉴 위 고정값이었고 그것이
+//전투의 줄과 우연히 비슷했을 뿐이라, 한쪽만 올리면 로비에서 전투로
+//넘어갈 때 장면이 튀었다.
 static float LobbyViewBottom(void)
 {
-	return (float)BOTTOMMENUHEIGHT + 82 * _2X;
+	return (float)(int)(DY * StageBg::kGroundRef);
 }
 
 static float LobbyViewCY(void)
@@ -5418,9 +5445,12 @@ static void LobbyCamClamp(void)
 	else
 		gLobbyCamX = Max(halfW, Min(w - halfW, gLobbyCamX));
 
-	//바닥(하단 메뉴 위)에 붙인다. 영역보다 높은 성도 처음에는 바닥부터
-	//본다 - 가운데를 잡으면 땅도 바퀴도 안 보이는 데서 시작한다.
-	//위층은 밀어 올려 본다.
+	//성이 딛는 줄에 세운다. 전투와 같은 줄(StageBg::kGroundRef)이라
+	//넘어갈 때 장면이 안 튄다. 예전에는 하단 메뉴 바로 위에 붙였는데,
+	//그 자리가 전투의 줄과 우연히 비슷했을 뿐이라 한쪽만 고치면 어긋났다.
+	//
+	//영역보다 높은 성도 처음에는 바닥부터 본다 - 가운데를 잡으면 땅도
+	//바퀴도 안 보이는 데서 시작한다. 위층은 밀어 올려 본다.
 	if (h <= halfH * 2 || gLobbyCamY < 0)
 		gLobbyCamY = h - halfH;
 	else
@@ -5988,7 +6018,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//여유가 0 이라 멀쩡해 보였다.
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
 	const float upperH = CastlePartsUpperH(curCastle + 1);
-	const float heroV = (upperH + (float)curCastle * 128.0f + 114.0f - LOBBY_HERO_LIFT)
+	const float heroV = (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT)
 	                  / gLobbyCastleH;
 
 	// 방 슬롯은 512px 방 좌표로 작성되어 있다. 성 외장 전체 폭(736px)을

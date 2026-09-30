@@ -10,6 +10,7 @@ namespace StageBg {
 float s_travel = 0.0f;
 float s_clock  = 0.0f;
 int   s_region = 0;
+int   s_regionPick = -1;
 }
 
 void BattleMobileCastleUpdate(float delta)
@@ -28,6 +29,45 @@ void BattleMobileCastleUpdate(float delta)
 //예전에는 자동 전투가 켜졌을 때만 흘렸다. 그러면 웨이브 사이 룰렛이
 //열릴 때마다 세계가 멈춰 섰다. 싸움은 달리면서 하는 것이고, 무엇을
 //살지 고르는 동안에도 열차는 간다.
+//배경 세트를 눈으로 넘겨 보는 버튼. GAMEDEBUG 에서만 Core::Run 이 부른다.
+//
+//지역은 판 번호가 정하므로(StageBg::SetRegionForStage) 그냥은 지금 판의
+//지역 하나밖에 못 본다. 일곱 벌을 다 확인하려면 잠시 붙잡을 길이 있어야
+//한다. 한 바퀴 돌면 다시 판을 따르는 자리로 돌아온다.
+//
+//맨 마지막에 그려 무엇에도 안 가린다. 터치도 마지막에 걸어 두므로
+//(GetTouchFunc 가 늦게 등록된 것부터 찾는다) 아래에 깔린 것에 안 먹힌다.
+void StageBgDebugNextRegion(void)
+{
+	StageBg::DebugNextRegion();
+}
+
+void StageBgDebugDrawButton(void)
+{
+	char str[32];
+
+	//왼쪽 위. 오른쪽 같은 높이에는 제목 화면의 이어하기 카드가 있어서,
+	//마지막에 등록되는 이 버튼이 그 터치를 가로챈다. 왼쪽 그 자리는 버전
+	//글자뿐이라 눌릴 것이 없다.
+	const int w = 84 * _2X;
+	const int h = 20 * _2X;
+	const int x = 4 * _2X;
+	const int y = DY - 44 * _2X;
+	const int pick = StageBg::DebugRegionPick();
+
+	MemRect(x, y, w, h, pick >= 0 ? 0x402038 : 0x202838);
+	MemRectFrame(x, y, w, h, 0x8AD8FF);
+
+	if (pick >= 0)
+		sprintf(str, "배경 %d 고정", pick + 1);
+	else
+		sprintf(str, "배경 %d (판)", StageBg::CurRegion() + 1);
+
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(str, x + w / 2, y - h + 6 * _2X, 0.42f);
+	SetRectPoint(x, y, w, h, TOUCH_FUNC_DEBUG_STAGEBG);
+}
+
 //성 본체를 내린 만큼 바퀴까지 따라 내려가면 바퀴가 선로 아래로 들어간다.
 //그 차이만큼 바퀴를 도로 올린다.
 float CastleWheelLiftPx(void)

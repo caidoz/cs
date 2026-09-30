@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3

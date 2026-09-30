@@ -1,4 +1,4 @@
-﻿//
+//
 //  Text.h
 //  100
 //
@@ -3652,6 +3652,20 @@ const char* const textId[] = {
 #include "CastleRoomV4Names.inc"
 #include "CastleMobilityNames.inc"
 #include "CastleExteriorNames.inc"
+#include "CastleExteriorMoreNames.inc"
+	"castle_exterior/castle_03_hollow_stage_0",
+	"castle_exterior/castle_03_hollow_stage_1",
+	"castle_exterior/castle_03_hollow_stage_2",
+	"castle_exterior/castle_03_hollow_stage_3",
+	"castle_exterior/castle_03_hollow_stage_4",
+	"castle_exterior/castle_03_hollow_stage_5",
+	"castle_exterior/castle_03_lion",
+	"castle_exterior/castle_01_hollow_stage_0",
+	"castle_exterior/castle_01_hollow_stage_1",
+	"castle_exterior/castle_01_hollow_stage_2",
+	"castle_exterior/castle_01_hollow_stage_3",
+	"castle_exterior/castle_01_hollow_stage_4",
+	"castle_exterior/castle_01_hollow_stage_5",
 
 	//지역 배경. 한 벌 다섯 장, ImgDef.h 의 STAGEBG_FIRST_IMG 와 같은 차례다.
 	"bg1_far",
@@ -3665,6 +3679,84 @@ const char* const textId[] = {
 	"bg2_rail",
 	"bg2_boss",
 	"bg2_boss_fx",
+
+	"bg3_far",
+	"bg3_mid",
+	"bg3_rail",
+	"bg3_boss",
+	"bg3_boss_fx",
+
+	"bg4_far",
+	"bg4_mid",
+	"bg4_rail",
+	"bg4_boss",
+	"bg4_boss_fx",
+
+	"bg5_far",
+	"bg5_mid",
+	"bg5_rail",
+	"bg5_boss",
+	"bg5_boss_fx",
+
+	"bg6_far",
+	"bg6_mid",
+	"bg6_rail",
+	"bg6_boss",
+	"bg6_boss_fx",
+
+	"bg7_far",
+	"bg7_mid",
+	"bg7_rail",
+	"bg7_boss",
+	"bg7_boss_fx",
+
+	"bg8_far",
+	"bg8_mid",
+	"bg8_rail",
+	"bg8_boss",
+	"bg8_boss_fx",
+
+	"bg9_far",
+	"bg9_mid",
+	"bg9_rail",
+	"bg9_boss",
+	"bg9_boss_fx",
+
+	"bg10_far",
+	"bg10_mid",
+	"bg10_rail",
+	"bg10_boss",
+	"bg10_boss_fx",
+
+	"bg11_far",
+	"bg11_mid",
+	"bg11_rail",
+	"bg11_boss",
+	"bg11_boss_fx",
+
+	"bg12_far",
+	"bg12_mid",
+	"bg12_rail",
+	"bg12_boss",
+	"bg12_boss_fx",
+
+	"bg13_far",
+	"bg13_mid",
+	"bg13_rail",
+	"bg13_boss",
+	"bg13_boss_fx",
+
+	//성 단계별 가방 테두리. ImgDef.h 의 GRID_FRAME_FIRST_IMG 와 같은 차례다.
+	"grid0",
+	"grid1",
+	"grid2",
+	"grid3",
+	"grid4",
+	"grid5",
+	"grid6",
+	"grid7",
+	"grid8",
+	"grid9",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
