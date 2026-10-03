@@ -2199,6 +2199,142 @@ static void GridTrashRect(int* x, int* y, int* w, int* h)
 //격자 위에 뜬다. 한 판에 한 번, 셋 중 하나를 골라 격자에 놓으면
 //닫힌다. 열 칸짜리 상점 줄을 없애고 이것으로 바꾼 것은, 아무 때나
 //살 수 있으면 "무엇을 포기할까"가 사라지기 때문이다.
+//======================================================================
+// 전투 화면의 UI 조각
+//
+// 네모만 찍던 자리를 기존 아틀라스 그림으로 바꾼다. win.png 와 slot.png 에
+// 쓸 만한 틀과 자물쇠가 이미 있어서 새로 그릴 까닭이 없다.
+//
+// 조각 자리는 tools/ui/atlas_rects.py 로 쟀다. 눈대중으로 자르면 한두
+// 픽셀이 어긋나 테두리에 선이 생긴다.
+//======================================================================
+
+//win.png 의 금모서리 사각 틀
+#define UIFRAME_X	418
+#define UIFRAME_Y	508
+#define UIFRAME_W	198
+#define UIFRAME_H	198
+#define UIFRAME_CAP	44
+
+//win.png 의 작은 금색 바
+#define UIGOLDBAR_X		512
+#define UIGOLDBAR_Y		113
+#define UIGOLDBAR_W		216
+#define UIGOLDBAR_H		68
+#define UIGOLDBAR_CAP	26
+
+//slot.png 의 자물쇠와 쇠사슬
+#define UILOCK_X	1
+#define UILOCK_Y	439
+#define UILOCK_W	145
+#define UILOCK_H	168
+#define UICHAIN_X	147
+#define UICHAIN_Y	438
+#define UICHAIN_W	479
+#define UICHAIN_H	215
+
+//한 조각을 늘리지 않고 같은 배율로 이어 붙인다. 마지막 장은 원본을
+//잘라서 폭을 맞춘다.
+//
+//늘려 그리지 않는 까닭: 가로 세로 배율이 달라진 스프라이트를 누가
+//getScale() 로 읽으면 엔진이 "어느 쪽을 줘야 하나" 하고 단언에 걸려
+//게임이 멈춘다(CCNode.cpp 의 getScale). 같은 배율로 여러 번 찍으면
+//그 길을 아예 피한다.
+static void UiTileX(int img, int sx, int sy, int sw, int sh,
+                    int x, int y, int w, float sc)
+{
+	const int step = Max(1, (int)(sw * sc));
+
+	for (int at = 0; at < w; at += step) {
+		const int left = w - at;
+		const int cut = left >= step ? sw : Max(1, (int)(left / sc));
+
+		DrawImage(cut, sh, sx, sy, x + at, y, false, false, false, false, false,
+		          sc, sprite[img], img);
+	}
+}
+
+static void UiTileY(int img, int sx, int sy, int sw, int sh,
+                    int x, int y, int h, float sc)
+{
+	const int step = Max(1, (int)(sh * sc));
+
+	for (int at = 0; at < h; at += step) {
+		const int left = h - at;
+		const int cut = left >= step ? sh : Max(1, (int)(left / sc));
+
+		DrawImage(sw, cut, sx, sy, x, y - at, false, false, false, false, false,
+		          sc, sprite[img], img);
+	}
+}
+
+//아홉 조각 틀. 가운데는 비운다 - 안에 아이템 그림이 들어간다.
+static void UiFrameDraw(int img, int sx, int sy, int sw, int sh, int cap,
+                        int x, int y, int w, int h, float sc)
+{
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return;
+
+	const int c = Max(1, (int)(cap * sc));
+
+	if (w < c * 2 || h < c * 2) {
+		MemRectFrame(x, y, w, h, 0xC9A227);
+		return;
+	}
+
+	const int mw = w - c * 2;
+	const int mh = h - c * 2;
+	const int sm = sw - cap * 2;
+	const int tm = sh - cap * 2;
+	const int sr = sx + sw - cap;
+	const int sb = sy + sh - cap;
+
+	//네 모서리
+	DrawImage(cap, cap, sx, sy, x, y, false, false, false, false, false, sc, sprite[img], img);
+	DrawImage(cap, cap, sr, sy, x + w - c, y, false, false, false, false, false, sc, sprite[img], img);
+	DrawImage(cap, cap, sx, sb, x, y - h + c, false, false, false, false, false, sc, sprite[img], img);
+	DrawImage(cap, cap, sr, sb, x + w - c, y - h + c, false, false, false, false, false, sc, sprite[img], img);
+
+	//네 변
+	UiTileX(img, sx + cap, sy, sm, cap, x + c, y, mw, sc);
+	UiTileX(img, sx + cap, sb, sm, cap, x + c, y - h + c, mw, sc);
+	UiTileY(img, sx, sy + cap, cap, tm, x, y - c, mh, sc);
+	UiTileY(img, sr, sy + cap, cap, tm, x + w - c, y - c, mh, sc);
+}
+
+//가로로만 늘어나는 띠. 값표와 버튼 바탕에 쓴다.
+static void UiBarDraw(int img, int sx, int sy, int sw, int sh, int cap,
+                      int x, int y, int w, float sc)
+{
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return;
+
+	const int c = Max(1, (int)(cap * sc));
+
+	if (w < c * 2) {
+		MemRectFrame(x, y, w, (int)(sh * sc), 0xC9A227);
+		return;
+	}
+
+	DrawImage(cap, sh, sx, sy, x, y, false, false, false, false, false, sc, sprite[img], img);
+	DrawImage(cap, sh, sx + sw - cap, sy, x + w - c, y, false, false, false, false, false, sc, sprite[img], img);
+	UiTileX(img, sx + cap, sy, sw - cap * 2, sh, x + c, y, w - c * 2, sc);
+}
+
+//그림 한 조각을 네모 안에 가운데 맞춰 넣는다.
+static void UiPieceFit(int img, int sx, int sy, int sw, int sh,
+                       int x, int y, int w, int h, int alpha)
+{
+	if (!sprite[img]) LoadImg(img);
+	if (!sprite[img]) return;
+
+	const float sc = Min((float)w / sw, (float)h / sh);
+
+	DrawImage(sw, sh, sx, sy,
+	          x + (w - (int)(sw * sc)) / 2, y - (h - (int)(sh * sc)) / 2,
+	          false, false, false, false, alpha, sc, sprite[img], img);
+}
+
 static void GridOfferRect(int n, int* x, int* y, int* w, int* h)
 {
 	const int cw = (DX - STAGE_SHOP_GAP * (GRIDTEST_OFFERCNT + 1)) / GRIDTEST_OFFERCNT;
@@ -2603,9 +2739,18 @@ static void GridShopPriceStrip(int n, int price, bool afford)
 	y -= h;
 	h = STAGE_SHOP_PRICEH;
 
-	MemRect(x, y, w, h, price < 0 ? 0x16161F : (afford ? 0x2C2A18 : 0x241A1A));
-	MemRectFrame(x, y, w, h, price < 0 ? 0x3A3F5A : (afford ? 0xC9A227 : 0x77404A));
-	SetFontColor(price < 0 ? COLOR_GREY : (afford ? COLOR_WHITE : COLOR_GREY));
+	//살 수 있는 값만 금색 띠를 깐다. 못 사는 값과 빈 칸은 어두운 네모로
+	//두어, 띠가 보이면 곧 "지금 살 수 있다" 가 되게 한다.
+	if (price >= 0 && afford) {
+		UiBarDraw(WIN_IMG, UIGOLDBAR_X, UIGOLDBAR_Y, UIGOLDBAR_W, UIGOLDBAR_H,
+		          UIGOLDBAR_CAP, x, y, w, (float)h / UIGOLDBAR_H);
+	}
+	else {
+		MemRect(x, y, w, h, price < 0 ? 0x16161F : 0x241A1A);
+		MemRectFrame(x, y, w, h, price < 0 ? 0x3A3F5A : 0x77404A);
+	}
+
+	SetFontColor(price < 0 ? COLOR_GREY : (afford ? COLOR_BLACK : COLOR_GREY));
 
 	if (price < 0)
 		CenterTextStrSolid("-", x + w / 2, y - h + 3 * _2X, 0.5f);
@@ -4987,12 +5132,20 @@ void GridTestDraw(void)
 			//
 			//아직 아무도 안 눕혔다. 무엇이 나올 자리인지만 보여 준다.
 			if (gOfferOn == false) {
-				SetAlpha(10);
-				MemRect(x, y, w, h, 0x22223C);
+				SetAlpha(12);
+				MemRect(x, y, w, h, 0x101020);
 				SetAlpha(ALPHA_MAX);
-				MemRectFrame(x, y, w, h, 0x3A3F5A);
-				SetFontColor(COLOR_GREY);
-				CenterTextStrSolid("잠김", x + w / 2, y - h / 2 - 4 * _2X, 0.56f);
+				UiFrameDraw(WIN_IMG, UIFRAME_X, UIFRAME_Y, UIFRAME_W, UIFRAME_H,
+				            UIFRAME_CAP, x, y, w, h, 0.34f);
+
+				//"잠김" 이라고 쓰던 자리다. 자물쇠와 쇠사슬이 글자보다
+				//멀리서도 읽힌다 - 무엇이 잠겼는지는 자리로 이미 안다.
+				UiPieceFit(SLOT_IMG, UICHAIN_X, UICHAIN_Y, UICHAIN_W, UICHAIN_H,
+				           x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 22);
+				UiPieceFit(SLOT_IMG, UILOCK_X, UILOCK_Y, UILOCK_W, UILOCK_H,
+				           x + w / 2 - 11 * _2X, y - h / 2 + 13 * _2X,
+				           22 * _2X, 26 * _2X, 0);
+
 				GridShopPriceStrip(i, -1, false);
 				continue;
 			}
@@ -5010,7 +5163,8 @@ void GridTestDraw(void)
 				SetAlpha(24);
 				MemRect(x, y, w, h, 0x2A2A44);
 				SetAlpha(ALPHA_MAX);
-				MemRectFrame(x, y, w, h, 0xFFD700);
+				UiFrameDraw(WIN_IMG, UIFRAME_X, UIFRAME_Y, UIFRAME_W, UIFRAME_H,
+				            UIFRAME_CAP, x, y, w, h, 0.34f);
 
 				bool drawn = false;
 				if (f->type == ITEM_SWORD)
@@ -5312,6 +5466,16 @@ static float gLobbyCastleH = 0;
 //DrawObj 가 쓰는 오브젝트 좌표로 바꾼다. DrawObj 는 화면에
 //  x' = xOffset + x - rx,  y' = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry
 //로 찍으므로 그 역이다.
+//화면 자리를 그대로 오브젝트 좌표로 옮긴다.
+//
+//LobbyCastleToObj 의 뒤쪽 절반이다. 성 안의 비율 자리가 아니라 화면
+//어디든 짚어야 할 때 쓴다 - 전투 자리로 내려보낸 동료가 그렇다.
+static void ScreenToObj(float sx, float sy, float* x, float* y)
+{
+	*x = sx - xOffset + rx;
+	*y = (float)(STATUSWIN_Y + (rh - 4) * TSIZE) - ry + OBJIMGGAP - sy;
+}
+
 static void LobbyCastleToObj(float u, float v, float* x, float* y)
 {
 	const float sx = gLobbyCastleLeft + u * gLobbyCastleW * gLobbyCastleScale;
@@ -5332,6 +5496,22 @@ static void LobbyCastleToObj(float u, float v, float* x, float* y)
 
 //이번 판에 나가는 동료를 얼마나 키우나. 성 안에 그냥 있을 때가 기준이다.
 #define CASTLE_CREW_BATTLE_ZOOM	1.5f
+
+//전투 자리로 내려올 때의 등장 연출 길이(프레임)와 그때 더 커지는 비율.
+#define CREW_ENTER_FRAME		18
+#define CREW_ENTER_POP			0.9f
+
+//성 밑 전투 자리. 성 앞에 가로로 늘어선다.
+//
+//성이 왼쪽(StageBg::kCastleLeft)에 서고 몬스터가 오른쪽에 서므로 그
+//사이가 동료 자리다. 성보다 앞에 그려지니 성과 겹쳐도 가려지지 않는다.
+#define CREW_LINE_X			(26.0f * _2X)
+#define CREW_LINE_GAP		(30.0f * _2X)
+#define CREW_LINE_LIFT		(3.0f * _2X)
+
+//슬롯마다 남은 등장 연출 프레임. 그 자리의 주인이 바뀐 순간부터 센다.
+static int gCrewEnter[MAXCREW] = { 0, };
+static int gCrewEnterType[MAXCREW] = { 0, };
 
 static float LobbyCharZoom(void)
 {
@@ -5416,7 +5596,7 @@ void LobbyCastleMenuCommand(int func)
 //넘어갈 때 장면이 튀었다.
 static float LobbyViewBottom(void)
 {
-	return (float)(int)(DY * StageBg::kGroundRef);
+	return (float)StageBg::kGroundPx;
 }
 
 static float LobbyViewCY(void)
@@ -5441,11 +5621,12 @@ static void LobbyCamClamp(void)
 	//전투와 같은 자리에 붙인다. 가운데에 두면 로비에서 전투로 넘어갈 때
 	//성이 옆으로 미끄러진다.
 	if (w <= halfW * 2)
-		gLobbyCamX = (DX / 2.0f - StageBg::kCastleLeft) / s;
+		gLobbyCamX = (DX / 2.0f - StageBg::kCastleLeft
+		              + CastlePartsLeftInset(LobbyCastleLevel()) * s) / s;
 	else
 		gLobbyCamX = Max(halfW, Min(w - halfW, gLobbyCamX));
 
-	//성이 딛는 줄에 세운다. 전투와 같은 줄(StageBg::kGroundRef)이라
+	//성이 딛는 줄에 세운다. 전투와 같은 줄(StageBg::kGroundPx)이라
 	//넘어갈 때 장면이 안 튄다. 예전에는 하단 메뉴 바로 위에 붙였는데,
 	//그 자리가 전투의 줄과 우연히 비슷했을 뿐이라 한쪽만 고치면 어긋났다.
 	//
@@ -5787,7 +5968,7 @@ static int LobbyCastleGroundY(void)
 {
 	float w, h;
 
-	if (!LobbyCastleSize(&w, &h)) return (int)(DY * StageBg::kGroundRef);
+	if (!LobbyCastleSize(&w, &h)) return StageBg::kGroundPx;
 
 	const float s = LobbyCamScale(w, h);
 	const float rectBottom = LobbyViewCY() + gLobbyCamY * s - h * s;
@@ -5822,8 +6003,11 @@ static void LobbyCastleDraw(void)
 
 	const float s = LobbyCamScale(w, h);
 	const int left = (int)(DX / 2.0f - gLobbyCamX * s);
-	//선로 자리는 그대로 두고 성만 내린다. 전투와 같은 값이다.
-	const int top = (int)(LobbyViewCY() + gLobbyCamY * s - StageBg::kCastleDropPx);
+	// Wheel centers meet the hull's lower edge; place their contact point on
+	// the unchanged rail, with the same authored offset at every zoom.
+	const float groundOffset = CastlePartsGroundOffset(LobbyCastleLevel());
+	const int top = (int)(LobbyViewCY() + gLobbyCamY * s -
+		(groundOffset >= 0.0f ? groundOffset * s : StageBg::kCastleDropPx));
 	const float bottom = top - h * s;
 
 	//지면은 LobbyDraw 가 먼저 깐 선로다. 성은 그 위에 선다.
@@ -6018,23 +6202,44 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//여유가 0 이라 멀쩡해 보였다.
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
 	const float upperH = CastlePartsUpperH(curCastle + 1);
-	const float heroV = (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT)
-	                  / gLobbyCastleH;
+	const float bodyLift = CastlePartsBodyLift(curCastle + 1);
+	const float partOffset = curCastle == 0 ? 96.0f : 0.0f;
+	const float heroV = curCastle == 0
+		? (upperH + roomStackH + 38.0f - bodyLift) / gLobbyCastleH // front cannon deck
+		: (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT - bodyLift)
+		  / gLobbyCastleH;
 
 	// 방 슬롯은 512px 방 좌표로 작성되어 있다. 성 외장 전체 폭(736px)을
 	// 그대로 곱하면 동료가 좌우 외장과 지휘대로 퍼진다. 중앙 방 aperture
 	// (x=64..575) 안으로만 다시 매핑한다.
-	auto RoomUToCastleU = [](float roomU) -> float {
-		return (64.0f + roomU * 512.0f) / gLobbyCastleW;
+	auto RoomUToCastleU = [partOffset](float roomU) -> float {
+		return (partOffset + 64.0f + roomU * 512.0f) / gLobbyCastleW;
 	};
 
 	// 지휘관은 최상층 방 중앙이 아니라 우측 지휘대의 보행 가능한 난간
 	// 안쪽에 선다. 지휘대는 전체 조립 좌표 x=544..735에 있다.
 	float heroCenterX, heroY;
-	const float commanderU = 660.0f / gLobbyCastleW;
+	const float commanderU = (partOffset + 660.0f) / gLobbyCastleW;
 	LobbyCastleToObj(commanderU, heroV, &heroCenterX, &heroY);
 
 	const float charZoom = LobbyCharZoom();
+
+	//전투 자리에 막 내려온 동료를 찾는다. 슬롯의 주인이 바뀐 프레임이
+	//등장 순간이다. 한 번만 세면 되므로 동료를 훑기 전에 처리한다.
+	if (battle) {
+		for (int c = 0; c < MAXCREW; ++c) {
+			const OBJECT* o = &ao[CREW + c];
+			const int t = (o->active && !o->dead) ? o->type : 0;
+
+			if (t != gCrewEnterType[c]) {
+				gCrewEnterType[c] = t;
+				gCrewEnter[c] = t ? CREW_ENTER_FRAME : 0;
+			}
+			else if (gCrewEnter[c] > 0) {
+				gCrewEnter[c]--;
+			}
+		}
+	}
 
 	const CastleSlotTable& slotTable = kCastleSlotTables[curCastle];
 
@@ -6049,7 +6254,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		// Slot tables are authored in the room stack's old 0..1 space.  The
 		// castle bounds now also include its lower hull, so remap the vertical
 		// coordinate into the complete shared local space.
-		const float castleV=(upperH+def.v*roomStackH)/gLobbyCastleH;
+		const float castleV=(upperH+def.v*roomStackH-bodyLift)/gLobbyCastleH;
 		LobbyCastleToObj(RoomUToCastleU(def.u), castleV, &x, &y);
 		LobbySlotInstance inst = {
 			def.role,
@@ -6201,16 +6406,29 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		//가져온다. 흉내 낸 모션을 따로 만들면 성 안의 동료와 전장의
 		//동료가 다른 동작을 해서 같은 사람으로 안 읽힌다.
 		const OBJECT* live = nullptr;
+		int liveSlot = -1;
 		if (battle) {
 			for (int c = 0; c < MAXCREW; ++c) {
 				const OBJECT* o = &ao[CREW + c];
 				if (o->active && !o->dead && o->type == pCrew->type) {
 					live = o;
+					liveSlot = c;
 					break;
 				}
 			}
 		}
 		if (live) {
+			//싸우러 나간 동료는 방에서 빼고 성 밑 전투 자리로 내려보낸다.
+			//
+			//방에 그대로 두면 예순네 명 사이에 섞여 누가 나갔는지가 안
+			//보인다. 땅에 내려서면 성과 몬스터 사이에 저 혼자 서게 된다.
+			const float sx = CREW_LINE_X + liveSlot * CREW_LINE_GAP;
+			const float sy = (float)StageBg::kGroundPx + CREW_LINE_LIFT;
+
+			float ox = 0.0f, oy = 0.0f;
+			ScreenToObj(sx, sy, &ox, &oy);
+			pCrew->x = ox;
+			pCrew->y = oy;
 			pCrew->motion = live->motion;
 			pCrew->dirX = pCrew->dirF = live->dirF;
 		}
@@ -6224,8 +6442,18 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		pCrew->ny = pCrew->y;
 		pCrew->frame = live ? live->frame : frame + owned * MOTIONDIV;
 		pCrew->zoom = enemyIconZoom[pCrew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * roleZoomScale * charZoom;
-		//싸우러 나간 동료만 키운다. 성 안에 그대로 서 있되 눈에 띈다.
-		if (live) pCrew->zoom *= CASTLE_CREW_BATTLE_ZOOM;
+
+		if (live) {
+			//전투 자리의 동료는 조금 크게. 방 안의 구경꾼들과 섞이면 안 된다.
+			pCrew->zoom *= CASTLE_CREW_BATTLE_ZOOM;
+
+			//막 내려온 순간에는 한 번 더 부풀렸다 가라앉는다. 그래야
+			//"방에서 나왔다"가 눈에 걸린다.
+			if (liveSlot >= 0 && gCrewEnter[liveSlot] > 0) {
+				const float t = (float)gCrewEnter[liveSlot] / CREW_ENTER_FRAME;
+				pCrew->zoom *= 1.0f + CREW_ENTER_POP * t;
+			}
+		}
 		owned++;
 	}
 

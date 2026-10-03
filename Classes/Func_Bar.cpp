@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -404,6 +404,14 @@ void BarDraw(BAR* barP, float zoom)
 		SetRectPoint(xOffset + barP->x - (float)MAINMENU_X / 2 * zoom, barP->y + (float)MAINMENU_Y / 2 * zoom, (float)MAINMENU_X * zoom, (float)MAINMENU_Y * zoom, TOUCH_FUNC_FRIENDS);
 		break;
 	case BAR_NPC:
+		//성이 달리는 판에서는 이 바를 안 쓴다.
+		//
+		//초상화와 심장 아이콘이 달려 화면 위쪽을 넓게 차지한다. 그 자리는
+		//지금 배경과 성이 쓰고, 체력은 몬스터 밑 · 성 밑의 가는 두 줄로
+		//보여 준다(BattleMobileCastle::DrawDuelHpBars).
+		if (drawHandle == MD_PLAY)
+			break;
+
 		DrawImage(207, 33, 0, 953, xOffset + barP->x + shakePosX[effect.hpShake], barP->y - 12 * _2X + shakePosY[effect.hpShake], false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
 		EnemyProfileDraw(xOffset + barP->x + (float)(4 * _2X) * zoom, barP->y - (float)(14 * _2X) * zoom, ao[ENEMY].type, zoom, false, false);
 

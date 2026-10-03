@@ -798,16 +798,45 @@ typedef enum _imgDef {
 	CASTLE_03_LION_IMG,
 	CASTLE_01_HOLLOW_FIRST_IMG,
 	CASTLE_01_HOLLOW_LAST_IMG = CASTLE_01_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_02_HOLLOW_FIRST_IMG,
+	CASTLE_02_HOLLOW_LAST_IMG = CASTLE_02_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_04_HOLLOW_FIRST_IMG,
+	CASTLE_04_HOLLOW_LAST_IMG = CASTLE_04_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_04_EAGLE_IMG,
+	CASTLE_05_HOLLOW_FIRST_IMG,
+	CASTLE_05_HOLLOW_LAST_IMG = CASTLE_05_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_05_GEAR_IMG,
+	CASTLE_05_BEAST_IMG,
+	CASTLE_06_HOLLOW_FIRST_IMG,
+	CASTLE_06_HOLLOW_LAST_IMG = CASTLE_06_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_06_DRAGON_IMG,
+	CASTLE_07_HOLLOW_FIRST_IMG,
+	CASTLE_07_HOLLOW_LAST_IMG = CASTLE_07_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_07_EXHAUST_IMG,
+	CASTLE_08_HOLLOW_FIRST_IMG,
+	CASTLE_08_HOLLOW_LAST_IMG = CASTLE_08_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_08_EXHAUST_IMG,
+	CASTLE_09_HOLLOW_FIRST_IMG,
+	CASTLE_09_HOLLOW_LAST_IMG = CASTLE_09_HOLLOW_FIRST_IMG + 6 - 1,
+	CASTLE_09_WINGS_IMG,
+	CASTLE_09_EXHAUST_IMG,
+	CASTLE_10_HOLLOW_FIRST_IMG,
+	CASTLE_10_HOLLOW_LAST_IMG = CASTLE_10_HOLLOW_FIRST_IMG + 6 - 1,
+	// Castle 1: separate, room-width combat deck and forward cannon (six stages).
+	CASTLE_01_COMBAT_DECK_FIRST_IMG,
+	CASTLE_01_COMBAT_DECK_LAST_IMG = CASTLE_01_COMBAT_DECK_FIRST_IMG + 6 - 1,
+	CASTLE_01_CANNON_FIRST_IMG,
+	CASTLE_01_CANNON_LAST_IMG = CASTLE_01_CANNON_FIRST_IMG + 6 - 1,
 
 	// 성열차가 달리는 지역의 배경. 한 지역이 다섯 장 한 벌이고
 	// 원경 - 보스 - 중경 - 선로 차례로 겹친다. 순서와 장수가 곧
 	// StageBackground.h 의 지역 표이므로 한 벌씩 통째로 덧붙인다.
-	//   0 늪지대   1 금단의 계곡   2 아틀란티스   3 지하수로   4 아델라인 평원   5 화염지대   6 얼음지대   7 번개지대   8 빛의 지대   9 골렘협곡   10 어둠의 협곡   11 드래곤 협곡   12 망자의 도시   13 마왕성
+	//   0 늪지대   1 금단의 계곡   2 아틀란티스   3 지하수로   4 아델라인 평원   5 화염지대   6 얼음지대   7 번개지대   8 빛의 지대   9 골렘협곡   10 어둠의 협곡   11 드래곤 협곡   12 망자의 도시   13 마왕성   14 우주
 	STAGEBG_FIRST_IMG,
 	STAGEBG_PER_REGION = 5,
-	//열넷이다. res 에 bg1 ~ bg14 가 있고 Text.h 이름표도 70 줄(14 x 5),
-	//StageBackground.h 의 kRegion 과 이름 표도 열넷이다.
-	STAGEBG_REGION_CNT = 14,
+	//열다섯이다. res 에 bg1 ~ bg15 가 있고 Text.h 이름표도 75 줄(15 x 5),
+	//StageBackground.h 의 kRegion 과 이름 표도 열다섯이다.
+	STAGEBG_REGION_CNT = 15,
 	STAGEBG_LAST_IMG = STAGEBG_FIRST_IMG + STAGEBG_PER_REGION * STAGEBG_REGION_CNT - 1,
 
 	// 성 단계별 가방 테두리. grid0 이 1 단계다 - 성 번호와 짝이다.

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // StageBackground.h
 // 성열차가 달리는 지역의 배경. 원경 - 보스 - 중경 - 선로 를 서로 다른
 // 속도로 흘려 깊이를 낸다.
@@ -30,6 +30,8 @@ namespace StageBg {
 
 // ---- 지역이 공유하는 설계 좌표 (layer/*/layout.json) ----
 static const float kDesignW  = 1088.0f;
+//설계 화면 높이. 배경 배율의 기준이다(MINDY_MIN = 425 * 2).
+static const float kDesignH  = 850.0f;
 static const float kSkyW     = 1088.0f, kSkyH = 1445.0f;     // 원경 · 중경
 static const float kRailW    = 1088.0f, kRailH = 438.0f;
 static const float kRailTopY =  840.0f;
@@ -41,7 +43,9 @@ static const float kSpeedFar = 2.2f, kSpeedMid = 15.4f, kSpeedRail = 110.0f;
 
 //성의 왼쪽 여백. 성은 왼쪽에 서고 오른쪽이 싸우는 자리다. 로비와 전투가
 //같은 값을 써야 넘어갈 때 성이 옆으로 미끄러지지 않는다.
-static const float kCastleLeft = 6.0f * (float)_2X;
+//0 이다. 성은 화면 왼쪽에 붙는다 - 여백을 두면 그 폭이 몬스터 자리에서
+//깎인다.
+static const float kCastleLeft = 0.0f;
 
 //성을 딛는 줄보다 이만큼 내려 놓는다. 화면 픽셀이고, 성 배율이 붙박이라
 //층수와 상관없이 같다.
@@ -52,19 +56,9 @@ static const float kCastleLeft = 6.0f * (float)_2X;
 static const float kCastleDropPx = 48.0f;
 static const float kWheelDropPx  = 16.0f;
 
-//장면이 딛는 줄의 기준 높이. 화면 아래에서 잰 비율이다. 배율도 여기서
-//정한다.
-//
-//0.31 -> 0.385 -> 0.46 으로 올렸다(64 픽셀씩 두 번). 전투 화면의 아래
-//UI - 격자와 상점 줄 - 가 선로와 성 아랫도리를 가렸다.
-//
-//로비도 이 줄에 성을 세운다(LobbyCamClamp). 두 화면이 같은 값을 봐야
-//넘어갈 때 장면이 안 튄다.
-//
-//로비와 전투가 우연이 아니라 이 값으로 같은 자리에 선다 - 로비 카메라가
-//성을 놓는 자리를 세어 보면 화면 높이의 0.31 쯤이고, 전투도 같은 값을
-//쓴다(VisualGroundY).
-static const float kGroundRef = 0.46f;
+//화면 바닥에서 잰 픽셀이다. 화면 높이의 비율이 아니다.
+//설계 높이 850(MINDY_MIN) 에서 0.46 이던 자리다.
+static const int kGroundPx = 391;
 
 // ---- 지역마다 다른 것 ----
 
@@ -127,6 +121,12 @@ static const Region kRegion[] = {
 	// 망자의 도시 - 거대 사신 보스가 5.2 초 주기로 숨을 쉰다.
 	{ 0x625B76, 0x4E2F6D, 230.0f, 130.0f, 900.0f, 600.0f,
 	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 마왕성 - 거대 마왕 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x47586B, 0x668B98, 310.0f, 110.0f, 750.0f, 625.0f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
+	// 우주 - 보이드 레비아탄 보스가 5.2 초 주기로 숨을 쉰다.
+	{ 0x26344F, 0x040F34, 245.0f, 130.0f, 860.0f, 573.333f,
+	  5.2f, 0.005f, 0.005f, 2.0f, FxNone, 1.0f, 0.0f, 0.0f },
 };
 
 //보스 그림의 기준점. 그림 좌상단에서 잰 비율이라 밑동이 안개에 박힌 채로
@@ -184,7 +184,7 @@ inline const char* DebugRegionLabel(void) {
 	static const char* const kNames[STAGEBG_REGION_CNT] = {
 		"1.늪지대", "2.금단의계곡", "3.아틀란티스", "4.지하수로",
 		"5.아델라인평원", "6.화염지대", "7.얼음지대", "8.번개지대", "9.빛의지대", "10.골렘협곡",
-		"11.어둠의협곡", "12.드래곤협곡", "13.망자의도시"
+		"11.어둠의협곡", "12.드래곤협곡", "13.망자의도시", "14.마왕성", "15.우주"
 	};
 	if (s_regionPick >= 0 && s_regionPick < STAGEBG_REGION_CNT) {
 		return kNames[s_regionPick];
@@ -221,38 +221,18 @@ inline Camera FixedCam(int groundY) {
 }
 
 // 층마다 카메라를 얼마나 따라가나.
-//
-// [미는 것은 흐르는 속도 그대로다]
-// 원경이 선로의 50 분의 1 로 흐르는 것은 그만큼 멀리 있다는 뜻이다.
-// 카메라를 밀 때도 그만큼만 따라와야 앞뒤가 맞는다. 예전에는 모든 층이
-// 딛는 줄을 1:1 로 따라가서, 성을 잡고 밀면 하늘이 성만큼 움직였다 -
-// 그러면 멀리 있는 것으로 안 보인다.
-//
-// [키우는 것은 따로 둔다]
-// 같은 비로 키우면 원경이 50 분의 1 이라 하늘이 사실상 안 커진다. 성만
-// 커지고 배경은 멈춘 그림이 된다. 눈에 보이는 만큼은 따라 커지도록
-// 완만한 값을 따로 준다.
 struct Depth { float pan, zoom; };
 static const Depth kDepthFar  = { kSpeedFar / kSpeedRail, 0.25f };
 static const Depth kDepthMid  = { kSpeedMid / kSpeedRail, 0.55f };
 static const Depth kDepthRail = { 1.0f,                   1.00f };
 
 inline float Scale(void) {
-	//배율은 붙박이다. 딛는 줄은 출정 준비에서 들리고 로비에서는 카메라를
-	//따라 오르내리는데, 배율까지 같이 변하면 성 크기는 그대로인 채 배경만
-	//줌해서 어긋나 보인다.
-	//
-	//폭을 채우되, 기준 높이에서 원경 꼭대기가 화면 위를 넘을 만큼 키운다.
-	//땅이 기준보다 올라가 원경 위가 모자라면 배율을 키우는 대신 하늘색을
-	//이어 붙인다(Draw). 배율로 메우면 카메라를 밀 때마다 배경이 숨쉰다.
-	const float byWidth = (float)DX / kDesignW;
-	const float byRef   = (float)Max(1, DY - (int)(DY * kGroundRef)) / kDeckY;
-
-	return byWidth > byRef ? byWidth : byRef;
+	//화면 가로폭(DX)을 설계 폭(kDesignW = 1088)에 맞춘다.
+	return (float)DX / kDesignW;
 }
 
 //기준 높이. 카메라가 안 밀렸을 때 근경이 딛는 줄이다.
-inline float GroundRef(void) { return (float)(int)(DY * kGroundRef); }
+inline float GroundRef(void) { return (float)kGroundPx; }
 
 //이 층이 그려질 배율과 딛는 줄. 깊이만큼만 카메라를 따라간다.
 inline float LayerScale(const Camera& cam, const Depth& d) {
@@ -270,6 +250,9 @@ inline float RailTravelPx(void) {
 
 //설계 y 를 화면 y 로 옮긴다. 화면 y 는 사각형의 윗변이고 위로 갈수록 크다.
 inline int TopOf(int groundY, float designY, float s) {
+	if (designY < kRailTopY) {
+		return (int)DY;
+	}
 	return groundY + (int)((kDeckY - designY) * s);
 }
 
@@ -295,7 +278,8 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 
 	const int   q     = (int)std::floor(dist / tileW);
 	const float first = -(dist - q * tileW);
-	const int   top   = TopOf(LayerGround(cam, d), designTopY, s);
+	//원경과 중경(designTopY == 0)은 무조건 화면 맨 상단(DY)에 붙여서 그린다.
+	const int   top   = (designTopY == 0.0f) ? (int)DY : TopOf(LayerGround(cam, d), designTopY, s);
 
 	for (int j = 0; first + j * tileW < (float)DX; j++) {
 		DrawImage((int)sz.width, (int)sz.height, 0, 0,
@@ -312,7 +296,6 @@ inline void Boss(const Camera& cam) {
 	//보스는 원경에 붙어 있다. 원경과 같은 배율 · 같은 깊이로 움직여야
 	//붙어 있는 것으로 보인다.
 	const float s       = LayerScale(cam, kDepthFar);
-	const int   groundY = LayerGround(cam, kDepthFar);
 
 	const int baseImg = Img(SlotBoss);
 	const int fxImg   = Img(SlotBossFx);
@@ -323,16 +306,6 @@ inline void Boss(const Camera& cam) {
 	const auto sz = sprite[baseImg]->getContentSize();
 	if (sz.width < 1.0f) return;
 
-	//가로 세로를 한 배율로 낸다.
-	//
-	//따로 내면 스프라이트에 scaleX != scaleY 가 남는다. 숨쉬기 비율이
-	//달라서만이 아니라, w/폭 과 h/높이 를 따로 나누면 부동소수 끝자리가
-	//어긋나기 때문이다. 그 스프라이트를 나중에 누가 getScale() 로 읽으면
-	//엔진이 "어느 쪽을 줘야 하나" 하고 단언에 걸려 게임이 멈춘다
-	//(CCNode.cpp 의 getScale).
-	//
-	//구운 그림은 설계 비율 그대로라(0.75 배) 한 배율로 맞는다. 숨쉬기는
-	//가로 세로 평균을 쓴다 - 원본의 0.9% 와 1.8% 차이는 눈에 안 띈다.
 	const float swell = Swell(r.motionSec);
 	const float grow  = 1.0f + swell * (r.scaleX + r.scaleY) * .5f;
 	const float w = r.bossW * s * grow;
@@ -353,13 +326,15 @@ inline void Boss(const Camera& cam) {
 	const int   q     = (int)std::floor(dist / tileW);
 	const float first = -(dist - q * tileW);
 
+	//보스의 상단 y좌표: 화면 맨 위(DY)에서 r.bossY만큼 내려온다.
+	const float topY = (float)DY - (r.bossY - r.riseY * swell) * s;
+
 	for (int j = 0; first + j * tileW < (float)DX; j++) {
 		if (WrapEven(q + j) != 0) continue;
 
 		//기준점을 고정한 채 부풀린다.
 		const float ax = first + j * tileW + r.bossX * s + r.bossW * s * kBossAncU;
-		const float ay = (float)TopOf(groundY, r.bossY - r.riseY * swell, s)
-		               - r.bossH * s * kBossAncV;
+		const float ay = topY - r.bossH * s * kBossAncV;
 		const int   x  = (int)(ax - w * kBossAncU);
 		const int   y  = (int)(ay + h * kBossAncV);
 
@@ -382,13 +357,6 @@ inline void Boss(const Camera& cam) {
 inline void Draw(const Camera& cam, int arenaBottom) {
 	//심연색을 먼저 깐다. 원경 아래로 화면이 길어져도 색이 이어진다.
 	MemRect(0, DY, DX, Max(1, DY - arenaBottom), Cur().abyss);
-
-	//원경 꼭대기가 화면 위에 못 미치면 - 카메라를 위로 밀어 땅이 기준보다
-	//올라간 때다 - 그 위는 하늘색으로 잇는다. 원경 맨 윗줄이 그 색이라
-	//이음매가 안 보인다.
-	const int farTop = TopOf(LayerGround(cam, kDepthFar), 0.0f,
-	                         LayerScale(cam, kDepthFar));
-	if (farTop < DY) MemRect(0, DY, DX, DY - farTop, Cur().sky);
 
 	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  cam, kDepthFar);
 	Boss(cam);

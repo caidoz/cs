@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -80,6 +80,9 @@ int GetStageInventoryTop(void);
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int castle, bool battle);
 float CastlePartsUpperH(int castleLevel);
+float CastlePartsLeftInset(int castleLevel);
+float CastlePartsBodyLift(int castleLevel);
+float CastlePartsGroundOffset(int castleLevel);
 float GetStageWorldLift(void);
 void GridTestPick(int n, bool fromShop);
 void GridTestRelease(void);

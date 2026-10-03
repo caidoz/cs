@@ -16,7 +16,9 @@
 void CastlePartsDrawRect(int castleLevel, int x, int yTop, int w, int h);
 void CastlePartsNaturalSize(int castleLevel, float* w, float* h);
 float CastlePartsWheelSink(void);
+float CastlePartsGroundOffset(int castleLevel);
 float CastlePartsRoomScale(void);
+float CastlePartsLeftInset(int castleLevel);
 float CastlePartsFloatOffset(int castleLevel);
 
 namespace BattleMobileCastle {
@@ -35,8 +37,8 @@ inline bool IsMoving() {
 inline int VisualGroundY(int layoutGroundY) {
 	(void)layoutGroundY;
 	//전장은 고정이다. 격자가 오르내려도 세계가 따라 움직이면 안 된다.
-	//로비도 성을 같은 줄에 놓는다(StageBg::kGroundRef).
-	return (int)(DY * StageBg::kGroundRef);
+	//로비도 성을 같은 줄에 놓는다(StageBg::kGroundPx).
+	return StageBg::kGroundPx;
 }
 
 struct SlotUV { float u, v; };
@@ -151,9 +153,14 @@ inline void DrawCastle(int groundY) {
 
 	const float shudderY = (s_hitFlash > 0.0f) ? ((rand() % 5) - 2) * 1.5f * (float)_2X : 0.0f;
 	const float rumbleY = IsMoving() ? (std::sin((float)frame * 0.40f) * 1.0f * (float)_2X) : 0.0f;
-	const float castleLeft = StageBg::kCastleLeft;
-	const float assemblyBottom = (float)groundY - CastlePartsWheelSink() * scale
-	                           - StageBg::kCastleDropPx + shudderY + rumbleY;
+	//성 1 의 들여쓰기를 뺀다. 안 빼면 그만큼 왼쪽이 비고, 그 폭이
+	//고스란히 몬스터 자리에서 깎인다.
+	const float castleLeft = StageBg::kCastleLeft
+	                       - CastlePartsLeftInset(curCastle + 1) * scale;
+	const float groundOffset = CastlePartsGroundOffset(curCastle + 1);
+	const float assemblyBottom = (float)groundY -
+		(groundOffset >= 0.0f ? groundOffset * scale : StageBg::kCastleDropPx)
+		+ shudderY + rumbleY;
 	const float yTop = assemblyBottom + castleH;
 
 	CastlePartsDrawRect(curCastle + 1, (int)castleLeft, (int)yTop, (int)castleW, (int)castleH);
@@ -167,6 +174,51 @@ inline void DrawCastle(int groundY) {
 	CastleCrewDrawAt(castleLeft, yTop + CastlePartsFloatOffset(curCastle + 1) * scale,
 	                 naturalW, naturalH, scale, curCastle, true);
 	(void)lowerH;
+}
+
+//가늘고 긴 체력 띠 하나.
+inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp, int color) {
+	if (w < 8 || maxHp <= 0) return;
+
+	//배경이 밝고 복잡하다. 어두운 바탕에 밝은 윗줄까지 넣어야 읽힌다.
+	const int h = 6 * _2X;
+	const long long v = hp < 0 ? 0 : (hp > maxHp ? maxHp : hp);
+	const int fill = (int)((long long)(w - 4) * v / maxHp);
+
+	MemRect(x, y, w, h, 0x0A0A12);
+	if (fill > 0) {
+		MemRect(x + 2, y - 2, fill, h - 4, color);
+		MemRect(x + 2, y - 2, fill, 2, 0xFFFFFF);
+	}
+	MemRectFrame(x, y, w, h, 0x000000);
+}
+
+//누가 누구를 깎고 있는가. 몬스터 밑과 성 밑에 한 줄씩.
+//
+//예전에는 초상화와 심장 아이콘이 달린 바(BAR_NPC)가 화면 위쪽을 넓게
+//차지했다. 성이 움직이는 판에서는 두 쪽의 남은 체력만 보이면 된다.
+//마주 본 두 줄이면 누가 이기고 있는지가 한눈에 읽힌다.
+inline void DrawDuelHpBars(int groundY) {
+	//딛는 줄 바로 위. 밑으로 내리면 선로 구조물에 묻혀 안 보인다.
+	const int y = groundY + 7 * _2X;
+
+	//체력은 개체에서 읽는다. bar[BAR_NPC] / bar[BAR_PLAYERHP] 는 이 판에서
+	//0 으로 남아 있어 못 쓴다 - 찍어 보고 확인했다.
+	float naturalW = 0.0f, naturalH = 0.0f;
+	CastlePartsNaturalSize(Max(0, Min(gMobileCastleVisual, 9)) + 1, &naturalW, &naturalH);
+	const int castleW = (int)(naturalW * CastlePartsRoomScale());
+
+	DrawDuelHpBar((int)StageBg::kCastleLeft, y, castleW,
+	              ao[ROBIN].hp, ao[ROBIN].maxhp, 0x46C85A);
+
+	//몬스터 쪽. 서 있는 자리를 가운데로 잡는다.
+	const int foe = StageRtFoe();
+	if (foe < 0 || !ao[foe].active || ao[foe].dead) return;
+
+	const int w = 120 * _2X;
+	const int bossX = (int)Min((float)DX - 32 * _2X, 256.0f * _2X);
+	DrawDuelHpBar(Min(DX - w - 4 * _2X, bossX - w / 2), y, w,
+	              ao[foe].hp, ao[foe].maxhp, 0xD8443C);
 }
 
 inline void DrawBossMonster(int groundY) {
@@ -195,6 +247,7 @@ inline void Draw(int groundY, int invenTop) {
 	DrawBackground(groundY, arenaBottom);
 	DrawCastle(groundY);
 	DrawBossMonster(groundY);
+	DrawDuelHpBars(groundY);
 
 	UnSectionClip(false);
 }
