@@ -4743,15 +4743,49 @@ static void LoadoutGridDraw(int top, int bottom)
 	if (gGridW <= 0 || gGridH <= 0)
 		return;
 
-	cell = Min((DX - 20 * _2X) / gGridW, areaH / gGridH);
+	//---- 칸 크기 ----
+	//
+	//전투 화면의 GridTestLayout 과 같은 식을 쓴다. 여기서 따로 잡으면
+	//출정 준비의 가방이 전투의 가방보다 크거나 작게 나와, 같은 성인데
+	//다른 물건처럼 보인다.
+	//
+	//가장 넓은 성(GRIDTEST_W)을 기준으로 나눈다. 제 폭(gGridW)으로
+	//나누면 작은 성일수록 칸이 커져 테두리 그림이 화면 밖으로 넘친다.
+	cell = Min(SWORD_TILE_SIZE,
+		Min((DX - 24 * _2X) / GRIDTEST_W, areaH / Max(1, gGridH))) & ~1;
 
 	if (cell < 8 * _2X)
 		cell = 8 * _2X;
 
 	left = (DX - cell * gGridW) / 2;
-	base = bottom + cell * gGridH;	//맨 윗 줄의 위쪽 변
+
+	//자리 한가운데에 둔다. 밑변에 붙이면 칸이 작은 성에서 위쪽이 통째로
+	//비어, 가방이 화면 구석에 떨어진 것처럼 보인다.
+	base = bottom + (areaH - cell * gGridH) / 2 + cell * gGridH;	//맨 윗 줄의 위쪽 변
+
+	//---- 가방 테두리 ----
+	//
+	//전투 화면과 같은 그림(grid0 ~ grid9)을 쓴다. 여기서만 네모를 그리면
+	//"출정 준비에서 본 가방"과 "싸울 때의 가방"이 다른 물건처럼 보인다.
+	{
+		const int img = GRID_FRAME_FIRST_IMG + GridCastleStage();
+
+		if (!sprite[img]) LoadImg(img);
+		if (sprite[img]) {
+			const auto sz = sprite[img]->getContentSize();
+			const float zoom = (float)cell / (float)GRID_FRAME_CELL;
+
+			DrawImage((int)sz.width, (int)sz.height, 0, 0,
+			          left - (int)(GRID_FRAME_PAD * zoom),
+			          base + (int)(GRID_FRAME_PAD * zoom),
+			          false, false, false, false, false, zoom, sprite[img], img);
+		}
+	}
 
 	//---- 빈 칸과 성의 생김새 ----
+	//
+	//테두리 그림이 칸을 이미 그려 주므로 여기서는 찬 칸만 옅게 덮어
+	//어디가 찼는지 표시한다. 빈 칸에 네모를 또 그리면 그림과 겹쳐 지저분하다.
 	for (int row = 0; row < gGridH; row++)
 		for (int col = 0; col < gGridW; col++) {
 			const int cx = left + col * cell;
@@ -4760,15 +4794,14 @@ static void LoadoutGridDraw(int top, int bottom)
 			if (GridMaskAt(col, row) == false)
 				continue;
 
-			if (occ[row][col] == 0)
+			if (occ[row][col] == 0) {
 				free++;
+				continue;
+			}
 
-			SetAlpha(occ[row][col] ? 22 : 12);
-			MemRect(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
-				occ[row][col] ? 0x2A2A44 : 0x14141F);
+			SetAlpha(22);
+			MemRect(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X, 0x2A2A44);
 			SetAlpha(ALPHA_MAX);
-			MemRectFrame(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
-				occ[row][col] ? 0x8899BB : 0x333344);
 		}
 
 	//---- 들어간 장비 ----
@@ -4800,7 +4833,9 @@ static void LoadoutGridDraw(int top, int bottom)
 		sprintf(str, "빈 칸 %d", free);
 	}
 
-	CenterTextStrSolid(str, DX / 2, top - 2 * _2X, 0.55f);
+	//격자 바로 위에 붙인다. 자리의 맨 위(top)에 두면 머리말과 겹친다 -
+	//격자가 가운데로 내려오면서 그 사이가 비기 때문이다.
+	CenterTextStrSolid(str, DX / 2, base + 26 * _2X, 0.55f);
 }
 
 void LoadoutDraw(void)
@@ -4865,38 +4900,43 @@ void LoadoutDraw(void)
 			SetRectPoint(52 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_CLEAR);
 	}
 
-	//---- 보기 바꾸기 ----
+	//보기를 갈아 끼우던 버튼은 없앴다. 이제 가방과 창고가 같이 보이므로
+	//갈아 볼 것이 없다.
+
+	//---- 위는 가방, 아래는 보유창고 ----
 	//
-	//둘을 한 화면에 넣으면 둘 다 못 읽는다. 갈아 본다.
-	{
-		const int bw = 52 * _2X;
-		const int bh = 16 * _2X;
-		const int bx = DX - bw - 8 * _2X;
-		const int by = top + 2 * _2X;
+	//전에는 둘 중 하나만 보여 주고 버튼으로 갈아 봤다. 한 화면에 둘 다
+	//넣으면 둘 다 못 읽는다고 보았기 때문이다.
+	//
+	//그런데 여기서 하는 일이 "창고의 것을 가방으로 옮기는" 것이다. 옮기는
+	//일인데 받는 쪽과 주는 쪽을 같이 못 보면, 누를 때마다 갈아 보며
+	//머릿속으로 맞춰야 한다. 그래서 가방을 위에 두고 창고를 아래 띠로
+	//줄였다 - 창고 칸은 작아도 아이콘만 알아보면 되지만, 가방은 모양이
+	//맞물리는 것을 봐야 한다.
+	const int storeBot = BOTTOMMENUHEIGHT + 84 * _2X;
+	const int cw = 44 * _2X;
+	const int ch = 44 * _2X;
+	const int storeRows = 3;
+	const int storeTop = storeBot + storeRows * (ch + 4 * _2X);
 
-		SetAlpha(gLoadoutGridView ? 30 : 14);
-		MemRect(bx, by, bw, bh, gLoadoutGridView ? 0x2A3A5A : 0x14141F);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(bx, by, bw, bh, gLoadoutGridView ? 0x99BBEE : 0x556688);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid(gLoadoutGridView ? "목록" : "격자", bx + bw / 2,
-			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
-		SetRectPoint(bx, by, bw, bh, TOUCH_FUNC_LOADOUT_VIEW);
-	}
+	LoadoutGridDraw(top - 52 * _2X, storeTop + 44 * _2X);
 
-	//---- 격자를 보고 있으면 목록은 접는다 ----
-	if (gLoadoutGridView) {
-		LoadoutGridDraw(top - 52 * _2X, BOTTOMMENUHEIGHT + 84 * _2X);
-		LoadoutGoButtonDraw();
-		return;
-	}
+	//창고 띠의 받침. 가방과 갈라 보이게 한다.
+	SetAlpha(30);
+	MemRect(0, storeTop + 40 * _2X, DX, storeTop + 40 * _2X - storeBot + 8 * _2X,
+		0x000000);
+	SetAlpha(ALPHA_MAX);
+
+	SetFontColor(COLOR_GREY);
+	CenterTextStrSolid("성 보관함  -  눌러서 가방에 싣는다",
+		DX / 2, storeTop + 38 * _2X, 0.44f);
 
 	//---- 분류 탭 ----
 	for (int t = 0; t < LOADOUT_TAB_CNT; t++) {
 		const int tw = (DX - 20 * _2X) / LOADOUT_TAB_CNT;
 		const int th = 18 * _2X;
 		const int tx = 10 * _2X + t * tw;
-		const int ty = top - 44 * _2X;
+		const int ty = storeTop + 24 * _2X;
 		const bool on = (gLoadoutTab == t);
 
 		SetAlpha(on ? 30 : 14);
@@ -4914,13 +4954,11 @@ void LoadoutDraw(void)
 	//---- 가방 ----
 	//
 	//고른 것은 테두리가 밝아지고 드는 점수가 붙는다.
-	const int cw = 56 * _2X;
-	const int ch = 56 * _2X;
 	const int cols = Max(1, (DX - 16 * _2X) / (cw + 4 * _2X));
 	const int left = (DX - (cw + 4 * _2X) * cols) / 2;
-	const int listTop = top - 70 * _2X;
-	const int listBot = BOTTOMMENUHEIGHT + 84 * _2X;
-	const int rows = Max(1, (listTop - listBot) / (ch + 4 * _2X));
+	const int listTop = storeTop;
+	const int listBot = storeBot;
+	const int rows = storeRows;
 
 	//넘기는 쪽이 볼 값. 목록이 줄면 밀어 둔 자리가 빈 화면이 되므로
 	//여기서 되돌린다.
@@ -6462,7 +6500,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
 	const float upperH = CastlePartsUpperH(curCastle + 1);
 	const float bodyLift = CastlePartsBodyLift(curCastle + 1);
-	const float partOffset = curCastle == 0 ? 96.0f : 0.0f;
+	const float partOffset = CastlePartsRoomInset(curCastle + 1) - 64.0f;
 	const float heroV = curCastle == 0
 		? (upperH + roomStackH + 38.0f - bodyLift) / gLobbyCastleH // front cannon deck
 		: (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT - bodyLift)
