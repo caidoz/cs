@@ -1,4 +1,4 @@
-/*----------------------------------------------------------------------------
+﻿/*----------------------------------------------------------------------------
 **			PRE-DEFINITIONS FOR MODULE
 **--------------------------------------------------------------------------*/
 #ifdef DEBUG
@@ -466,6 +466,7 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 			//격자 시험판의 끌기도 여기서 끝난다. 손을 떼는 자리가 둘이라
 			//한쪽만 넣으면 스크롤로 끝난 터치에서 카드가 손에 붙어 남는다.
 			GridTestRelease();
+			LoadoutRelease();
 
 			joyPressed = false;
 			joyReturning = true;
@@ -630,6 +631,7 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 			//격자 시험판의 끌기도 여기서 끝난다. 손을 떼는 자리가 둘이라
 			//한쪽만 넣으면 스크롤로 끝난 터치에서 카드가 손에 붙어 남는다.
 			GridTestRelease();
+			LoadoutRelease();
 
 			joyPressed = false;
 			joyReturning = true;

@@ -3034,8 +3034,10 @@ void touchFunc(int func)
 		//만큼 차례가 어긋나 누른 것과 골라지는 것이 달라진다.
 		const int idx = LoadoutSlotInven(func - TOUCH_FUNC_LOADOUT_ITEM);
 
-		if (idx >= 0 && LoadoutToggle(idx) == false)
-			PlayMusic(M_ERROR);
+		//누르는 순간 싣지 않고 손에 든다. 가방까지 끌고 가는 동안 그
+		//물건이 손에 붙어 있어야 무엇을 옮기는 중인지 보인다. 싣는 것은
+		//LoadoutRelease 가 떼는 자리에서 한다.
+		LoadoutPickStart(idx);
 
 		systemKey = 0;
 		return;

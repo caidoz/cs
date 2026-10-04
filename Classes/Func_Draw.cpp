@@ -4709,13 +4709,152 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 	return missed;
 }
 
-//출정 버튼. 목록 보기와 격자 보기가 같은 자리에 같은 것을 그린다.
+//---- 출정 준비는 하단 메뉴 자리까지 쓴다 ----
+//
+//이 화면이 떠 있는 동안은 전투로 넘어가는 중이라 상점이나 성으로 갈
+//일이 없다. 하단 메뉴는 덮어 두고 그 높이를 가방과 보관함에 준다.
+//
+//덮는 것으로 충분하다 - LoadoutDraw 는 GNBDraw 뒤에 그려지고, 맨 처음
+//화면 전체에 닫기 영역을 등록한다. 터치는 나중에 등록한 것이 먼저
+//걸리므로 하단 메뉴는 눌리지 않는다.
+static int LoadoutFootY(void)
+{
+	return 16 * _2X;
+}
+
+//---- 보관함은 다 보여 준다 ----
+//
+//가진 것만 늘어놓으면 아직 무엇이 남았는지가 안 보인다. 장비를 종류와
+//번호별로 다 깔고, 아직 없는 것은 회색으로 둔다.
+//
+//같은 장비를 여러 개 가졌으면 그중 가장 좋은 것 하나만 세운다. 등급만
+//다른 같은 칼이 줄줄이 늘어서면 목록이 길어지기만 한다.
+#define LOADOUT_DETAILMAX 40
+#define LOADOUT_CATMAX    320
+
+static short gLoadoutOwn[TOTALITEMTYPE][LOADOUT_DETAILMAX];
+
+//---- 끌어다 싣기 ----
+//
+//누르는 순간 바로 싣지 않고 손에 든다. 보관함에서 가방까지 끌고 가는
+//동안 그 물건이 손에 붙어 있어야, 지금 무엇을 옮기는 중인지 보인다.
+//
+//놓을 자리는 가방 전체다. 어느 칸에 꽂을지까지는 아직 손으로 정하지
+//못한다 - 넣으면 LoadoutPreviewPack 이 알아서 자리를 잡는다.
+static int gLoadoutDrag = -1;		//손에 든 인벤토리 칸. 없으면 -1
+static int gLoadoutGridX = 0;		//가방이 그려진 자리. 놓을 때 쓴다
+static int gLoadoutGridY = 0;
+static int gLoadoutGridW = 0;
+static int gLoadoutGridH = 0;
+
+//지금 탭에 깔린 장비 목록. 그린 차례 그대로라, 눌린 칸 번호로 되짚는다.
+static short gLoadoutCatType[LOADOUT_CATMAX];
+static short gLoadoutCatDetail[LOADOUT_CATMAX];
+static int gLoadoutCatCnt = 0;
+
+//인벤토리를 한 번만 훑어 (종류, 번호) -> 가진 칸으로 접어 둔다. 칸마다
+//인벤토리를 다시 뒤지면 장비 271 종 x 500 칸을 매 프레임 돈다.
+static void LoadoutScanOwned(void)
+{
+	memset(gLoadoutOwn, -1, sizeof(gLoadoutOwn));
+
+	for (int i = 0; i < TOTALINVENTORY; i++) {
+		const ITEM* it = &robin.inven[i];
+
+		if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+			continue;
+
+		if (it->type < 0 || it->type >= TOTALITEMTYPE)
+			continue;
+
+		if (it->detail < 0 || it->detail >= LOADOUT_DETAILMAX)
+			continue;
+
+		short* slot = &gLoadoutOwn[it->type][it->detail];
+
+		if (*slot < 0 || robin.inven[*slot].grade < it->grade)
+			*slot = (short)i;
+	}
+}
+
+//그 종류에 번호가 몇 개인가. 다음 종류가 시작하는 자리까지가 제 몫이다.
+static int LoadoutDetailCnt(int type)
+{
+	if (type < 0 || type + 1 > ITEM_GEM)
+		return 0;
+
+	return (int)itemStartCnt[type + 1] - (int)itemStartCnt[type];
+}
+
+//지금 탭에 보일 장비를 (종류, 번호)로 늘어놓는다. 가진 것이 앞에 선다 -
+//쓸 수 있는 것부터 보여야 고르는 데 쓸모가 있다.
+static int LoadoutCatalog(short* type, short* detail, int max)
+{
+	int n = 0;
+
+	for (int pass = 0; pass < 2 && n < max; pass++)
+		for (int t = 0; t < ITEM_GEM && n < max; t++) {
+			if (IsEquipItemType(t) == false)
+				continue;
+
+			if (!LoadoutTabHas(gLoadoutTab, t))
+				continue;
+
+			const int cnt = Min(LoadoutDetailCnt(t), LOADOUT_DETAILMAX);
+
+			for (int d = 0; d < cnt && n < max; d++) {
+				const bool own = (gLoadoutOwn[t][d] >= 0);
+
+				if (own != (pass == 0))
+					continue;
+
+				type[n] = (short)t;
+				detail[n] = (short)d;
+				n++;
+			}
+		}
+
+	return n;
+}
+
+//보관함 칸을 집는다. 아직 안 가진 칸은 들 것이 없다.
+void LoadoutPickStart(int inven)
+{
+	gLoadoutDrag = (inven >= 0 && inven < TOTALINVENTORY) ? inven : -1;
+}
+
+//손을 뗀 순간. 가방 위에서 떼면 싣고, 그 밖이면 그냥 놓는다.
+void LoadoutRelease(void)
+{
+	const int inven = gLoadoutDrag;
+
+	gLoadoutDrag = -1;
+
+	if (inven < 0 || LoadoutOpen() == false)
+		return;
+
+	//이미 실려 있는 것을 가방 밖으로 끌어내면 내린다. 싣는 길과 내리는
+	//길이 같은 손놀림이어야 한다.
+	const bool inGrid = (touchX >= gLoadoutGridX
+		&& touchX < gLoadoutGridX + gLoadoutGridW
+		&& touchY <= gLoadoutGridY
+		&& touchY > gLoadoutGridY - gLoadoutGridH);
+	const bool already = (LoadoutFind(inven) >= 0);
+
+	if (inGrid == already)
+		return;		//실린 것을 가방에 또 놓거나, 안 실린 것을 밖에 놓았다
+
+	if (LoadoutToggle(inven) == false)
+		PlayMusic(M_ERROR);
+}
+
+//출정 버튼.
 static void LoadoutGoButtonDraw(void)
 {
 	const int bw = 132 * _2X;
 	const int bh = bw * 62 / 192;
 	const int bx = DX / 2 - bw / 2;
-	const int by = BOTTOMMENUHEIGHT + 44 * _2X;
+	const int by = LoadoutFootY() + 44 * _2X;
 
 	DrawTouchLargeButton(bx, by, 192, 62, "", TOUCH_FUNC_LOADOUT_GO,
 		FRAME_GREEN, (float)bw / 192.0f);
@@ -4762,6 +4901,13 @@ static void LoadoutGridDraw(int top, int bottom)
 	//자리 한가운데에 둔다. 밑변에 붙이면 칸이 작은 성에서 위쪽이 통째로
 	//비어, 가방이 화면 구석에 떨어진 것처럼 보인다.
 	base = bottom + (areaH - cell * gGridH) / 2 + cell * gGridH;	//맨 윗 줄의 위쪽 변
+
+	//끌어온 것을 어디에 떨어뜨려야 실리는지. 그리는 쪽에서만 아는 값이라
+	//여기서 남겨 둔다.
+	gLoadoutGridX = left;
+	gLoadoutGridY = base;
+	gLoadoutGridW = cell * gGridW;
+	gLoadoutGridH = cell * gGridH;
 
 	//---- 가방 테두리 ----
 	//
@@ -4850,10 +4996,15 @@ void LoadoutDraw(void)
 	//뒤의 로비를 어둡게 깔고, 바깥을 누르면 닫는다.
 	SetAlpha(24);
 	MemRect(0, DY, DX, DY, 0x000000);
+
 	SetAlpha(ALPHA_MAX);
 	SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_LOADOUT_CLOSE);
 
-	cnt = LoadoutList(list, TOTALINVENTORY);
+	LoadoutScanOwned();
+	gLoadoutCatCnt = LoadoutCatalog(gLoadoutCatType, gLoadoutCatDetail,
+		LOADOUT_CATMAX);
+	cnt = gLoadoutCatCnt;
+	(void)list;
 
 	//---- 머리말 ----
 	const int top = DY - GNBHEIGHT - 20 * _2X;
@@ -4913,7 +5064,7 @@ void LoadoutDraw(void)
 	//머릿속으로 맞춰야 한다. 그래서 가방을 위에 두고 창고를 아래 띠로
 	//줄였다 - 창고 칸은 작아도 아이콘만 알아보면 되지만, 가방은 모양이
 	//맞물리는 것을 봐야 한다.
-	const int storeBot = BOTTOMMENUHEIGHT + 84 * _2X;
+	const int storeBot = LoadoutFootY() + 84 * _2X;
 	const int cw = 44 * _2X;
 	const int ch = 44 * _2X;
 	const int storeRows = 3;
@@ -4921,10 +5072,11 @@ void LoadoutDraw(void)
 
 	LoadoutGridDraw(top - 52 * _2X, storeTop + 44 * _2X);
 
-	//창고 띠의 받침. 가방과 갈라 보이게 한다.
-	SetAlpha(30);
-	MemRect(0, storeTop + 40 * _2X, DX, storeTop + 40 * _2X - storeBot + 8 * _2X,
-		0x000000);
+	//---- 창고 띠의 받침 ----
+	//
+	//화면 바닥까지 진하게 깐다. 옅게 깔면 뒤의 로비 버튼이 비쳐 보여,
+	//출정 버튼 옆에 누를 수 없는 버튼이 하나 더 있는 것처럼 보인다.
+	MemRect(0, storeTop + 40 * _2X, DX, storeTop + 40 * _2X, 0x0A0A14);
 	SetAlpha(ALPHA_MAX);
 
 	SetFontColor(COLOR_GREY);
@@ -4980,26 +5132,51 @@ void LoadoutDraw(void)
 		const int row = at / cols;
 		const int x = left + col * (cw + 4 * _2X);
 		const int y = listTop - row * (ch + 4 * _2X);
-		const ITEM* it = &robin.inven[list[i]];
-		const bool on = LoadoutFind(list[i]) >= 0;
+		const int inv = gLoadoutOwn[gLoadoutCatType[i]][gLoadoutCatDetail[i]];
+		const bool own = (inv >= 0);
+		const ITEM* it = own ? &robin.inven[inv] : NULL;
+		const bool on = own && LoadoutFind(inv) >= 0;
 
 		if (row >= rows || gLoadoutSlotCnt >= LOADOUT_PICKMAX)
 			break;
 
-		SetAlpha(on ? 30 : 16);
+		SetAlpha(on ? 30 : own ? 16 : 10);
 		MemRect(x, y, cw, ch, 0x1B1B2E);
 		SetAlpha(ALPHA_MAX);
-		MemRectFrame(x, y, cw, ch, on ? 0xFFD700 : 0x556688);
+		MemRectFrame(x, y, cw, ch, on ? 0xFFD700 : own ? 0x556688 : 0x2A2A38);
 
-		DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
+		//---- 아직 없는 것은 회색으로 ----
+		//
+		//자리는 잡아 두고 색만 뺀다. 아예 안 그리면 무엇이 남았는지
+		//모르고, 색까지 그대로면 가진 것과 구별이 안 된다.
+		if (own == false)
+			grayScale = 32;
+
+		DrawIcon(GetItemIcon(gLoadoutCatType[i], gLoadoutCatDetail[i],
+			own ? it->grade : GRADE_NORMAL),
 			x + cw / 2 - ITEMICONSIZE / 2, y - ch / 2 + ITEMICONSIZE / 2,
 			1.0f, false, false, false, true);
 
-		SetFontColor(on ? COLOR_YELLOW : COLOR_GREY);
-		sprintf(str, "%d점", LoadoutCost(it));
-		CenterTextStrSolid(str, x + cw / 2, y - ch + 12 * _2X, 0.44f);
+		grayScale = 0;
 
-		gLoadoutSlot[gLoadoutSlotCnt] = (short)list[i];
+		//---- 값은 별로 ----
+		//
+		//"4점" 은 그 수가 무엇을 재는지 알아야 읽힌다. 별은 몇 개인지만
+		//보면 되고, 가방에 실을 때 드는 몫과 그대로 이어진다.
+		if (own) {
+			const int star = Min(8, LoadoutCost(it));
+
+			str[0] = 0;
+			for (int k = 0; k < star; k++)
+				strcat(str, "★");
+
+			SetFontColor(on ? COLOR_YELLOW : COLOR_GREY);
+			CenterTextStrSolid(str, x + cw / 2, y - ch + 12 * _2X, 0.34f);
+		}
+
+		//안 가진 칸도 터치를 받는다. 눌러도 실리지는 않지만, 눌러서
+		//아무 일도 안 일어나는 것과 터치가 없는 것은 손에 다르게 온다.
+		gLoadoutSlot[gLoadoutSlotCnt] = (short)(own ? inv : -1);
 		SetRectPoint(x, y, cw, ch, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
 		gLoadoutSlotCnt++;
 	}
@@ -5042,6 +5219,29 @@ void LoadoutDraw(void)
 
 	//---- 출정 ----
 	LoadoutGoButtonDraw();
+
+	//---- 손에 든 것 ----
+	//
+	//맨 마지막에 그린다. 가방과 보관함 위에 떠 있어야 "들고 있다" 로
+	//보인다. 반투명인 것은 아직 놓은 것이 아니기 때문이다 - 진하게
+	//그리면 이미 실린 것과 구별이 안 된다.
+	if (gLoadoutDrag >= 0) {
+		const ITEM* it = &robin.inven[gLoadoutDrag];
+		GridPart part;
+
+		GridGearPart(it, &part);
+
+		//가방에 들어갔을 때의 크기로 든다. 아이콘 크기로 들면 끌고 가서
+		//놓을 때까지 "이게 몇 칸짜리인지" 를 모른다.
+		const int cell = gGridW > 0 ? gLoadoutGridW / gGridW : ITEMICONSIZE;
+		const int w = part.w * cell;
+		const int h = part.h * cell;
+
+		SetAlpha(ALPHA_MAX / 2);
+		GridDrawShapedCard(&part, touchX - w / 2, touchY + h / 2, w, h,
+			ALPHA_MAX / 2, false);
+		SetAlpha(ALPHA_MAX);
+	}
 }
 
 static void GridPlaceGear(void)
@@ -6369,6 +6569,18 @@ static int LobbyBottomNavActive(void)
 
 static void LobbyBottomNavDraw(void)
 {
+	//---- 출정 준비 중에는 쉰다 ----
+	//
+	//전투로 넘어가는 중이라 상점이나 성으로 갈 일이 없고, 그 높이를
+	//가방과 보관함이 쓴다.
+	//
+	//덮어서 가릴 수는 없다. 이 줄은 LoadoutDraw 뒤에 그려지므로 출정
+	//준비가 깐 받침 위로 올라온다. 그리는 것만 막아도 안 된다 - 터치
+	//영역도 여기서 잡으므로, 안 보이는 자리를 눌러 로비로 빠져나가는
+	//함정이 생긴다.
+	if (LoadoutOpen())
+		return;
+
 	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
 		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
 	const int actions[] = { TOUCH_FUNC_SHOP, TOUCH_FUNC_COLLECTIONS,
