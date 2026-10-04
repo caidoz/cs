@@ -68,13 +68,6 @@ void StageBgDebugDrawButton(void)
 	SetRectPoint(x, y, w, h, TOUCH_FUNC_DEBUG_STAGEBG);
 }
 
-//성 본체를 내린 만큼 바퀴까지 따라 내려가면 바퀴가 선로 아래로 들어간다.
-//그 차이만큼 바퀴를 도로 올린다.
-float CastleWheelLiftPx(void)
-{
-	return StageBg::kCastleDropPx - StageBg::kWheelDropPx;
-}
-
 //배경이 지금까지 흘려보낸 거리. 바퀴가 이 거리를 굴러야 미끄러지지 않는다.
 float StageBgRailTravelPx(void)
 {
@@ -700,6 +693,8 @@ void LoadImg(int index)
 {
 	std::string fileName;
 	fileName = null;
+
+
 	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);

@@ -2222,7 +2222,21 @@ static int GridStoreCell(void)
 	return Max(2, Min(gGridCell, (DX - 12 * _2X) / GRIDSTORE_MAX) & ~1);
 }
 
-//y 는 윗변이다. 격자 밑변에서 틈만큼 내려온 자리에 한 줄로 늘어선다.
+//---- 보관함은 세 갈래 카드와 같은 띠를 쓴다 ----
+//
+//처음에는 격자 밑변 바로 아래에 두었다. 그런데 거기가 세 갈래 카드가
+//앉는 자리라 카드가 보관함을 덮어 버렸다 - 격자 밑은 StageShopTopBase()
+//이고 그 값이 곧 카드 띠의 윗변이다.
+//
+//둘은 같이 쓸 일이 없다. 갈래가 떠 있는 동안은 무엇을 받을지 고르는
+//중이고, 고르고 나면 갈래는 내려간다. 그래서 자리를 나누지 않고 번갈아
+//쓴다 - 좁은 화면에서 한 줄을 더 빼앗지 않는 쪽이 낫다.
+static bool GridStoreVisible(void)
+{
+	return gOfferOn == false;
+}
+
+//y 는 윗변이다. 카드 띠 한가운데에 한 칸 높이로 앉는다.
 static void GridStoreRect(int n, int* x, int* y, int* w, int* h)
 {
 	const int cell = GridStoreCell();
@@ -2230,7 +2244,7 @@ static void GridStoreRect(int n, int* x, int* y, int* w, int* h)
 	*w = cell;
 	*h = cell;
 	*x = DX / 2 - cell * GRIDSTORE_MAX / 2 + n * cell;
-	*y = gGridBottom - GRIDSTORE_GAP;
+	*y = StageShopSlotTop() - (STAGE_SHOP_CARDH - cell) / 2;
 }
 
 //보관함 전체가 차지하는 띠. 여기 떨어뜨리면 보관함에 넣는 것으로 본다.
@@ -3974,7 +3988,7 @@ void GridTestRelease(void)
 	//
 	//격자보다 먼저 본다. 보관함 띠는 격자 밖이라 격자 판정에 걸리지
 	//않지만, 순서를 뒤로 두면 "어디에도 못 놓았다" 쪽으로 샌다.
-	{
+	if (GridStoreVisible()) {
 		int bx, by, bw, bh;
 
 		GridStoreBandRect(&bx, &by, &bw, &bh);
@@ -5216,7 +5230,7 @@ void GridTestDraw(void)
 	//
 	//격자 밑 한 줄이다. 가방과 눈에 띄게 달라야 한다 - 같아 보이면
 	//보관함에 둔 것도 싸우는 줄 안다. 그래서 테두리만 두고 안은 비운다.
-	{
+	if (GridStoreVisible()) {
 		int bx, by, bw, bh;
 
 		GridStoreBandRect(&bx, &by, &bw, &bh);
@@ -5369,7 +5383,11 @@ void GridTestDraw(void)
 			//---- 잠긴 칸 ----
 			//
 			//아직 아무도 안 눕혔다. 무엇이 나올 자리인지만 보여 준다.
-			if (gOfferOn == false) {
+			//
+			//다만 그 자리를 보관함이 쓰고 있으면 그리지 않는다. 자물쇠는
+			//누를 수 없는 장식이고 보관함은 집어 옮기는 곳이라, 둘이
+			//겹치면 쓸 수 있는 쪽이 못 쓰는 쪽에 덮인다.
+			if (gOfferOn == false && GridStoreVisible() == false) {
 				SetAlpha(12);
 				MemRect(x, y, w, h, 0x101020);
 				SetAlpha(ALPHA_MAX);
@@ -6457,10 +6475,11 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		return (partOffset + 64.0f + roomU * 512.0f) / gLobbyCastleW;
 	};
 
-	// 지휘관은 최상층 방 중앙이 아니라 우측 지휘대의 보행 가능한 난간
-	// 안쪽에 선다. 지휘대는 전체 조립 좌표 x=544..735에 있다.
+	// 2~10번 성의 포대는 지휘대 오른쪽에 장착된다. 지휘관은 포신과
+	// 겹치지 않도록 지휘대의 안쪽 보행 공간에 선다.
 	float heroCenterX, heroY;
-	const float commanderU = (partOffset + 660.0f) / gLobbyCastleW;
+	const float commanderU = (partOffset + (curCastle == 0 ? 660.0f : 616.0f))
+		/ gLobbyCastleW;
 	LobbyCastleToObj(commanderU, heroV, &heroCenterX, &heroY);
 
 	const float charZoom = LobbyCharZoom();

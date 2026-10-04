@@ -1,4 +1,4 @@
-//
+﻿//
 //  Text.h
 //  100
 //
@@ -3734,6 +3734,7 @@ const char* const textId[] = {
 	"castle_exterior/castle_01_cannon_stage_3",
 	"castle_exterior/castle_01_cannon_stage_4",
 	"castle_exterior/castle_01_cannon_stage_5",
+#include "CastleCombatDeckNames.inc"
 
 	//지역 배경. 한 벌 다섯 장, ImgDef.h 의 STAGEBG_FIRST_IMG 와 같은 차례다.
 	"bg1_far",
@@ -3813,6 +3814,18 @@ const char* const textId[] = {
 	"bg13_rail",
 	"bg13_boss",
 	"bg13_boss_fx",
+
+	"bg14_far",
+	"bg14_mid",
+	"bg14_rail",
+	"bg14_boss",
+	"bg14_boss_fx",
+
+	"bg15_far",
+	"bg15_mid",
+	"bg15_rail",
+	"bg15_boss",
+	"bg15_boss_fx",
 
 	//성 단계별 가방 테두리. ImgDef.h 의 GRID_FRAME_FIRST_IMG 와 같은 차례다.
 	"grid0",
