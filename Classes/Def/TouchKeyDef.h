@@ -448,6 +448,9 @@ typedef enum _touchFuncDef {
 	GRIDTEST_MAXCOMBO = 5,//연참 최대 대수
 	GRIDTEST_MAXITEM = 40,
 
+	//성보관함 칸 수. 얻었지만 아직 가방에 못 넣은 것이 여기 앉는다.
+	GRIDSTORE_MAX = 10,
+
 	//★ 위 GRIDTEST_* 처럼 값을 박은 항목 뒤에는 번호가 거기서부터 다시
 	//세어진다. 그냥 이어 쓰면 GRIDTEST_MAXITEM(40) 다음인 41번이 되어
 	//앞쪽 TOUCH_FUNC 와 겹친다. 반드시 앞 항목에서 이어 붙인다.
@@ -458,7 +461,10 @@ typedef enum _touchFuncDef {
 
 	//스테이지 실시간 전투의 전투 버튼. 누르면 자동전투가 켜지고 꺼진다.
 	//위의 GRIDTEST_ITEM 묶음이 끝나는 자리에서 이어 붙인다.
-	TOUCH_FUNC_STAGE_AUTOBATTLE = TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM,
+	//성보관함 칸. 격자 칸 묶음이 끝나는 자리에서 이어 붙인다.
+	TOUCH_FUNC_GRIDTEST_STORE = TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM,
+
+	TOUCH_FUNC_STAGE_AUTOBATTLE = TOUCH_FUNC_GRIDTEST_STORE + GRIDSTORE_MAX,
 
 	//하단 상점 줄. 다시 뽑기와 아래 두 칸(지도 / 도감)이다.
 	TOUCH_FUNC_STAGE_REROLL,

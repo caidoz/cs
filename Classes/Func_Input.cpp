@@ -2980,6 +2980,12 @@ void touchFunc(int func)
 		return;
 	}
 
+	if (func >= TOUCH_FUNC_GRIDTEST_STORE && func < TOUCH_FUNC_GRIDTEST_STORE + GRIDSTORE_MAX) {
+		GridTestPickStore(func - TOUCH_FUNC_GRIDTEST_STORE);
+		systemKey = 0;
+		return;
+	}
+
 	if (func >= TOUCH_FUNC_GRIDTEST_ITEM && func < TOUCH_FUNC_GRIDTEST_ITEM + GRIDTEST_MAXITEM) {
 		GridTestPick(func - TOUCH_FUNC_GRIDTEST_ITEM, false);
 		systemKey = 0;

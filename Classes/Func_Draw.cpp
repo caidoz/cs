@@ -12,6 +12,7 @@
 // previews can request continuous redraws.
 #endif
 #include "CastleSlotData.h"
+#include "CrewLines.h"
 #include "GridFrameMetrics.inc"
 
 
@@ -1948,6 +1949,26 @@ struct GridSlot {
 
 static GridSlot gGridItem[GRIDTEST_MAXITEM];
 
+//---- 성보관함 ----
+//
+//얻었지만 아직 가방에 못 넣은 것이 여기 앉는다. 격자 바로 밑 한 줄이다.
+//
+//전에는 세 갈래에서 집은 것을 그 자리에서 격자에 넣지 못하면 잃었다.
+//성이 1 단계일 때는 넣을 자리가 없는 쪽이 보통이라, 좋은 것이 나와도
+//고를 수가 없었다. 보관함이 받아 두면 자리를 비운 뒤에 넣으면 된다.
+//
+//보관함에 있는 것은 전투력이 되지 않는다 - 성이 가방이고, 가방에 놓인
+//것만 싸운다. 보관함은 그 앞의 대기줄일 뿐이다.
+struct StoreSlot {
+	GridPart part;
+	int shop;		//상점에서 샀다면 그 kShopPart 번호. 아니면 -1
+	bool used;
+	ITEM item;
+	int level;
+};
+
+static StoreSlot gStore[GRIDSTORE_MAX];
+
 //격자는 전투 화면에 붙박이로 붙는다. 접을 수는 있다.
 static bool gGridOpen = true;
 
@@ -2008,6 +2029,11 @@ static int gGridDragFrom = -1;		//-1 이면 상점에서 새로 사는 것
 //손에 든 것이 동료라면 그 룰렛 칸 번호. 아니면 -1
 static int gGridDragCrew = -1;
 
+//보관함에서 집었다면 그 칸 번호. 격자에서 집은 것(gGridDragFrom)과 달리
+//값은 이미 치른 것이라, 격자에 놓을 때 또 받으면 안 된다. 허공에 놓으면
+//보관함 제자리로 돌아간다.
+static int gGridDragStore = -1;
+
 //판이 새로 열렸고 아직 장착 장비를 가방에 넣지 않았다.
 static bool gGridGearPending = false;
 
@@ -2048,6 +2074,10 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 //커진다. 나머지 높이는 전투 화면과 아래 상점 줄이 나눠 쓴다.
 #define GRIDTEST_MAXRATE 0.30f
 #define GRIDTEST_EXTRAH (32 * _2X)
+
+//보관함과 격자 사이의 틈. 붙여 놓으면 가방 한 줄이 더 있는 것처럼 보여,
+//보관함에 둔 것도 싸우는 줄 안다.
+#define GRIDSTORE_GAP (5 * _2X)
 
 //======================================================================
 // 하단 상점 줄
@@ -2180,6 +2210,50 @@ static inline int GridTopY(void) { return gGridBottom + gGridH * gGridCell; }
 static inline int GridFloorDiv(int a, int b)
 {
 	return (a >= 0) ? (a / b) : -(((-a) + b - 1) / b);
+}
+
+//---- 보관함 한 칸의 자리 ----
+//
+//칸 크기는 격자 칸을 따라가되, 열 칸이 화면 폭을 넘으면 줄인다. 성이
+//작을 때 격자 폭에 맞춰 줄이면 칸이 너무 작아져 그림을 못 알아본다 -
+//보관함은 성 크기와 무관하게 늘 열 칸이므로 화면을 기준으로 잡는다.
+static int GridStoreCell(void)
+{
+	return Max(2, Min(gGridCell, (DX - 12 * _2X) / GRIDSTORE_MAX) & ~1);
+}
+
+//y 는 윗변이다. 격자 밑변에서 틈만큼 내려온 자리에 한 줄로 늘어선다.
+static void GridStoreRect(int n, int* x, int* y, int* w, int* h)
+{
+	const int cell = GridStoreCell();
+
+	*w = cell;
+	*h = cell;
+	*x = DX / 2 - cell * GRIDSTORE_MAX / 2 + n * cell;
+	*y = gGridBottom - GRIDSTORE_GAP;
+}
+
+//보관함 전체가 차지하는 띠. 여기 떨어뜨리면 보관함에 넣는 것으로 본다.
+static void GridStoreBandRect(int* x, int* y, int* w, int* h)
+{
+	int cx, cy, cw, ch;
+
+	GridStoreRect(0, &cx, &cy, &cw, &ch);
+	*x = cx;
+	*y = cy;
+	*w = cw * GRIDSTORE_MAX;
+	*h = ch;
+}
+
+static int GridStoreFreeSlot(void)
+{
+	int i;
+
+	for (i = 0; i < GRIDSTORE_MAX; i++)
+		if (gStore[i].used == false)
+			return i;
+
+	return -1;
 }
 
 //휴지통 자리. 격자 위 한 줄의 오른쪽 끝이다.
@@ -3805,6 +3879,52 @@ void GridTestPick(int n, bool fromShop)
 	}
 }
 
+//---- 보관함에 넣기 ----
+//
+//넣을 자리가 없으면 false 를 준다. 부르는 쪽이 값을 치르기 전에 물어야
+//한다 - 받고 못 넣으면 골드만 사라진다.
+static bool GridStorePut(const GridPart* p, int shop)
+{
+	const int n = GridStoreFreeSlot();
+
+	if (n < 0)
+		return false;
+
+	gStore[n].used = true;
+	gStore[n].part = *p;
+	gStore[n].shop = shop;
+	gStore[n].level = 1;
+	MakeItem(&gStore[n].item, p->type, Max(1, robin.stage + 1), p->grade,
+		p->detail, EMPTY);
+
+	return true;
+}
+
+//보관함 칸을 집는다. 집는 순간 보관함에서 뺀다 - 격자에서 집을 때와 같다.
+void GridTestPickStore(int n)
+{
+	if (gGridOpen == false)
+		return;
+
+	if (n < 0 || n >= GRIDSTORE_MAX || gStore[n].used == false)
+		return;
+
+	gGridDragRot = false;
+	gGridDragOn = true;
+	gGridDragDesc = gStore[n].part;
+	gGridDragShop = gStore[n].shop;
+	gGridDragCrew = -1;
+
+	//격자에서 집은 것이 아니므로 from 은 -1 이다. 다만 이미 산 것이라
+	//값을 또 치르면 안 된다 - 그래서 보관함에서 왔다는 것을 따로 든다.
+	gGridDragFrom = -1;
+	gGridDragStore = n;
+	gGridPressX = touchX;
+	gGridPressY = touchY;
+
+	gStore[n].used = false;
+}
+
 //손을 뗀 순간. 여기서만 값이 오간다.
 void GridTestRelease(void)
 {
@@ -3842,11 +3962,60 @@ void GridTestRelease(void)
 		? GridPartRotated(gGridDragDesc) : gGridDragDesc;
 	const int shop = gGridDragShop;
 	const int from = gGridDragFrom;
+	const int store = gGridDragStore;
 	const GridPart* p = &held;
 
 	gGridDragOn = false;
 	gGridDragShop = -1;
 	gGridDragFrom = -1;
+	gGridDragStore = -1;
+
+	//---- 보관함에 떨어뜨렸다 ----
+	//
+	//격자보다 먼저 본다. 보관함 띠는 격자 밖이라 격자 판정에 걸리지
+	//않지만, 순서를 뒤로 두면 "어디에도 못 놓았다" 쪽으로 샌다.
+	{
+		int bx, by, bw, bh;
+
+		GridStoreBandRect(&bx, &by, &bw, &bh);
+		if (touchX >= bx && touchX < bx + bw
+			&& touchY <= by && touchY > by - bh) {
+			//아직 안 산 것이면 여기서 값을 치른다. 보관함도 사는 자리다.
+			if (from < 0 && store < 0) {
+				if (robin.gold < GridShopPrice(p->price)) {
+					PlayMusic(M_ERROR);
+					GridTestSay("골드가 모자란다");
+					return;
+				}
+				if (GridStorePut(p, shop) == false) {
+					PlayMusic(M_ERROR);
+					GridTestSay("보관함이 가득 찼다");
+					return;
+				}
+				robin.gold -= GridShopPrice(p->price);
+				sprintf(gGridMsg, "%s 보관  -%d",
+					p->name, GridShopPrice(p->price));
+				gGridMsgFrame = FPS * 2;
+				GridOfferResume();
+				return;
+			}
+
+			if (GridStorePut(p, shop) == false) {
+				//못 넣으면 왔던 자리로 돌린다. 손이 미끄러진 것만으로
+				//잃으면 안 된다.
+				if (from >= 0)
+					gGridItem[from].used = true;
+				else if (store >= 0)
+					gStore[store].used = true;
+				PlayMusic(M_ERROR);
+				GridTestSay("보관함이 가득 찼다");
+				return;
+			}
+
+			GridTestSay(from >= 0 ? "보관함으로" : "제자리로");
+			return;
+		}
+	}
 
 	//---- 휴지통 ----
 	GridTrashRect(&tx, &ty, &tw, &th);
@@ -3877,7 +4046,7 @@ void GridTestRelease(void)
 
 	//---- 격자 ----
 	if (gGridDragValid && gGridDragCol >= 0 && gGridDragRow >= 0) {
-		if (from < 0) {
+		if (from < 0 && store < 0) {
 			if (robin.gold < GridShopPrice(p->price)) {
 				//살 수 없다. 소리로도 알린다 - 격자에 놓으려던 손은
 				//글자를 읽고 있지 않다.
@@ -3937,12 +4106,45 @@ void GridTestRelease(void)
 			//곧바로 다음 판이 선다 - 그래야 고른 것이 고른 값을 한다.
 			GridOfferResume();
 		}
-		else {
+		else if (from >= 0) {
 			//자리만 옮긴다. 값은 오가지 않는다.
 			gGridItem[from].used = true;
 			gGridItem[from].part = held;
 			gGridItem[from].col = gGridDragCol;
 			gGridItem[from].row = gGridDragRow;
+		}
+		else {
+			//---- 보관함에서 가방으로 ----
+			//
+			//이미 산 것이다. 값은 오가지 않는다. 자리가 없으면 보관함
+			//제자리로 돌린다.
+			const int slot = GridTestFreeSlot();
+
+			if (slot < 0) {
+				gStore[store].used = true;
+				GridTestSay("더 놓을 수 없다");
+				return;
+			}
+
+			if (held.type == ITEM_CREW
+				&& StageRtAddCrew(held.detail) == false) {
+				gStore[store].used = true;
+				PlayMusic(M_ERROR);
+				GridTestSay("더 설 자리가 없다");
+				return;
+			}
+
+			gGridItem[slot].used = true;
+			gGridItem[slot].part = held;
+			gGridItem[slot].shop = shop;
+			gGridItem[slot].equip = -1;
+			gGridItem[slot].col = gGridDragCol;
+			gGridItem[slot].row = gGridDragRow;
+			gGridItem[slot].item = gStore[store].item;
+			gGridItem[slot].level = gStore[store].level;
+
+			sprintf(gGridMsg, "%s 배치", held.name);
+			gGridMsgFrame = FPS * 2;
 		}
 
 		return;
@@ -3954,6 +4156,12 @@ void GridTestRelease(void)
 	//사라지면 손이 미끄러진 것만으로 장비를 잃는다.
 	if (from >= 0) {
 		gGridItem[from].used = true;
+		GridTestSay("제자리로");
+		return;
+	}
+
+	if (store >= 0) {
+		gStore[store].used = true;
 		GridTestSay("제자리로");
 		return;
 	}
@@ -5004,6 +5212,36 @@ void GridTestDraw(void)
 		}
 	}
 
+	//---- 성보관함 ----
+	//
+	//격자 밑 한 줄이다. 가방과 눈에 띄게 달라야 한다 - 같아 보이면
+	//보관함에 둔 것도 싸우는 줄 안다. 그래서 테두리만 두고 안은 비운다.
+	{
+		int bx, by, bw, bh;
+
+		GridStoreBandRect(&bx, &by, &bw, &bh);
+
+		//받침. 띠 전체를 한 덩어리로 깔아 가방과 갈라 보이게 한다.
+		MemRect(bx - 2 * _2X, by + 2 * _2X, bw + 4 * _2X, bh + 4 * _2X,
+			COLOR_BLACK);
+
+		for (i = 0; i < GRIDSTORE_MAX; i++) {
+			int sx, sy, sw, sh;
+
+			GridStoreRect(i, &sx, &sy, &sw, &sh);
+			MemRectFrame(sx, sy, sw, sh, COLOR_GREY);
+			SetRectPoint(sx, sy, sw, sh, TOUCH_FUNC_GRIDTEST_STORE + i);
+
+			if (gStore[i].used == false)
+				continue;
+
+			//칸 하나에 맞춰 그린다. 보관함은 크기를 따지지 않는다 -
+			//넉 칸짜리 검도 여기서는 한 칸이다. 자리가 값이 되는 것은
+			//가방 안에서뿐이다.
+			GridTestDrawCard(&gStore[i].part, sx, sy, sw, sh, ALPHA_MAX, false);
+		}
+	}
+
 	//---- 놓여 있는 것 ----
 	for (i = 0; i < GRIDTEST_MAXITEM; i++) {
 		if (gGridItem[i].used == false)
@@ -5574,7 +5812,10 @@ static float LobbyCamScale(float imgW, float imgH)
 	//작아져서, 열 층짜리는 방 폭이 128 까지 줄어 안이 안 보였다. 키운
 	//보람이 화면에서 사라진다. 이제 높은 성은 화면을 넘고, 넘는 만큼은
 	//카메라로 밀어 본다.
-	return CastlePartsRoomScale() * gLobbyCamZoom;
+	// DrawCastle snaps to 1/128 so adjacent 128px rooms share exact pixel
+	// edges. Camera, crew and rail must use that same scale at every zoom.
+	const float raw = CastlePartsRoomScale() * gLobbyCamZoom;
+	return Max(1.0f, std::floor(raw * 128.0f + 0.5f)) / 128.0f;
 }
 
 //성을 보여 주는 세로 영역. 하단 메뉴 위부터 화면 위 끝까지다.
@@ -5990,7 +6231,7 @@ static StageBg::Camera LobbyCamera(void)
 	const float s = LobbyCamScale(w, h);
 
 	cam.panX = (DX / 2.0f - gLobbyCamX * s) - StageBg::kCastleLeft;
-	cam.zoom = gLobbyCamZoom;
+	cam.zoom = s / CastlePartsRoomScale();
 
 	return cam;
 }

@@ -85,6 +85,7 @@ float CastlePartsBodyLift(int castleLevel);
 float CastlePartsGroundOffset(int castleLevel);
 float GetStageWorldLift(void);
 void GridTestPick(int n, bool fromShop);
+void GridTestPickStore(int n);	//성보관함 칸을 집는다
 void GridTestRelease(void);
 void GridTestToggle(void);
 void GridTestSkipOffer(void);
