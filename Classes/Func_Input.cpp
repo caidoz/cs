@@ -3779,10 +3779,13 @@ void touchFunc(int func)
 			systemKey = 0;
 			return;
 
+		//성급 여섯 칸. 전에는 분류 네 칸이었다.
 		case TOUCH_FUNC_LOADOUT_TAB:
 		case TOUCH_FUNC_LOADOUT_TAB + 1:
 		case TOUCH_FUNC_LOADOUT_TAB + 2:
 		case TOUCH_FUNC_LOADOUT_TAB + 3:
+		case TOUCH_FUNC_LOADOUT_TAB + 4:
+		case TOUCH_FUNC_LOADOUT_TAB + 5:
 			LoadoutSetTab(func - TOUCH_FUNC_LOADOUT_TAB);
 			systemKey = 0;
 			return;

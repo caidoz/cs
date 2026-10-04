@@ -4270,6 +4270,10 @@ static bool gLoadoutOpen = false;
 //나눠 보고, 그 안에서는 좋은 것부터 세운다.
 static int gLoadoutTab = 0;
 
+//지금 보고 있는 성급. 1 부터. 탭이 분류에서 성급으로 바뀌면서 생겼다.
+#define LOADOUT_STAR_CNT 6
+static int gLoadoutStar = 1;
+
 enum {
 	LOADOUT_TAB_ALL = 0,
 	LOADOUT_TAB_WEAPON,
@@ -4344,10 +4348,13 @@ int LoadoutTab(void)
 	return gLoadoutTab;
 }
 
+//탭은 이제 성급이다. 분류(무기 / 방어구 / 장신구)로 가르던 자리를
+//1성 ~ 6성이 쓴다 - 도감은 "무엇이 있나" 가 아니라 "이 등급에 무엇이
+//있나" 를 보는 것이고, 부위는 판에 깔린 모양으로 이미 구별된다.
 void LoadoutSetTab(int tab)
 {
-	if (tab >= 0 && tab < LOADOUT_TAB_CNT) {
-		gLoadoutTab = tab;
+	if (tab >= 0 && tab < LOADOUT_STAR_CNT) {
+		gLoadoutStar = tab + 1;
 		gLoadoutRow = 0;
 	}
 }
@@ -4732,6 +4739,9 @@ static int LoadoutFootY(void)
 #define LOADOUT_DETAILMAX 40
 #define LOADOUT_CATMAX    320
 
+//보관함 판의 폭. 성 가방과 달리 성 단계를 안 타므로 고정이다.
+#define LOADOUT_STORE_W   10
+
 static short gLoadoutOwn[TOTALITEMTYPE][LOADOUT_DETAILMAX];
 
 //---- 끌어다 싣기 ----
@@ -4747,10 +4757,22 @@ static int gLoadoutGridY = 0;
 static int gLoadoutGridW = 0;
 static int gLoadoutGridH = 0;
 
-//지금 탭에 깔린 장비 목록. 그린 차례 그대로라, 눌린 칸 번호로 되짚는다.
+//---- 보관함 판 ----
+//
+//도감이라 아이콘을 같은 네모에 찍지 않고, 가방에 들어갈 때의 실제 칸
+//크기로 깐다. 2x4 짜리 검이 반지 여덟 개와 같은 자리를 먹는다는 것이
+//한눈에 보여야, 무엇을 들고 갈지 고르는 데 쓸모가 있다.
+//
+//그린 차례 그대로라, 눌린 칸 번호로 되짚는다.
 static short gLoadoutCatType[LOADOUT_CATMAX];
 static short gLoadoutCatDetail[LOADOUT_CATMAX];
+static unsigned char gLoadoutCatCol[LOADOUT_CATMAX];
+static unsigned char gLoadoutCatRow[LOADOUT_CATMAX];
+static unsigned char gLoadoutCatW[LOADOUT_CATMAX];
+static unsigned char gLoadoutCatH[LOADOUT_CATMAX];
 static int gLoadoutCatCnt = 0;
+static int gLoadoutCatRows = 0;		//판 전체 줄 수. 밀어 보는 데 쓴다
+
 
 //인벤토리를 한 번만 훑어 (종류, 번호) -> 가진 칸으로 접어 둔다. 칸마다
 //인벤토리를 다시 뒤지면 장비 271 종 x 500 칸을 매 프레임 돈다.
@@ -4786,35 +4808,143 @@ static int LoadoutDetailCnt(int type)
 	return (int)itemStartCnt[type + 1] - (int)itemStartCnt[type];
 }
 
-//지금 탭에 보일 장비를 (종류, 번호)로 늘어놓는다. 가진 것이 앞에 선다 -
-//쓸 수 있는 것부터 보여야 고르는 데 쓸모가 있다.
-static int LoadoutCatalog(short* type, short* detail, int max)
+//---- 히어로마다 쓰는 장비 ----
+//
+//아이템 종류가 셋씩 묶여 (로빈, 디아나, 맥스) 차례다. 무기도 검 / 총 /
+//부메랑으로 같은 차례다(COSTUME_WEAPON_*_IMG).
+//
+//목걸이와 반지는 누구나 쓴다. 그래서 어느 히어로의 판에도 들어간다.
+static bool LoadoutHeroHas(int hero, int type)
 {
-	int n = 0;
+	static const int kTriple[6][3] = {
+		{ ITEM_SWORD,   ITEM_GUN,    ITEM_BOOMERANG },
+		{ ITEM_HELM,    ITEM_HAT,    ITEM_CAP },
+		{ ITEM_ARMOR,   ITEM_VEST,   ITEM_COAT },
+		{ ITEM_GUNTLET, ITEM_ARMLET, ITEM_GLOVE },
+		{ ITEM_KILT,    ITEM_SKIRT,  ITEM_PANTS },
+		{ ITEM_GREAVES, ITEM_SHOES,  ITEM_BOOTS },
+	};
 
-	for (int pass = 0; pass < 2 && n < max; pass++)
-		for (int t = 0; t < ITEM_GEM && n < max; t++) {
-			if (IsEquipItemType(t) == false)
+	if (type == ITEM_NECK || type == ITEM_RING)
+		return true;
+
+	if (hero < 0 || hero >= 3)
+		return false;
+
+	for (int i = 0; i < 6; i++)
+		if (kTriple[i][hero] == type)
+			return true;
+
+	return false;
+}
+
+//(종류, 번호)의 칸 크기. 가진 아이템이 없어도 알 수 있어야 도감이 깔린다.
+static void LoadoutPartOf(int type, int detail, GridPart* out)
+{
+	ITEM it;
+
+	memset(&it, 0, sizeof(it));
+	it.type = type;
+	it.detail = detail;
+	it.grade = GRADE_NORMAL;
+	GridGearPart(&it, out);
+}
+
+//판에 자리를 잡는다. 성 가방의 GridFindSpot 과 같은 규칙이되, 이 판은
+//구멍 없는 네모라 성 모양 마스크를 보지 않는다.
+static bool LoadoutSpot(unsigned char* occ, int rowsMax, int w, int h,
+	int* outCol, int* outRow)
+{
+	for (int r = 0; r + h <= rowsMax; r++)
+		for (int c = 0; c + w <= LOADOUT_STORE_W; c++) {
+			bool free = true;
+
+			for (int dy = 0; dy < h && free; dy++)
+				for (int dx = 0; dx < w; dx++)
+					if (occ[(r + dy) * LOADOUT_STORE_W + c + dx]) {
+						free = false;
+						break;
+					}
+
+			if (free == false)
 				continue;
 
-			if (!LoadoutTabHas(gLoadoutTab, t))
-				continue;
+			for (int dy = 0; dy < h; dy++)
+				for (int dx = 0; dx < w; dx++)
+					occ[(r + dy) * LOADOUT_STORE_W + c + dx] = 1;
 
-			const int cnt = Min(LoadoutDetailCnt(t), LOADOUT_DETAILMAX);
-
-			for (int d = 0; d < cnt && n < max; d++) {
-				const bool own = (gLoadoutOwn[t][d] >= 0);
-
-				if (own != (pass == 0))
-					continue;
-
-				type[n] = (short)t;
-				detail[n] = (short)d;
-				n++;
-			}
+			*outCol = c;
+			*outRow = r;
+			return true;
 		}
 
-	return n;
+	return false;
+}
+
+//---- 지금 히어로 · 지금 성급의 장비를 실제 크기로 깐다 ----
+//
+//성급은 itemStar 표에 (종류, 번호)마다 박혀 있다. 등급(GRADE_*)과는 다른
+//축이라 GetItemStar 는 grade 를 받고도 보지 않는다.
+static int LoadoutCatalog(void)
+{
+	enum { ROWSMAX = 64 };
+	const int hero = Max(0, Min(2, curHero));
+	static unsigned char occ[ROWSMAX * LOADOUT_STORE_W];
+	static short ty[LOADOUT_CATMAX], dt[LOADOUT_CATMAX];
+	static unsigned char pw[LOADOUT_CATMAX], ph[LOADOUT_CATMAX];
+	int n = 0;
+
+	memset(occ, 0, sizeof(occ));
+
+	for (int t = 0; t < ITEM_GEM && n < LOADOUT_CATMAX; t++) {
+		if (IsEquipItemType(t) == false || LoadoutHeroHas(hero, t) == false)
+			continue;
+
+		const int cnt = Min(LoadoutDetailCnt(t), LOADOUT_DETAILMAX);
+
+		for (int d = 0; d < cnt && n < LOADOUT_CATMAX; d++) {
+			GridPart part;
+
+			if (GetItemStar(t, d, GRADE_NORMAL) != gLoadoutStar)
+				continue;
+
+			LoadoutPartOf(t, d, &part);
+			ty[n] = (short)t;
+			dt[n] = (short)d;
+			pw[n] = (unsigned char)Max(1, part.w);
+			ph[n] = (unsigned char)Max(1, part.h);
+			n++;
+		}
+	}
+
+	//큰 것부터 넣는다. 작은 것부터 넣으면 큰 것이 들어갈 구멍이 먼저
+	//메워져 판이 쓸데없이 길어진다.
+	gLoadoutCatCnt = 0;
+	gLoadoutCatRows = 0;
+
+	for (int pass = 0; pass < 2; pass++)
+		for (int i = 0; i < n; i++) {
+			const bool big = (pw[i] > 1 || ph[i] > 1);
+			int c = 0, r = 0;
+
+			if (big != (pass == 0))
+				continue;
+
+			if (LoadoutSpot(occ, ROWSMAX, pw[i], ph[i], &c, &r) == false)
+				continue;
+
+			const int k = gLoadoutCatCnt++;
+
+			gLoadoutCatType[k] = ty[i];
+			gLoadoutCatDetail[k] = dt[i];
+			gLoadoutCatCol[k] = (unsigned char)c;
+			gLoadoutCatRow[k] = (unsigned char)r;
+			gLoadoutCatW[k] = pw[i];
+			gLoadoutCatH[k] = ph[i];
+			gLoadoutCatRows = Max(gLoadoutCatRows, r + ph[i]);
+		}
+
+	return gLoadoutCatCnt;
 }
 
 //보관함 칸을 집는다. 아직 안 가진 칸은 들 것이 없다.
@@ -5001,9 +5131,7 @@ void LoadoutDraw(void)
 	SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_LOADOUT_CLOSE);
 
 	LoadoutScanOwned();
-	gLoadoutCatCnt = LoadoutCatalog(gLoadoutCatType, gLoadoutCatDetail,
-		LOADOUT_CATMAX);
-	cnt = gLoadoutCatCnt;
+	cnt = LoadoutCatalog();
 	(void)list;
 
 	//---- 머리말 ----
@@ -5065,10 +5193,13 @@ void LoadoutDraw(void)
 	//줄였다 - 창고 칸은 작아도 아이콘만 알아보면 되지만, 가방은 모양이
 	//맞물리는 것을 봐야 한다.
 	const int storeBot = LoadoutFootY() + 84 * _2X;
-	const int cw = 44 * _2X;
-	const int ch = 44 * _2X;
-	const int storeRows = 3;
-	const int storeTop = storeBot + storeRows * (ch + 4 * _2X);
+
+	//판은 실제 칸으로 깔리므로 띠 높이도 칸으로 잰다. 네 줄이면 2x4
+	//짜리 검 한 자루가 통째로 보인다 - 가장 긴 것이 잘리면 크기를
+	//견주어 보라고 만든 판이 제 일을 못 한다.
+	const int storeVisRows = 4;
+	const int storeTop = storeBot
+		+ storeVisRows * ((DX - 16 * _2X) / LOADOUT_STORE_W);
 
 	LoadoutGridDraw(top - 52 * _2X, storeTop + 44 * _2X);
 
@@ -5080,70 +5211,95 @@ void LoadoutDraw(void)
 	SetAlpha(ALPHA_MAX);
 
 	SetFontColor(COLOR_GREY);
-	CenterTextStrSolid("성 보관함  -  눌러서 가방에 싣는다",
+	CenterTextStrSolid("성 보관함  -  끌어서 가방에 싣는다",
 		DX / 2, storeTop + 38 * _2X, 0.44f);
 
-	//---- 분류 탭 ----
-	for (int t = 0; t < LOADOUT_TAB_CNT; t++) {
-		const int tw = (DX - 20 * _2X) / LOADOUT_TAB_CNT;
+	//---- 성급 탭 ----
+	//
+	//분류(무기 / 방어구 / 장신구)로 가르던 것을 성급으로 바꿨다. 도감은
+	//"무엇이 있나" 가 아니라 "이 등급에 무엇이 있나" 를 보는 것이고,
+	//부위는 판에 깔린 모양으로 이미 구별된다.
+	for (int t = 0; t < LOADOUT_STAR_CNT; t++) {
+		const int tw = (DX - 20 * _2X) / LOADOUT_STAR_CNT;
 		const int th = 18 * _2X;
 		const int tx = 10 * _2X + t * tw;
 		const int ty = storeTop + 24 * _2X;
-		const bool on = (gLoadoutTab == t);
+		const bool on = (gLoadoutStar == t + 1);
 
 		SetAlpha(on ? 30 : 14);
 		MemRect(tx, ty, tw - 2 * _2X, th, on ? 0x6A521A : 0x241A10);
 		SetAlpha(ALPHA_MAX);
 		MemRectFrame(tx, ty, tw - 2 * _2X, th, on ? 0xFFD700 : 0x6B573A);
 		SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid(kLoadoutTabName[t], tx + tw / 2 - _2X,
+		sprintf(str, "%d성", t + 1);
+		CenterTextStrSolid(str, tx + tw / 2 - _2X,
 			(int)((float)ty - ((float)th - FONT_HEIGHT * 0.5f) / 2), 0.5f);
 
 		if (!on)
 			SetRectPoint(tx, ty, tw - 2 * _2X, th, TOUCH_FUNC_LOADOUT_TAB + t);
 	}
 
-	//---- 가방 ----
+	//---- 보관함 판 ----
 	//
-	//고른 것은 테두리가 밝아지고 드는 점수가 붙는다.
-	const int cols = Max(1, (DX - 16 * _2X) / (cw + 4 * _2X));
-	const int left = (DX - (cw + 4 * _2X) * cols) / 2;
-	const int listTop = storeTop;
-	const int listBot = storeBot;
-	const int rows = storeRows;
+	//아이콘을 같은 네모에 찍지 않고 가방에 들어갈 실제 칸 크기로 깐다.
+	//2x4 짜리 검이 반지 여덟 개와 같은 자리를 먹는다는 것이 여기서
+	//보여야, 무엇을 들고 갈지 고르는 데 쓸모가 있다.
+	const int sCell = (DX - 16 * _2X) / LOADOUT_STORE_W;
+	const int visRows = Max(1, (storeTop - storeBot) / sCell);
+	const int boardX = (DX - sCell * LOADOUT_STORE_W) / 2;
 
-	//넘기는 쪽이 볼 값. 목록이 줄면 밀어 둔 자리가 빈 화면이 되므로
-	//여기서 되돌린다.
-	gLoadoutCols = cols;
-	gLoadoutRows = rows;
-	gLoadoutRowTotal = Max(1, (cnt + cols - 1) / cols);
+	gLoadoutCols = LOADOUT_STORE_W;
+	gLoadoutRows = visRows;
+	gLoadoutRowTotal = Max(1, gLoadoutCatRows);
 
-	if (gLoadoutRow > gLoadoutRowTotal - rows)
-		gLoadoutRow = gLoadoutRowTotal - rows;
+	if (gLoadoutRow > gLoadoutRowTotal - visRows)
+		gLoadoutRow = gLoadoutRowTotal - visRows;
 
 	if (gLoadoutRow < 0)
 		gLoadoutRow = 0;
 
+	//빈 판을 먼저 깐다. 아이템이 없는 자리도 칸으로 보여야 "여기까지가
+	//이 성급의 판" 이라는 것이 읽힌다.
+	for (int r = 0; r < visRows; r++)
+		for (int c = 0; c < LOADOUT_STORE_W; c++) {
+			const int x = boardX + c * sCell;
+			const int y = storeBot + (r + 1) * sCell;
+
+			SetAlpha(10);
+			MemRect(x, y, sCell, sCell, 0x1B1B2E);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(x, y, sCell, sCell, 0x2A2A38);
+		}
+
 	gLoadoutSlotCnt = 0;
 
-	for (int i = gLoadoutRow * cols; i < cnt; i++) {
-		const int at = i - gLoadoutRow * cols;
-		const int col = at % cols;
-		const int row = at / cols;
-		const int x = left + col * (cw + 4 * _2X);
-		const int y = listTop - row * (ch + 4 * _2X);
+	for (int i = 0; i < cnt && gLoadoutSlotCnt < LOADOUT_PICKMAX; i++) {
+		const int row = (int)gLoadoutCatRow[i] - gLoadoutRow;
+		const int pwc = gLoadoutCatW[i];
+		const int phc = gLoadoutCatH[i];
+
+		//화면 밖으로 나간 줄은 건너뛴다. 걸쳐 있는 것은 그린다 - 잘려
+		//보이는 쪽이 통째로 사라지는 것보다 어디까지 왔는지 알기 쉽다.
+		if (row + phc <= 0 || row >= visRows)
+			continue;
+
+		const int x = boardX + (int)gLoadoutCatCol[i] * sCell;
+		const int y = storeBot + (row + phc) * sCell;
+		const int w = pwc * sCell;
+		const int h = phc * sCell;
 		const int inv = gLoadoutOwn[gLoadoutCatType[i]][gLoadoutCatDetail[i]];
 		const bool own = (inv >= 0);
 		const ITEM* it = own ? &robin.inven[inv] : NULL;
 		const bool on = own && LoadoutFind(inv) >= 0;
+		GridPart part;
 
-		if (row >= rows || gLoadoutSlotCnt >= LOADOUT_PICKMAX)
-			break;
+		LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
+		part.grade = own ? it->grade : GRADE_NORMAL;
 
 		SetAlpha(on ? 30 : own ? 16 : 10);
-		MemRect(x, y, cw, ch, 0x1B1B2E);
+		MemRect(x, y, w, h, 0x1B1B2E);
 		SetAlpha(ALPHA_MAX);
-		MemRectFrame(x, y, cw, ch, on ? 0xFFD700 : own ? 0x556688 : 0x2A2A38);
+		MemRectFrame(x, y, w, h, on ? 0xFFD700 : own ? 0x556688 : 0x2A2A38);
 
 		//---- 아직 없는 것은 회색으로 ----
 		//
@@ -5152,32 +5308,15 @@ void LoadoutDraw(void)
 		if (own == false)
 			grayScale = 32;
 
-		DrawIcon(GetItemIcon(gLoadoutCatType[i], gLoadoutCatDetail[i],
-			own ? it->grade : GRADE_NORMAL),
-			x + cw / 2 - ITEMICONSIZE / 2, y - ch / 2 + ITEMICONSIZE / 2,
-			1.0f, false, false, false, true);
+		GridDrawShapedCard(&part, x, y, w, h, own ? ALPHA_MAX : ALPHA_MAX / 2,
+			false);
 
 		grayScale = 0;
 
-		//---- 값은 별로 ----
-		//
-		//"4점" 은 그 수가 무엇을 재는지 알아야 읽힌다. 별은 몇 개인지만
-		//보면 되고, 가방에 실을 때 드는 몫과 그대로 이어진다.
-		if (own) {
-			const int star = Min(8, LoadoutCost(it));
-
-			str[0] = 0;
-			for (int k = 0; k < star; k++)
-				strcat(str, "★");
-
-			SetFontColor(on ? COLOR_YELLOW : COLOR_GREY);
-			CenterTextStrSolid(str, x + cw / 2, y - ch + 12 * _2X, 0.34f);
-		}
-
-		//안 가진 칸도 터치를 받는다. 눌러도 실리지는 않지만, 눌러서
-		//아무 일도 안 일어나는 것과 터치가 없는 것은 손에 다르게 온다.
+		//안 가진 칸도 터치를 받는다. 눌러도 안 실리지만, 눌러서 아무 일도
+		//안 일어나는 것과 터치가 없는 것은 손에 다르게 온다.
 		gLoadoutSlot[gLoadoutSlotCnt] = (short)(own ? inv : -1);
-		SetRectPoint(x, y, cw, ch, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
+		SetRectPoint(x, y, w, h, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
 		gLoadoutSlotCnt++;
 	}
 
@@ -5185,14 +5324,14 @@ void LoadoutDraw(void)
 	//
 	//목록이 한 쪽에 다 들어가면 그리지 않는다. 누를 데가 없는 버튼은
 	//고장난 것처럼 보인다.
-	if (gLoadoutRowTotal > rows) {
+	if (gLoadoutRowTotal > visRows) {
 		const int bw = 26 * _2X;
 		const int bh = 18 * _2X;
-		const int by = listBot - 2 * _2X;
-		const int page = gLoadoutRow / Max(1, rows) + 1;
-		const int pageAll = (gLoadoutRowTotal + rows - 1) / rows;
+		const int by = storeBot - 2 * _2X;
+		const int page = gLoadoutRow / Max(1, visRows) + 1;
+		const int pageAll = (gLoadoutRowTotal + visRows - 1) / visRows;
 		const bool upOn = (gLoadoutRow > 0);
-		const bool downOn = (gLoadoutRow < gLoadoutRowTotal - rows);
+		const bool downOn = (gLoadoutRow < gLoadoutRowTotal - visRows);
 
 		//위로
 		MemRect(DX / 2 - 52 * _2X, by, bw, bh, upOn ? 0x243044 : 0x1A1A22);
@@ -5207,7 +5346,7 @@ void LoadoutDraw(void)
 		CenterTextStrSolid("▼", DX / 2 + 26 * _2X + bw / 2, by - bh + 4 * _2X, 0.5f);
 
 		SetFontColor(COLOR_GREY);
-		sprintf(str, "%d / %d  (%d점)", page, pageAll, cnt);
+		sprintf(str, "%d / %d  (%d종 %d줄)", page, pageAll, cnt, gLoadoutCatRows);
 		CenterTextStrSolid(str, DX / 2, by - bh + 5 * _2X, 0.46f);
 
 		if (upOn)

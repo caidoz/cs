@@ -493,7 +493,9 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_LOADOUT_GO = TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX,
 	TOUCH_FUNC_LOADOUT_CLOSE,
 	TOUCH_FUNC_LOADOUT_TAB,
-	TOUCH_FUNC_LOADOUT_TAB_END = TOUCH_FUNC_LOADOUT_TAB + LOADOUT_TAB_CNT,
+	//탭은 이제 분류 넷이 아니라 성급 여섯이다. 자리를 좁게 잡으면 5성과
+	//6성 칸이 뒤 항목의 번호를 덮어쓴다.
+	TOUCH_FUNC_LOADOUT_TAB_END = TOUCH_FUNC_LOADOUT_TAB + 6,
 
 	//목록 넘기기. 위의 _END 가 값을 박아 두므로 그 뒤에 붙인다.
 	TOUCH_FUNC_LOADOUT_UP,
