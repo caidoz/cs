@@ -1895,7 +1895,7 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 1, 140, "판금갑옷" },
 	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 1,  40, "건틀릿" },
 	{ ITEM_KILT,    1, GRADE_NORMAL,   1, 1,  70, "판금바지" },
-	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 1,  40, "강철장화" },
+	{ ITEM_GREAVES, 1, GRADE_NORMAL,   2, 2,  40, "강철장화", false, 0x23 },
 	{ ITEM_RING,    0, GRADE_EPIC,     1, 1, 200, "룬반지" },
 };
 
@@ -3064,12 +3064,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 
 	//---- 투구 ----
 	//
-	//투구는 가방용 그림이 따로 없다. 무기와 마찬가지로 코스튬 그림
-	//(h0_* / h1_* / h2_*)이 곧 가방에 놓이는 모습이다.
+	// 인벤토리용 128x128 투구는 착용용 코스튬 조각(h0/h1/h2)과 별개다.
 	if (p->type == ITEM_HELM || p->type == ITEM_HAT || p->type == ITEM_CAP) {
-		const int base = p->type == ITEM_HELM ? COSTUME_HELM_ROBIN_IMG :
-			(p->type == ITEM_HAT ? COSTUME_HELM_DIANA_IMG : COSTUME_HELM_MAXX_IMG);
-		const int img = base + p->detail + 1;
+		const int base = p->type == ITEM_HELM ? INVENTORY_HELM_ROBIN_FIRST_IMG :
+			(p->type == ITEM_HAT ? INVENTORY_HELM_DIANA_FIRST_IMG : INVENTORY_HELM_MAXX_FIRST_IMG);
+		const int img = base + p->detail;
 
 		if (!sprite[img]) LoadImg(img);
 
@@ -4247,7 +4246,9 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
 		out->w = 2; out->h = it->detail >= 5 ? 3 : 2; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
-		out->w = 2; out->h = 2; break;
+		// 발목은 오른쪽 위, 발끝은 아래로 뻗는다. 왼쪽 위 한 칸은
+		// 실제 그림도 투명하므로 다른 장비가 들어갈 수 있다.
+		out->w = 2; out->h = 2; out->cells = 0x23; break;
 	case ITEM_NECK:
 		out->w = 1; out->h = 2; break;
 	default:
