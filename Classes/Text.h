@@ -3735,6 +3735,9 @@ const char* const textId[] = {
 	"castle_exterior/castle_01_cannon_stage_4",
 	"castle_exterior/castle_01_cannon_stage_5",
 #include "CastleCombatDeckNames.inc"
+#include "CastleWallPairNames.inc"
+#include "CastleCommandPlatformNames.inc"
+#include "CastleHeavyCannonNames.inc"
 
 	//지역 배경. 한 벌 다섯 장, ImgDef.h 의 STAGEBG_FIRST_IMG 와 같은 차례다.
 	"bg1_far",
@@ -3838,6 +3841,38 @@ const char* const textId[] = {
 	"grid7",
 	"grid8",
 	"grid9",
+
+	//인벤토리 전용 투구 그림. 128x128 이라 64 짜리 칸으로 2x2 다.
+	//코스튬 쪽 h0 / h1 / h2 는 캐릭터에 합성해 쓰는 것이라 따로 둔다.
+	//ImgDef.h 의 INVENTORY_HELM_*_FIRST_IMG 와 같은 차례여야 한다.
+
+	"inventory_helm/robin_1",
+	"inventory_helm/robin_2",
+	"inventory_helm/robin_3",
+	"inventory_helm/robin_4",
+	"inventory_helm/robin_5",
+	"inventory_helm/robin_6",
+	"inventory_helm/robin_7",
+	"inventory_helm/robin_8",
+
+	"inventory_helm/diana_1",
+	"inventory_helm/diana_2",
+	"inventory_helm/diana_3",
+	"inventory_helm/diana_4",
+	"inventory_helm/diana_5",
+	"inventory_helm/diana_6",
+	"inventory_helm/diana_7",
+	"inventory_helm/diana_8",
+
+	"inventory_helm/maxx_1",
+	"inventory_helm/maxx_2",
+	"inventory_helm/maxx_3",
+	"inventory_helm/maxx_4",
+	"inventory_helm/maxx_5",
+	"inventory_helm/maxx_6",
+	"inventory_helm/maxx_7",
+	"inventory_helm/maxx_8",
+
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 
