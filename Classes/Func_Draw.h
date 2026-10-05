@@ -89,6 +89,7 @@ void GridTestPickStore(int n);	//성보관함 칸을 집는다
 void LoadoutPickStart(int inven);	//출정 준비에서 보관함 칸을 집는다
 bool LoadoutToggleAt(int invenIdx, int col, int row);	//끌어다 놓은 칸에 담는다
 bool LoadoutMoveTo(int invenIdx, int col, int row);	//담긴 것의 자리만 옮긴다
+bool LoadoutRotate(int invenIdx);	//담긴 것을 90 도 돌린다
 void LoadoutPickBag(int n);			//가방에 놓인 것을 집는다
 void LoadoutRelease(void);			//그 손을 뗀 순간
 void GridTestRelease(void);

@@ -4229,22 +4229,29 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 
 	//---- 부위별 크기 ----
 	//
-	// Match the requested limits for each equipment category. Keep a full
-	// rectangle until a transparent, item-specific cell mask is available.
+	//전에는 거의 다 1x1 이었다(번호 5 부터만 조금 커졌다). 그러면 가방이
+	//"작은 네모를 몇 개 넣느냐" 가 되어, 모양을 맞춰 끼우는 재미가 없다.
+	//방어구도 제 몫의 자리를 먹어야 무기와 견주어 고를 것이 생긴다.
+	//
+	//1x1 은 반지만 남긴다. 목걸이는 1x2 로 가늘고 길다.
+	//
+	//갑옷과 하의는 번호가 오르면 한 칸 더 길어진다. 가장 좋은 것을
+	//들고 가려면 그만큼 자리를 내줘야 한다.
 	switch (it->type) {
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
-		out->h = it->detail >= 5 ? 2 : 1; break;
+		out->w = 2; out->h = 2; break;
 	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
-		out->w = it->detail >= 5 ? 2 : 1;
-		out->h = it->detail >= 5 ? 2 : 1; break;
+		out->w = 2; out->h = it->detail >= 5 ? 3 : 2; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
-		out->h = it->detail >= 5 ? 2 : 1; break;
+		out->w = 2; out->h = 2; break;
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
-		out->h = it->detail >= 5 ? 2 : 1; break;
+		out->w = 2; out->h = it->detail >= 5 ? 3 : 2; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
-		out->h = it->detail >= 5 ? 2 : 1; break;
+		out->w = 2; out->h = 2; break;
+	case ITEM_NECK:
+		out->w = 1; out->h = 2; break;
 	default:
-		break;
+		break;		//반지만 1x1 로 남는다
 	}
 }
 
@@ -4492,6 +4499,24 @@ static signed char gLoadoutAtRow[LOADOUT_MAX];
 //깔린 차례 -> 인벤토리 칸. 가방에 놓인 것을 집을 때 되짚는 데 쓴다.
 static short gLoadoutPackInven[LOADOUT_MAX];
 
+//---- 겹쳐 놓은 것 ----
+//
+//이미 찬 칸에 올려놓아도 일단 그 자리에 놓는다. 손이 간 자리에 안 놓이고
+//엉뚱한 데로 밀려나면 왜 그런지 알 수가 없다. 대신 빨갛게 죽여 "이대로는
+//못 들고 간다" 를 보여 주고, 끌어 옮기면 살아난다.
+static bool gLoadoutBad[LOADOUT_MAX];
+
+//집은 곳과 집은 자리. 가방에서 톡 누른 것인지(= 돌리기) 보는 데 쓴다.
+static bool gLoadoutDragFromBag = false;
+static int gLoadoutDragX = 0;
+static int gLoadoutDragY = 0;
+
+//---- 눌러서 돌린다 ----
+//
+//가방에 놓인 것을 톡 누르면 90 도 돈다. 세워서 안 들어가는 검을 눕히는
+//길이 끌기 말고도 있어야 한다.
+static bool gLoadoutRot[LOADOUT_MAX];
+
 bool LoadoutToggleAt(int invenIdx, int col, int row)
 {
 	const int at = LoadoutFind(invenIdx);
@@ -4501,6 +4526,7 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 			gLoadout[i] = gLoadout[i + 1];
 			gLoadoutAtCol[i] = gLoadoutAtCol[i + 1];
 			gLoadoutAtRow[i] = gLoadoutAtRow[i + 1];
+			gLoadoutRot[i] = gLoadoutRot[i + 1];
 		}
 
 		gLoadoutCnt--;
@@ -4520,6 +4546,7 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 
 	gLoadoutAtCol[gLoadoutCnt] = (signed char)col;
 	gLoadoutAtRow[gLoadoutCnt] = (signed char)row;
+	gLoadoutRot[gLoadoutCnt] = false;
 	gLoadout[gLoadoutCnt++] = invenIdx;
 	return true;
 }
@@ -4543,11 +4570,26 @@ bool LoadoutMoveTo(int invenIdx, int col, int row)
 	return true;
 }
 
+//가방에 놓인 것을 90 도 돌린다.
+bool LoadoutRotate(int invenIdx)
+{
+	const int at = LoadoutFind(invenIdx);
+
+	if (at < 0)
+		return false;
+
+	gLoadoutRot[at] = !gLoadoutRot[at];
+	return true;
+}
+
 //가방에 놓인 것을 집는다. 깔린 차례로 부른다.
 void LoadoutPickBag(int n)
 {
-	if (n >= 0 && n < LOADOUT_MAX)
-		LoadoutPickStart(gLoadoutPackInven[n]);
+	if (n < 0 || n >= LOADOUT_MAX)
+		return;
+
+	LoadoutPickStart(gLoadoutPackInven[n]);
+	gLoadoutDragFromBag = true;
 }
 
 //======================================================================
@@ -4698,7 +4740,13 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 			continue;
 
 		GridGearPart(it, &parts[n]);
+
+		//눌러서 돌려 둔 것은 돌린 모양으로 깐다.
+		if (gLoadoutRot[i])
+			parts[n] = GridPartRotated(parts[n]);
+
 		fit[n] = false;
+		gLoadoutBad[n] = false;
 		order[n] = n;
 
 		//그린 것을 다시 집으려면 어느 인벤토리 칸인지 알아야 한다.
@@ -4744,17 +4792,22 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 		if (c < 0 || r < 0)
 			continue;
 
-		if (LoadoutPreviewCanPlace(&parts[e], c, r, occ) == false)
-			continue;
+		//---- 못 놓을 자리라도 그 자리에 놓는다 ----
+		//
+		//엉뚱한 데로 밀려나면 왜 그런지 알 수가 없다. 놓고 빨갛게 죽인다.
+		//죽은 것은 칸을 먹지 않는다 - 먹으면 멀쩡한 것까지 밀려난다.
+		const bool ok = LoadoutPreviewCanPlace(&parts[e], c, r, occ);
 
-		for (int dy = 0; dy < parts[e].h; dy++)
-			for (int dx = 0; dx < parts[e].w; dx++)
-				if (GridPartCell(&parts[e], dx, dy))
-					occ[r + dy][c + dx] = 1;
+		if (ok)
+			for (int dy = 0; dy < parts[e].h; dy++)
+				for (int dx = 0; dx < parts[e].w; dx++)
+					if (GridPartCell(&parts[e], dx, dy))
+						occ[r + dy][c + dx] = 1;
 
 		atCol[e] = c;
 		atRow[e] = r;
 		fit[e] = true;
+		gLoadoutBad[e] = (ok == false);
 	}
 
 	for (int k = 0; k < n; k++) {
@@ -5111,17 +5164,33 @@ static int LoadoutCatalog(void)
 void LoadoutPickStart(int inven)
 {
 	gLoadoutDrag = (inven >= 0 && inven < TOTALINVENTORY) ? inven : -1;
+	gLoadoutDragFromBag = false;
+	gLoadoutDragX = touchX;
+	gLoadoutDragY = touchY;
 }
 
 //손을 뗀 순간. 가방 위에서 떼면 싣고, 그 밖이면 그냥 놓는다.
 void LoadoutRelease(void)
 {
 	const int inven = gLoadoutDrag;
+	const bool fromBag = gLoadoutDragFromBag;
 
 	gLoadoutDrag = -1;
+	gLoadoutDragFromBag = false;
 
 	if (inven < 0 || LoadoutOpen() == false)
 		return;
+
+	//---- 가방에서 톡 눌렀으면 돌린다 ----
+	//
+	//거의 안 움직이고 뗐으면 끌기가 아니라 누르기다. 세워서 안 들어가는
+	//검을 눕히는 길이 끌기 말고도 있어야 한다.
+	if (fromBag
+		&& Abs(touchX - gLoadoutDragX) <= 8 * _2X
+		&& Abs(touchY - gLoadoutDragY) <= 8 * _2X) {
+		LoadoutRotate(inven);
+		return;
+	}
 
 	//이미 실려 있는 것을 가방 밖으로 끌어내면 내린다. 싣는 길과 내리는
 	//길이 같은 손놀림이어야 한다.
@@ -5312,7 +5381,18 @@ static void LoadoutGridDraw(int top, int bottom)
 		const int cx = left + atCol[i] * cell;
 		const int cy = base - (gGridH - 1 - atRow[i]) * cell + (parts[i].h - 1) * cell;
 
-		GridDrawShapedCard(&parts[i], cx, cy, w, h, ALPHA_MAX, false);
+		//겹쳐 놓은 것은 빨갛게 죽인다. 이대로는 못 들고 간다.
+		if (gLoadoutBad[i]) {
+			SetAlpha(40);
+			MemRect(cx, cy, w, h, 0x882222);
+			SetAlpha(ALPHA_MAX);
+		}
+
+		GridDrawShapedCard(&parts[i], cx, cy, w, h,
+			gLoadoutBad[i] ? ALPHA_MAX / 2 : ALPHA_MAX, false);
+
+		if (gLoadoutBad[i])
+			MemRectFrame(cx, cy, w, h, 0xFF4444);
 
 		//집어서 뺄 수 있게 터치를 건다. 이게 없으면 한 번 넣은 것을
 		//보관함에서 같은 칸을 다시 찾아 누르는 수밖에 없다.
@@ -5639,8 +5719,13 @@ void LoadoutDraw(void)
 		LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
 		part.grade = own ? it->grade : GRADE_NORMAL;
 
-		SetAlpha(live ? 16 : 10);
-		MemRect(x, y, w, h, 0x1B1B2E);
+		//---- 못 집는 칸은 바탕을 밝게 ----
+		//
+		//색을 빼면 원래 잿빛이던 장비가 어두운 바탕에 묻혀 안 보인다.
+		//그림을 어둡게 누르고 바탕을 밝혀, 밝은 판에 찍힌 그림자로 읽게
+		//한다. 색을 빼는 것만으로는 "못 쓴다" 가 안 보인다.
+		SetAlpha(live ? 16 : 34);
+		MemRect(x, y, w, h, live ? 0x1B1B2E : 0x3A3A46);
 		SetAlpha(ALPHA_MAX);
 
 		//테두리로 셋을 가른다. 올라간 것은 금빛을 죽인 색이라 "저건 내
@@ -5652,13 +5737,21 @@ void LoadoutDraw(void)
 		//
 		//자리는 잡아 두고 색만 뺀다. 아예 안 그리면 무엇이 남았는지
 		//모르고, 색까지 그대로면 집을 수 있는 것과 구별이 안 된다.
-		if (live == false)
+		const int keepColor = baseColor;
+
+		if (live == false) {
 			grayScale = 32;
+			SetColor(0x4A4A56);		//밝은 바탕 위의 그림자로
+		}
 
-		GridDrawShapedCard(&part, x, y, w, h, live ? ALPHA_MAX : ALPHA_MAX / 2,
-			false);
+		GridDrawShapedCard(&part, x, y, w, h, ALPHA_MAX, false);
 
-		grayScale = 0;
+		if (live == false) {
+			//원래 값으로 되돌린다. 흰색으로 돌려놓으면 그 뒤에 그리는
+			//것이 통째로 하얗게 뜬다 - 출정 버튼이 그랬다.
+			SetColor(keepColor);
+			grayScale = 0;
+		}
 
 		//---- 집을 수 있는 것만 터치를 받는다 ----
 		//
