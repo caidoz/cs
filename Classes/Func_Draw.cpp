@@ -4728,6 +4728,21 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 //세로는 가방(gGridH 줄)과 보관함(여섯 줄)이 같이 들어가야 한다.
 static int gLoadoutCell = 16;
 
+//---- 보관함을 손가락으로 민다 ----
+//
+//성급 판이 옆으로 길게 서 있다. 버튼으로 밀면 끝까지 가는 데 여러 번
+//눌러야 하고 지금 어디쯤인지도 손에 안 온다.
+//
+//아이템을 집어 가방으로 올리는 손놀림과 같은 자리에서 일어나므로, 어느
+//쪽인지 움직인 방향으로 가른다 - 가로로 더 가면 밀기, 세로로 더 가면
+//집기다. 정해지기 전에는 둘 다 아무 일도 하지 않는다. 먼저 정해 버리면
+//밀려다가 아이템이 딸려 올라오고, 집으려다 판이 흔들린다.
+static bool gLoadoutGesture = false;	//보관함 안에서 누르고 있나
+static int gLoadoutGestureX = 0;		//누른 자리
+static int gLoadoutGestureY = 0;
+static int gLoadoutGestureBase = 0;		//누를 때 밀려 있던 양
+static int gLoadoutGestureMode = 0;		//0 아직 / 1 밀기 / 2 집기
+
 //---- 출정 준비는 하단 메뉴 자리까지 쓴다 ----
 //
 //이 화면이 떠 있는 동안은 전투로 넘어가는 중이라 상점이나 성으로 갈
@@ -5254,11 +5269,56 @@ void LoadoutDraw(void)
 	gLoadoutRows = 1;
 	gLoadoutRowTotal = Max(1, gLoadoutCatCols);
 
+	//---- 손가락 ----
+	{
+		const bool down = (isTouchKey == TOUCH_PRESS || isTouchKey == TOUCH_DRAG);
+		const bool inBand = (touchY <= storeTop && touchY > storeBot);
+		const int slack = 6 * _2X;
+
+		if (down == false) {
+			gLoadoutGesture = false;
+			gLoadoutGestureMode = 0;
+		}
+		else if (gLoadoutGesture == false && inBand) {
+			gLoadoutGesture = true;
+			gLoadoutGestureMode = 0;
+			gLoadoutGestureX = touchX;
+			gLoadoutGestureY = touchY;
+			gLoadoutGestureBase = gLoadoutRow;
+		}
+
+		if (gLoadoutGesture) {
+			const int dx = touchX - gLoadoutGestureX;
+			const int dy = touchY - gLoadoutGestureY;
+
+			if (gLoadoutGestureMode == 0) {
+				if (Abs(dx) > slack && Abs(dx) >= Abs(dy))
+					gLoadoutGestureMode = 1;
+				else if (Abs(dy) > slack)
+					gLoadoutGestureMode = 2;
+			}
+
+			if (gLoadoutGestureMode == 1) {
+				//손가락이 짚은 칸이 손가락을 따라오도록, 민 반대로 옮긴다.
+				gLoadoutRow = gLoadoutGestureBase - dx / Max(1, sCell);
+
+				//밀기로 정해졌으면 집던 것은 놓는다. 둘이 같이 일어나면
+				//판을 밀 때마다 아이템이 가방으로 올라간다.
+				gLoadoutDrag = -1;
+			}
+		}
+	}
+
 	if (gLoadoutRow > gLoadoutRowTotal - viewCols)
 		gLoadoutRow = gLoadoutRowTotal - viewCols;
 
 	if (gLoadoutRow < 0)
 		gLoadoutRow = 0;
+
+	//띠 전체를 터치로 덮는다. 아이템 칸은 뒤에 등록하므로 그쪽이 이긴다.
+	//이게 없으면 빈 칸을 짚어 미는 순간 "바깥" 으로 읽혀 창이 닫힌다.
+	SetRectPoint(0, storeTop + 24 * _2X, DX, storeTop + 24 * _2X,
+		TOUCH_FUNC_LOADOUT_BAND);
 
 	//빈 판을 먼저 깐다. 아이템이 없는 자리도 칸으로 보여야 "여기까지가
 	//이 성급의 판" 이라는 것이 읽힌다.
@@ -5352,36 +5412,24 @@ void LoadoutDraw(void)
 		gLoadoutSlotCnt++;
 	}
 
-	//---- 좌우로 밀기 ----
+	//---- 어디쯤인지 ----
 	//
-	//성급 판이 옆으로 서 있으므로 위아래가 아니라 좌우다. 한 번에 반쪽씩
-	//민다 - 한 칸씩이면 끝까지 가는 데 수십 번을 눌러야 한다.
+	//버튼은 걷었다. 손가락으로 미니 누를 데가 필요 없고, 대신 지금 어디를
+	//보고 있는지만 가는 막대로 보여 준다. 그것마저 없으면 판이 더 있는지
+	//조차 모른다.
 	if (gLoadoutRowTotal > viewCols) {
-		const int bw = 26 * _2X;
-		const int bh = 18 * _2X;
-		const int by = storeBot - 2 * _2X;
-		const bool leftOn = (gLoadoutRow > 0);
-		const bool rightOn = (gLoadoutRow < gLoadoutRowTotal - viewCols);
+		const int bw = DX - 48 * _2X;
+		const int bh = 3 * _2X;
+		const int bx = 24 * _2X;
+		const int by = storeBot - 4 * _2X;
+		const int kw = Max(12 * _2X, bw * viewCols / gLoadoutRowTotal);
+		const int kx = bx + (bw - kw) * gLoadoutRow
+		             / Max(1, gLoadoutRowTotal - viewCols);
 
-		MemRect(DX / 2 - 52 * _2X, by, bw, bh, leftOn ? 0x243044 : 0x1A1A22);
-		MemRectFrame(DX / 2 - 52 * _2X, by, bw, bh, leftOn ? 0x8899BB : 0x333344);
-		SetFontColor(leftOn ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid("◀", DX / 2 - 52 * _2X + bw / 2, by - bh + 4 * _2X, 0.5f);
-
-		MemRect(DX / 2 + 26 * _2X, by, bw, bh, rightOn ? 0x243044 : 0x1A1A22);
-		MemRectFrame(DX / 2 + 26 * _2X, by, bw, bh, rightOn ? 0x8899BB : 0x333344);
-		SetFontColor(rightOn ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid("▶", DX / 2 + 26 * _2X + bw / 2, by - bh + 4 * _2X, 0.5f);
-
-		SetFontColor(COLOR_GREY);
-		sprintf(str, "%d / %d 칸", gLoadoutRow + 1, gLoadoutRowTotal);
-		CenterTextStrSolid(str, DX / 2, by - bh + 5 * _2X, 0.46f);
-
-		if (leftOn)
-			SetRectPoint(DX / 2 - 52 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_UP);
-
-		if (rightOn)
-			SetRectPoint(DX / 2 + 26 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_DOWN);
+		SetAlpha(14);
+		MemRect(bx, by, bw, bh, 0xFFFFFF);
+		SetAlpha(ALPHA_MAX);
+		MemRect(kx, by, kw, bh, 0x8899BB);
 	}
 
 	//---- 출정 ----
@@ -6533,6 +6581,22 @@ bool LobbyCamTouchMoved(int id, float x, float y)
 			break;
 	if (n == 2)
 		return false;
+
+	//---- 출정 준비가 떠 있으면 비켜 준다 ----
+	//
+	//이 함수가 true 를 주면 부르는 쪽(Core.cpp 의 onTouchMoved)이 거기서
+	//돌아가 버려 touchX / touchY 가 갱신되지 않는다. 그러면 그 위에 뜬
+	//출정 준비에서는 손가락이 움직여도 누른 자리에 멈춰 있는 것으로 보여,
+	//보관함을 밀 수가 없다. 어차피 창이 덮고 있어 로비 카메라를 돌릴
+	//일도 없다.
+	//
+	//자리는 갱신하고 나간다. 묵은 자리를 두면 창을 닫는 순간 그 사이
+	//움직인 만큼을 한 번에 몰아 로비 카메라가 튄다.
+	if (LoadoutOpen()) {
+		gLobbyFinger[n].x = x;
+		gLobbyFinger[n].y = y;
+		return false;
+	}
 
 	if (gLobbyFinger[n].orphan)
 		return true;

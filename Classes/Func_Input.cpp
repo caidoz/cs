@@ -3790,6 +3790,12 @@ void touchFunc(int func)
 			systemKey = 0;
 			return;
 
+		//보관함 띠. 미는 것은 LoadoutDraw 가 손가락 자리를 보고 하므로
+		//여기서는 받아만 두고 아무 일도 하지 않는다.
+		case TOUCH_FUNC_LOADOUT_BAND:
+			systemKey = 0;
+			return;
+
 		case TOUCH_FUNC_LOADOUT_CLOSE:
 			LoadoutSetOpen(false);
 			systemKey = 0;

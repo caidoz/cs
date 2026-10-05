@@ -492,6 +492,11 @@ typedef enum _touchFuncDef {
 	TOUCH_FUNC_LOADOUT_ITEM,
 	TOUCH_FUNC_LOADOUT_GO = TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX,
 	TOUCH_FUNC_LOADOUT_CLOSE,
+
+	//보관함 띠. 눌러도 아무 일도 안 하지만, 깔아 두지 않으면 화면 전체에
+	//깔린 "바깥을 누르면 닫는다" 가 먼저 걸려 띠를 밀려다 창이 닫힌다.
+	TOUCH_FUNC_LOADOUT_BAND,
+
 	TOUCH_FUNC_LOADOUT_TAB,
 	//탭은 이제 분류 넷이 아니라 성급 여섯이다. 자리를 좁게 잡으면 5성과
 	//6성 칸이 뒤 항목의 번호를 덮어쓴다.

@@ -14,7 +14,8 @@ param(
     [int]$ClickGapMs = 2500,
     [int]$SettleMs = 2500,
     [int]$W = 0,
-    [int]$H = 0
+    [int]$H = 0,
+    [string]$Drag = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -94,6 +95,28 @@ if ($Clicks -ne "") {
         [Win]::mouse_event(0x0004, 0, 0, 0, [IntPtr]::Zero)
         Start-Sleep -Milliseconds $ClickGapMs
     }
+}
+
+# 끌기. "x1,y1,x2,y2" 비율. 누른 채 여러 걸음에 나눠 움직이고 뗀다 -
+# 한 번에 옮기면 게임이 누름과 뗌만 보고 끌기로 안 읽는다.
+if ($Drag -ne "") {
+    $d = $Drag.Split(",")
+    $x1 = $o.X + [int]([double]$d[0] * $w); $y1 = $o.Y + [int]([double]$d[1] * $ht)
+    $x2 = $o.X + [int]([double]$d[2] * $w); $y2 = $o.Y + [int]([double]$d[3] * $ht)
+    Write-Host ("끌기 {0},{1} -> {2},{3}" -f $x1, $y1, $x2, $y2)
+    [void][Win]::SetCursorPos($x1, $y1)
+    Start-Sleep -Milliseconds 300
+    [Win]::mouse_event(0x0002, 0, 0, 0, [IntPtr]::Zero)
+    Start-Sleep -Milliseconds 150
+    for ($i = 1; $i -le 20; $i++) {
+        [void][Win]::SetCursorPos(
+            $x1 + [int](($x2 - $x1) * $i / 20),
+            $y1 + [int](($y2 - $y1) * $i / 20))
+        Start-Sleep -Milliseconds 40
+    }
+    Start-Sleep -Milliseconds 300
+    [Win]::mouse_event(0x0004, 0, 0, 0, [IntPtr]::Zero)
+    Start-Sleep -Milliseconds 400
 }
 
 Start-Sleep -Milliseconds $SettleMs
