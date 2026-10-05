@@ -58,7 +58,28 @@ static const float kWheelDropPx  = 16.0f;
 
 //화면 바닥에서 잰 픽셀이다. 화면 높이의 비율이 아니다.
 //설계 높이 850(MINDY_MIN) 에서 0.46 이던 자리다.
+//
+//비율로 잡던 것을 붙박이로 바꾼 것은 긴 화면 때문이다. 비율이면 창이
+//길어질수록 성이 위로 들려 UI 와 멀어졌다.
 static const int kGroundPx = 391;
+
+//---- 다만 짧은 화면에서는 붙박이가 너무 높다 ----
+//
+//391 은 설계 높이 850 의 46% 다. 화면이 그만큼 짧으면 성이 화면 한가운데
+//에 뜨고, 그 아래로 철로와 버튼 사이가 통째로 빈다.
+//
+//긴 화면에서는 붙박이가 맞고 짧은 화면에서는 비율이 맞으므로, 둘 중 낮은
+//쪽을 쓴다. 1:1.33(640x851) 에서 391 -> 298 로 내려오고, 긴 화면에서는
+//비율 쪽이 391 을 넘으므로 지금 자리 그대로다.
+static const float kGroundMaxRate = 0.35f;
+
+//성과 철로가 딛는 줄. 화면 바닥에서 잰 픽셀이다.
+inline int GroundY(void)
+{
+	const int byRate = (int)((float)DY * kGroundMaxRate);
+
+	return byRate < kGroundPx ? byRate : kGroundPx;
+}
 
 // ---- 지역마다 다른 것 ----
 
@@ -232,7 +253,7 @@ inline float Scale(void) {
 }
 
 //기준 높이. 카메라가 안 밀렸을 때 근경이 딛는 줄이다.
-inline float GroundRef(void) { return (float)kGroundPx; }
+inline float GroundRef(void) { return (float)GroundY(); }
 
 //이 층이 그려질 배율과 딛는 줄. 깊이만큼만 카메라를 따라간다.
 inline float LayerScale(const Camera& cam, const Depth& d) {

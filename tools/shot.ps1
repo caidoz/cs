@@ -12,7 +12,9 @@ param(
     [string]$Out = "shot.png",
     [int]$BootMs = 9000,
     [int]$ClickGapMs = 2500,
-    [int]$SettleMs = 2500
+    [int]$SettleMs = 2500,
+    [int]$W = 0,
+    [int]$H = 0
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,6 +31,8 @@ public class Win {
     [DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr h, ref POINT p);
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
     [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] public static extern bool MoveWindow(IntPtr h, int x, int y, int w, int ht, bool repaint);
+    [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
     public struct RECT { public int Left, Top, Right, Bottom; }
     public struct POINT { public int X, Y; }
 }
@@ -45,6 +49,26 @@ $p.Refresh()
 
 $h = $p.MainWindowHandle
 if ($h -eq [IntPtr]::Zero) { Write-Error "창을 못 찾았다"; exit 1 }
+
+# 창 크기를 지정했으면 먼저 맞춘다. 화면 비율에 따라 달라지는 자리를
+# 보려면 그 비율을 실제로 만들어야 한다. 테두리 두께만큼 더 키운다.
+if ($W -gt 0 -and $H -gt 0) {
+    $cr = New-Object Win+RECT
+    $wr = New-Object Win+RECT
+    [void][Win]::GetClientRect($h, [ref]$cr)
+    [void][Win]::GetWindowRect($h, [ref]$wr)
+    Write-Host ("크기 바꾸기 전: 안 {0}x{1}  밖 {2}x{3}" -f ($cr.Right-$cr.Left), ($cr.Bottom-$cr.Top), ($wr.Right-$wr.Left), ($wr.Bottom-$wr.Top))
+    # 두 번 맞춘다. 한 번에 안 맞는 것은 테두리 두께를 미리 못 재서다 -
+    # 재고 나서 모자란 만큼 한 번 더 민다.
+    [void][Win]::MoveWindow($h, $wr.Left, $wr.Top, $W, $H, $true)
+    Start-Sleep -Milliseconds 1200
+    [void][Win]::GetClientRect($h, [ref]$cr)
+    [void][Win]::GetWindowRect($h, [ref]$wr)
+    $padW = ($wr.Right - $wr.Left) - ($cr.Right - $cr.Left)
+    $padH = ($wr.Bottom - $wr.Top) - ($cr.Bottom - $cr.Top)
+    [void][Win]::MoveWindow($h, $wr.Left, $wr.Top, $W + $padW, $H + $padH, $true)
+    Start-Sleep -Milliseconds 1500
+}
 
 $r = New-Object Win+RECT
 [void][Win]::GetClientRect($h, [ref]$r)

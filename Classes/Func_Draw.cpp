@@ -6232,7 +6232,7 @@ void LobbyCastleMenuCommand(int func)
 //넘어갈 때 장면이 튀었다.
 static float LobbyViewBottom(void)
 {
-	return (float)StageBg::kGroundPx;
+	return (float)StageBg::GroundY();
 }
 
 static float LobbyViewCY(void)
@@ -6262,7 +6262,7 @@ static void LobbyCamClamp(void)
 	else
 		gLobbyCamX = Max(halfW, Min(w - halfW, gLobbyCamX));
 
-	//성이 딛는 줄에 세운다. 전투와 같은 줄(StageBg::kGroundPx)이라
+	//성이 딛는 줄에 세운다. 전투와 같은 줄(StageBg::GroundY())이라
 	//넘어갈 때 장면이 안 튄다. 예전에는 하단 메뉴 바로 위에 붙였는데,
 	//그 자리가 전투의 줄과 우연히 비슷했을 뿐이라 한쪽만 고치면 어긋났다.
 	//
@@ -6604,7 +6604,7 @@ static int LobbyCastleGroundY(void)
 {
 	float w, h;
 
-	if (!LobbyCastleSize(&w, &h)) return StageBg::kGroundPx;
+	if (!LobbyCastleSize(&w, &h)) return StageBg::GroundY();
 
 	const float s = LobbyCamScale(w, h);
 	const float rectBottom = LobbyViewCY() + gLobbyCamY * s - h * s;
@@ -7072,7 +7072,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			//방에 그대로 두면 예순네 명 사이에 섞여 누가 나갔는지가 안
 			//보인다. 땅에 내려서면 성과 몬스터 사이에 저 혼자 서게 된다.
 			const float sx = CREW_LINE_X + liveSlot * CREW_LINE_GAP;
-			const float sy = (float)StageBg::kGroundPx + CREW_LINE_LIFT;
+			const float sy = (float)StageBg::GroundY() + CREW_LINE_LIFT;
 
 			float ox = 0.0f, oy = 0.0f;
 			ScreenToObj(sx, sy, &ox, &oy);

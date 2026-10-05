@@ -37,8 +37,8 @@ inline bool IsMoving() {
 inline int VisualGroundY(int layoutGroundY) {
 	(void)layoutGroundY;
 	//전장은 고정이다. 격자가 오르내려도 세계가 따라 움직이면 안 된다.
-	//로비도 성을 같은 줄에 놓는다(StageBg::kGroundPx).
-	return StageBg::kGroundPx;
+	//로비도 성을 같은 줄에 놓는다(StageBg::GroundY()).
+	return StageBg::GroundY();
 }
 
 struct SlotUV { float u, v; };
@@ -136,7 +136,6 @@ inline void DrawCastle(int groundY) {
 	//실제 진행을 따르게 하려면 여기와 LobbyCastleLevel 의 한 줄을 같이
 	//robin.castle 로 되돌리면 된다.
 	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
-	const float lowerH = curCastle < 6 ? 104.0f : 240.0f;
 
 	//조립표가 적어 둔 네모. 성 1 은 지붕이 방보다 높아 윗여유가 따로 있다.
 	//여기서 빠뜨리면 CastlePartsDrawRect 가 네모 안에서 다시 가운데로
@@ -173,7 +172,6 @@ inline void DrawCastle(int groundY) {
 	//나가는 동료만 이 안에서 1.5 배가 된다.
 	CastleCrewDrawAt(castleLeft, yTop + CastlePartsFloatOffset(curCastle + 1) * scale,
 	                 naturalW, naturalH, scale, curCastle, true);
-	(void)lowerH;
 }
 
 //가늘고 긴 체력 띠 하나.
