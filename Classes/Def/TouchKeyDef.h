@@ -497,6 +497,10 @@ typedef enum _touchFuncDef {
 	//깔린 "바깥을 누르면 닫는다" 가 먼저 걸려 띠를 밀려다 창이 닫힌다.
 	TOUCH_FUNC_LOADOUT_BAND,
 
+	//가방에 놓인 장비. 집어서 빼거나 다른 칸으로 옮긴다.
+	TOUCH_FUNC_LOADOUT_BAGITEM,
+	TOUCH_FUNC_LOADOUT_BAGITEM_END = TOUCH_FUNC_LOADOUT_BAGITEM + LOADOUT_MAX,
+
 	TOUCH_FUNC_LOADOUT_TAB,
 	//탭은 이제 분류 넷이 아니라 성급 여섯이다. 자리를 좁게 잡으면 5성과
 	//6성 칸이 뒤 항목의 번호를 덮어쓴다.

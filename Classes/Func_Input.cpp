@@ -3026,6 +3026,15 @@ void touchFunc(int func)
 		return;
 	}
 
+	//가방에 놓인 장비를 집는다. 가방 밖으로 끌어내면 빠지고, 가방 안 다른
+	//칸에 놓으면 그리로 옮겨 간다.
+	if (func >= TOUCH_FUNC_LOADOUT_BAGITEM
+		&& func < TOUCH_FUNC_LOADOUT_BAGITEM + LOADOUT_MAX) {
+		LoadoutPickBag(func - TOUCH_FUNC_LOADOUT_BAGITEM);
+		systemKey = 0;
+		return;
+	}
+
 	if (func >= TOUCH_FUNC_LOADOUT_ITEM
 		&& func < TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX) {
 		//화면에 늘어놓은 차례대로 가방 칸을 찾는다. 그리는 쪽과 같은

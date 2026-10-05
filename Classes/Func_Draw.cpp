@@ -4489,6 +4489,9 @@ int LoadoutFind(int invenIdx)
 static signed char gLoadoutAtCol[LOADOUT_MAX];
 static signed char gLoadoutAtRow[LOADOUT_MAX];
 
+//깔린 차례 -> 인벤토리 칸. 가방에 놓인 것을 집을 때 되짚는 데 쓴다.
+static short gLoadoutPackInven[LOADOUT_MAX];
+
 bool LoadoutToggleAt(int invenIdx, int col, int row)
 {
 	const int at = LoadoutFind(invenIdx);
@@ -4524,6 +4527,27 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 bool LoadoutToggle(int invenIdx)
 {
 	return LoadoutToggleAt(invenIdx, -1, -1);
+}
+
+//이미 담긴 것을 다른 칸으로 옮긴다. 빼었다 다시 담으면 점수 검사에
+//걸려 제자리로도 못 돌아오는 수가 있다.
+bool LoadoutMoveTo(int invenIdx, int col, int row)
+{
+	const int at = LoadoutFind(invenIdx);
+
+	if (at < 0)
+		return false;
+
+	gLoadoutAtCol[at] = (signed char)col;
+	gLoadoutAtRow[at] = (signed char)row;
+	return true;
+}
+
+//가방에 놓인 것을 집는다. 깔린 차례로 부른다.
+void LoadoutPickBag(int n)
+{
+	if (n >= 0 && n < LOADOUT_MAX)
+		LoadoutPickStart(gLoadoutPackInven[n]);
 }
 
 //======================================================================
@@ -4676,6 +4700,9 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 		GridGearPart(it, &parts[n]);
 		fit[n] = false;
 		order[n] = n;
+
+		//그린 것을 다시 집으려면 어느 인벤토리 칸인지 알아야 한다.
+		gLoadoutPackInven[n] = (short)gLoadout[i];
 		n++;
 	}
 
@@ -4820,6 +4847,7 @@ static float gLoadoutScrollBase = 0.0f;	//누를 때 밀려 있던 양
 //속도는 지난 프레임과의 차이를 그대로 쓰지 않고 섞는다. 한 프레임만 보면
 //손가락이 잠깐 멈춘 순간에 떼었을 때 속도가 0 이 되어 안 미끄러진다.
 static float gLoadoutScrollVel = 0.0f;
+static bool gLoadoutWasDown = false;	//지난 프레임에 눌려 있었나
 static int gLoadoutScrollPrevX = 0;
 
 #define LOADOUT_FLICK_MIX   0.45f	//새 속도를 섞는 비율
@@ -5103,8 +5131,9 @@ void LoadoutRelease(void)
 		&& touchY > gLoadoutGridY - gLoadoutGridH);
 	const bool already = (LoadoutFind(inven) >= 0);
 
-	if (inGrid == already)
-		return;		//실린 것을 가방에 또 놓거나, 안 실린 것을 밖에 놓았다
+	//안 실린 것을 가방 밖에 놓았다. 아무 일도 없다.
+	if (inGrid == false && already == false)
+		return;
 
 	//---- 떨어뜨린 칸 ----
 	//
@@ -5119,15 +5148,46 @@ void LoadoutRelease(void)
 		GridGearPart(&robin.inven[inven], &part);
 
 		if (cell > 0) {
-			col = (touchX - gLoadoutGridX) / cell - (part.w - 1) / 2;
-			row = (gLoadoutGridY - touchY) / cell;
-			row = gGridH - 1 - row - (part.h - 1) / 2;
+			//---- 손에 든 그림의 왼쪽 위에서 되짚는다 ----
+			//
+			//유령은 손가락을 그림 한가운데에 두고 그린다. 그러니 손가락
+			//자리에서 폭의 절반, 높이의 절반을 물러나야 그림의 모서리다.
+			//
+			//전에는 (w - 1) / 2 로 뺐다. 2 칸짜리에서 0 이 되어 한 칸
+			//오른쪽으로, 4 칸짜리에서 1 이 되어 한 칸 위로 튀었다.
+			const int w = part.w * cell;
+			const int h = part.h * cell;
+			const int leftPx = touchX - w / 2;
+			const int topPx = touchY + h / 2;
+
+			//반 칸 넘게 걸치면 그 칸으로 붙인다. 음수에서 0 쪽으로 자르면
+			//격자 왼쪽 바깥이 첫 칸에 붙으므로 내림으로 나눈다.
+			//
+			//row 0 이 맨 아랫줄이다. 위에서 몇 줄 내려왔는지를 센 뒤
+			//뒤집는다.
+			const int down = GridFloorDiv(
+				gLoadoutGridY - topPx + cell / 2, cell);
+
+			col = GridFloorDiv(leftPx - gLoadoutGridX + cell / 2, cell);
+			row = gGridH - part.h - down;
 
 			if (col < 0) col = 0;
 			if (row < 0) row = 0;
 			if (col > gGridW - part.w) col = gGridW - part.w;
 			if (row > gGridH - part.h) row = gGridH - part.h;
 		}
+	}
+
+	//---- 이미 담긴 것이면 자리만 옮기거나 뺀다 ----
+	if (already) {
+		if (inGrid) {
+			LoadoutMoveTo(inven, col, row);
+			return;
+		}
+
+		//가방 밖으로 끌어냈다. 뺀다.
+		LoadoutToggle(inven);
+		return;
 	}
 
 	if (LoadoutToggleAt(inven, col, row) == false)
@@ -5253,6 +5313,10 @@ static void LoadoutGridDraw(int top, int bottom)
 		const int cy = base - (gGridH - 1 - atRow[i]) * cell + (parts[i].h - 1) * cell;
 
 		GridDrawShapedCard(&parts[i], cx, cy, w, h, ALPHA_MAX, false);
+
+		//집어서 뺄 수 있게 터치를 건다. 이게 없으면 한 번 넣은 것을
+		//보관함에서 같은 칸을 다시 찾아 누르는 수밖에 없다.
+		SetRectPoint(cx, cy, w, h, TOUCH_FUNC_LOADOUT_BAGITEM + i);
 	}
 
 	//---- 결과 한 줄 ----
@@ -5419,7 +5483,13 @@ void LoadoutDraw(void)
 			gLoadoutGesture = false;
 			gLoadoutGestureMode = 0;
 		}
-		else if (gLoadoutGesture == false && inBand) {
+		//---- 누른 순간에만 잡는다 ----
+		//
+		//끌던 도중 손가락이 띠에 들어왔다고 새로 잡으면, 가방에서 집어
+		//보관함으로 끌어내리는 길에 밀기로 바뀌어 들고 있던 것을 놓친다.
+		//누름의 첫 프레임이 아니면 띠 안이라도 아무 일도 하지 않는다.
+		else if (gLoadoutGesture == false && inBand
+			&& gLoadoutWasDown == false) {
 			gLoadoutGesture = true;
 			gLoadoutGestureMode = 0;
 			gLoadoutGestureX = touchX;
@@ -5465,6 +5535,8 @@ void LoadoutDraw(void)
 			if (Abs(gLoadoutScrollVel) < LOADOUT_FLICK_STOP)
 				gLoadoutScrollVel = 0.0f;
 		}
+
+		gLoadoutWasDown = down;
 
 		//끝에 닿으면 선다. 끌고 있는 동안에도 끝을 넘겨 두지 않는다 -
 		//넘겼다가 놓으면 빈 자리가 한 번 보였다 돌아온다.
