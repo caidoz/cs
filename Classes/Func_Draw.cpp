@@ -4479,13 +4479,26 @@ int LoadoutFind(int invenIdx)
 }
 
 //고르고 뺀다. 점수가 모자라면 고르지 않는다.
-bool LoadoutToggle(int invenIdx)
+//---- 손으로 놓은 자리 ----
+//
+//끌어다 놓은 칸을 같이 들고 있는다. -1 이면 "아무 데나" 다 - 자동 담기나
+//눌러서 담은 것이 그렇다.
+//
+//이것이 없으면 놓은 자리와 상관없이 LoadoutPreviewPack 이 제 차례대로
+//다시 깔아 버려, 끌어다 놓은 데가 아닌 곳에 장비가 선다.
+static signed char gLoadoutAtCol[LOADOUT_MAX];
+static signed char gLoadoutAtRow[LOADOUT_MAX];
+
+bool LoadoutToggleAt(int invenIdx, int col, int row)
 {
 	const int at = LoadoutFind(invenIdx);
 
 	if (at >= 0) {
-		for (int i = at; i + 1 < gLoadoutCnt; i++)
+		for (int i = at; i + 1 < gLoadoutCnt; i++) {
 			gLoadout[i] = gLoadout[i + 1];
+			gLoadoutAtCol[i] = gLoadoutAtCol[i + 1];
+			gLoadoutAtRow[i] = gLoadoutAtRow[i + 1];
+		}
 
 		gLoadoutCnt--;
 		return true;
@@ -4502,8 +4515,15 @@ bool LoadoutToggle(int invenIdx)
 	if (LoadoutUsed() + LoadoutCost(it) > LoadoutPoint())
 		return false;
 
+	gLoadoutAtCol[gLoadoutCnt] = (signed char)col;
+	gLoadoutAtRow[gLoadoutCnt] = (signed char)row;
 	gLoadout[gLoadoutCnt++] = invenIdx;
 	return true;
+}
+
+bool LoadoutToggle(int invenIdx)
+{
+	return LoadoutToggleAt(invenIdx, -1, -1);
 }
 
 //======================================================================
@@ -4685,10 +4705,39 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 		order[j + 1] = key;
 	}
 
+	//---- 손으로 놓은 것부터 그 자리에 앉힌다 ----
+	//
+	//자동으로 깔기 전에 자리를 잡아 둬야 한다. 나중에 하면 그 칸이 이미
+	//다른 것에 먹혀 끌어다 놓은 데가 아닌 곳으로 밀린다.
+	for (int k = 0; k < n; k++) {
+		const int e = order[k];
+		const int c = gLoadoutAtCol[e];
+		const int r = gLoadoutAtRow[e];
+
+		if (c < 0 || r < 0)
+			continue;
+
+		if (LoadoutPreviewCanPlace(&parts[e], c, r, occ) == false)
+			continue;
+
+		for (int dy = 0; dy < parts[e].h; dy++)
+			for (int dx = 0; dx < parts[e].w; dx++)
+				if (GridPartCell(&parts[e], dx, dy))
+					occ[r + dy][c + dx] = 1;
+
+		atCol[e] = c;
+		atRow[e] = r;
+		fit[e] = true;
+	}
+
 	for (int k = 0; k < n; k++) {
 		const int e = order[k];
 		int col = 0, row = 0;
 		bool found = false;
+
+		//이미 손으로 놓은 자리에 앉았다.
+		if (fit[e])
+			continue;
 
 		for (int r = 0; r < gGridH && found == false; r++)
 			for (int c = 0; c < gGridW && found == false; c++)
@@ -5057,7 +5106,31 @@ void LoadoutRelease(void)
 	if (inGrid == already)
 		return;		//실린 것을 가방에 또 놓거나, 안 실린 것을 밖에 놓았다
 
-	if (LoadoutToggle(inven) == false)
+	//---- 떨어뜨린 칸 ----
+	//
+	//칸 번호로 바꿔 넘긴다. 손가락이 짚은 자리가 아니라 든 것의 왼쪽
+	//아래가 기준이다 - 집을 때 가운데를 손가락에 맞췄으므로 그만큼 뺀다.
+	int col = -1, row = -1;
+
+	if (inGrid && gGridW > 0 && gGridH > 0) {
+		const int cell = gLoadoutGridW / gGridW;
+		GridPart part;
+
+		GridGearPart(&robin.inven[inven], &part);
+
+		if (cell > 0) {
+			col = (touchX - gLoadoutGridX) / cell - (part.w - 1) / 2;
+			row = (gLoadoutGridY - touchY) / cell;
+			row = gGridH - 1 - row - (part.h - 1) / 2;
+
+			if (col < 0) col = 0;
+			if (row < 0) row = 0;
+			if (col > gGridW - part.w) col = gGridW - part.w;
+			if (row > gGridH - part.h) row = gGridH - part.h;
+		}
+	}
+
+	if (LoadoutToggleAt(inven, col, row) == false)
 		PlayMusic(M_ERROR);
 }
 

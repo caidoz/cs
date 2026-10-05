@@ -87,6 +87,7 @@ float GetStageWorldLift(void);
 void GridTestPick(int n, bool fromShop);
 void GridTestPickStore(int n);	//성보관함 칸을 집는다
 void LoadoutPickStart(int inven);	//출정 준비에서 보관함 칸을 집는다
+bool LoadoutToggleAt(int invenIdx, int col, int row);	//끌어다 놓은 칸에 담는다
 void LoadoutRelease(void);			//그 손을 뗀 순간
 void GridTestRelease(void);
 void GridTestToggle(void);
