@@ -5100,9 +5100,16 @@ static void LoadoutGridDraw(int top, int bottom)
 
 	left = (DX - cell * gGridW) / 2;
 
-	//자리 한가운데에 둔다. 밑변에 붙이면 칸이 작은 성에서 위쪽이 통째로
-	//비어, 가방이 화면 구석에 떨어진 것처럼 보인다.
-	base = bottom + (areaH - cell * gGridH) / 2 + cell * gGridH;	//맨 윗 줄의 위쪽 변
+	//---- 밑변을 자리의 밑변에 맞춘다 ----
+	//
+	//base 는 맨 윗 줄의 위쪽 변이다. 테두리 그림이 맨 아랫 줄 밑으로도
+	//PAD 만큼 더 나오므로, 그 몫까지 올려 세워야 밑단이 안 잘린다.
+	//
+	//가운데에 두던 것을 바꿨다. 가운데면 자리가 남을 때 아래위로 반씩
+	//나뉘는데, 아래쪽 틈은 보관함이 바로 받고 있어 쓸 데가 없다.
+	base = bottom + cell * gGridH
+	     + (int)(GRID_FRAME_PAD * (float)cell / (float)GRID_FRAME_CELL);
+	(void)areaH;
 
 	//끌어온 것을 어디에 떨어뜨려야 실리는지. 그리는 쪽에서만 아는 값이라
 	//여기서 남겨 둔다.
@@ -5264,7 +5271,7 @@ void LoadoutDraw(void)
 	//머리말 세 줄(출정 준비 / 점수 / 성 몇 칸) 아래부터가 가방 자리다.
 	//테두리 그림이 칸 바깥으로도 조금 나오므로 글자 밑에서 조금 더 내려
 	//잡되, 더 내리면 그만큼 칸 크기에서 깎이므로 아끼 잡는다.
-	const int headTop = top - 56 * _2X;
+	const int headTop = top - 44 * _2X;
 
 	//---- 칸 크기를 먼저 정한다 ----
 	//
@@ -5272,20 +5279,32 @@ void LoadoutDraw(void)
 	//가로는 가방이 화면을 넘지 않아야 하고, 세로는 가방(gGridH 줄)과
 	//보관함(여섯 줄)에 성급 이름 줄까지 들어가야 한다.
 	{
-		//성급 이름 줄과 가방 / 보관함 사이 틈. 여기 쓰는 만큼 칸이 작아진다.
-		const int labelH = 15 * _2X;
-		const int gapH = 6 * _2X;
-		const int roomH = headTop - storeBot - labelH - gapH;
-		const int rowsAll = Max(1, gGridH) + LOADOUT_STORE_H;
+		//성급 이름 줄. 여기 쓰는 만큼 칸이 작아진다.
+		const int labelH = 24 * _2X;
+		const int roomH = headTop - storeBot - labelH;
 
-		gLoadoutCell = Min((DX - 16 * _2X) / Max(1, gGridW), roomH / rowsAll);
+		//---- 테두리 그림 몫을 같이 센다 ----
+		//
+		//가방은 칸만 차지하는 것이 아니다. 테두리 그림이 칸 바깥으로도
+		//위아래 GRID_FRAME_PAD 만큼 더 나온다. 그 몫을 안 빼면 가방이 제
+		//자리보다 커져 밑단이 보관함 받침에 덮인다.
+		//
+		//칸 단위로 환산해 줄 수에 더한다. 64 짜리 칸에 여백 50 이 둘이면
+		//1.56 줄만큼이다.
+		const int rowsCell = (Max(1, gGridH) + LOADOUT_STORE_H) * GRID_FRAME_CELL
+		                   + 2 * GRID_FRAME_PAD;
+
+		gLoadoutCell = Min((DX - 16 * _2X) / Max(1, gGridW),
+			roomH * GRID_FRAME_CELL / Max(1, rowsCell));
 		gLoadoutCell = Max(8 * _2X, gLoadoutCell) & ~1;
 	}
 
 	const int sCell = gLoadoutCell;
 	const int storeTop = storeBot + LOADOUT_STORE_H * sCell;
 
-	LoadoutGridDraw(headTop, storeTop + 21 * _2X);
+	//가방 자리의 밑변은 보관함 받침의 윗변이다. 더 내려 잡으면 테두리
+	//밑단이 받침에 덮인다.
+	LoadoutGridDraw(headTop, storeTop + 24 * _2X);
 
 	//---- 보관함 띠의 받침 ----
 	//
