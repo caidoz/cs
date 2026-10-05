@@ -1837,22 +1837,94 @@ static void GridWeaponShape(GridPart* p)
 	const int d = Max(0, Min(34, p->detail));
 	p->cells = 0;
 	if (p->type == ITEM_SWORD) {
-		// The sprite canvas is quantized to 32 px tiles. Use that exact
-		// footprint for placement as well as for drawing.
-		const SwordSpriteInfo* info = GetSwordSpriteInfo(d);
-		p->w = info ? info->cols : 1;
-		p->h = info ? info->rows : 2;
+		//---- 검은 가늘다 ----
+		//
+		//전에는 그림판 크기(1x2 / 2x3 / 2x4)를 그대로 칸으로 썼다. 검은
+		//비스듬히 가늘어서 두 칸 폭을 잡아도 양옆이 빈다 - 안 쓰는 자리
+		//까지 값을 치르고 있었다. 그림 35 장을 재 보면 칸의 40% 가 빈다.
+		//
+		//가늘면 가는 대로 한 칸 폭으로 잡고, 길이로만 등급을 낸다.
+		//    ★1~2  1x3   3칸
+		//    ★3~5  1x4   4칸   창처럼 세로로 길다
+		//    ★6    3x3   5칸   날밑이 벌어진 십자
+		//
+		//맨 위만 벌어지는 것은, 자리를 두 배 내주고도 들고 갈 만한 것이
+		//끝에 하나쯤 있어야 하기 때문이다.
+		if (d >= 29) {
+			p->w = 3;
+			p->h = 3;
+
+			//bit(row * 4 + col), row 0 이 맨 아랫줄이다.
+			//    . O .   날
+			//    O O O   날밑 - 날과 손잡이 사이라 가운데가 벌어진다
+			//    . O .   손잡이
+			p->cells = (1u << 9)
+			         | (1u << 4) | (1u << 5) | (1u << 6)
+			         | (1u << 1);
+			return;
+		}
+
+		p->w = 1;
+		p->h = d >= 10 ? 4 : 3;
 		return;
 	}
 	if (p->type == ITEM_BOOMERANG) {
-		p->w = d < 9 ? 3 : 4;
-		p->h = p->w;
+		//---- 부메랑은 고리다 ----
+		//
+		//전에는 그림판을 그대로 써서 3x3(9칸) 과 4x4(16칸) 이었다. 24 칸
+		//짜리 가방에서 하나가 16 칸이면 다른 것을 들 수가 없다. 맥스의
+		//무기 칸 합이 497 로 로빈(226)의 두 배가 넘었던 까닭이다.
+		//
+		//그림 35 장을 재 보면 42% 가 빈 칸이다 - 부메랑은 곡선이라
+		//네 모서리와 가운데가 안 찬다. 그 모양을 그대로 쓴다.
+		//    ★1~2  2x2        4칸
+		//    ★3~5  3x3 십자   5칸
+		//    ★6    3x3 고리   8칸   가운데만 빈다
+		if (d >= 29) {
+			p->w = 3;
+			p->h = 3;
+
+			//가운데 한 칸(row 1, col 1)만 뺀 고리다.
+			p->cells = 0x777 & ~(1u << 5);
+			return;
+		}
+
+		if (d >= 10) {
+			p->w = 3;
+			p->h = 3;
+			p->cells = (1u << 9)
+			         | (1u << 4) | (1u << 5) | (1u << 6)
+			         | (1u << 1);
+			return;
+		}
+
+		p->w = 2;
+		p->h = 2;
 		return;
 	}
-	// Some starter guns are wider than a single tile. Give those silhouettes
-	// a 2x2 footprint rather than shrinking their visible art.
-	p->w = d < 5 && d != 1 && d != 2 && d != 4 ? 1 : 2;
-	p->h = d < 5 ? 2 : 3;
+
+	//---- 총 ----
+	//
+	//총은 검과 달리 두 칸 폭을 실제로 쓴다(그림을 재면 2x3 이 꽉 찬다).
+	//다만 손잡이 쪽 모서리 하나가 비므로 그만큼 깎는다.
+	//    ★1~2  2x2             4칸
+	//    ★3~5  2x3 모서리 하나  5칸
+	//    ★6    2x3             6칸
+	if (d >= 29) {
+		p->w = 2;
+		p->h = 3;
+		return;
+	}
+
+	if (d >= 10) {
+		p->w = 2;
+		p->h = 3;
+		p->cells = 0x333 & ~(1u << 0);	//왼쪽 아래가 빈다
+		return;
+	}
+
+	p->w = 2;
+	p->h = 2;
 }
 
 //---- 눕히기 ----
@@ -4234,17 +4306,18 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	//
 	//1x1 은 반지만 남긴다. 목걸이는 1x2 로 가늘고 길다.
 	//
-	//갑옷과 하의는 번호가 오르면 한 칸 더 길어진다. 가장 좋은 것을
-	//들고 가려면 그만큼 자리를 내줘야 한다.
+	// 갑옷은 원본 높이에 따라 칸 수가 달라진다.
 	switch (it->type) {
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
 		out->w = 2; out->h = 2; break;
 	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
-		out->w = 2; out->h = it->detail >= 5 ? 3 : 2; break;
+		// 세 계열 모두 0~3번은 64x64, 4~7번은 64x96 원본이다.
+		out->w = 2; out->h = it->detail >= 4 ? 3 : 2; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
 		out->w = 2; out->h = 2; break;
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
-		out->w = 2; out->h = it->detail >= 5 ? 3 : 2; break;
+		// 하의 원본은 모든 단계가 64x64이다.
+		out->w = 2; out->h = 2; break;
 	case ITEM_GREAVES: case ITEM_SHOES: case ITEM_BOOTS:
 		// 발목은 오른쪽 위, 발끝은 아래로 뻗는다. 왼쪽 위 한 칸은
 		// 실제 그림도 투명하므로 다른 장비가 들어갈 수 있다.
