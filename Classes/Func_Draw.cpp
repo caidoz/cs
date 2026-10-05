@@ -5626,32 +5626,48 @@ void LoadoutDraw(void)
 		const int inv = gLoadoutOwn[gLoadoutCatType[i]][gLoadoutCatDetail[i]];
 		const bool own = (inv >= 0);
 		const ITEM* it = own ? &robin.inven[inv] : NULL;
-		const bool on = own && LoadoutFind(inv) >= 0;
+		//---- 이미 가방에 올라간 것 ----
+		//
+		//위로 올린 것은 보관함에서 회색이 되고 집히지 않는다. 같은 것을
+		//두 번 실을 수는 없으니 집히면 안 되고, 테두리만 바꿔 두면 실린
+		//것인지 아닌지가 한눈에 안 들어온다. 되돌리려면 가방에서 끌어
+		//내리면 그 자리로 돌아온다.
+		const bool taken = own && LoadoutFind(inv) >= 0;
+		const bool live = own && taken == false;	//집을 수 있는가
 		GridPart part;
 
 		LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
 		part.grade = own ? it->grade : GRADE_NORMAL;
 
-		SetAlpha(on ? 30 : own ? 16 : 10);
+		SetAlpha(live ? 16 : 10);
 		MemRect(x, y, w, h, 0x1B1B2E);
 		SetAlpha(ALPHA_MAX);
-		MemRectFrame(x, y, w, h, on ? 0xFFD700 : own ? 0x556688 : 0x2A2A38);
 
-		//---- 아직 없는 것은 회색으로 ----
+		//테두리로 셋을 가른다. 올라간 것은 금빛을 죽인 색이라 "저건 내
+		//것인데 지금 위에 있다" 로 읽히고, 아직 없는 것은 그냥 어둡다.
+		MemRectFrame(x, y, w, h,
+			live ? 0x556688 : taken ? 0x6A5A2A : 0x2A2A38);
+
+		//---- 못 집는 것은 회색으로 ----
 		//
 		//자리는 잡아 두고 색만 뺀다. 아예 안 그리면 무엇이 남았는지
-		//모르고, 색까지 그대로면 가진 것과 구별이 안 된다.
-		if (own == false)
+		//모르고, 색까지 그대로면 집을 수 있는 것과 구별이 안 된다.
+		if (live == false)
 			grayScale = 32;
 
-		GridDrawShapedCard(&part, x, y, w, h, own ? ALPHA_MAX : ALPHA_MAX / 2,
+		GridDrawShapedCard(&part, x, y, w, h, live ? ALPHA_MAX : ALPHA_MAX / 2,
 			false);
 
 		grayScale = 0;
 
-		//안 가진 칸도 터치를 받는다. 눌러도 안 실리지만, 눌러서 아무 일도
-		//안 일어나는 것과 터치가 없는 것은 손에 다르게 온다.
-		gLoadoutSlot[gLoadoutSlotCnt] = (short)(own ? inv : -1);
+		//---- 집을 수 있는 것만 터치를 받는다 ----
+		//
+		//올라간 것에 터치를 걸어 두면 집히는 손맛이 나면서 아무 일도
+		//안 일어난다. 아예 안 걸면 띠가 받아 밀기로 이어진다.
+		if (live == false)
+			continue;
+
+		gLoadoutSlot[gLoadoutSlotCnt] = (short)inv;
 		SetRectPoint(x, y, w, h, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
 		gLoadoutSlotCnt++;
 	}
