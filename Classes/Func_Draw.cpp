@@ -5181,9 +5181,9 @@ static void LoadoutGridDraw(int top, int bottom)
 		sprintf(str, "빈 칸 %d", free);
 	}
 
-	//격자 바로 위에 붙인다. 자리의 맨 위(top)에 두면 머리말과 겹친다 -
-	//격자가 가운데로 내려오면서 그 사이가 비기 때문이다.
-	CenterTextStrSolid(str, DX / 2, base + 26 * _2X, 0.55f);
+	//가방 아래, 보관함과의 틈에 적는다. 위에 두면 칸이 커질수록 가방이
+	//올라가 머리말 글자를 밟는다. 아래는 틈이 늘 한 줄만큼 있다.
+	CenterTextStrSolid(str, DX / 2, bottom + 14 * _2X, 0.5f);
 }
 
 void LoadoutDraw(void)
@@ -5258,11 +5258,13 @@ void LoadoutDraw(void)
 	//
 	//여기서 하는 일이 "보관함의 것을 가방으로 옮기는" 것이다. 받는 쪽과
 	//주는 쪽을 같이 못 보면 누를 때마다 갈아 보며 머릿속으로 맞춰야 한다.
-	const int storeBot = LoadoutFootY() + 84 * _2X;
+	//출정 버튼 바로 위까지 쓴다. 전에는 그 위에 한 뼘을 더 비워 두었는데,
+	//그 높이가 그대로 칸 크기에서 깎인다.
+	const int storeBot = LoadoutFootY() + 68 * _2X;
 	//머리말 세 줄(출정 준비 / 점수 / 성 몇 칸) 아래부터가 가방 자리다.
-	//칸이 커지면서 가방이 글자를 덮었다 - 테두리 그림이 칸 바깥으로도
-	//조금 더 나오므로 글자 밑에서 한 뼘 더 내려 잡는다.
-	const int headTop = top - 70 * _2X;
+	//테두리 그림이 칸 바깥으로도 조금 나오므로 글자 밑에서 조금 더 내려
+	//잡되, 더 내리면 그만큼 칸 크기에서 깎이므로 아끼 잡는다.
+	const int headTop = top - 56 * _2X;
 
 	//---- 칸 크기를 먼저 정한다 ----
 	//
@@ -5270,8 +5272,9 @@ void LoadoutDraw(void)
 	//가로는 가방이 화면을 넘지 않아야 하고, 세로는 가방(gGridH 줄)과
 	//보관함(여섯 줄)에 성급 이름 줄까지 들어가야 한다.
 	{
-		const int labelH = 20 * _2X;
-		const int gapH = 12 * _2X;
+		//성급 이름 줄과 가방 / 보관함 사이 틈. 여기 쓰는 만큼 칸이 작아진다.
+		const int labelH = 15 * _2X;
+		const int gapH = 6 * _2X;
 		const int roomH = headTop - storeBot - labelH - gapH;
 		const int rowsAll = Max(1, gGridH) + LOADOUT_STORE_H;
 
@@ -5282,7 +5285,7 @@ void LoadoutDraw(void)
 	const int sCell = gLoadoutCell;
 	const int storeTop = storeBot + LOADOUT_STORE_H * sCell;
 
-	LoadoutGridDraw(headTop, storeTop + 32 * _2X);
+	LoadoutGridDraw(headTop, storeTop + 21 * _2X);
 
 	//---- 보관함 띠의 받침 ----
 	//
