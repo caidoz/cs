@@ -4737,8 +4737,9 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 //보관함에서 두 칸짜리로 보이던 것이 가방에서 다른 크기로 보이면, 자리를
 //견주어 보라고 만든 판이 제 일을 못 한다.
 //
-//둘 다 들어가는 가장 큰 값이다. 가로는 가방이 화면을 넘지 않아야 하고,
-//세로는 가방(gGridH 줄)과 보관함(여섯 줄)이 같이 들어가야 한다.
+//기본은 64 다. 그림 한 칸이 64 픽셀이라 그대로 그려지고, 1x1 짜리도
+//손가락으로 짚을 만하다. 화면이 짧아 다 안 들어갈 때만 줄인다.
+#define LOADOUT_CELL_BASE 64
 static int gLoadoutCell = 16;
 
 //---- 보관함을 손가락으로 민다 ----
@@ -4799,8 +4800,14 @@ static int LoadoutFootY(void)
 #define LOADOUT_DETAILMAX 40
 #define LOADOUT_CATMAX    320
 
-//보관함 판은 높이를 여섯 칸으로 고정하고 가로로 늘린다.
-#define LOADOUT_STORE_H   6
+//---- 보관함 판은 높이를 네 칸으로 고정하고 가로로 늘린다 ----
+//
+//전에는 여섯 칸이었다. 성 가방이 최대 여섯 줄이라 거기에 맞춘 것인데,
+//보관함에 들어가는 것은 아이템이지 성이 아니다. 가장 긴 아이템이 2x4
+//짜리 검과 4x4 짜리 부메랑으로 네 칸이므로 네 줄이면 다 선다.
+//
+//두 줄을 줄인 만큼이 그대로 칸 크기로 간다.
+#define LOADOUT_STORE_H   4
 #define LOADOUT_BOARD_GAP 2		//판 사이. 성급이 갈리는 것이 보여야 한다
 #define LOADOUT_COLMAX    240
 
@@ -5202,8 +5209,9 @@ void LoadoutDraw(void)
 	if (!gLoadoutOpen)
 		return;
 
-	//뒤의 로비를 어둡게 깔고, 바깥을 누르면 닫는다.
-	SetAlpha(24);
+	//뒤의 로비를 어둡게 깔고, 바깥을 누르면 닫는다. 화면 꼭대기까지 쓰므로
+	//위쪽 HUD 가 비쳐 보이면 머리말과 겹쳐 읽힌다 - 진하게 덮는다.
+	SetAlpha(30);
 	MemRect(0, DY, DX, DY, 0x000000);
 
 	SetAlpha(ALPHA_MAX);
@@ -5214,7 +5222,10 @@ void LoadoutDraw(void)
 	(void)list;
 
 	//---- 머리말 ----
-	const int top = DY - GNBHEIGHT - 20 * _2X;
+	//
+	//화면 꼭대기까지 쓴다. 전에는 하단 메뉴 높이만큼 내려 잡았는데, 그
+	//높이가 그대로 칸 크기에서 깎인다. 어차피 창이 화면을 다 덮는다.
+	const int top = DY - 14 * _2X;
 	const int point = LoadoutPoint();
 	const int used = LoadoutUsed();
 	const int cell = GridTestCellCnt(GridCastleStage());
@@ -5269,9 +5280,8 @@ void LoadoutDraw(void)
 	//그 높이가 그대로 칸 크기에서 깎인다.
 	const int storeBot = LoadoutFootY() + 68 * _2X;
 	//머리말 세 줄(출정 준비 / 점수 / 성 몇 칸) 아래부터가 가방 자리다.
-	//테두리 그림이 칸 바깥으로도 조금 나오므로 글자 밑에서 조금 더 내려
-	//잡되, 더 내리면 그만큼 칸 크기에서 깎이므로 아끼 잡는다.
-	const int headTop = top - 44 * _2X;
+	//여기 쓰는 만큼 칸 크기에서 깎이므로 아끼 잡는다.
+	const int headTop = top - 40 * _2X;
 
 	//---- 칸 크기를 먼저 정한다 ----
 	//
@@ -5294,8 +5304,9 @@ void LoadoutDraw(void)
 		const int rowsCell = (Max(1, gGridH) + LOADOUT_STORE_H) * GRID_FRAME_CELL
 		                   + 2 * GRID_FRAME_PAD;
 
-		gLoadoutCell = Min((DX - 16 * _2X) / Max(1, gGridW),
-			roomH * GRID_FRAME_CELL / Max(1, rowsCell));
+		gLoadoutCell = Min(LOADOUT_CELL_BASE,
+			Min((DX - 16 * _2X) / Max(1, gGridW),
+				roomH * GRID_FRAME_CELL / Max(1, rowsCell)));
 		gLoadoutCell = Max(8 * _2X, gLoadoutCell) & ~1;
 	}
 
@@ -7376,12 +7387,18 @@ void LobbyDraw(void)
 #endif
 
 	// 기존 플레이 화면의 상단 GNB와 자원 바를 그대로 쓴다.
-	bar[BAR_GOLD].count = robin.gold;
-	bar[BAR_STAR].count = robin.coin;
-	BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
-	BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
-	BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
-	GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+	//
+	//출정 준비가 떠 있는 동안은 쉰다. 그 창이 화면 꼭대기까지 쓰므로 바가
+	//머리말 위로 올라온다. 전투로 넘어가는 중이라 골드나 보석을 쓸 일도
+	//없고, 이 바들은 LoadoutDraw 뒤에 그려져 덮어서는 가릴 수 없다.
+	if (LoadoutOpen() == false) {
+		bar[BAR_GOLD].count = robin.gold;
+		bar[BAR_STAR].count = robin.coin;
+		BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
+		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+	}
 
 	//======================================================================
 	// 날짜와 현재 진행 위치
