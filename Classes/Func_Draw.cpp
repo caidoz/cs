@@ -1494,7 +1494,20 @@ void TitleDraw(void)
 		//NewCollectionDraw(0, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
 #else
 		MemRect(0, DY, DX, DY, 0x000000);
-		DrawImage(640, 1024, 0, 0, xOffset + DX / 2 - 320 * _2X / 2, DY / 2 + 512 * _2X / 2, false, false, false, false, false, 1.0f, sprite[TITLE_IMG], TITLE_IMG);
+		if (!sprite[TITLE_IMG]) LoadImg(TITLE_IMG);
+		if (sprite[TITLE_IMG]) {
+			const auto sz = sprite[TITLE_IMG]->getContentSize();
+			if (sz.width > 0.0f && sz.height > 0.0f) {
+				const float byW = (float)DX / sz.width;
+				const float byH = (float)DY / sz.height;
+				const float zoom = (byW > byH) ? byW : byH;
+				const int drawX = (int)std::floor((DX - sz.width * zoom) * 0.5f);
+				const int drawY = (int)std::ceil((DY + sz.height * zoom) * 0.5f);
+				DrawImage((int)sz.width, (int)sz.height, 0, 0,
+				          drawX, drawY,
+				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
+			}
+		}
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
@@ -4740,8 +4753,28 @@ static int gLoadoutCell = 16;
 static bool gLoadoutGesture = false;	//보관함 안에서 누르고 있나
 static int gLoadoutGestureX = 0;		//누른 자리
 static int gLoadoutGestureY = 0;
-static int gLoadoutGestureBase = 0;		//누를 때 밀려 있던 양
 static int gLoadoutGestureMode = 0;		//0 아직 / 1 밀기 / 2 집기
+
+//---- 밀린 양은 칸이 아니라 픽셀로 센다 ----
+//
+//칸 단위로 세면 손가락을 따라오는 것이 한 칸씩 툭툭 끊기고, 손을 뗀 뒤
+//미끄러지는 것도 계단처럼 보인다.
+static float gLoadoutScrollPx = 0.0f;
+static float gLoadoutScrollBase = 0.0f;	//누를 때 밀려 있던 양
+
+//---- 손을 뗀 뒤에도 가던 만큼 더 간다 ----
+//
+//튕겨 놓고 손을 떼면 그 자리에 서 버리면, 긴 판을 넘기는 데 손을 몇 번씩
+//다시 대야 한다. 뗄 때의 속도를 남겨 두고 매 프레임 줄인다.
+//
+//속도는 지난 프레임과의 차이를 그대로 쓰지 않고 섞는다. 한 프레임만 보면
+//손가락이 잠깐 멈춘 순간에 떼었을 때 속도가 0 이 되어 안 미끄러진다.
+static float gLoadoutScrollVel = 0.0f;
+static int gLoadoutScrollPrevX = 0;
+
+#define LOADOUT_FLICK_MIX   0.45f	//새 속도를 섞는 비율
+#define LOADOUT_FLICK_DECAY 0.92f	//매 프레임 줄어드는 비율
+#define LOADOUT_FLICK_STOP  0.4f	//이보다 느려지면 멈춘다
 
 //---- 출정 준비는 하단 메뉴 자리까지 쓴다 ----
 //
@@ -5270,6 +5303,7 @@ void LoadoutDraw(void)
 	gLoadoutRowTotal = Max(1, gLoadoutCatCols);
 
 	//---- 손가락 ----
+	const int scrollMax = Max(0, (gLoadoutCatCols - viewCols) * sCell);
 	{
 		const bool down = (isTouchKey == TOUCH_PRESS || isTouchKey == TOUCH_DRAG);
 		const bool inBand = (touchY <= storeTop && touchY > storeBot);
@@ -5284,7 +5318,9 @@ void LoadoutDraw(void)
 			gLoadoutGestureMode = 0;
 			gLoadoutGestureX = touchX;
 			gLoadoutGestureY = touchY;
-			gLoadoutGestureBase = gLoadoutRow;
+			gLoadoutScrollBase = gLoadoutScrollPx;
+			gLoadoutScrollPrevX = touchX;
+			gLoadoutScrollVel = 0.0f;
 		}
 
 		if (gLoadoutGesture) {
@@ -5300,20 +5336,48 @@ void LoadoutDraw(void)
 
 			if (gLoadoutGestureMode == 1) {
 				//손가락이 짚은 칸이 손가락을 따라오도록, 민 반대로 옮긴다.
-				gLoadoutRow = gLoadoutGestureBase - dx / Max(1, sCell);
+				gLoadoutScrollPx = gLoadoutScrollBase - (float)dx;
+
+				//뗄 때 쓸 속도. 한 프레임만 보면 손가락이 잠깐 멈춘 순간에
+				//떼었을 때 0 이 되므로 지난 속도와 섞는다.
+				const float step = (float)(gLoadoutScrollPrevX - touchX);
+
+				gLoadoutScrollVel = gLoadoutScrollVel * (1.0f - LOADOUT_FLICK_MIX)
+					+ step * LOADOUT_FLICK_MIX;
+				gLoadoutScrollPrevX = touchX;
 
 				//밀기로 정해졌으면 집던 것은 놓는다. 둘이 같이 일어나면
 				//판을 밀 때마다 아이템이 가방으로 올라간다.
 				gLoadoutDrag = -1;
 			}
 		}
+		else if (gLoadoutScrollVel != 0.0f) {
+			//---- 미끄러지는 중 ----
+			gLoadoutScrollPx += gLoadoutScrollVel;
+			gLoadoutScrollVel *= LOADOUT_FLICK_DECAY;
+
+			if (Abs(gLoadoutScrollVel) < LOADOUT_FLICK_STOP)
+				gLoadoutScrollVel = 0.0f;
+		}
+
+		//끝에 닿으면 선다. 끌고 있는 동안에도 끝을 넘겨 두지 않는다 -
+		//넘겼다가 놓으면 빈 자리가 한 번 보였다 돌아온다.
+		if (gLoadoutScrollPx < 0.0f) {
+			gLoadoutScrollPx = 0.0f;
+			gLoadoutScrollVel = 0.0f;
+		}
+
+		if (gLoadoutScrollPx > (float)scrollMax) {
+			gLoadoutScrollPx = (float)scrollMax;
+			gLoadoutScrollVel = 0.0f;
+		}
 	}
 
-	if (gLoadoutRow > gLoadoutRowTotal - viewCols)
-		gLoadoutRow = gLoadoutRowTotal - viewCols;
+	//그리는 쪽이 쓸 값. 열 번호와 그 안에서 더 밀린 픽셀로 나눈다.
+	const int scrollPx = (int)gLoadoutScrollPx;
+	const int firstCol = scrollPx / sCell;
 
-	if (gLoadoutRow < 0)
-		gLoadoutRow = 0;
+	gLoadoutRow = firstCol;		//막대와 바깥 코드가 보는 값
 
 	//띠 전체를 터치로 덮는다. 아이템 칸은 뒤에 등록하므로 그쪽이 이긴다.
 	//이게 없으면 빈 칸을 짚어 미는 순간 "바깥" 으로 읽혀 창이 닫힌다.
@@ -5323,8 +5387,8 @@ void LoadoutDraw(void)
 	//빈 판을 먼저 깐다. 아이템이 없는 자리도 칸으로 보여야 "여기까지가
 	//이 성급의 판" 이라는 것이 읽힌다.
 	for (int r = 0; r < LOADOUT_STORE_H; r++)
-		for (int c = 0; c < viewCols; c++) {
-			const int at = gLoadoutRow + c;
+		for (int c = 0; c <= viewCols; c++) {
+			const int at = firstCol + c;
 			int star = 0;
 
 			//판과 판 사이의 빈 열은 칸을 안 그린다. 거기가 경계다.
@@ -5337,8 +5401,11 @@ void LoadoutDraw(void)
 			if (star == 0)
 				continue;
 
-			const int x = boardX + c * sCell;
+			const int x = boardX + at * sCell - scrollPx;
 			const int y = storeBot + (r + 1) * sCell;
+
+			if (x + sCell <= 0 || x >= DX)
+				continue;
 
 			SetAlpha(10);
 			MemRect(x, y, sCell, sCell, 0x1B1B2E);
@@ -5354,28 +5421,27 @@ void LoadoutDraw(void)
 		if (gLoadoutStarWide[k] <= 0)
 			continue;
 
-		const int c = gLoadoutStarCol[k] - gLoadoutRow;
+		const int x = boardX + gLoadoutStarCol[k] * sCell - scrollPx;
 
-		if (c + gLoadoutStarWide[k] <= 0 || c >= viewCols)
+		if (x + gLoadoutStarWide[k] * sCell <= 0 || x >= DX)
 			continue;
 
-		DrawStar(ICON_STAR, boardX + Max(0, c) * sCell + 2 * _2X,
-			storeTop + 20 * _2X, k + 1, k + 1, k + 1, LEFT, false, 0.34f);
+		DrawStar(ICON_STAR, Max(0, x) + 2 * _2X, storeTop + 20 * _2X,
+			k + 1, k + 1, k + 1, LEFT, false, 0.34f);
 	}
 
 	gLoadoutSlotCnt = 0;
 
 	for (int i = 0; i < cnt && gLoadoutSlotCnt < LOADOUT_PICKMAX; i++) {
-		const int c = (int)gLoadoutCatCol[i] - gLoadoutRow;
 		const int pwc = gLoadoutCatW[i];
 		const int phc = gLoadoutCatH[i];
+		const int x = boardX + (int)gLoadoutCatCol[i] * sCell - scrollPx;
 
-		//화면 밖으로 나간 열은 건너뛴다. 걸쳐 있는 것은 그린다 - 잘려
+		//화면 밖으로 나간 것은 건너뛴다. 걸쳐 있는 것은 그린다 - 잘려
 		//보이는 쪽이 통째로 사라지는 것보다 어디까지 왔는지 알기 쉽다.
-		if (c + pwc <= 0 || c >= viewCols)
+		if (x + pwc * sCell <= 0 || x >= DX)
 			continue;
 
-		const int x = boardX + c * sCell;
 		const int y = storeBot + ((int)gLoadoutCatRow[i] + phc) * sCell;
 		const int w = pwc * sCell;
 		const int h = phc * sCell;
@@ -5423,8 +5489,8 @@ void LoadoutDraw(void)
 		const int bx = 24 * _2X;
 		const int by = storeBot - 4 * _2X;
 		const int kw = Max(12 * _2X, bw * viewCols / gLoadoutRowTotal);
-		const int kx = bx + (bw - kw) * gLoadoutRow
-		             / Max(1, gLoadoutRowTotal - viewCols);
+		const int kx = bx + (int)((bw - kw) * gLoadoutScrollPx
+		             / (float)Max(1, scrollMax));
 
 		SetAlpha(14);
 		MemRect(bx, by, bw, bh, 0xFFFFFF);

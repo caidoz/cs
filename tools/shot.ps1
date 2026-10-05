@@ -15,7 +15,9 @@ param(
     [int]$SettleMs = 2500,
     [int]$W = 0,
     [int]$H = 0,
-    [string]$Drag = ""
+    [string]$Drag = "",
+    [int]$DragSteps = 20,
+    [int]$DragStepMs = 40
 )
 
 $ErrorActionPreference = "Stop"
@@ -108,13 +110,13 @@ if ($Drag -ne "") {
     Start-Sleep -Milliseconds 300
     [Win]::mouse_event(0x0002, 0, 0, 0, [IntPtr]::Zero)
     Start-Sleep -Milliseconds 150
-    for ($i = 1; $i -le 20; $i++) {
+    for ($i = 1; $i -le $DragSteps; $i++) {
         [void][Win]::SetCursorPos(
-            $x1 + [int](($x2 - $x1) * $i / 20),
-            $y1 + [int](($y2 - $y1) * $i / 20))
-        Start-Sleep -Milliseconds 40
+            $x1 + [int](($x2 - $x1) * $i / $DragSteps),
+            $y1 + [int](($y2 - $y1) * $i / $DragSteps))
+        Start-Sleep -Milliseconds $DragStepMs
     }
-    Start-Sleep -Milliseconds 300
+    # 튕기려면 멈추지 않고 바로 떼야 한다. 여기서 쉬면 속도가 0 이 된다.
     [Win]::mouse_event(0x0004, 0, 0, 0, [IntPtr]::Zero)
     Start-Sleep -Milliseconds 400
 }
