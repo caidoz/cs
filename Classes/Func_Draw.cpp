@@ -1837,35 +1837,23 @@ static void GridWeaponShape(GridPart* p)
 	const int d = Max(0, Min(34, p->detail));
 	p->cells = 0;
 	if (p->type == ITEM_SWORD) {
-		//---- 검은 가늘다 ----
-		//
-		//전에는 그림판 크기(1x2 / 2x3 / 2x4)를 그대로 칸으로 썼다. 검은
-		//비스듬히 가늘어서 두 칸 폭을 잡아도 양옆이 빈다 - 안 쓰는 자리
-		//까지 값을 치르고 있었다. 그림 35 장을 재 보면 칸의 40% 가 빈다.
-		//
-		//가늘면 가는 대로 한 칸 폭으로 잡고, 길이로만 등급을 낸다.
-		//    ★1~2  1x3   3칸
-		//    ★3~5  1x4   4칸   창처럼 세로로 길다
-		//    ★6    3x3   5칸   날밑이 벌어진 십자
-		//
-		//맨 위만 벌어지는 것은, 자리를 두 배 내주고도 들고 갈 만한 것이
-		//끝에 하나쯤 있어야 하기 때문이다.
-		if (d >= 29) {
-			p->w = 3;
-			p->h = 3;
+		// The remodelling manifest defines each sword's actual canvas and
+		// occupied cells. Keep inventory placement identical to the art.
+		const SwordSpriteInfo* info = GetSwordSpriteInfo(d);
 
-			//bit(row * 4 + col), row 0 이 맨 아랫줄이다.
-			//    . O .   날
-			//    O O O   날밑 - 날과 손잡이 사이라 가운데가 벌어진다
-			//    . O .   손잡이
-			p->cells = (1u << 9)
-			         | (1u << 4) | (1u << 5) | (1u << 6)
-			         | (1u << 1);
-			return;
-		}
+		p->w = info ? info->cols : 1;
+		p->h = info ? info->rows : 2;
 
-		p->w = 1;
-		p->h = d >= 10 ? 4 : 3;
+		//---- 구멍은 그림에서 읽는다 ----
+		//
+		//manifest 의 cells 는 아직 서른다섯 자루가 다 0 이다. 그 사이에는
+		//그림을 재서 만든 표를 쓴다(tools/swords/build_cells.py). 칸이
+		//15% 미만 차면 안 쓰는 것으로 보는데, 다시 그린 검의 T 자는 빈
+		//칸이 0 이고 쓰는 칸이 30 이상이라 사이가 넓다.
+		//
+		//manifest 가 채워지면 그쪽이 이긴다 - 그림을 그린 쪽이 더 잘 안다.
+		p->cells = (info && info->cells) ? info->cells
+		         : (d >= 0 && d < 35 ? swordTileCells[d] : 0);
 		return;
 	}
 	if (p->type == ITEM_BOOMERANG) {
@@ -5758,8 +5746,8 @@ void LoadoutDraw(void)
 		if (x + gLoadoutStarWide[k] * sCell <= 0 || x >= DX)
 			continue;
 
-		DrawStar(ICON_STAR, Max(0, x) + 2 * _2X, storeTop + 20 * _2X,
-			k + 1, k + 1, k + 1, LEFT, false, 0.34f);
+		DrawStar(ICON_STAR, Max(0, x) + 2 * _2X, storeTop + 23 * _2X,
+			k + 1, k + 1, k + 1, LEFT, false, 0.62f);
 	}
 
 	gLoadoutSlotCnt = 0;
