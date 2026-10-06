@@ -242,6 +242,50 @@ void TitleKey(void)
 
 			RefreshStat(&ao[ROBIN]);
 
+			//---- 시험용: 장비를 전부 쥐어 준다 ----
+			//
+			//히어로마다 쓰는 장비가 다르다(검 / 총 / 부메랑, 투구 / 모자 /
+			//캡 …). 로빈 것만 주면 출정 준비에서 디아나나 맥스로 바꿨을 때
+			//보관함이 통째로 회색이 되어 들고 갈 것이 하나도 없다.
+			//
+			//GetItem 으로는 안 된다. 가방 칸이 성 단계로 묶여 있어서
+			//(INVEN_BASE_SLOT 40 + 성 18 x 4 = 112), 동료 64 를 빼면 빈
+			//칸이 쉰도 안 남는다. 271 점이 들어갈 자리가 없어 조용히
+			//버려진다. 시험용이므로 그 제한을 넘겨 배열에 바로 적는다.
+			{
+				int t, d, slot = 0;
+
+				for (t = 0; t < ITEM_GEM; t++) {
+					if (IsEquipItemType(t) == false)
+						continue;
+
+					const int cnt = (int)itemStartCnt[t + 1]
+					              - (int)itemStartCnt[t];
+
+					for (d = 0; d < cnt; d++) {
+						while (slot < TOTALINVENTORY
+							&& robin.inven[slot].type != EMPTY)
+							slot++;
+
+						if (slot >= TOTALINVENTORY)
+							break;
+
+						MakeItem(&robin.inven[slot], t, 1, GRADE_NORMAL,
+							d, EMPTY);
+						robin.inven[slot].count = 1;
+					}
+				}
+			}
+
+			//넣어 둔 것이 보이도록 칸도 같이 연다. GetItem 이 다음에
+			//불릴 때 성 단계로 다시 좁히지만, 시험 세이브에서는 이것으로
+			//충분하다 - 보관함은 배열 전체를 훑는다.
+			robin.maxInven = (unsigned short)TOTALINVENTORY;
+
+			//시험은 디아나로 시작한다. 출정 준비에서 셋 중 아무나 고를 수
+			//있으므로 이것은 시작 자리일 뿐이다.
+			curHero = DIANA;
+
 			//MakeItem(&ao[DIANA].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_INFERNO, 0);
 			//MakeItem(&ao[DIANA].equip[EQUIP_HELM], ITEM_HAT, 1, GRADE_NORMAL, ITEM_HAT_DRAGONSKULL, 0);
 			//MakeItem(&ao[DIANA].equip[EQUIP_ARMOR], ITEM_VEST, 1, GRADE_NORMAL, ITEM_VEST_QUEEN, 0);
