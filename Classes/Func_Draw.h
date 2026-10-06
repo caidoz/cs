@@ -91,6 +91,7 @@ bool LoadoutToggleAt(int invenIdx, int col, int row);	//끌어다 놓은 칸에 
 bool LoadoutMoveTo(int invenIdx, int col, int row);	//담긴 것의 자리만 옮긴다
 bool LoadoutRotate(int invenIdx);	//담긴 것을 90 도 돌린다
 void LoadoutPickBag(int n);			//가방에 놓인 것을 집는다
+void LoadoutPickHero(int hero);		//출정할 히어로를 고른다
 void LoadoutRelease(void);			//그 손을 뗀 순간
 void GridTestRelease(void);
 void GridTestToggle(void);

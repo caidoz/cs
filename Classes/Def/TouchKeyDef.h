@@ -497,6 +497,10 @@ typedef enum _touchFuncDef {
 	//깔린 "바깥을 누르면 닫는다" 가 먼저 걸려 띠를 밀려다 창이 닫힌다.
 	TOUCH_FUNC_LOADOUT_BAND,
 
+	//히어로 셋. 고르면 그 히어로의 장비로 보관함이 다시 깔린다.
+	TOUCH_FUNC_LOADOUT_HERO,
+	TOUCH_FUNC_LOADOUT_HERO_END = TOUCH_FUNC_LOADOUT_HERO + 3,
+
 	//가방에 놓인 장비. 집어서 빼거나 다른 칸으로 옮긴다.
 	TOUCH_FUNC_LOADOUT_BAGITEM,
 	TOUCH_FUNC_LOADOUT_BAGITEM_END = TOUCH_FUNC_LOADOUT_BAGITEM + LOADOUT_MAX,

@@ -3026,6 +3026,14 @@ void touchFunc(int func)
 		return;
 	}
 
+	//히어로를 고른다. 보관함이 그 히어로의 장비로 다시 깔린다.
+	if (func >= TOUCH_FUNC_LOADOUT_HERO
+		&& func < TOUCH_FUNC_LOADOUT_HERO + 3) {
+		LoadoutPickHero(func - TOUCH_FUNC_LOADOUT_HERO);
+		systemKey = 0;
+		return;
+	}
+
 	//가방에 놓인 장비를 집는다. 가방 밖으로 끌어내면 빠지고, 가방 안 다른
 	//칸에 놓으면 그리로 옮겨 간다.
 	if (func >= TOUCH_FUNC_LOADOUT_BAGITEM

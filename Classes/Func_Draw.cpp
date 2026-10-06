@@ -4,6 +4,9 @@
 #include "Func.h"
 #include "Text.h"
 #include "Data/SwordSprites.h"
+//검이 쓰는 칸. SwordSprites.h 는 도구가 통째로 덮어쓰므로 거기 두면
+//다시 뽑을 때마다 사라진다(실제로 두 번 사라졌다).
+#include "Data/SwordCells.inc"
 #include "Data/FoeGearData.h"
 #ifdef GAMEDEBUG
 #include "CastleModularDebug.h"
@@ -4433,6 +4436,26 @@ int LoadoutTab(void)
 	return gLoadoutTab;
 }
 
+//---- 히어로를 고른다 ----
+//
+//히어로마다 쓰는 장비가 다르다. 고르는 순간 보관함이 그 히어로의 것으로
+//다시 깔린다.
+//
+//들고 있던 것은 내려놓는다. 로빈의 검을 든 채 디아나로 바꾸면 들고 갈 수
+//없는 것을 든 채가 되는데, 그걸 화면에서 알아보기 어렵다.
+void LoadoutPickHero(int hero)
+{
+	if (hero < 0 || hero >= 3 || hero == curHero)
+		return;
+
+	curHero = hero;
+	gLoadoutCnt = 0;
+
+	//판이 통째로 바뀌므로 보던 자리는 맨 앞으로 돌린다. 밀린 양은
+	//LoadoutDraw 가 끝에 닿으면 알아서 자르므로 여기서는 안 건드린다.
+	gLoadoutRow = 0;
+}
+
 //탭은 이제 성급이다. 분류(무기 / 방어구 / 장신구)로 가르던 자리를
 //1성 ~ 6성이 쓴다 - 도감은 "무엇이 있나" 가 아니라 "이 등급에 무엇이
 //있나" 를 보는 것이고, 부위는 판에 깔린 모양으로 이미 구별된다.
@@ -5519,6 +5542,34 @@ void LoadoutDraw(void)
 	SetFontColor(COLOR_GREY);
 	sprintf(str, "성 %d칸 중  %d칸을 들고 간다", cell, LoadoutCellUsed());
 	CenterTextStrSolid(str, DX / 2, top - 38 * _2X, 0.52f);
+
+	//---- 히어로 셋 ----
+	//
+	//머리말 아래에 가로로 늘어놓는다. 지금 고른 것만 금빛이다.
+	{
+		static const char* kName[3] = { "로빈", "디아나", "맥스" };
+		const int bw = 46 * _2X;
+		const int bh = 16 * _2X;
+		const int by = top - 22 * _2X;
+		const int bx = DX / 2 - bw * 3 / 2;
+
+		for (int i = 0; i < 3; i++) {
+			const bool on = (curHero == i);
+			const int x = bx + i * bw;
+
+			SetAlpha(on ? 30 : 12);
+			MemRect(x, by, bw - 2 * _2X, bh, on ? 0x6A521A : 0x1A1A24);
+			SetAlpha(ALPHA_MAX);
+			MemRectFrame(x, by, bw - 2 * _2X, bh, on ? 0xFFD700 : 0x44485A);
+			SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
+			CenterTextStrSolid(kName[i], x + bw / 2 - _2X,
+				(int)((float)by - ((float)bh - FONT_HEIGHT * 0.5f) / 2), 0.5f);
+
+			if (!on)
+				SetRectPoint(x, by, bw - 2 * _2X, bh,
+					TOUCH_FUNC_LOADOUT_HERO + i);
+		}
+	}
 
 	//---- 자동 · 비우기 ----
 	{
