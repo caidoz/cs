@@ -1875,8 +1875,19 @@ static void GridWeaponShape(GridPart* p)
 			p->w = 3;
 			p->h = 3;
 
-			//가운데 한 칸(row 1, col 1)만 뺀 고리다.
-			p->cells = 0x777 & ~(1u << 5);
+			//---- 위쪽 두 모서리를 뺀다 ----
+			//
+			//처음에는 가운데를 뺀 고리로 잡았다. 부메랑이니 가운데가
+			//비겠거니 했는데, 그림 여섯 장을 재 보니 반대였다 - 가운데가
+			//64% 로 가장 꽉 차고 비는 것은 위쪽 두 모서리(17 / 24) 다.
+			//아래 두 모서리는 37 / 48 이라 쓰고 있다.
+			//
+			//    . O .
+			//    O O O
+			//    O O O
+			p->cells = (1u << 9)
+			         | (1u << 4) | (1u << 5) | (1u << 6)
+			         | (1u << 0) | (1u << 1) | (1u << 2);
 			return;
 		}
 
@@ -1896,26 +1907,28 @@ static void GridWeaponShape(GridPart* p)
 
 	//---- 총 ----
 	//
-	//총은 검과 달리 두 칸 폭을 실제로 쓴다(그림을 재면 2x3 이 꽉 찬다).
-	//다만 손잡이 쪽 모서리 하나가 비므로 그만큼 깎는다.
-	//    ★1~2  2x2             4칸
-	//    ★3~5  2x3 모서리 하나  5칸
-	//    ★6    2x3             6칸
+	// The inventory-only sprites match these silhouettes exactly. Keep the
+	// broad upper rows on tier 6 so its heavy muzzle remains visible.
+	//    ★1~2  2x2, 3 cells
+	//    ★3~5  2x3, 4 cells
+	//    ★6    2x4, 6 cells
 	if (d >= 29) {
 		p->w = 2;
-		p->h = 3;
+		p->h = 4;
+		p->cells = 0x3322; // top two rows full; lower right spine
 		return;
 	}
 
 	if (d >= 10) {
 		p->w = 2;
 		p->h = 3;
-		p->cells = 0x333 & ~(1u << 0);	//왼쪽 아래가 빈다
+		p->cells = 0x232; // top/right, middle/full, bottom/right
 		return;
 	}
 
 	p->w = 2;
 	p->h = 2;
+	p->cells = 0x23; // top/right, bottom/full
 }
 
 //---- 눕히기 ----
@@ -3085,7 +3098,9 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 	if (p->type == ITEM_SWORD || p->type == ITEM_GUN || p->type == ITEM_BOOMERANG) {
 		const int base = p->type == ITEM_SWORD ? COSTUME_WEAPON_ROBIN_IMG :
 			(p->type == ITEM_GUN ? COSTUME_WEAPON_DIANA_IMG : COSTUME_WEAPON_MAXX_IMG);
-		const int img = base + p->detail + 1;
+		const int img = p->type == ITEM_GUN
+			? INVENTORY_GUN_FIRST_IMG + p->detail
+			: base + p->detail + 1;
 		if (!sprite[img]) LoadImg(img);
 		if (sprite[img]) {
 			const int iw = (int)sprite[img]->getContentSize().width;
@@ -5552,13 +5567,17 @@ void LoadoutDraw(void)
 
 	//---- 히어로 셋 ----
 	//
-	//머리말 아래에 가로로 늘어놓는다. 지금 고른 것만 금빛이다.
+	//머리말 첫 줄의 오른쪽 끝에 붙인다. 왼쪽은 자동 / 비우기가 쓰고
+	//가운데는 "출정 준비" 가 쓴다.
+	//
+	//아래 줄에 두었더니 "출정 점수" 글자를 덮었다. 머리말 세 줄은 이미
+	//자리가 꽉 차 있어서, 줄을 더 쓰면 그만큼 칸 크기에서 깎인다.
 	{
 		static const char* kName[3] = { "로빈", "디아나", "맥스" };
-		const int bw = 46 * _2X;
+		const int bw = 36 * _2X;
 		const int bh = 16 * _2X;
-		const int by = top - 22 * _2X;
-		const int bx = DX / 2 - bw * 3 / 2;
+		const int by = top + 2 * _2X;
+		const int bx = DX - bw * 3 - 8 * _2X;
 
 		for (int i = 0; i < 3; i++) {
 			const bool on = (curHero == i);
