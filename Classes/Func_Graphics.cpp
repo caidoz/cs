@@ -55,17 +55,14 @@ void StageBgDebugDrawButton(void)
 	const int y = DY - 44 * _2X;
 	const int pick = StageBg::DebugRegionPick();
 
-	MemRect(x, y, w, h, pick >= 0 ? 0x402038 : 0x202838);
-	MemRectFrame(x, y, w, h, 0x8AD8FF);
-
 	if (pick >= 0)
 		sprintf(str, "배경 %d 고정", pick + 1);
 	else
 		sprintf(str, "배경 %d (판)", StageBg::CurRegion() + 1);
 
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid(str, x + w / 2, y - h + 6 * _2X, 0.42f);
-	SetRectPoint(x, y, w, h, TOUCH_FUNC_DEBUG_STAGEBG);
+	//붙잡아 둔 동안은 켜진 것으로 보인다. 색을 따로 쓰지 않는다 - 디버그
+	//버튼도 다른 버튼과 같은 것이어야 어느 것이 눌리는지 한눈에 읽힌다.
+	DrawUiButton(x, y, w, h, str, TOUCH_FUNC_DEBUG_STAGEBG, pick >= 0);
 }
 
 //배경이 지금까지 흘려보낸 거리. 바퀴가 이 거리를 굴러야 미끄러지지 않는다.
@@ -5733,6 +5730,18 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 }
 
 
+//버튼 안쪽 여백. 글자가 테두리에 닿으면 눌린 것처럼 보인다.
+#define UIBTN_PAD		(6 * _2X)
+//글자를 이보다 크게는 키우지 않는다. 짧은 글자가 혼자 커지면 줄이 안 맞는다.
+#define UIBTN_MAXZOOM	0.62f
+
+//그림 버튼의 원본 크기. DrawTouchLargeButton 이 늘 이 크기로 그린다.
+#define LARGEBTN_W		192.0f
+#define LARGEBTN_H		62.0f
+//그림 버튼은 네모 칩보다 크므로 글자도 그만큼 키운다. 배율에 곱해 쓴다 -
+//작게 그린 버튼에 큰 글자가 들어가면 안 된다.
+#define LARGEBTN_MAXZOOM	1.2f
+
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
 	//누르면 들어가고 떼면 튀어오른다. 배율만 곱하고 한가운데를 붙잡아
@@ -5751,10 +5760,29 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 
 	DrawImage(192, 62, 1, 1 + (color - FRAME_GREEN) * 63, x - gapX, y + gapY, false, false, false, false, false, drawZoom, sprite[BUTTON_IMG], BUTTON_IMG);
 
+	//글자는 그림 한가운데에 넣는다. 자리를 재는 기준이 넘겨받은 w / h 가
+	//아니라 192 x 62 다 - 그림은 w 와 무관하게 늘 그 크기로 그려지므로
+	//(바로 위 DrawImage), w 로 재면 w 가 192 가 아닌 자리에서 글자가
+	//비켜 앉는다. 상점 버튼(BUYBUTTON_X = 168)이 그랬다.
+	//
+	//크기도 여기서 정한다. 전에는 배율이 그림에 안 매여 있어서, 부르는
+	//쪽마다 ""을 넘기고 글자를 따로 찍는 일이 생겼다 - 그러면 또 가운데가
+	//어긋난다. DrawUiButton 과 같은 식으로 버튼 폭에 맞춰 스스로 줄인다.
+	if (text && text[0]) {
+		const float room = LARGEBTN_W * drawZoom - UIBTN_PAD * 2;
+		const float full = StringWidth(text, 1.0f);
+		const float cap = LARGEBTN_MAXZOOM * drawZoom;
+		float tz = (full > 0.0f) ? room / full : cap;
 
-	//SetFontColor(COLOR_BROWN);
-	DrawTextStr(text, x - gapX + ((float)w * drawZoom - StringWidth(text, drawZoom)) / 2, y + gapY - ((float)h / 2 * drawZoom + (float)(12) * drawZoom) / 2, 1.0f * drawZoom);
-	//SetFontColor(COLOR_WHITE);
+		if (tz > cap)
+			tz = cap;
+
+		CenterTextStrSolid(text,
+			(int)(x - gapX + LARGEBTN_W * drawZoom / 2),
+			(int)(y + gapY - (LARGEBTN_H * drawZoom - FONT_HEIGHT * tz) / 2),
+			tz);
+	}
+
 	if (func)
 		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
 
@@ -5773,11 +5801,6 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 //DrawTouchLargeButton 과 역할이 갈린다. 그쪽은 192x62 짜리 그림 버튼이고
 //이것은 아무 크기나 되는 네모 칩이다 - 탭, 토글, 디버그 버튼이 여기 든다.
 //======================================================================
-
-//버튼 안쪽 여백. 글자가 테두리에 닿으면 눌린 것처럼 보인다.
-#define UIBTN_PAD		(6 * _2X)
-//글자를 이보다 크게는 키우지 않는다. 짧은 글자가 혼자 커지면 줄이 안 맞는다.
-#define UIBTN_MAXZOOM	0.62f
 
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on, bool enabled)

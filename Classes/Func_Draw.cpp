@@ -5347,12 +5347,11 @@ static void LoadoutGoButtonDraw(void)
 	const int bx = DX / 2 - bw / 2;
 	const int by = LoadoutFootY() + 44 * _2X;
 
-	DrawTouchLargeButton(bx, by, 192, 62, "", TOUCH_FUNC_LOADOUT_GO,
-		FRAME_GREEN, (float)bw / 192.0f);
+	(void)bh;
 
 	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid("출 정", DX / 2,
-		(int)((float)by - ((float)bh - FONT_HEIGHT * 0.8f) / 2), 0.8f);
+	DrawTouchLargeButton(bx, by, 192, 62, "출 정", TOUCH_FUNC_LOADOUT_GO,
+		FRAME_GREEN, (float)bw / 192.0f);
 }
 
 //격자를 그린다. 맨 아래 줄이 화면에서도 아래다(row 0 이 바닥).
@@ -6846,8 +6845,13 @@ static void LobbyCastleArrowsDraw(void)
 	for (int side = 0; side < 2; ++side) {
 		const int x = side == 0 ? 3*_2X : DX-3*_2X-kCastleArrowW;
 		const int y = cy+kCastleArrowH/2;
-		MemRect(x, y, kCastleArrowW, kCastleArrowH, 0x18263D);
-		MemRectFrame(x, y, kCastleArrowW, kCastleArrowH, 0xE7BD4E);
+
+		//네모는 공용 버튼에 맡긴다. 누르는 자리는 이 함수가 아니라
+		//LobbyCastleArrowHit 이 GetRectPoint 로 따로 잡으므로 func 는 0 이다
+		//- 여기서 터치영역을 또 걸면 같은 자리에 둘이 겹친다.
+		DrawUiButton(x, y, kCastleArrowW, kCastleArrowH, "", 0);
+
+		//화살표는 글자가 아니라 점으로 찍는다. 글꼴에 없는 모양이다.
 		const int cx = x+kCastleArrowW/2;
 		for (int row = -6; row <= 6; ++row) {
 			const int half = 6-abs(row);

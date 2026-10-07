@@ -1227,23 +1227,20 @@ void StageRtDrawButton(void)
 
 	//룰렛이 돌아간 뒤에는 "전투 시작"이다. 고르기를 끝내고 다음 놈을
 	//세운다. 싸우는 중에는 자동전투를 켜고 끄는 버튼이다.
-	//DrawTouchLargeButton 은 192 x 62 그림을 zoom 만 곱해 그린다. 글자는
-	//넘겨준 w 로 가운데를 잡으므로, w 를 192 로 두고 배율로 크기를 맞춰야
-	//글자가 버튼 한가운데에 온다.
+	//DrawTouchLargeButton 은 192 x 62 그림을 zoom 만 곱해 그린다. w 를 192 로
+	//두고 배율로 크기를 맞춘다. 글자 자리와 크기는 버튼이 스스로 잡는다.
 	const bool offer = GridTestOfferOpen();
 	const float zoom = (float)w / 192.0f;
 
 	const char* label = offer ? "전투 시작" : (stageAutoBattle ? "멈춤" : "전투");
 
-	//글자는 버튼에 맡기지 않고 직접 화면 한가운데에 찍는다. 버튼 함수의
-	//글자 자리는 원본 그림(192)과 배율을 섞어 재는 탓에 가운데가 아니다.
-	DrawTouchLargeButton(x, y, 192, 62, "",
+	(void)h;
+
+	SetFontColor(COLOR_WHITE);
+	DrawTouchLargeButton(x, y, 192, 62, label,
 		offer ? TOUCH_FUNC_GRIDTEST_SKIP : TOUCH_FUNC_STAGE_AUTOBATTLE,
 		(offer || !stageAutoBattle) ? FRAME_GREEN : FRAME_RED,
 		zoom);
-
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid(label, DX / 2, y - h / 2 + 7 * _2X, 0.8f);
 }
 
 //======================================================================
