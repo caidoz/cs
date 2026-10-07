@@ -7,6 +7,8 @@
 //검이 쓰는 칸. SwordSprites.h 는 도구가 통째로 덮어쓰므로 거기 두면
 //다시 뽑을 때마다 사라진다(실제로 두 번 사라졌다).
 #include "Data/SwordCells.inc"
+#include "Data/InventoryBoomerangShapes.h"
+#include "Data/InventoryGunShapes.h"
 #include "Data/FoeGearData.h"
 #ifdef GAMEDEBUG
 #include "CastleModularDebug.h"
@@ -1860,75 +1862,26 @@ static void GridWeaponShape(GridPart* p)
 		return;
 	}
 	if (p->type == ITEM_BOOMERANG) {
-		//---- 부메랑은 고리다 ----
-		//
-		//전에는 그림판을 그대로 써서 3x3(9칸) 과 4x4(16칸) 이었다. 24 칸
-		//짜리 가방에서 하나가 16 칸이면 다른 것을 들 수가 없다. 맥스의
-		//무기 칸 합이 497 로 로빈(226)의 두 배가 넘었던 까닭이다.
-		//
-		//그림 35 장을 재 보면 42% 가 빈 칸이다 - 부메랑은 곡선이라
-		//네 모서리와 가운데가 안 찬다. 그 모양을 그대로 쓴다.
-		//    ★1~2  2x2        4칸
-		//    ★3~5  3x3 십자   5칸
-		//    ★6    3x3 고리   8칸   가운데만 빈다
-		if (d >= 29) {
-			p->w = 3;
-			p->h = 3;
-
-			//---- 위쪽 두 모서리를 뺀다 ----
-			//
-			//처음에는 가운데를 뺀 고리로 잡았다. 부메랑이니 가운데가
-			//비겠거니 했는데, 그림 여섯 장을 재 보니 반대였다 - 가운데가
-			//64% 로 가장 꽉 차고 비는 것은 위쪽 두 모서리(17 / 24) 다.
-			//아래 두 모서리는 37 / 48 이라 쓰고 있다.
-			//
-			//    . O .
-			//    O O O
-			//    O O O
-			p->cells = (1u << 9)
-			         | (1u << 4) | (1u << 5) | (1u << 6)
-			         | (1u << 0) | (1u << 1) | (1u << 2);
-			return;
-		}
-
-		if (d >= 10) {
-			p->w = 3;
-			p->h = 3;
-			p->cells = (1u << 9)
-			         | (1u << 4) | (1u << 5) | (1u << 6)
-			         | (1u << 1);
-			return;
-		}
-
-		p->w = 2;
-		p->h = 2;
+		// The inventory artwork and mask are generated together. The hollow
+		// follows each boomerang at 2x2, 2x3, and finally a 3x3 center ring.
+		const InventoryBoomerangShape& shape = kInventoryBoomerangShapes[d];
+		p->w = shape.cols;
+		p->h = shape.rows;
+		p->cells = shape.cells;
 		return;
 	}
 
 	//---- 총 ----
 	//
-	// The inventory-only sprites match these silhouettes exactly. Keep the
-	// broad upper rows on tier 6 so its heavy muzzle remains visible.
+	// The inventory-only sprites and occupied cells are generated together.
+	// Every gun is drawn as one piece so its barrel meets its grip.
 	//    ★1~2  2x2, 3 cells
 	//    ★3~5  2x3, 4 cells
 	//    ★6    2x4, 6 cells
-	if (d >= 29) {
-		p->w = 2;
-		p->h = 4;
-		p->cells = 0x3322; // top two rows full; lower right spine
-		return;
-	}
-
-	if (d >= 10) {
-		p->w = 2;
-		p->h = 3;
-		p->cells = 0x232; // top/right, middle/full, bottom/right
-		return;
-	}
-
-	p->w = 2;
-	p->h = 2;
-	p->cells = 0x23; // top/right, bottom/full
+	const InventoryGunShape& shape = kInventoryGunShapes[d];
+	p->w = shape.cols;
+	p->h = shape.rows;
+	p->cells = shape.cells;
 }
 
 //---- 눕히기 ----
@@ -3100,7 +3053,9 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			(p->type == ITEM_GUN ? COSTUME_WEAPON_DIANA_IMG : COSTUME_WEAPON_MAXX_IMG);
 		const int img = p->type == ITEM_GUN
 			? INVENTORY_GUN_FIRST_IMG + p->detail
-			: base + p->detail + 1;
+			: (p->type == ITEM_BOOMERANG
+				? INVENTORY_BOOMERANG_FIRST_IMG + p->detail
+				: base + p->detail + 1);
 		if (!sprite[img]) LoadImg(img);
 		if (sprite[img]) {
 			const int iw = (int)sprite[img]->getContentSize().width;
@@ -3188,6 +3143,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true)
 {
 	if (p->cells == 0) { GridTestDrawCard(p, x, y, w, h, alpha, box); return; }
+	// Gun sprites already have transparent pixels in every unused cell.
+	// Draw the whole gun once: separate scissor passes can leave a seam at a
+	// cell boundary when the inventory is rendered at a fractional scale.
+	const bool drawWholeSprite = p->type == ITEM_GUN;
+	if (drawWholeSprite) GridTestDrawCard(p, x, y, w, h, alpha, box);
 	const int cw = w / p->w;
 	const int ch = h / p->h;
 	for (int row = 0; row < p->h; ++row)
@@ -3195,9 +3155,11 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 			if (!GridPartCell(p, col, row)) continue;
 			const int cx = x + col * cw;
 			const int cy = y - (p->h - 1 - row) * ch;
-			SetSectionClip(cx, cy, cw, ch, false);
-			GridTestDrawCard(p, x, y, w, h, alpha, box);
-			UnSectionClip(false);
+			if (!drawWholeSprite) {
+				SetSectionClip(cx, cy, cw, ch, false);
+				GridTestDrawCard(p, x, y, w, h, alpha, box);
+				UnSectionClip(false);
+			}
 
 			//칸 테두리는 등급 색으로 늘 두른다. 어디까지가 한 점인지는
 			//판이 없어도 보여야 한다.
@@ -7722,8 +7684,20 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	}
 
 	// 3단계: 히어로. 성문 앞 한가운데. 자리와 크기만 잠깐 바꿔 그리고 되돌린다.
-	if (ao[ROBIN].active) {
-		OBJECT* hero = &ao[ROBIN];
+	//
+	//---- 고른 히어로가 선다 ----
+	//
+	//ao[ROBIN] 이 박혀 있었다. 출정 준비에서 디아나를 골라도 지휘대에는
+	//로빈이 서 있어, 누구로 나가는지가 화면에 안 보였다.
+	//
+	//셋 중 아직 깨어나지 않은 자리가 있을 수 있으므로, 안 서 있으면
+	//로빈으로 돌아간다 - 지휘대가 비는 것보다는 낫다.
+	{
+		const int pick = (curHero >= ROBIN && curHero < TOTALCHAR
+			&& ao[curHero].active) ? curHero : ROBIN;
+
+	if (ao[pick].active) {
+		OBJECT* hero = &ao[pick];
 		const float bx = hero->x, by = hero->y, bnx = hero->nx, bny = hero->ny, bz = hero->zoom;
 
 		hero->x = hero->nx = heroCenterX;
@@ -7737,6 +7711,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		DrawObj(hero);
 
 		hero->x = bx; hero->y = by; hero->nx = bnx; hero->ny = bny; hero->zoom = bz;
+	}
 	}
 }
 
