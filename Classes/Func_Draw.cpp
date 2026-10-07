@@ -3641,11 +3641,7 @@ void StageMapOverlayDraw(void)
 		const int bx = DX - w - 6 * _2X;
 		const int by = DY - 6 * _2X;
 
-		MemRect(bx, by, w, h, 0x442233);
-		MemRectFrame(bx, by, w, h, 0xCC6688);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("닫기", bx + w / 2, by - h + 4 * _2X, 0.6f);
-		SetRectPoint(bx, by, w, h, TOUCH_FUNC_STAGEMAP_CLOSE);
+		DrawUiButton(bx, by, w, h, "닫기", TOUCH_FUNC_STAGEMAP_CLOSE);
 	}
 
 	gTouchRectLocked = true;
@@ -7838,11 +7834,7 @@ void LobbyDraw(void)
 		const int funcs[] = { TOUCH_FUNC_POPUP_CASTLEMENU, TOUCH_FUNC_POPUP_CREWLIST };
 		for (int i = 0; i < 2; ++i) {
 			const int top = y - i * (h + 3 * _2X);
-			MemRect(x, top, w, h, 0x294976);
-			MemRectFrame(x, top, w, h, 0xC9A227);
-			SetFontColor(COLOR_WHITE);
-			CenterTextStrSolid(labels[i], x + w / 2, top - h / 2 + 5 * _2X, .68f);
-			SetRectPoint(x, top, w, h, funcs[i]);
+			DrawUiButton(x, top, w, h, labels[i], funcs[i]);
 		}
 	}
 	SetFontColor(COLOR_WHITE);

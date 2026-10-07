@@ -143,6 +143,10 @@ void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on = false, bool enabled = true);
 void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
 	bool on = false, bool enabled = true);
+
+//아이콘이 왼쪽에 붙는 같은 버튼. 글자를 비우면 아이콘만 한가운데에 놓는다.
+void DrawUiButtonIcon(int x, int y, int w, int h, int icon, const char* text,
+	int func, bool on = false, bool enabled = true);
 void DrawAlarmMark(int x, int y, int count, float zoom);
 void DrawPlusMark(int x, int y, float zoom);
 void DrawXMark(int x, int y, float zoom);

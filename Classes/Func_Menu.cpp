@@ -6841,11 +6841,7 @@ static void CodexPopupDraw(void)
 			const int bx = px + w - bw - 4 * _2X;
 			const int by = py - 4 * _2X;
 
-			MemRect(bx, by, bw, bw, 0x442233);
-			MemRectFrame(bx, by, bw, bw, 0xCC6688);
-			SetFontColor(COLOR_WHITE);
-			CenterTextStrSolid("X", bx + bw / 2, by - bw + 5 * _2X, 0.6f);
-			SetRectPoint(bx, by, bw, bw, TOUCH_FUNC_CODEX_CLOSE);
+			DrawUiButton(bx, by, bw, bw, "X", TOUCH_FUNC_CODEX_CLOSE);
 		}
 
 		gTouchRectLocked = true;
@@ -6891,30 +6887,16 @@ static void CodexDraw(int x, int y, float zoom)
 			const int tx = x + 8 * _2X + t * tw;
 			const bool on = (gCodexTab == t);
 
-			SetAlpha(on ? 30 : 14);
-			MemRect(tx, fy, tw - 2 * _2X, fh, on ? 0x2A3A5A : 0x14141F);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(tx, fy, tw - 2 * _2X, fh, on ? 0x99BBEE : 0x333344);
-			SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
-			CenterTextStrSolid(kCodexTabName[t], tx + tw / 2 - _2X,
-				(int)((float)fy - ((float)fh - FONT_HEIGHT * 0.46f) / 2), 0.46f);
-
-			if (on == false)
-				SetRectPoint(tx, fy, tw - 2 * _2X, fh, TOUCH_FUNC_CODEX_TAB + t);
+			DrawUiButton(tx, fy, tw - 2 * _2X, fh, kCodexTabName[t],
+				TOUCH_FUNC_CODEX_TAB + t, on, !on);
 		}
 
 		//안 얻은 것만
 		{
 			const int mx = x + DX - 8 * _2X - mw;
 
-			SetAlpha(gCodexMissOnly ? 30 : 14);
-			MemRect(mx, fy, mw, fh, gCodexMissOnly ? 0x5A2A2A : 0x14141F);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(mx, fy, mw, fh, gCodexMissOnly ? 0xEE9999 : 0x333344);
-			SetFontColor(gCodexMissOnly ? COLOR_WHITE : COLOR_GREY);
-			CenterTextStrSolid("미획득", mx + mw / 2,
-				(int)((float)fy - ((float)fh - FONT_HEIGHT * 0.46f) / 2), 0.46f);
-			SetRectPoint(mx, fy, mw, fh, TOUCH_FUNC_CODEX_MISS);
+			DrawUiButton(mx, fy, mw, fh, "미획득", TOUCH_FUNC_CODEX_MISS,
+				gCodexMissOnly);
 		}
 	}
 
@@ -7003,11 +6985,7 @@ void CodexOverlayDraw(void)
 		const int bx = DX - w - 6 * _2X;
 		const int by = DY - 6 * _2X;
 
-		MemRect(bx, by, w, h, 0x442233);
-		MemRectFrame(bx, by, w, h, 0xCC6688);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("닫기", bx + w / 2, by - h + 4 * _2X, 0.6f);
-		SetRectPoint(bx, by, w, h, TOUCH_FUNC_CODEX_CLOSE);
+		DrawUiButton(bx, by, w, h, "닫기", TOUCH_FUNC_CODEX_CLOSE);
 	}
 
 	CodexPopupDraw();

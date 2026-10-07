@@ -5823,6 +5823,50 @@ void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
 	DrawUiButton(x, y, w, h, TEXTPTR(textIdx), func, on, enabled);
 }
 
+//---- 아이콘이 붙는 버튼 ----
+//
+//아이콘을 왼쪽에, 글자를 그 오른쪽에 둔다. 글자만 있는 버튼과 같은 자리
+//계산을 쓰되 글자가 쓸 폭만 줄여 준다 - 둘을 따로 그리면 또 가운데가
+//어긋난다.
+//
+//글자를 비우면 아이콘만 한가운데에 놓는다.
+void DrawUiButtonIcon(int x, int y, int w, int h, int icon, const char* text,
+	int func, bool on, bool enabled)
+{
+	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
+	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
+
+	SetAlpha(on ? 30 : enabled ? 14 : 8);
+	MemRect(x, y, w, h, fill);
+	SetAlpha(ALPHA_MAX);
+	MemRectFrame(x, y, w, h, line);
+
+	//아이콘은 버튼 높이에 맞춘다. 글자가 없으면 한가운데, 있으면 왼쪽.
+	const float iz = (float)(h - UIBTN_PAD) / (float)ITEMICONSIZE;
+	const int iw = (int)(ITEMICONSIZE * iz);
+	const bool hasText = (text && text[0]);
+	const int ix = hasText ? x + UIBTN_PAD / 2 : x + (w - iw) / 2;
+
+	DrawIcon(icon, ix, y - (h - iw) / 2, iz, false, false, false, true);
+
+	if (hasText) {
+		//아이콘이 먹은 만큼 글자가 쓸 폭이 준다.
+		const float room = (float)(w - iw - UIBTN_PAD * 2);
+		const float full = StringWidth(text, 1.0f);
+		float zoom = (full > 0.0f) ? room / full : UIBTN_MAXZOOM;
+
+		if (zoom > UIBTN_MAXZOOM)
+			zoom = UIBTN_MAXZOOM;
+
+		SetFontColor(on ? COLOR_WHITE : enabled ? COLOR_GREY : COLOR_DARKGREY);
+		CenterTextStrSolid(text, x + iw / 2 + w / 2,
+			(int)((float)y - ((float)h - FONT_HEIGHT * zoom) / 2), zoom);
+	}
+
+	if (func && enabled)
+		SetRectPoint(x, y, w, h, func);
+}
+
 void DrawAlarmMark(int x, int y, int count, float zoom)
 {
 	DrawFrame(x, y, (float)(16 * _2X) * zoom, (float)(20 * _2X) * zoom, FRAME_RED);
