@@ -5735,8 +5735,14 @@ void DrawTouchButton(int x, int y, const char* text, int func)
 //글자를 이보다 크게는 키우지 않는다. 짧은 글자가 혼자 커지면 줄이 안 맞는다.
 #define UIBTN_MAXZOOM	0.62f
 
-//그림 버튼의 원본 크기. DrawTouchLargeButton 이 늘 이 크기로 그린다.
-#define LARGEBTN_W		192.0f
+//그림 버튼 한 칸의 진짜 크기.
+//
+//button.png 은 170 x 253 이고 색마다 63 씩 내려가며 넉 줄이 들어 있다.
+//테두리 한 줄을 빼면 한 칸은 168 x 62 다 - BUYBUTTON_X / BUYBUTTON_Y 가
+//그 값이다. 그런데 부르는 쪽 대부분이 192 를 넘기고 있었다. 텍스처가
+//170 밖에 없으니 실제로는 168 만 그려지고, 가운데만 192 로 재서 그림이
+//왼쪽으로 치우치고 글자는 그 위에서 또 오른쪽으로 밀렸다.
+#define LARGEBTN_W		168.0f
 #define LARGEBTN_H		62.0f
 //그림 버튼은 네모 칩보다 크므로 글자도 그만큼 키운다. 배율에 곱해 쓴다 -
 //작게 그린 버튼에 큰 글자가 들어가면 안 된다.
@@ -5758,18 +5764,28 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 	float gapX = (float)w * zoom * (press - 1.0f) / 2;
 	float gapY = (float)h * zoom * (press - 1.0f) / 2;
 
-	DrawImage(192, 62, 1, 1 + (color - FRAME_GREEN) * 63, x - gapX, y + gapY, false, false, false, false, false, drawZoom, sprite[BUTTON_IMG], BUTTON_IMG);
+	//부르는 쪽이 잡아 둔 자리(w x h)가 그림보다 넓으면 그 안의 한가운데에
+	//놓는다. 왼쪽에 붙여 그리면, 부르는 쪽은 w 로 화면 가운데를 맞췄는데
+	//정작 눈에 보이는 버튼은 왼쪽으로 치우쳐 보인다 - 출정 버튼이 그랬다.
+	const float boxW = (float)w * drawZoom;
+	const float boxH = (float)h * drawZoom;
+	const float padX = (boxW - LARGEBTN_W * drawZoom) / 2;
 
-	//글자는 그림 한가운데에 넣는다. 자리를 재는 기준이 넘겨받은 w / h 가
-	//아니라 192 x 62 다 - 그림은 w 와 무관하게 늘 그 크기로 그려지므로
-	//(바로 위 DrawImage), w 로 재면 w 가 192 가 아닌 자리에서 글자가
-	//비켜 앉는다. 상점 버튼(BUYBUTTON_X = 168)이 그랬다.
+	DrawImage((int)LARGEBTN_W, (int)LARGEBTN_H, 1, 1 + (color - FRAME_GREEN) * 63,
+		x - gapX + padX, y + gapY, false, false, false, false, false, drawZoom,
+		sprite[BUTTON_IMG], BUTTON_IMG);
+
+	//글자는 그 자리의 한가운데다. CenterTextStr 가 x 를 가운데로 보고
+	//스스로 좌우를 맞추므로, 여기서는 가운데 좌표만 주면 된다.
+	//
+	//Solid 가 아니라 CenterTextStr 다 - 이름과 달리 Solid 는 "테두리 없음"
+	//이라(Func_Text.cpp 의 DrawTextStrSystem 마지막 인자), 그림 버튼 위에
+	//얹으면 글자가 배경색에 묻힌다.
 	//
 	//크기도 여기서 정한다. 전에는 배율이 그림에 안 매여 있어서, 부르는
-	//쪽마다 ""을 넘기고 글자를 따로 찍는 일이 생겼다 - 그러면 또 가운데가
-	//어긋난다. DrawUiButton 과 같은 식으로 버튼 폭에 맞춰 스스로 줄인다.
+	//쪽마다 ""을 넘기고 글자를 따로 찍는 일이 생겼다 - 그러면 또 어긋난다.
 	if (text && text[0]) {
-		const float room = LARGEBTN_W * drawZoom - UIBTN_PAD * 2;
+		const float room = boxW - UIBTN_PAD * 2;
 		const float full = StringWidth(text, 1.0f);
 		const float cap = LARGEBTN_MAXZOOM * drawZoom;
 		float tz = (full > 0.0f) ? room / full : cap;
@@ -5777,9 +5793,9 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 		if (tz > cap)
 			tz = cap;
 
-		CenterTextStrSolid(text,
-			(int)(x - gapX + LARGEBTN_W * drawZoom / 2),
-			(int)(y + gapY - (LARGEBTN_H * drawZoom - FONT_HEIGHT * tz) / 2),
+		CenterTextStr(text,
+			(int)(x - gapX + boxW / 2),
+			(int)(y + gapY - (boxH - FONT_HEIGHT * tz) / 2),
 			tz);
 	}
 
