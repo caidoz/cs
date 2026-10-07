@@ -1874,10 +1874,8 @@ static void GridWeaponShape(GridPart* p)
 	//---- 총 ----
 	//
 	// The inventory-only sprites and occupied cells are generated together.
-	// Every gun is drawn as one piece so its barrel meets its grip.
-	//    ★1~2  2x2, 3 cells
-	//    ★3~5  2x3, 4 cells
-	//    ★6    2x4, 6 cells
+	// Every gun is drawn as one piece. Cell occupancy follows the actual
+	// silhouette, so no part is removed merely to meet a fixed cell count.
 	const InventoryGunShape& shape = kInventoryGunShapes[d];
 	p->w = shape.cols;
 	p->h = shape.rows;
@@ -3147,9 +3145,22 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 	// Draw the whole gun once: separate scissor passes can leave a seam at a
 	// cell boundary when the inventory is rendered at a fractional scale.
 	const bool drawWholeSprite = p->type == ITEM_GUN;
-	if (drawWholeSprite) GridTestDrawCard(p, x, y, w, h, alpha, box);
 	const int cw = w / p->w;
 	const int ch = h / p->h;
+	if (drawWholeSprite) {
+		if (box) {
+			SetAlpha(alpha);
+			for (int row = 0; row < p->h; ++row)
+				for (int col = 0; col < p->w; ++col) {
+					if (!GridPartCell(p, col, row)) continue;
+					MemRect(x + col * cw + _2X,
+						y - (p->h - 1 - row) * ch - _2X,
+						cw - 2 * _2X, ch - 2 * _2X, 0x1B1B2E);
+				}
+			SetAlpha(ALPHA_MAX);
+		}
+		GridTestDrawCard(p, x, y, w, h, alpha, false);
+	}
 	for (int row = 0; row < p->h; ++row)
 		for (int col = 0; col < p->w; ++col) {
 			if (!GridPartCell(p, col, row)) continue;
@@ -5543,19 +5554,9 @@ void LoadoutDraw(void)
 
 		for (int i = 0; i < 3; i++) {
 			const bool on = (curHero == i);
-			const int x = bx + i * bw;
 
-			SetAlpha(on ? 30 : 12);
-			MemRect(x, by, bw - 2 * _2X, bh, on ? 0x6A521A : 0x1A1A24);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(x, by, bw - 2 * _2X, bh, on ? 0xFFD700 : 0x44485A);
-			SetFontColor(on ? COLOR_WHITE : COLOR_GREY);
-			CenterTextStrSolid(kName[i], x + bw / 2 - _2X,
-				(int)((float)by - ((float)bh - FONT_HEIGHT * 0.5f) / 2), 0.5f);
-
-			if (!on)
-				SetRectPoint(x, by, bw - 2 * _2X, bh,
-					TOUCH_FUNC_LOADOUT_HERO + i);
+			DrawUiButton(bx + i * bw, by, bw - 2 * _2X, bh, kName[i],
+				TOUCH_FUNC_LOADOUT_HERO + i, on, !on);
 		}
 	}
 
@@ -5566,25 +5567,10 @@ void LoadoutDraw(void)
 		const int by = top + 2 * _2X;
 		const bool any = (gLoadoutCnt > 0);
 
-		SetAlpha(14);
-		MemRect(8 * _2X, by, bw, bh, 0x1A2A1A);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(8 * _2X, by, bw, bh, 0x88BB88);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("자동", 8 * _2X + bw / 2,
-			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
-		SetRectPoint(8 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_AUTO);
-
-		SetAlpha(any ? 14 : 8);
-		MemRect(52 * _2X, by, bw, bh, 0x2A1A1A);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(52 * _2X, by, bw, bh, any ? 0xBB8888 : 0x443333);
-		SetFontColor(any ? COLOR_WHITE : COLOR_GREY);
-		CenterTextStrSolid("비우기", 52 * _2X + bw / 2,
-			(int)((float)by - ((float)bh - FONT_HEIGHT * 0.48f) / 2), 0.48f);
-
-		if (any)
-			SetRectPoint(52 * _2X, by, bw, bh, TOUCH_FUNC_LOADOUT_CLEAR);
+		DrawUiButton(8 * _2X, by, bw, bh, "자동",
+			TOUCH_FUNC_LOADOUT_AUTO);
+		DrawUiButton(52 * _2X, by, bw, bh, "비우기",
+			TOUCH_FUNC_LOADOUT_CLEAR, false, any);
 	}
 
 	//보기를 갈아 끼우던 버튼은 없앴다. 이제 가방과 창고가 같이 보이므로
@@ -6421,11 +6407,7 @@ void GridTestDraw(void)
 			const int rx = DX - rw - 4 * _2X;
 			const int ry = StageShopSlotTop() + rh + 2 * _2X;
 
-			MemRect(rx, ry, rw, rh, 0x1B2E3A);
-			MemRectFrame(rx, ry, rw, rh, 0x5FA0B0);
-			SetFontColor(COLOR_WHITE);
-			CenterTextStrSolid("다시", rx + rw / 2, ry - rh / 2 - 4 * _2X, 0.5f);
-			SetRectPoint(rx, ry, rw, rh, TOUCH_FUNC_STAGE_REFRESH);
+			DrawUiButton(rx, ry, rw, rh, "다시", TOUCH_FUNC_STAGE_REFRESH);
 		}
 
 		//---- 나오는 몫 ----
@@ -6448,12 +6430,9 @@ void GridTestDraw(void)
 		if (gOfferOn) {
 			const bool canRoll = robin.gold >= STAGE_REROLL_GOLD;
 
-			MemRect(x, y, w, h, canRoll ? 0x2A2A3A : 0x1A1A22);
-			MemRectFrame(x, y, w, h, canRoll ? 0xC9A227 : 0x555566);
-			SetFontColor(canRoll ? COLOR_WHITE : COLOR_GREY);
 			sprintf(str, "%d 다시", STAGE_REROLL_GOLD);
-			CenterTextStrSolid(str, x + w / 2, y - h + 4 * _2X, 0.46f);
-			SetRectPoint(x, y, w, h, TOUCH_FUNC_STAGE_REROLL);
+			DrawUiButton(x, y, w, h, str, TOUCH_FUNC_STAGE_REROLL,
+				false, canRoll);
 		}
 
 		//---- 가진 골드 ----
@@ -6568,11 +6547,7 @@ void GridTestDraw(void)
 	x = 6 * _2X;
 	y = GridTopY() + GRIDTEST_HUDH - 2 * _2X;
 
-	MemRect(x, y, w, h, 0x442233);
-	MemRectFrame(x, y, w, h, 0xCC6688);
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid("접기", x + w / 2, y - h + 4 * _2X, 0.6f);
-	SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_TOGGLE);
+	DrawUiButton(x, y, w, h, "접기", TOUCH_FUNC_GRIDTEST_TOGGLE);
 
 	//덮개는 무엇보다 위다. 열려 있을 때만 그린다.
 	StageMapOverlayDraw();
@@ -6906,11 +6881,8 @@ static void LobbyCastleToggleDraw(void)
 	const int x = LobbyCastleToggleX();
 	const int y = LobbyCastleToggleY();
 
-	MemRect(x, y, kCastleToggleW, kCastleToggleH, 0x1B2E3A);
-	MemRectFrame(x, y, kCastleToggleW, kCastleToggleH, 0x5FA0B0);
-	SetFontColor(COLOR_WHITE);
 	sprintf(str, "성 %d", Max(0, Min(robin.castle, 9)));
-	CenterTextStrSolid(str, x + kCastleToggleW / 2, y - kCastleToggleH + 5 * _2X, 0.5f);
+	DrawUiButton(x, y, kCastleToggleW, kCastleToggleH, str, 0);
 }
 
 static void LobbyCastleButtonsDraw(void)
@@ -6923,14 +6895,8 @@ static void LobbyCastleButtonsDraw(void)
 		const int btnY = LobbyCastleBtnItemY(n);
 		const bool selected = (curCastle == n);
 
-		MemRect(btnX, btnY, kCastleBtnW, kCastleBtnH, selected ? 0x6A521A : 0x1A1E2E);
-		MemRectFrame(btnX, btnY, kCastleBtnW, kCastleBtnH, selected ? 0xFFD700 : 0x485275);
-		if (selected) {
-			MemRectFrame(btnX + 1, btnY - 1, kCastleBtnW - 2, kCastleBtnH - 2, 0xFFE680);
-		}
-		SetFontColor(selected ? COLOR_WHITE : COLOR_GREY);
 		sprintf(str, "%d", n);
-		CenterTextStrSolid(str, btnX + kCastleBtnW / 2, btnY - kCastleBtnH + 4 * _2X, selected ? 0.65f : 0.55f);
+		DrawUiButton(btnX, btnY, kCastleBtnW, kCastleBtnH, str, 0, selected);
 	}
 }
 
@@ -7216,11 +7182,8 @@ static void LobbyZoomButtonsDraw(void)
 		const int y = LobbyZoomBtnItemY(n);
 		const bool held = gLobbyZoomHold == (n == 0 ? -1 : +1);
 
-		MemRect(x, y, kLobbyZoomBtnW, kLobbyZoomBtnH, held ? 0x5A4A20 : 0x202030);
-		MemRectFrame(x, y, kLobbyZoomBtnW, kLobbyZoomBtnH, 0xC9A227);
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid(n == 0 ? "축소" : "확대",
-			x + kLobbyZoomBtnW / 2, y - kLobbyZoomBtnH + 5 * _2X, 0.5f);
+		DrawUiButton(x, y, kLobbyZoomBtnW, kLobbyZoomBtnH,
+			n == 0 ? "축소" : "확대", 0, held);
 	}
 
 	sprintf(str, "x%.2f", gLobbyCamZoom);

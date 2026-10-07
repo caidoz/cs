@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #define BOX_OPEN_FRAME           10
 #define BOX_OPEN_CHANGE_FRAME     6
 #define BOX_CLOSE_FRAME           8
@@ -131,6 +131,18 @@ void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, b
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom);
 void DrawTouchButton(int, int, const char*, int);
 void DrawTouchLargeButton(int, int, int, int, const char*, int, int, float zoom);
+
+//---- 글자가 꽉 차는 네모 버튼 ----
+//
+//버튼 · 글자 · 터치영역을 한 번에 그린다. 글자 크기는 버튼 안에 맞춰
+//스스로 정하므로 자리마다 배율을 눈대중으로 박을 일이 없다.
+//
+//    on       지금 고른 것인가 (금빛)
+//    enabled  누를 수 있는가 (false 면 터치영역도 안 잡는다)
+void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
+	bool on = false, bool enabled = true);
+void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
+	bool on = false, bool enabled = true);
 void DrawAlarmMark(int x, int y, int count, float zoom);
 void DrawPlusMark(int x, int y, float zoom);
 void DrawXMark(int x, int y, float zoom);

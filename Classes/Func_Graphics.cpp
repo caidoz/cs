@@ -834,6 +834,21 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
+		if (idx >= INVENTORY_HELM_ROBIN_FIRST_IMG && idx <= INVENTORY_HELM_LAST_IMG) {
+			const int hero = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) / 8;
+			const int item = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) % 8 + 1;
+			const char* names[] = { "robin", "diana", "maxx" };
+			fileName = "res/inventory_helm/" + std::string(names[hero]) + "_" + std::to_string(item) + ".png";
+			break;
+		}
+		if (idx >= INVENTORY_GUN_FIRST_IMG && idx <= INVENTORY_GUN_LAST_IMG) {
+			fileName = "res/inventory_gun/" + std::to_string(idx - INVENTORY_GUN_FIRST_IMG + 1) + ".png";
+			break;
+		}
+		if (idx >= INVENTORY_BOOMERANG_FIRST_IMG && idx <= INVENTORY_BOOMERANG_LAST_IMG) {
+			fileName = "res/inventory_boomerang/" + std::to_string(idx - INVENTORY_BOOMERANG_FIRST_IMG + 1) + ".png";
+			break;
+		}
 		temp = TEXT_IMGNAME_START + idx;
 
 		if (idx < MAP_TILE_IMG && idx >= ROBIN_PART_IMG) {
@@ -1009,7 +1024,7 @@ void DrawSwordAtHand(int detail, float x, float y, float rotation, bool flipX, f
 	if (!sprite[img]) return;
 	const float anchorX = info->pivotX / info->width;
 	RotateImage(info->width, info->height, 0, 0, (int)x, (int)y,
-		flipX, rotation, effect, alpha, zoom,
+		flipX, rotation, effect, alpha, zoom * info->handScale,
 		Vec2(flipX ? 1.0f - anchorX : anchorX, 1.0f - info->pivotY / info->height), sprite[img], img);
 }
 
@@ -1067,8 +1082,9 @@ bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 	if (!sprite[img]) return false;
 	if (alpha <= 0) return true;
 
-	const float imgW = 32.0f;
-	const float imgH = 64.0f;
+	const float imgW = sprite[img]->getContentSize().width;
+	const float imgH = sprite[img]->getContentSize().height;
+	if (imgW <= 0 || imgH <= 0) return false;
 	const float zoom = Min((float)w / imgW, (float)h / imgH);
 	DrawImage((int)imgW, (int)imgH, 0, 0,
 		x + (int)((w - imgW * zoom) / 2.0f), y - (int)((h - imgH * zoom) / 2.0f),
@@ -1097,8 +1113,9 @@ bool DrawBootsInBoxRot(int type, int detail, int x, int y, int w, int h, int alp
 	if (!sprite[img]) return false;
 	if (alpha <= 0) return true;
 
-	const float imgW = 32.0f;
-	const float imgH = 64.0f;
+	const float imgW = sprite[img]->getContentSize().width;
+	const float imgH = sprite[img]->getContentSize().height;
+	if (imgW <= 0 || imgH <= 0) return false;
 	const float zoom = Min((float)w / imgH, (float)h / imgW);
 	RotateImage((int)imgW, (int)imgH, 0, 0, x + w / 2, y - h / 2,
 		false, 90.0f, 0, alpha, zoom, Vec2(0.5f, 0.5f), sprite[img], img);
@@ -5741,6 +5758,69 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 	if (func)
 		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
 
+}
+
+//======================================================================
+// 글자가 꽉 차는 네모 버튼
+//
+//버튼과 글자를 따로 그리면 가운데가 안 맞고 크기도 제각각이 된다. 실제로
+//소스 곳곳에서 MemRect + MemRectFrame + CenterTextStrSolid 를 손으로 맞춰
+//두었는데, 자리마다 배율을 눈대중으로 박아 글자가 작거나 치우쳐 있었다.
+//
+//하나로 모은다. 글자 크기는 버튼 안에 맞춰 스스로 정한다 - 길면 줄이고
+//짧으면 키워, 어느 버튼이든 같은 비율로 찬다. 터치영역도 여기서 잡는다.
+//
+//DrawTouchLargeButton 과 역할이 갈린다. 그쪽은 192x62 짜리 그림 버튼이고
+//이것은 아무 크기나 되는 네모 칩이다 - 탭, 토글, 디버그 버튼이 여기 든다.
+//======================================================================
+
+//버튼 안쪽 여백. 글자가 테두리에 닿으면 눌린 것처럼 보인다.
+#define UIBTN_PAD		(6 * _2X)
+//글자를 이보다 크게는 키우지 않는다. 짧은 글자가 혼자 커지면 줄이 안 맞는다.
+#define UIBTN_MAXZOOM	0.62f
+
+void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
+	bool on, bool enabled)
+{
+	//켜짐 / 꺼짐 / 못 누름. 색이 셋이어야 "지금 이것" 과 "누를 수 있음" 이
+	//따로 읽힌다.
+	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
+	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
+
+	SetAlpha(on ? 30 : enabled ? 14 : 8);
+	MemRect(x, y, w, h, fill);
+	SetAlpha(ALPHA_MAX);
+	MemRectFrame(x, y, w, h, line);
+
+	if (text && text[0]) {
+		//글자 폭이 버튼 안에 들어가는 가장 큰 배율. 1.0 으로 한 번 재서
+		//나눈다 - 폭은 배율에 비례한다.
+		const float room = (float)(w - UIBTN_PAD * 2);
+		const float full = StringWidth(text, 1.0f);
+		float zoom = (full > 0.0f) ? room / full : UIBTN_MAXZOOM;
+
+		if (zoom > UIBTN_MAXZOOM)
+			zoom = UIBTN_MAXZOOM;
+
+		SetFontColor(on ? COLOR_WHITE : enabled ? COLOR_GREY : COLOR_DARKGREY);
+
+		//세로 한가운데. y 는 윗변이라 글자 높이의 절반만큼 내린다.
+		CenterTextStrSolid(text, x + w / 2,
+			(int)((float)y - ((float)h - FONT_HEIGHT * zoom) / 2), zoom);
+	}
+
+	//못 누르는 버튼에 터치영역을 걸어 두면 눌리는 손맛만 나고 아무 일도
+	//안 일어난다.
+	if (func && enabled)
+		SetRectPoint(x, y, w, h, func);
+}
+
+//이름표에 든 글자로 그린다. 같은 글자를 여러 곳에서 쓸 때 문자열을
+//흩뿌리지 않는다.
+void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
+	bool on, bool enabled)
+{
+	DrawUiButton(x, y, w, h, TEXTPTR(textIdx), func, on, enabled);
 }
 
 void DrawAlarmMark(int x, int y, int count, float zoom)
