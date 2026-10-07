@@ -4886,28 +4886,92 @@ void SaveOption(void)
 #endif
 }
 
-void LoadHeroObj(int type)
+//---- 히어로를 아무 자리에나 세운다 ----
+//
+//전에는 자리와 히어로가 같은 번호였다(LoadHeroObj(1) 이면 늘 ao[1] 에
+//디아나). 그래서 0 번 자리에는 로빈밖에 못 섰는데, 싸울 때는 0 번 자리
+//하나만 쓴다(SetHero 의 playerCnt) - 디아나를 골라도 나가 싸우는 것은
+//로빈이었고 성의 지휘대에도 로빈이 섰다.
+//
+//자리(slot)와 누구(type)를 갈라 둔다. cmf 가 생김새이므로 그것만 type 을
+//따라가면 0 번 자리에 디아나가 선다.
+void LoadHeroObjAt(int slot, int type)
 {
-	ao[type].type = ao[type].cmf = type;
-	InitStat(&ao[type]);
-	memcpy(&ao[type].equip, &robin.charData[type].equip, sizeof(robin.charData[type].equip));
-	memcpy(&ao[type].hotKey, &robin.charData[type].hotKey, sizeof(robin.charData[type].hotKey));
-	memcpy(&ao[type].getSkillList, &robin.charData[type].getSkillList, sizeof(robin.charData[type].getSkillList));
-	ao[type].exps = robin.charData[type].exps;
-	ao[type].lv = 1;
-	LevelUpObj(&ao[type], ao[type].exps);
-	memcpy(&ao[type].skillLv, &robin.charData[type].skillLv, sizeof(robin.charData[type].skillLv));
-	RefreshStat(&ao[type]);
+	ao[slot].type = ao[slot].cmf = type;
+	InitStat(&ao[slot]);
+	memcpy(&ao[slot].equip, &robin.charData[type].equip, sizeof(robin.charData[type].equip));
+	memcpy(&ao[slot].hotKey, &robin.charData[type].hotKey, sizeof(robin.charData[type].hotKey));
+	memcpy(&ao[slot].getSkillList, &robin.charData[type].getSkillList, sizeof(robin.charData[type].getSkillList));
+	ao[slot].exps = robin.charData[type].exps;
+	ao[slot].lv = 1;
+	LevelUpObj(&ao[slot], ao[slot].exps);
+	memcpy(&ao[slot].skillLv, &robin.charData[type].skillLv, sizeof(robin.charData[type].skillLv));
+	RefreshStat(&ao[slot]);
 	//항상 hp는 최대값으로 채워준다.
-	ao[type].hp = robin.charData[type].hp = ao[type].ps[PS_HP];
-	ao[type].mp = robin.charData[type].mp;
-	ao[type].sp = robin.charData[type].sp;
+	ao[slot].hp = robin.charData[type].hp = ao[slot].ps[PS_HP];
+	ao[slot].mp = robin.charData[type].mp;
+	ao[slot].sp = robin.charData[type].sp;
 	//if (IsGetHero(type)) {
 	//	//InitBar(BAR_INVENTORY + type);
 	//	InitBar(BAR_SKILL + type);
 	//	//InitBar(BAR_PLAYERHP + type);
 	//}
 
+}
+
+void LoadHeroObj(int type)
+{
+	LoadHeroObjAt(type, type);
+}
+
+//0 번 자리에 설 히어로.
+//
+//IsGetHero 로 거르지 않는다. 그것은 레벨 문턱이고(디아나 99, 맥스 그 위)
+//출정 준비는 그와 무관하게 셋을 다 내준다. 거기서 고른 사람이 지휘대에
+//서는 사람이다 - 걸러 버리면 디아나를 골라 놓고 로빈이 서 있게 된다.
+//
+//문턱을 다시 세우려면 고르는 자리(LoadoutPickHero)에서 막아야 한다.
+//여기서 막으면 고른 것과 보이는 것이 어긋날 뿐이다.
+int PlayerHeroType(void)
+{
+	if (curHero >= ROBIN && curHero < TOTALCHAR)
+		return curHero;
+	return ROBIN;
+}
+
+//---- 히어로를 바꾼다 ----
+//
+//curHero 만 바꾸면 0 번 자리는 아까 그 사람이다. 그 자리가 성의 지휘대에
+//서고 판에 나가 싸우는 사람이므로(SetHero), 여기서 같이 갈아 끼운다.
+//
+//curHero 를 손으로 대입하던 곳이 셋이었다 - 출정 준비, 시험용 전체 지급,
+//단축키. 그중 시험용 지급은 GotoLobby 가 SetHero 를 부른 뒤에 돌아서,
+//지휘대에는 로빈이 선 채였다. 한 자리로 모아 그 순서를 안 타게 한다.
+//
+//서 있는 자리와 크기, 등장 연출은 건드리지 않는다. 다시 세우면 낙하
+//연출이 처음부터 다시 돈다.
+void SetPlayerHero(int hero)
+{
+	if (hero < ROBIN || hero >= TOTALCHAR)
+		return;
+
+	curHero = hero;
+
+	{
+		const int who = PlayerHeroType();
+		const float bx = ao[PLAYER].x, by = ao[PLAYER].y;
+		const float bnx = ao[PLAYER].nx, bny = ao[PLAYER].ny;
+		const float bz = ao[PLAYER].zoom, bdz = ao[PLAYER].defaultZoom;
+		const bool bActive = ao[PLAYER].active;
+
+		LoadHeroObjAt(PLAYER, who);
+
+		ao[PLAYER].x = bx; ao[PLAYER].y = by;
+		ao[PLAYER].nx = bnx; ao[PLAYER].ny = bny;
+		ao[PLAYER].zoom = bz; ao[PLAYER].defaultZoom = bdz;
+		ao[PLAYER].active = bActive;
+		ao[PLAYER].name = TEXT_MONSTERNAME_START + who;
+	}
 }
 
 void LoadOption(void)

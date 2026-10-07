@@ -4439,7 +4439,9 @@ void LoadoutPickHero(int hero)
 	if (hero < 0 || hero >= 3 || hero == curHero)
 		return;
 
-	curHero = hero;
+	//0 번 자리도 같이 갈아 끼운다. 그 자리가 성의 지휘대에 서고 판에
+	//나가 싸우는 사람이다(SetHero).
+	SetPlayerHero(hero);
 	gLoadoutCnt = 0;
 
 	//판이 통째로 바뀌므로 보던 자리는 맨 앞으로 돌린다. 밀린 양은
@@ -7192,6 +7194,7 @@ static void LobbyZoomButtonsDraw(void)
 		(int)skyHour, (int)(skyHour * 60) % 60);
 	CenterTextStrSolid(str, LobbyZoomBtnX(0) + kLobbyZoomBtnW / 2,
 		LobbyZoomBtnItemY(1) + 9 * _2X, 0.36f);
+
 }
 #endif
 
@@ -7650,17 +7653,16 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//
 	//---- 고른 히어로가 선다 ----
 	//
-	//ao[ROBIN] 이 박혀 있었다. 출정 준비에서 디아나를 골라도 지휘대에는
-	//로빈이 서 있어, 누구로 나가는지가 화면에 안 보였다.
+	//전에는 ao[curHero] 를 찾아 그렸다. 그런데 고른 히어로가 제 번호
+	//자리에서 안 깨어나 있으면 로빈으로 되돌아가, 디아나를 골라도
+	//지휘대에는 로빈이 서 있었다.
 	//
-	//셋 중 아직 깨어나지 않은 자리가 있을 수 있으므로, 안 서 있으면
-	//로빈으로 돌아간다 - 지휘대가 비는 것보다는 낫다.
+	//이제 0 번 자리가 곧 고른 히어로다(SetHero 의 PlayerHeroType). 찾을
+	//것 없이 그 자리를 그린다 - 나가 싸우는 것도 그 자리이므로, 지휘대에
+	//선 사람과 판에서 싸우는 사람이 저절로 같아진다.
 	{
-		const int pick = (curHero >= ROBIN && curHero < TOTALCHAR
-			&& ao[curHero].active) ? curHero : ROBIN;
-
-	if (ao[pick].active) {
-		OBJECT* hero = &ao[pick];
+	if (ao[PLAYER].active) {
+		OBJECT* hero = &ao[PLAYER];
 		const float bx = hero->x, by = hero->y, bnx = hero->nx, bny = hero->ny, bz = hero->zoom;
 
 		hero->x = hero->nx = heroCenterX;

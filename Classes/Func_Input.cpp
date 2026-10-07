@@ -284,7 +284,7 @@ void TitleKey(void)
 
 			//시험은 디아나로 시작한다. 출정 준비에서 셋 중 아무나 고를 수
 			//있으므로 이것은 시작 자리일 뿐이다.
-			curHero = DIANA;
+			SetPlayerHero(DIANA);
 
 			//MakeItem(&ao[DIANA].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_INFERNO, 0);
 			//MakeItem(&ao[DIANA].equip[EQUIP_HELM], ITEM_HAT, 1, GRADE_NORMAL, ITEM_HAT_DRAGONSKULL, 0);
@@ -2043,7 +2043,7 @@ void PlayKey(int obj)
 		case AVK_SELECT_HERO + ROBIN:
 		case AVK_SELECT_HERO + DIANA:
 		case AVK_SELECT_HERO + MAXX:
-			curHero = systemKey - AVK_SELECT_HERO;
+			SetPlayerHero(systemKey - AVK_SELECT_HERO);
 			//if (curMenu == MENU_COLLECTIONS)
 			//	scY[menuCur] = GetScrollDy(curMenu);
 			break;

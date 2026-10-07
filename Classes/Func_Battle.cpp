@@ -5500,8 +5500,21 @@ void SetHero(void)
 			memset(&ao[PLAYER + slot], 0, sizeof(OBJECT));
 	}
 
+	//---- 0 번 자리에는 고른 히어로가 선다 ----
+	//
+	//전에는 자리 번호가 곧 히어로 번호였다. 싸울 때는 0 번 자리 하나만
+	//쓰므로(바로 위 playerCnt) 디아나를 골라도 나가는 것은 늘 로빈이었고,
+	//성의 지휘대에 선 것도 로빈이었다.
+	//
+	//0 번만 갈아 끼운다. 1, 2 번 자리는 번호 그대로 둔다 - 메뉴 여기저기가
+	//ao[curHero] 로 제 히어로를 찾으므로(Func_Menu 의 장비창 · 스탯창)
+	//그 자리까지 섞으면 엉뚱한 사람의 장비가 뜬다.
+	const int player = PlayerHeroType();
+
 	//3명을 모두 세팅한다.
 	for (i = 0; i < playerCnt; i++) {
+		//이 자리에 설 사람. 0 번 자리만 고른 히어로다.
+		const int who = (i == 0) ? player : i;
 
 		//for (i = NEUTRAL; i < ITEMOBJ; i++) {
 		//	if (ao[i].type == OBJ_DOOR) {
@@ -5511,16 +5524,18 @@ void SetHero(void)
 		//		break;
 		//	}
 		//}
+		//0 번 자리는 레벨 문턱을 안 본다. 고른 사람이 거기 선다
+		//(PlayerHeroType 의 주석). 1, 2 번은 종전대로 깨어난 사람만.
 		//if (IsGetHero(i)) {
-		if (IsGetHero(i)) {
-			LoadHeroObj(i);
+		if (i == 0 || IsGetHero(who)) {
+			LoadHeroObjAt(PLAYER + i, who);
 
 			switch (drawHandle) {
 			//case MD_PLAY:
 			default:
 				ao[PLAYER + i].nx = ao[PLAYER + i].x = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 0];
 				ao[PLAYER + i].ny = ao[PLAYER + i].y = setHeroPos[castleOrder[robin.castle] * 2 * TOTALCHAR + i * 2 + 1];// doorY + TSIZE;
-				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[i] * HEROZOOM;
+				ao[PLAYER + i].defaultZoom = ao[PLAYER + i].zoom = heroZoom[who] * HEROZOOM;
 				ao[PLAYER + i].dirF = ao[PLAYER + i].dirX = RIGHT;
 				ao[PLAYER + i].moveHandler = REGENMOVE;
 				ao[PLAYER + i].drawHandler = REGENDRAW;
@@ -5537,7 +5552,7 @@ void SetHero(void)
 
 			InitStatue(&ao[PLAYER + i]);
 
-			ao[PLAYER + i].name = TEXT_MONSTERNAME_START + i;// +TEXT_NICKNAME + Random(100);
+			ao[PLAYER + i].name = TEXT_MONSTERNAME_START + who;// +TEXT_NICKNAME + Random(100);
 			//ao[PLAYER + i].active = true;
 			//SetEnemy(&ao[MAXPLAYER + i]);
 
