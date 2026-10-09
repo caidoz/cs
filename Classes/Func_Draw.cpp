@@ -7419,7 +7419,25 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	const float roomStackH = (float)(curCastle + 1) * 128.0f;
 	const float upperH = CastlePartsUpperH(curCastle + 1);
 	const float bodyLift = CastlePartsBodyLift(curCastle + 1);
-	const float partOffset = CastlePartsRoomInset(curCastle + 1) - 64.0f;
+	//---- 방은 조립 원점에서 늘 64 다 ----
+	//
+	//여기서 CastlePartsRoomInset(= LeftArmorW)을 쓰고 있었다. 그런데
+	//그리는 쪽(CastleModularDebug.h 의 DrawCastle)은 성급과 무관하게
+	//    roomLeft = left + 64 * scale
+	//로 방을 놓는다. 벽 장갑은 그 왼쪽으로 뻗을 뿐 방을 밀지 않는다.
+	//
+	//그래서 성이 커질수록 동료가 (LeftArmorW - 64) 만큼 오른쪽으로
+	//밀려났다 - 성 4 면 124 픽셀, 2 배로 보면 248 픽셀이다. 동료가 방을
+	//벗어나 오른쪽 벽 너머 계단과 지휘대에 섰고, 히어로는 성에서 떨어져
+	//나갔다.
+	//
+	//바로 아래 주석이 이미 맞는 값을 적어 두고 있었다("방 aperture 는
+	//x = 64..575").
+	//
+	//성 1 만 예외다. 조립할 때 왼쪽으로 96 들여 놓으므로(DrawCastle 의
+	//left) 그만큼 더해야 한다. LeftArmorW(0) 이 160 이라 옛 식이 96 을
+	//내놓아 성 1 은 우연히 맞아 있었다 - 그래서 성 1 만 보고는 못 찾는다.
+	const float partOffset = CastlePartsLeftInset(curCastle + 1);
 	const float heroV = curCastle == 0
 		? (upperH + roomStackH + 38.0f - bodyLift) / gLobbyCastleH // front cannon deck
 		: (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT - bodyLift)
