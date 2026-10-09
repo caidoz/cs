@@ -282,9 +282,9 @@ void TitleKey(void)
 			//충분하다 - 보관함은 배열 전체를 훑는다.
 			robin.maxInven = (unsigned short)TOTALINVENTORY;
 
-			//시험은 맥스로 시작한다. 출정 준비에서 셋 중 아무나 고를 수
+			//시험은 로빈으로 시작한다. 출정 준비에서 셋 중 아무나 고를 수
 			//있으므로 이것은 시작 자리일 뿐이다.
-			SetPlayerHero(MAXX);
+			SetPlayerHero(ROBIN);
 
 			//MakeItem(&ao[DIANA].equip[EQUIP_WEAPON], ITEM_GUN, 1, GRADE_NORMAL, ITEM_GUN_INFERNO, 0);
 			//MakeItem(&ao[DIANA].equip[EQUIP_HELM], ITEM_HAT, 1, GRADE_NORMAL, ITEM_HAT_DRAGONSKULL, 0);
