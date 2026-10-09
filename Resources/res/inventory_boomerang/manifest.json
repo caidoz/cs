@@ -1,0 +1,247 @@
+﻿[
+    {
+        "id":  1,
+        "cols":  2,
+        "rows":  2,
+        "cells":  50,
+        "lostPixels":  0
+    },
+    {
+        "id":  2,
+        "cols":  2,
+        "rows":  2,
+        "cells":  19,
+        "lostPixels":  16
+    },
+    {
+        "id":  3,
+        "cols":  2,
+        "rows":  2,
+        "cells":  51,
+        "lostPixels":  0
+    },
+    {
+        "id":  4,
+        "cols":  2,
+        "rows":  2,
+        "cells":  51,
+        "lostPixels":  0
+    },
+    {
+        "id":  5,
+        "cols":  2,
+        "rows":  2,
+        "cells":  19,
+        "lostPixels":  18
+    },
+    {
+        "id":  6,
+        "cols":  2,
+        "rows":  2,
+        "cells":  19,
+        "lostPixels":  37
+    },
+    {
+        "id":  7,
+        "cols":  2,
+        "rows":  2,
+        "cells":  50,
+        "lostPixels":  0
+    },
+    {
+        "id":  8,
+        "cols":  2,
+        "rows":  2,
+        "cells":  51,
+        "lostPixels":  0
+    },
+    {
+        "id":  9,
+        "cols":  2,
+        "rows":  2,
+        "cells":  51,
+        "lostPixels":  0
+    },
+    {
+        "id":  10,
+        "cols":  2,
+        "rows":  2,
+        "cells":  51,
+        "lostPixels":  0
+    },
+    {
+        "id":  11,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  12,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  13,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  14,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  15,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  16,
+        "cols":  2,
+        "rows":  3,
+        "cells":  803,
+        "lostPixels":  0
+    },
+    {
+        "id":  17,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  18,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  19,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  20,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  21,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  22,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  23,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  24,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  25,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  26,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  27,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  28,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  29,
+        "cols":  2,
+        "rows":  3,
+        "cells":  819,
+        "lostPixels":  0
+    },
+    {
+        "id":  30,
+        "cols":  3,
+        "rows":  3,
+        "cells":  1911,
+        "lostPixels":  0
+    },
+    {
+        "id":  31,
+        "cols":  3,
+        "rows":  3,
+        "cells":  1911,
+        "lostPixels":  0
+    },
+    {
+        "id":  32,
+        "cols":  3,
+        "rows":  3,
+        "cells":  626,
+        "lostPixels":  3
+    },
+    {
+        "id":  33,
+        "cols":  3,
+        "rows":  3,
+        "cells":  1911,
+        "lostPixels":  0
+    },
+    {
+        "id":  34,
+        "cols":  3,
+        "rows":  3,
+        "cells":  1911,
+        "lostPixels":  0
+    },
+    {
+        "id":  35,
+        "cols":  3,
+        "rows":  3,
+        "cells":  1911,
+        "lostPixels":  0
+    }
+]

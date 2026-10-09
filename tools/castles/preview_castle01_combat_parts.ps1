@@ -19,8 +19,8 @@ try {
         Draw-Part ("castle_room_01_{0}.png" -f $stage) ($left+64) $roomTop
         Draw-Part ("castle_exterior/castle_01_wall_stage_{0}.png" -f $stage) $left $roomTop
         Draw-Part ("castle_exterior/castle_01_roof_stage_{0}.png" -f $stage) $left ($roomTop-256)
-        Draw-Part ("castle_mobility/castle_01_wheel_stage_{0}.png" -f $stage) ($left+64+128-64) ($bottom+96)
-        Draw-Part ("castle_mobility/castle_01_wheel_stage_{0}.png" -f $stage) ($left+64+384-64) ($bottom+96)
+        Draw-Part ("castle_mobility/castle_01_wheel_stage_{0}.png" -f $stage) ($left+64+128-64) ($bottom+80)
+        Draw-Part ("castle_mobility/castle_01_wheel_stage_{0}.png" -f $stage) ($left+64+384-64) ($bottom+80)
         Draw-Part ("castle_exterior/castle_01_cannon_stage_{0}.png" -f $stage) ($left+576) ($bottom-64)
     }
 } finally { $g.Dispose() }

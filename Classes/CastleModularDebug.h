@@ -6,8 +6,6 @@
 
 //배경이 지금까지 흘려보낸 거리(화면 픽셀). StageBackground 가 센다.
 float StageBgRailTravelPx(void);
-//성 본체보다 바퀴를 이만큼 덜 내린다. 둘의 내림값은 StageBackground 에 있다.
-float CastleWheelLiftPx(void);
 
 namespace CastleParts {
 struct Box { int x,y,w,h; };
@@ -47,6 +45,13 @@ static void DrawFixedAsset(int img,int sourceW,int sourceH,float x,float yTop,fl
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
  DrawImage(sourceW,sourceH,0,0,(int)std::lround(x),(int)std::lround(yTop),false,0,0,0,0,scale,sprite[img],img);
+}
+static void DrawFixedAssetRegion(int img,int sourceW,int sourceH,int sourceY,
+                                 float x,float yTop,float scale) {
+ if(!sprite[img]) LoadImg(img);
+ if(!sprite[img]) { missingAsset=true; return; }
+ DrawImage(sourceW,sourceH,0,sourceY,(int)std::lround(x),(int)std::lround(yTop),
+           false,0,0,0,0,scale,sprite[img],img);
 }
 static void DrawFixedAssetScale(int img,int sourceW,int sourceH,int x,int yTop,float scaleX,float scaleY) {
  if(!sprite[img]) LoadImg(img);
@@ -92,12 +97,6 @@ static int BaseAssetId(int castle,int stage) {
 static int WheelAssetId(int castle,int stage) {
  return CASTLE_WHEEL_FIRST_IMG+castle*6+stage;
 }
-static int HoverAssetId(int castle,int stage) {
- return CASTLE_HOVER_FIRST_IMG+(castle-6)*6+stage;
-}
-static int FlightBaseAssetId(int castle,int stage) {
- return CASTLE_FLIGHTBASE_FIRST_IMG+(castle-6)*6+stage;
-}
 static int Balcony01AssetId(int stage) {
  return CASTLE_BALCONY_01_FIRST_IMG+stage;
 }
@@ -116,6 +115,16 @@ static int RoofAssetId(int castle,int stage) {
  if(castle==1) return CASTLE_ROOF_02_FIRST_IMG+stage;
  return CASTLE_EXTERIOR_03_FIRST_IMG+(castle-2)*18+12+stage;
 }
+static int HollowAssetId(int castle,int stage) {
+ static const int first[9]={
+  CASTLE_02_HOLLOW_FIRST_IMG,CASTLE_03_HOLLOW_FIRST_IMG,
+  CASTLE_04_HOLLOW_FIRST_IMG,CASTLE_05_HOLLOW_FIRST_IMG,
+  CASTLE_06_HOLLOW_FIRST_IMG,CASTLE_07_HOLLOW_FIRST_IMG,
+  CASTLE_08_HOLLOW_FIRST_IMG,CASTLE_09_HOLLOW_FIRST_IMG,
+  CASTLE_10_HOLLOW_FIRST_IMG
+ };
+ return first[castle-1]+stage;
+}
 static void DrawAsset(int castle,int part,int level,float x,float yTop,float scale) {
  const int img=AssetId(castle,part,level);
  if(!sprite[img]) LoadImg(img);
@@ -123,52 +132,69 @@ static void DrawAsset(int castle,int part,int level,float x,float yTop,float sca
  const int partH=part==Roof?164+(castle+1)*92:(part==Mobility&&castle>=7?176:kPartH[part]);
  DrawImage(kPartW[part],partH,0,0,(int)x,(int)yTop,false,0,0,0,0,scale,sprite[img],img);
 }
-//첫 방의 밑변이 조립 밑변에서 얼마나 떠 있나. 바퀴성이든 부유성이든
-//같다.
-//
-//예전에는 바퀴성 104, 부유성 240 으로 갈렸다. 그러면 성 단계를 넘길 때
-//첫 방이 오르내려서 같은 성의 같은 층으로 안 읽힌다. 둘의 가운데인
-//172 로 모은다. 남는 아래 공간은 바퀴성은 커진 바퀴가, 부유성은 엔진과
-//불꽃이 채운다.
+// Distance from the assembly origin to the first room. Every castle now
+// uses wheels, so the floor/base/wheel seam shares one coordinate system.
 static const float kRoomStackLift=172.0f;
-static float NaturalLowerH(int castle) { return castle==0?236.0f:kRoomStackLift; }
-static float NaturalBodyLift(int castle) { return castle<6?16.0f:0.0f; }
+static float NaturalLowerH(int castle) { (void)castle; return 236.0f; }
+static float NaturalBodyLift(int castle) { (void)castle; return 16.0f; }
 static float NaturalUpperH(int castle) {
  static const float heights[10]={256.0f,220.0f,197.0f,340.0f,300.0f,320.0f,320.0f,320.0f,320.0f,330.0f};
  return heights[Max(0,Min(9,castle))];
 }
-static float HoverPhase() { return std::fmod((float)frame,180.0f)/180.0f; }
-static float HoverLift(int castle) {
- if(castle<6) return 0.0f;
- const float p=HoverPhase();
- return 6.0f-6.0f*std::cos(p*6.2831853f);
+static int LeftArmorW(int castle) {
+ return castle==0?160:140+12*(castle+1);
 }
-static float HoverThrust() {
- const float p=HoverPhase();
- return p<0.5f?std::sin(p*6.2831853f):0.10f+0.04f*std::sin(p*25.132741f);
+static int RightArmorW(int castle) {
+ return castle==0?160:110+10*(castle+1);
 }
-static void DrawHoverExhaust(int castle,float x,float yTop,float scale) {
- const int img=castle==6?CASTLE_07_EXHAUST_IMG:(castle==7?CASTLE_08_EXHAUST_IMG:(castle==8?CASTLE_09_EXHAUST_IMG:CASTLE_HOVER_EXHAUST_10_IMG));
- if(!sprite[img]) LoadImg(img);
- if(!sprite[img]) { missingAsset=true; return; }
- const float thrust=Max(0.0f,HoverThrust());
- // Keep the effect in the same authored 512x128 coordinate system as the
- // engine hull.  Stretching only Y made the nozzle centers and attachment
- // seam drift whenever the castle zoom changed.
- const int alpha=(int)(18.0f+14.0f*thrust);
- DrawImageScale(512,128,0,0,(int)x,(int)yTop,false,0,0,1,alpha,scale,scale,sprite[img],img);
+static float CannonGrowth(int castle,int stage) {
+ return (1.0f+0.135f*castle)*(0.82f+0.036f*stage);
 }
-static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
+static float NaturalCastleW(int castle) {
+ if(castle==0) return 832.0f;
+ // The prow cannon projects farther right as the castle grows. Include it
+ // in the camera bounds so the last castle does not lose its muzzle.
+ return LeftArmorW(castle)+544.0f+128.0f*CannonGrowth(castle,5);
+}
+// Room and wall rectangles meet at the same coordinate, but their artwork
+// has transparent edge pixels. A narrow material-colored backing closes the
+// resulting see-through seam without moving either sprite or covering rooms.
+static int WallRoomSeamColor(int castle) {
+ static const int colors[9]={
+  0x716B63, // stone and iron
+  0x864736, // red brick
+  0xB7AA8D, // limestone
+  0x47786D, // oxidized copper
+  0x4C3D3B, // black iron
+  0xA0C6D5, // ice
+  0x655078, // amethyst
+  0x494047, // obsidian
+  0xCDBF9D  // celestial marble
+ };
+ return colors[Max(0,Min(8,castle-1))];
+}
+static void DrawWallRoomSeamBacking(int castle,float roomLeft,float bottom,
+                                    float scale,int wallH) {
+ const int yTop=(int)std::lround(bottom+wallH*scale);
+ const int yBottom=(int)std::lround(bottom);
+ const int roomLeftPx=(int)std::lround(roomLeft);
+ const int roomRightPx=(int)std::lround(roomLeft+512.0f*scale);
+ const int outer=(int)std::ceil(32.0f*scale);
+ const int inner=(int)std::ceil(20.0f*scale);
+ const int color=WallRoomSeamColor(castle);
+ MemRect(roomLeftPx-outer,yTop,outer+inner,yTop-yBottom,color);
+ MemRect(roomRightPx-inner,yTop,outer+inner,yTop-yBottom,color);
+}
+static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
+                       bool centerOnWheelAxis=false) {
  castle=Max(0,Min(CastleCount-1,castle));
  const int floorCount=castle+1;
  const int stage=roomStage[castle];
  const float lowerH=NaturalLowerH(castle);
  const float upperH=NaturalUpperH(castle);
- // 64px side shell + 512px room + 64px side shell, followed by the
- // 160px exposed portion of the 192px commander deck (32px overlaps).
- // Castle 1 has a long cannon bow.  Give its left side the same spare width
- // so the room, rather than the asymmetric silhouette, is the origin.
- const float naturalW=castle==0?832.0f:736.0f;
+ // The 512px room is the shared origin. Its continuous outer armor and the
+ // growing cannon determine the camera bounds for each castle.
+ const float naturalW=NaturalCastleW(castle);
  const float scaleByW=(float)w/naturalW;
  const float scaleByH=(float)h/(128.0f*floorCount+lowerH+upperH);
  float scale=Min(maxDrawW/512.0f,Min(scaleByW,scaleByH));
@@ -186,31 +212,31 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
  scale=Max(1.0f,std::floor(scale*128.0f+0.5f))/128.0f;
  const float castleW=naturalW*scale;
  const float castleH=(128.0f*floorCount+lowerH+upperH)*scale;
- const float left=x+(w-castleW)*0.5f+(castle==0?96.0f*scale:0.0f);
+ // The room midpoint is also the midpoint of the two wheel axles. Keep it
+ // fixed while the side armor and prow grow asymmetrically between castles.
+ // Lobby/battle pass a world-space assembly origin; the title preview passes
+ // a viewport whose center must stay on the same wheel axis at every grade.
+ const float left=centerOnWheelAxis
+  ? x+w*0.5f-320.0f*scale
+  : x+(w-castleW)*0.5f+(castle==0?96.0f:0.0f)*scale;
  const float roomLeft=left+64.0f*scale;
- const float lift=HoverLift(castle)*scale;
- const float assemblyBottom=yTop-h+(h-castleH)*0.5f+lift;
+ const float assemblyBottom=yTop-h+(h-castleH)*0.5f;
  // Raise every wheeled hull above its axle without moving the wheels off the rail.
  const float bottom=assemblyBottom+(lowerH+NaturalBodyLift(castle))*scale;
- if(castle>=6) {
-  // The flying castles use one thick hull/engine module.  Its top meets the
-  // first room at the same authored 512px seam; only the plume sits behind it.
-  // Sink the first 20 authored pixels into the engine mouths.  This removes
-  // the transparent seam while retaining a full 1:1 plume below the hull.
-  DrawHoverExhaust(castle,roomLeft,bottom-(castle==6 || castle==7 || castle==8?94.0f:108.0f)*scale,scale);
-  DrawFixedAsset(FlightBaseAssetId(castle,stage),512,128,roomLeft,bottom,scale);
- } else if(castle==0) {
-  // A continuous shallow combat deck and chassis starts directly below room 1.
-  DrawFixedAsset(CASTLE_01_COMBAT_DECK_FIRST_IMG+stage,736,160,left,bottom,scale);
- } else {
-  DrawFixedAsset(BaseAssetId(castle,stage),512,64,roomLeft,bottom,scale);
- }
+ // All castles have the same authored 736x144 combat deck below room 1.
+ // Its 512x64 chassis is already baked in, so a second base draw would
+ // leave a visible seam or a duplicate rim at different camera zooms.
+ const int deckImg=castle==0?CASTLE_01_COMBAT_DECK_FIRST_IMG+stage:
+  CASTLE_02_10_COMBAT_DECK_FIRST_IMG+(castle-1)*6+stage;
+ DrawFixedAsset(deckImg,736,144,castle==0?left:left-48.0f*scale,bottom,scale);
  // Quantize every shared edge once.  Rooms and side shells then use the same
  // integer floor rectangle, so camera zoom cannot open a one-pixel crack.
  const int shellLeftPx=(int)std::lround(left);
  const int shellRightPx=(int)std::lround(left+640.0f*scale);
  const int roomLeftPx=(int)std::lround(left+64.0f*scale);
  const int roomRightPx=(int)std::lround(left+576.0f*scale);
+ if(castle>0)
+  DrawWallRoomSeamBacking(castle,roomLeft,bottom,scale,floorCount*128);
  //배율이 128 분의 1 단위라 아래 자리들이 다 정수로 떨어진다. 가로
  //세로를 따로 잴 까닭이 없어졌다.
  (void)shellRightPx;
@@ -231,72 +257,56 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
   // A separate, increasingly elaborate timber crown; the room stays 512x128.
   DrawFixedAsset(CASTLE_ROOF_01_FIRST_IMG+stage,736,256,left,
                  bottom+(128.0f+256.0f)*scale,scale);
- } else if(castle==1) {
-  // Two-room stone fortress: one continuous crown and slim side walls.
-  DrawFixedAsset(CASTLE_02_HOLLOW_FIRST_IMG+stage,640,476,left,
-                 bottom+476.0f*scale,scale);
- } else if(castle==2) {
-  // One hollow exterior: all three floor apertures are exact 512x128
-  // transparent slots. The lion is a separate projecting foreground piece.
-  DrawFixedAsset(CASTLE_03_HOLLOW_FIRST_IMG+stage,640,581,left,
-                 bottom+581.0f*scale,scale);
- } else if(castle==3) {
-  // White stone and blue spires enclose four open rooms; the eagle is drawn
-  // separately at the lower front so it never masks the room passage.
-  DrawFixedAsset(CASTLE_04_HOLLOW_FIRST_IMG+stage,640,852,left,
-                 bottom+852.0f*scale,scale);
- } else if(castle==4) {
-  // Copper domes and machinery frame five unobstructed room apertures.
-  DrawFixedAsset(CASTLE_05_HOLLOW_FIRST_IMG+stage,640,940,left,
-                 bottom+940.0f*scale,scale);
- } else if(castle==5) {
-  // Dragon fortress surrounds six completely open room slots.
-  DrawFixedAsset(CASTLE_06_HOLLOW_FIRST_IMG+stage,640,1088,left,
-                 bottom+1088.0f*scale,scale);
- } else if(castle==6) {
-  // First flying castle: white crystal shell with seven open room slots.
-  DrawFixedAsset(CASTLE_07_HOLLOW_FIRST_IMG+stage,640,1216,left,
-                 bottom+1216.0f*scale,scale);
- } else if(castle==7) {
-  // Violet gothic shell surrounds eight unobstructed room slots.
-  DrawFixedAsset(CASTLE_08_HOLLOW_FIRST_IMG+stage,640,1344,left,
-                 bottom+1344.0f*scale,scale);
- } else if(castle==8) {
-  // Black-red dragon shell surrounds nine rooms; wings project off the left.
-  DrawFixedAsset(CASTLE_09_HOLLOW_FIRST_IMG+stage,640,1472,left,
-                 bottom+1472.0f*scale,scale);
-  DrawFixedAsset(CASTLE_09_WINGS_IMG,128,1152,left-100.0f*scale,
-                 bottom+1152.0f*scale,scale);
- } else if(castle==9) {
-  // The final royal sky palace frames ten unobstructed room slots.
-  DrawFixedAsset(CASTLE_10_HOLLOW_FIRST_IMG+stage,640,1610,left,
-                 bottom+1610.0f*scale,scale);
  } else {
-  DrawFixedAsset(RoofAssetId(castle,stage),512,342,roomLeft,
-                 bottom+(castle+1)*128.0f*scale+342.0f*scale,scale);
+  // One continuous flank on either side of the complete room stack. The
+  // opening is exactly 512px wide, so no wall pixel covers a room. Long
+  // castles use a second image above the first 1024px section.
+  const int wallH=floorCount*128;
+  const int crownH=(int)upperH;
+  const int lowerH=Min(1024,wallH);
+  const int upperWallH=wallH-lowerH;
+  const int leftWallW=LeftArmorW(castle);
+  const int rightWallW=RightArmorW(castle);
+  const int wallIndex=(castle-1)*12+stage*2;
+  DrawFixedAsset(CASTLE_WALL_PAIR_LOWER_FIRST_IMG+wallIndex,leftWallW,lowerH,
+                 roomLeft-leftWallW*scale,bottom+lowerH*scale,scale);
+  DrawFixedAsset(CASTLE_WALL_PAIR_LOWER_FIRST_IMG+wallIndex+1,rightWallW,lowerH,
+                 roomLeft+512.0f*scale,bottom+lowerH*scale,scale);
+  if(upperWallH>0) {
+   const int upperIndex=(castle-8)*12+stage*2;
+   DrawFixedAsset(CASTLE_WALL_PAIR_UPPER_FIRST_IMG+upperIndex,leftWallW,upperWallH,
+                  roomLeft-leftWallW*scale,bottom+wallH*scale,scale);
+   DrawFixedAsset(CASTLE_WALL_PAIR_UPPER_FIRST_IMG+upperIndex+1,rightWallW,upperWallH,
+                  roomLeft+512.0f*scale,bottom+wallH*scale,scale);
+  }
+  DrawFixedAsset(RoofAssetId(castle,stage),640,crownH,left,
+                 bottom+(wallH+crownH)*scale,scale);
+  if(castle==8)
+   DrawFixedAsset(CASTLE_09_WINGS_IMG,128,1152,left-100.0f*scale,
+                  bottom+1152.0f*scale,scale);
  }
  // Draw the wheels last.  The title screen buffer preserves visit order, so
  // this is the foreground pass over the lower hull.
  if(castle==0) {
   // The authored wheel is 128x128; its upper arc overlaps the lower hull.
   const float wheelScale=scale;
-  const float radiusPx=61.0f*wheelScale;
-  const float wheelY=bottom-160.0f*scale;
+  const float radiusPx=58.0f*wheelScale;
+  const float wheelY=bottom-147.0f*scale;
   const float wheelAngle=WheelAngleNow(radiusPx);
   DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
   DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
- } else if(castle<6) {
+ } else {
   //바퀴는 아래쪽 껍데기 밑단에 걸려 땅까지 닿는다. 크기를 숫자로 따로
   //주면 방 높이나 성 배율을 고칠 때마다 다시 맞춰야 하므로, 메워야 할
   //틈에서 거꾸로 구한다. 껍데기 밑단(kRoomStackLift-64)부터 땅(0)까지가
   //그 틈이고, 그 길이가 곧 바퀴의 보이는 지름이다.
   const float gap=kRoomStackLift-64.0f;
-  const float wheelPad=castle==0?2.0f:kWheelPad;
-  const float wheelScale=scale*gap/(128.0f-wheelPad*2.0f);
-  const float radiusPx=(64.0f-wheelPad)*wheelScale;
-  //본체는 더 내려앉히고 바퀴는 덜 내린다. 같이 내리면 바퀴가 선로
-  //아래로 파묻힌다.
-  const float wheelY=bottom-64.0f*scale;
+  const float wheelPad=castle==5?6.0f:kWheelPad;
+  // Castles 7-10 use padded 128px textures with a 108px visible rim.
+  const float wheelScale=castle>=6?scale*1.04f:scale*gap/(128.0f-wheelPad*2.0f);
+  const float radiusPx=castle>=6?54.0f*wheelScale:(64.0f-wheelPad)*wheelScale;
+  // The axle meets the lower edge of the new 144px combat deck.
+  const float wheelY=bottom-144.0f*scale;
   const float wheelAngle=WheelAngleNow(radiusPx);
   DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
   DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
@@ -306,25 +316,17 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW) {
  if(castle==0)
   DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG+stage,160,128,left+576.0f*scale,
                  bottom+64.0f*scale,scale);
- else
-  DrawFixedAsset(BalconyAssetId(castle,stage),192,128,roomLeft+480.0f*scale,
-                 bottom+128.0f*scale,scale);
- if(castle==2)
-  DrawFixedAsset(CASTLE_03_LION_IMG,128,160,left-82.0f*scale,
-                 bottom+160.0f*scale,scale);
- if(castle==3)
-  DrawFixedAsset(CASTLE_04_EAGLE_IMG,128,160,left-82.0f*scale,
-                 bottom+160.0f*scale,scale);
- if(castle==4) {
-  // The industrial gear and beast prow jut out independently of the room shell.
-  DrawFixedAsset(CASTLE_05_GEAR_IMG,128,160,left-90.0f*scale,
-                 bottom+628.0f*scale,scale);
-  DrawFixedAsset(CASTLE_05_BEAST_IMG,160,240,left-100.0f*scale,
-                 bottom+240.0f*scale,scale);
+ else {
+  const float balconyLeft=roomLeft+480.0f*scale;
+  const float balconyTop=bottom+128.0f*scale;
+  const int commandIndex=(castle-1)*6+stage;
+  DrawFixedAsset(CASTLE_COMMAND_PLATFORM_FIRST_IMG+commandIndex,192,128,
+                 balconyLeft,balconyTop,scale);
+  const float gunScale=CannonGrowth(castle,stage);
+  DrawFixedAsset(CASTLE_HEAVY_CANNON_FIRST_IMG+commandIndex,128,64,
+                 balconyLeft+64.0f*scale,
+                 balconyTop+(gunScale-1.0f)*64.0f*scale,scale*gunScale);
  }
- if(castle==5)
-  DrawFixedAsset(CASTLE_06_DRAGON_IMG,160,256,left-100.0f*scale,
-                 bottom+298.0f*scale,scale);
 }
 static void Button(int x,int y,int w,int h,const char* text,int command,float font) {
  MemRect(x,y,w,h,0x30464D); MemRectFrame(x,y,w,h,0xBD965C); SetFontColor(COLOR_WHITE);
@@ -339,8 +341,12 @@ void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
 void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- if(w) *w=castle==0?832.0f:736.0f;
+ if(w) *w=NaturalCastleW(castle);
  if(h) *h=(castle+1)*128.0f+NaturalLowerH(castle)+NaturalUpperH(castle);
+}
+float CastlePartsRoomInset(int castleLevel) {
+ using namespace CastleParts;
+ return (float)LeftArmorW(Max(1,Min(CastleCount,castleLevel))-1);
 }
 //성 1 은 조립할 때 왼쪽으로 96 만큼 들여 놓는다(DrawCastle 의 left).
 //대포 뱃머리가 오른쪽으로 길어서, 방을 기준으로 삼으려고 왼쪽에 같은
@@ -367,11 +373,11 @@ float CastlePartsBodyLift(int castleLevel) {
 float CastlePartsGroundOffset(int castleLevel) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- if(castle>=6) return -1.0f;
- if(castle==0) return NaturalLowerH(castle)+NaturalBodyLift(castle)-160.0f-61.0f;
+ if(castle==0) return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-61.0f;
+ if(castle>=6) return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-54.0f;
  const float wheelScale=(kRoomStackLift-64.0f)/(128.0f-2.0f*kWheelPad);
  const float radius=(64.0f-kWheelPad)*wheelScale;
- return NaturalLowerH(castle)+NaturalBodyLift(castle)-64.0f-radius;
+ return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-radius;
 }
 float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW / 512.0f; }
 //조립 네모의 밑변이 곧 땅에 닿는 줄이다. 바퀴가 딱 그 자리까지 내려오게
@@ -381,9 +387,8 @@ float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW
 //놓아야 했다. 바퀴를 키워 밖으로 꺼내면서 그 보정이 사라졌다.
 float CastlePartsWheelSink(void) { return 0.0f; }
 float CastlePartsFloatOffset(int castleLevel) {
- using namespace CastleParts;
- const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- return HoverLift(castle);
+ (void)castleLevel;
+ return 0.0f;
 }
 bool TitleCastleDebugCommand(int command) {
  using namespace CastleParts;
@@ -416,9 +421,9 @@ bool TitleCastleDebugDraw() {
  const int controlsH=2*(rowH+gap)+(int)(35*u),controlsTop=controlsH+(int)(12*u);
  char title[128]; sprintf(title,"%d번 성 / %d층 / %s",state.castle+1,state.castle+1,kThemes[state.castle]);
  SetFontColor(COLOR_WHITE); CenterTextStrSolid(title,xOffset+DX/2,DY-(int)(88*u),1.05f*u);
- CenterTextStrSolid("방 512 x 128 / 성1 전투갑판 736 x 160",xOffset+DX/2,DY-(int)(116*u),.68f*u);
+ CenterTextStrSolid("방 512 x 128 / 전투갑판 736 x 144",xOffset+DX/2,DY-(int)(116*u),.68f*u);
  const int artTop=DY-(int)(132*u),artBottom=controlsTop+(int)(8*u);
- missingAsset=false; DrawCastle(state.castle,xOffset+(int)(8*u),artTop,DX-(int)(16*u),Max((int)(80*u),artTop-artBottom),RoomDrawW);
+ missingAsset=false; DrawCastle(state.castle,xOffset+(int)(8*u),artTop,DX-(int)(16*u),Max((int)(80*u),artTop-artBottom),RoomDrawW,true);
  int y=controlsTop; char roomLabel[96];
  sprintf(roomLabel,"%d층 방   %s%d / +5   +",state.castle+1,roomStage[state.castle]?"+":"기본 ",roomStage[state.castle]);
  Button(buttonX,y,buttonW,rowH,roomLabel,TOUCH_FUNC_TITLE_CASTLE_ARMOR,.86f*u); y-=rowH+gap;
@@ -427,6 +432,6 @@ bool TitleCastleDebugDraw() {
  Button(buttonX+smallW+gap,y,smallW,rowH,"다음 성",TOUCH_FUNC_TITLE_CASTLE_PAUSE,.72f*u);
  Button(buttonX+2*(smallW+gap),y,smallW,rowH,"타이틀",TOUCH_FUNC_TITLE_CASTLE_CLOSE,.72f*u);
  SetFontColor(missingAsset?COLOR_RED:COLOR_WHITE);
- CenterTextStrSolid(missingAsset?"누락된 성 파츠 PNG":"방 + 외곽 + 전투갑판 + 포대 + 바퀴 / 6단계",xOffset+DX/2,y-rowH-(int)(7*u),.62f*u);
+ CenterTextStrSolid(missingAsset?"누락된 성 파츠 PNG":"방 + 외곽 + 첨탑 + 전투갑판 + 포대 + 바퀴 / 6단계",xOffset+DX/2,y-rowH-(int)(7*u),.62f*u);
  SetFontColor(COLOR_WHITE); return true;
 }

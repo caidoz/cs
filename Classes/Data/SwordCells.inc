@@ -27,16 +27,16 @@ static const unsigned short swordTileCells[35] = {
 	0x2722,	//w0_21  3x4 6칸  .O. OOO .O. .O.
 	0x000,	//w0_22  2x3 6칸  OO OO OO
 	0x000,	//w0_23  2x3 6칸  OO OO OO
-	0x722,	//w0_24  3x3 5칸  OOO .O. .O.
+	0x000,	//w0_24  2x3 6칸  OO OO OO
 	0x000,	//w0_25  2x3 6칸  OO OO OO
 	0x000,	//w0_26  2x4 8칸  OO OO OO OO
 	0x000,	//w0_27  2x3 6칸  OO OO OO
 	0x000,	//w0_28  2x3 6칸  OO OO OO
 	0x000,	//w0_29  2x3 6칸  OO OO OO
-	0x000,	//w0_30  2x3 6칸  OO OO OO
-	0x000,	//w0_31  2x3 6칸  OO OO OO
-	0x000,	//w0_32  2x3 6칸  OO OO OO
-	0x000,	//w0_33  2x3 6칸  OO OO OO
-	0x000,	//w0_34  2x3 6칸  OO OO OO
-	0x000,	//w0_35  2x3 6칸  OO OO OO
+	0x000,	//w0_30  2x4 8칸  OO OO OO OO
+	0x000,	//w0_31  2x4 8칸  OO OO OO OO
+	0x000,	//w0_32  2x4 8칸  OO OO OO OO
+	0x000,	//w0_33  2x4 8칸  OO OO OO OO
+	0x000,	//w0_34  2x4 8칸  OO OO OO OO
+	0x000,	//w0_35  2x4 8칸  OO OO OO OO
 };

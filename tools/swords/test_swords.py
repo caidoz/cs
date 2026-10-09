@@ -1,5 +1,4 @@
 """Validate lossless image migration and CMF sidecar integrity."""
-import hashlib
 import json
 import math
 import re
@@ -9,26 +8,26 @@ from build_sword_poses import ROOT, array, decode, signature
 
 
 class SwordTests(unittest.TestCase):
-    def test_all_35_sprites_preserve_pixels_and_alpha(self):
-        rows=json.loads((ROOT/'content/swords/sprites.json').read_text())
+    def test_all_35_sprites_match_remodelled_footprints(self):
+        rows=json.loads((ROOT/'content/swords/remodel/manifest.json').read_text(encoding='utf-8-sig'))
         self.assertEqual([s['id'] for s in rows],list(range(1,36)))
         for s in rows:
             with self.subTest(sword=s['id']):
                 path=ROOT/f'Resources/res/w0_{s["id"]}.png'
-                src=Image.open(ROOT/f'content/swords/source/w0_{s["id"]}.png').convert('RGBA')
                 dst=Image.open(path).convert('RGBA')
                 self.assertEqual(dst.size,(s['cols']*32,s['rows']*32))
-                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),s['sha256'])
-                x,y,w,h=s['contentRect']
-                self.assertTrue(0 <= dst.width-w < 32 and 0 <= dst.height-h < 32)
-                self.assertEqual((x,y),((dst.width-w)//2,(dst.height-h)//2))
-                restored=dst.crop((x,y,x+w,y+h)).transpose(Image.Transpose.ROTATE_270)
-                self.assertEqual(restored.tobytes(),src.crop(s['sourceRect']).tobytes())
-                self.assertEqual(sum(a>0 for a in dst.getchannel('A').tobytes()),
-                                 sum(a>0 for a in restored.getchannel('A').tobytes()))
+                self.assertEqual((s['width'],s['height']),dst.size)
+                self.assertGreater(sum(a>32 for a in dst.getchannel('A').getdata()),100)
+                for row in range(s['rows']):
+                    for col in range(s['cols']):
+                        occupied=not s['cells'] or bool(s['cells'] & (1<<(row*4+col)))
+                        tile=dst.crop((col*32,(s['rows']-row-1)*32,(col+1)*32,(s['rows']-row)*32))
+                        count=sum(a>32 for a in tile.getchannel('A').getdata())
+                        if occupied:self.assertGreater(count,0)
+                        else:self.assertEqual(count,0)
                 self.assertTrue(0<=s['pivotX']<dst.width and 0<=s['pivotY']<dst.height)
-                self.assertGreater(dst.getpixel((int(s['pivotX']),int(s['pivotY'])))[3],0)
-        self.assertEqual((rows[-1]['cols'],rows[-1]['rows']),(3,12))
+                self.assertGreater(s['handScale'],0)
+        self.assertEqual({s['shape'] for s in rows},{'1x2','1x3','1x4','Ttree','2x2','2x3','2x4'})
 
     def test_track_matches_cmf_and_covers_every_sword_motion(self):
         text=(ROOT/'Classes/Data/CmfBlob.cpp').read_text(encoding='utf-8-sig')

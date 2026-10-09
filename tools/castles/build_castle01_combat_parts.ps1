@@ -94,7 +94,7 @@ public static class Castle01CombatBake {
                 // Crop only the open combat space. The lower fascia comes from
                 // a wheel-free 512x64 authored base, so no fixed wheel fragment
                 // can remain under the two independently rotating sprites.
-                var deck=new Bitmap(736,160,PixelFormat.Format32bppArgb);
+                var deck=new Bitmap(736,144,PixelFormat.Format32bppArgb);
                 using(var open=Crop(sheet,s,new Rectangle(28,285,546,71),736,96))
                 using(var baseImg=new Bitmap(Path.Combine(res,"castle_mobility",
                     String.Format("castle_01_base_stage_{0}.png",s))))
@@ -105,7 +105,9 @@ public static class Castle01CombatBake {
                     using(var clear=new SolidBrush(Color.Transparent))
                         g.FillRectangle(clear,576,0,160,96);
                     g.CompositingMode=CompositingMode.SourceOver;
-                    g.DrawImageUnscaled(baseImg,64,96);
+                    // Sink the chassis top 16px behind the combat-floor art.
+                    // Several stages have transparent pixels at this seam.
+                    g.DrawImageUnscaled(baseImg,64,80);
                 }
                 Save(deck,Path.Combine(res,"castle_exterior",String.Format("castle_01_combat_deck_stage_{0}.png",s)));
 
@@ -124,4 +126,4 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
     (Join-Path $root 'tools/castles/concepts/castle_01_battle_deck_50_percent_taller.png'),
     (Join-Path $root 'Resources/res'),
     (Join-Path $root 'tools/castles/source_shells/castle_01_full.png'))
-Write-Host 'Built 6 stages of castle-1 roof 736x256, wall 736x128, deck 736x160, cannon 160x128, wheel 128x128.'
+Write-Host 'Built 6 stages of castle-1 roof 736x256, wall 736x128, deck 736x144, cannon 160x128, wheel 128x128.'

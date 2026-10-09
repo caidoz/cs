@@ -3141,10 +3141,10 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true)
 {
 	if (p->cells == 0) { GridTestDrawCard(p, x, y, w, h, alpha, box); return; }
-	// Gun sprites already have transparent pixels in every unused cell.
-	// Draw the whole gun once: separate scissor passes can leave a seam at a
+	// Gun and boomerang sprites already have transparent pixels in unused cells.
+	// Draw each sprite once: separate scissor passes can leave a seam at a
 	// cell boundary when the inventory is rendered at a fractional scale.
-	const bool drawWholeSprite = p->type == ITEM_GUN;
+	const bool drawWholeSprite = p->type == ITEM_GUN || p->type == ITEM_BOOMERANG;
 	const int cw = w / p->w;
 	const int ch = h / p->h;
 	if (drawWholeSprite) {
