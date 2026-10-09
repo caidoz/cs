@@ -1279,8 +1279,37 @@ static void StageFoeShotClear(void)
 	memset(stageGearPart, 0, sizeof(stageGearPart));
 }
 
-//한 자루를 날린다.
-static void StageFoeShotFire(int foe, int hit, int detail, int value)
+//---- 히어로 머리 위를 도는 검 ----
+//
+//가방의 검은 제 시계가 찰 때까지 아무 데도 없다가 갑자기 날아왔다.
+//무엇을 몇 자루 들고 싸우는지가 화면에 안 보이고, 날아오는 것이 어디서
+//나온 것인지도 안 읽힌다.
+//
+//차는 동안 머리 위를 돌게 한다. 몇 자루가 도는지가 곧 전투력이고,
+//시계가 차면 돌던 그 자리에서 떠난다.
+#define STAGE_ORBIT_RX		(34 * _2X)	//도는 둘레의 가로 반지름
+#define STAGE_ORBIT_RY		(11 * _2X)	//세로는 눌러 그린다. 비스듬히 보는 판이다
+#define STAGE_ORBIT_UP		(58 * _2X)	//머리에서 얼마나 띄울까
+//y 는 + 가 아래다. 띄우려면 빼야 한다 - 더했다가 검이 히어로 아래,
+//바닥 띠 옆에서 돌았다.
+#define STAGE_ORBIT_TURN	1.8f		//한 프레임에 도는 각도
+#define STAGE_SWORD_ZOOM	1.0f		//검 크기. 0.7 은 너무 작아 안 보였다
+
+//idx 번째 검이 지금 떠 있는 자리. cnt 자루가 고르게 벌어져 돈다.
+static void StageOrbitPos(int obj, int idx, int cnt, float* x, float* y)
+{
+	const float step = (cnt > 0) ? 360.0f / cnt : 0.0f;
+	const float deg = frame * STAGE_ORBIT_TURN + idx * step;
+	const float rad = CC_DEGREES_TO_RADIANS(deg);
+
+	*x = ao[obj].x + cos(rad) * STAGE_ORBIT_RX;
+	*y = ao[obj].y - STAGE_ORBIT_UP + sin(rad) * STAGE_ORBIT_RY;
+}
+
+//한 자루를 날린다. 떠난 자리를 따로 주면 거기서 나간다 - 머리 위를
+//돌던 검은 돌던 그 자리에서 떠나야 끊겨 보이지 않는다.
+static void StageFoeShotFireFrom(int foe, int hit, int detail, int value,
+	const float* fromX, const float* fromY)
 {
 	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
 		StageFoeShot* s = &stageFoeShotList[i];
@@ -1294,12 +1323,17 @@ static void StageFoeShotFire(int foe, int hit, int detail, int value)
 		s->foe = foe;
 		s->hit = hit;
 		s->frame = 0;
-		s->sx = ao[foe].x;
-		s->sy = ao[foe].y + 24 * _2X;
+		s->sx = fromX ? *fromX : ao[foe].x;
+		s->sy = fromY ? *fromY : ao[foe].y + 24 * _2X;
 		s->tx = ao[hit].x;
 		s->ty = ao[hit].y + 24 * _2X;
 		return;
 	}
+}
+
+static void StageFoeShotFire(int foe, int hit, int detail, int value)
+{
+	StageFoeShotFireFrom(foe, hit, detail, value, 0, 0);
 }
 
 //몬스터의 한 대를 검의 위력으로 바꿔 때린다. 히어로 쪽 StageRtSwordHit 과
@@ -1379,10 +1413,44 @@ static void StageFoeShotStep(void)
 	}
 }
 
+//머리 위를 도는 검을 그린다. 아직 안 날아간 것만이다.
+static void StageOrbitDraw(void)
+{
+	StageSword swords[GRIDTEST_MAXITEM];
+	const int cnt = GridTestSwords(swords, GRIDTEST_MAXITEM);
+
+	if (!ao[PLAYER].active || ao[PLAYER].dead)
+		return;
+
+	for (int k = 0; k < cnt; k++) {
+		float x, y;
+
+		StageOrbitPos(PLAYER, k, cnt, &x, &y);
+
+		const float sx = xOffset + x - rx;
+		const float sy = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry;
+
+		//도는 동안은 칼끝이 도는 쪽을 본다. 한 자리에 굳어 있으면
+		//떠 있는 것이 아니라 박혀 있는 것으로 보인다.
+		const float deg = frame * STAGE_ORBIT_TURN + k * (cnt ? 360.0f / cnt : 0.0f);
+
+		//시계가 다 차 번쩍이는 동안은 또렷하게. 차는 동안은 옅게 떠 있다.
+		const int slot = swords[k].slot;
+		const bool ready = (slot >= 0 && slot < GRIDTEST_MAXITEM)
+			&& stageSwordFlash[slot] > 0;
+
+		DrawSwordAtHand(swords[k].detail, sx, sy, deg, true,
+			STAGE_SWORD_ZOOM, ready ? ALPHA_MAX : ALPHA_MAX * 3 / 4, 0);
+	}
+}
+
 void StageFoeShotDraw(void)
 {
 	if (!IsStageRealtime())
 		return;
+
+	StageOrbitDraw();
+
 
 	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
 		const StageFoeShot* s = &stageFoeShotList[i];
@@ -1397,7 +1465,7 @@ void StageFoeShotDraw(void)
 		const float sx = xOffset + x - rx;
 		const float sy = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry;
 
-		DrawSwordAtHand(s->detail, sx, sy, -90.0f, true, 0.7f, ALPHA_MAX, 0);
+		DrawSwordAtHand(s->detail, sx, sy, -90.0f, true, STAGE_SWORD_ZOOM, ALPHA_MAX, 0);
 	}
 }
 
@@ -1674,9 +1742,14 @@ void UpdateStageRealtime(void)
 				continue;
 
 			//장착 검도 캐릭터 모션을 기다리지 않는다. 모든 검은 자기 시계가
-			//끝난 순간 히어로 위치에서 목표로 날아가며, 도착할 때 피해를 준다.
+			//끝난 순간 돌던 자리에서 목표로 날아가며, 도착할 때 피해를 준다.
 			//따라서 여러 검의 쿨타임과 연출이 서로를 막지 않는다.
-			StageFoeShotFire(PLAYER, foe, s->detail, s->value);
+			{
+				float ox, oy;
+
+				StageOrbitPos(PLAYER, k, swordCnt, &ox, &oy);
+				StageFoeShotFireFrom(PLAYER, foe, s->detail, s->value, &ox, &oy);
+			}
 
 			stageSwordCool[slot] = 0;
 			continue;

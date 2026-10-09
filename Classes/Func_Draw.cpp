@@ -4286,8 +4286,8 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	case ITEM_HELM: case ITEM_HAT: case ITEM_CAP:
 		out->w = 2; out->h = 2; break;
 	case ITEM_ARMOR: case ITEM_VEST: case ITEM_COAT:
-		// 세 계열 모두 0~3번은 64x64, 4~7번은 64x96 원본이다.
-		out->w = 2; out->h = it->detail >= 4 ? 3 : 2; break;
+		// 세 계열 모두 1~6단계는 2x2, 7~8단계만 2x3이다.
+		out->w = 2; out->h = it->detail >= 6 ? 3 : 2; break;
 	case ITEM_GUNTLET: case ITEM_ARMLET: case ITEM_GLOVE:
 		out->w = 2; out->h = 2; break;
 	case ITEM_KILT: case ITEM_SKIRT: case ITEM_PANTS:
@@ -5896,6 +5896,58 @@ void LoadoutDraw(void)
 	}
 }
 
+//---- 이 아이템이 들어갈 착용 칸 ----
+//
+//itemSlotEquip 이 칸마다 기준 종류를 준다. 무기 · 방어구는 히어로 셋이
+//나란히 묶여 있으므로(검 / 총 / 부메랑) 기준에서 셋 안이면 그 칸이다.
+//목걸이와 반지는 셋이 같이 쓰므로 기준 하나뿐이다.
+static int GridEquipSlotOfType(int type)
+{
+	for (int e = 0; e < TOTALEQUIP; e++) {
+		const int base = itemSlotEquip[e];
+
+		if (e < EQUIP_NECK) {
+			if (type >= base && type < base + TOTALCHAR)
+				return e;
+		}
+		else if (type == base)
+			return e;
+	}
+
+	return -1;
+}
+
+//---- 들고 들어온 것을 몸에 입힌다 ----
+//
+//출정 준비에서 고른 것이 그 판의 장비다. 그런데 가방에 넣기만 하고
+//몸에는 안 입혀서, 판에 선 히어로는 늘 맨몸에 밖에서 끼고 있던 것만
+//걸치고 있었다 - 무엇을 골랐는지가 화면에 안 보인다.
+//
+//스탯은 두 번 안 더해진다. StageGearApplyStat 이 가방의 것을 더할 때
+//같은 id 가 몸에 있으면 건너뛴다("두 번 더하지 않는다" 주석).
+//
+//같은 칸이 여럿이면 먼저 고른 것이 차지한다. 검을 둘 넣으면 한 자루만
+//손에 들고 나머지는 가방에서 날아간다.
+static void GridWearLoadout(void)
+{
+	OBJECT* hero = &ao[PLAYER];
+
+	for (int e = 0; e < TOTALEQUIP; e++)
+		hero->equip[e].type = EMPTY;
+
+	for (int i = 0; i < gLoadoutCnt; i++) {
+		const ITEM* it = &robin.inven[gLoadout[i]];
+		const int e = (it->type == EMPTY) ? -1 : GridEquipSlotOfType(it->type);
+
+		if (e < 0 || hero->equip[e].type != EMPTY)
+			continue;
+
+		hero->equip[e] = *it;
+	}
+
+	RefreshStat(hero);
+}
+
 static void GridPlaceGear(void)
 {
 	//---- 무엇을 들고 들어왔나 ----
@@ -5909,6 +5961,10 @@ static void GridPlaceGear(void)
 	int missed = 0;
 
 	gGridGearPending = false;
+
+	//고른 것을 몸에도 입힌다. 가방에만 넣으면 판에 선 히어로가 무엇을
+	//들고 왔는지 화면에 안 보인다.
+	GridWearLoadout();
 
 	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; ++i) {
 		const ITEM* it = &robin.inven[gLoadout[i]];
