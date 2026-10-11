@@ -852,7 +852,7 @@ bool Core::init()
 		LoadTexture(i);
 	}
 	//로비 성. 로비가 첫 화면이라 처음부터 읽어 둔다.
-	for (i = CASTLE0_IMG; i <= LOBBY_FOOTHILLS_IMG; i++) {
+	for (i = LOBBY_LANDSCAPE_IMG; i <= LOBBY_FOOTHILLS_IMG; i++) {
 		LoadImg(i);
 		LoadTexture(i);
 	}

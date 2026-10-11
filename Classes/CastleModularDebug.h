@@ -29,9 +29,9 @@ static int roomStage[CastleCount]={0,0,0,0,0,0,0,0,0,0};
 static bool active=false;
 static bool missingAsset=false;
 
-static int AssetId(int castle,int part,int level) {
- return MODCASTLE_V2_FIRST_IMG+castle*PartCount*LevelCount+part*LevelCount+level;
-}
+//옛 모듈러 조각(castle_parts/*)을 집던 AssetId 는 지웠다. 부르는 데가
+//없었고, 그림 250 장도 이미 없어서 이름표만 차지하고 있었다. 지금은
+//RoomV4 + 외장 파츠로 조립한다.
 static int RoomV4AssetId(int floor,int stage) {
  return CASTLE_ROOM_V4_FIRST_IMG+floor*6+stage;
 }
@@ -125,13 +125,8 @@ static int HollowAssetId(int castle,int stage) {
  };
  return first[castle-1]+stage;
 }
-static void DrawAsset(int castle,int part,int level,float x,float yTop,float scale) {
- const int img=AssetId(castle,part,level);
- if(!sprite[img]) LoadImg(img);
- if(!sprite[img]) { missingAsset=true; return; }
- const int partH=part==Roof?164+(castle+1)*92:(part==Mobility&&castle>=7?176:kPartH[part]);
- DrawImage(kPartW[part],partH,0,0,(int)x,(int)yTop,false,0,0,0,0,scale,sprite[img],img);
-}
+//옛 모듈러 조각을 그리던 DrawAsset 도 같이 지웠다. AssetId 와 마찬가지로
+//부르는 데가 없었다.
 // Distance from the assembly origin to the first room. Every castle now
 // uses wheels, so the floor/base/wheel seam shares one coordinate system.
 static const float kRoomStackLift=172.0f;

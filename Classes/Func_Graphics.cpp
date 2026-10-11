@@ -1184,7 +1184,7 @@ bool DrawArmorInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	const float imgW = 64.0f;
-	const float imgH = (d < 4) ? 64.0f : 96.0f;
+	const float imgH = (d < 6) ? 64.0f : 96.0f;
 
 	if (type == ITEM_ARMOR) {
 		img = ITEM_ARMOR_ROBIN0_IMG + d;
