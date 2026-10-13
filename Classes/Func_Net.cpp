@@ -232,6 +232,7 @@ static bool gHeroEffectLoaded = false;
 //---- robin 전체를 덤프 문자열로 ----
 static void NetBuildDump(std::string& out)
 {
+	CastleProgressEnsure();
 	int i, j;
 	char head[256];
 
@@ -305,6 +306,17 @@ static void NetBuildDump(std::string& out)
 	//---- player_flag ----
 	//켜진 것만 넣는다. 배열을 통째로 넣으면 대부분 0인 수백 행이 된다.
 	TableBegin("player_flag", "user_id\tflag_kind\tflag_idx\tvalue");
+	CastleProgressEnsure();
+	PutNum(gNetUserId); PutNum(7); PutNum(0); PutNum(1); RowEnd();
+	for(int c=0;c<10;++c) {
+		if(CastleMenuModel::Owned(robin.castleProgress,c)) {
+			PutNum(gNetUserId); PutNum(6); PutNum(c); PutNum(1); RowEnd();
+		}
+		for(int k=0;k<5;++k) {
+			PutNum(gNetUserId); PutNum(4); PutNum(c*5+k); PutNum(robin.castleProgress.parts[c][k]); RowEnd();
+			PutNum(gNetUserId); PutNum(5); PutNum(c*5+k); PutNum(robin.castleProgress.rooms[c][k]); RowEnd();
+		}
+	}
 
 	for (i = 0; i < TOTALDEMO; i++)
 		if (robin.demoSeen[i]) {
@@ -831,6 +843,7 @@ static bool NetParseDump(const std::string& text, NetTableMap& out,
 //---- 표 묶음을 robin에 붓는다 ----
 static void NetApplyDump(NetTableMap& tables)
 {
+	robin.castleProgress=CastleMenuModel::Progress();
 	NetTableMap::iterator it;
 	size_t r;
 	int i, j;
@@ -901,6 +914,10 @@ static void NetApplyDump(NetTableMap& tables)
 				continue;
 
 			switch (kind) {
+			case 4: if(idx<50) robin.castleProgress.parts[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
+			case 5: if(idx<50) robin.castleProgress.rooms[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
+			case 6: if(idx<10&&val) robin.castleProgress.owned|=1u<<idx; break;
+			case 7: if(idx==0&&val==1) robin.castleProgress.version=1; break;
 			case 0: if (idx < TOTALDEMO) robin.demoSeen[idx] = (val != 0); break;
 			case 1: if (idx < TOTAL_MENU) robin.openedMenu[idx] = (unsigned char)val; break;
 			case 2: if (idx < TOTAL_STATUE) robin.statue[idx] = (val != 0); break;
@@ -1323,6 +1340,41 @@ static void NetApplyDump(NetTableMap& tables)
 //   - revision을 검사해서 나중 것을 거절하고
 //   - 파일(=DB)에 원자적으로 쓴다
 //=============================================================================
+
+bool NetCastleProtocolSelfTest(void)
+{
+    // Runs before AppDelegate in the explicit test process, without account I/O.
+    for (int selected = 0; selected < CastleMenuModel::Count; ++selected) {
+        robin.castle = selected;
+        robin.gold = 987654321;
+        robin.coin = 43210;
+        auto& p = robin.castleProgress;
+        p.version = 1;
+        p.owned = 1023u;
+        for (int c = 0; c < CastleMenuModel::Count; ++c)
+            for (int i = 0; i < CastleMenuModel::Categories; ++i) {
+                p.parts[c][i] = (unsigned char)((c+i+selected)%6);
+                p.rooms[c][i] = (unsigned char)((c*3+i+selected)%6);
+            }
+        const CastleMenuModel::Progress expected = p;
+        std::string dump;
+        NetBuildDump(dump);
+        NetTableMap tables;
+        long long user = 0, revision = 0;
+        if (!NetParseDump(dump, tables, &user, &revision)) return false;
+        robin.castleProgress = CastleMenuModel::Progress();
+        robin.castle = 0;
+        robin.gold = robin.coin = 0;
+        NetApplyDump(tables);
+        if (robin.castle != selected || robin.gold != 987654321 || robin.coin != 43210 ||
+            p.version != expected.version || p.owned != expected.owned) return false;
+        for (int c = 0; c < CastleMenuModel::Count; ++c)
+            for (int i = 0; i < CastleMenuModel::Categories; ++i)
+                if (p.parts[c][i] != expected.parts[c][i] ||
+                    p.rooms[c][i] != expected.rooms[c][i]) return false;
+    }
+    return true;
+}
 
 static std::string ServerPath(const char* name)
 {

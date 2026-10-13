@@ -36,6 +36,16 @@ void RouletteDrawSimple3Slots(
 
 void RouletteDraw(int x, int y, float zoom);
 
+//---- PVP 우주맵 ----
+//
+//룰렛 PVP 당첨 연출이 쓰던 두 화면이다. 좌상단 PVP 버튼도 같은 화면으로
+//들어가야 "어느 쪽으로 들어왔든 같은 우주" 로 읽힌다.
+//
+//    localFrame  이 화면이 시작한 뒤 지난 프레임
+//    buildFrame  다 차오르는 데 걸리는 프레임
+void DrawPvpCosmicCastleMap(int localFrame, int buildFrame);
+void DrawPvpSelectedCastles(int localFrame, int totalFrame);
+
 // Crew 관련
 int GetCrewIdxFromType(int);
 

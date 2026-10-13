@@ -33,6 +33,12 @@ void StageFoeShotDraw(void);	//몬스터가 날린 검
 void StageRtDrawButton(void);
 int StageSwordCooldown(int detail);
 bool StageRtSwordCharge(int slot, float* charge, int* flash);
+void StageArtilleryReset(void);
+void StageArtilleryStep(bool running, int foe);
+void StageArtilleryDraw(void);
+bool StageArtilleryVisual(float* charge, float* recoil, int* burst);
+bool CastlePartsCannonMuzzle(int castleLevel, float* x, float* y);
+void StageArtilleryNotifySpawn(int obj);
 int StageRtCrewType(int slot);
 bool StageRtHasCrew(int type);
 bool StageRtCrewFull(void);

@@ -103,7 +103,7 @@
         "cells":  0,
         "width":  64,
         "height":  64,
-        "pivotX":  31.5,
+        "pivotX":  30.5,
         "pivotY":  56.5,
         "handScale":  1.4
     },
@@ -172,10 +172,10 @@
         "shape":  "2x3",
         "cols":  2,
         "rows":  3,
-        "cells":  0,
+        "cells":  819,
         "width":  64,
         "height":  96,
-        "pivotX":  29.5,
+        "pivotX":  31.5,
         "pivotY":  88.5,
         "handScale":  1
     },
@@ -243,12 +243,12 @@
         "id":  21,
         "shape":  "Ttree",
         "cols":  3,
-        "rows":  4,
-        "cells":  30498,
+        "rows":  3,
+        "cells":  1906,
         "width":  96,
-        "height":  128,
+        "height":  96,
         "pivotX":  47.5,
-        "pivotY":  109.5,
+        "pivotY":  88.5,
         "handScale":  1
     },
     {

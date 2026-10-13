@@ -109,8 +109,21 @@ enum { maxxSkillClosingFrame_COUNT = 22 };
 
 //c0~c2 모션을 60프레임용으로 늘리면 인덱스가 char 범위를 넘는다.
 //MSVC는 이 경우 에러가 아니라 C4309 경고만 내고 값을 잘라버리므로 폭을 넓혀 둔다.
+//---- 로빈 모션표의 길이 ----
+//
+//일반공격 표가 찌르기냐 베기냐(ROBINDEFAULTATTACKSTING)에 따라 줄 수가
+//다르다. 한 줄이 네 칸이라 48 줄 차이가 192 칸 차이가 된다 - 찌르기 8604,
+//베기 8412.
+//
+//이 값이 실제 배열보다 크면 그 뒤의 쓰레기를 모션으로 읽는다. 모션 번호도
+//효과도 소리도 남의 메모리에서 나온다.
+//
+//#ifdef 로 가르지 않는다. make_pack.py 가 아래 두 줄을 "extern 바로 다음
+//줄의 enum" 으로 읽어 팩 목록을 만들기 때문에, 사이에 무엇이 끼면 이
+//배열이 팩에서 통째로 빠진다. 설정을 바꾸면 이 숫자도 같이 고친다 -
+//어긋나면 HeroData.cpp 의 static_assert 가 빌드를 멈춘다.
 extern const unsigned short* robinSkillMotion;
-enum { robinSkillMotion_COUNT = 8612 };
+enum { robinSkillMotion_COUNT = 8412 };
 
 extern const unsigned short* dianaSkillMotion;
 enum { dianaSkillMotion_COUNT = 7964 };

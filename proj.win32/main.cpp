@@ -25,6 +25,9 @@
 #include "main.h"
 #include "AppDelegate.h"
 #include "cocos2d.h"
+#include "Func_Net.h"
+#include <cstdlib>
+#include <crtdbg.h>
 
 USING_NS_CC;
 
@@ -35,6 +38,28 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
+    // Explicit headless verification: never reads or writes the player's save.
+    if (getenv("CS_CASTLE_PROTOCOL_TEST"))
+        return NetCastleProtocolSelfTest() ? 0 : 1;
+
+    // Isolated preview storage and non-modal CRT diagnostics for automated checks.
+    if (const char* reviewPath = getenv("CS_CASTLE_REVIEW_PATH")) {
+        FileUtils::getInstance()->setWritablePath(reviewPath);
+#ifdef _DEBUG
+        std::string report = std::string(reviewPath) + "startup-crt.log";
+        HANDLE reportFile = CreateFileA(report.c_str(), GENERIC_WRITE,
+            FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (reportFile != INVALID_HANDLE_VALUE) {
+            _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+            _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+            _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+            _CrtSetReportFile(_CRT_WARN, (_HFILE)reportFile);
+            _CrtSetReportFile(_CRT_ERROR, (_HFILE)reportFile);
+            _CrtSetReportFile(_CRT_ASSERT, (_HFILE)reportFile);
+        }
+#endif
+    }
 
     // create the application instance
     AppDelegate app;

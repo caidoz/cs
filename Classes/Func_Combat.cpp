@@ -513,6 +513,14 @@ void RefreshStat_Sub(OBJECT* pObj)
 	StageGearApplyStat(pObj);
 
 	//---- 성 파츠: 동료 ----
+	{
+		const int obj=GetObjFromPtr(pObj);
+		if(obj==PLAYER || (obj>=CREW && obj<CREW+MAXCREW)) {
+			pObj->ps[PS_DMG]+=pObj->ps[PS_DMG]*CastleTeamBonus(0)/100;
+			pObj->ps[PS_HP]+=pObj->ps[PS_HP]*CastleTeamBonus(1)/100;
+			pObj->ps[PS_ARMOR]+=pObj->ps[PS_ARMOR]*CastleTeamBonus(2)/100;
+		}
+	}
 	//
 	//훈련장과 식당은 동료에게 붙는다. 성에서 먹이고 가르친 것이므로
 	//몬스터에게는 가지 않는다.
@@ -2237,7 +2245,7 @@ long long int CalcDamage(const DMGINPUT* in)
 	return damage;
 }
 
-int AttackObj(long long int attacker, int dest)
+int AttackObj(long long int attacker, int dest, bool guaranteedHit)
 {
 	long long int damage = 0;
 	int ad = 0, i;
@@ -2388,7 +2396,7 @@ int AttackObj(long long int attacker, int dest)
 	//		dmgOrigin = 50;
 	//#endif
 
-	if (ProcHit(attacker, PROC_MISS,
+	if (!guaranteedHit && ProcHit(attacker, PROC_MISS,
 		(tempVal + dmgOrigin) * 10 - *(attackerPs + PS_HIT) * 100, 10000))
 		ad = -1;
 #ifdef NOMISS
@@ -3175,7 +3183,7 @@ NEXT:
 	 * 여기까지가 "이 한 대는 원래 얼마인가" 다. 계획은 그 값을 그대로 쓰지
 	 * 않고, 이번 액션에 배정된 총액 안에서 넘치지도 모자라지도 않게 나눈다.
 	 * 계획이 없으면(한 대짜리 공격, 적의 공격 등) 그대로 통과한다. */
-	damage = ActionPlanTake((int)attacker, dest, damage);
+	if (!guaranteedHit) damage = ActionPlanTake((int)attacker, dest, damage);
 
 	//인터랙티브 전투 튜토리얼의 첫 몬스터: "세바스찬(크루)이 먼저 공격 -> HP가 남아있으면 주인공이
 	//마무리"라는 순서를 스크립트대로 보여줘야 한다. 크루가 한 방에 죽여버리면 주인공의 공격 턴이

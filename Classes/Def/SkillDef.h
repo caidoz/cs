@@ -96,7 +96,20 @@ typedef enum _skillDef {
 	ROBIN_ATTACK_RAID_GOOD_CNT = 3,
 	//ROBINMAXSTING = 106,
 	ROBINMAXSTING = 69,	//60프레임용으로 2배
+
+	//베기 콤보의 행 수. 마지막 _END 줄까지 센다.
+	ROBINMAXSLASH = 23,
+
+	//---- 일반공격 표의 길이 ----
+	//
+	//이 값이 틀리면 뒤에 이어지는 모든 스킬 표의 시작 줄이 밀린다. 찌르기와
+	//베기는 표의 길이가 다르므로 어느 갈래를 쓰는지 따라가야 한다
+	//(robinSkillMotion, HeroData.cpp).
+#ifdef ROBINDEFAULTATTACKSTING
 	ROBIN_ATTACK_NORMAL_CNT = ROBIN_ATTACK_DELAY + ROBINMAXSTING,
+#else
+	ROBIN_ATTACK_NORMAL_CNT = ROBINMAXSLASH,
+#endif
 	ROBIN_ATTACK_DASH_CNT = 19,	//60프레임용으로 2배
 	ROBIN_ATTACK_AIR_CNT = 11,	//60프레임용으로 2배
 	ROBIN_ATTACK_DOWN_CNT = 0,

@@ -80,7 +80,13 @@
 
 // ---
 #define ATTACKFIRSTROULETTELAST        // 공격 먼저 룰렛 나중
-#define ROBINDEFAULTATTACKSTING        // 로빈 기본 공격 스팅
+//로빈 기본공격을 찌르기(스팅)로 할 것인가.
+//
+//끄면 robinSkillMotion 의 다른 갈래가 쓰인다 - 네 번 베고 마지막에 크게
+//한 번 더 베는 옛 베기 콤보다. 표의 길이가 달라지므로 끌 때는
+//ROBIN_ATTACK_NORMAL_CNT(SkillDef.h) 와 _WAIT2 가 되돌아갈 자리
+//(charEtcData, HeroData.cpp) 도 같이 그 갈래 값을 봐야 한다.
+//#define ROBINDEFAULTATTACKSTING        // 로빈 기본 공격 스팅
 #define LONGSWORDLONGDMG               // 롱소드 긴 데미지
 
 // ---

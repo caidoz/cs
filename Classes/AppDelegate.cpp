@@ -6,6 +6,7 @@
 #include "AppDelegate.h"
 #include "CoreClass.h"
 #include "Func_Net.h"
+#include <cstdlib>
 //#define SDKBOX_ENABLED
 #ifdef SDKBOX_ENABLED
 #include "PluginAdMob/PluginAdMob.h"
@@ -93,7 +94,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	auto glview = director->getOpenGLView();
 	if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-		glview = GLViewImpl::createWithRect("인삼남:인생이 삼일 남았다!", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+		glview = GLViewImpl::createWithRect("Castle Survivor", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
 		glview->setFrameSize(640, 640 * 133 / 100);//WINDOWS
 		//glview->setFrameSize(640, 640 * 167 / 100);//WINDOWS
@@ -101,7 +102,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 		//glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 
 #else
-		glview = GLViewImpl::create("인삼남:인생이 삼일 남았다!");
+		glview = GLViewImpl::create("Castle Survivor");
 #endif
 
 		
@@ -162,6 +163,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 // This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
 void AppDelegate::applicationDidEnterBackground() {
+	// Hidden, isolated UI verification still needs the rendering loop.
+	if (getenv("CS_CASTLE_REVIEW_PATH")) return;
 	//루프를 세우기 전에 남긴다. 세우고 나면 NetUpdate() 가 안 돌아서
 	//쌓인 변경을 내보낼 기회가 없다.
 	NetSuspend();

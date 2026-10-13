@@ -18,6 +18,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "Def.h"
+#include "CastleMenuModel.h"
 #include "Data/CastlePartData.h"	//성 파츠 표(castlePartLv 가 쓴다)
 #include "ui/UIWebView.h"
 #include <vector>
@@ -701,6 +702,7 @@ typedef struct _robin {
 	//--------------------------------------------------------
 	int crewHighGradeMissCount = 0;
 	int equipHighGradeMissCount = 0;
+	CastleMenuModel::Progress castleProgress;
 
 	template <class Archive>
 	void serialize(Archive & ar)
@@ -781,7 +783,8 @@ typedef struct _robin {
 			//★ 새 항목은 반드시 끝에 붙인다. 가운데에 끼우면 저장 순서가
 			//밀려서 옛 세이브를 못 읽는다.
 			castlePartLv,
-			castleIncomeTs
+			castleIncomeTs,
+			castleProgress
 		);
 	}
 } ROBINDATA;

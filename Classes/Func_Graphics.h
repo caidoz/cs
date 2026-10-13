@@ -67,6 +67,7 @@ void MemRectFrame(int, int, int, int, int);
 void MemRectBoth(int, int, int, int, int, int);
 void MemRectRound(int, int, int, int, int, int);
 void DrawFrame(int, int, int, int, int);
+void DrawLabelPanel(int x, int y, int w, int h);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);
 void DrawWindow4(int, int, int, int, int, float zoom);
 void DrawWindow3(int, int, int, int, int, float zoom);

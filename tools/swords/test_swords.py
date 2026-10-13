@@ -8,6 +8,31 @@ from build_sword_poses import ROOT, array, decode, signature
 
 
 class SwordTests(unittest.TestCase):
+    def test_chicken_uses_all_six_cells(self):
+        rows=json.loads((ROOT/'content/swords/remodel/manifest.json').read_text(encoding='utf-8-sig'))
+        chicken=rows[14]
+        self.assertEqual((chicken['cols'],chicken['rows'],chicken['cells']),(2,3,0x333))
+        table=(ROOT/'Classes/Data/SwordCells.inc').read_text(encoding='utf-8-sig')
+        self.assertRegex(table,r'0x000,\s*//w0_15\s+2x3 6칸')
+
+    def test_chicken_body_is_centred_without_detached_specks(self):
+        image=Image.open(ROOT/'Resources/res/w0_15.png').convert('RGBA')
+        alpha=image.getchannel('A')
+        remaining={(x,y) for y in range(image.height) for x in range(image.width)
+                   if alpha.getpixel((x,y))>24}
+        body={remaining.pop()}
+        pending=list(body)
+        while pending:
+            x,y=pending.pop()
+            for point in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                if point in remaining:
+                    remaining.remove(point)
+                    body.add(point)
+                    pending.append(point)
+        self.assertFalse(remaining,'Detached pixels must not affect chicken alignment')
+        centre=(min(x for x,y in body)+max(x for x,y in body))/2
+        self.assertLessEqual(abs(centre-(image.width-1)/2),1)
+
     def test_all_35_sprites_match_remodelled_footprints(self):
         rows=json.loads((ROOT/'content/swords/remodel/manifest.json').read_text(encoding='utf-8-sig'))
         self.assertEqual([s['id'] for s in rows],list(range(1,36)))
@@ -28,6 +53,8 @@ class SwordTests(unittest.TestCase):
                 self.assertTrue(0<=s['pivotX']<dst.width and 0<=s['pivotY']<dst.height)
                 self.assertGreater(s['handScale'],0)
         self.assertEqual({s['shape'] for s in rows},{'1x2','1x3','1x4','Ttree','2x2','2x3','2x4'})
+        tree = rows[20]
+        self.assertEqual((tree['cols'], tree['rows'], tree['cells']), (3, 3, 0x772))
 
     def test_track_matches_cmf_and_covers_every_sword_motion(self):
         text=(ROOT/'Classes/Data/CmfBlob.cpp').read_text(encoding='utf-8-sig')

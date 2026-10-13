@@ -1668,12 +1668,7 @@ long long CastleIncomeTake(void)
 //다시 채운다 - 성을 올렸는데 칸이 그대로면 올린 보람이 없다.
 int GetMaxInven(void)
 {
-	//성 단계에 가방 파츠(창고 · 보물고 등)를 더한다. 올리면 그 자리에서
-	//칸이 는다.
-	const int slot = INVEN_BASE_SLOT + robin.castle * INVEN_PER_CASTLE
-		+ CastleBonusOf(CPE_BAG);
-
-	return Max(1, Min((int)TOTALINVENTORY, slot));
+	return CastleInventoryCapacity(robin.castle);
 }
 
 //가방이 가득 차서 못 받은 것이 있는가. 전투 중에는 알림을 띄우지 않고

@@ -1403,6 +1403,7 @@ void WaveControler()
 			}
 			else
 				pObj->type = wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 0];
+			StageArtilleryNotifySpawn(obj);
 			//pObj->type = ENEMY_SLIME_GOLD;
 			pObj->nx = pObj->x = positionX = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 0];
 			pObj->ny = pObj->y = positionY = setEnemyPos[robin.castle * 2 * MAXWAVEENEMY + 2 * robin.curWaveIdx + 1];

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "CastlePartState.h"
 #include <cstdlib>
 #include <cmath>
@@ -28,6 +28,8 @@ static const float RoomDrawW=320.0f;
 static int roomStage[CastleCount]={0,0,0,0,0,0,0,0,0,0};
 static bool active=false;
 static bool missingAsset=false;
+static float cannonMuzzleX[10]={0},cannonMuzzleY[10]={0};
+static bool cannonMuzzleValid[10]={false};
 
 //옛 모듈러 조각(castle_parts/*)을 집던 AssetId 는 지웠다. 부르는 데가
 //없었고, 그림 250 장도 이미 없어서 이름표만 차지하고 있었다. 지금은
@@ -184,7 +186,10 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
                        bool centerOnWheelAxis=false) {
  castle=Max(0,Min(CastleCount-1,castle));
  const int floorCount=castle+1;
- const int stage=roomStage[castle];
+ const int stage=active?roomStage[castle]:CastleVisualPartLevel(castle,1);
+ const int roofStage=active?stage:CastleVisualPartLevel(castle,0);
+ const int cannonStage=active?stage:CastleVisualPartLevel(castle,3);
+ const int mobilityStage=active?stage:CastleVisualPartLevel(castle,4);
  const float lowerH=NaturalLowerH(castle);
  const float upperH=NaturalUpperH(castle);
  // The 512px room is the shared origin. Its continuous outer armor and the
@@ -237,7 +242,7 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  (void)shellRightPx;
  (void)roomRightPx;
  for(int floor=0;floor<=castle;++floor) {
-  const int floorStage=floor==castle?stage:5;
+  const int floorStage=active?(floor==castle?stage:5):CastleVisualPartLevel(castle,2);
   const int floorTopPx=(int)std::lround(bottom+(floor+1)*128.0f*scale);
   DrawRoomV4Scale(floor,floorStage,roomLeftPx,floorTopPx,scale,scale);
   // The shell owns only the 64px strips beside the room.  Its central
@@ -250,7 +255,7 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  }
  if(castle==0) {
   // A separate, increasingly elaborate timber crown; the room stays 512x128.
-  DrawFixedAsset(CASTLE_ROOF_01_FIRST_IMG+stage,736,256,left,
+  DrawFixedAsset(CASTLE_ROOF_01_FIRST_IMG+roofStage,736,256,left,
                  bottom+(128.0f+256.0f)*scale,scale);
  } else {
   // One continuous flank on either side of the complete room stack. The
@@ -274,7 +279,7 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
    DrawFixedAsset(CASTLE_WALL_PAIR_UPPER_FIRST_IMG+upperIndex+1,rightWallW,upperWallH,
                   roomLeft+512.0f*scale,bottom+wallH*scale,scale);
   }
-  DrawFixedAsset(RoofAssetId(castle,stage),640,crownH,left,
+  DrawFixedAsset(RoofAssetId(castle,roofStage),640,crownH,left,
                  bottom+(wallH+crownH)*scale,scale);
   if(castle==8)
    DrawFixedAsset(CASTLE_09_WINGS_IMG,128,1152,left-100.0f*scale,
@@ -288,8 +293,8 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
   const float radiusPx=58.0f*wheelScale;
   const float wheelY=bottom-147.0f*scale;
   const float wheelAngle=WheelAngleNow(radiusPx);
-  DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
-  DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
+  DrawWheelAsset(WheelAssetId(castle,mobilityStage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
+  DrawWheelAsset(WheelAssetId(castle,mobilityStage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
  } else {
   //바퀴는 아래쪽 껍데기 밑단에 걸려 땅까지 닿는다. 크기를 숫자로 따로
   //주면 방 높이나 성 배율을 고칠 때마다 다시 맞춰야 하므로, 메워야 할
@@ -303,25 +308,38 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
   // The axle meets the lower edge of the new 144px combat deck.
   const float wheelY=bottom-144.0f*scale;
   const float wheelAngle=WheelAngleNow(radiusPx);
-  DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
-  DrawWheelAsset(WheelAssetId(castle,stage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
+  DrawWheelAsset(WheelAssetId(castle,mobilityStage),roomLeft+128.0f*scale,wheelY,wheelScale,wheelAngle);
+  DrawWheelAsset(WheelAssetId(castle,mobilityStage),roomLeft+384.0f*scale,wheelY,wheelScale,wheelAngle);
  }
  // The commander deck projects from the lowest room, at the front of the
  // assembled castle.  Its first 32px attach inside the room edge.
- if(castle==0)
-  DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG+stage,160,128,left+576.0f*scale,
-                 bottom+64.0f*scale,scale);
+ float artilleryCharge=0,artilleryRecoil=0; int artilleryBurst=0;
+ const bool artilleryOn=StageArtilleryVisual(&artilleryCharge,&artilleryRecoil,&artilleryBurst);
+ const float recoilPx=artilleryOn?artilleryRecoil*10.0f*scale:0.0f;
+ if(castle==0) {
+  if(stage==0)
+   DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG,160,192,left+576.0f*scale-recoilPx,
+                  bottom+104.0f*scale,scale);
+  else
+   DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG+cannonStage,160,128,left+576.0f*scale-recoilPx,
+                  bottom+64.0f*scale,scale);
+  cannonMuzzleX[castle]=left+728.0f*scale-recoilPx;
+  cannonMuzzleY[castle]=bottom+(cannonStage==0?72.0f:38.0f)*scale;
+ }
  else {
   const float balconyLeft=roomLeft+480.0f*scale;
   const float balconyTop=bottom+128.0f*scale;
-  const int commandIndex=(castle-1)*6+stage;
+  const int commandIndex=(castle-1)*6+cannonStage;
   DrawFixedAsset(CASTLE_COMMAND_PLATFORM_FIRST_IMG+commandIndex,192,128,
                  balconyLeft,balconyTop,scale);
-  const float gunScale=CannonGrowth(castle,stage);
+  const float gunScale=CannonGrowth(castle,cannonStage);
   DrawFixedAsset(CASTLE_HEAVY_CANNON_FIRST_IMG+commandIndex,128,64,
-                 balconyLeft+64.0f*scale,
+                 balconyLeft+64.0f*scale-recoilPx,
                  balconyTop+(gunScale-1.0f)*64.0f*scale,scale*gunScale);
+  cannonMuzzleX[castle]=balconyLeft+(64.0f+122.0f*gunScale)*scale-recoilPx;
+  cannonMuzzleY[castle]=balconyTop+(gunScale-1.0f)*64.0f*scale-26.0f*gunScale*scale;
  }
+ cannonMuzzleValid[castle]=true;
 }
 static void Button(int x,int y,int w,int h,const char* text,int command,float font) {
  MemRect(x,y,w,h,0x30464D); MemRectFrame(x,y,w,h,0xBD965C); SetFontColor(COLOR_WHITE);
@@ -332,6 +350,12 @@ static void Button(int x,int y,int w,int h,const char* text,int command,float fo
 void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
  using namespace CastleParts;
  missingAsset=false; DrawCastle(Max(1,Min(CastleCount,castleLevel))-1,x,yTop,w,h,100000.0f);
+}
+bool CastlePartsCannonMuzzle(int castleLevel,float* x,float* y) {
+ const int castle=Max(0,Min(9,castleLevel-1));
+ if(!CastleParts::cannonMuzzleValid[castle]) return false;
+ *x=CastleParts::cannonMuzzleX[castle]; *y=CastleParts::cannonMuzzleY[castle];
+ return true;
 }
 void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  using namespace CastleParts;
@@ -408,7 +432,23 @@ bool TitleCastleDebugActive() {
 bool TitleCastleDebugDraw() {
  using namespace CastleParts;
  static bool checked=false;
- if(!checked) { checked=true; const char* requested=std::getenv("CS_CASTLE_DEBUG"); if(requested&&requested[0]=='1') active=true; }
+ //---- 타이틀이 뜨면 바로 이 화면으로 ----
+ //
+ //로딩(MENU_LOADING)이 끝난 뒤에 연다. 타이틀 화면은 그 동안 한 프레임에
+ //그림 한 장씩 올리는데, 처음부터 가로채면 그 일이 아예 안 일어난다.
+ //
+ //약관 동의와 로그인 선택이 떠 있으면 비켜 준다. 그 창은 타이틀 위에
+ //얹혀 있어서, 이 화면이 먼저 덮으면 동의할 길이 없다.
+ //
+ //한 번만 본다. 아래 "타이틀" 로 닫고 나면 그 판에서는 다시 안 연다.
+ if(!checked&&curMenu!=MENU_LOADING
+  &&!NetTermsPending()&&!NetLoginChoicePending()) {
+  checked=true;
+#if OPEN_TITLE_CASTLE_DEBUG
+  active=true;
+#endif
+  const char* requested=std::getenv("CS_CASTLE_DEBUG"); if(requested&&requested[0]=='1') active=true;
+ }
  if(!active) return false;
  ResetRectPoint(); touchDisable=false; SetAlpha(32); MemRect(0,DY,DX,DY,0x18292F);
  const float u=(float)DX/640.0f; const int rowH=(int)(36*u),gap=(int)(6*u);

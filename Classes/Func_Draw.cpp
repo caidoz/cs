@@ -1859,6 +1859,9 @@ static void GridWeaponShape(GridPart* p)
 		//manifest 가 채워지면 그쪽이 이긴다 - 그림을 그린 쪽이 더 잘 안다.
 		p->cells = (info && info->cells) ? info->cells
 		         : (d >= 0 && d < 35 ? swordTileCells[d] : 0);
+		// The chicken's sparse head and grip still occupy a full rectangle.
+		// Never clip its centred artwork using the old asymmetric silhouette.
+		if (d == 14) p->cells = 0;
 		return;
 	}
 	if (p->type == ITEM_BOOMERANG) {
@@ -1988,12 +1991,19 @@ struct GridSlot {
 };
 
 static GridSlot gGridItem[GRIDTEST_MAXITEM];
+int CastleEquippedCells(void) {
+	int n=0;
+	for(int i=0;i<GRIDTEST_MAXITEM;++i) if(gGridItem[i].used)
+		for(int y=0;y<gGridItem[i].part.h;++y) for(int x=0;x<gGridItem[i].part.w;++x)
+			if(GridPartCell(&gGridItem[i].part,x,y)) ++n;
+	return n;
+}
 
 //---- 성보관함 ----
 //
 //얻었지만 아직 가방에 못 넣은 것이 여기 앉는다. 격자 바로 밑 한 줄이다.
 //
-//전에는 세 갈래에서 집은 것을 그 자리에서 격자에 넣지 못하면 잃었다.
+//전에는 상점에서 집은 것을 그 자리에서 격자에 넣지 못하면 잃었다.
 //성이 1 단계일 때는 넣을 자리가 없는 쪽이 보통이라, 좋은 것이 나와도
 //고를 수가 없었다. 보관함이 받아 두면 자리를 비운 뒤에 넣으면 된다.
 //
@@ -2012,7 +2022,7 @@ static StoreSlot gStore[GRIDSTORE_MAX];
 //격자는 전투 화면에 붙박이로 붙는다. 접을 수는 있다.
 static bool gGridOpen = true;
 
-//---- 몬스터를 눕힐 때마다 내미는 세 갈래 ----
+//---- 몬스터를 눕힐 때마다 내미는 갈래 ----
 //
 //gOfferOn 이 서 있는 동안만 카드 세 장이 뜬다. 하나를 사거나 넘기면
 //내려간다.
@@ -2122,7 +2132,7 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 //======================================================================
 // 하단 상점 줄
 //
-// 격자 아래에 깔리는 판이다. 위에서부터 룰렛 네 칸, 값, 나오는 몫,
+// 격자 아래에 깔리는 판이다. 위에서부터 룰렛 칸(GRIDTEST_OFFERCNT 개), 값, 나오는 몫,
 // 가진 골드, 맨 아래가 지도 / 전투 시작 / 도감 줄이다.
 //
 // 자리를 늘 비워 둔다. 몬스터를 눕힐 때마다 나타났다 사라지면 격자가
@@ -2226,6 +2236,12 @@ int GetStageInventoryTop(void)
 	return gGridBottom + gGridH * gGridCell + GRIDTEST_HUDH;
 }
 
+int GetStageInventoryWidth(void)
+{
+	GridTestLayout();
+	return gGridW * gGridCell;
+}
+
 float GetStageWorldLift(void)
 {
 	// Preparation uses the tall inventory. Keep the complete battlefield 144
@@ -2262,9 +2278,9 @@ static int GridStoreCell(void)
 	return Max(2, Min(gGridCell, (DX - 12 * _2X) / GRIDSTORE_MAX) & ~1);
 }
 
-//---- 보관함은 세 갈래 카드와 같은 띠를 쓴다 ----
+//---- 보관함은 상점 카드와 같은 띠를 쓴다 ----
 //
-//처음에는 격자 밑변 바로 아래에 두었다. 그런데 거기가 세 갈래 카드가
+//처음에는 격자 밑변 바로 아래에 두었다. 그런데 거기가 상점 카드가
 //앉는 자리라 카드가 보관함을 덮어 버렸다 - 격자 밑은 StageShopTopBase()
 //이고 그 값이 곧 카드 띠의 윗변이다.
 //
@@ -2322,7 +2338,7 @@ static void GridTrashRect(int* x, int* y, int* w, int* h)
 	*y = GridTopY() + GRIDTEST_HUDH - 2 * _2X;
 }
 
-//---- 전투가 끝나고 내미는 세 갈래 ----
+//---- 전투가 끝나고 내미는 갈래 ----
 //
 //격자 위에 뜬다. 한 판에 한 번, 셋 중 하나를 골라 격자에 놓으면
 //닫힌다. 열 칸짜리 상점 줄을 없애고 이것으로 바꾼 것은, 아무 때나
@@ -2858,6 +2874,24 @@ static void StageFoeInvenDraw(int alpha)
 //
 //값을 카드 안에 적으면 그림이 가려진다. 카드 밑에 띠로 따로 붙인다.
 //price 가 음수면 아직 값이 없는 칸(잠김 또는 회전 중)이다.
+//---- 칸 안에 글자를 맞춰 넣는다 ----
+//
+//내미는 칸이 늘면 칸 하나가 그만큼 좁아진다. 배율을 박아 두면 긴 이름이
+//칸 밖으로 삐져나가 옆 칸 글자와 붙는다. 들어갈 만큼만 줄인다.
+static void GridOfferLabel(const char* text, int x, int w, int y, float zoom)
+{
+	if (!text || !text[0])
+		return;
+
+	const float room = (float)(w - 4 * _2X);
+	const float full = StringWidth(text, 1.0f);
+
+	if (full > 0.0f && full * zoom > room)
+		zoom = room / full;
+
+	CenterTextStrSolid(text, x + w / 2, y, zoom);
+}
+
 static void GridShopPriceStrip(int n, int price, bool afford)
 {
 	char str[32];
@@ -2967,6 +3001,12 @@ static bool GridTestCanPlace(const GridPart* p, int col, int row, int skip)
 
 	if (p == nullptr || p->w <= 0 || p->h <= 0)
 		return false;
+	int occupied=CastleEquippedCells(),added=0;
+	if(skip>=0&&skip<GRIDTEST_MAXITEM&&gGridItem[skip].used)
+		for(int yy=0;yy<gGridItem[skip].part.h;++yy) for(int xx=0;xx<gGridItem[skip].part.w;++xx)
+			if(GridPartCell(&gGridItem[skip].part,xx,yy)) --occupied;
+	for(int yy=0;yy<p->h;++yy) for(int xx=0;xx<p->w;++xx) if(GridPartCell(p,xx,yy)) ++added;
+	if(occupied+added>CastleEquipmentCapacity(GridCastleStage())) return false;
 
 	if (col < 0 || row < 0 || col + p->w > gGridW || row + p->h > gGridH)
 		return false;
@@ -3338,7 +3378,7 @@ void GridTestToggle(void)
 		GridOfferResume();
 }
 
-//이 타입이 이미 이번 세 갈래에 나왔는가.
+//이 타입이 이미 이번 갈래에 나왔는가.
 static bool GridOfferHasCrew(const OfferCard* made, int madeCnt, int type)
 {
 	for (int k = 0; k < madeCnt; ++k) {
@@ -3399,13 +3439,17 @@ static int GridPickMonster(int killedType, const OfferCard* made, int madeCnt)
 	return -1;
 }
 
-//---- 세 갈래를 새로 뽑는다 ----
+//---- 갈래를 새로 뽑는다 ----
 //
 //동료와 몬스터는 설 자리가 남았을 때만 섞는다. 꽉 찼는데 내밀면 살 수
-//없는 카드가 한 장 끼어 세 갈래가 두 갈래가 된다. 뽑을 것이 없으면
+//없는 카드가 한 장 끼어 고를 것이 한 갈래 줄어든다. 뽑을 것이 없으면
 //장비로 채운다.
 //
 //장비도 같은 것이 두 장 나오면 안 된다. 겹치면 다시 뽑는다.
+//장비가 겹치면 다시 뽑는 아래의 되풀이는 표가 칸보다 많아야 끝난다.
+static_assert(GRIDTEST_SHOPCNT >= GRIDTEST_OFFERCNT,
+	"살 수 있는 물건이 내미는 칸보다 적으면 겹침을 피하다 영영 돈다");
+
 static void GridOfferRoll(int killedType)
 {
 	int i, j;
@@ -3478,7 +3522,7 @@ static bool GridOfferSpinning(int n)
 
 //---- 시험용 리프레시 ----
 //
-//값 없이 세 칸을 다시 돌린다. 끌어놓기를 시험하는 동안 원하는 장비가
+//값 없이 모든 칸을 다시 돌린다. 끌어놓기를 시험하는 동안 원하는 장비가
 //나올 때까지 돌려 보려는 것이라, 골드도 안 들고 룰렛이 닫혀 있으면
 //열면서 돌린다.
 void GridTestRefresh(void)
@@ -4539,7 +4583,8 @@ int LoadoutCost(const ITEM* it)
 //이번 판에 쓸 수 있는 점수. 성이 오르면 는다.
 int LoadoutPoint(void)
 {
-	return LOADOUT_BASE + robin.castle + CastleBonusOf(CPE_LOADOUT);
+	CastleProgressEnsure();
+	return LOADOUT_BASE + robin.castle + CastleBonusOf(CPE_LOADOUT)+robin.castleProgress.rooms[CastleMenuModel::Clamp(robin.castle)][1];
 }
 
 //지금 고른 것이 드는 점수의 합.
@@ -4621,6 +4666,8 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 
 	if (LoadoutUsed() + LoadoutCost(it) > LoadoutPoint())
 		return false;
+	GridPart candidate; GridGearPart(it,&candidate);
+	if(LoadoutCellUsed()+GridPartCellCount(&candidate)>CastleEquipmentCapacity(robin.castle)) return false;
 
 	gLoadoutAtCol[gLoadoutCnt] = (signed char)col;
 	gLoadoutAtRow[gLoadoutCnt] = (signed char)row;
@@ -4677,7 +4724,7 @@ void LoadoutPickBag(int n)
 // 성 격자에 어떻게 들어갈지를 옆에서 바로 본다 - 큰 검 하나를 넣으면
 // 남는 칸이 확 주는 것이 보여야 "이걸 두고 짧은 검 둘을 넣을까" 가 된다.
 //======================================================================
-static int LoadoutCellUsed(void)
+int LoadoutCellUsed(void)
 {
 	int sum = 0;
 
@@ -4780,6 +4827,10 @@ static bool LoadoutPreviewCanPlace(const GridPart* p, int col, int row,
 {
 	if (p == nullptr || p->w <= 0 || p->h <= 0)
 		return false;
+	int occupied=0,added=0;
+	for(int yy=0;yy<GRIDTEST_H;++yy) for(int xx=0;xx<GRIDTEST_W;++xx) if(occ[yy][xx]) ++occupied;
+	for(int yy=0;yy<p->h;++yy) for(int xx=0;xx<p->w;++xx) if(GridPartCell(p,xx,yy)) ++added;
+	if(occupied+added>CastleEquipmentCapacity(GridCastleStage())) return false;
 
 	if (col < 0 || row < 0 || col + p->w > gGridW || row + p->h > gGridH)
 		return false;
@@ -6411,10 +6462,10 @@ void GridTestDraw(void)
 					enemyIconZoom[type] * 0.6f);
 
 				SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-				CenterTextStrSolid(textId[TEXT_MONSTERNAME_START + type],
-					x + w / 2, y - h + 14 * _2X, 0.52f);
-				CenterTextStrSolid(c->kind == OFFER_CREW ? "동료" : "몬스터",
-					x + w / 2, y - h + 4 * _2X, 0.46f);
+				GridOfferLabel(textId[TEXT_MONSTERNAME_START + type],
+					x, w, y - h + 14 * _2X, 0.52f);
+				GridOfferLabel(c->kind == OFFER_CREW ? "동료" : "몬스터",
+					x, w, y - h + 4 * _2X, 0.46f);
 				GridShopPriceStrip(i, GridShopPrice(c->price), afford);
 
 				SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
@@ -6443,9 +6494,9 @@ void GridTestDraw(void)
 				1.0f, false, false, false, true);
 
 			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-			CenterTextStrSolid(p->name, x + w / 2, y - h + 14 * _2X, 0.52f);
+			GridOfferLabel(p->name, x, w, y - h + 14 * _2X, 0.52f);
 			sprintf(str, "%dx%d / %d칸", p->w, p->h, GridPartCellCount(p));
-			CenterTextStrSolid(str, x + w / 2, y - h + 4 * _2X, 0.46f);
+			GridOfferLabel(str, x, w, y - h + 4 * _2X, 0.46f);
 			GridShopPriceStrip(i, GridShopPrice(p->price), afford);
 
 			SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
@@ -6734,7 +6785,7 @@ static int LobbyCastleLevel(void)
 		//원래는 robin.castle 을 따랐는데, 제목 화면의 이어하기가
 		//디버그 최대치라 늘 열 층짜리로 들어왔다. 실제 진행을 따르게
 		//하려면 아래 줄을 robin.castle 로 되돌리면 된다.
-		gMobileCastleVisual = 0;
+		gMobileCastleVisual = CastleMenuModel::Clamp(robin.castle);
 		gLobbyVisualReady = true;
 	}
 
@@ -7213,7 +7264,8 @@ static void LobbyCastleDraw(void)
 	// the unchanged rail, with the same authored offset at every zoom.
 	const float groundOffset = CastlePartsGroundOffset(LobbyCastleLevel());
 	const int top = (int)(LobbyViewCY() + gLobbyCamY * s -
-		(groundOffset >= 0.0f ? groundOffset * s : StageBg::kCastleDropPx));
+		(groundOffset >= 0.0f ? groundOffset * s : StageBg::kCastleDropPx) -
+		StageBg::kCastleGroundingPx);
 	const float bottom = top - h * s;
 
 	//지면은 LobbyDraw 가 먼저 깐 선로다. 성은 그 위에 선다.
@@ -7439,8 +7491,8 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//내놓아 성 1 은 우연히 맞아 있었다 - 그래서 성 1 만 보고는 못 찾는다.
 	const float partOffset = CastlePartsLeftInset(curCastle + 1);
 	const float heroV = curCastle == 0
-		? (upperH + roomStackH + 38.0f - bodyLift) / gLobbyCastleH // front cannon deck
-		: (upperH + (float)curCastle * 128.0f + 104.0f - LOBBY_HERO_LIFT - bodyLift)
+		? (upperH + roomStackH + 26.0f - bodyLift) / gLobbyCastleH // raised command deck
+		: (upperH + (float)curCastle * 128.0f + 92.0f - LOBBY_HERO_LIFT - bodyLift)
 		  / gLobbyCastleH;
 
 	// 방 슬롯은 512px 방 좌표로 작성되어 있다. 성 외장 전체 폭(736px)을
@@ -7489,7 +7541,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		// Slot tables are authored in the room stack's old 0..1 space.  The
 		// castle bounds now also include its lower hull, so remap the vertical
 		// coordinate into the complete shared local space.
-		const float castleV=(upperH+def.v*roomStackH-bodyLift)/gLobbyCastleH;
+		const float castleV=(upperH+def.v*roomStackH-bodyLift-12.0f)/gLobbyCastleH;
 		LobbyCastleToObj(RoomUToCastleU(def.u), castleV, &x, &y);
 		LobbySlotInstance inst = {
 			def.role,
@@ -7799,57 +7851,34 @@ void LobbyDraw(void)
 	//머리말 위로 올라온다. 전투로 넘어가는 중이라 골드나 보석을 쓸 일도
 	//없고, 이 바들은 LoadoutDraw 뒤에 그려져 덮어서는 가릴 수 없다.
 	if (LoadoutOpen() == false) {
-		bar[BAR_GOLD].count = robin.gold;
-		bar[BAR_STAR].count = robin.coin;
-		BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
-		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
-		BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
+		LobbyResourceBarsDraw(DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 	}
 
 	//======================================================================
-	// 날짜와 현재 진행 위치
+	// 누적 이동거리와 현재 지역
 	//======================================================================
 	{
 		const int panelTop = DY - GNBHEIGHT - 4 * _2X;
 
-		//---- 상단 DAY 및 낮/밤 표시 ----
+		// Existing stage-label ornament keeps both lines in the world-map style.
 		{
-			const int dayW = 118 * _2X;
-			const int dayH = 34 * _2X;
-			const int dayX = DX / 2 - dayW / 2;
-			const int dayY = panelTop;
-
-			//두 겹의 왕실 명패. 단색 사각형보다 성의 금장 톤과 맞는다.
-			MemRect(dayX - 2 * _2X, dayY + 2 * _2X, dayW + 4 * _2X, dayH + 4 * _2X, 0x0D1424);
-			MemRectFrame(dayX - 2 * _2X, dayY + 2 * _2X, dayW + 4 * _2X, dayH + 4 * _2X, 0x7B5A19);
-			MemRect(dayX, dayY, dayW, dayH, 0x24193A);
-			MemRectFrame(dayX, dayY, dayW, dayH, 0xF2C85B);
-
-			const int phaseImg = IsStageNight() ? LOBBY_NIGHT_IMG : LOBBY_DAY_IMG;
-			const int phaseSize = 28 * _2X;
-			DrawImage(128, 128, 0, 0, dayX + 5 * _2X, dayY - 3 * _2X,
-				false, false, false, false, false, phaseSize / 128.0f,
-				sprite[phaseImg], phaseImg);
-
+			const float labelZoom = Min(0.76f * _2X,
+				(float)(DX - 24 * _2X) / 512.0f);
+			const int distanceY = panelTop - 13 * _2X;
+			const int stageY = distanceY - (int)(FONT_HEIGHT * 0.86f) - 4 * _2X;
+			const int labelX = (int)(DX / 2 - 256.0f * labelZoom);
+			const int labelTop = distanceY + (int)(8 * _2X * labelZoom);
+			const int labelBottom = stageY - (int)(FONT_HEIGHT * 0.72f) - 7 * _2X;
+			DrawLabelPanel(labelX, labelTop, (int)(512 * labelZoom), labelTop - labelBottom);
 			SetFontColor(COLOR_WHITE);
-			sprintf(str, "%d일차  /  %d일", GetStageDay(), CYCLE_DAYS);
-			CenterTextStrSolid(str, dayX + phaseSize + (dayW - phaseSize) / 2,
-				dayY - 12 * _2X, 0.92f);
-			SetFontColor(COLOR_REALYELLOW);
-			CenterTextStrSolid(IsStageNight() ? "밤" : "낮",
-				dayX + phaseSize + (dayW - phaseSize) / 2, dayY - 27 * _2X, 0.48f);
-
-			//현재 진행 중인 스테이지를 날짜 명패 바로 아래에 붙인다.
-			const int stageW = 92 * _2X;
-			const int stageH = 20 * _2X;
-			const int stageX = DX / 2 - stageW / 2;
-			const int stageY = dayY - dayH - 5 * _2X;
-			MemRect(stageX, stageY, stageW, stageH, 0x17263E);
-			MemRectFrame(stageX, stageY, stageW, stageH, 0x6E91C5);
+			const double distanceKm = StageBg::kSpeedRail * StageBg::s_totalTravelSeconds / 10000.0;
+			sprintf(str, "총 이동거리 %.1f km", distanceKm);
+			CenterTextStrSolid(str, DX / 2, distanceY, 0.86f);
 			SetFontColor(COLOR_WHITE);
-			sprintf(str, "현재 스테이지  %d", robin.stage + 1);
-			CenterTextStrSolid(str, DX / 2, stageY - 7 * _2X, 0.62f);
+			const int region = (robin.stage / STAGE_PER_CYCLE) % STAGEBG_REGION_CNT;
+			sprintf(str, "%s  스테이지 %d", StageBg::RegionName(region), robin.stage + 1);
+			CenterTextStrSolid(str, DX / 2, stageY, 0.72f);
 		}
 	}
 
@@ -8305,7 +8334,10 @@ static void SetupPvpCombatObjects(void)
 	}
 }
 
-void StartPvpTest(void)
+//격돌 상태를 처음으로 되돌린다. 정의는 격돌 화면과 함께 아래에 있다.
+static void PvpClashReset(void);
+
+void StartPvpTest(bool withUniverse)
 {
 	if (drawHandle == MD_PVP)
 		return;
@@ -8319,8 +8351,12 @@ void StartPvpTest(void)
 	pvpSavedDioramaZoom = dioramaZoom;
 	pvpSavedWaveStatus = waveStatus;
 	pvpTestFrame = 0;
-	//두 성의 VS 대치 화면을 먼저 보여 준 뒤 구름 전환과 실제 전투로 간다.
-	pvpTestState = -1;
+	//---- 들어오는 두 길 ----
+	//
+	//좌상단 버튼으로 들어오면 우주맵에서 상대를 찾는 것부터 보여준다.
+	//룰렛 당첨으로 들어오면 그 화면은 룰렛이 이미 보여줬다 - 여기서 또
+	//하면 같은 우주가 두 번 차오른다.
+	pvpTestState = withUniverse ? -3 : -1;
 	pvpHudBarsReady = false;
 	//실제 플레이어 능력치를 PVP 테스트 전투의 기준값으로 사용한다.
 	//상대는 서버 HOUSE가 없으므로 현재 로빈의 복사본이다.
@@ -8361,6 +8397,7 @@ void StartPvpTest(void)
 	//격돌 화면 뒤에서 전장이 먼저 보이지 않게 아주 작은 디오라마로 시작한다.
 	//구름이 화면을 덮은 뒤 PvpTestDraw가 현재 전투 줌까지 키운다.
 	dioramaZoom = (DIORAMAZOOM_BATTLE + dioramaZoomGap) * 0.12f;
+	PvpClashReset();
 	drawHandle = MD_PVP;
 	keyHandle = MK_PVP;
 	curMenu = MENU_PLAY;
@@ -9040,7 +9077,216 @@ void PvpTransitionCloudDraw(int transitionFrame)
 		false, true, false, false, false, cloudZoom, sprite[CLOUD_IMG], CLOUD_IMG);
 }
 
-static void PvpCastleStandOffDraw(void)
+//=============================================================================
+// 두 성의 격돌
+//
+// 남의 성에 쳐들어가는 대신 내 성과 상대 성을 좌우에 세우고 그 사이로
+// 번갈아 한 발씩 쏜다. 화면에 성이 둘이어야 "성끼리 붙었다" 로 읽힌다.
+//
+// 성 위의 히어로와 동료는 들어오기 전 배치(pvpSavedObjects)를 그대로
+// 투영한다. 전투용 개체를 따로 세우지 않으므로 누가 어디 서 있었는지가
+// 격돌 화면에서도 그대로 보인다.
+//=============================================================================
+
+//---- 차례표 ----
+//
+//한 자리는 (쪽, 번호) 다. 번호 0..MAXCREW-1 은 동료, MAXCREW 는 히어로다.
+//
+//차례는 쪽을 번갈아 가며 돈다 - 한쪽 일곱이 내리 쏘고 그다음에 반대쪽
+//일곱이 쏘면, 앞 절반 동안은 한쪽 성이 맞기만 하는 판으로 보인다.
+//빈 자리는 건너뛴다.
+static int pvpClashTurnIndex = 0;
+
+//지금 쏘고 있는 자리. side 가 -1 이면 아무도 안 쏘는 사이참이다.
+static int pvpClashActorSide = -1;
+static int pvpClashActorSlot = 0;
+static int pvpClashActorLevel = 1;
+
+//그 차례에 나간 스킬. -1 이면 기본 공격이라 카드를 안 띄운다.
+static int pvpClashActorSkill = -1;
+
+//날아가는 탄의 나이와, 차례 사이에 센 프레임.
+static int pvpClashShotFrame = 0;
+static int pvpClashGapFrame = 0;
+
+//맞은 쪽이 흔들리는 프레임. [0] 내 성, [1] 상대 성.
+static int pvpClashShake[2] = { 0, 0 };
+
+//누가 제 차례를 몇 번 치렀는가. 스킬은 시계가 아니라 이 횟수로 나간다 -
+//공성전(UpdatePvpCombatLoop)과 같은 규칙이라 두 모드가 어긋나지 않는다.
+static int pvpClashActCount[2][MAXCREW + 1] = { { 0, }, };
+
+//이번 탄이 낼 피해와, 한 발이 낼 수 있는 가장 작은 피해.
+static long long pvpClashShotDamage = 0;
+static long long pvpClashFloor = 1;
+
+//그 자리에 설 사람이 있는가. 히어로 자리는 언제나 있다.
+//
+//양쪽 다 들어올 때 베낀 편성(pvpSavedObjects)을 본다. 상대는 아직 내
+//복사본이다 - 서버 매칭이 붙으면 수비 쪽만 받아온 편성으로 바꾼다.
+static bool PvpClashSlotFilled(int side, int slot)
+{
+	(void)side;
+
+	if (slot >= MAXCREW)
+		return true;
+
+	return pvpSavedObjects[CREW + slot].active;
+}
+
+//그 자리의 공격력.
+static long long PvpClashSlotDamage(int slot)
+{
+	const OBJECT* src = (slot >= MAXCREW)
+		? &pvpSavedObjects[PLAYER] : &pvpSavedObjects[CREW + slot];
+
+	return Max((long long)1, src->ps[PS_DMG]);
+}
+
+static void PvpClashReset(void)
+{
+	pvpClashTurnIndex = 0;
+	pvpClashActorSide = -1;
+	pvpClashActorSlot = 0;
+	pvpClashActorLevel = 1;
+	pvpClashActorSkill = -1;
+	pvpClashShotFrame = 0;
+	pvpClashGapFrame = 0;
+	pvpClashShake[0] = pvpClashShake[1] = 0;
+	pvpClashShotDamage = 0;
+	memset(pvpClashActCount, 0, sizeof(pvpClashActCount));
+
+	//---- 한 발의 최소 피해 ----
+	//
+	//피해는 저마다의 실제 공격력에서 나온다. 체력에 비해 그 값이 작으면
+	//두 성이 서서 쏘기만 하다가 끝나지 않는다.
+	//
+	//쏘는 인원으로 나눈다. 동료가 여섯이면 한 바퀴에 일곱 발이 나가므로,
+	//인원을 안 보면 편성이 두꺼울수록 판이 짧아진다.
+	int shooters = 1;
+
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (PvpClashSlotFilled(0, i))
+			shooters++;
+	}
+
+	pvpClashFloor = Max((long long)1,
+		pvpTestPlayerMaxHp / Max(1, PVP_CLASH_VOLLEY_MAX * shooters));
+}
+
+//---- 다음 차례를 잡는다 ----
+//
+//빈 자리를 건너뛰며 표를 돈다. 한 바퀴를 다 돌아도 설 사람이 없으면
+//false - 그런 판은 없지만, 돌다 멈추지 않게 한 바퀴로 끊는다.
+static bool PvpClashTakeTurn(void)
+{
+	const int total = (MAXCREW + 1) * 2;
+
+	for (int step = 0; step < total; ++step) {
+		const int index = (pvpClashTurnIndex + step) % total;
+		const int side = index % 2;
+		const int slot = index / 2;
+
+		if (!PvpClashSlotFilled(side, slot))
+			continue;
+
+		pvpClashTurnIndex = (index + 1) % total;
+		pvpClashActorSide = side;
+		pvpClashActorSlot = slot;
+		pvpClashShotFrame = 0;
+
+		//---- 몇 차 스킬인가 ----
+		//
+		//제 차례를 세 번 치르면 2 차, 여섯 번이면 3 차다. 공성전과 같은
+		//값(PVP_SKILL2_EVERY / PVP_SKILL3_EVERY)을 본다.
+		const int count = ++pvpClashActCount[side][slot];
+
+		pvpClashActorLevel = (count % PVP_SKILL3_EVERY == 0) ? 3
+			: (count % PVP_SKILL2_EVERY == 0) ? 2 : 1;
+		pvpClashActorSkill = -1;
+
+		if (slot < MAXCREW) {
+			const int crewIdx =
+				GetCrewIdxFromType(pvpSavedObjects[CREW + slot].type);
+
+			if (crewIdx >= 0) {
+				const int skill = crewData[crewIdx * CREWDATASIZE
+					+ CREWDATA_SKILL1 + pvpClashActorLevel - 1];
+
+				if (skill >= 0 && skill < gTotalSkill)
+					pvpClashActorSkill = skill;
+			}
+		}
+
+		//단계가 오르면 그만큼 세게 친다. 1 차가 여럿 나간 뒤에 오는 한 방이
+		//아무 차이도 없으면 스킬이 나간 줄 모른다.
+		pvpClashShotDamage = Max(pvpClashFloor,
+			PvpClashSlotDamage(slot) * pvpClashActorLevel);
+
+		PlayMusic(pvpClashActorLevel > 1 ? M_SWORDSTRONG : M_GUNSTRONG);
+
+		return true;
+	}
+
+	return false;
+}
+
+//---- 한 차례 ----
+//
+//사이참이 차면 다음 사람이 쏘고, 탄이 닿으면 맞은 쪽 히어로의 체력을
+//깎는다. 한 번에 하나만 난다 - 둘이 동시에 쏘면 어느 탄이 누구 것인지
+//안 보인다.
+static void PvpClashCombatStep(void)
+{
+	for (int i = 0; i < 2; ++i) {
+		if (pvpClashShake[i] > 0)
+			pvpClashShake[i]--;
+	}
+
+	if (pvpClashActorSide < 0) {
+		if (++pvpClashGapFrame < PVP_CLASH_TURN_GAP)
+			return;
+
+		pvpClashGapFrame = 0;
+		PvpClashTakeTurn();
+
+		return;
+	}
+
+	if (++pvpClashShotFrame < PVP_CLASH_SHOT_FLY)
+		return;
+
+	//닿았다. 쏜 쪽의 반대편이 깎인다.
+	const int hitSide = 1 - pvpClashActorSide;
+
+	if (hitSide == 0)
+		pvpTestPlayerHp = Max((long long)0,
+			pvpTestPlayerHp - pvpClashShotDamage);
+	else
+		pvpTestEnemyHp = Max((long long)0,
+			pvpTestEnemyHp - pvpClashShotDamage);
+
+	pvpClashShake[hitSide] = FPS / 4 + pvpClashActorLevel * 2;
+	pvpClashActorSide = -1;
+	pvpClashShotFrame = 0;
+	PlayMusic(M_KUNG);
+}
+
+//---- 약탈 ----
+//
+//공성전에는 성 안에 상자가 있어서 이기면 걸어가 내리쳤다. 격돌에는 들어갈
+//성이 없다. 이긴 자리에서 바로 받는다.
+static void PvpClashTakeLoot(void)
+{
+	pvpTestLoot = Max((long long)0, pvpTestDefender.gold);
+
+	if (pvpTestLoot > 0)
+		GetItem(ITEM_GOLD, false, false, false, pvpTestLoot, false);
+
+	PlayMusic(M_LEVELUP);
+}
+
+static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 {
 	SetAlpha(32);
 	MemRect(0, DY, DX, DY, 0x05071D);
@@ -9059,8 +9305,22 @@ static void PvpCastleStandOffDraw(void)
 	//때보다 서로 침범하는 면적이 줄어 사선 구분을 유지하면서 조금 더 키울 수 있다.
 	const float castleZoom = Min(0.60f,
 		(float)DX * 0.60f / (float)DIORAMASIZE_X);
-	const int leftX = (int)(DX * 0.18f);
-	const int rightX = (int)(DX * 0.82f);
+	//---- 좌우에서 밀려 들어온다 ----
+	//
+	//slideIn 이 0 이면 두 성이 화면 밖에 있고 1 이면 제자리다. 맞은 쪽은
+	//몇 프레임 흔들린다.
+	//
+	//흔들림과 밀려 들어오는 거리를 성 그림의 x 에 바로 넣는다. 아래에서
+	//히어로와 동료의 자리를 이 x 에서 다시 재므로, 성이 움직이면 그 위에
+	//선 사람들도 같이 간다 - 따로 더해 주면 어긋난다.
+	const float slide = Min(1.0f, Max(0.0f, slideIn));
+	const int slideGap = (int)((float)DX * 0.62f * (1.0f - slide));
+	const int shakeX[2] = {
+		pvpClashShake[0] > 0 ? ((pvpClashShake[0] % 2) ? -3 * _2X : 3 * _2X) : 0,
+		pvpClashShake[1] > 0 ? ((pvpClashShake[1] % 2) ? 3 * _2X : -3 * _2X) : 0
+	};
+	const int leftX = (int)(DX * 0.18f) - slideGap + shakeX[0];
+	const int rightX = (int)(DX * 0.82f) + slideGap + shakeX[1];
 	//DrawImage의 y는 이미지 상단이고 아래쪽 끝은 y-height*zoom이다.
 	//오른쪽 성의 하단을 하단 메뉴 윗선에 정확히 맞추고 왼쪽 성은 대치
 	//구도를 유지할 만큼만 위에 둔다.
@@ -9114,13 +9374,33 @@ static void PvpCastleStandOffDraw(void)
 			- localY * DIORAMASIZE_Y * castleZoom);
 	};
 
+	//맞는 자리(상대 히어로)와 쏘는 자리를 여기서 받아 둔다. 탄은 성
+	//한가운데가 아니라 지금 치는 사람의 발에서 나가야 누가 쏘는지 보인다.
+	int heroPoint[2][2] = { { 0, 0 }, { 0, 0 } };
+	int actorPoint[2] = { 0, 0 };
+	bool actorSeen = false;
+
 	for (int side = 0; side < 2; ++side) {
+		//제 차례인 사람은 한 발짝 나선다. 가만히 선 일곱 중 누구 차례인지
+		//탄만으로는 안 보인다.
+		const int lunge = (side == 0 ? 1 : -1) * 5 * _2X;
 		int heroX, heroY;
 		GetCastleObjectPoint(&pvpSavedObjects[PLAYER], side, &heroX, &heroY);
+		heroPoint[side][0] = heroX;
+		heroPoint[side][1] = heroY;
+
+		const bool heroActing = fighting && pvpClashActorSide == side
+			&& pvpClashActorSlot >= MAXCREW;
 		OBJECT hero = pvpSavedObjects[PLAYER];
-		DrawPlayer(&hero, motionData[0], heroX, heroY,
+		DrawPlayer(&hero, motionData[0], heroX + (heroActing ? lunge : 0), heroY,
 			side == 0 ? RIGHT : LEFT,
 			castleZoom * DIORAMAZOOM_REMAINDER, 0, false, true);
+
+		if (heroActing) {
+			actorPoint[0] = heroX + lunge;
+			actorPoint[1] = heroY;
+			actorSeen = true;
+		}
 
 		for (int i = 0; i < MAXCREW; ++i) {
 			const OBJECT* crew = &pvpSavedObjects[CREW + i];
@@ -9128,9 +9408,24 @@ static void PvpCastleStandOffDraw(void)
 				continue;
 			int crewX, crewY;
 			GetCastleObjectPoint(crew, side, &crewX, &crewY);
-			DrawCmfDetailShadow(crew->cmf, crewPos[crew->type * 5],
-				crewX, crewY, side == 0 ? RIGHT : LEFT,
+
+			const bool acting = fighting && pvpClashActorSide == side
+				&& pvpClashActorSlot == i;
+			//치는 동안만 모션이 돈다. 나머지는 선 자세 그대로다.
+			const int motionCnt = Max(1, crewPos[crew->type * 5 + 1]);
+			const int motion = crewPos[crew->type * 5]
+				+ (acting ? (frame / 3) % motionCnt : 0);
+
+			DrawCmfDetailShadow(crew->cmf, motion,
+				crewX + (acting ? lunge : 0), crewY,
+				side == 0 ? RIGHT : LEFT,
 				castleZoom * DIORAMAZOOM_REMAINDER * enemyIconZoom[crew->type]);
+
+			if (acting) {
+				actorPoint[0] = crewX + lunge;
+				actorPoint[1] = crewY;
+				actorSeen = true;
+			}
 		}
 	}
 
@@ -9169,24 +9464,227 @@ static void PvpCastleStandOffDraw(void)
 	UserProfileNameDraw((int)enemyHouse.userProfileImgIdx, "RIVAL COPY",
 		DX - 8 * _2X - (int)profileSize, rightProfileY, profileSize,
 		DX - 48 * _2X, rightProfileY - 16 * _2X, 0.90f, RIGHT);
-	if (pvpTestFrame < FPS + FPS / 2) {
-		SetAlpha(Min(32, Max(0, (FPS + FPS / 2 - pvpTestFrame) * 32 / Max(1, FPS / 2))));
-		DrawGoldAlphaText(DX / 2, DY - 18 * _2X, "SIEGE READY",
-			FONT_GOLD_LARGE, 0.72f, CENTER, true, -7.0f);
+	if (!fighting) {
+		if (pvpTestFrame < FPS + FPS / 2) {
+			SetAlpha(Min(32, Max(0, (FPS + FPS / 2 - pvpTestFrame) * 32 / Max(1, FPS / 2))));
+			DrawGoldAlphaText(DX / 2, DY - 18 * _2X, "CASTLE CLASH",
+				FONT_GOLD_LARGE, 0.72f, CENTER, true, -7.0f);
+			SetAlpha(32);
+		}
+		DrawGoldAlphaText(DX / 2, DY / 2 + 18 * _2X, "VS",
+			FONT_GOLD_LARGE,
+			1.75f + 0.10f * sinf((float)pvpTestFrame * 0.08f),
+			CENTER, true, -7.0f);
+
+		return;
+	}
+
+	//---- 날아가는 탄 ----
+	//
+	//치는 사람의 자리에서 나가 상대 히어로에게 닿는다. 가는 길은
+	//포물선이다 - 직선으로 가면 쏜 것이 아니라 그어 놓은 선으로 보인다.
+	//
+	//단계가 높을수록 굵다. 2 / 3 차는 그 위에 스킬 카드도 띄운다.
+	if (pvpClashActorSide >= 0 && actorSeen) {
+		const int to = 1 - pvpClashActorSide;
+		const float t = Min(1.0f, (float)pvpClashShotFrame
+			/ (float)Max(1, PVP_CLASH_SHOT_FLY));
+		const int fromX = actorPoint[0];
+		const int fromY = actorPoint[1] + 14 * _2X;
+		const int toX = heroPoint[to][0];
+		const int toY = heroPoint[to][1] + 14 * _2X;
+		const int shotX = (int)(fromX + (toX - fromX) * t);
+		const int shotY = (int)(fromY + (toY - fromY) * t
+			+ 40.0f * _2X * sinf(t * (float)M_PI));
+		const int shotR = (3 + pvpClashActorLevel * 2) * _2X;
+		const int color = (pvpClashActorLevel >= 3) ? 0xFF7AE0
+			: (pvpClashActorLevel == 2) ? 0x7AC8FF : 0xFFD34D;
+
+		//연기. 지나온 자리에 옅게 남는다.
+		for (int i = 1; i <= 4; ++i) {
+			const float pt = Max(0.0f, t - (float)i * 0.045f);
+			const int px = (int)(fromX + (toX - fromX) * pt);
+			const int py = (int)(fromY + (toY - fromY) * pt
+				+ 40.0f * _2X * sinf(pt * (float)M_PI));
+			SetAlpha(14 - i * 3);
+			MemRectRound(px - shotR / 2, py + shotR / 2,
+				shotR, shotR, 0xFFEBB0, shotR / 2);
+		}
+
+		SetAlpha(32);
+		MemRectRound(shotX - shotR, shotY + shotR,
+			shotR * 2, shotR * 2, color, shotR);
+		MemRectRound(shotX - shotR / 3, shotY + shotR / 3,
+			shotR * 2 / 3, shotR * 2 / 3, COLOR_WHITE, shotR / 3);
+
+		//스킬 카드는 치는 사람의 머리 위다. 무엇이 나갔는지 이름으로 읽는다.
+		if (pvpClashActorSkill >= 0 && pvpClashActorLevel > 1) {
+			const float cardZoom = (float)(26 * _2X) / (float)SKILLCARDSIZE_X;
+
+			DrawSkillCard(pvpClashActorSkill, pvpClashActorLevel,
+				actorPoint[0] - 13 * _2X, actorPoint[1] + 46 * _2X,
+				cardZoom);
+		}
+	}
+
+	//맞은 성은 한 번 번쩍인다.
+	for (int side = 0; side < 2; ++side) {
+		if (pvpClashShake[side] <= 0)
+			continue;
+
+		const int flashX = (side == 0) ? leftX : rightX;
+		SetAlpha(Min(20, pvpClashShake[side] * 4));
+		MemRectRound(flashX - 30 * _2X,
+			castleY[side] - (int)(DIORAMASIZE_Y * castleZoom * 0.35f),
+			60 * _2X, 60 * _2X, 0xFF8A5C, 30 * _2X);
 		SetAlpha(32);
 	}
-	DrawGoldAlphaText(DX / 2, DY / 2 + 18 * _2X, "VS",
-		FONT_GOLD_LARGE,
-		1.75f + 0.10f * sinf((float)pvpTestFrame * 0.08f),
-		CENTER, true, -7.0f);
+
+	VsHpBarDraw(pvpTestPlayerHp, pvpTestPlayerMaxHp,
+		86 * _2X, DY - 72 * _2X, BARCOLOR_GREEN, 0.58f);
+	VsHpBarDraw(pvpTestEnemyHp, pvpTestEnemyMaxHp,
+		DX - 86 * _2X, DY - 72 * _2X, BARCOLOR_RED, 0.58f);
+}
+
+//---- 격돌 화면의 진행 ----
+//
+//    -3  우주맵이 차오른다
+//    -2  그 우주에서 고른 두 성이 가운데로 모인다
+//    -1  두 성이 좌우에서 제자리로 밀려 들어온다
+//     2  서로 쏜다
+//     4  이겼다 - 상대 금고를 가져온다
+//     5  졌다
+//     6  구름으로 닫고 돌아간다
+//
+//공성전의 상자 약탈(3)과 GO 대기(1)는 없다. 들어갈 성이 없고, 두 성이
+//맞붙는 것을 보여주는 화면이라 누를 것도 없다.
+static void PvpCastleClashDraw(void)
+{
+	switch (pvpTestState) {
+	case -3:
+		DrawPvpCosmicCastleMap(pvpTestFrame, PVP_CLASH_UNIVERSE_BUILD);
+
+		if (pvpTestFrame >= PVP_CLASH_UNIVERSE_BUILD
+			+ PVP_CLASH_UNIVERSE_HOLD) {
+			pvpTestState = -2;
+			pvpTestFrame = 0;
+			PlayMusic(M_HEART);
+		}
+		break;
+
+	case -2:
+		DrawPvpSelectedCastles(pvpTestFrame, PVP_CLASH_MATCH_FRAME);
+
+		if (pvpTestFrame >= PVP_CLASH_MATCH_FRAME) {
+			pvpTestState = -1;
+			pvpTestFrame = 0;
+			PvpClashReset();
+		}
+		break;
+
+	case -1: {
+		//제자리에 닿는 순간이 가장 빠르다. 그래야 부딪히는 것으로 보인다.
+		const float t = Min(1.0f, (float)pvpTestFrame
+			/ (float)Max(1, PVP_CLASH_IN_FRAME));
+
+		PvpCastleStandOffDraw(t * t, false);
+
+		if (pvpTestFrame >= PVP_CLASH_IN_FRAME) {
+			pvpTestState = 2;
+			pvpTestFrame = 0;
+			PlayMusic(M_KUNG);
+		}
+		break;
+	}
+
+	case 2:
+		PvpCastleStandOffDraw(1.0f, true);
+		PvpClashCombatStep();
+
+		if (pvpTestEnemyHp <= 0) {
+			pvpTestState = 4;
+			pvpTestFrame = 0;
+			PvpClashTakeLoot();
+		}
+		else if (pvpTestPlayerHp <= 0) {
+			pvpTestState = 5;
+			pvpTestFrame = 0;
+			PlayMusic(M_ERROR);
+		}
+		break;
+
+	case 4: {
+		char lootText[64];
+
+		PvpCastleStandOffDraw(1.0f, true);
+		sprintf(lootText, "GOLD +%lld", pvpTestLoot);
+		SetFontColor(0xFFD43B);
+		CenterTextStrSolid("CLASH WON", DX / 2, DY - 112 * _2X, 1.55f);
+		CenterTextStrSolid(lootText, DX / 2, DY - 142 * _2X, 1.2f);
+		SetFontColor(COLOR_WHITE);
+
+		if (pvpTestFrame >= PVP_CLASH_RESULT_FRAME) {
+			pvpTestState = 6;
+			pvpTestFrame = 0;
+		}
+		break;
+	}
+
+	case 5:
+		PvpCastleStandOffDraw(1.0f, true);
+		SetFontColor(0xFF7777);
+		CenterTextStrSolid("CLASH LOST", DX / 2, DY - 112 * _2X, 1.55f);
+		SetFontColor(COLOR_WHITE);
+
+		if (pvpTestFrame >= PVP_CLASH_RESULT_FRAME) {
+			pvpTestState = 6;
+			pvpTestFrame = 0;
+		}
+		break;
+
+	default:
+		//---- 닫고 나간다 ----
+		//
+		//공성전과 같은 구름이다. 열리며 들어왔으니 닫히며 나간다.
+		PvpCastleStandOffDraw(1.0f, true);
+		PvpTransitionCloudDraw((FPS + FPS / 2)
+			* Max(0, PVP_LOOT_CLOSE_FRAME - pvpTestFrame)
+			/ PVP_LOOT_CLOSE_FRAME);
+
+		if (pvpTestFrame >= PVP_LOOT_CLOSE_FRAME) {
+			ExitPvpTest();
+			return;
+		}
+		break;
+	}
+
+	//---- 위 바와 뒤로가기 ----
+	//
+	//우주맵이 차오르는 동안에는 아무것도 얹지 않는다. 그 화면은 "여기가
+	//어디인가" 를 보여주는 중이라 글자 한 줄만 더 와도 복잡해진다.
+	if (pvpTestState > -3 && pvpTestState != 6) {
+		BarDraw(&bar[BAR_CROWN], bar[BAR_CROWN].zoom);
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		BarDraw(&bar[BAR_STAR], bar[BAR_STAR].zoom);
+		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+		DrawUiButton(8 * _2X, DY - 8 * _2X, 42 * _2X, 34 * _2X,
+			"<", TOUCH_FUNC_PVP_TEST_BACK);
+	}
+
+	pvpTestFrame++;
 }
 
 void PvpTestDraw(void)
 {
 	ResetRectPoint();
+#if PVP_CASTLE_CLASH
+	//성 하나를 전장으로 쓰는 공성전 대신 두 성을 좌우에 세운다.
+	PvpCastleClashDraw();
+	return;
+#endif
 	if (pvpObjectsSaved && pvpTestState == -1) {
 		//두 성과 승무원 배치를 잠깐 보여 준 뒤 실제 적 성 전장으로 전환한다.
-		PvpCastleStandOffDraw();
+		PvpCastleStandOffDraw(1.0f, false);
 		pvpTestFrame++;
 		if (pvpTestFrame >= FPS * 2) {
 			pvpTestState = 0;
@@ -9541,13 +10039,9 @@ void GNBDraw(int x, int y)
 	//---- 좌상단 퀵버튼 ----
 	//
 	//상점은 하단 네 칸의 첫 자리로 내려갔다. 같은 곳으로 가는 문이 화면에
-	//둘이면 어느 쪽이 진짜인지 헷갈린다.
-	//
-	//PVP 시험 버튼은 성 메뉴 칸에서 아이콘을 빌려 쓰고 있었다. 그 자리는
-	//이제 성 배지가 쓴다.
-	//
-	//두 버튼 다 자리만 비운다. 눌렀을 때 가는 곳은 그대로 살아 있다.
-#if SHOW_SHOP_EVENT_ICON || SHOW_PVP_TEST_BUTTON
+	//둘이면 어느 쪽이 진짜인지 헷갈린다. 자리만 비운다 - 눌렀을 때 가는
+	//곳은 그대로 살아 있다.
+#if SHOW_SHOP_EVENT_ICON
 	if (curMenu == MENU_PLAY && drawHandle == MD_PLAY) {
 		const float shopZoom = 0.72f;
 		const float shopX = (float)x + 4.0f * _2X
@@ -9574,35 +10068,30 @@ void GNBDraw(int x, int y)
 				TOUCH_FUNC_SHOP);
 		}
 #endif
-
-#if SHOW_PVP_TEST_BUTTON
-		//PVP 서버 연결 전까지 쓰는 테스트 진입 버튼. 상점 바로 아래에 두며
-		//아이콘은 임시로 성 메뉴 셀을 사용한다.
-		const float pvpY = shopY - (float)MAINMENU_Y * shopZoom - 4.0f * _2X;
-		const float pvpPress = GetButtonPressScale(
-			shopX, pvpY,
-			(float)MAINMENU_X * shopZoom,
-			(float)MAINMENU_Y * shopZoom);
-		const float pvpDrawZoom = shopZoom * pvpPress;
-		const float pvpGapX = (float)MAINMENU_X * (pvpDrawZoom - shopZoom) / 2.0f;
-		const float pvpGapY = (float)MAINMENU_Y * (pvpDrawZoom - shopZoom) / 2.0f;
-
-		DrawBarIcon(BAR_CASTLE,
-			(int)(shopX - pvpGapX),
-			(int)(pvpY + pvpGapY),
-			pvpDrawZoom);
-		CenterTextStrSolid("PVP",
-			(int)(shopX + (float)MAINMENU_X * shopZoom / 2.0f),
-			(int)(pvpY - (float)MAINMENU_Y * shopZoom + 8.0f * _2X),
-			0.62f);
-
-		if (menuPressPossible()) {
-			SetRectPoint(shopX, pvpY,
-				(float)MAINMENU_X * shopZoom,
-				(float)MAINMENU_Y * shopZoom,
-				TOUCH_FUNC_PVP_TEST);
-		}
+	}
 #endif
+
+	//---- PVP 진입 ----
+	//
+	//성 배지 바로 아래. 그림을 빌리지 않고 글자만 있는 공용 네모 버튼을
+	//쓴다 - 성 메뉴 칸 그림을 빌려 쓰던 때는 성 배지와 같은 그림이
+	//좌상단에 둘 나와서 어느 쪽이 성으로 가는 문인지 헷갈렸다.
+	//
+	//자리는 배지(bar[BAR_CASTLE])에서 잰다. 보스전 진입으로 배지가 화면
+	//밖으로 밀리면 이 버튼도 같이 밀려야 한다.
+#if SHOW_PVP_TEST_BUTTON
+	if (curMenu == MENU_PLAY && drawHandle == MD_PLAY) {
+		const int pvpW = 56 * _2X;
+		const int pvpH = 26 * _2X;
+		const int pvpX = (int)(xOffset + bar[BAR_CASTLE].x) - pvpW / 2;
+		//배지의 터치영역이 끝나는 줄보다 아래다. 둘이 겹치면 성으로
+		//들어가려다 PVP 로 들어간다.
+		const int pvpY = (int)bar[BAR_CASTLE].y - 30 * _2X;
+
+		//창이 떠 있는 동안에도 자리는 그대로 둔다. 사라졌다 나타나면 성
+		//배지만 남아 좌상단이 매번 달라 보인다. 누르는 것만 막는다.
+		DrawUiButton(pvpX, pvpY, pvpW, pvpH, "PVP", TOUCH_FUNC_PVP_TEST,
+			false, menuPressPossible());
 	}
 #endif
 
@@ -10946,6 +11435,7 @@ void DrawPopUp(int idx)
 		&& p->type != POPUPTYPE_OPTION_HELP
 		&& p->type != POPUPTYPE_IAP_CONFIRM
 		&& p->type != POPUPTYPE_GACHA_RATES
+		&& p->type != POPUPTYPE_CASTLEMENU
 		//멸망전 입장창도 제 오른쪽 위에 닫기 버튼을 달고 있다.
 		&& p->type != POPUPTYPE_BOSSRAID)) {
 		float xMarkZoom = 1.0f;

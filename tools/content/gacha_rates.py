@@ -441,7 +441,7 @@ def write_html(boxes, pity, stars, stamp):
     a('<head>')
     a('<meta charset="utf-8">')
     a('<meta name="viewport" content="width=device-width, initial-scale=1">')
-    a('<title>인삼남 확률 정보</title>')
+    a('<title>Castle Survivor 확률 정보</title>')
     a('<style>')
     a(STYLE)
     a('</style>')
@@ -449,7 +449,7 @@ def write_html(boxes, pity, stars, stamp):
     a('<body>')
     a('<div class="wrap">')
 
-    a('<h1>인삼남 확률 정보</h1>')
+    a('<h1>Castle Survivor 확률 정보</h1>')
     a('<div class="meta">주식회사 빅픽셀<br>기준일 %s</div>' % stamp)
 
     a('<div class="note">')

@@ -37,7 +37,7 @@ int GetAtk(int);
 long long GetRouletteValue(int actioncCardType, int itemType, int itemDetail, int itemGrade, int itemLv);
 void AttackRobin(int, int);
 int AttackRobin_Back(int, int);
-int AttackObj(long long int, int);
+int AttackObj(long long int, int, bool guaranteedHit = false);
 int AttackObj2(int, int, int, int);
 int AttackEnemyCheck(int);
 int EnemyCheck(int);

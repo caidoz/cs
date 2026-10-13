@@ -2084,6 +2084,7 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_POPUP_CASTLEMENU:
+			CastleMenuOpen();
 			while (popUpCnt > 0) {
 				menuDepth = 0;
 				ClosePopUp();
@@ -2977,6 +2978,13 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
+	// Retired menu commands must not bypass per-castle upgrades or paid ownership.
+	if ((func >= TOUCH_FUNC_CASTLE_PARTUP && func < TOUCH_FUNC_CASTLE_PARTUP + 4) ||
+		func == TOUCH_FUNC_CASTLE_FINISH || func == TOUCH_FUNC_CASTLE_UPGRADE) {
+		systemKey = 0;
+		return;
+	}
+	if (!touchDisable && CastleMenuCommand(func)) { systemKey=0; return; }
 	// Handle this isolated title tool even while network login is pending.
 #ifdef GAMEDEBUG
 	if (TitleCastleDebugCommand(func)) {

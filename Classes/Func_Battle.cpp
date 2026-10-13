@@ -4,6 +4,10 @@
 #include "Text.h"
 #include "Data/SwordSprites.h"
 #include "Data/FoeGearData.h"
+#include "CastleArtilleryModel.h"
+#include "Data/CastleArtilleryFrames.h"
+#include "Data/CmfBlob.h"
+#include "StageBackground.h"
 
 namespace {
 	int bossRaidCrewGauge[MAXCREW] = { 0, };
@@ -75,6 +79,10 @@ namespace {
 
 	bool IsBossRaidVisibleBar(int barIndex)
 	{
+		// Bridge HUD replaces the legacy health UI in normal realtime stages.
+		if (drawHandle == MD_PLAY && ((barIndex >= BAR_PLAYERHP && barIndex < BAR_COIN)
+			|| barIndex == BAR_NPC || barIndex == BAR_BOSSHP))
+			return false;
 		// 1단계 퇴장 중에는 기존 바를 실제로 그려야 화면 밖으로 튕겨 나가는
 		// 모습이 보인다. 보스 생성과 MD 전환이 끝난 뒤에만 전용 HUD로 거른다.
 		if (attackSequence == ATTACKSEQUENCE_BOSSRAID)
@@ -1075,7 +1083,7 @@ static void DrawRobin6PartDiagnostic(void)
 // 스테이지 실시간 전투
 //
 // [규칙]
-//   - 판마다 히어로 혼자 선다. 몬스터를 한 마리 눕힐 때마다 세 갈래를
+//   - 판마다 히어로 혼자 선다. 몬스터를 한 마리 눕힐 때마다 갈래를
 //     골드로 사고(Func_Draw 의 격자 모듈), 고른 동료와 몬스터는 곧바로
 //     히어로 곁에 선다. 판이 끝나면 뽑은 것은 다 사라진다.
 //   - 아무도 걷지 않는다. 제자리에서 저마다 제 쿨타임으로 친다.
@@ -1148,6 +1156,9 @@ bool IsStageRealtime(void)
 //등) 거기서 지우면 산 동료와 잡은 수가 판 중간에 사라지기 때문이다.
 void StageRtBegin(void)
 {
+	CastleProgressEnsure();
+	gMobileCastleVisual=robin.castle;
+	StageArtilleryReset();
 	//---- 판 시작 골드 ----
 	//
 	//망루가 있으면 판에 들어가면서 골드를 얹어 준다. 첫 룰렛에서 무엇을
@@ -1206,8 +1217,8 @@ void StageRtSetAuto(bool on)
 
 //---- 전투 버튼 ----
 //
-//격자 위에 앉는다. 세 갈래가 떠 있거나 상자/클리어 연출 중에는 숨긴다 -
-//그때는 눌러도 싸울 것이 없고, 세 갈래와 같은 자리를 쓴다.
+//격자 위에 앉는다. 상점이 떠 있거나 상자/클리어 연출 중에는 숨긴다 -
+//그때는 눌러도 싸울 것이 없고, 상점과 같은 자리를 쓴다.
 //
 //Play() 뒤에 그린다(Core.cpp). 터치영역은 뒤에 등록한 것이 먼저 걸리므로
 //아래 깔린 전투 UI 에 먹히지 않는다.
@@ -1620,6 +1631,8 @@ static bool StageRtFoeAlive(int foe)
 	return e->active && !e->dead && e->moveHandler != VANISHMOVE;
 }
 
+#include "CastleArtilleryRuntime.inc"
+
 //---- 격자의 검 한 자루가 친다 ----
 //
 //데미지는 공격자의 PS_DMG 를 백분율로 쓴다(AttackObj). 그 값은 장착 무기의
@@ -1645,7 +1658,7 @@ void UpdateStageRealtime(void)
 	if (!IsStageRealtime())
 		return;
 
-	//판이 멈춰 있을 때(세 갈래를 고르는 중, 상자, 클리어)는 아무도 안 친다.
+	//판이 멈춰 있을 때(상점에서 고르는 중, 상자, 클리어)는 아무도 안 친다.
 	//시계도 멈춘다 - 멈춘 사이에 차 두면 다시 서자마자 한꺼번에 쏟아진다.
 	const bool running = stageAutoBattle
 		&& (waveStatus == WAVESTATUS_PLAY)
@@ -1654,6 +1667,7 @@ void UpdateStageRealtime(void)
 
 	const int foe = StageRtFoe();
 	OBJECT* hero = &ao[PLAYER];
+	StageArtilleryStep(running, foe);
 
 	//---- 아무도 걷지 않는다 ----
 	//

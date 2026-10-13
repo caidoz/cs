@@ -76,6 +76,8 @@ bool LobbyCamTouchEnded(int id);
 //시험이 끝나면 이 네 줄과 Func_Draw.cpp 의 블록을 통째로 지운다.
 void GridTestDraw(void);
 int GetStageInventoryTop(void);
+int GetStageInventoryWidth(void);
+void StageBridgeHpDraw(void);
 //성 안의 히어로와 동료. 로비와 전투가 같이 쓴다.
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int castle, bool battle);
@@ -122,6 +124,8 @@ void StageGearApplyStat(OBJECT* pObj);				//가방 장비 스탯을 더한다
 long long StageGearReduce(int obj, long long damage);//방어구를 거친 피해
 bool kShopPartIsSword(int part);
 int GridTestCellCnt(int castle);
+int CastleEquippedCells(void);
+int LoadoutCellUsed(void);
 void GridTestResetStage(void);
 bool GridTestOfferOpen(void);
 int GridTestDockTop(void);
@@ -130,7 +134,11 @@ bool GridTestIsOpen(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
 void BattleMinimapDraw(int x, int y, float zoom);
-void StartPvpTest(void);
+//---- PVP 진입 ----
+//
+//withUniverse 가 true 면 우주맵에서 상대를 찾는 화면부터 보여준다. 룰렛
+//당첨으로 들어올 때는 그 화면을 룰렛이 이미 보여줬으므로 false 다.
+void StartPvpTest(bool withUniverse = true);
 void StartPvpTestBattle(void);
 bool IsPvpCrewActing(int crewSlot);
 int GetPvpSkillFreezeObj(void);

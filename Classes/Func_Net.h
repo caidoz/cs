@@ -259,3 +259,5 @@ extern long long gNetRevision;
 //서버에서 받아 둔 히어로 상태이상을 ao[] 에 얹는다.
 //히어로를 다 세운 뒤에 한 번 부른다.
 void NetApplyHeroEffects(void);
+// Headless development check of the actual dump encoder and decoder.
+bool NetCastleProtocolSelfTest(void);

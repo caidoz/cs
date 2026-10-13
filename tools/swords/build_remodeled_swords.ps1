@@ -3,7 +3,7 @@ param([string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path)
 # Rebuild the 35 inventory/held sprites from the approved concept atlas.
 # Tile pixels and hand anchors share one coordinate system with SwordSprites.h.
 Add-Type -AssemblyName System.Drawing
-$atlasPath = Join-Path $Root 'content\swords\remodel\source-atlas.png'
+$atlasPath = Join-Path $Root 'content\equipment\pixel_art\robin_sword_atlas.png'
 $atlas = [System.Drawing.Bitmap]::new($atlasPath)
 $originalTree = [System.Drawing.Bitmap]::new((Join-Path $Root 'content\swords\remodel\tree21-original.png'))
 $res = Join-Path $Root 'Resources\res'
@@ -39,8 +39,11 @@ try {
             '1x4' { $cols = 1; $rows = 4 }
             '2x2' { $cols = 2; $rows = 2 }
             '2x4' { $cols = 2; $rows = 4 }
-            'Ttree' { $cols = 3; $rows = 4; $cells = 0x7722 }
+            'Ttree' { $cols = 3; $rows = 3; $cells = 0x772 }
         }
+        # The centred chicken uses the complete 2x3 rectangle. Explicit bits
+        # prevent the legacy silhouette table from clipping its right half.
+        if ($n -eq 15) { $cells = 0x333 }
         $width = $cols * 32; $height = $rows * 32
         $row = [int][Math]::Floor(($n - 1) / 7)
         $col = ($n - 1) % 7
@@ -60,6 +63,30 @@ try {
             }
         }
         if ($maxX -lt $minX) { throw "Missing atlas sword $n" }
+        if ($n -eq 15) {
+            # Ignore the detached speck to the right of the chicken silhouette.
+            # Keep the widest continuous run of occupied columns (the body).
+            # The detached speck can contain several opaque pixels per column,
+            # so a pixel-count threshold alone does not reliably remove it.
+            $minX = $right; $maxX = -1
+            $runStart = -1; $bestLength = 0
+            for ($x = $left; $x -lt $right; $x++) {
+                $opaqueCount = 0
+                for ($y = $minY; $y -le $maxY; $y++) {
+                    if ($atlas.GetPixel($x, $y).A -gt 24) { $opaqueCount++ }
+                }
+                if ($opaqueCount -gt 0) {
+                    if ($runStart -lt 0) { $runStart = $x }
+                    $runLength = $x - $runStart + 1
+                    if ($runLength -gt $bestLength) {
+                        $bestLength = $runLength
+                        $minX = $runStart; $maxX = $x
+                    }
+                } else {
+                    $runStart = -1
+                }
+            }
+        }
         $source = [System.Drawing.Rectangle]::new($minX, $minY, $maxX - $minX + 1, $maxY - $minY + 1)
         $out = [System.Drawing.Bitmap]::new($width, $height, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
         $g = [System.Drawing.Graphics]::FromImage($out)
@@ -79,11 +106,11 @@ try {
         } elseif ($n -eq 21) {
             # Widen only the original foliage by 50%. The trunk and grip keep
             # their exact original vertical coordinates and proportions.
-            for ($sy = 0; $sy -lt $originalTree.Height; $sy++) {
+            for ($sy = 16; $sy -lt 112; $sy++) {
                 $factor = if ($sy -le 45) { 1.5 } elseif ($sy -ge 65) { 1.0 } else { 1.5 - 0.5 * ($sy - 45) / 20.0 }
                 $rowWidth = [int][Math]::Round($originalTree.Width * $factor)
                 $dx = [int][Math]::Floor(($width - $rowWidth) / 2)
-                $g.DrawImage($originalTree, [System.Drawing.Rectangle]::new($dx, $sy, $rowWidth, 1),
+                $g.DrawImage($originalTree, [System.Drawing.Rectangle]::new($dx, $sy - 16, $rowWidth, 1),
                     [System.Drawing.Rectangle]::new(0, $sy, $originalTree.Width, 1), [System.Drawing.GraphicsUnit]::Pixel)
             }
         } else {
@@ -94,6 +121,23 @@ try {
             # lands on the centre line without clipping the opposite edge.
             $artX = if ($n -eq 32) { 13 } else { 2 }
             $artWidth = if ($n -eq 32) { 50 } else { $width - 4 }
+            # Preserve the tile footprint while giving these blades a slimmer silhouette.
+            if ($n -in @(4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 19)) {
+                $artWidth = [int][Math]::Round(($width - 4) * 0.72)
+                $artX = [int][Math]::Floor(($width - $artWidth) / 2)
+            }
+            if ($n -eq 15) {
+                $artWidth = $width - 12
+                $artX = [int][Math]::Floor(($width - $artWidth) / 2)
+            }
+            if ($n -in @(22, 23)) {
+                $artWidth = [int][Math]::Round(($width - 4) * 0.82)
+                $artX = [int][Math]::Floor(($width - $artWidth) / 2)
+            }
+            if ($n -eq 18) {
+                $artWidth = $width - 2; $artX = 1
+                $artHeight = $height - 2; $artY = 1
+            }
             $g.DrawImage($atlas, [System.Drawing.Rectangle]::new($artX, $artY, $artWidth, $artHeight), $source, [System.Drawing.GraphicsUnit]::Pixel)
         }
         $g.Dispose()
@@ -117,7 +161,7 @@ try {
 
         $baselineHeight = if ($n -le 5) { 64 } elseif ($n -le 18) { 96 } else { 128 }
         $handScale = [Math]::Min(1.4, $baselineHeight / [double]$height)
-        if ($n -eq 18 -or $n -eq 26) { $handScale = 1.0 }
+        if ($n -eq 18 -or $n -eq 21 -or $n -eq 26) { $handScale = 1.0 }
         $handScaleText = $handScale.ToString('0.000', [cultureinfo]::InvariantCulture)
         $records.Add([pscustomobject]@{
             id = $n; shape = $shape; cols = $cols; rows = $rows; cells = $cells

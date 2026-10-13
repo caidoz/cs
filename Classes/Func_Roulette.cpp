@@ -1141,7 +1141,7 @@ void RouletteDrawSimple3Slots(
 
 //룰렛의 세 심장 당첨을 "여러 우주의 성 중 상대를 찾는다"는 화면으로 잇는다.
 //신규 리소스 없이 기존 성 디오라마를 축소 배치하고 별은 작은 광점으로만 만든다.
-static void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
+void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 {
 	UnSectionClip(false);
 	float buildT = Min(1.0f, (float)localFrame / (float)Max(1, buildFrame));
@@ -1293,7 +1293,7 @@ static void RestorePvpUiBars(void)
 	pvpUiBarsMoving = false;
 }
 
-static void DrawPvpSelectedCastles(int localFrame, int totalFrame)
+void DrawPvpSelectedCastles(int localFrame, int totalFrame)
 {
 	DrawPvpCosmicCastleMap(totalFrame, totalFrame);
 	float t = Min(1.0f, (float)localFrame / (float)Max(1, totalFrame));
@@ -1719,7 +1719,8 @@ void RouletteDraw(int x, int y, float zoom)
 			dioramaZoom = gPvpCosmicBaseZoom;
 			gPvpCosmicTransition = false;
 			RestorePvpUiBars();
-			StartPvpTest();
+			//우주맵과 두 성의 대치는 위에서 이미 보여줬다.
+			StartPvpTest(false);
 		}
 		return;
 	}

@@ -187,7 +187,7 @@
 	X(dianaSkillClosingFrame, 2, DPK_UINT, 23, DPK_KEY_NONE, 0, 0) \
 	X(maxxSkillStartFrame, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
 	X(maxxSkillClosingFrame, 2, DPK_UINT, 22, DPK_KEY_NONE, 0, 0) \
-	X(robinSkillMotion, 2, DPK_UINT, 8612, DPK_KEY_NONE, 0, 0) \
+	X(robinSkillMotion, 2, DPK_UINT, 8412, DPK_KEY_NONE, 0, 0) \
 	X(dianaSkillMotion, 2, DPK_UINT, 7964, DPK_KEY_NONE, 0, 0) \
 	X(maxxSkillMotion, 2, DPK_UINT, 3652, DPK_KEY_NONE, 0, 0) \
 	X(dianaHelmPos, 1, DPK_INT, 50, DPK_KEY_NONE, 0, 0) \

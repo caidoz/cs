@@ -48,6 +48,10 @@ def mask_of(detail, w, h):
     읽으므로 뒤집어 적는다. 네모를 다 쓰면 0 을 준다 - 가방 쪽에서 0 은
     "구멍 없음" 이라 그대로 맞는다.
     """
+    # The chicken is centred in a full 2x3 footprint. Sparse head/grip
+    # pixels must not turn its right-hand tiles into clipping holes.
+    if detail == 14:
+        return 0, w * h, ["O" * w for _ in range(h)]
     p = os.path.join(ROOT, "Resources", "res", "w0_%d.png" % (detail + 1))
     a = np.array(Image.open(p).convert("RGBA"))
     m = a[:, :, 3] > 16

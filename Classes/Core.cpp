@@ -517,6 +517,11 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 
 	endTouchX = touchPoint.x;
 	endTouchY = touchPoint.y;
+	if (CastleMenuSwipe(startTouchX,startTouchY,endTouchX,endTouchY)) {
+		is_key_pressed=is_touchkey_pressed=is_key_released=false;
+		is_press_finished=is_release_finished=true;
+		return;
+	}
 
 	if (touch) {
 		if (touchModeOld == NULL && autoScroll == false) {
@@ -844,6 +849,9 @@ bool Core::init()
 
 	LoadImg(EFFECT_IMG);
 	LoadTexture(EFFECT_IMG);
+	// Artillery is outside the legacy loading range; register both caches.
+	LoadImg(CASTLE_ARTILLERY_IMG);
+	LoadTexture(CASTLE_ARTILLERY_IMG);
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
@@ -1030,6 +1038,8 @@ bool Core::init()
 	return true;
 }
 
+#include "CastleMenuReview.inc"
+
 void Core::Run(float delta) {
 	LobbySkyUpdate(delta);
 	StageBgUpdate(delta);
@@ -1099,6 +1109,7 @@ void Core::Run(float delta) {
 	//그 전에 도착하면 빈 판을 덮게 된다.
 	if (netBooted)
 		IapUpdate();
+	if (netBooted) CastleMenuReviewStep();
 
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
@@ -1523,7 +1534,9 @@ void PaintClet(int x, int y, int w, int h)
 				//시험이 끝나면 이 세 줄과 Func_Draw.cpp 의 블록을 지운다.
 				HitZoomPause();
 				GridTestDraw();
+				StageBridgeHpDraw();
 				StageFoeShotDraw();
+				StageArtilleryDraw();
 				StageRtDrawButton();
 				HitZoomResume();
 
@@ -2600,7 +2613,7 @@ void PaintClet(int x, int y, int w, int h)
 
 	VersionDraw();
 #ifdef GAMEDEBUG
-	StageBgDebugDrawButton();
+	if (curMenu != MENU_CASTLE || popUpCnt == 0) StageBgDebugDrawButton();
 #endif
 }
 

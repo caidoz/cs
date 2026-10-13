@@ -21,6 +21,88 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 	DrawImage(BOTTOMMENU_CELL, BOTTOMMENU_CELL, BOTTOMMENU_CELL * cell, 0,
 		left, top, false, false, false, false, 32, z,
 		sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
+	if (drawHandle == MD_LOBBY && cell == BOTTOMMENU_CELL_ADVENTURE) {
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("모험", (int)(left + BOTTOMMENU_CELL * z / 2.0f),
+			(int)(top - BOTTOMMENU_CELL * z + 15.0f * _2X * zoom), 0.68f * zoom);
+	}
+}
+
+// Use the existing resource frame with an independent width; icons and type
+// stay at their normal height when the lobby makes room for energy.
+static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
+{
+	const float zx = w / 444.0f;
+	const float zy = 0.5f;
+	DrawImageScale(444, 129, 302, 1, x, y, false, false, false, false, false,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImageScale(411 * percent, 94, 318, 132 + 95 * color,
+		x + 16 * zx, y - 16 * zy, false, false, false, false, false,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+}
+
+void LobbyResourceBarsDraw(int y)
+{
+	const int gap = 2 * _2X;
+	const int left = xOffset + gap;
+	const int usable = DX - 36 * _2X - gap * 5;
+	const int levelW = (int)(usable * 0.15f);
+	const int moneyW = (int)(usable * 0.28f);
+	const int energyW = usable - levelW - moneyW * 2;
+	const int goldX = left + levelW + gap;
+	const int coinX = goldX + moneyW + gap;
+	const int energyX = coinX + moneyW + gap;
+	const int h = GOLDBARHEIGHT;
+	const float progress = Max(0.0f, Min(1.0f,
+		(float)(ao[PLAYER].exps - NextExp(robin.lv - 1)) /
+		Max(1.0f, (float)(NextExp(robin.lv) - NextExp(robin.lv - 1)))));
+	LobbyResourceFrame(left, y, levelW, BARCOLOR_PURPLE, progress);
+	DrawStarNum(ICON_CROWN, robin.lv + 1, left + 4 * _2X, y - 6 * _2X, 1.0f);
+	SetRectPoint(left, y, levelW, h, TOUCH_FUNC_POPUP_LVUPREWARD);
+
+	for (int i = 0; i < 2; ++i) {
+		const int x = i == 0 ? goldX : coinX;
+		const int func = i == 0 ? TOUCH_FUNC_GOTO_GOLD_IAP : TOUCH_FUNC_GOTO_RAINBOW_IAP;
+		LobbyResourceFrame(x, y, moneyW, i == 0 ? BARCOLOR_YELLOW : BARCOLOR_PURPLE);
+		if (i == 0)
+			DrawIcon(ICON_GOLD, x + 4 * _2X, y - 7 * _2X, 0.9f,
+				COLOR_BROWN, false, false, 1);
+		else
+			DrawImage(64, 64, 0, 198, x + 4 * _2X, y - 7 * _2X,
+				false, false, false, false, false, 0.55f,
+				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+		const int plusSize = 15 * _2X;
+		const int plusX = x + moneyW - plusSize - 4 * _2X;
+		const int plusY = y - (h - plusSize) / 2;
+		DrawBigNumTTF(i == 0 ? robin.gold : robin.coin, plusX - 2 * _2X,
+			y - 10 * _2X, NUM_FONT_NORMAL, RIGHT, false, false,
+			moneyW - 42 * _2X, true, 0.8f, true);
+		const float press = GetButtonScale(func, plusX, plusY, plusSize, plusSize);
+		const float size = plusSize * press;
+		DrawImage(64, 64, 521, 640, plusX + (plusSize - size) / 2,
+			plusY - (plusSize - size) / 2, false, false, false, false, false,
+			size / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+		SetRectPoint(plusX, plusY, plusSize, plusSize, func);
+	}
+
+	LobbyResourceFrame(energyX, y, energyW, BARCOLOR_GREEN);
+	const int iconSize = 17 * _2X;
+	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, y - (h - iconSize) / 2,
+		false, false, false, false, false, iconSize / 128.0f,
+		sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
+	const int textX = energyX + iconSize + 5 * _2X;
+	const int textW = energyW - iconSize - 9 * _2X;
+	char label[64];
+	sprintf(label, "보유 %lld", robin.heart);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(label, textX + textW / 2, y - 5 * _2X,
+		Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
+	const long long cost = GetStageAdmissionHeart(robin.stage);
+	sprintf(label, "소모 %lld", cost);
+	SetFontColor(robin.heart >= cost ? COLOR_WHITE : COLOR_RED);
+	CenterTextStrSolid(label, textX + textW / 2, y - 18 * _2X,
+		Min(0.65f, textW / Max(1.0f, StringWidth(label, 1.0f))));
+	SetFontColor(COLOR_WHITE);
 }
 
 void DrawBarIcon(int type, int x, int y, float zoom)

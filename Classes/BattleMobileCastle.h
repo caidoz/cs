@@ -159,6 +159,7 @@ inline void DrawCastle(int groundY) {
 	const float groundOffset = CastlePartsGroundOffset(curCastle + 1);
 	const float assemblyBottom = (float)groundY -
 		(groundOffset >= 0.0f ? groundOffset * scale : StageBg::kCastleDropPx)
+		- StageBg::kCastleGroundingPx
 		+ shudderY + rumbleY;
 	const float yTop = assemblyBottom + castleH;
 
@@ -174,49 +175,65 @@ inline void DrawCastle(int groundY) {
 	                 naturalW, naturalH, scale, curCastle, true);
 }
 
-//가늘고 긴 체력 띠 하나.
-inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp, int color) {
-	if (w < 8 || maxHp <= 0) return;
-
-	//배경이 밝고 복잡하다. 어두운 바탕에 밝은 윗줄까지 넣어야 읽힌다.
-	const int h = 6 * _2X;
-	const long long v = hp < 0 ? 0 : (hp > maxHp ? maxHp : hp);
-	const int fill = (int)((long long)(w - 4) * v / maxHp);
-
-	MemRect(x, y, w, h, 0x0A0A12);
-	if (fill > 0) {
-		MemRect(x + 2, y - 2, fill, h - 4, color);
-		MemRect(x + 2, y - 2, fill, 2, 0xFFFFFF);
+//다리 옆 체력 패널. 어두운 반투명 틀과 픽셀 하이라이트를 공유한다.
+inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
+                         const char* title, bool enemy) {
+	const int px=Max(1,_2X), h=34*px;
+	const bool compact=w<64*px;
+	const long long maximum=Max(0LL,maxHp), current=Max(0LL,Min(hp,maximum));
+	SetAlpha(20);
+	MemRect(x+2*px,y-2*px,w,h,0x050912);
+	MemRect(x,y,w,h,0x101D30);
+	SetAlpha(ALPHA_MAX);
+	MemRectFrame(x+px,y-px,w-2*px,h-2*px,enemy?0xB8836D:0xB5CDE0);
+	MemRect(x+4*px,y-2*px,w-8*px,px,enemy?0xEAC1A2:0xDBE9F2);
+	const int trackX=x+5*px,trackY=y-(compact?14:17)*px,trackW=w-10*px,trackH=(compact?8:11)*px;
+	MemRect(trackX-px,trackY+px,trackW+2*px,trackH+2*px,0x060D19);
+	MemRect(trackX,trackY,trackW,trackH,enemy?0x42232B:0x1C3542);
+	const int fill=maximum>0?(int)(trackW*((double)current/maximum)):0;
+	if(fill>0) {
+		MemRect(trackX,trackY,fill,trackH,enemy?0xCB4659:0x2798AF);
+		MemRect(trackX,trackY,fill,3*px,enemy?0xFF8C82:0x84E4DB);
+		MemRect(trackX,trackY-trackH+2*px,fill,2*px,enemy?0x90334D:0x186479);
+		if(fill>2*px) MemRect(trackX+fill-px,trackY-px,px,trackH-2*px,enemy?0xFFC3A3:0xC4FFF0);
 	}
-	MemRectFrame(x, y, w, h, 0x000000);
+	char value[96];
+	if(compact) sprintf(value,"%d%%",maximum>0?(int)(100.0*current/maximum):0);
+	else sprintf(value,"%lld / %lld",current,maximum);
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(value,x+w/2,trackY-px,
+		Min((compact?.34f:.43f)*px,(trackW-4.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
+	if(compact) {
+		char a[32],b[32];
+		if(current>=1000000) sprintf(a,"%.3gM",current/1000000.0);
+		else if(current>=1000) sprintf(a,"%.3gK",current/1000.0);
+		else sprintf(a,"%lld",current);
+		if(maximum>=1000000) sprintf(b,"%.3gM",maximum/1000000.0);
+		else if(maximum>=1000) sprintf(b,"%.3gK",maximum/1000.0);
+		else sprintf(b,"%lld",maximum);
+		sprintf(value,"%s / %s",a,b);
+		CenterTextStrSolid(value,x+w/2,y-25*px,
+			Min(.3f*px,(w-8.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
+		sprintf(value,"%s",title);
+	} else sprintf(value,"%s   %d%%",title,maximum>0?(int)(100.0*current/maximum):0);
+	CenterTextStrSolid(value,x+w/2,y-5*px,
+		Min(.5f*px,(w-12.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
 }
 
-//누가 누구를 깎고 있는가. 몬스터 밑과 성 밑에 한 줄씩.
-//
-//예전에는 초상화와 심장 아이콘이 달린 바(BAR_NPC)가 화면 위쪽을 넓게
-//차지했다. 성이 움직이는 판에서는 두 쪽의 남은 체력만 보이면 된다.
-//마주 본 두 줄이면 누가 이기고 있는지가 한눈에 읽힌다.
-inline void DrawDuelHpBars(int groundY) {
-	//딛는 줄 바로 위. 밑으로 내리면 선로 구조물에 묻혀 안 보인다.
-	const int y = groundY + 7 * _2X;
-
-	//체력은 개체에서 읽는다. bar[BAR_NPC] / bar[BAR_PLAYERHP] 는 이 판에서
-	//0 으로 남아 있어 못 쓴다 - 찍어 보고 확인했다.
-	float naturalW = 0.0f, naturalH = 0.0f;
-	CastlePartsNaturalSize(Max(0, Min(gMobileCastleVisual, 9)) + 1, &naturalW, &naturalH);
-	const int castleW = (int)(naturalW * CastlePartsRoomScale());
-
-	DrawDuelHpBar((int)StageBg::kCastleLeft, y, castleW,
-	              ao[ROBIN].hp, ao[ROBIN].maxhp, 0x46C85A);
-
-	//몬스터 쪽. 서 있는 자리를 가운데로 잡는다.
-	const int foe = StageRtFoe();
-	if (foe < 0 || !ao[foe].active || ao[foe].dead) return;
-
-	const int w = 120 * _2X;
-	const int bossX = (int)Min((float)DX - 32 * _2X, 256.0f * _2X);
-	DrawDuelHpBar(Min(DX - w - 4 * _2X, bossX - w / 2), y, w,
-	              ao[foe].hp, ao[foe].maxhp, 0xD8443C);
+//다리 기준으로 좌우에 배치한다. 가운데 인벤토리에는 겹치지 않는다.
+inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
+	// Leave the central inventory fully visible and keep both cards beside the bridge.
+	const int gap=8*_2X, w=Max(32,(DX-inventoryWidth)/2-2*gap), y=groundY-8*_2X;
+	// The castle's health pool is the player health that receives enemy attacks.
+	DrawDuelHpBar(gap,y,w,ao[PLAYER].hp,ao[PLAYER].maxhp,"성 총 체력",false);
+	long long hp=0,maximum=0;
+	for(int i=ENEMY;i<NEUTRAL;++i) {
+		const OBJECT& foe=ao[i];
+		if(!foe.active || foe.type<=0 || foe.mom!=i || foe.moveHandler==REGENMOVE) continue;
+		maximum+=Max(0LL,foe.maxhp);
+		if(!foe.dead) hp+=Max(0LL,Min(foe.hp,foe.maxhp));
+	}
+	DrawDuelHpBar(DX-gap-w,y,w,hp,maximum,"적 총 체력",true);
 }
 
 inline void DrawBossMonster(int groundY) {
@@ -245,7 +262,6 @@ inline void Draw(int groundY, int invenTop) {
 	DrawBackground(groundY, arenaBottom);
 	DrawCastle(groundY);
 	DrawBossMonster(groundY);
-	DrawDuelHpBars(groundY);
 
 	UnSectionClip(false);
 }

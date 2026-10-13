@@ -3565,11 +3565,30 @@ static const signed short jumpFullFrame2_builtin[] = {
 	12 * _2X + 12 * _2X / 2,
 	12 * _2X,
 };
+//---- 공격을 더 안 누르고 있을 때 돌아갈 줄 ----
+//
+//일반공격 표의 _WAIT2 / _WAIT3 가 이 줄로 건너뛴다.
+//
+//찌르기 표에는 _WAIT2 / _WAIT3 가 없다 - 한 번 찌르면 STING6 로 길게
+//버티다 끝난다. 그래서 이 값은 베기 콤보가 읽는다. 베기는 한 번 베고
+//(4 줄), 두 번 베고(9 줄) 멈출 수 있고, 멈추면 칼을 거두는 STOP 네 줄
+//(18 줄)로 간다.
+//
+//옛 값(36 / 40)은 더 긴 베기 표를 보던 때의 자리다. 지금 표는 23 줄이라
+//그 값은 표 밖, 즉 대쉬어택 표를 읽는다.
 static const unsigned char charEtcData_builtin[] = {
 	//WAIT1FRAME
+#ifdef ROBINDEFAULTATTACKSTING
 	ROBIN_ATTACK_NORMAL_START + 36 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 56 + DIANA_ATTACK_DELAY, 0,
+#else
+	ROBIN_ATTACK_NORMAL_START + 18, DIANA_ATTACK_NORMAL_START + 56 + DIANA_ATTACK_DELAY, 0,
+#endif
 	//WAIT2FRAME
+#ifdef ROBINDEFAULTATTACKSTING
 	ROBIN_ATTACK_NORMAL_START + 40 + ROBIN_ATTACK_DELAY, DIANA_ATTACK_NORMAL_START + 56 + DIANA_ATTACK_DELAY, 0,
+#else
+	ROBIN_ATTACK_NORMAL_START + 18, DIANA_ATTACK_NORMAL_START + 56 + DIANA_ATTACK_DELAY, 0,
+#endif
 };
 static const unsigned short robinSkillStartFrame_builtin[] = {
 	0,
@@ -10071,6 +10090,11 @@ const unsigned short* motionData = motionData_builtin;
 //게임이 읽는 포인터. 처음에는 내장 기본값을 가리키고, 부팅 때
 //팩을 읽으면 그쪽으로 옮겨간다. const는 가리키는 대상에 붙으므로
 //게임 코드는 대상을 못 건드리고, 로더만 자기 버퍼를 채워 넘긴다.
+
+//표를 고치면 길이도 같이 고쳐야 한다. 안 고치면 조용히 표 밖을 읽는다.
+static_assert(sizeof(robinSkillMotion_builtin)
+	/ sizeof(robinSkillMotion_builtin[0]) == robinSkillMotion_COUNT,
+	"robinSkillMotion 의 길이와 robinSkillMotion_COUNT 가 다르다");
 
 const unsigned short* robinSkillMotion = robinSkillMotion_builtin;
 const unsigned short* dianaSkillMotion = dianaSkillMotion_builtin;

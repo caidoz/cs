@@ -5,9 +5,13 @@
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
 
+static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
+    "Text.h must include every image-name slot declared in ImgDef.h");
+
 //배경 시계의 실체. 헤더는 extern 으로만 들고 있다 - 까닭은 거기 적어 두었다.
 namespace StageBg {
 float s_travel = 0.0f;
+double s_totalTravelSeconds = 0.0;
 float s_clock  = 0.0f;
 int   s_region = 0;
 int   s_regionPick = -1;
@@ -16,6 +20,13 @@ int   s_regionPick = -1;
 void BattleMobileCastleUpdate(float delta)
 {
 	BattleMobileCastle::Update(delta);
+}
+
+void StageBridgeHpDraw(void)
+{
+	if (drawHandle != MD_PLAY) return;
+	const int inventoryWidth=GetStageInventoryWidth();
+	BattleMobileCastle::DrawDuelHpBars(StageBg::GroundY(),inventoryWidth);
 }
 
 //배경이 흐르는 시계. 로비 · 출정 준비 · 전투가 같은 선로를 쓰므로
@@ -73,8 +84,24 @@ float StageBgRailTravelPx(void)
 
 void StageBgUpdate(float delta)
 {
+	static bool loadedDistance = false;
+	static double lastSavedDistance = 0.0;
+	if (!loadedDistance) {
+		StageBg::s_totalTravelSeconds = cocos2d::UserDefault::getInstance()
+			->getDoubleForKey("castle_total_travel_seconds_v1", 0.0);
+		lastSavedDistance = StageBg::s_totalTravelSeconds;
+		loadedDistance = true;
+	}
 	StageBg::SetRegionForStage(robin.stage);
+	const float before = StageBg::s_travel;
 	StageBg::Update(delta, drawHandle == MD_LOBBY || drawHandle == MD_PLAY);
+	StageBg::s_totalTravelSeconds += StageBg::s_travel - before;
+	if (StageBg::s_totalTravelSeconds - lastSavedDistance >= 10.0) {
+		cocos2d::UserDefault::getInstance()->setDoubleForKey(
+			"castle_total_travel_seconds_v1", StageBg::s_totalTravelSeconds);
+		cocos2d::UserDefault::getInstance()->flush();
+		lastSavedDistance = StageBg::s_totalTravelSeconds;
+	}
 }
 
 //타격 줌을 잠시 꺼두는 중첩 카운터. 월드를 그리는 도중이지만 좌표가 이미
@@ -689,7 +716,7 @@ void HitZoomUpdate(void)
 void LoadImg(int index)
 {
 	std::string fileName;
-	fileName = null;
+	fileName.clear();
 
 
 	//�̹����� �׳� �о �ε��ϴ� ���?
@@ -820,7 +847,7 @@ std::string  GetResourceName(int type, int idx)
 	std::string fileName;
 
 	//파일명 정하기
-	fileName = null;
+	fileName.clear();
 
 	switch (type) {
 	case RES_MAP:
@@ -831,6 +858,10 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
+		if (idx == CASTLE_ARTILLERY_IMG) {
+			fileName = "res/castle_artillery/attacks.png";
+			break;
+		}
 		if (idx >= INVENTORY_HELM_ROBIN_FIRST_IMG && idx <= INVENTORY_HELM_LAST_IMG) {
 			const int hero = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) / 8;
 			const int item = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) % 8 + 1;
@@ -2438,15 +2469,27 @@ void DrawLabel(int x, int y, int textIdx, float zoom)
 	x += (float)(16 * _2X * _2X) * zoom;
 	SetColor(false);
 	//SetFontColor(COLOR_WHITE);
-	SetAlpha(16);
-	MemRect(x + (float)(-480 / 2) * IMGZOOM * zoom, y - (float)6 * _2X, (float)480 * IMGZOOM * zoom, (float)20 * _2X * zoom, COLOR_NAVY);
-	SetAlpha(32);
-
-	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * IMGZOOM * zoom, y - (float)4 * _2X, false, false, false, false, false, IMGZOOM * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	DrawImage(512, 19, 2, 612, x + (float)(-512 / 2) * IMGZOOM * zoom, y - (float)22 * _2X, false, false, false, false, false, IMGZOOM * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawLabelPanel(x - (int)(256 * IMGZOOM * zoom), y - 4 * _2X,
+		(int)(512 * IMGZOOM * zoom), (int)(18 * _2X + 19 * IMGZOOM * zoom));
 
 	if (textIdx)
 		CenterText(textIdx, x, y - (float)(16 * _2X) * zoom + (float)11 * _2X / 2 * LABELZOOM * zoom, LABELZOOM * zoom);
+}
+
+void DrawLabelPanel(int x, int y, int w, int h)
+{
+	const float zoom = w / 512.0f;
+	const int inset = (int)(16 * zoom);
+	const int ornamentH = (int)(19 * zoom);
+	const int savedAlpha = m_lgrpAlpha;
+	SetAlpha(savedAlpha / 2);
+	MemRect(x + inset, y - ornamentH / 2, w - inset * 2,
+		Max(1, h - ornamentH), COLOR_NAVY);
+	SetAlpha(savedAlpha);
+	DrawImage(512, 19, 2, 612, x, y, false, false, false, false, false,
+		zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImage(512, 19, 2, 612, x, y - h + ornamentH,
+		false, false, false, false, false, zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 }
 
 void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, float zoom)

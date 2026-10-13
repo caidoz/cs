@@ -18,7 +18,7 @@ static const unsigned short swordTileCells[35] = {
 	0x000,	//w0_12  2x3 6칸  OO OO OO
 	0x000,	//w0_13  2x3 6칸  OO OO OO
 	0x000,	//w0_14  2x3 6칸  OO OO OO
-	0x131,	//w0_15  2x3 4칸  O. OO O.
+	0x000,	//w0_15  2x3 6칸  OO OO OO
 	0x000,	//w0_16  2x3 6칸  OO OO OO
 	0x000,	//w0_17  2x3 6칸  OO OO OO
 	0x000,	//w0_18  1x4 4칸  O O O O

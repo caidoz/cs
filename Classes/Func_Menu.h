@@ -207,6 +207,16 @@ void DrawItemCard(
 	int selectedFrame,
 	int backFrame);
 
+void CastleMenuOpen(void);
+bool CastleMenuCommand(int func);
+bool CastleMenuSwipe(float fromX,float fromY,float toX,float toY);
+void CastleProgressEnsure(void);
+int CastleEquipmentCapacity(int castle);
+int CastleInventoryCapacity(int castle);
+int CastleCannonDamagePercent(int castle);
+int CastleCannonCooldown(int castle);
+int CastleVisualPartLevel(int castle,int part);
+int CastleTeamBonus(int kind);
 int GetCrewInventoryIdx(int type);
 void CrewMenuDraw(int x, int y, float zoom);
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY);

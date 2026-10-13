@@ -1,5 +1,5 @@
 -- =============================================================================
--- 인삼남 서버 스키마 (MariaDB 10.6+)
+-- Castle Survivor 서버 스키마 (MariaDB 10.6+)
 --
 -- 이 파일이 서버와 클라이언트가 주고받는 데이터의 기준이다.
 --
@@ -208,6 +208,8 @@ CREATE TABLE player_flag (
     -- 1 = openedMenu (열린 메뉴)
     -- 2 = statue (세운 석상)
     -- 3 = equipGet (도감 등록된 장비)
+    -- 4 = castle parts, 5 = castle rooms (idx = castle*5 + category)
+    -- 6 = owned castles, 7 = castle progress format version
     flag_kind TINYINT UNSIGNED NOT NULL,
     flag_idx  SMALLINT UNSIGNED NOT NULL,
     -- openedMenu는 unsigned char라 0/1이 아닐 수 있어 값을 그대로 담는다.

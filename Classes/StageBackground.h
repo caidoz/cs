@@ -55,6 +55,8 @@ static const float kCastleLeft = 0.0f;
 //남도록 덜 내린다.
 static const float kCastleDropPx = 48.0f;
 static const float kWheelDropPx  = 16.0f;
+// Keep the assembled castle's wheels seated on the rail in lobby and battle.
+static const float kCastleGroundingPx = 32.0f;
 
 //화면 바닥에서 잰 픽셀이다. 화면 높이의 비율이 아니다.
 //설계 높이 850(MINDY_MIN) 에서 0.46 이던 자리다.
@@ -163,6 +165,7 @@ static const float kBossAncU = 0.5f, kBossAncV = 0.85f;
 //다른 값을 보게 되어, 로비 배경이 영영 0 초에 멈춰 있었다.
 //정의는 Func_Graphics.cpp 한 군데다.
 extern float s_travel;
+extern double s_totalTravelSeconds;
 extern float s_clock;
 extern int   s_region;
 
@@ -200,6 +203,15 @@ inline void DebugNextRegion(void) {
 }
 inline int DebugRegionPick(void) { return s_regionPick; }
 inline int CurRegion(void)       { return s_region; }
+
+inline const char* RegionName(int region) {
+	static const char* const names[STAGEBG_REGION_CNT] = {
+		"늪지대", "금단의 계곡", "아틀란티스", "지하수로", "아델라인 평원",
+		"화염지대", "얼음지대", "번개지대", "빛의지대", "골렘협곡",
+		"어둠의 협곡", "드래곤 협곡", "망자의 도시", "마왕성", "우주"
+	};
+	return names[Max(0, Min(region, STAGEBG_REGION_CNT - 1))];
+}
 
 inline const char* DebugRegionLabel(void) {
 	static const char* const kNames[STAGEBG_REGION_CNT] = {
