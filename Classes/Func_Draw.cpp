@@ -2099,10 +2099,42 @@ static int gGridDragCol = -1;
 static int gGridDragRow = -1;
 static bool gGridDragValid = false;
 
+//상점에서 집었다면 그 룰렛 칸 번호. 못 놓고 되돌아갈 자리를 안다.
+static int gGridDragOffer = -1;
+
 //마지막으로 한 일. 화면 아래에 한 줄로 띄운다. 무엇이 왜 안 됐는지
 //보이지 않으면 시험이 안 된다.
 static char gGridMsg[64] = { 0, };
 static int gGridMsgFrame = 0;
+
+//---- 왜 안 됐는가 ----
+//
+//못 놓은 까닭만 따로 화면 한가운데에 크게 띄운다. 아래 한 줄은 한 일을
+//차곡차곡 적는 자리라, 거기 섞어 놓으면 "안 됐다"가 "했다"와 같은 크기로
+//지나간다 - 손은 격자를 보고 있어서 아래 줄을 안 읽는다.
+//
+//뜬 자리에서 조금 올라가며 흐려진다. 머물러 있으면 다음 판을 가린다.
+static char gGridWarn[64] = { 0, };
+static int gGridWarnFrame = 0;
+#define GRIDWARN_FRAME		(FPS * 5 / 4)
+#define GRIDWARN_RISE		(30 * _2X)	//사는 동안 올라가는 높이
+#define GRIDWARN_ZOOM		1.30f
+
+//---- 되돌아가는 장비 ----
+//
+//못 놓은 것은 손을 뗀 자리에서 제자리로 날아간다. 그냥 사라졌다 도로
+//나타나면 어디로 돌아갔는지 안 보여서, 잃어버린 줄 안다.
+//
+//돌려놓는 일 자체는 손을 떼는 그 프레임에 이미 끝나 있다. 이것은 눈이
+//따라갈 수 있게 보여 주기만 하는 그림이라, 판의 상태를 건드리지 않는다.
+static bool gGridFlyOn = false;
+static GridPart gGridFlyPart;
+static int gGridFlyFromX = 0;
+static int gGridFlyFromY = 0;
+static int gGridFlyToX = 0;
+static int gGridFlyToY = 0;
+static int gGridFlyFrame = 0;
+#define GRIDFLY_FRAME		(FPS / 4)
 
 //---- 자리 계산 ----
 //
@@ -2504,6 +2536,16 @@ static void GridTestSay(const char* msg)
 	strncpy(gGridMsg, msg, sizeof(gGridMsg) - 1);
 	gGridMsg[sizeof(gGridMsg) - 1] = 0;
 	gGridMsgFrame = FPS * 2;
+}
+
+//못 한 까닭. 가운데에 크게 띄우고, 아래 한 줄에도 같이 남긴다 - 큰
+//글자는 곧 사라지므로 무엇이 있었는지 되짚을 자리가 하나는 있어야 한다.
+static void GridTestWarn(const char* msg)
+{
+	strncpy(gGridWarn, msg, sizeof(gGridWarn) - 1);
+	gGridWarn[sizeof(gGridWarn) - 1] = 0;
+	gGridWarnFrame = GRIDWARN_FRAME;
+	GridTestSay(msg);
 }
 
 //======================================================================
@@ -3910,8 +3952,14 @@ void GridTestResetStage(void)
 	gGridDragShop = -1;
 	gGridDragFrom = -1;
 	gGridDragCrew = -1;
+	gGridDragOffer = -1;
 	gGridDragRot = false;
 	gGridMsgFrame = 0;
+
+	//판이 새로 서면 지난 판의 까닭과 날아가던 것도 같이 지운다. 남겨
+	//두면 새 판 한가운데에 지난 판의 글자가 떠 있다.
+	gGridWarnFrame = 0;
+	gGridFlyOn = false;
 }
 
 bool GridTestIsOpen(void)
@@ -3965,6 +4013,7 @@ void GridTestPick(int n, bool fromShop)
 			gGridDragOn = true;
 			gGridDragShop = -1;
 			gGridDragCrew = n;
+			gGridDragOffer = n;
 			gGridDragFrom = -1;
 			gGridPressX = touchX;
 			gGridPressY = touchY;
@@ -3977,6 +4026,7 @@ void GridTestPick(int n, bool fromShop)
 		gGridDragDesc = kShopPart[gOffer[n].part];
 		gGridDragDesc.grade = gOffer[n].grade;	//성이 올려 준 등급으로
 		gGridDragShop = gOffer[n].part;
+		gGridDragOffer = n;
 		gGridDragFrom = -1;
 	}
 	else {
@@ -3986,6 +4036,7 @@ void GridTestPick(int n, bool fromShop)
 		gGridDragOn = true;
 		gGridDragDesc = gGridItem[n].part;
 		gGridDragShop = gGridItem[n].shop;
+		gGridDragOffer = -1;
 		gGridDragFrom = n;
 		gGridPressX = touchX;
 		gGridPressY = touchY;
@@ -4042,6 +4093,61 @@ void GridTestPickStore(int n)
 	gStore[n].used = false;
 }
 
+//---- 제자리로 날려 보낸다 ----
+//
+//손을 뗀 자리(touchX/Y)에서 왔던 자리로 간다. 어디서 왔는지는 집을 때
+//적어 둔 세 가지가 안다.
+//
+//    from  >= 0   격자의 그 칸
+//    store >= 0   보관함의 그 칸
+//    둘 다 -1     상점의 그 룰렛 칸
+//
+//자리를 못 찾으면 안 날린다. 엉뚱한 데로 빨려 들어가는 것보다 낫다.
+static void GridFlyHome(const GridPart* p, int from, int store, int offer)
+{
+	int x, y, w, h;
+
+	if (p == NULL)
+		return;
+
+	if (from >= 0 && from < GRIDTEST_MAXITEM) {
+		//칸 번호는 왼쪽 아래다. 몸이 차지하는 만큼의 한가운데를 잡는다.
+		gGridFlyToX = GridCellX(gGridItem[from].col)
+			+ gGridItem[from].part.w * gGridCell / 2;
+		gGridFlyToY = GridCellY(gGridItem[from].row)
+			- gGridItem[from].part.h * gGridCell / 2;
+	}
+	else if (store >= 0 && store < GRIDSTORE_MAX) {
+		GridStoreRect(store, &x, &y, &w, &h);
+		gGridFlyToX = x + w / 2;
+		gGridFlyToY = y - h / 2;
+	}
+	else if (offer >= 0 && offer < GRIDTEST_OFFERCNT) {
+		GridOfferRect(offer, &x, &y, &w, &h);
+		gGridFlyToX = x + w / 2;
+		gGridFlyToY = y - h / 2;
+	}
+	else
+		return;
+
+	gGridFlyPart = *p;
+	gGridFlyFromX = touchX;
+	gGridFlyFromY = touchY;
+	gGridFlyFrame = GRIDFLY_FRAME;
+	gGridFlyOn = true;
+}
+
+//손을 뗀 자리가 가방 안인가. 밖이면 "자리가 모자라서"가 아니라 "엉뚱한
+//데 놓아서" 안 된 것이라, 같은 말로 알리면 안 된다.
+static bool GridInsideBag(int x, int y)
+{
+	if (gGridCell <= 0)
+		return false;
+
+	return x >= gGridX && x < gGridX + gGridW * gGridCell
+		&& y <= GridTopY() && y > gGridBottom;
+}
+
 //손을 뗀 순간. 여기서만 값이 오간다.
 void GridTestRelease(void)
 {
@@ -4067,7 +4173,7 @@ void GridTestRelease(void)
 		if (GridTestCanPlace(&turned, s->col, s->row, -1))
 			s->part = turned;
 		else
-			GridTestSay("돌릴 자리가 없다");
+			GridTestWarn("돌려 놓을 자리가 없다");
 
 		s->used = true;
 		return;
@@ -4080,12 +4186,14 @@ void GridTestRelease(void)
 	const int shop = gGridDragShop;
 	const int from = gGridDragFrom;
 	const int store = gGridDragStore;
+	const int offer = gGridDragOffer;
 	const GridPart* p = &held;
 
 	gGridDragOn = false;
 	gGridDragShop = -1;
 	gGridDragFrom = -1;
 	gGridDragStore = -1;
+	gGridDragOffer = -1;
 
 	//---- 보관함에 떨어뜨렸다 ----
 	//
@@ -4101,12 +4209,14 @@ void GridTestRelease(void)
 			if (from < 0 && store < 0) {
 				if (robin.gold < GridShopPrice(p->price)) {
 					PlayMusic(M_ERROR);
-					GridTestSay("골드가 모자란다");
+					GridTestWarn("골드가 모자란다");
+					GridFlyHome(p, from, store, offer);
 					return;
 				}
 				if (GridStorePut(p, shop) == false) {
 					PlayMusic(M_ERROR);
-					GridTestSay("보관함이 가득 찼다");
+					GridTestWarn("보관함이 가득 찼다");
+					GridFlyHome(p, from, store, offer);
 					return;
 				}
 				robin.gold -= GridShopPrice(p->price);
@@ -4125,7 +4235,8 @@ void GridTestRelease(void)
 				else if (store >= 0)
 					gStore[store].used = true;
 				PlayMusic(M_ERROR);
-				GridTestSay("보관함이 가득 찼다");
+				GridTestWarn("보관함이 가득 찼다");
+				GridFlyHome(p, from, store, offer);
 				return;
 			}
 
@@ -4140,7 +4251,8 @@ void GridTestRelease(void)
 	if (touchX >= tx && touchX <= tx + tw && touchY <= ty && touchY >= ty - th) {
 		if (from < 0) {
 			//상점에서 집어 바로 버린 것. 산 적이 없으니 줄 돈도 없다.
-			GridTestSay("사지 않은 것은 팔 수 없다");
+			GridTestWarn("사지 않은 것은 팔 수 없다");
+			GridFlyHome(p, from, store, offer);
 			return;
 		}
 
@@ -4148,7 +4260,8 @@ void GridTestRelease(void)
 		//사라진다. 제자리로 돌린다.
 		if (gGridItem[from].equip >= 0) {
 			gGridItem[from].used = true;
-			GridTestSay("장착 장비는 팔 수 없다");
+			GridTestWarn("장착 장비는 팔 수 없다");
+			GridFlyHome(p, from, store, offer);
 			return;
 		}
 
@@ -4168,14 +4281,17 @@ void GridTestRelease(void)
 				//살 수 없다. 소리로도 알린다 - 격자에 놓으려던 손은
 				//글자를 읽고 있지 않다.
 				PlayMusic(M_ERROR);
-				GridTestSay("골드가 모자란다");
+				GridTestWarn("골드가 모자란다");
+				GridFlyHome(p, from, store, offer);
 				return;
 			}
 
 			const int slot = GridTestFreeSlot();
 
 			if (slot < 0) {
-				GridTestSay("더 놓을 수 없다");
+				PlayMusic(M_ERROR);
+				GridTestWarn("가방에 더 넣을 수 없다");
+				GridFlyHome(p, from, store, offer);
 				return;
 			}
 
@@ -4186,7 +4302,8 @@ void GridTestRelease(void)
 			if (p->type == ITEM_CREW) {
 				if (StageRtAddCrew(p->detail) == false) {
 					PlayMusic(M_ERROR);
-					GridTestSay("더 설 자리가 없다");
+					GridTestWarn("더 설 자리가 없다");
+					GridFlyHome(p, from, store, offer);
 					return;
 				}
 			}
@@ -4239,7 +4356,9 @@ void GridTestRelease(void)
 
 			if (slot < 0) {
 				gStore[store].used = true;
-				GridTestSay("더 놓을 수 없다");
+				PlayMusic(M_ERROR);
+				GridTestWarn("가방에 더 넣을 수 없다");
+				GridFlyHome(p, from, store, offer);
 				return;
 			}
 
@@ -4247,7 +4366,8 @@ void GridTestRelease(void)
 				&& StageRtAddCrew(held.detail) == false) {
 				gStore[store].used = true;
 				PlayMusic(M_ERROR);
-				GridTestSay("더 설 자리가 없다");
+				GridTestWarn("더 설 자리가 없다");
+				GridFlyHome(p, from, store, offer);
 				return;
 			}
 
@@ -4271,22 +4391,38 @@ void GridTestRelease(void)
 	//
 	//격자에서 집은 것은 제자리로 돌린다. 집었다가 허공에 놓았다고
 	//사라지면 손이 미끄러진 것만으로 장비를 잃는다.
+	//---- 까닭을 가른다 ----
+	//
+	//가방 안에 놓았는데 못 들어간 것과, 가방 밖에 놓은 것은 다른 일이다.
+	//"제자리로" 한 마디로 묶으면 자리를 넓혀야 하는지 다시 놓아야 하는지
+	//알 수가 없다. 칸이 모자란 쪽은 눕혀도 안 들어간 것이다(GridTestCanPlace
+	//가 세운 모양과 눕힌 모양을 다 본다).
+	const bool inBag = GridInsideBag(touchX, touchY);
+	const char* why = inBag
+		? "가방에 빈 자리가 모자란다" : "가방 안에 놓아야 한다";
+
 	if (from >= 0) {
 		gGridItem[from].used = true;
-		GridTestSay("제자리로");
+		PlayMusic(M_ERROR);
+		GridTestWarn(why);
+		GridFlyHome(p, from, store, offer);
 		return;
 	}
 
 	if (store >= 0) {
 		gStore[store].used = true;
-		GridTestSay("제자리로");
+		PlayMusic(M_ERROR);
+		GridTestWarn(why);
+		GridFlyHome(p, from, store, offer);
 		return;
 	}
 
-	//상점에서 집어 격자 밖에 놓은 것. 값은 오가지 않았지만 아무 말도
+	//상점에서 집어 가방 밖에 놓은 것. 값은 오가지 않았지만 아무 말도
 	//없으면 "샀는데 사라졌나" 싶어진다. 골드 부족과 자리 부족은 이미
 	//말해 주는데 여기만 조용했다.
-	GridTestSay("격자 안에 놓아야 산다");
+	PlayMusic(M_ERROR);
+	GridTestWarn(inBag ? "가방에 빈 자리가 모자란다" : "가방 안에 놓아야 산다");
+	GridFlyHome(p, from, store, offer);
 }
 
 //장착 장비는 인벤토리의 진짜 ITEM 을 그대로 쓴다.
@@ -6638,6 +6774,51 @@ void GridTestDraw(void)
 		//집어 든 것은 가방에 놓일 실제 모습이다. 그대로 그린다 - 놓일
 		//자리는 아래의 초록/빨강 테두리가 따로 알려 준다.
 		GridDrawShapedCard(p, touchX - w / 2, touchY + h / 2, w, h, GRIDTEST_DRAGALPHA);
+	}
+
+	//---- 제자리로 돌아가는 것 ----
+	//
+	//놓지 못해 되돌아가는 장비다. 손을 뗀 자리에서 왔던 자리로 당겨지듯
+	//간다 - 끝으로 갈수록 느려져야 "빨려 들어갔다"가 아니라 "놓였다"로
+	//보인다. 닿을 무렵에는 옅어져서 그 자리의 진짜 그림에 자연스레 넘긴다.
+	if (gGridFlyOn) {
+		const GridPart* p = &gGridFlyPart;
+		float t = 1.0f - (float)gGridFlyFrame / (float)Max(1, GRIDFLY_FRAME);
+
+		if (--gGridFlyFrame <= 0)
+			gGridFlyOn = false;
+
+		t = 1.0f - (1.0f - t) * (1.0f - t);
+
+		const int fx = (int)(gGridFlyFromX + (gGridFlyToX - gGridFlyFromX) * t);
+		const int fy = (int)(gGridFlyFromY + (gGridFlyToY - gGridFlyFromY) * t);
+
+		w = p->w * gGridCell;
+		h = p->h * gGridCell;
+
+		GridDrawShapedCard(p, fx - w / 2, fy + h / 2, w, h,
+			(int)(GRIDTEST_DRAGALPHA * (1.0f - t * 0.65f)));
+	}
+
+	//---- 왜 안 됐는가 ----
+	//
+	//화면 한가운데. 손이 보고 있는 자리라 여기서만 읽힌다. 조금 올라가며
+	//흐려진다 - 멈춰 있으면 다음에 놓으려는 자리를 가린다.
+	if (gGridWarnFrame > 0) {
+		const float t = 1.0f
+			- (float)gGridWarnFrame / (float)Max(1, GRIDWARN_FRAME);
+
+		gGridWarnFrame--;
+
+		//뜨자마자 사라지면 못 읽는다. 절반을 지난 뒤부터 흐려진다.
+		const float fade = (t < 0.5f) ? 1.0f : 1.0f - (t - 0.5f) * 2.0f;
+
+		SetAlpha(Max(1, (int)(ALPHA_MAX * fade)));
+		SetFontColor(COLOR_REALYELLOW);
+		CenterTextStrSolid(gGridWarn, DX / 2,
+			DY / 2 + (int)(GRIDWARN_RISE * t), GRIDWARN_ZOOM);
+		SetFontColor(COLOR_WHITE);
+		SetAlpha(ALPHA_MAX);
 	}
 
 	//---- 접기 ----
