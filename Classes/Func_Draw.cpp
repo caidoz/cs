@@ -9,8 +9,11 @@
 #include "Data/SwordCells.inc"
 #include "Data/InventoryBoomerangShapes.h"
 #include "Data/InventoryGunShapes.h"
+#include "Data/InventoryCannonSprites.h"
+#include "CastleArtilleryModel.h"
 #include "Data/FoeGearData.h"
 #ifdef GAMEDEBUG
+// All ten cannons share the lower command platform and commander-relative placement.
 #include "CastleModularDebug.h"
 #include "StageBackground.h"
 // CastleModularDebug also exposes its active state to Core so animated title
@@ -1906,7 +1909,9 @@ static GridPart GridPartRotated(const GridPart& p)
 	return r;
 }
 
-static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
+// Stage-only objects do not enter the persistent ITEM enum or its stat tables.
+enum { GRID_ITEM_CANNON=-100, GRID_SHOP_CANNON=GRIDTEST_SHOPCNT, GRID_SHOP_MISC=GRIDTEST_SHOPCNT+1 };
+static const GridPart kShopPart[GRIDTEST_SHOPCNT+2] = {
 	//---- 검 ----
 	//
 	//길이(세로 칸)가 곧 검의 길이다. 짧은 검은 판정이 좁고 빠르게
@@ -1915,18 +1920,20 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT] = {
 	//
 	//detail 은 ItemDef 의 검 번호다. 번호가 클수록 좋은 검이라, 연참
 	//차례를 매길 때 이 번호를 그대로 쓴다.
-	{ ITEM_SWORD,   1, GRADE_NORMAL, swordTileSize[2], swordTileSize[3],  60, "롱소드" },
-	{ ITEM_SWORD,  10, GRADE_RARE, swordTileSize[20], swordTileSize[21], 180, "플레임소드" },
-	{ ITEM_SWORD,  11, GRADE_RARE, swordTileSize[22], swordTileSize[23], 200, "아이스소드" },
-	{ ITEM_SWORD,  21, GRADE_LEGEND, swordTileSize[42], swordTileSize[43], 600, "엑스칼리버" },
+	{ ITEM_SWORD,   1, GRADE_NORMAL, swordTileSize[2], swordTileSize[3],   6, "롱소드" },
+	{ ITEM_SWORD,  10, GRADE_RARE, swordTileSize[20], swordTileSize[21],  18, "플레임소드" },
+	{ ITEM_SWORD,  11, GRADE_RARE, swordTileSize[22], swordTileSize[23],  20, "아이스소드" },
+	{ ITEM_SWORD,  21, GRADE_LEGEND, swordTileSize[42], swordTileSize[43], 60, "엑스칼리버" },
 
 	//---- 방어구 · 장신구 ----
-	{ ITEM_HELM,    1, GRADE_SUPERIOR, 1, 1,  80, "강철투구" },
-	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 1, 140, "판금갑옷" },
-	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 1,  40, "건틀릿" },
-	{ ITEM_KILT,    1, GRADE_NORMAL,   1, 1,  70, "판금바지" },
-	{ ITEM_GREAVES, 1, GRADE_NORMAL,   2, 2,  40, "강철장화", false, 0x23 },
-	{ ITEM_RING,    0, GRADE_EPIC,     1, 1, 200, "룬반지" },
+	{ ITEM_HELM,    1, GRADE_SUPERIOR, 1, 1,   8, "강철투구" },
+	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 1,  14, "판금갑옷" },
+	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 1,   4, "건틀릿" },
+	{ ITEM_KILT,    1, GRADE_NORMAL,   1, 1,   7, "판금바지" },
+	{ ITEM_GREAVES, 1, GRADE_NORMAL,   2, 2,   4, "강철장화", false, 0x23 },
+	{ ITEM_RING,    0, GRADE_EPIC,     1, 1,  20, "룬반지" },
+	{ GRID_ITEM_CANNON, 0, GRADE_NORMAL, 2, 2, 6, "대포" },
+	{ ITEM_ESSENCE, 0, GRADE_NORMAL, 1, 1, 4, "마력 정수" },
 };
 
 //---- 검마다 잔상 색 ----
@@ -2044,8 +2051,32 @@ struct OfferCard {
 	int grade;		//성 파츠로 오른 뒤의 등급
 };
 
+static GridPart GridOfferPart(const OfferCard& card)
+{
+	GridPart part=kShopPart[card.part];
+	part.grade=card.grade;
+	part.price=card.price;
+	if(part.type==GRID_ITEM_CANNON) {
+		part.detail=card.crewType;
+		part.name=CastleArtillery::Of(part.detail).name;
+		const auto& frame=InventoryCannons::Get(part.detail,part.grade);
+		part.w=frame.cols; part.h=frame.rows; part.cells=(unsigned short)frame.cells;
+	}
+	return part;
+}
+
 static OfferCard gOffer[GRIDTEST_OFFERCNT];
 static bool gOfferOn = false;
+
+//---- 인게임 전투 재화 ----
+//
+//아웃게임 골드(robin.gold)와 분리된 이번 스테이지의 인게임 재화다.
+//1st Wave 진입 시 기본값 10골드로 시작하며, 상점 구매/판매/새로고침에 쓰인다.
+static int gStageGold = 10;
+
+int StageGold(void) { return gStageGold; }
+void StageGoldSet(int g) { gStageGold = g; }
+void StageGoldAdd(int delta) { gStageGold += delta; if (gStageGold < 0) gStageGold = 0; }
 
 //---- 룰렛 ----
 //
@@ -2058,8 +2089,8 @@ static int gOfferFace[GRIDTEST_OFFERCNT];
 //
 //몬스터가 동료보다 싸다. 편성표의 동료는 키워 둔 것이라 믿을 만하고,
 //몬스터는 방금 싸운 놈이라 쓸 만한지는 데려와 봐야 안다.
-static const int kOfferCrewPrice = 80;
-static const int kOfferMonsterPrice = 50;
+static const int kOfferCrewPrice = 8;
+static const int kOfferMonsterPrice = 5;
 static const int kOfferCrewPct = 30;
 static const int kOfferMonsterPct = 30;
 
@@ -2118,7 +2149,11 @@ static char gGridWarn[64] = { 0, };
 static int gGridWarnFrame = 0;
 #define GRIDWARN_FRAME		(FPS * 5 / 4)
 #define GRIDWARN_RISE		(30 * _2X)	//사는 동안 올라가는 높이
-#define GRIDWARN_ZOOM		1.30f
+
+//출정 버튼 글자와 같은 크기다. 그 버튼은 그림 배율 1.375 에
+//LARGEBTN_MAXZOOM(1.2) 을 곱한 값으로 글자를 찍는다(Func_Graphics.cpp).
+//한눈에 읽히라고 띄우는 글자라 그보다 작으면 뜻이 없다.
+#define GRIDWARN_ZOOM		1.65f
 
 //---- 되돌아가는 장비 ----
 //
@@ -2127,12 +2162,17 @@ static int gGridWarnFrame = 0;
 //
 //돌려놓는 일 자체는 손을 떼는 그 프레임에 이미 끝나 있다. 이것은 눈이
 //따라갈 수 있게 보여 주기만 하는 그림이라, 판의 상태를 건드리지 않는다.
+//
+//가방 격자와 출정 화면이 같이 쓴다. 두 화면은 칸 크기가 달라서, 칸 수가
+//아니라 그릴 때의 픽셀 크기를 들고 있는다.
 static bool gGridFlyOn = false;
 static GridPart gGridFlyPart;
 static int gGridFlyFromX = 0;
 static int gGridFlyFromY = 0;
 static int gGridFlyToX = 0;
 static int gGridFlyToY = 0;
+static int gGridFlyW = 0;
+static int gGridFlyH = 0;
 static int gGridFlyFrame = 0;
 #define GRIDFLY_FRAME		(FPS / 4)
 
@@ -2182,7 +2222,7 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 #define STAGE_ROULETTE_FRAME	(FPS * 2 / 3)
 #define STAGE_ROULETTE_STAGGER	(FPS / 5)
 #define STAGE_ROULETTE_TICK		3		//돌아가는 동안 그림이 바뀌는 간격
-#define STAGE_REROLL_GOLD		10		//다시 뽑는 값
+#define STAGE_REROLL_GOLD		1		//다시 뽑는 값
 
 //바닥 메뉴는 전투 중에 그리지 않는다. 그 자리를 비워 두면 화면 아래가
 //검은 띠로 남으므로, 판을 화면 맨 아래(0)에 붙인다.
@@ -2222,8 +2262,8 @@ static void StageUiSlideStep(void)
 
 static int StageShopBtnTop(void)	{ return 4 * _2X + STAGE_SHOP_BTNH - StageUiDrop(); }
 static int StageShopGoldTop(void)	{ return StageShopBtnTop() + 14 * _2X; }
-static int StageShopPctTop(void)	{ return StageShopGoldTop() + 9 * _2X; }
-static int StageShopSlotTop(void)	{ return StageShopPctTop() + 4 * _2X + STAGE_SHOP_CARDH + STAGE_SHOP_PRICEH; }
+static int StageShopPctTop(void)	{ return StageShopGoldTop() + 19 * _2X; }
+static int StageShopSlotTop(void)	{ return StageShopPctTop() + 6 * _2X + STAGE_SHOP_CARDH + STAGE_SHOP_PRICEH; }
 static int StageShopTop(void)		{ return StageShopSlotTop() + 4 * _2X; }
 
 //내려가기 전, 상점 줄이 다 보일 때의 윗변. 격자는 이 자리에서 시작해
@@ -2518,7 +2558,7 @@ static void GridOfferRect(int n, int* x, int* y, int* w, int* h)
 	*w = cw;
 	*h = STAGE_SHOP_CARDH;
 	*x = STAGE_SHOP_GAP + n * (cw + STAGE_SHOP_GAP);
-	*y = StageShopSlotTop();
+	*y = Min(StageShopSlotTop(),StageBg::GroundY()-46*_2X);
 }
 
 //맨 아래 가운데. 전투 / 전투 시작 버튼이 앉는 자리다.
@@ -2546,6 +2586,90 @@ static void GridTestWarn(const char* msg)
 	gGridWarn[sizeof(gGridWarn) - 1] = 0;
 	gGridWarnFrame = GRIDWARN_FRAME;
 	GridTestSay(msg);
+}
+
+//카드 한 장을 그리는 공용 함수. 정의는 아래 격자 쪽에 있다.
+static void GridDrawShapedCard(const GridPart* p, int x, int y,
+	int w, int h, int alpha, bool box = true);
+
+//---- 손 뗀 자리에서 그 자리로 ----
+//
+//그릴 때의 픽셀 크기를 같이 받는다. 가방 격자와 출정 화면은 칸 크기가
+//다르므로 칸 수만 받으면 한쪽에서 크기가 틀어진다.
+static void GridFlyStart(const GridPart* p, int w, int h, int toX, int toY)
+{
+	if (p == NULL || w <= 0 || h <= 0)
+		return;
+
+	gGridFlyPart = *p;
+	gGridFlyW = w;
+	gGridFlyH = h;
+	gGridFlyFromX = touchX;
+	gGridFlyFromY = touchY;
+	gGridFlyToX = toX;
+	gGridFlyToY = toY;
+	gGridFlyFrame = GRIDFLY_FRAME;
+	gGridFlyOn = true;
+}
+
+//---- 제자리로 돌아가는 것 ----
+//
+//손을 뗀 자리에서 왔던 자리로 당겨지듯 간다. 끝으로 갈수록 느려져야
+//"빨려 들어갔다"가 아니라 "놓였다"로 보인다. 닿을 무렵에는 옅어져서 그
+//자리의 진짜 그림에 자연스레 넘긴다.
+//
+//두 화면이 다 부른다. 맨 마지막에, 손에 든 것 다음에 그려야 한다.
+static void GridFlyDraw(void)
+{
+	if (gGridFlyOn == false)
+		return;
+
+	float t = 1.0f - (float)gGridFlyFrame / (float)Max(1, GRIDFLY_FRAME);
+
+	if (--gGridFlyFrame <= 0)
+		gGridFlyOn = false;
+
+	t = 1.0f - (1.0f - t) * (1.0f - t);
+
+	const int fx = (int)(gGridFlyFromX + (gGridFlyToX - gGridFlyFromX) * t);
+	const int fy = (int)(gGridFlyFromY + (gGridFlyToY - gGridFlyFromY) * t);
+
+	GridDrawShapedCard(&gGridFlyPart, fx - gGridFlyW / 2, fy + gGridFlyH / 2,
+		gGridFlyW, gGridFlyH,
+		(int)(GRIDTEST_DRAGALPHA * (1.0f - t * 0.65f)));
+}
+
+//---- 왜 안 됐는가 ----
+//
+//화면 한가운데. 손이 보고 있는 자리라 여기서만 읽힌다. 조금 올라가며
+//흐려진다 - 멈춰 있으면 다음에 놓으려는 자리를 가린다.
+static void GridWarnDraw(void)
+{
+	if (gGridWarnFrame <= 0)
+		return;
+
+	const float t = 1.0f
+		- (float)gGridWarnFrame / (float)Max(1, GRIDWARN_FRAME);
+
+	gGridWarnFrame--;
+
+	//뜨자마자 사라지면 못 읽는다. 절반을 지난 뒤부터 흐려진다.
+	const float fade = (t < 0.5f) ? 1.0f : 1.0f - (t - 0.5f) * 2.0f;
+
+	//긴 까닭은 화면 밖으로 나간다. 들어갈 만큼만 줄인다.
+	const float room = (float)(DX - 16 * _2X);
+	const float full = StringWidth(gGridWarn, 1.0f);
+	float zoom = GRIDWARN_ZOOM;
+
+	if (full > 0.0f && full * zoom > room)
+		zoom = room / full;
+
+	SetAlpha(Max(1, (int)(ALPHA_MAX * fade)));
+	SetFontColor(COLOR_REALYELLOW);
+	CenterTextStr(gGridWarn, DX / 2,
+		DY / 2 + (int)(GRIDWARN_RISE * t), zoom);
+	SetFontColor(COLOR_WHITE);
+	SetAlpha(ALPHA_MAX);
 }
 
 //======================================================================
@@ -2580,7 +2704,7 @@ static int StageFoeTier(int obj);
 //장비가 히어로와 몬스터에게 다르게 붙는다.
 static void StageGearAddItem(OBJECT* pObj, const ITEM* it)
 {
-	if (it->type == EMPTY)
+	if (it->type == EMPTY || it->type == ITEM_ESSENCE)
 		return;
 
 	//값 자체는 부위에 따라 갈라 붙인다.
@@ -2956,11 +3080,13 @@ static void GridShopPriceStrip(int n, int price, bool afford)
 
 	SetFontColor(price < 0 ? COLOR_GREY : (afford ? COLOR_BLACK : COLOR_GREY));
 
+	const float priceZoom=Min(.65f,(h-2.0f)/FONT_HEIGHT);
+	const int priceY=y-(int)((h-FONT_HEIGHT*priceZoom)/2);
 	if (price < 0)
-		CenterTextStrSolid("-", x + w / 2, y - h + 3 * _2X, 0.5f);
+		CenterTextStrSolid("-", x + w / 2, priceY, priceZoom);
 	else {
 		sprintf(str, "%d", price);
-		CenterTextStrSolid(str, x + w / 2, y - h + 3 * _2X, 0.5f);
+		CenterTextStrSolid(str, x + w / 2, priceY, priceZoom);
 	}
 }
 
@@ -2981,6 +3107,10 @@ static void GridMakeItem(GridSlot* s)
 {
 	const GridPart* p = &s->part;
 	const int lv = Max(1, robin.stage + 1);
+	if(p->type==GRID_ITEM_CANNON) {
+		memset(&s->item,0,sizeof(s->item)); s->item.type=EMPTY; s->level=1;
+		return;
+	}
 
 	MakeItem(&s->item, p->type, lv, p->grade, p->detail, EMPTY);
 	s->level = 1;
@@ -3021,7 +3151,7 @@ static void GridStackItem(int at)
 
 	s->level++;
 
-	if (s->level > STAGE_GEAR_EVOLVE && s->part.grade < TOTALGRADE - 1) {
+	if (s->part.type!=GRID_ITEM_CANNON && s->level > STAGE_GEAR_EVOLVE && s->part.grade < TOTALGRADE - 1) {
 		//진화. 한 등급 위로 다시 만든다.
 		s->part.grade++;
 		GridMakeItem(s);
@@ -3113,6 +3243,16 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		SetAlpha(ALPHA_MAX);
 	}
 
+	if(p->type==GRID_ITEM_CANNON) {
+		if(p->rot) {
+			const auto& f=InventoryCannons::Get(p->detail,p->grade);
+			const int img=INVENTORY_CANNON_ATLAS_IMG;
+			if(!sprite[img]) LoadImg(img);
+			if(sprite[img]) RotateImage(f.w,f.h,f.x,f.y,x+w/2,y-h/2,false,90,0,alpha,
+				Min(w/(float)f.h,h/(float)f.w),Vec2(.5f,.5f),sprite[img],img);
+		} else DrawInventoryCannonIcon(p->detail,p->grade,x,y,w,h);
+		return;
+	}
 	//---- 동료 ----
 	//
 	//아이템 그림이 없다. 그 몸을 칸 크기에 맞춰 세운다 - 누가 오는지는
@@ -3220,13 +3360,13 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 
 // Render only occupied cells. Reusing one fitted image under a per-cell clip
 // keeps the silhouette continuous while leaving the holes genuinely empty.
-static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true)
+static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box)
 {
 	if (p->cells == 0) { GridTestDrawCard(p, x, y, w, h, alpha, box); return; }
 	// Gun and boomerang sprites already have transparent pixels in unused cells.
 	// Draw each sprite once: separate scissor passes can leave a seam at a
 	// cell boundary when the inventory is rendered at a fractional scale.
-	const bool drawWholeSprite = p->type == ITEM_GUN || p->type == ITEM_BOOMERANG;
+	const bool drawWholeSprite = p->type == ITEM_GUN || p->type == ITEM_BOOMERANG || p->type == GRID_ITEM_CANNON;
 	const int cw = w / p->w;
 	const int ch = h / p->h;
 	if (drawWholeSprite) {
@@ -3495,35 +3635,30 @@ static_assert(GRIDTEST_SHOPCNT >= GRIDTEST_OFFERCNT,
 static void GridOfferRoll(int killedType)
 {
 	int i, j;
-	const bool crewRoom = !StageRtCrewFull();
 
 	for (i = 0; i < GRIDTEST_OFFERCNT; i++) {
 		OfferCard* c = &gOffer[i];
-		const int roll = crewRoom ? Random(100) : 0;
-
-		memset(c, 0, sizeof(OfferCard));
-		c->kind = OFFER_PART;
-
-		if (roll >= 100 - kOfferMonsterPct) {
-			const int type = GridPickMonster(killedType, gOffer, i);
-
-			if (type >= 0) {
-				c->kind = OFFER_MONSTER;
-				c->crewType = type;
-				c->price = kOfferMonsterPrice;
-				continue;
-			}
-		}
-		else if (roll >= 100 - kOfferMonsterPct - kOfferCrewPct) {
-			const int type = GridPickOwnedCrew(gOffer, i);
-
-			if (type >= 0) {
-				c->kind = OFFER_CREW;
-				c->crewType = type;
-				c->price = kOfferCrewPrice;
-				continue;
-			}
-		}
+        memset(c,0,sizeof(OfferCard));
+        c->kind=OFFER_PART;
+        if(i==1) {
+            int type=GridPickOwnedCrew(gOffer,i);
+            if(type<0) type=GridPickMonster(killedType,gOffer,i);
+            if(type<0) for(int n=0;n<gTotalCrew;++n) {
+                int candidate=crewData[n*CREWDATASIZE+CREWDATA_TYPE];
+                if(candidate>0 && candidate!=NPC_SHIP && !StageRtHasCrew(candidate)) { type=candidate; break; }
+            }
+            if(type>=0) {
+                c->kind=OFFER_CREW; c->crewType=type; c->price=kOfferCrewPrice;
+                continue;
+            }
+        }
+        if(i==2 || i==3) {
+            c->part=i==2?GRID_SHOP_MISC:GRID_SHOP_CANNON;
+            c->grade=i==3?Min(TOTALGRADE-1,GridCastleStage()/2+CastleBonusOf(CPE_GEAR_GRADE)):GRADE_NORMAL;
+            c->crewType=GridCastleStage();
+            c->price=kShopPart[c->part].price+(i==3?c->grade*4:0);
+            continue;
+        }
 
 		for (;;) {
 			c->part = Random(GRIDTEST_SHOPCNT);
@@ -3602,13 +3737,13 @@ void GridTestReroll(void)
 		return;
 	}
 
-	if (robin.gold < STAGE_REROLL_GOLD) {
+	if (gStageGold < STAGE_REROLL_GOLD) {
 		PlayMusic(M_ERROR);
 		GridTestSay("골드가 모자라다");
 		return;
 	}
 
-	robin.gold -= STAGE_REROLL_GOLD;
+	gStageGold -= STAGE_REROLL_GOLD;
 	GridOfferRoll(-1);
 }
 
@@ -3753,6 +3888,9 @@ bool GridTestBeginOffer(int killedType)
 	if (gGridOpen == false)
 		return false;
 
+	// 몬스터 처치 시 인게임 골드 획득 (웨이브 승리/처치 보상)
+	gStageGold += 5;
+
 	GridOfferRoll(killedType);
 
 	//---- 고르는 동안 전투를 멈춘다 ----
@@ -3863,7 +4001,7 @@ static void GridCrewPart(const OfferCard* c, GridPart* out)
 
 static void GridOfferBuyCrew(const OfferCard* c)
 {
-	if (robin.gold < GridShopPrice(c->price)) {
+	if (gStageGold < GridShopPrice(c->price)) {
 		GridTestSay("골드가 모자란다");
 		return;
 	}
@@ -3874,7 +4012,7 @@ static void GridOfferBuyCrew(const OfferCard* c)
 		return;
 	}
 
-	robin.gold -= GridShopPrice(c->price);
+	gStageGold -= GridShopPrice(c->price);
 
 	snprintf(gGridMsg, sizeof(gGridMsg), "%s 합류  -%d",
 		textId[TEXT_MONSTERNAME_START + c->crewType], GridShopPrice(c->price));
@@ -3941,6 +4079,9 @@ void GridTestResetStage(void)
 {
 	//공짜 다시 뽑기는 판마다 새로 찬다.
 	gGridFreeRoll = 0;
+
+	//인게임 전투 재화 기본값 10골드
+	gStageGold = 10;
 
 	memset(gGridItem, 0, sizeof(gGridItem));
 
@@ -4023,7 +4164,7 @@ void GridTestPick(int n, bool fromShop)
 		//장비 값은 놓는 순간에 치른다. 집기만 하고 도로 놓을 수 있어야 한다.
 		gGridDragOn = true;
 		gGridDragCrew = -1;
-		gGridDragDesc = kShopPart[gOffer[n].part];
+		gGridDragDesc = GridOfferPart(gOffer[n]);
 		gGridDragDesc.grade = gOffer[n].grade;	//성이 올려 준 등급으로
 		gGridDragShop = gOffer[n].part;
 		gGridDragOffer = n;
@@ -4062,7 +4203,9 @@ static bool GridStorePut(const GridPart* p, int shop)
 	gStore[n].part = *p;
 	gStore[n].shop = shop;
 	gStore[n].level = 1;
-	MakeItem(&gStore[n].item, p->type, Max(1, robin.stage + 1), p->grade,
+	if(p->type==GRID_ITEM_CANNON) {
+		memset(&gStore[n].item,0,sizeof(gStore[n].item)); gStore[n].item.type=EMPTY;
+	} else MakeItem(&gStore[n].item, p->type, Max(1, robin.stage + 1), p->grade,
 		p->detail, EMPTY);
 
 	return true;
@@ -4130,11 +4273,8 @@ static void GridFlyHome(const GridPart* p, int from, int store, int offer)
 	else
 		return;
 
-	gGridFlyPart = *p;
-	gGridFlyFromX = touchX;
-	gGridFlyFromY = touchY;
-	gGridFlyFrame = GRIDFLY_FRAME;
-	gGridFlyOn = true;
+	GridFlyStart(p, p->w * gGridCell, p->h * gGridCell,
+		gGridFlyToX, gGridFlyToY);
 }
 
 //손을 뗀 자리가 가방 안인가. 밖이면 "자리가 모자라서"가 아니라 "엉뚱한
@@ -4207,7 +4347,7 @@ void GridTestRelease(void)
 			&& touchY <= by && touchY > by - bh) {
 			//아직 안 산 것이면 여기서 값을 치른다. 보관함도 사는 자리다.
 			if (from < 0 && store < 0) {
-				if (robin.gold < GridShopPrice(p->price)) {
+				if (gStageGold < GridShopPrice(p->price)) {
 					PlayMusic(M_ERROR);
 					GridTestWarn("골드가 모자란다");
 					GridFlyHome(p, from, store, offer);
@@ -4219,7 +4359,7 @@ void GridTestRelease(void)
 					GridFlyHome(p, from, store, offer);
 					return;
 				}
-				robin.gold -= GridShopPrice(p->price);
+				gStageGold -= GridShopPrice(p->price);
 				sprintf(gGridMsg, "%s 보관  -%d",
 					p->name, GridShopPrice(p->price));
 				gGridMsgFrame = FPS * 2;
@@ -4250,6 +4390,19 @@ void GridTestRelease(void)
 
 	if (touchX >= tx && touchX <= tx + tw && touchY <= ty && touchY >= ty - th) {
 		if (from < 0) {
+			//---- 보관함에서 끌어다 버렸다 ----
+			//
+			//칸을 되돌려 놓는다. 여기가 비어 있어서 보관함에서 집어 휴지통에
+			//놓으면 그 장비가 그냥 사라졌다 - 판 것도 아니고 되돌아간 것도
+			//아니었다.
+			if (store >= 0) {
+				gStore[store].used = true;
+				PlayMusic(M_ERROR);
+				GridTestWarn("보관함의 것은 가방에 넣어야 판다");
+				GridFlyHome(p, from, store, offer);
+				return;
+			}
+
 			//상점에서 집어 바로 버린 것. 산 적이 없으니 줄 돈도 없다.
 			GridTestWarn("사지 않은 것은 팔 수 없다");
 			GridFlyHome(p, from, store, offer);
@@ -4266,9 +4419,9 @@ void GridTestRelease(void)
 		}
 
 		//판 값은 산 값의 절반이다. 되사기를 반복해 돈을 버는 길을 막는다.
-		const int back = p->price / 2;
+		const int back = Max(1, p->price / 2);
 
-		robin.gold += back;
+		gStageGold += back;
 		sprintf(gGridMsg, "%s 판매  +%d", p->name, back);
 		gGridMsgFrame = FPS * 2;
 		return;
@@ -4277,7 +4430,7 @@ void GridTestRelease(void)
 	//---- 격자 ----
 	if (gGridDragValid && gGridDragCol >= 0 && gGridDragRow >= 0) {
 		if (from < 0 && store < 0) {
-			if (robin.gold < GridShopPrice(p->price)) {
+			if (gStageGold < GridShopPrice(p->price)) {
 				//살 수 없다. 소리로도 알린다 - 격자에 놓으려던 손은
 				//글자를 읽고 있지 않다.
 				PlayMusic(M_ERROR);
@@ -4308,7 +4461,7 @@ void GridTestRelease(void)
 				}
 			}
 
-			robin.gold -= GridShopPrice(p->price);
+			gStageGold -= GridShopPrice(p->price);
 
 			//---- 같은 것이 이미 있으면 겹친다 ----
 			//
@@ -4423,6 +4576,48 @@ void GridTestRelease(void)
 	PlayMusic(M_ERROR);
 	GridTestWarn(inBag ? "가방에 빈 자리가 모자란다" : "가방 안에 놓아야 산다");
 	GridFlyHome(p, from, store, offer);
+}
+
+void StageShopPreviewOpen(void)
+{
+	if(!getenv("CS_SHOP_OFFER_REVIEW")) return;
+	GridTestRefresh();
+	StageGoldSet(100);
+	for(int i=0;i<GRIDTEST_OFFERCNT;++i) gOfferSpin[i]=0;
+}
+
+bool StageShopPreviewPurchaseChecks(void)
+{
+	if(!getenv("CS_SHOP_OFFER_REVIEW")) return false;
+	// Exercise the real drag/release purchase path in the isolated review account.
+	const int selections[]={3,0,2,1,3};
+	for(int test=0;test<5;++test) {
+		memset(gGridItem,0,sizeof(gGridItem));
+		gGridGearPending=false;
+		StageShopPreviewOpen();
+		GridTestLayout();
+		if(gOffer[1].kind!=OFFER_CREW || gOffer[2].part!=GRID_SHOP_MISC || gOffer[3].part!=GRID_SHOP_CANNON) return false;
+		const int index=selections[test];
+		if(index==0) { gOffer[0].part=4; gOffer[0].price=kShopPart[4].price; }
+		const int expected=GridShopPrice(gOffer[index].price);
+		StageGoldSet(test==0?0:100);
+		GridTestPick(index,true);
+		if(!gGridDragOn) return false;
+		bool found=false;
+		for(int row=0;row<gGridH && !found;++row) for(int col=0;col<gGridW && !found;++col) {
+			if(!GridTestCanPlace(&gGridDragDesc,col,row,-1)) continue;
+			gGridDragCol=col; gGridDragRow=row; gGridDragValid=true;
+			touchX=gGridX+(int)((col+gGridDragDesc.w*.5f)*gGridCell);
+			touchY=gGridBottom+(int)((row+gGridDragDesc.h*.5f)*gGridCell);
+			found=true;
+		}
+		if(!found) return false;
+		GridTestRelease();
+		if(test==0) { if(gStageGold!=0 || GridTestTotalItemCount()!=0) return false; }
+		else if(gStageGold!=100-expected || GridTestTotalItemCount()!=1) return false;
+	}
+	StageShopPreviewOpen();
+	return true;
 }
 
 //장착 장비는 인벤토리의 진짜 ITEM 을 그대로 쓴다.
@@ -4551,6 +4746,13 @@ static int gLoadoutRow = 0;
 //밀어 본 만큼 차례가 어긋나므로 목록 번호를 그대로 쓸 수 없다.
 static short gLoadoutSlot[LOADOUT_PICKMAX];
 static int gLoadoutSlotCnt = 0;
+
+//그 칸이 이번 프레임에 그려진 자리. 못 실은 것을 창고의 제자리로
+//날려 보낼 때 어디로 갈지가 여기 있다.
+static int gLoadoutSlotX[LOADOUT_PICKMAX];
+static int gLoadoutSlotY[LOADOUT_PICKMAX];
+static int gLoadoutSlotW[LOADOUT_PICKMAX];
+static int gLoadoutSlotH[LOADOUT_PICKMAX];
 
 //한 줄에 몇 칸, 몇 줄이 보이는가. 그리는 쪽과 넘기는 쪽이 같은 값을
 //봐야 끝에서 멈춘다.
@@ -4776,9 +4978,18 @@ static int gLoadoutDragY = 0;
 //길이 끌기 말고도 있어야 한다.
 static bool gLoadoutRot[LOADOUT_MAX];
 
+//---- 못 실은 까닭 ----
+//
+//LoadoutToggleAt 은 false 하나로 네 가지를 함께 돌려준다. 어느 쪽이냐에
+//따라 할 일이 다르다 - 점수를 비워야 하는지, 성을 키워야 하는지, 다른
+//것을 내려야 하는지.
+static const char* gLoadoutWhy = NULL;
+
 bool LoadoutToggleAt(int invenIdx, int col, int row)
 {
 	const int at = LoadoutFind(invenIdx);
+
+	gLoadoutWhy = NULL;
 
 	if (at >= 0) {
 		for (int i = at; i + 1 < gLoadoutCnt; i++) {
@@ -4792,18 +5003,30 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 		return true;
 	}
 
-	if (gLoadoutCnt >= LOADOUT_MAX)
+	if (gLoadoutCnt >= LOADOUT_MAX) {
+		gLoadoutWhy = "더 실을 수 없다";
 		return false;
+	}
 
 	const ITEM* it = &robin.inven[invenIdx];
 
-	if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+	if (it->type == EMPTY || IsEquipItemType(it->type) == false) {
+		gLoadoutWhy = "실을 수 있는 장비가 아니다";
 		return false;
+	}
 
-	if (LoadoutUsed() + LoadoutCost(it) > LoadoutPoint())
+	if (LoadoutUsed() + LoadoutCost(it) > LoadoutPoint()) {
+		gLoadoutWhy = "점수가 모자란다";
 		return false;
+	}
+
 	GridPart candidate; GridGearPart(it,&candidate);
-	if(LoadoutCellUsed()+GridPartCellCount(&candidate)>CastleEquipmentCapacity(robin.castle)) return false;
+
+	if (LoadoutCellUsed() + GridPartCellCount(&candidate)
+		> CastleEquipmentCapacity(robin.castle)) {
+		gLoadoutWhy = "성이 실을 수 있는 칸을 넘는다";
+		return false;
+	}
 
 	gLoadoutAtCol[gLoadoutCnt] = (signed char)col;
 	gLoadoutAtRow[gLoadoutCnt] = (signed char)row;
@@ -5434,6 +5657,50 @@ void LoadoutPickStart(int inven)
 	gLoadoutDragY = touchY;
 }
 
+//---- 창고의 제자리로 ----
+//
+//그 인벤토리 칸이 이번 프레임에 창고 어디에 그려졌는지를 찾아 그리로
+//날린다. 창고를 옆으로 밀어 그 칸이 화면 밖이면 못 찾는다 - 그때는 안
+//날린다. 엉뚱한 데로 빨려 들어가는 것보다 낫다.
+static void LoadoutFlyHome(int inven)
+{
+	GridPart part;
+
+	if (inven < 0 || inven >= TOTALINVENTORY)
+		return;
+
+	for (int i = 0; i < gLoadoutSlotCnt; ++i) {
+		if (gLoadoutSlot[i] != (short)inven)
+			continue;
+
+		GridGearPart(&robin.inven[inven], &part);
+		GridFlyStart(&part, gLoadoutSlotW[i], gLoadoutSlotH[i],
+			gLoadoutSlotX[i] + gLoadoutSlotW[i] / 2,
+			gLoadoutSlotY[i] - gLoadoutSlotH[i] / 2);
+		return;
+	}
+}
+
+//떨어뜨리면 어느 칸인지. 정의는 가방 그리는 쪽에 있다 - 미리 보여 주는
+//쪽과 같은 식을 써야 파란 칸과 실제로 들어가는 칸이 같다.
+static bool LoadoutDropCell(int inven, GridPart* outPart,
+	int* outCol, int* outRow);
+
+//---- 지금 손이 가방 위인가 ----
+//
+//미리 보여 주는 쪽과 놓는 쪽이 같은 판정을 써야 한다. 식이 둘이면
+//"파랗게 보여 놓고 안 들어가는" 자리가 생긴다.
+static bool LoadoutOverGrid(void)
+{
+	if (gLoadoutGridW <= 0 || gLoadoutGridH <= 0)
+		return false;
+
+	return touchX >= gLoadoutGridX
+		&& touchX < gLoadoutGridX + gLoadoutGridW
+		&& touchY <= gLoadoutGridY
+		&& touchY > gLoadoutGridY - gLoadoutGridH;
+}
+
 //손을 뗀 순간. 가방 위에서 떼면 싣고, 그 밖이면 그냥 놓는다.
 void LoadoutRelease(void)
 {
@@ -5459,15 +5726,19 @@ void LoadoutRelease(void)
 
 	//이미 실려 있는 것을 가방 밖으로 끌어내면 내린다. 싣는 길과 내리는
 	//길이 같은 손놀림이어야 한다.
-	const bool inGrid = (touchX >= gLoadoutGridX
-		&& touchX < gLoadoutGridX + gLoadoutGridW
-		&& touchY <= gLoadoutGridY
-		&& touchY > gLoadoutGridY - gLoadoutGridH);
+	const bool inGrid = LoadoutOverGrid();
 	const bool already = (LoadoutFind(inven) >= 0);
 
-	//안 실린 것을 가방 밖에 놓았다. 아무 일도 없다.
-	if (inGrid == false && already == false)
+	//---- 안 실린 것을 가방 밖에 놓았다 ----
+	//
+	//여기가 조용했다. 장비는 손에서 사라져 창고 제자리에 도로 나타나는데
+	//아무 말이 없으니, 왜 안 실렸는지도 어디로 갔는지도 알 수가 없었다.
+	if (inGrid == false && already == false) {
+		PlayMusic(M_ERROR);
+		GridTestWarn("가방 안에 놓아야 실린다");
+		LoadoutFlyHome(inven);
 		return;
+	}
 
 	//---- 떨어뜨린 칸 ----
 	//
@@ -5475,41 +5746,10 @@ void LoadoutRelease(void)
 	//아래가 기준이다 - 집을 때 가운데를 손가락에 맞췄으므로 그만큼 뺀다.
 	int col = -1, row = -1;
 
-	if (inGrid && gGridW > 0 && gGridH > 0) {
-		const int cell = gLoadoutGridW / gGridW;
+	if (inGrid) {
 		GridPart part;
 
-		GridGearPart(&robin.inven[inven], &part);
-
-		if (cell > 0) {
-			//---- 손에 든 그림의 왼쪽 위에서 되짚는다 ----
-			//
-			//유령은 손가락을 그림 한가운데에 두고 그린다. 그러니 손가락
-			//자리에서 폭의 절반, 높이의 절반을 물러나야 그림의 모서리다.
-			//
-			//전에는 (w - 1) / 2 로 뺐다. 2 칸짜리에서 0 이 되어 한 칸
-			//오른쪽으로, 4 칸짜리에서 1 이 되어 한 칸 위로 튀었다.
-			const int w = part.w * cell;
-			const int h = part.h * cell;
-			const int leftPx = touchX - w / 2;
-			const int topPx = touchY + h / 2;
-
-			//반 칸 넘게 걸치면 그 칸으로 붙인다. 음수에서 0 쪽으로 자르면
-			//격자 왼쪽 바깥이 첫 칸에 붙으므로 내림으로 나눈다.
-			//
-			//row 0 이 맨 아랫줄이다. 위에서 몇 줄 내려왔는지를 센 뒤
-			//뒤집는다.
-			const int down = GridFloorDiv(
-				gLoadoutGridY - topPx + cell / 2, cell);
-
-			col = GridFloorDiv(leftPx - gLoadoutGridX + cell / 2, cell);
-			row = gGridH - part.h - down;
-
-			if (col < 0) col = 0;
-			if (row < 0) row = 0;
-			if (col > gGridW - part.w) col = gGridW - part.w;
-			if (row > gGridH - part.h) row = gGridH - part.h;
-		}
+		LoadoutDropCell(inven, &part, &col, &row);
 	}
 
 	//---- 이미 담긴 것이면 자리만 옮기거나 뺀다 ----
@@ -5524,8 +5764,16 @@ void LoadoutRelease(void)
 		return;
 	}
 
-	if (LoadoutToggleAt(inven, col, row) == false)
+	if (LoadoutToggleAt(inven, col, row) == false) {
+		//---- 못 실었다 ----
+		//
+		//전에는 소리 하나가 전부였다. 장비는 손에서 사라지고 창고 제자리에
+		//도로 나타나는데, 그 사이가 없으니 어디로 갔는지도 왜 안 됐는지도
+		//보이지 않았다.
 		PlayMusic(M_ERROR);
+		GridTestWarn(gLoadoutWhy ? gLoadoutWhy : "실을 수 없다");
+		LoadoutFlyHome(inven);
+	}
 }
 
 //출정 버튼.
@@ -5544,6 +5792,44 @@ static void LoadoutGoButtonDraw(void)
 }
 
 //격자를 그린다. 맨 아래 줄이 화면에서도 아래다(row 0 이 바닥).
+//---- 떨어뜨리면 어느 칸인가 ----
+//
+//놓는 쪽(LoadoutRelease)과 미리 보여 주는 쪽이 같은 식을 써야, 파랗게
+//보여 준 자리와 실제로 들어가는 자리가 같다. 식이 둘이면 반드시 어긋난다.
+//
+//손가락은 그림 한가운데에 있다. 거기서 폭과 높이의 절반을 물러나야
+//그림의 모서리고, 반 칸 넘게 걸치면 그 칸으로 붙인다. row 0 이 맨 아랫줄이다.
+static bool LoadoutDropCell(int inven, GridPart* outPart, int* outCol, int* outRow)
+{
+	if (inven < 0 || inven >= TOTALINVENTORY || gGridW <= 0 || gGridH <= 0)
+		return false;
+
+	const int cell = gLoadoutGridW / Max(1, gGridW);
+
+	if (cell <= 0)
+		return false;
+
+	GridGearPart(&robin.inven[inven], outPart);
+
+	const int w = outPart->w * cell;
+	const int h = outPart->h * cell;
+	const int leftPx = touchX - w / 2;
+	const int topPx = touchY + h / 2;
+	const int down = GridFloorDiv(gLoadoutGridY - topPx + cell / 2, cell);
+	int col = GridFloorDiv(leftPx - gLoadoutGridX + cell / 2, cell);
+	int row = gGridH - outPart->h - down;
+
+	if (col < 0) col = 0;
+	if (row < 0) row = 0;
+	if (col > gGridW - outPart->w) col = gGridW - outPart->w;
+	if (row > gGridH - outPart->h) row = gGridH - outPart->h;
+
+	*outCol = col;
+	*outRow = row;
+
+	return true;
+}
+
 static void LoadoutGridDraw(int top, int bottom)
 {
 	char str[96];
@@ -5652,8 +5938,15 @@ static void LoadoutGridDraw(int top, int bottom)
 			SetAlpha(ALPHA_MAX);
 		}
 
-		GridDrawShapedCard(&parts[i], cx, cy, w, h,
-			gLoadoutBad[i] ? ALPHA_MAX / 2 : ALPHA_MAX, false);
+		//---- 끌고 있는 동안은 비춰 둔다 ----
+		//
+		//놓일 자리를 이 위에 겹쳐 그린다. 밑엣것이 그대로 진하면 둘이
+		//엉켜서 지금 놓는 것이 어느 쪽인지 안 보인다.
+		const int lay = (gLoadoutDrag >= 0)
+			? LOADOUT_UNDER_ALPHA
+			: (gLoadoutBad[i] ? ALPHA_MAX / 2 : ALPHA_MAX);
+
+		GridDrawShapedCard(&parts[i], cx, cy, w, h, lay, false);
 
 		if (gLoadoutBad[i])
 			MemRectFrame(cx, cy, w, h, 0xFF4444);
@@ -5661,6 +5954,90 @@ static void LoadoutGridDraw(int top, int bottom)
 		//집어서 뺄 수 있게 터치를 건다. 이게 없으면 한 번 넣은 것을
 		//보관함에서 같은 칸을 다시 찾아 누르는 수밖에 없다.
 		SetRectPoint(cx, cy, w, h, TOUCH_FUNC_LOADOUT_BAGITEM + i);
+	}
+
+	//---- 들어갈 자리를 미리 ----
+	//
+	//끌고 있는 동안, 지금 떼면 어느 칸을 먹는지 그 칸 위에 깐다. 파란
+	//칸은 들어가는 자리, 빨간 칸은 이미 찼거나 성 밖이라 못 들어가는
+	//자리다. 놓아 보고 나서야 아는 것과 놓기 전에 아는 것은 다르다.
+	//
+	//이미 실려 있는 것을 옮기는 중이면 제 몸이 깔아 둔 칸은 뺀다. 안 그러면
+	//한 칸 옆으로 옮기려 할 때 제 자리와 겹쳐 온통 빨갛게 보인다.
+	if (gLoadoutDrag >= 0) {
+		GridPart held;
+		int hc = 0, hr = 0;
+
+		if (LoadoutOverGrid()
+			&& LoadoutDropCell(gLoadoutDrag, &held, &hc, &hr)) {
+			//제 몸이 깔아 둔 칸을 걷어낸 자리표를 따로 만든다.
+			unsigned char mine[GRIDTEST_H][GRIDTEST_W];
+
+			memset(mine, 0, sizeof(mine));
+
+			for (int i = 0; i < LOADOUT_MAX; i++) {
+				if (fit[i] == false || gLoadoutPackInven[i] == (short)gLoadoutDrag)
+					continue;
+
+				for (int r = 0; r < parts[i].h; r++)
+					for (int c = 0; c < parts[i].w; c++) {
+						if (GridPartCell(&parts[i], c, r) == false)
+							continue;
+
+						const int gc = atCol[i] + c;
+						const int gr = atRow[i] + r;
+
+						if (gc >= 0 && gc < GRIDTEST_W
+							&& gr >= 0 && gr < GRIDTEST_H)
+							mine[gr][gc] = 1;
+					}
+			}
+
+			for (int r = 0; r < held.h; r++)
+				for (int c = 0; c < held.w; c++) {
+					if (GridPartCell(&held, c, r) == false)
+						continue;
+
+					const int gc = hc + c;
+					const int gr = hr + r;
+					const bool out = (gc < 0 || gc >= gGridW
+						|| gr < 0 || gr >= gGridH
+						|| GridMaskAt(gc, gr) == false);
+					const bool taken = out
+						|| mine[gr][gc] != 0;
+					const int cx = left + gc * cell;
+					const int cy = base - (gGridH - 1 - gr) * cell;
+
+					if (out)
+						continue;	//성 밖은 그릴 칸 자체가 없다
+
+					//칸을 꽉 채운다. 옅게 깔면 파란 테두리 그림에 묻혀
+					//아무것도 안 깐 것처럼 보인다.
+					SetAlpha(taken ? 18 : 20);
+					MemRect(cx + _2X, cy - _2X,
+						cell - 2 * _2X, cell - 2 * _2X,
+						taken ? 0xC02030 : 0x1E5BE0);
+					SetAlpha(ALPHA_MAX);
+					MemRectFrame(cx + _2X, cy - _2X,
+						cell - 2 * _2X, cell - 2 * _2X,
+						taken ? 0xFF6677 : 0x86C0FF);
+				}
+
+			//---- 놓였을 때의 모습 ----
+			//
+			//칸만 칠하면 "저 칸들을 먹는다"까지는 알아도 그 안에 어떻게
+			//들어앉는지는 모른다. 들어간 뒤의 그림을 그 자리에 그대로
+			//겹친다. 반투명인 것은 아직 놓은 것이 아니기 때문이다 -
+			//진하게 그리면 이미 실린 것과 구별이 안 된다.
+			const int gw = held.w * cell;
+			const int gh = held.h * cell;
+			const int gx = left + hc * cell;
+			const int gy = base - (gGridH - 1 - hr) * cell
+				+ (held.h - 1) * cell;
+
+			GridDrawShapedCard(&held, gx, gy, gw, gh,
+				LOADOUT_PREVIEW_ALPHA, false);
+		}
 	}
 
 	//---- 결과 한 줄 ----
@@ -5679,6 +6056,30 @@ static void LoadoutGridDraw(int top, int bottom)
 	//가방 아래, 보관함과의 틈에 적는다. 위에 두면 칸이 커질수록 가방이
 	//올라가 머리말 글자를 밟는다. 아래는 틈이 늘 한 줄만큼 있다.
 	CenterTextStrSolid(str, DX / 2, bottom + 14 * _2X, 0.5f);
+
+#if LOADOUT_DROP_DEBUG
+	//---- 들어갈 칸 미리보기가 왜 안 뜨는지 보는 임시 줄 ----
+	//
+	//끌고 있는 동안 판정에 쓰는 값을 그대로 적는다. 미리보기가 안 보이는
+	//까닭이 "끌고 있지 않다"인지 "가방 밖으로 친다"인지 "칸이 성 밖"인지
+	//가려야 고칠 자리가 정해진다. 자리를 잡으면 이 줄과 값을 걷어낸다.
+	{
+		GridPart dbg;
+		int dc = -1, dr = -1;
+		const bool ok = (gLoadoutDrag >= 0)
+			&& LoadoutDropCell(gLoadoutDrag, &dbg, &dc, &dr);
+
+		sprintf(str, "drag %d  touch %d,%d  grid %d,%d %dx%d  cell %d,%d  %s",
+			gLoadoutDrag, touchX, touchY,
+			gLoadoutGridX, gLoadoutGridY, gLoadoutGridW, gLoadoutGridH,
+			dc, dr,
+			ok ? (GridMaskAt(dc, dr) ? "mask O" : "mask X") : "no drop");
+
+		SetFontColor(COLOR_REALYELLOW);
+		CenterTextStrSolid(str, DX / 2, bottom + 4 * _2X, 0.42f);
+		SetFontColor(COLOR_WHITE);
+	}
+#endif
 }
 
 void LoadoutDraw(void)
@@ -5839,8 +6240,16 @@ void LoadoutDraw(void)
 		//끌던 도중 손가락이 띠에 들어왔다고 새로 잡으면, 가방에서 집어
 		//보관함으로 끌어내리는 길에 밀기로 바뀌어 들고 있던 것을 놓친다.
 		//누름의 첫 프레임이 아니면 띠 안이라도 아무 일도 하지 않는다.
+		//---- 집은 채로는 안 민다 ----
+		//
+		//누른 자리에 장비가 있었으면 그 누름은 "집기"다. 그대로 두면
+		//아래의 밀기 판정이 가로채 gLoadoutDrag 를 지워서, 집어 든 것이
+		//손에서 사라진다 - 가방이 위에 있어 손이 옆으로 먼저 움직이는
+		//왼쪽 칸에서 특히 자주 그랬다.
+		//
+		//띠의 빈 자리를 눌렀을 때만 민다.
 		else if (gLoadoutGesture == false && inBand
-			&& gLoadoutWasDown == false) {
+			&& gLoadoutWasDown == false && gLoadoutDrag < 0) {
 			gLoadoutGesture = true;
 			gLoadoutGestureMode = 0;
 			gLoadoutGestureX = touchX;
@@ -6010,14 +6419,18 @@ void LoadoutDraw(void)
 		//모르고, 색까지 그대로면 집을 수 있는 것과 구별이 안 된다.
 		const int keepColor = baseColor;
 
-		if (live == false) {
+		//지금 손에 들고 있는 그 칸도 같이 죽인다. 들어 올린 것이 제자리에
+		//그대로 또렷하면 무엇을 들었는지 알 수가 없다.
+		const bool held = (gLoadoutDrag >= 0 && inv == gLoadoutDrag);
+
+		if (live == false || held) {
 			grayScale = 32;
 			SetColor(0x4A4A56);		//밝은 바탕 위의 그림자로
 		}
 
 		GridDrawShapedCard(&part, x, y, w, h, ALPHA_MAX, false);
 
-		if (live == false) {
+		if (live == false || held) {
 			//원래 값으로 되돌린다. 흰색으로 돌려놓으면 그 뒤에 그리는
 			//것이 통째로 하얗게 뜬다 - 출정 버튼이 그랬다.
 			SetColor(keepColor);
@@ -6032,6 +6445,10 @@ void LoadoutDraw(void)
 			continue;
 
 		gLoadoutSlot[gLoadoutSlotCnt] = (short)inv;
+		gLoadoutSlotX[gLoadoutSlotCnt] = x;
+		gLoadoutSlotY[gLoadoutSlotCnt] = y;
+		gLoadoutSlotW[gLoadoutSlotCnt] = w;
+		gLoadoutSlotH[gLoadoutSlotCnt] = h;
 		SetRectPoint(x, y, w, h, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
 		gLoadoutSlotCnt++;
 	}
@@ -6076,11 +6493,15 @@ void LoadoutDraw(void)
 		const int w = part.w * cell;
 		const int h = part.h * cell;
 
-		SetAlpha(ALPHA_MAX / 2);
+		//든 것이 제 색이어야 "이것을 옮기는 중"으로 읽힌다. 옅게 그리면
+		//창고에 남은 그림이 더 또렷해서 그쪽이 들린 것처럼 보인다.
 		GridDrawShapedCard(&part, touchX - w / 2, touchY + h / 2, w, h,
-			ALPHA_MAX / 2, false);
-		SetAlpha(ALPHA_MAX);
+			ALPHA_MAX, false);
 	}
+
+	//못 실어 돌아가는 것과 그 까닭. 둘 다 손에 든 것 위에 얹는다.
+	GridFlyDraw();
+	GridWarnDraw();
 }
 
 //---- 이 아이템이 들어갈 착용 칸 ----
@@ -6555,23 +6976,8 @@ void GridTestDraw(void)
 				UiFrameDraw(WIN_IMG, UIFRAME_X, UIFRAME_Y, UIFRAME_W, UIFRAME_H,
 				            UIFRAME_CAP, x, y, w, h, 0.34f);
 
-				bool drawn = false;
-				if (f->type == ITEM_SWORD)
-					drawn = DrawSwordInBox(f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-				else if (f->type == ITEM_GREAVES || f->type == ITEM_SHOES || f->type == ITEM_BOOTS)
-					drawn = DrawBootsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-				else if (f->type == ITEM_KILT || f->type == ITEM_SKIRT || f->type == ITEM_PANTS)
-					drawn = DrawPantsInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-				else if (f->type == ITEM_GUNTLET || f->type == ITEM_ARMLET || f->type == ITEM_GLOVE)
-					drawn = DrawGloveInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-				else if (f->type == ITEM_ARMOR || f->type == ITEM_VEST || f->type == ITEM_COAT)
-					drawn = DrawArmorInBox(f->type, f->detail, x + 4 * _2X, y - 4 * _2X, w - 8 * _2X, h - 14 * _2X, 20);
-
-				if (!drawn) {
-					DrawIcon(GetItemIcon(f->type, f->detail, f->grade),
-						x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
-						1.0f, false, false, false, true);
-				}
+                DrawIcon(GetItemIcon(f->type,f->detail,f->grade),
+                    x+w/2-ITEMICONSIZE/2,y-2*_2X,1.0f,false,false,false,true);
 
 				GridShopPriceStrip(i, -1, false);
 				continue;
@@ -6582,7 +6988,7 @@ void GridTestDraw(void)
 			//아이콘이 없으므로 그 몸을 작게 세운다. 누가 오는지는 얼굴로
 			//알아봐야 한다.
 			if (c->kind != OFFER_PART) {
-				const bool afford = (robin.gold >= GridShopPrice(c->price));
+				const bool afford = !StageRtCrewFull() && (gStageGold >= GridShopPrice(c->price));
 				const int type = c->crewType;
 				const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
 				const int idle = crewPos[type * 5]
@@ -6594,23 +7000,25 @@ void GridTestDraw(void)
 				MemRectFrame(x, y, w, h,
 					c->kind == OFFER_CREW ? 0x66CCFF : 0xFF8844);
 
-				DrawCmfDetailShadow(cmf, idle, x + w / 2, y - 26 * _2X, RIGHT,
+				SetSectionClip(x+3*_2X,y-3*_2X,w-6*_2X,h-25*_2X,false);
+				DrawCmfDetailShadow(cmf, idle, x + w / 2, y-h+24*_2X, RIGHT,
 					enemyIconZoom[type] * 0.6f);
+				UnSectionClip(false);
 
 				SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
 				GridOfferLabel(textId[TEXT_MONSTERNAME_START + type],
-					x, w, y - h + 14 * _2X, 0.52f);
+					x, w, y - h + 15 * _2X, 0.45f);
 				GridOfferLabel(c->kind == OFFER_CREW ? "동료" : "몬스터",
-					x, w, y - h + 4 * _2X, 0.46f);
+					x, w, y - h + 7 * _2X, 0.4f);
 				GridShopPriceStrip(i, GridShopPrice(c->price), afford);
 
 				SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
 				continue;
 			}
 
-			GridPart shown = kShopPart[c->part];
+			GridPart shown = GridOfferPart(*c);
 			const GridPart* p = &shown;
-			const bool afford = (robin.gold >= GridShopPrice(p->price));
+			const bool afford = (gStageGold >= GridShopPrice(p->price));
 
 			//성이 올려 준 등급으로 보여준다. 테두리 색이 곧 등급이다.
 			shown.grade = c->grade;
@@ -6625,14 +7033,15 @@ void GridTestDraw(void)
 			//가방에 놓인 모습(실제 크기의 그림)은 집어 든 순간에 보여준다.
 			//고르는 동안에는 크기가 제각각인 그림보다 같은 크기의 아이콘이
 			//견주기 쉽다.
-			DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
-				x + w / 2 - ITEMICONSIZE / 2, y - 8 * _2X,
-				1.0f, false, false, false, true);
+            if(p->type==GRID_ITEM_CANNON)
+                DrawInventoryCannonThumbnail(p->detail,p->grade,x+6*_2X,y-2*_2X,w-12*_2X,h-18*_2X);
+            else DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
+                x+w/2-ITEMICONSIZE/2,y-2*_2X,1.0f,false,false,false,true);
 
 			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-			GridOfferLabel(p->name, x, w, y - h + 14 * _2X, 0.52f);
-			sprintf(str, "%dx%d / %d칸", p->w, p->h, GridPartCellCount(p));
-			GridOfferLabel(str, x, w, y - h + 4 * _2X, 0.46f);
+			GridOfferLabel(p->name, x, w, y - h + 15 * _2X, 0.45f);
+			sprintf(str, "%s · %d×%d",p->type==GRID_ITEM_CANNON?"대포":c->part==GRID_SHOP_MISC?"기타":"장비",p->w,p->h);
+			GridOfferLabel(str, x, w, y - h + 7 * _2X, 0.4f);
 			GridShopPriceStrip(i, GridShopPrice(p->price), afford);
 
 			SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
@@ -6652,12 +7061,10 @@ void GridTestDraw(void)
 
 		//---- 나오는 몫 ----
 		//
-		//무엇이 얼마나 나오는지 적어 둔다. 다시 뽑을지 말지는 이 수를
-		//보고 정하는 것이라, 숨기면 다시 뽑기가 도박이 된다.
+		//무엇이 얼마나 나오는지 적어 둔다. 글자 크기를 3배로 키운다(0.46f -> 1.38f).
 		SetFontColor(COLOR_GREY);
-		sprintf(str, "장비 %d%%   동료 %d%%   몬스터 %d%%",
-			100 - kOfferCrewPct - kOfferMonsterPct, kOfferCrewPct, kOfferMonsterPct);
-		CenterTextStrSolid(str, DX / 2, StageShopPctTop() - 2 * _2X, 0.46f);
+		sprintf(str,"장비 2 · 동료 1 · 기타 1 · 대포 1");
+
 
 		//---- 다시 뽑기 ----
 		//
@@ -6665,29 +7072,33 @@ void GridTestDraw(void)
 		w = STAGE_SHOP_SIDEW;
 		h = 16 * _2X;
 		x = DX - w - STAGE_SHOP_GAP;
-		y = StageShopPctTop() + 2 * _2X;
+		y = StageShopGoldTop() + 2 * _2X;
 
 		if (gOfferOn) {
-			const bool canRoll = robin.gold >= STAGE_REROLL_GOLD;
+			const bool canRoll = gStageGold >= STAGE_REROLL_GOLD;
 
 			sprintf(str, "%d 다시", STAGE_REROLL_GOLD);
 			DrawUiButton(x, y, w, h, str, TOUCH_FUNC_STAGE_REROLL,
 				false, canRoll);
 		}
 
-		//---- 가진 골드 ----
+		//---- 가진 골드 (인게임 재화) ----
 		//
-		//동전 그림과 수를 나란히 놓는다. 수만 있으면 그것이 골드인지
-		//다른 값인지 알 수 없다.
+		//동전 그림과 수를 합쳐서 화면 센터(DX / 2)에 맞춘다.
 		{
-			const float gz = 0.5f;
-			const int numW = GetGoldNumDx(robin.gold, false, false, true, 0.6f);
+			const float gz = 0.55f;
+			const float numZoom = 0.6f;
 			const int iconW = (int)(ITEMICONSIZE * gz);
-			const int gx = DX / 2 - (numW + iconW) / 2;
+			const int gap = 4 * _2X;
+			const int numW = (int)GetGoldNumDx(gStageGold, 0, 0, true, numZoom);
+			const int totalW = iconW + gap + numW;
+			const int startX = DX / 2 - totalW / 2;
+			const int iconX = startX;
+			const int numX = startX + iconW + gap;
+			const int goldY = StageShopGoldTop();
 
-			DrawIcon(ICON_GOLD, gx, StageShopGoldTop(), gz, false, true, true, true);
-			DrawGoldNum(robin.gold, gx + iconW + 2 * _2X, StageShopGoldTop(),
-				RIGHT, false, false, true, 0.6f);
+			DrawIcon(ICON_GOLD, iconX, goldY, gz, false, true, true, true);
+			DrawGoldNum(gStageGold, numX, goldY, LEFT, 0, 0, true, numZoom);
 		}
 
 		//---- 지도 / 도감 ----
@@ -6776,50 +7187,8 @@ void GridTestDraw(void)
 		GridDrawShapedCard(p, touchX - w / 2, touchY + h / 2, w, h, GRIDTEST_DRAGALPHA);
 	}
 
-	//---- 제자리로 돌아가는 것 ----
-	//
-	//놓지 못해 되돌아가는 장비다. 손을 뗀 자리에서 왔던 자리로 당겨지듯
-	//간다 - 끝으로 갈수록 느려져야 "빨려 들어갔다"가 아니라 "놓였다"로
-	//보인다. 닿을 무렵에는 옅어져서 그 자리의 진짜 그림에 자연스레 넘긴다.
-	if (gGridFlyOn) {
-		const GridPart* p = &gGridFlyPart;
-		float t = 1.0f - (float)gGridFlyFrame / (float)Max(1, GRIDFLY_FRAME);
-
-		if (--gGridFlyFrame <= 0)
-			gGridFlyOn = false;
-
-		t = 1.0f - (1.0f - t) * (1.0f - t);
-
-		const int fx = (int)(gGridFlyFromX + (gGridFlyToX - gGridFlyFromX) * t);
-		const int fy = (int)(gGridFlyFromY + (gGridFlyToY - gGridFlyFromY) * t);
-
-		w = p->w * gGridCell;
-		h = p->h * gGridCell;
-
-		GridDrawShapedCard(p, fx - w / 2, fy + h / 2, w, h,
-			(int)(GRIDTEST_DRAGALPHA * (1.0f - t * 0.65f)));
-	}
-
-	//---- 왜 안 됐는가 ----
-	//
-	//화면 한가운데. 손이 보고 있는 자리라 여기서만 읽힌다. 조금 올라가며
-	//흐려진다 - 멈춰 있으면 다음에 놓으려는 자리를 가린다.
-	if (gGridWarnFrame > 0) {
-		const float t = 1.0f
-			- (float)gGridWarnFrame / (float)Max(1, GRIDWARN_FRAME);
-
-		gGridWarnFrame--;
-
-		//뜨자마자 사라지면 못 읽는다. 절반을 지난 뒤부터 흐려진다.
-		const float fade = (t < 0.5f) ? 1.0f : 1.0f - (t - 0.5f) * 2.0f;
-
-		SetAlpha(Max(1, (int)(ALPHA_MAX * fade)));
-		SetFontColor(COLOR_REALYELLOW);
-		CenterTextStrSolid(gGridWarn, DX / 2,
-			DY / 2 + (int)(GRIDWARN_RISE * t), GRIDWARN_ZOOM);
-		SetFontColor(COLOR_WHITE);
-		SetAlpha(ALPHA_MAX);
-	}
+	GridFlyDraw();
+	GridWarnDraw();
 
 	//---- 접기 ----
 	//
@@ -7520,6 +7889,10 @@ static void LobbyBottomNavDraw(void)
 	//함정이 생긴다.
 	if (LoadoutOpen())
 		return;
+	// The castle modal owns this area and its purchase/upgrade buttons.
+	// Do not redraw the main tabs or register their hit areas above it.
+	for (int i = 0; i < popUpCnt; ++i)
+		if (popUp[i].type == POPUPTYPE_CASTLEMENU) return;
 
 	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
 		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
@@ -7671,10 +8044,8 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//left) 그만큼 더해야 한다. LeftArmorW(0) 이 160 이라 옛 식이 96 을
 	//내놓아 성 1 은 우연히 맞아 있었다 - 그래서 성 1 만 보고는 못 찾는다.
 	const float partOffset = CastlePartsLeftInset(curCastle + 1);
-	const float heroV = curCastle == 0
-		? (upperH + roomStackH + 26.0f - bodyLift) / gLobbyCastleH // raised command deck
-		: (upperH + (float)curCastle * 128.0f + 92.0f - LOBBY_HERO_LIFT - bodyLift)
-		  / gLobbyCastleH;
+	// Commander and descending combat crew share the deck's walking surface.
+	const float heroV = (upperH + roomStackH + 72.0f - bodyLift) / gLobbyCastleH;
 
 	// 방 슬롯은 512px 방 좌표로 작성되어 있다. 성 외장 전체 폭(736px)을
 	// 그대로 곱하면 동료가 좌우 외장과 지휘대로 퍼진다. 중앙 방 aperture
@@ -7686,7 +8057,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	// 2~10번 성의 포대는 지휘대 오른쪽에 장착된다. 지휘관은 포신과
 	// 겹치지 않도록 지휘대의 안쪽 보행 공간에 선다.
 	float heroCenterX, heroY;
-	const float commanderU = (partOffset + (curCastle == 0 ? 660.0f : 616.0f))
+	const float commanderU = (partOffset + 600.0f)
 		/ gLobbyCastleW;
 	LobbyCastleToObj(commanderU, heroV, &heroCenterX, &heroY);
 
@@ -7891,7 +8262,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			//방에 그대로 두면 예순네 명 사이에 섞여 누가 나갔는지가 안
 			//보인다. 땅에 내려서면 성과 몬스터 사이에 저 혼자 서게 된다.
 			const float sx = CREW_LINE_X + liveSlot * CREW_LINE_GAP;
-			const float sy = (float)StageBg::GroundY() + CREW_LINE_LIFT;
+			const float sy = gLobbyCastleTop - heroV * gLobbyCastleH * gLobbyCastleScale;
 
 			float ox = 0.0f, oy = 0.0f;
 			ScreenToObj(sx, sy, &ox, &oy);
@@ -8106,6 +8477,29 @@ void LobbyDraw(void)
 		SetFontColor(COLOR_WHITE);
 		CenterTextStrSolid(title,
 			rowX + iconH + gap + numberW + gap + titleW / 2, rowY, rowZoom);
+
+#if SHOW_PVP_TEST_BUTTON
+		//---- PVP ----
+		//
+		//게임 시작 왼쪽에 나란히 선다. 플레이 화면의 좌상단 버튼과 같은
+		//곳으로 가며(TOUCH_FUNC_PVP_TEST), 누르면 우주맵에서 상대를 찾아
+		//두 성이 맞붙는 화면으로 간다.
+		//
+		//세로 한가운데를 게임 시작 버튼에 맞춘다. 눌려서 커졌다 작아지는
+		//동안에는 그 버튼만 움직이고 이 버튼은 제자리에 둔다 - 둘이 같이
+		//들썩이면 어느 것을 누른 것인지 안 보인다.
+		{
+			const int pvpW = 44 * _2X;
+			const int pvpH = 30 * _2X;
+			const int pvpGap = 6 * _2X;
+			const int pvpX = x - pvpGap - pvpW;
+			const int pvpY = y - (int)(height - pvpH) / 2;
+
+			if (pvpX > 2 * _2X)
+				DrawUiButton(pvpX, pvpY, pvpW, pvpH, "PVP",
+					TOUCH_FUNC_PVP_TEST, false, menuPressPossible());
+		}
+#endif
 	}
 
 	//출정 준비. 로비 위에 얹는다.
@@ -10276,8 +10670,21 @@ void GNBDraw(int x, int y)
 	}
 #endif
 
-	//�޴���ư
-	DrawImage(140, 145, 1, 1, x + DX - (float)148 * 0.45f, y - 1 * _2X, false, false, false, false, false, 0.45f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	//---- 환경설정 톱니바퀴 ----
+	//
+	//자원 칸과 같은 높이로 그리고, 그 줄 안에서 세로 한가운데에 둔다.
+	//오른쪽 여백은 칸들이 비워 둔 자리(36*_2X)의 가운데를 잡는다.
+	{
+		const float gearZoom = GNB_GEAR_ZOOM;
+		const int gearW = (int)(140.0f * gearZoom);
+		const int gearH = (int)(145.0f * gearZoom);
+
+		DrawImage(140, 145, 1, 1,
+			x + DX - 36 * _2X / 2 - gearW / 2,
+			y - (LOBBY_BAR_H - gearH) / 2,
+			false, false, false, false, false, gearZoom,
+			sprite[UI_NEW_IMG], UI_NEW_IMG);
+	}
 	if (IsStageRealtime()) {
 		//톱니바퀴와 같은 상단 기준선에 둔다. 버튼 함수에 넘긴 y를 그대로
 		//사용하며 별도의 세로 보정은 하지 않는다.
@@ -10292,11 +10699,11 @@ void GNBDraw(int x, int y)
 			if (xOffset != 0)//ȭ���� 
 				SetRectPoint(x, y, DX, DY, (curMenu == MENU_PLAY ? TOUCH_FUNC_GAMEMENU : TOUCH_FUNC_GAMEMENU_OUT));
 			else
-				SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
+				SetRectPoint(x + DX - GNB_GEAR_TOUCHW, y, GNB_GEAR_TOUCHW, GNB_GEAR_TOUCHH, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
 		}
 		else {
 			//우측상단 톱니바퀴는 환경설정 팝업을 띄운다.
-			SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
+			SetRectPoint(x + DX - GNB_GEAR_TOUCHW, y, GNB_GEAR_TOUCHW, GNB_GEAR_TOUCHH, (curMenu == MENU_PLAY ? TOUCH_FUNC_SETTING : TOUCH_FUNC_GAMEMENU_OUT));
 		}
 		break;
 	case MD_BATTLE:
@@ -10304,8 +10711,8 @@ void GNBDraw(int x, int y)
 		break;
 	case MD_BOSSRAID:
 		// 보스전에서도 우측 상단 환경설정은 같은 자리에 그대로 둔다.
-		SetRectPoint(x + DX - 36 * _2X, y, 36 * _2X, 40 * _2X,
-			TOUCH_FUNC_SETTING);
+		SetRectPoint(x + DX - GNB_GEAR_TOUCHW, y,
+			GNB_GEAR_TOUCHW, GNB_GEAR_TOUCHH, TOUCH_FUNC_SETTING);
 		break;
 	}
 }

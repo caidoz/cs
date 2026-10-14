@@ -28,17 +28,37 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 	}
 }
 
-// Use the existing resource frame with an independent width; icons and type
-// stay at their normal height when the lobby makes room for energy.
+//---- 자원 칸 하나의 테두리 ----
+//
+//그림판의 444x129 칸을 가로는 폭에 맞춰, 세로는 LOBBY_BAR_H 에 맞춰 늘인다.
+//세로 배율을 따로 박아 두면 높이를 바꿀 때 테두리만 남고 안쪽 띠가 어긋난다.
 static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
 {
 	const float zx = w / 444.0f;
-	const float zy = 0.5f;
+	const float zy = (float)LOBBY_BAR_H / 129.0f;
 	DrawImageScale(444, 129, 302, 1, x, y, false, false, false, false, false,
 		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	DrawImageScale(411 * percent, 94, 318, 132 + 95 * color,
 		x + 16 * zx, y - 16 * zy, false, false, false, false, false,
 		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+}
+
+//---- 칸 오른쪽 끝의 + 단추 ----
+//
+//골드 · 무지개 · 에너지가 같은 자리에 같은 크기로 단다. 세 칸이 같은
+//차림이어야 "눌러서 더 얻는 곳"으로 한눈에 읽힌다.
+static void LobbyResourcePlus(int x, int y, int w, int func)
+{
+	const int size = 15 * _2X;
+	const int px = x + w - size - 4 * _2X;
+	const int py = y - (LOBBY_BAR_H - size) / 2;
+	const float press = GetButtonScale(func, px, py, size, size);
+	const float drawn = size * press;
+
+	DrawImage(64, 64, 521, 640, px + (size - drawn) / 2,
+		py - (size - drawn) / 2, false, false, false, false, false,
+		drawn / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	SetRectPoint(px, py, size, size, func);
 }
 
 void LobbyResourceBarsDraw(int y)
@@ -52,12 +72,20 @@ void LobbyResourceBarsDraw(int y)
 	const int goldX = left + levelW + gap;
 	const int coinX = goldX + moneyW + gap;
 	const int energyX = coinX + moneyW + gap;
-	const int h = GOLDBARHEIGHT;
+	const int h = LOBBY_BAR_H;
+	const int iconSize = 17 * _2X;
+	const int iconTop = y - (h - iconSize) / 2;	//칸 안에서 세로 한가운데
+
+	//글자도 칸의 한가운데에 놓는다. y 는 윗변이므로 글자 높이의 절반만큼
+	//내린다 - 버튼 글자(DrawTouchLargeButton)와 같은 식이다.
+	const float numZoom = 0.8f;
+	const int numTop = y - (int)((h - FONT_HEIGHT * numZoom) / 2);
+
 	const float progress = Max(0.0f, Min(1.0f,
 		(float)(ao[PLAYER].exps - NextExp(robin.lv - 1)) /
 		Max(1.0f, (float)(NextExp(robin.lv) - NextExp(robin.lv - 1)))));
 	LobbyResourceFrame(left, y, levelW, BARCOLOR_PURPLE, progress);
-	DrawStarNum(ICON_CROWN, robin.lv + 1, left + 4 * _2X, y - 6 * _2X, 1.0f);
+	DrawStarNum(ICON_CROWN, robin.lv + 1, left + 4 * _2X, iconTop, 1.0f);
 	SetRectPoint(left, y, levelW, h, TOUCH_FUNC_POPUP_LVUPREWARD);
 
 	for (int i = 0; i < 2; ++i) {
@@ -65,44 +93,54 @@ void LobbyResourceBarsDraw(int y)
 		const int func = i == 0 ? TOUCH_FUNC_GOTO_GOLD_IAP : TOUCH_FUNC_GOTO_RAINBOW_IAP;
 		LobbyResourceFrame(x, y, moneyW, i == 0 ? BARCOLOR_YELLOW : BARCOLOR_PURPLE);
 		if (i == 0)
-			DrawIcon(ICON_GOLD, x + 4 * _2X, y - 7 * _2X, 0.9f,
+			DrawIcon(ICON_GOLD, x + 4 * _2X, iconTop, 0.9f,
 				COLOR_BROWN, false, false, 1);
 		else
-			DrawImage(64, 64, 0, 198, x + 4 * _2X, y - 7 * _2X,
+			DrawImage(64, 64, 0, 198, x + 4 * _2X, iconTop,
 				false, false, false, false, false, 0.55f,
 				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
-		const int plusSize = 15 * _2X;
-		const int plusX = x + moneyW - plusSize - 4 * _2X;
-		const int plusY = y - (h - plusSize) / 2;
-		DrawBigNumTTF(i == 0 ? robin.gold : robin.coin, plusX - 2 * _2X,
-			y - 10 * _2X, NUM_FONT_NORMAL, RIGHT, false, false,
-			moneyW - 42 * _2X, true, 0.8f, true);
-		const float press = GetButtonScale(func, plusX, plusY, plusSize, plusSize);
-		const float size = plusSize * press;
-		DrawImage(64, 64, 521, 640, plusX + (plusSize - size) / 2,
-			plusY - (plusSize - size) / 2, false, false, false, false, false,
-			size / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
-		SetRectPoint(plusX, plusY, plusSize, plusSize, func);
+
+		//---- 숫자는 흰색 ----
+		//
+		//바로 위 DrawIcon 이 글자색을 갈색으로 두고 나온다. 그대로 두면
+		//어두운 띠 위의 어두운 글자가 되어 회색으로 죽어 보인다.
+		SetFontColor(COLOR_WHITE);
+		DrawBigNumTTF(i == 0 ? robin.gold : robin.coin,
+			x + moneyW - 19 * _2X - 4 * _2X - 2 * _2X,
+			numTop, NUM_FONT_NORMAL, RIGHT, false, false,
+			moneyW - 42 * _2X, true, numZoom, true);
+		LobbyResourcePlus(x, y, moneyW, func);
 	}
 
+	//---- 에너지 ----
+	//
+	//골드 · 무지개와 같은 차림이다. "보유 / 소모" 두 줄로 적던 것을
+	//"지금 / 상한" 한 줄로 바꿨다. 쓸 양은 들어가는 자리에서 다시 묻고,
+	//여기서 알고 싶은 것은 "얼마나 남았나" 하나다.
 	LobbyResourceFrame(energyX, y, energyW, BARCOLOR_GREEN);
-	const int iconSize = 17 * _2X;
-	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, y - (h - iconSize) / 2,
+	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, iconTop,
 		false, false, false, false, false, iconSize / 128.0f,
 		sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
-	const int textX = energyX + iconSize + 5 * _2X;
-	const int textW = energyW - iconSize - 9 * _2X;
-	char label[64];
-	sprintf(label, "보유 %lld", robin.heart);
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid(label, textX + textW / 2, y - 5 * _2X,
-		Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
-	const long long cost = GetStageAdmissionHeart(robin.stage);
-	sprintf(label, "소모 %lld", cost);
-	SetFontColor(robin.heart >= cost ? COLOR_WHITE : COLOR_RED);
-	CenterTextStrSolid(label, textX + textW / 2, y - 18 * _2X,
-		Min(0.65f, textW / Max(1.0f, StringWidth(label, 1.0f))));
-	SetFontColor(COLOR_WHITE);
+
+	{
+		const int plusRoom = 19 * _2X + 4 * _2X;
+		const int textX = energyX + iconSize + 5 * _2X;
+		const int textW = energyW - iconSize - 9 * _2X - plusRoom;
+		const long long now = robin.heart;
+		const long long full = Max(1, GetInitHeart());
+		char label[64];
+
+		sprintf(label, "%lld/%lld", now, full);
+
+		//가득 찬 뒤에는 더 안 차오른다. 그 사실이 색으로 먼저 읽히게 한다.
+		SetFontColor(now >= full ? COLOR_REALYELLOW : COLOR_WHITE);
+		CenterTextStrSolid(label, textX + textW / 2,
+			y - (int)((h - FONT_HEIGHT * 0.72f) / 2),
+			Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
+		SetFontColor(COLOR_WHITE);
+	}
+
+	LobbyResourcePlus(energyX, y, energyW, TOUCH_FUNC_HEARTAMOUNT);
 }
 
 void DrawBarIcon(int type, int x, int y, float zoom)

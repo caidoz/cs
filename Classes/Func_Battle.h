@@ -36,6 +36,7 @@ bool StageRtSwordCharge(int slot, float* charge, int* flash);
 void StageArtilleryReset(void);
 void StageArtilleryStep(bool running, int foe);
 void StageArtilleryDraw(void);
+void StageArtilleryPreviewStep(bool prime);
 bool StageArtilleryVisual(float* charge, float* recoil, int* burst);
 bool CastlePartsCannonMuzzle(int castleLevel, float* x, float* y);
 void StageArtilleryNotifySpawn(int obj);

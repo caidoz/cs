@@ -8987,6 +8987,6 @@ void ShopDraw(int x, int y, float zoom)
 }
 
 //======================================================================
-// 성 선택, 구매 확인, 방과 파츠 업그레이드.
+// 전체 화면 성 팝업: 성 중앙 배치, 전투력, 전투와 같은 방향의 그리드 및 배치 한도.
 #include "CastleMenuRuntime.inc"
 void CastleMenuDraw(int x,int y,float zoom) { CastleMenuNewDraw(); }

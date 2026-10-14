@@ -1450,6 +1450,10 @@ extern signed char is_touchkey_pressed;
 //int keyCount = 0;
 
 extern unsigned char keyHandle, drawHandle, before_DrawHandle, before_KeyHandle, before_DrawHandle_Gacha, before_CurMenu_Gacha, before_KeyHandle_Gacha, before_DrawHandle_Collections, before_KeyHandle_Collections, before_DrawHandle_NewCard, before_KeyHandle_NewCard, next_DrawHandle, next_KeyHandle, before_DrawHandle_StageClear, before_KeyHandle_StageClear;
+//힙이 처음 깨진 자리를 적는 임시 탐침(Core.cpp). HEAP_PROBE_LOG 가 0 이면
+//아무 일도 안 한다.
+void HeapProbe(const char* where);
+
 extern unsigned short DX, DY;
 extern unsigned short TILEDX, TILEDY;
 extern unsigned short REALDX, REALDY;

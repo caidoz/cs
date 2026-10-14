@@ -1,7 +1,9 @@
-// Included by Func_Menu.cpp; all resource IDs remain unchanged.
+// Included by Func_Menu.cpp.
 #include "CastleArtilleryModel.h"
+#include "Data/InventoryCannonSprites.h"
 namespace {
 int castleBrowse=0,castlePage=0,castleCategory=0,castleRow=0,castleModal=0;
+int castleMessageUntil=0; float castlePanY=0;
 const char* castleMessage="";
 const char* const castlePartNames[]={"지붕","성벽","내부","대포","차대"};
 const char* const castleRoomNames[]={"창고","무기고","병영","공방","지휘실"};
@@ -22,8 +24,8 @@ void CastleLabel(const char* s,int x,int y,int width,float z=0.7f) {
     CenterTextStrSolid(s,x,y,Min(z,width/Max(1.0f,StringWidth(s,1.0f))));
 }
 void CastlePanel(int x,int y,int w,int h) { MemRect(x,y,w,h,0x111F33); MemRectFrame(x,y,w,h,0xB99343); }
-void CastleButton(const char* s,int x,int y,int w,int h,int cmd,bool enabled=true) {
-    MenuButton(x,y,w,h,s,enabled?BUTTON_COLOR_BLUE:BUTTON_COLOR_BROWN,enabled,enabled?cmd:0,
+void CastleButton(const char* s,int x,int y,int w,int h,int cmd,bool enabled=true,int color=BUTTON_COLOR_BLUE) {
+    MenuButton(x,y,w,h,s,enabled?color:BUTTON_COLOR_BROWN,enabled,enabled?cmd:0,
         Min(0.75f*_2X,(w-8.0f*_2X)/Max(1.0f,StringWidth(s,1.0f))));
 }
 void CastleSaveChanges() {
@@ -60,15 +62,15 @@ int CastleTeamBonus(int kind) {
         kind==1?CastleMenuModel::Health(p,c)+CastleMenuModel::All(p,c):
         CastleMenuModel::Defense(p,c)+CastleMenuModel::All(p,c);
 }
-void CastleMenuOpen() { CastleProgressEnsure(); castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; }
+void CastleMenuOpen() { CastleProgressEnsure(); castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0; }
 bool CastleMenuCommand(int func) {
     if(func<TOUCH_FUNC_CASTLE_NEW_PREV||func>=TOUCH_FUNC_CASTLE_NEW_ROW_END) return false;
     CastleProgressEnsure(); auto& p=robin.castleProgress; int c=castleBrowse;
     if(castleModal&&func!=TOUCH_FUNC_CASTLE_NEW_CANCEL&&func!=TOUCH_FUNC_CASTLE_NEW_CONFIRM&&func!=TOUCH_FUNC_CASTLE_NEW_CONDITION) return true;
     castleMessage="";
     switch(func) {
-    case TOUCH_FUNC_CASTLE_NEW_PREV: castleBrowse=Max(0,c-1); break;
-    case TOUCH_FUNC_CASTLE_NEW_NEXT: castleBrowse=Min(9,c+1); break;
+    case TOUCH_FUNC_CASTLE_NEW_PREV: castleBrowse=Max(0,c-1); castlePanY=0; break;
+    case TOUCH_FUNC_CASTLE_NEW_NEXT: castleBrowse=Min(9,c+1); castlePanY=0; break;
     case TOUCH_FUNC_CASTLE_NEW_DETAIL: castlePage=1; break;
     case TOUCH_FUNC_CASTLE_NEW_BACK: castlePage=castlePage==2?1:0; break;
     case TOUCH_FUNC_CASTLE_NEW_ROOMS: castleCategory=0; break;
@@ -80,136 +82,211 @@ bool CastleMenuCommand(int func) {
         }
         robin.castle=c; gMobileCastleVisual=c; CastleSaveChanges(); castleMessage="출정 성으로 선택했습니다."; break;
     case TOUCH_FUNC_CASTLE_NEW_BUY:
-        if(!CastleMenuModel::Owned(p,c)) castleModal=CastleMenuModel::Unlocked(p,c)?1:2;
+        if(!CastleMenuModel::Owned(p,c)) {
+            if(c>0 && CastleMenuModel::Owned(p,c-1)) castleModal=1;
+            else castleMessage="이전 성을 먼저 구매해주세요.";
+        }
+        break;
+    case TOUCH_FUNC_CASTLE_NEW_BUY_GOLD:
+        if(!CastleMenuModel::Owned(p,c)) {
+            if(CastleMenuModel::Unlocked(p,c)) castleModal=3;
+            else castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다.";
+        }
         break;
     case TOUCH_FUNC_CASTLE_NEW_CONFIRM:
-        if(castleModal==1) {
-            if(CastleMenuModel::Buy(p,c,robin.coin)) { CastleSaveChanges(); castlePage=1; }
-            else castleMessage="구매 조건 또는 유료화폐 잔액을 확인해주세요.";
+        if(castleModal==1||castleModal==3) {
+            const bool bought=castleModal==3?CastleMenuModel::BuyGold(p,c,robin.gold):CastleMenuModel::BuyInstant(p,c,robin.coin);
+            if(bought) { CastleSaveChanges(); castlePage=1; }
+            else castleMessage="이전 성 보유 여부와 잔액을 확인해주세요.";
             castleModal=0;
         }
         break;
     case TOUCH_FUNC_CASTLE_NEW_CANCEL: castleModal=0; break;
-    case TOUCH_FUNC_CASTLE_NEW_CONDITION: castleBrowse=Max(0,c-1); castleCategory=1; castlePage=1; castleModal=0; break;
+    case TOUCH_FUNC_CASTLE_NEW_CONDITION:
+        castleModal=0; castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다."; break;
     case TOUCH_FUNC_CASTLE_NEW_UPGRADE:
-        if(CastleMenuModel::Upgrade(p,c,castleRow,castleCategory==0,robin.gold)) CastleSaveChanges();
+        if(CastleMenuModel::Upgrade(p,c,castleRow,castleCategory==0,robin.gold)) { CastleSaveChanges(); castleMessage="골드 업그레이드 완료"; }
         else castleMessage="최대 단계이거나 골드가 부족합니다.";
+        break;
+    case TOUCH_FUNC_CASTLE_NEW_PAID_UPGRADE:
+        if(CastleMenuModel::UpgradePaid(p,c,castleRow,castleCategory==0,robin.coin)) { CastleSaveChanges(); castleMessage="즉시 업그레이드 완료"; }
+        else castleMessage="최대 단계이거나 유료화폐가 부족합니다.";
         break;
     default: castleRow=func-TOUCH_FUNC_CASTLE_NEW_ROW; castlePage=2; break;
     }
+    if(*castleMessage) castleMessageUntil=frame+FPS*3;
     return true;
 }
 bool CastleMenuSwipe(float fx,float fy,float tx,float ty) {
-    if(curMenu!=MENU_CASTLE||popUpCnt==0||popUp[popUpCnt-1].type!=POPUPTYPE_CASTLEMENU||castlePage||castleModal) return false;
-    if(fy<DY-GNBHEIGHT-230*_2X||fy>DY-GNBHEIGHT-40*_2X||Abs(tx-fx)<40*_2X||Abs(ty-fy)>Abs(tx-fx)*0.6f) return false;
+    if(curMenu!=MENU_CASTLE||popUpCnt==0||popUp[popUpCnt-1].type!=POPUPTYPE_CASTLEMENU||castlePage==2||castleModal) return false;
+    const float unit=Min((float)_2X,(DY-GNBHEIGHT)/430.0f);
+    if(fy<DY-GNBHEIGHT-260*unit||fy>DY-GNBHEIGHT-86*unit) return false;
+    if(Abs(ty-fy)>Abs(tx-fx) && Abs(ty-fy)>12*_2X) {
+        float cw,ch; CastlePartsNaturalSize(castleBrowse+1,&cw,&ch);
+        const float limit=Max(0.0f,(ch*CastlePartsRoomScale()-174*unit)/2);
+        castlePanY=Max(-limit,Min(limit,castlePanY+ty-fy)); return true;
+    }
+    if(castlePage||Abs(tx-fx)<40*_2X||Abs(ty-fy)>Abs(tx-fx)*0.6f) return false;
     CastleMenuCommand(tx<fx?TOUCH_FUNC_CASTLE_NEW_NEXT:TOUCH_FUNC_CASTLE_NEW_PREV); return true;
+}
+namespace {
+long long CastleTotalPower(const CastleMenuModel::Progress& p,int c) {
+    long long total=CastleMenuModel::StructuralPower(p,c,GridTestCellCnt(c))+Max(1LL,CastleProjectedPower(p,c));
+    for(int i=CREW;i<CREW+MAXCREW;++i) if(ao[i].active&&!ao[i].dead) {
+        long long crew=GetCombatPower(&ao[i]);
+        const int stats[3]={PS_DMG,PS_HP,PS_ARMOR};
+        const int bonus[3]={CastleMenuModel::Attack(p,c),CastleMenuModel::Health(p,c),CastleMenuModel::Defense(p,c)};
+        for(int k=0;k<3;++k) crew+=ao[i].ps[stats[k]]*(100+bonus[k]+CastleMenuModel::All(p,c))/(100+CastleTeamBonus(k))-ao[i].ps[stats[k]];
+        total+=Max(0LL,crew);
+    }
+    const auto& profile=CastleArtillery::Of(c);
+    const long long damage=Max(1LL,CastleProjectedStat(p,c,PS_DMG)*profile.damagePercent*(100+10*p.parts[c][3])/10000);
+    const int cooldown=Max(1,profile.cooldown*(100-3*p.parts[c][3])/100);
+    return total+damage*profile.hits*FPS/cooldown;
+}
+void CastleMenuGrid(int c,int x,int top,int width,int height,float u) {
+    const int start=castleGridCellStart[c],count=GridTestCellCnt(c);
+    int cols=0,rows=0;
+    for(int i=0;i<count;++i) { cols=Max(cols,(int)castleGridCell[(start+i)*2]+1); rows=Max(rows,(int)castleGridCell[(start+i)*2+1]+1); }
+    const float cell=Min(width/(float)Max(1,cols),height/(float)Max(1,rows));
+    const int left=x+(width-(int)(cols*cell))/2;
+    for(int i=0;i<count;++i) {
+        const int gx=left+(int)(castleGridCell[(start+i)*2]*cell);
+        const int gy=top-(int)((rows-1-castleGridCell[(start+i)*2+1])*cell);
+        // Runtime limits total occupied cells, not individual grid positions.
+        MemRect(gx,gy,Max(1,(int)cell-1),Max(1,(int)cell-1),0x163E61);
+        MemRectFrame(gx,gy,Max(1,(int)cell-1),Max(1,(int)cell-1),0x5CC9F0);
+    }
+}
+void CastleMenuAssembly(int c,int top,int bottom) {
+    float nw,nh; CastlePartsNaturalSize(c+1,&nw,&nh);
+    const float scale=CastlePartsRoomScale();
+    float visualLeft,visualRight; CastlePartsVisualBounds(c+1,scale,&visualLeft,&visualRight);
+    const int x=(int)(DX*.5f-(visualLeft+visualRight)*scale*.5f-CastlePartsLeftInset(c+1)*scale);
+    const int y=(int)(DY*.5f+nh*scale*.5f+castlePanY);
+    SetSectionClip(0,top,DX,top-bottom,false);
+    CastlePartsDrawRect(c+1,x,y,(int)(nw*scale),(int)(nh*scale));
+    UnSectionClip(false);
+}
+void CastleMenuToast(float u) {
+    if(!*castleMessage||frame>=castleMessageUntil) return;
+    const int width=DX-32*u,top=DY/2+24*u;
+    SetAlpha(28); CastlePanel(16*u,top,width,48*u); SetAlpha(ALPHA_MAX);
+    CastleLabel(castleMessage,DX/2,top-19*u,width-16*u,.60f*u);
+}
 }
 void CastleMenuNewDraw() {
     CastleProgressEnsure(); const auto& p=robin.castleProgress;
-    const int c=castleBrowse,top=DY-GNBHEIGHT,bottom=BOTTOMMENUHEIGHT+4*_2X;
-    const int x=8*_2X,w=DX-16*_2X,available=top-bottom;
-    const float u=Min((float)_2X,available/402.0f);
-    char s[256];
-    MemRect(0,top,DX,available,0x081528);
-    CastleLabel(castlePage?"성 상세 · 업그레이드":"성 선택",DX/2,top-8*u,w,0.9f*u);
-    if(castlePage) CastleButton("뒤로",x,top-4*u,48*u,22*u,TOUCH_FUNC_CASTLE_NEW_BACK);
-    else CastleButton("닫기",x,top-4*u,48*u,22*u,TOUCH_FUNC_POPUP_CLOSE);
-    CastleLabel(CastleStageAt(c)->title,DX/2,top-35*u,w,0.8f*u);
+    const int c=castleBrowse,top=DY-GNBHEIGHT,x=8*_2X,w=DX-16*_2X;
+    const float u=Min((float)_2X,top/430.0f);
     const bool owned=CastleMenuModel::Owned(p,c);
-    sprintf(s,"%s  ·  %d / 10",owned?(robin.castle==c?"출정 중":"보유 성"):"미보유",c+1);
-    CastleLabel(s,DX/2,top-53*u,w,0.55f*u);
-    if(!castlePage) {
-        // Neighbor previews are confined to their own rectangles.
-        if(c>0) { SetAlpha(12); CastlePartsDrawRect(c,0,top-90*u,48*u,120*u); SetAlpha(ALPHA_MAX); }
-        if(c<9) { SetAlpha(12); CastlePartsDrawRect(c+2,DX-48*u,top-90*u,48*u,120*u); SetAlpha(ALPHA_MAX); }
-        CastlePartsDrawRect(c+1,48*u,top-70*u,DX-96*u,148*u);
-        SetRectPoint(54*u,top-72*u,DX-108*u,145*u,TOUCH_FUNC_CASTLE_NEW_DETAIL);
-        CastleButton("<",x,top-135*u,26*u,32*u,TOUCH_FUNC_CASTLE_NEW_PREV,c>0);
-        CastleButton(">",DX-x-26*u,top-135*u,26*u,32*u,TOUCH_FUNC_CASTLE_NEW_NEXT,c<9);
-        for(int i=0;i<10;++i) MemRect(DX/2+(i-5)*10*u,top-224*u,5*u,4*u,i==c?0x4CD8FF:0x46566A);
-        CastlePanel(x,top-241*u,w,106*u);
-        sprintf(s,"아이템 적재 %d개     장비 배치 %d칸",CastleInventoryCapacity(c),CastleEquipmentCapacity(c));
-        CastleLabel(s,DX/2,top-252*u,w-12*u,0.68f*u);
-        sprintf(s,"%s · 창고 Lv.%d / 무기고 Lv.%d",CastleStageAt(c)->title,p.rooms[c][0],p.rooms[c][1]);
-        CastleLabel(s,DX/2,top-273*u,w-12*u,0.5f*u);
-        sprintf(s,"현재 보유 %d개   배치 %d칸",CastleInventoryUsed(),CastleEquippedCells());
-        CastleLabel(s,DX/2,top-294*u,w-12*u,0.55f*u);
-        sprintf(s,"포 공격 배율 %d%%  ·  쿨타임 %.1f초",CastleCannonDamagePercent(c),CastleCannonCooldown(c)/(float)FPS);
-        CastleLabel(s,DX/2,top-311*u,w-12*u,0.55f*u);
-        int shown=0;
-        for(int i=0;i<TOTALINVENTORY&&shown<6;++i) {
-            const ITEM& it=robin.inven[i];
-            if(it.type==EMPTY||it.count<=0) continue;
-            const int bx=x+12*u+shown*(w-24*u)/6;
-            MemRectFrame(bx,top-325*u,22*u,18*u,0x566C88);
-            DrawIcon(GetItemIcon(it.type,it.detail,it.grade),bx+2*u,top-325*u,18*u/ITEMICONSIZE,false,false,false,false);
-            ++shown;
-        }
-        if(owned) {
-            CastleButton("상세보기",x,top-352*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_DETAIL);
-            CastleButton(robin.castle==c?"출정 중":"출정 성 선택",x+w/2+3*u,top-352*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_SELECT,robin.castle!=c);
+    char s[256];
+    // A modal owns the full area below the top currency bar, including main tabs.
+    ResetRectPoint(); SetAlpha(ALPHA_MAX);
+    MemRect(0,top,DX,top,0x081528);
+    SetRectPoint(0,top,DX,top,TOUCH_FUNC_CASTLE_NEW_CANCEL);
+    CastleLabel(castlePage?"성 상세 · 업그레이드":"성 선택",DX/2,top-8*u,w,.9f*u);
+    CastleButton(castlePage?"뒤로":"닫기",x,top-4*u,48*u,22*u,castlePage?TOUCH_FUNC_CASTLE_NEW_BACK:TOUCH_FUNC_POPUP_CLOSE);
+    CastleLabel(CastleStageAt(c)->title,DX/2,top-34*u,w,.8f*u);
+    sprintf(s,"%s · %d / 10",owned?(robin.castle==c?"출정 중":"보유 중"):"미보유",c+1);
+    CastleLabel(s,DX/2,top-52*u,w,.48f*u);
+    sprintf(s,"성 전체 전투력  %lld",CastleTotalPower(p,c));
+    SetFontColor(COLOR_YELLOW); CenterTextStrSolid(s,DX/2,top-75*u,Min(.9f*u,(w-12*u)/Max(1.0f,StringWidth(s,1))));
+    if(castlePage<2) {
+        const int viewTop=top-104*u,viewBottom=top-274*u;
+        CastleMenuAssembly(c,viewTop,viewBottom);
+        if(!castlePage) {
+            SetRectPoint(44*u,viewTop,DX-88*u,viewTop-viewBottom,TOUCH_FUNC_CASTLE_NEW_DETAIL);
+            CastleButton("<",x,top-154*u,26*u,32*u,TOUCH_FUNC_CASTLE_NEW_PREV,c>0);
+            CastleButton(">",DX-x-26*u,top-154*u,26*u,32*u,TOUCH_FUNC_CASTLE_NEW_NEXT,c<9);
         } else {
-            if(CastleMenuModel::Unlocked(p,c)) sprintf(s,"유료화폐 %d · 구매하기",CastleMenuModel::Price(c));
-            else sprintf(s,"이전 성의 모든 파츠 업그레이드 필요");
-            CastleButton(s,x,top-352*u,w,30*u,TOUCH_FUNC_CASTLE_NEW_BUY);
+            // Five actionable labels surround the centered castle and point inward.
+            const int bw=76*u,bh=23*u;
+            for(int i=0;i<5;++i) {
+                const bool right=i==3||i==4;
+                const int bx=right?DX-x-bw:x,by=top-(100+(right?i-3:i)*48)*u;
+                float anchorX,anchorY; CastlePartsPartAnchor(c+1,castleCategory?i:2,&anchorX,&anchorY);
+                const int px=Max((int)(92*u),Min((int)(DX-92*u),(int)anchorX));
+                const int py=Max(viewBottom+(int)(12*u),Min(viewTop-(int)(4*u),(int)anchorY));
+                const int start=right?bx:bx+bw,midY=by-bh/2;
+                MemRect(Min(start,px),midY,Max(1,Abs(px-start)),Max(1,(int)u),0xD2AB58);
+                MemRect(px,Max(midY,py),Max(1,(int)u),Max(1,Abs(py-midY)),0xD2AB58);
+                MemRect(px-2*u,py+2*u,4*u,4*u,0xFFD777);
+                sprintf(s,"%s Lv.%d +",castleCategory?castlePartNames[i]:castleRoomNames[i],castleCategory?p.parts[c][i]:p.rooms[c][i]);
+                CastleButton(s,bx,by,bw,bh,TOUCH_FUNC_CASTLE_NEW_ROW+i);
+            }
         }
-    } else if(castlePage==1) {
-        CastlePartsDrawRect(c+1,DX/2-52*u,top-70*u,104*u,80*u);
-        CastlePanel(x,top-155*u,w,65*u);
-        sprintf(s,"적재 %d개  |  장비 배치 %d칸",CastleInventoryCapacity(c),CastleEquipmentCapacity(c));
-        CastleLabel(s,DX/2,top-163*u,w-12*u,0.65f*u);
-        sprintf(s,"포 공격력 %lld · %.1f초 · %d연타",Max(1LL,CastleProjectedStat(p,c,PS_DMG)*CastleCannonDamagePercent(c)/100),CastleCannonCooldown(c)/(float)FPS,CastleArtillery::Of(c).hits);
-        CastleLabel(s,DX/2,top-183*u,w-12*u,0.55f*u);
-        sprintf(s,"영웅 예상 전투력 %lld · 파츠 %d / 25",CastleProjectedPower(p,c),CastleMenuModel::Completed(p,c));
-        CastleLabel(s,DX/2,top-202*u,w-12*u,0.5f*u);
-        CastleButton("방 5종",x,top-226*u,w/2-2*u,25*u,TOUCH_FUNC_CASTLE_NEW_ROOMS);
-        CastleButton("파츠 5종",x+w/2+2*u,top-226*u,w/2-2*u,25*u,TOUCH_FUNC_CASTLE_NEW_PARTS);
-        for(int i=0;i<5;++i) {
-            int lv=castleCategory?p.parts[c][i]:p.rooms[c][i];
-            sprintf(s,"%s  Lv.%d / 5   >",castleCategory?castlePartNames[i]:castleRoomNames[i],lv);
-            CastleButton(s,x,top-(257+i*24)*u,w,22*u,TOUCH_FUNC_CASTLE_NEW_ROW+i);
+        CastleLabel("위아래로 밀어 성 전체 보기",DX/2,top-276*u,w,.42f*u);
+        CastlePanel(x,top-285*u,w,75*u);
+        sprintf(s,"전투 인벤토리 %d칸 · 배치 한도 %d칸",GridTestCellCnt(c),CastleEquipmentCapacity(c));
+        CastleLabel(s,DX/2,top-294*u,w-12*u,.62f*u);
+        CastleMenuGrid(c,x+6*u,top-311*u,w/2-12*u,44*u,u);
+        sprintf(s,"아이템 적재 %d개",CastleInventoryCapacity(c));
+        CastleLabel(s,x+w*3/4,top-311*u,w/2-12*u,.52f*u);
+        sprintf(s,"포 공격력 %lld · %d연타",Max(1LL,CastleProjectedStat(p,c,PS_DMG)*CastleCannonDamagePercent(c)/100),CastleArtillery::Of(c).hits);
+        CastleLabel(s,x+w*3/4,top-328*u,w/2-12*u,.49f*u);
+        sprintf(s,"쿨타임 %.1f초",CastleCannonCooldown(c)/(float)FPS);
+        CastleLabel(s,x+w*3/4,top-345*u,w/2-12*u,.48f*u);
+        if(!castlePage) {
+            int shown=0;
+            for(int i=0;i<TOTALINVENTORY&&shown<6;++i) {
+                const ITEM& it=robin.inven[i]; if(it.type==EMPTY||it.count<=0) continue;
+                DrawIcon(GetItemIcon(it.type,it.detail,it.grade),x+8*u+shown*24*u,top-365*u,18*u/ITEMICONSIZE,false,false,false,false); ++shown;
+            }
+            if(owned) {
+                CastleButton("상세보기",x,top-390*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_DETAIL);
+                CastleButton(robin.castle==c?"출정 중":"출정 성 선택",x+w/2+3*u,top-390*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_SELECT,robin.castle!=c);
+            } else {
+                sprintf(s,"골드 %d · 구매",CastleMenuModel::GoldPrice(c));
+                CastleButton(s,x,top-390*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_BUY_GOLD,true,BUTTON_COLOR_BEIGE);
+                sprintf(s,"유료화폐 %d · 즉시 구매",CastleMenuModel::Price(c));
+                CastleButton(s,x+w/2+3*u,top-390*u,w/2-3*u,30*u,TOUCH_FUNC_CASTLE_NEW_BUY,true,BUTTON_COLOR_PURPLE);
+            }
+        } else {
+            CastleButton("방 업그레이드 5종",x,top-369*u,w/2-3*u,26*u,TOUCH_FUNC_CASTLE_NEW_ROOMS);
+            CastleButton("파츠 업그레이드 5종",x+w/2+3*u,top-369*u,w/2-3*u,26*u,TOUCH_FUNC_CASTLE_NEW_PARTS);
+            CastleLabel(castleCategory?"지붕 · 성벽 · 내부 · 대포 · 차대":"창고 · 무기고 · 병영 · 공방 · 지휘실",DX/2,top-407*u,w,.53f*u);
         }
-        sprintf(s,"다음 성 구매 조건: 파츠 %d / 25",CastleMenuModel::Completed(p,c));
-        CastleLabel(s,DX/2,top-381*u,w,0.53f*u);
     } else {
-        bool room=castleCategory==0; int lv=room?p.rooms[c][castleRow]:p.parts[c][castleRow];
-        sprintf(s,"%s Lv.%d%s",room?castleRoomNames[castleRow]:castlePartNames[castleRow],lv,lv==5?" · 최대 단계":" → 다음 단계");
-        CastleLabel(s,DX/2,top-76*u,w,0.8f*u);
+        const bool room=castleCategory==0; const int lv=room?p.rooms[c][castleRow]:p.parts[c][castleRow];
+        sprintf(s,"%s  Lv.%d / 5",room?castleRoomNames[castleRow]:castleRow==3?CastleArtillery::Of(c).name:castlePartNames[castleRow],lv);
+        CastleLabel(s,DX/2,top-104*u,w,.8f*u);
         if(room) {
-            const int img=CASTLE_ROOM_V4_FIRST_IMG+Min(9,castleRow)*6+lv;
+            const int img=CASTLE_ROOM_V4_FIRST_IMG+castleRow*6+lv;
             if(!sprite[img]) LoadImg(img);
-            if(sprite[img]) DrawImageScale(512,128,0,0,x,top-107*u,false,0,0,0,0,w/512.0f,70*u/128.0f,sprite[img],img);
-        } else CastlePartsDrawRect(c+1,x,top-105*u,w,85*u);
-        CastlePanel(x,top-195*u,w,117*u);
-        CastleLabel(room?castleRoomEffects[castleRow]:castlePartEffects[castleRow],DX/2,top-207*u,w-12*u,0.6f*u);
-        auto next=p; if(lv<5) { if(room) ++next.rooms[c][castleRow]; else ++next.parts[c][castleRow]; }
-        int before=CastleInventoryCapacity(c),after=CastleMenuModel::Inventory(next,c,INVEN_BASE_SLOT,INVEN_PER_CASTLE,TOTALINVENTORY);
-        sprintf(s,"적재 한도 %d → %d개",before,after); CastleLabel(s,DX/2,top-232*u,w-12*u,0.62f*u);
-        sprintf(s,"장비 배치 %d → %d칸",CastleEquipmentCapacity(c),CastleMenuModel::Equipment(next,c,GridTestCellCnt(c))); CastleLabel(s,DX/2,top-253*u,w-12*u,0.62f*u);
-        sprintf(s,"아군 공격 +%d%% → +%d%%",CastleMenuModel::Attack(p,c)+CastleMenuModel::All(p,c),CastleMenuModel::Attack(next,c)+CastleMenuModel::All(next,c)); CastleLabel(s,DX/2,top-274*u,w-12*u,0.62f*u);
-        sprintf(s,"체력 +%d%% → +%d%% · 방어 +%d%% → +%d%%",CastleMenuModel::Health(p,c)+CastleMenuModel::All(p,c),CastleMenuModel::Health(next,c)+CastleMenuModel::All(next,c),CastleMenuModel::Defense(p,c)+CastleMenuModel::All(p,c),CastleMenuModel::Defense(next,c)+CastleMenuModel::All(next,c)); CastleLabel(s,DX/2,top-294*u,w-12*u,0.5f*u);
-        if(!room&&castleRow==3) { sprintf(s,"포 피해 %lld → %lld / %.1f → %.1f초",Max(1LL,CastleProjectedStat(p,c,PS_DMG)*CastleCannonDamagePercent(c)/100),Max(1LL,CastleProjectedStat(next,c,PS_DMG)*CastleArtillery::Of(c).damagePercent*(100+10*next.parts[c][3])/10000),CastleCannonCooldown(c)/(float)FPS,CastleArtillery::Of(c).cooldown*(100-3*next.parts[c][3])/(100.0f*FPS)); }
-        else sprintf(s,"영웅 예상 전투력 %lld → %lld",CastleProjectedPower(p,c),CastleProjectedPower(next,c));
-        CastleLabel(s,DX/2,top-326*u,w,0.53f*u);
-        sprintf(s,lv==5?"최대 단계":"골드 %d · 업그레이드",CastleMenuModel::UpgradeCost(c,lv,room));
-        CastleButton(s,x,top-352*u,w,30*u,TOUCH_FUNC_CASTLE_NEW_UPGRADE,owned&&lv<5);
-    }
-    if(*castleMessage) CastleLabel(castleMessage,DX/2,bottom+14*u,w,0.5f*u);
-    if(castleModal) {
-        SetAlpha(24); MemRect(0,top,DX,available,COLOR_BLACK); SetAlpha(ALPHA_MAX);
-        SetRectPoint(0,top,DX,available,TOUCH_FUNC_CASTLE_NEW_CANCEL);
-        const int mt=top-95*u; CastlePanel(x,mt,w,238*u);
-        CastleLabel(castleModal==1?"성 구매 확인":"이전 성 업그레이드 필요",DX/2,mt-14*u,w-10*u,0.8f*u);
-        CastleButton("닫기",DX-x-48*u,mt-3*u,44*u,22*u,TOUCH_FUNC_CASTLE_NEW_CANCEL);
-        if(castleModal==1) {
-            CastleLabel(CastleStageAt(c)->title,DX/2,mt-67*u,w,0.8f*u);
-            sprintf(s,"유료화폐 %d / 보유 %lld",CastleMenuModel::Price(c),robin.coin); CastleLabel(s,DX/2,mt-110*u,w,0.7f*u);
-            sprintf(s,"구매 후 잔액 %lld",robin.coin-CastleMenuModel::Price(c)); CastleLabel(s,DX/2,mt-145*u,w,0.65f*u);
-            CastleButton("구매 확정",x+12*u,mt-192*u,w-24*u,30*u,TOUCH_FUNC_CASTLE_NEW_CONFIRM,robin.coin>=CastleMenuModel::Price(c));
+            if(sprite[img]) DrawImageScale(512,128,0,0,x,top-126*u,false,0,0,0,0,w/512.0f,65*u/128.0f,sprite[img],img);
+        } else if(castleRow==3) {
+            DrawInventoryCannonIcon(c,lv,x,top-126*u,w/2-4*u,65*u);
+            DrawInventoryCannonIcon(c,Min(5,lv+1),x+w/2,top-126*u,w/2-4*u,65*u);
         } else {
-            const int prev=Max(0,c-1);
-            for(int i=0;i<5;++i) { sprintf(s,"%s  %d / 5  %s",castlePartNames[i],p.parts[prev][i],p.parts[prev][i]==5?"완료":"업그레이드 필요"); CastleLabel(s,DX/2,mt-(55+i*23)*u,w-16*u,0.64f*u); }
-            CastleButton("이전 성 업그레이드",x+12*u,mt-192*u,w-24*u,30*u,TOUCH_FUNC_CASTLE_NEW_CONDITION);
+            SetSectionClip(x,top-126*u,w,65*u,false);
+            CastlePartsDrawRect(c+1,x,top-126*u,w,65*u); UnSectionClip(false);
         }
+        CastleLabel(room?castleRoomEffects[castleRow]:castlePartEffects[castleRow],DX/2,top-204*u,w,.57f*u);
+        auto next=p; if(lv<5) { if(room) ++next.rooms[c][castleRow]; else ++next.parts[c][castleRow]; }
+        sprintf(s,"성 전체 전투력 %lld → %lld",CastleTotalPower(p,c),CastleTotalPower(next,c));
+        CastleLabel(s,DX/2,top-230*u,w,.7f*u);
+        sprintf(s,"장비 배치 %d → %d칸 · 아이템 적재 %d → %d개",CastleEquipmentCapacity(c),CastleMenuModel::Equipment(next,c,GridTestCellCnt(c)),CastleInventoryCapacity(c),CastleMenuModel::Inventory(next,c,INVEN_BASE_SLOT,INVEN_PER_CASTLE,TOTALINVENTORY));
+        CastleLabel(s,DX/2,top-255*u,w,.51f*u);
+        CastleMenuGrid(c,x,top-276*u,w,67*u,u);
+        sprintf(s,lv==5?"최대 단계":"골드 %d · 업그레이드",CastleMenuModel::UpgradeCost(c,lv,room));
+        CastleButton(s,x,top-378*u,w/2-3*u,32*u,TOUCH_FUNC_CASTLE_NEW_UPGRADE,owned&&lv<5,BUTTON_COLOR_BEIGE);
+        sprintf(s,lv==5?"최대 단계":"유료화폐 %d · 즉시 업그레이드",CastleMenuModel::PaidUpgradeCost(c,lv,room));
+        CastleButton(s,x+w/2+3*u,top-378*u,w/2-3*u,32*u,TOUCH_FUNC_CASTLE_NEW_PAID_UPGRADE,owned&&lv<5,BUTTON_COLOR_PURPLE);
     }
+    if(castleModal) {
+        SetAlpha(24); MemRect(0,top,DX,top,COLOR_BLACK); SetAlpha(ALPHA_MAX);
+        SetRectPoint(0,top,DX,top,TOUCH_FUNC_CASTLE_NEW_CANCEL);
+        const int mt=DY/2+90*u; CastlePanel(x,mt,w,180*u);
+        CastleLabel("성 구매 확인",DX/2,mt-12*u,w,.85f*u);
+        CastleLabel(CastleStageAt(c)->title,DX/2,mt-43*u,w,.75f*u);
+        const bool gold=castleModal==3;
+        const int cost=gold?CastleMenuModel::GoldPrice(c):CastleMenuModel::Price(c);
+        const long long balance=gold?robin.gold:robin.coin;
+        sprintf(s,"%s %d · 보유 %lld",gold?"골드":"유료화폐",cost,balance);
+        CastleLabel(s,DX/2,mt-78*u,w,.63f*u);
+        CastleButton("취소",x+8*u,mt-124*u,w/2-12*u,30*u,TOUCH_FUNC_CASTLE_NEW_CANCEL);
+        CastleButton("구매 확정",x+w/2+4*u,mt-124*u,w/2-12*u,30*u,TOUCH_FUNC_CASTLE_NEW_CONFIRM,balance>=cost);
+    }
+    CastleMenuToast(u);
 }

@@ -44,5 +44,14 @@ int main() {
     for(int i=0;i<State::Capacity;++i) assert(full.Spawn(1,1,from,target));
     assert(!full.Spawn(1,1,from,target));
     assert(ClampGrade(-1)==0 && ClampGrade(99)==9);
+    for(int level=0;level<6;++level) {
+        if(level) assert(ProjectileScale(level)>ProjectileScale(level-1));
+        State upgrade; upgrade.upgrade=level;
+        assert(upgrade.Spawn(1,1,from,target));
+        assert(upgrade.shots[0].upgrade==level);
+        upgrade.upgrade=0;
+        assert(upgrade.shots[0].upgrade==level); // In-flight visuals retain the launch tier.
+    }
+    assert(ClampUpgrade(-1)==0 && ClampUpgrade(99)==5);
     std::puts("10 artillery types: timing, burst counts, moving-target collisions, reset and capacity OK");
 }

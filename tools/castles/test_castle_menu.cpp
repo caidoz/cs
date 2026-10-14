@@ -15,6 +15,22 @@ struct Reader {
     template<class T,class... Rest> void operator()(T& value,Rest&... rest) { (*this)(value); (*this)(rest...); }
 };
 int main() {
+    {
+        Progress dual={}; dual.version=1; dual.owned=1;
+        long long coin=10000,gold=1000000;
+        assert(!BuyGold(dual,1,gold)&&gold==1000000);
+        assert(!BuyInstant(dual,2,coin)&&coin==10000);
+        assert(BuyInstant(dual,1,coin)&&coin==10000-Price(1));
+        const long long before=coin;
+        assert(UpgradePaid(dual,1,3,false,coin)&&dual.parts[1][3]==1);
+        assert(coin==before-PaidUpgradeCost(1,0,false));
+        const long long rating=StructuralPower(dual,1,30);
+        assert(UpgradePaid(dual,1,1,true,coin)&&StructuralPower(dual,1,30)>rating);
+        long long empty=0; assert(!UpgradePaid(dual,1,3,false,empty)&&dual.parts[1][3]==1);
+        dual.parts[1][3]=5; assert(!UpgradePaid(dual,1,3,false,coin));
+        for(int i=0;i<5;++i) dual.parts[1][i]=5;
+        assert(BuyGold(dual,2,gold)&&gold==1000000-GoldPrice(2));
+    }
     Progress p={}; int old[]={2,1,0,3}; Migrate(p,2,old);
     assert(p.version==1&&Owned(p,0)&&Owned(p,1)&&Owned(p,2)&&!Owned(p,3));
     assert(Completed(p,0)==25&&p.parts[2][0]==2&&p.parts[2][3]==3);

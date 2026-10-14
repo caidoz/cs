@@ -29,21 +29,22 @@ void ArtilleryHit(int target) {
     hero->ps[PS_DMG]=damage;
     hero->attackFrame=attackFrame; hero->attackLv=attackLv;
 }
-void ArtillerySprite(int group,int animation,float x,float y,float size,float angle=0) {
+void ArtillerySprite(int group,int animation,float x,float y,float size,float angle=0,int opacity=ALPHA_MAX) {
     const CastleArtilleryFrame& f=kCastleArtilleryFrames[group*8+(animation%8)];
     const float z=size/Max(f.w,f.h);
-    RotateImage(f.w,f.h,f.x,f.y,(int)x,(int)y,false,angle,0,ALPHA_MAX,z,
+    RotateImage(f.w,f.h,f.x,f.y,(int)x,(int)y,false,angle,0,opacity,z,
         Vec2(0.5f,0.5f),sprite[CASTLE_ARTILLERY_IMG],CASTLE_ARTILLERY_IMG);
 }
 void ArtilleryBeam(const CastleArtillery::Shot& s,int animation) {
     const float dx=s.destination.x-s.from.x,dy=s.destination.y-s.from.y;
     const float length=std::sqrt(dx*dx+dy*dy);
-    const int pieces=Max(1,(int)(length/(24*_2X)));
+    const float thickness=(10+3*CastleArtillery::ClampUpgrade(s.upgrade))*_2X;
+    const int pieces=Max(1,(int)std::ceil(length/thickness));
     const float angle=-std::atan2(dy,dx)*180/3.14159265f;
     for(int i=0;i<pieces;++i) {
         const float t=(i+0.5f)/pieces;
         ArtillerySprite(stageArtillery.grade,animation,s.from.x+dx*t,s.from.y+dy*t,
-            length/pieces+2*_2X,angle);
+            thickness+2*_2X,angle);
     }
 }
 }
@@ -67,6 +68,7 @@ void StageArtilleryStep(bool running,int foe) {
     if(stageArtillery.grade!=CastleArtillery::ClampGrade(gMobileCastleVisual)) StageArtilleryReset();
     if(!running) return;
     stageArtillery.cooldownOverride=CastleCannonCooldown(stageArtillery.grade);
+    stageArtillery.upgrade=CastleVisualPartLevel(stageArtillery.grade,3);
     const int grade=stageArtillery.grade;
     CastleArtillery::Point muzzle={0,0};
     if(!CastlePartsCannonMuzzle(grade+1,&muzzle.x,&muzzle.y)) return;
@@ -95,16 +97,17 @@ void StageArtilleryDraw(void) {
     if(!sprite[CASTLE_ARTILLERY_IMG] || !texture[CASTLE_ARTILLERY_IMG]) return;
     const int grade=stageArtillery.grade;
     const CastleArtillery::Profile& p=CastleArtillery::Of(grade);
+    const float muzzleScale=CastleArtillery::ProjectileScale(CastleVisualPartLevel(grade,3));
     float mx=0,my=0;
     if(!CastlePartsCannonMuzzle(grade+1,&mx,&my)) return;
     if(stageArtillery.charge) {
         const int animation=(CastleArtillery::State::ChargeFrames-stageArtillery.charge)*8/
             CastleArtillery::State::ChargeFrames;
-        ArtillerySprite(20+grade,animation,mx,my,(14+grade)*_2X);
+        ArtillerySprite(20+grade,animation,mx,my,(14+grade)*_2X*muzzleScale);
     }
     if(stageArtillery.recoil) {
         const int animation=8-stageArtillery.recoil;
-        ArtillerySprite(20+grade,animation,mx+8*_2X,my,(22+grade)*_2X);
+        ArtillerySprite(20+grade,animation,mx+8*_2X,my,(22+grade)*_2X*muzzleScale);
         if(p.kind==CastleArtillery::Gatling) {
             for(int i=0;i<3;++i) {
                 const float angle=(animation*60+i*120)*3.14159265f/180;
@@ -122,14 +125,15 @@ void StageArtilleryDraw(void) {
         const CastleArtillery::Shot& s=stageArtillery.shots[i];
         if(!s.active) continue;
         const int animation=s.age/3;
+        const float shotScale=CastleArtillery::ProjectileScale(s.upgrade);
         if(s.impact) {
             const int impact=(CastleArtillery::State::ImpactFrames-s.impact)*8/CastleArtillery::State::ImpactFrames;
-            ArtillerySprite(10+grade,impact,s.position.x,s.position.y,(p.size+12)*_2X);
+            ArtillerySprite(10+grade,impact,s.position.x,s.position.y,(p.size+12)*_2X*shotScale);
             if(p.kind==CastleArtillery::Laser) ArtilleryBeam(s,impact);
             if(p.kind==CastleArtillery::Electric)
-                DrawEffect(EFFECT_THUNDER0+impact,s.position.x,s.position.y,0,0,0.85f);
+                DrawEffect(EFFECT_THUNDER0+impact,s.position.x,s.position.y,0,0,0.85f*shotScale);
             if(p.kind==CastleArtillery::Ice)
-                DrawEffect(EFFECT_ICE0+impact,s.position.x,s.position.y,0,0,0.85f);
+                DrawEffect(EFFECT_ICE0+impact,s.position.x,s.position.y,0,0,0.85f*shotScale);
             continue;
         }
         if(p.kind==CastleArtillery::Laser) { ArtilleryBeam(s,animation); continue; }
@@ -138,14 +142,17 @@ void StageArtilleryDraw(void) {
             (p.kind==CastleArtillery::Homing||p.kind==CastleArtillery::Rockets)?
             -std::atan2(dy,dx)*180/3.14159265f:0;
         if(p.kind==CastleArtillery::Flame||p.kind==CastleArtillery::Homing||p.kind==CastleArtillery::Rockets) {
-            ArtillerySprite(20+grade,animation,s.previous.x,s.previous.y,p.size*_2X*0.6f);
+            ArtillerySprite(20+grade,animation,s.previous.x,s.previous.y,p.size*_2X*0.6f*shotScale);
         }
-        ArtillerySprite(grade,animation,s.position.x,s.position.y,p.size*_2X,angle);
+        for(int trail=0;trail<s.upgrade/2;++trail)
+            ArtillerySprite(grade,animation,s.previous.x-dx*.6f*trail,s.previous.y-dy*.6f*trail,
+                p.size*_2X*shotScale*.7f,angle,12-trail*3);
+        ArtillerySprite(grade,animation,s.position.x,s.position.y,p.size*_2X*shotScale,angle);
     }
     // Keep the charge gauge below the barrel and above the castle HP stripe.
     const int w=80*_2X,h=4*_2X;
     const int x=Max(4*_2X,Min(DX-w-4*_2X,(int)mx-w));
-    const int y=Max(StageBg::GroundY()+22*_2X,(int)my-20*_2X);
+    const int y=Max(StageBg::GroundY()+22*_2X,(int)CastlePartsCannonBaseY(grade+1)-18*_2X);
     SetAlpha(24); MemRect(x-3*_2X,y+14*_2X,w+6*_2X,25*_2X,COLOR_NAVY); SetAlpha(ALPHA_MAX);
     MemRect(x,y,w,h,0x182338);
     const float progress=stageArtillery.Progress();
@@ -158,4 +165,10 @@ void StageArtilleryDraw(void) {
     SetFontColor(COLOR_WHITE);
     CenterTextStrSolid(label,x+w/2,y+12*_2X,
         Min(0.62f,w/Max(1.0f,StringWidth(label,1.0f))));
+}
+
+void StageArtilleryPreviewStep(bool prime) {
+    if(!getenv("CS_CANNON_PARTS_REVIEW") || !getenv("CS_CANNON_SHOT_REVIEW")) return;
+    if(prime) { stageArtillery.charge=1; stageArtillery.pending=0; }
+    StageArtilleryStep(true,StageRtFoe());
 }

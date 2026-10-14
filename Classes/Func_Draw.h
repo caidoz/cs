@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -39,6 +39,9 @@ bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
 void CastlePartsNaturalSize(int level, float* w, float* h);
+float CastlePartsRoomScale(void);
+void CastlePartsVisualBounds(int level, float scale, float* left, float* right);
+void CastlePartsPartAnchor(int level, int part, float* x, float* y);
 float CastlePartsFloatOffset(int level);
 void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
@@ -51,6 +54,7 @@ void LoadoutDraw(void);				//출정 준비 화면
 void StageMapOverlayDraw(void);		//이 판의 자리 열다섯
 void StageMapSetOpen(bool on);
 bool StageMapOpen(void);
+void StageShopOfferCardsDraw(void);		//5지선다 선택 카드 목록
 bool LoadoutOpen(void);
 void LoadoutSetOpen(bool on);
 int LoadoutPoint(void);				//이번 판에 쓸 수 있는 점수
@@ -78,6 +82,12 @@ void GridTestDraw(void);
 int GetStageInventoryTop(void);
 int GetStageInventoryWidth(void);
 void StageBridgeHpDraw(void);
+// Shared 32px-grid cannon art; castle/level are zero based, bounds use top-left Y.
+void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height);
+void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height);
+void StageShopPreviewOpen(void);
+float CastlePartsCannonBaseY(int castleLevel);
+bool StageShopPreviewPurchaseChecks(void);
 //성 안의 히어로와 동료. 로비와 전투가 같이 쓴다.
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int castle, bool battle);
@@ -101,6 +111,9 @@ void GridTestSkipOffer(void);
 void GridTestReroll(void);
 void GridTestRefresh(void);			//시험용. 값 없이 세 칸을 다시 돌린다
 int GridShopPrice(int base);		//성 할인을 거친 값				//값을 치르고 룰렛을 다시 돌린다
+int StageGold(void);				//인게임 전투 재화
+void StageGoldSet(int g);
+void StageGoldAdd(int delta);
 void GridTestShopSide(bool book);		//하단 지도 / 도감 자리
 void StageShopBtnRect(int* x, int* y, int* w, int* h);	//전투 시작 버튼 자리
 bool GridTestBeginOffer(int killedType);

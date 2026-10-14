@@ -4,6 +4,7 @@
 #include "Data.h"
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
+#include "Data/InventoryCannonSprites.h"
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
     "Text.h must include every image-name slot declared in ImgDef.h");
@@ -27,6 +28,29 @@ void StageBridgeHpDraw(void)
 	if (drawHandle != MD_PLAY) return;
 	const int inventoryWidth=GetStageInventoryWidth();
 	BattleMobileCastle::DrawDuelHpBars(StageBg::GroundY(),inventoryWidth);
+}
+
+void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)
+{
+	const auto& f=InventoryCannons::Get(castle,level);
+	const int img=INVENTORY_CANNON_ATLAS_IMG;
+	if(!sprite[img]) LoadImg(img);
+	if(!texture[img]) LoadTexture(img);
+	if(!sprite[img] || !texture[img] || width<=0 || height<=0) return;
+	const float scale=Min(width/(float)f.w,height/(float)f.h);
+	DrawImage(f.w,f.h,f.x,f.y,x+(width-(int)(f.w*scale))/2,
+		y-(height-(int)(f.h*scale))/2,false,false,false,false,false,scale,sprite[img],img);
+}
+
+void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height)
+{
+	const auto& f=InventoryCannons::Get(castle,level);
+	const int img=INVENTORY_CANNON_ATLAS_IMG;
+	if(!sprite[img]) LoadImg(img);
+	if(!sprite[img] || width<=0 || height<=0) return;
+	const float scale=Min(width/(float)f.bw,height/(float)f.bh);
+	DrawImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+(width-(int)(f.bw*scale))/2,
+		y-(height-(int)(f.bh*scale))/2,false,0,0,0,0,scale,sprite[img],img);
 }
 
 //배경이 흐르는 시계. 로비 · 출정 준비 · 전투가 같은 선로를 쓰므로

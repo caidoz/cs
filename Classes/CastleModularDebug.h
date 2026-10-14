@@ -1,5 +1,6 @@
 #pragma once
 #include "CastlePartState.h"
+#include "Data/InventoryCannonSprites.h"
 #include <cstdlib>
 #include <cmath>
 #include <chrono>
@@ -30,6 +31,8 @@ static bool active=false;
 static bool missingAsset=false;
 static float cannonMuzzleX[10]={0},cannonMuzzleY[10]={0};
 static bool cannonMuzzleValid[10]={false};
+static float cannonBaseY[10]={0};
+static float partAnchor[10][5][2]={0};
 
 //옛 모듈러 조각(castle_parts/*)을 집던 AssetId 는 지웠다. 부르는 데가
 //없었고, 그림 250 장도 이미 없어서 이름표만 차지하고 있었다. 지금은
@@ -145,13 +148,14 @@ static int RightArmorW(int castle) {
  return castle==0?160:110+10*(castle+1);
 }
 static float CannonGrowth(int castle,int stage) {
- return (1.0f+0.135f*castle)*(0.82f+0.036f*stage);
+ static const float fit[6]={1.75f,1.50f,1.30f,1.16f,1.07f,1.0f};
+ return (2.4f+0.09f*castle)*fit[Max(0,Min(5,stage))]*(castle==0?1.30f:1.0f);
 }
 static float NaturalCastleW(int castle) {
- if(castle==0) return 832.0f;
+ if(castle==0) return 960.0f;
  // The prow cannon projects farther right as the castle grows. Include it
  // in the camera bounds so the last castle does not lose its muzzle.
- return LeftArmorW(castle)+544.0f+128.0f*CannonGrowth(castle,5);
+ return LeftArmorW(castle)+640.0f+90.0f*CannonGrowth(castle,5);
 }
 // Room and wall rectangles meet at the same coordinate, but their artwork
 // has transparent edge pixels. A narrow material-colored backing closes the
@@ -316,30 +320,39 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  float artilleryCharge=0,artilleryRecoil=0; int artilleryBurst=0;
  const bool artilleryOn=StageArtilleryVisual(&artilleryCharge,&artilleryRecoil,&artilleryBurst);
  const float recoilPx=artilleryOn?artilleryRecoil*10.0f*scale:0.0f;
+ const float balconyLeft=roomLeft+480.0f*scale;
+ // All ten artillery themes share the commander's lower combat platform.
+ const auto& gun=InventoryCannons::Get(castle,cannonStage);
+ const float gunScale=CannonGrowth(castle,cannonStage)*scale;
+ // Every cannon sits on the command deck, starting 32 screen pixels in
+ // front of the commander's shared local x=600 anchor.
+ const float gunLeft=left+600.0f*scale+32.0f-recoilPx;
+ const float platformWidth=Max(192.0f,(gunLeft+recoilPx+gun.bw*gunScale-balconyLeft)/scale+8.0f);
+ // Platform walking surface matches the combat deck, 72px below room 1.
  if(castle==0) {
-  if(stage==0)
-   DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG,160,192,left+576.0f*scale-recoilPx,
-                  bottom+104.0f*scale,scale);
-  else
-   DrawFixedAsset(CASTLE_01_CANNON_FIRST_IMG+cannonStage,160,128,left+576.0f*scale-recoilPx,
-                  bottom+64.0f*scale,scale);
-  cannonMuzzleX[castle]=left+728.0f*scale-recoilPx;
-  cannonMuzzleY[castle]=bottom+(cannonStage==0?72.0f:38.0f)*scale;
- }
- else {
-  const float balconyLeft=roomLeft+480.0f*scale;
-  const float balconyTop=bottom+128.0f*scale;
+  DrawFixedAssetScale(Balcony01AssetId(cannonStage),192,128,
+                 balconyLeft,bottom+3.0f*scale,scale*platformWidth/192.0f,scale);
+ } else {
   const int commandIndex=(castle-1)*6+cannonStage;
-  DrawFixedAsset(CASTLE_COMMAND_PLATFORM_FIRST_IMG+commandIndex,192,128,
-                 balconyLeft,balconyTop,scale);
-  const float gunScale=CannonGrowth(castle,cannonStage);
-  DrawFixedAsset(CASTLE_HEAVY_CANNON_FIRST_IMG+commandIndex,128,64,
-                 balconyLeft+64.0f*scale-recoilPx,
-                 balconyTop+(gunScale-1.0f)*64.0f*scale,scale*gunScale);
-  cannonMuzzleX[castle]=balconyLeft+(64.0f+122.0f*gunScale)*scale-recoilPx;
-  cannonMuzzleY[castle]=balconyTop+(gunScale-1.0f)*64.0f*scale-26.0f*gunScale*scale;
+  DrawFixedAssetScale(CASTLE_COMMAND_PLATFORM_FIRST_IMG+commandIndex,192,128,
+                 balconyLeft,bottom-12.0f*scale,scale*platformWidth/192.0f,scale);
  }
+ const float gunBase=bottom-72.0f*scale;
+ const float gunTop=gunBase+gun.bh*gunScale;
+ cannonBaseY[castle]=gunBase;
+ const int gunImg=INVENTORY_CANNON_ATLAS_IMG;
+ if(!sprite[gunImg]) LoadImg(gunImg);
+ if(sprite[gunImg]) DrawImage(gun.bw,gun.bh,gun.x+gun.bx,gun.y+gun.by,
+     (int)std::lround(gunLeft),(int)std::lround(gunTop),false,0,0,0,0,gunScale,sprite[gunImg],gunImg);
+ else missingAsset=true;
+ cannonMuzzleX[castle]=gunLeft+(gun.muzzleX-gun.bx)*gunScale;
+ cannonMuzzleY[castle]=gunTop-(gun.muzzleY-gun.by)*gunScale;
  cannonMuzzleValid[castle]=true;
+ const float anchorX[5]={roomLeft+256*scale,roomLeft-LeftArmorW(castle)*scale*.5f,
+                        roomLeft+256*scale,gunLeft+gun.bw*gunScale*.5f,roomLeft+256*scale};
+ const float anchorY[5]={bottom+(floorCount*128+upperH*.5f)*scale,bottom+floorCount*64*scale,
+                        bottom+floorCount*64*scale,gunTop-gun.bh*gunScale*.5f,bottom-96*scale};
+ for(int i=0;i<5;++i) { partAnchor[castle][i][0]=anchorX[i]; partAnchor[castle][i][1]=anchorY[i]; }
 }
 static void Button(int x,int y,int w,int h,const char* text,int command,float font) {
  MemRect(x,y,w,h,0x30464D); MemRectFrame(x,y,w,h,0xBD965C); SetFontColor(COLOR_WHITE);
@@ -356,6 +369,9 @@ bool CastlePartsCannonMuzzle(int castleLevel,float* x,float* y) {
  if(!CastleParts::cannonMuzzleValid[castle]) return false;
  *x=CastleParts::cannonMuzzleX[castle]; *y=CastleParts::cannonMuzzleY[castle];
  return true;
+}
+float CastlePartsCannonBaseY(int castleLevel) {
+ return CastleParts::cannonBaseY[Max(0,Min(9,castleLevel-1))];
 }
 void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  using namespace CastleParts;
@@ -399,6 +415,23 @@ float CastlePartsGroundOffset(int castleLevel) {
  return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-radius;
 }
 float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW / 512.0f; }
+void CastlePartsVisualBounds(int level,float scale,float* outLeft,float* outRight) {
+ using namespace CastleParts;
+ const int c=Max(0,Min(9,level-1));
+ const int lv=active?roomStage[c]:CastleVisualPartLevel(c,3);
+ const auto& gun=InventoryCannons::Get(c,lv);
+ float left=c==0?0.0f:64.0f-LeftArmorW(c);
+ if(c==8) left=Min(left,-100.0f);
+ const float gunRight=600.0f+32.0f/Max(.01f,scale)+gun.bw*CannonGrowth(c,lv);
+ const float right=Max(c==0?736.0f:Max(736.0f,576.0f+RightArmorW(c)),gunRight+8.0f);
+ if(outLeft) *outLeft=left;
+ if(outRight) *outRight=right;
+}
+void CastlePartsPartAnchor(int level,int part,float* x,float* y) {
+ const int c=Max(0,Min(9,level-1)),i=Max(0,Min(4,part));
+ if(x) *x=CastleParts::partAnchor[c][i][0];
+ if(y) *y=CastleParts::partAnchor[c][i][1];
+}
 //조립 네모의 밑변이 곧 땅에 닿는 줄이다. 바퀴가 딱 그 자리까지 내려오게
 //그려지므로(DrawCastle) 따로 파묻을 값이 없다.
 //

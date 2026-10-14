@@ -3880,6 +3880,7 @@ const char* const textId[] = {
 	"inventory_boomerang/34",
 	"inventory_boomerang/35",
 	"castle_artillery/attacks",
+	"inventory_cannon/atlas",
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

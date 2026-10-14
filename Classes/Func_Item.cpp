@@ -1796,6 +1796,11 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 		if (robin.gold < 0)
 			robin.gold = 0;
 
+		//상한을 넘긴 몫은 버린다. 상단 칸이 보여 줄 수 있는 자리수가
+		//거기까지다.
+		if (robin.gold > GOLD_MAX)
+			robin.gold = GOLD_MAX;
+
 		goldFrame = FPS / 2;
 		break;
 	case ITEM_KEY:

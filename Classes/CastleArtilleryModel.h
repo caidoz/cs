@@ -13,6 +13,11 @@ struct Profile {
 #include "Data/CastleArtilleryProfiles.inc"
 inline int ClampGrade(int grade) { return grade < 0 ? 0 : grade > 9 ? 9 : grade; }
 inline const Profile& Of(int grade) { return kProfiles[ClampGrade(grade)]; }
+inline int ClampUpgrade(int level) { return level<0?0:level>5?5:level; }
+inline float ProjectileScale(int level) {
+    static const float scales[6]={.45f,.55f,.65f,.78f,.90f,1.05f};
+    return scales[ClampUpgrade(level)];
+}
 struct Point { float x,y; };
 inline Point Position(Kind kind, Point from, Point target, float t, int lane) {
     t=t<0?0:t>1?1:t;
@@ -33,22 +38,23 @@ inline bool SegmentHits(Point a, Point b, Point target, float radius) {
 }
 struct Shot {
     bool active;
-    int target,generation,lane,age,flight,impact;
+    int target,generation,lane,age,flight,impact,upgrade;
     Point from,position,previous,destination;
 };
 struct State {
     enum { Capacity=32, ChargeFrames=12, ImpactFrames=18 };
-    int grade,cooldown,charge,pending,burstClock,lane,recoil,cooldownOverride;
+    int grade,cooldown,charge,pending,burstClock,lane,recoil,cooldownOverride,upgrade;
     Shot shots[Capacity];
     State() { Reset(0); }
     void Reset(int g) {
-        grade=ClampGrade(g); cooldown=charge=pending=burstClock=lane=recoil=0; cooldownOverride=0;
+        grade=ClampGrade(g); cooldown=charge=pending=burstClock=lane=recoil=0; cooldownOverride=0; upgrade=0;
         for(int i=0;i<Capacity;++i) shots[i]=Shot();
     }
     bool Spawn(int target,int generation,Point from,Point destination) {
         for(int i=0;i<Capacity;++i) if(!shots[i].active) {
             Shot& s=shots[i]; s=Shot(); s.active=true; s.target=target;
             s.generation=generation; s.lane=lane++;
+            s.upgrade=ClampUpgrade(upgrade);
             s.from=s.position=s.previous=from; s.destination=destination;
             s.flight=Of(grade).flight; return true;
         }

@@ -5063,6 +5063,7 @@ void RaidSequenceDraw(void)
 
 void InfoDraw(void)
 {
+	if(getenv("CS_CANNON_PARTS_REVIEW")) return;
 	int i;
 	int x, y;
 	int gap = -48 * _2X;

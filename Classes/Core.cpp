@@ -852,6 +852,8 @@ bool Core::init()
 	// Artillery is outside the legacy loading range; register both caches.
 	LoadImg(CASTLE_ARTILLERY_IMG);
 	LoadTexture(CASTLE_ARTILLERY_IMG);
+	LoadImg(INVENTORY_CANNON_ATLAS_IMG);
+	LoadTexture(INVENTORY_CANNON_ATLAS_IMG);
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
@@ -1040,7 +1042,60 @@ bool Core::init()
 
 #include "CastleMenuReview.inc"
 
+//======================================================================
+// 힙 탐침 (임시)
+//
+// 깨진 뒤에 터지는 것이 힙이다. 터진 자리에는 범인이 없다. 한 프레임을
+// 토막내 매번 검사해서, 멀쩡하다가 처음 깨진 그 토막을 적어 둔다.
+//
+// 지우는 법은 BalanceConfig.h 의 HEAP_PROBE_LOG 주석에 적었다.
+//======================================================================
+#if HEAP_PROBE_LOG && (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include <crtdbg.h>
+
+void HeapProbe(const char* where)
+{
+	//한 번 깨지면 그 뒤로는 계속 깨져 있다. 처음 한 번만 적는다.
+	static bool told = false;
+
+	if (told)
+		return;
+
+	//매 프레임 보면 게임이 기어간다. 거르는 것은 프레임뿐이고, 보는
+	//프레임에서는 네 토막을 다 본다.
+	if (HEAP_PROBE_EVERY > 1 && (wholeFrame % HEAP_PROBE_EVERY) != 0)
+		return;
+
+	//둘 다 본다. 디버그 CRT 가 쓰는 힙과 윈도우가 주는 힙이 다르다.
+	const bool crtOk = (_CrtCheckMemory() != 0);
+	const bool winOk = (HeapValidate(GetProcessHeap(), 0, NULL) != 0);
+
+	if (crtOk && winOk)
+		return;
+
+	told = true;
+
+	FILE* fp = fopen("heap_probe.txt", "a");
+
+	if (fp) {
+		fprintf(fp, "처음 깨진 자리 : %s\n", where);
+		fprintf(fp, "  프레임 %d / wholeFrame %d\n", (int)frame, (int)wholeFrame);
+		fprintf(fp, "  drawHandle %d  curMenu %d  keyHandle %d\n",
+			(int)drawHandle, (int)curMenu, (int)keyHandle);
+		fprintf(fp, "  CRT %s  WIN %s\n",
+			crtOk ? "멀쩡" : "깨짐", winOk ? "멀쩡" : "깨짐");
+		fclose(fp);
+	}
+
+	CCLOG("HEAP BROKEN at %s (frame %d, drawHandle %d)",
+		where, (int)frame, (int)drawHandle);
+}
+#else
+void HeapProbe(const char*) {}
+#endif
+
 void Core::Run(float delta) {
+	HeapProbe("프레임 머리");
 	LobbySkyUpdate(delta);
 	StageBgUpdate(delta);
 	if (drawHandle == MD_PLAY) {
@@ -1061,6 +1116,8 @@ void Core::Run(float delta) {
 
 	if (netBootStarted)
 		NetUpdate();
+
+	HeapProbe("통신 뒤");
 
 	//---- 부팅이 아직 안 끝났다 ----
 	//
@@ -1224,9 +1281,11 @@ void Core::Run(float delta) {
 #endif
 		if (drawThisFrame) {
 			//한 프레임의 모든 드로우를 화면버퍼에 모은 뒤 한 번만 화면에 표시한다.
+			HeapProbe("그리기 직전");
 			BeginScreenBuffer();
 			PaintClet(0, DY, DX, DY);
 			EndScreenBuffer();
+			HeapProbe("그린 뒤");
 		}
 
 	}
