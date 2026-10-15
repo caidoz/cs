@@ -47,7 +47,7 @@ inline bool IsMoving() {
 
 inline int VisualGroundY(int layoutGroundY) {
 	(void)layoutGroundY;
-	return (int)(DY * 0.31f);
+	return GetStageSceneGroundY();
 }
 
 // Combat Projectile types
@@ -810,7 +810,7 @@ inline void DrawBossUI() {
 
 // Main Entry Point for MD_PLAY in DrawDiorama
 inline void Draw(int groundY, int invenTop) {
-	groundY = VisualGroundY(groundY) + (int)GetStageWorldLift();
+	groundY = VisualGroundY(groundY);
 	const int arenaBottom = Max(0, groundY - 85 * _2X);
 	SetSectionClip(0, DY, DX, DY - arenaBottom, false);
 

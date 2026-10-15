@@ -33,7 +33,11 @@ void StageFoeShotDraw(void);	//몬스터가 날린 검
 void StageRtDrawButton(void);
 int StageSwordCooldown(int detail);
 bool StageRtSwordCharge(int slot, float* charge, int* flash);
-void StageArtilleryReset(void);
+//castle 이 음수면 가방에 실린 포를 본다.
+void StageArtilleryReset(int castle = -1);
+
+//가방 칸 위에 그릴 쿨타임. 그 칸이 지금 쏘는 포일 때만 참이다.
+bool StageArtilleryCharge(int slot, float* charge, int* flash);
 void StageArtilleryStep(bool running, int foe);
 void StageArtilleryDraw(void);
 void StageArtilleryPreviewStep(bool prime);

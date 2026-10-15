@@ -27,7 +27,7 @@ void StageBridgeHpDraw(void)
 {
 	if (drawHandle != MD_PLAY) return;
 	const int inventoryWidth=GetStageInventoryWidth();
-	BattleMobileCastle::DrawDuelHpBars(StageBg::GroundY(),inventoryWidth);
+	BattleMobileCastle::DrawDuelHpBars(GetStageSceneGroundY(),inventoryWidth);
 }
 
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)
@@ -37,9 +37,10 @@ void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int heig
 	if(!sprite[img]) LoadImg(img);
 	if(!texture[img]) LoadTexture(img);
 	if(!sprite[img] || !texture[img] || width<=0 || height<=0) return;
-	const float scale=Min(width/(float)f.w,height/(float)f.h);
-	DrawImage(f.w,f.h,f.x,f.y,x+(width-(int)(f.w*scale))/2,
-		y-(height-(int)(f.h*scale))/2,false,false,false,false,false,scale,sprite[img],img);
+    // Upgrade-card art: fit the opaque cannon bounds, not its mounting canvas.
+    const float scale=Min(width/(float)f.bw,height/(float)f.bh);
+    DrawImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+(width-(int)(f.bw*scale))/2,
+        y-(height-(int)(f.bh*scale))/2,false,false,false,false,false,scale,sprite[img],img);
 }
 
 void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height)

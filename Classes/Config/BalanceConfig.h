@@ -467,7 +467,10 @@
 //
 //ALPHA_MAX(32) 가 꽉 참이다. 아직 놓은 것이 아니므로 실린 것보다는
 //옅어야 하고, 그렇다고 칸 색에 묻히면 무엇이 들어가는지 안 보인다.
-#define LOADOUT_PREVIEW_ALPHA		(ALPHA_MAX * 3 / 4)
+//
+//3/4 로 뒀다가 절반으로 낮췄다. 그 자리에 놓인 것처럼 또렷해서, 이미
+//실린 장비와 구별이 잘 안 됐다.
+#define LOADOUT_PREVIEW_ALPHA		(ALPHA_MAX / 2)
 
 //끌고 있는 동안, 가방에 이미 깔려 있는 장비의 진하기.
 //
@@ -475,6 +478,14 @@
 //어느 것이 지금 놓는 것인지 안 보인다. 반쯤 비춰 두면 무엇이 깔려
 //있었는지도 같이 읽힌다.
 #define LOADOUT_UNDER_ALPHA		(ALPHA_MAX / 2)
+
+//집어 든 그 칸이 창고에 남겨 두는 자취의 진하기.
+//
+//회색으로만 죽이고 알파는 꽉 채워(ALPHA_MAX) 그렸더니, 색만 빠졌지
+//또렷하기는 손에 든 것과 같아서 어느 쪽이 들린 것인지 흐릿했다.
+//
+//ALPHA_MAX(32) 가 투명도 0 이다. 그 4 분의 1 만큼 비운다.
+#define LOADOUT_HELD_SLOT_ALPHA	(ALPHA_MAX * 3 / 4)
 
 #define LOADOUT_DROP_DEBUG			0
 

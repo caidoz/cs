@@ -36,9 +36,8 @@ inline bool IsMoving() {
 
 inline int VisualGroundY(int layoutGroundY) {
 	(void)layoutGroundY;
-	//전장은 고정이다. 격자가 오르내려도 세계가 따라 움직이면 안 된다.
-	//로비도 성을 같은 줄에 놓는다(StageBg::GroundY()).
-	return StageBg::GroundY();
+	// The full grid and lower menu determine the shared world position.
+	return GetStageSceneGroundY();
 }
 
 struct SlotUV { float u, v; };
@@ -247,8 +246,7 @@ inline void DrawBossMonster(int groundY) {
 }
 
 inline void Draw(int groundY, int invenTop) {
-	//UI 가 내려간다고 장면까지 들어올리지 않는다. 싸움이 시작될 때마다
-	//세계가 위로 솟으면 같은 자리를 달리는 열차로 안 읽힌다.
+	// Foreground, rail, castle and combatants follow the same menu transition.
 	groundY = VisualGroundY(groundY);
 	//장면은 화면 바닥까지 그린다.
 	//

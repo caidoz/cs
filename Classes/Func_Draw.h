@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -56,7 +56,14 @@ void StageMapSetOpen(bool on);
 bool StageMapOpen(void);
 void StageShopOfferCardsDraw(void);		//5지선다 선택 카드 목록
 bool LoadoutOpen(void);
+bool BattleEntryLocked(void);
 void LoadoutSetOpen(bool on);
+//성의 대포 파츠 단계에 맞는 포를 인벤토리에 둔다. 출정 준비를 열 때 부른다.
+void CannonGrantEnsure(void);
+
+//가방에 실린 대포. 없으면 false - 그때는 아무것도 안 쏜다.
+bool StageBagCannon(int* castle, int* level, int* slot);
+
 int LoadoutPoint(void);				//이번 판에 쓸 수 있는 점수
 int LoadoutUsed(void);
 int LoadoutCost(const ITEM* it);
@@ -96,6 +103,12 @@ float CastlePartsLeftInset(int castleLevel);
 float CastlePartsBodyLift(int castleLevel);
 float CastlePartsGroundOffset(int castleLevel);
 float GetStageWorldLift(void);
+int GetStageSceneGroundY(void);
+bool BattleMenuPreviewDragCheck(void);
+bool BattleMenuPreviewScrollCheck(void);
+bool BattleMenuPreviewWarehouseGestureCheck(void);
+void BattleInventoryScroll(int direction);
+void BattleWarehouseScroll(int direction);
 void GridTestPick(int n, bool fromShop);
 void GridTestPickStore(int n);	//성보관함 칸을 집는다
 void LoadoutPickStart(int inven);	//출정 준비에서 보관함 칸을 집는다
@@ -104,7 +117,8 @@ bool LoadoutMoveTo(int invenIdx, int col, int row);	//담긴 것의 자리만 �
 bool LoadoutRotate(int invenIdx);	//담긴 것을 90 도 돌린다
 void LoadoutPickBag(int n);			//가방에 놓인 것을 집는다
 void LoadoutPickHero(int hero);		//출정할 히어로를 고른다
-void LoadoutRelease(void);			//그 손을 뗀 순간
+void LoadoutSetupPress(void);
+void LoadoutRelease(bool cancelled=false);			//그 손을 뗀 순간
 void GridTestRelease(void);
 void GridTestToggle(void);
 void GridTestSkipOffer(void);

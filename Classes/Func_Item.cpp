@@ -1682,7 +1682,9 @@ bool gInvenFullNotice = false;
 //안 된다.
 bool IsEquipItemType(int type)
 {
-	return type >= ITEM_SWORD && type <= ITEM_RING;
+	//대포도 가방에 싣는 것이라 장비로 센다. 다만 번호가 뒤에 따로 떨어져
+	//있어서 범위로는 안 걸린다.
+	return (type >= ITEM_SWORD && type <= ITEM_RING) || type == ITEM_CANNON;
 }
 
 int GetItem(int type, int lv, int detail, int grade, long long count, int set)
@@ -2719,6 +2721,17 @@ bool IsEquipOwned(ITEM* it)
 int GetItemStar(int type, int detail, int grade)
 {
 	int i;
+
+	//---- 대포의 별 ----
+	//
+	//성 둘에 별 하나다. 1 · 2 성이 ★1, 3 · 4 성이 ★2 … 9 · 10 성이 ★5.
+	//
+	//표(itemStar)에 예순 줄을 적어 넣지 않는다. 식으로 두면 나중에 성이
+	//둘 늘 때 ★6 이 저절로 따라온다 - 표면 그때 또 손대야 한다.
+	//
+	//detail 이 성 번호(0 부터)다.
+	if (type == ITEM_CANNON)
+		return Max(1, Min(detail, CASTLE_STAGE_CNT - 1) / 2 + 1);
 
 	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {

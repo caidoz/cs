@@ -11,6 +11,7 @@
 #include "Data/InventoryGunShapes.h"
 #include "Data/InventoryCannonSprites.h"
 #include "CastleArtilleryModel.h"
+#include "BattleMenuLayout.h"
 #include "Data/FoeGearData.h"
 #ifdef GAMEDEBUG
 // All ten cannons share the lower command platform and commander-relative placement.
@@ -1760,6 +1761,21 @@ static int GridCastleStage(void)
 	return GridCastleIdx(gMobileCastleVisual);
 }
 
+// Layout preview only: keep the selected castle and its cannon/progression intact.
+// Set to 0 to restore castle-sized grids while debugging.
+#ifndef BATTLE_DEBUG_MAX_GRID
+#define BATTLE_DEBUG_MAX_GRID 1
+#endif
+static int GridLayoutCastleStage(void)
+{
+#if defined(_DEBUG) && BATTLE_DEBUG_MAX_GRID
+    return CASTLE_STAGE_CNT - 1;
+#else
+    return GridCastleStage();
+#endif
+}
+
+
 //이 성의 가방 칸 수. 로비의 판 설명도 이 값을 쓴다.
 int GridTestCellCnt(int castle)
 {
@@ -1910,7 +1926,14 @@ static GridPart GridPartRotated(const GridPart& p)
 }
 
 // Stage-only objects do not enter the persistent ITEM enum or its stat tables.
-enum { GRID_ITEM_CANNON=-100, GRID_SHOP_CANNON=GRIDTEST_SHOPCNT, GRID_SHOP_MISC=GRIDTEST_SHOPCNT+1 };
+//---- 격자 전용 표식 ----
+//
+//대포는 전에 ITEM 이 아니었다(-100). 이제 진짜 타입이 생겼으므로 같은
+//번호를 본다 - 그리는 쪽과 집는 쪽에 흩어져 있는 열몇 군데의
+//GRID_ITEM_CANNON 비교가 인벤토리에서 온 대포에도 그대로 맞아야 한다.
+//
+//둘을 따로 두었더니 창고의 대포가 어느 갈래에도 안 걸려 빈 칸으로 그려졌다.
+enum { GRID_ITEM_CANNON = ITEM_CANNON, GRID_SHOP_CANNON=GRIDTEST_SHOPCNT, GRID_SHOP_MISC=GRIDTEST_SHOPCNT+1 };
 static const GridPart kShopPart[GRIDTEST_SHOPCNT+2] = {
 	//---- 검 ----
 	//
@@ -2068,6 +2091,15 @@ static GridPart GridOfferPart(const OfferCard& card)
 static OfferCard gOffer[GRIDTEST_OFFERCNT];
 static bool gOfferOn = false;
 
+//---- 칸에 내밀 것이 들어 있는가 ----
+//
+//gOfferOn 은 "지금 고르는 중" 이다(그동안 판이 선다). 그것과 "칸에 무엇이
+//들어 있는가" 는 다른 일인데 하나로 쓰고 있었다.
+//
+//그래서 판이 서자마자는 한 번도 안 뽑은 칸을 그대로 그렸다 - OfferCard 가
+//0 이라 표의 0 번(롱소드)이 다섯 칸에 똑같이 섰다.
+static bool gOfferFilled = false;
+
 //---- 인게임 전투 재화 ----
 //
 //아웃게임 골드(robin.gold)와 분리된 이번 스테이지의 인게임 재화다.
@@ -2181,11 +2213,12 @@ static int gGridFlyFrame = 0;
 // 칸 크기와 격자 원점을 한 곳에서 정한다. 그리기와 터치 판정이 서로
 // 다른 식을 쓰면 눈에 보이는 자리와 눌리는 자리가 어긋난다.
 static int gGridCell = 0;
+static int gBattleInventoryPan=0;
 static int gGridX = 0;			//0 번 열의 왼쪽
 static int gGridBottom = 0;		//0 번 행의 아랫변
 
 //격자 바로 위에 얹는 한 줄. 연참 미리보기와 골드/칸이 여기 들어간다.
-#define GRIDTEST_HUDH (36 * _2X)
+#define GRIDTEST_HUDH (20 * _2X)
 
 //집어 든 장비를 그리는 투명도. 32 가 불투명이다.
 //
@@ -2211,7 +2244,7 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 // 위아래로 뛰어서, 끌어다 놓던 손이 매번 자리를 다시 찾아야 한다.
 //======================================================================
 #define STAGE_SHOP_GAP		(6 * _2X)
-#define STAGE_SHOP_CARDH	(34 * _2X)	//룰렛 칸 그림
+#define STAGE_SHOP_CARDH	96	//룰렛 칸 그림
 #define STAGE_SHOP_PRICEH	(9 * _2X)	//그 아래 값표
 #define STAGE_SHOP_BTNW		(96 * _2X)	//전투 버튼 너비. 원본 그림이 192 다
 #define STAGE_SHOP_BTNH		(STAGE_SHOP_BTNW * 62 / 192)
@@ -2236,18 +2269,18 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 //======================================================================
 #define STAGE_UI_SLIDE_SPEED	0.14f	//한 프레임에 좁히는 몫
 #define STAGE_UI_DROP_RATE		0.60f	//아래 UI 가 내려가는 거리(화면 몫)
-#define STAGE_SCENE_DROP_RATE	0.16f	//전투 장면이 내려가는 거리
 
 static float gStageUiSlide = 0.0f;		//0 이면 보인다, 1 이면 다 내려갔다
+static bool gStageCombatStarted=false;
 
 //이번 프레임의 자리. 그리는 쪽과 재는 쪽이 같은 값을 써야 한다.
 static int StageUiDrop(void)	{ return (int)(gStageUiSlide * DY * STAGE_UI_DROP_RATE); }
-static int StageSceneDrop(void)	{ return (int)(gStageUiSlide * DY * STAGE_SCENE_DROP_RATE); }
 
 //싸우는 중인가. 룰렛이 열려 있으면 고르는 중이라 아니다.
 static bool StageUiHidden(void)
 {
-	return IsStageRealtime() && StageRtAutoOn() && !GridTestOfferOpen();
+	if(IsStageRealtime()&&StageRtAutoOn()) gStageCombatStarted=true;
+	return IsStageRealtime() && gStageCombatStarted && !GridTestOfferOpen();
 }
 
 static void StageUiSlideStep(void)
@@ -2274,29 +2307,20 @@ static int StageShopTopBase(void)	{ return StageShopTop() + StageUiDrop(); }
 //싸우는지는 싸우는 내내 보여야 한다. 상점 줄이 비운 자리로 내려올 뿐이다.
 static int StageGridDrop(void)
 {
-	return (int)(gStageUiSlide * (StageShopTopBase() - 4 * _2X));
+	return (int)(gStageUiSlide * (StageShopTopBase() - 40 * _2X));
 }
 
 static void GridTestLayout(void)
 {
-	GridLoadCells(GridCastleStage());
-	// PNG와 같은 32px 칸을 쓴다. 가장 넓은 성(12칸)이 화면 폭에
-	// 안 들어갈 때에만 한 칸의 화면 표시 크기를 줄인다.
-	//---- 칸 크기 ----
-	//
-	//폭과 높이 둘 다에 맞춘다. 폭만 보고 잡으면 줄이 많은 성에서 격자가
-	//전투 화면을 밀어 올려 히어로가 화면 밖으로 나간다. 격자에 내주는
-	//높이는 화면의 GRIDTEST_MAXRATE 까지다.
-	const int roomH = (int)(DY * GRIDTEST_MAXRATE) + GRIDTEST_EXTRAH - GRIDTEST_HUDH;
-	const int fitH = Max(1, roomH / Max(1, gGridH));
-
-	// A stage inventory cell is 32x32 screen pixels, the same size as an
-	// equipment PNG tile. Shrink only on a display that cannot fit the grid.
-	gGridCell = Min(SWORD_TILE_SIZE,
-		Min((DX - 24 * _2X) / kGridMaxW, fitH)) & ~1;
-	gGridCell = Max(2, gGridCell);
-	gGridX = DX / 2 - gGridCell * gGridW / 2;
-	gGridBottom = StageShopTopBase() - StageGridDrop();
+ GridLoadCells(GridLayoutCastleStage());
+ static int layoutFrame=-1;
+ if(layoutFrame!=frame) { StageUiSlideStep(); layoutFrame=frame; }
+ // Both inventories use literal 48px cells; wide grids pan instead of shrinking.
+ gGridCell=BattleMenuLayout::Cell(DX,_2X);
+ const int pad=(int)(GRID_FRAME_PAD*(float)gGridCell/GRID_FRAME_CELL);
+ gBattleInventoryPan=Max(0,Min(gBattleInventoryPan,BattleMenuLayout::ScrollMax(DX,gGridW,gGridCell,pad)));
+ gGridX=BattleMenuLayout::Origin(DX,gGridW,gGridCell,pad,gBattleInventoryPan);
+ gGridBottom=StageShopTopBase()-StageGridDrop();
 }
 
 int GetStageInventoryTop(void)
@@ -2316,9 +2340,14 @@ int GetStageInventoryWidth(void)
 
 float GetStageWorldLift(void)
 {
-	// Preparation uses the tall inventory. Keep the complete battlefield 144
-	// screen pixels higher, then return smoothly as the UI slides away.
-	return (1.0f - gStageUiSlide) * 72.0f * _2X;
+	return GetStageSceneGroundY()-StageBg::GroundY();
+}
+static int LoadoutMenuTop(void);
+int GetStageSceneGroundY(void) {
+	int top=GetStageInventoryTop();
+	const int shopTop=StageShopTopBase()+gGridH*gGridCell+GRIDTEST_HUDH;
+	top+=(int)((1.0f-gStageUiSlide)*Max(0,LoadoutMenuTop()-shopTop));
+	return BattleMenuLayout::Ground(StageBg::GroundY(),top,_2X);
 }
 
 static inline int GridCellX(int col) { return gGridX + col * gGridCell; }
@@ -2558,13 +2587,16 @@ static void GridOfferRect(int n, int* x, int* y, int* w, int* h)
 	*w = cw;
 	*h = STAGE_SHOP_CARDH;
 	*x = STAGE_SHOP_GAP + n * (cw + STAGE_SHOP_GAP);
-	*y = Min(StageShopSlotTop(),StageBg::GroundY()-46*_2X);
+	*y = StageShopSlotTop();
 }
 
 //맨 아래 가운데. 전투 / 전투 시작 버튼이 앉는 자리다.
 //Func_Battle 의 StageRtDrawButton 이 같은 자리를 쓴다.
 void StageShopBtnRect(int* x, int* y, int* w, int* h)
 {
+	if(StageUiHidden()) {
+		*w=64*_2X; *h=20*_2X; *x=DX/2-*w/2; *y=24*_2X; return;
+	}
 	*w = STAGE_SHOP_BTNW;
 	*h = STAGE_SHOP_BTNH;
 	*x = DX / 2 - *w / 2;
@@ -3067,27 +3099,34 @@ static void GridShopPriceStrip(int n, int price, bool afford)
 	y -= h;
 	h = STAGE_SHOP_PRICEH;
 
-	//살 수 있는 값만 금색 띠를 깐다. 못 사는 값과 빈 칸은 어두운 네모로
-	//두어, 띠가 보이면 곧 "지금 살 수 있다" 가 되게 한다.
-	if (price >= 0 && afford) {
-		UiBarDraw(WIN_IMG, UIGOLDBAR_X, UIGOLDBAR_Y, UIGOLDBAR_W, UIGOLDBAR_H,
-		          UIGOLDBAR_CAP, x, y, w, (float)h / UIGOLDBAR_H);
-	}
-	else {
-		MemRect(x, y, w, h, price < 0 ? 0x16161F : 0x241A1A);
-		MemRectFrame(x, y, w, h, price < 0 ? 0x3A3F5A : 0x77404A);
-	}
-
-	SetFontColor(price < 0 ? COLOR_GREY : (afford ? COLOR_BLACK : COLOR_GREY));
+	SetFontColor(price < 0 ? COLOR_GREY : (afford ? 0xFFDD66 : COLOR_GREY));
 
 	const float priceZoom=Min(.65f,(h-2.0f)/FONT_HEIGHT);
 	const int priceY=y-(int)((h-FONT_HEIGHT*priceZoom)/2);
-	if (price < 0)
+
+	if (price < 0) {
 		CenterTextStrSolid("-", x + w / 2, priceY, priceZoom);
-	else {
-		sprintf(str, "%d", price);
-		CenterTextStrSolid(str, x + w / 2, priceY, priceZoom);
+		return;
 	}
+
+	//---- 코인 + 숫자 ----
+	//
+	//숫자만 있으면 그 수가 값인지 개수인지 힘인지 알 수가 없다. 코인을
+	//앞에 붙여 "얼마" 로 읽히게 한다.
+	//
+	//띠가 좁으므로 코인도 띠 높이에 맞춰 줄이고, 둘을 한 덩어리로 묶어
+	//가운데에 놓는다 - 따로 놓으면 자리마다 간격이 어긋난다.
+	sprintf(str, "%d", price);
+
+	const int coin = Max(6 * _2X, h - 2 * _2X);
+	const float coinZoom = (float)coin / (float)ITEMICONSIZE;
+	const int gap = 1 * _2X;
+	const int textW = (int)StringWidth(str, priceZoom);
+	const int rowX = x + (w - (coin + gap + textW)) / 2;
+
+	DrawIcon(ICON_GOLD, rowX, y - (h - coin) / 2, coinZoom,
+		false, false, false, true);
+	CenterTextStrSolid(str, rowX + coin + gap + textW / 2, priceY, priceZoom);
 }
 
 //======================================================================
@@ -3136,6 +3175,14 @@ static int GridFindSame(const GridPart* p, int skip)
 			continue;
 
 		const GridPart* q = &gGridItem[i].part;
+
+		//---- 대포는 안 겹친다 ----
+		//
+		//같은 포를 둘 놓으면 한 자리에 쌓이는 것이 아니라 제 칸을 따로
+		//먹어야 한다. 포는 겹쳐 세지지 않고, 옆에 붙이는 강화 아이템으로
+		//세진다.
+		if (p->type == ITEM_CANNON || q->type == ITEM_CANNON)
+			continue;
 
 		if (q->type == p->type && q->detail == p->detail && q->grade == p->grade)
 			return i;
@@ -3248,8 +3295,8 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			const auto& f=InventoryCannons::Get(p->detail,p->grade);
 			const int img=INVENTORY_CANNON_ATLAS_IMG;
 			if(!sprite[img]) LoadImg(img);
-			if(sprite[img]) RotateImage(f.w,f.h,f.x,f.y,x+w/2,y-h/2,false,90,0,alpha,
-				Min(w/(float)f.h,h/(float)f.w),Vec2(.5f,.5f),sprite[img],img);
+			if(sprite[img]) RotateImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+w/2,y-h/2,false,90,0,alpha,
+				Min(w/(float)f.bh,h/(float)f.bw),Vec2(.5f,.5f),sprite[img],img);
 		} else DrawInventoryCannonIcon(p->detail,p->grade,x,y,w,h);
 		return;
 	}
@@ -3660,12 +3707,25 @@ static void GridOfferRoll(int killedType)
             continue;
         }
 
-		for (;;) {
+		//---- 장비 칸은 서로 다른 갈래에서 ----
+		//
+		//번호만 달리 뽑으면 검 두 자루가 나란히 선다. 검 · 투구 · 갑옷처럼
+		//끼는 자리가 다른 것이 섞여야 고를 것이 생긴다.
+		//
+		//한 바퀴를 다 돌아도 못 찾으면(표가 한 갈래뿐이면) 번호만 겹치지
+		//않게 하고 만다. 못 찾은 채로 영영 돌지 않는다.
+		for (int tries = 0; ; ++tries) {
 			c->part = Random(GRIDTEST_SHOPCNT);
 
-			for (j = 0; j < i; j++)
-				if (gOffer[j].kind == OFFER_PART && gOffer[j].part == c->part)
+			for (j = 0; j < i; j++) {
+				if (gOffer[j].kind != OFFER_PART)
+					continue;
+				if (gOffer[j].part == c->part)
 					break;
+				if (tries < GRIDTEST_SHOPCNT * 2
+					&& kShopPart[gOffer[j].part].type == kShopPart[c->part].type)
+					break;
+			}
 
 			if (j == i)
 				break;
@@ -3689,6 +3749,18 @@ static void GridOfferRoll(int killedType)
 	}
 
 	gOfferOn = true;
+	gOfferFilled = true;
+}
+
+//---- 판이 서면 한 번은 채운다 ----
+//
+//고르느라 판을 세우는 것은 아니다. 칸에 살 것을 깔아 둘 뿐이라
+//gOfferOn 은 도로 내린다 - 켜 두면 무언가를 사는 순간 GridOfferResume 이
+//웨이브를 넘긴다.
+static void GridOfferFillOnce(void)
+{
+	GridOfferRoll(-1);
+	gOfferOn = false;
 }
 
 //돌아가는 중인가. 그동안은 그 칸을 누를 수 없다.
@@ -3969,7 +4041,7 @@ void GridTestSkipOffer(void)
 	// This green start button bypasses StageRtToggleAuto, so clear the
 	// cinematic combat zoom on this path too.
 	ClearCombatZoom();
-	GridTestSay("이번 판은 넘겼다");
+	GridTestSay("전투 시작");
 }
 
 //---- 동료 / 몬스터 카드를 산다 ----
@@ -4077,6 +4149,8 @@ int GridTestTotalItemCount(void)
 //뽑은 것은 그 판에서만 산다. 격자와 떠 있던 세 갈래를 비운다.
 void GridTestResetStage(void)
 {
+	gStageUiSlide=0.0f;
+	gStageCombatStarted=false;
 	//공짜 다시 뽑기는 판마다 새로 찬다.
 	gGridFreeRoll = 0;
 
@@ -4089,6 +4163,9 @@ void GridTestResetStage(void)
 	//섰을 수 있다(START 는 GotoPlay 보다 먼저 이 함수를 부른다).
 	gGridGearPending = true;
 	gOfferOn = false;
+
+	//칸도 비운다. 다음에 판을 그릴 때 이 판의 성 · 편성으로 다시 뽑는다.
+	gOfferFilled = false;
 	gGridDragOn = false;
 	gGridDragShop = -1;
 	gGridDragFrom = -1;
@@ -4101,6 +4178,9 @@ void GridTestResetStage(void)
 	//두면 새 판 한가운데에 지난 판의 글자가 떠 있다.
 	gGridWarnFrame = 0;
 	gGridFlyOn = false;
+	// Warehouse setup is followed by the first shop, before combat starts.
+	StageRtSetAuto(false);
+	GridTestRefresh();
 }
 
 bool GridTestIsOpen(void)
@@ -4648,6 +4728,26 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 		return;
 	}
 
+	//---- 대포 ----
+	//
+	//칸 모양은 그림이 들고 있다. 성(detail)과 업그레이드 단계(grade)마다
+	//포신 길이가 달라서 2x2 도 3x2 도 된다.
+	//
+	//이름은 대포 종류의 이름을 그대로 쓴다. "장착 장비" 로 두면 창고에서
+	//어느 포인지 구별이 안 된다.
+	//대포(= GRID_ITEM_CANNON). 칸 모양은 그림이 들고 있다.
+	if (it->type == ITEM_CANNON) {
+		const int castle = Max(0, Min((int)it->detail, CASTLE_STAGE_CNT - 1));
+		const int level = Max(0, Min((int)it->grade, InventoryCannons::Levels - 1));
+		const auto& frame = InventoryCannons::Get(castle, level);
+
+		out->w = frame.cols;
+		out->h = frame.rows;
+		out->cells = (unsigned short)frame.cells;
+		out->name = CastleArtillery::Of(castle).name;
+		return;
+	}
+
 	//---- 부위별 크기 ----
 	//
 	//전에는 거의 다 1x1 이었다(번호 5 부터만 조금 커졌다). 그러면 가방이
@@ -4714,6 +4814,8 @@ static bool GridFindSpot(const GridPart* p, int* outCol, int* outRow)
 //말없이 빠지면 장비가 사라진 것으로 보인다.
 //출정 준비 화면이 열려 있는가. START 를 누르면 열리고, 출정하면 닫힌다.
 static bool gLoadoutOpen = false;
+static bool gLoadoutSetupPressed = false;
+static int gLoadoutSetupX = 0, gLoadoutSetupY = 0;
 
 //---- 분류 ----
 //
@@ -4887,10 +4989,16 @@ int LoadoutList(int* out, int max)
 	return n;
 }
 
+bool BattleEntryLocked(void)
+{
+    return LoadoutOpen() || (IsStageRealtime() && !gStageCombatStarted && !StageRtAutoOn());
+}
+
 bool LoadoutOpen(void)		{ return gLoadoutOpen; }
 void LoadoutSetOpen(bool on)
 {
 	gLoadoutOpen = on;
+	gLoadoutSetupPressed = false;
 
 	//열 때마다 목록 맨 위부터 본다. 지난번에 밀어 둔 자리에서 열리면
 	//무엇을 보고 있는지 알 수가 없다.
@@ -5069,7 +5177,12 @@ bool LoadoutRotate(int invenIdx)
 //가방에 놓인 것을 집는다. 깔린 차례로 부른다.
 void LoadoutPickBag(int n)
 {
-	if (n < 0 || n >= LOADOUT_MAX)
+	//---- 깔린 자리만 ----
+	//
+	//gLoadoutPackInven 은 이번에 깐 만큼만 채워진다. 그 뒤 칸은 지난
+	//판의 값이거나 0 이고, 0 은 인벤토리 0 번이라 멀쩡한 장비로 보인다.
+	//깐 개수 안쪽인지 먼저 본다.
+	if (n < 0 || n >= LOADOUT_MAX || n >= gLoadoutCnt)
 		return;
 
 	LoadoutPickStart(gLoadoutPackInven[n]);
@@ -5218,8 +5331,13 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 	int n = 0;
 	int missed = 0;
 
-	GridLoadCells(GridCastleStage());
+	GridLoadCells(GridLayoutCastleStage());
 	memset(occ, 0, sizeof(unsigned char) * GRIDTEST_H * GRIDTEST_W);
+
+	//깐 자리표도 같이 비운다. 안 비우면 이번에 안 깐 칸에 지난 판의
+	//인벤토리 번호가 남아, 그 자리를 누르면 엉뚱한 것이 집힌다.
+	for (int i = 0; i < LOADOUT_MAX; ++i)
+		gLoadoutPackInven[i] = -1;
 
 	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; i++) {
 		const ITEM* it = &robin.inven[gLoadout[i]];
@@ -5405,7 +5523,7 @@ static int gLoadoutScrollPrevX = 0;
 //걸리므로 하단 메뉴는 눌리지 않는다.
 static int LoadoutFootY(void)
 {
-	return 16 * _2X;
+	return 4 * _2X;
 }
 
 //---- 보관함은 다 보여 준다 ----
@@ -5418,14 +5536,46 @@ static int LoadoutFootY(void)
 #define LOADOUT_DETAILMAX 40
 #define LOADOUT_CATMAX    320
 
-//---- 보관함 판은 높이를 네 칸으로 고정하고 가로로 늘린다 ----
-//
-//전에는 여섯 칸이었다. 성 가방이 최대 여섯 줄이라 거기에 맞춘 것인데,
-//보관함에 들어가는 것은 아이템이지 성이 아니다. 가장 긴 아이템이 2x4
-//짜리 검과 4x4 짜리 부메랑으로 네 칸이므로 네 줄이면 다 선다.
-//
-//두 줄을 줄인 만큼이 그대로 칸 크기로 간다.
-#define LOADOUT_STORE_H   4
+//창고는 48픽셀 칸 네 줄을 온전히 확보한다.
+//성과 레일이 확보된 메뉴 높이에 맞춰 위로 이동한다.
+#define LOADOUT_STORE_H 4
+static float gLoadoutWorldLift=0.0f;
+static float gLoadoutStorePan=0,gLoadoutStorePanBase=0;
+static int LoadoutStoreHeight(void) {
+ const int cell=BattleMenuLayout::Cell(DX,_2X);
+ // Reserve the full warehouse height before positioning the grid and world.
+ return LOADOUT_STORE_H*cell;
+}
+static int LoadoutMenuTop(void) {
+	GridLoadCells(GridLayoutCastleStage());
+	const int cell=BattleMenuLayout::Cell(DX,_2X);
+	const int pad=(int)(GRID_FRAME_PAD*(float)cell/GRID_FRAME_CELL);
+	return LoadoutFootY()+32*_2X+LoadoutStoreHeight()+12*_2X
+		+BattleMenuLayout::GridHeight(gGridH,cell)+2*pad+20*_2X;
+}
+static void LoadoutWorldStep(void) {
+	const float target=LoadoutOpen()?Max(0,LoadoutMenuTop()+8*_2X-StageBg::GroundY()):0;
+	gLoadoutWorldLift=BattleMenuLayout::Approach(gLoadoutWorldLift,target);
+}
+void BattleInventoryScroll(int direction) {
+ const int cell=BattleMenuLayout::Cell(DX,_2X);
+ const int pad=(int)(GRID_FRAME_PAD*(float)cell/GRID_FRAME_CELL);
+ gBattleInventoryPan=Max(0,Min(gBattleInventoryPan+direction*cell*2,
+     BattleMenuLayout::ScrollMax(DX,gGridW,cell,pad)));
+}
+void BattleWarehouseScroll(int direction) {
+ const int cell=BattleMenuLayout::Cell(DX,_2X);
+ gLoadoutStorePan=Max(0.0f,Min(gLoadoutStorePan+direction*cell,
+     (float)(LOADOUT_STORE_H*cell-LoadoutStoreHeight())));
+}
+static void BattleInventoryArrows(int top) {
+ const int cell=BattleMenuLayout::Cell(DX,_2X);
+ const int pad=(int)(GRID_FRAME_PAD*(float)cell/GRID_FRAME_CELL);
+ const int maximum=BattleMenuLayout::ScrollMax(DX,gGridW,cell,pad);
+ if(!maximum) return;
+ DrawUiButton(4,top,36,28,"<",TOUCH_FUNC_BATTLE_GRID_PREV,false,gBattleInventoryPan>0);
+ DrawUiButton(DX-40,top,36,28,">",TOUCH_FUNC_BATTLE_GRID_NEXT,false,gBattleInventoryPan<maximum);
+}
 #define LOADOUT_BOARD_GAP 2		//판 사이. 성급이 갈리는 것이 보여야 한다
 #define LOADOUT_COLMAX    240
 
@@ -5493,6 +5643,10 @@ static void LoadoutScanOwned(void)
 //그 종류에 번호가 몇 개인가. 다음 종류가 시작하는 자리까지가 제 몫이다.
 static int LoadoutDetailCnt(int type)
 {
+	//대포는 성마다 하나씩, 열 종류다. 아이템 표에는 없으므로 여기서 센다.
+	if (type == ITEM_CANNON)
+		return CASTLE_STAGE_CNT;
+
 	if (type < 0 || type + 1 > ITEM_GEM)
 		return 0;
 
@@ -5516,7 +5670,8 @@ static bool LoadoutHeroHas(int hero, int type)
 		{ ITEM_GREAVES, ITEM_SHOES,  ITEM_BOOTS },
 	};
 
-	if (type == ITEM_NECK || type == ITEM_RING)
+	//목걸이 · 반지 · 대포는 누가 들든 같은 것이다.
+	if (type == ITEM_NECK || type == ITEM_RING || type == ITEM_CANNON)
 		return true;
 
 	if (hero < 0 || hero >= 3)
@@ -5575,6 +5730,85 @@ static bool LoadoutSpot(unsigned char* occ, int colsMax, int w, int h,
 	return false;
 }
 
+//---- 가방에 실린 대포 ----
+//
+//전에는 성에 붙은 포가 혼자 쏘았다(gMobileCastleVisual). 이제 포는 가방에
+//놓는 물건이라, 무엇을 싣고 왔느냐가 무엇을 쏘느냐를 정한다.
+//
+//    castle  어느 성의 포인가 (쏘는 방식과 그림을 가른다)
+//    level   그 포의 단계 (0~5)
+//    slot    격자 칸 번호. 쿨타임을 그 칸 위에 그리는 데 쓴다
+//
+//싣고 오지 않았으면 false 다. 그때는 아무것도 안 쏜다.
+bool StageBagCannon(int* castle, int* level, int* slot)
+{
+	for (int i = 0; i < GRIDTEST_MAXITEM; i++) {
+		if (gGridItem[i].used == false)
+			continue;
+
+		if (gGridItem[i].part.type != ITEM_CANNON)
+			continue;
+
+		if (castle) *castle = Max(0, Min((int)gGridItem[i].part.detail,
+			CASTLE_STAGE_CNT - 1));
+		if (level) *level = Max(0, Min((int)gGridItem[i].part.grade,
+			InventoryCannons::Levels - 1));
+		if (slot) *slot = i;
+
+		return true;
+	}
+
+	return false;
+}
+
+//---- 성의 대포를 인벤토리에 둔다 ----
+//
+//성 파츠의 대포 칸(parts[성][3], 0~5)을 올리면 그 단계의 포가 인벤토리에
+//있어야 한다. 상점에서 사는 것이 아니라 성이 주는 것이다.
+//
+//성별로 보유한 포를 유지한다. 디버그에서는 열 종류를 모두 지급하고,
+//일반 빌드에서는 선택한 성의 포를 지급한다. 기존 보유 등급은 낮추지 않는다.
+//
+//MakeItem 을 안 쓴다. 그 함수는 아이템 표(itemStartCnt)를 종류로 색인하는데
+//대포는 그 표에 없다.
+void CannonGrantEnsure(void)
+{
+	CastleProgressEnsure();
+
+    const int CANNON_PART = 3;
+    const int selected = CastleMenuModel::Clamp(robin.castle);
+#if defined(_DEBUG)
+    const int first = 0, end = CASTLE_STAGE_CNT;
+#else
+    const int first = selected, end = selected + 1;
+#endif
+    for (int castle = first; castle < end; ++castle) {
+        const int level = Max(0,Min((int)robin.castleProgress.parts[castle][CANNON_PART],
+            InventoryCannons::Levels-1));
+        int at = -1, empty = -1;
+        for (int i = 0; i < TOTALINVENTORY; ++i) {
+            if (robin.inven[i].type == ITEM_CANNON && robin.inven[i].detail == castle) {
+                at = i; break;
+            }
+            if (empty < 0 && robin.inven[i].type == EMPTY) empty = i;
+        }
+        if (at >= 0) {
+            ITEM& it = robin.inven[at];
+            it.grade = (unsigned char)Max((int)it.grade,level);
+            it.lv = Max(1,(int)it.lv);
+            it.count = Max(1LL,(long long)it.count);
+            continue;
+        }
+        if (empty < 0) continue;
+        ITEM& it = robin.inven[empty];
+        memset(&it,0,sizeof(it));
+        it.type = ITEM_CANNON;
+        it.detail = (unsigned char)castle;
+        it.grade = (unsigned char)level;
+        it.lv = 1; it.count = 1;
+    }
+}
+
 //---- 성급마다 한 판, 판들을 옆으로 잇는다 ----
 //
 //성급은 itemStar 표에 (종류, 번호)마다 박혀 있다. 등급(GRADE_*)과는 다른
@@ -5599,8 +5833,13 @@ static int LoadoutCatalog(void)
 		gLoadoutStarWide[star - 1] = 0;
 
 		//번호 차례로 훑는다. 같은 번호면 종류 차례다.
+		//
+		//대포(ITEM_CANNON)는 번호가 장비들과 떨어져 뒤에 있다. 범위를
+		//늘리는 대신 마지막 한 바퀴로 끼워 넣는다 - 사이의 재료 · 소비품
+		//까지 훑게 하면 엉뚱한 것이 창고에 선다.
 		for (int d = 0; d < LOADOUT_DETAILMAX; d++)
-			for (int t = 0; t < ITEM_GEM; t++) {
+			for (int ti = 0; ti <= ITEM_GEM; ti++) {
+				const int t = (ti == ITEM_GEM) ? ITEM_CANNON : ti;
 				GridPart part;
 				int c = 0, r = 0;
 
@@ -5617,7 +5856,13 @@ static int LoadoutCatalog(void)
 				if (GetItemStar(t, d, GRADE_NORMAL) != star)
 					continue;
 
-				LoadoutPartOf(t, d, &part);
+				//대포는 단계마다 포신 길이가 달라 칸 모양이 바뀐다. 가진
+				//것이 있으면 그 단계로 자리를 잡아야 창고의 칸과 실제로
+				//싣는 모양이 같다.
+				if (t == ITEM_CANNON && gLoadoutOwn[t][d] >= 0)
+					GridGearPart(&robin.inven[gLoadoutOwn[t][d]], &part);
+				else
+					LoadoutPartOf(t, d, &part);
 
 				const int pw = Max(1, part.w);
 				const int ph = Max(1, Min(LOADOUT_STORE_H, part.h));
@@ -5651,7 +5896,19 @@ static int LoadoutCatalog(void)
 //보관함 칸을 집는다. 아직 안 가진 칸은 들 것이 없다.
 void LoadoutPickStart(int inven)
 {
-	gLoadoutDrag = (inven >= 0 && inven < TOTALINVENTORY) ? inven : -1;
+	//---- 빈 칸은 들 것이 없다 ----
+	//
+	//번호 범위만 보고 있었다. 0 번은 늘 범위 안이라, 어디선가 0 이 흘러
+	//들어오면 인벤토리 0 번(연습용 몽둥이)을 집은 것이 되어 빈 곳을
+	//눌렀는데 몽둥이가 손에 붙었다.
+	//
+	//그 칸에 실제로 낄 수 있는 것이 들어 있는지까지 본다. 이 한 곳만
+	//막으면 창고에서 집든 가방에서 집든 같은 구멍이 닫힌다.
+	const bool pickable = (inven >= 0 && inven < TOTALINVENTORY)
+		&& robin.inven[inven].type != EMPTY
+		&& IsEquipItemType(robin.inven[inven].type);
+
+	gLoadoutDrag = pickable ? inven : -1;
 	gLoadoutDragFromBag = false;
 	gLoadoutDragX = touchX;
 	gLoadoutDragY = touchY;
@@ -5702,8 +5959,30 @@ static bool LoadoutOverGrid(void)
 }
 
 //손을 뗀 순간. 가방 위에서 떼면 싣고, 그 밖이면 그냥 놓는다.
-void LoadoutRelease(void)
+void LoadoutSetupPress(void)
 {
+    gLoadoutSetupPressed = true;
+    gLoadoutSetupX = touchX; gLoadoutSetupY = touchY;
+}
+
+void LoadoutRelease(bool cancelled)
+{
+    if (gLoadoutSetupPressed) {
+        gLoadoutSetupPressed = false;
+        const int bw=88*_2X, bh=bw*62/192;
+        const int by=LoadoutFootY()+28*_2X;
+        const bool tap=!cancelled && gLoadoutGestureMode!=1 &&
+            Abs(endTouchX-gLoadoutSetupX)<=6*_2X &&
+            Abs(endTouchY-gLoadoutSetupY)<=6*_2X &&
+            endTouchX>DX/2-bw/2 && endTouchX<DX/2+bw/2 &&
+            endTouchY<by && endTouchY>by-bh;
+        if(tap && LoadoutOpen()) {
+            LoadoutSetOpen(false);
+            systemKey=AVK_GOTOBATTLE;
+        } else systemKey=0;
+    }
+    if(cancelled) { gLoadoutDrag=-1; gLoadoutDragFromBag=false; return; }
+
 	const int inven = gLoadoutDrag;
 	const bool fromBag = gLoadoutDragFromBag;
 
@@ -5779,15 +6058,15 @@ void LoadoutRelease(void)
 //출정 버튼.
 static void LoadoutGoButtonDraw(void)
 {
-	const int bw = 132 * _2X;
+	const int bw = 88 * _2X;
 	const int bh = bw * 62 / 192;
 	const int bx = DX / 2 - bw / 2;
-	const int by = LoadoutFootY() + 44 * _2X;
+	const int by = LoadoutFootY() + 28 * _2X;
 
 	(void)bh;
 
 	SetFontColor(COLOR_WHITE);
-	DrawTouchLargeButton(bx, by, 192, 62, "출 정", TOUCH_FUNC_LOADOUT_GO,
+	DrawTouchLargeButton(bx, by, 192, 62, "세팅 완료", TOUCH_FUNC_LOADOUT_GO,
 		FRAME_GREEN, (float)bw / 192.0f);
 }
 
@@ -5857,7 +6136,9 @@ static void LoadoutGridDraw(int top, int bottom)
 	if (cell < 8 * _2X)
 		cell = 8 * _2X;
 
-	left = (DX - cell * gGridW) / 2;
+	const int framePad=(int)(GRID_FRAME_PAD*(float)cell/GRID_FRAME_CELL);
+	gBattleInventoryPan=Max(0,Min(gBattleInventoryPan,BattleMenuLayout::ScrollMax(DX,gGridW,cell,framePad)));
+	left = BattleMenuLayout::Origin(DX,gGridW,cell,framePad,gBattleInventoryPan);
 
 	//---- 밑변을 자리의 밑변에 맞춘다 ----
 	//
@@ -5882,7 +6163,7 @@ static void LoadoutGridDraw(int top, int bottom)
 	//전투 화면과 같은 그림(grid0 ~ grid9)을 쓴다. 여기서만 네모를 그리면
 	//"출정 준비에서 본 가방"과 "싸울 때의 가방"이 다른 물건처럼 보인다.
 	{
-		const int img = GRID_FRAME_FIRST_IMG + GridCastleStage();
+		const int img = GRID_FRAME_FIRST_IMG + GridLayoutCastleStage();
 
 		if (!sprite[img]) LoadImg(img);
 		if (sprite[img]) {
@@ -6090,15 +6371,20 @@ void LoadoutDraw(void)
 
 	if (!gLoadoutOpen)
 		return;
+	if(gLoadoutDrag>=0) {
+		if(touchX<20) gBattleInventoryPan-=4;
+		else if(touchX>DX-20) gBattleInventoryPan+=4;
+	}
 
-	//뒤의 로비를 어둡게 깔고, 바깥을 누르면 닫는다. 화면 꼭대기까지 쓰므로
-	//위쪽 HUD 가 비쳐 보이면 머리말과 겹쳐 읽힌다 - 진하게 덮는다.
-	SetAlpha(30);
-	MemRect(0, DY, DX, DY, 0x000000);
+	// Keep the world visible behind the individual inventory cells and controls.
+	const int menuTop=LoadoutMenuTop();
 
 	SetAlpha(ALPHA_MAX);
 	SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_LOADOUT_CLOSE);
 
+	//소유표를 훑기 전에 지급을 맞춘다. 성을 올리고 바로 들어와도 그
+	//단계의 포가 이번 프레임부터 창고에 선다.
+	CannonGrantEnsure();
 	LoadoutScanOwned();
 	cnt = LoadoutCatalog();
 	(void)list;
@@ -6107,21 +6393,19 @@ void LoadoutDraw(void)
 	//
 	//화면 꼭대기까지 쓴다. 전에는 하단 메뉴 높이만큼 내려 잡았는데, 그
 	//높이가 그대로 칸 크기에서 깎인다. 어차피 창이 화면을 다 덮는다.
-	const int top = DY - 14 * _2X;
+	const int top = menuTop;
 	const int point = LoadoutPoint();
 	const int used = LoadoutUsed();
-	const int cell = GridTestCellCnt(GridCastleStage());
+	const int cell = GridTestCellCnt(GridLayoutCastleStage());
 
 	SetFontColor(COLOR_WHITE);
 	CenterTextStrSolid("출정 준비", DX / 2, top, 0.9f);
 
 	SetFontColor(used > point ? COLOR_RED : COLOR_YELLOW);
-	sprintf(str, "출정 점수  %d / %d", used, point);
-	CenterTextStrSolid(str, DX / 2, top - 22 * _2X, 0.66f);
+	sprintf(str, "배치 %d / %d · 전투 인벤토리 %d칸", used, point,cell);
+	CenterTextStrSolid(str, DX / 2, top - 12 * _2X, 0.66f);
 
-	SetFontColor(COLOR_GREY);
-	sprintf(str, "성 %d칸 중  %d칸을 들고 간다", cell, LoadoutCellUsed());
-	CenterTextStrSolid(str, DX / 2, top - 38 * _2X, 0.52f);
+	SetFontColor(COLOR_WHITE);
 
 	//---- 히어로 셋 ----
 	//
@@ -6167,50 +6451,26 @@ void LoadoutDraw(void)
 	//주는 쪽을 같이 못 보면 누를 때마다 갈아 보며 머릿속으로 맞춰야 한다.
 	//출정 버튼 바로 위까지 쓴다. 전에는 그 위에 한 뼘을 더 비워 두었는데,
 	//그 높이가 그대로 칸 크기에서 깎인다.
-	const int storeBot = LoadoutFootY() + 68 * _2X;
+	const int storeBot = LoadoutFootY() + 32 * _2X;
 	//머리말 세 줄(출정 준비 / 점수 / 성 몇 칸) 아래부터가 가방 자리다.
 	//여기 쓰는 만큼 칸 크기에서 깎이므로 아끼 잡는다.
-	const int headTop = top - 40 * _2X;
+	const int headTop = top - 20 * _2X;
 
 	//---- 칸 크기를 먼저 정한다 ----
 	//
 	//가방과 보관함이 같은 값을 쓴다. 둘 다 들어가는 가장 큰 값이다.
 	//가로는 가방이 화면을 넘지 않아야 하고, 세로는 가방(gGridH 줄)과
 	//보관함(여섯 줄)에 성급 이름 줄까지 들어가야 한다.
-	{
-		//성급 이름 줄. 여기 쓰는 만큼 칸이 작아진다.
-		const int labelH = 24 * _2X;
-		const int roomH = headTop - storeBot - labelH;
-
-		//---- 테두리 그림 몫을 같이 센다 ----
-		//
-		//가방은 칸만 차지하는 것이 아니다. 테두리 그림이 칸 바깥으로도
-		//위아래 GRID_FRAME_PAD 만큼 더 나온다. 그 몫을 안 빼면 가방이 제
-		//자리보다 커져 밑단이 보관함 받침에 덮인다.
-		//
-		//칸 단위로 환산해 줄 수에 더한다. 64 짜리 칸에 여백 50 이 둘이면
-		//1.56 줄만큼이다.
-		const int rowsCell = (Max(1, gGridH) + LOADOUT_STORE_H) * GRID_FRAME_CELL
-		                   + 2 * GRID_FRAME_PAD;
-
-		gLoadoutCell = Min(LOADOUT_CELL_BASE,
-			Min((DX - 16 * _2X) / Max(1, gGridW),
-				roomH * GRID_FRAME_CELL / Max(1, rowsCell)));
-		gLoadoutCell = Max(8 * _2X, gLoadoutCell) & ~1;
-	}
+	gLoadoutCell=BattleMenuLayout::Cell(DX,_2X);
 
 	const int sCell = gLoadoutCell;
-	const int storeTop = storeBot + LOADOUT_STORE_H * sCell;
+	const int storeTop = storeBot + LoadoutStoreHeight();
+	gLoadoutStorePan=Max(0.0f,Min(gLoadoutStorePan,(float)(LOADOUT_STORE_H*sCell-LoadoutStoreHeight())));
 
 	//가방 자리의 밑변은 보관함 받침의 윗변이다. 더 내려 잡으면 테두리
 	//밑단이 받침에 덮인다.
-	LoadoutGridDraw(headTop, storeTop + 24 * _2X);
+	LoadoutGridDraw(headTop, storeTop + 12 * _2X);
 
-	//---- 보관함 띠의 받침 ----
-	//
-	//화면 바닥까지 진하게 깐다. 옅게 깔면 뒤의 로비 버튼이 비쳐 보여,
-	//출정 버튼 옆에 누를 수 없는 버튼이 하나 더 있는 것처럼 보인다.
-	MemRect(0, storeTop + 24 * _2X, DX, storeTop + 24 * _2X, 0x0A0A14);
 	SetAlpha(ALPHA_MAX);
 
 	//---- 좌우로 민다 ----
@@ -6228,7 +6488,8 @@ void LoadoutDraw(void)
 	const int scrollMax = Max(0, (gLoadoutCatCols - viewCols) * sCell);
 	{
 		const bool down = (isTouchKey == TOUCH_PRESS || isTouchKey == TOUCH_DRAG);
-		const bool inBand = (touchY <= storeTop && touchY > storeBot);
+		// Include the star header, scrollbar, and setup footer in the drag surface.
+		const bool inBand = (touchY <= storeTop + 24*_2X && touchY >= 0);
 		const int slack = 6 * _2X;
 
 		if (down == false) {
@@ -6255,6 +6516,7 @@ void LoadoutDraw(void)
 			gLoadoutGestureX = touchX;
 			gLoadoutGestureY = touchY;
 			gLoadoutScrollBase = gLoadoutScrollPx;
+			gLoadoutStorePanBase=gLoadoutStorePan;
 			gLoadoutScrollPrevX = touchX;
 			gLoadoutScrollVel = 0.0f;
 		}
@@ -6286,6 +6548,9 @@ void LoadoutDraw(void)
 				//판을 밀 때마다 아이템이 가방으로 올라간다.
 				gLoadoutDrag = -1;
 			}
+			if(gLoadoutGestureMode==2 && gLoadoutDrag<0)
+				gLoadoutStorePan=Max(0.0f,Min(gLoadoutStorePanBase-dy,
+					(float)(LOADOUT_STORE_H*sCell-LoadoutStoreHeight())));
 		}
 		else if (gLoadoutScrollVel != 0.0f) {
 			//---- 미끄러지는 중 ----
@@ -6319,8 +6584,9 @@ void LoadoutDraw(void)
 
 	//띠 전체를 터치로 덮는다. 아이템 칸은 뒤에 등록하므로 그쪽이 이긴다.
 	//이게 없으면 빈 칸을 짚어 미는 순간 "바깥" 으로 읽혀 창이 닫힌다.
-	SetRectPoint(0, storeTop + 24 * _2X, DX, storeTop + 24 * _2X,
+	SetRectPoint(0, storeTop + 12 * _2X, DX, storeTop + 12 * _2X,
 		TOUCH_FUNC_LOADOUT_BAND);
+	SetSectionClip(0,storeTop,DX,storeTop-storeBot,false);
 
 	//빈 판을 먼저 깐다. 아이템이 없는 자리도 칸으로 보여야 "여기까지가
 	//이 성급의 판" 이라는 것이 읽힌다.
@@ -6340,7 +6606,7 @@ void LoadoutDraw(void)
 				continue;
 
 			const int x = boardX + at * sCell - scrollPx;
-			const int y = storeBot + (r + 1) * sCell;
+			const int y = storeBot + (r + 1) * sCell-(int)gLoadoutStorePan;
 
 			if (x + sCell <= 0 || x >= DX)
 				continue;
@@ -6353,8 +6619,13 @@ void LoadoutDraw(void)
 
 	//---- 성급 이름 ----
 	//
-	//판 좌상단에 별로 붙인다. 숫자보다 별이 멀리서도 읽히고, 동료 쪽
-	//표기와도 같아진다.
+	//그 성급 묶음의 왼쪽 위에 별로 붙인다. 숫자보다 별이 멀리서도 읽히고,
+	//동료 쪽 표기와도 같아진다.
+	//
+	//전에는 Max(0, x) 로 그렸다. 묶음이 왼쪽으로 밀려 나가도 별만 화면
+	//왼쪽 끝에 붙어 서서, 지금 보고 있는 묶음의 성급인 양 남았다. 밀면
+	//제 묶음과 같이 나가야 한다.
+	UnSectionClip(false);
 	for (int k = 0; k < LOADOUT_STAR_CNT; k++) {
 		if (gLoadoutStarWide[k] <= 0)
 			continue;
@@ -6364,11 +6635,12 @@ void LoadoutDraw(void)
 		if (x + gLoadoutStarWide[k] * sCell <= 0 || x >= DX)
 			continue;
 
-		DrawStar(ICON_STAR, Max(0, x) + 2 * _2X, storeTop + 23 * _2X,
-			k + 1, k + 1, k + 1, LEFT, false, 0.62f);
+		DrawStar(ICON_STAR, x + 2 * _2X, storeTop + 11 * _2X,
+			k + 1, k + 1, k + 1, LEFT, false, 0.5f);
 	}
 
 	gLoadoutSlotCnt = 0;
+	SetSectionClip(0,storeTop,DX,storeTop-storeBot,false);
 
 	for (int i = 0; i < cnt && gLoadoutSlotCnt < LOADOUT_PICKMAX; i++) {
 		const int pwc = gLoadoutCatW[i];
@@ -6380,9 +6652,10 @@ void LoadoutDraw(void)
 		if (x + pwc * sCell <= 0 || x >= DX)
 			continue;
 
-		const int y = storeBot + ((int)gLoadoutCatRow[i] + phc) * sCell;
+		const int y = storeBot + ((int)gLoadoutCatRow[i] + phc) * sCell-(int)gLoadoutStorePan;
 		const int w = pwc * sCell;
 		const int h = phc * sCell;
+		if(y<=storeBot||y-h>=storeTop) continue;
 		const int inv = gLoadoutOwn[gLoadoutCatType[i]][gLoadoutCatDetail[i]];
 		const bool own = (inv >= 0);
 		const ITEM* it = own ? &robin.inven[inv] : NULL;
@@ -6428,7 +6701,10 @@ void LoadoutDraw(void)
 			SetColor(0x4A4A56);		//밝은 바탕 위의 그림자로
 		}
 
-		GridDrawShapedCard(&part, x, y, w, h, ALPHA_MAX, false);
+		//들고 있는 칸은 자취만 남긴다. 색을 빼는 것만으로는 또렷하기가
+		//손에 든 것과 같아 어느 쪽이 들린 것인지 흐릿했다.
+		GridDrawShapedCard(&part, x, y, w, h,
+			held ? LOADOUT_HELD_SLOT_ALPHA : ALPHA_MAX, false);
 
 		if (live == false || held) {
 			//원래 값으로 되돌린다. 흰색으로 돌려놓으면 그 뒤에 그리는
@@ -6449,9 +6725,11 @@ void LoadoutDraw(void)
 		gLoadoutSlotY[gLoadoutSlotCnt] = y;
 		gLoadoutSlotW[gLoadoutSlotCnt] = w;
 		gLoadoutSlotH[gLoadoutSlotCnt] = h;
-		SetRectPoint(x, y, w, h, TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
+		const int visibleTop=Min(y,storeTop),visibleBottom=Max(y-h,storeBot);
+		SetRectPoint(x,visibleTop,w,visibleTop-visibleBottom,TOUCH_FUNC_LOADOUT_ITEM + gLoadoutSlotCnt);
 		gLoadoutSlotCnt++;
 	}
+	UnSectionClip(false);
 
 	//---- 어디쯤인지 ----
 	//
@@ -6475,6 +6753,11 @@ void LoadoutDraw(void)
 
 	//---- 출정 ----
 	LoadoutGoButtonDraw();
+	BattleInventoryArrows(gLoadoutGridY);
+	if(LoadoutStoreHeight()<LOADOUT_STORE_H*sCell) {
+		DrawUiButton(DX-86,storeTop+23,38,21,"위",TOUCH_FUNC_WAREHOUSE_UP);
+		DrawUiButton(DX-44,storeTop+23,40,21,"아래",TOUCH_FUNC_WAREHOUSE_DOWN);
+	}
 
 	//---- 손에 든 것 ----
 	//
@@ -6680,6 +6963,77 @@ static void GridPlaceGear(void)
 	}
 }
 
+bool BattleMenuPreviewWarehouseGestureCheck(void) {
+    if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_BATTLE_MENU_REVIEW")) return false;
+    const int oldTouch=isTouchKey, oldX=touchX, oldY=touchY;
+    const int oldEndX=endTouchX, oldEndY=endTouchY, oldKey=systemKey;
+    const float oldScroll=gLoadoutScrollPx;
+    const int storeTop=LoadoutFootY()+32*_2X+LoadoutStoreHeight();
+    bool ok=true;
+    for(int band=0;band<3;++band) {
+        gLoadoutWasDown=false; gLoadoutScrollVel=0; gLoadoutScrollPx=100;
+        touchX=DX/2; touchY=band==0?storeTop+10*_2X:
+            band==1?4*_2X:LoadoutFootY()+18*_2X;
+        isTouchKey=TOUCH_PRESS; systemKey=0;
+        if(band==2) ExecTouchFunc(touchX,touchY);
+        ok=ok&&LoadoutOpen();
+        LoadoutDraw();
+        touchX-=96; isTouchKey=TOUCH_DRAG; LoadoutDraw();
+        endTouchX=touchX; endTouchY=touchY; isTouchKey=TOUCH_RELEASE;
+        LoadoutRelease();
+        ok=ok&&gLoadoutScrollPx>100&&LoadoutOpen()&&systemKey==0;
+        LoadoutDraw();
+    }
+    // A tap still queues admission; cancellation never starts a run.
+    for(int cancel=1;cancel>=0;--cancel) {
+        touchX=endTouchX=DX/2;
+        touchY=endTouchY=LoadoutFootY()+18*_2X;
+        isTouchKey=TOUCH_PRESS; ExecTouchFunc(touchX,touchY); LoadoutDraw();
+        isTouchKey=TOUCH_RELEASE; LoadoutRelease(cancel!=0);
+        ok=ok&&(cancel?(LoadoutOpen()&&systemKey==0):(!LoadoutOpen()&&systemKey==AVK_GOTOBATTLE));
+        if(!cancel) { systemKey=0; LoadoutSetOpen(true); }
+        LoadoutDraw();
+    }
+    isTouchKey=oldTouch; touchX=oldX; touchY=oldY;
+    endTouchX=oldEndX; endTouchY=oldEndY; systemKey=oldKey;
+    gLoadoutScrollPx=oldScroll; gLoadoutScrollVel=0; gLoadoutWasDown=false;
+    return ok;
+}
+
+bool BattleMenuPreviewScrollCheck(void) {
+	if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_BATTLE_MENU_REVIEW")) return false;
+	if(gGridW!=12||gGridH!=4||GridTestCellCnt(GridLayoutCastleStage())!=48) return false;
+	if(gLoadoutGridX+gLoadoutGridW/2!=DX/2) return false;
+	if(gLoadoutCell!=48||gGridCell!=48||gBattleInventoryPan!=0||LoadoutStoreHeight()!=4*48||LOADOUT_STORE_H!=4) return false;
+	const int bottom=LoadoutFootY()+32*_2X,top=bottom+LoadoutStoreHeight();
+	for(int i=0;i<touchIndex;++i) if(touchRect[i][4]>=TOUCH_FUNC_LOADOUT_ITEM&&touchRect[i][4]<TOUCH_FUNC_LOADOUT_ITEM+LOADOUT_PICKMAX) {
+		if(touchRect[i][1]>top||touchRect[i][1]-touchRect[i][3]<bottom) return false;
+	}
+	return true;
+}
+bool BattleMenuPreviewDragCheck(void) {
+	if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_BATTLE_MENU_REVIEW")) return false;
+    CannonGrantEnsure();
+    bool owned[CASTLE_STAGE_CNT] = {};
+    for (int i=0;i<TOTALINVENTORY;++i)
+        if(robin.inven[i].type==ITEM_CANNON && robin.inven[i].count>0 &&
+            robin.inven[i].detail<CASTLE_STAGE_CNT) owned[robin.inven[i].detail]=true;
+    for(int c=0;c<CASTLE_STAGE_CNT;++c) if(!owned[c]) return false;
+	LoadoutClear();
+	const int cell=BattleMenuLayout::Cell(DX,_2X);
+	for(int i=0;i<TOTALINVENTORY;++i) {
+		if(robin.inven[i].type==EMPTY||robin.inven[i].count<=0) continue;
+		if(LoadoutCost(&robin.inven[i])>LoadoutPoint()) continue;
+		GridPart part; GridGearPart(&robin.inven[i],&part);
+		if(part.w>gGridW||part.h>gGridH) continue;
+		LoadoutPickStart(i);
+		touchX=gLoadoutGridX+part.w*cell/2;
+		touchY=gLoadoutGridY-gLoadoutGridH+part.h*cell/2;
+		LoadoutRelease();
+		if(LoadoutFind(i)>=0&&LoadoutUsed()>0) return true;
+	}
+	return false;
+}
 void GridTestDraw(void)
 {
 	char str[96];
@@ -6693,7 +7047,13 @@ void GridTestDraw(void)
 		return;
 	}
 
+	if(gGridDragOn) {
+		if(touchX<20) gBattleInventoryPan-=4;
+		else if(touchX>DX-20) gBattleInventoryPan+=4;
+	}
 	GridTestLayout();
+	// Draw only the grid, item cards and controls over the existing scenery.
+	SetAlpha(ALPHA_MAX);
 
 	//---- 판이 열렸으면 장착 장비부터 넣는다 ----
 	//
@@ -6763,7 +7123,7 @@ void GridTestDraw(void)
 	//그림 안의 칸 간격과 바깥 여백은 GridFrameMetrics.inc 가 들고 있다.
 	//그 파일도 같은 도구가 내므로 그림을 다시 뽑으면 같이 바뀐다.
 	{
-		const int castle = GridCastleStage();
+		const int castle = GridLayoutCastleStage();
 		const int img = GRID_FRAME_FIRST_IMG + castle;
 
 		if (!sprite[img]) LoadImg(img);
@@ -6825,12 +7185,16 @@ void GridTestDraw(void)
 
 		GridDrawShapedCard(p, x, y, w, h, ALPHA_MAX, false);
 
-		//검은 쿨타임을 덮어 그린다. 가방 안에서 치는 것은 검뿐이다.
-		if (p->type == ITEM_SWORD) {
+		//가방 안에서 스스로 치는 것 - 검과 대포에 쿨타임을 덮어 그린다.
+		if (p->type == ITEM_SWORD || p->type == ITEM_CANNON) {
 			float charge = 0.0f;
 			int flash = 0;
 
-			if (StageRtSwordCharge(i, &charge, &flash)) {
+			const bool ticking = (p->type == ITEM_CANNON)
+				? StageArtilleryCharge(i, &charge, &flash)
+				: StageRtSwordCharge(i, &charge, &flash);
+
+			if (ticking) {
 				for (int row = 0; row < p->h; ++row)
 					for (int col = 0; col < p->w; ++col) {
 						if (!GridPartCell(p, col, row)) continue;
@@ -6897,7 +7261,7 @@ void GridTestDraw(void)
 	}
 
 	//---- 싸우는 동안은 아래를 내린다 ----
-	StageUiSlideStep();
+	// Layout advances the shared slide once before both world and UI rendering.
 
 	//---- 적의 가방 ----
 	//
@@ -6929,123 +7293,63 @@ void GridTestDraw(void)
 		//선로와 성 아랫도리까지 통째로 덮었다. 카드마다 제 테두리와
 		//바탕이 있으므로 판 없이도 읽힌다.
 
-		for (i = 0; i < GRIDTEST_OFFERCNT; i++) {
-			const OfferCard* c = &gOffer[i];
+		//---- 첫 판에도 살 것이 있어야 한다 ----
+		//
+		//전에는 몬스터를 한 마리 눕혀야 칸이 찼다. 그 전까지는 한 번도
+		//안 뽑은 칸을 그대로 그려서, 표의 0 번(롱소드)이 다섯 칸에
+		//똑같이 섰다. 판이 서면 여기서 한 번 채운다.
+		if (gOfferFilled == false)
+			GridOfferFillOnce();
 
-			GridOfferRect(i, &x, &y, &w, &h);
-
-			//---- 잠긴 칸 ----
-			//
-			//아직 아무도 안 눕혔다. 무엇이 나올 자리인지만 보여 준다.
-			//
-			//다만 그 자리를 보관함이 쓰고 있으면 그리지 않는다. 자물쇠는
-			//누를 수 없는 장식이고 보관함은 집어 옮기는 곳이라, 둘이
-			//겹치면 쓸 수 있는 쪽이 못 쓰는 쪽에 덮인다.
-			if (gOfferOn == false && GridStoreVisible() == false) {
-				SetAlpha(12);
-				MemRect(x, y, w, h, 0x101020);
-				SetAlpha(ALPHA_MAX);
-				UiFrameDraw(WIN_IMG, UIFRAME_X, UIFRAME_Y, UIFRAME_W, UIFRAME_H,
-				            UIFRAME_CAP, x, y, w, h, 0.34f);
-
-				//"잠김" 이라고 쓰던 자리다. 자물쇠와 쇠사슬이 글자보다
-				//멀리서도 읽힌다 - 무엇이 잠겼는지는 자리로 이미 안다.
-				UiPieceFit(SLOT_IMG, UICHAIN_X, UICHAIN_Y, UICHAIN_W, UICHAIN_H,
-				           x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 22);
-				UiPieceFit(SLOT_IMG, UILOCK_X, UILOCK_Y, UILOCK_W, UILOCK_H,
-				           x + w / 2 - 11 * _2X, y - h / 2 + 13 * _2X,
-				           22 * _2X, 26 * _2X, 0);
-
-				GridShopPriceStrip(i, -1, false);
-				continue;
-			}
-
-			//---- 돌아가는 칸 ----
-			//
-			//멈출 때까지 장비 그림이 빠르게 바뀐다. 멈춘 뒤에야 누를 수 있다.
-			if (gOfferSpin[i] > 0) {
-				const GridPart* f = &kShopPart[gOfferFace[i]];
-
-				gOfferSpin[i]--;
-				if (gOfferSpin[i] % STAGE_ROULETTE_TICK == 0)
-					gOfferFace[i] = Random(GRIDTEST_SHOPCNT);
-
-				SetAlpha(24);
-				MemRect(x, y, w, h, 0x2A2A44);
-				SetAlpha(ALPHA_MAX);
-				UiFrameDraw(WIN_IMG, UIFRAME_X, UIFRAME_Y, UIFRAME_W, UIFRAME_H,
-				            UIFRAME_CAP, x, y, w, h, 0.34f);
-
-                DrawIcon(GetItemIcon(f->type,f->detail,f->grade),
-                    x+w/2-ITEMICONSIZE/2,y-2*_2X,1.0f,false,false,false,true);
-
-				GridShopPriceStrip(i, -1, false);
-				continue;
-			}
-
-			//---- 동료 / 몬스터 ----
-			//
-			//아이콘이 없으므로 그 몸을 작게 세운다. 누가 오는지는 얼굴로
-			//알아봐야 한다.
-			if (c->kind != OFFER_PART) {
-				const bool afford = !StageRtCrewFull() && (gStageGold >= GridShopPrice(c->price));
-				const int type = c->crewType;
-				const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
-				const int idle = crewPos[type * 5]
-					+ frame / 8 % Max(1, (int)crewPos[type * 5 + 1]);
-
-				SetAlpha(afford ? 30 : 14);
-				MemRect(x, y, w, h, 0x22223C);
-				SetAlpha(ALPHA_MAX);
-				MemRectFrame(x, y, w, h,
-					c->kind == OFFER_CREW ? 0x66CCFF : 0xFF8844);
-
-				SetSectionClip(x+3*_2X,y-3*_2X,w-6*_2X,h-25*_2X,false);
-				DrawCmfDetailShadow(cmf, idle, x + w / 2, y-h+24*_2X, RIGHT,
-					enemyIconZoom[type] * 0.6f);
-				UnSectionClip(false);
-
-				SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-				GridOfferLabel(textId[TEXT_MONSTERNAME_START + type],
-					x, w, y - h + 15 * _2X, 0.45f);
-				GridOfferLabel(c->kind == OFFER_CREW ? "동료" : "몬스터",
-					x, w, y - h + 7 * _2X, 0.4f);
-				GridShopPriceStrip(i, GridShopPrice(c->price), afford);
-
-				SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
-				continue;
-			}
-
-			GridPart shown = GridOfferPart(*c);
-			const GridPart* p = &shown;
-			const bool afford = (gStageGold >= GridShopPrice(p->price));
-
-			//성이 올려 준 등급으로 보여준다. 테두리 색이 곧 등급이다.
-			shown.grade = c->grade;
-
-			SetAlpha(afford ? 30 : 14);
-			MemRect(x, y, w, h, 0x22223C);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(x, y, w, h, kGradeColor[p->grade]);
-
-			//---- 칸은 아이콘으로 ----
-			//
-			//가방에 놓인 모습(실제 크기의 그림)은 집어 든 순간에 보여준다.
-			//고르는 동안에는 크기가 제각각인 그림보다 같은 크기의 아이콘이
-			//견주기 쉽다.
-            if(p->type==GRID_ITEM_CANNON)
-                DrawInventoryCannonThumbnail(p->detail,p->grade,x+6*_2X,y-2*_2X,w-12*_2X,h-18*_2X);
-            else DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
-                x+w/2-ITEMICONSIZE/2,y-2*_2X,1.0f,false,false,false,true);
-
-			SetFontColor(afford ? COLOR_WHITE : COLOR_GREY);
-			GridOfferLabel(p->name, x, w, y - h + 15 * _2X, 0.45f);
-			sprintf(str, "%s · %d×%d",p->type==GRID_ITEM_CANNON?"대포":c->part==GRID_SHOP_MISC?"기타":"장비",p->w,p->h);
-			GridOfferLabel(str, x, w, y - h + 7 * _2X, 0.4f);
-			GridShopPriceStrip(i, GridShopPrice(p->price), afford);
-
-			SetRectPoint(x, y, w, h, TOUCH_FUNC_GRIDTEST_OFFER + i);
-		}
+        for (i = 0; i < GRIDTEST_OFFERCNT; ++i) {
+            const OfferCard* c = &gOffer[i];
+            GridOfferRect(i, &x, &y, &w, &h);
+            const int px = x + (w - 96) / 2;
+            const int platformY = y - 32;
+            const int img = MAP_TILE_IMG + 17;
+            if (!sprite[img]) LoadImg(img);
+            if (sprite[img]) DrawImage(96,64,64,96,px,platformY,
+                false,false,false,false,ALPHA_MAX,1.0f,sprite[img],img);
+            const bool spinning = gOfferSpin[i] > 0;
+            if (spinning) {
+                --gOfferSpin[i];
+                if (gOfferSpin[i] % STAGE_ROULETTE_TICK == 0)
+                    gOfferFace[i] = Random(GRIDTEST_SHOPCNT);
+            }
+            const int grade = Min(TOTALGRADE-1,Max(0,spinning ?
+                kShopPart[gOfferFace[i]].grade : c->grade));
+            const int color = kGradeColor[grade];
+            // Frame dimensions are literal screen pixels, independent of UI scale.
+            MemRect(px,platformY,96,2,color);
+            MemRect(px,platformY-44,96,2,color);
+            MemRect(px,platformY,2,46,color);
+            MemRect(px+94,platformY,2,46,color);
+            ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,
+                x+w/2-24,platformY-16,SHADOW_IMG,1.0f);
+            bool afford = false;
+            int price = -1;
+            if (!spinning && c->kind != OFFER_PART) {
+                const int type = c->crewType;
+                const int cmf = enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
+                const int idle = crewPos[type*5]+frame/8%Max(1,(int)crewPos[type*5+1]);
+                SetSectionClip(px,y,96,70,false);
+                DrawCmfDetail(cmf,idle,x+w/2,platformY-30,RIGHT,
+                    enemyIconZoom[type]*0.6f,0,false);
+                UnSectionClip(false);
+                price = GridShopPrice(c->price);
+                afford = !StageRtCrewFull() && gStageGold >= price;
+            } else {
+                GridPart shown = spinning ? kShopPart[gOfferFace[i]] : GridOfferPart(*c);
+                if (!spinning) shown.grade = c->grade;
+                GridTestDrawCard(&shown,px+8,y,80,64,ALPHA_MAX,false);
+                if (!spinning) {
+                    price = GridShopPrice(shown.price);
+                    afford = gStageGold >= price;
+                }
+            }
+            GridShopPriceStrip(i,price,afford);
+            if (!spinning) SetRectPoint(x,y,w,h,TOUCH_FUNC_GRIDTEST_OFFER+i);
+        }
 
 		//---- 시험용 리프레시 ----
 		//
@@ -7156,12 +7460,13 @@ void GridTestDraw(void)
 	}
 
 	//칸 수도 표에서 읽는다.
-	const int totalCell = GridTestCellCnt(GridCastleStage());
+	const int totalCell = GridTestCellCnt(GridLayoutCastleStage());
 
 	//쓴 칸과 골드는 아래 상점 줄에서 본다. 여기 또 적으면 같은 수가
 	//화면에 둘이 되어 어느 쪽이 맞는지 헷갈린다.
 	(void)usedCell;
 	(void)totalCell;
+	BattleInventoryArrows(GridTopY());
 
 	//---- 한 일 ----
 	if (gGridMsgFrame > 0) {
@@ -7780,7 +8085,7 @@ static int LobbyCastleGroundY(void)
 	const float s = LobbyCamScale(w, h);
 	const float rectBottom = LobbyViewCY() + gLobbyCamY * s - h * s;
 
-	return (int)(rectBottom + CastlePartsWheelSink() * s);
+	return (int)(rectBottom + CastlePartsWheelSink() * s + gLoadoutWorldLift);
 }
 
 //배경에 넘길 카메라. 근경(선로) 기준의 밀기와 배율이다.
@@ -7798,6 +8103,7 @@ static StageBg::Camera LobbyCamera(void)
 
 	cam.panX = (DX / 2.0f - gLobbyCamX * s) - StageBg::kCastleLeft;
 	cam.zoom = s / CastlePartsRoomScale();
+	cam.menuLift=gLoadoutWorldLift;
 
 	return cam;
 }
@@ -7813,7 +8119,7 @@ static void LobbyCastleDraw(void)
 	// Wheel centers meet the hull's lower edge; place their contact point on
 	// the unchanged rail, with the same authored offset at every zoom.
 	const float groundOffset = CastlePartsGroundOffset(LobbyCastleLevel());
-	const int top = (int)(LobbyViewCY() + gLobbyCamY * s -
+	const int top = (int)(LobbyViewCY() + gLobbyCamY * s + gLoadoutWorldLift -
 		(groundOffset >= 0.0f ? groundOffset * s : StageBg::kCastleDropPx) -
 		StageBg::kCastleGroundingPx);
 	const float bottom = top - h * s;
@@ -7889,10 +8195,16 @@ static void LobbyBottomNavDraw(void)
 	//함정이 생긴다.
 	if (LoadoutOpen())
 		return;
-	// The castle modal owns this area and its purchase/upgrade buttons.
-	// Do not redraw the main tabs or register their hit areas above it.
-	for (int i = 0; i < popUpCnt; ++i)
-		if (popUp[i].type == POPUPTYPE_CASTLEMENU) return;
+	//---- 창이 떠 있으면 쉰다 ----
+	//
+	//이 줄은 팝업보다 나중에 그려진다. 그려 두면 창의 아래쪽을 덮어
+	//메뉴가 쓸 수 있는 높이가 그만큼 줄고, 터치영역까지 여기서 마지막에
+	//잡으므로 창 위를 눌러도 로비 탭이 먼저 먹는다.
+	//
+	//전에는 성 메뉴(POPUPTYPE_CASTLEMENU) 하나만 그렇게 비켰다. 다른 창도
+	//사정이 같다 - 창이 하나라도 떠 있으면 통째로 비킨다.
+	if (popUpCnt > 0)
+		return;
 
 	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
 		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
@@ -8363,6 +8675,7 @@ void LobbyDraw(void)
 	char str[96];
 	ResetRectPoint();
 	LobbyCastlePrepare();
+	LoadoutWorldStep();
 
 	//로비도 전투와 같은 선로 위다. 성은 멈춰 서 있는 건물이 아니라
 	//늘 달리는 열차이고, 바퀴도 로비에서 돈다. 배경이 다르면 로비에서
@@ -8393,8 +8706,7 @@ void LobbyDraw(void)
 	                 Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1)), false);
 
 #if LOBBY_CAM_DEBUG_BUTTONS
-	LobbyZoomButtonsDraw();
-	LobbyCastleArrowsDraw();
+	if(!LoadoutOpen()) { LobbyZoomButtonsDraw(); LobbyCastleArrowsDraw(); }
 #endif
 
 	// 기존 플레이 화면의 상단 GNB와 자원 바를 그대로 쓴다.
@@ -8402,7 +8714,9 @@ void LobbyDraw(void)
 	//출정 준비가 떠 있는 동안은 쉰다. 그 창이 화면 꼭대기까지 쓰므로 바가
 	//머리말 위로 올라온다. 전투로 넘어가는 중이라 골드나 보석을 쓸 일도
 	//없고, 이 바들은 LoadoutDraw 뒤에 그려져 덮어서는 가릴 수 없다.
-	if (LoadoutOpen() == false) {
+	//창이 떠 있으면 여기서 안 그린다. 창 위에 남아야 하므로 팝업을 그린
+	//뒤에 한 번 더 그리는 쪽(이 함수 끝)이 맡는다.
+	if (popUpCnt == 0) {
 		LobbyResourceBarsDraw(DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 	}
@@ -8410,7 +8724,7 @@ void LobbyDraw(void)
 	//======================================================================
 	// 누적 이동거리와 현재 지역
 	//======================================================================
-	{
+	if(!LoadoutOpen()) {
 		const int panelTop = DY - GNBHEIGHT - 4 * _2X;
 
 		// Existing stage-label ornament keeps both lines in the world-map style.
@@ -8441,7 +8755,7 @@ void LobbyDraw(void)
 	//하단 메뉴에도 장비 탭이 따로 있다.
 
 	// Keep the castle base above the footer, including its characters.
-	{
+	if(!LoadoutOpen()) {
 		const float width = Min((float)DX * .50f, 164.0f * _2X);
 		const float height = width * 131.0f / 512.0f;
 		const int x = (int)((DX - width) / 2);
@@ -8535,8 +8849,18 @@ void LobbyDraw(void)
 	for (int i = 0; i < popUpCnt; i++)
 		DrawPopUp(i);
 
-	// Always keep the primary navigation above menu windows and register its
-	// hit areas last, so every lobby screen can switch sections directly.
+	//---- 상단 자원 칸은 창 위에 남는다 ----
+	//
+	//창은 화면을 덮되 맨 윗줄만 비워 둔다. 골드와 에너지가 창에 가리면
+	//무엇을 살 수 있는지 보면서 고를 수가 없다.
+	//
+	//위에서 한 번 그리고 여기서 또 그리지 않는다. 창이 떠 있을 때만
+	//이쪽이 그린다 - 두 번 그리면 눌림 연출이 두 겹으로 겹친다.
+	if (popUpCnt > 0 && LoadoutOpen() == false) {
+		LobbyResourceBarsDraw(DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+		GNBDraw(0, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+	}
+
 	LobbyBottomNavDraw();
 
 	frame++;

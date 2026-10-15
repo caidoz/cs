@@ -1,4 +1,4 @@
-// Explicit isolated UI review; enabled only with CS_CASTLE_REVIEW_PATH.
+﻿// Explicit isolated UI review; enabled only with CS_CASTLE_REVIEW_PATH.
 static void CastleReviewTrace(const char* message) {
     const char* path=getenv("CS_CASTLE_REVIEW_PATH");
     if(!path) return;
@@ -17,6 +17,77 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_BATTLE_MENU_REVIEW")) {
+        static int menuTick=0; ++menuTick;
+        static int shopGround=0;
+        if(menuTick==1) {
+            robin.castle=0; gMobileCastleVisual=0;
+            robin.castleProgress.version=1; robin.castleProgress.owned=1023u;
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;
+            GotoLobby(); while(popUpCnt>0) ClosePopUp();
+        }
+        if(menuTick==30) LoadoutSetOpen(true);
+        if(menuTick==45) {
+            const auto heart = robin.heart;
+            const int handle = drawHandle;
+            CastleReviewClick(TOUCH_FUNC_LOADOUT_CLOSE);
+            systemKey = AVK_CLR; PlayKey(PLAYER);
+            CastleReviewTrace(LoadoutOpen() && BattleEntryLocked() &&
+                drawHandle==handle && robin.heart==heart ?
+                "PASS preparation outside tap and back stay in run":"FAIL preparation exit guard");
+        }
+        if(menuTick==180) {
+            const auto heart = robin.heart;
+            BattleAbandonCommand();
+            CastleReviewTrace(IsStageRealtime() && BattleEntryLocked() && robin.heart==heart ?
+                "PASS precombat abandon blocked":"FAIL precombat abandon guard");
+        }
+        if(menuTick==60) CastleReviewTrace(BattleMenuPreviewDragCheck()?"PASS warehouse drag into grid":"FAIL warehouse drag into grid");
+        if(menuTick==100) CastleReviewTrace(BattleMenuPreviewWarehouseGestureCheck()?
+            "PASS star footer button drag tap and cancel":"FAIL warehouse gesture regions");
+        if(menuTick==110||menuTick==600) {
+            LoadoutSetOpen(false); GotoPlay(); StageRtBegin(); StageRtSetAuto(false);
+            battleStartFrame=0;
+        }
+        if(menuTick==250) GridTestSkipOffer();
+        if(menuTick==210) {
+            shopGround=GetStageSceneGroundY();
+            CastleReviewTrace(GridTestOfferOpen()&&!StageRtAutoOn()?"PASS initial shop before battle":"FAIL initial shop before battle");
+        }
+        if(menuTick==320) CastleReviewTrace(StageRtAutoOn()&&!GridTestOfferOpen()&&GetStageSceneGroundY()<shopGround?
+            "PASS world descends with full battle grid":"FAIL battle layout transition");
+        if(menuTick>=250&&menuTick<360) {
+            ao[PLAYER].hp=ao[PLAYER].maxhp=1000000000; ao[PLAYER].dead=false;
+            for(int i=ENEMY;i<NEUTRAL;++i) if(ao[i].active) { ao[i].hp=ao[i].maxhp=1000000000; ao[i].dead=false; }
+        }
+        if(menuTick==360) GridTestRefresh();
+        if(menuTick==335) StageRtSetAuto(false);
+        if(menuTick==345) CastleReviewTrace(GetStageSceneGroundY()<shopGround&&!GridTestOfferOpen()?
+            "PASS pause retains compact combat menu":"FAIL pause menu");
+        if(menuTick==350) StageRtSetAuto(true);
+        if(menuTick==460) CastleReviewTrace(GridTestOfferOpen()&&GetStageSceneGroundY()==shopGround?
+            "PASS world returns for shopping":"FAIL return shop layout");
+        if(menuTick==500) {
+            robin.castle=9; gMobileCastleVisual=9;
+            GotoLobby(); while(popUpCnt>0) ClosePopUp(); LoadoutSetOpen(true);
+        }
+        if(menuTick==585) CastleReviewTrace(BattleMenuPreviewScrollCheck()?
+            "PASS centred 48px grid and four warehouse rows":"FAIL 48px inventory scrolling");
+        const char* shot=menuTick==70?"01-warehouse-4rows.png":menuTick==210?"02-first-shop.png":
+            menuTick==320?"03-battle-grid.png":menuTick==460?"04-return-shop.png":
+            menuTick==570?"05-castle10-warehouse.png":menuTick==700?"06-castle10-shop.png":nullptr;
+        if(shot) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+            CastleReviewTrace(ok?"PASS battle menu capture":"FAIL battle menu capture");
+        },std::string(path)+shot);
+        if(menuTick==730) {
+            GridTestSkipOffer();
+            CastleReviewTrace(!BattleEntryLocked()?"PASS exit unlocks after combat starts":"FAIL combat exit lock");
+            BattleAbandonCommand();
+            CastleReviewTrace(!IsStageRealtime()?"PASS explicit combat abandon":"FAIL explicit combat abandon");
+            CastleReviewTrace("PASS battle menu flow review");
+        }
+        return;
+    }
     if (getenv("CS_CASTLE_LAYOUT_REVIEW")) {
         static int layoutTick=0; ++layoutTick;
         if(layoutTick==1) {

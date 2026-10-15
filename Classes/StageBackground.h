@@ -246,10 +246,11 @@ struct Camera {
 	float panX;     // 근경이 옆으로 밀린 화면 거리
 	int   groundY;  // 근경이 딛는 줄
 	float zoom;     // 근경 배율. 1 이면 붙박이
+	float menuLift; // Menu transition moves foreground only, not distant scenery.
 };
 
 inline Camera FixedCam(int groundY) {
-	Camera c = { 0.0f, groundY, 1.0f };
+	Camera c = { 0.0f, groundY, 1.0f, 0.0f };
 	return c;
 }
 
@@ -272,7 +273,8 @@ inline float LayerScale(const Camera& cam, const Depth& d) {
 	return Scale() * (1.0f + (cam.zoom - 1.0f) * d.zoom);
 }
 inline int LayerGround(const Camera& cam, const Depth& d) {
-	return (int)(GroundRef() + ((float)cam.groundY - GroundRef()) * d.pan);
+	return (int)(GroundRef() + ((float)cam.groundY - GroundRef()-cam.menuLift) * d.pan
+		+(d.pan>=kDepthMid.pan?cam.menuLift:0.0f));
 }
 
 //지금까지 흘려보낸 선로 거리(화면 픽셀). 바퀴가 이만큼 굴러야 한다.
@@ -399,7 +401,9 @@ inline void Draw(const Camera& cam, int arenaBottom) {
 
 //카메라를 안 쓰는 화면(전투)용.
 inline void Draw(int groundY, int arenaBottom) {
-	Draw(FixedCam(groundY), arenaBottom);
+	Camera cam=FixedCam(groundY);
+	cam.menuLift=GetStageWorldLift();
+	Draw(cam, arenaBottom);
 }
 
 } // namespace StageBg

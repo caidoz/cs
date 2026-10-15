@@ -1,4 +1,4 @@
-// Included by Func_Battle.cpp: combat adapter and renderer for the pure model.
+﻿// Included by Func_Battle.cpp: combat adapter and renderer for the pure model.
 namespace {
 CastleArtillery::State stageArtillery;
 int artilleryGeneration[TOTALOBJECT]={0};
@@ -52,9 +52,25 @@ void ArtilleryBeam(const CastleArtillery::Shot& s,int animation) {
 void StageArtilleryNotifySpawn(int obj) {
     if(obj>=0 && obj<TOTALOBJECT) ++artilleryGeneration[obj];
 }
-void StageArtilleryReset(void) {
-    stageArtillery.Reset(gMobileCastleVisual);
+void StageArtilleryReset(int castle) {
+    // castle 이 음수면 가방에 실린 포를 본다. 없으면 성 그림을 따른다 -
+    // 판 밖에서 불릴 때 기준이 하나는 있어야 한다.
+    if(castle<0) { int c=gMobileCastleVisual; StageBagCannon(&c,NULL,NULL); castle=c; }
+    stageArtillery.Reset(castle);
     artilleryVolleyTarget=-1;
+}
+
+//---- 가방 칸에 그릴 쿨타임 ----
+//
+// 그 칸이 지금 쏘는 포일 때만 참이다. charge 는 0~1, flash 는 다 찼을 때의
+// 번쩍임이다. 검(StageRtSwordCharge)과 같은 모양으로 돌려준다.
+bool StageArtilleryCharge(int slot,float* charge,int* flash) {
+    int bagSlot=-1;
+    if(!IsStageRealtime() || !StageBagCannon(NULL,NULL,&bagSlot) || bagSlot!=slot) return false;
+    if(charge) *charge=stageArtillery.charge
+        /(float)Max(1,(int)CastleArtillery::State::ChargeFrames);
+    if(flash) *flash=stageArtillery.recoil;
+    return true;
 }
 bool StageArtilleryVisual(float* charge,float* recoil,int* burst) {
     *charge=0; *recoil=0; *burst=0;
@@ -65,10 +81,15 @@ bool StageArtilleryVisual(float* charge,float* recoil,int* burst) {
     return true;
 }
 void StageArtilleryStep(bool running,int foe) {
-    if(stageArtillery.grade!=CastleArtillery::ClampGrade(gMobileCastleVisual)) StageArtilleryReset();
+    // 쏘는 주인은 가방에 실린 포다. 성에 붙어 혼자 쏘던 것을 옮겼다.
+    // 안 싣고 왔으면 아무 일도 없다.
+    int bagCastle=0,bagLevel=0;
+    if(!StageBagCannon(&bagCastle,&bagLevel,NULL)) { StageArtilleryReset(); return; }
+    if(stageArtillery.grade!=CastleArtillery::ClampGrade(bagCastle)) StageArtilleryReset(bagCastle);
     if(!running) return;
     stageArtillery.cooldownOverride=CastleCannonCooldown(stageArtillery.grade);
-    stageArtillery.upgrade=CastleVisualPartLevel(stageArtillery.grade,3);
+    // 단계는 성 그림이 아니라 실어 온 그 포의 것이다.
+    stageArtillery.upgrade=bagLevel;
     const int grade=stageArtillery.grade;
     CastleArtillery::Point muzzle={0,0};
     if(!CastlePartsCannonMuzzle(grade+1,&muzzle.x,&muzzle.y)) return;
@@ -92,6 +113,7 @@ void StageArtilleryStep(bool running,int foe) {
 }
 void StageArtilleryDraw(void) {
     if(!IsStageRealtime()) return;
+    if(!StageBagCannon(NULL,NULL,NULL)) return;   // 안 싣고 왔으면 그릴 것도 없다
     if(!sprite[CASTLE_ARTILLERY_IMG]) LoadImg(CASTLE_ARTILLERY_IMG);
     if(!texture[CASTLE_ARTILLERY_IMG]) LoadTexture(CASTLE_ARTILLERY_IMG);
     if(!sprite[CASTLE_ARTILLERY_IMG] || !texture[CASTLE_ARTILLERY_IMG]) return;
@@ -149,24 +171,17 @@ void StageArtilleryDraw(void) {
                 p.size*_2X*shotScale*.7f,angle,12-trail*3);
         ArtillerySprite(grade,animation,s.position.x,s.position.y,p.size*_2X*shotScale,angle);
     }
-    // Keep the charge gauge below the barrel and above the castle HP stripe.
-    const int w=80*_2X,h=4*_2X;
-    const int x=Max(4*_2X,Min(DX-w-4*_2X,(int)mx-w));
-    const int y=Max(StageBg::GroundY()+22*_2X,(int)CastlePartsCannonBaseY(grade+1)-18*_2X);
-    SetAlpha(24); MemRect(x-3*_2X,y+14*_2X,w+6*_2X,25*_2X,COLOR_NAVY); SetAlpha(ALPHA_MAX);
-    MemRect(x,y,w,h,0x182338);
-    const float progress=stageArtillery.Progress();
-    MemRect(x+_2X,y-_2X,(int)((w-2*_2X)*progress),h-2*_2X,p.color);
-    MemRectFrame(x,y,w,h,0xD2BC85);
-    char label[96];
-    if(stageArtillery.pending||stageArtillery.recoil) sprintf(label,"%s · %d연타",p.name,p.hits);
-    else if(stageArtillery.charge) sprintf(label,"%s · 충전",p.name);
-    else sprintf(label,"%s %.1fs",p.name,Max(0,CastleCannonCooldown(grade)-stageArtillery.cooldown)/(float)FPS);
-    SetFontColor(COLOR_WHITE);
-    CenterTextStrSolid(label,x+w/2,y+12*_2X,
-        Min(0.62f,w/Max(1.0f,StringWidth(label,1.0f))));
+    // 충전 게이지와 "투석포 4.5s" 줄은 걷어냈다.
+    //
+    // 대포는 이제 가방에 실린 물건이고, 쿨타임은 그 칸 위에 그린다
+    // (Func_Draw.cpp 의 가방 그리기). 같은 것을 화면 아래에 또 적으면
+    // 한 가지를 두 자리에서 읽게 된다.
 }
 
+//---- 대포 점검용 ----
+//
+//환경변수 두 개가 다 켜져 있을 때만 돈다. 성 파츠와 발사를 눈으로
+//맞춰 보는 자리라 평소에는 아무 일도 안 한다.
 void StageArtilleryPreviewStep(bool prime) {
     if(!getenv("CS_CANNON_PARTS_REVIEW") || !getenv("CS_CANNON_SHOT_REVIEW")) return;
     if(prime) { stageArtillery.charge=1; stageArtillery.pending=0; }

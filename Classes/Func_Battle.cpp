@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -1225,6 +1225,9 @@ void StageRtSetAuto(bool on)
 void StageRtDrawButton(void)
 {
 	if (!IsStageRealtime())
+		return;
+
+	if (CodexOverlayOpen() || StageMapOpen())
 		return;
 
 	if (attackSequence != ATTACKSEQUENCE_READY)

@@ -3948,8 +3948,8 @@ void OptionDraw(int x, int y, float zoom)
 		//확률 정보는 게임 안에서도 닿아야 한다. 게임산업법이 게임 밖(홈페이지,
 		//스토어 소개)과 게임 안 양쪽에 알리라고 하기 때문이다.
 		const bool battleOption = IsStageRealtime();
-		const char* footText[4] = { battleOption ? "전투 포기" : "고객센터", "이용약관", "개인정보처리방침", "확률정보" };
-		const int footTouch[4] = { battleOption ? TOUCH_FUNC_BATTLE_ABANDON : TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY, TOUCH_FUNC_OPTION_RATES };
+		const char* footText[4] = { battleOption && !BattleEntryLocked() ? "전투 포기" : "고객센터", "이용약관", "개인정보처리방침", "확률정보" };
+		const int footTouch[4] = { battleOption && !BattleEntryLocked() ? TOUCH_FUNC_BATTLE_ABANDON : TOUCH_FUNC_OPTION_HELP, TOUCH_FUNC_OPTION_POLICY, TOUCH_FUNC_OPTION_PRIVACY, TOUCH_FUNC_OPTION_RATES };
 		float gap = 8.0f * zoom;
 		float bh2 = footH * 0.68f;
 		float by2 = footY - (footH - bh2) / 2;
@@ -3983,7 +3983,7 @@ void OptionDraw(int x, int y, float zoom)
 
 void BattleAbandonCommand(void)
 {
-	if (!IsStageRealtime())
+	if (!IsStageRealtime() || BattleEntryLocked())
 		return;
 
 	ClosePopUp();

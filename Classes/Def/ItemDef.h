@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef _DEF_ITEM_H_
 #define _DEF_ITEM_H_
@@ -100,6 +100,22 @@ typedef enum _itemDef {
 	ITEM_BOX,
 	ITEM_CREW,
 	ITEM_SKILL,
+
+	//---- 대포 ----
+	//
+	//전에는 ITEM 이 아니라 격자 전용 표식(GRID_ITEM_CANNON = -100)이었다.
+	//ITEM.type 이 unsigned char 라 그 번호는 인벤토리에 담기지 않아서,
+	//가방에 놓여도 item.type 을 EMPTY 로 비워 두고 그림만 그렸다. 창고에
+	//못 들어간 까닭이다.
+	//
+	//맨 끝에 붙인다. 앞 번호가 하나도 안 밀리므로 옛 세이브가 그대로
+	//읽힌다(Core.h 의 ITEM 직렬화 주석과 같은 규칙).
+	//
+	//팩에 실리는 아이템 표(itemStartCnt · itemStar)는 늘리지 않는다.
+	//그 표를 읽는 자리마다 대포를 따로 갈라 둔다 - 표 길이를 늘리면
+	//DataList.h 와 content.pack 까지 맞춰야 하고, 어긋나면 조용히 표
+	//밖을 읽는다.
+	ITEM_CANNON,
 
 	TOTALITEMTYPE,
 

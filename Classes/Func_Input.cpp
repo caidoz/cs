@@ -616,6 +616,13 @@ void TalkKey(void)
 
 void PlayKey(int obj)
 {
+    // Preparing an admitted run must not return to the lobby before combat.
+    if (BattleEntryLocked() && (systemKey == AVK_GOTOPLAY ||
+        (systemKey == AVK_CLR && popUpCnt == 0))) {
+        systemKey = 0;
+        return;
+    }
+
 	int i;
 	OBJECT* pObj = &ao[obj];
 	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
@@ -3864,17 +3871,25 @@ void touchFunc(int func)
 		case TOUCH_FUNC_LOADOUT_BAND:
 			systemKey = 0;
 			return;
+		case TOUCH_FUNC_BATTLE_GRID_PREV:
+		case TOUCH_FUNC_BATTLE_GRID_NEXT:
+			BattleInventoryScroll(func==TOUCH_FUNC_BATTLE_GRID_NEXT?1:-1);
+			systemKey=0; return;
+		case TOUCH_FUNC_WAREHOUSE_UP:
+		case TOUCH_FUNC_WAREHOUSE_DOWN:
+			BattleWarehouseScroll(func==TOUCH_FUNC_WAREHOUSE_UP?1:-1);
+			systemKey=0; return;
 
 		case TOUCH_FUNC_LOADOUT_CLOSE:
-			LoadoutSetOpen(false);
+			// Full-screen modal hit target: consume outside taps without closing.
 			systemKey = 0;
 			return;
 
-		case TOUCH_FUNC_LOADOUT_GO:
-			//고르기를 끝냈다. 여기서부터는 예전 START 와 같은 길이다.
-			LoadoutSetOpen(false);
-			systemKey = AVK_GOTOBATTLE;
-			return;
+        case TOUCH_FUNC_LOADOUT_GO:
+            // Defer activation until release, so dragging the button scrolls.
+            LoadoutSetupPress();
+            systemKey=0;
+            return;
 
 		case TOUCH_FUNC_GOTOBATTLE:
 			//---- 출정 준비를 먼저 연다 ----
