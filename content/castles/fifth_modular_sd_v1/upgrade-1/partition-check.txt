@@ -1,0 +1,2 @@
+PASS exact exterior partition: 884149 visible pixels; 0 RGBA mismatches; no overlapping ownership.
+Room aperture 290,400,330,1030; all other exterior pixels unchanged.

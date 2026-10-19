@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>세 번째 화강암 요새 · 기본형과 업그레이드</title>
+<style>body{margin:24px;background:#182231;color:#eee;font:16px system-ui}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}figure{margin:0;background:#263448;padding:14px;border-radius:12px}img{width:100%;height:auto}a{color:#b9dcff}button{padding:10px 18px;margin:4px;cursor:pointer}h2{margin:4px 0}</style>
+<h1>세 번째 화강암 요새 · Lv.0~5</h1><p>왼쪽 사각 감시탑, 후퇴한 중앙 석벽, 경사진 버팀벽과 돌출 로켓 포대의 비대칭 구성입니다. 교차검 문양과 파란 지붕을 사용하며, 침실·무기 작업실·주방의 방 3개를 수용합니다.</p>
+<p><a href="castle-01-03-comparison.png">첫 세 성의 같은 폭·접지선 비교</a> · <a href="../../../output/third-upgrades-review/stage-0-closed.png">실제 게임 기본형</a> · <a href="../../../output/third-upgrades-review/stage-5-open.png">실제 게임 내부</a> · <a href="../../../output/third-upgrades-review/castle-3-companion-deck.png">동료 전투 발판</a></p>
+<button onclick="show(false)">외관</button><button onclick="show(true)">세 방 내부</button><main id="stages"></main>
+<script>function show(opened){document.getElementById('stages').innerHTML=Array.from({length:6},(_,i)=>{const d=i?'upgrade-'+i+'/':'';const image=d+'reassembled-game-'+(opened?'open':'closed')+'.png';return `<figure><h2>Lv.${i}</h2><a href="${image}"><img src="${image}" alt="세 번째 성 ${i}단계"></a><a href="${d}parts.json">파츠 좌표</a> · <a href="${d}partition-check.txt">재조립 검증</a></figure>`}).join('')}show(false)</script></html>

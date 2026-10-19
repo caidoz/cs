@@ -1,0 +1,16 @@
+Verified 2026-10-18, Windows Debug Win32.
+PASS MSBuild cs.fifth-modular-preview.exe (existing project warnings remain).
+PASS all six stages: saved exterior PNG reassembly has zero visible RGBA mismatches.
+PASS retained legacy resources: 54 files registered with image IDs and names.
+PASS fifth castle: five rooms, six stages, three mixed assemblies, 18 fresh closed/open game captures.
+PASS loaded interior texture bounds (330x1030), exterior source bounds, viewport fit and rail contact.
+PASS hold/release room reveal, closed resident suppression and per-floor resident clipping checks.
+PASS rolling wheels and actual six deployed companion positions on front deck.
+PASS fourth castle regression: six stages, three mixed assemblies, room reveal, wheel rotation and deployed companions.
+PASS third castle regression: six stages, three mixed assemblies, room reveal, wheel rotation and deployed companions.
+PASS second castle regression: six stages, three mixed assemblies, room reveal, wheel rotation and deployed companions.
+PASS first castle regression: closed/interior states, hold/release reveal, six deck anchors and deployed positions; five captures.
+PASS git diff --check (pre-existing line ending conversion warnings only).
+Visually inspected fresh fifth stage-0 closed/open, stage-5 open, mixed-1 closed and deployed companion game captures.
+Inspected six-stage exterior and interior overview, plus same-width castles 01-05 comparison.
+Profiles isolated through CS_CASTLE_REVIEW_PATH; user's real save was not used.

@@ -1,0 +1,24 @@
+{
+  "file": "progression-board.png",
+  "readablePng": true,
+  "dimensions": [
+    2172,
+    724
+  ],
+  "designTargetHeightsStrictlyIncreasing": true,
+  "designTargetWidthsStrictlyIncreasing": true,
+  "architecturalTypes": [
+    "목조 성채",
+    "직각형 보루",
+    "각진 첨탑",
+    "둥근 돔",
+    "비대칭 금속 요새",
+    "현대형 계단 피라미드",
+    "고딕 성채",
+    "아치·배럴볼트형 성",
+    "수정 군집",
+    "왕궁·어니언 돔"
+  ],
+  "gameResourcesChanged": false,
+  "visualReview": "Distinct architectural silhouettes, side elevation, shared baseline, physical barrel-vault roof raised above previous Gothic tip; generated art is a concept, not a measured runtime layout."
+}

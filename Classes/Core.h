@@ -563,6 +563,27 @@ typedef struct _house {
 	unsigned short crew[MAXCREW];//크류의 인덱스.
 	unsigned char crewMaxStar[MAXCREW];//크류의 최대 레벨
 	unsigned char crewCurStar[MAXCREW];//크류의 현재 레벨
+
+	//---- 성 ----
+	//
+	//houseType 은 지도에 찍던 마을 그림 번호다. PVP 가 보여 주는 것은 그
+	//집이 아니라 성이므로, 성 단계와 파츠를 따로 들고 있는다.
+	//
+	//castleLevel 은 1 부터 CASTLE_STAGE_CNT 까지다. 0 은 "아직 안 정함" 이라
+	//읽고, 그때는 1 단계로 본다.
+	//
+	//castlePart 는 성 파츠 다섯 칸의 단계(0~5)다. 차례는 성 메뉴와 같다
+	//(0 지붕 · 1 방 · 2 · 3 대포 · 4 이동). 대포가 3 번이라 그 칸이 곧
+	//이 사람이 쏘는 포의 단계다.
+	//
+	//power 는 맞붙을 상대를 고르는 데 쓰는 세기다. 성 단계와 동료 별을
+	//섞어 한 숫자로 만든다 - 표가 없으면 "나보다 조금 센 상대" 를 못 고른다.
+	//
+	//★ 새 항목은 끝에 붙인다. 가운데에 끼우면 AIDATAFILE 의 자리가 밀려
+	//옛 파일을 못 읽는다.
+	unsigned char castleLevel;
+	unsigned char castlePart[CASTLE_PART_SLOT];
+	unsigned short power;
 } HOUSE;
 
 //로빈구조체는 게임 전체에 대한 저장소이다.
@@ -704,6 +725,18 @@ typedef struct _robin {
 	int equipHighGradeMissCount = 0;
 	CastleMenuModel::Progress castleProgress;
 
+	//---- PVP 열 단계 ----
+	//
+	//어디까지 깼는가. 0 이면 아직 한 번도 안 이겼고, 1 이면 1 단계를
+	//깬 것이다. PVP_STAGE_CNT 를 다 깨면 거기서 멈춘다.
+	//
+	//다음에 붙을 상대는 이 값이 정한다(PvpStageOpponent) - 단계가 오를수록
+	//나보다 센 성이 나온다.
+	unsigned char pvpStage = 0;
+
+	//열 단계를 다 깬 보상을 받았는가. 한 번만 준다.
+	unsigned char pvpGrandTaken = 0;
+
 	template <class Archive>
 	void serialize(Archive & ar)
 	{
@@ -784,7 +817,9 @@ typedef struct _robin {
 			//밀려서 옛 세이브를 못 읽는다.
 			castlePartLv,
 			castleIncomeTs,
-			castleProgress
+			castleProgress,
+			pvpStage,
+			pvpGrandTaken
 		);
 	}
 } ROBINDATA;

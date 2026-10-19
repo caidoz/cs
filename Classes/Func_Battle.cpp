@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -1679,6 +1679,12 @@ void UpdateStageRealtime(void)
 	//쓰러질 때는 전투 코드가 VANISHMOVE 를 다시 붙이므로 그 길은 산다.
 	for (int i = 0; i < MAXCREW; ++i) {
 		OBJECT* c = &ao[CREW + i];
+
+        float deckX,deckY;
+        if(c->active && !c->dead && CastleCrewDeckPoint(i,&deckX,&deckY)) {
+            c->x=c->nx=deckX-xOffset+rx;
+            c->y=c->ny=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-deckY;
+        }
 
 		if (c->active && (c->moveHandler == CREWMOVE || c->moveHandler == NPCMOVE))
 			c->moveHandler = null;

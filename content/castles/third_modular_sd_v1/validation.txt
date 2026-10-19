@@ -1,0 +1,19 @@
+2026-10-18 final verification
+PASS Debug Win32 build: proj.win32/Debug.win32/cs.third-modular-preview.exe
+Build log: output/third-modular-build.log (existing compiler warnings remain)
+PASS six stages: exact reconstruction from saved exterior PNGs, zero visible RGBA mismatches
+PASS canonical 1133x1388 masters and 470x530 three-room atlases
+PASS all 54 retained legacy resource names resolve
+PASS six stages and three mixed assemblies: resource bounds, width cap, wheel contact and rotation, right-facing launcher muzzle
+PASS closed resident render count zero / held reveal resident render count matches
+PASS three-floor per-room clipping and actual deployed companion deck object positions
+PASS preparation viewport roof bounds and proportional castle/character fitting
+PASS 18 closed/open screenshots plus deployed companion screenshot
+Third-castle log: output/third-upgrades-review/phases.log
+PASS second-castle regression: six stages, three mixed assemblies, deployed companion positions
+Second-castle log: output/second-upgrades-review/phases.log
+PASS first-castle six-stage/three-mix regression before viewport fit correction
+PASS first-castle final room hold/release and deployed deck regression after correction
+First-castle logs: output/starter-upgrades-review/phases.log; output/sd-room-deck-review/phases.log
+PASS git diff --check
+Inspected final stage-0 exterior, stage-5 interior, mixed-stage assembly, fitted preparation view, six-stage artwork and same-width castle-01-03 comparison.

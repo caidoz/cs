@@ -1,0 +1,25 @@
+{
+  "status": "standalone-exterior-proposal",
+  "method": "built-in imagegen",
+  "sourceBoard": "../architectural_progression_v4/progression-board.png",
+  "castle": 10,
+  "material": "ivory and gold",
+  "emblem": "sun",
+  "roof": "asymmetric royal-blue onion domes",
+  "rooms": 10,
+  "roomCapacity": "five compact levels with two rooms per level",
+  "view": "side elevation; convex rounded central keep",
+  "targetDisplay": {
+    "height": 760,
+    "width": 431,
+    "unit": "reference pixels at 640-wide game view",
+    "aspectHeightOverWidth": 1.7633410672853829
+  },
+  "growthPolicy": {
+    "widthGainPerHeightGain": 0.15,
+    "maximumHeightReference": "user-selected prior sixth-castle display"
+  },
+  "weapon": "one right-facing gravity cannon above hero terrace",
+  "decks": "continuous lower companion walkway and same-height right hero terrace",
+  "gameResourcesChanged": false
+}

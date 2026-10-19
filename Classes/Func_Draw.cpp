@@ -17,6 +17,7 @@
 // All ten cannons share the lower command platform and commander-relative placement.
 #include "CastleModularDebug.h"
 #include "StageBackground.h"
+float StageCastleGroundingPx(void) { return StageBg::kCastleGroundingPx; }
 // CastleModularDebug also exposes its active state to Core so animated title
 // previews can request continuous redraws.
 #endif
@@ -1761,10 +1762,14 @@ static int GridCastleStage(void)
 	return GridCastleIdx(gMobileCastleVisual);
 }
 
-// Layout preview only: keep the selected castle and its cannon/progression intact.
-// Set to 0 to restore castle-sized grids while debugging.
+//---- 격자를 마지막 성 크기로 보던 시험값 ----
+//
+//칸이 많은 판에서 배치를 보려고 켜 두었던 것이다. 켜 두면 1 단계 성인데
+//10 단계 가방이 붙어, 보급력도 칸 수도 실제와 다른 것을 보게 된다.
+//
+//이제 가진 성의 크기로 돌아간다. 다시 넓게 보려면 1 로 둔다.
 #ifndef BATTLE_DEBUG_MAX_GRID
-#define BATTLE_DEBUG_MAX_GRID 1
+#define BATTLE_DEBUG_MAX_GRID 0
 #endif
 static int GridLayoutCastleStage(void)
 {
@@ -4994,11 +4999,39 @@ bool BattleEntryLocked(void)
     return LoadoutOpen() || (IsStageRealtime() && !gStageCombatStarted && !StageRtAutoOn());
 }
 
+//---- 출정 준비를 누가 열었는가 ----
+//
+//스테이지로 가는 길과 PVP 로 가는 길이 같은 화면을 쓴다. [세팅 완료]
+//를 눌렀을 때 어디로 갈지는 연 쪽이 정한다.
+static bool gLoadoutForPvp = false;
+
 bool LoadoutOpen(void)		{ return gLoadoutOpen; }
+
+//격돌의 세팅 차례에 연다. 상대 성과 편성이 이미 화면에 서 있으므로,
+//그것을 보고 창고에서 끌어다 놓는다.
+void LoadoutOpenForPvp(void)
+{
+	gLoadoutForPvp = true;
+	LoadoutSetOpen(true);
+}
+
+bool LoadoutTakePvp(void)
+{
+	const bool was = gLoadoutForPvp;
+
+	gLoadoutForPvp = false;
+
+	return was;
+}
 void LoadoutSetOpen(bool on)
 {
 	gLoadoutOpen = on;
 	gLoadoutSetupPressed = false;
+
+	//닫는 길은 여럿이다(취소, 뒤로). 깃발을 안 내리면 다음에 스테이지로
+	//가려고 연 화면에서 [세팅 완료] 가 PVP 로 들어간다.
+	if (!on)
+		gLoadoutForPvp = false;
 
 	//열 때마다 목록 맨 위부터 본다. 지난번에 밀어 둔 자리에서 열리면
 	//무엇을 보고 있는지 알 수가 없다.
@@ -5029,8 +5062,14 @@ int LoadoutCost(const ITEM* it)
 //이번 판에 쓸 수 있는 점수. 성이 오르면 는다.
 int LoadoutPoint(void)
 {
+	//가방이 보는 그 성이다. 칸 배치와 테두리가 10 성인데 점수만 1 성이면
+	//화면에 보이는 격자를 다 채울 수가 없다.
+	const int castle = GridLayoutCastleStage();
+
 	CastleProgressEnsure();
-	return LOADOUT_BASE + robin.castle + CastleBonusOf(CPE_LOADOUT)+robin.castleProgress.rooms[CastleMenuModel::Clamp(robin.castle)][1];
+	return LOADOUT_BASE + castle * LOADOUT_PER_CASTLE
+		+ CastleBonusOf(CPE_LOADOUT)
+		+ robin.castleProgress.rooms[castle][1];
 }
 
 //지금 고른 것이 드는 점수의 합.
@@ -5130,8 +5169,9 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 
 	GridPart candidate; GridGearPart(it,&candidate);
 
+	//한도도 가방이 보는 성의 것이다.
 	if (LoadoutCellUsed() + GridPartCellCount(&candidate)
-		> CastleEquipmentCapacity(robin.castle)) {
+		> CastleEquipmentCapacity(GridLayoutCastleStage())) {
 		gLoadoutWhy = "성이 실을 수 있는 칸을 넘는다";
 		return false;
 	}
@@ -5273,6 +5313,100 @@ void LoadoutAuto(void)
 			continue;
 
 		LoadoutToggle(list[i]);
+	}
+}
+
+//---- 처음 열면 기본으로 다 올려 둔다 ----
+//
+//빈 가방에서 시작하면 들어올 때마다 같은 것을 다시 고르게 된다. 가진 것
+//중 좋은 것과 성이 준 포를 먼저 올려 두고, 바꿀 사람만 바꾼다.
+//
+//한 번 고르고 난 뒤에는 건드리지 않는다 - 창을 여닫을 때마다 고른 것이
+//도로 바뀌면 고른 보람이 없다.
+static bool gLoadoutDefaultDone = false;
+
+void LoadoutDefaultReset(void) { gLoadoutDefaultDone = false; }
+
+static void LoadoutDefaultFill(void)
+{
+	if (gLoadoutDefaultDone)
+		return;
+
+	gLoadoutDefaultDone = true;
+
+	if (gLoadoutCnt > 0)
+		return;
+
+	//---- 포가 먼저 ----
+	//
+	//성이 준 물건이고, 빠지면 판에서 아무것도 안 쏜다. 점수가 모자라
+	//밀려나지 않도록 맨 앞에 담는다.
+	//
+	//지금 성의 포라야 한다. 디버그 빌드에서는 CannonGrantEnsure 가 열
+	//단계의 포를 다 지급해서, 가방을 앞에서부터 훑으면 남의 성 포가
+	//먼저 잡힌다. 그 포는 칸도 크고 점수도 비싸 LoadoutToggle 이
+	//거절하는데, 거기서 break 로 끊고 있어 결국 포가 하나도 안 실렸다.
+	{
+		//---- 어느 성의 포인가 ----
+		//
+		//robin.castle 을 보고 있었다. 그런데 가방은 - 칸 배치도, 테두리
+		//그림도, 성 그림도 - gMobileCastleVisual 을 본다
+		//(GridCastleStage 의 주석). 로비 화살표로 성을 넘기면 그 값만
+		//움직이고 robin.castle 은 그대로다.
+		//
+		//그래서 10 성 가방에 1 성의 작은 포가 올라왔다. 가방이 보는 성을
+		//똑같이 본다.
+		const int mine = GridLayoutCastleStage();
+		int picked = -1;
+
+		for (int i = 0; i < TOTALINVENTORY; i++) {
+			if (robin.inven[i].type != ITEM_CANNON)
+				continue;
+
+			if ((int)robin.inven[i].detail == mine) {
+				picked = i;
+				break;
+			}
+		}
+
+		//지금 성의 포가 없으면(지급 전) 가진 포 중 아무거나 하나.
+		if (picked < 0) {
+			for (int i = 0; i < TOTALINVENTORY; i++) {
+				if (robin.inven[i].type == ITEM_CANNON) {
+					picked = i;
+					break;
+				}
+			}
+		}
+
+		if (picked >= 0 && LoadoutFind(picked) < 0)
+			LoadoutToggle(picked);
+	}
+
+	//---- 그다음은 히어로가 끼고 있는 것 ----
+	//
+	//전에는 LoadoutAuto 로 가방 전체에서 값이 높은 것을 골랐다. 그러면
+	//끼지도 않은 부메랑이 올라온다 - 밖에서 차려 입은 모습과 판에 들고
+	//나가는 것이 달라, 무엇을 입었는지가 아무 뜻이 없어진다.
+	//
+	//끼고 있는 것은 robin.charData 가 안다. ao[PLAYER] 를 보면 안 된다 -
+	//PVP 격돌에서는 그 칸이 이미 전투용으로 갈아끼워져 있다.
+	{
+		const int who = Max(0, Min(TOTALPLAYER - 1, PlayerHeroType()));
+		const CHARDATA* me = &robin.charData[who];
+
+		for (int e = 0; e < TOTALEQUIP; e++) {
+			const ITEM* worn = &me->equip[e];
+			int at;
+
+			if (worn->type == EMPTY)
+				continue;
+
+			at = GetInvenIdx(worn->type, worn->detail, worn->grade);
+
+			if (at >= 0 && LoadoutFind(at) < 0)
+				LoadoutToggle(at);
+		}
 	}
 }
 
@@ -5526,6 +5660,25 @@ static int LoadoutFootY(void)
 	return 4 * _2X;
 }
 
+//---- 세팅 완료 버튼의 자리 ----
+//
+//그리는 쪽과 누르는 쪽이 각자 제 식으로 재고 있었다. 그리는 쪽은
+//LoadoutFootY()+14, 누르는 쪽은 +28 이라 둘이 14 만큼 어긋났고, 그린
+//버튼의 아랫변이 화면 밖(-10)으로 나가 반이 잘렸다.
+//
+//한 군데서 잰다. 아랫변이 화면 바닥에서 LoadoutFootY() 만큼 떠 있다.
+static void LoadoutGoButtonRect(int* x, int* y, int* w, int* h)
+{
+	const int bw = 88 * _2X;
+	const int bh = bw * 62 / 192;
+
+	if (w) *w = bw;
+	if (h) *h = bh;
+	if (x) *x = DX / 2 - bw / 2;
+	//y 는 사각형의 윗변이고 아래로 bh 만큼 뻗는다.
+	if (y) *y = LoadoutFootY() + bh;
+}
+
 //---- 보관함은 다 보여 준다 ----
 //
 //가진 것만 늘어놓으면 아직 무엇이 남았는지가 안 보인다. 장비를 종류와
@@ -5728,6 +5881,115 @@ static bool LoadoutSpot(unsigned char* occ, int colsMax, int w, int h,
 		}
 
 	return false;
+}
+
+//======================================================================
+// PVP 열 단계
+//
+// 한 번에 한 단계씩 오른다. 단계가 오를수록 나보다 센 성이 나오고, 열
+// 단계를 다 깨면 한 번만 주는 큰 보상이 있다.
+//
+// 상대는 AI 표(aiUserHouse)에서 고른다. 그 표는 저마다 성 단계와 파츠를
+// 들고 있고(MakeAiHouse), power 하나로 세기를 견줄 수 있다.
+//======================================================================
+
+//내 세기. 상대 표(HOUSE.power)와 같은 식이어야 견줄 수 있다.
+int PvpMyPower(void)
+{
+	int sum = 0;
+
+	CastleProgressEnsure();
+
+	const int castle = CastleMenuModel::Clamp(robin.castle);
+
+	for (int i = 0; i < CASTLE_PART_SLOT; ++i)
+		sum += robin.castleProgress.parts[castle][i];
+
+	//---- 동료 몫 ----
+	//
+	//상대 쪽은 동료 별(crewCurStar)을 더한다. 내 쪽에는 그 별을 담는 칸이
+	//없다 - 동료는 가방에 실린 물건이고, 별은 그 물건이 들고 있다.
+	//
+	//그래서 편성한 칸의 물건 별을 그대로 쓴다. 칸이 비면 0 이다.
+	for (int i = 0; i < MAXCREW; ++i) {
+		if (robin.slotCrew[i] >= 0)
+			sum += Max(1, GetItemStar(ITEM_CREW, robin.slotCrew[i], GRADE_NORMAL));
+	}
+
+	return (castle + 1) * 100 + sum * 3;
+}
+
+//지금 도전할 단계. 0 부터 깨 왔으므로 다음 단계는 그 다음 수다.
+int PvpStageNow(void)
+{
+	return Min(PVP_STAGE_CNT, (int)robin.pvpStage + 1);
+}
+
+//---- 이번 단계의 상대 ----
+//
+//내 세기에 단계만큼을 더한 자리에서 가장 가까운 사람을 고른다. 표를 그냥
+//훑으면 늘 같은 사람이 나오므로, 가까운 쪽 몇을 모아 그중 하나를 뽑는다.
+bool PvpStageOpponent(int stage, HOUSE* out)
+{
+	const int want = PvpMyPower()
+		+ Max(1, Min(PVP_STAGE_CNT, stage)) * PVP_STAGE_POWER_STEP;
+	int pick[8];
+	int picked = 0;
+	int bestGap = 0x7FFFFFFF;
+
+	if (out == NULL)
+		return false;
+
+	//한 바퀴 돌며 가장 가까운 차이를 찾는다.
+	for (int i = 0; i < TOTALAI; ++i) {
+		const int gap = Abs((int)aiUserHouse[i].power - want);
+
+		if (gap < bestGap)
+			bestGap = gap;
+	}
+
+	//그 차이에서 멀지 않은 사람들을 모은다. 한 명만 고르면 같은 상대가
+	//계속 나와 열 단계가 같은 얼굴 열 번이 된다.
+	for (int i = 0; i < TOTALAI && picked < 8; ++i) {
+		if (Abs((int)aiUserHouse[i].power - want) <= bestGap + PVP_STAGE_POWER_STEP / 2)
+			pick[picked++] = i;
+	}
+
+	if (picked <= 0)
+		return false;
+
+	*out = aiUserHouse[pick[Random(picked)]];
+
+	return true;
+}
+
+//---- 단계를 깼다 ----
+//
+//보상을 주고 한 칸 올린다. 이미 깬 단계를 다시 이겨도 올라가지 않는다 -
+//같은 단계를 되풀이해 보상을 긁는 길이 생긴다.
+void PvpStageClear(int stage)
+{
+	if (stage <= 0 || stage > PVP_STAGE_CNT)
+		return;
+
+	if (stage <= (int)robin.pvpStage)
+		return;
+
+	robin.pvpStage = (unsigned char)stage;
+
+	GetItem(ITEM_GOLD, false, false, false,
+		(long long)PVP_STAGE_GOLD * stage, false);
+
+	//---- 끝까지 깼다 ----
+	//
+	//열 단계를 다 깬 사람에게 한 번만 준다.
+	if (stage >= PVP_STAGE_CNT && robin.pvpGrandTaken == 0) {
+		robin.pvpGrandTaken = 1;
+		GetItem(ITEM_GOLD, false, false, false, (long long)PVP_GRAND_GOLD, false);
+		GetItem(ITEM_HEART, false, false, false, (long long)PVP_GRAND_HEART, false);
+	}
+
+	SaveGame();
 }
 
 //---- 가방에 실린 대포 ----
@@ -5969,16 +6231,22 @@ void LoadoutRelease(bool cancelled)
 {
     if (gLoadoutSetupPressed) {
         gLoadoutSetupPressed = false;
-        const int bw=88*_2X, bh=bw*62/192;
-        const int by=LoadoutFootY()+28*_2X;
+        int bx=0, by=0, bw=0, bh=0;
+
+        LoadoutGoButtonRect(&bx, &by, &bw, &bh);
+
         const bool tap=!cancelled && gLoadoutGestureMode!=1 &&
             Abs(endTouchX-gLoadoutSetupX)<=6*_2X &&
             Abs(endTouchY-gLoadoutSetupY)<=6*_2X &&
-            endTouchX>DX/2-bw/2 && endTouchX<DX/2+bw/2 &&
+            endTouchX>bx && endTouchX<bx+bw &&
             endTouchY<by && endTouchY>by-bh;
         if(tap && LoadoutOpen()) {
+            //PVP 에서 열었으면 판으로 가지 않는다. 격돌은 이미 진행
+            //중이고, 닫히는 것을 보고 다음 차례로 넘어간다.
+            const bool pvp = LoadoutTakePvp();
+
             LoadoutSetOpen(false);
-            systemKey=AVK_GOTOBATTLE;
+            systemKey = pvp ? 0 : AVK_GOTOBATTLE;
         } else systemKey=0;
     }
     if(cancelled) { gLoadoutDrag=-1; gLoadoutDragFromBag=false; return; }
@@ -6055,19 +6323,65 @@ void LoadoutRelease(bool cancelled)
 	}
 }
 
+//---- 히어로 고르기 ----
+//
+//글자 버튼 셋을 머리말 오른쪽에 두었더니, 그 줄이 차지하는 높이가 그대로
+//칸 크기에서 깎였다. 세팅 완료 버튼 왼쪽으로 내리고 이름 대신 그 사람을
+//세운다 - 누구인지는 얼굴이 글자보다 빨리 읽힌다.
+//
+//고른 사람만 제 색이고 나머지는 잿빛이다. 그림자까지 그려야 바닥에 선
+//것으로 보인다.
+static void LoadoutHeroPickDraw(int buttonX, int buttonY, int buttonH)
+{
+	static const int kCmf[3] = { ROBIN, DIANA, MAXX };
+	const int gap = 4 * _2X;
+	const int box = 26 * _2X;
+	const int baseY = buttonY - (buttonH - box) / 2;
+	int x = buttonX - gap - box * 3 - gap * 2;
+
+	for (int i = 0; i < 3; i++) {
+		const bool on = (curHero == i);
+		const int cx = x + i * (box + gap);
+		const int keep = baseColor;
+
+		if (on == false) {
+			grayScale = 32;
+			SetColor(0x4A4A56);
+		}
+
+		//발이 바닥에 닿게 둔다. DrawCmfDetailShadow 의 y 는 선 자리다.
+		DrawCmfDetailShadow(kCmf[i], crewPos[kCmf[i] * 5], cx + box / 2,
+			baseY - box + 3 * _2X, RIGHT, 0.62f);
+
+		if (on == false) {
+			SetColor(keep);
+			grayScale = 0;
+		}
+
+		//고른 사람 발밑에 금빛 줄 하나. 누가 선택됐는지는 색만으로는
+		//한눈에 안 들어온다.
+		if (on)
+			MemRect(cx + 3 * _2X, baseY - box + 4 * _2X,
+				box - 6 * _2X, 2 * _2X, 0xFFD76A);
+
+		SetRectPoint(cx, baseY, box, box, TOUCH_FUNC_LOADOUT_HERO + i);
+	}
+}
+
 //출정 버튼.
 static void LoadoutGoButtonDraw(void)
 {
-	const int bw = 88 * _2X;
-	const int bh = bw * 62 / 192;
-	const int bx = DX / 2 - bw / 2;
-	const int by = LoadoutFootY() + 28 * _2X;
+	int bx = 0, by = 0, bw = 0, bh = 0;
 
+	LoadoutGoButtonRect(&bx, &by, &bw, &bh);
 	(void)bh;
 
 	SetFontColor(COLOR_WHITE);
 	DrawTouchLargeButton(bx, by, 192, 62, "세팅 완료", TOUCH_FUNC_LOADOUT_GO,
 		FRAME_GREEN, (float)bw / 192.0f);
+
+	//히어로 셋은 이 버튼 왼쪽에 선다.
+	LoadoutHeroPickDraw(bx, by, (int)(62.0f * bw / 192.0f));
 }
 
 //격자를 그린다. 맨 아래 줄이 화면에서도 아래다(row 0 이 바닥).
@@ -6237,6 +6551,55 @@ static void LoadoutGridDraw(int top, int bottom)
 		SetRectPoint(cx, cy, w, h, TOUCH_FUNC_LOADOUT_BAGITEM + i);
 	}
 
+	//---- 보급력 ----
+	//
+	//쓸 수 있는 양과 쓴 양이다. 머리말에 한 줄로 적던 것을 격자 왼쪽 위로
+	//옮겼다 - 칸을 채우다 모자라는 것이라, 채우는 자리에 붙어 있어야 한다.
+	//
+	//넘겼으면 빨갛게 센다. 그대로는 출정이 안 된다.
+	{
+		//---- 판을 깔고 그 위에 ----
+		//
+		//격자 테두리 위에 글자만 얹었더니 성벽 무늬에 묻혀 안 읽혔다.
+		//어두운 판을 깔아 글자가 설 자리를 만든다. 격자 윗변보다 위로
+		//올려 칸을 가리지 않는다.
+		const int used = LoadoutUsed();
+		const int point = LoadoutPoint();
+		const float zoom = 0.95f;
+		const int star = 18 * _2X;
+		const int pad = 5 * _2X;
+
+		sprintf(str, "%d / %d", used, point);
+
+		const int nameW = (int)StringWidth("보급력", zoom);
+		const int numW = (int)StringWidth(str, zoom);
+		const int gap = 4 * _2X;
+		const int boxW = pad * 2 + nameW + gap + star + gap + numW;
+		const int boxH = (int)(FONT_HEIGHT * zoom) + 6 * _2X;
+		const int bx = left;
+		const int by = base + boxH + 6 * _2X;
+
+		SetAlpha(26);
+		MemRect(bx, by, boxW, boxH, 0x0C1A2E);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(bx, by, boxW, boxH, 0x6FA8FF);
+
+		const int ty = by - (int)((boxH - FONT_HEIGHT * zoom) / 2);
+		int at = bx + pad;
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("보급력", at + nameW / 2, ty, zoom);
+		at += nameW + gap;
+
+		DrawIcon(ICON_STAR, at, by - (boxH - star) / 2,
+			(float)star / (float)ITEMICONSIZE, false, false, false, true);
+		at += star + gap;
+
+		SetFontColor(used > point ? COLOR_RED : COLOR_REALYELLOW);
+		CenterTextStrSolid(str, at + numW / 2, ty, zoom);
+		SetFontColor(COLOR_WHITE);
+	}
+
 	//---- 들어갈 자리를 미리 ----
 	//
 	//끌고 있는 동안, 지금 떼면 어느 칸을 먹는지 그 칸 위에 깐다. 파란
@@ -6325,18 +6688,20 @@ static void LoadoutGridDraw(int top, int bottom)
 	//
 	//안 들어간 것이 있으면 그것부터 말한다. 출정을 눌렀을 때가 아니라
 	//여기서 알아야 두고 갈 것을 바꿀 수 있다.
+	//---- 탈이 있을 때만 적는다 ----
+	//
+	//"빈 칸 N" 은 격자를 보면 바로 아는 것이라 적을 필요가 없다. 안 들어간
+	//장비가 있을 때만 말한다 - 그건 격자만 봐서는 모른다.
 	if (missed > 0) {
 		SetFontColor(COLOR_RED);
 		sprintf(str, "장비 %d점이 성에 안 들어간다", missed);
-	}
-	else {
-		SetFontColor(COLOR_GREY);
-		sprintf(str, "빈 칸 %d", free);
+
+		//가방 아래, 보관함과의 틈에 적는다. 위에 두면 칸이 커질수록 가방이
+		//올라가 머리말 글자를 밟는다.
+		CenterTextStrSolid(str, DX / 2, bottom + 14 * _2X, 0.5f);
 	}
 
-	//가방 아래, 보관함과의 틈에 적는다. 위에 두면 칸이 커질수록 가방이
-	//올라가 머리말 글자를 밟는다. 아래는 틈이 늘 한 줄만큼 있다.
-	CenterTextStrSolid(str, DX / 2, bottom + 14 * _2X, 0.5f);
+	(void)free;
 
 #if LOADOUT_DROP_DEBUG
 	//---- 들어갈 칸 미리보기가 왜 안 뜨는지 보는 임시 줄 ----
@@ -6386,6 +6751,10 @@ void LoadoutDraw(void)
 	//단계의 포가 이번 프레임부터 창고에 선다.
 	CannonGrantEnsure();
 	LoadoutScanOwned();
+
+	//지급과 소유표가 선 뒤에 기본 편성을 올린다. 그 전에 부르면 방금 준
+	//포가 아직 목록에 없어 빠진다.
+	LoadoutDefaultFill();
 	cnt = LoadoutCatalog();
 	(void)list;
 
@@ -6398,13 +6767,14 @@ void LoadoutDraw(void)
 	const int used = LoadoutUsed();
 	const int cell = GridTestCellCnt(GridLayoutCastleStage());
 
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid("출정 준비", DX / 2, top, 0.9f);
-
-	SetFontColor(used > point ? COLOR_RED : COLOR_YELLOW);
-	sprintf(str, "배치 %d / %d · 전투 인벤토리 %d칸", used, point,cell);
-	CenterTextStrSolid(str, DX / 2, top - 12 * _2X, 0.66f);
-
+	//---- 머리말은 비웠다 ----
+	//
+	//"출정 준비" 도 "배치 N / M · 전투 인벤토리 N칸" 도 지웠다. 이 창에
+	//들어온 사람은 여기가 어디인지 이미 알고, 쓸 수 있는 양은 격자
+	//왼쪽 위에 보급력으로 붙는다(LoadoutGridDraw).
+	//
+	//머리말 두 줄이 차지하던 높이가 그대로 칸 크기에서 깎이던 자리다.
+	(void)cell;
 	SetFontColor(COLOR_WHITE);
 
 	//---- 히어로 셋 ----
@@ -6414,20 +6784,8 @@ void LoadoutDraw(void)
 	//
 	//아래 줄에 두었더니 "출정 점수" 글자를 덮었다. 머리말 세 줄은 이미
 	//자리가 꽉 차 있어서, 줄을 더 쓰면 그만큼 칸 크기에서 깎인다.
-	{
-		static const char* kName[3] = { "로빈", "디아나", "맥스" };
-		const int bw = 36 * _2X;
-		const int bh = 16 * _2X;
-		const int by = top + 2 * _2X;
-		const int bx = DX - bw * 3 - 8 * _2X;
-
-		for (int i = 0; i < 3; i++) {
-			const bool on = (curHero == i);
-
-			DrawUiButton(bx + i * bw, by, bw - 2 * _2X, bh, kName[i],
-				TOUCH_FUNC_LOADOUT_HERO + i, on, !on);
-		}
-	}
+	//머리말에서는 뺐다. 세팅 완료 버튼 왼쪽으로 내려간다
+	//(LoadoutHeroPickDraw).
 
 	//---- 자동 · 비우기 ----
 	{
@@ -6436,9 +6794,9 @@ void LoadoutDraw(void)
 		const int by = top + 2 * _2X;
 		const bool any = (gLoadoutCnt > 0);
 
-		DrawUiButton(8 * _2X, by, bw, bh, "자동",
-			TOUCH_FUNC_LOADOUT_AUTO);
-		DrawUiButton(52 * _2X, by, bw, bh, "비우기",
+		//"자동" 은 걷었다. 눌러서 알아서 채우는 것은 고르는 재미를 대신
+		//해 버린다. 비우기는 남긴다 - 다시 고르려면 치울 자리가 있어야 한다.
+		DrawUiButton(8 * _2X, by, bw, bh, "비우기",
 			TOUCH_FUNC_LOADOUT_CLEAR, false, any);
 	}
 
@@ -6635,8 +6993,10 @@ void LoadoutDraw(void)
 		if (x + gLoadoutStarWide[k] * sCell <= 0 || x >= DX)
 			continue;
 
-		DrawStar(ICON_STAR, x + 2 * _2X, storeTop + 11 * _2X,
-			k + 1, k + 1, k + 1, LEFT, false, 0.5f);
+		//몇 성 판인지는 멀리서도 읽혀야 한다. 작게 찍어 두면 판이 바뀐
+		//것을 못 보고 같은 판을 계속 미는 수가 있다.
+		DrawStar(ICON_STAR, x + 2 * _2X, storeTop + 16 * _2X,
+			k + 1, k + 1, k + 1, LEFT, false, 0.85f);
 	}
 
 	gLoadoutSlotCnt = 0;
@@ -6669,7 +7029,16 @@ void LoadoutDraw(void)
 		const bool live = own && taken == false;	//집을 수 있는가
 		GridPart part;
 
-		LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
+		//---- 가진 것은 그 물건 그대로 ----
+		//
+		//전에는 기본 등급으로 조각을 만들고 등급만 덮어썼다. 대포처럼
+		//단계마다 칸 모양이 달라지는 것은 그러면 칸(2x2)과 그림(3x2)이
+		//어긋나, 좁은 칸에 맞추느라 그림이 절반만 차 보였다.
+		if (own)
+			GridGearPart(it, &part);
+		else
+			LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
+
 		part.grade = own ? it->grade : GRADE_NORMAL;
 
 		//---- 못 집는 칸은 바탕을 밝게 ----
@@ -6737,18 +7106,28 @@ void LoadoutDraw(void)
 	//보고 있는지만 가는 막대로 보여 준다. 그것마저 없으면 판이 더 있는지
 	//조차 모른다.
 	if (gLoadoutRowTotal > viewCols) {
+		//---- 어디쯤인지 ----
+		//
+		//버튼 바로 위에 눌려 있어 잘 안 보였다. 위로 올리고 두껍게 하고,
+		//손잡이를 주황으로 둔다 - 바탕과 같은 푸른 계열이면 전체 폭 중
+		//어디까지 와 있는지가 안 읽힌다.
+		//보관함과 세팅 완료 버튼 사이의 띠에 둔다. 미는 것이 보관함이므로
+		//그 바로 아래가 제자리다 - 격자 밑에 두면 무엇을 미는 막대인지
+		//한눈에 안 온다.
 		const int bw = DX - 48 * _2X;
-		const int bh = 3 * _2X;
+		const int bh = 5 * _2X;
 		const int bx = 24 * _2X;
-		const int by = storeBot - 4 * _2X;
+		const int by = storeBot - 3 * _2X;
 		const int kw = Max(12 * _2X, bw * viewCols / gLoadoutRowTotal);
 		const int kx = bx + (int)((bw - kw) * gLoadoutScrollPx
 		             / (float)Max(1, scrollMax));
 
-		SetAlpha(14);
-		MemRect(bx, by, bw, bh, 0xFFFFFF);
+		SetAlpha(16);
+		MemRect(bx, by, bw, bh, 0x0A1322);
 		SetAlpha(ALPHA_MAX);
-		MemRect(kx, by, kw, bh, 0x8899BB);
+		MemRectFrame(bx, by, bw, bh, 0x33415C);
+		MemRect(kx, by, kw, bh, 0xFF9A2E);
+		MemRectFrame(kx, by, kw, bh, 0xFFD08A);
 	}
 
 	//---- 출정 ----
@@ -7525,7 +7904,7 @@ void GridTestDraw(void)
 // 픽셀, 위가 0). 그림이 화면보다 크면 그림 끝이 화면 안으로 들어오지
 // 않게 막고, 작으면 그 방향은 가운데에 둔다.
 //======================================================================
-#define LOBBY_CAM_ZOOM_MIN		1.0f
+#define LOBBY_CAM_ZOOM_MIN		0.5f
 #define LOBBY_CAM_ZOOM_MAX		2.0f
 #define LOBBY_CAM_ZOOM_STEP		1.02f	//디버그 버튼을 누르고 있을 때 한 프레임에
 #define LOBBY_CAM_DRAG_START	(6 * _2X)	//이만큼 움직여야 끌기로 본다
@@ -7624,7 +8003,7 @@ static float LobbyCharZoom(void)
 //가려 가슴 위만 보인다. 발판 높이만큼 올린다. 성 그림 기준 픽셀이다.
 #define LOBBY_HERO_LIFT			24.0f
 //성에 하나뿐인 사람이라 동료와 같은 크기면 묻힌다.
-#define LOBBY_HERO_ZOOM			1.5f
+#define LOBBY_HERO_ZOOM			3.0f
 #define LOBBY_GROUND_V_BACK		0.925f
 #define LOBBY_GROUND_V_FRONT	0.975f
 
@@ -7677,6 +8056,23 @@ static float LobbyCamScale(float imgW, float imgH)
 	return Max(1.0f, std::floor(raw * 128.0f + 0.5f)) / 128.0f;
 }
 
+float CastlePartsViewZoom(void) {
+    if(drawHandle!=MD_LOBBY) return 1.0f;
+    const float base=Max(1.0f,std::floor(CastlePartsRoomScale()*128.0f+.5f))/128.0f;
+    return LobbyCamScale(0,0)/base;
+}
+float CastlePartsViewLeft(float fallback) {
+    if(drawHandle!=MD_LOBBY) return fallback;
+    float w,h;if(!LobbyCastleSize(&w,&h)) return fallback;
+    const float s=LobbyCamScale(w,h);
+    const float base=Max(1.0f,std::floor(CastlePartsRoomScale()*128.0f+.5f))/128.0f;
+    const float baseCamX=w*base<=DX
+        ? (DX*.5f-StageBg::kCastleLeft+CastlePartsLeftInset(LobbyCastleLevel())*base)/base
+        : w*.5f;
+    return DX*.5f+(baseCamX-gLobbyCamX)*s
+        +(4.0f*DX/640.0f-DX*.5f)*CastlePartsViewZoom();
+}
+
 //성을 보여 주는 세로 영역. 하단 메뉴 위부터 화면 위 끝까지다.
 //성의 맨 아래가 하단 버튼에 가리지 않게 이 영역 안에서만 움직인다.
 static bool gLobbyCastleMenuOpen = false;
@@ -7717,6 +8113,7 @@ static void LobbyCamClamp(void)
 	const float s = LobbyCamScale(w, h);
 	const float halfW = DX / 2.0f / s;
 	const float halfH = (DY - LobbyViewBottom()) / 2.0f / s;
+	const auto& sd = CastleParts::sdPlacement;
 
 	//전투와 같은 자리에 붙인다. 가운데에 두면 로비에서 전투로 넘어갈 때
 	//성이 옆으로 미끄러진다.
@@ -7732,7 +8129,12 @@ static void LobbyCamClamp(void)
 	//
 	//영역보다 높은 성도 처음에는 바닥부터 본다 - 가운데를 잡으면 땅도
 	//바퀴도 안 보이는 데서 시작한다. 위층은 밀어 올려 본다.
-	if (h <= halfH * 2 || gLobbyCamY < 0)
+	if (sd.valid && sd.castle==LobbyCastleLevel()-1 && CastleParts::SdEnabled(sd.castle)) {
+		const float bottomCam=h-halfH;
+		const float panHeight=Max(0.0f,sd.height-(DY-90.0f*DX/640.0f-LobbyViewBottom()))/s;
+		gLobbyCamY=Max(bottomCam-panHeight,Min(bottomCam,gLobbyCamY));
+	}
+	else if (h <= halfH * 2 || gLobbyCamY < 0)
 		gLobbyCamY = h - halfH;
 	else
 		gLobbyCamY = Max(halfH, Min(h - halfH, gLobbyCamY));
@@ -7931,6 +8333,29 @@ bool LobbyCamTouchBegan(int id, float x, float y)
 			//번째까지를 지나갔다.
 			gMobileCastleVisual = (gMobileCastleVisual + castleStep + CASTLE_STAGE_CNT)
 			                    % CASTLE_STAGE_CNT;
+
+			//---- 보는 성이 곧 지금 성이다 ----
+			//
+			//전에는 그림만 갈아 끼우고 robin.castle 은 그대로 두었다.
+			//그래서 10 성 그림에 10 성 격자가 붙었는데 포와 보급력만
+			//1 성 것이 나왔다 - 화면의 절반은 보는 성을, 나머지 절반은
+			//가진 성을 보고 있었다.
+			//
+			//화살표는 실제로 성을 갈아타는 것이다. 둘을 같이 옮긴다.
+			robin.castle = gMobileCastleVisual;
+			CastleProgressEnsure();
+
+			//---- 가방은 다시 짠다 ----
+			//
+			//성이 바뀌면 칸 배치도 보급력도 달라진다. 지난 성에서 놓아
+			//둔 자리가 새 격자에 그대로 들어맞을 까닭이 없다.
+			//
+			//비우고 기본값부터 다시 올린다 - 그 성의 포와 히어로 장비다.
+			LoadoutClear();
+			LoadoutDefaultReset();
+
+			SaveGame();
+
 			gLobbyCamImg = -1;
 			gLobbyPanBlocked = true;
 			return true;
@@ -8264,6 +8689,722 @@ static void LobbyBottomNavDraw(void)
 //left/top/w/h/scale 은 성이 그려진 자리다. 로비는 카메라가, 전투는
 //전장이 정한다. 안에서 gLobbyCastle* 에 넣어 두므로 LobbyCastleToObj
 //가 두 화면에서 같이 동작한다.
+bool StarterSdWheelReview(bool remember) {
+    static float first=0;
+    const auto& p=CastleParts::sdPlacement;
+    if(remember) { first=p.wheelAngle; return p.valid; }
+    return p.valid && p.width<=DX*CastleParts::kStarterViewportRatio+.5f && std::fabs(p.wheelAngle-first)>.1f;
+}
+
+bool SdRoomDeckReviewCheck(void) {
+    if(!getenv("CS_SD_ROOM_DECK_REVIEW")||!getenv("CS_CASTLE_REVIEW_PATH")) return false;
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || CastleParts::roomCover[0].material!=CASTLE_WALL_01_FIRST_IMG) return false;
+    if(p.width>DX*CastleParts::kStarterViewportRatio+.5f) return false;
+    const int parts[]={CASTLE_ROOF_01_FIRST_IMG,CASTLE_WALL_01_FIRST_IMG,
+        CASTLE_01_HOLLOW_FIRST_IMG,CASTLE_01_CANNON_FIRST_IMG,CASTLE_BALCONY_01_FIRST_IMG,
+        CASTLE_01_COMBAT_DECK_FIRST_IMG,CASTLE_BASE_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG,CASTLE_ROOM_V4_FIRST_IMG};
+    for(int img:parts) if(!sprite[img]) return false;
+    const int legacySizes[9][2]={{736,256},{736,128},{640,288},{160,192},
+        {192,128},{736,144},{512,64},{128,128},{512,128}};
+    for(int i=0;i<9;++i) {
+        const int img=CASTLE_STARTER_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        if(size.width!=legacySizes[i][0] || size.height!=legacySizes[i][1]) return false;
+    }
+    if(p.deckWidth<p.width*.6f || std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    int active=0;
+    for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) ++active;
+    if(p.externalCount!=active || p.residentCount+p.externalCount>8) return false;
+    for(int i=0;i<MAXCREW;++i) {
+        float x,y;
+        if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth || x<0 || x>DX || y!=p.deckSurface) return false;
+        if(ao[CREW+i].active && !ao[CREW+i].dead) {
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return false;
+        }
+    }
+    return true;
+}
+
+bool StarterSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.width>DX*CastleParts::kStarterViewportRatio+.5f || p.deckWidth<p.width*.6f) return false;
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-StarterSdParts::GroundY*p.width/StarterSdParts::Width-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(0)?p.residentCount:0)) return false;
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    const int firsts[]={CASTLE_ROOF_01_FIRST_IMG,CASTLE_WALL_01_FIRST_IMG,CASTLE_01_HOLLOW_FIRST_IMG,
+        CASTLE_01_CANNON_FIRST_IMG,CASTLE_BALCONY_01_FIRST_IMG,CASTLE_01_COMBAT_DECK_FIRST_IMG,
+        CASTLE_BASE_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(0,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return false;
+    }
+    if(!sprite[CASTLE_ROOM_V4_FIRST_IMG+CastleVisualPartLevel(0,2)]) return false;
+    if(CastleParts::roomCover[0].material!=CASTLE_WALL_01_FIRST_IMG+CastleVisualPartLevel(0,1)) return false;
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(0,3));
+    if(CastleParts::cannonMuzzleX[0]>=p.left+(gun.x+gun.w*.5f)*p.width/StarterSdParts::Width) return false;
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_STARTER_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+    }
+    return true;
+}
+
+bool SecondSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=1 || p.roomCount!=2 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return false;
+    if(p.height<p.width*.95f || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return false;
+    const float unit=p.width/SecondSdParts::Width;
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-SecondSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(1)?p.residentCount:0)) return false;
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    const int firsts[]={CASTLE_ROOF_02_FIRST_IMG,CASTLE_WALL_02_FIRST_IMG,CASTLE_02_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG,CASTLE_COMMAND_PLATFORM_FIRST_IMG,CASTLE_02_10_COMBAT_DECK_FIRST_IMG,
+        CASTLE_BASE_FIRST_IMG+6,CASTLE_WHEEL_FIRST_IMG+6,CASTLE_WHEEL_FIRST_IMG+6};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(1,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,1);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return false;
+    }
+    if(!sprite[CASTLE_ROOM_V4_FIRST_IMG+6+CastleVisualPartLevel(1,2)]) return false;
+    if(CastleParts::roomCover[1].material!=CASTLE_WALL_02_FIRST_IMG+CastleVisualPartLevel(1,1)) return false;
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(1,3),1);
+    if(CastleParts::cannonMuzzleX[1]<=p.left+(gun.x+gun.w*.5f)*unit) return false;
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_SECOND_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return false;
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return false;
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return false;
+    }
+    return true;
+}
+
+bool ThirdSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=2 || p.roomCount!=3 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return false;
+    if(p.height<p.width*1.15f || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return false;
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/ThirdSdParts::Width;
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-ThirdSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(2)?p.residentCount:0)) return false;
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+12,CASTLE_EXTERIOR_03_FIRST_IMG,CASTLE_03_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+6,CASTLE_COMMAND_PLATFORM_FIRST_IMG+6,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+6,
+        CASTLE_BASE_FIRST_IMG+12,CASTLE_WHEEL_FIRST_IMG+12,CASTLE_WHEEL_FIRST_IMG+12};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(2,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,2);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return false;
+    }
+    if(!sprite[CASTLE_ROOM_V4_FIRST_IMG+12+CastleVisualPartLevel(2,2)]) return false;
+    if(CastleParts::roomCover[2].material!=CASTLE_EXTERIOR_03_FIRST_IMG+CastleVisualPartLevel(2,1)) return false;
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(2,3),2);
+    if(CastleParts::cannonMuzzleX[2]<=p.left+(gun.x+gun.w*.5f)*unit) return false;
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_THIRD_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return false;
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return false;
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return false;
+    }
+    return true;
+}
+
+static bool TenthSdReviewFailure(int line) {
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(path) {
+        FILE* log=fopen((std::string(path)+"geometry.log").c_str(),"a");
+        if(log) { fprintf(log,"Tenth geometry check failed at Func_Draw.cpp:%d\n",line); fclose(log); }
+    }
+    return false;
+}
+
+bool CastleInteriorSyncReviewCheck(int operation) {
+    static float width=0,height=0;
+    const auto& p=CastleParts::sdPlacement;
+    if(operation==0) {width=p.width;height=p.height;LobbyCamZoomAt(.75f,DX*.5f,LobbyViewCY());return true;}
+    if(operation==1 || operation==2) {
+        const float ratio=operation==1?.75f:1.25f;
+        const bool ok=std::fabs(p.width-width*ratio)<1 && std::fabs(p.height-height*ratio)<1;
+        LobbyCamZoomAt(operation==1?1.25f:1.0f,DX*.5f,LobbyViewCY());
+        return ok;
+    }
+    if(operation==3) {
+        if(p.residentCount!=20 || p.residentDrawCount!=20) return false;
+        for(int floor=0;floor<p.roomCount;++floor) {
+            const int img=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+floor*6+CastleVisualPartLevel(p.castle,2);
+            if(!sprite[img]) return false;
+            const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
+            if(size.width!=512 || size.height!=128) return false;
+        }
+        return true;
+    }
+    return false;
+}
+bool CastleIndividualReviewCheck(int operation) {
+    static float previousW=0,previousH=0,angle=0;
+    const auto& p=CastleParts::sdPlacement;
+    if(operation==2) {
+        const auto& r=IndividualCastleV4::Rigs[p.castle];
+        const auto& aperture=IndividualCastleRooms::Rooms[p.castle];
+        const auto& cover=CastleParts::roomCover[p.castle];
+        const float zoom=p.width/r.width;
+        return p.roomCount==p.castle+1 && p.roomColumns==1
+            && std::fabs(p.interiorWidth/zoom-IndividualCastleRooms::RoomWidth)<1
+            && std::fabs(p.roomFloorGap/zoom-IndividualCastleRooms::FloorHeight)<1
+            && cover.height==p.roomCount*(int)p.roomFloorGap
+            && cover.sx>=aperture.x-2 && cover.sy>=aperture.y-2
+            && cover.sx+cover.sw<=aperture.x+aperture.w+2
+            && cover.sy+cover.sh<=aperture.y+aperture.h+2;
+    }
+    if(operation==1) return std::fabs(angle-p.wheelAngle)>.01f;
+    const auto& r=IndividualCastleV4::Rigs[p.castle];
+    const bool ok=p.valid && !CastleParts::missingAsset && p.width>previousW && p.height>previousH
+        && std::fabs(p.height/p.width-(float)r.h/r.w)<.001f
+        && p.commanderY>p.top-p.height && p.commanderX>p.deckLeft
+        && CastleParts::cannonMuzzleValid[p.castle];
+    previousW=p.width;previousH=p.height;angle=p.wheelAngle;
+    return ok;
+}
+bool CastleFixedWidthReviewCheck(int operation) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || !CastleParts::SdEnabled(p.castle)) return false;
+    if(operation==1) {
+        gLobbyCamY-=p.height*2;
+        LobbyCamClamp();
+        return true;
+    }
+    if(operation==2) {
+        const float roof=p.top-CastleParts::SdTopVisibleY(p.castle,0)*p.width/p.sourceWidth;
+        return roof<=DY+1 && roof>DY*.5f;
+    }
+    static float previousHeight=0;
+    if(std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f || p.height<=previousHeight) return false;
+    if(std::fabs(p.top-(p.castle==9?TenthSdParts::GroundY:p.castle==8?NinthSdParts::GroundY:p.castle==7?EighthSdParts::GroundY:p.castle==6?SeventhSdParts::GroundY:p.castle==5?SixthSdParts::GroundY:p.castle==4?FifthSdParts::GroundY:p.castle==3?FourthSdParts::GroundY:p.castle==2?ThirdSdParts::GroundY:p.castle==1?SecondSdParts::GroundY:StarterSdParts::GroundY)*p.width/p.sourceWidth-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    previousHeight=p.height;
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(!path) return false;
+    FILE* log=fopen((std::string(path)+"sizes.csv").c_str(),p.castle==0?"w":"a");
+    if(!log) return false;
+    if(p.castle==0) fprintf(log,"castle,width,height\n");
+    fprintf(log,"%d,%.2f,%.2f\n",p.castle+1,p.width,p.height); fclose(log);
+    return true;
+}
+
+bool TenthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(TenthSdParts::Room.h!=10*TenthSdParts::RoomFloorGap) return TenthSdReviewFailure(__LINE__);
+    if(TenthSdParts::DeckX!=45 || TenthSdParts::DeckW!=170) return TenthSdReviewFailure(__LINE__);
+    if(!p.valid || p.castle!=9 || p.roomCount!=10 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return TenthSdReviewFailure(__LINE__);
+    if(p.left<0 || p.left+p.width>DX) return TenthSdReviewFailure(__LINE__);
+    if(std::fabs(p.height*TenthSdParts::Width-p.width*TenthSdParts::Height)>p.width || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return TenthSdReviewFailure(__LINE__);
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/TenthSdParts::Width;
+    const auto& heroDeck=CastleParts::SdStagePiece(5,CastleVisualPartLevel(9,4),9);
+    if(TenthSdParts::HeroX<heroDeck.x+8 || TenthSdParts::HeroX>heroDeck.x+heroDeck.w-8) return TenthSdReviewFailure(__LINE__);
+    if(std::fabs(p.roomFloorGap-TenthSdParts::RoomFloorGap*unit)>.1f) return TenthSdReviewFailure(__LINE__);
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-TenthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return TenthSdReviewFailure(__LINE__);
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(9)?p.residentCount:0)) return TenthSdReviewFailure(__LINE__);
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return TenthSdReviewFailure(__LINE__);
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+138,CASTLE_EXTERIOR_03_FIRST_IMG+126,CASTLE_10_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+48,CASTLE_COMMAND_PLATFORM_FIRST_IMG+48,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+48,
+        CASTLE_BASE_FIRST_IMG+54,CASTLE_WHEEL_FIRST_IMG+54,CASTLE_WHEEL_FIRST_IMG+54};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(9,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return TenthSdReviewFailure(__LINE__);
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,9);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return TenthSdReviewFailure(__LINE__);
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+54+CastleVisualPartLevel(9,2);
+    if(!sprite[roomImg]) return TenthSdReviewFailure(__LINE__);
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<TenthSdParts::Room.w || roomSize.height<TenthSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,TenthSdParts::Room.w,TenthSdParts::Room.h); fclose(log); }
+        return TenthSdReviewFailure(__LINE__);
+    }
+    if(CastleParts::roomCover[9].material!=CASTLE_EXTERIOR_03_FIRST_IMG+126+CastleVisualPartLevel(9,1)) return TenthSdReviewFailure(__LINE__);
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(9,3),9);
+    if(CastleParts::cannonMuzzleX[9]<=p.left+(gun.x+gun.w*.5f)*unit) return TenthSdReviewFailure(__LINE__);
+    const float muzzleY=(p.top-CastleParts::cannonMuzzleY[9])/unit;
+    if(muzzleY<gun.y || muzzleY>gun.y+gun.h) return TenthSdReviewFailure(__LINE__);
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_TENTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return TenthSdReviewFailure(__LINE__);
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return TenthSdReviewFailure(__LINE__);
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return TenthSdReviewFailure(__LINE__);
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return TenthSdReviewFailure(__LINE__);
+    }
+    return true;
+}
+
+static bool NinthSdReviewFailure(int line) {
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(path) {
+        FILE* log=fopen((std::string(path)+"geometry.log").c_str(),"a");
+        if(log) { fprintf(log,"Ninth geometry check failed at Func_Draw.cpp:%d\n",line); fclose(log); }
+    }
+    return false;
+}
+
+bool NinthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(NinthSdParts::Room.h!=9*NinthSdParts::RoomFloorGap) return NinthSdReviewFailure(__LINE__);
+    if(NinthSdParts::DeckX!=55 || NinthSdParts::DeckW!=185) return NinthSdReviewFailure(__LINE__);
+    if(!p.valid || p.castle!=8 || p.roomCount!=9 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return NinthSdReviewFailure(__LINE__);
+    if(p.left<0 || p.left+p.width>DX) return NinthSdReviewFailure(__LINE__);
+    if(std::fabs(p.height*NinthSdParts::Width-p.width*NinthSdParts::Height)>p.width || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return NinthSdReviewFailure(__LINE__);
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/NinthSdParts::Width;
+    const auto& heroDeck=CastleParts::SdStagePiece(5,CastleVisualPartLevel(8,4),8);
+    if(NinthSdParts::HeroX<heroDeck.x+8 || NinthSdParts::HeroX>heroDeck.x+heroDeck.w-8) return NinthSdReviewFailure(__LINE__);
+    if(std::fabs(p.roomFloorGap-NinthSdParts::RoomFloorGap*unit)>.1f) return NinthSdReviewFailure(__LINE__);
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-NinthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return NinthSdReviewFailure(__LINE__);
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(8)?p.residentCount:0)) return NinthSdReviewFailure(__LINE__);
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return NinthSdReviewFailure(__LINE__);
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+120,CASTLE_EXTERIOR_03_FIRST_IMG+108,CASTLE_09_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+42,CASTLE_COMMAND_PLATFORM_FIRST_IMG+42,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+42,
+        CASTLE_BASE_FIRST_IMG+48,CASTLE_WHEEL_FIRST_IMG+48,CASTLE_WHEEL_FIRST_IMG+48};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(8,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return NinthSdReviewFailure(__LINE__);
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,8);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return NinthSdReviewFailure(__LINE__);
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+48+CastleVisualPartLevel(8,2);
+    if(!sprite[roomImg]) return NinthSdReviewFailure(__LINE__);
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<NinthSdParts::Room.w || roomSize.height<NinthSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,NinthSdParts::Room.w,NinthSdParts::Room.h); fclose(log); }
+        return NinthSdReviewFailure(__LINE__);
+    }
+    if(CastleParts::roomCover[8].material!=CASTLE_EXTERIOR_03_FIRST_IMG+108+CastleVisualPartLevel(8,1)) return NinthSdReviewFailure(__LINE__);
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(8,3),8);
+    if(CastleParts::cannonMuzzleX[8]<=p.left+(gun.x+gun.w*.5f)*unit) return NinthSdReviewFailure(__LINE__);
+    const float muzzleY=(p.top-CastleParts::cannonMuzzleY[8])/unit;
+    if(muzzleY<gun.y || muzzleY>gun.y+gun.h) return NinthSdReviewFailure(__LINE__);
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_NINTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return NinthSdReviewFailure(__LINE__);
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return NinthSdReviewFailure(__LINE__);
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return NinthSdReviewFailure(__LINE__);
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return NinthSdReviewFailure(__LINE__);
+    }
+    return true;
+}
+
+static bool EighthSdReviewFailure(int line) {
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(path) {
+        FILE* log=fopen((std::string(path)+"geometry.log").c_str(),"a");
+        if(log) { fprintf(log,"Eighth geometry check failed at Func_Draw.cpp:%d\n",line); fclose(log); }
+    }
+    return false;
+}
+
+bool EighthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(EighthSdParts::Room.h!=8*EighthSdParts::RoomFloorGap) return EighthSdReviewFailure(__LINE__);
+    if(!p.valid || p.castle!=7 || p.roomCount!=8 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return EighthSdReviewFailure(__LINE__);
+    if(p.left<0 || p.left+p.width>DX) return EighthSdReviewFailure(__LINE__);
+    if(std::fabs(p.height*EighthSdParts::Width-p.width*EighthSdParts::Height)>p.width || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return EighthSdReviewFailure(__LINE__);
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/EighthSdParts::Width;
+    const auto& heroDeck=CastleParts::SdStagePiece(5,CastleVisualPartLevel(7,4),7);
+    if(EighthSdParts::HeroX<heroDeck.x+8 || EighthSdParts::HeroX>heroDeck.x+heroDeck.w-8) return EighthSdReviewFailure(__LINE__);
+    if(std::fabs(p.roomFloorGap-EighthSdParts::RoomFloorGap*unit)>.1f) return EighthSdReviewFailure(__LINE__);
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-EighthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return EighthSdReviewFailure(__LINE__);
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(7)?p.residentCount:0)) return EighthSdReviewFailure(__LINE__);
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return EighthSdReviewFailure(__LINE__);
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+102,CASTLE_EXTERIOR_03_FIRST_IMG+90,CASTLE_08_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+36,CASTLE_COMMAND_PLATFORM_FIRST_IMG+36,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+36,
+        CASTLE_BASE_FIRST_IMG+42,CASTLE_WHEEL_FIRST_IMG+42,CASTLE_WHEEL_FIRST_IMG+42};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(7,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return EighthSdReviewFailure(__LINE__);
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,7);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return EighthSdReviewFailure(__LINE__);
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+42+CastleVisualPartLevel(7,2);
+    if(!sprite[roomImg]) return EighthSdReviewFailure(__LINE__);
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<EighthSdParts::Room.w || roomSize.height<EighthSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,EighthSdParts::Room.w,EighthSdParts::Room.h); fclose(log); }
+        return EighthSdReviewFailure(__LINE__);
+    }
+    if(CastleParts::roomCover[7].material!=CASTLE_EXTERIOR_03_FIRST_IMG+90+CastleVisualPartLevel(7,1)) return EighthSdReviewFailure(__LINE__);
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(7,3),7);
+    if(CastleParts::cannonMuzzleX[7]<=p.left+(gun.x+gun.w*.5f)*unit) return EighthSdReviewFailure(__LINE__);
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_EIGHTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return EighthSdReviewFailure(__LINE__);
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return EighthSdReviewFailure(__LINE__);
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return EighthSdReviewFailure(__LINE__);
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return EighthSdReviewFailure(__LINE__);
+    }
+    return true;
+}
+
+static bool SeventhSdReviewFailure(int line) {
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(path) {
+        FILE* log=fopen((std::string(path)+"geometry.log").c_str(),"a");
+        if(log) { fprintf(log,"Seventh geometry check failed at Func_Draw.cpp:%d\n",line); fclose(log); }
+    }
+    return false;
+}
+
+bool SeventhSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=6 || p.roomCount!=7 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return SeventhSdReviewFailure(__LINE__);
+    if(p.left<0 || p.left+p.width>DX) return SeventhSdReviewFailure(__LINE__);
+    if(std::fabs(p.height*SeventhSdParts::Width-p.width*SeventhSdParts::Height)>p.width || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return SeventhSdReviewFailure(__LINE__);
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/SeventhSdParts::Width;
+    const auto& heroDeck=CastleParts::SdStagePiece(5,CastleVisualPartLevel(6,4),6);
+    if(SeventhSdParts::HeroX<heroDeck.x+8 || SeventhSdParts::HeroX>heroDeck.x+heroDeck.w-8) return SeventhSdReviewFailure(__LINE__);
+    if(std::fabs(p.roomFloorGap-SeventhSdParts::RoomFloorGap*unit)>.1f) return SeventhSdReviewFailure(__LINE__);
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-SeventhSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return SeventhSdReviewFailure(__LINE__);
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(6)?p.residentCount:0)) return SeventhSdReviewFailure(__LINE__);
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return SeventhSdReviewFailure(__LINE__);
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+84,CASTLE_EXTERIOR_03_FIRST_IMG+72,CASTLE_07_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+30,CASTLE_COMMAND_PLATFORM_FIRST_IMG+30,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+30,
+        CASTLE_BASE_FIRST_IMG+36,CASTLE_WHEEL_FIRST_IMG+36,CASTLE_WHEEL_FIRST_IMG+36};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(6,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return SeventhSdReviewFailure(__LINE__);
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,6);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return SeventhSdReviewFailure(__LINE__);
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+36+CastleVisualPartLevel(6,2);
+    if(!sprite[roomImg]) return SeventhSdReviewFailure(__LINE__);
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<SeventhSdParts::Room.w || roomSize.height<SeventhSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,SeventhSdParts::Room.w,SeventhSdParts::Room.h); fclose(log); }
+        return SeventhSdReviewFailure(__LINE__);
+    }
+    if(CastleParts::roomCover[6].material!=CASTLE_EXTERIOR_03_FIRST_IMG+72+CastleVisualPartLevel(6,1)) return SeventhSdReviewFailure(__LINE__);
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(6,3),6);
+    if(CastleParts::cannonMuzzleX[6]<=p.left+(gun.x+gun.w*.5f)*unit) return SeventhSdReviewFailure(__LINE__);
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_SEVENTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return SeventhSdReviewFailure(__LINE__);
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return SeventhSdReviewFailure(__LINE__);
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return SeventhSdReviewFailure(__LINE__);
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return SeventhSdReviewFailure(__LINE__);
+    }
+    return true;
+}
+
+static bool SixthSdReviewFailure(int line) {
+    const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+    if(path) {
+        FILE* log=fopen((std::string(path)+"geometry.log").c_str(),"a");
+        if(log) { fprintf(log,"Sixth geometry check failed at Func_Draw.cpp:%d\n",line); fclose(log); }
+    }
+    return false;
+}
+
+bool SixthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=5 || p.roomCount!=6 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return SixthSdReviewFailure(__LINE__);
+    if(p.left<0 || p.left+p.width>DX) return SixthSdReviewFailure(__LINE__);
+    if(std::fabs(p.height*SixthSdParts::Width-p.width*SixthSdParts::Height)>p.width || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return SixthSdReviewFailure(__LINE__);
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/SixthSdParts::Width;
+    if(std::fabs(p.roomFloorGap-SixthSdParts::RoomFloorGap*unit)>.1f) return SixthSdReviewFailure(__LINE__);
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-SixthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return SixthSdReviewFailure(__LINE__);
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(5)?p.residentCount:0)) return SixthSdReviewFailure(__LINE__);
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return SixthSdReviewFailure(__LINE__);
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+66,CASTLE_EXTERIOR_03_FIRST_IMG+54,CASTLE_06_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+24,CASTLE_COMMAND_PLATFORM_FIRST_IMG+24,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+24,
+        CASTLE_BASE_FIRST_IMG+30,CASTLE_WHEEL_FIRST_IMG+30,CASTLE_WHEEL_FIRST_IMG+30};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(5,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return SixthSdReviewFailure(__LINE__);
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,5);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return SixthSdReviewFailure(__LINE__);
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+30+CastleVisualPartLevel(5,2);
+    if(!sprite[roomImg]) return SixthSdReviewFailure(__LINE__);
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<SixthSdParts::Room.w || roomSize.height<SixthSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,SixthSdParts::Room.w,SixthSdParts::Room.h); fclose(log); }
+        return SixthSdReviewFailure(__LINE__);
+    }
+    if(CastleParts::roomCover[5].material!=CASTLE_EXTERIOR_03_FIRST_IMG+54+CastleVisualPartLevel(5,1)) return SixthSdReviewFailure(__LINE__);
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(5,3),5);
+    if(CastleParts::cannonMuzzleX[5]<=p.left+(gun.x+gun.w*.5f)*unit) return SixthSdReviewFailure(__LINE__);
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_SIXTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return SixthSdReviewFailure(__LINE__);
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return SixthSdReviewFailure(__LINE__);
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return SixthSdReviewFailure(__LINE__);
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return SixthSdReviewFailure(__LINE__);
+    }
+    return true;
+}
+
+bool FifthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=4 || p.roomCount!=5 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return false;
+    if(p.left<0 || p.left+p.width>DX) return false;
+    if(p.height<p.width*1.8f || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return false;
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/FifthSdParts::Width;
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-FifthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(4)?p.residentCount:0)) return false;
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+48,CASTLE_EXTERIOR_03_FIRST_IMG+36,CASTLE_05_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+18,CASTLE_COMMAND_PLATFORM_FIRST_IMG+18,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+18,
+        CASTLE_BASE_FIRST_IMG+24,CASTLE_WHEEL_FIRST_IMG+24,CASTLE_WHEEL_FIRST_IMG+24};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(4,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,4);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return false;
+    }
+    const int roomImg=CASTLE_ROOM_V4_FIRST_IMG+24+CastleVisualPartLevel(4,2);
+    if(!sprite[roomImg]) return false;
+    const auto roomSize=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    if(roomSize.width<FifthSdParts::Room.w || roomSize.height<FifthSdParts::Room.h) {
+        FILE* log=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"room-texture.log").c_str(),"a");
+        if(log) { fprintf(log,"%s %.0fx%.0f expected %dx%d\n",GetResourceName(RES_IMG,roomImg).c_str(),roomSize.width,roomSize.height,FifthSdParts::Room.w,FifthSdParts::Room.h); fclose(log); }
+        return false;
+    }
+    if(CastleParts::roomCover[4].material!=CASTLE_EXTERIOR_03_FIRST_IMG+36+CastleVisualPartLevel(4,1)) return false;
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(4,3),4);
+    if(CastleParts::cannonMuzzleX[4]<=p.left+(gun.x+gun.w*.5f)*unit) return false;
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_FIFTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return false;
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return false;
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return false;
+    }
+    return true;
+}
+
+bool FourthSdUpgradeReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=3 || p.roomCount!=4 || p.width>DX*CastleParts::kStarterViewportRatio+.5f) return false;
+    if(p.left<0 || p.left+p.width>DX) return false;
+    if(p.height<p.width*1.4f || p.deckWidth<p.width*.6f || p.roomFloorGap<=0) return false;
+    if((drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0)) && std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)>.5f) return false;
+    const float unit=p.width/FourthSdParts::Width;
+    if(drawHandle==MD_LOBBY && std::fabs(p.top-FourthSdParts::GroundY*unit-(LobbyCastleGroundY()-CastleParts::kStarterRailOverlapPx))>3) return false;
+    if(p.residentDrawCount!=(CastleParts::RoomRevealRequested(3)?p.residentCount:0)) return false;
+    if(std::fabs(p.deckSurface-p.commanderY)>1) return false;
+    const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+30,CASTLE_EXTERIOR_03_FIRST_IMG+18,CASTLE_04_HOLLOW_FIRST_IMG,
+        CASTLE_HEAVY_CANNON_FIRST_IMG+12,CASTLE_COMMAND_PLATFORM_FIRST_IMG+12,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+12,
+        CASTLE_BASE_FIRST_IMG+18,CASTLE_WHEEL_FIRST_IMG+18,CASTLE_WHEEL_FIRST_IMG+18};
+    const int categories[]={0,1,1,3,3,4,4,4,4};
+    for(int i=0;i<9;++i) {
+        const int level=CastleVisualPartLevel(3,categories[i]);
+        const int img=firsts[i]+level;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        const auto& rect=CastleParts::SdStagePiece(i,level,3);
+        if(size.width<rect.sx+rect.w || size.height<rect.sy+rect.h) return false;
+    }
+    if(!sprite[CASTLE_ROOM_V4_FIRST_IMG+18+CastleVisualPartLevel(3,2)]) return false;
+    if(CastleParts::roomCover[3].material!=CASTLE_EXTERIOR_03_FIRST_IMG+18+CastleVisualPartLevel(3,1)) return false;
+    const auto& gun=CastleParts::SdStagePiece(3,CastleVisualPartLevel(3,3),3);
+    if(CastleParts::cannonMuzzleX[3]<=p.left+(gun.x+gun.w*.5f)*unit) return false;
+    for(int i=0;i<54;++i) {
+        const int img=CASTLE_FOURTH_LEGACY_FIRST_IMG+i;
+        if(!sprite[img]) LoadImg(img);
+        if(!sprite[img]) return false;
+    }
+    if(drawHandle==MD_PLAY) {
+        int count=0;
+        for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active&&!ao[CREW+i].dead) {
+            float x,y; ++count;
+            if(!CastleCrewDeckPoint(i,&x,&y) || x<p.deckLeft || x>p.deckLeft+p.deckWidth) return false;
+            const float actualX=xOffset+ao[CREW+i].x-rx;
+            const float actualY=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ao[CREW+i].y;
+            if(std::fabs(actualX-x)>2 || std::fabs(actualY-y)>2) return false;
+        }
+        if(p.externalCount!=count || count!=MAXCREW) return false;
+    }
+    return true;
+}
+
+bool CastleRoomToggleTap(float startX,float startY,float endX,float endY) {
+    if(popUpCnt>0 || CastleParts::active || (drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY)) return false;
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle!=gMobileCastleVisual || CastleParts::roomCover[p.castle].width<=0) return false;
+    if(std::fabs(endX-startX)>8*_2X || std::fabs(endY-startY)>8*_2X) return false;
+    const auto inside=[&](float x,float y) {return x>=p.left && x<=p.left+p.width && y>=p.top-p.height && y<=p.top && y<DY-60*_2X;};
+    if(!inside(startX,startY) || !inside(endX,endY)) return false;
+    CastleParts::roomInteriorOpen[p.castle]=!CastleParts::roomInteriorOpen[p.castle];
+    return true;
+}
+bool CastleRoomCoverPreview(int operation) {
+    if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_ROOM_COVER_REVIEW")) return false;
+    const int c=Max(0,Min(CASTLE_STAGE_CNT-1,gMobileCastleVisual));
+    const auto& r=CastleParts::roomCover[c];
+    if(operation==4) {
+        touchX=r.left-64*_2X-4;touchY=r.top-r.height/2;isTouchKey=TOUCH_PRESS;
+        CastleRoomToggleTap(touchX,touchY,touchX,touchY);
+        return r.width>0;
+    }
+    if(operation==5) {
+        touchX=r.left+r.width*2/3;touchY=r.top-r.height/2;isTouchKey=TOUCH_DRAG;
+        return r.width>0;
+    }
+    if(operation>=2 && operation!=6) return CastleParts::roomCoverRevealed[c]==(operation==2);
+    touchX=r.left+r.width/2;
+    touchY=(Max(0,r.top-r.height)+Min(DY-60,r.top))/2;
+    isTouchKey=operation?TOUCH_PRESS:TOUCH_RELEASE;
+    if(operation==1 || operation==6) CastleRoomToggleTap(touchX,touchY,touchX,touchY);
+    return r.width>0;
+}
+
+bool CastleUniformReviewCheck(void) {
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid || p.castle<5 || p.castle>9 || p.roomCount!=p.castle+1) return false;
+    const int c=p.castle;
+    const float unit=p.width/p.sourceWidth;
+    const auto& hero=UniformCastleAnchors::Stages[c-5][CastleVisualPartLevel(c,3)];
+    const auto& deck=UniformCastleAnchors::Stages[c-5][CastleVisualPartLevel(c,4)];
+    const auto& gun=UniformCastleAnchors::Stages[c-5][CastleVisualPartLevel(c,3)];
+    const auto shift=CastleParts::SdUniformOffset(c,3);
+    if(std::fabs(p.commanderX-(p.left+(hero.heroX+shift.x)*unit))>1 ||
+       std::fabs(p.commanderY-(p.top-(hero.heroY+shift.y)*unit))>1 ||
+       std::fabs(p.deckSurface-(p.top-deck.deckY*unit))>1 ||
+       std::fabs(CastleParts::cannonMuzzleX[c]-(p.left+(gun.muzzleX+shift.x)*unit))>1) return false;
+    for(int i=0;i<9;++i) {
+        const int stage=CastleVisualPartLevel(c,i==0?0:(i==1||i==2)?1:(i==3||i==4)?3:4);
+        const auto& r=CastleParts::SdStagePiece(i,stage,c);
+        if(r.w<=0 || r.h<=0 || r.x<0 || r.y<0 || r.x+r.w>p.sourceWidth+1 || r.y+r.h>p.height/unit+1) return false;
+        const int hollows[]={CASTLE_06_HOLLOW_FIRST_IMG,CASTLE_07_HOLLOW_FIRST_IMG,CASTLE_08_HOLLOW_FIRST_IMG,CASTLE_09_HOLLOW_FIRST_IMG,CASTLE_10_HOLLOW_FIRST_IMG};
+        const int firsts[]={CASTLE_EXTERIOR_03_FIRST_IMG+66+(c-5)*18,CASTLE_EXTERIOR_03_FIRST_IMG+54+(c-5)*18,hollows[c-5],
+            CASTLE_HEAVY_CANNON_FIRST_IMG+24+(c-5)*6,CASTLE_COMMAND_PLATFORM_FIRST_IMG+24+(c-5)*6,
+            CASTLE_02_10_COMBAT_DECK_FIRST_IMG+24+(c-5)*6,CASTLE_BASE_FIRST_IMG+c*6,CASTLE_WHEEL_FIRST_IMG+c*6,CASTLE_WHEEL_FIRST_IMG+c*6};
+        const int img=firsts[i]+stage;
+        if(!sprite[img]) return false;
+        const auto size=sprite[img]->getContentSize();
+        if(size.width<r.sx+r.w || size.height<r.h) return false;
+    }
+    const auto& cover=CastleParts::roomCover[c];
+    return cover.width>0 && cover.height>0 && p.deckWidth>0 &&
+        std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)<1;
+}
+
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int curCastleIn, bool battle)
 {
@@ -8372,8 +9513,10 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	const float commanderU = (partOffset + 600.0f)
 		/ gLobbyCastleW;
 	LobbyCastleToObj(commanderU, heroV, &heroCenterX, &heroY);
+	const bool sdRoom=CastleParts::SdEnabled(curCastleIn)&&CastleParts::sdPlacement.valid;
+	if(sdRoom) ScreenToObj(CastleParts::sdPlacement.commanderX,CastleParts::sdPlacement.commanderY,&heroCenterX,&heroY);
 
-	const float charZoom = LobbyCharZoom();
+	const float charZoom = LobbyCharZoom() * (sdRoom?CastleParts::sdPlacement.fitScale:1.0f);
 
 	//전투 자리에 막 내려온 동료를 찾는다. 슬롯의 주인이 바뀐 프레임이
 	//등장 순간이다. 한 번만 세면 되므로 동료를 훑기 전에 처리한다.
@@ -8429,6 +9572,13 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	static int candidateCrew[CAP_CREW];
 	int candidateCount = 0;
 	bool selected[CAP_CREW] = { false };
+    if(sdRoom && battle) for(int slot=0;slot<MAXCREW;++slot) {
+        const auto& o=ao[CREW+slot];
+        if(!o.active || o.dead) continue;
+        for(int k=0;k<gTotalCrew;++k) if(crewData[k*CREWDATASIZE+CREWDATA_TYPE]==o.type && !selected[k]) {
+            selected[k]=true; candidateCrew[candidateCount++]=k; break;
+        }
+    }
 
 	// 1순위: 인벤토리에 보유 중인 크루 등록
 	for (int i = 0; i < gTotalCrew && candidateCount < CAP_CREW; ++i) {
@@ -8443,7 +9593,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		}
 	}
 	// 2순위: 각성 시 모든 동료가 다 들어갈 수 있도록 남은 슬롯 전체를 보유 외 동료로 채움
-	for (int i = 0; i < gTotalCrew && candidateCount < slotTable.count; ++i) {
+	for (int i = 0; !sdRoom && i < gTotalCrew && candidateCount < slotTable.count; ++i) {
 		if (selected[i])
 			continue;
 		if (crewData[i * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
@@ -8478,6 +9628,13 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	};
 	AssignedCrew assigned[CAP_CREW];
 	int assignedCount = 0;
+    if(sdRoom) {
+        // The room grid accepts every owned candidate, independently of the
+        // old decorative roof/wall slot table and its eight-person cap.
+        for(int i=0;i<candidateCount;++i)
+            assigned[assignedCount++]={candidateCrew[i],{(LobbyCrewRole)0,0,0,false,0}};
+        walkingCrewCount=standingCrewCount=0;
+    }
 
 	int walkSlotIdx = 0;
 	int fixedSlotIdx = 0;
@@ -8504,6 +9661,9 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 	// 3단계: 선별/배치된 크루들의 모션 및 이동 연산
 	static OBJECT lobbyCrewList[CAP_CREW];
+	bool externalCrew[CAP_CREW]={};
+    int residentFloor[CAP_CREW]={};
+	int resident=0;
 	int owned = 0;
 
 	for (int i = 0; i < assignedCount; ++i) {
@@ -8531,6 +9691,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		else if (slot.role == LOBBY_ROLE_WALL_TOP) roleZoomScale = 0.85f;
 		else if (slot.role == LOBBY_ROLE_WALL_MID) roleZoomScale = 0.90f;
 		else roleZoomScale = 1.00f;
+		if(sdRoom) roleZoomScale=1.0f;
 
 		pCrew->y = slot.baseY;
 
@@ -8573,8 +9734,9 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			//
 			//방에 그대로 두면 예순네 명 사이에 섞여 누가 나갔는지가 안
 			//보인다. 땅에 내려서면 성과 몬스터 사이에 저 혼자 서게 된다.
-			const float sx = CREW_LINE_X + liveSlot * CREW_LINE_GAP;
-			const float sy = gLobbyCastleTop - heroV * gLobbyCastleH * gLobbyCastleScale;
+			float sx = CREW_LINE_X + liveSlot * CREW_LINE_GAP;
+			float sy = gLobbyCastleTop - heroV * gLobbyCastleH * gLobbyCastleScale;
+			if(sdRoom) CastleCrewDeckPoint(liveSlot,&sx,&sy);
 
 			float ox = 0.0f, oy = 0.0f;
 			ScreenToObj(sx, sy, &ox, &oy);
@@ -8583,6 +9745,22 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			pCrew->motion = live->motion;
 			pCrew->dirX = pCrew->dirF = live->dirF;
 		}
+
+        externalCrew[owned]=(live!=nullptr);
+        if(sdRoom && !live) {
+            const auto& p=CastleParts::sdPlacement;
+            float ox,oy;
+            const int slots=Max(1,assignedCount);
+            const int position=resident++;
+            const int slot=position%p.roomCount;
+            const int floor=slot/p.roomColumns, column=position/p.roomCount;
+            residentFloor[owned]=floor;
+            const int columns=(slots+p.roomCount-1)/p.roomCount;
+            const float cellW=p.interiorWidth/p.roomColumns;
+            const float sx=p.interiorLeft+cellW*(slot%p.roomColumns)+cellW*(column+1)/(columns+1.0f);
+            ScreenToObj(sx,p.interiorFloor+floor*p.roomFloorGap,&ox,&oy);
+            pCrew->x=ox; pCrew->y=oy;
+        }
 
 		// 모션 유효성 안전 보정 (스프라이트가 없는 모션 번호 방지)
 		if (cmd_m_cnt[pCrew->cmf] == nullptr || cmd_m_cnt[pCrew->cmf][pCrew->motion * 2 + 1] == 0) {
@@ -8593,6 +9771,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		pCrew->ny = pCrew->y;
 		pCrew->frame = live ? live->frame : frame + owned * MOTIONDIV;
 		pCrew->zoom = enemyIconZoom[pCrew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * roleZoomScale * charZoom;
+		if(sdRoom && !live) pCrew->zoom *= 2.25f; // Another 1.5x over the previous 1.5x.
 
 		if (live) {
 			//전투 자리의 동료는 조금 크게. 방 안의 구경꾼들과 섞이면 안 된다.
@@ -8607,6 +9786,13 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		}
 		owned++;
 	}
+
+    if(sdRoom) {
+        auto& p=CastleParts::sdPlacement; p.externalCount=0; p.residentCount=0;
+        for(int k=0;k<owned;++k) {
+            if(externalCrew[k]) ++p.externalCount; else ++p.residentCount;
+        }
+    }
 
 	// Y-sorting: 화면 위(성 상단/뒤쪽)부터 화면 아래(바닥/앞쪽) 순서로 렌더링하여 입체감 확보
 	static int drawOrder[CAP_CREW];
@@ -8623,8 +9809,13 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		drawOrder[m + 1] = key;
 	}
 
+    const bool revealResidents=!sdRoom || CastleParts::RoomRevealRequested(curCastleIn);
+    if(sdRoom) CastleParts::sdPlacement.residentDrawCount=0;
 	// 1단계: 발밑 그림자 먼저 렌더링 (캐릭터 발밑에 정상적으로 그림자가 깔리도록 처리)
 	for (int k = 0; k < owned; ++k) {
+		const bool inside=!externalCrew[drawOrder[k]];
+		if(inside && !revealResidents) continue;
+		CastleParts::RoomClipScope roomClip(sdRoom && inside,residentFloor[drawOrder[k]]);
 		const OBJECT* pCrew = &lobbyCrewList[drawOrder[k]];
 		const float shadowX = pCrew->x - (IsBigCmf(pCrew->cmf) ? 20.0f : 12.0f) * _2X * pCrew->zoom;
 		const float shadowY = STATUSWIN_Y + (rh - 4) * TSIZE - (pCrew->y - OBJIMGGAP) - ry + 8.0f * _2X * pCrew->zoom;
@@ -8636,7 +9827,119 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 	// 2단계: 크루 스프라이트 렌더링
 	for (int k = 0; k < owned; ++k) {
-		DrawObj(&lobbyCrewList[drawOrder[k]]);
+		if(!externalCrew[drawOrder[k]] && revealResidents) {
+			CastleParts::RoomClipScope roomClip(sdRoom,residentFloor[drawOrder[k]]);
+			DrawObj(&lobbyCrewList[drawOrder[k]]);
+			if(sdRoom) ++CastleParts::sdPlacement.residentDrawCount;
+		}
+	}
+
+	CastleParts::DrawRoomCover(curCastleIn);
+	for(int k=0;k<owned;++k) if(externalCrew[drawOrder[k]]) DrawObj(&lobbyCrewList[drawOrder[k]]);
+
+	//---- 발판에 동료를 세워 본다 ----
+	//
+	//로비에서는 동료가 다 방 안에 있고 발판은 비어 있다. 거기에 몇이
+	//어떻게 서는지를 보려고 시험 삼아 세운다(CASTLE_DECK_SAMPLE_CNT).
+	//
+	//판에서는 안 세운다 - 거기서는 진짜 동료가 내려서 있고(위의 live),
+	//그 위에 겹쳐 세우면 같은 사람이 둘이 된다.
+	//
+	//자리는 전투가 쓰는 그 표다(CastleCrewDeckPoint). 방 안의 동료보다
+	//크고 지휘관보다는 작다.
+	if (!battle && CASTLE_DECK_SAMPLE_CNT > 0 && sdRoom) {
+		//누구를 세우나. 편성한 동료가 먼저고, 모자라면 가진 동료로 채운다.
+		int show[MAXCREW];
+		int shown = 0;
+
+		for (int i = 0; i < MAXCREW && shown < CASTLE_DECK_SAMPLE_CNT; ++i) {
+			const int type = robin.slotCrew[i];
+
+			if (type > 0 && GetCrewIdxFromType(type) >= 0)
+				show[shown++] = type;
+		}
+
+		for (int i = 0; i < gTotalCrew && shown < CASTLE_DECK_SAMPLE_CNT; ++i) {
+			const int type = crewData[i * CREWDATASIZE + CREWDATA_TYPE];
+			bool already = false;
+
+			if (type <= 0 || type == NPC_SHIP)
+				continue;
+
+			for (int k = 0; k < shown; ++k)
+				if (show[k] == type) { already = true; break; }
+
+			if (!already)
+				show[shown++] = type;
+		}
+
+		for (int i = 0; i < shown; ++i) {
+			OBJECT deck;
+			float sx = 0.0f, sy = 0.0f;
+			float ox = 0.0f, oy = 0.0f;
+
+			//---- 발판 위에 고르게 ----
+			//
+			//CastleCrewDeckPoint 는 MAXCREW(6) 칸 중 몇 번째냐로 자리를
+			//준다. 다섯을 거기에 끼워 넣으려고 i * 5 / 4 로 칸 번호를
+			//만들었더니 정수 나눗셈이 0, 1, 2, 3, 5 를 냈다 - 넷이 왼쪽
+			//60% 에 뭉치고 하나만 오른쪽 끝에 떨어져 섰다.
+			//
+			//칸 번호를 거치지 않고 발판 폭을 사람 수로 직접 나눈다.
+			//가장자리 여백은 그 함수와 같은 값(24 * scale)이다.
+			{
+				const CastleParts::SdPlacement& dp = CastleParts::sdPlacement;
+				const float inset = 24.0f * dp.scale;
+				const float span = Max(1.0f, dp.deckWidth - inset * 2.0f);
+
+				if (!dp.valid)
+					continue;
+
+				sx = dp.deckLeft + inset
+					+ span * (float)(i + 1) / (float)(shown + 1);
+				sy = dp.deckSurface;
+			}
+
+			ScreenToObj(sx, sy, &ox, &oy);
+
+			//---- SetNpc 를 거쳐야 그려진다 ----
+			//
+			//손으로 type 과 cmf 만 채워 넣었더니 그림자만 깔리고 사람은
+			//안 나왔다. 그릴 때 보는 값(drawHandler · hp · 상태)이 비어
+			//있었기 때문이다.
+			//
+			//방 안의 동료를 세우는 길과 같게 간다(위의 lobbyCrewList).
+			//SetNpc 가 active · motion · drawHandler 까지 다 덮어쓰므로,
+			//자리와 크기는 그 뒤에 얹는다.
+			memset(&deck, 0, sizeof(deck));
+			deck.type = (unsigned short)show[i];
+			deck.cmf = enemyData[deck.type * ENEMYDATASIZE + ENEMYDATA_CMF];
+			SetNpc(&deck);
+			deck.motion = crewPos[deck.type * 5];
+			deck.active = true;
+			deck.dead = false;
+			deck.x = deck.nx = ox;
+			deck.y = deck.ny = oy;
+			deck.dirX = deck.dirF = RIGHT;
+			deck.frame = frame + i * MOTIONDIV;
+			//방 안의 동료와 같은 식에 발판 몫을 곱한다.
+			deck.zoom = enemyIconZoom[deck.type] * CREWZOOM
+				* LOBBY_CREW_ZOOM_SCALE * charZoom * 2.25f
+				* CASTLE_DECK_SAMPLE_ZOOM;
+			deck.defaultZoom = deck.zoom;
+
+			//모션 번호가 그림 표 밖이면 서 있는 그림으로 되돌린다.
+			if (cmd_m_cnt[deck.cmf] == nullptr
+				|| cmd_m_cnt[deck.cmf][deck.motion * 2 + 1] == 0)
+				deck.motion = crewPos[deck.type * 5];
+
+			ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
+				deck.x - 12.0f * _2X * deck.zoom,
+				STATUSWIN_Y + (rh - 4) * TSIZE - (deck.y - OBJIMGGAP) - ry
+					+ 8.0f * _2X * deck.zoom,
+				SHADOW_IMG, deck.zoom);
+			DrawObj(&deck);
+		}
 	}
 
 	// 3단계: 히어로. 성문 앞 한가운데. 자리와 크기만 잠깐 바꿔 그리고 되돌린다.
@@ -8658,6 +9961,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		hero->x = hero->nx = heroCenterX;
 		hero->y = hero->ny = heroY;
 		hero->zoom = bz * charZoom * LOBBY_HERO_ZOOM;
+		if(sdRoom) hero->y=hero->ny=heroY-8.0f*_2X*hero->zoom;
 
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
 			hero->x - 12.0f * _2X * hero->zoom,
@@ -8909,6 +10213,56 @@ static int pvpTestFrame = 0;
 //0 격돌/구름/디오라마 줌 진입, 1 GO 대기, 2 교전, 3 상자로 이동해 내리치기, 4 약탈,
 //5 패배, 6 닫고 복귀
 static int pvpTestState = 0;
+#if defined(_DEBUG)
+static int pvpDebugCastle[2]={-1,-1};
+static void PvpCastleDebugKeys() {
+    static bool registered=false;
+    if(registered) return;
+    registered=true;
+    auto listener=cocos2d::EventListenerKeyboard::create();
+    listener->onKeyPressed=[](cocos2d::EventKeyboard::KeyCode key,cocos2d::Event* event) {
+        if(drawHandle!=MD_PVP) return;
+        using Key=cocos2d::EventKeyboard::KeyCode;
+        int side=-1,step=0;
+        if(key==Key::KEY_Q){side=0;step=1;}
+        if(key==Key::KEY_A){side=0;step=-1;}
+        if(key==Key::KEY_W){side=1;step=1;}
+        if(key==Key::KEY_S){side=1;step=-1;}
+        if(side<0) return;
+        const int current=pvpDebugCastle[side]>=0?pvpDebugCastle[side]:(side?Max(0,Min(9,pvpFoeCastleLevel-1)):CastleMenuModel::Clamp(robin.castle));
+        pvpDebugCastle[side]=(current+step+10)%10;
+        event->stopPropagation();
+    };
+    cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener,-1);
+}
+#endif
+bool PvpCastleDebugReviewCheck() {
+#if defined(_DEBUG)
+    const int saved[2]={pvpDebugCastle[0],pvpDebugCastle[1]};
+    const int player=robin.castle,foe=pvpFoeCastleLevel;
+    using Key=cocos2d::EventKeyboard::KeyCode;
+    const Key keys[2][2]={{Key::KEY_Q,Key::KEY_A},{Key::KEY_W,Key::KEY_S}};
+    bool ok=true;
+    for(int side=0;side<2;++side) for(int direction=0;direction<2;++direction) {
+        pvpDebugCastle[side]=0;
+        for(int i=0;i<10;++i) {
+            cocos2d::EventKeyboard event(keys[side][direction],true);
+            cocos2d::Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+            const int expected=((direction?-1:1)*(i+1)+20)%10;
+            ok=ok && pvpDebugCastle[side]==expected;
+        }
+    }
+    pvpDebugCastle[0]=saved[0];pvpDebugCastle[1]=saved[1];
+    float baseW=0,baseH=0;CastlePartsDrawSize(1,1,&baseW,&baseH);
+    for(int level=1;level<=10;++level) {
+        float w=0,h=0;CastlePartsDrawSize(level,1,&w,&h);
+        ok=ok && std::fabs(w/baseW-IndividualCastleV4::Rigs[level-1].width/342.0f)<.001f;
+    }
+    return ok && robin.castle==player && pvpFoeCastleLevel==foe;
+#else
+    return true;
+#endif
+}
 
 //---- 약탈 ----
 //
@@ -8926,12 +10280,124 @@ static long long pvpTestEnemyMaxHp = 1000;
 static long long pvpTestPlayerDamage = 100;
 static long long pvpTestDefenseDamage = 50;
 static HOUSE pvpTestDefender;
+//---- 지금 붙고 있는 단계 ----
+//
+//VS 화면(Func_Roulette)과 격돌 화면이 둘 다 상대 성 단계를 알아야 한다.
+//그래서 static 이 아니다.
+int pvpStageFighting = 0;
+int pvpFoeCastleLevel = 1;
+int pvpFoeProfileImg = 0;	//상대 얼굴. 단계마다 다른 사람이라야 한다.
+//이겼을 때 이번이 처음 깬 단계였는지, 끝 단계 보상까지 받았는지. 결과
+//화면이 뭐라고 적을지가 이 둘로 갈린다.
+static bool pvpStageJustCleared = false;
+static bool pvpStageGrandJust = false;
 static int pvpTestPlayerX = 76 * _2X;
 static long long pvpTestLoot = 0;
 static unsigned char pvpReturnDraw = MD_PLAY;
 static unsigned char pvpReturnKey = MK_PLAY;
 static OBJECT pvpSavedObjects[TOTALOBJECT];
 static bool pvpObjectsSaved = false;
+
+//---- 상대 쪽에 서는 사람들 ----
+//
+//전에는 내 것(pvpSavedObjects)을 좌우로 뒤집어 양쪽에 똑같이 세웠다.
+//상대가 내 복사본이던 때의 이야기다. 이제는 단계마다 다른 성이 올라오니
+//그 사람의 동료가 서야 한다.
+//
+//히어로 칸은 내 것을 그대로 쓴다 - 상대의 히어로 그림까지 HOUSE 가
+//들고 있지는 않다. 서버 매칭이 붙으면 그 칸도 받아 온 것으로 바뀐다.
+static OBJECT pvpFoeObjects[TOTALOBJECT];
+
+//---- 내 쪽에 서는 사람들 ----
+//
+//로비의 오브젝트를 그대로 쓰면 아무도 안 선다. 로비에서는 동료 칸
+//(ao[CREW + i])이 꺼져 있고, 성 안의 동료는 성 그림이 따로 그리기
+//때문이다 - 격돌은 그 그림을 안 쓰므로 여기서 직접 세운다.
+//
+//편성표(robin.slotCrew)를 읽는다. 상대 쪽과 같은 길이다.
+static OBJECT pvpMyObjects[TOTALOBJECT];
+
+static const OBJECT* PvpSideObjects(int side)
+{
+	return (side == 0) ? pvpMyObjects : pvpFoeObjects;
+}
+
+//---- 붙잡아 둔 선로 거리 ----
+//
+//격돌이 시작될 때의 값이다. 매 프레임 이 자리에 되돌려 놓아 배경을
+//세워 둔다(StageBg::Borrow).
+static float pvpClashBgTravel = 0.0f;
+
+//---- 상대 쪽 사람들을 세운다 ----
+//
+//HOUSE.crew 는 동료의 '타입' 이다. 그림(cmf)과 크기는 그 타입으로
+//enemyData 에서 찾는다 - SetBattleCrew 와 같은 길이다.
+static void PvpBuildSideObjects(OBJECT* out, const unsigned short* crewType,
+	int heroType)
+{
+	memcpy(out, pvpSavedObjects, sizeof(OBJECT) * TOTALOBJECT);
+
+	//---- 히어로 ----
+	//
+	//로비의 ao[PLAYER] 를 그대로 쓰고 있었다. 그 칸은 고른 히어로가
+	//아니라 마지막으로 세운 사람이라, 로빈을 골라 두고도 맥스가 나갔다.
+	//
+	//게다가 양쪽이 같은 칸을 봤다 - 상대 성 위에도 내 히어로가 섰다.
+	//이제 쪽마다 제 사람을 세운다.
+	//
+	//LoadHeroObjAt 은 ao 에만 쓴다. 한 칸을 잠깐 빌려 쓰고 바로 돌려
+	//놓는다 - 이 함수는 판이 시작될 때 한 번만 불린다.
+	if (heroType >= 0 && heroType < TOTALCHAR) {
+		const OBJECT keep = ao[PLAYER];
+
+		LoadHeroObjAt(PLAYER, heroType);
+		out[PLAYER] = ao[PLAYER];
+		ao[PLAYER] = keep;
+
+		//선 자리는 안 쓴다. 격돌은 성의 지휘대 자리에 세운다.
+		out[PLAYER].active = true;
+		out[PLAYER].dead = false;
+	}
+
+	for (int i = 0; i < MAXCREW; ++i) {
+		OBJECT* o = &out[CREW + i];
+		const int type = (crewType != NULL) ? (int)crewType[i] : 0;
+
+		if (type <= 0 || GetCrewIdxFromType(type) < 0) {
+			//빈 칸이다. 지난 값이 남아 있으면 그 자리에 모르는 놈이 선다.
+			o->active = false;
+			continue;
+		}
+
+		//선 자리(x, y)는 내 쪽 것을 그대로 쓴다. 성 위의 자리는 성이
+		//정하는 것이지 누가 서느냐가 정하는 것이 아니다.
+		o->type = type;
+		o->cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
+		o->active = true;
+		o->dead = false;
+	}
+}
+
+//---- 양쪽을 한 번에 세운다 ----
+static void PvpBuildBothObjects(const HOUSE* foe)
+{
+	unsigned short mine[MAXCREW];
+	//---- 상대 히어로 ----
+	//
+	//HOUSE 는 그 사람이 누구를 쓰는지까지는 안 들고 있다. 얼굴 번호로
+	//정한다 - 사람마다 다르고 늘 같아서, 같은 상대는 늘 같은 히어로다.
+	//
+	//서버 매칭이 붙으면 받아 온 값으로 바꾼다.
+	const int foeHero = (foe != NULL)
+		? (int)(foe->userProfileImgIdx % TOTALCHAR) : 0;
+
+	for (int i = 0; i < MAXCREW; ++i)
+		mine[i] = (robin.slotCrew[i] > 0) ? (unsigned short)robin.slotCrew[i] : 0;
+
+	PvpBuildSideObjects(pvpMyObjects, mine, PlayerHeroType());
+	PvpBuildSideObjects(pvpFoeObjects,
+		(foe != NULL) ? foe->crew : NULL, foeHero);
+}
 static int pvpSavedRx = 0;
 static int pvpSavedRy = 0;
 static float pvpSavedDioramaZoom = DIORAMAZOOM;
@@ -9236,6 +10702,16 @@ static void SetupPvpCombatObjects(void)
 //격돌 상태를 처음으로 되돌린다. 정의는 격돌 화면과 함께 아래에 있다.
 static void PvpClashReset(void);
 
+//---- 격돌의 격자 ----
+//
+//본문은 아래(PvpCastleStandOffDraw 앞)에 있다. 여기서는 이름만 알린다 -
+//판을 여는 StartPvpTest 와 한 차례를 도는 PvpClashCombatStep 이 둘 다
+//본문보다 앞에 있다.
+static void PvpSideGridSetup(const HOUSE* foe);
+static void PvpSideGridStep(void);
+static bool PvpSideGridFire(void);
+static void PvpSideGridDraw(int side, int topY, float appear);
+
 void StartPvpTest(bool withUniverse)
 {
 	if (drawHandle == MD_PVP)
@@ -9251,6 +10727,9 @@ void StartPvpTest(bool withUniverse)
 	pvpSavedWaveStatus = waveStatus;
 	pvpTestFrame = 0;
 	//---- 들어오는 두 길 ----
+#if defined(_DEBUG)
+    pvpDebugCastle[0]=pvpDebugCastle[1]=-1;
+#endif
 	//
 	//좌상단 버튼으로 들어오면 우주맵에서 상대를 찾는 것부터 보여준다.
 	//룰렛 당첨으로 들어오면 그 화면은 룰렛이 이미 보여줬다 - 여기서 또
@@ -9271,9 +10750,65 @@ void StartPvpTest(bool withUniverse)
 	}
 	pvpTestPlayerX = 76 * _2X;
 	pvpTestLoot = 0;
+	//---- 이번 단계의 상대 ----
+	//
+	//전에는 내 복사본과 붙었다. 이제 AI 표에서 내 세기보다 단계만큼 위인
+	//성을 골라 온다. 골라 오지 못하면(표가 비었을 때) 옛 길로 떨어진다.
 	memset(&pvpTestDefender, 0, sizeof(pvpTestDefender));
+
+	pvpStageFighting = PvpStageNow();
+
+	const bool foeFound = PvpStageOpponent(pvpStageFighting, &pvpTestDefender);
+
+	//---- 시험용 ----
+	//
+	//상대를 마지막 성으로 올려 본다. 큰 성과 큰 격자가 화면에 어떻게
+	//들어오는지를 보려는 값이다(BalanceConfig 의 주석).
+#if PVP_DEBUG_FOE_MAX_CASTLE
+	if (foeFound) {
+		int sum = 0;
+
+		pvpTestDefender.castleLevel = (unsigned char)CASTLE_STAGE_CNT;
+
+		for (int i = 0; i < CASTLE_PART_SLOT; ++i) {
+			pvpTestDefender.castlePart[i] = (unsigned char)CASTLE_PART_MAX_LV;
+			sum += CASTLE_PART_MAX_LV;
+		}
+
+		for (int i = 0; i < MAXCREW; ++i)
+			sum += pvpTestDefender.crewCurStar[i];
+
+		pvpTestDefender.power =
+			(unsigned short)(CASTLE_STAGE_CNT * 100 + sum * 3);
+	}
+#endif
+
+	if (foeFound) {
+		pvpFoeCastleLevel = Max(1, Min(CASTLE_STAGE_CNT, (int)pvpTestDefender.castleLevel));
+		pvpFoeProfileImg = (int)pvpTestDefender.userProfileImgIdx;
+		//---- 상대가 센 만큼 ----
+		//
+		//세기 차이를 그대로 체력과 공격에 싣는다. 1 단계는 나와 거의 같고,
+		//10 단계는 눈에 띄게 두껍다.
+		{
+			const int mine = Max(1, PvpMyPower());
+			const float ratio = Min(2.5f, Max(0.8f,
+				(float)Max(1, (int)pvpTestDefender.power) / (float)mine));
+
+			pvpTestEnemyMaxHp = Max((long long)1,
+				(long long)(pvpTestPlayerMaxHp * ratio));
+			pvpTestEnemyHp = pvpTestEnemyMaxHp;
+			pvpTestDefenseDamage = Max((long long)1,
+				(long long)(pvpTestDefenseDamage * ratio));
+		}
+	}
+	else {
+		pvpFoeCastleLevel = CastleMenuModel::Clamp(robin.castle) + 1;
+		pvpFoeProfileImg = (int)enemyHouse.userProfileImgIdx;
+		pvpTestDefender.gold = robin.gold;
+	}
+
 	pvpTestDefender.userId = -1; //로컬 복사 상대. 서버 매칭 상대는 실제 userId를 넣는다.
-	pvpTestDefender.gold = robin.gold;
 	pvpTestDefender.houseType = castleOrder[robin.castle];
 	//---- 상대 편성 ----
 	//
@@ -9287,10 +10822,24 @@ void StartPvpTest(bool withUniverse)
 	//
 	//지금은 내 편성을 그대로 베낀다. 서버 매칭이 붙으면 이 줄만 상대
 	//유저에게서 받은 값으로 바꾸면 된다 - 아래 세우는 코드는 이 배열만 본다.
-	for (int i = 0; i < MAXCREW; i++)
-		pvpTestDefender.crew[i] = (robin.slotCrew[i] >= 0)
-			? (unsigned short)robin.slotCrew[i] : 0;
+	//
+	//단계 상대를 골라 왔으면 그 사람의 편성을 쓴다. 베끼는 것은 상대가
+	//없을 때뿐이다.
+	if (!foeFound) {
+		for (int i = 0; i < MAXCREW; i++)
+			pvpTestDefender.crew[i] = (robin.slotCrew[i] >= 0)
+				? (unsigned short)robin.slotCrew[i] : 0;
+	}
 	SetupPvpCombatObjects();
+
+	//---- 격돌에 쓸 것들 ----
+	//
+	//배경을 세울 자리, 상대 쪽에 설 사람들, 양쪽 격자. 셋 다 판이 시작될
+	//때 한 번만 정하고 그 뒤로는 바뀌지 않는다.
+	pvpClashBgTravel = StageBg::s_travel;
+	PvpBuildBothObjects(foeFound ? &pvpTestDefender : NULL);
+	PvpSideGridSetup(&pvpTestDefender);
+
 	rx = ry = 0;
 	waveStatus = WAVESTATUS_PLAY;
 	//격돌 화면 뒤에서 전장이 먼저 보이지 않게 아주 작은 디오라마로 시작한다.
@@ -10142,12 +11691,15 @@ static void PvpClashCombatStep(void)
 			pvpClashShake[i]--;
 	}
 
-	if (pvpClashActorSide < 0) {
-		if (++pvpClashGapFrame < PVP_CLASH_TURN_GAP)
-			return;
+	//격자의 시계는 탄이 나는 동안에도 돈다. 멈추면 쏘는 사이에 아무도
+	//안 차서, 한 발 쏘고 처음부터 다시 기다리는 꼴이 된다.
+	PvpSideGridStep();
 
-		pvpClashGapFrame = 0;
-		PvpClashTakeTurn();
+	if (pvpClashActorSide < 0) {
+		//다 찬 칸이 없으면 기다린다. 줄에 선 칸이 있으면 바로 나간다 -
+		//쿨타임을 이미 기다렸는데 그 위에 또 사이참을 두면 느려진다.
+		if (!PvpSideGridFire())
+			pvpClashGapFrame = 0;
 
 		return;
 	}
@@ -10182,28 +11734,720 @@ static void PvpClashTakeLoot(void)
 	if (pvpTestLoot > 0)
 		GetItem(ITEM_GOLD, false, false, false, pvpTestLoot, false);
 
+	//---- 단계 ----
+	//
+	//이긴 자리에서 바로 한 칸 올린다. 이미 깬 단계면 PvpStageClear 가
+	//아무 것도 하지 않는다.
+	pvpStageJustCleared = (pvpStageFighting > (int)robin.pvpStage);
+	pvpStageGrandJust = pvpStageJustCleared
+		&& pvpStageFighting >= PVP_STAGE_CNT && robin.pvpGrandTaken == 0;
+
+	PvpStageClear(pvpStageFighting);
+
 	PlayMusic(M_LEVELUP);
 }
 
-static void PvpCastleStandOffDraw(float slideIn, bool fighting)
+//======================================================================
+// 격돌의 격자
+//
+// 일반 전투에서는 가방에 실린 것이 저마다 제 시계로 돌다가 다 차면 친다.
+// 격돌도 같아야 한다 - 양쪽 성 아래에 그 사람이 싣고 나온 격자를 펴 놓고,
+// 칸에서 쿨타임이 차는 그 순간에 한 발이 나간다.
+//
+// 차례를 돌려 가며 치던 것(PvpClashTakeTurn)은 쓰지 않는다. 돌림차례는
+// 무엇을 실었든 같은 박자라, 격자를 짜 온 보람이 없었다.
+//======================================================================
+#define PVP_SIDE_ITEM_MAX	24
+#define PVP_SIDE_FLASH		(FPS / 5)
+
+//---- 이 칸이 차면 누가 움직이는가 ----
+//
+//격자에서 탄이 바로 날아가고 있었다. 무엇이 쳤든 같은 그림이라, 포를
+//올린 것과 동료를 올린 것이 화면에서 구별되지 않았다.
+//
+//칸마다 제 주인이 있다. 포는 성의 포신에서, 장비는 그 장비를 든 히어로
+//에게서, 동료는 그 동료에게서 나간다.
+enum {
+	PVP_ACT_GEAR = 0,	//히어로가 든 무기. 히어로가 휘두른다
+	PVP_ACT_CANNON,		//성의 포. 포신에서 나간다
+	PVP_ACT_CREW		//동료. 그 동료가 나선다
+};
+
+struct PvpSideItem {
+	GridPart part;
+	int kind;			//PVP_ACT_*
+	int col, row;		//격자 왼쪽 위에서 잰 칸. row 는 위에서부터다
+	int cool, coolMax;	//찬 만큼 / 다 차는 데 걸리는 프레임
+	int flash;			//친 직후의 번쩍임
+	int actCount;		//몇 번 쳤는가. 2 / 3 차 스킬이 여기서 나온다
+	int skill;
+	int crewSlot;		//동료면 그 자리. 칠 때 한 발짝 나선다(없으면 -1)
+	long long damage;
+};
+
+//---- 격자는 성이 정한다 ----
+//
+//네모 판을 그리고 있었다. 가방은 성마다 모양이 다르고(castleGridCell),
+//테두리도 성마다 다른 그림이다(GRID_FRAME_FIRST_IMG + 성). 격돌에서만
+//네모를 쓰면 같은 가방이 두 화면에서 다른 물건으로 보인다.
+//
+//일반 전투가 보는 그 표를 그대로 읽는다. 다만 GridLoadCells 는 한 성의
+//것만 캐시로 들고 있어 양쪽을 동시에 못 본다 - 여기서는 쪽마다 제 표를
+//펼쳐 둔다.
+//
+//row 는 아랫줄이 0 이다. 표와 일반 전투(GridCellY)가 그렇다.
+struct PvpSideGrid {
+	PvpSideItem it[PVP_SIDE_ITEM_MAX];
+	int cnt;
+	int castle;			//0 부터. 테두리 그림과 칸 표를 고르는 값이다
+	int cols, rows;
+	unsigned char mask[GRIDTEST_H][GRIDTEST_W];	//쓸 수 있는 칸
+	unsigned char fill[GRIDTEST_H][GRIDTEST_W];	//이미 찬 칸
+	int x, bottom, cell;	//마지막으로 그린 자리. 탄이 여기서 나간다
+};
+
+static PvpSideGrid pvpSideGrid[2];
+
+//---- 쏠 차례를 기다리는 칸 ----
+//
+//한 번에 여러 칸이 동시에 찰 수 있다. 탄은 하나씩만 난다 - 둘이 겹쳐
+//날면 어느 것이 누구 것인지 안 보인다. 찬 차례대로 줄을 세운다.
+#define PVP_SHOT_QUEUE_MAX	32
+static short pvpShotQueue[PVP_SHOT_QUEUE_MAX][2];
+static int pvpShotQueueCnt = 0;
+
+//지금 치고 있는 것의 종류(PVP_ACT_*). 누가 어떤 몸짓을 할지가 여기서
+//갈린다.
+static int pvpClashActorKind = PVP_ACT_GEAR;
+
+//---- 이 성의 칸을 펼친다 ----
+//
+//GridLoadCells 와 같은 표를 읽는다. 그쪽은 성 하나를 캐시로 들고 있어
+//쪽마다 다른 성을 동시에 보여줄 수 없다.
+static void PvpSideGridLoad(int side, int castle)
 {
-	SetAlpha(32);
-	MemRect(0, DY, DX, DY, 0x05071D);
-	for (int i = 0; i < 36; ++i) {
-		const int sx = (i * 193 + 37) % Max(1, DX);
-		const int sy = (i * 107 + 61) % Max(1, DY);
-		const int size = (i % 7 == 0) ? 2 * _2X : 1 * _2X;
-		SetAlpha(18 + (i + frame / 6) % 14);
-		MemRectRound(sx, sy, size, size, 0xDCEBFF, size / 2);
+	PvpSideGrid* g = &pvpSideGrid[side & 1];
+	const int c = Min(CASTLE_STAGE_CNT - 1, Max(0, castle));
+	const int start = castleGridCellStart[c];
+	const int cnt = castleGridCellCnt[c];
+
+	memset(g, 0, sizeof(PvpSideGrid));
+	g->castle = c;
+
+	for (int i = 0; i < cnt; ++i) {
+		const int col = castleGridCell[(start + i) * 2];
+		const int row = castleGridCell[(start + i) * 2 + 1];
+
+		//표를 손으로 고치다 틀려도 배열 밖을 쓰지 않는다.
+		if (col < 0 || col >= GRIDTEST_W || row < 0 || row >= GRIDTEST_H)
+			continue;
+
+		g->mask[row][col] = 1;
+		g->cols = Max(g->cols, col + 1);
+		g->rows = Max(g->rows, row + 1);
+	}
+
+	g->cols = Max(1, g->cols);
+	g->rows = Max(1, g->rows);
+}
+
+static void PvpSideGridClear(void)
+{
+	memset(pvpSideGrid, 0, sizeof(pvpSideGrid));
+	pvpShotQueueCnt = 0;
+}
+
+//---- 이 칸은 몇 프레임마다 치는가 ----
+//
+//0 이면 치지 않는 것이다. 방어구와 장신구가 그렇다 - 입은 채로 거들기만
+//하고, 그 몫은 아래 PvpSideBonus 가 다른 칸의 한 방에 얹는다.
+static int PvpItemCooldown(const GridPart* p)
+{
+	switch (p->type) {
+	case ITEM_SWORD:
+	case ITEM_GUN:
+	case ITEM_BOOMERANG:
+		return StageSwordCooldown(p->detail);
+
+	case ITEM_CANNON:
+		//성의 포다. 단계(detail)마다 제 빠르기를 들고 있다.
+		return Max(FPS / 2, CastleArtillery::Of(p->detail).cooldown);
+
+	case ITEM_CREW: {
+		//보스전에서 쓰는 그 시계다(CREWDATA_BOSSCOOL). 격돌도 턴이 없으니
+		//같은 값을 본다 - 두 벌을 두면 한쪽만 고쳐진다.
+		const int idx = p->detail;
+
+		if (idx < 0 || idx >= gTotalCrew)
+			return FPS * 2;
+
+		return Max(FPS / 2, crewData[idx * CREWDATASIZE + CREWDATA_BOSSCOOL]);
+	}
+	}
+
+	return 0;
+}
+
+//---- 치지 않는 칸이 거드는 몫 ----
+//
+//방어구를 실었는데 아무 일도 안 일어나면 그 칸은 버린 칸이다. 칸 수만큼
+//다른 칸의 한 방에 얹는다.
+static int PvpSideBonus(int side)
+{
+	const PvpSideGrid* g = &pvpSideGrid[side & 1];
+	int sum = 0;
+
+	for (int i = 0; i < g->cnt; ++i) {
+		if (g->it[i].coolMax > 0)
+			continue;
+
+		sum += g->it[i].part.w * g->it[i].part.h * (1 + g->it[i].part.grade);
+	}
+
+	return sum;
+}
+
+//---- 격자에 한 칸 놓는다 ----
+//
+//왼쪽 위부터 빈 자리를 찾아 넣는다. 모양(cells)은 자리 잡을 때 보지
+//않는다 - 서로 맞물려 끼우는 것은 출정 준비 화면의 일이고, 여기는 무엇을
+//싣고 나왔는지를 보여 주는 자리다.
+//---- 손으로 놓아 둔 자리에 그대로 ----
+//
+//출정 준비에서 끌어다 놓은 칸이다(gLoadoutAtCol / AtRow). 다시 깔아
+//버리면 출발 직전에 짜 놓은 모양이 격돌에서 사라진다.
+//
+//자리가 비어 있지 않거나 성이 안 내준 칸이면 false 다. 그때는 부르는
+//쪽이 자동으로 넘긴다.
+static bool PvpSideGridPut(int side, const GridPart* p, int col, int row,
+	long long damage, int skill, int crewSlot)
+{
+	PvpSideGrid* g = &pvpSideGrid[side & 1];
+
+	if (g->cnt >= PVP_SIDE_ITEM_MAX)
+		return false;
+
+	if (col < 0 || row < 0 || col + p->w > g->cols || row + p->h > g->rows)
+		return false;
+
+	for (int y = 0; y < p->h; ++y)
+		for (int x = 0; x < p->w; ++x)
+			if (!g->mask[row + y][col + x] || g->fill[row + y][col + x])
+				return false;
+
+	{
+		PvpSideItem* s = &g->it[g->cnt++];
+		const int cool = PvpItemCooldown(p);
+
+		memset(s, 0, sizeof(PvpSideItem));
+		s->part = *p;
+		s->kind = (p->type == ITEM_CANNON) ? PVP_ACT_CANNON
+			: (crewSlot >= 0) ? PVP_ACT_CREW : PVP_ACT_GEAR;
+		s->col = col;
+		s->row = row;
+		s->coolMax = cool;
+		s->cool = (cool > 0) ? Random(cool) : 0;
+		s->damage = Max((long long)1, damage);
+		s->skill = skill;
+		s->crewSlot = crewSlot;
+	}
+
+	for (int y = 0; y < p->h; ++y)
+		for (int x = 0; x < p->w; ++x)
+			g->fill[row + y][col + x] = 1;
+
+	return true;
+}
+
+static bool PvpSideGridAdd(int side, const GridPart* p, long long damage,
+	int skill, int crewSlot)
+{
+	PvpSideGrid* g = &pvpSideGrid[side & 1];
+	const int w = Max(1, Min(p->w, g->cols));
+	const int h = Max(1, Min(p->h, g->rows));
+
+	if (g->cnt >= PVP_SIDE_ITEM_MAX)
+		return false;
+
+	//아랫줄부터 채운다. 일반 전투에서 손으로 넣을 때도 바닥부터 쌓인다.
+	for (int row = 0; row + h <= g->rows; ++row) {
+		for (int col = 0; col + w <= g->cols; ++col) {
+			bool open = true;
+
+			//성이 안 내준 칸(mask)과 이미 찬 칸(fill)을 둘 다 본다.
+			for (int y = 0; y < h && open; ++y)
+				for (int x = 0; x < w; ++x)
+					if (!g->mask[row + y][col + x]
+						|| g->fill[row + y][col + x]) { open = false; break; }
+
+			if (!open)
+				continue;
+
+			{
+				PvpSideItem* s = &g->it[g->cnt++];
+				const int cool = PvpItemCooldown(p);
+
+				memset(s, 0, sizeof(PvpSideItem));
+				s->part = *p;
+				s->kind = (p->type == ITEM_CANNON) ? PVP_ACT_CANNON
+					: (crewSlot >= 0) ? PVP_ACT_CREW : PVP_ACT_GEAR;
+				s->part.w = w;
+				s->part.h = h;
+				s->col = col;
+				s->row = row;
+				s->coolMax = cool;
+				//시작을 흩는다. 다 같이 0 에서 출발하면 한 박자에 전부
+				//터지고 그 다음은 한참 조용하다.
+				s->cool = (cool > 0) ? Random(cool) : 0;
+				s->damage = Max((long long)1, damage);
+				s->skill = skill;
+				s->crewSlot = crewSlot;
+			}
+
+			for (int y = 0; y < h; ++y)
+				for (int x = 0; x < w; ++x)
+					g->fill[row + y][col + x] = 1;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//---- 내 격자 ----
+//
+//출정 준비에서 고른 것(gLoadout)을 그대로 가져온다. 한 번도 안 골랐으면
+//기본값을 채워 넣는다 - 빈 격자로 나가면 아무것도 안 쏜다.
+static void PvpSideGridBuildMine(void)
+{
+	const long long base = Max((long long)1, pvpTestPlayerDamage);
+
+	LoadoutDefaultFill();
+
+	for (int i = 0; i < gLoadoutCnt && i < PVP_SIDE_ITEM_MAX; ++i) {
+		const ITEM* it = &robin.inven[gLoadout[i]];
+		GridPart part;
+
+		if (it->type == EMPTY)
+			continue;
+
+		GridGearPart(it, &part);
+
+		//눕혀 놓았으면 눕힌 모양 그대로다.
+		if (gLoadoutRot[i])
+			part = GridPartRotated(part);
+
+		{
+			const long long dmg = base * Max(1, part.w * part.h) / 4;
+
+			//끌어다 놓은 칸이 있으면 거기, 없으면(자동으로 담은 것)
+			//빈 자리를 찾아 넣는다.
+			if (!PvpSideGridPut(0, &part, gLoadoutAtCol[i], gLoadoutAtRow[i],
+				dmg, -1, -1))
+				PvpSideGridAdd(0, &part, dmg, -1, -1);
+		}
+	}
+
+	//---- 동료 ----
+	//
+	//편성한 동료는 가방 칸이 아니라 성에 선다. 격자에도 한 칸씩 올려야
+	//누가 치고 있는지가 보인다.
+	for (int i = 0; i < MAXCREW; ++i) {
+		const int type = robin.slotCrew[i];
+		const int idx = (type >= 0) ? GetCrewIdxFromType(type) : -1;
+		GridPart part;
+
+		if (idx < 0)
+			continue;
+
+		memset(&part, 0, sizeof(part));
+		part.type = ITEM_CREW;
+		part.detail = idx;
+		part.grade = GRADE_NORMAL;
+		part.w = part.h = 1;
+		part.name = "동료";
+
+		PvpSideGridAdd(0, &part, PvpClashSlotDamage(i),
+			crewData[idx * CREWDATASIZE + CREWDATA_SKILL1], i);
+	}
+}
+
+//---- 상대 격자 ----
+//
+//상대는 AI 표의 한 줄이다(HOUSE). 격자를 통째로 들고 있지는 않으므로,
+//그 줄이 아는 것 - 성 단계 · 파츠 · 동료 - 으로 같은 모양을 짠다.
+//
+//서버 매칭이 붙으면 이 함수만 "받아 온 격자를 푼다" 로 바뀐다. 아래
+//전투는 pvpSideGrid 만 보므로 그 밖은 손댈 곳이 없다.
+static void PvpSideGridBuildFoe(const HOUSE* h)
+{
+	const int level = Max(1, Min(CASTLE_STAGE_CNT, (int)h->castleLevel));
+	const long long base = Max((long long)1, pvpTestDefenseDamage);
+	ITEM it;
+	GridPart part;
+
+	//---- 포 ----
+	memset(&it, 0, sizeof(it));
+	it.type = ITEM_CANNON;
+	it.detail = (unsigned char)(level - 1);
+	it.grade = h->castlePart[CASTLE_PART_CANNON_IDX];
+	GridGearPart(&it, &part);
+	PvpSideGridAdd(1, &part, base, -1, -1);
+
+	//---- 무기 ----
+	//
+	//성이 높을수록 좋은 검을 든다. 한 자루는 반드시 - 포만으로는 한 방이
+	//드물어 판이 늘어진다.
+	memset(&it, 0, sizeof(it));
+	it.type = ITEM_SWORD;
+	it.detail = (unsigned char)Max(0, Min(7, level * 8 / CASTLE_STAGE_CNT - 1));
+	it.grade = GRADE_NORMAL;
+	GridGearPart(&it, &part);
+	PvpSideGridAdd(1, &part, base, -1, -1);
+
+	//---- 방어구 ----
+	//
+	//파츠를 올린 만큼 걸친다. 치지는 않고 다른 칸의 한 방을 거든다.
+	for (int i = 0; i < CASTLE_PART_SLOT; ++i) {
+		static const int kWear[CASTLE_PART_SLOT] = {
+			ITEM_HELM, ITEM_ARMOR, ITEM_GUNTLET, ITEM_KILT, ITEM_GREAVES
+		};
+
+		if (h->castlePart[i] <= 0)
+			continue;
+
+		memset(&it, 0, sizeof(it));
+		it.type = (unsigned char)kWear[i];
+		it.detail = (unsigned char)Max(0, Min(7, (int)h->castlePart[i]));
+		it.grade = GRADE_NORMAL;
+		GridGearPart(&it, &part);
+		PvpSideGridAdd(1, &part, base, -1, -1);
+	}
+
+	//---- 동료 ----
+	for (int i = 0; i < MAXCREW; ++i) {
+		const int idx = (h->crew[i] > 0) ? GetCrewIdxFromType(h->crew[i]) : -1;
+
+		if (idx < 0)
+			continue;
+
+		memset(&part, 0, sizeof(part));
+		part.type = ITEM_CREW;
+		part.detail = idx;
+		part.grade = GRADE_NORMAL;
+		part.w = part.h = 1;
+		part.name = "동료";
+
+		PvpSideGridAdd(1, &part, base,
+			crewData[idx * CREWDATASIZE + CREWDATA_SKILL1], i);
+	}
+}
+
+//---- 한 방의 크기를 판 길이에 맞춘다 ----
+//
+//칸마다 제 공격력을 들고 있으면, 격자가 두꺼울수록 판이 눈 깜짝할 새에
+//끝난다. 양쪽 다 PVP_CLASH_VOLLEY_MAX 차례쯤에 결판나도록 한 번 고른다.
+static void PvpSideGridBalance(void)
+{
+	for (int side = 0; side < 2; ++side) {
+		PvpSideGrid* g = &pvpSideGrid[side];
+		const long long foeHp = (side == 0) ? pvpTestEnemyMaxHp : pvpTestPlayerMaxHp;
+		const int bonus = PvpSideBonus(side);
+		long long sum = 0;
+		int shooters = 0;
+
+		for (int i = 0; i < g->cnt; ++i) {
+			if (g->it[i].coolMax <= 0)
+				continue;
+
+			shooters++;
+			sum += g->it[i].damage;
+		}
+
+		if (shooters <= 0 || sum <= 0)
+			continue;
+
+		//한 바퀴(모두 한 번씩)에 들어가야 할 몫.
+		{
+			const long long want = Max((long long)1,
+				foeHp / Max(1, PVP_CLASH_VOLLEY_MAX));
+
+			for (int i = 0; i < g->cnt; ++i) {
+				if (g->it[i].coolMax <= 0)
+					continue;
+
+				g->it[i].damage = Max((long long)1,
+					g->it[i].damage * want / sum) + bonus;
+			}
+		}
+	}
+}
+
+static void PvpSideGridSetup(const HOUSE* foe)
+{
+	const int foeCastle = (foe != NULL && foe->castleLevel > 0)
+		? (int)foe->castleLevel - 1 : CastleMenuModel::Clamp(robin.castle);
+
+	PvpSideGridClear();
+	//칸 표를 먼저 펼친다. 놓는 자리가 이 표 안에서만 나온다.
+	PvpSideGridLoad(0, CastleMenuModel::Clamp(robin.castle));
+	PvpSideGridLoad(1, foeCastle);
+	PvpSideGridBuildMine();
+	PvpSideGridBuildFoe(foe);
+	PvpSideGridBalance();
+}
+
+//---- 격자를 그린다 ----
+//
+//성 아래, 선로 밑의 빈 자리다. 양쪽이 같은 크기로 마주 놓여야 어느 쪽이
+//두꺼운지가 한눈에 읽힌다.
+//---- 칸 하나의 크기 ----
+//
+//양쪽이 같아야 어느 쪽 가방이 두꺼운지가 한눈에 읽힌다. 둘 중 더 큰
+//격자가 들어갈 수 있는 크기로 한 번만 정하고 둘 다 그 값을 쓴다.
+//
+//높이는 내 격자가 들어갈 자리(선로 아래)를 본다. 상대 격자는 제 성 위의
+//넓은 자리에 서므로 여기가 늘 좁은 쪽이다.
+static int PvpSideGridCell(void)
+{
+	const int margin = 8 * _2X;
+	const int cols = Max(1, Max(pvpSideGrid[0].cols, pvpSideGrid[1].cols));
+	const int rows = Max(1, Max(pvpSideGrid[0].rows, pvpSideGrid[1].rows));
+	//테두리 그림이 칸 바깥으로 PAD 만큼 더 나간다. 그만큼을 빼 두지
+	//않으면 테두리가 화면 밖으로 잘린다.
+	const int frame = (int)(GRID_FRAME_PAD * 2.0f / GRID_FRAME_CELL) + 1;
+
+	return Max(4 * _2X, Min((DX - margin * 2) / (cols + frame),
+		(StageBg::GroundY() - margin * 2) / (rows + frame)));
+}
+
+//appear 는 0 이면 아직 안 올라왔고 1 이면 다 올라온 것이다. 세팅 차례에
+//제 쪽 화면 밖에서 밀려 들어온다.
+//
+//bottomY 는 격자 맨 아랫줄의 밑변이다(화면 아래가 0 인 좌표).
+static void PvpSideGridDraw(int side, int bottomY, float appear)
+{
+	PvpSideGrid* g = &pvpSideGrid[side & 1];
+	const int cell = PvpSideGridCell();
+	const int boardW = cell * g->cols;
+	const int boardH = cell * g->rows;
+	//가로는 가운데에 둔다. 한쪽에 붙이면 열두 칸짜리 격자가 화면을 넘는다.
+	const int left = (DX - boardW) / 2;
+	const float rise = Min(1.0f, Max(0.0f, appear));
+	//덜 올라온 만큼 제 쪽 화면 밖으로 밀어 둔다.
+	const int bottom = bottomY + (int)((1.0f - rise) * (boardH + 20 * _2X)
+		* (side == 0 ? -1.0f : 1.0f));
+
+	if (rise <= 0.0f)
+		return;
+
+	g->x = left;
+	g->bottom = bottom;
+	g->cell = cell;
+
+	//---- 성의 테두리 그림 ----
+	//
+	//일반 전투의 가방과 같은 그림, 같은 자리 맞춤이다(GridTestDraw).
+	//그림 안의 칸 간격과 바깥 여백은 GridFrameMetrics.inc 가 들고 있다.
+	{
+		const int img = GRID_FRAME_FIRST_IMG + g->castle;
+
+		if (!sprite[img])
+			LoadImg(img);
+
+		if (sprite[img]) {
+			const auto sz = sprite[img]->getContentSize();
+			const float zoom = (float)cell / (float)GRID_FRAME_CELL;
+
+			DrawImage((int)sz.width, (int)sz.height, 0, 0,
+				left - (int)(GRID_FRAME_PAD * zoom),
+				bottom + boardH + (int)(GRID_FRAME_PAD * zoom),
+				false, false, false, false, false, zoom, sprite[img], img);
+		}
+	}
+
+	for (int i = 0; i < g->cnt; ++i) {
+		const PvpSideItem* s = &g->it[i];
+		const int x = left + s->col * cell;
+		//row 는 아랫줄이다. 사각형의 윗변은 맨 윗줄에서 온다.
+		const int y = bottom + (s->row + s->part.h) * cell;
+		const int w = s->part.w * cell;
+		const int h = s->part.h * cell;
+
+		GridDrawShapedCard(&s->part, x, y, w, h, ALPHA_MAX, false);
+
+		//쿨타임. 찬 만큼만 밝다 - 일반 전투의 가방과 같은 모양이다.
+		if (s->coolMax > 0) {
+			GridDrawCharge(x, y, w, h,
+				(float)s->cool / (float)Max(1, s->coolMax), s->flash);
+		}
+	}
+}
+
+//---- 다 찬 칸을 줄 세운다 ----
+static void PvpSideGridStep(void)
+{
+	for (int side = 0; side < 2; ++side) {
+		PvpSideGrid* g = &pvpSideGrid[side];
+
+		for (int i = 0; i < g->cnt; ++i) {
+			PvpSideItem* s = &g->it[i];
+
+			if (s->flash > 0)
+				s->flash--;
+
+			if (s->coolMax <= 0)
+				continue;
+
+			if (++s->cool < s->coolMax)
+				continue;
+
+			s->cool = 0;
+			s->flash = PVP_SIDE_FLASH;
+
+			if (pvpShotQueueCnt < PVP_SHOT_QUEUE_MAX) {
+				pvpShotQueue[pvpShotQueueCnt][0] = (short)side;
+				pvpShotQueue[pvpShotQueueCnt][1] = (short)i;
+				pvpShotQueueCnt++;
+			}
+		}
+	}
+}
+
+//---- 줄 맨 앞의 칸을 쏜다 ----
+static bool PvpSideGridFire(void)
+{
+	int side, idx;
+	PvpSideItem* s;
+
+	if (pvpShotQueueCnt <= 0)
+		return false;
+
+	side = pvpShotQueue[0][0];
+	idx = pvpShotQueue[0][1];
+
+	for (int i = 1; i < pvpShotQueueCnt; ++i) {
+		pvpShotQueue[i - 1][0] = pvpShotQueue[i][0];
+		pvpShotQueue[i - 1][1] = pvpShotQueue[i][1];
+	}
+	pvpShotQueueCnt--;
+
+	if (side < 0 || side > 1 || idx < 0 || idx >= pvpSideGrid[side].cnt)
+		return false;
+
+	s = &pvpSideGrid[side].it[idx];
+
+	//몇 차 스킬인가. 공성전과 같은 값을 본다.
+	{
+		const int count = ++s->actCount;
+
+		pvpClashActorLevel = (count % PVP_SKILL3_EVERY == 0) ? 3
+			: (count % PVP_SKILL2_EVERY == 0) ? 2 : 1;
+	}
+
+	pvpClashActorSide = side;
+	pvpClashActorKind = s->kind;
+	pvpClashActorSlot = (s->crewSlot >= 0) ? s->crewSlot : MAXCREW;
+	pvpClashActorSkill = s->skill;
+	pvpClashShotFrame = 0;
+	pvpClashShotDamage = Max(pvpClashFloor, s->damage * pvpClashActorLevel);
+
+	//---- 소리도 저마다 ----
+	//
+	//포는 묵직하게, 무기는 베는 소리, 동료는 스킬 차수에 따라 다르다.
+	PlayMusic((pvpClashActorKind == PVP_ACT_CANNON) ? M_KUNG
+		: (pvpClashActorLevel > 1) ? M_SWORDSTRONG : M_GUNSTRONG);
+
+	return true;
+}
+
+//---- 두 성이 함께 쓸 폭 ----
+//
+//폭은 두 성이 같아야 한다. 성을 올려도 폭은 그대로고 위로만 자라는 것이
+//이 게임의 규칙이라(로비 · 전투도 그렇다), 성마다 따로 줄이면 열 단계를
+//올린 성이 더 좁아 보인다.
+//
+//그렇다고 로비 폭을 그대로 쓰면 성 10 이 너무 길다. 그림이 270x1024 라
+//폭을 맞추면 높이가 폭의 3.8 배가 된다 - 로비는 위를 잘라 넘겼지만
+//격돌은 두 성을 통째로 보여 주는 화면이다.
+//
+//그래서 폭을 한 번만 정한다. 둘 중 높은 쪽이 선로 위에 다 들어오는
+//폭이다. 낮은 성도 같이 작아지지만 둘의 폭은 끝까지 같다.
+//
+//PVP_CLASH_CASTLE_W 는 그 윗선이다 - 1 이면 로비에서 보던 폭까지,
+//그보다 좁아지는 것은 높은 성이 들어오느라 줄어들 때뿐이다.
+static float PvpCastleWidth(void)
+{
+	//---- 로비에서 보던 그 크기 ----
+	//
+	//성이 화면에 다 들어오도록 줄여 봤다 - 전장 높이에 맞추기도 하고,
+	//서로의 반쪽을 넘지 않게 묶기도 했다. 그때마다 같은 성인데 로비에서
+	//본 것과 격돌에서 본 것의 크기가 달라졌다.
+	//
+	//성을 올린 것이 어느 화면에서나 같은 크기로 보여야 올린 보람이
+	//남는다. 높은 성은 위가 잘린다 - 로비도 그렇게 넘긴다.
+	return CastlePartsWorldWidth() * PVP_CLASH_CASTLE_W;
+}
+
+//정한 폭을 이 성의 배율로 옮긴다.
+static float PvpCastleScale(int level, float naturalW, float wantW)
+{
+	float w1 = 0.0f, h1 = 0.0f;
+
+	//SD 조립이 아닌 성은 옛 조립 좌표가 그대로 화면 크기다.
+	if (!CastlePartsDrawSize(level, 1.0f, &w1, &h1) || w1 < 1.0f)
+		return wantW / Max(1.0f, naturalW);
+
+	const float ratio=CastleParts::IndividualArtEnabled()?IndividualCastleV4::Rigs[level-1].width/342.0f:1.0f;
+	return wantW * ratio / w1;
+}
+
+//myGridIn / foeGridIn 은 쪽마다 격자가 얼마나 올라왔는가다. 세팅
+//차례에는 상대 것만 올린다 - 내 것은 출정 준비 창이 대신 보여 준다.
+static void PvpCastleStandOffDraw(float slideIn, bool fighting,
+	float myGridIn, float foeGridIn)
+{
+	//---- 전장은 레일 위다 ----
+	//
+	//전에는 까만 판에 별을 뿌렸다. 우주맵에서 막 내려온 참이라 그렇게
+	//두었는데, 싸우는 자리까지 허공이면 두 성이 어디에 서 있는지가 없다.
+	//
+	//스테이지와 같은 선로를 쓴다. 다만 지역은 우주다 - PVP 는 우주맵에서
+	//상대를 골라 내려온 자리이므로, 늪지대 폭포를 뒤에 두면 어디서 붙는
+	//판인지가 어긋난다.
+	//
+	//보스는 뺀다. 남의 보스가 원경에 떠 있으면 두 성이 그놈과 싸우는
+	//것으로 읽힌다.
+	//
+	//선로와 원경은 붙잡아 둔다(Borrow 의 두 번째 값). 양쪽에서 달려와
+	//서는 장면인데 배경이 흐르면, 달려든 것이 아니라 한 열차에 실려 가는
+	//것으로 보인다.
+	//---- 가방을 짜는 동안에는 성을 위로 올린다 ----
+	//
+	//세팅 차례에 출정 준비 창이 화면 아래 절반을 덮는다. 그 자리에 성이
+	//그대로 서 있으면 상대가 창에 가려 안 보인다 - 보고 고르라고 만든
+	//차례인데 볼 것이 가려진다.
+	//
+	//싱글이 로비에서 하는 그대로다(gLoadoutWorldLift). 가까운 것만
+	//올라가고 원경은 제자리다 - 그래야 올라간 것으로 보인다.
+	LoadoutWorldStep();
+
+	const int worldLift = (int)gLoadoutWorldLift;
+	const int groundY = StageBg::GroundY() + worldLift;
+
+	{
+		StageBg::Borrow space(StageBg::kSpaceRegion, pvpClashBgTravel);
+		StageBg::Camera cam = StageBg::FixedCam(groundY);
+
+		cam.menuLift = (float)worldLift;
+		StageBg::Draw(cam, 0, false);
 	}
 	SetAlpha(32);
 
 	//큰 성은 빠르게 흔들면 가벼워 보인다. 진폭은 작게, 주기는 길게 둔다.
 	const float floatY = sinf((float)pvpTestFrame * 0.012f) * 1.5f * _2X;
-	//아군 성은 왼쪽 위, 적군 성은 오른쪽 아래로 엇갈린다. 같은 높이에 놓을
-	//때보다 서로 침범하는 면적이 줄어 사선 구분을 유지하면서 조금 더 키울 수 있다.
-	const float castleZoom = Min(0.60f,
-		(float)DX * 0.60f / (float)DIORAMASIZE_X);
+
 	//---- 좌우에서 밀려 들어온다 ----
 	//
 	//slideIn 이 0 이면 두 성이 화면 밖에 있고 1 이면 제자리다. 맞은 쪽은
@@ -10220,57 +12464,185 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 	};
 	const int leftX = (int)(DX * 0.18f) - slideGap + shakeX[0];
 	const int rightX = (int)(DX * 0.82f) + slideGap + shakeX[1];
-	//DrawImage의 y는 이미지 상단이고 아래쪽 끝은 y-height*zoom이다.
-	//오른쪽 성의 하단을 하단 메뉴 윗선에 정확히 맞추고 왼쪽 성은 대치
-	//구도를 유지할 만큼만 위에 둔다.
-	const int rightCastleY = BOTTOMMENUHEIGHT
-		+ (int)(DIORAMASIZE_Y * castleZoom);
-	//현재 2배 좌표계에서 실제 화면 약 100픽셀만큼 위로 올린다.
-	const int castleRaiseY = 50 * _2X;
-	const int castleY[2] = {
-		rightCastleY + castleRaiseY + (int)(DY * 0.28f + floatY),
-		rightCastleY + castleRaiseY - (int)floatY
-	};
-	const int myCastle = castleOrder[robin.castle];
-	const int foeCastle = pvpTestDefender.houseType;
+	//---- 두 성을 선로에 앉힌다 ----
+	//
+	//전에는 디오라마 네모(DIORAMASIZE_X/Y)에 성을 끼워 넣고 그 네모의
+	//밑변을 선로에 맞췄다. 그러면 성 그림 아래의 투명 여유만큼 성이 떠
+	//보이고, 단계마다 그 여유가 달라 한쪽만 공중에 섰다.
+	//
+	//전투 화면이 성을 선로에 앉히는 식(BattleMobileCastle.h)을 그대로
+	//쓴다. 조립표가 제 크기(CastlePartsNaturalSize)와 바퀴가 닿는 자리
+	//(CastlePartsGroundOffset)를 둘 다 알고 있다.
+	//
+	//폭을 맞추고 높이는 성이 정하게 둔다. 높이를 먼저 맞추면 1 단계와
+	//10 단계의 폭이 제각각이 된다.
+	const int myLevel = CastleMenuModel::Clamp(robin.castle) + 1;
+	const int foeLevel = Max(1, Min(CASTLE_STAGE_CNT, pvpFoeCastleLevel));
+	int level[2] = { myLevel, foeLevel };
+#if defined(_DEBUG)
+    PvpCastleDebugKeys();
+    for(int side=0;side<2;++side) if(pvpDebugCastle[side]>=0) level[side]=pvpDebugCastle[side]+1;
+    char debugLabel[96];sprintf(debugLabel,"Q/A LEFT %02d    W/S RIGHT %02d",level[0],level[1]);
+    SetFontColor(COLOR_WHITE);
+    CenterTextStrSolid(debugLabel,DX/2,groundY+18*_2X,.6f);
+#endif
+	const int centerX[2] = { leftX, rightX };
+	//성이 적어 주는 자리. 아래 사람 세우기가 읽는다.
+	bool deckSeen[2] = { false, false };
+	float heroAt[2][2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
+	float deckAt[2][3] = { { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
+	float charZoom[2] = { 1.0f, 1.0f };
+	//성의 포신. 포가 찼을 때 탄이 여기서 나간다.
+	bool muzzleSeen[2] = { false, false };
+	float muzzleAt[2][2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
+	//둘이 함께 쓸 폭. 성을 그리기 전에 한 번만 정한다.
+	//
+	const float castleWantW = PvpCastleWidth();
+	float boxW[2] = { 1.0f, 1.0f };
+	float boxH[2] = { 1.0f, 1.0f };
+	float boxLeft[2] = { 0.0f, 0.0f };
+	int castleY[2] = { 0, 0 };
 
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		leftX - DIORAMASIZE_X * castleZoom / 2, castleY[0],
-		false, false, false, false, false, castleZoom,
-		sprite[MAP_DIORAMA_IMG + myCastle], MAP_DIORAMA_IMG + myCastle);
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		rightX - DIORAMASIZE_X * castleZoom / 2, castleY[1],
-		true, false, false, false, false, castleZoom,
-		sprite[MAP_DIORAMA_IMG + foeCastle], MAP_DIORAMA_IMG + foeCastle);
+	for (int side = 0; side < 2; ++side) {
+		float nw = 1.0f, nh = 1.0f;
 
-	//원래 DrawDiorama가 사용하던 화면 좌표를 디오라마 내부의 0~1 좌표로
-	//바꾼 뒤 각 성의 위치/배율에 다시 투영한다. 성을 움직이거나 띄워도
-	//히어로와 동료는 성에 배치되어 있던 자리를 그대로 따라간다.
-	const float sourceZoom = Max(0.001f, pvpSavedDioramaZoom);
-	const float sourceLeft = xOffset + DX / 2.0f
-		- DIORAMASIZE_X * sourceZoom / 2.0f;
-	const float sourceTop = STATUSWIN_Y + DIORAMASIZE_Y * sourceZoom;
-	const float sourceFloorY = STATUSWIN_Y + (rh - 4) * TSIZE;
-	const float targetLeft[2] = {
-		leftX - DIORAMASIZE_X * castleZoom / 2.0f,
-		rightX - DIORAMASIZE_X * castleZoom / 2.0f
-	};
+		CastlePartsNaturalSize(level[side], &nw, &nh);
 
-	auto GetCastleObjectPoint = [&](const OBJECT* obj, int side,
-		int* drawX, int* drawY) {
-		const float sourceScreenX = xOffset + obj->x - pvpSavedRx;
-		const float sourceScreenY = sourceFloorY
-			- (obj->y - OBJIMGGAP) - pvpSavedRy;
-		float localX = (sourceScreenX - sourceLeft)
-			/ (DIORAMASIZE_X * sourceZoom);
-		const float localY = (sourceTop - sourceScreenY)
-			/ (DIORAMASIZE_Y * sourceZoom);
-		if (side == 1)
-			localX = 1.0f - localX;
-		*drawX = (int)(targetLeft[side]
-			+ localX * DIORAMASIZE_X * castleZoom);
-		*drawY = (int)(castleY[side]
-			- localY * DIORAMASIZE_Y * castleZoom);
+		{
+			//---- 폭은 두 성이 같다 ----
+			//
+			//위에서 한 번 정한 폭을 이 성의 배율로 옮긴다.
+			const float scale = PvpCastleScale(level[side], nw, castleWantW);
+			const float off = CastlePartsGroundOffset(level[side]);
+
+			boxW[side] = nw * scale;
+			boxH[side] = nh * scale;
+			boxLeft[side] = (float)centerX[side] - boxW[side] / 2.0f;
+			//kCastleGroundingPx 는 화면 픽셀이다(StageBackground.h 의
+			//주석). 배율을 곱하면 작아진 성이 그만큼 덜 내려앉아 선로
+			//위에 뜬다 - 전투 화면과 같이 그냥 뺀다.
+			//---- 바퀴 밑단은 두 성이 같은 줄이다 ----
+			//
+			//숨결(floatY)을 쪽마다 반대로 더하고 있었다. 성이 살아
+			//있어 보이라고 넣은 것인데, 두 성이 나란히 서는 화면에서는
+			//그 몇 픽셀이 "한쪽만 떠 있다" 로 읽힌다.
+			//
+			//숨결은 걷었다. 밑단은 선로 하나다.
+			castleY[side] = (int)((float)groundY
+				- (off >= 0.0f ? off * scale : StageBg::kCastleDropPx)
+				- StageBg::kCastleGroundingPx
+				+ boxH[side]);
+		}
+
+		//---- 오른쪽 성은 왼쪽을 본다 ----
+		//
+		//마주 선 둘이 같은 쪽을 보고 있으면 뒤에서 쫓아가는 그림이다.
+		//조립 렌더러에 거울을 걸어 제자리에서 돌려 세운다.
+		{
+			const float axis = boxLeft[side] + boxW[side] / 2.0f;
+
+			if (side == 1)
+				CastlePartsSetMirror(true, axis);
+
+			//---- 준 자리에 그대로 선다 ----
+			//
+			//안 켜면 성 4 단계부터 화면 왼쪽 끝으로 붙어 버린다. 그러면
+			//오른쪽 성이 왼쪽 성에 겹치고, 밖에서 밀려 들어오는 것도
+			//제자리에 선 채로 안 움직인다.
+			CastlePartsSetFreePlace(true);
+
+			CastlePartsDrawRect(level[side], (int)boxLeft[side], castleY[side],
+				(int)boxW[side], (int)boxH[side]);
+
+			CastlePartsSetFreePlace(false);
+			CastlePartsSetMirror(false, 0.0f);
+
+			//---- 사람이 설 자리는 성이 알고 있다 ----
+			//
+			//성을 그리고 나면 조립표가 지휘관 자리와 갑판을 화면 좌표로
+			//적어 둔다(sdPlacement). 로비도 그 값을 읽어 사람을 세운다.
+			//
+			//비율로 짐작해 세웠더니 성마다 어긋나 아예 안 보였다. 적어
+			//둔 자리를 그대로 쓴다.
+			//
+			//거울을 건 쪽은 그 자리도 같이 접는다 - 적어 둔 값은 접기
+			//전의 자리다.
+			//---- 포신 ----
+			//
+			//조립표가 성을 그리며 적어 둔다. 거울을 건 쪽은 같이 접는다.
+			{
+				float mx = 0.0f, my = 0.0f;
+
+				if (CastlePartsCannonMuzzle(level[side], &mx, &my)) {
+					muzzleSeen[side] = true;
+					muzzleAt[side][0] = (side == 1) ? (axis * 2.0f - mx) : mx;
+					muzzleAt[side][1] = my;
+				}
+			}
+
+			if (CastleParts::sdPlacement.valid) {
+				const CastleParts::SdPlacement& sp = CastleParts::sdPlacement;
+				const float fold = (side == 1) ? (axis * 2.0f) : 0.0f;
+				const float sign = (side == 1) ? -1.0f : 1.0f;
+
+				deckSeen[side] = true;
+				heroAt[side][0] = fold + sign * sp.commanderX;
+				heroAt[side][1] = sp.commanderY;
+				//접으면 왼쪽 끝과 오른쪽 끝이 뒤바뀐다.
+				deckAt[side][0] = (side == 1)
+					? (fold - (sp.deckLeft + sp.deckWidth)) : sp.deckLeft;
+				deckAt[side][1] = sp.deckWidth;
+				deckAt[side][2] = sp.deckSurface;
+				//로비가 쓰는 식 그대로다(LobbyCharZoom). 성의 배율만
+				//로비의 것 대신 이 성의 것으로 바꿔 넣는다.
+				charZoom[side] = DIORAMAZOOM * 0.70f * sp.scale
+					* LOBBY_CHAR_REF_W / DX * sp.fitScale;
+			}
+		}
+	}
+
+	//이름표를 얹을 줄. 두 성 중 높은 쪽 꼭대기다.
+	const int rightCastleY = groundY + (int)Max(boxH[0], boxH[1]);
+
+	//---- 성 위에 사람을 세운다 ----
+	//
+	//전에는 로비 화면의 오브젝트 좌표(pvpSavedObjects 의 x, y)를 디오라마
+	//네모 안의 0~1 로 되돌린 뒤 성 네모에 다시 투영했다. 로비 네모와 성
+	//네모는 크기도 기준도 달라, 성이 작아지자 사람이 성 밖으로 나가
+	//아예 보이지 않았다.
+	//
+	//로비가 쓰는 그 앵커를 그대로 쓴다(CastleCrewDrawAt 의 heroV 와
+	//commanderU). 조립표가 아는 값이라 단계가 달라져도 따라온다.
+	//
+	//u 는 네모 왼쪽에서, v 는 네모 위에서 잰 0~1 이다.
+	float deckV[2] = { 0.5f, 0.5f };
+	float heroU[2] = { 0.5f, 0.5f };
+	float roomU0[2] = { 0.2f, 0.2f };
+	float roomUW[2] = { 0.6f, 0.6f };
+
+	for (int side = 0; side < 2; ++side) {
+		const float upperH = CastlePartsUpperH(level[side]);
+		const float bodyLift = CastlePartsBodyLift(level[side]);
+		const float roomStackH = (float)level[side] * 128.0f;
+		const float inset = CastlePartsLeftInset(level[side]);
+		float nw = 1.0f, nh = 1.0f;
+
+		CastlePartsNaturalSize(level[side], &nw, &nh);
+
+		deckV[side] = (upperH + roomStackH + 72.0f - bodyLift) / Max(1.0f, nh);
+		//지휘관은 지휘대 안쪽에 선다. 포신과 겹치지 않는 자리다.
+		heroU[side] = (inset + 600.0f) / Max(1.0f, nw);
+		//방 구멍은 x = 64..575 다. 동료는 그 안에만 선다.
+		roomU0[side] = (inset + 64.0f) / Max(1.0f, nw);
+		roomUW[side] = 512.0f / Max(1.0f, nw);
+	}
+
+	//u, v 를 화면 자리로 옮긴다. 오른쪽 성은 거울이므로 u 도 접는다.
+	auto CastleSpot = [&](int side, float u, float v, int* drawX, int* drawY) {
+		const float fold = (side == 1) ? (1.0f - u) : u;
+
+		*drawX = (int)(boxLeft[side] + fold * boxW[side]);
+		*drawY = (int)(castleY[side] - v * boxH[side]);
 	};
 
 	//맞는 자리(상대 히어로)와 쏘는 자리를 여기서 받아 둔다. 탄은 성
@@ -10284,16 +12656,40 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 		//탄만으로는 안 보인다.
 		const int lunge = (side == 0 ? 1 : -1) * 5 * _2X;
 		int heroX, heroY;
-		GetCastleObjectPoint(&pvpSavedObjects[PLAYER], side, &heroX, &heroY);
+
+		if (deckSeen[side]) {
+			heroX = (int)heroAt[side][0];
+			heroY = (int)heroAt[side][1];
+		}
+		else CastleSpot(side, heroU[side], deckV[side], &heroX, &heroY);
+
 		heroPoint[side][0] = heroX;
 		heroPoint[side][1] = heroY;
 
+		//히어로가 나서는 것은 제 무기가 찼을 때뿐이다. 포가 쏘는데
+		//히어로가 같이 휘두르면 누가 친 것인지 알 수 없다.
 		const bool heroActing = fighting && pvpClashActorSide == side
-			&& pvpClashActorSlot >= MAXCREW;
-		OBJECT hero = pvpSavedObjects[PLAYER];
-		DrawPlayer(&hero, motionData[0], heroX + (heroActing ? lunge : 0), heroY,
-			side == 0 ? RIGHT : LEFT,
-			castleZoom * DIORAMAZOOM_REMAINDER, 0, false, true);
+			&& pvpClashActorKind == PVP_ACT_GEAR;
+		OBJECT hero = PvpSideObjects(side)[PLAYER];
+		//---- 휘두르는 동안은 공격 모션 ----
+		//
+		//서 있는 그림(motionData[0])만 쓰고 있었다. 탄만 날고 사람은
+		//가만히 있어 누가 쳤는지가 안 보인다. 보스전이 쓰는 그 표를
+		//그대로 쓴다(motionData 의 32 번부터 서른두 장).
+		{
+			const int swing = heroActing
+				? (32 + (pvpClashShotFrame * 32
+					/ Max(1, PVP_CLASH_SHOT_FLY)) % 32)
+				: 0;
+
+			DrawPlayer(&hero, motionData[swing],
+				heroX + (heroActing ? lunge : 0), heroY,
+				side == 0 ? RIGHT : LEFT,
+				deckSeen[side]
+					? charZoom[side] * LOBBY_HERO_ZOOM * PVP_CLASH_HERO_ZOOM
+					: (boxH[side] / (float)DIORAMASIZE_Y) * DIORAMAZOOM_REMAINDER,
+				0, false, true);
+		}
 
 		if (heroActing) {
 			actorPoint[0] = heroX + lunge;
@@ -10301,14 +12697,37 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 			actorSeen = true;
 		}
 
+		//선 사람 수를 먼저 센다. 방 구멍 안에 고르게 나눠 세우려면
+		//몇이 서는지를 먼저 알아야 한다.
+		int standing = 0;
+		int placed = 0;
+
+		for (int i = 0; i < MAXCREW; ++i)
+			if (PvpSideObjects(side)[CREW + i].active)
+				standing++;
+
 		for (int i = 0; i < MAXCREW; ++i) {
-			const OBJECT* crew = &pvpSavedObjects[CREW + i];
+			const OBJECT* crew = &PvpSideObjects(side)[CREW + i];
 			if (!crew->active)
 				continue;
 			int crewX, crewY;
-			GetCastleObjectPoint(crew, side, &crewX, &crewY);
+
+			placed++;
+
+			//갑판 위에 고르게 늘어선다. 갑판의 왼쪽 끝과 폭도 성이
+			//적어 둔 값이다.
+			if (deckSeen[side]) {
+				crewX = (int)(deckAt[side][0] + deckAt[side][1]
+					* (float)placed / (float)(standing + 1));
+				crewY = (int)deckAt[side][2];
+			}
+			else CastleSpot(side,
+				roomU0[side] + roomUW[side] * (float)placed
+					/ (float)(standing + 1),
+				deckV[side], &crewX, &crewY);
 
 			const bool acting = fighting && pvpClashActorSide == side
+				&& pvpClashActorKind == PVP_ACT_CREW
 				&& pvpClashActorSlot == i;
 			//치는 동안만 모션이 돈다. 나머지는 선 자세 그대로다.
 			const int motionCnt = Max(1, crewPos[crew->type * 5 + 1]);
@@ -10318,7 +12737,9 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 			DrawCmfDetailShadow(crew->cmf, motion,
 				crewX + (acting ? lunge : 0), crewY,
 				side == 0 ? RIGHT : LEFT,
-				castleZoom * DIORAMAZOOM_REMAINDER * enemyIconZoom[crew->type]);
+				(deckSeen[side] ? charZoom[side]
+					: (boxH[side] / (float)DIORAMASIZE_Y) * DIORAMAZOOM_REMAINDER)
+				* enemyIconZoom[crew->type]);
 
 			if (acting) {
 				actorPoint[0] = crewX + lunge;
@@ -10328,41 +12749,69 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 		}
 	}
 
-	//좌하단에서 우상단으로 이어지는 연속 분할대. 가로 선분을 촘촘히 이어
-	//한 장의 사선 마스크처럼 만들고, 성이 겹치는 중앙 부분을 이 암부로 가린다.
-	const int pulse = (int)(2 * _2X
-		* (0.5f + 0.5f * sinf(frame * 0.08f)));
-	const int crackBottom = 0;
-	const int crackTop = DY;
-	const int crackBandHalf = 9 * _2X;
-	const int scanH = Max(1, 2 * _2X);
-	for (int crackY = crackBottom; crackY < crackTop; crackY += scanH) {
-		const float t = (float)(crackY - crackBottom)
-			/ (float)Max(1, crackTop - crackBottom);
-		const int crackX = (int)(DX * (0.31f + 0.38f * t));
-		SetAlpha(26);
-		MemRect(crackX - crackBandHalf, crackY + scanH,
-			crackBandHalf * 2, scanH + 1, 0x01020A);
-		SetAlpha(15 + pulse);
-		MemRect(crackX - crackBandHalf - 1 * _2X, crackY + scanH,
-			2 * _2X, scanH + 1, 0x43A9FF);
-		MemRect(crackX + crackBandHalf - 1 * _2X, crackY + scanH,
-			2 * _2X, scanH + 1, 0xFF496B);
+	//---- 포는 포신에서 ----
+	//
+	//아무도 나서지 않는다. 성이 쏘는 것이라 사람이 움직일 까닭이 없다.
+	if (fighting && pvpClashActorSide >= 0
+		&& pvpClashActorKind == PVP_ACT_CANNON
+		&& muzzleSeen[pvpClashActorSide]) {
+		actorPoint[0] = (int)muzzleAt[pvpClashActorSide][0];
+		actorPoint[1] = (int)muzzleAt[pvpClashActorSide][1];
+		actorSeen = true;
 	}
-	SetAlpha(32);
 
+	//---- 가운데 사선 암부는 걷었다 ----
+	//
+	//두 성이 겹치던 자리를 가리려고 깔았던 띠다. 성이 작아져 겹치지 않고,
+	//레일 배경 위에서는 그 띠가 선로를 가로지르는 금으로 보인다.
+	//---- 두 사람의 이름표 ----
+	//
+	//성이 같은 줄에 서므로 이름표도 같은 높이에 둔다. 성 꼭대기보다
+	//조금 위다 - 성 위에 겹치면 그 위에 선 히어로와 엉킨다.
 	const float profileSize = 36.0f * _2X;
-	const int leftProfileY = Min(DY - 48 * _2X,
-		castleY[0] - 8 * _2X);
-	const int rightProfileY = rightCastleY + castleRaiseY
-		- (int)(DIORAMASIZE_Y * castleZoom)
-		+ (int)profileSize + 8 * _2X;
+	const int profileY = Min(DY - 48 * _2X,
+		rightCastleY + (int)profileSize + 10 * _2X);
+	const int leftProfileY = profileY;
+	const int rightProfileY = profileY;
 	UserProfileNameDraw(profileImg[0], robin.nickname.empty() ? "Guest" : robin.nickname.c_str(),
 		8 * _2X, leftProfileY, profileSize,
 		48 * _2X, leftProfileY - 16 * _2X, 0.90f, LEFT);
-	UserProfileNameDraw((int)enemyHouse.userProfileImgIdx, "RIVAL COPY",
-		DX - 8 * _2X - (int)profileSize, rightProfileY, profileSize,
-		DX - 48 * _2X, rightProfileY - 16 * _2X, 0.90f, RIGHT);
+	{
+		char foeName[32];
+
+		sprintf(foeName, "STAGE %d RIVAL", Max(1, pvpStageFighting));
+		UserProfileNameDraw(pvpFoeProfileImg, foeName,
+			DX - 8 * _2X - (int)profileSize, rightProfileY, profileSize,
+			DX - 48 * _2X, rightProfileY - 16 * _2X, 0.90f, RIGHT);
+	}
+
+	//---- 양쪽 격자 ----
+	//
+	//선로 아래, 성 밑의 빈 자리다. 싣고 나온 것이 저기 다 펴져 있고 그
+	//칸에서 쿨타임이 차는 순간에 한 발이 난다 - 무엇이 치고 있는지가
+	//탄만으로는 안 보인다.
+	//
+	//들어오는 동안에는 안 그린다. 양쪽에서 달려오는 장면에 격자가 먼저
+	//깔리면 눈이 그리로 간다.
+	if (myGridIn > 0.0f || foeGridIn > 0.0f) {
+		const int cell = PvpSideGridCell();
+		const int margin = 8 * _2X;
+		const int pad = (int)(GRID_FRAME_PAD * (float)cell / GRID_FRAME_CELL);
+
+		//내 격자는 선로 아래, 일반 전투에서 가방이 있던 그 자리다.
+		PvpSideGridDraw(0, margin + pad, myGridIn);
+
+		//상대 격자는 제 성 위다. 아래에 둘을 나란히 놓으면 내 것과 남의
+		//것이 같은 줄에 서서 어느 쪽이 내 가방인지가 흐려진다.
+		//
+		//위로는 자원 칸에 닿지 않게 끊는다.
+		{
+			const int rows = Max(1, pvpSideGrid[1].rows);
+			const int top = DY - 58 * _2X - pad;
+
+			PvpSideGridDraw(1, top - rows * cell, foeGridIn);
+		}
+	}
 	if (!fighting) {
 		if (pvpTestFrame < FPS + FPS / 2) {
 			SetAlpha(Min(32, Max(0, (FPS + FPS / 2 - pvpTestFrame) * 32 / Max(1, FPS / 2))));
@@ -10388,6 +12837,12 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 		const int to = 1 - pvpClashActorSide;
 		const float t = Min(1.0f, (float)pvpClashShotFrame
 			/ (float)Max(1, PVP_CLASH_SHOT_FLY));
+		//---- 치는 사람에게서 나간다 ----
+		//
+		//격자 칸에서 바로 날리고 있었다. 무엇이 쳤든 같은 자리에서 같은
+		//탄이 나가서, 포를 올린 것과 동료를 올린 것이 구별되지 않았다.
+		//
+		//칸은 번쩍이는 것으로 제 몫을 한다(GridDrawCharge 의 flash).
 		const int fromX = actorPoint[0];
 		const int fromY = actorPoint[1] + 14 * _2X;
 		const int toX = heroPoint[to][0];
@@ -10395,8 +12850,12 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 		const int shotX = (int)(fromX + (toX - fromX) * t);
 		const int shotY = (int)(fromY + (toY - fromY) * t
 			+ 40.0f * _2X * sinf(t * (float)M_PI));
-		const int shotR = (3 + pvpClashActorLevel * 2) * _2X;
-		const int color = (pvpClashActorLevel >= 3) ? 0xFF7AE0
+		//포탄은 굵다. 사람이 친 것과 한눈에 갈려야 한다.
+		const int shotR = (pvpClashActorKind == PVP_ACT_CANNON)
+			? (7 + pvpClashActorLevel * 2) * _2X
+			: (3 + pvpClashActorLevel * 2) * _2X;
+		const int color = (pvpClashActorKind == PVP_ACT_CANNON) ? 0xFF9A3C
+			: (pvpClashActorLevel >= 3) ? 0xFF7AE0
 			: (pvpClashActorLevel == 2) ? 0x7AC8FF : 0xFFD34D;
 
 		//연기. 지나온 자리에 옅게 남는다.
@@ -10417,7 +12876,8 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 			shotR * 2 / 3, shotR * 2 / 3, COLOR_WHITE, shotR / 3);
 
 		//스킬 카드는 치는 사람의 머리 위다. 무엇이 나갔는지 이름으로 읽는다.
-		if (pvpClashActorSkill >= 0 && pvpClashActorLevel > 1) {
+		if (pvpClashActorKind == PVP_ACT_CREW
+			&& pvpClashActorSkill >= 0 && pvpClashActorLevel > 1) {
 			const float cardZoom = (float)(26 * _2X) / (float)SKILLCARDSIZE_X;
 
 			DrawSkillCard(pvpClashActorSkill, pvpClashActorLevel,
@@ -10426,17 +12886,28 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 		}
 	}
 
-	//맞은 성은 한 번 번쩍인다.
+	//---- 맞은 자리 ----
+	//
+	//전에는 맞은 성 위에 지름 60 짜리 둥근 판을 깔았다. 반투명으로 둔
+	//것인데 화면에서는 성 절반을 덮는 갈색 원으로 보였다 - 성이 가려지면
+	//무엇에 맞았는지가 아니라 그림이 깨진 것으로 읽힌다.
+	//
+	//얇은 테 하나만 남긴다. 흔들림(pvpClashShake)이 이미 맞은 것을
+	//말하고 있으므로 여기는 거들기만 하면 된다.
 	for (int side = 0; side < 2; ++side) {
 		if (pvpClashShake[side] <= 0)
 			continue;
 
-		const int flashX = (side == 0) ? leftX : rightX;
-		SetAlpha(Min(20, pvpClashShake[side] * 4));
-		MemRectRound(flashX - 30 * _2X,
-			castleY[side] - (int)(DIORAMASIZE_Y * castleZoom * 0.35f),
-			60 * _2X, 60 * _2X, 0xFF8A5C, 30 * _2X);
-		SetAlpha(32);
+		{
+			const int flashX = (side == 0) ? leftX : rightX;
+			const int r = (10 + pvpClashShake[side]) * _2X;
+
+			SetAlpha(Min(ALPHA_MAX / 2, pvpClashShake[side] * 2));
+			MemRectFrame(flashX - r,
+				castleY[side] - (int)(boxH[side] * 0.45f) + r,
+				r * 2, r * 2, 0xFFD08A);
+			SetAlpha(ALPHA_MAX);
+		}
 	}
 
 	VsHpBarDraw(pvpTestPlayerHp, pvpTestPlayerMaxHp,
@@ -10449,14 +12920,44 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting)
 //
 //    -3  우주맵이 차오른다
 //    -2  그 우주에서 고른 두 성이 가운데로 모인다
-//    -1  두 성이 좌우에서 제자리로 밀려 들어온다
+//    -1  두 성이 좌우에서 천천히 밀려 들어와 선다
+//     1  상대를 보고 창고에서 가방을 짠다(출정 준비 화면)
+//     3  양쪽 격자가 올라온다
 //     2  서로 쏜다
 //     4  이겼다 - 상대 금고를 가져온다
 //     5  졌다
 //     6  구름으로 닫고 돌아간다
 //
-//공성전의 상자 약탈(3)과 GO 대기(1)는 없다. 들어갈 성이 없고, 두 성이
-//맞붙는 것을 보여주는 화면이라 누를 것도 없다.
+//1 과 3 은 공성전에서 GO 대기와 상자 약탈이던 번호다. 둘은 서로 다른
+//화면(PvpTestDraw 와 PvpCastleClashDraw)이 각자 읽는 값이라 겹치지 않는다.
+static bool gPvpClashAutoAdvance = false; //디버깅: 자동으로 넘기지 않고 터치/버튼으로 진행
+
+void PvpClashAdvanceNext(void)
+{
+	if (pvpTestState == -2) {
+		pvpTestState = -1;
+		pvpTestFrame = 0;
+		PvpClashReset();
+		PlayMusic(M_SELECT);
+	}
+	else if (pvpTestState == -3) {
+		pvpTestState = -2;
+		pvpTestFrame = 0;
+		PlayMusic(M_HEART);
+	}
+}
+
+void PvpClashToggleAuto(void)
+{
+	gPvpClashAutoAdvance = !gPvpClashAutoAdvance;
+	PlayMusic(M_SELECT);
+}
+
+bool PvpClashIsAuto(void)
+{
+	return gPvpClashAutoAdvance;
+}
+
 static void PvpCastleClashDraw(void)
 {
 	switch (pvpTestState) {
@@ -10474,21 +12975,112 @@ static void PvpCastleClashDraw(void)
 	case -2:
 		DrawPvpSelectedCastles(pvpTestFrame, PVP_CLASH_MATCH_FRAME);
 
-		if (pvpTestFrame >= PVP_CLASH_MATCH_FRAME) {
-			pvpTestState = -1;
-			pvpTestFrame = 0;
-			PvpClashReset();
+		if (gPvpClashAutoAdvance) {
+			if (pvpTestFrame >= PVP_CLASH_MATCH_FRAME) {
+				pvpTestState = -1;
+				pvpTestFrame = 0;
+				PvpClashReset();
+			}
+		}
+		else {
+			//자동으로 넘기지 않고 완료 프레임에서 멈춰 대기한다
+			if (pvpTestFrame >= PVP_CLASH_MATCH_FRAME) {
+				pvpTestFrame = PVP_CLASH_MATCH_FRAME;
+			}
+		}
+
+		//---- 디버깅: 화면 터치 및 버튼으로 다음 단계 진행 ----
+		//화면 아무 곳이나 터치하면 다음으로 넘어간다 (뒤에 등록되는 개별 버튼 터치가 우선)
+		SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_PVP_DEBUG_NEXT);
+
+		//디버깅 다음 버튼 (하단 중앙)
+		{
+			const int bw = 90 * _2X;
+			const int bh = 24 * _2X;
+			const int bx = DX / 2 - bw / 2;
+			const int by = 42 * _2X;
+			DrawUiButton(bx, by, bw, bh, "다음 ▶", TOUCH_FUNC_PVP_DEBUG_NEXT);
+		}
+
+		//디버깅 자동/수동 토글 버튼 (우측 상단, GNB 아래)
+		{
+			const int bw = 68 * _2X;
+			const int bh = 20 * _2X;
+			const int bx = DX - bw - 6 * _2X;
+			const int by = DY - 44 * _2X;
+			DrawUiButton(bx, by, bw, bh,
+				gPvpClashAutoAdvance ? "자동: ON" : "수동 대기",
+				TOUCH_FUNC_PVP_DEBUG_AUTO, gPvpClashAutoAdvance);
 		}
 		break;
 
 	case -1: {
-		//제자리에 닿는 순간이 가장 빠르다. 그래야 부딪히는 것으로 보인다.
+		//---- 천천히 와서 선다 ----
+		//
+		//전에는 제자리에 닿는 순간이 가장 빨랐다(t * t). 부딪히는 그림을
+		//노린 것인데, 두 성이 달려와 들이받고 멈추는 것으로 보였다.
+		//
+		//이제는 끝에서 느려진다. 멀리서 밀려와 제자리에 가만히 서고, 선
+		//다음에 세팅 차례가 온다.
 		const float t = Min(1.0f, (float)pvpTestFrame
 			/ (float)Max(1, PVP_CLASH_IN_FRAME));
+		const float ease = 1.0f - (1.0f - t) * (1.0f - t) * (1.0f - t);
 
-		PvpCastleStandOffDraw(t * t, false);
+		PvpCastleStandOffDraw(ease, false, 0.0f, 0.0f);
 
 		if (pvpTestFrame >= PVP_CLASH_IN_FRAME) {
+			pvpTestState = 1;
+			pvpTestFrame = 0;
+			//상대가 눈앞에 선 다음에 가방을 짠다.
+			LoadoutOpenForPvp();
+			PlayMusic(M_OPENWINDOW);
+		}
+		break;
+	}
+
+	//---- 세팅 ----
+	//
+	//상대 성과 편성이 눈앞에 선 뒤에 창고에서 끌어다 놓는다. 먼저 고르게
+	//하면 누구와 붙는지 모르는 채로 고르는 것이 되어, 무엇을 들고 갈지를
+	//정할 근거가 없다.
+	//
+	//출정 준비 화면 그대로다(LoadoutDraw). 뒤로 격돌 장면이 비치므로
+	//고르는 동안에도 상대가 보인다.
+	case 1:
+		//---- 상대 가방을 보며 내 가방을 짠다 ----
+		//
+		//내 격자는 안 그린다 - 출정 준비 창이 그 자리에서 같은 일을
+		//한다. 상대 것만 제 성 위에 띄워 둔다. 무엇을 싣고 나왔는지
+		//보고 고르라고 만든 차례다.
+		PvpCastleStandOffDraw(1.0f, false, 0.0f, 1.0f);
+		LoadoutDraw();
+
+		//[세팅 완료] 를 누르면 닫힌다. 그 뒤에야 가방을 다시 짠다 -
+		//방금 바꾼 것이 그대로 격자에 올라가야 한다.
+		if (!LoadoutOpen()) {
+			PvpSideGridSetup(&pvpTestDefender);
+			pvpTestState = 3;
+			pvpTestFrame = 0;
+			PlayMusic(M_HEART);
+		}
+		break;
+
+	//---- 양쪽 격자가 올라온다 ----
+	//
+	//공성전의 3 은 상자 약탈이었다. 격돌에는 들어갈 성이 없어 비어 있던
+	//번호다.
+	case 3: {
+		const float t = Min(1.0f, (float)pvpTestFrame
+			/ (float)Max(1, PVP_CLASH_SETUP_IN));
+
+		PvpCastleStandOffDraw(1.0f, false,
+			1.0f - (1.0f - t) * (1.0f - t), 1.0f);
+
+		SetFontColor(0xFFD43B);
+		CenterTextStrSolid("SETTING", DX / 2, DY / 2 - 40 * _2X, 1.05f);
+		SetFontColor(COLOR_WHITE);
+
+		if (pvpTestFrame >= PVP_CLASH_SETUP_FRAME) {
 			pvpTestState = 2;
 			pvpTestFrame = 0;
 			PlayMusic(M_KUNG);
@@ -10497,7 +13089,7 @@ static void PvpCastleClashDraw(void)
 	}
 
 	case 2:
-		PvpCastleStandOffDraw(1.0f, true);
+		PvpCastleStandOffDraw(1.0f, true, 1.0f, 1.0f);
 		PvpClashCombatStep();
 
 		if (pvpTestEnemyHp <= 0) {
@@ -10515,11 +13107,32 @@ static void PvpCastleClashDraw(void)
 	case 4: {
 		char lootText[64];
 
-		PvpCastleStandOffDraw(1.0f, true);
+		PvpCastleStandOffDraw(1.0f, true, 1.0f, 1.0f);
 		sprintf(lootText, "GOLD +%lld", pvpTestLoot);
 		SetFontColor(0xFFD43B);
 		CenterTextStrSolid("CLASH WON", DX / 2, DY - 112 * _2X, 1.55f);
 		CenterTextStrSolid(lootText, DX / 2, DY - 142 * _2X, 1.2f);
+
+		//---- 단계 ----
+		//
+		//처음 깬 단계일 때만 적는다. 이미 깬 단계를 다시 이긴 것이면
+		//올라간 것이 없으니 적을 것도 없다.
+		if (pvpStageGrandJust) {
+			char grandText[64];
+
+			sprintf(grandText, "GRAND REWARD  GOLD +%d  HEART +%d",
+				PVP_GRAND_GOLD, PVP_GRAND_HEART);
+			CenterTextStrSolid("ALL 10 STAGES CLEAR!", DX / 2, DY - 168 * _2X, 1.3f);
+			CenterTextStrSolid(grandText, DX / 2, DY - 192 * _2X, 0.95f);
+		}
+		else if (pvpStageJustCleared) {
+			char stageText[64];
+
+			sprintf(stageText, "STAGE %d CLEAR   GOLD +%d",
+				pvpStageFighting, PVP_STAGE_GOLD * pvpStageFighting);
+			CenterTextStrSolid(stageText, DX / 2, DY - 168 * _2X, 1.1f);
+		}
+
 		SetFontColor(COLOR_WHITE);
 
 		if (pvpTestFrame >= PVP_CLASH_RESULT_FRAME) {
@@ -10530,7 +13143,7 @@ static void PvpCastleClashDraw(void)
 	}
 
 	case 5:
-		PvpCastleStandOffDraw(1.0f, true);
+		PvpCastleStandOffDraw(1.0f, true, 1.0f, 1.0f);
 		SetFontColor(0xFF7777);
 		CenterTextStrSolid("CLASH LOST", DX / 2, DY - 112 * _2X, 1.55f);
 		SetFontColor(COLOR_WHITE);
@@ -10545,7 +13158,7 @@ static void PvpCastleClashDraw(void)
 		//---- 닫고 나간다 ----
 		//
 		//공성전과 같은 구름이다. 열리며 들어왔으니 닫히며 나간다.
-		PvpCastleStandOffDraw(1.0f, true);
+		PvpCastleStandOffDraw(1.0f, true, 1.0f, 1.0f);
 		PvpTransitionCloudDraw((FPS + FPS / 2)
 			* Max(0, PVP_LOOT_CLOSE_FRAME - pvpTestFrame)
 			/ PVP_LOOT_CLOSE_FRAME);
@@ -10583,7 +13196,7 @@ void PvpTestDraw(void)
 #endif
 	if (pvpObjectsSaved && pvpTestState == -1) {
 		//두 성과 승무원 배치를 잠깐 보여 준 뒤 실제 적 성 전장으로 전환한다.
-		PvpCastleStandOffDraw(1.0f, false);
+		PvpCastleStandOffDraw(1.0f, false, 0.0f, 0.0f);
 		pvpTestFrame++;
 		if (pvpTestFrame >= FPS * 2) {
 			pvpTestState = 0;

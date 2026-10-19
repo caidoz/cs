@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // StageBackground.h
 // 성열차가 달리는 지역의 배경. 원경 - 보스 - 중경 - 선로 를 서로 다른
 // 속도로 흘려 깊이를 낸다.
@@ -389,21 +389,52 @@ inline void Boss(const Camera& cam) {
 
 // 전투 장면 배경 한 판.  groundY 는 성과 적이 딛는 줄, arenaBottom 은
 // 아래 인벤토리가 덮기 시작하는 줄이다.
-inline void Draw(const Camera& cam, int arenaBottom) {
+//withBoss 는 원경의 보스를 얹을지다. PVP 격돌은 두 성이 맞붙는 자리라
+//남의 보스가 뒤에 떠 있으면 누가 싸우는 판인지가 흐려진다.
+inline void Draw(const Camera& cam, int arenaBottom, bool withBoss = true) {
 	//심연색을 먼저 깐다. 원경 아래로 화면이 길어져도 색이 이어진다.
 	MemRect(0, DY, DX, Max(1, DY - arenaBottom), Cur().abyss);
 
 	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  cam, kDepthFar);
-	Boss(cam);
+	if (withBoss)
+		Boss(cam);
 	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  cam, kDepthMid);
 	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
 }
 
+//선로만 그린다 (우주맵 등 다른 배경 위에 선로를 얹을 때 쓴다)
+inline void DrawRail(const Camera& cam) {
+	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
+}
+
 //카메라를 안 쓰는 화면(전투)용.
-inline void Draw(int groundY, int arenaBottom) {
+inline void Draw(int groundY, int arenaBottom, bool withBoss = true) {
 	Camera cam=FixedCam(groundY);
 	cam.menuLift=GetStageWorldLift();
-	Draw(cam, arenaBottom);
+	Draw(cam, arenaBottom, withBoss);
 }
+
+//---- 잠시 다른 지역으로 ----
+//
+//PVP 격돌은 우주에서 벌어진다. 판이 정한 지역(s_region)을 건드리지 않고
+//한 장면만 다른 지역으로 그리려면 그렸다가 되돌릴 자리가 필요하다.
+//
+//달린 거리(s_travel)도 같이 붙잡는다. 두 성이 양쪽에서 와서 서는 동안
+//선로와 원경이 흐르면, 서로 달려든 것이 아니라 한 열차에 실려 가는
+//것으로 보인다.
+struct Borrow {
+	int region;
+	float travel;
+
+	//hold 는 붙잡아 둘 선로 거리다. 그 자리에 세워 두면 배경이 멈춘다.
+	Borrow(int use, float hold) : region(s_region), travel(s_travel) {
+		s_region = Max(0, Min(use, STAGEBG_REGION_CNT - 1));
+		s_travel = hold;
+	}
+	~Borrow() { s_region = region; s_travel = travel; }
+};
+
+//우주 지역의 번호. 표(kRegion)의 마지막이다.
+static const int kSpaceRegion = STAGEBG_REGION_CNT - 1;
 
 } // namespace StageBg

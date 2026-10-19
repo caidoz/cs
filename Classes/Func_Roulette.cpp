@@ -1,6 +1,7 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
+#include "Data/CastleMapIconLayout.h"
 
 //==========================================================================
 // 스킬 카드가 동료 머리 위에 내려앉는 크기
@@ -1190,25 +1191,45 @@ void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 				continue;
 			}
 
-			const int castleListIdx = (robin.castle + friendIndex + 1) % gTotalCastle;
-			const int castleType = castleOrder[castleListIdx];
+			//---- 저마다 제 성을 세운다 ----
+			//
+			//전에는 지도용 마을 그림을 돌려 가며 깔았다. 그 집들은 성이
+			//아니어서, 성끼리 붙는 판을 앞두고 못 보던 마을이 늘어섰다.
+			//
+			//이제 AI 표(aiUserHouse)가 저마다 성 단계를 들고 있다. 그
+			//단계의 지도 아이콘을 그대로 찍는다 - 아이콘은 한 장짜리라
+			//수십 개를 깔아도 조립 렌더러처럼 느려지지 않는다.
+			const HOUSE* who = &aiUserHouse[friendIndex % TOTALAI];
+			const int level = Max(1, Min(CASTLE_STAGE_CNT, (int)who->castleLevel));
+			const int icon = CASTLE_MAP_ICON_FIRST_IMG + level - 1;
 			const int jitterX = ((friendIndex * 37) % 17 - 8) * _2X;
 			const int jitterY = ((friendIndex * 53) % 13 - 6) * _2X;
 			const int cx = (col * 2 + 1) * DX / (cols * 2) + jitterX;
 			const int cy = (row * 2 + 1) * DY / (rows * 2) + jitterY;
-			const float castleZoom = (0.058f + 0.012f * (friendIndex % 3)) * appear;
+
+			//단계가 높을수록 조금 크게 찍는다. 지도만 봐도 센 성이 어디
+			//있는지 눈에 들어온다.
+			const float iconSize = (20.0f + level * 1.6f) * _2X * appear;
 			const float profileSize = (18.0f + 2.0f * (friendIndex % 2)) * _2X;
 
+			if (!sprite[icon]) LoadImg(icon);
+
 			SetAlpha((int)(32.0f * appear));
-			DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-				cx - (float)DIORAMASIZE_X * castleZoom / 2,
-				cy + (float)DIORAMASIZE_Y * castleZoom / 2,
-				false, false, false, false, false, castleZoom,
-				sprite[MAP_DIORAMA_IMG + castleType], MAP_DIORAMA_IMG + castleType);
-			SocialProfileImageDraw((int)aiUserHouse[friendIndex % TOTALAI].userProfileImgIdx,
+
+			if (sprite[icon]) {
+				const auto sz = sprite[icon]->getContentSize();
+				const float zoom = (sz.width > 0.0f)
+					? iconSize / sz.width : 1.0f;
+
+				DrawImage((int)sz.width, (int)sz.height, 0, 0,
+					cx - iconSize / 2, cy + iconSize / 2,
+					false, false, false, false, false, zoom,
+					sprite[icon], icon);
+			}
+
+			SocialProfileImageDraw((int)who->userProfileImgIdx,
 				cx - profileSize * appear / 2,
-				cy + (float)DIORAMASIZE_Y * castleZoom / 2
-					+ profileSize * appear + 2 * _2X,
+				cy - iconSize / 2 - 2 * _2X,
 				profileSize * appear);
 			friendIndex++;
 		}
@@ -1293,6 +1314,28 @@ static void RestorePvpUiBars(void)
 	pvpUiBarsMoving = false;
 }
 
+struct PvpEntranceIconPlacement {int image=0,level=0;float left=0,right=0,contact=0,scale=0;bool mirrored=false,valid=false;};
+static PvpEntranceIconPlacement pvpEntranceIcons[2];
+static void DrawPvpEntranceIcon(int side,int level,int centerX,int wheelY,float size) {
+    auto& p=pvpEntranceIcons[side];p=PvpEntranceIconPlacement();
+    const int c=Max(0,Min(9,level-1)),img=CASTLE_MAP_ICON_FIRST_IMG+c;
+    if(!sprite[img]) LoadImg(img);
+    if(!sprite[img]) return;
+    const float scale=size/CastleMapIconLayout::Size;
+    const int left=(int)std::lround(centerX-size*.5f);
+    const int top=(int)std::lround(wheelY+CastleMapIconLayout::WheelY[c]*scale);
+    DrawImage(1024,1024,0,0,left,top,side==1,0,0,0,0,scale,sprite[img],img);
+    p.image=img;p.level=level;p.left=(float)left;p.right=left+size;
+    p.scale=scale;p.mirrored=side==1;p.valid=true;
+    p.contact=top-CastleMapIconLayout::WheelY[c]*scale;
+}
+bool PvpEntranceIconReviewCheck(int myLevel,int foeLevel) {
+    const auto& a=pvpEntranceIcons[0];const auto& b=pvpEntranceIcons[1];
+    return a.valid && b.valid && a.level==myLevel && b.level==foeLevel
+        && a.image==CASTLE_MAP_ICON_FIRST_IMG+myLevel-1 && b.image==CASTLE_MAP_ICON_FIRST_IMG+foeLevel-1
+        && !a.mirrored && b.mirrored && std::fabs(a.scale-b.scale)<.0001f
+        && std::fabs(a.contact-b.contact)<=1 && a.left>=0 && b.right<=DX;
+}
 void DrawPvpSelectedCastles(int localFrame, int totalFrame)
 {
 	DrawPvpCosmicCastleMap(totalFrame, totalFrame);
@@ -1302,32 +1345,57 @@ void DrawPvpSelectedCastles(int localFrame, int totalFrame)
 	MemRect(0, DY, DX, DY, 0x02040F);
 	SetAlpha(32);
 
-	const float castleZoom = 0.16f + 0.18f * t;
-	const int leftX = (int)(DX / 2 + (DX / 4 - DX / 2) * t);
+	//---- 좌우 바깥에서 달려온다 ----
+	//
+	//전에는 화면 가운데에서 둘로 갈라져 나왔다. 여러 성이 떠 있는 지도
+	//에서 맞붙을 둘만 남는 장면이라, 가운데에서 솟아 오르는 것으로
+	//보였다.
+	//
+	//이제는 화면 밖에서 달려와 가운데에 선다. t 가 이미 끝에서 느려지는
+	//곡선이라(위의 1 - (1-t)^3) 달려와 멈추는 것으로 읽힌다.
+	const float iconSize = DX*(0.28f+0.10f*t);
+	const float outside = -(float)DX * 0.35f;
+	const int leftX = (int)(outside + ((float)(DX / 4) - outside) * t);
 	const int rightX = DX - leftX;
-	const int castleY = DY / 2 + (int)(DIORAMASIZE_Y * castleZoom / 2);
-	const int myCastle = castleOrder[robin.castle];
-	const int foeCastle = enemyHouse.houseType >= 0
-		? (int)enemyHouse.houseType : myCastle;
-
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		leftX - DIORAMASIZE_X * castleZoom / 2, castleY,
-		false, false, false, false, false, castleZoom,
-		sprite[MAP_DIORAMA_IMG + myCastle], MAP_DIORAMA_IMG + myCastle);
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		rightX - DIORAMASIZE_X * castleZoom / 2, castleY,
-		true, false, false, false, false, castleZoom,
-		sprite[MAP_DIORAMA_IMG + foeCastle], MAP_DIORAMA_IMG + foeCastle);
+	// Entrance uses the current castle icons, independent of lobby camera,
+	// assembly geometry and room/crew rendering. Both wheel contacts share Y.
+	const int myLevel = CastleMenuModel::Clamp(robin.castle) + 1;
+	const int foeLevel = Max(1, Min(CASTLE_STAGE_CNT, pvpFoeCastleLevel));
+	const int contactY=DY/2+20*_2X;
+	DrawPvpEntranceIcon(0,myLevel,leftX,contactY,iconSize);
+	DrawPvpEntranceIcon(1,foeLevel,rightX,contactY,iconSize);
 
 	const float profileSize = 30.0f * _2X;
 	UserProfileNameDraw(profileImg[0], robin.nickname.empty() ? "Guest" : robin.nickname.c_str(),
 		leftX - 72 * _2X, DY - 30 * _2X, profileSize,
 		leftX - 36 * _2X, DY - 42 * _2X, 0.82f, LEFT);
-	UserProfileNameDraw((int)enemyHouse.userProfileImgIdx, "RIVAL COPY",
-		rightX + 72 * _2X - (int)profileSize, DY - 30 * _2X, profileSize,
-		rightX + 36 * _2X, DY - 42 * _2X, 0.82f, RIGHT);
-	DrawGoldAlphaText(DX / 2, DY / 2 + 10 * _2X, "VS",
+	//---- 상대 이름 ----
+	//
+	//전에는 내 복사본이라 "RIVAL COPY" 였다. 이제는 단계마다 다른 성이
+	//올라오니 몇 단계 상대인지를 적는다.
+	{
+		char foeName[32];
+
+		sprintf(foeName, "STAGE %d RIVAL", Max(1, pvpStageFighting));
+		UserProfileNameDraw(pvpFoeProfileImg, foeName,
+			rightX + 72 * _2X - (int)profileSize, DY - 30 * _2X, profileSize,
+			rightX + 36 * _2X, DY - 42 * _2X, 0.82f, RIGHT);
+	}
+	DrawGoldAlphaText(DX / 2, DY / 2 - 8 * _2X, "VS",
 		FONT_GOLD_LARGE, 2.4f + 0.4f * sinf(t * M_PI), CENTER, true, -7.0f);
+
+	//---- 몇 단계인가 ----
+	//
+	//열 단계가 끝까지 있으니, 지금 어디쯤인지가 VS 아래에 늘 보여야 한다.
+	{
+		char stageText[32];
+
+		sprintf(stageText, "STAGE %d / %d",
+			Max(1, pvpStageFighting), PVP_STAGE_CNT);
+		SetFontColor(0xFFD43B);
+		CenterTextStrSolid(stageText, DX / 2, DY / 2 - 80 * _2X, 0.95f);
+		SetFontColor(COLOR_WHITE);
+	}
 }
 
 void RouletteDraw(int x, int y, float zoom)

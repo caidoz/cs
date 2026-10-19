@@ -1,0 +1,188 @@
+{
+  "width": 1024,
+  "height": 1024,
+  "transparentBackground": true,
+  "camera": "side elevation icon, two wheels, no diorama slab",
+  "icons": [
+    {
+      "castleLevel": 1,
+      "castleIndex": 0,
+      "upgradeStage": 0,
+      "file": "png/castle-map-01.png",
+      "source": "originals/castle-map-01.png",
+      "currentCastleReference": "../individual_castles_v4/castle-01.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_01.png",
+      "imageId": "CASTLE_MAP_ICON_01_IMG",
+      "wheelContactY": 988,
+      "opaqueBounds": [
+        39,
+        66,
+        985,
+        988
+      ],
+      "sha256": "037fe2dde2ce49c940f6bc9009e8dcca39909c6d5f20ace14199b2d73ba95c06"
+    },
+    {
+      "castleLevel": 2,
+      "castleIndex": 1,
+      "upgradeStage": 0,
+      "file": "png/castle-map-02.png",
+      "source": "originals/castle-map-02.png",
+      "currentCastleReference": "../individual_castles_v4/castle-02.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_02.png",
+      "imageId": "CASTLE_MAP_ICON_02_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        50,
+        44,
+        974,
+        989
+      ],
+      "sha256": "6bf79caa9d448d82aa372c48fde6caf333ef85e79a92c4f6df81b62e6d389a70"
+    },
+    {
+      "castleLevel": 3,
+      "castleIndex": 2,
+      "upgradeStage": 0,
+      "file": "png/castle-map-03.png",
+      "source": "originals/castle-map-03.png",
+      "currentCastleReference": "../individual_castles_v4/castle-03.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_03.png",
+      "imageId": "CASTLE_MAP_ICON_03_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        94,
+        43,
+        930,
+        989
+      ],
+      "sha256": "e91e4c167702e0c15d9506051cdb8a861b15b766e463cb647f41939ca0458780"
+    },
+    {
+      "castleLevel": 4,
+      "castleIndex": 3,
+      "upgradeStage": 0,
+      "file": "png/castle-map-04.png",
+      "source": "originals/castle-map-04.png",
+      "currentCastleReference": "../individual_castles_v4/castle-04.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_04.png",
+      "imageId": "CASTLE_MAP_ICON_04_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        126,
+        43,
+        897,
+        989
+      ],
+      "sha256": "07ada07679a83608af7c1afa020e3bb7624e97b3d31675c3f7e6b354d2ee7393"
+    },
+    {
+      "castleLevel": 5,
+      "castleIndex": 4,
+      "upgradeStage": 0,
+      "file": "png/castle-map-05.png",
+      "source": "originals/castle-map-05.png",
+      "currentCastleReference": "../individual_castles_v4/castle-05.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_05.png",
+      "imageId": "CASTLE_MAP_ICON_05_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        88,
+        43,
+        935,
+        989
+      ],
+      "sha256": "0b327d174cca205884fd3729d774cc48ec73c71633ccf12dd40a89125ad86fc6"
+    },
+    {
+      "castleLevel": 6,
+      "castleIndex": 5,
+      "upgradeStage": 0,
+      "file": "png/castle-map-06.png",
+      "source": "originals/castle-map-06.png",
+      "currentCastleReference": "../individual_castles_v4/castle-06.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_06.png",
+      "imageId": "CASTLE_MAP_ICON_06_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        72,
+        43,
+        951,
+        989
+      ],
+      "sha256": "5d2bed1702a5a5f4c9cd98c601b212275010b242951b53cb0d0b2a48ceafb95d"
+    },
+    {
+      "castleLevel": 7,
+      "castleIndex": 6,
+      "upgradeStage": 0,
+      "file": "png/castle-map-07.png",
+      "source": "originals/castle-map-07.png",
+      "currentCastleReference": "../individual_castles_v4/castle-07.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_07.png",
+      "imageId": "CASTLE_MAP_ICON_07_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        117,
+        43,
+        907,
+        989
+      ],
+      "sha256": "1423040d9227b0225a2509f17d98324385cc835ed2d069078520787814bc701e"
+    },
+    {
+      "castleLevel": 8,
+      "castleIndex": 7,
+      "upgradeStage": 0,
+      "file": "png/castle-map-08.png",
+      "source": "originals/castle-map-08.png",
+      "currentCastleReference": "../individual_castles_v4/castle-08.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_08.png",
+      "imageId": "CASTLE_MAP_ICON_08_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        66,
+        43,
+        957,
+        989
+      ],
+      "sha256": "2cc510e2098d22a0b37df69d3af800b2586d74f92b430d3af59068c20be1118e"
+    },
+    {
+      "castleLevel": 9,
+      "castleIndex": 8,
+      "upgradeStage": 0,
+      "file": "png/castle-map-09.png",
+      "source": "originals/castle-map-09.png",
+      "currentCastleReference": "../individual_castles_v4/castle-09.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_09.png",
+      "imageId": "CASTLE_MAP_ICON_09_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        83,
+        43,
+        940,
+        989
+      ],
+      "sha256": "81b7b26900f5be753b9c24b54b9fb8cd3a69917cb6052041b9f0aeb31e4b230b"
+    },
+    {
+      "castleLevel": 10,
+      "castleIndex": 9,
+      "upgradeStage": 0,
+      "file": "png/castle-map-10.png",
+      "source": "originals/castle-map-10.png",
+      "currentCastleReference": "../individual_castles_v4/castle-10.png",
+      "gameFile": "Resources\\res\\castle_map_icons\\castle_map_10.png",
+      "imageId": "CASTLE_MAP_ICON_10_IMG",
+      "wheelContactY": 989,
+      "opaqueBounds": [
+        122,
+        43,
+        901,
+        989
+      ],
+      "sha256": "a642d43f1db6f005e5b7e76f11ade795b27765b4efe7db1736b1e1587b556189"
+    }
+  ]
+}

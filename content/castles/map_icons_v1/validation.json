@@ -1,0 +1,155 @@
+{
+  "status": "PASS",
+  "icons": [
+    {
+      "castleLevel": 1,
+      "file": "png/castle-map-01.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        38,
+        113,
+        986,
+        986
+      ],
+      "transparentFraction": 0.5285,
+      "sha256": "d14f0bbd37d2a44908a0e3c0f96fd444eaf42f1ae20d2459d66f50d91f49fc74"
+    },
+    {
+      "castleLevel": 2,
+      "file": "png/castle-map-02.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        40,
+        38,
+        983,
+        986
+      ],
+      "transparentFraction": 0.4631,
+      "sha256": "8060b04c46a8877ed2ec0a80bcadcc94eb096a1175d544a21d91bbfae5e59d68"
+    },
+    {
+      "castleLevel": 3,
+      "file": "png/castle-map-03.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        75,
+        39,
+        948,
+        986
+      ],
+      "transparentFraction": 0.4944,
+      "sha256": "6aea73bfac3299e7850f7a4f15cf9f0ad704af87ee953bc9ceffe72219b753b6"
+    },
+    {
+      "castleLevel": 4,
+      "file": "png/castle-map-04.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        95,
+        38,
+        927,
+        986
+      ],
+      "transparentFraction": 0.5327,
+      "sha256": "2f4c7a9eb4f4de2e63ba31383680e7ccadb5a439cfd18f5a5048f9acb48d26fd"
+    },
+    {
+      "castleLevel": 5,
+      "file": "png/castle-map-05.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        137,
+        39,
+        889,
+        986
+      ],
+      "transparentFraction": 0.6327,
+      "sha256": "a9cd1f83015f3ce4ef0275b9dc4ee7c37d21e04f39ada1cc5db824176f05904c"
+    },
+    {
+      "castleLevel": 6,
+      "file": "png/castle-map-06.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        95,
+        38,
+        930,
+        986
+      ],
+      "transparentFraction": 0.5852,
+      "sha256": "50a2f1f5eeccd8740fb34956c0b547ed8cbca9e8fb2ae59a40823e8f0f26dc85"
+    },
+    {
+      "castleLevel": 7,
+      "file": "png/castle-map-07.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        144,
+        37,
+        880,
+        988
+      ],
+      "transparentFraction": 0.6774,
+      "sha256": "8020974b392b8b30f528a1aa6fd83f2fd44b0932ebadf012f00cb185e96138dd"
+    },
+    {
+      "castleLevel": 8,
+      "file": "png/castle-map-08.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        138,
+        38,
+        888,
+        987
+      ],
+      "transparentFraction": 0.6477,
+      "sha256": "589af197001019dcb4dbdaa3895e78f440e0dd522cbbb2762504c551519507d7"
+    },
+    {
+      "castleLevel": 9,
+      "file": "png/castle-map-09.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        155,
+        38,
+        869,
+        987
+      ],
+      "transparentFraction": 0.6805,
+      "sha256": "b2e1640d6c69d90f96aecd23460a7c0743bd6d900634cf3dba768942cbdbd2be"
+    },
+    {
+      "castleLevel": 10,
+      "file": "png/castle-map-10.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "solidBounds": [
+        134,
+        38,
+        890,
+        990
+      ],
+      "transparentFraction": 0.6571,
+      "sha256": "e6b0f0b90dc63106ab6fba63dfc9f5245e486d307154c72d328424bd483675c9"
+    }
+  ]
+}

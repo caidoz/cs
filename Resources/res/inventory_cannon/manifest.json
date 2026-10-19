@@ -12,8 +12,8 @@
       "castle": 1,
       "level": 0,
       "grade": 0,
-      "gradeName": "normal",
       "file": "castle_01_lv_0.png",
+      "theme": "stone_catapult",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -27,466 +27,411 @@
         64,
         64
       ],
-      "sourceRect": [
-        0,
-        0,
-        205,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
-      "bodyRect": [
-        17,
-        18,
-        29,
-        28
-      ],
-      "muzzle": [
-        23,
-        21
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_0.png",
-      "partSize": [
-        58,
-        56
-      ]
-    },
-    {
-      "castle": 1,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_01_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        0,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        0,
-        391,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
-      "bodyRect": [
-        9,
-        15,
-        46,
-        33
-      ],
-      "muzzle": [
-        18,
-        18
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_1.png",
-      "partSize": [
-        92,
-        66
-      ]
-    },
-    {
-      "castle": 1,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_01_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        0,
-        64,
-        64
-      ],
-      "sourceRect": [
-        391,
-        0,
-        605,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
       "bodyRect": [
         3,
-        15,
-        58,
-        33
-      ],
-      "muzzle": [
-        14,
-        18
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_2.png",
-      "partSize": [
-        116,
-        66
-      ]
-    },
-    {
-      "castle": 1,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_01_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        0,
-        96,
-        64
-      ],
-      "sourceRect": [
-        605,
-        0,
-        808,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
-      "bodyRect": [
-        14,
-        9,
-        68,
-        45
-      ],
-      "muzzle": [
-        27,
-        13
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_3.png",
-      "partSize": [
-        136,
-        90
-      ]
-    },
-    {
-      "castle": 1,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_01_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        0,
-        96,
-        64
-      ],
-      "sourceRect": [
-        808,
-        0,
-        1021,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
-      "bodyRect": [
-        9,
-        6,
-        78,
-        52
-      ],
-      "muzzle": [
-        24,
-        11
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_4.png",
-      "partSize": [
-        156,
-        104
-      ]
-    },
-    {
-      "castle": 1,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_01_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        0,
-        96,
-        64
-      ],
-      "sourceRect": [
-        1021,
-        0,
-        1229,
-        129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "stone_catapult",
-      "bodyRect": [
-        3,
-        4,
-        90,
-        56
-      ],
-      "muzzle": [
-        21,
-        10
-      ],
-      "partFile": "castle_cannon_v2/castle_01_lv_5.png",
-      "partSize": [
-        180,
-        112
-      ]
-    },
-    {
-      "castle": 2,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_02_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        64,
-        64,
-        64
-      ],
-      "sourceRect": [
-        0,
-        129,
-        205,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
-      "bodyRect": [
-        16,
-        18,
-        33,
-        28
-      ],
-      "muzzle": [
-        47,
-        30
-      ],
-      "partFile": "castle_cannon_v2/castle_02_lv_0.png",
-      "partSize": [
-        66,
-        56
-      ]
-    },
-    {
-      "castle": 2,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_02_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        64,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        129,
-        395,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
-      "bodyRect": [
-        9,
-        16,
-        46,
-        32
-      ],
-      "muzzle": [
-        52,
-        29
-      ],
-      "partFile": "castle_cannon_v2/castle_02_lv_1.png",
-      "partSize": [
-        92,
-        64
-      ]
-    },
-    {
-      "castle": 2,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_02_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        64,
-        64,
-        64
-      ],
-      "sourceRect": [
-        395,
-        129,
-        600,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
-      "bodyRect": [
-        3,
-        14,
-        58,
-        35
-      ],
-      "muzzle": [
-        58,
-        29
-      ],
-      "partFile": "castle_cannon_v2/castle_02_lv_2.png",
-      "partSize": [
-        116,
-        70
-      ]
-    },
-    {
-      "castle": 2,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_02_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        64,
-        96,
-        64
-      ],
-      "sourceRect": [
-        600,
-        129,
-        797,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
-      "bodyRect": [
-        14,
-        10,
-        68,
-        43
-      ],
-      "muzzle": [
-        78,
-        28
-      ],
-      "partFile": "castle_cannon_v2/castle_02_lv_3.png",
-      "partSize": [
-        136,
-        86
-      ]
-    },
-    {
-      "castle": 2,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_02_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        64,
-        96,
-        64
-      ],
-      "sourceRect": [
-        797,
-        129,
-        1014,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
-      "bodyRect": [
-        9,
         11,
-        78,
+        58,
         41
       ],
       "muzzle": [
-        83,
+        14,
+        15
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 1,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_01_lv_1.png",
+      "theme": "stone_catapult",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        0,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        11,
+        58,
+        41
+      ],
+      "muzzle": [
+        14,
+        15
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 1,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_01_lv_2.png",
+      "theme": "stone_catapult",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        0,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        11,
+        58,
+        41
+      ],
+      "muzzle": [
+        14,
+        15
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 1,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_01_lv_3.png",
+      "theme": "stone_catapult",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        0,
+        96,
+        64
+      ],
+      "bodyRect": [
+        7,
+        3,
+        81,
+        58
+      ],
+      "muzzle": [
+        23,
+        9
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 1,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_01_lv_4.png",
+      "theme": "stone_catapult",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        0,
+        96,
+        64
+      ],
+      "bodyRect": [
+        7,
+        3,
+        81,
+        58
+      ],
+      "muzzle": [
+        23,
+        9
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 1,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_01_lv_5.png",
+      "theme": "stone_catapult",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        0,
+        96,
+        64
+      ],
+      "bodyRect": [
+        7,
+        3,
+        81,
+        58
+      ],
+      "muzzle": [
+        23,
+        9
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
+      "sourceRect": [
+        123,
+        37,
+        1421,
+        963
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 2,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_02_lv_0.png",
+      "theme": "flamethrower",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        64,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        12,
+        58,
+        40
+      ],
+      "muzzle": [
+        58,
+        29
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 2,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_02_lv_1.png",
+      "theme": "flamethrower",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        64,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        12,
+        58,
+        40
+      ],
+      "muzzle": [
+        58,
+        29
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 2,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_02_lv_2.png",
+      "theme": "flamethrower",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        64,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        12,
+        58,
+        40
+      ],
+      "muzzle": [
+        58,
+        29
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 2,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_02_lv_3.png",
+      "theme": "flamethrower",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        64,
+        96,
+        64
+      ],
+      "bodyRect": [
+        6,
+        3,
+        84,
+        58
+      ],
+      "muzzle": [
+        86,
         28
       ],
-      "partFile": "castle_cannon_v2/castle_02_lv_4.png",
-      "partSize": [
-        156,
-        82
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 2,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_02_lv_4.png",
+      "theme": "flamethrower",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        64,
+        96,
+        64
+      ],
+      "bodyRect": [
+        6,
+        3,
+        84,
+        58
+      ],
+      "muzzle": [
+        86,
+        28
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 2,
       "level": 5,
       "grade": 5,
-      "gradeName": "legend",
       "file": "castle_02_lv_5.png",
+      "theme": "flamethrower",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -500,36 +445,31 @@
         96,
         64
       ],
-      "sourceRect": [
-        1014,
-        129,
-        1229,
-        246
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "flamethrower",
       "bodyRect": [
+        6,
         3,
-        9,
-        90,
-        46
+        84,
+        58
       ],
       "muzzle": [
-        88,
+        86,
         28
       ],
-      "partFile": "castle_cannon_v2/castle_02_lv_5.png",
-      "partSize": [
-        180,
-        92
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
+      "sourceRect": [
+        154,
+        39,
+        1485,
+        961
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 3,
       "level": 0,
       "grade": 0,
-      "gradeName": "normal",
       "file": "castle_03_lv_0.png",
+      "theme": "rocket_battery",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -543,36 +483,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        0,
-        246,
-        205,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
       "bodyRect": [
-        16,
-        18,
-        32,
-        28
+        3,
+        14,
+        58,
+        36
       ],
       "muzzle": [
-        45,
-        26
+        55,
+        24
       ],
-      "partFile": "castle_cannon_v2/castle_03_lv_0.png",
-      "partSize": [
-        64,
-        56
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
+        104,
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 3,
       "level": 1,
       "grade": 1,
-      "gradeName": "superior",
       "file": "castle_03_lv_1.png",
+      "theme": "rocket_battery",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -586,36 +521,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        205,
-        246,
-        408,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
       "bodyRect": [
-        13,
-        15,
-        38,
-        34
+        3,
+        14,
+        58,
+        36
       ],
       "muzzle": [
-        47,
+        55,
         24
       ],
-      "partFile": "castle_cannon_v2/castle_03_lv_1.png",
-      "partSize": [
-        76,
-        68
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
+        104,
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 3,
       "level": 2,
       "grade": 2,
-      "gradeName": "rare",
       "file": "castle_03_lv_2.png",
+      "theme": "rocket_battery",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -629,36 +559,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        408,
-        246,
-        610,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
       "bodyRect": [
-        6,
-        11,
-        52,
-        42
+        3,
+        14,
+        58,
+        36
       ],
       "muzzle": [
-        53,
-        22
+        55,
+        24
       ],
-      "partFile": "castle_cannon_v2/castle_03_lv_2.png",
-      "partSize": [
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
         104,
-        84
-      ]
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 3,
       "level": 3,
       "grade": 3,
-      "gradeName": "set",
       "file": "castle_03_lv_3.png",
+      "theme": "rocket_battery",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -672,100 +597,6 @@
         96,
         64
       ],
-      "sourceRect": [
-        610,
-        246,
-        811,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
-      "bodyRect": [
-        15,
-        8,
-        66,
-        48
-      ],
-      "muzzle": [
-        75,
-        21
-      ],
-      "partFile": "castle_cannon_v2/castle_03_lv_3.png",
-      "partSize": [
-        132,
-        96
-      ]
-    },
-    {
-      "castle": 3,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_03_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        128,
-        96,
-        64
-      ],
-      "sourceRect": [
-        811,
-        246,
-        1011,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
-      "bodyRect": [
-        9,
-        6,
-        78,
-        51
-      ],
-      "muzzle": [
-        80,
-        20
-      ],
-      "partFile": "castle_cannon_v2/castle_03_lv_4.png",
-      "partSize": [
-        156,
-        102
-      ]
-    },
-    {
-      "castle": 3,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_03_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        128,
-        96,
-        64
-      ],
-      "sourceRect": [
-        1011,
-        246,
-        1229,
-        370
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "rocket_battery",
       "bodyRect": [
         3,
         4,
@@ -776,18 +607,97 @@
         85,
         19
       ],
-      "partFile": "castle_cannon_v2/castle_03_lv_5.png",
-      "partSize": [
-        180,
-        112
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
+        104,
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 3,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_03_lv_4.png",
+      "theme": "rocket_battery",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        128,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        4,
+        90,
+        56
+      ],
+      "muzzle": [
+        85,
+        19
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
+        104,
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 3,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_03_lv_5.png",
+      "theme": "rocket_battery",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        128,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        4,
+        90,
+        56
+      ],
+      "muzzle": [
+        85,
+        19
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
+      "sourceRect": [
+        75,
+        104,
+        1414,
+        943
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 4,
       "level": 0,
       "grade": 0,
-      "gradeName": "normal",
       "file": "castle_04_lv_0.png",
+      "theme": "gatling",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -801,122 +711,107 @@
         64,
         64
       ],
-      "sourceRect": [
-        0,
-        370,
-        205,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
-      "bodyRect": [
-        14,
-        18,
-        36,
-        27
-      ],
-      "muzzle": [
-        48,
-        27
-      ],
-      "partFile": "castle_cannon_v2/castle_04_lv_0.png",
-      "partSize": [
-        72,
-        54
-      ]
-    },
-    {
-      "castle": 4,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_04_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        192,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        370,
-        401,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
-      "bodyRect": [
-        9,
-        15,
-        46,
-        32
-      ],
-      "muzzle": [
-        53,
-        26
-      ],
-      "partFile": "castle_cannon_v2/castle_04_lv_1.png",
-      "partSize": [
-        92,
-        64
-      ]
-    },
-    {
-      "castle": 4,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_04_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        192,
-        64,
-        64
-      ],
-      "sourceRect": [
-        401,
-        370,
-        602,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
       "bodyRect": [
         3,
         13,
         58,
-        37
+        38
       ],
       "muzzle": [
         59,
         26
       ],
-      "partFile": "castle_cannon_v2/castle_04_lv_2.png",
-      "partSize": [
-        116,
-        74
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 4,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_04_lv_1.png",
+      "theme": "gatling",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        192,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        13,
+        58,
+        38
+      ],
+      "muzzle": [
+        59,
+        26
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 4,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_04_lv_2.png",
+      "theme": "gatling",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        192,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        13,
+        58,
+        38
+      ],
+      "muzzle": [
+        59,
+        26
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 4,
       "level": 3,
       "grade": 3,
-      "gradeName": "set",
       "file": "castle_04_lv_3.png",
+      "theme": "gatling",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -930,36 +825,31 @@
         96,
         64
       ],
-      "sourceRect": [
-        602,
-        370,
-        803,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
       "bodyRect": [
-        14,
-        10,
-        68,
-        43
+        3,
+        3,
+        89,
+        58
       ],
       "muzzle": [
-        80,
-        25
+        89,
+        24
       ],
-      "partFile": "castle_cannon_v2/castle_04_lv_3.png",
-      "partSize": [
-        136,
-        86
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 4,
       "level": 4,
       "grade": 4,
-      "gradeName": "epic",
       "file": "castle_04_lv_4.png",
+      "theme": "gatling",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -973,36 +863,31 @@
         96,
         64
       ],
-      "sourceRect": [
-        803,
-        370,
-        1012,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
       "bodyRect": [
-        9,
-        10,
-        78,
-        43
+        3,
+        3,
+        89,
+        58
       ],
       "muzzle": [
-        84,
-        25
+        89,
+        24
       ],
-      "partFile": "castle_cannon_v2/castle_04_lv_4.png",
-      "partSize": [
-        156,
-        86
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 4,
       "level": 5,
       "grade": 5,
-      "gradeName": "legend",
       "file": "castle_04_lv_5.png",
+      "theme": "gatling",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -1016,36 +901,31 @@
         96,
         64
       ],
-      "sourceRect": [
-        1012,
-        370,
-        1229,
-        487
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "gatling",
       "bodyRect": [
         3,
-        6,
-        90,
-        51
+        3,
+        89,
+        58
       ],
       "muzzle": [
-        90,
+        89,
         24
       ],
-      "partFile": "castle_cannon_v2/castle_04_lv_5.png",
-      "partSize": [
-        180,
-        102
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
+      "sourceRect": [
+        46,
+        42,
+        1490,
+        980
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 5,
       "level": 0,
       "grade": 0,
-      "gradeName": "normal",
       "file": "castle_05_lv_0.png",
+      "theme": "guided_missiles",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -1059,36 +939,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        0,
-        487,
-        205,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
       "bodyRect": [
-        17,
-        18,
-        29,
-        28
+        3,
+        14,
+        58,
+        35
       ],
       "muzzle": [
-        44,
-        23
-      ],
-      "partFile": "castle_cannon_v2/castle_05_lv_0.png",
-      "partSize": [
         58,
-        56
-      ]
+        20
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
+      "sourceRect": [
+        93,
+        98,
+        1477,
+        944
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 5,
       "level": 1,
       "grade": 1,
-      "gradeName": "superior",
       "file": "castle_05_lv_1.png",
+      "theme": "guided_missiles",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -1102,36 +977,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        205,
-        487,
-        401,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
       "bodyRect": [
-        10,
-        15,
-        42,
-        34
+        3,
+        14,
+        58,
+        35
       ],
       "muzzle": [
-        49,
-        21
+        58,
+        20
       ],
-      "partFile": "castle_cannon_v2/castle_05_lv_1.png",
-      "partSize": [
-        84,
-        68
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
+      "sourceRect": [
+        93,
+        98,
+        1477,
+        944
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 5,
       "level": 2,
       "grade": 2,
-      "gradeName": "rare",
       "file": "castle_05_lv_2.png",
+      "theme": "guided_missiles",
       "cols": 2,
       "rows": 2,
       "cells": 51,
@@ -1145,36 +1015,31 @@
         64,
         64
       ],
-      "sourceRect": [
-        401,
-        487,
-        601,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
       "bodyRect": [
         3,
-        12,
+        14,
         58,
-        40
+        35
       ],
       "muzzle": [
         58,
-        19
+        20
       ],
-      "partFile": "castle_cannon_v2/castle_05_lv_2.png",
-      "partSize": [
-        116,
-        80
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
+      "sourceRect": [
+        93,
+        98,
+        1477,
+        944
+      ],
+      "design": "current base exterior shared by all grades"
     },
     {
       "castle": 5,
       "level": 3,
       "grade": 3,
-      "gradeName": "set",
       "file": "castle_05_lv_3.png",
+      "theme": "guided_missiles",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -1188,100 +1053,6 @@
         96,
         64
       ],
-      "sourceRect": [
-        601,
-        487,
-        806,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
-      "bodyRect": [
-        14,
-        8,
-        67,
-        48
-      ],
-      "muzzle": [
-        77,
-        16
-      ],
-      "partFile": "castle_cannon_v2/castle_05_lv_3.png",
-      "partSize": [
-        134,
-        96
-      ]
-    },
-    {
-      "castle": 5,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_05_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        256,
-        96,
-        64
-      ],
-      "sourceRect": [
-        806,
-        487,
-        1007,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
-      "bodyRect": [
-        10,
-        5,
-        76,
-        54
-      ],
-      "muzzle": [
-        82,
-        15
-      ],
-      "partFile": "castle_cannon_v2/castle_05_lv_4.png",
-      "partSize": [
-        152,
-        108
-      ]
-    },
-    {
-      "castle": 5,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_05_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        256,
-        96,
-        64
-      ],
-      "sourceRect": [
-        1007,
-        487,
-        1229,
-        618
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "guided_missiles",
       "bodyRect": [
         3,
         4,
@@ -1292,190 +1063,21 @@
         88,
         14
       ],
-      "partFile": "castle_cannon_v2/castle_05_lv_5.png",
-      "partSize": [
-        180,
-        110
-      ]
-    },
-    {
-      "castle": 6,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_06_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        320,
-        64,
-        64
-      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
       "sourceRect": [
-        0,
-        618,
-        205,
-        744
+        93,
+        98,
+        1477,
+        944
       ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        17,
-        18,
-        30,
-        28
-      ],
-      "muzzle": [
-        44,
-        26
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_0.png",
-      "partSize": [
-        60,
-        56
-      ]
+      "design": "current base exterior shared by all grades"
     },
     {
-      "castle": 6,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_06_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        320,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        618,
-        384,
-        744
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        9,
-        15,
-        46,
-        34
-      ],
-      "muzzle": [
-        51,
-        24
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_1.png",
-      "partSize": [
-        92,
-        68
-      ]
-    },
-    {
-      "castle": 6,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_06_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        320,
-        64,
-        64
-      ],
-      "sourceRect": [
-        384,
-        618,
-        581,
-        744
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        3,
-        14,
-        58,
-        36
-      ],
-      "muzzle": [
-        57,
-        24
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_2.png",
-      "partSize": [
-        116,
-        72
-      ]
-    },
-    {
-      "castle": 6,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_06_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        320,
-        96,
-        64
-      ],
-      "sourceRect": [
-        581,
-        618,
-        779,
-        744
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        14,
-        12,
-        68,
-        39
-      ],
-      "muzzle": [
-        77,
-        23
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_3.png",
-      "partSize": [
-        136,
-        78
-      ]
-    },
-    {
-      "castle": 6,
+      "castle": 5,
       "level": 4,
       "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_06_lv_4.png",
+      "file": "castle_05_lv_4.png",
+      "theme": "guided_missiles",
       "cols": 3,
       "rows": 2,
       "cells": 119,
@@ -1485,1093 +1087,10 @@
       ],
       "atlasRect": [
         384,
-        320,
+        256,
         96,
         64
       ],
-      "sourceRect": [
-        779,
-        618,
-        998,
-        744
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        9,
-        9,
-        78,
-        45
-      ],
-      "muzzle": [
-        81,
-        21
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_4.png",
-      "partSize": [
-        156,
-        90
-      ]
-    },
-    {
-      "castle": 6,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_06_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        320,
-        96,
-        64
-      ],
-      "sourceRect": [
-        998,
-        618,
-        1229,
-        744
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "heavy_siege",
-      "bodyRect": [
-        3,
-        6,
-        90,
-        52
-      ],
-      "muzzle": [
-        87,
-        20
-      ],
-      "partFile": "castle_cannon_v2/castle_06_lv_5.png",
-      "partSize": [
-        180,
-        104
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_07_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        384,
-        64,
-        64
-      ],
-      "sourceRect": [
-        0,
-        744,
-        205,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        15,
-        18,
-        32,
-        28
-      ],
-      "muzzle": [
-        45,
-        23
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_0.png",
-      "partSize": [
-        64,
-        56
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_07_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        384,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        744,
-        387,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        10,
-        15,
-        43,
-        34
-      ],
-      "muzzle": [
-        51,
-        22
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_1.png",
-      "partSize": [
-        86,
-        68
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_07_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        384,
-        64,
-        64
-      ],
-      "sourceRect": [
-        387,
-        744,
-        581,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        3,
-        13,
-        57,
-        38
-      ],
-      "muzzle": [
-        58,
-        20
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_2.png",
-      "partSize": [
-        114,
-        76
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_07_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        384,
-        96,
-        64
-      ],
-      "sourceRect": [
-        581,
-        744,
-        782,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        14,
-        9,
-        68,
-        47
-      ],
-      "muzzle": [
-        80,
-        18
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_3.png",
-      "partSize": [
-        136,
-        94
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_07_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        384,
-        96,
-        64
-      ],
-      "sourceRect": [
-        782,
-        744,
-        994,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        9,
-        7,
-        78,
-        49
-      ],
-      "muzzle": [
-        84,
-        17
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_4.png",
-      "partSize": [
-        156,
-        98
-      ]
-    },
-    {
-      "castle": 7,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_07_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        384,
-        96,
-        64
-      ],
-      "sourceRect": [
-        994,
-        744,
-        1229,
-        881
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "ice_crystal",
-      "bodyRect": [
-        3,
-        5,
-        90,
-        54
-      ],
-      "muzzle": [
-        90,
-        16
-      ],
-      "partFile": "castle_cannon_v2/castle_07_lv_5.png",
-      "partSize": [
-        180,
-        108
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_08_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        448,
-        64,
-        64
-      ],
-      "sourceRect": [
-        0,
-        881,
-        205,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        14,
-        19,
-        36,
-        26
-      ],
-      "muzzle": [
-        48,
-        28
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_0.png",
-      "partSize": [
-        72,
-        52
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_08_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        448,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        881,
-        395,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        9,
-        19,
-        46,
-        26
-      ],
-      "muzzle": [
-        53,
-        28
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_1.png",
-      "partSize": [
-        92,
-        52
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_08_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        448,
-        64,
-        64
-      ],
-      "sourceRect": [
-        395,
-        881,
-        589,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        3,
-        16,
-        58,
-        32
-      ],
-      "muzzle": [
-        59,
-        27
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_2.png",
-      "partSize": [
-        116,
-        64
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_08_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        448,
-        96,
-        64
-      ],
-      "sourceRect": [
-        589,
-        881,
-        786,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        14,
-        11,
-        68,
-        42
-      ],
-      "muzzle": [
-        80,
-        25
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_3.png",
-      "partSize": [
-        136,
-        84
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_08_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        448,
-        96,
-        64
-      ],
-      "sourceRect": [
-        786,
-        881,
-        992,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        9,
-        9,
-        78,
-        45
-      ],
-      "muzzle": [
-        84,
-        24
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_4.png",
-      "partSize": [
-        156,
-        90
-      ]
-    },
-    {
-      "castle": 8,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_08_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        448,
-        96,
-        64
-      ],
-      "sourceRect": [
-        992,
-        881,
-        1229,
-        1005
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "laser",
-      "bodyRect": [
-        3,
-        8,
-        90,
-        47
-      ],
-      "muzzle": [
-        90,
-        24
-      ],
-      "partFile": "castle_cannon_v2/castle_08_lv_5.png",
-      "partSize": [
-        180,
-        94
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_09_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        512,
-        64,
-        64
-      ],
-      "sourceRect": [
-        0,
-        1005,
-        205,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        17,
-        18,
-        29,
-        28
-      ],
-      "muzzle": [
-        44,
-        26
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_0.png",
-      "partSize": [
-        58,
-        56
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_09_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        512,
-        64,
-        64
-      ],
-      "sourceRect": [
-        205,
-        1005,
-        395,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        17,
-        15,
-        30,
-        34
-      ],
-      "muzzle": [
-        45,
-        25
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_1.png",
-      "partSize": [
-        60,
-        68
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_09_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        512,
-        64,
-        64
-      ],
-      "sourceRect": [
-        395,
-        1005,
-        598,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        5,
-        11,
-        54,
-        42
-      ],
-      "muzzle": [
-        56,
-        23
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_2.png",
-      "partSize": [
-        108,
-        84
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_09_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        512,
-        96,
-        64
-      ],
-      "sourceRect": [
-        598,
-        1005,
-        792,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        14,
-        8,
-        67,
-        47
-      ],
-      "muzzle": [
-        78,
-        22
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_3.png",
-      "partSize": [
-        134,
-        94
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_09_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        512,
-        96,
-        64
-      ],
-      "sourceRect": [
-        792,
-        1005,
-        994,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        9,
-        5,
-        78,
-        53
-      ],
-      "muzzle": [
-        84,
-        21
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_4.png",
-      "partSize": [
-        156,
-        106
-      ]
-    },
-    {
-      "castle": 9,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_09_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        512,
-        96,
-        64
-      ],
-      "sourceRect": [
-        994,
-        1005,
-        1229,
-        1129
-      ],
-      "sourceFile": "master_v2.png",
-      "theme": "tesla",
-      "bodyRect": [
-        3,
-        6,
-        90,
-        51
-      ],
-      "muzzle": [
-        89,
-        21
-      ],
-      "partFile": "castle_cannon_v2/castle_09_lv_5.png",
-      "partSize": [
-        180,
-        102
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 0,
-      "grade": 0,
-      "gradeName": "normal",
-      "file": "castle_10_lv_0.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        16,
-        576,
-        64,
-        64
-      ],
-      "sourceRect": [
-        25,
-        0,
-        196,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
-      "bodyRect": [
-        17,
-        18,
-        29,
-        28
-      ],
-      "muzzle": [
-        44,
-        30
-      ],
-      "partFile": "castle_cannon_v2/castle_10_lv_0.png",
-      "partSize": [
-        58,
-        56
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 1,
-      "grade": 1,
-      "gradeName": "superior",
-      "file": "castle_10_lv_1.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        112,
-        576,
-        64,
-        64
-      ],
-      "sourceRect": [
-        257,
-        0,
-        470,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
-      "bodyRect": [
-        13,
-        15,
-        37,
-        34
-      ],
-      "muzzle": [
-        48,
-        29
-      ],
-      "partFile": "castle_cannon_v2/castle_10_lv_1.png",
-      "partSize": [
-        74,
-        68
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 2,
-      "grade": 2,
-      "gradeName": "rare",
-      "file": "castle_10_lv_2.png",
-      "cols": 2,
-      "rows": 2,
-      "cells": 51,
-      "size": [
-        64,
-        64
-      ],
-      "atlasRect": [
-        208,
-        576,
-        64,
-        64
-      ],
-      "sourceRect": [
-        520,
-        0,
-        812,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
-      "bodyRect": [
-        5,
-        11,
-        54,
-        42
-      ],
-      "muzzle": [
-        56,
-        29
-      ],
-      "partFile": "castle_cannon_v2/castle_10_lv_2.png",
-      "partSize": [
-        108,
-        84
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 3,
-      "grade": 3,
-      "gradeName": "set",
-      "file": "castle_10_lv_3.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        288,
-        576,
-        96,
-        64
-      ],
-      "sourceRect": [
-        859,
-        0,
-        1203,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
-      "bodyRect": [
-        16,
-        8,
-        63,
-        48
-      ],
-      "muzzle": [
-        76,
-        28
-      ],
-      "partFile": "castle_cannon_v2/castle_10_lv_3.png",
-      "partSize": [
-        126,
-        96
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 4,
-      "grade": 4,
-      "gradeName": "epic",
-      "file": "castle_10_lv_4.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        384,
-        576,
-        96,
-        64
-      ],
-      "sourceRect": [
-        1230,
-        0,
-        1611,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
-      "bodyRect": [
-        11,
-        5,
-        73,
-        54
-      ],
-      "muzzle": [
-        81,
-        28
-      ],
-      "partFile": "castle_cannon_v2/castle_10_lv_4.png",
-      "partSize": [
-        146,
-        108
-      ]
-    },
-    {
-      "castle": 10,
-      "level": 5,
-      "grade": 5,
-      "gradeName": "legend",
-      "file": "castle_10_lv_5.png",
-      "cols": 3,
-      "rows": 2,
-      "cells": 119,
-      "size": [
-        96,
-        64
-      ],
-      "atlasRect": [
-        480,
-        576,
-        96,
-        64
-      ],
-      "sourceRect": [
-        1634,
-        0,
-        2149,
-        724
-      ],
-      "sourceFile": "gravity_sideview.png",
-      "theme": "gravity",
       "bodyRect": [
         3,
         4,
@@ -2579,14 +1098,1195 @@
         55
       ],
       "muzzle": [
+        88,
+        14
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
+      "sourceRect": [
+        93,
+        98,
+        1477,
+        944
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 5,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_05_lv_5.png",
+      "theme": "guided_missiles",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        256,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        4,
+        90,
+        55
+      ],
+      "muzzle": [
+        88,
+        14
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
+      "sourceRect": [
+        93,
+        98,
+        1477,
+        944
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_06_lv_0.png",
+      "theme": "heavy_siege",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        320,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        15,
+        58,
+        34
+      ],
+      "muzzle": [
+        57,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_06_lv_1.png",
+      "theme": "heavy_siege",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        320,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        15,
+        58,
+        34
+      ],
+      "muzzle": [
+        57,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_06_lv_2.png",
+      "theme": "heavy_siege",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        320,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        15,
+        58,
+        34
+      ],
+      "muzzle": [
+        57,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_06_lv_3.png",
+      "theme": "heavy_siege",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        320,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        53
+      ],
+      "muzzle": [
+        87,
+        20
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_06_lv_4.png",
+      "theme": "heavy_siege",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        320,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        53
+      ],
+      "muzzle": [
+        87,
+        20
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 6,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_06_lv_5.png",
+      "theme": "heavy_siege",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        320,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        53
+      ],
+      "muzzle": [
+        87,
+        20
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
+      "sourceRect": [
+        54,
+        86,
+        1513,
+        950
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_07_lv_0.png",
+      "theme": "ice_crystal",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        384,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        16,
+        58,
+        31
+      ],
+      "muzzle": [
+        59,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_07_lv_1.png",
+      "theme": "ice_crystal",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        384,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        16,
+        58,
+        31
+      ],
+      "muzzle": [
+        59,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_07_lv_2.png",
+      "theme": "ice_crystal",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        384,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        16,
+        58,
+        31
+      ],
+      "muzzle": [
+        59,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_07_lv_3.png",
+      "theme": "ice_crystal",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        384,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        8,
+        90,
+        48
+      ],
+      "muzzle": [
+        90,
+        17
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_07_lv_4.png",
+      "theme": "ice_crystal",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        384,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        8,
+        90,
+        48
+      ],
+      "muzzle": [
+        90,
+        17
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 7,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_07_lv_5.png",
+      "theme": "ice_crystal",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        384,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        8,
+        90,
+        48
+      ],
+      "muzzle": [
+        90,
+        17
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
+      "sourceRect": [
+        66,
+        184,
+        1497,
+        941
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_08_lv_0.png",
+      "theme": "laser",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        448,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        14,
+        58,
+        35
+      ],
+      "muzzle": [
+        59,
+        26
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_08_lv_1.png",
+      "theme": "laser",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        448,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        14,
+        58,
+        35
+      ],
+      "muzzle": [
+        59,
+        26
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_08_lv_2.png",
+      "theme": "laser",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        448,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        14,
+        58,
+        35
+      ],
+      "muzzle": [
+        59,
+        26
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_08_lv_3.png",
+      "theme": "laser",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        448,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        54
+      ],
+      "muzzle": [
+        90,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_08_lv_4.png",
+      "theme": "laser",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        448,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        54
+      ],
+      "muzzle": [
+        90,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 8,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_08_lv_5.png",
+      "theme": "laser",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        448,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        5,
+        90,
+        54
+      ],
+      "muzzle": [
+        90,
+        24
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
+      "sourceRect": [
+        98,
+        112,
+        1439,
+        917
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_09_lv_0.png",
+      "theme": "tesla",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        512,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        17,
+        58,
+        29
+      ],
+      "muzzle": [
+        58,
+        25
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_09_lv_1.png",
+      "theme": "tesla",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        512,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        17,
+        58,
+        29
+      ],
+      "muzzle": [
+        58,
+        25
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_09_lv_2.png",
+      "theme": "tesla",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        512,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        17,
+        58,
+        29
+      ],
+      "muzzle": [
+        58,
+        25
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_09_lv_3.png",
+      "theme": "tesla",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        512,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        9,
+        90,
+        45
+      ],
+      "muzzle": [
+        89,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_09_lv_4.png",
+      "theme": "tesla",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        512,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        9,
+        90,
+        45
+      ],
+      "muzzle": [
+        89,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 9,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_09_lv_5.png",
+      "theme": "tesla",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        512,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        9,
+        90,
+        45
+      ],
+      "muzzle": [
+        89,
+        22
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
+      "sourceRect": [
+        91,
+        110,
+        1595,
+        856
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 0,
+      "grade": 0,
+      "file": "castle_10_lv_0.png",
+      "theme": "gravity",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        16,
+        576,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        13,
+        58,
+        37
+      ],
+      "muzzle": [
+        58,
+        28
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 1,
+      "grade": 1,
+      "file": "castle_10_lv_1.png",
+      "theme": "gravity",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        112,
+        576,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        13,
+        58,
+        37
+      ],
+      "muzzle": [
+        58,
+        28
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 2,
+      "grade": 2,
+      "file": "castle_10_lv_2.png",
+      "theme": "gravity",
+      "cols": 2,
+      "rows": 2,
+      "cells": 51,
+      "size": [
+        64,
+        64
+      ],
+      "atlasRect": [
+        208,
+        576,
+        64,
+        64
+      ],
+      "bodyRect": [
+        3,
+        13,
+        58,
+        37
+      ],
+      "muzzle": [
+        58,
+        28
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 3,
+      "grade": 3,
+      "file": "castle_10_lv_3.png",
+      "theme": "gravity",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        288,
+        576,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        3,
+        90,
+        57
+      ],
+      "muzzle": [
         89,
         27
       ],
-      "partFile": "castle_cannon_v2/castle_10_lv_5.png",
-      "partSize": [
-        180,
-        110
-      ]
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 4,
+      "grade": 4,
+      "file": "castle_10_lv_4.png",
+      "theme": "gravity",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        384,
+        576,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        3,
+        90,
+        57
+      ],
+      "muzzle": [
+        89,
+        27
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
+    },
+    {
+      "castle": 10,
+      "level": 5,
+      "grade": 5,
+      "file": "castle_10_lv_5.png",
+      "theme": "gravity",
+      "cols": 3,
+      "rows": 2,
+      "cells": 119,
+      "size": [
+        96,
+        64
+      ],
+      "atlasRect": [
+        480,
+        576,
+        96,
+        64
+      ],
+      "bodyRect": [
+        3,
+        3,
+        90,
+        57
+      ],
+      "muzzle": [
+        89,
+        27
+      ],
+      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
+      "sourceRect": [
+        76,
+        71,
+        1462,
+        954
+      ],
+      "design": "current base exterior shared by all grades"
     }
   ]
 }

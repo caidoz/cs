@@ -1,0 +1,80 @@
+{
+  "status": "selected-art-direction",
+  "method": "built-in imagegen",
+  "view": "side elevation, asymmetric architecture",
+  "maximumHeightReference": "User-selected existing sixth-castle game display; approximately 760 reference units",
+  "widthGainPerHeightGain": 0.15,
+  "stageTargets": [
+    {
+      "castle": 1,
+      "height": 235,
+      "width": 352,
+      "rooms": 1,
+      "architecture": "목조 성채"
+    },
+    {
+      "castle": 2,
+      "height": 300,
+      "width": 362,
+      "rooms": 2,
+      "architecture": "직각형 보루"
+    },
+    {
+      "castle": 3,
+      "height": 365,
+      "width": 372,
+      "rooms": 3,
+      "architecture": "각진 첨탑"
+    },
+    {
+      "castle": 4,
+      "height": 430,
+      "width": 381,
+      "rooms": 4,
+      "architecture": "둥근 돔"
+    },
+    {
+      "castle": 5,
+      "height": 495,
+      "width": 391,
+      "rooms": 5,
+      "architecture": "비대칭 금속 요새"
+    },
+    {
+      "castle": 6,
+      "height": 560,
+      "width": 401,
+      "rooms": 6,
+      "architecture": "현대형 계단 피라미드"
+    },
+    {
+      "castle": 7,
+      "height": 620,
+      "width": 410,
+      "rooms": 7,
+      "architecture": "고딕 성채"
+    },
+    {
+      "castle": 8,
+      "height": 675,
+      "width": 418,
+      "rooms": 8,
+      "architecture": "아치·배럴볼트형 성"
+    },
+    {
+      "castle": 9,
+      "height": 720,
+      "width": 425,
+      "rooms": 9,
+      "architecture": "수정 군집"
+    },
+    {
+      "castle": 10,
+      "height": 760,
+      "width": 431,
+      "rooms": 10,
+      "architecture": "왕궁·어니언 돔"
+    }
+  ],
+  "precision": "Dimensional targets are art direction. The generated concept sheet is not a pixel-accurate assembly drawing."
+}

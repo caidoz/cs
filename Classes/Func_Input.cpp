@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
@@ -3313,6 +3313,11 @@ void touchFunc(int func)
 			systemKey = AVK_LOBBY_DUNGEON;
 			break;
 		case TOUCH_FUNC_PVP_TEST:
+			//---- 가방은 매칭 뒤에 짠다 ----
+			//
+			//출정 준비를 여기서 먼저 열어 봤는데, 그때는 누구와 붙는지를
+			//아직 모른다. 상대 성과 편성을 보고 나서 고르는 것이 맞으므로
+			//격돌의 세팅 차례(PvpCastleClashDraw 의 1)에서 연다.
 			StartPvpTest();
 			systemKey = 0;
 			break;
@@ -3322,6 +3327,14 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_PVP_TEST_BACK:
 			ExitPvpTest();
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_PVP_DEBUG_NEXT:
+			PvpClashAdvanceNext();
+			systemKey = 0;
+			break;
+		case TOUCH_FUNC_PVP_DEBUG_AUTO:
+			PvpClashToggleAuto();
 			systemKey = 0;
 			break;
 		case TOUCH_FUNC_STARSHOP://상점

@@ -1,0 +1,96 @@
+{
+  "masterWidth": 450,
+  "masterHeight": 992,
+  "visiblePixelMismatches": 0,
+  "parts": [
+    {
+      "name": "castle_exterior/castle_06_roof_stage_1.png",
+      "x": 24,
+      "y": 97,
+      "w": 246,
+      "h": 109,
+      "sx": 0
+    },
+    {
+      "name": "castle_exterior/castle_06_wall_stage_1.png",
+      "x": 70,
+      "y": 322,
+      "w": 125,
+      "h": 539,
+      "sx": 0
+    },
+    {
+      "name": "castle_exterior/castle_06_hollow_stage_1.png",
+      "x": 2,
+      "y": 206,
+      "w": 429,
+      "h": 663,
+      "sx": 0
+    },
+    {
+      "name": "castle_exterior/castle_06_heavy_cannon_stage_1.png",
+      "x": 281,
+      "y": 594,
+      "w": 164,
+      "h": 112,
+      "sx": 0
+    },
+    {
+      "name": "castle_exterior/castle_06_command_platform_stage_1.png",
+      "x": 281,
+      "y": 706,
+      "w": 149,
+      "h": 161,
+      "sx": 0
+    },
+    {
+      "name": "castle_exterior/castle_06_combat_deck_stage_1.png",
+      "x": 2,
+      "y": 869,
+      "w": 429,
+      "h": 38,
+      "sx": 0
+    },
+    {
+      "name": "castle_mobility/castle_06_base_stage_1.png",
+      "x": 16,
+      "y": 907,
+      "w": 398,
+      "h": 75,
+      "sx": 0
+    },
+    {
+      "name": "castle_mobility/castle_06_wheel_stage_1.png",
+      "x": 49,
+      "y": 878,
+      "w": 103,
+      "h": 103,
+      "sx": 0
+    },
+    {
+      "name": "castle_mobility/castle_06_wheel_stage_1.png",
+      "x": 236,
+      "y": 878,
+      "w": 103,
+      "h": 103,
+      "sx": 103
+    }
+  ],
+  "registration": "uniform-source",
+  "scaleX": 0.9022869022869023,
+  "scaleY": 0.9022869022869023,
+  "source": "content\\castles\\sixth_modular_sd_v1\\upgrade-1\\generated-master.png",
+  "anchors": {
+    "HeroX": 379,
+    "HeroY": 868,
+    "StoneX": 441,
+    "StoneY": 643,
+    "DeckX": 17,
+    "DeckY": 868,
+    "DeckW": 264,
+    "FloorY": 857,
+    "GroundY": 980,
+    "WheelRadius": 50,
+    "TopVisibleY": 97
+  }
+}

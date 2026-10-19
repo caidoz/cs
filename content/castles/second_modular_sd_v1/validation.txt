@@ -1,0 +1,15 @@
+2026-10-17 final verification
+PASS fresh Debug Win32 build: cs.second-modular-preview.exe
+Build log: output/second-modular-final-build.log (existing compiler warnings remain)
+PASS six second-castle stages: exact saved-PNG exterior reconstruction, zero visible RGBA mismatches
+PASS all 54 retained legacy resource names resolve
+PASS second-castle UI: six stages, three mixed combinations, 18 closed/open captures
+PASS second-castle geometry: two rooms, viewport width cap 55%, wheel contact, rolling wheels, right-facing muzzle, resource bounds
+PASS second-castle closed resident draw count zero / held reveal resident count matches
+PASS second-castle deployed companion deck anchors match actual battle object positions
+Second-castle log: output/second-upgrades-review/phases.log
+PASS first-castle regression: six stages, three mixed combinations, 18 captures
+First-castle upgrade log: output/starter-upgrades-review/phases.log
+PASS first-castle regression: touch hold/release, legacy dimensions, deployed deck actual positions, five captures
+First-castle deck log: output/sd-room-deck-review/phases.log
+Native art and two-room alignment inspected, including final stage-0 closed/open game captures.

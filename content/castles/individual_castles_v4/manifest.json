@@ -1,0 +1,186 @@
+{
+  "status": "individual-art-drafts-proportion-review-pending",
+  "generator": "built-in imagegen",
+  "castles": [
+    {
+      "id": 1,
+      "name": "??",
+      "file": "castle-01.png",
+      "pixels": [
+        1536,
+        1024
+      ],
+      "opaque_bbox": [
+        238,
+        17,
+        1358,
+        979
+      ],
+      "target_height": 235,
+      "target_width": 352,
+      "native_aspect": 0.8589285714285714
+    },
+    {
+      "id": 2,
+      "name": "?? ??",
+      "file": "castle-02.png",
+      "pixels": [
+        1355,
+        1160
+      ],
+      "opaque_bbox": [
+        138,
+        5,
+        1287,
+        1108
+      ],
+      "target_height": 300,
+      "target_width": 362,
+      "native_aspect": 0.9599651871192341
+    },
+    {
+      "id": 3,
+      "name": "?? ??",
+      "file": "castle-03.png",
+      "pixels": [
+        1272,
+        1237
+      ],
+      "opaque_bbox": [
+        238,
+        26,
+        1143,
+        1186
+      ],
+      "target_height": 365,
+      "target_width": 372,
+      "native_aspect": 1.281767955801105
+    },
+    {
+      "id": 4,
+      "name": "??? ?",
+      "file": "castle-04.png",
+      "pixels": [
+        1191,
+        1321
+      ],
+      "opaque_bbox": [
+        167,
+        35,
+        1073,
+        1271
+      ],
+      "target_height": 430,
+      "target_width": 381,
+      "native_aspect": 1.3642384105960266
+    },
+    {
+      "id": 5,
+      "name": "?? ??",
+      "file": "castle-05.png",
+      "pixels": [
+        1103,
+        1426
+      ],
+      "opaque_bbox": [
+        85,
+        27,
+        1075,
+        1383
+      ],
+      "target_height": 495,
+      "target_width": 391,
+      "native_aspect": 1.3696969696969696
+    },
+    {
+      "id": 6,
+      "name": "?? ????",
+      "file": "castle-06.png",
+      "pixels": [
+        1063,
+        1480
+      ],
+      "opaque_bbox": [
+        98,
+        34,
+        1039,
+        1462
+      ],
+      "target_height": 560,
+      "target_width": 401,
+      "native_aspect": 1.5175345377258236
+    },
+    {
+      "id": 7,
+      "name": "?? ??",
+      "file": "castle-07.png",
+      "pixels": [
+        1035,
+        1519
+      ],
+      "opaque_bbox": [
+        98,
+        24,
+        1027,
+        1495
+      ],
+      "target_height": 620,
+      "target_width": 410,
+      "native_aspect": 1.5834230355220666
+    },
+    {
+      "id": 8,
+      "name": "?? ?? ??",
+      "file": "castle-08.png",
+      "pixels": [
+        1014,
+        1551
+      ],
+      "opaque_bbox": [
+        45,
+        99,
+        983,
+        1513
+      ],
+      "target_height": 675,
+      "target_width": 418,
+      "native_aspect": 1.507462686567164
+    },
+    {
+      "id": 9,
+      "name": "????",
+      "file": "castle-09.png",
+      "pixels": [
+        966,
+        1628
+      ],
+      "opaque_bbox": [
+        69,
+        14,
+        947,
+        1601
+      ],
+      "target_height": 720,
+      "target_width": 425,
+      "native_aspect": 1.8075170842824602
+    },
+    {
+      "id": 10,
+      "name": "??",
+      "file": "castle-10.png",
+      "pixels": [
+        946,
+        1662
+      ],
+      "opaque_bbox": [
+        71,
+        53,
+        915,
+        1614
+      ],
+      "target_height": 760,
+      "target_width": 431,
+      "native_aspect": 1.849526066350711
+    }
+  ]
+}

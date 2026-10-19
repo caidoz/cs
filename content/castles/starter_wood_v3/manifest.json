@@ -1,0 +1,62 @@
+{
+  "atlas": "content/castles/starter_wood_v3/draft-unapproved-atlas.png",
+  "castle": 1,
+  "upgrade": 0,
+  "frames": [
+    {
+      "name": "roof",
+      "x": 46,
+      "y": 0,
+      "w": 1018,
+      "h": 347,
+      "nativeWidth": 736,
+      "nativeHeight": 256
+    },
+    {
+      "name": "facade",
+      "x": 64,
+      "y": 354,
+      "w": 983,
+      "h": 306,
+      "nativeWidth": 640,
+      "nativeHeight": 128
+    },
+    {
+      "name": "chassis",
+      "x": 30,
+      "y": 683,
+      "w": 1056,
+      "h": 211,
+      "nativeWidth": 736,
+      "nativeHeight": 144
+    },
+    {
+      "name": "wheel",
+      "x": 446,
+      "y": 894,
+      "w": 216,
+      "h": 215,
+      "nativeWidth": 128,
+      "nativeHeight": 128
+    },
+    {
+      "name": "command_platform",
+      "x": 341,
+      "y": 1110,
+      "w": 485,
+      "h": 161,
+      "nativeWidth": 192,
+      "nativeHeight": 128
+    },
+    {
+      "name": "catapult",
+      "x": 399,
+      "y": 1278,
+      "w": 358,
+      "h": 170,
+      "nativeWidth": 168,
+      "nativeHeight": 104
+    }
+  ],
+  "status": "discarded draft; awaiting assembled-master approval before production splitting"
+}

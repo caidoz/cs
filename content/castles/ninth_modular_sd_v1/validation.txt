@@ -1,0 +1,15 @@
+PASS 2026-10-18 Debug Win32 build: cs.ninth-modular-preview.exe.
+Existing project warnings remain in output/ninth-modular-build.log.
+PASS all six exterior masters replaced with newly generated portrait art after original-height feedback.
+Baseline solid silhouette H/W: previous 0.83, new 2.40. Comparison keeps the same visible width.
+PASS six native partitions and disk PNG reconstruction: zero visible RGBA mismatches.
+PASS opaque companion walking floor x55..240 and hero floor x260 at y893, all six grades.
+PASS 54 retained original resource files and their legacy image/name registration.
+PASS nine room floors, closed resident hiding, held reveal, room texture bounds and resident clipping.
+PASS levels 0..5 and three mixed part-level assemblies, 18 closed/open captures plus deployed capture.
+PASS per-grade muzzle coordinates, hero deck bounds, viewport cap, roof safe area and rail contact.
+PASS distance-based wheel rotation and six deployed companion positions.
+PASS final-art regression: eighth upgrade suite and first castle room/deck/reveal/deployed suite.
+PASS initial integration regression: seventh, sixth, fifth, fourth, third and second upgrade suites.
+PASS git diff --check (existing CRLF notices only).
+Review launcher uses an isolated save profile.

@@ -522,6 +522,15 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 		is_press_finished=is_release_finished=true;
 		return;
 	}
+	// A completed tap on the castle toggles the whole interior. UI controls,
+	// camera drags and pinches keep their own input paths.
+	if(!GetTouchFunc(startTouchX,startTouchY) && !GetTouchFunc(endTouchX,endTouchY)
+		&& CastleRoomToggleTap(startTouchX,startTouchY,endTouchX,endTouchY)) {
+		isTouchKey=TOUCH_RELEASE;
+		is_key_pressed=is_touchkey_pressed=is_key_released=false;
+		is_press_finished=is_release_finished=true;
+		return;
+	}
 
 	if (touch) {
 		if (touchModeOld == NULL && autoScroll == false) {
@@ -854,6 +863,13 @@ bool Core::init()
 	LoadTexture(CASTLE_ARTILLERY_IMG);
 	LoadImg(INVENTORY_CANNON_ATLAS_IMG);
 	LoadTexture(INVENTORY_CANNON_ATLAS_IMG);
+	// Map icons are beyond the legacy boot-loading range. Populate both caches.
+	static_assert(CASTLE_MAP_ICON_LAST_IMG-CASTLE_MAP_ICON_FIRST_IMG+1==10,"Ten castle map icons required");
+	for (i=CASTLE_MAP_ICON_FIRST_IMG;i<=CASTLE_MAP_ICON_LAST_IMG;++i) {
+		LoadImg(i);
+		LoadTexture(i);
+		if(texture[i]) texture[i]->setAntiAliasTexParameters();
+	}
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
@@ -1166,7 +1182,7 @@ void Core::Run(float delta) {
 	//그 전에 도착하면 빈 판을 덮게 된다.
 	if (netBooted)
 		IapUpdate();
-	if (netBooted) CastleMenuReviewStep();
+	if (netBooted && !getenv("CS_CURRENT_CANNON_ICON_REVIEW") && !getenv("CS_PVP_ICON_ENTRANCE_REVIEW")) CastleMenuReviewStep();
 
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
@@ -1565,6 +1581,13 @@ void PaintClet(int x, int y, int w, int h)
 		mustRefresh = true;
 #endif
 
+	// Asset-only review uses loaded textures without requiring login/terms or
+	// changing player progress. Draw after the previous frame has been cleared.
+	if(getenv("CS_CASTLE_REVIEW_PATH") && (getenv("CS_CURRENT_CANNON_ICON_REVIEW") || getenv("CS_PVP_ICON_ENTRANCE_REVIEW"))
+		&& (drawHandle==MD_TITLE || netBooted)) {
+		CastleMenuReviewStep();
+		return;
+	}
 	if (mustRefresh == true) {
 		if (isScreenShot == false) {
 			switch (drawHandle) {

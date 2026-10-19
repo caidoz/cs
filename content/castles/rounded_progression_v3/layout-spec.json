@@ -1,0 +1,69 @@
+{
+  "type": "design-proposal",
+  "unit": "640px-wide game reference; art specification, not runtime configuration",
+  "widthGrowthPerHeightGrowth": 0.15,
+  "maximumHeight": 760,
+  "view": "side elevation with a convex rounded central keep",
+  "stages": [
+    {
+      "castle": 1,
+      "height": 235,
+      "width": 352,
+      "rooms": 1
+    },
+    {
+      "castle": 2,
+      "height": 300,
+      "width": 362,
+      "rooms": 2
+    },
+    {
+      "castle": 3,
+      "height": 365,
+      "width": 372,
+      "rooms": 3
+    },
+    {
+      "castle": 4,
+      "height": 430,
+      "width": 381,
+      "rooms": 4
+    },
+    {
+      "castle": 5,
+      "height": 495,
+      "width": 391,
+      "rooms": 5
+    },
+    {
+      "castle": 6,
+      "height": 560,
+      "width": 401,
+      "rooms": 6
+    },
+    {
+      "castle": 7,
+      "height": 620,
+      "width": 410,
+      "rooms": 7
+    },
+    {
+      "castle": 8,
+      "height": 675,
+      "width": 418,
+      "rooms": 8
+    },
+    {
+      "castle": 9,
+      "height": 720,
+      "width": 425,
+      "rooms": 9
+    },
+    {
+      "castle": 10,
+      "height": 760,
+      "width": 431,
+      "rooms": 10
+    }
+  ]
+}

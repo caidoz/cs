@@ -1,0 +1,24 @@
+{
+  "castle-07-rounded.png": {
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA",
+    "alphaRange": [
+      0,
+      254
+    ]
+  },
+  "progression-board.png": {
+    "size": [
+      2172,
+      724
+    ],
+    "mode": "RGB",
+    "alphaRange": [
+      255,
+      255
+    ]
+  }
+}

@@ -1,0 +1,910 @@
+{
+  "source": "master_10x6.png",
+  "logicalSize": [
+    256,
+    64
+  ],
+  "sampling": "nearest",
+  "rooms": [
+    {
+      "file": "castle_room_01_0.png",
+      "floor": 1,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        0,
+        324,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_01_1.png",
+      "floor": 1,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        0,
+        647,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_01_2.png",
+      "floor": 1,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        0,
+        971,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_01_3.png",
+      "floor": 1,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        0,
+        1295,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_01_4.png",
+      "floor": 1,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        0,
+        1618,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_01_5.png",
+      "floor": 1,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        0,
+        1942,
+        81
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_0.png",
+      "floor": 2,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        81,
+        324,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_1.png",
+      "floor": 2,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        81,
+        647,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_2.png",
+      "floor": 2,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        81,
+        971,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_3.png",
+      "floor": 2,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        81,
+        1295,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_4.png",
+      "floor": 2,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        81,
+        1618,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_02_5.png",
+      "floor": 2,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        81,
+        1942,
+        162
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_0.png",
+      "floor": 3,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        162,
+        324,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_1.png",
+      "floor": 3,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        162,
+        647,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_2.png",
+      "floor": 3,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        162,
+        971,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_3.png",
+      "floor": 3,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        162,
+        1295,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_4.png",
+      "floor": 3,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        162,
+        1618,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_03_5.png",
+      "floor": 3,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        162,
+        1942,
+        243
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_0.png",
+      "floor": 4,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        243,
+        324,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_1.png",
+      "floor": 4,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        243,
+        647,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_2.png",
+      "floor": 4,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        243,
+        971,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_3.png",
+      "floor": 4,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        243,
+        1295,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_4.png",
+      "floor": 4,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        243,
+        1618,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_04_5.png",
+      "floor": 4,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        243,
+        1942,
+        324
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_0.png",
+      "floor": 5,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        324,
+        324,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_1.png",
+      "floor": 5,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        324,
+        647,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_2.png",
+      "floor": 5,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        324,
+        971,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_3.png",
+      "floor": 5,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        324,
+        1295,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_4.png",
+      "floor": 5,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        324,
+        1618,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_05_5.png",
+      "floor": 5,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        324,
+        1942,
+        404
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_0.png",
+      "floor": 6,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        404,
+        324,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_1.png",
+      "floor": 6,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        404,
+        647,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_2.png",
+      "floor": 6,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        404,
+        971,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_3.png",
+      "floor": 6,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        404,
+        1295,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_4.png",
+      "floor": 6,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        404,
+        1618,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_06_5.png",
+      "floor": 6,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        404,
+        1942,
+        485
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_0.png",
+      "floor": 7,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        485,
+        324,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_1.png",
+      "floor": 7,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        485,
+        647,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_2.png",
+      "floor": 7,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        485,
+        971,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_3.png",
+      "floor": 7,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        485,
+        1295,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_4.png",
+      "floor": 7,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        485,
+        1618,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_07_5.png",
+      "floor": 7,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        485,
+        1942,
+        566
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_0.png",
+      "floor": 8,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        566,
+        324,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_1.png",
+      "floor": 8,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        566,
+        647,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_2.png",
+      "floor": 8,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        566,
+        971,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_3.png",
+      "floor": 8,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        566,
+        1295,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_4.png",
+      "floor": 8,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        566,
+        1618,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_08_5.png",
+      "floor": 8,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        566,
+        1942,
+        647
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_0.png",
+      "floor": 9,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        647,
+        324,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_1.png",
+      "floor": 9,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        647,
+        647,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_2.png",
+      "floor": 9,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        647,
+        971,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_3.png",
+      "floor": 9,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        647,
+        1295,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_4.png",
+      "floor": 9,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        647,
+        1618,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_09_5.png",
+      "floor": 9,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        647,
+        1942,
+        728
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_0.png",
+      "floor": 10,
+      "stage": 0,
+      "sourceRect": [
+        0,
+        728,
+        324,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_1.png",
+      "floor": 10,
+      "stage": 1,
+      "sourceRect": [
+        324,
+        728,
+        647,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_2.png",
+      "floor": 10,
+      "stage": 2,
+      "sourceRect": [
+        647,
+        728,
+        971,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_3.png",
+      "floor": 10,
+      "stage": 3,
+      "sourceRect": [
+        971,
+        728,
+        1295,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_4.png",
+      "floor": 10,
+      "stage": 4,
+      "sourceRect": [
+        1295,
+        728,
+        1618,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    },
+    {
+      "file": "castle_room_10_5.png",
+      "floor": 10,
+      "stage": 5,
+      "sourceRect": [
+        1618,
+        728,
+        1942,
+        809
+      ],
+      "size": [
+        512,
+        128
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "generator": "built-in imagegen",
+  "assets": [
+    {
+      "castleLevel": 1,
+      "reference": "../individual_castles_v4/castle-01.png",
+      "output": "originals/castle-map-01.png"
+    },
+    {
+      "castleLevel": 2,
+      "reference": "../individual_castles_v4/castle-02.png",
+      "output": "originals/castle-map-02.png"
+    },
+    {
+      "castleLevel": 3,
+      "reference": "../individual_castles_v4/castle-03.png",
+      "output": "originals/castle-map-03.png"
+    },
+    {
+      "castleLevel": 4,
+      "reference": "../individual_castles_v4/castle-04.png",
+      "output": "originals/castle-map-04.png"
+    },
+    {
+      "castleLevel": 5,
+      "reference": "../individual_castles_v4/castle-05.png",
+      "output": "originals/castle-map-05.png"
+    },
+    {
+      "castleLevel": 6,
+      "reference": "../individual_castles_v4/castle-06.png",
+      "output": "originals/castle-map-06.png"
+    },
+    {
+      "castleLevel": 7,
+      "reference": "../individual_castles_v4/castle-07.png",
+      "output": "originals/castle-map-07.png"
+    },
+    {
+      "castleLevel": 8,
+      "reference": "../individual_castles_v4/castle-08.png",
+      "output": "originals/castle-map-08.png"
+    },
+    {
+      "castleLevel": 9,
+      "reference": "../individual_castles_v4/castle-09.png",
+      "output": "originals/castle-map-09.png"
+    },
+    {
+      "castleLevel": 10,
+      "reference": "../individual_castles_v4/castle-10.png",
+      "output": "originals/castle-map-10.png"
+    }
+  ]
+}

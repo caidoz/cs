@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "format": "PNG",
+  "width": 1024,
+  "height": 1024,
+  "transparentBackground": true,
+  "camera": "elevated three-quarter front/right",
+  "icons": [
+    {
+      "castleIndex": 0,
+      "castleLevel": 1,
+      "upgradeStage": 0,
+      "name": "목재 왕관성",
+      "file": "png/castle-map-01.png",
+      "sourceAssembly": "../starter_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_01_IMG",
+      "resourceName": "castle_map_icons/castle_map_01",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_01.png"
+    },
+    {
+      "castleIndex": 1,
+      "castleLevel": 2,
+      "upgradeStage": 0,
+      "name": "사암 멧돼지성",
+      "file": "png/castle-map-02.png",
+      "sourceAssembly": "../second_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_02_IMG",
+      "resourceName": "castle_map_icons/castle_map_02",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_02.png"
+    },
+    {
+      "castleIndex": 2,
+      "castleLevel": 3,
+      "upgradeStage": 0,
+      "name": "화강암 교차검성",
+      "file": "png/castle-map-03.png",
+      "sourceAssembly": "../third_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_03_IMG",
+      "resourceName": "castle_map_icons/castle_map_03",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_03.png"
+    },
+    {
+      "castleIndex": 3,
+      "castleLevel": 4,
+      "upgradeStage": 0,
+      "name": "현무암 거북성",
+      "file": "png/castle-map-04.png",
+      "sourceAssembly": "../fourth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_04_IMG",
+      "resourceName": "castle_map_icons/castle_map_04",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_04.png"
+    },
+    {
+      "castleIndex": 4,
+      "castleLevel": 5,
+      "upgradeStage": 0,
+      "name": "철제 사자성",
+      "file": "png/castle-map-05.png",
+      "sourceAssembly": "../fifth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_05_IMG",
+      "resourceName": "castle_map_icons/castle_map_05",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_05.png"
+    },
+    {
+      "castleIndex": 5,
+      "castleLevel": 6,
+      "upgradeStage": 0,
+      "name": "은빛 기어성",
+      "file": "png/castle-map-06.png",
+      "sourceAssembly": "../sixth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_06_IMG",
+      "resourceName": "castle_map_icons/castle_map_06",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_06.png"
+    },
+    {
+      "castleIndex": 6,
+      "castleLevel": 7,
+      "upgradeStage": 0,
+      "name": "흑대리석 불사조성",
+      "file": "png/castle-map-07.png",
+      "sourceAssembly": "../seventh_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_07_IMG",
+      "resourceName": "castle_map_icons/castle_map_07",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_07.png"
+    },
+    {
+      "castleIndex": 7,
+      "castleLevel": 8,
+      "upgradeStage": 0,
+      "name": "백대리석 독수리성",
+      "file": "png/castle-map-08.png",
+      "sourceAssembly": "../eighth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_08_IMG",
+      "resourceName": "castle_map_icons/castle_map_08",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_08.png"
+    },
+    {
+      "castleIndex": 8,
+      "castleLevel": 9,
+      "upgradeStage": 0,
+      "name": "크리스탈 안광성",
+      "file": "png/castle-map-09.png",
+      "sourceAssembly": "../ninth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_09_IMG",
+      "resourceName": "castle_map_icons/castle_map_09",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_09.png"
+    },
+    {
+      "castleIndex": 9,
+      "castleLevel": 10,
+      "upgradeStage": 0,
+      "name": "태양 황궁",
+      "file": "png/castle-map-10.png",
+      "sourceAssembly": "../tenth_modular_sd_v1/reassembled-game-closed.png",
+      "imageId": "CASTLE_MAP_ICON_10_IMG",
+      "resourceName": "castle_map_icons/castle_map_10",
+      "gameFile": "Resources/res/castle_map_icons/castle_map_10.png"
+    }
+  ]
+}

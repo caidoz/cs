@@ -163,4 +163,10 @@ inline const Frame& Get(int castle,int level) {
 
 
 if __name__ == '__main__':
-    build()
+    import sys
+    current=ROOT/'content/castles/current_cannon_icons_v1/originals'
+    if '--legacy' not in sys.argv and all((current/f'cannon-{i:02}.png').is_file() for i in range(1,11)):
+        from register_current_cannon_icons import build as build_current
+        build_current()
+    else:
+        build()

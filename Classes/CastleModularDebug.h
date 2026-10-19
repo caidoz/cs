@@ -1,12 +1,80 @@
-#pragma once
+﻿#pragma once
 #include "CastlePartState.h"
+#include "Data/UniformCastleAnchors.h"
+#include "Data/IndividualCastleV4.h"
+#include "Data/IndividualCastleRooms.h"
 #include "Data/InventoryCannonSprites.h"
+#include "Data/CastleRoomFacade.h"
+#include "Data/SdRoomDeck.h"
+#include "Data/StarterSdParts.h"
+#include "Data/StarterSdPartsStage1.h"
+#include "Data/StarterSdPartsStage2.h"
+#include "Data/StarterSdPartsStage3.h"
+#include "Data/StarterSdPartsStage4.h"
+#include "Data/StarterSdPartsStage5.h"
+#include "Data/SecondSdParts.h"
+#include "Data/SecondSdPartsStage1.h"
+#include "Data/SecondSdPartsStage2.h"
+#include "Data/SecondSdPartsStage3.h"
+#include "Data/SecondSdPartsStage4.h"
+#include "Data/SecondSdPartsStage5.h"
+#include "Data/ThirdSdParts.h"
+#include "Data/ThirdSdPartsStage1.h"
+#include "Data/ThirdSdPartsStage2.h"
+#include "Data/ThirdSdPartsStage3.h"
+#include "Data/ThirdSdPartsStage4.h"
+#include "Data/ThirdSdPartsStage5.h"
+#include "Data/FourthSdParts.h"
+#include "Data/FourthSdPartsStage1.h"
+#include "Data/FourthSdPartsStage2.h"
+#include "Data/FourthSdPartsStage3.h"
+#include "Data/FourthSdPartsStage4.h"
+#include "Data/FourthSdPartsStage5.h"
+#include "Data/FifthSdParts.h"
+#include "Data/FifthSdPartsStage1.h"
+#include "Data/FifthSdPartsStage2.h"
+#include "Data/FifthSdPartsStage3.h"
+#include "Data/FifthSdPartsStage4.h"
+#include "Data/FifthSdPartsStage5.h"
+#include "Data/SixthSdParts.h"
+#include "Data/SixthSdPartsStage1.h"
+#include "Data/SixthSdPartsStage2.h"
+#include "Data/SixthSdPartsStage3.h"
+#include "Data/SixthSdPartsStage4.h"
+#include "Data/SixthSdPartsStage5.h"
+#include "Data/SeventhSdParts.h"
+#include "Data/SeventhSdPartsStage1.h"
+#include "Data/SeventhSdPartsStage2.h"
+#include "Data/SeventhSdPartsStage3.h"
+#include "Data/SeventhSdPartsStage4.h"
+#include "Data/SeventhSdPartsStage5.h"
+#include "Data/EighthSdParts.h"
+#include "Data/EighthSdPartsStage1.h"
+#include "Data/EighthSdPartsStage2.h"
+#include "Data/EighthSdPartsStage3.h"
+#include "Data/EighthSdPartsStage4.h"
+#include "Data/EighthSdPartsStage5.h"
+#include "Data/NinthSdParts.h"
+#include "Data/NinthSdPartsStage1.h"
+#include "Data/NinthSdPartsStage2.h"
+#include "Data/NinthSdPartsStage3.h"
+#include "Data/NinthSdPartsStage4.h"
+#include "Data/NinthSdPartsStage5.h"
+#include "Data/TenthSdParts.h"
+#include "Data/TenthSdPartsStage1.h"
+#include "Data/TenthSdPartsStage2.h"
+#include "Data/TenthSdPartsStage3.h"
+#include "Data/TenthSdPartsStage4.h"
+#include "Data/TenthSdPartsStage5.h"
 #include <cstdlib>
 #include <cmath>
 #include <chrono>
 
 //배경이 지금까지 흘려보낸 거리(화면 픽셀). StageBackground 가 센다.
 float StageBgRailTravelPx(void);
+float StageCastleGroundingPx(void);
+float CastlePartsViewZoom(void);
+float CastlePartsViewLeft(float fallback);
 
 namespace CastleParts {
 struct Box { int x,y,w,h; };
@@ -33,6 +101,81 @@ static float cannonMuzzleX[10]={0},cannonMuzzleY[10]={0};
 static bool cannonMuzzleValid[10]={false};
 static float cannonBaseY[10]={0};
 static float partAnchor[10][5][2]={0};
+// Stage-zero preview textures have authored crops. Other assembly modes keep
+// their original fixed-size textures through separate retained resource IDs.
+static bool useStarterLegacy=false, useSecondLegacy=false, useThirdLegacy=false, useFourthLegacy=false, useFifthLegacy=false, useSixthLegacy=false, useSeventhLegacy=false, useEighthLegacy=false, useNinthLegacy=false, useTenthLegacy=false;
+static int StarterAssemblyImage(int img) {
+ if(useTenthLegacy) {
+  static const int tenth[]={CASTLE_EXTERIOR_03_FIRST_IMG+138,CASTLE_EXTERIOR_03_FIRST_IMG+126,
+   CASTLE_10_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+48,CASTLE_COMMAND_PLATFORM_FIRST_IMG+48,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+48,CASTLE_BASE_FIRST_IMG+54,CASTLE_WHEEL_FIRST_IMG+54,CASTLE_ROOM_V4_FIRST_IMG+54};
+  for(int i=0;i<9;++i) if(img>=tenth[i] && img<tenth[i]+6)
+   return CASTLE_TENTH_LEGACY_FIRST_IMG+(img-tenth[i])*9+i;
+ }
+ if(useNinthLegacy) {
+  static const int ninth[]={CASTLE_EXTERIOR_03_FIRST_IMG+120,CASTLE_EXTERIOR_03_FIRST_IMG+108,
+   CASTLE_09_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+42,CASTLE_COMMAND_PLATFORM_FIRST_IMG+42,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+42,CASTLE_BASE_FIRST_IMG+48,CASTLE_WHEEL_FIRST_IMG+48,CASTLE_ROOM_V4_FIRST_IMG+48};
+  for(int i=0;i<9;++i) if(img>=ninth[i] && img<ninth[i]+6)
+   return CASTLE_NINTH_LEGACY_FIRST_IMG+(img-ninth[i])*9+i;
+ }
+ if(useEighthLegacy) {
+  static const int eighth[]={CASTLE_EXTERIOR_03_FIRST_IMG+102,CASTLE_EXTERIOR_03_FIRST_IMG+90,
+   CASTLE_08_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+36,CASTLE_COMMAND_PLATFORM_FIRST_IMG+36,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+36,CASTLE_BASE_FIRST_IMG+42,CASTLE_WHEEL_FIRST_IMG+42,CASTLE_ROOM_V4_FIRST_IMG+42};
+  for(int i=0;i<9;++i) if(img>=eighth[i] && img<eighth[i]+6)
+   return CASTLE_EIGHTH_LEGACY_FIRST_IMG+(img-eighth[i])*9+i;
+ }
+ if(useSeventhLegacy) {
+  static const int seventh[]={CASTLE_EXTERIOR_03_FIRST_IMG+84,CASTLE_EXTERIOR_03_FIRST_IMG+72,
+   CASTLE_07_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+30,CASTLE_COMMAND_PLATFORM_FIRST_IMG+30,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+30,CASTLE_BASE_FIRST_IMG+36,CASTLE_WHEEL_FIRST_IMG+36,CASTLE_ROOM_V4_FIRST_IMG+36};
+  for(int i=0;i<9;++i) if(img>=seventh[i] && img<seventh[i]+6)
+   return CASTLE_SEVENTH_LEGACY_FIRST_IMG+(img-seventh[i])*9+i;
+ }
+ if(useSixthLegacy) {
+  static const int sixth[]={CASTLE_EXTERIOR_03_FIRST_IMG+66,CASTLE_EXTERIOR_03_FIRST_IMG+54,
+   CASTLE_06_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+24,CASTLE_COMMAND_PLATFORM_FIRST_IMG+24,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+24,CASTLE_BASE_FIRST_IMG+30,CASTLE_WHEEL_FIRST_IMG+30,CASTLE_ROOM_V4_FIRST_IMG+30};
+  for(int i=0;i<9;++i) if(img>=sixth[i] && img<sixth[i]+6)
+   return CASTLE_SIXTH_LEGACY_FIRST_IMG+(img-sixth[i])*9+i;
+ }
+ if(useFifthLegacy) {
+  static const int fifth[]={CASTLE_EXTERIOR_03_FIRST_IMG+48,CASTLE_EXTERIOR_03_FIRST_IMG+36,
+   CASTLE_05_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+18,CASTLE_COMMAND_PLATFORM_FIRST_IMG+18,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+18,CASTLE_BASE_FIRST_IMG+24,CASTLE_WHEEL_FIRST_IMG+24,CASTLE_ROOM_V4_FIRST_IMG+24};
+  for(int i=0;i<9;++i) if(img>=fifth[i] && img<fifth[i]+6)
+   return CASTLE_FIFTH_LEGACY_FIRST_IMG+(img-fifth[i])*9+i;
+ }
+ if(useFourthLegacy) {
+  static const int fourth[]={CASTLE_EXTERIOR_03_FIRST_IMG+30,CASTLE_EXTERIOR_03_FIRST_IMG+18,
+   CASTLE_04_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+12,CASTLE_COMMAND_PLATFORM_FIRST_IMG+12,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+12,CASTLE_BASE_FIRST_IMG+18,CASTLE_WHEEL_FIRST_IMG+18,CASTLE_ROOM_V4_FIRST_IMG+18};
+  for(int i=0;i<9;++i) if(img>=fourth[i] && img<fourth[i]+6)
+   return CASTLE_FOURTH_LEGACY_FIRST_IMG+(img-fourth[i])*9+i;
+ }
+ if(useThirdLegacy) {
+  static const int third[]={CASTLE_EXTERIOR_03_FIRST_IMG+12,CASTLE_EXTERIOR_03_FIRST_IMG,
+   CASTLE_03_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG+6,CASTLE_COMMAND_PLATFORM_FIRST_IMG+6,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG+6,CASTLE_BASE_FIRST_IMG+12,CASTLE_WHEEL_FIRST_IMG+12,CASTLE_ROOM_V4_FIRST_IMG+12};
+  for(int i=0;i<9;++i) if(img>=third[i] && img<third[i]+6)
+   return CASTLE_THIRD_LEGACY_FIRST_IMG+(img-third[i])*9+i;
+ }
+ if(useSecondLegacy) {
+  static const int second[]={CASTLE_ROOF_02_FIRST_IMG,CASTLE_WALL_02_FIRST_IMG,
+   CASTLE_02_HOLLOW_FIRST_IMG,CASTLE_HEAVY_CANNON_FIRST_IMG,CASTLE_COMMAND_PLATFORM_FIRST_IMG,
+   CASTLE_02_10_COMBAT_DECK_FIRST_IMG,CASTLE_BASE_FIRST_IMG+6,CASTLE_WHEEL_FIRST_IMG+6,CASTLE_ROOM_V4_FIRST_IMG+6};
+  for(int i=0;i<9;++i) if(img>=second[i] && img<second[i]+6)
+   return CASTLE_SECOND_LEGACY_FIRST_IMG+(img-second[i])*9+i;
+ }
+ if(!useStarterLegacy) return img;
+ static const int originals[]={CASTLE_ROOF_01_FIRST_IMG,CASTLE_WALL_01_FIRST_IMG,
+  CASTLE_01_HOLLOW_FIRST_IMG,CASTLE_01_CANNON_FIRST_IMG,CASTLE_BALCONY_01_FIRST_IMG,
+  CASTLE_01_COMBAT_DECK_FIRST_IMG,CASTLE_BASE_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG,CASTLE_ROOM_V4_FIRST_IMG};
+ for(int i=0;i<9;++i) if(img>=originals[i] && img<originals[i]+6)
+  return CASTLE_STARTER_LEGACY_FIRST_IMG+(img-originals[i])*9+i;
+ return img;
+}
 
 //옛 모듈러 조각(castle_parts/*)을 집던 AssetId 는 지웠다. 부르는 데가
 //없었고, 그림 250 장도 이미 없어서 이름표만 차지하고 있었다. 지금은
@@ -40,34 +183,67 @@ static float partAnchor[10][5][2]={0};
 static int RoomV4AssetId(int floor,int stage) {
  return CASTLE_ROOM_V4_FIRST_IMG+floor*6+stage;
 }
+//---- 거울 ----
+//
+//PVP 격돌에서 오른쪽 성은 왼쪽을 봐야 한다. 조립 렌더러는 그림 수십 장을
+//제자리에 찍으므로, 찍는 자리를 하나하나 다시 재는 대신 마지막 한 줄에서
+//좌표를 세로선 기준으로 접고 그림에 flipX 를 건다.
+//
+//gMirrorAxis 는 접는 세로선(화면 x)이다. 성의 한가운데를 넣으면 제자리에
+//선 채로 방향만 돌아선다.
+//
+//조립 좌표를 적어 두는 칸(roomCover, cannonMuzzle) 은 접지 않는다. 그
+//값을 읽어 다시 그리는 쪽이 저마다 접어야 하고, 접힌 좌표를 또 접으면
+//제자리로 돌아온다.
+static bool gMirror=false;
+static float gMirrorAxis=0.0f;
+
+//---- 부른 쪽이 자리를 정한다 ----
+//
+//SD 조립은 성 1~3 말고는 왼쪽 끝으로 붙여 버린다(아래 p.left). 로비와
+//전투는 성이 화면 왼쪽에 서는 화면이라 그게 맞다.
+//
+//PVP 격돌은 둘이 좌우에 마주 서고, 들어올 때는 화면 밖에서 밀려 들어
+//온다. 왼쪽 끝으로 붙여 버리면 오른쪽 성이 제자리에 못 서고 들어오는
+//것도 안 보인다. 이 깃발이 서 있으면 부른 쪽이 준 x 를 그대로 쓴다.
+static bool gFreePlace=false;
+
+//접힌 자리. drawW 는 화면에 그려질 폭이다(원본 폭 * 배율).
+static inline float MirrorX(float x,float drawW) {
+ return gMirror ? (gMirrorAxis*2.0f-x-drawW) : x;
+}
+
 static void DrawRoomV4(int floor,int stage,float x,float yTop,float scale) {
- const int img=RoomV4AssetId(floor,stage);
+ const int img=StarterAssemblyImage(RoomV4AssetId(floor,stage));
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
- DrawImage(512,128,0,0,(int)std::lround(x),(int)std::lround(yTop),false,0,0,0,0,scale,sprite[img],img);
+ DrawImage(512,128,0,0,(int)std::lround(MirrorX(x,512.0f*scale)),(int)std::lround(yTop),gMirror,0,0,0,0,scale,sprite[img],img);
 }
 static void DrawFixedAsset(int img,int sourceW,int sourceH,float x,float yTop,float scale) {
+ img=StarterAssemblyImage(img);
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
- DrawImage(sourceW,sourceH,0,0,(int)std::lround(x),(int)std::lround(yTop),false,0,0,0,0,scale,sprite[img],img);
+ DrawImage(sourceW,sourceH,0,0,(int)std::lround(MirrorX(x,(float)sourceW*scale)),(int)std::lround(yTop),gMirror,0,0,0,0,scale,sprite[img],img);
 }
 static void DrawFixedAssetRegion(int img,int sourceW,int sourceH,int sourceY,
                                  float x,float yTop,float scale) {
+ img=StarterAssemblyImage(img);
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
- DrawImage(sourceW,sourceH,0,sourceY,(int)std::lround(x),(int)std::lround(yTop),
-           false,0,0,0,0,scale,sprite[img],img);
+ DrawImage(sourceW,sourceH,0,sourceY,(int)std::lround(MirrorX(x,(float)sourceW*scale)),(int)std::lround(yTop),
+           gMirror,0,0,0,0,scale,sprite[img],img);
 }
 static void DrawFixedAssetScale(int img,int sourceW,int sourceH,int x,int yTop,float scaleX,float scaleY) {
+ img=StarterAssemblyImage(img);
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
- DrawImageScale(sourceW,sourceH,0,0,x,yTop,false,0,0,0,0,scaleX,scaleY,sprite[img],img);
+ DrawImageScale(sourceW,sourceH,0,0,(int)MirrorX((float)x,(float)sourceW*scaleX),yTop,gMirror,0,0,0,0,scaleX,scaleY,sprite[img],img);
 }
 static void DrawRoomV4Scale(int floor,int stage,int x,int yTop,float scaleX,float scaleY) {
- const int img=RoomV4AssetId(floor,stage);
+ const int img=StarterAssemblyImage(RoomV4AssetId(floor,stage));
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
- DrawImageScale(512,128,0,0,x,yTop,false,0,0,0,0,scaleX,scaleY,sprite[img],img);
+ DrawImageScale(512,128,0,0,(int)MirrorX((float)x,512.0f*scaleX),yTop,gMirror,0,0,0,0,scaleX,scaleY,sprite[img],img);
 }
 //바퀴 그림 128 칸 안쪽의 투명 여백. 실제 바퀴는 이만큼 작다. 이걸 빼먹고
 //칸 크기로 맞추면 바퀴가 땅에서 뜬 채로 돈다.
@@ -91,6 +267,7 @@ static float WheelAngleNow(float radiusPx) {
  return std::fmod(travel/radiusPx*57.29578f,360.0f);
 }
 static void DrawWheelAsset(int img,float centerX,float centerY,float scale,float angle) {
+ img=StarterAssemblyImage(img);
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
  RotateImage(128,128,0,0,(int)centerX,(int)centerY,false,angle,0,0,scale,
@@ -137,6 +314,9 @@ static int HollowAssetId(int castle,int stage) {
 static const float kRoomStackLift=172.0f;
 static float NaturalLowerH(int castle) { (void)castle; return 236.0f; }
 static float NaturalBodyLift(int castle) { (void)castle; return 16.0f; }
+static float StarterLegacyGroundOffset(void) {
+ return NaturalLowerH(0)+NaturalBodyLift(0)-144.0f-61.0f;
+}
 static float NaturalUpperH(int castle) {
  static const float heights[10]={256.0f,220.0f,197.0f,340.0f,300.0f,320.0f,320.0f,320.0f,320.0f,330.0f};
  return heights[Max(0,Min(9,castle))];
@@ -183,12 +363,446 @@ static void DrawWallRoomSeamBacking(int castle,float roomLeft,float bottom,
  const int outer=(int)std::ceil(32.0f*scale);
  const int inner=(int)std::ceil(20.0f*scale);
  const int color=WallRoomSeamColor(castle);
- MemRect(roomLeftPx-outer,yTop,outer+inner,yTop-yBottom,color);
- MemRect(roomRightPx-inner,yTop,outer+inner,yTop-yBottom,color);
+ MemRect((int)MirrorX((float)(roomLeftPx-outer),(float)(outer+inner)),yTop,outer+inner,yTop-yBottom,color);
+ MemRect((int)MirrorX((float)(roomRightPx-inner),(float)(outer+inner)),yTop,outer+inner,yTop-yBottom,color);
+}
+// Debug facade experiment. Geometry comes from the canonical castle draw.
+#ifndef CASTLE_DEBUG_ROOM_COVER
+#define CASTLE_DEBUG_ROOM_COVER 1
+#endif
+struct RoomCoverRect { int left=0,top=0,width=0,height=0,material=0,sx=0,sy=0,sw=0,sh=0,roof=0; float scale=1,roofX=0,roofY=0; };
+static RoomCoverRect roomCover[CastleCount];
+static bool roomCoverRevealed[CastleCount]={};
+static bool roomInteriorOpen[CastleCount]={};
+struct SdPlacement {
+ bool valid=false; int externalCount=0,residentCount=0; float left=0,top=0,width=0,height=0,scale=1;
+ int residentDrawCount=0,castle=0,roomCount=1,roomColumns=1,sourceWidth=1536; float roomFloorGap=0;
+ float wheelAngle=0,fitScale=1;
+ float interiorLeft=0,interiorTop=0,interiorWidth=0,interiorFloor=0;
+ float commanderX=0,commanderY=0,deckLeft=0,deckTop=0,deckWidth=0,deckSurface=0;
+};
+static SdPlacement sdPlacement;
+static const float kStarterViewportRatio=.55f; // Latest request: 10% larger than the half-screen sample.
+static const float kStarterRailOverlapPx=8.0f;
+static bool SdEnabled(int castle) {
+ if(!getenv("CS_LEGACY_CASTLE_ART")) return castle>=0 && castle<10;
+#if defined(_DEBUG)
+ if(castle<0 || castle>9 || active) return false;
+ return true;
+#else
+ return false;
+#endif
+}
+static const StarterSdParts::Piece& SdStagePiece(int part,int level,int castle=0) {
+ if(castle==9) {
+  static const StarterSdParts::Piece* const tenth[]={TenthSdParts::Pieces,
+   TenthSdPartsStage1::Pieces,TenthSdPartsStage2::Pieces,TenthSdPartsStage3::Pieces,
+   TenthSdPartsStage4::Pieces,TenthSdPartsStage5::Pieces};
+  return tenth[Max(0,Min(5,level))][part];
+ }
+ if(castle==8) {
+  static const StarterSdParts::Piece* const ninth[]={NinthSdParts::Pieces,
+   NinthSdPartsStage1::Pieces,NinthSdPartsStage2::Pieces,NinthSdPartsStage3::Pieces,
+   NinthSdPartsStage4::Pieces,NinthSdPartsStage5::Pieces};
+  return ninth[Max(0,Min(5,level))][part];
+ }
+ if(castle==7) {
+  static const StarterSdParts::Piece* const eighth[]={EighthSdParts::Pieces,
+   EighthSdPartsStage1::Pieces,EighthSdPartsStage2::Pieces,EighthSdPartsStage3::Pieces,
+   EighthSdPartsStage4::Pieces,EighthSdPartsStage5::Pieces};
+  return eighth[Max(0,Min(5,level))][part];
+ }
+ if(castle==6) {
+  static const StarterSdParts::Piece* const seventh[]={SeventhSdParts::Pieces,
+   SeventhSdPartsStage1::Pieces,SeventhSdPartsStage2::Pieces,SeventhSdPartsStage3::Pieces,
+   SeventhSdPartsStage4::Pieces,SeventhSdPartsStage5::Pieces};
+  return seventh[Max(0,Min(5,level))][part];
+ }
+ if(castle==5) {
+  static const StarterSdParts::Piece* const sixth[]={SixthSdParts::Pieces,
+   SixthSdPartsStage1::Pieces,SixthSdPartsStage2::Pieces,SixthSdPartsStage3::Pieces,
+   SixthSdPartsStage4::Pieces,SixthSdPartsStage5::Pieces};
+  return sixth[Max(0,Min(5,level))][part];
+ }
+ if(castle==4) {
+  static const StarterSdParts::Piece* const fifth[]={FifthSdParts::Pieces,
+   FifthSdPartsStage1::Pieces,FifthSdPartsStage2::Pieces,FifthSdPartsStage3::Pieces,
+   FifthSdPartsStage4::Pieces,FifthSdPartsStage5::Pieces};
+  return fifth[Max(0,Min(5,level))][part];
+ }
+ if(castle==3) {
+  static const StarterSdParts::Piece* const fourth[]={FourthSdParts::Pieces,
+   FourthSdPartsStage1::Pieces,FourthSdPartsStage2::Pieces,FourthSdPartsStage3::Pieces,
+   FourthSdPartsStage4::Pieces,FourthSdPartsStage5::Pieces};
+  return fourth[Max(0,Min(5,level))][part];
+ }
+ if(castle==2) {
+  static const StarterSdParts::Piece* const third[]={ThirdSdParts::Pieces,
+   ThirdSdPartsStage1::Pieces,ThirdSdPartsStage2::Pieces,ThirdSdPartsStage3::Pieces,
+   ThirdSdPartsStage4::Pieces,ThirdSdPartsStage5::Pieces};
+  return third[Max(0,Min(5,level))][part];
+ }
+ if(castle==1) {
+  static const StarterSdParts::Piece* const second[]={SecondSdParts::Pieces,
+   SecondSdPartsStage1::Pieces,SecondSdPartsStage2::Pieces,SecondSdPartsStage3::Pieces,
+   SecondSdPartsStage4::Pieces,SecondSdPartsStage5::Pieces};
+  return second[Max(0,Min(5,level))][part];
+ }
+ static const StarterSdParts::Piece* const stages[]={StarterSdParts::Pieces,
+  StarterSdPartsStage1::Pieces,StarterSdPartsStage2::Pieces,StarterSdPartsStage3::Pieces,
+  StarterSdPartsStage4::Pieces,StarterSdPartsStage5::Pieces};
+ return stages[Max(0,Min(5,level))][part];
+}
+static void SdPiece(int img,const StarterSdParts::Piece& r,float unit,float left,float top,bool flipX=false) {
+ if(!sprite[img]) LoadImg(img);
+ if(!sprite[img]) { missingAsset=true; return; }
+ const int x=(int)std::lround(left+r.x*unit), y=(int)std::lround(top-r.y*unit);
+ const int right=(int)std::lround(left+(r.x+r.w)*unit), bottom=(int)std::lround(top-(r.y+r.h)*unit);
+ DrawImageScale(r.w,r.h,r.sx,r.sy,MirrorX(x,r.w*unit),y,flipX!=gMirror,0,0,0,0,
+     (right-x)/(float)r.w,(y-bottom)/(float)r.h,sprite[img],img);
+}
+static int SdTopVisibleY(int castle,int stage) {
+ if(castle==9) {
+  const int tops[]={TenthSdParts::TopVisibleY,TenthSdPartsStage1::TopVisibleY,
+   TenthSdPartsStage2::TopVisibleY,TenthSdPartsStage3::TopVisibleY,
+   TenthSdPartsStage4::TopVisibleY,TenthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==8) {
+  const int tops[]={NinthSdParts::TopVisibleY,NinthSdPartsStage1::TopVisibleY,
+   NinthSdPartsStage2::TopVisibleY,NinthSdPartsStage3::TopVisibleY,
+   NinthSdPartsStage4::TopVisibleY,NinthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==7) {
+  const int tops[]={EighthSdParts::TopVisibleY,EighthSdPartsStage1::TopVisibleY,
+   EighthSdPartsStage2::TopVisibleY,EighthSdPartsStage3::TopVisibleY,
+   EighthSdPartsStage4::TopVisibleY,EighthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==6) {
+  const int tops[]={SeventhSdParts::TopVisibleY,SeventhSdPartsStage1::TopVisibleY,
+   SeventhSdPartsStage2::TopVisibleY,SeventhSdPartsStage3::TopVisibleY,
+   SeventhSdPartsStage4::TopVisibleY,SeventhSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==5) {
+  const int tops[]={SixthSdParts::TopVisibleY,SixthSdPartsStage1::TopVisibleY,
+   SixthSdPartsStage2::TopVisibleY,SixthSdPartsStage3::TopVisibleY,
+   SixthSdPartsStage4::TopVisibleY,SixthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==4) {
+  const int tops[]={FifthSdParts::TopVisibleY,FifthSdPartsStage1::TopVisibleY,
+   FifthSdPartsStage2::TopVisibleY,FifthSdPartsStage3::TopVisibleY,
+   FifthSdPartsStage4::TopVisibleY,FifthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ if(castle==3) {
+  const int tops[]={FourthSdParts::TopVisibleY,FourthSdPartsStage1::TopVisibleY,
+   FourthSdPartsStage2::TopVisibleY,FourthSdPartsStage3::TopVisibleY,
+   FourthSdPartsStage4::TopVisibleY,FourthSdPartsStage5::TopVisibleY};
+  return tops[Max(0,Min(5,stage))];
+ }
+ return SdStagePiece(0,stage,castle).y;
+}
+static cocos2d::Vec2 SdUniformOffset(int castle,int part) {
+ if(castle<5) return cocos2d::Vec2::ZERO;
+ const auto* stages=UniformCastleAnchors::Stages[castle-5];
+ const auto& body=stages[CastleVisualPartLevel(castle,1)];
+ const auto& base=stages[CastleVisualPartLevel(castle,4)];
+ const auto& roof=stages[CastleVisualPartLevel(castle,0)];
+ const auto& gun=stages[CastleVisualPartLevel(castle,3)];
+ const cocos2d::Vec2 shift(base.hullX-body.hullX,base.deckY-body.deckY);
+ if(part==0) return cocos2d::Vec2(base.hullX-roof.hullX,shift.y+body.roofY-roof.roofY);
+ if(part==1 || part==2) return shift;
+ if(part==3 || part==4) return cocos2d::Vec2(shift.x+body.gunX-gun.gunX,base.deckY-gun.deckY);
+ return cocos2d::Vec2::ZERO;
+}
+static bool DrawSdCastle(int castle,float left,float bottom,float scale) {
+ if(!SdEnabled(castle)) { sdPlacement.valid=false; return false; }
+ auto& p=sdPlacement; p.valid=true; p.castle=castle; p.roomCount=castle+1;
+ const int sourceW=castle==9?TenthSdParts::Width:castle==8?NinthSdParts::Width:castle==7?EighthSdParts::Width:castle==6?SeventhSdParts::Width:castle==5?SixthSdParts::Width:castle==4?FifthSdParts::Width:castle==3?FourthSdParts::Width:castle==2?ThirdSdParts::Width:castle?SecondSdParts::Width:StarterSdParts::Width;
+ const int sourceH=castle==9?TenthSdParts::Height:castle==8?NinthSdParts::Height:castle==7?EighthSdParts::Height:castle==6?SeventhSdParts::Height:castle==5?SixthSdParts::Height:castle==4?FifthSdParts::Height:castle==3?FourthSdParts::Height:castle==2?ThirdSdParts::Height:castle?SecondSdParts::Height:StarterSdParts::Height;
+ const int ground=castle==9?TenthSdParts::GroundY:castle==8?NinthSdParts::GroundY:castle==7?EighthSdParts::GroundY:castle==6?SeventhSdParts::GroundY:castle==5?SixthSdParts::GroundY:castle==4?FifthSdParts::GroundY:castle==3?FourthSdParts::GroundY:castle==2?ThirdSdParts::GroundY:castle?SecondSdParts::GroundY:StarterSdParts::GroundY;
+ const int floor=castle==9?TenthSdParts::FloorY:castle==8?NinthSdParts::FloorY:castle==7?EighthSdParts::FloorY:castle==6?SeventhSdParts::FloorY:castle==5?SixthSdParts::FloorY:castle==4?FifthSdParts::FloorY:castle==3?FourthSdParts::FloorY:castle==2?ThirdSdParts::FloorY:castle?SecondSdParts::FloorY:StarterSdParts::FloorY;
+ const int heroX=castle==9?TenthSdParts::HeroX:castle==8?NinthSdParts::HeroX:castle==7?EighthSdParts::HeroX:castle==6?SeventhSdParts::HeroX:castle==5?SixthSdParts::HeroX:castle==4?FifthSdParts::HeroX:castle==3?FourthSdParts::HeroX:castle==2?ThirdSdParts::HeroX:castle?SecondSdParts::HeroX:StarterSdParts::HeroX;
+ const int heroY=castle==9?TenthSdParts::HeroY:castle==8?NinthSdParts::HeroY:castle==7?EighthSdParts::HeroY:castle==6?SeventhSdParts::HeroY:castle==5?SixthSdParts::HeroY:castle==4?FifthSdParts::HeroY:castle==3?FourthSdParts::HeroY:castle==2?ThirdSdParts::HeroY:castle?SecondSdParts::HeroY:StarterSdParts::HeroY;
+ const int deckX=castle==9?TenthSdParts::DeckX:castle==8?NinthSdParts::DeckX:castle==7?EighthSdParts::DeckX:castle==6?SeventhSdParts::DeckX:castle==5?SixthSdParts::DeckX:castle==4?FifthSdParts::DeckX:castle==3?FourthSdParts::DeckX:castle==2?ThirdSdParts::DeckX:castle?SecondSdParts::DeckX:StarterSdParts::DeckX;
+ const int deckW=castle==9?TenthSdParts::DeckW:castle==8?NinthSdParts::DeckW:castle==7?EighthSdParts::DeckW:castle==6?SeventhSdParts::DeckW:castle==5?SixthSdParts::DeckW:castle==4?FifthSdParts::DeckW:castle==3?FourthSdParts::DeckW:castle==2?ThirdSdParts::DeckW:castle?SecondSdParts::DeckW:StarterSdParts::DeckW;
+ const int deckY=castle==9?TenthSdParts::DeckY:castle==8?NinthSdParts::DeckY:castle==7?EighthSdParts::DeckY:castle==6?SeventhSdParts::DeckY:castle==5?SixthSdParts::DeckY:castle==4?FifthSdParts::DeckY:castle==3?FourthSdParts::DeckY:castle==2?ThirdSdParts::DeckY:castle?SecondSdParts::DeckY:StarterSdParts::DeckY;
+ const auto& room=castle==9?TenthSdParts::Room:castle==8?NinthSdParts::Room:castle==7?EighthSdParts::Room:castle==6?SeventhSdParts::Room:castle==5?SixthSdParts::Room:castle==4?FifthSdParts::Room:castle==3?FourthSdParts::Room:castle==2?ThirdSdParts::Room:castle?SecondSdParts::Room:StarterSdParts::Room;
+ p.sourceWidth=sourceW;
+ const float naturalUnit=Min(960.0f*1.10f/sourceW*scale,DX*kStarterViewportRatio/sourceW);
+ const float groundLine=bottom-252*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale+StageCastleGroundingPx()-kStarterRailOverlapPx;
+ const bool worldView=!gFreePlace
+  && (drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0));
+ // Castle grades share one screen width. Taller art grows above the rail;
+ // neither the legacy assembly height nor the viewport roof can shrink it.
+ const float unit=worldView?DX*kStarterViewportRatio/sourceW:naturalUnit;
+ p.fitScale=unit/naturalUnit;
+ p.scale=unit*sourceW/960.0f;
+ // The caller has already subtracted the legacy contact offset and grounding.
+ // Cancel those once, then place the authored wheel contact on the actual rail.
+ p.left=(!gFreePlace && (worldView || castle>=3))?Max(4.0f*DX/640.0f,left):left;
+ p.top=groundLine+ground*unit;
+ p.width=sourceW*unit; p.height=sourceH*unit;
+ // Actual existing resource IDs, not a baked castle or a replacement atlas.
+ int images[9]={CASTLE_ROOF_01_FIRST_IMG,CASTLE_WALL_01_FIRST_IMG,
+  CASTLE_01_HOLLOW_FIRST_IMG,CASTLE_01_CANNON_FIRST_IMG,CASTLE_BALCONY_01_FIRST_IMG,
+  CASTLE_01_COMBAT_DECK_FIRST_IMG,CASTLE_BASE_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG,CASTLE_WHEEL_FIRST_IMG};
+ if(castle==1) {
+  const int second[]={CASTLE_ROOF_02_FIRST_IMG,CASTLE_WALL_02_FIRST_IMG,CASTLE_02_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG,CASTLE_COMMAND_PLATFORM_FIRST_IMG,CASTLE_02_10_COMBAT_DECK_FIRST_IMG,
+   CASTLE_BASE_FIRST_IMG+6,CASTLE_WHEEL_FIRST_IMG+6,CASTLE_WHEEL_FIRST_IMG+6};
+  for(int i=0;i<9;++i) images[i]=second[i];
+ }
+ if(castle==2) {
+  const int third[]={CASTLE_EXTERIOR_03_FIRST_IMG+12,CASTLE_EXTERIOR_03_FIRST_IMG,CASTLE_03_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+6,CASTLE_COMMAND_PLATFORM_FIRST_IMG+6,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+6,
+   CASTLE_BASE_FIRST_IMG+12,CASTLE_WHEEL_FIRST_IMG+12,CASTLE_WHEEL_FIRST_IMG+12};
+  for(int i=0;i<9;++i) images[i]=third[i];
+ }
+ if(castle==9) {
+  const int tenth[]={CASTLE_EXTERIOR_03_FIRST_IMG+138,CASTLE_EXTERIOR_03_FIRST_IMG+126,CASTLE_10_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+48,CASTLE_COMMAND_PLATFORM_FIRST_IMG+48,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+48,
+   CASTLE_BASE_FIRST_IMG+54,CASTLE_WHEEL_FIRST_IMG+54,CASTLE_WHEEL_FIRST_IMG+54};
+  for(int i=0;i<9;++i) images[i]=tenth[i];
+ }
+ if(castle==8) {
+  const int ninth[]={CASTLE_EXTERIOR_03_FIRST_IMG+120,CASTLE_EXTERIOR_03_FIRST_IMG+108,CASTLE_09_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+42,CASTLE_COMMAND_PLATFORM_FIRST_IMG+42,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+42,
+   CASTLE_BASE_FIRST_IMG+48,CASTLE_WHEEL_FIRST_IMG+48,CASTLE_WHEEL_FIRST_IMG+48};
+  for(int i=0;i<9;++i) images[i]=ninth[i];
+ }
+ if(castle==7) {
+  const int eighth[]={CASTLE_EXTERIOR_03_FIRST_IMG+102,CASTLE_EXTERIOR_03_FIRST_IMG+90,CASTLE_08_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+36,CASTLE_COMMAND_PLATFORM_FIRST_IMG+36,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+36,
+   CASTLE_BASE_FIRST_IMG+42,CASTLE_WHEEL_FIRST_IMG+42,CASTLE_WHEEL_FIRST_IMG+42};
+  for(int i=0;i<9;++i) images[i]=eighth[i];
+ }
+ if(castle==6) {
+  const int seventh[]={CASTLE_EXTERIOR_03_FIRST_IMG+84,CASTLE_EXTERIOR_03_FIRST_IMG+72,CASTLE_07_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+30,CASTLE_COMMAND_PLATFORM_FIRST_IMG+30,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+30,
+   CASTLE_BASE_FIRST_IMG+36,CASTLE_WHEEL_FIRST_IMG+36,CASTLE_WHEEL_FIRST_IMG+36};
+  for(int i=0;i<9;++i) images[i]=seventh[i];
+ }
+ if(castle==5) {
+  const int sixth[]={CASTLE_EXTERIOR_03_FIRST_IMG+66,CASTLE_EXTERIOR_03_FIRST_IMG+54,CASTLE_06_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+24,CASTLE_COMMAND_PLATFORM_FIRST_IMG+24,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+24,
+   CASTLE_BASE_FIRST_IMG+30,CASTLE_WHEEL_FIRST_IMG+30,CASTLE_WHEEL_FIRST_IMG+30};
+  for(int i=0;i<9;++i) images[i]=sixth[i];
+ }
+ if(castle==3) {
+  const int fourth[]={CASTLE_EXTERIOR_03_FIRST_IMG+30,CASTLE_EXTERIOR_03_FIRST_IMG+18,CASTLE_04_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+12,CASTLE_COMMAND_PLATFORM_FIRST_IMG+12,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+12,
+   CASTLE_BASE_FIRST_IMG+18,CASTLE_WHEEL_FIRST_IMG+18,CASTLE_WHEEL_FIRST_IMG+18};
+  for(int i=0;i<9;++i) images[i]=fourth[i];
+ }
+ if(castle==4) {
+  const int fifth[]={CASTLE_EXTERIOR_03_FIRST_IMG+48,CASTLE_EXTERIOR_03_FIRST_IMG+36,CASTLE_05_HOLLOW_FIRST_IMG,
+   CASTLE_HEAVY_CANNON_FIRST_IMG+18,CASTLE_COMMAND_PLATFORM_FIRST_IMG+18,CASTLE_02_10_COMBAT_DECK_FIRST_IMG+18,
+   CASTLE_BASE_FIRST_IMG+24,CASTLE_WHEEL_FIRST_IMG+24,CASTLE_WHEEL_FIRST_IMG+24};
+  for(int i=0;i<9;++i) images[i]=fifth[i];
+ }
+ const int levels[9]={CastleVisualPartLevel(castle,0),CastleVisualPartLevel(castle,1),CastleVisualPartLevel(castle,1),
+  CastleVisualPartLevel(castle,3),CastleVisualPartLevel(castle,3),CastleVisualPartLevel(castle,4),
+  CastleVisualPartLevel(castle,4),CastleVisualPartLevel(castle,4),CastleVisualPartLevel(castle,4)};
+ for(int i=0;i<9;++i) images[i]+=levels[i];
+ p.wheelAngle=WheelAngleNow((castle==9?TenthSdParts::WheelRadius:castle==8?NinthSdParts::WheelRadius:castle==7?EighthSdParts::WheelRadius:castle==6?SeventhSdParts::WheelRadius:castle==5?SixthSdParts::WheelRadius:castle==4?FifthSdParts::WheelRadius:castle==3?FourthSdParts::WheelRadius:castle==2?ThirdSdParts::WheelRadius:castle?102:121)*unit);
+ for(int i=0;i<9;++i) if(i!=1) {
+  auto r=SdStagePiece(i,levels[i],castle);
+  const auto shift=SdUniformOffset(castle,i);
+  r.x+=(int)std::lround(shift.x);r.y+=(int)std::lround(shift.y);
+  // Use the authored weapon orientation without runtime mirroring.
+  if(i<7) SdPiece(images[i],r,unit,p.left,p.top);
+  else {
+   if(!sprite[images[i]]) LoadImg(images[i]);
+   if(!sprite[images[i]]) { missingAsset=true; continue; }
+   RotateImage(r.w,r.h,r.sx,r.sy,(int)std::lround(p.left+(r.x+r.w*.5f)*unit),
+    (int)std::lround(p.top-(r.y+r.h*.5f)*unit),false,WheelAngleNow(r.w*unit*.5f),0,0,unit,
+    cocos2d::Vec2(.5f,.5f),sprite[images[i]],images[i]);
+  }
+ }
+ auto roomDraw=room;
+ const auto bodyShift=SdUniformOffset(castle,1);
+ roomDraw.x+=(int)std::lround(bodyShift.x);roomDraw.y+=(int)std::lround(bodyShift.y);
+ SdPiece(CASTLE_ROOM_V4_FIRST_IMG+castle*6+CastleVisualPartLevel(castle,2),roomDraw,unit,p.left,p.top);
+ auto aperture=SdStagePiece(1,levels[1],castle);
+ aperture.x+=(int)std::lround(bodyShift.x);aperture.y+=(int)std::lround(bodyShift.y);
+ auto& cover=roomCover[castle];
+ cover.left=(int)std::lround(p.left+aperture.x*unit);
+ cover.top=(int)std::lround(p.top-aperture.y*unit);
+ cover.width=(int)std::lround(p.left+(aperture.x+aperture.w)*unit)-cover.left;
+ cover.height=cover.top-(int)std::lround(p.top-(aperture.y+aperture.h)*unit);
+ cover.material=images[1]; cover.sx=cover.sy=0;
+ cover.sw=aperture.w; cover.sh=aperture.h; cover.roof=0;
+ if(!sprite[cover.material]) LoadImg(cover.material);
+ // These views do not run the crew/cover pass, so draw the closed facade here.
+ if(popUpCnt>0 || (drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY))
+  SdPiece(cover.material,aperture,unit,p.left,p.top);
+ p.interiorLeft=cover.left; p.interiorTop=cover.top; p.interiorWidth=cover.width;
+ p.interiorFloor=p.top-(floor+bodyShift.y)*unit; p.roomFloorGap=castle==9?TenthSdParts::RoomFloorGap*unit:castle==8?NinthSdParts::RoomFloorGap*unit:castle==7?EighthSdParts::RoomFloorGap*unit:castle==6?SeventhSdParts::RoomFloorGap*unit:castle==5?SixthSdParts::RoomFloorGap*unit:castle==4?FifthSdParts::RoomFloorGap*unit:castle==3?FourthSdParts::RoomFloorGap*unit:castle==2?ThirdSdParts::RoomFloorGap*unit:castle?172.5f*unit:0;
+ p.commanderX=p.left+heroX*unit;
+ p.commanderY=p.top-heroY*unit;
+ p.deckLeft=p.left+deckX*unit; p.deckWidth=deckW*unit;
+ p.deckSurface=p.top-deckY*unit; p.deckTop=p.deckSurface;
+ cannonBaseY[castle]=p.commanderY;
+ const int stoneXs[]={StarterSdParts::StoneX,StarterSdPartsStage1::StoneX,StarterSdPartsStage2::StoneX,
+  StarterSdPartsStage3::StoneX,StarterSdPartsStage4::StoneX,StarterSdPartsStage5::StoneX};
+ const int stoneYs[]={StarterSdParts::StoneY,StarterSdPartsStage1::StoneY,StarterSdPartsStage2::StoneY,
+  StarterSdPartsStage3::StoneY,StarterSdPartsStage4::StoneY,StarterSdPartsStage5::StoneY};
+ if(castle==9) {
+  const int xs[]={TenthSdParts::StoneX,TenthSdPartsStage1::StoneX,TenthSdPartsStage2::StoneX,TenthSdPartsStage3::StoneX,TenthSdPartsStage4::StoneX,TenthSdPartsStage5::StoneX};
+  const int ys[]={TenthSdParts::StoneY,TenthSdPartsStage1::StoneY,TenthSdPartsStage2::StoneY,TenthSdPartsStage3::StoneY,TenthSdPartsStage4::StoneY,TenthSdPartsStage5::StoneY};
+  cannonMuzzleX[castle]=p.left+xs[levels[3]]*unit;
+  cannonMuzzleY[castle]=p.top-ys[levels[3]]*unit; cannonMuzzleValid[castle]=true;
+ } else  if(castle==8) {
+  const int xs[]={NinthSdParts::StoneX,NinthSdPartsStage1::StoneX,NinthSdPartsStage2::StoneX,NinthSdPartsStage3::StoneX,NinthSdPartsStage4::StoneX,NinthSdPartsStage5::StoneX};
+  const int ys[]={NinthSdParts::StoneY,NinthSdPartsStage1::StoneY,NinthSdPartsStage2::StoneY,NinthSdPartsStage3::StoneY,NinthSdPartsStage4::StoneY,NinthSdPartsStage5::StoneY};
+  cannonMuzzleX[castle]=p.left+xs[levels[3]]*unit;
+  cannonMuzzleY[castle]=p.top-ys[levels[3]]*unit; cannonMuzzleValid[castle]=true;
+ } else {
+ cannonMuzzleX[castle]=p.left+(castle==9?TenthSdParts::StoneX:castle==8?NinthSdParts::StoneX:castle==7?EighthSdParts::StoneX:castle==6?SeventhSdParts::StoneX:castle==5?SixthSdParts::StoneX:castle==4?FifthSdParts::StoneX:castle==3?FourthSdParts::StoneX:castle==2?ThirdSdParts::StoneX:castle?SecondSdParts::StoneX:stoneXs[levels[3]])*unit;
+ cannonMuzzleY[castle]=p.top-(castle==9?TenthSdParts::StoneY:castle==8?NinthSdParts::StoneY:castle==7?EighthSdParts::StoneY:castle==6?SeventhSdParts::StoneY:castle==5?SixthSdParts::StoneY:castle==4?FifthSdParts::StoneY:castle==3?FourthSdParts::StoneY:castle==2?ThirdSdParts::StoneY:castle?SecondSdParts::StoneY:stoneYs[levels[3]])*unit; cannonMuzzleValid[castle]=true;
+ }
+ if(castle>=5) {
+  const auto& hero=UniformCastleAnchors::Stages[castle-5][levels[4]];
+  const auto& deck=UniformCastleAnchors::Stages[castle-5][levels[5]];
+  const auto& gun=UniformCastleAnchors::Stages[castle-5][levels[3]];
+  const auto shift=SdUniformOffset(castle,3);
+  p.commanderX=p.left+(hero.heroX+shift.x)*unit; p.commanderY=p.top-(hero.heroY+shift.y)*unit;
+  p.deckLeft=p.left+deck.deckX*unit; p.deckWidth=deck.deckW*unit;
+  p.deckSurface=p.top-deck.deckY*unit; p.deckTop=p.deckSurface;
+  cannonBaseY[castle]=p.commanderY;
+  cannonMuzzleX[castle]=p.left+(gun.muzzleX+shift.x)*unit;
+  cannonMuzzleY[castle]=p.top-(gun.muzzleY+shift.y)*unit;
+ }
+ for(int i=0;i<5;++i) {
+  partAnchor[castle][i][0]=p.left+(i==3?.89f:.35f)*p.width;
+  partAnchor[castle][i][1]=p.top-(i==0?.24f:i==4?.83f:.56f)*p.height;
+ }
+ return true;
+}
+static bool RoomRevealRequested(int castle) {
+ if(castle<0 || castle>9 || active || popUpCnt>0 || (drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY)) return false;
+ const auto& r=roomCover[castle];
+ if(r.width<=0 || r.height<=0 || !sprite[r.material]) return false;
+ return roomInteriorOpen[castle];
+}
+struct RoomClipScope {
+ int x,y,x2,y2; bool enabled;
+ explicit RoomClipScope(bool on,int floor=0):x(clipX),y(clipY),x2(clipX2),y2(clipY2),enabled(on) {
+  if(!on) return;
+  const auto& r=roomCover[sdPlacement.castle];
+  clipX=Max(clipX,r.left); clipX2=Min(clipX2,r.left+r.width);
+  clipY=Min(clipY,r.top); clipY2=Max(clipY2,r.top-r.height);
+  if(sdPlacement.roomCount>1) {
+   const float gap=sdPlacement.roomFloorGap;
+   clipY=Min(clipY,(int)std::lround(sdPlacement.interiorFloor+floor*gap+gap-4*sdPlacement.width/sdPlacement.sourceWidth));
+   clipY2=Max(clipY2,(int)std::lround(sdPlacement.interiorFloor+floor*gap-10*sdPlacement.width/sdPlacement.sourceWidth));
+  }
+ }
+ ~RoomClipScope() { if(enabled) { clipX=x; clipY=y; clipX2=x2; clipY2=y2; } }
+};
+static void DrawRoomCover(int castle) {
+#if CASTLE_DEBUG_ROOM_COVER
+ // Authored SD samples; other castles keep their original open rooms.
+ if(castle<0 || castle>9 || active || popUpCnt>0 || (drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY)) return;
+ const auto& r=roomCover[castle];
+ if(r.width<=0 || r.height<=0 || !sprite[r.material]) return;
+ const bool reveal=RoomRevealRequested(castle);
+ roomCoverRevealed[castle]=reveal;
+ // Complete exteriors already draw the closed facade exactly once.
+ if(r.material>=CASTLE_INDIVIDUAL_V4_FIRST_IMG && r.material<=CASTLE_INDIVIDUAL_V4_LAST_IMG && !reveal) return;
+ const auto segment=[&](int a,int b,int row,int bh) {
+  if(b<=a) return;
+  const int sx=r.sx+(int)((a-r.left)*(float)r.sw/r.width);
+  const int sy=r.sy+(int)(row*(float)r.sh/r.height);
+  const int sw=Max(1,Min(r.sx+r.sw-sx,(int)std::ceil((b-a)*(float)r.sw/r.width)));
+  const int sh=Max(1,Min(r.sy+r.sh-sy,(int)std::ceil(bh*(float)r.sh/r.height)));
+  DrawImageScale(sw,sh,sx,sy,(int)MirrorX((float)a,(float)(b-a)),r.top-row,gMirror,0,0,0,0,
+      (b-a)/(float)sw,bh/(float)sh,sprite[r.material],r.material);
+ };
+ if(!reveal) segment(r.left,r.left+r.width,0,r.height);
+ // Restore the original roof in front of the facade: no wall can cover its spires.
+ if(r.roof) DrawFixedAsset(r.roof,736,256,r.roofX,r.roofY,r.scale);
+#endif
+}
+// Complete selected exterior; the legacy modular renderer remains available
+// through CS_LEGACY_CASTLE_ART for room/upgrade authoring.
+static bool IndividualArtEnabled() { return !getenv("CS_LEGACY_CASTLE_ART"); }
+static bool DrawIndividualCastle(int castle,float left,float bottom,float scale) {
+ if(!IndividualArtEnabled()) return false;
+ const auto& r=IndividualCastleV4::Rigs[castle];
+ const int img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+castle*3;
+ for(int i=0;i<3;++i) { if(!sprite[img+i]) { LoadImg(img+i); LoadTexture(img+i); if(sprite[img+i]) sprite[img+i]->getTexture()->setAntiAliasTexParameters(); } if(!sprite[img+i]) { missingAsset=true; return false; } }
+ const bool world=!gFreePlace && (drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0));
+ const float unit=world?DX/640.0f*r.width/r.w*CastlePartsViewZoom():1056.0f*(r.width/342.0f)/r.w*scale;
+ const float ground=bottom-252*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale+StageCastleGroundingPx()-kStarterRailOverlapPx;
+ auto& p=sdPlacement; p=SdPlacement(); p.valid=true;p.castle=castle;p.roomCount=castle+1;
+ p.left=world?CastlePartsViewLeft(Max(4.0f*DX/640.0f,left)):left;p.width=r.w*unit;p.height=r.h*unit;
+ p.top=ground+p.height;p.sourceWidth=r.w;p.scale=p.width/960.0f;
+ p.fitScale=unit/(1056.0f*(r.width/342.0f)/r.w*scale);
+ DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),(int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[img],img);
+ const float angle=WheelAngleNow(r.r*unit);
+ for(int i=0;i<2;++i) {
+  const float cx=p.left+((i?r.rx:r.lx)-r.x)*unit;
+  const float cy=p.top-(r.cy-r.y)*unit;
+  RotateImage(r.r*2,r.r*2,0,0,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),(int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[img+1+i],img+1+i);
+ }
+ p.wheelAngle=angle;
+ p.commanderX=p.left+(r.hero-r.x)*unit;p.commanderY=p.top-(r.floor-r.y)*unit;
+ p.deckLeft=p.left+32*unit;p.deckWidth=Max(1.0f,(r.hero-r.x-100)*unit);
+ p.deckSurface=p.commanderY;p.deckTop=p.deckSurface;
+ roomCover[castle]=RoomCoverRect();roomCoverRevealed[castle]=false;
+ if(world && !active) {
+  const auto& a=IndividualCastleRooms::Rooms[castle];
+  auto& cover=roomCover[castle];
+  const float worldZoom=p.width/r.width;
+  const int floorPixels=Max(1,(int)std::lround(IndividualCastleRooms::FloorHeight*worldZoom));
+  cover.width=Max(1,(int)std::lround(IndividualCastleRooms::RoomWidth*worldZoom));
+  cover.height=floorPixels*p.roomCount;
+  cover.left=(int)std::lround(p.left+(a.x+a.w*.5f-r.x)*unit-cover.width*.5f);
+  cover.top=(int)std::lround(p.top-(a.y+a.h-r.y)*unit+IndividualCastleRooms::BottomLift*worldZoom)+cover.height;
+  cover.material=img;
+  cover.sx=(int)std::lround(r.x+(cover.left-p.left)/unit);
+  cover.sy=(int)std::lround(r.y+(p.top-cover.top)/unit);
+  cover.sw=Max(1,(int)std::lround(cover.width/unit));
+  cover.sh=Max(1,(int)std::lround(cover.height/unit));
+  p.roomColumns=1;
+  const int rows=p.roomCount;
+  p.interiorLeft=(float)cover.left;p.interiorTop=(float)cover.top;p.interiorWidth=(float)cover.width;
+  p.roomFloorGap=cover.height/(float)rows;
+  p.interiorFloor=cover.top-cover.height+Max(2.0f,4*unit);
+  if(RoomRevealRequested(castle)) {
+    // Use intact single-floor originals. Clipped SD stacks have transparent
+    // roof cutouts and cannot be sliced back into rectangular rooms.
+    for(int room=0;room<p.roomCount;++room) {
+     const int roomImg=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+room*6+CastleVisualPartLevel(castle,2);
+     if(!sprite[roomImg]) LoadImg(roomImg);
+     if(!sprite[roomImg]) {missingAsset=true;continue;}
+     const int row=room;
+     const int sx=0,sy=0,sw=512,sh=128;
+     const int x=cover.left;
+     const int x2=cover.left+cover.width;
+     const int top=cover.top-cover.height+cover.height*(row+1)/rows;
+     const int low=cover.top-cover.height+cover.height*row/rows;
+     // Opaque backing prevents transparent room edges exposing the old facade.
+     MemRect(x,top,x2-x,top-low,0x21170F);
+     DrawImageScale(sw,sh,sx,sy,x,top,false,0,0,0,0,(x2-x)/(float)sw,(top-low)/(float)sh,sprite[roomImg],roomImg);
+    }
+  }
+ }
+ cannonBaseY[castle]=p.commanderY;
+ cannonMuzzleX[castle]=p.left+(r.mx-r.x)*unit;cannonMuzzleY[castle]=p.top-(r.my-r.y)*unit;cannonMuzzleValid[castle]=true;
+ for(int i=0;i<5;++i) {partAnchor[castle][i][0]=p.left+(i==3?.89f:.4f)*p.width;partAnchor[castle][i][1]=p.top-(i==0?.15f:i==4?.9f:.55f)*p.height;}
+ return true;
 }
 static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
                        bool centerOnWheelAxis=false) {
  castle=Max(0,Min(CastleCount-1,castle));
+ useStarterLegacy=!SdEnabled(castle); useSecondLegacy=useStarterLegacy; useThirdLegacy=useStarterLegacy; useFourthLegacy=useStarterLegacy; useFifthLegacy=useStarterLegacy; useSixthLegacy=useStarterLegacy; useSeventhLegacy=useStarterLegacy; useEighthLegacy=useStarterLegacy; useNinthLegacy=useStarterLegacy; useTenthLegacy=useStarterLegacy;
  const int floorCount=castle+1;
  const int stage=active?roomStage[castle]:CastleVisualPartLevel(castle,1);
  const int roofStage=active?stage:CastleVisualPartLevel(castle,0);
@@ -227,6 +841,10 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  const float assemblyBottom=yTop-h+(h-castleH)*0.5f;
  // Raise every wheeled hull above its axle without moving the wheels off the rail.
  const float bottom=assemblyBottom+(lowerH+NaturalBodyLift(castle))*scale;
+ const float individualWidth=1056.0f*(IndividualCastleV4::Rigs[castle].width/342.0f)*scale;
+ const float individualLeft=gFreePlace?x+(w-individualWidth)*.5f:left;
+ if(DrawIndividualCastle(castle,individualLeft,bottom,scale)) return;
+ if(DrawSdCastle(castle,left,bottom,scale)) return;
  // All castles have the same authored 736x144 combat deck below room 1.
  // Its 512x64 chassis is already baked in, so a second base draw would
  // leave a visible seam or a duplicate rim at different camera zooms.
@@ -239,6 +857,26 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  const int shellRightPx=(int)std::lround(left+640.0f*scale);
  const int roomLeftPx=(int)std::lround(left+64.0f*scale);
  const int roomRightPx=(int)std::lround(left+576.0f*scale);
+ // Keep the facade aligned with rooms even while the castle/camera moves.
+ auto& cover=roomCover[castle];
+ cover.left=roomLeftPx; cover.top=(int)std::lround(bottom+floorCount*128.0f*scale);
+ cover.width=roomRightPx-roomLeftPx;
+ cover.height=(int)std::lround(floorCount*128.0f*scale);
+ cover.scale=scale;
+ cover.material=castle==0 ? CASTLE_WALL_01_FIRST_IMG+stage :
+     CASTLE_WALL_PAIR_LOWER_FIRST_IMG+(castle-1)*12+stage*2;
+ cover.sx=castle==0?16:Max(0,LeftArmorW(castle)/2-16);
+ cover.sy=castle==0?40:Max(0,Min(1024,floorCount*128)-48);
+ if(castle==0) {
+  cover.left=shellLeftPx;
+  cover.width=shellRightPx-shellLeftPx;
+  cover.material=CASTLE_ROOM_FACADE_01_IMG;
+  cover.sx=CastleRoomFacade::X; cover.sy=CastleRoomFacade::Y;
+  cover.sw=CastleRoomFacade::W; cover.sh=CastleRoomFacade::H;
+  cover.roof=CASTLE_ROOF_01_FIRST_IMG+roofStage;
+  cover.roofX=left; cover.roofY=bottom+(128.0f+256.0f)*scale;
+ }
+ if(!sprite[cover.material]) LoadImg(cover.material);
  if(castle>0)
   DrawWallRoomSeamBacking(castle,roomLeft,bottom,scale,floorCount*128);
  //배율이 128 분의 1 단위라 아래 자리들이 다 정수로 떨어진다. 가로
@@ -343,7 +981,7 @@ static void DrawCastle(int castle,int x,int yTop,int w,int h,float maxDrawW,
  const int gunImg=INVENTORY_CANNON_ATLAS_IMG;
  if(!sprite[gunImg]) LoadImg(gunImg);
  if(sprite[gunImg]) DrawImage(gun.bw,gun.bh,gun.x+gun.bx,gun.y+gun.by,
-     (int)std::lround(gunLeft),(int)std::lround(gunTop),false,0,0,0,0,gunScale,sprite[gunImg],gunImg);
+     (int)std::lround(MirrorX(gunLeft,gun.bw*gunScale)),(int)std::lround(gunTop),gMirror,0,0,0,0,gunScale,sprite[gunImg],gunImg);
  else missingAsset=true;
  cannonMuzzleX[castle]=gunLeft+(gun.muzzleX-gun.bx)*gunScale;
  cannonMuzzleY[castle]=gunTop-(gun.muzzleY-gun.by)*gunScale;
@@ -358,6 +996,95 @@ static void Button(int x,int y,int w,int h,const char* text,int command,float fo
  MemRect(x,y,w,h,0x30464D); MemRectFrame(x,y,w,h,0xBD965C); SetFontColor(COLOR_WHITE);
  CenterTextStrSolid(text,x+w/2,y-h/2+7*_2X,font); SetRectPoint(x,y,w,h,command);
 }
+}
+
+bool CastleCrewDeckPoint(int slot,float* x,float* y) {
+ const auto& p=CastleParts::sdPlacement;
+ if(!p.valid || !CastleParts::SdEnabled(gMobileCastleVisual) || slot<0 || slot>=MAXCREW) return false;
+ const float inset=24*p.scale;
+ *x=p.deckLeft+inset+(p.deckWidth-2*inset)*slot/Max(1,MAXCREW-1);
+ *y=p.deckSurface;
+ return true;
+}
+//---- 성을 돌려 세운다 ----
+//
+//on 이면 다음 CastlePartsDrawRect 가 axisX 를 축으로 접힌 성을 그린다.
+//한 장면 안에서 한쪽만 돌려 세우므로, 그린 뒤에는 반드시 다시 꺼야 한다.
+void CastlePartsSetMirror(bool on,float axisX) {
+ CastleParts::gMirror=on;
+ CastleParts::gMirrorAxis=axisX;
+}
+
+//켜면 다음 CastlePartsDrawRect 가 준 네모를 그대로 쓴다. 성이 화면
+//왼쪽에 붙지 않아야 하는 화면(PVP 격돌)에서만 켠다.
+void CastlePartsSetFreePlace(bool on) {
+ CastleParts::gFreePlace=on;
+}
+
+//---- 이 배율로 그리면 화면에서 몇 픽셀인가 ----
+//
+//조립표가 주는 제 크기(CastlePartsNaturalSize)는 옛 조립 좌표계의 값이고,
+//실제로 그려지는 것은 SD 그림 한 장이다. 두 비율이 성마다 다르다 - 성 1
+//의 그림은 1536x1024(납작)이고 성 10 은 270x1024(홀쭉)이다.
+//
+//그래서 폭만 맞추면 성 10 은 화면 높이의 네 배가 되어 밑동만 보인다.
+//부르는 쪽이 높이도 보고 배율을 정할 수 있어야 한다.
+//
+//폭은 성과 상관없이 960 * 1.10 * scale 이다. 높이는 그림의 가로세로비를
+//따른다. SD 조립이 아닌 성이면 false.
+//---- 로비와 전투가 성을 그리는 폭 ----
+//
+//SD 조립이 세상 화면(worldView)에서 쓰는 값이다. 성 단계와 상관없이
+//늘 같아서, 성을 올리면 폭은 그대로고 위로만 자란다.
+//
+//다른 화면도 "로비에서 보던 그 크기" 로 그리려면 이 값을 물어보면 된다.
+float CastlePartsWorldWidth(void) {
+ return (float)DX*CastleParts::kStarterViewportRatio;
+}
+
+//---- 이 네모로 그리면 바퀴가 어느 줄에 닿는가 ----
+//
+//조립은 준 네모 안에서 제 배율을 다시 고르고(128 분의 1 단위로 반올림)
+//남는 높이를 위아래로 나눠 가운데에 맞춘다. 그래서 네모의 밑변과 바퀴가
+//닿는 줄이 성마다 몇 픽셀씩 어긋난다.
+//
+//두 성이 나란히 서는 화면(PVP 격돌)에서는 그 몇 픽셀이 눈에 띈다 - 한
+//쪽만 선로에서 떠 보인다. 그리기 전에 여기서 재 보고 그만큼 올리면 된다.
+//
+//DrawCastle 과 DrawSdCastle 이 하는 셈을 그대로 따라간다. 둘 중 한쪽을
+//고치면 여기도 같이 고쳐야 한다.
+float CastlePartsWheelLine(int castleLevel,int yTop,int w,int h) {
+ using namespace CastleParts;
+ const int castle=Max(1,Min(CastleCount,castleLevel))-1;
+ const float lowerH=NaturalLowerH(castle),upperH=NaturalUpperH(castle);
+ const int floorCount=castle+1;
+ const float naturalH=128.0f*floorCount+lowerH+upperH;
+ float scale=Min((float)w/NaturalCastleW(castle),(float)h/naturalH);
+ scale=Max(1.0f,std::floor(scale*128.0f+0.5f))/128.0f;
+ const float assemblyBottom=(float)yTop-h+(h-naturalH*scale)*0.5f;
+ if(!SdEnabled(castle)) return assemblyBottom+CastlePartsGroundOffset(castleLevel)*scale;
+ const float bottom=assemblyBottom+(lowerH+NaturalBodyLift(castle))*scale;
+ return bottom-252.0f*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale
+   +StageCastleGroundingPx()-kStarterRailOverlapPx;
+}
+
+bool CastlePartsDrawSize(int castleLevel,float scale,float* w,float* h) {
+ using namespace CastleParts;
+ const int castle=Max(1,Min(CastleCount,castleLevel))-1;
+ if(IndividualArtEnabled()) {
+  const auto& r=IndividualCastleV4::Rigs[castle];
+  const float width=1056.0f*scale*r.width/342.0f;
+  if(w) *w=width;
+  if(h) *h=width*r.h/r.w;
+  return true;
+ }
+ if(!SdEnabled(castle)) return false;
+ const float sw=(float)(castle==9?TenthSdParts::Width:castle==8?NinthSdParts::Width:castle==7?EighthSdParts::Width:castle==6?SeventhSdParts::Width:castle==5?SixthSdParts::Width:castle==4?FifthSdParts::Width:castle==3?FourthSdParts::Width:castle==2?ThirdSdParts::Width:castle?SecondSdParts::Width:StarterSdParts::Width);
+ const float sh=(float)(castle==9?TenthSdParts::Height:castle==8?NinthSdParts::Height:castle==7?EighthSdParts::Height:castle==6?SeventhSdParts::Height:castle==5?SixthSdParts::Height:castle==4?FifthSdParts::Height:castle==3?FourthSdParts::Height:castle==2?ThirdSdParts::Height:castle?SecondSdParts::Height:StarterSdParts::Height);
+ const float unit=960.0f*1.10f/sw*scale;
+ if(w) *w=sw*unit;
+ if(h) *h=sh*unit;
+ return true;
 }
 
 void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
@@ -408,7 +1135,7 @@ float CastlePartsBodyLift(int castleLevel) {
 float CastlePartsGroundOffset(int castleLevel) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- if(castle==0) return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-61.0f;
+ if(castle==0) return StarterLegacyGroundOffset();
  if(castle>=6) return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-54.0f;
  const float wheelScale=(kRoomStackLift-64.0f)/(128.0f-2.0f*kWheelPad);
  const float radius=(64.0f-kWheelPad)*wheelScale;

@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -5017,6 +5017,18 @@ void LoadAiHouse(void)
 #else
 	LoadFile(AIDATAFILE, (char*)&aiUserHouse, sizeof(HOUSE) * TOTALAI);
 #endif
+
+	//---- 성이 없는 옛 파일이면 다시 만든다 ----
+	//
+	//HOUSE 에 성 단계와 파츠를 붙였다. 그 전에 쓰던 파일은 그 자리가
+	//비어 있어 castleLevel 이 0 으로 읽힌다 - 지도에 아이콘이 하나도
+	//안 뜨고, 맞붙을 상대도 못 고른다.
+	//
+	//한 칸만 봐도 안다. 0 이면 통째로 다시 뽑는다.
+	if (aiUserHouse[0].castleLevel == 0) {
+		MakeAiHouse();
+		SaveAiHouse();
+	}
 }
 
 void MakeAiHouse(void)
@@ -5057,6 +5069,44 @@ void MakeAiHouse(void)
 		//아무도 읽지 않아 지웠다.
 		houseGoldTier = aiUserHouse[i].houseType;
 		aiUserHouse[i].gold = houseGold[aiUserHouse[i].houseType] + Random(houseGold[aiUserHouse[i + 1].houseType] - houseGold[aiUserHouse[i].houseType]);
+
+		//---- 성 ----
+		//
+		//앞쪽 사람일수록 낮은 성이다. 표를 훑으면 1 단계부터 10 단계까지
+		//고르게 깔리고, 그래야 "나보다 조금 센 상대" 를 고를 자리가 생긴다.
+		//
+		//같은 단계 안에서도 파츠는 제각각이다. 다 올린 성과 이제 올리기
+		//시작한 성이 섞여야 지도가 사람 사는 곳으로 보인다.
+		{
+			const int span = Max(1, TOTALAI / CASTLE_STAGE_CNT);
+			int level = Min(CASTLE_STAGE_CNT, i / span + 1);
+			int sum = 0;
+
+			//열에 하나쯤은 한 단계 위아래로 흔든다. 줄 세운 티가 덜 난다.
+			if (Random(10) == 0)
+				level = Max(1, Min(CASTLE_STAGE_CNT, level + (Random(2) ? 1 : -1)));
+
+			aiUserHouse[i].castleLevel = (unsigned char)level;
+
+			for (j = 0; j < CASTLE_PART_SLOT; j++) {
+				//낮은 성은 파츠도 덜 올렸다. 성 단계가 올라가는 만큼
+				//올릴 수 있는 윗선도 같이 올린다.
+				const int cap = Min(CASTLE_PART_MAX_LV,
+					1 + level * CASTLE_PART_MAX_LV / CASTLE_STAGE_CNT);
+
+				aiUserHouse[i].castlePart[j] = (unsigned char)Random(cap + 1);
+				sum += aiUserHouse[i].castlePart[j];
+			}
+
+			//---- 세기 ----
+			//
+			//성 단계가 큰 몫이고, 파츠와 동료 별이 거든다. 맞붙을 상대를
+			//고를 때 이 하나만 보면 된다.
+			for (j = 0; j < MAXCREW; j++)
+				sum += aiUserHouse[i].crewCurStar[j];
+
+			aiUserHouse[i].power = (unsigned short)(level * 100 + sum * 3);
+		}
 	}
 
 	SaveAiHouse();

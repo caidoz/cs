@@ -1,4 +1,5 @@
-// Generated room resource names. Each image is exactly 512x128.
+// Generated room resource names. Legacy rooms are 512x128; the first stage-zero
+// SD preview uses its authored aperture from Data/StarterSdParts.h.
 // Order matches CASTLE_ROOM_V4_FIRST_IMG: floor, then stage.
 // They live flat in res/ - every game image does.
 	"castle_room_01_0",

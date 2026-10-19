@@ -3881,6 +3881,21 @@ const char* const textId[] = {
 	"inventory_boomerang/35",
 	"castle_artillery/attacks",
 	"inventory_cannon/atlas",
+	"castle_exterior/castle_01_facade_v2",
+	"castle_exterior/starter_sd_room_deck_v1",
+#include "StarterSdLegacyNames.inc"
+#include "SecondSdLegacyNames.inc"
+#include "ThirdSdLegacyNames.inc"
+#include "FourthSdLegacyNames.inc"
+#include "FifthSdLegacyNames.inc"
+#include "SixthSdLegacyNames.inc"
+#include "SeventhSdLegacyNames.inc"
+#include "EighthSdLegacyNames.inc"
+#include "NinthSdLegacyNames.inc"
+#include "TenthSdLegacyNames.inc"
+#include "CastleMapIconNames.inc"
+#include "IndividualCastleNames.inc"
+#include "RectangularRoomNames.inc"
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

@@ -45,6 +45,7 @@ void RouletteDraw(int x, int y, float zoom);
 //    buildFrame  다 차오르는 데 걸리는 프레임
 void DrawPvpCosmicCastleMap(int localFrame, int buildFrame);
 void DrawPvpSelectedCastles(int localFrame, int totalFrame);
+bool PvpEntranceIconReviewCheck(int myLevel,int foeLevel);
 
 // Crew 관련
 int GetCrewIdxFromType(int);

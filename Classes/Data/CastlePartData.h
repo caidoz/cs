@@ -28,6 +28,17 @@
 enum {
 	CASTLE_PART_MAX = 4,	//한 성에 들어가는 요소의 상한
 	CASTLE_STAGE_CNT = 10,	//성 단계(그림 castle0 ~ castle9 와 짝)
+
+	//성 파츠 칸 수. 0 지붕 · 1 방 · 2 · 3 대포 · 4 이동.
+	//CastleMenuModel::Categories 와 같은 값이어야 한다 - 그쪽은 저장
+	//구조(Progress)를, 이쪽은 PVP 가 들고 다니는 HOUSE 를 잡는다.
+	CASTLE_PART_SLOT = 5,
+
+	//성 파츠 중 대포가 몇 번째인가.
+	CASTLE_PART_CANNON_IDX = 3,
+
+	//파츠 한 칸이 올라갈 수 있는 끝. CastleMenuModel::MaxLevel 과 같다.
+	CASTLE_PART_MAX_LV = 5,
 };
 
 //파츠가 무엇을 올리는가. 쓰는 쪽이 이 종류로 찾아 쓴다.

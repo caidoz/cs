@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -38,6 +38,23 @@ void TitleDraw(void);
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
+
+//성을 세로선(axisX)을 축으로 접어 그린다. 켠 뒤에는 반드시 다시 끈다 -
+//한 장면 안에서 한쪽만 돌려 세우는 용도다.
+void CastlePartsSetMirror(bool on, float axisX);
+
+//켜면 성이 화면 왼쪽으로 붙지 않고 준 자리에 그대로 선다.
+void CastlePartsSetFreePlace(bool on);
+
+//이 배율로 그렸을 때 화면에서 차지하는 폭과 높이. 성마다 그림의
+//가로세로비가 달라, 폭만 맞추면 홀쭉한 성이 화면을 넘는다.
+bool CastlePartsDrawSize(int castleLevel, float scale, float* w, float* h);
+
+//로비와 전투가 성을 그리는 폭. 성 단계와 상관없이 늘 같다.
+float CastlePartsWorldWidth(void);
+
+//이 네모로 그렸을 때 바퀴가 닿을 화면 y. 두 성을 같은 줄에 세울 때 쓴다.
+float CastlePartsWheelLine(int castleLevel, int yTop, int w, int h);
 void CastlePartsNaturalSize(int level, float* w, float* h);
 float CastlePartsRoomScale(void);
 void CastlePartsVisualBounds(int level, float scale, float* left, float* right);
@@ -96,6 +113,26 @@ void StageShopPreviewOpen(void);
 float CastlePartsCannonBaseY(int castleLevel);
 bool StageShopPreviewPurchaseChecks(void);
 //성 안의 히어로와 동료. 로비와 전투가 같이 쓴다.
+bool CastleRoomCoverPreview(int operation);
+bool CastleCrewDeckPoint(int slot,float* x,float* y);
+bool SdRoomDeckReviewCheck(void);
+bool StarterSdWheelReview(bool remember);
+bool StarterSdUpgradeReviewCheck(void);
+bool SecondSdUpgradeReviewCheck(void);
+bool ThirdSdUpgradeReviewCheck(void);
+bool TenthSdUpgradeReviewCheck(void);
+bool CastleFixedWidthReviewCheck(int operation);
+bool CastleUniformReviewCheck(void);
+bool CastleIndividualReviewCheck(int operation);
+bool CastleInteriorSyncReviewCheck(int operation);
+bool CastleRoomToggleTap(float startX,float startY,float endX,float endY);
+bool PvpCastleDebugReviewCheck();
+bool NinthSdUpgradeReviewCheck(void);
+bool EighthSdUpgradeReviewCheck(void);
+bool SeventhSdUpgradeReviewCheck(void);
+bool SixthSdUpgradeReviewCheck(void);
+bool FifthSdUpgradeReviewCheck(void);
+bool FourthSdUpgradeReviewCheck(void);
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int castle, bool battle);
 float CastlePartsUpperH(int castleLevel);
@@ -166,6 +203,22 @@ void BattleMinimapDraw(int x, int y, float zoom);
 //withUniverse 가 true 면 우주맵에서 상대를 찾는 화면부터 보여준다. 룰렛
 //당첨으로 들어올 때는 그 화면을 룰렛이 이미 보여줬으므로 false 다.
 void StartPvpTest(bool withUniverse = true);
+
+//출정 준비를 PVP 용으로 연다. [세팅 완료] 를 누르면 판이 아니라 격돌로
+//들어간다.
+void LoadoutOpenForPvp(void);
+
+//---- PVP 열 단계 ----
+//
+//pvpStageFighting 은 지금 붙고 있는 단계(1~PVP_STAGE_CNT), pvpFoeCastleLevel
+//은 상대 성 단계다. VS 화면도 이 둘을 읽는다.
+extern int pvpStageFighting;
+extern int pvpFoeCastleLevel;
+extern int pvpFoeProfileImg;
+int PvpMyPower(void);
+int PvpStageNow(void);
+bool PvpStageOpponent(int stage, HOUSE* out);
+void PvpStageClear(int stage);
 void StartPvpTestBattle(void);
 bool IsPvpCrewActing(int crewSlot);
 int GetPvpSkillFreezeObj(void);
@@ -202,3 +255,7 @@ void VsHpBarDraw(long long count, long long max, int x, int y, int color,
 void WaveBadgeDrawBeforeBars(void);
 
 void LobbyCastleMenuCommand(int func);
+
+void PvpClashAdvanceNext(void);
+void PvpClashToggleAuto(void);
+bool PvpClashIsAuto(void);

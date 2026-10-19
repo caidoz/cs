@@ -96,7 +96,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 		glview = GLViewImpl::createWithRect("Castle Survivor", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
-		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 		if(getenv("CS_CASTLE_REVIEW_PATH")&&getenv("CS_BATTLE_MENU_REVIEW")) {
 			const char* reviewHeight=getenv("CS_BATTLE_MENU_HEIGHT");
 			const int height=reviewHeight?atoi(reviewHeight):725;

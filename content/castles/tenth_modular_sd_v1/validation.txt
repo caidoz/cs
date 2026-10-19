@@ -1,0 +1,15 @@
+PASS 2026-10-18 Debug Win32 build: cs.tenth-modular-preview.exe.
+Existing project warnings remain in output/tenth-modular-build.log.
+PASS portrait original art for baseline and all five upgrades; unselected wide candidate preserved separately.
+PASS six exterior partitions and disk PNG reconstruction: zero visible RGBA mismatches.
+PASS opaque companion walking floor x45..215 and hero floor x220 at y893, all six grades.
+PASS 54 original resource files preserved with legacy image IDs and resource names.
+PASS tenth: 10 rooms, levels 0..5, three mixed part-level assemblies.
+PASS room textures, ten-floor spacing, closed resident hiding, held reveal and resident clipping.
+PASS viewport width cap, roof safe area, hero deck bounds and rail grounding.
+PASS per-grade muzzle coordinates, distance-based wheel rotation and six deployed companion positions.
+PASS eighteen closed/open upgrade captures plus deployed companion capture.
+PASS regression: ninth, eighth, seventh, sixth, fifth, fourth, third, second and starter upgrade suites.
+PASS first castle room/deck/reveal/deployed suite, five captures.
+PASS git diff --check (existing CRLF notices only).
+Review launchers use an isolated save profile.

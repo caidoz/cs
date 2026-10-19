@@ -1,0 +1,141 @@
+param([string]$Source='content/castles/second_modular_sd_v1/assembled-master.png', [string]$Interior='content/castles/second_modular_sd_v1/interior-source.png', [ValidateRange(0,5)][int]$Stage=0)
+$ErrorActionPreference='Stop'
+$root=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
+Add-Type -AssemblyName System.Drawing
+Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
+using System;
+using System.IO;
+using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+public static class SecondSdSplit {
+ static byte[] Read(Bitmap b) {
+  var d=b.LockBits(new Rectangle(0,0,b.Width,b.Height),ImageLockMode.ReadOnly,PixelFormat.Format32bppArgb);
+  var a=new byte[b.Width*b.Height*4];
+  for(int y=0;y<b.Height;y++) Marshal.Copy(IntPtr.Add(d.Scan0,y*d.Stride),a,y*b.Width*4,b.Width*4);
+  b.UnlockBits(d); return a;
+ }
+ static Bitmap Make(byte[] a,int w,int h) {
+  var b=new Bitmap(w,h,PixelFormat.Format32bppArgb);
+  var d=b.LockBits(new Rectangle(0,0,w,h),ImageLockMode.WriteOnly,PixelFormat.Format32bppArgb);
+  for(int y=0;y<h;y++) Marshal.Copy(a,y*w*4,IntPtr.Add(d.Scan0,y*d.Stride),w*4);
+  b.UnlockBits(d); return b;
+ }
+ static int Group(int x,int y) {
+  if((x-315)*(x-315)+(y-1060)*(y-1060)<=102*102) return 7;
+  if((x-793)*(x-793)+(y-1060)*(y-1060)<=102*102) return 8;
+  if(x>=900 && y<700) return 3;
+  if(x>=900 && y<880) return 4;
+  if(y<535) return 0;
+  if(y<880 && x>=140 && x<850) return 1;
+  if(y<890) return 2;
+  if(y<980) return 5;
+  return 6;
+ }
+ public static void Run(string root,string master,string interior,int stage) {
+  string outDir=Path.Combine(root,"content/castles/second_modular_sd_v1");
+  if(stage>0) outDir=Path.Combine(outDir,"upgrade-"+stage);
+  Directory.CreateDirectory(outDir);
+  string backup=Path.Combine(outDir,"original-resources"); Directory.CreateDirectory(backup);
+  string[] names={"castle_exterior/castle_02_roof_stage_0.png","castle_exterior/castle_02_wall_stage_0.png",
+   "castle_exterior/castle_02_hollow_stage_0.png","castle_exterior/castle_02_heavy_cannon_stage_0.png",
+   "castle_exterior/castle_02_command_platform_stage_0.png","castle_exterior/castle_02_combat_deck_stage_0.png",
+   "castle_mobility/castle_02_base_stage_0.png","castle_mobility/castle_02_wheel_stage_0.png"};
+  for(int i=0;i<names.Length;i++) names[i]=names[i].Replace("_stage_0","_stage_"+stage);
+  foreach(string n in names) { string dst=Path.Combine(backup,n); Directory.CreateDirectory(Path.GetDirectoryName(dst)); if(!File.Exists(dst)) File.Copy(Path.Combine(root,"Resources/res",n),dst); }
+  string roomName="castle_room_02_"+stage+".png";
+  if(!File.Exists(Path.Combine(backup,roomName))) File.Copy(Path.Combine(root,"Resources/res",roomName),Path.Combine(backup,roomName));
+  foreach(string n in names) { string dst=Path.Combine(root,"Resources/res/castle_sd_second_legacy",n); Directory.CreateDirectory(Path.GetDirectoryName(dst)); File.Copy(Path.Combine(backup,n),dst,true); }
+  File.Copy(Path.Combine(backup,roomName),Path.Combine(root,"Resources/res/castle_sd_second_legacy",roomName),true);
+  using(var src=new Bitmap(master)) using(var inside=new Bitmap(interior)) {
+   if(src.Width!=1254||src.Height!=1254||inside.Width!=1254||inside.Height!=1254) throw new Exception("Expected 1254x1254 aligned masters");
+   int w=src.Width,h=src.Height; byte[] raw=Read(src), roomRaw=Read(inside);
+   // Register the generated two-room cutaway to the fixed facade aperture.
+   // Keep the lower floor visible instead of clipping furniture at y=880.
+   using(var fitted=new Bitmap(710,345,PixelFormat.Format32bppArgb)) {
+    using(var g=Graphics.FromImage(fitted)) {
+     g.CompositingMode=System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+     g.InterpolationMode=System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+     g.DrawImage(inside,new Rectangle(0,0,710,345),new Rectangle(140,535,710,415),GraphicsUnit.Pixel);
+    }
+    byte[] mapped=Read(fitted);
+    for(int y=0;y<345;y++) Buffer.BlockCopy(mapped,y*710*4,roomRaw,((535+y)*w+140)*4,710*4);
+   }
+   byte[][] groups=new byte[9][]; var boxes=new Rectangle[9];
+   for(int i=0;i<9;i++) { groups[i]=new byte[raw.Length]; boxes[i]=new Rectangle(w,h,0,0); }
+   int[] minX=new int[9],minY=new int[9],maxX=new int[9],maxY=new int[9];
+   for(int i=0;i<9;i++) { minX[i]=w; minY[i]=h; maxX[i]=maxY[i]=-1; }
+   for(int y=0;y<h;y++) for(int x=0;x<w;x++) {
+    int p=(y*w+x)*4, g=Group(x,y); if(raw[p+3]==0) continue;
+    Buffer.BlockCopy(raw,p,groups[g],p,4);
+    minX[g]=Math.Min(minX[g],x); minY[g]=Math.Min(minY[g],y); maxX[g]=Math.Max(maxX[g],x); maxY[g]=Math.Max(maxY[g],y);
+   }
+   // Exterior partition verification compares RGBA values of every visible pixel.
+   int mismatches=0,visible=0; byte[] assembled=new byte[raw.Length];
+   for(int p=0;p<raw.Length;p+=4) {
+    int owners=0; for(int g=0;g<9;g++) if(groups[g][p+3]!=0) { owners++; Buffer.BlockCopy(groups[g],p,assembled,p,4); }
+    if(raw[p+3]!=0) { visible++; if(owners!=1) mismatches++; for(int k=0;k<4;k++) if(assembled[p+k]!=raw[p+k]) mismatches++; }
+   }
+   if(mismatches!=0) throw new Exception("Exterior reconstruction mismatch: "+mismatches);
+   using(var re=Make(assembled,w,h)) re.Save(Path.Combine(outDir,"reassembled-closed.png"),ImageFormat.Png);
+   var ns=stage==0?"SecondSdParts":"SecondSdPartsStage"+stage;
+   var header=new StringBuilder("#pragma once\nnamespace "+ns+" {\n");
+   header.Append("using Piece=StarterSdParts::Piece;\n");
+   header.Append("static const int Width=1254,Height=1254;\nstatic const Piece Pieces[9]={\n");
+   var manifest=new StringBuilder("{\"masterWidth\":1254,\"masterHeight\":1254,\"visiblePixelMismatches\":0,\"parts\":[");
+   byte[][] crops=new byte[9][];
+   for(int i=0;i<9;i++) {
+    boxes[i]=new Rectangle(minX[i],minY[i],maxX[i]-minX[i]+1,maxY[i]-minY[i]+1);
+    var r=boxes[i]; crops[i]=new byte[r.Width*r.Height*4];
+    for(int y=0;y<r.Height;y++) Buffer.BlockCopy(groups[i],((r.Y+y)*w+r.X)*4,crops[i],y*r.Width*4,r.Width*4);
+   }
+   int wheelWidth=boxes[7].Width+boxes[8].Width,wheelHeight=Math.Max(boxes[7].Height,boxes[8].Height);
+   var wheel=new byte[wheelWidth*wheelHeight*4];
+   for(int i=0;i<9;i++) {
+    var r=boxes[i]; int sx=i==8?boxes[7].Width:0;
+    string name=names[Math.Min(i,7)];
+    if(i<7) using(var b=Make(crops[i],r.Width,r.Height)) b.Save(Path.Combine(root,"Resources/res",name),ImageFormat.Png);
+    else for(int y=0;y<r.Height;y++) Buffer.BlockCopy(crops[i],y*r.Width*4,wheel,(y*wheelWidth+sx)*4,r.Width*4);
+    header.AppendFormat(" {{{0},{1},{2},{3},{4},0}},\n",r.X,r.Y,r.Width,r.Height,sx);
+    if(i!=0) manifest.Append(',');
+    manifest.AppendFormat("{{\"name\":\"{0}\",\"x\":{1},\"y\":{2},\"w\":{3},\"h\":{4},\"sx\":{5}}}",name,r.X,r.Y,r.Width,r.Height,sx);
+   }
+   using(var b=Make(wheel,wheelWidth,wheelHeight)) b.Save(Path.Combine(root,"Resources/res",names[7]),ImageFormat.Png);
+   // Independently reload the saved PNGs, not the in-memory partition buffers.
+   var diskRebuild=new byte[raw.Length];
+   for(int i=0;i<9;i++) using(var png=new Bitmap(Path.Combine(root,"Resources/res",names[Math.Min(i,7)]))) {
+    byte[] bytes=Read(png); var r=boxes[i]; int sourceX=i==8?boxes[7].Width:0;
+    for(int y=0;y<r.Height;y++) for(int x=0;x<r.Width;x++) {
+     int s=(y*png.Width+sourceX+x)*4, d=((r.Y+y)*w+r.X+x)*4;
+     if(bytes[s+3]!=0) Buffer.BlockCopy(bytes,s,diskRebuild,d,4);
+    }
+   }
+   for(int p=0;p<raw.Length;p+=4) if(raw[p+3]!=0)
+    for(int k=0;k<4;k++) if(raw[p+k]!=diskRebuild[p+k]) throw new Exception("Saved PNG reconstruction mismatch at byte "+(p+k));
+   // The room occupies the same exact aperture. No AI exterior pixels are reused.
+   var aperture=new Rectangle(140,535,710,345); var room=new byte[710*345*4];
+   for(int y=0;y<345;y++) Buffer.BlockCopy(roomRaw,((535+y)*w+140)*4,room,y*710*4,710*4);
+   using(var b=Make(room,710,345)) b.Save(Path.Combine(root,"Resources/res",roomName),ImageFormat.Png);
+   int launchX=1210,launchY=610;
+   header.Append("};\nstatic const Piece Room={140,535,710,345,0,0};\nstatic const int FloorY=865,DeckY=925,HeroX=1060,HeroY=925,DeckX=80,DeckW=790,GroundY=1163;\n");
+   header.AppendFormat("static const int StoneX={0},StoneY={1};\n}}\n",launchX,launchY);
+   File.WriteAllText(Path.Combine(root,"Classes/Data/"+ns+".h"),header.ToString(),new UTF8Encoding(false));
+   manifest.Append("]}"); File.WriteAllText(Path.Combine(outDir,"parts.json"),manifest.ToString(),new UTF8Encoding(false));
+   // Open-state reconstruction uses identical exterior pixels and only swaps the room aperture.
+   for(int y=535;y<880;y++) for(int x=140;x<850;x++) Buffer.BlockCopy(roomRaw,(y*w+x)*4,assembled,(y*w+x)*4,4);
+   using(var re=Make(assembled,w,h)) re.Save(Path.Combine(outDir,"reassembled-open.png"),ImageFormat.Png);
+   // Source and renderer now share the same left-loaded pose, without a second flip.
+   foreach(bool opened in new bool[]{false,true}) {
+    var game=new byte[raw.Length]; Buffer.BlockCopy(raw,0,game,0,raw.Length);
+    if(opened) for(int y=535;y<880;y++) for(int x=140;x<850;x++)
+     Buffer.BlockCopy(roomRaw,(y*w+x)*4,game,(y*w+x)*4,4);
+    using(var re=Make(game,w,h)) re.Save(Path.Combine(outDir,"reassembled-game-"+(opened?"open":"closed")+".png"),ImageFormat.Png);
+   }
+   File.WriteAllText(Path.Combine(outDir,"partition-check.txt"),"PASS exact exterior partition: "+visible+" visible pixels; 0 RGBA mismatches; no overlapping ownership.\nRoom aperture 140,535,710,345; all other exterior pixels unchanged.\n");
+   Console.WriteLine("PASS exact partition, "+visible+" visible pixels, nine exterior pieces plus room, existing resource names retained");
+  }
+ }
+}
+'@
+[SecondSdSplit]::Run($root,(Join-Path $root $Source),(Join-Path $root $Interior),$Stage)

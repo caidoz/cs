@@ -1,0 +1,50 @@
+[
+  {
+    "stage": 0,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.6135265700483091,
+    "scaleY": 0.6135265700483091,
+    "roomCount": 10
+  },
+  {
+    "stage": 1,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.4783427495291902,
+    "scaleY": 0.4783427495291902,
+    "roomCount": 10
+  },
+  {
+    "stage": 2,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.4635036496350365,
+    "scaleY": 0.4635036496350365,
+    "roomCount": 10
+  },
+  {
+    "stage": 3,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.46605504587155966,
+    "scaleY": 0.46605504587155966,
+    "roomCount": 10
+  },
+  {
+    "stage": 4,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.46605504587155966,
+    "scaleY": 0.46605504587155966,
+    "roomCount": 10
+  },
+  {
+    "stage": 5,
+    "width": 270,
+    "height": 640,
+    "scaleX": 0.4643510054844607,
+    "scaleY": 0.4643510054844607,
+    "roomCount": 10
+  }
+]

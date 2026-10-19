@@ -1,0 +1,13 @@
+PASS 2026-10-18 Debug Win32 build: cs.eighth-modular-preview.exe.
+Existing project warnings remain; see output/eighth-modular-build.log.
+PASS six exterior partitions, disk PNG reconstruction: zero visible RGBA mismatches.
+PASS 54 original resource files preserved and loaded through retained legacy IDs.
+PASS eighth: 8 rooms, levels 0..5, three mixed part-level assemblies.
+PASS room textures, eight-floor spacing, closed resident hiding, held reveal, resident clipping.
+PASS viewport width cap, roof safe area, hero deck bounds and rail grounding.
+PASS distance-based rolling wheels and six deployed companion positions.
+PASS eighteen closed/open upgrade captures plus deployed companion capture.
+PASS regression: seventh, sixth, fifth, fourth, third, second upgrade suites.
+PASS first castle room/deck/reveal/deployed suite, five captures.
+PASS git diff --check (existing CRLF notices only).
+PASS isolated review profile; no preview process left running.

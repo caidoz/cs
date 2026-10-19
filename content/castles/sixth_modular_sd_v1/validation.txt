@@ -1,0 +1,17 @@
+Verified 2026-10-18, Windows Debug Win32.
+PASS MSBuild cs.sixth-modular-preview.exe (existing project warnings remain).
+PASS six stages: saved exterior PNG reassembly has zero visible RGBA mismatches against the registered assembly.
+PASS retained legacy resources: 54 files, registered image IDs and names.
+PASS six room floors, six stages and three mixed part combinations, with 18 fresh closed/open game captures.
+PASS loaded interior texture bounds (160x732), source rectangles, native aspect ratio and scaled room floor gap.
+PASS viewport fit, 55-percent maximum width and wheel rail contact.
+PASS hold/release reveal, closed resident suppression and per-floor clipping checks.
+PASS rolling wheels and actual six deployed companion positions on front deck.
+PASS fifth, fourth and third castle regressions: six stages and three mixed assemblies each, room reveal, wheel rotation, resource bounds and deployed companions.
+PASS second castle regression: six stages and three mixed assemblies, room reveal, wheel rotation, resource bounds and deployed companions.
+PASS first castle regression: closed/interior states, hold/release reveal, six deck anchors and deployed positions, five captures.
+PASS git diff --check (pre-existing line ending conversion warnings only).
+Visually inspected fresh stage-0 closed/open, stage-5 closed/open, mixed-1 closed and deployed companion game captures.
+Inspected all six closed/open native assembly and game overview images, plus same-width castles 01-06 comparison.
+Preview profiles isolated through CS_CASTLE_REVIEW_PATH; user's real save was not used.
+Original generation PNGs preserved. Upgrade assemblies registered to common wheel/deck/weapon bounds before exact splitting.

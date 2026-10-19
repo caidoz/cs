@@ -1,0 +1,16 @@
+{
+  "repairs": [
+    {
+      "castleLevel": 3,
+      "prompt": "Repair framing ONLY of this exact castle map icon. Keep SAME castle identity/materials/emblem/weapon, camera, lighting, wheels and ground plinth. The bottom corner of the stone plinth is cut by the canvas edge. Zoom the ENTIRE existing diorama OUT about15%, centered, restore the missing bottom pointed/rounded plinth edge naturally, and leave at least80px TRANSPARENT breathing room on ALL FOUR SIDES on a square1024x1024 canvas. Whole stoneplinth and highestfinial must be fully intact. No new structures, no extra wheels, no added decoration or scenery, do not change colors or shape. True alpha background, no haze/shadowoutsideplinth. Preserve original clean SD sculpted3D art. Main task: complete missing bottomedge and fullyframeicon, not redesigncastle."
+    },
+    {
+      "castleLevel": 5,
+      "prompt": "Repair framing ONLY of this exact castle map icon. Keep SAME castle identity/materials/emblem/weapon, camera, lighting, wheels and ground plinth. The bottom corner of the stone plinth is cut by the canvas edge. Zoom the ENTIRE existing diorama OUT about15%, centered, restore the missing bottom pointed/rounded plinth edge naturally, and leave at least80px TRANSPARENT breathing room on ALL FOUR SIDES on a square1024x1024 canvas. Whole stoneplinth and highestfinial must be fully intact. No new structures, no extra wheels, no added decoration or scenery, do not change colors or shape. True alpha background, no haze/shadowoutsideplinth. Preserve original clean SD sculpted3D art. Main task: complete missing bottomedge and fullyframeicon, not redesigncastle."
+    },
+    {
+      "castleLevel": 6,
+      "prompt": "Repair framing ONLY of this exact castle map icon. Keep SAME castle identity/materials/emblem/weapon, camera, lighting, wheels and ground plinth. The bottom corner of the stone plinth is cut by the canvas edge. Zoom the ENTIRE existing diorama OUT about15%, centered, restore the missing bottom pointed/rounded plinth edge naturally, and leave at least80px TRANSPARENT breathing room on ALL FOUR SIDES on a square1024x1024 canvas. Whole stoneplinth and highestfinial must be fully intact. No new structures, no extra wheels, no added decoration or scenery, do not change colors or shape. True alpha background, no haze/shadowoutsideplinth. Preserve original clean SD sculpted3D art. Main task: complete missing bottomedge and fullyframeicon, not redesigncastle."
+    }
+  ]
+}

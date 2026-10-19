@@ -1,0 +1,19 @@
+Verified 2026-10-18, Windows Debug Win32.
+PASS MSBuild cs.seventh-modular-preview.exe (existing project warnings remain).
+PASS all six stages: saved exterior PNG reassembly has zero visible RGBA mismatches against registered assemblies.
+PASS retained legacy resources: 54 files with image IDs and names registered.
+PASS seven rooms, six stages and three mixed part combinations, 18 fresh closed/open game captures.
+PASS loaded interior texture bounds (120x672), exterior source rectangles, native aspect ratio and scaled floor gap.
+PASS viewport fit, 55-percent maximum width, rotating wheels and rail contact.
+PASS hold/release room reveal, closed resident suppression and per-floor clipping checks.
+PASS hero inside the actual deck resource bounds at every stage and mixed combination.
+PASS all six registered hero terrace surfaces at native Y=891..892, hero X=315.
+PASS actual six deployed companion positions on the front deck.
+PASS sixth, fifth, fourth and third castle regressions: six stages, three mixed assemblies, room reveal, wheel rotation, resource bounds and deployed companions.
+PASS second castle regression: six stages, three mixed assemblies, room reveal, wheel rotation, resource bounds and deployed companions.
+PASS first castle regression: closed/interior states, hold/release reveal, six deck anchors and deployed positions, five captures.
+PASS git diff --check (pre-existing line ending conversion warnings only).
+Visually inspected fresh stage-0 closed/open, stage-1 closed, stage-5 closed/open, mixed-1 closed and deployed companion game captures.
+Inspected all six closed/open assembly and game overviews, plus same-width castles 01-07 comparison.
+Original generation PNGs preserved; wheel axles, terrace surface and outer bounds registered before exact splitting.
+Preview profiles isolated through CS_CASTLE_REVIEW_PATH; user's real save was not used.

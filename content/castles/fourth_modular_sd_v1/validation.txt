@@ -1,0 +1,21 @@
+2026-10-18 final verification
+PASS Debug Win32 build: proj.win32/Debug.win32/cs.fourth-modular-preview.exe
+Build log: output/fourth-modular-build.log (existing compiler warnings remain)
+PASS six stages: exact saved-PNG exterior reconstruction, zero visible RGBA mismatches
+PASS canonical 1024x1536 masters and 480x800 four-room atlases
+PASS all 54 retained legacy resource names resolve
+PASS transparent exterior probes and compositing on an opaque blue background
+PASS six stages plus three mixed assemblies: resource bounds, viewport width/height/left/right bounds, rail contact and rotating wheels
+PASS single right-facing gatling muzzle and shared companion/hero deck walking baseline
+PASS closed resident render count zero / held reveal count matches, four-floor clipping
+PASS actual deployed companion battle-object positions match deck anchors
+PASS 18 closed/open screenshots plus deployed companion screenshot
+Fourth-castle log: output/fourth-upgrades-review/phases.log
+PASS third-castle regression: six stages, three mixed assemblies, viewport fit and deployed companion positions
+Third-castle log: output/third-upgrades-review/phases.log
+PASS second-castle regression: six stages, three mixed assemblies and deployed companion positions
+Second-castle log: output/second-upgrades-review/phases.log
+PASS first-castle regression: hold/release interior reveal and actual deployed deck positions; five captures
+First-castle log: output/sd-room-deck-review/phases.log
+PASS git diff --check
+Inspected final stage-0 exterior, stage-5 interior, mixed assembly, fitted preparation/deck view, six-stage exterior/interior overviews and same-width castle-01-04 comparison.

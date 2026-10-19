@@ -1,0 +1,65 @@
+{
+  "generator": "built-in imagegen",
+  "assets": [
+    {
+      "id": 1,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the wooden stone catapult mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. oak timber throwing arm with silver fittings, a large gray stone cup LEFT of the pivot, throws RIGHT; same left-loaded arm and triangular support as reference. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-01.png",
+      "output": "originals/cannon-01.png"
+    },
+    {
+      "id": 2,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the flamethrower mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. silver cylindrical tube, thick gold rings and red rim, small yellow-orange flame pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-02.png",
+      "output": "originals/cannon-02.png"
+    },
+    {
+      "id": 3,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the rocket battery mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. three silver rocket tubes with gold rings, red pointed rocket noses stacked in one integrated battery pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-03.png",
+      "output": "originals/cannon-03.png"
+    },
+    {
+      "id": 4,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the gatling mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. copper-green multi-barrel gatling with thick gold bands, all barrels pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-04.png",
+      "output": "originals/cannon-04.png"
+    },
+    {
+      "id": 5,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the guided missile mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. one blue and gold missile launcher with a silver conical nose and gold tip pointing RIGHT, blue stabilizing fins. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-05.png",
+      "output": "originals/cannon-05.png"
+    },
+    {
+      "id": 6,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the heavy siege cannon mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. large turquoise cylinder with gold bands, hollow black round bore pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-06.png",
+      "output": "originals/cannon-06.png"
+    },
+    {
+      "id": 7,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the ice crystal cannon mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. blue-and-gold mount holding large faceted luminous cyan ice crystal pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-07.png",
+      "output": "originals/cannon-07.png"
+    },
+    {
+      "id": 8,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the laser cannon mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. white and royal blue cylindrical laser barrel, gold trim, bright cyan muzzle pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-08.png",
+      "output": "originals/cannon-08.png"
+    },
+    {
+      "id": 9,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the electric cannon mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. dark silver and violet cylindrical electric tube, gold rings, violet electric energy at muzzle pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-09.png",
+      "output": "originals/cannon-09.png"
+    },
+    {
+      "id": 10,
+      "prompt": "Use case: precise-object-edit. Asset: game inventory cannon icon. Extract and recreate ONLY the gravity cannon mounted on the RIGHT of the reference castle, matching its CURRENT design exactly. royal blue rounded receiver, gold bands and trim, cyan circular gravity energy muzzle pointing RIGHT. Keep same polished chunky SD toy 3D mobile-strategy shading and materials. Strict side view, weapon fires RIGHT; catapult stone stays LEFT of pivot. One weapon only, with compact mechanical support foot, detached from the building. Remove EVERY castle wall, terrace, architectural platform, railing, shield, flag, wheel, hero and background. No text, no icon frame, no shadow cast on background. Truly transparent background. Large centered readable silhouette with 8% margin, entire muzzle and loaded stone included. Do not invent upgrades or extra barrels beyond the reference weapon. Suitable for reducing to 64x64 and 96x64 item sprites.",
+      "reference": "../individual_castles_v4/castle-10.png",
+      "output": "originals/cannon-10.png"
+    }
+  ]
+}
