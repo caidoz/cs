@@ -3392,8 +3392,9 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		//칸 바닥에 발을 붙여 놓았더니 2x2 칸의 위쪽 절반이 통째로 비고
 		//사람은 아래로 가라앉아 보였다. 칸 높이의 사분의 일만큼 올린다 -
 		//칸이 커지면 같이 올라간다.
+		//끝의 4 는 화면 픽셀 그대로다. 사분의 일이 조금 높았다.
 		DrawCmfDetailShadow(cmf, idle, x + w / 2,
-			y - h + 4 * _2X + h / 4, RIGHT,
+			y - h + 4 * _2X + h / 4 - 4, RIGHT,
 			enemyIconZoom[type] * 0.5f * Min(w, h) / (24.0f * _2X));
 		return;
 	}
@@ -5780,6 +5781,17 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 					found = true;
 				}
 
+		//---- 한 번 앉은 자리는 그 자리다 ----
+		//
+		//손으로 안 놓은 것(gLoadoutAtCol 이 -1)은 매 프레임 빈 칸을 처음
+		//부터 다시 찾았다. 그래서 포를 한 칸 옮기면 그 칸을 피해 나머지가
+		//통째로 다시 깔렸다 - 손대지도 않은 동료가 저 혼자 자리를 옮겼다.
+		//
+		//자리를 찾으면 그 값을 적어 둔다. 다음부터는 손으로 놓은 것과
+		//똑같이 그 자리에 앉는다.
+		//
+		//(아래 눕히기도 같은 길로 내려간다 - 찾은 뒤에 한 번만 적는다.)
+
 		//세워서 안 들어가면 눕혀 본다. 성보다 긴 검이 여기서 들어간다.
 		if (found == false) {
 			const GridPart turned = GridPartRotated(parts[e]);
@@ -5809,6 +5821,21 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 		atCol[e] = col;
 		atRow[e] = row;
 		fit[e] = true;
+
+		//---- 찾은 자리를 못 박는다 ----
+		//
+		//여기까지 왔다는 것은 손으로 안 놓은 것이라는 뜻이다(위에서
+		//fit 이면 건너뛴다). 적어 두지 않으면 다음 프레임에 또 처음부터
+		//빈 칸을 찾는다 - 그래서 포를 한 칸 옮기면 그 칸을 피해 나머지가
+		//통째로 다시 깔렸고, 손대지도 않은 동료가 저 혼자 자리를 옮겼다.
+		//
+		//적어 두면 다음부터는 손으로 놓은 것과 똑같이 그 자리에 앉는다.
+		//성이 바뀌면 가방을 비우므로(로비 화살표) 묵은 자리가 남지 않는다.
+		if (e >= 0 && e < LOADOUT_MAX) {
+			gLoadoutAtCol[e] = (signed char)col;
+			gLoadoutAtRow[e] = (signed char)row;
+			gLoadoutRot[e] = parts[e].rot;
+		}
 	}
 
 	return missed;
