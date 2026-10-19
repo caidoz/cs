@@ -3374,12 +3374,26 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 	//아이템 그림이 없다. 그 몸을 칸 크기에 맞춰 세운다 - 누가 오는지는
 	//얼굴로 알아봐야 한다.
 	if (p->type == ITEM_CREW) {
-		const int type = p->detail;
+		//---- detail 은 동료표의 번호다 ----
+		//
+		//그것을 적 타입으로 바로 썼다. 동료 번호 0~63 이 적 표의 앞쪽
+		//번호가 되어, 성 창고의 동료 칸에 달팽이 · 조개 · 골렘이 섰다.
+		//
+		//동료의 타입은 동료표가 안다. 보상 카드도 같은 식을 쓴다
+		//(Func_Graphics 의 EnemyProfileDraw 호출).
+		const int at = Max(0, Min(gTotalCrew - 1, (int)p->detail));
+		const int type = crewData[at * CREWDATASIZE + CREWDATA_TYPE];
 		const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
 		const int idle = crewPos[type * 5]
 			+ frame / 8 % Max(1, (int)crewPos[type * 5 + 1]);
 
-		DrawCmfDetailShadow(cmf, idle, x + w / 2, y - h + 4 * _2X, RIGHT,
+		//---- 칸 가운데쯤에 세운다 ----
+		//
+		//칸 바닥에 발을 붙여 놓았더니 2x2 칸의 위쪽 절반이 통째로 비고
+		//사람은 아래로 가라앉아 보였다. 칸 높이의 사분의 일만큼 올린다 -
+		//칸이 커지면 같이 올라간다.
+		DrawCmfDetailShadow(cmf, idle, x + w / 2,
+			y - h + 4 * _2X + h / 4, RIGHT,
 			enemyIconZoom[type] * 0.5f * Min(w, h) / (24.0f * _2X));
 		return;
 	}
@@ -5570,6 +5584,8 @@ static void LoadoutDefaultFill(void)
 	{
 		int crew = 0;
 
+		//편성표에 있는 동료가 먼저다. 밖에서 데리고 다니던 그 셋이
+		//판에도 따라 나가는 것이 맞다.
 		for (int i = 0; i < MAXCREW && crew < PVP_GRID_CREW_MAX; i++) {
 			const int type = robin.slotCrew[i];
 			const int idx = (type >= 0) ? GetCrewIdxFromType(type) : -1;
@@ -5580,6 +5596,26 @@ static void LoadoutDefaultFill(void)
 				continue;
 
 			if (LoadoutFind(at) < 0 && LoadoutToggle(at) == false)
+				continue;
+
+			++crew;
+		}
+
+		//---- 그래도 모자라면 가진 동료에서 ----
+		//
+		//편성표가 비어 있으면 격자에 동료가 하나도 안 올라가고, 성
+		//발판도 따라서 텅 빈다. 가방이 아는 것(실제로 가진 동료)에서
+		//채운다 - 포를 챙기는 길과 같다.
+		for (int i = 0; i < TOTALINVENTORY && crew < PVP_GRID_CREW_MAX; i++) {
+			const ITEM* it = &robin.inven[i];
+
+			if (it->type != ITEM_CREW || LoadoutCrewReal(it->detail) == false)
+				continue;
+
+			if (LoadoutFind(i) >= 0)
+				continue;
+
+			if (LoadoutToggle(i) == false)
 				continue;
 
 			++crew;

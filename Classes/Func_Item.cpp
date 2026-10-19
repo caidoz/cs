@@ -2733,30 +2733,15 @@ int GetItemStar(int type, int detail, int grade)
 	if (type == ITEM_CANNON)
 		return Max(1, Min(detail, CASTLE_STAGE_CNT - 1) / 2 + 1);
 
-	//---- 동료의 별 ----
+	//---- 동료의 별도 이 표에 있다 ----
 	//
-	//동료는 장비 별표(itemStar)에 자리가 없다. 번호가 ITEM_GEM 뒤로
-	//한참 떨어져 있어서 itemStartCnt[ITEM_CREW] 가 표 밖을 가리킨다 -
-	//그 쓰레기값이 별이 되어, 성 창고의 동료 칸이 엉뚱한 성급 판에
-	//얹히거나 아예 어느 판에도 안 실렸다.
+	//한때 여기에 "동료는 이 표에 자리가 없다" 며 enemyData 의 별을 쓰는
+	//분기를 넣었다. 틀렸다 - 아이템 표에는 ITEM_CREW 자리가 아흔여섯 칸
+	//잡혀 있고(itemStartCnt[39] = 520, [40] = 616), 거기에 ★1 아홉 ·
+	//★2 열 · … · ★6 열다섯으로 제대로 적혀 있다.
 	//
-	//동료의 별은 동료표가 안다. 보상 카드와 상자가 이미 그 식을 쓰고
-	//있다(Core.cpp 의 rewardMark · boxCardMark).
-	if (type == ITEM_CREW) {
-		if (detail < 0 || detail >= gTotalCrew)
-			return 1;
-
-		{
-			const int crewType = crewData[detail * CREWDATASIZE + CREWDATA_TYPE];
-
-			if (crewType < 0 || crewType >= gTotalEnemy)
-				return 1;
-
-			return Max(1, Min(6,
-				enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_STAR] + 1));
-		}
-	}
-
+	//enemyData 의 별은 동료 예순넷이 전부 1 이라, 그걸로 바꾸자 성 창고의
+	//동료가 ★1 판 하나에 통째로 몰렸다.
 	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {
 	//	if (collectionData[i * COLLECTIONSDATASIZE + 0] == type && collectionData[i * COLLECTIONSDATASIZE + 1] == detail && collectionData[i * COLLECTIONSDATASIZE + 2] == grade)
