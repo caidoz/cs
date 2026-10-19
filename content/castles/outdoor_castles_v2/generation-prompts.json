@@ -1,0 +1,9 @@
+{
+  "mode": "built-in imagegen",
+  "wheelSchedule": {
+    "stages1to4": 2,
+    "stages5to7": 3,
+    "stages8to10": 4
+  },
+  "wheelDiameterScale": 0.6666666666666666
+}

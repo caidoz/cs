@@ -1,0 +1,92 @@
+[
+  {
+    "castle": 1,
+    "file": "originals\\castle-01.png",
+    "width": 1536,
+    "height": 1024,
+    "wheelCount": 2,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 2,
+    "file": "originals\\castle-02.png",
+    "width": 1355,
+    "height": 1160,
+    "wheelCount": 2,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 3,
+    "file": "originals\\castle-03.png",
+    "width": 1272,
+    "height": 1236,
+    "wheelCount": 2,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 4,
+    "file": "originals\\castle-04.png",
+    "width": 1189,
+    "height": 1323,
+    "wheelCount": 2,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 5,
+    "file": "originals\\castle-05.png",
+    "width": 1103,
+    "height": 1426,
+    "wheelCount": 3,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 6,
+    "file": "originals\\castle-06.png",
+    "width": 1063,
+    "height": 1479,
+    "wheelCount": 3,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 7,
+    "file": "originals\\castle-07.png",
+    "width": 1036,
+    "height": 1518,
+    "wheelCount": 3,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 8,
+    "file": "originals\\castle-08.png",
+    "width": 1014,
+    "height": 1551,
+    "wheelCount": 4,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 9,
+    "file": "originals\\castle-09.png",
+    "width": 966,
+    "height": 1628,
+    "wheelCount": 4,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  },
+  {
+    "castle": 10,
+    "file": "originals\\castle-10.png",
+    "width": 946,
+    "height": 1662,
+    "wheelCount": 4,
+    "targetWheelDiameterScale": 0.6666666666666666,
+    "transparent": true
+  }
+]

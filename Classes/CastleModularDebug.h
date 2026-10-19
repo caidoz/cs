@@ -6,6 +6,7 @@
 #include "Data/InventoryCannonSprites.h"
 #include "Data/CastleRoomFacade.h"
 #include "Data/SdRoomDeck.h"
+#include "Data/CastleCrewDeckLayout.h"
 #include "Data/StarterSdParts.h"
 #include "Data/StarterSdPartsStage1.h"
 #include "Data/StarterSdPartsStage2.h"
@@ -735,8 +736,8 @@ static bool IndividualArtEnabled() { return !getenv("CS_LEGACY_CASTLE_ART"); }
 static bool DrawIndividualCastle(int castle,float left,float bottom,float scale) {
  if(!IndividualArtEnabled()) return false;
  const auto& r=IndividualCastleV4::Rigs[castle];
- const int img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+castle*3;
- for(int i=0;i<3;++i) { if(!sprite[img+i]) { LoadImg(img+i); LoadTexture(img+i); if(sprite[img+i]) sprite[img+i]->getTexture()->setAntiAliasTexParameters(); } if(!sprite[img+i]) { missingAsset=true; return false; } }
+ const int img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+castle*IndividualCastleV4::Stride;
+ for(int i=0;i<=r.wheelCount;++i) { if(!sprite[img+i]) { LoadImg(img+i); LoadTexture(img+i); if(sprite[img+i]) sprite[img+i]->getTexture()->setAntiAliasTexParameters(); } if(!sprite[img+i]) { missingAsset=true; return false; } }
  const bool world=!gFreePlace && (drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0));
  const float unit=world?DX/640.0f*r.width/r.w*CastlePartsViewZoom():1056.0f*(r.width/342.0f)/r.w*scale;
  const float ground=bottom-252*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale+StageCastleGroundingPx()-kStarterRailOverlapPx;
@@ -744,17 +745,15 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  p.left=world?CastlePartsViewLeft(Max(4.0f*DX/640.0f,left)):left;p.width=r.w*unit;p.height=r.h*unit;
  p.top=ground+p.height;p.sourceWidth=r.w;p.scale=p.width/960.0f;
  p.fitScale=unit/(1056.0f*(r.width/342.0f)/r.w*scale);
- DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),(int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[img],img);
- const float angle=WheelAngleNow(r.r*unit);
- for(int i=0;i<2;++i) {
-  const float cx=p.left+((i?r.rx:r.lx)-r.x)*unit;
-  const float cy=p.top-(r.cy-r.y)*unit;
-  RotateImage(r.r*2,r.r*2,0,0,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),(int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[img+1+i],img+1+i);
- }
+ // The approved image already contains the outdoor ledge and compact chassis.
+ // Render it intact; never split/raise the upper body or add another deck.
+ DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),
+   (int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[img],img);
+ const float angle=WheelAngleNow(r.wheels[0].r*unit);
  p.wheelAngle=angle;
  p.commanderX=p.left+(r.hero-r.x)*unit;p.commanderY=p.top-(r.floor-r.y)*unit;
- p.deckLeft=p.left+32*unit;p.deckWidth=Max(1.0f,(r.hero-r.x-100)*unit);
- p.deckSurface=p.commanderY;p.deckTop=p.deckSurface;
+ p.deckLeft=p.left+(r.deckX-r.x)*unit;p.deckWidth=r.deckW*unit;
+ p.deckSurface=p.top-(r.deckY-r.y)*unit;p.deckTop=p.deckSurface;
  roomCover[castle]=RoomCoverRect();roomCoverRevealed[castle]=false;
  if(world && !active) {
   const auto& a=IndividualCastleRooms::Rooms[castle];
@@ -793,6 +792,14 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
      DrawImageScale(sw,sh,sx,sy,x,top,false,0,0,0,0,(x2-x)/(float)sw,(top-low)/(float)sh,sprite[roomImg],roomImg);
     }
   }
+ }
+ // The same wheel centers/radii define the art crops and rotation pivots.
+ for(int i=0;i<r.wheelCount;++i) {
+  const auto& wheel=r.wheels[i];
+  const float cx=p.left+(wheel.x-r.x)*unit;
+  const float cy=p.top-(wheel.y-r.y)*unit;
+  RotateImage(wheel.r*2,wheel.r*2,0,0,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),
+    (int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[img+1+i],img+1+i);
  }
  cannonBaseY[castle]=p.commanderY;
  cannonMuzzleX[castle]=p.left+(r.mx-r.x)*unit;cannonMuzzleY[castle]=p.top-(r.my-r.y)*unit;cannonMuzzleValid[castle]=true;

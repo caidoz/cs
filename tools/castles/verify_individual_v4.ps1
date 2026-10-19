@@ -25,6 +25,7 @@ try {
  foreach($check in @('placement and progression','wheels rolling')) {
   if(([regex]::Matches($log,"PASS individual $check")).Count -ne 10){throw "Expected ten checks: $check"}
  }
+ if(([regex]::Matches($log,'PASS visible combat deck and crew foot line')).Count -ne 10){throw 'Expected ten visible combat deck and foot anchor checks'}
  if(([regex]::Matches($log,'PASS individual capture')).Count -ne 20){throw 'Expected twenty captures'}
  if(([regex]::Matches($log,'PASS uniform room dimensions and floor count')).Count -ne 10){throw 'Expected ten uniform room geometry checks'}
  if($InteriorSync) {

@@ -1,0 +1,52 @@
+[
+  {
+    "castle": 1,
+    "file": "map-icons/castle-map-01.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 2,
+    "file": "map-icons/castle-map-02.png",
+    "wheelContactY": 988
+  },
+  {
+    "castle": 3,
+    "file": "map-icons/castle-map-03.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 4,
+    "file": "map-icons/castle-map-04.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 5,
+    "file": "map-icons/castle-map-05.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 6,
+    "file": "map-icons/castle-map-06.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 7,
+    "file": "map-icons/castle-map-07.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 8,
+    "file": "map-icons/castle-map-08.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 9,
+    "file": "map-icons/castle-map-09.png",
+    "wheelContactY": 989
+  },
+  {
+    "castle": 10,
+    "file": "map-icons/castle-map-10.png",
+    "wheelContactY": 989
+  }
+]

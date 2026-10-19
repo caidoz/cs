@@ -72,9 +72,17 @@ static void CastleMenuReviewStep()
                 }
             }
             GotoLobby();while(popUpCnt>0) ClosePopUp();LoadoutSetOpen(false);
+            if(getenv("CS_CASTLE_INTERIOR_SYNC_REVIEW")) {
+                gLoadoutCnt=0;
+                for(int i=0;i<20 && gLoadoutCnt<3;++i) {
+                    const int idx=robin.inven[i].detail;
+                    if(idx>=3 && idx<gTotalCrew && enemyData[crewData[idx*CREWDATASIZE+CREWDATA_TYPE]*ENEMYDATASIZE+ENEMYDATA_CMF]>=CREW_CMF_FIRST) gLoadout[gLoadoutCnt++]=i;
+                }
+            }
         }
         if(phase==16) {
             const bool ok=CastleIndividualReviewCheck(0);
+            CastleReviewTrace(CastleIndividualReviewCheck(3)?"PASS visible combat deck and crew foot line":"FAIL combat deck geometry");
             CastleReviewTrace(ok?"PASS individual placement and progression":"FAIL individual placement and progression");
             CastleReviewTrace(CastleIndividualReviewCheck(2)?"PASS uniform room dimensions and floor count":"FAIL uniform room dimensions and floor count");
         }

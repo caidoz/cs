@@ -1,0 +1,42 @@
+[
+  {
+    "castle": 2,
+    "prompt": "EDIT ONLY the wheels and their mounting clearance in this exact castle image. Keep its entire sandstone castle body, flag, emblem, weapon, deck width and body scale unchanged. The two visible wheels are still TOO LARGE. Reduce EACH wheel DIAMETER to 66.7% OF ITS CURRENT SIZE IN THIS PROVIDED IMAGE, so each wheel diameter is approximately 14% of the full castle hull width (not 20%). Exactly TWO clearly separate equal small wheels, common horizontal wheel-bottom baseline, directly mounted under chassis without long struts or a large gap. Bring chassis/deck lower toward the smaller wheel tops if needed, without compressing the castle architecture. Preserve the shallow railing-free outdoor deck and all above-deck design. No railings, extra storey, background, ground plane, text or characters. True transparent background. This is a precise small-wheel revision, not a full redesign."
+  },
+  {
+    "castle": 3,
+    "prompt": "Precise edit of this same castle: reduce the TWO wheels a further 20% in DIAMETER from their current size. Each wheel should measure approximately 14–15% of total castle hull width. Keep every above-chassis shape, castle body height/width, colors, emblem, weapon and railing-free narrow lower outdoor deck unchanged. Two equal modest circular wheels, bottoms level, tops mounted directly under compact chassis; lower chassis/deck toward wheel tops to avoid tall blank undercarriage. No extra wheels, railings, posts, indoor gallery, stilt gap, background, terrain, text or characters. Preserve side view. Transparent background outside art. Whole sprite with padding."
+  },
+  {
+    "castle": 4,
+    "prompt": "Precise edit of this same castle: reduce the TWO wheels a further 20% in DIAMETER from their current size. Each wheel should measure approximately 14–15% of total castle hull width. Keep every above-chassis shape, castle body height/width, colors, emblem, weapon and railing-free narrow lower outdoor deck unchanged. Two equal modest circular wheels, bottoms level, tops mounted directly under compact chassis; lower chassis/deck toward wheel tops to avoid tall blank undercarriage. No extra wheels, railings, posts, indoor gallery, stilt gap, background, terrain, text or characters. Preserve side view. Transparent background outside art. Whole sprite with padding."
+  },
+  {
+    "castle": 5,
+    "prompt": "Precise wheel-size correction ONLY. Keep this exact castle architecture, body width/height and outdoor narrow low deck. Reduce all THREE wheel diameters a further 20% from THIS image; each wheel diameter is about 14% of full castle hull width. Exactly THREE equal small circular wheels in one evenly spaced horizontal row, all bottoms aligned. Seat chassis close to wheel tops; no tall blank undercarriage, new struts or raised castle. Preserve colors, emblem, weapon, side view, original roof silhouette and no railing on companion deck. No extra wheels, characters, text, scenery, background or aura. Transparent background, full castle padded."
+  },
+  {
+    "castle": 6,
+    "prompt": "Precise wheel-size correction ONLY. Keep this exact castle architecture, body width/height and outdoor narrow low deck. Reduce all THREE wheel diameters a further 20% from THIS image; each wheel diameter is about 12–13% of full castle hull width. Exactly THREE equal small circular wheels in one evenly spaced horizontal row, all bottoms aligned. Seat chassis close to wheel tops; no tall blank undercarriage, new struts or raised castle. Preserve colors, emblem, weapon, side view, original roof silhouette and no railing on companion deck. No extra wheels, characters, text, scenery, background or aura. Transparent background, full castle padded."
+  },
+  {
+    "castle": 7,
+    "prompt": "Edit ONLY lower companion deck and wheel size in this exact red gothic castle. REMOVE ALL the gold handrails, vertical balusters and little upright posts along the LOWEST FRONT walking deck. The lower deck must be a continuous clear exposed floor with a low thin edge entirely BELOW the feet line. Keep the upper separate weapon/hero ledge unchanged. Reduce THREE wheel DIAMETERS another 20% from THIS image, so each wheel is about 13–14% of hull width. Exactly three equal wheels, evenly spaced, horizontal wheel-bottom line, direct chassis mounting, no tall gap. Preserve full gothic castle body, red roofs, phoenix emblem, crystal weapon, architecture proportions and side view. No new panels, enclosure, gallery, characters, text or backdrop. Transparent background, entire castle with padding."
+  },
+  {
+    "castle": 8,
+    "prompt": "Precise size edit: keep the exact white marble barrel-vault castle body and railing-free outdoor ledge, reduce all FOUR wheel DIAMETERS by a further 20% from THIS image. Each small wheel should be approximately 13% of full hull width. Exactly FOUR equal clearly separate circular wheels in one evenly spaced horizontal row, all bottoms level. Chassis sits directly near small wheel tops without a tall undercarriage or stilts. Do not squash or resize the castle body. Preserve blue barrel vault, eagle emblem, blue energy gun, and unobstructed low companion deck. No new railings, characters, ground, background, labels or glow haze. True transparent background, entire castle safely padded."
+  },
+  {
+    "castle": 9,
+    "prompt": "Precision edit to wheels ONLY: reduce all FOUR circular wheel DIAMETERS by a further 20% from THIS image. Target each wheel diameter about 14% of full hull width. Exactly FOUR equal small wheels, separated and evenly spaced across the chassis, aligned wheel bottoms. Lower chassis toward wheel tops if necessary, no tall undercarriage gap. Preserve castle body, overall above-chassis proportions, unique architecture, colors, emblem, cannon and shallow railing-free outdoor ledge exactly. No added rails, storeys, hangars, characters, text or background. Transparent background and safe margins."
+  },
+  {
+    "castle": 10,
+    "prompt": "Precision edit to wheels ONLY: reduce all FOUR circular wheel DIAMETERS by a further 20% from THIS image. Target each wheel diameter about 14% of full hull width. Exactly FOUR equal small wheels, separated and evenly spaced across the chassis, aligned wheel bottoms. Lower chassis toward wheel tops if necessary, no tall undercarriage gap. Preserve castle body, overall above-chassis proportions, unique architecture, colors, emblem, cannon and shallow railing-free outdoor ledge exactly. No added rails, storeys, hangars, characters, text or background. Transparent background and safe margins."
+  },
+  {
+    "castle": 7,
+    "prompt": "Remove a specific unwanted object from this exact image: the GOLD HORIZONTAL HANDRAIL crossing the bottom of the central red arched entrance door on the LOWEST outdoor walking deck, and every narrow upright gold support/baluster attached to that handrail along the lowest facade. Delete the entire railing at the base of the castle. Replace those rail pixels with the uninterrupted original door and lower stone wall behind them. Leave the lowest deck TOP as a completely bare open walkway: no rail in front OR behind it. Keep every other detail unchanged, especially the three already-small wheels, their size/number, facade, phoenix banner, red roofs, weapon, upper weapon balcony, floor width and side view. No characters, text or scenery. True transparent background."
+  }
+]

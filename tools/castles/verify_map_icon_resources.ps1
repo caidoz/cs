@@ -26,8 +26,12 @@ try {
   $row=$rows[$i]
   if([int]$row.castle -ne $i+1 -or [int]$row.width -ne 1024 -or [int]$row.height -ne 1024){throw 'Incorrect map icon dimensions or order'}
   if([int]$row.image_id -ne [int]$rows[0].image_id+$i){throw 'Map icon image IDs are not contiguous'}
+  if(Test-Path (Join-Path $root 'content/castles/outdoor_castles_v2/map-icon-registration.json')) {
+   $source=Join-Path $root ('content/castles/outdoor_castles_v2/map-icons/castle-map-{0:00}.png' -f ($i+1))
+  } else {
   $version=if(Test-Path (Join-Path $root 'content/castles/map_icons_v2/manifest.json')){'map_icons_v2'}else{'map_icons_v1'}
   $source=Join-Path $root ('content/castles/'+$version+('/png/castle-map-{0:00}.png' -f ($i+1)))
+  }
   $target=Join-Path $root ('Resources/res/castle_map_icons/castle_map_{0:00}.png' -f ($i+1))
   if((Get-FileHash -LiteralPath $source).Hash -ne (Get-FileHash -LiteralPath $target).Hash){throw 'Registered PNG differs from approved export'}
  }

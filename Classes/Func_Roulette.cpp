@@ -1239,23 +1239,18 @@ void DrawPvpCosmicCastleMap(int localFrame, int buildFrame)
 	//실제 DrawDiorama가 축소를 끝낼 무렵에만 작은 성 그림으로 교차시킨다.
 	//초반부터 이것을 그리면 실제 오브젝트가 든 성 위에 빈 성이 겹쳐 보인다.
 	const float mapBlend = Min(1.0f, Max(0.0f, (buildT - 0.72f) / 0.28f));
-	const float myZoom = 0.16f;
-	SetAlpha((int)(14.0f * mapBlend));
-	MemRectRound(DX / 2 - 60 * _2X, DY / 2 + 60 * _2X,
-		120 * _2X, 120 * _2X, 0x264DA8, 60 * _2X);
-	SetAlpha((int)(32.0f * mapBlend));
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		DX / 2 - (float)DIORAMASIZE_X * myZoom / 2,
-		DY / 2 + (float)DIORAMASIZE_Y * myZoom / 2,
-		false, false, false, false, false, myZoom,
-		sprite[MAP_DIORAMA_IMG + castleOrder[robin.castle]],
-		MAP_DIORAMA_IMG + castleOrder[robin.castle]);
-	const float myProfileSize = 26.0f * _2X;
-	SocialProfileImageDraw(profileImg[0],
-		DX / 2 - myProfileSize / 2,
-		DY / 2 + (float)DIORAMASIZE_Y * myZoom / 2
-			+ myProfileSize + 3 * _2X,
-		myProfileSize * mapBlend);
+	const int myIcon=CASTLE_MAP_ICON_FIRST_IMG+CastleMenuModel::Clamp(robin.castle);
+	const float myIconSize=100.0f*_2X;
+	if(!sprite[myIcon]) LoadImg(myIcon);
+	SetAlpha((int)(14.0f*mapBlend));
+	MemRectRound(DX/2-60*_2X,DY/2+60*_2X,120*_2X,120*_2X,0x264DA8,60*_2X);
+	SetAlpha((int)(32.0f*mapBlend));
+	if(sprite[myIcon]) DrawImage(1024,1024,0,0,
+		DX/2-myIconSize/2,DY/2+myIconSize/2,
+		false,false,false,false,false,myIconSize/1024.0f,sprite[myIcon],myIcon);
+	const float myProfileSize=26.0f*_2X;
+	SocialProfileImageDraw(profileImg[0],DX/2-myProfileSize/2,
+		DY/2+myIconSize/2+myProfileSize+3*_2X,myProfileSize*mapBlend);
 	SetAlpha(32);
 }
 

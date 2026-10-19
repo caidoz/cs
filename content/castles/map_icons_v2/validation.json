@@ -1,0 +1,11 @@
+{
+  "icons": 10,
+  "size": [
+    1024,
+    1024
+  ],
+  "transparent": true,
+  "runtimeResourceCheck": "PASS ten IDs, boot-loaded texture caches and matching PNG hashes",
+  "entranceReview": "PASS ten complementary pairs on both sides, mirrored opponent, measured wheel baseline, screen bounds",
+  "captures": "../../../output/pvp-icon-entrance-review"
+}

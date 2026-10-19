@@ -2733,6 +2733,30 @@ int GetItemStar(int type, int detail, int grade)
 	if (type == ITEM_CANNON)
 		return Max(1, Min(detail, CASTLE_STAGE_CNT - 1) / 2 + 1);
 
+	//---- 동료의 별 ----
+	//
+	//동료는 장비 별표(itemStar)에 자리가 없다. 번호가 ITEM_GEM 뒤로
+	//한참 떨어져 있어서 itemStartCnt[ITEM_CREW] 가 표 밖을 가리킨다 -
+	//그 쓰레기값이 별이 되어, 성 창고의 동료 칸이 엉뚱한 성급 판에
+	//얹히거나 아예 어느 판에도 안 실렸다.
+	//
+	//동료의 별은 동료표가 안다. 보상 카드와 상자가 이미 그 식을 쓰고
+	//있다(Core.cpp 의 rewardMark · boxCardMark).
+	if (type == ITEM_CREW) {
+		if (detail < 0 || detail >= gTotalCrew)
+			return 1;
+
+		{
+			const int crewType = crewData[detail * CREWDATASIZE + CREWDATA_TYPE];
+
+			if (crewType < 0 || crewType >= gTotalEnemy)
+				return 1;
+
+			return Max(1, Min(6,
+				enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_STAR] + 1));
+		}
+	}
+
 	return itemStar[itemStartCnt[type] + detail] / 100;
 	//for (i = 0; i < TOTAL_COLLECTIONS * COLLECTIONSITEMCNT; i++) {
 	//	if (collectionData[i * COLLECTIONSDATASIZE + 0] == type && collectionData[i * COLLECTIONSDATASIZE + 1] == detail && collectionData[i * COLLECTIONSDATASIZE + 2] == grade)

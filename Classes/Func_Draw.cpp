@@ -3219,6 +3219,70 @@ static void GridStackItem(int at)
 //
 // skip 은 "이 번호는 없는 셈 친다"는 뜻이다. 이미 놓여 있던 것을 집어
 // 옮길 때 제 몸에 걸려서 못 놓는 일을 막는다.
+//---- 왜 못 놓았는가 ----
+//
+//GridTestCanPlace 는 되고 안 되고만 돌려준다. 안 될 때 할 일은 까닭마다
+//다르다 - 치울 것인지, 성을 올릴 것인지, 다른 칸에 놓을 것인지.
+//
+//아래 GridTestCanPlace 와 보는 차례가 같아야 한다. 한쪽만 고치면 "놓을
+//수 있다" 와 "까닭이 없다" 가 어긋난다.
+enum {
+	GRIDWHY_OK = 0,
+	GRIDWHY_CAP,		//성이 실을 수 있는 칸을 넘었다
+	GRIDWHY_OUT,		//격자 밖으로 나간다
+	GRIDWHY_MASK,		//성이 안 내준 칸이다
+	GRIDWHY_BUSY		//다른 장비가 있다
+};
+
+static int GridPlaceWhy(const GridPart* p, int col, int row, int skip)
+{
+	if (p == nullptr || p->w <= 0 || p->h <= 0)
+		return GRIDWHY_OUT;
+
+	{
+		int occupied = CastleEquippedCells(), added = 0;
+
+		if (skip >= 0 && skip < GRIDTEST_MAXITEM && gGridItem[skip].used)
+			for (int yy = 0; yy < gGridItem[skip].part.h; ++yy)
+				for (int xx = 0; xx < gGridItem[skip].part.w; ++xx)
+					if (GridPartCell(&gGridItem[skip].part, xx, yy)) --occupied;
+
+		for (int yy = 0; yy < p->h; ++yy)
+			for (int xx = 0; xx < p->w; ++xx)
+				if (GridPartCell(p, xx, yy)) ++added;
+
+		if (occupied + added > CastleEquipmentCapacity(GridCastleStage()))
+			return GRIDWHY_CAP;
+	}
+
+	if (col < 0 || row < 0 || col + p->w > gGridW || row + p->h > gGridH)
+		return GRIDWHY_OUT;
+
+	for (int cy = 0; cy < p->h; cy++)
+		for (int cx = 0; cx < p->w; cx++)
+			if (GridPartCell(p, cx, cy) && GridMaskAt(col + cx, row + cy) == false)
+				return GRIDWHY_MASK;
+
+	for (int i = 0; i < GRIDTEST_MAXITEM; i++) {
+		if (gGridItem[i].used == false || i == skip)
+			continue;
+
+		{
+			const GridPart* o = &gGridItem[i].part;
+
+			for (int cy = 0; cy < p->h; ++cy)
+				for (int cx = 0; cx < p->w; ++cx) {
+					if (!GridPartCell(p, cx, cy)) continue;
+					if (GridPartCell(o, col + cx - gGridItem[i].col,
+						row + cy - gGridItem[i].row))
+						return GRIDWHY_BUSY;
+				}
+		}
+	}
+
+	return GRIDWHY_OK;
+}
+
 static bool GridTestCanPlace(const GridPart* p, int col, int row, int skip)
 {
 	int i, cx, cy;
@@ -4636,8 +4700,43 @@ void GridTestRelease(void)
 	//알 수가 없다. 칸이 모자란 쪽은 눕혀도 안 들어간 것이다(GridTestCanPlace
 	//가 세운 모양과 눕힌 모양을 다 본다).
 	const bool inBag = GridInsideBag(touchX, touchY);
-	const char* why = inBag
-		? "가방에 빈 자리가 모자란다" : "가방 안에 놓아야 한다";
+
+	//---- 까닭마다 할 일이 다르다 ----
+	//
+	//전에는 "빈 자리가 모자란다" 한 마디였다. 그래서 빈 칸이 빤히
+	//보이는데 자리가 없다는 말이 떴다 - 실제로 막은 것은 성의 칸 한도
+	//이기도 하고, 성이 안 내준 칸이기도 하고, 눕혀도 안 들어가는 모양
+	//이기도 했다.
+	//
+	//세운 모양과 눕힌 모양 중 덜 나쁜 까닭을 고른다. 한쪽이 한도에
+	//걸렸는데 다른 쪽이 칸 때문이면, 칸 쪽이 손을 쓸 수 있는 이야기다.
+	static char gridWhyBuf[80];
+	const char* why;
+
+	{
+		const GridPart turned = GridPartRotated(*p);
+		const int a = GridPlaceWhy(p, gGridDragCol, gGridDragRow, from);
+		const int b = GridPlaceWhy(&turned, gGridDragCol, gGridDragRow, from);
+		const int reason = (a == GRIDWHY_CAP && b != GRIDWHY_CAP) ? b : a;
+
+		switch (inBag ? reason : GRIDWHY_OUT) {
+		case GRIDWHY_CAP:
+			sprintf(gridWhyBuf, "성이 실을 수 있는 칸을 넘는다 %d/%d",
+				CastleEquippedCells() + GridPartCellCount(p),
+				CastleEquipmentCapacity(GridCastleStage()));
+			why = gridWhyBuf;
+			break;
+		case GRIDWHY_MASK:
+			why = "성이 안 내준 칸이다";
+			break;
+		case GRIDWHY_BUSY:
+			why = "다른 장비가 있는 칸이다";
+			break;
+		default:
+			why = inBag ? "격자 밖으로 나간다" : "가방 안에 놓아야 한다";
+			break;
+		}
+	}
 
 	if (from >= 0) {
 		gGridItem[from].used = true;
@@ -4659,7 +4758,7 @@ void GridTestRelease(void)
 	//없으면 "샀는데 사라졌나" 싶어진다. 골드 부족과 자리 부족은 이미
 	//말해 주는데 여기만 조용했다.
 	PlayMusic(M_ERROR);
-	GridTestWarn(inBag ? "가방에 빈 자리가 모자란다" : "가방 안에 놓아야 산다");
+	GridTestWarn(inBag ? why : "가방 안에 놓아야 산다");
 	GridFlyHome(p, from, store, offer);
 }
 
@@ -4750,6 +4849,17 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 		out->h = frame.rows;
 		out->cells = (unsigned short)frame.cells;
 		out->name = CastleArtillery::Of(castle).name;
+		return;
+	}
+
+	//---- 동료 ----
+	//
+	//한 칸으로 두면 반지와 같은 값이 된다. 사람 하나가 성에 서는 것이니
+	//그만큼 자리를 차지해야, 동료를 몇 데려갈지가 고르는 일이 된다.
+	if (it->type == ITEM_CREW) {
+		out->w = CREW_GRID_W;
+		out->h = CREW_GRID_H;
+		out->name = "동료";
 		return;
 	}
 
@@ -4950,6 +5060,44 @@ void LoadoutSetTab(int tab)
 }
 
 //지금 탭에 보이는 가방 칸을 좋은 것부터 담는다. 담은 수를 돌려준다.
+//---- 가방에 실을 수 있는가 ----
+//
+//장비와 포에 더해 동료도 싣는다. 동료는 성 위에 서서 제 시계로 치므로
+//가방 칸을 먹는 것이 맞다 - 공짜로 여섯이 서면 장비를 고를 까닭이 없다.
+//
+//IsEquipItemType 자체는 안 건드린다. 그 함수는 장착 · 판매 · 합성이 다
+//보는 자리라, 동료를 장비로 쳐 버리면 엉뚱한 데서 동료가 장착된다.
+static bool LoadoutCanCarry(int type)
+{
+	return IsEquipItemType(type) || type == ITEM_CREW;
+}
+
+//---- 이 번호가 진짜 동료인가 ----
+//
+//한때 앞머리 셋을 히어로로 보고 잘라 냈다. GetCrewIdxFromType 의 주석이
+//"hero 3개는 로비 편의 데이터" 라고 적어 둔 것을 그대로 믿은 것인데,
+//그 함수 자체는 0 번부터 찾는다(START_KEY = 0).
+//
+//팩을 까 보니 0 번이 꼬마(NPC_BOY, CMF 59)였다. 첫 동료를 내가 잘라
+//내고 있었다.
+//
+//지금 표에는 CMF 가 52 밑인 동료가 하나도 없다(52~121). 그래도 기준은
+//남겨 둔다 - 표가 늘 때 사람이 아닌 것이 섞여 들어오면 여기서 걸린다.
+static bool LoadoutCrewReal(int idx)
+{
+	if (idx < 0 || idx >= gTotalCrew)
+		return false;
+
+	{
+		const int type = crewData[idx * CREWDATASIZE + CREWDATA_TYPE];
+
+		if (type <= 0 || type == NPC_SHIP)
+			return false;
+
+		return enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF] >= CREW_CMF_FIRST;
+	}
+}
+
 int LoadoutList(int* out, int max)
 {
 	int n = 0;
@@ -4957,7 +5105,10 @@ int LoadoutList(int* out, int max)
 	for (int i = 0; i < TOTALINVENTORY && n < max; i++) {
 		const ITEM* it = &robin.inven[i];
 
-		if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+		if (it->type == EMPTY || LoadoutCanCarry(it->type) == false)
+			continue;
+
+		if (it->type == ITEM_CREW && LoadoutCrewReal(it->detail) == false)
 			continue;
 
 		if (!LoadoutTabHas(gLoadoutTab, it->type))
@@ -5157,7 +5308,7 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 
 	const ITEM* it = &robin.inven[invenIdx];
 
-	if (it->type == EMPTY || IsEquipItemType(it->type) == false) {
+	if (it->type == EMPTY || LoadoutCanCarry(it->type) == false) {
 		gLoadoutWhy = "실을 수 있는 장비가 아니다";
 		return false;
 	}
@@ -5406,6 +5557,32 @@ static void LoadoutDefaultFill(void)
 
 			if (at >= 0 && LoadoutFind(at) < 0)
 				LoadoutToggle(at);
+		}
+	}
+
+	//---- 그리고 동료 ----
+	//
+	//동료도 가방 칸을 먹는다. 성 위에 서서 제 시계로 치는 것이므로
+	//격자에 올라와 있어야 무엇이 치고 있는지가 보인다.
+	//
+	//편성한 차례대로 몇까지다(PVP_GRID_CREW_MAX). 여섯을 다 올리면 첫
+	//성의 좁은 격자가 동료로 가득 차 장비를 넣을 자리가 없다.
+	{
+		int crew = 0;
+
+		for (int i = 0; i < MAXCREW && crew < PVP_GRID_CREW_MAX; i++) {
+			const int type = robin.slotCrew[i];
+			const int idx = (type >= 0) ? GetCrewIdxFromType(type) : -1;
+			const int at = (LoadoutCrewReal(idx))
+				? GetInvenIdx(ITEM_CREW, idx, GRADE_NORMAL) : -1;
+
+			if (at < 0)
+				continue;
+
+			if (LoadoutFind(at) < 0 && LoadoutToggle(at) == false)
+				continue;
+
+			++crew;
 		}
 	}
 }
@@ -5686,7 +5863,18 @@ static void LoadoutGoButtonRect(int* x, int* y, int* w, int* h)
 //
 //같은 장비를 여러 개 가졌으면 그중 가장 좋은 것 하나만 세운다. 등급만
 //다른 같은 칼이 줄줄이 늘어서면 목록이 길어지기만 한다.
-#define LOADOUT_DETAILMAX 40
+//---- 창고 선반이 드는 번호 ----
+//
+//종류마다 번호 몇까지를 선반에 세울 수 있는가다. 가진 것을 찾아 두는
+//표(gLoadoutOwn)의 둘째 칸이기도 하다.
+//
+//마흔이었다. 장비는 종류마다 여덟 단계뿐이라 남았는데, 동료를 가방에
+//싣게 되면서 모자라졌다 - 동료표는 예순넷이라 스물넷이 선반에서
+//빠졌다(실을 수는 있었지만 창고에 안 섰다).
+//
+//동료표 전체가 들어가는 수로 올린다. CAP_CREW 는 그 표가 커져도 따라
+//가는 값이다.
+#define LOADOUT_DETAILMAX (CAP_CREW > 40 ? CAP_CREW : 40)
 #define LOADOUT_CATMAX    320
 
 //창고는 48픽셀 칸 네 줄을 온전히 확보한다.
@@ -5777,7 +5965,10 @@ static void LoadoutScanOwned(void)
 	for (int i = 0; i < TOTALINVENTORY; i++) {
 		const ITEM* it = &robin.inven[i];
 
-		if (it->type == EMPTY || IsEquipItemType(it->type) == false)
+		if (it->type == EMPTY || LoadoutCanCarry(it->type) == false)
+			continue;
+
+		if (it->type == ITEM_CREW && LoadoutCrewReal(it->detail) == false)
 			continue;
 
 		if (it->type < 0 || it->type >= TOTALITEMTYPE)
@@ -5799,6 +5990,11 @@ static int LoadoutDetailCnt(int type)
 	//대포는 성마다 하나씩, 열 종류다. 아이템 표에는 없으므로 여기서 센다.
 	if (type == ITEM_CANNON)
 		return CASTLE_STAGE_CNT;
+
+	//동료는 동료표가 센다. 창고 선반이 번호 마흔까지라 거기서 자른다 -
+	//그 뒤의 동료는 창고에 안 서지만 실을 수는 있다(목록 쪽).
+	if (type == ITEM_CREW)
+		return Min(LOADOUT_DETAILMAX, gTotalCrew);
 
 	if (type < 0 || type + 1 > ITEM_GEM)
 		return 0;
@@ -5823,8 +6019,9 @@ static bool LoadoutHeroHas(int hero, int type)
 		{ ITEM_GREAVES, ITEM_SHOES,  ITEM_BOOTS },
 	};
 
-	//목걸이 · 반지 · 대포는 누가 들든 같은 것이다.
-	if (type == ITEM_NECK || type == ITEM_RING || type == ITEM_CANNON)
+	//목걸이 · 반지 · 대포 · 동료는 누가 들든 같은 것이다.
+	if (type == ITEM_NECK || type == ITEM_RING || type == ITEM_CANNON
+		|| type == ITEM_CREW)
 		return true;
 
 	if (hero < 0 || hero >= 3)
@@ -6094,6 +6291,49 @@ static int LoadoutCatalog(void)
 		gLoadoutStarCol[star - 1] = at;
 		gLoadoutStarWide[star - 1] = 0;
 
+		//---- 동료를 판 맨 앞에 세운다 ----
+		//
+		//장비와 섞어 번호 차례로 깔았더니, 동료가 장비 수십 칸 뒤에
+		//묻혀 띠를 한참 밀어야 나왔다. 안 보이면 없는 것과 같다.
+		//
+		//같은 성급 판 안에서 동료부터 깐다. 띠를 열면 왼쪽 끝에 선다.
+		for (int d = 0; d < LOADOUT_DETAILMAX; d++) {
+			GridPart part;
+			int c = 0, r = 0;
+
+			if (gLoadoutCatCnt >= LOADOUT_CATMAX)
+				break;
+
+			if (d >= LoadoutDetailCnt(ITEM_CREW) || LoadoutCrewReal(d) == false)
+				continue;
+
+			if (GetItemStar(ITEM_CREW, d, GRADE_NORMAL) != star)
+				continue;
+
+			LoadoutPartOf(ITEM_CREW, d, &part);
+
+			{
+				const int pw = Max(1, part.w);
+				const int ph = Max(1, Min(LOADOUT_STORE_H, part.h));
+
+				if (LoadoutSpot(one, LOADOUT_COLMAX, pw, ph, &c, &r) == false)
+					continue;
+
+				{
+					const int k = gLoadoutCatCnt++;
+
+					gLoadoutCatType[k] = (short)ITEM_CREW;
+					gLoadoutCatDetail[k] = (short)d;
+					gLoadoutCatStar[k] = (unsigned char)star;
+					gLoadoutCatCol[k] = (unsigned short)(at + c);
+					gLoadoutCatRow[k] = (unsigned char)r;
+					gLoadoutCatW[k] = (unsigned char)pw;
+					gLoadoutCatH[k] = (unsigned char)ph;
+					wide = Max(wide, c + pw);
+				}
+			}
+		}
+
 		//번호 차례로 훑는다. 같은 번호면 종류 차례다.
 		//
 		//대포(ITEM_CANNON)는 번호가 장비들과 떨어져 뒤에 있다. 범위를
@@ -6101,6 +6341,7 @@ static int LoadoutCatalog(void)
 		//까지 훑게 하면 엉뚱한 것이 창고에 선다.
 		for (int d = 0; d < LOADOUT_DETAILMAX; d++)
 			for (int ti = 0; ti <= ITEM_GEM; ti++) {
+				//동료는 위에서 이미 깔았다.
 				const int t = (ti == ITEM_GEM) ? ITEM_CANNON : ti;
 				GridPart part;
 				int c = 0, r = 0;
@@ -6108,7 +6349,7 @@ static int LoadoutCatalog(void)
 				if (gLoadoutCatCnt >= LOADOUT_CATMAX)
 					break;
 
-				if (IsEquipItemType(t) == false
+				if (LoadoutCanCarry(t) == false
 					|| LoadoutHeroHas(hero, t) == false)
 					continue;
 
@@ -7994,6 +8235,26 @@ static float LobbyCharZoom(void)
 	return DIORAMAZOOM * 0.70f * gLobbyCastleScale * LOBBY_CHAR_REF_W / DX;
 }
 
+//---- 성 위에 선 사람의 크기 ----
+//
+//방 안의 동료 · 발판의 동료 · 지휘관이 성의 배율 하나(charZoom)에서
+//같이 나온다. 성이 커지면 셋이 같은 비율로 같이 커지고, 작아지면 같이
+//작아진다.
+//
+//전에는 자리마다 제 식으로 곱했다. 로비는 CREWZOOM 과 2.25 를 얹고
+//격돌은 charZoom 만 곱해서, 같은 동료가 판에서는 콩알만 했다.
+static float CastleRoomCrewZoom(float charZoom, int type)
+{
+	return enemyIconZoom[type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE
+		* charZoom * CASTLE_ROOM_CREW_ZOOM;
+}
+
+//발판에 선 동료. 앞에 나와 있으므로 방 안의 것보다 크다.
+static float CastleDeckCrewZoom(float charZoom, int type)
+{
+	return CastleRoomCrewZoom(charZoom, type) * CASTLE_DECK_SAMPLE_ZOOM;
+}
+
 //성 그림 위 자리. 모든 성 그림이 아래 가운데에 성문, 맨 아래가 바닥이라
 //그 바닥 띠에 세운다. 발코니 같은 성마다 다른 자리는 아직 표가 없다.
 #define LOBBY_HERO_U			0.50f
@@ -8881,6 +9142,25 @@ bool CastleInteriorSyncReviewCheck(int operation) {
 bool CastleIndividualReviewCheck(int operation) {
     static float previousW=0,previousH=0,angle=0;
     const auto& p=CastleParts::sdPlacement;
+    if(operation==3) {
+        if(!p.valid || p.castle<0 || p.castle>=10) return false;
+        const auto& rig=IndividualCastleV4::Rigs[p.castle];
+        const int expected=p.castle<4?2:p.castle<7?3:4;
+        const float unit=p.width/rig.w;
+        if(rig.wheelCount!=expected || p.deckWidth<p.width*.55f) return false;
+        for(int i=0;i<rig.wheelCount;++i) {
+            const int img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+p.castle*IndividualCastleV4::Stride+1+i;
+            if(!sprite[img]) return false;
+            const auto size=sprite[img]->getContentSize();
+            if(size.width!=rig.wheels[i].r*2 || size.height!=rig.wheels[i].r*2) return false;
+        }
+        if(std::fabs(p.deckSurface-(p.top-(rig.deckY-rig.y)*unit))>1) return false;
+        for(int slot=0;slot<MAXCREW;++slot) {
+            float x,y;
+            if(!CastleCrewDeckPoint(slot,&x,&y) || x<=p.deckLeft || x>=p.deckLeft+p.deckWidth || std::fabs(y-p.deckSurface)>.1f) return false;
+        }
+        return true;
+    }
     if(operation==2) {
         const auto& r=IndividualCastleV4::Rigs[p.castle];
         const auto& aperture=IndividualCastleRooms::Rooms[p.castle];
@@ -9358,7 +9638,7 @@ bool CastleRoomCoverPreview(int operation) {
     const int c=Max(0,Min(CASTLE_STAGE_CNT-1,gMobileCastleVisual));
     const auto& r=CastleParts::roomCover[c];
     if(operation==4) {
-        touchX=r.left-64*_2X-4;touchY=r.top-r.height/2;isTouchKey=TOUCH_PRESS;
+        touchX=CastleParts::sdPlacement.left-4*_2X;touchY=r.top-r.height/2;isTouchKey=TOUCH_PRESS;
         CastleRoomToggleTap(touchX,touchY,touchX,touchY);
         return r.width>0;
     }
@@ -9771,7 +10051,9 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		pCrew->ny = pCrew->y;
 		pCrew->frame = live ? live->frame : frame + owned * MOTIONDIV;
 		pCrew->zoom = enemyIconZoom[pCrew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * roleZoomScale * charZoom;
-		if(sdRoom && !live) pCrew->zoom *= 2.25f; // Another 1.5x over the previous 1.5x.
+		//방 안의 동료 몫. 발판과 지휘관이 같은 식에서 나오도록 이름을
+		//붙여 두었다(CASTLE_ROOM_CREW_ZOOM).
+		if(sdRoom && !live) pCrew->zoom *= CASTLE_ROOM_CREW_ZOOM;
 
 		if (live) {
 			//전투 자리의 동료는 조금 크게. 방 안의 구경꾼들과 섞이면 안 된다.
@@ -9848,29 +10130,24 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	//자리는 전투가 쓰는 그 표다(CastleCrewDeckPoint). 방 안의 동료보다
 	//크고 지휘관보다는 작다.
 	if (!battle && CASTLE_DECK_SAMPLE_CNT > 0 && sdRoom) {
-		//누구를 세우나. 편성한 동료가 먼저고, 모자라면 가진 동료로 채운다.
+		//---- 가방에 실은 동료가 선다 ----
+		//
+		//전에는 편성표를 보고 아무나 세웠다. 그러면 격자에 안 올린
+		//동료가 발판에 서서, 출정 준비 화면에서 고른 것과 성 위에 선
+		//사람이 서로 다른 이야기를 한다.
+		//
+		//가방(gLoadout)에 실린 동료만 세운다. 끌어다 놓으면 그 자리에서
+		//바로 발판에 선다.
 		int show[MAXCREW];
 		int shown = 0;
 
-		for (int i = 0; i < MAXCREW && shown < CASTLE_DECK_SAMPLE_CNT; ++i) {
-			const int type = robin.slotCrew[i];
+		for (int i = 0; i < gLoadoutCnt && shown < CASTLE_DECK_SAMPLE_CNT; ++i) {
+			const ITEM* it = &robin.inven[gLoadout[i]];
 
-			if (type > 0 && GetCrewIdxFromType(type) >= 0)
-				show[shown++] = type;
-		}
-
-		for (int i = 0; i < gTotalCrew && shown < CASTLE_DECK_SAMPLE_CNT; ++i) {
-			const int type = crewData[i * CREWDATASIZE + CREWDATA_TYPE];
-			bool already = false;
-
-			if (type <= 0 || type == NPC_SHIP)
+			if (it->type != ITEM_CREW || !LoadoutCrewReal(it->detail))
 				continue;
 
-			for (int k = 0; k < shown; ++k)
-				if (show[k] == type) { already = true; break; }
-
-			if (!already)
-				show[shown++] = type;
+			show[shown++] = crewData[it->detail * CREWDATASIZE + CREWDATA_TYPE];
 		}
 
 		for (int i = 0; i < shown; ++i) {
@@ -9889,7 +10166,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			//가장자리 여백은 그 함수와 같은 값(24 * scale)이다.
 			{
 				const CastleParts::SdPlacement& dp = CastleParts::sdPlacement;
-				const float inset = 24.0f * dp.scale;
+				const float inset = 24.0f*dp.scale;
 				const float span = Max(1.0f, dp.deckWidth - inset * 2.0f);
 
 				if (!dp.valid)
@@ -9897,7 +10174,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 				sx = dp.deckLeft + inset
 					+ span * (float)(i + 1) / (float)(shown + 1);
-				sy = dp.deckSurface;
+				sy = dp.deckSurface + (CastleParts::IndividualArtEnabled()?0.0f:CASTLE_DECK_SAMPLE_LIFT);
 			}
 
 			ScreenToObj(sx, sy, &ox, &oy);
@@ -9915,7 +10192,8 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			deck.type = (unsigned short)show[i];
 			deck.cmf = enemyData[deck.type * ENEMYDATASIZE + ENEMYDATA_CMF];
 			SetNpc(&deck);
-			deck.motion = crewPos[deck.type * 5];
+			const int idleFrames = Max(1, (int)crewPos[deck.type * 5 + 1]);
+			deck.motion = crewPos[deck.type * 5] + (frame / 6 + i) % idleFrames;
 			deck.active = true;
 			deck.dead = false;
 			deck.x = deck.nx = ox;
@@ -9923,9 +10201,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			deck.dirX = deck.dirF = RIGHT;
 			deck.frame = frame + i * MOTIONDIV;
 			//방 안의 동료와 같은 식에 발판 몫을 곱한다.
-			deck.zoom = enemyIconZoom[deck.type] * CREWZOOM
-				* LOBBY_CREW_ZOOM_SCALE * charZoom * 2.25f
-				* CASTLE_DECK_SAMPLE_ZOOM;
+			deck.zoom = CastleDeckCrewZoom(charZoom, deck.type);
 			deck.defaultZoom = deck.zoom;
 
 			//모션 번호가 그림 표 밖이면 서 있는 그림으로 되돌린다.
@@ -9957,11 +10233,19 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	if (ao[PLAYER].active) {
 		OBJECT* hero = &ao[PLAYER];
 		const float bx = hero->x, by = hero->y, bnx = hero->nx, bny = hero->ny, bz = hero->zoom;
+		const int bm = hero->motion;
+		const int bdirX = hero->dirX, bdirF = hero->dirF;
 
 		hero->x = hero->nx = heroCenterX;
 		hero->y = hero->ny = heroY;
 		hero->zoom = bz * charZoom * LOBBY_HERO_ZOOM;
-		if(sdRoom) hero->y=hero->ny=heroY-8.0f*_2X*hero->zoom;
+		if(sdRoom && !CastleParts::IndividualArtEnabled()) hero->y=hero->ny=heroY-8.0f*_2X*hero->zoom;
+
+		if (!battle) {
+			const int loop = GetHeroLoopMotion(hero->cmf, HEROLOOP_NEUTRAL, frame);
+			hero->motion = (loop < 0) ? PO_C0_N0 + (frame / 6) % 4 : loop;
+			hero->dirX = hero->dirF = RIGHT;
+		}
 
 		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
 			hero->x - 12.0f * _2X * hero->zoom,
@@ -9970,6 +10254,11 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		DrawObj(hero);
 
 		hero->x = bx; hero->y = by; hero->nx = bnx; hero->ny = bny; hero->zoom = bz;
+		if (battle) {
+			hero->motion = bm;
+			hero->dirX = bdirX;
+			hero->dirF = bdirF;
+		}
 	}
 	}
 }
@@ -11799,6 +12088,11 @@ struct PvpSideItem {
 struct PvpSideGrid {
 	PvpSideItem it[PVP_SIDE_ITEM_MAX];
 	int cnt;
+	//---- 발판에 서는 동료 ----
+	//
+	//격자에 오른 동료만 성 위에 선다. 편성표만 보고 세우면 가방에 안
+	//실은 동료가 발판에 서서, 화면에 선 사람과 쏘는 칸이 어긋난다.
+	unsigned char crewIn[MAXCREW];
 	int castle;			//0 부터. 테두리 그림과 칸 표를 고르는 값이다
 	int cols, rows;
 	unsigned char mask[GRIDTEST_H][GRIDTEST_W];	//쓸 수 있는 칸
@@ -11952,6 +12246,9 @@ static bool PvpSideGridPut(int side, const GridPart* p, int col, int row,
 		s->crewSlot = crewSlot;
 	}
 
+	if (crewSlot >= 0 && crewSlot < MAXCREW)
+		g->crewIn[crewSlot] = 1;
+
 	for (int y = 0; y < p->h; ++y)
 		for (int x = 0; x < p->w; ++x)
 			g->fill[row + y][col + x] = 1;
@@ -12004,6 +12301,9 @@ static bool PvpSideGridAdd(int side, const GridPart* p, long long damage,
 				s->crewSlot = crewSlot;
 			}
 
+			if (crewSlot >= 0 && crewSlot < MAXCREW)
+				g->crewIn[crewSlot] = 1;
+
 			for (int y = 0; y < h; ++y)
 				for (int x = 0; x < w; ++x)
 					g->fill[row + y][col + x] = 1;
@@ -12053,7 +12353,9 @@ static void PvpSideGridBuildMine(void)
 	//
 	//편성한 동료는 가방 칸이 아니라 성에 선다. 격자에도 한 칸씩 올려야
 	//누가 치고 있는지가 보인다.
-	for (int i = 0; i < MAXCREW; ++i) {
+	//다만 몇까지다(PVP_GRID_CREW_MAX). 여섯을 다 올리면 첫 성의 좁은
+	//격자가 동료로 가득 차 장비를 넣을 자리가 없다.
+	for (int i = 0, crew = 0; i < MAXCREW && crew < PVP_GRID_CREW_MAX; ++i) {
 		const int type = robin.slotCrew[i];
 		const int idx = (type >= 0) ? GetCrewIdxFromType(type) : -1;
 		GridPart part;
@@ -12061,12 +12363,19 @@ static void PvpSideGridBuildMine(void)
 		if (idx < 0)
 			continue;
 
-		memset(&part, 0, sizeof(part));
-		part.type = ITEM_CREW;
-		part.detail = idx;
-		part.grade = GRADE_NORMAL;
-		part.w = part.h = 1;
-		part.name = "동료";
+		++crew;
+
+		//크기는 GridGearPart 가 정한다(CREW_GRID_W/H). 여기서 따로
+		//쓰면 출정 준비에서 본 칸과 격돌의 칸이 달라진다.
+		{
+			ITEM one;
+
+			memset(&one, 0, sizeof(one));
+			one.type = ITEM_CREW;
+			one.detail = (unsigned char)idx;
+			one.grade = GRADE_NORMAL;
+			GridGearPart(&one, &part);
+		}
 
 		PvpSideGridAdd(0, &part, PvpClashSlotDamage(i),
 			crewData[idx * CREWDATASIZE + CREWDATA_SKILL1], i);
@@ -12126,18 +12435,27 @@ static void PvpSideGridBuildFoe(const HOUSE* h)
 	}
 
 	//---- 동료 ----
-	for (int i = 0; i < MAXCREW; ++i) {
+	//
+	//내 쪽과 같은 수까지다. 한쪽만 여섯이면 격자 싸움이 아니다.
+	for (int i = 0, crew = 0; i < MAXCREW && crew < PVP_GRID_CREW_MAX; ++i) {
 		const int idx = (h->crew[i] > 0) ? GetCrewIdxFromType(h->crew[i]) : -1;
 
 		if (idx < 0)
 			continue;
 
-		memset(&part, 0, sizeof(part));
-		part.type = ITEM_CREW;
-		part.detail = idx;
-		part.grade = GRADE_NORMAL;
-		part.w = part.h = 1;
-		part.name = "동료";
+		++crew;
+
+		//크기는 GridGearPart 가 정한다(CREW_GRID_W/H). 여기서 따로
+		//쓰면 출정 준비에서 본 칸과 격돌의 칸이 달라진다.
+		{
+			ITEM one;
+
+			memset(&one, 0, sizeof(one));
+			one.type = ITEM_CREW;
+			one.detail = (unsigned char)idx;
+			one.grade = GRADE_NORMAL;
+			GridGearPart(&one, &part);
+		}
 
 		PvpSideGridAdd(1, &part, base,
 			crewData[idx * CREWDATASIZE + CREWDATA_SKILL1], i);
@@ -12666,10 +12984,17 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting,
 		heroPoint[side][0] = heroX;
 		heroPoint[side][1] = heroY;
 
-		//히어로가 나서는 것은 제 무기가 찼을 때뿐이다. 포가 쏘는데
-		//히어로가 같이 휘두르면 누가 친 것인지 알 수 없다.
+		//---- 아군도 적군도 휘두른다 ----
+		//
+		//제 무기가 찬 그 순간에만 휘둘렀다. 격자가 한 발씩 번갈아
+		//나가므로, 둘 중 하나만 가끔 움직이고 나머지 시간에는 양쪽 다
+		//장승처럼 서 있었다.
+		//
+		//붙어 있는 동안에는 둘 다 계속 휘두른다. 한 발짝 나서고 탄이
+		//나가는 것은 실제로 제 무기가 찬 쪽뿐이다(heroActing).
 		const bool heroActing = fighting && pvpClashActorSide == side
 			&& pvpClashActorKind == PVP_ACT_GEAR;
+		const bool heroSwing = fighting;
 		OBJECT hero = PvpSideObjects(side)[PLAYER];
 		//---- 휘두르는 동안은 공격 모션 ----
 		//
@@ -12677,10 +13002,12 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting,
 		//가만히 있어 누가 쳤는지가 안 보인다. 보스전이 쓰는 그 표를
 		//그대로 쓴다(motionData 의 32 번부터 서른두 장).
 		{
+			//휘두르는 표는 보스전이 쓰는 그 서른두 장이다. 치는 쪽은
+			//탄이 나는 동안에 맞춰 돌고, 나머지 한쪽은 제 박자로 돈다.
 			const int swing = heroActing
 				? (32 + (pvpClashShotFrame * 32
 					/ Max(1, PVP_CLASH_SHOT_FLY)) % 32)
-				: 0;
+				: heroSwing ? (32 + (frame / 2 + side * 8) % 32) : 0;
 
 			DrawPlayer(&hero, motionData[swing],
 				heroX + (heroActing ? lunge : 0), heroY,
@@ -12702,13 +13029,16 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting,
 		int standing = 0;
 		int placed = 0;
 
+		//격자에 오른 동료만 센다. 가방에 안 실은 동료가 발판에 서면
+		//화면에 선 사람과 쿨타임이 도는 칸이 어긋난다.
 		for (int i = 0; i < MAXCREW; ++i)
-			if (PvpSideObjects(side)[CREW + i].active)
+			if (PvpSideObjects(side)[CREW + i].active
+				&& pvpSideGrid[side].crewIn[i])
 				standing++;
 
 		for (int i = 0; i < MAXCREW; ++i) {
 			const OBJECT* crew = &PvpSideObjects(side)[CREW + i];
-			if (!crew->active)
+			if (!crew->active || !pvpSideGrid[side].crewIn[i])
 				continue;
 			int crewX, crewY;
 
@@ -12726,20 +13056,33 @@ static void PvpCastleStandOffDraw(float slideIn, bool fighting,
 					/ (float)(standing + 1),
 				deckV[side], &crewX, &crewY);
 
+			//---- 양쪽 다 싸우고 있다 ----
+			//
+			//제 차례일 때만 모션이 돌았다. 한 발씩 번갈아 나가므로
+			//화면에서는 양쪽 여럿이 가만히 서 있고 가끔 하나만 움직였다.
+			//
+			//붙어 있는 동안에는 둘 다 계속 움직인다(swinging). 한 발짝
+			//나서는 것(lunge)만 실제로 치는 그 하나다(acting).
 			const bool acting = fighting && pvpClashActorSide == side
 				&& pvpClashActorKind == PVP_ACT_CREW
 				&& pvpClashActorSlot == i;
-			//치는 동안만 모션이 돈다. 나머지는 선 자세 그대로다.
+			const bool swinging = fighting;
 			const int motionCnt = Max(1, crewPos[crew->type * 5 + 1]);
 			const int motion = crewPos[crew->type * 5]
-				+ (acting ? (frame / 3) % motionCnt : 0);
+				+ (swinging ? (frame / 3 + i) % motionCnt : 0);
 
+			//---- 로비의 발판에 선 동료와 같은 크기 ----
+			//
+			//charZoom 에 enemyIconZoom 만 곱하고 있었다. 로비가 얹는
+			//몫(CREWZOOM · LOBBY_CREW_ZOOM_SCALE · 방 몫 · 발판 몫)이
+			//통째로 빠져서 같은 동료가 판에서는 콩알만 했다.
 			DrawCmfDetailShadow(crew->cmf, motion,
 				crewX + (acting ? lunge : 0), crewY,
 				side == 0 ? RIGHT : LEFT,
-				(deckSeen[side] ? charZoom[side]
-					: (boxH[side] / (float)DIORAMASIZE_Y) * DIORAMAZOOM_REMAINDER)
-				* enemyIconZoom[crew->type]);
+				deckSeen[side]
+					? CastleDeckCrewZoom(charZoom[side], crew->type)
+					: (boxH[side] / (float)DIORAMASIZE_Y)
+						* DIORAMAZOOM_REMAINDER * enemyIconZoom[crew->type]);
 
 			if (acting) {
 				actorPoint[0] = crewX + lunge;

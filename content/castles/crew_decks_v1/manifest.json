@@ -1,0 +1,112 @@
+[
+  {
+    "castle": 1,
+    "file": "deck-01.png",
+    "crop": [
+      41,
+      245,
+      2090,
+      245
+    ],
+    "foot": 88
+  },
+  {
+    "castle": 2,
+    "file": "deck-02.png",
+    "crop": [
+      43,
+      260,
+      2086,
+      244
+    ],
+    "foot": 88
+  },
+  {
+    "castle": 3,
+    "file": "deck-03.png",
+    "crop": [
+      32,
+      259,
+      2108,
+      219
+    ],
+    "foot": 79
+  },
+  {
+    "castle": 4,
+    "file": "deck-04.png",
+    "crop": [
+      36,
+      241,
+      2101,
+      266
+    ],
+    "foot": 96
+  },
+  {
+    "castle": 5,
+    "file": "deck-05.png",
+    "crop": [
+      43,
+      249,
+      2087,
+      259
+    ],
+    "foot": 93
+  },
+  {
+    "castle": 6,
+    "file": "deck-06.png",
+    "crop": [
+      21,
+      231,
+      2131,
+      269
+    ],
+    "foot": 97
+  },
+  {
+    "castle": 7,
+    "file": "deck-07.png",
+    "crop": [
+      41,
+      238,
+      2090,
+      280
+    ],
+    "foot": 101
+  },
+  {
+    "castle": 8,
+    "file": "deck-08.png",
+    "crop": [
+      35,
+      228,
+      2103,
+      291
+    ],
+    "foot": 105
+  },
+  {
+    "castle": 9,
+    "file": "deck-09.png",
+    "crop": [
+      21,
+      249,
+      2129,
+      290
+    ],
+    "foot": 104
+  },
+  {
+    "castle": 10,
+    "file": "deck-10.png",
+    "crop": [
+      11,
+      232,
+      2150,
+      274
+    ],
+    "foot": 99
+  }
+]

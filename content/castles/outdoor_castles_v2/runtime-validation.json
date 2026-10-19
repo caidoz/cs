@@ -1,0 +1,22 @@
+{
+  "exteriors": 10,
+  "animatedWheelCount": 29,
+  "wheelSchedule": [
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4
+  ],
+  "lobby": "PASS all ten natural-aspect exteriors, stage size progression, wheel texture sizes and rotation",
+  "companions": "PASS all six foot anchors on authored outdoor deck for every castle",
+  "interiors": "PASS 1..10 uniform floors, room toggle open/close, 20 residents and camera zoom",
+  "pvpEntrance": "PASS ten complementary icon pairs, mirroring, wheel baseline and screen bounds",
+  "pvpLayout": "PASS both debug selectors and all ten lobby size ratios",
+  "mapIcons": "PASS ten resource IDs, boot-loaded texture caches, 1024px dimensions and source hashes"
+}
