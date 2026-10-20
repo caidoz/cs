@@ -1879,8 +1879,15 @@ void AllyShootAt(int obj, int level, int target)
 		ao[i].target = target;
 		ao[i].dirX = ao[i].dirF = RIGHT;
 
-		//수비측과 같은 높이에서 나간다.
-		ao[i].y = mom->y - PVP_BULLET_UP;
+		//---- 제 머리 위에서 나간다 ----
+		//
+		//모두 같은 높이(PVP_BULLET_UP)에서 쏘고 있었다. 양쪽이 같은 줄에
+		//서는 공성전은 그걸로 맞았지만, 성 위에 선 동료는 크기가 제각각
+		//이라 작은 동료는 머리에서 한참 뜨고 큰 동료는 가슴에서 나갔다.
+		//
+		//제 크기만큼 띄운다. 1 배 동료는 전과 똑같은 자리다.
+		ao[i].y = mom->y - PVP_BULLET_UP
+			* Max(CREW_SHOT_HEAD_MIN, mom->zoom);
 		break;
 	}
 }
