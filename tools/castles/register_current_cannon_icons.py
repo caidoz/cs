@@ -8,7 +8,7 @@ import json
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-SOURCE=ROOT/'content/castles/current_cannon_icons_v1'
+SOURCE=ROOT/'content/castles/current_cannon_icons_v2'
 OUT=ROOT/'Resources/res/inventory_cannon'
 THEMES=['stone_catapult','flamethrower','rocket_battery','gatling','guided_missiles',
         'heavy_siege','ice_crystal','laser','tesla','gravity']

@@ -1,0 +1,16 @@
+﻿{
+    "designs":  60,
+    "mountedExports":  60,
+    "unarmedBases":  10,
+    "inventoryExports":  60,
+    "mountedPreview":  "output/cannon-upgrades-review/mounted-all-grades.png",
+    "runtime":  "PASS 60 mounted combinations and 60 inventory frames",
+    "preview":  "content/castles/cannon_upgrades_v3/preview.png",
+    "registration":  "PASS distinct hashes, transparency, footprint masks, both atlas copies",
+    "build":  "PASS",
+    "pvp":  "PASS base and maximum grade mirrored layout",
+    "executable":  "proj.win32/Debug.win32/cs.exe",
+    "families":  10,
+    "grades":  6,
+    "sha256":  "1CBAE2C8227B8A16BED9EDE5CB5F278743271C3B7769D77C4E3D635B6380581A"
+}

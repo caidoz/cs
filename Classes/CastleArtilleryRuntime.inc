@@ -21,6 +21,24 @@ bool ArtilleryTargetValid(const CastleArtillery::Shot& shot) {
         && artilleryGeneration[shot.target]==shot.generation;
 }
 void ArtilleryHit(int target) {
+    CannonSynergy synergy;
+    StageCannonQuerySynergy(&synergy);
+    OBJECT* hero=&ao[PLAYER];
+    const long long damage=hero->ps[PS_DMG];
+    const int attackFrame=hero->attackFrame,attackLv=hero->attackLv;
+    const long long baseCannonDmg = damage*CastleCannonDamagePercent(stageArtillery.grade)/100;
+    hero->ps[PS_DMG]=Max(1LL, baseCannonDmg + synergy.swordBonusDmg);
+    AttackObj(PLAYER,target,true);
+    hero->ps[PS_DMG]=damage;
+    hero->attackFrame=attackFrame; hero->attackLv=attackLv;
+    if(target>=0 && target<TOTALOBJECT && ao[target].active) {
+        if(synergy.fireEssenceCnt > 0) ActivateDebuf(&ao[target], DEBUF_POISON0, 180, PLAYER);
+        if(synergy.iceEssenceCnt > 0) ActivateDebuf(&ao[target], DEBUF_SLOW0, 180, PLAYER);
+        if(synergy.thunderEssenceCnt > 0) ActivateDebuf(&ao[target], DEBUF_STUN0, 30, PLAYER);
+    }
+    return;
+}
+void OldArtilleryHit(int target) {
     OBJECT* hero=&ao[PLAYER];
     const long long damage=hero->ps[PS_DMG];
     const int attackFrame=hero->attackFrame,attackLv=hero->attackLv;
@@ -87,7 +105,10 @@ void StageArtilleryStep(bool running,int foe) {
     if(!StageBagCannon(&bagCastle,&bagLevel,NULL)) { StageArtilleryReset(); return; }
     if(stageArtillery.grade!=CastleArtillery::ClampGrade(bagCastle)) StageArtilleryReset(bagCastle);
     if(!running) return;
-    stageArtillery.cooldownOverride=CastleCannonCooldown(stageArtillery.grade);
+    CannonSynergy synStep;
+    StageCannonQuerySynergy(&synStep);
+    const int baseCool = CastleCannonCooldown(stageArtillery.grade);
+    stageArtillery.cooldownOverride = Max(20, baseCool * (100 - synStep.cooldownReductionPct) / 100);
     // 단계는 성 그림이 아니라 실어 온 그 포의 것이다.
     stageArtillery.upgrade=bagLevel;
     const int grade=stageArtillery.grade;
@@ -147,15 +168,23 @@ void StageArtilleryDraw(void) {
         const CastleArtillery::Shot& s=stageArtillery.shots[i];
         if(!s.active) continue;
         const int animation=s.age/3;
-        const float shotScale=CastleArtillery::ProjectileScale(s.upgrade);
+        CannonSynergy synDraw;
+        StageCannonQuerySynergy(&synDraw);
+        const float shotScale=CastleArtillery::ProjectileScale(s.upgrade) * (1.0f + synDraw.scaleBonus);
         if(s.impact) {
             const int impact=(CastleArtillery::State::ImpactFrames-s.impact)*8/CastleArtillery::State::ImpactFrames;
             ArtillerySprite(10+grade,impact,s.position.x,s.position.y,(p.size+12)*_2X*shotScale);
             if(p.kind==CastleArtillery::Laser) ArtilleryBeam(s,impact);
             if(p.kind==CastleArtillery::Electric)
                 DrawEffect(EFFECT_THUNDER0+impact,s.position.x,s.position.y,0,0,0.85f*shotScale);
-            if(p.kind==CastleArtillery::Ice)
-                DrawEffect(EFFECT_ICE0+impact,s.position.x,s.position.y,0,0,0.85f*shotScale);
+            if(p.kind==CastleArtillery::Ice || synDraw.iceEssenceCnt > 0)
+                DrawEffect(EFFECT_ICE0+impact,s.position.x,s.position.y,0,0,1.1f*shotScale);
+            if(p.kind==CastleArtillery::Electric || synDraw.thunderEssenceCnt > 0)
+                DrawEffect(EFFECT_THUNDER0+impact,s.position.x,s.position.y,0,0,1.1f*shotScale);
+            if(p.kind==CastleArtillery::Flame || synDraw.fireEssenceCnt > 0)
+                DrawEffect(EFFECT_FIRE0+(impact%8),s.position.x,s.position.y,0,0,1.2f*shotScale);
+            if(synDraw.swordCnt > 0)
+                SetHitMark(s.position.x,s.position.y,RIGHT,HITMARK_SMALL,0,PLAYER,1.2f);
             continue;
         }
         if(p.kind==CastleArtillery::Laser) { ArtilleryBeam(s,animation); continue; }
@@ -163,7 +192,7 @@ void StageArtilleryDraw(void) {
         const float angle=p.kind==CastleArtillery::Rock?s.age*12.0f:
             (p.kind==CastleArtillery::Homing||p.kind==CastleArtillery::Rockets)?
             -std::atan2(dy,dx)*180/3.14159265f:0;
-        if(p.kind==CastleArtillery::Flame||p.kind==CastleArtillery::Homing||p.kind==CastleArtillery::Rockets) {
+        if(p.kind==CastleArtillery::Flame||p.kind==CastleArtillery::Homing||p.kind==CastleArtillery::Rockets||synDraw.fireEssenceCnt>0) {
             ArtillerySprite(20+grade,animation,s.previous.x,s.previous.y,p.size*_2X*0.6f*shotScale);
         }
         for(int trail=0;trail<s.upgrade/2;++trail)

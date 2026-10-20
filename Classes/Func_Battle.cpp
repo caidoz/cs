@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -1130,6 +1130,24 @@ namespace {
 	//시계의 상한. 그림이 차오른 비율을 셀 때 쓴다.
 	int stageSwordMax[GRIDTEST_MAXITEM] = { 0, };
 
+	//격자의 방패/갑옷. 격자 칸 번호마다 방어막 충전 시계를 든다.
+	int stageShieldCool[GRIDTEST_MAXITEM] = { 0, };
+	int stageShieldPart[GRIDTEST_MAXITEM] = { 0, };
+	int stageShieldFlash[GRIDTEST_MAXITEM] = { 0, };
+	int stageShieldMax[GRIDTEST_MAXITEM] = { 0, };
+
+	//격자의 작전서 (지휘형 동료 영웅 궁극기 충전)
+	int stageTacticCool[GRIDTEST_MAXITEM] = { 0, };
+	int stageTacticFlash[GRIDTEST_MAXITEM] = { 0, };
+	int stageTacticMax[GRIDTEST_MAXITEM] = { 0, };
+
+	//영웅 필살기 컷인 연출 상태
+	int stageHeroUltFrame = 0;
+	const char* stageHeroUltTitle = "소울 크래시";
+
+	//대장장이형 동료 주기적 수리 시계
+	int stageBlacksmithRepairCool = 0;
+
 	//전투 버튼으로 켜고 끈다. 꺼져 있으면 몬스터가 서 있어도 아무도 안 친다.
 	//
 	//판이 바뀌어도 그대로 둔다. 한 번 켜면 스테이지를 넘기며 계속 싸우는
@@ -1185,6 +1203,19 @@ void StageRtBegin(void)
 	memset(stageSwordPart, 0, sizeof(stageSwordPart));
 	memset(stageSwordFlash, 0, sizeof(stageSwordFlash));
 	memset(stageSwordMax, 0, sizeof(stageSwordMax));
+
+	memset(stageShieldCool, 0, sizeof(stageShieldCool));
+	memset(stageShieldPart, 0, sizeof(stageShieldPart));
+	memset(stageShieldFlash, 0, sizeof(stageShieldFlash));
+	memset(stageShieldMax, 0, sizeof(stageShieldMax));
+
+	memset(stageTacticCool, 0, sizeof(stageTacticCool));
+	memset(stageTacticFlash, 0, sizeof(stageTacticFlash));
+	memset(stageTacticMax, 0, sizeof(stageTacticMax));
+	stageHeroUltFrame = 0;
+	stageBlacksmithRepairCool = 0;
+	StageInitFortressHealthAndArmor();
+	GridEnsureTacticScroll();
 
 	//STAGE_MONSTER_CNT 마리를 채우면 판이 끝난다(Func_Movement 의 VanishMove).
 	//안 지우면 지난 판의 수가 남아 들어서자마자 상자가 떨어진다.
@@ -1630,6 +1661,113 @@ bool StageRtSwordCharge(int slot, float* charge, int* flash)
 	return true;
 }
 
+int StageShieldCooldown(int itemType, int detail)
+{
+	if (itemType == ITEM_SHIELD)
+		return 150; // 2.5초 (방패: 빠른 방어막 펄스)
+	if (itemType == ITEM_ARMOR)
+		return 210; // 3.5초 (판금갑옷: 묵직한 방어막 펄스)
+	return 240;     // 4.0초 (기타 투구/부츠/장신구 방어구)
+}
+
+bool StageRtShieldCharge(int slot, float* charge, int* flash)
+{
+	if (slot < 0 || slot >= GRIDTEST_MAXITEM || stageShieldPart[slot] == 0)
+		return false;
+
+	const int max = Max(1, stageShieldMax[slot]);
+
+	if (charge) *charge = (float)Max(0, stageShieldCool[slot]) / (float)max;
+	if (flash) *flash = stageShieldFlash[slot];
+	return true;
+}
+
+bool StageRtTacticCharge(int slot, float* charge, int* flash)
+{
+	if (slot < 0 || slot >= GRIDTEST_MAXITEM)
+		return false;
+
+	const int max = Max(1, stageTacticMax[slot]);
+
+	if (charge) *charge = (float)Max(0, stageTacticCool[slot]) / (float)max;
+	if (flash) *flash = stageTacticFlash[slot];
+	return true;
+}
+
+void StageHeroUltDraw(void)
+{
+	if (stageHeroUltFrame <= 0)
+		return;
+
+	stageHeroUltFrame--;
+
+	const int bannerY = (int)(DY * 0.58f);
+	const int bannerH = 46 * _2X;
+
+	// 1. 화면 전체 플래시 (시작 직후 몇 프레임)
+	if (stageHeroUltFrame > 35) {
+		SetAlpha((stageHeroUltFrame - 35) * 15);
+		MemRect(0, 0, DX, DY, 0xFFFFFF);
+	}
+
+	// 2. 어두운 배경 띠
+	SetAlpha(200);
+	MemRect(0, bannerY - bannerH / 2, DX, bannerH, 0x140A28);
+	MemRectFrame(0, bannerY - bannerH / 2, DX, bannerH, 0xFFCC33);
+	SetAlpha(ALPHA_MAX);
+
+	// 3. 타이틀 텍스트
+	SetFontColor(0xFFDD44);
+	CenterTextStrSolid("★ 영웅 필살 각성 ★", DX / 2, bannerY + 8 * _2X, 0.45f);
+
+	SetFontColor(0xFF66AA);
+	CenterTextStrSolid(stageHeroUltTitle ? stageHeroUltTitle : "소울 크래시", DX / 2, bannerY - 8 * _2X, 0.54f);
+}
+
+void StageUpdateFortressDefense(void)
+{
+	OBJECT* hero = &ao[PLAYER];
+	long long baseArmor = 100 + CastleBonusOf(CPE_DEF) * 20 + hero->ps[PS_ARMOR] * 3;
+
+	StageSword shields[GRIDTEST_MAXITEM];
+	const int shieldCnt = GridTestShields(shields, GRIDTEST_MAXITEM);
+	for (int i = 0; i < shieldCnt; ++i) {
+		baseArmor += shields[i].value * 3;
+	}
+
+	hero->shieldMax = (int)Max(100LL, baseArmor);
+	if (hero->shield > hero->shieldMax)
+		hero->shield = hero->shieldMax;
+}
+
+void StageInitFortressHealthAndArmor(void)
+{
+	OBJECT* hero = &ao[PLAYER];
+	if (hero->ps[PS_HP] <= 0) hero->ps[PS_HP] = 1000;
+
+	// 1. 성 총 체력: 성 기본 내구도 + 히어로 체력 + 바지(Pants) 보너스 + 승선 동료 체력 기여
+	long long totalHp = hero->ps[PS_HP] + GridTestPantsHpBonus();
+	for (int i = 0; i < MAXCREW; ++i) {
+		const OBJECT* c = &ao[CREW + i];
+		if (c->active && c->ps[PS_HP] > 0) {
+			// 바지와 인접한 동료는 성채 체력 기여도 2배 (50% -> 100%)
+			const bool pantsBoost = GridCrewHasAdjacentPants(i);
+			totalHp += pantsBoost ? c->ps[PS_HP] : (c->ps[PS_HP] / 2);
+		}
+	}
+	const int hpPct = CastleBonusOf(CPE_HP_PCT);
+	if (hpPct > 0)
+		totalHp += totalHp * hpPct / 100;
+
+	hero->maxhp = totalHp;
+	hero->hp = totalHp;
+	hero->dead = false;
+
+	// 2. 총 방어력(Armor/Shield): 성 기본 방어력 + 가방 방어구
+	StageUpdateFortressDefense();
+	hero->shield = hero->shieldMax;
+}
+
 //쓰러졌거나 쓰러지는 중이면 더 치지 않는다. 한 프레임에 여러 자루가 치는데
 //앞의 한 대가 눕혔으면 뒤의 것이 사망 처리를 한 번 더 돌린다.
 static bool StageRtFoeAlive(int foe)
@@ -1756,7 +1894,11 @@ void UpdateStageRealtime(void)
 		const StageSword* s = &swords[k];
 		const int slot = s->slot;
 
-		stageSwordMax[slot] = StageSwordCooldown(s->detail);
+		int swordCool = StageSwordCooldown(s->detail);
+		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_HELM)) {
+			swordCool = swordCool * 85 / 100; // 투구 인접 시 무기 쿨타임 15% 가속
+		}
+		stageSwordMax[slot] = swordCool;
 
 		if (stageSwordPart[slot] != s->part + 1) {
 			stageSwordPart[slot] = s->part + 1;
@@ -1779,7 +1921,11 @@ void UpdateStageRealtime(void)
 				float ox, oy;
 
 				StageOrbitPos(PLAYER, k, swordCnt, &ox, &oy);
-				StageFoeShotFireFrom(PLAYER, foe, s->detail, s->value, &ox, &oy);
+				int finalSwordVal = s->value;
+				if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_GLOVE)) {
+					finalSwordVal = finalSwordVal * 120 / 100; // 장갑 인접 시 공격력 +20% (숫돌 효과)
+				}
+				StageFoeShotFireFrom(PLAYER, foe, s->detail, finalSwordVal, &ox, &oy);
 			}
 
 			stageSwordCool[slot] = 0;
@@ -1789,6 +1935,145 @@ void UpdateStageRealtime(void)
 		if (stageSwordCool[slot] < stageSwordMax[slot]) {
 			if (++stageSwordCool[slot] >= stageSwordMax[slot])
 				stageSwordFlash[slot] = STAGE_SWORD_FLASH;
+		}
+	}
+
+	//---- 가방의 방패/갑옷 쿨타임 및 방어력(Armor/Shield) 완충 ----
+	StageSword shields[GRIDTEST_MAXITEM];
+	const int shieldCnt = GridTestShields(shields, GRIDTEST_MAXITEM);
+
+	for (int k = 0; k < shieldCnt; ++k) {
+		const StageSword* s = &shields[k];
+		const int slot = s->slot;
+
+		int shieldCool = StageShieldCooldown(s->detail, s->grade);
+		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_BOOTS)) {
+			shieldCool = shieldCool * 80 / 100; // 신발 인접 시 방어막 재충전 펄스 20% 가속
+		}
+		stageShieldMax[slot] = shieldCool;
+
+		if (stageShieldPart[slot] != s->part + 1) {
+			stageShieldPart[slot] = s->part + 1;
+			stageShieldFlash[slot] = 0;
+			stageShieldCool[slot] = 0;
+		}
+
+		if (!running || !StageRtFoeAlive(foe))
+			continue;
+
+		if (stageShieldFlash[slot] > 0) {
+			if (--stageShieldFlash[slot] > 0)
+				continue;
+
+			// 방패/갑옷 쿨타임 완료: 성채 방어력(Armor/Shield) 충전!
+			if (hero->shield < hero->shieldMax) {
+				hero->shield = Min(hero->shieldMax, hero->shield + s->value);
+			}
+			stageShieldCool[slot] = 0;
+			continue;
+		}
+
+		if (stageShieldCool[slot] < stageShieldMax[slot]) {
+			if (++stageShieldCool[slot] >= stageShieldMax[slot])
+				stageShieldFlash[slot] = STAGE_SWORD_FLASH;
+		}
+	}
+
+	//---- 가방의 작전서 (지휘형 동료 연동 영웅 궁극기 충전) ----
+	StageSword tactics[GRIDTEST_MAXITEM];
+	const int tacticCnt = GridTestTactics(tactics, GRIDTEST_MAXITEM);
+
+	for (int k = 0; k < tacticCnt; ++k) {
+		const StageSword* t = &tactics[k];
+		const int slot = t->slot;
+
+		bool hasKing = false;
+		bool hasDurak = false;
+		for (int i = 0; i < MAXCREW; ++i) {
+			if (ao[CREW+i].active && !ao[CREW+i].dead) {
+				if (ao[CREW+i].type == NPC_KING) hasKing = true;
+				if (ao[CREW+i].type == NPC_DURAK) hasDurak = true;
+			}
+		}
+
+		int tacticCool = 480; // 8초 (480 프레임) 기본 쿨타임
+		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_HELM)) {
+			tacticCool = 384; // 투구 인접 시 전술 가속 20% 단축 (8초 -> 6.4초)
+		}
+		if (hasKing) {
+			tacticCool = tacticCool * 75 / 100; // 에드몬드 왕: 궁극기 충전 25% 추가 단축
+		}
+		stageTacticMax[slot] = tacticCool;
+
+		if (!running || !StageRtFoeAlive(foe))
+			continue;
+
+		if (stageTacticFlash[slot] > 0) {
+			if (--stageTacticFlash[slot] > 0)
+				continue;
+
+			// 작전서 충전 완료: 히어로 궁극기 (Soul Crash / Magic Blast / Vortex) 격발!
+			stageHeroUltFrame = 45;
+			if (curHero == 1) stageHeroUltTitle = "매직 블래스트";
+			else if (curHero == 2) stageHeroUltTitle = "기간틱 볼텍스";
+			else stageHeroUltTitle = "소울 크래시";
+
+			PlayMusic(M_BANG);
+			effect.shake = 5;
+
+			if (StageRtFoeAlive(foe)) {
+				const long long keep = hero->ps[PS_DMG];
+				const int ultMult = hasKing ? 5 : 4; // 왕 보유 시 500% 대미지
+				hero->ps[PS_DMG] = keep * ultMult;
+				AttackObj(PLAYER, foe);
+				hero->ps[PS_DMG] = keep;
+
+				// 광역/단일 폭발 및 1.5초 기절
+				ao[foe].debuf[DEBUF_STUN0] = 90;
+			}
+
+			if (hasDurak) { // 듀라크 장군: 진격 명령으로 무기 및 동료 쿨타임 즉시 초기화
+				memset(stageCrewCool, 0, sizeof(stageCrewCool));
+				memset(stageSwordCool, 0, sizeof(stageSwordCool));
+			}
+
+			stageTacticCool[slot] = 0;
+			continue;
+		}
+
+		if (stageTacticCool[slot] < stageTacticMax[slot]) {
+			if (++stageTacticCool[slot] >= stageTacticMax[slot])
+				stageTacticFlash[slot] = STAGE_SWORD_FLASH;
+		}
+	}
+
+	//---- 대장장이/지원형 동료: 주기적 성채 수리 및 방어막 재생 ----
+	int blacksmithCrewSlot = -1;
+	bool hasLora = false;
+	for (int i = 0; i < MAXCREW; ++i) {
+		const OBJECT* c = &ao[CREW + i];
+		if (c->active && !c->dead) {
+			if (GetCrewRole(c->type) == CREW_ROLE_BLACKSMITH && blacksmithCrewSlot < 0) {
+				blacksmithCrewSlot = i;
+			}
+			if (c->type == NPC_LORA) {
+				hasLora = true;
+			}
+		}
+	}
+	if (blacksmithCrewSlot >= 0 && running) {
+		const int repairInterval = hasLora ? 180 : 300; // 로라 공주(★6) 배치 시 3초마다 발동 (기본 5초)
+		if (++stageBlacksmithRepairCool >= repairInterval) {
+			stageBlacksmithRepairCool = 0;
+			const bool pantsSupport = GridCrewHasAdjacentPants(blacksmithCrewSlot);
+			const int repairPct = hasLora ? 10 : (pantsSupport ? 8 : 5); // 바지 연계 시 5% -> 8%, 로라 공주 시 10%
+			if (hero->hp < hero->maxhp) {
+				hero->hp = Min(hero->maxhp, hero->hp + Max(50LL, hero->maxhp * repairPct / 100));
+			}
+			if (hero->shield < hero->shieldMax) {
+				const int shieldGain = hasLora ? 120 : 60;
+				hero->shield = Min(hero->shieldMax, hero->shield + shieldGain);
+			}
 		}
 	}
 
@@ -1803,8 +2088,9 @@ void UpdateStageRealtime(void)
 		c->frame++;
 
 		if (running && foe >= 0) {
+			const int crewSpeed = (c->type == NPC_EVAN) ? 4 : (GetCrewRole(c->type) == CREW_ROLE_STRIKER) ? 2 : 1;
 			if (stageCrewCool[i] < BossRaidCrewCooldown(i))
-				stageCrewCool[i]++;
+				stageCrewCool[i] += crewSpeed;
 			else {
 				//몇 차 스킬인가. PVP 와 같은 자로 잰다 - 쏜 횟수다.
 				const int done = ++stageCrewShotCnt[i];

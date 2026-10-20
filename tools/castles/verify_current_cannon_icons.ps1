@@ -1,3 +1,4 @@
+param([string]$Executable='proj.win32/Debug.win32/cs.exe')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $review=Join-Path $root 'output/current-cannon-icons-review'
@@ -9,7 +10,7 @@ try {
  Set-Content (Join-Path $review 'phases.log') ''
  $env:CS_CASTLE_REVIEW_PATH=$review.Replace('\','/')+'/'
  $env:CS_CURRENT_CANNON_ICON_REVIEW='1';$env:CS_BATTLE_MENU_REVIEW='1';$env:CS_BATTLE_MENU_HEIGHT='1400'
- $process=Start-Process (Join-Path $root 'proj.win32/Debug.win32/cs.exe') -WorkingDirectory (Join-Path $root 'Resources') -WindowStyle Hidden -PassThru
+ $process=Start-Process (Join-Path $root $Executable) -WorkingDirectory (Join-Path $root 'Resources') -WindowStyle Hidden -PassThru
  $deadline=[DateTime]::UtcNow.AddSeconds(35)
  do {
   Start-Sleep -Milliseconds 400

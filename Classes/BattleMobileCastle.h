@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // BattleMobileCastle.h
 // Manages the Mobile Fortress Battle Scene in MD_PLAY:
 // - Left: Player's Modular Mobile Castle (1~10 floors, drawn via CastlePartsDrawRect)
@@ -174,65 +174,134 @@ inline void DrawCastle(int groundY) {
 	                 naturalW, naturalH, scale, curCastle, true);
 }
 
-//다리 옆 체력 패널. 어두운 반투명 틀과 픽셀 하이라이트를 공유한다.
+//다리 옆 체력/방어력 패널. 어두운 반투명 틀과 픽셀 하이라이트를 공유한다.
 inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
-                         const char* title, bool enemy) {
-	const int px=Max(1,_2X), h=34*px;
-	const bool compact=w<64*px;
-	const long long maximum=Max(0LL,maxHp), current=Max(0LL,Min(hp,maximum));
+                         const char* title, bool enemy,
+                         long long shield = 0, long long maxShield = 0) {
+	const int px = Max(1, _2X);
+	const bool hasShield = (maxShield > 0);
+	const int h = (hasShield ? 44 : 34) * px;
+	const bool compact = w < 64 * px;
+	const long long maximum = Max(0LL, maxHp), current = Max(0LL, Min(hp, maximum));
+	const long long sMaximum = Max(0LL, maxShield), sCurrent = Max(0LL, Min(shield, sMaximum));
+
 	SetAlpha(20);
-	MemRect(x+2*px,y-2*px,w,h,0x050912);
-	MemRect(x,y,w,h,0x101D30);
+	MemRect(x + 2 * px, y - 2 * px, w, h, 0x050912);
+	MemRect(x, y, w, h, 0x101D30);
 	SetAlpha(ALPHA_MAX);
-	MemRectFrame(x+px,y-px,w-2*px,h-2*px,enemy?0xB8836D:0xB5CDE0);
-	MemRect(x+4*px,y-2*px,w-8*px,px,enemy?0xEAC1A2:0xDBE9F2);
-	const int trackX=x+5*px,trackY=y-(compact?14:17)*px,trackW=w-10*px,trackH=(compact?8:11)*px;
-	MemRect(trackX-px,trackY+px,trackW+2*px,trackH+2*px,0x060D19);
-	MemRect(trackX,trackY,trackW,trackH,enemy?0x42232B:0x1C3542);
-	const int fill=maximum>0?(int)(trackW*((double)current/maximum)):0;
-	if(fill>0) {
-		MemRect(trackX,trackY,fill,trackH,enemy?0xCB4659:0x2798AF);
-		MemRect(trackX,trackY,fill,3*px,enemy?0xFF8C82:0x84E4DB);
-		MemRect(trackX,trackY-trackH+2*px,fill,2*px,enemy?0x90334D:0x186479);
-		if(fill>2*px) MemRect(trackX+fill-px,trackY-px,px,trackH-2*px,enemy?0xFFC3A3:0xC4FFF0);
+	MemRectFrame(x + px, y - px, w - 2 * px, h - 2 * px, enemy ? 0xB8836D : 0xB5CDE0);
+	MemRect(x + 4 * px, y - 2 * px, w - 8 * px, px, enemy ? 0xEAC1A2 : 0xDBE9F2);
+
+	const int trackX = x + 5 * px, trackW = w - 10 * px;
+
+	if (hasShield) {
+		//---- 2단 게이지: 상단 방어력(실드), 하단 본체 체력 ----
+		char titleStr[96];
+		sprintf(titleStr, "%s   %d%%", title, maximum > 0 ? (int)(100.0 * current / maximum) : 0);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(titleStr, x + w / 2, y - 5 * px,
+			Min((compact ? .32f : .44f) * px, (w - 12.0f * px) / Max(1.0f, StringWidth(titleStr, 1.0f))));
+
+		// 1. 방어막/실드 트랙 (골드/호박색)
+		const int sTrackY = y - (compact ? 13 : 15) * px, sTrackH = (compact ? 7 : 8) * px;
+		MemRect(trackX - px, sTrackY + px, trackW + 2 * px, sTrackH + 2 * px, 0x060D19);
+		MemRect(trackX, sTrackY, trackW, sTrackH, 0x36270C);
+		const int sFill = sMaximum > 0 ? (int)(trackW * ((double)sCurrent / sMaximum)) : 0;
+		if (sFill > 0) {
+			MemRect(trackX, sTrackY, sFill, sTrackH, 0xF5B025);
+			MemRect(trackX, sTrackY, sFill, 2 * px, 0xFFE88A);
+			MemRect(trackX, sTrackY - sTrackH + 2 * px, sFill, 2 * px, 0xA87110);
+			if (sFill > 2 * px) MemRect(trackX + sFill - px, sTrackY - px, px, sTrackH - 2 * px, 0xFFF4C4);
+		}
+		char sVal[96];
+		if (compact) sprintf(sVal, "방어 %d%%", sMaximum > 0 ? (int)(100.0 * sCurrent / sMaximum) : 0);
+		else sprintf(sVal, "방어 %lld / %lld", sCurrent, sMaximum);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(sVal, x + w / 2, sTrackY - px,
+			Min((compact ? .30f : .36f) * px, (trackW - 4.0f * px) / Max(1.0f, StringWidth(sVal, 1.0f))));
+
+		// 2. 본체 체력 트랙 (청록색)
+		const int hpTrackY = y - (compact ? 24 : 27) * px, hpTrackH = (compact ? 8 : 10) * px;
+		MemRect(trackX - px, hpTrackY + px, trackW + 2 * px, hpTrackH + 2 * px, 0x060D19);
+		MemRect(trackX, hpTrackY, trackW, hpTrackH, enemy ? 0x42232B : 0x1C3542);
+		const int hpFill = maximum > 0 ? (int)(trackW * ((double)current / maximum)) : 0;
+		if (hpFill > 0) {
+			MemRect(trackX, hpTrackY, hpFill, hpTrackH, enemy ? 0xCB4659 : 0x2798AF);
+			MemRect(trackX, hpTrackY, hpFill, 2 * px, enemy ? 0xFF8C82 : 0x84E4DB);
+			MemRect(trackX, hpTrackY - hpTrackH + 2 * px, hpFill, 2 * px, enemy ? 0x90334D : 0x186479);
+			if (hpFill > 2 * px) MemRect(trackX + hpFill - px, hpTrackY - px, px, hpTrackH - 2 * px, enemy ? 0xFFC3A3 : 0xC4FFF0);
+		}
+		char hpVal[96];
+		if (compact) sprintf(hpVal, "체력 %lld", current);
+		else sprintf(hpVal, "체력 %lld / %lld", current, maximum);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(hpVal, x + w / 2, hpTrackY - px,
+			Min((compact ? .32f : .38f) * px, (trackW - 4.0f * px) / Max(1.0f, StringWidth(hpVal, 1.0f))));
+
+		if (compact) {
+			char a[32], b[32];
+			if (current >= 1000000) sprintf(a, "%.3gM", current / 1000000.0);
+			else if (current >= 1000) sprintf(a, "%.3gK", current / 1000.0);
+			else sprintf(a, "%lld", current);
+			if (maximum >= 1000000) sprintf(b, "%.3gM", maximum / 1000000.0);
+			else if (maximum >= 1000) sprintf(b, "%.3gK", maximum / 1000.0);
+			else sprintf(b, "%lld", maximum);
+			sprintf(hpVal, "%s / %s", a, b);
+			CenterTextStrSolid(hpVal, x + w / 2, y - 36 * px,
+				Min(.28f * px, (w - 8.0f * px) / Max(1.0f, StringWidth(hpVal, 1.0f))));
+		}
+	} else {
+		//---- 기본 1단 게이지 (적 또는 방패 없는 대상) ----
+		const int trackY = y - (compact ? 14 : 17) * px, trackH = (compact ? 8 : 11) * px;
+		MemRect(trackX - px, trackY + px, trackW + 2 * px, trackH + 2 * px, 0x060D19);
+		MemRect(trackX, trackY, trackW, trackH, enemy ? 0x42232B : 0x1C3542);
+		const int fill = maximum > 0 ? (int)(trackW * ((double)current / maximum)) : 0;
+		if (fill > 0) {
+			MemRect(trackX, trackY, fill, trackH, enemy ? 0xCB4659 : 0x2798AF);
+			MemRect(trackX, trackY, fill, 3 * px, enemy ? 0xFF8C82 : 0x84E4DB);
+			MemRect(trackX, trackY - trackH + 2 * px, fill, 2 * px, enemy ? 0x90334D : 0x186479);
+			if (fill > 2 * px) MemRect(trackX + fill - px, trackY - px, px, trackH - 2 * px, enemy ? 0xFFC3A3 : 0xC4FFF0);
+		}
+		char value[96];
+		if (compact) sprintf(value, "%d%%", maximum > 0 ? (int)(100.0 * current / maximum) : 0);
+		else sprintf(value, "%lld / %lld", current, maximum);
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid(value, x + w / 2, trackY - px,
+			Min((compact ? .34f : .43f) * px, (trackW - 4.0f * px) / Max(1.0f, StringWidth(value, 1.0f))));
+		if (compact) {
+			char a[32], b[32];
+			if (current >= 1000000) sprintf(a, "%.3gM", current / 1000000.0);
+			else if (current >= 1000) sprintf(a, "%.3gK", current / 1000.0);
+			else sprintf(a, "%lld", current);
+			if (maximum >= 1000000) sprintf(b, "%.3gM", maximum / 1000000.0);
+			else if (maximum >= 1000) sprintf(b, "%.3gK", maximum / 1000.0);
+			else sprintf(b, "%lld", maximum);
+			sprintf(value, "%s / %s", a, b);
+			CenterTextStrSolid(value, x + w / 2, y - 25 * px,
+				Min(.3f * px, (w - 8.0f * px) / Max(1.0f, StringWidth(value, 1.0f))));
+			sprintf(value, "%s", title);
+		} else sprintf(value, "%s   %d%%", title, maximum > 0 ? (int)(100.0 * current / maximum) : 0);
+		CenterTextStrSolid(value, x + w / 2, y - 5 * px,
+			Min(.5f * px, (w - 12.0f * px) / Max(1.0f, StringWidth(value, 1.0f))));
 	}
-	char value[96];
-	if(compact) sprintf(value,"%d%%",maximum>0?(int)(100.0*current/maximum):0);
-	else sprintf(value,"%lld / %lld",current,maximum);
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid(value,x+w/2,trackY-px,
-		Min((compact?.34f:.43f)*px,(trackW-4.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
-	if(compact) {
-		char a[32],b[32];
-		if(current>=1000000) sprintf(a,"%.3gM",current/1000000.0);
-		else if(current>=1000) sprintf(a,"%.3gK",current/1000.0);
-		else sprintf(a,"%lld",current);
-		if(maximum>=1000000) sprintf(b,"%.3gM",maximum/1000000.0);
-		else if(maximum>=1000) sprintf(b,"%.3gK",maximum/1000.0);
-		else sprintf(b,"%lld",maximum);
-		sprintf(value,"%s / %s",a,b);
-		CenterTextStrSolid(value,x+w/2,y-25*px,
-			Min(.3f*px,(w-8.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
-		sprintf(value,"%s",title);
-	} else sprintf(value,"%s   %d%%",title,maximum>0?(int)(100.0*current/maximum):0);
-	CenterTextStrSolid(value,x+w/2,y-5*px,
-		Min(.5f*px,(w-12.0f*px)/Max(1.0f,StringWidth(value,1.0f))));
 }
 
 //다리 기준으로 좌우에 배치한다. 가운데 인벤토리에는 겹치지 않는다.
 inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
 	// Leave the central inventory fully visible and keep both cards beside the bridge.
-	const int gap=8*_2X, w=Max(32,(DX-inventoryWidth)/2-2*gap), y=groundY-8*_2X;
+	const int gap = 8 * _2X, w = Max(32, (DX - inventoryWidth) / 2 - 2 * gap), y = groundY - 8 * _2X;
 	// The castle's health pool is the player health that receives enemy attacks.
-	DrawDuelHpBar(gap,y,w,ao[PLAYER].hp,ao[PLAYER].maxhp,"성 총 체력",false);
-	long long hp=0,maximum=0;
-	for(int i=ENEMY;i<NEUTRAL;++i) {
-		const OBJECT& foe=ao[i];
-		if(!foe.active || foe.type<=0 || foe.mom!=i || foe.moveHandler==REGENMOVE) continue;
-		maximum+=Max(0LL,foe.maxhp);
-		if(!foe.dead) hp+=Max(0LL,Min(foe.hp,foe.maxhp));
+	const long long playerMaxHp = Max(ao[PLAYER].maxhp, ao[PLAYER].ps[PS_HP]);
+	DrawDuelHpBar(gap, y, w, ao[PLAYER].hp, playerMaxHp, "성 요새 체력", false,
+	              ao[PLAYER].shield, ao[PLAYER].shieldMax);
+	long long hp = 0, maximum = 0;
+	for (int i = ENEMY; i < NEUTRAL; ++i) {
+		const OBJECT& foe = ao[i];
+		if (!foe.active || foe.type <= 0 || foe.mom != i || foe.moveHandler == REGENMOVE) continue;
+		maximum += Max(0LL, foe.maxhp);
+		if (!foe.dead) hp += Max(0LL, Min(foe.hp, foe.maxhp));
 	}
-	DrawDuelHpBar(DX-gap-w,y,w,hp,maximum,"적 총 체력",true);
+	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 총 체력", true);
 }
 
 inline void DrawBossMonster(int groundY) {

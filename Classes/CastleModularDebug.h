@@ -4,6 +4,7 @@
 #include "Data/IndividualCastleV4.h"
 #include "Data/IndividualCastleRooms.h"
 #include "Data/InventoryCannonSprites.h"
+#include "Data/MountedCannonSprites.h"
 #include "Data/CastleRoomFacade.h"
 #include "Data/SdRoomDeck.h"
 #include "Data/CastleCrewDeckLayout.h"
@@ -715,7 +716,8 @@ static void DrawRoomCover(int castle) {
  const bool reveal=RoomRevealRequested(castle);
  roomCoverRevealed[castle]=reveal;
  // Complete exteriors already draw the closed facade exactly once.
- if(r.material>=CASTLE_INDIVIDUAL_V4_FIRST_IMG && r.material<=CASTLE_INDIVIDUAL_V4_LAST_IMG && !reveal) return;
+ if(!reveal && ((r.material>=CASTLE_INDIVIDUAL_V4_FIRST_IMG && r.material<=CASTLE_INDIVIDUAL_V4_LAST_IMG)
+   || (r.material>=CASTLE_UNARMED_FIRST_IMG && r.material<=CASTLE_UNARMED_LAST_IMG))) return;
  const auto segment=[&](int a,int b,int row,int bh) {
   if(b<=a) return;
   const int sx=r.sx+(int)((a-r.left)*(float)r.sw/r.width);
@@ -747,8 +749,11 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  p.fitScale=unit/(1056.0f*(r.width/342.0f)/r.w*scale);
  // The approved image already contains the outdoor ledge and compact chassis.
  // Render it intact; never split/raise the upper body or add another deck.
+ const int baseImg=CASTLE_UNARMED_FIRST_IMG+castle;
+ if(!sprite[baseImg]) LoadImg(baseImg);
+ if(!sprite[baseImg]) { missingAsset=true; return false; }
  DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),
-   (int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[img],img);
+   (int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[baseImg],baseImg);
  const float angle=WheelAngleNow(r.wheels[0].r*unit);
  p.wheelAngle=angle;
  p.commanderX=p.left+(r.hero-r.x)*unit;p.commanderY=p.top-(r.floor-r.y)*unit;
@@ -764,7 +769,7 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
   cover.height=floorPixels*p.roomCount;
   cover.left=(int)std::lround(p.left+(a.x+a.w*.5f-r.x)*unit-cover.width*.5f);
   cover.top=(int)std::lround(p.top-(a.y+a.h-r.y)*unit+IndividualCastleRooms::BottomLift*worldZoom)+cover.height;
-  cover.material=img;
+  cover.material=baseImg;
   cover.sx=(int)std::lround(r.x+(cover.left-p.left)/unit);
   cover.sy=(int)std::lround(r.y+(p.top-cover.top)/unit);
   cover.sw=Max(1,(int)std::lround(cover.width/unit));
@@ -802,7 +807,28 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
     (int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[img+1+i],img+1+i);
  }
  cannonBaseY[castle]=p.commanderY;
- cannonMuzzleX[castle]=p.left+(r.mx-r.x)*unit;cannonMuzzleY[castle]=p.top-(r.my-r.y)*unit;cannonMuzzleValid[castle]=true;
+ int cannonStage=active?roomStage[castle]:CastleVisualPartLevel(castle,3);
+ if(getenv("CS_CASTLE_REVIEW_PATH") && getenv("CS_CANNON_GRADE_REVIEW"))
+   cannonStage=Max(0,Min(5,atoi(getenv("CS_CANNON_GRADE_REVIEW"))));
+ const auto& gun=MountedCannons::Get(castle,cannonStage);
+ const auto& mount=MountedCannons::mounts[castle];
+ const int gunImg=CANNON_UPGRADE_ATLAS_IMG;
+ if(!sprite[gunImg]) LoadImg(gunImg);
+ // Fit from the mounting surface with one uniform scale. Grades gain modest
+ // physical size; their authored armor/mechanisms supply the visual progression.
+ const float growth=1.0f+.045f*Max(0,Min(5,cannonStage));
+ const float gunUnit=Min(mount.w/(float)gun.w,mount.h/(float)gun.h)*unit*growth;
+ float charge=0,recoil=0;int burst=0;
+ const bool firing=StageArtilleryVisual(&charge,&recoil,&burst);
+ const float gunLeft=p.left+(mount.x-r.x)*unit-(firing?recoil*8.0f*unit:0);
+ const float gunBase=p.top-(mount.y+mount.h-r.y)*unit;
+ const float gunTop=gunBase+gun.h*gunUnit;
+ if(sprite[gunImg]) DrawImage(gun.w,gun.h,gun.x,gun.y,
+   (int)std::lround(MirrorX(gunLeft,gun.w*gunUnit)),(int)std::lround(gunTop),
+   gMirror,0,0,0,0,gunUnit,sprite[gunImg],gunImg);
+ else missingAsset=true;
+ cannonMuzzleX[castle]=gunLeft+gun.mx*gunUnit;
+ cannonMuzzleY[castle]=gunTop-gun.my*gunUnit;cannonMuzzleValid[castle]=true;
  for(int i=0;i<5;++i) {partAnchor[castle][i][0]=p.left+(i==3?.89f:.4f)*p.width;partAnchor[castle][i][1]=p.top-(i==0?.15f:i==4?.9f:.55f)*p.height;}
  return true;
 }

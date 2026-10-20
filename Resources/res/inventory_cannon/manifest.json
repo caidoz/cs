@@ -37,14 +37,15 @@
         14,
         15
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_0.png",
+      "partRect": [
+        21,
+        12,
+        342,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "4cd5c0ad4833d6e8a12071f5ec5124656d6d137992a3e5847cd4155a0ccd2721"
     },
     {
       "castle": 1,
@@ -75,14 +76,15 @@
         14,
         15
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_1.png",
+      "partRect": [
+        403,
+        12,
+        345,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "0ac347e327b5ab12984622cef764c37dc22360077e3fa2eb33806a0d9791f074"
     },
     {
       "castle": 1,
@@ -113,14 +115,15 @@
         14,
         15
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_2.png",
+      "partRect": [
+        788,
+        12,
+        344,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "25afbe757ee7cebf690ba39f35cd150b151fd7769784b95fe91d70b92157fed1"
     },
     {
       "castle": 1,
@@ -142,23 +145,24 @@
         64
       ],
       "bodyRect": [
-        7,
         3,
-        81,
+        3,
+        89,
         58
       ],
       "muzzle": [
-        23,
+        21,
         9
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_3.png",
+      "partRect": [
+        1158,
+        13,
+        372,
+        243
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "09b996c7c5bafef4484004460485c61a60a2c254ebd1c6e836cc2281214b5f67"
     },
     {
       "castle": 1,
@@ -180,23 +184,24 @@
         64
       ],
       "bodyRect": [
-        7,
+        5,
         3,
-        81,
+        86,
         58
       ],
       "muzzle": [
-        23,
+        22,
         9
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_4.png",
+      "partRect": [
+        1547,
+        12,
+        361,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "680201b191e624d508258d6f29030de945a2090a98169365e83ad75427b2eb2b"
     },
     {
       "castle": 1,
@@ -218,23 +223,24 @@
         64
       ],
       "bodyRect": [
-        7,
+        5,
         3,
-        81,
+        85,
         58
       ],
       "muzzle": [
-        23,
+        22,
         9
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-01.png",
-      "sourceRect": [
-        123,
-        37,
-        1421,
-        963
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_01_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_01_lv_5.png",
+      "partRect": [
+        1933,
+        12,
+        358,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "a6eac0ef666115adf93f61e667fe9c11d8457cc1ea012740377b73cbcbf2f371"
     },
     {
       "castle": 2,
@@ -257,22 +263,23 @@
       ],
       "bodyRect": [
         3,
-        12,
+        13,
         58,
-        40
+        37
       ],
       "muzzle": [
         58,
-        29
+        28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_0.png",
+      "partRect": [
+        6,
+        274,
+        372,
+        238
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "6eb79e097231cfcad7816c021945383c17300a44d1e537afec8088f4584a0010"
     },
     {
       "castle": 2,
@@ -295,22 +302,23 @@
       ],
       "bodyRect": [
         3,
-        12,
+        13,
         58,
-        40
+        37
       ],
       "muzzle": [
         58,
-        29
+        28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_1.png",
+      "partRect": [
+        390,
+        275,
+        372,
+        237
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "99e445f2f1ef32a95009547acdb822e0497d1e32ad52a6821c37a9413c79e072"
     },
     {
       "castle": 2,
@@ -333,22 +341,23 @@
       ],
       "bodyRect": [
         3,
-        12,
+        14,
         58,
-        40
+        35
       ],
       "muzzle": [
         58,
         29
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_2.png",
+      "partRect": [
+        774,
+        284,
+        372,
+        228
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "28a92ccc5a34d4c6599e1b823f4bbbe3bed903b708281a90da0d6d0f96a9c74f"
     },
     {
       "castle": 2,
@@ -370,23 +379,24 @@
         64
       ],
       "bodyRect": [
-        6,
         3,
-        84,
-        58
+        5,
+        90,
+        54
       ],
       "muzzle": [
-        86,
+        88,
         28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_3.png",
+      "partRect": [
+        1158,
+        290,
+        372,
+        222
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "3fda345129ef557c2c88bdc3318b82af91a434f78170dfd2951880d038b901e7"
     },
     {
       "castle": 2,
@@ -408,23 +418,24 @@
         64
       ],
       "bodyRect": [
-        6,
         3,
-        84,
-        58
+        4,
+        90,
+        56
       ],
       "muzzle": [
-        86,
+        88,
         28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_4.png",
+      "partRect": [
+        1542,
+        281,
+        372,
+        231
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "259fc39d2a5e3567676ad6fba8a3b6c0161f33119c477376a75dadf36a492697"
     },
     {
       "castle": 2,
@@ -446,23 +457,24 @@
         64
       ],
       "bodyRect": [
-        6,
         3,
-        84,
-        58
+        3,
+        90,
+        57
       ],
       "muzzle": [
-        86,
-        28
+        88,
+        27
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-02.png",
-      "sourceRect": [
-        154,
-        39,
-        1485,
-        961
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_02_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_02_lv_5.png",
+      "partRect": [
+        1926,
+        277,
+        372,
+        235
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "294df6a6b5f1816a03dfe0125e829b79a03046516e82ddc672ae57ae66d17c1d"
     },
     {
       "castle": 3,
@@ -485,22 +497,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        11,
         58,
-        36
+        41
       ],
       "muzzle": [
         55,
-        24
+        22
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_0.png",
+      "partRect": [
+        18,
+        524,
+        347,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "46c85a25a3cec5079c5371311feb03db3f073555ca6d6c190819e82d71094866"
     },
     {
       "castle": 3,
@@ -523,22 +536,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        12,
         58,
-        36
+        40
       ],
       "muzzle": [
         55,
-        24
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_1.png",
+      "partRect": [
+        400,
+        524,
+        352,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "daa1c4234488af3c85ba77bc6387545e26caf3235d507dbd7ba2fe3a884b1222"
     },
     {
       "castle": 3,
@@ -561,22 +575,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        13,
         58,
-        36
+        37
       ],
       "muzzle": [
         55,
-        24
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_2.png",
+      "partRect": [
+        774,
+        529,
+        372,
+        239
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cd9a3bba48956f04f1993919f98c8de51a00b113009fb14d3545f273d39def81"
     },
     {
       "castle": 3,
@@ -599,22 +614,23 @@
       ],
       "bodyRect": [
         3,
-        4,
+        6,
         90,
-        56
+        52
       ],
       "muzzle": [
         85,
-        19
+        20
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_3.png",
+      "partRect": [
+        1158,
+        553,
+        372,
+        215
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cbf9afeff2e652ec17982bc59eb86c193721344a2bee5f8417c911528b80e997"
     },
     {
       "castle": 3,
@@ -637,22 +653,23 @@
       ],
       "bodyRect": [
         3,
-        4,
+        3,
         90,
-        56
+        57
       ],
       "muzzle": [
         85,
         19
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_4.png",
+      "partRect": [
+        1542,
+        531,
+        372,
+        237
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "3a46fef0eb69a7fb7e63d00fba69f41538c2438b8c9a1d6e023f8f20c18f7605"
     },
     {
       "castle": 3,
@@ -674,23 +691,24 @@
         64
       ],
       "bodyRect": [
+        5,
         3,
-        4,
-        90,
-        56
+        86,
+        58
       ],
       "muzzle": [
-        85,
+        83,
         19
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-03.png",
-      "sourceRect": [
-        75,
-        104,
-        1414,
-        943
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_03_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_03_lv_5.png",
+      "partRect": [
+        1931,
+        524,
+        362,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "a0f79c176315c34e5895a8e7480cbbcb9733273f6f7971a95e3fc387d4c8bb3b"
     },
     {
       "castle": 4,
@@ -713,22 +731,23 @@
       ],
       "bodyRect": [
         3,
-        13,
+        12,
         58,
-        38
+        39
       ],
       "muzzle": [
         59,
         26
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_0.png",
+      "partRect": [
+        10,
+        780,
+        363,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "96f8e04c26e5bdaf9de6ec38e624b273ec85eb203a731982908cbc7d97e07a23"
     },
     {
       "castle": 4,
@@ -753,20 +772,21 @@
         3,
         13,
         58,
-        38
+        37
       ],
       "muzzle": [
         59,
         26
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_1.png",
+      "partRect": [
+        390,
+        786,
+        372,
+        238
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "f8d98ac2fca12194f6362686280a32057ccb7eeb436b3c20ec4d215011e10ff8"
     },
     {
       "castle": 4,
@@ -791,20 +811,21 @@
         3,
         13,
         58,
-        38
+        37
       ],
       "muzzle": [
         59,
         26
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_2.png",
+      "partRect": [
+        774,
+        787,
+        372,
+        237
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cb287f06b66c2b4d32730a84427227b3fc3639b6a6cfb22c6ebbf29d72f7b876"
     },
     {
       "castle": 4,
@@ -828,21 +849,22 @@
       "bodyRect": [
         3,
         3,
-        89,
-        58
+        90,
+        57
       ],
       "muzzle": [
-        89,
-        24
+        90,
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_3.png",
+      "partRect": [
+        1158,
+        787,
+        372,
+        237
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "f4ec0e07e6b20cf2235627953d73311f33ba102c3bc1a8529d31d5735f1cf995"
     },
     {
       "castle": 4,
@@ -865,22 +887,23 @@
       ],
       "bodyRect": [
         3,
-        3,
-        89,
-        58
+        4,
+        90,
+        55
       ],
       "muzzle": [
-        89,
-        24
+        90,
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_4.png",
+      "partRect": [
+        1542,
+        795,
+        372,
+        229
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "9d91d21b9cb26d1cf5ad6cbf2ba9c6a6e232943f662ada486abf39df1546c79e"
     },
     {
       "castle": 4,
@@ -902,23 +925,24 @@
         64
       ],
       "bodyRect": [
+        4,
         3,
-        3,
-        89,
+        88,
         58
       ],
       "muzzle": [
         89,
         24
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-04.png",
-      "sourceRect": [
-        46,
-        42,
-        1490,
-        980
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_04_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_04_lv_5.png",
+      "partRect": [
+        1926,
+        780,
+        372,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "46e7776fc36fab362a8a2019acc03149da832ba05c66db330311f9050cee853e"
     },
     {
       "castle": 5,
@@ -941,22 +965,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        13,
         58,
-        35
+        38
       ],
       "muzzle": [
         58,
         20
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_0.png",
+      "partRect": [
+        6,
+        1036,
+        372,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "877deb72c49c2a92f1fa74c9d95a8b59f78ed2196a546d42b7bfdf6550d438a2"
     },
     {
       "castle": 5,
@@ -979,22 +1004,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        13,
         58,
-        35
+        37
       ],
       "muzzle": [
         58,
-        20
+        19
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_1.png",
+      "partRect": [
+        390,
+        1044,
+        372,
+        236
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cee8999ca1a7cc0f0475471fd5d07d2623c304f660c67410d12abc4d0b1d2f4a"
     },
     {
       "castle": 5,
@@ -1017,22 +1043,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        13,
         58,
-        35
+        37
       ],
       "muzzle": [
         58,
-        20
+        19
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_2.png",
+      "partRect": [
+        774,
+        1045,
+        372,
+        235
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "d9ebff31b40eb0c2c93798f0b7747fcb5c87c80940e9ced561bc73da2644e5e4"
     },
     {
       "castle": 5,
@@ -1055,22 +1082,23 @@
       ],
       "bodyRect": [
         3,
-        4,
+        7,
         90,
-        55
+        50
       ],
       "muzzle": [
         88,
-        14
+        16
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_3.png",
+      "partRect": [
+        1158,
+        1073,
+        372,
+        207
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "50ac9c3af8e1098ede3abbe3cec5489fd41d7cd09bc125777ae2fedf5aba0924"
     },
     {
       "castle": 5,
@@ -1101,14 +1129,15 @@
         88,
         14
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_4.png",
+      "partRect": [
+        1542,
+        1052,
+        372,
+        228
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "324c7ec1b083c2579dcc3f8080e21e48bf031edd9910b19f5bb08f9f7eab5034"
     },
     {
       "castle": 5,
@@ -1131,22 +1160,23 @@
       ],
       "bodyRect": [
         3,
-        4,
+        3,
         90,
-        55
+        57
       ],
       "muzzle": [
         88,
-        14
+        13
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-05.png",
-      "sourceRect": [
-        93,
-        98,
-        1477,
-        944
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_05_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_05_lv_5.png",
+      "partRect": [
+        1926,
+        1044,
+        372,
+        236
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "4bc3d6be6287aa97ea3ab0621d7b190fccdd82cfccfe8586dde729caaf6fa79b"
     },
     {
       "castle": 6,
@@ -1169,22 +1199,23 @@
       ],
       "bodyRect": [
         3,
-        15,
+        14,
         58,
-        34
+        36
       ],
       "muzzle": [
         57,
         24
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_0.png",
+      "partRect": [
+        6,
+        1307,
+        372,
+        229
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "dc30c64b90e8f06684a53ac99fff994040a0e7e275e0bedf0cc7e0809537fd4e"
     },
     {
       "castle": 6,
@@ -1215,14 +1246,15 @@
         57,
         24
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_1.png",
+      "partRect": [
+        390,
+        1316,
+        372,
+        220
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "1862d459eef6cf35fefd65183a5885b8fe44703190ee331f91f0724160d1a51a"
     },
     {
       "castle": 6,
@@ -1245,22 +1277,23 @@
       ],
       "bodyRect": [
         3,
-        15,
+        14,
         58,
-        34
+        35
       ],
       "muzzle": [
         57,
         24
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_2.png",
+      "partRect": [
+        774,
+        1311,
+        372,
+        225
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "0c7ac6c07a9286d69b01799ff6c464f352795006593cdb0461e8860822e95679"
     },
     {
       "castle": 6,
@@ -1283,22 +1316,23 @@
       ],
       "bodyRect": [
         3,
-        5,
+        7,
         90,
-        53
+        50
       ],
       "muzzle": [
         87,
-        20
+        21
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_3.png",
+      "partRect": [
+        1158,
+        1329,
+        372,
+        207
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "6b09ddcff8b4558518e1e06a92384f2b4224f461322ab1cef5481f6d38724a32"
     },
     {
       "castle": 6,
@@ -1323,20 +1357,21 @@
         3,
         5,
         90,
-        53
+        54
       ],
       "muzzle": [
         87,
         20
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_4.png",
+      "partRect": [
+        1542,
+        1311,
+        372,
+        225
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "872d9d2db0fdbd9204501cce90b68169ca979843411a2cce1bace015e700da6a"
     },
     {
       "castle": 6,
@@ -1359,22 +1394,23 @@
       ],
       "bodyRect": [
         3,
-        5,
+        3,
         90,
-        53
+        57
       ],
       "muzzle": [
         87,
-        20
+        19
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-06.png",
-      "sourceRect": [
-        54,
-        86,
-        1513,
-        950
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_06_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_06_lv_5.png",
+      "partRect": [
+        1926,
+        1302,
+        372,
+        234
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "8999f20314b22e38a8af93db897cc8a010d1465d365b3b588948f3a90f62971c"
     },
     {
       "castle": 7,
@@ -1397,22 +1433,23 @@
       ],
       "bodyRect": [
         3,
-        16,
+        15,
         58,
-        31
+        33
       ],
       "muzzle": [
         59,
-        22
+        21
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_0.png",
+      "partRect": [
+        6,
+        1583,
+        372,
+        209
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "875d2a29ba48994dbb9d4e9e22b2c8a36bb29163306a71d8f0cbc6276f3aa68a"
     },
     {
       "castle": 7,
@@ -1437,20 +1474,21 @@
         3,
         16,
         58,
-        31
+        32
       ],
       "muzzle": [
         59,
         22
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_1.png",
+      "partRect": [
+        390,
+        1584,
+        372,
+        208
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "4fc921ddd415dbf2ea25a96bc6f15d773eb4f9a6bc2161877408fa38e4c7c119"
     },
     {
       "castle": 7,
@@ -1475,20 +1513,21 @@
         3,
         16,
         58,
-        31
+        32
       ],
       "muzzle": [
         59,
         22
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_2.png",
+      "partRect": [
+        774,
+        1587,
+        372,
+        205
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "f9327eef3b9fd9b5228907a487573ab901e76dff4ea231fbf1a57c928d494588"
     },
     {
       "castle": 7,
@@ -1511,22 +1550,23 @@
       ],
       "bodyRect": [
         3,
-        8,
+        6,
         90,
-        48
+        52
       ],
       "muzzle": [
         90,
-        17
+        16
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_3.png",
+      "partRect": [
+        1158,
+        1576,
+        372,
+        216
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cd4b077c2a9f9254ed7ba30c821b6b1b9aac9f87649d4a9857848fa67a13dc90"
     },
     {
       "castle": 7,
@@ -1549,22 +1589,23 @@
       ],
       "bodyRect": [
         3,
-        8,
+        5,
         90,
-        48
+        54
       ],
       "muzzle": [
         90,
-        17
+        16
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_4.png",
+      "partRect": [
+        1542,
+        1569,
+        372,
+        223
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "e09b6921275834ea3d431948d1fd47a8e37d2ccea5e5a3ab59f4a6e2ab9f70c5"
     },
     {
       "castle": 7,
@@ -1587,22 +1628,23 @@
       ],
       "bodyRect": [
         3,
-        8,
+        5,
         90,
-        48
+        54
       ],
       "muzzle": [
         90,
-        17
+        16
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-07.png",
-      "sourceRect": [
-        66,
-        184,
-        1497,
-        941
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_07_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_07_lv_5.png",
+      "partRect": [
+        1926,
+        1570,
+        372,
+        222
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "ba0d1d526df713c1ee3ed94235e5c7e555fabab823a6a86f66afa8f9228ec3ec"
     },
     {
       "castle": 8,
@@ -1625,22 +1667,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        10,
         58,
-        35
+        44
       ],
       "muzzle": [
         59,
-        26
+        25
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_0.png",
+      "partRect": [
+        29,
+        1804,
+        325,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "803e1e13b57d93ec2eaa697b52f86d23cd1a36ff00f10aad45758d599d298a8b"
     },
     {
       "castle": 8,
@@ -1663,22 +1706,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        12,
         58,
-        35
+        39
       ],
       "muzzle": [
         59,
-        26
+        25
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_1.png",
+      "partRect": [
+        394,
+        1804,
+        364,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "53b89933826877b99542d8a4723a8eeaa4e82fc705b5368a7750779cbb5db37c"
     },
     {
       "castle": 8,
@@ -1701,22 +1745,23 @@
       ],
       "bodyRect": [
         3,
-        14,
+        13,
         58,
-        35
+        38
       ],
       "muzzle": [
         59,
         26
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_2.png",
+      "partRect": [
+        775,
+        1804,
+        369,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "4e6093405b785ed7942ed770a95a2d5a6c48fd935faba3ea06e49f764a294efa"
     },
     {
       "castle": 8,
@@ -1739,22 +1784,23 @@
       ],
       "bodyRect": [
         3,
-        5,
+        4,
         90,
-        54
+        55
       ],
       "muzzle": [
         90,
-        24
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_3.png",
+      "partRect": [
+        1158,
+        1820,
+        372,
+        228
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "bc6c63011deb2898ef07bc52c3c9b2e85fa29ea86437bc4faf1bee1f58dedbb9"
     },
     {
       "castle": 8,
@@ -1777,22 +1823,23 @@
       ],
       "bodyRect": [
         3,
-        5,
-        90,
-        54
+        3,
+        89,
+        58
       ],
       "muzzle": [
-        90,
-        24
+        89,
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_4.png",
+      "partRect": [
+        1542,
+        1805,
+        372,
+        243
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "909a5614cc0e408a113afb164f64131d82d31c94f60b697b86d2646c14a05b68"
     },
     {
       "castle": 8,
@@ -1814,23 +1861,24 @@
         64
       ],
       "bodyRect": [
-        3,
         5,
-        90,
-        54
+        3,
+        85,
+        58
       ],
       "muzzle": [
-        90,
-        24
+        87,
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-08.png",
-      "sourceRect": [
-        98,
-        112,
-        1439,
-        917
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_08_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_08_lv_5.png",
+      "partRect": [
+        1932,
+        1804,
+        359,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "82e9e43ec6ad1c7b8b5135754d60e5135e225e5511acd09139c548729f40b5f3"
     },
     {
       "castle": 9,
@@ -1853,22 +1901,23 @@
       ],
       "bodyRect": [
         3,
-        17,
+        19,
         58,
-        29
+        26
       ],
       "muzzle": [
         58,
-        25
+        27
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_0.png",
+      "partRect": [
+        6,
+        2134,
+        372,
+        170
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "527106d94bc985b90c896756632766269585478dccbde6d2772c95349acb07d5"
     },
     {
       "castle": 9,
@@ -1891,22 +1940,23 @@
       ],
       "bodyRect": [
         3,
-        17,
+        18,
         58,
-        29
+        27
       ],
       "muzzle": [
         58,
-        25
+        26
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_1.png",
+      "partRect": [
+        390,
+        2133,
+        372,
+        171
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "b957721bc574a1514a2524531f0f10b65f2a5e373bb8e02c6ff5e0ea8d7f8649"
     },
     {
       "castle": 9,
@@ -1929,22 +1979,23 @@
       ],
       "bodyRect": [
         3,
-        17,
-        58,
-        29
-      ],
-      "muzzle": [
+        19,
         58,
         25
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "muzzle": [
+        58,
+        26
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_2.png",
+      "partRect": [
+        774,
+        2143,
+        372,
+        161
+      ],
+      "sourceHash": "4dcad007786e0da39cf1863f46d371c29685ce509e241e423b285383b643c2b1"
     },
     {
       "castle": 9,
@@ -1967,22 +2018,23 @@
       ],
       "bodyRect": [
         3,
-        9,
+        12,
         90,
-        45
+        39
       ],
       "muzzle": [
         89,
-        22
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_3.png",
+      "partRect": [
+        1158,
+        2145,
+        372,
+        159
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "0035cba683823aaa7201fc703da2476292715eae32ef3813cfcac2b065247f91"
     },
     {
       "castle": 9,
@@ -2005,22 +2057,23 @@
       ],
       "bodyRect": [
         3,
-        9,
+        13,
         90,
-        45
+        38
       ],
       "muzzle": [
         89,
-        22
+        24
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_4.png",
+      "partRect": [
+        1542,
+        2148,
+        372,
+        156
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "f20e587b99ce116ade714f69817e8d2eb6dfc9d34ce48a0c4b7bae8e6ad210e4"
     },
     {
       "castle": 9,
@@ -2043,22 +2096,23 @@
       ],
       "bodyRect": [
         3,
-        9,
+        11,
         90,
-        45
+        42
       ],
       "muzzle": [
         89,
-        22
+        23
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-09.png",
-      "sourceRect": [
-        91,
-        110,
-        1595,
-        856
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_09_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_09_lv_5.png",
+      "partRect": [
+        1926,
+        2129,
+        372,
+        175
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "2e857038d50105dd4e90a5ef6aaadbd802937e09188356ebd3de4e35aee0587d"
     },
     {
       "castle": 10,
@@ -2081,22 +2135,23 @@
       ],
       "bodyRect": [
         3,
-        13,
+        12,
         58,
-        37
+        40
       ],
       "muzzle": [
         58,
-        28
+        29
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_0.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_0.png",
+      "partRect": [
+        16,
+        2316,
+        351,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "cf4a48d15133e40a64f6bbd21c02a22072b18991bed7dc3f45902e39f83c4a18"
     },
     {
       "castle": 10,
@@ -2127,14 +2182,15 @@
         58,
         28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_1.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_1.png",
+      "partRect": [
+        390,
+        2320,
+        372,
+        240
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "2a1babd499044ecef311a292e857a87bed729615e1a3d4f3b39e4afeb8154c96"
     },
     {
       "castle": 10,
@@ -2157,22 +2213,23 @@
       ],
       "bodyRect": [
         3,
-        13,
+        14,
         58,
-        37
+        36
       ],
       "muzzle": [
         58,
-        28
+        29
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_2.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_2.png",
+      "partRect": [
+        774,
+        2329,
+        372,
+        231
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "2bf4fc4b6ec1ab337e6e66d2445d192e2bbafeba53eabdbb93c3d60bc4194ccb"
     },
     {
       "castle": 10,
@@ -2195,22 +2252,23 @@
       ],
       "bodyRect": [
         3,
-        3,
+        5,
         90,
-        57
+        54
       ],
       "muzzle": [
         89,
-        27
+        28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_3.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_3.png",
+      "partRect": [
+        1158,
+        2338,
+        372,
+        222
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "ed22f5c1d8581a3d8d4b337280bd7a69dced191823e8efa16c583d902357581d"
     },
     {
       "castle": 10,
@@ -2241,14 +2299,15 @@
         89,
         27
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_4.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_4.png",
+      "partRect": [
+        1542,
+        2325,
+        372,
+        235
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "5bd4af8565a432472e1a39e0c79c51ce1b4132aa4e18e67138450ede11688bba"
     },
     {
       "castle": 10,
@@ -2272,21 +2331,22 @@
       "bodyRect": [
         3,
         3,
-        90,
-        57
+        89,
+        58
       ],
       "muzzle": [
-        89,
-        27
+        88,
+        28
       ],
-      "sourceFile": "content\\castles\\current_cannon_icons_v1\\originals\\cannon-10.png",
-      "sourceRect": [
-        76,
-        71,
-        1462,
-        954
+      "sourceFile": "content\\castles\\cannon_upgrades_v3\\originals\\castle_10_lv_5.png",
+      "partFile": "castle_cannon_v2/castle_10_lv_5.png",
+      "partRect": [
+        1926,
+        2316,
+        372,
+        244
       ],
-      "design": "current base exterior shared by all grades"
+      "sourceHash": "4a5c5d8666f2ae9b82e7aec4174ac46b03b9a59886560efdcee0d98e4eed13c3"
     }
   ]
 }

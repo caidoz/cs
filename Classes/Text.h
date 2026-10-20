@@ -3897,6 +3897,7 @@ const char* const textId[] = {
 #include "IndividualCastleNames.inc"
 #include "RectangularRoomNames.inc"
 #include "CrewDeckNames.inc"
+#include "CannonUpgradeNames.inc"
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
 

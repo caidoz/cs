@@ -1,0 +1,11 @@
+﻿{
+    "registration":  "PASS",
+    "executable":  "proj.win32/Debug.win32/cs.exe",
+    "build":  "PASS",
+    "preview":  "output/current-cannon-icons-review/current-cannon-icons.png",
+    "designs":  10,
+    "frames":  60,
+    "runtime":  "PASS",
+    "grades":  6,
+    "sha256":  "61880F075F2C30486E0DE2CBFB42487760499EC331A08C031ABBEFB46D75E293"
+}

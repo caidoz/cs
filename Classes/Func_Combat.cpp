@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -1848,9 +1848,17 @@ void AttackRobin(int obj, int dest)
 		if (IsStageRealtime())
 			damage = (int)StageGearReduce(dest, damage);
 
-		AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
-		
-		ao[dest].hp -= damage;
+		// 성채 방어력(Armor/Shield) 완충막 우선 흡수:
+		if (dest == PLAYER && ao[PLAYER].shield > 0) {
+			const int absorb = Min(damage, ao[PLAYER].shield);
+			ao[PLAYER].shield -= absorb;
+			damage -= absorb;
+		}
+
+		if (damage > 0) {
+			AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
+			ao[dest].hp -= damage;
+		}
 
 		//---- 몬스터는 회복하지 않는다 ----
 		//
@@ -2053,8 +2061,16 @@ int AttackRobin_Back(int obj, int dest)
 		break;
 	}
 
-	AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
-	ao[dest].hp -= damage;
+	if (IsStageRealtime() && dest == PLAYER && ao[PLAYER].shield > 0) {
+		const int absorb = Min(damage, ao[PLAYER].shield);
+		ao[PLAYER].shield -= absorb;
+		damage -= absorb;
+	}
+
+	if (damage > 0) {
+		AddBar(&bar[BAR_PLAYERHP + dest], -Min(damage, ao[dest].hp), BARFRAME);
+		ao[dest].hp -= damage;
+	}
 	return damage;
 }
 
@@ -3241,10 +3257,18 @@ NEXT:
 		if (IsStageRealtime())
 			damage = (int)StageGearReduce(dest, damage);
 
+		if (dest == PLAYER && ao[PLAYER].shield > 0) {
+			const int absorb = Min(damage, ao[PLAYER].shield);
+			ao[PLAYER].shield -= absorb;
+			damage -= absorb;
+		}
+
 		if (damage > ao[dest].hp)
 			damage = ao[dest].hp;
-		ao[dest].hp -= damage;
-		AddBar(&bar[BAR_BOSSHP], -damage, BARFRAME);
+		if (damage > 0) {
+			ao[dest].hp -= damage;
+			AddBar(&bar[BAR_BOSSHP], -damage, BARFRAME);
+		}
 
 		if (pDest->moveHandler == DEBRIONARMMOVE || pDest->moveHandler == FOLLOWMOMMOVE)
 			pDest->jumpFrame = 24;

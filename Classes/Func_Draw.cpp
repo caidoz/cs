@@ -2084,6 +2084,11 @@ static GridPart GridOfferPart(const OfferCard& card)
 	GridPart part=kShopPart[card.part];
 	part.grade=card.grade;
 	part.price=card.price;
+	if(part.type==ITEM_ESSENCE) {
+		part.detail = card.crewType % 4;
+		static const char* kEssNames[4] = { "마력 정수", "화염 정수", "빙결 정수", "번개 정수" };
+		part.name = kEssNames[part.detail];
+	}
 	if(part.type==GRID_ITEM_CANNON) {
 		part.detail=card.crewType;
 		part.name=CastleArtillery::Of(part.detail).name;
@@ -2744,11 +2749,35 @@ static void StageGearAddItem(OBJECT* pObj, const ITEM* it)
 	if (it->type == EMPTY || it->type == ITEM_ESSENCE)
 		return;
 
-	//값 자체는 부위에 따라 갈라 붙인다.
-	if (it->type == ITEM_SWORD)
+	//값 자체는 6대 부위의 특성에 맞춰 차별화하여 분배
+	if (it->type == ITEM_SWORD || it->type == ITEM_GUN || it->type == ITEM_BOOMERANG) {
 		pObj->ps[PS_DMG] += it->value;
-	else
+	}
+	else if (it->type == ITEM_ARMOR || it->type == ITEM_VEST || it->type == ITEM_COAT) {
+		pObj->ps[PS_ARMOR] += (long long)(it->value * 1.5); // 갑옷: 방어막 총량의 핵심 기둥
+	}
+	else if (it->type == ITEM_HELM || it->type == ITEM_HAT || it->type == ITEM_CAP) {
+		pObj->ps[PS_ARMOR] += it->value / 2;
+		pObj->ps[PS_CRITICAL] += 5 + it->grade * 2; // 투구: 치명타율
+		pObj->ps[PS_DELAY] += 5 + it->grade * 2;    // 투구: 쿨타임 감소
+	}
+	else if (it->type == ITEM_GUNTLET || it->type == ITEM_ARMLET || it->type == ITEM_GLOVE) {
+		pObj->ps[PS_DMG] += it->value / 2;           // 장갑: 무기 화력 보조
+		pObj->ps[PS_CRITDMG] += 15 + it->grade * 5; // 장갑: 치명타 피해
+		pObj->ps[PS_HPDRAIN] += 2 + it->grade;      // 장갑: 적중 시 흡혈
+	}
+	else if (it->type == ITEM_KILT || it->type == ITEM_PANTS || it->type == ITEM_SKIRT) {
+		pObj->ps[PS_HP] += it->value * 8;           // 바지: 순수 본체 체력통 대폭 증가
+		pObj->ps[PS_HPRESTORE] += 5 + it->grade * 2; // 바지: 체력 재생
+	}
+	else if (it->type == ITEM_GREAVES || it->type == ITEM_BOOTS || it->type == ITEM_SHOES) {
+		pObj->ps[PS_ARMOR] += it->value / 2;
+		pObj->ps[PS_EVASION] += 5 + it->grade * 2;  // 신발: 회피율
+		pObj->ps[PS_GOLDMOD] += 10 + it->grade * 3; // 신발: 골드 보너스
+	}
+	else {
 		pObj->ps[PS_ARMOR] += it->value;
+	}
 
 	for (int j = 0; j < TOTALOPTION; j++) {
 		const int* tPtr = &it->option[j][0];
@@ -3396,6 +3425,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		DrawCmfDetailShadow(cmf, idle, x + w / 2,
 			y - h + 4 * _2X + h / 4 - 4, RIGHT,
 			enemyIconZoom[type] * 0.5f * Min(w, h) / (24.0f * _2X));
+		const CrewRole role = GetCrewRole(type);
+		const char* roleName = GetCrewRoleName(role);
+		const int roleCol = GetCrewRoleColor(role);
+		SetFontColor(roleCol);
+		CenterTextStrSolid(roleName, x + w / 2, y - h + 6 * _2X, 0.35f);
 		return;
 	}
 
@@ -3482,11 +3516,31 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			return;
 	}
 
+	if (p->type == ITEM_RECIPE) {
+		SetAlpha(alpha);
+		MemRect(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 0xD4B886);
+		MemRectFrame(x + 2 * _2X, y - 2 * _2X, w - 4 * _2X, h - 4 * _2X, 0x8A5229);
+		DrawIcon(GetItemIcon(ITEM_RECIPE, p->detail, p->grade),
+			x + w / 2 - ITEMICONSIZE / 2,
+			y - h / 2 + ITEMICONSIZE / 2,
+			1.0f, false, false, false, true);
+		SetFontColor(0x4A2508);
+		CenterTextStrSolid("작전서", x + w / 2, y - h + 8 * _2X, 0.38f);
+		return;
+	}
+
 	//아이콘은 카드 한가운데. DrawIcon 의 x, y 는 왼쪽 위다.
 	DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
 		x + w / 2 - ITEMICONSIZE / 2,
 		y - h / 2 + ITEMICONSIZE / 2,
 		1.0f, false, false, false, true);
+	if (p->type == ITEM_ESSENCE) {
+		const int elem = p->detail % 4;
+		static const char* elemTag[4] = { "마력", "화염", "빙결", "번개" };
+		static const int elemCol[4] = { 0xB088FF, 0xFF6633, 0x44DDFF, 0xFFDD44 };
+		SetFontColor(elemCol[elem]);
+		CenterTextStrSolid(elemTag[elem], x + w / 2, y - h + 10 * _2X, 0.40f);
+	}
 }
 
 // Render only occupied cells. Reusing one fitted image under a per-cell clip
@@ -3785,6 +3839,7 @@ static void GridOfferRoll(int killedType)
         }
         if(i==2 || i==3) {
             c->part=i==2?GRID_SHOP_MISC:GRID_SHOP_CANNON;
+            if(i==2) c->crewType = (robin.waveIdx + i) % 4;
             c->grade=i==3?Min(TOTALGRADE-1,GridCastleStage()/2+CastleBonusOf(CPE_GEAR_GRADE)):GRADE_NORMAL;
             c->crewType=GridCastleStage();
             c->price=kShopPart[c->part].price+(i==3?c->grade*4:0);
@@ -4045,7 +4100,14 @@ bool GridTestBeginOffer(int killedType)
 		return false;
 
 	// 몬스터 처치 시 인게임 골드 획득 (웨이브 승리/처치 보상)
-	gStageGold += 5;
+	int waveGold = 5;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && GetItemGearCategory(gGridItem[i].part.type) == GEAR_CAT_BOOTS && gGridItem[i].row == 0) {
+			waveGold += 2; // 신발을 바닥 열(Row 0)에 배치 시 추진력 골드 보너스!
+			break;
+		}
+	}
+	gStageGold += waveGold;
 
 	GridOfferRoll(killedType);
 
@@ -4210,13 +4272,257 @@ int GridTestSwords(StageSword* out, int maxCnt)
 
 		//겹쳐서 오른 레벨이 그대로 위력이다. 칸에 든 진짜 ITEM 의 값을
 		//쓰면 레벨업과 진화가 바로 전투에 먹힌다.
-		out[n].value = Max(1, (gGridItem[i].item.type != EMPTY)
+		int val = Max(1, (gGridItem[i].item.type != EMPTY)
 			? gGridItem[i].item.value
 			: MakeItemValue(p->type, p->detail, p->grade, 1));
+		if (GridSlotAdjacentToRocky(i)) {
+			val = val * 125 / 100; // 대장장이 로키 담금질: 공격력 +25%
+		}
+		out[n].value = val;
 		n++;
 	}
 
 	return n;
+}
+
+static bool GridItemsAreAdjacent(int slotA, int slotB);
+
+int GridTestShields(StageSword* out, int maxCnt)
+{
+	int n = 0;
+	for (int i = 0; i < GRIDTEST_MAXITEM && n < maxCnt; ++i) {
+		if (gGridItem[i].used == false) continue;
+		const GridPart* p = &gGridItem[i].part;
+		if (p->type != ITEM_ARMOR && p->type != ITEM_SHIELD
+			&& p->type != ITEM_HELM && p->type != ITEM_KILT
+			&& p->type != ITEM_GREAVES && p->type != ITEM_GUNTLET)
+			continue;
+		out[n].slot = i;
+		out[n].part = (gGridItem[i].shop >= 0) ? gGridItem[i].shop : 1000 + gGridItem[i].equip;
+		out[n].gear = (gGridItem[i].equip >= 0);
+		out[n].detail = p->detail;
+		out[n].grade = p->grade;
+		int baseVal = (p->price > 0) ? p->price * 3 : 25;
+		if (p->type == ITEM_ARMOR || p->type == ITEM_VEST || p->type == ITEM_COAT)
+			baseVal = baseVal * 3 / 2; // 갑옷: 방어막 총량 1.5배
+		if (p->type == ITEM_ARMOR || p->type == ITEM_VEST || p->type == ITEM_COAT) {
+			int defNeighbors = 0;
+			for (int j = 0; j < GRIDTEST_MAXITEM; ++j) {
+				if (j == i || !gGridItem[j].used) continue;
+				const int jt = gGridItem[j].part.type;
+				if ((jt == ITEM_SHIELD || jt == ITEM_HELM || jt == ITEM_GREAVES || jt == ITEM_KILT)
+					&& GridItemsAreAdjacent(i, j))
+					defNeighbors++;
+			}
+			baseVal += baseVal * 15 * defNeighbors / 100; // 인접 방어구당 +15%
+		}
+		out[n].value = Max(15, baseVal * (p->grade + 1) * Max(1, gGridItem[i].level));
+		n++;
+	}
+	return n;
+}
+
+int GridTestTactics(StageSword* out, int maxCnt)
+{
+	int n = 0;
+	for (int i = 0; i < GRIDTEST_MAXITEM && n < maxCnt; ++i) {
+		if (gGridItem[i].used == false) continue;
+		const GridPart* p = &gGridItem[i].part;
+		if (p->type != ITEM_RECIPE) continue;
+		out[n].slot = i;
+		out[n].part = (gGridItem[i].shop >= 0) ? gGridItem[i].shop : 1000 + gGridItem[i].equip;
+		out[n].gear = false;
+		out[n].detail = p->detail;
+		out[n].grade = p->grade;
+		out[n].value = Max(1, gGridItem[i].level);
+		n++;
+	}
+	return n;
+}
+
+// 64종 전체 동료 역할군 매핑 테이블 (성급별 균등 분배)
+static const unsigned char kCrewRoleTable[64] = {
+	// ★1 (0~7): 지휘 2, 포격 2, 지원 2, 공격 2
+	CREW_ROLE_ARTILLERY,  // 00 NPC_BOY (꼬마 마르셀)
+	CREW_ROLE_STRIKER,    // 01 NPC_GIRL (귀여운 로제티)
+	CREW_ROLE_BLACKSMITH, // 02 NPC_GRANDMA (엘사 할머니)
+	CREW_ROLE_COMMANDER,  // 03 NPC_GRANDFA (촌장 뭉크)
+	CREW_ROLE_ARTILLERY,  // 04 NPC_MAN (자경단 빌리)
+	CREW_ROLE_STRIKER,    // 05 NPC_WOMAN (새침때기 캐롤)
+	CREW_ROLE_COMMANDER,  // 06 NPC_UNCLE (촌장후보 버크)
+	CREW_ROLE_BLACKSMITH, // 07 NPC_AUNT (부녀회장 로사)
+
+	// ★2 (8~19): 지휘 3, 포격 3, 지원 3, 공격 3
+	CREW_ROLE_ARTILLERY,  // 08 NPC_SEAUNCLE (반어인 롤란)
+	CREW_ROLE_ARTILLERY,  // 09 NPC_SEASOLDIER (반어병사 크롤)
+	CREW_ROLE_STRIKER,    // 10 NPC_MILESE (격투가 마일즈)
+	CREW_ROLE_COMMANDER,  // 11 NPC_ALMA (성격급한 알마)
+	CREW_ROLE_ARTILLERY,  // 12 NPC_CREW (선원 윌)
+	CREW_ROLE_BLACKSMITH, // 13 NPC_TRAVEL (탐험가 케일)
+	CREW_ROLE_BLACKSMITH, // 14 NPC_ELFBOY (엘프 메로)
+	CREW_ROLE_STRIKER,    // 15 NPC_ELFGIRL (엘프 카나리아)
+	CREW_ROLE_BLACKSMITH, // 16 NPC_ITEM (캐러밴 상인)
+	CREW_ROLE_STRIKER,    // 17 NPC_ELFUNCLE (질풍의 검사)
+	CREW_ROLE_COMMANDER,  // 18 NPC_ELFAUNT (엘프 케일라)
+	CREW_ROLE_COMMANDER,  // 19 NPC_ADELKNIGHT (근위대장 나스)
+
+	// ★3 (20~34): 지휘 4, 포격 4, 지원 4, 공격 3
+	CREW_ROLE_ARTILLERY,  // 20 NPC_OWL (부엉이)
+	CREW_ROLE_BLACKSMITH, // 21 NPC_MAID (메이드 메어리)
+	CREW_ROLE_STRIKER,    // 22 NPC_BUNNYGIRL (바니걸 로즈)
+	CREW_ROLE_BLACKSMITH, // 23 NPC_MAP (지도왕 아벨)
+	CREW_ROLE_COMMANDER,  // 24 NPC_MONICA (모니카 선생님)
+	CREW_ROLE_ARTILLERY,  // 25 NPC_SEABOY (반어꼬마 모시)
+	CREW_ROLE_ARTILLERY,  // 26 NPC_DOBEL (해적 도벨)
+	CREW_ROLE_ARTILLERY,  // 27 NPC_GAGEL (해적 가젤)
+	CREW_ROLE_COMMANDER,  // 28 NPC_ELFGRANDFA (워드 할아버지)
+	CREW_ROLE_STRIKER,    // 29 NPC_ELFWOMAN (엘프 루디아)
+	CREW_ROLE_BLACKSMITH, // 30 NPC_ELFMAN (정원사 아리프)
+	CREW_ROLE_STRIKER,    // 31 NPC_ELFDANCER (무희 메리동전)
+	CREW_ROLE_COMMANDER,  // 32 NPC_NOBLEMAN (몬테오 남작)
+	CREW_ROLE_COMMANDER,  // 33 NPC_SCHOLAR (역사학자 데런)
+	CREW_ROLE_BLACKSMITH, // 34 NPC_NETITEM (상인 그랜드)
+
+	// ★4 (35~42, 45~53, 55): 지휘 5, 포격 4, 지원 5, 공격 4
+	CREW_ROLE_BLACKSMITH, // 35 NPC_FATMAN (먹보 케로)
+	CREW_ROLE_BLACKSMITH, // 36 NPC_CRAFTMAN (대장장이 로키)
+	CREW_ROLE_COMMANDER,  // 37 NPC_LUISE (루이제 공주)
+	CREW_ROLE_BLACKSMITH, // 38 NPC_DOG (충견 플란다스)
+	CREW_ROLE_STRIKER,    // 39 NPC_KNIGHT (검사 라즈베릴)
+	CREW_ROLE_STRIKER,    // 40 NPC_WITCH (마녀 페페)
+	CREW_ROLE_BLACKSMITH, // 41 NPC_BISTRO (비스트로 체)
+	CREW_ROLE_COMMANDER,  // 42 NPC_SEBASTIAN (대신 세바스찬)
+	CREW_ROLE_ARTILLERY,  // 43 NPC_FISHING (★5, 낚시꾼 라피)
+	CREW_ROLE_COMMANDER,  // 44 NPC_FRAUD (★5, 수왕 프라우트)
+	CREW_ROLE_BLACKSMITH, // 45 NPC_ELFMAGIC (사제 아밀)
+	CREW_ROLE_COMMANDER,  // 46 NPC_DARIAN (대신 다리안)
+	CREW_ROLE_ARTILLERY,  // 47 NPC_DONALD (브루스 미)
+	CREW_ROLE_STRIKER,    // 48 NPC_ELFDARK (다크엘프 무)
+	CREW_ROLE_STRIKER,    // 49 NPC_NEZAR (마법사 네자르)
+	CREW_ROLE_COMMANDER,  // 50 NPC_DURAK (듀라크 장군)
+	CREW_ROLE_ARTILLERY,  // 51 NPC_WOMANGHOST (유령 캐서린)
+	CREW_ROLE_ARTILLERY,  // 52 NPC_MANGHOST (유령 버틀러)
+	CREW_ROLE_ARTILLERY,  // 53 NPC_AUSTIN (유령 오스틴)
+	CREW_ROLE_STRIKER,    // 54 NPC_ELEIN (★5, 엘레인)
+	CREW_ROLE_COMMANDER,  // 55 NPC_USERQUEST (홍보대사 밀키)
+
+	// ★5 (56~60): 지휘 2, 포격 2, 지원 2, 공격 2
+	CREW_ROLE_BLACKSMITH, // 56 NPC_CHEF (쉐프 가르니에)
+	CREW_ROLE_ARTILLERY,  // 57 NPC_CAPTAIN (선장 캡틴)
+	CREW_ROLE_STRIKER,    // 58 NPC_ELKEIN (엘케인)
+	CREW_ROLE_COMMANDER,  // 59 NPC_DELPIOS (델피오스 백작)
+	CREW_ROLE_BLACKSMITH, // 60 NPC_LABETH (마법사 라베스)
+
+	// ★6 (61~63): 지휘 1, 지원 1, 공격 1
+	CREW_ROLE_STRIKER,    // 61 NPC_EVAN (방랑자 에번)
+	CREW_ROLE_BLACKSMITH, // 62 NPC_LORA (로라 공주)
+	CREW_ROLE_COMMANDER,  // 63 NPC_KING (에드몬드 왕)
+};
+
+CrewRole GetCrewRole(int crewType)
+{
+	int idx = crewType;
+	if (crewType >= NPC_CAPTAIN) {
+		idx = GetCrewIdxFromType(crewType);
+	}
+	if (idx >= 0 && idx < 64)
+		return (CrewRole)kCrewRoleTable[idx];
+
+	if (crewType >= 0)
+		return (CrewRole)(crewType % TOTAL_CREW_ROLES);
+	return CREW_ROLE_COMMANDER;
+}
+
+const char* GetCrewRoleName(CrewRole role)
+{
+	switch (role) {
+	case CREW_ROLE_COMMANDER:  return "지휘형";
+	case CREW_ROLE_ARTILLERY:  return "포격형";
+	case CREW_ROLE_BLACKSMITH: return "지원형";
+	case CREW_ROLE_STRIKER:    return "공격형";
+	default:                   return "일반";
+	}
+}
+
+int GetCrewRoleColor(CrewRole role)
+{
+	switch (role) {
+	case CREW_ROLE_COMMANDER:  return 0xB066FF;
+	case CREW_ROLE_ARTILLERY:  return 0xFF5533;
+	case CREW_ROLE_BLACKSMITH: return 0x33DD77;
+	case CREW_ROLE_STRIKER:    return 0x33AAFF;
+	default:                   return 0xDFD9C0;
+	}
+}
+
+GearCategory GetItemGearCategory(int itemType)
+{
+	if (itemType == ITEM_SWORD || itemType == ITEM_GUN || itemType == ITEM_BOOMERANG)
+		return GEAR_CAT_WEAPON;
+	if (itemType == ITEM_ARMOR || itemType == ITEM_VEST || itemType == ITEM_COAT)
+		return GEAR_CAT_ARMOR;
+	if (itemType == ITEM_HELM || itemType == ITEM_HAT || itemType == ITEM_CAP)
+		return GEAR_CAT_HELM;
+	if (itemType == ITEM_GUNTLET || itemType == ITEM_ARMLET || itemType == ITEM_GLOVE)
+		return GEAR_CAT_GLOVE;
+	if (itemType == ITEM_KILT || itemType == ITEM_PANTS || itemType == ITEM_SKIRT)
+		return GEAR_CAT_PANTS;
+	if (itemType == ITEM_GREAVES || itemType == ITEM_BOOTS || itemType == ITEM_SHOES)
+		return GEAR_CAT_BOOTS;
+	if (itemType == ITEM_SHIELD)
+		return GEAR_CAT_SHIELD;
+	if (itemType == ITEM_CREW)
+		return GEAR_CAT_CREW;
+	if (itemType == ITEM_RECIPE)
+		return GEAR_CAT_RECIPE;
+	return GEAR_CAT_WEAPON;
+}
+
+bool GridSlotHasAdjacentCategory(int slot, GearCategory cat)
+{
+	if (slot < 0 || slot >= GRIDTEST_MAXITEM || !gGridItem[slot].used) return false;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (i == slot || !gGridItem[i].used) continue;
+		if (GetItemGearCategory(gGridItem[i].part.type) == cat && GridItemsAreAdjacent(slot, i))
+			return true;
+	}
+	return false;
+}
+
+long long GridTestPantsHpBonus(void)
+{
+	long long sum = 0;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (!gGridItem[i].used) continue;
+		const int t = gGridItem[i].part.type;
+		if (t == ITEM_KILT || t == ITEM_PANTS || t == ITEM_SKIRT) {
+			const int baseVal = (gGridItem[i].part.price > 0) ? gGridItem[i].part.price * 25 : 150;
+			sum += (long long)baseVal * (gGridItem[i].part.grade + 1) * Max(1, gGridItem[i].level);
+		}
+	}
+	return sum;
+}
+
+bool GridCrewHasAdjacentPants(int crewIndex)
+{
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (!gGridItem[i].used || gGridItem[i].part.type != ITEM_CREW) continue;
+		if (GridSlotHasAdjacentCategory(i, GEAR_CAT_PANTS))
+			return true;
+	}
+	return false;
+}
+
+bool GridSlotAdjacentToRocky(int slot)
+{
+	if (slot < 0 || slot >= GRIDTEST_MAXITEM || !gGridItem[slot].used) return false;
+	for (int j = 0; j < GRIDTEST_MAXITEM; ++j) {
+		if (j == slot || !gGridItem[j].used) continue;
+		if (gGridItem[j].part.type == ITEM_CREW && gGridItem[j].part.detail == 36) { // 36: 대장장이 로키
+			if (GridItemsAreAdjacent(slot, j)) return true;
+		}
+	}
+	return false;
 }
 
 int GridTestTotalItemCount(void)
@@ -4701,6 +5007,7 @@ void GridTestRelease(void)
 			gGridMsgFrame = FPS * 2;
 		}
 
+		StageUpdateFortressDefense();
 		return;
 	}
 
@@ -6283,6 +6590,117 @@ bool StageBagCannon(int* castle, int* level, int* slot)
 	return false;
 }
 
+static bool GridItemsAreAdjacent(int slotA, int slotB)
+{
+	if (slotA < 0 || slotA >= GRIDTEST_MAXITEM || !gGridItem[slotA].used) return false;
+	if (slotB < 0 || slotB >= GRIDTEST_MAXITEM || !gGridItem[slotB].used) return false;
+	if (slotA == slotB) return false;
+	const GridPart* pa = &gGridItem[slotA].part;
+	const int colA = gGridItem[slotA].col, rowA = gGridItem[slotA].row;
+	const GridPart* pb = &gGridItem[slotB].part;
+	const int colB = gGridItem[slotB].col, rowB = gGridItem[slotB].row;
+	for (int ra = 0; ra < pa->h; ++ra) {
+		for (int ca = 0; ca < pa->w; ++ca) {
+			if (!GridPartCell(pa, ca, ra)) continue;
+			const int xa = colA + ca, ya = rowA + ra;
+			for (int rb = 0; rb < pb->h; ++rb) {
+				for (int cb = 0; cb < pb->w; ++cb) {
+					if (!GridPartCell(pb, cb, rb)) continue;
+					const int xb = colB + cb, yb = rowB + rb;
+					if (abs(xa - xb) <= 1 && abs(ya - yb) <= 1) return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void StageCannonQuerySynergy(CannonSynergy* out)
+{
+	if (!out) return;
+	memset(out, 0, sizeof(CannonSynergy));
+	int cannonSlot = -1;
+	if (!StageBagCannon(NULL, NULL, &cannonSlot) || cannonSlot < 0) return;
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (i == cannonSlot || !gGridItem[i].used) continue;
+		if (!GridItemsAreAdjacent(cannonSlot, i)) continue;
+		const GridPart* p = &gGridItem[i].part;
+		const int level = Max(1, gGridItem[i].level);
+		if (p->type == ITEM_ESSENCE) {
+			const int detail = p->detail % 4;
+			if (detail == 1) { out->fireEssenceCnt += level; out->scaleBonus += 0.18f * level; }
+			else if (detail == 2) { out->iceEssenceCnt += level; out->cooldownReductionPct += 12 * level; }
+			else if (detail == 3) { out->thunderEssenceCnt += level; out->extraHits += 1 * level; }
+			else { out->magicEssenceCnt += level; out->cooldownReductionPct += 15 * level; }
+		} else if (p->type == ITEM_SWORD) {
+			out->swordCnt += level;
+			const int swordVal = (gGridItem[i].item.type != EMPTY) ? gGridItem[i].item.value : MakeItemValue(p->type, p->detail, p->grade, 1);
+			out->swordBonusDmg += (swordVal * 35 / 100) * level;
+			out->scaleBonus += 0.12f * level;
+		} else if (p->type == ITEM_CREW) {
+			const int crewIdx = p->detail;
+			const CrewRole role = GetCrewRole(crewIdx);
+			if (role == CREW_ROLE_ARTILLERY) {
+				out->crewArtilleryCnt += 1;
+				out->cooldownReductionPct += 20;
+				out->scaleBonus += 0.15f;
+				out->extraHits += 1;
+				if (crewIdx == 57 || (crewIdx >= 0 && crewIdx < 64 && crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE] == NPC_CAPTAIN)) {
+					out->extraHits += 1;
+				}
+			}
+		} else if (p->type == ITEM_ARMOR || p->type == ITEM_SHIELD || p->type == ITEM_HELM || p->type == ITEM_GREAVES) {
+			out->shieldCnt += level; out->swordBonusDmg += (p->price * 12) * level; out->scaleBonus += 0.10f;
+		}
+	}
+	if (out->cooldownReductionPct > 60) out->cooldownReductionPct = 60;
+}
+
+
+void GridEnsureTacticScroll(void)
+{
+	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
+		if (gGridItem[i].used && gGridItem[i].part.type == ITEM_RECIPE)
+			return;
+	}
+
+	GridPart scroll;
+	memset(&scroll, 0, sizeof(scroll));
+	scroll.type = ITEM_RECIPE;
+	scroll.detail = 0;
+	scroll.grade = GRADE_SUPERIOR;
+	scroll.w = 1;
+	scroll.h = 2;
+	scroll.price = 50;
+	scroll.name = "작전서";
+	scroll.rot = false;
+	scroll.cells = 0;
+
+	int col = -1, row = -1;
+	if (!GridFindSpot(&scroll, &col, &row)) {
+		GridPart turned = GridPartRotated(scroll);
+		if (!GridFindSpot(&turned, &col, &row))
+			return;
+		scroll = turned;
+	}
+
+	const int slot = GridTestFreeSlot();
+	if (slot < 0) return;
+
+	gGridItem[slot].part = scroll;
+	gGridItem[slot].shop = -1;
+	gGridItem[slot].equip = -1;
+	gGridItem[slot].col = col;
+	gGridItem[slot].row = row;
+	gGridItem[slot].used = true;
+	gGridItem[slot].level = 1;
+	memset(&gGridItem[slot].item, 0, sizeof(ITEM));
+	gGridItem[slot].item.type = ITEM_RECIPE;
+	gGridItem[slot].item.detail = 0;
+	gGridItem[slot].item.grade = GRADE_SUPERIOR;
+	gGridItem[slot].item.value = 100;
+}
+
 //---- 성의 대포를 인벤토리에 둔다 ----
 //
 //성 파츠의 대포 칸(parts[성][3], 0~5)을 올리면 그 단계의 포가 인벤토리에
@@ -7644,6 +8062,7 @@ static void GridPlaceGear(void)
 			GridMakeItem(&gGridItem[slot]);
 		}
 	}
+	GridEnsureTacticScroll();
 }
 
 bool BattleMenuPreviewWarehouseGestureCheck(void) {
@@ -7869,13 +8288,17 @@ void GridTestDraw(void)
 		GridDrawShapedCard(p, x, y, w, h, ALPHA_MAX, false);
 
 		//가방 안에서 스스로 치는 것 - 검과 대포에 쿨타임을 덮어 그린다.
-		if (p->type == ITEM_SWORD || p->type == ITEM_CANNON) {
+		if (p->type == ITEM_SWORD || p->type == ITEM_CANNON || p->type == ITEM_ARMOR || p->type == ITEM_SHIELD || p->type == ITEM_RECIPE) {
 			float charge = 0.0f;
 			int flash = 0;
 
 			const bool ticking = (p->type == ITEM_CANNON)
 				? StageArtilleryCharge(i, &charge, &flash)
-				: StageRtSwordCharge(i, &charge, &flash);
+				: (p->type == ITEM_ARMOR || p->type == ITEM_SHIELD)
+					? StageRtShieldCharge(i, &charge, &flash)
+					: (p->type == ITEM_RECIPE)
+						? StageRtTacticCharge(i, &charge, &flash)
+						: StageRtSwordCharge(i, &charge, &flash);
 
 			if (ticking) {
 				for (int row = 0; row < p->h; ++row)
@@ -7896,8 +8319,54 @@ void GridTestDraw(void)
 			CenterTextStrSolid("장착", x + 12 * _2X, y - 2 * _2X, 0.4f);
 		}
 
+		//장비별 6대 부위 인접 시너지 뱃지 시각화
+		if (p->type == ITEM_SWORD) {
+			const bool hasGlove = GridSlotHasAdjacentCategory(i, GEAR_CAT_GLOVE);
+			const bool hasHelm = GridSlotHasAdjacentCategory(i, GEAR_CAT_HELM);
+			if (hasGlove || hasHelm) {
+				const int synCol = hasGlove ? 0xFFAA33 : 0x44DDFF;
+				MemRectFrame(x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, synCol);
+				SetFontColor(synCol);
+				CenterTextStrSolid(hasGlove ? "강타" : "가속", x + w / 2, y - h + 6 * _2X, 0.34f);
+			}
+		} else if (p->type == ITEM_RECIPE) {
+			if (GridSlotHasAdjacentCategory(i, GEAR_CAT_HELM)) {
+				MemRectFrame(x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, 0xFFDD44);
+				SetFontColor(0xFFDD44);
+				CenterTextStrSolid("신속", x + w / 2, y - 4 * _2X, 0.34f);
+			}
+		} else if (p->type == ITEM_ARMOR || p->type == ITEM_SHIELD) {
+			if (GridSlotHasAdjacentCategory(i, GEAR_CAT_BOOTS)) {
+				MemRectFrame(x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, 0x33FF99);
+				SetFontColor(0x33FF99);
+				CenterTextStrSolid("급속", x + w / 2, y - 4 * _2X, 0.34f);
+			}
+		} else if (p->type == ITEM_GREAVES || p->type == ITEM_BOOTS || p->type == ITEM_SHOES) {
+			if (gGridItem[i].row == 0) {
+				SetFontColor(0xFFDD33);
+				CenterTextStrSolid("추진", x + w / 2, y - 4 * _2X, 0.34f);
+			}
+		}
+
 		//겹쳐서 오른 레벨. 1 이면 적지 않는다 - 모든 칸에 Lv1 이 붙으면
 		//눈이 갈 곳을 잃는다.
+		if (p->type == ITEM_CANNON) {
+			CannonSynergy syn;
+			StageCannonQuerySynergy(&syn);
+			if (syn.fireEssenceCnt > 0 || syn.iceEssenceCnt > 0 || syn.thunderEssenceCnt > 0 || syn.swordCnt > 0) {
+				const int auraCol = (syn.fireEssenceCnt > 0) ? 0xFF5522 :
+					(syn.iceEssenceCnt > 0) ? 0x33CCFF :
+					(syn.thunderEssenceCnt > 0) ? 0xFFDD33 : 0xFFCC44;
+				MemRectFrame(x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, auraCol);
+				char tag[48] = { 0 };
+				if (syn.fireEssenceCnt > 0) strcat(tag, "íì¼ ");
+				if (syn.iceEssenceCnt > 0) strcat(tag, "ë¹ê²° ");
+				if (syn.thunderEssenceCnt > 0) strcat(tag, "ë²ê° ");
+				if (syn.swordCnt > 0) strcat(tag, "íí¸ ");
+				SetFontColor(auraCol);
+				CenterTextStrSolid(tag, x + w / 2, y - 4 * _2X, 0.36f);
+			}
+		}
 		if (gGridItem[i].level > 1) {
 			char lv[16];
 

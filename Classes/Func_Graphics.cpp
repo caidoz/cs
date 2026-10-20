@@ -28,6 +28,7 @@ void StageBridgeHpDraw(void)
 	if (drawHandle != MD_PLAY) return;
 	const int inventoryWidth=GetStageInventoryWidth();
 	BattleMobileCastle::DrawDuelHpBars(GetStageSceneGroundY(),inventoryWidth);
+	StageHeroUltDraw();
 }
 
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)

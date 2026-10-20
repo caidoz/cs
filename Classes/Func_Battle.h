@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Core.h"
 
 // Battle 관련 함수
@@ -33,6 +33,12 @@ void StageFoeShotDraw(void);	//몬스터가 날린 검
 void StageRtDrawButton(void);
 int StageSwordCooldown(int detail);
 bool StageRtSwordCharge(int slot, float* charge, int* flash);
+int StageShieldCooldown(int itemType, int detail);
+bool StageRtShieldCharge(int slot, float* charge, int* flash);
+bool StageRtTacticCharge(int slot, float* charge, int* flash);
+void StageHeroUltDraw(void);
+void StageInitFortressHealthAndArmor(void);
+void StageUpdateFortressDefense(void);
 //castle 이 음수면 가방에 실린 포를 본다.
 void StageArtilleryReset(int castle = -1);
 

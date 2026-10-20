@@ -81,6 +81,55 @@ void CannonGrantEnsure(void);
 //가방에 실린 대포. 없으면 false - 그때는 아무것도 안 쏜다.
 bool StageBagCannon(int* castle, int* level, int* slot);
 
+//가방 내 대포 소켓 인접 시너지
+struct CannonSynergy {
+	int fireEssenceCnt;
+	int iceEssenceCnt;
+	int thunderEssenceCnt;
+	int magicEssenceCnt;
+	int swordCnt;
+	int swordBonusDmg;
+	int crewArtilleryCnt;
+	int shieldCnt;
+	int cooldownReductionPct;
+	float scaleBonus;
+	int extraHits;
+};
+void StageCannonQuerySynergy(CannonSynergy* out);
+
+//동료 4대 카테고리 역할
+enum CrewRole {
+	CREW_ROLE_COMMANDER = 0, // 지휘형: 가방에 작전서 제공 -> 쿨타임 완료 시 히어로 궁극기 발동
+	CREW_ROLE_ARTILLERY,     // 포격형: 성 대포 쿨타임/화력 증폭
+	CREW_ROLE_BLACKSMITH,    // 지원/대장장이형: 인접 장비 강화 및 요새 수리/실드 회복
+	CREW_ROLE_STRIKER,       // 공격형: 성 위에서 원거리 지속 화력 투사
+	TOTAL_CREW_ROLES
+};
+CrewRole GetCrewRole(int crewType);
+const char* GetCrewRoleName(CrewRole role);
+int GetCrewRoleColor(CrewRole role);
+void GridEnsureTacticScroll(void);
+
+//히어로 장비 6대 부위 카테고리
+enum GearCategory {
+	GEAR_CAT_WEAPON = 0,
+	GEAR_CAT_ARMOR,
+	GEAR_CAT_HELM,
+	GEAR_CAT_GLOVE,
+	GEAR_CAT_PANTS,
+	GEAR_CAT_BOOTS,
+	GEAR_CAT_SHIELD,
+	GEAR_CAT_CREW,
+	GEAR_CAT_RECIPE,
+	TOTAL_GEAR_CATS
+};
+GearCategory GetItemGearCategory(int itemType);
+bool GridSlotHasAdjacentCategory(int slot, GearCategory cat);
+long long GridTestPantsHpBonus(void);
+bool GridCrewHasAdjacentPants(int crewIndex);
+bool GridSlotAdjacentToRocky(int slot);
+int GetCrewIdxFromType(int type);
+
 int LoadoutPoint(void);				//이번 판에 쓸 수 있는 점수
 int LoadoutUsed(void);
 int LoadoutCost(const ITEM* it);
@@ -180,6 +229,8 @@ struct StageSword {
 	bool gear;		//아웃게임에서 장착하고 들어온 검. 히어로가 휘두른다
 };
 int GridTestSwords(StageSword* out, int maxCnt);
+int GridTestShields(StageSword* out, int maxCnt);
+int GridTestTactics(StageSword* out, int maxCnt);
 int GridTestTotalItemCount(void);
 int StageGearList(int obj, StageSword* out, int maxCnt);	//누구든 장비 목록
 int StageFoeGearList(StageSword* out, int maxCnt);	//지금 몬스터 장비
