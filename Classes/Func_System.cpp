@@ -2448,6 +2448,7 @@ void NewGame(void)
 
 void GotoTitle(void)
 {
+	StageRunEquipmentEnd();
 	drawHandle = MD_TITLE;
 	keyHandle = MK_TITLE;
 
@@ -2481,6 +2482,7 @@ void GotoTitle(void)
 
 void GotoLobby(void)
 {
+	StageRunEquipmentEnd();
 	//자동전투는 판을 떠나면 끈다. 다음에 들어와서는 전투 버튼을 눌러야 싸운다.
 	StageRtSetAuto(false);
 
@@ -4776,6 +4778,7 @@ void ChangeTile(int x, int y, int width, int height, int type)
 // Save & Load
 void SaveGame(void)
 {
+	if(getenv("CS_STAGE_COMBAT_REVIEW") || getenv("CS_MAX_WEAPON_REVIEW") || getenv("CS_ALLY_LINK_REVIEW") || getenv("CS_ALLIES_BALANCE_REVIEW")) return;
 	int i;
 
 	running = false;
@@ -4788,7 +4791,8 @@ void SaveGame(void)
 
 	for (i = ROBIN; i < TOTALPLAYER; i++) {
 		RefreshStat(&ao[i]);
-		memcpy((char*)&robin.charData[i].equip, &ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
+		const ITEM* persistent=StageRunPersistentEquipment(i);
+		memcpy((char*)&robin.charData[i].equip, persistent?persistent:ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
 		memcpy(&robin.charData[i].getSkillList, &ao[i].getSkillList,
 			sizeof(robin.charData[i].getSkillList));
 		memcpy((char*)&robin.charData[i].skillLv, &ao[i].skillLv, CAP_SKILL);

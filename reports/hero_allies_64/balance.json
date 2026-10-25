@@ -1,0 +1,2502 @@
+[
+  {
+    "id": 0,
+    "ability": "돌팔매 응원",
+    "attack_seconds": 3.2,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 1,
+    "action": "Volley",
+    "ability_seconds": 8.0,
+    "power": 45,
+    "condition": "EnemyHighHp",
+    "robin": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 8.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 6,
+      "cooldown_seconds": 8.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 35,
+      "cooldown_seconds": 8.0
+    },
+    "drawback": "체력이 절반 이상인 적에게만 보조 돌팔매",
+    "name": "꼬마 마르셀",
+    "npc_id": 367,
+    "npc_enum": "NPC_BOY",
+    "sprite": "Resources/res/c59.png",
+    "legacy_skills": [
+      111,
+      112,
+      113
+    ],
+    "status": null
+  },
+  {
+    "id": 1,
+    "ability": "로제티의 용기",
+    "attack_seconds": 2.8,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 1,
+    "action": "Shield",
+    "ability_seconds": 9.0,
+    "power": 3,
+    "condition": "LowShield",
+    "robin": {
+      "action": "Strike",
+      "power": 40,
+      "cooldown_seconds": 7.0
+    },
+    "diana": {
+      "action": "Shield",
+      "power": 2,
+      "cooldown_seconds": 7.0
+    },
+    "max": {
+      "action": "Supply",
+      "power": 5,
+      "cooldown_seconds": 7.0
+    },
+    "drawback": "보호막이 절반 이하일 때만 보호",
+    "name": "귀여운로제티",
+    "npc_id": 368,
+    "npc_enum": "NPC_GIRL",
+    "sprite": "Resources/res/c60.png",
+    "legacy_skills": [
+      114,
+      115,
+      116
+    ],
+    "status": null
+  },
+  {
+    "id": 2,
+    "ability": "엘사의 구급 보따리",
+    "attack_seconds": 4.4,
+    "attack_percent": 80,
+    "cols": 1,
+    "rows": 2,
+    "action": "Heal",
+    "ability_seconds": 12.0,
+    "power": 4,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Heal",
+      "power": 2,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 8,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "성 체력 절반 이하에서만 회복",
+    "name": "엘사 할머니",
+    "npc_id": 380,
+    "npc_enum": "NPC_GRANDMA",
+    "sprite": "Resources/res/c72.png",
+    "legacy_skills": [
+      150,
+      151,
+      152
+    ],
+    "status": null
+  },
+  {
+    "id": 3,
+    "ability": "촌장의 전열 지시",
+    "attack_seconds": 4.2,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 10.0,
+    "power": 12,
+    "condition": "Front",
+    "robin": {
+      "action": "Shield",
+      "power": 3,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 7,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 3,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "전열 배치 필요",
+    "name": "촌장 뭉크",
+    "npc_id": 362,
+    "npc_enum": "NPC_GRANDFA",
+    "sprite": "Resources/res/c54.png",
+    "legacy_skills": [
+      96,
+      97,
+      98
+    ],
+    "status": null
+  },
+  {
+    "id": 4,
+    "ability": "빌리의 경계 사격",
+    "attack_seconds": 3.4,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 2,
+    "action": "Expose",
+    "ability_seconds": 9.0,
+    "power": 1,
+    "condition": "EnemyClean",
+    "robin": {
+      "action": "Volley",
+      "power": 45,
+      "cooldown_seconds": 8.0
+    },
+    "diana": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 60,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "새 상태이상이 없는 적을 먼저 표식",
+    "name": "자경단 빌리",
+    "npc_id": 365,
+    "npc_enum": "NPC_MAN",
+    "sprite": "Resources/res/c57.png",
+    "legacy_skills": [
+      105,
+      106,
+      107
+    ],
+    "status": {
+      "name": "Expose",
+      "cap": 1,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 5,
+    "ability": "캐롤의 따끔한 일침",
+    "attack_seconds": 3.0,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 1,
+    "action": "Bleed",
+    "ability_seconds": 8.0,
+    "power": 1,
+    "condition": "EnemyHighHp",
+    "robin": {
+      "action": "Strike",
+      "power": 45,
+      "cooldown_seconds": 8.0
+    },
+    "diana": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 45,
+      "cooldown_seconds": 8.0
+    },
+    "drawback": "적 체력 절반 이상에서만 출혈 부여",
+    "name": "새침때기캐롤",
+    "npc_id": 366,
+    "npc_enum": "NPC_WOMAN",
+    "sprite": "Resources/res/c58.png",
+    "legacy_skills": [
+      108,
+      109,
+      110
+    ],
+    "status": {
+      "name": "Bleed",
+      "cap": 4,
+      "duration_seconds": 6
+    }
+  },
+  {
+    "id": 6,
+    "ability": "버크의 경쟁심",
+    "attack_seconds": 3.8,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 9.0,
+    "power": 65,
+    "condition": "HighHp",
+    "robin": {
+      "action": "Inspire",
+      "power": 10,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 45,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 65,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "성 체력 절반 초과 필요",
+    "name": "촌장후보버크",
+    "npc_id": 363,
+    "npc_enum": "NPC_UNCLE",
+    "sprite": "Resources/res/c55.png",
+    "legacy_skills": [
+      99,
+      100,
+      101
+    ],
+    "status": null
+  },
+  {
+    "id": 7,
+    "ability": "로사의 공동 비축",
+    "attack_seconds": 4.8,
+    "attack_percent": 75,
+    "cols": 1,
+    "rows": 2,
+    "action": "Supply",
+    "ability_seconds": 11.0,
+    "power": 9,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Shield",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 8,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 2,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "다른 동료와 맞닿아야 지원",
+    "name": "부녀회장로사",
+    "npc_id": 364,
+    "npc_enum": "NPC_AUNT",
+    "sprite": "Resources/res/c56.png",
+    "legacy_skills": [
+      102,
+      103,
+      104
+    ],
+    "status": null
+  },
+  {
+    "id": 8,
+    "ability": "롤란의 파도 방벽",
+    "attack_seconds": 4.0,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 2,
+    "action": "Shield",
+    "ability_seconds": 9.0,
+    "power": 5,
+    "condition": "Front",
+    "robin": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Shield",
+      "power": 3,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "전열에서만 주기 보호막",
+    "name": "반어인 롤란",
+    "npc_id": 393,
+    "npc_enum": "NPC_SEAUNCLE",
+    "sprite": "Resources/res/c85.png",
+    "legacy_skills": [
+      189,
+      190,
+      191
+    ],
+    "status": null
+  },
+  {
+    "id": 9,
+    "ability": "크롤의 해저 창술",
+    "attack_seconds": 4.2,
+    "attack_percent": 110,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 10.0,
+    "power": 90,
+    "condition": "Front",
+    "robin": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Strike",
+      "power": 70,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "전열에서만 추가 창격",
+    "name": "반어병사크롤",
+    "npc_id": 389,
+    "npc_enum": "NPC_SEASOLDIER",
+    "sprite": "Resources/res/c81.png",
+    "legacy_skills": [
+      177,
+      178,
+      179
+    ],
+    "status": null
+  },
+  {
+    "id": 10,
+    "ability": "마일즈의 연속권",
+    "attack_seconds": 2.6,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 8.0,
+    "power": 80,
+    "condition": "EveryThird",
+    "robin": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 8.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 12,
+      "cooldown_seconds": 8.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 75,
+      "cooldown_seconds": 8.0
+    },
+    "drawback": "영웅 공격 세 번마다 발동 기회",
+    "name": "격투가마일즈",
+    "npc_id": 384,
+    "npc_enum": "NPC_MILESE",
+    "sprite": "Resources/res/c76.png",
+    "legacy_skills": [
+      162,
+      163,
+      164
+    ],
+    "status": null
+  },
+  {
+    "id": 11,
+    "ability": "알마의 재촉",
+    "attack_seconds": 3.0,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 1,
+    "action": "Supply",
+    "ability_seconds": 10.0,
+    "power": 10,
+    "condition": "HighHp",
+    "robin": {
+      "action": "Supply",
+      "power": 6,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 10,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Inspire",
+      "power": 12,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "성 체력 절반 초과에서만 재촉",
+    "name": "성격급한알마",
+    "npc_id": 369,
+    "npc_enum": "NPC_ALMA",
+    "sprite": "Resources/res/c61.png",
+    "legacy_skills": [
+      117,
+      118,
+      119
+    ],
+    "status": null
+  },
+  {
+    "id": 12,
+    "ability": "윌의 포승탄",
+    "attack_seconds": 3.6,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 2,
+    "action": "Chill",
+    "ability_seconds": 10.0,
+    "power": 1,
+    "condition": "Back",
+    "robin": {
+      "action": "Volley",
+      "power": 55,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "후열 배치 필요",
+    "name": "선원 윌",
+    "npc_id": 361,
+    "npc_enum": "NPC_CREW",
+    "sprite": "Resources/res/c53.png",
+    "legacy_skills": [
+      93,
+      94,
+      95
+    ],
+    "status": {
+      "name": "Chill",
+      "cap": 3,
+      "duration_seconds": 3
+    }
+  },
+  {
+    "id": 13,
+    "ability": "케일의 안전 경로",
+    "attack_seconds": 4.0,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 1,
+    "action": "Cleanse",
+    "ability_seconds": 12.0,
+    "power": 1,
+    "condition": "Back",
+    "robin": {
+      "action": "Shield",
+      "power": 4,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 9,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 4,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "후열에서 성의 기존 해로운 효과 하나 해제",
+    "name": "탐험가 케일",
+    "npc_id": 379,
+    "npc_enum": "NPC_TRAVEL",
+    "sprite": "Resources/res/c71.png",
+    "legacy_skills": [
+      147,
+      148,
+      149
+    ],
+    "status": null
+  },
+  {
+    "id": 14,
+    "ability": "메로의 숲 치유",
+    "attack_seconds": 3.8,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 1,
+    "action": "Repair",
+    "ability_seconds": 11.0,
+    "power": 3,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Heal",
+      "power": 2,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 10,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Repair",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "인접 동료 필요",
+    "name": "엘프 메로",
+    "npc_id": 411,
+    "npc_enum": "NPC_ELFBOY",
+    "sprite": "Resources/res/c103.png",
+    "legacy_skills": [
+      243,
+      244,
+      245
+    ],
+    "status": null
+  },
+  {
+    "id": 15,
+    "ability": "카나리아의 서리 화살",
+    "attack_seconds": 3.2,
+    "attack_percent": 105,
+    "cols": 1,
+    "rows": 2,
+    "action": "Chill",
+    "ability_seconds": 9.0,
+    "power": 1,
+    "condition": "EnemyClean",
+    "robin": {
+      "action": "Strike",
+      "power": 60,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 55,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "상태이상이 없는 적에게 냉기 부여",
+    "name": "엘프카나리아",
+    "npc_id": 412,
+    "npc_enum": "NPC_ELFGIRL",
+    "sprite": "Resources/res/c104.png",
+    "legacy_skills": [
+      246,
+      247,
+      248
+    ],
+    "status": {
+      "name": "Chill",
+      "cap": 3,
+      "duration_seconds": 3
+    }
+  },
+  {
+    "id": 16,
+    "ability": "캐러밴의 예비 부품",
+    "attack_seconds": 4.6,
+    "attack_percent": 75,
+    "cols": 1,
+    "rows": 2,
+    "action": "Repair",
+    "ability_seconds": 13.0,
+    "power": 5,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Shield",
+      "power": 4,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 12,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Repair",
+      "power": 4,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "성 체력 절반 이하에서 수리",
+    "name": "캐러밴 상인",
+    "npc_id": 370,
+    "npc_enum": "NPC_ITEM",
+    "sprite": "Resources/res/c62.png",
+    "legacy_skills": [
+      120,
+      121,
+      122
+    ],
+    "status": null
+  },
+  {
+    "id": 17,
+    "ability": "질풍의 빈틈 베기",
+    "attack_seconds": 2.7,
+    "attack_percent": 105,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 9.0,
+    "power": 115,
+    "condition": "EnemyDebuffed",
+    "robin": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 65,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 100,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "상태이상에 걸린 적 필요",
+    "name": "질풍의 검사",
+    "npc_id": 407,
+    "npc_enum": "NPC_ELFUNCLE",
+    "sprite": "Resources/res/c99.png",
+    "legacy_skills": [
+      231,
+      232,
+      233
+    ],
+    "status": null
+  },
+  {
+    "id": 18,
+    "ability": "케일라의 보호 기도",
+    "attack_seconds": 4.0,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 2,
+    "action": "Shield",
+    "ability_seconds": 10.0,
+    "power": 6,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Inspire",
+      "power": 14,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Shield",
+      "power": 4,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "동료와 인접해야 방벽 유지",
+    "name": "엘프 케일라",
+    "npc_id": 408,
+    "npc_enum": "NPC_ELFAUNT",
+    "sprite": "Resources/res/c100.png",
+    "legacy_skills": [
+      234,
+      235,
+      236
+    ],
+    "status": null
+  },
+  {
+    "id": 19,
+    "ability": "나스의 문지기",
+    "attack_seconds": 3.6,
+    "attack_percent": 110,
+    "cols": 1,
+    "rows": 2,
+    "action": "Fortify",
+    "ability_seconds": 11.0,
+    "power": 8,
+    "condition": "Front",
+    "robin": {
+      "action": "Shield",
+      "power": 5,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Fortify",
+      "power": 6,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 5,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "전열에서만 다음 적 공격 경감",
+    "name": "근위대장나스",
+    "npc_id": 400,
+    "npc_enum": "NPC_ADELKNIGHT",
+    "sprite": "Resources/res/c92.png",
+    "legacy_skills": [
+      210,
+      211,
+      212
+    ],
+    "status": null
+  },
+  {
+    "id": 20,
+    "ability": "야행성 감시",
+    "attack_seconds": 3.4,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 1,
+    "action": "Expose",
+    "ability_seconds": 8.0,
+    "power": 1,
+    "condition": "Back",
+    "robin": {
+      "action": "Strike",
+      "power": 80,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 70,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "후열 배치 필요",
+    "name": "부엉이",
+    "npc_id": 416,
+    "npc_enum": "NPC_OWL",
+    "sprite": "Resources/res/c108.png",
+    "legacy_skills": [
+      258,
+      259,
+      260
+    ],
+    "status": {
+      "name": "Expose",
+      "cap": 1,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 21,
+    "ability": "메어리의 정돈",
+    "attack_seconds": 4.0,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "Cleanse",
+    "ability_seconds": 10.0,
+    "power": 1,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Repair",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 10,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "성 체력 절반 이하에서만 정돈",
+    "name": "메이드메어리",
+    "npc_id": 399,
+    "npc_enum": "NPC_MAID",
+    "sprite": "Resources/res/c91.png",
+    "legacy_skills": [
+      207,
+      208,
+      209
+    ],
+    "status": null
+  },
+  {
+    "id": 22,
+    "ability": "로즈의 행운 사격",
+    "attack_seconds": 3.0,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 1,
+    "action": "Volley",
+    "ability_seconds": 9.0,
+    "power": 85,
+    "condition": "EveryThird",
+    "robin": {
+      "action": "Inspire",
+      "power": 16,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 65,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Supply",
+      "power": 9,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "영웅 세 번째 공격 이후 추가 사격",
+    "name": "바니걸 로즈",
+    "npc_id": 372,
+    "npc_enum": "NPC_BUNNYGIRL",
+    "sprite": "Resources/res/c64.png",
+    "legacy_skills": [
+      126,
+      127,
+      128
+    ],
+    "status": null
+  },
+  {
+    "id": 23,
+    "ability": "아벨의 우회 지도",
+    "attack_seconds": 4.4,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "Supply",
+    "ability_seconds": 11.0,
+    "power": 13,
+    "condition": "Back",
+    "robin": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 11,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 5,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "후열에서만 경로 안내",
+    "name": "지도왕 아벨",
+    "npc_id": 377,
+    "npc_enum": "NPC_MAP",
+    "sprite": "Resources/res/c69.png",
+    "legacy_skills": [
+      141,
+      142,
+      143
+    ],
+    "status": null
+  },
+  {
+    "id": 24,
+    "ability": "모니카의 실전 수업",
+    "attack_seconds": 4.2,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 12.0,
+    "power": 20,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Strike",
+      "power": 85,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 16,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Supply",
+      "power": 10,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "인접 동료에게 다음 한 발만 강화",
+    "name": "모니카선생님",
+    "npc_id": 387,
+    "npc_enum": "NPC_MONICA",
+    "sprite": "Resources/res/c79.png",
+    "legacy_skills": [
+      171,
+      172,
+      173
+    ],
+    "status": null
+  },
+  {
+    "id": 25,
+    "ability": "모시의 물방울",
+    "attack_seconds": 3.1,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 1,
+    "action": "Chill",
+    "ability_seconds": 8.0,
+    "power": 1,
+    "condition": "EnemyHighHp",
+    "robin": {
+      "action": "Shield",
+      "power": 4,
+      "cooldown_seconds": 9.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 60,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "drawback": "적 체력 절반 이상일 때만 둔화",
+    "name": "반어꼬마모시",
+    "npc_id": 394,
+    "npc_enum": "NPC_SEABOY",
+    "sprite": "Resources/res/c86.png",
+    "legacy_skills": [
+      192,
+      193,
+      194
+    ],
+    "status": {
+      "name": "Chill",
+      "cap": 3,
+      "duration_seconds": 3
+    }
+  },
+  {
+    "id": 26,
+    "ability": "도벨의 화약통",
+    "attack_seconds": 4.0,
+    "attack_percent": 115,
+    "cols": 1,
+    "rows": 2,
+    "action": "Burn",
+    "ability_seconds": 9.0,
+    "power": 2,
+    "condition": "Front",
+    "robin": {
+      "action": "Strike",
+      "power": 90,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Burn",
+      "power": 1,
+      "cooldown_seconds": 9.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 80,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "전열 배치 필요",
+    "name": "해적도벨",
+    "npc_id": 385,
+    "npc_enum": "NPC_DOBEL",
+    "sprite": "Resources/res/c77.png",
+    "legacy_skills": [
+      165,
+      166,
+      167
+    ],
+    "status": {
+      "name": "Burn",
+      "cap": 5,
+      "duration_seconds": 4
+    }
+  },
+  {
+    "id": 27,
+    "ability": "가젤의 약탈 사격",
+    "attack_seconds": 3.4,
+    "attack_percent": 110,
+    "cols": 1,
+    "rows": 2,
+    "action": "Leech",
+    "ability_seconds": 10.0,
+    "power": 4,
+    "condition": "EnemyLowHp",
+    "robin": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 12,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Leech",
+      "power": 3,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "적 체력 절반 이하에서만 흡수 회복",
+    "name": "해적가젤",
+    "npc_id": 386,
+    "npc_enum": "NPC_GAGEL",
+    "sprite": "Resources/res/c78.png",
+    "legacy_skills": [
+      168,
+      169,
+      170
+    ],
+    "status": null
+  },
+  {
+    "id": 28,
+    "ability": "워드의 오래된 룬",
+    "attack_seconds": 4.8,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "Fortify",
+    "ability_seconds": 12.0,
+    "power": 12,
+    "condition": "Back",
+    "robin": {
+      "action": "Shield",
+      "power": 6,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Fortify",
+      "power": 8,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "후열에서만 수호 룬",
+    "name": "워드할아버지",
+    "npc_id": 406,
+    "npc_enum": "NPC_ELFGRANDFA",
+    "sprite": "Resources/res/c98.png",
+    "legacy_skills": [
+      228,
+      229,
+      230
+    ],
+    "status": null
+  },
+  {
+    "id": 29,
+    "ability": "루디아의 맹독 칼날",
+    "attack_seconds": 3.3,
+    "attack_percent": 110,
+    "cols": 1,
+    "rows": 2,
+    "action": "Poison",
+    "ability_seconds": 9.0,
+    "power": 2,
+    "condition": "AdjacentWeapon",
+    "robin": {
+      "action": "Bleed",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Poison",
+      "power": 1,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 90,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "무기와 인접해야 독 부여",
+    "name": "엘프 루디아",
+    "npc_id": 410,
+    "npc_enum": "NPC_ELFWOMAN",
+    "sprite": "Resources/res/c102.png",
+    "legacy_skills": [
+      240,
+      241,
+      242
+    ],
+    "status": {
+      "name": "Poison",
+      "cap": 6,
+      "duration_seconds": 8
+    }
+  },
+  {
+    "id": 30,
+    "ability": "아리프의 생장 씨앗",
+    "attack_seconds": 4.5,
+    "attack_percent": 80,
+    "cols": 1,
+    "rows": 1,
+    "action": "Repair",
+    "ability_seconds": 12.0,
+    "power": 4,
+    "condition": "HighHp",
+    "robin": {
+      "action": "Shield",
+      "power": 5,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 11,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Repair",
+      "power": 4,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "성 체력 절반 초과에서 예방 수리",
+    "name": "정원사아리프",
+    "npc_id": 409,
+    "npc_enum": "NPC_ELFMAN",
+    "sprite": "Resources/res/c101.png",
+    "legacy_skills": [
+      237,
+      238,
+      239
+    ],
+    "status": null
+  },
+  {
+    "id": 31,
+    "ability": "메리동전의 박자",
+    "attack_seconds": 3.2,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 10.0,
+    "power": 18,
+    "condition": "EveryThird",
+    "robin": {
+      "action": "Supply",
+      "power": 10,
+      "cooldown_seconds": 10.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 75,
+      "cooldown_seconds": 10.0
+    },
+    "max": {
+      "action": "Inspire",
+      "power": 16,
+      "cooldown_seconds": 10.0
+    },
+    "drawback": "영웅 공격 세 번의 박자 필요",
+    "name": "무희메리동전",
+    "npc_id": 415,
+    "npc_enum": "NPC_ELFDANCER",
+    "sprite": "Resources/res/c107.png",
+    "legacy_skills": [
+      255,
+      256,
+      257
+    ],
+    "status": null
+  },
+  {
+    "id": 32,
+    "ability": "남작의 호위 계약",
+    "attack_seconds": 4.2,
+    "attack_percent": 105,
+    "cols": 2,
+    "rows": 2,
+    "action": "Shield",
+    "ability_seconds": 12.0,
+    "power": 10,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Strike",
+      "power": 100,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 20,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 7,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "넓은 점유와 인접 동료 필요",
+    "name": "몬테오남작",
+    "npc_id": 402,
+    "npc_enum": "NPC_NOBLEMAN",
+    "sprite": "Resources/res/c94.png",
+    "legacy_skills": [
+      216,
+      217,
+      218
+    ],
+    "status": null
+  },
+  {
+    "id": 33,
+    "ability": "데런의 전투 기록",
+    "attack_seconds": 4.6,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 2,
+    "action": "Expose",
+    "ability_seconds": 11.0,
+    "power": 1,
+    "condition": "EveryThird",
+    "robin": {
+      "action": "Strike",
+      "power": 125,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 13,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "공격 세 번을 기록해야 표식",
+    "name": "역사학자데런",
+    "npc_id": 396,
+    "npc_enum": "NPC_SCHOLAR",
+    "sprite": "Resources/res/c88.png",
+    "legacy_skills": [
+      198,
+      199,
+      200
+    ],
+    "status": {
+      "name": "Expose",
+      "cap": 1,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 34,
+    "ability": "그랜드의 비상 물자",
+    "attack_seconds": 4.8,
+    "attack_percent": 80,
+    "cols": 1,
+    "rows": 2,
+    "action": "Supply",
+    "ability_seconds": 13.0,
+    "power": 16,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Heal",
+      "power": 4,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 13,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 6,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "위기 상태에서만 비축 물자 개방",
+    "name": "상인 그랜드",
+    "npc_id": 383,
+    "npc_enum": "NPC_NETITEM",
+    "sprite": "Resources/res/c75.png",
+    "legacy_skills": [
+      159,
+      160,
+      161
+    ],
+    "status": null
+  },
+  {
+    "id": 35,
+    "ability": "케로의 든든한 한입",
+    "attack_seconds": 4.6,
+    "attack_percent": 95,
+    "cols": 2,
+    "rows": 2,
+    "action": "Heal",
+    "ability_seconds": 14.0,
+    "power": 8,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Fortify",
+      "power": 8,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Shield",
+      "power": 7,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 5,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "넓은 점유와 낮은 성 체력 필요",
+    "name": "먹보 케로",
+    "npc_id": 371,
+    "npc_enum": "NPC_FATMAN",
+    "sprite": "Resources/res/c63.png",
+    "legacy_skills": [
+      123,
+      124,
+      125
+    ],
+    "status": null
+  },
+  {
+    "id": 36,
+    "ability": "로키의 이동식 작업대",
+    "attack_seconds": 5.0,
+    "attack_percent": 90,
+    "cols": 2,
+    "rows": 2,
+    "action": "PrototypeSmith",
+    "ability_seconds": 8.0,
+    "power": 5,
+    "condition": "Always",
+    "robin": {
+      "action": "Shield",
+      "power": 3,
+      "cooldown_seconds": 8.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 10,
+      "cooldown_seconds": 8.0
+    },
+    "max": {
+      "action": "Repair",
+      "power": 5,
+      "cooldown_seconds": 8.0
+    },
+    "drawback": "맥스와 출전하면 비행 중에만 수리",
+    "name": "대장장이로키",
+    "npc_id": 376,
+    "npc_enum": "NPC_CRAFTMAN",
+    "sprite": "Resources/res/c68.png",
+    "legacy_skills": [
+      138,
+      139,
+      140
+    ],
+    "status": null
+  },
+  {
+    "id": 37,
+    "ability": "루이제의 격려",
+    "attack_seconds": 4.0,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 12.0,
+    "power": 24,
+    "condition": "LowShield",
+    "robin": {
+      "action": "Shield",
+      "power": 8,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 13,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 5,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "성 보호막이 절반 이하일 때만 격려",
+    "name": "루이제 공주",
+    "npc_id": 392,
+    "npc_enum": "NPC_LUISE",
+    "sprite": "Resources/res/c84.png",
+    "legacy_skills": [
+      186,
+      187,
+      188
+    ],
+    "status": null
+  },
+  {
+    "id": 38,
+    "ability": "플란다스의 충성",
+    "attack_seconds": 2.8,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 2,
+    "action": "Fortify",
+    "ability_seconds": 10.0,
+    "power": 10,
+    "condition": "Front",
+    "robin": {
+      "action": "Strike",
+      "power": 100,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Fortify",
+      "power": 8,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Supply",
+      "power": 11,
+      "cooldown_seconds": 11.0
+    },
+    "drawback": "전열에서 성을 지킴",
+    "name": "충견플란다스",
+    "npc_id": 374,
+    "npc_enum": "NPC_DOG",
+    "sprite": "Resources/res/c66.png",
+    "legacy_skills": [
+      132,
+      133,
+      134
+    ],
+    "status": null
+  },
+  {
+    "id": 39,
+    "ability": "라즈베릴의 결투",
+    "attack_seconds": 3.0,
+    "attack_percent": 120,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 11.0,
+    "power": 160,
+    "condition": "Alone",
+    "robin": {
+      "action": "Bleed",
+      "power": 2,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 130,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "다른 동료와 인접하지 않아야 결투 강타",
+    "name": "검사라즈베릴",
+    "npc_id": 373,
+    "npc_enum": "NPC_KNIGHT",
+    "sprite": "Resources/res/c65.png",
+    "legacy_skills": [
+      129,
+      130,
+      131
+    ],
+    "status": null
+  },
+  {
+    "id": 40,
+    "ability": "페페의 저주 가마솥",
+    "attack_seconds": 4.0,
+    "attack_percent": 105,
+    "cols": 1,
+    "rows": 2,
+    "action": "Poison",
+    "ability_seconds": 10.0,
+    "power": 3,
+    "condition": "EnemyDebuffed",
+    "robin": {
+      "action": "Burn",
+      "power": 1,
+      "cooldown_seconds": 11.0
+    },
+    "diana": {
+      "action": "Poison",
+      "power": 2,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "이미 상태이상인 적에게만 독 가중",
+    "name": "마녀 페페",
+    "npc_id": 405,
+    "npc_enum": "NPC_WITCH",
+    "sprite": "Resources/res/c97.png",
+    "legacy_skills": [
+      225,
+      226,
+      227
+    ],
+    "status": {
+      "name": "Poison",
+      "cap": 6,
+      "duration_seconds": 8
+    }
+  },
+  {
+    "id": 41,
+    "ability": "비스트로의 온기",
+    "attack_seconds": 4.4,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "Repair",
+    "ability_seconds": 12.0,
+    "power": 6,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Heal",
+      "power": 4,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 20,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 7,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "동료와 인접해야 온기 전파",
+    "name": "비스트로 체",
+    "npc_id": 398,
+    "npc_enum": "NPC_BISTRO",
+    "sprite": "Resources/res/c90.png",
+    "legacy_skills": [
+      204,
+      205,
+      206
+    ],
+    "status": null
+  },
+  {
+    "id": 42,
+    "ability": "세바스찬의 보급 명령",
+    "attack_seconds": 4.6,
+    "attack_percent": 95,
+    "cols": 1,
+    "rows": 2,
+    "action": "Supply",
+    "ability_seconds": 14.0,
+    "power": 20,
+    "condition": "AdjacentWeapon",
+    "robin": {
+      "action": "Inspire",
+      "power": 22,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 15,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Fortify",
+      "power": 10,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "무기 인접 필요와 긴 지원 주기",
+    "name": "대신세바스찬",
+    "npc_id": 401,
+    "npc_enum": "NPC_SEBASTIAN",
+    "sprite": "Resources/res/c93.png",
+    "legacy_skills": [
+      213,
+      214,
+      215
+    ],
+    "status": null
+  },
+  {
+    "id": 43,
+    "ability": "라피의 대어 낚시",
+    "attack_seconds": 5.2,
+    "attack_percent": 130,
+    "cols": 2,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 14.0,
+    "power": 210,
+    "condition": "EnemyLowHp",
+    "robin": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 115,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 170,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "큰 점유와 적 체력 절반 이하 조건",
+    "name": "낚시꾼 라피",
+    "npc_id": 381,
+    "npc_enum": "NPC_FISHING",
+    "sprite": "Resources/res/c73.png",
+    "legacy_skills": [
+      153,
+      154,
+      155
+    ],
+    "status": null
+  },
+  {
+    "id": 44,
+    "ability": "프라우트의 포효",
+    "attack_seconds": 4.2,
+    "attack_percent": 125,
+    "cols": 2,
+    "rows": 2,
+    "action": "Fortify",
+    "ability_seconds": 13.0,
+    "power": 18,
+    "condition": "Front",
+    "robin": {
+      "action": "Strike",
+      "power": 145,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 25,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 10,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "전열 배치와 큰 점유 필요",
+    "name": "수왕프라우트",
+    "npc_id": 390,
+    "npc_enum": "NPC_FRAUD",
+    "sprite": "Resources/res/c82.png",
+    "legacy_skills": [
+      180,
+      181,
+      182
+    ],
+    "status": null
+  },
+  {
+    "id": 45,
+    "ability": "아밀의 구원의 빛",
+    "attack_seconds": 5.0,
+    "attack_percent": 85,
+    "cols": 1,
+    "rows": 2,
+    "action": "PrototypeCleric",
+    "ability_seconds": 15.0,
+    "power": 10,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Heal",
+      "power": 10,
+      "cooldown_seconds": 15.0
+    },
+    "diana": {
+      "action": "Heal",
+      "power": 10,
+      "cooldown_seconds": 15.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 10,
+      "cooldown_seconds": 15.0
+    },
+    "drawback": "성 체력 절반 이하와 영웅 연계 이벤트 필요",
+    "name": "사제 아밀",
+    "npc_id": 414,
+    "npc_enum": "NPC_ELFMAGIC",
+    "sprite": "Resources/res/c106.png",
+    "legacy_skills": [
+      252,
+      253,
+      254
+    ],
+    "status": null
+  },
+  {
+    "id": 46,
+    "ability": "다리안의 빈틈 분석",
+    "attack_seconds": 4.2,
+    "attack_percent": 105,
+    "cols": 1,
+    "rows": 2,
+    "action": "Expose",
+    "ability_seconds": 12.0,
+    "power": 1,
+    "condition": "EnemyDebuffed",
+    "robin": {
+      "action": "Strike",
+      "power": 150,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 16,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "상태이상 적에게만 표식",
+    "name": "대신 다리안",
+    "npc_id": 391,
+    "npc_enum": "NPC_DARIAN",
+    "sprite": "Resources/res/c83.png",
+    "legacy_skills": [
+      183,
+      184,
+      185
+    ],
+    "status": {
+      "name": "Expose",
+      "cap": 1,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 47,
+    "ability": "브루스의 발경",
+    "attack_seconds": 3.0,
+    "attack_percent": 120,
+    "cols": 1,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 10.0,
+    "power": 155,
+    "condition": "EveryThird",
+    "robin": {
+      "action": "Bleed",
+      "power": 2,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 105,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 140,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "세 번째 영웅 공격까지 발경 대기",
+    "name": "브루스 미",
+    "npc_id": 395,
+    "npc_enum": "NPC_DONALD",
+    "sprite": "Resources/res/c87.png",
+    "legacy_skills": [
+      195,
+      196,
+      197
+    ],
+    "status": null
+  },
+  {
+    "id": 48,
+    "ability": "무의 암습",
+    "attack_seconds": 3.3,
+    "attack_percent": 125,
+    "cols": 1,
+    "rows": 2,
+    "action": "Bleed",
+    "ability_seconds": 11.0,
+    "power": 2,
+    "condition": "EnemyLowHp",
+    "robin": {
+      "action": "Strike",
+      "power": 170,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Bleed",
+      "power": 2,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "체력이 절반 이하인 적만 노림",
+    "name": "다크엘프 무",
+    "npc_id": 413,
+    "npc_enum": "NPC_ELFDARK",
+    "sprite": "Resources/res/c105.png",
+    "legacy_skills": [
+      249,
+      250,
+      251
+    ],
+    "status": {
+      "name": "Bleed",
+      "cap": 4,
+      "duration_seconds": 6
+    }
+  },
+  {
+    "id": 49,
+    "ability": "네자르의 축전술",
+    "attack_seconds": 4.2,
+    "attack_percent": 115,
+    "cols": 1,
+    "rows": 2,
+    "action": "Shock",
+    "ability_seconds": 10.0,
+    "power": 2,
+    "condition": "AdjacentWeapon",
+    "robin": {
+      "action": "Discharge",
+      "power": 100,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Shock",
+      "power": 1,
+      "cooldown_seconds": 11.0
+    },
+    "max": {
+      "action": "Discharge",
+      "power": 120,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "무기 인접 필요; 감전만 쌓으면 추가 피해 없음",
+    "name": "마법사네자르",
+    "npc_id": 423,
+    "npc_enum": "NPC_NEZAR",
+    "sprite": "Resources/res/c115.png",
+    "legacy_skills": [
+      279,
+      280,
+      281
+    ],
+    "status": {
+      "name": "Shock",
+      "cap": 4,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 50,
+    "ability": "듀라크의 일제 진격",
+    "attack_seconds": 4.4,
+    "attack_percent": 110,
+    "cols": 2,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 14.0,
+    "power": 30,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Supply",
+      "power": 16,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 120,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Inspire",
+      "power": 24,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "큰 점유와 인접 동료 필요",
+    "name": "듀라크 장군",
+    "npc_id": 425,
+    "npc_enum": "NPC_DURAK",
+    "sprite": "Resources/res/c117.png",
+    "legacy_skills": [
+      285,
+      286,
+      287
+    ],
+    "status": null
+  },
+  {
+    "id": 51,
+    "ability": "캐서린의 차가운 손길",
+    "attack_seconds": 4.0,
+    "attack_percent": 115,
+    "cols": 1,
+    "rows": 2,
+    "action": "Chill",
+    "ability_seconds": 11.0,
+    "power": 2,
+    "condition": "EnemyHighHp",
+    "robin": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Chill",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 110,
+      "cooldown_seconds": 12.0
+    },
+    "drawback": "적 체력 절반 이상; 보스 둔화 상한 적용",
+    "name": "유령 캐서린",
+    "npc_id": 427,
+    "npc_enum": "NPC_WOMANGHOST",
+    "sprite": "Resources/res/c119.png",
+    "legacy_skills": [
+      291,
+      292,
+      293
+    ],
+    "status": {
+      "name": "Chill",
+      "cap": 3,
+      "duration_seconds": 3
+    }
+  },
+  {
+    "id": 52,
+    "ability": "버틀러의 혼령 수발",
+    "attack_seconds": 4.4,
+    "attack_percent": 100,
+    "cols": 1,
+    "rows": 2,
+    "action": "Leech",
+    "ability_seconds": 13.0,
+    "power": 6,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Shield",
+      "power": 8,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 15,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Leech",
+      "power": 5,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "성 체력이 낮을 때만 생명 흡수",
+    "name": "유령 버틀러",
+    "npc_id": 428,
+    "npc_enum": "NPC_MANGHOST",
+    "sprite": "Resources/res/c120.png",
+    "legacy_skills": [
+      294,
+      295,
+      296
+    ],
+    "status": null
+  },
+  {
+    "id": 53,
+    "ability": "오스틴의 전류 잔향",
+    "attack_seconds": 3.8,
+    "attack_percent": 115,
+    "cols": 1,
+    "rows": 2,
+    "action": "Discharge",
+    "ability_seconds": 12.0,
+    "power": 180,
+    "condition": "EnemyDebuffed",
+    "robin": {
+      "action": "Shock",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "diana": {
+      "action": "Discharge",
+      "power": 140,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Shock",
+      "power": 2,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "감전이 있어야 전류 방출 피해 발생",
+    "name": "유령 오스틴",
+    "npc_id": 429,
+    "npc_enum": "NPC_AUSTIN",
+    "sprite": "Resources/res/c121.png",
+    "legacy_skills": [
+      297,
+      298,
+      299
+    ],
+    "status": null
+  },
+  {
+    "id": 54,
+    "ability": "엘레인의 빙정 검",
+    "attack_seconds": 3.0,
+    "attack_percent": 125,
+    "cols": 1,
+    "rows": 2,
+    "action": "Chill",
+    "ability_seconds": 10.0,
+    "power": 2,
+    "condition": "Front",
+    "robin": {
+      "action": "Strike",
+      "power": 175,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Expose",
+      "power": 1,
+      "cooldown_seconds": 12.0
+    },
+    "max": {
+      "action": "Chill",
+      "power": 2,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "전열 배치 필요; 강제 기절 없음",
+    "name": "엘레인",
+    "npc_id": 419,
+    "npc_enum": "NPC_ELEIN",
+    "sprite": "Resources/res/c111.png",
+    "legacy_skills": [
+      267,
+      268,
+      269
+    ],
+    "status": {
+      "name": "Chill",
+      "cap": 3,
+      "duration_seconds": 3
+    }
+  },
+  {
+    "id": 55,
+    "ability": "밀키의 응원 행진",
+    "attack_seconds": 4.0,
+    "attack_percent": 90,
+    "cols": 1,
+    "rows": 2,
+    "action": "Supply",
+    "ability_seconds": 12.0,
+    "power": 18,
+    "condition": "HighHp",
+    "robin": {
+      "action": "Inspire",
+      "power": 28,
+      "cooldown_seconds": 13.0
+    },
+    "diana": {
+      "action": "Shield",
+      "power": 9,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Supply",
+      "power": 15,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "성 체력 절반 초과에서만 행진",
+    "name": "홍보대사밀키",
+    "npc_id": 378,
+    "npc_enum": "NPC_USERQUEST",
+    "sprite": "Resources/res/c70.png",
+    "legacy_skills": [
+      144,
+      145,
+      146
+    ],
+    "status": null
+  },
+  {
+    "id": 56,
+    "ability": "가르니에의 만찬",
+    "attack_seconds": 4.8,
+    "attack_percent": 90,
+    "cols": 2,
+    "rows": 2,
+    "action": "Heal",
+    "ability_seconds": 16.0,
+    "power": 12,
+    "condition": "LowHp",
+    "robin": {
+      "action": "Shield",
+      "power": 12,
+      "cooldown_seconds": 15.0
+    },
+    "diana": {
+      "action": "Inspire",
+      "power": 30,
+      "cooldown_seconds": 15.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 8,
+      "cooldown_seconds": 15.0
+    },
+    "drawback": "넓은 점유와 긴 회복 주기",
+    "name": "쉐프가르니에",
+    "npc_id": 397,
+    "npc_enum": "NPC_CHEF",
+    "sprite": "Resources/res/c89.png",
+    "legacy_skills": [
+      201,
+      202,
+      203
+    ],
+    "status": null
+  },
+  {
+    "id": 57,
+    "ability": "잭의 엄호 사격",
+    "attack_seconds": 5.0,
+    "attack_percent": 110,
+    "cols": 1,
+    "rows": 2,
+    "action": "PrototypeCaptain",
+    "ability_seconds": 3.0,
+    "power": 100,
+    "condition": "Always",
+    "robin": {
+      "action": "Volley",
+      "power": 100,
+      "cooldown_seconds": 3.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 100,
+      "cooldown_seconds": 3.0
+    },
+    "max": {
+      "action": "Volley",
+      "power": 100,
+      "cooldown_seconds": 3.0
+    },
+    "drawback": "추가 사격은 영웅 명중 또는 귀환 시작 때만 가능",
+    "name": "용병단장 잭",
+    "npc_id": 360,
+    "npc_enum": "NPC_CAPTAIN",
+    "sprite": "Resources/res/c52.png",
+    "legacy_skills": [
+      90,
+      91,
+      92
+    ],
+    "status": null
+  },
+  {
+    "id": 58,
+    "ability": "엘케인의 붉은 추격",
+    "attack_seconds": 3.4,
+    "attack_percent": 130,
+    "cols": 2,
+    "rows": 2,
+    "action": "Burn",
+    "ability_seconds": 11.0,
+    "power": 3,
+    "condition": "EnemyLowHp",
+    "robin": {
+      "action": "Strike",
+      "power": 185,
+      "cooldown_seconds": 14.0
+    },
+    "diana": {
+      "action": "Burn",
+      "power": 2,
+      "cooldown_seconds": 13.0
+    },
+    "max": {
+      "action": "Bleed",
+      "power": 2,
+      "cooldown_seconds": 13.0
+    },
+    "drawback": "큰 점유와 낮은 적 체력 조건",
+    "name": "엘케인",
+    "npc_id": 418,
+    "npc_enum": "NPC_ELKEIN",
+    "sprite": "Resources/res/c110.png",
+    "legacy_skills": [
+      264,
+      265,
+      266
+    ],
+    "status": {
+      "name": "Burn",
+      "cap": 5,
+      "duration_seconds": 4
+    }
+  },
+  {
+    "id": 59,
+    "ability": "델피오스의 약점 판결",
+    "attack_seconds": 4.4,
+    "attack_percent": 120,
+    "cols": 2,
+    "rows": 2,
+    "action": "Expose",
+    "ability_seconds": 13.0,
+    "power": 1,
+    "condition": "EnemyHighHp",
+    "robin": {
+      "action": "Strike",
+      "power": 200,
+      "cooldown_seconds": 15.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 145,
+      "cooldown_seconds": 15.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 190,
+      "cooldown_seconds": 15.0
+    },
+    "drawback": "큰 점유; 표식은 지정 강타에만 소비",
+    "name": "델피오스백작",
+    "npc_id": 403,
+    "npc_enum": "NPC_DELPIOS",
+    "sprite": "Resources/res/c95.png",
+    "legacy_skills": [
+      219,
+      220,
+      221
+    ],
+    "status": {
+      "name": "Expose",
+      "cap": 1,
+      "duration_seconds": 5
+    }
+  },
+  {
+    "id": 60,
+    "ability": "라베스의 마력 보호진",
+    "attack_seconds": 4.8,
+    "attack_percent": 105,
+    "cols": 2,
+    "rows": 2,
+    "action": "Shield",
+    "ability_seconds": 14.0,
+    "power": 16,
+    "condition": "Back",
+    "robin": {
+      "action": "Fortify",
+      "power": 18,
+      "cooldown_seconds": 14.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 18,
+      "cooldown_seconds": 14.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 9,
+      "cooldown_seconds": 15.0
+    },
+    "drawback": "넓은 점유와 후열 배치 필요",
+    "name": "마법사라베스",
+    "npc_id": 417,
+    "npc_enum": "NPC_LABETH",
+    "sprite": "Resources/res/c109.png",
+    "legacy_skills": [
+      261,
+      262,
+      263
+    ],
+    "status": null
+  },
+  {
+    "id": 61,
+    "ability": "에번의 방랑 검무",
+    "attack_seconds": 2.4,
+    "attack_percent": 115,
+    "cols": 2,
+    "rows": 2,
+    "action": "Strike",
+    "ability_seconds": 12.0,
+    "power": 190,
+    "condition": "Alone",
+    "robin": {
+      "action": "Bleed",
+      "power": 3,
+      "cooldown_seconds": 14.0
+    },
+    "diana": {
+      "action": "Volley",
+      "power": 150,
+      "cooldown_seconds": 14.0
+    },
+    "max": {
+      "action": "Strike",
+      "power": 210,
+      "cooldown_seconds": 15.0
+    },
+    "drawback": "인접 동료 없이 혼자 있어야 검무 추가타",
+    "name": "방랑자 에번",
+    "npc_id": 420,
+    "npc_enum": "NPC_EVAN",
+    "sprite": "Resources/res/c112.png",
+    "legacy_skills": [
+      270,
+      271,
+      272
+    ],
+    "status": null
+  },
+  {
+    "id": 62,
+    "ability": "로라의 생명 서약",
+    "attack_seconds": 4.0,
+    "attack_percent": 100,
+    "cols": 2,
+    "rows": 2,
+    "action": "Repair",
+    "ability_seconds": 15.0,
+    "power": 12,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Shield",
+      "power": 16,
+      "cooldown_seconds": 16.0
+    },
+    "diana": {
+      "action": "Cleanse",
+      "power": 1,
+      "cooldown_seconds": 14.0
+    },
+    "max": {
+      "action": "Heal",
+      "power": 10,
+      "cooldown_seconds": 16.0
+    },
+    "drawback": "큰 점유; 인접 동료가 있어야 서약 발동",
+    "name": "로라공주",
+    "npc_id": 404,
+    "npc_enum": "NPC_LORA",
+    "sprite": "Resources/res/c96.png",
+    "legacy_skills": [
+      222,
+      223,
+      224
+    ],
+    "status": null
+  },
+  {
+    "id": 63,
+    "ability": "에드몬드의 왕명",
+    "attack_seconds": 4.5,
+    "attack_percent": 120,
+    "cols": 2,
+    "rows": 2,
+    "action": "Inspire",
+    "ability_seconds": 16.0,
+    "power": 40,
+    "condition": "AdjacentCrew",
+    "robin": {
+      "action": "Strike",
+      "power": 220,
+      "cooldown_seconds": 16.0
+    },
+    "diana": {
+      "action": "Supply",
+      "power": 20,
+      "cooldown_seconds": 16.0
+    },
+    "max": {
+      "action": "Shield",
+      "power": 18,
+      "cooldown_seconds": 16.0
+    },
+    "drawback": "넓은 점유와 긴 왕명 주기; 인접 동료 필요",
+    "name": "에드몬드 왕",
+    "npc_id": 426,
+    "npc_enum": "NPC_KING",
+    "sprite": "Resources/res/c118.png",
+    "legacy_skills": [
+      288,
+      289,
+      290
+    ],
+    "status": null
+  }
+]

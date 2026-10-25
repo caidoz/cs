@@ -1182,7 +1182,7 @@ void Core::Run(float delta) {
 	//그 전에 도착하면 빈 판을 덮게 된다.
 	if (netBooted)
 		IapUpdate();
-	if (netBooted && !getenv("CS_CURRENT_CANNON_ICON_REVIEW") && !getenv("CS_PVP_ICON_ENTRANCE_REVIEW")) CastleMenuReviewStep();
+	if (netBooted && !getenv("CS_CURRENT_CANNON_ICON_REVIEW") && !getenv("CS_PVP_ICON_ENTRANCE_REVIEW") && !getenv("CS_COMPACT_EQUIPMENT_REVIEW") && !getenv("CS_HERO_ALLIES_AUDIT")) CastleMenuReviewStep();
 
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
@@ -1583,7 +1583,7 @@ void PaintClet(int x, int y, int w, int h)
 
 	// Asset-only review uses loaded textures without requiring login/terms or
 	// changing player progress. Draw after the previous frame has been cleared.
-	if(getenv("CS_CASTLE_REVIEW_PATH") && (getenv("CS_CURRENT_CANNON_ICON_REVIEW") || getenv("CS_PVP_ICON_ENTRANCE_REVIEW"))
+	if(getenv("CS_CASTLE_REVIEW_PATH") && (getenv("CS_CURRENT_CANNON_ICON_REVIEW") || getenv("CS_PVP_ICON_ENTRANCE_REVIEW") || getenv("CS_COMPACT_EQUIPMENT_REVIEW") || getenv("CS_HERO_ALLIES_AUDIT"))
 		&& (drawHandle==MD_TITLE || netBooted)) {
 		CastleMenuReviewStep();
 		return;

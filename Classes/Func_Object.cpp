@@ -1142,7 +1142,8 @@ void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, fl
 
 				imgFile = COSTUME_WEAPON_MAXX_IMG + costume;
 
-				if (fixedImg == IMG_C2_82 && boomerangAway[GetObjFromPtr(pObj)]) {
+				if (fixedImg == IMG_C2_82 && (boomerangAway[GetObjFromPtr(pObj)]
+					|| (IsStageRealtime() && GetObjFromPtr(pObj)==PLAYER && StageMaxBoomerangBusy()))) {
 					cPtr += 4;
 					i--;
 					continue;

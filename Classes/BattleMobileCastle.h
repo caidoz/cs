@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // BattleMobileCastle.h
 // Manages the Mobile Fortress Battle Scene in MD_PLAY:
 // - Left: Player's Modular Mobile Castle (1~10 floors, drawn via CastlePartsDrawRect)
@@ -294,14 +294,23 @@ inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
 	const long long playerMaxHp = Max(ao[PLAYER].maxhp, ao[PLAYER].ps[PS_HP]);
 	DrawDuelHpBar(gap, y, w, ao[PLAYER].hp, playerMaxHp, "성 요새 체력", false,
 	              ao[PLAYER].shield, ao[PLAYER].shieldMax);
-	long long hp = 0, maximum = 0;
+	//---- 적도 방어력과 체력을 따로 센다 ----
+	//
+	//체력만 세고 있었다. 성 쪽은 방어력 · 체력 두 단인데 적 쪽은 한 단
+	//이라, 나란히 선 두 창이 서로 다른 것을 재고 있었다.
+	long long hp = 0, maximum = 0, armor = 0, armorMax = 0;
 	for (int i = ENEMY; i < NEUTRAL; ++i) {
 		const OBJECT& foe = ao[i];
 		if (!foe.active || foe.type <= 0 || foe.mom != i || foe.moveHandler == REGENMOVE) continue;
 		maximum += Max(0LL, foe.maxhp);
-		if (!foe.dead) hp += Max(0LL, Min(foe.hp, foe.maxhp));
+		armorMax += Max(0LL, (long long)foe.shieldMax);
+		if (!foe.dead) {
+			hp += Max(0LL, Min(foe.hp, foe.maxhp));
+			armor += Max(0LL, Min((long long)foe.shield, (long long)foe.shieldMax));
+		}
 	}
-	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 총 체력", true);
+	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 총 체력", true,
+	              armor, armorMax);
 }
 
 inline void DrawBossMonster(int groundY) {
@@ -309,6 +318,7 @@ inline void DrawBossMonster(int groundY) {
 	if (foe < 0) return;
 	const OBJECT* monster = &ao[foe];
 	const float bossX = Min((float)DX - 32 * _2X, 256.0f * _2X);
+	StageCombatRecordActor(foe,bossX,groundY-3*_2X,enemyIconZoom[monster->type]*1.75f,true);
 	DrawCmfDetailShadow(monster->cmf, monster->motion, (int)bossX,
 		groundY - 3 * _2X,
 		LEFT, enemyIconZoom[monster->type] * 1.75f);

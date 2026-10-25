@@ -18,6 +18,159 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_ALLIES_BALANCE_REVIEW")) {
+        static int tick=0;++tick;
+        if(tick==1) {
+            robin.castle=3;robin.castleProgress.version=1;robin.castleProgress.owned=1023u;
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.bossRoom=0;bossRaidMode=false;
+            SetHero();GotoPlay();while(popUpCnt>0) ClosePopUp();
+            CastleReviewTrace(StageAlliesBalanceReview()
+                ?"PASS 64 placements attack timings 61 unique abilities 183 synergies dedup caps and cleanup"
+                :"FAIL 64 ally balance integration");
+        }
+        if(tick==5) CastleReviewTrace("PASS ally balance review complete");
+        return;
+    }
+    if(getenv("CS_ALLY_LINK_REVIEW")) {
+        static int tick=0;static bool pending=false;
+        if(pending) return;
+        const int hero=tick/560,phase=tick%560;++tick;
+        if(hero>=3) {if(tick==1681) CastleReviewTrace("PASS three hero ally links complete");return;}
+        if(phase==0) {
+            robin.castle=3;robin.castleProgress.version=1;robin.castleProgress.owned=1023u;
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.bossRoom=0;bossRaidMode=false;
+            SetPlayerHero(hero);SetHero();GotoPlay();StageRtBegin();
+            CastleReviewTrace(StageAllyLinkReviewSetup(hero)?"PASS three approved companions placed":"FAIL approved companion setup");
+            while(popUpCnt>0) ClosePopUp();
+            for(int i=ENEMY;i<NEUTRAL;++i) ao[i].active=false;
+            OBJECT& foe=ao[ENEMY];foe.type=crewData[CREWDATA_TYPE];SetNpc(&foe);
+            foe.mom=ENEMY;foe.active=true;foe.dead=false;foe.moveHandler=0;foe.x=foe.nx=DX-60;
+            foe.hp=foe.maxhp=1000000000;foe.shield=foe.shieldMax=0;
+            StageArtilleryNotifySpawn(ENEMY);ao[PLAYER].active=true;
+            ao[PLAYER].hp=200000000;ao[PLAYER].maxhp=1000000000;ao[PLAYER].shield=0;
+        }
+        ao[PLAYER].dead=false;
+        waveStatus=WAVESTATUS_PLAY;attackSequence=ATTACKSEQUENCE_READY;battleStartFrame=0;
+        StageRtSetAuto(phase>=180 && !(phase>=270 && phase<290));
+        if(phase==180) {
+            ao[PLAYER].hp=200000000;ao[PLAYER].maxhp=1000000000;ao[PLAYER].shield=0;
+            CastleReviewTrace(StageAllyLinkReview(0)?"PASS link clocks ready through actual tick model":"FAIL link clock setup");
+        }
+        if(phase==270) StageAllyLinkReview(2);
+        if(phase==289) CastleReviewTrace(StageAllyLinkReview(3)?"PASS paused ally link clocks":"FAIL paused ally clocks");
+        if(phase==500) {
+            CastleReviewTrace(StageAllyLinkReview(1)?"PASS hero repair heal supply and support projectile impacts":"FAIL hero ally effects");
+            CastleReviewTrace(StageAllyLinkReviewUi()?"PASS repair heal link cooldown bars rendered":"FAIL ally ability bars");
+            char name[64];sprintf(name,"hero-%d-allies.png",hero);
+            pending=true;
+            cocos2d::utils::captureScreen([](bool captured,const std::string&) {
+                CastleReviewTrace(captured?"PASS hero ally link capture":"FAIL hero ally link capture");pending=false;
+            },std::string(path)+name);
+        }
+        if(phase==550) CastleReviewTrace(StageAllyLinkReview(4)?"PASS run exit clears ally links":"FAIL ally links leaked");
+        return;
+    }
+    if(getenv("CS_HERO_ALLIES_AUDIT")) {
+        static int tick=0;static bool pending=false;
+        if(pending) return;
+        const int page=tick/30,phase=tick%30;++tick;
+        if(page>=2) {if(tick==61) CastleReviewTrace("PASS existing 64 allies audit complete");return;}
+        const bool ok=HeroAlliesAuditReview(page);
+        if(phase==16) CastleReviewTrace(ok?"PASS existing allies IDs and animations":"FAIL ally catalog");
+        if(phase==20) {
+            char name[64];sprintf(name,"existing-allies-%d.png",page);
+            pending=true;
+            cocos2d::utils::captureScreen([](bool captured,const std::string&) {
+                CastleReviewTrace(captured?"PASS allies audit capture":"FAIL allies audit capture");pending=false;
+            },std::string(path)+name);
+        }
+        return;
+    }
+    if(getenv("CS_COMPACT_EQUIPMENT_REVIEW")) {
+        static int tick=0;static bool pending=false;
+        if(pending) return;
+        const int page=tick/24,phase=tick%24;++tick;
+        if(page>=4) {if(tick==97) CastleReviewTrace("PASS compact equipment complete");return;}
+        const bool ok=CompactEquipmentReview(page);
+        if(phase==16) CastleReviewTrace(ok?"PASS compact equipment dimensions and rotations":"FAIL compact equipment dimensions");
+        if(phase==18) {
+            char name[64];sprintf(name,"compact-equipment-%d.png",page);
+            pending=true;
+            cocos2d::utils::captureScreen([](bool captured,const std::string&) {
+                CastleReviewTrace(captured?"PASS compact equipment capture":"FAIL compact equipment capture");pending=false;
+            },std::string(path)+name);
+        }
+        return;
+    }
+    if(getenv("CS_MAX_WEAPON_REVIEW")) {
+        static int tick=0;static long long before=0,afterManual=0;++tick;
+        if(tick==1) {
+            robin.castle=0;robin.castleProgress.version=1;robin.castleProgress.owned=1023u;
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.bossRoom=0;bossRaidMode=false;
+            SetPlayerHero(2);SetHero();GotoPlay();
+            CastleReviewTrace(MaxWeaponFoundationReview()?"PASS four rewards required weapon optional crew persistent equipment and run cleanup":"FAIL Max foundation");
+            CastleReviewTrace(MaxWeaponRuntimeReview(0)?"PASS boomerang hit once return pause target loss and readiness":"FAIL boomerang model");
+            while(popUpCnt>0) ClosePopUp();
+            for(int i=ENEMY;i<NEUTRAL;++i) ao[i].active=false;
+            OBJECT& foe=ao[ENEMY];foe.type=crewData[CREWDATA_TYPE];SetNpc(&foe);
+            foe.mom=ENEMY;foe.active=true;foe.dead=false;foe.moveHandler=0;foe.x=foe.nx=DX-60;
+            foe.hp=foe.maxhp=1000000000;foe.shield=foe.shieldMax=0;
+            StageArtilleryNotifySpawn(ENEMY);ao[PLAYER].active=true;
+        }
+        ao[PLAYER].hp=ao[PLAYER].maxhp=1000000000;ao[PLAYER].dead=false;
+        waveStatus=WAVESTATUS_PLAY;attackSequence=ATTACKSEQUENCE_READY;battleStartFrame=0;
+        StageRtSetAuto(tick>=40);
+        if(tick==40) {
+            before=ao[ENEMY].hp+ao[ENEMY].shield;
+            CastleReviewTrace(MaxWeaponRuntimeReview(1)?"PASS live Max throw":"FAIL live Max throw");
+        }
+        if(tick==65) CastleReviewTrace(MaxWeaponRuntimeReview(2) && ao[ENEMY].hp+ao[ENEMY].shield<before
+            ?"PASS live Max contact damage and returning":"FAIL live Max damage or return");
+        if(tick==110) CastleReviewTrace(MaxWeaponRuntimeReview(3)?"PASS live Max ready after return":"FAIL live Max stuck");
+        if(tick==130) afterManual=ao[ENEMY].hp+ao[ENEMY].shield;
+        if(tick==120) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+            CastleReviewTrace(ok?"PASS Max capture":"FAIL Max capture");},std::string(path)+"max-combat.png");
+        if(tick==400) {
+            CastleReviewTrace(ao[ENEMY].hp+ao[ENEMY].shield<afterManual
+                ?"PASS repeated automatic Max basic attack":"FAIL automatic Max basic attack");
+            CastleReviewTrace("PASS Max foundation review complete");
+        }
+        return;
+    }
+    if(getenv("CS_STAGE_COMBAT_REVIEW")) {
+        static int tick=0;++tick;
+        if(tick==1) {
+            robin.castle=0;robin.castleProgress.version=1;robin.castleProgress.owned=1023u;
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.bossRoom=0;bossRaidMode=false;
+            SetHero();GotoPlay();StageRtBegin();StageCombatReviewSetup();ao[PLAYER].active=true;
+            while(popUpCnt>0) ClosePopUp();
+            for(int i=ENEMY;i<NEUTRAL;++i) ao[i].active=false;
+            OBJECT& foe=ao[ENEMY];foe.type=crewData[CREWDATA_TYPE];SetNpc(&foe);
+            foe.mom=ENEMY;foe.active=true;foe.dead=false;foe.moveHandler=0;foe.x=foe.nx=DX-60;
+            StageArtilleryNotifySpawn(ENEMY);
+        }
+        ao[PLAYER].hp=ao[PLAYER].maxhp=1000000000;ao[PLAYER].dead=false;
+        ao[ENEMY].hp=ao[ENEMY].maxhp=1000000000;ao[ENEMY].dead=false;
+        waveStatus=WAVESTATUS_PLAY;attackSequence=ATTACKSEQUENCE_READY;battleStartFrame=0;
+        StageRtSetAuto(tick>45 && !(tick>=850 && tick<880));
+        if(tick==40) CastleReviewTrace(StageCombatRuntimeReview(0)?"PASS equipped sword excluded, orbit follows hero head, cannon in grid":"FAIL stage grid or orbit");
+        if(tick==180) {
+            int visible=0;
+            for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active && !ao[CREW+i].dead) ++visible;
+            CastleReviewTrace(visible==2 && StageCombatReviewCrewVisible()
+                ?"PASS two loadout crew spawned and drawn on deck":"FAIL loadout crew spawn or deck rendering");
+            CastleReviewTrace(StageCombatReviewCooldownVisible()?"PASS crew grid cooldown draws and changes":"FAIL crew grid cooldown not drawn or frozen");
+        }
+        if(tick==40 || tick==600) cocos2d::utils::captureScreen([](bool,const std::string&) {},std::string(path)+(tick==40?"waiting.png":"attacking.png"));
+        if(tick==850) StageCombatRuntimeReview(2);
+        if(tick==879) CastleReviewTrace(StageCombatRuntimeReview(3)?"PASS paused combat clocks":"FAIL paused clocks advanced");
+        if(tick==900) {
+            CastleReviewTrace(StageCombatRuntimeReview(1)?"PASS sword crew cannon impacts and faster monster attacks":"FAIL combat impacts");
+            cocos2d::utils::captureScreen([](bool ok,const std::string&) {CastleReviewTrace(ok?"PASS stage combat capture":"FAIL stage combat capture");},std::string(path)+"combat.png");
+        }
+        if(tick==910) CastleReviewTrace("PASS stage combat review complete");
+        return;
+    }
     if(getenv("CS_PVP_ICON_ENTRANCE_REVIEW")) {
         static int tick=0;static bool pending=false;
         if(pending) return;

@@ -808,9 +808,11 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  }
  cannonBaseY[castle]=p.commanderY;
  int cannonStage=active?roomStage[castle]:CastleVisualPartLevel(castle,3);
+ int weaponCastle=castle;
+ const bool mounted=!IsStageRealtime() || StageBagCannon(&weaponCastle,&cannonStage,NULL);
  if(getenv("CS_CASTLE_REVIEW_PATH") && getenv("CS_CANNON_GRADE_REVIEW"))
    cannonStage=Max(0,Min(5,atoi(getenv("CS_CANNON_GRADE_REVIEW"))));
- const auto& gun=MountedCannons::Get(castle,cannonStage);
+ const auto& gun=MountedCannons::Get(weaponCastle,cannonStage);
  const auto& mount=MountedCannons::mounts[castle];
  const int gunImg=CANNON_UPGRADE_ATLAS_IMG;
  if(!sprite[gunImg]) LoadImg(gunImg);
@@ -823,10 +825,10 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  const float gunLeft=p.left+(mount.x-r.x)*unit-(firing?recoil*8.0f*unit:0);
  const float gunBase=p.top-(mount.y+mount.h-r.y)*unit;
  const float gunTop=gunBase+gun.h*gunUnit;
- if(sprite[gunImg]) DrawImage(gun.w,gun.h,gun.x,gun.y,
+ if(sprite[gunImg] && mounted) DrawImage(gun.w,gun.h,gun.x,gun.y,
    (int)std::lround(MirrorX(gunLeft,gun.w*gunUnit)),(int)std::lround(gunTop),
    gMirror,0,0,0,0,gunUnit,sprite[gunImg],gunImg);
- else missingAsset=true;
+ else if(!sprite[gunImg]) missingAsset=true;
  cannonMuzzleX[castle]=gunLeft+gun.mx*gunUnit;
  cannonMuzzleY[castle]=gunTop-gun.my*gunUnit;cannonMuzzleValid[castle]=true;
  for(int i=0;i<5;++i) {partAnchor[castle][i][0]=p.left+(i==3?.89f:.4f)*p.width;partAnchor[castle][i][1]=p.top-(i==0?.15f:i==4?.9f:.55f)*p.height;}

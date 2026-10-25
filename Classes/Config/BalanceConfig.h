@@ -797,10 +797,11 @@
 //히어로가 다시 휘두를 때까지. 동료보다 짧다 - 판은 히어로 혼자 시작하므로
 //처음 몇 마리는 히어로 손으로만 눕혀야 한다.
 #define STAGE_HERO_COOLDOWN			(FPS)
+#define STAGE_MAX_BASIC_COOLDOWN       (FPS * 3)
 
 //몬스터가 다시 칠 때까지. 히어로보다 길다 - 짧으면 동료가 한 명도 없는
 //첫 판에서 버틸 수가 없다.
-#define STAGE_FOE_COOLDOWN			(FPS * 3 / 2)
+#define STAGE_FOE_COOLDOWN			(FPS * 3 / 4)
 
 //몬스터가 치는 자세의 몇 프레임째에 맞는가. 자세가 끝날 때 맞으면 이미
 //돌아서는 중이라 누가 때렸는지 안 보인다.
@@ -899,6 +900,34 @@
 #define LOADOUT_MAX				12	//고를 수 있는 점의 수(배열 크기)
 #define LOADOUT_PICKMAX			40	//출정 준비 화면에 늘어놓는 가방 칸 수
 #define LOADOUT_TAB_CNT			4	//전체 / 무기 / 방어구 / 장신구
+
+//---- 적도 방어력을 두른다 ----
+//
+//성 쪽은 방어력과 체력이 두 단으로 나뉘어 있다(StageInitFortressHealthAndArmor).
+//맞으면 방어력이 먼저 닳고, 다 닳은 뒤에야 체력이 깎인다.
+//
+//적 쪽에는 그 단이 없어서 체력 하나뿐이었다. 그래서 양쪽 체력창이
+//서로 다른 것을 재고 있었다 - 한쪽은 두 단, 한쪽은 한 단.
+//
+//적에게도 같은 단을 준다. 두께는 제 방어 스탯(PS_ARMOR)에서 나온다.
+//0 으로 두면 적은 전처럼 체력만 가진다.
+#define STAGE_FOE_ARMOR			1
+#define STAGE_FOE_ARMOR_BASE	60		//방어 스탯이 0 이어도 이만큼
+#define STAGE_FOE_ARMOR_PER		3		//방어 스탯 1 당
+
+//---- 적도 방어력을 두른다 ----
+//
+//성 쪽은 방어력과 체력이 두 단으로 나뉘어 있다(StageInitFortressHealthAndArmor).
+//맞으면 방어력이 먼저 닳고, 다 닳은 뒤에야 체력이 깎인다.
+//
+//적 쪽에는 그 단이 없어서 체력 하나뿐이었다. 그래서 양쪽 체력창이
+//서로 다른 것을 재고 있었다 - 한쪽은 두 단, 한쪽은 한 단.
+//
+//적에게도 같은 단을 준다. 두께는 제 방어 스탯(PS_ARMOR)에서 나온다.
+//0 으로 두면 적은 전처럼 체력만 가진다.
+#define STAGE_FOE_ARMOR			1
+#define STAGE_FOE_ARMOR_BASE	60		//방어 스탯이 0 이어도 이만큼
+#define STAGE_FOE_ARMOR_PER		3		//방어 스탯 1 당
 
 //성 파츠 없이 세울 수 있는 동료 수. 안뜰 · 소환진이 여기에 더해진다.
 //

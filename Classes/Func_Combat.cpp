@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 
@@ -1849,9 +1849,18 @@ void AttackRobin(int obj, int dest)
 			damage = (int)StageGearReduce(dest, damage);
 
 		// 성채 방어력(Armor/Shield) 완충막 우선 흡수:
-		if (dest == PLAYER && ao[PLAYER].shield > 0) {
-			const int absorb = Min(damage, ao[PLAYER].shield);
-			ao[PLAYER].shield -= absorb;
+		//---- 방어막은 누구 것이든 먼저 닳는다 ----
+		//
+		//히어로(성)만 보고 있었다. 적도 같은 단을 두르므로 같은 규칙을
+		//받아야 한다 - 한쪽만 두 단이면 나란히 선 체력창 둘이 서로 다른
+		//것을 재게 된다.
+		//
+		//제 방어막을 따로 굴리는 보스(매머드 · 성 보스)는 위 가지에서
+		//이미 갈라져 여기 오지 않는다.
+		if (ao[dest].shield > 0) {
+			const int absorb = Min(damage, (int)ao[dest].shield);
+
+			ao[dest].shield -= absorb;
 			damage -= absorb;
 		}
 
@@ -2061,9 +2070,11 @@ int AttackRobin_Back(int obj, int dest)
 		break;
 	}
 
-	if (IsStageRealtime() && dest == PLAYER && ao[PLAYER].shield > 0) {
-		const int absorb = Min(damage, ao[PLAYER].shield);
-		ao[PLAYER].shield -= absorb;
+	//방어막은 누구 것이든 먼저 닳는다(위와 같은 규칙).
+	if (IsStageRealtime() && ao[dest].shield > 0) {
+		const int absorb = Min(damage, (int)ao[dest].shield);
+
+		ao[dest].shield -= absorb;
 		damage -= absorb;
 	}
 
@@ -3257,9 +3268,18 @@ NEXT:
 		if (IsStageRealtime())
 			damage = (int)StageGearReduce(dest, damage);
 
-		if (dest == PLAYER && ao[PLAYER].shield > 0) {
-			const int absorb = Min(damage, ao[PLAYER].shield);
-			ao[PLAYER].shield -= absorb;
+		//---- 방어막은 누구 것이든 먼저 닳는다 ----
+		//
+		//히어로(성)만 보고 있었다. 적도 같은 단을 두르므로 같은 규칙을
+		//받아야 한다 - 한쪽만 두 단이면 나란히 선 체력창 둘이 서로 다른
+		//것을 재게 된다.
+		//
+		//제 방어막을 따로 굴리는 보스(매머드 · 성 보스)는 위 가지에서
+		//이미 갈라져 여기 오지 않는다.
+		if (ao[dest].shield > 0) {
+			const int absorb = Min(damage, (int)ao[dest].shield);
+
+			ao[dest].shield -= absorb;
 			damage -= absorb;
 		}
 

@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -8,6 +8,10 @@
 #include "Data/CastleArtilleryFrames.h"
 #include "Data/CmfBlob.h"
 #include "StageBackground.h"
+#include "StageBoomerangModel.h"
+#include "StageAllyLinkModel.h"
+#include "StageAllyBalanceModel.h"
+#include "Data/AllyBalanceData.h"
 
 namespace {
 	int bossRaidCrewGauge[MAXCREW] = { 0, };
@@ -31,6 +35,8 @@ namespace {
 	inline int BossRaidCrewCooldown(int crewSlot)
 	{
 		const int idx = GetCrewIdxFromType(ao[CREW + crewSlot].type);
+		const auto* profile=AllyBalance::Get(idx);
+		if(IsStageRealtime() && profile) return AllyBalance::Frames(profile->attackMs,FPS);
 
 		if (idx < 0)
 			return BOSSRAID_CREW_COOLDOWN;
@@ -1107,6 +1113,18 @@ namespace {
 	int stageRunCrew[MAXCREW] = { 0, };
 
 	int stageHeroCool = 0;
+	StageAllyLink::Runtime stageAllyLinks;
+	unsigned stageAllyRun=0;
+	std::uint64_t stageAllyEventId=0,stageMaxAttackId=0;
+	bool stageAllyDispatching=false;
+	int stageAllyActivations[StageAllyLink::EffectCount]={};
+	bool stageAllySupportBullet[TOTALOBJECT]={};
+	int stageAllySupportImpacts=0;
+	StageBoomerangModel::Runtime stageBoomerang;
+	int stageBoomerangTarget=-1,stageBoomerangDetail=0;
+	bool stageRunEquipmentActive=false;
+	ITEM stagePersistentEquipment[TOTALPLAYER][TOTALEQUIP]={};
+	int combatReviewHits[4]={};
 	int stageCrewCool[MAXCREW] = { 0, };
 	int stageCrewShot[MAXCREW] = { 0, };	//쏘는 자세가 남은 프레임
 	int stageCrewShotCnt[MAXCREW] = { 0, };	//쏜 수. 몇 번째에 2 / 3 차를 낼지
@@ -1159,6 +1177,176 @@ namespace {
 //몬스터만 시험용으로 바꾸고(Func_Map 의 WaveControler) 싸우는 방식은
 //건드리지 않는다. 막아 두었더니 테스트 시작으로 들어간 판이 통째로 옛
 //턴제로 돌고 전투 버튼도 안 떴다.
+static void StageFoeShotClear(void);
+static void StageAlliesBalanceReset(void);
+static void StageAllyLinksReset(void)
+{
+    stageAllyLinks.Reset(++stageAllyRun,FPS);stageAllyEventId=stageMaxAttackId=0;
+    stageAllyDispatching=false;memset(stageAllyActivations,0,sizeof(stageAllyActivations));
+    memset(stageAllySupportBullet,0,sizeof(stageAllySupportBullet));stageAllySupportImpacts=0;
+    StageAlliesBalanceReset();
+}
+static bool StageAllyLinksRunning(void)
+{
+    return IsStageRealtime() && stageAutoBattle && waveStatus==WAVESTATUS_PLAY
+        && attackSequence==ATTACKSEQUENCE_READY && ao[PLAYER].active && !ao[PLAYER].dead;
+}
+static int StageAllyLinkActor(int type)
+{
+    for(int i=0;i<MAXCREW;++i)
+        if(stageRunCrew[i]==type && ao[CREW+i].active && !ao[CREW+i].dead && ao[CREW+i].type==type) {
+            StageAllyPlacement placement={};
+            return StageAllyPlacementFor(type,&placement)?CREW+i:-1;
+        }
+    return -1;
+}
+#include "StageAllyBalanceRuntime.inc"
+static void StageAllyLinkDispatch(StageAllyLink::EventKind kind,int target,std::uint64_t id,bool derived=false)
+{
+    using namespace StageAllyLink;
+    if(!StageAllyLinksRunning() || stageAllyDispatching) return;
+    const int who=PlayerHeroType();
+    if((kind==RobinHit && who!=ROBIN) || (kind==DianaShot && who!=DIANA)
+       || (kind>=MaxThrow && kind<=MaxReturned && who!=MAXX)) return;
+    StageAlliesBalanceDispatch(kind,target,id,derived);
+    const StageAllyLink::Event event={stageAllyLinks.run,id,kind,derived};
+    OBJECT& hero=ao[PLAYER];
+    const bool smith=StageAllyLinkActor(NPC_CRAFTMAN)>=0;
+    const bool cleric=StageAllyLinkActor(NPC_ELFMAGIC)>=0;
+    const int captain=StageAllyLinkActor(NPC_CAPTAIN);
+    stageAllyDispatching=true;
+    if(kind==RobinHit || kind==DianaShot) {
+        const bool eligible=smith && (kind==StageAllyLink::RobinHit?hero.shield<hero.shieldMax:stageBalancedSupply<30);
+        if(stageAllyLinks.Accept(SmithLink,event,true,eligible,FPS/4)) {
+            if(kind==RobinHit) hero.shield=(int)Min((long long)hero.shieldMax,(long long)hero.shield+Max(1LL,(long long)hero.shieldMax*3/100));
+            else StageBalancedApply(AllyBalance::Profiles[36],AllyBalance::Action::Supply,10,target);
+            ++stageAllyActivations[SmithLink];
+        }
+    }
+    if(kind==RobinHit || kind==DianaShot || kind==MaxReturned) {
+        const bool low=hero.maxhp>0 && hero.hp>0 && hero.hp<=hero.maxhp/2;
+        if(stageAllyLinks.Accept(Heal,event,true,cleric&&low,FPS/4)) {
+            hero.hp=Min(hero.maxhp,hero.hp+Max(1LL,hero.maxhp/10));
+            ++stageAllyActivations[Heal];
+        }
+    }
+    if(kind==RobinHit || kind==DianaShot || kind==MaxReturning) {
+        int freeBullet=-1;
+        for(int i=BULLET;i<ENEMYUSEROBJ;++i) if(!ao[i].active) {freeBullet=i;break;}
+        const bool foe=target>=ENEMY && target<NEUTRAL && ao[target].active && !ao[target].dead
+            && ao[target].moveHandler!=VANISHMOVE;
+        if(stageAllyLinks.Accept(SupportShot,event,true,captain>=0&&foe&&freeBullet>=0,FPS/4)) {
+            OBJECT& c=ao[captain];
+            c.etc=enemyAttackPattern[c.type*ATTACKPATTERNTOTALDATASIZE+2+THERE];
+            stageCrewShot[captain-CREW]=PVP_FOE_SHOTMOTION;
+            AllyShootAt(captain,1,target);
+            stageAllySupportBullet[freeBullet]=ao[freeBullet].active && ao[freeBullet].mom==captain;
+            ++stageAllyActivations[SupportShot];
+        }
+    }
+    stageAllyDispatching=false;
+}
+void StageHeroAttackLink(int obj,int target,int weaponType)
+{
+    if(obj!=PLAYER || !IsStageRealtime()) return;
+    if(PlayerHeroType()==ROBIN && weaponType==ITEM_SWORD)
+        StageAllyLinkDispatch(StageAllyLink::RobinHit,target,++stageAllyEventId);
+    else if(PlayerHeroType()==DIANA && weaponType==ITEM_GUN)
+        StageAllyLinkDispatch(StageAllyLink::DianaShot,target,++stageAllyEventId);
+}
+static void StageAllyLinksStep(bool running)
+{
+    using namespace StageAllyLink;
+    const bool smith=StageAllyLinkActor(NPC_CRAFTMAN)>=0;
+    const bool present[EffectCount]={smith,smith,StageAllyLinkActor(NPC_ELFMAGIC)>=0,StageAllyLinkActor(NPC_CAPTAIN)>=0};
+    stageAllyLinks.Tick(running,present);
+    if(!running) return;
+    OBJECT& hero=ao[PLAYER];
+    const bool flight=stageBoomerang.phase==StageBoomerangModel::Outbound || stageBoomerang.phase==StageBoomerangModel::Returning;
+    const bool eligible=smith && hero.maxhp>0 && hero.hp>0 && hero.hp<hero.maxhp
+        && (PlayerHeroType()!=MAXX || flight);
+    const StageAllyLink::Event event={stageAllyLinks.run,++stageAllyEventId,CombatTick,false};
+    if(stageAllyLinks.Accept(Repair,event,true,eligible,FPS/4)) {
+        hero.hp=Min(hero.maxhp,hero.hp+Max(1LL,hero.maxhp/20));
+        ++stageAllyActivations[Repair];
+    }
+}
+bool StageAllyLinkCharge(int type,float* charge,int* flash,const char** label)
+{
+    using namespace StageAllyLink;
+    if(!IsStageRealtime() || StageAllyLinkActor(type)<0) return false;
+    if(StageAlliesBalanceCharge(type,charge,flash,label)) return true;
+    Effect effect;
+    if(type==NPC_CRAFTMAN) {effect=Repair;*label="수리";}
+    else if(type==NPC_ELFMAGIC) {effect=Heal;*label="회복";}
+    else if(type==NPC_CAPTAIN) {effect=SupportShot;*label="연계";}
+    else return false;
+    *charge=stageAllyLinks.Progress(effect);*flash=stageAllyLinks.flash[effect];return true;
+}
+void StageAllyProjectileSpawned(int obj)
+{
+    if(obj>=0 && obj<TOTALOBJECT) {stageAllySupportBullet[obj]=false;stageBalancedBulletPower[obj]=0;}
+}
+void StageAllyProjectileHit(int obj,bool damaged)
+{
+    if(obj<0 || obj>=TOTALOBJECT) return;
+    if(stageAllySupportBullet[obj] && damaged) ++stageAllySupportImpacts;
+    stageAllySupportBullet[obj]=false;
+}
+bool StageAllyLinkReview(int operation)
+{
+    using namespace StageAllyLink;
+    if(!getenv("CS_ALLY_LINK_REVIEW")) return false;
+    static Runtime paused;
+    if(operation==0) {
+        const bool present[EffectCount]={StageAllyLinkActor(NPC_CRAFTMAN)>=0,StageAllyLinkActor(NPC_CRAFTMAN)>=0,
+            StageAllyLinkActor(NPC_ELFMAGIC)>=0,StageAllyLinkActor(NPC_CAPTAIN)>=0};
+        for(int i=0;i<FPS*15;++i) stageAllyLinks.Tick(true,present);
+        return stageAllyLinks.Progress(Repair)==1 && stageAllyLinks.Progress(Heal)==1 && stageAllyLinks.Progress(SupportShot)==1;
+    }
+    if(operation==1) {
+        const bool linked=PlayerHeroType()==MAXX || stageAllyActivations[SmithLink]>0;
+        const char* path=getenv("CS_CASTLE_REVIEW_PATH");
+        if(path) {
+            FILE* f=fopen((std::string(path)+"activations.tsv").c_str(),"a");
+            if(f) {fprintf(f,"%d\t%d\t%d\t%d\t%d\t%d\n",PlayerHeroType(),stageAllyActivations[Repair],
+                stageAllyActivations[SmithLink],stageAllyActivations[Heal],stageAllyActivations[SupportShot],stageAllySupportImpacts);fclose(f);}
+        }
+        return linked && stageAllyActivations[Repair]>0 && stageAllyActivations[Heal]>0
+            && stageAllyActivations[SupportShot]>0 && stageAllySupportImpacts>0
+            && ao[PLAYER].hp<=ao[PLAYER].maxhp && ao[PLAYER].shield<=ao[PLAYER].shieldMax;
+    }
+    if(operation==2) {paused=stageAllyLinks;return true;}
+    if(operation==3) {
+        for(int i=0;i<EffectCount;++i) if(paused.elapsed[i]!=stageAllyLinks.elapsed[i] || paused.flash[i]!=stageAllyLinks.flash[i]) return false;
+        return true;
+    }
+    if(operation==4) {
+        StageRunEquipmentEnd();
+        for(int i=0;i<EffectCount;++i) if(stageAllyLinks.elapsed[i] || stageAllyActivations[i]) return false;
+        return !stageAllySupportImpacts;
+    }
+    return false;
+}
+const ITEM* StageRunPersistentEquipment(int hero) {
+ return stageRunEquipmentActive && hero>=0 && hero<TOTALPLAYER?stagePersistentEquipment[hero]:NULL;
+}
+void StageRunEquipmentEnd(void) {
+ if(!stageRunEquipmentActive) return;
+ for(int i=0;i<TOTALPLAYER;++i) {
+  memcpy(robin.charData[i].equip,stagePersistentEquipment[i],sizeof(stagePersistentEquipment[i]));
+  memcpy(ao[i].equip,stagePersistentEquipment[i],sizeof(stagePersistentEquipment[i]));
+ }
+ const int who=Max(0,Min(TOTALPLAYER-1,PlayerHeroType()));
+ memcpy(ao[PLAYER].equip,stagePersistentEquipment[who],sizeof(stagePersistentEquipment[who]));
+ stageRunEquipmentActive=false;StageRunGridClear();
+ stageBoomerang=StageBoomerangModel::Runtime();stageBoomerangTarget=-1;
+ memset(stageRunCrew,0,sizeof(stageRunCrew));
+ memset(stageCrewCool,0,sizeof(stageCrewCool));
+ memset(stageCrewShot,0,sizeof(stageCrewShot));
+ StageFoeShotClear();StageArtilleryReset();
+ StageAllyLinksReset();
+}
 bool IsStageRealtime(void)
 {
 	return drawHandle == MD_PLAY
@@ -1174,6 +1362,13 @@ bool IsStageRealtime(void)
 //등) 거기서 지우면 산 동료와 잡은 수가 판 중간에 사라지기 때문이다.
 void StageRtBegin(void)
 {
+	StageRunEquipmentEnd();
+	for(int i=0;i<TOTALPLAYER;++i) memcpy(stagePersistentEquipment[i],robin.charData[i].equip,sizeof(stagePersistentEquipment[i]));
+	stageRunEquipmentActive=true;
+	StageFoeShotClear();
+	StageAllyLinksReset();
+	stageBoomerang=StageBoomerangModel::Runtime();stageBoomerangTarget=-1;
+	memset(combatReviewHits,0,sizeof(combatReviewHits));
 	CastleProgressEnsure();
 	gMobileCastleVisual=robin.castle;
 	StageArtilleryReset();
@@ -1297,7 +1492,7 @@ void StageRtDrawButton(void)
 // 총알 오브젝트를 쓰지 않는다. 몬스터마다 쏘는 자세와 총알 표가 따로
 // 있어서, 없는 놈이 태반이라 그 길로는 절반이 아무것도 못 던진다.
 //======================================================================
-#define STAGE_FOESHOT_MAX	8
+#define STAGE_FOESHOT_MAX	64
 #define STAGE_FOESHOT_FLY	(FPS / 3)	//날아가는 데 걸리는 시간
 
 struct StageFoeShot {
@@ -1322,6 +1517,53 @@ static void StageFoeShotClear(void)
 	memset(stageFoeShotList, 0, sizeof(stageFoeShotList));
 	memset(stageGearCool, 0, sizeof(stageGearCool));
 	memset(stageGearPart, 0, sizeof(stageGearPart));
+}
+
+static StageBoomerangModel::Point StageBoomerangPoint(int obj, bool head=false)
+{
+    float x=0,y=0;StageCombatActorPoint(obj,&x,&y,head);
+    return {x-xOffset+rx,STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-y};
+}
+bool StageMaxBoomerangBusy(void) {return stageBoomerang.Busy();}
+bool StageMaxBoomerangThrow(int obj,int target)
+{
+    if(!IsStageRealtime() || obj!=PLAYER || target<ENEMY || target>=NEUTRAL
+       || ao[obj].equip[EQUIP_WEAPON].type!=ITEM_BOOMERANG) return false;
+    if(!stageBoomerang.Throw(StageBoomerangPoint(obj,true))) return false;
+    stageBoomerangTarget=target;stageBoomerangDetail=ao[obj].equip[EQUIP_WEAPON].detail;
+    stageMaxAttackId=++stageAllyEventId;
+    StageAllyLinkDispatch(StageAllyLink::MaxThrow,target,stageMaxAttackId);
+    return true;
+}
+static void StageMaxBoomerangStep(bool running)
+{
+    if(!stageBoomerang.Busy()) return;
+    const int target=stageBoomerangTarget;
+    const bool valid=target>=ENEMY && target<NEUTRAL && ao[target].active && !ao[target].dead
+        && ao[target].moveHandler!=VANISHMOVE;
+    const auto owner=StageBoomerangPoint(PLAYER,true);
+    const auto point=valid?StageBoomerangPoint(target):owner;
+    const auto before=stageBoomerang.phase;
+    if(stageBoomerang.Step(running,valid,point,owner,Max(1,FPS/3),Max(1,FPS/3),Max(1,FPS/6))) {
+        AttackObj(PLAYER,target);
+        StageAllyLinkDispatch(StageAllyLink::MaxHit,target,stageMaxAttackId);
+    }
+    if(before==StageBoomerangModel::Outbound && stageBoomerang.phase==StageBoomerangModel::Returning)
+        StageAllyLinkDispatch(StageAllyLink::MaxReturning,target,stageMaxAttackId);
+    if(before==StageBoomerangModel::Returning && stageBoomerang.phase==StageBoomerangModel::Recovering)
+        StageAllyLinkDispatch(StageAllyLink::MaxReturned,target,stageMaxAttackId);
+}
+static void StageMaxBoomerangDraw(void)
+{
+    if(stageBoomerang.phase!=StageBoomerangModel::Outbound && stageBoomerang.phase!=StageBoomerangModel::Returning) return;
+    const int img=COSTUME_WEAPON_MAXX_IMG+1+stageBoomerangDetail;
+    if(!sprite[img]) LoadImg(img);
+    if(!sprite[img]) return;
+    const int w=(int)sprite[img]->getContentSize().width,h=(int)sprite[img]->getContentSize().height;
+    const float zoom=48.0f*_2X/Max(1,Max(w,h));
+    const float x=xOffset+stageBoomerang.position.x-rx;
+    const float y=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-stageBoomerang.position.y;
+    RotateImage(w,h,0,0,(int)x,(int)y,false,(float)(frame*18%360),0,ALPHA_MAX,zoom,Vec2(.5f,.5f),sprite[img],img);
 }
 
 //---- 히어로 머리 위를 도는 검 ----
@@ -1355,8 +1597,11 @@ static void StageOrbitPos(int obj, int idx, int cnt, float* x, float* y)
 	const float deg = frame * STAGE_ORBIT_TURN + idx * step;
 	const float rad = CC_DEGREES_TO_RADIANS(deg);
 
-	*x = ao[obj].x + cos(rad) * STAGE_ORBIT_RX;
-	*y = ao[obj].y - STAGE_ORBIT_UP + sin(rad) * STAGE_ORBIT_RY;
+	float sx=0,sy=0;
+	StageCombatActorPoint(obj,&sx,&sy,true);
+	sx+=cos(rad)*STAGE_ORBIT_RX; sy+=sin(rad)*STAGE_ORBIT_RY;
+	*x=sx-xOffset+rx;
+	*y=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-sy;
 }
 
 //한 자루를 날린다. 떠난 자리를 따로 주면 거기서 나간다 - 머리 위를
@@ -1378,8 +1623,18 @@ static void StageFoeShotFireFrom(int foe, int hit, int detail, int value,
 		s->frame = 0;
 		s->sx = fromX ? *fromX : ao[foe].x;
 		s->sy = fromY ? *fromY : ao[foe].y + 24 * _2X;
+		if(!fromX && !fromY) {
+		 float x=0,y=0;
+		 if(StageCombatActorPoint(foe,&x,&y,true)) {
+		  s->sx=x-xOffset+rx;s->sy=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-y;
+		 }
+		}
 		s->tx = ao[hit].x;
 		s->ty = ao[hit].y + 24 * _2X;
+		float tx=0,ty=0;
+		if(StageCombatActorPoint(hit,&tx,&ty)) {
+		 s->tx=tx-xOffset+rx;s->ty=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ty;
+		}
 		return;
 	}
 }
@@ -1391,12 +1646,14 @@ static void StageFoeShotFire(int foe, int hit, int detail, int value)
 
 //몬스터의 한 대를 검의 위력으로 바꿔 때린다. 히어로 쪽 StageRtSwordHit 과
 //같은 식이다 - 장착 무기의 값을 1 로 보고 그 비로 곱한다.
+static void StageRtSwordHit(int foe,int swordValue);
 static void StageFoeShotHit(const StageFoeShot* s)
 {
 	OBJECT* e = &ao[s->foe];
 
 	if (!e->active || e->dead || !ao[s->hit].active || ao[s->hit].dead)
 		return;
+	if(s->foe==PLAYER) {StageRtSwordHit(s->hit,s->value);return;}
 
 	StageSword gear[FOEGEAR_BAGMAX + 1];
 	const int cnt = StageGearList(s->foe, gear, FOEGEAR_BAGMAX + 1);
@@ -1458,6 +1715,14 @@ static void StageFoeShotStep(void)
 		if (!s->on)
 			continue;
 
+		if(!stageAutoBattle || waveStatus!=WAVESTATUS_PLAY || attackSequence!=ATTACKSEQUENCE_READY) continue;
+		if(!ao[s->hit].active || ao[s->hit].dead || ao[s->hit].moveHandler==VANISHMOVE) {
+		 s->on=false;continue;
+		}
+		float tx=0,ty=0;
+		if(StageCombatActorPoint(s->hit,&tx,&ty)) {
+		 s->tx=tx-xOffset+rx;s->ty=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-ty;
+		}
 		if (++s->frame < STAGE_FOESHOT_FLY)
 			continue;
 
@@ -1475,17 +1740,21 @@ static void StageOrbitDraw(void)
 	if (!ao[PLAYER].active || ao[PLAYER].dead)
 		return;
 
+	int orbitCount=0,orbitIndex=0;
+	for(int k=0;k<cnt;++k) if(!swords[k].gear) ++orbitCount;
 	for (int k = 0; k < cnt; k++) {
+		if(swords[k].gear) continue;
 		float x, y;
 
-		StageOrbitPos(PLAYER, k, cnt, &x, &y);
+		const int idx=orbitIndex++;
+		StageOrbitPos(PLAYER, idx, orbitCount, &x, &y);
 
 		const float sx = xOffset + x - rx;
 		const float sy = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry;
 
 		//도는 동안은 칼끝이 도는 쪽을 본다. 한 자리에 굳어 있으면
 		//떠 있는 것이 아니라 박혀 있는 것으로 보인다.
-		const float deg = frame * STAGE_ORBIT_TURN + k * (cnt ? 360.0f / cnt : 0.0f);
+		const float deg = frame * STAGE_ORBIT_TURN + idx * (orbitCount ? 360.0f / orbitCount : 0.0f);
 
 		//시계가 다 차 번쩍이는 동안은 또렷하게. 차는 동안은 옅게 떠 있다.
 		const int slot = swords[k].slot;
@@ -1503,6 +1772,8 @@ void StageFoeShotDraw(void)
 		return;
 
 	StageOrbitDraw();
+	StageMaxBoomerangDraw();
+    StageAlliesBalanceDraw();
 
 
 	for (int i = 0; i < STAGE_FOESHOT_MAX; i++) {
@@ -1518,7 +1789,8 @@ void StageFoeShotDraw(void)
 		const float sx = xOffset + x - rx;
 		const float sy = STATUSWIN_Y + (rh - 4) * TSIZE - (y - OBJIMGGAP) - ry;
 
-		DrawSwordAtHand(s->detail, sx, sy, -90.0f, true, STAGE_SWORD_ZOOM, ALPHA_MAX, 0);
+		const float angle=-CC_RADIANS_TO_DEGREES(atan2(s->ty-s->sy,s->tx-s->sx));
+		DrawSwordAtHand(s->detail, sx, sy, angle, true, STAGE_SWORD_ZOOM, ALPHA_MAX, 0);
 	}
 }
 
@@ -1544,6 +1816,43 @@ bool StageRtHasCrew(int type)
 	}
 
 	return false;
+}
+bool StageRtCrewCharge(int type,float* charge,int* flash) {
+ if(!IsStageRealtime()) return false;
+ for(int i=0;i<MAXCREW;++i) if(stageRunCrew[i]==type && ao[CREW+i].active && !ao[CREW+i].dead) {
+  if(charge) *charge=Min(1.0f,Max(0.0f,stageCrewCool[i]/(float)Max(1,BossRaidCrewCooldown(i))));
+  if(flash) *flash=stageCrewShot[i];
+  return true;
+ }
+ return false;
+}
+void StageCombatReviewHit(int kind) {
+ if(kind>=0 && kind<4 && getenv("CS_STAGE_COMBAT_REVIEW")) ++combatReviewHits[kind];
+}
+bool StageCombatRuntimeReview(int operation) {
+ if(!getenv("CS_STAGE_COMBAT_REVIEW")) return false;
+ if(operation==0) {
+  StageSword swords[GRIDTEST_MAXITEM];int n=GridTestSwords(swords,GRIDTEST_MAXITEM),equipped=0;
+  for(int i=0;i<n;++i) if(swords[i].gear) ++equipped;
+  float hx=0,hy=0,ox=0,oy=0;
+  StageCombatActorPoint(PLAYER,&hx,&hy,true);StageOrbitPos(PLAYER,0,1,&ox,&oy);
+  ox=xOffset+ox-rx;oy=STATUSWIN_Y+(rh-4)*TSIZE-(oy-OBJIMGGAP)-ry;
+  return n>=2 && equipped==1 && StageBagCannon(NULL,NULL,NULL)
+   && fabs(ox-hx)<=STAGE_ORBIT_RX+1 && fabs(oy-hy)<=STAGE_ORBIT_RY+1;
+ }
+ if(operation==1) {
+  char message[160];sprintf(message,"combat impacts swords=%d crew=%d cannon=%d monster=%d\n",combatReviewHits[0],combatReviewHits[1],combatReviewHits[2],combatReviewHits[3]);
+  FILE* f=fopen((std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"impacts.log").c_str(),"w");
+  if(f){fputs(message,f);fclose(f);}
+  return combatReviewHits[0]>0 && combatReviewHits[1]>0 && combatReviewHits[2]>0 && combatReviewHits[3]>3;
+ }
+ static int paused=0;
+ int checksum=stageHeroCool+stageFoeCool+stageFoeShot;
+ for(int i=0;i<MAXCREW;++i) checksum+=stageCrewCool[i];
+ for(int i=0;i<GRIDTEST_MAXITEM;++i) checksum+=stageSwordCool[i];
+ if(operation==2) {paused=checksum;return true;}
+ if(operation==3) return checksum==paused;
+ return false;
 }
 
 //---- 설 수 있는 동료 수 ----
@@ -1638,11 +1947,44 @@ int StageSwordCooldown(int detail)
 static int StageHeroCooldown(void)
 {
 	const ITEM* weapon = &ao[PLAYER].equip[EQUIP_WEAPON];
+	if(weapon->type==ITEM_BOOMERANG) return STAGE_MAX_BASIC_COOLDOWN;
 
 	if (weapon->type != ITEM_SWORD)
 		return STAGE_HERO_COOLDOWN;
 
 	return StageSwordCooldown(weapon->detail);
+}
+
+bool StageRtBasicWeaponCharge(float* charge,int* flash)
+{
+    const int type=ao[PLAYER].equip[EQUIP_WEAPON].type;
+    if(type!=ITEM_BOOMERANG && type!=ITEM_GUN) return false;
+    *charge=Min(1.0f,(float)stageHeroCool/Max(1,StageHeroCooldown()));
+    *flash=0;return true;
+}
+
+bool MaxWeaponRuntimeReview(int operation)
+{
+    if(!getenv("CS_MAX_WEAPON_REVIEW")) return false;
+    if(operation==0) {
+        using namespace StageBoomerangModel;
+        Runtime r;const StageBoomerangModel::Point owner={0,0},target={120,60};
+        if(!r.Throw(owner) || r.Throw(owner)) return false;
+        int hits=0;
+        for(int i=0;i<10;++i) hits+=r.Step(true,true,target,owner,10,8,3)?1:0;
+        if(hits!=1 || r.phase!=Returning || r.position.x!=120) return false;
+        const int elapsed=r.elapsed;
+        for(int i=0;i<20;++i) r.Step(false,true,target,owner,10,8,3);
+        if(r.elapsed!=elapsed) return false;
+        for(int i=0;i<11;++i) hits+=r.Step(true,false,target,owner,10,8,3)?1:0;
+        if(r.Busy() || hits!=1 || r.position.x!=0) return false;
+        r.Throw(owner);r.Step(true,false,target,owner,10,8,3);
+        for(int i=0;i<11;++i) if(r.Step(true,false,target,owner,10,8,3)) return false;
+        return !r.Busy() && STAGE_MAX_BASIC_COOLDOWN>StageSwordCooldown(34);
+    }
+    if(operation==1) return StageMaxBoomerangThrow(PLAYER,ENEMY);
+    if(operation==2) return stageBoomerang.phase==StageBoomerangModel::Returning;
+    return !StageMaxBoomerangBusy();
 }
 
 //---- 격자 칸의 검이 얼마나 찼는가 ----
@@ -1790,6 +2132,7 @@ static bool StageRtFoeAlive(int foe)
 //대마다 무거워진다.
 static void StageRtSwordHit(int foe, int swordValue)
 {
+	const long long before=ao[foe].hp+ao[foe].shield;
 	OBJECT* hero = &ao[PLAYER];
 	const ITEM* weapon = &hero->equip[EQUIP_WEAPON];
 	const long long equipValue = (weapon->type != EMPTY)
@@ -1798,8 +2141,10 @@ static void StageRtSwordHit(int foe, int swordValue)
 	const long long keep = hero->ps[PS_DMG];
 
 	hero->ps[PS_DMG] = Max(1LL, keep * swordValue / equipValue);
-	AttackObj(PLAYER, foe);
+	AttackObj(PLAYER, foe,true);
+	if(ao[foe].hp+ao[foe].shield<before) StageCombatReviewHit(0);
 	hero->ps[PS_DMG] = keep;
+    if(ao[foe].hp+ao[foe].shield<before) StageHeroAttackLink(PLAYER,foe,ITEM_SWORD);
 }
 
 void UpdateStageRealtime(void)
@@ -1816,7 +2161,36 @@ void UpdateStageRealtime(void)
 
 	const int foe = StageRtFoe();
 	OBJECT* hero = &ao[PLAYER];
+
+	//---- 선 적에게 방어 단을 입힌다 ----
+	//
+	//성은 방어력이 먼저 닳고 그 뒤에 체력이 깎인다. 적에게 그 단이
+	//없어서 양쪽 체력창이 서로 다른 것을 재고 있었다.
+	//
+	//한 번만 두른다(shieldMax 가 0 일 때). 매 프레임 다시 채우면 아무리
+	//때려도 안 닳는다. 제 방어막을 이미 들고 있는 보스(매머드 등)는
+	//건드리지 않는다.
+#if STAGE_FOE_ARMOR
+	for (int obj = ENEMY; obj < NEUTRAL; ++obj) {
+		OBJECT* e = &ao[obj];
+
+		if (!e->active || e->dead || e->type <= 0 || e->mom != obj)
+			continue;
+
+		if (e->shieldMax > 0)
+			continue;
+
+		e->shieldMax = (int)Max((long long)STAGE_FOE_ARMOR_BASE,
+			STAGE_FOE_ARMOR_BASE + e->ps[PS_ARMOR] * STAGE_FOE_ARMOR_PER);
+		e->shield = e->shieldMax;
+	}
+#endif
+
 	StageArtilleryStep(running, foe);
+	StageFoeShotStep();
+	StageMaxBoomerangStep(running);
+    StageAllyLinksStep(running);
+    StageAlliesBalanceStep(running,foe);
 
 	//---- 아무도 걷지 않는다 ----
 	//
@@ -1862,7 +2236,7 @@ void UpdateStageRealtime(void)
 		//장착한 검의 빠르기로 휘두른다. 격자의 검과 같은 식이다.
 		if (stageHeroCool < StageHeroCooldown())
 			stageHeroCool++;
-		else if (PvpHeroTurnBusy(PLAYER) == false) {
+		else if (PvpHeroTurnBusy(PLAYER) == false && !StageMaxBoomerangBusy()) {
 			PvpHeroGiveTurn(PLAYER);
 			stageHeroCool = 0;
 		}
@@ -1890,9 +2264,12 @@ void UpdateStageRealtime(void)
 	//
 	//새로 놓인 검은 칸 번호만큼 시계를 늦게 건다. 모두 0 에서 출발하면 같은
 	//길이의 검이 같은 프레임에 쳐서 데미지 숫자가 한 자리에 겹친다.
+	int orbitCount=0,orbitIndex=0;
+	for(int k=0;k<swordCnt;++k) if(!swords[k].gear) ++orbitCount;
 	for (int k = 0; k < swordCnt; ++k) {
 		const StageSword* s = &swords[k];
 		const int slot = s->slot;
+		const int orbitAt=s->gear?-1:orbitIndex++;
 
 		int swordCool = StageSwordCooldown(s->detail);
 		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_HELM)) {
@@ -1913,6 +2290,10 @@ void UpdateStageRealtime(void)
 		if (stageSwordFlash[slot] > 0) {
 			if (--stageSwordFlash[slot] > 0)
 				continue;
+			if(s->gear) {
+			 if(PvpHeroTurnBusy(PLAYER)) {stageSwordFlash[slot]=1;continue;}
+			 PvpHeroGiveTurn(PLAYER);stageSwordCool[slot]=0;continue;
+			}
 
 			//장착 검도 캐릭터 모션을 기다리지 않는다. 모든 검은 자기 시계가
 			//끝난 순간 돌던 자리에서 목표로 날아가며, 도착할 때 피해를 준다.
@@ -1920,12 +2301,34 @@ void UpdateStageRealtime(void)
 			{
 				float ox, oy;
 
-				StageOrbitPos(PLAYER, k, swordCnt, &ox, &oy);
+				StageOrbitPos(PLAYER, orbitAt, orbitCount, &ox, &oy);
 				int finalSwordVal = s->value;
 				if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_GLOVE)) {
 					finalSwordVal = finalSwordVal * 120 / 100; // 장갑 인접 시 공격력 +20% (숫돌 효과)
 				}
 				StageFoeShotFireFrom(PLAYER, foe, s->detail, finalSwordVal, &ox, &oy);
+
+				// 동료 인접 검: 협공 스킬 (Co-op Strike) 발동!
+				const int adjCrew = GridSlotGetAdjacentCrew(slot);
+				if (adjCrew >= 0) {
+					static int sCoopShotCnt[GRIDTEST_MAXITEM] = { 0 };
+					if (++sCoopShotCnt[slot] >= 3) { // 3회 공격마다 협공 스킬 격발
+						sCoopShotCnt[slot] = 0;
+						stageHeroUltFrame = 25;
+						if (curHero == 1) {
+							stageHeroUltTitle = "매직 블래스트 (협공)";
+							PlayMusic(M_FIRE);
+						} else if (curHero == 2) {
+							stageHeroUltTitle = "기간틱 볼텍스 (협공)";
+							PlayMusic(M_KUNG);
+						} else {
+							stageHeroUltTitle = "소울 크래시 (협공)";
+							PlayMusic(M_SWORDSTRONG);
+						}
+						effect.shake = 3;
+						AttackObj(PLAYER, foe);
+					}
+				}
 			}
 
 			stageSwordCool[slot] = 0;
@@ -2053,7 +2456,8 @@ void UpdateStageRealtime(void)
 	for (int i = 0; i < MAXCREW; ++i) {
 		const OBJECT* c = &ao[CREW + i];
 		if (c->active && !c->dead) {
-			if (GetCrewRole(c->type) == CREW_ROLE_BLACKSMITH && blacksmithCrewSlot < 0) {
+			if (GetCrewRole(c->type) == CREW_ROLE_BLACKSMITH && blacksmithCrewSlot < 0
+                && !StageBalancedProfile(c->type)) {
 				blacksmithCrewSlot = i;
 			}
 			if (c->type == NPC_LORA) {
@@ -2088,7 +2492,7 @@ void UpdateStageRealtime(void)
 		c->frame++;
 
 		if (running && foe >= 0) {
-			const int crewSpeed = (c->type == NPC_EVAN) ? 4 : (GetCrewRole(c->type) == CREW_ROLE_STRIKER) ? 2 : 1;
+			const int crewSpeed = StageBalancedProfile(c->type)?1:(c->type == NPC_EVAN) ? 4 : (GetCrewRole(c->type) == CREW_ROLE_STRIKER) ? 2 : 1;
 			if (stageCrewCool[i] < BossRaidCrewCooldown(i))
 				stageCrewCool[i] += crewSpeed;
 			else {
@@ -2148,7 +2552,6 @@ void UpdateStageRealtime(void)
 			stageFoeObj = foe;
 			stageFoeShot = 0;
 			stageFoeCool = 0;
-			StageFoeShotClear();
 		}
 
 		e->dirX = e->dirF = LEFT;
@@ -2156,11 +2559,13 @@ void UpdateStageRealtime(void)
 
 		//가방 검. 몬스터도 동료와 같은 규칙으로 날린다.
 		StageGearShotStep(foe, PLAYER, 0, running);
-		StageFoeShotStep();
 
 		if (running && stageFoeShot == 0) {
 			if (stageFoeCool < STAGE_FOE_COOLDOWN)
-				stageFoeCool++;
+            {
+                stageBalancedSlowClock+=1000-stageBalancedStatus.SlowPermille();
+                if(stageBalancedSlowClock>=1000) {stageBalancedSlowClock-=1000;++stageFoeCool;}
+            }
 			else {
 				e->etc = enemyAttackPattern[e->type * ATTACKPATTERNTOTALDATASIZE + 2 + THERE];
 				stageFoeShot = PVP_FOE_SHOTMOTION;
@@ -2169,7 +2574,7 @@ void UpdateStageRealtime(void)
 			}
 		}
 
-		if (stageFoeShot > 0) {
+		if (stageFoeShot > 0 && running) {
 			if (e->etc > 0) {
 				const signed short* st = cmf_status_data[e->cmf][e->etc];
 				const int cnt = Max(1, (int)st[0]);
@@ -2198,7 +2603,11 @@ void UpdateStageRealtime(void)
 				stageFoeHit = true;
 
 				if (running)
-					AttackRobin(foe, PLAYER);
+                    {
+                        const long long previous=e->ps[PS_DMG];
+                        e->ps[PS_DMG]=previous*(100-stageBalancedFortify)/100;stageBalancedFortify=0;
+                        StageCombatReviewHit(3);AttackRobin(foe,PLAYER);e->ps[PS_DMG]=previous;
+                    }
 			}
 
 			stageFoeShot--;

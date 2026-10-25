@@ -1804,7 +1804,10 @@ void PlayKey(int obj)
 			BossRaidActivateCrewSkill(menuX, 3);
 			break;
 		case AVK_GOTOBATTLE:
-		{
+        {
+            if(!LoadoutRequiredWeaponReady()) {
+                PlayMusic(M_ERROR);LoadoutSetOpen(true);break;
+            }
 			//----------------------------------------------------
 			// 배틀 입장료
 			//

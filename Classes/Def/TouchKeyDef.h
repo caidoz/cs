@@ -446,7 +446,7 @@ typedef enum _touchFuncDef {
 	GRIDTEST_W = 12,
 	GRIDTEST_H = 6,
 	GRIDTEST_SHOPCNT = 10,//살 수 있는 물건 가짓수(표 크기)
-	GRIDTEST_OFFERCNT = 5,//전투가 끝나고 내미는 갈래 수(룰렛 칸 수)
+	GRIDTEST_OFFERCNT = 4,//전투가 끝나고 내미는 갈래 수(룰렛 칸 수)
 	GRIDTEST_MAXCOMBO = 5,//연참 최대 대수
 	GRIDTEST_MAXITEM = 40,
 

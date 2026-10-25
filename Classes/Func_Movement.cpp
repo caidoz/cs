@@ -773,6 +773,33 @@ void MoveObj(OBJECT* pObj)
 	int obj = GetObjFromPtr(pObj);
 	int i;
 	int tempSystemKey = systemKey;
+	// Stage actors are drawn on castle decks and the boss is drawn separately.
+	// Track those visible anchors rather than the legacy ground-lane positions.
+	if(IsStageRealtime() && obj>=BULLET && obj<ENEMYUSEROBJ && pObj->active
+	 && pObj->mom>=CREW && pObj->mom<CREW+MAXCREW) {
+	 if(!StageRtAutoOn() || waveStatus!=WAVESTATUS_PLAY || attackSequence!=ATTACKSEQUENCE_READY) return;
+	 const int target=pObj->target;
+	 float tx=0,ty=0;
+	 if(!StageCombatActorPoint(target,&tx,&ty) || ao[target].moveHandler==VANISHMOVE) {
+	  memset(pObj,0,sizeof(OBJECT));return;
+	 }
+	 const float sx=xOffset+pObj->x-rx;
+	 const float sy=STATUSWIN_Y+(rh-4)*TSIZE-(pObj->y-OBJIMGGAP)-ry;
+	 const float dx=tx-sx,dy=ty-sy;
+	 const float distance=std::sqrt(dx*dx+dy*dy),speed=Max(1,(int)PVP_FOEBULLET_SPEED);
+	 if(distance<=speed) {
+	  const long long before=ao[target].hp+ao[target].shield;
+	  const long long balancedDamage=StageAllyBalancedShotBegin(obj);
+	  AttackObj(obj,target,true);
+	  StageAllyBalancedShotEnd(obj,balancedDamage);
+	  StageAllyProjectileHit(obj,ao[target].hp+ao[target].shield<before);
+	  if(ao[target].hp+ao[target].shield<before) StageCombatReviewHit(1);
+	  memset(pObj,0,sizeof(OBJECT));return;
+	 }
+	 pObj->x+=dx/distance*speed;pObj->y-=dy/distance*speed;
+	 pObj->dirX=pObj->dirF=dx>=0?RIGHT:LEFT;++pObj->frame;
+	 return;
+	}
 
 	//---- 스킬이 나가는 동안 판을 세운다 ----
 	//
@@ -1815,6 +1842,7 @@ void PvpFoeShoot(int obj, int level)
 		//고르는 규칙이 거기 다 들어 있어서, 손으로 채우면 그것을 두 벌
 		//유지하게 된다.
 		AddObject(&ao[i], mom, ADDOBJ_CREWBULLET);
+		StageAllyProjectileSpawned(i);
 
 		//가는 길만 우리 것으로 바꾼다. FOLLOWMOVE 는 "아군 -> 적" 이다.
 		ao[i].moveHandler = PVPFOEBULLETMOVE;
@@ -1888,6 +1916,13 @@ void AllyShootAt(int obj, int level, int target)
 		//제 크기만큼 띄운다. 1 배 동료는 전과 똑같은 자리다.
 		ao[i].y = mom->y - PVP_BULLET_UP
 			* Max(CREW_SHOT_HEAD_MIN, mom->zoom);
+		if(IsStageRealtime()) {
+		 float x=0,y=0;
+		 if(StageCombatActorPoint(obj,&x,&y,true)) {
+		  ao[i].x=ao[i].nx=x-xOffset+rx;
+		  ao[i].y=ao[i].ny=STATUSWIN_Y+(rh-4)*TSIZE+OBJIMGGAP-ry-y;
+		 }
+		}
 		break;
 	}
 }
@@ -1945,8 +1980,16 @@ void PvpHeroStep(OBJECT* pObj)
 				+ PVP_HERO_HIT_FRAME) {
 			pvpHeroHit[side] = true;
 
-			if (side == 0)
-				AttackObj(obj, foe);
+			if (side == 0) {
+				if(IsStageRealtime() && obj==PLAYER && pObj->equip[EQUIP_WEAPON].type==ITEM_BOOMERANG)
+					StageMaxBoomerangThrow(obj,foe);
+				else {
+                    const long long before=ao[foe].hp+ao[foe].shield;
+                    AttackObj(obj, foe);
+                    if(pObj->equip[EQUIP_WEAPON].type==ITEM_GUN || ao[foe].hp+ao[foe].shield<before)
+                        StageHeroAttackLink(obj,foe,pObj->equip[EQUIP_WEAPON].type);
+                }
+			}
 			else
 				AttackRobin(obj, foe);
 		}
@@ -4696,6 +4739,10 @@ void PlayerMove_SkillAttack(OBJECT* pObj, int released)
 		attackDelay = attackDelayPerType[attackType];
 		break;
 	case _ADDBOOMERANG:
+		// The stage basic attack owns its hit/return clock. Active skills retain
+		// the original projectile path below.
+		if(IsStageRealtime() && GetObjFromPtr(pObj)==PLAYER && pObj->attack==ATTACK_NORMAL)
+			break;
 		//기본설정
 		sPtr = &maxxBoomerangData[(pObj->attack - ATTACK_NORMAL) * 7];
 		cnt = GetEmptyObject(BULLET);

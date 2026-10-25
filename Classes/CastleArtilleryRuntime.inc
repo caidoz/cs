@@ -21,6 +21,7 @@ bool ArtilleryTargetValid(const CastleArtillery::Shot& shot) {
         && artilleryGeneration[shot.target]==shot.generation;
 }
 void ArtilleryHit(int target) {
+    const long long before=ao[target].hp+ao[target].shield;
     CannonSynergy synergy;
     StageCannonQuerySynergy(&synergy);
     OBJECT* hero=&ao[PLAYER];
@@ -29,6 +30,7 @@ void ArtilleryHit(int target) {
     const long long baseCannonDmg = damage*CastleCannonDamagePercent(stageArtillery.grade)/100;
     hero->ps[PS_DMG]=Max(1LL, baseCannonDmg + synergy.swordBonusDmg);
     AttackObj(PLAYER,target,true);
+    if(ao[target].hp+ao[target].shield<before) StageCombatReviewHit(2);
     hero->ps[PS_DMG]=damage;
     hero->attackFrame=attackFrame; hero->attackLv=attackLv;
     if(target>=0 && target<TOTALOBJECT && ao[target].active) {
@@ -85,14 +87,13 @@ void StageArtilleryReset(int castle) {
 bool StageArtilleryCharge(int slot,float* charge,int* flash) {
     int bagSlot=-1;
     if(!IsStageRealtime() || !StageBagCannon(NULL,NULL,&bagSlot) || bagSlot!=slot) return false;
-    if(charge) *charge=stageArtillery.charge
-        /(float)Max(1,(int)CastleArtillery::State::ChargeFrames);
+    if(charge) *charge=stageArtillery.Progress();
     if(flash) *flash=stageArtillery.recoil;
     return true;
 }
 bool StageArtilleryVisual(float* charge,float* recoil,int* burst) {
     *charge=0; *recoil=0; *burst=0;
-    if(!IsStageRealtime() || stageArtillery.grade!=CastleArtillery::ClampGrade(gMobileCastleVisual)) return false;
+    if(!IsStageRealtime() || !StageBagCannon(NULL,NULL,NULL)) return false;
     *charge=stageArtillery.charge/(float)CastleArtillery::State::ChargeFrames;
     *recoil=stageArtillery.recoil/8.0f;
     *burst=stageArtillery.pending;
@@ -113,7 +114,7 @@ void StageArtilleryStep(bool running,int foe) {
     stageArtillery.upgrade=bagLevel;
     const int grade=stageArtillery.grade;
     CastleArtillery::Point muzzle={0,0};
-    if(!CastlePartsCannonMuzzle(grade+1,&muzzle.x,&muzzle.y)) return;
+    if(!CastlePartsCannonMuzzle(gMobileCastleVisual+1,&muzzle.x,&muzzle.y)) return;
     const int target=StageRtFoeAlive(foe)?foe:-1;
     const int generation=target>=0?artilleryGeneration[target]:0;
     if(stageArtillery.pending && (target!=artilleryVolleyTarget || generation!=artilleryVolleyGeneration))
@@ -142,7 +143,7 @@ void StageArtilleryDraw(void) {
     const CastleArtillery::Profile& p=CastleArtillery::Of(grade);
     const float muzzleScale=CastleArtillery::ProjectileScale(CastleVisualPartLevel(grade,3));
     float mx=0,my=0;
-    if(!CastlePartsCannonMuzzle(grade+1,&mx,&my)) return;
+    if(!CastlePartsCannonMuzzle(gMobileCastleVisual+1,&mx,&my)) return;
     if(stageArtillery.charge) {
         const int animation=(CastleArtillery::State::ChargeFrames-stageArtillery.charge)*8/
             CastleArtillery::State::ChargeFrames;
