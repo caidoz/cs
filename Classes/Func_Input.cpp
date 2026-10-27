@@ -3105,6 +3105,13 @@ void touchFunc(int func)
 		return;
 	}
 
+    if(func==TOUCH_FUNC_LOADOUT_INFO_HOLD) {systemKey=0;return;}
+    if(func==TOUCH_FUNC_LOADOUT_INFO_CLOSE || func==TOUCH_FUNC_LOADOUT_INFO_NEXT) {
+        LoadoutInspect(func==TOUCH_FUNC_LOADOUT_INFO_CLOSE?-1:-2);systemKey=0;return;
+    }
+    if(func>=TOUCH_FUNC_LOADOUT_INFO && func<TOUCH_FUNC_LOADOUT_INFO_END) {
+        LoadoutInspect(func-TOUCH_FUNC_LOADOUT_INFO);systemKey=0;return;
+    }
 	if (func >= TOUCH_FUNC_LOADOUT_ITEM
 		&& func < TOUCH_FUNC_LOADOUT_ITEM + LOADOUT_PICKMAX) {
 		//화면에 늘어놓은 차례대로 가방 칸을 찾는다. 그리는 쪽과 같은

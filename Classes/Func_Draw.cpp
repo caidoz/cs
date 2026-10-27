@@ -12,6 +12,7 @@
 #include "Data/InventoryCannonSprites.h"
 #include "CastleArtilleryModel.h"
 #include "BattleMenuLayout.h"
+#include "DragPreviewModel.h"
 #include "Data/FoeGearData.h"
 namespace {
 struct CombatActorPoint {float x,y,headX,headY;int tick;};
@@ -1874,6 +1875,30 @@ struct GridPart {
 	unsigned short cells; // bit (row * 4 + col), bottom row first; 0 = full rectangle
 };
 
+static int GridPreviewKind(int type) {
+ using namespace DragPreview;
+ if(type>=ITEM_SWORD && type<=ITEM_BOOMERANG) return type==ITEM_SWORD?Sword:type==ITEM_GUN?Gun:Boomerang;
+ if(type>=ITEM_HELM && type<=ITEM_CAP) return Helm;
+ if(type>=ITEM_ARMOR && type<=ITEM_COAT) return Armor;
+ if(type>=ITEM_GUNTLET && type<=ITEM_GLOVE) return Glove;
+ if(type>=ITEM_KILT && type<=ITEM_PANTS) return Pants;
+ if(type>=ITEM_GREAVES && type<=ITEM_BOOTS) return Boots;
+ if(type==ITEM_SHIELD) return Shield;
+ if(type==ITEM_NECK) return Neck;
+ if(type==ITEM_RING) return Ring;
+ if(type==ITEM_CANNON) return Cannon;
+ if(type==ITEM_ESSENCE) return Essence;
+ if(type==ITEM_RECIPE) return Recipe;
+ if(type==ITEM_CREW) return Crew;
+ return Other;
+}
+static DragPreview::Item GridPreviewItem(const GridPart& p,int key,int col,int row) {
+ DragPreview::Item out;out.key=key;out.kind=GridPreviewKind(p.type);out.type=p.type;out.grade=p.grade;out.detail=p.detail;
+ out.col=col;out.row=row;out.w=p.w;out.h=p.h;out.cells=p.cells;out.price=p.price;
+ return out;
+}
+static std::vector<DragPreview::Item> GridPreviewRuntime();
+
 static bool GridPartCell(const GridPart* p, int col, int row)
 {
 	if (col < 0 || row < 0 || col >= p->w || row >= p->h)
@@ -1895,7 +1920,8 @@ static int GridPartCellCount(const GridPart* p)
 static void GridWeaponShape(GridPart* p)
 {
  const int detail=Max(0,Min(34,p->detail));
- p->w=1;p->h=detail<10?2:detail<25?3:4;p->cells=0;
+ p->w=(p->type==ITEM_BOOMERANG && detail>=10)?2:1;
+ p->h=p->type==ITEM_BOOMERANG?2:detail<10?2:detail<25?3:4;p->cells=0;
 }
 
 //---- 눕히기 ----
@@ -1942,7 +1968,7 @@ static const GridPart kShopPart[GRIDTEST_SHOPCNT+2] = {
 
 	//---- 방어구 · 장신구 ----
 	{ ITEM_HELM,    1, GRADE_SUPERIOR, 1, 1,   8, "강철투구" },
-	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 2,  14, "판금갑옷" },
+	{ ITEM_ARMOR,   1, GRADE_SUPERIOR, 1, 1,  14, "판금갑옷" },
 	{ ITEM_GUNTLET, 1, GRADE_NORMAL,   1, 1,   4, "건틀릿" },
 	{ ITEM_KILT,    1, GRADE_NORMAL,   1, 1,   7, "판금바지" },
 	{ ITEM_GREAVES, 1, GRADE_NORMAL,   1, 1,   4, "강철장화", false, 0 },
@@ -2064,6 +2090,7 @@ struct OfferCard {
 	int crewType;	//그 밖일 때 서는 개체의 타입. 동료도 몬스터 타입이다
 	int price;
 	int grade;		//성 파츠로 오른 뒤의 등급
+	bool purchased;
 };
 
 static GridPart GridOfferPart(const OfferCard& card)
@@ -2430,10 +2457,10 @@ static int GridStoreFreeSlot(void)
 //연참 미리보기와 나란히 앉힌다.
 static void GridTrashRect(int* x, int* y, int* w, int* h)
 {
-	*w = 30 * _2X;
-	*h = 16 * _2X;
+	*w = 72;
+	*h = 52;
 	*x = DX - *w - 6 * _2X;
-	*y = GridTopY() + GRIDTEST_HUDH - 2 * _2X;
+	*y = StageShopBtnTop()+64;
 }
 
 //---- 전투가 끝나고 내미는 갈래 ----
@@ -2714,7 +2741,7 @@ static void GridWarnDraw(void)
 #define STAGE_FOE_INVEN_H	2
 #define STAGE_FOE_INVEN_MAX	FOEGEAR_BAGMAX
 
-static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true);
+static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box = true, bool backing = true);
 
 //---- 몬스터 장비 목록 ----
 //
@@ -2989,6 +3016,9 @@ int StageGearList(int obj, StageSword* out, int max)
 	if (obj == PLAYER)
 		return GridTestSwords(out, max);
 
+    // Allies use their authored attack/skill data, never generated monster equipment.
+    if(obj>=CREW && obj<CREW+MAXCREW) return 0;
+
 	if (!ao[obj].active)
 		return 0;
 
@@ -3111,43 +3141,18 @@ static void GridOfferLabel(const char* text, int x, int w, int y, float zoom)
 	CenterTextStrSolid(text, x + w / 2, y, zoom);
 }
 
-static void GridShopPriceStrip(int n, int price, bool afford)
-{
-	char str[32];
-	int x, y, w, h;
-
-	GridOfferRect(n, &x, &y, &w, &h);
-	y -= h;
-	h = STAGE_SHOP_PRICEH;
-
-	SetFontColor(price < 0 ? COLOR_GREY : (afford ? 0xFFDD66 : COLOR_GREY));
-
-	const float priceZoom=Min(.65f,(h-2.0f)/FONT_HEIGHT);
-	const int priceY=y-(int)((h-FONT_HEIGHT*priceZoom)/2);
-
-	if (price < 0) {
-		CenterTextStrSolid("-", x + w / 2, priceY, priceZoom);
-		return;
-	}
-
-	//---- 코인 + 숫자 ----
-	//
-	//숫자만 있으면 그 수가 값인지 개수인지 힘인지 알 수가 없다. 코인을
-	//앞에 붙여 "얼마" 로 읽히게 한다.
-	//
-	//띠가 좁으므로 코인도 띠 높이에 맞춰 줄이고, 둘을 한 덩어리로 묶어
-	//가운데에 놓는다 - 따로 놓으면 자리마다 간격이 어긋난다.
-	sprintf(str, "%d", price);
-
-	const int coin = Max(6 * _2X, h - 2 * _2X);
-	const float coinZoom = (float)coin / (float)ITEMICONSIZE;
-	const int gap = 1 * _2X;
-	const int textW = (int)StringWidth(str, priceZoom);
-	const int rowX = x + (w - (coin + gap + textW)) / 2;
-
-	DrawIcon(ICON_GOLD, rowX, y - (h - coin) / 2, coinZoom,
-		false, false, false, true);
-	CenterTextStrSolid(str, rowX + coin + gap + textW / 2, priceY, priceZoom);
+static void StageGoldAmountDraw(int amount,int centerX,int top) {
+ const float iconZoom=.55f,numZoom=.6f;
+ const int iconW=(int)(ITEMICONSIZE*iconZoom),gap=4*_2X;
+ const int numberW=(int)GetGoldNumDx(amount,0,0,true,numZoom);
+ const int left=centerX-(iconW+gap+numberW)/2;
+ DrawIcon(ICON_GOLD,left,top,iconZoom,false,true,true,true);
+ DrawGoldNum(amount,left+iconW+gap,top,LEFT,0,0,true,numZoom);
+}
+static void GridShopPriceStrip(int n,int price,bool afford) {
+ int x,y,w,h;GridOfferRect(n,&x,&y,&w,&h);
+ if(price<0) return;
+ StageGoldAmountDraw(price,x+w/2,y-h-2);
 }
 
 //======================================================================
@@ -3172,7 +3177,9 @@ static void GridMakeItem(GridSlot* s)
 		return;
 	}
 
-	MakeItem(&s->item, p->type, lv, p->grade, p->detail, EMPTY);
+	// Run crew parts carry NPC types; ITEM_CREW data uses catalogue indices.
+	const int detail=p->type==ITEM_CREW?GetCrewIdxFromType(p->detail):p->detail;
+	MakeItem(&s->item, p->type, lv, p->grade, detail, EMPTY);
 	s->level = 1;
 }
 
@@ -3364,16 +3371,39 @@ static int GridTestFreeSlot(void)
 //
 //격자에 이미 놓인 것에는 깔지 않는다. 판이 그림을 덮어서 무엇을 끼고
 //있는지 안 보였다 - 칸 테두리는 격자가 따로 그린다.
-static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box)
+static int GridPartStar(const GridPart* p)
 {
-	const int col = kGradeColor[Min(TOTALGRADE - 1, Max(0, p->grade))];
-
-	if (box) {
-		SetAlpha(alpha);
-		MemRect(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, 0x1B1B2E);
-		MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
-		SetAlpha(ALPHA_MAX);
-	}
+ if(p->type==ITEM_CREW) {
+  const int crew=p->detail>=gTotalCrew?GetCrewIdxFromType(p->detail):p->detail;
+  return crew>=0 && crew<gTotalCrew?GetItemStar(ITEM_CREW,crew,GRADE_NORMAL):1;
+ }
+ if(p->type>=ITEM_SWORD && p->type<ITEM_GEM && p->detail>=0)
+  return Max(1,Min(6,GetItemStar(p->type,p->detail,p->grade)));
+ return 1;
+}
+static int GridStarColor(int star)
+{
+ static const int colors[]={0x8796A8,0x49B779,0x458FE0,0xAC67D9,0xE3AA42,0xE76C70};
+ return colors[Max(0,Min(5,star-1))];
+}
+static int GridPlateShade(int color,int percent)
+{
+ return (((color>>16)&255)*percent/100<<16)|(((color>>8)&255)*percent/100<<8)|((color&255)*percent/100);
+}
+// One star palette for inventory cards, warehouse cards and purchase plinths.
+static void GridStarPlate(int star,int x,int y,int w,int h,int alpha)
+{
+ const int color=GridStarColor(star),edge=Max(2,Min(w,h)/12);
+ SetAlpha(alpha);
+ MemRect(x,y,w,h,color);
+ MemRect(x+2,y-2,w-4,h-4,GridPlateShade(color,22));
+ MemRect(x+2,y-2,w-4,Max(1,h-edge-2),GridPlateShade(color,48));
+ MemRect(x+edge,y-edge,w-edge*2,Max(1,h-edge*2),GridPlateShade(color,38));
+ SetAlpha(ALPHA_MAX);
+}
+static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box, bool backing)
+{
+	if(backing) GridStarPlate(GridPartStar(p),x+1,y-1,w-2,h-2,alpha);
 
 	if(p->type==GRID_ITEM_CANNON) {
 		if(p->rot) {
@@ -3410,14 +3440,16 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		//사람은 아래로 가라앉아 보였다. 칸 높이의 사분의 일만큼 올린다 -
 		//칸이 커지면 같이 올라간다.
 		//끝의 4 는 화면 픽셀 그대로다. 사분의 일이 조금 높았다.
+		// Keep the surrounding warehouse clip and allow horizontal overhang only.
+		const int savedClipTop=clipY, savedClipBottom=clipY2;
+		clipY=Min(clipY,y-1);
+		clipY2=Max(clipY2,y-h+1);
 		DrawCmfDetailShadow(cmf, idle, x + w / 2,
-			y - h + 4 * _2X + h / 4 - 4, RIGHT,
-			enemyIconZoom[type] * 0.5f * Min(w, h) / (24.0f * _2X));
-		const CrewRole role = GetCrewRole(type);
-        const char* roleName=GetCrewRoleName(role);
-		const int roleCol = GetCrewRoleColor(role);
-		SetFontColor(roleCol);
-		CenterTextStrSolid(roleName, x + w / 2, y - h + 6 * _2X, 0.35f);
+			y - h + 4 * _2X + h / 4 - 10, RIGHT,
+			enemyIconZoom[type] * 0.6f * Min(w / Max(1,p->w), h / Max(1,p->h)) / (24.0f * _2X));
+		clipY=savedClipTop;
+		clipY2=savedClipBottom;
+
 		return;
 	}
 
@@ -3535,18 +3567,18 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 	const int cw = w / p->w;
 	const int ch = h / p->h;
 	if (drawWholeSprite) {
-		if (box) {
+		{
 			SetAlpha(alpha);
 			for (int row = 0; row < p->h; ++row)
 				for (int col = 0; col < p->w; ++col) {
 					if (!GridPartCell(p, col, row)) continue;
-					MemRect(x + col * cw + _2X,
+					GridStarPlate(GridPartStar(p),x + col * cw + _2X,
 						y - (p->h - 1 - row) * ch - _2X,
-						cw - 2 * _2X, ch - 2 * _2X, 0x1B1B2E);
+						cw - 2 * _2X, ch - 2 * _2X,alpha);
 				}
 			SetAlpha(ALPHA_MAX);
 		}
-		GridTestDrawCard(p, x, y, w, h, alpha, false);
+		GridTestDrawCard(p, x, y, w, h, alpha, false, false);
 	}
 	for (int row = 0; row < p->h; ++row)
 		for (int col = 0; col < p->w; ++col) {
@@ -3562,7 +3594,7 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 			//칸 테두리는 등급 색으로 늘 두른다. 어디까지가 한 점인지는
 			//판이 없어도 보여야 한다.
 			MemRectFrame(cx, cy, cw - 1, ch - 1,
-				kGradeColor[Min(TOTALGRADE - 1, Max(0, p->grade))]);
+				GridStarColor(GridPartStar(p)));
 		}
 }
 
@@ -4285,9 +4317,7 @@ int GridTestShields(StageSword* out, int maxCnt)
 	for (int i = 0; i < GRIDTEST_MAXITEM && n < maxCnt; ++i) {
 		if (gGridItem[i].used == false) continue;
 		const GridPart* p = &gGridItem[i].part;
-		if (p->type != ITEM_ARMOR && p->type != ITEM_SHIELD
-			&& p->type != ITEM_HELM && p->type != ITEM_KILT
-			&& p->type != ITEM_GREAVES && p->type != ITEM_GUNTLET)
+		if (!DragPreview::Defense(GridPreviewKind(p->type)))
 			continue;
 		out[n].slot = i;
 		out[n].part = (gGridItem[i].shop >= 0) ? gGridItem[i].shop : 1000 + gGridItem[i].equip;
@@ -4302,8 +4332,9 @@ int GridTestShields(StageSword* out, int maxCnt)
 			for (int j = 0; j < GRIDTEST_MAXITEM; ++j) {
 				if (j == i || !gGridItem[j].used) continue;
 				const int jt = gGridItem[j].part.type;
-				if ((jt == ITEM_SHIELD || jt == ITEM_HELM || jt == ITEM_GREAVES || jt == ITEM_KILT)
-					&& GridItemsAreAdjacent(i, j))
+				const int kind=GridPreviewKind(jt);
+                if ((kind==DragPreview::Shield || kind==DragPreview::Helm || kind==DragPreview::Boots || kind==DragPreview::Pants)
+                    && GridItemsAreAdjacent(i,j))
 					defNeighbors++;
 			}
 			baseVal += baseVal * 15 * defNeighbors / 100; // 인접 방어구당 +15%
@@ -4467,7 +4498,7 @@ GearCategory GetItemGearCategory(int itemType)
 		return GEAR_CAT_CREW;
 	if (itemType == ITEM_RECIPE)
 		return GEAR_CAT_RECIPE;
-	return GEAR_CAT_WEAPON;
+	return (GearCategory)-1;
 }
 
 bool GridSlotHasAdjacentCategory(int slot, GearCategory cat)
@@ -4497,12 +4528,15 @@ long long GridTestPantsHpBonus(void)
 
 bool GridCrewHasAdjacentPants(int crewIndex)
 {
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (!gGridItem[i].used || gGridItem[i].part.type != ITEM_CREW) continue;
-		if (GridSlotHasAdjacentCategory(i, GEAR_CAT_PANTS))
-			return true;
-	}
-	return false;
+ if(crewIndex<0 || crewIndex>=MAXCREW) return false;
+ const int type=ao[CREW+crewIndex].type;
+ for(int i=0;i<GRIDTEST_MAXITEM;++i) {
+  if(!gGridItem[i].used || gGridItem[i].part.type!=ITEM_CREW) continue;
+  const int detail=gGridItem[i].part.detail;
+  const int npc=gGridItem[i].equip>=0 && detail>=0 && detail<gTotalCrew?crewData[detail*CREWDATASIZE+CREWDATA_TYPE]:detail;
+  if(npc==type) return GridSlotHasAdjacentCategory(i,GEAR_CAT_PANTS);
+ }
+ return false;
 }
 
 bool GridSlotAdjacentToRocky(int slot)
@@ -4619,6 +4653,7 @@ void GridTestPick(int n, bool fromShop)
 
 		if (n < 0 || n >= GRIDTEST_OFFERCNT)
 			return;
+		if(gOffer[n].purchased) return;
 
 		//돌아가는 칸은 아직 무엇인지 정해지지 않았다.
 		if (GridOfferSpinning(n))
@@ -4839,6 +4874,7 @@ void GridTestRelease(void)
 					return;
 				}
 				gStageGold -= GridShopPrice(p->price);
+				if(offer>=0 && offer<GRIDTEST_OFFERCNT) gOffer[offer].purchased=true;
 				sprintf(gGridMsg, "%s 보관  -%d",
 					p->name, GridShopPrice(p->price));
 				gGridMsgFrame = FPS * 2;
@@ -4888,19 +4924,19 @@ void GridTestRelease(void)
 			return;
 		}
 
-		//아웃게임 장비는 팔 수 없다. 여기서 팔면 인벤토리의 진짜 장비가
-		//사라진다. 제자리로 돌린다.
-		if (gGridItem[from].equip >= 0) {
-			gGridItem[from].used = true;
-			GridTestWarn("장착 장비는 팔 수 없다");
-			GridFlyHome(p, from, store, offer);
-			return;
-		}
-
 		//판 값은 산 값의 절반이다. 되사기를 반복해 돈을 버는 길을 막는다.
-		const int back = Max(1, p->price / 2);
+		const int back = Max(1, GridShopPrice(p->price) / 2);
 
 		gStageGold += back;
+		if(p->type==ITEM_CREW) {
+		 const int crewType=gGridItem[from].equip>=0?crewData[p->detail*CREWDATASIZE+CREWDATA_TYPE]:p->detail;
+		 StageRtRemoveCrew(crewType);
+		}
+		// Only the run copy is removed; persistent inventory is restored on exit.
+		for(int e=0;e<TOTALEQUIP;++e)
+			if(ao[PLAYER].equip[e].type!=EMPTY && ao[PLAYER].equip[e].id==gGridItem[from].item.id)
+				ao[PLAYER].equip[e].type=EMPTY;
+		RefreshStat(&ao[PLAYER]);
 		sprintf(gGridMsg, "%s 판매  +%d", p->name, back);
 		gGridMsgFrame = FPS * 2;
 		return;
@@ -4941,6 +4977,7 @@ void GridTestRelease(void)
 			}
 
 			gStageGold -= GridShopPrice(p->price);
+			if(offer>=0 && offer<GRIDTEST_OFFERCNT) gOffer[offer].purchased=true;
 
 			//---- 같은 것이 이미 있으면 겹친다 ----
 			//
@@ -5129,7 +5166,18 @@ bool StageShopPreviewPurchaseChecks(void)
 		if(!found) return false;
 		GridTestRelease();
 		if(test==0) { if(gStageGold!=0 || GridTestTotalItemCount()!=0) return false; }
-		else if(gStageGold!=100-expected || GridTestTotalItemCount()!=1) return false;
+		else {
+		 if(gStageGold!=100-expected || GridTestTotalItemCount()!=1 || !gOffer[index].purchased) return false;
+		 const bool wasOpen=gOfferOn;gOfferOn=true;GridTestPick(index,true);gOfferOn=wasOpen;
+		 if(gGridDragOn) return false;
+		 int sold=-1;for(int slot=0;slot<GRIDTEST_MAXITEM;++slot) if(gGridItem[slot].used) {sold=slot;break;}
+		 if(sold<0) return false;
+		 const int refund=Max(1,GridShopPrice(gGridItem[sold].part.price)/2),beforeGold=gStageGold;
+		 GridTestPick(sold,false);
+		 int tx,ty,tw,th;GridTrashRect(&tx,&ty,&tw,&th);touchX=tx+tw/2;touchY=ty-th/2;
+		 GridTestRelease();
+		 if(gGridItem[sold].used || gStageGold!=beforeGold+refund) return false;
+		}
 	}
 	StageShopPreviewOpen();
 	return true;
@@ -5197,10 +5245,10 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 
 	//---- 부위별 크기 ----
 	//
-	//갑옷 계열만 1x2, 나머지 일반 장비는 1x1이다.
+	//일반 장비는 갑옷 계열을 포함해 1x1이다.
 	switch (it->type) {
  case ITEM_ARMOR:case ITEM_VEST:case ITEM_COAT:
-  out->h=2;break;
+  out->h=1;break;
  default:break;
  }
 
@@ -5334,9 +5382,10 @@ int LoadoutTab(void)
 //---- 히어로를 고른다 ----
 //
 //히어로를 바꾸면 편성을 비우고 새 히어로의 기본 무기를 먼저 고른다.
-//추가 장비와 동료는 히어로 종류에 관계없이 가방의 제약 안에서 고른다.
+//선택한 히어로의 전용 장비와 공용 장비·동료를 가방의 제약 안에서 고른다.
 void LoadoutPickHero(int hero)
 {
+ LoadoutInspect(-1);
 	if (hero < 0 || hero >= 3 || hero == curHero)
 		return;
 
@@ -5386,6 +5435,12 @@ static bool LoadoutCanCarry(int type)
 //
 //지금 표에는 CMF 가 52 밑인 동료가 하나도 없다(52~121). 그래도 기준은
 //남겨 둔다 - 표가 늘 때 사람이 아닌 것이 섞여 들어오면 여기서 걸린다.
+static bool LoadoutHeroHas(int hero,int type)
+{
+ return hero>=0 && hero<3 && LoadoutCanCarry(type) &&
+  (type>ITEM_BOOTS || (type>=ITEM_SWORD && type%3==hero));
+}
+
 static bool LoadoutCrewReal(int idx)
 {
 	if (idx < 0 || idx >= gTotalCrew)
@@ -5479,6 +5534,7 @@ bool LoadoutTakePvp(void)
 }
 void LoadoutSetOpen(bool on)
 {
+	LoadoutInspect(-1);
 	gLoadoutOpen = on;
 	gLoadoutSetupPressed = false;
 
@@ -5610,6 +5666,14 @@ bool LoadoutToggleAt(int invenIdx, int col, int row)
 	}
 
 	const ITEM* it = &robin.inven[invenIdx];
+	if(!LoadoutHeroHas(curHero,it->type)) {
+        gLoadoutWhy = "다른 히어로 전용";
+        return false;
+    }
+	if(it->type==ITEM_CANNON && it->detail!=CastleMenuModel::Clamp(robin.castle)) {
+		gLoadoutWhy = "다른 성 전용 포대";
+		return false;
+	}
 
 	if (it->type == EMPTY || LoadoutCanCarry(it->type) == false) {
 		gLoadoutWhy = "실을 수 있는 장비가 아니다";
@@ -5782,7 +5846,17 @@ static void LoadoutDefaultFill(void)
 {
  if(gLoadoutDefaultDone) return;
  gLoadoutDefaultDone=true;
- if(gLoadoutCnt>0) return;
+ CannonGrantEnsure();
+ for(int n=gLoadoutCnt-1;n>=0;--n) {
+  const ITEM& old=robin.inven[gLoadout[n]];
+  if(old.type==ITEM_CANNON && old.detail!=CastleMenuModel::Clamp(robin.castle)) LoadoutToggle(gLoadout[n]);
+ }
+ for(int i=0;i<TOTALINVENTORY;++i)
+  if(robin.inven[i].type==ITEM_CANNON && robin.inven[i].count>0 &&
+     robin.inven[i].detail==CastleMenuModel::Clamp(robin.castle)) {
+   if(LoadoutFind(i)<0) LoadoutToggle(i);break;
+  }
+ if(gLoadoutCnt>1 || (gLoadoutCnt==1 && robin.inven[gLoadout[0]].type!=ITEM_CANNON)) return;
  const int required=curHero==1?ITEM_GUN:curHero==2?ITEM_BOOMERANG:ITEM_SWORD;
  const ITEM& worn=robin.charData[Max(0,Min(TOTALPLAYER-1,PlayerHeroType()))].equip[EQUIP_WEAPON];
  int picked=-1;
@@ -5793,6 +5867,7 @@ static void LoadoutDefaultFill(void)
   if(it.id==worn.id && worn.type==required) {picked=i;break;}
  }
  if(picked>=0) LoadoutToggle(picked);
+
 }
 
 //======================================================================
@@ -6021,7 +6096,8 @@ bool LoadoutRequiredWeaponReady(void)
  bool weapon=false,bad=missed>0;
  for(int i=0;i<gLoadoutCnt;++i) {
   const ITEM& it=robin.inven[gLoadout[i]];
-  bad=bad||!fit[i]||gLoadoutBad[i]||it.count==0;
+  bad=bad||!fit[i]||gLoadoutBad[i]||it.count==0||!LoadoutHeroHas(curHero,it.type)||
+   (it.type==ITEM_CANNON && it.detail!=CastleMenuModel::Clamp(robin.castle));
   if(it.type==required && it.count>0 && fit[i] && !gLoadoutBad[i]) weapon=true;
  }
  return weapon&&!bad;
@@ -6124,7 +6200,7 @@ static void LoadoutGoButtonRect(int* x, int* y, int* w, int* h)
 //동료표 전체가 들어가는 수로 올린다. CAP_CREW 는 그 표가 커져도 따라
 //가는 값이다.
 #define LOADOUT_DETAILMAX (CAP_CREW > 40 ? CAP_CREW : 40)
-#define LOADOUT_CATMAX    320
+#define LOADOUT_CATMAX    1024
 
 //창고는 48픽셀 칸 네 줄을 온전히 확보한다.
 //성과 레일이 확보된 메뉴 높이에 맞춰 위로 이동한다.
@@ -6257,10 +6333,6 @@ static int LoadoutDetailCnt(int type)
 //부메랑으로 같은 차례다(COSTUME_WEAPON_*_IMG).
 //
 //목걸이와 반지는 누구나 쓴다. 그래서 어느 히어로의 판에도 들어간다.
-static bool LoadoutHeroHas(int hero,int type)
-{
- return hero>=0 && hero<3 && LoadoutCanCarry(type);
-}
 
 //(종류, 번호)의 칸 크기. 가진 아이템이 없어도 알 수 있어야 도감이 깔린다.
 static void LoadoutPartOf(int type, int detail, GridPart* out)
@@ -6450,27 +6522,10 @@ bool StageBagCannon(int* castle, int* level, int* slot)
 
 static bool GridItemsAreAdjacent(int slotA, int slotB)
 {
-	if (slotA < 0 || slotA >= GRIDTEST_MAXITEM || !gGridItem[slotA].used) return false;
-	if (slotB < 0 || slotB >= GRIDTEST_MAXITEM || !gGridItem[slotB].used) return false;
-	if (slotA == slotB) return false;
-	const GridPart* pa = &gGridItem[slotA].part;
-	const int colA = gGridItem[slotA].col, rowA = gGridItem[slotA].row;
-	const GridPart* pb = &gGridItem[slotB].part;
-	const int colB = gGridItem[slotB].col, rowB = gGridItem[slotB].row;
-	for (int ra = 0; ra < pa->h; ++ra) {
-		for (int ca = 0; ca < pa->w; ++ca) {
-			if (!GridPartCell(pa, ca, ra)) continue;
-			const int xa = colA + ca, ya = rowA + ra;
-			for (int rb = 0; rb < pb->h; ++rb) {
-				for (int cb = 0; cb < pb->w; ++cb) {
-					if (!GridPartCell(pb, cb, rb)) continue;
-					const int xb = colB + cb, yb = rowB + rb;
-					if (abs(xa - xb) <= 1 && abs(ya - yb) <= 1) return true;
-				}
-			}
-		}
-	}
-	return false;
+ if(slotA<0 || slotB<0 || slotA>=GRIDTEST_MAXITEM || slotB>=GRIDTEST_MAXITEM ||
+    !gGridItem[slotA].used || !gGridItem[slotB].used) return false;
+ return DragPreview::Adjacent(GridPreviewItem(gGridItem[slotA].part,slotA,gGridItem[slotA].col,gGridItem[slotA].row),
+  GridPreviewItem(gGridItem[slotB].part,slotB,gGridItem[slotB].col,gGridItem[slotB].row));
 }
 
 static int StageAllyGridType(int slot)
@@ -6510,45 +6565,58 @@ bool StageAlliesAreAdjacent(int type,int otherType)
  return GridItemsAreAdjacent(a,b);
 }
 
+static std::vector<DragPreview::Item> GridPreviewRuntime() {
+ std::vector<DragPreview::Item> items;
+ for(int i=0;i<GRIDTEST_MAXITEM;++i) if(gGridItem[i].used) {
+  const auto& slot=gGridItem[i];
+  auto p=GridPreviewItem(slot.part,i,slot.col,slot.row);p.level=Max(1,slot.level);
+  p.value=slot.item.type!=EMPTY?slot.item.value:DragPreview::Weapon(p.kind)?MakeItemValue(slot.part.type,slot.part.detail,slot.part.grade,1):0;
+  if(p.kind==DragPreview::Crew) {
+   const int type=StageAllyGridType(i);p.crew=GetCrewIdxFromType(type);p.role=(int)GetCrewRole(type);
+  }
+  p.equipped=slot.equip>=0 && slot.item.id==ao[PLAYER].equip[EQUIP_WEAPON].id &&
+   slot.part.type==ao[PLAYER].equip[EQUIP_WEAPON].type;
+  items.push_back(p);
+ }
+ return items;
+}
+int GridEquippedWeaponHaste(void) {
+ const auto items=GridPreviewRuntime();
+ for(const auto& p:items) if(p.kind==DragPreview::Sword && p.equipped)
+  return DragPreview::Has(items,p,DragPreview::Helm)?15:0;
+ return 0;
+}
+int GridShieldCooldownForSlot(int slot) {
+ if(slot<0 || slot>=GRIDTEST_MAXITEM || !gGridItem[slot].used) return 240;
+ return StageShieldCooldown(gGridItem[slot].part.type,gGridItem[slot].part.detail);
+}
 void StageCannonQuerySynergy(CannonSynergy* out)
 {
-	if (!out) return;
-	memset(out, 0, sizeof(CannonSynergy));
-	int cannonSlot = -1;
-	if (!StageBagCannon(NULL, NULL, &cannonSlot) || cannonSlot < 0) return;
-	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
-		if (i == cannonSlot || !gGridItem[i].used) continue;
-		if (!GridItemsAreAdjacent(cannonSlot, i)) continue;
-		const GridPart* p = &gGridItem[i].part;
-		const int level = Max(1, gGridItem[i].level);
-		if (p->type == ITEM_ESSENCE) {
-			const int detail = p->detail % 4;
-			if (detail == 1) { out->fireEssenceCnt += level; out->scaleBonus += 0.18f * level; }
-			else if (detail == 2) { out->iceEssenceCnt += level; out->cooldownReductionPct += 12 * level; }
-			else if (detail == 3) { out->thunderEssenceCnt += level; out->extraHits += 1 * level; }
-			else { out->magicEssenceCnt += level; out->cooldownReductionPct += 15 * level; }
-		} else if (p->type == ITEM_SWORD) {
-			out->swordCnt += level;
-			const int swordVal = (gGridItem[i].item.type != EMPTY) ? gGridItem[i].item.value : MakeItemValue(p->type, p->detail, p->grade, 1);
-			out->swordBonusDmg += (swordVal * 35 / 100) * level;
-			out->scaleBonus += 0.12f * level;
-		} else if (p->type == ITEM_CREW) {
-			const int crewIdx = p->detail;
-			const CrewRole role = GetCrewRole(crewIdx);
-			if (role == CREW_ROLE_ARTILLERY) {
-				out->crewArtilleryCnt += 1;
-				out->cooldownReductionPct += 20;
-				out->scaleBonus += 0.15f;
-				out->extraHits += 1;
-				if (crewIdx == 57 || (crewIdx >= 0 && crewIdx < 64 && crewData[crewIdx * CREWDATASIZE + CREWDATA_TYPE] == NPC_CAPTAIN)) {
-					out->extraHits += 1;
-				}
-			}
-		} else if (p->type == ITEM_ARMOR || p->type == ITEM_SHIELD || p->type == ITEM_HELM || p->type == ITEM_GREAVES) {
-			out->shieldCnt += level; out->swordBonusDmg += (p->price * 12) * level; out->scaleBonus += 0.10f;
-		}
-	}
-	if (out->cooldownReductionPct > 60) out->cooldownReductionPct = 60;
+ if(!out) return;memset(out,0,sizeof(*out));int slot=-1;
+ if(!StageBagCannon(NULL,NULL,&slot)) return;
+ const auto items=GridPreviewRuntime();
+ const auto effects=DragPreview::CannonEffects(items,slot);
+ const auto* cannon=(const DragPreview::Item*)NULL;
+ for(const auto& q:items) if(q.key==slot) {cannon=&q;break;}
+ for(const auto& p:items) if(p.key!=slot) {
+  if(!cannon || !DragPreview::Adjacent(p,*cannon)) continue;
+  if(p.kind==DragPreview::Sword) out->swordCnt+=p.level;
+  if(p.kind==DragPreview::Crew && p.role==CREW_ROLE_ARTILLERY) ++out->crewArtilleryCnt;
+  if(p.kind==DragPreview::Essence && p.detail%4==0) out->magicEssenceCnt+=p.level;
+  if(p.kind==DragPreview::Armor||p.kind==DragPreview::Shield||p.kind==DragPreview::Helm||p.kind==DragPreview::Boots) out->shieldCnt+=p.level;
+ }
+ for(const auto& e:effects) if(e.target==slot) {
+  using namespace DragPreview;
+  switch(e.rule) {
+   case CannonDamage:out->swordBonusDmg=e.value;break;
+   case CannonScale:out->scaleBonus=e.value/100.0f;break;
+   case CannonHaste:out->cooldownReductionPct=e.value;break;
+   case CannonHits:out->extraHits=e.value;break;
+   case FireAmmo:out->fireEssenceCnt=e.value;break;
+   case IceAmmo:out->iceEssenceCnt=e.value;break;
+   case ThunderAmmo:out->thunderEssenceCnt=e.value;break;
+  }
+ }
 }
 
 
@@ -6653,17 +6721,12 @@ void GridEnsureSampleLayout(void)
 		}
 	}
 
-	// 3. 동료 (ITEM_CREW, 2x2) - 로빈의 스킬(소울 크래시)을 연동하는 동료
+	// The initial companion uses the same identity, footprint and roster as a purchase.
 	if (!hasCrew) {
-		GridPart p;
-		memset(&p, 0, sizeof(p));
-		p.type = ITEM_CREW;
-		p.detail = 1; // 01 귀여운 로제티 (무기 인접 시 로빈 스킬 협공 격발)
-		p.grade = GRADE_NORMAL;
-		p.w = GRID_CREW_W;
-		p.h = GRID_CREW_H;
-		p.price = 15;
-		p.name = "동료";
+		OfferCard companion={};
+		companion.crewType=crewData[1*CREWDATASIZE+CREWDATA_TYPE];
+		companion.price=15;
+		GridPart p;GridCrewPart(&companion,&p);
 		int col = -1, row = -1;
 		if (GridFindSpot(&p, &col, &row)) {
 			int slot = GridTestFreeSlot();
@@ -6675,6 +6738,7 @@ void GridEnsureSampleLayout(void)
 				gGridItem[slot].row = row;
 				gGridItem[slot].used = true;
 				GridMakeItem(&gGridItem[slot]);
+				if(!StageRtHasCrew(companion.crewType)) StageRtAddCrew(companion.crewType);
 			}
 		}
 	}
@@ -6822,18 +6886,22 @@ static int LoadoutCatalog(void)
 		//대포(ITEM_CANNON)는 번호가 장비들과 떨어져 뒤에 있다. 범위를
 		//늘리는 대신 마지막 한 바퀴로 끼워 넣는다 - 사이의 재료 · 소비품
 		//까지 훑게 하면 엉뚱한 것이 창고에 선다.
-		for (int d = 0; d < LOADOUT_DETAILMAX; d++)
+		for(int group=0;group<3;++group) {
+        // Prevent later groups from filling holes ahead of the selected hero.
+        if(group>0) for(int c=0;c<wide;++c) for(int r=0;r<LOADOUT_STORE_H;++r) one[r*LOADOUT_COLMAX+c]=1;
+        for (int d = 0; d < LOADOUT_DETAILMAX; d++)
 			for (int ti = 0; ti <= ITEM_GEM; ti++) {
 				//동료는 위에서 이미 깔았다.
 				const int t = (ti == ITEM_GEM) ? ITEM_CANNON : ti;
+                const int itemGroup=t<=ITEM_BOOTS?(t%3==hero?0:2):1;
+                if(itemGroup!=group) continue;
 				GridPart part;
 				int c = 0, r = 0;
 
 				if (gLoadoutCatCnt >= LOADOUT_CATMAX)
 					break;
 
-				if (LoadoutCanCarry(t) == false
-					|| LoadoutHeroHas(hero, t) == false)
+				if (LoadoutCanCarry(t) == false)
 					continue;
 
 				if (d >= LoadoutDetailCnt(t))
@@ -6868,6 +6936,7 @@ static int LoadoutCatalog(void)
 				wide = Max(wide, c + pw);
 			}
 
+        }
 		gLoadoutStarWide[star - 1] = wide;
 
 		if (wide > 0) {
@@ -6882,6 +6951,7 @@ static int LoadoutCatalog(void)
 //보관함 칸을 집는다. 아직 안 가진 칸은 들 것이 없다.
 void LoadoutPickStart(int inven)
 {
+ LoadoutInspect(-1);
 	//---- 빈 칸은 들 것이 없다 ----
 	//
 	//번호 범위만 보고 있었다. 0 번은 늘 범위 안이라, 어디선가 0 이 흘러
@@ -6892,7 +6962,8 @@ void LoadoutPickStart(int inven)
 	//막으면 창고에서 집든 가방에서 집든 같은 구멍이 닫힌다.
 	const bool pickable = (inven >= 0 && inven < TOTALINVENTORY)
 		&& robin.inven[inven].type != EMPTY
-		&& IsEquipItemType(robin.inven[inven].type);
+		&& LoadoutHeroHas(curHero,robin.inven[inven].type)
+        && (robin.inven[inven].type!=ITEM_CANNON || robin.inven[inven].detail==CastleMenuModel::Clamp(robin.castle));
 
 	gLoadoutDrag = pickable ? inven : -1;
 	gLoadoutDragFromBag = false;
@@ -7000,6 +7071,11 @@ void LoadoutRelease(bool cancelled)
 
 	//이미 실려 있는 것을 가방 밖으로 끌어내면 내린다. 싣는 길과 내리는
 	//길이 같은 손놀림이어야 한다.
+    if(!fromBag && Abs(touchX-gLoadoutDragX)<=8*_2X && Abs(touchY-gLoadoutDragY)<=8*_2X) {
+        for(int i=0;i<gLoadoutCatCnt;++i)
+            if(gLoadoutOwn[gLoadoutCatType[i]][gLoadoutCatDetail[i]]==inven) {LoadoutInspect(i);return;}
+    }
+
 	const bool inGrid = LoadoutOverGrid();
 	const bool already = (LoadoutFind(inven) >= 0);
 
@@ -7130,6 +7206,8 @@ static bool LoadoutDropCell(int inven, GridPart* outPart, int* outCol, int* outR
 		return false;
 
 	GridGearPart(&robin.inven[inven], outPart);
+ const int selected=LoadoutFind(inven);
+ if(selected>=0 && gLoadoutRot[selected]) *outPart=GridPartRotated(*outPart);
 
 	const int w = outPart->w * cell;
 	const int h = outPart->h * cell;
@@ -7139,16 +7217,14 @@ static bool LoadoutDropCell(int inven, GridPart* outPart, int* outCol, int* outR
 	int col = GridFloorDiv(leftPx - gLoadoutGridX + cell / 2, cell);
 	int row = gGridH - outPart->h - down;
 
-	if (col < 0) col = 0;
-	if (row < 0) row = 0;
-	if (col > gGridW - outPart->w) col = gGridW - outPart->w;
-	if (row > gGridH - outPart->h) row = gGridH - outPart->h;
 
 	*outCol = col;
 	*outRow = row;
 
 	return true;
 }
+
+#include "DragPreviewRuntime.inc"
 
 static void LoadoutGridDraw(int top, int bottom)
 {
@@ -7278,54 +7354,6 @@ static void LoadoutGridDraw(int top, int bottom)
 		SetRectPoint(cx, cy, w, h, TOUCH_FUNC_LOADOUT_BAGITEM + i);
 	}
 
-	//---- 보급력 ----
-	//
-	//쓸 수 있는 양과 쓴 양이다. 머리말에 한 줄로 적던 것을 격자 왼쪽 위로
-	//옮겼다 - 칸을 채우다 모자라는 것이라, 채우는 자리에 붙어 있어야 한다.
-	//
-	//넘겼으면 빨갛게 센다. 그대로는 출정이 안 된다.
-	{
-		//---- 판을 깔고 그 위에 ----
-		//
-		//격자 테두리 위에 글자만 얹었더니 성벽 무늬에 묻혀 안 읽혔다.
-		//어두운 판을 깔아 글자가 설 자리를 만든다. 격자 윗변보다 위로
-		//올려 칸을 가리지 않는다.
-		const int used = LoadoutUsed();
-		const int point = LoadoutPoint();
-		const float zoom = 0.95f;
-		const int star = 18 * _2X;
-		const int pad = 5 * _2X;
-
-		sprintf(str, "%d / %d", used, point);
-
-		const int nameW = (int)StringWidth("보급력", zoom);
-		const int numW = (int)StringWidth(str, zoom);
-		const int gap = 4 * _2X;
-		const int boxW = pad * 2 + nameW + gap + star + gap + numW;
-		const int boxH = (int)(FONT_HEIGHT * zoom) + 6 * _2X;
-		const int bx = left;
-		const int by = base + boxH + 6 * _2X;
-
-		SetAlpha(26);
-		MemRect(bx, by, boxW, boxH, 0x0C1A2E);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(bx, by, boxW, boxH, 0x6FA8FF);
-
-		const int ty = by - (int)((boxH - FONT_HEIGHT * zoom) / 2);
-		int at = bx + pad;
-
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("보급력", at + nameW / 2, ty, zoom);
-		at += nameW + gap;
-
-		DrawIcon(ICON_STAR, at, by - (boxH - star) / 2,
-			(float)star / (float)ITEMICONSIZE, false, false, false, true);
-		at += star + gap;
-
-		SetFontColor(used > point ? COLOR_RED : COLOR_REALYELLOW);
-		CenterTextStrSolid(str, at + numW / 2, ty, zoom);
-		SetFontColor(COLOR_WHITE);
-	}
 
 	//---- 들어갈 자리를 미리 ----
 	//
@@ -7753,7 +7781,9 @@ void LoadoutDraw(void)
 		//것인지 아닌지가 한눈에 안 들어온다. 되돌리려면 가방에서 끌어
 		//내리면 그 자리로 돌아온다.
 		const bool taken = own && LoadoutFind(inv) >= 0;
-		const bool live = own && taken == false;	//집을 수 있는가
+		const bool otherHero = !LoadoutHeroHas(curHero,gLoadoutCatType[i]);
+        const bool incompatible = own && (otherHero || (it->type==ITEM_CANNON && it->detail!=CastleMenuModel::Clamp(robin.castle)));
+		const bool live = own && !incompatible && taken == false;	//집을 수 있는가
 		GridPart part;
 
 		//---- 가진 것은 그 물건 그대로 ----
@@ -7780,7 +7810,7 @@ void LoadoutDraw(void)
 		//테두리로 셋을 가른다. 올라간 것은 금빛을 죽인 색이라 "저건 내
 		//것인데 지금 위에 있다" 로 읽히고, 아직 없는 것은 그냥 어둡다.
 		MemRectFrame(x, y, w, h,
-			live ? 0x556688 : taken ? 0x6A5A2A : 0x2A2A38);
+			live ? 0x556688 : incompatible ? 0xB07535 : taken ? 0x6A5A2A : 0x2A2A38);
 
 		//---- 못 집는 것은 회색으로 ----
 		//
@@ -7792,7 +7822,7 @@ void LoadoutDraw(void)
 		//그대로 또렷하면 무엇을 들었는지 알 수가 없다.
 		const bool held = (gLoadoutDrag >= 0 && inv == gLoadoutDrag);
 
-		if (live == false || held) {
+		if (!own || taken || held || (incompatible && !otherHero)) {
 			grayScale = 32;
 			SetColor(0x4A4A56);		//밝은 바탕 위의 그림자로
 		}
@@ -7802,19 +7832,41 @@ void LoadoutDraw(void)
 		GridDrawShapedCard(&part, x, y, w, h,
 			held ? LOADOUT_HELD_SLOT_ALPHA : ALPHA_MAX, false);
 
-		if (live == false || held) {
+		if (!own || taken || held || (incompatible && !otherHero)) {
 			//원래 값으로 되돌린다. 흰색으로 돌려놓으면 그 뒤에 그리는
 			//것이 통째로 하얗게 뜬다 - 출정 버튼이 그랬다.
 			SetColor(keepColor);
 			grayScale = 0;
+		}
+		if(own && otherHero) {
+            static const int heroCmf[3]={ROBIN,DIANA,MAXX};
+            const int owner=gLoadoutCatType[i]%3;
+            const int badge=Max(12,Min(w,h)/3);
+            const int bx=x+w-badge-1,by=y-1;
+            MemRect(bx,by,badge,badge,0x19304A);
+            MemRectFrame(bx,by,badge,badge,0xE0B45A);
+            const int sx=clipX,sy=clipY,sx2=clipX2,sy2=clipY2;
+            clipX=Max(clipX,bx+1);clipX2=Min(clipX2,bx+badge-1);
+            clipY=Min(clipY,by-1);clipY2=Max(clipY2,by-badge+1);
+            DrawCmfDetail(heroCmf[owner],crewPos[heroCmf[owner]*5],bx+badge/2,
+                by-badge*2,RIGHT,badge/(24.0f*_2X),false,false);
+            clipX=sx;clipY=sy;clipX2=sx2;clipY2=sy2;
+        }
+        if(!own || (incompatible && !otherHero) || taken) {
+			SetFontColor(incompatible?0xE0A050:own?0xBBA060:0x888899);
+			CenterTextStrSolid(!own?"미획득":otherHero?"다른 히어로 전용":incompatible?"다른 성 전용":"편성 중",
+				x+w/2,y-10*_2X,0.32f);
 		}
 
 		//---- 집을 수 있는 것만 터치를 받는다 ----
 		//
 		//올라간 것에 터치를 걸어 두면 집히는 손맛이 나면서 아무 일도
 		//안 일어난다. 아예 안 걸면 띠가 받아 밀기로 이어진다.
-		if (live == false)
-			continue;
+		if (live == false) {
+            const int visibleTop=Min(y,storeTop),visibleBottom=Max(y-h,storeBot);
+            SetRectPoint(x,visibleTop,w,visibleTop-visibleBottom,TOUCH_FUNC_LOADOUT_INFO+i);
+            continue;
+        }
 
 		gLoadoutSlot[gLoadoutSlotCnt] = (short)inv;
 		gLoadoutSlotX[gLoadoutSlotCnt] = x;
@@ -7875,6 +7927,8 @@ void LoadoutDraw(void)
 		GridPart part;
 
 		GridGearPart(it, &part);
+        const int selected=LoadoutFind(gLoadoutDrag);
+        if(selected>=0 && gLoadoutRot[selected]) part=GridPartRotated(part);
 
 		//가방에 들어갔을 때의 크기로 든다. 아이콘 크기로 들면 끌고 가서
 		//놓을 때까지 "이게 몇 칸짜리인지" 를 모른다.
@@ -7889,6 +7943,8 @@ void LoadoutDraw(void)
 	}
 
 	//못 실어 돌아가는 것과 그 까닭. 둘 다 손에 든 것 위에 얹는다.
+	LoadoutHeroStatusDraw();
+	DragInfoLoadoutDraw();
 	GridFlyDraw();
 	GridWarnDraw();
 }
@@ -8161,21 +8217,42 @@ bool HeroAlliesAuditReview(int page)
 bool CompactEquipmentReview(int page)
 {
  if(!getenv("CS_COMPACT_EQUIPMENT_REVIEW")) return false;
+ if(getenv("CS_DRAG_PREVIEW_REVIEW")) return DragInfoReview(page);
  const int types[]={ITEM_SWORD,ITEM_GUN,ITEM_BOOMERANG};
  bool ok=true;
+ const int savedHero=curHero;
+ for(int hero=0;hero<3;++hero) {
+  curHero=hero;LoadoutCatalog();
+  for(int type=ITEM_SWORD;type<=ITEM_BOOTS;++type)
+   ok=ok&&(LoadoutHeroHas(hero,type)==(type%3==hero));
+  ok=ok&&LoadoutHeroHas(hero,ITEM_CREW)&&LoadoutHeroHas(hero,ITEM_CANNON)&&LoadoutHeroHas(hero,ITEM_RING);
+  int swords=0,lateSwords=0;
+  for(int i=0;i<gLoadoutCatCnt;++i) {
+   if(gLoadoutCatType[i]==ITEM_SWORD) {++swords;if(gLoadoutCatStar[i]==6) ++lateSwords;}
+   const int type=gLoadoutCatType[i];
+   if(type>ITEM_BOOTS || type%3!=hero) continue;
+   for(int j=0;j<gLoadoutCatCnt;++j) {
+    const int other=gLoadoutCatType[j];
+    if(gLoadoutCatStar[j]==gLoadoutCatStar[i] && other<=ITEM_BOOTS && other%3!=hero)
+     ok=ok&&gLoadoutCatCol[i]+gLoadoutCatW[i]<=gLoadoutCatCol[j];
+   }
+  }
+  ok=ok&&swords==35&&lateSwords>0&&gLoadoutCatCnt<LOADOUT_CATMAX;
+ }
+ curHero=savedHero;
  MemRect(0,DY,DX,DY,0x132236);
  for(int kind=0;kind<3;++kind) for(int detail=0;detail<35;++detail) {
   ITEM it={};it.type=types[kind];it.detail=detail;
   GridPart p;GridGearPart(&it,&p);
-  ok=ok&&p.w==1&&p.h==(detail<10?2:detail<25?3:4)&&GridPartCellCount(&p)==p.h;
+  ok=ok&&p.w==(kind==2&&detail>=10?2:1)&&p.h==(kind==2?2:detail<10?2:detail<25?3:4)&&GridPartCellCount(&p)==p.w*p.h;
   GridPart rotated=GridPartRotated(p),restored=GridPartRotated(rotated);
-  ok=ok&&rotated.h==1&&rotated.w==p.h&&GridPartCellCount(&rotated)==p.h;
+  ok=ok&&rotated.h==p.w&&rotated.w==p.h&&GridPartCellCount(&rotated)==p.w*p.h;
   ok=ok&&restored.w==p.w&&restored.h==p.h&&!restored.rot;
   if(kind!=page) continue;
   const int x=12+(detail%7)*89,y=DY-60-(detail/7)*228;
-  char label[32];sprintf(label,"%02d / 1x%d",detail+1,p.h);
+  char label[32];sprintf(label,"%02d / %dx%d",detail+1,p.w,p.h);
   SetFontColor(COLOR_WHITE);CenterTextStrSolid(label,x+36,y+18,.4f);
-  GridDrawShapedCard(&p,x,y,38,p.h*38,ALPHA_MAX,true);
+  GridDrawShapedCard(&p,x,y,p.w*38,p.h*38,ALPHA_MAX,true);
   GridDrawShapedCard(&rotated,x,y-162,p.h*18,18,ALPHA_MAX,true);
  }
  const int armorTypes[]={ITEM_ARMOR,ITEM_VEST,ITEM_COAT,ITEM_HELM,ITEM_HAT,ITEM_CAP,
@@ -8183,7 +8260,7 @@ bool CompactEquipmentReview(int page)
   ITEM_GREAVES,ITEM_SHOES,ITEM_BOOTS,ITEM_RING,ITEM_SHIELD,ITEM_RECIPE};
  for(int type:armorTypes) for(int detail=0;detail<8;++detail) {
   ITEM it={};it.type=type;it.detail=detail;GridPart p;GridGearPart(&it,&p);
-  const int height=type==ITEM_ARMOR||type==ITEM_VEST||type==ITEM_COAT?2:1;
+  const int height=1;
   ok=ok&&p.w==1&&p.h==height&&GridPartCellCount(&p)==height;
  }
  if(page==3) for(int i=0;i<18;++i) {
@@ -8208,10 +8285,10 @@ bool MaxWeaponFoundationReview(void)
   it.type=i==0?ITEM_BOOMERANG:i==1?ITEM_SWORD:ITEM_CREW;
   it.detail=0;it.count=1;it.lv=1;it.value=1;it.id=200000+i;
  }
- ok=ok&&LoadoutToggle(1)&&!LoadoutRequiredWeaponReady();
+ ok=ok&&!LoadoutToggle(1)&&!LoadoutRequiredWeaponReady();
  LoadoutClear();
  ok=ok&&LoadoutToggle(0)&&LoadoutRequiredWeaponReady();
- ok=ok&&LoadoutHeroHas(2,ITEM_SWORD)&&LoadoutHeroHas(0,ITEM_BOOMERANG);
+ ok=ok&&!LoadoutHeroHas(2,ITEM_SWORD)&&!LoadoutHeroHas(0,ITEM_BOOMERANG);
  ok=ok&&LoadoutToggle(2)&&LoadoutRequiredWeaponReady();
  GridPlaceGear();
  ITEM owned=robin.inven[0];
@@ -8307,6 +8384,13 @@ bool BattleMenuPreviewWarehouseGestureCheck(void) {
 
 bool BattleMenuPreviewScrollCheck(void) {
 	if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_BATTLE_MENU_REVIEW")) return false;
+	for(int slot=0;slot<GRIDTEST_MAXITEM;++slot) if(gGridItem[slot].used && gGridItem[slot].part.type==ITEM_CREW) {
+		const auto& part=gGridItem[slot].part;
+		const int type=StageAllyGridType(slot);
+		const auto* profile=AllyBalance::Get(GetCrewIdxFromType(type));
+		if(!profile || !StageRtHasCrew(type)) return false;
+		if(part.w!=(part.rot?profile->rows:profile->cols) || part.h!=(part.rot?profile->cols:profile->rows)) return false;
+	}
 	if(gGridW!=12||gGridH!=4||GridTestCellCnt(GridLayoutCastleStage())!=48) return false;
 	if(gLoadoutGridX+gLoadoutGridW/2!=DX/2) return false;
 	if(gLoadoutCell!=48||gGridCell!=48||gBattleInventoryPan!=0||LoadoutStoreHeight()!=4*48||LOADOUT_STORE_H!=4) return false;
@@ -8334,6 +8418,12 @@ bool BattleMenuPreviewDragCheck(void) {
 		LoadoutPickStart(i);
 		touchX=gLoadoutGridX+part.w*cell/2;
 		touchY=gLoadoutGridY-gLoadoutGridH+part.h*cell/2;
+		const int rendered=dragInfoRendered,countBefore=gLoadoutCnt,goldBefore=gStageGold;
+		static ITEM inventoryBefore[TOTALINVENTORY];
+		memcpy(inventoryBefore,robin.inven,sizeof(inventoryBefore));
+		DragInfoLoadoutDraw();
+		if(dragInfoRendered!=rendered+1 || gLoadoutCnt!=countBefore || gStageGold!=goldBefore ||
+			memcmp(inventoryBefore,robin.inven,sizeof(inventoryBefore))!=0) return false;
 		LoadoutRelease();
 		if(LoadoutFind(i)>=0&&LoadoutUsed()>0) return true;
 	}
@@ -8454,14 +8544,11 @@ void GridTestDraw(void)
 
 		GridStoreBandRect(&bx, &by, &bw, &bh);
 
-		//받침. 띠 전체를 한 덩어리로 깔아 가방과 갈라 보이게 한다.
-		MemRect(bx - 2 * _2X, by + 2 * _2X, bw + 4 * _2X, bh + 4 * _2X,
-			COLOR_BLACK);
-
 		for (i = 0; i < GRIDSTORE_MAX; i++) {
 			int sx, sy, sw, sh;
 
 			GridStoreRect(i, &sx, &sy, &sw, &sh);
+			if(!gStore[i].used) continue;
 			MemRectFrame(sx, sy, sw, sh, COLOR_GREY);
 			SetRectPoint(sx, sy, sw, sh, TOUCH_FUNC_GRIDTEST_STORE + i);
 
@@ -8545,7 +8632,8 @@ void GridTestDraw(void)
 
 		//장비별 6대 부위 인접 시너지 뱃지 시각화
 		if (p->type == ITEM_SWORD) {
-			const bool hasGlove = GridSlotHasAdjacentCategory(i, GEAR_CAT_GLOVE);
+			const bool primary=gGridItem[i].equip>=0 && gGridItem[i].item.id==ao[PLAYER].equip[EQUIP_WEAPON].id && ao[PLAYER].equip[EQUIP_WEAPON].type==ITEM_SWORD;
+            const bool hasGlove = !primary && GridSlotHasAdjacentCategory(i, GEAR_CAT_GLOVE);
 			const bool hasHelm = GridSlotHasAdjacentCategory(i, GEAR_CAT_HELM);
 			if (hasGlove || hasHelm) {
 				const int synCol = hasGlove ? 0xFFAA33 : 0x44DDFF;
@@ -8559,16 +8647,11 @@ void GridTestDraw(void)
 				SetFontColor(0xFFDD44);
 				CenterTextStrSolid("신속", x + w / 2, y - 4 * _2X, 0.34f);
 			}
-		} else if (p->type == ITEM_ARMOR || p->type == ITEM_SHIELD) {
+		} else if (DragPreview::Defense(GridPreviewKind(p->type))) {
 			if (GridSlotHasAdjacentCategory(i, GEAR_CAT_BOOTS)) {
 				MemRectFrame(x + _2X, y - _2X, w - 2 * _2X, h - 2 * _2X, 0x33FF99);
 				SetFontColor(0x33FF99);
 				CenterTextStrSolid("급속", x + w / 2, y - 4 * _2X, 0.34f);
-			}
-		} else if (p->type == ITEM_GREAVES || p->type == ITEM_BOOTS || p->type == ITEM_SHOES) {
-			if (gGridItem[i].row == 0) {
-				SetFontColor(0xFFDD33);
-				CenterTextStrSolid("추진", x + w / 2, y - 4 * _2X, 0.34f);
 			}
 		}
 
@@ -8682,10 +8765,8 @@ void GridTestDraw(void)
             GridOfferRect(i, &x, &y, &w, &h);
             const int px = x + (w - 96) / 2;
             const int platformY = y - 32;
-            const int img = MAP_TILE_IMG + 17;
-            if (!sprite[img]) LoadImg(img);
-            if (sprite[img]) DrawImage(96,64,64,96,px,platformY,
-                false,false,false,false,ALPHA_MAX,1.0f,sprite[img],img);
+            const int savedOfferColor=baseColor;
+            if(c->purchased) {grayScale=32;SetColor(0x555563);}
             const bool spinning = gOfferSpin[i] > 0;
             if (spinning) {
                 --gOfferSpin[i];
@@ -8694,12 +8775,9 @@ void GridTestDraw(void)
             }
             const int grade = Min(TOTALGRADE-1,Max(0,spinning ?
                 kShopPart[gOfferFace[i]].grade : c->grade));
-            const int color = kGradeColor[grade];
-            // Frame dimensions are literal screen pixels, independent of UI scale.
-            MemRect(px,platformY,96,2,color);
-            MemRect(px,platformY-44,96,2,color);
-            MemRect(px,platformY,2,46,color);
-            MemRect(px+94,platformY,2,46,color);
+            GridPart platePart=spinning?kShopPart[gOfferFace[i]]:GridOfferPart(*c);
+            if(!spinning && c->kind!=OFFER_PART) {platePart.type=ITEM_CREW;platePart.detail=GetCrewIdxFromType(c->crewType);}
+            GridStarPlate(GridPartStar(&platePart),px,platformY,96,46,ALPHA_MAX);
             ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,
                 x+w/2-24,platformY-16,SHADOW_IMG,1.0f);
             bool afford = false;
@@ -8717,14 +8795,16 @@ void GridTestDraw(void)
             } else {
                 GridPart shown = spinning ? kShopPart[gOfferFace[i]] : GridOfferPart(*c);
                 if (!spinning) shown.grade = c->grade;
-                GridTestDrawCard(&shown,px+8,y,80,64,ALPHA_MAX,false);
+                GridTestDrawCard(&shown,px+8,y,80,64,ALPHA_MAX,false,false);
                 if (!spinning) {
                     price = GridShopPrice(shown.price);
                     afford = gStageGold >= price;
                 }
             }
-            GridShopPriceStrip(i,price,afford);
-            if (!spinning) SetRectPoint(x,y,w,h,TOUCH_FUNC_GRIDTEST_OFFER+i);
+            if(c->purchased) {grayScale=0;SetColor(savedOfferColor);SetAlpha(20);MemRect(px,y,96,h,0x0A1422);SetAlpha(ALPHA_MAX);}
+            GridShopPriceStrip(i,price,afford&&!c->purchased);
+            if(c->purchased) {SetFontColor(0xD9B566);CenterTextStrSolid("구매 완료",x+w/2,y-28,.65f);}
+            if (!spinning && !c->purchased) SetRectPoint(x,y,w,h,TOUCH_FUNC_GRIDTEST_OFFER+i);
         }
 
 		//---- 시험용 리프레시 ----
@@ -8766,19 +8846,7 @@ void GridTestDraw(void)
 		//
 		//동전 그림과 수를 합쳐서 화면 센터(DX / 2)에 맞춘다.
 		{
-			const float gz = 0.55f;
-			const float numZoom = 0.6f;
-			const int iconW = (int)(ITEMICONSIZE * gz);
-			const int gap = 4 * _2X;
-			const int numW = (int)GetGoldNumDx(gStageGold, 0, 0, true, numZoom);
-			const int totalW = iconW + gap + numW;
-			const int startX = DX / 2 - totalW / 2;
-			const int iconX = startX;
-			const int numX = startX + iconW + gap;
-			const int goldY = StageShopGoldTop();
-
-			DrawIcon(ICON_GOLD, iconX, goldY, gz, false, true, true, true);
-			DrawGoldNum(gStageGold, numX, goldY, LEFT, 0, 0, true, numZoom);
+			StageGoldAmountDraw(gStageGold,DX/2,StageShopGoldTop());
 		}
 
 		//---- 지도 / 도감 ----
@@ -8803,7 +8871,7 @@ void GridTestDraw(void)
 		}
 	}
 
-#if 0	//휴지통은 화면에서 뺐다. 파는 길은 나중에 다시 정한다.
+#if 1
 	//---- 휴지통 ----
 	GridTrashRect(&x, &y, &w, &h);
 
@@ -8818,7 +8886,13 @@ void GridTestDraw(void)
 	MemRectFrame(x, y, w, h, overTrash ? 0xFF5555 : 0x777799);
 
 	SetFontColor(overTrash ? COLOR_WHITE : COLOR_GREY);
-	CenterTextStrSolid("팔기", x + w / 2, y - h + 4 * _2X, 0.6f);
+	CenterTextStrSolid("판매", x + w / 2, y - 13, 0.65f);
+	MemRectFrame(x+7,y-15,10,20,overTrash?0xFFCE8E:0xAEBFD0);
+	MemRect(x+5,y-12,14,3,overTrash?0xFFCE8E:0xAEBFD0);
+	char sellText[48];
+	if(gGridDragOn && gGridDragFrom>=0) sprintf(sellText,"+%d G",Max(1,GridShopPrice(gGridDragDesc.price)/2));
+	else sprintf(sellText,"드래그");
+	CenterTextStrSolid(sellText,x+w/2,y-36,.5f);
 #endif
 
 	//---- 연참 미리보기 ----
@@ -8868,6 +8942,7 @@ void GridTestDraw(void)
 		GridDrawShapedCard(p, touchX - w / 2, touchY + h / 2, w, h, GRIDTEST_DRAGALPHA);
 	}
 
+	DragInfoBattleDraw();
 	GridFlyDraw();
 	GridWarnDraw();
 
@@ -10854,6 +10929,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	// 1단계: 발밑 그림자 먼저 렌더링 (캐릭터 발밑에 정상적으로 그림자가 깔리도록 처리)
 	for (int k = 0; k < owned; ++k) {
 		const bool inside=!externalCrew[drawOrder[k]];
+		if(!inside && battle) continue; // Live roster draws its own shadow once below.
 		if(inside && !revealResidents) continue;
 		CastleParts::RoomClipScope roomClip(sdRoom && inside,residentFloor[drawOrder[k]]);
 		const OBJECT* pCrew = &lobbyCrewList[drawOrder[k]];
@@ -10875,7 +10951,34 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	}
 
 	CastleParts::DrawRoomCover(curCastleIn);
-	for(int k=0;k<owned;++k) if(externalCrew[drawOrder[k]]) DrawObj(&lobbyCrewList[drawOrder[k]]);
+    // Render the run roster directly, including shop recruits/captured monsters
+    // absent from the persistent castle resident list. Preview and battle share scale.
+    if(battle) {
+        int drawn=0;
+        for(int c=0;c<MAXCREW;++c) {
+            const OBJECT& actor=ao[CREW+c];
+            if(StageRtCrewType(c)<=0 || StageRtCrewType(c)!=actor.type) continue;
+            bool placed=false;
+            for(int slot=0;slot<GRIDTEST_MAXITEM;++slot)
+                if(gGridItem[slot].used && gGridItem[slot].part.type==ITEM_CREW && StageAllyGridType(slot)==actor.type) {placed=true;break;}
+            if(!placed) continue;
+            const bool preview=(!StageRtAutoOn() || waveStatus!=WAVESTATUS_PLAY) && actor.moveHandler==REGENMOVE;
+            if((!actor.active || actor.dead) && !preview) continue;
+            float sx=CREW_LINE_X+c*CREW_LINE_GAP;
+            float sy=gLobbyCastleTop-heroV*gLobbyCastleH*gLobbyCastleScale;
+            if(sdRoom) CastleCrewDeckPoint(c,&sx,&sy);
+            int motion=preview?crewPos[actor.type*5]+frame/8%Max(1,(int)crewPos[actor.type*5+1]):actor.motion;
+            if(actor.cmf<0 || actor.cmf>=TOTALCMF || !cmd_m_cnt[actor.cmf]) continue;
+            if(motion<0 || motion>=cmf_m_cnt[actor.cmf] || cmd_m_cnt[actor.cmf][motion*2+1]==0)
+                motion=crewPos[actor.type*5]+frame/8%Max(1,(int)crewPos[actor.type*5+1]);
+            const float zoom=CastleDeckCrewZoom(charZoom,actor.type);
+            StageCombatRecordActor(CREW+c,(int)sx,(int)sy,zoom,false);
+            DrawCmfDetailShadow(actor.cmf,motion,(int)sx,(int)sy,RIGHT,zoom);
+            ++drawn;
+        }
+        if(sdRoom) CastleParts::sdPlacement.externalCount=drawn;
+    }
+
 
 	//---- 발판에 동료를 세워 본다 ----
 	//

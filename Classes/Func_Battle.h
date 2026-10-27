@@ -72,6 +72,7 @@ bool StageRtHasCrew(int type);
 bool StageRtCrewFull(void);
 int StageRtCrewLimit(void);		//성이 정하는 동료 자리 수
 bool StageRtAddCrew(int type);
+void StageRtRemoveCrew(int type);
 
 // 3-day boss raid combat state (no admission fee or attack cost).
 void InitBossRaidMercenarySystem(void);

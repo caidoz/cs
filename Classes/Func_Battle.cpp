@@ -1832,6 +1832,10 @@ void StageCombatReviewHit(int kind) {
 bool StageCombatRuntimeReview(int operation) {
  if(!getenv("CS_STAGE_COMBAT_REVIEW")) return false;
  if(operation==0) {
+  for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active) {
+   StageSword invented[FOEGEAR_BAGMAX+1];
+   if(StageGearList(CREW+i,invented,FOEGEAR_BAGMAX+1)!=0) return false;
+  }
   StageSword swords[GRIDTEST_MAXITEM];int n=GridTestSwords(swords,GRIDTEST_MAXITEM),equipped=0;
   for(int i=0;i<n;++i) if(swords[i].gear) ++equipped;
   float hx=0,hy=0,ox=0,oy=0;
@@ -1881,6 +1885,15 @@ bool StageRtCrewFull(void)
 //
 //빈 칸 하나에 넣고 SetBattleCrew 로 세운다. 이미 선 동료는 그 함수가 건드리지
 //않으므로 새로 산 하나만 떨어져 내린다.
+void StageRtRemoveCrew(int type)
+{
+ StageAllyPlacement placement={};
+ if(StageAllyPlacementFor(type,&placement)) return;
+ for(int slot=0;slot<MAXCREW;++slot) if(stageRunCrew[slot]==type) {
+  stageRunCrew[slot]=0;stageCrewCool[slot]=stageCrewShot[slot]=stageCrewShotCnt[slot]=0;
+  memset(&ao[CREW+slot],0,sizeof(OBJECT));
+ }
+}
 bool StageRtAddCrew(int type)
 {
 	if (type <= 0 || GetCrewIdxFromType(type) < 0)
@@ -1952,7 +1965,7 @@ static int StageHeroCooldown(void)
 	if (weapon->type != ITEM_SWORD)
 		return STAGE_HERO_COOLDOWN;
 
-	return StageSwordCooldown(weapon->detail);
+	return StageSwordCooldown(weapon->detail)*(100-GridEquippedWeaponHaste())/100;
 }
 
 bool StageRtBasicWeaponCharge(float* charge,int* flash)
@@ -2007,7 +2020,7 @@ int StageShieldCooldown(int itemType, int detail)
 {
 	if (itemType == ITEM_SHIELD)
 		return 150; // 2.5초 (방패: 빠른 방어막 펄스)
-	if (itemType == ITEM_ARMOR)
+	if (itemType == ITEM_ARMOR || itemType == ITEM_VEST || itemType == ITEM_COAT)
 		return 210; // 3.5초 (판금갑옷: 묵직한 방어막 펄스)
 	return 240;     // 4.0초 (기타 투구/부츠/장신구 방어구)
 }
@@ -2349,7 +2362,7 @@ void UpdateStageRealtime(void)
 		const StageSword* s = &shields[k];
 		const int slot = s->slot;
 
-		int shieldCool = StageShieldCooldown(s->detail, s->grade);
+		int shieldCool = GridShieldCooldownForSlot(slot);
 		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_BOOTS)) {
 			shieldCool = shieldCool * 80 / 100; // 신발 인접 시 방어막 재충전 펄스 20% 가속
 		}
@@ -2436,8 +2449,10 @@ void UpdateStageRealtime(void)
 			}
 
 			if (hasDurak) { // 듀라크 장군: 진격 명령으로 무기 및 동료 쿨타임 즉시 초기화
-				memset(stageCrewCool, 0, sizeof(stageCrewCool));
-				memset(stageSwordCool, 0, sizeof(stageSwordCool));
+				for(int i=0;i<MAXCREW;++i) if(ao[CREW+i].active)
+					stageCrewCool[i]=BossRaidCrewCooldown(i);
+				for(int i=0;i<GRIDTEST_MAXITEM;++i) stageSwordCool[i]=Max(0,stageSwordMax[i]);
+				stageHeroCool=StageHeroCooldown();
 			}
 
 			stageTacticCool[slot] = 0;
@@ -2518,7 +2533,7 @@ void UpdateStageRealtime(void)
 		}
 
 		//가방 검. 히어로, 몬스터와 같은 규칙이다.
-		StageGearShotStep(CREW + i, foe, i + 1, running);
+		// Ally bullets and authored skills are their only attack sources.
 
 		//자세. 쏜 직후에는 쏘는 자세, 아니면 대기 자세다. 안 두면 총알만
 		//나가고 사람은 서 있기만 해서 누가 쏜 것인지 안 보인다.

@@ -43,11 +43,11 @@ struct Shot {
 };
 struct State {
     enum { Capacity=32, ChargeFrames=12, ImpactFrames=18 };
-    int grade,cooldown,charge,pending,burstClock,lane,recoil,cooldownOverride,upgrade;
+    int grade,cooldown,charge,pending,burstClock,lane,recoil,cooldownOverride,upgrade,extraHits;
     Shot shots[Capacity];
     State() { Reset(0); }
     void Reset(int g) {
-        grade=ClampGrade(g); cooldown=charge=pending=burstClock=lane=recoil=0; cooldownOverride=0; upgrade=0;
+        grade=ClampGrade(g); cooldown=charge=pending=burstClock=lane=recoil=0; cooldownOverride=0; upgrade=0;extraHits=0;
         for(int i=0;i<Capacity;++i) shots[i]=Shot();
     }
     bool Spawn(int target,int generation,Point from,Point destination) {
@@ -72,7 +72,7 @@ struct State {
         }
         if(charge>0) {
             if(target<0) return false;
-            if(--charge==0) { pending=p.hits; burstClock=lane=0; cooldown=0; }
+            if(--charge==0) { pending=p.hits+(extraHits>0?extraHits:0); burstClock=lane=0; cooldown=0; }
             return false;
         }
         const int limit=cooldownOverride>0?cooldownOverride:p.cooldown;

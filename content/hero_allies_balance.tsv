@@ -1,6 +1,6 @@
 id	ability	attack_seconds	attack_percent	cols	rows	action	ability_seconds	power	condition	robin	diana	max	drawback
 0	돌팔매 응원	3.2	90	1	1	Volley	8	45	EnemyHighHp	Bleed:1:8	Supply:6:8	Volley:35:8	체력이 절반 이상인 적에게만 보조 돌팔매
-1	로제티의 용기	2.8	85	1	1	Shield	9	3	LowShield	Strike:40:7	Shield:2:7	Supply:5:7	보호막이 절반 이하일 때만 보호
+1	로제티의 용기	2.8	85	1	2	Shield	9	3	LowShield	Strike:40:7	Shield:2:7	Supply:5:7	보호막이 절반 이하일 때만 보호
 2	엘사의 구급 보따리	4.4	80	1	2	Heal	12	4	LowHp	Heal:2:10	Supply:8:10	Heal:3:10	성 체력 절반 이하에서만 회복
 3	촌장의 전열 지시	4.2	85	1	2	Inspire	10	12	Front	Shield:3:9	Supply:7:9	Shield:3:9	전열 배치 필요
 4	빌리의 경계 사격	3.4	100	1	2	Expose	9	1	EnemyClean	Volley:45:8	Expose:1:9	Strike:60:9	새 상태이상이 없는 적을 먼저 표식

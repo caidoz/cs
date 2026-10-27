@@ -43,7 +43,7 @@
     "attack_seconds": 2.8,
     "attack_percent": 85,
     "cols": 1,
-    "rows": 1,
+    "rows": 2,
     "action": "Shield",
     "ability_seconds": 9.0,
     "power": 3,

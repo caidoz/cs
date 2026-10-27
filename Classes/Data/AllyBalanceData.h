@@ -8,7 +8,7 @@ struct Profile { int id,npc,cols,rows,attackMs,attackPercent; Action action; int
 inline int Frames(int ms,int fps) {return (ms*fps+999)/1000;}
 static const Profile Profiles[64]={
  {0,367,1,1,3200,90,Action::Volley,8000,45,Condition::EnemyHighHp,{{Action::Bleed,1,8000}, {Action::Supply,6,8000}, {Action::Volley,35,8000}},"꼬마 마르셀","돌팔매 응원","체력이 절반 이상인 적에게만 보조 돌팔매"},
- {1,368,1,1,2800,85,Action::Shield,9000,3,Condition::LowShield,{{Action::Strike,40,7000}, {Action::Shield,2,7000}, {Action::Supply,5,7000}},"귀여운로제티","로제티의 용기","보호막이 절반 이하일 때만 보호"},
+ {1,368,1,2,2800,85,Action::Shield,9000,3,Condition::LowShield,{{Action::Strike,40,7000}, {Action::Shield,2,7000}, {Action::Supply,5,7000}},"귀여운로제티","로제티의 용기","보호막이 절반 이하일 때만 보호"},
  {2,380,1,2,4400,80,Action::Heal,12000,4,Condition::LowHp,{{Action::Heal,2,10000}, {Action::Supply,8,10000}, {Action::Heal,3,10000}},"엘사 할머니","엘사의 구급 보따리","성 체력 절반 이하에서만 회복"},
  {3,362,1,2,4200,85,Action::Inspire,10000,12,Condition::Front,{{Action::Shield,3,9000}, {Action::Supply,7,9000}, {Action::Shield,3,9000}},"촌장 뭉크","촌장의 전열 지시","전열 배치 필요"},
  {4,365,1,2,3400,100,Action::Expose,9000,1,Condition::EnemyClean,{{Action::Volley,45,8000}, {Action::Expose,1,9000}, {Action::Strike,60,9000}},"자경단 빌리","빌리의 경계 사격","새 상태이상이 없는 적을 먼저 표식"},

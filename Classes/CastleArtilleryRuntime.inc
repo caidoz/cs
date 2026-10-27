@@ -110,6 +110,7 @@ void StageArtilleryStep(bool running,int foe) {
     StageCannonQuerySynergy(&synStep);
     const int baseCool = CastleCannonCooldown(stageArtillery.grade);
     stageArtillery.cooldownOverride = Max(20, baseCool * (100 - synStep.cooldownReductionPct) / 100);
+    stageArtillery.extraHits=synStep.extraHits;
     // 단계는 성 그림이 아니라 실어 온 그 포의 것이다.
     stageArtillery.upgrade=bagLevel;
     const int grade=stageArtillery.grade;

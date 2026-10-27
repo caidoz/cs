@@ -157,6 +157,7 @@ void GridTestDraw(void);
 int GetStageInventoryTop(void);
 int GetStageInventoryWidth(void);
 void StageBridgeHpDraw(void);
+void DrawFortressStatusCard(int x,int y,int width,long long hp,long long maxHp,long long shield,long long maxShield,const char* title);
 // Shared 32px-grid cannon art; castle/level are zero based, bounds use top-left Y.
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height);
 void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height);
@@ -329,3 +330,7 @@ void LobbyCastleMenuCommand(int func);
 void PvpClashAdvanceNext(void);
 void PvpClashToggleAuto(void);
 bool PvpClashIsAuto(void);
+
+void LoadoutInspect(int catalog);
+int GridEquippedWeaponHaste(void);
+int GridShieldCooldownForSlot(int slot);

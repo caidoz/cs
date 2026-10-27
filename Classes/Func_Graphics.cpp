@@ -4,6 +4,7 @@
 #include "Data.h"
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
+// Castle weapons use equipped sprites; duel HUD uses framed live resource gauges.
 #include "Data/InventoryCannonSprites.h"
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
@@ -29,6 +30,11 @@ void StageBridgeHpDraw(void)
 	const int inventoryWidth=GetStageInventoryWidth();
 	BattleMobileCastle::DrawDuelHpBars(GetStageSceneGroundY(),inventoryWidth);
 	StageHeroUltDraw();
+}
+
+void DrawFortressStatusCard(int x,int y,int width,long long hp,long long maxHp,long long shield,long long maxShield,const char* title)
+{
+ BattleMobileCastle::DrawDuelHpBar(x,y,width,hp,maxHp,title,false,shield,maxShield);
 }
 
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)
