@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
@@ -651,6 +651,9 @@ void PlayKey(int obj)
 	//�޼��� �ʱ�ȭ : �汸�� ����(�� �濡�� �ƹ��͵� ���� �ʰ� �ִ� �ð�)
 	rpVar2.roomFrame = 0;
 
+	if(systemKey>=AVK_SELECT_HERO && systemKey<AVK_SELECT_HERO+TOTALCHAR) {
+        SetPlayerHero(systemKey-AVK_SELECT_HERO);scY[MENU_COLLECTIONS]=0;systemKey=0;return;
+    }
 	switch (systemKey) {
 	case AVK_1:
 	case AVK_2:
@@ -922,7 +925,8 @@ void PlayKey(int obj)
 			}
 			break;
 		default:
-			EquipItem(&ao[ROBIN], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
+			EquipItem(&ao[PLAYER], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
+			SetPlayerHero(curHero);
 
 			//튜토리얼: 장착했으면 리스트로 돌아가 갑옷 자리에 들어간 것을 보여준다.
 			//상세보기에 머물러 있으면 슬롯이 화면에 없어서 보여줄 것이 없다.
@@ -1381,7 +1385,7 @@ void PlayKey(int obj)
 			break;
 		case AVK_GOTO_GOLD_IAP:
 		case AVK_GOTO_RAINBOW_IAP:
-			ShopJumpToIapSection(systemKey == AVK_GOTO_GOLD_IAP ? 0 : 2);
+			ShopJumpToIapSection(systemKey == AVK_GOTO_GOLD_IAP ? SHOPSEC_GOLD : SHOPSEC_CASH);
 			curMenuBack = curMenu;
 			curMenu = MENU_SHOP;
 			menuDepth = 0;
@@ -2160,6 +2164,7 @@ void PlayKey(int obj)
 		//----------------------------------------------------------------
 		if (systemKey >= AVK_SHOP_IAP && systemKey <= AVK_SHOP_IAP_END) {
 			int product = systemKey - AVK_SHOP_IAP;
+			if(!IapCanPurchase(product)) {systemKey=0;return;}
 			SetPopUp(POPUPTYPE_IAP_CONFIRM, DX / 2, POPUPPOSITION_Y,
 				POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, product, false,
 				false, false, false, false, false,
@@ -2170,30 +2175,9 @@ void PlayKey(int obj)
 			POPUP* confirm = (popUpCnt > 0 && popUp[popUpCnt - 1].type == POPUPTYPE_IAP_CONFIRM)
 				? &popUp[popUpCnt - 1] : NULL;
 			if (confirm && confirm->itemType == ITEM_BOX) {
-				int boxDetail = confirm->itemDetail;
-				long long boxPrice = GetBoxPrice(boxDetail, GRADE_NORMAL);
-				if (boxPrice < 0 || robin.gold < boxPrice) {
-					PlayMusic(M_ERROR);
-				}
-				else {
-					GetItem(ITEM_GOLD, false, false, false, -boxPrice, false);
-					memset(&rewardItem, 0, sizeof(rewardItem));
-					memset(&rewardMark, 0, sizeof(rewardMark));
-					memset(&boxMark, 0, sizeof(boxMark));
-					rewardMark[0].type = rewardItem[0].type = ITEM_BOX;
-					rewardMark[0].detail = boxDetail;
-					rewardMark[0].grade = GRADE_NORMAL;
-					//GotoGacha()는 rewardMark가 아니라 boxMark[0]에서 열 상자를
-					//읽는다. 상점 구매 경로에서도 실제 입력 구조를 채워야 한다.
-					boxMark[0].type = ITEM_BOX;
-					boxMark[0].detail = boxDetail;
-					boxMark[0].grade = GRADE_NORMAL;
-					rewardItemCnt = 1;
-					boxCnt = 0;
-					SaveGame();
-					ClosePopUp();
-					GotoGacha();
-				}
+				const int detail=confirm->itemDetail;
+				ClosePopUp();
+				ShopPurchaseExistingBox(detail);
 			}
 			else {
 				int product = confirm ? confirm->itemDetail : -1;
@@ -2928,7 +2912,7 @@ bool IsTouchFuncEnabled(int func)
 	//
 	//아군 페이즈만 막아 놓았더니 그 앞 구간이 비어 있었다. 여기서 누르면
 	//적이 아직 서지도 않았는데 턴이 돌아간다.
-	if (waveAnnounceFrame > 0 || waveAnnounceTouchLock)
+	if (!IsStageRealtime() && (waveAnnounceFrame > 0 || waveAnnounceTouchLock))
 		return false;
 
 	//가챠나 팝업이 떠 있으면 밑에 깔린 버튼은 없는 것으로 친다.
@@ -3015,7 +2999,7 @@ void touchFunc(int func)
 	if (touchDisable || IsTurnPhaseAnnouncementActive())
 		return;
 
-	if (waveAnnounceFrame > 0 || waveAnnounceTouchLock)
+	if (!IsStageRealtime() && (waveAnnounceFrame > 0 || waveAnnounceTouchLock))
 		return;
 
 	//�κ��丮���� Ű�� 1:1������ �ȵǴ� �͵��� ���⼭ �ٷ� ó���Ѵ�.
@@ -3024,10 +3008,17 @@ void touchFunc(int func)
 	//끌기는 누르는 순간 시작한다. systemKey 를 태우지 않는 것은, 이
 	//두 가지가 "화면을 바꾸는 명령"이 아니라 손에 무엇을 쥐는 동작이라
 	//다음 프레임까지 기다릴 이유가 없어서다.
+	if(func>=TOUCH_FUNC_SELECT_HERO && func<TOUCH_FUNC_SELECT_HERO+TOTALCHAR) { systemKey=AVK_SELECT_HERO+func-TOUCH_FUNC_SELECT_HERO; return; }
+	if(func>=TOUCH_FUNC_EQUIPMENT_V2_CATEGORY && func<TOUCH_FUNC_EQUIPMENT_V2_CATEGORY_END) { menuX=func-TOUCH_FUNC_EQUIPMENT_V2_CATEGORY;scY[MENU_COLLECTIONS]=0;systemKey=0;return; }
+	if(ShopCatalogTouch(func)) {systemKey=0;return;}
 	if (func == TOUCH_FUNC_GRIDTEST_TOGGLE) {
 		GridTestToggle();
 		systemKey = 0;
 		return;
+	}
+	if(func>=TOUCH_FUNC_SHOP_TAB && func<TOUCH_FUNC_SHOP_TAB+4) {
+		ShopSelectPixelCategory(func-TOUCH_FUNC_SHOP_TAB);
+		systemKey=0;return;
 	}
 
 	if (func == TOUCH_FUNC_GRIDTEST_SKIP) {
@@ -3299,6 +3290,7 @@ void touchFunc(int func)
 			systemKey = AVK_STAGE_POPUP;
 			break;
 		case TOUCH_FUNC_SHOP://상점
+			ShopCatalogTouch(TOUCH_FUNC_SHOP_MAIN_TAB);
 			systemKey = AVK_SHOP;
 			break;
 		case TOUCH_FUNC_LOBBY_CASTLE:
@@ -3320,7 +3312,9 @@ void touchFunc(int func)
 			systemKey = AVK_LOBBY_ADVENTURE;
 			break;
 		case TOUCH_FUNC_LOBBY_DUNGEON:
-			systemKey = AVK_LOBBY_DUNGEON;
+			// 5번째 메뉴는 잠금 상태
+			PlayMusic(M_ERROR);
+			systemKey = 0;
 			break;
 		case TOUCH_FUNC_PVP_TEST:
 			//---- 가방은 매칭 뒤에 짠다 ----
@@ -4159,8 +4153,7 @@ void touchFunc(int func)
 			//성을 다시 찾아 내려가야 하면 유도가 아니라 숙제가 된다.
 			//
 			//여는 것은 AVK_SHOP 이 하고, 어디로 갈지는 여기서 미리 적어둔다.
-			ShopJumpToIapSection(SHOPSEC_CASTLE);
-			systemKey = AVK_SHOP;
+			systemKey = AVK_POPUP_CASTLEMENU;
 			break;
 
 		case TOUCH_FUNC_POPUP_CASTLEMENU:

@@ -354,14 +354,12 @@ static void NetBuildDump(std::string& out)
 	TableEnd(body);
 
 	//---- inventory ----
-	//인벤은 앞에서부터 채워지고 type == EMPTY(0xFF)에서 끝난다.
-	//item_uid는 나중에 서버가 발급할 값이라 지금은 인벤 자리번호 + 1을 쓴다.
 	TableBegin("inventory",
 		"item_uid\tuser_id\titem_type\tdetail\tgrade\tlv\tcnt\tcooldown\texp\tseen");
 
-	for (i = 0; i < robin.maxInven; i++) {
+	for (i = 0; i < TOTALINVENTORY; i++) {
 		if (robin.inven[i].type == EMPTY)
-			break;
+			continue;
 
 		PutNum(i + 1);
 		PutNum(gNetUserId);
@@ -379,9 +377,9 @@ static void NetBuildDump(std::string& out)
 
 	//---- inventory_option / inventory_socket ----
 	TableBegin("inventory_option", "item_uid\tslot\topt_type\topt_value");
-	for (i = 0; i < robin.maxInven; i++) {
+	for (i = 0; i < TOTALINVENTORY; i++) {
 		if (robin.inven[i].type == EMPTY)
-			break;
+			continue;
 
 		for (j = 0; j < 12; j++) {
 			if (robin.inven[i].option[j][0] == EMPTYINT)
@@ -397,9 +395,9 @@ static void NetBuildDump(std::string& out)
 	TableEnd(body);
 
 	TableBegin("inventory_socket", "item_uid\tslot\tgem");
-	for (i = 0; i < robin.maxInven; i++) {
+	for (i = 0; i < TOTALINVENTORY; i++) {
 		if (robin.inven[i].type == EMPTY)
-			break;
+			continue;
 
 		for (j = 0; j < MAXSOCKET; j++) {
 			if (robin.inven[i].socket[j] == EMPTYINT)

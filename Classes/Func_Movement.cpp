@@ -12014,6 +12014,13 @@ void RegenMove(OBJECT* pObj)
 		(obj == SOLDIER) ? Max(2, FPS * 9 / 20 + 8) : FPS / 2;
 
 	pObj->frame++;
+	// Realtime opponents enter from the right; skip the old summon delay.
+	if(IsStageRealtime() && obj>=ENEMY && obj<NEUTRAL && !pObj->active) {
+		pObj->active=true;
+		pObj->frame=0;
+		pObj->motion=crewPos[pObj->type*5];
+		memset(pObj->debuf,0,sizeof(pObj->debuf));
+	}
 	//부활전에는 
 	if (pObj->active == false) {
 		if (pObj->frame > REGENFRAME) {

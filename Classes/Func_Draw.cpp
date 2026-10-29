@@ -1474,6 +1474,25 @@ void TitleTermsCommand(int command)
 	}
 }
 
+static void DrawCastleSurvivorTitleArt(void)
+{
+		MemRect(0, DY, DX, DY, 0x000000);
+		if (!sprite[TITLE_IMG]) LoadImg(TITLE_IMG);
+		if (sprite[TITLE_IMG]) {
+			const auto sz = sprite[TITLE_IMG]->getContentSize();
+			if (sz.width > 0.0f && sz.height > 0.0f) {
+				const float byW = (float)DX / sz.width;
+				const float byH = (float)DY / sz.height;
+				const float zoom = (byW > byH) ? byW : byH;
+				const int drawX = (int)std::floor((DX - sz.width * zoom) * 0.5f);
+				const int drawY = (int)std::ceil((DY + sz.height * zoom) * 0.5f);
+				DrawImage((int)sz.width, (int)sz.height, 0, 0,
+				          drawX, drawY,
+				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
+			}
+		}
+}
+
 void TitleDraw(void)
 {
 #ifdef GAMEDEBUG
@@ -1535,21 +1554,7 @@ void TitleDraw(void)
 		//DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + DX / 2 - DIORAMASIZE_X / 2, y - DY / 2 + DIORAMASIZE_Y / 2 + 72 * _2X, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + houseOrder[0]], gScreenBuffer, gScreenLayer, MAP_DIORAMA_IMG + houseOrder[0], false);
 		//NewCollectionDraw(0, DY, 1.0f, gScreenBuffer, gScreenLayer, false);
 #else
-		MemRect(0, DY, DX, DY, 0x000000);
-		if (!sprite[TITLE_IMG]) LoadImg(TITLE_IMG);
-		if (sprite[TITLE_IMG]) {
-			const auto sz = sprite[TITLE_IMG]->getContentSize();
-			if (sz.width > 0.0f && sz.height > 0.0f) {
-				const float byW = (float)DX / sz.width;
-				const float byH = (float)DY / sz.height;
-				const float zoom = (byW > byH) ? byW : byH;
-				const int drawX = (int)std::floor((DX - sz.width * zoom) * 0.5f);
-				const int drawY = (int)std::ceil((DY + sz.height * zoom) * 0.5f);
-				DrawImage((int)sz.width, (int)sz.height, 0, 0,
-				          drawX, drawY,
-				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
-			}
-		}
+		DrawCastleSurvivorTitleArt();
 
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 80 * _2X, ALPHA_COIN, FONT_GOLD_LARGE, scale + 1.0f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
 		//DrawGoldAlpha(xOffset + DX / 2, DY / 2 - 124 * _2X, ALPHA_SWORD, FONT_GOLD_LARGE, scale + 0.4f, CENTER, frame % FPS < FPS / 2 ? true : false, false, gScreenBuffer, gScreenLayer, false);
@@ -1623,9 +1628,25 @@ void TitleDraw(void)
 			DrawTitleGearButton();
 #endif
 
-			DrawItemCard(ITEM_CREW, CREW_SEBASTIAN, GRADE_NORMAL, 1, 1, false, xOffset + 0, 100 * _2X, TEXT_NEWGAME, 0.55f, true, TOUCH_FUNC_DEBUG_RESETGAME, TOUCH_FUNC_DEBUG_RESETGAME, true, 0);
-			
-			DrawItemCard(ITEM_CREW, CREW_KING, GRADE_NORMAL, 1, 1, false, xOffset + DX / 2 + 120 * _2X - 32 * _2X, 100 * _2X, TEXT_CONTINUE, 0.55f, true, TOUCH_FUNC_DEBUG_MAXSTATUS, TOUCH_FUNC_DEBUG_MAXSTATUS, true, 0);
+			// The artwork owns the logo; interactive controls remain native UI.
+			{
+				const int bw=Min(DX-64,320),bh=58,bx=(DX-bw)/2,by=Max(116,DY/7);
+				MemRect(bx-3,by+3,bw+6,bh+6,0xC89542);
+				MemRect(bx,by,bw,bh,0x142E43);
+				MemRect(bx+3,by-3,bw-6,2,0xF5D68D);
+				SetFontColor(0xFFE4A0);
+				CenterTextStrSolid("모험 시작",DX/2,by-17,1.15f);
+				SetRectPoint(bx,by,bw,bh,TOUCH_FUNC_GOTOPLAY);
+				if(const char* review=getenv("CS_TITLE_REVIEW_PATH")) {
+					static bool captured=false;
+					if(!captured && frame>60) {
+						captured=true;
+						cocos2d::utils::captureScreen([](bool,const std::string&) {},review);
+					}
+				}
+				SetFontColor(0xBCD9DC);
+				CenterTextStrSolid("성을 이끌고, 끝까지 살아남으세요",DX/2,by+29,.60f);
+			}
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
 
@@ -1661,14 +1682,7 @@ void TitleDraw(void)
 		break;
 		//�α��� �̷��� ������ �α��� ����
 	case MENU_LOGIN:
-		MemRect(0, DY, DX, DY, COLOR_BLACK);
-		for (i = 0; i < TOTAL_LOGIN; i++) {
-			MemRect(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, COLOR_WHITE);
-			DrawImage(32 * _2X, 32 * _2X, i * 32 * _2X, 147 * _2X, DX / 2 - 120 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 8 * _2X, false, false, false, false, false, 1.0f, sprite[ETC_IMG], ETC_IMG);
-			SetFontColor(COLOR_GREY);
-			CenterTextSolid(TEXT_LOGIN_FACEBOOK + i, DX / 2 + 24 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i - 20 * _2X, 1.0f);
-			SetRectPoint(DX / 2 - 128 * _2X, DY / 2 + 64 * _2X * 2 - 64 * _2X * i, 256 * _2X, 48 * _2X, TOUCH_FUNC_TITLE_LOGIN_FACEBOOK + i);
-		}
+		DrawCastleSurvivorTitleArt();
 		break;
 		//�������
 	case MENU_POLICY:
@@ -1685,9 +1699,6 @@ void TitleDraw(void)
 	else if (NetBootstrapPoll() == NETRESULT_NONE)
 		DrawTitleBootLoading();
 
-#ifdef GAMEDEBUG
-	TitleCastleDebugButton();
-#endif
 
 }
 
@@ -2268,8 +2279,8 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 // 위아래로 뛰어서, 끌어다 놓던 손이 매번 자리를 다시 찾아야 한다.
 //======================================================================
 #define STAGE_SHOP_GAP		(6 * _2X)
-#define STAGE_SHOP_CARDH	96	//룰렛 칸 그림
-#define STAGE_SHOP_PRICEH	(9 * _2X)	//그 아래 값표
+#define STAGE_SHOP_CARDH	56
+#define STAGE_SHOP_PRICEH	32
 #define STAGE_SHOP_BTNW		(96 * _2X)	//전투 버튼 너비. 원본 그림이 192 다
 #define STAGE_SHOP_BTNH		(STAGE_SHOP_BTNW * 62 / 192)
 #define STAGE_SHOP_SIDEW	(44 * _2X)	//지도 / 도감 칸 너비
@@ -2295,6 +2306,7 @@ static int gGridBottom = 0;		//0 번 행의 아랫변
 #define STAGE_UI_DROP_RATE		0.60f	//아래 UI 가 내려가는 거리(화면 몫)
 
 static float gStageUiSlide = 0.0f;		//0 이면 보인다, 1 이면 다 내려갔다
+static float gStageEntranceOffset=0.0f;
 static bool gStageCombatStarted=false;
 
 //이번 프레임의 자리. 그리는 쪽과 재는 쪽이 같은 값을 써야 한다.
@@ -2309,6 +2321,8 @@ static bool StageUiHidden(void)
 
 static void StageUiSlideStep(void)
 {
+	gStageEntranceOffset*=.86f;
+	if(gStageEntranceOffset<.5f) gStageEntranceOffset=0;
 	const float target = StageUiHidden() ? 1.0f : 0.0f;
 
 	gStageUiSlide += (target - gStageUiSlide) * STAGE_UI_SLIDE_SPEED;
@@ -2317,10 +2331,10 @@ static void StageUiSlideStep(void)
 	if (gStageUiSlide > 0.998f) gStageUiSlide = 1.0f;
 }
 
-static int StageShopBtnTop(void)	{ return 4 * _2X + STAGE_SHOP_BTNH - StageUiDrop(); }
+static int StageShopBtnTop(void)	{ return 4 * _2X + STAGE_SHOP_BTNH - StageUiDrop()+(int)gStageEntranceOffset; }
 static int StageShopGoldTop(void)	{ return StageShopBtnTop() + 14 * _2X; }
 static int StageShopPctTop(void)	{ return StageShopGoldTop() + 19 * _2X; }
-static int StageShopSlotTop(void)	{ return StageShopPctTop() + 6 * _2X + STAGE_SHOP_CARDH + STAGE_SHOP_PRICEH; }
+static int StageShopSlotTop(void)	{ return StageShopGoldTop() + 8 + STAGE_SHOP_CARDH + STAGE_SHOP_PRICEH; }
 static int StageShopTop(void)		{ return StageShopSlotTop() + 4 * _2X; }
 
 //내려가기 전, 상점 줄이 다 보일 때의 윗변. 격자는 이 자리에서 시작해
@@ -2368,10 +2382,9 @@ float GetStageWorldLift(void)
 }
 static int LoadoutMenuTop(void);
 int GetStageSceneGroundY(void) {
-	int top=GetStageInventoryTop();
-	const int shopTop=StageShopTopBase()+gGridH*gGridCell+GRIDTEST_HUDH;
-	top+=(int)((1.0f-gStageUiSlide)*Max(0,LoadoutMenuTop()-shopTop));
-	return BattleMenuLayout::Ground(StageBg::GroundY(),top,_2X);
+	GridTestLayout();
+	const int framePad=(int)(GRID_FRAME_PAD*(float)gGridCell/GRID_FRAME_CELL);
+	return gGridBottom+gGridH*gGridCell+framePad;
 }
 
 static inline int GridCellX(int col) { return gGridX + col * gGridCell; }
@@ -2806,9 +2819,19 @@ static void StageGearAddItem(OBJECT* pObj, const ITEM* it)
 }
 
 //누구든 제 가방의 장비 스탯을 더한다. RefreshStat 뒤에 부른다.
+static bool gLoadoutStatPreview=false;
+static std::vector<ITEM> gLoadoutStatItems;
 void StageGearApplyStat(OBJECT* pObj)
 {
 	const int obj = GetObjFromPtr(pObj);
+	if(obj==PLAYER && gLoadoutStatPreview) {
+		for(const auto& item:gLoadoutStatItems) {
+			bool worn=false;
+			for(int e=0;e<TOTALEQUIP;++e) if(pObj->equip[e].type!=EMPTY && pObj->equip[e].id==item.id) worn=true;
+			if(!worn) StageGearAddItem(pObj,&item);
+		}
+		return;
+	}
 
 	if (obj < 0 || !IsStageRealtime())
 		return;
@@ -3019,7 +3042,7 @@ int StageGearList(int obj, StageSword* out, int max)
     // Allies use their authored attack/skill data, never generated monster equipment.
     if(obj>=CREW && obj<CREW+MAXCREW) return 0;
 
-	if (!ao[obj].active)
+	if (!ao[obj].active && ao[obj].moveHandler!=REGENMOVE)
 		return 0;
 
 	const int type = ao[obj].type;
@@ -3077,43 +3100,45 @@ static void StageFoeInvenDraw(int alpha)
 	if (alpha <= 0)
 		return;
 
-	const int foe = StageRtFoe();
+	int foe = StageRtFoe();
+	if(foe<0) for(int obj=ENEMY;obj<NEUTRAL;++obj)
+		if((ao[obj].active && !ao[obj].dead || ao[obj].moveHandler==REGENMOVE) && ao[obj].type>0 && ao[obj].mom==obj) {foe=obj;break;}
 
-	if (foe < 0 || !ao[foe].active || ao[foe].dead)
+	if (foe < 0 || ((!ao[foe].active || ao[foe].dead) && ao[foe].moveHandler!=REGENMOVE))
 		return;
 
-	const int cell = 20 * _2X;
-	const int w = STAGE_FOE_INVEN_W * cell;
-	const int h = STAGE_FOE_INVEN_H * cell;
-	const int x = DX / 2 - w / 2;
-	const int y = DY - 46 * _2X;	//리본 아래
-
-	SetAlpha(alpha / 2);
-	MemRect(x - 3 * _2X, y + 3 * _2X, w + 6 * _2X, h + 6 * _2X, 0x14121F);
-	SetAlpha(alpha);
-	MemRectFrame(x - 3 * _2X, y + 3 * _2X, w + 6 * _2X, h + 6 * _2X, 0x77404A);
-
-	for (int r = 0; r < STAGE_FOE_INVEN_H; r++)
-		for (int c = 0; c < STAGE_FOE_INVEN_W; c++)
-			MemRectFrame(x + c * cell, y - r * cell, cell, cell, 0x33314A);
-
-	const int cnt = StageFoeGearList(gear, STAGE_FOE_INVEN_MAX + 1);
-
-	for (i = 0; i < cnt; i++) {
-		GridPart shown = kShopPart[gear[i].part];
-		const GridPart* p = &shown;
-
-		//등급이 올랐으면 테두리 색도 같이 오른다. 열어 보면 "이놈은 아까
-		//그놈이 아니다" 가 색으로 먼저 보여야 한다.
-		shown.grade = gear[i].grade;
-
-		const int cw = Min(STAGE_FOE_INVEN_W, p->w) * cell;
-		const int ch = Min(STAGE_FOE_INVEN_H, p->h) * cell;
-		const int cx = x + (i % 3) * 2 * cell;
-		const int cy = y - (i / 3) * cell;
-
-		GridTestDrawCard(p, cx, cy, cw, ch, alpha);
-	}
+ const int cell=gGridCell,x=gGridX,y=DY-64;
+ const int castle=GridLayoutCastleStage(),img=GRID_FRAME_FIRST_IMG+castle;
+ if(!sprite[img]) LoadImg(img);
+ if(sprite[img]) {
+  const auto size=sprite[img]->getContentSize();
+  const float zoom=(float)cell/GRID_FRAME_CELL;
+  const int pad=(int)(GRID_FRAME_PAD*zoom);
+  DrawImage((int)size.width,(int)size.height,0,0,x-pad,y+pad,false,false,false,false,false,zoom,sprite[img],img);
+ }
+ bool occupied[GRIDTEST_H][GRIDTEST_W]={};
+ const auto fits=[&](const GridPart& part,int col,int row) {
+  for(int dy=0;dy<part.h;++dy) for(int dx=0;dx<part.w;++dx) if(GridPartCell(&part,dx,dy)) {
+   const int c=col+dx,r=row+dy;
+   if(c<0 || r<0 || c>=gGridW || r>=gGridH || !GridMaskAt(c,r) || occupied[r][c]) return false;
+  }
+  return true;
+ };
+ const int cnt=StageGearList(foe,gear,STAGE_FOE_INVEN_MAX+1);
+ for(i=0;i<cnt;++i) {
+  GridPart part=kShopPart[gear[i].part];part.grade=gear[i].grade;
+  if(part.type==ITEM_SWORD || part.type==ITEM_GUN || part.type==ITEM_BOOMERANG) GridWeaponShape(&part);
+  int col=-1,row=-1;
+  for(int turn=0;turn<2 && col<0;++turn) {
+   if(turn) part=GridPartRotated(part);
+   for(int r=0;r<gGridH && col<0;++r) for(int c=0;c<gGridW && col<0;++c)
+    if(fits(part,c,r)) {col=c;row=r;}
+  }
+  if(col<0) continue;
+  for(int dy=0;dy<part.h;++dy) for(int dx=0;dx<part.w;++dx)
+   if(GridPartCell(&part,dx,dy)) occupied[row+dy][col+dx]=true;
+  GridDrawShapedCard(&part,x+col*cell,y-(gGridH-row-part.h)*cell,part.w*cell,part.h*cell,alpha,false);
+ }
 
 	SetFontColor(COLOR_GREY);
 	CenterTextStrSolid("적의 장비", DX / 2, y + 3 * _2X + 12 * _2X, 0.46f);
@@ -3391,14 +3416,15 @@ static int GridPlateShade(int color,int percent)
  return (((color>>16)&255)*percent/100<<16)|(((color>>8)&255)*percent/100<<8)|((color&255)*percent/100);
 }
 // One star palette for inventory cards, warehouse cards and purchase plinths.
+static bool gGridCardInvalid=false;
 static void GridStarPlate(int star,int x,int y,int w,int h,int alpha)
 {
- const int color=GridStarColor(star),edge=Max(2,Min(w,h)/12);
- SetAlpha(alpha);
+ const int color=gGridCardInvalid?0xFF5363:GridStarColor(star),edge=Max(2,Min(w,h)/12);
+ SetAlpha(gGridCardInvalid?ALPHA_MAX:alpha);
  MemRect(x,y,w,h,color);
  MemRect(x+2,y-2,w-4,h-4,GridPlateShade(color,22));
  MemRect(x+2,y-2,w-4,Max(1,h-edge-2),GridPlateShade(color,48));
- MemRect(x+edge,y-edge,w-edge*2,Max(1,h-edge*2),GridPlateShade(color,38));
+ MemRect(x+edge,y-edge,w-edge*2,Max(1,h-edge*2),gGridCardInvalid?0xA32636:GridPlateShade(color,38));
  SetAlpha(ALPHA_MAX);
 }
 static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int alpha, bool box, bool backing)
@@ -3609,7 +3635,7 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 static void GridDrawCharge(int x, int y, int w, int h, float charge, int flash)
 {
 	const float c = Max(0.0f, Min(1.0f, charge));
-	const int dark = h - (int)(h * c);
+	const int dark = flash>0 ? 0 : h - (int)(h * c);
 
 	if (dark > 0) {
 		// SetAlpha uses 4..32, while sprite opacity constants use 0..255.
@@ -3623,12 +3649,6 @@ static void GridDrawCharge(int x, int y, int w, int h, float charge, int flash)
 		MemRect(x, y, w, h, 0xFFFFFF);
 		SetAlpha(ALPHA_MAX);
 	}
-	// A contrasting progress track remains readable on dark/transparent icons.
-	const int barH=Max(4,3*_2X),pad=Max(2,_2X);
-	const int barW=Max(1,w-pad*2);
-	MemRect(x+pad,y-h+barH+pad,barW,barH,0x101820);
-	if(c>0) MemRect(x+pad,y-h+barH+pad,Max(1,(int)(barW*c)),barH,
-	 flash>0?0xFFDD66:0x40DDEE);
 }
 
 //---- 검 미리보기 ----
@@ -3856,12 +3876,11 @@ static void GridOfferRoll(int killedType)
                 continue;
             }
         }
-        if(i==2 || i==3) {
-            c->part=i==2?GRID_SHOP_MISC:GRID_SHOP_CANNON;
-            if(i==2) c->crewType = (robin.waveIdx + i) % 4;
-            c->grade=i==3?Min(TOTALGRADE-1,GridCastleStage()/2+CastleBonusOf(CPE_GEAR_GRADE)):GRADE_NORMAL;
-            c->crewType=GridCastleStage();
-            c->price=kShopPart[c->part].price+(i==3?c->grade*4:0);
+        if(i==2) {
+            c->part=GRID_SHOP_MISC;
+            c->crewType=(robin.waveIdx+i)%4;
+            c->grade=GRADE_NORMAL;
+            c->price=kShopPart[c->part].price;
             continue;
         }
 
@@ -3874,6 +3893,7 @@ static void GridOfferRoll(int killedType)
 		//않게 하고 만다. 못 찾은 채로 영영 돌지 않는다.
 		for (int tries = 0; ; ++tries) {
 			c->part = Random(GRIDTEST_SHOPCNT);
+			if(kShopPart[c->part].type==ITEM_CANNON) continue;
 
 			for (j = 0; j < i; j++) {
 				if (gOffer[j].kind != OFFER_PART)
@@ -4363,84 +4383,122 @@ int GridTestTactics(StageSword* out, int maxCnt)
 	return n;
 }
 
-// 64종 전체 동료 역할군 매핑 테이블 (성급별 균등 분배)
+// 64종 전체 동료 역할군 매핑 테이블 (성급별 균등 분배 & 실제 액션·총탄 연동)
 static const unsigned char kCrewRoleTable[64] = {
 	// ★1 (0~7): 지휘 2, 포격 2, 지원 2, 공격 2
-	CREW_ROLE_ARTILLERY,  // 00 NPC_BOY (꼬마 마르셀)
-	CREW_ROLE_STRIKER,    // 01 NPC_GIRL (귀여운 로제티)
-	CREW_ROLE_BLACKSMITH, // 02 NPC_GRANDMA (엘사 할머니)
-	CREW_ROLE_COMMANDER,  // 03 NPC_GRANDFA (촌장 뭉크)
-	CREW_ROLE_ARTILLERY,  // 04 NPC_MAN (자경단 빌리)
-	CREW_ROLE_STRIKER,    // 05 NPC_WOMAN (새침때기 캐롤)
-	CREW_ROLE_COMMANDER,  // 06 NPC_UNCLE (촌장후보 버크)
-	CREW_ROLE_BLACKSMITH, // 07 NPC_AUNT (부녀회장 로사)
+	CREW_ROLE_ARTILLERY,  // 00 NPC_BOY (새총 꼬마 / Slingshot Kid) [Volley]
+	CREW_ROLE_BLACKSMITH, // 01 NPC_GIRL (용기 꼬마 / Little Cheerer) [Shield]
+	CREW_ROLE_BLACKSMITH, // 02 NPC_GRANDMA (약초 할머니 / Herbal Granny) [Heal]
+	CREW_ROLE_COMMANDER,  // 03 NPC_GRANDFA (원로 촌장 / Village Elder) [Inspire]
+	CREW_ROLE_ARTILLERY,  // 04 NPC_MAN (성벽 파수꾼 / Town Watchman) [Expose]
+	CREW_ROLE_STRIKER,    // 05 NPC_WOMAN (침술 낭자 / Needle Maiden) [Bleed]
+	CREW_ROLE_STRIKER,    // 06 NPC_UNCLE (열혈 일꾼 / Eager Worker) [Strike]
+	CREW_ROLE_COMMANDER,  // 07 NPC_AUNT (마을 살림꾼 / Village Matron) [Supply]
 
 	// ★2 (8~19): 지휘 3, 포격 3, 지원 3, 공격 3
-	CREW_ROLE_ARTILLERY,  // 08 NPC_SEAUNCLE (반어인 롤란)
-	CREW_ROLE_ARTILLERY,  // 09 NPC_SEASOLDIER (반어병사 크롤)
-	CREW_ROLE_STRIKER,    // 10 NPC_MILESE (격투가 마일즈)
-	CREW_ROLE_COMMANDER,  // 11 NPC_ALMA (성격급한 알마)
-	CREW_ROLE_ARTILLERY,  // 12 NPC_CREW (선원 윌)
-	CREW_ROLE_BLACKSMITH, // 13 NPC_TRAVEL (탐험가 케일)
-	CREW_ROLE_BLACKSMITH, // 14 NPC_ELFBOY (엘프 메로)
-	CREW_ROLE_STRIKER,    // 15 NPC_ELFGIRL (엘프 카나리아)
-	CREW_ROLE_BLACKSMITH, // 16 NPC_ITEM (캐러밴 상인)
-	CREW_ROLE_STRIKER,    // 17 NPC_ELFUNCLE (질풍의 검사)
-	CREW_ROLE_COMMANDER,  // 18 NPC_ELFAUNT (엘프 케일라)
-	CREW_ROLE_COMMANDER,  // 19 NPC_ADELKNIGHT (근위대장 나스)
+	CREW_ROLE_ARTILLERY,  // 08 NPC_SEAUNCLE (파도 어인 / Tide Merfolk) [Shield]
+	CREW_ROLE_ARTILLERY,  // 09 NPC_SEASOLDIER (삼지창 수병 / Trident Marine) [Strike]
+	CREW_ROLE_STRIKER,    // 10 NPC_MILESE (연타 격투가 / Combo Striker) [Strike]
+	CREW_ROLE_COMMANDER,  // 11 NPC_ALMA (신속 배달부 / Hasty Courier) [Supply]
+	CREW_ROLE_ARTILLERY,  // 12 NPC_CREW (올가미 선원 / Lasso Sailor) [Chill]
+	CREW_ROLE_BLACKSMITH, // 13 NPC_TRAVEL (길잡이 탐험가 / Pathfinder Explorer) [Cleanse]
+	CREW_ROLE_BLACKSMITH, // 14 NPC_ELFBOY (새싹 치유사 / Sprout Shaman) [Repair]
+	CREW_ROLE_STRIKER,    // 15 NPC_ELFGIRL (서리 궁수 / Frost Archer) [Chill]
+	CREW_ROLE_BLACKSMITH, // 16 NPC_ITEM (부품 보급상 / Caravan Merchant) [Repair]
+	CREW_ROLE_STRIKER,    // 17 NPC_ELFUNCLE (질풍 검객 / Gale Swordsman) [Strike]
+	CREW_ROLE_COMMANDER,  // 18 NPC_ELFAUNT (기도의 현자 / Elven Sage) [Shield]
+	CREW_ROLE_COMMANDER,  // 19 NPC_ADELKNIGHT (철벽 근위대장 / Royal Guard Captain) [Fortify]
 
 	// ★3 (20~34): 지휘 4, 포격 4, 지원 4, 공격 3
-	CREW_ROLE_ARTILLERY,  // 20 NPC_OWL (부엉이)
-	CREW_ROLE_BLACKSMITH, // 21 NPC_MAID (메이드 메어리)
-	CREW_ROLE_STRIKER,    // 22 NPC_BUNNYGIRL (바니걸 로즈)
-	CREW_ROLE_BLACKSMITH, // 23 NPC_MAP (지도왕 아벨)
-	CREW_ROLE_COMMANDER,  // 24 NPC_MONICA (모니카 선생님)
-	CREW_ROLE_ARTILLERY,  // 25 NPC_SEABOY (반어꼬마 모시)
-	CREW_ROLE_ARTILLERY,  // 26 NPC_DOBEL (해적 도벨)
-	CREW_ROLE_ARTILLERY,  // 27 NPC_GAGEL (해적 가젤)
-	CREW_ROLE_COMMANDER,  // 28 NPC_ELFGRANDFA (워드 할아버지)
-	CREW_ROLE_STRIKER,    // 29 NPC_ELFWOMAN (엘프 루디아)
-	CREW_ROLE_BLACKSMITH, // 30 NPC_ELFMAN (정원사 아리프)
-	CREW_ROLE_STRIKER,    // 31 NPC_ELFDANCER (무희 메리동전)
-	CREW_ROLE_COMMANDER,  // 32 NPC_NOBLEMAN (몬테오 남작)
-	CREW_ROLE_COMMANDER,  // 33 NPC_SCHOLAR (역사학자 데런)
-	CREW_ROLE_BLACKSMITH, // 34 NPC_NETITEM (상인 그랜드)
+	CREW_ROLE_ARTILLERY,  // 20 NPC_OWL (파수 부엉이 / Lookout Owl) [Expose]
+	CREW_ROLE_BLACKSMITH, // 21 NPC_MAID (정돈 메이드 / Cleansing Maid) [Cleanse]
+	CREW_ROLE_STRIKER,    // 22 NPC_BUNNYGIRL (행운의 바니걸 / Lucky Bunny Girl) [Volley]
+	CREW_ROLE_BLACKSMITH, // 23 NPC_MAP (지도 제작자 / Master Cartographer) [Supply]
+	CREW_ROLE_COMMANDER,  // 24 NPC_MONICA (학당 교사 / Academy Teacher) [Inspire]
+	CREW_ROLE_ARTILLERY,  // 25 NPC_SEABOY (물방울 꼬마 / Bubble Merboy) [Chill]
+	CREW_ROLE_ARTILLERY,  // 26 NPC_DOBEL (화약통 해적 / Bomb Pirate) [Burn]
+	CREW_ROLE_ARTILLERY,  // 27 NPC_GAGEL (약탈 해적 / Plunder Pirate) [Leech]
+	CREW_ROLE_COMMANDER,  // 28 NPC_ELFGRANDFA (고목 룬 장로 / Elder Rune Sage) [Fortify]
+	CREW_ROLE_STRIKER,    // 29 NPC_ELFWOMAN (맹독 사냥꾼 / Venom Hunter) [Poison]
+	CREW_ROLE_BLACKSMITH, // 30 NPC_ELFMAN (왕실 정원사 / Royal Gardener) [Repair]
+	CREW_ROLE_STRIKER,    // 31 NPC_ELFDANCER (박자의 무희 / Rhythm Dancer) [Inspire]
+	CREW_ROLE_COMMANDER,  // 32 NPC_NOBLEMAN (계약 남작 / Contractor Baron) [Shield]
+	CREW_ROLE_COMMANDER,  // 33 NPC_SCHOLAR (기록 학자 / Chronicle Scholar) [Expose]
+	CREW_ROLE_BLACKSMITH, // 34 NPC_NETITEM (무역 거상 / Grand Merchant) [Supply]
 
 	// ★4 (35~42, 45~53, 55): 지휘 5, 포격 4, 지원 5, 공격 4
-	CREW_ROLE_BLACKSMITH, // 35 NPC_FATMAN (먹보 케로)
-	CREW_ROLE_BLACKSMITH, // 36 NPC_CRAFTMAN (대장장이 로키)
-	CREW_ROLE_COMMANDER,  // 37 NPC_LUISE (루이제 공주)
-	CREW_ROLE_BLACKSMITH, // 38 NPC_DOG (충견 플란다스)
-	CREW_ROLE_STRIKER,    // 39 NPC_KNIGHT (검사 라즈베릴)
-	CREW_ROLE_STRIKER,    // 40 NPC_WITCH (마녀 페페)
-	CREW_ROLE_BLACKSMITH, // 41 NPC_BISTRO (비스트로 체)
-	CREW_ROLE_COMMANDER,  // 42 NPC_SEBASTIAN (대신 세바스찬)
-	CREW_ROLE_ARTILLERY,  // 43 NPC_FISHING (★5, 낚시꾼 라피)
-	CREW_ROLE_COMMANDER,  // 44 NPC_FRAUD (★5, 수왕 프라우트)
-	CREW_ROLE_BLACKSMITH, // 45 NPC_ELFMAGIC (사제 아밀)
-	CREW_ROLE_COMMANDER,  // 46 NPC_DARIAN (대신 다리안)
-	CREW_ROLE_ARTILLERY,  // 47 NPC_DONALD (브루스 미)
-	CREW_ROLE_STRIKER,    // 48 NPC_ELFDARK (다크엘프 무)
-	CREW_ROLE_STRIKER,    // 49 NPC_NEZAR (마법사 네자르)
-	CREW_ROLE_COMMANDER,  // 50 NPC_DURAK (듀라크 장군)
-	CREW_ROLE_ARTILLERY,  // 51 NPC_WOMANGHOST (유령 캐서린)
-	CREW_ROLE_ARTILLERY,  // 52 NPC_MANGHOST (유령 버틀러)
-	CREW_ROLE_ARTILLERY,  // 53 NPC_AUSTIN (유령 오스틴)
-	CREW_ROLE_STRIKER,    // 54 NPC_ELEIN (★5, 엘레인)
-	CREW_ROLE_COMMANDER,  // 55 NPC_USERQUEST (홍보대사 밀키)
+	CREW_ROLE_BLACKSMITH, // 35 NPC_FATMAN (성채 대식가 / Castle Epicure) [Heal]
+	CREW_ROLE_BLACKSMITH, // 36 NPC_CRAFTMAN (수석 대장장이 / Master Blacksmith) [Smith]
+	CREW_ROLE_COMMANDER,  // 37 NPC_LUISE (왕실 공주 / Royal Princess) [Inspire]
+	CREW_ROLE_BLACKSMITH, // 38 NPC_DOG (충직한 수호견 / Loyal Guard Dog) [Fortify]
+	CREW_ROLE_STRIKER,    // 39 NPC_KNIGHT (결투 중기사 / Dueling Knight) [Strike]
+	CREW_ROLE_STRIKER,    // 40 NPC_WITCH (가마솥 마녀 / Cauldron Witch) [Poison]
+	CREW_ROLE_BLACKSMITH, // 41 NPC_BISTRO (비스트로 셰프 / Bistro Chef) [Repair]
+	CREW_ROLE_COMMANDER,  // 42 NPC_SEBASTIAN (궁정 재상 / Court Chancellor) [Supply]
+	CREW_ROLE_ARTILLERY,  // 43 NPC_FISHING (전설의 강태공 / Master Angler) [Strike]
+	CREW_ROLE_COMMANDER,  // 44 NPC_FRAUD (맹수 군주 / Beast King) [Fortify]
+	CREW_ROLE_BLACKSMITH, // 45 NPC_ELFMAGIC (빛의 성직자 / Cleric of Light) [Cleric]
+	CREW_ROLE_COMMANDER,  // 46 NPC_DARIAN (원로 참모 / Senior Strategist) [Expose]
+	CREW_ROLE_ARTILLERY,  // 47 NPC_DONALD (발경의 달인 / Palm Master) [Strike]
+	CREW_ROLE_STRIKER,    // 48 NPC_ELFDARK (그림자 암살자 / Shadow Assassin) [Bleed]
+	CREW_ROLE_STRIKER,    // 49 NPC_NEZAR (전격술사 / Shock Sorcerer) [Shock]
+	CREW_ROLE_COMMANDER,  // 50 NPC_DURAK (진격의 사령관 / Assault General) [Inspire]
+	CREW_ROLE_ARTILLERY,  // 51 NPC_WOMANGHOST (한기의 원령 / Frost Phantom) [Chill]
+	CREW_ROLE_ARTILLERY,  // 52 NPC_MANGHOST (유령 집사 / Phantom Butler) [Leech]
+	CREW_ROLE_ARTILLERY,  // 53 NPC_AUSTIN (잔류 전류령 / Surge Specter) [Discharge]
+	CREW_ROLE_STRIKER,    // 54 NPC_ELEIN (빙정의 창술사 / Frost Valkyrie) [Chill]
+	CREW_ROLE_COMMANDER,  // 55 NPC_USERQUEST (친선 대사 / Parade Ambassador) [Supply]
 
 	// ★5 (56~60): 지휘 2, 포격 2, 지원 2, 공격 2
-	CREW_ROLE_BLACKSMITH, // 56 NPC_CHEF (쉐프 가르니에)
-	CREW_ROLE_ARTILLERY,  // 57 NPC_CAPTAIN (선장 캡틴)
-	CREW_ROLE_STRIKER,    // 58 NPC_ELKEIN (엘케인)
-	CREW_ROLE_COMMANDER,  // 59 NPC_DELPIOS (델피오스 백작)
-	CREW_ROLE_BLACKSMITH, // 60 NPC_LABETH (마법사 라베스)
+	CREW_ROLE_BLACKSMITH, // 56 NPC_CHEF (왕실 대요리장 / Royal Executive Chef) [Heal]
+	CREW_ROLE_ARTILLERY,  // 57 NPC_CAPTAIN (기함 함포선장 / Flagship Captain) [Captain]
+	CREW_ROLE_STRIKER,    // 58 NPC_ELKEIN (성염의 기사단장 / Crimson Paladin) [Burn]
+	CREW_ROLE_COMMANDER,  // 59 NPC_DELPIOS (심판 백작 / Adjudicator Count) [Expose]
+	CREW_ROLE_BLACKSMITH, // 60 NPC_LABETH (결계 대마도사 / Grand Barrier Mage) [Shield]
 
 	// ★6 (61~63): 지휘 1, 지원 1, 공격 1
-	CREW_ROLE_STRIKER,    // 61 NPC_EVAN (방랑자 에번)
-	CREW_ROLE_BLACKSMITH, // 62 NPC_LORA (로라 공주)
-	CREW_ROLE_COMMANDER,  // 63 NPC_KING (에드몬드 왕)
+	CREW_ROLE_STRIKER,    // 61 NPC_EVAN (무영의 검성 / Phantom Blade Saint) [Strike]
+	CREW_ROLE_BLACKSMITH, // 62 NPC_LORA (광휘의 성녀 / Radiant Saintess) [Repair]
+	CREW_ROLE_COMMANDER,  // 63 NPC_KING (위엄의 국왕 / Sovereign High King) [Inspire]
 };
+
+// 64종 동료 한글 직업명 (총탄 및 백팩 고유 시너지 기반)
+static const char* kCrewClassTitle[64] = {
+	"새총 꼬마", "용기 꼬마", "약초 할머니", "원로 촌장", "성벽 파수꾼", "침술 낭자", "열혈 일꾼", "마을 살림꾼",
+	"파도 어인", "삼지창 수병", "연타 격투가", "신속 배달부", "올가미 선원", "길잡이 탐험가", "새싹 치유사", "서리 궁수",
+	"부품 보급상", "질풍 검객", "기도의 현자", "철벽 근위대장", "파수 부엉이", "정돈 메이드", "행운의 바니걸", "지도 제작자",
+	"학당 교사", "물방울 꼬마", "화약통 해적", "약탈 해적", "고목 룬 장로", "맹독 사냥꾼", "왕실 정원사", "박자의 무희",
+	"계약 남작", "기록 학자", "무역 거상", "성채 대식가", "수석 대장장이", "왕실 공주", "충직한 수호견", "결투 중기사",
+	"가마솥 마녀", "비스트로 셰프", "궁정 재상", "전설의 강태공", "맹수 군주", "빛의 성직자", "원로 참모", "발경의 달인",
+	"그림자 암살자", "전격술사", "진격의 사령관", "한기의 원령", "유령 집사", "잔류 전류령", "빙정의 창술사", "친선 대사",
+	"왕실 대요리장", "기함 함포선장", "성염의 기사단장", "심판 백작", "결계 대마도사", "무영의 검성", "광휘의 성녀", "위엄의 국왕"
+};
+
+// 64종 동료 영문 클래스명
+static const char* kCrewClassTitleEn[64] = {
+	"Slingshot Kid", "Little Cheerer", "Herbal Granny", "Village Elder", "Town Watchman", "Needle Maiden", "Eager Worker", "Village Matron",
+	"Tide Merfolk", "Trident Marine", "Combo Striker", "Hasty Courier", "Lasso Sailor", "Pathfinder Explorer", "Sprout Shaman", "Frost Archer",
+	"Caravan Merchant", "Gale Swordsman", "Elven Sage", "Royal Guard Captain", "Lookout Owl", "Cleansing Maid", "Lucky Bunny Girl", "Master Cartographer",
+	"Academy Teacher", "Bubble Merboy", "Bomb Pirate", "Plunder Pirate", "Elder Rune Sage", "Venom Hunter", "Royal Gardener", "Rhythm Dancer",
+	"Contractor Baron", "Chronicle Scholar", "Grand Merchant", "Castle Epicure", "Master Blacksmith", "Royal Princess", "Loyal Guard Dog", "Dueling Knight",
+	"Cauldron Witch", "Bistro Chef", "Court Chancellor", "Master Angler", "Beast King", "Cleric of Light", "Senior Strategist", "Palm Master",
+	"Shadow Assassin", "Shock Sorcerer", "Assault General", "Frost Phantom", "Phantom Butler", "Surge Specter", "Frost Valkyrie", "Parade Ambassador",
+	"Royal Executive Chef", "Flagship Captain", "Crimson Paladin", "Adjudicator Count", "Grand Barrier Mage", "Phantom Blade Saint", "Radiant Saintess", "Sovereign High King"
+};
+
+const char* GetCrewClassTitle(int crewIdx)
+{
+	if (crewIdx >= 0 && crewIdx < 64)
+		return kCrewClassTitle[crewIdx];
+	return "";
+}
+
+const char* GetCrewClassTitleEn(int crewIdx)
+{
+	if (crewIdx >= 0 && crewIdx < 64)
+		return kCrewClassTitleEn[crewIdx];
+	return "";
+}
 
 CrewRole GetCrewRole(int crewType)
 {
@@ -4578,6 +4636,8 @@ int GridTestTotalItemCount(void)
 void GridTestResetStage(void)
 {
 	gStageUiSlide=0.0f;
+	gStageEntranceOffset=0;
+	gStageEntranceOffset=(float)Max(0,LoadoutMenuTop()-(StageShopTopBase()+gGridH*gGridCell));
 	gStageCombatStarted=false;
 	//공짜 다시 뽑기는 판마다 새로 찬다.
 	gGridFreeRoll = 0;
@@ -5148,7 +5208,9 @@ bool StageShopPreviewPurchaseChecks(void)
 		gGridGearPending=false;
 		StageShopPreviewOpen();
 		GridTestLayout();
-		if(gOffer[1].kind!=OFFER_CREW || gOffer[2].part!=GRID_SHOP_MISC || gOffer[3].part!=GRID_SHOP_CANNON) return false;
+		if(gOffer[1].kind!=OFFER_CREW || gOffer[2].part!=GRID_SHOP_MISC) return false;
+		for(int offer=0;offer<GRIDTEST_OFFERCNT;++offer)
+			if(gOffer[offer].kind==OFFER_PART && GridOfferPart(gOffer[offer]).type==ITEM_CANNON) return false;
 		const int index=selections[test];
 		if(index==0) { gOffer[0].part=4; gOffer[0].price=kShopPart[4].price; }
 		const int expected=GridShopPrice(gOffer[index].price);
@@ -6775,6 +6837,43 @@ void GridEnsureSampleLayout(void)
 //성별로 보유한 포를 유지한다. 디버그에서는 열 종류를 모두 지급하고,
 //일반 빌드에서는 선택한 성의 포를 지급한다. 기존 보유 등급은 낮추지 않는다.
 //
+//인벤토리에 64명 동료가 누락되지 않도록 확인하고 지급한다.
+void CrewGrantEnsure(void)
+{
+	for (int c = 0; c < gTotalCrew; ++c) {
+		if (!LoadoutCrewReal(c))
+			continue;
+
+		int at = -1, empty = -1;
+		for (int i = 0; i < TOTALINVENTORY; ++i) {
+			if (robin.inven[i].type == ITEM_CREW && robin.inven[i].detail == c) {
+				at = i;
+				break;
+			}
+			if (empty < 0 && robin.inven[i].type == EMPTY)
+				empty = i;
+		}
+
+		if (at >= 0) {
+			ITEM& it = robin.inven[at];
+			if (it.count < 1) it.count = 1;
+			if (it.lv < 1) it.lv = 1;
+			continue;
+		}
+
+		if (empty < 0)
+			continue;
+
+		ITEM& it = robin.inven[empty];
+		memset(&it, 0, sizeof(it));
+		it.type = ITEM_CREW;
+		it.detail = (unsigned char)c;
+		it.grade = GRADE_NORMAL;
+		it.lv = 1;
+		it.count = 1;
+	}
+}
+
 //MakeItem 을 안 쓴다. 그 함수는 아이템 표(itemStartCnt)를 종류로 색인하는데
 //대포는 그 표에 없다.
 void CannonGrantEnsure(void)
@@ -7224,6 +7323,7 @@ static bool LoadoutDropCell(int inven, GridPart* outPart, int* outCol, int* outR
 	return true;
 }
 
+static long long LoadoutCombatPower(void);
 #include "DragPreviewRuntime.inc"
 
 static void LoadoutGridDraw(int top, int bottom)
@@ -7340,11 +7440,14 @@ static void LoadoutGridDraw(int top, int bottom)
 		//
 		//놓일 자리를 이 위에 겹쳐 그린다. 밑엣것이 그대로 진하면 둘이
 		//엉켜서 지금 놓는 것이 어느 쪽인지 안 보인다.
-		const int lay = (gLoadoutDrag >= 0)
-			? LOADOUT_UNDER_ALPHA
-			: (gLoadoutBad[i] ? ALPHA_MAX / 2 : ALPHA_MAX);
-
+		const bool sourceHeld=gLoadoutDrag>=0 && gLoadoutPackInven[i]==gLoadoutDrag;
+		const int lay=sourceHeld?LOADOUT_HELD_SLOT_ALPHA:(gLoadoutBad[i]?ALPHA_MAX/2:ALPHA_MAX);
+		const int savedSourceColor=baseColor,savedSourceGray=grayScale;
+		if(sourceHeld) {grayScale=32;SetColor(0x4A4A56);}
+		const bool savedInvalid=gGridCardInvalid;gGridCardInvalid=gLoadoutBad[i];
 		GridDrawShapedCard(&parts[i], cx, cy, w, h, lay, false);
+		gGridCardInvalid=savedInvalid;
+		SetColor(savedSourceColor);grayScale=savedSourceGray;
 
 		if (gLoadoutBad[i])
 			MemRectFrame(cx, cy, w, h, 0xFF4444);
@@ -7505,6 +7608,7 @@ void LoadoutDraw(void)
 	//소유표를 훑기 전에 지급을 맞춘다. 성을 올리고 바로 들어와도 그
 	//단계의 포가 이번 프레임부터 창고에 선다.
 	CannonGrantEnsure();
+	CrewGrantEnsure();
 	LoadoutScanOwned();
 
 	//지급과 소유표가 선 뒤에 기본 편성을 올린다. 그 전에 부르면 방금 준
@@ -7981,6 +8085,17 @@ static int GridEquipSlotOfType(int type)
 //
 //같은 칸이 여럿이면 먼저 고른 것이 차지한다. 검을 둘 넣으면 한 자루만
 //손에 들고 나머지는 가방에서 날아간다.
+static const ITEM* LoadoutPrimaryWeapon(void)
+{
+	const int required=curHero==1?ITEM_GUN:curHero==2?ITEM_BOOMERANG:ITEM_SWORD;
+	for(int i=0;i<gLoadoutCnt;++i) {
+		const int index=gLoadout[i];
+		if(index<0 || index>=TOTALINVENTORY) continue;
+		const ITEM& item=robin.inven[index];
+		if(item.type==required && item.count>0) return &item;
+	}
+	return NULL;
+}
 static void GridWearLoadout(void)
 {
 	OBJECT* hero = &ao[PLAYER];
@@ -8000,7 +8115,49 @@ static void GridWearLoadout(void)
 		hero->equip[e] = *it;
 	}
 
+	const ITEM* primary=LoadoutPrimaryWeapon();
+	if(primary) hero->equip[EQUIP_WEAPON]=*primary;
 	RefreshStat(hero);
+}
+
+bool LoadoutVisualWeapon(ITEM* out)
+{
+	if(!LoadoutOpen() || !out) return false;
+	const ITEM* primary=LoadoutPrimaryWeapon();
+	if(primary) *out=*primary;
+	else {memset(out,0,sizeof(*out));out->type=EMPTY;}
+	return true;
+}
+
+static long long LoadoutCombatPower(void)
+{
+	unsigned char occupied[GRIDTEST_H][GRIDTEST_W];GridPart parts[LOADOUT_MAX];
+	int cols[LOADOUT_MAX],rows[LOADOUT_MAX];bool fit[LOADOUT_MAX]={};
+	LoadoutPreviewPack(occupied,parts,cols,rows,fit);
+	std::vector<ITEM> selected;
+	unsigned long long hash=1469598103934665603ULL;
+	const auto mix=[&](const void* ptr,size_t size) {
+		const auto* bytes=(const unsigned char*)ptr;
+		for(size_t n=0;n<size;++n) {hash^=bytes[n];hash*=1099511628211ULL;}
+	};
+	mix(&curHero,sizeof(curHero));mix(&robin.lv,sizeof(robin.lv));
+	mix(ao[PLAYER].stat,sizeof(ao[PLAYER].stat));mix(ao[PLAYER].skillLv,sizeof(ao[PLAYER].skillLv));
+	for(int i=0;i<gLoadoutCnt;++i) if(fit[i]&&!gLoadoutBad[i]) {
+		const int index=gLoadoutPackInven[i];
+		if(index>=0 && index<TOTALINVENTORY) {selected.push_back(robin.inven[index]);mix(&robin.inven[index],sizeof(ITEM));}
+	}
+	static unsigned long long cachedHash=0;static long long cachedPower=0;
+	if(hash==cachedHash) return cachedPower;
+	static OBJECT savedHero;memcpy(&savedHero,&ao[PLAYER],sizeof(OBJECT));const int savedArmor=extraArmor;
+	gLoadoutStatItems=selected;gLoadoutStatPreview=true;
+	for(int e=0;e<TOTALEQUIP;++e) ao[PLAYER].equip[e].type=EMPTY;
+	for(const auto& item:selected) {
+		const int slot=GridEquipSlotOfType(item.type);
+		if(slot>=0 && ao[PLAYER].equip[slot].type==EMPTY) ao[PLAYER].equip[slot]=item;
+	}
+	RefreshStat(&ao[PLAYER]);cachedPower=GetCombatPower(&ao[PLAYER]);
+	memcpy(&ao[PLAYER],&savedHero,sizeof(OBJECT));extraArmor=savedArmor;gLoadoutStatPreview=false;gLoadoutStatItems.clear();
+	cachedHash=hash;return cachedPower;
 }
 
 static void GridPlaceGear(void)
@@ -8095,7 +8252,7 @@ static void GridPlaceGear(void)
 	//전투 상태 시험으로 들어온 판에는 서로 크기와 쿨타임이 다른 네 검을
 	//실제 격자 배치 규칙으로 넣는다. 빈 모양을 무시하거나 좌표를 강제로
 	//잡지 않으며, 들어갈 자리가 없으면 그 검만 건너뛴다.
-	if (gCombatStatusTest || CastleEquippedCells() == 0) {
+	if (getenv("CS_STAGE_COMBAT_REVIEW")) {
 		GridEnsureSampleLayout();
 	} else if (false) {
 		for (int shop = 0; shop < 4; ++shop) {
@@ -8425,7 +8582,17 @@ bool BattleMenuPreviewDragCheck(void) {
 		if(dragInfoRendered!=rendered+1 || gLoadoutCnt!=countBefore || gStageGold!=goldBefore ||
 			memcmp(inventoryBefore,robin.inven,sizeof(inventoryBefore))!=0) return false;
 		LoadoutRelease();
-		if(LoadoutFind(i)>=0&&LoadoutUsed()>0) return true;
+		if(LoadoutFind(i)>=0&&LoadoutUsed()>0) {
+			static OBJECT beforePower;memcpy(&beforePower,&ao[PLAYER],sizeof(OBJECT));
+			const long long first=LoadoutCombatPower();
+			if(memcmp(&beforePower,&ao[PLAYER],sizeof(OBJECT))!=0) return false;
+			if(robin.inven[i].type==ITEM_SWORD || robin.inven[i].type==ITEM_GUN || robin.inven[i].type==ITEM_BOOMERANG) {
+				const auto savedValue=robin.inven[i].value;robin.inven[i].value+=100;
+				const long long stronger=LoadoutCombatPower();robin.inven[i].value=savedValue;
+				if(stronger<=first || LoadoutCombatPower()!=first) return false;
+			}
+			return memcmp(&beforePower,&ao[PLAYER],sizeof(OBJECT))==0;
+		}
 	}
 	return false;
 }
@@ -8564,7 +8731,8 @@ void GridTestDraw(void)
 
 	//---- 놓여 있는 것 ----
 	for (i = 0; i < GRIDTEST_MAXITEM; i++) {
-		if (gGridItem[i].used == false)
+		const bool sourceHeld=gGridDragOn && gGridDragFrom==i;
+		if (gGridItem[i].used == false && !sourceHeld)
 			continue;
 
 		const GridPart* p = &gGridItem[i].part;
@@ -8575,7 +8743,11 @@ void GridTestDraw(void)
 		w = p->w * gGridCell;
 		h = p->h * gGridCell;
 
-		GridDrawShapedCard(p, x, y, w, h, ALPHA_MAX, false);
+		const int sourceColor=baseColor,sourceGray=grayScale;
+		if(sourceHeld) {grayScale=32;SetColor(0x4A4A56);}
+		GridDrawShapedCard(p, x, y, w, h, sourceHeld?LOADOUT_HELD_SLOT_ALPHA:ALPHA_MAX, false);
+		SetColor(sourceColor);grayScale=sourceGray;
+		if(sourceHeld) continue;
 
 		//가방 안에서 스스로 치는 것 - 검과 대포에 쿨타임을 덮어 그린다.
 		if (p->type == ITEM_SWORD || p->type == ITEM_CANNON || p->type == ITEM_ARMOR || p->type == ITEM_SHIELD || p->type == ITEM_RECIPE || p->type==ITEM_CREW || p->type==ITEM_BOOMERANG || p->type==ITEM_GUN) {
@@ -8617,9 +8789,8 @@ void GridTestDraw(void)
             float charge=0;int flash=0;const char* label=nullptr;
             if(StageAllyLinkCharge(type,&charge,&flash,&label)) {
                 if(getenv("CS_ALLY_LINK_REVIEW")) ++allyLinkBarDraws[type==NPC_CRAFTMAN?0:type==NPC_ELFMAGIC?1:2];
-                const int left=x+2*_2X,top=y-h+14*_2X,width=Max(1,w-4*_2X);
-                MemRect(left,top,width,3*_2X,0x16251D);
-                MemRect(left,top,(int)(width*charge),3*_2X,flash>0?0xFFDD66:0x58E88B);
+                // Ability activation uses the same white cue, without a second bar.
+                if(flash>0) GridDrawCharge(x,y,w,h,1.0f,flash);
                 SetFontColor(flash>0?0xFFDD66:0xA5FFB8);
                 CenterTextStrSolid(label,x+w-13*_2X,y-2*_2X,.34f);
             }
@@ -8730,10 +8901,9 @@ void GridTestDraw(void)
 	//끼고 있는지 알고 고르는 것과 모르고 고르는 것은 다른 게임이다 -
 	//그것이 이 파츠의 값어치다.
 	{
-		const int slide = (int)(ALPHA_MAX * gStageUiSlide);
-		const int preview = CastleBonusOf(CPE_FOE_PREVIEW) > 0 ? ALPHA_MAX / 2 : 0;
-
-		StageFoeInvenDraw(Max(slide, preview));
+		StageFoeInvenDraw(ALPHA_MAX);
+		// Keep the route visible above the ordinary top bars in combat/shop.
+		WaveBadgeDrawBeforeBars();
 	}
 
 	//---- 하단 상점 줄 ----
@@ -8764,20 +8934,24 @@ void GridTestDraw(void)
             const OfferCard* c = &gOffer[i];
             GridOfferRect(i, &x, &y, &w, &h);
             const int px = x + (w - 96) / 2;
-            const int platformY = y - 32;
+            const int platformY = y - 18;
+            SetAlpha(20);MemRect(x,y,w,h+STAGE_SHOP_PRICEH,0x0C1A2E);SetAlpha(ALPHA_MAX);
+            MemRectFrame(x,y,w,h+STAGE_SHOP_PRICEH,0x718BA2);
             const int savedOfferColor=baseColor;
             if(c->purchased) {grayScale=32;SetColor(0x555563);}
             const bool spinning = gOfferSpin[i] > 0;
             if (spinning) {
                 --gOfferSpin[i];
-                if (gOfferSpin[i] % STAGE_ROULETTE_TICK == 0)
-                    gOfferFace[i] = Random(GRIDTEST_SHOPCNT);
+                if (gOfferSpin[i] % STAGE_ROULETTE_TICK == 0) {
+                    do {gOfferFace[i]=Random(GRIDTEST_SHOPCNT);}
+                    while(kShopPart[gOfferFace[i]].type==ITEM_CANNON);
+                }
             }
             const int grade = Min(TOTALGRADE-1,Max(0,spinning ?
                 kShopPart[gOfferFace[i]].grade : c->grade));
             GridPart platePart=spinning?kShopPart[gOfferFace[i]]:GridOfferPart(*c);
             if(!spinning && c->kind!=OFFER_PART) {platePart.type=ITEM_CREW;platePart.detail=GetCrewIdxFromType(c->crewType);}
-            GridStarPlate(GridPartStar(&platePart),px,platformY,96,46,ALPHA_MAX);
+            GridStarPlate(GridPartStar(&platePart),px,platformY,96,30,ALPHA_MAX);
             ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,
                 x+w/2-24,platformY-16,SHADOW_IMG,1.0f);
             bool afford = false;
@@ -8786,7 +8960,7 @@ void GridTestDraw(void)
                 const int type = c->crewType;
                 const int cmf = enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
                 const int idle = crewPos[type*5]+frame/8%Max(1,(int)crewPos[type*5+1]);
-                SetSectionClip(px,y,96,70,false);
+                SetSectionClip(px,y,96,STAGE_SHOP_CARDH,false);
                 DrawCmfDetail(cmf,idle,x+w/2,platformY-30,RIGHT,
                     enemyIconZoom[type]*0.6f,0,false);
                 UnSectionClip(false);
@@ -8795,7 +8969,13 @@ void GridTestDraw(void)
             } else {
                 GridPart shown = spinning ? kShopPart[gOfferFace[i]] : GridOfferPart(*c);
                 if (!spinning) shown.grade = c->grade;
-                GridTestDrawCard(&shown,px+8,y,80,64,ALPHA_MAX,false,false);
+                if(shown.type==GRID_ITEM_CANNON)
+                    DrawInventoryCannonThumbnail(shown.detail,shown.grade,px+8,y-8,80,64);
+                else {
+                    const float iconZoom=Min(1.0f,Min(32,gGridCell-8)/(float)ITEMICONSIZE);
+                    const int side=(int)(ITEMICONSIZE*iconZoom);
+                    DrawIcon(GetItemIcon(shown.type,shown.detail,shown.grade),x+(w-side)/2,y-8,iconZoom,false,false,false,true);
+                }
                 if (!spinning) {
                     price = GridShopPrice(shown.price);
                     afford = gStageGold >= price;
@@ -9666,7 +9846,7 @@ static void LobbyZoomButtonsDraw(void)
 		const bool held = gLobbyZoomHold == (n == 0 ? -1 : +1);
 
 		DrawUiButton(x, y, kLobbyZoomBtnW, kLobbyZoomBtnH,
-			n == 0 ? "축소" : "확대", 0, held);
+			n == 0 ? "-" : "+", 0, held);
 	}
 
 	sprintf(str, "x%.2f", gLobbyCamZoom);
@@ -9720,8 +9900,19 @@ static void LobbyBottomNavDraw(void)
 	//
 	//전에는 성 메뉴(POPUPTYPE_CASTLEMENU) 하나만 그렇게 비켰다. 다른 창도
 	//사정이 같다 - 창이 하나라도 떠 있으면 통째로 비킨다.
-	if (popUpCnt > 0)
-		return;
+	if (popUpCnt > 0) {
+		const int topType = popUp[popUpCnt - 1].type;
+		// The shop covers the dock, including its touch rectangles.
+		if(topType==POPUPTYPE_SHOPINFO || topType==POPUPTYPE_EVENTSHOP || topType==POPUPTYPE_COLLECTIONS || topType==POPUPTYPE_CASTLEMENU) return;
+		const bool isLobbySection = (topType == POPUPTYPE_SHOPINFO
+			|| topType == POPUPTYPE_EVENTSHOP
+			|| topType == POPUPTYPE_COLLECTIONS
+			|| topType == POPUPTYPE_CREWLIST
+			|| topType == POPUPTYPE_CREWUPGRADE
+			|| topType == POPUPTYPE_CASTLEMENU);
+		if (!isLobbySection)
+			return;
+	}
 
 	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
 		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
@@ -9734,19 +9925,20 @@ static void LobbyBottomNavDraw(void)
 	// This pass is intentionally after all popup windows.  The main navigation
 	// remains visible and its hit areas are registered last.
 	MemRect(0, BOTTOMMENUHEIGHT + 4 * _2X, DX, BOTTOMMENUHEIGHT + 4 * _2X, 0x0D1728);
-	MemRect(0, BOTTOMMENUHEIGHT, DX, BOTTOMMENUHEIGHT, 0x183052);
-	MemRect(0, BOTTOMMENUHEIGHT, DX, 2 * _2X, 0x8CB4E8);
+	MemRect(0, BOTTOMMENUHEIGHT, DX, BOTTOMMENUHEIGHT, 0x102638);
+	MemRect(0, BOTTOMMENUHEIGHT, DX, 2 * _2X, 0x43859B);
 
 	int left = 0;
 	for (int i = 0; i < 5; ++i) {
 		const float share = i == active ? activeShare : normalShare;
 		const int right = i == 4 ? DX : left + (int)(DX * share + 0.5f);
 		const int cx = (left + right) / 2;
-		const bool selected = i == active;
-		const int top = BOTTOMMENUHEIGHT + (selected ? 7 * _2X : 1 * _2X);
+		const bool isLocked = (i == 4);
+		const bool selected = (i == active) && !isLocked;
+		const int top = BOTTOMMENUHEIGHT;
+		DrawPixelPanel(left,top,right-left,BOTTOMMENUHEIGHT,selected?0x194657:0x102638);
 
 		if (selected) {
-			MemRect(left + 2 * _2X, top, right - left - 4 * _2X, top, 0x315B91);
 			MemRect(left + 2 * _2X, top, right - left - 4 * _2X, 3 * _2X, 0xFFD76A);
 		}
 		if (left > 0)
@@ -9755,11 +9947,27 @@ static void LobbyBottomNavDraw(void)
 		// With labels removed, almost the complete bar height can be used.  This
 		// makes the icons about 50 percent larger than the former layout.
 		const float iconSize = Min((float)(right - left - 4 * _2X),
-			(float)BOTTOMMENUHEIGHT - 4 * _2X);
-		const float press = GetButtonScale(actions[i], left, top, right - left, top);
-		const float size = iconSize * (selected ? 1.08f : 1.0f) * press;
-		DrawImage(128, 128, 0, 0, cx - (int)(size / 2), top - 1 * _2X,
+			(float)BOTTOMMENUHEIGHT - 10 * _2X);
+		const float press = isLocked ? 1.0f : GetButtonScale(actions[i], left, top, right - left, top);
+		const float size = iconSize * press;
+		const int savedIconColor=baseColor,savedIconGray=grayScale;
+
+		DrawImage(128, 128, 0, 0, cx - (int)(size / 2), top - (int)((BOTTOMMENUHEIGHT-size)/2),
 			false, false, false, false, false, size / 128.0f, sprite[navImgs[i]], navImgs[i]);
+
+		if (isLocked) {
+			grayScale = savedIconGray;
+			SetColor(savedIconColor);
+
+			// 5번째 메뉴(던전) 잠금 아이콘 오버레이 (ICON_EVENT_LOCK)
+			const float lockZoom = Min(0.8f, (iconSize * 0.30f) / (float)ITEMICONSIZE);
+			const int lockW = (int)(ITEMICONSIZE * lockZoom);
+			const int lockX = cx + (int)(size/2) - lockW;
+			const int lockY = top - BOTTOMMENUHEIGHT + lockW + 5*_2X;
+			DrawIcon(ICON_EVENT_LOCK, lockX, lockY, lockZoom, false, false, false, true);
+		}
+		grayScale=savedIconGray;SetColor(savedIconColor);
+
 		SetRectPoint(left, top, right - left, top, actions[i]);
 		left = right;
 	}
@@ -11192,7 +11400,8 @@ void LobbyDraw(void)
 			const int labelX = (int)(DX / 2 - 256.0f * labelZoom);
 			const int labelTop = distanceY + (int)(8 * _2X * labelZoom);
 			const int labelBottom = stageY - (int)(FONT_HEIGHT * 0.72f) - 7 * _2X;
-			DrawLabelPanel(labelX, labelTop, (int)(512 * labelZoom), labelTop - labelBottom);
+			const int plateW=Min(DX-32*_2X,190*_2X);
+			DrawPixelPanel((DX-plateW)/2,labelTop,plateW,labelTop-labelBottom);
 			SetFontColor(COLOR_WHITE);
 			const double distanceKm = StageBg::kSpeedRail * StageBg::s_totalTravelSeconds / 10000.0;
 			sprintf(str, "총 이동거리 %.1f km", distanceKm);
@@ -11217,9 +11426,8 @@ void LobbyDraw(void)
 		const int x = (int)((DX - width) / 2);
 		const int y = BOTTOMMENUHEIGHT + 48 * _2X;
 		const float press = GetButtonScale(TOUCH_FUNC_GOTOBATTLE, x, y, width, height);
-		DrawImage(512, 131, 512, 272, x - (int)(width * (press - 1) / 2),
-			y + (int)(height * (press - 1) / 2), false, false, false, false, false,
-			width / 512.0f * press, sprite[WIN_IMG], WIN_IMG);
+		DrawPixelPanel(x,y,(int)width,(int)height,0x17653E,0xE9B84F);
+		MemRect(x+4*_2X,y-4*_2X,(int)width-8*_2X,2*_2X,0x4CB66A);
 		SetRectPoint(x, y, width, height, TOUCH_FUNC_GOTOBATTLE);
 		const long long admission = GetStageAdmissionHeart(robin.stage);
 		sprintf(str, "%lld", admission);
@@ -11227,8 +11435,8 @@ void LobbyDraw(void)
 		// One row, one top coordinate: lightning + price + label.  Both DrawImage
 		// and CenterTextStrSolid use their supplied Y as the top edge, so no
 		// independent vertical offsets belong here.
-		const char* title = "게임 시작";
-		const float rowZoom = 1.42f * press;
+		const char* title = "모험 시작";
+		const float rowZoom = 1.15f * press;
 		const int iconH = (int)((FONT_HEIGHT + 1 * _2X) * rowZoom);
 		const float buttonTop = y + height * (press - 1.0f) / 2.0f;
 		const float buttonHeight = height * press;
@@ -14822,7 +15030,15 @@ void GNBDraw(int x, int y)
 		const int gearW = (int)(140.0f * gearZoom);
 		const int gearH = (int)(145.0f * gearZoom);
 
-		DrawImage(140, 145, 1, 1,
+		if(drawHandle==MD_LOBBY) {
+			const int size=LOBBY_BAR_H,px=x+DX-36*_2X/2-size/2;
+			DrawPixelPanel(px,y,size,size);
+			const int p=Max(1,_2X),cx=px+size/2,cy=y-size/2;
+			MemRect(cx-5*p,cy+5*p,10*p,10*p,0xE7E3CD);
+			MemRect(cx-7*p,cy+2*p,14*p,4*p,0xE7E3CD);
+			MemRect(cx-2*p,cy+7*p,4*p,14*p,0xE7E3CD);
+			MemRect(cx-2*p,cy+2*p,4*p,4*p,0x102638);
+		} else DrawImage(140, 145, 1, 1,
 			x + DX - 36 * _2X / 2 - gearW / 2,
 			y - (LOBBY_BAR_H - gearH) / 2,
 			false, false, false, false, false, gearZoom,
@@ -16167,6 +16383,9 @@ void DrawPopUp(int idx)
 		&& p->type != POPUPTYPE_IAP_CONFIRM
 		&& p->type != POPUPTYPE_GACHA_RATES
 		&& p->type != POPUPTYPE_CASTLEMENU
+		&& p->type != POPUPTYPE_SHOPINFO
+		&& p->type != POPUPTYPE_EVENTSHOP
+		&& p->type != POPUPTYPE_COLLECTIONS
 		//멸망전 입장창도 제 오른쪽 위에 닫기 버튼을 달고 있다.
 		&& p->type != POPUPTYPE_BOSSRAID)) {
 		float xMarkZoom = 1.0f;

@@ -61,6 +61,14 @@ int main() {
  assert(Value(hp,31,CrewHp)==100&&Value(hp,32,CrewHp)==0);
  auto source=Make(41,Crew,0,0),target=Make(42,Crew,1,0);source.crew=50;target.crew=2;
  assert(Value(Evaluate({source,target},8,0),42,InspireTargets)<=40);
+ auto turret=Make(80,Cannon,0,0),commander=Make(81,Crew,1,0);
+ commander.crew=3;commander.role=0;
+ assert(Value(CannonEffects({turret,commander},80),80,CannonHaste)==0);
+ commander.crew=8;commander.role=1;
+ const auto artilleryBonus=CannonEffects({turret,commander},80);
+ assert(Value(artilleryBonus,80,CannonHaste)==20);
+ assert(Value(artilleryBonus,80,CannonScale)==15);
+ assert(Value(artilleryBonus,80,CannonHits)==1);
  CastleArtillery::State artillery;artillery.extraHits=2;artillery.charge=1;
  artillery.Tick(1,1,{0,0},{50,0});assert(artillery.pending==CastleArtillery::Of(0).hits+2);
  artillery.Reset(0);assert(artillery.extraHits==0);

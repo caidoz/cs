@@ -137,8 +137,8 @@ inline void DrawCastle(int groundY) {
 
 //다리 옆 체력/방어력 패널. 어두운 반투명 틀과 픽셀 하이라이트를 공유한다.
 inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
- const char* title, bool enemy, long long shield=0, long long maxShield=0) {
- const int h=124,trim=enemy?0xD09A65:0xD8BC72;
+ const char* title, bool enemy, long long shield=0, long long maxShield=0,long long power=-1) {
+ const int extra=power>=0?44:0,h=124+extra,trim=enemy?0xD09A65:0xD8BC72;
  const long long maxima[2]={Max(0LL,maxShield),Max(0LL,maxHp)};
  const long long current[2]={Max(0LL,Min(shield,maxima[0])),Max(0LL,Min(hp,maxima[1]))};
  SetAlpha(ALPHA_MAX);
@@ -148,8 +148,14 @@ inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
  SetFontColor(0xF8E1A3);
  const char* name=title;
  CenterTextStrSolid(name,x+w/2,y-16,Min(.62f,(w-12.0f)/Max(1.0f,StringWidth(name,1))));
+ if(power>=0) {
+  char stat[96];sprintf(stat,"총체력 %lld",maxima[1]);
+  CenterTextStrSolid(stat,x+w/2,y-35,Min(.5f,(w-10.0f)/Max(1.0f,StringWidth(stat,1))));
+  sprintf(stat,"전투력 %lld",power);
+  CenterTextStrSolid(stat,x+w/2,y-55,Min(.5f,(w-10.0f)/Max(1.0f,StringWidth(stat,1))));
+ }
  for(int row=0;row<2;++row) {
-  const int top=y-33-row*43,tx=x+7,tw=w-14;
+  const int top=y-33-extra-row*43,tx=x+7,tw=w-14;
   SetFontColor(row==0?0x94D8FF:enemy?0xFFB3A2:0xA6EAC2);
   CenterTextStrSolid(row==0?"방어":"체력",x+w/2,top-3,.52f);
   MemRect(tx-1,top-16,tw+2,21,0x091322);
@@ -178,31 +184,37 @@ inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
 	// The castle's health pool is the player health that receives enemy attacks.
 	const long long playerMaxHp = Max(ao[PLAYER].maxhp, ao[PLAYER].ps[PS_HP]);
 	DrawDuelHpBar(gap, y, w, ao[PLAYER].hp, playerMaxHp, "아군 요새", false,
-	              ao[PLAYER].shield, ao[PLAYER].shieldMax);
+	              ao[PLAYER].shield, ao[PLAYER].shieldMax,GetCombatPower(&ao[PLAYER]));
 	//---- 적도 방어력과 체력을 따로 센다 ----
 	//
 	//체력만 세고 있었다. 성 쪽은 방어력 · 체력 두 단인데 적 쪽은 한 단
 	//이라, 나란히 선 두 창이 서로 다른 것을 재고 있었다.
-	long long hp = 0, maximum = 0, armor = 0, armorMax = 0;
+	long long hp = 0, maximum = 0, armor = 0, armorMax = 0,power=0;
 	for (int i = ENEMY; i < NEUTRAL; ++i) {
 		const OBJECT& foe = ao[i];
 		if (!foe.active || foe.type <= 0 || foe.mom != i || foe.moveHandler == REGENMOVE) continue;
 		maximum += Max(0LL, foe.maxhp);
 		armorMax += Max(0LL, (long long)foe.shieldMax);
+		if(!foe.dead) power+=GetCombatPower((OBJECT*)&foe);
 		if (!foe.dead) {
 			hp += Max(0LL, Min(foe.hp, foe.maxhp));
 			armor += Max(0LL, Min((long long)foe.shield, (long long)foe.shieldMax));
 		}
 	}
 	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 요새", true,
-	              armor, armorMax);
+	              armor, armorMax,power);
 }
 
 inline void DrawBossMonster(int groundY) {
-	const int foe = StageRtFoe();
+	int foe = StageRtFoe();
+	if(foe<0) for(int obj=ENEMY;obj<NEUTRAL;++obj)
+		if(ao[obj].active && ao[obj].moveHandler==REGENMOVE && ao[obj].mom==obj) {foe=obj;break;}
 	if (foe < 0) return;
 	const OBJECT* monster = &ao[foe];
-	const float bossX = Min((float)DX - 32 * _2X, 256.0f * _2X);
+	const float targetX = Min((float)DX - 32 * _2X, 256.0f * _2X);
+	const float entry=monster->moveHandler==REGENMOVE
+		? Max(0.0f,Min(1.0f,(float)monster->frame/(FPS/2))) : 1.0f;
+	const float bossX=targetX+((float)DX+160*_2X-targetX)*(1.0f-entry);
 	StageCombatRecordActor(foe,bossX,groundY-3*_2X,enemyIconZoom[monster->type]*1.75f,true);
 	DrawCmfDetailShadow(monster->cmf, monster->motion, (int)bossX,
 		groundY - 3 * _2X,

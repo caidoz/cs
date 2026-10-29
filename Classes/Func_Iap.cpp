@@ -2,6 +2,7 @@
 #include "Data.h"
 #include "Func.h"
 #include "Config/IapConfig.h"
+#include "Config/ShopConfig.h"
 
 //=============================================================================
 // 대기 장부
@@ -462,8 +463,17 @@ int IapLastProduct(void)
 	return sResultProduct;
 }
 
+bool IapCanPurchase(int product)
+{
+	// Both mobile adapter and production receipt verifier are currently placeholders.
+	// Existing pending journals still recover through IapUpdate; only new sales stop.
+	if(product<0||product>=TOTALIAPPRODUCT||product==IAP_INVEN_20)return false;
+	return SHOP_STORE_CONNECTED&&SHOP_RECEIPTS_VERIFIED&&IapPriceText(product)[0]!=0;
+}
+
 bool IapBuy(int product)
 {
+	if(!IapCanPurchase(product)) return false;
 #if !IAP_ENABLED
 	CCLOG("Iap: 결제가 꺼져 있다 (IapConfig.h 의 IAP_ENABLED)");
 	return false;

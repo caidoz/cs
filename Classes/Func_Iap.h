@@ -71,6 +71,8 @@ void IapUpdate(void);	//매 프레임 한 번.
 //
 //시작되면 true. 이미 다른 결제가 도는 중이거나 결제가 꺼져 있으면 false.
 bool IapBuy(int product);
+// False until a real store SDK, localized price and receipt verifier are connected.
+bool IapCanPurchase(int product);
 
 //지금 결제가 도는 중인가. 도는 동안에는 상점 버튼을 잠가야 한다.
 bool IapIsBusy(void);

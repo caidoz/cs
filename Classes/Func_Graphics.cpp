@@ -4,7 +4,7 @@
 #include "Data.h"
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
-// Castle weapons use equipped sprites; duel HUD uses framed live resource gauges.
+// The duel scene and live resource cards share the player's grid-top rail anchor.
 #include "Data/InventoryCannonSprites.h"
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
@@ -890,6 +890,7 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
+		if(idx==TITLE_IMG) return "res/title/castle-survivor-v2-convoy.png";
 		if (idx == CASTLE_ARTILLERY_IMG) {
 			fileName = "res/castle_artillery/attacks.png";
 			break;
@@ -2590,6 +2591,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 	memset(&sortedCrewY, -1, sizeof(sortedCrewY));
 
 	if (drawHandle == MD_PLAY) {
+		// The castle renderer also animates opponents entering from screen right.
 		BattleMobileCastle::Draw(GetStageGroundY(), GetStageInventoryTop());
 		return;
 	}
@@ -4348,7 +4350,7 @@ float GetNumDxTTF(long long int num, int sign, int font, int digit, bool comma, 
 	return GetNumDx(num, sign, font, digit, comma, zoom, fixed);
 	memset(&tempStr, 0, sizeof(tempStr));
 	addCommasToNumber(num, sign, tempStr, sizeof(tempStr));
-	fontLabelWidth = Label::createWithTTF(tempStr, "fonts/font.ttf", FONT_HEIGHT + 1 * _2X);
+	fontLabelWidth = Label::createWithTTF(tempStr, "fonts/neodgm.ttf", FONT_HEIGHT + 1 * _2X);
 	textSize = fontLabelWidth->getContentSize();
 	width = textSize.width;
 	//fontLabelWidth->release();
@@ -5893,6 +5895,18 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 //이것은 아무 크기나 되는 네모 칩이다 - 탭, 토글, 디버그 버튼이 여기 든다.
 //======================================================================
 
+void DrawPixelPanel(int x,int y,int w,int h,int fill,int edge)
+{
+	const int p=Max(1,_2X);
+	// Stepped corners and discrete highlights; no scaled frame textures.
+	MemRect(x+p,y-p,w,h,0x07131F);
+	MemRect(x+p,y,w-2*p,h,edge);
+	MemRect(x,y-p,w,h-2*p,edge);
+	MemRect(x+2*p,y-2*p,w-4*p,h-4*p,fill);
+	MemRect(x+2*p,y-2*p,w-4*p,p,0x70B2C2);
+	MemRect(x+2*p,y-h+3*p,w-4*p,p,0x091A29);
+}
+
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on, bool enabled)
 {
@@ -5901,10 +5915,13 @@ void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
 	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
 
+	if(drawHandle==MD_LOBBY) DrawPixelPanel(x,y,w,h,on?0x205363:0x102638,on?0xEDBB58:0x43859B);
+	else {
 	SetAlpha(on ? 30 : enabled ? 14 : 8);
 	MemRect(x, y, w, h, fill);
 	SetAlpha(ALPHA_MAX);
 	MemRectFrame(x, y, w, h, line);
+	}
 
 	if (text && text[0]) {
 		//글자 폭이 버튼 안에 들어가는 가장 큰 배율. 1.0 으로 한 번 재서

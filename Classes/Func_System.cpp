@@ -4790,18 +4790,20 @@ void SaveGame(void)
 //#endif
 
 	for (i = ROBIN; i < TOTALPLAYER; i++) {
+		const int heroType=ao[i].type;
+		if(heroType<ROBIN || heroType>=TOTALCHAR || (i!=PLAYER && (heroType!=i || heroType==ao[PLAYER].type))) continue;
 		RefreshStat(&ao[i]);
 		const ITEM* persistent=StageRunPersistentEquipment(i);
-		memcpy((char*)&robin.charData[i].equip, persistent?persistent:ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
-		memcpy(&robin.charData[i].getSkillList, &ao[i].getSkillList,
-			sizeof(robin.charData[i].getSkillList));
-		memcpy((char*)&robin.charData[i].skillLv, &ao[i].skillLv, CAP_SKILL);
+		memcpy((char*)&robin.charData[heroType].equip, persistent?persistent:ao[i].equip, sizeof(ITEM) * TOTALEQUIP);
+		memcpy(&robin.charData[heroType].getSkillList, &ao[i].getSkillList,
+			sizeof(robin.charData[heroType].getSkillList));
+		memcpy((char*)&robin.charData[heroType].skillLv, &ao[i].skillLv, CAP_SKILL);
 
-		robin.charData[i].exps = ao[i].exps;
-		robin.charData[i].hp = ao[i].hp;
-		robin.charData[i].mp = ao[i].mp;
-		robin.charData[i].ap = ao[i].ap;
-		robin.charData[i].sp = ao[i].sp;
+		robin.charData[heroType].exps = ao[i].exps;
+		robin.charData[heroType].hp = ao[i].hp;
+		robin.charData[heroType].mp = ao[i].mp;
+		robin.charData[heroType].ap = ao[i].ap;
+		robin.charData[heroType].sp = ao[i].sp;
 
 		//robin.totalDmgRecord[i] = ao[i].totalDmgRecord;
 		//robin.onceDmgRecord[i] = ao[i].onceDmgRecord;
@@ -4875,6 +4877,7 @@ void LoadGame(void)
 void LoadGameAfterNet(void)
 {
 	CastleProgressEnsure();
+	CrewGrantEnsure();
 	gMobileCastleVisual=CastleMenuModel::Clamp(robin.castle);
 	robin.maxInven=(unsigned short)GetMaxInven();
 	//crewCnt는 ROBINDATA에 없는 순수 전역이라 저장에서 복원되지 않는다.

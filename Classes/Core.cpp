@@ -190,6 +190,16 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 		touchY = touchPoint.y;
 	}
 
+    if(CastleMenuFinalDrag((int)startTouchX,(int)startTouchY,(int)touchPoint.x,(int)touchPoint.y,touchPressedKey[0][1])) {
+        touchPressedKey[0][0]=(int)touchPoint.x;touchPressedKey[0][1]=(int)touchPoint.y;
+        return;
+    }
+	if(EquipmentMenuV2Drag((int)startTouchX,(int)startTouchY,
+        (int)touchPoint.x,(int)touchPoint.y,touchPressedKey[0][0],touchPressedKey[0][1])) {
+        touchPressedKey[0][0]=(int)touchPoint.x;touchPressedKey[0][1]=(int)touchPoint.y;
+        return;
+    }
+
 	if (joyPressed) {
 		float dx = touchPoint.x - joyStartX;
 		float dy = touchPoint.y - joyStartY;
@@ -612,7 +622,7 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 406 - 112;
 						break;
 					case MENU_COLLECTIONS:
-						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
+						if(curEquipTab!=EQUIPTAB_GEAR) scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
 						break;
 					case MENU_CASTLE:
 						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
@@ -2695,7 +2705,7 @@ void PaintClet(int x, int y, int w, int h)
 
 	VersionDraw();
 #ifdef GAMEDEBUG
-	if (curMenu != MENU_CASTLE || popUpCnt == 0) StageBgDebugDrawButton();
+	if (popUpCnt == 0) StageBgDebugDrawButton();
 #endif
 }
 

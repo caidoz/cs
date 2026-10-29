@@ -18,6 +18,159 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_CASTLE_FINAL_REVIEW")) {
+        static int tick=0;static long long purchaseGold=0;++tick;
+        if(tick==1){
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.castle=0;
+            robin.castleProgress=CastleMenuModel::Progress();robin.castleProgress.version=1;robin.castleProgress.owned=1;
+            robin.gold=1000000;robin.coin=1234;GotoLobby();while(popUpCnt>0)ClosePopUp();
+        }
+        if(tick==20){systemKey=AVK_POPUP_CASTLEMENU;PlayKey(PLAYER);systemKey=0;}
+        if(tick==45){
+            bool noFloors=true;for(int i=0;i<touchIndex;++i) if(touchRect[i][4]==TOUCH_FUNC_CASTLE_NEW_ROOMS)noFloors=false;
+            CastleReviewTrace(noFloors && curMenu==MENU_CASTLE?"PASS five part castle menu opens":"FAIL castle menu opens");
+            CastleReviewTrace(CastleMenuFinalReviewChecks()?"PASS all castle costs levels gold guards visual levels and rooms preserved":"FAIL castle data guards");
+        }
+        if(tick==50){
+            int start=DY-GNBHEIGHT-100;
+            CastleMenuFinalDrag(100,start,100,start-5000,start);
+            CastleReviewTrace(scY[MENU_CASTLE]==scT[MENU_CASTLE] && scT[MENU_CASTLE]>0?"PASS full body scroll bottom":"FAIL body scroll bottom");scDir=SCROLL_NOTHING;
+        }
+        if(tick==70) CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_ROW+4);
+        if(tick==78) CastleReviewTrace(robin.castleProgress.parts[0][4]==1 && robin.gold==999700 && robin.coin==1234 && CastleVisualPartLevel(0,4)==1?"PASS real gold upgrade and costume level":"FAIL real gold upgrade");
+        if(tick==100){scY[MENU_CASTLE]=0;for(int i=0;i<5;++i)robin.castleProgress.parts[0][i]=5;}
+        if(tick==110)CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_NEXT);
+        if(tick==125){scY[MENU_CASTLE]=Min(scT[MENU_CASTLE],300);}
+        if(tick==130){purchaseGold=robin.gold;CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_BUY_GOLD);}
+        if(tick==145)CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
+        if(tick==155)CastleReviewTrace(CastleMenuModel::Owned(robin.castleProgress,1) && robin.castle==1 && gMobileCastleVisual==1 && robin.gold==purchaseGold-CastleMenuModel::GoldPrice(1)?"PASS gold castle acquisition and costume selection":"FAIL castle acquisition");
+        if(tick==160) {scY[MENU_CASTLE]=0;}
+        if(tick==170){
+            for(int i=0;i<8;++i)CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_NEXT);
+            scY[MENU_CASTLE]=0;
+        }
+        const char* shot=tick==40?"top.png":tick==60?"bottom.png":tick==90?"upgraded.png":tick==140?"purchase.png":tick==165?"second.png":tick==190?"tenth.png":nullptr;
+        if(shot)cocos2d::utils::captureScreen([](bool ok,const std::string&){CastleReviewTrace(ok?"PASS castle final capture":"FAIL castle final capture");},std::string(path)+shot);
+        if(tick==210){
+            CastleReviewClick(TOUCH_FUNC_POPUP_CLOSE);PlayKey(PLAYER);systemKey=0;
+            CastleReviewTrace(curMenu!=MENU_CASTLE?"PASS castle final review complete":"FAIL castle close");
+        }
+        return;
+    }
+    if(getenv("CS_SHOP_SPEC_REVIEW")) {
+        static int tick=0;static long long cancelGold=0;++tick;
+        if(tick==1) {robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();}
+        if(tick==20) {CastleReviewClick(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==40) CastleReviewTrace(ShopSpecReviewChecks()
+            ?"PASS real hero pools grants insufficient gold full storage duplicate purchase and unavailable IAP"
+            :"FAIL shop spec runtime checks");
+        const char* shot=tick==60?"recommended.png":tick==100?"supplies.png":tick==140?"supply-pool.png":tick==180?"packages.png":tick==240?"supplies-bottom.png":nullptr;
+        if(shot) cocos2d::utils::captureScreen([](bool ok,const std::string&) {CastleReviewTrace(ok?"PASS spec capture":"FAIL spec capture");},std::string(path)+shot);
+        if(tick==80) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+1);
+        if(tick==110) CastleReviewClick(TOUCH_FUNC_SHOP_HERO+1);
+        if(tick==115) CastleReviewClick(TOUCH_FUNC_SHOP_HERO+2);
+        if(tick==120) CastleReviewClick(TOUCH_FUNC_SHOP_SUPPLY_DETAIL);
+        if(tick==150) CastleReviewClick(TOUCH_FUNC_SHOP_CATALOG_CLOSE);
+        if(tick==160) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+2);
+        if(tick==180) {
+            bool sale=false,dock=false;
+            for(int i=0;i<touchIndex;++i) {
+                const int cmd=touchRect[i][4];
+                if(cmd>=TOUCH_FUNC_SHOP_IAP&&cmd<=TOUCH_FUNC_SHOP_IAP_END)sale=true;
+                if(cmd==TOUCH_FUNC_LOBBY_ADVENTURE||cmd==TOUCH_FUNC_LOBBY_CASTLE)dock=true;
+            }
+            CastleReviewTrace(!sale&&!dock?"PASS unavailable packages hidden and dock input covered":"FAIL fake package or dock input");
+        }
+        if(tick==200) {robin.gold=Max(robin.gold,GetBoxPrice(BOX_PAID5,GRADE_NORMAL));CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+1);}
+        if(tick==220) scY[MENU_SHOP]=scT[MENU_SHOP];
+        if(tick==250) {cancelGold=robin.gold;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX6);PlayKey(PLAYER);systemKey=0;}
+        if(tick==265) {CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CANCEL);PlayKey(PLAYER);systemKey=0;}
+        if(tick==275) CastleReviewTrace(robin.gold==cancelGold?"PASS cancellation preserves currency":"FAIL cancellation charged currency");
+        if(tick==280) {CastleReviewClick(TOUCH_FUNC_POPUP_CLOSE);PlayKey(PLAYER);systemKey=0;}
+        if(tick==290) CastleReviewTrace(popUpCnt==0?"PASS shop spec review complete":"FAIL shop exit");
+        return;
+    }
+    if(getenv("CS_PIXEL_EQUIP_REVIEW")) {
+        static int tick=0;++tick;
+        if(tick==1) {
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();
+            while(popUpCnt>0) ClosePopUp();
+            ITEM& item=robin.inven[0];memset(&item,0,sizeof(item));
+            item.type=ITEM_SWORD;item.detail=0;item.lv=1;item.count=10;item.id=100000;item.value=100;
+            for(int h=0;h<TOTALCHAR;++h){
+                for(int e=0;e<TOTALEQUIP;++e) robin.charData[h].equip[e].type=EMPTY;
+                ITEM starter=item;starter.type=ITEM_SWORD+h;starter.value=19;starter.id=110000+h;
+                robin.charData[h].equip[EQUIP_WEAPON]=starter;
+            }
+            SetPlayerHero(ROBIN);
+        }
+        if(tick==20) {CastleReviewClick(TOUCH_FUNC_COLLECTIONS);PlayKey(PLAYER);systemKey=0;curEquipTab=EQUIPTAB_GEAR;}
+        if(tick==90) {
+            CastleReviewTrace(popUpCnt>0 && popUp[popUpCnt-1].type==POPUPTYPE_COLLECTIONS
+                ?"PASS equipment opens":"FAIL equipment navigation");
+            cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+                CastleReviewTrace(ok?"PASS equipment capture":"FAIL equipment capture");
+            },std::string(path)+"equipment.png");
+        }
+        if(tick==95) CastleReviewTrace(EquipmentMenuV2ReviewChecks()?"PASS equipment V2 scrolling and layout":"FAIL equipment V2 scrolling and layout");
+        if(tick==96) {CastleReviewClick(TOUCH_FUNC_SELECT_HERO+DIANA);PlayKey(PLAYER);systemKey=0;CastleReviewTrace(curHero==DIANA?"PASS equipment hero selection":"FAIL equipment hero selection");}
+        if(tick==98) CastleReviewTrace(EquipmentMenuV2ReviewEquipping()?"PASS equipment all hero equip and power":"FAIL equipment all hero equip and power");
+        if(tick==100) {touchFunc(TOUCH_FUNC_EQUIPMENT_V2_CATEGORY+EQUIP_RING);CastleReviewTrace(menuX==EQUIP_RING?"PASS equipment accessory category":"FAIL equipment accessory category");menuX=0;SetPlayerHero(ROBIN);}
+        if(tick==105) {menuItem=0;menuDepth=1;}
+        if(tick==145) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+            CastleReviewTrace(ok?"PASS equipment detail capture":"FAIL detail capture");
+        },std::string(path)+"equipment-detail.png");
+        if(tick==160) menuDepth=0;
+        if(tick==165) CastleReviewClick(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_STAT);
+        if(tick==195) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+            CastleReviewTrace(ok?"PASS equipment stat capture":"FAIL stat capture");
+        },std::string(path)+"equipment-stat.png");
+        if(tick==215) CastleReviewClick(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_CODEX);
+        if(tick==245) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+            CastleReviewTrace(ok?"PASS equipment codex capture":"FAIL codex capture");
+        },std::string(path)+"equipment-codex.png");
+        if(tick==260) CastleReviewTrace("PASS pixel equipment review complete");
+        return;
+    }
+    if(getenv("CS_PIXEL_SHOP_REVIEW")) {
+        static int tick=0;++tick;
+        if(tick==1) {
+            robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();
+            while(popUpCnt>0) ClosePopUp();
+        }
+        if(tick==20) {CastleReviewClick(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==90) {
+            CastleReviewTrace(popUpCnt>0 && popUp[popUpCnt-1].type==POPUPTYPE_SHOPINFO
+                ?"PASS shop opened from navigation":"FAIL shop navigation");
+            bool dockHit=false;
+            for(int i=0;i<touchIndex;++i) {
+                const int command=touchRect[i][4];
+                if(command==TOUCH_FUNC_LOBBY_ADVENTURE || command==TOUCH_FUNC_LOBBY_DUNGEON
+                    || command==TOUCH_FUNC_LOBBY_CASTLE || command==TOUCH_FUNC_COLLECTIONS)
+                    dockHit=true;
+            }
+            CastleReviewTrace(!dockHit?"PASS shop owns dock input layer":"FAIL dock input leaks above shop");
+            cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+                CastleReviewTrace(ok?"PASS shop top capture":"FAIL shop capture");
+            },std::string(path)+"shop-top.png");
+        }
+        if(tick==110) scY[MENU_SHOP]=scT[MENU_SHOP];
+        if(tick==145) {
+            bool usesBottom=false;
+            for(int i=0;i<touchIndex;++i) {
+                const int command=touchRect[i][4];
+                if(command>=TOUCH_FUNC_SHOP_IAP && command<=TOUCH_FUNC_SHOP_IAP_END
+                    && touchRect[i][1]-touchRect[i][3]<BOTTOMMENUHEIGHT) usesBottom=true;
+            }
+            CastleReviewTrace(usesBottom?"PASS products use former dock area":"FAIL shop bottom space unused");
+            cocos2d::utils::captureScreen([](bool ok,const std::string&) {
+                CastleReviewTrace(ok?"PASS shop bottom capture":"FAIL shop capture");
+            },std::string(path)+"shop-bottom.png");
+        }
+        if(tick==155) {CastleReviewClick(TOUCH_FUNC_POPUP_CLOSE);PlayKey(PLAYER);systemKey=0;}
+        if(tick==165) CastleReviewTrace(popUpCnt==0?"PASS pixel shop review complete":"FAIL shop back");
+        return;
+    }
     if(getenv("CS_ALLIES_BALANCE_REVIEW")) {
         static int tick=0;++tick;
         if(tick==1) {

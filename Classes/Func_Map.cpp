@@ -1845,6 +1845,11 @@ void WaveControler()
 
 void DrawWaveAnnouncement(void)
 {
+	// Realtime stages keep the compact badge and skip the blocking wave intro.
+	if(IsStageRealtime()) {
+		waveAnnounceFrame=0;waveAnnounceTouchLock=false;touchDisable=false;
+		return;
+	}
 	if (waveAnnounceFrame <= 0)
 		return;
 

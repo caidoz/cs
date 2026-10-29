@@ -8,8 +8,8 @@ struct Profile { int id,npc,cols,rows,attackMs,attackPercent; Action action; int
 inline int Frames(int ms,int fps) {return (ms*fps+999)/1000;}
 static const Profile Profiles[64]={
  {0,367,1,1,3200,90,Action::Volley,8000,45,Condition::EnemyHighHp,{{Action::Bleed,1,8000}, {Action::Supply,6,8000}, {Action::Volley,35,8000}},"꼬마 마르셀","돌팔매 응원","체력이 절반 이상인 적에게만 보조 돌팔매"},
- {1,368,1,2,2800,85,Action::Shield,9000,3,Condition::LowShield,{{Action::Strike,40,7000}, {Action::Shield,2,7000}, {Action::Supply,5,7000}},"귀여운로제티","로제티의 용기","보호막이 절반 이하일 때만 보호"},
- {2,380,1,2,4400,80,Action::Heal,12000,4,Condition::LowHp,{{Action::Heal,2,10000}, {Action::Supply,8,10000}, {Action::Heal,3,10000}},"엘사 할머니","엘사의 구급 보따리","성 체력 절반 이하에서만 회복"},
+ {1,368,1,1,2800,85,Action::Shield,9000,3,Condition::LowShield,{{Action::Strike,40,7000}, {Action::Shield,2,7000}, {Action::Supply,5,7000}},"귀여운로제티","로제티의 용기","보호막이 절반 이하일 때만 보호"},
+ {2,380,1,1,4400,80,Action::Heal,12000,4,Condition::LowHp,{{Action::Heal,2,10000}, {Action::Supply,8,10000}, {Action::Heal,3,10000}},"엘사 할머니","엘사의 구급 보따리","성 체력 절반 이하에서만 회복"},
  {3,362,1,2,4200,85,Action::Inspire,10000,12,Condition::Front,{{Action::Shield,3,9000}, {Action::Supply,7,9000}, {Action::Shield,3,9000}},"촌장 뭉크","촌장의 전열 지시","전열 배치 필요"},
  {4,365,1,2,3400,100,Action::Expose,9000,1,Condition::EnemyClean,{{Action::Volley,45,8000}, {Action::Expose,1,9000}, {Action::Strike,60,9000}},"자경단 빌리","빌리의 경계 사격","새 상태이상이 없는 적을 먼저 표식"},
  {5,366,1,1,3000,95,Action::Bleed,8000,1,Condition::EnemyHighHp,{{Action::Strike,45,8000}, {Action::Bleed,1,9000}, {Action::Volley,45,8000}},"새침때기캐롤","캐롤의 따끔한 일침","적 체력 절반 이상에서만 출혈 부여"},
@@ -45,7 +45,7 @@ static const Profile Profiles[64]={
  {35,371,2,2,4600,95,Action::Heal,14000,8,Condition::LowHp,{{Action::Fortify,8,12000}, {Action::Shield,7,12000}, {Action::Heal,5,12000}},"먹보 케로","케로의 든든한 한입","넓은 점유와 낮은 성 체력 필요"},
  {36,376,2,2,5000,90,Action::PrototypeSmith,8000,5,Condition::Always,{{Action::Shield,3,8000}, {Action::Supply,10,8000}, {Action::Repair,5,8000}},"대장장이로키","로키의 이동식 작업대","맥스와 출전하면 비행 중에만 수리"},
  {37,392,1,2,4000,95,Action::Inspire,12000,24,Condition::LowShield,{{Action::Shield,8,12000}, {Action::Supply,13,12000}, {Action::Heal,5,12000}},"루이제 공주","루이제의 격려","성 보호막이 절반 이하일 때만 격려"},
- {38,374,1,2,2800,100,Action::Fortify,10000,10,Condition::Front,{{Action::Strike,100,11000}, {Action::Fortify,8,11000}, {Action::Supply,11,11000}},"충견플란다스","플란다스의 충성","전열에서 성을 지킴"},
+ {38,374,1,1,2800,100,Action::Fortify,10000,10,Condition::Front,{{Action::Strike,100,11000}, {Action::Fortify,8,11000}, {Action::Supply,11,11000}},"충견플란다스","플란다스의 충성","전열에서 성을 지킴"},
  {39,373,1,2,3000,120,Action::Strike,11000,160,Condition::Alone,{{Action::Bleed,2,11000}, {Action::Expose,1,12000}, {Action::Strike,130,12000}},"검사라즈베릴","라즈베릴의 결투","다른 동료와 인접하지 않아야 결투 강타"},
  {40,405,1,2,4000,105,Action::Poison,10000,3,Condition::EnemyDebuffed,{{Action::Burn,1,11000}, {Action::Poison,2,11000}, {Action::Expose,1,12000}},"마녀 페페","페페의 저주 가마솥","이미 상태이상인 적에게만 독 가중"},
  {41,398,1,2,4400,85,Action::Repair,12000,6,Condition::AdjacentCrew,{{Action::Heal,4,12000}, {Action::Inspire,20,12000}, {Action::Shield,7,12000}},"비스트로 체","비스트로의 온기","동료와 인접해야 온기 전파"},

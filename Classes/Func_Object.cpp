@@ -781,6 +781,19 @@ void DrawObj(OBJECT* pObj)
 
 void DrawPlayer(OBJECT* pObj, int motion, int x, int y, int dirF, float zoom, float rotation, bool center, bool shadow)
 {
+	// All hero render paths (including the lobby pass) preview the selected weapon.
+	struct PreviewWeaponScope {
+		OBJECT* actor;ITEM saved;int image;bool changed;
+		PreviewWeaponScope(OBJECT* object):actor(object),changed(false) {
+			if(object!=&ao[PLAYER]) return;
+			ITEM shown;
+			if(!LoadoutVisualWeapon(&shown)) return;
+			saved=object->equip[EQUIP_WEAPON];image=object->equipImg[EQUIP_WEAPON];changed=true;
+			object->equip[EQUIP_WEAPON]=shown;
+			object->equipImg[EQUIP_WEAPON]=shown.type==EMPTY?0:shown.detail+1;
+		}
+		~PreviewWeaponScope() {if(changed) {actor->equip[EQUIP_WEAPON]=saved;actor->equipImg[EQUIP_WEAPON]=image;}}
+	} previewWeapon(pObj);
 	int i, fixedImg;
 	int costume;
 	int type;

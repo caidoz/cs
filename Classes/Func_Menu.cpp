@@ -2,6 +2,13 @@
 #include "Core.h"
 #include "Func.h"
 #include "Text.h"
+
+static bool PixelEquipmentUi()
+{
+	if(curMenu==MENU_COLLECTIONS) return true;
+	for(int i=0;i<popUpCnt;++i) if(popUp[i].type==POPUPTYPE_COLLECTIONS) return true;
+	return false;
+}
 #include "Data.h"
 
 // Menu & UI 관련 함수
@@ -141,7 +148,7 @@ void HeroSelectButtonList(int x, int y, float zoom, int selected, bool touchActi
 
 	if (horizontal == true) {
 		for (i = 0; i < TOTALCHAR; i++) {
-			DrawFrame(x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0), (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, FRAME_SHOPBALLOON);
+			if(PixelEquipmentUi()) DrawPixelPanel((int)(x+i*(HEROBUTTON_X+4*_2X)*zoom),(int)y,(int)(HEROBUTTON_X*zoom),(int)(HEROBUTTON_Y*zoom),selected==i?0x205363:0x102638,selected==i?0xEDBB58:0x43859B); else DrawFrame(x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0), (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, FRAME_SHOPBALLOON);
 			DrawPlayer(&ao[i], (i == selected ? frame / 4 % 4 : 0), x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom + (float)(HEROBUTTON_X / 2) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0) - (float)(HEROBUTTON_Y - 8 * _2X) * zoom, RIGHT, zoom, false, false, true);
 			if (i != selected && touchActive == true)
 				SetRectPoint(x + i * (float)(HEROBUTTON_X + 4 * _2X) * zoom, y + (selected == i ? (float)4 * _2X * zoom : 0), (float)HEROBUTTON_X * zoom, (float)HEROBUTTON_Y * zoom, TOUCH_FUNC_SELECT_HERO + i);
@@ -406,6 +413,12 @@ static float sCrewEquipBtnH = 0.0f;
 //늘리지 않고 그대로. 크기는 zoom으로만 정한다.
 static void DrawWinFlat(int sx, int sy, int sw, int sh, float x, float y, float z)
 {
+	if(PixelEquipmentUi()) {
+		DrawPixelPanel((int)x,(int)y,(int)(sw*z),(int)(sh*z));
+		const float tz=Min(1.5f,sw*z/24);
+		SetFontColor(COLOR_WHITE);CenterTextStrSolid(sx==WP_CLOSE_X?"X":">",(int)(x+sw*z/2),(int)(y-(sh*z-FONT_HEIGHT*tz)/2),tz);
+		return;
+	}
 	DrawImageScale(sw, sh, sx, sy, x, y,
 		false, false, false, false, false, z, z,
 		sprite[WIN_IMG], WIN_IMG);
@@ -416,6 +429,7 @@ static void DrawWinFlat(int sx, int sy, int sw, int sh, float x, float y, float 
 static void DrawWin9(int sx, int sy, int sw, int sh, int cap,
 	float x, float y, float w, float h, float z)
 {
+	if(PixelEquipmentUi()) {DrawPixelPanel((int)x,(int)y,(int)w,(int)h);return;}
 	float c = (float)cap * z;		//화면에서의 모서리 크기
 	int sm = sw - cap * 2;			//원본 가운데 폭
 	int tm = sh - cap * 2;			//원본 가운데 높이
@@ -471,6 +485,7 @@ static void DrawWin9(int sx, int sy, int sw, int sh, int cap,
 static void DrawWin9Frame(int sx, int sy, int sw, int sh, int cap,
 	float x, float y, float w, float h, float z)
 {
+	if(PixelEquipmentUi()) {MemRectFrame((int)x,(int)y,(int)w,(int)h,0x43859B);return;}
 	float c = (float)cap * z;
 	int sm = sw - cap * 2;
 	int tm = sh - cap * 2;
@@ -524,6 +539,7 @@ static void DrawWin9Frame(int sx, int sy, int sw, int sh, int cap,
 static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
 	float x, float y, float w, float h, float z)
 {
+	if(PixelEquipmentUi()) {DrawPixelPanel((int)x,(int)y,(int)w,(int)h,0x205363,0xC49D4D);return;}
 	float sc = h / (float)sh;		//높이에 맞춘 배율
 	float c = (float)cap * sc;
 	int sm = sw - cap * 2;
@@ -614,7 +630,7 @@ void DrawPvpHeroPanel(int x, int y, int w, int h,
 //
 // 뜻이 있는 색(모자람=빨강, 오름=초록)은 그대로 둔다. 그건 바탕과 상관없이
 // 그 색이어야 뜻이 전달된다.
-#define CD_INK		COLOR_DARKGREY
+#define CD_INK		(PixelEquipmentUi()?0xD7E9EC:COLOR_DARKGREY)
 #define CD_PAPER	COLOR_WHITE
 
 // [못 누르는 버튼]
@@ -661,7 +677,7 @@ void DrawPvpHeroPanel(int x, int y, int w, int h,
 // [오르는 값]
 // 형광 초록(COLOR_GREEN 0x93CF49)은 베이지 판 위에서 뜨기만 하고 안 읽힌다.
 // win.png 가 쓰는 짙은 초록을 그대로 가져와 팝업 그림과 색을 맞춘다.
-#define CD_UP		COLOR_WIN_DARK_GREEN1
+#define CD_UP		(PixelEquipmentUi()?0x69DEA6:COLOR_WIN_DARK_GREEN1)
 
 // [테두리는 제목과 버튼에만]
 // 테두리는 글자를 배경에서 떼어내는 대신 획을 굵게 만들어 속을 먹는다. 작은
@@ -672,6 +688,10 @@ void DrawPvpHeroPanel(int x, int y, int w, int h,
 static void CdTextEx(const char* s, float px, float py, float z, int align,
 	int col, bool outline)
 {
+	if(PixelEquipmentUi()) {
+		if(col==CD_INK) col=0xD7E9EC;
+		else if(col==CD_UP) col=0x69DEA6;
+	}
 	SetFontColor(col);
 	DrawTextStrSystem(s, Loc(px), LocY(py), z * sCdU, align, outline);
 	SetFontColor(COLOR_WHITE);
@@ -6192,7 +6212,9 @@ void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani,
 {
 	float zoom = zoomY;
 	//패널 그리기
-	DrawImageScale(buttonImgData[color * 5 + 0], buttonImgData[color * 5 + 1], buttonImgData[color * 5 + 2], buttonImgData[color * 5 + 3], x, y, false, false, false, false, false, zoomX, zoomY, sprite[buttonImgData[color * 5 + 4]], buttonImgData[color * 5 + 4]);
+	if(PixelEquipmentUi()) DrawPixelPanel(x,y,(int)(buttonImgData[color*5]*zoomX),(int)(buttonImgData[color*5+1]*zoomY),
+		color==BUTTON_COLOR_PURPLE?0x205363:0x102638,color==BUTTON_COLOR_PURPLE?0xEDBB58:0x43859B);
+	else DrawImageScale(buttonImgData[color * 5 + 0], buttonImgData[color * 5 + 1], buttonImgData[color * 5 + 2], buttonImgData[color * 5 + 3], x, y, false, false, false, false, false, zoomX, zoomY, sprite[buttonImgData[color * 5 + 4]], buttonImgData[color * 5 + 4]);
 
 	//아이콘 그리기(일단 생략)
 
@@ -6325,6 +6347,10 @@ void DrawItemCard(
 
 	invenIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
 
+	if(PixelEquipmentUi()) {
+		const int colors[]={0x638A9B,0x59AF8A,0x5C9EDB,0xAE7BC5,0xDBAC54,0xE97878};
+		DrawPixelPanel(x,y,(int)(240*zoom),(int)(332*zoom),0x142E43,colors[Max(0,Min(5,itemStar-1))]);
+	} else {
 	DrawImageScale(
 		198,
 		288,
@@ -6351,6 +6377,8 @@ void DrawItemCard(
 		sprite[CARD_IMG],
 		CARD_IMG);
 
+	}
+
 	SetColor(false);
 
 	if (selectedFrame) {
@@ -6365,7 +6393,11 @@ void DrawItemCard(
 
 	if (empty) {
 		//카드 한가운데에 오도록 왼쪽 4픽셀, 아래 8픽셀 밀어준다(y는 위로 갈수록 커진다).
-		DrawPlusMark(
+		if(PixelEquipmentUi()) {
+			const int cx=(int)(x+120*zoom),cy=(int)(y-150*zoom),p=Max(1,(int)(10*zoom));
+			MemRect(cx-3*p,cy+p,6*p,2*p,0x70B2C2);
+			MemRect(cx-p,cy+3*p,2*p,6*p,0x70B2C2);
+		} else DrawPlusMark(
 			x + (float)88 * zoom - 4,
 			y - (float)72 * zoom - 8,
 			1.45f * zoom);
@@ -6435,7 +6467,8 @@ void DrawItemCard(
 			//memset(&tempStr, 0, sizeof(tempStr));
 			//sprintf(tempStr, "LV %d", itemLv);
 
-			DrawImageScale(222, 46, 0, 664 + 46 * (itemStar - 1), x + (float)24 * zoom, y - (float)(268) * zoom, false, false, false, false, false, 0.9f * zoom, 0.9f * zoom, sprite[CARD_IMG], CARD_IMG);
+			if(PixelEquipmentUi()) DrawPixelPanel((int)(x+24*zoom),(int)(y-268*zoom),(int)(200*zoom),(int)(46*zoom),0x205363);
+			else DrawImageScale(222, 46, 0, 664 + 46 * (itemStar - 1), x + (float)24 * zoom, y - (float)(268) * zoom, false, false, false, false, false, 0.9f * zoom, 0.9f * zoom, sprite[CARD_IMG], CARD_IMG);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
@@ -6544,7 +6577,9 @@ static void MenuButton(int x, int y, int w, int h, const char* label,
 	const float gapX = (float)w * (press - 1.0f) / 2;
 	const float gapY = (float)h * (press - 1.0f) / 2;
 
-	DrawButton(x - gapX, y + gapY, enabled ? color : BUTTON_COLOR_WHITE,
+	if(PixelEquipmentUi()) DrawPixelPanel(x,y,w,h,color==BUTTON_COLOR_PURPLE?0x205363:0x102638,
+		color==BUTTON_COLOR_PURPLE?0xEDBB58:0x43859B);
+	else DrawButton(x - gapX, y + gapY, enabled ? color : BUTTON_COLOR_WHITE,
 		0, 0, 0, false, zx, zy);
 
 	//---- 글자를 버튼 한가운데에 ----
@@ -7022,8 +7057,8 @@ static int InvenEquippedBy(int invenIdx)
 {
 	for (int h = 0; h < TOTALCHAR; h++)
 		for (int e = 0; e < TOTALEQUIP; e++)
-			if (ao[h].equip[e].type != EMPTY
-				&& ao[h].equip[e].id == robin.inven[invenIdx].id)
+			if (robin.charData[h].equip[e].type != EMPTY
+				&& robin.charData[h].equip[e].id == robin.inven[invenIdx].id)
 				return h;
 
 	return -1;
@@ -7038,8 +7073,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	char str[24];
 
 	//바탕은 단색. 등급이 높을수록 아주 조금만 밝다.
-	MemRect(x, y, w, h, 0x1A1712 + grade * 0x040404);
-	MemRectFrame(x, y, w, h, col);
+	DrawPixelPanel(x,y,w,h,0x142E43,col);
 
 	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
 	//"지금 끼고 있는 것"이 제일 먼저 보여야 한다.
@@ -7047,7 +7081,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 		MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
 
 	DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
-		x + w / 2 - ITEMICONSIZE / 2, y - h / 2 + ITEMICONSIZE / 2,
+		x + w / 2 - ITEMICONSIZE * zoom / 2, y - h / 2 + ITEMICONSIZE * zoom / 2,
 		1.0f * zoom, false, false, false, true);
 
 	//강화 레벨. 장비는 cooldown 칸에 들어간다(ITEM 주석 참고).
@@ -7059,7 +7093,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 
 	if (wearer >= 0) {
 		SetFontColor(COLOR_YELLOW);
-		CenterTextStrSolid("착용중", x + w / 2, y - h + 4 * _2X, 0.46f * zoom);
+		MemRect(x + w - 12, y - h + 12, 8, 8, 0xF2CA64);
 	}
 
 	//아직 상세를 안 본 것. 점 하나면 된다.
@@ -7148,6 +7182,10 @@ static void EquipSellBtnDraw(void)
 static void EquipTabDraw(float zoom)
 {
 	int i, x, y, w, h;
+	const int headY=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-11*_2X;
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(kEquipTabName[curEquipTab],DX/2+16*_2X,headY-6*_2X,1.0f);
+	DrawUiButton(DX-48,headY,38,38,"<",TOUCH_FUNC_POPUP_CLOSE);
 
 	EquipSellBtnDraw();
 
@@ -7166,14 +7204,18 @@ static void EquipTabDraw(float zoom)
 	}
 }
 
+#include "EquipmentMenuV2.inc"
+
 void CollectionsDraw(int x, int y, float zoom)
 {
+	if(curEquipTab==EQUIPTAB_GEAR){EquipmentMenuV2Draw();return;}
+	if(drawHandle==MD_LOBBY) y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
 	int i, j;
 	float OUTTHICK = (float)5 * zoom;
 	float INTTHICK = (float)5 * zoom;
 	float WINX = (float)DX * zoom;
 	// Keep the persistent lobby navigation completely outside this window.
-	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
+	float WINY = (float)y * zoom;
 	
 	int repItem = 0;
 	int setItemCnt = 0;
@@ -7183,7 +7225,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	int collectionIdx;
 	int menuText[] = { TEXT_EQUIPMENT, TEXT_SKILL };
 
-	MemRect(x, y, WINX, WINY, 0x3B2513);
+	DrawPixelPanel(x,y,(int)WINX,(int)WINY);
 
 	//---- 동료 탭 ----
 	//
@@ -7191,20 +7233,20 @@ void CollectionsDraw(int x, int y, float zoom)
 	//두 곳을 같이 고쳐야 하므로, 그리는 일은 저쪽에 그대로 맡긴다.
 	if (curEquipTab == EQUIPTAB_CREW) {
 		CrewMenuDraw(x, y, zoom);
-		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		
 		return;
 	}
 
 	//---- 도감 탭 ----
 	if (curEquipTab == EQUIPTAB_CODEX) {
 		CodexDraw(x, y, zoom);
-		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		
 
 		//상세는 맨 위다. 탭과 골드바를 그린 뒤라야 그 위에 얹힌다.
 		CodexPopupDraw();
@@ -7217,22 +7259,15 @@ void CollectionsDraw(int x, int y, float zoom)
 	//그대로 읽는다 - 전투가 보는 값과 다른 값을 보여주면 안 된다.
 	if (curEquipTab == EQUIPTAB_STAT) {
 		HeroStatDraw(&ao[curHero], x, y - (float)120 * _2X * zoom, zoom);
-		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+		
 		return;
 	}
 
-	for (i = 0; i < 2; i++)
-		DrawImage(equipMenuUiData[i * MENUUIDATACNT + 0], equipMenuUiData[i * MENUUIDATACNT + 1], equipMenuUiData[i * MENUUIDATACNT + 2], equipMenuUiData[i * MENUUIDATACNT + 3], x + (float)equipMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(equipMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[equipMenuUiData[i * MENUUIDATACNT + 6]], equipMenuUiData[i * MENUUIDATACNT + 6]);
-
-	CenterText(TEXT_EQUIPMENT, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom);
-	CenterText(TEXT_EQUIP_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom);
-
-	DrawImageScale(128, 128, 716, 874, x + (float)8 * zoom, y - (float)124 * zoom, false, false, false, false, false, (float)(WINX - 16) / 128 * zoom, (float)(WINY - 132) / 128 * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-
-	DrawImageScale(128, 128, 587, 608, x + (float)32 * zoom, y - (float)142 * zoom, false, false, false, false, false, (float)3.4f * zoom, (float)2.8f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawPixelPanel(x,y,(int)WINX,(int)(124*zoom));
+	DrawPixelPanel((int)(x+16*zoom),(int)(y-138*zoom),(int)(440*zoom),(int)(362*zoom));
 
 	for (i = 0; i < EQUIP_NECK; i++) {
 		int slotX = x + (float)(52 + 144 * (i % 3)) * zoom;
@@ -7312,10 +7347,10 @@ void CollectionsDraw(int x, int y, float zoom)
 		}
 	}
 
-	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)142 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawPixelPanel((int)(x+476*zoom),(int)(y-142*zoom),(int)(128*zoom),(int)(128*zoom));
 	DrawPlayer(&ao[ROBIN], 0, x + (float)(476 + 128 / 2) * zoom, y - (float)242 * zoom, LEFT, 1.5f * zoom, false, false, true);
 
-	DrawImageScale(128, 128, 587, 608, x + (float)476 * zoom, y - (float)280 * zoom, false, false, false, false, false, 1.0f * zoom, 1.7f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawPixelPanel((int)(x+476*zoom),(int)(y-280*zoom),(int)(128*zoom),(int)(218*zoom));
 
 	//공격력
 	itemType = ITEM_SWORD;
@@ -7323,7 +7358,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	itemGrade = ao[ROBIN].equip[EQUIP_WEAPON].grade;
 	DrawImageScale(64, 64, 455, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	
-	SetFontColor(COLOR_GREY);
+	SetFontColor(0xBCD6DF);
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s@+%d", textId[TEXT_ATK], ao[ROBIN].ps[PS_DMG]);
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70) * zoom, (float)108 * zoom, -1, -1, zoom);
@@ -7334,7 +7369,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	itemGrade = ao[ROBIN].equip[EQUIP_ARMOR].grade;
 	DrawImageScale(64, 64, 520, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 2) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
-	SetFontColor(COLOR_GREY);
+	SetFontColor(0xBCD6DF);
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s@+%d", textId[TEXT_DEF], ao[ROBIN].ps[PS_ARMOR]);
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 2) * zoom, (float)108 * zoom, -1, -1, zoom);
@@ -7342,7 +7377,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//체력
 	DrawImageScale(64, 64, 390, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 3) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
 	
-	SetFontColor(COLOR_GREY);
+	SetFontColor(0xBCD6DF);
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s@+%d", textId[TEXT_HERO_PARAM_HP], ao[ROBIN].ps[PS_HP]);
 	LineTextStrSolid(tempStr, x + (float)(476 + 8 + 46) * zoom, y - (float)(220 + 10 + 70 * 3) * zoom, (float)108 * zoom, -1, -1, zoom);
@@ -7462,9 +7497,9 @@ void CollectionsDraw(int x, int y, float zoom)
 	UnSectionClip(false);
 
 	//최외각 테두리
-	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
+	MemRectFrame(x,y,(int)WINX,(int)WINY,0x43859B);
 	//그안에 테두리
-	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
+	
 
 	switch (menuDepth) {
 		case 1:
@@ -7518,7 +7553,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//히어로 줄과 탭. 팝업이 떠 있으면(menuDepth 1) 누를 수 없다 - 팝업이
 	//터치를 잠그므로 그려만 두면 눌린 것처럼 보이고 안 먹는다.
 	if (menuDepth == 0) {
-		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, DY - (float)8 * _2X * zoom,
+		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, true, true);
 		EquipTabDraw(zoom);
 	}
@@ -7526,7 +7561,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//골드바. 동료 메뉴(CrewMenuDraw)는 그리는데 여기만 빠져 있었다.
 	//상세 팝업이 위쪽 띠를 파고들어 앉으므로, 팝업을 그린 뒤에 다시 올려야
 	//돈이 얼마인지 보면서 강화를 누를 수 있다.
-	BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+	
 
 	return;
 	
@@ -7534,7 +7569,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//if (menuCur < EQUIP_NECK)
 
 
-	HeroSelectButtonList(x + 1 * _2X * zoom, DY - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true);
+	HeroSelectButtonList(x + 1 * _2X * zoom, y - (float)8 * _2X * zoom, zoom, curHero, menuDepth == 0 ? true : false, true);
 
 
 	//Bottom Menu
@@ -7905,28 +7940,9 @@ static const char* ShopProductName(int product)
 //현지 가격 대신 표시할 기본 원화 가격. 실제 가격이 오면 즉시 그 값이 우선한다.
 static const char* ShopPriceText(int product, bool* storeReady)
 {
-	static const char* tier[6] = {
-		"1,200원", "2,500원", "5,900원", "12,000원", "25,000원", "59,000원"
-	};
-	const char* storePrice = IapPriceText(product);
-
-	*storeReady = storePrice && storePrice[0];
-	if (*storeReady)
-		return storePrice;
-	if (product >= IAP_COIN_01 && product <= IAP_COIN_06)
-		return tier[product - IAP_COIN_01];
-	if (product >= IAP_HEART_01 && product <= IAP_HEART_06)
-		return tier[product - IAP_HEART_01];
-	if (product >= IAP_CASH_01 && product <= IAP_CASH_06)
-		return tier[product - IAP_CASH_01];
-
-	switch (product) {
-	case IAP_PASS_HEART:  return "9,900원";
-	case IAP_PASS_GROWTH: return "14,900원";
-	case IAP_STARTER:     return "5,900원";
-	case IAP_INVEN_20:    return "2,500원";
-	default:              return "가격 확인";
-	}
+	const char* price=IapPriceText(product);
+	*storeReady=IapCanPurchase(product)&&price&&price[0];
+	return *storeReady?price:"스토어 연결 준비 중";
 }
 
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom);
@@ -8241,21 +8257,11 @@ void GachaRatesDraw(int boxDetail)
 //구역 제목 리본.
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
 {
-	float h = 44.0f * zoom;
-	float ribbonW = w * 1.155f;
-	float ribbonH = h * 1.155f;
-	float lift = h * 0.05f;
-
-	//win.png 안에 이미 들어 있는 보라색/금색 리본 영역을 재사용한다.
-	DrawImageScale(512, 112, 512, 0, cx - ribbonW / 2,
-		y + (ribbonH - h) / 2 + lift,
-		false, false, false, false, false,
-		ribbonW / 512.0f, ribbonH / 112.0f,
-		sprite[WIN_IMG], WIN_IMG);
-	SetFontColor(COLOR_WHITE);
-	CenterTextStr(title, cx,
-		y - h / 2 + (float)FONT_HEIGHT * zoom * 1.3f / 2 + 4.0f * zoom,
-		zoom * 1.3f);
+	const int h=(int)(32*zoom);
+	MemRect((int)(cx-w/2), (int)(y-h/2), (int)w, Max(1,_2X),0xB69145);
+	DrawPixelPanel((int)(cx-w/2),(int)y,(int)w,h);
+	SetFontColor(0xF4D778);
+	CenterTextStr(title,cx,y-5*zoom,zoom);
 	SetFontColor(COLOR_WHITE);
 }
 
@@ -8275,12 +8281,12 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	float artX = x + (w - artSize) / 2;
 	float artY = y - 38.0f * zoom;
 
-	int cardColor = COLOR_BROWN;
+	int cardColor = 0x142E43;
 	if (product >= IAP_HEART_01 && product <= IAP_HEART_06)
-		cardColor = 0x51243B;
+		cardColor = 0x263245;
 	else if (product >= IAP_CASH_01 && product <= IAP_CASH_06)
-		cardColor = 0x202D61;
-	MemRectRound(x, y, w, h, cardColor, 3);
+		cardColor = 0x272B4B;
+	DrawPixelPanel((int)x,(int)y,(int)w,(int)h,cardColor);
 
 	SetFontColor(COLOR_WHITE);
 	CenterTextStr(name, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
@@ -8322,13 +8328,9 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 
 	//가격은 버튼 위에 따로 두고, 동료 강화창과 같은 노란 버튼을 쓴다.
 	SetFontColor(COLOR_WHITE);
-	DrawTextStrSystem(price, x + w / 2, by + 32.0f * zoom,
-		zoom * 0.85f, CENTER, true);
-	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
-		WP_YELLOW_CAP, x + 6.0f * zoom, by,
-		w - 12.0f * zoom, bh, zoom);
+	DrawPixelPanel((int)(x+6*zoom),(int)by,(int)(w-12*zoom),(int)bh,0x164A5B,0xC49D4D);
 	SetFontColor(canTouch ? COLOR_WHITE : COLOR_GREY);
-	DrawTextStrSystem("구매하기", x + w / 2,
+	DrawTextStrSystem(price, x + w / 2,
 		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
 		zoom * 0.85f, CENTER, true);
 	SetFontColor(COLOR_WHITE);
@@ -8353,10 +8355,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	float panelX = x + (w - panelSize) / 2;
 	float panelY = y - 38.0f * zoom;
 
-	MemRectRound(x, y, w, h, 0x171A40, 3);
-	DrawImage(512, 512, 0, 0, panelX, panelY,
-		false, false, false, false, false, panelSize / 512.0f,
-		sprite[SHOP_CARD_BOX_IMG], SHOP_CARD_BOX_IMG);
+	DrawPixelPanel((int)x,(int)y,(int)w,(int)h,0x272B4B);
 
 	SetFontColor(COLOR_WHITE);
 	CenterText(TEXT_ITEMNAME_BOX + detail, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
@@ -8372,9 +8371,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	DrawNum(price, x + w - 10.0f * zoom,
 		by + 32.0f * zoom,
 		NUM_FONT_NORMAL, RIGHT, false, false, true, zoom * 0.8f, false);
-	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
-		WP_YELLOW_CAP, x + 6.0f * zoom, by,
-		w - 12.0f * zoom, bh, zoom);
+	DrawPixelPanel((int)(x+6*zoom),(int)by,(int)(w-12*zoom),(int)bh,0x164A5B,0xC49D4D);
 	SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
 	DrawTextStrSystem("구매하기", x + w / 2,
 		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
@@ -8569,424 +8566,32 @@ static int sShopIapJumpSection = -1;
 static int sShopIapScrollTarget = -1;
 static int sShopIapScrollDelay = 0;
 static float sShopIapAnimatedY = 0.0f;
+static int sPixelShopCategory=0;
 
 void ShopJumpToIapSection(int section)
 {
-	//구역이 늘면 이 상한도 같이 올라가야 한다. 못 박아 두면 새 구역으로
-	//뛰라고 해도 조용히 마지막 구역으로 간다.
-	sShopIapJumpSection = Max(0, Min(TOTALSHOPSEC - 1, section));
-	sShopIapScrollTarget = -1;
-	sShopIapScrollDelay = 8;
-	sShopIapAnimatedY = 0.0f;
-	autoScroll = 0;
-	scAccelY = 0;
-	scRecoveryFrameY = 0;
-	scY[MENU_SHOP] = 0;
-	scT[MENU_SHOP] = 0;
-	snapTargetY[MENU_SHOP] = 0;
+	ShopCatalogTouch(TOUCH_FUNC_SHOP_MAIN_TAB+(section==SHOPSEC_BOX?1:2));
+	autoScroll=scAccelY=scRecoveryFrameY=0;
+	scY[MENU_SHOP]=scT[MENU_SHOP]=snapTargetY[MENU_SHOP]=0;
+}
+void ShopSelectPixelCategory(int category)
+{
+	ShopCatalogTouch(TOUCH_FUNC_SHOP_MAIN_TAB+Max(0,Min(2,category)));
 }
 
 //상점 전체 상품을 한 목록으로 이어서 그린다.
-static void ShopIapDraw(float x, float y, float w, float h, float zoom)
+#include "ShopRuntime.inc"
+
+void ShopDraw(int x,int y,float zoom)
 {
-	float pad = 12.0f * zoom;
-	float innerW = w - pad * 2;
-	//상점 간판의 하단 장식과 겹치지 않도록 배너/목록 시작점을 내린다.
-	float viewTop = y - 136.0f * zoom;
-	float bottom = y - h + pad;
-	float cy = viewTop + (float)scY[MENU_SHOP];
-	char buf[128];
-	const int COL = 3;
-	float cw = (innerW - 8.0f * zoom * (COL - 1)) / COL;
-	//클래시로얄식 세로 카드 비율. 기존 92px 카드의 정확히 3배다.
-	float ch = 276.0f * zoom;
-	float rowStep = ch + 8.0f * zoom;
-	if (sShopIapScrollTarget >= 0) {
-		//상점 전용 위치를 기준으로 움직인다. Core가 관성/복귀 과정에서
-		//scY를 바꿔도 다음 그리기에서 이 값으로 다시 덮어쓴다.
-		autoScroll = 0;
-		scAccelY = 0;
-		scRecoveryFrameY = 0;
-		if (sShopIapScrollDelay > 0)
-			sShopIapScrollDelay--;
-		else {
-			// scT는 이 함수의 맨 끝에서 전체 상품을 모두 배치한 뒤 확정된다.
-			// 여기서 이전 프레임의 scT로 목표를 자르면 팝업이 열리는 동안
-			// 기록된 작은 값에서 자동 스크롤이 곧바로 종료된다.
-			float target = (float)sShopIapScrollTarget;
-			float remain = target - sShopIapAnimatedY;
-			if (remain <= 2.0f) {
-				sShopIapAnimatedY = target;
-				sShopIapScrollTarget = -1;
-			}
-			else
-				sShopIapAnimatedY += Max(8.0f, remain / 6.0f);
-		}
-		scY[MENU_SHOP] = (int)sShopIapAnimatedY;
-		cy = viewTop + (float)scY[MENU_SHOP];
-	}
-	else if (sShopIapJumpSection >= 0) {
-		scY[MENU_SHOP] = 0;
-		cy = viewTop;
-	}
-
-	//제목 아래 영역만 스크롤한다. SetRectPoint도 이 clip을 따르므로 화면
-	//밖으로 나간 구매 버튼은 눌리지 않는다.
-	SetSectionClip((int)(x + pad), (int)viewTop, (int)innerW,
-		(int)(viewTop - bottom), false);
-
-	if (IapPendingCount() > 0) {
-		float bh = 26.0f * zoom;
-		MemRectRound(x + pad, cy, innerW, bh, COLOR_RED, 2);
-		SetFontColor(COLOR_WHITE);
-		sprintf(buf, "받는 중입니다 (%d건)", IapPendingCount());
-		CenterTextStr(buf, x + w / 2,
-			cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
-		cy -= bh + 4.0f * zoom;
-	}
-
-	//추천 배너도 목록의 첫 항목이라 위로 스크롤하면 함께 사라진다.
-	{
-		int banner = ShopBannerIndex();
-		int bannerImg = SHOP_BANNER_GOLD_IMG + banner;
-		int product = ShopBannerProduct(banner);
-		bool can = !IapIsBusy();
-		//배너 원화가 눌려 보이지 않도록 실제 화면에서도 128px 높이를 쓴다.
-		float bh = 128.0f * zoom;
-		static const int bannerW[4] = { 1983, 1774, 1983, 1983 };
-		static const int bannerH[4] = { 793, 887, 793, 793 };
-		int cropW = (banner == 0 || banner == 3) ? bannerW[banner] / 2 : bannerW[banner];
-		int cropH = Min(bannerH[banner],
-			(int)((float)cropW * bh / innerW));
-		int cropY = (bannerH[banner] - cropH) / 2;
-
-		MemRectRound(x + pad, cy, innerW, bh, COLOR_NAVY, 2);
-		DrawImageScale(cropW, cropH, 0, cropY, x + pad, cy,
-			false, false, false, false, false,
-			innerW / (float)cropW, bh / (float)cropH,
-			sprite[bannerImg], bannerImg);
-
-		if (banner == 0)
-			DrawIcon(ICON_GOLD, x + pad + innerW - 35.0f * zoom,
-				cy - 40.0f * zoom, 2.2f * zoom, false, false, true, 1);
-		else if (banner == 3)
-			DrawCastleBoxXY(BOX_PAID5, false, LEFT,
-				x + pad + innerW - 90.0f * zoom, cy - 18.0f * zoom,
-				COLOR_WHITE, 0.075f * zoom);
-
-		if (banner == 2) {
-			float cashSize = 78.0f * zoom;
-			DrawImage(1280, 1280, 0, 0,
-				x + pad + 8.0f * zoom, cy - 24.0f * zoom,
-				false, false, false, false, false, cashSize / 1280.0f,
-				sprite[SHOP_CASH_ICON_IMG], SHOP_CASH_ICON_IMG);
-		}
-		else
-			DrawIcon(IapProductIcon(product), x + pad + 40.0f * zoom,
-				cy - 34.0f * zoom, 2.2f * zoom, false, false, true, 1);
-		SetFontColor(COLOR_YELLOW);
-		DrawTextStrSystem("추천 상품", x + pad + 82.0f * zoom,
-			cy - 38.0f * zoom, zoom, LEFT, true);
-		SetFontColor(COLOR_WHITE);
-		DrawTextStrSystem(ShopProductName(product), x + pad + 82.0f * zoom,
-			cy - 70.0f * zoom, zoom * 1.15f, LEFT, true);
-		if (can)
-			SetRectPoint(x + pad, cy, innerW, bh, TOUCH_FUNC_SHOP_IAP + product);
-
-		//배너 아래 16px 페이지 표시 영역. 선택된 배너만 밝고 크게 그린다.
-		float indicatorH = 16.0f * zoom;
-		float dotSize = 9.9f * zoom;
-		float dotGap = 14.4f * zoom;
-		float dotsW = dotSize * 4 + dotGap * 3;
-		float dotsX = x + w / 2 - dotsW / 2;
-		float dotsY = cy - bh - (indicatorH - dotSize) / 2;
-		for (int dot = 0; dot < 4; dot++) {
-			float size = dot == banner ? dotSize + 2.0f * zoom : dotSize;
-			MemRectRound(dotsX + dot * (dotSize + dotGap) - (size - dotSize) / 2,
-				dotsY + (size - dotSize) / 2, size, size,
-				dot == banner ? COLOR_YELLOW : COLOR_GREY, size / 2);
-		}
-		cy -= bh + indicatorH + 10.0f * zoom;
-	}
-
-	struct ShopSection {
-		const char* title;
-		int first;
-		int count;
-		bool box;
-
-		//상품이 아니라 다른 화면으로 들어가는 갈래. 카드 대신 버튼 하나를
-		//놓는다. 성처럼 규격이 다른 것을 목록에 끼울 때 쓴다.
-		const char* link;
-		int linkFunc;
-	};
-	static const ShopSection sections[] = {
-		//성이 맨 앞이다. 순서는 Func_Menu.h 의 SHOPSEC_* 와 같아야 한다.
-		{ "성", 0, 0, false, "UPGRADE CASTLE", TOUCH_FUNC_POPUP_CASTLEMENU },
-		{ "골드 상품", IAP_COIN_01, 6, false, 0, 0 },
-		{ "하트 상품", IAP_HEART_01, 6, false, 0, 0 },
-		{ "레인보우 코인", IAP_CASH_01, 6, false, 0, 0 },
-		{ "상자 상품", 0, 6, true, 0, 0 },
-		{ "스페셜 패스", IAP_PASS_HEART, 4, false, 0, 0 },
-	};
-
-	for (int section = 0; section < (int)(sizeof(sections) / sizeof(sections[0])); section++) {
-		const ShopSection& data = sections[section];
-		int rows = (data.count + COL - 1) / COL;
-		//팝업은 처음 7프레임 동안 작은 크기에서 1.0까지 확대된다.
-		//그 도중의 zoom으로 누적 높이를 구하면 목표가 실제 거리의 일부만
-		//계산되어 몇 픽셀 움직이고 끝난다. 최종 크기가 된 뒤 계산한다.
-		if (sShopIapJumpSection == section && zoom >= 0.999f) {
-			//공식으로 높이를 추정하지 않고 실제로 그려진 리본의 누적 위치를
-			//목표로 쓴다. 상품 높이가 바뀌어도 정확한 구역까지 이동한다.
-			sShopIapScrollTarget = Max(0,
-				(int)(viewTop + (float)scY[MENU_SHOP] - cy));
-			sShopIapJumpSection = -1;
-		}
-
-		ShopRibbon(data.title, x + w / 2, cy, 280.0f * zoom, zoom);
-		cy -= 48.0f * zoom;
-
-		//---- 다른 화면으로 가는 갈래 ----
-		//
-		//상품 카드가 아니라 버튼 하나다. 성은 골드로 올리는 별도 화면이라
-		//상품 규격에 안 맞는다. 목록에는 자리만 두고 그 화면으로 보낸다.
-		if (data.link) {
-			//성 메뉴 맨 위에 깔리는 그 일러스트를 배너로 쓴다. 성을 팔면서
-			//성 화면과 다른 그림을 보여주면 어디로 가는 버튼인지 흐려진다.
-			//
-			//castleMenuUiData 의 0번이 그 상단창이다. 폭을 배너에 맞추고
-			//세로는 원래 비율대로 따라온다. 늘여 붙이면 성이 찌그러진다.
-			const int bgW = castleMenuUiData[0];
-			const int bgH = castleMenuUiData[1];
-			const float bs = innerW / (float)bgW;
-			const float bh = (float)bgH * bs;
-
-			if (cy >= bottom && cy - bh <= viewTop) {
-				DrawImageScale(bgW, bgH,
-					castleMenuUiData[2], castleMenuUiData[3],
-					x + pad, cy, false, false, false, false, false,
-					bs, bs,
-					sprite[castleMenuUiData[6]], castleMenuUiData[6]);
-
-				//---- 배너 위에 얹는 버튼 ----
-				//
-				//다른 버튼과 같은 버튼 이미지를 쓴다. 직접 그린 네모는 이
-				//화면에서 혼자 다른 물건으로 보인다.
-				const float lw = innerW * 0.56f;
-				const float lh = 52.0f * zoom;
-				const float lx = x + w / 2 - lw / 2;
-				const float ly = cy - bh + lh + 12.0f * zoom;
-
-				DrawButton(lx, ly, BUTTON_COLOR_BROWN, 0, 0, 0, false,
-					lw / (float)buttonImgData[0],
-					lh / (float)buttonImgData[1]);
-
-				{
-					//글자를 버튼 안에 맞춘다. 못 박은 배율로 그리면 문구가
-					//길어지는 순간 버튼 밖으로 흘러나간다. 여기 문구는
-					//공용이라 언제든 바뀐다.
-					const float room = lw - 24.0f * zoom;
-					float tz = 0.62f * zoom;
-					float tw = GetGoldAlphaTextWidth(data.link,
-						FONT_GOLD_LARGE, tz);
-
-					if (tw > room) {
-						tz *= room / tw;
-						tw = room;
-					}
-
-					DrawGoldAlphaText(x + w / 2 - tw / 2,
-						ly - lh / 2 + 14.0f * zoom, data.link,
-						FONT_GOLD_LARGE, tz, LEFT, false, false);
-				}
-
-				SetRectPoint(lx, ly, lw, lh, data.linkFunc);
-			}
-
-			cy -= bh + 12.0f * zoom;
-			continue;
-		}
-
-		for (int i = 0; i < data.count; i++) {
-			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);
-			float cardY = cy - rowStep * (i / COL);
-
-			if (cardY >= bottom && cardY - ch <= viewTop) {
-				if (data.box)
-					ShopBoxCard(i, cx, cardY, cw, ch, zoom);
-				else
-					ShopCard(data.first + i, cx, cardY, cw, ch, zoom);
-			}
-		}
-
-		cy -= rowStep * rows + 12.0f * zoom;
-	}
-
-	//패스가 활성화된 경우 목록 맨 아래에 남은 기간을 표시한다.
-	for (int i = 0; i < 2; i++) {
-		bool on = i == 0 ? IapHeartPass() : IapGrowthPass();
-		long until = IapPassUntil(i != 0);
-		if (!on)
-			continue;
-		SetFontColor(COLOR_YELLOW);
-		sprintf(buf, "%s 남은 %d일", i == 0 ? "하트 패스" : "성장 패스",
-			(int)((until - (long)MC_knlCurrentTimeStamp()) / 86400) + 1);
-		DrawTextStrSystem(buf, x + pad, cy, zoom * 0.8f, LEFT, true);
-		cy -= 18.0f * zoom;
-	}
-
-	SetFontColor(COLOR_WHITE);
-	UnSectionClip(false);
-
-	//스크롤 전 위치에서의 콘텐츠 높이와 현재 단말기의 표시 높이를 비교한다.
-	int maxScroll = Max(0, (int)((viewTop + (float)scY[MENU_SHOP] - cy)
-		- (viewTop - bottom)));
-	scT[MENU_SHOP] = maxScroll;
-	if (scY[MENU_SHOP] > maxScroll) {
-		scY[MENU_SHOP] = maxScroll;
-		if (sShopIapScrollTarget >= 0)
-			sShopIapAnimatedY = (float)maxScroll;
-	}
-	if (scY[MENU_SHOP] < 0)
-		scY[MENU_SHOP] = 0;
-
-	DrawScroll((int)(x + w - pad - 4.0f * _2X), (int)viewTop,
-		(int)(viewTop - bottom), MENU_SHOP);
+	if(drawHandle==MD_LOBBY) y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
+	const int width=(int)(DX*zoom),height=(int)(y*zoom);
+	ResetRectPoint();DrawPixelPanel(x,y,width,height);
+	DrawPixelPanel(x,y,width,(int)(58*zoom));
+	SetFontColor(COLOR_WHITE);CenterText(TEXT_MENU_SHOP,x+width/2,y-16*zoom,1.25f*zoom);
+	DrawUiButton(x+10*zoom,y-10*zoom,40*zoom,38*zoom,"<",TOUCH_FUNC_POPUP_CLOSE);
+	ShopSpec::Draw(x,y,width,height,zoom);
 }
 
-void ShopDraw(int x, int y, float zoom)
-{
-	int i;
-	float OUTTHICK = (float)5 * zoom;
-	float INTTHICK = (float)5 * zoom;
-	float WINX = (float)DX * zoom;
-	// Keep the persistent lobby navigation completely outside this window.
-	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
-
-
-	MemRect(x, y, WINX, WINY, 0x3B2513);
-
-	for (i = 0; i < 2; i++)
-		DrawImage(shopMenuUiData[i * MENUUIDATACNT + 0], shopMenuUiData[i * MENUUIDATACNT + 1], shopMenuUiData[i * MENUUIDATACNT + 2], shopMenuUiData[i * MENUUIDATACNT + 3], x + (float)shopMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(shopMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[shopMenuUiData[i * MENUUIDATACNT + 6]], shopMenuUiData[i * MENUUIDATACNT + 6]);
-
-	CenterText(TEXT_MENU_SHOP, x + (float)160 * _2X * zoom, y - (float)48 * zoom, 2.0f * zoom);
-	CenterText(TEXT_SHOP_BUY, x + (float)160 * _2X * zoom, y - (float)100 * zoom, 1.1f * zoom);
-
-	//최외각 테두리
-	MemRectFrameThick(x, y, WINX, WINY, 0x271910, (float)OUTTHICK * zoom);
-	//그안에 테두리
-	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x5F4022, INTTHICK);
-
-	ShopIapDraw(x, y, WINX, WINY, zoom);
-
-	return;
-
-
-	switch (menuDepth) {
-	case 0:
-		switch (menuIdx) {
-		default:
-			//상단의 팝업스토어
-			for (i = 0; i < TOTALPOPUPSTORE; i++) {
-				DrawFrame(x + (float)32 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y, (float)(DX - 64 * _2X) * zoom, (float)POPUPSTORE_Y * zoom, FRAME_SHOPBALLOON);
-				DrawNumTTF(i + 1, x + (float)34 * _2X * zoom + scX + (float)DX * zoom * (i - menuX), y - (float)2 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, false, 1.0f, false);
-			}
-
-			for (i = 0; i < TOTALPOPUPSTORE; i++) {
-				if (i == TOTALPOPUPSTORE - 1) {
-					if ((long)(currentTimeStamp - robin.freeRewardTimeStamp) >= FREEITEMTIME) {
-						SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-						SetColor(COLOR_REALRED);
-					}
-					else
-						SetColor(COLOR_RED);
-				}
-
-				DrawImage(9 * _2X, 9 * _2X, (menuX == i ? 145 * _2X : 154 * _2X), 0 * _2X, x + (float)((DX / 2 - (16 * 4 + 9) * _2X / 2) + i * 16 * _2X) * zoom, y - (float)POPUPSTORE_Y * zoom - (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
-				SetColor(false);
-				SetAlpha(32);
-			}
-
-			return;
-			//하트상품 6개
-			//y -= GNBHEIGHT;
-
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y + (float)16 * _2X * zoom, TEXT_SHOP_HEART_TITLE, zoom);
-
-			for (i = 0; i < 6; i++) {
-
-				//if (zoom == 1)
-				//	SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, (float)SHOPMENUCARD_WIDTH * zoom, (float)SHOPMENUCARD_HEIGHT * zoom, TOUCH_FUNC_EQUIP_INVENTORY + i);
-
-				DrawImage(72 * _2X, 64 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 72 * _2X) / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 88 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[HEART_0_IMG + i], HEART_0_IMG + i);
-
-				//하트수량
-				DrawNum(currencyShop[0 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT) * (i / 3)) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true);
-
-				if (currencyShop[0 * 7 + i * 7 + 2]) {
-					memset(tempStr, 0, sizeof(tempStr));
-					sprintf(tempStr, "+%d%%", currencyShop[0 * 7 + i * 7 + 2]);
-					//보너스 숫자
-					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 36 * _2X) * zoom, zoom);
-				}
-				//아이콘
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 34 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[0 * 7 + i * 7 + 6], currencyShop[0 * 7 + i * 7 + 5], zoom, false, false, false);
-			}
-
-			y -= (float)(208 * _2X) * zoom;
-
-			//장비뽑기 3종
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_GACHA_TITLE, zoom);
-
-			for (i = 0; i < 3; i++) {
-				ShadowImage(40 * _2X, 16 * _2X, 26 * _2X, 1 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 46 * _2X - 20 * _2X) * zoom, SHADOW_IMG, zoom);
-				DrawCastleBoxXY(BOX_REWARD2 + i, false, LEFT, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 - 4 * _2X + 20 * _2X - (BOXSIZE_X / 2)) * zoom, y + (float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 50 * _2X + BOXSIZE_Y) * zoom, itemColor[frame % 6], zoom);
-				CenterText(TEXT_ITEMNAME_BOX + BOX_REWARD2 + i, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3)) * zoom, zoom);
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y +(float)(-40 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, GetBoxPrice(BOX_REWARD2 + i, GRADE_NORMAL), GetBoxCurrency(BOX_REWARD2 + i, GRADE_NORMAL), zoom, false, false, false);
-				if (robin.gold >= GetBoxPrice(BOX_REWARD2 + i, GRADE_NORMAL))
-					SetRectPoint(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, TOUCH_FUNC_SHOP_BUYBOX1 + i);
-			}
-
-			y -= (float)(128 * _2X) * zoom;
-
-			DrawLabel(x + (float)(POPUPWINDOWSIZE_X / 2 - 40 * _2X) * zoom, y, TEXT_SHOP_COIN_TITLE, zoom);
-
-			for (i = 0; i < 3; i++) {
-				DrawImage(64 * _2X, 52 * _2X, 0 * _2X, 0 * _2X, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 64 * _2X) / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - (SHOPMENUCARD_HEIGHT - 52 * _2X) / 2) * zoom, false, false, false, false, false, zoom, sprite[COIN_0_IMG + 3 + i], COIN_0_IMG + 3 + i);
-
-				//코인수량
-				DrawNum(currencyShop[9 * 7 + i * 7 + 4], x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 8 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 0, false, true, zoom, true);
-
-				if (currencyShop[9 * 7 + i * 7 + 2]) {
-					memset(tempStr, 0, sizeof(tempStr));
-					sprintf(tempStr, "+%d%%", currencyShop[9 * 7 + i * 7 + 2]);
-					//보너스 숫자
-					CenterTextStr(tempStr, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + SHOPMENUCARD_WIDTH / 2) * zoom, y + (float)(-24 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 52 * _2X) * zoom, zoom);
-				}
-
-				//DrawNeutral(OBJ_ITEM0 + (frame + i) % 4, x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + (SHOPMENUCARD_WIDTH - 16 * _2X * 2) / 2 + ITEMICONSIZE) * zoom, y + (float)(- 16 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - 26 * _2X - 16 * _2X - ITEMICONSIZE * 2) * zoom, LEFT, (float)2 * zoom, gScreenBuffer, gScreenLayer, false);
-
-				DrawBuyButton(x + (float)(2 * _2X + (SHOPMENUCARD_WIDTH + 2 * _2X) * (i % 3) + 6 * _2X) * zoom, y + (float)(-32 * _2X - (SHOPMENUCARD_HEIGHT + 8 * _2X) * (i / 3) - SHOPMENUCARD_HEIGHT + 28 * _2X) * zoom, (float)(SHOPMENUCARD_WIDTH - 12 * _2X) * zoom, (float)(RAIDGOLDBARHEIGHT)*zoom, frame, 0, currencyShop[9 * 7 + i * 7 + 6], currencyShop[9 * 7 + i * 7 + 5], zoom, false, false, false);
-			}
-
-			break;
-		}
-		break;
-	case 1:
-		break;
-	case 2:
-		break;
-	}
-}
-
-//======================================================================
-// 전체 화면 성 팝업: 성 중앙 배치, 전투력, 전투와 같은 방향의 그리드 및 배치 한도.
 #include "CastleMenuRuntime.inc"
 void CastleMenuDraw(int x,int y,float zoom) { CastleMenuNewDraw(); }

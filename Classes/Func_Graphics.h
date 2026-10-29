@@ -196,3 +196,4 @@ void OpenBox(OBJECT* pObj);
 void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, float zoom);
 void DrawCastleBox(OBJECT* pObj);
 void BoxDraw(OBJECT* pObj);
+void DrawPixelPanel(int x,int y,int w,int h,int fill=0x102638,int edge=0x43859B);

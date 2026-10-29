@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
 #define OPENING_TEXT_PER_SCENE 3
@@ -38,6 +38,7 @@ void TitleDraw(void);
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
+void CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h);
 
 //성을 세로선(axisX)을 축으로 접어 그린다. 켠 뒤에는 반드시 다시 끈다 -
 //한 장면 안에서 한쪽만 돌려 세우는 용도다.
@@ -77,6 +78,8 @@ bool BattleEntryLocked(void);
 void LoadoutSetOpen(bool on);
 //성의 대포 파츠 단계에 맞는 포를 인벤토리에 둔다. 출정 준비를 열 때 부른다.
 void CannonGrantEnsure(void);
+//64명 동료가 인벤토리에 정상 지급되어 있는지 확인하고 보장한다.
+void CrewGrantEnsure(void);
 
 //가방에 실린 대포. 없으면 false - 그때는 아무것도 안 쏜다.
 bool StageBagCannon(int* castle, int* level, int* slot);
@@ -108,6 +111,8 @@ enum CrewRole {
 CrewRole GetCrewRole(int crewType);
 const char* GetCrewRoleName(CrewRole role);
 int GetCrewRoleColor(CrewRole role);
+const char* GetCrewClassTitle(int crewIdx);
+const char* GetCrewClassTitleEn(int crewIdx);
 void GridEnsureTacticScroll(void);
 
 //히어로 장비 6대 부위 카테고리
@@ -174,6 +179,7 @@ bool StageCombatReviewCrewVisible(void);
 bool StageCombatReviewCooldownVisible(void);
 void StageRunGridClear(void);
 bool LoadoutRequiredWeaponReady(void);
+bool LoadoutVisualWeapon(ITEM* out);
 void LoadoutDefaultReset(void);
 bool MaxWeaponFoundationReview(void);
 bool CompactEquipmentReview(int page);

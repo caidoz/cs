@@ -6,6 +6,37 @@ static int dragInfoLastKey=-999,dragInfoLastCol=-999,dragInfoLastRow=-999,dragIn
 static int dragInfoRendered=0,dragInfoGains=0,dragInfoLosses=0;
 static const int kInfoGain=0x66E5C4,kInfoLoss=0xFFB060,kInfoWait=0xC4B0FA;
 
+static void LoadoutPowerDraw() {
+ const long long value=LoadoutCombatPower();
+ static long long target=-1,start=0,displayed=0,change=0;
+ static int began=0,arrived=-10000,hero=-1,lastDraw=-10000;
+ if(target<0 || hero!=curHero || frame-lastDraw>FPS) {
+  target=start=displayed=value;change=0;hero=curHero;began=frame;arrived=-10000;
+ } else if(value!=target) {
+  change=value-target;start=displayed;target=value;began=frame;arrived=-10000;
+ }
+ lastDraw=frame;
+ const float t=Min(1.0f,Max(0.0f,(frame-began)/(float)Max(1,FPS*45/100)));
+ const float eased=1-(1-t)*(1-t)*(1-t);
+ displayed=t>=1?target:start+(long long)((target-start)*eased);
+ if(t>=1 && arrived==-10000 && change!=0) arrived=frame;
+ const float pulse=arrived>=0?Max(0.0f,1-(frame-arrived)/(float)Max(1,FPS/2)):0;
+ const int color=change>0?kInfoGain:change<0?kInfoLoss:0xEAD18D;
+ const int x=DX-170,top=LoadoutFootY()+54,w=160,h=52;
+ const int sx=clipX,sy=clipY,sx2=clipX2,sy2=clipY2;
+ UnSectionClip(false);SetAlpha(ALPHA_MAX);
+ MemRect(x,top,w,h,0x14283D);MemRectFrame(x,top,w,h,pulse>0?color:0xB49B62);
+ if(pulse>0) MemRectFrame(x+3,top-3,w-6,h-6,color);
+ char text[96];sprintf(text,"전투력 %lld",displayed);
+ SetFontColor(t<1||pulse>0?color:COLOR_WHITE);
+ CenterTextStrSolid(text,x+w/2,top-7,.8f*(1+pulse*.08f));
+ if(change!=0 && (t<1 || pulse>0)) sprintf(text,"%+lld",change);
+ else sprintf(text,"현재 편성");
+ SetFontColor(change!=0 && (t<1||pulse>0)?color:0xA4B7C9);
+ CenterTextStrSolid(text,x+w/2,top-32,.55f);
+ SetFontColor(COLOR_WHITE);clipX=sx;clipY=sy;clipX2=sx2;clipY2=sy2;
+}
+
 static void LoadoutHeroStatusDraw() {
  const OBJECT& hero=ao[PLAYER];const bool live=IsStageRealtime();
  const long long maximum=Max(1LL,live?hero.maxhp:hero.ps[PS_HP]);
@@ -14,7 +45,7 @@ static void LoadoutHeroStatusDraw() {
  const long long currentArmor=live?hero.shield:armor;
  const int sx=clipX,sy=clipY,sx2=clipX2,sy2=clipY2;
  UnSectionClip(false);SetAlpha(ALPHA_MAX);
- char text[96];sprintf(text,"전투력 %lld",GetCombatPower(&ao[PLAYER]));
+ char text[96];sprintf(text,"아군 요새");
  DrawFortressStatusCard(12,gLoadoutGridY+148,120,hp,maximum,currentArmor,armor,text);
  const int boxW=260,boxH=44,bx=DX-boxW-12,by=gLoadoutGridY+80;
  MemRect(bx,by,boxW,boxH,0x0C1A2E);MemRectFrame(bx,by,boxW,boxH,0x6FA8FF);
@@ -29,6 +60,7 @@ static void LoadoutHeroStatusDraw() {
  SetFontColor(LoadoutUsed()>LoadoutPoint()?COLOR_RED:COLOR_REALYELLOW);
  CenterTextStrSolid(text,at+numW/2,textY,zoom);SetFontColor(COLOR_WHITE);
  clipX=sx;clipY=sy;clipX2=sx2;clipY2=sy2;
+ LoadoutPowerDraw();
 }
 
 static const char* DragInfoKindName(int kind) {
@@ -107,13 +139,18 @@ static void DragInfoBasic(std::vector<DragInfoLine>& lines,const DragPreview::It
   sprintf(text,"고유: %s / %.1f초",a.ability,a.abilityMs/1000.0f);lines.push_back({text,COLOR_WHITE});
   lines.push_back({DragInfoEffect(a.action,a.power),COLOR_WHITE});
   lines.push_back({std::string("대기 조건: ")+DragInfoCondition(a.condition),kInfoWait});
+  if(p.role==CREW_ROLE_ARTILLERY) {
+   sprintf(text,"포격형 · 포대 인접: 준비 -20%%, 탄 크기 +15%%, 추가탄 +%d",p.crew==57?2:1);
+   lines.push_back({text,kInfoWait});
+  }
+  else if(p.role==CREW_ROLE_COMMANDER) lines.push_back({"지휘형 · 포대 직접 강화 없음",kInfoWait});
   const auto& link=a.synergy[Max(0,Min(2,curHero))];
   const char* trigger=curHero==0?"로빈 검 명중":curHero==1?"디아나 총 사격":"맥스 귀환 완료";
   if(curHero==2 && p.crew==36) trigger="맥스 비행 중";
   if(curHero==2 && p.crew==57) trigger="맥스 귀환 시작";
   sprintf(text,"%s 연계 / %.1f초",trigger,link.cooldownMs/1000.0f);lines.push_back({text,kInfoGain});
   lines.push_back({DragInfoEffect(link.action,link.power),kInfoGain});
-  if(expanded) for(int hero=0;hero<3;++hero) if(hero!=curHero) {
+  if(expanded && dragInfoInspect>=0) for(int hero=0;hero<3;++hero) if(hero!=curHero) {
    const auto& other=a.synergy[hero];
    sprintf(text,"%s 연계: %s / %.1f초",hero==0?"로빈":hero==1?"디아나":"맥스",
     DragInfoEffect(other.action,other.power).c_str(),other.cooldownMs/1000.0f);
@@ -204,7 +241,9 @@ static void DragInfoDraw(const std::vector<DragPreview::Item>& before,const std:
  else lines.push_back({removing?"− 가방에서 제거할 때":"+ 이 자리에 배치할 때",removing?kInfoLoss:kInfoGain});
  lines.push_back({footer,COLOR_WHITE});
  std::vector<DragInfoLine> basic;DragInfoBasic(basic,held,pvp,expanded);
- for(int i=0;i<(int)basic.size()&&i<2;++i) lines.push_back(basic[i]);
+ for(int i=0;i<(int)basic.size()&&i<2;++i) {
+  auto line=basic[i];if(invalid) line.color=0x8794A3;lines.push_back(line);
+ }
  auto changes=Diff(Evaluate(before,gGridW,curHero),Evaluate(after,gGridW,curHero));
  // Losses and conditions take precedence; only unrelated unchanged effects are folded.
  std::stable_sort(changes.begin(),changes.end(),[](const Change& a,const Change& b){return (a.delta<0?0:a.delta>0?1:2)<(b.delta<0?0:b.delta>0?1:2);});
@@ -212,7 +251,7 @@ static void DragInfoDraw(const std::vector<DragPreview::Item>& before,const std:
  dragInfoGains=dragInfoLosses=0;
  if(!invalid && !pvp) for(const auto& change:changes) {
   const auto& e=change.after;const auto& old=change.before;
-  if(change.delta==0 && e.providers==old.providers && e.target!=held.key && e.source!=held.key) continue;
+  if((e.value==0 && old.value==0) || (change.delta==0 && e.providers==old.providers)) continue;
   const Item* target=DragInfoFind(after,e.target);if(!target) target=DragInfoFind(before,e.target);
   if(!target) continue;
   const bool loss=change.delta<0 || (e.rule==Duplicate && e.value>0);
@@ -247,7 +286,7 @@ static void DragInfoDraw(const std::vector<DragPreview::Item>& before,const std:
  const int page=dragInfoPage%pages;
  for(int i=page*maxEffects;i<(int)effects.size()&&i<(page+1)*maxEffects;++i) lines.push_back(effects[i]);
  if(pages>1) {char text[96];sprintf(text,"연계 %d/%d · 상세창의 > 버튼으로 다음 쪽",page+1,pages);lines.push_back({text,kInfoWait});}
- for(int i=2;i<(int)basic.size();++i) lines.push_back(basic[i]);
+ for(int i=2;i<(int)basic.size();++i) {auto line=basic[i];if(invalid) line.color=0x8794A3;lines.push_back(line);}
  const int width=Min(DX-24,520);
  const float zoom=0.85f;
  // UTF-8 wrapping preserves glyph boundaries and applies to every detail line.
@@ -264,8 +303,10 @@ static void DragInfoDraw(const std::vector<DragPreview::Item>& before,const std:
  }
  const int lineH=30;
  // Fit above the destination grid; overflow is paged, never laid over the cells.
- const int ceiling=DY-78;
- const int bottom=Max(12,originTop+(gLoadoutOpen?164:24));
+ const int ceiling=DY-48;
+ // The temporary detail card may cover the status HUD, but never the grid.
+ // Reserving the HUD's entire height left only a single readable line.
+ const int bottom=Max(12,originTop+24);
  const int limit=Max(1,Min(16,(ceiling-bottom-58)/lineH));
  const int textPages=Max(1,((int)wrapped.size()+limit-1)/limit);
  const int textPage=dragInfoPage%textPages;
@@ -275,6 +316,17 @@ static void DragInfoDraw(const std::vector<DragPreview::Item>& before,const std:
  const int top=bottom+height;
  const int savedX=clipX,savedY=clipY,savedX2=clipX2,savedY2=clipY2;
  UnSectionClip(false);SetAlpha(ALPHA_MAX);MemRect(x,top,width,height,0x14283D);
+ if(invalid) {
+  MemRect(x,top,width,height,0x491F2A);
+  const bool overGrid=gLoadoutDrag>=0?LoadoutOverGrid():gGridDragOn&&GridInsideBag(touchX,touchY);
+  for(int row=0;overGrid && row<held.h;++row) for(int col=0;col<held.w;++col) if(Cell(held,col,row)) {
+   const int c=held.col+col,r=held.row+row;
+   if(c<0 || r<0 || c>=gGridW || r>=gGridH || !GridMaskAt(c,r)) continue;
+   const int cx=originX+c*cell,cy=originTop-(gGridH-r-1)*cell;
+   SetAlpha(16);MemRect(cx+2,cy-2,cell-4,cell-4,0xD3293E);SetAlpha(ALPHA_MAX);
+   MemRectFrame(cx+2,cy-2,cell-4,cell-4,0xFF6677);
+  }
+ }
  MemRectFrame(x,top,width,height,invalid?kInfoLoss:kInfoGain);
  int star=0;
  if(held.kind==Crew && held.crew>=0 && held.crew<64) star=GetItemStar(ITEM_CREW,held.crew,GRADE_NORMAL);

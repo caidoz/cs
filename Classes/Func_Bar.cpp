@@ -21,11 +21,7 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 	DrawImage(BOTTOMMENU_CELL, BOTTOMMENU_CELL, BOTTOMMENU_CELL * cell, 0,
 		left, top, false, false, false, false, 32, z,
 		sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
-	if (drawHandle == MD_LOBBY && cell == BOTTOMMENU_CELL_ADVENTURE) {
-		SetFontColor(COLOR_WHITE);
-		CenterTextStrSolid("모험", (int)(left + BOTTOMMENU_CELL * z / 2.0f),
-			(int)(top - BOTTOMMENU_CELL * z + 15.0f * _2X * zoom), 0.68f * zoom);
-	}
+
 }
 
 //---- 자원 칸 하나의 테두리 ----
@@ -34,13 +30,9 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 //세로 배율을 따로 박아 두면 높이를 바꿀 때 테두리만 남고 안쪽 띠가 어긋난다.
 static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
 {
-	const float zx = w / 444.0f;
-	const float zy = (float)LOBBY_BAR_H / 129.0f;
-	DrawImageScale(444, 129, 302, 1, x, y, false, false, false, false, false,
-		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	DrawImageScale(411 * percent, 94, 318, 132 + 95 * color,
-		x + 16 * zx, y - 16 * zy, false, false, false, false, false,
-		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawPixelPanel(x,y,w,LOBBY_BAR_H);
+	if(percent<1.0f) MemRect(x+3*_2X,y-LOBBY_BAR_H+4*_2X,
+		Max(1,(int)((w-6*_2X)*percent)),_2X,0xB58DE4);
 }
 
 //---- 칸 오른쪽 끝의 + 단추 ----
@@ -55,14 +47,16 @@ static void LobbyResourcePlus(int x, int y, int w, int func)
 	const float press = GetButtonScale(func, px, py, size, size);
 	const float drawn = size * press;
 
-	DrawImage(64, 64, 521, 640, px + (size - drawn) / 2,
-		py - (size - drawn) / 2, false, false, false, false, false,
-		drawn / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawPixelPanel(px,py,size,size,0x164153,0x43859B);
+	const int p=Max(1,_2X),cx=px+size/2,cy=py-size/2;
+	MemRect(cx-4*p,cy+p,8*p,2*p,0xF4F0DB);
+	MemRect(cx-p,cy+4*p,2*p,8*p,0xF4F0DB);
 	SetRectPoint(px, py, size, size, func);
 }
 
 void LobbyResourceBarsDraw(int y)
 {
+	MemRect(0,y,DX,LOBBY_BAR_H+3*_2X,0x091D2B);
 	const int gap = 2 * _2X;
 	const int left = xOffset + gap;
 	const int usable = DX - 36 * _2X - gap * 5;
@@ -773,6 +767,8 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 		float ribbonW = frameW * 1.5f;
 		float ribbonZoom = ribbonW / ribbonSourceW;
 		float ribbonH = ribbonSourceH * ribbonZoom;
+		if(IsStageRealtime()) badgeCenterX=8.0f+ribbonW/2;
+		startX=badgeCenterX-titleWidth/2;
 		float titleY = frameTop - ribbonH * 0.25f;
 		const int glyphDelay = Max(2, FPS / 10);
 		const int sparkleFrames = Max(6, FPS / 4);
@@ -786,7 +782,7 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 			if (title[i] == ' ')
 				continue;
 
-			int age = waveBadgeFrame - i * glyphDelay;
+			int age = IsStageRealtime()?sparkleFrames:waveBadgeFrame - i * glyphDelay;
 			if (age < 0)
 				continue;
 
@@ -827,6 +823,25 @@ void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 
 void WaveBadgeDrawBeforeBars(void)
 {
+	if(IsStageRealtime()) {
+		// Fifteen connected stops; leave the map/settings controls accessible.
+		const int left=12,right=DX-120,top=DY-6,height=44;
+		const int current=Max(1,Min(15,robin.waveIdx+1));
+		MemRect(left-6,top,right-left+12,height,0x102538);
+		const int cy=top-17,step=(right-left)/14;
+		MemRect(left,cy+2,step*14,4,0x43566B);
+		if(current>1) MemRect(left,cy+2,step*(current-1),4,0x42DCC0);
+		for(int stop=1;stop<=15;++stop) {
+			const int x=left+(stop-1)*step;
+			const bool selected=stop==current;
+			const int size=selected?14:10;
+			MemRect(x-size/2-2,cy+size/2+2,size+4,size+4,selected?0xFFE080:0x60768B);
+			MemRect(x-size/2,cy+size/2,size,size,stop<=current?0x35C8AB:0x182E42);
+			if(stop%5==0) DrawCmfDetail(CMF_NPC_HEART,PO_C122_HEART,x,cy-10,RIGHT,.35f,false,false);
+			DrawNum(stop,x,top-30,NUM_FONT_NORMAL,CENTER,false,false,true,.35f,true);
+		}
+		return;
+	}
 	// 보스 난입이 시작되면 기존 일반전투의 nTH WAVE 리본은 더 이상 그리지 않는다.
 	if (bossRaidMode || attackSequence == ATTACKSEQUENCE_BOSSRAID)
 		return;
@@ -835,6 +850,7 @@ void WaveBadgeDrawBeforeBars(void)
 
 	float zoom = bar[BAR_BOSSHP].frame2 > 0
 		? bar[BAR_BOSSHP].zoom2 : bar[BAR_BOSSHP].zoom;
+	if(IsStageRealtime()) zoom*=.5f;
 	drawingWaveBadgePrepass = true;
 	BossHpBarDraw(0, 1, xOffset + bar[BAR_BOSSHP].x,
 		bar[BAR_BOSSHP].y, zoom);

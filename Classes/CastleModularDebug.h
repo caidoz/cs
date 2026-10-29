@@ -1126,6 +1126,22 @@ void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
  using namespace CastleParts;
  missingAsset=false; DrawCastle(Max(1,Min(CastleCount,castleLevel))-1,x,yTop,w,h,100000.0f);
 }
+// Menu previews fit the rendered rig, rather than the legacy room assembly box.
+void CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h) {
+ using namespace CastleParts;
+ const int c=Max(0,Min(9,level-1));
+ const bool freePlace=gFreePlace;gFreePlace=true;
+ if(IndividualArtEnabled()) {
+  const auto& r=IndividualCastleV4::Rigs[c];
+  const float baseWidth=1056.0f*r.width/342.0f;
+  const float scale=Min(w/baseWidth,h/(baseWidth*r.h/r.w));
+  const float height=baseWidth*r.h/r.w*scale;
+  const float ground=top-(h-height)*.5f-height;
+  const float bottom=ground+252*scale-(c?54.0f:StarterLegacyGroundOffset())*scale-StageCastleGroundingPx()+kStarterRailOverlapPx;
+  DrawIndividualCastle(c,x+(w-baseWidth*scale)*.5f,bottom,scale);
+ } else DrawCastle(c,x,top,w,h,100000.0f);
+ gFreePlace=freePlace;
+}
 bool CastlePartsCannonMuzzle(int castleLevel,float* x,float* y) {
  const int castle=Max(0,Min(9,castleLevel-1));
  if(!CastleParts::cannonMuzzleValid[castle]) return false;

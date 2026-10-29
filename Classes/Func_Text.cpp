@@ -54,7 +54,7 @@ float StringWidthTTF(const char* str, float zoom)
 	Size textSize;
 	float width;
 
-	fontLabelWidth = Label::createWithTTF(str, "fonts/font.ttf", FONT_HEIGHT + 1 * _2X);
+	fontLabelWidth = Label::createWithTTF(str, "fonts/neodgm.ttf", FONT_HEIGHT + 1 * _2X);
 	textSize = fontLabelWidth->getContentSize();
 	width = textSize.width;
 	//fontLabelWidth->release();
@@ -276,7 +276,7 @@ void LoadFontLabelFromText(const char* str)
 		//str으로 변환할 char 배열을 labelStr2로 하고 초기화한다.
 		TextToString((char*)&labelStr, strlen(labelStr), (char*)&labelStr2);
 
-		fontLabel[getFontLabelIdx] = Label::createWithTTF(labelStr2, "fonts/font.ttf", FONT_HEIGHT + 1 * _2X);
+		fontLabel[getFontLabelIdx] = Label::createWithTTF(labelStr2, "fonts/neodgm.ttf", FONT_HEIGHT + 1 * _2X);
 		fontLabel[getFontLabelIdx]->retain();
 		fontLabelIndex[getFontLabelIdx] = getFontLabelIdx;
 		fontLabelMotherIndex[getFontLabelIdx] = fontIdx;

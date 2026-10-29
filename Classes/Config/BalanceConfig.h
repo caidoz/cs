@@ -408,7 +408,7 @@
 //
 //전에는 호출부에 "출시 전에 주석 처리하라"고 적어 뒀는데, 주석은 껐다
 //켰다 하다 보면 어느 쪽이 맞는 상태인지 알 수 없게 된다. 값으로 둔다.
-#define SHOW_TITLE_MOTION_VIEWER	1
+#define SHOW_TITLE_MOTION_VIEWER	0
 
 //타이틀 화면을 성 파츠 디버깅 화면으로 바로 열 것인가.
 //
@@ -418,7 +418,7 @@
 //
 //화면 아래 "타이틀" 을 누르면 그 판에서는 원래 타이틀로 돌아간다. 아주
 //끄려면 이 값을 0 으로 둔다. 환경변수 CS_CASTLE_DEBUG=1 도 그대로 열린다.
-#define OPEN_TITLE_CASTLE_DEBUG		1
+#define OPEN_TITLE_CASTLE_DEBUG		0
 
 //로빈 일반공격이 제 모션표 밖을 읽고 있으면 로그를 남길 것인가.
 //

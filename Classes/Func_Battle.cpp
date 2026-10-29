@@ -1113,6 +1113,7 @@ namespace {
 	int stageRunCrew[MAXCREW] = { 0, };
 
 	int stageHeroCool = 0;
+	int stageHeroFlash = 0;
 	StageAllyLink::Runtime stageAllyLinks;
 	unsigned stageAllyRun=0;
 	std::uint64_t stageAllyEventId=0,stageMaxAttackId=0;
@@ -1389,6 +1390,7 @@ void StageRtBegin(void)
 	memset(stageCrewShotCnt, 0, sizeof(stageCrewShotCnt));
 
 	stageHeroCool = 0;
+	stageHeroFlash = 0;
 	stageFoeCool = 0;
 	stageFoeShot = 0;
 	stageFoeObj = -1;
@@ -1973,7 +1975,7 @@ bool StageRtBasicWeaponCharge(float* charge,int* flash)
     const int type=ao[PLAYER].equip[EQUIP_WEAPON].type;
     if(type!=ITEM_BOOMERANG && type!=ITEM_GUN) return false;
     *charge=Min(1.0f,(float)stageHeroCool/Max(1,StageHeroCooldown()));
-    *flash=0;return true;
+    *flash=stageHeroFlash;return true;
 }
 
 bool MaxWeaponRuntimeReview(int operation)
@@ -2245,6 +2247,7 @@ void UpdateStageRealtime(void)
 
 	//장착 검이 가방에 없으면(자리가 없어 못 넣었거나 맨손) 예전처럼 제
 	//시계로 휘두른다. 안 그러면 히어로가 아무것도 안 해 첫 판을 못 넘긴다.
+	if(running && stageHeroFlash>0) --stageHeroFlash;
 	if (!gearSword && running && foe >= 0) {
 		//장착한 검의 빠르기로 휘두른다. 격자의 검과 같은 식이다.
 		if (stageHeroCool < StageHeroCooldown())
@@ -2252,6 +2255,7 @@ void UpdateStageRealtime(void)
 		else if (PvpHeroTurnBusy(PLAYER) == false && !StageMaxBoomerangBusy()) {
 			PvpHeroGiveTurn(PLAYER);
 			stageHeroCool = 0;
+			stageHeroFlash = Max(1,FPS/10);
 		}
 	}
 	else if (foe < 0 && hero->attack == false) {

@@ -142,6 +142,10 @@ void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, b
 void IapConfirmDraw(int itemType, int detail, int x, int y, float zoom);
 void GachaRatesDraw(int boxDetail);
 void ShopJumpToIapSection(int section);
+void ShopSelectPixelCategory(int category);
+bool ShopCatalogTouch(int command);
+bool ShopPurchaseExistingBox(int detail);
+bool ShopSpecReviewChecks();
 void StageProgressDraw(int x, int y, int current, int progress, float zoom);
 void RemainedTurnDraw(int x, int y, int current, int progress, float zoom);
 void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, int y, float zoom);
@@ -222,3 +226,13 @@ void CrewMenuDraw(int x, int y, float zoom);
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY);
 
 #endif
+
+bool EquipmentMenuV2Drag(int,int,int,int,int,int);
+
+bool EquipmentMenuV2ReviewChecks();
+
+bool EquipmentMenuV2ReviewEquipping();
+
+bool CastleMenuFinalDrag(int,int,int,int,int);
+
+bool CastleMenuFinalReviewChecks();
