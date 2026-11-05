@@ -25,6 +25,10 @@ int GetMaxInven(void);				//성이 정하는 가방 칸 수
 void ItemToggleLock(int invenIdx);	//자물쇠를 걸고 푼다
 int CastleBonusOf(int effectType);	//성 파츠가 주는 값(CPE_*)
 long long CastleIncomePerMin(void);	//1분에 쌓이는 골드
+long long CastleIncomePerHour(void);
+int CastleEnergyRecoverySeconds(void);
+void CastleProductionRebase(long long oldGoldPerHour,int oldEnergySeconds,long long oldGoldCap);
+bool CastleProductionReview(void);
 long long CastleIncomeCap(void);	//금고 상한
 long long CastleIncomeNow(void);	//지금 쌓여 있는 양
 long long CastleIncomeTake(void);	//걷는다. 걷은 양을 돌려준다

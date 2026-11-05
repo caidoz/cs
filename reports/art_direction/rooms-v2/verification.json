@@ -1,0 +1,67 @@
+{
+  "executable": "proj.win32/Debug.win32/cs.exe",
+  "sha256": "2384d67a8adda71e9c95e6424d34cdbcd9112a25c15efb4cef84df91f24f748d",
+  "checks": [
+    "Win32 Debug build",
+    "10 castles x 4 states x 4 viewport ratios: 160 native captures",
+    "10 castles: room open/close, zoom, 20 residents, original anchors, wheels",
+    "Castle menu gold upgrades, icons, selection and scroll at 640 x 1408",
+    "All 60 room atlas cells valid and distinct within their grade"
+  ],
+  "assets": [
+    {
+      "level": 0,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-0.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "82171eb37d8e7d2f2ace53a79d3e08892aa8df84af8cf6f10758a4a1d4319834"
+    },
+    {
+      "level": 1,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-1.png",
+      "size": [
+        1585,
+        992
+      ],
+      "sha256": "a90aac1f78c83749fc9f26b1042da3019ca1b608fa5386f0a6c73bf6be6aa7c0"
+    },
+    {
+      "level": 2,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-2.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "77058ab6ef287c25fdc8c9a05eec3cdaa47c780ab1f22ead462c91e00da6c5f9"
+    },
+    {
+      "level": 3,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-3.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "1a4167937c097469cf57a9fa91d33ac51d819e6a10a70c22bacbb9261f5d4de5"
+    },
+    {
+      "level": 4,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-4.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "ec968a17a0058c78566472cb29d3d3eefc8eebb2f899d112762a81360fb3ba10"
+    },
+    {
+      "level": 5,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-5.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "a7204cd88dcae2eef2b18d012c10f4afe8dadf3432008669175ef907b5e8391f"
+    }
+  ]
+}

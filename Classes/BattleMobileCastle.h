@@ -21,6 +21,14 @@ float CastlePartsRoomScale(void);
 float CastlePartsLeftInset(int castleLevel);
 float CastlePartsFloatOffset(int castleLevel);
 
+//성이 달리는 조건은 Func_Battle 이 들고 있다(전역 함수다). 여기서 또
+//적으면 둘이 어긋나 바퀴만 돌고 땅은 멈추는 그림이 난다.
+//
+//네임스페이스 안에서 선언하면 BattleMobileCastle:: 짜리 다른 이름이 되어
+//링크가 안 된다. 그래서 바깥에 둔다.
+bool StageCastleRolling(void);
+void StageFoeBagDraw(int x, int y, int w);
+
 namespace BattleMobileCastle {
 
 static float s_scrollDist = 0.0f;
@@ -28,10 +36,12 @@ static float s_scrollSpeed = 24.0f;
 static float s_hitFlash = 0.0f;
 
 inline bool IsMoving() {
-	//달리는 것과 싸우는 것은 별개다. 열차는 웨이브 사이에도 간다.
-	//배경이 흐르는 조건(StageBgUpdate)과 같아야 차체 흔들림이 땅과
-	//따로 놀지 않는다.
-	return drawHandle == MD_PLAY;
+	//---- 몬스터가 서면 멈춘다 ----
+	//
+	//전에는 판에 들어와 있기만 하면 달렸다(drawHandle == MD_PLAY).
+	//그래서 한 마리와 오래 싸울수록 바퀴가 돌고 풍경이 흘렀다 -
+	//제자리 싸움인데 이동거리만 늘었다.
+	return ::StageCastleRolling();
 }
 
 inline int VisualGroundY(int layoutGroundY) {
@@ -142,9 +152,7 @@ inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
  const long long maxima[2]={Max(0LL,maxShield),Max(0LL,maxHp)};
  const long long current[2]={Max(0LL,Min(shield,maxima[0])),Max(0LL,Min(hp,maxima[1]))};
  SetAlpha(ALPHA_MAX);
- MemRect(x+3,y-3,w,h,0x07101C);
- MemRect(x,y,w,h,trim);MemRect(x+2,y-2,w-4,h-4,0x142840);
- MemRect(x+5,y-5,w-10,23,0x243A52);
+ DrawSd3dPanel(x,y,w,h,enemy?4:0);
  SetFontColor(0xF8E1A3);
  const char* name=title;
  CenterTextStrSolid(name,x+w/2,y-16,Min(.62f,(w-12.0f)/Max(1.0f,StringWidth(name,1))));
@@ -158,11 +166,11 @@ inline void DrawDuelHpBar(int x, int y, int w, long long hp, long long maxHp,
   const int top=y-33-extra-row*43,tx=x+7,tw=w-14;
   SetFontColor(row==0?0x94D8FF:enemy?0xFFB3A2:0xA6EAC2);
   CenterTextStrSolid(row==0?"방어":"체력",x+w/2,top-3,.52f);
-  MemRect(tx-1,top-16,tw+2,21,0x091322);
+  MemRectRound(tx-1,top-16,tw+2,21,0x091322,3);
   const int fill=maxima[row]>0?(int)(tw*(double)current[row]/maxima[row]):0;
   if(fill>0) {
    const int color=row==0?0x358DBD:enemy?0xBA4C62:0x268D67;
-   MemRect(tx,top-17,fill,18,color);
+   MemRectRound(tx,top-17,fill,18,color,Min(3,fill/2));
    MemRect(tx,top-17,fill,3,row==0?0x83D8EF:enemy?0xF99C92:0x7ADBB1);
   }
   char value[80],v[2][24];
@@ -203,6 +211,16 @@ inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
 	}
 	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 요새", true,
 	              armor, armorMax,power);
+
+	//---- 적이 멘 것 ----
+	//
+	//체력 막대만 있으면 얼마나 센지는 알아도 무엇으로 때리는지를 모른다.
+	//적 체력 칸 바로 아래에 적의 가방을 깔아, 그것을 보고 내 칸을 채우게
+	//한다.
+	//
+	//두 단 게이지는 44, 한 단은 34 px 다(DrawDuelHpBar). 넉넉한 쪽으로
+	//비켜 둔다.
+	::StageFoeBagDraw(DX - gap - w, y - 46 * Max(1, _2X), w);
 }
 
 inline void DrawBossMonster(int groundY) {

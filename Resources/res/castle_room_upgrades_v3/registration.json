@@ -1,0 +1,2386 @@
+[
+  {
+    "castle": 1,
+    "theme": "목재 개척 농장",
+    "file": "castle-01.png",
+    "size": [
+      2172,
+      724
+    ],
+    "rows": 2,
+    "rooms": 1,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          21,
+          10,
+          682,
+          342
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          745,
+          10,
+          682,
+          342
+        ],
+        "previous_delta": 7.607706546783447
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          1469,
+          10,
+          682,
+          342
+        ],
+        "previous_delta": 6.013224124908447
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          21,
+          372,
+          682,
+          342
+        ],
+        "previous_delta": 14.864949226379395
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          745,
+          372,
+          682,
+          342
+        ],
+        "previous_delta": 14.484538078308105
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          1469,
+          372,
+          682,
+          342
+        ],
+        "previous_delta": 22.8670654296875
+      }
+    ],
+    "sha256": "875983013b7fcef7a4c691722b69894c6ce51a2a402673f0bd0fb90ee3913b5c"
+  },
+  {
+    "castle": 2,
+    "theme": "사암 보급 요새",
+    "file": "castle-02.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "rows": 5,
+    "rooms": 2,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          15,
+          6,
+          482,
+          192
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          527,
+          6,
+          482,
+          192
+        ],
+        "previous_delta": 11.337199211120605
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          1039,
+          6,
+          482,
+          192
+        ],
+        "previous_delta": 9.1671142578125
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          15,
+          210,
+          482,
+          193
+        ],
+        "previous_delta": 26.03271484375
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          527,
+          210,
+          482,
+          193
+        ],
+        "previous_delta": 18.75227928161621
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          1039,
+          210,
+          482,
+          193
+        ],
+        "previous_delta": 19.66398048400879
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          15,
+          620,
+          482,
+          193
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          527,
+          620,
+          482,
+          193
+        ],
+        "previous_delta": 12.602580070495605
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          1039,
+          620,
+          482,
+          193
+        ],
+        "previous_delta": 8.362060546875
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          15,
+          825,
+          482,
+          193
+        ],
+        "previous_delta": 25.77213478088379
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          527,
+          825,
+          482,
+          193
+        ],
+        "previous_delta": 11.736165046691895
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          1039,
+          825,
+          482,
+          193
+        ],
+        "previous_delta": 21.93155860900879
+      }
+    ],
+    "sha256": "88cc86cef873fe89494924eb96d09c7536e03f38edbd3fae1d93b64bf51b60a9"
+  },
+  {
+    "castle": 3,
+    "theme": "백석 기사단",
+    "file": "castle-03.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "rows": 4,
+    "rooms": 2,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          15,
+          7,
+          482,
+          242
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          527,
+          7,
+          482,
+          242
+        ],
+        "previous_delta": 11.166789054870605
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          1039,
+          7,
+          482,
+          242
+        ],
+        "previous_delta": 11.928019523620605
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          15,
+          263,
+          482,
+          242
+        ],
+        "previous_delta": 19.30948829650879
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          527,
+          263,
+          482,
+          242
+        ],
+        "previous_delta": 16.15592384338379
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          1039,
+          263,
+          482,
+          242
+        ],
+        "previous_delta": 22.09309959411621
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          15,
+          519,
+          482,
+          242
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          527,
+          519,
+          482,
+          242
+        ],
+        "previous_delta": 9.731038093566895
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          1039,
+          519,
+          482,
+          242
+        ],
+        "previous_delta": 11.604411125183105
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          15,
+          775,
+          482,
+          242
+        ],
+        "previous_delta": 18.45882225036621
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          527,
+          775,
+          482,
+          242
+        ],
+        "previous_delta": 21.17818260192871
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          1039,
+          775,
+          482,
+          242
+        ],
+        "previous_delta": 17.57926368713379
+      }
+    ],
+    "sha256": "e9d6523e441e9dd8557f16453b0252cfe4ddd16381cf94c2736da21dad4f5f48"
+  },
+  {
+    "castle": 4,
+    "theme": "비취 수산 요새",
+    "file": "castle-04.png",
+    "size": [
+      1145,
+      1374
+    ],
+    "rows": 6,
+    "rooms": 3,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          11,
+          6,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          392,
+          6,
+          360,
+          217
+        ],
+        "previous_delta": 24.99678611755371
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          774,
+          6,
+          360,
+          217
+        ],
+        "previous_delta": 27.11014747619629
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          11,
+          235,
+          359,
+          217
+        ],
+        "previous_delta": 32.0400390625
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          392,
+          235,
+          360,
+          217
+        ],
+        "previous_delta": 28.69189453125
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          774,
+          235,
+          360,
+          217
+        ],
+        "previous_delta": 33.3253173828125
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          11,
+          464,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          392,
+          464,
+          360,
+          217
+        ],
+        "previous_delta": 24.56107521057129
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          774,
+          464,
+          360,
+          217
+        ],
+        "previous_delta": 27.50126075744629
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          11,
+          693,
+          359,
+          217
+        ],
+        "previous_delta": 32.683837890625
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          392,
+          693,
+          360,
+          217
+        ],
+        "previous_delta": 27.8748779296875
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          774,
+          693,
+          360,
+          217
+        ],
+        "previous_delta": 30.92041015625
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          11,
+          922,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          392,
+          922,
+          360,
+          217
+        ],
+        "previous_delta": 26.68949317932129
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          774,
+          922,
+          360,
+          217
+        ],
+        "previous_delta": 27.7860107421875
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          11,
+          1151,
+          359,
+          217
+        ],
+        "previous_delta": 32.03792190551758
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          392,
+          1151,
+          360,
+          217
+        ],
+        "previous_delta": 28.873291015625
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          774,
+          1151,
+          360,
+          217
+        ],
+        "previous_delta": 34.72379684448242
+      }
+    ],
+    "sha256": "3d05fe82769d106f5018fae0d3a4cb64504e0a44a453dd18c5d13bb8d7aa2aaf"
+  },
+  {
+    "castle": 5,
+    "theme": "강철 공업 요새",
+    "file": "castle-05.png",
+    "size": [
+      1145,
+      1374
+    ],
+    "rows": 6,
+    "rooms": 3,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          11,
+          6,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          392,
+          6,
+          360,
+          217
+        ],
+        "previous_delta": 28.21695899963379
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          774,
+          6,
+          360,
+          217
+        ],
+        "previous_delta": 29.26497459411621
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          11,
+          235,
+          359,
+          217
+        ],
+        "previous_delta": 39.53483200073242
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          392,
+          235,
+          360,
+          217
+        ],
+        "previous_delta": 35.2554931640625
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          774,
+          235,
+          360,
+          217
+        ],
+        "previous_delta": 38.0867919921875
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          11,
+          464,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          392,
+          464,
+          360,
+          217
+        ],
+        "previous_delta": 30.928955078125
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          774,
+          464,
+          360,
+          217
+        ],
+        "previous_delta": 29.25333595275879
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          11,
+          693,
+          359,
+          217
+        ],
+        "previous_delta": 40.68925094604492
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          392,
+          693,
+          360,
+          217
+        ],
+        "previous_delta": 35.3126220703125
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          774,
+          693,
+          360,
+          217
+        ],
+        "previous_delta": 40.46858596801758
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          11,
+          922,
+          359,
+          217
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          392,
+          922,
+          360,
+          217
+        ],
+        "previous_delta": 29.96541404724121
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          774,
+          922,
+          360,
+          217
+        ],
+        "previous_delta": 33.13004684448242
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          11,
+          1151,
+          359,
+          217
+        ],
+        "previous_delta": 40.56331253051758
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          392,
+          1151,
+          360,
+          217
+        ],
+        "previous_delta": 34.34952926635742
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          774,
+          1151,
+          360,
+          217
+        ],
+        "previous_delta": 41.345458984375
+      }
+    ],
+    "sha256": "9cf266375db499171e64677041be41d08875b5a9583ccac4b5de7ade97603c43"
+  },
+  {
+    "castle": 6,
+    "theme": "청록 공학 성",
+    "file": "castle-06.png",
+    "size": [
+      1086,
+      1448
+    ],
+    "rows": 8,
+    "rooms": 4,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          10,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          372,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": 12.141194343566895
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          734,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": 14.841227531433105
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          10,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 13.793538093566895
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          372,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 14.690470695495605
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          734,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 20.40328025817871
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          10,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          372,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": 12.534260749816895
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          734,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": 17.2227783203125
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          10,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 18.40828514099121
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          372,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 19.9443359375
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          734,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 21.29886817932129
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          10,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          372,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": 16.99251365661621
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          734,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": 19.84383201599121
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          10,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 22.99173927307129
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          372,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 12.064494132995605
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          734,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 21.29532814025879
+      },
+      {
+        "room": 3,
+        "level": 0,
+        "crop": [
+          10,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 3,
+        "level": 1,
+        "crop": [
+          372,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": 14.0863037109375
+      },
+      {
+        "room": 3,
+        "level": 2,
+        "crop": [
+          734,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": 14.810750007629395
+      },
+      {
+        "room": 3,
+        "level": 3,
+        "crop": [
+          10,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 13.03955078125
+      },
+      {
+        "room": 3,
+        "level": 4,
+        "crop": [
+          372,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 14.628499031066895
+      },
+      {
+        "room": 3,
+        "level": 5,
+        "crop": [
+          734,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 21.82157325744629
+      }
+    ],
+    "sha256": "e6b74ceb346effb194960e90e154e459914c653aec86ba85987154137226fb07"
+  },
+  {
+    "castle": 7,
+    "theme": "붉은 봉황 성",
+    "file": "castle-07.png",
+    "size": [
+      1086,
+      1448
+    ],
+    "rows": 8,
+    "rooms": 4,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          10,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          372,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": 11.972086906433105
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          734,
+          5,
+          342,
+          171
+        ],
+        "previous_delta": 12.158894538879395
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          10,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 14.5787353515625
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          372,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 15.309000968933105
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          734,
+          186,
+          342,
+          171
+        ],
+        "previous_delta": 18.29142189025879
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          10,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          372,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": 9.0504150390625
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          734,
+          367,
+          342,
+          171
+        ],
+        "previous_delta": 9.2000732421875
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          10,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 14.146037101745605
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          372,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 15.251912117004395
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          734,
+          548,
+          342,
+          171
+        ],
+        "previous_delta": 20.6241455078125
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          10,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          372,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": 13.685994148254395
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          734,
+          729,
+          342,
+          171
+        ],
+        "previous_delta": 13.236002922058105
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          10,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 15.711222648620605
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          372,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 14.226765632629395
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          734,
+          910,
+          342,
+          171
+        ],
+        "previous_delta": 13.209919929504395
+      },
+      {
+        "room": 3,
+        "level": 0,
+        "crop": [
+          10,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 3,
+        "level": 1,
+        "crop": [
+          372,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": 11.148844718933105
+      },
+      {
+        "room": 3,
+        "level": 2,
+        "crop": [
+          734,
+          1091,
+          342,
+          171
+        ],
+        "previous_delta": 10.917277336120605
+      },
+      {
+        "room": 3,
+        "level": 3,
+        "crop": [
+          10,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 15.855631828308105
+      },
+      {
+        "room": 3,
+        "level": 4,
+        "crop": [
+          372,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 14.710041999816895
+      },
+      {
+        "room": 3,
+        "level": 5,
+        "crop": [
+          734,
+          1272,
+          342,
+          171
+        ],
+        "previous_delta": 24.89620018005371
+      }
+    ],
+    "sha256": "9a362d8fb4531b65186903484aa1a923364572c5e96745e788e03022bc4b94cd"
+  },
+  {
+    "castle": 8,
+    "theme": "백조 학술 궁전",
+    "file": "castle-08.png",
+    "size": [
+      1086,
+      1448
+    ],
+    "rows": 10,
+    "rooms": 5,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          10,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          372,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 12.416829109191895
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          734,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 13.6253662109375
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          10,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 35.0115966796875
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          372,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 20.86344337463379
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          734,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 22.41927146911621
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          10,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          372,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 14.2008056640625
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          734,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 16.5003662109375
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          10,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 31.68973731994629
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          372,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 12.782429695129395
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          734,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 16.755615234375
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          10,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          372,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 15.765177726745605
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          734,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 14.907185554504395
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          10,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 35.4708251953125
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          372,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 22.53031349182129
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          734,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 17.77726173400879
+      },
+      {
+        "room": 3,
+        "level": 0,
+        "crop": [
+          10,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 3,
+        "level": 1,
+        "crop": [
+          372,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 14.990315437316895
+      },
+      {
+        "room": 3,
+        "level": 2,
+        "crop": [
+          734,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 20.50663185119629
+      },
+      {
+        "room": 3,
+        "level": 3,
+        "crop": [
+          10,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 33.00813674926758
+      },
+      {
+        "room": 3,
+        "level": 4,
+        "crop": [
+          372,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 14.6627197265625
+      },
+      {
+        "room": 3,
+        "level": 5,
+        "crop": [
+          734,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 20.78206443786621
+      },
+      {
+        "room": 4,
+        "level": 0,
+        "crop": [
+          10,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 4,
+        "level": 1,
+        "crop": [
+          372,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 18.04203224182129
+      },
+      {
+        "room": 4,
+        "level": 2,
+        "crop": [
+          734,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 28.480712890625
+      },
+      {
+        "room": 4,
+        "level": 3,
+        "crop": [
+          10,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 54.2630615234375
+      },
+      {
+        "room": 4,
+        "level": 4,
+        "crop": [
+          372,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 25.91581153869629
+      },
+      {
+        "room": 4,
+        "level": 5,
+        "crop": [
+          734,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 28.63472557067871
+      }
+    ],
+    "sha256": "924b4089ba8d763ab6d837d73c45ef5e41fd788968234202a603bd24d4eb6871"
+  },
+  {
+    "castle": 9,
+    "theme": "수정 마법 성",
+    "file": "castle-09.png",
+    "size": [
+      1086,
+      1448
+    ],
+    "rows": 10,
+    "rooms": 5,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          10,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          372,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 11.716959953308105
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          734,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 10.353596687316895
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          10,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 32.74821090698242
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          372,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 23.5599365234375
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          734,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 22.92049217224121
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          10,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          372,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 14.965983390808105
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          734,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 10.400471687316895
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          10,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 33.86800003051758
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          372,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 20.2841796875
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          734,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 23.7056884765625
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          10,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          372,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 15.814045906066895
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          734,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 16.98714256286621
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          10,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 36.59260940551758
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          372,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 18.1468505859375
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          734,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 18.43155860900879
+      },
+      {
+        "room": 3,
+        "level": 0,
+        "crop": [
+          10,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 3,
+        "level": 1,
+        "crop": [
+          372,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 12.323689460754395
+      },
+      {
+        "room": 3,
+        "level": 2,
+        "crop": [
+          734,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 11.494140625
+      },
+      {
+        "room": 3,
+        "level": 3,
+        "crop": [
+          10,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 33.4869384765625
+      },
+      {
+        "room": 3,
+        "level": 4,
+        "crop": [
+          372,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 18.34745216369629
+      },
+      {
+        "room": 3,
+        "level": 5,
+        "crop": [
+          734,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 19.34769630432129
+      },
+      {
+        "room": 4,
+        "level": 0,
+        "crop": [
+          10,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 4,
+        "level": 1,
+        "crop": [
+          372,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 16.14949607849121
+      },
+      {
+        "room": 4,
+        "level": 2,
+        "crop": [
+          734,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 17.072509765625
+      },
+      {
+        "room": 4,
+        "level": 3,
+        "crop": [
+          10,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 50.244384765625
+      },
+      {
+        "room": 4,
+        "level": 4,
+        "crop": [
+          372,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 18.57267189025879
+      },
+      {
+        "room": 4,
+        "level": 5,
+        "crop": [
+          734,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 27.02099609375
+      }
+    ],
+    "sha256": "815fe4eba0bf392b9a78b50237439223e636c95738f8f6e9273353f16df32ffe"
+  },
+  {
+    "castle": 10,
+    "theme": "태양 왕실 궁전",
+    "file": "castle-10.png",
+    "size": [
+      1086,
+      1448
+    ],
+    "rows": 10,
+    "rooms": 5,
+    "frames": [
+      {
+        "room": 0,
+        "level": 0,
+        "crop": [
+          10,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 0,
+        "level": 1,
+        "crop": [
+          372,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 15.130534172058105
+      },
+      {
+        "room": 0,
+        "level": 2,
+        "crop": [
+          734,
+          4,
+          342,
+          136
+        ],
+        "previous_delta": 17.4012451171875
+      },
+      {
+        "room": 0,
+        "level": 3,
+        "crop": [
+          10,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 35.53458786010742
+      },
+      {
+        "room": 0,
+        "level": 4,
+        "crop": [
+          372,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 19.93204689025879
+      },
+      {
+        "room": 0,
+        "level": 5,
+        "crop": [
+          734,
+          148,
+          342,
+          137
+        ],
+        "previous_delta": 24.95829200744629
+      },
+      {
+        "room": 1,
+        "level": 0,
+        "crop": [
+          10,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 1,
+        "level": 1,
+        "crop": [
+          372,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 14.640095710754395
+      },
+      {
+        "room": 1,
+        "level": 2,
+        "crop": [
+          734,
+          293,
+          342,
+          137
+        ],
+        "previous_delta": 8.732096672058105
+      },
+      {
+        "room": 1,
+        "level": 3,
+        "crop": [
+          10,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 36.06880569458008
+      },
+      {
+        "room": 1,
+        "level": 4,
+        "crop": [
+          372,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 18.6246337890625
+      },
+      {
+        "room": 1,
+        "level": 5,
+        "crop": [
+          734,
+          438,
+          342,
+          137
+        ],
+        "previous_delta": 20.67081642150879
+      },
+      {
+        "room": 2,
+        "level": 0,
+        "crop": [
+          10,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 2,
+        "level": 1,
+        "crop": [
+          372,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 16.73551368713379
+      },
+      {
+        "room": 2,
+        "level": 2,
+        "crop": [
+          734,
+          583,
+          342,
+          137
+        ],
+        "previous_delta": 18.67549705505371
+      },
+      {
+        "room": 2,
+        "level": 3,
+        "crop": [
+          10,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 36.201416015625
+      },
+      {
+        "room": 2,
+        "level": 4,
+        "crop": [
+          372,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 15.453694343566895
+      },
+      {
+        "room": 2,
+        "level": 5,
+        "crop": [
+          734,
+          728,
+          342,
+          136
+        ],
+        "previous_delta": 15.781779289245605
+      },
+      {
+        "room": 3,
+        "level": 0,
+        "crop": [
+          10,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 3,
+        "level": 1,
+        "crop": [
+          372,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 16.54325294494629
+      },
+      {
+        "room": 3,
+        "level": 2,
+        "crop": [
+          734,
+          872,
+          342,
+          137
+        ],
+        "previous_delta": 17.31046485900879
+      },
+      {
+        "room": 3,
+        "level": 3,
+        "crop": [
+          10,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 37.9302978515625
+      },
+      {
+        "room": 3,
+        "level": 4,
+        "crop": [
+          372,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 14.529377937316895
+      },
+      {
+        "room": 3,
+        "level": 5,
+        "crop": [
+          734,
+          1017,
+          342,
+          137
+        ],
+        "previous_delta": 19.1572265625
+      },
+      {
+        "room": 4,
+        "level": 0,
+        "crop": [
+          10,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": null
+      },
+      {
+        "room": 4,
+        "level": 1,
+        "crop": [
+          372,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 20.48758888244629
+      },
+      {
+        "room": 4,
+        "level": 2,
+        "crop": [
+          734,
+          1162,
+          342,
+          137
+        ],
+        "previous_delta": 19.6751708984375
+      },
+      {
+        "room": 4,
+        "level": 3,
+        "crop": [
+          10,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 66.778564453125
+      },
+      {
+        "room": 4,
+        "level": 4,
+        "crop": [
+          372,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 17.37841796875
+      },
+      {
+        "room": 4,
+        "level": 5,
+        "crop": [
+          734,
+          1307,
+          342,
+          137
+        ],
+        "previous_delta": 27.43221092224121
+      }
+    ],
+    "sha256": "84fb10e5a594cab1ae0d848df70f8f6e0e4ed108db4cffb4b37de8e88288a182"
+  }
+]

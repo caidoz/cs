@@ -1,0 +1,109 @@
+{
+  "executable": "proj.win32/Debug.win32/cs.interiors-v3.exe",
+  "sha256": "9aa937cf7e8dde5f1bedffa61c800303ed3c7cec14fefccd52390f34bd4fd30e",
+  "checks": [
+    "Win32 Debug build",
+    "160 native captures: 10 castles x base/max x open/closed x 4 viewport ratios",
+    "All ten castles: proportional growth, original hero/deck/weapon anchors, wheel rotation",
+    "All ten castles: room open/close, zoom, 20 residents and dedicated module crop bounds",
+    "Castle menu: dedicated room icons, scrolling, gold confirmation, upgrade, costume selection"
+  ],
+  "assets": [
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-01-base.png",
+      "dimensions": [
+        2141,
+        734
+      ],
+      "sha256": "eb229ce51e8342dd0c33b7c6dd86a6b48f630c411c87d2ffb8059fa67bd4c682"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-01-max.png",
+      "dimensions": [
+        2141,
+        734
+      ],
+      "sha256": "e736ae605e3516ad1db88519708088515981fe4caaca738f1d21726d92b45e81"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-02.png",
+      "dimensions": [
+        1951,
+        806
+      ],
+      "sha256": "119afc8d23f6a0633821a25d8dcd96c993f05490a4571a0502cb346b352fedd1"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-03.png",
+      "dimensions": [
+        1570,
+        1002
+      ],
+      "sha256": "d87f1d2e950d91b3445f3c08ba4504fb4aa42af251fb66e500f2e33e2b8ba01e"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-04.png",
+      "dimensions": [
+        1490,
+        1056
+      ],
+      "sha256": "e05503c52e231ae1cf6679607a5ed0740cc3887ba117a6e36776304cb659a8f3"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-05.png",
+      "dimensions": [
+        1426,
+        1103
+      ],
+      "sha256": "424c4d584ba5e2e9bb0faa931f767ecff205adc8ad824f832f41cb61eaa4f36e"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-06.png",
+      "dimensions": [
+        1230,
+        1278
+      ],
+      "sha256": "78fcd95270f5559df56e66f2c8bcb8fd558e9f1451779feba09fb724027b85a0"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-07.png",
+      "dimensions": [
+        1272,
+        1236
+      ],
+      "sha256": "9943fb0edf9a8039e88e2f791c1fc2606d0fcbecc66bd5179e0abdf9c0fc0ef2"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-08.png",
+      "dimensions": [
+        1264,
+        1244
+      ],
+      "sha256": "118a475067d539fe9bfcc6b710d50c65501c9dfcc4e20227638b2a6cc2a55f95"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-09.png",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "sha256": "3856d527398b7fee04637f0f3e3a6f13148fdd0b2e78edae503cc0c82c07090f"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-10-base.png",
+      "dimensions": [
+        786,
+        1999
+      ],
+      "sha256": "1375aa29c091d6cb4be53e4772a2beea79c56bbec3a943fdbe0c95883d127e3a"
+    },
+    {
+      "path": "Resources/res/castle_interiors_v3/castle-10-max.png",
+      "dimensions": [
+        787,
+        1999
+      ],
+      "sha256": "1eb2fdef66985b33acc40c7ddbfbf04250772c5f3c3376a0ac22c98826115137"
+    }
+  ]
+}

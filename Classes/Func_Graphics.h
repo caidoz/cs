@@ -111,6 +111,10 @@ float DrawNumTTF(long long int num, int x, int y, int font, int align, int digit
 void DrawNum2(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom, bool fixed);
 void DrawNum(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed);
 void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom);
+// Coin + gold digits, shared by prices and balances. Default matches four-choice shop.
+float DrawGoldAmount(long long amount,int x,int top,int maxWidth=0,int align=CENTER,float scale=1.0f);
+bool CastleRoomUpgradeShaderValid();
+void SetCastleRoomFeather(bool enabled);
 void DrawBigNumGold(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom);
 float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed);
 void DrawBigNum(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed);
@@ -197,3 +201,5 @@ void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, 
 void DrawCastleBox(OBJECT* pObj);
 void BoxDraw(OBJECT* pObj);
 void DrawPixelPanel(int x,int y,int w,int h,int fill=0x102638,int edge=0x43859B);
+// Shared flat pixel skin. Legacy helper name retained for existing callers.
+bool DrawSd3dPanel(int x,int y,int w,int h,int style=1);

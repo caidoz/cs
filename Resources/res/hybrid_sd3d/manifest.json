@@ -1,0 +1,173 @@
+{
+  "version": 4,
+  "style": "rounded SD 3D raster environment with pixel characters and pixel distant bosses",
+  "generation": "built-in image_gen; PNG pixels copied unchanged; runtime atlas crops and nine-slice layout",
+  "font": "Bundled Pretendard Bold; original font file and SIL OFL license in Resources/fonts; characters and bosses retain their original raster filtering.",
+  "scope": {
+    "castle": "Authored IndividualCastleV4 geometry restored for all ten castles. Original per-castle weapon types and per-floor rooms restored. Royal castle enlarged 422 -> 480 uniformly, including its rooms.",
+    "environment": "first region (swamp canyon): independent far, mid and railway layers",
+    "menus": "shared panels, buttons, resource bar, navigation, equipment, shop, castle, settings/subwindows, details, inventory grids, combat HUD and title"
+  },
+  "runtime": {
+    "parts.png": "Legacy atlas retained for cannon and menu part icons; roof/wall/deck runtime now use registered complete-castle V2 atlases.",
+    "wheels.png": "6 front-on wheel upgrades; original motion distance controls rotation",
+    "ui.png": "6 nine-slice panel skins; existing actions and hit rectangles preserved",
+    "far.png": "opaque distant scenery; original pixel boss drawn on a separate layer",
+    "mid.png": "transparent trees, cliffs and waterfalls",
+    "rail.png": "transparent horizontal railway and supports; original track contact height",
+    "title-scene.png": "hybrid title background without text",
+    "title-logo.png": "transparent logo fitted independently to screen dimensions",
+    "title.png": "source title artwork retained for provenance, not the runtime compositing background",
+    "castles-closed-v2.png": "Six complete, coherent closed hulls; source rectangles use one uniform scale, cuts follow structural beams.",
+    "castles-open-v2.png": "Exactly registered open-facade counterparts; same roof, outer silhouette, chassis and outdoor deck.",
+    "fleet-NN-closed.png": "Castles02..10: six coherent complete exteriors on registered 3x2 grids. Roof and facade cuts share beam seams.",
+    "fleet-NN-open.png": "Registered open-interior counterparts; source rectangles preserve the same outer silhouette and deck.",
+    "fleet-NN-parts.png": "Six thematic mounted guns plus six independent front-on rotating wheels. Runtime crops omit gun carriage wheels."
+  },
+  "castle_coordinate_system": {
+    "size": [
+      1024,
+      680
+    ],
+    "floor_y": 432,
+    "commander": [
+      950,
+      432
+    ],
+    "wheel_centers": [
+      [
+        180,
+        610
+      ],
+      [
+        650,
+        610
+      ]
+    ],
+    "wheel_radius": 70,
+    "upgrades": "Existing castleProgress.parts[0][0..4], levels 0..5, remain independent. Changing levels does not move floor, sockets or wheel axes.",
+    "interior": "Existing tap-to-open state; the closed facade hides residents and is restored after room rendering.",
+    "allies": "Stand behind commander toward the castle, with fixed spacing; back-plane cannon renders before characters.",
+    "registration": "3 columns, column stride 658; 2 rows, row stride 389; source cell x=20+column*658, y=row*389, size638x389. Roof y0..175; facade x0..415/y175..315. No independent horizontal/vertical stretch."
+  },
+  "review": {
+    "asset_validation": "tools/castles/measure_hybrid_sd3d.py",
+    "native_screens": "tools/castles/verify_hybrid_sd3d.ps1",
+    "upgrade_compositions": "tools/castles/verify_upgrade_parts.ps1 -Executable proj.win32/Debug.win32/cs.hybrid-fleet.exe",
+    "aspect_ratios": [
+      [
+        640,
+        850
+      ],
+      [
+        640,
+        1069
+      ],
+      [
+        640,
+        1280
+      ],
+      [
+        640,
+        1408
+      ]
+    ],
+    "gallery": "reports/art_direction/authored-castles-review.html",
+    "native_fleet": "tools/castles/verify_authored_castles.ps1",
+    "weapon_types": "tools/castles/verify_cannon_upgrades.ps1 -Executable proj.win32/Debug.win32/cs.authored-castles.exe"
+  },
+  "environment_coverage": "First-region far/mid layers cover full viewport uniformly and stay horizontally centered; pixel boss shares far-layer coverage and phase.",
+  "fleet_registration": "fleet-registration.json and Classes/Data/HybridCastleFleet.h; produced by tools/castles/measure_hybrid_fleet.py without modifying PNGs.",
+  "fleet_capacity": "Authored gameplay floor count restored exactly: castle index+1 floors. Each floor uses its own original room theme and original upgrade artwork.",
+  "fleet_lobby": "Existing left/right arrows switch castles. Tap the castle to open/close interior. Initial tall silhouettes fit below lobby distance card; manual zoom stays available.",
+  "castle_rendering": "Classes/CastleModularDebug.h uses original unarmed rigs, original mounted cannon atlas, original floor-specific rectangular rooms and matching original axle data. RGB-only material treatment: Classes/AuthoredCastleTone.inc.",
+  "fleet_status": "REJECTED: generated hybrid starter/fleet geometry is no longer used by the castle, inventory weapon or castle-menu rendering paths. Retained only as archived draft assets.",
+  "tone": "Existing castle PNG pixels and texture coordinates are unchanged. Shader changes RGB only; alpha, silhouette, deck, wall, prop and weapon shapes are preserved. Characters/bosses excluded.",
+  "royal": "Width 480 versus original 422 (+13.744%); original aspect ratio and all source anchors retained. Warm inlay glints affect only existing gold, not the silhouette.",
+  "interiors_v2": {
+    "status": "superseded by dedicated castle-specific v3 modules",
+    "assets": "res/castle_rooms_sd_v2/grade-0.png through grade-5.png",
+    "layout": "full authored aperture, 1 through 10 floors, uniform aspect-preserving crop",
+    "themes": "barracks,dining,bedroom,kitchen,infirmary,bath,library,navigation,officers,throne",
+    "review": "reports/art_direction/rooms-v2-review.html",
+    "executable_sha256": "2384D67A8ADDA71E9C95E6424D34CDBCD9112A25C15EFB4CEF84DF91F24F748D"
+  },
+  "interiors_v3": {
+    "status": "active source and verified build",
+    "assets": "res/castle_interiors_v3",
+    "structure": "one continuous module per castle, material matched to its original shell",
+    "floors": "1 through 10, actual slab anchors for residents and clipping",
+    "upgrades": "base/advanced furnishing sets; six material finishes retain existing save levels",
+    "review": "reports/art_direction/interiors-v3-review.html",
+    "executable_sha256": "9aa937cf7e8dde5f1bedffa61c800303ed3c7cec14fefccd52390f34bd4fd30e"
+  },
+  "scene_fixes": {
+    "status": "verified",
+    "mid": "res/hybrid_sd3d/mid-v2.png",
+    "far": "single opaque periodic shader, no mirrored repetition",
+    "grid": "original grid0..grid9 connected castle frames",
+    "debug": "in-game toggle; title remains clean",
+    "build_sha256": "779e20335174ff4bbeed8dd78fd49aeb7d702eaf0126e91f235b1d6df8cc46ed",
+    "review": "reports/art_direction/scene-fixes-review.html"
+  },
+  "regional_backgrounds_v2": {
+    "status": "active and verified",
+    "regions": "02 through 15",
+    "assets": "res/stage_sd3d_v2",
+    "png_count": 42,
+    "generation": "built-in image_gen; generation.json contains exact prompts",
+    "scroll": "nonmirrored scenery, periodic far and rail shader, transparent mid edges",
+    "registration": "measured rail contact rows; asset-audit.json",
+    "pixel_art": "original characters and boss/fx slots retained",
+    "native_viewports": [
+      [
+        640,
+        850
+      ],
+      [
+        640,
+        1136
+      ],
+      [
+        640,
+        1280
+      ],
+      [
+        640,
+        1408
+      ]
+    ],
+    "native_captures": 120,
+    "combat": "swords, crew, cannon and enemy impacts passed",
+    "review": "reports/art_direction/all-regions-review.html",
+    "executable_sha256": "afd8a69f487a228c1431cc09699147960fff763d5e9db94d19cb739efa1dd58b"
+  },
+  "soft_castle_sectors_v1": {
+    "status": "verified",
+    "castles": 10,
+    "sector_counts": [
+      1,
+      2,
+      2,
+      3,
+      3,
+      4,
+      4,
+      5,
+      5,
+      5
+    ],
+    "asset_pngs": 12,
+    "native_captures": {
+      "850": 40,
+      "1136": 40,
+      "1280": 40,
+      "1408": 40
+    },
+    "combat": "passed",
+    "executable_sha256": "6b66509087ab6f99cbfaa6646336fae32da266b38ae0f1e2d530460e010c4646",
+    "assets": "res/castle_soft_sectors_v1",
+    "review": "reports/art_direction/soft-sectors-review.html",
+    "generation": "built-in image_gen; generation.json and final-edits.json"
+  }
+}

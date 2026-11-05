@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 
 // Battle 관련 함수
@@ -35,6 +35,9 @@ void StageRtToggleAuto(void);
 void StageRtSetAuto(bool on);
 bool StageRtAutoOn(void);
 int StageRtFoe(void);		//지금 서 있는 몬스터. 없으면 -1
+
+//성이 달리는가. 몬스터가 서 있으면 멈춘다 - 배경과 차체가 같은 값을 본다.
+bool StageCastleRolling(void);
 void StageFoeShotDraw(void);	//몬스터가 날린 검
 void StageRtDrawButton(void);
 int StageSwordCooldown(int detail);
@@ -54,6 +57,9 @@ void StageArtilleryStep(bool running, int foe);
 void StageArtilleryDraw(void);
 void StageArtilleryPreviewStep(bool prime);
 bool StageArtilleryVisual(float* charge, float* recoil, int* burst);
+void LobbyArtilleryDebugFire(void);
+void LobbyArtilleryDebugDraw(void);
+int LobbyArtilleryDebugHits(void);
 bool CastlePartsCannonMuzzle(int castleLevel, float* x, float* y);
 void StageArtilleryNotifySpawn(int obj);
 int StageRtCrewType(int slot);
@@ -111,3 +117,8 @@ bool IsBossRaidWaitingForControl(void);
 //그 동료가 지금 실제로 공격 동작을 돌리고 있는가.
 //보스전은 턴이 없어 전역 turn 하나로 여섯을 가릴 수 없다.
 bool IsBossRaidCrewActing(int crewSlot);
+
+void DebugControlsToggle(void);
+void SceneBackgroundReviewAt(int sample);
+bool AllRegionBackgroundReviewAt(int sample);
+void SetStageFarScroll(float span,float phase);

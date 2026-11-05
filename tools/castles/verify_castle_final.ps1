@@ -1,4 +1,4 @@
-param([string]$Executable='proj.win32/Debug.win32/cs.castle-final.exe',[int[]]$Heights=@(850,960,1136,1408))
+﻿param([string]$Executable='proj.win32/Debug.win32/cs.castle-spec-v2.exe',[int[]]$Heights=@(850,1069,1280,1408))
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $keys=@('CS_CASTLE_REVIEW_PATH','CS_CASTLE_FINAL_REVIEW','CS_BATTLE_MENU_REVIEW','CS_BATTLE_MENU_HEIGHT')
@@ -6,7 +6,7 @@ $saved=@{};foreach($key in $keys){$saved[$key]=[Environment]::GetEnvironmentVari
 $process=$null
 try {
  foreach($height in $Heights){
-  $review=Join-Path $root "output/castle-final-$height"
+  $review=Join-Path $root "output/castle-spec-v2-$height"
   New-Item -ItemType Directory -Force $review | Out-Null
   Set-Content (Join-Path $review 'phases.log') ''
   $env:CS_CASTLE_REVIEW_PATH=$review.Replace('\','/')+'/'

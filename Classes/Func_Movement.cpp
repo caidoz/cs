@@ -12014,6 +12014,19 @@ void RegenMove(OBJECT* pObj)
 		(obj == SOLDIER) ? Max(2, FPS * 9 / 20 + 8) : FPS / 2;
 
 	pObj->frame++;
+	//---- 실시간 판의 히어로는 떨어져 들어오지 않는다 ----
+	//
+	//로비에서 이미 성 위에 서 있던 사람이다. 모험을 시작할 때마다 다시
+	//사라졌다 뛰어내리면 "로빈이 리셋됐다" 로 읽힌다. 서 있던 자리에
+	//그대로 둔다.
+	//
+	//착지 처리(모션 · 핸들러 · waveStatus)는 아래 분기가 그대로 하므로
+	//시계만 그 자리로 보낸다. 따로 세우면 두 길이 갈라진다.
+	if(IsStageRealtime() && obj==ROBIN) {
+		pObj->active=true;
+		pObj->frame=regenMotionFrame;
+	}
+
 	// Realtime opponents enter from the right; skip the old summon delay.
 	if(IsStageRealtime() && obj>=ENEMY && obj<NEUTRAL && !pObj->active) {
 		pObj->active=true;

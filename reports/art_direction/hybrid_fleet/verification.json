@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "date": "2026-10-30",
+  "platform": "Windows Debug Win32",
+  "source_executable": "proj.win32/Debug.win32/cs.hybrid-fleet.exe",
+  "installed_executable": "proj.win32/Debug.win32/cs.exe",
+  "sha256": "10D3C0D55F1E833C85AFEA100D80E3797CCC0918D2D3A7A6BC6A5AEEF411C51D",
+  "scope": "All 10 castles, five independent parts, levels 0..5. Existing upgrade data/costs/ownership retained.",
+  "passed": [
+    "27 new transparent fleet atlases; 108 gun/wheel source rectangles and circular wheel bounds",
+    "160 native lobby captures: 10 castles x base/max x closed/open x four aspect ratios",
+    "120 native upgrade menu compositions: six whole-castle levels, five single-part max states, one mixed state per castle",
+    "Four castle menu aspect ratios, full scroll, confirmation, one gold charge, duplicate/cancel/stale input/MAX/acquisition checks; upgrade logic unchanged by final rendering-size adjustment",
+    "Combat rewards, boomerang hit/return/readiness/pause and repeated automatic attacks",
+    "Installed executable SHA256 matches final verified build",
+    "git diff --check"
+  ],
+  "art_generation": "Built-in image_gen, generated PNGs copied unchanged; promptset Resources/res/hybrid_sd3d/fleet-prompts.json",
+  "runtime": "One uniform scale per authored cell, cuts along structural beams; real deck/hero/cannon sockets and rotating wheel axes.",
+  "visual_rows": "Visible room rows follow authored apertures; Progress room capacity and displayed gameplay floor count remain existing data.",
+  "gallery": "reports/art_direction/hybrid-fleet-review.html",
+  "limitations": [
+    "iOS build not run on this Windows workstation."
+  ],
+  "status": "Historical, rejected castle geometry; superseded by authored restoration",
+  "superseded_by": "reports/art_direction/authored_castles/verification.json"
+}

@@ -14,6 +14,7 @@
 #include "BattleMenuLayout.h"
 #include "DragPreviewModel.h"
 #include "Data/FoeGearData.h"
+#include "Data/GearRoleData.h"
 namespace {
 struct CombatActorPoint {float x,y,headX,headY;int tick;};
 CombatActorPoint combatActorPoints[TOTALOBJECT]={};
@@ -45,9 +46,15 @@ bool StageCombatActorPoint(int obj,float* x,float* y,bool head) {
  *y=STATUSWIN_Y+(rh-4)*TSIZE-(ao[obj].y-OBJIMGGAP)-ry+(head?42:20)*_2X*ao[obj].zoom;
  return true;
 }
+static float LobbyCharZoom(void);
+static float CastleCompanionHeight(float charZoom);
+static float CastleCompanionZoom(float charZoom,int type);
+static float CastleWorldCharZoom(void);
+static float CastleCompanionFootOffset(int type,float zoom);
 #ifdef GAMEDEBUG
 // All ten cannons share the lower command platform and commander-relative placement.
 #include "CastleModularDebug.h"
+#include "LobbyCastleDebug.inc"
 #include "StageBackground.h"
 float StageCastleGroundingPx(void) { return StageBg::kCastleGroundingPx; }
 // CastleModularDebug also exposes its active state to Core so animated title
@@ -439,18 +446,20 @@ void VersionDraw(void)
 
 	const int x = 5 * _2X;
 	const int y = DY - 5 * _2X;
-	const int w = 154 * _2X;
-	const int h = 43 * _2X;
+	const bool details=getenv("CS_DEBUG_CONTROLS")!=NULL;
+	const int w = details?154*_2X:128;
+	const int h = details?43*_2X:28;
 	char account[64];
 	char revision[64];
 	sprintf(account, "User ID  %lld", gNetUserId);
 	sprintf(revision, "Data revision  %lld", gNetRevision);
 
 	SetAlpha(14);
-	MemRectRound(x, y, w, h, COLOR_BLACK, 5 * _2X);
+	MemRect(x, y, w, h, COLOR_BLACK);
 	SetAlpha(32);
 	SetFontColor(COLOR_WHITE);
 	DrawText(TEXT_VERSION, x + 7 * _2X, y - 5 * _2X, 0.72f);
+	if(!details)return;
 	DrawTextStrSystem(account, x + 7 * _2X, y - 18 * _2X,
 		0.58f, LEFT, true);
 	DrawTextStrSystem(revision, x + 7 * _2X, y - 31 * _2X,
@@ -1281,13 +1290,12 @@ namespace
 	void DrawTitleTermsCheck(int x, int y, bool checked, const char* label, int touchFunc)
 	{
 		const int box = 30 * _2X;
-		MemRect(x, y, box, box, COLOR_WHITE);
-		MemRectFrame(x, y, box, box, checked ? COLOR_REALRED : COLOR_GREY);
+		DrawSd3dPanel(x,y,box,box,checked?2:1);
 		if (checked) {
-			SetFontColor(COLOR_REALRED);
+			SetFontColor(COLOR_WHITE);
 			CenterTextStr("V", x + box / 2, y - box / 2 + 7 * _2X, 1.5f);
 		}
-		SetFontColor(COLOR_DARKGREY);
+		SetFontColor(0xD7E9EC);
 		//체크박스와 별개로 문구도 왼쪽 8px, 위쪽 4px 이동한다.
 		DrawTextStrSystem(label, x + box + 2 * _2X, y - 7 * _2X,
 			1.20f, LEFT, false);
@@ -1308,12 +1316,12 @@ namespace
 		SetAlpha(22);
 		MemRect(0, DY, DX, DY, COLOR_BLACK);
 		SetAlpha(32);
-		MemRect(x, y, panelW, panelH, 0xFFF8E8);
-		MemRectFrame(x, y, panelW, panelH, COLOR_ORANGE);
+		DrawSd3dPanel(x,y,panelW,panelH,0);
 
 		SetFontColor(COLOR_WHITE);
 		CenterTextStr("게임 이용 동의", xOffset + DX / 2, y - 24 * _2X, 1.86f);
 		SetFontColor(COLOR_DARKGREY);
+		SetFontColor(0xD7E9EC);
 		DrawTextStrSystem("처음 한 번만 확인합니다.", xOffset + DX / 2,
 			y - 59 * _2X, 1.10f, CENTER, false);
 
@@ -1331,7 +1339,7 @@ namespace
 		const float linkZoom = 1.155f;
 		const int linkY = y - 226 * _2X;
 		const int linkTextY = linkY - 4 * _2X;
-		SetFontColor(COLOR_DARKGREY);
+		SetFontColor(0xD7E9EC);
 		DrawTextStrSystem(serviceText, linkCenter1, linkTextY, linkZoom, CENTER, false);
 		DrawTextStrSystem(privacyText, linkCenter2, linkTextY, linkZoom, CENTER, false);
 		const int serviceW = (int)StringWidthTTF(serviceText, linkZoom);
@@ -1401,12 +1409,12 @@ namespace
 		SetAlpha(22);
 		MemRect(0, DY, DX, DY, COLOR_BLACK);
 		SetAlpha(32);
-		MemRect(x, y, panelW, panelH, 0xFFF8E8);
-		MemRectFrame(x, y, panelW, panelH, COLOR_ORANGE);
+		DrawSd3dPanel(x,y,panelW,panelH,0);
 
 		SetFontColor(COLOR_WHITE);
 		CenterTextStr("로그인", xOffset + DX / 2, y - 27 * _2X, 1.65f);
 		SetFontColor(COLOR_DARKGREY);
+		SetFontColor(0xD7E9EC);
 		DrawTextStrSystem("게임 데이터를 안전하게 저장합니다.",
 			xOffset + DX / 2, y - 56 * _2X, 0.88f, CENTER, false);
 
@@ -1479,6 +1487,7 @@ static void DrawCastleSurvivorTitleArt(void)
 		MemRect(0, DY, DX, DY, 0x000000);
 		if (!sprite[TITLE_IMG]) LoadImg(TITLE_IMG);
 		if (sprite[TITLE_IMG]) {
+			sprite[TITLE_IMG]->getTexture()->setAntiAliasTexParameters();
 			const auto sz = sprite[TITLE_IMG]->getContentSize();
 			if (sz.width > 0.0f && sz.height > 0.0f) {
 				const float byW = (float)DX / sz.width;
@@ -1491,8 +1500,17 @@ static void DrawCastleSurvivorTitleArt(void)
 				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
 			}
 		}
+		// A separate logo stays legible on both squat and tall devices.
+		if(!sprite[HYBRID_TITLE_LOGO_IMG])LoadImg(HYBRID_TITLE_LOGO_IMG);
+		if(sprite[HYBRID_TITLE_LOGO_IMG]){
+		 const auto sz=sprite[HYBRID_TITLE_LOGO_IMG]->getContentSize();
+		 const float z=Min(DX*.90f/sz.width,DY*.28f/sz.height);
+		 sprite[HYBRID_TITLE_LOGO_IMG]->getTexture()->setAntiAliasTexParameters();
+		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-24*_2X,false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
+		}
 }
 
+#include "TitleLoginFlow.inc"
 void TitleDraw(void)
 {
 #ifdef GAMEDEBUG
@@ -1611,7 +1629,7 @@ void TitleDraw(void)
 
 			//DrawBigNumTTF(1000, 0, DY, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 0.7f, true, gScreenBuffer, gScreenLayer, false);
 			//DrawBigNumTTF(10000, 0, DY - 20 * _2X, NUM_FONT_LARGE, LEFT, false, false, (float)((REWARDCARDSIZE_X - 8 * _2X) / 2) * 1.0f, false, 1.0f, true, gScreenBuffer, gScreenLayer, false);
-			LoadingBarDraw(xOffset + DX / 2 - 525 * _2X / 2 + 180 * _2X, 40 * _2X, frame);
+			if(TitleLoginBusy())TitleLogin::Draw();
 			break;
 			//case CURTAINFRAME - 1:
 			//case 23:
@@ -1630,13 +1648,7 @@ void TitleDraw(void)
 
 			// The artwork owns the logo; interactive controls remain native UI.
 			{
-				const int bw=Min(DX-64,320),bh=58,bx=(DX-bw)/2,by=Max(116,DY/7);
-				MemRect(bx-3,by+3,bw+6,bh+6,0xC89542);
-				MemRect(bx,by,bw,bh,0x142E43);
-				MemRect(bx+3,by-3,bw-6,2,0xF5D68D);
-				SetFontColor(0xFFE4A0);
-				CenterTextStrSolid("모험 시작",DX/2,by-17,1.15f);
-				SetRectPoint(bx,by,bw,bh,TOUCH_FUNC_GOTOPLAY);
+				TitleLogin::Draw();
 				if(const char* review=getenv("CS_TITLE_REVIEW_PATH")) {
 					static bool captured=false;
 					if(!captured && frame>60) {
@@ -1644,8 +1656,6 @@ void TitleDraw(void)
 						cocos2d::utils::captureScreen([](bool,const std::string&) {},review);
 					}
 				}
-				SetFontColor(0xBCD9DC);
-				CenterTextStrSolid("성을 이끌고, 끝까지 살아남으세요",DX/2,by+29,.60f);
 			}
 
 			//SetRectPoint(0, DY, DX, DY, TOUCH_FUNC_GOTOPLAY);
@@ -1683,6 +1693,7 @@ void TitleDraw(void)
 		//�α��� �̷��� ������ �α��� ����
 	case MENU_LOGIN:
 		DrawCastleSurvivorTitleArt();
+		TitleLogin::Draw();
 		break;
 		//�������
 	case MENU_POLICY:
@@ -1694,7 +1705,7 @@ void TitleDraw(void)
 		DrawTitleTermsGate();
 	else if (NetLoginChoicePending()) {
 		curMenu = MENU_LOGIN;
-		DrawTitleLoginGate();
+		TitleLogin::Draw();
 	}
 	else if (NetBootstrapPoll() == NETRESULT_NONE)
 		DrawTitleBootLoading();
@@ -1869,6 +1880,27 @@ static bool GridMaskAt(int col, int row)
 	return gGridMask[row][col];
 }
 
+static void DrawSdInventoryGrid(int castle,int left,int top,int cell)
+{
+ // Restore the original connected castle silhouette, shared by every board.
+ const int c=Max(0,Min(9,castle)),img=GRID_FRAME_FIRST_IMG+c;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto size=sprite[img]->getContentSize();
+ const float zoom=cell/(float)GRID_FRAME_CELL;
+ const int pad=(int)std::lround(GRID_FRAME_PAD*zoom);
+ DrawImage((int)size.width,(int)size.height,0,0,left-pad,top+pad,false,0,0,0,0,zoom,sprite[img],img);
+}
+
+bool SceneGridReviewCheck(void){
+ const int c=GridLayoutCastleStage(),img=GRID_FRAME_FIRST_IMG+c;
+ if(!sprite[img])return false;
+ int columns=0,rows=0;
+ const int first=castleGridCellStart[c],count=castleGridCellCnt[c];
+ for(int i=0;i<count;++i){columns=Max(columns,castleGridCell[(first+i)*2]+1);rows=Max(rows,castleGridCell[(first+i)*2+1]+1);}
+ const auto size=sprite[img]->getContentSize();
+ return size.width==columns*GRID_FRAME_CELL+GRID_FRAME_PAD*2 && size.height==rows*GRID_FRAME_CELL+GRID_FRAME_PAD*2;
+}
+
 //---- 살 수 있는 장비 ----
 //
 // 크기는 부위의 생김새에서 온다. 검은 세로로 길고, 갑옷은 몸통이라
@@ -1933,6 +1965,45 @@ static void GridWeaponShape(GridPart* p)
  const int detail=Max(0,Min(34,p->detail));
  p->w=(p->type==ITEM_BOOMERANG && detail>=10)?2:1;
  p->h=p->type==ITEM_BOOMERANG?2:detail<10?2:detail<25?3:4;p->cells=0;
+}
+
+//---- 상점 표를 지금 히어로의 줄로 바꾼다 ----
+//
+//부위마다 종류가 셋이고 그 셋이 로빈·다이애나·맥스에 1:1 로 묶여 있다
+//(ITEM_SWORD + hero 규칙, Data/GearRoleData.h 의 표). 상점 표(kShopPart)는
+//로빈의 줄로만 적혀 있어서, 다이애나로 들어가면 판마다 로빈 전용 장비가
+//다섯 칸에 섰다. 창고에서는 남의 줄을 막아 두었는데(LoadoutToggleAt) 판
+//안의 상점에는 그 문이 없었다.
+//
+//부위는 그대로 두고 줄만 갈아 끼운다 - 투구 자리에 모자가, 갑옷 자리에
+//조끼가 선다. 이름은 아이템 표에서 다시 받는다(표에 박힌 "강철투구" 를
+//그대로 두면 모자를 투구라 부른다).
+//
+//방패·장신구·정수·대포는 셋이 같이 쓰므로 손대지 않는다.
+//
+//무기도 아직 손대지 않는다. 가방의 무기를 돌리는 손(GridTestSwords)이
+//ITEM_SWORD 만 보기 때문이다 - 다이애나에게 총을 쥐어 주면 칸은 차지하고
+//아무것도 쏘지 않는다. 가방 무기를 셋 다 돌리게 만든 뒤에 이 자리에서
+//ITEM_SWORD 까지 함께 갈아 끼운다(그때 GridWeaponShape 로 칸 모양도).
+static void GridHeroLinePart(GridPart* p)
+{
+	if (!p || p->type < ITEM_HELM || p->type > ITEM_BOOTS)
+		return;
+
+	const int hero = Max(0, Min(2, (int)curHero));
+	const int want = p->type - (p->type % 3) + hero;	//그 부위의 히어로 자리
+
+	if (want == p->type)
+		return;
+
+	const int cnt = (int)itemStartCnt[want + 1] - (int)itemStartCnt[want];
+
+	if (cnt <= 0)
+		return;
+
+	p->type = want;
+	p->detail = Max(0, Min(cnt - 1, p->detail));
+	p->name = textId[TEXT_ITEMNAME_START + GetItemName(want, p->detail, p->grade)];
 }
 
 //---- 눕히기 ----
@@ -2109,6 +2180,7 @@ static GridPart GridOfferPart(const OfferCard& card)
 	GridPart part=kShopPart[card.part];
 	part.grade=card.grade;
 	part.price=card.price;
+	GridHeroLinePart(&part);		//지금 히어로의 줄로 갈아 끼운다
 	if(part.type==ITEM_ESSENCE) {
 		part.detail = card.crewType % 4;
 		static const char* kEssNames[4] = { "마력 정수", "화염 정수", "빙결 정수", "번개 정수" };
@@ -2885,6 +2957,61 @@ int StageFoeGearList(StageSword* out, int max)
 	return StageGearList(StageRtFoe(), out, max);
 }
 
+//---- 적 가방 ----
+//
+//몬스터도 가방을 메고 있다(FoeGearData.h). 그 값으로 때리고 맞는데
+//화면에는 체력 막대만 있었다 - 무엇을 들고 있는지 모르는 채로 내 가방을
+//짜야 했다.
+//
+//에너지를 쓰고 들어서는 순간 적이 먼저 서고, 그 옆에 적이 멘 것이
+//깔린다. 보고 나서 내 칸을 채우라는 뜻이다.
+//
+//목록을 내주는 함수(StageFoeGearList)는 있었는데 아무도 부르지 않았다.
+void StageFoeBagDraw(int x, int y, int w)
+{
+	StageSword gear[FOEGEAR_BAGMAX + 2];
+	const int cnt = StageFoeGearList(gear, FOEGEAR_BAGMAX + 2);
+	const int px = Max(1, _2X);
+
+	if (cnt <= 0 || w < 24 * px)
+		return;
+
+	{
+		const int pad = 3 * px;
+		//칸은 정사각이다. 폭 안에 다 들어가되 너무 커지지도 않게 묶는다.
+		const int cell = Max(10 * px,
+			Min(22 * px, (w - pad * (cnt + 1)) / Max(1, cnt)));
+		const int h = cell + 13 * px;
+		int at = x + (w - (cell * cnt + pad * (cnt - 1))) / 2;
+
+		//받침. 체력 칸과 같은 어두운 틀을 쓴다.
+		SetAlpha(20);
+		MemRect(x + 2 * px, y - 2 * px, w, h, 0x050912);
+		MemRect(x, y, w, h, 0x101D30);
+		SetAlpha(ALPHA_MAX);
+		MemRectFrame(x + px, y - px, w - 2 * px, h - 2 * px, 0xB8836D);
+
+		SetFontColor(COLOR_WHITE);
+		CenterTextStrSolid("적 장비", x + w / 2, y - 3 * px, 0.34f * px);
+
+		for (int i = 0; i < cnt; ++i) {
+			//part 는 상점 표(kShopPart)의 번호다. 모양이 거기 있다.
+			const int idx = Max(0, Min(GRIDTEST_SHOPCNT + 1, gear[i].part));
+			GridPart part = kShopPart[idx];
+
+			part.grade = gear[i].grade;
+			part.rot = false;
+
+			//한 칸에 맞춰 그린다. 적 가방은 크기를 따지지 않는다 -
+			//무엇을 들었는지만 보면 된다.
+			GridTestDrawCard(&part, at, y - 12 * px, cell, cell,
+				ALPHA_MAX, true);
+
+			at += cell + pad;
+		}
+	}
+}
+
 //---- 방어구 ----
 //
 //검이 아닌 장비의 값을 더한 것이다. 이 값이 클수록 덜 맞는다. 히어로도
@@ -3108,14 +3235,8 @@ static void StageFoeInvenDraw(int alpha)
 		return;
 
  const int cell=gGridCell,x=gGridX,y=DY-64;
- const int castle=GridLayoutCastleStage(),img=GRID_FRAME_FIRST_IMG+castle;
- if(!sprite[img]) LoadImg(img);
- if(sprite[img]) {
-  const auto size=sprite[img]->getContentSize();
-  const float zoom=(float)cell/GRID_FRAME_CELL;
-  const int pad=(int)(GRID_FRAME_PAD*zoom);
-  DrawImage((int)size.width,(int)size.height,0,0,x-pad,y+pad,false,false,false,false,false,zoom,sprite[img],img);
- }
+ const int castle=GridLayoutCastleStage();
+ DrawSdInventoryGrid(castle,x,y,cell);
  bool occupied[GRIDTEST_H][GRIDTEST_W]={};
  const auto fits=[&](const GridPart& part,int col,int row) {
   for(int dy=0;dy<part.h;++dy) for(int dx=0;dx<part.w;++dx) if(GridPartCell(&part,dx,dy)) {
@@ -3167,17 +3288,32 @@ static void GridOfferLabel(const char* text, int x, int w, int y, float zoom)
 }
 
 static void StageGoldAmountDraw(int amount,int centerX,int top) {
- const float iconZoom=.55f,numZoom=.6f;
- const int iconW=(int)(ITEMICONSIZE*iconZoom),gap=4*_2X;
- const int numberW=(int)GetGoldNumDx(amount,0,0,true,numZoom);
- const int left=centerX-(iconW+gap+numberW)/2;
- DrawIcon(ICON_GOLD,left,top,iconZoom,false,true,true,true);
- DrawGoldNum(amount,left+iconW+gap,top,LEFT,0,0,true,numZoom);
+ DrawGoldAmount(amount,centerX,top);
 }
+//---- 못 사는 것은 못 사는 티가 나야 한다 ----
+//
+//afford 를 받아 놓고 쓰지 않았다. 골드가 3 인데 7 · 8 짜리가 똑같은
+//낯으로 서 있어서, 눌러 보고 "골드가 모자란다" 를 들은 뒤에야 알았다.
+//
+//못 사는 칸은 붉은 띠를 깔고 값을 흐린다. 누르기 전에 알아야 한다.
 static void GridShopPriceStrip(int n,int price,bool afford) {
  int x,y,w,h;GridOfferRect(n,&x,&y,&w,&h);
  if(price<0) return;
+
+ if(!afford) {
+  //칸 전체에 붉은 기를 얹는다. 글자만 붉히면 작아서 눈에 안 걸린다.
+  SetAlpha(9);
+  MemRect(x,y,w,h,0xFF3B30);
+  SetAlpha(ALPHA_MAX);
+  MemRectFrame(x+_2X,y-_2X,w-2*_2X,h-2*_2X,0xC0392B);
+
+  //값은 흐리게. 살 수 있는 칸의 금빛과 갈려야 한다.
+  SetAlpha(ALPHA_MAX*5/8);
+ }
+
  StageGoldAmountDraw(price,x+w/2,y-h-2);
+
+ if(!afford) SetAlpha(ALPHA_MAX);
 }
 
 //======================================================================
@@ -3421,6 +3557,12 @@ static void GridStarPlate(int star,int x,int y,int w,int h,int alpha)
 {
  const int color=gGridCardInvalid?0xFF5363:GridStarColor(star),edge=Max(2,Min(w,h)/12);
  SetAlpha(gGridCardInvalid?ALPHA_MAX:alpha);
+ const int styles[]={1,2,1,5,3,4};
+ if(DrawSd3dPanel(x,y,w,h,gGridCardInvalid?4:styles[Max(0,Min(5,star-1))])){
+  // Keep the existing six-star palette in the inset, independent of skin.
+  MemRectRound(x+edge,y-edge,w-edge*2,Max(1,h-edge*2),gGridCardInvalid?0xA32636:GridPlateShade(color,38),Max(1,edge/2));
+  SetAlpha(ALPHA_MAX);return;
+ }
  MemRect(x,y,w,h,color);
  MemRect(x+2,y-2,w-4,h-4,GridPlateShade(color,22));
  MemRect(x+2,y-2,w-4,Max(1,h-edge-2),GridPlateShade(color,48));
@@ -3433,11 +3575,11 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 
 	if(p->type==GRID_ITEM_CANNON) {
 		if(p->rot) {
-			const auto& f=InventoryCannons::Get(p->detail,p->grade);
-			const int img=INVENTORY_CANNON_ATLAS_IMG;
-			if(!sprite[img]) LoadImg(img);
-			if(sprite[img]) RotateImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+w/2,y-h/2,false,90,0,alpha,
-				Min(w/(float)f.bh,h/(float)f.bw),Vec2(.5f,.5f),sprite[img],img);
+			const auto& f=MountedCannons::Get(p->detail,p->grade);
+            const int img=CANNON_UPGRADE_ATLAS_IMG;
+            if(!sprite[img])LoadImg(img);
+            if(sprite[img])RotateImage(f.w,f.h,f.x,f.y,x+w/2,y-h/2,false,90,0,alpha,
+                Min(w/(float)f.h,h/(float)f.w),Vec2(.5f,.5f),sprite[img],img);
 		} else DrawInventoryCannonIcon(p->detail,p->grade,x,y,w,h);
 		return;
 	}
@@ -4146,6 +4288,14 @@ bool GridTestBeginOffer(int killedType)
 			break;
 		}
 	}
+
+	//보조 역할축: 발 장비가 모아 둔 골드(표의 값은 1/10 원 자리다)
+	{
+		GearRoleTotals roles;
+		GridQueryGearRoles(&roles);
+		waveGold += roles.goldTenths / 10;
+	}
+
 	gStageGold += waveGold;
 
 	GridOfferRoll(killedType);
@@ -4570,18 +4720,75 @@ bool GridSlotHasAdjacentCategory(int slot, GearCategory cat)
 	return false;
 }
 
-long long GridTestPantsHpBonus(void)
+//---- 가방 장비 네 역할축 합계 ----
+//
+//표는 Data/GearRoleData.h 한 곳이다. 여기는 그 표를 가방에 얹어 더하는
+//손이고, 어느 수치를 어디에 쓰는지는 Func_Battle 이 안다.
+//
+//한 칸이 내놓는 양:
+//    크기값  price x (등급+1) x 겹친 레벨 / 10
+//    비율값  (등급+1) x 겹친 레벨 / 10
+//
+//보석(소켓)은 제 수치가 없다. 맞닿은 장비의 주 역할만 25% 불린다 - 혼자
+//놓으면 아무 일도 일어나지 않는다.
+void GridQueryGearRoles(GearRoleTotals* out)
 {
-	long long sum = 0;
+	if (!out) return;
+	memset(out, 0, sizeof(*out));
+
 	for (int i = 0; i < GRIDTEST_MAXITEM; ++i) {
 		if (!gGridItem[i].used) continue;
-		const int t = gGridItem[i].part.type;
-		if (t == ITEM_KILT || t == ITEM_PANTS || t == ITEM_SKIRT) {
-			const int baseVal = (gGridItem[i].part.price > 0) ? gGridItem[i].part.price * 25 : 150;
-			sum += (long long)baseVal * (gGridItem[i].part.grade + 1) * Max(1, gGridItem[i].level);
+
+		const GridPart* p = &gGridItem[i].part;
+		const GearRoleSpec* spec = GearRoleOf(p->type);
+
+		if (!spec || spec->line == GEAR_LINE_SOCKET)
+			continue;
+
+		const int step = (p->grade + 1) * Max(1, gGridItem[i].level);
+		const long long unit = (long long)((p->price > 0) ? p->price : 8) * step;
+
+		//맞닿은 보석 하나당 주 역할 +25%. 여러 개면 그만큼 더 쌓인다.
+		int gems = 0;
+		for (int j = 0; j < GRIDTEST_MAXITEM; ++j) {
+			if (j == i || !gGridItem[j].used) continue;
+			if (gGridItem[j].part.type == ITEM_GEM && GridItemsAreAdjacent(i, j))
+				++gems;
 		}
+		const int ampPct = 100 + gems * GEAR_GEM_AMPLIFY_PCT;
+
+		//증폭은 주 역할이 가리키는 수치에만 걸린다.
+		const int defAmp   = (spec->primary == GEAR_AXIS_DEF)   ? ampPct : 100;
+		const int hpAmp    = (spec->primary == GEAR_AXIS_UTIL)  ? ampPct : 100;
+		const int atkAmp   = (spec->primary == GEAR_AXIS_ATK)   ? ampPct : 100;
+		const int regenAmp = (spec->primary == GEAR_AXIS_REGEN) ? ampPct : 100;
+
+		out->shieldMax += unit * spec->defPer * defAmp / 1000;
+		out->maxHp     += unit * spec->hpPer  * hpAmp  / 1000;
+
+		out->atkPct            += spec->atkPct      * step * atkAmp   / 1000;
+		out->critPct           += spec->critPct     * step * atkAmp   / 1000;
+		out->coolPct           += spec->coolPct     * step / 10;
+		out->dodgePct          += spec->dodgePct    * step / 10;
+		out->leechPct          += spec->leechPct    * step * regenAmp / 1000;
+		out->hpRegenTenths     += spec->hpRegen     * step * regenAmp / 100;
+		out->shieldRegenTenths += spec->shieldRegen * step * regenAmp / 100;
+		out->goldTenths        += spec->gold        * step;
 	}
-	return sum;
+
+	out->atkPct   = Min(out->atkPct,   (int)GEAR_CAP_ATK_PCT);
+	out->critPct  = Min(out->critPct,  (int)GEAR_CAP_CRIT_PCT);
+	out->coolPct  = Min(out->coolPct,  (int)GEAR_CAP_COOL_PCT);
+	out->dodgePct = Min(out->dodgePct, (int)GEAR_CAP_DODGE_PCT);
+	out->leechPct = Min(out->leechPct, (int)GEAR_CAP_LEECH_PCT);
+}
+
+//하체 장비의 체력통. 이제 표(GearRoleData.h)의 보조 역할 합계가 그 값이다.
+long long GridTestPantsHpBonus(void)
+{
+	GearRoleTotals roles;
+	GridQueryGearRoles(&roles);
+	return roles.maxHp;
 }
 
 bool GridCrewHasAdjacentPants(int crewIndex)
@@ -4636,8 +4843,12 @@ int GridTestTotalItemCount(void)
 void GridTestResetStage(void)
 {
 	gStageUiSlide=0.0f;
+	//---- 들어설 때 띠를 움직이지 않는다 ----
+	//
+	//출정 준비에서 보던 자리에 가방 띠를 올려 두고 전투 자리까지
+	//미끄러뜨렸다. 자리가 모자라서가 아니라 그냥 연출이었고, 화면이
+	//한 번 위로 갔다 내려오는 것으로만 보인다. 제자리에서 시작한다.
 	gStageEntranceOffset=0;
-	gStageEntranceOffset=(float)Max(0,LoadoutMenuTop()-(StageShopTopBase()+gGridH*gGridCell));
 	gStageCombatStarted=false;
 	//공짜 다시 뽑기는 판마다 새로 찬다.
 	gGridFreeRoll = 0;
@@ -5307,13 +5518,11 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 
 	//---- 부위별 크기 ----
 	//
-	//일반 장비는 갑옷 계열을 포함해 1x1이다.
-	switch (it->type) {
- case ITEM_ARMOR:case ITEM_VEST:case ITEM_COAT:
-  out->h=1;break;
- default:break;
- }
-
+	//일반 장비는 갑옷 계열을 포함해 1x1이다. 크기로 갈리는 것은 위에서
+	//먼저 돌아간 무기 · 대포 · 동료뿐이다.
+	//
+	//여기 갑옷(ARMOR/VEST/COAT)만 따로 보는 switch 가 있었는데, 하는 일이
+	//h=1 을 h=1 로 덮는 것이었다. 갑옷이 1x2 이던 시절의 자국이다.
 }
 
 //아래 줄, 왼쪽 칸부터 처음 들어가는 자리를 찾는다.
@@ -5639,8 +5848,27 @@ int LoadoutPoint(void)
 	const int castle = GridLayoutCastleStage();
 
 	CastleProgressEnsure();
-	return LOADOUT_BASE + castle * LOADOUT_PER_CASTLE
-		+ CastleBonusOf(CPE_LOADOUT)
+
+	//---- 점수는 격자가 정한다 ----
+	//
+	//전에는 10 + 성단계x2 라는 고정값이었다. 그 10 은 칸이 지금보다
+	//훨씬 적던 시절, 한 칸이 크던 시절의 값이다. 그 뒤로 그림이 작아져
+	//격자의 칸 수가 몇 곱절이 됐는데 점수는 그대로였다.
+	//
+	//그래서 "칸은 텅 비었는데 무기가 안 실린다" 가 된다. 칸이 막은 것이
+	//아니라 묵은 상수가 막은 것이다. 두 한도가 서로 다른 말을 하면
+	//플레이어는 어느 쪽을 보고 짜야 할지 알 수가 없다.
+	//
+	//쓸 수 있는 칸에서 바로 뽑는다. 한 점은 칸 둘이다
+	//(LOADOUT_CELL_PER_POINT). 이제 한도는 격자 하나뿐이고, 성을 올려
+	//칸이 늘면 점수도 같이 는다.
+	const int cells = CastleEquipmentCapacity(castle);
+	const int fromGrid = (cells + LOADOUT_CELL_PER_POINT - 1)
+		/ LOADOUT_CELL_PER_POINT;
+
+	//LOADOUT_BASE 는 이제 바닥값이다. 방을 안 올린 첫 성에서 격자가
+	//너무 작게 잡혀도 기본 한 벌은 들어가야 한다.
+	return Max(LOADOUT_BASE, fromGrid) + CastleBonusOf(CPE_LOADOUT)
 		+ robin.castleProgress.rooms[castle][1];
 }
 
@@ -5904,10 +6132,106 @@ static bool gLoadoutDefaultDone = false;
 
 void LoadoutDefaultReset(void) { gLoadoutDefaultDone = false; }
 
+//기본 편성이 무엇을 못 실었는지. 출정 준비 화면에 그대로 적는다 -
+//GridTestWarn 은 전투 격자가 그리는 글자라 이 창 위에서는 안 보인다.
+static const char* gLoadoutFillWhy = NULL;
+
 static void LoadoutDefaultFill(void)
 {
- if(gLoadoutDefaultDone) return;
- gLoadoutDefaultDone=true;
+ //---- 비어 있으면 다시 채운다 ----
+ //
+ //한 번 채웠으면 다시 안 건드리는 빗장이었다. 그런데 성을 갈아타거나
+ //시험 경로가 가방을 비우면(LoadoutClear) 빗장만 남고 가방은 빈 채로
+ //판에 들어간다 - 격자에 아무것도 안 올라갔다.
+ //
+ //빗장의 뜻은 "고른 것을 되돌리지 않는다" 이다. 빈 가방은 고른 것이
+ //없는 것이므로, 채워도 되돌리는 것이 아니다.
+ const bool first=!(gLoadoutDefaultDone && gLoadoutCnt>0);
+ if(first) gLoadoutDefaultDone=true;
+
+ //---- 무기가 먼저다 ----
+ //
+ //전에는 포를 먼저 실었다. 포는 네 칸을 먹으므로 좁은 성에서는 그것만
+ //으로 점수와 칸 한도가 차고, 그다음에 오는 검이 "칸을 넘는다" 로
+ //퇴짜를 맞았다. 그러면 아무것도 못 때리는 가방으로 판에 들어간다.
+ //
+ //무기는 있고 없고가 갈리는 물건이고 포는 보조 화력이다(CLAUDE.md 5장).
+ //차례가 곧 우선순위다.
+ gLoadoutFillWhy=NULL;
+ {
+  const int required=curHero==1?ITEM_GUN:curHero==2?ITEM_BOOMERANG:ITEM_SWORD;
+  bool have=false;
+
+  for(int n=0;n<gLoadoutCnt;++n)
+   if(robin.inven[gLoadout[n]].type==required) {have=true;break;}
+
+  if(!have) {
+   //창고에 한 자루도 없으면 지급부터 한다. 기본 나무칼(detail 0)이
+   //그 자리다 - 기획도 "히어로 라인 6부위 첫 품목" 을 보장한다
+   //(CLAUDE.md 4-4, GearGrantEnsure).
+   if(GetInvenIdx(required,0,GRADE_NORMAL)<0) GearGrantEnsure();
+
+   const ITEM& worn=robin.charData[Max(0,Min(TOTALPLAYER-1,PlayerHeroType()))].equip[EQUIP_WEAPON];
+   int picked=-1;
+
+   for(int i=0;i<TOTALINVENTORY;++i) {
+    const ITEM& it=robin.inven[i];
+    if(it.type!=required || it.count==0) continue;
+    if(picked<0) picked=i;
+    if(it.id==worn.id && worn.type==required) {picked=i;break;}
+   }
+
+   if(picked<0) gLoadoutFillWhy="창고에 이 히어로의 무기가 없다";
+   else if(!LoadoutToggle(picked)) gLoadoutFillWhy=gLoadoutWhy;
+  }
+ }
+
+ if(!first) return;
+
+ //---- 그다음은 이 히어로가 쓸 수 있는 한 벌 ----
+ //
+ //판에 들어가면 히어로가 알몸이 됐다. GridWearLoadout 이 착용 칸 여섯을
+ //비우고 가방에 실린 것만 다시 입히는데, 기본 편성이 무기 하나만 싣고
+ //있었기 때문이다 - "코스튬이 리셋된다" 의 정체다.
+ //
+ //"입고 있던 것" 을 싣는 길로 갔더니 첫 판에서 여전히 빈손이었다.
+ //새 세이브의 히어로는 아무것도 안 입고 있고(charData.equip 이 전부
+ //EMPTY), GearGrantEnsure 는 창고에만 넣지 입히지는 않기 때문이다.
+ //
+ //그래서 몸이 아니라 창고를 본다. 지급 규칙(CLAUDE.md 4-4)과 같은 자리를
+ //같은 방식으로 훑는다 - 내 줄 6부위 + 공용. 부위마다 가진 것 중 가장
+ //좋은 하나다.
+ //
+ //가방이 전부를 정한다는 원칙(2장)은 그대로다. 처음 열 때의 기본값만
+ //채워 둘 뿐이고, 점수나 칸이 모자라면 거기서 끊긴다.
+ {
+  const int hero=Max(0,Min(GEAR_LINE_MAXX,(int)curHero));
+
+  for(int k=0;k<TOTAL_GEAR_ROLE;++k) {
+   const int type=kGearRole[k].type;
+   const int line=kGearRole[k].line;
+
+   //보석은 혼자서 아무 일도 안 하고, 작전서·대포는 제 길이 따로 있다.
+   if(line==GEAR_LINE_SOCKET || line==GEAR_LINE_TACTIC) continue;
+   if(line!=GEAR_LINE_COMMON && line!=hero) continue;
+   //무기는 위에서 이미 실었다. 두 번 실으면 한 자루가 낭비된다.
+   if(type==ITEM_SWORD || type==ITEM_GUN || type==ITEM_BOOMERANG) continue;
+
+   int best=-1;
+   for(int i=0;i<TOTALINVENTORY;++i) {
+    const ITEM& it=robin.inven[i];
+    if(it.type!=type || it.count==0) continue;
+    if(best<0 || robin.inven[best].grade<it.grade) best=i;
+   }
+
+   if(best>=0 && LoadoutFind(best)<0) LoadoutToggle(best);
+  }
+ }
+
+ //---- 마지막이 포 ----
+ //
+ //네 칸을 먹는 보조 화력이다. 자리가 남으면 얹고, 없으면 안 얹는다
+ //(CLAUDE.md 5장 - 포 없이도 전 웨이브가 클리어 가능해야 한다).
  CannonGrantEnsure();
  for(int n=gLoadoutCnt-1;n>=0;--n) {
   const ITEM& old=robin.inven[gLoadout[n]];
@@ -5918,18 +6242,6 @@ static void LoadoutDefaultFill(void)
      robin.inven[i].detail==CastleMenuModel::Clamp(robin.castle)) {
    if(LoadoutFind(i)<0) LoadoutToggle(i);break;
   }
- if(gLoadoutCnt>1 || (gLoadoutCnt==1 && robin.inven[gLoadout[0]].type!=ITEM_CANNON)) return;
- const int required=curHero==1?ITEM_GUN:curHero==2?ITEM_BOOMERANG:ITEM_SWORD;
- const ITEM& worn=robin.charData[Max(0,Min(TOTALPLAYER-1,PlayerHeroType()))].equip[EQUIP_WEAPON];
- int picked=-1;
- for(int i=0;i<TOTALINVENTORY;++i) {
-  const ITEM& it=robin.inven[i];
-  if(it.type!=required || it.count==0) continue;
-  if(picked<0) picked=i;
-  if(it.id==worn.id && worn.type==required) {picked=i;break;}
- }
- if(picked>=0) LoadoutToggle(picked);
-
 }
 
 //======================================================================
@@ -5992,8 +6304,17 @@ static int LoadoutPreviewPack(unsigned char occ[GRIDTEST_H][GRIDTEST_W],
 
 	//깐 자리표도 같이 비운다. 안 비우면 이번에 안 깐 칸에 지난 판의
 	//인벤토리 번호가 남아, 그 자리를 누르면 엉뚱한 것이 집힌다.
-	for (int i = 0; i < LOADOUT_MAX; ++i)
+	//
+	//fit · atCol · atRow 도 끝까지 비운다. 쓰는 쪽(LoadoutGridDraw)은
+	//LOADOUT_MAX 까지 훑는데 여기서는 실은 수만큼만 채웠다 - 남은 칸의
+	//스택 쓰레기가 fit 으로 읽히면 있지도 않은 장비가 격자에 그려진다.
+	for (int i = 0; i < LOADOUT_MAX; ++i) {
 		gLoadoutPackInven[i] = -1;
+		gLoadoutBad[i] = false;
+		fit[i] = false;
+		atCol[i] = -1;
+		atRow[i] = -1;
+	}
 
 	for (int i = 0; i < gLoadoutCnt && n < LOADOUT_MAX; i++) {
 		const ITEM* it = &robin.inven[gLoadout[i]];
@@ -6408,6 +6729,32 @@ static void LoadoutPartOf(int type, int detail, GridPart* out)
 	GridGearPart(&it, out);
 }
 
+//---- 창고 한 칸의 모양: 여기 한 곳에서만 나온다 ----
+//
+//전에는 자리를 잡는 쪽(LoadoutCatalog)과 그리는 쪽이 각자 조각을 만들어
+//썼다. 자리 쪽은 늘 기본 등급(LoadoutPartOf)으로, 그리는 쪽은 가진 물건
+//그대로(GridGearPart)로 - 대포처럼 등급마다 칸 모양이 달라지는 것은 둘이
+//어긋나, 잡아 둔 자리는 2x2 인데 그림은 3x2 로 그려졌다.
+//
+//가진 것이 있으면 그 물건을, 없으면 기본 등급을 쓴다. 두 쪽이 이 함수를
+//같이 부르므로 어긋날 자리가 없다.
+static void LoadoutStorePart(int type, int detail, GridPart* out)
+{
+	const bool valid = type >= 0 && type < TOTALITEMTYPE
+		&& detail >= 0 && detail < LOADOUT_DETAILMAX;
+	const int inv = valid ? gLoadoutOwn[type][detail] : -1;
+
+	if (inv >= 0)
+		GridGearPart(&robin.inven[inv], out);
+	else
+		LoadoutPartOf(type, detail, out);
+
+	//창고 띠는 네 줄이다. 그보다 긴 것은 띠 안에서만 줄여 보여 준다 -
+	//자리와 그림이 같이 줄어야 한다.
+	if (out->h > LOADOUT_STORE_H)
+		out->h = LOADOUT_STORE_H;
+}
+
 //---- 판에 자리를 잡는다 ----
 //
 //높이 여섯 칸짜리 띠를 왼쪽부터 채운다. 늘 0 열부터 다시 훑으므로 큰
@@ -6810,6 +7157,7 @@ void GridEnsureSampleLayout(void)
 	for (int k = 0; k < 5; ++k) {
 		int sp = kSampleParts[k];
 		GridPart p = kShopPart[sp];
+		GridHeroLinePart(&p);
 		int col = -1, row = -1;
 		if (GridFindSpot(&p, &col, &row)) {
 			int slot = GridTestFreeSlot();
@@ -6914,6 +7262,69 @@ void CannonGrantEnsure(void)
     }
 }
 
+//---- 지금 히어로의 장비를 창고에 둔다 ----
+//
+//히어로 한 명에게 모든 것을 몰아주는 판이다(CLAUDE.md 2장). 가방에 올릴
+//물건이 없으면 역할 표(GearRoleData.h)가 무엇을 하는지 눈으로 볼 수가
+//없다. 그래서 대포·동료와 같은 규칙으로 장비도 보장 지급한다.
+//
+//창고는 히어로마다 다르다. 부위마다 종류가 셋이고 그 셋이 로빈·다이애나·
+//맥스에 1:1 로 묶여 있어서다(ITEM_SWORD + curHero 규칙). 그래서 지금 고른
+//히어로의 줄과, 셋이 같이 쓰는 방패·장신구만 준다 - 남의 줄을 줘도 그
+//히어로는 끼지 못한다.
+//
+//히어로를 바꿔 다시 들어오면 그 줄이 그때 더해진다. 먼저 받은 줄은 그대로
+//남는다 - 창고는 하나고, 쓸 수 있는 줄만 히어로마다 갈린다.
+//
+//표의 종류마다 첫 품목(detail 0) 하나씩이다. 이미 들고 있으면 손대지
+//않는다 - 등급과 레벨을 되돌리면 모아 둔 것을 깎는 셈이다.
+//
+//MakeItem 을 쓴다. 대포와 달리 장비는 아이템 표(itemStartCnt)에 있으므로
+//값과 옵션까지 제대로 채워진다. 표 길이는 늘리지 않는다.
+void GearGrantEnsure(void)
+{
+	const int hero = Max(0, Min(GEAR_LINE_MAXX, (int)curHero));
+
+	for (int k = 0; k < TOTAL_GEAR_ROLE; ++k) {
+		const int type = kGearRole[k].type;
+		const int line = kGearRole[k].line;
+
+		if (type < 0 || type >= TOTALITEMTYPE)
+			continue;
+
+		//보석은 소켓이라 혼자서는 아무 일도 안 한다. 지급 목록에서 뺀다.
+		if (line == GEAR_LINE_SOCKET || line == GEAR_LINE_TACTIC)
+			continue;
+
+		//남의 히어로 줄은 주지 않는다.
+		if (line != GEAR_LINE_COMMON && line != hero)
+			continue;
+
+		//그 종류에 품목이 하나도 없으면(표가 비었으면) 건너뛴다.
+		if ((int)itemStartCnt[type + 1] - (int)itemStartCnt[type] <= 0)
+			continue;
+
+		if (GetInvenIdx(type, 0, GRADE_NORMAL) >= 0)
+			continue;
+
+		int empty = -1;
+		for (int i = 0; i < TOTALINVENTORY; ++i) {
+			if (robin.inven[i].type == EMPTY) {
+				empty = i;
+				break;
+			}
+		}
+
+		if (empty < 0)
+			return;
+
+		ITEM& it = robin.inven[empty];
+		MakeItem(&it, type, 1, GRADE_NORMAL, 0, 0);
+		it.lv = Max(1, (int)it.lv);
+		it.count = Max(1LL, (long long)it.count);
+	}
+}
+
 //---- 성급마다 한 판, 판들을 옆으로 잇는다 ----
 //
 //성급은 itemStar 표에 (종류, 번호)마다 박혀 있다. 등급(GRADE_*)과는 다른
@@ -6956,11 +7367,11 @@ static int LoadoutCatalog(void)
 			if (GetItemStar(ITEM_CREW, d, GRADE_NORMAL) != star)
 				continue;
 
-			LoadoutPartOf(ITEM_CREW, d, &part);
+			LoadoutStorePart(ITEM_CREW, d, &part);
 
 			{
 				const int pw = Max(1, part.w);
-				const int ph = Max(1, Min(LOADOUT_STORE_H, part.h));
+				const int ph = Max(1, part.h);	//LoadoutStorePart 가 이미 띠 높이로 끊는다
 
 				if (LoadoutSpot(one, LOADOUT_COLMAX, pw, ph, &c, &r) == false)
 					continue;
@@ -7009,16 +7420,11 @@ static int LoadoutCatalog(void)
 				if (GetItemStar(t, d, GRADE_NORMAL) != star)
 					continue;
 
-				//대포는 단계마다 포신 길이가 달라 칸 모양이 바뀐다. 가진
-				//것이 있으면 그 단계로 자리를 잡아야 창고의 칸과 실제로
-				//싣는 모양이 같다.
-				if (t == ITEM_CANNON && gLoadoutOwn[t][d] >= 0)
-					GridGearPart(&robin.inven[gLoadoutOwn[t][d]], &part);
-				else
-					LoadoutPartOf(t, d, &part);
+				//자리와 그림이 같은 곳에서 나온다(LoadoutStorePart).
+				LoadoutStorePart(t, d, &part);
 
 				const int pw = Max(1, part.w);
-				const int ph = Max(1, Min(LOADOUT_STORE_H, part.h));
+				const int ph = Max(1, part.h);	//LoadoutStorePart 가 이미 띠 높이로 끊는다
 
 				if (LoadoutSpot(one, LOADOUT_COLMAX, pw, ph, &c, &r) == false)
 					continue;
@@ -7142,8 +7548,18 @@ void LoadoutRelease(bool cancelled)
                 GridTestWarn("히어로 기본 무기와 가방 배치를 확인해 주세요");
                 systemKey=0;return;
             }
+            //---- 이미 판 안이면 들어갈 곳이 없다 ----
+            //
+            //들어가기 전에 짜던 때는 여기서 AVK_GOTOBATTLE 로 입장했다.
+            //이제는 적을 보고 짜느라 이미 판 안이다 - 또 보내면 입장료를
+            //두 번 내고 판이 처음부터 다시 선다.
+            //
+            //창만 닫는다. 가방은 닫히는 순간 격자로 들어간다
+            //(gGridGearPending).
+            const bool inStage = (drawHandle == MD_PLAY);
+
             LoadoutSetOpen(false);
-            systemKey = pvp ? 0 : AVK_GOTOBATTLE;
+            systemKey = (pvp || inStage) ? 0 : AVK_GOTOBATTLE;
         } else systemKey=0;
     }
     if(cancelled) { gLoadoutDrag=-1; gLoadoutDragFromBag=false; return; }
@@ -7380,18 +7796,7 @@ static void LoadoutGridDraw(int top, int bottom)
 	//전투 화면과 같은 그림(grid0 ~ grid9)을 쓴다. 여기서만 네모를 그리면
 	//"출정 준비에서 본 가방"과 "싸울 때의 가방"이 다른 물건처럼 보인다.
 	{
-		const int img = GRID_FRAME_FIRST_IMG + GridLayoutCastleStage();
-
-		if (!sprite[img]) LoadImg(img);
-		if (sprite[img]) {
-			const auto sz = sprite[img]->getContentSize();
-			const float zoom = (float)cell / (float)GRID_FRAME_CELL;
-
-			DrawImage((int)sz.width, (int)sz.height, 0, 0,
-			          left - (int)(GRID_FRAME_PAD * zoom),
-			          base + (int)(GRID_FRAME_PAD * zoom),
-			          false, false, false, false, false, zoom, sprite[img], img);
-		}
+		DrawSdInventoryGrid(GridLayoutCastleStage(),left,base,cell);
 	}
 
 	//---- 빈 칸과 성의 생김새 ----
@@ -7457,6 +7862,20 @@ static void LoadoutGridDraw(int top, int bottom)
 		SetRectPoint(cx, cy, w, h, TOUCH_FUNC_LOADOUT_BAGITEM + i);
 	}
 
+
+	//---- 기본 편성이 무엇을 못 실었나 ----
+	//
+	//말없이 빈 가방으로 들어가면 플레이어는 "기본 장비가 안 들어간다"
+	//까지만 알고 무엇을 고쳐야 할지를 모른다. 여기에 까닭을 적는다.
+	//(GridTestWarn 은 전투 격자가 그리는 글자라 이 창 위에서는 안 보인다.)
+	if (gLoadoutFillWhy) {
+		char why[96];
+
+		sprintf(why, "기본 무기를 못 실었다 - %s", gLoadoutFillWhy);
+		SetFontColor(COLOR_RED);
+		LineTextStrSolid(why, left, base + 14 * _2X, DX, -1, -1, 0.5f);
+		SetFontColor(COLOR_WHITE);
+	}
 
 	//---- 들어갈 자리를 미리 ----
 	//
@@ -7609,6 +8028,7 @@ void LoadoutDraw(void)
 	//단계의 포가 이번 프레임부터 창고에 선다.
 	CannonGrantEnsure();
 	CrewGrantEnsure();
+	GearGrantEnsure();
 	LoadoutScanOwned();
 
 	//지급과 소유표가 선 뒤에 기본 편성을 올린다. 그 전에 부르면 방금 준
@@ -7890,16 +8310,9 @@ void LoadoutDraw(void)
 		const bool live = own && !incompatible && taken == false;	//집을 수 있는가
 		GridPart part;
 
-		//---- 가진 것은 그 물건 그대로 ----
-		//
-		//전에는 기본 등급으로 조각을 만들고 등급만 덮어썼다. 대포처럼
-		//단계마다 칸 모양이 달라지는 것은 그러면 칸(2x2)과 그림(3x2)이
-		//어긋나, 좁은 칸에 맞추느라 그림이 절반만 차 보였다.
-		if (own)
-			GridGearPart(it, &part);
-		else
-			LoadoutPartOf(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
-
+		//자리를 잡을 때와 똑같은 곳에서 받는다. 둘이 갈라지면 잡아 둔
+		//칸과 그려지는 그림이 어긋난다.
+		LoadoutStorePart(gLoadoutCatType[i], gLoadoutCatDetail[i], &part);
 		part.grade = own ? it->grade : GRADE_NORMAL;
 
 		//---- 못 집는 칸은 바탕을 밝게 ----
@@ -8428,6 +8841,210 @@ bool CompactEquipmentReview(int page)
  return ok;
 }
 
+//---- 히어로 몰빵 개편 점검 ----
+//
+//CLAUDE.md 2~4장이 코드와 어긋나지 않는지 한자리에서 본다. 가방을 직접
+//채워 역할축 합계를 재므로, 수치를 고치면 여기가 먼저 깨진다.
+//
+//    0  역할축 합계: 방어막·체력·공격·회피·재생이 장비에서 나오는가
+//    1  보석(소켓): 맞닿은 장비의 주 역할만 25% 불리는가
+//    2  히어로별 창고: 남의 줄을 주지 않는가
+//    3  판 안 상점: 지금 히어로의 줄로 갈아 끼우는가
+//    4  동료는 체력을 보태지 않는가
+//시험용 판을 펼친다. 격자 칸(gGridMask)은 성에서 오고, 그 성을 한 번도
+//그리지 않았으면 가로세로가 0 이라 아무것도 놓이지 않는다. 열 번째 성의
+//판이 가장 넓어 한 벌을 다 깔 수 있다.
+static void GearReviewBoard(void)
+{
+	GridLoadCells(CASTLE_STAGE_CNT - 1);
+	StageRunGridClear();
+}
+
+//---- 칸 모양은 손으로 적지 않는다 ----
+//
+//이 하네스가 갑옷 · 코트 · 바지를 2x2 라고 적어 두고 있었다. 실제로는
+//셋 다 1x1 이다(GridGearPart). 창고에 그려지는 그 크기가 확정이므로,
+//시험도 같은 표에서 받아야 "있지도 않은 배치" 를 검증하지 않는다.
+//
+//w · h 를 받던 자리는 없앴다. 남겨 두면 다음 사람이 또 손으로 적는다.
+static bool GearReviewPut(int type, int detail, int grade, int price)
+{
+	const int slot = GridTestFreeSlot();
+
+	if (slot < 0)
+		return false;
+
+	GridPart p;
+	{
+		ITEM it;
+
+		memset(&it, 0, sizeof(it));
+		it.type = type; it.detail = detail; it.grade = grade;
+		GridGearPart(&it, &p);
+	}
+	p.price = price; p.name = "시험";
+
+	int col = -1, row = -1;
+	if (!GridFindSpot(&p, &col, &row))
+		return false;
+
+	gGridItem[slot].part = p;
+	gGridItem[slot].shop = -1;
+	gGridItem[slot].equip = -1;
+	gGridItem[slot].col = col;
+	gGridItem[slot].row = row;
+	gGridItem[slot].used = true;
+	gGridItem[slot].level = 1;
+	GridMakeItem(&gGridItem[slot]);
+	return true;
+}
+
+bool GearRoleReview(int operation)
+{
+	if (!getenv("CS_GEAR_ROLE_REVIEW"))
+		return false;
+
+	if (operation == 0) {
+		//맥스의 줄 한 벌. 부위마다 역할이 다르므로 다섯 축이 모두 선다.
+		GearReviewBoard();
+		bool put = GearReviewPut(ITEM_CAP, 0, GRADE_NORMAL, 8);		//보조+방어
+		put = put && GearReviewPut(ITEM_COAT, 0, GRADE_NORMAL, 14);	//방어+회복
+		put = put && GearReviewPut(ITEM_GLOVE, 0, GRADE_NORMAL, 4);	//공격+회복
+		put = put && GearReviewPut(ITEM_PANTS, 0, GRADE_NORMAL, 7);	//체력+방어
+		put = put && GearReviewPut(ITEM_BOOTS, 0, GRADE_NORMAL, 4);	//회복+방어
+		put = put && GearReviewPut(ITEM_SHOES, 0, GRADE_NORMAL, 4);	//회피
+		put = put && GearReviewPut(ITEM_RING, 0, GRADE_NORMAL, 20);	//치명+흡혈
+
+		GearRoleTotals roles;
+		GridQueryGearRoles(&roles);
+
+		//상한을 넘지 않고, 축마다 값이 서야 한다.
+		return put
+			&& roles.shieldMax > 0 && roles.maxHp > 0
+			&& roles.atkPct > 0 && roles.atkPct <= GEAR_CAP_ATK_PCT
+			&& roles.critPct > 0 && roles.critPct <= GEAR_CAP_CRIT_PCT
+			&& roles.coolPct > 0 && roles.coolPct <= GEAR_CAP_COOL_PCT
+			&& roles.dodgePct > 0 && roles.dodgePct <= GEAR_CAP_DODGE_PCT
+			&& roles.leechPct > 0 && roles.leechPct <= GEAR_CAP_LEECH_PCT
+			&& roles.hpRegenTenths > 0 && roles.shieldRegenTenths > 0
+			&& roles.goldTenths > 0;
+	}
+
+	if (operation == 1) {
+		//갑옷 하나. 주 역할이 방어라 보석은 방어막만 불려야 한다.
+		GearReviewBoard();
+		if (!GearReviewPut(ITEM_ARMOR, 0, GRADE_NORMAL, 14))
+			return false;
+
+		GearRoleTotals bare;
+		GridQueryGearRoles(&bare);
+
+		//갑옷에 맞닿게 보석을 놓는다. GridFindSpot 이 왼쪽 아래부터 채우므로
+		//갑옷(1x1) 바로 옆 칸이다.
+		if (!GearReviewPut(ITEM_GEM, 0, GRADE_NORMAL, 10))
+			return false;
+
+		GearRoleTotals amped;
+		GridQueryGearRoles(&amped);
+
+		const long long want = bare.shieldMax * (100 + GEAR_GEM_AMPLIFY_PCT) / 100;
+		return bare.shieldMax > 0 && amped.shieldMax == want;
+	}
+
+	if (operation == 2) {
+		//히어로를 바꿔 가며 지급하고, 받은 줄이 그 히어로의 것인지 본다.
+		static ITEM keep[TOTALINVENTORY];
+		memcpy(keep, robin.inven, sizeof(keep));
+
+		bool ok = true;
+		for (int hero = 0; hero <= 2 && ok; ++hero) {
+			memset(robin.inven, 0, sizeof(robin.inven));
+			for (int i = 0; i < TOTALINVENTORY; ++i) robin.inven[i].type = EMPTY;
+
+			const int was = curHero;
+			curHero = hero;
+			GearGrantEnsure();
+			curHero = was;
+
+			//그 히어로의 머리·몸통·하체는 섰고, 남의 것은 없다.
+			for (int slotBase = ITEM_HELM; slotBase <= ITEM_GREAVES; slotBase += 3) {
+				for (int line = 0; line < 3; ++line) {
+					const bool owned = GetInvenIdx(slotBase + line, 0, GRADE_NORMAL) >= 0;
+					if (owned != (line == hero)) ok = false;
+				}
+			}
+
+			//공용(방패·목걸이·반지)은 누구에게나 선다.
+			ok = ok && GetInvenIdx(ITEM_SHIELD, 0, GRADE_NORMAL) >= 0
+				&& GetInvenIdx(ITEM_NECK, 0, GRADE_NORMAL) >= 0
+				&& GetInvenIdx(ITEM_RING, 0, GRADE_NORMAL) >= 0;
+
+			//보석은 소켓이라 주지 않는다.
+			ok = ok && GetInvenIdx(ITEM_GEM, 0, GRADE_NORMAL) < 0;
+		}
+
+		memcpy(robin.inven, keep, sizeof(keep));
+		return ok;
+	}
+
+	if (operation == 3) {
+		//상점 표는 로빈의 줄로 적혀 있다. 히어로마다 그 부위의 제 종류로
+		//바뀌어 나와야 한다. 무기는 아직 갈지 않는다(GridHeroLinePart 주석).
+		bool ok = true;
+		const int was = curHero;
+
+		for (int hero = 0; hero <= 2; ++hero) {
+			curHero = hero;
+
+			OfferCard card;
+			memset(&card, 0, sizeof(card));
+			card.kind = OFFER_PART;
+			card.part = 4;			//강철투구: 머리 부위의 로빈 자리
+			card.grade = GRADE_NORMAL;
+			card.price = kShopPart[4].price;
+
+			const GridPart part = GridOfferPart(card);
+			if (part.type != ITEM_HELM + hero) ok = false;
+
+			card.part = 0;			//롱소드: 무기는 그대로 검이어야 한다
+			card.price = kShopPart[0].price;
+			if (GridOfferPart(card).type != ITEM_SWORD) ok = false;
+		}
+
+		curHero = was;
+		return ok;
+	}
+
+	if (operation == 4) {
+		//동료를 여럿 세워도 히어로 체력은 그대로다.
+		GearReviewBoard();
+		if (!GearReviewPut(ITEM_PANTS, 0, GRADE_NORMAL, 7))
+			return false;
+
+		for (int i = 0; i < MAXCREW; ++i) {
+			OBJECT* c = &ao[CREW + i];
+			c->active = true; c->dead = false;
+			c->ps[PS_HP] = 100000;
+		}
+
+		StageInitFortressHealthAndArmor();
+		const long long withCrew = ao[PLAYER].maxhp;
+
+		for (int i = 0; i < MAXCREW; ++i) {
+			ao[CREW + i].active = false;
+			ao[CREW + i].ps[PS_HP] = 0;
+		}
+
+		StageInitFortressHealthAndArmor();
+		const long long alone = ao[PLAYER].maxhp;
+
+		//바지 체력통은 들어 있고(순수 체력보다 크다), 동료는 끼지 않는다.
+		return withCrew == alone && alone > ao[PLAYER].ps[PS_HP];
+	}
+
+	return false;
+}
+
 bool MaxWeaponFoundationReview(void)
 {
  if(!getenv("CS_MAX_WEAPON_REVIEW")) return false;
@@ -8621,7 +9238,9 @@ void GridTestDraw(void)
 	//
 	//히어로가 선 뒤에야 장비를 읽을 수 있다. 등장 연출 중(REGENMOVE)이어도
 	//장비는 이미 실려 있다(SetHero).
-	if (gGridGearPending
+	//출정 준비가 열려 있는 동안에는 넣지 않는다. 고르는 도중의 가방이
+	//판에 실리면, 창을 닫고 바꾼 것이 격자에 안 들어간다.
+	if (gGridGearPending && !LoadoutOpen()
 		&& (ao[PLAYER].active || ao[PLAYER].moveHandler == REGENMOVE))
 		GridPlaceGear();
 
@@ -8685,21 +9304,7 @@ void GridTestDraw(void)
 	//그림 안의 칸 간격과 바깥 여백은 GridFrameMetrics.inc 가 들고 있다.
 	//그 파일도 같은 도구가 내므로 그림을 다시 뽑으면 같이 바뀐다.
 	{
-		const int castle = GridLayoutCastleStage();
-		const int img = GRID_FRAME_FIRST_IMG + castle;
-
-		if (!sprite[img]) LoadImg(img);
-		if (sprite[img]) {
-			const auto sz = sprite[img]->getContentSize();
-			const float zoom = (float)gGridCell / (float)GRID_FRAME_CELL;
-			//격자의 왼쪽 위 모서리에 그림의 칸 영역 왼쪽 위를 맞춘다.
-			const int left = gGridX - (int)(GRID_FRAME_PAD * zoom);
-			const int top = gGridBottom + gGridH * gGridCell
-			              + (int)(GRID_FRAME_PAD * zoom);
-
-			DrawImage((int)sz.width, (int)sz.height, 0, 0, left, top,
-			          false, false, false, false, false, zoom, sprite[img], img);
-		}
+		DrawSdInventoryGrid(GridLayoutCastleStage(),gGridX,gGridBottom+gGridH*gGridCell,gGridCell);
 	}
 
 	//---- 성보관함 ----
@@ -8950,6 +9555,7 @@ void GridTestDraw(void)
             const int grade = Min(TOTALGRADE-1,Max(0,spinning ?
                 kShopPart[gOfferFace[i]].grade : c->grade));
             GridPart platePart=spinning?kShopPart[gOfferFace[i]]:GridOfferPart(*c);
+            if(spinning) GridHeroLinePart(&platePart);	//도는 동안에도 내 줄을 보여 준다
             if(!spinning && c->kind!=OFFER_PART) {platePart.type=ITEM_CREW;platePart.detail=GetCrewIdxFromType(c->crewType);}
             GridStarPlate(GridPartStar(&platePart),px,platformY,96,30,ALPHA_MAX);
             ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,
@@ -8968,6 +9574,7 @@ void GridTestDraw(void)
                 afford = !StageRtCrewFull() && gStageGold >= price;
             } else {
                 GridPart shown = spinning ? kShopPart[gOfferFace[i]] : GridOfferPart(*c);
+                if (spinning) GridHeroLinePart(&shown);
                 if (!spinning) shown.grade = c->grade;
                 if(shown.type==GRID_ITEM_CANNON)
                     DrawInventoryCannonThumbnail(shown.detail,shown.grade,px+8,y-8,80,64);
@@ -9256,14 +9863,13 @@ static float LobbyCharZoom(void)
 //격돌은 charZoom 만 곱해서, 같은 동료가 판에서는 콩알만 했다.
 static float CastleRoomCrewZoom(float charZoom, int type)
 {
-	return enemyIconZoom[type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE
-		* charZoom * CASTLE_ROOM_CREW_ZOOM;
+	return CastleCompanionZoom(charZoom,type);
 }
 
 //발판에 선 동료. 앞에 나와 있으므로 방 안의 것보다 크다.
 static float CastleDeckCrewZoom(float charZoom, int type)
 {
-	return CastleRoomCrewZoom(charZoom, type) * CASTLE_DECK_SAMPLE_ZOOM;
+	return CastleRoomCrewZoom(charZoom, type);
 }
 
 //성 그림 위 자리. 모든 성 그림이 아래 가운데에 성문, 맨 아래가 바닥이라
@@ -9276,6 +9882,35 @@ static float CastleDeckCrewZoom(float charZoom, int type)
 #define LOBBY_HERO_LIFT			24.0f
 //성에 하나뿐인 사람이라 동료와 같은 크기면 묻힌다.
 #define LOBBY_HERO_ZOOM			3.0f
+
+// Use a fixed standing frame, so walking/attacking cannot change scale.
+static float CastleStandingHeight(int cmf,int motion){
+ if(cmf<0||cmf>=TOTALCMF)return 40.0f;
+ if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+ if(motion<0||motion>=cmf_m_cnt[cmf])motion=0;
+ const auto* b=cmfMotionImgSizeBlob+cmfMotionImgSizeSlot[cmf]+motion*4;
+ return (float)Max(1,(int)b[3]);
+}
+static float CastleCompanionHeight(float charZoom){
+ return CastleStandingHeight(ao[PLAYER].cmf,PO_C0_N0)*ao[PLAYER].zoom*charZoom*LOBBY_HERO_ZOOM*.5f;
+}
+static float CastleCompanionZoom(float charZoom,int type){
+ const int cmf=enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
+ return CastleCompanionHeight(charZoom)/CastleStandingHeight(cmf,crewPos[type*5]);
+}
+static float CastleCompanionFootOffset(int type,float zoom){
+ const int cmf=enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
+ int motion=crewPos[type*5];
+ if(cmf<0||cmf>=TOTALCMF)return 0;
+ if(motion<0||motion>=cmf_m_cnt[cmf])motion=0;
+ const auto* b=cmfMotionImgSizeBlob+cmfMotionImgSizeSlot[cmf]+motion*4;
+ return (b[1]+b[3])*zoom;
+}
+static float CastleWorldCharZoom(void){
+ // Fixed screen height, independent of which castle rig is selected.
+ const float heroHeight=CastleStandingHeight(ao[PLAYER].cmf,PO_C0_N0);
+ return 96.0f*(DX/640.0f)*CastlePartsViewZoom()/Max(.01f,heroHeight*ao[PLAYER].zoom*LOBBY_HERO_ZOOM);
+}
 #define LOBBY_GROUND_V_BACK		0.925f
 #define LOBBY_GROUND_V_FRONT	0.975f
 
@@ -9590,6 +10225,7 @@ static float LobbyFingerDist(void)
 //true 를 돌려주면 이 터치는 여기서 먹었다(일반 터치로 넘기지 않는다).
 bool LobbyCamTouchBegan(int id, float x, float y)
 {
+ if(LobbyCastleDebugHit(x,y))return false;
 	//첫 손가락. 일반 터치(버튼)도 그대로 받게 false 를 돌려준다.
 	if (!gLobbyFinger[0].on) {
 		gLobbyFinger[0] = { true, id, x, y, false };
@@ -9600,6 +10236,11 @@ bool LobbyCamTouchBegan(int id, float x, float y)
 #if LOBBY_CAM_DEBUG_BUTTONS
 		const int castleStep = gLobbyCastleMenuOpen ? 0 : LobbyCastleArrowHit(x, y);
 		if (castleStep != 0) {
+			if(LobbyCastleDebugLevel(gMobileCastleVisual,0)>=0){
+				LobbyCastleDebugCommand(castleStep<0?TOUCH_FUNC_LOBBY_CASTLE_PREV:TOUCH_FUNC_LOBBY_CASTLE_NEXT);
+				gLobbyPanBlocked=true;
+				return true;
+			}
 			//성은 열 개다. 스무 개짜리 그림(castle0~19)을 쓰던 때의
 			//수가 남아 있어서, 화살표가 없는 성 열한 번째부터 스무
 			//번째까지를 지나갔다.
@@ -10169,10 +10810,11 @@ bool CastleInteriorSyncReviewCheck(int operation) {
     if(operation==3) {
         if(p.residentCount!=20 || p.residentDrawCount!=20) return false;
         for(int floor=0;floor<p.roomCount;++floor) {
-            const int img=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+floor*6+CastleVisualPartLevel(p.castle,2);
+            const int img=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+p.castle*6+CastleVisualPartLevel(p.castle,2);
             if(!sprite[img]) return false;
             const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
-            if(size.width!=512 || size.height!=128) return false;
+            const auto cell=CastleRoomAtlas::Floor(p.castle,CastleVisualPartLevel(p.castle,2),floor,(int)size.width,(int)size.height);
+            if(cell.w<=0 || cell.h<=0 || cell.x+cell.w>size.width || cell.y+cell.h>size.height) return false;
         }
         return true;
     }
@@ -10204,10 +10846,10 @@ bool CastleIndividualReviewCheck(int operation) {
         const auto& r=IndividualCastleV4::Rigs[p.castle];
         const auto& aperture=IndividualCastleRooms::Rooms[p.castle];
         const auto& cover=CastleParts::roomCover[p.castle];
-        const float zoom=p.width/r.width;
+        const float unit=p.width/r.w;
         return p.roomCount==p.castle+1 && p.roomColumns==1
-            && std::fabs(p.interiorWidth/zoom-IndividualCastleRooms::RoomWidth)<1
-            && std::fabs(p.roomFloorGap/zoom-IndividualCastleRooms::FloorHeight)<1
+            && std::fabs(p.interiorWidth-aperture.w*unit)<1
+            && std::fabs(p.roomFloorGap-aperture.h*unit/p.roomCount)<1
             && cover.height==p.roomCount*(int)p.roomFloorGap
             && cover.sx>=aperture.x-2 && cover.sy>=aperture.y-2
             && cover.sx+cover.sw<=aperture.x+aperture.w+2
@@ -10672,6 +11314,50 @@ bool CastleRoomToggleTap(float startX,float startY,float endX,float endY) {
     CastleParts::roomInteriorOpen[p.castle]=!CastleParts::roomInteriorOpen[p.castle];
     return true;
 }
+bool CastleSoftSectorsReview(int operation) {
+ if(!getenv("CS_CASTLE_REVIEW_PATH"))return false;
+ const int c=Max(0,Min(9,gMobileCastleVisual));
+ if(operation==1 || operation==2){CastleParts::roomInteriorOpen[c]=operation==1;return true;}
+ const auto& p=CastleParts::sdPlacement;
+ if(!p.valid || p.castle!=c || p.roomCount!=SoftCastle::Counts[c] || p.roomCount<1 || p.roomCount>5 || CastleParts::missingAsset || !sprite[CASTLE_SOFT_FIRST_IMG+c])return false;
+ for(int i=0;i<p.roomCount;++i){
+  const auto& s=SoftCastle::Sectors[c][i];
+  if(s.x<0 || s.y<0 || s.x+s.w>1 || s.y+s.h>1 || s.foot<s.y || s.foot>s.y+s.h+.001f)return false;
+ }
+ return operation!=3 || (CastleParts::roomCoverRevealed[c] && p.residentDrawCount>0 && p.residentDrawCount<=p.residentCount);
+}
+bool CastleHybridFleetReview(int operation) {
+ if(!getenv("CS_HYBRID_FLEET_REVIEW"))return false;
+ const int c=Max(0,Min(9,(int)robin.castle));
+ if(operation==1||operation==2){CastleParts::roomInteriorOpen[c]=operation==1;return true;}
+ const auto& p=CastleParts::sdPlacement;const auto& rig=IndividualCastleV4::Rigs[c];
+ const float u=p.width/rig.w;
+ bool ok=p.valid&&!CastleParts::missingAsset&&p.castle==c&&p.sourceWidth==rig.w&&p.roomCount==c+1;
+ ok=ok&&std::fabs(p.height/p.width-rig.h/(float)rig.w)<.001f;
+ ok=ok&&std::fabs(p.commanderX-(p.left+(rig.hero-rig.x)*u))<.1f;
+ ok=ok&&std::fabs(p.commanderY-(p.top-(rig.floor-rig.y)*u))<.1f;
+ ok=ok&&std::fabs(p.deckSurface-(p.top-(rig.deckY-rig.y)*u))<.1f;
+ ok=ok&&CastleParts::roomCover[c].material==CASTLE_UNARMED_FIRST_IMG+c;
+ ok=ok&&sprite[CANNON_UPGRADE_ATLAS_IMG]&&CastleParts::cannonMuzzleValid[c];
+ for(int i=0;i<MAXCREW;++i){float x=0,y=0;ok=ok&&CastleCrewDeckPoint(i,&x,&y)&&x>=p.deckLeft&&x<=p.deckLeft+p.deckWidth&&std::fabs(y-p.deckSurface)<.1f;}
+ if(operation==3){ok=ok&&CastleParts::roomCoverRevealed[c];
+  ok=ok&&sprite[CASTLE_RECTANGULAR_ROOM_FIRST_IMG+c*6+CastleVisualPartLevel(c,2)];
+ }
+ return ok;
+}
+bool CastleHybridReview(int operation) {
+ if(!getenv("CS_HYBRID_REVIEW"))return false;
+ if(operation==4){GridTestResetStage();GridPlaceGear();return true;}
+ if(operation==1 || operation==2){CastleParts::roomInteriorOpen[0]=operation==1;return true;}
+ if(operation==3)return CastleParts::roomCoverRevealed[0];
+ const auto& p=CastleParts::sdPlacement;const auto& r=IndividualCastleV4::Rigs[0];
+ bool ok=p.valid&&p.castle==0&&p.sourceWidth==r.w&&p.roomCount==1;
+ const float unit=p.width/r.w;
+ ok=ok&&std::fabs(p.commanderY-(p.top-(r.floor-r.y)*unit))<.1f;
+ for(int i=0;i<MAXCREW;++i){float x=0,y=0;ok=ok&&CastleCrewDeckPoint(i,&x,&y)&&x>=p.deckLeft&&x<=p.deckLeft+p.deckWidth&&std::fabs(y-p.deckSurface)<.1f;}
+
+ return ok;
+}
 bool CastleRoomCoverPreview(int operation) {
     if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_ROOM_COVER_REVIEW")) return false;
     const int c=Max(0,Min(CASTLE_STAGE_CNT-1,gMobileCastleVisual));
@@ -10723,6 +11409,33 @@ bool CastleUniformReviewCheck(void) {
     return cover.width>0 && cover.height>0 && p.deckWidth>0 &&
         std::fabs(p.width-DX*CastleParts::kStarterViewportRatio)<1;
 }
+
+//---- 방 안의 사람 배율과 설 자리 ----
+//
+//자리를 잡는 곳과 크기를 정하는 곳이 같은 값을 써야 한다. 두 군데에
+//식을 따로 두었더니 한쪽만 고쳐져 사람이 벽을 뚫고 섰다.
+//
+//한도는 배치표(CastleNpcPlacement)가 준다. 기준 한 사람으로 배율을 뽑고,
+//그 크기로 방 폭에 몇이 서는지를 센다 - 방이 좁으면 적게 서는 것이지
+//사람이 작아지는 것이 아니다.
+static float CastleRoomManZoom(const CastleNpcPlacement::Area& zone,
+	const CastleParts::SdPlacement& p)
+{
+	return CastleCompanionHeight(CastleWorldCharZoom())/CASTLE_ROOM_CREW_REF_H;
+}
+
+static int CastleRoomManCap(float roomW, const CastleNpcPlacement::Area& zone,
+	const CastleParts::SdPlacement& p)
+{
+	const float manW = CASTLE_ROOM_CREW_REF_W * CastleRoomManZoom(zone, p)
+		* CASTLE_ROOM_CREW_GAP;
+	//표가 "이만큼은 선다" 고 적어 둔 수(recommended)는 바닥값이다.
+	const int wide = manW < 1.0f ? 1 : (int)(roomW / manW);
+
+	return Max(1, Min(CASTLE_ROOM_CREW_PER_ROOM,
+		wide));
+}
+
 
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int curCastleIn, bool battle)
@@ -10835,7 +11548,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	const bool sdRoom=CastleParts::SdEnabled(curCastleIn)&&CastleParts::sdPlacement.valid;
 	if(sdRoom) ScreenToObj(CastleParts::sdPlacement.commanderX,CastleParts::sdPlacement.commanderY,&heroCenterX,&heroY);
 
-	const float charZoom = LobbyCharZoom() * (sdRoom?CastleParts::sdPlacement.fitScale:1.0f);
+	const float charZoom = sdRoom?CastleWorldCharZoom():LobbyCharZoom();
 
 	//전투 자리에 막 내려온 동료를 찾는다. 슬롯의 주인이 바뀐 프레임이
 	//등장 순간이다. 한 번만 세면 되므로 동료를 훑기 전에 처리한다.
@@ -10886,7 +11599,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		}
 	}
 
-	// 1단계: 로비에 등장할 크루 선별 (최대 64명)
+// 1단계: 로비에 등장할 크루 선별 (최대 64명)
 	// 각성 시 모든 동료가 성에 들어올 수 있으므로, 보유 크루를 우선 등록하고 슬롯을 채움
 	static int candidateCrew[CAP_CREW];
 	int candidateCount = 0;
@@ -10906,13 +11619,39 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		if (crewData[i * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
 			continue;
 		int invenIdx = GetInvenIdx(ITEM_CREW, i, GRADE_NORMAL);
+
+		//---- 가방에 실은 동료는 방에 없다 ----
+		//
+		//실으면 꺼내서 발판에 세운다(아래 발판 블록). 방에도 같이 두면
+		//같은 사람이 둘이 되어, 몇을 데리고 나가는지가 안 읽힌다.
+		//
+		//방은 "가졌지만 안 데려가는 동료" 의 자리다.
+		if (invenIdx >= 0 && LoadoutFind(invenIdx) >= 0)
+			continue;
+
 		if (invenIdx >= 0 && robin.inven[invenIdx].count >= 1) {
 			candidateCrew[candidateCount++] = i;
 			selected[i] = true;
 		}
 	}
-	// 2순위: 각성 시 모든 동료가 다 들어갈 수 있도록 남은 슬롯 전체를 보유 외 동료로 채움
-	for (int i = 0; !sdRoom && i < gTotalCrew && candidateCount < slotTable.count; ++i) {
+	//---- 2순위: 방을 채운다 ----
+	//
+	//"!sdRoom" 이 붙어 있어서 새 성 그림(SD · 개별 아트)에서는 이 줄이
+	//통째로 꺼졌다. 그 경로가 지금 기본이라, 방에 설 수 있는 사람은
+	//"가졌는데 가방에 안 실은 동료" 뿐이었다.
+	//
+	//그런데 기본 편성이 가진 동료를 죄다 가방에 올리므로 그 교집합이
+	//비어 버린다 - 진단이 cand 0 을 찍은 자리다. 성 안이 늘 빈 집이었다.
+	//
+	//방은 사람 사는 곳이다. 아직 안 뽑은 동료도 구경꾼으로 세운다.
+	//어차피 방마다 설 자리는 capacity(1~3)가 끊으므로 몇을 담든 그린
+	//수는 같다 - 담는 수만 그 언저리로 줄여 둔다.
+	//예순네 명이 다 들어가면 얼마나 바글바글한지 보려고 전원을 받는다.
+	//방마다 설 자리는 CASTLE_ROOM_CREW_CAP 이 끊으므로, 넘치는 사람은
+	//자리를 못 얻어 그려지지 않는다.
+	const int roomFill = sdRoom ? CAP_CREW : slotTable.count;
+
+	for (int i = 0; i < gTotalCrew && candidateCount < roomFill; ++i) {
 		if (selected[i])
 			continue;
 		if (crewData[i * CREWDATASIZE + CREWDATA_TYPE] == NPC_SHIP)
@@ -10982,6 +11721,9 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	static OBJECT lobbyCrewList[CAP_CREW];
 	bool externalCrew[CAP_CREW]={};
     int residentFloor[CAP_CREW]={};
+
+    //방마다 몇이 실제로 남았는가.
+    int residentKept[8]={};
 	int resident=0;
 	int owned = 0;
 
@@ -11071,13 +11813,55 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
             float ox,oy;
             const int slots=Max(1,assignedCount);
             const int position=resident++;
+            float rankUp=0.0f;	//뒷줄이면 조금 위에 선다
             const int slot=position%p.roomCount;
             const int floor=slot/p.roomColumns, column=position/p.roomCount;
             residentFloor[owned]=floor;
             const int columns=(slots+p.roomCount-1)/p.roomCount;
             const float cellW=p.interiorWidth/p.roomColumns;
-            const float sx=p.interiorLeft+cellW*(slot%p.roomColumns)+cellW*(column+1)/(columns+1.0f);
-            ScreenToObj(sx,p.interiorFloor+floor*p.roomFloorGap,&ox,&oy);
+            float sx=p.interiorLeft+cellW*(slot%p.roomColumns)+cellW*(column+1)/(columns+1.0f);
+            if(SoftCastle::Enabled()){
+                //---- 자리는 배치표가 정한다 ----
+                //
+                //CastleNpcPlacement::Areas 는 성 본체를 (0,0)~(1,1) 로 보고
+                //방마다 "발을 놓을 수 있는 가로 범위 · 바닥 Y · 뒤로 쓸 수
+                //있는 깊이 · 사람 크기 한도" 를 적어 둔 표다(10성 34방).
+                //
+                //전에는 방 네모(SoftCastle::Sectors)를 그대로 발판으로 썼다.
+                //그건 그리기를 자르는 영역이지 설 자리가 아니라서, 기둥
+                //위나 난간 밖에 사람이 섰다.
+                const auto& zone=CastleNpcPlacement::Areas[p.castle][floor];
+                const float width=(zone.right-zone.left)*p.width;
+                const int capacity=CastleRoomManCap(width,zone,p);
+                //---- 앞줄이 차면 뒷줄 ----
+                //
+                //방 다섯에 앞줄만으로는 서른 남짓이 끝이라 예순네 명이
+                //다 못 들어온다. 표의 depth 안에서 뒤로 한 줄 더 세운다.
+                const int rank=column/Max(1,capacity);
+                const int file=column%Max(1,capacity);
+                // No invented back rows on floors with almost no walkable depth.
+                if(rank>0)residentFloor[owned]=-1;
+                const int inRow=Min(columns,capacity);
+                sx=p.left+CastleNpcPlacement::SlotX(zone,file,inRow)*p.width;
+                //뒷줄은 반 칸 어긋나게 - 앞사람에 딱 가리면 없는 것과 같다.
+                // Every rank stays inside the same authored floor span.
+                //뒤로 물러나는 만큼 화면에서는 위로 간다. 표가 준 깊이를
+                //넘지 않는다 - 넘으면 뒷벽을 뚫는다.
+                rankUp=CASTLE_ROOM_CREW_RANKS>1
+                	?zone.depth*p.height*rank/(CASTLE_ROOM_CREW_RANKS-1.0f):0.0f;
+                // Do not place residents over the enlarged mounted weapon.
+                //RoomFloorFoot 가 이미 배치표의 foot 를 돌려준다. 여기에
+                //따로 올림값을 더하지 않는다 - 표가 발 기준이라 두 번
+                //더하면 사람이 바닥에서 뜬다(인수인계 문서).
+                const float foot=CastleParts::RoomFloorFoot(p.castle,floor)
+                	+rankUp,margin=12.0f*DX/640.0f;
+                if(p.gunWidth>0 && sx+margin>p.gunLeft && sx-margin<p.gunLeft+p.gunWidth &&
+                   foot<p.gunTop && foot+28.0f*DX/640.0f>p.gunTop-p.gunHeight)residentFloor[owned]=-1;
+            }
+            if(residentFloor[owned]>=0 && floor>=0 && floor<8) ++residentKept[floor];
+
+            //발을 방바닥 선에 딱 붙이면 난간 · 데크 윗면에 파묻힌다.
+            ScreenToObj(sx,CastleParts::RoomFloorFoot(p.castle,floor)+rankUp,&ox,&oy);
             pCrew->x=ox; pCrew->y=oy;
         }
 
@@ -11089,26 +11873,44 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		pCrew->nx = pCrew->x;
 		pCrew->ny = pCrew->y;
 		pCrew->frame = live ? live->frame : frame + owned * MOTIONDIV;
-		pCrew->zoom = enemyIconZoom[pCrew->type] * CREWZOOM * LOBBY_CREW_ZOOM_SCALE * roleZoomScale * charZoom;
-		//방 안의 동료 몫. 발판과 지휘관이 같은 식에서 나오도록 이름을
-		//붙여 두었다(CASTLE_ROOM_CREW_ZOOM).
-		if(sdRoom && !live) pCrew->zoom *= CASTLE_ROOM_CREW_ZOOM;
-
-		if (live) {
-			//전투 자리의 동료는 조금 크게. 방 안의 구경꾼들과 섞이면 안 된다.
-			pCrew->zoom *= CASTLE_CREW_BATTLE_ZOOM;
-
-			//막 내려온 순간에는 한 번 더 부풀렸다 가라앉는다. 그래야
-			//"방에서 나왔다"가 눈에 걸린다.
-			if (liveSlot >= 0 && gCrewEnter[liveSlot] > 0) {
-				const float t = (float)gCrewEnter[liveSlot] / CREW_ENTER_FRAME;
-				pCrew->zoom *= 1.0f + CREW_ENTER_POP * t;
-			}
-		}
+		// Residents, deck samples and active companions share half the hero height.
+		pCrew->zoom = CastleCompanionZoom(charZoom,pCrew->type);
+		pCrew->y-=CastleCompanionFootOffset(pCrew->type,pCrew->zoom);pCrew->ny=pCrew->y;
 		if(liveSlot>=0) StageCombatRecordActor(CREW+liveSlot,xOffset+pCrew->x-rx,
 		 STATUSWIN_Y+(rh-4)*TSIZE-(pCrew->y-OBJIMGGAP)-ry,pCrew->zoom,pCrew->dirX==LEFT);
 		owned++;
 	}
+
+    //---- 방 자리 맞추기 도구 ----
+    //
+    //방이 어디까지인지 · 발 선이 어디인지가 화면에 안 보이면, 고치는 쪽도
+    //보는 쪽도 "조금 위로" 말고는 할 말이 없다. 성마다 방이 다섯씩 열
+    //성이라 눈대중으로는 못 맞춘다.
+    //
+    //CS_ROOM_TUNE=1 로 띄우면 방 네모와 번호, 발 선을 덮어 그린다.
+    //표는 SoftCastle::Sectors[성][방] = {x, y, w, h, foot} 한 줄이다.
+    if(sdRoom && SoftCastle::Enabled() && getenv("CS_ROOM_TUNE")) {
+        const auto& p=CastleParts::sdPlacement;
+        char tune[64];
+        for(int r=0;r<CastleNpcPlacement::Counts[p.castle];++r) {
+            //방 전체(초록, 그리기를 자르는 영역)와 발을 놓을 수 있는
+            //구역(노랑, 배치표)을 같이 그린다. 둘이 다른 물건이다.
+            const auto& sc=SoftCastle::Sectors[p.castle][r];
+            MemRectFrame((int)(p.left+sc.x*p.width),(int)(p.top-sc.y*p.height),
+                (int)(sc.w*p.width),(int)(sc.h*p.height),0x33FF88);
+
+            const auto& z=CastleNpcPlacement::Areas[p.castle][r];
+            const int fx=(int)(p.left+z.left*p.width);
+            const int fw=(int)((z.right-z.left)*p.width);
+            const int foot=(int)(p.top-z.foot*p.height);
+            const int depth=Max(1,(int)(z.depth*p.height));
+
+            MemRectFrame(fx,foot+depth,fw,depth,0xFFCC33);	//발이 설 수 있는 띠
+            MemRect(fx,foot,fw,Max(1,_2X),0xFF3366);		//앞줄 발 선
+            sprintf(tune,"%d.%d x%d",p.castle,r,(int)z.recommended);
+            LineTextStrSolid(tune,fx+2*_2X,foot+depth+10*_2X,fw,-1,-1,0.45f);
+        }
+    }
 
     if(sdRoom) {
         auto& p=CastleParts::sdPlacement; p.externalCount=0; p.residentCount=0;
@@ -11132,13 +11934,14 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		drawOrder[m + 1] = key;
 	}
 
-    const bool revealResidents=!sdRoom || CastleParts::RoomRevealRequested(curCastleIn);
+    const bool revealResidents=(!sdRoom || CastleParts::RoomRevealRequested(curCastleIn)) && LobbyCastleDebugPopulation()==0;
+
     if(sdRoom) CastleParts::sdPlacement.residentDrawCount=0;
 	// 1단계: 발밑 그림자 먼저 렌더링 (캐릭터 발밑에 정상적으로 그림자가 깔리도록 처리)
 	for (int k = 0; k < owned; ++k) {
 		const bool inside=!externalCrew[drawOrder[k]];
 		if(!inside && battle) continue; // Live roster draws its own shadow once below.
-		if(inside && !revealResidents) continue;
+		if(inside && (!revealResidents || (sdRoom && residentFloor[drawOrder[k]]<0))) continue;
 		CastleParts::RoomClipScope roomClip(sdRoom && inside,residentFloor[drawOrder[k]]);
 		const OBJECT* pCrew = &lobbyCrewList[drawOrder[k]];
 		const float shadowX = pCrew->x - (IsBigCmf(pCrew->cmf) ? 20.0f : 12.0f) * _2X * pCrew->zoom;
@@ -11151,13 +11954,14 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 	// 2단계: 크루 스프라이트 렌더링
 	for (int k = 0; k < owned; ++k) {
-		if(!externalCrew[drawOrder[k]] && revealResidents) {
+		if(!externalCrew[drawOrder[k]] && revealResidents && (!sdRoom || residentFloor[drawOrder[k]]>=0)) {
 			CastleParts::RoomClipScope roomClip(sdRoom,residentFloor[drawOrder[k]]);
 			DrawObj(&lobbyCrewList[drawOrder[k]]);
 			if(sdRoom) ++CastleParts::sdPlacement.residentDrawCount;
 		}
 	}
 
+	LobbyCastleDebugCrowdDraw();
 	CastleParts::DrawRoomCover(curCastleIn);
     // Render the run roster directly, including shop recruits/captured monsters
     // absent from the persistent castle resident list. Preview and battle share scale.
@@ -11180,6 +11984,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
             if(motion<0 || motion>=cmf_m_cnt[actor.cmf] || cmd_m_cnt[actor.cmf][motion*2+1]==0)
                 motion=crewPos[actor.type*5]+frame/8%Max(1,(int)crewPos[actor.type*5+1]);
             const float zoom=CastleDeckCrewZoom(charZoom,actor.type);
+            sy+=CastleCompanionFootOffset(actor.type,zoom);
             StageCombatRecordActor(CREW+c,(int)sx,(int)sy,zoom,false);
             DrawCmfDetailShadow(actor.cmf,motion,(int)sx,(int)sy,RIGHT,zoom);
             ++drawn;
@@ -11271,6 +12076,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 			deck.frame = frame + i * MOTIONDIV;
 			//방 안의 동료와 같은 식에 발판 몫을 곱한다.
 			deck.zoom = CastleDeckCrewZoom(charZoom, deck.type);
+			deck.y-=CastleCompanionFootOffset(deck.type,deck.zoom);deck.ny=deck.y;
 			deck.defaultZoom = deck.zoom;
 
 			//모션 번호가 그림 표 밖이면 서 있는 그림으로 되돌린다.
@@ -11403,12 +12209,52 @@ void LobbyDraw(void)
 			const int plateW=Min(DX-32*_2X,190*_2X);
 			DrawPixelPanel((DX-plateW)/2,labelTop,plateW,labelTop-labelBottom);
 			SetFontColor(COLOR_WHITE);
-			const double distanceKm = StageBg::kSpeedRail * StageBg::s_totalTravelSeconds / 10000.0;
-			sprintf(str, "총 이동거리 %.1f km", distanceKm);
+			//---- 미터로 쭉 적는다 ----
+			//
+			//km 로 적으면 처음 한참을 0.0 km 로 서 있다. 달린 보람이
+			//숫자에 안 나타난다 - 미터면 한 걸음마다 올라간다.
+			const double distanceM = StageBg::kSpeedRail
+				* StageBg::s_totalTravelSeconds / 10.0;
+			//천 단위로 끊는다. 45 만을 콤마 없이 적으면 자릿수를 세게 된다.
+			{
+				char raw[32], grouped[48];
+				int at = 0;
+
+				sprintf(raw, "%.0f", Max(0.0, distanceM));
+
+				{
+					const int len = (int)strlen(raw);
+
+					for (int i = 0; i < len && at < (int)sizeof(grouped) - 2; ++i) {
+						if (i > 0 && (len - i) % 3 == 0)
+							grouped[at++] = ',';
+
+						grouped[at++] = raw[i];
+					}
+				}
+
+				grouped[at] = 0;
+				sprintf(str, "총 이동거리 %s m", grouped);
+			}
+
 			CenterTextStrSolid(str, DX / 2, distanceY, 0.86f);
 			SetFontColor(COLOR_WHITE);
 			const int region = (robin.stage / STAGE_PER_CYCLE) % STAGEBG_REGION_CNT;
-			sprintf(str, "%s  스테이지 %d", StageBg::RegionName(region), robin.stage + 1);
+			//방 자리를 고치려면 "이 성이 몇 번인가" 가 먼저다. 스크린샷
+			//한 장으로 알 수 있게 성 번호와 방 수를 같이 적는다.
+			//(SoftCastle::Sectors[성][방] 표의 줄 번호가 이 숫자다.)
+			//robin.castle 이 아니라 지금 그려지고 있는 성이다. 로비의
+			//화살표는 미리보기만 넘기므로 robin.castle 은 안 바뀐다 -
+			//그걸 찍었더니 어느 성을 봐도 "성 0" 이었다.
+			{
+				const int shown = CastleParts::sdPlacement.valid
+					? CastleParts::sdPlacement.castle
+					: CastleMenuModel::Clamp(robin.castle);
+
+				sprintf(str, "%s  스테이지 %d  ·  성 %d (방 %d)",
+					StageBg::RegionName(region), robin.stage + 1, shown,
+					SoftCastle::Enabled() ? SoftCastle::Counts[shown] : 0);
+			}
 			CenterTextStrSolid(str, DX / 2, stageY, 0.72f);
 		}
 	}
@@ -13640,20 +14486,7 @@ static void PvpSideGridDraw(int side, int bottomY, float appear)
 	//일반 전투의 가방과 같은 그림, 같은 자리 맞춤이다(GridTestDraw).
 	//그림 안의 칸 간격과 바깥 여백은 GridFrameMetrics.inc 가 들고 있다.
 	{
-		const int img = GRID_FRAME_FIRST_IMG + g->castle;
-
-		if (!sprite[img])
-			LoadImg(img);
-
-		if (sprite[img]) {
-			const auto sz = sprite[img]->getContentSize();
-			const float zoom = (float)cell / (float)GRID_FRAME_CELL;
-
-			DrawImage((int)sz.width, (int)sz.height, 0, 0,
-				left - (int)(GRID_FRAME_PAD * zoom),
-				bottom + boardH + (int)(GRID_FRAME_PAD * zoom),
-				false, false, false, false, false, zoom, sprite[img], img);
-		}
+		DrawSdInventoryGrid(g->castle,left,bottom+boardH,cell);
 	}
 
 	for (int i = 0; i < g->cnt; ++i) {
@@ -15030,15 +15863,7 @@ void GNBDraw(int x, int y)
 		const int gearW = (int)(140.0f * gearZoom);
 		const int gearH = (int)(145.0f * gearZoom);
 
-		if(drawHandle==MD_LOBBY) {
-			const int size=LOBBY_BAR_H,px=x+DX-36*_2X/2-size/2;
-			DrawPixelPanel(px,y,size,size);
-			const int p=Max(1,_2X),cx=px+size/2,cy=y-size/2;
-			MemRect(cx-5*p,cy+5*p,10*p,10*p,0xE7E3CD);
-			MemRect(cx-7*p,cy+2*p,14*p,4*p,0xE7E3CD);
-			MemRect(cx-2*p,cy+7*p,4*p,14*p,0xE7E3CD);
-			MemRect(cx-2*p,cy+2*p,4*p,4*p,0x102638);
-		} else DrawImage(140, 145, 1, 1,
+		DrawImage(140, 145, 1, 1,
 			x + DX - 36 * _2X / 2 - gearW / 2,
 			y - (LOBBY_BAR_H - gearH) / 2,
 			false, false, false, false, false, gearZoom,

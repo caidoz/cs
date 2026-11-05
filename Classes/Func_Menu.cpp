@@ -1,13 +1,12 @@
-﻿#pragma once
+#pragma once
 #include "Core.h"
 #include "Func.h"
 #include "Text.h"
 
 static bool PixelEquipmentUi()
 {
-	if(curMenu==MENU_COLLECTIONS) return true;
-	for(int i=0;i<popUpCnt;++i) if(popUp[i].type==POPUPTYPE_COLLECTIONS) return true;
-	return false;
+	// Menus share the flat pixel skin and light text.
+	return true;
 }
 #include "Data.h"
 
@@ -880,27 +879,7 @@ static void DrawCdCost(long long needPiece, long long havePiece,
 	//전에는 칸 폭의 56% 라는 고정 자리였다. 액수는 오른쪽 맞춤이라 자릿수가
 	//늘면 숫자가 왼쪽으로 자라 금화를 파고들고, 적으면 금화와 숫자 사이가
 	//휑하게 벌어졌다. 액수 폭을 재서 그 왼쪽에 8 칸을 띄우고 놓는다.
-	{
-		float goldR = cl + cw - 24.0f;
-		float numW = StringWidth(tempStr, 2.0f * sCdU) / sCdU;
-		float coinX = goldR - numW - 8.0f - coinS;
-
-		//카드가 있으면 그 오른쪽 글자와 부딪히지 않게 막아 둔다.
-		float lim = cl + cw * 0.30f;
-
-		if (coinX < lim)
-			coinX = lim;
-
-		//아이콘 번호 자체가 프레임마다 돌아가서 동전이 반짝인다.
-		DrawIcon(ICON_GOLD + frame % GOLDICONFRAME,
-			Loc(coinX), LocY(cy + (ch - coinS) / 2),
-			coinS / (float)ITEMICONSIZE * sCdU, false, true, false, sCdU);
-	}
-
-	//금화 옆이라 짙은 회색보다 흰색이 금화와 한 덩어리로 읽힌다.
-	//모자랄 때만 빨강으로 바꿔 왜 못 누르는지 보인다.
-	CdText(tempStr, cl + cw - 24.0f, CdMidY(cy, ch, 2.0f) - 8.0f, 2.0f, RIGHT,
-		enoughGold ? COLOR_WHITE : COLOR_REALRED);
+	DrawGoldAmount(needGold,(int)Loc(cl+cw-24),(int)LocY(cy+32),(int)(cw*.65f*sCdU),RIGHT);
 
 	//---- 버튼 ----
 	if (canUp)
@@ -3346,12 +3325,18 @@ static const char* const optionLangName[12] = {
 //option.png 한 조각을 그대로 그린다.
 static void DrawOptionPart(int sx, int sy, int sw, int sh, float x, float y, float sc)
 {
+	if(sx==OPT_XBTN_X && sy==OPT_XBTN_Y){
+	 DrawSd3dPanel((int)x,(int)y,(int)(sw*sc),(int)(sh*sc),4);SetFontColor(COLOR_WHITE);
+	 CenterTextStrSolid("X",(int)(x+sw*sc/2),(int)(y-sh*sc/2+8),1.0f);return;
+	}
 	DrawImage(sw, sh, sx, sy, x, y, false, false, false, false, false, sc, sprite[OPTION_IMG], OPTION_IMG);
 }
 
 //가운데를 늘려서 원하는 크기로 만드는 9분할. 모서리는 원본 비율을 지킨다.
 static void DrawOptionPart9(int sx, int sy, int sw, int sh, int edge, float x, float y, float w, float h, float sc)
 {
+	const int style=sx==OPT_RIBBON_X?0:sx==OPT_SELROW_X?0:1;
+	if(DrawSd3dPanel((int)x,(int)y,(int)w,(int)h,style))return;
 	float e = (float)edge * sc;
 	int   me = sw - edge * 2;	//가운데 소스 폭
 	int   mv = sh - edge * 2;	//가운데 소스 높이
@@ -3399,6 +3384,11 @@ static void DrawOptionPart9(int sx, int sy, int sw, int sh, int edge, float x, f
 //중간 띠(OPT_WIN_MID)를 필요한 만큼 반복해서 쌓아 올린다.
 static void DrawOptionWindow(float x, float y, float w, float h)
 {
+	if(DrawSd3dPanel((int)x,(int)y,(int)w,(int)h,1)){
+	 const float s=w/OPT_WIN_W;
+	 DrawSd3dPanel((int)x,(int)y,(int)w,(int)(OPT_WIN_TOP_H*s),0);
+	 return;
+	}
 	float s = w / (float)OPT_WIN_W;
 	float topH = (float)OPT_WIN_TOP_H * s;
 	float botH = (float)OPT_WIN_BOT_H * s;
@@ -8074,13 +8064,10 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			COLOR_WHITE);
 
 		//골드
-		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
-			Loc(ROW_CX - ICON_H / 2),
-			LocY(ROW_CY + ROW_GAP * 2 - ICON_H / 2), ICON_Z * sCdU,
-			false, false, true, 1);
-		sprintf(tempStr, "%d~%d (%d%%)", box.goldMin, box.goldMax, box.goldRate);
-		CdText(tempStr, ROW_TX, ROW_CY + ROW_GAP * 2 + ROW_TDY, ROW_TZ, LEFT,
-			COLOR_WHITE);
+		sprintf(tempStr,"%d%%",box.goldRate);CdText(tempStr,ROW_CX-40,ROW_CY+ROW_GAP*2+ROW_TDY,1.3f,LEFT,COLOR_WHITE);
+		DrawGoldAmount(box.goldMin,Loc(ROW_TX),LocY(ROW_CY+ROW_GAP*2+ROW_TDY),175*sCdU,LEFT);
+		CdText("~",ROW_TX+315,ROW_CY+ROW_GAP*2+ROW_TDY,ROW_TZ,LEFT,COLOR_WHITE);
+		DrawGoldAmount(box.goldMax,Loc(ROW_TX+350),LocY(ROW_CY+ROW_GAP*2+ROW_TDY),175*sCdU,LEFT);
 
 		//---- 상세 확률표 ----
 		//
@@ -8117,7 +8104,6 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		long long amount = 0;
 		if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 			amount = coinAmount[product - IAP_COIN_01];
-			DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME, Loc(310.0f), LocY(935.0f), 2.0f * sCdU, false, false, true, 1);
 		}
 		else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
 			amount = heartAmount[product - IAP_HEART_01];
@@ -8130,7 +8116,8 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 				Loc(310.0f), LocY(935.0f), false, false, false, false, false,
 				1.0f * sCdU, sprite[ITEM_IMG + 7], ITEM_IMG + 7);
 		}
-		if (amount) {
+		if(product>=IAP_COIN_01&&product<=IAP_COIN_06)DrawGoldAmount(amount,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(945.0f),(int)(700*sCdU));
+		else if (amount) {
 			sprintf(tempStr, "%lld", amount);
 			CdText(tempStr, 435.0f, 955.0f, 2.15f, LEFT, COLOR_WHITE);
 		}
@@ -8138,12 +8125,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	if (isBox) {
 		long long boxPrice = GetBoxPrice(detail, GRADE_NORMAL);
 		//목록 판이 1056 까지 내려왔다. 가격은 그 아래로 물러난다.
-		DrawIcon(ICON_GOLD + (frame / 6) % GOLDICONFRAME,
-			Loc(305.0f), LocY(1097.0f), 2.7f * sCdU, false, false, true, 1);
-		SetFontColor(COLOR_WHITE);
-		DrawBigNumTTF(boxPrice, (int)Loc(805.0f), (int)LocY(1127.0f),
-			NUM_FONT_NORMAL, RIGHT, false, false, 430.0f * sCdU,
-			true, 2.15f * sCdU, true);
+		DrawGoldAmount(boxPrice,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(1100.0f),(int)(700*sCdU));
 	}
 	else
 		CdText(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, COLOR_WHITE);
@@ -8364,13 +8346,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 	DrawCastleBoxXY(detail, false, LEFT, x + (w - boxSize) / 2,
 		panelY - (panelSize - boxSize) / 2, COLOR_WHITE, boxSize / 512.0f);
 
-	DrawIcon(ICON_GOLD, x + 18.0f * zoom, by + 32.0f * zoom, 0.8f * zoom,
-		false, false, false, 1);
-
-	SetFontColor(COLOR_WHITE);
-	DrawNum(price, x + w - 10.0f * zoom,
-		by + 32.0f * zoom,
-		NUM_FONT_NORMAL, RIGHT, false, false, true, zoom * 0.8f, false);
+	DrawGoldAmount(price,(int)(x+w/2),(int)(by+34*zoom),(int)(w-24*zoom));
 	DrawPixelPanel((int)(x+6*zoom),(int)by,(int)(w-12*zoom),(int)bh,0x164A5B,0xC49D4D);
 	SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
 	DrawTextStrSystem("구매하기", x + w / 2,

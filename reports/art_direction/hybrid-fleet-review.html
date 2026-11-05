@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castle Survivor · 전체 성 파츠 적용</title>
+<style>body{margin:0;background:#0b1827;color:#e5eef5;font:16px system-ui}header{position:sticky;top:0;background:#112a3e;padding:18px;z-index:2;border-bottom:2px solid #cda64c}h1{font-size:22px;margin:0 0 12px}select{padding:8px;background:#204059;color:white;border:1px solid #6b9db5;border-radius:6px;margin-right:10px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;padding:20px}figure{margin:0;background:#173349;border:1px solid #48748b;border-radius:12px;overflow:hidden}figcaption{padding:12px;color:#ffe1a0}img{display:block;width:100%;height:auto}p{margin:10px 0;color:#b5ceda;font-size:14px}details{padding:20px}a{color:#ffe1a0}</style>
+<div style="padding:16px;background:#60302c;color:white">?? ??? ? ?? ? ?????? ???? ????. <a href="authored-castles-review.html">?? ?? ?? ?? ??</a></div><header><h1>10종 성 · 5개 파츠 · 0~5단계</h1><select id="castle"></select><select id="ratio"><option value="850">1:1.33 · 640×850</option><option value="1069">1:1.67 · 640×1069</option><option value="1280">1:2 · 640×1280</option><option value="1408" selected>1:2.2 · 640×1408</option></select><p>실제 로비 캡처입니다. 기본/최대 강화 외관과 실내를 비교할 수 있습니다. 로비의 좌우 화살표로 성을 바꾸고, 성을 누르면 실내를 열고 닫을 수 있습니다.</p></header>
+<main id="lobby"></main><details open><summary>업그레이드 조합 12종 · 실제 성 메뉴</summary><main id="upgrades"></main></details>
+<script>
+const names=['기초 요새','멧돼지 문장','쌍검 문장','거북 문장','사자 문장','톱니 문장','불사조 문장','독수리 문장','수정의 눈','태양 문장'];
+castle.innerHTML=names.map((n,i)=>`<option value="${i+1}">${i+1}. ${n}</option>`).join('');
+const states=[['base-closed','기본 외관'],['base-open','기본 실내'],['max-closed','최대 강화 외관'],['max-open','최대 강화 실내']];
+function card(label,path){return `<figure><figcaption>${label}</figcaption><a href="${path}" target="_blank"><img loading="lazy" src="${path}" alt="${label}"></a></figure>`}
+function render(){const n=String(castle.value).padStart(2,'0');lobby.innerHTML=states.map(([f,t])=>card(t,`hybrid_fleet/${ratio.value}/castle-${n}-${f}.png`)).join('');upgrades.innerHTML=Array.from({length:12},(_,i)=>card(i<6?'전체 Lv.'+i:i<11?['첨탑','외부장갑','실내/데크','대포','바퀴'][i-6]+'만 최대 강화':'서로 다른 단계 조합',`hybrid_fleet/upgrades/castle-${n}-variant-${String(i).padStart(2,'0')}.png`)).join('')}
+castle.onchange=ratio.onchange=render;render();
+</script></html>

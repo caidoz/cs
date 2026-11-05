@@ -1114,6 +1114,21 @@ namespace {
 
 	int stageHeroCool = 0;
 	int stageHeroFlash = 0;
+
+	//---- 대표 휘두름 ----
+	//
+	//검이 나갈 때마다 선다. 도는 동안 히어로가 공격 모션을 친다.
+	//stageHeroFlash 와 따로 둔다 - 그쪽은 기본 무기 게이지의 번쩍임이라
+	//검이 쏠 때 같이 켜면 엉뚱한 칸이 빛난다.
+	int stageHeroSwing = 0;
+
+	//---- 발사 보류 ----
+	//
+	//stageHoldFrame 동안은 아무도 쏘지 않는다. 풀리면 stageDrainFrame
+	//동안 STAGE_DRAIN_GAP 간격으로 한 발씩 쏟는다.
+	int stageHoldFrame = 0;
+	int stageDrainFrame = 0;
+	int stageDrainGap = 0;
 	StageAllyLink::Runtime stageAllyLinks;
 	unsigned stageAllyRun=0;
 	std::uint64_t stageAllyEventId=0,stageMaxAttackId=0;
@@ -1391,6 +1406,10 @@ void StageRtBegin(void)
 
 	stageHeroCool = 0;
 	stageHeroFlash = 0;
+	stageHeroSwing = 0;
+	stageHoldFrame = 0;
+	stageDrainFrame = 0;
+	stageDrainGap = 0;
 	stageFoeCool = 0;
 	stageFoeShot = 0;
 	stageFoeObj = -1;
@@ -1945,6 +1964,10 @@ int StageRtFoe(void)
 	return -1;
 }
 
+//가방 장비 네 역할축 합계. UpdateStageRealtime 가 매 프레임 새로 뜬다.
+//검이 날아가 닿는 자리와 쿨타임 셈은 그 루프 밖이라 여기서 받아 본다.
+static GearRoleTotals stageGearRoles;
+
 //---- 검 한 자루의 쿨타임 ----
 //
 //검의 길이(세로 칸)에서 온다. 표 밖의 번호면 히어로 기본값을 준다.
@@ -1967,7 +1990,8 @@ static int StageHeroCooldown(void)
 	if (weapon->type != ITEM_SWORD)
 		return STAGE_HERO_COOLDOWN;
 
-	return StageSwordCooldown(weapon->detail)*(100-GridEquippedWeaponHaste())/100;
+	const int haste = Min(80, GridEquippedWeaponHaste() + stageGearRoles.coolPct);
+	return Max(1, StageSwordCooldown(weapon->detail)*(100-haste)/100);
 }
 
 bool StageRtBasicWeaponCharge(float* charge,int* flash)
@@ -2051,6 +2075,29 @@ bool StageRtTacticCharge(int slot, float* charge, int* flash)
 	return true;
 }
 
+//---- 이번 프레임에 쏴도 되는가 ----
+//
+//보류 중이면 안 된다. 보류가 풀린 직후에는 한 발씩 간격을 두고 내보낸다 -
+//한꺼번에 터지면 궁극기 뒤에 숫자가 뭉개진다.
+//
+//시계는 이 함수와 무관하게 계속 돈다. 미루는 것은 발사뿐이다.
+static bool StageShotHeld(void)
+{
+	if (stageHoldFrame > 0)
+		return true;
+
+	if (stageDrainFrame <= 0)
+		return false;
+
+	if (stageDrainGap > 0) {
+		--stageDrainGap;
+		return true;
+	}
+
+	stageDrainGap = STAGE_DRAIN_GAP;
+	return false;
+}
+
 void StageHeroUltDraw(void)
 {
 	if (stageHeroUltFrame <= 0)
@@ -2081,20 +2128,67 @@ void StageHeroUltDraw(void)
 	CenterTextStrSolid(stageHeroUltTitle ? stageHeroUltTitle : "소울 크래시", DX / 2, bannerY - 8 * _2X, 0.54f);
 }
 
+//---- 히어로 방어막 최대치 ----
+//
+//방어막은 히어로 한 명의 것이다(CLAUDE.md 3장). 성은 발판이라 보너스만
+//얹고, 그 몫은 20% 를 넘지 않는다.
+//
+//가방 장비의 몫은 역할 표 합계(GridQueryGearRoles) 하나에서만 온다. 전에는
+//방패 목록의 값을 세 배로 더했는데, 그러면 같은 장비가 여기서도 더해지고
+//펄스 충전에서도 또 쓰여 어느 쪽이 최대치인지 알 수 없었다. 방패 목록은
+//이제 "한 번 충전할 양" 만 맡는다.
+//히어로가 이 판에서 이미 쓰러졌는가. 끝을 한 번만 알리기 위한 빗장이다.
+static bool stageHeroDown = false;
+
 void StageUpdateFortressDefense(void)
 {
 	OBJECT* hero = &ao[PLAYER];
-	long long baseArmor = 100 + CastleBonusOf(CPE_DEF) * 20 + hero->ps[PS_ARMOR] * 3;
+	const long long heroArmor = 100 + hero->ps[PS_ARMOR] * 3;
 
-	StageSword shields[GRIDTEST_MAXITEM];
-	const int shieldCnt = GridTestShields(shields, GRIDTEST_MAXITEM);
-	for (int i = 0; i < shieldCnt; ++i) {
-		baseArmor += shields[i].value * 3;
-	}
+	GearRoleTotals roles;
+	GridQueryGearRoles(&roles);
+
+	long long baseArmor = heroArmor + roles.shieldMax;
+
+	//성 파츠 보너스는 보조다. 히어로가 모은 몫의 20% 를 상한으로 둔다.
+	const long long castleBonus = Min(baseArmor * 20 / 100,
+		(long long)CastleBonusOf(CPE_DEF) * 20);
+	baseArmor += Max(0LL, castleBonus);
 
 	hero->shieldMax = (int)Max(100LL, baseArmor);
 	if (hero->shield > hero->shieldMax)
 		hero->shield = hero->shieldMax;
+}
+
+//---- 히어로 체력 최대치 ----
+//
+//성 내구도도, 동료 체력도 더하지 않는다. 체력통은 히어로 하나뿐이고 그것이
+//0 이 되면 판이 끝난다(StageHeroDownCheck). 동료는 회복과 화력으로만 돕는다.
+//---- 성이 달리는가 ----
+//
+//몬스터가 서 있으면 멈춘다. 싸우는 동안에도 배경이 흐르면, 제자리에서
+//치고받는데 풍경만 지나간다 - 달린 거리가 싸운 시간만큼 늘어나서
+//"총 이동거리" 가 실제로 간 길과 상관없는 수가 된다.
+//
+//배경(StageBg::Update)과 차체 흔들림(BattleMobileCastle 의 IsMoving)이
+//같은 값을 봐야 땅과 바퀴가 따로 놀지 않는다.
+bool StageCastleRolling(void)
+{
+	//---- 로비에서도 멈춘다 ----
+	//
+	//거기엔 몬스터가 없으니 늘 달리게 두었다. 그런데 첫 화면은 성을
+	//보여 주고 고르는 자리다 - 배경이 계속 흐르면 눈이 거기로 끌리고,
+	//아무 데도 안 가는데 "총 이동거리" 만 쌓인다.
+	//
+	//달리는 것은 판에서 몬스터와 몬스터 사이뿐이다.
+	if (drawHandle != MD_PLAY)
+		return false;
+
+	//실시간 판이 아니면(튜토리얼 등) 예전처럼 계속 간다.
+	if (!IsStageRealtime())
+		return true;
+
+	return StageRtFoe() < 0;
 }
 
 void StageInitFortressHealthAndArmor(void)
@@ -2102,27 +2196,65 @@ void StageInitFortressHealthAndArmor(void)
 	OBJECT* hero = &ao[PLAYER];
 	if (hero->ps[PS_HP] <= 0) hero->ps[PS_HP] = 1000;
 
-	// 1. 성 총 체력: 성 기본 내구도 + 히어로 체력 + 바지(Pants) 보너스 + 승선 동료 체력 기여
+	// 1. 히어로 체력: 순수 체력 + 하체 장비 체력통 + 체력 역할 장신구
 	long long totalHp = hero->ps[PS_HP] + GridTestPantsHpBonus();
-	for (int i = 0; i < MAXCREW; ++i) {
-		const OBJECT* c = &ao[CREW + i];
-		if (c->active && c->ps[PS_HP] > 0) {
-			// 바지와 인접한 동료는 성채 체력 기여도 2배 (50% -> 100%)
-			const bool pantsBoost = GridCrewHasAdjacentPants(i);
-			totalHp += pantsBoost ? c->ps[PS_HP] : (c->ps[PS_HP] / 2);
-		}
-	}
-	const int hpPct = CastleBonusOf(CPE_HP_PCT);
+
+	//성 파츠 체력 보너스도 보조다 - 상한 20%.
+	const int hpPct = Min(20, CastleBonusOf(CPE_HP_PCT));
 	if (hpPct > 0)
 		totalHp += totalHp * hpPct / 100;
 
 	hero->maxhp = totalHp;
 	hero->hp = totalHp;
 	hero->dead = false;
+	stageHeroDown = false;
 
-	// 2. 총 방어력(Armor/Shield): 성 기본 방어력 + 가방 방어구
+	// 2. 방어막: 히어로 방어 + 가방 방어 역할 장비
 	StageUpdateFortressDefense();
 	hero->shield = hero->shieldMax;
+}
+
+//---- 히어로가 쓰러지면 판이 끝난다 ----
+//
+//전에는 쓰러져도 아무 일이 없었다. running 만 꺼져 적도 히어로도 멈춘 채
+//화면이 그대로 서 있었다 - 성 내구도가 진짜 체력통이던 때의 흔적이다.
+//
+//보스 레이드가 끝을 알리는 길(POPUPTYPE_GAMEOVER)과 같은 자리를 쓴다.
+//부활도, 성 자동방어도 두지 않는다(CLAUDE.md 9장 4항).
+static void StageHeroDownCheck(void)
+{
+	OBJECT* hero = &ao[PLAYER];
+
+	if (stageHeroDown || !hero->active)
+		return;
+
+	//---- 등장 연출 중에는 끝내지 않는다 ----
+	//
+	//RegenMove 는 히어로를 두 걸음으로 깨운다. 먼저 active 를 켜고
+	//(frame > REGENFRAME), 몇 프레임 뒤에야 dead 를 끈다
+	//(frame == regenMotionFrame). 그 사이가 "서 있는데 죽은 것으로
+	//적힌" 한 칸이다.
+	//
+	//여기서 그 칸을 밟았다. 에너지를 쓰고 들어서자마자 판이 끝나고
+	//(waveStatus = WAVESTATUS_END) 몬스터가 한 마리도 안 나왔다 -
+	//화면에는 STAGE FAILED 만 떴다.
+	if (hero->moveHandler == REGENMOVE || hero->drawHandler == REGENDRAW)
+		return;
+
+	if (hero->hp > 0 && !hero->dead)
+		return;
+
+	stageHeroDown = true;
+	hero->hp = 0;
+	hero->dead = true;
+	touchDisable = true;
+	waveStatus = WAVESTATUS_END;
+
+	SetPopUp(POPUPTYPE_GAMEOVER, DX / 2, POPUPPOSITION_Y,
+		POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, false, false, false,
+		false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false);
+	gameOverFrame = 0;
 }
 
 //쓰러졌거나 쓰러지는 중이면 더 치지 않는다. 한 프레임에 여러 자루가 치는데
@@ -2155,17 +2287,52 @@ static void StageRtSwordHit(int foe, int swordValue)
 		: Max(1LL, (long long)hero->lv);
 	const long long keep = hero->ps[PS_DMG];
 
-	hero->ps[PS_DMG] = Max(1LL, keep * swordValue / equipValue);
+	//---- 공격 역할축 ----
+	//
+	//손 장비와 반지가 모아 둔 공격력 %, 그리고 치명타다. 검 제 값에 얹는다 -
+	//PS_DMG 를 직접 만지면 스킬과 장착 무기 쪽까지 같이 부푼다.
+	long long value = Max(1LL, (long long)swordValue);
+	value += value * stageGearRoles.atkPct / 100;
+
+	const bool crit = stageGearRoles.critPct > 0
+		&& Random(100) < stageGearRoles.critPct;
+	if (crit)
+		value = value * 3 / 2;
+
+	hero->ps[PS_DMG] = Max(1LL, keep * value / equipValue);
 	AttackObj(PLAYER, foe,true);
-	if(ao[foe].hp+ao[foe].shield<before) StageCombatReviewHit(0);
 	hero->ps[PS_DMG] = keep;
-    if(ao[foe].hp+ao[foe].shield<before) StageHeroAttackLink(PLAYER,foe,ITEM_SWORD);
+
+	const bool damaged = ao[foe].hp + ao[foe].shield < before;
+	if(damaged) StageCombatReviewHit(0);
+    if(damaged) StageHeroAttackLink(PLAYER,foe,ITEM_SWORD);
+
+	//---- 회복 역할축: 흡혈 ----
+	//
+	//검·장갑·반지가 모아 둔 비율만큼, 실제로 들어간 피해에서 떼어 온다.
+	//방어막이 덜 찼으면 거기부터 메운다(템빨용사 식 2중 보호막).
+	if (damaged && stageGearRoles.leechPct > 0) {
+		const long long dealt = before - (ao[foe].hp + ao[foe].shield);
+		const long long heal = Max(1LL, dealt * stageGearRoles.leechPct / 100);
+
+		if (hero->shield < hero->shieldMax)
+			hero->shield = (int)Min((long long)hero->shieldMax, hero->shield + heal);
+		else if (hero->hp < hero->maxhp)
+			hero->hp = Min(hero->maxhp, hero->hp + heal);
+	}
 }
 
 void UpdateStageRealtime(void)
 {
 	if (!IsStageRealtime())
 		return;
+
+	//가방 장비가 히어로에게 보태는 네 역할축. 한 프레임에 한 번만 센다.
+	GridQueryGearRoles(&stageGearRoles);
+
+	//히어로가 쓰러졌으면 그 자리에서 판을 끝낸다. 성이 멀쩡해도, 동료가
+	//남아 있어도 끝이다(CLAUDE.md 3장).
+	StageHeroDownCheck();
 
 	//판이 멈춰 있을 때(상점에서 고르는 중, 상자, 클리어)는 아무도 안 친다.
 	//시계도 멈춘다 - 멈춘 사이에 차 두면 다시 서자마자 한꺼번에 쏟아진다.
@@ -2248,6 +2415,32 @@ void UpdateStageRealtime(void)
 	//장착 검이 가방에 없으면(자리가 없어 못 넣었거나 맨손) 예전처럼 제
 	//시계로 휘두른다. 안 그러면 히어로가 아무것도 안 해 첫 판을 못 넘긴다.
 	if(running && stageHeroFlash>0) --stageHeroFlash;
+
+	//---- 연출 시계 ----
+	//
+	//보류와 쏟아내기는 판이 멈춰 있을 때도 줄어들면 안 된다. 멈춘 사이에
+	//풀려 버리면 다시 서자마자 보류분이 통째로 터진다.
+	if (running) {
+		if (stageHoldFrame > 0) {
+			if (--stageHoldFrame <= 0)
+				stageDrainFrame = STAGE_DRAIN_WINDOW;	//이제 한 발씩 쏟는다
+		}
+		else if (stageDrainFrame > 0) --stageDrainFrame;
+
+		if (stageHeroSwing > 0) --stageHeroSwing;
+	}
+
+	//---- 대표 휘두름을 몸에 입힌다 ----
+	//
+	//제 차례를 치르는 중이면(맨손 경로) 건드리지 않는다 - 진짜 공격
+	//모션이 돌고 있는데 덧쓰면 동작이 끊긴다.
+	if (stageHeroSwing > 0 && hero->active && !hero->dead
+		&& !PvpHeroTurnBusy(PLAYER)) {
+		const int step = (STAGE_HERO_SWING - stageHeroSwing) * 32
+			/ Max(1, STAGE_HERO_SWING);
+
+		hero->motion = motionData[32 + Max(0, Min(31, step))];
+	}
 	if (!gearSword && running && foe >= 0) {
 		//장착한 검의 빠르기로 휘두른다. 격자의 검과 같은 식이다.
 		if (stageHeroCool < StageHeroCooldown())
@@ -2292,7 +2485,11 @@ void UpdateStageRealtime(void)
 		if (GridSlotHasAdjacentCategory(slot, GEAR_CAT_HELM)) {
 			swordCool = swordCool * 85 / 100; // 투구 인접 시 무기 쿨타임 15% 가속
 		}
-		stageSwordMax[slot] = swordCool;
+		//보조 역할축: 모자/캡/부메랑이 모아 둔 공격 준비 단축(상한 40%)
+		if (stageGearRoles.coolPct > 0) {
+			swordCool = swordCool * (100 - stageGearRoles.coolPct) / 100;
+		}
+		stageSwordMax[slot] = Max(1, swordCool);
 
 		if (stageSwordPart[slot] != s->part + 1) {
 			stageSwordPart[slot] = s->part + 1;
@@ -2307,6 +2504,23 @@ void UpdateStageRealtime(void)
 		if (stageSwordFlash[slot] > 0) {
 			if (--stageSwordFlash[slot] > 0)
 				continue;
+
+			//---- 보류 중이면 아직 안 나간다 ----
+			//
+			//번쩍임을 1 로 되돌려 다음 프레임에 다시 이 자리로 온다.
+			//시계(stageSwordCool)는 이미 다 찼으므로 총량은 안 줄어든다.
+			if (StageShotHeld()) {
+				stageSwordFlash[slot] = 1;
+				continue;
+			}
+
+			//---- 사람도 같이 친다 ----
+			//
+			//칼만 날고 사람이 서 있으면 주인공이 장식이 된다. 이미
+			//휘두르는 중이면 덧쓰지 않는다 - 큐를 쌓으면 칸의 게이지와
+			//화면이 어긋난다(docs/기획_전투신.md 3장).
+			if (stageHeroSwing <= 0)
+				stageHeroSwing = STAGE_HERO_SWING;
 			if(s->gear) {
 			 if(PvpHeroTurnBusy(PLAYER)) {stageSwordFlash[slot]=1;continue;}
 			 PvpHeroGiveTurn(PLAYER);stageSwordCool[slot]=0;continue;
@@ -2441,6 +2655,14 @@ void UpdateStageRealtime(void)
 			PlayMusic(M_BANG);
 			effect.shake = 5;
 
+			//---- 이 한 방만 보이게 ----
+			//
+			//잔타가 배너 위에 겹치면 가장 큰 것이 묻힌다. 잠깐 발사를
+			//미루고, 끝나는 순간 미뤘던 것들이 한 발씩 터진다.
+			stageHoldFrame = STAGE_HOLD_ULT;
+			stageDrainFrame = 0;
+			stageDrainGap = 0;
+
 			if (StageRtFoeAlive(foe)) {
 				const long long keep = hero->ps[PS_DMG];
 				const int ultMult = hasKing ? 5 : 4; // 왕 보유 시 500% 대미지
@@ -2500,6 +2722,36 @@ void UpdateStageRealtime(void)
 		}
 	}
 
+	//---- 회복 역할축: 장비가 스스로 메우는 몫 ----
+	//
+	//목걸이·킬트·코트·부츠가 모아 둔 초당 재생이다. 표의 값은 1/10 점
+	//자리라, 1 초(FPS 프레임) 동안 쌓아 두고 10 으로 나눠 준다. 프레임마다
+	//나누면 소수점이 깎여 작은 장비는 영원히 아무 일도 안 한다.
+	if (running) {
+		static int hpRegenTick = 0, shieldRegenTick = 0;
+
+		if (stageGearRoles.hpRegenTenths > 0 && hero->hp < hero->maxhp) {
+			hpRegenTick += stageGearRoles.hpRegenTenths;
+			if (hpRegenTick >= FPS * 10) {
+				const int gain = hpRegenTick / (FPS * 10);
+				hpRegenTick -= gain * FPS * 10;
+				hero->hp = Min(hero->maxhp, hero->hp + gain);
+			}
+		}
+		else hpRegenTick = 0;
+
+		if (stageGearRoles.shieldRegenTenths > 0 && hero->shield < hero->shieldMax) {
+			shieldRegenTick += stageGearRoles.shieldRegenTenths;
+			if (shieldRegenTick >= FPS * 10) {
+				const int gain = shieldRegenTick / (FPS * 10);
+				shieldRegenTick -= gain * FPS * 10;
+				hero->shield = (int)Min((long long)hero->shieldMax,
+					hero->shield + gain);
+			}
+		}
+		else shieldRegenTick = 0;
+	}
+
 	//---- 동료 ----
 	for (int i = 0; i < MAXCREW; ++i) {
 		OBJECT* c = &ao[CREW + i];
@@ -2514,6 +2766,9 @@ void UpdateStageRealtime(void)
 			const int crewSpeed = StageBalancedProfile(c->type)?1:(c->type == NPC_EVAN) ? 4 : (GetCrewRole(c->type) == CREW_ROLE_STRIKER) ? 2 : 1;
 			if (stageCrewCool[i] < BossRaidCrewCooldown(i))
 				stageCrewCool[i] += crewSpeed;
+			else if (StageShotHeld()) {
+				//보류 중. 시계는 다 찬 채로 기다린다 - 줄이지 않는다.
+			}
 			else {
 				//몇 차 스킬인가. PVP 와 같은 자로 잰다 - 쏜 횟수다.
 				const int done = ++stageCrewShotCnt[i];
@@ -2623,9 +2878,15 @@ void UpdateStageRealtime(void)
 
 				if (running)
                     {
+                        //보조 역할축: 치마·신발이 모아 둔 회피(상한 30%).
+                        //피하면 이 한 대가 아예 없던 일이 된다.
+                        const bool dodged = stageGearRoles.dodgePct > 0
+                            && Random(100) < stageGearRoles.dodgePct;
+
                         const long long previous=e->ps[PS_DMG];
                         e->ps[PS_DMG]=previous*(100-stageBalancedFortify)/100;stageBalancedFortify=0;
-                        StageCombatReviewHit(3);AttackRobin(foe,PLAYER);e->ps[PS_DMG]=previous;
+                        if(!dodged) {StageCombatReviewHit(3);AttackRobin(foe,PLAYER);}
+                        e->ps[PS_DMG]=previous;
                     }
 			}
 

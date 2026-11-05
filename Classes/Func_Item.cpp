@@ -2,6 +2,7 @@
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
+#include "Data/CastleFacilities.h"
 
 long long GetStageAdmissionFee(void)
 {
@@ -1610,6 +1611,10 @@ int CastleBonusOf(int effectType)
 //집무실 · 의회실이 그 위에 비율로 얹힌다.
 long long CastleIncomePerMin(void)
 {
+ return CastleIncomePerHour()/60;
+}
+long long CastleIncomePerHour(void)
+{
 	int crew = 0;
 
 	for (int i = 0; i < gTotalCrew; i++) {
@@ -1621,7 +1626,73 @@ long long CastleIncomePerMin(void)
 
 	const long long base = INCOME_PER_MIN + (long long)INCOME_PER_CREW * crew;
 
-	return base * (100 + CastleBonusOf(CPE_INCOME_PCT)) / 100;
+	return base * 60 * (100 + CastleBonusOf(CPE_INCOME_PCT)) / 100
+        * (100+CastleFacilities::Bonus(robin.castleProgress,robin.castle,false))/100;
+}
+int CastleEnergyRecoverySeconds(void){
+ const int bonus=CastleFacilities::Bonus(robin.castleProgress,robin.castle,true);
+ return Max(1,HEARTTIME*100/(100+bonus));
+}
+bool CastleProductionReview(){
+ if(!getenv("CS_FACILITY_ECONOMY_REVIEW"))return false;
+ const auto saved=robin.castleProgress;const int castle=robin.castle;
+ const long long heart=robin.heart,gold=robin.gold;
+ const long goldTs=robin.castleIncomeTs,heartTs=robin.heartTimeStamp,clock=currentTimeStamp;
+ const bool savedAuto=autoPlay;const int savedAutoFrame=autoFrame;
+ autoPlay=false;bool ok=true;robin.castleProgress.owned=1023u;
+ for(int c=0;c<10;++c){
+  robin.castle=c;
+  for(int i=0;i<5;++i)robin.castleProgress.rooms[c][i]=0;
+  for(int i=0;i<CastleFacilities::Counts[c];++i){
+   const long long rate=CastleIncomePerHour();const int interval=CastleEnergyRecoverySeconds();
+   const int attack=CastleMenuModel::Attack(robin.castleProgress,c);
+   robin.castleProgress.rooms[c][i]=5;
+   ok=ok&&(CastleFacilities::Food(c,i)?CastleEnergyRecoverySeconds()<interval&&CastleIncomePerHour()==rate:
+    CastleIncomePerHour()>rate&&CastleEnergyRecoverySeconds()==interval);
+   ok=ok&&(CastleFacilities::Armory(c,i)?CastleMenuModel::Attack(robin.castleProgress,c)>attack:CastleMenuModel::Attack(robin.castleProgress,c)>=attack);
+   robin.castleProgress.rooms[c][i]=0;
+  }
+ }
+ robin.castle=1;const long now=MC_knlCurrentTimeStamp();currentTimeStamp=now;
+ const int interval=CastleEnergyRecoverySeconds();
+ robin.heart=0;robin.heartTimeStamp=now-interval*2-7;RefreshHeartTime();
+ ok=ok&&robin.heart==Min((long long)GetInitHeart(),2LL*GetHeartAmount())&&robin.heartTimeStamp==now-7;
+ robin.heart=GetInitHeart()+7;RefreshHeartTime();ok=ok&&robin.heart==GetInitHeart()+7;
+ robin.heart=0;robin.heartTimeStamp=now-interval/2;robin.castleIncomeTs=now-600;
+ const long long before=CastleIncomeNow(),rate=CastleIncomePerHour(),cap=CastleIncomeCap();robin.gold=0;
+ robin.castleProgress.rooms[1][1]=5;robin.castleProgress.rooms[1][0]=5;
+ CastleProductionRebase(rate,interval,cap);
+ ok=ok&&robin.gold==before&&CastleIncomeNow()==0;
+ const int nextInterval=CastleEnergyRecoverySeconds();
+ ok=ok&&robin.heart==0&&now-robin.heartTimeStamp<=nextInterval/2;
+ robin.gold=0;robin.castleIncomeTs=now-600;const long long after=CastleIncomeNow(),take=CastleIncomeTake();
+ ok=ok&&robin.gold==take&&take==after&&CastleIncomeTake()==0;
+ robin.heart=0;robin.heartTimeStamp=now+1000;RefreshHeartTime();ok=ok&&robin.heart==0&&robin.heartTimeStamp==now;
+ robin.castleProgress=saved;robin.castle=castle;robin.heart=heart;robin.gold=gold;
+ robin.castleIncomeTs=goldTs;robin.heartTimeStamp=heartTs;currentTimeStamp=clock;autoPlay=savedAuto;autoFrame=savedAutoFrame;
+ return ok;
+}
+void CastleProductionRebase(long long oldGoldPerHour,int oldEnergySeconds,long long oldGoldCap){
+ const long now=MC_knlCurrentTimeStamp();
+ if(robin.castleIncomeTs>0 && robin.castleIncomeTs<=now){
+  const long elapsed=Min((long)INCOME_MAX_SEC,now-robin.castleIncomeTs);
+  const long long pending=Min(oldGoldCap,oldGoldPerHour*elapsed/3600);
+  if(oldGoldPerHour!=CastleIncomePerHour() || oldGoldCap!=CastleIncomeCap()){
+   // Settle at the old rate before starting the new clock. Do not round-trip
+   // fractional timestamps: repeated castle switching must never mint gold.
+   robin.castleIncomeTs=now;
+   if(pending>0)GetItem(ITEM_GOLD,false,false,false,pending,false);
+  }
+ }
+ else robin.castleIncomeTs=now;
+ const long elapsed=robin.heartTimeStamp>0 && robin.heartTimeStamp<=now?now-robin.heartTimeStamp:0;
+ // Whole old-rate ticks are credited before translating the remaining fraction.
+ if(robin.heart<GetInitHeart() && oldEnergySeconds>0){
+  robin.heart=Min((long long)GetInitHeart(),robin.heart+GetHeartAmount()*(long long)(elapsed/oldEnergySeconds));
+  const int next=CastleEnergyRecoverySeconds();
+  const long partial=elapsed%oldEnergySeconds;
+  robin.heartTimeStamp=robin.heart>=GetInitHeart()?now:now-(long)((long long)partial*next/oldEnergySeconds);
+ }else robin.heartTimeStamp=now;
 }
 
 //금고 상한. 생산 시설이 올린다.
@@ -1646,7 +1717,7 @@ long long CastleIncomeNow(void)
 	if (sec > INCOME_MAX_SEC)
 		sec = INCOME_MAX_SEC;
 
-	return Min(CastleIncomeCap(), CastleIncomePerMin() * sec / 60);
+	return Min(CastleIncomeCap(), CastleIncomePerHour() * sec / 3600);
 }
 
 //금고를 걷는다. 걷은 양을 돌려준다.

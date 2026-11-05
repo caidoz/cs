@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Castle Survivor · 기존 성 구조 복원</title>
+<style>body{margin:0;background:#0b1827;color:#e5eef5;font:16px system-ui}header{position:sticky;top:0;background:#112a3e;padding:18px;z-index:2;border-bottom:2px solid #cda64c}h1{font-size:22px;margin:0 0 12px}select{padding:8px;background:#204059;color:white;border:1px solid #6b9db5;border-radius:6px;margin-right:10px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;padding:20px}figure{margin:0;background:#173349;border:1px solid #48748b;border-radius:12px;overflow:hidden}figcaption{padding:12px;color:#ffe1a0}img{display:block;width:100%;height:auto}p{margin:10px 0;color:#b5ceda;font-size:14px}details{padding:20px}a{color:#ffe1a0}.atlas{max-width:1400px;margin:20px auto;background:#193348}</style>
+<header><h1>기존 성·층별 실내·성별 무기 복원</h1><select id="castle"></select><select id="ratio"><option value="850">1:1.33 · 640×850</option><option value="1069">1:1.67 · 640×1069</option><option value="1280">1:2 · 640×1280</option><option value="1408" selected>1:2.2 · 640×1408</option></select><p>기존 이미지의 구조와 공간을 유지하고 재질의 색·명암만 보정했습니다. 마지막 성은 원래 비율에서 약 14% 확대했으며 실내도 함께 확대됩니다. 캐릭터와 원경 보스는 기존 도트 표현을 유지합니다.</p></header>
+<main id="gallery"></main>
+<details open><summary>같은 화면 크기에서 첫 성과 마지막 성 비교</summary><main id="growth"></main></details>
+<details><summary>성별 무기 10종 · 기존 0~5단계 이미지</summary><p>투석기 / 화염방사기 / 다연장 로켓 / 개틀링 / 유도 미사일 / 중포 / 냉기포 / 레이저 / 전격포 / 중력포</p><img class="atlas" loading="lazy" src="../../Resources/res/castle_cannon_v2/atlas.png"></details>
+<script>
+const castle=document.querySelector('#castle'),ratio=document.querySelector('#ratio');
+const names=['기초 요새 · 투석기','멧돼지 문장 · 화염방사기','쌍검 문장 · 다연장 로켓','거북 문장 · 개틀링','사자 문장 · 유도 미사일','톱니 문장 · 중포','불사조 문장 · 냉기포','독수리 문장 · 레이저','수정의 눈 · 전격포','태양 문장 · 중력포'];
+castle.innerHTML=names.map((n,i)=>`<option value="${i+1}" ${i===9?'selected':''}>${i+1}. ${n}</option>`).join('');
+const states=[['base-closed','기본 외관'],['base-open','기본 실내'],['max-closed','최대 강화 외관'],['max-open','최대 강화 실내']];
+function card(label,path){return `<figure><figcaption>${label}</figcaption><a href="${path}" target="_blank"><img loading="lazy" src="${path}" alt="${label}"></a></figure>`}
+function render(){const n=String(castle.value).padStart(2,'0');document.querySelector('#gallery').innerHTML=states.map(([f,t])=>card(t,`authored_castles/${ratio.value}/castle-${n}-${f}.png`)).join('');document.querySelector('#growth').innerHTML=card('첫 성 · 투석기',`authored_castles/${ratio.value}/castle-01-base-closed.png`)+card('마지막 성 · 중력포',`authored_castles/${ratio.value}/castle-10-base-closed.png`)}
+castle.onchange=ratio.onchange=render;render();
+</script></html>

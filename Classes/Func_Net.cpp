@@ -3009,9 +3009,37 @@ bool NetLoginChoicePending(void)
 {
 	return sLoginChoiceWaiting;
 }
+namespace {
+int rememberedGuestLogin=-1;
+std::string LoginResumePath(){
+ if(const char* review=getenv("CS_CASTLE_REVIEW_PATH"))return std::string(review)+"title-login-resume.dat";
+ return ServerPath("login-resume.dat");
+}
+}
+bool NetHasRememberedGuestLogin(){
+ if(rememberedGuestLogin<0){
+  rememberedGuestLogin=0;FILE* f=fopen(LoginResumePath().c_str(),"rb");
+  if(f){char data[32]={};const size_t n=fread(data,1,sizeof(data),f);fclose(f);
+   rememberedGuestLogin=n==8 && !memcmp(data,"guest-v1",8);}
+ }
+ return rememberedGuestLogin==1;
+}
+bool NetRememberGuestLogin(){
+ bool ok=false;
+ if(getenv("CS_CASTLE_REVIEW_PATH")){
+  FILE* f=fopen(LoginResumePath().c_str(),"wb");if(f){ok=fwrite("guest-v1",1,8,f)==8;fclose(f);}
+ }else ok=ServerWriteFile("login-resume.dat","guest-v1");
+ if(ok)rememberedGuestLogin=1;
+ return ok;
+}
+bool NetLoginProviderAvailable(int provider){
+ // No provider credential exchange exists yet; never impersonate it as guest.
+ return provider==LOGIN_GUEST;
+}
 
 bool NetChooseLogin(int provider)
 {
+	if(!NetLoginProviderAvailable(provider))return false;
 	//---- 게스트는 문턱을 안 넘는다 ----
 	//
 	//아래 sLoginChoiceWaiting 검사부터 이 함수의 나머지는 모두 부팅이
@@ -3126,6 +3154,7 @@ void NetIndicatorDraw(void)
 		SetFontColor(COLOR_WHITE);
 	}
 
+	if (drawHandle==MD_TITLE && !getenv("CS_DEBUG_CONTROLS"))return;
 	if (sReq == NETREQ_NONE)
 		return;
 

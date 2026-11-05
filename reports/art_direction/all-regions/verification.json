@@ -1,0 +1,32 @@
+{
+  "status": "active and verified",
+  "regions": "02 through 15",
+  "assets": "res/stage_sd3d_v2",
+  "png_count": 42,
+  "generation": "built-in image_gen; generation.json contains exact prompts",
+  "scroll": "nonmirrored scenery, periodic far and rail shader, transparent mid edges",
+  "registration": "measured rail contact rows; asset-audit.json",
+  "pixel_art": "original characters and boss/fx slots retained",
+  "native_viewports": [
+    [
+      640,
+      850
+    ],
+    [
+      640,
+      1136
+    ],
+    [
+      640,
+      1280
+    ],
+    [
+      640,
+      1408
+    ]
+  ],
+  "native_captures": 120,
+  "combat": "swords, crew, cannon and enemy impacts passed",
+  "review": "reports/art_direction/all-regions-review.html",
+  "executable_sha256": "afd8a69f487a228c1431cc09699147960fff763d5e9db94d19cb739efa1dd58b"
+}

@@ -1,6 +1,19 @@
 ﻿// Included by Func_Battle.cpp: combat adapter and renderer for the pure model.
 namespace {
+//---- 대포는 보조 화력이다 ----
+//
+//성은 히어로가 서는 발판이고, 포는 거기 얹은 한 문뿐이다(CLAUDE.md 5장).
+//피해 지분 목표는 히어로 직접 타격 60 · 동료 협공 20 · 대포 20 이라서,
+//포가 들고 가는 몫을 히어로 공격력의 0.6 배로 깎아 둔다.
+//
+//포를 가방에 올리지 않아도 모든 줄은 히어로 장비만으로 넘을 수 있어야
+//한다 - 이 계수를 올리려면 그 전제부터 다시 재야 한다.
+const int STAGE_CANNON_SUPPORT_PCT = 60;
+
 CastleArtillery::State stageArtillery;
+// Cosmetic lobby simulation is isolated from battle targets, damage and rewards.
+CastleArtillery::State lobbyArtillery;
+int lobbyArtilleryUntil=0,lobbyArtilleryFrame=-1,lobbyArtilleryHits=0;
 int artilleryGeneration[TOTALOBJECT]={0};
 int artilleryVolleyTarget=-1,artilleryVolleyGeneration=0;
 
@@ -27,7 +40,8 @@ void ArtilleryHit(int target) {
     OBJECT* hero=&ao[PLAYER];
     const long long damage=hero->ps[PS_DMG];
     const int attackFrame=hero->attackFrame,attackLv=hero->attackLv;
-    const long long baseCannonDmg = damage*CastleCannonDamagePercent(stageArtillery.grade)/100;
+    const long long baseCannonDmg = damage*CastleCannonDamagePercent(stageArtillery.grade)
+        /100*STAGE_CANNON_SUPPORT_PCT/100;
     hero->ps[PS_DMG]=Max(1LL, baseCannonDmg + synergy.swordBonusDmg);
     AttackObj(PLAYER,target,true);
     if(ao[target].hp+ao[target].shield<before) StageCombatReviewHit(2);
@@ -44,7 +58,8 @@ void OldArtilleryHit(int target) {
     OBJECT* hero=&ao[PLAYER];
     const long long damage=hero->ps[PS_DMG];
     const int attackFrame=hero->attackFrame,attackLv=hero->attackLv;
-    hero->ps[PS_DMG]=Max(1LL,damage*CastleCannonDamagePercent(stageArtillery.grade)/100);
+    hero->ps[PS_DMG]=Max(1LL,damage*CastleCannonDamagePercent(stageArtillery.grade)
+        /100*STAGE_CANNON_SUPPORT_PCT/100);
     AttackObj(PLAYER,target,true);
     hero->ps[PS_DMG]=damage;
     hero->attackFrame=attackFrame; hero->attackLv=attackLv;
@@ -93,11 +108,63 @@ bool StageArtilleryCharge(int slot,float* charge,int* flash) {
 }
 bool StageArtilleryVisual(float* charge,float* recoil,int* burst) {
     *charge=0; *recoil=0; *burst=0;
+    if(drawHandle==MD_LOBBY && frame<lobbyArtilleryUntil && lobbyArtillery.grade==gMobileCastleVisual){
+        *charge=lobbyArtillery.charge/(float)CastleArtillery::State::ChargeFrames;
+        *recoil=lobbyArtillery.recoil/8.0f;*burst=lobbyArtillery.pending;return true;
+    }
     if(!IsStageRealtime() || !StageBagCannon(NULL,NULL,NULL)) return false;
     *charge=stageArtillery.charge/(float)CastleArtillery::State::ChargeFrames;
     *recoil=stageArtillery.recoil/8.0f;
     *burst=stageArtillery.pending;
     return true;
+}
+void LobbyArtilleryDebugFire(){
+#ifdef GAMEDEBUG
+ if(drawHandle!=MD_LOBBY)return;
+ lobbyArtillery.Reset(gMobileCastleVisual);lobbyArtillery.upgrade=CastleVisualPartLevel(gMobileCastleVisual,3);
+ lobbyArtillery.cooldownOverride=100000;lobbyArtillery.charge=CastleArtillery::State::ChargeFrames;
+ lobbyArtilleryUntil=frame+240;lobbyArtilleryFrame=-1;lobbyArtilleryHits=0;
+#endif
+}
+int LobbyArtilleryDebugHits(){return lobbyArtilleryHits;}
+void LobbyArtilleryDebugDraw(){
+#ifdef GAMEDEBUG
+ if(drawHandle!=MD_LOBBY || lobbyArtillery.grade!=gMobileCastleVisual){lobbyArtilleryUntil=0;return;}
+ if(frame>=lobbyArtilleryUntil)return;
+ float mx=0,my=0;if(!CastlePartsCannonMuzzle(gMobileCastleVisual+1,&mx,&my))return;
+ const CastleArtillery::Point muzzle={mx,my},target={(float)DX-32*_2X,my};
+ if(lobbyArtilleryFrame!=frame){
+  lobbyArtilleryFrame=frame;lobbyArtillery.Tick(0,0,muzzle,target);
+  for(int i=0;i<CastleArtillery::State::Capacity;++i){
+   auto& s=lobbyArtillery.shots[i];if(!s.active)continue;
+   if(s.impact){if(--s.impact==0)s.active=false;}
+   else if(lobbyArtillery.Move(s,target,8*_2X))++lobbyArtilleryHits;
+  }
+ }
+ if(!sprite[CASTLE_ARTILLERY_IMG])LoadImg(CASTLE_ARTILLERY_IMG);
+ if(!texture[CASTLE_ARTILLERY_IMG])LoadTexture(CASTLE_ARTILLERY_IMG);
+ if(!sprite[CASTLE_ARTILLERY_IMG]||!texture[CASTLE_ARTILLERY_IMG])return;
+ const int grade=lobbyArtillery.grade;const auto& profile=CastleArtillery::Of(grade);
+ const float scale=CastleArtillery::ProjectileScale(lobbyArtillery.upgrade);
+ MemRectFrame((int)target.x-12*_2X,(int)target.y+18*_2X,24*_2X,36*_2X,0xEDBB58);
+ MemRect((int)target.x-1,(int)target.y+10*_2X,2,20*_2X,0xFFE5A0);
+ MemRect((int)target.x-7*_2X,(int)target.y+1,14*_2X,2,0xFFE5A0);
+ SetFontColor(COLOR_WHITE);char label[80];sprintf(label,"시험 표적 · 명중 %d",lobbyArtilleryHits);
+ CenterTextStrSolid(label,DX-80*_2X,(int)target.y+35*_2X,
+  Min(.45f*_2X,150.0f*_2X/Max(1.0f,StringWidth(label,1.0f))));
+ if(lobbyArtillery.charge||lobbyArtillery.recoil)ArtillerySprite(20+grade,(frame/2)%8,mx,my,24*_2X*scale);
+ for(int i=0;i<CastleArtillery::State::Capacity;++i){
+  const auto& s=lobbyArtillery.shots[i];if(!s.active)continue;
+  const int anim=s.impact?(CastleArtillery::State::ImpactFrames-s.impact)*8/CastleArtillery::State::ImpactFrames:s.age/3;
+  if(profile.kind==CastleArtillery::Laser){
+   const float dx=s.destination.x-s.from.x,dy=s.destination.y-s.from.y;
+   const int pieces=Max(1,(int)(std::sqrt(dx*dx+dy*dy)/(12*_2X)));
+   for(int j=0;j<pieces;++j){const float t=(j+.5f)/pieces;ArtillerySprite(grade,anim,s.from.x+dx*t,s.from.y+dy*t,14*_2X);}
+  }
+  ArtillerySprite((s.impact?10:0)+grade,anim,s.position.x,s.position.y,(profile.size+(s.impact?12:0))*_2X*scale,
+   profile.kind==CastleArtillery::Rock?s.age*12.0f:0);
+ }
+#endif
 }
 void StageArtilleryStep(bool running,int foe) {
     // 쏘는 주인은 가방에 실린 포다. 성에 붙어 혼자 쏘던 것을 옮겼다.

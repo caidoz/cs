@@ -1,10 +1,19 @@
-﻿#pragma once
+﻿#include "Data/CastleRoomAtlas.h"
+#pragma once
 #include "CastlePartState.h"
 #include "Data/UniformCastleAnchors.h"
 #include "Data/IndividualCastleV4.h"
+#include "Data/CastleUpgradeCosmetics.h"
+#include "Data/HybridSd3d.h"
+#include "Data/HybridCastleFleet.h"
 #include "Data/IndividualCastleRooms.h"
 #include "Data/InventoryCannonSprites.h"
 #include "Data/MountedCannonSprites.h"
+#include "Data/SoftCastleSectors.h"
+#include "Data/FunctionalCastleCrops.h"
+#include "Data/CastleRoomUpgrades.h"
+#include "Data/CastleNpcPlacement.h"
+#include "Data/SoftCastleWheelFrames.h"
 #include "Data/CastleRoomFacade.h"
 #include "Data/SdRoomDeck.h"
 #include "Data/CastleCrewDeckLayout.h"
@@ -375,13 +384,22 @@ static void DrawWallRoomSeamBacking(int castle,float roomLeft,float bottom,
 struct RoomCoverRect { int left=0,top=0,width=0,height=0,material=0,sx=0,sy=0,sw=0,sh=0,roof=0; float scale=1,roofX=0,roofY=0; };
 static RoomCoverRect roomCover[CastleCount];
 static bool roomCoverRevealed[CastleCount]={};
-static bool roomInteriorOpen[CastleCount]={};
+//---- 실내는 기본으로 열려 있다 ----
+//
+//닫힌 채로 두었더니 성 안이 늘 비어 보였다. 방에 사람이 깔려 있는데
+//외장이 덮고 있어서, 가진 동료가 몇인지가 화면에 없었다.
+//
+//한 번 터치하면 닫힌다(LobbyCastleTouch). 닫는 것은 선택이고, 보이는
+//것이 기본이다.
+static bool roomInteriorOpen[CastleCount]={true,true,true,true,true,
+                                           true,true,true,true,true};
 struct SdPlacement {
  bool valid=false; int externalCount=0,residentCount=0; float left=0,top=0,width=0,height=0,scale=1;
  int residentDrawCount=0,castle=0,roomCount=1,roomColumns=1,sourceWidth=1536; float roomFloorGap=0;
  float wheelAngle=0,fitScale=1;
  float interiorLeft=0,interiorTop=0,interiorWidth=0,interiorFloor=0;
  float commanderX=0,commanderY=0,deckLeft=0,deckTop=0,deckWidth=0,deckSurface=0;
+ float gunLeft=0,gunTop=0,gunWidth=0,gunHeight=0;
 };
 static SdPlacement sdPlacement;
 static const float kStarterViewportRatio=.55f; // Latest request: 10% larger than the half-screen sample.
@@ -692,21 +710,47 @@ static bool RoomRevealRequested(int castle) {
  if(r.width<=0 || r.height<=0 || !sprite[r.material]) return false;
  return roomInteriorOpen[castle];
 }
+// Feet and clipping follow the actual slabs of each dedicated cutaway.
+static float RoomFloorTop(int castle,int floor){
+ if(SoftCastle::Enabled()){const auto& s=SoftCastle::Sectors[castle][Max(0,Min(SoftCastle::Counts[castle]-1,floor))];return sdPlacement.top-s.y*sdPlacement.height;}
+ const auto& r=roomCover[castle];
+ return r.top-r.height*CastleRoomAtlas::Edge(castle,CastleVisualPartLevel(castle,2),castle-floor);
+}
+static float RoomFloorBottom(int castle,int floor){
+ if(SoftCastle::Enabled()){const auto& s=SoftCastle::Sectors[castle][Max(0,Min(SoftCastle::Counts[castle]-1,floor))];return sdPlacement.top-(s.y+s.h)*sdPlacement.height;}
+ const auto& r=roomCover[castle];
+ return r.top-r.height*CastleRoomAtlas::Edge(castle,CastleVisualPartLevel(castle,2),castle-floor+1);
+}
+static float RoomFloorFoot(int castle,int floor){
+ if(SoftCastle::Enabled()){const auto& area=CastleNpcPlacement::Areas[castle][Max(0,Min(CastleNpcPlacement::Counts[castle]-1,floor))];return sdPlacement.top-area.foot*sdPlacement.height;}
+ const float bottom=RoomFloorBottom(castle,floor);
+ return bottom+(RoomFloorTop(castle,floor)-bottom)*.13f;
+}
 struct RoomClipScope {
  int x,y,x2,y2; bool enabled;
- explicit RoomClipScope(bool on,int floor=0):x(clipX),y(clipY),x2(clipX2),y2(clipY2),enabled(on) {
+ explicit RoomClipScope(bool on,int floor=0,bool art=false):x(clipX),y(clipY),x2(clipX2),y2(clipY2),enabled(on) {
   if(!on) return;
+  if(SoftCastle::Enabled()){
+   const auto& p=sdPlacement;const int physical=Max(0,Min(p.roomCount-1,floor));
+   const auto& floorArea=CastleNpcPlacement::Areas[p.castle][physical];
+   auto authored=CastleRoomIntegrated::ArtRegions[p.castle][physical];
+   authored.y*=CastleRoomUpgrades::InteriorYScale(p.castle);authored.h*=CastleRoomUpgrades::InteriorYScale(p.castle);
+   const CastleRoomIntegrated::Region s=art?authored:CastleRoomIntegrated::Region{
+    Max(0.0f,floorArea.left-floorArea.maxWidth*.5f),Max(0.0f,floorArea.foot-.18f),
+    floorArea.right-floorArea.left+floorArea.maxWidth,.19f};
+   const float roomLeft=MirrorX(p.left+s.x*p.width,s.w*p.width);
+   clipX=Max(clipX,(int)roomLeft);clipX2=Min(clipX2,(int)(roomLeft+s.w*p.width));
+   clipY=Min(clipY,(int)(p.top-s.y*p.height));clipY2=Max(clipY2,(int)(p.top-(s.y+s.h)*p.height));return;
+  }
   const auto& r=roomCover[sdPlacement.castle];
   clipX=Max(clipX,r.left); clipX2=Min(clipX2,r.left+r.width);
   clipY=Min(clipY,r.top); clipY2=Max(clipY2,r.top-r.height);
-  if(sdPlacement.roomCount>1) {
-   const float gap=sdPlacement.roomFloorGap;
-   clipY=Min(clipY,(int)std::lround(sdPlacement.interiorFloor+floor*gap+gap-4*sdPlacement.width/sdPlacement.sourceWidth));
-   clipY2=Max(clipY2,(int)std::lround(sdPlacement.interiorFloor+floor*gap-10*sdPlacement.width/sdPlacement.sourceWidth));
-  }
+  clipY=Min(clipY,(int)std::lround(RoomFloorTop(sdPlacement.castle,floor)-1));
+  clipY2=Max(clipY2,(int)std::lround(RoomFloorBottom(sdPlacement.castle,floor)+1));
  }
  ~RoomClipScope() { if(enabled) { clipX=x; clipY=y; clipX2=x2; clipY2=y2; } }
 };
+
 static void DrawRoomCover(int castle) {
 #if CASTLE_DEBUG_ROOM_COVER
  // Authored SD samples; other castles keep their original open rooms.
@@ -735,6 +779,49 @@ static void DrawRoomCover(int castle) {
 // Complete selected exterior; the legacy modular renderer remains available
 // through CS_LEGACY_CASTLE_ART for room/upgrade authoring.
 static bool IndividualArtEnabled() { return !getenv("CS_LEGACY_CASTLE_ART"); }
+// Additions share the original rig coordinates; no hull/deck or axle is moved.
+static bool UpgradeCosmeticsReady(int castle) {
+ const int img=CASTLE_UPGRADE_COSMETICS_IMG+castle;
+ if(!sprite[img]) LoadImg(img);
+ if(!texture[img]) LoadTexture(img);
+ return sprite[img]!=nullptr && texture[img]!=nullptr;
+}
+static void DrawIndividualUpgradeWheel(int castle,const IndividualCastleV4::Wheel& wheel,int original,float cx,float cy,float unit,float angle) {
+ const int lv=CastleVisualPartLevel(castle,4);
+ if(lv>0 && UpgradeCosmeticsReady(castle)) {
+  const auto& f=CastleUpgradeCosmetics::Frames[castle][3][Min(5,lv)];
+  const float z=wheel.r*2.0f/Max(f.w,f.h)*unit;
+  RotateImage(f.w,f.h,f.x,f.y,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),(int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,z,cocos2d::Vec2(.5f,.5f),sprite[CASTLE_UPGRADE_COSMETICS_IMG+castle],CASTLE_UPGRADE_COSMETICS_IMG+castle);
+ } else RotateImage(wheel.r*2,wheel.r*2,0,0,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),(int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[original],original);
+}
+static int facilityDrawCastle=-1,facilityDrawCount=0,facilityDrawLevels[5]={};
+static bool menuFacilityPreview=false;
+static int FacilityImage(int castle,int level){return castle==9?CASTLE_FINAL_ROOM_FIRST_IMG+level:CASTLE_ROOM_UPGRADE_FIRST_IMG+castle;}
+static void DrawFacilityInteriors(int castle){
+ facilityDrawCastle=castle;facilityDrawCount=0;
+ const auto& p=sdPlacement;
+ for(int room=0;room<SoftCastle::Counts[castle];++room){
+  const int preview=LobbyCastleDebugFacilityLevel(castle,room);
+  const int level=Max(0,Min(5,preview>=0?preview:robin.castleProgress.rooms[castle][room]));
+  facilityDrawLevels[room]=level;++facilityDrawCount;
+  if(level==0)continue; // Base furnishings are already in the continuous cutaway.
+  const int image=FacilityImage(castle,level);
+  if(!sprite[image])LoadImg(image);
+  if(!sprite[image]){missingAsset=true;return;}
+  const auto size=sprite[image]->getContentSize();
+  sprite[image]->getTexture()->setAntiAliasTexParameters();
+  const int physicalRoom=CastleFacilities::SectorIndex[castle][room];
+  const auto& s=CastleRoomIntegrated::ArtRegions[castle][physicalRoom];
+  const auto cell=CastleRoomUpgrades::Frame(castle,room,level,(int)size.width,(int)size.height);
+  const float yScale=CastleRoomUpgrades::InteriorYScale(castle);
+  const float width=s.w*p.width,height=s.h*p.height*yScale;
+  // Sample the same body-normalized room from a complete authored cutaway.
+  // No independent room enlargement, cover cropping, or inserted room frames.
+  RoomClipScope clip(true,physicalRoom,true);
+  DrawImageScale(cell.w,cell.h,cell.x,cell.y,(int)std::lround(MirrorX(p.left+s.x*p.width,width)),
+   (int)std::lround(p.top-s.y*p.height*yScale),gMirror,0,0,0,0,width/cell.w,height/cell.h,sprite[image],image);
+ }
+}
 static bool DrawIndividualCastle(int castle,float left,float bottom,float scale) {
  if(!IndividualArtEnabled()) return false;
  const auto& r=IndividualCastleV4::Rigs[castle];
@@ -743,7 +830,7 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  const bool world=!gFreePlace && (drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0));
  const float unit=world?DX/640.0f*r.width/r.w*CastlePartsViewZoom():1056.0f*(r.width/342.0f)/r.w*scale;
  const float ground=bottom-252*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale+StageCastleGroundingPx()-kStarterRailOverlapPx;
- auto& p=sdPlacement; p=SdPlacement(); p.valid=true;p.castle=castle;p.roomCount=castle+1;
+ auto& p=sdPlacement; p=SdPlacement(); p.valid=true;p.castle=castle;p.roomCount=SoftCastle::Enabled()?SoftCastle::Counts[castle]:castle+1;
  p.left=world?CastlePartsViewLeft(Max(4.0f*DX/640.0f,left)):left;p.width=r.w*unit;p.height=r.h*unit;
  p.top=ground+p.height;p.sourceWidth=r.w;p.scale=p.width/960.0f;
  p.fitScale=unit/(1056.0f*(r.width/342.0f)/r.w*scale);
@@ -752,23 +839,44 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  const int baseImg=CASTLE_UNARMED_FIRST_IMG+castle;
  if(!sprite[baseImg]) LoadImg(baseImg);
  if(!sprite[baseImg]) { missingAsset=true; return false; }
+ const bool soft=SoftCastle::Enabled();
+ const bool softOpen=soft && (menuFacilityPreview || (world && !active && popUpCnt==0 && roomInteriorOpen[castle]));
+ const int softImg=softOpen?FacilityImage(castle,0):CASTLE_SOFT_FIRST_IMG+castle;
+ SoftCastle::Crop softCrop=SoftCastle::Bodies[castle][0];
+ if(softOpen){const auto& b=CastleRoomIntegrated::Bodies[castle][0];softCrop={b.x,b.y,b.w,(int)(b.h*CastleRoomUpgrades::SourceBodyBottom(castle))};}
+ if(soft){
+  if(!sprite[softImg])LoadImg(softImg);
+  if(!sprite[softImg]){missingAsset=true;return false;}
+  SetCastleRoomFeather(false);
+  DrawImageScale(softCrop.w,softCrop.h,softCrop.x,softCrop.y,(int)std::lround(MirrorX(p.left,p.width)),
+   (int)std::lround(p.top),gMirror,0,0,0,0,p.width/softCrop.w,p.height*(softOpen?CastleRoomUpgrades::TargetBodyBottom(castle):1.0f)/softCrop.h,sprite[softImg],softImg);
+  SetCastleRoomFeather(true);
+  if(softOpen)DrawFacilityInteriors(castle);
+ }else{
  DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),
    (int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[baseImg],baseImg);
+ }
  const float angle=WheelAngleNow(r.wheels[0].r*unit);
  p.wheelAngle=angle;
  p.commanderX=p.left+(r.hero-r.x)*unit;p.commanderY=p.top-(r.floor-r.y)*unit;
  p.deckLeft=p.left+(r.deckX-r.x)*unit;p.deckWidth=r.deckW*unit;
  p.deckSurface=p.top-(r.deckY-r.y)*unit;p.deckTop=p.deckSurface;
+ if(softOpen&&castle==8){p.commanderY=p.top-.906f*p.height;p.deckSurface=p.deckTop=p.commanderY;}
  roomCover[castle]=RoomCoverRect();roomCoverRevealed[castle]=false;
  if(world && !active) {
+  if(soft){
+   auto& cover=roomCover[castle];cover.left=(int)p.left;cover.top=(int)p.top;cover.width=(int)p.width;cover.height=(int)p.height;
+   cover.material=baseImg;p.roomColumns=1;p.interiorLeft=p.left;p.interiorTop=p.top;p.interiorWidth=p.width;
+   p.roomFloorGap=0;p.interiorFloor=RoomFloorFoot(castle,0);
+  }else{
   const auto& a=IndividualCastleRooms::Rooms[castle];
   auto& cover=roomCover[castle];
-  const float worldZoom=p.width/r.width;
-  const int floorPixels=Max(1,(int)std::lround(IndividualCastleRooms::FloorHeight*worldZoom));
-  cover.width=Max(1,(int)std::lround(IndividualCastleRooms::RoomWidth*worldZoom));
+  // Use the complete authored cutaway, rather than a fixed 140 x 40 strip.
+  cover.left=(int)std::lround(p.left+(a.x-r.x)*unit);
+  cover.top=(int)std::lround(p.top-(a.y-r.y)*unit);
+  cover.width=Max(1,(int)std::lround(a.w*unit));
+  const int floorPixels=Max(1,(int)std::floor(a.h*unit/p.roomCount));
   cover.height=floorPixels*p.roomCount;
-  cover.left=(int)std::lround(p.left+(a.x+a.w*.5f-r.x)*unit-cover.width*.5f);
-  cover.top=(int)std::lround(p.top-(a.y+a.h-r.y)*unit+IndividualCastleRooms::BottomLift*worldZoom)+cover.height;
   cover.material=baseImg;
   cover.sx=(int)std::lround(r.x+(cover.left-p.left)/unit);
   cover.sy=(int)std::lround(r.y+(p.top-cover.top)/unit);
@@ -778,33 +886,37 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
   const int rows=p.roomCount;
   p.interiorLeft=(float)cover.left;p.interiorTop=(float)cover.top;p.interiorWidth=(float)cover.width;
   p.roomFloorGap=cover.height/(float)rows;
-  p.interiorFloor=cover.top-cover.height+Max(2.0f,4*unit);
+  p.interiorFloor=RoomFloorFoot(castle,0);
   if(RoomRevealRequested(castle)) {
-    // Use intact single-floor originals. Clipped SD stacks have transparent
-    // roof cutouts and cannot be sliced back into rectangular rooms.
-    for(int room=0;room<p.roomCount;++room) {
-     const int roomImg=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+room*6+CastleVisualPartLevel(castle,2);
-     if(!sprite[roomImg]) LoadImg(roomImg);
-     if(!sprite[roomImg]) {missingAsset=true;continue;}
-     const int row=room;
-     const int sx=0,sy=0,sw=512,sh=128;
-     const int x=cover.left;
-     const int x2=cover.left+cover.width;
-     const int top=cover.top-cover.height+cover.height*(row+1)/rows;
-     const int low=cover.top-cover.height+cover.height*row/rows;
-     // Opaque backing prevents transparent room edges exposing the old facade.
-     MemRect(x,top,x2-x,top-low,0x21170F);
-     DrawImageScale(sw,sh,sx,sy,x,top,false,0,0,0,0,(x2-x)/(float)sw,(top-low)/(float)sh,sprite[roomImg],roomImg);
-    }
+   // One continuous castle-specific material module, with no per-floor seams.
+   const int level=CastleVisualPartLevel(castle,2);
+   const int roomImg=CASTLE_RECTANGULAR_ROOM_FIRST_IMG+castle*6+level;
+   if(!sprite[roomImg])LoadImg(roomImg);
+   if(!sprite[roomImg])missingAsset=true;
+   else {
+    const auto size=sprite[roomImg]->getTexture()->getContentSizeInPixels();
+    const auto panel=CastleRoomAtlas::Panel(castle,level,(int)size.width,(int)size.height);
+    DrawImageScale(panel.w,panel.h,panel.x,panel.y,cover.left,cover.top,false,0,0,0,0,
+     cover.width/(float)panel.w,cover.height/(float)panel.h,sprite[roomImg],roomImg);
+   }
   }
  }
+ }
+ // Authored silhouette stays intact. Material-only roof/wall/deck upgrade
+ // treatment is applied in the renderer; no unrelated ornaments cover it.
  // The same wheel centers/radii define the art crops and rotation pivots.
  for(int i=0;i<r.wheelCount;++i) {
   const auto& wheel=r.wheels[i];
   const float cx=p.left+(wheel.x-r.x)*unit;
   const float cy=p.top-(wheel.y-r.y)*unit;
-  RotateImage(wheel.r*2,wheel.r*2,0,0,(int)std::lround(gMirror?gMirrorAxis*2-cx:cx),
-    (int)std::lround(cy),gMirror,gMirror?-angle:angle,0,0,unit,cocos2d::Vec2(.5f,.5f),sprite[img+1+i],img+1+i);
+  if(soft){
+   const auto& a=SoftCastle::Wheels[castle][i];
+   const auto& f=SoftCastle::RimFrames[castle];
+   const int rim=CASTLE_SOFT_WHEELS_IMG;if(!sprite[rim])LoadImg(rim);
+   const float z=a.r*p.width*2.0f/Max(f.w,f.h);
+   const float wx=p.left+a.x*p.width,wy=p.top-a.y*p.height;
+   RotateImage(f.w,f.h,f.x,f.y,(int)std::lround(gMirror?gMirrorAxis*2-wx:wx),(int)std::lround(wy),gMirror,gMirror?-angle:angle,0,0,z,cocos2d::Vec2(.5f,.5f),sprite[rim],rim);
+  }else DrawIndividualUpgradeWheel(castle,wheel,img+1+i,cx,cy,unit,angle);
  }
  cannonBaseY[castle]=p.commanderY;
  int cannonStage=active?roomStage[castle]:CastleVisualPartLevel(castle,3);
@@ -812,25 +924,27 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  const bool mounted=!IsStageRealtime() || StageBagCannon(&weaponCastle,&cannonStage,NULL);
  if(getenv("CS_CASTLE_REVIEW_PATH") && getenv("CS_CANNON_GRADE_REVIEW"))
    cannonStage=Max(0,Min(5,atoi(getenv("CS_CANNON_GRADE_REVIEW"))));
- const auto& gun=MountedCannons::Get(weaponCastle,cannonStage);
+ const bool softGun=soft && weaponCastle!=0 && weaponCastle!=2;
+ const auto& gun=softGun?SoftCastle::Guns[Max(0,Min(9,weaponCastle))*6+Max(0,Min(5,cannonStage))]:MountedCannons::Get(weaponCastle,cannonStage);
  const auto& mount=MountedCannons::mounts[castle];
- const int gunImg=CANNON_UPGRADE_ATLAS_IMG;
+ const int gunImg=softGun?CASTLE_SOFT_CANNON_IMG:CANNON_UPGRADE_ATLAS_IMG;
  if(!sprite[gunImg]) LoadImg(gunImg);
  // Fit from the mounting surface with one uniform scale. Grades gain modest
  // physical size; their authored armor/mechanisms supply the visual progression.
- const float growth=1.0f+.045f*Max(0,Min(5,cannonStage));
+ const float growth=(softGun?1.20f:1.0f)+(softGun?.055f:.045f)*Max(0,Min(5,cannonStage));
  const float gunUnit=Min(mount.w/(float)gun.w,mount.h/(float)gun.h)*unit*growth;
  float charge=0,recoil=0;int burst=0;
  const bool firing=StageArtilleryVisual(&charge,&recoil,&burst);
  const float gunLeft=p.left+(mount.x-r.x)*unit-(firing?recoil*8.0f*unit:0);
  const float gunBase=p.top-(mount.y+mount.h-r.y)*unit;
  const float gunTop=gunBase+gun.h*gunUnit;
+ p.gunLeft=gunLeft;p.gunTop=gunTop;p.gunWidth=mounted?gun.w*gunUnit:0;p.gunHeight=mounted?gun.h*gunUnit:0;
  if(sprite[gunImg] && mounted) DrawImage(gun.w,gun.h,gun.x,gun.y,
    (int)std::lround(MirrorX(gunLeft,gun.w*gunUnit)),(int)std::lround(gunTop),
    gMirror,0,0,0,0,gunUnit,sprite[gunImg],gunImg);
  else if(!sprite[gunImg]) missingAsset=true;
  cannonMuzzleX[castle]=gunLeft+gun.mx*gunUnit;
- cannonMuzzleY[castle]=gunTop-gun.my*gunUnit;cannonMuzzleValid[castle]=true;
+ cannonMuzzleY[castle]=gunTop-gun.my*gunUnit;cannonMuzzleValid[castle]=mounted&&sprite[gunImg]!=nullptr;
  for(int i=0;i<5;++i) {partAnchor[castle][i][0]=p.left+(i==3?.89f:.4f)*p.width;partAnchor[castle][i][1]=p.top-(i==0?.15f:i==4?.9f:.55f)*p.height;}
  return true;
 }
@@ -1127,20 +1241,37 @@ void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
  missingAsset=false; DrawCastle(Max(1,Min(CastleCount,castleLevel))-1,x,yTop,w,h,100000.0f);
 }
 // Menu previews fit the rendered rig, rather than the legacy room assembly box.
-void CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h) {
+bool CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h) {
  using namespace CastleParts;
  const int c=Max(0,Min(9,level-1));
- const bool freePlace=gFreePlace;gFreePlace=true;
+ const bool freePlace=gFreePlace,previousPreview=menuFacilityPreview;
+ gFreePlace=true;menuFacilityPreview=true;missingAsset=false;bool rendered=true;
  if(IndividualArtEnabled()) {
   const auto& r=IndividualCastleV4::Rigs[c];
   const float baseWidth=1056.0f*r.width/342.0f;
-  const float scale=Min(w/baseWidth,h/(baseWidth*r.h/r.w));
-  const float height=baseWidth*r.h/r.w*scale;
+  const float aspect=r.h/(float)r.w;
+  const float scale=Min(w/baseWidth,h/(baseWidth*aspect));
+  const float height=baseWidth*aspect*scale;
   const float ground=top-(h-height)*.5f-height;
   const float bottom=ground+252*scale-(c?54.0f:StarterLegacyGroundOffset())*scale-StageCastleGroundingPx()+kStarterRailOverlapPx;
-  DrawIndividualCastle(c,x+(w-baseWidth*scale)*.5f,bottom,scale);
+  rendered=DrawIndividualCastle(c,x+(w-baseWidth*scale)*.5f,bottom,scale);
  } else DrawCastle(c,x,top,w,h,100000.0f);
- gFreePlace=freePlace;
+ gFreePlace=freePlace;menuFacilityPreview=previousPreview;return rendered&&!missingAsset;
+}
+bool CastlePartsUpgradePlacementStable(int castle,int variant) {
+ using namespace CastleParts;
+ struct Bounds {float left,top,width,height,heroX,heroY,deckX,deckY,deckWidth;};
+ static Bounds baseline[10];static bool ready[10]={};
+ const auto& p=sdPlacement;
+ if(castle<0||castle>=10||!p.valid||p.castle!=castle||missingAsset)return false;
+ Bounds value={p.left,p.top,p.width,p.height,p.commanderX,p.commanderY,p.deckLeft,p.deckSurface,p.deckWidth};
+ if(variant==0){baseline[castle]=value;ready[castle]=true;return true;}
+ if(!ready[castle])return false;
+ const auto& b=baseline[castle];
+ return fabsf(b.left-value.left)<.01f && fabsf(b.top-value.top)<.01f &&
+  fabsf(b.width-value.width)<.01f && fabsf(b.height-value.height)<.01f &&
+  fabsf(b.heroX-value.heroX)<.01f && fabsf(b.heroY-value.heroY)<.01f &&
+  fabsf(b.deckX-value.deckX)<.01f && fabsf(b.deckY-value.deckY)<.01f && fabsf(b.deckWidth-value.deckWidth)<.01f;
 }
 bool CastlePartsCannonMuzzle(int castleLevel,float* x,float* y) {
  const int castle=Max(0,Min(9,castleLevel-1));

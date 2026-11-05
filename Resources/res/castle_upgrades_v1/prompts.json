@@ -1,0 +1,18 @@
+{
+  "base": "Use case: precise-object-edit. Production transparent sprite atlas of upgrade attachments for the EXISTING attached Castle Survivor castle. Preserve its exact materials, palette, emblem, polished game shading and thick readable outlines. These parts must integrate smoothly on that existing castle at unchanged mounting coordinates; do NOT redesign the castle or include complete castles. Output one genuinely transparent 1536x1024 PNG, EXACT 6 columns x 4 rows of 256x256 tiles. Every isolated sprite stays within its tile with 20px transparent padding; no cross-tile overlaps, labels, grid, ground, background or external glows. Columns are level 0,1,2,3,4,5, with clearly increasing reinforcement and detail. For every row keep the same center, outer mounting width and bottom mounting edge across all six levels; never change perspective or move attachment points. Row 1: compact roof-spire finial/crown ADD-ON with a flat horizontal mounting base, matching the supplied castle; progressive reinforcement, branch tips and appropriate gems. Row 2: rectangular exterior armor emblem/shield plaque, matching the EXACT castle emblem and its colored banner, reinforced corner plates and rivets, increasingly elaborate trim, but not unrelated iconography. Row 3: rectangular gothic window/interior inset, matching the castle's facade material, visible warm lit interior details progressing from simple chamber to elaborate command chamber, all within the same clean mounting rectangle. Row 4: complete circular wheel disk matching the supplied castle's existing wheel material and colors; strictly identical outer circular diameter and hub center at every level, progressing in rim reinforcement, spokes, bolts and matching emblem. Keep transparent borders clean and avoid free floating decorations, detached support rods, a change of lighting, or touching adjacent sprites. Seamless assembly and consistent registration are more important than isolated ornament complexity. Theme specific instruction: ",
+  "themes": [
+    "golden timber purple royal crown",
+    "warm sandstone, red banners, GOLDEN BOAR emblem, red gems and bronze/gold wheels",
+    "silver limestone, cobalt-blue roofs and banners, CROSSED SILVER SWORDS emblem, blue gems, silver-and-gold wheels",
+    "dark gray stone, emerald/teal domes and banners, GOLDEN TURTLE emblem, emerald stones, gold-and-dark steel wheels",
+    "riveted black steel, cobalt blue roof and banners, GOLDEN RAMPANT LION emblem, blue gems, steel-and-gold wheels",
+    "ivory limestone, teal roofs and banners, GOLDEN COG GEAR emblem, turquoise stones, gold-and-silver wheels",
+    "black stone, crimson pointed roofs, GOLDEN PHOENIX emblem, ruby gems, black-and-gold wheels",
+    "white marble, cobalt barrel-vault roof and domes, SILVER EAGLE emblem, blue stones, blue-and-gold wheels. Finials fit the small existing gold dome caps",
+    "obsidian purple crystal castle, AMETHYST EYE emblem, silver/dark gold trim, purple crystal wheel hubs. Row 1 is faceted AMETHYST CRYSTAL SPIRE enhancement with a dark metal mounting collar, not a golden crown",
+    "white marble, cobalt blue domes, GOLDEN SUN emblem, sapphire gems and luminous polished gold, blue-and-gold wheels"
+  ],
+  "tool": "built-in image_gen",
+  "reference": "Resources/res/castle_individual_v4/castle-NN.png",
+  "layoutReference": "Resources/res/castle_upgrades_v1/parts.png"
+}

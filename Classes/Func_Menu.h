@@ -236,3 +236,5 @@ bool EquipmentMenuV2ReviewEquipping();
 bool CastleMenuFinalDrag(int,int,int,int,int);
 
 bool CastleMenuFinalReviewChecks();
+
+void CastleMenuModuleReviewSet(int,int);

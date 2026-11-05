@@ -1,0 +1,9 @@
+{
+  "name": "Pretendard Bold",
+  "source": "https://github.com/orioncactus/pretendard",
+  "asset": "https://raw.githubusercontent.com/orioncactus/pretendard/main/packages/pretendard/dist/public/static/Pretendard-Bold.otf",
+  "license": "SIL Open Font License 1.1",
+  "license_file": "Pretendard-LICENSE.txt",
+  "modified": false,
+  "purpose": "Smooth bold Korean menu typography for the hybrid SD 3D art direction"
+}

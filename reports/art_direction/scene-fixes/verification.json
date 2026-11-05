@@ -1,0 +1,17 @@
+{
+  "build_sha256": "779e20335174ff4bbeed8dd78fd49aeb7d702eaf0126e91f235b1d6df8cc46ed",
+  "checks": [
+    "Win32 Debug build",
+    "Ten original castle frame images and exact cell/padding dimensions at 640x850 and 640x1408",
+    "Debug toggle touch and expanded PVP/max/background controls",
+    "Twenty native screenshots across ten non-mirrored background scroll phases",
+    "Visual inspection of the formerly visible vertical seam"
+  ],
+  "changes": [
+    "Original grid0..grid9 connected castle boards restored",
+    "Debug button available without environment variables in development lobby/play",
+    "Transparent asymmetric tree islands; no mirrored joins",
+    "Single opaque periodic far-background shader with high precision and bounded phase",
+    "Shared integer tile edges with one-pixel bleed for midground/rail"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "mode": "built-in image_gen",
+  "prompts": [
+    [
+      "title-scene",
+      "Use case: precise-object-edit. Remove ONLY the entire CASTLE SURVIVOR title logo and its crown/banner from the top of this game title artwork. Fill that area seamlessly with the existing purple/blue twilight sky and soft clouds. Keep ALL castles, train convoy, railway bridge, lanterns, canyon, pixel characters and giant pixel demon lord exactly unchanged. Retain the full original portrait canvas and scene composition. No text or logo anywhere. This is the title BACKGROUND layer; a separately positioned logo will be added by game code.",
+      false
+    ],
+    [
+      "title-logo",
+      "Use case: background-extraction. Extract ONLY the exact CASTLE SURVIVOR logo from the top of this reference as a standalone polished 3D GAME LOGO on true transparent alpha. Keep the golden wooden frame, purple fabric banner and purple/gold crown above, exact gold CASTLE and silver SURVIVOR lettering in two lines, chunky rounded bevels, lighting and proportions. Remove the ENTIRE surrounding scene including clouds, sky, demon, cliffs, castle wagons and all characters. Tight composition with 5% transparent margin, wide horizontal canvas around 2.1:1. Exact readable text CASTLE SURVIVOR. No background, no extra text, no additional icon.",
+      true
+    ]
+  ]
+}

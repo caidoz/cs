@@ -881,15 +881,16 @@ void RefreshQuestTime(void)
 
 void RefreshHeartTime(void)
 {
-
+	const int recoverySeconds=CastleEnergyRecoverySeconds();
+	if(robin.heartTimeStamp<=0 || robin.heartTimeStamp>currentTimeStamp)robin.heartTimeStamp=currentTimeStamp;
 	if (robin.heart < GetInitHeart()) {
-		if ((long)(currentTimeStamp - robin.heartTimeStamp) >= HEARTTIME) {
+		if ((long)(currentTimeStamp - robin.heartTimeStamp) >= recoverySeconds) {
 			if (robin.heart < GetInitHeart()) {
-				robin.heart += GetHeartAmount() * ((long)(currentTimeStamp - robin.heartTimeStamp) / HEARTTIME);
+				robin.heart += GetHeartAmount() * ((long)(currentTimeStamp - robin.heartTimeStamp) / recoverySeconds);
 				if (robin.heart > GetInitHeart())
 					robin.heart = GetInitHeart();
 			}
-			robin.heartTimeStamp += (long)(currentTimeStamp - robin.heartTimeStamp) / HEARTTIME * HEARTTIME;
+			robin.heartTimeStamp += (long)(currentTimeStamp - robin.heartTimeStamp) / recoverySeconds * recoverySeconds;
 			SaveGame();
 		}
 	}

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // =============================================================
 // RENDER CONSTANTS
 // 실제 사용되는 렌더링 상수만 유지
@@ -84,7 +84,7 @@
 
 #define BOSSHEARTBARZOOM           1.25f          // 보스 하트바 줌
 #define LOBBYZOOM                  1.2f           // 로비 줌
-#define LOBBY_CREW_ZOOM_SCALE      0.85f          // 로비 보유 동료 기본 줌 배율 (전투와 독립)
+#define LOBBY_CREW_ZOOM_SCALE      0.68f          // 로비 보유 동료 기본 줌 배율 (전투와 독립). 0.85 에서 20% 줄였다 - 히어로만 제 크기를 지킨다
 #define LOBBY_CREW_ZOOM_SPIRE      0.90f          // 로비 첨탑 동료 줌 배율 (원근감)
 #define LOBBY_CREW_ZOOM_WALL       0.95f          // 로비 성벽 동료 줌 배율
 #define LOBBY_CREW_ZOOM_GROUND     1.00f          // 로비 성 바닥 동료 줌 배율

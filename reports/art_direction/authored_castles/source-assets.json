@@ -1,0 +1,743 @@
+{
+  "source_images": [
+    {
+      "path": "Resources/res/castle_cannon_v2/atlas.png",
+      "sha256": "9aef8aace2330daed2dd5e95bde16879ebea05a7b470dfdc6ef0cde62cc1cea6"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_0.png",
+      "sha256": "ded078e7c7fde7087498bc665c4b5a614767fd5d48a9acf460f9b6794f8b4b7a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_1.png",
+      "sha256": "27b2cf08f8b279fac703615c3c8a0e5766e78081f03ae7fa97745107a2c4100e"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_2.png",
+      "sha256": "80b48c58f89de210eccebf5b168155ae51b275c2161193a35d0f6d73a2dc57a3"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_3.png",
+      "sha256": "947683767ee0528ed82f4bf284578d2835248a3ad3eb1766cc5f9cfa6a008186"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_4.png",
+      "sha256": "27073451002970c1f8d7c6f72172c3c03daa8227e2b182caba52a1984bbb1f05"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_01_lv_5.png",
+      "sha256": "bd856bd12e44ce4040b1da238aa6ff89376b881720882b05c8110815ece6201f"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_0.png",
+      "sha256": "4f612c4081a187cff5e9733d9bf4f1991622b6e9ab38474e52a3ba0443a59d62"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_1.png",
+      "sha256": "df610570649b0ae4dea0fd461ef4ed2746d26c4a1a36963fe87547be3f5bf9a4"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_2.png",
+      "sha256": "bc244d9e77b897f8d6ae274ba0e942163b0ed1c0af76bf35103d9c96ca71883b"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_3.png",
+      "sha256": "c8d031c067bb0f6358b0eef49b1573dd94b11da0042a9795ccf9d2dbac16e637"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_4.png",
+      "sha256": "da7122ae52cf8d9399cc832bc5aefa02940145604ccda11b138a49cbe136d939"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_02_lv_5.png",
+      "sha256": "9cdcfe871b21bd00fde697371ac110a1adde0019abd23fc3292bf5414ce5746a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_0.png",
+      "sha256": "5d730adac8d89c0bf56952bf1e0053f0b644ffc3377f9df33b4c5520caa3f0af"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_1.png",
+      "sha256": "b7c4a2a017c8beea356c1503dd6071bb2f4f9e8c0a3105f11502a4df36e6b08a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_2.png",
+      "sha256": "4d6bc9b2f883881ae70dcca0bdae8f44f90f5f0c4961cb063fc024e93bd772ac"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_3.png",
+      "sha256": "3c23bdd241efb8ec59f71532c7a75aaaa7277f18d68de2ce7e2218b11dfc93f7"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_4.png",
+      "sha256": "6dc826edd37fb5639857ee4a605fc46362ff847a01f3f9af43a37d68b50f3fd6"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_03_lv_5.png",
+      "sha256": "202f319880a4bfb5158444b1c7bf9bdb8b3fe5225395d88a9cc276722a2bc9e8"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_0.png",
+      "sha256": "c7199a4f9110a91177d5c7123fcc594847bd54f2582d26ac19558aee69425a30"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_1.png",
+      "sha256": "18122daccb6e4c53e5967c720d402af599c8c606352aab7299c074079e35eacc"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_2.png",
+      "sha256": "72d6537b1c2ef2913a02a669d286c428e0330f091f655a14d72fcbfdebd24d5c"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_3.png",
+      "sha256": "0624785345f9e45b01f6df31f82a1c33525f3377814e2cac30c5fc34c6eb6dbb"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_4.png",
+      "sha256": "73d208dc220712b1e1e24f8bd3906e18e3e3dc1b1fa25dfa17eae6e5b44c11d9"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_04_lv_5.png",
+      "sha256": "beaf96eb0a89e8e27199733930a000809ee62850412880b10c3927d1328c6843"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_0.png",
+      "sha256": "5c87059059fb716f563d42f885543553478e38accac51c63576bed06aba7c269"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_1.png",
+      "sha256": "f5c17ce2526abdc8ed9d03261f3db3471fb3170b4a5a7d8a8eb025de55665888"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_2.png",
+      "sha256": "37ded65175d0648aa575e5498962998c31a88820a2193f12b19304d2f35b9d8a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_3.png",
+      "sha256": "edc79448fd825d44cbb5b532142df37c94e72909e0a8beeaff991d8c6aa9c941"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_4.png",
+      "sha256": "e91aeaddc2508140dd7aa3567700ae71db22e5873637b141f8abac54bb16c16b"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_05_lv_5.png",
+      "sha256": "b32c08f1dc190e71d4489508482434112d9f41ec08bb207d2f68d13207152314"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_0.png",
+      "sha256": "f5c816400c509c40b93ccf301017f3711a2b37d7627c1fd02faa6d59dd85f1ba"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_1.png",
+      "sha256": "ce625bb43c6a71d4f889ae5fe175a9c15808af29c01685de6a2306e248207924"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_2.png",
+      "sha256": "c5833b9332b463ab17c295412dcd0cde8b68814e081c71f98f0176aa26f6c6f1"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_3.png",
+      "sha256": "38b2e9081c24ecada6db1ae624ac86247aed8482b669f8599bfe96f6e78f85d0"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_4.png",
+      "sha256": "0b49502fcc29ba848be75a07105d54e749a093e2f8817b6e054155222d1735ad"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_06_lv_5.png",
+      "sha256": "94690a902c1b5ca3231e910776510d9cb848e757d05769dbb251b018cdfa57be"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_0.png",
+      "sha256": "f3be3ee00eb8728bcba97c69055b37d35c30b3fdaa514518df5b679be4251c3a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_1.png",
+      "sha256": "aceb27393fec1bf39c713ee8b126f90e51db794af022660eb9c281b44fb77662"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_2.png",
+      "sha256": "22986b237ec97e3ce7f7a74bcc59a8349f7eddcdccd5ab39586c14fb51f01933"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_3.png",
+      "sha256": "8b8979ac13b6e38a98fe8d5ed243cdd5f318fb56957764328b366e0fa36b7fb1"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_4.png",
+      "sha256": "9bfda0ec3beead48f80a7e6873e6973b2fad29deadd8a1b7c21859bb9ac2abcb"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_07_lv_5.png",
+      "sha256": "272b700817f0493a8bca247e7888ff8ca7bb7c6d8e448a4ed6b95b1dea3c3b40"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_0.png",
+      "sha256": "5cbe72ca938d5430029f500df69e4b51d516dfce36db536bd0f0af5f8c66d21d"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_1.png",
+      "sha256": "bdfa1fbc56d37b647d9c542ed46e0593284f5321ce59b04f1013374169340201"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_2.png",
+      "sha256": "fc456d02aa839097c6a8b064663fd99279ed373780dc1143363fe5efeb7bb790"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_3.png",
+      "sha256": "dc491c43e527addc80461990a6a1723a823360412a8188d6ba0102e8efeb00c6"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_4.png",
+      "sha256": "3ca43c723120585b768878dfc7d9ea6a4b0623be30a401d16c171f33dbe028ef"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_08_lv_5.png",
+      "sha256": "667402e896e3ba2bc950baddcba5b8b3c2e26fb4ef65775f9f91078ac8ffa1ea"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_0.png",
+      "sha256": "7220196486c480375d73cc32c42b7589c0807b245e8e0a70183469debc120a6a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_1.png",
+      "sha256": "8694241feb2ebec6ed12d05f83a7066dce872c08190c4c78a0c77459994a476e"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_2.png",
+      "sha256": "d92d6e3f08824f915c199a8df689c013eac71df452eaa11def402793de061613"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_3.png",
+      "sha256": "a73b1339653bef13b519c18bca47c8fac241dc33e2a69d0ff99c88f13db3709d"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_4.png",
+      "sha256": "20dffdbbf94c687c2f501afe1d5765f178fbd5ed2a68682444fa479f14af5e13"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_09_lv_5.png",
+      "sha256": "9595db639632cdede6e1c5e8083919a3df51cbc41b3d651e20a60182c6cbd161"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_0.png",
+      "sha256": "a24f5b530ad2ecc1d3861e554b63c39ed86daeae13c56ceef27e23049d2bd6b3"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_1.png",
+      "sha256": "68915614b2a5889f72b4b63eb09b1572bd7984f4ae998bd8577e24b092ffc5ab"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_2.png",
+      "sha256": "2dccdba63352bd15941a8a1edbfaaa650e82ca743d03f23e7f277b7915cf90ae"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_3.png",
+      "sha256": "374587facac17836a3164cdc4a23999f3c31500aa9cfe968c2c52fc76ee931ce"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_4.png",
+      "sha256": "8799c4ad4cc3fe4037eb9c0e465ae163a23ae591738e22d2f794e8a118dd1313"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/castle_10_lv_5.png",
+      "sha256": "b85a16cd7fc48422e9f054b9eeb9b2839424f6c6975fb358287eb1772e367751"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-01.png",
+      "sha256": "8551d1624749475a1200c448d5c3a645caf0862b23548669f62aab018af6d68b"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-02.png",
+      "sha256": "cb6f7991f5dc47d22f10eb9070318fab58c5ae5af6d760060fcf4d62468793a2"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-03.png",
+      "sha256": "d32693319680f6d47b12e841134af679551a72202cdad2fc813508f3e4d907ff"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-04.png",
+      "sha256": "937a1efa97c5ec7321f7d2828ec3b30ff43451ca808115c4051acd5ae204ddfd"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-05.png",
+      "sha256": "3ec49eee2a011a50c156826524ee5791cb0a72b7abceee24157d1593ba5b31d6"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-06.png",
+      "sha256": "30e147d11343ce4abf2db26f33772f0681e51e691e70fbe641fc20e1c1a056e2"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-07.png",
+      "sha256": "6a5d719d573d6958e45983338725b630236aa63b203a313d43448dd0d15bae57"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-08.png",
+      "sha256": "f47e11cc511a2b5a8d2f2e4c732a538179aac4f02359eb474847599cc6a9b1a0"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-09.png",
+      "sha256": "79b782bb3b4cb45605d1792870241ea79ca68a690cb2943812eb84b2940f7b4a"
+    },
+    {
+      "path": "Resources/res/castle_cannon_v2/unarmed-10.png",
+      "sha256": "9f875b55a6248798bc7eb60ce20277667e44fd02945b667ee5a27a277801a14f"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-01.png",
+      "sha256": "f350d1c4e8d768b49d4e9f57ac828df024590929d6ae9c3b94e927fb15ee9c8f"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-02.png",
+      "sha256": "3e90b9a077c8f72c64014dd11ed224b45023518478aad9b575402647091171b0"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-03.png",
+      "sha256": "c05fc20efbd353e1d51ea861a2c592df20ac2d1d9d71059194b0cd6b671f84cb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-04.png",
+      "sha256": "0c36c66a4b4e7a1bbbc1fe4869f0e359f3f7a7649541fc664c75d5516732c6fe"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-05.png",
+      "sha256": "bb3904ffed9ae3680f3b3f3a464504d0ae8bebb827f227901eafbb282e90ac72"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-06.png",
+      "sha256": "a8e1b45b9d62e5a1ea4c2ee9be97e1f0858b6886740967053b14685631eb28a9"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-07.png",
+      "sha256": "8841eb9d46c4776fd9b08f6e92064a0637f81f3c750f4668151dbffe592bb8c7"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-08.png",
+      "sha256": "59ec94d699897aa85b6b5c48c91aaeb4f874b3f96ab741de48ab7140fb59e48d"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-09.png",
+      "sha256": "27e0f092d215ae5365ccee7422425e885ff01154a2d01c96313f2cbb8f778e57"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/castle-10.png",
+      "sha256": "a39d06432abac903f67b59066901694b325860e6b9907bd7bf5a38d5e4e06b1a"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-01-0.png",
+      "sha256": "cab29085ab8f69c659fdba7f5d64ef73586b1fbee342765b8b5ded0592947fb8"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-01-1.png",
+      "sha256": "2381d3210ed523f9f75212fd2cf19dcbdb9fdb2ed65e65f2af16e7d01165d0cb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-01-2.png",
+      "sha256": "2381d3210ed523f9f75212fd2cf19dcbdb9fdb2ed65e65f2af16e7d01165d0cb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-01-3.png",
+      "sha256": "2381d3210ed523f9f75212fd2cf19dcbdb9fdb2ed65e65f2af16e7d01165d0cb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-02-0.png",
+      "sha256": "6620d180355d1d4be94b3e5a6087d03b52dde0ca1d5bd01281ecc2285cc304b9"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-02-1.png",
+      "sha256": "293c3b1e073d41fc1d4b344012596eaaf5205638e6037db639f33246fca1c361"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-02-2.png",
+      "sha256": "293c3b1e073d41fc1d4b344012596eaaf5205638e6037db639f33246fca1c361"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-02-3.png",
+      "sha256": "293c3b1e073d41fc1d4b344012596eaaf5205638e6037db639f33246fca1c361"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-03-0.png",
+      "sha256": "3312fe1b1822e1665f407d937e11e386be48a48c6d03eb50ee8e474f0b3d9592"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-03-1.png",
+      "sha256": "ce4c15149f68a02bce9f46a504e2bad7e1026ec10125bcaaf9185d64b0b99dbe"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-03-2.png",
+      "sha256": "ce4c15149f68a02bce9f46a504e2bad7e1026ec10125bcaaf9185d64b0b99dbe"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-03-3.png",
+      "sha256": "ce4c15149f68a02bce9f46a504e2bad7e1026ec10125bcaaf9185d64b0b99dbe"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-04-0.png",
+      "sha256": "6c04ecf4a86b92ff635b6ba4ed786f241b68cc0d9fa26baec84857bdf46575ed"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-04-1.png",
+      "sha256": "a325126dfa87fcb909063addd544efb35389a794bf1434aa9aa2b829dda96774"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-04-2.png",
+      "sha256": "a325126dfa87fcb909063addd544efb35389a794bf1434aa9aa2b829dda96774"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-04-3.png",
+      "sha256": "a325126dfa87fcb909063addd544efb35389a794bf1434aa9aa2b829dda96774"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-05-0.png",
+      "sha256": "226ab25a70c01e3ca5166c301f2906264097d61b2eb1a78547439c0fa80a9d67"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-05-1.png",
+      "sha256": "f20e2ef7d6fd0e0f3d131b922297bf11d55a26ddf1bc1ce12f7ac3913d391d7f"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-05-2.png",
+      "sha256": "887149e67920fde3acb2b89a00966b92c55954e040e0ad75b2c4d03dfc7937eb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-05-3.png",
+      "sha256": "887149e67920fde3acb2b89a00966b92c55954e040e0ad75b2c4d03dfc7937eb"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-06-0.png",
+      "sha256": "16a49b502099e0ca3c368fd72462a8af2fdfb72ea82386fe7745a81c53a1096b"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-06-1.png",
+      "sha256": "efe6290d54c13e6fb38dac482f4730b674943bdc37b65b7b877f1c7f7c6f84f3"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-06-2.png",
+      "sha256": "676ef190b0c5e9143629681005be27cdf8ebbab4ef710999b12a720641040188"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-06-3.png",
+      "sha256": "676ef190b0c5e9143629681005be27cdf8ebbab4ef710999b12a720641040188"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-07-0.png",
+      "sha256": "98106f01c766e3554a32c22823ef325d84163d078e3db44a127b0a794e948826"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-07-1.png",
+      "sha256": "3534e22d6178d2472f86b75ca439214174becbb0348ebe18c1578355f6286c68"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-07-2.png",
+      "sha256": "2a54e46634d7ffbb8cecdb6ad7cf6e7a8767cbf658b46e3e6b4f8e19be3b991d"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-07-3.png",
+      "sha256": "2a54e46634d7ffbb8cecdb6ad7cf6e7a8767cbf658b46e3e6b4f8e19be3b991d"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-08-0.png",
+      "sha256": "3b8b950dbcc93d4d1a0996fab6c387ad48f0f7ae7e77c04c4c06fc81db2c0a6f"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-08-1.png",
+      "sha256": "dfdff92c12f646f99e597f8c3ee2b76d65870f789be51d40cc6c9a7010fc049d"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-08-2.png",
+      "sha256": "4d07ef79fa46ab1f43d37df4ee343e5c04bd204477aa82c5e7017f5643b6e46f"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-08-3.png",
+      "sha256": "43d7ed8df73808e11ff24b6e2a6dc8cea65faf1ed937331e8ba107fc379dd4ba"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-09-0.png",
+      "sha256": "8d920a0cfdae03d29fcfbd1e1858c7ebd0fb761d1924c8f26aa2c2057b9f461e"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-09-1.png",
+      "sha256": "62fae3ac96e9582c3b5af3703f251fea1cf0d06ea7bcbd90865f5057b8dc7892"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-09-2.png",
+      "sha256": "1b20bb3e8464f65e95d750eb12d75e0c0181cf326f98189d8a048c1e6735380c"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-09-3.png",
+      "sha256": "681ffb99550d8e84c0e56c61fe95154578098b169e1d9e9c01a981642da3e3e8"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-10-0.png",
+      "sha256": "a09be875df02c58f82ebf0eda9f7b50418abb8f6bfd0c1c4527c828ec2a277db"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-10-1.png",
+      "sha256": "b0e0072bc9ac51df0ab87a1a2a6b8953445a2738318f8bbde34016fb01ed66c3"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-10-2.png",
+      "sha256": "1d98db171876853a93abd2feaf39ee70be8b22fc1c5630a32b9038c1e1a83957"
+    },
+    {
+      "path": "Resources/res/castle_individual_v4/wheel-10-3.png",
+      "sha256": "11021c9219aa3e47b8cd4d609afd3ababee428e2a9cddf306fbbd06bb033290b"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_0.png",
+      "sha256": "6a6b9ee5fcba12350e99a67f935320cfe2433c6fb531bf9eefe35f40a7d2cf67"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_1.png",
+      "sha256": "9d45d2ea7a5f79a31393f02d10c6c25ff68e7bb81c07e5c6aa302a7e8d222250"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_2.png",
+      "sha256": "aa953dab3e0f8678da232c0d2a58c6c73c86cf88bc60568d95ae9cce785ad87f"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_3.png",
+      "sha256": "9028912ccd5a71e237fcc84d4a77ab2b34394954ad76ea2472fb756b6098ba4c"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_4.png",
+      "sha256": "24c45688d83ecee1200fbc55660649b3f4337f0a88bf6e575d5b2f1f8152083c"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_01_5.png",
+      "sha256": "6b486d95916e1e352088165ff0622a7d08eb1302f4a3ef51df5c8d340185a9cb"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_0.png",
+      "sha256": "c66c7f06df2e31ac6ef19d87f71f0fb8990ad669d74b60eb9485960dd7e025af"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_1.png",
+      "sha256": "083b9d81043a6e8826d670ed20e253288dc76014dfe16e6cd1ac86816920d4a4"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_2.png",
+      "sha256": "85dc4ce3de7dc465335f354c241769c20597649785e97a6f91585ed146a5c918"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_3.png",
+      "sha256": "dc1b4cd882391079bd54901c97b8bc7faa0d4d7a75b7424e17a6f1729fc7fd3e"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_4.png",
+      "sha256": "212ada766e0bef23fe40bb2e46a768288e9491ab070a51ab2a7585f489624663"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_02_5.png",
+      "sha256": "beb18b0ced94a01fd7a69a08d10a144216cd80248a74e0f5eee79905ed7270a8"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_0.png",
+      "sha256": "e952d306247f7eea2adae241bd93e3a12395cddd6236b19241044d732d1c1b4c"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_1.png",
+      "sha256": "fe33e5387e2aa12d34aa6eaab9d5709ccbecd8633a0cc5a8d90495095d62e783"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_2.png",
+      "sha256": "dadd0492faa3aff156ac3b649ac211e9fdf17f2c7b79b9c8c0b30a8b0ed48f2d"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_3.png",
+      "sha256": "8628d14f87afbc6ae8796c53932662931a1cd8b21023e93259e974a39c372077"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_4.png",
+      "sha256": "1c99882c52d6352d96c991f728beffcedd84794ece8516a6c6e277f47b1d03cf"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_03_5.png",
+      "sha256": "d54c53557355d4e01a46d975d8f6c329aa843aad109ccc9889493a000cd82a08"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_0.png",
+      "sha256": "49a8cf64768e6128ec11ddacbe7a55c4c086c194dd42a4b7f1d59dbce92cd321"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_1.png",
+      "sha256": "620ea93517e77c006605a5b1b0b81e67b19a1a3b86569074c28b8f3dd4eb3999"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_2.png",
+      "sha256": "9f798cc410bac2d505dd71ddd098d6ab3b49fc18f50a0587b73bbfab9018f909"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_3.png",
+      "sha256": "b369c4e8900830509bd883d9eb5b415376b8e48b8f55385c3e89d0a1e3caf1f0"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_4.png",
+      "sha256": "e9ed9ed62170b847e3f3fc24c234f34ae08835055418c7fe5e917c8d330537d7"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_04_5.png",
+      "sha256": "e925496be7944404c060fd6d01c1ae4d6d1a8aa09dc8e46d0bb1b63c26de9399"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_0.png",
+      "sha256": "86563419f07cac6a306e2dd5f76769e541b7448c3ee2f90c7f34331c49a6f84e"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_1.png",
+      "sha256": "e9bf7ff20fc2d7e038a0ce2666f16084bcd7b5ce8890406d85e54d63cbbe8ea6"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_2.png",
+      "sha256": "d193f5bda16f372e600ce316915df0042500716ac56f583abd39155702a0ee35"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_3.png",
+      "sha256": "de9e3fdc680df501593d2034efb1ea357b546d48e7fec6b0099148bd1efb5c0c"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_4.png",
+      "sha256": "4a9f0207cfbef44e7b6489a6d7c36efabb052f6b1e32c6f095fc17b11d72125b"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_05_5.png",
+      "sha256": "2e1dacf96dc0bdab6ef37cb09569b42c68176c0a3eccb1814546752a4bdcfded"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_0.png",
+      "sha256": "5f6439069460d1c9d3a129ad75dcf95ff06e0cbeeed6dc4af1fe979dbbf2dd12"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_1.png",
+      "sha256": "65fe35e6c8da885711f0ac36ffcb3d0bd9f985ebdfb9b06d88dadf9d6b4108bb"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_2.png",
+      "sha256": "da1f5224959532eb21ffc04f288e655477b09c0c104c98ee500be88762aa5c7e"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_3.png",
+      "sha256": "e539e30fddd68c0f0b57134ce6734ab0c199c9e4e4f3bf6958f2893955605d05"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_4.png",
+      "sha256": "16eb3c1ccc2ea9fa9e99cd820bf27835fdcf3780005d9ebf7da196b0753b2db3"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_06_5.png",
+      "sha256": "58eec9ca953409abecdafd1dbb8dfb70c0587fae0aa130a2b1344bedd8987a79"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_0.png",
+      "sha256": "7112b8aab47ea576ab62f6374660e147c4eb0e0a95489135cbbe63cba7cddfc9"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_1.png",
+      "sha256": "72773452625bb023040dbe9f2a518947dd6bfe6f7c3a7f296729d00741b89e9a"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_2.png",
+      "sha256": "54b97c1f667478c53d69581c9335382355cdfb85a4c1813cd149dad43599e027"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_3.png",
+      "sha256": "25d50569dcf842c70e9689b809ce2aae286f3e0899fbfbce533521e73f404b7f"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_4.png",
+      "sha256": "8c028f131190707f3b78541ab8a009a7ca89b0a464ea86cea1ab587dd0f3cb46"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_07_5.png",
+      "sha256": "9f19bae44d71afa3e0661a1828b2aa49a7845b1f06e9cc136457896de0e1a374"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_0.png",
+      "sha256": "41d0bedf3fd5e41191a197851307dd85403a4969612af4461079d079f65cc62d"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_1.png",
+      "sha256": "2cd7ccc98c3b12dea0a6ef5756318eee8a11dc60925e8654fe945a0e78439231"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_2.png",
+      "sha256": "6ddee42b5aacc06b130e269a2da2e2b57a7f9d6aa8f63f522fa4a9fbc0a6f9f7"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_3.png",
+      "sha256": "50b49c103fd1dfff07a0ffda8cb98e970b5fc92bf783263be58914a6d7355033"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_4.png",
+      "sha256": "48a1572c56fecc57f442bb34c878686d96d33c583d5bf5d25f8cb65187a82b2f"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_08_5.png",
+      "sha256": "5dbe72d6c0e94ec8d83c4ede36fe893a0283e87924c818da4c8fed95d5c765a4"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_0.png",
+      "sha256": "edfda15cfa27a742e3c19d9d7576808bd912bc20f4d396d2c3cc9a5584d78436"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_1.png",
+      "sha256": "5f1709af04a8ef04fc417ed4901c9a60f8086a46ee8f3b0f0bf4ad69a5edb486"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_2.png",
+      "sha256": "1fa1e7d5518a09e71f68e159499030a2031b3a5e3e0becc7fcb34dec5a86f2ac"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_3.png",
+      "sha256": "08f066172771e9b45ff0d122edabe14a0ef37d2a8456f7fde6b276de134111ec"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_4.png",
+      "sha256": "55a3f0c4998eb568b5f7b287bb760dd362d7ad259785fe4b93588836e2ee8db9"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_09_5.png",
+      "sha256": "ba38a1366c908a3bf1ff1c019d65833ada024015ec90b5ce2331b15b8657ef76"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_0.png",
+      "sha256": "5cb24b8aff7506f6f10b01a93bb237ab2503f034db9e9cabb0a8e70d59c5d312"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_1.png",
+      "sha256": "370ab2ab24ec5fe0f225a2f90ac17b7c8f8704a1b18e25595915a948cba65d11"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_2.png",
+      "sha256": "853b6d573ebcc6354ec9583befb741221aa1505b16a0ece633ff9c4b5c325242"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_3.png",
+      "sha256": "0dd998f27d877c99fa91f730777f1c819392115d253122cfb62ee128c662cb6c"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_4.png",
+      "sha256": "765b4ce622e6be7d273d9425dca50b8bf799825b2da2a903b5af174385f2f0eb"
+    },
+    {
+      "path": "Resources/res/castle_rectangular_rooms/castle_room_10_5.png",
+      "sha256": "e310ed4046309eb41e4c0b49d9c2a08b169ccdf287439039f9103d0cd6a87f74"
+    }
+  ],
+  "first_nine_rigs": "Unchanged from HEAD",
+  "royal_change": "Width 422 -> 480; all source anchors unchanged",
+  "nominal_heights": [
+    269.2048192771084,
+    324.24645390070924,
+    422.37223974763407,
+    471.44467640918583,
+    478.7487969201155,
+    550.8550724637681,
+    583.5736677115988,
+    590.6222684703434,
+    716.664406779661,
+    825.7534246575342
+  ],
+  "last_to_first_height": 3.0673797997930246
+}

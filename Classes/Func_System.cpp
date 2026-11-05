@@ -4878,6 +4878,7 @@ void LoadGameAfterNet(void)
 {
 	CastleProgressEnsure();
 	CrewGrantEnsure();
+	GearGrantEnsure();
 	gMobileCastleVisual=CastleMenuModel::Clamp(robin.castle);
 	robin.maxInven=(unsigned short)GetMaxInven();
 	//crewCnt는 ROBINDATA에 없는 순수 전역이라 저장에서 복원되지 않는다.

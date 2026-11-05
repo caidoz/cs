@@ -1,0 +1,7 @@
+Mode: built-in image_gen, style-transfer, screenshot mockup only.
+References: user Castle Survivor screenshot and hybrid 2D/3D game reference.
+Keep the hero and enormous distant frog demon boss crisp pixel art.
+Convert the existing castle wagon, cannon, bridge, canyon, foliage, waterfalls and UI into rounded, detailed, colorful SD 3D mobile strategy art.
+Preserve the original side-view castle identity, purple roof/flag, crown banner, two compact wheels, exposed outdoor combat deck, mounted cannon, composition and UI functions.
+Use beveled teal and gold UI, a green adventure button and five bottom navigation icons. Remove desktop chrome and debug controls.
+Do not convert the hero or distant boss into 3D. Do not replace the actual castle design with an unrelated castle.

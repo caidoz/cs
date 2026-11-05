@@ -1120,7 +1120,9 @@ void HeapProbe(const char* where)
 void HeapProbe(const char*) {}
 #endif
 
+#include "UiFrameProfile.inc"
 void Core::Run(float delta) {
+	UiFrameProfile::Sample uiFrameSample;
 	HeapProbe("프레임 머리");
 	LobbySkyUpdate(delta);
 	StageBgUpdate(delta);
@@ -1185,6 +1187,7 @@ void Core::Run(float delta) {
 		}
 	}
 
+	TitleLoginStep(netBooted);
 	//결제를 한 칸 굴린다. 스토어 답을 받고, 못 보낸 영수증을 다시 보낸다.
 	//
 	//부팅 뒤에 둔다. 그 전에는 토큰이 없어서 보내봐야 거절당하고, 무엇보다
@@ -1230,7 +1233,7 @@ void Core::Run(float delta) {
 			curBufferCnt = 0;
 			memset(&curBufferSpriteArr, 0, sizeof(curBufferSpriteArr));
 			memset(&sameBufferSpriteCur, 0, sizeof(sameBufferSpriteCur));
-			memset(&sameBufferSpriteArr, 0, sizeof(sameBufferSpriteArr));
+			// Unused legacy lookup table: no per-frame writes to its large storage.
 
 			if (!screenBuffer) {
 				for (i = 0; i < totalFontLabelCnt; i++) {
@@ -1240,7 +1243,7 @@ void Core::Run(float delta) {
 			curFontLabelCnt = 0;
 			memset(&curFontLabelArr, 0, sizeof(curFontLabelArr));
 			memset(&sameFontLabelCur, 0, sizeof(sameFontLabelCur));
-			memset(&sameFontLabelArr, 0, sizeof(sameFontLabelArr));
+			// Label slots are append-only until ResetLabel(), just like sprites.
 
 			if (!screenBuffer) {
 				for (i = 0; i < curTextLabelCnt; i++) {
@@ -1250,7 +1253,7 @@ void Core::Run(float delta) {
 			curTextLabelCnt = 0;
 			memset(&curTextLabelArr, 0, sizeof(curTextLabelArr));
 			memset(&sameTextLabelCur, 0, sizeof(sameTextLabelCur));
-			memset(&sameTextLabelArr, 0, sizeof(sameTextLabelArr));
+			// Unused legacy text lookup table.
 
 			for (i = 0; i < curRenderCnt; i++) {
 
@@ -1268,7 +1271,7 @@ void Core::Run(float delta) {
 			curRenderCnt = 0;
 			memset(&curRenderSpriteArr, 0, sizeof(curRenderSpriteArr));
 			memset(&sameRenderSpriteCur, 0, sizeof(sameRenderSpriteCur));
-			memset(&sameRenderSpriteArr, 0, sizeof(sameRenderSpriteArr));
+			// Append-only pool lookup survives frames; clear cursors, not the map.
 
 		}
 
@@ -1299,6 +1302,7 @@ void Core::Run(float delta) {
 		RefreshEnemyTime();
 
 		bool drawThisFrame = (running == true);
+		if(TitleLoginBusy())drawThisFrame=true;
 #ifdef GAMEDEBUG
 		//System dialogs can pause the normal game-running flag while the title
 		//debug preview remains visible.  Its wheel animation still needs a frame.
@@ -1306,11 +1310,14 @@ void Core::Run(float delta) {
 			drawThisFrame = true;
 #endif
 		if (drawThisFrame) {
+			uiFrameSample.Mark("update-reset");
 			//한 프레임의 모든 드로우를 화면버퍼에 모은 뒤 한 번만 화면에 표시한다.
 			HeapProbe("그리기 직전");
 			BeginScreenBuffer();
 			PaintClet(0, DY, DX, DY);
+			uiFrameSample.Mark("paint");
 			EndScreenBuffer();
+			uiFrameSample.Mark("end-buffer");
 			HeapProbe("그린 뒤");
 		}
 
@@ -1598,6 +1605,7 @@ void PaintClet(int x, int y, int w, int h)
 		CastleMenuReviewStep();
 		return;
 	}
+	if(TitleLoginBusy())mustRefresh=true;
 	if (mustRefresh == true) {
 		if (isScreenShot == false) {
 			switch (drawHandle) {
@@ -2189,7 +2197,9 @@ void PaintClet(int x, int y, int w, int h)
 		// already rendered them inside the area above BOTTOMMENUHEIGHT and then
 		// drawn the navigation bar. Running the generic popup pass here used to
 		// darken that bar, erase its hit areas, and draw the same window twice.
-		const bool lobbySection = drawHandle == MD_LOBBY && popUpCnt == 1 && menuDepth == 0
+		// These section renderers also own their menuDepth detail modal. Drawing
+		// it here again doubled the entire equipment screen and its hit setup.
+		const bool lobbySection = drawHandle == MD_LOBBY && popUpCnt == 1
 			&& (topPopupType == POPUPTYPE_SHOPINFO
 				|| topPopupType == POPUPTYPE_COLLECTIONS
 				|| topPopupType == POPUPTYPE_CREWLIST

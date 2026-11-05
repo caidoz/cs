@@ -1,5 +1,7 @@
 #include "../../Classes/CastleMenuModel.h"
 #include "../../Classes/CastleArtilleryModel.h"
+#include "../../Classes/Data/CastleRoomUpgrades.h"
+#include "../../Classes/Data/CastleNpcPlacement.h"
 #include <cassert>
 #include <cstdio>
 #include <sstream>
@@ -15,6 +17,43 @@ struct Reader {
     template<class T,class... Rest> void operator()(T& value,Rest&... rest) { (*this)(value); (*this)(rest...); }
 };
 int main() {
+    {
+        Progress available={};available.version=1;available.owned=1;
+        available.rooms[0][0]=2;
+        assert(EnableAllCastles(available)&&available.owned==1023u);
+        assert(!EnableAllCastles(available)&&available.rooms[0][0]==2);
+        for(int c=0;c<Count;++c){
+            assert(Owned(available,c));
+            for(int i=CastleFacilities::Counts[c];i<Categories;++i){
+                long long funds=1000000;
+                assert(!Upgrade(available,c,i,true,funds)&&funds==1000000);
+                assert(!UpgradePaid(available,c,i,true,funds)&&funds==1000000);
+            }
+        }
+    }
+    for(int c=0;c<10;++c){
+        Progress facilities={};facilities.version=1;facilities.owned=1023u;
+        const int baseAttack=Attack(facilities,c);
+        for(int room=0;room<CastleFacilities::Counts[c];++room){
+            assert(CastleNpcPlacement::Counts[c]==CastleFacilities::Counts[c]);
+            const auto& area=CastleNpcPlacement::Areas[c][room];
+            for(int i=0;i<area.recommended;++i){
+                assert(CastleNpcPlacement::ContainsFoot(area,CastleNpcPlacement::SlotX(area,i,area.recommended),area.foot));
+                if(i>0)assert(CastleNpcPlacement::SlotX(area,i,area.recommended)-CastleNpcPlacement::SlotX(area,i-1,area.recommended)+.000001f>=area.maxWidth);
+            }
+            assert(!CastleNpcPlacement::ContainsFoot(area,area.left-.01f,area.foot));
+            assert(!CastleNpcPlacement::ContainsFoot(area,area.left,area.foot+.01f));
+            assert(CastleFacilities::Food(c,room)==(room==0));
+            for(int lv=0;lv<=5;++lv){
+                auto crop=CastleRoomUpgrades::Frame(c,room,lv,1536,2048);
+                assert(crop.x>=0&&crop.y>=0&&crop.w>0&&crop.h>0&&crop.x+crop.w<=1536&&crop.y+crop.h<=2048);
+                facilities.rooms[c][room]=(unsigned char)lv;
+                if(room==1)assert(Attack(facilities,c)==baseAttack+CastleFacilities::AttackUpgrade(c,room,lv));
+                if(lv<5)assert(CastleFacilities::Output(c,room,lv+1)>CastleFacilities::Output(c,room,lv));
+            }
+            facilities.rooms[c][room]=0;
+        }
+    }
     {
         Progress dual={}; dual.version=1; dual.owned=1;
         long long coin=10000,gold=1000000;
@@ -44,10 +83,14 @@ int main() {
     int cap=Inventory(p,3,40,4,999),equipment=Equipment(p,3,30);
     assert(Upgrade(p,3,0,true,gold)&&Inventory(p,3,40,4,999)==cap+4);
     assert(Equipment(p,3,30)==equipment);
-    assert(Upgrade(p,3,1,true,gold)&&Equipment(p,3,30)==equipment+1);
+    const int attackBeforeArmory=Attack(p,3);
+    assert(Upgrade(p,3,1,true,gold)&&Equipment(p,3,30)==equipment+1&&Attack(p,3)>attackBeforeArmory);
     assert(Upgrade(p,3,2,true,gold)&&Health(p,3)==2);
-    assert(Upgrade(p,3,3,true,gold)&&Defense(p,3)==2);
-    assert(Upgrade(p,3,4,true,gold)&&Attack(p,3)==2);
+    paid=gold;assert(!Upgrade(p,3,3,true,gold)&&!Upgrade(p,3,4,true,gold)&&gold==paid);
+    auto late=p;EnableAllCastles(late);
+    assert(Upgrade(late,9,3,true,gold)&&Defense(late,9)==2);
+    const int attackBeforeRoyal=Attack(late,9);
+    assert(Upgrade(late,9,4,true,gold)&&Attack(late,9)==attackBeforeRoyal+2);
     assert(Upgrade(p,3,4,false,gold)&&All(p,3)==1);
     for(int i=0;i<5;++i) while(p.parts[3][i]<5) assert(Upgrade(p,3,i,false,gold));
     paid=gold; assert(!Upgrade(p,3,0,false,gold)&&gold==paid);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // StageBackground.h
 // 성열차가 달리는 지역의 배경. 원경 - 보스 - 중경 - 선로 를 서로 다른
 // 속도로 흘려 깊이를 낸다.
@@ -180,6 +180,9 @@ inline const Region& Cur(void) {
 }
 
 inline int Img(int slot) {
+	// Keep the original pixel bosses and their animation frames untouched.
+	// The approved first region receives independently scrolling SD 3D layers.
+	if(s_region==0 && slot<3) return HYBRID_FAR_IMG+slot;
 	return STAGEBG_FIRST_IMG +
 	       Max(0, Min(s_region, STAGEBG_REGION_CNT - 1)) * STAGEBG_PER_REGION + slot;
 }
@@ -303,25 +306,49 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 
 	const auto sz = sprite[img]->getContentSize();
 	if (sz.width < 1.0f) return;
+	if(designTopY==0.0f || s_region>0 || img==HYBRID_RAIL_IMG)
+		sprite[img]->getTexture()->setAntiAliasTexParameters();
 
-	const float s     = LayerScale(cam, d);
+	// Cover tall displays uniformly: never expose a hard image bottom above the rail.
+	const float coverage = (designTopY==0.0f) ? Max(1.0f,(float)DY/(kSkyH*Scale())) : 1.0f;
+	const float s     = LayerScale(cam, d)*coverage;
 	const float tileW = designW * s;
+ const bool natural=(designTopY==0.0f);
+ const bool blended=(img==Img(SlotFar) || (s_region>0 && img==Img(SlotRail)));
+ const float step=tileW*(blended?.90f:1.0f);
 	const float zoom  = tileW / sz.width;
 	//흘러간 거리에서 카메라가 민 만큼을 뺀다. 미는 쪽과 흐르는 쪽이 같은
 	//축이라 한 값으로 합쳐 놓아야 타일 이음매가 어긋나지 않는다.
 	const float dist  = speed * s_travel * s - cam.panX * d.pan;
 
-	const int   q     = (int)std::floor(dist / tileW);
-	const float first = -(dist - q * tileW);
+	const int   q     = (int)std::floor(dist / step);
+	const float first = -(dist - q * step) - ((coverage>1.0f)?(tileW-DX)*.5f:0.0f);
 	//원경과 중경(designTopY == 0)은 무조건 화면 맨 상단(DY)에 붙여서 그린다.
-	const int   top   = (designTopY == 0.0f) ? (int)DY : TopOf(LayerGround(cam, d), designTopY, s);
+	int top = (designTopY == 0.0f) ? (int)DY : TopOf(LayerGround(cam, d), designTopY, s);
+ // Measured top rail rows in the unchanged authored PNGs (asset-audit.json).
+ // Align every regional track to the shared wheel contact line.
+ if(designTopY!=0.0f && s_region>0){
+  static const int railTop[15]={0,49,54,48,58,28,25,27,38,49,46,46,36,51,35};
+  top+=(int)std::lround(railTop[s_region]*zoom-kRailH*.0635f*s);
+ }
 
-	for (int j = 0; first + j * tileW < (float)DX; j++) {
-		DrawImage((int)sz.width, (int)sz.height, 0, 0,
-		          (int)(first + j * tileW), top,
-		          WrapEven(q + j) != 0, false, false, false, false,
-		          zoom, sprite[img], img);
-	}
+ if(blended){
+  const float center=coverage>1.0f?(tileW-DX)*.5f:0.0f;
+  SetStageFarScroll(DX/tileW,(dist+center)/tileW);
+  // A single opaque quad has no screen-space tile edge to flash or band.
+  DrawImageScale((int)sz.width,(int)sz.height,0,0,0,top,false,0,0,0,0,
+   DX/sz.width,zoom,sprite[img],img);
+  return;
+ }
+
+ // Shared integer edges and one pixel of bleed prevent fractional raster gaps.
+ for(int j=0;first+j*step<(float)DX;++j){
+  const int left=(int)std::floor(first+j*step);
+  const int right=(int)std::floor(first+(j+1)*step)+1;
+  DrawImageScale((int)sz.width,(int)sz.height,0,0,left,top,
+   natural?false:WrapEven(q+j)!=0,0,0,0,0,
+   (right-left)/sz.width,zoom,sprite[img],img);
+ }
 }
 
 //보스는 원경에 붙어 있다. 한 마리뿐이라 반복하지 않고, 원경 타일 중
@@ -330,7 +357,8 @@ inline void Boss(const Camera& cam) {
 	const Region& r = Cur();
 	//보스는 원경에 붙어 있다. 원경과 같은 배율 · 같은 깊이로 움직여야
 	//붙어 있는 것으로 보인다.
-	const float s       = LayerScale(cam, kDepthFar);
+	const float coverage=Max(1.0f,(float)DY/(kSkyH*Scale()));
+	const float s       = LayerScale(cam, kDepthFar)*coverage;
 
 	const int baseImg = Img(SlotBoss);
 	const int fxImg   = Img(SlotBossFx);
@@ -356,10 +384,10 @@ inline void Boss(const Camera& cam) {
 
 	const int   img   = (swap && sprite[fxImg]) ? fxImg : baseImg;
 
-	const float tileW = kSkyW * s;
+	const float tileW = kSkyW * s * .90f;
 	const float dist  = kSpeedFar * s_travel * s - cam.panX * kDepthFar.pan;
 	const int   q     = (int)std::floor(dist / tileW);
-	const float first = -(dist - q * tileW);
+	const float first = -(dist - q * tileW) - ((coverage>1.0f)?(kSkyW*s-DX)*.5f:0.0f);
 
 	//보스의 상단 y좌표: 화면 맨 위(DY)에서 r.bossY만큼 내려온다.
 	const float topY = (float)DY - (r.bossY - r.riseY * swell) * s;

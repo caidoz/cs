@@ -1,0 +1,31 @@
+{
+  "tool": "built-in image_gen",
+  "base_prompt": "Production game texture atlas, exactly TWO columns and FIVE rows, ten equal rectangular room panels with NO gaps, NO labels, NO outer padding. Overall aspect ratio 8:5; each room aspect ratio4:1. Front-facing side cutaway rooms for a wheeled fantasy castle, polished rounded SD 3D mobile game materials, rich warm wood and gold carved posts, thick tactile timber floors, depth from inset back walls, soft warm illumination, compatible with white stone blue gold castle too. Fill each room with coherent readable furniture, not miniature repeated trinkets, keep central front floor walkway clear for 2D characters. NO characters, NO weapons cannon, NO exterior roof or wheels. Room order row-major: 1 warm wood barracks with benches, crates, weapon rack and lanterns; 2 gray stone dining hall with big hearth, table, barrels and food shelves; 3 cozy bedroom with green bed, cupboard and folded linens; 4 kitchen workshop with suspended cauldron, brick stove, pantry, hanging tools; 5 infirmary with herb racks, green medicine bottles, cot and arched windows; 6 bath laundry room with wood tub, towels, water bucket, copper pipes; 7 library study with bookshelves desk globe candles; 8 captain navigation room with maps chart table compass trophy chest; 9 blue banner officers room with elegant desk books cabinet; 10 royal blue gold throne chamber with throne, crown display, velvet banners and side chests. Every panel includes its OWN slim warm structural edge matching its walls, avoid black rectangular metal frames. Base upgrade level, practical well furnished and high quality, reserve more elaborate gold/carpets/extra furniture for future higher grades. Atlas must be perfectly tiled regular2x5 rows flush image boundary, enough floor depth, smooth illustrative 3D not pixel art, objects readable when downsized.",
+  "upgrade_prompt": "Edit exact base atlas, retain two columns/five rows, room identities/camera/floor boundaries. Grades 1–5 progressively add practical furnishings, stocked shelves, carved brass/gold fittings, curtains, carpets and royal furniture. Keep foreground floor clear; no characters, labels, spacing or heavy black frames.",
+  "files": [
+    {
+      "level": 0,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-0.png"
+    },
+    {
+      "level": 1,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-1.png"
+    },
+    {
+      "level": 2,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-2.png"
+    },
+    {
+      "level": 3,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-3.png"
+    },
+    {
+      "level": 4,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-4.png"
+    },
+    {
+      "level": 5,
+      "path": "Resources/res/castle_rooms_sd_v2/grade-5.png"
+    }
+  ]
+}

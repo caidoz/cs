@@ -26,6 +26,7 @@ void DrawWindow4(int x, int y, int w, int h, int index, float zoom);
 void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffsetY);
 
 void VersionDraw(void);
+bool SceneGridReviewCheck(void);
 
 #if DUMP_CMF_PNG
 //캐릭터 그림을 한 프레임에 한 장씩 PNG 로 떨군다(Config/BuildConfig.h).
@@ -34,11 +35,15 @@ void DumpCmfStep(void);
 void LogoDraw(void);
 void LoadingDraw(void);
 void TitleDraw(void);
+bool TitleLoginBusy(void);
+void TitleLoginStart(int provider);
+void TitleLoginStep(bool dataReady);
 #ifdef GAMEDEBUG
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
-void CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h);
+bool CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h);
+bool CastlePartsUpgradePlacementStable(int,int);
 
 //성을 세로선(axisX)을 축으로 접어 그린다. 켠 뒤에는 반드시 다시 끈다 -
 //한 장면 안에서 한쪽만 돌려 세우는 용도다.
@@ -63,6 +68,17 @@ void CastlePartsPartAnchor(int level, int part, float* x, float* y);
 float CastlePartsFloatOffset(int level);
 void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
+bool LobbyCastleDebugCommand(int command);
+void LobbyCastleDebugDraw(void);
+int LobbyCastleDebugPopulation(void);
+void LobbyCastleDebugCrowdDraw(void);
+bool LobbyCastleFunctionalReview(void);
+int LobbyCastleDebugLevel(int castle,int part);
+int LobbyCastleDebugFacilityLevel(int castle,int room);
+bool CastleRoomUpgradeReview(int castle,int level,bool configure);
+bool CastleRoomUpgradeReviewOne(int facility,bool configure);
+bool LobbyCastleDebugHit(float x,float y);
+bool CastleSoftSectorsReview(int operation);
 #endif
 void TitleSkillViewerCommand(int command);
 void TitleTermsCommand(int command);
@@ -129,6 +145,29 @@ enum GearCategory {
 	TOTAL_GEAR_CATS
 };
 GearCategory GetItemGearCategory(int itemType);
+
+//---- 가방 장비가 히어로에게 보태는 네 역할축 합계 ----
+//
+//생존과 화력의 주체는 히어로 한 명뿐이다(CLAUDE.md 2~3장). 성 내구도와
+//동료 체력은 이 합계에 끼지 않는다 - 동료는 회복과 화력으로만 돕는다.
+//
+//크기값은 그대로 더한 값이고, 비율값은 % 다(상한은 GearRoleData.h).
+struct GearRoleTotals {
+	long long shieldMax;	//방어막 최대치에 보탤 양
+	long long maxHp;		//최대 체력에 보탤 양
+	int atkPct;				//가방 검 피해 +%
+	int critPct;			//치명타율 %
+	int coolPct;			//공격 준비 단축 %
+	int dodgePct;			//회피 %
+	int leechPct;			//적중 시 흡혈 %
+	int hpRegenTenths;		//초당 체력 재생 (1/10 점)
+	int shieldRegenTenths;	//초당 방어막 재생 (1/10 점)
+	int goldTenths;			//웨이브 클리어 골드 (1/10 원)
+};
+void GridQueryGearRoles(GearRoleTotals* out);
+//장비 전 종류를 창고에 보장 지급한다(대포/동료 지급과 같은 규칙).
+void GearGrantEnsure(void);
+
 bool GridSlotHasAdjacentCategory(int slot, GearCategory cat);
 int GridSlotGetAdjacentCrew(int slot);
 void GridEnsureSampleLayout(void);
@@ -182,6 +221,9 @@ bool LoadoutRequiredWeaponReady(void);
 bool LoadoutVisualWeapon(ITEM* out);
 void LoadoutDefaultReset(void);
 bool MaxWeaponFoundationReview(void);
+//히어로 몰빵 개편 점검(CS_GEAR_ROLE_REVIEW). 0 역할축 · 1 보석 · 2 창고 ·
+//3 상점 줄 갈이 · 4 동료는 체력을 안 보탠다
+bool GearRoleReview(int operation);
 bool CompactEquipmentReview(int page);
 bool HeroAlliesAuditReview(int page);
 bool StageAllyLinkReviewSetup(int hero);
@@ -260,6 +302,9 @@ int GridTestTactics(StageSword* out, int maxCnt);
 int GridTestTotalItemCount(void);
 int StageGearList(int obj, StageSword* out, int maxCnt);	//누구든 장비 목록
 int StageFoeGearList(StageSword* out, int maxCnt);	//지금 몬스터 장비
+
+//적이 멘 것을 적 체력 칸 아래에 깔아 준다. 보고 내 가방을 짜라는 자리다.
+void StageFoeBagDraw(int x, int y, int w);
 long long StageGearArmor(int obj);					//방어구 값의 합
 void StageGearApplyStat(OBJECT* pObj);				//가방 장비 스탯을 더한다
 long long StageGearReduce(int obj, long long damage);//방어구를 거친 피해
@@ -340,3 +385,5 @@ bool PvpClashIsAuto(void);
 void LoadoutInspect(int catalog);
 int GridEquippedWeaponHaste(void);
 int GridShieldCooldownForSlot(int slot);
+bool CastleHybridReview(int operation);
+bool CastleHybridFleetReview(int operation);

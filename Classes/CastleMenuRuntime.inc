@@ -1,8 +1,11 @@
-﻿// Included by Func_Menu.cpp.
+// Included by Func_Menu.cpp.
 #include "CastleArtilleryModel.h"
+#include "Data/CastleFacilities.h"
 #include "Data/InventoryCannonSprites.h"
 namespace {
 int castleBrowse=0,castlePage=0,castleCategory=0,castleRow=0,castleModal=0;
+bool castleUpgradeIsRoom=false;
+int castleUpgradeCastle=0,castleUpgradePart=0,castleUpgradeLevel=0,castleUpgradePrice=0;
 int castleMessageUntil=0; float castlePanY=0;
 const char* castleMessage="";
 const char* const castlePartNames[]={"첨탑","외부장갑","실내","대포","바퀴"};
@@ -50,23 +53,40 @@ int CastleInventoryCapacity(int c) { CastleProgressEnsure(); return CastleMenuMo
 int CastleEquipmentCapacity(int c) { CastleProgressEnsure(); return CastleMenuModel::Equipment(robin.castleProgress,c,GridTestCellCnt(c)); }
 int CastleCannonDamagePercent(int c) {
     CastleProgressEnsure(); c=CastleMenuModel::Clamp(c);
-    return CastleArtillery::Of(c).damagePercent*(100+10*robin.castleProgress.parts[c][3])/100;
+    return CastleArtillery::Of(c).damagePercent*CastleMenuModel::CannonDamageMultiplier(robin.castleProgress,c)/100;
 }
 int CastleCannonCooldown(int c) {
     CastleProgressEnsure(); c=CastleMenuModel::Clamp(c);
-    return CastleArtillery::Of(c).cooldown*(100-3*robin.castleProgress.parts[c][3])/100;
+    return CastleArtillery::Of(c).cooldown*CastleMenuModel::CannonCooldownMultiplier(robin.castleProgress,c)/100;
 }
-int CastleVisualPartLevel(int c,int i) { CastleProgressEnsure(); return c>=0&&c<10&&i>=0&&i<5?robin.castleProgress.parts[c][i]:0; }
+int CastleVisualPartLevel(int c,int i) {
+ const int preview=LobbyCastleDebugLevel(c,i);if(preview>=0)return preview;
+ CastleProgressEnsure(); return c>=0&&c<10&&i>=0&&i<5?robin.castleProgress.parts[c][i]:0;
+}
 int CastleTeamBonus(int kind) {
     CastleProgressEnsure(); const auto& p=robin.castleProgress; int c=CastleMenuModel::Clamp(robin.castle);
     return kind==0?CastleMenuModel::Attack(p,c)+CastleMenuModel::All(p,c):
         kind==1?CastleMenuModel::Health(p,c)+CastleMenuModel::All(p,c):
         CastleMenuModel::Defense(p,c)+CastleMenuModel::All(p,c);
 }
-void CastleMenuOpen() { CastleProgressEnsure(); castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0; }
+void CastleMenuOpen() { CastleProgressEnsure();
+    if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
+    castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0; }
 bool CastleMenuCommand(int func) {
+    if(func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE && func<=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE_END){
+        if(castleModal)return true;
+        CastleProgressEnsure();const int c=castleBrowse,i=func-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE;
+        const int lv=robin.castleProgress.rooms[c][i];
+        if(i<CastleFacilities::Counts[c] && CastleMenuModel::Owned(robin.castleProgress,c) && lv<5 && robin.gold>=CastleMenuModel::UpgradeCost(c,lv,true) && !(NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT)){
+            castleUpgradeIsRoom=true;castleUpgradeCastle=c;castleUpgradePart=i;castleUpgradeLevel=lv;
+            castleUpgradePrice=CastleMenuModel::UpgradeCost(c,lv,true);castleModal=2;
+        }return true;
+    }
     if(func<TOUCH_FUNC_CASTLE_NEW_PREV||func>=TOUCH_FUNC_CASTLE_NEW_ROW_END) return false;
     CastleProgressEnsure(); auto& p=robin.castleProgress; int c=castleBrowse;
+    const long long oldGoldPerHour=CastleIncomePerHour();
+    const long long oldGoldCap=CastleIncomeCap();
+    const int oldEnergySeconds=CastleEnergyRecoverySeconds();
     if(castleModal&&func!=TOUCH_FUNC_CASTLE_NEW_CANCEL&&func!=TOUCH_FUNC_CASTLE_NEW_CONFIRM&&func!=TOUCH_FUNC_CASTLE_NEW_CONDITION) return true;
     castleMessage="";
     switch(func) {
@@ -81,7 +101,7 @@ bool CastleMenuCommand(int func) {
         if(CastleInventoryUsed()>CastleInventoryCapacity(c)||CastleEquippedCells()>CastleEquipmentCapacity(c)||LoadoutCellUsed()>CastleEquipmentCapacity(c)||LoadoutUsed()>LOADOUT_BASE+c+p.rooms[c][1]) {
             castleMessage="용량 초과: 적재 아이템과 배치 장비를 먼저 정리해주세요."; break;
         }
-        robin.castle=c; gMobileCastleVisual=c; CastleSaveChanges(); castleMessage="출정 성으로 선택했습니다."; break;
+        robin.castle=c; gMobileCastleVisual=c; CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges(); castleMessage="출정 성으로 선택했습니다."; break;
     case TOUCH_FUNC_CASTLE_NEW_BUY:
         if(!CastleMenuModel::Owned(p,c)) {
             if(CastleMenuModel::Unlocked(p,c)) castleModal=3;
@@ -95,9 +115,18 @@ bool CastleMenuCommand(int func) {
         }
         break;
     case TOUCH_FUNC_CASTLE_NEW_CONFIRM:
-        if(castleModal==3) {
+        if(castleModal==2) {
+            castleModal=0; // Consume this confirmation before charging or saving.
+            if(c==castleUpgradeCastle && (castleUpgradeIsRoom || castleRow==castleUpgradePart) &&
+               (castleUpgradeIsRoom?p.rooms[c][castleUpgradePart]:p.parts[c][castleUpgradePart])==castleUpgradeLevel &&
+               CastleMenuModel::UpgradeCost(c,castleUpgradeLevel,castleUpgradeIsRoom)==castleUpgradePrice &&
+               CastleMenuModel::Upgrade(p,c,castleUpgradePart,castleUpgradeIsRoom,robin.gold)) {
+                CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges();castleMessage="업그레이드 완료 · 저장 요청됨";
+            } else castleMessage="레벨 또는 골드가 변경되었습니다. 다시 확인해주세요.";
+        }
+        else if(castleModal==3) {
             const bool bought=CastleMenuModel::BuyGold(p,c,robin.gold);
-            if(bought) { robin.castle=c;gMobileCastleVisual=c;CastleSaveChanges(); castlePage=1; }
+            if(bought) { robin.castle=c;gMobileCastleVisual=c;CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges(); castlePage=1; }
             else castleMessage="이전 성 보유 여부와 잔액을 확인해주세요.";
             castleModal=0;
         }
@@ -106,13 +135,17 @@ bool CastleMenuCommand(int func) {
     case TOUCH_FUNC_CASTLE_NEW_CONDITION:
         castleModal=0; castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다."; break;
     case TOUCH_FUNC_CASTLE_NEW_UPGRADE:
-        if(CastleMenuModel::Upgrade(p,c,castleRow,false,robin.gold)) { CastleSaveChanges(); castleMessage="골드 업그레이드 완료"; }
-        else castleMessage="최대 단계이거나 골드가 부족합니다.";
+        if(NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT) {castleMessage="저장 충돌 해결 후 다시 시도해주세요.";break;}
+        if(CastleMenuModel::Owned(p,c) && p.parts[c][castleRow]<CastleMenuModel::MaxLevel &&
+           robin.gold>=CastleMenuModel::UpgradeCost(c,p.parts[c][castleRow],false)) {
+            castleUpgradeIsRoom=false;castleUpgradeCastle=c;castleUpgradePart=castleRow;castleUpgradeLevel=p.parts[c][castleRow];
+            castleUpgradePrice=CastleMenuModel::UpgradeCost(c,castleUpgradeLevel,false);castleModal=2;
+        } else castleMessage="최대 단계이거나 골드가 부족합니다.";
         break;
     case TOUCH_FUNC_CASTLE_NEW_PAID_UPGRADE:
         castleMessage="성 업그레이드는 골드만 사용합니다.";
         break;
-    default: castleRow=func-TOUCH_FUNC_CASTLE_NEW_ROW;castleCategory=1;CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_UPGRADE); break;
+    default: castleRow=func-TOUCH_FUNC_CASTLE_NEW_ROW;castleCategory=1;break;
     }
     if(*castleMessage) castleMessageUntil=frame+FPS*3;
     return true;

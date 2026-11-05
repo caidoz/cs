@@ -1235,6 +1235,11 @@ void PlayKey(int obj)
 			break;
 		case AVK_CLR:
 			switch (drawHandle) {
+			case MD_LOBBY:
+				if(menuDepth>0 && popUpCnt>0 &&
+				 (popUp[popUpCnt-1].type==POPUPTYPE_COLLECTIONS || popUp[popUpCnt-1].type==POPUPTYPE_CREWLIST))--menuDepth;
+				else if(popUpCnt>0)ClosePopUp();
+				break;
 			case MD_PLAY:
 				switch (curMenu) {
 				case MENU_PLAY:
@@ -1809,9 +1814,8 @@ void PlayKey(int obj)
 			break;
 		case AVK_GOTOBATTLE:
         {
-            if(!LoadoutRequiredWeaponReady()) {
-                PlayMusic(M_ERROR);LoadoutSetOpen(true);break;
-            }
+            //무기 검사는 [세팅 완료] 에서 한다(LoadoutRelease). 여기서
+            //막으면 적을 보기도 전에 돌려보내게 된다.
 			//----------------------------------------------------
 			// 배틀 입장료
 			//
@@ -1846,6 +1850,16 @@ void PlayKey(int obj)
 			//세우는 동료는 이 표를 읽으므로 그보다 먼저 비운다.
 			StageRtBegin();
 			GotoPlay();
+
+			//---- 적을 보고 짠다 ----
+			//
+			//판은 열렸고 적은 WaveControler 가 세운다. 그 위에 출정
+			//준비를 얹는다 - 적과 적 가방을 보고 내 칸을 채우라는 자리다.
+			//
+			//가방이 격자로 들어가는 것은 이 창이 닫힌 뒤다
+			//(GridTestDraw 의 gGridGearPending). 열어 둔 채로 넣으면
+			//고르는 도중의 가방이 판에 실린다.
+			LoadoutSetOpen(true);
 		}
 			break;
 		case AVK_NEWGAME:
@@ -2981,6 +2995,7 @@ void touchFunc(int func)
 	if (!touchDisable && CastleMenuCommand(func)) { systemKey=0; return; }
 	// Handle this isolated title tool even while network login is pending.
 #ifdef GAMEDEBUG
+	if (LobbyCastleDebugCommand(func)) return;
 	if (TitleCastleDebugCommand(func)) {
 		systemKey = 0;
 		return;
@@ -3224,13 +3239,13 @@ void touchFunc(int func)
 			break;
 
 		case TOUCH_FUNC_TITLE_LOGIN_FACEBOOK:
-			systemKey = AVK_LOGIN_FACEBOOK;
+			TitleLoginStart(LOGIN_FACEBOOK);systemKey=0;
 			break;
 		case TOUCH_FUNC_TITLE_LOGIN_GOOGLE:
-			systemKey = AVK_LOGIN_GOOGLE;
+			TitleLoginStart(LOGIN_GOOGLE);systemKey=0;
 			break;
 		case TOUCH_FUNC_TITLE_LOGIN_APPLE:
-			systemKey = AVK_LOGIN_APPLE;
+			TitleLoginStart(LOGIN_APPLE);systemKey=0;
 			break;
 		case TOUCH_FUNC_TITLE_LOGIN_GUEST:
 			//게스트만 여기서 곧바로 처리한다.
@@ -3245,11 +3260,7 @@ void touchFunc(int func)
 			//네트워크도 메뉴 상태도 안 따지는 길이라 여기서 끝낸다.
 			systemKey = 0;
 
-			if (NetChooseLogin(LOGIN_GUEST)) {
-				menuResult = 0;
-				curMenu = MENU_LOADING;
-				PlayMusic(M_LEVELUP);
-			}
+			TitleLoginStart(LOGIN_GUEST);
 			break;
 
 		case TOUCH_FUNC_TITLE_NEWGAME:
@@ -3737,6 +3748,9 @@ void touchFunc(int func)
 		case TOUCH_FUNC_DEBUG_MAXSTATUS:
 			systemKey = AVK_MAXGAME;
 			break;
+		case TOUCH_FUNC_DEBUG_TOGGLE:
+			DebugControlsToggle();
+			break;
 		case TOUCH_FUNC_DEBUG_STAGEBG:
 			StageBgDebugNextRegion();
 			PlayMusic(M_BUTTON);
@@ -3909,12 +3923,15 @@ void touchFunc(int func)
             return;
 
 		case TOUCH_FUNC_GOTOBATTLE:
-			//---- 출정 준비를 먼저 연다 ----
+			//---- 먼저 들어가고, 적을 보고 짠다 ----
 			//
-			//무엇을 들고 갈지 고르는 것이 이 판의 첫 선택이다. 고르고
-			//[출정] 을 누르면 그때 들어간다.
-			LoadoutSetOpen(true);
-			systemKey = 0;
+			//전에는 로비에서 가방부터 짜고 그 뒤에 들어갔다. 그런데 그
+			//자리에는 적이 없다 - 무엇과 붙는지 모르는 채로 칸을 채우고
+			//나서야 상대를 봤다.
+			//
+			//이제 눌렀을 때 바로 들어간다. 적이 서고 적이 멘 것이 깔린
+			//뒤에 출정 준비가 그 위에 열린다(AVK_GOTOBATTLE 끝).
+			systemKey = AVK_GOTOBATTLE;
 			break;
 		case TOUCH_FUNC_GOTONEWCARD:
 			systemKey = AVK_GOTONEWCARD;

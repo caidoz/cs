@@ -1,0 +1,28 @@
+{
+  "status": "verified",
+  "castles": 10,
+  "sector_counts": [
+    1,
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    5,
+    5
+  ],
+  "asset_pngs": 12,
+  "native_captures": {
+    "850": 40,
+    "1136": 40,
+    "1280": 40,
+    "1408": 40
+  },
+  "combat": "passed",
+  "executable_sha256": "6b66509087ab6f99cbfaa6646336fae32da266b38ae0f1e2d530460e010c4646",
+  "assets": "res/castle_soft_sectors_v1",
+  "review": "reports/art_direction/soft-sectors-review.html",
+  "generation": "built-in image_gen; generation.json and final-edits.json"
+}

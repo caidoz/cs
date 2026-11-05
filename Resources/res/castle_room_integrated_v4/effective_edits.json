@@ -1,0 +1,56 @@
+{
+  "mode": "built-in image_gen",
+  "method": "Continuous full-castle baseline; independent room apertures preserve existing physical sectors",
+  "sources": [
+    {
+      "castle": 1,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-aba54398-7924-45cb-bc7a-a7ed934b23f6.png"
+    },
+    {
+      "castle": 2,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-944f9582-8191-4b44-a6f1-884c94545cf8.png"
+    },
+    {
+      "castle": 3,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-ae823f4b-e40f-4791-8c9b-40ba334d2f35.png"
+    },
+    {
+      "castle": 4,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-b4160938-73b2-4e56-a26b-a6ff86a453fe.png"
+    },
+    {
+      "castle": 5,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-b0c6c93b-7d72-46e1-aec6-05e106c56071.png"
+    },
+    {
+      "castle": 6,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-27e8ec0f-fc3a-48a9-9233-df93d36194dd.png"
+    },
+    {
+      "castle": 7,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-6edfce79-6a50-467f-b5a3-b478a30e74c4.png"
+    },
+    {
+      "castle": 8,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-922bcba0-d4e2-48c9-948c-f7f911ffb3e9.png"
+    },
+    {
+      "castle": 9,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-02700840-4466-4ab4-b26e-4e76d9a83b76.png"
+    },
+    {
+      "castle": 10,
+      "generated_source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-ea0f5e9d-6e99-42df-a17f-b92673840838.png"
+    }
+  ],
+  "revisions": [
+    {
+      "castle": 8,
+      "prompt": "Use case precise-object-edit. Edit this existing six-castle atlas. Preserve the exact 3 columns by 2 rows layout, each castle's position, size, all masonry, roofs, floor heights, arches, stairs, all other rooms, and the other five castles pixel composition. In the TOP LEFT castle ONLY, replace the bed in the small LEFT MIDDLE side room with a SMALL RED RESTAURANT / TAVERN: crimson tablecloth food table, amber keg and small lute. This room must already be a functional restaurant in the basic stage, not a bedroom. It should look like a simpler version of the red restaurant in the top middle castle. Nothing else changes. No new rooms, no scenery, no text, no characters. Preserve genuine transparency outside all six castles."
+    },
+    {
+      "castle": 10,
+      "prompt": "Use case: precise-object-edit. EDIT RIGHT HALF OPEN CASTLE ONLY from reference. Produce a LANDSCAPE 3072x2048 TRANSPARENT sprite sheet with EXACTLY SIX complete castles arranged THREE equal columns by TWO equal rows. One castle centered in EACH of the six cells. All six castles identical size and architecture. Do not make two large sprites plus three small sprites; there MUST be three castles in the top row and three in the bottom row, equal size. Keep the reference open castle's silhouette, cream stone, blue roofs, GOLD trim, staircases, all five room positions and floor heights EXACTLY. No exterior growth between levels. NO background whatsoever. Change ONLY interior furniture. IMPORTANT correct functional PLACEMENT: 1 BOTTOM RIGHT KITCHEN CHAMBER = green wheat growing beds, cream grain sacks, cyan milk/dairy vessels. 2 BOTTOM LEFT CHAMBER = charcoal-grey BLACKSMITH FORGE, glowing orange fire, blue steel armor, cyan blueprint bench. 3 SMALL UPPER LEFT SIDE ROOM (where violin/statue originally are) = CRIMSON RESTAURANT, a red-clothed food table, amber keg and a small instrument; REMOVE statue gallery. 4 SMALL UPPER RIGHT SIDE ROOM (original telescope room) = COBALT/IVORY LIBRARY AND CHAPEL, bookshelves, reading desk and altar; REMOVE telescope. 5 TALL MAIN CENTRAL CHAMBER (original organ concert hall) = WHITE-GOLD ROYAL BOTANICAL CONSERVATORY, lush green climbing plants, white gold fountain, elegant garden furnishings; REMOVE organ, stage, audience seats and crimson theater drapes! Do not leave a theater in the tall central room. All five functions must be visibly distinct already in basic state. Top row left to right base, upgrade1, upgrade2; bottom row left to right upgrades3,4,5. Each step adds materially better functional equipment in each SAME room: progressively improved grain irrigation and dairy tools; heavier forge and equipment prototypes; richer restaurant food/table/service; larger blue bookshelves and ivory altar; more advanced gold botanical garden fountain and plants. Base simple functional, MAX elaborate functional. Furniture fits existing door/stair scale and floor height. Clear front walkways for NPC characters. No people, cannon, outside landscape, text or labels. Do not add extra floors or freestanding rectangular rooms. EXACT SIX equal-sized complete castles."
+    }
+  ]
+}

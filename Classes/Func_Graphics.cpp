@@ -1,11 +1,25 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Text.h"
+#include "GoldAmountFormat.h"
 #include "Data.h"
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
 // The duel scene and live resource cards share the player's grid-top rail anchor.
 #include "Data/InventoryCannonSprites.h"
+#include "Data/HybridSd3d.h"
+#include "Data/HybridCastleFleet.h"
+#include "Data/MountedCannonSprites.h"
+#include "Data/IndividualCastleV4.h"
+#include "AuthoredCastleTone.inc"
+#include "StageBackgroundSeam.inc"
+#include "CastleRoomUpgradeBlend.inc"
+static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
+ const bool regional=index>=STAGEBG_FIRST_IMG && index<STAGEBG_FIRST_IMG+STAGEBG_PER_REGION*STAGEBG_REGION_CNT && (index-STAGEBG_FIRST_IMG)%STAGEBG_PER_REGION<3;
+ const bool smooth=regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
+   (index>=LOBBY_NAV_SHOP_IMG && index<=LOBBY_NAV_DUNGEON_IMG);
+ if(smooth)s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
+}
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
     "Text.h must include every image-name slot declared in ImgDef.h");
@@ -39,26 +53,15 @@ void DrawFortressStatusCard(int x,int y,int width,long long hp,long long maxHp,l
 
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)
 {
-	const auto& f=InventoryCannons::Get(castle,level);
-	const int img=INVENTORY_CANNON_ATLAS_IMG;
-	if(!sprite[img]) LoadImg(img);
-	if(!texture[img]) LoadTexture(img);
-	if(!sprite[img] || !texture[img] || width<=0 || height<=0) return;
-    // Upgrade-card art: fit the opaque cannon bounds, not its mounting canvas.
-    const float scale=Min(width/(float)f.bw,height/(float)f.bh);
-    DrawImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+(width-(int)(f.bw*scale))/2,
-        y-(height-(int)(f.bh*scale))/2,false,false,false,false,false,scale,sprite[img],img);
+ if(castle<0||castle>=10||width<=0||height<=0)return;
+ const auto& f=MountedCannons::Get(castle,level);const int img=CANNON_UPGRADE_ATLAS_IMG;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const float z=Min(width/(float)f.w,height/(float)f.h);
+ DrawImage(f.w,f.h,f.x,f.y,x+(width-f.w*z)/2,y-(height-f.h*z)/2,false,0,0,0,0,z,sprite[img],img);
 }
-
 void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height)
 {
-	const auto& f=InventoryCannons::Get(castle,level);
-	const int img=INVENTORY_CANNON_ATLAS_IMG;
-	if(!sprite[img]) LoadImg(img);
-	if(!sprite[img] || width<=0 || height<=0) return;
-	const float scale=Min(width/(float)f.bw,height/(float)f.bh);
-	DrawImage(f.bw,f.bh,f.x+f.bx,f.y+f.by,x+(width-(int)(f.bw*scale))/2,
-		y-(height-(int)(f.bh*scale))/2,false,0,0,0,0,scale,sprite[img],img);
+ DrawInventoryCannonIcon(castle,level,x,y,width,height);
 }
 
 //배경이 흐르는 시계. 로비 · 출정 준비 · 전투가 같은 선로를 쓰므로
@@ -85,17 +88,41 @@ void StageBgDebugNextRegion(void)
 	StageBg::DebugNextRegion();
 }
 
+static bool sDebugControlsOpen=false;
+void DebugControlsToggle(void){sDebugControlsOpen=!sDebugControlsOpen;}
+void SceneBackgroundReviewAt(int sample){
+ if(!getenv("CS_CASTLE_REVIEW_PATH"))return;
+ StageBg::s_regionPick=0;
+ StageBg::s_travel=(1088.0f/15.4f)*(sample*.25f);
+}
+bool AllRegionBackgroundReviewAt(int sample){
+ if(!getenv("CS_CASTLE_REVIEW_PATH"))return false;
+ StageBg::s_regionPick=StageBg::s_region=sample/2;
+ StageBg::s_travel=(1088.0f/15.4f)*(sample%2?.98f:.18f);
+ for(int slot=0;slot<5;++slot){
+  const int img=StageBg::Img(slot);if(!sprite[img])LoadImg(img);
+  if(!sprite[img] || sprite[img]->getContentSize().width<2)return false;
+ }
+ return true;
+}
 void StageBgDebugDrawButton(void)
 {
+ if(drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY && !getenv("CS_DEBUG_CONTROLS"))return;
+ const int y=DY-30*_2X,h=16*_2X;
+ DrawUiButton(4*_2X,y,44*_2X,h,sDebugControlsOpen?"디버그 닫기":"디버그",TOUCH_FUNC_DEBUG_TOGGLE,sDebugControlsOpen);
+ LobbyCastleDebugDraw();
+ if(!sDebugControlsOpen)return;
+ DrawUiButton(50*_2X,y,42*_2X,h,"PVP",TOUCH_FUNC_PVP_TEST);
+ DrawUiButton(94*_2X,y,48*_2X,h,"최대 강화",TOUCH_FUNC_DEBUG_MAXSTATUS);
+ DrawUiButton(144*_2X,y,42*_2X,h,"적 공격",TOUCH_FUNC_DEBUG_ENEMYATTACK);
 	char str[32];
 
 	//왼쪽 위. 오른쪽 같은 높이에는 제목 화면의 이어하기 카드가 있어서,
 	//마지막에 등록되는 이 버튼이 그 터치를 가로챈다. 왼쪽 그 자리는 버전
 	//글자뿐이라 눌릴 것이 없다.
 	const int w = 84 * _2X;
-	const int h = 20 * _2X;
 	const int x = 4 * _2X;
-	const int y = DY - 44 * _2X;
+	const int backgroundY = y-h-2*_2X;
 	const int pick = StageBg::DebugRegionPick();
 
 	if (pick >= 0)
@@ -105,7 +132,7 @@ void StageBgDebugDrawButton(void)
 
 	//붙잡아 둔 동안은 켜진 것으로 보인다. 색을 따로 쓰지 않는다 - 디버그
 	//버튼도 다른 버튼과 같은 것이어야 어느 것이 눌리는지 한눈에 읽힌다.
-	DrawUiButton(x, y, w, h, str, TOUCH_FUNC_DEBUG_STAGEBG, pick >= 0);
+	DrawUiButton(x, backgroundY, w, h, str, TOUCH_FUNC_DEBUG_STAGEBG, pick >= 0);
 }
 
 //배경이 지금까지 흘려보낸 거리. 바퀴가 이 거리를 굴러야 미끄러지지 않는다.
@@ -126,7 +153,9 @@ void StageBgUpdate(float delta)
 	}
 	StageBg::SetRegionForStage(robin.stage);
 	const float before = StageBg::s_travel;
-	StageBg::Update(delta, drawHandle == MD_LOBBY || drawHandle == MD_PLAY);
+	//몬스터가 서 있으면 멈춘다(StageCastleRolling). 전에는 판에 들어와
+	//있기만 하면 흘러서, 한 마리와 오래 싸울수록 이동거리가 늘었다.
+	StageBg::Update(delta, StageCastleRolling());
 	StageBg::s_totalTravelSeconds += StageBg::s_travel - before;
 	if (StageBg::s_totalTravelSeconds - lastSavedDistance >= 10.0) {
 		cocos2d::UserDefault::getInstance()->setDoubleForKey(
@@ -800,13 +829,13 @@ void LoadSpriteFromTexture(int textureIdx)
 		renderSprite[getSpriteIdx]->retain();
 		renderSpriteIndex[getSpriteIdx] = getSpriteTexture;
 
-		sameRenderSpriteArr[textureIdx][sameRenderSpriteCur[textureIdx]] = totalRenderCnt;
+		if(sameRenderSpriteCur[textureIdx]<3000)sameRenderSpriteArr[textureIdx][sameRenderSpriteCur[textureIdx]] = totalRenderCnt;
 		sameRenderSpriteMax[textureIdx]++;
 		sameRenderSpriteCur[textureIdx]++;
 		totalRenderCnt++;
 	}
 	//기존것을 쓴다면
-	renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
+	ApplyRasterFilter(renderSprite[getSpriteIdx],getSpriteTexture);
 	renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
 	renderSprite[getSpriteIdx]->setFlippedX(false);
 	renderSprite[getSpriteIdx]->setRotation(0);
@@ -849,12 +878,19 @@ int GetSpriteIndex(int index)
 	int i;
 	int sameCnt = 0;
 	getSpriteTexture = index;
+	// Pool slots are append-only. Keep the texture-to-slot map across frames;
+	// only its cursor is reset. The old linear search made dense popups quadratic.
+	static const bool compareSlow=getenv("CS_UI_SLOW_POOL_REVIEW")!=NULL;
+	if(!compareSlow && sameRenderSpriteCur[index]<sameRenderSpriteMax[index] && sameRenderSpriteCur[index]<3000){
+		getSpriteIdx=sameRenderSpriteArr[index][sameRenderSpriteCur[index]++];
+		return getSpriteIdx;
+	}
 
 	if (sameRenderSpriteCur[index] < sameRenderSpriteMax[index]) {
-		for (i = 0; i < MAXRENDERCNT; i++) {
+		for (i = 0; i < totalRenderCnt; i++) {
 			if (renderSpriteIndex[i] == index) {
 				if (sameRenderSpriteCur[index] == sameCnt) {
-					sameRenderSpriteArr[index][sameRenderSpriteCur[index]] = i;
+					if(sameRenderSpriteCur[index]<3000)sameRenderSpriteArr[index][sameRenderSpriteCur[index]] = i;
 					sameRenderSpriteCur[index]++;
 					getSpriteIdx = i;
 					return i;
@@ -890,7 +926,7 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
-		if(idx==TITLE_IMG) return "res/title/castle-survivor-v2-convoy.png";
+		if(idx==TITLE_IMG) return "res/hybrid_sd3d/title-scene.png";
 		if (idx == CASTLE_ARTILLERY_IMG) {
 			fileName = "res/castle_artillery/attacks.png";
 			break;
@@ -1025,13 +1061,13 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 		renderSprite[getSpriteIdx]->retain();
 		renderSpriteIndex[getSpriteIdx] = getSpriteTexture;
 
-		sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
+		if(sameRenderSpriteCur[srcIdx]<3000)sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
 		sameRenderSpriteMax[srcIdx]++;
 		sameRenderSpriteCur[srcIdx]++;
 		totalRenderCnt++;
 	}
 
-	renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
+	ApplyRasterFilter(renderSprite[getSpriteIdx],getSpriteTexture);
 
 	//�׷��� ������
 	if (grayScale) {
@@ -1071,6 +1107,7 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	else if (!grayScale)
 		renderSprite[getSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
+	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);}
 	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
@@ -1547,13 +1584,13 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 		renderSprite[getSpriteIdx]->retain();
 		renderSpriteIndex[getSpriteIdx] = getSpriteTexture;
 
-		sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
+		if(sameRenderSpriteCur[srcIdx]<3000)sameRenderSpriteArr[srcIdx][sameRenderSpriteCur[srcIdx]] = totalRenderCnt;
 		sameRenderSpriteMax[srcIdx]++;
 		sameRenderSpriteCur[srcIdx]++;
 		totalRenderCnt++;
 	}
 
-	renderSprite[getSpriteIdx]->getTexture()->setAliasTexParameters();
+	ApplyRasterFilter(renderSprite[getSpriteIdx],getSpriteTexture);
 
 	if (grayScale) {
 		renderSprite[getSpriteIdx]->setGLProgram(
@@ -1643,6 +1680,7 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 		);
 	}
 
+	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);}
 	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
@@ -2176,6 +2214,18 @@ void MemRectRound(int x, int y, int w, int h, int fillCol, int empty)
 
 void DrawFrame(int x, int y, int w, int h, int type)
 {
+	// All shared menu windows/buttons use the same dimensional skin.
+	int hybridStyle=-1;
+	switch(type){
+	case FRAME_NORMAL:case FRAME_MENUWIN:case FRAME_MENUWIN_QUICK:case FRAME_MENUWIN_INFO:
+	case FRAME_MENUDAILY:case FRAME_GAMEOVER:case FRAME_GNB:case FRAME_NOFRAME:hybridStyle=1;break;
+	case FRAME_GREEN:case FRAME_GREEN_OPTION:case FRAME_GREEN_STAGE:hybridStyle=2;break;
+	case FRAME_RED:case FRAME_RED_OPTION:hybridStyle=4;break;
+	case FRAME_BLUE:case FRAME_BLUE_OPTION:case FRAME_GREY:case FRAME_GREY_OPTION:case FRAME_GREY_STAGE:
+	case FRAME_BUTTON:case FRAME_CHOICEBUTTON:case FRAME_CHOICEBUTTON2:hybridStyle=1;break;
+	case FRAME_CHOICEBUTTON_BEIGE:hybridStyle=0;break;
+	}
+	if(hybridStyle>=0 && DrawSd3dPanel(x,y,w,h,hybridStyle)) return;
 	int i, j, t;
 	int curAlpha = m_lgrpAlpha;
 	int color;
@@ -2461,6 +2511,7 @@ void DrawGuage(int x, int y, int w, int h, long cur, long max, int bgCol, int fu
 
 float DrawRouletteNumIcon(long long num, int icon, int x, int y, bool ani, int align, float zoom)
 {
+	if(icon>=ICON_GOLD && icon<ICON_GOLD+GOLDICONFRAME)return DrawGoldAmount(num,x,y,0,align);
 	//float zoom = 2;
 	float width = GetNumDx(num, false, NUM_FONT_LARGE, false, true, 1.0f * zoom, false) + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom;
 
@@ -5645,6 +5696,42 @@ void LoadingBarDraw(int x, int y, int loadingBarFrame)
 	//SetFontColor(COLOR_WHITE);
 }
 
+float DrawGoldAmount(long long amount,int x,int top,int maxWidth,int align,float scale){
+ amount=Max(0LL,amount);scale=Min(1.0f,Max(.05f,scale));
+ const bool compact=maxWidth>0 && GetGoldNumDx(amount,0,0,true,.6f*scale)+ITEMICONSIZE*.55f*scale+4*_2X*scale>maxWidth;
+ const auto parts=GoldAmountFormat::Split(amount,compact);
+ static const int units[]={ALPHA_NUM_K,ALPHA_NUM_M,ALPHA_NUM_B,ALPHA_NUM_T,ALPHA_NUM_Q,ALPHA_NUM_Z};
+ float icon=0,num=0,gap=0,digits=0,total=0;
+ for(int fit=0;fit<24;++fit){
+  icon=ITEMICONSIZE*.55f*scale;num=.6f*scale;gap=4*_2X*scale;
+  digits=GetGoldNumDx(parts.whole,0,0,parts.unit<0,num);
+  if(parts.unit>=0){
+   if(parts.tenth)digits+=Max(4.0f,8*num)+GetGoldNumDx(parts.tenth,0,0,false,num);
+   digits+=GetGoldAlphaWidth(units[parts.unit],FONT_GOLD_LARGE,num);
+  }
+  total=icon+gap+digits;
+  if(maxWidth<=0||total<=maxWidth)break;
+  scale*=.9f;
+ }
+ const int left=(int)(x-(align==CENTER?total/2:align==RIGHT?total:0));
+ const int savedColor=baseColor,savedGray=grayScale;
+ SetColor(0);grayScale=0;
+ DrawIcon(ICON_GOLD,left,top,.55f*scale,false,true,true,true);
+ float nx=left+icon+gap;
+ DrawGoldNum(parts.whole,(int)nx,top,LEFT,0,0,parts.unit<0,num);
+ nx+=GetGoldNumDx(parts.whole,0,0,parts.unit<0,num);
+ if(parts.unit>=0){
+  if(parts.tenth){
+   const int dot=Max(2,(int)(6*num)),dy=top-(int)(goldNumData[10]*num)+dot;
+   MemRect((int)nx,dy+1,dot+2,dot+2,0x60351C);MemRect((int)nx+1,dy,dot,dot,0xFFD965);
+   nx+=Max(4.0f,8*num);
+   DrawGoldNum(parts.tenth,(int)nx,top,LEFT,0,0,false,num);nx+=GetGoldNumDx(parts.tenth,0,0,false,num);
+  }
+  DrawGoldAlpha((int)nx,top,units[parts.unit],FONT_GOLD_LARGE,num,LEFT,false,false);
+ }
+ grayScale=savedGray;SetColor(savedColor);
+ return total;
+}
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount)
 {
 	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
@@ -5682,6 +5769,14 @@ void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long lon
 	grayScale = curGray;
 
 	DrawImageScale(176, 40, 1, 679, x, y, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	if(currency==CURRENCY_GOLD && amount>0){
+	 if(discount>0){
+	  const float width=DrawGoldAmount(amount,x+w/2,y-2,w-12,CENTER,.65f);
+	  MemRect((int)(x+w/2-width/2),y-10,(int)width,2,0xE67B72);
+	  DrawGoldAmount(amount-(long long)(amount*discount/100),x+w/2,y-23,w-12,CENTER,.65f);
+	 }else DrawGoldAmount(amount,x+w/2,y-(h-28)/2,w-12);
+	 return;
+	}
 
 	//무료
 	if (amount == 0) {
@@ -5848,6 +5943,8 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 	const float boxH = (float)h * drawZoom;
 	const float padX = (boxW - LARGEBTN_W * drawZoom) / 2;
 
+	if(!DrawSd3dPanel((int)(x-gapX),(int)(y+gapY),(int)boxW,(int)boxH,
+		color==FRAME_GREEN?2:color==FRAME_RED?4:1))
 	DrawImage((int)LARGEBTN_W, (int)LARGEBTN_H, 1, 1 + (color - FRAME_GREEN) * 63,
 		x - gapX + padX, y + gapY, false, false, false, false, false, drawZoom,
 		sprite[BUTTON_IMG], BUTTON_IMG);
@@ -5897,14 +5994,45 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 
 void DrawPixelPanel(int x,int y,int w,int h,int fill,int edge)
 {
-	const int p=Max(1,_2X);
+	if(w<2 || h<2)return;
+	static const bool compareMetal=getenv("CS_METAL_UI_REVIEW")!=NULL;
+	const int r=(fill>>16)&255,g=(fill>>8)&255,b=fill&255;
+	const int style=(g>r*1.4f && g>b*1.1f)?2:(r>g*1.5f && r>b*1.2f)?4:
+		(b>g*1.4f && r>g*1.3f)?5:(edge==0xEDBB58 || edge==0xE9B84F || edge==0xFFD700)?0:1;
+	if(compareMetal && DrawSd3dPanel(x,y,w,h,style)) return;
+	const int p=Max(1,Min(2,Min(w,h)/6));
 	// Stepped corners and discrete highlights; no scaled frame textures.
-	MemRect(x+p,y-p,w,h,0x07131F);
-	MemRect(x+p,y,w-2*p,h,edge);
-	MemRect(x,y-p,w,h-2*p,edge);
+	MemRect(x,y,w,h,0x10151F);
+	MemRect(x+p,y-p,w-2*p,h-2*p,edge);
 	MemRect(x+2*p,y-2*p,w-4*p,h-4*p,fill);
-	MemRect(x+2*p,y-2*p,w-4*p,p,0x70B2C2);
-	MemRect(x+2*p,y-h+3*p,w-4*p,p,0x091A29);
+	MemRect(x+2*p,y-2*p,w-4*p,p,0x75949C);
+}
+
+bool DrawSd3dPanel(int x,int y,int w,int h,int style)
+{
+	if(w<4 || h<4) return false;
+	static const bool compareMetal=getenv("CS_METAL_UI_REVIEW")!=NULL;
+	if(!compareMetal){
+	 static const int fills[]={0x263745,0x202C3A,0x29483E,0x263B4B,0x4A2B36,0x393249};
+	 static const int edges[]={0xC7AA69,0x688794,0x80AF82,0x6896A6,0xBD7B7B,0xA293BC};
+	 const int s=Max(0,Min(5,style));DrawPixelPanel(x,y,w,h,fills[s],edges[s]);return true;
+	}
+	const int img=HYBRID_UI_IMG;
+	if(!sprite[img]) LoadImg(img);
+	if(!sprite[img]) return false;
+	sprite[img]->getTexture()->setAntiAliasTexParameters();
+	const auto& f=HybridSd3d::Panels[Max(0,Min(5,style))];
+	const int corner=Min(18,Min(w,h)/3),srcCorner=64;
+	const int sx[]={f.x,f.x+srcCorner,f.x+f.w-srcCorner};
+	const int sy[]={f.y,f.y+srcCorner,f.y+f.h-srcCorner};
+	const int sw[]={srcCorner,f.w-srcCorner*2,srcCorner};
+	const int sh[]={srcCorner,f.h-srcCorner*2,srcCorner};
+	const int xx[]={x,x+corner,x+w-corner},yy[]={y,y-corner,y-h+corner};
+	const int ww[]={corner,w-corner*2,corner},hh[]={corner,h-corner*2,corner};
+	for(int row=0;row<3;++row)for(int col=0;col<3;++col)
+		DrawImageScale(sw[col],sh[row],sx[col],sy[row],xx[col],yy[row],false,0,0,0,0,
+			ww[col]/(float)sw[col],hh[row]/(float)sh[row],sprite[img],img);
+	return true;
 }
 
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
@@ -6592,8 +6720,7 @@ void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, in
 	if (attackTypeIdx == ROULETTE_BATTLE) {
 		DrawBigNum(value, x + (float)(160 * _2X + ITEMICONSIZE * 1.5f + 2 * _2X) * zoom, y - (float)(14 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(32 * _2X) * zoom, true, zoom, true);
 		value = (float)enemyHouse.gold / BATTLEREWARDGOLDDIV * (str + 1);
-		DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(228 * _2X) * zoom, y + (float)(-10 * _2X + 1 * _2X) * zoom, 1.5f * zoom, false, false, false, true);
-		DrawBigNum(value, x + (float)(228 * _2X + ITEMICONSIZE * 1.5f + 2 * _2X) * zoom, y - (float)(14 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(32 * _2X) * zoom, true, zoom, true);
+		DrawGoldAmount(value,x+228*_2X*zoom,y-10*_2X*zoom,128*zoom,LEFT);
 	}
 	else {
 		DrawBigNum(value, x + (float)(160 * _2X + ITEMICONSIZE * 1.5f + 2 * _2X) * zoom, y - (float)(14 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(128 * _2X) * zoom, true, zoom, true);
@@ -6609,8 +6736,7 @@ void DrawMedalReward(int attackTypeIdx, int x, int y, int w, int h, int step, in
 			break;
 		}
 
-		DrawIcon(ICON_GOLD + frame % GOLDICONFRAME, x + (float)(228 * _2X) * zoom, y + (float)(-10 * _2X + 1 * _2X) * zoom, 1.5f * zoom, false, false, false, true);
-		DrawBigNum(value, x + (float)(228 * _2X + ITEMICONSIZE * 1.5f + 2 * _2X) * zoom, y - (float)(14 * _2X) * zoom, NUM_FONT_LARGE, LEFT, false, false, (float)(32 * _2X) * zoom, true, zoom, true);
+		DrawGoldAmount(value,x+228*_2X*zoom,y-10*_2X*zoom,128*zoom,LEFT);
 	}
 }
 
@@ -6920,13 +7046,16 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 				}
 			}
 
-			else if (count > 1) {
+			else if (count > 1 || type==ITEM_GOLD) {
 				numWidth = (float)(REWARDCARDSIZE_X - 24 * _2X) * zoom;
+				if(type==ITEM_GOLD)DrawGoldAmount(count,x+w/2,y+(-REWARDCARDSIZE_Y+27*_2X)*zoom,(int)numWidth);
+				else {
 #ifdef NUMTTF
 				DrawBigNumTTF(count, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 27 * _2X) * zoom, NUM_FONT_LARGE, CENTER, false, false, numWidth, false, zoom * 0.71f, true);
 #else
 				DrawBigNum(count, x + w / 2, y + (float)(-REWARDCARDSIZE_Y + 27 * _2X) * zoom, NUM_FONT_LARGE, CENTER, false, false, numWidth, false, zoom / 2, true);
 #endif
+				}
 			}
 
 			//별 그려주기

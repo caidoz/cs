@@ -1,0 +1,13 @@
+{
+  "before": {
+    "cpu_ms": 55.918499999999995,
+    "frame_ms": 95.221,
+    "sprites": 1891.0
+  },
+  "after": {
+    "cpu_ms": 23.5075,
+    "frame_ms": 45.427499999999995,
+    "sprites": 586.0
+  },
+  "platform": "Win32 Debug, native equipment detail, 640 x 1408; CPU preparation and frame intervals, not GPU timing"
+}

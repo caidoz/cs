@@ -1,0 +1,39 @@
+{
+  "version": 4,
+  "date": "2026-10-30",
+  "status": "Authored structures restored; rejected hybrid castle drafts inactive",
+  "source_executable": "proj.win32/Debug.win32/cs.authored-castles.exe",
+  "installed_executable": "proj.win32/Debug.win32/cs.exe",
+  "sha256": "C22A69FF6F7680A8D61B24D84B40E9094E32DE5BC63BD2E3141225BA8C7ABD7E",
+  "method": "Use original castle, weapon and floor artwork; RGB-only material shader, unchanged PNG pixels and alpha.",
+  "restored": [
+    "Original silhouette and proportional castle growth; first nine rig records unchanged from HEAD",
+    "Catapult, flame, rockets, gatling, homing, heavy, ice, laser, electric, gravity: original six-level mounted images and existing combat profiles",
+    "Original deck and hero source anchors, original wheel axes",
+    "Actual floor count castleIndex+1 and individual floor themes at their original upgrade levels",
+    "Original source art also used for inventory and menu weapons"
+  ],
+  "royal": {
+    "original_width": 422,
+    "width": 480,
+    "scale_ratio": 1.1374407582938388,
+    "height_to_first": 3.067,
+    "detail": "Matching room enlargement and moving highlights on existing gold/inlay; original source anchors preserved"
+  },
+  "passed": [
+    "160 native lobby captures across 640x850,640x1069,640x1280,640x1408; base/max, exterior/interior for all ten castles",
+    "60 mounted castle/upgrade combinations plus all 60 inventory weapon frames",
+    "All ten castles: proportional growth, actor and muzzle anchors, rotating wheels, uniform rooms and floor counts",
+    "All ten castles: zoom out/in, interior open/close/release persistence, 20 residents and intact original floor textures",
+    "Four castle-menu ratios: scrolling, upgrade confirmation, funds, one charge, cancellation, stale input and maximum-level guards",
+    "Native stage combat: sword12, crew8, cannon6 and monster12 impacts, pause behavior",
+    "Fresh C++ artillery model executable: 10 kinds, timing/bursts, moving-target collision, reset and capacity",
+    "Installed executable SHA256 matches final verified build",
+    "git diff --check"
+  ],
+  "gallery": "reports/art_direction/authored-castles-review.html",
+  "source_asset_hashes": "reports/art_direction/authored_castles/source-assets.json",
+  "limitations": [
+    "iOS device build was not run on this Windows workstation."
+  ]
+}

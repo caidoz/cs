@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>성 파츠 합성 비교</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1722;color:#e6eff5;font:16px system-ui,sans-serif}main{max-width:1380px;margin:auto;padding:28px}h1{font-size:27px;margin:0 0 12px}p{color:#b6cbd6;line-height:1.6}.controls{display:flex;gap:10px;flex-wrap:wrap;padding:16px 0}button,select{background:#163247;color:#edf6fb;border:2px solid #4b849a;border-radius:3px;padding:10px 14px;font:inherit}button.active{border-color:#edbd58;background:#245466}.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px}figure{margin:0;border:2px solid #4b849a;background:#142e43}figcaption{padding:12px 16px;border-bottom:2px solid #4b849a;color:#ffe5a0}.viewport{aspect-ratio:640/296;overflow:hidden}.viewport img{display:block;width:100%;height:auto;margin-top:-17.1875%;image-rendering:pixelated}a{color:#8ee0d1}footer{margin-top:24px;line-height:1.8}.status{padding:12px;background:#123c34;border-left:4px solid #79d6b1}@media(max-width:750px){main{padding:16px}.compare{grid-template-columns:1fr}}
+</style>
+<main><h1>성 파츠 합성 비교</h1>
+<p>실제 게임에서 캡처한 화면입니다. 성을 선택한 뒤 전체 강화·개별 강화·혼합 레벨을 비교하세요. 원본 본체와 접합 기준을 유지하고 각 부위의 외형을 갱신합니다.</p>
+<div class="controls" id="castles"></div>
+<label>비교할 상태 <select id="variant"></select></label>
+<div class="controls"><a id="atlas" href="../../Resources/res/castle_upgrades_v1/parts.png">해당 성의 파츠 원본 아틀라스</a></div>
+<div class="compare"><figure><figcaption>기본 Lv.0</figcaption><a id="beforeLink"><div class="viewport"><img id="before" alt="기본 성 합성"></div></a></figure><figure><figcaption id="afterLabel">전체 Lv.5</figcaption><a id="afterLink"><div class="viewport"><img id="after" alt="강화 성 합성"></div></a></figure></div>
+<p class="status">10개 성 · 5개 부위 · Lv.0~5. 실제 렌더 120조합과 본체·데크·히어로·바퀴 축의 배치 고정을 검사했습니다.</p>
+<footer>이미지를 누르면 원본 게임 화면을 엽니다.<br>파츠: 첨탑 / 대포 / 외부장갑 / 실내 / 바퀴<br>혼합 레벨: 첨탑 1 · 대포 4 · 외부장갑 5 · 실내 2 · 바퀴 3<br><a href="README.md">검증 설명</a> · <a href="../../Resources/res/castle_upgrades_v1/prompts.json">내장 image_gen 제작 프롬프트</a></footer>
+</main>
+<script>
+const labels=['기본 Lv.0','전체 Lv.1','전체 Lv.2','전체 Lv.3','전체 Lv.4','전체 Lv.5','첨탑만 Lv.5','외부장갑만 Lv.5','실내만 Lv.5','대포만 Lv.5','바퀴만 Lv.5','혼합 레벨'];let castle=1;
+const select=document.querySelector('#variant');labels.forEach((s,i)=>{let o=document.createElement('option');o.value=i;o.textContent=s;select.append(o)});select.value=5;
+for(let c=1;c<=10;c++){let b=document.createElement('button');b.textContent=`성 ${c}`;b.dataset.castle=c;b.onclick=()=>{castle=c;render()};document.querySelector('#castles').append(b)}
+function render(){const n=String(castle).padStart(2,'0');let a=`assembled/castle-${n}-variant-00.png`,b=`assembled/castle-${n}-variant-${String(select.value).padStart(2,'0')}.png`;document.querySelector('#before').src=a;document.querySelector('#after').src=b;document.querySelector('#beforeLink').href=a;document.querySelector('#afterLink').href=b;document.querySelector('#afterLabel').textContent=labels[+select.value];document.querySelector('#atlas').href=`../../Resources/res/castle_upgrades_v1/parts${castle===1?'':'-'+n}.png`;document.querySelectorAll('button').forEach(b=>b.classList.toggle('active',+b.dataset.castle===castle))}select.onchange=render;render();
+</script></html>

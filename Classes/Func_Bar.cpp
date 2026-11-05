@@ -86,10 +86,9 @@ void LobbyResourceBarsDraw(int y)
 		const int x = i == 0 ? goldX : coinX;
 		const int func = i == 0 ? TOUCH_FUNC_GOTO_GOLD_IAP : TOUCH_FUNC_GOTO_RAINBOW_IAP;
 		LobbyResourceFrame(x, y, moneyW, i == 0 ? BARCOLOR_YELLOW : BARCOLOR_PURPLE);
-		if (i == 0)
-			DrawIcon(ICON_GOLD, x + 4 * _2X, iconTop, 0.9f,
-				COLOR_BROWN, false, false, 1);
-		else
+		if (i == 0){
+			DrawGoldAmount(robin.gold,x+4*_2X,y-(h-28)/2,moneyW-27*_2X,LEFT);
+		}else{
 			DrawImage(64, 64, 0, 198, x + 4 * _2X, iconTop,
 				false, false, false, false, false, 0.55f,
 				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
@@ -99,10 +98,11 @@ void LobbyResourceBarsDraw(int y)
 		//바로 위 DrawIcon 이 글자색을 갈색으로 두고 나온다. 그대로 두면
 		//어두운 띠 위의 어두운 글자가 되어 회색으로 죽어 보인다.
 		SetFontColor(COLOR_WHITE);
-		DrawBigNumTTF(i == 0 ? robin.gold : robin.coin,
+		DrawBigNumTTF(robin.coin,
 			x + moneyW - 19 * _2X - 4 * _2X - 2 * _2X,
 			numTop, NUM_FONT_NORMAL, RIGHT, false, false,
 			moneyW - 42 * _2X, true, numZoom, true);
+		}
 		LobbyResourcePlus(x, y, moneyW, func);
 	}
 
@@ -340,7 +340,7 @@ void BarDraw(BAR* barP, float zoom)
 
 				DrawText(TEXT_AFTER, xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 42 * _2X) * barP->zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * barP->zoom, barP->zoom);
 
-				DrawTime(xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 78 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * zoom, HEARTTIME - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom);
+				DrawTime(xOffset + barP->x - (float)(HEARTBARWIDTH / 2 - 78 * _2X) * zoom, barP->y - (float)(HEARTBARHEIGHT + 1 * _2X) * zoom, CastleEnergyRecoverySeconds() - (MC_knlCurrentTimeStamp() - robin.heartTimeStamp), TIME_MINUTE_SECONDS, LEFT, zoom);
 
 			}
 		}
@@ -1043,16 +1043,7 @@ void DevilHeartDraw(int x, int y, float zoom)
 void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom, bool shopPlus)
 {
 	DrawRoundBar(x + (float)0 * zoom, y, 1.0f, ROUNDBAR_BIG, BARCOLOR_YELLOW, alpha, 0.5f * zoom);
-	DrawIcon(icon, x + (float)(6 * _2X) * zoom, y - (float)(6 * _2X) * zoom, 1.2f * zoom, COLOR_BROWN, false, false, 1);
-#ifdef NUMTTF
-	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - (shopPlus ? 72 : 10 * _2X)) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - (shopPlus ? 90 : 0 * _2X)) * zoom, true, zoom, true);
-#else
-	DrawBigNum2Bold(count, x + (float)(GOLDBARWIDTH - 26 * _2X) * zoom,
-		y - (float)(12 * _2X) * zoom, RIGHT, false, false,
-		(float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 32 * _2X) * zoom,
-		true, NUM2ZOOM * 1.0f * zoom, true);
-	//DrawNum2AutoSpaceing(count, x + (float)(GOLDBARWIDTH - 24 * _2X) * zoom, y - (float)(10 * _2X) * zoom, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE * 1.2f - 32 * _2X) * zoom, true, NUM2ZOOM * 1.2f * zoom, true, true);
-#endif
+	DrawGoldAmount(count,x+8,(int)(y-10*zoom),(int)((GOLDBARWIDTH-(shopPlus?60:16))*zoom),LEFT);
 	if (shopPlus) {
 		float plusX = x + (float)(GOLDBARWIDTH - 48) * zoom;
 		float plusY = y - 11.0f * zoom;
@@ -1069,6 +1060,7 @@ void GoldBarDraw(long long count, int icon, int x, int y, int alpha, float zoom,
 
 void BattleCoinBarDraw(long long count, int icon, int x, int y, int alpha, float zoom)
 {
+	if(icon>=ICON_GOLD && icon<ICON_GOLD+GOLDICONFRAME){DrawGoldAmount(count,x,y,(int)(GOLDBARWIDTH*zoom),RIGHT);return;}
 #ifdef NUMTTF
 	DrawBigNumTTF(count, x + (float)(GOLDBARWIDTH - 10 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, (float)(GOLDBARWIDTH - ITEMICONSIZE - 0 * _2X) * zoom, true, zoom, true);
 #else

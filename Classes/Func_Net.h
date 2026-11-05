@@ -190,6 +190,9 @@ void NetAgreeTerms(bool ageOk, bool marketing, bool marketingNight);
 //않는 방식이면 false를 돌려준다.
 bool NetLoginChoicePending(void);
 bool NetChooseLogin(int provider);
+bool NetHasRememberedGuestLogin(void);
+bool NetRememberGuestLogin(void);
+bool NetLoginProviderAvailable(int provider);
 
 //---- 충돌 ----
 //

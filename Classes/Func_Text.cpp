@@ -54,7 +54,7 @@ float StringWidthTTF(const char* str, float zoom)
 	Size textSize;
 	float width;
 
-	fontLabelWidth = Label::createWithTTF(str, "fonts/neodgm.ttf", FONT_HEIGHT + 1 * _2X);
+	fontLabelWidth = Label::createWithTTF(str, "fonts/Pretendard-Bold.otf", FONT_HEIGHT + 1 * _2X);
 	textSize = fontLabelWidth->getContentSize();
 	width = textSize.width;
 	//fontLabelWidth->release();
@@ -232,15 +232,19 @@ int GetFontLabelIndex(const char* str)
 
 	//처음 같은 문자열을 가진 라벨 인덱스를 리턴
 	index = GetSameStringIndex(str);
+	if(sameFontLabelCur[index]<sameFontLabelMax[index] && sameFontLabelCur[index]<100){
+		getFontLabelIdx=sameFontLabelArr[index][sameFontLabelCur[index]++];
+		return getFontLabelIdx;
+	}
 
 	if (sameFontLabelCur[index] < sameFontLabelMax[index]) {
-		for (i = 0; i < MAXFONTLABELCNT; i++) {
+		for (i = 0; i < totalFontLabelCnt; i++) {
 			//fontLabelIndex는 몇번 라벨의 값을 가졌는지 그 몇번을 저장한다.
 			if (fontLabelMotherIndex[i] == index) {
 				j++;
 				if (j > sameFontLabelCur[index]) {
 					if (i < totalFontLabelCnt) {
-						sameFontLabelArr[index][sameFontLabelCur[index]] = i;
+						if(sameFontLabelCur[index]<100)sameFontLabelArr[index][sameFontLabelCur[index]] = i;
 						sameFontLabelCur[index]++;
 						getFontLabelIdx = i;
 						return i;
@@ -276,12 +280,12 @@ void LoadFontLabelFromText(const char* str)
 		//str으로 변환할 char 배열을 labelStr2로 하고 초기화한다.
 		TextToString((char*)&labelStr, strlen(labelStr), (char*)&labelStr2);
 
-		fontLabel[getFontLabelIdx] = Label::createWithTTF(labelStr2, "fonts/neodgm.ttf", FONT_HEIGHT + 1 * _2X);
+		fontLabel[getFontLabelIdx] = Label::createWithTTF(labelStr2, "fonts/Pretendard-Bold.otf", FONT_HEIGHT + 1 * _2X);
 		fontLabel[getFontLabelIdx]->retain();
 		fontLabelIndex[getFontLabelIdx] = getFontLabelIdx;
 		fontLabelMotherIndex[getFontLabelIdx] = fontIdx;
 
-		sameFontLabelArr[fontIdx][sameFontLabelCur[fontIdx]] = totalFontLabelCnt;
+		if(sameFontLabelCur[fontIdx]<100)sameFontLabelArr[fontIdx][sameFontLabelCur[fontIdx]] = totalFontLabelCnt;
 		sameFontLabelCur[fontIdx]++;
 		sameFontLabelMax[fontIdx]++;
 

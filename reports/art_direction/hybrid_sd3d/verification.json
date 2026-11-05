@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "date": "2026-10-30",
+  "platform": "Windows Debug Win32 native build",
+  "installed_executable": "Historical V2 build; cs.exe is now the fleet build",
+  "source_executable": "proj.win32/Debug.win32/cs.hybrid-sd3d-v2.exe",
+  "sha256": "9F000EBBF27D5DBAA8E4A8A8F3DEFC0DA5B74940ED69F7C4492D3291CAD44DD1",
+  "passed": [
+    "48 native UI captures: 12 screens at each of 640x850, 640x1069, 640x1280, 640x1408",
+    "120 rendered castle upgrade combinations, stable hull, hero, deck and wheel placement",
+    "Combat foundation: rewards, equipment cleanup, boomerang contact/return/pause/readiness and repeated automatic attacks (same combat code; before final thumbnail-only change)",
+    "Installed executable matches verified final build",
+    "git diff --check"
+  ],
+  "visual_review": [
+    "Complete castle silhouette and continuous outdoor deck",
+    "Closed/open facade registration",
+    "Base, maximum and mixed independent upgrades",
+    "Wheel/chassis contact and rail grounding",
+    "Pixel allies line up behind pixel hero on outdoor deck",
+    "Tall-screen scenery coverage and centered original pixel boss"
+  ],
+  "art_generation": "Built-in image_gen. Versioned PNGs copied unchanged. Prompt set: Resources/res/hybrid_sd3d/castles-v2-prompts.json",
+  "notes": [
+    "Only first castle and first-region scenery changed in this revision; existing menu actions and data retained.",
+    "Screenshot fixtures now wait for asynchronous PNG saves before advancing.",
+    "iOS build not run on this Windows workstation."
+  ],
+  "superseded_by": "reports/art_direction/authored_castles/verification.json",
+  "status": "Historical, rejected castle geometry; superseded by authored restoration"
+}

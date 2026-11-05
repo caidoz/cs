@@ -1,4 +1,4 @@
-#include "Func.h"
+﻿#include "Func.h"
 #include "Write.h"
 #include "Data.h"
 
@@ -1383,11 +1383,21 @@ void WaveControler()
 		// AVK_MAXGAME 테스트에서는 종류만 덮어쓰고 등장 프레임은 원본 wave[]를
 		// 읽고 있었기 때문에, 원본 세 슬롯의 시간이 같으면 세 마리가 동시에 나왔다.
 		// 테스트 적도 원본과 똑같이 프레임값으로 등장 시간을 지정한다.
+		//---- 첫 마리는 기다리지 않는다 ----
+		//
+		//표의 등장 프레임을 그대로 쓰면 판에 들어서고도 몇 초를 빈 화면
+		//으로 본다. 이제는 들어서자마자 적을 보고 가방을 짜는 판이라
+		//(입장 직후 출정 준비가 그 위에 열린다), 첫 마리가 늦으면 짤
+		//거리가 없다.
+		//
+		//둘째부터는 표대로다 - 줄줄이 나오는 간격은 그 표가 정한다.
+		//(변수로 두면 뒤의 case 레이블이 초기화를 건너뛴다 - C2360)
 		if (robin.curWaveIdx < GetMaxWaveCnt() && robin.waveActive[robin.curWaveIdx] == false &&
-			(gCombatStatusTest
+			((IsStageRealtime() && robin.curWaveIdx == 0)
+			|| (gCombatStatusTest
 				? robin.playtime - demoSpawnStartFrame >= demoEnemySpawnFrame[Min(2, robin.curWaveIdx)]
 				: MC_knlCurrentTimeStamp() - robin.waveTimeStamp >=
-					wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS)
+					wave[GetWaveRow(robin.waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + robin.curWaveIdx * WAVEDATASIZE + 1] / FPS))
 				/* || AliveEnemyCnt() == 0*/) {
 			//비활성 슬롯을 새 몬스터에 재사용할 때 전역 turn이 그 슬롯 번호를
 			//가리키고 있으면, 생성 직후부터 자기 차례로 오인해 MOVE가 시작된다.
