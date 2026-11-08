@@ -406,6 +406,8 @@
     <ClInclude Include="..\Classes\Def\ObjectDef.h" />
     <ClInclude Include="..\Classes\Def\QuestDef.h" />
     <ClInclude Include="..\Classes\Def\RouletteDef.h" />
+    <ClInclude Include="..\Classes\Def\BoardDef.h" />
+    <ClInclude Include="..\Classes\BoardModel.h" />
     <ClInclude Include="..\Classes\Def\SkillDef.h" />
     <ClInclude Include="..\Classes\Def\SoundDef.h" />
     <ClInclude Include="..\Classes\Def\StatDef.h" />
