@@ -1,0 +1,31 @@
+name	value	note
+WAVE_HP_BASE	330	첫 몬스터의 체력. 보통 공격 열 대
+WAVE_HP_TIER_MUL	117	계단 하나마다 체력 배수(100 분). 35자루로 얻는 배수 270의 35제곱근
+WAVE_HP_MAX_TIER	120	계단 상한. 넘으면 long long 이 넘친다
+WAVE_HP_SUBBOSS_MUL	5	소보스 체력 배수
+WAVE_HP_MIDBOSS_MUL	10	중보스 체력 배수
+WAVE_HP_BIGBOSS_MUL	100	대보스 체력 배수
+WAVE_SIZE_SUBBOSS_PCT	120	소보스 크기(%). 체력 배수와 짝이다
+WAVE_SIZE_MIDBOSS_PCT	145	중보스 크기(%)
+WAVE_SIZE_BIGBOSS_PCT	180	대보스 크기(%). 넘으면 머리가 화면 밖으로 나간다
+STAGE_KILL_GOLD	20	처치 기본 골드
+STAGE_KILL_GOLD_HP_DIV	25	체력 몇 점이 금화 하나인가. 올리면 전체 보상이 내려간다
+LOADOUT_BASE	10	출정 점수의 바닥값. 한 점이 한 칸이다
+LOADOUT_PER_CASTLE	2	성 한 단계가 더 주는 점수
+GEAR_UNIT_BASE	4	창고 장비 크기값의 첫 품목
+GEAR_UNIT_STEP	2	부위 안 번호 하나당
+GEAR_UNIT_MAX	40	크기값 상한
+STAGE_FOE_ARMOR_BASE	60	적 방어막 바닥값
+STAGE_FOE_ARMOR_PER	3	적 방어 스탯 1 당 방어막
+STAGE_ARMOR_SOFT	400	방어구가 이만큼 쌓이면 피해가 절반
+HEART_MAX_BASE	20	에너지 상한의 바닥
+HEART_MAX_PER_CASTLE	1	성 한 단계마다 에너지 상한
+HEART_REGEN_BASE	1	주기마다 차는 에너지
+HEART_TEST_MAX	100	디버그 빌드의 에너지 상한
+CASTLE_ROOM_CREW_SCREEN_H	35.0f	방 안 사람의 화면 키(640 기준 픽셀)
+CASTLE_ROOM_CREW_FILL_H	0.82f	방 높이 중 사람 키(%)
+CASTLE_ROOM_CREW_FILL_W	0.86f	방 폭 중 사람들이 쓰는 몫(%)
+CASTLE_ROOM_CREW_PER_ROOM	7	한 방에 설 수 있는 최대 인원
+CASTLE_ROOM_CREW_RANKS	2	앞줄 뒷줄 몇 줄까지
+STAGE_LOADOUT_HEADROOM	10	출정 준비 위로 성을 더 띄우는 몫(_2X 배)
+PVP_GRID_CREW_MAX	3	가방에 올릴 수 있는 동료 수

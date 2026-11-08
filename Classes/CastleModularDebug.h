@@ -797,6 +797,30 @@ static void DrawIndividualUpgradeWheel(int castle,const IndividualCastleV4::Whee
 static int facilityDrawCastle=-1,facilityDrawCount=0,facilityDrawLevels[5]={};
 static bool menuFacilityPreview=false;
 static int FacilityImage(int castle,int level){return castle==9?CASTLE_FINAL_ROOM_FIRST_IMG+level:CASTLE_ROOM_UPGRADE_FIRST_IMG+castle;}
+static void MaskFacilityToBody(int castle,const CastleRoomIntegrated::Region& region,int sx,int sy,int sw,int sh){
+ const auto& b=CastleRoomIntegrated::Bodies[castle][0];
+ SetCastleRoomSilhouette(FacilityImage(castle,0),b.x+region.x*b.w,b.y+region.y*b.h,region.w*b.w,region.h*b.h,sx,sy,sw,sh);
+}
+static void DrawFacilityFacade(int castle){
+ const auto& p=sdPlacement;const int image=CASTLE_SOFT_FIRST_IMG+castle;
+ if(!sprite[image])LoadImg(image);if(!sprite[image]){missingAsset=true;return;}
+ const auto& closed=SoftCastle::Bodies[castle][0];
+ const float yScale=CastleRoomUpgrades::InteriorYScale(castle);
+ for(int room=0;room<CastleFacilities::Counts[castle];++room){
+  auto target=CastleRoomIntegrated::ArtRegions[castle][room];
+  // Close the full opening, including furniture at the edge of its art crop.
+  const float right=Min(1.0f,target.x+target.w+.06f),bottom=Min(CastleRoomUpgrades::SourceBodyBottom(castle),target.y+target.h+.01f);
+  target.x=Max(0.0f,target.x-.06f);target.y=Max(0.0f,target.y-.02f);
+  target.w=right-target.x;target.h=bottom-target.y;
+  const auto& source=SoftCastle::Sectors[castle][room];
+  const int sx=closed.x+(int)(source.x*closed.w),sy=closed.y+(int)(source.y*closed.h);
+  const int sw=Max(1,(int)(source.w*closed.w)),sh=Max(1,(int)(source.h*closed.h));
+  MaskFacilityToBody(castle,target,sx,sy,sw,sh);
+  DrawImageScale(sw,sh,sx,sy,(int)std::lround(MirrorX(p.left+target.x*p.width,target.w*p.width)),
+   (int)std::lround(p.top-target.y*p.height*yScale),gMirror,0,0,0,0,target.w*p.width/sw,target.h*p.height*yScale/sh,sprite[image],image);
+  SetCastleRoomSilhouette(-1);
+ }
+}
 static void DrawFacilityInteriors(int castle){
  facilityDrawCastle=castle;facilityDrawCount=0;
  const auto& p=sdPlacement;
@@ -818,8 +842,10 @@ static void DrawFacilityInteriors(int castle){
   // Sample the same body-normalized room from a complete authored cutaway.
   // No independent room enlargement, cover cropping, or inserted room frames.
   RoomClipScope clip(true,physicalRoom,true);
+  MaskFacilityToBody(castle,s,cell.x,cell.y,cell.w,cell.h);
   DrawImageScale(cell.w,cell.h,cell.x,cell.y,(int)std::lround(MirrorX(p.left+s.x*p.width,width)),
    (int)std::lround(p.top-s.y*p.height*yScale),gMirror,0,0,0,0,width/cell.w,height/cell.h,sprite[image],image);
+  SetCastleRoomSilhouette(-1);
  }
 }
 static bool DrawIndividualCastle(int castle,float left,float bottom,float scale) {
@@ -841,17 +867,17 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  if(!sprite[baseImg]) { missingAsset=true; return false; }
  const bool soft=SoftCastle::Enabled();
  const bool softOpen=soft && (menuFacilityPreview || (world && !active && popUpCnt==0 && roomInteriorOpen[castle]));
- const int softImg=softOpen?FacilityImage(castle,0):CASTLE_SOFT_FIRST_IMG+castle;
+ const int softImg=FacilityImage(castle,0);
  SoftCastle::Crop softCrop=SoftCastle::Bodies[castle][0];
- if(softOpen){const auto& b=CastleRoomIntegrated::Bodies[castle][0];softCrop={b.x,b.y,b.w,(int)(b.h*CastleRoomUpgrades::SourceBodyBottom(castle))};}
+ {const auto& b=CastleRoomIntegrated::Bodies[castle][0];softCrop={b.x,b.y,b.w,(int)(b.h*CastleRoomUpgrades::SourceBodyBottom(castle))};}
  if(soft){
   if(!sprite[softImg])LoadImg(softImg);
   if(!sprite[softImg]){missingAsset=true;return false;}
   SetCastleRoomFeather(false);
   DrawImageScale(softCrop.w,softCrop.h,softCrop.x,softCrop.y,(int)std::lround(MirrorX(p.left,p.width)),
-   (int)std::lround(p.top),gMirror,0,0,0,0,p.width/softCrop.w,p.height*(softOpen?CastleRoomUpgrades::TargetBodyBottom(castle):1.0f)/softCrop.h,sprite[softImg],softImg);
+   (int)std::lround(p.top),gMirror,0,0,0,0,p.width/softCrop.w,p.height*CastleRoomUpgrades::TargetBodyBottom(castle)/softCrop.h,sprite[softImg],softImg);
   SetCastleRoomFeather(true);
-  if(softOpen)DrawFacilityInteriors(castle);
+  if(softOpen)DrawFacilityInteriors(castle);else DrawFacilityFacade(castle);
  }else{
  DrawImage(r.w,r.h,r.x,r.y,(int)std::lround(MirrorX(p.left,p.width)),
    (int)std::lround(p.top),gMirror,0,0,0,0,unit,sprite[baseImg],baseImg);
@@ -861,7 +887,7 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  p.commanderX=p.left+(r.hero-r.x)*unit;p.commanderY=p.top-(r.floor-r.y)*unit;
  p.deckLeft=p.left+(r.deckX-r.x)*unit;p.deckWidth=r.deckW*unit;
  p.deckSurface=p.top-(r.deckY-r.y)*unit;p.deckTop=p.deckSurface;
- if(softOpen&&castle==8){p.commanderY=p.top-.906f*p.height;p.deckSurface=p.deckTop=p.commanderY;}
+ if(soft&&castle==8){p.commanderY=p.top-.906f*p.height;p.deckSurface=p.deckTop=p.commanderY;}
  roomCover[castle]=RoomCoverRect();roomCoverRevealed[castle]=false;
  if(world && !active) {
   if(soft){
@@ -1324,6 +1350,9 @@ float CastlePartsGroundOffset(int castleLevel) {
  return NaturalLowerH(castle)+NaturalBodyLift(castle)-144.0f-radius;
 }
 float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW / 512.0f; }
+//지휘대에 선 히어로의 화면 가로 자리. 아직 한 번도 안 그렸으면 -1 이다.
+//성이 몬스터에게 다가갈 거리를 이것으로 잰다(BattleMobileCastle).
+float CastlePartsCommanderX(void) { using namespace CastleParts; return sdPlacement.valid ? sdPlacement.commanderX : -1.0f; }
 void CastlePartsVisualBounds(int level,float scale,float* outLeft,float* outRight) {
  using namespace CastleParts;
  const int c=Max(0,Min(9,level-1));

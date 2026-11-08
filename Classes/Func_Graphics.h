@@ -115,6 +115,7 @@ void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign
 float DrawGoldAmount(long long amount,int x,int top,int maxWidth=0,int align=CENTER,float scale=1.0f);
 bool CastleRoomUpgradeShaderValid();
 void SetCastleRoomFeather(bool enabled);
+void SetCastleRoomSilhouette(int image,float x=0,float y=0,float w=0,float h=0,float sx=0,float sy=0,float sw=1,float sh=1);
 void DrawBigNumGold(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom);
 float DrawBigNumTTF(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed);
 void DrawBigNum(long long int num, int x, int y, int font, int align, int digit, int sign, float width, bool comma, float zoom, bool fixed);
@@ -191,6 +192,11 @@ void DrawTime(int x, int y, int atime, int type, int align, float zoom);
 void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom);
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText);
 void DrawHand(int, int, int, float);
+void DrawHandAtTarget(int x, int y, int frame, float zoom);
+void DrawMenuBackButton(int x,int top,int command);
+void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size=1.f);
+void DrawMenuReferencePanel(int x,int top,int w,int h,int kind=0,int fill=0x10383D,int edge=0xF1C47E);
+void DrawMenuGear(int x,int top,int size);
 void DrawScroll(int x, int y, int h, int type);
 void YesNoDraw(int, int);
 void DrawEmptyBox(int, int, int, int);
@@ -203,3 +209,5 @@ void BoxDraw(OBJECT* pObj);
 void DrawPixelPanel(int x,int y,int w,int h,int fill=0x102638,int edge=0x43859B);
 // Shared flat pixel skin. Legacy helper name retained for existing callers.
 bool DrawSd3dPanel(int x,int y,int w,int h,int style=1);
+
+void DrawMenuRoomBackdrop(int x,int top,int w,int h,int castle=1,int room=1);

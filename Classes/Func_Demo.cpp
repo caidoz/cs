@@ -2,6 +2,8 @@
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
+#include "CastleTutorialRuntime.inc"
+// Modern onboarding uses circular focus, a translucent drag trail and persistent player flags.
 
 void Demo(void)
 {

@@ -30,9 +30,8 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 //세로 배율을 따로 박아 두면 높이를 바꿀 때 테두리만 남고 안쪽 띠가 어긋난다.
 static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
 {
-	DrawPixelPanel(x,y,w,LOBBY_BAR_H);
-	if(percent<1.0f) MemRect(x+3*_2X,y-LOBBY_BAR_H+4*_2X,
-		Max(1,(int)((w-6*_2X)*percent)),_2X,0xB58DE4);
+	// The resource strip has one shared outline; separators belong inside it.
+	if(x>8)MemRect(x,y-12,1,LOBBY_BAR_H-24,0xAC9771);
 }
 
 //---- 칸 오른쪽 끝의 + 단추 ----
@@ -47,7 +46,7 @@ static void LobbyResourcePlus(int x, int y, int w, int func)
 	const float press = GetButtonScale(func, px, py, size, size);
 	const float drawn = size * press;
 
-	DrawPixelPanel(px,py,size,size,0x164153,0x43859B);
+	DrawMenuReferencePanel(px,py,size,size,0,0x10383D,0xD7B783);
 	const int p=Max(1,_2X),cx=px+size/2,cy=py-size/2;
 	MemRect(cx-4*p,cy+p,8*p,2*p,0xF4F0DB);
 	MemRect(cx-p,cy+4*p,2*p,8*p,0xF4F0DB);
@@ -67,6 +66,7 @@ void LobbyResourceBarsDraw(int y)
 	const int coinX = goldX + moneyW + gap;
 	const int energyX = coinX + moneyW + gap;
 	const int h = LOBBY_BAR_H;
+	DrawMenuReferencePanel(left,y,energyX+energyW-left,h,1,0x10383D,0xF1C47E);
 	const int iconSize = 17 * _2X;
 	const int iconTop = y - (h - iconSize) / 2;	//칸 안에서 세로 한가운데
 
@@ -89,9 +89,16 @@ void LobbyResourceBarsDraw(int y)
 		if (i == 0){
 			DrawGoldAmount(robin.gold,x+4*_2X,y-(h-28)/2,moneyW-27*_2X,LEFT);
 		}else{
-			DrawImage(64, 64, 0, 198, x + 4 * _2X, iconTop,
-				false, false, false, false, false, 0.55f,
-				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+			//---- 캐시는 다이아다 ----
+			//
+			//여기서만 그림 장(ITEM_IMG+7)의 한 칸을 좌표로 찍고 있었다.
+			//아이콘 표(currencyIcon)를 안 거치니 그쪽을 고쳐도 상단 바는
+			//옛 코인 그림 그대로였다.
+			//
+			//표와 같은 그림을 쓰도록 DrawIcon 으로 돌린다 - 아이콘을 다시
+			//바꿀 일이 생겨도 고칠 데가 한 곳이다.
+			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON, x + 4 * _2X, iconTop,
+				(float)iconSize / ITEMICONSIZE, false, false, false, true);
 
 		//---- 숫자는 흰색 ----
 		//

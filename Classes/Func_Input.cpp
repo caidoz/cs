@@ -1860,6 +1860,7 @@ void PlayKey(int obj)
 			//(GridTestDraw 의 gGridGearPending). 열어 둔 채로 넣으면
 			//고르는 도중의 가방이 판에 실린다.
 			LoadoutSetOpen(true);
+			LoadoutDiag("GOTOBATTLE", (int)LoadoutOpen(), (int)drawHandle, 0, 0);
 		}
 			break;
 		case AVK_NEWGAME:
@@ -2986,6 +2987,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
+	if(CastleTutorialCommand(func)||MenuRenewalCommand(func)){systemKey=0;return;}
 	// Retired menu commands must not bypass per-castle upgrades or paid ownership.
 	if ((func >= TOUCH_FUNC_CASTLE_PARTUP && func < TOUCH_FUNC_CASTLE_PARTUP + 4) ||
 		func == TOUCH_FUNC_CASTLE_FINISH || func == TOUCH_FUNC_CASTLE_UPGRADE) {
@@ -3261,6 +3263,9 @@ void touchFunc(int func)
 			systemKey = 0;
 
 			TitleLoginStart(LOGIN_GUEST);
+			break;
+		case TOUCH_FUNC_TITLE_RESET_SAVE:
+			systemKey=0;TitleLoginReset();
 			break;
 
 		case TOUCH_FUNC_TITLE_NEWGAME:

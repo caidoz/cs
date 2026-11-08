@@ -210,6 +210,7 @@ CREATE TABLE player_flag (
     -- 3 = equipGet (도감 등록된 장비)
     -- 4 = castle parts, 5 = castle rooms (idx = castle*5 + category)
     -- 6 = owned castles, 7 = castle progress format version
+    -- 8 = castle tutorial (idx 0: version 1, idx 1: step 0..9)
     flag_kind TINYINT UNSIGNED NOT NULL,
     flag_idx  SMALLINT UNSIGNED NOT NULL,
     -- openedMenu는 unsigned char라 0/1이 아닐 수 있어 값을 그대로 담는다.

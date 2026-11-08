@@ -11,7 +11,7 @@ $process=$null
 try{
  $env:CS_CASTLE_REVIEW_PATH=$review.Replace('\','/')+'/'
  $env:CS_BATTLE_MENU_REVIEW='1';$env:CS_BATTLE_MENU_HEIGHT=[string]$Height
- foreach($mode in @('fresh','returning')){
+ foreach($mode in @('fresh','returning','reset')){
   Set-Content (Join-Path $review 'phases.log') ''
   $env:CS_TITLE_LOGIN_REVIEW=$mode
   $process=Start-Process (Join-Path $root $Executable) -WorkingDirectory (Join-Path $root 'Resources') -WindowStyle Hidden -PassThru

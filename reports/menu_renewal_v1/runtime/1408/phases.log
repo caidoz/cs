@@ -1,0 +1,67 @@
+
+PASS menu capture
+PASS touch
+PASS dungeon preview and return target
+PASS touch
+PASS settings above dungeon without intercepted input
+PASS touch
+PASS menu capture
+PASS touch
+PASS dungeon closes
+PASS touch
+PASS menu capture
+PASS equipment actual equip power and scroll
+PASS touch
+PASS companion inventory touch
+PASS menu capture
+PASS touch
+PASS menu capture
+PASS full stat and resistance list scroll
+PASS touch
+PASS menu capture
+PASS touch
+PASS touch
+PASS castle tabs reachable
+PASS menu capture
+PASS touch
+PASS first castle one facility
+PASS menu capture
+PASS ninth castle fifth facility reachable
+PASS menu capture
+PASS all castles upgrade spending MAX and persistence
+PASS touch
+PASS touch
+PASS menu capture
+PASS shop grants full storage insufficient duplicate guards
+PASS touch
+PASS shop covers dock and no disconnected cash purchase
+PASS menu capture
+PASS touch
+PASS touch
+PASS menu capture
+PASS touch
+PASS settings music command
+PASS touch
+PASS touch
+PASS touch
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu review without tutorial overlay
+PASS menu capture
+PASS menu renewal complete

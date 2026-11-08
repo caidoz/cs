@@ -17,10 +17,11 @@ static void GoldPair(long long needed,long long owned,int left,int top,int width
 }
 static int HeaderTop(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int BodyTop(){return HeaderTop()-54;}
-static int ContentHeight(){return 1244+CastleFacilities::Counts[castleBrowse]*148;}
+static int PreviewHeight(){return Min(400,Max(280,DY*28/100));}
+static int ContentHeight(){return PreviewHeight()+360+(gCastleFacilityTab?CastleFacilities::Counts[castleBrowse]*144:490);}
 static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-HOMEBAR_HEIGHT-16));}
-static void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true){
- DrawPixelPanel(x,y,w,h,enabled?0x205363:0x182A38,enabled?0xEDBB58:0x3D5262);
+static void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false){
+ DrawPixelPanel(x,y,w,h,selected?0x467B55:enabled?0x205363:0x182A38,enabled?0xEDBB58:0x3D5262);
  SetFontColor(enabled?0xFFE5A0:0x84949C);
  CenterTextStrSolid(text,x+w/2,y-h/2+8,Min(.7f,(w-12)/Max(1.0f,StringWidth(text,1))));
  if(enabled) SetRectPoint(x,y,w,h,command);
@@ -32,6 +33,15 @@ static void FacilityIcon(int c,int room,int lv,int x,int top,int size){
  const auto f=CastleRoomUpgrades::Frame(c,room,lv,(int)tex.width,(int)tex.height);
  const float z=Min(size/(float)f.w,size/(float)f.h);
  DrawImageScale(f.w,f.h,f.x,f.y,x+(size-f.w*z)/2,top-(size-f.h*z)/2,false,0,0,0,0,z,z,sprite[img],img);
+}
+static void FacilityPreview(int c,int room,int lv,int x,int top,int width,int height){
+ const int img=c==9?CASTLE_FINAL_ROOM_FIRST_IMG+lv:CASTLE_ROOM_UPGRADE_FIRST_IMG+c;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto tex=sprite[img]->getTexture()->getContentSizeInPixels();
+ const auto f=CastleRoomUpgrades::Frame(c,room,lv,(int)tex.width,(int)tex.height);
+ const float z=Max(width/(float)f.w,height/(float)f.h);
+ const int sw=Min(f.w,(int)(width/z)),sh=Min(f.h,(int)(height/z));
+ DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+(f.h-sh)/2,x,top,false,0,0,0,0,width/(float)sw,height/(float)sh,sprite[img],img);
 }
 static void PartIcon(int c,int part,int lv,int x,int top,int size){
  if(part==3){DrawInventoryCannonIcon(c,lv,x,top,size,size);return;}
@@ -97,23 +107,43 @@ void CastleMenuNewDraw(){
  ResetRectPoint();SetAlpha(ALPHA_MAX);
  DrawPixelPanel(0,top,DX,top,0x0C1C2C,0x43859B);
  SetSectionClip(0,body,DX,body-bottom,false);
- // The actual castle is the only costume preview, and belongs to the scroll body.
- DrawPixelPanel(left,y,width,296,0x142E43,0x28566D);
- if(!CastlePartsDrawMenuPreview(c+1,left+30,y-16,width-60,264))
-  CastleLabel("성 리소스를 불러오지 못했습니다",DX/2,y-130,width-32,.7f);
- y-=308;
- DrawPixelPanel(left,y,width,180,0x142E43,0x43859B);
- Button("<",left+10,y-10,44,44,TOUCH_FUNC_CASTLE_NEW_PREV,c>0);
- Button(">",DX-left-54,y-10,44,44,TOUCH_FUNC_CASTLE_NEW_NEXT,c<9);
- CastleLabel(CastleStageAt(c)->title,DX/2,y-14,width-136,.85f);
- sprintf(s,"성 Lv.%d / 10  ·  %d구역  ·  %s",c+1,CastleFacilities::Counts[c],owned?(robin.castle==c?"출정 중":"보유 중"):"미보유");
- CastleLabel(s,DX/2,y-47,width-24,.65f);
- sprintf(s,"전투 그리드 %d칸 · 배치 한도 %d칸 · 창고 %d개",GridTestCellCnt(c),CastleEquipmentCapacity(c),CastleInventoryCapacity(c));
- CastleLabel(s,DX/2,y-76,width-24,.62f);
- if(owned)Button(robin.castle==c?"현재 출정 성":"출정 성으로 선택",left+12,y-116,width-24,48,TOUCH_FUNC_CASTLE_NEW_SELECT,robin.castle!=c);
- else {Button("",left+12,y-116,width-24,48,TOUCH_FUNC_CASTLE_NEW_BUY_GOLD);
-  Text("성 구매",left+28,y-132,90,.7f);DrawGoldAmount(CastleMenuModel::GoldPrice(c),DX/2+40,y-125,width-160);}
- y-=192;
+ // Three neighboring castles, using actual art and direct selection commands.
+ const int first=Min(7,Max(0,c-1)),tile=(width-16)/3;
+ for(int n=0;n<3;++n){
+  const int pick=first+n,x=left+n*(tile+8);
+  Button("",x,y,tile,70,TOUCH_FUNC_CASTLE_BROWSE_PICK+pick,true,pick==c);
+  PartIcon(pick,1,0,x+8,y-6,54);
+  sprintf(s,"%d / 10",pick+1);CastleLabel(s,x+tile*2/3,y-28,tile/2,.75f);
+ }
+ y-=82;
+ const int ph=PreviewHeight();
+ DrawPixelPanel(left,y,width,ph,0x142E43,0x43859B);
+ const int bg=HYBRID_FAR_IMG;if(!sprite[bg])LoadImg(bg);
+ if(sprite[bg]){
+  const auto sz=sprite[bg]->getContentSize();
+  const float z=Max(width/sz.width,ph/sz.height);
+  const int sw=(int)(width/z),sh=(int)(ph/z);
+  DrawImageScale(sw,sh,(sz.width-sw)/2,(sz.height-sh)/2,left,y,false,0,0,0,0,width/(float)sw,ph/(float)sh,sprite[bg],bg);
+ }
+ const int rail=HYBRID_RAIL_IMG;if(!sprite[rail])LoadImg(rail);
+ if(sprite[rail]){const auto sz=sprite[rail]->getContentSize();const float z=width/sz.width;
+  DrawImageScale((int)sz.width,Min((int)sz.height,(int)(30/z)),0,0,left,y-ph+18,false,0,0,0,0,z,z,sprite[rail],rail);}
+ CastlePartsDrawMenuPreview(c+1,left+10,y-8,width*58/100,ph-22);
+ const int infoX=left+width*60/100,infoW=width*40/100-12;
+ DrawPixelPanel(infoX,y-28,infoW,130,0x123D43,0xEDBB58);
+ CastleLabel(CastleFacilities::Themes[c],infoX+infoW/2,y-44,infoW-16,.78f);
+ sprintf(s,"%d / 10",c+1);CastleLabel(s,infoX+infoW/2,y-82,infoW-16,.8f);
+ sprintf(s,"시설 %d개",CastleFacilities::Counts[c]);CastleLabel(s,infoX+infoW/2,y-116,infoW-16,.7f);
+
+ if(owned)Button(robin.castle==c?"현재 출정 성":"출정 성으로 선택",infoX,y-174,infoW,48,TOUCH_FUNC_CASTLE_NEW_SELECT,robin.castle!=c);
+ Button("<",left+8,y-ph+52,40,40,TOUCH_FUNC_CASTLE_NEW_PREV,c>0);
+ Button(">",left+width-48,y-ph+52,40,40,TOUCH_FUNC_CASTLE_NEW_NEXT,c<9);
+ y-=ph+12;
+ DrawMenuRoomBackdrop(left,y,width,48,0,0);
+ Button("전투 파츠",left,y,(width-8)/2,48,TOUCH_FUNC_RENEW_CASTLE_PARTS,true,!gCastleFacilityTab);
+ Button("생산 시설",left+(width+8)/2,y,(width-8)/2,48,TOUCH_FUNC_RENEW_CASTLE_FACILITIES,true,gCastleFacilityTab);
+ y-=64;
+ if(!gCastleFacilityTab){
  const int gap=8,card=(width-gap*4)/5;
  for(int row=0;row<5;++row){
   const int part=Order[row],lv=p.parts[c][part],x=left+row*(card+gap);
@@ -143,6 +173,7 @@ void CastleMenuNewDraw(){
  if(NetLastRequest()==NETREQ_SAVE && NetLastResult()!=NETRESULT_OK && NetLastResult()!=NETRESULT_NONE)
   CastleLabel(conflict?"서버 저장 데이터를 다시 불러옵니다":"저장 실패 · 기존 캐시 및 재시도 정책으로 보관 중",DX/2,y-292,width-40,.57f);
  y-=346;
+ }else{
  sprintf(s,"%s · 시설 %d개",CastleFacilities::Themes[c],CastleFacilities::Counts[c]);
  Text(s,left+20,y,width-40,.78f,0xFFE5A0);y-=38;
  sprintf(s,"선택한 성 · 에너지 회복 속도 +%d%%",CastleFacilities::Bonus(p,c,true));
@@ -159,17 +190,19 @@ void CastleMenuNewDraw(){
  Text("수금",left+width-72,y-12,60,.65f);y-=62;
  for(int i=0;i<CastleFacilities::Counts[c];++i){
   const auto& f=CastleFacilities::Rooms[c][i];const int level=p.rooms[c][i];
-  DrawPixelPanel(left,y,width,136,0x142E43,0x43859B);
-  FacilityIcon(c,i,level,left+12,y-10,64);
-  sprintf(s,"%s  %s",f.name,level>=5?"MAX":"");Text(s,left+88,y-10,width-104,.68f);
-  sprintf(s,"Lv.%d / 5 · %s",level,f.product);Text(s,left+88,y-36,width-104,.60f,0xBCD6DF);
+  const int imageW=width*42/100,tx=left+imageW+20,tw=width-imageW-36;
+  DrawPixelPanel(left,y,width,132,0x142E43,0x43859B);
+  FacilityPreview(c,i,level,left+8,y-8,imageW,116);
+  sprintf(s,"%s  %s",f.name,level>=5?"MAX":"");Text(s,tx,y-10,tw,.70f);
+  sprintf(s,"Lv.%d / 5 · %s",level,f.product);Text(s,tx,y-38,tw,.60f,0xBCD6DF);
   if(CastleFacilities::Armory(c,i))sprintf(s,"골드 +%d%% · 공격력 +%d%% > +%d%%",CastleFacilities::Output(c,i,level),CastleFacilities::AttackUpgrade(c,i,level),CastleFacilities::AttackUpgrade(c,i,level+1));
   else sprintf(s,"%s +%d%%  >  +%d%%",CastleFacilities::Effect(c,i),CastleFacilities::Output(c,i,level),CastleFacilities::Output(c,i,level+1));
-  Text(s,left+88,y-60,width-104,.58f,0x82DAC4);
+  Text(s,tx,y-62,tw,.56f,0x82DAC4);
   const int price=CastleMenuModel::UpgradeCost(c,level,true);
-  Button(level>=5?"MAX":"",left+16,y-90,width-32,36,TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+i,owned&&level<5&&robin.gold>=price&&!SaveConflict());
-  if(level<5){Text("강화",left+32,y-100,64,.65f);DrawGoldAmount(price,DX/2+36,y-94,width-160);}
-  y-=148;
+  Button(level>=5?"MAX":"강화",tx,y-88,74,34,TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+i,owned&&level<5&&robin.gold>=price&&!SaveConflict());
+  if(level<5)DrawGoldAmount(price,tx+82,y-92,tw-82,LEFT);
+  y-=144;
+ }
  }
  if(scT[MENU_CASTLE]>0){
   const int view=body-bottom,thumb=Max(24,view*view/ContentHeight());
@@ -178,7 +211,7 @@ void CastleMenuNewDraw(){
  }
  UnSectionClip(false);
  DrawPixelPanel(0,top,DX,54,0x102638,0x43859B);
- CastleLabel("성",DX/2,top-15,width,.95f);Button("<",16,top-6,44,44,TOUCH_FUNC_POPUP_CLOSE);
+ CastleLabel("성",DX/2,top-15,width,.95f);DrawMenuBackButton(12,top-4,TOUCH_FUNC_POPUP_CLOSE);
  if(castleModal){
   ResetRectPoint();SetAlpha(24);MemRect(0,top,DX,top,COLOR_BLACK);SetAlpha(ALPHA_MAX);
   const int mt=DY/2+150;const bool upgrade=castleModal==2;

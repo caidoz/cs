@@ -1,0 +1,5 @@
+<!doctype html><meta charset="utf-8"><title>성 메뉴 실제 검증 화면</title>
+<style>body{background:#132b35;color:#eee;font:18px sans-serif;margin:24px}select{font:inherit}main{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}img{width:100%}a{color:#edbb58}@media(max-width:800px){main{grid-template-columns:1fr}}</style>
+<h1>성 메뉴 실제 검증 화면</h1><p>튜토리얼을 임시 해제한 네이티브 실행 화면입니다. 시안 이미지가 아닙니다.</p>
+<select id="height"><option>850</option><option>1069</option><option>1280</option><option selected>1408</option></select><main></main>
+<script>function render(){let h=document.querySelector('select').value,m=document.querySelector('main');m.replaceChildren();for(let c=1;c<=10;c++){let a=document.createElement('a');a.href=`runtime/${h}/castle-${String(c).padStart(2,'0')}-overview.png`;a.innerHTML=`<h2>성 ${c}</h2><img loading="lazy" src="${a.href}">`;m.append(a)}}document.querySelector('select').onchange=render;render();</script>

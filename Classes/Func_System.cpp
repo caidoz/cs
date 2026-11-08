@@ -1535,7 +1535,9 @@ void InitBar(int type)
 		bar[BAR_STAR].add = 0;
 		bar[BAR_STAR].countFrame = 0;
 
-		bar[BAR_STAR].icon = ITEM_CASH_ICON;
+		//캐시 바도 다이아다(UIData.cpp 의 currencyIcon 과 같은 그림이어야
+		//한다 - 둘이 갈리면 상단 바와 상점이 다른 재화처럼 보인다).
+		bar[BAR_STAR].icon = ITEM_PREMIUM_DIAMOND_ICON;
 		bar[BAR_STAR].iconFrame = 0;
 
 		bar[BAR_STAR].frame = 0;
@@ -2025,6 +2027,7 @@ void NewGame(void)
 
 	memset(&robin, 0, sizeof(ROBINDATA));
 
+	CastleTutorialNewGame();
 	robin.startTime = GetCurrentTimeMs();
 
 	robin.stage = 0;

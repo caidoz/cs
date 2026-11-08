@@ -37,7 +37,16 @@ void LoadingDraw(void);
 void TitleDraw(void);
 bool TitleLoginBusy(void);
 void TitleLoginStart(int provider);
+void TitleLoginReset(void);
 void TitleLoginStep(bool dataReady);
+extern int gCastleTutorialStep;
+void CastleTutorialNewGame(void);
+void CastleTutorialLoad(int step);
+void CastleTutorialUpdate(void);
+void CastleTutorialDraw(void);
+bool CastleTutorialCommand(int command);
+void CastleTutorialEvent(int event);
+bool CastleTutorialReviewAction(int action);
 #ifdef GAMEDEBUG
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
@@ -219,7 +228,9 @@ bool StageCombatReviewCooldownVisible(void);
 void StageRunGridClear(void);
 bool LoadoutRequiredWeaponReady(void);
 bool LoadoutVisualWeapon(ITEM* out);
+void LoadoutDiag(const char* tag, int a, int c, int d, int e);
 void LoadoutDefaultReset(void);
+void LoadoutMarkTouched(void);
 bool MaxWeaponFoundationReview(void);
 //히어로 몰빵 개편 점검(CS_GEAR_ROLE_REVIEW). 0 역할축 · 1 보석 · 2 창고 ·
 //3 상점 줄 갈이 · 4 동료는 체력을 안 보탠다
@@ -304,7 +315,6 @@ int StageGearList(int obj, StageSword* out, int maxCnt);	//누구든 장비 목�
 int StageFoeGearList(StageSword* out, int maxCnt);	//지금 몬스터 장비
 
 //적이 멘 것을 적 체력 칸 아래에 깔아 준다. 보고 내 가방을 짜라는 자리다.
-void StageFoeBagDraw(int x, int y, int w);
 long long StageGearArmor(int obj);					//방어구 값의 합
 void StageGearApplyStat(OBJECT* pObj);				//가방 장비 스탯을 더한다
 long long StageGearReduce(int obj, long long damage);//방어구를 거친 피해
@@ -387,3 +397,8 @@ int GridEquippedWeaponHaste(void);
 int GridShieldCooldownForSlot(int slot);
 bool CastleHybridReview(int operation);
 bool CastleHybridFleetReview(int operation);
+
+int CastleTutorialFocus(int rectangles[2][4]);
+
+bool MenuRenewalDungeonOpen();
+bool MenuRenewalCommand(int command);

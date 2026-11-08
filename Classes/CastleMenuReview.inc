@@ -15,10 +15,12 @@ static void CastleReviewClick(int command) {
     }
     CastleReviewTrace("FAIL touch area missing");
 }
+#include "MenuRenewalReview.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(MenuRenewalReviewStep(path))return;
     if(getenv("CS_ROOM_UPGRADE_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         static auto saved=robin.castleProgress;static long long gold=0,hp=0;
@@ -50,27 +52,73 @@ static void CastleMenuReviewStep()
         if(tick==827){CastleReviewClick(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);CastleReviewTrace(!memcmp(&saved,&robin.castleProgress,sizeof(saved))?"PASS facility debug restoration":"FAIL facility debug restoration");CastleReviewTrace("PASS room upgrades complete");}
         return;
     }
+    if(const char* mode=getenv("CS_TUTORIAL_REVIEW")){
+        static int tick=0;static bool pending=false;static int heldTick=0;
+        static auto focusAt=std::chrono::steady_clock::now();
+        if(pending)return;
+        if(heldTick){
+            if(std::chrono::steady_clock::now()<focusAt)return;
+            char name[40];sprintf(name,"focus-%03d.png",heldTick);heldTick=0;pending=true;
+            cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS circular focus capture":"FAIL focus capture");},std::string(path)+name);return;
+        }
+        ++tick;
+        if(tick==1){
+            NetBootstrapBegin();NetChooseLogin(LOGIN_GUEST);
+            if(!strcmp(mode,"fresh"))NewGame();
+            GotoLobby();while(popUpCnt>0)ClosePopUp();
+        }
+        NetUpdate();
+        if(!strcmp(mode,"resume")){
+            if(tick==30){char info[80];sprintf(info,"INFO resumed tutorial step %d",gCastleTutorialStep);CastleReviewTrace(info);CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial persisted resume":"FAIL tutorial persistence");CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_SKIP);NetFlush();}
+            if(tick==130)CastleReviewTrace("PASS tutorial complete");return;
+        }
+        if(!strcmp(mode,"done")){
+            if(tick==30){CastleReviewTrace(gCastleTutorialStep==9?"PASS tutorial completion persists":"FAIL tutorial completion persistence");CastleReviewClick(TOUCH_FUNC_TUTORIAL_HELP);}
+            if(tick==40)CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial replay without reset":"FAIL tutorial replay");
+            if(tick==130)CastleReviewTrace("PASS tutorial complete");return;
+        }
+        if(tick==20)CastleReviewTrace(gCastleTutorialStep==1?"PASS new game tutorial welcome":"FAIL tutorial welcome");
+        if(tick==25)CastleReviewTrace("PASS textless tutorial auto entry");
+        if(tick==30){CastleReviewClick(TOUCH_FUNC_GOTOBATTLE);PlayKey(PLAYER);systemKey=0;}
+        if(tick==65){CastleReviewTrace(gCastleTutorialStep==2&&LoadoutOpen()?"PASS actual adventure enters placement":"FAIL tutorial adventure");CastleReviewTrace(CastleTutorialReviewAction(0)?"PASS cancelled drag does not advance":"FAIL tutorial cancelled drag");}
+        if(tick==70)CastleReviewTrace(CastleTutorialReviewAction(1)?"PASS valid actual drag advances":"FAIL tutorial valid drag");
+        if(tick==80)CastleReviewTrace(CastleTutorialReviewAction(2)?"PASS actual setup release":"FAIL tutorial setup");
+        if(tick==90){if(GridTestOfferOpen())GridTestSkipOffer();else StageRtToggleAuto();}
+        if(tick==95)CastleReviewTrace(gCastleTutorialStep==5?"PASS actual combat advances guide":"FAIL tutorial combat");
+        if(tick==100)CastleReviewTrace(CastleTutorialReviewAction(3)?"PASS insufficient funds preserves tutorial step":"FAIL tutorial purchase guard");
+        if(tick==110)CastleReviewTrace(CastleTutorialReviewAction(4)?"PASS actual charged purchase advances":"FAIL tutorial purchase");
+        if(tick==120){if(GridTestOfferOpen())GridTestSkipOffer();else StageRtToggleAuto();}
+        if(tick==130)CastleReviewTrace(gCastleTutorialStep==8?"PASS next wave growth guide":"FAIL tutorial next wave");
+        const bool shot=tick==22||tick==67||tick==85||tick==105||tick==132;
+        if(shot){heldTick=tick;focusAt=std::chrono::steady_clock::now()+std::chrono::milliseconds(1600);char name[32];sprintf(name,"guide-%03d.png",tick);pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS tutorial capture":"FAIL tutorial capture");},std::string(path)+name);}
+        if(tick==140){GotoLobby();CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_HELP);CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_NEXT);NetFlush();}
+        if(tick==145)CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial resume checkpoint":"FAIL tutorial checkpoint");
+        if(tick==260)CastleReviewTrace("PASS tutorial complete");
+        return;
+    }
     if(const char* mode=getenv("CS_TITLE_LOGIN_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
-        const bool returning=!strcmp(mode,"returning");
-        if(!returning && tick==30){
-            bool guest=false,start=false;
-            for(int i=0;i<touchIndex;++i){guest|=touchRect[i][4]==TOUCH_FUNC_TITLE_LOGIN_GUEST;start|=touchRect[i][4]==TOUCH_FUNC_GOTOPLAY;}
-            CastleReviewTrace(drawHandle==MD_TITLE&&guest&&!start&&!NetHasRememberedGuestLogin()?"PASS first launch login choices":"FAIL first launch login choices");
+        const bool reset=!strcmp(mode,"reset");
+        if(tick==30){
+            bool guest=false,start=false,resetButton=false;
+            for(int i=0;i<touchIndex;++i){guest|=touchRect[i][4]==TOUCH_FUNC_TITLE_LOGIN_GUEST;start|=touchRect[i][4]==TOUCH_FUNC_GOTOPLAY;resetButton|=touchRect[i][4]==TOUCH_FUNC_TITLE_RESET_SAVE;}
+            CastleReviewTrace(drawHandle==MD_TITLE&&guest&&!start&&resetButton&&!TitleLoginBusy()?"PASS manual guest gate with reset button":"FAIL title manual gate");
             CastleReviewTrace(!NetLoginProviderAvailable(LOGIN_GOOGLE)&&!NetLoginProviderAvailable(LOGIN_APPLE)?"PASS social providers do not impersonate guest":"FAIL social provider gating");
-            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS title login capture":"FAIL title login capture");},std::string(path)+"login.png");
+            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS title login capture":"FAIL title login capture");},std::string(path)+mode+"-login.png");
         }
-        if(!returning&&tick==35)CastleReviewClick(TOUCH_FUNC_TITLE_LOGIN_GUEST);
-        if(!returning&&tick==38){TitleLoginStart(LOGIN_GUEST);CastleReviewTrace(TitleLoginBusy()?"PASS guest queues loading once":"FAIL guest loading");}
-        if((!returning&&tick==53)||(returning&&tick==15)){
+        if(reset&&tick==35){robin.gold=777777;robin.stage=10;CastleReviewClick(TOUCH_FUNC_TITLE_RESET_SAVE);TitleLoginReset();}
+        if(reset&&tick==50)CastleReviewTrace(drawHandle==MD_TITLE&&!TitleLoginBusy()&&robin.gold!=777777&&robin.stage==0?"PASS reset progress stays on title":"FAIL reset progress");
+        if(tick==55)CastleReviewClick(TOUCH_FUNC_TITLE_LOGIN_GUEST);
+        if(tick==58){TitleLoginStart(LOGIN_GUEST);CastleReviewTrace(TitleLoginBusy()?"PASS guest queues loading once":"FAIL guest loading");}
+        if(tick==73){
             CastleReviewTrace(drawHandle==MD_TITLE&&TitleLoginBusy()?"PASS title loading bar before lobby":"FAIL title loading state");
-            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS title loading capture":"FAIL title loading capture");},std::string(path)+(returning?"auto-loading.png":"guest-loading.png"));
+            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS title loading capture":"FAIL title loading capture");},std::string(path)+mode+"-loading.png");
         }
-        if(tick==90){
-            CastleReviewTrace(drawHandle==MD_LOBBY&&NetHasRememberedGuestLogin()?"PASS remembered login enters lobby":"FAIL guest lobby entry");
-            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS lobby entry capture":"FAIL lobby entry capture");},std::string(path)+(returning?"auto-lobby.png":"guest-lobby.png"));
+        if(tick==110){
+            CastleReviewTrace(drawHandle==MD_LOBBY&&NetHasRememberedGuestLogin()?"PASS manual guest login enters lobby":"FAIL guest lobby entry");
+            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS lobby entry capture":"FAIL lobby entry capture");},std::string(path)+mode+"-lobby.png");
         }
-        if(tick==95)CastleReviewTrace("PASS title login review complete");
+        if(tick==115)CastleReviewTrace("PASS title login review complete");
         return;
     }
     if(getenv("CS_FACILITY_ECONOMY_REVIEW")){
@@ -380,7 +428,8 @@ static void CastleMenuReviewStep()
                 char name[64];sprintf(name,"castle-top-%02d.png",c+1);capturePending=true;
                 cocos2d::utils::captureScreen([](bool ok,const std::string&){capturePending=false;CastleReviewTrace(ok?"PASS castle assembled menu capture":"FAIL castle assembled menu capture");},std::string(path)+name);
             }
-            if(step==3){scY[MENU_CASTLE]=scT[MENU_CASTLE];scDir=SCROLL_NOTHING;}
+            if(step==3){CastleMenuCommand(TOUCH_FUNC_RENEW_CASTLE_FACILITIES);}
+            if(step==5){scY[MENU_CASTLE]=scT[MENU_CASTLE];scDir=SCROLL_NOTHING;}
             if(step==10){
                 bool valid=true,last=false;
                 for(int i=0;i<touchIndex;++i){const int f=touchRect[i][4]-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE;
@@ -444,6 +493,8 @@ static void CastleMenuReviewStep()
                 for(int e=0;e<TOTALEQUIP;++e) robin.charData[h].equip[e].type=EMPTY;
                 ITEM starter=item;starter.type=ITEM_SWORD+h;starter.value=19;starter.id=110000+h;
                 robin.charData[h].equip[EQUIP_WEAPON]=starter;
+                // This isolated fixture exercises every unlocked hero tab.
+                robin.lv=Max(robin.lv,getHeroLv[h]);
             }
             SetPlayerHero(ROBIN);
         }
@@ -466,11 +517,11 @@ static void CastleMenuReviewStep()
         if(tick==148){CastleReviewClick(TOUCH_FUNC_ITEM_LOCK);PlayKey(PLAYER);systemKey=0;CastleReviewTrace(robin.inven[0].locked?"PASS detail lock touch":"FAIL detail lock touch");}
         if(tick==151){CastleReviewClick(TOUCH_FUNC_ITEM_LOCK);PlayKey(PLAYER);systemKey=0;CastleReviewTrace(!robin.inven[0].locked?"PASS detail unlock touch":"FAIL detail unlock touch");}
         if(tick==155){CastleReviewClick(TOUCH_FUNC_CLOSEALERT);PlayKey(PLAYER);systemKey=0;CastleReviewTrace(menuDepth==0 && curMenu==MENU_COLLECTIONS?"PASS detail closes to equipment":"FAIL detail close touch");}
-        if(tick==165) CastleReviewClick(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_STAT);
+        if(tick==165) touchFunc(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_STAT);
         if(tick==195) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
             CastleReviewTrace(ok?"PASS equipment stat capture":"FAIL stat capture");
         },std::string(path)+"equipment-stat.png");
-        if(tick==215) CastleReviewClick(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_CODEX);
+        if(tick==215) touchFunc(TOUCH_FUNC_EQUIPTAB+EQUIPTAB_CODEX);
         if(tick==245) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
             CastleReviewTrace(ok?"PASS equipment codex capture":"FAIL codex capture");
         },std::string(path)+"equipment-codex.png");

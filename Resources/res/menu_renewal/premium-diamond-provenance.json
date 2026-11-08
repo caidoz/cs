@@ -1,0 +1,13 @@
+{
+  "tool": "image_gen",
+  "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a12a10-72f8-7283-b8c9-2952ab5764c9\\exec-6cadc531-57cb-438b-bc54-eca955fa0cb1.png",
+  "prompt": "Classic cyan blue faceted diamond currency sprite, transparent pixel art; no ring, frame or text.",
+  "atlas": "res/i7.png",
+  "cell": [
+    1,
+    1,
+    32,
+    32
+  ],
+  "packing": "Generated sprite scaled to 30px, centered in empty cell; all other atlas pixels preserved."
+}

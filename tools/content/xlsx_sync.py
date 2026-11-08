@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """content/*.tsv <-> content/*.xlsx
 
 밸런스는 엑셀에서 잡고, 값은 tsv 를 거쳐 소스로 간다.
@@ -75,6 +75,12 @@ BOOKS = {
         'tables': ['bet_heart', 'bet_coin', 'gold_stage', 'gold_skill',
                    'gold_crewstar', 'item_price', 'item_sell',
                    'shop_currency', 'shop_quick'],
+    },
+    'balance': {
+        'title': '밸런스 손잡이',
+        'note': '곡선을 정하는 숫자들. balance 는 한 행이 상수 하나이고 value 는 C++ 토막 그대로다(0.82f 도, (64 * _2X) 도). gear_role 은 장비 한 줄, shop_part 는 판 안 상점 한 칸, hero_allies_balance 는 동료 한 명이다.',
+        'tables': ['balance', 'gear_role', 'shop_part', 'hero_allies_balance'],
+        'build': 'make_balance.py',
     },
     'wave': {
         'title': '웨이브',

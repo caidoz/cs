@@ -1066,7 +1066,7 @@ bool Core::init()
 	return true;
 }
 
-#include "CastleMenuReview.inc" // Full-height warehouse review.
+#include "CastleMenuReview.inc" // Full-height warehouse and native menu/layer/stat/audio/capture review.
 
 //======================================================================
 // 힙 탐침 (임시)
@@ -1188,6 +1188,7 @@ void Core::Run(float delta) {
 	}
 
 	TitleLoginStep(netBooted);
+	if(netBooted)CastleTutorialUpdate();
 	//결제를 한 칸 굴린다. 스토어 답을 받고, 못 보낸 영수증을 다시 보낸다.
 	//
 	//부팅 뒤에 둔다. 그 전에는 토큰이 없어서 보내봐야 거절당하고, 무엇보다
@@ -1639,6 +1640,20 @@ void PaintClet(int x, int y, int w, int h)
 				StageArtilleryDraw();
 				StageRtDrawButton();
 				HitZoomResume();
+
+				//---- 출정 준비는 판 위에도 얹힌다 ----
+				//
+				//모험을 시작하면 판에 먼저 들어가고(GotoPlay) 그 위에 창을 열었다
+				//(LoadoutSetOpen). 적과 적의 가방을 보고 짜라는 자리다. 그런데 그리는
+				//손은 로비와 격돌에만 있었다 - 깃발만 서고 화면은 안 나왔다.
+				//
+				//그 바람에 기본 편성을 돌리는 LoadoutDefaultFill 이 영영 안 돌고(그
+				//함수 안에 있다), 격자에 장비를 넣는 GridPlaceGear 는 "창이 닫히기"를
+				//영원히 기다렸다. 가방이 비던 까닭이다.
+				//
+				//격자 뒤에 부른다 - 터치영역은 뒤에 등록한 것이 먼저 걸리므로, 창이
+				//열려 있으면 그 손이 먼저 받아야 한다.
+				LoadoutDraw();
 
 				if (curMenu == MENU_PLAY) {
 					for (i = 0; i < M_ROULETTEUP; i++)
@@ -2715,8 +2730,9 @@ void PaintClet(int x, int y, int w, int h)
 
 	VersionDraw();
 #ifdef GAMEDEBUG
-	if (popUpCnt == 0) StageBgDebugDrawButton();
+	if (popUpCnt == 0 && !MenuRenewalDungeonOpen()) StageBgDebugDrawButton();
 #endif
+	HitZoomPause();CastleTutorialDraw();HitZoomResume();
 }
 
 long MC_knlCurrentTime()

@@ -1,0 +1,6 @@
+{
+  "tool": "image_gen.imagegen",
+  "asset": "dungeon-v2.png",
+  "prompt": "Create one production game environment background image for Castle Survivor mobile dungeon menu. No UI, no text, no letters, no logos, no characters. Warm friendly rounded SD 3D mobile fantasy game rendering, soft teal shadows warm golden light, matching the existing game's wooden wheeled castle and waterfall valley world. Composition: landscape 3:2 illustration. A purple glowing spiral magical portal in ancient round stone arch on the RIGHT two-thirds, chunky rounded stone towers, lush hanging plants, a pair of warm small lanterns, purple flags. Portal has clean bright magical violet center, no lock icon (UI will add). LEFT third is open space showing hazy waterfall canyon and a broad horizontal stone bridge walkway across entire lower quarter, enough clear foreground for actual game hero sprites to stand. No castle painted into background (actual game castle will be overlaid). Strong dimensional readable large shapes, medium detail, vivid but tasteful warm greens and stone gray, beautiful hand-painted mobile game look. Output intended as reusable menu scene, not a completed interface.",
+  "transparent_background": false
+}

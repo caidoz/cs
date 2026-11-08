@@ -1,9 +1,9 @@
-// Included after the existing catalog/card helpers in Func_Menu.cpp.
+﻿// Included after the existing catalog/card helpers in Func_Menu.cpp.
 #include "ShopCatalogModel.h"
 #include <memory>
 #include <chrono>
 namespace ShopSpec {
-int tab=ShopCatalog::Recommended,hero=0,detail=-1,page=0;
+int tab=ShopCatalog::Gear,hero=0,detail=-1,page=0;
 bool resultOpen=false,purchasing=false;
 int resultUntil=0;
 std::chrono::steady_clock::time_point lastPurchaseTime;
@@ -16,7 +16,7 @@ void Label(const char* text,int x,int y,int width,float size=.75f,int color=COLO
  SetFontColor(color);CenterTextStrSolid(text,x,y,Min(size,width/Max(1.0f,StringWidth(text,1))));
 }
 void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false) {
- DrawPixelPanel(x,y,w,h,selected?0x205363:0x102638,selected?0xEDBB58:0x43859B);
+ DrawPixelPanel(x,y,w,h,selected?0x17653E:0x102638,selected?0xEDBB58:0x43859B);
  Label(text,x+w/2,y-(h-(int)(FONT_HEIGHT*.75f))/2,w-12,.75f,enabled?COLOR_WHITE:0x8AA0AC);
  if(command&&enabled)SetRectPoint(x,y,w,h,command);
 }
@@ -36,6 +36,12 @@ std::vector<Candidate> Pool(int kind,int who) {
 const char* CandidateName(const Candidate& c) {
  if(c.type==ITEM_CREW) return textId[TEXT_MONSTERNAME_START+crewData[c.detail*CREWDATASIZE+CREWDATA_TYPE]];
  return textId[TEXT_ITEMNAME_START+GetItemName(c.type,c.detail,GRADE_NORMAL)];
+}
+//재화 묶음인가. 재화 탭이 따로 받으므로 패키지 탭에서는 뺀다 - 안 빼면
+//같은 상품이 두 탭에 나온다(옛 추천/보급품이 그랬다).
+bool IsCurrencyProduct(int product) {
+ return (product>=IAP_HEART_01&&product<=IAP_HEART_06)
+     || (product>=IAP_CASH_01 &&product<=IAP_CASH_06);
 }
 void SupplyCard(int kind,int x,int y,int w,int h) {
  const auto product=ShopCatalog::Supply(kind,hero);
@@ -81,41 +87,48 @@ void Overlay(int top) {
  Button(">",x+w-60,y-h+42,44,32,TOUCH_FUNC_SHOP_POOL_NEXT,page+1<pages);
 }
 void Draw(float x,float y,float w,float h,float zoom) {
- const int top=(int)y,head=58,tabH=42,pad=12;
- const int bodyTop=top-head-tabH-(tab==ShopCatalog::Supplies?48:0)-12,bottom=12;
- const char* tabs[]={"추천","보급품","패키지"};
- for(int i=0;i<3;++i)Button(tabs[i],(int)x+pad+i*((int)w-2*pad)/3,top-head,
-  ((int)w-2*pad)/3-4,tabH,TOUCH_FUNC_SHOP_MAIN_TAB+i,true,tab==i);
- if(tab==ShopCatalog::Supplies)for(int i=0;i<3;++i)Button(HeroName(i),(int)x+pad+i*((int)w-2*pad)/3,
-  top-head-tabH-6,((int)w-2*pad)/3-4,36,TOUCH_FUNC_SHOP_HERO+i,true,hero==i);
- SetSectionClip((int)x+pad,bodyTop,(int)w-2*pad,Max(1,bodyTop-bottom),false);
+ const int top=(int)y,head=58,tabH=46,pad=18;
+ //장비 탭만 히어로 줄을 따로 고른다. 그만큼 본문이 내려온다.
+ const int bodyTop=top-head-tabH-12,bottom=12;
+ const char* tabs[]={"장비","패키지","재화"};
+ for(int i=0;i<ShopCatalog::TabCount;++i)Button(tabs[i],(int)x+pad+i*((int)w-2*pad)/ShopCatalog::TabCount,top-head,
+  ((int)w-2*pad)/ShopCatalog::TabCount-4,tabH,TOUCH_FUNC_SHOP_MAIN_TAB+i,true,tab==i);
+
+ // Live treasure products are shared; no hero picker or unavailable cards precede them.
+ SetSectionClip((int)x,bodyTop,(int)w,Max(1,bodyTop-bottom),false);
  int cy=bodyTop+scY[MENU_SHOP];const int inner=(int)w-2*pad,cw=(inner-8)/2;
- if(tab==ShopCatalog::Recommended) {
-  DrawPixelPanel((int)x+pad,cy,inner,100,0x1E3648);
-  Label("오늘의 무료 보급",(int)(x+w/2),cy-12,inner-20,.95f,0xF0D47C);
+ if(tab==ShopCatalog::Gear) {
+  //---- 무료 수령 ----
   if(ShopCatalog::DailyConfigured()) {
    const long long now=MC_knlCurrentTimeStamp(),next=robin.freeRewardTimeStamp+SHOP_DAILY_RESET_SECONDS;
    char text[100];sprintf(text,"골드 %lld · 다음 보급까지 %lld초",SHOP_DAILY_GOLD,Max(0LL,next-now));
-   Label(text,(int)(x+w/2),cy-42,inner-20,.7f);
-   Button(next>now?"수령 완료":"무료 수령",(int)x+pad+12,cy-64,inner-24,30,TOUCH_FUNC_SHOP_DAILY_CLAIM,next<=now);
-  } else {
-   Label("보급 구성과 갱신 기준 준비 중",(int)(x+w/2),cy-42,inner-20,.72f);
-   Label("아직 수령할 수 없습니다",(int)(x+w/2),cy-70,inner-20,.6f,0x8AA0AC);
+   DrawMenuPlaque("오늘의 보급",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=60;
+   Label(text,(int)(x+w/2),cy-16,inner-20,.7f);
+   Button(next>now?"수령 완료":"무료 수령",(int)x+pad+12,cy-38,inner-24,30,TOUCH_FUNC_SHOP_DAILY_CLAIM,next<=now);
+   cy-=88;
   }
-  cy-=114;
-  Label("기존 종합 보급 상자",(int)(x+w/2),cy-4,inner,.85f);cy-=36;
-  ShopBoxCard(0,x+pad,cy,cw,206,1);ShopBoxCard(1,x+pad+cw+8,cy,cw,206,1);cy-=222;
-  Label("주력 보급품 · 선택 히어로 기준",(int)(x+w/2),cy-4,inner,.8f);cy-=34;
-  for(int k=0;k<4;++k)SupplyCard(k,(int)x+pad+(k%2)*(cw+8),cy-(k/2)*180,cw,170);
-  cy-=360;
- } else if(tab==ShopCatalog::Supplies) {
-  for(int k=0;k<4;++k)SupplyCard(k,(int)x+pad+(k%2)*(cw+8),cy-(k/2)*180,cw,170);
-  cy-=374;Label("종합 보급 상자 · 기존 확률 그대로",(int)(x+w/2),cy,inner,.8f);cy-=36;
-  for(int k=0;k<6;++k)ShopBoxCard(k,x+pad+(k%2)*(cw+8),cy-(k/2)*216,cw,206,1);
-  cy-=648;
- } else {
+
+  DrawMenuRoomBackdrop((int)x,cy,(int)w,112,0,0);
+  const int merchant=MENU_REFERENCE_SHOPKEEPER_IMG;if(!sprite[merchant])LoadImg(merchant);
+  if(sprite[merchant])DrawImageScale(748,1135,235,36,(int)x+(int)w/5,cy-3,false,0,0,0,0,108.f/1135.f,108.f/1135.f,sprite[merchant],merchant);
+  // Reuse the lower counter pixels over the merchant so she stands behind it.
+  if(sprite[MENU_RENEWAL_ROOM_IMG]){
+   const auto sz=sprite[MENU_RENEWAL_ROOM_IMG]->getContentSize();const int strip=(int)sz.height/3;
+   const float cover=Max(w/sz.width,112.f/strip);const int sw=(int)(w/cover),sh=(int)(112/cover),cut=(int)(54/cover);
+   const int sx=((int)sz.width-sw)/2,sy=strip*2+(strip-sh)/2;
+   DrawImageScale(sw,sh-cut,sx,sy+cut,(int)x,cy-54,false,0,0,0,0,w/sw,58.f/(sh-cut),sprite[MENU_RENEWAL_ROOM_IMG],MENU_RENEWAL_ROOM_IMG);
+   SetAlpha(4);MemRect((int)x,cy-54,(int)w,58,0x092B30);SetAlpha(32);
+  }
+  cy-=88;
+
+  //---- 종합 상자 ----
+  DrawMenuPlaque("보물상자",(int)x+inner/5,cy,inner*3/5,54,1.05f);cy-=68;
+  const int cardH=Max(190,Min(224,(int)(cw*.73f))),pitch=cardH+10;
+  for(int k=0;k<6;++k)ShopBoxCard(k,x+pad+(k%2)*(cw+8),cy-(k/2)*pitch,cw,cardH,1);
+  cy-=pitch*3;
+ } else if(tab==ShopCatalog::Packages) {
   int shown=0;
-  for(int i=0;i<TOTALIAPPRODUCT;++i)if(i!=IAP_INVEN_20&&IapCanPurchase(i)) {
+  for(int i=0;i<TOTALIAPPRODUCT;++i)if(i!=IAP_INVEN_20&&IapCanPurchase(i)&&!IsCurrencyProduct(i)) {
    ShopCard(i,x+pad+(shown%2)*(cw+8),cy-(shown/2)*216,cw,206,1);++shown;
   }
   if(!shown) {
@@ -124,12 +137,32 @@ void Draw(float x,float y,float w,float h,float zoom) {
    Label("스토어 연결 후 현지 가격으로 안내합니다",(int)(x+w/2),cy-64,inner-24,.7f);
    Label("광고 제거·미연결 패스는 판매하지 않습니다",(int)(x+w/2),cy-96,inner-24,.6f,0x8AA0AC);cy-=148;
   } else cy-=((shown+1)/2)*216;
+ } else {
+  //---- 재화 ----
+  //
+  //골드는 안 판다. 판에서 벌어 상자와 성에 쓰는 순환 재화이지 사고파는
+  //물건이 아니다. 팔기 시작하면 성장 곡선을 돈으로 건너뛴다.
+  int shown=0;
+  DrawMenuPlaque("하트",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  for(int i=IAP_HEART_01;i<=IAP_HEART_06;++i)if(IapCanPurchase(i)) {
+   ShopCard(i,x+pad+(shown%2)*(cw+8),cy-(shown/2)*216,cw,206,1);++shown;
+  }
+  cy-=((shown+1)/2)*216+14;shown=0;
+  DrawMenuPlaque("캐시",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  for(int i=IAP_CASH_01;i<=IAP_CASH_06;++i)if(IapCanPurchase(i)) {
+   ShopCard(i,x+pad+(shown%2)*(cw+8),cy-(shown/2)*216,cw,206,1);++shown;
+  }
+  cy-=((shown+1)/2)*216;
  }
  if(IapPendingCount()>0) {Label("미지급 결제를 복구하고 있습니다",(int)(x+w/2),cy,inner,.7f,0xE6C56B);cy-=36;}
  UnSectionClip(false);
  scT[MENU_SHOP]=Max(0,bodyTop+scY[MENU_SHOP]-cy-(bodyTop-bottom));
  scY[MENU_SHOP]=Max(0,Min(scY[MENU_SHOP],scT[MENU_SHOP]));
- DrawScroll((int)(x+w-10),bodyTop,bodyTop-bottom,MENU_SHOP);
+ if(scT[MENU_SHOP]>0){
+  const int view=bodyTop-bottom,content=view+scT[MENU_SHOP],thumb=Max(32,view*view/content);
+  MemRect((int)(x+w-8),bodyTop,3,view,0x183D40);
+  MemRect((int)(x+w-8),bodyTop-scY[MENU_SHOP]*(view-thumb)/scT[MENU_SHOP],3,thumb,0xEBC587);
+ }
  if(!message.empty()&&!resultOpen&&frame<resultUntil) {
   DrawPixelPanel(16,bodyTop-8,DX-32,50,0x422C35,0xC49D4D);Label(message.c_str(),DX/2,bodyTop-24,DX-56,.7f);
  }
@@ -141,10 +174,10 @@ bool ShopCatalogTouch(int command) {
  using namespace ShopSpec;
  if(command>=TOUCH_FUNC_SHOP_MAIN_TAB&&command<TOUCH_FUNC_SHOP_MAIN_TAB+3) {
   tab=command-TOUCH_FUNC_SHOP_MAIN_TAB;detail=-1;resultOpen=false;granted.clear();message.clear();
-  if(tab==ShopCatalog::Recommended)hero=Max(0,Min(2,curHero));
+  if(tab==ShopCatalog::Gear)hero=Max(0,Min(TOTALCHAR-1,(int)curHero));
   scY[MENU_SHOP]=scT[MENU_SHOP]=0;return true;
  }
- if(command>=TOUCH_FUNC_SHOP_HERO&&command<TOUCH_FUNC_SHOP_HERO+3) {
+ if(command>=TOUCH_FUNC_SHOP_HERO&&command<TOUCH_FUNC_SHOP_HERO+TOTALCHAR) {
   hero=command-TOUCH_FUNC_SHOP_HERO;detail=-1;scY[MENU_SHOP]=scT[MENU_SHOP]=0;return true;
  }
  if(command>=TOUCH_FUNC_SHOP_SUPPLY_DETAIL&&command<TOUCH_FUNC_SHOP_SUPPLY_DETAIL+4) {
@@ -169,23 +202,26 @@ bool ShopCatalogTouch(int command) {
 bool ShopPurchaseExistingBox(int boxDetail) {
  using namespace ShopSpec;
  const long long cost=GetBoxPrice(boxDetail,GRADE_NORMAL);
+ const bool gems=ShopTreasure::UsesGems(boxDetail-BOX_PAID0);
  const auto fail=[&](const char* why){message=why;resultUntil=frame+FPS*5;return false;};
  const auto now=std::chrono::steady_clock::now();
  if(purchasing||std::chrono::duration_cast<std::chrono::milliseconds>(now-lastPurchaseTime).count()<500||IapIsBusy()||IsStageRealtime()||StageRunPersistentEquipment(0))return fail("다른 구매 또는 탐험이 진행 중입니다");
  if(boxDetail<BOX_PAID0||boxDetail>BOX_PAID5||cost<0)return fail("판매하지 않는 상품입니다");
- if(robin.gold<cost)return fail("골드가 부족합니다");
+ if((gems?robin.coin:robin.gold)<cost)return fail(gems?"보석이 부족합니다":"골드가 부족합니다");
  int empty=0;for(int i=0;i<GetMaxInven();++i)if(robin.inven[i].type==EMPTY)++empty;
- if(empty<GACHA_MAX_REWARD_CARD)return fail("보관함에 빈칸 12개를 확보해주세요. 골드는 차감되지 않았습니다");
+ if(empty<GACHA_MAX_REWARD_CARD)return fail("보관함에 빈칸 12개를 확보해주세요. 재화는 차감되지 않았습니다");
  purchasing=true;
  // SaveGame only queues a whole-profile update; no network callback/frame occurs
  // within this synchronous transaction. On any failure restore the complete profile.
  std::unique_ptr<ROBINDATA> before(new ROBINDATA(robin));
- if(!GenerateCastleBoxReward(boxDetail)) {robin=*before;purchasing=false;return fail("보급품 구성을 불러오지 못했습니다");}
- robin.gold-=cost;
+ if(!GenerateCastleBoxReward(boxDetail)) {robin=*before;purchasing=false;return fail("보물상자 구성을 불러오지 못했습니다");}
+ if(gems)robin.coin-=cost;else robin.gold-=cost;
  const int count=boxCardItemCnt[0];granted.clear();
  bool ok=count>0&&count<=GACHA_MAX_REWARD_CARD;
  for(int i=0;i<count&&ok;++i) {
-  const ITEM item=boxCardItem[0][i];
+  ITEM item=boxCardItem[0][i];
+  if(item.type==ITEM_GOLD)item.count=ShopTreasure::GoldReward(boxDetail-BOX_PAID0,(int)item.count);
+  if(item.type==ITEM_HEART)item.count=ShopTreasure::HeartReward(boxDetail-BOX_PAID0,(int)item.count);
   ok=GetItem(item.type,item.lv,item.detail,item.grade,item.count,false)!=0;
   if(ok) {
    ITEM actual=item;
@@ -200,11 +236,11 @@ bool ShopPurchaseExistingBox(int boxDetail) {
  if(!ok) {
   robin=*before;granted.clear();SaveGame();purchasing=false;
   for(int i=ROBIN;i<TOTALPLAYER;++i)RefreshStat(&ao[i]);
-  return fail("지급하지 못해 구매를 취소했습니다. 골드는 보존됩니다");
+  return fail("지급하지 못해 구매를 취소했습니다. 재화는 보존됩니다");
  }
  SaveGame();lastPurchaseTime=now;purchasing=false;resultOpen=true;
  CCLOG("shop grant box=%d profile_count=%d rewards=%d",boxDetail,(int)robin.count,count);
- message="보급품 구매 완료";PlayMusic(M_ITEM);return true;
+ message="보물상자 구매 완료";PlayMusic(M_ITEM);return true;
 }
 
 bool ShopSpecReviewChecks() {
@@ -255,18 +291,38 @@ bool ShopSpecReviewChecks() {
   else if(IsEquipItemType(item.type)||item.type==ITEM_CREW)ok=ok&&GetItemCount(item.type,item.detail,item.grade)>0;
  }
  ok=ok&&robin.gold==fullGold-cost+rewardGold;
+ ok=ok&&rewardGold<=ShopTreasure::GoldReward(0,1000000);
  trace("grant accounting");
  const long long paidGold=robin.gold;
  ok=ok&&!ShopPurchaseExistingBox(BOX_PAID0)&&robin.gold==paidGold;
  trace("duplicate");
+ // Every premium tier must charge gems, reject insufficient gems even when
+ // gold is plentiful, and leave both currencies intact on duplicate attempts.
+ for(int tier=2;tier<6;++tier){
+  for(int i=0;i<TOTALINVENTORY;++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
+  const long long price=GetBoxPrice(BOX_PAID0+tier,GRADE_NORMAL);
+  robin.gold=700;robin.coin=price-1;lastPurchaseTime={};
+  ok=ok&&!ShopPurchaseExistingBox(BOX_PAID0+tier)&&robin.gold==700&&robin.coin==price-1;
+  robin.coin=price;lastPurchaseTime={};
+  ok=ok&&ShopPurchaseExistingBox(BOX_PAID0+tier)&&robin.coin==0&&!granted.empty();
+  long long goldDrop=0;for(const auto& item:granted)if(item.type==ITEM_GOLD)goldDrop+=item.count;
+  ok=ok&&robin.gold==700+goldDrop&&goldDrop<=ShopTreasure::GoldReward(tier,1000000);
+  const long long afterGold=robin.gold,afterGems=robin.coin;
+  ok=ok&&!ShopPurchaseExistingBox(BOX_PAID0+tier)&&robin.gold==afterGold&&robin.coin==afterGems;
+ }
+ trace("premium gems charges and duplicate guards");
  // Fixed self-test grants only: no live price, invented random distribution,
  // or sellable development SKU is created for the proposed supplies.
+ // Isolate this case from random box loot: repeated companion/material drops
+ // can otherwise reach their stack cap before these independent grant checks.
+ for(int i=0;i<TOTALINVENTORY;++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
  for(int h=0;h<3;++h)for(int kind=0;kind<4;++kind) {
   const auto pool=Pool(kind,h);
   if(pool.empty()){ok=false;continue;}
   const auto item=pool.front();
   const bool received=GetItem(item.type,1,item.detail,GRADE_NORMAL,1,false)!=0;
   ok=ok&&received&&GetItemCount(item.type,item.detail,GRADE_NORMAL)>0;
+  if(!received||GetItemCount(item.type,item.detail,GRADE_NORMAL)<=0)trace("fixed supply grant mismatch");
  }
  trace("fixed development supply grants");
  robin.castle=0;robin.castleProgress.owned=1;
@@ -274,10 +330,25 @@ bool ShopSpecReviewChecks() {
  robin.gold=CastleMenuModel::GoldPrice(1);robin.coin=777;
  const int previousCapacity=GetMaxInven();
  CastleMenuOpen();CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_NEXT);
- CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_BUY_GOLD);CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
- ok=ok&&robin.castle==1&&robin.gold==0&&robin.coin==777&&GetMaxInven()>=previousCapacity;
+ // All castles are already owned in the current design. Selection is free;
+ // upgrades still consume gold exactly once through the confirmation handler.
+ robin.castleIncomeTs=MC_knlCurrentTimeStamp();
+ CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_SELECT);
+ ok=ok&&robin.castle==1&&robin.gold==CastleMenuModel::GoldPrice(1)&&robin.coin==777&&GetMaxInven()>=previousCapacity;
+ trace("free owned castle selection");
+ const long long beforeUpgrade=robin.gold;
+ const int level=robin.castleProgress.parts[1][0];
+ const int upgradeCost=CastleMenuModel::UpgradeCost(1,level,false);
+ CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_ROW);
+ robin.castleIncomeTs=MC_knlCurrentTimeStamp();
+ CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_UPGRADE);CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
+ ok=ok&&level<5&&robin.castleProgress.parts[1][0]==level+1&&robin.gold==beforeUpgrade-upgradeCost;
+ const long long afterUpgrade=robin.gold;
+ trace("single gold upgrade");
+ CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
+ ok=ok&&robin.gold==afterUpgrade;
  CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_PAID_UPGRADE);
- ok=ok&&robin.coin==777&&robin.gold==0;
+ ok=ok&&robin.coin==777&&robin.gold==afterUpgrade;
  trace("gold-only castle runtime and automatic capacity");
  robin=*saved;for(int i=0;i<PLAYERALL;++i)ao[i]=savedActors[i];crewCnt=savedCrewCount;
  gMobileCastleVisual=savedVisual;CastleMenuOpen();

@@ -39,6 +39,7 @@ static const int wave_builtin[] = {
 
 
 
+
 	//여기서 패턴을 잡아준다.
 	//
 	//0~3번 행은 튜토리얼 4연전이 순서대로 쓴다(TutoralDef.h의 TUTORIAL_WAVEIDX_*).
@@ -75,8 +76,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 7 잡몹
-	ENEMY_TREE, FPS * 1, MONSTERTYPE_JACO,//늪의 주인
+	//늪 기본 - 7 잡몹  [손]
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//7판을 손으로 잡는다
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -90,8 +91,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 10 중보스(레드)
-	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 기본 - 10 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -115,8 +116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 15 소보스
-	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 기본 - 15 중보스(레드)
+	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -140,8 +141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 20 중보스(레드)
-	ENEMY_FROG_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 기본 - 20 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -191,7 +192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 기본 - 30 중보스(레드)
-	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -240,8 +241,8 @@ static const int wave_builtin[] = {
 	ENEMY_SNAIL, FPS * 2, MONSTERTYPE_JACO,//가시껍질달팽이
 	ENEMY_TREE, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
-	//늪 기본 - 40 중보스(레드)
-	ENEMY_FROG_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 기본 - 40 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -265,8 +266,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 45 소보스
-	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 기본 - 45 중보스(레드)
+	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -290,8 +291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 50 중보스(레드)
-	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 기본 - 50 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -390,8 +391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 70 중보스(레드)
-	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 기본 - 70 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -415,8 +416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 75 소보스
-	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 기본 - 75 중보스(레드)
+	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -440,8 +441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 기본 - 80 중보스(레드)
-	ENEMY_FROG_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 기본 - 80 소보스
+	ENEMY_TREE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -491,7 +492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 기본 - 90 중보스(레드)
-	ENEMY_KIMERA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -540,8 +541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 100 대보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
+	//계곡 기본 - 100 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -565,8 +566,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	ENEMY_ONEEYE, FPS * 3, MONSTERTYPE_JACO,//아이볼
 
-	//계곡 기본 - 105 소보스
-	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 기본 - 105 중보스(레드)
+	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -590,8 +591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 110 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 110 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -690,8 +691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 130 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 130 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -715,8 +716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 135 소보스
-	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 기본 - 135 중보스(레드)
+	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -740,8 +741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 140 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 140 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -790,8 +791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 150 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 150 대보스(블루)
+	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -840,8 +841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 160 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 160 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -865,8 +866,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 165 소보스
-	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 기본 - 165 중보스(레드)
+	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -890,8 +891,8 @@ static const int wave_builtin[] = {
 	ENEMY_ONEEYE, FPS * 2, MONSTERTYPE_JACO,//아이볼
 	ENEMY_SKELETON, FPS * 3, MONSTERTYPE_JACO,//칠흑의 기사
 
-	//계곡 기본 - 170 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 170 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -990,8 +991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 기본 - 190 중보스(레드)
-	ENEMY_LARVA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 기본 - 190 소보스
+	ENEMY_SKELETON, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1015,8 +1016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 195 소보스
-	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 기본 - 195 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1040,8 +1041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 200 대보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//아틀란티스 기본 - 200 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1140,8 +1141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 220 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 기본 - 220 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1165,8 +1166,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 225 소보스
-	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 기본 - 225 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1190,8 +1191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 230 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 기본 - 230 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1290,8 +1291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 250 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 기본 - 250 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1315,8 +1316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 255 소보스
-	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 기본 - 255 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1340,8 +1341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 260 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 기본 - 260 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1440,8 +1441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 280 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 기본 - 280 소보스
+	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1465,8 +1466,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 기본 - 285 소보스
-	ENEMY_JELLYFISH, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 기본 - 285 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1490,8 +1491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 290 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 290 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1590,8 +1591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 310 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 310 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1615,8 +1616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 315 소보스
-	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 기본 - 315 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1640,8 +1641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 320 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 320 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1740,8 +1741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 340 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 340 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1765,8 +1766,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 345 소보스
-	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 기본 - 345 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1790,8 +1791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 350 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 350 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1890,8 +1891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 370 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 370 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1915,8 +1916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 375 소보스
-	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 기본 - 375 중보스(레드)
+	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -1940,8 +1941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 기본 - 380 중보스(레드)
-	ENEMY_SALAMANDER_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 기본 - 380 소보스
+	ENEMY_SLIME, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2040,8 +2041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 400 대보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
+	//평원 기본 - 400 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2065,8 +2066,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 405 소보스
-	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 기본 - 405 중보스(레드)
+	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2090,8 +2091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 410 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 410 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2190,8 +2191,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 기본 - 430 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 430 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2215,8 +2216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 435 소보스
-	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 기본 - 435 중보스(레드)
+	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2240,8 +2241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 440 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 440 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2290,8 +2291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 450 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 450 대보스(블루)
+	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2340,8 +2341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 460 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 460 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2365,8 +2366,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 465 소보스
-	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 기본 - 465 중보스(레드)
+	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2390,8 +2391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 기본 - 470 중보스(레드)
-	ENEMY_GIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 기본 - 470 소보스
+	ENEMY_BOAR, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2490,8 +2491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 490 중보스(레드)
-	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 기본 - 490 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2515,8 +2516,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	ENEMY_FLAME, FPS * 3, MONSTERTYPE_JACO,//분노의 정령
 
-	//화염 기본 - 495 소보스
-	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 기본 - 495 중보스(레드)
+	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2540,8 +2541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 500 대보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 기본 - 500 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2640,8 +2641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 520 중보스(레드)
-	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 기본 - 520 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2665,8 +2666,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 525 소보스
-	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 기본 - 525 중보스(레드)
+	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2690,8 +2691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 530 중보스(레드)
-	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 기본 - 530 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2790,8 +2791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 550 중보스(레드)
-	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 기본 - 550 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2815,8 +2816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 기본 - 555 소보스
-	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 기본 - 555 중보스(레드)
+	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2840,8 +2841,8 @@ static const int wave_builtin[] = {
 	ENEMY_FLAME, FPS * 2, MONSTERTYPE_JACO,//분노의 정령
 	ENEMY_PHOENIX, FPS * 3, MONSTERTYPE_JACO,//마성의 불새
 
-	//화염 기본 - 560 중보스(레드)
-	ENEMY_IFRIT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 기본 - 560 소보스
+	ENEMY_PHOENIX, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2940,8 +2941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 580 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 580 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2965,8 +2966,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 585 소보스
-	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 기본 - 585 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -2990,8 +2991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 590 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 590 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3090,8 +3091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 610 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 610 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3115,8 +3116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 615 소보스
-	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 기본 - 615 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3140,8 +3141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 620 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 620 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3240,8 +3241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 640 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 640 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3265,8 +3266,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 645 소보스
-	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 기본 - 645 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3290,8 +3291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 기본 - 650 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 기본 - 650 소보스
+	ENEMY_SNOWMAN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3390,8 +3391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 670 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 670 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3415,8 +3416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 675 소보스
-	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 기본 - 675 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3440,8 +3441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 680 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 680 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3540,8 +3541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 700 대보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//뇌전 기본 - 700 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3565,8 +3566,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 705 소보스
-	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 기본 - 705 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3590,8 +3591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 710 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 710 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3690,8 +3691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 730 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 730 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3715,8 +3716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 735 소보스
-	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 기본 - 735 중보스(레드)
+	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3740,8 +3741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 740 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 740 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3790,8 +3791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 750 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 750 대보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3840,8 +3841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 기본 - 760 중보스(레드)
-	ENEMY_MAMMOTH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 기본 - 760 소보스
+	ENEMY_MACHINE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3865,8 +3866,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 765 소보스
-	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 기본 - 765 중보스(레드)
+	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3890,8 +3891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 770 중보스(레드)
-	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 기본 - 770 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -3990,8 +3991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 790 중보스(레드)
-	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 기본 - 790 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4015,8 +4016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 795 소보스
-	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 기본 - 795 중보스(레드)
+	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4040,8 +4041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 800 대보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 기본 - 800 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4140,8 +4141,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 기본 - 820 중보스(레드)
-	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 기본 - 820 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4165,8 +4166,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 825 소보스
-	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 기본 - 825 중보스(레드)
+	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4190,8 +4191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 830 중보스(레드)
-	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 기본 - 830 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4290,8 +4291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 850 중보스(레드)
-	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 기본 - 850 소보스
+	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4315,8 +4316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 기본 - 855 소보스
-	ENEMY_CIRCLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 기본 - 855 중보스(레드)
+	ENEMY_ANGEL_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4340,8 +4341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 860 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 860 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4440,8 +4441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 880 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 880 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4465,8 +4466,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	ENEMY_SPIDER, FPS * 3, MONSTERTYPE_JACO,//스트라이더
 
-	//골렘계곡 기본 - 885 소보스
-	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 기본 - 885 중보스(레드)
+	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4490,8 +4491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 890 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 890 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4590,8 +4591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 910 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 910 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4615,8 +4616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 915 소보스
-	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 기본 - 915 중보스(레드)
+	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4640,8 +4641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 920 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 920 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4740,8 +4741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 940 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 940 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4765,8 +4766,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 기본 - 945 소보스
-	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 기본 - 945 중보스(레드)
+	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4790,8 +4791,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPIDER, FPS * 2, MONSTERTYPE_JACO,//스트라이더
 	ENEMY_GOLEM, FPS * 3, MONSTERTYPE_JACO,//주인잃은 골렘
 
-	//골렘계곡 기본 - 950 중보스(레드)
-	ENEMY_SHIP_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 기본 - 950 소보스
+	ENEMY_GOLEM, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4890,8 +4891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 970 중보스(레드)
-	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 기본 - 970 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4915,8 +4916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 975 소보스
-	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 기본 - 975 중보스(레드)
+	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4940,8 +4941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 980 중보스(레드)
-	ENEMY_DARKGIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 기본 - 980 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -4991,7 +4992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 기본 - 990 중보스(레드)
-	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5040,8 +5041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1000 대보스(블루)
-	ENEMY_DARKGIANT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//그레이트아머
+	//암흑 기본 - 1000 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5065,8 +5066,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1005 소보스
-	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 기본 - 1005 중보스(레드)
+	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5090,8 +5091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1010 중보스(레드)
-	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 기본 - 1010 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5190,8 +5191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1030 중보스(레드)
-	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 기본 - 1030 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5215,8 +5216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1035 소보스
-	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 기본 - 1035 중보스(레드)
+	ENEMY_FOGRA_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5240,8 +5241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 기본 - 1040 중보스(레드)
-	ENEMY_DARKGIANT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 기본 - 1040 소보스
+	ENEMY_DARKDRAGON, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5290,8 +5291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1050 중보스(레드)
-	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 기본 - 1050 대보스(블루)
+	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5340,8 +5341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1060 중보스(레드)
-	ENEMY_DRAGON2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 기본 - 1060 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5365,8 +5366,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1065 소보스
-	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 기본 - 1065 중보스(레드)
+	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5390,8 +5391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1070 중보스(레드)
-	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 기본 - 1070 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5490,8 +5491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1090 중보스(레드)
-	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 기본 - 1090 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5515,8 +5516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1095 소보스
-	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 기본 - 1095 중보스(레드)
+	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5540,8 +5541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1100 대보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
+	//드래곤 기본 - 1100 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5591,7 +5592,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 기본 - 1110 중보스(레드)
-	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5640,8 +5641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1120 중보스(레드)
-	ENEMY_DRAGON2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 기본 - 1120 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5665,8 +5666,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1125 소보스
-	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 기본 - 1125 중보스(레드)
+	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5690,8 +5691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 기본 - 1130 중보스(레드)
-	ENEMY_BAHAMUT_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 기본 - 1130 소보스
+	ENEMY_DRAGON1, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5790,8 +5791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1150 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1150 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5815,8 +5816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1155 소보스
-	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 기본 - 1155 중보스(레드)
+	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5840,8 +5841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1160 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1160 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5940,8 +5941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1180 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1180 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5965,8 +5966,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1185 소보스
-	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 기본 - 1185 중보스(레드)
+	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -5990,8 +5991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1190 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1190 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6090,8 +6091,8 @@ static const int wave_builtin[] = {
 	ENEMY_GHOST, FPS * 2, MONSTERTYPE_JACO,//떠도는 영혼
 	ENEMY_PUMPKIN, FPS * 3, MONSTERTYPE_JACO,//무혼의 기사
 
-	//망령 기본 - 1210 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1210 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6115,8 +6116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1215 소보스
-	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 기본 - 1215 중보스(레드)
+	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6140,8 +6141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 기본 - 1220 중보스(레드)
-	ENEMY_DEATH_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 기본 - 1220 소보스
+	ENEMY_PUMPKIN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6240,8 +6241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1240 중보스(레드)
-	ENEMY_CASTLE_BOSS2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 기본 - 1240 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6265,8 +6266,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1245 소보스
-	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 기본 - 1245 중보스(레드)
+	ENEMY_CASTLE_BOSS3_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6290,8 +6291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1250 중보스(레드)
-	ENEMY_CASTLE_BOSS3_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 기본 - 1250 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6390,8 +6391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1270 중보스(레드)
-	ENEMY_CASTLE_BOSS2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 기본 - 1270 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6415,8 +6416,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	ENEMY_LABETH, FPS * 3, MONSTERTYPE_JACO,//라베스
 
-	//마성 기본 - 1275 소보스
-	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 기본 - 1275 중보스(레드)
+	ENEMY_CASTLE_BOSS2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6440,8 +6441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1280 중보스(레드)
-	ENEMY_CASTLE_BOSS3_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 기본 - 1280 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6491,7 +6492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 기본 - 1290 중보스(레드)
-	ENEMY_CASTLE2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6540,8 +6541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1300 대보스(블루)
-	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//엘케인맨티스
+	//마성 기본 - 1300 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6565,8 +6566,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1305 소보스
-	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 기본 - 1305 중보스(레드)
+	ENEMY_CASTLE2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6590,8 +6591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1310 중보스(레드)
-	ENEMY_CASTLE_BOSS3_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 기본 - 1310 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6641,7 +6642,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 기본 - 1320 중보스(레드)
-	ENEMY_CASTLE2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6690,8 +6691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 기본 - 1330 중보스(레드)
-	ENEMY_CASTLE_BOSS2_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 기본 - 1330 소보스
+	ENEMY_ELKEIN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6715,8 +6716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1335 소보스
-	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 기본 - 1335 중보스(레드)
+	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6740,8 +6741,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE1, FPS * 2, MONSTERTYPE_JACO,//안드로볼
 	ENEMY_SPACE2, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
-	//우주 기본 - 1340 중보스(레드)
-	ENEMY_CASTLE_BOSS1_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 기본 - 1340 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6790,8 +6791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1350 중보스(레드)
-	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 기본 - 1350 대보스(블루)
+	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6840,8 +6841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1360 중보스(레드)
-	ENEMY_CASTLE_BOSS1_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 기본 - 1360 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6865,8 +6866,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1365 소보스
-	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 기본 - 1365 중보스(레드)
+	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6890,8 +6891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1370 중보스(레드)
-	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 기본 - 1370 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -6990,8 +6991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1390 중보스(레드)
-	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 기본 - 1390 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7015,8 +7016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1395 소보스
-	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 기본 - 1395 중보스(레드)
+	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7040,8 +7041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1400 대보스(블루)
-	ENEMY_CASTLE_BOSS1_BLUE, FPS * 1, MONSTERTYPE_BIGBOSS,//데브리온
+	//우주 기본 - 1400 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7091,7 +7092,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 기본 - 1410 중보스(레드)
-	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7140,8 +7141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1420 중보스(레드)
-	ENEMY_CASTLE_BOSS1_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 기본 - 1420 소보스
+	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7165,8 +7166,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 기본 - 1425 소보스
-	ENEMY_SPACE2, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 기본 - 1425 중보스(레드)
+	ENEMY_CASTLE_BOSS4_RED, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7190,8 +7191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1430 중보스(블루)
-	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 레드 - 1430 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7290,8 +7291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1450 중보스(블루)
-	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 레드 - 1450 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7315,8 +7316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1455 소보스
-	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 레드 - 1455 중보스(블루)
+	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7340,8 +7341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1460 중보스(블루)
-	ENEMY_FROG_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 레드 - 1460 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7391,7 +7392,7 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_RED, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
 	//늪 레드 - 1470 중보스(블루)
-	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7440,8 +7441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1480 중보스(블루)
-	ENEMY_FROG_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 레드 - 1480 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7465,8 +7466,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_RED, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1485 소보스
-	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 레드 - 1485 중보스(블루)
+	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7490,8 +7491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1490 중보스(블루)
-	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 레드 - 1490 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7541,7 +7542,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 레드 - 1500 대보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//마도합성수
+	ENEMY_FROG_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7590,8 +7591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1510 중보스(블루)
-	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 레드 - 1510 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7615,8 +7616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1515 소보스
-	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 레드 - 1515 중보스(블루)
+	ENEMY_KIMERA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7640,8 +7641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 레드 - 1520 중보스(블루)
-	ENEMY_FROG_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 레드 - 1520 소보스
+	ENEMY_TREE_RED, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7740,8 +7741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1540 중보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 레드 - 1540 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7765,8 +7766,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_RED, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1545 소보스
-	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 레드 - 1545 중보스(블루)
+	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7790,8 +7791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1550 중보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 레드 - 1550 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7890,8 +7891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1570 중보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 레드 - 1570 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7915,8 +7916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1575 소보스
-	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 레드 - 1575 중보스(블루)
+	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -7940,8 +7941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1580 중보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 레드 - 1580 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8040,8 +8041,8 @@ static const int wave_builtin[] = {
 	ENEMY_ONEEYE_RED, FPS * 2, MONSTERTYPE_JACO,//아이볼
 	ENEMY_SKELETON_RED, FPS * 3, MONSTERTYPE_JACO,//칠흑의 기사
 
-	//계곡 레드 - 1600 대보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
+	//계곡 레드 - 1600 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8065,8 +8066,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_RED, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1605 소보스
-	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 레드 - 1605 중보스(블루)
+	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8090,8 +8091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 레드 - 1610 중보스(블루)
-	ENEMY_LARVA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 레드 - 1610 소보스
+	ENEMY_SKELETON_RED, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8190,8 +8191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1630 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1630 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8215,8 +8216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1635 소보스
-	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 레드 - 1635 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8240,8 +8241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1640 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1640 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8290,8 +8291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1650 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1650 대보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8340,8 +8341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1660 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1660 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8365,8 +8366,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_RED, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	ENEMY_LIZARD_RED, FPS * 3, MONSTERTYPE_JACO,//사하긴병사
 
-	//아틀란티스 레드 - 1665 소보스
-	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 레드 - 1665 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8390,8 +8391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1670 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1670 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8490,8 +8491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1690 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 레드 - 1690 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8515,8 +8516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1695 소보스
-	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 레드 - 1695 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8540,8 +8541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 레드 - 1700 대보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//아틀란티스 레드 - 1700 소보스
+	ENEMY_JELLYFISH_RED, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8640,8 +8641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1720 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1720 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8665,8 +8666,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_RED, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1725 소보스
-	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 레드 - 1725 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8690,8 +8691,8 @@ static const int wave_builtin[] = {
 	ENEMY_KNIGHT_RED, FPS * 2, MONSTERTYPE_JACO,//타락한 기사
 	ENEMY_SLIME_RED, FPS * 3, MONSTERTYPE_JACO,//슬라임
 
-	//하수도 레드 - 1730 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1730 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8790,8 +8791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1750 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1750 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8815,8 +8816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1755 소보스
-	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 레드 - 1755 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8840,8 +8841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1760 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1760 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8940,8 +8941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1780 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1780 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8965,8 +8966,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_RED, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1785 소보스
-	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 레드 - 1785 중보스(블루)
+	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -8990,8 +8991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1790 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1790 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9090,8 +9091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 레드 - 1810 중보스(블루)
-	ENEMY_SALAMANDER_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 레드 - 1810 소보스
+	ENEMY_SLIME_RED, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9115,8 +9116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1815 소보스
-	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 레드 - 1815 중보스(블루)
+	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9140,8 +9141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1820 중보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 레드 - 1820 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9240,8 +9241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1840 중보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 레드 - 1840 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9265,8 +9266,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_RED, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1845 소보스
-	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 레드 - 1845 중보스(블루)
+	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9290,8 +9291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1850 중보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 레드 - 1850 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9390,8 +9391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1870 중보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 레드 - 1870 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9415,8 +9416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1875 소보스
-	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 레드 - 1875 중보스(블루)
+	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9440,8 +9441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1880 중보스(블루)
-	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 레드 - 1880 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9540,8 +9541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1900 대보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
+	//평원 레드 - 1900 소보스
+	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9565,8 +9566,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_RED, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 레드 - 1905 소보스
-	ENEMY_BOAR_RED, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 레드 - 1905 중보스(블루)
+	ENEMY_GIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9590,8 +9591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1910 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1910 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9690,8 +9691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1930 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1930 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9715,8 +9716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1935 소보스
-	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 레드 - 1935 중보스(블루)
+	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9740,8 +9741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1940 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1940 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9790,8 +9791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1950 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1950 대보스(퍼플)
+	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9840,8 +9841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1960 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1960 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9865,8 +9866,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_RED, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1965 소보스
-	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 레드 - 1965 중보스(블루)
+	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9890,8 +9891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1970 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1970 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -9990,8 +9991,8 @@ static const int wave_builtin[] = {
 	ENEMY_FLAME_RED, FPS * 2, MONSTERTYPE_JACO,//분노의 정령
 	ENEMY_PHOENIX_RED, FPS * 3, MONSTERTYPE_JACO,//마성의 불새
 
-	//화염 레드 - 1990 중보스(블루)
-	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 레드 - 1990 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10015,8 +10016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 1995 소보스
-	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 레드 - 1995 중보스(블루)
+	ENEMY_IFRIT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10040,8 +10041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 레드 - 2000 대보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 레드 - 2000 소보스
+	ENEMY_PHOENIX_RED, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10140,8 +10141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2020 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2020 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10165,8 +10166,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_RED, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2025 소보스
-	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 레드 - 2025 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10190,8 +10191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2030 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2030 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10290,8 +10291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2050 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2050 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10315,8 +10316,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_RED, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	ENEMY_SNOWMAN_RED, FPS * 3, MONSTERTYPE_JACO,//스노우맨
 
-	//빙설 레드 - 2055 소보스
-	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 레드 - 2055 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10340,8 +10341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2060 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2060 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10440,8 +10441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2080 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2080 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10465,8 +10466,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_RED, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2085 소보스
-	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 레드 - 2085 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10490,8 +10491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 레드 - 2090 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 레드 - 2090 소보스
+	ENEMY_SNOWMAN_RED, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10590,8 +10591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2110 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2110 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10615,8 +10616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2115 소보스
-	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 레드 - 2115 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10640,8 +10641,8 @@ static const int wave_builtin[] = {
 	ENEMY_LIGHTNING_RED, FPS * 2, MONSTERTYPE_JACO,//스파크
 	ENEMY_THUNDER_RED, FPS * 3, MONSTERTYPE_JACO,//다크미스트
 
-	//뇌전 레드 - 2120 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2120 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10740,8 +10741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2140 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2140 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10765,8 +10766,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_RED, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2145 소보스
-	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 레드 - 2145 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10790,8 +10791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2150 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2150 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10890,8 +10891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2170 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2170 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10915,8 +10916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2175 소보스
-	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 레드 - 2175 중보스(블루)
+	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -10940,8 +10941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 레드 - 2180 중보스(블루)
-	ENEMY_MAMMOTH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 레드 - 2180 소보스
+	ENEMY_MACHINE_RED, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11040,8 +11041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2200 대보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 레드 - 2200 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11065,8 +11066,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_RED, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2205 소보스
-	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 레드 - 2205 중보스(블루)
+	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11090,8 +11091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2210 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2210 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11190,8 +11191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2230 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2230 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11215,8 +11216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2235 소보스
-	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 레드 - 2235 중보스(블루)
+	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11240,8 +11241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2240 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2240 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11290,8 +11291,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY_RED, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE_RED, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 레드 - 2250 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2250 대보스(퍼플)
+	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11340,8 +11341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2260 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2260 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11365,8 +11366,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_RED, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2265 소보스
-	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 레드 - 2265 중보스(블루)
+	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11390,8 +11391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 레드 - 2270 중보스(블루)
-	ENEMY_ANGEL_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 레드 - 2270 소보스
+	ENEMY_CIRCLE_RED, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11490,8 +11491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2290 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2290 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11515,8 +11516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2295 소보스
-	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 레드 - 2295 중보스(블루)
+	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11540,8 +11541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2300 대보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
+	//골렘계곡 레드 - 2300 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11640,8 +11641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2320 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2320 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11665,8 +11666,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_RED, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2325 소보스
-	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 레드 - 2325 중보스(블루)
+	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11690,8 +11691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2330 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2330 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11790,8 +11791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2350 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2350 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11815,8 +11816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2355 소보스
-	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 레드 - 2355 중보스(블루)
+	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11840,8 +11841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 레드 - 2360 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2360 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11940,8 +11941,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPIDER_RED, FPS * 2, MONSTERTYPE_JACO,//스트라이더
 	ENEMY_GOLEM_RED, FPS * 3, MONSTERTYPE_JACO,//주인잃은 골렘
 
-	//골렘계곡 레드 - 2380 중보스(블루)
-	ENEMY_SHIP_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 레드 - 2380 소보스
+	ENEMY_GOLEM_RED, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11965,8 +11966,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_RED, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2385 소보스
-	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 레드 - 2385 중보스(블루)
+	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -11990,8 +11991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2390 중보스(블루)
-	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 레드 - 2390 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12090,8 +12091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2410 중보스(블루)
-	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 레드 - 2410 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12115,8 +12116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2415 소보스
-	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 레드 - 2415 중보스(블루)
+	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12140,8 +12141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2420 중보스(블루)
-	ENEMY_DARKGIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 레드 - 2420 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12191,7 +12192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 레드 - 2430 중보스(블루)
-	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12240,8 +12241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2440 중보스(블루)
-	ENEMY_DARKGIANT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 레드 - 2440 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12265,8 +12266,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_RED, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	ENEMY_DARKDRAGON_RED, FPS * 3, MONSTERTYPE_JACO,//우로보로스
 
-	//암흑 레드 - 2445 소보스
-	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 레드 - 2445 중보스(블루)
+	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12290,8 +12291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2450 중보스(블루)
-	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 레드 - 2450 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12390,8 +12391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2470 중보스(블루)
-	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 레드 - 2470 소보스
+	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12415,8 +12416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 레드 - 2475 소보스
-	ENEMY_DARKDRAGON_RED, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 레드 - 2475 중보스(블루)
+	ENEMY_FOGRA_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12440,8 +12441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2480 중보스(블루)
-	ENEMY_DRAGON2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 레드 - 2480 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12491,7 +12492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 레드 - 2490 중보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12540,8 +12541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2500 대보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
+	//드래곤 레드 - 2500 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12565,8 +12566,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_RED, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2505 소보스
-	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 레드 - 2505 중보스(블루)
+	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12590,8 +12591,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_RED, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	ENEMY_DRAGON1_RED, FPS * 3, MONSTERTYPE_JACO,//탐욕의 살육자
 
-	//드래곤 레드 - 2510 중보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 레드 - 2510 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12690,8 +12691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2530 중보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 레드 - 2530 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12715,8 +12716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2535 소보스
-	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 레드 - 2535 중보스(블루)
+	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12740,8 +12741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2540 중보스(블루)
-	ENEMY_DRAGON2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 레드 - 2540 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12790,8 +12791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2550 중보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 레드 - 2550 대보스(퍼플)
+	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12840,8 +12841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2560 중보스(블루)
-	ENEMY_DRAGON2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 레드 - 2560 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12865,8 +12866,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_RED, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2565 소보스
-	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 레드 - 2565 중보스(블루)
+	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12890,8 +12891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 레드 - 2570 중보스(블루)
-	ENEMY_BAHAMUT_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 레드 - 2570 소보스
+	ENEMY_DRAGON1_RED, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -12990,8 +12991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2590 중보스(블루)
-	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 레드 - 2590 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13015,8 +13016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2595 소보스
-	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 레드 - 2595 중보스(블루)
+	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13040,8 +13041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2600 대보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
+	//망령 레드 - 2600 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13140,8 +13141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2620 중보스(블루)
-	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 레드 - 2620 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13165,8 +13166,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_RED, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2625 소보스
-	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 레드 - 2625 중보스(블루)
+	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13190,8 +13191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2630 중보스(블루)
-	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 레드 - 2630 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13290,8 +13291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2650 중보스(블루)
-	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 레드 - 2650 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13315,8 +13316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2655 소보스
-	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 레드 - 2655 중보스(블루)
+	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13340,8 +13341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 레드 - 2660 중보스(블루)
-	ENEMY_DEATH_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 레드 - 2660 소보스
+	ENEMY_PUMPKIN_RED, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13391,7 +13392,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 레드 - 2670 중보스(블루)
-	ENEMY_CASTLE2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13440,8 +13441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2680 중보스(블루)
-	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 레드 - 2680 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13465,8 +13466,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_RED, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2685 소보스
-	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 레드 - 2685 중보스(블루)
+	ENEMY_CASTLE_BOSS3_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13490,8 +13491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2690 중보스(블루)
-	ENEMY_CASTLE_BOSS3_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 레드 - 2690 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13590,8 +13591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2710 중보스(블루)
-	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 레드 - 2710 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13615,8 +13616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2715 소보스
-	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 레드 - 2715 중보스(블루)
+	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13640,8 +13641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2720 중보스(블루)
-	ENEMY_CASTLE_BOSS3_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 레드 - 2720 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13691,7 +13692,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 레드 - 2730 중보스(블루)
-	ENEMY_CASTLE2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13740,8 +13741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2740 중보스(블루)
-	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 레드 - 2740 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13765,8 +13766,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_RED, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2745 소보스
-	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 레드 - 2745 중보스(블루)
+	ENEMY_CASTLE2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13790,8 +13791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 레드 - 2750 중보스(블루)
-	ENEMY_CASTLE_BOSS3_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 레드 - 2750 소보스
+	ENEMY_ELKEIN_RED, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13841,7 +13842,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 레드 - 2760 중보스(블루)
-	ENEMY_CASTLE2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13890,8 +13891,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE1_RED, FPS * 2, MONSTERTYPE_JACO,//안드로볼
 	ENEMY_SPACE2_RED, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
-	//우주 레드 - 2770 중보스(블루)
-	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 레드 - 2770 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13915,8 +13916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2775 소보스
-	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 레드 - 2775 중보스(블루)
+	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13940,8 +13941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2780 중보스(블루)
-	ENEMY_CASTLE_BOSS1_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 레드 - 2780 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -13991,7 +13992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 레드 - 2790 중보스(블루)
-	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14040,8 +14041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2800 대보스(퍼플)
-	ENEMY_CASTLE_BOSS1_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//데브리온
+	//우주 레드 - 2800 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14065,8 +14066,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_RED, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2805 소보스
-	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 레드 - 2805 중보스(블루)
+	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14090,8 +14091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2810 중보스(블루)
-	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 레드 - 2810 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14190,8 +14191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2830 중보스(블루)
-	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 레드 - 2830 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14215,8 +14216,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_RED, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	ENEMY_SPACE1_RED, FPS * 3, MONSTERTYPE_JACO,//안드로볼
 
-	//우주 레드 - 2835 소보스
-	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 레드 - 2835 중보스(블루)
+	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14240,8 +14241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2840 중보스(블루)
-	ENEMY_CASTLE_BOSS1_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 레드 - 2840 소보스
+	ENEMY_SPACE2_RED, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14290,8 +14291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 레드 - 2850 중보스(블루)
-	ENEMY_CASTLE_BOSS4_BLUE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 레드 - 2850 대보스(퍼플)
+	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14340,8 +14341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2860 중보스(퍼플)
-	ENEMY_FROG_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 블루 - 2860 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14365,8 +14366,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_BLUE, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2865 소보스
-	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블루 - 2865 중보스(퍼플)
+	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14390,8 +14391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2870 중보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블루 - 2870 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14490,8 +14491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2890 중보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블루 - 2890 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14515,8 +14516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2895 소보스
-	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블루 - 2895 중보스(퍼플)
+	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14540,8 +14541,8 @@ static const int wave_builtin[] = {
 	ENEMY_SNAIL_BLUE, FPS * 2, MONSTERTYPE_JACO,//가시껍질달팽이
 	ENEMY_TREE_BLUE, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
-	//늪 블루 - 2900 대보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//마도합성수
+	//늪 블루 - 2900 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14591,7 +14592,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 블루 - 2910 중보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14640,8 +14641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2920 중보스(퍼플)
-	ENEMY_FROG_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 블루 - 2920 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14665,8 +14666,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_BLUE, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2925 소보스
-	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블루 - 2925 중보스(퍼플)
+	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14690,8 +14691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2930 중보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블루 - 2930 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14790,8 +14791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블루 - 2950 중보스(퍼플)
-	ENEMY_KIMERA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블루 - 2950 소보스
+	ENEMY_TREE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14815,8 +14816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 2955 소보스
-	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블루 - 2955 중보스(퍼플)
+	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14840,8 +14841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 2960 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 2960 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14940,8 +14941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 2980 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 2980 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14965,8 +14966,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_BLUE, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 2985 소보스
-	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블루 - 2985 중보스(퍼플)
+	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -14990,8 +14991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 2990 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 2990 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15090,8 +15091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 3010 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 3010 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15115,8 +15116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 3015 소보스
-	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블루 - 3015 중보스(퍼플)
+	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15140,8 +15141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 3020 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 3020 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15240,8 +15241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 3040 중보스(퍼플)
-	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블루 - 3040 소보스
+	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15265,8 +15266,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_BLUE, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블루 - 3045 소보스
-	ENEMY_SKELETON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블루 - 3045 중보스(퍼플)
+	ENEMY_LARVA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15290,8 +15291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3050 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3050 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15390,8 +15391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3070 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3070 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15415,8 +15416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3075 소보스
-	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블루 - 3075 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15440,8 +15441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3080 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3080 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15540,8 +15541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3100 대보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//아틀란티스 블루 - 3100 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15565,8 +15566,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_BLUE, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3105 소보스
-	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블루 - 3105 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15590,8 +15591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3110 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3110 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15690,8 +15691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3130 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3130 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15715,8 +15716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3135 소보스
-	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블루 - 3135 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15740,8 +15741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블루 - 3140 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블루 - 3140 소보스
+	ENEMY_JELLYFISH_BLUE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15790,8 +15791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3150 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3150 대보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15840,8 +15841,8 @@ static const int wave_builtin[] = {
 	ENEMY_KNIGHT_BLUE, FPS * 2, MONSTERTYPE_JACO,//타락한 기사
 	ENEMY_SLIME_BLUE, FPS * 3, MONSTERTYPE_JACO,//슬라임
 
-	//하수도 블루 - 3160 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3160 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15865,8 +15866,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_BLUE, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3165 소보스
-	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블루 - 3165 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15890,8 +15891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3170 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3170 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -15990,8 +15991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3190 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3190 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16015,8 +16016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3195 소보스
-	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블루 - 3195 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16040,8 +16041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3200 대보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//하수도 블루 - 3200 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16140,8 +16141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3220 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3220 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16165,8 +16166,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_BLUE, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	ENEMY_KNIGHT_BLUE, FPS * 3, MONSTERTYPE_JACO,//타락한 기사
 
-	//하수도 블루 - 3225 소보스
-	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블루 - 3225 중보스(퍼플)
+	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16190,8 +16191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블루 - 3230 중보스(퍼플)
-	ENEMY_SALAMANDER_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블루 - 3230 소보스
+	ENEMY_SLIME_BLUE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16290,8 +16291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3250 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3250 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16315,8 +16316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3255 소보스
-	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블루 - 3255 중보스(퍼플)
+	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16340,8 +16341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3260 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3260 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16440,8 +16441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3280 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3280 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16465,8 +16466,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_BLUE, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3285 소보스
-	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블루 - 3285 중보스(퍼플)
+	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16490,8 +16491,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING_BLUE, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR_BLUE, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 블루 - 3290 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3290 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16590,8 +16591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3310 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3310 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16615,8 +16616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3315 소보스
-	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블루 - 3315 중보스(퍼플)
+	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16640,8 +16641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블루 - 3320 중보스(퍼플)
-	ENEMY_GIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블루 - 3320 소보스
+	ENEMY_BOAR_BLUE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16740,8 +16741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3340 중보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블루 - 3340 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16765,8 +16766,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_BLUE, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3345 소보스
-	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블루 - 3345 중보스(퍼플)
+	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16790,8 +16791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3350 중보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블루 - 3350 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16890,8 +16891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3370 중보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블루 - 3370 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16915,8 +16916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3375 소보스
-	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블루 - 3375 중보스(퍼플)
+	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -16940,8 +16941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3380 중보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블루 - 3380 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17040,8 +17041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3400 대보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 블루 - 3400 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17065,8 +17066,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_BLUE, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3405 소보스
-	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블루 - 3405 중보스(퍼플)
+	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17090,8 +17091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블루 - 3410 중보스(퍼플)
-	ENEMY_IFRIT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블루 - 3410 소보스
+	ENEMY_PHOENIX_BLUE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17190,8 +17191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3430 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3430 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17215,8 +17216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3435 소보스
-	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블루 - 3435 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17240,8 +17241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3440 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3440 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17290,8 +17291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3450 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3450 대보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17340,8 +17341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3460 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3460 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17365,8 +17366,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_BLUE, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3465 소보스
-	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블루 - 3465 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17390,8 +17391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3470 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3470 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17490,8 +17491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3490 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3490 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17515,8 +17516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3495 소보스
-	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블루 - 3495 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17540,8 +17541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3500 대보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//빙설 블루 - 3500 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17640,8 +17641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블루 - 3520 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블루 - 3520 소보스
+	ENEMY_SNOWMAN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17665,8 +17666,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_BLUE, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3525 소보스
-	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블루 - 3525 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17690,8 +17691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3530 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3530 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17790,8 +17791,8 @@ static const int wave_builtin[] = {
 	ENEMY_CRYSTAL_BLUE, FPS * 2, MONSTERTYPE_JACO,//스파크플랜트
 	ENEMY_MACHINE_BLUE, FPS * 3, MONSTERTYPE_JACO,//라이오너
 
-	//뇌전 블루 - 3550 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3550 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17815,8 +17816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3555 소보스
-	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블루 - 3555 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17840,8 +17841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3560 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3560 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17940,8 +17941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3580 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3580 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17965,8 +17966,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_BLUE, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3585 소보스
-	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블루 - 3585 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -17990,8 +17991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3590 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3590 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18090,8 +18091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3610 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3610 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18115,8 +18116,8 @@ static const int wave_builtin[] = {
 	ENEMY_MACHINE_BLUE, FPS * 2, MONSTERTYPE_JACO,//라이오너
 	ENEMY_LIGHTNING_BLUE, FPS * 3, MONSTERTYPE_JACO,//스파크
 
-	//뇌전 블루 - 3615 소보스
-	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블루 - 3615 중보스(퍼플)
+	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18140,8 +18141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블루 - 3620 중보스(퍼플)
-	ENEMY_MAMMOTH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블루 - 3620 소보스
+	ENEMY_MACHINE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18240,8 +18241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3640 중보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블루 - 3640 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18265,8 +18266,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_BLUE, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3645 소보스
-	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블루 - 3645 중보스(퍼플)
+	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18290,8 +18291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3650 중보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블루 - 3650 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18390,8 +18391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3670 중보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블루 - 3670 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18415,8 +18416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3675 소보스
-	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블루 - 3675 중보스(퍼플)
+	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18440,8 +18441,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY_BLUE, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE_BLUE, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 블루 - 3680 중보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블루 - 3680 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18540,8 +18541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3700 대보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 블루 - 3700 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18565,8 +18566,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_BLUE, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3705 소보스
-	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블루 - 3705 중보스(퍼플)
+	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18590,8 +18591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블루 - 3710 중보스(퍼플)
-	ENEMY_ANGEL_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블루 - 3710 소보스
+	ENEMY_CIRCLE_BLUE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18690,8 +18691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3730 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3730 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18715,8 +18716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3735 소보스
-	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블루 - 3735 중보스(퍼플)
+	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18740,8 +18741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3740 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3740 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18790,8 +18791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3750 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3750 대보스(그린)
+	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18840,8 +18841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3760 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3760 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18865,8 +18866,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_BLUE, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3765 소보스
-	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블루 - 3765 중보스(퍼플)
+	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18890,8 +18891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3770 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3770 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -18990,8 +18991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3790 중보스(퍼플)
-	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블루 - 3790 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19015,8 +19016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3795 소보스
-	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블루 - 3795 중보스(퍼플)
+	ENEMY_SHIP_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19040,8 +19041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블루 - 3800 대보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
+	//골렘계곡 블루 - 3800 소보스
+	ENEMY_GOLEM_BLUE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19140,8 +19141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3820 중보스(퍼플)
-	ENEMY_DARKGIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블루 - 3820 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19165,8 +19166,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_BLUE, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3825 소보스
-	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블루 - 3825 중보스(퍼플)
+	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19190,8 +19191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3830 중보스(퍼플)
-	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블루 - 3830 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19290,8 +19291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3850 중보스(퍼플)
-	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블루 - 3850 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19315,8 +19316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3855 소보스
-	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블루 - 3855 중보스(퍼플)
+	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19340,8 +19341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3860 중보스(퍼플)
-	ENEMY_DARKGIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블루 - 3860 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19391,7 +19392,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 블루 - 3870 중보스(퍼플)
-	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19440,8 +19441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3880 중보스(퍼플)
-	ENEMY_DARKGIANT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블루 - 3880 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19465,8 +19466,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_BLUE, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3885 소보스
-	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블루 - 3885 중보스(퍼플)
+	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19490,8 +19491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블루 - 3890 중보스(퍼플)
-	ENEMY_FOGRA_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블루 - 3890 소보스
+	ENEMY_DARKDRAGON_BLUE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19541,7 +19542,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 블루 - 3900 대보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
+	ENEMY_DARKGIANT_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19590,8 +19591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3910 중보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블루 - 3910 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19615,8 +19616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3915 소보스
-	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블루 - 3915 중보스(퍼플)
+	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19640,8 +19641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3920 중보스(퍼플)
-	ENEMY_DRAGON2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 블루 - 3920 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19691,7 +19692,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 블루 - 3930 중보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19740,8 +19741,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_BLUE, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	ENEMY_DRAGON1_BLUE, FPS * 3, MONSTERTYPE_JACO,//탐욕의 살육자
 
-	//드래곤 블루 - 3940 중보스(퍼플)
-	ENEMY_DRAGON2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 블루 - 3940 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19765,8 +19766,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_BLUE, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3945 소보스
-	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블루 - 3945 중보스(퍼플)
+	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19790,8 +19791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3950 중보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블루 - 3950 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19890,8 +19891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3970 중보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블루 - 3970 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19915,8 +19916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3975 소보스
-	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블루 - 3975 중보스(퍼플)
+	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19940,8 +19941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 3980 중보스(퍼플)
-	ENEMY_DRAGON2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 블루 - 3980 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -19991,7 +19992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 블루 - 3990 중보스(퍼플)
-	ENEMY_BAHAMUT_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20040,8 +20041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블루 - 4000 대보스(그린)
-	ENEMY_DRAGON2_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//드래곤좀비
+	//드래곤 블루 - 4000 소보스
+	ENEMY_DRAGON1_BLUE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20065,8 +20066,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_BLUE, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	ENEMY_GHOST_BLUE, FPS * 3, MONSTERTYPE_JACO,//떠도는 영혼
 
-	//망령 블루 - 4005 소보스
-	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블루 - 4005 중보스(퍼플)
+	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20090,8 +20091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4010 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4010 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20190,8 +20191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4030 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4030 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20215,8 +20216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4035 소보스
-	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블루 - 4035 중보스(퍼플)
+	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20240,8 +20241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4040 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4040 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20290,8 +20291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4050 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4050 대보스(그린)
+	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20340,8 +20341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4060 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4060 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20365,8 +20366,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_BLUE, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4065 소보스
-	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블루 - 4065 중보스(퍼플)
+	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20390,8 +20391,8 @@ static const int wave_builtin[] = {
 	ENEMY_GHOST_BLUE, FPS * 2, MONSTERTYPE_JACO,//떠도는 영혼
 	ENEMY_PUMPKIN_BLUE, FPS * 3, MONSTERTYPE_JACO,//무혼의 기사
 
-	//망령 블루 - 4070 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4070 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20490,8 +20491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4090 중보스(퍼플)
-	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블루 - 4090 소보스
+	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20515,8 +20516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블루 - 4095 소보스
-	ENEMY_PUMPKIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블루 - 4095 중보스(퍼플)
+	ENEMY_DEATH_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20540,8 +20541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4100 대보스(그린)
-	ENEMY_CASTLE_BOSS3_GREEN, FPS * 1, MONSTERTYPE_BIGBOSS,//테트라쉐도우
+	//마성 블루 - 4100 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20591,7 +20592,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 블루 - 4110 중보스(퍼플)
-	ENEMY_CASTLE2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20640,8 +20641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4120 중보스(퍼플)
-	ENEMY_CASTLE_BOSS2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블루 - 4120 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20665,8 +20666,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_BLUE, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4125 소보스
-	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블루 - 4125 중보스(퍼플)
+	ENEMY_CASTLE_BOSS3_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20690,8 +20691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4130 중보스(퍼플)
-	ENEMY_CASTLE_BOSS3_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블루 - 4130 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20790,8 +20791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4150 중보스(퍼플)
-	ENEMY_CASTLE_BOSS2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블루 - 4150 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20815,8 +20816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4155 소보스
-	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블루 - 4155 중보스(퍼플)
+	ENEMY_CASTLE_BOSS2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20840,8 +20841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4160 중보스(퍼플)
-	ENEMY_CASTLE_BOSS3_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블루 - 4160 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20891,7 +20892,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 블루 - 4170 중보스(퍼플)
-	ENEMY_CASTLE2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20940,8 +20941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4180 중보스(퍼플)
-	ENEMY_CASTLE_BOSS2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블루 - 4180 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20965,8 +20966,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_BLUE, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4185 소보스
-	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블루 - 4185 중보스(퍼플)
+	ENEMY_CASTLE2_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -20990,8 +20991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블루 - 4190 중보스(퍼플)
-	ENEMY_CASTLE_BOSS3_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블루 - 4190 소보스
+	ENEMY_ELKEIN_BLUE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21090,8 +21091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4210 중보스(퍼플)
-	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블루 - 4210 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21115,8 +21116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4215 소보스
-	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블루 - 4215 중보스(퍼플)
+	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21140,8 +21141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4220 중보스(퍼플)
-	ENEMY_CASTLE_BOSS1_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블루 - 4220 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21191,7 +21192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 블루 - 4230 중보스(퍼플)
-	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21240,8 +21241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4240 중보스(퍼플)
-	ENEMY_CASTLE_BOSS1_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블루 - 4240 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21265,8 +21266,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_BLUE, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4245 소보스
-	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블루 - 4245 중보스(퍼플)
+	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21290,8 +21291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4250 중보스(퍼플)
-	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블루 - 4250 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21390,8 +21391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4270 중보스(퍼플)
-	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블루 - 4270 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21415,8 +21416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4275 소보스
-	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블루 - 4275 중보스(퍼플)
+	ENEMY_CASTLE_BOSS4_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21440,8 +21441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블루 - 4280 중보스(퍼플)
-	ENEMY_CASTLE_BOSS1_PURPLE, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블루 - 4280 소보스
+	ENEMY_SPACE2_BLUE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21491,7 +21492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 퍼플 - 4290 중보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21540,8 +21541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4300 대보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//마도합성수
+	//늪 퍼플 - 4300 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21565,8 +21566,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_PURPLE, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4305 소보스
-	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 퍼플 - 4305 중보스(그린)
+	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21590,8 +21591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4310 중보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 퍼플 - 4310 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21690,8 +21691,8 @@ static const int wave_builtin[] = {
 	ENEMY_SNAIL_PURPLE, FPS * 2, MONSTERTYPE_JACO,//가시껍질달팽이
 	ENEMY_TREE_PURPLE, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
-	//늪 퍼플 - 4330 중보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 퍼플 - 4330 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21715,8 +21716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4335 소보스
-	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 퍼플 - 4335 중보스(그린)
+	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21740,8 +21741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4340 중보스(그린)
-	ENEMY_FROG_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 퍼플 - 4340 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21790,8 +21791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4350 중보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 퍼플 - 4350 대보스(골드)
+	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21840,8 +21841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4360 중보스(그린)
-	ENEMY_FROG_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 퍼플 - 4360 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21865,8 +21866,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_PURPLE, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4365 소보스
-	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 퍼플 - 4365 중보스(그린)
+	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21890,8 +21891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 퍼플 - 4370 중보스(그린)
-	ENEMY_KIMERA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 퍼플 - 4370 소보스
+	ENEMY_TREE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -21990,8 +21991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4390 중보스(그린)
-	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 퍼플 - 4390 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22015,8 +22016,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_PURPLE, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	ENEMY_ONEEYE_PURPLE, FPS * 3, MONSTERTYPE_JACO,//아이볼
 
-	//계곡 퍼플 - 4395 소보스
-	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 퍼플 - 4395 중보스(그린)
+	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22040,8 +22041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4400 대보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
+	//계곡 퍼플 - 4400 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22140,8 +22141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4420 중보스(그린)
-	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 퍼플 - 4420 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22165,8 +22166,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_PURPLE, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4425 소보스
-	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 퍼플 - 4425 중보스(그린)
+	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22190,8 +22191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4430 중보스(그린)
-	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 퍼플 - 4430 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22290,8 +22291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4450 중보스(그린)
-	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 퍼플 - 4450 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22315,8 +22316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 퍼플 - 4455 소보스
-	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 퍼플 - 4455 중보스(그린)
+	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22340,8 +22341,8 @@ static const int wave_builtin[] = {
 	ENEMY_ONEEYE_PURPLE, FPS * 2, MONSTERTYPE_JACO,//아이볼
 	ENEMY_SKELETON_PURPLE, FPS * 3, MONSTERTYPE_JACO,//칠흑의 기사
 
-	//계곡 퍼플 - 4460 중보스(그린)
-	ENEMY_LARVA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 퍼플 - 4460 소보스
+	ENEMY_SKELETON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22440,8 +22441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4480 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4480 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22465,8 +22466,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_PURPLE, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4485 소보스
-	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 퍼플 - 4485 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22490,8 +22491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4490 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4490 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22590,8 +22591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4510 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4510 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22615,8 +22616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4515 소보스
-	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 퍼플 - 4515 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22640,8 +22641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4520 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4520 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22740,8 +22741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4540 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4540 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22765,8 +22766,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_PURPLE, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4545 소보스
-	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 퍼플 - 4545 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22790,8 +22791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4550 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4550 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22890,8 +22891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 퍼플 - 4570 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 퍼플 - 4570 소보스
+	ENEMY_JELLYFISH_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22915,8 +22916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4575 소보스
-	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 퍼플 - 4575 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -22940,8 +22941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4580 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4580 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23040,8 +23041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4600 대보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//하수도 퍼플 - 4600 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23065,8 +23066,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_PURPLE, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4605 소보스
-	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 퍼플 - 4605 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23090,8 +23091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4610 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4610 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23190,8 +23191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4630 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4630 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23215,8 +23216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4635 소보스
-	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 퍼플 - 4635 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23240,8 +23241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4640 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4640 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23290,8 +23291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4650 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4650 대보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23340,8 +23341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4660 중보스(그린)
-	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 퍼플 - 4660 소보스
+	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23365,8 +23366,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_PURPLE, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 퍼플 - 4665 소보스
-	ENEMY_SLIME_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 퍼플 - 4665 중보스(그린)
+	ENEMY_SALAMANDER_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23390,8 +23391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4670 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4670 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23490,8 +23491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4690 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4690 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23515,8 +23516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4695 소보스
-	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 퍼플 - 4695 중보스(그린)
+	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23540,8 +23541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4700 대보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
+	//평원 퍼플 - 4700 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23640,8 +23641,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING_PURPLE, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR_PURPLE, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 퍼플 - 4720 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4720 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23665,8 +23666,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_PURPLE, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4725 소보스
-	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 퍼플 - 4725 중보스(그린)
+	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23690,8 +23691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4730 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4730 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23790,8 +23791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4750 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4750 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23815,8 +23816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4755 소보스
-	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 퍼플 - 4755 중보스(그린)
+	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23840,8 +23841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 퍼플 - 4760 중보스(그린)
-	ENEMY_GIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 퍼플 - 4760 소보스
+	ENEMY_BOAR_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23940,8 +23941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4780 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4780 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23965,8 +23966,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_PURPLE, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	ENEMY_FLAME_PURPLE, FPS * 3, MONSTERTYPE_JACO,//분노의 정령
 
-	//화염 퍼플 - 4785 소보스
-	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 퍼플 - 4785 중보스(그린)
+	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -23990,8 +23991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4790 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4790 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24090,8 +24091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4810 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4810 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24115,8 +24116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4815 소보스
-	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 퍼플 - 4815 중보스(그린)
+	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24140,8 +24141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4820 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4820 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24240,8 +24241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4840 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4840 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24265,8 +24266,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_PURPLE, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 퍼플 - 4845 소보스
-	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 퍼플 - 4845 중보스(그린)
+	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24290,8 +24291,8 @@ static const int wave_builtin[] = {
 	ENEMY_FLAME_PURPLE, FPS * 2, MONSTERTYPE_JACO,//분노의 정령
 	ENEMY_PHOENIX_PURPLE, FPS * 3, MONSTERTYPE_JACO,//마성의 불새
 
-	//화염 퍼플 - 4850 중보스(그린)
-	ENEMY_IFRIT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 퍼플 - 4850 소보스
+	ENEMY_PHOENIX_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24390,8 +24391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4870 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4870 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24415,8 +24416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4875 소보스
-	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 퍼플 - 4875 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24440,8 +24441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4880 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4880 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24540,8 +24541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4900 대보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//빙설 퍼플 - 4900 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24565,8 +24566,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_PURPLE, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4905 소보스
-	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 퍼플 - 4905 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24590,8 +24591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4910 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4910 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24690,8 +24691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4930 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4930 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24715,8 +24716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4935 소보스
-	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 퍼플 - 4935 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24740,8 +24741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4940 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4940 소보스
+	ENEMY_SNOWMAN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24790,8 +24791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 퍼플 - 4950 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 퍼플 - 4950 대보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24840,8 +24841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 4960 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 퍼플 - 4960 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24865,8 +24866,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_PURPLE, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 4965 소보스
-	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 퍼플 - 4965 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24890,8 +24891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 4970 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 퍼플 - 4970 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -24990,8 +24991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 4990 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 퍼플 - 4990 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25015,8 +25016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 4995 소보스
-	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 퍼플 - 4995 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25040,8 +25041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 5000 대보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//뇌전 퍼플 - 5000 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25140,8 +25141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 5020 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 퍼플 - 5020 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25165,8 +25166,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_PURPLE, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 5025 소보스
-	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 퍼플 - 5025 중보스(그린)
+	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25190,8 +25191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 퍼플 - 5030 중보스(그린)
-	ENEMY_MAMMOTH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 퍼플 - 5030 소보스
+	ENEMY_MACHINE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25290,8 +25291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5050 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5050 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25315,8 +25316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5055 소보스
-	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 퍼플 - 5055 중보스(그린)
+	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25340,8 +25341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5060 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5060 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25440,8 +25441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5080 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5080 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25465,8 +25466,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_PURPLE, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5085 소보스
-	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 퍼플 - 5085 중보스(그린)
+	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25490,8 +25491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5090 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5090 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25590,8 +25591,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY_PURPLE, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE_PURPLE, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 퍼플 - 5110 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5110 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25615,8 +25616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5115 소보스
-	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 퍼플 - 5115 중보스(그린)
+	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25640,8 +25641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5120 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5120 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25740,8 +25741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 퍼플 - 5140 중보스(그린)
-	ENEMY_ANGEL_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 퍼플 - 5140 소보스
+	ENEMY_CIRCLE_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25765,8 +25766,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_PURPLE, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5145 소보스
-	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 퍼플 - 5145 중보스(그린)
+	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25790,8 +25791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5150 중보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5150 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25890,8 +25891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5170 중보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5170 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25915,8 +25916,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_PURPLE, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	ENEMY_SPIDER_PURPLE, FPS * 3, MONSTERTYPE_JACO,//스트라이더
 
-	//골렘계곡 퍼플 - 5175 소보스
-	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 퍼플 - 5175 중보스(그린)
+	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -25940,8 +25941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5180 중보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5180 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26040,8 +26041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5200 대보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5200 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26065,8 +26066,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_PURPLE, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5205 소보스
-	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 퍼플 - 5205 중보스(그린)
+	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26090,8 +26091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5210 중보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5210 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26190,8 +26191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5230 중보스(그린)
-	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 퍼플 - 5230 소보스
+	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26215,8 +26216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 퍼플 - 5235 소보스
-	ENEMY_GOLEM_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 퍼플 - 5235 중보스(그린)
+	ENEMY_SHIP_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26240,8 +26241,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPIDER_PURPLE, FPS * 2, MONSTERTYPE_JACO,//스트라이더
 	ENEMY_GOLEM_PURPLE, FPS * 3, MONSTERTYPE_JACO,//주인잃은 골렘
 
-	//암흑 퍼플 - 5240 중보스(그린)
-	ENEMY_DARKGIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 퍼플 - 5240 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26290,8 +26291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5250 중보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 퍼플 - 5250 대보스(골드)
+	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26340,8 +26341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5260 중보스(그린)
-	ENEMY_DARKGIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 퍼플 - 5260 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26365,8 +26366,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_PURPLE, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5265 소보스
-	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 퍼플 - 5265 중보스(그린)
+	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26390,8 +26391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5270 중보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 퍼플 - 5270 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26490,8 +26491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5290 중보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 퍼플 - 5290 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26515,8 +26516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5295 소보스
-	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 퍼플 - 5295 중보스(그린)
+	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26540,8 +26541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5300 대보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
+	//암흑 퍼플 - 5300 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26591,7 +26592,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 퍼플 - 5310 중보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26640,8 +26641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5320 중보스(그린)
-	ENEMY_DARKGIANT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 퍼플 - 5320 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26665,8 +26666,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_PURPLE, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5325 소보스
-	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 퍼플 - 5325 중보스(그린)
+	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26690,8 +26691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 퍼플 - 5330 중보스(그린)
-	ENEMY_FOGRA_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 퍼플 - 5330 소보스
+	ENEMY_DARKDRAGON_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26790,8 +26791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5350 중보스(그린)
-	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 퍼플 - 5350 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26815,8 +26816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5355 소보스
-	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 퍼플 - 5355 중보스(그린)
+	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26840,8 +26841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5360 중보스(그린)
-	ENEMY_DRAGON2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 퍼플 - 5360 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26891,7 +26892,7 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_PURPLE, FPS * 3, MONSTERTYPE_JACO,//탐욕의 살육자
 
 	//드래곤 퍼플 - 5370 중보스(그린)
-	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26940,8 +26941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5380 중보스(그린)
-	ENEMY_DRAGON2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 퍼플 - 5380 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26965,8 +26966,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_PURPLE, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5385 소보스
-	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 퍼플 - 5385 중보스(그린)
+	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -26990,8 +26991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5390 중보스(그린)
-	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 퍼플 - 5390 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27090,8 +27091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5410 중보스(그린)
-	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 퍼플 - 5410 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27115,8 +27116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5415 소보스
-	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 퍼플 - 5415 중보스(그린)
+	ENEMY_BAHAMUT_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27140,8 +27141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 퍼플 - 5420 중보스(그린)
-	ENEMY_DRAGON2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 퍼플 - 5420 소보스
+	ENEMY_DRAGON1_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27240,8 +27241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5440 중보스(그린)
-	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 퍼플 - 5440 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27265,8 +27266,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_PURPLE, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5445 소보스
-	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 퍼플 - 5445 중보스(그린)
+	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27290,8 +27291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5450 중보스(그린)
-	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 퍼플 - 5450 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27390,8 +27391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5470 중보스(그린)
-	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 퍼플 - 5470 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27415,8 +27416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5475 소보스
-	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 퍼플 - 5475 중보스(그린)
+	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27440,8 +27441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5480 중보스(그린)
-	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 퍼플 - 5480 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27540,8 +27541,8 @@ static const int wave_builtin[] = {
 	ENEMY_GHOST_PURPLE, FPS * 2, MONSTERTYPE_JACO,//떠도는 영혼
 	ENEMY_PUMPKIN_PURPLE, FPS * 3, MONSTERTYPE_JACO,//무혼의 기사
 
-	//망령 퍼플 - 5500 대보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
+	//망령 퍼플 - 5500 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27565,8 +27566,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_PURPLE, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5505 소보스
-	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 퍼플 - 5505 중보스(그린)
+	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27590,8 +27591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 퍼플 - 5510 중보스(그린)
-	ENEMY_DEATH_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 퍼플 - 5510 소보스
+	ENEMY_PUMPKIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27690,8 +27691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5530 중보스(그린)
-	ENEMY_CASTLE_BOSS2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 퍼플 - 5530 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27715,8 +27716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5535 소보스
-	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 퍼플 - 5535 중보스(그린)
+	ENEMY_CASTLE2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27740,8 +27741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5540 중보스(그린)
-	ENEMY_CASTLE_BOSS3_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 퍼플 - 5540 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27790,8 +27791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5550 중보스(그린)
-	ENEMY_CASTLE2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	//마성 퍼플 - 5550 대보스(골드)
+	ENEMY_CASTLE_BOSS2_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27840,8 +27841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5560 중보스(그린)
-	ENEMY_CASTLE_BOSS2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 퍼플 - 5560 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27865,8 +27866,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_PURPLE, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	ENEMY_LABETH_PURPLE, FPS * 3, MONSTERTYPE_JACO,//라베스
 
-	//마성 퍼플 - 5565 소보스
-	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 퍼플 - 5565 중보스(그린)
+	ENEMY_CASTLE_BOSS3_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27890,8 +27891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5570 중보스(그린)
-	ENEMY_CASTLE_BOSS3_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 퍼플 - 5570 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -27990,8 +27991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5590 중보스(그린)
-	ENEMY_CASTLE_BOSS2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 퍼플 - 5590 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28015,8 +28016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5595 소보스
-	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 퍼플 - 5595 중보스(그린)
+	ENEMY_CASTLE_BOSS2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28040,8 +28041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5600 대보스(골드)
-	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//테트라쉐도우
+	//마성 퍼플 - 5600 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28091,7 +28092,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 퍼플 - 5610 중보스(그린)
-	ENEMY_CASTLE2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28140,8 +28141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 퍼플 - 5620 중보스(그린)
-	ENEMY_CASTLE_BOSS2_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 퍼플 - 5620 소보스
+	ENEMY_ELKEIN_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28165,8 +28166,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_PURPLE, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5625 소보스
-	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 퍼플 - 5625 중보스(그린)
+	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28190,8 +28191,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE1_PURPLE, FPS * 2, MONSTERTYPE_JACO,//안드로볼
 	ENEMY_SPACE2_PURPLE, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
-	//우주 퍼플 - 5630 중보스(그린)
-	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 퍼플 - 5630 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28290,8 +28291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5650 중보스(그린)
-	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 퍼플 - 5650 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28315,8 +28316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5655 소보스
-	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 퍼플 - 5655 중보스(그린)
+	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28340,8 +28341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5660 중보스(그린)
-	ENEMY_CASTLE_BOSS1_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 퍼플 - 5660 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28391,7 +28392,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 퍼플 - 5670 중보스(그린)
-	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28440,8 +28441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5680 중보스(그린)
-	ENEMY_CASTLE_BOSS1_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 퍼플 - 5680 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28465,8 +28466,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_PURPLE, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5685 소보스
-	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 퍼플 - 5685 중보스(그린)
+	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28490,8 +28491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5690 중보스(그린)
-	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 퍼플 - 5690 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28541,7 +28542,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 퍼플 - 5700 대보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_GOLD, FPS * 1, MONSTERTYPE_BIGBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28590,8 +28591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5710 중보스(그린)
-	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 퍼플 - 5710 소보스
+	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28615,8 +28616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 퍼플 - 5715 소보스
-	ENEMY_SPACE2_PURPLE, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 퍼플 - 5715 중보스(그린)
+	ENEMY_CASTLE_BOSS4_GREEN, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28640,8 +28641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5720 중보스(골드)
-	ENEMY_FROG_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 그린 - 5720 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28691,7 +28692,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 그린 - 5730 중보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28740,8 +28741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5740 중보스(골드)
-	ENEMY_FROG_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 그린 - 5740 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28765,8 +28766,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_GREEN, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5745 소보스
-	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 그린 - 5745 중보스(골드)
+	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28790,8 +28791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5750 중보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 그린 - 5750 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28890,8 +28891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5770 중보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 그린 - 5770 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28915,8 +28916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5775 소보스
-	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 그린 - 5775 중보스(골드)
+	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28940,8 +28941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5780 중보스(골드)
-	ENEMY_FROG_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 그린 - 5780 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -28991,7 +28992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 그린 - 5790 중보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29040,8 +29041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5800 대보스(블랙)
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//토드뮤턴트
+	//늪 그린 - 5800 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29065,8 +29066,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_GREEN, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5805 소보스
-	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 그린 - 5805 중보스(골드)
+	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29090,8 +29091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 그린 - 5810 중보스(골드)
-	ENEMY_KIMERA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 그린 - 5810 소보스
+	ENEMY_TREE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29190,8 +29191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5830 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5830 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29215,8 +29216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5835 소보스
-	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 그린 - 5835 중보스(골드)
+	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29240,8 +29241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5840 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5840 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29290,8 +29291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5850 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5850 대보스(블랙)
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29340,8 +29341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5860 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5860 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29365,8 +29366,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_GREEN, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5865 소보스
-	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 그린 - 5865 중보스(골드)
+	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29390,8 +29391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5870 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5870 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29490,8 +29491,8 @@ static const int wave_builtin[] = {
 	ENEMY_ONEEYE_GREEN, FPS * 2, MONSTERTYPE_JACO,//아이볼
 	ENEMY_SKELETON_GREEN, FPS * 3, MONSTERTYPE_JACO,//칠흑의 기사
 
-	//계곡 그린 - 5890 중보스(골드)
-	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 그린 - 5890 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29515,8 +29516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5895 소보스
-	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 그린 - 5895 중보스(골드)
+	ENEMY_LARVA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29540,8 +29541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 그린 - 5900 대보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
+	//계곡 그린 - 5900 소보스
+	ENEMY_SKELETON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29640,8 +29641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5920 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5920 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29665,8 +29666,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_GREEN, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5925 소보스
-	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 그린 - 5925 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29690,8 +29691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5930 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5930 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29790,8 +29791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5950 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5950 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29815,8 +29816,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_GREEN, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	ENEMY_LIZARD_GREEN, FPS * 3, MONSTERTYPE_JACO,//사하긴병사
 
-	//아틀란티스 그린 - 5955 소보스
-	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 그린 - 5955 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29840,8 +29841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5960 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5960 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29940,8 +29941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5980 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5980 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29965,8 +29966,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_GREEN, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5985 소보스
-	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 그린 - 5985 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -29990,8 +29991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 그린 - 5990 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 그린 - 5990 소보스
+	ENEMY_JELLYFISH_GREEN, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30090,8 +30091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6010 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6010 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30115,8 +30116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6015 소보스
-	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 그린 - 6015 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30140,8 +30141,8 @@ static const int wave_builtin[] = {
 	ENEMY_KNIGHT_GREEN, FPS * 2, MONSTERTYPE_JACO,//타락한 기사
 	ENEMY_SLIME_GREEN, FPS * 3, MONSTERTYPE_JACO,//슬라임
 
-	//하수도 그린 - 6020 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6020 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30240,8 +30241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6040 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6040 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30265,8 +30266,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_GREEN, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6045 소보스
-	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 그린 - 6045 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30290,8 +30291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6050 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6050 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30390,8 +30391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6070 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6070 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30415,8 +30416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6075 소보스
-	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 그린 - 6075 중보스(골드)
+	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30440,8 +30441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 그린 - 6080 중보스(골드)
-	ENEMY_SALAMANDER_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 그린 - 6080 소보스
+	ENEMY_SLIME_GREEN, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30540,8 +30541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6100 대보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
+	//평원 그린 - 6100 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30565,8 +30566,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_GREEN, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6105 소보스
-	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 그린 - 6105 중보스(골드)
+	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30590,8 +30591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6110 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6110 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30690,8 +30691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6130 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6130 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30715,8 +30716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6135 소보스
-	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 그린 - 6135 중보스(골드)
+	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30740,8 +30741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6140 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6140 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30790,8 +30791,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING_GREEN, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR_GREEN, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 그린 - 6150 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6150 대보스(블랙)
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30840,8 +30841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6160 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6160 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30865,8 +30866,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_GREEN, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6165 소보스
-	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 그린 - 6165 중보스(골드)
+	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30890,8 +30891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6170 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6170 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -30990,8 +30991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 그린 - 6190 중보스(골드)
-	ENEMY_GIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 그린 - 6190 소보스
+	ENEMY_BOAR_GREEN, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31015,8 +31016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6195 소보스
-	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 그린 - 6195 중보스(골드)
+	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31040,8 +31041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6200 대보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 그린 - 6200 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31140,8 +31141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6220 중보스(골드)
-	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 그린 - 6220 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31165,8 +31166,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_GREEN, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6225 소보스
-	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 그린 - 6225 중보스(골드)
+	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31190,8 +31191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6230 중보스(골드)
-	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 그린 - 6230 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31290,8 +31291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6250 중보스(골드)
-	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 그린 - 6250 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31315,8 +31316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6255 소보스
-	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 그린 - 6255 중보스(골드)
+	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31340,8 +31341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6260 중보스(골드)
-	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 그린 - 6260 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31440,8 +31441,8 @@ static const int wave_builtin[] = {
 	ENEMY_FLAME_GREEN, FPS * 2, MONSTERTYPE_JACO,//분노의 정령
 	ENEMY_PHOENIX_GREEN, FPS * 3, MONSTERTYPE_JACO,//마성의 불새
 
-	//화염 그린 - 6280 중보스(골드)
-	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 그린 - 6280 소보스
+	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31465,8 +31466,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_GREEN, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 그린 - 6285 소보스
-	ENEMY_PHOENIX_GREEN, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 그린 - 6285 중보스(골드)
+	ENEMY_IFRIT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31490,8 +31491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6290 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6290 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31590,8 +31591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6310 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6310 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31615,8 +31616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6315 소보스
-	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 그린 - 6315 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31640,8 +31641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6320 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6320 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31740,8 +31741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6340 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6340 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31765,8 +31766,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_GREEN, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	ENEMY_SNOWMAN_GREEN, FPS * 3, MONSTERTYPE_JACO,//스노우맨
 
-	//빙설 그린 - 6345 소보스
-	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 그린 - 6345 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31790,8 +31791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6350 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6350 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31890,8 +31891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6370 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6370 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31915,8 +31916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6375 소보스
-	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 그린 - 6375 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -31940,8 +31941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 그린 - 6380 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 그린 - 6380 소보스
+	ENEMY_SNOWMAN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32040,8 +32041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6400 대보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//뇌전 그린 - 6400 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32065,8 +32066,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_GREEN, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6405 소보스
-	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 그린 - 6405 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32090,8 +32091,8 @@ static const int wave_builtin[] = {
 	ENEMY_CRYSTAL_GREEN, FPS * 2, MONSTERTYPE_JACO,//스파크플랜트
 	ENEMY_MACHINE_GREEN, FPS * 3, MONSTERTYPE_JACO,//라이오너
 
-	//뇌전 그린 - 6410 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6410 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32190,8 +32191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6430 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6430 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32215,8 +32216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6435 소보스
-	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 그린 - 6435 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32240,8 +32241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6440 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6440 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32290,8 +32291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6450 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6450 대보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32340,8 +32341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6460 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6460 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32365,8 +32366,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_GREEN, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6465 소보스
-	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 그린 - 6465 중보스(골드)
+	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32390,8 +32391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 그린 - 6470 중보스(골드)
-	ENEMY_MAMMOTH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 그린 - 6470 소보스
+	ENEMY_MACHINE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32490,8 +32491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6490 중보스(골드)
-	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 그린 - 6490 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32515,8 +32516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6495 소보스
-	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 그린 - 6495 중보스(골드)
+	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32540,8 +32541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6500 대보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 그린 - 6500 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32640,8 +32641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6520 중보스(골드)
-	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 그린 - 6520 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32665,8 +32666,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_GREEN, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6525 소보스
-	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 그린 - 6525 중보스(골드)
+	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32690,8 +32691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6530 중보스(골드)
-	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 그린 - 6530 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32790,8 +32791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6550 중보스(골드)
-	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 그린 - 6550 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32815,8 +32816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6555 소보스
-	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 그린 - 6555 중보스(골드)
+	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32840,8 +32841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 그린 - 6560 중보스(골드)
-	ENEMY_ANGEL_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 그린 - 6560 소보스
+	ENEMY_CIRCLE_GREEN, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32940,8 +32941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6580 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6580 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32965,8 +32966,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_GREEN, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6585 소보스
-	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 그린 - 6585 중보스(골드)
+	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -32990,8 +32991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6590 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6590 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33090,8 +33091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6610 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6610 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33115,8 +33116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6615 소보스
-	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 그린 - 6615 중보스(골드)
+	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33140,8 +33141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6620 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6620 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33240,8 +33241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6640 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6640 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33265,8 +33266,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_GREEN, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6645 소보스
-	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 그린 - 6645 중보스(골드)
+	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33290,8 +33291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 그린 - 6650 중보스(골드)
-	ENEMY_SHIP_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 그린 - 6650 소보스
+	ENEMY_GOLEM_GREEN, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33390,8 +33391,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_GREEN, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	ENEMY_DARKDRAGON_GREEN, FPS * 3, MONSTERTYPE_JACO,//우로보로스
 
-	//암흑 그린 - 6670 중보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 그린 - 6670 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33415,8 +33416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6675 소보스
-	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 그린 - 6675 중보스(골드)
+	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33440,8 +33441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6680 중보스(골드)
-	ENEMY_DARKGIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 그린 - 6680 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33491,7 +33492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 그린 - 6690 중보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33540,8 +33541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6700 대보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
+	//암흑 그린 - 6700 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33565,8 +33566,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_GREEN, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6705 소보스
-	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 그린 - 6705 중보스(골드)
+	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33590,8 +33591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6710 중보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 그린 - 6710 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33690,8 +33691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6730 중보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 그린 - 6730 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33715,8 +33716,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_GREEN, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	ENEMY_DARKDRAGON_GREEN, FPS * 3, MONSTERTYPE_JACO,//우로보로스
 
-	//암흑 그린 - 6735 소보스
-	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 그린 - 6735 중보스(골드)
+	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33740,8 +33741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6740 중보스(골드)
-	ENEMY_DARKGIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 그린 - 6740 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33790,8 +33791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6750 중보스(골드)
-	ENEMY_FOGRA_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 그린 - 6750 대보스(블랙)
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33840,8 +33841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 그린 - 6760 중보스(골드)
-	ENEMY_DARKGIANT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 그린 - 6760 소보스
+	ENEMY_DARKDRAGON_GREEN, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33865,8 +33866,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GREEN, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6765 소보스
-	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 그린 - 6765 중보스(골드)
+	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33890,8 +33891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6770 중보스(골드)
-	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 그린 - 6770 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -33990,8 +33991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6790 중보스(골드)
-	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 그린 - 6790 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34015,8 +34016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6795 소보스
-	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 그린 - 6795 중보스(골드)
+	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34040,8 +34041,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GREEN, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	ENEMY_DRAGON1_GREEN, FPS * 3, MONSTERTYPE_JACO,//탐욕의 살육자
 
-	//드래곤 그린 - 6800 대보스(블랙)
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//드래곤좀비
+	//드래곤 그린 - 6800 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34091,7 +34092,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 그린 - 6810 중보스(골드)
-	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34140,8 +34141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6820 중보스(골드)
-	ENEMY_DRAGON2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 그린 - 6820 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34165,8 +34166,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GREEN, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6825 소보스
-	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 그린 - 6825 중보스(골드)
+	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34190,8 +34191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6830 중보스(골드)
-	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 그린 - 6830 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34290,8 +34291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6850 중보스(골드)
-	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 그린 - 6850 소보스
+	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34315,8 +34316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 그린 - 6855 소보스
-	ENEMY_DRAGON1_GREEN, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 그린 - 6855 중보스(골드)
+	ENEMY_BAHAMUT_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34340,8 +34341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6860 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6860 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34440,8 +34441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6880 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6880 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34465,8 +34466,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_GREEN, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6885 소보스
-	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 그린 - 6885 중보스(골드)
+	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34490,8 +34491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6890 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6890 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34590,8 +34591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6910 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6910 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34615,8 +34616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6915 소보스
-	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 그린 - 6915 중보스(골드)
+	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34640,8 +34641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6920 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6920 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34740,8 +34741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6940 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6940 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34765,8 +34766,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_GREEN, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6945 소보스
-	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 그린 - 6945 중보스(골드)
+	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34790,8 +34791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 그린 - 6950 중보스(골드)
-	ENEMY_DEATH_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 그린 - 6950 소보스
+	ENEMY_PUMPKIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34841,7 +34842,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 그린 - 6960 중보스(골드)
-	ENEMY_CASTLE2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34890,8 +34891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 6970 중보스(골드)
-	ENEMY_CASTLE_BOSS2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 그린 - 6970 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34915,8 +34916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 6975 소보스
-	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 그린 - 6975 중보스(골드)
+	ENEMY_CASTLE2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34940,8 +34941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 6980 중보스(골드)
-	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 그린 - 6980 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -34991,7 +34992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 그린 - 6990 중보스(골드)
-	ENEMY_CASTLE2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35040,8 +35041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7000 대보스(블랙)
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//엘케인맨티스
+	//마성 그린 - 7000 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35065,8 +35066,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_GREEN, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7005 소보스
-	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 그린 - 7005 중보스(골드)
+	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35090,8 +35091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7010 중보스(골드)
-	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 그린 - 7010 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35190,8 +35191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7030 중보스(골드)
-	ENEMY_CASTLE_BOSS2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 그린 - 7030 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35215,8 +35216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7035 소보스
-	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 그린 - 7035 중보스(골드)
+	ENEMY_CASTLE_BOSS2_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35240,8 +35241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 그린 - 7040 중보스(골드)
-	ENEMY_CASTLE_BOSS3_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 그린 - 7040 소보스
+	ENEMY_ELKEIN_GREEN, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35290,8 +35291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7050 중보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 그린 - 7050 대보스(블랙)
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35340,8 +35341,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE1_GREEN, FPS * 2, MONSTERTYPE_JACO,//안드로볼
 	ENEMY_SPACE2_GREEN, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
-	//우주 그린 - 7060 중보스(골드)
-	ENEMY_CASTLE_BOSS1_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 그린 - 7060 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35365,8 +35366,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_GREEN, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7065 소보스
-	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 그린 - 7065 중보스(골드)
+	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35390,8 +35391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7070 중보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 그린 - 7070 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35490,8 +35491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7090 중보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 그린 - 7090 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35515,8 +35516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7095 소보스
-	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 그린 - 7095 중보스(골드)
+	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35540,8 +35541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7100 대보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
+	//우주 그린 - 7100 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35591,7 +35592,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 그린 - 7110 중보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35640,8 +35641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7120 중보스(골드)
-	ENEMY_CASTLE_BOSS1_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 그린 - 7120 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35665,8 +35666,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_GREEN, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	ENEMY_SPACE1_GREEN, FPS * 3, MONSTERTYPE_JACO,//안드로볼
 
-	//우주 그린 - 7125 소보스
-	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 그린 - 7125 중보스(골드)
+	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35690,8 +35691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 그린 - 7130 중보스(골드)
-	ENEMY_CASTLE_BOSS4_GOLD, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 그린 - 7130 소보스
+	ENEMY_SPACE2_GREEN, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35790,8 +35791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7150 중보스(블랙)
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 골드 - 7150 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35815,8 +35816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7155 소보스
-	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 골드 - 7155 중보스(블랙)
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35840,8 +35841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7160 중보스(블랙)
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 골드 - 7160 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35891,7 +35892,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 골드 - 7170 중보스(블랙)
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35940,8 +35941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7180 중보스(블랙)
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 골드 - 7180 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35965,8 +35966,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_GOLD, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7185 소보스
-	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 골드 - 7185 중보스(블랙)
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -35990,8 +35991,8 @@ static const int wave_builtin[] = {
 	ENEMY_SNAIL_GOLD, FPS * 2, MONSTERTYPE_JACO,//가시껍질달팽이
 	ENEMY_TREE_GOLD, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
-	//늪 골드 - 7190 중보스(블랙)
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 골드 - 7190 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36090,8 +36091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7210 중보스(블랙)
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 골드 - 7210 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36115,8 +36116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7215 소보스
-	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 골드 - 7215 중보스(블랙)
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36140,8 +36141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 골드 - 7220 중보스(블랙)
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 골드 - 7220 소보스
+	ENEMY_TREE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36191,7 +36192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 골드 - 7230 중보스(블랙)
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36240,8 +36241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7240 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7240 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36265,8 +36266,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_GOLD, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7245 소보스
-	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 골드 - 7245 중보스(블랙)
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36290,8 +36291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7250 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7250 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36390,8 +36391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7270 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7270 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36415,8 +36416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7275 소보스
-	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 골드 - 7275 중보스(블랙)
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36440,8 +36441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7280 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7280 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36540,8 +36541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7300 대보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아르곤
+	//계곡 골드 - 7300 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36565,8 +36566,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_GOLD, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7305 소보스
-	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 골드 - 7305 중보스(블랙)
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36590,8 +36591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7310 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7310 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36690,8 +36691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 골드 - 7330 중보스(블랙)
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 골드 - 7330 소보스
+	ENEMY_SKELETON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36715,8 +36716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7335 소보스
-	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 골드 - 7335 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36740,8 +36741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7340 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7340 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36790,8 +36791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7350 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7350 대보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36840,8 +36841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7360 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7360 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36865,8 +36866,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_GOLD, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7365 소보스
-	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 골드 - 7365 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36890,8 +36891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7370 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7370 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -36990,8 +36991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7390 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7390 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37015,8 +37016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7395 소보스
-	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 골드 - 7395 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37040,8 +37041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7400 대보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//아틀란티스 골드 - 7400 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37140,8 +37141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7420 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 골드 - 7420 소보스
+	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37165,8 +37166,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_GOLD, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 골드 - 7425 소보스
-	ENEMY_JELLYFISH_GOLD, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 골드 - 7425 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37190,8 +37191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7430 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7430 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37290,8 +37291,8 @@ static const int wave_builtin[] = {
 	ENEMY_KNIGHT_GOLD, FPS * 2, MONSTERTYPE_JACO,//타락한 기사
 	ENEMY_SLIME_GOLD, FPS * 3, MONSTERTYPE_JACO,//슬라임
 
-	//하수도 골드 - 7450 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7450 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37315,8 +37316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7455 소보스
-	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 골드 - 7455 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37340,8 +37341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7460 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7460 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37440,8 +37441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7480 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7480 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37465,8 +37466,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_GOLD, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7485 소보스
-	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 골드 - 7485 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37490,8 +37491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7490 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7490 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37590,8 +37591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7510 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7510 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37615,8 +37616,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_GOLD, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	ENEMY_KNIGHT_GOLD, FPS * 3, MONSTERTYPE_JACO,//타락한 기사
 
-	//하수도 골드 - 7515 소보스
-	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 골드 - 7515 중보스(블랙)
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37640,8 +37641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 골드 - 7520 중보스(블랙)
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 골드 - 7520 소보스
+	ENEMY_SLIME_GOLD, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37740,8 +37741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7540 중보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 골드 - 7540 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37765,8 +37766,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_GOLD, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7545 소보스
-	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 골드 - 7545 중보스(블랙)
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37790,8 +37791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7550 중보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 골드 - 7550 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37890,8 +37891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7570 중보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 골드 - 7570 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37915,8 +37916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7575 소보스
-	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 골드 - 7575 중보스(블랙)
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -37940,8 +37941,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING_GOLD, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR_GOLD, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 골드 - 7580 중보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 골드 - 7580 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38040,8 +38041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7600 대보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 수호자
+	//평원 골드 - 7600 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38065,8 +38066,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_GOLD, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7605 소보스
-	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 골드 - 7605 중보스(블랙)
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38090,8 +38091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 골드 - 7610 중보스(블랙)
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 골드 - 7610 소보스
+	ENEMY_BOAR_GOLD, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38190,8 +38191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7630 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7630 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38215,8 +38216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7635 소보스
-	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 골드 - 7635 중보스(블랙)
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38240,8 +38241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7640 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7640 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38290,8 +38291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7650 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7650 대보스(블랙)
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38340,8 +38341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7660 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7660 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38365,8 +38366,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_GOLD, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7665 소보스
-	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 골드 - 7665 중보스(블랙)
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38390,8 +38391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7670 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7670 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38490,8 +38491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7690 중보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 골드 - 7690 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38515,8 +38516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7695 소보스
-	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 골드 - 7695 중보스(블랙)
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38540,8 +38541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 골드 - 7700 대보스(블랙)
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 골드 - 7700 소보스
+	ENEMY_PHOENIX_GOLD, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38640,8 +38641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7720 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7720 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38665,8 +38666,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_GOLD, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7725 소보스
-	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 골드 - 7725 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38690,8 +38691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7730 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7730 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38790,8 +38791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7750 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7750 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38815,8 +38816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7755 소보스
-	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 골드 - 7755 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38840,8 +38841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7760 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7760 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38940,8 +38941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7780 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7780 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38965,8 +38966,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_GOLD, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7785 소보스
-	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 골드 - 7785 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -38990,8 +38991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7790 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7790 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39090,8 +39091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 골드 - 7810 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 골드 - 7810 소보스
+	ENEMY_SNOWMAN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39115,8 +39116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7815 소보스
-	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 골드 - 7815 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39140,8 +39141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7820 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 골드 - 7820 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39240,8 +39241,8 @@ static const int wave_builtin[] = {
 	ENEMY_LIGHTNING_GOLD, FPS * 2, MONSTERTYPE_JACO,//스파크
 	ENEMY_THUNDER_GOLD, FPS * 3, MONSTERTYPE_JACO,//다크미스트
 
-	//뇌전 골드 - 7840 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 골드 - 7840 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39265,8 +39266,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_GOLD, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7845 소보스
-	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 골드 - 7845 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39290,8 +39291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7850 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 골드 - 7850 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39390,8 +39391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7870 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 골드 - 7870 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39415,8 +39416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7875 소보스
-	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 골드 - 7875 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39440,8 +39441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7880 중보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 골드 - 7880 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39540,8 +39541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 골드 - 7900 대보스(블랙)
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//뇌전 골드 - 7900 소보스
+	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39565,8 +39566,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_GOLD, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	ENEMY_CRYSTAL_GOLD, FPS * 3, MONSTERTYPE_JACO,//스파크플랜트
 
-	//뇌전 골드 - 7905 소보스
-	ENEMY_MACHINE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 골드 - 7905 중보스(블랙)
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39590,8 +39591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7910 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7910 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39690,8 +39691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7930 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7930 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39715,8 +39716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7935 소보스
-	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 골드 - 7935 중보스(블랙)
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39740,8 +39741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7940 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7940 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39790,8 +39791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7950 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7950 대보스(블랙)
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39840,8 +39841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7960 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7960 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39865,8 +39866,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_GOLD, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7965 소보스
-	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 골드 - 7965 중보스(블랙)
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39890,8 +39891,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY_GOLD, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE_GOLD, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 골드 - 7970 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7970 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -39990,8 +39991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7990 중보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 골드 - 7990 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40015,8 +40016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 7995 소보스
-	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 골드 - 7995 중보스(블랙)
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40040,8 +40041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 골드 - 8000 대보스(블랙)
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 골드 - 8000 소보스
+	ENEMY_CIRCLE_GOLD, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40140,8 +40141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8020 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8020 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40165,8 +40166,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_GOLD, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8025 소보스
-	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 골드 - 8025 중보스(블랙)
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40190,8 +40191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8030 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8030 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40290,8 +40291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8050 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8050 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40315,8 +40316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8055 소보스
-	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 골드 - 8055 중보스(블랙)
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40340,8 +40341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8060 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8060 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40440,8 +40441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8080 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8080 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40465,8 +40466,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_GOLD, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8085 소보스
-	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 골드 - 8085 중보스(블랙)
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40490,8 +40491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 골드 - 8090 중보스(블랙)
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 골드 - 8090 소보스
+	ENEMY_GOLEM_GOLD, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40541,7 +40542,7 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_GOLD, FPS * 3, MONSTERTYPE_JACO,//우로보로스
 
 	//암흑 골드 - 8100 대보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//아리만
+	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40590,8 +40591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8110 중보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 골드 - 8110 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40615,8 +40616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8115 소보스
-	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 골드 - 8115 중보스(블랙)
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40640,8 +40641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8120 중보스(블랙)
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 골드 - 8120 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40691,7 +40692,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 골드 - 8130 중보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40740,8 +40741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8140 중보스(블랙)
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 골드 - 8140 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40765,8 +40766,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_GOLD, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8145 소보스
-	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 골드 - 8145 중보스(블랙)
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40790,8 +40791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8150 중보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 골드 - 8150 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40890,8 +40891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8170 중보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 골드 - 8170 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40915,8 +40916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8175 소보스
-	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 골드 - 8175 중보스(블랙)
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40940,8 +40941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 골드 - 8180 중보스(블랙)
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 골드 - 8180 소보스
+	ENEMY_DARKDRAGON_GOLD, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -40991,7 +40992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 골드 - 8190 중보스(블랙)
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41040,8 +41041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8200 대보스(블랙)
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//드래곤좀비
+	//드래곤 골드 - 8200 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41065,8 +41066,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GOLD, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8205 소보스
-	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 골드 - 8205 중보스(블랙)
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41090,8 +41091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8210 중보스(블랙)
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 골드 - 8210 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41190,8 +41191,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GOLD, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	ENEMY_DRAGON1_GOLD, FPS * 3, MONSTERTYPE_JACO,//탐욕의 살육자
 
-	//드래곤 골드 - 8230 중보스(블랙)
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 골드 - 8230 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41215,8 +41216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8235 소보스
-	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 골드 - 8235 중보스(블랙)
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41240,8 +41241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8240 중보스(블랙)
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 골드 - 8240 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41290,8 +41291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8250 중보스(블랙)
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 골드 - 8250 대보스(블랙)
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41340,8 +41341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8260 중보스(블랙)
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 골드 - 8260 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41365,8 +41366,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_GOLD, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8265 소보스
-	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 골드 - 8265 중보스(블랙)
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41390,8 +41391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 골드 - 8270 중보스(블랙)
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 골드 - 8270 소보스
+	ENEMY_DRAGON1_GOLD, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41490,8 +41491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8290 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8290 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41515,8 +41516,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_GOLD, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	ENEMY_GHOST_GOLD, FPS * 3, MONSTERTYPE_JACO,//떠도는 영혼
 
-	//망령 골드 - 8295 소보스
-	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 골드 - 8295 중보스(블랙)
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41540,8 +41541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8300 대보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
+	//망령 골드 - 8300 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41640,8 +41641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8320 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8320 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41665,8 +41666,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_GOLD, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8325 소보스
-	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 골드 - 8325 중보스(블랙)
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41690,8 +41691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8330 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8330 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41790,8 +41791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8350 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8350 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41815,8 +41816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8355 소보스
-	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 골드 - 8355 중보스(블랙)
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41840,8 +41841,8 @@ static const int wave_builtin[] = {
 	ENEMY_GHOST_GOLD, FPS * 2, MONSTERTYPE_JACO,//떠도는 영혼
 	ENEMY_PUMPKIN_GOLD, FPS * 3, MONSTERTYPE_JACO,//무혼의 기사
 
-	//망령 골드 - 8360 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8360 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41940,8 +41941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 골드 - 8380 중보스(블랙)
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 골드 - 8380 소보스
+	ENEMY_PUMPKIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41965,8 +41966,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_GOLD, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8385 소보스
-	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 골드 - 8385 중보스(블랙)
+	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -41990,8 +41991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8390 중보스(블랙)
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 골드 - 8390 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42041,7 +42042,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 골드 - 8400 대보스(블랙)
-	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42090,8 +42091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8410 중보스(블랙)
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 골드 - 8410 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42115,8 +42116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8415 소보스
-	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 골드 - 8415 중보스(블랙)
+	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42140,8 +42141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8420 중보스(블랙)
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 골드 - 8420 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42191,7 +42192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 골드 - 8430 중보스(블랙)
-	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42240,8 +42241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8440 중보스(블랙)
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 골드 - 8440 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42265,8 +42266,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_GOLD, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8445 소보스
-	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 골드 - 8445 중보스(블랙)
+	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42290,8 +42291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8450 중보스(블랙)
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 골드 - 8450 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42390,8 +42391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8470 중보스(블랙)
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 골드 - 8470 소보스
+	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42415,8 +42416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 골드 - 8475 소보스
-	ENEMY_ELKEIN_GOLD, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 골드 - 8475 중보스(블랙)
+	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42440,8 +42441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8480 중보스(블랙)
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 골드 - 8480 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42491,7 +42492,7 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_GOLD, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
 	//우주 골드 - 8490 중보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42540,8 +42541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8500 대보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
+	//우주 골드 - 8500 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42565,8 +42566,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_GOLD, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8505 소보스
-	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 골드 - 8505 중보스(블랙)
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42590,8 +42591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8510 중보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 골드 - 8510 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42690,8 +42691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8530 중보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 골드 - 8530 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42715,8 +42716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8535 소보스
-	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 골드 - 8535 중보스(블랙)
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42740,8 +42741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8540 중보스(블랙)
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 골드 - 8540 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42790,8 +42791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8550 중보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 골드 - 8550 대보스(블랙)
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42840,8 +42841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8560 중보스(블랙)
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 골드 - 8560 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42865,8 +42866,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_GOLD, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8565 소보스
-	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 골드 - 8565 중보스(블랙)
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42890,8 +42891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 골드 - 8570 중보스(블랙)
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 골드 - 8570 소보스
+	ENEMY_SPACE2_GOLD, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -42990,8 +42991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8590 중보스
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블랙 - 8590 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43015,8 +43016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8595 소보스
-	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블랙 - 8595 중보스
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43040,8 +43041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8600 대보스
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//토드뮤턴트
+	//늪 블랙 - 8600 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43091,7 +43092,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//늪 블랙 - 8610 중보스
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43140,8 +43141,8 @@ static const int wave_builtin[] = {
 	ENEMY_SNAIL_BLACK, FPS * 2, MONSTERTYPE_JACO,//가시껍질달팽이
 	ENEMY_TREE_BLACK, FPS * 3, MONSTERTYPE_JACO,//늪의 주인
 
-	//늪 블랙 - 8620 중보스
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 블랙 - 8620 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43165,8 +43166,8 @@ static const int wave_builtin[] = {
 	ENEMY_TREE_BLACK, FPS * 2, MONSTERTYPE_JACO,//늪의 주인
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8625 소보스
-	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블랙 - 8625 중보스
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43190,8 +43191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8630 중보스
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블랙 - 8630 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43290,8 +43291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8650 중보스
-	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
+	//늪 블랙 - 8650 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43315,8 +43316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8655 소보스
-	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
+	//늪 블랙 - 8655 중보스
+	ENEMY_KIMERA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//마도합성수
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43340,8 +43341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//늪 블랙 - 8660 중보스
-	ENEMY_FROG_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//토드뮤턴트
+	//늪 블랙 - 8660 소보스
+	ENEMY_TREE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//늪의 주인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43440,8 +43441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8680 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8680 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43465,8 +43466,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_BLACK, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	ENEMY_ONEEYE_BLACK, FPS * 3, MONSTERTYPE_JACO,//아이볼
 
-	//계곡 블랙 - 8685 소보스
-	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블랙 - 8685 중보스
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43490,8 +43491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8690 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8690 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43590,8 +43591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8710 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8710 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43615,8 +43616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8715 소보스
-	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블랙 - 8715 중보스
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43640,8 +43641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8720 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8720 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43740,8 +43741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8740 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8740 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43765,8 +43766,8 @@ static const int wave_builtin[] = {
 	ENEMY_SKELETON_BLACK, FPS * 2, MONSTERTYPE_JACO,//칠흑의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//계곡 블랙 - 8745 소보스
-	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
+	//계곡 블랙 - 8745 중보스
+	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43790,8 +43791,8 @@ static const int wave_builtin[] = {
 	ENEMY_ONEEYE_BLACK, FPS * 2, MONSTERTYPE_JACO,//아이볼
 	ENEMY_SKELETON_BLACK, FPS * 3, MONSTERTYPE_JACO,//칠흑의 기사
 
-	//계곡 블랙 - 8750 중보스
-	ENEMY_LARVA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아르곤
+	//계곡 블랙 - 8750 소보스
+	ENEMY_SKELETON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//칠흑의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43890,8 +43891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8770 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8770 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43915,8 +43916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8775 소보스
-	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블랙 - 8775 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -43940,8 +43941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8780 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8780 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44040,8 +44041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8800 대보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//아틀란티스 블랙 - 8800 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44065,8 +44066,8 @@ static const int wave_builtin[] = {
 	ENEMY_JELLYFISH_BLACK, FPS * 2, MONSTERTYPE_JACO,//맹독해파리
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8805 소보스
-	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블랙 - 8805 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44090,8 +44091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8810 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8810 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44190,8 +44191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8830 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8830 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44215,8 +44216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8835 소보스
-	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
+	//아틀란티스 블랙 - 8835 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44240,8 +44241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8840 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8840 소보스
+	ENEMY_JELLYFISH_BLACK, FPS * 1, MONSTERTYPE_BOSS,//맹독해파리
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44290,8 +44291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//아틀란티스 블랙 - 8850 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//아틀란티스 블랙 - 8850 대보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44340,8 +44341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8860 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8860 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44365,8 +44366,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_BLACK, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8865 소보스
-	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블랙 - 8865 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44390,8 +44391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8870 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8870 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44490,8 +44491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8890 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8890 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44515,8 +44516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8895 소보스
-	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블랙 - 8895 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44540,8 +44541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8900 대보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//카툼
+	//하수도 블랙 - 8900 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44640,8 +44641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8920 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8920 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44665,8 +44666,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLIME_BLACK, FPS * 2, MONSTERTYPE_JACO,//슬라임
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8925 소보스
-	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
+	//하수도 블랙 - 8925 중보스
+	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44690,8 +44691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8930 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8930 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44790,8 +44791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//하수도 블랙 - 8950 중보스
-	ENEMY_SALAMANDER_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//카툼
+	//하수도 블랙 - 8950 소보스
+	ENEMY_SLIME_BLACK, FPS * 1, MONSTERTYPE_BOSS,//슬라임
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44815,8 +44816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 8955 소보스
-	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블랙 - 8955 중보스
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44840,8 +44841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 8960 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 8960 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44940,8 +44941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 8980 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 8980 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44965,8 +44966,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_BLACK, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 8985 소보스
-	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블랙 - 8985 중보스
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -44990,8 +44991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 8990 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 8990 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45090,8 +45091,8 @@ static const int wave_builtin[] = {
 	ENEMY_SLING_BLACK, FPS * 2, MONSTERTYPE_JACO,//평원의 도적
 	ENEMY_BOAR_BLACK, FPS * 3, MONSTERTYPE_JACO,//거친발멧돼지
 
-	//평원 블랙 - 9010 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 9010 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45115,8 +45116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 9015 소보스
-	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블랙 - 9015 중보스
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45140,8 +45141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 9020 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 9020 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45240,8 +45241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 9040 중보스
-	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
+	//평원 블랙 - 9040 소보스
+	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45265,8 +45266,8 @@ static const int wave_builtin[] = {
 	ENEMY_BOAR_BLACK, FPS * 2, MONSTERTYPE_JACO,//거친발멧돼지
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//평원 블랙 - 9045 소보스
-	ENEMY_BOAR_BLACK, FPS * 1, MONSTERTYPE_BOSS,//거친발멧돼지
+	//평원 블랙 - 9045 중보스
+	ENEMY_GIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 수호자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45290,8 +45291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9050 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9050 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45390,8 +45391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9070 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9070 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45415,8 +45416,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_BLACK, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	ENEMY_FLAME_BLACK, FPS * 3, MONSTERTYPE_JACO,//분노의 정령
 
-	//화염 블랙 - 9075 소보스
-	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블랙 - 9075 중보스
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45440,8 +45441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9080 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9080 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45540,8 +45541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9100 대보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//이프리트
+	//화염 블랙 - 9100 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45565,8 +45566,8 @@ static const int wave_builtin[] = {
 	ENEMY_PHOENIX_BLACK, FPS * 2, MONSTERTYPE_JACO,//마성의 불새
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9105 소보스
-	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블랙 - 9105 중보스
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45590,8 +45591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9110 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9110 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45690,8 +45691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9130 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9130 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45715,8 +45716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//화염 블랙 - 9135 소보스
-	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
+	//화염 블랙 - 9135 중보스
+	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45740,8 +45741,8 @@ static const int wave_builtin[] = {
 	ENEMY_FLAME_BLACK, FPS * 2, MONSTERTYPE_JACO,//분노의 정령
 	ENEMY_PHOENIX_BLACK, FPS * 3, MONSTERTYPE_JACO,//마성의 불새
 
-	//화염 블랙 - 9140 중보스
-	ENEMY_IFRIT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//이프리트
+	//화염 블랙 - 9140 소보스
+	ENEMY_PHOENIX_BLACK, FPS * 1, MONSTERTYPE_BOSS,//마성의 불새
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45790,8 +45791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9150 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9150 대보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45840,8 +45841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9160 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9160 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45865,8 +45866,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_BLACK, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9165 소보스
-	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블랙 - 9165 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45890,8 +45891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9170 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9170 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -45990,8 +45991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9190 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9190 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46015,8 +46016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9195 소보스
-	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블랙 - 9195 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46040,8 +46041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9200 대보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//프로스트
+	//빙설 블랙 - 9200 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46140,8 +46141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9220 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9220 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46165,8 +46166,8 @@ static const int wave_builtin[] = {
 	ENEMY_FACE_BLACK, FPS * 2, MONSTERTYPE_JACO,//결빙의 석상
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9225 소보스
-	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
+	//빙설 블랙 - 9225 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46190,8 +46191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빙설 블랙 - 9230 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//빙설 블랙 - 9230 소보스
+	ENEMY_SNOWMAN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//스노우맨
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46290,8 +46291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9250 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9250 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46315,8 +46316,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9255 소보스
-	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블랙 - 9255 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46340,8 +46341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9260 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9260 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46440,8 +46441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9280 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9280 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46465,8 +46466,8 @@ static const int wave_builtin[] = {
 	ENEMY_THUNDER_BLACK, FPS * 2, MONSTERTYPE_JACO,//다크미스트
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9285 소보스
-	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블랙 - 9285 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46490,8 +46491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9290 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9290 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46590,8 +46591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9310 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9310 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46615,8 +46616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9315 소보스
-	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
+	//뇌전 블랙 - 9315 중보스
+	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46640,8 +46641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//뇌전 블랙 - 9320 중보스
-	ENEMY_MAMMOTH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//프로스트
+	//뇌전 블랙 - 9320 소보스
+	ENEMY_MACHINE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//라이오너
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46740,8 +46741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9340 중보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블랙 - 9340 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46765,8 +46766,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_BLACK, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9345 소보스
-	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블랙 - 9345 중보스
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46790,8 +46791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9350 중보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블랙 - 9350 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46890,8 +46891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9370 중보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블랙 - 9370 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46915,8 +46916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9375 소보스
-	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블랙 - 9375 중보스
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -46940,8 +46941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9380 중보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블랙 - 9380 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47040,8 +47041,8 @@ static const int wave_builtin[] = {
 	ENEMY_FAIRY_BLACK, FPS * 2, MONSTERTYPE_JACO,//라이트스피릿
 	ENEMY_CIRCLE_BLACK, FPS * 3, MONSTERTYPE_JACO,//딜루전소울
 
-	//빛 블랙 - 9400 대보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//호루스
+	//빛 블랙 - 9400 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47065,8 +47066,8 @@ static const int wave_builtin[] = {
 	ENEMY_CIRCLE_BLACK, FPS * 2, MONSTERTYPE_JACO,//딜루전소울
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9405 소보스
-	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
+	//빛 블랙 - 9405 중보스
+	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47090,8 +47091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//빛 블랙 - 9410 중보스
-	ENEMY_ANGEL_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//호루스
+	//빛 블랙 - 9410 소보스
+	ENEMY_CIRCLE_BLACK, FPS * 1, MONSTERTYPE_BOSS,//딜루전소울
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47190,8 +47191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9430 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9430 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47215,8 +47216,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9435 소보스
-	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블랙 - 9435 중보스
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47240,8 +47241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9440 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9440 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47290,8 +47291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9450 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9450 대보스
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47340,8 +47341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9460 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9460 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47365,8 +47366,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_BLACK, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	ENEMY_SPIDER_BLACK, FPS * 3, MONSTERTYPE_JACO,//스트라이더
 
-	//골렘계곡 블랙 - 9465 소보스
-	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블랙 - 9465 중보스
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47390,8 +47391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9470 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9470 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47490,8 +47491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9490 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9490 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47515,8 +47516,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9495 소보스
-	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
+	//골렘계곡 블랙 - 9495 중보스
+	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47540,8 +47541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9500 대보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9500 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47640,8 +47641,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//골렘계곡 블랙 - 9520 중보스
-	ENEMY_SHIP_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//고대의 방주
+	//골렘계곡 블랙 - 9520 소보스
+	ENEMY_GOLEM_BLACK, FPS * 1, MONSTERTYPE_BOSS,//주인잃은 골렘
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47665,8 +47666,8 @@ static const int wave_builtin[] = {
 	ENEMY_GOLEM_BLACK, FPS * 2, MONSTERTYPE_JACO,//주인잃은 골렘
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9525 소보스
-	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블랙 - 9525 중보스
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47690,8 +47691,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_BLACK, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	ENEMY_DARKDRAGON_BLACK, FPS * 3, MONSTERTYPE_JACO,//우로보로스
 
-	//암흑 블랙 - 9530 중보스
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블랙 - 9530 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47790,8 +47791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9550 중보스
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블랙 - 9550 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47815,8 +47816,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9555 소보스
-	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블랙 - 9555 중보스
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47840,8 +47841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9560 중보스
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블랙 - 9560 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47891,7 +47892,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//암흑 블랙 - 9570 중보스
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47940,8 +47941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9580 중보스
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블랙 - 9580 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47965,8 +47966,8 @@ static const int wave_builtin[] = {
 	ENEMY_DARKDRAGON_BLACK, FPS * 2, MONSTERTYPE_JACO,//우로보로스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9585 소보스
-	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블랙 - 9585 중보스
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -47990,8 +47991,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9590 중보스
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블랙 - 9590 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48090,8 +48091,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9610 중보스
-	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
+	//암흑 블랙 - 9610 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48115,8 +48116,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9615 소보스
-	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
+	//암흑 블랙 - 9615 중보스
+	ENEMY_FOGRA_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//아리만
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48140,8 +48141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//암흑 블랙 - 9620 중보스
-	ENEMY_DARKGIANT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//그레이트아머
+	//암흑 블랙 - 9620 소보스
+	ENEMY_DARKDRAGON_BLACK, FPS * 1, MONSTERTYPE_BOSS,//우로보로스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48191,7 +48192,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 블랙 - 9630 중보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48240,8 +48241,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9640 중보스
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 블랙 - 9640 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48265,8 +48266,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_BLACK, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9645 소보스
-	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블랙 - 9645 중보스
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48290,8 +48291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9650 중보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블랙 - 9650 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48390,8 +48391,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9670 중보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블랙 - 9670 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48415,8 +48416,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9675 소보스
-	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블랙 - 9675 중보스
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48440,8 +48441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9680 중보스
-	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
+	//드래곤 블랙 - 9680 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48491,7 +48492,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//드래곤 블랙 - 9690 중보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	ENEMY_DRAGON2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//드래곤좀비
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48540,8 +48541,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9700 대보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//티어맷
+	//드래곤 블랙 - 9700 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48565,8 +48566,8 @@ static const int wave_builtin[] = {
 	ENEMY_DRAGON1_BLACK, FPS * 2, MONSTERTYPE_JACO,//탐욕의 살육자
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9705 소보스
-	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
+	//드래곤 블랙 - 9705 중보스
+	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48590,8 +48591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//드래곤 블랙 - 9710 중보스
-	ENEMY_BAHAMUT_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//티어맷
+	//드래곤 블랙 - 9710 소보스
+	ENEMY_DRAGON1_BLACK, FPS * 1, MONSTERTYPE_BOSS,//탐욕의 살육자
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48690,8 +48691,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9730 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9730 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48715,8 +48716,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9735 소보스
-	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블랙 - 9735 중보스
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48740,8 +48741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9740 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9740 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48790,8 +48791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9750 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9750 대보스
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48840,8 +48841,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9760 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9760 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48865,8 +48866,8 @@ static const int wave_builtin[] = {
 	ENEMY_PUMPKIN_BLACK, FPS * 2, MONSTERTYPE_JACO,//무혼의 기사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9765 소보스
-	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블랙 - 9765 중보스
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48890,8 +48891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9770 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9770 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -48990,8 +48991,8 @@ static const int wave_builtin[] = {
 	ENEMY_GHOST_BLACK, FPS * 2, MONSTERTYPE_JACO,//떠도는 영혼
 	ENEMY_PUMPKIN_BLACK, FPS * 3, MONSTERTYPE_JACO,//무혼의 기사
 
-	//망령 블랙 - 9790 중보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
+	//망령 블랙 - 9790 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49015,8 +49016,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9795 소보스
-	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
+	//망령 블랙 - 9795 중보스
+	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//죽음의 신
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49040,8 +49041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//망령 블랙 - 9800 대보스
-	ENEMY_DEATH_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//죽음의 신
+	//망령 블랙 - 9800 소보스
+	ENEMY_PUMPKIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//무혼의 기사
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49140,8 +49141,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9820 중보스
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블랙 - 9820 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49165,8 +49166,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_BLACK, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9825 소보스
-	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블랙 - 9825 중보스
+	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49190,8 +49191,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9830 중보스
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블랙 - 9830 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49241,7 +49242,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 블랙 - 9840 중보스
-	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49290,8 +49291,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9850 중보스
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블랙 - 9850 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49315,8 +49316,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_BLACK, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	ENEMY_LABETH_BLACK, FPS * 3, MONSTERTYPE_JACO,//라베스
 
-	//마성 블랙 - 9855 소보스
-	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블랙 - 9855 중보스
+	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49340,8 +49341,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9860 중보스
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블랙 - 9860 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49391,7 +49392,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//마성 블랙 - 9870 중보스
-	ENEMY_CASTLE2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//공허한 갑주
+	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49440,8 +49441,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9880 중보스
-	ENEMY_CASTLE_BOSS2_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//엘케인맨티스
+	//마성 블랙 - 9880 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49465,8 +49466,8 @@ static const int wave_builtin[] = {
 	ENEMY_CASTLE1_BLACK, FPS * 2, MONSTERTYPE_JACO,//어둠의 마도사
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9885 소보스
-	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
+	//마성 블랙 - 9885 중보스
+	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49490,8 +49491,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//마성 블랙 - 9890 중보스
-	ENEMY_CASTLE_BOSS3_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//테트라쉐도우
+	//마성 블랙 - 9890 소보스
+	ENEMY_ELKEIN_BLACK, FPS * 1, MONSTERTYPE_BOSS,//엘케인
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49590,8 +49591,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9910 중보스
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블랙 - 9910 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49615,8 +49616,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9915 소보스
-	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블랙 - 9915 중보스
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49640,8 +49641,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE1_BLACK, FPS * 2, MONSTERTYPE_JACO,//안드로볼
 	ENEMY_SPACE2_BLACK, FPS * 3, MONSTERTYPE_JACO,//메탈가우스
 
-	//우주 블랙 - 9920 중보스
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블랙 - 9920 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49691,7 +49692,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 블랙 - 9930 중보스
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49740,8 +49741,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9940 중보스
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블랙 - 9940 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49765,8 +49766,8 @@ static const int wave_builtin[] = {
 	ENEMY_SPACE2_BLACK, FPS * 2, MONSTERTYPE_JACO,//메탈가우스
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9945 소보스
-	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블랙 - 9945 중보스
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49790,8 +49791,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9950 중보스
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블랙 - 9950 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49890,8 +49891,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9970 중보스
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	//우주 블랙 - 9970 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49915,8 +49916,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9975 소보스
-	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
+	//우주 블랙 - 9975 중보스
+	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49940,8 +49941,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 9980 중보스
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
+	//우주 블랙 - 9980 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -49991,7 +49992,7 @@ static const int wave_builtin[] = {
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
 	//우주 블랙 - 9990 중보스
-	ENEMY_CASTLE_BOSS4_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//다크나이트
+	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_MIDBOSS,//데브리온
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
@@ -50040,8 +50041,8 @@ static const int wave_builtin[] = {
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 
-	//우주 블랙 - 10000 대보스
-	ENEMY_CASTLE_BOSS1_BLACK, FPS * 1, MONSTERTYPE_BIGBOSS,//데브리온
+	//우주 블랙 - 10000 소보스
+	ENEMY_SPACE2_BLACK, FPS * 1, MONSTERTYPE_BOSS,//메탈가우스
 	false, FPS * 2, MONSTERTYPE_JACO,//2
 	false, FPS * 3, MONSTERTYPE_JACO,//3
 

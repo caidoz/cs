@@ -1,7 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "Core.h"
 #include "Func.h"
 #include "Text.h"
+#include "Config/ShopConfig.h"
 
 static bool PixelEquipmentUi()
 {
@@ -1858,6 +1859,47 @@ static void DrawEquipPreview(float px, float py, float pw, float ph)
 
 void EquipDetailDraw(ITEM* it)
 {
+	if(drawHandle==MD_LOBBY && !IsTutorialPlaying()){
+	 SetItemString_Gem(it);
+	 int optionCount=0;for(int n=0;n<12;++n)if(it->option[n][0]!=EMPTYINT&&optionStr[n][0])++optionCount;
+	 const int screenTop=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;
+	 const int dialogH=Min(Max(600,540+optionCount*30),screenTop-12),top=screenTop-Max(0,(screenTop-dialogH)/2);
+	 const int art=Min(230,Max(150,(dialogH-300)/3));
+	 DrawPixelPanel(8,top,DX-16,dialogH,0x12383E,0xC5A269);
+	 DrawMenuRoomBackdrop(12,top-56,DX-24,art);
+	 DrawMenuPlaque("장비 상세",8,top,DX-16,56,1.1f);
+	 DrawUiButton(DX-62,top-6,44,44,"X",TOUCH_FUNC_CLOSEALERT);
+	 const int foot=top-56-art+18;
+	 DrawPixelPanel(DX/2-88,foot+32,176,32,0x8B623C,0xDEBB86);
+	 const float iz=Min(2.8f,(art-42)/(float)ITEMICONSIZE);
+	 DrawIcon(GetItemIcon(it->type,it->detail,it->grade),DX/2-ITEMICONSIZE*iz/2,foot+ITEMICONSIZE*iz+18,iz,false,false,false,true);
+	 char line[240];int y=foot-16;
+	 SetFontColor(0xFFF0C9);
+	 const char* name=textId[GetItemName(it->type,it->detail,it->grade)+TEXT_ITEMNAME_START];
+	 CenterTextStrSolid(name,DX/2,y,Min(1.f,(DX-64)/Max(1.f,StringWidth(name,1.f))));y-=44;
+	 const ITEM& worn=ao[PLAYER].equip[itemEquipSlot[it->type]];
+	 const bool equipped=worn.type==it->type&&worn.detail==it->detail&&worn.grade==it->grade;
+	 const int cw=(DX-60)/2;
+	 for(int n=0;n<2;++n){
+	  const int x=24+n*(cw+12);DrawPixelPanel(x,y,cw,108,n?0x17653E:0x12383E,0xC5A269);
+	  SetFontColor(0xFFF0C9);CenterTextStrSolid(n?"선택 장비":"현재 장착 장비",x+cw/2,y-14,.82f);
+	  const long long power=n?GetEquipPower(it,it->lv):worn.type==EMPTY?0:GetEquipPower(const_cast<ITEM*>(&worn),worn.lv);
+	  sprintf(line,"장비 능력 %lld",power);CenterTextStrSolid(line,x+cw/2,y-60,.85f);
+	 }y-=126;
+	 SetItemString_Gem(it);
+	 const int footer=top-dialogH+76,space=Max(1,y-footer-56),lh=Max(18,Min(34,space/Max(1,optionCount)));int shown=0;
+	 for(int n=0;n<12;++n)if(it->option[n][0]!=EMPTYINT&&optionStr[n][0]){
+	  SetFontColor(0xE8DCB9);DrawTextStrSystem(optionStr[n],32,y,Min(.74f,(DX-64)/Max(1.f,StringWidth(optionStr[n],1.f))),LEFT,false);y-=lh;++shown;
+	 }
+	 int same=0;for(int n=0;n<TOTALINVENTORY;++n)if(robin.inven[n].type==it->type&&robin.inven[n].detail==it->detail&&robin.inven[n].grade==it->grade)++same;
+	 sprintf(line,"같은 장비 %d / %d · 합성은 장비 목록에서",same,ITEM_MERGE_COUNT);
+	 SetFontColor(0xD8C494);CenterTextStrSolid(line,DX/2,Max(footer+38,y-8),.66f);
+	 const int idx=GetInvenIdx(it->type,it->detail,it->grade);
+	 sEquipBtnX=24;sEquipBtnY=footer;sEquipBtnW=(DX-60)/2;sEquipBtnH=48;
+	 DrawUiButton(24,footer,(DX-60)/2,48,equipped?"장착 중":"장착",TOUCH_FUNC_EQUIP_INVENTORY+idx,true,!equipped&&idx>=0);
+	 DrawUiButton(DX/2+6,footer,(DX-60)/2,48,it->locked?"잠금 해제":"잠금",TOUCH_FUNC_ITEM_LOCK,it->locked);
+	 return;
+	}
 	int itemType = it->type;
 	int itemDetail = it->detail;
 	int itemGrade = it->grade;
@@ -2939,11 +2981,11 @@ void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, b
 		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
 
 	//i7.png의 빈 하단 영역에 넣은 64x64 레인보우 코인 10프레임.
-	int coinFrame = 0; //상단에서는 정면 이미지로 고정한다.
-	DrawImage(64, 64, (coinFrame % 4) * 65, 198 + (coinFrame / 4) * 65,
-		x + (float)(5 * _2X) * zoom, y - (float)(3 * _2X) * zoom,
-		false, false, false, false, false, 0.78f * zoom,
-		sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+	//캐시는 다이아다. 전에는 그림 장의 코인 칸(0,198)을 좌표로 찍어서
+	//아이콘 표를 고쳐도 여기는 안 바뀌었다.
+	DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,
+		(int)(x + (float)(5 * _2X) * zoom), (int)(y - (float)(3 * _2X) * zoom),
+		64.0f * 0.78f * zoom / ITEMICONSIZE, false, false, false, true);
 #ifdef NUMTTF
 	DrawBigNumTTF(pow, x + (wide - 72) * zoom,
 		y + (float)(-5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT,
@@ -3325,6 +3367,13 @@ static const char* const optionLangName[12] = {
 //option.png 한 조각을 그대로 그린다.
 static void DrawOptionPart(int sx, int sy, int sw, int sh, float x, float y, float sc)
 {
+ if(drawHandle==MD_LOBBY){
+  if(sx==OPT_XBTN_X&&sy==OPT_XBTN_Y){DrawPixelPanel((int)x,(int)y,(int)(sw*sc),(int)(sh*sc),0x152D37,0xC5A269);SetFontColor(0xF2E7CB);CenterTextStrSolid("X",(int)(x+sw*sc/2),(int)(y-8*sc),.8f);return;}
+  if((sx==OPT_TOGGLEON_X||sx==OPT_TOGGLEOFF_X)&&sy==OPT_TOGGLEON_Y){
+   DrawPixelPanel((int)x,(int)y,(int)(sw*sc),(int)(sh*sc),sx==OPT_TOGGLEON_X?0x467B55:0x435052,0xC5A269);return;
+  }
+ }
+
 	if(sx==OPT_XBTN_X && sy==OPT_XBTN_Y){
 	 DrawSd3dPanel((int)x,(int)y,(int)(sw*sc),(int)(sh*sc),4);SetFontColor(COLOR_WHITE);
 	 CenterTextStrSolid("X",(int)(x+sw*sc/2),(int)(y-sh*sc/2+8),1.0f);return;
@@ -3776,8 +3825,10 @@ void OptionHelpDraw(int x, int y, float zoom)
 	}
 }
 
+#include "MenuRenewalOptions.inc"
 void OptionDraw(int x, int y, float zoom)
 {
+ if(drawHandle==MD_LOBBY){RenewalOptionsDraw();return;}
 	const bool titleMode = (drawHandle == MD_TITLE);
 	const float w = (float)POPUPWINDOWSIZE_X * zoom;
 	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
@@ -4559,7 +4610,7 @@ long long GetBoxPrice(int detail, int grade)
 	case BOX_PAID3:
 	case BOX_PAID4:
 	case BOX_PAID5:
-		return GetBoxPrice(BOX_REWARD2 + detail - BOX_PAID0, grade);
+		return ShopTreasure::Price(detail-BOX_PAID0);
 	}
 
 	return -1;
@@ -6567,8 +6618,8 @@ static void MenuButton(int x, int y, int w, int h, const char* label,
 	const float gapX = (float)w * (press - 1.0f) / 2;
 	const float gapY = (float)h * (press - 1.0f) / 2;
 
-	if(PixelEquipmentUi()) DrawPixelPanel(x,y,w,h,color==BUTTON_COLOR_PURPLE?0x205363:0x102638,
-		color==BUTTON_COLOR_PURPLE?0xEDBB58:0x43859B);
+	if(PixelEquipmentUi()) DrawPixelPanel(x,y,w,h,color==BUTTON_COLOR_BLUE||color==BUTTON_COLOR_PURPLE?0x467B55:0x152D37,
+		color==BUTTON_COLOR_BLUE||color==BUTTON_COLOR_PURPLE?0xC5A269:0x65827F);
 	else DrawButton(x - gapX, y + gapY, enabled ? color : BUTTON_COLOR_WHITE,
 		0, 0, 0, false, zx, zy);
 
@@ -6732,7 +6783,7 @@ static int CodexContentHeight(void)
 {
 	CodexGroup group[24];
 	const int groups = CodexGroups(group, 24);
-	const int cell = 34 * _2X;
+	const int cell = (DX-32)/6;
 	const int cols = Max(1, (DX - 24 * _2X) / cell);
 	int h = 0;
 
@@ -6963,17 +7014,12 @@ static void CodexDraw(int x, int y, float zoom)
 			if (cy > DY || cy < BOTTOMMENUHEIGHT - cell)
 				continue;
 
-			SetAlpha(got ? 26 : 10);
-			MemRect(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
-				got ? 0x2A2A44 : 0x14141F);
-			SetAlpha(ALPHA_MAX);
-			MemRectFrame(cx + _2X, cy - _2X, cell - 2 * _2X, cell - 2 * _2X,
-				got ? 0x8899BB : 0x333344);
+			DrawPixelPanel(cx+3,cy-3,cell-6,cell-6,got?0x243E40:0x14272B,got?0x86ADAD:0x435052);
 
 			//못 얻은 것은 그림자만. 얻은 것과 한눈에 갈려야 한다.
 			DrawIcon(GetItemIcon(group[g].type, i, GRADE_NORMAL),
-				cx + cell / 2 - ITEMICONSIZE / 2, cy - cell / 2 + ITEMICONSIZE / 2,
-				0.9f, got ? false : COLOR_BLACK, false, false, true);
+				cx + cell / 2 - ITEMICONSIZE*.6f, cy - cell / 2 + ITEMICONSIZE*.6f,
+				1.2f, got ? false : COLOR_BLACK, false, false, true);
 
 			//눌러서 상세를 본다. 보이는 칸에만 자리를 준다.
 			if (gCodexSlotCnt < CODEX_SLOT_MAX) {
@@ -7063,12 +7109,12 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	char str[24];
 
 	//바탕은 단색. 등급이 높을수록 아주 조금만 밝다.
-	DrawPixelPanel(x,y,w,h,0x142E43,col);
+	static const int tileFill[]={0x13383E,0x243E40,0x343147,0x4B354C,0x51422C,0x51422C};
+	DrawMenuReferencePanel(x,y,w,h,0,tileFill[Min(5,grade)],wearer>=0?0xF2C17D:col);
 
 	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
 	//"지금 끼고 있는 것"이 제일 먼저 보여야 한다.
-	if (wearer >= 0)
-		MemRectFrame(x + 1 * _2X, y - 1 * _2X, w - 2 * _2X, h - 2 * _2X, col);
+	// Selected/equipped items use the same rounded frame as the other menus.
 
 	DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
 		x + w / 2 - ITEMICONSIZE * zoom / 2, y - h / 2 + ITEMICONSIZE * zoom / 2,
@@ -7088,7 +7134,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 
 	//아직 상세를 안 본 것. 점 하나면 된다.
 	if (it->seen == false)
-		MemRect(x + w - 8 * _2X, y - 3 * _2X, 5 * _2X, 5 * _2X, 0xFF5544);
+		MemRect(x + w - 8, y - 4, 3, 3, 0xFFAA72);
 
 	//---- 자물쇠 ----
 	//
@@ -7175,7 +7221,7 @@ static void EquipTabDraw(float zoom)
 	const int headY=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-11*_2X;
 	SetFontColor(COLOR_WHITE);
 	CenterTextStrSolid(kEquipTabName[curEquipTab],DX/2+16*_2X,headY-6*_2X,1.0f);
-	DrawUiButton(DX-48,headY,38,38,"<",TOUCH_FUNC_POPUP_CLOSE);
+	DrawMenuBackButton(12,headY,TOUCH_FUNC_POPUP_CLOSE);
 
 	EquipSellBtnDraw();
 
@@ -7195,6 +7241,7 @@ static void EquipTabDraw(float zoom)
 }
 
 #include "EquipmentMenuV2.inc"
+#include "MenuRenewalEquipment.inc" // Native companion layout and full-width combat-stat summaries and lists.
 
 void CollectionsDraw(int x, int y, float zoom)
 {
@@ -7222,6 +7269,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//편성은 동료 메뉴가 이미 다 하고 있다. 같은 것을 여기 옮겨 그리면
 	//두 곳을 같이 고쳐야 하므로, 그리는 일은 저쪽에 그대로 맡긴다.
 	if (curEquipTab == EQUIPTAB_CREW) {
+        if(drawHandle==MD_LOBBY&&!IsTutorialPlaying()){RenewalCrewDraw();return;}
 		CrewMenuDraw(x, y, zoom);
 		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
@@ -7248,6 +7296,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//장비를 바꾸면 무엇이 얼마나 변하는지 보는 곳이다. 숫자는 ps[] 를
 	//그대로 읽는다 - 전투가 보는 값과 다른 값을 보여주면 안 된다.
 	if (curEquipTab == EQUIPTAB_STAT) {
+        if(drawHandle==MD_LOBBY){RenewalStatsDraw();return;}
 		HeroStatDraw(&ao[curHero], x, y - (float)120 * _2X * zoom, zoom);
 		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
@@ -7938,6 +7987,15 @@ static const char* ShopPriceText(int product, bool* storeReady)
 static void ShopRibbon(const char* title, float cx, float y, float w, float zoom);
 
 //동료 상세보기와 같은 프레임 계열을 사용하는 구매 확인창.
+static void DrawTreasurePrice(int detail,int cx,int top,int width){
+ const long long price=GetBoxPrice(detail,GRADE_NORMAL);
+ if(!ShopTreasure::UsesGems(detail-BOX_PAID0)){DrawGoldAmount(price,cx,top,width);return;}
+ char number[32];sprintf(number,"%lld",price);const float z=.92f;
+ const int rowW=32+8+(int)StringWidth(number,z),left=cx-rowW/2;
+ //보석값 상자도 캐시로 산다. 그 표식은 다이아 하나로 통일한다.
+ DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,left,top,64.0f*.5f/ITEMICONSIZE,false,false,false,true);
+ SetFontColor(0xF6EACA);DrawTextStrSystem(number,left+40,top-4,z,LEFT,false);
+}
 void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 {
 	bool isBox = itemType == ITEM_BOX;
@@ -7955,11 +8013,11 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	bool storeReady = false;
 	if (isBox) {
 		static const char* paidBoxName[6] = {
-			"브론즈 상자", "실버 상자", "크리스탈 상자",
-			"아케인 상자", "로열 상자", "레전드 상자"
+			"브론즈 보물상자", "실버 보물상자", "크리스탈 보물상자",
+			"아케인 보물상자", "로열 보물상자", "레전드 보물상자"
 		};
 		name = paidBoxName[detail - BOX_PAID0];
-		sprintf(priceBuf, "%lld 골드", GetBoxPrice(detail, GRADE_NORMAL));
+		sprintf(priceBuf, "%lld %s", GetBoxPrice(detail, GRADE_NORMAL),ShopTreasure::UsesGems(detail-BOX_PAID0)?"보석":"골드");
 		price = priceBuf;
 	}
 	else {
@@ -8013,7 +8071,10 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 
 	if (isBox) {
 		int boxIndex = GetRewardBoxIndex(detail);
-		const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
+		REWARD_BOX_DATA box = rewardBoxData[boxIndex];
+		const int tier=detail-BOX_PAID0;
+		box.goldMin=ShopTreasure::GoldReward(tier,box.goldMin);box.goldMax=ShopTreasure::GoldReward(tier,box.goldMax);
+		box.heartMin=ShopTreasure::HeartReward(tier,box.heartMin);box.heartMax=ShopTreasure::HeartReward(tier,box.heartMax);
 		//---- 보상 목록 ----
 		//
 		//줄마다 x 를 따로 적어서 235 / 255 / 255 / 245 로 어긋나 있었다.
@@ -8111,10 +8172,10 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		}
 		else if (product >= IAP_CASH_01 && product <= IAP_CASH_06) {
 			amount = cashAmount[product - IAP_CASH_01];
-			int cashFrame = (frame / 5) % 10;
-			DrawImage(64, 64, (cashFrame % 4) * 65, 198 + (cashFrame / 4) * 65,
-				Loc(310.0f), LocY(935.0f), false, false, false, false, false,
-				1.0f * sCdU, sprite[ITEM_IMG + 7], ITEM_IMG + 7);
+			//결제 확인 화면의 캐시 그림도 다이아다. 돌아가던 열 칸짜리
+			//애니메이션은 코인 그림의 것이라 같이 걷는다.
+			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON, (int)Loc(310.0f), (int)LocY(935.0f),
+				64.0f * sCdU / ITEMICONSIZE, false, false, false, true);
 		}
 		if(product>=IAP_COIN_01&&product<=IAP_COIN_06)DrawGoldAmount(amount,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(945.0f),(int)(700*sCdU));
 		else if (amount) {
@@ -8125,7 +8186,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	if (isBox) {
 		long long boxPrice = GetBoxPrice(detail, GRADE_NORMAL);
 		//목록 판이 1056 까지 내려왔다. 가격은 그 아래로 물러난다.
-		DrawGoldAmount(boxPrice,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(1100.0f),(int)(700*sCdU));
+		DrawTreasurePrice(detail,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(1100.0f),(int)(700*sCdU));
 	}
 	else
 		CdText(price, (float)CD_DESIGNW / 2, 1090.0f, 1.7f, CENTER, COLOR_WHITE);
@@ -8135,6 +8196,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	float buttonY = (float)CD_BTN_Y;
 	float buttonH = (float)CD_BTN_H;
 	bool canBuy = !IapIsBusy();
+	if(isBox)canBuy=canBuy&&(ShopTreasure::UsesGems(detail-BOX_PAID0)?robin.coin:robin.gold)>=GetBoxPrice(detail,GRADE_NORMAL);
 	if (canBuy)
 		SetRectPoint(Loc(buttonX), LocY(buttonY), buttonW * sCdU,
 			buttonH * sCdU, TOUCH_FUNC_SHOP_IAP_CONFIRM);
@@ -8328,35 +8390,27 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 //(GetBoxPrice). 사는 길도 다르다 - AVK_SHOP_BUYBOX 로 간다.
 static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 {
-	int detail = BOX_PAID0 + i;
-	long long price = GetBoxPrice(detail, GRADE_NORMAL);
-	bool can = price >= 0 && robin.gold >= price;
-	float bh = 36.0f * zoom;
-	float by = y - h + bh + 4.0f * zoom;
-	float panelSize = Min(w - 8.0f * zoom, h - 112.0f * zoom);
-	float panelX = x + (w - panelSize) / 2;
-	float panelY = y - 38.0f * zoom;
-
-	DrawPixelPanel((int)x,(int)y,(int)w,(int)h,0x272B4B);
-
-	SetFontColor(COLOR_WHITE);
-	CenterText(TEXT_ITEMNAME_BOX + detail, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
-
-	float boxSize = panelSize * 0.82f;
-	DrawCastleBoxXY(detail, false, LEFT, x + (w - boxSize) / 2,
-		panelY - (panelSize - boxSize) / 2, COLOR_WHITE, boxSize / 512.0f);
-
-	DrawGoldAmount(price,(int)(x+w/2),(int)(by+34*zoom),(int)(w-24*zoom));
-	DrawPixelPanel((int)(x+6*zoom),(int)by,(int)(w-12*zoom),(int)bh,0x164A5B,0xC49D4D);
-	SetFontColor(can ? COLOR_WHITE : COLOR_GREY);
-	DrawTextStrSystem("구매하기", x + w / 2,
-		by - bh / 2 + (float)FONT_HEIGHT * zoom * 0.85f / 2,
-		zoom * 0.85f, CENTER, true);
-	SetFontColor(COLOR_WHITE);
-
-	if (can)
-		SetRectPoint(x + 6.0f * zoom, by, w - 12.0f * zoom, bh,
-			TOUCH_FUNC_SHOP_BUYBOX1 + i);
+ const int detail=BOX_PAID0+i;const long long price=GetBoxPrice(detail,GRADE_NORMAL);
+ const bool can=price>=0&&(ShopTreasure::UsesGems(i)?robin.coin:robin.gold)>=price;
+ DrawMenuReferencePanel((int)x,(int)y,(int)w,(int)h,0,0x19474A,0xEAC58A);
+ SetFontColor(0xFFF0CD);CenterText(TEXT_ITEMNAME_BOX+detail,x+w/2,y-12,1.05f);
+ const int chest=BOX0_IMG+detail-BOX_CASTLE0;if(!sprite[chest])LoadImg(chest);
+ const float art=Min(w*.44f,h-82.f),z=art/512.f;
+ const int saved=baseColor;SetColor(0);
+ DrawImageScale(510,512,0,0,x+8,y-44,false,0,0,0,0,z,z,sprite[chest],chest);SetColor(saved);
+ const int cell=Max(26,Min(44,(int)((w-art-24)/3))),px=(int)(x+art+14),py=(int)(y-64);
+ for(int n=0;n<3;++n){
+  const int tx=px+n*(cell+3);DrawMenuReferencePanel(tx,py,cell,cell+8,0,0x12383D,0x86ADAD);
+  const int icon=n==0?GetItemIcon(ITEM_GOLD,0,0):n==1?ICON_HEART:GetItemIcon(ITEM_SWORD+curHero,0,0);
+  const float iz=(cell-8)/(float)ITEMICONSIZE;
+  DrawIcon(icon,tx+4,py-7,iz,false,false,false,true);
+ }
+ const int bh=42,by=(int)(y-h+bh+10),priceW=(int)(w*.55f)-14,buyX=(int)(x+w*.55f),buyW=(int)(w*.45f)-12;
+ DrawMenuReferencePanel((int)x+12,by,priceW,bh,0,0x0D3037,0xDDB77D);
+ DrawTreasurePrice(detail,(int)x+12+priceW/2,by-3,priceW-8);
+ DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x16613C:0x24433F,0xEAC58A);
+ SetFontColor(can?0xFFF0CD:0xA8B4AC);CenterTextStrSolid("구매",buyX+buyW/2,by-10,.95f);
+ if(can)SetRectPoint(buyX,by,buyW,bh,TOUCH_FUNC_SHOP_BUYBOX1+i);
 }
 
 //이전 탭 방식. 필요하면 비교할 수 있도록 소스만 남겨 둔다.
@@ -8556,16 +8610,17 @@ void ShopSelectPixelCategory(int category)
 }
 
 //상점 전체 상품을 한 목록으로 이어서 그린다.
-#include "ShopRuntime.inc"
+#include "ShopRuntime.inc" // Catalog UI and isolated grant / all-owned castle regression checks.
 
 void ShopDraw(int x,int y,float zoom)
 {
 	if(drawHandle==MD_LOBBY) y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
 	const int width=(int)(DX*zoom),height=(int)(y*zoom);
 	ResetRectPoint();DrawPixelPanel(x,y,width,height);
-	DrawPixelPanel(x,y,width,(int)(58*zoom));
+	DrawMenuReferencePanel(x,y,width,(int)(58*zoom),0,0x10383D,0x49777A);
 	SetFontColor(COLOR_WHITE);CenterText(TEXT_MENU_SHOP,x+width/2,y-16*zoom,1.25f*zoom);
-	DrawUiButton(x+10*zoom,y-10*zoom,40*zoom,38*zoom,"<",TOUCH_FUNC_POPUP_CLOSE);
+	DrawMenuBackButton(x+12,y-4,TOUCH_FUNC_POPUP_CLOSE);
+	// The left back button is the sole page exit.
 	ShopSpec::Draw(x,y,width,height,zoom);
 }
 

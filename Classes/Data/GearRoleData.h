@@ -80,48 +80,10 @@ struct GearRoleSpec {
 //
 //한 줄(히어로)을 통째로 읽으면 그 캐릭터의 성격이 보인다. 한 부위를 세로로
 //읽으면 같은 자리를 셋이 어떻게 달리 쓰는지가 보인다.
-static const GearRoleSpec kGearRole[] = {
-	//무기: 피해의 본줄기는 GridTestSwords 가 들고 있다. 여기서는 부 역할만
-	//얹는다 - 같은 피해를 두 군데서 더하면 두 배가 된다.
-	{ ITEM_SWORD,     GEAR_AXIS_ATK,   GEAR_AXIS_REGEN, GEAR_LINE_ROBIN,     0,   0,   0,  10,   0,  0, 10,  0,  0,  0 },
-	{ ITEM_GUN,       GEAR_AXIS_ATK,   GEAR_AXIS_ATK,   GEAR_LINE_DIANA,     0,   0,   0,  15,  10,  0,  0,  0,  0,  0 },
-	{ ITEM_BOOMERANG, GEAR_AXIS_ATK,   GEAR_AXIS_UTIL,  GEAR_LINE_MAXX,      0,   0,   0,   5, 100,  0,  0,  0,  0,  0 },
-
-	//머리
-	{ ITEM_HELM,      GEAR_AXIS_DEF,   GEAR_AXIS_ATK,   GEAR_LINE_ROBIN,    25,   0,   0,  10,   0,  0,  0,  0,  0,  0 },
-	{ ITEM_HAT,       GEAR_AXIS_UTIL,  GEAR_AXIS_ATK,   GEAR_LINE_DIANA,     0,   0,   0,  15, 150,  0,  0,  0,  0,  0 },
-	{ ITEM_CAP,       GEAR_AXIS_UTIL,  GEAR_AXIS_DEF,   GEAR_LINE_MAXX,     12,   0,   0,   5, 100,  0,  0,  0,  0,  0 },
-
-	//몸통
-	{ ITEM_ARMOR,     GEAR_AXIS_DEF,   GEAR_AXIS_DEF,   GEAR_LINE_ROBIN,    40,   0,   0,   0,   0,  0,  0,  0,  0,  0 },
-	{ ITEM_VEST,      GEAR_AXIS_DEF,   GEAR_AXIS_UTIL,  GEAR_LINE_DIANA,    25,  80,   0,   0,   0,  0,  0,  0,  0,  0 },
-	{ ITEM_COAT,      GEAR_AXIS_DEF,   GEAR_AXIS_REGEN, GEAR_LINE_MAXX,     20,   0,   0,   0,   0,  0,  0,  0,  5,  0 },
-
-	//손
-	{ ITEM_GUNTLET,   GEAR_AXIS_ATK,   GEAR_AXIS_DEF,   GEAR_LINE_ROBIN,    10,   0,  30,   0,   0,  0,  0,  0,  0,  0 },
-	{ ITEM_ARMLET,    GEAR_AXIS_ATK,   GEAR_AXIS_UTIL,  GEAR_LINE_DIANA,     0,   0,  20,   0,  20,  0,  0,  0,  0,  0 },
-	{ ITEM_GLOVE,     GEAR_AXIS_ATK,   GEAR_AXIS_REGEN, GEAR_LINE_MAXX,      0,   0,  15,   0,   0,  0, 10,  0,  0,  0 },
-
-	//하체
-	{ ITEM_KILT,      GEAR_AXIS_UTIL,  GEAR_AXIS_REGEN, GEAR_LINE_ROBIN,     0, 180,   0,   0,   0,  0,  0,  4,  0,  0 },
-	{ ITEM_SKIRT,     GEAR_AXIS_UTIL,  GEAR_AXIS_ATK,   GEAR_LINE_DIANA,     0, 120,   0,  10,   0, 10,  0,  0,  0,  0 },
-	{ ITEM_PANTS,     GEAR_AXIS_UTIL,  GEAR_AXIS_DEF,   GEAR_LINE_MAXX,     10, 250,   0,   0,   0,  0,  0,  0,  0,  0 },
-
-	//발
-	{ ITEM_GREAVES,   GEAR_AXIS_DEF,   GEAR_AXIS_REGEN, GEAR_LINE_ROBIN,    20,   0,   0,   0,   0,  0,  0,  0,  4, 10 },
-	{ ITEM_SHOES,     GEAR_AXIS_UTIL,  GEAR_AXIS_REGEN, GEAR_LINE_DIANA,     0,   0,   0,   0,   0, 15,  0,  3,  0, 10 },
-	{ ITEM_BOOTS,     GEAR_AXIS_REGEN, GEAR_AXIS_DEF,   GEAR_LINE_MAXX,     10,   0,   0,   0,   0,  0,  0,  0,  8, 20 },
-
-	//방패: 즉시 펄스는 GridTestShields 가 들고 있다. 여기서는 최대치만 얹는다.
-	{ ITEM_SHIELD,    GEAR_AXIS_DEF,   GEAR_AXIS_REGEN, GEAR_LINE_COMMON,   30,   0,   0,   0,   0,  0,  0,  0,  6,  0 },
-
-	//장신구: 셋이 같이 쓴다
-	{ ITEM_NECK,      GEAR_AXIS_REGEN, GEAR_AXIS_UTIL,  GEAR_LINE_COMMON,    0,  50,   0,   0,   0,  0,  0,  8,  0,  0 },
-	{ ITEM_RING,      GEAR_AXIS_ATK,   GEAR_AXIS_REGEN, GEAR_LINE_COMMON,    0,   0,  10,  20,   0,  0,  5,  0,  0,  0 },
-
-	//보석: 제 수치는 없다. 인접 장비의 주 역할을 25% 불린다.
-	{ ITEM_GEM,       GEAR_AXIS_NONE,  GEAR_AXIS_NONE,  GEAR_LINE_SOCKET,    0,   0,   0,   0,   0,  0,  0,  0,  0,  0 },
-};
+//표는 content/gear_role.tsv 에서 난다. 엑셀로 고치고 생성기를 돌린다
+//(tools/content/make_balance.py). 여기 직접 적지 않는다 - 적으면 다음
+//생성에서 지워진다.
+#include "GearRoleTable.inc"
 
 enum { TOTAL_GEAR_ROLE = sizeof(kGearRole) / sizeof(kGearRole[0]) };
 

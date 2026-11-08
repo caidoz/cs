@@ -1,7 +1,8 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "GoldAmountFormat.h"
+// Castle room/facade overlays share the registered body silhouette.
 #include "Data.h"
 #include "Data/SwordSprites.h"
 #include "BattleMobileCastle.h"
@@ -16,7 +17,7 @@
 #include "CastleRoomUpgradeBlend.inc"
 static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
  const bool regional=index>=STAGEBG_FIRST_IMG && index<STAGEBG_FIRST_IMG+STAGEBG_PER_REGION*STAGEBG_REGION_CNT && (index-STAGEBG_FIRST_IMG)%STAGEBG_PER_REGION<3;
- const bool smooth=regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
+ const bool smooth=index==MENU_RENEWAL_ROOM_IMG||index==MENU_RENEWAL_DUNGEON_IMG||regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
    (index>=LOBBY_NAV_SHOP_IMG && index<=LOBBY_NAV_DUNGEON_IMG);
  if(smooth)s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
 }
@@ -31,6 +32,9 @@ double s_totalTravelSeconds = 0.0;
 float s_clock  = 0.0f;
 int   s_region = 0;
 int   s_regionPick = -1;
+//몇 바퀴째인가(0~6). 열다섯 지역을 한 번 다 돌면 한 단 오른다.
+//그 단이 곧 몬스터 색이고, 배경도 같은 색으로 물든다.
+int   s_cycleColor = 0;
 }
 
 void BattleMobileCastleUpdate(float delta)
@@ -110,8 +114,8 @@ void StageBgDebugDrawButton(void)
  if(drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY && !getenv("CS_DEBUG_CONTROLS"))return;
  const int y=DY-30*_2X,h=16*_2X;
  DrawUiButton(4*_2X,y,44*_2X,h,sDebugControlsOpen?"디버그 닫기":"디버그",TOUCH_FUNC_DEBUG_TOGGLE,sDebugControlsOpen);
- LobbyCastleDebugDraw();
  if(!sDebugControlsOpen)return;
+ LobbyCastleDebugDraw();
  DrawUiButton(50*_2X,y,42*_2X,h,"PVP",TOUCH_FUNC_PVP_TEST);
  DrawUiButton(94*_2X,y,48*_2X,h,"최대 강화",TOUCH_FUNC_DEBUG_MAXSTATUS);
  DrawUiButton(144*_2X,y,42*_2X,h,"적 공격",TOUCH_FUNC_DEBUG_ENEMYATTACK);
@@ -5672,6 +5676,12 @@ int GetInitHeart(void)
 	if (IapHeartPass())
 		init += HEARTPASS_MAXBONUS;
 
+#ifdef GAMEDEBUG
+	//시험용. 상한만 올린다 - 회복 시계는 상한 밑에서만 도므로, 양을
+	//직접 꽂으면 차는 것을 못 본다(BalanceConfig 의 HEART_TEST_MAX).
+	init = Max(init, HEART_TEST_MAX);
+#endif
+
 	return init;
 }
 
@@ -5992,9 +6002,18 @@ void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func
 //이것은 아무 크기나 되는 네모 칩이다 - 탭, 토글, 디버그 버튼이 여기 든다.
 //======================================================================
 
+#include "MenuRenewalSkin.inc" // Warm teal and brass menu primitives, with clipped mobile-safe pooled panels.
 void DrawPixelPanel(int x,int y,int w,int h,int fill,int edge)
 {
 	if(w<2 || h<2)return;
+ if(drawHandle==MD_LOBBY||drawHandle==MD_PVP||drawHandle==MD_TITLE){
+  switch(fill){case 0x102638:case 0x142E43:case 0x1E3648:case 0x0C1C2C:case 0x272B4B:fill=0x152D37;break;
+   case 0x205363:case 0x164A5B:fill=0x225E61;break;case 0x17653E:case 0x467B55:fill=0x14633F;break;
+   case 0x152D37:fill=0x0D3038;break;}
+  if(edge==0x43859B||edge==0x28566D||edge==0x65827F)edge=0x86ADAD;
+  if(edge==0xEDBB58||edge==0xE9B84F||edge==0xC49D4D||edge==0xC5A269)edge=0xF2C17D;
+  if(DrawRenewalPanel(x,y,w,h,fill,edge))return;
+ }
 	static const bool compareMetal=getenv("CS_METAL_UI_REVIEW")!=NULL;
 	const int r=(fill>>16)&255,g=(fill>>8)&255,b=fill&255;
 	const int style=(g>r*1.4f && g>b*1.1f)?2:(r>g*1.5f && r>b*1.2f)?4:
@@ -6043,7 +6062,7 @@ void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
 	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
 
-	if(drawHandle==MD_LOBBY) DrawPixelPanel(x,y,w,h,on?0x205363:0x102638,on?0xEDBB58:0x43859B);
+	if(drawHandle==MD_LOBBY||drawHandle==MD_PVP||drawHandle==MD_TITLE) DrawPixelPanel(x,y,w,h,on?0x467B55:enabled?0x152D37:0x1B2A30,on?0xC5A269:enabled?0x65827F:0x435052);
 	else {
 	SetAlpha(on ? 30 : enabled ? 14 : 8);
 	MemRect(x, y, w, h, fill);
@@ -6061,7 +6080,7 @@ void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 		if (zoom > UIBTN_MAXZOOM)
 			zoom = UIBTN_MAXZOOM;
 
-		SetFontColor(on ? COLOR_WHITE : enabled ? COLOR_GREY : COLOR_DARKGREY);
+		SetFontColor(on ? 0xF2E7CB : enabled ? 0xE2DCCA : 0x81918F);
 
 		//세로 한가운데. y 는 윗변이라 글자 높이의 절반만큼 내린다.
 		CenterTextStrSolid(text, x + w / 2,
@@ -7451,6 +7470,20 @@ void DrawHand(int x, int y, int hFrame, float zoom)
 	int imgIdx = IMG_HAND1 + (hFrame % 7 < 5 ? 0 : (hFrame % 7 - 4));
 
 	DrawImage(imgArray[imgIdx * 4 + 2], imgArray[imgIdx * 4 + 3], imgArray[imgIdx * 4 + 0], imgArray[imgIdx * 4 + 1], x + (float)(hFrame % 7 < 5 ? 0 : (hFrame % 7 == 5 ? 1 : 0)) * _2X * zoom, y - (float)(hFrame % 7 < 5 ? 0 : (hFrame % 7 == 5 ? -4 : -3)) * _2X * zoom, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
+}
+// Target coordinates describe the fingertip, independent of the atlas frame.
+// Do not apply DrawHand's legacy bounce: the tip must stay on the target.
+void DrawHandAtTarget(int x, int y, int frame, float zoom)
+{
+	const int phase = frame % 7;
+	const int hand = phase < 5 ? 0 : phase - 4;
+	static const int tip[3][2] = {{17,3},{12,1},{16,13}};
+	const int img = IMG_HAND1 + hand;
+	DrawImage(imgArray[img*4+2], imgArray[img*4+3],
+		imgArray[img*4], imgArray[img*4+1],
+		(int)roundf(x-tip[hand][0]*_2X*zoom),
+		(int)roundf(y+tip[hand][1]*_2X*zoom),
+		false,false,false,false,false,zoom,sprite[COMMON_IMG],COMMON_IMG);
 }
 void YesNoDraw(int x, int y)
 {

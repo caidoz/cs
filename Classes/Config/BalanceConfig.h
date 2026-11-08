@@ -3,6 +3,15 @@
 #ifndef _CONFIG_BALANCE_H_
 #define _CONFIG_BALANCE_H_
 
+//---- 표에서 나는 손잡이 ----
+//
+//곡선을 정하는 숫자들은 content/balance.tsv 에 있고 거기서 헤더가 난다
+//(tools/content/make_balance.py). 엑셀 한 칸이 곧 곡선이다.
+//
+//여기 남은 #define 들은 아직 표로 안 뺀 것들이다. 설명이 길어 주석이
+//본문인 자리들이라, 표의 note 한 칸으로는 담기지 않는다.
+#include "BalanceGenerated.h"
+
 //==========================================================================
 // 밸런스 손잡이
 //
@@ -39,7 +48,7 @@
 //
 // 그래서 첫 몬스터를 "보통 공격 열 대"로 잡는다. 33 * 10 = 330. 튜토리얼
 // 보스(300)와 비슷한 자리다. 지금 값 10,000 은 여기서 30배가 넘었다.
-#define WAVE_HP_BASE			330
+//WAVE_HP_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 // [계단 크기]
 // 무기 한 자루(500스테이지)마다 체력이 몇 배가 되는가.
@@ -57,11 +66,11 @@
 //
 // 100 을 나눈 정수로 적는다. 실수로 두면 기기마다 반올림이 달라져 같은
 // 스테이지의 몬스터 체력이 서로 달라진다.
-#define WAVE_HP_TIER_MUL		117
+//WAVE_HP_TIER_MUL 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 // 계단을 무한정 올리면 long long 도 넘친다. 이 값이면 60,000 스테이지라
 // 어떤 콘텐츠보다 멀다.
-#define WAVE_HP_MAX_TIER		120
+//WAVE_HP_MAX_TIER 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 보스 체력 ----
 //
@@ -74,9 +83,23 @@
 //
 // 하트 경제와 짝이다. 잡몹 하나에 하트 한 뭉치를 쓰고 상자가 그걸 도로
 // 채워주므로, 대보스 100배는 "쌓아둔 하트를 여기서 다 쓴다"는 뜻이 된다.
-#define WAVE_HP_SUBBOSS_MUL		5		//소보스 : 잡몹의 5배
-#define WAVE_HP_MIDBOSS_MUL		10		//중보스 : 잡몹의 10배
-#define WAVE_HP_BIGBOSS_MUL		100		//대보스 : 잡몹의 100배
+//WAVE_HP_SUBBOSS_MUL 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//WAVE_HP_MIDBOSS_MUL 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//WAVE_HP_BIGBOSS_MUL 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+
+//---- 보스는 커 보여야 한다 ----
+//
+//자리(MONSTERTYPE_*)는 체력 배수만 바꾸고 있었다. 그래서 백 배짜리
+//대보스가 잡몹과 똑같은 덩치로 서서, 체력바를 읽기 전에는 보스인 줄을
+//몰랐다. 색이 한두 단 위라는 것도 그 색을 아는 사람에게만 보인다.
+//
+//체력 배수처럼 곱으로 둔다. 100 을 나눈 백분율이다 - 실수로 두면 기기마다
+//마지막 자리가 달라진다.
+//
+//잡몹은 100(그대로). 대보스가 1.8 배를 넘으면 화면 밖으로 머리가 나간다.
+//WAVE_SIZE_SUBBOSS_PCT 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//WAVE_SIZE_MIDBOSS_PCT 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//WAVE_SIZE_BIGBOSS_PCT 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 하트 ----
 //
@@ -134,10 +157,23 @@
 #define GNB_GEAR_TOUCHW			(41 * _2X)
 #define GNB_GEAR_TOUCHH			(40 * _2X)
 
-#define HEART_MAX_BASE			20
-#define HEART_MAX_PER_CASTLE	1
+//HEART_MAX_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//HEART_MAX_PER_CASTLE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+
+//---- 시험용 에너지 ----
+//
+//스무 개로는 판을 몇 번 못 들어간다. 열 분에 하나씩 차는 것을 기다리며
+//전투를 고칠 수는 없다.
+//
+//상한만 올린다. 양을 직접 꽂으면 상한을 넘은 상태라 회복 시계가 아예
+//안 돌아서(RefreshHeartTime 은 상한 밑에서만 돈다) 차는 것을 시험할 수
+//없다. 상한을 올려야 "쓰고 → 차는" 두 쪽을 다 본다.
+//
+//디버그 빌드에서만이다(GAMEDEBUG, Config/BuildConfig.h). 정식 빌드의
+//스무 개는 그대로다.
+//HEART_TEST_MAX 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 #define HEART_MAX_PER_LEVEL		0
-#define HEART_REGEN_BASE		1
+//HEART_REGEN_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 #define HEART_REGEN_PER_LEVEL	0
 
 #define HEART_REFILL_PCT		110		//잡몹 상자 : 맥스의 110%까지
@@ -690,8 +726,8 @@
 //(capacity+1) 늘 한 자리 몫을 비워 두니 더 작아졌다.
 //
 //방의 실제 크기에서 바로 뽑는다. 성을 키우면 사람도 같이 큰다.
-#define CASTLE_ROOM_CREW_FILL_H 0.82f   //방 높이 중 사람 키
-#define CASTLE_ROOM_CREW_FILL_W 0.86f   //방 폭 중 사람들이 쓰는 몫
+//CASTLE_ROOM_CREW_FILL_H 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//CASTLE_ROOM_CREW_FILL_W 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //방을 잴 때 쓰는 "기준 한 사람" 의 원 그림 크기다. 사람마다 제 그림
 //크기로 재면 배율이 사람마다 달라져 같은 방에서 키가 제각각이 된다.
@@ -705,7 +741,13 @@
 //
 //화면에서의 키를 먼저 정하고, 방이 그보다 낮거나 좁을 때만 줄인다.
 //(640 폭 기준 픽셀. _2X 가 아니라 DX 로 재는 것은 위 식들과 같은 자다.)
-#define CASTLE_ROOM_CREW_SCREEN_H 35.0f
+//CASTLE_ROOM_CREW_SCREEN_H 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+
+//---- 출정 준비 위로 성을 얼마나 더 띄울까 ----
+//
+//창의 격자 윗변을 그대로 땅으로 삼으면 성 밑단이 격자 테두리에 닿는다.
+//바퀴와 레일 장식이 윗변 밖으로 조금 나오므로 그만큼 더 올린다.
+//STAGE_LOADOUT_HEADROOM 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 바닥에서 띄우던 값은 걷었다 ----
 //
@@ -723,7 +765,7 @@
 //좁은 방에서는 작아진다 - 성마다 키가 달라지던 까닭이 그것이었다.
 //
 //방이 좁으면 적게 서는 것이지 작아지는 것이 아니다.
-#define CASTLE_ROOM_CREW_PER_ROOM 7
+//CASTLE_ROOM_CREW_PER_ROOM 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 뒷줄 ----
 //
@@ -731,14 +773,14 @@
 //뒤로 한 줄 더 서야 한다. 뒷줄은 반 칸 어긋나게 서고 조금 위에 선다
 //(멀리 있다는 뜻) - 앞줄에 가려 머리만 보인다.
 //뒷줄이 뒤로 물러나는 깊이는 배치표의 depth 가 준다 - 방마다 다르다.
-#define CASTLE_ROOM_CREW_RANKS    2
+//CASTLE_ROOM_CREW_RANKS 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 #define CASTLE_ROOM_CREW_GAP      1.15f	//어깨 사이 틈
 
 //---- 격자에 올리는 동료 수 ----
 //
 //동료도 가방 칸을 먹는다. 여섯을 다 올리면 첫 성의 좁은 격자가 동료로
 //가득 차 장비를 넣을 자리가 없다.
-#define PVP_GRID_CREW_MAX       3
+//PVP_GRID_CREW_MAX 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 어디부터가 진짜 동료인가 ----
 //
@@ -954,7 +996,23 @@
 //                         10
 //
 //3 이었다. 그 점수로는 무기와 투구 둘만 올라가 나머지는 두고 가야 했다.
-#define LOADOUT_BASE			10
+//---- 장비 한 점의 크기값 단위 ----
+//
+//GridQueryGearRoles 는 part.price 를 "그 장비가 얼마나 큰가" 로 쓴다
+//(방어막 · 최대 체력). 그런데 창고에서 올린 장비는 price 가 0 이라
+//전부 8 로 떨어졌다 - 나무칼이든 엑스칼리버든, 첫 투구든 마지막 투구든
+//똑같은 크기로 쳐졌다. 성장이 숫자에 안 나타나던 자리다.
+//
+//아이템 표의 금화 값(itemPrice)은 200 에서 10만까지라 그대로 쓸 수 없다.
+//판 안 상점의 값(kShopPart)은 4~60 이다. 두 자가 다르다.
+//
+//부위 안의 번호를 그대로 단계로 쓴다. 표가 이미 "번호가 클수록 좋은
+//장비" 로 적혀 있고(검 주석), 상점 값과 같은 범위에 들어온다.
+//GEAR_UNIT_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//GEAR_UNIT_STEP 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//GEAR_UNIT_MAX 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+
+//LOADOUT_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 디버그: 출정 점수를 넉넉히 ----
 //
@@ -966,7 +1024,7 @@
 #define LOADOUT_DEBUG_BONUS		20
 
 //성 한 단계가 더 주는 양. 성을 올리면 한 벌을 더 챙길 여지가 생긴다.
-#define LOADOUT_PER_CASTLE		2
+//LOADOUT_PER_CASTLE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 #define LOADOUT_CELL_PER_POINT	2
 #define LOADOUT_MAX				12	//고를 수 있는 점의 수(배열 크기)
 #define LOADOUT_PICKMAX			40	//출정 준비 화면에 늘어놓는 가방 칸 수
@@ -983,8 +1041,8 @@
 //적에게도 같은 단을 준다. 두께는 제 방어 스탯(PS_ARMOR)에서 나온다.
 //0 으로 두면 적은 전처럼 체력만 가진다.
 #define STAGE_FOE_ARMOR			1
-#define STAGE_FOE_ARMOR_BASE	60		//방어 스탯이 0 이어도 이만큼
-#define STAGE_FOE_ARMOR_PER		3		//방어 스탯 1 당
+//STAGE_FOE_ARMOR_BASE 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+//STAGE_FOE_ARMOR_PER 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 적도 방어력을 두른다 ----
 //
@@ -1017,10 +1075,59 @@
 #define INVEN_PER_CASTLE	4	//성 한 단계마다 늘어나는 칸
 
 //방어구가 쌓일 때 피해가 줄어드는 완만함. 이만큼 쌓이면 피해가 절반이다.
-#define STAGE_ARMOR_SOFT 400
+//STAGE_ARMOR_SOFT 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
-//몬스터 한 마리를 눕힐 때 떨어지는 골드. 판이 오를수록 같이 오른다.
-#define STAGE_KILL_GOLD 20
+//---- 몬스터 한 마리를 눕힐 때 떨어지는 골드 ----
+//
+//전에는 `STAGE_KILL_GOLD * (판 + 1)` 이었다. 판에 **비례**해서 오른다.
+//그런데 몬스터 체력은 **등비**로 오른다(WAVE_HP_TIER_MUL, 15판마다
+//x1.17). 둘의 속도가 달라서, 판이 깊어질수록 "열 배 단단한 놈을 잡고
+//받는 돈은 두 배" 가 된다 - 뒤로 갈수록 보상이 무의미해진다.
+//
+//그리고 자리(소 · 중 · 대보스)가 보상에 전혀 안 나타났다. 백 배 체력을
+//깎고도 잡몹과 같은 돈을 받았다.
+//
+//잡은 놈의 체력으로 준다. 체력 곡선이 보상 곡선이 되므로 둘이 영영
+//어긋나지 않고, 보스 배수(WAVE_HP_*_MUL)가 그대로 보상 배수가 된다.
+//
+//    골드 = STAGE_KILL_GOLD + 그놈의 최대 체력 / STAGE_KILL_GOLD_HP_DIV
+//
+//첫 몬스터(체력 330)면 20 + 13 = 33. 같은 자리의 대보스(x100)면 1,340.
+//STAGE_KILL_GOLD 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
+
+//---- 포탄 ----
+//
+//맞히면 그 자리에서 사라졌다. 공중에서 증발하니 "맞혔다" 가 아니라
+//"없어졌다" 로 보인다. 한 대 치고 떨어뜨린다.
+//
+//(화면 y 가 어느 쪽이 아래인지는 이 공간에서 "빼면 위" 다 -
+// ArtilleryTargetPoint 가 몸 중심을 잡을 때 빼고 있다. 거꾸로 날면
+// GRAVITY 의 부호만 뒤집으면 된다.)
+#define STAGE_SHELL_FALL     (FPS * 2 / 3)  //떨어지는 시간
+#define STAGE_SHELL_GRAVITY  0.55f          //한 프레임에 더해지는 속도
+#define STAGE_SHELL_DRIFT    0.6f           //맞은 쪽으로 조금 밀려난다
+
+//포탄이 작아 무엇이 날아가는지 안 보였다.
+#define STAGE_SHELL_SCALE    1.5f
+
+//---- 시험: 스킬 동료를 강제로 싣는다 ----
+//
+//동료의 협공은 그 동료가 실제로 판에 서 있어야 돈다
+//(StageAllyLinkActor). 기본 편성은 장비만 싣기 때문에, 띄워서 그냥
+//싸우면 협공이 한 번도 안 나온다 - 만들어 둔 것이 도는지를 볼 길이 없다.
+//
+//브루스(NPC_DONALD, 47번)는 로빈의 마구찌르기를 부르는 동료다
+//(GameConfig.h 의 CREW_DONALD 주석). 세 번째 영웅 공격마다 선다
+//(AllyBalance 의 Condition::EveryThird).
+//
+//0 으로 두면 안 싣는다.
+//끄고 켜는 깃발은 번호와 따로 둔다. NPC_DONALD 는 enum 이라 전처리기가
+//모른다 - #if 에 바로 쓰면 0 으로 읽혀 블록이 통째로 빠진다.
+#define STAGE_TEST_SKILL_CREW_ON  1
+#define STAGE_TEST_SKILL_CREW     NPC_DONALD
+
+//체력 몇 점이 금화 하나인가. 올리면 전체 보상이 내려간다.
+//STAGE_KILL_GOLD_HP_DIV 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 
 //---- 튜토리얼 에필로그 골드 ----
 //

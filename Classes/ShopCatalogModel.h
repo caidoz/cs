@@ -2,7 +2,21 @@
 #include "Config/ShopConfig.h"
 // Stable catalog identities; prices/probabilities are never inferred from artwork.
 namespace ShopCatalog {
-enum Tab { Recommended, Supplies, Packages, TabCount };
+//---- 상점은 큰 셋이다 ----
+//
+//전에는 추천 · 보급품 · 패키지였다. 그런데 추천이 보급품의 카드를 그대로
+//한 번 더 깔아서, 같은 상자가 두 탭에 나왔다 - 어느 쪽이 진짜인지가
+//안 읽힌다.
+//
+//파는 물건의 성격으로 가른다.
+//    장비    상자다. 골드로 연다. 영구 창고로 간다.
+//    패키지  현금 묶음.
+//    재화    하트 · 캐시. 골드는 안 판다 - 판에서 벌어 상자와 성에 쓰는
+//            순환 재화이지 사고파는 물건이 아니다.
+//
+//동료는 여기 없다. 성에서 모집한다 - 동료는 성 방에 사는 사람들이고,
+//상점에서 사는 것보다 성에서 맞아들이는 쪽이 읽힌다.
+enum Tab { Gear, Packages, Currency, TabCount };
 enum Kind { Daily, Weapon, Armor, Companion, Special, ExistingBox, CashBundle };
 enum Ownership { Persistent, RunTemporary };
 enum Source { Shop, RunReward };

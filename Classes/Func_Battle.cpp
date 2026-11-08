@@ -1668,6 +1668,30 @@ static void StageFoeShotFire(int foe, int hit, int detail, int value)
 //몬스터의 한 대를 검의 위력으로 바꿔 때린다. 히어로 쪽 StageRtSwordHit 과
 //같은 식이다 - 장착 무기의 값을 1 로 보고 그 비로 곱한다.
 static void StageRtSwordHit(int foe,int swordValue);
+
+//---- 때린 자리에 타격 효과 ----
+//
+//AttackObj 안에서도 SetHitMark 를 하나 찍는다. 그런데 그 자리는 맞은
+//놈의 *오브젝트* 좌표다. 판에서 몬스터는 제 오브젝트 자리가 아니라
+//화면의 정해진 자리에 그려지므로(DrawBossMonster), 효과만 엉뚱한 데서
+//터지고 화면에는 아무것도 안 보였다.
+//
+//그려진 자리(StageCombatRecordActor 가 적어 둔 점)에 다시 찍는다.
+//SetHitMark 는 월드 좌표를 받으므로 되돌려 넣는다 - 날아가는 검이 쓰는
+//그 변환과 같은 식이다(StageFoeShotStep).
+static void StageRtHitMark(int target, int owner)
+{
+	float sx = 0.0f, sy = 0.0f;
+
+	if (!StageCombatActorPoint(target, &sx, &sy, false))
+		return;
+
+	const int wx = (int)(sx - xOffset + rx);
+	const int wy = (int)(STATUSWIN_Y + (rh - 4) * TSIZE + OBJIMGGAP - ry - sy);
+
+	SetHitMark(wx, wy, (target < PLAYERALL) ? RIGHT : LEFT,
+		HITMARK_SMALL, 0, owner, HITMARKZOOM);
+}
 static void StageFoeShotHit(const StageFoeShot* s)
 {
 	OBJECT* e = &ao[s->foe];
@@ -1684,10 +1708,15 @@ static void StageFoeShotHit(const StageFoeShot* s)
 	e->ps[PS_DMG] = Max(1LL, keep * s->value / base);
 
 	//히어로를 때리는 길과 몬스터를 때리는 길이 다르다.
+	const long long before = ao[s->hit].hp + ao[s->hit].shield;
+
 	if (s->hit < PLAYERALL)
 		AttackRobin(s->foe, s->hit);
 	else
 		AttackObj(s->foe, s->hit);
+
+	if (ao[s->hit].hp + ao[s->hit].shield < before)
+		StageRtHitMark(s->hit, s->foe);
 
 	e->ps[PS_DMG] = keep;
 }
@@ -2304,6 +2333,7 @@ static void StageRtSwordHit(int foe, int swordValue)
 	hero->ps[PS_DMG] = keep;
 
 	const bool damaged = ao[foe].hp + ao[foe].shield < before;
+	if(damaged) StageRtHitMark(foe, PLAYER);
 	if(damaged) StageCombatReviewHit(0);
     if(damaged) StageHeroAttackLink(PLAYER,foe,ITEM_SWORD);
 

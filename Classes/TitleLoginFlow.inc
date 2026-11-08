@@ -1,6 +1,7 @@
 // Title controls are separate from artwork and survive InitMenu during bootstrap.
 namespace TitleLogin {
 static bool requested=false;
+static bool resetPending=false;
 static int ticks=0;
 static bool ready=false;
 static void Button(int x,int y,int w,int h,const char* label,int command,bool enabled){
@@ -13,6 +14,7 @@ static void Draw(){
  ResetRectPoint();
  const int w=Min(DX-48,320),h=44,gap=10,x=(DX-w)/2;
  const int guestY=Max(86,Min(150,DY/9));
+ if(resetPending){Button(x,guestY,w,h,"초기화 중",TOUCH_FUNC_TITLE_RESET_SAVE,false);return;}
  if(requested){
   const int progress=ready?Min(100,ticks*100/36):Min(90,ticks*90/36);
   DrawPixelPanel(x,guestY,w,24,0x182A36,0x73949C);
@@ -28,18 +30,29 @@ static void Draw(){
  Button(x,guestY+(h+gap)*row++,w,h,"Apple 로그인",TOUCH_FUNC_TITLE_LOGIN_APPLE,NetLoginProviderAvailable(LOGIN_APPLE));
 #endif
  Button(x,guestY,w,h,"게스트 로그인",TOUCH_FUNC_TITLE_LOGIN_GUEST,true);
+ Button(DX-110,DY-14,96,36,"Reset",TOUCH_FUNC_TITLE_RESET_SAVE,true);
 }
 }
-bool TitleLoginBusy(){return drawHandle==MD_TITLE&&TitleLogin::requested;}
+bool TitleLoginBusy(){return drawHandle==MD_TITLE&&(TitleLogin::requested||TitleLogin::resetPending);}
+void TitleLoginReset(){
+ if(drawHandle!=MD_TITLE||TitleLoginBusy())return;
+ if(NetBootstrapPoll()==NETRESULT_NONE)NetChooseLogin(LOGIN_GUEST);
+ TitleLogin::resetPending=true;TitleLogin::ticks=0;touchDisable=false;
+}
 void TitleLoginStart(int provider){
- if(drawHandle!=MD_TITLE||TitleLogin::requested||!NetLoginProviderAvailable(provider))return;
+ if(drawHandle!=MD_TITLE||TitleLoginBusy()||!NetLoginProviderAvailable(provider))return;
  if(NetBootstrapPoll()==NETRESULT_NONE && !NetChooseLogin(provider))return;
  TitleLogin::requested=true;TitleLogin::ticks=0;curMenu=MENU_LOADING;touchDisable=false;
 }
 void TitleLoginStep(bool dataReady){
  TitleLogin::ready=dataReady;
- if(drawHandle!=MD_TITLE){TitleLogin::requested=false;TitleLogin::ticks=0;return;}
- if(!TitleLogin::requested && NetHasRememberedGuestLogin())TitleLoginStart(LOGIN_GUEST);
+ if(drawHandle!=MD_TITLE){TitleLogin::requested=false;TitleLogin::resetPending=false;TitleLogin::ticks=0;return;}
+ if(TitleLogin::resetPending){
+  if(!dataReady)return; // Finish loading first so an old save cannot overwrite reset.
+  gCombatStatusTest=false;NewGame();GotoTitle();curMenu=MENU_LOGIN;
+  TitleLogin::requested=false;TitleLogin::resetPending=false;TitleLogin::ticks=0;
+  return;
+ }
  if(!TitleLogin::requested)return;
  curMenu=MENU_LOADING;++TitleLogin::ticks;
  if(dataReady && TitleLogin::ticks>=36){

@@ -45,9 +45,22 @@ static void LoadoutHeroStatusDraw() {
  const long long currentArmor=live?hero.shield:armor;
  const int sx=clipX,sy=clipY,sx2=clipX2,sy2=clipY2;
  UnSectionClip(false);SetAlpha(ALPHA_MAX);
- char text[96];sprintf(text,"아군 요새");
- DrawFortressStatusCard(12,gLoadoutGridY+148,120,hp,maximum,currentArmor,armor,text);
- const int boxW=260,boxH=44,bx=DX-boxW-12,by=gLoadoutGridY+80;
+ char text[96];
+
+ //---- 판 위에서는 체력창을 또 그리지 않는다 ----
+ //
+ //출정 준비가 판 위에 얹히면서(Core.cpp 의 MD_PLAY) 이 창이 제 "아군
+ //요새" 를 한 번 더 그렸다. 판에는 이미 성 바퀴 밑에 아군 · 적군이
+ //좌우로 나뉘어 서 있다(BattleMobileCastle::DrawDuelHpBars).
+ //
+ //로비에서 열었을 때는 그 두 창이 없으므로 여기서 그린다.
+ if(!live) {
+  sprintf(text,"아군 요새");
+  DrawFortressStatusCard(12,gLoadoutGridY+148,120,hp,maximum,currentArmor,armor,text);
+ }
+ //보급력은 가운데에 둔다. 오른쪽 끝에 붙여 두었더니 적 체력창과
+ //같은 쪽에 겹쳐 어느 쪽 숫자인지가 안 읽혔다.
+ const int boxW=260,boxH=44,bx=(DX-boxW)/2,by=gLoadoutGridY+80;
  MemRect(bx,by,boxW,boxH,0x0C1A2E);MemRectFrame(bx,by,boxW,boxH,0x6FA8FF);
  SetFontColor(COLOR_WHITE);
  const float zoom=.95f;const int star=18*_2X,gap=4*_2X;

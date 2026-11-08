@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cmath>
 
 // Engine-independent simulation. One shot owns one target and can hit once.
@@ -39,6 +39,9 @@ inline bool SegmentHits(Point a, Point b, Point target, float radius) {
 struct Shot {
     bool active;
     int target,generation,lane,age,flight,impact,upgrade;
+    //맞고 나서 떨어지는 동안 남은 프레임과 지금 속도.
+    //0 이면 아직 날아가는 중이거나 이미 사라진 것이다.
+    int fall; float vy;
     Point from,position,previous,destination;
 };
 struct State {
@@ -56,6 +59,7 @@ struct State {
             s.generation=generation; s.lane=lane++;
             s.upgrade=ClampUpgrade(upgrade);
             s.from=s.position=s.previous=from; s.destination=destination;
+            s.fall=0; s.vy=0.0f;
             s.flight=Of(grade).flight; return true;
         }
         return false;

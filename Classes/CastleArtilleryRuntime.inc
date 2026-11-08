@@ -17,9 +17,22 @@ int lobbyArtilleryUntil=0,lobbyArtilleryFrame=-1,lobbyArtilleryHits=0;
 int artilleryGeneration[TOTALOBJECT]={0};
 int artilleryVolleyTarget=-1,artilleryVolleyGeneration=0;
 
+//---- 조준은 "그려진 자리" 에서 받는다 ----
+//
+//여기서 몬스터 자리를 다시 셈하고 있었다(화면 중앙 고정 x, 배율 1.75).
+//그런데 성이 몬스터에게 다가가고(ClashAdvance) 보스가 커지면서
+//(GetWaveSizePct) 실제로 그려지는 자리가 달라졌다 - 포탄만 옛 자리로
+//날아갔다.
+//
+//그리는 쪽이 적어 둔 점을 그대로 쓴다(StageCombatRecordActor). 자리를
+//세 군데서 따로 세면 한 군데만 고쳐져 또 어긋난다.
 CastleArtillery::Point ArtilleryTargetPoint(int foe) {
     CastleArtillery::Point point={Min((float)DX-32*_2X,256.0f*_2X),
         (float)StageBg::GroundY()+28*_2X};
+    {
+        float px=0,py=0;
+        if(StageCombatActorPoint(foe,&px,&py,false)) { point.x=px; point.y=py; return point; }
+    }
     const OBJECT* e=&ao[foe];
     if(e->cmf>=0 && e->cmf<TOTALCMF && e->motion>=0 && e->motion<cmf_m_cnt[e->cmf]) {
         const signed short* bounds=cmfMotionImgSizeBlob+cmfMotionImgSizeSlot[e->cmf]+e->motion*4;
@@ -195,7 +208,25 @@ void StageArtilleryStep(bool running,int foe) {
     for(int i=0;i<CastleArtillery::State::Capacity;++i) {
         CastleArtillery::Shot& shot=stageArtillery.shots[i];
         if(!shot.active) continue;
-        if(shot.impact) { if(--shot.impact==0) shot.active=false; continue; }
+        //---- 맞고 나서 떨어진다 ----
+        //
+        //전에는 터지는 연출이 끝나면 그 자리에서 사라졌다. 포탄이 공중에서
+        //증발하니 "맞혔다" 가 아니라 "없어졌다" 로 보였다.
+        //
+        //한 대 치고 나면 떨어진다. 떨어지는 동안에는 터지는 그림이 아니라
+        //포탄 그대로다.
+        if(shot.impact) {
+            if(--shot.impact==0) { shot.fall=STAGE_SHELL_FALL; shot.vy=0.0f; }
+            continue;
+        }
+        if(shot.fall) {
+            shot.vy+=STAGE_SHELL_GRAVITY*_2X;
+            shot.previous=shot.position;
+            shot.position.y+=shot.vy;
+            shot.position.x+=STAGE_SHELL_DRIFT*_2X;
+            if(--shot.fall==0) shot.active=false;
+            continue;
+        }
         if(!ArtilleryTargetValid(shot)) { shot.active=false; continue; }
         const CastleArtillery::Point point=ArtilleryTargetPoint(shot.target);
         if(stageArtillery.Move(shot,point,8*_2X)) ArtilleryHit(shot.target);
@@ -239,7 +270,20 @@ void StageArtilleryDraw(void) {
         const int animation=s.age/3;
         CannonSynergy synDraw;
         StageCannonQuerySynergy(&synDraw);
-        const float shotScale=CastleArtillery::ProjectileScale(s.upgrade) * (1.0f + synDraw.scaleBonus);
+        //포탄은 작아서 뭐가 날아가는지 안 보였다. 한 몫 키운다.
+        const float shotScale=CastleArtillery::ProjectileScale(s.upgrade)
+            * (1.0f + synDraw.scaleBonus) * STAGE_SHELL_SCALE;
+
+        //---- 떨어지는 중 ----
+        //
+        //터지는 그림이 아니라 포탄 그대로다. 돌면서 떨어지고, 끝물에는
+        //옅어져 사라진다.
+        if(s.fall) {
+            const int alpha=ALPHA_MAX*Min(s.fall,8)/8;
+            ArtillerySprite(grade,s.age/3,s.position.x,s.position.y,
+                p.size*_2X*shotScale,(float)(s.age*18%360),alpha);
+            continue;
+        }
         if(s.impact) {
             const int impact=(CastleArtillery::State::ImpactFrames-s.impact)*8/CastleArtillery::State::ImpactFrames;
             ArtillerySprite(10+grade,impact,s.position.x,s.position.y,(p.size+12)*_2X*shotScale);

@@ -174,6 +174,7 @@ extern int   s_region;
 //지역은 판이 정하므로(SetRegionForStage) 그냥은 지금 판의 지역 하나밖에
 //못 본다. 다른 지역 그림을 확인하려면 잠시 붙잡아 둘 자리가 필요하다.
 extern int   s_regionPick;
+extern int   s_cycleColor;
 
 inline const Region& Cur(void) {
 	return kRegion[Max(0, Min(s_region, STAGEBG_REGION_CNT - 1))];
@@ -195,6 +196,31 @@ inline void SetRegionForStage(int stage) {
 	s_region = s_regionPick >= 0
 	         ? s_regionPick % STAGEBG_REGION_CNT
 	         : (stage / STAGE_PER_CYCLE) % STAGEBG_REGION_CNT;
+
+	//---- 한 바퀴를 다 돌면 색이 한 단 오른다 ----
+	//
+	//배경 그림은 열다섯 장이 전부다. 150 판이면 바닥난다. 그렇다고 지역당
+	//판을 늘리면 배경 하나를 660 마리분 보게 되고, 지역의 끝(대보스)이
+	//아득해진다.
+	//
+	//이 게임은 이미 "컬러가 곧 단계다" 로 지어져 있다(content/wave_color.tsv).
+	//몬스터가 그 규칙으로 깔려 있으므로 배경도 같은 축을 쓴다 - 늪지대를
+	//붉은 하늘로 다시 지난다. 같은 땅, 더 독한 계절이다.
+	s_cycleColor = Max(0, Min(STAGEBG_CYCLE_COLOR_CNT - 1,
+		stage / (STAGE_PER_CYCLE * STAGEBG_REGION_CNT)));
+}
+
+//바퀴마다 배경에 입히는 색. 몬스터 색 일곱 단과 같은 차례다
+//(기본 · 레드 · 블루 · 퍼플 · 그린 · 골드 · 블랙).
+//
+//기본 바퀴는 0(원본색)이다. 0xFFFFFF는 DrawImage의 백화 효과 예약값이다.
+inline int CycleTint(void) {
+	static const int kTint[STAGEBG_CYCLE_COLOR_CNT] = {
+		0, 0xFF9A88, 0x8FB8FF, 0xC79BFF,
+		0x96E3A8, 0xFFD98A, 0x7A7A86,
+	};
+
+	return kTint[Max(0, Min(STAGEBG_CYCLE_COLOR_CNT - 1, s_cycleColor))];
 }
 
 //다음 지역으로 넘긴다. 마지막을 지나면 다시 판을 따른다 - 눌러서 한 바퀴
@@ -420,6 +446,14 @@ inline void Boss(const Camera& cam) {
 //withBoss 는 원경의 보스를 얹을지다. PVP 격돌은 두 성이 맞붙는 자리라
 //남의 보스가 뒤에 떠 있으면 누가 싸우는 판인지가 흐려진다.
 inline void Draw(const Camera& cam, int arenaBottom, bool withBoss = true) {
+	//---- 바퀴 색을 입힌다 ----
+	//
+	//배경에만 건다. 성과 몬스터는 제 색을 따로 들고 있다(몬스터는 아예
+	//다른 번호의 그림이다). 여기서 같이 물들이면 두 번 칠해진다.
+	const int savedColor = baseColor;
+
+	SetColor(CycleTint());
+
 	//심연색을 먼저 깐다. 원경 아래로 화면이 길어져도 색이 이어진다.
 	MemRect(0, DY, DX, Max(1, DY - arenaBottom), Cur().abyss);
 
@@ -428,6 +462,8 @@ inline void Draw(const Camera& cam, int arenaBottom, bool withBoss = true) {
 		Boss(cam);
 	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  cam, kDepthMid);
 	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
+
+	SetColor(savedColor);
 }
 
 //선로만 그린다 (우주맵 등 다른 배경 위에 선로를 얹을 때 쓴다)

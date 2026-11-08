@@ -1030,6 +1030,26 @@ int GetWaveKind(int waveIdx)
 	return wave[GetWaveRow(waveIdx) * MAXWAVEENEMY * WAVEDATASIZE + 0 * WAVEDATASIZE + 2];
 }
 
+//---- 그 자리가 잡몹보다 몇 배로 커 보이는가 ----
+//
+//체력 배수(GetWaveHpMul)와 짝이다. 자리가 세질수록 덩치도 같이 커야
+//"저게 보스다" 가 체력바를 읽기 전에 보인다.
+//
+//100 이 그대로다. 그리는 쪽이 100 으로 나눠 쓴다.
+int GetWaveSizePct(int waveIdx)
+{
+	switch (GetWaveKind(waveIdx)) {
+	case MONSTERTYPE_BOSS:
+		return WAVE_SIZE_SUBBOSS_PCT;
+	case MONSTERTYPE_MIDBOSS:
+		return WAVE_SIZE_MIDBOSS_PCT;
+	case MONSTERTYPE_BIGBOSS:
+		return WAVE_SIZE_BIGBOSS_PCT;
+	}
+
+	return 100;
+}
+
 //그 자리가 잡몹 체력의 몇 배인가. 100 을 나눈 값이 아니라 그냥 배수다.
 int GetWaveHpMul(int waveIdx)
 {

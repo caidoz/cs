@@ -15,6 +15,7 @@ void SetEnemyUser(void);
 int GetWaveRow(int waveIdx);
 int GetWaveKind(int waveIdx);
 int GetWaveHpMul(int waveIdx);
+int GetWaveSizePct(int waveIdx);
 int GetMaxWaveCnt(void);
 
 //---- 3일 주기 ----
@@ -22,7 +23,16 @@ int GetMaxWaveCnt(void);
 // 자세한 것은 Func_Map.cpp 의 GetStageCycleIdx() 위에 적어 두었다.
 enum {
 	STAGE_PER_DAY = 2,		//낮 한 판, 밤 한 판
-	STAGE_PER_CYCLE = 5,	//2 + 2 + 마지막 날
+	//---- 한 지역에 머무는 판 수 ----
+	//
+	//다섯이었다. 그런데 지역의 끝은 그 지역의 배경 보스를 눕히는
+	//자리여야 하고(대보스), 대보스는 열 판에 한 번이다. 둘이 어긋나면
+	//배경이 바뀌는 자리와 보스를 잡는 자리가 서로 다른 데가 된다.
+	//
+	//열 판이 한 지역이다. 열다섯 지역을 돌면 한 바퀴(150 판)이고,
+	//그다음은 색을 한 단 올려 같은 땅을 다시 지난다 - 몬스터가 이미
+	//그렇게 깔려 있다(content/wave_color.tsv).
+	STAGE_PER_CYCLE = 10,
 	CYCLE_DAYS = 3,
 
 	//한 판에 나오는 몬스터 수. 이 수를 채우면 판이 끝난다.

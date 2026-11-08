@@ -45,6 +45,7 @@ typedef enum _iconDef {
 	ITEM_IRON_ICON = 64 * 5 + 49,
 	ITEM_EXP_ICON = 64 * 2 + 52,
 	ITEM_LETTER_ICON = 64 * 2 + 64 - 1,
+	ITEM_PREMIUM_DIAMOND_ICON = 64 * 7, // i7: top-left 32px cell
 	ITEM_CASH_ICON = 64 * 5 + 41,
 
 	ITEM_RUBY_ICON = 46,

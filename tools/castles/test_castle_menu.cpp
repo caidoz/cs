@@ -1,4 +1,5 @@
 #include "../../Classes/CastleMenuModel.h"
+#include "../../Classes/CastleTutorialModel.h"
 #include "../../Classes/CastleArtilleryModel.h"
 #include "../../Classes/Data/CastleRoomUpgrades.h"
 #include "../../Classes/Data/CastleNpcPlacement.h"
@@ -17,6 +18,19 @@ struct Reader {
     template<class T,class... Rest> void operator()(T& value,Rest&... rest) { (*this)(value); (*this)(rest...); }
 };
 int main() {
+    {
+        using namespace CastleTutorial;
+        int step=Welcome;
+        const Event sequence[]={Next,Entered,Placed,Setup,Started,ShopOpened,Bought,Started,Next};
+        for(int i=0;i<Done;++i){
+            assert(step==i);
+            for(int e=Next;e<=Bought;++e)if(e!=sequence[i])assert(Advance(step,(Event)e)==step);
+            step=Advance(step,sequence[i]);
+            assert(Advance(step,sequence[i])==step);
+        }
+        assert(step==Done&&Advance(Done,Next)==Done);
+        assert(CastleTutorial::Clamp(-100)==-1&&CastleTutorial::Clamp(100)==Done);
+    }
     {
         Progress available={};available.version=1;available.owned=1;
         available.rooms[0][0]=2;

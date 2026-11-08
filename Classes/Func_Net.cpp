@@ -306,6 +306,10 @@ static void NetBuildDump(std::string& out)
 	//---- player_flag ----
 	//켜진 것만 넣는다. 배열을 통째로 넣으면 대부분 0인 수백 행이 된다.
 	TableBegin("player_flag", "user_id\tflag_kind\tflag_idx\tvalue");
+	if(gCastleTutorialStep>=0){
+		PutNum(gNetUserId);PutNum(8);PutNum(0);PutNum(1);RowEnd();
+		PutNum(gNetUserId);PutNum(8);PutNum(1);PutNum(gCastleTutorialStep);RowEnd();
+	}
 	CastleProgressEnsure();
 	PutNum(gNetUserId); PutNum(7); PutNum(0); PutNum(1); RowEnd();
 	for(int c=0;c<10;++c) {
@@ -841,6 +845,7 @@ static bool NetParseDump(const std::string& text, NetTableMap& out,
 //---- 표 묶음을 robin에 붓는다 ----
 static void NetApplyDump(NetTableMap& tables)
 {
+	CastleTutorialLoad(-1);
 	robin.castleProgress=CastleMenuModel::Progress();
 	NetTableMap::iterator it;
 	size_t r;
@@ -912,6 +917,7 @@ static void NetApplyDump(NetTableMap& tables)
 				continue;
 
 			switch (kind) {
+			case 8: if(idx==1)CastleTutorialLoad(val);break;
 			case 4: if(idx<50) robin.castleProgress.parts[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
 			case 5: if(idx<50) robin.castleProgress.rooms[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
 			case 6: if(idx<10&&val) robin.castleProgress.owned|=1u<<idx; break;

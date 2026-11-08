@@ -4387,14 +4387,18 @@ void SetDmgNum(int attacker, int obj, long long dmg, int critical, int type, flo
 				str = 5;
 			else
 				str = 6;
-			//for (i = 0; i < 3; i++)
-			currencyObj = DropItem(&ao[obj], ITEM_GOLD);
-			ao[currencyObj].defaultZoom = ao[currencyObj].zoom = 1.5f + str * 0.3f;
-			ao[currencyObj].target = attacker;
-			if (obj < PLAYERALL)
-				ao[currencyObj].ax = -dmg;
-			else
-				ao[currencyObj].ax = dmg;
+			//---- 칠 때마다 날아오던 동전 ----
+			//
+			//맞은 만큼 골드가 동전이 되어 날아오던 길이다. 룰렛 시절의
+			//경제였고, 지금 판의 골드는 눕힌 뒤 상점에서 돈다.
+			//
+			//때릴 때마다 쏟아지면 동전이 화면을 덮어 무엇을 맞았는지가
+			//안 보인다. 판에서는 DropItem 을 아예 쓰지 않는다.
+			//
+			//(위 AttackObj 쪽에는 이미 같은 뜻의 빗장이 있었는데 이
+			// 갈래에는 없었다.)
+			(void)str;
+			(void)currencyObj;
 			//SetCurrencyMarkGold(startX, startY, str);
 			//AddBar(&bar[BAR_GOLD], dmg, BARFRAME);
 			//----------------------------------------------------

@@ -1204,12 +1204,12 @@ const char* const textId[] = {
 	"보상박스5",
 	"보상박스6",
 	"보상박스7",
-	"브론즈 유료 상자",
-	"실버 유료 상자",
-	"크리스탈 유료 상자",
-	"아케인 유료 상자",
-	"로열 유료 상자",
-	"레전드 유료 상자",
+	"브론즈 보물상자",
+	"실버 보물상자",
+	"크리스탈 보물상자",
+	"아케인 보물상자",
+	"로열 보물상자",
+	"레전드 보물상자",
 
 	////투기장 2 전용 아이템(나중에 프리미엄으로 주면 될듯)
 	////검 : ITEM_SWORD	
@@ -1882,12 +1882,12 @@ const char* const textId[] = {
 	"보상박스5설명",
 	"보상박스6설명",
 	"보상박스7설명",
-	"브론즈 유료 상자 설명",
-	"실버 유료 상자 설명",
-	"크리스탈 유료 상자 설명",
-	"아케인 유료 상자 설명",
-	"로열 유료 상자 설명",
-	"레전드 유료 상자 설명",
+	"브론즈 보물상자 설명",
+	"실버 보물상자 설명",
+	"크리스탈 보물상자 설명",
+	"아케인 보물상자 설명",
+	"로열 보물상자 설명",
+	"레전드 보물상자 설명",
 
 	"견습 기사",//TEXT_SETNAME_START
 	"왕가의 수호자",
@@ -3982,6 +3982,9 @@ const char* const textId[] = {
 	"castle_room_integrated_v4/castle-10-level-3",
 	"castle_room_integrated_v4/castle-10-level-4",
 	"castle_room_integrated_v4/castle-10-level-5",
+	"menu_renewal/rooms-v1",
+	"menu_renewal/dungeon-v2",
+	"menu_renewal/shopkeeper-v1",
 
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN

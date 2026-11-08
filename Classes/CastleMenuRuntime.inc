@@ -1,4 +1,4 @@
-// Included by Func_Menu.cpp.
+﻿// Included by Func_Menu.cpp.
 #include "CastleArtilleryModel.h"
 #include "Data/CastleFacilities.h"
 #include "Data/InventoryCannonSprites.h"
@@ -72,7 +72,14 @@ int CastleTeamBonus(int kind) {
 void CastleMenuOpen() { CastleProgressEnsure();
     if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
     castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0; }
+static bool gCastleFacilityTab=true;
 bool CastleMenuCommand(int func) {
+    if(func>=TOUCH_FUNC_CASTLE_BROWSE_PICK && func<TOUCH_FUNC_CASTLE_BROWSE_PICK_END){
+        if(!castleModal){castleBrowse=func-TOUCH_FUNC_CASTLE_BROWSE_PICK;scY[MENU_CASTLE]=0;scAccelY=0;}return true;
+    }
+    if(func==TOUCH_FUNC_RENEW_CASTLE_PARTS||func==TOUCH_FUNC_RENEW_CASTLE_FACILITIES){
+        if(!castleModal){gCastleFacilityTab=func==TOUCH_FUNC_RENEW_CASTLE_FACILITIES;scY[MENU_CASTLE]=0;scAccelY=0;}return true;
+    }
     if(func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE && func<=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE_END){
         if(castleModal)return true;
         CastleProgressEnsure();const int c=castleBrowse,i=func-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE;

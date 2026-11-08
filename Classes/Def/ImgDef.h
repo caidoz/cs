@@ -782,6 +782,10 @@ typedef enum _imgDef {
 	//열다섯이다. res 에 bg1 ~ bg15 가 있고 Text.h 이름표도 75 줄(15 x 5),
 	//StageBackground.h 의 kRegion 과 이름 표도 열다섯이다.
 	STAGEBG_REGION_CNT = 15,
+
+	//배경을 다시 쓰는 바퀴 수. 몬스터 색 일곱 단과 같은 수다
+	//(content/wave_color.tsv). 열다섯 지역을 다 돌면 색이 한 단 오른다.
+	STAGEBG_CYCLE_COLOR_CNT = 7,
 	STAGEBG_LAST_IMG = STAGEBG_FIRST_IMG + STAGEBG_PER_REGION * STAGEBG_REGION_CNT - 1,
 
 	// 성 단계별 가방 테두리. grid0 이 1 단계다 - 성 번호와 짝이다.
@@ -873,6 +877,9 @@ typedef enum _imgDef {
 	CASTLE_ROOM_UPGRADE_LAST_IMG=CASTLE_ROOM_UPGRADE_FIRST_IMG+9,
 	CASTLE_FINAL_ROOM_FIRST_IMG,
 	CASTLE_FINAL_ROOM_LAST_IMG=CASTLE_FINAL_ROOM_FIRST_IMG+5,
+	MENU_RENEWAL_ROOM_IMG,
+	MENU_RENEWAL_DUNGEON_IMG,
+	MENU_REFERENCE_SHOPKEEPER_IMG,
 	TOTALIMG,
 #ifdef GAMELOGWRITE
 	MAXRENDERCNT = TOTALIMG * 100,

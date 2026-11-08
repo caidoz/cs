@@ -4,6 +4,14 @@
 #include <cstring>
 #include <iostream>
 int main() {
+ const long long prices[]={100,500,30,100,300,1000};
+ for(int tier=0;tier<6;++tier){
+  assert(ShopTreasure::Price(tier)==prices[tier]);
+  assert(ShopTreasure::UsesGems(tier)==(tier>=2));
+  assert(ShopTreasure::HeartReward(tier,10000)<=20);
+  if(tier<2)assert(ShopTreasure::GoldReward(tier,1000000)<prices[tier]);
+ }
+ assert(ShopTreasure::Price(-1)==-1&&ShopTreasure::Price(6)==-1);
  for(int h=0;h<3;++h)for(int k=0;k<4;++k) {
   const auto p=ShopCatalog::Supply(k,h);
   assert(ShopCatalog::MatchesHero(p,h));assert(!ShopCatalog::CanPurchase(p));

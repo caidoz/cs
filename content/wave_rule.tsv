@@ -3,8 +3,8 @@
 name	value	note
 total_wave	10000	깔 웨이브 수
 tutorial_rows	4	앞에서 그대로 보존할 행 수
-bigboss_every	100	대보스 자리
-midboss_every	10	중보스 자리
+bigboss_every	150	대보스 자리
+midboss_every	15	중보스 자리
 subboss_every	5	소보스 자리
 color_bump_midboss	1	중보스가 제 바퀴보다 몇 단 위 색으로 서는가
 color_bump_bigboss	2	대보스가 제 바퀴보다 몇 단 위 색으로 서는가

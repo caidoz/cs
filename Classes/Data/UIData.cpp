@@ -39,7 +39,9 @@ static const unsigned short currencyIcon_builtin[] = {
 	ICON_GOLD,//CURRENCY_GOLD
 	ITEM_RUBY_SMALLL_ICON,//CURRENCY_MEDAL
 	ITEM_SAPPHIRE_SMALL_ICON,//CURRENCY_COIN
-	ITEM_CASH_ICON,//CURRENCY_CASH
+	//캐시는 다이아다. 전에는 알록달록한 코인 그림이라 골드 · 메달 · 코인과
+	//한 덩어리로 보여서, 무엇이 유료 재화인지가 아이콘으로 안 갈렸다.
+	ITEM_PREMIUM_DIAMOND_ICON,//CURRENCY_CASH
 	ICON_HAMMER,//CURRENCY_HAMMER
 	ICON_SHIELD,//CURRENCY_SHIELD
 	ICON_HEART,//CURRENCY_HEART

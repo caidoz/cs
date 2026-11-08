@@ -11967,16 +11967,22 @@ void VanishMove(OBJECT* pObj)
 				//동전 하나가 떨어져 골드바로 날아간다. 그 사이에 룰렛이
 				//돈다 - 무엇을 살 수 있는지와 얼마가 들어왔는지가 같은
 				//순간에 보여야 "이걸로 무엇을 살까"가 이어진다.
-				const int coin = DropItem(pObj, ITEM_GOLD);
+				//동전을 떨어뜨리지 않고 바로 넣는다. 판에서는
+				//DropItem 을 쓰지 않는다 - 날아오는 동전이 화면을 덮어
+				//무엇을 맞았는지가 안 보였다.
+				//
+				//들어오는 양은 그대로다. 깃발이 있으면 더 들어온다.
+				{
+					//잡은 놈의 체력이 곧 보상이다(BalanceConfig 의
+					//STAGE_KILL_GOLD). 보스는 체력 배수만큼 더 준다.
+					const long long worth = Max(0LL, pObj->maxhp)
+						/ STAGE_KILL_GOLD_HP_DIV;
+					const int gold = (int)Min((long long)0x7FFFFFF,
+						(STAGE_KILL_GOLD + worth)
+						* (100 + CastleBonusOf(CPE_GOLD_PCT)) / 100);
 
-				if (coin >= 0) {
-					//깃발이 있으면 더 떨어진다.
-					const int gold = STAGE_KILL_GOLD * (robin.stage + 1)
-						* (100 + CastleBonusOf(CPE_GOLD_PCT)) / 100;
-
-					ao[coin].target = PLAYER;
-					ao[coin].ax = gold;
-					ao[coin].defaultZoom = ao[coin].zoom = 2.0f;
+					GetItem(ITEM_GOLD, false, false, false, gold, false);
+					AddBar(&bar[BAR_GOLD], gold, BARFRAME);
 				}
 
 				//아직 판이 남았다. 세 갈래를 내밀고, 고르는 동안 다음

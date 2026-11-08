@@ -18,6 +18,7 @@ void CastlePartsNaturalSize(int castleLevel, float* w, float* h);
 float CastlePartsWheelSink(void);
 float CastlePartsGroundOffset(int castleLevel);
 float CastlePartsRoomScale(void);
+float CastlePartsCommanderX(void);
 float CastlePartsLeftInset(int castleLevel);
 float CastlePartsFloatOffset(int castleLevel);
 
@@ -27,13 +28,46 @@ float CastlePartsFloatOffset(int castleLevel);
 //네임스페이스 안에서 선언하면 BattleMobileCastle:: 짜리 다른 이름이 되어
 //링크가 안 된다. 그래서 바깥에 둔다.
 bool StageCastleRolling(void);
-void StageFoeBagDraw(int x, int y, int w);
 
 namespace BattleMobileCastle {
 
 static float s_scrollDist = 0.0f;
 static float s_scrollSpeed = 24.0f;
 static float s_hitFlash = 0.0f;
+
+//---- 몬스터에게 다가간 거리 ----
+//
+//성은 화면 왼쪽 끝에, 몬스터는 가운데 오른쪽에 고정되어 있었다. 둘이
+//한 번도 닿지 않아 검도 탄도 포탄도 전부 그 빈 공간을 건넜다 - 때리는
+//느낌이 날 수가 없었다.
+//
+//몬스터가 서면 멈추는 대신 검이 닿는 자리까지 밀고 간다. 눕히면 제자리로
+//돌아와 다시 달린다.
+static float s_advance = 0.0f;
+
+inline int ClashFoe(void);
+inline float ClashFoeX(int foe);
+
+//성이 그려지는 폭. 다가갈 거리를 재려면 성의 오른쪽 끝을 알아야 한다.
+inline float ClashCastleWidth(void) {
+	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
+	float naturalW = 0.0f, naturalH = 0.0f;
+
+	CastlePartsNaturalSize(curCastle + 1, &naturalW, &naturalH);
+	(void)naturalH;
+
+	return naturalW * CastlePartsRoomScale();
+}
+
+//히어로가 선 자리에서 몬스터까지 남겨 둘 거리. 검이 미치는 만큼이다.
+//줄이면 더 바짝 붙고, 0 이면 겹친다.
+#define STAGE_CLASH_REACH (64 * _2X)
+
+//한 프레임에 다가가는 거리. 멀면 빠르게, 가까우면 느리게 붙는다.
+#define STAGE_CLASH_SPEED 0.14f
+
+//다가간 몫. 성 · 히어로 · 동료가 이만큼 같이 오른쪽으로 간다.
+inline float ClashAdvance(void) { return s_advance; }
 
 inline bool IsMoving() {
 	//---- 몬스터가 서면 멈춘다 ----
@@ -93,6 +127,42 @@ inline void Update(float delta) {
 
 	if (s_hitFlash > 0.0f) s_hitFlash = Max(0.0f, s_hitFlash - dt * 3.0f);
 
+	//---- 몬스터에게 다가간다 ----
+	//
+	//서 있는 놈이 있으면 검이 닿는 자리까지 밀고 가고, 없으면 제자리로
+	//돌아온다. 돌아오는 동안에도 배경은 흐르므로(IsMoving) 성만 뒤로
+	//빠지는 것이 아니라 "다음 놈을 향해 달린다" 로 읽힌다.
+	{
+		const int foe = (drawHandle == MD_PLAY) ? ClashFoe() : -1;
+		float want = 0.0f;
+
+		if (foe >= 0) {
+			//---- 성 폭이 아니라 히어로 자리로 잰다 ----
+			//
+			//처음에는 성 그림의 오른쪽 끝을 기준으로 삼았다. 그런데 그
+			//네모에는 투명한 여백이 들어 있고 성마다 폭이 달라서, 화면에는
+			//한참 떨어져 보이는데 셈으로는 이미 닿은 것이 되어 한 발도
+			//안 움직였다.
+			//
+			//닿아야 하는 것은 성이 아니라 히어로의 검이다. 지휘대에 선
+			//히어로 자리에서 검이 미치는 거리만큼 앞이 설 자리다.
+			const float commander = CastlePartsCommanderX();
+			const float heroX = (commander >= 0.0f)
+				? commander
+				: StageBg::kCastleLeft + ClashCastleWidth();
+
+			//commanderX 에는 지금까지 다가간 몫이 이미 들어 있다. 그래서
+			//차이만 재서 보탠다 - 매 프레임 다시 재므로 성 폭이 얼마든
+			//스스로 맞춰 간다.
+			const float need = ClashFoeX(foe) - STAGE_CLASH_REACH - heroX;
+
+			want = Max(0.0f, s_advance + need);
+		}
+
+		s_advance += (want - s_advance) * STAGE_CLASH_SPEED;
+		if (std::fabs(want - s_advance) < 0.5f) s_advance = want;
+	}
+
 }
 
 inline void DrawBackground(int groundY, int invenTop) {
@@ -125,7 +195,9 @@ inline void DrawCastle(int groundY) {
 	const float rumbleY = IsMoving() ? (std::sin((float)frame * 0.40f) * 1.0f * (float)_2X) : 0.0f;
 	//성 1 의 들여쓰기를 뺀다. 안 빼면 그만큼 왼쪽이 비고, 그 폭이
 	//고스란히 몬스터 자리에서 깎인다.
-	const float castleLeft = StageBg::kCastleLeft
+	//다가간 몫을 얹는다. 여기 하나만 더하면 성 · 히어로 · 동료가 같이
+	//간다 - 아래 CastleCrewDrawAt 가 이 값을 그대로 받는다.
+	const float castleLeft = StageBg::kCastleLeft + s_advance
 	                       - CastlePartsLeftInset(curCastle + 1) * scale;
 	const float groundOffset = CastlePartsGroundOffset(curCastle + 1);
 	const float assemblyBottom = (float)groundY -
@@ -212,31 +284,53 @@ inline void DrawDuelHpBars(int groundY, int inventoryWidth) {
 	DrawDuelHpBar(DX - gap - w, y, w, hp, maximum, "적 요새", true,
 	              armor, armorMax,power);
 
-	//---- 적이 멘 것 ----
+	//---- 적 체력창 밑에 가방을 덧붙이지 않는다 ----
 	//
-	//체력 막대만 있으면 얼마나 센지는 알아도 무엇으로 때리는지를 모른다.
-	//적 체력 칸 바로 아래에 적의 가방을 깔아, 그것을 보고 내 칸을 채우게
-	//한다.
+	//전에는 여기에 "적 장비" 띠를 깔았다. 그 바람에 적 카드만 아래로
+	//더 길어져서, 나란히 선 두 체력창이 서로 다른 물건으로 보였다.
 	//
-	//두 단 게이지는 44, 한 단은 34 px 다(DrawDuelHpBar). 넉넉한 쪽으로
-	//비켜 둔다.
-	::StageFoeBagDraw(DX - gap - w, y - 46 * Max(1, _2X), w);
+	//적이 무엇을 멨는지는 위쪽 적 격자(StageFoeInvenDraw)가 이미
+	//한 판으로 보여 준다. 같은 것을 두 군데서 그릴 까닭이 없다.
 }
 
-inline void DrawBossMonster(int groundY) {
+//지금 상대하는 놈. 서 있는 놈이 없으면 -1 이다.
+inline int ClashFoe(void) {
 	int foe = StageRtFoe();
 	if(foe<0) for(int obj=ENEMY;obj<NEUTRAL;++obj)
 		if(ao[obj].active && ao[obj].moveHandler==REGENMOVE && ao[obj].mom==obj) {foe=obj;break;}
-	if (foe < 0) return;
+	return foe;
+}
+
+//그 놈이 선 화면 가로 자리. 그리는 쪽과 다가가는 쪽이 같은 값을 써야
+//한다 - 둘이 어긋나면 성이 엉뚱한 데서 멈춘다.
+inline float ClashFoeX(int foe) {
 	const OBJECT* monster = &ao[foe];
 	const float targetX = Min((float)DX - 32 * _2X, 256.0f * _2X);
 	const float entry=monster->moveHandler==REGENMOVE
 		? Max(0.0f,Min(1.0f,(float)monster->frame/(FPS/2))) : 1.0f;
-	const float bossX=targetX+((float)DX+160*_2X-targetX)*(1.0f-entry);
-	StageCombatRecordActor(foe,bossX,groundY-3*_2X,enemyIconZoom[monster->type]*1.75f,true);
+	return targetX+((float)DX+160*_2X-targetX)*(1.0f-entry);
+}
+
+inline void DrawBossMonster(int groundY) {
+	const int foe = ClashFoe();
+	if (foe < 0) return;
+	const OBJECT* monster = &ao[foe];
+	const float bossX = ClashFoeX(foe);
+	//---- 자리가 세면 덩치도 크다 ----
+	//
+	//소 · 중 · 대보스가 잡몹과 똑같은 크기로 서 있었다. 체력만 다섯 배
+	//열 배 백 배인데 그림이 같으니, 체력바를 읽기 전에는 보스인 줄을
+	//몰랐다.
+	//
+	//재는 쪽(StageCombatRecordActor)과 그리는 쪽이 같은 값을 써야 한다 -
+	//어긋나면 검이 몸통이 아니라 허공으로 날아간다. 한 번만 셈한다.
+	const float bossZoom = enemyIconZoom[monster->type] * 1.75f
+		* GetWaveSizePct(robin.waveIdx) / 100.0f;
+
+	StageCombatRecordActor(foe,bossX,groundY-3*_2X,bossZoom,true);
 	DrawCmfDetailShadow(monster->cmf, monster->motion, (int)bossX,
 		groundY - 3 * _2X,
-		LEFT, enemyIconZoom[monster->type] * 1.75f);
+		LEFT, bossZoom);
 }
 
 inline void Draw(int groundY, int invenTop) {
