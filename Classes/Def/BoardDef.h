@@ -20,7 +20,7 @@ enum {
 	BOARD_SPINS = 10,		//적 하나당 룰렛 횟수
 	BOARD_TRAY = BOARD_REELS,
 
-	BLOCK_LV_MAX = 3,		//3단이 끝. Lv1 1×1 → Lv2 1×2 → Lv3 2×2 (2026-11-09, 4단 폐지)
+	BLOCK_LV_MAX = 6,		//6단 = 성급(★1~★6). 크기 1×1·1×2·2×2·2×3·3×3·3×4 (2026-11-09)
 	BOARD_MAX_BLOCKS = BOARD_CELLS,
 
 	RUN_LIVES_BASE = 3,		//갑옷 없을 때의 목숨
@@ -28,13 +28,23 @@ enum {
 	ENEMY_LIFE_COST_BOSS = 2,
 };
 
-//계열의 종류. 동료면 id 가 동료 번호(0~63), 장비면 id 는 쓰지 않는다.
+//계열의 종류. 동료 계열의 id 는 역할군(CrewRole), 장비면 id 는 쓰지 않는다.
+//블록이 어떤 동료인지는 블록이 따로 든다 — 합성 결과가 그 역할·★ 안에서 무작위이기 때문.
 enum LineageKind {
 	LINEAGE_CREW = 0,
 	LINEAGE_SWORD,		//히어로 평타 / 궁극기
 	LINEAGE_ARMOR,		//보호 / 적 턴 삭제
 	LINEAGE_NECK,		//하트 / 룰렛 횟수
 	LINEAGE_KIND_COUNT,
+};
+
+//역할군 4. 64명이 역할 × ★ 로 고르게 깔려 있어(지휘 17·포격 15·지원 17·공격 15) 이것이 곧 합성 트리다.
+enum BoardCrewRole {	//Func_Draw.h 의 CrewRole(CREW_ROLE_*) 과 같은 순서. 값이 같아야 한다
+	ROLE_COMMANDER = 0,	//지휘
+	ROLE_ARTILLERY,		//포격 (★5 가 끝 — ★6 이 없다)
+	ROLE_SUPPORT,		//지원
+	ROLE_STRIKER,		//공격
+	ROLE_COUNT,
 };
 
 //동료 특성 6종(§14-2). 동료 하나에 하나. 장비 계열은 TRAIT_NONE.

@@ -65,6 +65,7 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/Data/DataPack.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Object.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Roulette.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Func_MergeRoulette.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Sound.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_System.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Text.cpp \

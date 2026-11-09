@@ -50,6 +50,7 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/Core.cpp
+     Classes/Func_MergeRoulette.cpp
      #Classes/HelloWorldScene.cpp
      )
 list(APPEND GAME_HEADER

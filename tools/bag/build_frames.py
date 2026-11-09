@@ -24,8 +24,7 @@ grid0 이 1 단계다. 성 번호(0~9)와 짝을 맞춘 것이다.
 import io
 import os
 import re
-import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "Classes", "Data", "CastleData.cpp")
@@ -34,19 +33,19 @@ OUT = os.path.join(ROOT, "Resources", "res")
 SHEET = os.path.join(ROOT, "output", "bag_frames")
 
 CELL = 64          # 칸 한 변
-RIM = 22           # 바깥 테 두께
-MERLON = 20        # 총안 돌기 높이
-MERLON_W = 26      # 총안 돌기 폭
-LINE = 3           # 격자선 굵기
-NODE = 17          # 매듭 한 변
+RIM = 8            # 기존 성 실루엣은 보존하고 테두리만 얇게 다듬는다.
+MERLON = 0         # 합성 판은 돌기 없는 직사각형이다.
+MERLON_W = 12
+LINE = 2
+NODE = 11
 
-C_CELL_TOP = (22, 62, 122, 255)
-C_CELL_BOT = (12, 36, 82, 255)
-C_RIM_EDGE = (16, 92, 196, 255)   # 테 바깥 테두리
-C_RIM_MID = (38, 140, 240, 255)   # 테 몸통
-C_RIM_IN = (186, 236, 255, 255)   # 테 안쪽 밝은 선
-C_LINE = (150, 224, 255, 255)
-C_NODE = (238, 252, 255, 255)
+C_CELL_TOP = (18, 29, 53, 255)
+C_CELL_BOT = (8, 14, 34, 255)
+C_RIM_EDGE = (25, 34, 61, 255)
+C_RIM_MID = (80, 102, 149, 255)
+C_RIM_IN = (128, 145, 183, 255)
+C_LINE = (81, 101, 143, 255)
+C_NODE = (159, 177, 205, 255)
 C_GLOW = (80, 190, 255, 255)
 
 
@@ -88,18 +87,20 @@ def build(cells):
 
     #---- 바깥 테. 칸마다 키운 네모를 겹쳐 실루엣을 만든다.
     #     바깥 -> 몸통 -> 안쪽 밝은 선 차례로 덮어 두께를 낸다 ----
-    for grow, c in ((RIM, C_RIM_EDGE), (RIM - 4, C_RIM_MID), (6, C_RIM_IN)):
+    for grow, c in ((RIM, C_RIM_EDGE), (RIM - 3, C_RIM_MID), (2, C_RIM_IN)):
         for cx, cy in filled:
             d.rectangle(box(cx, cy, grow), fill=c)
 
     #---- 총안. 위가 뚫린 칸마다 한가운데에, 테 위로 솟게 얹는다.
     #     테와 같은 세 겹이라 한 덩어리로 읽힌다 ----
     for cx, cy in filled:
+        if not MERLON:
+            break
         if (cx, cy - 1) in filled:
             continue
         x0, y0, x1, _ = box(cx, cy, RIM)
         mx = (x0 + x1) // 2
-        for inset, c in ((0, C_RIM_EDGE), (4, C_RIM_MID), (9, C_RIM_IN)):
+        for inset, c in ((0, C_RIM_EDGE), (2, C_RIM_MID), (4, C_RIM_IN)):
             d.rectangle([mx - MERLON_W // 2 + inset, y0 - MERLON + inset,
                          mx + MERLON_W // 2 - inset, y0 + 12], fill=c)
 
@@ -136,20 +137,8 @@ def build(cells):
 
     #---- 발광. 밝은 것만 남겨 흐린 뒤 밑에도 깔고 위에도 옅게 얹는다.
     #     밑에만 깔면 테 바깥으로만 번지고, 위에만 얹으면 선이 뭉갠다 ----
-    a = np.array(im).astype(np.float32)
-    lum = a[:, :, :3].max(2) * (a[:, :, 3] / 255.0)
+    return im
 
-    def haze(thr, mul, blur, cap):
-        g = np.zeros_like(a)
-        g[:, :, :3] = C_GLOW[:3]
-        g[:, :, 3] = np.clip((lum - thr) * mul, 0, cap)
-        return Image.fromarray(g.astype(np.uint8), "RGBA").filter(
-            ImageFilter.GaussianBlur(blur))
-
-    out = Image.alpha_composite(haze(120, 2.2, 18, 255), haze(120, 2.2, 7, 255))
-    out = Image.alpha_composite(out, im)
-    out = Image.alpha_composite(out, haze(190, 1.4, 5, 110))
-    return out
 
 
 def write_metrics():

@@ -1814,6 +1814,7 @@ void PlayKey(int obj)
 			break;
 		case AVK_GOTOBATTLE:
         {
+            if(option.gameMode==TURNRPG) {MergeRouletteBegin();break;}
             //무기 검사는 [세팅 완료] 에서 한다(LoadoutRelease). 여기서
             //막으면 적을 보기도 전에 돌려보내게 된다.
 			//----------------------------------------------------

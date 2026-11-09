@@ -77,6 +77,9 @@ def main():
     ap.add_argument('--force', action='store_true', help='무조건 다시 낸다')
     ap.add_argument('--check', action='store_true', help='내지 않고 상태만 본다')
     args = ap.parse_args()
+    tree_builder = os.path.join(ROOT, 'tools', 'merge_roulette', 'build_tree_data.py')
+    if os.path.isfile(tree_builder):
+        subprocess.check_call([sys.executable, tree_builder] + (['--check'] if args.check else []))
 
     src_time, src_name = newest_source()
     have = os.path.isfile(PACK)

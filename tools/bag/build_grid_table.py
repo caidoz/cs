@@ -26,18 +26,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(ROOT, "Classes", "Data", "CastleData.cpp")
 
 #줄마다 몇 칸인가. 맨 아랫줄부터 위로.
-ROWS = [
-    [8, 8, 4, 4],    # 1 단계  24
-    [8, 8, 6, 4],    # 2       26
-    [8, 8, 7, 6],    # 3       29
-    [9, 9, 8, 6],    # 4       32
-    [10, 10, 9, 6],  # 5       35
-    [11, 11, 10, 6], # 6       38
-    [12, 12, 11, 6], # 7       41
-    [12, 12, 12, 8], # 8       44
-    [12, 12, 12, 10],# 9       46
-    [12, 12, 12, 12],# 10      48
-]
+# Keep 64px cells within nine columns; later castles add rows.
+ROWS = [[w] * h for w, h in ((6,4),(7,4),(8,4),(8,4),(9,4),(8,5),(9,5),(9,5),(8,6),(8,6))]
+
 
 
 def cells_of(rows):
@@ -84,9 +75,14 @@ def main():
     put("castleGridCellCnt", cnt)
     put("castleGridCellStart", start)
     io.open(SRC, "w", encoding="utf-8-sig", newline="").write(s)
+    header = os.path.join(ROOT, "Classes", "Data", "CastleData.h")
+    text = io.open(header, encoding="utf-8-sig").read()
+    text = re.sub(r'enum \{ castleGridCell_COUNT = \d+ \};[^\n]*',
+                  'enum { castleGridCell_COUNT = %d }; // generated cell-coordinate count' % (at * 2), text)
+    io.open(header, "w", encoding="utf-8", newline="\n").write(text)
 
     for i, rows in enumerate(ROWS):
-        print("%2d 단계  %2d칸  %2d x 4   %s" % (i + 1, sum(rows), max(rows),
+        print("%2d 단계  %2d칸  %2d x %d   %s" % (i + 1, sum(rows), max(rows), len(rows),
                                                " ".join(str(n) for n in rows[::-1])))
 
 

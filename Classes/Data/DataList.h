@@ -67,7 +67,7 @@
 	X(setHeroPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(setEnemyPos, 4, DPK_INT, 114, DPK_KEY_CASTLE, 6, 0) \
 	X(castleCrewPosition, 4, DPK_INT, 228, DPK_KEY_CASTLE, 12, 0) \
-	X(castleGridCell, 1, DPK_INT, 726, DPK_KEY_NONE, 0, 0) \
+	X(castleGridCell, 1, DPK_INT, 756, DPK_KEY_NONE, 0, 0) \
 	X(cmfOffBlob, 2, DPK_UINT, 12692, DPK_KEY_FREE, 0, 0) \
 	X(cmfOffSlot, 4, DPK_UINT, 429, DPK_KEY_CMF, 1, 0) \
 	X(cmfMotionImgBlob, 2, DPK_INT, 306052, DPK_KEY_FREE, 0, 0) \
@@ -172,7 +172,7 @@
 	X(dx_walk, 4, DPK_INT, 3, DPK_KEY_NONE, 0, 0) \
 	X(walkFrame, 1, DPK_UINT, 4, DPK_KEY_NONE, 0, 0) \
 	X(crewBulletLvUpDmgPercent, 4, DPK_INT, 10, DPK_KEY_NONE, 0, 0) \
-	X(crewData, 4, DPK_INT, 448, DPK_KEY_CREW, 6, 0) \
+	X(crewData, 4, DPK_INT, 448, DPK_KEY_CREW, 7, 0) \
 	X(jumpUpMotion, 2, DPK_INT, 56, DPK_KEY_NONE, 0, 0) \
 	X(jumpDownMotion, 2, DPK_INT, 107, DPK_KEY_NONE, 0, 0) \
 	X(backHomeMotion, 2, DPK_INT, 105, DPK_KEY_NONE, 0, 0) \
@@ -391,7 +391,7 @@
 	X(attackDelayPerType, 4, DPK_INT, 9, DPK_KEY_NONE, 0, 0) \
 	X(currencyShop, 4, DPK_INT, 126, DPK_KEY_NONE, 0, 0) \
 	X(quickShopData, 1, DPK_UINT, 162, DPK_KEY_NONE, 0, 0) \
-	X(skillData, 4, DPK_INT, 6666, DPK_KEY_SKILL, 29, 0) \
+	X(skillData, 4, DPK_INT, 6666, DPK_KEY_SKILL, 22, 0) \
 	X(barrierEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(berserkEtcData, 2, DPK_UINT, 15, DPK_KEY_NONE, 0, 0) \
 	X(skillToStat, 1, DPK_INT, 7, DPK_KEY_NONE, 0, 0) \

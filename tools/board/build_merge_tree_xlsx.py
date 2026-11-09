@@ -1,11 +1,13 @@
-"""룰렛 × 합성 전투의 합성 테크트리 표를 만든다.
+"""룰렛 × 합성 전투의 합성 사다리 표를 만든다.
 
 docs/합성_테크트리.xlsx  — 아이콘이 든 사람용 표
-content/merge_tree.tsv    — 같은 내용의 기계용 표 (동료 트리)
+content/merge_tree.tsv    — 같은 내용의 기계용 표 (64명의 역할 · ★ · 특성). build_tree_data.py 가 읽는다.
+
+합성은 6단 = 성급. 같은 역할 ★n 둘을 합치면 그 역할의 ★n+1 동료 중 하나가 무작위로 나온다.
+그래서 "트리" 는 역할군 4개의 ★ 사다리다. 64명은 역할 × ★ 로 이미 고르게 깔려 있다.
 
 동료 그림은 게임이 직접 그린 덤프(BuildConfig.h DUMP_CMF_PNG → dump/crew_N.png)를
-reports/hero_allies_64/icons/ 에 복사해 둔 것을 쓴다. 부품 시트에서 머리를 자르는 방법은
-64명 중 절반이 틀려서 버렸다.
+reports/hero_allies_64/icons/ 에 복사해 둔 것을 쓴다.
 무기는 w{line}_{detail+1}.png, 갑옷은 item_{armor|vest|coat}_{hero}{detail}.png.
 목걸이·반지는 낱장 그림이 없어 이름만 적는다.
 """
@@ -22,10 +24,12 @@ RES = ROOT / 'Resources/res'
 OUT_XLSX = ROOT / 'docs/합성_테크트리.xlsx'
 OUT_TSV = ROOT / 'content/merge_tree.tsv'
 ICON = 56  # 셀에 넣는 그림 크기(px)
+LV_MAX = 6
 
 # ---------------------------------------------------------------- 동료 데이터
 ROLE_CODE = ('ABBCASSC' 'AASCABBSBSCC' 'ABSBCAAACSBSCCB' 'BBCBSSBCACBCASSCAAASC' 'BASCBSBC')
-ROLE_NAME = {'A': '포격', 'B': '지원', 'C': '지휘', 'S': '공격'}
+ROLE_INDEX = {'C': 0, 'A': 1, 'B': 2, 'S': 3}          # CrewRole: 지휘 0 · 포격 1 · 지원 2 · 공격 3
+ROLE_NAME = ['지휘', '포격', '지원', '공격']
 STAR = [1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2, 2,2,2,2,3,3,3,3, 3,3,3,3,3,3,3,3,
         3,3,3,4,4,4,4,4, 4,4,4,5,5,4,4,4, 4,4,4,4,4,4,5,4, 5,5,5,5,5,6,6,6]
 ACTION = ['Volley','Shield','Heal','Inspire','Expose','Bleed','Strike','Supply',
@@ -43,35 +47,12 @@ TRAIT6 = {'Expose':'표식', 'Inspire':'고무', 'Supply':'고무', 'Smith':'고
           'Strike':'강타', 'Volley':'연타',
           'Chill':'빙결', 'Shield':'빙결', 'Fortify':'빙결', 'Heal':'빙결', 'Repair':'빙결', 'Cleanse':'빙결', 'Cleric':'빙결',
           'Burn':'지속', 'Poison':'지속', 'Bleed':'지속', 'Shock':'지속', 'Discharge':'지속', 'Leech':'지속'}
+ROLE = [ROLE_INDEX[c] for c in ROLE_CODE]
+assert len(ROLE) == 64 and len(STAR) == 64 and len(ACTION) == 64 and len(TITLE) == 64
 
-# 트리: (역할, 이름, [Lv1, Lv2, Lv3]) — 3단. 트리의 등급 = Lv1 의 성급(높을수록 릴 2·3 에 드물게 나온다).
-# 성급은 트리 안에서 내려가지 않는다. Lv3 는 트리마다 다르다(합류 없음).
-TREES = [
-    ('지휘', '왕가', [42, 37, 63]),   # 궁정 재상 → 왕실 공주 → 국왕        ★4 트리
-    ('지휘', '군단', [19, 50, 44]),   # 근위대장 → 진격의 사령관 → 맹수 군주
-    ('지휘', '현자', [18, 28, 59]),   # 기도의 현자 → 룬 장로 → 심판 백작
-    ('지휘', '마을', [3, 24, 46]),    # 원로 촌장 → 학당 교사 → 원로 참모
-    ('지휘', '사절', [11, 33, 55]),   # 신속 배달부 → 기록 학자 → 친선 대사
-    ('포격', '해적', [12, 27, 57]),   # 올가미 선원 → 약탈 해적 → 기함 함포선장
-    ('포격', '꼬마', [0, 25, 43]),    # 새총 꼬마 → 물방울 꼬마 → 전설의 강태공
-    ('포격', '파수', [4, 20, 53]),    # 성벽 파수꾼 → 파수 부엉이 → 잔류 전류령
-    ('포격', '바다', [8, 26, 52]),    # 파도 어인 → 화약통 해적 → 유령 집사
-    ('포격', '수병', [9, 47, 51]),    # 삼지창 수병 → 발경의 달인 → 한기의 원령
-    ('지원', '빛',   [14, 45, 62]),   # 새싹 치유사 → 빛의 성직자 → 광휘의 성녀
-    ('지원', '식탁', [2, 30, 56]),    # 약초 할머니 → 왕실 정원사 → 왕실 대요리장
-    ('지원', '결계', [1, 21, 60]),    # 용기 꼬마 → 정돈 메이드 → 결계 대마도사
-    ('지원', '공방', [16, 34, 36]),   # 부품 보급상 → 무역 거상 → 수석 대장장이
-    ('지원', '지킴', [13, 23, 38]),   # 길잡이 탐험가 → 지도 제작자 → 충직한 수호견
-    ('공격', '검',   [17, 39, 61]),   # 질풍 검객 → 결투 중기사 → 무영의 검성
-    ('공격', '서리', [15, 48, 54]),   # 서리 궁수 → 그림자 암살자 → 빙정의 창술사
-    ('공격', '독',   [5, 29, 58]),    # 침술 낭자 → 맹독 사냥꾼 → 성염의 기사단장
-    ('공격', '마녀', [6, 31, 40]),    # 열혈 일꾼 → 박자의 무희 → 가마솥 마녀
-    ('공격', '격투', [10, 22, 49]),   # 연타 격투가 → 행운의 바니걸 → 전격술사
-]
-RESERVE = [7, 32, 35, 41]   # 마을 살림꾼, 계약 남작, 성채 대식가, 비스트로 셰프
-LV_MAX = 3
-# 릴 2·3 가중치: 트리 등급(Lv1 성급)으로. ★1 넷, ★2 둘, ★3 이상 하나.
-def tree_weight(chain): return {1: 4, 2: 2}.get(STAR[chain[0]], 1)
+def ladder(role):
+    """★1..★6 마다 그 역할의 동료 번호."""
+    return {s: [i for i in range(64) if ROLE[i] == role and STAR[i] == s] for s in range(1, LV_MAX + 1)}
 
 def load_catalog():
     rows = {}
@@ -95,6 +76,7 @@ SWORD = text_lines(658, 35); GUN = text_lines(694, 35); BOOM = text_lines(730, 3
 ARMOR = text_lines(793, 8); VEST = text_lines(802, 8); COAT = text_lines(811, 8)
 NECK = text_lines(901, 28); RING = text_lines(930, 18)
 assert SWORD[1] == '롱소드' and GUN[0] == '발화식 총' and BOOM[0] == '사냥용 부메랑' and ARMOR[0] == '헌터 튜닉' and NECK[0] == '명예의 펜던트'
+GEAR_STEP = {'무기': 6, '갑옷': 1, '목걸이': 5}   # Classes/Data/MergeTreeData.h GearDetail 과 같아야 한다
 
 # ---------------------------------------------------------------- 그림
 def square(im, size=ICON):
@@ -124,7 +106,7 @@ def armor_icon(line, d):
 thin = Side(style='thin', color='999999')
 BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
 HEAD = PatternFill('solid', fgColor='2F3B52'); HEADF = Font(bold=True, color='FFFFFF')
-LV_FILL = ['', 'C9A66B', 'C0C0C0', 'E6B422']  # 구리·은·금
+LV_FILL = ['', 'C9A66B', 'C0C0C0', 'E6B422', 'D96A4A', 'B06BD9', '5AC8E8']  # ★1 구리 · ★2 은 · ★3 금 · ★4 붉은금 · ★5 보라 · ★6 하늘
 CENTER = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
 def header(ws, row, labels, widths=None):
@@ -148,7 +130,8 @@ def put_icon(ws, row, col, pil):
     ws.column_dimensions[get_column_letter(col)].width = ICON / 6.5
 
 def crew_label(i):
-    return f"{TITLE[i]}\n{CATALOG[i]['name']}\n★{STAR[i]} · {TRAIT6[ACTION[i]]}"
+    tail = f" · {CATALOG[i]['skill3_kind']}" if STAR[i] >= 5 else ''
+    return f"{TITLE[i]}\n{CATALOG[i]['name']}\n{TRAIT6[ACTION[i]]}{tail}"
 
 wb = Workbook()
 
@@ -156,159 +139,146 @@ wb = Workbook()
 ws = wb.active; ws.title = '읽는 법'
 ws.column_dimensions['A'].width = 110
 notes = [
- '룰렛 × 합성 전투 — 합성 테크트리 (2026-11-09). 기획서 docs/기획_룰렛_합성.md §15·§16 의 "계열" 이 이 표의 "트리" 다.',
+ '룰렛 × 합성 전투 — 합성 사다리 (2026-11-09, 6단 = 성급). 기획서 docs/기획_룰렛_합성.md §16·§19.',
  '',
  '■ 공통 규칙',
- '· 런 시작 3릴 슬롯이 트리 3개를 정한다. 릴 1 = 내가 고른 트리, 릴 2·3 = 보유 풀에서 무작위.',
- '· 룰렛은 그 트리 3개의 Lv1 블록만 낸다. 같은 트리 2 → Lv2 블록, 3 → Lv3 블록으로 나온다.',
- '· 같은 트리·같은 Lv 블록 2개를 합치면 한 단계 위 칸의 것이 된다. 얼굴·장비가 바뀐다 (운빨존많겜 식). 블록 크기 Lv1 1×1 → Lv2 1×2 → Lv3 2×2. 3단이 끝이다.',
- '· 트리의 등급 = Lv1 의 성급. 릴 2·3 에 나올 가중치는 ★1 트리 4, ★2 트리 2, ★3 이상 1. 왕가(재상→공주→국왕)처럼 ★4 에서 시작하는 트리는 그래서 드물다.',
+ '· 런 시작 3릴 슬롯이 계열 3개를 정한다. 계열 = 역할군 4(지휘·포격·지원·공격) + 장비 3(무기·갑옷·목걸이). 릴 1 = 내 선택, 릴 2·3 = 무작위.',
+ '· 룰렛은 그 계열의 ★1 블록을 낸다. 같은 계열 2 → ★2, 3 → ★3 블록으로 바로 나온다.',
+ '· 같은 역할 ★n 블록 둘을 합치면 그 역할의 ★n+1 동료 중 하나가 무작위로 나온다 (운빨존많겜 식). 어떤 동료끼리든 역할·★만 같으면 합쳐진다.',
+ '· 블록 크기 ★1 1×1 → ★2 1×2 → ★3 2×2 → ★4 2×3 → ★5 3×3 → ★6 3×4. 한 방 = 그 동료 값 × 2^(★-1).',
+ '· 공격해도 판은 비지 않는다. 성을 도는 동안 판이 ★6 까지 자란다. 압박은 하트(룰렛)·목숨(적 턴)·칸이다.',
+ '· 포격은 ★6 이 없어 ★5(기함 함포선장·전설의 강태공)가 끝이다. 지휘 ★6 = 국왕, 지원 ★6 = 성녀, 공격 ★6 = 검성.',
  '',
- '■ 동료 트리 (20개, 역할군마다 5개, 3단)',
- '· 트리 안에서 성급은 내려가지 않는다. Lv3 는 ★4~6. 세기는 성급이 정한다.',
- '· 블록이 쏘는 것: Lv1 = 그 동료의 SKILL1, Lv2 = Lv2 동료의 SKILL2, Lv3 = Lv3 동료의 SKILL3(궁극기/소환).',
- '· 특성(표식·고무·강타·연타·빙결·지속)은 지금 칸의 동료 것을 따른다. 원본 Action 열을 보고 6종 배정을 고칠 수 있다.',
- '· 예비 4명(마을 살림꾼·계약 남작·성채 대식가·비스트로 셰프)은 트리 밖이다. 뽑기 중복 승급 재료이거나 나중에 여섯째 트리의 씨앗.',
+ '■ 역할 사다리 시트',
+ '· 열 = ★1~★6, 행 = 역할마다 최대 5명. 같은 열 안의 얼굴 중 누가 나올지는 합성 때 정해진다.',
+ '· 특성(표식·고무·강타·연타·빙결·지속)은 동료마다 하나. ★1·2 는 SKILL1, ★3·4 는 SKILL2, ★5·6 은 SKILL3(궁극기/소환) 를 쏜다.',
+ '· 보유한 동료만 사다리에 선다. 한 ★ 에 보유 동료가 없으면 그 역할은 거기서 멈춘다.',
  '',
- '■ 장비 트리',
- '· 무기(검/총/부메랑 = 로빈/다이애나/맥스): Lv1 = 히어로가 낀 무기. 한 단계 = 12계단 위(35자루 ≈ 3등급). detail d → d+12 → d+24, 34 에서 멈춘다.',
- '· 갑옷(갑옷/조끼/코트): 8벌. 한 단계 = 3칸 위. d → d+3 → d+6, 7 에서 멈춘다.',
- '· 목걸이: 28개. 한 단계 = 9칸 위. d → d+9 → d+18, 27 에서 멈춘다. 낱장 그림이 없어 이름만 적었다.',
- '· 장비 블록이 하는 일은 §16 그대로: 검 = 히어로 평타/궁극기, 갑옷 = 보호/적 턴 삭제, 목걸이 = 하트/룰렛. Lv 가 그 크기를 정하고, 어느 장비인지는 그림과 이름(= 히어로 코스튬)이다.',
+ '■ 장비',
+ '· 무기(검/총/부메랑 = 로빈/다이애나/맥스): ★1 = 히어로가 낀 무기. 한 단계 = 6계단 위. d → d+6 → … 34 에서 멈춘다 (35자루 ≈ 6등급).',
+ '· 갑옷(갑옷/조끼/코트): 8벌. 한 단계 = 1칸 위. d → d+1 → … 7 에서 멈춘다.',
+ '· 목걸이: 28개. 한 단계 = 5칸 위. d → d+5 → … 27 에서 멈춘다. 낱장 그림이 없어 이름만 적었다.',
+ '· 장비 블록이 하는 일: 검 = 히어로 평타 × 2^(Lv-1) · 갑옷 = 보호 1/1/2회, Lv4·5 적 턴 1회 삭제, Lv6 2회 · 목걸이 = 하트 +1/+2/+3, Lv4~6 룰렛 +1/+2/+3.',
  '',
  '■ 그림 출처',
  '· 동료: 게임이 그린 덤프 reports/hero_allies_64/icons/crew_N.png (DUMP_CMF_PNG). 무기: w{0,1,2}_{d+1}.png. 갑옷: item_{armor,vest,coat}_*.png.',
- '· 같은 내용의 기계용 표: content/merge_tree.tsv',
+ '· 같은 내용의 기계용 표: content/merge_tree.tsv → tools/merge_roulette/build_tree_data.py → Classes/Data/MergeTreeData.h',
 ]
 for r, t in enumerate(notes, 1):
     c = ws.cell(row=r, column=1, value=t); c.alignment = Alignment(wrap_text=True, vertical='top')
     if t.startswith('■'): c.font = Font(bold=True)
 
-# ---- 동료 트리
-ws = wb.create_sheet('동료 트리')
-labels = ['역할', '트리', '등급\n(가중치)']
-for lv in range(1, LV_MAX + 1):
-    labels += [f'Lv{lv} 얼굴', f'Lv{lv}']
-    if lv < LV_MAX: labels += ['→']
+# ---- 역할 사다리
+ws = wb.create_sheet('역할 사다리')
+labels = ['역할', '#']
+for s in range(1, LV_MAX + 1): labels += [f'★{s} 얼굴', f'★{s}']
 header(ws, 1, labels)
-ws.column_dimensions['A'].width = 7; ws.column_dimensions['B'].width = 7; ws.column_dimensions['C'].width = 9
+ws.column_dimensions['A'].width = 7; ws.column_dimensions['B'].width = 4
 row = 2
-for role, name, chain in TREES:
-    put(ws, row, 1, role, bold=True); put(ws, row, 2, name, bold=True)
-    put(ws, row, 3, f'★{STAR[chain[0]]} 트리\n가중치 {tree_weight(chain)}')
-    col = 4
-    for lv, i in enumerate(chain, 1):
-        put(ws, row, col, None, fill=LV_FILL[lv]); put_icon(ws, row, col, crew_icon(i)); col += 1
-        put(ws, row, col, crew_label(i), fill=LV_FILL[lv]); ws.column_dimensions[get_column_letter(col)].width = 18; col += 1
-        if lv < LV_MAX: put(ws, row, col, '→', bold=True); ws.column_dimensions[get_column_letter(col)].width = 3; col += 1
+for role in range(4):
+    lad = ladder(role)
+    depth = max(len(v) for v in lad.values())
+    top = max(s for s, v in lad.items() if v)
+    for k in range(depth):
+        put(ws, row, 1, ROLE_NAME[role] if k == 0 else '', bold=True); put(ws, row, 2, k + 1)
+        col = 3
+        for s in range(1, LV_MAX + 1):
+            ids = lad[s]
+            if k < len(ids):
+                i = ids[k]
+                put(ws, row, col, None, fill=LV_FILL[s]); put_icon(ws, row, col, crew_icon(i))
+                put(ws, row, col + 1, crew_label(i), fill=LV_FILL[s])
+            else:
+                put(ws, row, col, '없음' if (s > top and k == 0) else ''); put(ws, row, col + 1, '')
+            ws.column_dimensions[get_column_letter(col + 1)].width = 18
+            col += 2
+        row += 1
     row += 1
-row += 1
-put(ws, row, 1, '예비', bold=True); put(ws, row, 2, '트리 밖'); put(ws, row, 3, '-')
-col = 4
-for i in RESERVE:
-    put_icon(ws, row, col, crew_icon(i)); col += 1
-    put(ws, row, col, crew_label(i)); col += 1
-ws.freeze_panes = 'D2'
+ws.freeze_panes = 'C2'
 
 # ---- 동료 64 목록
 ws = wb.create_sheet('동료 64 목록')
-header(ws, 1, ['번호', '얼굴', '칭호', '이름', '★', '역할', '원본 Action', '특성 6종', '트리', 'Lv', '쏘는 것(기획)'],
-       [6, ICON / 6.5, 14, 14, 5, 7, 12, 9, 10, 5, 22])
-where = {}
-for role, name, chain in TREES:
-    for lv, i in enumerate(chain, 1): where.setdefault(i, []).append((f'{role}·{name}', lv))
+header(ws, 1, ['번호', '얼굴', '칭호', '이름', '★', '역할', '원본 Action', '특성 6종', '합성하면(★+1 후보)', '쏘는 것'],
+       [6, ICON / 6.5, 14, 14, 5, 7, 12, 9, 34, 20])
 for i in range(64):
     r = i + 2
     put(ws, r, 1, i); put_icon(ws, r, 2, crew_icon(i)); put(ws, r, 3, TITLE[i]); put(ws, r, 4, CATALOG[i]['name'])
-    put(ws, r, 5, STAR[i]); put(ws, r, 6, ROLE_NAME[ROLE_CODE[i]]); put(ws, r, 7, ACTION[i]); put(ws, r, 8, TRAIT6[ACTION[i]])
-    w = where.get(i)
-    if w:
-        put(ws, r, 9, ' / '.join(t for t, _ in w), fill=LV_FILL[w[0][1]]); put(ws, r, 10, w[0][1], fill=LV_FILL[w[0][1]])
-        shoots = ['SKILL1 일반탄 100%', 'SKILL2 일반탄 300%', f"SKILL3 {CATALOG[i]['skill3_kind']}"][w[0][1] - 1]
-        put(ws, r, 11, shoots)
-    else:
-        put(ws, r, 9, '예비'); put(ws, r, 10, '-'); put(ws, r, 11, '-')
+    put(ws, r, 5, STAR[i], fill=LV_FILL[STAR[i]]); put(ws, r, 6, ROLE_NAME[ROLE[i]]); put(ws, r, 7, ACTION[i]); put(ws, r, 8, TRAIT6[ACTION[i]])
+    nxt = ladder(ROLE[i]).get(STAR[i] + 1, [])
+    put(ws, r, 9, ' / '.join(TITLE[j] for j in nxt) if nxt else '끝 (더 못 합침)')
+    put(ws, r, 10, 'SKILL1 일반탄' if STAR[i] <= 2 else 'SKILL2 일반탄' if STAR[i] <= 4 else f"SKILL3 {CATALOG[i]['skill3_kind']}")
 ws.freeze_panes = 'C2'
 
-# ---- 무기 트리
-ws = wb.create_sheet('무기 트리')
-header(ws, 1, ['라인', 'detail', '등급', '그림', '이름', '→ 합성 결과(d+12)', '그림', '이름', '런 예시 (Lv1→Lv3)'],
-       [10, 7, 6, ICON / 6.5, 18, 14, ICON / 6.5, 18, 44])
+# ---- 무기
+ws = wb.create_sheet('무기 사다리')
+header(ws, 1, ['라인', 'detail', '그림', '이름', '→ 합성 결과(d+6)', '그림', '이름', '런 예시 (★1→★6)'],
+       [10, 7, ICON / 6.5, 18, 14, ICON / 6.5, 18, 70])
 row = 2
 for line, (lname, names) in enumerate([('검 (로빈)', SWORD), ('총 (다이애나)', GUN), ('부메랑 (맥스)', BOOM)]):
+    step = GEAR_STEP['무기']
     for d in range(35):
-        nd = min(d + 12, 34)
-        tier = min(d // 12, 2)
-        put(ws, row, 1, lname); put(ws, row, 2, d); put(ws, row, 3, f'{tier + 1}등급')
-        put_icon(ws, row, 4, weapon_icon(line, d)); put(ws, row, 5, names[d])
-        if nd == d:
-            put(ws, row, 6, '최고 (더 못 합침)'); put(ws, row, 7, ''); put(ws, row, 8, '')
-        else:
-            put(ws, row, 6, f'd{d} + d{d} → d{nd}'); put_icon(ws, row, 7, weapon_icon(line, nd)); put(ws, row, 8, names[nd])
-        chain = [min(d + 12 * k, 34) for k in range(3)]
-        put(ws, row, 9, ' → '.join(f'Lv{k + 1} {names[c]}' for k, c in enumerate(chain)) + ('' if d < 11 else '  (상한에서 겹침)'))
+        nd = min(d + step, 34)
+        put(ws, row, 1, lname); put(ws, row, 2, d)
+        put_icon(ws, row, 3, weapon_icon(line, d)); put(ws, row, 4, names[d])
+        if nd == d: put(ws, row, 5, '최고 (더 못 합침)'); put(ws, row, 6, ''); put(ws, row, 7, '')
+        else: put(ws, row, 5, f'd{d} + d{d} → d{nd}'); put_icon(ws, row, 6, weapon_icon(line, nd)); put(ws, row, 7, names[nd])
+        chain = [min(d + step * k, 34) for k in range(LV_MAX)]
+        put(ws, row, 8, ' → '.join(f'★{k + 1} {names[c]}' for k, c in enumerate(chain)) + ('' if d + step * (LV_MAX - 1) <= 34 else '  (상한에서 겹침)'))
         row += 1
     row += 1
-ws.freeze_panes = 'D2'
+ws.freeze_panes = 'C2'
 
-# ---- 갑옷 트리
-ws = wb.create_sheet('갑옷 트리')
-header(ws, 1, ['라인', 'detail', '그림', '이름', '→ 합성 결과(d+3)', '그림', '이름', '런 예시 (Lv1→Lv3)'],
-       [12, 7, ICON / 6.5, 16, 14, ICON / 6.5, 16, 50])
+# ---- 갑옷
+ws = wb.create_sheet('갑옷 사다리')
+header(ws, 1, ['라인', 'detail', '그림', '이름', '→ 합성 결과(d+1)', '그림', '이름', '런 예시 (★1→★6)'],
+       [12, 7, ICON / 6.5, 16, 14, ICON / 6.5, 16, 70])
 row = 2
 for line, (lname, names) in enumerate([('갑옷 (로빈)', ARMOR), ('조끼 (다이애나)', VEST), ('코트 (맥스)', COAT)]):
+    step = GEAR_STEP['갑옷']
     for d in range(8):
-        nd = min(d + 3, 7)
+        nd = min(d + step, 7)
         put(ws, row, 1, lname); put(ws, row, 2, d); put_icon(ws, row, 3, armor_icon(line, d)); put(ws, row, 4, names[d])
         if nd == d: put(ws, row, 5, '최고'); put(ws, row, 6, ''); put(ws, row, 7, '')
         else: put(ws, row, 5, f'd{d} + d{d} → d{nd}'); put_icon(ws, row, 6, armor_icon(line, nd)); put(ws, row, 7, names[nd])
-        chain = [min(d + 3 * k, 7) for k in range(3)]
-        put(ws, row, 8, ' → '.join(f'Lv{k + 1} {names[c]}' for k, c in enumerate(chain)))
+        chain = [min(d + step * k, 7) for k in range(LV_MAX)]
+        put(ws, row, 8, ' → '.join(f'★{k + 1} {names[c]}' for k, c in enumerate(chain)))
         row += 1
     row += 1
 ws.freeze_panes = 'C2'
 
 # ---- 목걸이·반지
 ws = wb.create_sheet('목걸이·반지')
-header(ws, 1, ['종류', 'detail', '등급', '이름', '→ 합성 결과', '이름', '런 예시 (Lv1→Lv3)'], [8, 7, 6, 16, 14, 16, 60])
+header(ws, 1, ['종류', 'detail', '이름', '→ 합성 결과', '이름', '런 예시 (★1→★6)'], [10, 7, 16, 14, 16, 80])
 row = 2
-for kind, names, step in [('목걸이', NECK, 9), ('반지(참고)', RING, 6)]:
+for kind, names, step in [('목걸이', NECK, GEAR_STEP['목걸이']), ('반지(참고)', RING, 3)]:
     n = len(names)
     for d in range(n):
         nd = min(d + step, n - 1)
-        put(ws, row, 1, kind); put(ws, row, 2, d); put(ws, row, 3, f'{d // step + 1}등급'); put(ws, row, 4, names[d])
-        put(ws, row, 5, '최고' if nd == d else f'd{d} + d{d} → d{nd}'); put(ws, row, 6, '' if nd == d else names[nd])
-        chain = [min(d + step * k, n - 1) for k in range(3)]
-        put(ws, row, 7, ' → '.join(f'Lv{k + 1} {names[c]}' for k, c in enumerate(chain)))
+        put(ws, row, 1, kind); put(ws, row, 2, d); put(ws, row, 3, names[d])
+        put(ws, row, 4, '최고' if nd == d else f'd{d} + d{d} → d{nd}'); put(ws, row, 5, '' if nd == d else names[nd])
+        chain = [min(d + step * k, n - 1) for k in range(LV_MAX)]
+        put(ws, row, 6, ' → '.join(f'★{k + 1} {names[c]}' for k, c in enumerate(chain)))
         row += 1
     row += 1
 ws.cell(row=row, column=1, value='반지는 §16 의 3칸(무기·갑옷·목걸이)에 없다. 넣을 때를 대비한 참고 표.')
 
-
-# ---------------------------------------------------------------- TSV
+# ---------------------------------------------------------------- TSV (엑셀보다 먼저 쓴다 — 엑셀이 열려 있어도 TSV 는 남게)
 with open(OUT_TSV, 'w', encoding='utf-8', newline='\n') as f:
-    f.write('#룰렛 × 합성 전투 동료 트리. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx\n')
-    f.write('#같은 트리·같은 lv 블록 둘을 합치면 lv+1 행의 crew 가 된다. 3단이 끝. weight 는 릴 2·3 에 그 트리가 나올 가중치(Lv1 성급 기준).\n')
-    f.write('tree\trole\tname\tweight\tlv\tcrew\ttitle\tstar\taction\ttrait\n')
-    for t, (role, name, chain) in enumerate(TREES):
-        for lv, i in enumerate(chain, 1):
-            f.write(f'{t}\t{role}\t{name}\t{tree_weight(chain)}\t{lv}\t{i}\t{TITLE[i]}\t{STAR[i]}\t{ACTION[i]}\t{TRAIT6[ACTION[i]]}\n')
-    for i in RESERVE:
-        f.write(f'-1\t{ROLE_NAME[ROLE_CODE[i]]}\t예비\t0\t0\t{i}\t{TITLE[i]}\t{STAR[i]}\t{ACTION[i]}\t{TRAIT6[ACTION[i]]}\n')
+    f.write('#룰렛 × 합성 전투 — 64명의 역할 · ★ · 특성. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx\n')
+    f.write('#합성 6단 = ★. 같은 역할 ★n 둘을 합치면 그 역할의 ★n+1 중 하나가 무작위로 나온다. build_tree_data.py 가 MergeTreeData.h 로 굽는다.\n')
+    f.write('#role: 0 지휘 · 1 포격 · 2 지원 · 3 공격 (Def/BoardDef.h CrewRole). trait: 표식·고무·강타·연타·빙결·지속.\n')
+    f.write('crew\trole\trole_name\tstar\ttitle\taction\ttrait\n')
+    for i in range(64):
+        f.write(f'{i}\t{ROLE[i]}\t{ROLE_NAME[ROLE[i]]}\t{STAR[i]}\t{TITLE[i]}\t{ACTION[i]}\t{TRAIT6[ACTION[i]]}\n')
 
-# 트리 무결성: 64명이 정확히 한 번씩(합류 Lv4 는 두 번) 나오는가
-used = [i for _, _, c in TREES for i in c] + RESERVE
-from collections import Counter
-cnt = Counter(used)
-missing = [i for i in range(64) if cnt[i] == 0]
-dup = [i for i, n in cnt.items() if n > 1]
-assert not missing, missing
-assert not dup, dup
-for role, name, chain in TREES:
-    assert all(STAR[a] <= STAR[b] for a, b in zip(chain, chain[1:])), (name, chain)
-    assert all(ROLE_NAME[ROLE_CODE[i]] == role for i in chain), (name, chain)
+# 무결성: 역할 × ★ 분배가 CLAUDE.md 표와 같은가
+expected = {0: [2, 3, 4, 5, 2, 1], 1: [2, 3, 4, 4, 2, 0], 2: [2, 3, 4, 5, 2, 1], 3: [2, 3, 3, 4, 2, 1]}
+for role, counts in expected.items():
+    lad = ladder(role)
+    assert [len(lad[s]) for s in range(1, 7)] == counts, (role, [len(lad[s]) for s in range(1, 7)])
+
 try:
     OUT_XLSX.parent.mkdir(parents=True, exist_ok=True); wb.save(OUT_XLSX)
 except PermissionError:
     raise SystemExit(f'엑셀이 {OUT_XLSX.name} 을 열고 있다. 닫고 다시 돌려라. (TSV 는 썼다)')
-print('wrote', OUT_XLSX.name, OUT_TSV.name, '| 64 crew covered once, stars non-decreasing, roles consistent, 20 trees x 3')
+print('wrote', OUT_XLSX.name, OUT_TSV.name, '| 64 crew, 4 roles x 6 stars match the balance table, gear steps 6-1-5')

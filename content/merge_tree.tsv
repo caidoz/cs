@@ -1,67 +1,68 @@
-#룰렛 × 합성 전투 동료 트리. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx
-#같은 트리·같은 lv 블록 둘을 합치면 lv+1 행의 crew 가 된다. 3단이 끝. weight 는 릴 2·3 에 그 트리가 나올 가중치(Lv1 성급 기준).
-tree	role	name	weight	lv	crew	title	star	action	trait
-0	지휘	왕가	1	1	42	궁정 재상	4	Supply	고무
-0	지휘	왕가	1	2	37	왕실 공주	4	Inspire	고무
-0	지휘	왕가	1	3	63	위엄의 국왕	6	Inspire	고무
-1	지휘	군단	2	1	19	철벽 근위대장	2	Fortify	빙결
-1	지휘	군단	2	2	50	진격의 사령관	4	Inspire	고무
-1	지휘	군단	2	3	44	맹수 군주	5	Fortify	빙결
-2	지휘	현자	2	1	18	기도의 현자	2	Shield	빙결
-2	지휘	현자	2	2	28	고목 룬 장로	3	Fortify	빙결
-2	지휘	현자	2	3	59	심판 백작	5	Expose	표식
-3	지휘	마을	4	1	3	원로 촌장	1	Inspire	고무
-3	지휘	마을	4	2	24	학당 교사	3	Inspire	고무
-3	지휘	마을	4	3	46	원로 참모	4	Expose	표식
-4	지휘	사절	2	1	11	신속 배달부	2	Supply	고무
-4	지휘	사절	2	2	33	기록 학자	3	Expose	표식
-4	지휘	사절	2	3	55	친선 대사	4	Supply	고무
-5	포격	해적	2	1	12	올가미 선원	2	Chill	빙결
-5	포격	해적	2	2	27	약탈 해적	3	Leech	지속
-5	포격	해적	2	3	57	기함 함포선장	5	Captain	고무
-6	포격	꼬마	4	1	0	새총 꼬마	1	Volley	연타
-6	포격	꼬마	4	2	25	물방울 꼬마	3	Chill	빙결
-6	포격	꼬마	4	3	43	전설의 강태공	5	Strike	강타
-7	포격	파수	4	1	4	성벽 파수꾼	1	Expose	표식
-7	포격	파수	4	2	20	파수 부엉이	3	Expose	표식
-7	포격	파수	4	3	53	잔류 전류령	4	Discharge	지속
-8	포격	바다	2	1	8	파도 어인	2	Shield	빙결
-8	포격	바다	2	2	26	화약통 해적	3	Burn	지속
-8	포격	바다	2	3	52	유령 집사	4	Leech	지속
-9	포격	수병	2	1	9	삼지창 수병	2	Strike	강타
-9	포격	수병	2	2	47	발경의 달인	4	Strike	강타
-9	포격	수병	2	3	51	한기의 원령	4	Chill	빙결
-10	지원	빛	2	1	14	새싹 치유사	2	Repair	빙결
-10	지원	빛	2	2	45	빛의 성직자	4	Cleric	빙결
-10	지원	빛	2	3	62	광휘의 성녀	6	Repair	빙결
-11	지원	식탁	4	1	2	약초 할머니	1	Heal	빙결
-11	지원	식탁	4	2	30	왕실 정원사	3	Repair	빙결
-11	지원	식탁	4	3	56	왕실 대요리장	5	Heal	빙결
-12	지원	결계	4	1	1	용기 꼬마	1	Shield	빙결
-12	지원	결계	4	2	21	정돈 메이드	3	Cleanse	빙결
-12	지원	결계	4	3	60	결계 대마도사	5	Shield	빙결
-13	지원	공방	2	1	16	부품 보급상	2	Repair	빙결
-13	지원	공방	2	2	34	무역 거상	3	Supply	고무
-13	지원	공방	2	3	36	수석 대장장이	4	Smith	고무
-14	지원	지킴	2	1	13	길잡이 탐험가	2	Cleanse	빙결
-14	지원	지킴	2	2	23	지도 제작자	3	Supply	고무
-14	지원	지킴	2	3	38	충직한 수호견	4	Fortify	빙결
-15	공격	검	2	1	17	질풍 검객	2	Strike	강타
-15	공격	검	2	2	39	결투 중기사	4	Strike	강타
-15	공격	검	2	3	61	무영의 검성	6	Strike	강타
-16	공격	서리	2	1	15	서리 궁수	2	Chill	빙결
-16	공격	서리	2	2	48	그림자 암살자	4	Bleed	지속
-16	공격	서리	2	3	54	빙정의 창술사	5	Chill	빙결
-17	공격	독	4	1	5	침술 낭자	1	Bleed	지속
-17	공격	독	4	2	29	맹독 사냥꾼	3	Poison	지속
-17	공격	독	4	3	58	성염의 기사단장	5	Burn	지속
-18	공격	마녀	4	1	6	열혈 일꾼	1	Strike	강타
-18	공격	마녀	4	2	31	박자의 무희	3	Inspire	고무
-18	공격	마녀	4	3	40	가마솥 마녀	4	Poison	지속
-19	공격	격투	2	1	10	연타 격투가	2	Strike	강타
-19	공격	격투	2	2	22	행운의 바니걸	3	Volley	연타
-19	공격	격투	2	3	49	전격술사	4	Shock	지속
--1	지휘	예비	0	0	7	마을 살림꾼	1	Supply	고무
--1	지휘	예비	0	0	32	계약 남작	3	Shield	빙결
--1	지원	예비	0	0	35	성채 대식가	4	Heal	빙결
--1	지원	예비	0	0	41	비스트로 셰프	4	Repair	빙결
+#룰렛 × 합성 전투 — 64명의 역할 · ★ · 특성. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx
+#합성 6단 = ★. 같은 역할 ★n 둘을 합치면 그 역할의 ★n+1 중 하나가 무작위로 나온다. build_tree_data.py 가 MergeTreeData.h 로 굽는다.
+#role: 0 지휘 · 1 포격 · 2 지원 · 3 공격 (Def/BoardDef.h CrewRole). trait: 표식·고무·강타·연타·빙결·지속.
+crew	role	role_name	star	title	action	trait
+0	1	포격	1	새총 꼬마	Volley	연타
+1	2	지원	1	용기 꼬마	Shield	빙결
+2	2	지원	1	약초 할머니	Heal	빙결
+3	0	지휘	1	원로 촌장	Inspire	고무
+4	1	포격	1	성벽 파수꾼	Expose	표식
+5	3	공격	1	침술 낭자	Bleed	지속
+6	3	공격	1	열혈 일꾼	Strike	강타
+7	0	지휘	1	마을 살림꾼	Supply	고무
+8	1	포격	2	파도 어인	Shield	빙결
+9	1	포격	2	삼지창 수병	Strike	강타
+10	3	공격	2	연타 격투가	Strike	강타
+11	0	지휘	2	신속 배달부	Supply	고무
+12	1	포격	2	올가미 선원	Chill	빙결
+13	2	지원	2	길잡이 탐험가	Cleanse	빙결
+14	2	지원	2	새싹 치유사	Repair	빙결
+15	3	공격	2	서리 궁수	Chill	빙결
+16	2	지원	2	부품 보급상	Repair	빙결
+17	3	공격	2	질풍 검객	Strike	강타
+18	0	지휘	2	기도의 현자	Shield	빙결
+19	0	지휘	2	철벽 근위대장	Fortify	빙결
+20	1	포격	3	파수 부엉이	Expose	표식
+21	2	지원	3	정돈 메이드	Cleanse	빙결
+22	3	공격	3	행운의 바니걸	Volley	연타
+23	2	지원	3	지도 제작자	Supply	고무
+24	0	지휘	3	학당 교사	Inspire	고무
+25	1	포격	3	물방울 꼬마	Chill	빙결
+26	1	포격	3	화약통 해적	Burn	지속
+27	1	포격	3	약탈 해적	Leech	지속
+28	0	지휘	3	고목 룬 장로	Fortify	빙결
+29	3	공격	3	맹독 사냥꾼	Poison	지속
+30	2	지원	3	왕실 정원사	Repair	빙결
+31	3	공격	3	박자의 무희	Inspire	고무
+32	0	지휘	3	계약 남작	Shield	빙결
+33	0	지휘	3	기록 학자	Expose	표식
+34	2	지원	3	무역 거상	Supply	고무
+35	2	지원	4	성채 대식가	Heal	빙결
+36	2	지원	4	수석 대장장이	Smith	고무
+37	0	지휘	4	왕실 공주	Inspire	고무
+38	2	지원	4	충직한 수호견	Fortify	빙결
+39	3	공격	4	결투 중기사	Strike	강타
+40	3	공격	4	가마솥 마녀	Poison	지속
+41	2	지원	4	비스트로 셰프	Repair	빙결
+42	0	지휘	4	궁정 재상	Supply	고무
+43	1	포격	5	전설의 강태공	Strike	강타
+44	0	지휘	5	맹수 군주	Fortify	빙결
+45	2	지원	4	빛의 성직자	Cleric	빙결
+46	0	지휘	4	원로 참모	Expose	표식
+47	1	포격	4	발경의 달인	Strike	강타
+48	3	공격	4	그림자 암살자	Bleed	지속
+49	3	공격	4	전격술사	Shock	지속
+50	0	지휘	4	진격의 사령관	Inspire	고무
+51	1	포격	4	한기의 원령	Chill	빙결
+52	1	포격	4	유령 집사	Leech	지속
+53	1	포격	4	잔류 전류령	Discharge	지속
+54	3	공격	5	빙정의 창술사	Chill	빙결
+55	0	지휘	4	친선 대사	Supply	고무
+56	2	지원	5	왕실 대요리장	Heal	빙결
+57	1	포격	5	기함 함포선장	Captain	고무
+58	3	공격	5	성염의 기사단장	Burn	지속
+59	0	지휘	5	심판 백작	Expose	표식
+60	2	지원	5	결계 대마도사	Shield	빙결
+61	3	공격	6	무영의 검성	Strike	강타
+62	2	지원	6	광휘의 성녀	Repair	빙결
+63	0	지휘	6	위엄의 국왕	Inspire	고무

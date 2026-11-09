@@ -1,5 +1,6 @@
 ﻿#include "cocos2d.h"
 
+#include "MergeRouletteModel.h"
 #ifndef _FUNC_H_
 #include "Func.h"
 #endif
@@ -306,6 +307,12 @@ static void NetBuildDump(std::string& out)
 	//---- player_flag ----
 	//켜진 것만 넣는다. 배열을 통째로 넣으면 대부분 0인 수백 행이 된다.
 	TableBegin("player_flag", "user_id\tflag_kind\tflag_idx\tvalue");
+	for(int n=0;n<(int)sizeof(robin.mergeRouletteRun)-1 && robin.mergeRouletteRun[n];++n) {
+		PutNum(gNetUserId);PutNum(9);PutNum(n);PutNum((unsigned char)robin.mergeRouletteRun[n]);RowEnd();
+	}
+	if(robin.mergeRouletteRun[0] && robin.mergeRouletteHero>=0 && robin.mergeRouletteHero<3) {
+		PutNum(gNetUserId);PutNum(9);PutNum(sizeof(robin.mergeRouletteRun)-1);PutNum(robin.mergeRouletteHero+1);RowEnd();
+	}
 	if(gCastleTutorialStep>=0){
 		PutNum(gNetUserId);PutNum(8);PutNum(0);PutNum(1);RowEnd();
 		PutNum(gNetUserId);PutNum(8);PutNum(1);PutNum(gCastleTutorialStep);RowEnd();
@@ -845,6 +852,7 @@ static bool NetParseDump(const std::string& text, NetTableMap& out,
 //---- 표 묶음을 robin에 붓는다 ----
 static void NetApplyDump(NetTableMap& tables)
 {
+	memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));robin.mergeRouletteHero=-1;
 	CastleTutorialLoad(-1);
 	robin.castleProgress=CastleMenuModel::Progress();
 	NetTableMap::iterator it;
@@ -917,6 +925,10 @@ static void NetApplyDump(NetTableMap& tables)
 				continue;
 
 			switch (kind) {
+			case 9:
+				if(idx==(int)sizeof(robin.mergeRouletteRun)-1) {if(val>=1&&val<=3)robin.mergeRouletteHero=val-1;}
+				else if(idx<(int)sizeof(robin.mergeRouletteRun)-1&&val>0&&val<=127)robin.mergeRouletteRun[idx]=(char)val;
+				break;
 			case 8: if(idx==1)CastleTutorialLoad(val);break;
 			case 4: if(idx<50) robin.castleProgress.parts[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
 			case 5: if(idx<50) robin.castleProgress.rooms[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
@@ -1347,8 +1359,18 @@ static void NetApplyDump(NetTableMap& tables)
 
 bool NetCastleProtocolSelfTest(void)
 {
+    MergeRoulette::Run merge;
+    merge.choosing=false;merge.drafted=true;
+    MergeRoulette::Block block;block.family=MergeRoulette::Sword;block.level=MergeRoulette::MaxLevel;block.x=0;block.y=0;
+    merge.board.push_back(block);
+    MergeRoulette::Stats stats;
+    merge.attack(stats);merge.step();
+    const std::string expectedMerge=merge.encode();
     // Runs before AppDelegate in the explicit test process, without account I/O.
     for (int selected = 0; selected < CastleMenuModel::Count; ++selected) {
+        std::memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));
+        std::memcpy(robin.mergeRouletteRun,expectedMerge.data(),expectedMerge.size());
+        robin.mergeRouletteHero=selected%3;
         robin.castle = selected;
         robin.gold = 987654321;
         robin.coin = 43210;
@@ -1370,6 +1392,9 @@ bool NetCastleProtocolSelfTest(void)
         robin.castle = 0;
         robin.gold = robin.coin = 0;
         NetApplyDump(tables);
+        MergeRoulette::Run restored;
+        if(robin.mergeRouletteHero!=selected%3 || !restored.decode(robin.mergeRouletteRun)
+           || restored.encode()!=expectedMerge)return false;
         if (robin.castle != selected || robin.gold != 987654321 || robin.coin != 43210 ||
             p.version != expected.version || p.owned != expected.owned) return false;
         for (int c = 0; c < CastleMenuModel::Count; ++c)

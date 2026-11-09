@@ -737,6 +737,11 @@ typedef struct _robin {
 	//열 단계를 다 깬 보상을 받았는가. 한 번만 준다.
 	unsigned char pvpGrandTaken = 0;
 
+	// Versioned TURNRPG run, appended for old save compatibility.
+	// player_flag kind 9 transports bytes; the final index stores hero + 1.
+	char mergeRouletteRun[8192] = {};
+	int mergeRouletteHero = -1;
+
 	template <class Archive>
 	void serialize(Archive & ar)
 	{
@@ -819,7 +824,9 @@ typedef struct _robin {
 			castleIncomeTs,
 			castleProgress,
 			pvpStage,
-			pvpGrandTaken
+			pvpGrandTaken,
+			mergeRouletteRun,
+			mergeRouletteHero
 		);
 	}
 } ROBINDATA;

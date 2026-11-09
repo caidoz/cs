@@ -14,50 +14,46 @@ namespace MergeBoard {
 typedef int (*RandomFn)(int bound);	//0 <= r < bound
 
 //---- 크기 ----
-//Lv1 1×1, Lv2 1×2, Lv3 2×2. 합쳐도 칸이 줄지 않는다.
-inline int BlockW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 1, 2 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
-inline int BlockH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 2, 2 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
+//Lv1 1×1, Lv2 1×2, Lv3 2×2, Lv4 2×3, Lv5 3×3, Lv6 3×4. 합쳐도 칸이 줄지 않는다(장수보다는 천천히 큰다).
+inline int BlockW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 1, 2, 2, 3, 3 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
+inline int BlockH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 2, 2, 3, 3, 4 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
 inline int BlockCells(int level) { return BlockW(level) * BlockH(level); }
 //Lv n 하나를 만드는 데 드는 Lv1 장수 = 2^(n-1)
 inline int BlockCards(int level) { return level < 1 ? 0 : 1 << (level - 1); }
+//한 방의 배수 = 장수. 합쳐서 손해 보는 일이 없고, ★ 이 오른 만큼은 덤이다.
+inline long long LevelMul(int level) { return level < 1 ? 0 : 1LL << (level - 1); }
 
 //---- 수치 (§16) ----
-//동료·검: Lv1 base ×1, Lv2 base ×3, Lv3 ult. (Lv 마다 다른 동료/장비이므로 base·ult 는 그 칸의 것을 넘긴다)
-inline long long BlockDamage(int level, long long base, long long ult) {
-	switch (level) {
-	case 1: return base;
-	case 2: return base * 3;
-	case 3: return ult;
-	}
-	return 0;
-}
-//표식: 이후 타격 +30/60/100 %
-inline int ExposePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 30, 60, 100 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
-//고무: 다음 블록 ×2/3/4
-inline int InspireMul(int level) { return level < 1 ? 1 : level + 1; }
-//강타: 자기 피해 +50/75/100 %
-inline int StrikePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 50, 75, 100 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
+//한 방 = base × 2^(Lv-1). base 는 그 칸에 선 동료/장비의 값(★ 이 오르면 동료가 바뀌어 base 도 오른다).
+//ult 는 더 쓰지 않는다 — 호출부 호환으로 남겨 둔다.
+inline long long BlockDamage(int level, long long base, long long /*ult*/) { return base * LevelMul(level); }
+//표식: 이후 타격 +20/40/60/80/100/120 %
+inline int ExposePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 20, 40, 60, 80, 100, 120 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
+//고무: 다음 블록 ×2/2/3/3/4/4
+inline int InspireMul(int level) { static const int m[BLOCK_LV_MAX + 1] = { 1, 2, 2, 3, 3, 4, 4 }; return (level < 1 || level > BLOCK_LV_MAX) ? 1 : m[level]; }
+//강타: 자기 피해 +30/50/75/100/125/150 %
+inline int StrikePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 30, 50, 75, 100, 125, 150 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
 //연타: 탄 수. 단일 적에는 피해 합이 같고, 적이 n 마리면 n 마리 전부 맞는다
-inline int VolleyHits(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 3, 5, 8 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
-//빙결: Lv3 적 턴 1회 삭제. Lv1·2 는 적 공격 절반(플래그)
-inline int ChillSkipTurns(int level) { return level >= 3 ? 1 : 0; }
+inline int VolleyHits(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 2, 3, 4, 6, 8, 10 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
+//빙결: Lv3·4 적 턴 1회, Lv5·6 2회 삭제. Lv1·2 는 적 공격 절반(플래그)
+inline int ChillSkipTurns(int level) { return level >= 5 ? 2 : level >= 3 ? 1 : 0; }
 //지속: 피해의 50% 가 Lv 교환 동안 남는다
 inline int BurnPct(int) { return 50; }
-inline int BurnTurns(int level) { return level; }
-//목걸이: 하트 +1/+3 (Lv1·2), 룰렛 +2 (Lv3)
-inline int NeckHearts(int level) { return level == 1 ? 1 : level == 2 ? 3 : 0; }
-inline int NeckSpins(int level) { return level >= 3 ? 2 : 0; }
-//갑옷: 보호 1회 (Lv1·2), 적 턴 1회 삭제 (Lv3). Lv2 는 적 공격 절반도
-inline int ArmorGuards(int level) { return (level == 1 || level == 2) ? 1 : 0; }
-inline int ArmorSkipTurns(int level) { return level >= 3 ? 1 : 0; }
+inline int BurnTurns(int level) { return level < 1 ? 0 : (level + 1) / 2; }	//1·1·2·2·3·3 교환
+//목걸이: 하트 +1/+2/+3 (Lv1~3), 룰렛 +1/+2/+3 (Lv4~6)
+inline int NeckHearts(int level) { return (level >= 1 && level <= 3) ? level : 0; }
+inline int NeckSpins(int level) { return level >= 4 ? level - 3 : 0; }
+//갑옷: 보호 1회 (Lv1·2), 2회 (Lv3). 적 턴 1회 삭제 (Lv4·5), 2회 (Lv6). Lv2 는 적 공격 절반도
+inline int ArmorGuards(int level) { return level == 3 ? 2 : (level == 1 || level == 2) ? 1 : 0; }
+inline int ArmorSkipTurns(int level) { return level >= 6 ? 2 : level >= 4 ? 1 : 0; }
 
 //---- 계열 ----
 struct Lineage {
 	int kind;			//LineageKind
-	int id;				//동료 번호. 장비는 -1
+	int id;				//동료 계열이면 역할군(CrewRole). 장비는 -1
 	int trait;			//BlockTrait. 장비는 TRAIT_NONE
-	long long base;		//Lv1 한 방. 동료는 SKILL1 값, 검은 히어로 평타
-	long long ult;		//Lv3 한 방. 동료는 SKILL3 값, 검은 히어로 궁극기
+	long long base;		//Lv1 한 방. 동료는 그 ★ 동료의 스킬 값, 검은 히어로 평타
+	long long ult;		//(쓰지 않음) 호환용
 };
 
 //---- 블록 ----
@@ -324,10 +320,13 @@ inline void PlanAttack(const Board& b, AttackPlan& p) {
 	}
 }
 
-//공격 뒤: 판을 비우고 룰렛을 다시 채운다. 적 턴 처리는 EnemyTurn 이 한다.
+//공격 뒤: 판은 그대로 두고(2026-11-09, 판 유지) 룰렛만 다시 채운다. 적 턴 처리는 EnemyTurn 이 한다.
 inline void AfterAttack(Board& b, const AttackPlan& p) {
-	for (int i = 0; i < BOARD_MAX_BLOCKS; i++) b.block[i].active = false;
 	b.spinsLeft = BOARD_SPINS + p.spinsGained;
+}
+//성을 넘길 때처럼 판을 통째로 비울 때.
+inline void ClearBoard(Board& b) {
+	for (int i = 0; i < BOARD_MAX_BLOCKS; i++) b.block[i].active = false;
 }
 
 //적 턴 하나를 받는다. 돌려주는 값 = 잃은 목숨.
@@ -342,7 +341,7 @@ inline int EnemyTurn(Board& b, const AttackPlan& p, bool boss) {
 }
 
 //---- 이번 판 최대 (§15-3) ----
-//계열당 장수 = 룰렛 횟수 × 3 / 계열 수(10장 = Lv3 ×2 + Lv2). 큰 블록부터
+//계열당 장수 = 룰렛 횟수 × 3 / 계열 수(10장 = Lv4 + Lv2). 큰 블록부터
 //탐욕으로 만들고, 타순은 표식 → 고무 → 나머지 피해 큰 순. 베팅 ×1.
 //이 값이 시작 슬롯 아래 "최대 ×N" 으로 적 체력과 나란히 보인다.
 inline long long MaxPotential(const Lineage lineage[BOARD_LINEAGES], int spins = BOARD_SPINS) {

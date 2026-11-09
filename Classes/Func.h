@@ -20,6 +20,7 @@
 #include "Func_Iap.h"
 #include "Func_Object.h"
 #include "Func_Roulette.h"
+#include "Func_MergeRoulette.h"
 #include "Func_Sound.h"
 #include "Func_System.h"
 #include "Func_Text.h"

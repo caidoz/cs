@@ -91,10 +91,10 @@ CONTENT_KEY = {
     'monXYGap':           ('DPK_KEY_ENEMY', 2, 3),
 
     # 동료
-    'crewData':           ('DPK_KEY_CREW', 6, 0),
+    'crewData':           ('DPK_KEY_CREW', 7, 0),
 
     # 스킬
-    'skillData':          ('DPK_KEY_SKILL', 29, 0),
+    'skillData':          ('DPK_KEY_SKILL', 22, 0),
 
     # 성. castleOrder[robin.castle] 처럼 성 번호로 색인한다.
     'castleOrder':        ('DPK_KEY_CASTLE', 1, 0),

@@ -28,6 +28,7 @@
 #include "Func_Net.h"
 #include <cstdlib>
 #include <crtdbg.h>
+#include "MergeRouletteCrashReview.h"
 
 USING_NS_CC;
 
@@ -38,6 +39,11 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
+    if (getenv("CS_MERGE_REVIEW")) {
+        SetUnhandledExceptionFilter(MergeReviewCrash);
+        if(const char* path=getenv("CS_MERGE_REVIEW_PATH")) FileUtils::getInstance()->setWritablePath(path);
+    }
 
     // Explicit headless verification: never reads or writes the player's save.
     if (getenv("CS_CASTLE_PROTOCOL_TEST"))

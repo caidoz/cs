@@ -1366,6 +1366,7 @@ void StageRunEquipmentEnd(void) {
 bool IsStageRealtime(void)
 {
 	return drawHandle == MD_PLAY
+		&& option.gameMode == ACTIONRPG
 		&& !bossRaidMode
 		&& !robin.bossRoom
 		&& !IsTutorialPlaying();

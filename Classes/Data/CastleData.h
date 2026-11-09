@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../Def.h"
 
 #ifndef _CASTLE_DATA_H_
@@ -37,5 +37,5 @@ enum { lobbyCrewArea_COUNT = TOTALCASTLE * 4 };
 extern const int castleGridCellCnt[TOTALCASTLE];
 extern const int castleGridCellStart[TOTALCASTLE];
 extern const signed char* castleGridCell;
-enum { castleGridCell_COUNT = 726 };	//배열 길이. 칸 수(363)의 두 배다
+enum { castleGridCell_COUNT = 756 }; // generated cell-coordinate count
 #endif

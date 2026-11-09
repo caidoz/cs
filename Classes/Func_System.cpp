@@ -4781,6 +4781,7 @@ void ChangeTile(int x, int y, int width, int height, int type)
 // Save & Load
 void SaveGame(void)
 {
+	if(getenv("CS_MERGE_REVIEW")) return;
 	if(getenv("CS_STAGE_COMBAT_REVIEW") || getenv("CS_MAX_WEAPON_REVIEW") || getenv("CS_ALLY_LINK_REVIEW") || getenv("CS_ALLIES_BALANCE_REVIEW")) return;
 	int i;
 

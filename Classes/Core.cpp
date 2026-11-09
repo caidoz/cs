@@ -107,6 +107,7 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 {
 	int i;
 	auto touchPoint = touch->getLocation();
+	if (MergeRouletteTouch(0, touch->getID(), touchPoint.x, touchPoint.y)) return true;
 	//log("onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touchPoint.x, touchPoint.y);
 
 	//로비 성 카메라. 두 번째 손가락이면 핀치라 일반 터치로 넘기지 않는다.
@@ -178,6 +179,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 	rapidSwipe = false;
 
 	auto touchPoint = touch->getLocation();
+	if (MergeRouletteTouch(1, touch->getID(), touchPoint.x, touchPoint.y)) return;
 
 	//로비 성 카메라. 핀치 중이면 여기서 끝낸다.
 	if (drawHandle == MD_LOBBY
@@ -431,6 +433,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 {
 	auto touchPoint = touch->getLocation();
+	if (MergeRouletteTouch(3, touch->getID(), touchPoint.x, touchPoint.y)) return;
 	rapidSwipe = false;
 
 	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
@@ -517,6 +520,9 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
+	if (MergeRouletteActive()) {
+		auto p=touch->getLocation(); MergeRouletteTouch(2,touch->getID(),p.x,p.y); return;
+	}
 	rapidSwipe = false;
 
 	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
@@ -678,6 +684,7 @@ void Core::onEnter()
 	listener->onTouchBegan = CC_CALLBACK_2(Core::onTouchBegan, this);
 	listener->onTouchMoved = CC_CALLBACK_2(Core::onTouchMoved, this);
 	listener->onTouchEnded = CC_CALLBACK_2(Core::onTouchEnded, this);
+	listener->onTouchCancelled = CC_CALLBACK_2(Core::onTouchCancelled, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 
@@ -1137,7 +1144,7 @@ void Core::Run(float delta) {
 
 	//서버 통신을 한 칸 굴린다. 요청이 없으면 아무것도 안 한다.
 	//SaveGame()이 표시해 둔 저장도 여기서 묶여 나간다.
-	if (!netBootStarted && drawHandle == MD_TITLE) {
+	if (!netBootStarted && drawHandle == MD_TITLE && !getenv("CS_MERGE_REVIEW")) {
 		netBootStarted = true;
 		NetBootstrapBegin();
 	}
@@ -1300,7 +1307,7 @@ void Core::Run(float delta) {
 
 		RefreshQuestTime();
 		RefreshHeartTime();
-		RefreshEnemyTime();
+		if (!MergeRouletteActive()) RefreshEnemyTime();
 
 		bool drawThisFrame = (running == true);
 		if(TitleLoginBusy())drawThisFrame=true;
@@ -1364,6 +1371,9 @@ void DoubleBuffering(int drawHandleIdx)
 
 void PaintClet(int x, int y, int w, int h)
 {
+	// Separate TURNRPG loop: never run Play()/GridTest or realtime combat beneath it.
+	if (getenv("CS_MERGE_REVIEW") && drawHandle==MD_TITLE && !MergeRouletteActive()) MergeRouletteBegin();
+	if (MergeRouletteActive()) { MergeRouletteDraw(); return; }
 	int i, j;
 	//아래에서 MD_NEWCOLLECTION/MD_NEWCARD일 때만 값을 잡는데, MD_STAGECLEAR의
 	//StageInfoDraw()도 이 값을 배율로 받는다. 그 경로에서는 초기화도 안 된 값이었다.
@@ -1621,6 +1631,7 @@ void PaintClet(int x, int y, int w, int h)
 				break;
 			case MD_LOBBY:
 				LobbyDraw();
+				MergeRouletteLobbyDraw();
 				break;
 			case MD_PLAY:
 			case MD_BATTLE:

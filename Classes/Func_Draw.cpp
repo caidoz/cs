@@ -1894,6 +1894,9 @@ static void DrawSdInventoryGrid(int castle,int left,int top,int cell)
  DrawImage((int)size.width,(int)size.height,0,0,left-pad,top+pad,false,0,0,0,0,zoom,sprite[img],img);
 }
 
+void CastleInventoryGridDraw(int castle,int left,int top,int cell) {
+ DrawSdInventoryGrid(castle,left,top,cell);
+}
 bool SceneGridReviewCheck(void){
  const int c=GridLayoutCastleStage(),img=GRID_FRAME_FIRST_IMG+c;
  if(!sprite[img])return false;
@@ -11637,6 +11640,16 @@ static int CastleRoomManCap(float roomW, const CastleNpcPlacement::Area& zone,
 		wide));
 }
 
+
+bool CastlePartsCombatAnchors(float* commanderX,float* commanderY,float* deckY)
+{
+    const auto& p=CastleParts::sdPlacement;
+    if(!p.valid)return false;
+    if(commanderX)*commanderX=p.commanderX;
+    if(commanderY)*commanderY=p.commanderY;
+    if(deckY)*deckY=p.deckSurface;
+    return true;
+}
 
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
                       int curCastleIn, bool battle)

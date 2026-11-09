@@ -344,6 +344,7 @@
     <ClCompile Include="..\Classes\Data\DataPack.cpp" />
     <ClCompile Include="..\Classes\Func_Object.cpp" />
     <ClCompile Include="..\Classes\Func_Roulette.cpp" />
+    <ClCompile Include="..\Classes\Func_MergeRoulette.cpp" />
     <ClCompile Include="..\Classes\Func_Sound.cpp" />
     <ClCompile Include="..\Classes\Func_System.cpp" />
     <ClCompile Include="..\Classes\Func_Text.cpp" />
@@ -439,6 +440,8 @@
     <ClInclude Include="..\Classes\Data\DataPack.h" />
     <ClInclude Include="..\Classes\Func_Object.h" />
     <ClInclude Include="..\Classes\Func_Roulette.h" />
+    <ClInclude Include="..\Classes\Func_MergeRoulette.h" />
+    <ClInclude Include="..\Classes\MergeRouletteModel.h" />
     <ClInclude Include="..\Classes\Func_Sound.h" />
     <ClInclude Include="..\Classes\Func_System.h" />
     <ClInclude Include="..\Classes\Func_Text.h" />
