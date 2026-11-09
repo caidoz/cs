@@ -8,13 +8,14 @@ static int SeqRandom(int bound) { int v = gSeq[gSeqI++ % (gSeqN ? gSeqN : 1)]; r
 static void SetSeq(int a, int b, int c) { gSeq[0] = a; gSeq[1] = b; gSeq[2] = c; gSeqN = 3; gSeqI = 0; }
 
 int main() {
-	//---- 크기 1·2·4·8, 장수 1·2·4·8 ----
-	assert(BlockCells(1) == 1 && BlockCells(2) == 2 && BlockCells(3) == 4 && BlockCells(4) == 8);
-	assert(BlockCards(1) == 1 && BlockCards(2) == 2 && BlockCards(3) == 4 && BlockCards(4) == 8);
-	assert(BlockW(4) == 2 && BlockH(4) == 4);
-	assert(BlockCells(0) == 0 && BlockCells(5) == 0);
+	//---- 크기 1·2·4, 장수 1·2·4. 3단이 끝 ----
+	assert(BLOCK_LV_MAX == 3);
+	assert(BlockCells(1) == 1 && BlockCells(2) == 2 && BlockCells(3) == 4);
+	assert(BlockCards(1) == 1 && BlockCards(2) == 2 && BlockCards(3) == 4);
+	assert(BlockW(3) == 2 && BlockH(3) == 2);
+	assert(BlockCells(0) == 0 && BlockCells(4) == 0);
 
-	//---- 계열당 10장 = Lv4 + Lv2 = 10칸, 셋이면 30칸 ≤ 36 ----
+	//---- 계열당 10장 = Lv3 ×2 + Lv2 = 10칸, 셋이면 30칸 ≤ 36 ----
 	{
 		int cards = BOARD_SPINS * BOARD_REELS / BOARD_LINEAGES;
 		assert(cards == 10);
@@ -77,15 +78,16 @@ int main() {
 	int e3 = Place(b, 2, 2, 5, 3);				//1×2 at (5,3)
 	assert(e3 >= 0 && Merge(b, e2, e3));			//→ Lv3 2×2: x 5→4, y 3 유지
 	assert(b.block[e3].level == 3 && b.block[e3].x == 4 && b.block[e3].y == 3);
-	//Lv4 상한: Lv4 끼리는 못 합친다
+	//Lv3 상한: Lv3 끼리는 못 합친다
 	{
 		Board c; Reset(c, L, 3);
-		int p = Place(c, 0, 4, 0, 0), q = Place(c, 0, 4, 2, 0);
+		int p = Place(c, 0, 3, 0, 0), q = Place(c, 0, 3, 2, 0);
 		assert(p >= 0 && q >= 0 && !CanMerge(c, p, q));
-		//Lv3 + Lv3 → Lv4 2×4 가 들어갈 자리가 없으면 실패
+		//Lv2 + Lv2 → Lv3 2×2 가 들어갈 자리가 없으면 실패
 		Board d; Reset(d, L, 3);
-		int r = Place(d, 0, 3, 0, 4), s = Place(d, 0, 3, 2, 4);	//둘 다 바닥 두 줄
+		int r = Place(d, 0, 2, 0, 4), s = Place(d, 0, 2, 5, 4);	//둘 다 바닥 두 줄, 양 끝
 		assert(r >= 0 && s >= 0);
+		for (int x = 1; x < 5; x++) for (int y = 4; y < 6; y++) Place(d, 1, 1, x, y);	//바닥 두 줄 사이를 채움
 		for (int x = 0; x < 6; x++) for (int y = 0; y < 4; y++) Place(d, 1, 1, x, y);	//위 네 줄을 채움
 		assert(!CanMerge(d, r, s));
 	}
@@ -131,14 +133,14 @@ int main() {
 		Place(c, 1, 1, 4, 0);	//갑옷 Lv1: 보호 1
 		Place(c, 2, 2, 5, 0);	//빙결 Lv2: 적 공격 절반
 		AttackPlan p; PlanAttack(c, p);
-		assert(p.heartsGained == 3 && p.spinsGained == 1 && p.guards == 1 && p.enemyAttackHalved && p.enemyTurnsSkipped == 0);
+		assert(p.heartsGained == 3 && p.spinsGained == 2 && p.guards == 1 && p.enemyAttackHalved && p.enemyTurnsSkipped == 0);
 		assert(p.damage == 300);
 		assert(EnemyTurn(c, p, true) == 0 && c.lives == 3);		//보스 2 → 절반 1 → 보호 1 → 0
 		AttackPlan none = {}; none.guards = 0;
 		assert(EnemyTurn(c, none, true) == 2 && c.lives == 1);
 		assert(EnemyTurn(c, none, false) == 1 && c.lives == 0);
 		AfterAttack(c, p);
-		assert(ActiveBlocks(c) == 0 && c.spinsLeft == BOARD_SPINS + 1);
+		assert(ActiveBlocks(c) == 0 && c.spinsLeft == BOARD_SPINS + 2);
 		//빙결 Lv3 는 적 턴을 지운다
 		Board d; Reset(d, G, 3);
 		Place(d, 2, 3, 0, 0);
@@ -159,16 +161,16 @@ int main() {
 		assert(TrayStuck(d) && MustAttack(d));
 	}
 
-	//---- 이번 판 최대: 계열당 Lv4 + Lv2 ----
+	//---- 이번 판 최대: 계열당 Lv3 ×2 + Lv2 ----
 	{
 		long long mx = MaxPotential(L);
-		//표식 Lv4 3000 (+150%) → 표식 Lv2 300×2.5=750 (+60% → 누적 210%)
-		//→ 고무 Lv4 3000×3.1=9300, 다음 ×5 → 고무 Lv2 300×3.1×5=4650, 다음 ×3
-		//→ 검 Lv4 6000×3.1×3=55800 → 검 Lv2 150×3.1=465
-		assert(mx == 3000 + 750 + 9300 + 4650 + 55800 + 465);
+		//표식 Lv3 1000 (+100%) → 표식 Lv3 1000×2=2000 (누적 200%) → 표식 Lv2 300×3=900 (누적 260%)
+		//→ 고무 Lv3 1000×3.6=3600, 다음 ×4 → 고무 Lv3 1000×3.6×4=14400, 다음 ×4 → 고무 Lv2 300×3.6×4=4320, 다음 ×3
+		//→ 검 Lv3 2000×3.6×3=21600 → 검 Lv3 2000×3.6=7200 → 검 Lv2 150×3.6=540
+		assert(mx == 1000 + 2000 + 900 + 3600 + 14400 + 4320 + 21600 + 7200 + 540);
 		assert(mx > 0 && MaxPotential(L, 0) == 0);
 	}
 
-	std::cout << "PASS board model: sizes 1/2/4/8, 30 cells in 36, hands, place/move/merge growth, row-major fire order, expose->inspire->ult, gear blocks, forced attack, max potential\n";
+	std::cout << "PASS board model: sizes 1/2/4 (3 levels), 30 cells in 36, hands, place/move/merge growth, row-major fire order, expose->inspire->ult, gear blocks, forced attack, max potential\n";
 	return 0;
 }

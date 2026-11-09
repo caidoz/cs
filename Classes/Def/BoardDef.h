@@ -20,7 +20,7 @@ enum {
 	BOARD_SPINS = 10,		//적 하나당 룰렛 횟수
 	BOARD_TRAY = BOARD_REELS,
 
-	BLOCK_LV_MAX = 4,		//Lv4 = 각성(3단 ×3). 열거를 늘리지 않는다
+	BLOCK_LV_MAX = 3,		//3단이 끝. Lv1 1×1 → Lv2 1×2 → Lv3 2×2 (2026-11-09, 4단 폐지)
 	BOARD_MAX_BLOCKS = BOARD_CELLS,
 
 	RUN_LIVES_BASE = 3,		//갑옷 없을 때의 목숨
