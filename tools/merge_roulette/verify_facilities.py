@@ -46,8 +46,8 @@ mixed=Image.open(DEST/'room-independent-castle-01-level-0.png').convert('RGB')
 # Compare the actual alpha apertures, excluding posts and animated scenery
 # visible through their antialiased outer edges. Only bottom-right upgrades.
 for rect in [(124,345,237,420),(268,345,378,420),(409,345,521,420),(124,480,294,565)]:
-    rect=(rect[0],rect[1]-24,rect[2],rect[3]-24)
+    rect=(rect[0],rect[1]-40,rect[2],rect[3]-40)
     assert ImageChops.difference(base.crop(rect),mixed.crop(rect)).getbbox() is None,'neighbor room changed'
-assert ImageChops.difference(base.crop((333,456,521,541)),mixed.crop((333,456,521,541))).getbbox(),'selected room did not upgrade'
+assert ImageChops.difference(base.crop((333,440,521,525)),mixed.crop((333,440,521,525))).getbbox(),'selected room did not upgrade'
 print('PASS 61 native captures; changing one room preserves the other four pixel-for-pixel',flush=True)
 (DEST/'verification.json').write_text(json.dumps({'castles':10,'rooms':50,'upgradeFrames':300,'nativeCaptures':61,'independentRoomPixels':True},indent=2))

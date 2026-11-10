@@ -24,7 +24,7 @@ a=Image.open(dest/'original-uniform-reference.png').convert('RGB');b=Image.open(
 regions={'start':(190,642,450,683),'continue':(258,712,390,728),'manage':(255,600,383,611),'tower':(139,67,154,80),'beam':(180,303,490,309)}
 result={}
 for name,q in regions.items():
- q=(q[0],q[1]-24,q[2],q[3]-24)
+ q=(q[0],q[1]-40,q[2],q[3]-40)
  d=ImageChops.difference(a.crop(q),b.crop(q));stat=ImageStat.Stat(d)
  result[name]={'maxDifference':max(v[1] for v in d.getextrema()),'meanDifference':max(stat.mean)}
  assert result[name]['maxDifference']<=(4 if name=='beam' else 2) and result[name]['meanDifference']<.05,(name,result[name])

@@ -36,7 +36,8 @@ def verify(executable: Path, height: int):
                             raise RuntimeError('missing capture ' + name)
                     for check in ('PASS spin results automatically fly into inventory', 'PASS landing locks input without extra heart cost',
                                   'PASS all three reel symbols land separately without automatic merge',
-                                  'PASS dragging clubs merges on full board into one 64px tile without heart cost',
+                                  'PASS expanded merge waits for space without changing either piece',
+                                  'PASS dragging clubs merges into expanded equipment footprint without heart cost',
                                   'PASS slot gears rotate during spin', 'PASS slot gears decelerate and stop with reels',
                                   'PASS slot gears stay still during attack',
                                   'PASS nine-column castle retains exact 64px cells',

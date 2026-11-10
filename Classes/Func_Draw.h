@@ -51,7 +51,7 @@ bool CastleTutorialReviewAction(int action);
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
-void DrawCastleLobbyBackground(int wheelGroundY);
+float DrawCastleLobbyBackground(int wheelGroundY);
 bool CastlePartsCombatAnchors(float* commanderX,float* commanderY,float* deckY);
 void CastleInventoryGridDraw(int castle,int left,int top,int cell);
 bool CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h);

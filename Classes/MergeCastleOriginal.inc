@@ -5,7 +5,7 @@ using Poly=std::vector<cocos2d::Vec2>;
 struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
 float zoom(){return DX/W;}
-float lift(){return 24*DX/640.f;}
+float lift(){return 40*DX/640.f;}
 Box box(int x,int y,int w,int h,float drop=0){float z=zoom();return {(int)(x*z),(int)((H-y)*z+lift()-drop),(int)(w*z),(int)(h*z)};}
 Poly rect(float x,float y,float w,float h){return {{x,y},{x+w,y},{x+w,y+h},{x,y+h}};}
 Poly circle(float x,float y,float r){Poly p;for(int i=0;i<64;++i){float a=i*6.2831853f/64;p.push_back({x+std::cos(a)*r,y+std::sin(a)*r});}return p;}
@@ -71,6 +71,6 @@ void wood(int x,int y,int w,int h){for(int n=0;n<h;n+=28)cut(300,1252,w,std::min
 void wheel(int side,float angle){
  const int img=MERGE_ORIGINAL_WHEEL_IMG;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
- RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(88*DX/640.f+99*z),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
+ RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(96*DX/640.f+99*z),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
 }
 }

@@ -1,6 +1,8 @@
 // Facilities remain independently upgradeable behind the chassis' alpha holes.
 #include "MergeCastleOriginal.inc"
 float entryElapsed=-1.f;
+float castleScrollSeconds=0.f,castleWheelTravel=0.f;
+float castleWheelAngle(float radius){return std::fmod(castleWheelTravel/std::max(1.f,radius)*57.2957795f,360.f);}
 bool entering(){return entryElapsed>=0&&entryElapsed<MergeCastleTransition::Duration;}
 void drawWorld(const Layout& l,bool combat);
 int castleMaterial(int c) {
@@ -26,14 +28,14 @@ CastleMap castleMap(const Layout& l,int c){
  const Box room=interiorBox(l);const float s=l.scale;
  // One uniform transform per authored castle. Growing boards may crop the
  // castle sides; they never squeeze pillars or stretch room furniture.
- const float z=(l.ground-96*s)/(f.y+f.h-330.f);
+ const float z=(l.ground-112*s)/(f.y+f.h-330.f);
  const float outerLeft=(DX-f.w*z)*.5f;
  const float innerLeft=outerLeft+(left-f.x)*z;
  const float innerRight=outerLeft+(right-f.x)*z;
  return {{(float)f.x,(float)left,(float)right,(float)(f.x+f.w)},
          {(float)f.y,(float)top,(float)bottom,(float)(f.y+f.h)},
          {outerLeft,innerLeft,innerRight,outerLeft+f.w*z},
-         {96*s+f.h*z,96*s+(f.y+f.h-top)*z,96*s+(f.y+f.h-bottom)*z,96*s}};
+         {112*s+f.h*z,112*s+(f.y+f.h-top)*z,112*s+(f.y+f.h-bottom)*z,112*s}};
 }
 Box roomBox(const Layout& l,int room){
  if(run.stage==0){const auto p=OriginalCastle::rooms()[room];return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}
@@ -41,6 +43,22 @@ Box roomBox(const Layout& l,int room){
  int x=(int)std::floor(m.x(f.x)),right=(int)std::ceil(m.x(f.x+f.w));
  int top=(int)std::ceil(m.y(f.y)),bottom=(int)std::floor(m.y(f.y+f.h));
  return {x,top,right-x,top-bottom};
+}
+void drawRoomResidents(const Layout& l){
+ for(int i=0;i<5;++i){
+  const Box b=roomBox(l,i);const int role=i%Roles;
+  int crew=-1,ordinal=i/4;
+  for(int star=1;star<=MaxLevel&&crew<0;++star)for(int k=0;k<roster.count[role][star];++k)
+   if(ordinal--==0){crew=roster.crew[role][star][k];break;}
+  if(crew<0)crew=roster.first(role,1);
+  if(crew<0)crew=MergeTrees::CrewAt(role,1,i/4);
+  if(crew<0)crew=MergeTrees::CrewAt(role,1,0);
+  const int h=(int)std::min(60*l.scale,b.h*.70f),w=(int)(h*.85f);
+  Box resident={b.x+(int)(b.w*.70f)-w/2,b.y-b.h+(int)(9*l.scale)+h,w,h};
+  SetSectionClip(b.x,b.y,b.w,b.h,false);
+  icon(role,resident,1.f,false,MergeTrees::Star(crew),crew);
+  UnSectionClip(false);
+ }
 }
 void drawCastleHull(const Layout& l){
  const int c=std::max(0,std::min(9,run.stage));const auto map=castleMap(l,c);const float s=l.scale;
@@ -52,16 +70,16 @@ void drawCastleHull(const Layout& l){
    const float z=std::max(b.w/(float)f.w,b.h/(float)f.h);const int sw=std::min(f.w,(int)std::ceil(b.w/z)),sh=std::min(f.h,(int)std::ceil(b.h/z));
    SetSectionClip(b.x,b.y,b.w,b.h,false);
    DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,false,0,0,0,0,z,z,sprite[img],img);UnSectionClip(false);
-   icon(i%Roles,{b.x+b.w*2/3,b.y-b.h+(int)(42*s),(int)(31*s),(int)(37*s)},.9f,false,1,MergeTrees::CrewAt(i%Roles,1,0));
   }
   OriginalCastle::wood(294,1035,507,153);OriginalCastle::wood(403,1003,279,53);OriginalCastle::wood(410,1194,277,56);
   OriginalCastle::wood(65,1204,160,131);OriginalCastle::wood(867,1202,162,133);
   OriginalCastle::draw(0);OriginalCastle::draw(1);
-  OriginalCastle::wheel(0,frame*.25f);OriginalCastle::wheel(1,frame*.25f);OriginalCastle::draw(8);
+  const float wheelAngle=castleWheelAngle(99*OriginalCastle::zoom());
+  OriginalCastle::wheel(0,wheelAngle);OriginalCastle::wheel(1,wheelAngle);OriginalCastle::draw(8);
   const int xx[5]={270,505,748,300,660},yy[5]={535,535,535,756,756},ww[5]={94,100,96,106,110};
   const char* titles[5]={"식량 재배","장비 공방","식음료","도서·문화","특화 시설"};
   for(int i=0;i<5;++i){Box t=OriginalCastle::box(xx[i]+5,yy[i]+5,ww[i]-10,22);MemRect(t.x,t.y,t.w,t.h,0xD9AF70);label(titles[i],t.x+t.w/2,t.y,.42f,0x23190E);}
-  return;
+  drawRoomResidents(l);return;
  }
  int img=MERGE_REBUILD_ROOMS_IMG+c;if(!sprite[img])LoadImg(img);
  if(sprite[img]){
@@ -75,8 +93,6 @@ void drawCastleHull(const Layout& l){
    SetSectionClip(b.x,b.y,b.w,b.h,false);
    DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,false,0,0,0,0,z,z,sprite[img],img);
    UnSectionClip(false);
-   const int role=i%Roles,crew=MergeTrees::CrewAt(role,1,0);
-   icon(role,{b.x+b.w*2/3,b.y-b.h+(int)(43*s),(int)(31*s),(int)(38*s)},.9f,false,1,crew);
   }
  }
  const auto& chassis=MergeCastleArt::Chassis[c];
@@ -87,13 +103,14 @@ void drawCastleHull(const Layout& l){
  const auto& wheel=MergeCastleArt::Parts[c][1][wheelLv];const int partImg=MERGE_REBUILD_PARTS_IMG+c;
  if(!sprite[partImg])LoadImg(partImg);
  if(sprite[partImg])for(int i=0;i<2;++i){
-  const int cx=(int)(i?DX-65*s:65*s),cy=(int)(131*s);
-  RotateImage(wheel.w,wheel.h,wheel.x,wheel.y,cx,cy,false,frame*.25f,0,0,86*s/std::max(wheel.w,wheel.h),cocos2d::Vec2(.5f,.5f),sprite[partImg],partImg);
+  const int cx=(int)(i?DX-65*s:65*s),cy=(int)(139*s);
+  RotateImage(wheel.w,wheel.h,wheel.x,wheel.y,cx,cy,false,castleWheelAngle(43*s),0,0,86*s/std::max(wheel.w,wheel.h),cocos2d::Vec2(.5f,.5f),sprite[partImg],partImg);
  }
  const int cannonLv=std::min(5,(int)robin.castleProgress.parts[c][3]);
  const auto& cannon=MergeCastleArt::Parts[c][0][cannonLv];
  const float z=std::min(95*s/cannon.w,77*s/cannon.h);
  artCut(partImg,cannon,{(int)(246*s),(int)(l.ground+cannon.h*z),(int)(cannon.w*z),(int)(cannon.h*z)});
+ drawRoomResidents(l);
 }
 void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  const int drop=(int)(280*l.scale*exit);Box start=lobbyStart(l),keep=lobbyContinue(l),manage=lobbyManage(l);

@@ -10639,7 +10639,7 @@ static StageBg::Camera LobbyCamera(void)
 	return cam;
 }
 
-void DrawCastleLobbyBackground(int wheelGroundY)
+float DrawCastleLobbyBackground(int wheelGroundY)
 {
 	LobbyCastlePrepare();
 	auto camera=LobbyCamera();
@@ -10647,6 +10647,7 @@ void DrawCastleLobbyBackground(int wheelGroundY)
 	// room chassis has its own axle; its wheels must still contact the rail.
 	camera.groundY=wheelGroundY;
 	StageBg::Draw(camera, 0);
+	return StageBg::kSpeedRail*StageBg::s_travel*StageBg::LayerScale(camera,StageBg::kDepthRail);
 }
 
 static void LobbyCastleDraw(void)

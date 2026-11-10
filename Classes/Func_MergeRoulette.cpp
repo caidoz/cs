@@ -94,16 +94,16 @@ Layout layout() {
     l.attack={DX-margin-(int)(224*s),bottom+bh,(int)(224*s),bh};
     const int heartCols=std::min(10,heartCapacity),heartRows=(heartCapacity+heartCols-1)/heartCols;
     const int heartWidth=(heartCols*27+40)*s;
-    l.heart={(DX-heartWidth)/2,(int)(140*s),heartWidth,(int)((heartRows*23+14)*s)};
+    l.heart={(DX-heartWidth)/2,(int)(156*s),heartWidth,(int)((heartRows*23+14)*s)};
     // RH's 512 x 218 board at a uniform 0.625 scale, with a right-hand lever.
-    l.slot={(int)(132*s),(int)(264*s),(int)(348*s),(int)(116*s)};
+    l.slot={(int)(132*s),(int)(280*s),(int)(348*s),(int)(116*s)};
     l.lever={l.slot.x+l.slot.w+(int)(4*s),l.slot.y-(int)(3*s),(int)(40*s),(int)(104*s)};
     l.trash={DX-(int)(82*s),l.slot.y,(int)(70*s),(int)(70*s)};
     l.cell=std::max(1,(int)(64*s));l.cellH=l.cell;
     int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
-    l.board={(DX-bw)/2,(int)(273*s)+bhGrid,bw,bhGrid};
+    l.board={(DX-bw)/2,(int)(305*s)+bhGrid,bw,bhGrid};
     l.arenaBottom=l.board.y+(int)(76*s);
-    l.ground=(run.stage==0?(int)(1077*DX/1089.f):l.board.y+(int)(122*s))+(int)(24*s);
+    l.ground=(run.stage==0?(int)(1077*DX/1089.f):l.board.y+(int)(90*s))+(int)(40*s);
     l.exit={DX-(int)(76*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};
     l.left={(int)(48*s),l.slot.y,(int)(36*s),l.slot.h};
     l.right={DX-(int)(84*s),l.slot.y,(int)(36*s),l.slot.h};
@@ -313,15 +313,14 @@ bool pay() {
     observedHearts=robin.heart;heartBlink=.72f;
     return true;
 }
-void iconGround(const Box& box,int width) {
+void iconGround(const Box& box,int width,int lift=0) {
     int p=std::max(1,(int)(DX/640.f)),cx=box.x+box.w/2;
-    int y=box.y-box.h+5*p,w=std::min(box.w-4*p,width);
-    // Stepped ellipse: a compact pixel footprint, shared by crew and equipment.
-    MemRect(cx-w/2+3*p,y+2*p,std::max(p,w-6*p),p,0x54505A);
-    MemRect(cx-w/2,y+p,w,3*p,0x252638);
-    MemRect(cx-w/2+3*p,y-2*p,std::max(p,w-6*p),p,0x363344);
+    const int w=std::max(p,std::min(box.w-4*p,width));
+    const float z=w/(float)(24*_2X);
+    ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,cx-w/2,
+        box.y-box.h+5*p+lift+(int)(8*_2X*z),SHADOW_IMG,z);
 }
-void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1) {
+void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1,int footLift=0) {
     if(family<0||family>=FamilyCount)return;
     SetColor(0);grayScale=0;
     if(family<Sword) {
@@ -336,9 +335,9 @@ void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int le
         int motion=crewPos[npc*5];
         const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
         int p=std::max(1,(int)(DX/640.f));
-        float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p)/(float)std::max(1,(int)bounds[3]))*fraction;
-        iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)));
-        DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+(int)(bounds[3]*z/2),RIGHT,z,0,true);
+        float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
+        iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
+        DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2),RIGHT,z,0,true);
     } else {
         ITEM item=treeEquipment[family-Sword][std::max(0,std::min(MaxLevel-1,level-1))];
         int size=(int)(std::min(box.w-2,box.h-7)*fraction);
@@ -377,7 +376,7 @@ void drawLever(const Layout& l) {
 void drawBlock(const Block& b,const Box& box,bool ghost=false) {
     int lv=std::max(1,std::min((int)MaxLevel,b.level));
     SetAlpha(ghost?16:32);padArt(lv+1,box);SetAlpha(32);
-    icon(b.family,inset(box,std::max(1,(int)(2*DX/640.f))),1.f,false,b.level,b.crew);
+    icon(b.family,inset(box,std::max(1,(int)(2*DX/640.f))),1.f,false,b.level,b.crew,b.family<Roles?(int)(6*DX/640.f):0);
 }
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
@@ -481,7 +480,9 @@ void drawIntro(const Layout& l) {
 void drawWorld(const Layout& l,bool combat) {
     const float s=l.scale;
     SetAlpha(32);SetColor(0);grayScale=0;
-    DrawCastleLobbyBackground((int)(96*s));
+    castleScrollSeconds+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()))*.25f;
+    {StageBg::Borrow scroll(StageBg::s_region,castleScrollSeconds);
+        castleWheelTravel=DrawCastleLobbyBackground((int)(104*s));}
     drawCastleHull(l);
     const int hx=(int)(DX*.57f),hy=l.ground,ex=(int)(DX*.85f),ey=l.ground;
     const float deckY=(float)hy;
@@ -763,18 +764,25 @@ void reviewStep(const Layout& l) {
         }
         const auto fullBoard=run.board;
         run.board[0].family=run.board[1].family=Sword;
+        const auto crowdedMerge=run.encode();
         Layout mergeLayout=layout();Box club=blockBox(run.board[0],mergeLayout),onto=blockBox(run.board[1],mergeLayout);
         const float ax=club.x+club.w*.5f,ay=club.y-club.h*.5f,bx=onto.x+onto.w+2,by=onto.y-onto.h*.5f;
         MergeRouletteTouch(0,999,ax,ay);MergeRouletteTouch(1,999,bx,by);MergeRouletteTouch(2,999,bx,by);
+        reviewTrace(run.encode()==crowdedMerge&&messageTime>0&&robin.heart==balance?
+            "PASS expanded merge waits for space without changing either piece":"FAIL blocked expanded merge");
+        run.board.erase(run.board.begin()+run.at(2,0));
+        MergeRouletteTouch(0,999,ax,ay);MergeRouletteTouch(1,999,bx,by);MergeRouletteTouch(2,999,bx,by);
         const int merged=run.at(1,0);
-        reviewTrace(merged>=0&&run.board.size()==23&&run.board[merged].level==2&&run.freeCells()==1&&
-            blockBox(run.board[merged],mergeLayout).w==64&&robin.heart==balance?
-            "PASS dragging clubs merges on full board into one 64px tile without heart cost":"FAIL full board club drag merge");
+        reviewTrace(merged>=0&&run.board.size()==22&&run.board[merged].level==2&&run.freeCells()==1&&
+            blockBox(run.board[merged],mergeLayout).w==128&&run.at(2,0)==merged&&robin.heart==balance?
+            "PASS dragging clubs merges into expanded equipment footprint without heart cost":"FAIL expanded club drag merge");
         run.board=fullBoard;
+        run.board.erase(run.board.begin()+run.at(5,3));
+        run.board.erase(run.board.begin()+run.at(4,3));
         Block large;large.family=Sword;large.level=3;run.tray.push_back(large);
         const auto blockedHand=run.encode();
         const bool heldResult=!beginSpinLanding()&&run.encode()==blockedHand;
-        Layout tight=layout();const int index=run.at(5,3);Box remove=blockBox(run.board[index],tight);
+        Layout tight=layout();const int index=run.at(3,3);Box remove=blockBox(run.board[index],tight);
         reviewTap(tight.attack);
         const bool noAttack=!run.attacking&&robin.heart==balance;
         const float sx=remove.x+tight.cell*.5f,sy=remove.y-tight.cellH*.5f;
