@@ -1,0 +1,29 @@
+# /etc/systemd/system/gameax.service — GameAX(FastAPI) 를 127.0.0.1:8010 에 띄운다.
+#
+# 코드 /opt/gameax, 가상환경 /opt/gameax/.venv, 설정 /opt/gameax/.env (600 gameax).
+# 바깥은 nginx(gameax.bigpixel.kr) 가 받아서 넘긴다. 보관은 로컬(var/media).
+# insamd 와 같은 박스(914Mi)라 메모리 상한을 둔다.
+
+[Unit]
+Description=GameAX API (uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gameax
+Group=gameax
+WorkingDirectory=/opt/gameax/backend
+Environment=GAMEAX_ENV_FILE=/opt/gameax/.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/gameax/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8010 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=3
+MemoryMax=400M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/gameax/var /opt/gameax/backend
+
+[Install]
+WantedBy=multi-user.target
