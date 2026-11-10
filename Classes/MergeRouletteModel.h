@@ -7,6 +7,7 @@
 // 나온다(운빨존많겜 식). 어느 동료가 나올 수 있는지는 Roster 가 들고 있고,
 // 피해·특성은 Stats 가 동료 번호로 들고 있다. 판은 공격해도 비지 않는다.
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <vector>
 #include <sstream>
@@ -32,8 +33,12 @@ struct Block {
     int family=-1, level=1, crew=-1, x=-1, y=-1;   // crew: 역할 계열이면 동료 번호, 장비면 -1
     bool placed() const { return x>=0 && y>=0; }
 };
-inline int Wide(int level) { return MergeBoard::BlockW(level); }
-inline int Tall(int level) { return MergeBoard::BlockH(level); }
+// 2026-11-10: 사람은 한 칸, 장비는 커진다. 동료 블록은 ★ 에 상관없이 1×1,
+// 장비 블록은 ★ 마다 한 칸씩(1×1 · 2×1 · 3×1 · 2×2 · 5×1 · 3×2). 표는 BoardModel.h.
+inline int Wide(int family,int level) { return MergeBoard::BlockWOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
+inline int Tall(int family,int level) { return MergeBoard::BlockHOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
+inline int Wide(const Block& b) { return Wide(b.family,b.level); }
+inline int Tall(const Block& b) { return Tall(b.family,b.level); }
 // 동료마다 한 방의 세기와 특성. 레벨(=★)은 블록이 들고 있으므로 여기엔 없다.
 struct CrewStats {
     long long power=20;
@@ -91,12 +96,12 @@ struct Run {
     }
     bool fits(const Block& b,int ignore=-1,int ignore2=-1) const {
         if(b.family<0 || b.family>=FamilyCount || b.level<1 || b.level>MaxLevel
-           || b.x<0 || b.y<0 || b.x+Wide(b.level)>shape.width || b.y+Tall(b.level)>shape.height) return false;
-        for(int y=b.y;y<b.y+Tall(b.level);++y)for(int x=b.x;x<b.x+Wide(b.level);++x)if(!shape.contains(x,y))return false;
+           || b.x<0 || b.y<0 || b.x+Wide(b)>shape.width || b.y+Tall(b)>shape.height) return false;
+        for(int y=b.y;y<b.y+Tall(b);++y)for(int x=b.x;x<b.x+Wide(b);++x)if(!shape.contains(x,y))return false;
         for(int i=0;i<(int)board.size();++i) {
             if(i==ignore||i==ignore2)continue;
             const Block& a=board[i];
-            if(b.x<a.x+Wide(a.level)&&a.x<b.x+Wide(b.level)&&b.y<a.y+Tall(a.level)&&a.y<b.y+Tall(b.level))return false;
+            if(b.x<a.x+Wide(a)&&a.x<b.x+Wide(b)&&b.y<a.y+Tall(a)&&a.y<b.y+Tall(b))return false;
         }
         return true;
     }
@@ -121,7 +126,7 @@ struct Run {
     int at(int x,int y) const {
         for(int i=0;i<(int)board.size();++i) {
             const Block& b=board[i];
-            if(x>=b.x && y>=b.y && x<b.x+Wide(b.level) && y<b.y+Tall(b.level)) return i;
+            if(x>=b.x && y>=b.y && x<b.x+Wide(b) && y<b.y+Tall(b)) return i;
         }
         return -1;
     }
@@ -136,8 +141,8 @@ struct Run {
         if(!mergeable(t,moving))return false;
         out=t;++out.level;
         // Same edge-inward placement policy as the existing BoardModel.
-        out.x=std::min(out.x,shape.width-Wide(out.level));
-        out.y=std::min(out.y,shape.height-Tall(out.level));
+        out.x=std::min(out.x,shape.width-Wide(out));
+        out.y=std::min(out.y,shape.height-Tall(out));
         return fits(out,target,ignore);
     }
     // Validate first: a failed merge/move never loses or changes either block.
@@ -166,12 +171,26 @@ struct Run {
     }
     bool autoPlace(int index) {
         if(index<0 || index>=(int)tray.size()) return false;
-        // Matches first, then scan for free space.
-        for(int i=0;i<(int)board.size();++i)
-            if(mergeable(board[i],tray[index]) && place(true,index,board[i].x,board[i].y)) return true;
+        // Reel rewards are separate pieces. Only a deliberate drag may merge.
         for(int y=0;y<shape.height;++y) for(int x=0;x<shape.width;++x)
             if(at(x,y)<0 && place(true,index,x,y)) return true;
         return false;
+    }
+    bool drop(bool fromTray,int index,float centerX,float centerY){
+        const auto& source=fromTray?tray:board;
+        if(index<0||index>=(int)source.size())return false;
+        // The dragged sprite is centered on the pointer. Resolve its visible
+        // overlap before attempting an empty-cell move, including edge drops.
+        const Block& m=source[index];const float mw=(float)Wide(m),mh=(float)Tall(m);
+        int target=-1;float best=.20f;
+        for(int i=0;i<(int)board.size();++i){
+            if((!fromTray&&i==index)||!mergeable(board[i],m))continue;
+            const float w=std::max(0.f,std::min(centerX+mw/2,board[i].x+(float)Wide(board[i]))-std::max(centerX-mw/2,(float)board[i].x));
+            const float h=std::max(0.f,std::min(centerY+mh/2,board[i].y+(float)Tall(board[i]))-std::max(centerY-mh/2,(float)board[i].y));
+            if(w*h>best){best=w*h;target=i;}
+        }
+        if(target>=0&&place(fromTray,index,board[target].x,board[target].y))return true;
+        return place(fromTray,index,(int)std::floor(centerX-(mw-1)/2),(int)std::floor(centerY-(mh-1)/2));
     }
     void choose(const std::vector<int>& pool,const int* weights=nullptr) {
         drafted=true;
@@ -222,22 +241,9 @@ struct Run {
     bool spin() {
         if(!canSpin()) return false;
         --spins;
-        int result[3]; for(int i=0;i<3;++i) result[i]=(int)random(3);
-        int levels[3],lineages[3];MergeBoard::HandFromReels(result,levels,lineages);
-        for(int i=0;i<3;++i) {
-            if(levels[i]==0)continue;
-            Block b;b.family=families[lineages[i]];b.level=levels[i];
-            // 릴 매치로 ★2·★3 이 바로 나온다. 그 ★ 에 동료가 없으면 ★1 셋으로 깐다.
-            if(b.family<Roles) {
-                b.crew=pickCrew(b.family,b.level);
-                if(b.crew<0) {
-                    tray.clear();
-                    for(int k=0;k<3;++k) {Block c;c.family=families[result[k]];c.level=1;c.crew=pickCrew(c.family,1);tray.push_back(c);}
-                    return true;
-                }
-            }
-            tray.push_back(b);
-        }
+        // Preserve reel order and every symbol, including pairs and triples.
+        int result[3];for(int i=0;i<3;++i)result[i]=(int)random(3);
+        for(int i=0;i<3;++i)tray.push_back(starter(families[result[i]]));
         return true;
     }
     Shot evaluate(const Block& b,const Stats& st,Effects& e) const {
@@ -252,10 +258,10 @@ struct Run {
         long long raw;Trait trait=Strike;bool summon=false;
         if(b.family<Roles) {
             const CrewStats& c=st.crew[b.crew<0||b.crew>=64?0:b.crew];
-            raw=c.power*MergeBoard::LevelMul(lv);trait=c.trait;summon=c.summon;
+            raw=c.power*MergeBoard::CrewMul(lv);trait=c.trait;summon=c.summon;
             if(trait==Chill) {e.skip+=MergeBoard::ChillSkipTurns(lv);if(lv<=2)e.half=true;}
             if(trait==Strike)raw+=raw*MergeBoard::StrikePct(lv)/100;
-        } else raw=st.weapon*MergeBoard::LevelMul(lv);
+        } else raw=st.weapon*MergeBoard::GearMul(lv);   // 장비는 ×3: 1+1 이 2칸이 되므로
         s.damage=raw*(100+e.expose)/100*e.inspire;e.inspire=1;
         if(b.family<Roles) {
             if(trait==Expose) e.expose+=MergeBoard::ExposePct(lv);

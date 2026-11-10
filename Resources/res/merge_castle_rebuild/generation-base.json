@@ -1,0 +1,134 @@
+{
+  "entries": [
+    {
+      "kind": "chassis",
+      "n": 1,
+      "name": "chassis-01",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-2fa34c0d-cb08-4928-a3ed-122e2ff05be7.png",
+      "prompt": "GAME-READY ISOLATED CASTLE CHASSIS ASSET, matching attached approved Castle Survivor reference EXACT design language, NOT another UI mockup. Output ONE front-facing stage1 timber castle chassis on true transparent background, same wide silhouette as reference. Keep golden metal brackets, purple roof and crown banner on UPPER LEFT keep, thick golden-brown carved timber supports, beautiful realistic pixelart highlights and floor shadows. Crucial silhouette: upper-left keep occupies ONLY LEFT 35 percent of total width; WIDE OPEN BATTLE DECK extends from x35% to x96%, at least60% total width, large visible top surface for hero versus enemy. Total chassis shape is landscape-ish castle keep above a broad rectangular room body, about width1024 height1280. Under deck: coherent carved ceiling rafters with hanging lantern, thick outer columns, exactly FIVE INDEPENDENT EMPTY ROOM APERTURES: three equal upper apertures, two wider lower apertures, matching reference3-above2-below layout. Aperture inner union width about78% overallwidth, height about42% overallheight; all FIVE windows have fully TRANSPARENT interiors, no room backgrounds/furniture, no plaques or text. Common beams and pillars remain visible around windows. Beneath rooms: handsome timber machinery/control bay with two recessed gear alcoves and reinforced lower chassis, matching reference. NO wheels (separately animated), NO cannon/turret, NO people/characters/enemy, NO UI, NO slot machine, NO buttons/menus/hearts, no numbers, NO background scenery/sky/ground. This is a usable layered sprite asset with five alpha holes, not a full screenshot. Reproduce reference's architecture, color, bevels, metal gold corner cuffs and struts faithfully; no simplification, no flat rectangle placeholders. Use rich crisp2.5D pixelart like reference. Entire chassis inside canvas, no clipping. Transparent exterior AND all five room interiors."
+    },
+    {
+      "kind": "chassis",
+      "n": 2,
+      "name": "chassis-02",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-94488b62-5189-4d68-ac0c-177fe2175002.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage2, identity pale sandstone with gold reinforcement and red enamel, GOLD BOAR crest, red pennant. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage2 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 3,
+      "name": "chassis-03",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-4a56f324-2926-4a96-863c-8aad66bb6dc3.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage3, identity cool gray stone with silver steel, cobalt CONICAL roofs, CROSSED SWORDS crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage3 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 4,
+      "name": "chassis-04",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-5a627af9-a917-4fbe-b926-74464a3c44d3.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage4, identity dark slate and teal copper DOMES and metal beams, GOLD TURTLE crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage4 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 5,
+      "name": "chassis-05",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-ba17a4ac-d482-4858-8313-f7b3c5e7549e.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage5, identity charcoal iron armor and cobalt enamel, blue pitched roof, gold LION crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage5 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 6,
+      "name": "chassis-06",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-8c1f8c90-25ab-4ee3-9398-554308aacba5.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage6, identity ivory marble, teal PYRAMID roofs and metal, GOLD SUN GEAR crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage6 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 7,
+      "name": "chassis-07",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-7f4154b9-f8c3-4563-b3f9-26f675539601.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage7, identity black basalt and crimson iron ribs, RED CONICAL roofs, GOLD PHOENIX crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage7 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 8,
+      "name": "chassis-08",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-17c50762-d025-493a-843e-6839fe1d838a.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage8, identity ivory palace stone, sapphire BARREL-VAULT roofs and domes, WHITE EAGLE crest, gold edges. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage8 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 9,
+      "name": "chassis-09",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-40ba8bf3-5e5c-4c8a-be1d-8a39111d48a3.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage9, identity obsidian with amethyst crystal roof spires and gold edges, MYSTIC PURPLE EYE crest. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage9 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "chassis",
+      "n": 10,
+      "name": "chassis-10",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-b6813780-e2c8-41d1-aa0a-0514107aa6e6.png",
+      "prompt": "Edit the attached game-ready transparent castle chassis. Preserve EXACT same FIVE transparent room holes (3upper,2lower), broad full-width deck and lower machinery bay, same front camera and same proportions. Castle stage10, identity royal IVORY MARBLE and cobalt ONION DOMES with GOLD SUN crest, gold ribs. Upgrade ALL architecture to these materials: exterior, floor beams, lower chassis, columns and diagonal struts, not just roof. NO BROWN WOOD STRUCTURE (wood furniture absent because apertures empty). Upper-left keep occupies only LEFT35% of totalwidth; open battle deck from35% to96%, at least60% width so hero and enemy have a spacious fighting platform. Keep every ornate bracket and sculptural depth of reference, do NOT simplify. Outer chassis and FIVE room interiors truly TRANSPARENT. No room furnishings, no characters, no cannon/turret, no wheels, no buttons/labels/menu/slot/hearts/text, NO BACKGROUND. Image is only isolated stage10 chassis sprite. Match golden highlights, crisp2.5D pixelart and shadow quality. Sourceholes geometry stays unchanged to permit interchangeable independent facility modules. Tall stages may have taller spires only; never shrink the play deck."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-start",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-d4ae2b1e-94db-4543-a818-2f38fe4542d5.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE ornate cobalt BLUE battle-start button, exact reference gold scroll flourishes on both sides, small golden crown above center, gold laurel leaves inside. Korean text exactly '전투 시작', large cream beveled lettering. Wide shallow3.5:1 composition. NO other buttons. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-continue",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-5e1b6571-1b7f-4396-8bb4-56a5f5e1d45a.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE small brown carved plaque button with thick gold octagonal rim and small diamond studs, Korean text exactly '이어서'. Match the reference continuation button precisely. Wide4:1 composition. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-manage",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-b8997a91-ed99-4013-ab35-5ad59dde511d.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE small carved warm timber management plaque, gold rim and small crown ornaments at bothends. Korean text exactly '성 관리'. Wide4:1 composition. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-spin",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-e85d0bde-e7a5-4109-9e7f-52b81ff13de5.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE ornate cobalt blue button in thick beveled gold pixelart frame. Big circular arrows icon on left, vertical gold separator, Korean main text '더 돌리기', smaller '동료·장비 추가', red heart icon followed by '-1'. Match reference battle choice button, tactile rich3D bevels, wide3:1. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-attack",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-49827605-cc1d-40ec-8a34-d496f6e7a057.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE ornate crimson orange button in thick beveled gold pixelart frame. Crossed swords icon left, vertical gold separator, Korean main text '지금 공격', smaller '현재 인벤토리 사용', red heart icon followed by '-1'. Match reference battle choice button, tactile rich3D bevels, wide3:1. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-navigation",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-29a51be4-4c4d-4601-8320-0a6124585620.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE connected FIVE-EQUAL-TAB bottom navigation bar, wide7:1 overall. Rich carved wood and thick gold metal rims exactly like reference. Tabs labels left-to-right exactly '상점','영웅','모험','동료','성'. Icons respectively purplegold treasure chest; silver armored HERO helmet; adventure MAP and pennant; TWO companion portraits; purple-roof CASTLE. ONLY middle '모험' tab selected cobaltblue with goldrim. Icon above label in eachtab. No extra icons, no character equipment menu. All5 tabs equalwidth, fullwidth bar with clean rectangular bottom corners. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-slot",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-82fb7b58-0fc1-414b-b4a3-c36ec2d7f6e9.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE magnificent rounded cylindrical three-reel SLOT MACHINE BODY matching attached battle reference EXACTLY: polished thick GOLD cylindrical outer case with raised screw caps, timber/bronze side gears, three CREAM curved reel windows separated by thin golden dividers. Three windows EMPTY, absolutely no equipment icons/characters/text. Wide about3:1. Machine appears integrated with wooden castle furniture, same intricate3D pixelart. No lever (separate sprite), no flat rectangular RH yellow frame, no UI buttons or hearts. Keep entire body on transparent background, no brown surrounding panel. Reels are cream opaque surfaces ready for live game symbols. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-lever",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-fd89db4a-24de-4fdf-a9f0-4cdb4ff8dc21.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE slot-machine pull LEVER sprite, matching reference slot's thick golden mechanical style: large bright RED ROUND BALL knob with shiny highlights, metallic silver shaft, rounded gold pivot and gold-brass base bracket. Portrait about1:3. No slot body, no text, no flat gray polygon panels. Entire assembly isolated on transparent background. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-footpads",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-9fcf8613-8c0e-4da5-9450-b38371e6aa3e.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. Exactly EIGHT empty raised stone-square floor tiles in FOUR columns by TWO rows, equal tile slots. Each tile square, beveled octagonal outline, visible thick front lip, bright top-left edge and soft foot shadow. Colors in reading order: warm CREAM, muted TEAL, BRONZE, SILVER, GOLD, RED GOLD, AMETHYST PURPLE, SAPPHIRE BLUE. NO objects, stars, level numbers or letters. Match reference's jewel-like raised chess plinths precisely. This is a reusable shared item-rarity footpad atlas, crisp pixelart, all isolated on transparent background with small equal padding. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    },
+    {
+      "kind": "ui",
+      "name": "ui-unit-plate",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-0ec3d873-4cdc-4803-88ad-1906166b401d.png",
+      "prompt": "GAME-READY PIXELART UI SPRITE for Castle Survivor. ONE small dark SLATE unit-stat plaque with thick beveled gray metal rim, octagonal corners and subtle gold studs. Two EMPTY rows for native health and armor text. Match reference health/defense plates exactly, about2.6:1 shape. No text, no bars, no hearts or icons, no characters. Isolated transparent background. Use attached approved mockups as visual source and match their shape, colors, gold ornamentation, proportions, richness and lettering, not a simplified interpretation. Output ONLY the requested isolated asset on TRUE TRANSPARENT background. No screenshot, scenery, border around canvas, mockup caption or extra assets. Art occupies almost all canvas with minimal transparent margin. Rich deliberate crisp2.5D pixelart, thick hand-painted material highlights like reference, refined depth, not flat vector UI."
+    }
+  ]
+}

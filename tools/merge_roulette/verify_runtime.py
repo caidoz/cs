@@ -34,7 +34,16 @@ def verify(executable: Path, height: int):
                                  '01-families', '02-inventory', '03-launch', '04-exchange', '05-castle10', '06-heart-spend'):
                         if not (folder / (name + '.png')).is_file():
                             raise RuntimeError('missing capture ' + name)
-                    print(f'PASS {640}x{height}: 64px cells, heart blink, retained actions, three-cell guard, discard, start/continue, nine captures', flush=True)
+                    for check in ('PASS spin results automatically fly into inventory', 'PASS landing locks input without extra heart cost',
+                                  'PASS all three reel symbols land separately without automatic merge',
+                                  'PASS dragging clubs merges on full board into one 64px tile without heart cost',
+                                  'PASS slot gears rotate during spin', 'PASS slot gears decelerate and stop with reels',
+                                  'PASS slot gears stay still during attack',
+                                  'PASS nine-column castle retains exact 64px cells',
+                                  'PASS large result waits safely then flies automatically when space is freed',
+                                  'PASS pending results resume with identical landing and no duplicate reward'):
+                        assert check in trace,check
+                    print(f'PASS {640}x{height}: automatic result flight, counter-rotating gears, 64px cells, hearts, retained actions, three-cell guard and resume', flush=True)
                     return
                 if process.poll() is not None:
                     crash = (folder / 'crash.log').read_text() if (folder / 'crash.log').exists() else ''
@@ -53,7 +62,7 @@ def compare_bottom():
     for height in (850, 1408):
         lines = (ROOT / 'output/merge-roulette' / str(height) / 'checks.log').read_text().splitlines()
         traces[height] = {line.split()[1]: line.split()[2:] for line in lines if line.startswith('LAYOUT ')}
-    for name in ('01-families', '02-inventory', '05-castle10'):
+    for name in ('01-families', '02-inventory', '05-castle10','10-castle5-nine-columns'):
         if name not in traces[850] or traces[850].get(name) != traces[1408].get(name):
             raise RuntimeError('UI rectangle coordinates differ between ratios: ' + name)
         short = Image.open(ROOT / 'output/merge-roulette/850' / (name + '.png')).convert('RGB')
@@ -62,11 +71,19 @@ def compare_bottom():
         tall = tall.crop((0, tall.height - 592, 640, tall.height))
         diff = ImageChops.difference(short, tall)
         # CMF/atlas sprite edges can round differently in the two GL viewports.
-        # The static heart bar and action buttons must still match pixel-for-pixel.
-        footer = diff.crop((0, 462, 640, 592))
-        if footer.getbbox():
-            raise RuntimeError('bottom-aligned UI differs between ratios: ' + name)
-    print('PASS bottom UI alignment at both ratios and castles 1/10; heart bar/buttons pixel-identical', flush=True)
+        # Procedural widgets match exactly. Generated textures use linear GL
+        # filtering; different viewport heights can vary their samples slightly.
+        # Compare opaque faces, excluding transparent flourishes over scenery.
+        values=list(map(int,traces[850][name]));hx,hy,hw,hh=values[12:16]
+        for rect in ((hx+10,592-hy+9,hx+hw-10,592-hy+hh-9),(311,545,329,560)):
+            if diff.crop(rect).getbbox():
+                raise RuntimeError('bottom-aligned UI differs between ratios: ' + name + ' ' + str(rect))
+        from PIL import ImageStat
+        for rect in ((92,540,270,565),(365,540,546,565)):
+            area=diff.crop(rect);stat=ImageStat.Stat(area)
+            if max(stat.mean)>2 or max(top for low,top in area.getextrema())>16:
+                raise RuntimeError('button face shifted between ratios: '+name+' '+str(rect))
+    print('PASS identical bottom UI geometry at both ratios and castles 1/10; exact heart/OR pixels, button faces within GL filtering tolerance', flush=True)
 
 
 if __name__ == '__main__':

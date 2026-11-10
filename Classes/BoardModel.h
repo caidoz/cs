@@ -14,19 +14,32 @@ namespace MergeBoard {
 typedef int (*RandomFn)(int bound);	//0 <= r < bound
 
 //---- 크기 ----
-//Lv1 1×1, Lv2 1×2, Lv3 2×2, Lv4 2×3, Lv5 3×3, Lv6 3×4. 합쳐도 칸이 줄지 않는다(장수보다는 천천히 큰다).
-inline int BlockW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 1, 2, 2, 3, 3 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
-inline int BlockH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 2, 2, 3, 3, 4 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
-inline int BlockCells(int level) { return BlockW(level) * BlockH(level); }
+//2026-11-10 결정: "사람은 한 칸, 장비는 커진다."
+//  동료 블록은 ★ 에 상관없이 1×1 — 사람이 커지는 그림은 어색하다. 합치면 칸이 하나 준다.
+//  장비 블록은 ★ 마다 한 칸씩 는다 — ★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2.
+//  1+1 이 2칸이 되는데 세기가 2배면 합칠 이유가 없다. 그래서 장비는 ×3, 동료는 ×2(칸을 벌었으니).
+inline int GearW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 2, 3, 2, 5, 3 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
+inline int GearH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 1, 1, 2, 1, 2 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
+inline int BlockWOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearW(level); }
+inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearH(level); }
+inline int BlockCellsOf(int kind, int level) { return BlockWOf(kind, level) * BlockHOf(kind, level); }
+//호환용: 종류를 모르는 호출부는 장비 크기로 본다.
+inline int BlockW(int level) { return GearW(level); }
+inline int BlockH(int level) { return GearH(level); }
+inline int BlockCells(int level) { return GearW(level) * GearH(level); }
 //Lv n 하나를 만드는 데 드는 Lv1 장수 = 2^(n-1)
 inline int BlockCards(int level) { return level < 1 ? 0 : 1 << (level - 1); }
-//한 방의 배수 = 장수. 합쳐서 손해 보는 일이 없고, ★ 이 오른 만큼은 덤이다.
-inline long long LevelMul(int level) { return level < 1 ? 0 : 1LL << (level - 1); }
+//한 방의 배수. 동료 ×2(1+1 → 1칸), 장비 ×3(1+1 → 2칸).
+inline long long CrewMul(int level) { return level < 1 ? 0 : 1LL << (level - 1); }
+inline long long GearMul(int level) { long long m = 1; for (int i = 1; i < level; i++) m *= 3; return level < 1 ? 0 : m; }
+inline long long LevelMulOf(int kind, int level) { return kind == LINEAGE_CREW ? CrewMul(level) : GearMul(level); }
+inline long long LevelMul(int level) { return CrewMul(level); }	//호환용
 
 //---- 수치 (§16) ----
-//한 방 = base × 2^(Lv-1). base 는 그 칸에 선 동료/장비의 값(★ 이 오르면 동료가 바뀌어 base 도 오른다).
-//ult 는 더 쓰지 않는다 — 호출부 호환으로 남겨 둔다.
-inline long long BlockDamage(int level, long long base, long long /*ult*/) { return base * LevelMul(level); }
+//한 방 = base × 배수(종류별). base 는 그 칸에 선 동료/장비의 값(★ 이 오르면 동료가 바뀌어 base 도 오른다).
+//ult 는 더 쓰지 않는다 — 호출부 호환으로 남겨 둔다. 종류를 모르는 호출부는 동료 배수.
+inline long long BlockDamage(int level, long long base, long long /*ult*/) { return base * CrewMul(level); }
+inline long long BlockDamageOf(int kind, int level, long long base) { return base * LevelMulOf(kind, level); }
 //표식: 이후 타격 +20/40/60/80/100/120 %
 inline int ExposePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 20, 40, 60, 80, 100, 120 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
 //고무: 다음 블록 ×2/2/3/3/4/4
@@ -88,20 +101,26 @@ inline void Occupancy(const Board& b, int grid[BOARD_H][BOARD_W], int ignoreA = 
 	for (int i = 0; i < BOARD_MAX_BLOCKS; i++) {
 		if (!b.block[i].active || i == ignoreA || i == ignoreB) continue;
 		const Block& k = b.block[i];
-		for (int dy = 0; dy < BlockH(k.level); dy++)
-			for (int dx = 0; dx < BlockW(k.level); dx++)
+		int kind = b.lineage[k.lineage].kind;
+		for (int dy = 0; dy < BlockHOf(kind, k.level); dy++)
+			for (int dx = 0; dx < BlockWOf(kind, k.level); dx++)
 				grid[k.y + dy][k.x + dx] = i;
 	}
 }
 
-inline bool Fits(const Board& b, int level, int x, int y, int ignoreA = -1, int ignoreB = -1) {
-	int w = BlockW(level), h = BlockH(level);
+inline bool FitsKind(const Board& b, int kind, int level, int x, int y, int ignoreA = -1, int ignoreB = -1) {
+	int w = BlockWOf(kind, level), h = BlockHOf(kind, level);
 	if (w == 0 || x < 0 || y < 0 || x + w > BOARD_W || y + h > BOARD_H) return false;
 	int grid[BOARD_H][BOARD_W];
 	Occupancy(b, grid, ignoreA, ignoreB);
 	for (int dy = 0; dy < h; dy++) for (int dx = 0; dx < w; dx++)
 		if (grid[y + dy][x + dx] >= 0) return false;
 	return true;
+}
+//계열 번호로 종류를 찾아 판정한다.
+inline bool Fits(const Board& b, int lineage, int level, int x, int y, int ignoreA = -1, int ignoreB = -1) {
+	if (lineage < 0 || lineage >= BOARD_LINEAGES) return false;
+	return FitsKind(b, b.lineage[lineage].kind, level, x, y, ignoreA, ignoreB);
 }
 
 inline int FreeCells(const Board& b) {
@@ -125,15 +144,15 @@ inline int ActiveBlocks(const Board& b) {
 }
 
 //어디든 들어갈 자리가 하나라도 있는가(강제 공격 판정에 쓴다).
-inline bool AnyFit(const Board& b, int level) {
+inline bool AnyFit(const Board& b, int lineage, int level) {
 	for (int y = 0; y < BOARD_H; y++) for (int x = 0; x < BOARD_W; x++)
-		if (Fits(b, level, x, y)) return true;
+		if (Fits(b, lineage, level, x, y)) return true;
 	return false;
 }
 
 //블록을 새로 놓는다. 성공하면 블록 번호, 실패 -1.
 inline int Place(Board& b, int lineage, int level, int x, int y) {
-	if (lineage < 0 || lineage >= BOARD_LINEAGES || !Fits(b, level, x, y)) return -1;
+	if (lineage < 0 || lineage >= BOARD_LINEAGES || !Fits(b, lineage, level, x, y)) return -1;
 	for (int i = 0; i < BOARD_MAX_BLOCKS; i++) {
 		if (b.block[i].active) continue;
 		b.block[i].active = true;
@@ -152,7 +171,7 @@ inline void Remove(Board& b, int idx) {
 //판 위 블록을 옮긴다. 자기 자리는 비운 셈 친다.
 inline bool Move(Board& b, int idx, int x, int y) {
 	if (idx < 0 || idx >= BOARD_MAX_BLOCKS || !b.block[idx].active) return false;
-	if (!Fits(b, b.block[idx].level, x, y, idx)) return false;
+	if (!Fits(b, b.block[idx].lineage, b.block[idx].level, x, y, idx)) return false;
 	b.block[idx].x = x; b.block[idx].y = y;
 	return true;
 }
@@ -165,11 +184,12 @@ inline bool MergeTarget(const Board& b, int a, int t, int* outX, int* outY) {
 	if (a < 0 || t < 0 || a == t || a >= BOARD_MAX_BLOCKS || t >= BOARD_MAX_BLOCKS) return false;
 	const Block& A = b.block[a]; const Block& T = b.block[t];
 	if (!A.active || !T.active || A.lineage != T.lineage || A.level != T.level || A.level >= BLOCK_LV_MAX) return false;
-	int lv = T.level + 1, w = BlockW(lv), h = BlockH(lv);
+	int kind = b.lineage[T.lineage].kind;
+	int lv = T.level + 1, w = BlockWOf(kind, lv), h = BlockHOf(kind, lv);
 	int x = T.x, y = T.y;
 	if (x + w > BOARD_W) x = BOARD_W - w;
 	if (y + h > BOARD_H) y = BOARD_H - h;
-	if (!Fits(b, lv, x, y, a, t)) return false;
+	if (!FitsKind(b, kind, lv, x, y, a, t)) return false;
 	if (outX) *outX = x;
 	if (outY) *outY = y;
 	return true;
@@ -228,7 +248,7 @@ inline int PlaceFromTray(Board& b, int slot, int x, int y) {
 //트레이의 어떤 블록이 들어갈 자리가 없다 = 공격만 남았다.
 inline bool TrayStuck(const Board& b) {
 	for (int i = 0; i < BOARD_TRAY; i++)
-		if (b.tray[i] > 0 && !AnyFit(b, b.tray[i])) return true;
+		if (b.tray[i] > 0 && !AnyFit(b, b.trayLineage[i], b.tray[i])) return true;
 	return false;
 }
 inline bool MustAttack(const Board& b) {
@@ -284,7 +304,7 @@ inline void PlanAttack(const Board& b, AttackPlan& p) {
 		switch (L.kind) {
 		case LINEAGE_CREW:
 		case LINEAGE_SWORD:
-			dmg = BlockDamage(k.level, L.base, L.ult);
+			dmg = BlockDamageOf(L.kind, k.level, L.base);
 			break;
 		case LINEAGE_NECK:
 			p.heartsGained += NeckHearts(k.level);
@@ -320,7 +340,7 @@ inline void PlanAttack(const Board& b, AttackPlan& p) {
 	}
 }
 
-//공격 뒤: 판은 그대로 두고(2026-11-09, 판 유지) 룰렛만 다시 채운다. 적 턴 처리는 EnemyTurn 이 한다.
+//공격 뒤: 판은 그대로 두고(판 유지) 룰렛만 다시 채운다. 적 턴 처리는 EnemyTurn 이 한다.
 inline void AfterAttack(Board& b, const AttackPlan& p) {
 	b.spinsLeft = BOARD_SPINS + p.spinsGained;
 }
@@ -341,7 +361,7 @@ inline int EnemyTurn(Board& b, const AttackPlan& p, bool boss) {
 }
 
 //---- 이번 판 최대 (§15-3) ----
-//계열당 장수 = 룰렛 횟수 × 3 / 계열 수(10장 = Lv4 + Lv2). 큰 블록부터
+//계열당 장수 = 룰렛 횟수 × 3 / 계열 수(10장 = Lv4 + Lv2). 큰 블록부터 (동료는 1칸, 장비는 4+2 칸)
 //탐욕으로 만들고, 타순은 표식 → 고무 → 나머지 피해 큰 순. 베팅 ×1.
 //이 값이 시작 슬롯 아래 "최대 ×N" 으로 적 체력과 나란히 보인다.
 inline long long MaxPotential(const Lineage lineage[BOARD_LINEAGES], int spins = BOARD_SPINS) {
@@ -362,7 +382,7 @@ inline long long MaxPotential(const Lineage lineage[BOARD_LINEAGES], int spins =
 	//표식(0) → 고무(1) → 나머지(2, 피해 큰 순). 고무 바로 뒤에 가장 큰 블록이 온다.
 	for (int i = 0; i < n; i++) {
 		const Lineage& L = lineage[b.block[i].lineage];
-		long long d = BlockDamage(b.block[i].level, L.base, L.ult);
+		long long d = BlockDamageOf(L.kind, b.block[i].level, L.base);
 		int bucket = L.trait == TRAIT_EXPOSE ? 0 : L.trait == TRAIT_INSPIRE ? 1 : 2;
 		int within = bucket == 2 ? (int)(1000000 - (d > 999999 ? 999999 : d)) : 0;
 		b.block[i].y = bucket * 1000000 + within;

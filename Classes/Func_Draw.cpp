@@ -10639,6 +10639,16 @@ static StageBg::Camera LobbyCamera(void)
 	return cam;
 }
 
+void DrawCastleLobbyBackground(int wheelGroundY)
+{
+	LobbyCastlePrepare();
+	auto camera=LobbyCamera();
+	// Keep the existing region, art, parallax and camera zoom/pan. The resized
+	// room chassis has its own axle; its wheels must still contact the rail.
+	camera.groundY=wheelGroundY;
+	StageBg::Draw(camera, 0);
+}
+
 static void LobbyCastleDraw(void)
 {
 	float w, h;
@@ -10695,7 +10705,7 @@ static void LobbyZoomButtonsDraw(void)
 
 static int LobbyBottomNavActive(void)
 {
-	if (gLobbyCastleMenuOpen) return 3;
+	if (gLobbyCastleMenuOpen) return 4;
 	if (popUpCnt <= 0) return 2;
 
 	switch (popUp[popUpCnt - 1].type) {
@@ -10703,11 +10713,12 @@ static int LobbyBottomNavActive(void)
 	case POPUPTYPE_EVENTSHOP:
 		return 0;
 	case POPUPTYPE_COLLECTIONS:
+		return 1;
 	case POPUPTYPE_CREWLIST:
 	case POPUPTYPE_CREWUPGRADE:
-		return 1;
-	case POPUPTYPE_CASTLEMENU:
 		return 3;
+	case POPUPTYPE_CASTLEMENU:
+		return 4;
 	default:
 		return 2;
 	}
@@ -10752,9 +10763,9 @@ static void LobbyBottomNavDraw(void)
 	}
 
 	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
-		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_DUNGEON_IMG };
+		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_CASTLE_IMG };
 	const int actions[] = { TOUCH_FUNC_SHOP, TOUCH_FUNC_COLLECTIONS,
-		TOUCH_FUNC_LOBBY_ADVENTURE, TOUCH_FUNC_LOBBY_CASTLE, TOUCH_FUNC_LOBBY_DUNGEON };
+		TOUCH_FUNC_LOBBY_ADVENTURE, TOUCH_FUNC_POPUP_CREWLIST, TOUCH_FUNC_POPUP_CASTLEMENU };
 	const int active = gRenewDungeon?4:LobbyBottomNavActive();
 	const float activeShare = 0.25f;
 	const float normalShare = (1.0f - activeShare) / 4.0f;
@@ -10772,7 +10783,7 @@ static void LobbyBottomNavDraw(void)
 		const float share = i == active ? activeShare : normalShare;
 		const int right = i == 4 ? DX : left + (int)(DX * share + 0.5f);
 		const int cx = (left + right) / 2;
-		const bool isLocked = (i == 4);
+		const bool isLocked = false;
 		const bool selected = (i == active);
 		const int top = BOTTOMMENUHEIGHT;
 		DrawMenuReferencePanel(left+7,top+(selected?4:-4),right-left-14,BOTTOMMENUHEIGHT-12,selected?1:0,selected?0x225E61:0x102638,selected?0xF2C17D:0x6C969A);
@@ -12373,6 +12384,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 
 void LobbyDraw(void)
 {
+	if(!gRenewDungeon && MergeRouletteLobbySceneDraw())return;
 	char str[96];
 	ResetRectPoint();
 	LobbyCastlePrepare();

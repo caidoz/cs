@@ -1,0 +1,5 @@
+{
+  "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-cc3d30fa-1da6-4e94-a269-8b22b0f0c01b.png",
+  "prompt": "Precise inpainting edit of attached ORIGINAL game mockup. Preserve the ENTIRE original1089x1445 image and ALL castle silhouette, every timber beam, pillar, brackets, purple roof/banner, five rooms, wheels, buttons, text and navigation EXACTLY unchanged. ONLY remove the cannon on upper deck (x340..460,y245..375), green hood companion (x490..580,y265..370), blonde purplecape hero (x610..725,y235..370). Fill their vacated footprints with the exact continuing wood deck/railing and original sky behind. No redesign, no recolor, no change to any architecture/button/room. This is a source patch for tiny repaired regions only, keep same1089x1445 canvas coordinate registration.",
+  "usage": "Only three deck repair patches; original pixels are drawn everywhere else."
+}

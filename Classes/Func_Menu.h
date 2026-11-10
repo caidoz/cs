@@ -212,6 +212,7 @@ void DrawItemCard(
 	int backFrame);
 
 void CastleMenuOpen(void);
+void CastleMenuFocusFacility(int room);
 bool CastleMenuCommand(int func);
 bool CastleMenuSwipe(float fromX,float fromY,float toX,float toY);
 void CastleProgressEnsure(void);

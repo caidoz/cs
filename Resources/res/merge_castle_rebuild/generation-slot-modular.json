@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {
+      "name": "slot",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-f958542e-eb0e-4fc0-9ec2-1ac5ec519813.png",
+      "prompt": "Edit target slot housing PNG into a modular game sprite: REMOVE ONLY the LEFT and RIGHT toothed cogwheels, leaving transparent holes where those two gear discs stood. Keep the central gold cylindrical three-reel housing, the thin metal shafts/collars sticking out at each end, exactly unchanged at original coordinates and scale. Keep three cream empty reel windows exactly unchanged. Canvas2172x724 same as original. NO text/symbols. Pure transparent exterior and removed gear regions. These gears will be separately rotating live sprites. Do not invent new small cogs. Do not crop/recenter or enlarge the housing."
+    },
+    {
+      "name": "gear",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-1b18ce18-a8cf-4b2d-bb65-f0fb9e1e5a1e.png",
+      "prompt": "Game-ready single isolated round golden bronze cogwheel, matching Castle Survivor ornate pixelart slot machine housing in attached style reference. ONE perfectly front-facing circular cog, 10 equal teeth, gold outer teeth, bronze dark recessed center, small polished gold central hub. Mechanical rich2.5D pixelart bevels and highlights, no perspective tilt. Perfectly centered symmetric circle suitable for actual rotation. Transparent outer background and aroundteeth. No axle/shaft/bar, no castle, no UI/buttons/text, no extra gears. Fullroundwheel fills90percent of squarecanvas."
+    }
+  ]
+}

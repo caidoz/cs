@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #pragma pack(push, 8)
 #include "Data.h"
 #include "Func.h"
@@ -10,6 +10,12 @@
 #include "Data/CmfData.h"
 #include "Data/CastleData.h"
 #include "Data/MergeTreeData.h"
+#include "Data/CastleFacilities.h"
+#include "MergeCastleTransition.h"
+#include "Data/MergeCastleRebuild.h"
+#include "2d/CCAutoPolygon.h"
+#include "Data/HybridSd3d.h"
+#include "Data/HybridCastleFleet.h"
 #include <cmath>
 #include <fstream>
 #include <cstdio>
@@ -24,6 +30,15 @@ int treeWeights[FamilyCount]={};
 ITEM treeEquipment[3][MaxLevel];
 bool active=false,review=false;
 int oldMode=ACTIONRPG, ticks=0, animation=0, picked=-1, finger=-1;
+float gearAngle=0.f,gearStartAngle=0.f;
+float reviewAttackGear=0.f;
+struct SpinDrop {Block source,target;};
+std::vector<SpinDrop> spinDrops;
+Run spinLandingPlan;
+int spinFlightFrame=-1;
+bool spinFlying(){return spinFlightFrame>=0;}
+Block reelSymbols[3];
+bool hasReelSymbols=false;
 bool pickedTray=false;
 float pointerX=0,pointerY=0,downX=0,downY=0;
 int pickCellX=0,pickCellY=0, flash=0;
@@ -36,8 +51,9 @@ float heartBlink=0,messageTime=0;
 int heartDisplay=0,spentHeart=-1;
 long long observedHearts=0;
 float introElapsed=-1;
-int reviewCombatTick=-1,introCaptures=0;
+int reviewCombatTick=-1,introCaptures=0,entryCaptures=0;
 bool reviewCapturePending=false,reviewFinalCapture=false,reviewDone=false;
+std::vector<std::string> reviewCaptureQueue;
 constexpr float IntroDuration=3.8f;
 bool introActive() {return introElapsed>=0&&introElapsed<IntroDuration;}
 Shape castleShape(int stage) {
@@ -73,19 +89,21 @@ Layout layout() {
     const float s=l.scale;
     // Everything below the scenery is anchored to the 640 x 850 baseline.
     // Taller phones reveal more scenery above; they never stretch the board.
-    int margin=(int)(44*s),bottom=(int)(12*s),bh=(int)(64*s);
-    l.spin={margin,bottom+bh,(int)(264*s),bh};
-    l.attack={DX-margin-(int)(264*s),bottom+bh,(int)(264*s),bh};
-    l.heart={(int)(132*s),(int)(126*s),(int)(376*s),(int)(44*s)};
+    int margin=(int)(72*s),bottom=(int)(12*s),bh=(int)(56*s);
+    l.spin={margin,bottom+bh,(int)(224*s),bh};
+    l.attack={DX-margin-(int)(224*s),bottom+bh,(int)(224*s),bh};
+    const int heartCols=std::min(10,heartCapacity),heartRows=(heartCapacity+heartCols-1)/heartCols;
+    const int heartWidth=(heartCols*27+40)*s;
+    l.heart={(DX-heartWidth)/2,(int)(140*s),heartWidth,(int)((heartRows*23+14)*s)};
     // RH's 512 x 218 board at a uniform 0.625 scale, with a right-hand lever.
-    l.slot={(int)(160*s),(int)(241*s),(int)(256*s),(int)(109*s)};
-    l.lever={l.slot.x+l.slot.w+(int)(12*s),l.slot.y-(int)(12*s),(int)(44*s),(int)(88*s)};
+    l.slot={(int)(132*s),(int)(264*s),(int)(348*s),(int)(116*s)};
+    l.lever={l.slot.x+l.slot.w+(int)(4*s),l.slot.y-(int)(3*s),(int)(40*s),(int)(104*s)};
     l.trash={DX-(int)(82*s),l.slot.y,(int)(70*s),(int)(70*s)};
     l.cell=std::max(1,(int)(64*s));l.cellH=l.cell;
     int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
-    l.board={(DX-bw)/2,l.slot.y+(int)(12*s)+bhGrid,bw,bhGrid};
-    l.arenaBottom=std::max((int)(600*s),l.board.y+(int)(36*s));
-    l.ground=l.arenaBottom+(int)(34*s);
+    l.board={(DX-bw)/2,(int)(273*s)+bhGrid,bw,bhGrid};
+    l.arenaBottom=l.board.y+(int)(76*s);
+    l.ground=(run.stage==0?(int)(1077*DX/1089.f):l.board.y+(int)(122*s))+(int)(24*s);
     l.exit={DX-(int)(76*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};
     l.left={(int)(48*s),l.slot.y,(int)(36*s),l.slot.h};
     l.right={DX-(int)(84*s),l.slot.y,(int)(36*s),l.slot.h};
@@ -120,7 +138,7 @@ void bevel(Box b,int color,int corner) {
         MemRect(b.x+trim,b.y-b.h+i+1,b.w-2*trim,1,color);
     }
 }
-void goldFrame(Box b,int topColor,int bottomColor,bool enabled=true) {
+void mergeGoldFrame(Box b,int topColor,int bottomColor,bool enabled=true) {
     int p=std::max(1,DX/640);
     bevel({b.x,b.y-3*p,b.w,b.h+3*p},0x050916,12*p);
     bevel(b,enabled?0x8B4808:0x4B5369,12*p);
@@ -199,20 +217,20 @@ void shield(int x,int y,int size) {
         if(r>1&&r<10)MemRect(x+(int)((trim+1)*p),y-(int)(r*p),std::max(1,(int)((8-2*trim)*p)),std::max(1,(int)std::ceil(p)),r<6?0x4EACF8:0x2366BB);
     }
 }
+// Dedicated art is registered independently of gameplay state.
+#include "MergeCastleArt.inc"
 void choice(const Box& b,bool attack,bool enabled) {
-    float s=DX/640.f,q=std::min(1.f,b.h/(94*s));
-    goldFrame(b,attack?0xC94309:0x075BC1,attack?0x862207:0x062E77,enabled);
-    int divider=b.x+(int)(b.w*.37f),tx=b.x+(int)(b.w*.685f);
-    MemRect(divider,b.y-(int)(16*s),std::max(1,(int)(2*s)),b.h-(int)(32*s),0xFFE8A4);
-    actionIcon({b.x+(int)(23*s),b.y-(int)(16*s*q),(int)(61*s*q),(int)(61*s*q)},attack);
-    label(attack?"지금 공격":"더 돌리기",tx,b.y-(int)(8*s*q),1.02f*q,enabled?0xFFF2B7:0xA7B0C0);
-    label(attack?"순서대로 행동":"동료·장비 추가",tx,b.y-(int)(36*s*q),.65f*q);
-    heart(tx-(int)(28*s*q),b.y-(int)(59*s*q),(int)(28*s*q),true);
-    label("-1",tx+(int)(18*s*q),b.y-(int)(60*s*q),.91f*q,0xFFF2B7);
+    const float s=DX/640.f;
+    SetAlpha(32);grayScale=0;SetColor(0);
+    mergeGoldFrame(b,attack?0xEC4A13:0x1369D9,attack?0x8D1607:0x073B8D,enabled);
+    const int color=enabled?0xFFF7E4:0xC4CBD3;
+    label(attack?"지금 공격":"더 돌리기",b.x+(int)(86*s),b.y-(int)(17*s),.80f,color);
+    heart(b.x+(int)(151*s),b.y-(int)(17*s),(int)(24*s),enabled);
+    label("-1",b.x+(int)(192*s),b.y-(int)(18*s),.77f,color);
 }
 void button(const Box& b,const char* title,const char* sub,int color,bool enabled=true) {
     float s=DX/640.0f;
-    if(b.h>50*s)goldFrame(b,enabled?color:0x252D3C,enabled?blend(color,0x050A20,.45f):0x1C2534,enabled);
+    if(b.h>50*s)mergeGoldFrame(b,enabled?color:0x252D3C,enabled?blend(color,0x050A20,.45f):0x1C2534,enabled);
     else panel(b,enabled?color:0x252D3C,enabled?0xD7AE66:0x4C5565);
     int tx=b.x+b.w/2;
     label(title,tx,b.y-b.h*(sub?.32f:.5f),b.h>50*s?.91f:.64f,enabled?0xFFF2D8:0x89909E);
@@ -295,7 +313,15 @@ bool pay() {
     observedHearts=robin.heart;heartBlink=.72f;
     return true;
 }
-void icon(int family,const Box& box,float fraction=0.7f,bool atlas=false,int level=1,int crew=-1) {
+void iconGround(const Box& box,int width) {
+    int p=std::max(1,(int)(DX/640.f)),cx=box.x+box.w/2;
+    int y=box.y-box.h+5*p,w=std::min(box.w-4*p,width);
+    // Stepped ellipse: a compact pixel footprint, shared by crew and equipment.
+    MemRect(cx-w/2+3*p,y+2*p,std::max(p,w-6*p),p,0x54505A);
+    MemRect(cx-w/2,y+p,w,3*p,0x252638);
+    MemRect(cx-w/2+3*p,y-2*p,std::max(p,w-6*p),p,0x363344);
+}
+void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1) {
     if(family<0||family>=FamilyCount)return;
     SetColor(0);grayScale=0;
     if(family<Sword) {
@@ -309,12 +335,14 @@ void icon(int family,const Box& box,float fraction=0.7f,bool atlas=false,int lev
         if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
         int motion=crewPos[npc*5];
         const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
-        float z=std::min(box.w/(float)std::max(1,(int)bounds[2]),box.h/(float)std::max(1,(int)bounds[3]))*fraction;
-        DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h/2,RIGHT,z,0,true);
+        int p=std::max(1,(int)(DX/640.f));
+        float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p)/(float)std::max(1,(int)bounds[3]))*fraction;
+        iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)));
+        DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+(int)(bounds[3]*z/2),RIGHT,z,0,true);
     } else {
         ITEM item=treeEquipment[family-Sword][std::max(0,std::min(MaxLevel-1,level-1))];
-        int size=(int)(std::min(box.w,box.h)*fraction);
-        if(!atlas&&item.type==ITEM_SWORD && DrawSwordInBox(item.detail,box.x+(box.w-size)/2,box.y-(box.h-size)/2,size,size,32))return;
+        int size=(int)(std::min(box.w-2,box.h-7)*fraction);
+        iconGround(box,size*3/4);
         // Raw atlas icon avoids inventory stars/count/compatibility overlays.
         int idx=item.icon;
         DrawImage(32,32,1+33*(idx&7),1+33*((idx&63)>>3),
@@ -323,53 +351,91 @@ void icon(int family,const Box& box,float fraction=0.7f,bool atlas=false,int lev
     }
 }
 void drawSlotFrame(const Box& b) {
-    DrawImageScale(512,218,0,0,b.x,b.y,false,0,0,0,0,b.w/512.f,b.h/218.f,sprite[SLOT_IMG],SLOT_IMG);
+    const int img=MERGE_REBUILD_UI_IMG+MergeCastleArt::Gear;
+    const auto& f=MergeCastleArt::UiFrames[MergeCastleArt::Gear];
+    const auto& housing=MergeCastleArt::UiFrames[MergeCastleArt::Slot];
+    if(!sprite[img])LoadImg(img);
+    if(sprite[img])for(int side=0;side<2;++side){
+        const float x=b.x+((side?1920:245)-housing.x)*b.w/(float)housing.w;
+        const float y=b.y-(425-housing.y)*b.h/(float)housing.h;
+        const float z=(470*b.w/(float)housing.w)/std::max(f.w,f.h);
+        RotateImage(f.w,f.h,f.x,f.y,(int)x,(int)y,false,side?-gearAngle:gearAngle,0,0,z,cocos2d::Vec2(.5f,.5f),sprite[img],img);
+    }
+    uiArt(MergeCastleArt::Slot,b);
 }
 void slotRim(const Box& b) {
-    const int cuts[][4]={{0,0,512,14},{0,204,512,14},{0,14,14,190},{498,14,14,190},{170,14,10,190},{340,14,10,190}};
-    for(const auto& c:cuts)DrawImageScale(c[2],c[3],c[0],c[1],b.x+(int)(c[0]*b.w/512.f),b.y-(int)(c[1]*b.h/218.f),
-        false,0,0,0,0,b.w/512.f,b.h/218.f,sprite[SLOT_IMG],SLOT_IMG);
+    const auto& f=MergeCastleArt::UiFrames[MergeCastleArt::Slot];
+    const int cuts[][4]={{54,12,2064,148},{54,560,2064,143},{54,160,446,400},{1690,160,428,400},{845,160,80,400},{1275,160,80,400}};
+    for(const auto& c:cuts)artCut(MERGE_REBUILD_UI_IMG+MergeCastleArt::Slot,{c[0],c[1],c[2],c[3]},
+        {b.x+(c[0]-f.x)*b.w/f.w,b.y-(c[1]-f.y)*b.h/f.h,c[2]*b.w/f.w,c[3]*b.h/f.h});
 }
 void drawLever(const Layout& l) {
-    const Box& b=l.lever;float s=l.scale;
-    bool pulling=finger>=0&&b.has(downX,downY)&&!introActive();
-    int drop=pulling?(int)(24*s):animation>20?(int)(16*s):0;
-    panel({b.x,b.y-b.h+(int)(25*s),b.w,(int)(25*s)},0x3F4555,0xD9AE54);
-    MemRect(b.x+(int)(16*s),b.y-drop,(int)(10*s),b.h-(int)(18*s)-drop,0x30364A);
-    MemRect(b.x+(int)(18*s),b.y-drop,(int)(4*s),b.h-(int)(18*s)-drop,0xCCD8E6);
-    Box knob={b.x+(int)(5*s),b.y+(int)(9*s)-drop,(int)(30*s),(int)(28*s)};
-    bevel(knob,0x692026,(int)(7*s));bevel(inset(knob,std::max(1,(int)(3*s))),0xE34B4C,(int)(5*s));
-    MemRect(knob.x+(int)(7*s),knob.y-(int)(5*s),(int)(9*s),(int)(4*s),0xFFB091);
+    Box b=l.lever;bool pulling=finger>=0&&b.has(downX,downY)&&!introActive();
+    b.y-=(int)((pulling?20:animation>20?12:0)*l.scale);
+    uiArt(MergeCastleArt::Lever,b);
 }
 void drawBlock(const Block& b,const Box& box,bool ghost=false) {
-    float s=DX/640.f;int pad=std::max(1,(int)(2*s));
-    Box tile=inset(box,pad);
-    // ★1 구리 · ★2 은 · ★3 금 · ★4 붉은 금 · ★5 보라 · ★6 하늘
-    static const int rims[MaxLevel+1]={0,0xBD885A,0xC3CCD9,0xF5CC5B,0xE07A52,0xB06BD9,0x5AC8E8};
-    static const int fills[MaxLevel+1]={0,0x382A29,0x303C51,0x67501E,0x5A2A1E,0x3A2252,0x1E3F4C};
-    int lv=std::max(1,std::min((int)MaxLevel,b.level));int rim=rims[lv],fill=fills[lv];
-    bevel(tile,0x080C1C,pad*2);bevel(inset(tile,pad),rim,pad);bevel(inset(tile,pad*2),ghost?0x33415B:fill,pad);
-    Box art=inset(tile,pad);art.h-=std::max(18,(int)(22*s));icon(b.family,art,.96f,false,b.level,b.crew);
-    char text[32];std::snprintf(text,sizeof(text),"★%d",b.level);
-    label(text,box.x+box.w/2,box.y-box.h+(int)(23*s),std::min(.66f,box.h/(48*s)),0xFFF0B1);
+    int lv=std::max(1,std::min((int)MaxLevel,b.level));
+    SetAlpha(ghost?16:32);padArt(lv+1,box);SetAlpha(32);
+    icon(b.family,inset(box,std::max(1,(int)(2*DX/640.f))),1.f,false,b.level,b.crew);
 }
 Box blockBox(const Block& b,const Layout& l) {
-    return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b.level)*l.cell,Tall(b.level)*l.cellH};
+    return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
+}
+bool beginSpinLanding(){
+    spinLandingPlan=run;spinDrops.clear();
+    const auto source=run.tray;
+    for(const auto& item:source){
+        const auto before=spinLandingPlan.board;
+        if(!spinLandingPlan.autoPlace(0)){
+            spinDrops.clear();message="결과를 놓을 공간이 부족합니다. 칸을 비워주세요.";messageTime=3;return false;
+        }
+        Block target=spinLandingPlan.board.back();
+        if(before.size()==spinLandingPlan.board.size())for(int i=0;i<(int)before.size();++i){
+            const auto& a=before[i];const auto& b=spinLandingPlan.board[i];
+            if(a.family!=b.family||a.level!=b.level||a.x!=b.x||a.y!=b.y||a.crew!=b.crew){target=b;break;}
+        }
+        spinDrops.push_back({item,target});
+    }
+    if(spinDrops.empty())return false;
+    spinFlightFrame=0;return true;
+}
+void rememberReelSymbols(){
+    for(int i=0;i<3;++i){
+        if(run.tray.empty()){reelSymbols[i]=Block();reelSymbols[i].family=run.families[i];}
+        else if(run.tray.size()==2){
+            int match=run.tray[0].level>=run.tray[1].level?0:1;
+            reelSymbols[i]=run.tray[i<2?match:1-match];
+        }else reelSymbols[i]=run.tray[std::min(i,(int)run.tray.size()-1)];
+    }
+    hasReelSymbols=true;
+}
+void drawSpinLanding(const Layout& l){
+    if(!spinFlying())return;
+    for(int i=0;i<(int)spinDrops.size();++i){
+        const float p=std::max(0.f,std::min(1.f,(spinFlightFrame-i*4)/36.f));
+        const int reel=spinDrops.size()==1?1:spinDrops.size()==2&&i==1?2:i;
+        const auto& drop=spinDrops[i];Box dest=blockBox(drop.target,l),from=slotWindow(l.slot,reel);
+        if(p<=0)continue;
+        if(p>=1){drawBlock(drop.target,dest);continue;}
+        const float ease=1.f-std::pow(1.f-p,3.f);
+        int w=(int)(from.w+(dest.w-from.w)*ease),h=(int)(from.h+(dest.h-from.h)*ease);
+        int cx=(int)(from.x+from.w*.5f+(dest.x+dest.w*.5f-from.x-from.w*.5f)*ease);
+        int cy=(int)(from.y-from.h*.5f+(dest.y-dest.h*.5f-from.y+from.h*.5f)*ease+std::sin(p*3.14159265f)*45*l.scale);
+        icon(drop.source.family,{cx-w/2,cy+h/2,w,h},1.f,false,drop.source.level,drop.source.crew);
+    }
 }
 float flightStart(int i) {return 2.05f+i*.22f;}
 void drawIntro(const Layout& l) {
     if(!introActive())return;
     float s=l.scale,t=introElapsed;
-    float fade=std::max(0.f,(t-3.35f)/.45f);
-    SetAlpha((int)(24*(1-fade)));MemRect(0,DY,DX,DY,0x030615);SetAlpha((int)(32*(1-fade)));
-    Box slot=l.slot;slot.y=(int)(DY*.52f+slot.h*.5f);
-    label(t<1.9f?"시작 동료·장비 소환":"인벤토리에 배치 중",DX/2,
-        t<1.9f?slot.y+(int)(52*s):slot.y-slot.h-(int)(12*s),.96f,0xFFE6A1);
-    if(t<1.9f)label("시작 보상 · 하트 소모 없음",DX/2,slot.y-slot.h-(int)(12*s),.58f,0xCBD3E6);
+    SetAlpha(32);
+    const Box slot=l.slot;
+    if(t<1.9f)label("무료 시작 뽑기",DX/2,slot.y+(int)(17*s),.5f,0xFFF1BD);
     drawSlotFrame(slot);
     for(int i=0;i<3;++i) {
         float stop=1.2f+i*.24f;
-        Box reel={slot.x+i*slot.w/3+(int)(8*s),slot.y-(int)(8*s),slot.w/3-(int)(16*s),slot.h-(int)(16*s)};
+        Box reel=slotWindow(slot,i);
         SetSectionClip(reel.x,reel.y,reel.w,reel.h,false);
         int pitch=(int)(108*s),centerY=reel.y-reel.h/2;
         if(t<stop) {
@@ -398,7 +464,8 @@ void drawIntro(const Layout& l) {
             continue;
         }
         float ease=1-std::pow(1-f,3.f);
-        float fromX=slot.x+slot.w*(2*i+1)/6.f,fromY=slot.y-slot.h/2.f;
+        const Box origin=slotWindow(slot,i);
+        float fromX=origin.x+origin.w*.5f,fromY=origin.y-origin.h*.5f;
         int cx=(int)(fromX+(dest.x+dest.w/2.f-fromX)*ease);
         int cy=(int)(fromY+(dest.y-dest.h/2.f-fromY)*ease+std::sin(f*3.14159265f)*60*s);
         int w=(int)(100*s*(1-ease)+dest.w*ease),h=(int)(100*s*(1-ease)+dest.h*ease);
@@ -409,6 +476,53 @@ void drawIntro(const Layout& l) {
         SetAlpha(32);icon(run.board[i].family,{cx-w/2,cy+h/2,w,h},.94f,false,run.board[i].level,run.board[i].crew);
     }
     SetAlpha(32);
+}
+#include "MergeCastleLobbyRebuild.inc"
+void drawWorld(const Layout& l,bool combat) {
+    const float s=l.scale;
+    SetAlpha(32);SetColor(0);grayScale=0;
+    DrawCastleLobbyBackground((int)(96*s));
+    drawCastleHull(l);
+    const int hx=(int)(DX*.57f),hy=l.ground,ex=(int)(DX*.85f),ey=l.ground;
+    const float deckY=(float)hy;
+    SetSectionClip(0,DY,DX,DY-l.board.y,false);
+    float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f));
+    DrawPlayer(&hero,motionData[combat&&run.attacking?32+(ticks%32):0],hx,hy,RIGHT,heroZoom,0,false,true);
+    for(int i=0,shown=0;i<3&&shown<1;++i)if(run.families[i]<Roles) {
+        int crew=roster.first(run.families[i],1);if(crew<0)crew=MergeTrees::CrewAt(run.families[i],1,0);if(crew<0)continue;
+        int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
+        int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+        if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+        DrawCmfDetail(cmf,crewPos[npc*5],hx-(int)(56*s),(int)deckY,RIGHT,std::min(.78f*s,heroZoom),0,false);++shown;
+    }
+    if(combat) {
+    int npc=run.wave==9?ENEMY_CASTLE_BOSS1:ENEMY_KNIGHT+run.wave%2;
+    int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+    const auto* enemyBounds=cmfMotionImgSize[cmf]+crewPos[npc*5]*4;
+    const float enemyZoom=std::min((run.wave==9?0.65f:1.35f)*s,std::max(.3f*s,(DY-ey-8*s)/std::max(1,(int)enemyBounds[3])));
+    DrawCmfDetail(cmf,crewPos[npc*5],ex,ey,LEFT,enemyZoom,0,false);
+    for(int i=0;i<(int)run.summons.size()&&i<3;++i) {
+        const Shot& summoned=run.summons[i];
+        int crew=summoned.block.crew;
+        if(crew<0||crew>=64)continue;
+        int skill=crewData[crew*CREWDATASIZE+CREWDATA_SKILL3];
+        int kind=SkillKind(skill),x=(int)(DX*(.59f+i*.06f));
+        if(kind==SUMMON) {
+            int type=SkillSummonEnemy(skill);
+            if(type>=0&&type<gTotalEnemy) {
+                int c=enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
+                if(cmfLoaded[c]!=c)CmfRead(c,c);
+                DrawCmfDetail(c,crewPos[type*5],x,l.ground,RIGHT,.35f*s,0,false);
+            }
+        } else if(kind==SUMMONHERO) {
+            OBJECT copy=hero;copy.type=std::max(0,std::min(2,SkillSummonHeroType(skill)));
+            DrawPlayer(&copy,motionData[0],x,l.ground,RIGHT,.45f*s,0,false,true);
+        } else icon(summoned.block.family,{x-(int)(14*s),l.ground+(int)(35*s),(int)(28*s),(int)(35*s)},.7f,false,summoned.block.level,summoned.block.crew);
+    }
+    }
+    UnSectionClip(false);
+
 }
 void close() {
     if(run.attacking) {message="공격 연출이 끝난 뒤 나갈 수 있습니다.";return;}
@@ -426,9 +540,19 @@ void tick() {
         heartDisplay=(int)std::max(0LL,std::min((long long)heartCapacity,heartDisplay+robin.heart-observedHearts));
         observedHearts=robin.heart;
     }
+    if(entering()) {
+        const float before=entryElapsed;
+        entryElapsed=std::min(MergeCastleTransition::Duration,entryElapsed+dt);
+        const int count=run.shape.width*run.shape.height;
+        for(int i=0;i<count;++i){const float land=MergeCastleTransition::TileLand(i,count);
+            if(before<land&&entryElapsed>=land)PlayMusic(M_BUTTON);}
+        return;
+    }
     if(introActive()) {
         float before=introElapsed;
         introElapsed+=std::min(.1f,std::max(.001f,cocos2d::Director::getInstance()->getDeltaTime()));
+        const float phase=std::min(1.f,introElapsed/1.68f);
+        gearAngle=450.f*(1.f-std::pow(1.f-phase,3.f));
         for(int i=0;i<3;++i) {
             float stop=1.2f+i*.24f,land=flightStart(i)+.7f;
             if(before<stop&&introElapsed>=stop)PlayMusic(M_ROULETTEUP);
@@ -436,7 +560,17 @@ void tick() {
         }
         return;
     }
-    if(animation>0 && --animation==0 && !run.attacking)save();
+    if(spinFlying()){
+        ++spinFlightFrame;
+        for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_POWERUP);
+        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();}
+        return;
+    }
+    if(animation>0&&!run.attacking){
+        const float phase=std::min(1.f,(46-animation)/45.f);
+        gearAngle=gearStartAngle+450.f*(1.f-std::pow(1.f-phase,3.f));
+    }
+    if(animation>0 && --animation==0 && !run.attacking){beginSpinLanding();save();}
     if(!run.attacking)return;
     if(animation>0)return;
     if(run.nextShot<(int)run.shots.size()) {
@@ -471,6 +605,7 @@ void reviewTrace(const char* text) {
 }
 void reviewCapture(const char* name) {
     const char* dir=std::getenv("CS_MERGE_REVIEW_PATH");if(!dir)return;
+    if(reviewCapturePending){reviewCaptureQueue.push_back(name);return;}
     reviewCapturePending=true;
     cocos2d::utils::captureScreen([](bool ok,const std::string& path){
         reviewCapturePending=false;
@@ -491,13 +626,23 @@ void reviewLayout(const Layout& l,const char* name) {
 }
 void reviewStep(const Layout& l) {
     if(!review||reviewDone)return;
-    if(run.choosing) {
-        int selected=run.selected;
-        if(!run.drafted){reviewTap(l.confirm);animation=0;}
-        reviewTrace(run.drafted&&run.families[0]==selected?"PASS selected first tree retained in weighted draft":"FAIL first tree selection");
-        reviewTap(l.confirm);return;
+    if(!reviewCapturePending&&!reviewCaptureQueue.empty()){
+        const std::string name=reviewCaptureQueue.front();reviewCaptureQueue.erase(reviewCaptureQueue.begin());
+        reviewCapture(name.c_str());
+    }
+    if(entering()) {
+        if(reviewCapturePending)return;
+        if(!(entryCaptures&1)&&entryElapsed>.04f){entryCaptures|=1;reviewCapture("00-transition-rooms");}
+        else if(!(entryCaptures&2)&&entryElapsed>.45f){entryCaptures|=2;reviewCapture("00-transition-cover");}
+        else if(!(entryCaptures&4)&&entryElapsed>1.f){entryCaptures|=4;reviewCapture("00-transition-controls");
+            const auto before=run.encode();const auto hearts=robin.heart;
+            reviewTap(l.spin);reviewTap(l.attack);
+            reviewTrace(run.encode()==before&&robin.heart==hearts?"PASS transition locks inputs without heart cost":"FAIL transition input lock");
+        }
+        return;
     }
     if(introActive()) {
+        if(reviewCapturePending)return;
         if(!(introCaptures&1)&&introElapsed>.3f) {
             introCaptures|=1;
             auto before=run.encode();long long hearts=robin.heart;
@@ -529,36 +674,44 @@ void reviewStep(const Layout& l) {
     if(t==9)MergeRouletteSetHeartCapacity(5);
     if(t==10) {reviewLayout(l,"01-families");reviewCapture("01-families");}
     if(t==16)MergeRouletteSetHeartCapacity(20);
-    if(t==30||t==100||t==170||t==240) {
+    if(t==30||t==140||t==250||t==360) {
         long long before=robin.heart;int life=run.lives;
-        if(t==100) {
+        if(t==140) {
             float x=l.lever.x+l.lever.w/2.f,y=l.lever.y-l.lever.h/2.f;
             MergeRouletteTouch(0,999,x,y);MergeRouletteTouch(1,999,x,y-24*l.scale);MergeRouletteTouch(2,999,x,y-36*l.scale);
         } else reviewTap(l.spin);
         reviewTrace(robin.heart==before-1&&run.lives==life&&!run.tray.empty()?"PASS spin costs one heart without enemy turn":"FAIL spin");
-        if(t==100)reviewTrace(robin.heart==before-1&&!run.tray.empty()?"PASS right lever pull spins once":"FAIL lever pull");
+        if(t==140)reviewTrace(robin.heart==before-1&&!run.tray.empty()?"PASS right lever pull spins once":"FAIL lever pull");
     }
     if(t==32) {
         long long balance=robin.heart;reviewTap(l.spin);reviewTap(l.attack);
         reviewTrace(heartBlink>0&&spentHeart==heartDisplay&&robin.heart==balance?"PASS one heart blinks and repeat input cannot charge twice":"FAIL heart animation");
         reviewCapture("06-heart-spend");
+        reviewTrace(gearAngle>gearStartAngle&&gearAngle<gearStartAngle+450.f?"PASS slot gears rotate during spin":"FAIL slot gear rotation");
     }
-    if(t==90||t==160||t==230||t==300) {
-        for(int i=0;i<3&&!run.tray.empty();++i) {
-            int count=(int)run.tray.size();
-            Box cell={l.slot.x,l.slot.y,l.slot.w/3,l.slot.h};reviewTap(cell);
-            if((int)run.tray.size()==count)break;
-        }
-        reviewTrace(run.tray.empty()&&!run.board.empty()?"PASS tray placed through input":"FAIL tray placement");
+    if(t==38)reviewCapture("07-gears-turning");
+    if(t==58)reviewCapture("08-gears-slowing");
+    if(t==90)reviewTrace(std::abs(gearAngle-gearStartAngle-450.f)<.01f?"PASS slot gears decelerate and stop with reels":"FAIL slot gear stop");
+    if(t==130||t==240||t==350||t==460) {
+        reviewTrace(run.tray.empty()&&!run.board.empty()&&!spinFlying()?"PASS spin results automatically fly into inventory":"FAIL automatic spin landing");
+        bool separate=run.board.size()==(size_t)(6+3*((t-130)/110));
+        for(const auto& b:run.board)separate=separate&&b.level==1;
+        reviewTrace(separate?"PASS all three reel symbols land separately without automatic merge":"FAIL reel symbols merged automatically");
     }
-    if(t==310) {
+    if(t==85){
+        const auto before=run.encode();const auto hearts=robin.heart;
+        reviewTap(l.spin);reviewTap(l.attack);reviewTap(l.exit);
+        reviewTrace(spinFlying()&&run.encode()==before&&robin.heart==hearts?"PASS landing locks input without extra heart cost":"FAIL landing input lock");
+        reviewCapture("09-spin-flight");
+    }
+    if(t==470) {
         Run restored;
         reviewTrace(restored.decode(run.encode())&&restored.encode()==run.encode()?"PASS run roundtrip":"FAIL run roundtrip");
         reviewLayout(l,"02-inventory");reviewCapture("02-inventory");
     }
-    if(t==305&&!run.board.empty()) {
+    if(t==465&&!run.board.empty()) {
         Block moving=run.board[0];bool checked=false;
-        for(int y=run.shape.height-Tall(moving.level);y>=0&&!checked;--y)for(int x=run.shape.width-Wide(moving.level);x>=0&&!checked;--x) {
+        for(int y=run.shape.height-Tall(moving);y>=0&&!checked;--y)for(int x=run.shape.width-Wide(moving);x>=0&&!checked;--x) {
             if(x==moving.x&&y==moving.y)continue;
             Block target=moving;target.x=x;target.y=y;if(!run.fits(target,0))continue;
             Box a=blockBox(moving,l),b=blockBox(target,l);
@@ -571,13 +724,14 @@ void reviewStep(const Layout& l) {
         MergeRouletteTouch(1,999,0,0);MergeRouletteTouch(3,999,0,0);
         reviewTrace(picked<0&&finger<0&&run.encode()==before?"PASS cancelled drag preserves block":"FAIL cancelled drag");
     }
-    if(t==330) {
+    if(t==490) {
+        reviewAttackGear=gearAngle;
         reviewAttackBlocks=run.board;
         long long before=robin.heart;reviewTap(l.attack);
         reviewTrace(run.attacking&&robin.heart==before-1?"PASS attack costs one heart":"FAIL attack");
     }
-    if(t==348)reviewCapture("03-launch");
-    if(t==590) {
+    if(t==508){reviewCapture("03-launch");reviewTrace(gearAngle==reviewAttackGear?"PASS slot gears stay still during attack":"FAIL attack moved slot gears");}
+    if(t==750) {
         reviewCapture("04-exchange");
         bool retained=run.board.size()==reviewAttackBlocks.size();
         for(int i=0;i<(int)run.board.size()&&retained;++i) {
@@ -586,10 +740,13 @@ void reviewStep(const Layout& l) {
         }
         reviewTrace(!run.attacking&&retained&&run.spins>=10?"PASS sequential actions preserve every board element":"FAIL retained inventory");
     }
-    if(t==600) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
-    if(t>=602&&!reviewCapturePending&&!reviewFinalCapture) {
+    if(t==755) {run.stage=4;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
+    if(t==756){reviewLayout(l,"10-castle5-nine-columns");reviewCapture("10-castle5-nine-columns");
+        reviewTrace(l.cell==64&&l.cellH==64&&l.board.w==576?"PASS nine-column castle retains exact 64px cells":"FAIL nine-column cell size");}
+    if(t==760) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
+    if(t>=762&&!reviewCapturePending&&!reviewFinalCapture) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
-    } else if(t>=603&&reviewFinalCapture&&!reviewCapturePending) {
+    } else if(t>=763&&reviewFinalCapture&&!reviewCapturePending&&reviewCaptureQueue.empty()) {
         Run current=run;
         run=Run();run.roster=&roster;run.choosing=false;run.families[0]=Sword;run.families[1]=Armor;run.families[2]=Necklace;
         run.setShape(castleShape(0));
@@ -600,14 +757,49 @@ void reviewStep(const Layout& l) {
         float tx=full.trash.x+full.trash.w/2.f,ty=full.trash.y-full.trash.h/2.f;
         MergeRouletteTouch(0,999,x,y);MergeRouletteTouch(1,999,tx,ty);MergeRouletteTouch(2,999,tx,ty);
         reviewTrace(run.freeCells()==3&&run.canSpin()&&robin.heart==balance?"PASS trash drag frees a cell and restores spin":"FAIL discard block");
+        run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
+        for(int y=0;y<4;++y)for(int x=0;x<6;++x){
+            Block b;b.family=Armor;b.x=x;b.y=y;run.board.push_back(b);
+        }
+        const auto fullBoard=run.board;
+        run.board[0].family=run.board[1].family=Sword;
+        Layout mergeLayout=layout();Box club=blockBox(run.board[0],mergeLayout),onto=blockBox(run.board[1],mergeLayout);
+        const float ax=club.x+club.w*.5f,ay=club.y-club.h*.5f,bx=onto.x+onto.w+2,by=onto.y-onto.h*.5f;
+        MergeRouletteTouch(0,999,ax,ay);MergeRouletteTouch(1,999,bx,by);MergeRouletteTouch(2,999,bx,by);
+        const int merged=run.at(1,0);
+        reviewTrace(merged>=0&&run.board.size()==23&&run.board[merged].level==2&&run.freeCells()==1&&
+            blockBox(run.board[merged],mergeLayout).w==64&&robin.heart==balance?
+            "PASS dragging clubs merges on full board into one 64px tile without heart cost":"FAIL full board club drag merge");
+        run.board=fullBoard;
+        Block large;large.family=Sword;large.level=3;run.tray.push_back(large);
+        const auto blockedHand=run.encode();
+        const bool heldResult=!beginSpinLanding()&&run.encode()==blockedHand;
+        Layout tight=layout();const int index=run.at(5,3);Box remove=blockBox(run.board[index],tight);
+        reviewTap(tight.attack);
+        const bool noAttack=!run.attacking&&robin.heart==balance;
+        const float sx=remove.x+tight.cell*.5f,sy=remove.y-tight.cellH*.5f;
+        const float dx=tight.trash.x+tight.trash.w*.5f,dy=tight.trash.y-tight.trash.h*.5f;
+        MergeRouletteTouch(0,999,sx,sy);MergeRouletteTouch(1,999,dx,dy);MergeRouletteTouch(2,999,dx,dy);
+        reviewTrace(heldResult&&noAttack&&spinFlying()&&spinLandingPlan.tray.empty()&&robin.heart==balance?
+            "PASS large result waits safely then flies automatically when space is freed":"FAIL large result recovery");
+        spinFlightFrame=-1;spinDrops.clear();
         run=current;
+        const bool pendingSpin=run.spin();
+        const std::string pending=run.encode();
+        const bool planned=beginSpinLanding();
+        const std::string plannedResult=spinLandingPlan.encode();
+        Run reloaded;reloaded.roster=&roster;
+        const bool decoded=reloaded.decode(pending);
+        run=reloaded;const bool replanned=beginSpinLanding();
+        reviewTrace(pendingSpin&&planned&&decoded&&replanned&&run.encode()==pending&&spinLandingPlan.encode()==plannedResult?
+            "PASS pending results resume with identical landing and no duplicate reward":"FAIL pending result resume");
+        run=current;spinFlightFrame=-1;spinDrops.clear();
         std::string stored=run.encode();
         std::memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));
         std::memcpy(robin.mergeRouletteRun,stored.data(),stored.size());robin.mergeRouletteHero=curHero;
         close();MergeRouletteBegin(true);
         reviewTrace(!introActive()&&run.encode()==stored?"PASS explicit continue preserves run without granting starters":"FAIL continue entry");
         close();MergeRouletteBegin(false);
-        reviewTap(layout().confirm);animation=0;reviewTap(layout().confirm);
         reviewTrace(introActive()&&run.board.size()==3&&run.spins==SpinLimit?"PASS new battle always replays three-starter intro":"FAIL fresh entry intro");
         reviewDone=true;reviewTrace("DONE");
     }
@@ -615,6 +807,22 @@ void reviewStep(const Layout& l) {
 }
 
 bool MergeRouletteActive() {return active;}
+bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height){
+    if(castle!=0)return false;
+    const float z=std::min(width/OriginalCastle::W,height/OriginalCastle::H);
+    const float ox=x+(width-OriginalCastle::W*z)*.5f,oy=top-height;
+    const int img=MERGE_REBUILD_ROOMS_IMG;if(!sprite[img])LoadImg(img);
+    if(sprite[img]){
+        const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const auto holes=OriginalCastle::rooms();
+        for(int i=0;i<5;++i){const auto& p=holes[i];float w=(p[1].x-p[0].x)*z,h=(p[2].y-p[0].y)*z;
+            const auto f=MergeCastleTransition::RoomFrame(i,robin.castleProgress.rooms[0][i],(int)size.width,(int)size.height);
+            const float rz=std::max(w/f.w,h/f.h);int sw=std::min(f.w,(int)(w/rz)),sh=std::min(f.h,(int)(h/rz));
+            DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,(int)(ox+p[0].x*z),(int)(oy+(OriginalCastle::H-p[0].y)*z),false,0,0,0,0,rz,rz,sprite[img],img);
+        }
+    }
+    for(int kind:{0,1,2,3,4,6,7,8})OriginalCastle::draw(kind,0,0,z,ox,oy);
+    return true;
+}
 void MergeRouletteSetHeartCapacity(int capacity) {heartCapacity=std::max(5,std::min(20,capacity));heartDisplay=(int)std::min((long long)heartCapacity,robin.heart);}
 void MergeRouletteBegin(bool resume) {
     if(active)return;
@@ -633,83 +841,79 @@ void MergeRouletteBegin(bool resume) {
         }
     } else if(review) {robin.heart=20;run.rng=12345;}
     run.setShape(castleShape(run.stage));
-    if(run.choosing)run.families[0]=run.selected;
-    introElapsed=-1.f;introCaptures=0;reviewCombatTick=-1;
+    bool starting=run.choosing&&run.start(pool,treeWeights);
+    entryElapsed=0.f;entryCaptures=0;
+    introElapsed=starting?0.f:-1.f;introCaptures=0;reviewCombatTick=-1;
     reviewCapturePending=reviewFinalCapture=false;
-    ticks=animation=0;picked=finger=-1;message="";
+    ticks=animation=0;gearAngle=gearStartAngle=0;picked=finger=-1;message="";
+    spinFlightFrame=-1;spinDrops.clear();
+    rememberReelSymbols();
+    if(resume&&!starting&&!run.tray.empty())beginSpinLanding();
     observedHearts=robin.heart;heartDisplay=(int)std::min((long long)heartCapacity,robin.heart);heartBlink=messageTime=0;spentHeart=-1;
     active=true;drawHandle=MD_PLAY;keyHandle=MK_PLAY;curMenu=MENU_PLAY;
     autoPlay=false;autoFrame=-1;touchDisable=false;mustRefresh=true;
     if(!run.choosing)save();
 }
-void MergeRouletteLobbyDraw() {
-    if(popUpCnt>0||LoadoutOpen())return;
-    Box b={DX-(int)(154*DX/640.0f),DY-(int)(120*DX/640.0f),(int)(142*DX/640.0f),(int)(44*DX/640.0f)};
-    button(b,"전투 시작","시작 3개 추첨",0x254C7C);
-    if(robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero) {
-        Box keep=b;keep.y-=(int)(50*DX/640.f);keep.h=(int)(32*DX/640.f);
-        button(keep,"이어서",nullptr,0x25394E);
-    }
+bool MergeRouletteLobbySceneDraw() {
+    static bool needsConfigure=true;
+    if(popUpCnt>0||LoadoutOpen()){needsConfigure=true;return false;}
+    static int preparedHero=-1,preparedCastle=-1;
+    if(needsConfigure||preparedHero!=curHero||preparedCastle!=robin.castle){configure();preparedHero=curHero;preparedCastle=robin.castle;needsConfigure=false;}
+    run.stage=std::max(0,std::min(9,(int)robin.castle));
+    run.setShape(castleShape(run.stage));
+    ResetRectPoint();SetAlpha(32);SetColor(0);grayScale=0;
+    Layout l=layout();drawWorld(l,false);drawLobbyControls(l,0,true);
+    mustRefresh=true;++frame;return true;
 }
+void MergeRouletteLobbyDraw() {}
 void MergeRouletteDraw() {
-    tick();ResetRectPoint();mustRefresh=true;
+    // Isolated capture reviews hold simulation until asynchronous PNG writing
+    // completes. Fixed-tick checks cannot be skipped or captured in a later state.
+    const bool holdReview=review&&reviewCapturePending;
+    if(!holdReview)tick();ResetRectPoint();mustRefresh=true;
+    if(review&&std::getenv("CS_MERGE_ORIGINAL_REVIEW")){
+        static int sample=0,hold=0;run.stage=0;run.setShape(castleShape(0));
+        if(sample==0)OriginalCastle::draw(9);
+        else{Layout l=layout();drawWorld(l,false);drawLobbyControls(l);}
+        if(!reviewCapturePending&&++hold>5&&sample<2){reviewCapture(sample==0?"original-uniform-reference":"original-live-lobby");++sample;hold=0;if(sample==2){
+            bool uniform=true;for(int c=1;c<10;++c){run.stage=c;run.setShape(castleShape(c));Layout test=layout();const auto m=castleMap(test,c);
+                const float z=(m.dx[3]-m.dx[0])/(m.sx[3]-m.sx[0]);for(int i=0;i<3;++i)uniform=uniform&&std::abs((m.dy[i+1]-m.dy[i])/(m.sy[i]-m.sy[i+1])-z)<.00001f;
+                uniform=uniform&&test.cell==64&&test.cellH==64;}
+            run.stage=0;run.setShape(castleShape(0));reviewTrace(uniform?"PASS all ten castles preserve uniform art scale and 64px cells":"FAIL castle aspect ratio");reviewTrace("DONE original reference review");}}
+        return;
+    }
+    if(review&&std::getenv("CS_MERGE_ROOM_REVIEW")) {
+        static int sample=0,hold=0;
+        const int c=sample>=60?0:sample/6,level=sample>=60?0:sample%6;
+        const auto saved=robin.castleProgress;const int savedCastle=robin.castle;
+        robin.castle=c;run.stage=c;run.setShape(castleShape(c));
+        for(int i=0;i<5;++i)robin.castleProgress.rooms[c][i]=(unsigned char)level;
+        if(sample>=60)robin.castleProgress.rooms[c][4]=5;
+        Layout l=layout();drawWorld(l,false);drawLobbyControls(l);
+        robin.castleProgress=saved;robin.castle=savedCastle;
+        if(!reviewCapturePending&&++hold>4&&sample<61){
+            char name[80];std::snprintf(name,sizeof(name),sample>=60?"room-independent-castle-%02d-level-%d":"room-castle-%02d-level-%d",c+1,level);reviewCapture(name);
+            hold=0;++sample;if(sample==61)reviewTrace("DONE modular facility review");
+        }
+        return;
+    }
     Layout l=layout();float s=l.scale;char text[160];
-    SetAlpha(32);SetColor(0);grayScale=0;
-    {StageBg::Borrow sunset(1,0);StageBg::Draw(l.ground,l.arenaBottom,false);}
-    int castle=std::max(1,std::min(10,(int)robin.castle+1));
-    float nw=1,nh=1;CastlePartsNaturalSize(castle,&nw,&nh);
-    int cw=(int)(DX*.55f),ch=(int)(cw*nh/std::max(1.0f,nw));
-    int top=l.ground+ch;
-    float contact=CastlePartsWheelLine(castle,top,cw,ch);top+=(int)(l.ground-contact);
-    SetSectionClip(0,DY,DX,DY-l.arenaBottom,false);
-    CastlePartsSetFreePlace(true);CastlePartsDrawRect(castle,0,top,cw,ch);CastlePartsSetFreePlace(false);
-    int hx=(int)(DX*.43f),hy=l.ground+(int)(72*s),ex=(int)(DX*.81f),ey=l.ground;
-    float commanderX=(float)hx,commanderY=(float)hy,deckY=(float)hy;
-    if(CastlePartsCombatAnchors(&commanderX,&commanderY,&deckY)) {hx=(int)commanderX;hy=(int)commanderY;}
-    // Short screens keep the hero on the lower combat deck rather than cropping
-    // the commander on the upper platform out of the viewport.
-    // In this mode the combatants stand on the open deck, as in the reference.
-    hy=(int)deckY;hx=(int)(cw*.79f);
-    float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f));
-    DrawPlayer(&hero,motionData[run.attacking?32+(ticks%32):0],hx,hy,RIGHT,heroZoom,0,false,true);
-    for(int i=0,shown=0;i<3&&shown<1;++i)if(run.families[i]<Roles) {
-        int crew=roster.first(run.families[i],1);if(crew<0)crew=MergeTrees::CrewAt(run.families[i],1,0);if(crew<0)continue;
-        int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
-        int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-        if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-        DrawCmfDetail(cmf,crewPos[npc*5],hx-(int)(56*s),(int)deckY,RIGHT,std::min(.78f*s,heroZoom),0,false);++shown;
+    const Layout fixed=layout();
+    drawWorld(fixed,true);
+    if(entering()){
+        drawLobbyControls(fixed,MergeCastleTransition::LobbyExit(entryElapsed));
+        const int controlDrop=(int)((1-MergeCastleTransition::ControlsEnter(entryElapsed))*300*s);
+        l.slot.y-=controlDrop;l.lever.y-=controlDrop;l.heart.y-=controlDrop;
+        l.spin.y-=controlDrop;l.attack.y-=controlDrop;
     }
-    int npc=run.wave==9?ENEMY_CASTLE_BOSS1:ENEMY_KNIGHT+run.wave%2;
-    int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-    DrawCmfDetail(cmf,crewPos[npc*5],ex,ey,LEFT,(run.wave==9?0.65f:1.35f)*s,0,false);
-    for(int i=0;i<(int)run.summons.size()&&i<3;++i) {
-        const Shot& summoned=run.summons[i];
-        int crew=summoned.block.crew;
-        if(crew<0||crew>=64)continue;
-        int skill=crewData[crew*CREWDATASIZE+CREWDATA_SKILL3];
-        int kind=SkillKind(skill),x=(int)(DX*(.59f+i*.06f));
-        if(kind==SUMMON) {
-            int type=SkillSummonEnemy(skill);
-            if(type>=0&&type<gTotalEnemy) {
-                int c=enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
-                if(cmfLoaded[c]!=c)CmfRead(c,c);
-                DrawCmfDetail(c,crewPos[type*5],x,l.ground,RIGHT,.35f*s,0,false);
-            }
-        } else if(kind==SUMMONHERO) {
-            OBJECT copy=hero;copy.type=std::max(0,std::min(2,SkillSummonHeroType(skill)));
-            DrawPlayer(&copy,motionData[0],x,l.ground,RIGHT,.45f*s,0,false,true);
-        } else icon(summoned.block.family,{x-(int)(14*s),l.ground+(int)(35*s),(int)(28*s),(int)(35*s)},.7f,false,summoned.block.level,summoned.block.crew);
-    }
-    UnSectionClip(false);
-    for(int y=0;y<l.arenaBottom;y+=8)MemRect(0,l.arenaBottom-y,DX,std::min(8,l.arenaBottom-y),blend(0x101831,0x090E29,y/(float)l.arenaBottom));
+    const int hx=(int)(DX*.57f),ex=(int)(DX*.85f),ey=l.ground;
     std::snprintf(text,sizeof(text),"%d성 · 웨이브 %d/10",run.stage+1,run.wave+1);
     label(text,DX/2,DY-(int)(17*s),0.55f);
     // Readable unit plates directly beneath the battle, separate from the board title.
-    Box allyPlate={hx-(int)(43*s),l.ground+(int)(70*s),(int)(100*s),(int)(43*s)};
-    Box enemyPlate={ex-(int)(52*s),l.arenaBottom+(int)(45*s),(int)(106*s),(int)(43*s)};
-    bevel(allyPlate,0xAAA694,(int)(5*s));bevel(inset(allyPlate,std::max(1,(int)(2*s))),0x22252B,(int)(3*s));
-    bevel(enemyPlate,0xAAA694,(int)(5*s));bevel(inset(enemyPlate,std::max(1,(int)(2*s))),0x22252B,(int)(3*s));
+    Box allyPlate={hx-(int)(43*s),l.ground-(int)(4*s),(int)(100*s),(int)(43*s)};
+    Box enemyPlate={ex-(int)(52*s),l.ground-(int)(4*s),(int)(106*s),(int)(43*s)};
+    uiArt(MergeCastleArt::UnitPlate,allyPlate);
+    uiArt(MergeCastleArt::UnitPlate,enemyPlate);
     std::snprintf(text,sizeof(text),"목숨  %d / %d",run.lives,run.maxLives);
     int barPad=std::max(1,(int)(5*s));
     MemRect(allyPlate.x+barPad,allyPlate.y-barPad,allyPlate.w-2*barPad,(int)(14*s),0x37433B);
@@ -726,21 +930,27 @@ void MergeRouletteDraw() {
     shield(enemyPlate.x+(int)(17*s),enemyPlate.y-(int)(24*s),(int)(10*s));
     label("방어 0",enemyPlate.x+enemyPlate.w/2+(int)(7*s),enemyPlate.y-(int)(23*s),.59f,0xFFF0B8);
     button(l.exit,"나가기",nullptr,0x25304A,!run.attacking);
-    if(usesCastleGrid())CastleInventoryGridDraw(std::max(0,std::min(9,run.stage)),l.board.x,l.board.y,l.cell);
-    else for(int row=0;row<run.shape.height;++row)for(int col=0;col<run.shape.width;++col) {
-        int pad=std::max(1,(int)(2*s));
-        Box tile={l.board.x+col*l.cell+pad,l.board.y-row*l.cellH-pad,l.cell-2*pad,l.cellH-2*pad};
-        bevel(tile,0x53658E,pad);bevel(inset(tile,pad),0x0B1229,pad);
-    }
+    // No backing board: individual 64px tiles cover the rooms themselves.
+    for(int row=0;row<run.shape.height;++row)for(int col=0;col<run.shape.width;++col)
+        if(run.shape.contains(col,row)){
+            Box tile={l.board.x+col*l.cell,l.board.y-row*l.cellH,l.cell,l.cellH};
+            const int index=row*run.shape.width+col,count=run.shape.width*run.shape.height;
+            float angle=0;
+            if(entering()){
+                if(entryElapsed<MergeCastleTransition::TileLaunch(index,count))continue;
+                const float p=MergeCastleTransition::TileProgress(entryElapsed,index,count);
+                const float q=1-std::pow(1-p,2.f);
+                // Use the moving housing's actual center, shared by every shot.
+                const float cx=l.slot.x+l.slot.w*.5f,cy=l.slot.y-l.slot.h*.5f;
+                tile.x=(int)(cx-l.cell*.5f+(tile.x-cx+l.cell*.5f)*q);
+                tile.y=(int)(cy+l.cellH*.5f+(tile.y-cy-l.cellH*.5f)*q+std::sin(p*3.14159265f)*32*s);
+                angle=(index%2?1.f:-1.f)*360.f*(1-p);
+                const float age=entryElapsed-MergeCastleTransition::TileLand(index,count);
+                if(age>=0&&age<.09f)tile.y+=(int)(std::sin(age/.09f*3.14159265f)*4*s);
+            }
+            padArt((row+col)%2,tile,angle);
+        }
     long long predicted=run.preview(stats);
-    label("인벤토리",DX/2,l.board.y+(int)(43*s),.94f,0xFFF0B6);
-    if(!run.choosing) {
-        std::snprintf(text,sizeof(text),"예상 피해 %lld / 적 %lld",predicted,run.enemyHp);
-        label(text,DX/2,l.board.y+(int)(16*s),.43f,predicted>=run.enemyHp?0xFFD45E:0xBCC7DE);
-    }
-    int lineY=l.board.y+(int)(31*s);
-    MemRect(l.board.x-(int)(18*s),lineY,l.board.w/2-(int)(42*s),std::max(1,(int)s),0x98A6C0);
-    MemRect(DX/2+(int)(61*s),lineY,l.board.w/2-(int)(42*s),std::max(1,(int)s),0x98A6C0);
     for(int i=0;i<(int)run.board.size();++i) {
         if(introActive()&&i<3)continue;
         if(picked==i&&!pickedTray)continue;
@@ -768,52 +978,60 @@ void MergeRouletteDraw() {
             }
         }
     }
-    // RH's original three-reel board. Keep all symbols inside its windows.
+    // The reels scroll inside the rounded housing and settle left-to-right.
+    if(entering()||!introActive()){
     drawSlotFrame(l.slot);
     for(int i=0;i<3;++i) {
         int pad=std::max(1,(int)(12*s));
-        Box window={l.slot.x+i*l.slot.w/3+pad,l.slot.y-pad,l.slot.w/3-2*pad,l.slot.h-2*pad};
+        Box window=slotWindow(l.slot,i);
         bool held=!run.tray.empty()&&i<(int)run.tray.size();
-        int f=held?run.tray[i].family:run.families[i],lv=held?run.tray[i].level:1,crew=held?run.tray[i].crew:-1;
-        if(animation>0&&!run.attacking){f=run.families[(ticks/3+i)%3];lv=1;crew=-1;}
-        SetSectionClip(window.x,window.y,window.w,window.h,false);
-        icon(f,window,.84f,true,lv,crew);
+        if(spinFlying()&&spinFlightFrame>i*4)continue;
+        const Block symbol=hasReelSymbols?reelSymbols[i]:Block();
+        int f=hasReelSymbols?symbol.family:held?run.tray[i].family:run.families[i];
+        int lv=hasReelSymbols?symbol.level:held?run.tray[i].level:1,crew=hasReelSymbols?symbol.crew:held?run.tray[i].crew:-1;
+        const float phase=std::min(1.f,(45-animation)/(float)(33+6*i));
+        if(animation>0&&!run.attacking&&phase<1.f){
+            const int pitch=window.h;
+            const float distance=6*pitch*(1.f-std::pow(1.f-phase,3.f));
+            const int offset=(int)std::fmod(distance,(float)pitch),turn=(int)(distance/pitch);
+            for(int j=-1;j<=1;++j){
+                Box symbol=window;symbol.y+=j*pitch-offset;
+                SetSectionClip(window.x,window.y,window.w,window.h,false);
+                icon(run.families[(turn+j+6+i)%3],symbol,1.f,true);
+            }
+        }else{
+            SetSectionClip(window.x,window.y,window.w,window.h,false);
+            icon(f,window,1.f,true,lv,crew);
+        }
         UnSectionClip(false);
     }
-    slotRim(l.slot);drawLever(l);
-    bevel(l.heart,0x6C748B,(int)(6*s));
-    bevel(inset(l.heart,std::max(1,(int)(2*s))),0x171D32,(int)(5*s));
+    slotRim(l.slot);
+    }
+    drawLever(l);
+    mergeGoldFrame(l.heart,0x382C31,0x201B25);
+    for(int side=0;side<2;++side){Box bolt={l.heart.x+(int)((side?l.heart.w/s-14:6)*s),l.heart.y-l.heart.h/2+(int)(4*s),(int)(8*s),(int)(8*s)};
+        bevel(bolt,0xD8D9E4,(int)(2*s));bevel(inset(bolt,std::max(1,(int)s)),0x7B8294,(int)s);}
     int cols=heartCapacity>10?10:heartCapacity;
     int heartSize=(int)(22*s),pitch=(int)(27*s),x0=DX/2-(cols*pitch-(int)(5*s))/2;
     int rows=(heartCapacity+cols-1)/cols;
-    int heartTop=l.heart.y-(int)((rows==1?12:4)*s);
+    int heartTop=l.heart.y-(int)(9*s);
     for(int i=0;i<heartCapacity;++i) {
         bool filled=i<heartDisplay;
         if(i==spentHeart&&heartBlink>0)filled=((int)(heartBlink/.09f)%2)==0;
-        heart(x0+(i%cols)*pitch,heartTop-(i/cols)*(int)(21*s),heartSize,filled);
+        heart(x0+(i%cols)*pitch,heartTop-(i/cols)*(int)(23*s),heartSize,filled);
     }
-    if(run.choosing) {
-        button(l.left,"<",nullptr,0x253F61,!run.drafted);button(l.right,">",nullptr,0x253F61,!run.drafted);
-        button(l.reroll,run.drafted?"다시 뽑기":"트리 변경",run.drafted?"하트 -1":"첫 릴 직접 선택",0x24578D,(!run.drafted||robin.heart>0)&&animation==0);
-        button(l.confirm,run.drafted?"전투 시작":"계열 뽑기",run.drafted?"선택한 편성으로 출발":"나머지 두 트리 무작위",0x975028,animation==0);
-    } else if(run.lost) {
+    if(run.lost) {
         button(l.spin,"다시 도전","새 런 시작",0x24578D);button(l.attack,"로비로",nullptr,0x975028);
     } else {
-        bool ready=!introActive()&&!run.attacking&&animation==0;
+        bool ready=!entering()&&!introActive()&&!spinFlying()&&!run.attacking&&animation==0;
         choice(l.spin,false,ready&&run.canSpin()&&robin.heart>0);
-        choice(l.attack,true,ready&&!run.board.empty()&&robin.heart>0);
+        choice(l.attack,true,ready&&run.tray.empty()&&!run.board.empty()&&robin.heart>0);
         if(ready&&!run.board.empty()&&predicted>=run.enemyHp)
             MemRectFrameThick(l.attack.x,l.attack.y,l.attack.w,l.attack.h,0xFFE36A,std::max(1,(int)(3*s)));
         Box orBadge={DX/2-(int)(21*s),l.spin.y-l.spin.h/2+(int)(14*s),(int)(42*s),(int)(28*s)};
         bevel(orBadge,0x080E20,(int)(6*s));bevel(inset(orBadge,std::max(1,(int)(2*s))),0xF6CE68,(int)(5*s));
         bevel(inset(orBadge,std::max(2,(int)(4*s))),0x26303D,(int)(3*s));
         label("OR",DX/2,orBadge.y-(int)(4*s),.82f,0xFFF0B0);
-        if(!run.tray.empty()) {
-            for(int i=0;i<(int)run.tray.size();++i) {
-                char t[20];std::snprintf(t,sizeof(t),"★%d",run.tray[i].level);
-                label(t,l.slot.x+l.slot.w*(2*i+1)/6,l.slot.y-(int)(14*s),0.42f);
-            }
-        }
         // Spin budget is a rule hint, not a slot-machine counter.
         if(run.spins==0&&run.tray.empty())label("이번 적립 종료 · 공격하세요",DX/2,DY-(int)(45*s),0.46f,0xFFD26A);
     }
@@ -847,38 +1065,26 @@ void MergeRouletteDraw() {
     }
     if(messageTime<=0&&!run.choosing&&!message.empty()&&(message.find("없")!=std::string::npos||message.find("부족")!=std::string::npos))
         label(message.c_str(),DX/2,DY-(int)(45*s),0.48f);
-    if(run.choosing) {
-        // Drafting does not pretend that the empty board is already playable.
-        int cardW=std::min(l.board.w-(int)(24*s),(int)(440*s));
-        int cardH=std::min(l.board.h-(int)(20*s),(int)(250*s));
-        Box card={(DX-cardW)/2,l.board.y-(l.board.h-cardH)/2,cardW,cardH};
-        panel(card,0x192539,0xD3A35D);
-        label(run.drafted?"이번 전투의 세 계열":"전투 준비",DX/2,card.y-(int)(28*s),.92f,0xFFD88B);
-        int artH=std::max(28,cardH-(int)(116*s));
-        for(int i=0;i<3;++i) {
-            Box art={card.x+cardW*i/3,card.y-(int)(49*s),cardW/3,artH};
-            if(!run.drafted&&i>0)label("?",art.x+art.w/2,art.y-art.h/2,1.5f,0x8F9AAF);
-            else icon(run.families[i],art,.82f);
-        }
-        label(treeName(run.selected),DX/2,card.y-cardH+(int)(48*s),.60f,0xFFD88B);
-        label("더 돌리기 / 지금 공격 · 각각 하트 -1",DX/2,card.y-cardH+(int)(22*s),.50f,0xC0C8D6);
-    }
-    drawIntro(l);
-    reviewStep(l);
+    drawSpinLanding(l);
+    if(!entering())drawIntro(l);
+    if(!holdReview)reviewStep(l);
 }
 
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
     if(!active) {
         if(phase==0&&drawHandle==MD_LOBBY&&popUpCnt==0&&!LoadoutOpen()) {
             float s=DX/640.0f;
-            Box b={DX-(int)(154*s),DY-(int)(120*s),(int)(142*s),(int)(44*s)};
+            Layout l=layout();Box b=lobbyStart(l);
             if(b.has(x,y)) {MergeRouletteBegin();return true;}
-            Box keep=b;keep.y-=(int)(50*s);keep.h=(int)(32*s);
+            Box keep=lobbyContinue(l);
             if(keep.has(x,y)&&robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero) {MergeRouletteBegin(true);return true;}
+            for(int i=0;i<5;++i)if(roomBox(l,i).has(x,y)){
+                CastleMenuFocusFacility(i);systemKey=AVK_POPUP_CASTLEMENU;return true;
+            }
         }
         return false;
     }
-    if(introActive()) {picked=finger=-1;return true;}
+    if(entering()||introActive()||spinFlying()) {picked=finger=-1;return true;}
     if(phase==3) {if(finger==id){picked=-1;finger=-1;}return true;}
     if(phase==0) {
         if(finger>=0)return true;
@@ -903,11 +1109,14 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     if(picked>=0) {
         bool ok=false;
         if(pickedTray&&std::abs(x-downX)+std::abs(y-downY)<10*l.scale)ok=run.autoPlace(picked);
-        else if(l.board.has(x,y))ok=run.place(pickedTray,picked,(int)(x-l.board.x)/l.cell-pickCellX,(int)(l.board.y-y)/l.cellH-pickCellY);
         else if(!pickedTray&&l.trash.has(x,y)) {run.board.erase(run.board.begin()+picked);ok=true;}
+        else ok=run.drop(pickedTray,picked,(x-l.board.x)/l.cell,(l.board.y-y)/l.cellH);
         message=ok?"":"그 자리에 배치/합성할 수 없습니다.";
+        if(!ok)messageTime=3;
         if(ok)PlayMusic(M_POWERUP);
-        picked=-1;save();return true;
+        picked=-1;
+        if(ok&&!run.tray.empty())beginSpinLanding();
+        save();return true;
     }
     if(l.exit.has(x,y)&&l.exit.has(downX,downY)){close();return true;}
     if(animation>0||run.attacking)return true;
@@ -917,26 +1126,13 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         else if(l.attack.has(x,y)&&l.attack.has(downX,downY))close();
         return true;
     }
-    if(run.choosing) {
-            if(!run.drafted&&((l.left.has(x,y)&&l.left.has(downX,downY))||(l.right.has(x,y)&&l.right.has(downX,downY))||(l.reroll.has(x,y)&&l.reroll.has(downX,downY)))) {
-            auto at=std::find(pool.begin(),pool.end(),run.selected);int i=(int)(at-pool.begin());
-            i=(i+(l.left.has(x,y)?(int)pool.size()-1:1))%(int)pool.size();
-            run.selected=pool[i];run.families[0]=run.selected;
-            save();
-        } else if(run.drafted&&l.reroll.has(x,y)&&l.reroll.has(downX,downY)&&pay()) {run.choose(pool,treeWeights);animation=45;save();}
-        else if(l.confirm.has(x,y)&&l.confirm.has(downX,downY)) {
-            if(!run.drafted) {run.choose(pool,treeWeights);animation=45;message="이번 조합을 확인하고 전투를 시작하세요.";}
-            else if(run.start(pool,treeWeights,true,true)) {introElapsed=0;message="";PlayMusic(M_ROULETTEUP);}
-            save();
-        }
-        return true;
-    }
     bool pull=l.lever.has(downX,downY)&&(l.lever.has(x,y)||downY-y>12*l.scale);
     if((l.spin.has(x,y)&&l.spin.has(downX,downY))||pull) {
         if(run.freeCells()<3) {message="빈칸이 3칸 이상 필요합니다.";messageTime=3;PlayMusic(M_ERROR);return true;}
         if(!run.canSpin()){message="릴의 블록을 모두 놓거나 지금 공격하세요.";messageTime=3;return true;}
-        if(pay()){run.spin();animation=45;message="";PlayMusic(M_ROULETTEUP);save();}
+        if(pay()){run.spin();rememberReelSymbols();gearStartAngle=gearAngle;animation=45;message="";PlayMusic(M_ROULETTEUP);save();}
     } else if(l.attack.has(x,y)&&l.attack.has(downX,downY)) {
+        if(!run.tray.empty()){message="뽑힌 결과가 들어갈 칸을 먼저 비워주세요.";messageTime=3;return true;}
         if(run.board.empty()){message="인벤토리가 비어 있습니다.";return true;}
         if(pay()){run.attack(stats);animation=1;message="출격!";save();}
     }

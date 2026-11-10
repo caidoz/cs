@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {
+      "name": "spin",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-08626ce7-c2d3-4eff-92b7-85cd3984b68a.png",
+      "prompt": "Edit this existing game button sprite into a production-ready BACKGROUND ONLY button. Preserve same2172x724 canvas, original ornate gold carvedborder and crown, same BLUE enamel and left circular-arrows icon, exactposition and silhouette. Remove ALL lettering, ALL heartcost icons/numbers, tiny subtitle plates, small laurelbranches in textarea. Keep gold vertical divider nextto lefticon. Righttwo-thirds shouldbe clean uninterruptedblue enamel for runtime crisp Korean typography. No text/numerals. Preserve puretransparentexterior. Do not add backdrop. Nativegame draws title,subtitle andheart-1 with readablefonts."
+    },
+    {
+      "name": "attack",
+      "source": "C:\\Users\\polyp\\.codex\\generated_images\\01a1b6fa-54b0-7231-81f2-c6f8b7dc04f0\\exec-2d3d92ab-f813-4e3b-a34d-85c63aebfd19.png",
+      "prompt": "Edit this existing game button sprite into a production-ready BACKGROUND ONLY button. Preserve same2172x724 canvas, original ornate gold carvedborder and crown, same RED enamel and left crossed-swords icon, exactposition and silhouette. Remove ALL lettering, ALL heartcost icons/numbers, tiny subtitle plates, small laurelbranches in textarea. Keep gold vertical divider nextto lefticon. Righttwo-thirds shouldbe clean uninterruptedred enamel for runtime crisp Korean typography. No text/numerals. Preserve puretransparentexterior. Do not add backdrop. Nativegame draws title,subtitle andheart-1 with readablefonts."
+    }
+  ]
+}

@@ -69,10 +69,14 @@ int CastleTeamBonus(int kind) {
         kind==1?CastleMenuModel::Health(p,c)+CastleMenuModel::All(p,c):
         CastleMenuModel::Defense(p,c)+CastleMenuModel::All(p,c);
 }
+static int castlePendingFacility=-1;
+static bool gCastleFacilityTab=true;
+void CastleMenuFocusFacility(int room){castlePendingFacility=Max(0,Min(4,room));}
 void CastleMenuOpen() { CastleProgressEnsure();
     if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
-    castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0; }
-static bool gCastleFacilityTab=true;
+    castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
+    if(castlePendingFacility>=0){gCastleFacilityTab=true;scY[MENU_CASTLE]=Min(400,Max(280,DY*28/100))+300+castlePendingFacility*144;castlePendingFacility=-1;}
+}
 bool CastleMenuCommand(int func) {
     if(func>=TOUCH_FUNC_CASTLE_BROWSE_PICK && func<TOUCH_FUNC_CASTLE_BROWSE_PICK_END){
         if(!castleModal){castleBrowse=func-TOUCH_FUNC_CASTLE_BROWSE_PICK;scY[MENU_CASTLE]=0;scAccelY=0;}return true;

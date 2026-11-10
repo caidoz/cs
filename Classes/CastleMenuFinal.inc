@@ -1,6 +1,9 @@
 ﻿#include "Data/CastleRoomAtlas.h"
 // Single scrolling body. Part indices retain the existing save/model ordering.
 #include "Data/CastleRoomUpgrades.h"
+#include "Data/MergeCastleRebuild.h"
+#include "Func_MergeRoulette.h"
+#include "MergeCastleTransition.h"
 #include "Data/MountedCannonSprites.h"
 #include "Data/SoftCastleSectors.h"
 #include "Data/IndividualCastleV4.h"
@@ -27,50 +30,28 @@ static void Button(const char* text,int x,int y,int w,int h,int command,bool ena
  if(enabled) SetRectPoint(x,y,w,h,command);
 }
 static void FacilityIcon(int c,int room,int lv,int x,int top,int size){
- const int img=c==9?CASTLE_FINAL_ROOM_FIRST_IMG+lv:CASTLE_ROOM_UPGRADE_FIRST_IMG+c;
+ const int img=MERGE_REBUILD_ROOMS_IMG+c;
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto tex=sprite[img]->getTexture()->getContentSizeInPixels();
- const auto f=CastleRoomUpgrades::Frame(c,room,lv,(int)tex.width,(int)tex.height);
+ const auto f=MergeCastleTransition::RoomFrame(room,lv,(int)tex.width,(int)tex.height);
  const float z=Min(size/(float)f.w,size/(float)f.h);
  DrawImageScale(f.w,f.h,f.x,f.y,x+(size-f.w*z)/2,top-(size-f.h*z)/2,false,0,0,0,0,z,z,sprite[img],img);
 }
 static void FacilityPreview(int c,int room,int lv,int x,int top,int width,int height){
- const int img=c==9?CASTLE_FINAL_ROOM_FIRST_IMG+lv:CASTLE_ROOM_UPGRADE_FIRST_IMG+c;
+ const int img=MERGE_REBUILD_ROOMS_IMG+c;
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto tex=sprite[img]->getTexture()->getContentSizeInPixels();
- const auto f=CastleRoomUpgrades::Frame(c,room,lv,(int)tex.width,(int)tex.height);
+ const auto f=MergeCastleTransition::RoomFrame(room,lv,(int)tex.width,(int)tex.height);
  const float z=Max(width/(float)f.w,height/(float)f.h);
  const int sw=Min(f.w,(int)(width/z)),sh=Min(f.h,(int)(height/z));
  DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+(f.h-sh)/2,x,top,false,0,0,0,0,width/(float)sw,height/(float)sh,sprite[img],img);
 }
-static void PartIcon(int c,int part,int lv,int x,int top,int size){
- if(part==3){DrawInventoryCannonIcon(c,lv,x,top,size,size);return;}
- if(part==0||part==1){
-  const int img=CASTLE_SOFT_FIRST_IMG+c;const auto& f=SoftCastle::Bodies[c][0];
-  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
-  const int h=part==0?f.h*2/5:f.h;const float z=Min((size-8)/(float)f.w,(size-8)/(float)h);
-  DrawImageScale(f.w,h,f.x,f.y,x+(size-f.w*z)/2,top-(size-h*z)/2,false,0,0,0,0,z,z,sprite[img],img);return;
- }
- if(part==4&&lv>0){
-  const auto& f=CastleUpgradeCosmetics::Frames[c][3][Min(5,lv)];const int img=CASTLE_UPGRADE_COSMETICS_IMG+c;
-  if(!sprite[img])LoadImg(img);if(sprite[img]){const float z=(size-8)/(float)Max(f.w,f.h);
-   DrawImage(f.w,f.h,f.x,f.y,x+(size-f.w*z)/2,top-(size-f.h*z)/2,false,0,0,0,0,z,sprite[img],img);return;}
- }
- const auto& r=IndividualCastleV4::Rigs[c];
- int img=CASTLE_UNARMED_FIRST_IMG+c,sx=r.x,sy=r.y,sw=r.w,sh=r.h;
- if(part==0){sh=r.h/3;}
- if(part==1){sx+=r.w/5;sy+=r.h/3;sw=r.w*3/5;sh=r.h/3;}
- if(part==2){
-  FacilityIcon(c,0,robin.castleProgress.rooms[c][0],x,top,size);return;
- }
- if(part==4){img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+c*IndividualCastleV4::Stride+1;sx=sy=0;sw=sh=r.wheels[0].r*2;}
- if(!sprite[img]) LoadImg(img);
- if(!sprite[img]) return;
- float z=Min((size-8)/(float)sw,(size-8)/(float)sh);
- DrawImageScale(sw,sh,sx,sy,x+(size-sw*z)/2,top-(size-sh*z)/2,false,0,0,0,0,z,z,sprite[img],img);
-}
+
 }
 
+namespace CastleFinal {
+#include "MergeCastleMenuArt.inc"
+}
 bool CastleMenuFinalDrag(int startX,int startY,int x,int y,int previousY){
  if(curMenu!=MENU_CASTLE || !popUpCnt || popUp[popUpCnt-1].type!=POPUPTYPE_CASTLEMENU || castleModal || gTouchRectLocked) return false;
  if(Abs(startX-x)<8 && Abs(startY-y)<8 && scDir==SCROLL_NOTHING) return true;
@@ -128,7 +109,7 @@ void CastleMenuNewDraw(){
  const int rail=HYBRID_RAIL_IMG;if(!sprite[rail])LoadImg(rail);
  if(sprite[rail]){const auto sz=sprite[rail]->getContentSize();const float z=width/sz.width;
   DrawImageScale((int)sz.width,Min((int)sz.height,(int)(30/z)),0,0,left,y-ph+18,false,0,0,0,0,z,z,sprite[rail],rail);}
- CastlePartsDrawMenuPreview(c+1,left+10,y-8,width*58/100,ph-22);
+ RebuildPreview(c,left+10,y-8,width*58/100,ph-22);
  const int infoX=left+width*60/100,infoW=width*40/100-12;
  DrawPixelPanel(infoX,y-28,infoW,130,0x123D43,0xEDBB58);
  CastleLabel(CastleFacilities::Themes[c],infoX+infoW/2,y-44,infoW-16,.78f);

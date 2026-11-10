@@ -37,16 +37,16 @@ RIM = 8            # 기존 성 실루엣은 보존하고 테두리만 얇게 �
 MERLON = 0         # 합성 판은 돌기 없는 직사각형이다.
 MERLON_W = 12
 LINE = 2
-NODE = 11
+NODE = 5
 
-C_CELL_TOP = (18, 29, 53, 255)
-C_CELL_BOT = (8, 14, 34, 255)
-C_RIM_EDGE = (25, 34, 61, 255)
-C_RIM_MID = (80, 102, 149, 255)
-C_RIM_IN = (128, 145, 183, 255)
-C_LINE = (81, 101, 143, 255)
-C_NODE = (159, 177, 205, 255)
-C_GLOW = (80, 190, 255, 255)
+C_CELL_TOP = (109, 79, 48, 255)
+C_CELL_BOT = (61, 40, 28, 255)
+C_RIM_EDGE = (58, 34, 23, 255)
+C_RIM_MID = (167, 112, 48, 255)
+C_RIM_IN = (243, 203, 117, 255)
+C_LINE = (100, 66, 39, 255)
+C_NODE = (223, 176, 87, 255)
+C_GLOW = (239, 186, 76, 255)
 
 
 def read_cells():
@@ -131,9 +131,9 @@ def build(cells):
             #어두운 테를 두르고 속을 밝게 채운다. 격자선 위에 그대로
             #얹으면 선에 묻혀 매듭으로 안 보인다.
             h = NODE // 2
-            d.rectangle([x - h, y - h, x + h, y + h], fill=(10, 44, 104, 255))
-            d.rectangle([x - h + 2, y - h + 2, x + h - 2, y + h - 2], fill=C_RIM_IN)
-            d.rectangle([x - h + 5, y - h + 5, x + h - 5, y + h - 5], fill=C_NODE)
+            d.rectangle([x - h, y - h, x + h, y + h], fill=C_RIM_EDGE)
+            d.rectangle([x - h + 1, y - h + 1, x + h - 1, y + h - 1], fill=C_RIM_IN)
+            d.point((x, y), fill=C_NODE)
 
     #---- 발광. 밝은 것만 남겨 흐린 뒤 밑에도 깔고 위에도 옅게 얹는다.
     #     밑에만 깔면 테 바깥으로만 번지고, 위에만 얹으면 선이 뭉갠다 ----
