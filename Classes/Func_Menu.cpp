@@ -1891,7 +1891,10 @@ void EquipDetailDraw(ITEM* it)
 	 for(int n=0;n<12;++n)if(it->option[n][0]!=EMPTYINT&&optionStr[n][0]){
 	  SetFontColor(0xE8DCB9);DrawTextStrSystem(optionStr[n],32,y,Min(.74f,(DX-64)/Max(1.f,StringWidth(optionStr[n],1.f))),LEFT,false);y-=lh;++shown;
 	 }
-	 int same=0;for(int n=0;n<TOTALINVENTORY;++n)if(robin.inven[n].type==it->type&&robin.inven[n].detail==it->detail&&robin.inven[n].grade==it->grade)++same;
+	 //재료로 쓸 수 있는 것만 센다. 착용 중이거나 잠긴 것을 같이 세면
+ //"3 / 3" 이라 적어 놓고 눌러도 아무 일이 없다(ItemMergeUsable).
+ int same=0;for(int n=0;n<TOTALINVENTORY;++n){const ITEM* o=&robin.inven[n];
+  if(o->type==it->type&&o->detail==it->detail&&o->grade==it->grade&&ItemMergeUsable(o))++same;}
 	 sprintf(line,"같은 장비 %d / %d · 합성은 장비 목록에서",same,ITEM_MERGE_COUNT);
 	 SetFontColor(0xD8C494);CenterTextStrSolid(line,DX/2,Max(footer+38,y-8),.66f);
 	 const int idx=GetInvenIdx(it->type,it->detail,it->grade);
@@ -2035,8 +2038,10 @@ void EquipDetailDraw(ITEM* it)
 		for (i = 0; i < TOTALINVENTORY; i++) {
 			const ITEM* o = &robin.inven[i];
 
+			//합치는 쪽과 같은 규칙이다 - 착용 중 · 잠금 · 전설은 재료가
+			//못 된다(ItemMergeUsable).
 			if (o->type == itemType && o->detail == itemDetail
-				&& o->grade == itemGrade)
+				&& o->grade == itemGrade && ItemMergeUsable(o))
 				same++;
 		}
 

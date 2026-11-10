@@ -49,6 +49,7 @@ int GetStageBossFace(void);
 long long GetStageAdmissionFee(void);
 long long GetStageAdmissionHeart(int stage);
 int GetItemPrice(ITEM * it);
+bool ItemMergeUsable(const ITEM* it);
 int GetCharPrice(int);
 int GetItemPow(int, int, int);
 int GetItemStar(int, int, int);

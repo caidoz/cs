@@ -1434,6 +1434,30 @@ static bool ItemWorn(const ITEM* it)
 	return false;
 }
 
+//---- 재료로 쓸 수 있는가 ----
+//
+//세는 쪽(메뉴의 "같은 장비 N / 3")과 합치는 쪽이 규칙을 따로 들고 있었다.
+//메뉴는 창고의 같은 것을 전부 셌고, 여기서는 착용 중 · 잠금 · 전설을
+//뺐다. 그래서 "3 / 3" 이라 적어 놓고 눌러도 아무 일이 없었다.
+//
+//판에 한 번 들어갔다 오면 더 심해진다. 가방에 실은 것이 전부 몸에 입혀
+//지므로(GridWearLoadout), 창고의 거의 모든 장비가 "착용 중" 이 된다.
+//
+//두 쪽이 이 함수 하나를 본다.
+bool ItemMergeUsable(const ITEM* it)
+{
+	if (!it || it->type == EMPTY || IsEquipItemType(it->type) == false)
+		return false;
+
+	//착용 중이어도 재료가 된다. 합성하면 그 자리에 결과를 도로 입히므로
+	//(아래 MergeItems) 맨몸이 되지 않는다.
+	//
+	//전에는 막아 두었다. 그런데 가방에 실은 것이 전부 몸에 입혀지면서
+	//(GridWearLoadout) 창고의 거의 모든 장비가 "착용 중" 이 되어, 합성이
+	//사실상 막혀 버렸다.
+	return it->grade < GRADE_LEGEND && !it->locked;
+}
+
 int MergeItems(bool doMerge)
 {
 	int done = 0;
@@ -1449,10 +1473,7 @@ int MergeItems(bool doMerge)
 			int found[ITEM_MERGE_COUNT];
 			int cnt = 0;
 
-			if (head->type == EMPTY || IsEquipItemType(head->type) == false)
-				continue;
-
-			if (head->grade >= GRADE_LEGEND || ItemWorn(head) || head->locked)
+			if (!ItemMergeUsable(head))
 				continue;
 
 			found[cnt++] = i;
@@ -1464,7 +1485,7 @@ int MergeItems(bool doMerge)
 					|| it->grade != head->grade)
 					continue;
 
-				if (ItemWorn(it) || it->locked)
+				if (!ItemMergeUsable(it))
 					continue;
 
 				found[cnt++] = k;
@@ -1492,6 +1513,27 @@ int MergeItems(bool doMerge)
 			const bool keep = CastleBonusOf(CPE_MERGE_BONUS) > 0
 				&& Random(100) < CastleBonusOf(CPE_MERGE_BONUS);
 
+			//---- 재료가 끼어 있던 자리 ----
+			//
+			//착용 중인 것도 재료로 쓴다. 그 자리를 비워 두면 맨몸이 되므로,
+			//어느 히어로의 어느 칸이었는지 적어 두었다가 결과를 도로 입힌다.
+			bool wornAt[TOTALPLAYER][TOTALEQUIP] = {};
+
+			for (int k = 0; k < ITEM_MERGE_COUNT; k++) {
+				const long long id = robin.inven[found[k]].id;
+
+				for (int h = 0; h < TOTALPLAYER; h++)
+					for (int e = 0; e < TOTALEQUIP; e++) {
+						if (robin.charData[h].equip[e].type != EMPTY
+							&& robin.charData[h].equip[e].id == id)
+							wornAt[h][e] = true;
+
+						if (ao[h].equip[e].type != EMPTY
+							&& ao[h].equip[e].id == id)
+							wornAt[h][e] = true;
+					}
+			}
+
 			for (int k = 1; k < ITEM_MERGE_COUNT; k++) {
 				//마지막 재료 하나는 남긴다.
 				if (keep && k == ITEM_MERGE_COUNT - 1)
@@ -1507,6 +1549,20 @@ int MergeItems(bool doMerge)
 			MakeItem(head, type, lv, grade, detail, EMPTY);
 			head->id = MakeItemId();
 			head->seen = false;
+
+			//---- 그 자리에 결과를 입힌다 ----
+			//
+			//칸이 맞는 자리에만 넣는다. 셋 중 둘이 서로 다른 히어로의 같은
+			//부위였다면 둘 다 새 것을 낀다 - 물건은 하나지만 창고의 한 점을
+			//여럿이 쓰는 것은 원래 이 게임의 규칙이다(같은 id 로 비교한다).
+			for (int h = 0; h < TOTALPLAYER; h++)
+				for (int e = 0; e < TOTALEQUIP; e++) {
+					if (!wornAt[h][e])
+						continue;
+
+					robin.charData[h].equip[e] = *head;
+					ao[h].equip[e] = *head;
+				}
 
 			again = true;
 			break;
