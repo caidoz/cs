@@ -1,0 +1,106 @@
+<!--
+  bigpixel.kr 첫 페이지.
+
+  게임 안 웹뷰(Core.cpp 의 _webView)가 https://www.bigpixel.kr 을 연다.
+  스토어 링크는 출시 뒤에 href 를 채운다. 약관·개인정보·확률 문서는 이 폴더의
+  것과 cdn.bigpixel.kr 의 것이 같은 파일이다.
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BigPixel · Castle Survivor</title>
+<meta name="description" content="BigPixel 의 모바일 게임 Castle Survivor. 움직이는 성과 함께 동료를 모으고 합쳐 적을 물리치는 턴제 룰렛 전투.">
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --dim: #666666;
+  --line: #e2e2e2;
+  --accent: #0b5d6b;
+  --card: #f6f7f8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171a;
+    --fg: #e6e8ea;
+    --dim: #9aa0a6;
+    --line: #2a2f34;
+    --accent: #58b6c4;
+    --card: #1c2126;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+}
+main { max-width: 720px; margin: 0 auto; padding: 48px 20px 64px; }
+header { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.brand { font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+h1 { margin: 8px 0 6px; font-size: 32px; line-height: 1.2; }
+.lead { margin: 0; color: var(--dim); }
+section { margin-top: 36px; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+p { margin: 0 0 12px; }
+ul { margin: 0; padding-left: 20px; }
+li { margin: 6px 0; }
+a { color: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.card b { display: block; margin-bottom: 4px; }
+.store { display: flex; flex-wrap: wrap; gap: 10px; }
+.store a, .store span {
+  display: inline-block; padding: 10px 16px; border-radius: 8px;
+  border: 1px solid var(--line); text-decoration: none; color: var(--fg); background: var(--card);
+}
+.store span { color: var(--dim); }
+footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--dim); }
+footer nav a { margin-right: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">BigPixel</div>
+    <h1>Castle Survivor</h1>
+    <p class="lead">움직이는 성과 함께 길을 간다. 룰렛을 돌려 동료를 모으고, 같은 동료를 합쳐 키우고, 쌓인 동료가 한 번에 쏜다.</p>
+  </header>
+
+  <section>
+    <h2>어떤 게임인가</h2>
+    <div class="cards">
+      <div class="card"><b>룰렛</b>세 릴이 동료와 장비를 내준다. 한 번 돌리는 데 하트 하나.</div>
+      <div class="card"><b>합성</b>같은 역할, 같은 별의 동료 둘을 합치면 한 단계 위 동료가 나온다. ★1 에서 ★6 까지.</div>
+      <div class="card"><b>공격</b>더 돌릴지, 지금 쏠지. 쏘면 성 안의 모든 동료가 차례로 나선다.</div>
+      <div class="card"><b>여정</b>성 하나에 적 열. 보스를 넘기면 다음 성으로. 동료는 성을 넘어 남는다.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>다운로드</h2>
+    <div class="store">
+      <span>Google Play · 준비 중</span>
+      <span>App Store · 준비 중</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>문의</h2>
+    <p>버그, 결제, 계정 문제는 <a href="mailto:support@bigpixel.kr">support@bigpixel.kr</a> 로 보내 주세요. 기기와 게임 안 닉네임을 함께 적어 주시면 빨리 찾습니다.</p>
+  </section>
+
+  <footer>
+    <nav>
+      <a href="/terms.html">이용약관</a>
+      <a href="/privacy.html">개인정보처리방침</a>
+      <a href="/rates.html">확률 정보</a>
+    </nav>
+    <p>© BigPixel. bigpixel.kr</p>
+  </footer>
+</main>
+</body>
+</html>
