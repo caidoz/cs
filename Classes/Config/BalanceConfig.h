@@ -1126,6 +1126,15 @@
 #define STAGE_TEST_SKILL_CREW_ON  1
 #define STAGE_TEST_SKILL_CREW     NPC_DONALD
 
+//---- 합성 연출 ----
+//
+//합쳐져도 블록 하나가 조용히 바뀔 뿐이라 "합쳐졌다" 가 안 읽혔다.
+//그 자리에서 테두리가 한 번 부풀었다 가라앉는 길이다.
+//
+//판을 멈추지 않는다 - 합성은 플레이어가 연달아 하는 동작이라, 멈추면
+//손이 끊긴다.
+#define MERGE_FLASH_FRAMES  (FPS / 3)
+
 //체력 몇 점이 금화 하나인가. 올리면 전체 보상이 내려간다.
 //STAGE_KILL_GOLD_HP_DIV 는 content/balance.tsv 에서 난다(BalanceGenerated.h).
 

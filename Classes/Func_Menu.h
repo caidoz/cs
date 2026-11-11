@@ -146,6 +146,7 @@ void ShopSelectPixelCategory(int category);
 bool ShopCatalogTouch(int command);
 bool ShopPurchaseExistingBox(int detail);
 bool ShopSpecReviewChecks();
+bool ShopCurrencyReviewChecks();
 void StageProgressDraw(int x, int y, int current, int progress, float zoom);
 void RemainedTurnDraw(int x, int y, int current, int progress, float zoom);
 void StageInfoDraw(int stage, int room, long long combatPower, bool cur, int x, int y, float zoom);

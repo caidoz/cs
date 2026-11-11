@@ -3719,32 +3719,7 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 		}
 }
 
-//---- 쿨타임 ----
-//
-//검은 칠 준비가 될 때까지 어둡게 가라앉아 있다가, 아래에서부터 밝아지며
-//차오른다(템빨용사와 같다). 다 차면 한 번 번쩍이고, 그 번쩍임이 끝나는
-//순간 공격이 나간다(Func_Battle 의 스테이지 실시간 전투).
-//
-//그리기 좌표는 윗변이고 사각형은 아래로 뻗는다. 밝은 쪽이 아래이므로
-//어두운 덮개는 윗변에서부터 남은 높이만큼 깐다.
-static void GridDrawCharge(int x, int y, int w, int h, float charge, int flash)
-{
-	const float c = Max(0.0f, Min(1.0f, charge));
-	const int dark = flash>0 ? 0 : h - (int)(h * c);
 
-	if (dark > 0) {
-		// SetAlpha uses 4..32, while sprite opacity constants use 0..255.
-		SetAlpha(16);
-		MemRect(x, y, w, dark, 0x000000);
-		SetAlpha(ALPHA_MAX);
-	}
-
-	if (flash > 0) {
-		SetAlpha(12);
-		MemRect(x, y, w, h, 0xFFFFFF);
-		SetAlpha(ALPHA_MAX);
-	}
-}
 
 //---- 검 미리보기 ----
 //
@@ -5493,6 +5468,64 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 	//
 	//여기 갑옷(ARMOR/VEST/COAT)만 따로 보는 switch 가 있었는데, 하는 일이
 	//h=1 을 h=1 로 덮는 것이었다. 갑옷이 1x2 이던 시절의 자국이다.
+}
+//---- 합성 판의 장비를 인벤토리 그림으로 ----
+//
+//합성 판은 32x32 아이콘 한 칸을 그대로 찍고 있었다. 그 그림은 목록에서
+//작게 훑어보라고 만든 것이라, 칸을 차지하는 물건으로 보이지 않는다.
+//
+//가방이 쓰는 그림과 같은 길로 보낸다 - 같은 검이 두 화면에서 다른
+//물건으로 보이면 안 된다. GridDrawShapedCard 는 이 파일 안에만 있으므로
+//여기서 문을 하나 낸다.
+void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha)
+{
+	if (!it || it->type == EMPTY)
+		return;
+
+	GridPart part;
+
+	GridGearPart(it, &part);
+
+	//---- 눕힐지는 칸이 정한다 ----
+	//
+	//부르는 쪽의 "눕혔다" 깃발을 그대로 믿으면 안 된다. 기본 방향이
+	//서로 다르기 때문이다 - 룰렛 판은 ★2 장비를 2×1(가로)로 보고,
+	//가방은 같은 검을 1×2(세로)로 본다. 깃발을 그대로 넘기면 세로 칸에
+	//누운 검이 들어간다.
+	//
+	//그려 달라는 칸의 모양만 본다. 칸이 가로로 길면 누운 그림을, 세로로
+	//길면 선 그림을 준다. 정사각은 돌려도 같으니 그대로 둔다.
+	if (part.w != part.h && (w > h) != (part.w > part.h))
+		part = GridPartRotated(part);
+
+	GridDrawShapedCard(&part, x, y, w, h, alpha, false);
+}
+
+//---- 쿨타임 ----
+//
+//검은 칠 준비가 될 때까지 어둡게 가라앉아 있다가, 아래에서부터 밝아지며
+//차오른다(템빨용사와 같다). 다 차면 한 번 번쩍이고, 그 번쩍임이 끝나는
+//순간 공격이 나간다(Func_Battle 의 스테이지 실시간 전투).
+//
+//그리기 좌표는 윗변이고 사각형은 아래로 뻗는다. 밝은 쪽이 아래이므로
+//어두운 덮개는 윗변에서부터 남은 높이만큼 깐다.
+static void GridDrawCharge(int x, int y, int w, int h, float charge, int flash)
+{
+	const float c = Max(0.0f, Min(1.0f, charge));
+	const int dark = flash>0 ? 0 : h - (int)(h * c);
+
+	if (dark > 0) {
+		// SetAlpha uses 4..32, while sprite opacity constants use 0..255.
+		SetAlpha(16);
+		MemRect(x, y, w, dark, 0x000000);
+		SetAlpha(ALPHA_MAX);
+	}
+
+	if (flash > 0) {
+		SetAlpha(12);
+		MemRect(x, y, w, h, 0xFFFFFF);
+		SetAlpha(ALPHA_MAX);
+	}
 }
 
 //아래 줄, 왼쪽 칸부터 처음 들어가는 자리를 찾는다.
@@ -11653,6 +11686,59 @@ static int CastleRoomManCap(float roomW, const CastleNpcPlacement::Area& zone,
 }
 
 
+//---- 걸을 수 있는 동료인가 ----
+//
+//crewPos 의 대기 장수로는 못 가른다. 64명 전원이 대기 그림을 4장씩
+//가지고 있어서 그 잣대로는 아무도 안 걸러진다. 걷는지는 cmf 이동표의
+//State 1 이 정한다 - 4~64장이고, 첫 모션이 걷기 범위(4~7)이고, dx 가
+//하나라도 0 이 아니어야 걷는 그림이다. State 1 이 없는 사람(17명),
+//있어도 dx 가 전부 0 인 제자리 동작(7명)은 걷지 않는다.
+//
+//성 로비(DrawCastleLobby)와 합성 로비(MergeCastleLobbyRebuild.inc)가
+//같은 잣대를 쓰도록 여기 한 곳에 둔다.
+bool CrewWalkMotion(int cmf, int type, int& outFrames, const signed short*& outMotions)
+{
+	outFrames = 0;
+	outMotions = nullptr;
+
+	// 비행선/탑승물이나 프레임 수가 1 이하인 정지형/석상은 절대 걷기 불가
+	if (type == NPC_SHIP || crewPos[type * 5 + 1] <= 1)
+		return false;
+
+	if (cmf < 0 || cmf >= REALMAXCMF)
+		return false;
+
+	// cmf_status_data[cmf][1] (State 1)이 걷기 모션 상태인지 검사
+	const signed short* st = cmf_status_data[cmf][1];
+	if (!st)
+		return false;
+
+	const int frames = (int)st[0];
+	if (frames < 4 || frames > 64)
+		return false;
+
+	// 첫 모션 확인: 대기 모션(0~3) 다음의 걷기 시작 모션 (4~7번 범위)
+	const signed short firstMotion = st[2];
+	if (firstMotion < 4 || firstMotion > 7)
+		return false;
+
+	// 상태 내에 실제 수평 이동(dx != 0)이 존재하는지 확인
+	bool hasMoveX = false;
+	for (int f = 0; f < frames; ++f) {
+		if (st[2 + frames + f] != 0) {
+			hasMoveX = true;
+			break;
+		}
+	}
+
+	if (!hasMoveX)
+		return false;
+
+	outFrames = frames;
+	outMotions = &st[2];
+	return true;
+}
+
 bool CastlePartsCombatAnchors(float* commanderX,float* commanderY,float* deckY)
 {
     const auto& p=CastleParts::sdPlacement;
@@ -11675,48 +11761,6 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	// 히어로와 동료는 성 그림 위 비율 자리(LobbyCastleToObj)에 세운다.
 	// 확대/이동하면 성과 같이 움직이고 같이 커진다.
 
-	// 동료의 순수 걷기(Walk) 모션 탐색 람다
-	auto GetCrewWalkMotion = [](int cmf, int type, int& outFrames, const signed short*& outMotions) -> bool {
-		outFrames = 0;
-		outMotions = nullptr;
-
-		// 비행선/탑승물이나 프레임 수가 1 이하인 정지형/석상은 절대 걷기 불가
-		if (type == NPC_SHIP || crewPos[type * 5 + 1] <= 1)
-			return false;
-
-		if (cmf < 0 || cmf >= REALMAXCMF)
-			return false;
-
-		// cmf_status_data[cmf][1] (State 1)이 걷기 모션 상태인지 검사
-		const signed short* st = cmf_status_data[cmf][1];
-		if (!st)
-			return false;
-
-		const int frames = (int)st[0];
-		if (frames < 4 || frames > 64)
-			return false;
-
-		// 첫 모션 확인: 대기 모션(0~3) 다음의 걷기 시작 모션 (4~7번 범위)
-		const signed short firstMotion = st[2];
-		if (firstMotion < 4 || firstMotion > 7)
-			return false;
-
-		// 상태 내에 실제 수평 이동(dx != 0)이 존재하는지 확인
-		bool hasMoveX = false;
-		for (int f = 0; f < frames; ++f) {
-			if (st[2 + frames + f] != 0) {
-				hasMoveX = true;
-				break;
-			}
-		}
-
-		if (!hasMoveX)
-			return false;
-
-		outFrames = frames;
-		outMotions = &st[2];
-		return true;
-	};
 
 	struct LobbySlotInstance {
 		LobbyCrewRole role;
@@ -11898,7 +11942,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		const int cmf = enemyData[type * ENEMYDATASIZE + ENEMYDATA_CMF];
 		int dummyF = 0;
 		const signed short* dummyM = nullptr;
-		if (GetCrewWalkMotion(cmf, type, dummyF, dummyM)) {
+		if (CrewWalkMotion(cmf, type, dummyF, dummyM)) {
 			walkingCrew[walkingCrewCount++] = crewIdx;
 		}
 		else {
@@ -11968,7 +12012,7 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 		// 걷는 모션 유무 확인 및 걷기 모션 데이터 획득 (순수 Walk 모션만 허용)
 		int walkFrames = 0;
 		const signed short* walkMotions = nullptr;
-		const bool hasWalkMotion = GetCrewWalkMotion(pCrew->cmf, pCrew->type, walkFrames, walkMotions);
+		const bool hasWalkMotion = CrewWalkMotion(pCrew->cmf, pCrew->type, walkFrames, walkMotions);
 
 		// 실제로 걷는 동작을 할 것인가? (걷는 모션 보유 + 슬롯에서 이동 허용 + 첨탑이 아님)
 		const bool isWalking = hasWalkMotion && slot.allowPatrol && (slot.role != LOBBY_ROLE_SPIRE);

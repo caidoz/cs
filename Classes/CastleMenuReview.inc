@@ -21,6 +21,20 @@ static void CastleMenuReviewStep()
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
     if(MenuRenewalReviewStep(path))return;
+    if(getenv("CS_SHOP_CURRENCY_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();}
+        if(tick==20){CastleReviewClick(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==35)CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+2);
+        if(tick==60||tick==110){
+            CastleReviewTrace(ShopCurrencyReviewChecks()?"PASS twelve currency products visible and unavailable purchases disabled":"FAIL currency catalog");
+            pending=true;const char* name=tick==60?"currency-top.png":"currency-bottom.png";
+            cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS currency capture":"FAIL currency capture");},std::string(path)+name);
+        }
+        if(tick==90){scY[MENU_SHOP]=scT[MENU_SHOP];scDir=SCROLL_NOTHING;}
+        if(tick==130)CastleReviewTrace("DONE currency review");
+        return;
+    }
     if(getenv("CS_ROOM_UPGRADE_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         static auto saved=robin.castleProgress;static long long gold=0,hp=0;

@@ -27,6 +27,9 @@ void DrawWindow5(int x, int y, int w, int h, int mapIdx, float zoom, int mapOffs
 
 void VersionDraw(void);
 bool SceneGridReviewCheck(void);
+//동료가 걷는 그림을 가졌는가. cmf 이동표 State 1 을 본다(Func_Draw.cpp 주석 참조).
+//걷는다면 outFrames 장의 모션 번호 배열을 outMotions 로 준다. CmfRead 뒤에 불러야 한다.
+bool CrewWalkMotion(int cmf, int type, int& outFrames, const signed short*& outMotions);
 
 #if DUMP_CMF_PNG
 //캐릭터 그림을 한 프레임에 한 장씩 PNG 로 떨군다(Config/BuildConfig.h).
@@ -232,6 +235,7 @@ void StageRunGridClear(void);
 bool LoadoutRequiredWeaponReady(void);
 bool LoadoutVisualWeapon(ITEM* out);
 void LoadoutDiag(const char* tag, int a, int c, int d, int e);
+void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha);
 void LoadoutDefaultReset(void);
 void LoadoutMarkTouched(void);
 bool MaxWeaponFoundationReview(void);

@@ -15,13 +15,16 @@ typedef int (*RandomFn)(int bound);	//0 <= r < bound
 
 //---- 크기 ----
 //2026-11-10 결정: "사람은 한 칸, 장비는 커진다."
-//  동료 블록은 ★ 에 상관없이 1×1 — 사람이 커지는 그림은 어색하다. 합치면 칸이 하나 준다.
+//2026-11-11 고침: 사람은 1×2 다. 한 칸에 넣으면 사람 그림의 세로에 맞춰
+//  줄어들어 칸 폭이 반도 안 찼다 - 누군지 알아볼 수가 없었다. 세로 두 칸이면
+//  폭을 꽉 채우고 선다. ★ 가 올라도 크기는 그대로 1×2 - 사람이 커지는 그림은
+//  여전히 어색하다. 합치면 두 칸이 준다.
 //  장비 블록은 ★ 마다 한 칸씩 는다 — ★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2.
 //  1+1 이 2칸이 되는데 세기가 2배면 합칠 이유가 없다. 그래서 장비는 ×3, 동료는 ×2(칸을 벌었으니).
 inline int GearW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 2, 3, 2, 5, 3 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
 inline int GearH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 1, 1, 2, 1, 2 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
 inline int BlockWOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearW(level); }
-inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearH(level); }
+inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 2 : 0) : GearH(level); }
 inline int BlockCellsOf(int kind, int level) { return BlockWOf(kind, level) * BlockHOf(kind, level); }
 //호환용: 종류를 모르는 호출부는 장비 크기로 본다.
 inline int BlockW(int level) { return GearW(level); }

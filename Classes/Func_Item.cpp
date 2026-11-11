@@ -1458,6 +1458,38 @@ bool ItemMergeUsable(const ITEM* it)
 	return it->grade < GRADE_LEGEND && !it->locked;
 }
 
+//---- 가장 많이 모인 것이 몇 점인가 ----
+//
+//합성이 안 될 때 "왜" 를 말해 주려고 둔다. 버튼이 꺼져 있기만 하면
+//모자라서인지 고장인지를 알 수가 없다.
+//
+//MergeItems 와 같은 재료 규칙을 쓴다(ItemMergeUsable).
+int MergeItemsBest(void)
+{
+	int best = 0;
+
+	for (int i = 0; i < TOTALINVENTORY; i++) {
+		const ITEM* head = &robin.inven[i];
+		int cnt = 0;
+
+		if (!ItemMergeUsable(head))
+			continue;
+
+		for (int k = 0; k < TOTALINVENTORY; k++) {
+			const ITEM* it = &robin.inven[k];
+
+			if (it->type == head->type && it->detail == head->detail
+				&& it->grade == head->grade && ItemMergeUsable(it))
+				cnt++;
+		}
+
+		if (cnt > best)
+			best = cnt;
+	}
+
+	return best;
+}
+
 int MergeItems(bool doMerge)
 {
 	int done = 0;

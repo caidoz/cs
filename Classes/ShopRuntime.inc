@@ -6,6 +6,7 @@ namespace ShopSpec {
 int tab=ShopCatalog::Gear,hero=0,detail=-1,page=0;
 bool resultOpen=false,purchasing=false;
 int resultUntil=0;
+int currencyCardsDrawn=0;
 std::chrono::steady_clock::time_point lastPurchaseTime;
 std::string message;
 struct Candidate {int type,detail;};
@@ -87,6 +88,7 @@ void Overlay(int top) {
  Button(">",x+w-60,y-h+42,44,32,TOUCH_FUNC_SHOP_POOL_NEXT,page+1<pages);
 }
 void Draw(float x,float y,float w,float h,float zoom) {
+ currencyCardsDrawn=0;
  const int top=(int)y,head=58,tabH=46,pad=18;
  //장비 탭만 히어로 줄을 따로 고른다. 그만큼 본문이 내려온다.
  const int bodyTop=top-head-tabH-12,bottom=12;
@@ -144,15 +146,16 @@ void Draw(float x,float y,float w,float h,float zoom) {
   //물건이 아니다. 팔기 시작하면 성장 곡선을 돈으로 건너뛴다.
   int shown=0;
   DrawMenuPlaque("하트",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
-  for(int i=IAP_HEART_01;i<=IAP_HEART_06;++i)if(IapCanPurchase(i)) {
-   ShopCard(i,x+pad+(shown%2)*(cw+8),cy-(shown/2)*216,cw,206,1);++shown;
+  const int columns=3,cardW=(inner-16)/columns,cardH=202,pitch=cardH+10;
+  for(int i=IAP_HEART_01;i<=IAP_HEART_06;++i) {
+   ShopCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH,1);++shown;++currencyCardsDrawn;
   }
-  cy-=((shown+1)/2)*216+14;shown=0;
+  cy-=((shown+columns-1)/columns)*pitch+14;shown=0;
   DrawMenuPlaque("캐시",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
-  for(int i=IAP_CASH_01;i<=IAP_CASH_06;++i)if(IapCanPurchase(i)) {
-   ShopCard(i,x+pad+(shown%2)*(cw+8),cy-(shown/2)*216,cw,206,1);++shown;
+  for(int i=IAP_CASH_01;i<=IAP_CASH_06;++i) {
+   ShopCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH,1);++shown;++currencyCardsDrawn;
   }
-  cy-=((shown+1)/2)*216;
+  cy-=((shown+columns-1)/columns)*pitch;
  }
  if(IapPendingCount()>0) {Label("미지급 결제를 복구하고 있습니다",(int)(x+w/2),cy,inner,.7f,0xE6C56B);cy-=36;}
  UnSectionClip(false);
@@ -170,6 +173,14 @@ void Draw(float x,float y,float w,float h,float zoom) {
 }
 }
 
+bool ShopCurrencyReviewChecks(){
+ if(ShopSpec::tab!=ShopCatalog::Currency||ShopSpec::currencyCardsDrawn!=12)return false;
+ for(int i=0;i<6;++i)if(!sprite[HEART_0_IMG+i])return false;
+ if(!sprite[SHOP_CASH_PILES_IMG])return false;
+ for(int i=0;i<touchIndex;++i){const int p=touchRect[i][4]-TOUCH_FUNC_SHOP_IAP;
+  if(p>=0&&p<TOTALIAPPRODUCT&&!IapCanPurchase(p))return false;}
+ return true;
+}
 bool ShopCatalogTouch(int command) {
  using namespace ShopSpec;
  if(command>=TOUCH_FUNC_SHOP_MAIN_TAB&&command<TOUCH_FUNC_SHOP_MAIN_TAB+3) {

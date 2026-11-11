@@ -34,6 +34,7 @@ long long CastleIncomeNow(void);	//지금 쌓여 있는 양
 long long CastleIncomeTake(void);	//걷는다. 걷은 양을 돌려준다
 long long SellNormalItems(void);	//일반 등급을 한 번에 판다
 int MergeItems(bool doMerge);		//같은 장비 셋을 한 등급 위로
+int MergeItemsBest(void);		//가장 많이 모인 같은 장비가 몇 점인가
 extern bool gInvenFullNotice;		//가방이 차서 못 받은 것이 있다
 int GetHeroCnt(void);
 int GetHeroIdx(int type);

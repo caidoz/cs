@@ -50,9 +50,9 @@ def render():
               'inline int CountAt(int role,int star) {int n=0;for(int c=0;c<CrewCount;++c)if(Crew[c].role==role&&Crew[c].star==star)++n;return n;}',
               'inline int CrewAt(int role,int star,int k) {for(int c=0;c<CrewCount;++c)if(Crew[c].role==role&&Crew[c].star==star&&k--==0)return c;return -1;}',
               'inline int MaxStar(int role) {int m=0;for(int c=0;c<CrewCount;++c)if(Crew[c].role==role&&Crew[c].star>m)m=Crew[c].star;return m;}',
-              '// 장비 계열(4 검 · 5 갑옷 · 6 목걸이) 의 Lv → detail. 35자루는 6칸, 8벌은 1칸, 28개는 5칸 위.',
+              '// 코스튬 6부위의 Lv → detail. 무기는 6칸, 나머지 부위는 1칸씩 성장.',
               'inline int GearDetail(int family,int detail,int level) {',
-              ' const int step=family==4?6:family==5?1:5,cap=family==4?34:family==5?7:27;',
+              ' const int step=family==4?6:1,cap=family==4?34:7;',
               ' return detail<0?0:(detail+(level-1)*step>cap?cap:detail+(level-1)*step);', '}', '}']
     return '\n'.join(lines) + '\n'
 
@@ -67,4 +67,4 @@ if __name__ == '__main__':
     else:
         if not TARGET.exists() or TARGET.read_text(encoding='utf-8-sig') != content:
             TARGET.write_text(content, encoding='utf-8-sig')
-    print('PASS 64 crew / 4 roles x 6 stars match the balance table / gear steps 6-1-5')
+    print('PASS 64 crew / 4 roles x 6 stars / six costume slots with gear steps 6-1')

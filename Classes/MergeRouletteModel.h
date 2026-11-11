@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #pragma pack(push, 8)
 // TURNRPG run state. No engine globals, persistent equipment or ACTIONRPG data.
 //
-// 2026-11-09: 합성은 6단 = 성급이다. 계열(family)은 역할군 4 + 장비 3.
+// 합성은 6단 = 성급이다. 계열(family)은 역할군 4 + 코스튬 장비 6.
 // 같은 역할·같은 ★ 블록 둘을 합치면 그 역할의 ★+1 동료 중 하나가 무작위로
 // 나온다(운빨존많겜 식). 어느 동료가 나올 수 있는지는 Roster 가 들고 있고,
 // 피해·특성은 Stats 가 동료 번호로 들고 있다. 판은 공격해도 비지 않는다.
@@ -16,7 +16,8 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Necklace=6, FamilyCount=7, RosterCell=8, SaveVersion=6 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, RosterCell=8, SaveVersion=8 };
+inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
     int width=BOARD_W,height=BOARD_H;
     unsigned rows[Height]={63,63,63,63,63,63};
@@ -31,14 +32,19 @@ struct Shape {
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
 struct Block {
     int family=-1, level=1, crew=-1, x=-1, y=-1;   // crew: 역할 계열이면 동료 번호, 장비면 -1
+    //눕혔는가. 장비는 ★5 가 5x1 이라 세로로 눕혀야 들어가는 자리가 많다.
+    //동료는 1x1 이라 눕히나 마나 같다.
+    bool rot=false;
     bool placed() const { return x>=0 && y>=0; }
 };
 // 2026-11-10: 사람은 한 칸, 장비는 커진다. 동료 블록은 ★ 에 상관없이 1×1,
 // 장비 블록은 ★ 마다 한 칸씩(1×1 · 2×1 · 3×1 · 2×2 · 5×1 · 3×2). 표는 BoardModel.h.
 inline int Wide(int family,int level) { return MergeBoard::BlockWOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
 inline int Tall(int family,int level) { return MergeBoard::BlockHOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
-inline int Wide(const Block& b) { return Wide(b.family,b.level); }
-inline int Tall(const Block& b) { return Tall(b.family,b.level); }
+//눕힌 블록은 가로세로가 바뀐다. 크기를 묻는 곳이 전부 이 둘을 거치므로
+//여기 두 줄이면 판정·그리기·저장이 같이 따라온다.
+inline int Wide(const Block& b) { return b.rot?Tall(b.family,b.level):Wide(b.family,b.level); }
+inline int Tall(const Block& b) { return b.rot?Wide(b.family,b.level):Tall(b.family,b.level); }
 // 동료마다 한 방의 세기와 특성. 레벨(=★)은 블록이 들고 있으므로 여기엔 없다.
 struct CrewStats {
     long long power=20;
@@ -71,8 +77,23 @@ struct Effects {
 struct Run {
     Shape shape;
     unsigned rng=1;
-    int families[3]={Sword,Armor,Necklace};
+    int families[3]={Sword,Armor,Boots};
     int selected=Sword, spins=SpinLimit, lives=5, maxLives=5;
+
+    //---- 막 합쳐진 자리 ----
+    //
+    //그리는 쪽이 연출을 걸 자리다. 저장하지 않는다 - 불러오자마자
+    //터지는 연출은 거짓말이다.
+    //
+    //seq 는 볼 때마다 오르는 번호다. 그리는 쪽이 제가 본 번호와 다르면
+    //"새로 합쳐졌다" 로 읽고 연출을 시작한다. 같은 자리에서 연달아
+    //합쳐도 번호가 달라 놓치지 않는다.
+    int mergeX=-1,mergeY=-1,mergeW=0,mergeH=0,mergeLevel=0;
+    unsigned mergeSeq=0;
+
+    //TODO(diag) 합성이 왜 안 되는지. 원인 잡으면 지운다.
+    //마지막으로 시도한 합성이 어디서 걸렸는가.
+    const char* lastFail="";
     int wave=0, stage=0, skipTurns=0, dotTurns=0, nextShot=0;
     long long enemyHp=330, enemyMax=330, dot=0, reward=0, damageDone=0;
     bool choosing=true, attacking=false, lost=false, drafted=false;
@@ -143,7 +164,46 @@ struct Run {
         // Same edge-inward placement policy as the existing BoardModel.
         out.x=std::min(out.x,shape.width-Wide(out));
         out.y=std::min(out.y,shape.height-Tall(out));
-        return fits(out,target,ignore);
+        if(fits(out,target,ignore)) return true;
+
+        //---- 그 자리에 안 들어가면 다른 자리를 찾는다 ----
+        //
+        //여기서 자리 하나만 보고 실패를 돌려주고 있었다. 장비는 ★ 마다
+        //칸이 늘어서(★4 2x2 -> ★5 5x1) 합친 결과가 재료가 있던 자리에
+        //그대로 들어가는 일이 드물다. 그래서 판이 텅 비어 있어도 합치기가
+        //조용히 실패했다 - "동료는 합쳐지는데 검은 안 합쳐진다" 가 이것이다.
+        //(동료는 ★ 과 무관하게 1x1 이라 늘 제자리에 들어간다.)
+        //
+        //재료 둘이 비켜 준 칸까지 포함해 판 전체를 훑는다. 원래 자리에서
+        //가까운 쪽을 고른다 - 합친 것이 판 반대편으로 튀면 어디로 갔는지
+        //눈으로 쫓을 수가 없다.
+        //재료 둘이 덮고 있던 한가운데. 합친 것이 그 자리를 중심으로 앉아야
+        //눈으로 쫓을 수 있다 - 판 반대편으로 튀면 어디로 갔는지 모른다.
+        const float cx=t.x+Wide(t)*.5f,cy=t.y+Tall(t)*.5f;
+        Block best=out;float bestScore=-1.0f;
+
+        //눕혀도 본다. ★5 는 5x1 이라 가로로는 안 들어가도 세로로는 들어가는
+        //자리가 많다.
+        for(int turn=0;turn<2;++turn) {
+            Block form=out;form.rot=(turn!=0);
+            if(turn && Wide(form)==Tall(form)) continue;   //정사각은 눕혀도 같다
+
+            for(int y=0;y<shape.height;++y) for(int x=0;x<shape.width;++x) {
+                Block cand=form;cand.x=x;cand.y=y;
+                if(!fits(cand,target,ignore)) continue;
+
+                const float dx=x+Wide(cand)*.5f-cx,dy=y+Tall(cand)*.5f-cy;
+                //가운데에서 먼 만큼 벌점. 눕힌 쪽은 아주 조금 뒤로 민다 -
+                //같은 거리면 세워 둔 모양이 읽기 쉽다.
+                const float score=dx*dx+dy*dy+(turn?0.25f:0.0f);
+
+                if(bestScore<0.0f||score<bestScore) {bestScore=score;best=cand;}
+            }
+        }
+
+        if(bestScore<0.0f) return false;
+        out=best;
+        return true;
     }
     // Validate first: a failed merge/move never loses or changes either block.
     bool place(bool fromTray,int index,int x,int y) {
@@ -155,13 +215,24 @@ struct Run {
         if(!fromTray && target==index) target=-1;
         if(target>=0) {
             Block combined;
-            if(!mergedPreview(target,moving,fromTray?-1:index,combined)) return false;
+            const Block& t=board[target];
+
+            if(t.family!=moving.family) {lastFail="family";return false;}
+            if(t.level!=moving.level) {lastFail="level";return false;}
+            if(!canGrow(t.family,t.level)) {lastFail="grow";return false;}
+            if(!mergedPreview(target,moving,fromTray?-1:index,combined)) {lastFail="room";return false;}
             if(combined.family<Roles) {
                 combined.crew=pickCrew(combined.family,combined.level);
-                if(combined.crew<0) return false;
+                if(combined.crew<0) {lastFail="crew";return false;}
             }
+            lastFail="";
             board[target]=combined;
             source.erase(source.begin()+index);
+
+            //연출이 걸릴 자리를 남긴다(그리는 쪽이 읽는다).
+            mergeX=combined.x;mergeY=combined.y;
+            mergeW=Wide(combined);mergeH=Tall(combined);
+            mergeLevel=combined.level;++mergeSeq;
         } else {
             if(!fits(moving,fromTray?-1:index)) return false;
             if(fromTray) { board.push_back(moving); tray.erase(tray.begin()+index); }
@@ -189,8 +260,52 @@ struct Run {
             const float h=std::max(0.f,std::min(centerY+mh/2,board[i].y+(float)Tall(board[i]))-std::max(centerY-mh/2,(float)board[i].y));
             if(w*h>best){best=w*h;target=i;}
         }
-        if(target>=0&&place(fromTray,index,board[target].x,board[target].y))return true;
-        return place(fromTray,index,(int)std::floor(centerX-(mw-1)/2),(int)std::floor(centerY-(mh-1)/2));
+        //---- 합칠 상대를 정조준했으면 거기서 끝낸다 ----
+        //
+        //전에는 합치기가 실패하면 곧바로 "빈 칸에 놓기" 를 다시 시도했다.
+        //그 두 번째 시도가 엉뚱한 블록 위에 떨어지면 거기서 또 실패하는데,
+        //실패 이유가 그쪽 것으로 덮어써진다 - 자리가 없어서 못 합친 것을
+        //"다른 종류끼리는 못 합칩니다" 로 읽게 된다.
+        //
+        //위에서 고른 target 은 이미 "합쳐지는 상대" 다(mergeable 로 걸렀다).
+        //거기를 겨눴는데 안 되면 그 까닭을 그대로 돌려준다. 몰래 다른 칸에
+        //옮겨 놓지도 않는다 - 합치려고 끈 것이 엉뚱한 데 가 있으면 더
+        //헷갈린다.
+        if(target>=0) return place(fromTray,index,board[target].x,board[target].y);
+
+        const int wantX=(int)std::floor(centerX-(mw-1)/2),wantY=(int)std::floor(centerY-(mh-1)/2);
+        if(place(fromTray,index,wantX,wantY)) return true;
+
+        //---- 릴에서 꺼낸 것만 가까운 빈 자리로 ----
+        //
+        //릴에서 막 나온 조각은 돌아갈 자리가 없다. 손이 조금 빗나갔다고
+        //트레이에 도로 얹으면 매번 다시 끌어야 한다 - 가장 가까운 빈 칸에
+        //넣어 준다.
+        //
+        //판에 이미 놓인 블록은 다르다. 합치려다 안 되면 **있던 자리로
+        //돌아가야** 한다. 엉뚱한 칸으로 옮겨 놓으면 판이 제멋대로 흐트러지고,
+        //무엇을 집었다 놓았는지가 안 읽힌다.
+        //(place 가 실패하면 아무것도 안 바꾸므로, false 를 돌려주는 것이
+        // 곧 제자리로 돌아가는 것이다.)
+        if(!fromTray) {lastFail="spot";return false;}
+        {
+            const Block& b=source[index];
+            int bestX=-1,bestY=-1,bestScore=0;
+
+            for(int y=0;y<shape.height;++y) for(int x=0;x<shape.width;++x) {
+                Block cand=b;cand.x=x;cand.y=y;
+                if(!fits(cand,fromTray?-1:index)) continue;
+
+                const int dx=x-wantX,dy=y-wantY,score=dx*dx+dy*dy;
+
+                if(bestX<0||score<bestScore) {bestScore=score;bestX=x;bestY=y;}
+            }
+
+            if(bestX>=0) return place(fromTray,index,bestX,bestY);
+        }
+
+        lastFail="full";
+        return false;
     }
     void choose(const std::vector<int>& pool,const int* weights=nullptr) {
         drafted=true;
@@ -198,7 +313,7 @@ struct Run {
         std::vector<int> remaining;
         for(int f:pool) if(f!=selected && std::find(remaining.begin(),remaining.end(),f)==remaining.end()) remaining.push_back(f);
         for(int i=1;i<3;++i) {
-            if(remaining.empty()) { families[i]=i==1?Armor:Necklace; continue; }
+            if(remaining.empty()) { families[i]=i==1?Armor:Boots; continue; }
             unsigned total=0;for(int f:remaining)total+=weights?(unsigned)std::max(0,weights[f]):1;
             unsigned pick=random(total);int j=0;
             if(total)for(;j+1<(int)remaining.size();++j) {
@@ -241,16 +356,42 @@ struct Run {
     bool spin() {
         if(!canSpin()) return false;
         --spins;
-        // Preserve reel order and every symbol, including pairs and triples.
-        int result[3];for(int i=0;i<3;++i)result[i]=(int)random(3);
-        for(int i=0;i<3;++i)tray.push_back(starter(families[result[i]]));
+        //---- 장비와 동료의 비율을 먼저 정한다 ----
+        //
+        //전에는 릴 세 줄에서 고르게 뽑았다(random(3)). 그러면 비율이 계열
+        //뽑기에 끌려다닌다 - 세 줄이 전부 동료 계열로 잡힌 판에서는 아무리
+        //돌려도 장비가 안 나와 합성 트리가 통째로 멈춘다.
+        //
+        //한 칸마다 "장비냐 동료냐" 를 BOARD_GEAR_PCT 로 먼저 정하고, 그다음
+        //그쪽 계열 중에서 고른다. 한쪽이 릴에 없으면 반대쪽으로 간다 -
+        //빈손으로 돌아가는 칸은 만들지 않는다.
+        //
+        //릴 차례와 칸 수는 그대로다(쌍·삼중도 그대로 나온다).
+        int gear[3],gn=0,role[3],rn=0;
+
+        for(int k=0;k<3;++k) {
+            if(families[k]>=Roles) gear[gn++]=families[k];
+            else role[rn++]=families[k];
+        }
+
+        for(int i=0;i<3;++i) {
+            const bool wantGear=(int)random(100)<BOARD_GEAR_PCT;
+            int family;
+
+            if(wantGear&&gn) family=gear[random((unsigned)gn)];
+            else if(!wantGear&&rn) family=role[random((unsigned)rn)];
+            else if(gn) family=gear[random((unsigned)gn)];
+            else family=role[random((unsigned)rn)];
+
+            tray.push_back(starter(family));
+        }
         return true;
     }
     Shot evaluate(const Block& b,const Stats& st,Effects& e) const {
         Shot s; s.block=b;
         int lv=b.level;
-        if(b.family==Necklace) return s;
-        if(b.family==Armor) {
+        if(b.family==Boots) return s;
+        if(DefensiveGear(b.family)) {
             e.protect+=MergeBoard::ArmorGuards(lv);e.skip+=MergeBoard::ArmorSkipTurns(lv);
             if(lv==2)e.half=true;
             return s;
@@ -271,10 +412,32 @@ struct Run {
         }
         return s;
     }
+    //---- 치는 차례 ----
+    //
+    //판의 오른쪽이 전열이다. 적이 오른쪽에 있고 데크의 줄도 오른쪽이
+    //앞이므로, 판·데크·적이 한 방향으로 읽힌다.
+    //
+    //차례는 연출만이 아니다. 표식(Expose)·고무(Inspire)·갑옷은 제 뒤에
+    //오는 블록에만 걸리므로, "오른쪽 열에 버퍼를 세우면 뒤가 세진다" 가
+    //곧 배치 전술이다. 그래서 규칙은 한 문장으로 외워져야 한다.
+    //
+    //같은 열은 위에서 아래로 - 한 열 안에서도 순서가 흔들리지 않는다.
     std::vector<Block> ordered() const {
         std::vector<Block> sorted=board;
-        std::stable_sort(sorted.begin(),sorted.end(),[](const Block& a,const Block& b){return a.y==b.y?a.x<b.x:a.y<b.y;});
+        std::stable_sort(sorted.begin(),sorted.end(),[](const Block& a,const Block& b){return a.x==b.x?a.y<b.y:a.x>b.x;});
         return sorted;
+    }
+    //---- 지금 공격하면 생길 효과 ----
+    //
+    //방어(갑옷) 표시가 쓰는 값이다. 전에는 패가 maxLives-3 을 방어라고
+    //보여 줬는데, 그건 방어와 아무 상관이 없어서 늘 0 이었다.
+    //
+    //진짜 방어는 갑옷 블록이 공격 때 내놓는 e.protect 다. 공격 전에도
+    //같은 셈을 미리 돌려, 갑옷을 올리면 바로 눈금이 오르게 한다.
+    Effects forecast(const Stats& st) const {
+        Effects e;
+        for(const Block& b:ordered()) evaluate(b,st,e);
+        return e;
     }
     long long preview(const Stats& st) const {
         Effects e; long long result=dotTurns>0?dot:0;
@@ -304,7 +467,7 @@ struct Run {
         if(!attacking || nextShot<(int)shots.size()) return 0;
         // Resolve equipment effects only once, after the presentation completes.
         int hearts=0, extraSpins=0;
-        for(const Shot& s:shots) if(s.block.family==Necklace) {
+        for(const Shot& s:shots) if(s.block.family==Boots) {
             hearts+=MergeBoard::NeckHearts(s.block.level);extraSpins+=MergeBoard::NeckSpins(s.block.level);
         }
         if(effects.dot>0) {dot=effects.dot;dotTurns=std::max(dotTurns,effects.dotTurns);}
@@ -336,7 +499,7 @@ struct Run {
         for(int f:families) o<<' '<<f;
         o<<' '<<shape.width<<' '<<shape.height;for(unsigned row:shape.rows)o<<' '<<row;
         for(const auto* list:{&board,&tray}) {
-            o<<' '<<list->size(); for(const auto& b:*list) o<<' '<<b.family<<' '<<b.level<<' '<<b.crew<<' '<<b.x<<' '<<b.y;
+            o<<' '<<list->size(); for(const auto& b:*list) o<<' '<<b.family<<' '<<b.level<<' '<<b.crew<<' '<<b.x<<' '<<b.y<<' '<<(b.rot?1:0);
         }
         o<<' '<<summons.size();
         for(const auto& s:summons) o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.damage<<' '<<s.summonTurns;
@@ -351,7 +514,8 @@ struct Run {
     }
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
-        if(!(in>>magic>>version)||magic!="MR3"||version!=SaveVersion) return false;
+        // v7's accessory family (6) becomes boots, preserving the run and utility effects.
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -366,7 +530,7 @@ struct Run {
         for(int list=0;list<2;++list) {
             int count;if(!(in>>count)||count<0||count>(list?3:Cells)) return false;
             for(int i=0;i<count;++i) {
-                Block b;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;
+                Block b;int rot=0;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y>>rot)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;b.rot=rot!=0;
                 if(std::find(r.families,r.families+3,b.family)==r.families+3) return false;
                 if(!list) {if(!r.fits(b)) return false;r.board.push_back(b);}
                 else {if(b.x!=-1||b.y!=-1) return false;r.tray.push_back(b);}

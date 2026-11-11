@@ -3,6 +3,7 @@
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
+#include <cstring>
 #include "Func_MergeRoulette.h"
 #include "MergeRouletteModel.h"
 #include "StageBackground.h"
@@ -27,7 +28,7 @@ Run run;
 Stats stats;
 Roster roster;
 int treeWeights[FamilyCount]={};
-ITEM treeEquipment[3][MaxLevel];
+ITEM treeEquipment[GearCount][MaxLevel];
 bool active=false,review=false;
 int oldMode=ACTIONRPG, ticks=0, animation=0, picked=-1, finger=-1;
 float gearAngle=0.f,gearStartAngle=0.f;
@@ -79,10 +80,19 @@ struct Box {
     int x,y,w,h;
     bool has(float px,float py) const {return px>=x&&px<x+w&&py<=y&&py>y-h;}
 };
+
+//---- 합성 연출 ----
+//
+//합쳐져도 블록 하나가 조용히 바뀔 뿐이라 "합쳐졌다" 가 안 읽혔다.
+//모델이 남긴 번호(run.mergeSeq)가 달라지면 그 자리에서 짧게 터뜨린다.
+unsigned mergeSeenSeq=0;
+int mergeFlash=0;
+Box mergeBox={0,0,0,0};
+int mergeShownLevel=0;
 struct Layout {
     float scale;
     int cell, cellH, ground, arenaBottom;
-    Box board, slot, lever, trash, heart, spin, attack, exit, left, right, reroll, confirm;
+    Box board, slot, lever, heart, spin, attack, exit, left, right, reroll, confirm;
 };
 Layout layout() {
     Layout l; l.scale=DX/640.0f;
@@ -98,7 +108,6 @@ Layout layout() {
     // RH's 512 x 218 board at a uniform 0.625 scale, with a right-hand lever.
     l.slot={(int)(132*s),(int)(280*s),(int)(348*s),(int)(116*s)};
     l.lever={l.slot.x+l.slot.w+(int)(4*s),l.slot.y-(int)(3*s),(int)(40*s),(int)(104*s)};
-    l.trash={DX-(int)(82*s),l.slot.y,(int)(70*s),(int)(70*s)};
     l.cell=std::max(1,(int)(64*s));l.cellH=l.cell;
     int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
     l.board={(DX-bw)/2,(int)(305*s)+bhGrid,bw,bhGrid};
@@ -219,6 +228,57 @@ void shield(int x,int y,int size) {
 }
 // Dedicated art is registered independently of gameplay state.
 #include "MergeCastleArt.inc"
+//---- 유닛 패 ----
+//
+//[같은 서식]
+//아군은 "목숨 3 / 3", 적은 "330/330" 으로 서식이 달랐다. 둘을 나란히
+//놓고 견줄 수가 없었다. 두 패가 같은 함수에서 나오므로 이제 어긋날
+//수 없다 - 색만 다르다.
+//
+//[위가 방어, 아래가 체력]
+//맞으면 방어가 먼저 막고 그다음 체력이 깎인다. 깎이는 차례대로 위아래로
+//쌓아야 "방패가 먼저 버틴다" 가 그림으로 읽힌다.
+//
+//[글자 대신 아이콘]
+//방패 = 방어, 하트 = 체력. 말을 지운 자리를 바와 숫자가 가져간다.
+//
+//[방어는 칸으로 센다]
+//방어는 "몇 번 막아 준다" 라서 최대치가 없다. 비율 바로 그리면 늘 꽉
+//찬 바가 되므로, 한 번 막을 때마다 칸 하나로 센다.
+void unitPlate(const Box& plate,long long hp,long long max,int guard,
+    int barBg,int barFg,bool hot) {
+    const float s=DX/640.f;
+    char text[48];
+
+    uiArt(MergeCastleArt::UnitPlate,plate);
+
+    const int pad=std::max(1,(int)(7*s));
+    const int mark=(int)(14*s);
+    const int barX=plate.x+pad+mark+(int)(5*s);
+    const int barW=std::max(1,plate.x+plate.w-pad-barX);
+    const int guardH=(int)(13*s),hpH=(int)(17*s);
+    const int guardY=plate.y-pad;
+    const int hpY=guardY-guardH-(int)(3*s);
+
+    //---- 위: 방어 ----
+    shield(plate.x+pad+(int)(2*s),guardY,(int)(12*s));
+    MemRect(barX,guardY,barW,guardH,0x2A3344);
+    if(guard>0) {
+        const int pips=std::min(guard,12);
+        const int cell=std::max(1,(barW-(pips-1)*(int)(2*s))/pips);
+        for(int k=0;k<pips;++k)
+            MemRect(barX+k*(cell+(int)(2*s)),guardY,cell,guardH,0x4EACF8);
+        std::snprintf(text,sizeof(text),"%d",guard);
+        label(text,barX+barW-(int)(11*s),guardY-(int)(2*s),.55f,0x0A1526);
+    }
+
+    //---- 아래: 체력 ----
+    heart(plate.x+pad,hpY,mark,hp>0);
+    MemRect(barX,hpY,barW,hpH,barBg);
+    if(max>0&&hp>0)MemRect(barX,hpY,(int)(barW*(double)hp/(double)max),hpH,barFg);
+    std::snprintf(text,sizeof(text),"%lld / %lld",hp,max);
+    label(text,barX+barW/2,hpY-(int)(4*s),.6f,hot?0xFFB060:0xFFFFFF);
+}
 void choice(const Box& b,bool attack,bool enabled) {
     const float s=DX/640.f;
     SetAlpha(32);grayScale=0;SetColor(0);
@@ -261,11 +321,14 @@ long long hpFor(int stage,int wave) {
     return (long long)std::min(hp,1000000000000000.0);
 }
 const char* treeName(int f) {
-    if(f>=Sword)return f==Sword?"무기":f==Armor?"방어구":"목걸이";
+    if(f>=Sword) {
+        static const char* names[GearCount]={"무기","몸통","발","머리","손","하체"};
+        return f<FamilyCount?names[f-Sword]:"";
+    }
     return f>=0&&f<Roles?MergeTrees::RoleName[f]:"?";
 }
 void configure() {
-    // 계열 = 역할 4 + 장비 3. 보유 동료가 역할 × ★ 사다리(roster)에 선다.
+    // 계열 = 역할 4 + 코스튬 장비 6. 보유 동료가 역할 × ★ 사다리(roster)에 선다.
     // 같은 역할 ★n 둘을 합치면 roster 의 ★n+1 중 하나가 나온다.
     pool.clear();roster=Roster();bool owned[64]={};int crewLevels[64]={};
     for(int i=0;i<TOTALINVENTORY;++i) {
@@ -277,15 +340,31 @@ void configure() {
     if(review)for(int i=0;i<64;++i){owned[i]=true;crewLevels[i]=1;}
     for(int c=0;c<64;++c)if(owned[c])roster.add(MergeTrees::Role(c),MergeTrees::Star(c),c);
     for(int r=0;r<Roles;++r)if(roster.has(r,1))pool.push_back(r);
-    pool.push_back(Sword);pool.push_back(Armor);pool.push_back(Necklace);
+    for(int f=Sword;f<FamilyCount;++f)pool.push_back(f);
     hero=ao[PLAYER];hero.type=std::max(0,std::min(2,curHero));
     if(hero.equip[EQUIP_WEAPON].type==EMPTY)
         std::memcpy(hero.equip,robin.charData[hero.type].equip,sizeof(hero.equip));
-    for(int g=0;g<3;++g) {
-        int family=Sword+g,equip=g==0?EQUIP_WEAPON:g==1?EQUIP_ARMOR:EQUIP_NECK;
+    static const int gearSlots[GearCount]={EQUIP_WEAPON,EQUIP_ARMOR,EQUIP_BOOTS,EQUIP_HELM,EQUIP_GLOVE,EQUIP_PANTS};
+    static const int gearTypes[GearCount]={ITEM_SWORD,ITEM_ARMOR,ITEM_GREAVES,ITEM_HELM,ITEM_GUNTLET,ITEM_KILT};
+    for(int g=0;g<GearCount;++g) {
+        int family=Sword+g,equip=gearSlots[g];
         ITEM base=hero.equip[equip];
-        int type=base.type==EMPTY?(g==0?ITEM_SWORD+hero.type:g==1?ITEM_ARMOR+hero.type:ITEM_NECK):base.type;
-        int detail=base.type==EMPTY?0:base.detail;
+
+        //---- 종류는 계열이 정한다 ----
+        //
+        //전에는 끼고 있는 물건의 종류를 그대로 가져왔다(base.type). 그런데
+        //hero 는 ao[PLAYER] 라서, 판에서 돌아온 직후면 가방이 입혀 놓은
+        //것이 그대로 남아 있다(GridWearLoadout). 갑옷 칸에 검이 들어 있으면
+        //갑옷 계열이 검 그림으로 그려진다 - 판에 나무몽둥이가 둘 서는데
+        //하나는 검, 하나는 갑옷이라 합쳐지지 않는다.
+        //
+        //계열이 곧 부위다. 종류는 거기서 받고, 끼고 있는 것은 번호·등급만
+        //빌려 온다 - 그것도 부위가 맞을 때만.
+        const int type=gearTypes[g]+hero.type;
+        const bool sameSlot=base.type==type;
+        const int detail=sameSlot?base.detail:0;
+
+        if(!sameSlot) {base.lv=1;base.grade=GRADE_NORMAL;}
         for(int l=0;l<MaxLevel;++l)MakeItem(&treeEquipment[g][l],type,std::max(1,(int)base.lv),base.grade,
             MergeTrees::GearDetail(family,detail,l+1),0);
     }
@@ -320,6 +399,56 @@ void iconGround(const Box& box,int width,int lift=0) {
     ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,cx-w/2,
         box.y-box.h+5*p+lift+(int)(8*_2X*z),SHADOW_IMG,z);
 }
+//---- 걸을 수 있는 사람인가 ----
+//
+//전에는 crewPos 의 대기 장수가 둘 이상이면 걷게 했다. 그런데 64명 전원이
+//대기 그림을 4장씩 가지고 있어서 아무도 안 걸러졌고, 걷는 그림이 없는
+//사람(파도 어인·대장장이·함포선장 등 26명)이 선 채로 옆으로 미끄러졌다.
+//
+//성 로비와 같은 잣대(CrewWalkMotion - cmf 이동표 State 1)를 쓴다.
+//걷는 사람이면 step 번째 걷기 모션 번호를, 아니면 -1 을 준다.
+int crewWalkMotion(int crew,int step) {
+    if(crew<0||crew>=64)return -1;
+    const int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
+    if(npc<0)return -1;
+    const int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+    if(cmf<0||cmf>=MAXCMF)return -1;
+    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+    int frames=0;const signed short* motions=nullptr;
+    if(!CrewWalkMotion(cmf,npc,frames,motions)||frames<=0)return -1;
+    return motions[std::max(0,step)%frames];
+}
+//---- 제자리에서 쉬는 자세 ----
+//
+//걷지 않는 사람도 숨은 쉰다. 대기 그림이 둘 이상이면(crewPos 의 장수)
+//step 번째 대기 모션을 주고, 한 장뿐이면 -1 - 그 사람만 멈춰 선다.
+int crewIdleMotion(int crew,int step) {
+    if(crew<0||crew>=64)return -1;
+    const int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
+    if(npc<0)return -1;
+    const int frames=crewPos[npc*5+1];
+    if(frames<=1)return -1;
+    return crewPos[npc*5]+std::max(0,step)%frames;
+}
+//---- 동료 하나를 칸에 세운다 ----
+//
+//icon() 의 동료 가지를 떼어낸 것이다. 로비의 방 주민은 걸어 다녀야 해서
+//모션 번호(crewWalkMotion)와 보는 쪽을 밖에서 받는다. motion<0 이면
+//쉬는 자세 첫 장 - 릴과 판, 그리고 걷는 그림이 없는 주민이 그렇다.
+void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,int dir) {
+    if(crew<0||crew>=64)return;
+    int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
+    int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+    if(cmf<0||cmf>=MAXCMF)return;
+    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+    int motion=motionIn>=0?motionIn:crewPos[npc*5];
+    if(motion<0||motion>=cmf_m_cnt[cmf])motion=crewPos[npc*5];
+    const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
+    int p=std::max(1,(int)(DX/640.f));
+    float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
+    iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
+    DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2),dir,z,0,true);
+}
 void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1,int footLift=0) {
     if(family<0||family>=FamilyCount)return;
     SetColor(0);grayScale=0;
@@ -327,26 +456,34 @@ void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int le
         // 블록이 든 동료. 없으면(릴 회전·계열 카드) 그 역할·★ 의 대표 — 보유분 먼저, 없으면 표의 첫 사람.
         if(crew<0)crew=roster.first(family,std::max(1,std::min((int)MaxLevel,level)));
         if(crew<0)crew=MergeTrees::CrewAt(family,std::max(1,std::min((int)MaxLevel,level)),0);
-        if(crew<0)return;
-        int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
-        int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-        if(cmf<0||cmf>=MAXCMF)return;
-        if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-        int motion=crewPos[npc*5];
-        const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
-        int p=std::max(1,(int)(DX/640.f));
-        float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
-        iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
-        DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2),RIGHT,z,0,true);
+        crewArt(crew,box,fraction,footLift,-1,RIGHT);
     } else {
         ITEM item=treeEquipment[family-Sword][std::max(0,std::min(MaxLevel-1,level-1))];
-        int size=(int)(std::min(box.w-2,box.h-7)*fraction);
-        iconGround(box,size*3/4);
-        // Raw atlas icon avoids inventory stars/count/compatibility overlays.
-        int idx=item.icon;
-        DrawImage(32,32,1+33*(idx&7),1+33*((idx&63)>>3),
-            box.x+(box.w-size)/2,box.y-(box.h-size)/2,false,0,0,0,32,size/32.0f,
-            sprite[ITEM_IMG+(idx>>6)],ITEM_IMG+(idx>>6));
+        //---- 릴 안은 아이콘, 판 위는 가방 그림 ----
+        //
+        //릴에서 도는 동안에는 32x32 아이콘 한 칸이 맞다. 가방 그림은
+        //칸 바탕색을 같이 들고 오므로, 돌아가는 릴에 네모가 줄줄이 서면
+        //룰렛으로 안 보인다.
+        //
+        //판에 놓인 뒤에는 가방이 쓰는 그림이다. 칸을 차지하는 물건으로
+        //보여야 하고, 같은 검이 두 화면에서 다른 물건으로 보이면 안 된다.
+        //(atlas 는 부르는 쪽이 "릴인가" 를 넘기는 깃발이다.)
+        if(!atlas) {
+            const int pad=std::max(1,(int)(DX/640.f))*2;
+            const int w=std::max(1,(int)((box.w-pad*2)*fraction));
+            const int h=std::max(1,(int)((box.h-pad*2-footLift)*fraction));
+
+            iconGround(box,w*3/4,footLift);
+            MergeBoardDrawGear(&item,box.x+(box.w-w)/2,
+                box.y-(box.h-h)/2-footLift,w,h,ALPHA_MAX);
+        } else {
+            const int size=(int)(std::min(box.w-2,box.h-7)*fraction);
+            const int idx=item.icon;
+
+            DrawImage(32,32,1+33*(idx&7),1+33*((idx&63)>>3),
+                box.x+(box.w-size)/2,box.y-(box.h-size)/2,false,0,0,0,32,
+                size/32.0f,sprite[ITEM_IMG+(idx>>6)],ITEM_IMG+(idx>>6));
+        }
     }
 }
 void drawSlotFrame(const Box& b) {
@@ -376,7 +513,7 @@ void drawLever(const Layout& l) {
 void drawBlock(const Block& b,const Box& box,bool ghost=false) {
     int lv=std::max(1,std::min((int)MaxLevel,b.level));
     SetAlpha(ghost?16:32);padArt(lv+1,box);SetAlpha(32);
-    icon(b.family,inset(box,std::max(1,(int)(2*DX/640.f))),1.f,false,b.level,b.crew,b.family<Roles?(int)(6*DX/640.f):0);
+    icon(b.family,inset(box,std::max(1,(int)(2*DX/640.f))),b.family<Roles?.90f:1.05f,false,b.level,b.crew,b.family<Roles?(int)(6*DX/640.f):0);
 }
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
@@ -401,7 +538,11 @@ bool beginSpinLanding(){
 }
 void rememberReelSymbols(){
     for(int i=0;i<3;++i){
-        if(run.tray.empty()){reelSymbols[i]=Block();reelSymbols[i].family=run.families[i];}
+        if(run.tray.empty()){
+            reelSymbols[i]=Block();reelSymbols[i].family=run.families[i];
+            // start() has already placed the actual opening results on the board.
+            if(introActive()&&i<(int)run.board.size())reelSymbols[i]=run.board[i];
+        }
         else if(run.tray.size()==2){
             int match=run.tray[0].level>=run.tray[1].level?0:1;
             reelSymbols[i]=run.tray[i<2?match:1-match];
@@ -447,7 +588,11 @@ void drawIntro(const Layout& l) {
                 icon(f,{reel.x,centerY+pitch/2+j*pitch-offset,reel.w,pitch},.91f,true);
             }
         } else if(t<flightStart(i)) {
-            icon(run.families[i],{reel.x,centerY+pitch/2,reel.w,pitch},.94f,true,1,i<(int)run.board.size()?run.board[i].crew:-1);
+            //릴이 든 사람은 트레이에 떨어질 그 사람이다. 전에는 board[i]
+            //의 동료를 가져왔는데, 그 칸은 이 릴과 아무 상관이 없다 -
+            //서는 순간 엉뚱한 사람으로 갈렸다.
+            icon(run.families[i],{reel.x,centerY+pitch/2,reel.w,pitch},.94f,true,1,
+                i<(int)run.board.size()?run.board[i].crew:-1);
         }
         UnSectionClip(false);
     }
@@ -477,6 +622,27 @@ void drawIntro(const Layout& l) {
     SetAlpha(32);
 }
 #include "MergeCastleLobbyRebuild.inc"
+//---- 지금 치고 있는 자리 ----
+//
+//피해는 판이 아니라 **사람에게서** 출발한다. 판에서 날아오면 누가 친
+//것인지 안 보인다. 데크에서 한 발 나온 그 자리를 여기 적어 두고,
+//날아가는 그림이 그 점에서 시작한다.
+int shotFromX=0,shotFromY=0;
+
+//---- 치는 자세 ----
+//
+//스테이지 전투와 같은 표를 본다(enemyAttackPattern 의 THERE = 원거리
+//자세). 자세가 없는 동료는 -1 - 그 자리에서 쉬는 자세로 둔다.
+int crewAttackMotion(int npc,int cmf,float t) {
+    if(npc<0||cmf<0||cmf>=MAXCMF)return -1;
+    const int status=enemyAttackPattern[npc*ATTACKPATTERNTOTALDATASIZE+2+THERE];
+    if(status<=0||status>=MAXSTATUS)return -1;
+    const signed short* st=cmf_status_data[cmf][status];
+    const int cnt=std::max(1,(int)st[0]);
+    const int at=std::max(0,std::min(cnt-1,(int)(t*cnt)));
+    const int m=st[2+at];
+    return (m>=0&&m<cmf_m_cnt[cmf])?m:-1;
+}
 void drawWorld(const Layout& l,bool combat) {
     const float s=l.scale;
     SetAlpha(32);SetColor(0);grayScale=0;
@@ -484,17 +650,120 @@ void drawWorld(const Layout& l,bool combat) {
     {StageBg::Borrow scroll(StageBg::s_region,castleScrollSeconds);
         castleWheelTravel=DrawCastleLobbyBackground((int)(104*s));}
     drawCastleHull(l);
-    const int hx=(int)(DX*.57f),hy=l.ground,ex=(int)(DX*.85f),ey=l.ground;
+    //---- 데크의 줄 ----
+    //
+    //전에는 히어로가 DX*0.57 에 서고 동료가 그 왼쪽으로 늘어섰다. 대포가
+    //그 자리에 있어서 줄의 앞머리가 포신에 겹쳐 박혔다.
+    //
+    //이제 대포 앞(오른쪽)부터가 사람 자리다. 히어로가 맨 앞에 서고 동료가
+    //그 뒤로 붙되, 마지막 사람이 포신을 넘지 않도록 간격만 좁힌다.
+    const Box gun=castleCannonBox(l);
+    const int deckBack=gun.x+gun.w+(int)(12*s);      //대포 바로 앞
+    const int hx=std::max(deckBack+(int)(30*s),(int)(DX*.66f));
+    const int hy=l.ground,ex=(int)(DX*.85f),ey=l.ground;
     const float deckY=(float)hy;
     SetSectionClip(0,DY,DX,DY-l.board.y,false);
-    float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f));
-    DrawPlayer(&hero,motionData[combat&&run.attacking?32+(ticks%32):0],hx,hy,RIGHT,heroZoom,0,false,true);
-    for(int i=0,shown=0;i<3&&shown<1;++i)if(run.families[i]<Roles) {
-        int crew=roster.first(run.families[i],1);if(crew<0)crew=MergeTrees::CrewAt(run.families[i],1,0);if(crew<0)continue;
-        int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
-        int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-        if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-        DrawCmfDetail(cmf,crewPos[npc*5],hx-(int)(56*s),(int)deckY,RIGHT,std::min(.78f*s,heroZoom),0,false);++shown;
+    //히어로는 판의 주인이다. 데크에서 한눈에 찾아야 하므로 동료보다 크다(1.5배).
+    float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f))*1.5f;
+
+    //---- 지금 치는 블록 ----
+    //
+    //차례가 된 블록 하나가 데크의 한 사람과 짝이 된다. 그 사람만 한 발
+    //앞으로 나가 치고 제자리로 돌아온다(lunge). 장비 블록은 사람이
+    //없으므로 히어로가 대신 휘두른다.
+    const Shot* firing=(combat&&run.attacking&&animation>0&&run.nextShot>0
+        &&run.nextShot<=(int)run.shots.size())?&run.shots[run.nextShot-1]:NULL;
+    const float fireT=firing
+        ?1.f-animation/(float)std::min(42,6+6*firing->block.level):0.f;
+    const int lunge=firing?(int)(std::sin(fireT*3.14159265f)*22*s):0;
+    const bool heroSwing=firing&&firing->block.family>=Sword&&!DefensiveGear(firing->block.family)&&firing->block.family!=Boots;
+
+    shotFromX=hx;shotFromY=hy-(int)(26*s);
+    const int heroX=hx+(heroSwing?lunge:0);
+    DrawPlayer(&hero,motionData[heroSwing?32+(int)(fireT*31):combat&&run.attacking?32+(ticks%32):0],
+        heroX,hy,RIGHT,heroZoom,0,false,true);
+    if(firing&&firing->block.family>=Sword)shotFromX=heroX+(int)(18*s);
+    //---- 판에 선 동료가 전투 화면에도 선다 ----
+    //
+    //전에는 계열 표(run.families)에서 대표 한 명을 뽑아 세웠다. 판에
+    //무엇을 올렸든 늘 같은 사람이 서 있어서, 칸을 채운 보람이 위에
+    //나타나지 않았다.
+    //
+    //판 위의 동료를 그대로 센다. 같은 사람이 여럿이면 한 번만 세운다 -
+    //★ 가 올라도 사람은 하나다.
+    {
+        int seen[8],shown=0;
+
+        for(int i=0;i<(int)run.board.size()&&shown<8;++i) {
+            const Block& b=run.board[i];
+
+            if(b.family>=Roles||b.crew<0||b.crew>=64) continue;
+
+            bool already=false;
+            for(int k=0;k<shown;++k) if(seen[k]==b.crew) {already=true;break;}
+            if(already) continue;
+
+            seen[shown++]=b.crew;
+        }
+
+        //---- 겹치지 않게 ----
+        //
+        //간격을 숫자로 못박으면 사람마다 폭이 달라 어깨가 겹친다. 그릴
+        //때의 실제 폭(cmfMotionImgSize)을 재서 그만큼씩 물러난다.
+        //
+        //커서는 히어로 어깨 뒤에서 시작해 왼쪽으로 간다. 대포 앞을 넘으면
+        //거기서 멈춘다 - 포신에 겹쳐 서느니 안 서는 편이 낫다.
+        int cursor=hx-(int)(38*s);
+        const int gap=(int)(6*s);
+
+        const int fireCrew=(firing&&firing->block.family<Roles)?firing->block.crew:-1;
+        bool fireShown=false;
+
+        for(int k=0;k<shown;++k) {
+            const int npc=crewData[seen[k]*CREWDATASIZE+CREWDATA_TYPE];
+            const int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+
+            if(cmf<0||cmf>=MAXCMF) continue;
+            if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+
+            //동료는 주인공이 아니다. 히어로보다 확실히 작고, 뒤로 갈수록
+            //한 번 더 작아져 멀리 있는 것으로 읽힌다.
+            const bool mine=(seen[k]==fireCrew);
+            float z=std::min(.70f*s,heroZoom*.52f)*(1.0f-k*.05f);
+            const int pose=mine?crewAttackMotion(npc,cmf,fireT):-1;
+            const int motion=pose>=0?pose:crewPos[npc*5];
+            const auto* bound=cmfMotionImgSize[cmf]+motion*4;
+            // Keep the first companion visible even on a narrow deck.
+            if(k==0)z=std::min(z,std::max(1,cursor-deckBack)/(float)std::max(1,(int)bound[2]));
+            const int wide=std::max(1,(int)(bound[2]*z));
+
+            cursor-=wide/2;
+            if(cursor-wide/2<deckBack) break;
+            const int x=cursor+(mine?lunge:0);
+
+            DrawCmfDetail(cmf,motion,x,(int)deckY,RIGHT,z,0,false);
+            cursor-=wide/2+gap;
+            if(mine){shotFromX=x+wide/2;shotFromY=(int)deckY-(int)(24*s);fireShown=true;}
+        }
+
+        //---- 데크에 못 선 동료 ----
+        //
+        //판에 아홉 번째가 있으면 줄에는 자리가 없다. 제 차례에만 히어로
+        //앞으로 올라와 치고 내려간다 - 안 보이는 사람이 때리면 안 된다.
+        if(fireCrew>=0&&!fireShown) {
+            const int npc=crewData[fireCrew*CREWDATASIZE+CREWDATA_TYPE];
+            const int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+
+            if(cmf>=0&&cmf<MAXCMF) {
+                if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+                const int x=hx+(int)(34*s)+lunge;
+                const int pose=crewAttackMotion(npc,cmf,fireT);
+
+                DrawCmfDetail(cmf,pose>=0?pose:crewPos[npc*5],x,(int)deckY,RIGHT,
+                    std::min(.70f*s,heroZoom*.52f),0,false);
+                shotFromX=x+(int)(16*s);shotFromY=(int)deckY-(int)(24*s);
+            }
+        }
     }
     if(combat) {
     int npc=run.wave==9?ENEMY_CASTLE_BOSS1:ENEMY_KNIGHT+run.wave%2;
@@ -651,6 +920,10 @@ void reviewStep(const Layout& l) {
             Box cell={l.board.x,l.board.y,l.cell,l.cellH};reviewTap(cell);
             reviewTrace(active&&run.encode()==before&&robin.heart==hearts?"PASS opening locks all gameplay input":"FAIL opening input lock");
             reviewTrace(run.board.size()==3&&run.tray.empty()&&run.spins==SpinLimit&&robin.heart==20?"PASS three free starters committed once":"FAIL opening reward");
+            bool sameStarters=hasReelSymbols&&run.board.size()==3;
+            for(int i=0;i<3&&sameStarters;++i)
+                sameStarters=reelSymbols[i].family==run.board[i].family&&reelSymbols[i].crew==run.board[i].crew&&reelSymbols[i].level==run.board[i].level;
+            reviewTrace(sameStarters?"PASS opening reels match exact grid characters":"FAIL opening character mismatch");
             Run restored;restored.roster=&roster;reviewTrace(restored.decode(before)&&!restored.start(pool)&&restored.encode()==before?"PASS opening reload cannot duplicate starters":"FAIL opening persistence");
             reviewCapture("00-opening-spin");
         }
@@ -749,15 +1022,15 @@ void reviewStep(const Layout& l) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
     } else if(t>=763&&reviewFinalCapture&&!reviewCapturePending&&reviewCaptureQueue.empty()) {
         Run current=run;
-        run=Run();run.roster=&roster;run.choosing=false;run.families[0]=Sword;run.families[1]=Armor;run.families[2]=Necklace;
+        run=Run();run.roster=&roster;run.choosing=false;run.families[0]=Sword;run.families[1]=Armor;run.families[2]=Boots;
         run.setShape(castleShape(0));
         for(int i=0;i<22;++i) {Block b;b.family=Sword;b.x=i%run.shape.width;b.y=i/run.shape.width;run.board.push_back(b);}
         Layout full=layout();long long balance=robin.heart;auto blocked=run.encode();reviewTap(full.spin);reviewTap(full.lever);
         reviewTrace(run.freeCells()==2&&run.encode()==blocked&&robin.heart==balance&&messageTime>0?"PASS fewer than three empty cells logs warning without charging":"FAIL full board guard");
         Box source=blockBox(run.board[0],full);float x=source.x+full.cell/2.f,y=source.y-full.cellH/2.f;
-        float tx=full.trash.x+full.trash.w/2.f,ty=full.trash.y-full.trash.h/2.f;
+        float tx=DX-47*full.scale,ty=full.slot.y-35*full.scale;
         MergeRouletteTouch(0,999,x,y);MergeRouletteTouch(1,999,tx,ty);MergeRouletteTouch(2,999,tx,ty);
-        reviewTrace(run.freeCells()==3&&run.canSpin()&&robin.heart==balance?"PASS trash drag frees a cell and restores spin":"FAIL discard block");
+        reviewTrace(run.encode()==blocked&&robin.heart==balance?"PASS dragging outside board preserves block without discard":"FAIL removed discard target");
         run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
         for(int y=0;y<4;++y)for(int x=0;x<6;++x){
             Block b;b.family=Armor;b.x=x;b.y=y;run.board.push_back(b);
@@ -785,9 +1058,8 @@ void reviewStep(const Layout& l) {
         Layout tight=layout();const int index=run.at(3,3);Box remove=blockBox(run.board[index],tight);
         reviewTap(tight.attack);
         const bool noAttack=!run.attacking&&robin.heart==balance;
-        const float sx=remove.x+tight.cell*.5f,sy=remove.y-tight.cellH*.5f;
-        const float dx=tight.trash.x+tight.trash.w*.5f,dy=tight.trash.y-tight.trash.h*.5f;
-        MergeRouletteTouch(0,999,sx,sy);MergeRouletteTouch(1,999,dx,dy);MergeRouletteTouch(2,999,dx,dy);
+        run.board.erase(run.board.begin()+index); // Fixture: newly available space.
+        beginSpinLanding();
         reviewTrace(heldResult&&noAttack&&spinFlying()&&spinLandingPlan.tray.empty()&&robin.heart==balance?
             "PASS large result waits safely then flies automatically when space is freed":"FAIL large result recovery");
         spinFlightFrame=-1;spinDrops.clear();
@@ -918,25 +1190,19 @@ void MergeRouletteDraw() {
     std::snprintf(text,sizeof(text),"%d성 · 웨이브 %d/10",run.stage+1,run.wave+1);
     label(text,DX/2,DY-(int)(17*s),0.55f);
     // Readable unit plates directly beneath the battle, separate from the board title.
-    Box allyPlate={hx-(int)(43*s),l.ground-(int)(4*s),(int)(100*s),(int)(43*s)};
-    Box enemyPlate={ex-(int)(52*s),l.ground-(int)(4*s),(int)(106*s),(int)(43*s)};
-    uiArt(MergeCastleArt::UnitPlate,allyPlate);
-    uiArt(MergeCastleArt::UnitPlate,enemyPlate);
-    std::snprintf(text,sizeof(text),"목숨  %d / %d",run.lives,run.maxLives);
-    int barPad=std::max(1,(int)(5*s));
-    MemRect(allyPlate.x+barPad,allyPlate.y-barPad,allyPlate.w-2*barPad,(int)(14*s),0x37433B);
-    MemRect(allyPlate.x+barPad,allyPlate.y-barPad,(allyPlate.w-2*barPad)*run.lives/std::max(1,run.maxLives),(int)(14*s),0x406D39);
-    label(text,allyPlate.x+allyPlate.w/2,allyPlate.y-(int)(3*s),.62f);
-    std::snprintf(text,sizeof(text),"방어 %d",std::max(0,run.maxLives-3));
-    shield(allyPlate.x+(int)(15*s),allyPlate.y-(int)(24*s),(int)(10*s));
-    label(text,allyPlate.x+allyPlate.w/2+(int)(7*s),allyPlate.y-(int)(23*s),.59f,0xFFF0B8);
-    std::snprintf(text,sizeof(text),"%lld/%lld",run.enemyHp,run.enemyMax);
-    int hpWidth=enemyPlate.w-2*barPad,hpY=enemyPlate.y-barPad;
-    MemRect(enemyPlate.x+barPad,hpY,hpWidth,(int)(14*s),0x493444);
-    MemRect(enemyPlate.x+barPad,hpY,(int)(hpWidth*(double)run.enemyHp/run.enemyMax),(int)(14*s),0xAA343E);
-    label(text,enemyPlate.x+enemyPlate.w/2,enemyPlate.y-(int)(3*s),.64f,flash?0xFFB060:0xFFFFFF);
-    shield(enemyPlate.x+(int)(17*s),enemyPlate.y-(int)(24*s),(int)(10*s));
-    label("방어 0",enemyPlate.x+enemyPlate.w/2+(int)(7*s),enemyPlate.y-(int)(23*s),.59f,0xFFF0B8);
+    //---- 패의 자리 ----
+    //
+    //히어로 발밑에 붙어 다니면 사람과 숫자가 서로를 가린다. 화면을 성
+    //가운데로 반 가른 뒤, 왼쪽 절반의 절반을 아군이, 오른쪽 절반의
+    //절반을 적이 쓴다 - 둘이 같은 폭으로 마주 본다.
+    const int plateW=DX/4,plateH=(int)(52*s);
+    Box allyPlate={DX/4-plateW/2,l.ground-(int)(4*s),plateW,plateH};
+    Box enemyPlate={DX*3/4-plateW/2,l.ground-(int)(4*s),plateW,plateH};
+    //방어는 갑옷 블록이 주는 보호 횟수다. 공격 중이면 남은 몫을, 배치
+    //중이면 "지금 공격하면 받을" 몫을 보여 준다.
+    const int guard=run.attacking?run.effects.protect:run.forecast(stats).protect;
+    unitPlate(allyPlate,run.lives,run.maxLives,guard,0x37433B,0x406D39,false);
+    unitPlate(enemyPlate,run.enemyHp,run.enemyMax,0,0x493444,0xAA343E,flash!=0);
     button(l.exit,"나가기",nullptr,0x25304A,!run.attacking);
     // No backing board: individual 64px tiles cover the rooms themselves.
     for(int row=0;row<run.shape.height;++row)for(int col=0;col<run.shape.width;++col)
@@ -964,13 +1230,56 @@ void MergeRouletteDraw() {
         if(picked==i&&!pickedTray)continue;
         drawBlock(run.board[i],blockBox(run.board[i],l));
     }
+
+    //---- 막 합쳐진 자리 ----
+    //
+    //모델이 번호를 올려 두면(run.mergeSeq) 그 자리에서 테두리가 한 번
+    //부풀었다 가라앉는다. 피해를 주는 연출이 아니므로 판을 멈추지 않는다.
+    if(run.mergeSeq!=mergeSeenSeq) {
+        mergeSeenSeq=run.mergeSeq;
+        mergeFlash=MERGE_FLASH_FRAMES;
+        mergeShownLevel=run.mergeLevel;
+
+        Block at;at.family=0;at.level=1;at.x=run.mergeX;at.y=run.mergeY;
+        mergeBox=blockBox(at,l);
+        mergeBox.w=run.mergeW*l.cell;
+        mergeBox.h=run.mergeH*l.cellH;
+    }
+    if(mergeFlash>0) {
+        const float t=mergeFlash/(float)MERGE_FLASH_FRAMES;   //1 -> 0
+        const int grow=(int)(t*10*s);
+        const int thick=std::max(1,(int)((1+t*3)*s));
+
+        SetAlpha((int)(ALPHA_MAX*t));
+        MemRectFrameThick(mergeBox.x-grow,mergeBox.y+grow,
+            mergeBox.w+grow*2,mergeBox.h+grow*2,0xFFE99E,thick);
+        SetAlpha(ALPHA_MAX);
+
+        //가운데에 ★ 를 하나 띄운다. 몇 단이 됐는지가 숫자 없이 읽힌다.
+        if(mergeShownLevel>0) {
+            const float z=(.6f+t*.5f)*s;
+            DrawIcon(ICON_STAR,mergeBox.x+mergeBox.w/2-(int)(8*z),
+                mergeBox.y-mergeBox.h/2+(int)(8*z),z,false,false,false,true);
+        }
+        --mergeFlash;
+    }
     if(run.attacking&&run.nextShot>0&&animation>0) {
         const Shot& shot=run.shots[run.nextShot-1];Box from=blockBox(shot.block,l);
         int lv=shot.block.level,duration=std::min(42,6+6*lv);
         float t=1-animation/(float)duration;
+
+        //차례가 된 칸은 판에서 테두리로 밝힌다 - 누가 치는 중인지 판에서도 읽힌다.
         MemRectFrameThick(from.x,from.y,from.w,from.h,0xFFE99E,std::max(1,(int)(3*s)));
-        int size=(int)((1-t)*std::min(from.w,from.h)+t*32*s);
-        Box flying={(int)((1-t)*from.x+t*ex),(int)((1-t)*from.y+t*(ey+45*s)),size,size};
+
+        //---- 피해는 사람에게서 나간다 ----
+        //
+        //데크에서 치고 있는 그 사람의 자리(shotFromX/Y)에서 출발한다.
+        //방어·보조 장비는 히어로 위로 떠오른다.
+        const bool guard=DefensiveGear(shot.block.family)||shot.block.family==Boots;
+        const int toX=guard?shotFromX:ex,toY=guard?(int)(ey+105*s):(int)(ey+45*s);
+        int size=(int)((1-t)*28*s+t*32*s);
+        Box flying={(int)((1-t)*(shotFromX-size/2)+t*(toX-size/2)),
+            (int)((1-t)*shotFromY+t*toY),size,size};
         icon(shot.block.family,flying,0.9f,false,shot.block.level,shot.block.crew);
         std::snprintf(text,sizeof(text),"%lld DAMAGE · %d HIT",run.damageDone,run.nextShot);
         label(text,ex,ey+(int)(65*s),0.6f,0xFFD25A);
@@ -999,17 +1308,39 @@ void MergeRouletteDraw() {
         int lv=hasReelSymbols?symbol.level:held?run.tray[i].level:1,crew=hasReelSymbols?symbol.crew:held?run.tray[i].crew:-1;
         const float phase=std::min(1.f,(45-animation)/(float)(33+6*i));
         if(animation>0&&!run.attacking&&phase<1.f){
+            //---- 돌다가 선다 ----
+            //
+            //마지막 한 바퀴를 지나 조금 넘어갔다가 되돌아온다. 그냥 멈추면
+            //"바뀌었다" 로만 보이고 슬롯머신으로 안 읽힌다.
             const int pitch=window.h;
-            const float distance=6*pitch*(1.f-std::pow(1.f-phase,3.f));
+            const float ease=1.f-std::pow(1.f-phase,3.f);
+            const float over=std::sin(phase*3.14159265f)*(1.f-phase)*REEL_OVERSHOOT*s;
+            const float distance=6*pitch*ease+over;
             const int offset=(int)std::fmod(distance,(float)pitch),turn=(int)(distance/pitch);
             for(int j=-1;j<=1;++j){
                 Box symbol=window;symbol.y+=j*pitch-offset;
                 SetSectionClip(window.x,window.y,window.w,window.h,false);
-                icon(run.families[(turn+j+6+i)%3],symbol,1.f,true);
+                //지나가는 칸의 동료까지 바꿔 가며 보여 주면, 서는 순간
+                //사람이 한 번 깜빡이며 갈린다. 설 자리의 계열이면 설 사람을
+                //미리 들고 돈다.
+                const int rollFamily=run.families[(turn+j+6+i)%3];
+                icon(rollFamily,symbol,1.f,true,rollFamily==f?lv:1,
+                    rollFamily==f?crew:-1);
             }
         }else{
             SetSectionClip(window.x,window.y,window.w,window.h,false);
             icon(f,window,1.f,true,lv,crew);
+
+            //선 직후 한 번 번쩍인다. 어느 줄이 방금 섰는지가 눈에 걸린다.
+            if(animation>0&&!run.attacking) {
+                const int left=std::max(0,(int)(REEL_STOP_FLASH-(45-animation)+(33+6*i)));
+                if(left>0) {
+                    SetAlpha(ALPHA_MAX*left/REEL_STOP_FLASH);
+                    MemRectFrameThick(window.x,window.y,window.w,window.h,
+                        0xFFE99E,std::max(1,(int)(2*s)));
+                    SetAlpha(ALPHA_MAX);
+                }
+            }
         }
         UnSectionClip(false);
     }
@@ -1057,19 +1388,21 @@ void MergeRouletteDraw() {
                 else valid=false;
             }
             MemRectFrameThick(box.x,box.y,box.w,box.h,valid?0x58DB9C:0xF35B63,(int)(3*s));
-            icon(b.family,{(int)pointerX-l.cell/2,(int)pointerY+l.cellH/2,l.cell,l.cellH},.7f,false,b.level,b.crew);
+            //---- 손에 든 것도 판에 놓인 그대로 ----
+            //
+            //한 칸짜리로 줄여 들면 집는 순간 물건이 바뀐 것처럼 보인다.
+            //판에서 쓰던 크기·그림 그대로, 쥔 칸만큼 어긋나게 든다.
+            Box held={(int)pointerX-pickCellX*l.cell-l.cell/2,
+                (int)pointerY+pickCellY*l.cellH+l.cellH/2,
+                Wide(b)*l.cell,Tall(b)*l.cellH};
+            drawBlock(b,held);
         }
-    }
-    if((picked>=0&&!pickedTray)||run.freeCells()<3) {
-        panel(l.trash,0x3D2431,0xD98C79);
-        label("×",l.trash.x+l.trash.w/2,l.trash.y-(int)(5*s),1.1f,0xFFDAB3);
-        label("버리기",l.trash.x+l.trash.w/2,l.trash.y-(int)(43*s),.54f);
     }
     if(messageTime>0&&!message.empty()) {
         Box toast={(int)(90*s),l.arenaBottom+(int)(53*s),(int)(460*s),(int)(48*s)};
         panel(toast,0x352332,0xDD957B);
         label(message.c_str(),DX/2,toast.y-(int)(6*s),.59f,0xFFE6C0);
-        if(run.freeCells()<3)label("블록을 휴지통으로 드래그해 칸을 비워주세요",DX/2,toast.y-(int)(28*s),.49f);
+        if(run.freeCells()<3)label("같은 블록을 합쳐 칸을 확보하세요",DX/2,toast.y-(int)(28*s),.49f);
     }
     if(messageTime<=0&&!run.choosing&&!message.empty()&&(message.find("없")!=std::string::npos||message.find("부족")!=std::string::npos))
         label(message.c_str(),DX/2,DY-(int)(45*s),0.48f);
@@ -1117,9 +1450,59 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     if(picked>=0) {
         bool ok=false;
         if(pickedTray&&std::abs(x-downX)+std::abs(y-downY)<10*l.scale)ok=run.autoPlace(picked);
-        else if(!pickedTray&&l.trash.has(x,y)) {run.board.erase(run.board.begin()+picked);ok=true;}
         else ok=run.drop(pickedTray,picked,(x-l.board.x)/l.cell,(l.board.y-y)/l.cellH);
-        message=ok?"":"그 자리에 배치/합성할 수 없습니다.";
+        //---- 왜 안 되는지까지 적는다 ----
+        //
+        //"배치/합성할 수 없습니다" 만으로는 자리가 없어서인지, 다른
+        //물건이라서인지, 더 올라갈 데가 없어서인지를 알 수가 없다.
+        //모델이 어디서 걸렸는지 남겨 둔다(run.lastFail).
+        if(ok) message="";
+        else {
+            const char* why=run.lastFail;
+            const char* text=
+                !std::strcmp(why,"spot")?"":
+                !std::strcmp(why,"full")?"판에 놓을 자리가 없습니다.":
+                !std::strcmp(why,"family")?"같은 종류끼리만 합쳐집니다.":
+                !std::strcmp(why,"level")?"같은 단계끼리만 합쳐집니다.":
+                !std::strcmp(why,"grow")?"더 올라갈 단계가 없습니다.":
+                !std::strcmp(why,"room")?"합친 것이 들어갈 자리가 없습니다.":
+                !std::strcmp(why,"crew")?"다음 단계의 동료를 아직 못 가졌습니다.":
+                "그 자리에 놓을 수 없습니다.";
+
+            message=text;
+
+            //TODO(diag) 파일로도 남긴다. 화면 글자를 사진으로 주고받는
+            //것이 번번이 막혀서다. 원인 잡으면 이 블록은 지운다.
+            {
+                static int hit=0;
+
+                if(hit<60) {
+                    ++hit;
+
+                    FILE* fp=fopen("merge-diag.txt",hit==1?"wb":"ab");
+
+                    if(fp) {
+                        const Block& b=pickedTray?run.tray[picked]:run.board[picked];
+                        const int cx=(x-l.board.x)/l.cell,cy=(l.board.y-y)/l.cellH;
+                        const int tgt=run.at(cx,cy);
+
+                        fprintf(fp,"why=%s tray=%d fam=%d lv=%d rot=%d "
+                            "drop=%d,%d target=%d free=%d board=%d",
+                            why,(int)pickedTray,b.family,b.level,(int)b.rot,
+                            cx,cy,tgt,run.freeCells(),(int)run.board.size());
+
+                        if(tgt>=0) {
+                            const Block& t=run.board[tgt];
+
+                            fprintf(fp," t(fam=%d lv=%d rot=%d at=%d,%d)",
+                                t.family,t.level,(int)t.rot,t.x,t.y);
+                        }
+                        fputc(10,fp);
+                        fclose(fp);
+                    }
+                }
+            }
+        }
         if(!ok)messageTime=3;
         if(ok)PlayMusic(M_POWERUP);
         picked=-1;

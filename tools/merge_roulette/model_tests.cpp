@@ -11,9 +11,38 @@ void finish(Run& r) {while(r.step()){}r.finish();}
 Roster fullRoster() {
     Roster ro;for(int c=0;c<64;++c)assert(ro.add(MergeTrees::Role(c),MergeTrees::Star(c),c));return ro;
 }
-int main() {
+int main(int argc,char**) {
     const Roster roster=fullRoster();
     Stats st;
+    {
+        // All six costume families can start, spin, merge and survive a save roundtrip.
+        assert(FamilyCount-Roles==6);
+        for(int family=Sword;family<FamilyCount;++family) {
+            Run r;r.roster=&roster;r.selected=family;
+            assert(r.start({family,0,1},nullptr,true));
+            assert(r.board[0].family==family);
+            for(int i=0;i<3;++i) {
+                const Block& b=r.board[i];
+                assert(b.family==r.families[i]);
+                if(b.family<Roles)assert(MergeTrees::Role(b.crew)==b.family);
+            }
+            Run restored;restored.roster=&roster;
+            assert(restored.decode(r.encode())&&restored.encode()==r.encode());
+            assert(r.spin()&&r.tray.size()==3);
+            Run merged;merged.choosing=false;merged.families[0]=family;
+            merged.board={block(family,1,0,0),block(family,1,2,0)};
+            assert(merged.place(false,0,2,0)&&merged.board.size()==1&&merged.board[0].level==2);
+            merged.enemyHp=merged.enemyMax=100000;
+            assert(merged.attack(st));finish(merged);
+            assert(MergeTrees::GearDetail(family,0,6)==(family==Sword?30:5));
+        }
+        Run old;old.choosing=false;old.families[0]=Boots;
+        old.board={block(Boots,1,0,0)};
+        std::string legacy=old.encode();legacy.replace(4,1,"7");
+        Run upgraded;assert(upgraded.decode(legacy)&&upgraded.board[0].family==Boots);
+        std::cout<<"PASS six costume equipment families, opening identities and v7 migration\n";
+    }
+    if(argc>1)return 0;
     {
         // 동료는 한 칸이다: 꽉 찬 판에서도 둘을 합치면 칸이 하나 빈다. 장비는 ★ 마다 한 칸씩 큰다.
         Run r;r.roster=&roster;r.choosing=false;r.families[0]=0;r.families[1]=Armor;
@@ -34,7 +63,7 @@ int main() {
         for(int lv=1;lv<=MaxLevel;++lv)assert(Wide(0,lv)==1&&Tall(0,lv)==1&&Wide(Sword,lv)*Tall(Sword,lv)==lv);
         bool pair=false,triple=false;
         for(unsigned seed=1;seed<1000;++seed){
-            Run s;s.choosing=false;s.families[0]=Sword;s.families[1]=Armor;s.families[2]=Necklace;s.rng=seed;
+            Run s;s.choosing=false;s.families[0]=Sword;s.families[1]=Armor;s.families[2]=Boots;s.rng=seed;
             Run expected=s;int reels[3];for(int i=0;i<3;++i)reels[i]=expected.families[expected.random(3)];
             assert(s.spin());
             assert(s.tray.size()==3);
@@ -56,7 +85,7 @@ int main() {
         assert(MergeTrees::CountAt(0,4)==5&&MergeTrees::CountAt(3,3)==3&&roster.count[1][6]==0);
         assert(MergeTrees::Role(42)==0&&MergeTrees::Star(42)==4&&MergeTrees::Star(63)==6&&MergeTrees::Role(57)==1);
         assert(MergeTrees::GearDetail(Sword,20,3)==32&&MergeTrees::GearDetail(Sword,30,6)==34);
-        assert(MergeTrees::GearDetail(Armor,2,6)==7&&MergeTrees::GearDetail(Necklace,3,6)==27);
+        assert(MergeTrees::GearDetail(Armor,2,6)==7&&MergeTrees::GearDetail(Boots,3,6)==7);
     }
     {
         // 합성: 같은 역할·같은 ★ 이면 동료가 달라도 합쳐지고, 결과는 그 역할의 ★+1 중 하나.
@@ -88,7 +117,7 @@ int main() {
     {
         // 시작·스핀: 역할 블록은 늘 동료를 들고 나온다. ★1 이 없는 역할은 시작할 수 없다.
         Run r;r.roster=&roster;r.rng=12345;
-        assert(r.start({0,1,2,3,Sword,Armor,Necklace}));
+        assert(r.start({0,1,2,3,Sword,Armor,Boots}));
         assert(!r.choosing&&r.board.size()==3&&r.tray.empty());
         for(const Block& b:r.board)assert(b.level==1&&(b.family>=Roles||(b.crew>=0&&MergeTrees::Star(b.crew)==1&&MergeTrees::Role(b.crew)==b.family)));
         Roster thin;thin.add(0,2,24);
@@ -129,15 +158,15 @@ int main() {
         Stats summ=st;summ.crew[57].summon=true;    // 기함 함포선장 ★5
         Run s;s.roster=&roster;s.choosing=false;s.enemyHp=s.enemyMax=100000;s.families[0]=1;
         s.board={block(1,5,0,0,57)};assert(s.attack(summ));finish(s);assert(s.summons.size()==1&&s.summons[0].summonTurns==3);
-        Run n;n.roster=&roster;n.choosing=false;n.enemyHp=1;n.enemyMax=330;n.families[0]=Sword;n.families[1]=Necklace;
-        n.board={block(Sword,1,0,0),block(Necklace,2,2,0),block(Necklace,5,0,1)};   // 목걸이 Lv5 는 5×1
+        Run n;n.roster=&roster;n.choosing=false;n.enemyHp=1;n.enemyMax=330;n.families[0]=Sword;n.families[1]=Boots;
+        n.board={block(Sword,1,0,0),block(Boots,2,2,0),block(Boots,5,0,1)};   // 목걸이 Lv5 는 5×1
         assert(n.attack(st));while(n.step()){}int hearts=n.finish();
         assert(hearts==2&&n.spins==12&&n.wave==1&&n.reward==10&&n.board.size()==3);
     }
     {
         // 저장: v6 만 읽는다. 동료 번호까지 왕복한다. 공격 중에도.
-        Run r;r.roster=&roster;r.choosing=false;r.families[0]=0;r.families[1]=Sword;r.families[2]=Necklace;
-        r.board={block(0,MaxLevel,0,0,63),block(Sword,2,4,3)};r.tray={block(Necklace,3)};
+        Run r;r.roster=&roster;r.choosing=false;r.families[0]=0;r.families[1]=Sword;r.families[2]=Boots;
+        r.board={block(0,MaxLevel,0,0,63),block(Sword,2,4,3)};r.tray={block(Boots,3)};
         Run copy;copy.roster=&roster;assert(copy.decode(r.encode()));assert(copy.encode()==r.encode()&&copy.board[0].crew==63);
         auto original=copy.encode();
         assert(!copy.decode("MR3 5 1 0"));assert(!copy.decode("MR3 1 junk"));assert(copy.encode()==original);
@@ -146,8 +175,8 @@ int main() {
         overlap=r;overlap.board[0].crew=-1;assert(!copy.decode(overlap.encode()));     // 역할 블록은 동료가 있어야
         overlap=r;overlap.board[1].crew=3;assert(!copy.decode(overlap.encode()));      // 장비 블록은 없어야
         assert(!copy.decode(r.encode()+" garbage"));
-        Run a;a.roster=&roster;a.choosing=false;a.enemyHp=a.enemyMax=100000;a.drafted=true;a.families[0]=0;a.families[1]=Armor;a.families[2]=Necklace;
-        a.board={block(0,3,0,0),block(Armor,2,3,0),block(Necklace,2,0,1)};   // 장비 Lv2 는 2×1 — 겹치지 않게
+        Run a;a.roster=&roster;a.choosing=false;a.enemyHp=a.enemyMax=100000;a.drafted=true;a.families[0]=0;a.families[1]=Armor;a.families[2]=Boots;
+        a.board={block(0,3,0,0),block(Armor,2,3,0),block(Boots,2,0,1)};   // 장비 Lv2 는 2×1 — 겹치지 않게
         assert(a.attack(st));
         while(a.step()) {Run resumed;resumed.roster=&roster;assert(resumed.decode(a.encode()));assert(resumed.encode()==a.encode());a=resumed;}
         assert(a.finish()==2&&a.board.size()==3&&a.lives==5);

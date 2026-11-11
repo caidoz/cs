@@ -7200,10 +7200,13 @@ static void EquipMergeBtnDraw(void)
 	EquipMergeBtnRect(&x, &y, &w, &h);
 
 	//몇 번 할 수 있는지 버튼에 적는다. 눌러 보기 전에 알아야 한다.
+	//못 할 때는 얼마나 모였는지를 적는다. 꺼진 버튼만 보면 모자라서인지
+	//고장인지를 알 수가 없다.
 	if (can > 0)
 		sprintf(str, "합성 %d", can);
 	else
-		sprintf(str, "합성");
+		sprintf(str, "합성 %d/%d", Min(MergeItemsBest(), ITEM_MERGE_COUNT),
+			ITEM_MERGE_COUNT);
 
 	MenuButton(x, y, w, h, str, BUTTON_COLOR_BLUE, can > 0,
 		TOUCH_FUNC_EQUIPTAB_MERGE, 0.52f);
@@ -8323,7 +8326,7 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 	const char* name = ShopProductName(product);
 	bool storeReady = false;
 	const char* price = ShopPriceText(product, &storeReady);
-	bool canTouch = !IapIsBusy();
+	bool canTouch = storeReady && !IapIsBusy();
 	float bh = 36.0f * zoom;
 	float by = y - h + bh + 4.0f * zoom;
 	float artSize = Min(w - 14.0f * zoom, h - 112.0f * zoom);
@@ -8335,7 +8338,11 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 		cardColor = 0x263245;
 	else if (product >= IAP_CASH_01 && product <= IAP_CASH_06)
 		cardColor = 0x272B4B;
-	DrawPixelPanel((int)x,(int)y,(int)w,(int)h,cardColor);
+	const int artImg=product>=IAP_HEART_01&&product<=IAP_HEART_06?HEART_0_IMG+product-IAP_HEART_01:
+		product>=IAP_CASH_01&&product<=IAP_CASH_06?SHOP_CASH_PILES_IMG:
+		product>=IAP_COIN_01&&product<=IAP_COIN_06?COIN_0_IMG+product-IAP_COIN_01:SHOP_PASS_ART_IMG;
+	if(!sprite[artImg])LoadImg(artImg);
+	DrawMenuReferencePanel((int)x,(int)y,(int)w,(int)h,0,cardColor,0xD9B775);
 
 	SetFontColor(COLOR_WHITE);
 	CenterTextStr(name, x + w / 2, y - 16.0f * zoom, zoom * 0.85f);
