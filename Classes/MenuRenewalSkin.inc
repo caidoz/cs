@@ -132,6 +132,6 @@ void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size){
 void DrawMenuBackButton(int x,int top,int command){
  DrawMenuReferencePanel(x,top,84,48,0,0x17444A,0xEAC58A);
  SetFontColor(0xFFF0CD);
- CenterTextStrSolid(u8"\u2039 \uC774\uC804",x+42,top-12,.95f);
+ CenterTextStrSolid(u8"\u2039",x+42,top-5,1.6f);
  SetRectPoint(x,top,84,48,command);
 }

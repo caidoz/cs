@@ -39,6 +39,15 @@ enum {
 	//마지막에 조금 넘어갔다 되돌아오고, 선 줄이 한 번 번쩍인다.
 	REEL_OVERSHOOT = 14,		//넘어갔다 오는 픽셀(_2X 아닌 scale 배)
 	REEL_STOP_FLASH = 8,		//선 뒤 테두리가 남는 프레임
+	//---- 서는 차례 ----
+	//
+	//전에는 45 프레임 안에 세 릴이 6 프레임 간격으로 섰다. 0.1초 간격은 눈에
+	//한꺼번에 서는 것이고, 마지막 릴이 느려지는 구간이 없어 "돌다가 선다" 가
+	//아니라 "결과로 바뀐다" 로 보였다. 첫 릴은 0.8초, 둘째 1.2초, 셋째 1.6초에
+	//선다(60fps). 릴마다 제 길이 전체에 걸쳐 감속하므로 마지막 릴이 가장
+	//오래 기어간다.
+	REEL_SPIN_FRAMES = 96,		//마지막 릴이 서는 프레임
+	REEL_STOP_GAP = 24,			//릴 사이 서는 간격
 
 	BLOCK_LV_MAX = 6,		//6단 = 성급(★1~★6). 크기 1×1·1×2·2×2·2×3·3×3·3×4 (2026-11-09)
 	BOARD_MAX_BLOCKS = BOARD_CELLS,
@@ -46,6 +55,8 @@ enum {
 	RUN_LIVES_BASE = 3,		//갑옷 없을 때의 목숨
 	ENEMY_LIFE_COST_NORMAL = 1,
 	ENEMY_LIFE_COST_BOSS = 2,
+	//장비 계열 칸 모양 표의 줄 수. MergeRouletteModel 의 GearCount(6) 이상이면 된다.
+	BOARD_GEAR_SLOTS = 8,
 };
 
 //계열의 종류. 동료 계열의 id 는 역할군(CrewRole), 장비면 id 는 쓰지 않는다.

@@ -16,7 +16,8 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, RosterCell=8, SaveVersion=8 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=9 };
+inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
     int width=BOARD_W,height=BOARD_H;
@@ -37,10 +38,11 @@ struct Block {
     bool rot=false;
     bool placed() const { return x>=0 && y>=0; }
 };
-// 2026-11-10: 사람은 한 칸, 장비는 커진다. 동료 블록은 ★ 에 상관없이 1×1,
-// 장비 블록은 ★ 마다 한 칸씩(1×1 · 2×1 · 3×1 · 2×2 · 5×1 · 3×2). 표는 BoardModel.h.
-inline int Wide(int family,int level) { return MergeBoard::BlockWOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
-inline int Tall(int family,int level) { return MergeBoard::BlockHOf(family<Roles?LINEAGE_CREW:LINEAGE_SWORD,level); }
+// 동료 블록은 ★ 에 상관없이 1×2. 장비 블록의 칸 모양은 그림이 정한다 -
+// configure() 가 GridGearPart 로 재서 MergeBoard::SetGearShape 에 넣는다(계열
+// 줄 = family-Sword). 그래서 무기만 크고 투구·갑옷·목걸이는 1×1 에 머문다.
+inline int Wide(int family,int level) { return family<Roles?MergeBoard::BlockWOf(LINEAGE_CREW,level):MergeBoard::GearW(family-Sword,level); }
+inline int Tall(int family,int level) { return family<Roles?MergeBoard::BlockHOf(LINEAGE_CREW,level):MergeBoard::GearH(family-Sword,level); }
 //눕힌 블록은 가로세로가 바뀐다. 크기를 묻는 곳이 전부 이 둘을 거치므로
 //여기 두 줄이면 판정·그리기·저장이 같이 따라온다.
 inline int Wide(const Block& b) { return b.rot?Tall(b.family,b.level):Wide(b.family,b.level); }
@@ -96,7 +98,7 @@ struct Run {
     const char* lastFail="";
     int wave=0, stage=0, skipTurns=0, dotTurns=0, nextShot=0;
     long long enemyHp=330, enemyMax=330, dot=0, reward=0, damageDone=0;
-    bool choosing=true, attacking=false, lost=false, drafted=false;
+    bool choosing=true, attacking=false, lost=false, drafted=false, counterResolved=false;
     std::vector<Block> board, tray;
     std::vector<Shot> shots, summons;
     Effects effects;
@@ -402,7 +404,7 @@ struct Run {
             raw=c.power*MergeBoard::CrewMul(lv);trait=c.trait;summon=c.summon;
             if(trait==Chill) {e.skip+=MergeBoard::ChillSkipTurns(lv);if(lv<=2)e.half=true;}
             if(trait==Strike)raw+=raw*MergeBoard::StrikePct(lv)/100;
-        } else raw=st.weapon*MergeBoard::GearMul(lv);   // 장비는 ×3: 1+1 이 2칸이 되므로
+        } else raw=st.weapon*MergeBoard::GearMulOf(b.family-Sword,lv);   // 칸이 느는 단만 ×3, 그대로인 단은 ×2
         s.damage=raw*(100+e.expose)/100*e.inspire;e.inspire=1;
         if(b.family<Roles) {
             if(trait==Expose) e.expose+=MergeBoard::ExposePct(lv);
@@ -447,7 +449,7 @@ struct Run {
     }
     bool attack(const Stats& st) {
         if(choosing || attacking || lost || board.empty()) return false;
-        shots.clear(); nextShot=0; effects=Effects(); damageDone=0;
+        shots.clear(); nextShot=0; effects=Effects(); damageDone=0;counterResolved=false;
         // Persistent damage ticks on attack exchanges, never while arranging/spinning.
         if(dotTurns>0) { enemyHp=std::max(0LL,enemyHp-dot); --dotTurns; }
         for(auto& s:summons) { enemyHp=std::max(0LL,enemyHp-s.damage); --s.summonTurns; }
@@ -463,6 +465,20 @@ struct Run {
         if(s.summonTurns>0) summons.push_back(s);
         return true;
     }
+    bool shouldCounterattack() const {
+        return attacking&&nextShot==(int)shots.size()&&enemyHp>0&&!counterResolved&&skipTurns+effects.skip<=0;
+    }
+    int counterDamage() const {
+        if(enemyHp<=0||skipTurns+effects.skip>0)return 0;
+        int hit=BossTier(wave)?2:1;
+        if(effects.half)hit=(hit+1)/2;
+        return std::max(0,hit-effects.protect);
+    }
+    bool counterattack() {
+        if(!shouldCounterattack())return false;
+        lives=std::max(0,lives-counterDamage());counterResolved=true;
+        return true;
+    }
     int finish() {
         if(!attacking || nextShot<(int)shots.size()) return 0;
         // Resolve equipment effects only once, after the presentation completes.
@@ -474,18 +490,13 @@ struct Run {
         skipTurns=std::min(100,skipTurns+effects.skip);
         if(enemyHp>0) {
             if(skipTurns>0) --skipTurns;
-            else {
-                int hit=(wave+1)%10==0?2:1;
-                if(effects.half) hit=(hit+1)/2;
-                hit=std::max(0,hit-effects.protect);
-                lives=std::max(0,lives-hit);
-            }
+            else if(!counterResolved)lives=std::max(0,lives-counterDamage());
         } else {
-            reward+=10LL*(stage+1)*((wave+1)%10==0?10:1);
-            if(++wave==10) {wave=0;++stage;lives=maxLives;}
+            reward+=10LL*(stage+1)*(BossTier(wave)?10:1);
+            if(++wave==WavesPerStage) {wave=0;++stage;lives=maxLives;}
             dot=0;dotTurns=skipTurns=0;summons.clear();
         }
-        shots.clear();attacking=false;nextShot=0;
+        shots.clear();attacking=false;nextShot=0;counterResolved=false;
         spins=std::min(100,SpinLimit+extraSpins); lost=lives==0;
         return hearts;
     }
@@ -507,6 +518,7 @@ struct Run {
          <<' '<<effects.expose<<' '<<effects.inspire<<' '<<effects.skip<<' '<<effects.protect
          <<' '<<effects.half<<' '<<effects.dot<<' '<<effects.dotTurns<<' '<<shots.size();
         for(const Shot& s:shots)o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.block.x<<' '<<s.block.y<<' '<<s.damage<<' '<<s.summonTurns;
+        o<<' '<<counterResolved;
         return o.str();
     }
     static bool crewOk(const Block& b) {
@@ -515,12 +527,12 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
            || r.maxLives<1 || r.maxLives>20 || r.lives<0 || r.lives>r.maxLives
-           || r.wave<0 || r.wave>=10 || r.stage<0 || r.stage>100000
+           || r.wave<0 || r.wave>=WavesPerStage || r.stage<0 || r.stage>100000
            || r.enemyMax<1 || r.enemyMax>1000000000000000LL || r.enemyHp<0 || r.enemyHp>r.enemyMax
            || r.dot<0 || r.dot>1000000000000000LL || r.dotTurns<0 || r.dotTurns>4 || r.skipTurns<0 || r.skipTurns>100) return false;
         for(int& f:r.families) if(!(in>>f)||f<0||f>=FamilyCount) return false;
@@ -561,8 +573,10 @@ struct Run {
             r.shots.push_back(s);
         }
         if(r.attacking?(count!=(int)r.board.size()||count==0||r.choosing||r.lost):(count!=0||r.nextShot!=0))return false;
+        if(version>=9&&!(in>>r.counterResolved))return false;
+        if(r.counterResolved&&(!r.attacking||r.nextShot!=count||r.enemyHp<=0))return false;
         in>>std::ws;if(!in.eof()) return false;
-        if((r.lives==0)!=r.lost) return false;
+        if((r.lives==0)!=r.lost&&!(r.attacking&&r.counterResolved&&r.lives==0&&!r.lost)) return false;
         *this=r;return true;
     }
 };

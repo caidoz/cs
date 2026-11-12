@@ -79,8 +79,10 @@ void drawRoomResidents(const Layout& l){
    const int id=roster.crew[role][star][k];
    // Deployed companions leave the castle rooms for the battle deck.
    bool deployed=false;
-   if(active)for(const auto& block:run.board)
-    if(block.family<Roles&&block.crew==id){deployed=true;break;}
+   if(active)for(int index=0;index<(int)run.board.size();++index){
+    const auto& block=run.board[index];
+    if(gridBlockLanded(index)&&block.family<Roles&&block.crew==id){deployed=true;break;}
+   }
    if(deployed)continue;
    bool dup=false;for(int j=0;j<n;++j)if(crews[j]==id)dup=true;
    if(!dup)crews[n++]=id;

@@ -8,22 +8,28 @@ static int SeqRandom(int bound) { int v = gSeq[gSeqI++ % (gSeqN ? gSeqN : 1)]; r
 static void SetSeq(int a, int b, int c) { gSeq[0] = a; gSeq[1] = b; gSeq[2] = c; gSeqN = 3; gSeqI = 0; }
 
 int main() {
-	//---- 6단 = ★. 사람은 1×2 두 칸, 장비는 한 칸씩 ----
+	//---- 6단 = ★. 사람은 1×2 두 칸. 장비 칸은 그림이 정한다 - 채우기 전은 1×1 ----
 	assert(BLOCK_LV_MAX == 6);
 	for (int lv = 1; lv <= 6; lv++) {
 		assert(BlockCellsOf(LINEAGE_CREW, lv) == 2 && BlockWOf(LINEAGE_CREW, lv) == 1 && BlockHOf(LINEAGE_CREW, lv) == 2);
-		assert(BlockCellsOf(LINEAGE_SWORD, lv) == lv && BlockCellsOf(LINEAGE_ARMOR, lv) == lv);
+		assert(BlockCellsOf(LINEAGE_SWORD, lv) == 1 && BlockCellsOf(LINEAGE_ARMOR, lv) == 1);
 		assert(BlockCards(lv) == (1 << (lv - 1)));
 		assert(CrewMul(lv) == (1 << (lv - 1)));
+		assert(GearMulOf(0, lv) == (1LL << (lv - 1)));	//칸이 안 늘면 동료와 같은 ×2
 	}
-	assert(GearW(2) == 2 && GearH(2) == 1 && GearW(4) == 2 && GearH(4) == 2 && GearW(5) == 5 && GearW(6) == 3 && GearH(6) == 2);
-	assert(GearMul(1) == 1 && GearMul(2) == 3 && GearMul(3) == 9 && GearMul(6) == 243);
-	//1+1 이 2칸이 되는 장비는 3배여야 칸당 화력이 는다. 동료는 1+1(4칸)이 2칸이라 2배면 는다.
+	//검 사다리처럼 채우면(1×2·1×2·1×3·1×3·1×3·1×4) 칸이 느는 단만 ×3 이다.
+	SetGearShape(0, 1, 1, 2); SetGearShape(0, 2, 1, 2); SetGearShape(0, 3, 1, 3);
+	SetGearShape(0, 4, 1, 3); SetGearShape(0, 5, 1, 3); SetGearShape(0, 6, 1, 4);
+	assert(BlockWOf(LINEAGE_SWORD, 3) == 1 && BlockHOf(LINEAGE_SWORD, 3) == 3 && BlockCellsOf(LINEAGE_SWORD, 6) == 4);
+	assert(BlockCellsOf(LINEAGE_ARMOR, 6) == 1);	//다른 줄은 그대로
+	assert(GearMulOf(0, 1) == 1 && GearMulOf(0, 2) == 2 && GearMulOf(0, 3) == 6 && GearMulOf(0, 4) == 12 && GearMulOf(0, 5) == 24 && GearMulOf(0, 6) == 72);
+	//합칠수록 칸당 화력이 는다
 	for (int lv = 2; lv <= 6; lv++) {
-		assert(GearMul(lv) * BlockCellsOf(LINEAGE_SWORD, lv - 1) > GearMul(lv - 1) * BlockCellsOf(LINEAGE_SWORD, lv));
+		assert(GearMulOf(0, lv) * BlockCellsOf(LINEAGE_SWORD, lv - 1) > GearMulOf(0, lv - 1) * BlockCellsOf(LINEAGE_SWORD, lv));
 		assert(CrewMul(lv) > CrewMul(lv - 1));
 	}
 	assert(BlockCellsOf(LINEAGE_CREW, 0) == 0 && BlockCellsOf(LINEAGE_SWORD, 7) == 0);
+	ResetGearShapes();
 
 	//---- 계열당 10장(룰렛 10회 × 3 / 3) = Lv4 + Lv2. 동료 4칸, 장비 6칸 ----
 	{
@@ -31,9 +37,13 @@ int main() {
 		assert(cards == 10);
 		int crewCells = 0, gearCells = 0, left = cards;
 		for (int lv = BLOCK_LV_MAX; lv >= 1; lv--) while (left >= BlockCards(lv)) { left -= BlockCards(lv); crewCells += BlockCellsOf(LINEAGE_CREW, lv); gearCells += BlockCellsOf(LINEAGE_SWORD, lv); }
-		assert(left == 0 && crewCells == 4 && gearCells == 6);
+		assert(left == 0 && crewCells == 4 && gearCells == 2);
 		assert(crewCells * 2 + gearCells <= BOARD_CELLS);
 	}
+
+	//아래 판 테스트는 큰 장비 블록으로 배치·당김·합성 규칙을 본다. 게임은 이 표를
+	//그림(GridGearPart)에서 재서 넣지만 여기는 그림이 없으니 옛 표를 손으로 넣는다.
+	{ static const int w[] = { 0, 1, 2, 3, 2, 5, 3 }, h[] = { 0, 1, 1, 1, 2, 1, 2 }; for (int s = 0; s < LINEAGE_KIND_COUNT - 1; s++) for (int lv = 1; lv <= 6; lv++) SetGearShape(s, lv, w[lv], h[lv]); }
 
 	//---- 손: 꽝 / 짝 / 셋 (표 함수는 남겨 둔다. 릴 매치로 ★2·3 을 바로 주는 규칙은 §20 에서 폐지) ----
 	{

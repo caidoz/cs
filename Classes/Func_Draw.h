@@ -236,6 +236,8 @@ bool LoadoutRequiredWeaponReady(void);
 bool LoadoutVisualWeapon(ITEM* out);
 void LoadoutDiag(const char* tag, int a, int c, int d, int e);
 void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha);
+//룰렛 판의 장비 블록이 차지하는 칸(가방과 같은 GridGearPart). 비어 있으면 1×1.
+void MergeBoardGearShape(const ITEM* it, int* w, int* h);
 void LoadoutDefaultReset(void);
 void LoadoutMarkTouched(void);
 bool MaxWeaponFoundationReview(void);

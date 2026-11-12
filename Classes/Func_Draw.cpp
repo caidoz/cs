@@ -5477,6 +5477,27 @@ static void GridGearPart(const ITEM* it, GridPart* out)
 //가방이 쓰는 그림과 같은 길로 보낸다 - 같은 검이 두 화면에서 다른
 //물건으로 보이면 안 된다. GridDrawShapedCard 는 이 파일 안에만 있으므로
 //여기서 문을 하나 낸다.
+//---- 룰렛 판의 장비 칸 모양 ----
+//
+//판(BoardModel)은 그림을 모른다. 전에는 ★2 = 2×1 같은 표를 손으로 들고
+//있어서 투구 ★2 가 두 칸을 먹고 그림은 한 칸에 떠 있었다. 칸 모양은
+//GridGearPart 한 곳에서만 나온다(CLAUDE.md §9-3) - 여기서 그 값을 판에
+//넘긴다. 검은 번호에 따라 1×2·1×3·1×4, 부메랑 2×2, 나머지 장비는 1×1.
+void MergeBoardGearShape(const ITEM* it, int* w, int* h)
+{
+	int cw = 1, ch = 1;
+
+	if (it && it->type != EMPTY) {
+		GridPart part;
+
+		GridGearPart(it, &part);
+		cw = Max(1, (int)part.w);
+		ch = Max(1, (int)part.h);
+	}
+	if (w) *w = cw;
+	if (h) *h = ch;
+}
+
 void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha)
 {
 	if (!it || it->type == EMPTY)

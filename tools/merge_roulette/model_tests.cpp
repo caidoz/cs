@@ -12,6 +12,11 @@ Roster fullRoster() {
     Roster ro;for(int c=0;c<64;++c)assert(ro.add(MergeTrees::Role(c),MergeTrees::Star(c),c));return ro;
 }
 int main(int argc,char**) {
+    //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛
+    //표(★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2)를 손으로 넣어
+    //합성·배치 규칙이 큰 블록에서도 서는지 본다.
+    {static const int w[]={0,1,2,3,2,5,3},h[]={0,1,1,1,2,1,2};
+     for(int g=0;g<GearCount;++g)for(int lv=1;lv<=MaxLevel;++lv)MergeBoard::SetGearShape(g,lv,w[lv],h[lv]);}
     const Roster roster=fullRoster();
     Stats st;
     {
@@ -38,33 +43,37 @@ int main(int argc,char**) {
         }
         Run old;old.choosing=false;old.families[0]=Boots;
         old.board={block(Boots,1,0,0)};
-        std::string legacy=old.encode();legacy.replace(4,1,"7");
+        std::string legacy=old.encode();legacy.replace(4,1,"7");legacy.erase(legacy.find_last_of(' '));
         Run upgraded;assert(upgraded.decode(legacy)&&upgraded.board[0].family==Boots);
         std::cout<<"PASS six costume equipment families, opening identities and v7 migration\n";
     }
     if(argc>1)return 0;
     {
-        // 동료는 한 칸이다: 꽉 찬 판에서도 둘을 합치면 칸이 하나 빈다. 장비는 ★ 마다 한 칸씩 큰다.
+        // 동료는 1×2 다: 꽉 찬 판에서도 둘을 합치면 두 칸이 빈다. 장비 칸은 위의 표대로 큰다.
         Run r;r.roster=&roster;r.choosing=false;r.families[0]=0;r.families[1]=Armor;
+        r.board.push_back(block(0,1,0,0,3));r.board.push_back(block(0,1,1,0,7));   // (0,0)-(0,1), (1,0)-(1,1)
         for(int y=0;y<r.shape.height;++y)for(int x=0;x<r.shape.width;++x)
-            r.board.push_back(block(Armor,1,x,y));
-        r.board[0]=block(0,1,0,0,3);r.board[1]=block(0,1,1,0,7);
+            if(x>1||y>1)r.board.push_back(block(Armor,1,x,y));
         assert(r.freeCells()==0&&r.drop(false,0,2.03f,.5f));
-        assert(r.freeCells()==1&&r.board[r.at(1,0)].level==2&&MergeTrees::Star(r.board[r.at(1,0)].crew)==2);
+        assert(r.freeCells()==2&&r.board[r.at(1,0)].level==2&&MergeTrees::Star(r.board[r.at(1,0)].crew)==2);
         const auto unchanged=r.encode();assert(!r.drop(false,r.at(1,0),3.5f,.5f)&&r.encode()==unchanged);
-        // 장비 ★1 + ★1 → ★2 는 2칸이라 꽉 찬 판에서는 못 합친다
+        // 장비 ★1 + ★1 → ★2 는 2칸. 꽉 찬 판이어도 재료 둘이 비켜 준 두 칸에 들어간다(mergedPreview 가 판 전체를 훑는다)
         Run g;g.choosing=false;g.families[0]=Sword;
         for(int y=0;y<g.shape.height;++y)for(int x=0;x<g.shape.width;++x)g.board.push_back(block(Sword,1,x,y));
-        const auto full=g.encode();assert(!g.drop(false,0,1.5f,.5f)&&g.encode()==full);
-        g.board.erase(g.board.begin()+g.at(2,0));   // (2,0) 을 비우면 (1,0)-(2,0) 에 2×1 이 선다
-        assert(g.drop(false,0,1.5f,.5f)&&g.freeCells()==1&&g.board[g.at(1,0)].level==2&&g.at(2,0)==g.at(1,0)&&Wide(g.board[g.at(1,0)])==2);
+        assert(g.drop(false,0,1.5f,.5f)&&g.freeCells()==0&&g.board[g.at(0,0)].level==2&&g.at(1,0)==g.at(0,0)&&Wide(g.board[g.at(0,0)])==2);
+        // ★2 + ★2 → ★3 은 3칸. 재료 둘이 비킨 네 칸(한 줄)에 3×1 이 서고 한 칸이 남는다
+        g.board[g.at(0,0)].level=2;g.board.erase(g.board.begin()+g.at(2,0));g.board.erase(g.board.begin()+g.at(3,0));
+        g.board.push_back(block(Sword,2,2,0));   // (0,0)-(1,0) ★2, (2,0)-(3,0) ★2, 나머지 꽉 참
+        assert(g.freeCells()==0&&g.drop(false,g.at(2,0),.5f,.5f)&&g.freeCells()==1&&g.board[g.at(0,0)].level==3&&Wide(g.board[g.at(0,0)])==3);
         Run reward;reward.choosing=false;reward.board={block(Sword,1,0,0)};reward.tray={block(Sword,1)};
         assert(reward.autoPlace(0)&&reward.board.size()==2&&reward.board[0].level==1&&reward.board[1].level==1);
-        for(int lv=1;lv<=MaxLevel;++lv)assert(Wide(0,lv)==1&&Tall(0,lv)==1&&Wide(Sword,lv)*Tall(Sword,lv)==lv);
+        for(int lv=1;lv<=MaxLevel;++lv)assert(Wide(0,lv)==1&&Tall(0,lv)==2&&Wide(Sword,lv)*Tall(Sword,lv)==lv);
         bool pair=false,triple=false;
         for(unsigned seed=1;seed<1000;++seed){
             Run s;s.choosing=false;s.families[0]=Sword;s.families[1]=Armor;s.families[2]=Boots;s.rng=seed;
-            Run expected=s;int reels[3];for(int i=0;i<3;++i)reels[i]=expected.families[expected.random(3)];
+            //spin 은 칸마다 "장비냐 동료냐"(random(100) < BOARD_GEAR_PCT) 를 먼저 굴리고 그쪽 계열에서 고른다.
+            //여기는 셋 다 장비라 어느 쪽이 나와도 장비 셋 중 하나(random(3))다 - 난수를 같은 순서로 되감는다.
+            Run expected=s;int reels[3];for(int i=0;i<3;++i){expected.random(100);reels[i]=expected.families[expected.random(3)];}
             assert(s.spin());
             assert(s.tray.size()==3);
             for(int i=0;i<3;++i)assert(s.tray[i].family==reels[i]&&s.tray[i].level==1);
@@ -130,12 +139,14 @@ int main(int argc,char**) {
         assert(r.lives==r.maxLives);
     }
     {
-        // 피해: 동료 = power × 2^(★-1), 장비 = × 3^(Lv-1). 표식 → 고무 → 검 의 타순 효과는 BoardModel 과 같다.
+        // 피해: 동료 = power × 2^(★-1), 장비 = 칸이 느는 단 ×3. 표식 → 고무 → 검 의 타순 효과는 BoardModel 과 같다.
+        // 단 차례의 방향이 다르다 - Run 은 오른쪽 열이 전열(ordered: x 큰 쪽 먼저), BoardModel 은 행 우선(x 작은 쪽 먼저).
+        // 그래서 같은 줄을 Run 에는 거울로 놓는다.
         Stats d;d.weapon=50;
         d.crew[3].power=100;d.crew[3].trait=Expose;   // 지휘 ★1 원로 촌장
         d.crew[2].power=100;d.crew[2].trait=Inspire;  // 지원 ★1 약초 할머니
         Run r;r.roster=&roster;r.choosing=false;r.enemyHp=r.enemyMax=100000;r.families[0]=0;r.families[1]=2;r.families[2]=Sword;
-        r.board={block(0,1,0,0,3),block(2,2,1,0,2),block(Sword,3,2,0)};
+        r.board={block(0,1,2,0,3),block(2,2,1,0,2),block(Sword,3,0,0)};   // 표식(x=2) → 고무(x=1) → 검(x=0)
         assert(r.preview(d)==100+240+1080);   // 검 Lv3 = 50×9(장비 ×3) ×1.2 ×2
         MergeBoard::Lineage lineages[3]={{LINEAGE_CREW,0,TRAIT_EXPOSE,100,0},{LINEAGE_CREW,2,TRAIT_INSPIRE,100,0},{LINEAGE_SWORD,-1,TRAIT_NONE,50,0}};
         MergeBoard::Board source;MergeBoard::Reset(source,lineages,5);
@@ -145,7 +156,7 @@ int main(int argc,char**) {
         long long empowered=r.preview(d);assert(r.attack(d));finish(r);
         assert(r.damageDone==empowered&&r.board.size()==3&&r.lives==4&&r.spins==10); // 판은 남고, 적 턴에 목숨 하나
         Run reversed;reversed.roster=&roster;reversed.choosing=false;reversed.families[0]=0;reversed.families[1]=2;reversed.families[2]=Sword;
-        reversed.board={block(Sword,3,0,0),block(2,2,2,0,2),block(0,1,3,0,3)};
+        reversed.board={block(Sword,3,3,0),block(2,2,2,0,2),block(0,1,0,0,3)};   // 검이 먼저 나가면 버프를 못 받는다
         assert(reversed.preview(d)<empowered);
     }
     {
@@ -176,7 +187,7 @@ int main(int argc,char**) {
         overlap=r;overlap.board[1].crew=3;assert(!copy.decode(overlap.encode()));      // 장비 블록은 없어야
         assert(!copy.decode(r.encode()+" garbage"));
         Run a;a.roster=&roster;a.choosing=false;a.enemyHp=a.enemyMax=100000;a.drafted=true;a.families[0]=0;a.families[1]=Armor;a.families[2]=Boots;
-        a.board={block(0,3,0,0),block(Armor,2,3,0),block(Boots,2,0,1)};   // 장비 Lv2 는 2×1 — 겹치지 않게
+        a.board={block(0,3,0,0),block(Armor,2,3,0),block(Boots,2,0,2)};   // 동료는 1×2(0,0)-(0,1), 장비 Lv2 는 2×1 — 겹치지 않게
         assert(a.attack(st));
         while(a.step()) {Run resumed;resumed.roster=&roster;assert(resumed.decode(a.encode()));assert(resumed.encode()==a.encode());a=resumed;}
         assert(a.finish()==2&&a.board.size()==3&&a.lives==5);

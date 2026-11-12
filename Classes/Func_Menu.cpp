@@ -8409,19 +8409,22 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
  const int chest=BOX0_IMG+detail-BOX_CASTLE0;if(!sprite[chest])LoadImg(chest);
  const float art=Min(w*.44f,h-82.f),z=art/512.f;
  const int saved=baseColor;SetColor(0);
- DrawImageScale(510,512,0,0,x+8,y-44,false,0,0,0,0,z,z,sprite[chest],chest);SetColor(saved);
- const int cell=Max(26,Min(44,(int)((w-art-24)/3))),px=(int)(x+art+14),py=(int)(y-64);
- for(int n=0;n<3;++n){
-  const int tx=px+n*(cell+3);DrawMenuReferencePanel(tx,py,cell,cell+8,0,0x12383D,0x86ADAD);
-  const int icon=n==0?GetItemIcon(ITEM_GOLD,0,0):n==1?ICON_HEART:GetItemIcon(ITEM_SWORD+curHero,0,0);
-  const float iz=(cell-8)/(float)ITEMICONSIZE;
-  DrawIcon(icon,tx+4,py-7,iz,false,false,false,true);
+ DrawImageScale(510,512,0,0,x+8,y-36,false,0,0,0,0,z,z,sprite[chest],chest);SetColor(saved);
+ // Reward categories, rather than one specific weapon or companion.
+ const int px=(int)(x+art+12),colW=Max(36,(int)((w-art-20)/2)),cell=Min(34,colW-10),py=(int)(y-54);
+ const char* rewardNames[]={"골드","하트","랜덤 장비","랜덤 동료"};
+ for(int n=0;n<4;++n){
+  const int cx=px+(n%2)*colW+colW/2,ty=py-(n/2)*50,tx=cx-cell/2;
+  DrawMenuReferencePanel(tx,ty,cell,cell,0,n==3?0x382E52:0x12383D,0x86ADAD);
+  if(n<2)DrawIcon(n==0?GetItemIcon(ITEM_GOLD,0,0):ICON_HEART,tx+4,ty-4,(cell-8)/(float)ITEMICONSIZE,false,false,false,true);
+  else {SetFontColor(0xFFF0CD);CenterTextStrSolid("?",cx,ty-4,.9f);}
+  SetFontColor(0xFFF0CD);CenterTextStrSolid(rewardNames[n],cx,ty-cell-2,Min(.48f,(colW-2)/Max(1.f,StringWidth(rewardNames[n],1.f))));
  }
  const int bh=42,by=(int)(y-h+bh+10),priceW=(int)(w*.55f)-14,buyX=(int)(x+w*.55f),buyW=(int)(w*.45f)-12;
  DrawMenuReferencePanel((int)x+12,by,priceW,bh,0,0x0D3037,0xDDB77D);
- DrawTreasurePrice(detail,(int)x+12+priceW/2,by-3,priceW-8);
- DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x16613C:0x24433F,0xEAC58A);
- SetFontColor(can?0xFFF0CD:0xA8B4AC);CenterTextStrSolid("구매",buyX+buyW/2,by-10,.95f);
+ DrawTreasurePrice(detail,(int)x+12+priceW/2,by-7,priceW-8);
+ DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x208C46:0x555555,can?0xEAC58A:0xA9A9A9);
+ SetFontColor(can?COLOR_WHITE:0xD0D0D0);CenterTextStrSolid("구매",buyX+buyW/2,by-10,.95f);
  if(can)SetRectPoint(buyX,by,buyW,bh,TOUCH_FUNC_SHOP_BUYBOX1+i);
 }
 

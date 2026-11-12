@@ -19,23 +19,37 @@ typedef int (*RandomFn)(int bound);	//0 <= r < bound
 //  줄어들어 칸 폭이 반도 안 찼다 - 누군지 알아볼 수가 없었다. 세로 두 칸이면
 //  폭을 꽉 채우고 선다. ★ 가 올라도 크기는 그대로 1×2 - 사람이 커지는 그림은
 //  여전히 어색하다. 합치면 두 칸이 준다.
-//  장비 블록은 ★ 마다 한 칸씩 는다 — ★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2.
-//  1+1 이 2칸이 되는데 세기가 2배면 합칠 이유가 없다. 그래서 장비는 ×3, 동료는 ×2(칸을 벌었으니).
-inline int GearW(int level) { static const int w[BLOCK_LV_MAX + 1] = { 0, 1, 2, 3, 2, 5, 3 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : w[level]; }
-inline int GearH(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 1, 1, 1, 2, 1, 2 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
-inline int BlockWOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearW(level); }
-inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 2 : 0) : GearH(level); }
+//2026-11-11 다시 고침: 장비의 칸 모양은 손으로 적지 않는다. 여기 ★2 = 2×1
+//  표가 있어서 투구 ★2 가 두 칸을 먹었는데 그림은 1×1 이라 칸 가운데 떠
+//  있었다 - 칸과 그림이 다른 표를 봤다. 칸 모양은 그림이 정한다(GridGearPart,
+//  CLAUDE.md §9-3). 판은 순수 모델이라 그림을 모르므로 게임이 런을 열 때
+//  SetGearShape 로 채운다. 채우기 전은 전부 1×1 - 테스트가 그 값을 쓴다.
+//  그래서 커지는 것은 무기뿐이다(검 1×2 → 1×3 → 1×4, 부메랑 2×2). 투구·갑옷·
+//  목걸이는 ★ 이 올라도 1×1 에 테두리 색과 코스튬만 바뀐다.
+//  세기: 칸이 느는 단은 ×3(1+1 이 2칸이 되니 3배여야 칸당 화력이 는다),
+//  칸이 그대로인 단은 ×2(동료와 같다). GearMulOf 가 단마다 가른다.
+struct GearShapeTable { signed char w[BOARD_GEAR_SLOTS][BLOCK_LV_MAX + 1]; signed char h[BOARD_GEAR_SLOTS][BLOCK_LV_MAX + 1]; };
+inline void ResetGearShapes(GearShapeTable& t) { for (int s = 0; s < BOARD_GEAR_SLOTS; s++) for (int l = 0; l <= BLOCK_LV_MAX; l++) { t.w[s][l] = (signed char)(l >= 1 ? 1 : 0); t.h[s][l] = (signed char)(l >= 1 ? 1 : 0); } }
+inline GearShapeTable& GearShapes() { static GearShapeTable t; static bool init = false; if (!init) { init = true; ResetGearShapes(t); } return t; }
+inline void ResetGearShapes() { ResetGearShapes(GearShapes()); }
+inline void SetGearShape(int slot, int level, int w, int h) { if (slot < 0 || slot >= BOARD_GEAR_SLOTS || level < 1 || level > BLOCK_LV_MAX || w < 1 || h < 1) return; GearShapes().w[slot][level] = (signed char)w; GearShapes().h[slot][level] = (signed char)h; }
+inline int GearW(int slot, int level) { return (slot < 0 || slot >= BOARD_GEAR_SLOTS || level < 1 || level > BLOCK_LV_MAX) ? 0 : GearShapes().w[slot][level]; }
+inline int GearH(int slot, int level) { return (slot < 0 || slot >= BOARD_GEAR_SLOTS || level < 1 || level > BLOCK_LV_MAX) ? 0 : GearShapes().h[slot][level]; }
+inline int GearCells(int slot, int level) { return GearW(slot, level) * GearH(slot, level); }
+//종류(LineageKind)로 묻는 호출부: 장비 종류는 LINEAGE_SWORD 부터 차례로 표의 줄이다.
+inline int BlockWOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearW(kind - LINEAGE_SWORD, level); }
+inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 2 : 0) : GearH(kind - LINEAGE_SWORD, level); }
 inline int BlockCellsOf(int kind, int level) { return BlockWOf(kind, level) * BlockHOf(kind, level); }
-//호환용: 종류를 모르는 호출부는 장비 크기로 본다.
-inline int BlockW(int level) { return GearW(level); }
-inline int BlockH(int level) { return GearH(level); }
-inline int BlockCells(int level) { return GearW(level) * GearH(level); }
+//호환용: 종류를 모르는 호출부는 무기(줄 0) 크기로 본다.
+inline int BlockW(int level) { return GearW(0, level); }
+inline int BlockH(int level) { return GearH(0, level); }
+inline int BlockCells(int level) { return GearCells(0, level); }
 //Lv n 하나를 만드는 데 드는 Lv1 장수 = 2^(n-1)
 inline int BlockCards(int level) { return level < 1 ? 0 : 1 << (level - 1); }
-//한 방의 배수. 동료 ×2(1+1 → 1칸), 장비 ×3(1+1 → 2칸).
+//한 방의 배수. 동료 ×2(1+1 → 1칸). 장비는 칸이 느는 단만 ×3, 그대로인 단은 ×2.
 inline long long CrewMul(int level) { return level < 1 ? 0 : 1LL << (level - 1); }
-inline long long GearMul(int level) { long long m = 1; for (int i = 1; i < level; i++) m *= 3; return level < 1 ? 0 : m; }
-inline long long LevelMulOf(int kind, int level) { return kind == LINEAGE_CREW ? CrewMul(level) : GearMul(level); }
+inline long long GearMulOf(int slot, int level) { if (level < 1) return 0; long long m = 1; for (int i = 2; i <= level; i++) m *= GearCells(slot, i) > GearCells(slot, i - 1) ? 3 : 2; return m; }
+inline long long LevelMulOf(int kind, int level) { return kind == LINEAGE_CREW ? CrewMul(level) : GearMulOf(kind - LINEAGE_SWORD, level); }
 inline long long LevelMul(int level) { return CrewMul(level); }	//호환용
 
 //---- 수치 (§16) ----
