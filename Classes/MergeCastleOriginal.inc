@@ -5,7 +5,7 @@ using Poly=std::vector<cocos2d::Vec2>;
 struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
 float zoom(){return DX/W;}
-float lift(){return 40*DX/640.f;}
+float lift(){return 40*DX/640.f+castleSceneLift();}
 Box box(int x,int y,int w,int h,float drop=0){float z=zoom();return {(int)(x*z),(int)((H-y)*z+lift()-drop),(int)(w*z),(int)(h*z)};}
 Poly rect(float x,float y,float w,float h){return {{x,y},{x+w,y},{x+w,y+h},{x,y+h}};}
 Poly circle(float x,float y,float r){Poly p;for(int i=0;i<64;++i){float a=i*6.2831853f/64;p.push_back({x+std::cos(a)*r,y+std::sin(a)*r});}return p;}
@@ -30,21 +30,27 @@ std::vector<Span> spans(const std::vector<Poly>& polys,float y){
  for(auto s:out){if(!merged.empty()&&s.a<=merged.back().b)merged.back().b=std::max(merged.back().b,s.b);else merged.push_back(s);}return merged;
 }
 struct Mesh {cocos2d::PolygonInfo info;std::vector<cocos2d::V3F_C4B_T2F> vertices;std::vector<unsigned short> indices;bool made=false;};
-Mesh meshes[10];
+Mesh meshes[13];
 void build(int kind){
  auto& m=meshes[kind];if(m.made)return;m.made=true;
  std::vector<Poly> yes,no;
- if(kind<=1){yes=outline();if(kind==0){no=rooms();auto p=patches();no.insert(no.end(),p.begin(),p.end());no.push_back(rect(294,1035,507,153));no.push_back(rect(403,1003,279,53));no.push_back(rect(410,1194,277,56));no.push_back(nav());no.push_back(circle(126,1303,99));no.push_back(circle(966,1301,99));}}
+ if(kind<=1){yes=outline();if(kind==0){no=rooms();auto p=patches();no.insert(no.end(),p.begin(),p.end());no.push_back(start());no.push_back(manage());no.push_back(resume());no.push_back(nav());no.push_back(circle(126,1303,99));no.push_back(circle(966,1301,99));}}
  else if(kind==2)yes={start()};else if(kind==3)yes={manage()};else if(kind==4)yes={resume()};else if(kind==5)yes={nav()};
  else if(kind==6)yes={circle(126,1303,99)};else if(kind==7)yes={circle(966,1301,99)};
  else if(kind==9)yes={rect(0,0,W,H)};
+ else if(kind>=10)yes={kind==10?start():kind==11?manage():resume()};
  else yes={{{348,281},{406,255},{436,252},{449,259},{452,286},{437,298},{382,307},{354,300}},{{345,296},{401,296},{417,310},{414,341},{451,344},{453,370},{340,370},{340,350},{359,341},{368,323},{349,316}}};
  for(int y=0;y<(int)H;++y){auto line=spans(yes,y+.5f);
   if(kind==1){auto limits=spans(patches(),y+.5f);std::vector<Span> cut;for(auto a:line)for(auto b:limits)if(std::min(a.b,b.b)>std::max(a.a,b.a))cut.push_back({std::max(a.a,b.a),std::min(a.b,b.b)});line=cut;}
   for(auto hole:spans(no,y+.5f)){std::vector<Span> cut;for(auto a:line){if(hole.b<=a.a||hole.a>=a.b)cut.push_back(a);else{if(hole.a>a.a)cut.push_back({a.a,hole.a});if(hole.b<a.b)cut.push_back({hole.b,a.b});}}line=cut;}
   for(auto a:line){if(a.b-a.a<.01f)continue;unsigned short first=(unsigned short)m.vertices.size();
    const float xy[4][2]={{a.a,(float)y},{a.b,(float)y},{a.b,y+1.f},{a.a,y+1.f}};
-   for(auto& v:xy){cocos2d::V3F_C4B_T2F vert;vert.vertices={v[0],H-v[1],0};vert.colors=cocos2d::Color4B::WHITE;vert.texCoords={v[0]/W,v[1]/H};m.vertices.push_back(vert);}
+   for(auto& v:xy){cocos2d::V3F_C4B_T2F vert;vert.vertices={v[0],H-v[1],0};vert.colors=cocos2d::Color4B::WHITE;
+    if(kind>=10){
+     const int left=kind==10?294:kind==11?403:410,top=kind==10?1035:kind==11?1003:1194;
+     // Repeat the existing wood sample only inside the actual button silhouette.
+     vert.texCoords={(300+v[0]-left)/W,(1252+(y-top)%28+v[1]-y)/H};
+    }else vert.texCoords={v[0]/W,v[1]/H};m.vertices.push_back(vert);}
    for(int i:{0,1,2,0,2,3})m.indices.push_back(first+i);
   }
  }
@@ -71,6 +77,6 @@ void wood(int x,int y,int w,int h){for(int n=0;n<h;n+=28)cut(300,1252,w,std::min
 void wheel(int side,float angle){
  const int img=MERGE_ORIGINAL_WHEEL_IMG;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
- RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(96*DX/640.f+99*z),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
+ RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(96*DX/640.f+99*z+castleSceneLift()),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
 }
 }

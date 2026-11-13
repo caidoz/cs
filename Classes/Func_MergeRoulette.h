@@ -1,7 +1,8 @@
 #pragma once
 bool MergeRouletteActive();
-void MergeRouletteSetHeartCapacity(int capacity); // 5..20, same pixel hearts, optional second row
+void MergeRouletteSetHeartCapacity(int capacity); // Compatibility entry point; displays ten enlarged hearts.
 void MergeRouletteBegin(bool resume=false);
+void MergeRouletteBeginSiege();   // PVP debug: castle vs castle (MergeSiege.inc)
 void MergeRouletteLobbyDraw();
 bool MergeRouletteLobbySceneDraw();
 bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height);

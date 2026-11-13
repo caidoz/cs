@@ -1372,7 +1372,10 @@ void DoubleBuffering(int drawHandleIdx)
 void PaintClet(int x, int y, int w, int h)
 {
 	// Separate TURNRPG loop: never run Play()/GridTest or realtime combat beneath it.
-	if (getenv("CS_MERGE_REVIEW") && drawHandle==MD_TITLE && !MergeRouletteActive()) MergeRouletteBegin();
+	if (getenv("CS_MERGE_REVIEW") && drawHandle==MD_TITLE && !MergeRouletteActive()) {
+		if (getenv("CS_MERGE_SIEGE_REVIEW")) MergeRouletteBeginSiege();
+		else MergeRouletteBegin();
+	}
 	if (MergeRouletteActive()) { MergeRouletteDraw(); return; }
 	int i, j;
 	//아래에서 MD_NEWCOLLECTION/MD_NEWCARD일 때만 값을 잡는데, MD_STAGECLEAR의

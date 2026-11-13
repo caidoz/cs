@@ -2,6 +2,12 @@
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
+#include <unordered_map>
+
+namespace {
+std::unordered_map<std::string,int> firstFontLabel;
+int indexedFontLabels=0;
+}
 
 // Text Handling
 
@@ -116,6 +122,7 @@ float SubstringWidth(const char* str, int offset, int length, float zoom)
 void ResetLabel()
 {
 	int i;
+    firstFontLabel.clear();indexedFontLabels=0;
 
 	for (i = 0; i < curFontLabelCnt; i++) {
 		curScene->removeChild(fontLabel[i]);
@@ -203,23 +210,18 @@ void EraiseColorFont(const char* str)
 //처음 같은 문자열을 가진 라벨 인덱스를 리턴
 int GetSameStringIndex(const char* str)
 {
-	int i;
 
 	//�ϴ� �ؽ�Ʈ�� labelStr���ٰ� �ְ� ��Ʈ�����·� �ٲ� ������
 	memset(&labelStr2, 0, sizeof(labelStr2));
 	TextToString(labelStr, strlen(labelStr), (char*)&labelStr2);
 
 	//�ش� �ؽ�Ʈ�� ���ؼ� ���� �ؽ�Ʈ�� �ִ��� ����
-	for (i = 0; i < totalFontLabelCnt; i++) {
-		labelString = fontLabel[i]->getString();
-		//문자열이 같으면
-		if (!strcmp(labelString.c_str(), labelStr2))
-		{
-			return i;
-		}
-	}
-
-	return i;
+    // Index newly allocated labels once; repeated hits do not scan all past damage values.
+    if(indexedFontLabels>totalFontLabelCnt){firstFontLabel.clear();indexedFontLabels=0;}
+    for(;indexedFontLabels<totalFontLabelCnt;++indexedFontLabels)
+        firstFontLabel.emplace(fontLabel[indexedFontLabels]->getString(),indexedFontLabels);
+    const auto found=firstFontLabel.find(labelStr2);
+    return found==firstFontLabel.end()?totalFontLabelCnt:found->second;
 }
 
 

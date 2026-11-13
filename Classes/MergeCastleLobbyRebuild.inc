@@ -27,6 +27,8 @@ Box castleCannonBox(const Layout& l){
 Box lobbyStart(const Layout& l){return OriginalCastle::box(294,1037,506,150);}
 Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
+//PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
+Box lobbyPvp(const Layout& l){const float s=l.scale;return {(int)(DX-152*s),(int)(118*s),(int)(144*s),(int)(32*s)};}
 struct CastleMap {
  float sx[4],sy[4],dx[4],dy[4];
  float x(float p) const {int k=p<sx[1]?0:p<sx[2]?1:2;return dx[k]+(p-sx[k])*(dx[k+1]-dx[k])/(sx[k+1]-sx[k]);}
@@ -39,14 +41,15 @@ CastleMap castleMap(const Layout& l,int c){
  const Box room=interiorBox(l);const float s=l.scale;
  // One uniform transform per authored castle. Growing boards may crop the
  // castle sides; they never squeeze pillars or stretch room furniture.
- const float z=(l.ground-112*s)/(f.y+f.h-330.f);
+ const float lift=castleSceneLift();
+ const float z=(l.ground-lift-112*s)/(f.y+f.h-330.f);
  const float outerLeft=(DX-f.w*z)*.5f;
  const float innerLeft=outerLeft+(left-f.x)*z;
  const float innerRight=outerLeft+(right-f.x)*z;
  return {{(float)f.x,(float)left,(float)right,(float)(f.x+f.w)},
          {(float)f.y,(float)top,(float)bottom,(float)(f.y+f.h)},
          {outerLeft,innerLeft,innerRight,outerLeft+f.w*z},
-         {112*s+f.h*z,112*s+(f.y+f.h-top)*z,112*s+(f.y+f.h-bottom)*z,112*s}};
+         {112*s+f.h*z+lift,112*s+(f.y+f.h-top)*z+lift,112*s+(f.y+f.h-bottom)*z+lift,112*s+lift}};
 }
 Box roomBox(const Layout& l,int room){
  if(run.stage==0){const auto p=OriginalCastle::rooms()[room];return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}
@@ -159,7 +162,7 @@ void drawCastleHull(const Layout& l){
    SetSectionClip(b.x,b.y,b.w,b.h,false);
    DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,false,0,0,0,0,z,z,sprite[img],img);UnSectionClip(false);
   }
-  OriginalCastle::wood(294,1035,507,153);OriginalCastle::wood(403,1003,279,53);OriginalCastle::wood(410,1194,277,56);
+  OriginalCastle::draw(10);OriginalCastle::draw(11);OriginalCastle::draw(12);
   OriginalCastle::wood(65,1204,160,131);OriginalCastle::wood(867,1202,162,133);
   OriginalCastle::draw(0);OriginalCastle::draw(1);
   const float wheelAngle=castleWheelAngle(99*OriginalCastle::zoom());
@@ -169,6 +172,12 @@ void drawCastleHull(const Layout& l){
   for(int i=0;i<5;++i){Box t=OriginalCastle::box(xx[i]+5,yy[i]+5,ww[i]-10,22);MemRect(t.x,t.y,t.w,t.h,0xD9AF70);label(titles[i],t.x+t.w/2,t.y,.42f,0x23190E);}
   drawRoomResidents(l);return;
  }
+ //---- 공성전: 적의 성은 거울로 선다 ----
+ //
+ //쳐들어간 성이라 방향이 반대다. 포탑·대포가 오른쪽으로 가고 성주가 거기
+ //선다. 방 그림·차체·대포를 x 축으로 뒤집어 그린다. 바퀴는 좌우 대칭이라
+ //그대로. 판(칸·블록)은 내 퍼즐이므로 뒤집지 않는다.
+ const bool mirror=siegeActive;
  int img=MERGE_REBUILD_ROOMS_IMG+c;if(!sprite[img])LoadImg(img);
  if(sprite[img]){
   const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
@@ -176,26 +185,27 @@ void drawCastleHull(const Layout& l){
    const int lv=std::min(5,(int)robin.castleProgress.rooms[c][i]);
    const auto f=MergeCastleTransition::RoomFrame(i,lv,(int)size.width,(int)size.height);
    Box b=roomBox(l,i);b.x-=2;b.y+=2;b.w+=4;b.h+=4;
+   if(mirror)b.x=DX-b.x-b.w;
    const float z=std::max(b.w/(float)f.w,b.h/(float)f.h);
    const int sw=std::min(f.w,(int)std::ceil(b.w/z)),sh=std::min(f.h,(int)std::ceil(b.h/z));
    SetSectionClip(b.x,b.y,b.w,b.h,false);
-   DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,false,0,0,0,0,z,z,sprite[img],img);
+   DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,mirror,0,0,0,0,z,z,sprite[img],img);
    UnSectionClip(false);
   }
  }
  const auto& chassis=MergeCastleArt::Chassis[c];
  const int chassisImg=MERGE_REBUILD_CHASSIS_IMG+c;if(!sprite[chassisImg])LoadImg(chassisImg);
  const float chassisZoom=(map.dx[3]-map.dx[0])/chassis.w;
- if(sprite[chassisImg])DrawImageScale(chassis.w,chassis.h,chassis.x,chassis.y,(int)map.dx[0],(int)map.dy[0],false,0,0,0,0,chassisZoom,chassisZoom,sprite[chassisImg],chassisImg);
+ if(sprite[chassisImg])DrawImageScale(chassis.w,chassis.h,chassis.x,chassis.y,(int)(mirror?DX-map.dx[3]:map.dx[0]),(int)map.dy[0],mirror,0,0,0,0,chassisZoom,chassisZoom,sprite[chassisImg],chassisImg);
  const int wheelLv=std::min(5,(int)robin.castleProgress.parts[c][4]);
  const auto& wheel=MergeCastleArt::Parts[c][1][wheelLv];const int partImg=MERGE_REBUILD_PARTS_IMG+c;
  if(!sprite[partImg])LoadImg(partImg);
  if(sprite[partImg])for(int i=0;i<2;++i){
-  const int cx=(int)(i?DX-65*s:65*s),cy=(int)(139*s);
+  const int cx=(int)(i?DX-65*s:65*s),cy=(int)(139*s+castleSceneLift());
   RotateImage(wheel.w,wheel.h,wheel.x,wheel.y,cx,cy,false,castleWheelAngle(43*s),0,0,86*s/std::max(wheel.w,wheel.h),cocos2d::Vec2(.5f,.5f),sprite[partImg],partImg);
  }
  const int cannonLv=std::min(5,(int)robin.castleProgress.parts[c][3]);
- artCut(partImg,MergeCastleArt::Parts[c][0][cannonLv],castleCannonBox(l));
+ {Box cb=castleCannonBox(l);if(mirror)cb.x=DX-cb.x-cb.w;artCutFlip(partImg,MergeCastleArt::Parts[c][0][cannonLv],cb,mirror);}
  drawRoomResidents(l);
 }
 void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
@@ -211,6 +221,7 @@ void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  for(int i=0;i<5;++i){Box text=OriginalCastle::box(cx[i]-62,1382,124,42,drop+OriginalCastle::lift());MemRect(text.x,text.y,text.w,text.h,i==2?0x1748A0:0x633015);label(names[i],(int)(cx[i]*OriginalCastle::zoom()),text.y-(int)(4*l.scale),.67f,0xFFE7B9);}
  const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
  if(interactive){
+  button(lobbyPvp(l),"PVP 디버그","공성전",0x6B2D3F);
   for(int i=0;i<5;++i)SetRectPoint(nav.x+nav.w*i/5,nav.y,nav.w/5,nav.h,actions[i]);
   SetRectPoint(manage.x,manage.y,manage.w,manage.h,TOUCH_FUNC_POPUP_CASTLEMENU);
   for(int i=0;i<5;++i){const Box b=roomBox(l,i);SetRectPoint(b.x,b.y,b.w,b.h,TOUCH_FUNC_POPUP_CASTLEMENU);}

@@ -2908,11 +2908,8 @@ bool gTouchRectLocked = false;
 
 void ResetRectPoint(void)
 {
-	int i;
-
 	gTouchRectLocked = false;
-	for (i = 0; i < TOTALTOUCHCNT; i++)
-		memset(touchRect, 0, sizeof(touchRect));
+	memset(touchRect, 0, sizeof(touchRect));
 	touchIndex = 0;
 }
 

@@ -34,21 +34,23 @@ def verify(exe, height, turn=False, arrival=False):
                     raise RuntimeError(text)
                 if arrival and 'DONE merge arrival review' in text and 'arrival-07-spin-ready.png' in text:
                     for check in ('stopped reels do not reveal pending crew on deck',
-                                  'grid landing precedes rotating deck arrival',
-                                  'normal spin also lands before rotating crew onto deck'):
+                                  'grid landing precedes warp deck arrival',
+                                  'normal spin also lands before warping crew onto deck'):
                         assert 'PASS ' + check in text, check
                     for name in ('arrival-01-stopped-reels', 'arrival-02-grid-landed',
-                                 'arrival-03-deck-spin', 'arrival-04-opening-ready',
-                                 'arrival-05-spin-grid-landed', 'arrival-06-spin-deck-rotation',
+                                 'arrival-03-deck-warp', 'arrival-04-opening-ready',
+                                 'arrival-05-spin-grid-landed', 'arrival-06-spin-deck-warp',
                                  'arrival-07-spin-ready'):
                         assert (dest / (name + '.png')).is_file(), name
-                    print(f'PASS 640x{height}: both opening and normal draws stop, land on grid, then rotate onto deck', flush=True)
+                    print(f'PASS 640x{height}: both opening and normal draws stop, land on grid, then warp onto deck', flush=True)
                     return
                 if turn and 'DONE merge turn review' in text and 'turn-06-wave15-final-boss.png' in text:
                     for check in ('hero crew and enemy neutral motions loop',
                                   'enemy hits only after all allied actions complete',
                                   'turn end follows enemy recovery',
                                   'enemy counterattack then turn end unlocks controls',
+                                  'enemy approaches and returns using authored walking animation',
+                                  'walk attack recover walk-back phases complete before turn end',
                                   'real bosses at waves 5 10 15 with increasing health'):
                         assert 'PASS ' + check in text, check
                     for name in ('turn-01-idle-progress', 'turn-02-enemy-counterattack',

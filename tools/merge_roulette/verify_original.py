@@ -28,5 +28,12 @@ for name,q in regions.items():
  d=ImageChops.difference(a.crop(q),b.crop(q));stat=ImageStat.Stat(d)
  result[name]={'maxDifference':max(v[1] for v in d.getextrema()),'meanDifference':max(stat.mean)}
  assert result[name]['maxDifference']<=(4 if name=='beam' else 2) and result[name]['meanDifference']<.05,(name,result[name])
-print('PASS original tower, beam and three buttons use matching native source pixels',flush=True)
+for name,(x,y,w,h) in {'start-border':(292,1035,511,155),'continue-border':(408,1194,280,58)}.items():
+ z=640/1089
+ q=(int(x*z),int(850-((1445-y)*z+40)),int((x+w)*z),int(850-((1445-y-h)*z+40)))
+ d=ImageChops.difference(a.crop(q),b.crop(q));stat=ImageStat.Stat(d)
+ result[name]={'maxDifference':max(v[1] for v in d.getextrema()),'meanDifference':max(stat.mean)}
+ # A few polygon-edge sampling pixels may differ; a rectangular repair seam cannot.
+ assert result[name]['maxDifference']<=16 and result[name]['meanDifference']<.01,(name,result[name])
+print('PASS original tower, beam, buttons and surrounding wood have no rectangular repair seams',flush=True)
 (dest/'verification.json').write_text(json.dumps(result,indent=2))

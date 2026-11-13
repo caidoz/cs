@@ -4,6 +4,12 @@ void artCut(int img,const MergeCastleArt::Rect& r,const Box& b) {
     if(sprite[img]&&r.w>0&&r.h>0&&b.w>0&&b.h>0)
         DrawImageScale(r.w,r.h,r.x,r.y,b.x,b.y,false,0,0,0,0,b.w/(float)r.w,b.h/(float)r.h,sprite[img],img);
 }
+//좌우를 뒤집어 그린다(공성전: 적의 성은 거울로 선다). b 는 이미 뒤집힌 자리다.
+void artCutFlip(int img,const MergeCastleArt::Rect& r,const Box& b,bool flip) {
+    if(!sprite[img])LoadImg(img);
+    if(sprite[img]&&r.w>0&&r.h>0&&b.w>0&&b.h>0)
+        DrawImageScale(r.w,r.h,r.x,r.y,b.x,b.y,flip,0,0,0,0,b.w/(float)r.w,b.h/(float)r.h,sprite[img],img);
+}
 void uiArt(int ui,const Box& b){
  const auto& f=MergeCastleArt::UiFrames[ui];
  if(ui==MergeCastleArt::Board){

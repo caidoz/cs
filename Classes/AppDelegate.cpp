@@ -96,7 +96,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 		glview = GLViewImpl::createWithRect("Castle Survivor", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
-		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		glview->setFrameSize(640, 640 * 220 / 100);//WINDOWS
 		if(getenv("CS_MERGE_REVIEW")) {
 			const char* height=getenv("CS_MERGE_REVIEW_HEIGHT");
 			glview->setFrameSize(640,height?Max(850,Min(1600,atoi(height))):850);
@@ -129,7 +129,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	);
 
 	// turn on display FPS
-	//director->setDisplayStats(true);
+	director->setDisplayStats(true);
 
 	// set FPS. the default value is 1.0/60 if you don't call this
 	director->setAnimationInterval(1.0f / 60.0f);

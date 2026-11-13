@@ -16,7 +16,7 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=9 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=10 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -55,6 +55,9 @@ struct CrewStats {
 };
 struct Stats {
     CrewStats crew[64];
+    long long armor[GearCount][MaxLevel]={};
+    bool realVitals=false;
+    long long heroHealth=0,heroArmor=0;
     long long weapon=20;   // 검 블록 Lv1 한 방 = 히어로 평타
 };
 // 역할 × ★ 에 어떤 동료가 설 수 있는가(보유 기준). 합성 결과·릴 결과가 여기서 뽑힌다.
@@ -71,7 +74,8 @@ struct Roster {
 };
 struct Shot { Block block; long long damage=0; int summonTurns=0; };
 struct Effects {
-    int expose=0, inspire=1, skip=0, protect=0;
+    int expose=0, inspire=1, skip=0;
+    long long protect=0;
     bool half=false;
     long long dot=0;
     int dotTurns=0;
@@ -80,7 +84,20 @@ struct Run {
     Shape shape;
     unsigned rng=1;
     int families[3]={Sword,Armor,Boots};
-    int selected=Sword, spins=SpinLimit, lives=5, maxLives=5;
+    int selected=Sword, spins=SpinLimit;
+    long long lives=5, maxLives=5;
+    bool realVitals=false;
+    long long baseArmor=0,enemyAttack=1;
+    void setVitals(long long hp,long long armor) {
+        hp=std::max(1LL,std::min(1000000000000000LL,hp));
+        const long double ratio=lives/(long double)std::max(1LL,maxLives);
+        lives=lives>0?std::max(1LL,(long long)std::llround(hp*ratio)):0;
+        maxLives=hp;baseArmor=std::max(0LL,std::min(1000000000000000LL,armor));realVitals=true;
+    }
+    long long armorOf(const Block& block,const Stats& st) const {
+        if(!DefensiveGear(block.family))return 0;
+        return st.realVitals?st.armor[block.family-Sword][std::max(0,std::min(MaxLevel-1,block.level-1))]:MergeBoard::ArmorGuards(block.level);
+    }
 
     //---- 막 합쳐진 자리 ----
     //
@@ -92,6 +109,7 @@ struct Run {
     //합쳐도 번호가 달라 놓치지 않는다.
     int mergeX=-1,mergeY=-1,mergeW=0,mergeH=0,mergeLevel=0;
     unsigned mergeSeq=0;
+    Block mergeInputs[2],mergeResult; // Presentation event only; never restored from a save.
 
     //TODO(diag) 합성이 왜 안 되는지. 원인 잡으면 지운다.
     //마지막으로 시도한 합성이 어디서 걸렸는가.
@@ -228,6 +246,7 @@ struct Run {
                 if(combined.crew<0) {lastFail="crew";return false;}
             }
             lastFail="";
+            mergeInputs[0]=moving;mergeInputs[1]=t;mergeResult=combined;
             board[target]=combined;
             source.erase(source.begin()+index);
 
@@ -338,12 +357,14 @@ struct Run {
             if(f<Roles&&!(roster&&roster->has(f,1)))return false;   // ★1 이 없는 역할은 시작할 수 없다
             if(std::find(unique.begin(),unique.end(),f)==unique.end())unique.push_back(f);
         }
-        if(unique.size()<3)return false;
+        if(unique.size()<3||std::find(unique.begin(),unique.end(),Sword)==unique.end())return false;
         Run next=*this;
         if(fixedFirst) {if(std::find(unique.begin(),unique.end(),next.selected)==unique.end())return false;}
         else next.selected=unique[next.random((unsigned)unique.size())];
         if(!keepDraft||!next.drafted)next.choose(unique,weights);
         else for(int f:next.families)if(std::find(unique.begin(),unique.end(),f)==unique.end())return false;
+        // Keep the selected first reel, but always start with an attack weapon.
+        if(std::find(next.families,next.families+3,Sword)==next.families+3)next.families[2]=Sword;
         next.choosing=false;
         for(int f:next.families) next.tray.push_back(next.starter(f));
         while(!next.tray.empty())if(!next.autoPlace(0))return false;
@@ -368,33 +389,44 @@ struct Run {
         //그쪽 계열 중에서 고른다. 한쪽이 릴에 없으면 반대쪽으로 간다 -
         //빈손으로 돌아가는 칸은 만들지 않는다.
         //
+        //---- 장비는 여섯 부위 전부 ----
+        //
+        //전에는 시작 슬롯이 정한 계열 셋 안에서만 뽑았다. 장비가 그중 둘이면
+        //열 번을 돌려도 같은 두 가지만 나와 빤했고, 같은 것끼리 바로바로
+        //합쳐지니 칸이 모자란 느낌도 없었다(2026-11-12). 이제 장비는 검·갑옷·
+        //장화·투구·장갑·바지 여섯 부위에서 고르게 뽑는다. 동료는 시작 슬롯이
+        //정한 역할 그대로다.
+        //
         //릴 차례와 칸 수는 그대로다(쌍·삼중도 그대로 나온다).
-        int gear[3],gn=0,role[3],rn=0;
+        int gear[GearCount],gn=0,role[3],rn=0;
 
-        for(int k=0;k<3;++k) {
-            if(families[k]>=Roles) gear[gn++]=families[k];
-            else role[rn++]=families[k];
-        }
+        for(int f=Sword;f<FamilyCount;++f) gear[gn++]=f;
+        for(int k=0;k<3;++k) if(families[k]<Roles) role[rn++]=families[k];
 
         for(int i=0;i<3;++i) {
             const bool wantGear=(int)random(100)<BOARD_GEAR_PCT;
             int family;
 
-            if(wantGear&&gn) family=gear[random((unsigned)gn)];
-            else if(!wantGear&&rn) family=role[random((unsigned)rn)];
-            else if(gn) family=gear[random((unsigned)gn)];
+            if(wantGear||!rn) family=gear[random((unsigned)gn)];
             else family=role[random((unsigned)rn)];
 
             tray.push_back(starter(family));
         }
         return true;
     }
+    //릴 띠에 도는 계열. spin() 이 고르는 집합과 같다 - 장비 여섯 + 시작 슬롯의 역할.
+    int reelFamilies(int* out) const {
+        int n=0;
+        for(int k=0;k<3;++k) if(families[k]<Roles) out[n++]=families[k];
+        for(int f=Sword;f<FamilyCount;++f) out[n++]=f;
+        return n;
+    }
     Shot evaluate(const Block& b,const Stats& st,Effects& e) const {
         Shot s; s.block=b;
         int lv=b.level;
         if(b.family==Boots) return s;
         if(DefensiveGear(b.family)) {
-            e.protect+=MergeBoard::ArmorGuards(lv);e.skip+=MergeBoard::ArmorSkipTurns(lv);
+            e.protect+=armorOf(b,st);e.skip+=MergeBoard::ArmorSkipTurns(lv);
             if(lv==2)e.half=true;
             return s;
         }
@@ -468,15 +500,15 @@ struct Run {
     bool shouldCounterattack() const {
         return attacking&&nextShot==(int)shots.size()&&enemyHp>0&&!counterResolved&&skipTurns+effects.skip<=0;
     }
-    int counterDamage() const {
+    long long counterDamage() const {
         if(enemyHp<=0||skipTurns+effects.skip>0)return 0;
-        int hit=BossTier(wave)?2:1;
+        long long hit=enemyAttack*(BossTier(wave)?2:1);
         if(effects.half)hit=(hit+1)/2;
-        return std::max(0,hit-effects.protect);
+        return std::max(0LL,hit-baseArmor-effects.protect);
     }
     bool counterattack() {
         if(!shouldCounterattack())return false;
-        lives=std::max(0,lives-counterDamage());counterResolved=true;
+        lives=std::max(0LL,lives-counterDamage());counterResolved=true;
         return true;
     }
     int finish() {
@@ -490,7 +522,7 @@ struct Run {
         skipTurns=std::min(100,skipTurns+effects.skip);
         if(enemyHp>0) {
             if(skipTurns>0) --skipTurns;
-            else if(!counterResolved)lives=std::max(0,lives-counterDamage());
+            else if(!counterResolved)lives=std::max(0LL,lives-counterDamage());
         } else {
             reward+=10LL*(stage+1)*(BossTier(wave)?10:1);
             if(++wave==WavesPerStage) {wave=0;++stage;lives=maxLives;}
@@ -518,7 +550,7 @@ struct Run {
          <<' '<<effects.expose<<' '<<effects.inspire<<' '<<effects.skip<<' '<<effects.protect
          <<' '<<effects.half<<' '<<effects.dot<<' '<<effects.dotTurns<<' '<<shots.size();
         for(const Shot& s:shots)o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.block.x<<' '<<s.block.y<<' '<<s.damage<<' '<<s.summonTurns;
-        o<<' '<<counterResolved;
+        o<<' '<<counterResolved<<' '<<realVitals<<' '<<baseArmor<<' '<<enemyAttack;
         return o.str();
     }
     static bool crewOk(const Block& b) {
@@ -527,11 +559,11 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
-           || r.maxLives<1 || r.maxLives>20 || r.lives<0 || r.lives>r.maxLives
+           || r.maxLives<1 || r.maxLives>(version>=10?1000000000000000LL:20LL) || r.lives<0 || r.lives>r.maxLives
            || r.wave<0 || r.wave>=WavesPerStage || r.stage<0 || r.stage>100000
            || r.enemyMax<1 || r.enemyMax>1000000000000000LL || r.enemyHp<0 || r.enemyHp>r.enemyMax
            || r.dot<0 || r.dot>1000000000000000LL || r.dotTurns<0 || r.dotTurns>4 || r.skipTurns<0 || r.skipTurns>100) return false;
@@ -543,7 +575,8 @@ struct Run {
             int count;if(!(in>>count)||count<0||count>(list?3:Cells)) return false;
             for(int i=0;i<count;++i) {
                 Block b;int rot=0;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y>>rot)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;b.rot=rot!=0;
-                if(std::find(r.families,r.families+3,b.family)==r.families+3) return false;
+                //장비는 여섯 부위 어느 것이든 판에 설 수 있다. 역할 블록만 시작 슬롯의 역할이어야 한다.
+                if(b.family<Roles&&std::find(r.families,r.families+3,b.family)==r.families+3) return false;
                 if(!list) {if(!r.fits(b)) return false;r.board.push_back(b);}
                 else {if(b.x!=-1||b.y!=-1) return false;r.tray.push_back(b);}
             }
@@ -561,7 +594,7 @@ struct Run {
         if(count<0||count>Cells||r.nextShot<0||r.nextShot>count||r.reward<0||r.reward>1000000000000LL
            ||r.damageDone<0||r.damageDone>1000000000000000LL||r.effects.expose<0||r.effects.expose>9000
            ||r.effects.inspire<1||r.effects.inspire>5||r.effects.skip<0||r.effects.skip>200
-           ||r.effects.protect<0||r.effects.protect>Cells*2||r.effects.dot<0||r.effects.dot>1000000000000000LL
+           ||r.effects.protect<0||r.effects.protect>(version>=10?Cells*1000000000000000LL:Cells*2LL)||r.effects.dot<0||r.effects.dot>1000000000000000LL
            ||r.effects.dotTurns<0||r.effects.dotTurns>4)return false;
         auto sorted=r.ordered();
         for(int i=0;i<count;++i) {
@@ -574,6 +607,10 @@ struct Run {
         }
         if(r.attacking?(count!=(int)r.board.size()||count==0||r.choosing||r.lost):(count!=0||r.nextShot!=0))return false;
         if(version>=9&&!(in>>r.counterResolved))return false;
+        if(version>=10) {
+            if(!(in>>r.realVitals>>r.baseArmor>>r.enemyAttack)||r.baseArmor<0||r.baseArmor>1000000000000000LL||r.enemyAttack<1||r.enemyAttack>1000000000000000LL)return false;
+            if(!r.realVitals&&(r.maxLives>20||r.baseArmor!=0||r.enemyAttack!=1))return false;
+        }
         if(r.counterResolved&&(!r.attacking||r.nextShot!=count||r.enemyHp<=0))return false;
         in>>std::ws;if(!in.eof()) return false;
         if((r.lives==0)!=r.lost&&!(r.attacking&&r.counterResolved&&r.lives==0&&!r.lost)) return false;

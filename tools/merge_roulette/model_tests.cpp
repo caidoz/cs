@@ -1,4 +1,4 @@
-#include "../../Classes/MergeRouletteModel.h"
+﻿#include "../../Classes/MergeRouletteModel.h"
 #include "../../Classes/Data/MergeTreeData.h"
 #include <cassert>
 #include <iostream>
@@ -24,7 +24,7 @@ int main(int argc,char**) {
         assert(FamilyCount-Roles==6);
         for(int family=Sword;family<FamilyCount;++family) {
             Run r;r.roster=&roster;r.selected=family;
-            assert(r.start({family,0,1},nullptr,true));
+            assert(r.start({family,Sword,0,1},nullptr,true));
             assert(r.board[0].family==family);
             for(int i=0;i<3;++i) {
                 const Block& b=r.board[i];
@@ -43,7 +43,7 @@ int main(int argc,char**) {
         }
         Run old;old.choosing=false;old.families[0]=Boots;
         old.board={block(Boots,1,0,0)};
-        std::string legacy=old.encode();legacy.replace(4,1,"7");legacy.erase(legacy.find_last_of(' '));
+        std::string legacy=old.encode();legacy.replace(4,2,"7");for(int i=0;i<4;++i)legacy.erase(legacy.find_last_of(' '));
         Run upgraded;assert(upgraded.decode(legacy)&&upgraded.board[0].family==Boots);
         std::cout<<"PASS six costume equipment families, opening identities and v7 migration\n";
     }
@@ -71,9 +71,9 @@ int main(int argc,char**) {
         bool pair=false,triple=false;
         for(unsigned seed=1;seed<1000;++seed){
             Run s;s.choosing=false;s.families[0]=Sword;s.families[1]=Armor;s.families[2]=Boots;s.rng=seed;
-            //spin 은 칸마다 "장비냐 동료냐"(random(100) < BOARD_GEAR_PCT) 를 먼저 굴리고 그쪽 계열에서 고른다.
-            //여기는 셋 다 장비라 어느 쪽이 나와도 장비 셋 중 하나(random(3))다 - 난수를 같은 순서로 되감는다.
-            Run expected=s;int reels[3];for(int i=0;i<3;++i){expected.random(100);reels[i]=expected.families[expected.random(3)];}
+            //spin 은 칸마다 "장비냐 동료냐"(random(100) < BOARD_GEAR_PCT) 를 먼저 굴리고, 장비면 여섯 부위
+            //전부(Sword..Pants) 에서 고른다. 여기는 역할이 없으니 늘 장비다 - 난수를 같은 순서로 되감는다.
+            Run expected=s;int reels[3];for(int i=0;i<3;++i){expected.random(100);reels[i]=Sword+(int)expected.random(GearCount);}
             assert(s.spin());
             assert(s.tray.size()==3);
             for(int i=0;i<3;++i)assert(s.tray[i].family==reels[i]&&s.tray[i].level==1);
@@ -128,6 +128,12 @@ int main(int argc,char**) {
         Run r;r.roster=&roster;r.rng=12345;
         assert(r.start({0,1,2,3,Sword,Armor,Boots}));
         assert(!r.choosing&&r.board.size()==3&&r.tray.empty());
+        for(unsigned seed=1;seed<=5000;++seed){
+            Run opening;opening.roster=&roster;opening.rng=seed;
+            assert(opening.start({0,1,2,3,Sword,Armor,Boots,Helm,Gloves,Pants}));
+            assert(std::any_of(opening.board.begin(),opening.board.end(),[](const Block& b){return b.family==Sword;}));
+        }
+        Run noWeapon;noWeapon.roster=&roster;assert(!noWeapon.start({0,1,Armor}));
         for(const Block& b:r.board)assert(b.level==1&&(b.family>=Roles||(b.crew>=0&&MergeTrees::Star(b.crew)==1&&MergeTrees::Role(b.crew)==b.family)));
         Roster thin;thin.add(0,2,24);
         Run no;no.roster=&thin;assert(!no.start({0,Sword,Armor}));
