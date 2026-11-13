@@ -31,6 +31,17 @@ struct Shape {
     bool contains(int x,int y) const {return x>=0&&y>=0&&x<width&&y<height&&(rows[y]&(1u<<x));}
 };
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
+inline Shape BattleShape(int stage) {
+    Shape out;out.width=4;out.height=4;
+    for(auto& row:out.rows)row=0;
+    for(int y=0;y<4;++y)out.rows[y]=15;
+    const int extra=2*std::max(0,std::min(9,stage));
+    // Add adjacent pairs, preserving every previously unlocked cell.
+    // Grow horizontally rather than pushing the fixed-size board into the deck.
+    for(int i=0;i<extra;++i){const int x=4+i/4,y=i%4;
+        out.rows[y]|=1u<<x;out.width=std::max(out.width,x+1);}
+    return out;
+}
 struct Block {
     int family=-1, level=1, crew=-1, x=-1, y=-1;   // crew: 역할 계열이면 동료 번호, 장비면 -1
     //눕혔는가. 장비는 ★5 가 5x1 이라 세로로 눕혀야 들어가는 자리가 많다.

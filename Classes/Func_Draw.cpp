@@ -16218,7 +16218,7 @@ void LogDraw(LOG* g)
 		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 40 * _2X) * g->zoom, -1, -1, g->zoom);
 
 		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true);
-		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, MINUS, true, g->zoom, true);
+		DrawImageNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, MINUS, true, g->zoom, true);
 		break;
 	case LOG_BATTLE:
 		DrawCmfDetailShadow(g->cmf, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(32 * _2X) * g->zoom, LEFT, g->zoom);
@@ -16235,7 +16235,7 @@ void LogDraw(LOG* g)
 		DrawCmfDetailShadow(g->cmf2, crewPos[enemyType * 5 + 0], g->x - (float)(LOG_X / 2) * g->zoom + (float)(4 * _2X + 16 * _2X + 160 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(40 * _2X) * g->zoom, LEFT, g->zoom);
 		LineTextStr(g->text, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 14 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X) * g->zoom, (float)(LOG_X - 80 * _2X) * g->zoom, -1, -1, g->zoom);
 		DrawIcon(g->icon == ICON_GOLD ? g->icon + frame % GOLDICONFRAME : 0, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 26 * _2X) * g->zoom, g->zoom, false, false, false, true);
-		DrawNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, PLUS, true, g->zoom, true);
+		DrawImageNum(g->count, g->x - (float)(LOG_X / 2) * g->zoom + (float)(8 * _2X + (float)16 * _2X * 1.5f + 16 * _2X + 20 * _2X) * g->zoom, g->y + (float)(LOG_Y / 2) * g->zoom - (float)(4 * _2X + 28 * _2X) * g->zoom, NUM_FONT_NORMAL, LEFT, false, PLUS, true, g->zoom, true);
 
 		break;
 	case LOG_SKILL:

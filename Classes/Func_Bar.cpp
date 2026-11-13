@@ -544,7 +544,7 @@ void BarDraw(BAR* barP, float zoom)
 
 		MemRect(xOffset + barP->x + (float)(40 * _2X + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake]) * zoom, val, (float)(HPBARHEIGHT)*zoom, ENEMYHPBARCOLOR);
 
-		DrawNum(count, xOffset + barP->x + (float)(30 * _2X + HPBARWIDTH + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake] - 2 * _2X) * zoom, NUM_FONT_NORMAL, RIGHT, 0, count >= 0 ? false : MINUS, true, zoom, true);
+		DrawImageNum(count, xOffset + barP->x + (float)(30 * _2X + HPBARWIDTH + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake] - 2 * _2X) * zoom, NUM_FONT_NORMAL, RIGHT, 0, count >= 0 ? false : MINUS, true, zoom, true);
 
 		DrawIcon(barP->icon + frame % GOLDICONFRAME, xOffset + barP->x + (float)(30 * _2X + HPBARWIDTH - GetNumDx(count, 0, NUM_FONT_NORMAL, 0, true, zoom, true) - 20 * _2X + shakePosX[effect.hpShake]) * zoom, barP->y + (float)(-20 * _2X + shakePosY[effect.hpShake]) * zoom, zoom, false, false, false, true);
 
@@ -845,7 +845,7 @@ void WaveBadgeDrawBeforeBars(void)
 			MemRect(x-size/2-2,cy+size/2+2,size+4,size+4,selected?0xFFE080:0x60768B);
 			MemRect(x-size/2,cy+size/2,size,size,stop<=current?0x35C8AB:0x182E42);
 			if(stop%5==0) DrawCmfDetail(CMF_NPC_HEART,PO_C122_HEART,x,cy-10,RIGHT,.35f,false,false);
-			DrawNum(stop,x,top-30,NUM_FONT_NORMAL,CENTER,false,false,true,.35f,true);
+			DrawImageNum(stop,x,top-30,NUM_FONT_NORMAL,CENTER,false,false,true,.35f,true);
 		}
 		return;
 	}
@@ -875,7 +875,7 @@ void MedalBarDraw(int x, int y, long long amount, bool ani, float zoom)
 	else
 		DrawIcon(ICON_MEDAL, x + (float)(8 * _2X) * zoom, y - (float)(9 * _2X) * zoom, zoom, false, false, false, true);
 
-	DrawNum(amount, x + (float)(TSIZE * 5 + 8 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, true, zoom, true);
+	DrawImageNum(amount, x + (float)(TSIZE * 5 + 8 * _2X) * zoom, y - (float)(5 * _2X * 2) * zoom, NUM_FONT_NORMAL, RIGHT, false, false, true, zoom, true);
 	if (medalFrame > 0 && ani == true)
 		medalFrame--;
 }
@@ -972,7 +972,7 @@ void PvpEventBarDraw(GAMEEVENT* gEvent, int x, int y, int icon, int count, int m
 #ifdef GUIDELINE
 	for (i = 0; i < TOTALPVPDETAILREQUEST; i++) {
 		MemRect(x + (float)(6 * _2X) * zoom + (float)(PVPQUESTBARWIDTH - 12 * _2X) * pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i] / max, y - (float)(7 * _2X) * zoom, (float)(1 * _2X) * zoom, (float)(PVPQUESTBARHEIGHT - 14 * _2X) * zoom, COLOR_REALRED);
-		DrawNum(pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i], x + (float)(6 * _2X) * zoom + (float)(PVPQUESTBARWIDTH - 12 * _2X) * pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i] / max, y - (float)(7 * _2X + PVPQUESTBARHEIGHT) * zoom, NUM_FONT_NORMAL, CENTER, false, false, true, zoom, true);
+		DrawImageNum(pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i], x + (float)(6 * _2X) * zoom + (float)(PVPQUESTBARWIDTH - 12 * _2X) * pvpQuestRequest[robin.pvpQuest * TOTALPVPSUBQUEST * TOTALPVPDETAILREQUEST + robin.pvpSubQuest * TOTALPVPDETAILREQUEST + i] / max, y - (float)(7 * _2X + PVPQUESTBARHEIGHT) * zoom, NUM_FONT_NORMAL, CENTER, false, false, true, zoom, true);
 	}
 #endif
 	xPos = 0;

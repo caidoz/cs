@@ -893,6 +893,7 @@ typedef enum _imgDef {
 	MERGE_ORIGINAL_MESH_IMG,
 	MERGE_ORIGINAL_WHEEL_IMG,
 	MERGE_SOLID_RECTS_IMG, // Pool identity for batched UI geometry; shares MEMRECT's texture.
+	MERGE_WOOD_FRONT_COVER_IMG,
 	TOTALIMG,
 #ifdef GAMELOGWRITE
 	MAXRENDERCNT = TOTALIMG * 100,

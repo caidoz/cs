@@ -1,7 +1,14 @@
 #include "../../Classes/MergeCombatPresentation.h"
+#include "../../Classes/MergeCastleTransition.h"
 #include <cassert>
 #include <iostream>
 int main() {
+    using namespace MergeCastleTransition;
+    assert(CoverProgress(PanicEnd)==0&&CoverProgress(CoverEnd)==1);
+    for(int count:{16,18,34})for(int i=0;i<count;++i){
+        assert(TileLaunch(i,count)>CoverEnd&&TileLand(i,count)<Duration);
+        assert(TileProgress(CoverEnd,i,count)==0);
+    }
     MergeCombat::EnemyPhases enemy;enemy.begin(24,40);
     assert(enemy.walkingIn(0)&&enemy.walkingIn(23)&&!enemy.walkingIn(24));
     assert(enemy.impact()==44&&enemy.returnStart()==76&&enemy.end()==100);

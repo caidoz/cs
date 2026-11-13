@@ -2529,7 +2529,7 @@ float DrawRouletteNumIcon(long long num, int icon, int x, int y, bool ani, int a
 	}
 	//일반숫자 2배수
 	DrawIcon(icon, x, y - (float)(1 * _2X) * zoom, zoom, COLOR_BROWN, ani, false, true);
-	DrawNum(num, x + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y, NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
+	DrawImageNum(num, x + (float)ITEMICONSIZE * zoom + (float)(4 * _2X) * zoom, y, NUM_FONT_LARGE, LEFT, 0, false, true, zoom, false);
 
 
 	return width;
@@ -4228,96 +4228,21 @@ float GetNumDx2(long long int num, int sign, int digit, bool comma, float zoom, 
 	return width + (float)(2 * _2X) * zoom;
 }
 
+// 옛 num.png 글꼴(소 14 / 중 24 / 대 36px)을 res/num2.png 글꼴(높이 80px, num2Off)로 바꿔 그릴 때의 배율.
+static float ImageNumberScale(int font, float zoom)
+{
+    const float height = font == NUM_FONT_SMALL ? 14.f : font == NUM_FONT_NORMAL ? 24.f : 36.f;
+    return zoom * height / 80.f;
+}
+
 float GetNumDx(long long int num, int sign, int font, int digit, bool comma, float zoom, bool fixed)
 {
-	int i;
-	float width = 0;
-	num = Abs(num);
-	long long int numOrigin = num;
-	int figureNum = GetNumFigure(num);
-	int widthNum = 0;
-	int widestNum = 5;//이미지 숫자중에 가장 넓이가 넓은 것은 5
-
-
-	if (fixed == true) {
-		for (i = 0; i < figureNum; i++)
-			widthNum += widestNum * pow(10, i);
-
-		do {
-			switch (font) {
-			case NUM_FONT_SMALL:
-				width += (float)(4 * _2X) * zoom;
-				break;
-			case NUM_FONT_NORMAL:
-				width += (float)(mediumNumData[10 + widthNum % 10]) * zoom;
-				break;
-			default:
-				width += (float)(largeNumData[10 + widthNum % 10]) * zoom;// *(sign + 1);
-				break;
-			}
-
-			widthNum = widthNum / 10;
-			digit--;
-		} while (widthNum != 0 || digit > 0);
-	}
-	else {
-		do {
-			switch (font) {
-			case NUM_FONT_SMALL:
-				width += (float)(4 * _2X) * zoom;
-				break;
-			case NUM_FONT_NORMAL:
-				width += (float)(mediumNumData[10 + num % 10]) * zoom;
-				break;
-			default:
-				width += (float)(largeNumData[10 + num % 10]) * zoom;// *(sign + 1);
-				break;
-			}
-
-			num = num / 10;
-			digit--;
-		} while (num != 0 || digit > 0);
-	}
-
-	if (sign) {
-		switch (font) {
-		case NUM_FONT_SMALL:
-			width += (float)8 * _2X * zoom;
-			break;
-		case NUM_FONT_NORMAL:
-			width += (float)9 * _2X * zoom;
-			break;
-		case NUM_FONT_LARGE:
-			width += (float)12 * _2X * zoom;
-			break;
-		}
-	}
-	//자릿수 콤마
-	if (comma)
-		switch (font) {
-		case NUM_FONT_SMALL:
-			width += (float)((GetNumFigure(numOrigin) - 1) / 3) * 3 * _2X * zoom;
-			break;
-		case NUM_FONT_NORMAL:
-			width += ((GetNumFigure(numOrigin) - 1) / 3) * (float)4 * _2X * zoom;
-			break;
-		default:
-			width += ((GetNumFigure(numOrigin) - 1) / 3) * (float)6 * _2X * zoom;
-			break;
-		}
-
-	switch (font) {
-	case NUM_FONT_NORMAL:
-		return (float)(width - 1 * _2X * zoom);
-	case NUM_FONT_SMALL:
-		return (float)(width + 1 * _2X * zoom);
-	default:
-		return (float)(width - 1 * _2X * zoom);
-	}
+    return GetNumDx2(Abs(num), sign, digit, comma, ImageNumberScale(font, zoom), fixed);
 }
 
 float GetGoldNumDx(long long int num, int sign, int digit, bool comma, float zoom)
 {
+	num = Abs(num);
 	long long int numOrigin = num;
 	float width = 0;
 
@@ -4327,10 +4252,10 @@ float GetGoldNumDx(long long int num, int sign, int digit, bool comma, float zoo
 		digit--;
 	} while (num != 0 || digit > 0);
 
-	if (sign > 0) {
+	if (sign == PLUS) {
 		width += (float)31 * zoom;
 	}
-	else if (sign < 0) {
+	else if (sign == MINUS) {
 		width += (float)27 * zoom;
 	}
 
@@ -4692,119 +4617,10 @@ void DrawNum2(long long int num, int x, int y, int align, int digit, int sign, b
 	}
 }
 
-void DrawNum(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed)
+void DrawImageNum(long long int num, int x, int y, int font, int align, int digit, int sign, bool comma, float zoom, bool fixed)
 {
-	long long int tempNum = num;
-	int numbers = 1;
-
- 	switch (align) {
-	case CENTER:
-		//�������
-		x += GetNumDx(num, sign, font, digit, comma, zoom, fixed) / 2;
-		break;
-	case LEFT:
-		//��������
-		x += GetNumDx(num, sign, font, digit, comma, zoom, fixed);
-		break;
-	}
-
-	switch (font) {
-	case NUM_FONT_LARGE:
-		x += (float)(1 * _2X) * zoom;
-		break;
-	default:
-		x += (float)(1 * _2X) * zoom;
-		break;
-	case NUM_FONT_SMALL:
-		x -= (float)(1 * _2X) * zoom;
-		break;
-	}
-
-	num = Abs(num);
-
-	//if (sign > 0)
-	//{
-	//	tempNum = tempNum;
-	//}
-
-	//숫자
-	do {
-		//��ǥ �׷��ֱ�
-		if (numbers % 4 == 0 && numbers > 0 && comma) {
-			switch (font) {
-			case NUM_FONT_SMALL:
-				x -= (float)(3 * _2X) * zoom;
-				//c.bmp
-				DrawImage(4 * _2X, 5 * _2X, 196 * _2X, 222 * _2X, x, y - (float)(4 * _2X) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
-				break;
-			case NUM_FONT_NORMAL:
-				x -= (float)(4 * _2X) * zoom;
-				DrawImage(5 * _2X, 6 * _2X, 200 * _2X, 222 * _2X, x, y - (float)(8 * _2X) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
-				break;
-			default:
-				x -= (float)(6 * _2X) * zoom;
-				DrawImage(7 * _2X, 8 * _2X, 205 * _2X, 222 * _2X, x, y - (float)(12 * _2X) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
-				break;
-			}
-		}
-		else {
-			switch (font) {
-			case NUM_FONT_SMALL:
-				x -= (float)(4 * _2X) * zoom;
-				//c.bmp
-				DrawImage(5 * _2X, 7 * _2X, 1 + (num % 10) * (5 * _2X + 1), 63, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[NUM_IMG], NUM_IMG);
-				break;
-			case NUM_FONT_NORMAL:
-				x -= (float)(mediumNumData[10 + (num % 10)]) * zoom;
-				DrawImage(mediumNumData[10 + (num % 10)], 12 * _2X, mediumNumData[num % 10], mediumNumData[30 + num % 10], x + (float)mediumNumData[20 + (num % 10)] * zoom, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[NUM_IMG], NUM_IMG);
-				break;
-			default:
-				x -= (float)(largeNumData[10 + (num % 10)]) * zoom;// *(sign + 1);
-				if (font >= NUM_FONT_LARGE_BACKLIGHTEN) {
-					if (font == NUM_FONT_LARGE_BACKLIGHTEN2)
-						SetAlpha(16);
-
-					//ef.bmp
-					DrawImage(18 * _2X, 20 * _2X, 78 * _2X, 166 * _2X, x - (1) * _2X, y + (1) * _2X, false, false, false, true, false, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
-
-					SetAlpha(32);
-				}
-				DrawImage(largeNumData[10 + (num % 10)], 18 * _2X, largeNumData[num % 10], largeNumData[30 + num % 10], x + (float)(largeNumData[20 + (num % 10)]) * zoom, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[NUM_IMG], NUM_IMG);
-				if (font == NUM_FONT_LARGE_FORELIGHTEN)
-					DrawImage(18 * _2X, 20 * _2X, 78 * _2X, 166 * _2X, x - (1) * _2X, y + (1) * _2X, false, false, false, true, false, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
-
-				break;
-			}
-
-			num = num / 10;
-			digit--;
-		}
-
-		numbers++;
-	} while (num != 0 || digit > 0);
-
-	//+, - ��ȣǥ��
-	if (sign != 0) {
-		switch (font) {
-		case NUM_FONT_SMALL:
-			x -= (float)(7 * _2X) * zoom;
-			//c.bmp
-			DrawImage(7 * _2X, 7 * _2X, (sign == PLUS ? 168 : 175) * _2X, 27 * _2X, x, y, false, false, false, false, m_lgrpAlpha, zoom, sprite[COMMON_IMG], COMMON_IMG);
-			break;
-		case NUM_FONT_NORMAL:
-			x -= (float)(7 * _2X) * zoom;
-			//c.bmp
-			DrawImage(7 * _2X, (sign == PLUS ? 7 : 3) * _2X, 215 * _2X, (sign == PLUS ? 133 : 130) * _2X, x, y - (float)((sign == PLUS ? 2 : 4) * _2X + 1) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
-			break;
-		case NUM_FONT_LARGE:
-			x -= (float)(12 * _2X) * zoom;
-			if (sign == PLUS)
-				DrawImage(12 * _2X, 12 * _2X, 227 * _2X, 134 * _2X, x, y - (float)(3 * _2X) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
-			else
-				DrawImage(12 * _2X, 4 * _2X, 222 * _2X, 130 * _2X, x, y - (float)(7 * _2X) * zoom, false, false, false, false, m_lgrpAlpha, zoom, sprite[EFFECT_IMG], EFFECT_IMG);
-			break;
-		}
-	}
+    // 옛 DrawNum 자리는 전부 res/num2.png 글꼴(DrawNum2)로 그린다.
+    DrawNum2(num, x, y, align, digit, sign, comma, ImageNumberScale(font, zoom), fixed);
 }
 
 void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom)
@@ -5153,7 +4969,7 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 	}
 
 	if ((int)GetNumDx(num, sign, font, digit, comma, zoom, fixed) <= (int)width || width == false) {
-		DrawNum(num, x, y, font, align, digit, sign, comma, zoom, fixed);
+		DrawImageNum(num, x, y, font, align, digit, sign, comma, zoom, fixed);
 		return;
 	}
 
@@ -5197,30 +5013,30 @@ void DrawBigNum(long long int num, int x, int y, int font, int align, int digit,
 
 	switch (align) {
 	case LEFT:
-		DrawNum(gapNum, x, y, font, LEFT, digit, sign, comma, zoom, fixed);
+		DrawImageNum(gapNum, x, y, font, LEFT, digit, sign, comma, zoom, fixed);
 		if (figureNum <= 1) {
 			DrawAlpha(x + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed), y + alphaGapY, ALPHA_DOT, alphaFont, zoom, false);
-			DrawNum(num2, x + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
+			DrawImageNum(num2, x + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
 			DrawAlpha(x + GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed) + dotWidth + GetNumDx(num2, false, font, 0, comma, zoom, fixed), y + alphaGapY, alphaIdx, alphaFont, zoom, false);
 		}
 		else
 			DrawAlpha(x + GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed), y + alphaGapY, alphaIdx, alphaFont, zoom, false);
 		break;
 	case CENTER:
-		DrawNum(gapNum, x - gapWidth / 2, y, font, LEFT, digit, sign, comma, zoom, fixed);
+		DrawImageNum(gapNum, x - gapWidth / 2, y, font, LEFT, digit, sign, comma, zoom, fixed);
 		if (figureNum <= 1) {
 			DrawAlpha(x - gapWidth / 2 + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed), y + alphaGapY, ALPHA_DOT, alphaFont, zoom, false);
-			DrawNum(num2, x - gapWidth / 2 + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
+			DrawImageNum(num2, x - gapWidth / 2 + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
 			DrawAlpha(x - gapWidth / 2 + GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed) + dotWidth + GetNumDx(num2, false, font, 0, comma, zoom, fixed), y + alphaGapY, alphaIdx, alphaFont, zoom, false);
 		}
 		else
 			DrawAlpha(x - gapWidth / 2 + GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed), y + alphaGapY, alphaIdx, alphaFont, zoom, false);
 		break;
 	case RIGHT:
-		DrawNum(gapNum, x - gapWidth, y, font, LEFT, digit, sign, comma, zoom, fixed);
+		DrawImageNum(gapNum, x - gapWidth, y, font, LEFT, digit, sign, comma, zoom, fixed);
 		if (figureNum <= 1) {
 			DrawAlpha(x - gapWidth + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed), y + alphaGapY, ALPHA_DOT, alphaFont, zoom, false);
-			DrawNum(num2, x - gapWidth + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
+			DrawImageNum(num2, x - gapWidth + GetNumDx(gapNum, sign, font, 0, comma, zoom, fixed) + dotWidth, y, font, LEFT, digit, false, comma, zoom, fixed);
 			DrawAlpha(x - gapWidth + GetNumDx(gapNum, sign, font, digit, comma, zoom, fixed) + dotWidth + GetNumDx(num2, false, font, 0, comma, zoom, fixed), y + alphaGapY, alphaIdx, alphaFont, zoom, false);
 		}
 		else
@@ -6149,9 +5965,9 @@ void DrawAlarmMark(int x, int y, int count, float zoom)
 {
 	DrawFrame(x, y, (float)(16 * _2X) * zoom, (float)(20 * _2X) * zoom, FRAME_RED);
 	if (count > 99)
-		DrawNum(99, x, y - (float)(6 * _2X) * zoom, NUM_FONT_SMALL, LEFT, 2, PLUS, false, zoom, true);
+		DrawImageNum(99, x, y - (float)(6 * _2X) * zoom, NUM_FONT_SMALL, LEFT, 2, PLUS, false, zoom, true);
 	else
-		DrawNum(count, x + (float)(4 * _2X) * zoom, y - (float)(6 * _2X) * zoom, NUM_FONT_SMALL, LEFT, 2, false, false, zoom, true);
+		DrawImageNum(count, x + (float)(4 * _2X) * zoom, y - (float)(6 * _2X) * zoom, NUM_FONT_SMALL, LEFT, 2, false, false, zoom, true);
 
 }
 
@@ -6708,7 +6524,7 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 	SetAlpha(32);
 
 	if (it->type > ITEM_GEM && it->type != ITEM_RECIPE && (it->type != ITEM_NETITEM || it->detail < ITEM_NET_BOX_WEAPON_HIGH))
-		DrawNum(it->count, x + (float)16 * _2X * zoom, y + (float)9 * _2X * zoom, NUM_FONT_SMALL, RIGHT, 0, 0, false, zoom, true);
+		DrawImageNum(it->count, x + (float)16 * _2X * zoom, y + (float)9 * _2X * zoom, NUM_FONT_SMALL, RIGHT, 0, 0, false, zoom, true);
 
 	if (it->type == ITEM_WASTE && it->cooldown)
 		DrawCycle(x, y, (float)16 * _2X * zoom, (float)16 * _2X * zoom, it->cooldown, itemCooltime[it->detail] * 12, zoom);
@@ -6774,7 +6590,7 @@ void DrawRedDot(int x, int y, int color, int num, float zoom)
 	DrawImage(9 * _2X, 9 * _2X, 42 * _2X, 45 * _2X, x, y, false, false, false, false, false, zoom, sprite[COMMON_IMG], COMMON_IMG);
 
 	if (num) {
-		DrawNum(num, x + (float)9 * _2X * zoom / 2, y - (float)9 * _2X * zoom / 2 + (float)7 * _2X * zoom / 2, NUM_FONT_SMALL, CENTER, false, false, false, zoom, false);
+		DrawImageNum(num, x + (float)9 * _2X * zoom / 2, y - (float)9 * _2X * zoom / 2 + (float)7 * _2X * zoom / 2, NUM_FONT_SMALL, CENTER, false, false, false, zoom, false);
 	}
 }
 
@@ -7150,7 +6966,7 @@ void DrawRewardCard(int type, int detail, int grade, int lv, long long count, in
 #ifdef NUMTTF
 			DrawNumTTF(realValue, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + (float)8 * _2X * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)30 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, true, zoom, false);
 #else
-			DrawNum(realValue, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + (float)8 * _2X * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)30 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, true, zoom, false);
+			DrawImageNum(realValue, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + (float)8 * _2X * zoom, y - (float)REWARDCARDSIZE_Y * zoom + (float)30 * _2X * zoom, NUM_FONT_LARGE, LEFT, false, false, true, zoom, false);
 #endif
 			break;
 		case ITEM_NETITEM:

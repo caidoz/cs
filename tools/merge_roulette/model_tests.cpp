@@ -12,6 +12,16 @@ Roster fullRoster() {
     Roster ro;for(int c=0;c<64;++c)assert(ro.add(MergeTrees::Role(c),MergeTrees::Star(c),c));return ro;
 }
 int main(int argc,char**) {
+    Shape previous=BattleShape(0);
+    for(int stage=0;stage<10;++stage){
+        const Shape shape=BattleShape(stage);assert(shape.valid());int cells=0;
+        for(int y=0;y<Height;++y)for(int x=0;x<Width;++x){
+            cells+=shape.contains(x,y);
+            if(stage&&previous.contains(x,y))assert(shape.contains(x,y));
+        }
+        assert(cells==16+2*stage&&shape.width<=9&&shape.height==4);
+        previous=shape;
+    }
     //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛
     //표(★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2)를 손으로 넣어
     //합성·배치 규칙이 큰 블록에서도 서는지 본다.

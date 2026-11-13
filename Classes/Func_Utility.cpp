@@ -676,7 +676,7 @@ void EffectDraw(int yPos, float zoom)
 			}
 
 			//SetAlpha(32);
-			DrawNum(dmgInfo[i].dmg, -rx + dmgInfo[i].x, -ry + dmgInfo[i].y, j, CENTER, 0, MINUS, true, dmgInfo[i].zoom, false);
+			DrawImageNum(dmgInfo[i].dmg, -rx + dmgInfo[i].x, -ry + dmgInfo[i].y, j, CENTER, 0, MINUS, true, dmgInfo[i].zoom, false);
 
 			SetColor(false);
 
@@ -756,7 +756,7 @@ void EffectDraw(int yPos, float zoom)
 		if (imgText[i].type == EFFECT_TEXT_EXP) {
 			SetBlend(12, 0xFFFFF00);
 			//if (option.effect)
-			DrawNum(imgText[i].dmg, (float)(xOffset + imgText[i].x - rx - 6 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, NUM_FONT_NORMAL, RIGHT, 0, 0, true, zoom, false);
+			DrawImageNum(imgText[i].dmg, (float)(xOffset + imgText[i].x - rx - 6 * _2X) * zoom, (float)(STATUSWIN_Y + (rh - 4) * TSIZE + imgText[i].y - ry) * zoom, NUM_FONT_NORMAL, RIGHT, 0, 0, true, zoom, false);
 			UnSetBlend();
 
 			if (imgText[i].frame > 4)

@@ -109,7 +109,7 @@ void DrawXNumGold(long long int num, int x, int y, bool ani, float zoom, int ali
 void DrawSlashNum(int min, int max, int x, int y, float width, float zoom);
 float DrawNumTTF(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed);
 void DrawNum2(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom, bool fixed);
-void DrawNum(long long int num, int x, int y, int font, int align, int digit, bool sign, bool comma, float zoom, bool fixed);
+void DrawImageNum(long long int num, int x, int y, int font, int align, int digit, int sign, bool comma, float zoom, bool fixed);
 void DrawGoldNum(long long int num, int x, int y, int align, int digit, int sign, bool comma, float zoom);
 // Coin + gold digits, shared by prices and balances. Default matches four-choice shop.
 float DrawGoldAmount(long long amount,int x,int top,int maxWidth=0,int align=CENTER,float scale=1.0f);

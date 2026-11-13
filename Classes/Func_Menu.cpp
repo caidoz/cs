@@ -253,7 +253,7 @@ void HeroStatDraw(OBJECT* pObj, int x, int y, float zoom)
 	//저항도
 	for (i = 5 - 1; i >= 0; i--) {
 		DrawArray(IMG_FLAME + i, x + (float)(40 * _2X + 48 * _2X * i) * zoom, y + plusY - (float)134 * _2X * zoom, 2.0f * zoom);
-		DrawNum(pObj->ps[PS_FIRE + i], x + (float)(40 * _2X + 24 * _2X + 48 * _2X * i) * zoom, y + plusY - (float)136 * _2X * zoom, NUM_FONT_NORMAL, LEFT, false, false, true, zoom, false);
+		DrawImageNum(pObj->ps[PS_FIRE + i], x + (float)(40 * _2X + 24 * _2X + 48 * _2X * i) * zoom, y + plusY - (float)136 * _2X * zoom, NUM_FONT_NORMAL, LEFT, false, false, true, zoom, false);
 	}
 
 	memset(optionStr, 0, sizeof(optionStr));
@@ -2176,7 +2176,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 			SetColor(COLOR_REALYELLOW);
 		else
 			SetColor(COLOR_REALRED);
-		DrawNum(combatPowerGap, x + (float)280 * _2X * zoom, y + (float)-18 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, combatPowerGap > 0 ? PLUS : MINUS, true, zoom, false);
+		DrawImageNum(combatPowerGap, x + (float)280 * _2X * zoom, y + (float)-18 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, combatPowerGap > 0 ? PLUS : MINUS, true, zoom, false);
 		SetColor(false);
 	}
 
@@ -2234,7 +2234,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 					//if (combatPowerNext - combatPowerCur != 0) {
 						//arrowDirY = frame / FPS % 2;
 					DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - (robin.playtime / 2) % 8), x + (float)(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? 200 * _2X : 210 * _2X) * zoom, y - (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? (float)40 * _2X : (float)54 * _2X) * zoom, LEFT, GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? false : 180, (float)(1.1f) * zoom);
-					DrawNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? PLUS : MINUS, true, 1.1f * zoom, false);
+					DrawImageNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? PLUS : MINUS, true, 1.1f * zoom, false);
 				}
 			}
 
@@ -2247,7 +2247,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 					//if (combatPowerNext - combatPowerCur != 0) {
 						//arrowDirY = frame / FPS % 2;
 					DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - (robin.playtime / 2) % 8), x + (float)(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? 200 * _2X : 210 * _2X) * zoom, y - (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? (float)40 * _2X : (float)54 * _2X) * zoom, LEFT, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? false : 180, (float)(1.2f) * zoom);
-					DrawNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? PLUS : MINUS, true, 1.1f * zoom, false);
+					DrawImageNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? PLUS : MINUS, true, 1.1f * zoom, false);
 				}
 			}
 			break;
@@ -2259,7 +2259,7 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 					//if (combatPowerNext - combatPowerCur != 0) {
 						//arrowDirY = frame / FPS % 2;
 					DrawEffect(EFFECT_DEMOTALK_ARROW0 + Abs(4 - (robin.playtime / 2) % 8), x + (float)(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? 200 * _2X : 210 * _2X) * zoom, y - (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0 ? (float)40 * _2X : (float)54 * _2X) * zoom, LEFT, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? false : 180, (float)(1.2f) * zoom);
-					DrawNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? PLUS : MINUS, true, 1.1f * zoom, false);
+					DrawImageNum(GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]), x + (float)280 * _2X * zoom, y - (float)50 * _2X * zoom, NUM_FONT_NORMAL, RIGHT, false, (GetItemValue(it) - GetItemValue(&ao[PLAYER].equip[itemEquipSlot[it->type]]) > 0) ? PLUS : MINUS, true, 1.1f * zoom, false);
 				}
 			}
 			break;
@@ -2412,7 +2412,7 @@ void ItemOptionDraw(ITEM* it, int x, int y, float zoom, bool equipped)
 					}
 
 					DrawIcon(GetItemIcon(ITEM_IRON + *eData / 50, *eData % 50), x + 40, y + 15 + i * 18);
-					DrawNum(require, x + 55, y + 24 + i * 18, FONT_SMALL, RIGHT, 0, false);
+					DrawImageNum(require, x + 55, y + 24 + i * 18, FONT_SMALL, RIGHT, 0, false);
 
 					grayScale = 0;
 					UnSetBlend();
@@ -4464,9 +4464,9 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
 
 		//몇분의 몇을 모았는지를 보여주는
 		if (setItemCnt > 0) {
-			DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+			DrawImageNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 			DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-			DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
+			DrawImageNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
 		}
 		//6개가 다 장착되어 있어서 스킬이 활성화 되어 있으면
 		if (GetFullEquipedCollectionIdx() == i)
@@ -4854,7 +4854,7 @@ void NewCollectionDraw(int x, int y, float zoom)
 
 	skillLv = ao[PLAYER].skillLv[newSkillIdx];
 
-	DrawNum(skillLv + 1, x + (float)(8 * _2X + SKILLICONSIZE * iconZoom * 0.75f + 2 * _2X * iconZoom) * zoom + StringWidth(textId[TEXT_SKILLNAME_COMMON_ROBIN1 + newSkillIdx], iconZoom * 0.75f * zoom) + (float)(2 * _2X * iconZoom) * zoom + StringWidth(textId[TEXT_ALPHA_LV], iconZoom * 0.5f * zoom) + (float)(8 * _2X * iconZoom) * zoom, y + (float)(-346 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 2, false, false, (float)(0.5f * iconZoom) * zoom, true);
+	DrawImageNum(skillLv + 1, x + (float)(8 * _2X + SKILLICONSIZE * iconZoom * 0.75f + 2 * _2X * iconZoom) * zoom + StringWidth(textId[TEXT_SKILLNAME_COMMON_ROBIN1 + newSkillIdx], iconZoom * 0.75f * zoom) + (float)(2 * _2X * iconZoom) * zoom + StringWidth(textId[TEXT_ALPHA_LV], iconZoom * 0.5f * zoom) + (float)(8 * _2X * iconZoom) * zoom, y + (float)(-346 * _2X) * zoom, NUM_FONT_NORMAL, CENTER, 2, false, false, (float)(0.5f * iconZoom) * zoom, true);
 
 	for (i = 0; i < TOTALHITMARK; i++) {
 		if (hitMark[i].frame > 0) {
@@ -5024,9 +5024,9 @@ void NewCardDraw(void)
 			DrawRewardCard(newItemType[i], newItemDetail[i], newItemGrade[i], 0, false, xOffset + DX / 2 - width / 2 + (float)(BOXSIZE_X * 0.7f + 4 * _2X) * (i - curNewItemIdx), STATUSWIN_Y - 4 * _2X, true, 0.7f, true, true, true, curStar, maxStar, true, 0);
 		}
 
-		DrawNum(remainNewItemCnt, DX / 2 - 8 * _2X, STATUSWIN_Y - 52 * _2X, NUM_FONT_NORMAL, RIGHT, false, false, false, 1.0f, true);
+		DrawImageNum(remainNewItemCnt, DX / 2 - 8 * _2X, STATUSWIN_Y - 52 * _2X, NUM_FONT_NORMAL, RIGHT, false, false, false, 1.0f, true);
 		CenterText(TEXT_SLASH, DX / 2, STATUSWIN_Y - 54 * _2X, 1.0f);
-		DrawNum(newItemCnt, DX / 2 + 8 * _2X, STATUSWIN_Y - 52 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
+		DrawImageNum(newItemCnt, DX / 2 + 8 * _2X, STATUSWIN_Y - 52 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
 
 	}
 
@@ -7748,9 +7748,9 @@ void CollectionsDraw(int x, int y, float zoom)
 
 			//몇분의 몇을 모았는지를 보여주는 
 			if (setItemCnt > 0) {
-				DrawNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
+				DrawImageNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
 				DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f);
-				DrawNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
+				DrawImageNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, true);
 			}
 			//6개가 다 장착되어 있어서 스킬이 활성화 되어 있으면
 			if (GetFullEquipedCollectionIdx() == i)
@@ -7799,7 +7799,7 @@ void CollectionsDraw(int x, int y, float zoom)
 		//if (robin.collectionRewardGet[menuCur] == true)
 		//	grayScale = 32;
 		DrawIcon(GetItemIcon(collectionReward[menuCur * 4 + 0], collectionReward[menuCur * 4 + 1], collectionReward[menuCur * 4 + 2]), x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2, (y - 400 * _2X - 26 * _2X) * zoom / 2, zoom, false, false, false, true);
-		DrawNum(collectionReward[menuCur * 4 + 3], x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2 + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom, (y - 400 * _2X - 26 * _2X) * zoom / 2, NUM_FONT_LARGE, LEFT, 0, false, true, 1.5f * zoom / 2, true);
+		DrawImageNum(collectionReward[menuCur * 4 + 3], x + DX / 2 - (GetNumDx(collectionReward[menuCur * 4 + 3], false, NUM_FONT_LARGE, false, true, 1.5f * zoom / 2, true) + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom) / 2 + (float)ITEMICONSIZE * zoom + (float)(2 * _2X) * zoom, (y - 400 * _2X - 26 * _2X) * zoom / 2, NUM_FONT_LARGE, LEFT, 0, false, true, 1.5f * zoom / 2, true);
 		grayScale = 0;
 
 		//모두 장착

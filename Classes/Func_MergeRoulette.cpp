@@ -19,6 +19,8 @@
 #include "2d/CCAutoPolygon.h"
 #include "Data/HybridSd3d.h"
 #include "Data/HybridCastleFleet.h"
+#include "Data/IndividualCastleRooms.h"
+#include "Data/CastleRoomFacade.h"
 #include <cmath>
 #include <fstream>
 #include <cstdio>
@@ -35,12 +37,22 @@ std::vector<GradeAccent> gradeAccents;
 std::vector<Block> shownGrades;
 struct CombatNumber {std::string text;float x,y;int color,age=0;bool defense=false;};
 std::vector<CombatNumber> combatNumbers;
+//---- 맞는 자리 ----
+//
+//적 cmf 의 앵커 x 는 몸통 가운데가 아니라 그림의 등 쪽 끝이다(DrawCmfDetail 의
+//center=false). 그래서 탄·타격 효과·피해 숫자를 ex 에 찍으면 전부 몬스터의
+//맨 뒤에서 터졌다. 공성전의 성주도 DX*.85 가 아니라 제가 선 자리(foeX)에 있다.
+//drawWorld 가 실제로 그린 자리에서 몸통 가운데를 셈해 적어 두고, 셋이 다 이것을
+//본다. 재는 식은 Func_Draw 의 StageCombatRecordActor 와 같다.
+int enemyBodyX=0,enemyBodyY=0,allyBodyX=0,allyBodyY=0;bool enemyBodyKnown=false,allyBodyKnown=false;
 Roster roster;
 int treeWeights[FamilyCount]={};
 ITEM treeEquipment[GearCount][MaxLevel];
 bool active=false,review=false;
 const ITEM* gearTableOverride=nullptr;   //MergeSiege.inc 가 상대 판을 그릴 때 끼운다
 bool siegeActive=false;   //공성전(PVP 디버그) 중. MergeSiege.inc
+int siegeHullStage=-1;    //공성전: 그릴 성(상대의 성). -1 이면 run.stage
+namespace Siege{extern bool swapped;extern int castle,refRows,region;}
 float castleSceneLift(){return MergeCombat::lobbyCastleLift((float)DX,(float)DY);}
 int oldMode=ACTIONRPG, ticks=0, animation=0, picked=-1, finger=-1;
 float gearAngle=0.f,gearStartAngle=0.f;
@@ -108,6 +120,10 @@ bool gridBlockLanded(int index) {
     return introElapsed<0||index>=3||introElapsed>=flightStart(index)+.7f;
 }
 void updateHeroCostume(bool animate=true) {
+    //공성전에서 런을 맞바꾸면 hero 는 성주이고 판도 성주의 것이다. 장비 표는
+    //gearTableOverride 가 성주 라인을 가리키고, 단계 기억(costumeLevels)은
+    //swapSides 가 같이 바꿔 준다. 그래서 여기는 누구 차례든 같은 코드다.
+    const ITEM* table=gearTableOverride?gearTableOverride:&treeEquipment[0][0];
     int best[GearCount]={};
     for(int i=0;i<(int)run.board.size();++i){
         const Block& b=run.board[i];
@@ -119,7 +135,7 @@ void updateHeroCostume(bool animate=true) {
         upgraded=upgraded||best[g]>costumeLevels[g];
         costumeLevels[g]=best[g];
         if(g!=0||!attackWeaponLevel)
-            hero.equip[costumeSlots[g]]=best[g]?treeEquipment[g][best[g]-1]:baseCostume[g];
+            hero.equip[costumeSlots[g]]=best[g]?table[g*MaxLevel+best[g]-1]:baseCostume[g];
     }
     if(upgraded&&animate)costumeEffectTicks=30;
 }
@@ -146,19 +162,7 @@ bool reviewCapturePending=false,reviewFinalCapture=false,reviewDone=false;
 std::vector<std::string> reviewCaptureQueue;
 constexpr float IntroDuration=3.8f;
 bool introActive() {return introElapsed>=0&&introElapsed<IntroDuration;}
-Shape castleShape(int stage) {
-    Shape out;out.width=out.height=0;for(auto& row:out.rows)row=0;
-    int c=std::max(0,std::min(9,stage)),start=castleGridCellStart[c],count=castleGridCellCnt[c];
-    for(int i=0;i<count;++i) {
-        int x=castleGridCell[(start+i)*2],y=castleGridCell[(start+i)*2+1];
-        if(x>=0&&x<Width&&y>=0&&y<Height){out.width=std::max(out.width,x+1);out.height=std::max(out.height,y+1);}
-    }
-    for(int i=0;i<count;++i) {
-        int x=castleGridCell[(start+i)*2],y=castleGridCell[(start+i)*2+1];
-        if(x>=0&&x<out.width&&y>=0&&y<out.height)out.rows[out.height-1-y]|=1u<<x;
-    }
-    return out;
-}
+Shape castleShape(int stage) {return BattleShape(stage);}
 bool usesCastleGrid() {
     Shape expected=castleShape(run.stage);
     if(run.shape.width!=expected.width||run.shape.height!=expected.height)return false;
@@ -195,13 +199,24 @@ Layout layout() {
     const int heartWidth=(heartCols*35+40)*s;
     l.heart={(DX-heartWidth)/2,(int)(156*s),heartWidth,(int)((heartRows*32+14)*s)};
     // RH's 512 x 218 board at a uniform 0.625 scale, with a right-hand lever.
-    l.slot={(int)(132*s),(int)(280*s),(int)(348*s),(int)(116*s)};
+    // 드럼 몸체는 판과 같은 세로축(DX/2)에 둔다. 레버는 오른쪽으로 튀어나오는 부속이라 가운데 계산에 넣지 않는다.
+    l.slot={(DX-(int)(348*s))/2,(int)(280*s),(int)(348*s),(int)(116*s)};
     l.lever={l.slot.x+l.slot.w+(int)(4*s),l.slot.y-(int)(3*s),(int)(40*s),(int)(104*s)};
+    const int groundStage=siegeActive?Siege::castle:run.stage;
     l.cell=std::max(1,(int)(64*s));l.cellH=l.cell;
+    const int layoutRows=siegeActive?std::max(run.shape.height,Siege::refRows):run.shape.height;
+    const int groundBase=std::max((groundStage==0?(int)(1077*DX/1089.f):(int)(651*s))+(int)(40*s),
+        (int)(293*s)+layoutRows*l.cellH+(int)(84*s));
     int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
-    l.board={(DX-bw)/2,(int)(305*s)+bhGrid,bw,bhGrid};
-    l.arenaBottom=l.board.y+(int)(76*s);
-    l.ground=(run.stage==0?(int)(1077*DX/1089.f):l.board.y+(int)(90*s))+(int)(40*s);
+    l.board={(DX-bw)/2,(int)(293*s)+bhGrid,bw,bhGrid};
+    //---- 공성전: 성의 크기는 내 판 기준으로 못 박는다 ----
+    //
+    //데크 높이(ground)가 판 높이에서 나오고 성은 그 높이로 커진다. 상대 턴에
+    //48칸 판이 서면 성이 따라 커졌다. 기준 줄 수(내 성의 판)로만 데크를 잡고,
+    //큰 판은 성 밖으로 삐져나가도 그대로 둔다. 성 번호도 무대의 성으로 본다.
+    const int refBottom=(int)(561*s);
+    l.arenaBottom=refBottom+(int)(76*s);
+    l.ground=groundBase;
     const int lift=(int)castleSceneLift();
     l.board.y+=lift;l.arenaBottom+=lift;l.ground+=lift;
     l.slot.y+=lift;l.lever.y+=lift;l.heart.y+=lift;
@@ -409,7 +424,7 @@ void unitPlate(const Box& plate,long long hp,long long max,long long guard,
     }
 
     const float guardZoom=std::min(.65f*s,(barW-4*s)/std::max(1.f,GetNumDx(guard,false,NUM_FONT_NORMAL,0,false,1.f,false)));
-    DrawNum(guard,barX+barW/2,guardY-(int)((barH-24*guardZoom)*.5f),NUM_FONT_NORMAL,CENTER,0,false,false,guardZoom,false);
+    DrawImageNum(guard,barX+barW/2,guardY-(int)((barH-24*guardZoom)*.5f),NUM_FONT_NORMAL,CENTER,0,false,false,guardZoom,false);
     mergeRect(barX,hpY,barW,barH,barBg);
     const double ratio=max>0?std::max(0.,std::min(1.,(animatedHp>=0?animatedHp:hp)/(double)max)):0.;
     if(ratio>0)mergeRect(barX,hpY,std::max(1,(int)(barW*ratio)),barH,barFg);
@@ -417,9 +432,9 @@ void unitPlate(const Box& plate,long long hp,long long max,long long guard,
     const float hpZoom=std::min(.65f*s,(barW-12*s)/std::max(1.f,digits));
     const float leftWidth=GetNumDx(hp,false,NUM_FONT_NORMAL,0,false,hpZoom,false),rightWidth=GetNumDx(max,false,NUM_FONT_NORMAL,0,false,hpZoom,false);
     const int numberY=hpY-(int)((barH-24*hpZoom)*.5f),numberX=(int)(barX+(barW-leftWidth-rightWidth-8*s)*.5f);
-    DrawNum(hp,numberX,numberY,NUM_FONT_NORMAL,LEFT,0,false,false,hpZoom,false);
+    DrawImageNum(hp,numberX,numberY,NUM_FONT_NORMAL,LEFT,0,false,false,hpZoom,false);
     label("/",(int)(numberX+leftWidth+4*s),hpY-(int)((barH-15*s)*.5f),.62f,hot?0xFFB060:0xFFFFFF);
-    DrawNum(max,(int)(numberX+leftWidth+8*s),numberY,NUM_FONT_NORMAL,LEFT,0,false,false,hpZoom,false);
+    DrawImageNum(max,(int)(numberX+leftWidth+8*s),numberY,NUM_FONT_NORMAL,LEFT,0,false,false,hpZoom,false);
 }
 long long currentGuard() {
     if(!run.attacking) {
@@ -436,7 +451,7 @@ long long currentGuard() {
 void floatingDamage(long long damage,bool enemy) {
     if(damage<=0)return;
     const float s=DX/640.f;
-    const int x=(int)(DX*(enemy?.85f:.66f));
+    const int x=enemy?(enemyBodyKnown?enemyBodyX:(int)(DX*.85f)):(allyBodyKnown?allyBodyX:(int)(DX*.66f));
     combatNumbers.push_back({"-"+std::to_string(damage),(float)x,(float)(layout().ground+68*s),enemy?0xFFE19A:0xFF9E91});
 }
 void updateGuardDisplay(float dt) {
@@ -450,7 +465,7 @@ void imageNumber(long long value,int x,int y,float zoom,bool sign=false) {
     if(!sprite[NUM_IMG])LoadImg(NUM_IMG);
     const float signWidth=sign?24*zoom:0;
     const float width=GetNumDx(value,false,NUM_FONT_LARGE,0,false,zoom,false);
-    DrawNum(value,x+(int)(signWidth*.5f),y,NUM_FONT_LARGE,CENTER,0,false,false,zoom,false);
+    DrawImageNum(value,x+(int)(signWidth*.5f),y,NUM_FONT_LARGE,CENTER,0,false,false,zoom,false);
     if(sign){
         if(!sprite[EFFECT_IMG])LoadImg(EFFECT_IMG);
         const int left=(int)(x-(width+signWidth)*.5f);
@@ -871,7 +886,10 @@ int shotFromX=0,shotFromY=0,deckResidentCount=0;
 //스테이지 전투와 같은 표를 본다(enemyAttackPattern 의 THERE = 원거리
 //자세). 자세가 없는 동료는 -1 - 그 자리에서 쉬는 자세로 둔다.
 int combatRegion() {
-    return StageBg::DebugRegionPick()>=0?StageBg::DebugRegionPick():(run.stage/STAGE_PER_CYCLE)%STAGEBG_REGION_CNT;
+    //공성전은 상대의 성이 무대라 원경도 상대가 가는 지역이다.
+    if(siegeActive&&Siege::region>=0)return Siege::region;
+    const int stage=siegeActive?Siege::castle:run.stage;
+    return StageBg::DebugRegionPick()>=0?StageBg::DebugRegionPick():(stage/STAGE_PER_CYCLE)%STAGEBG_REGION_CNT;
 }
 int combatEnemyNpc() {
     const int boss=BossTier(run.wave);
@@ -891,7 +909,7 @@ void drawWaveHeader(const Layout& l) {
         const Box node={cx-size/2,top,size,size};
         bevel(node,current?0xFFF1A8:cleared?0x89DBA0:boss?0xC5A2D5:0x6E8391,std::max(1,(int)(3*s)));
         bevel(inset(node,std::max(1,(int)(2*s))),current?0xBB771A:cleared?0x286B49:BossTier(i)==3?0x78313E:boss?0x49355E:0x233844,std::max(1,(int)(2*s)));
-        if(boss){std::snprintf(text,sizeof(text),"%d",i+1);DrawNum(i+1,cx,top,NUM_FONT_SMALL,CENTER,0,false,false,.58f*s,false);}
+        if(boss){std::snprintf(text,sizeof(text),"%d",i+1);DrawImageNum(i+1,cx,top,NUM_FONT_SMALL,CENTER,0,false,false,.58f*s,false);}
     }
     std::snprintf(text,sizeof(text),"%d / 15 · 5·10 보스 · 15 최종 보스",run.wave+1);
     label(text,DX/2,header.y-(int)(59*s),.44f,0xEAD6A3);
@@ -934,8 +952,11 @@ void beginEnemyTurn() {
     enemyTurn.phases.begin(enemyTurn.walk.empty()?0:std::max(12,std::min(30,(int)enemyTurn.walk.size())),(int)enemyTurn.motion.size());
     enemyTurn.time.begin(enemyTurn.phases.end(),enemyTurn.phases.impact(),0,1);
 }
-int heroNeutralMotion(OBJECT& who) {
-    const int loop=GetHeroLoopMotion(who.cmf,HEROLOOP_NEUTRAL,ticks);
+int heroNeutralMotion(OBJECT& who,int div=1) {
+    // Diana's interpolated in-between poses jitter the gun and hands. Keep the
+    // authored neutral key poses with a steady eight-tick hold on both PVP sides.
+    const int idleFrame=who.cmf==DIANA?(ticks/8%4)*4:ticks/std::max(1,div);
+    const int loop=GetHeroLoopMotion(who.cmf,HEROLOOP_NEUTRAL,idleFrame);
     return loop>=0?loop:motionData[0]+(ticks/6)%4;
 }
 struct CombatAction {
@@ -1048,6 +1069,7 @@ void drawWorld(const Layout& l,bool combat) {
     {StageBg::Borrow scroll(combatRegion(),castleScrollSeconds);
         castleWheelTravel=DrawCastleLobbyBackground((int)(104*s+castleSceneLift()));}
     drawCastleHull(l);
+    if(combat)drawBattleCover(l);
     //---- 데크의 줄 ----
     //
     //전에는 히어로가 DX*0.57 에 서고 동료가 그 왼쪽으로 늘어섰다. 대포가
@@ -1058,9 +1080,15 @@ void drawWorld(const Layout& l,bool combat) {
     const Box gun=castleCannonBox(l);
     const int deckBack=gun.x+gun.w+(int)(12*s);      //대포 바로 앞
     //공성전: 성이 거울로 서고 성주가 오른쪽에 있으므로 내 히어로는 왼쪽에서 올라탄다.
-    const int hx=siegeActive?(int)(DX*.30f):std::max(deckBack+(int)(30*s),(int)(DX*.66f));
-    const int hy=l.ground,ex=(int)(DX*.85f),ey=l.ground;
+    //둘은 데크 가운데서 마주 선다(내 쪽 24%, 상대 42%). 상대 턴에 런을 맞바꾸면
+    //hero 가 성주이므로 자리와 방향도 같이 바뀐다.
+    const bool sidesSwapped=siegeActive&&Siege::swapped;
+    const int allyX=(int)(DX*.24f),foeX=(int)(DX*.42f);
+    const int hx=siegeActive?(sidesSwapped?foeX:allyX):std::max(deckBack+(int)(30*s),(int)(DX*.66f));
+    const int heroDir=sidesSwapped?LEFT:RIGHT;
+    const int hy=l.ground,ex=siegeActive?(sidesSwapped?allyX:foeX):(int)(DX*.85f),ey=l.ground;
     const float deckY=(float)hy;
+    allyBodyX=hx;allyBodyY=hy+(int)(40*s);allyBodyKnown=true;   //히어로 그림은 x 가 몸통 가운데다
     SetSectionClip(0,DY,DX,DY-l.board.y,false);
     //히어로는 판의 주인이다. 데크에서 한눈에 찾아야 하므로 동료보다 크다(1.5배).
     float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f))*1.5f;
@@ -1080,12 +1108,12 @@ void drawWorld(const Layout& l,bool combat) {
     const int heroMotion=heroSwing?action.heroMotion[std::min((int)action.heroMotion.size()-1,heroFrame/MOTIONDIV)]:heroNeutralMotion(hero);
     const int costumeFrame=(30-costumeEffectTicks)/3;
     if(combat&&costumeEffectTicks>0)
-        DrawPlayer(actingHero,2000+LEVELUP_BACK0+costumeFrame,heroX,hy,RIGHT,heroZoom,0,false,false);
+        DrawPlayer(actingHero,2000+LEVELUP_BACK0+costumeFrame,heroX,hy,heroDir,heroZoom,0,false,false);
     if(allyFlash>0)SetColor(0xFF9B8A);
-    DrawPlayer(actingHero,heroMotion,heroX,hy,RIGHT,heroZoom,0,false,true);
+    DrawPlayer(actingHero,heroMotion,heroX,hy,heroDir,heroZoom,0,false,true);
     SetColor(0);
     if(combat&&costumeEffectTicks>0)
-        DrawPlayer(actingHero,2000+LEVELUP_FRONT0+costumeFrame,heroX,hy,RIGHT,heroZoom,0,false,false);
+        DrawPlayer(actingHero,2000+LEVELUP_FRONT0+costumeFrame,heroX,hy,heroDir,heroZoom,0,false,false);
     if(allyFlash>0&&enemyTurn.damage==0)label("BLOCK",heroX,hy+(int)(110*s),.7f,0xFFE69E);
     shotFromX=heroX+(int)(18*s);shotFromY=hy+(int)(35*s);
     //---- 판에 선 동료가 전투 화면에도 선다 ----
@@ -1154,7 +1182,7 @@ void drawWorld(const Layout& l,bool combat) {
                 // A small step identifies the caster; it never closes the gap to the enemy.
                 bevel({x-(int)(29*s),y+(int)(4*s),(int)(58*s),(int)(8*s)},0xFFDC69,(int)(4*s));
             }
-            DrawCmfDetail(cmf,motion,x,y,RIGHT,z,0,false);
+            DrawCmfDetail(cmf,motion,x,y,heroDir,z,0,false);
             const bool mergeWarp=combat&&deckMerge.time.running()&&!deckMerge.time.converging()&&seen[k]==deckMerge.result.crew;
             if(combat&&(reveal.arriving()||mergeWarp)) {
                 SetAlpha(32);
@@ -1196,7 +1224,7 @@ void drawWorld(const Layout& l,bool combat) {
             SetAlpha(32);
         }
     }
-    if(combat&&siegeActive)Siege::drawFoe(l,ex,ey);   //공성전: 몬스터 자리에 상대 성과 판
+    if(combat&&siegeActive){Siege::drawFoe(l,ex,ey);enemyBodyX=ex;enemyBodyY=ey+(int)(40*s);enemyBodyKnown=true;}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
     else if(combat) {
     int npc=combatEnemyNpc();
     int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
@@ -1226,6 +1254,12 @@ void drawWorld(const Layout& l,bool combat) {
     }
     renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;renderedEnemyDir=enemyDir;
     DrawCmfDetailShadow(cmf,enemyMotion,enemyX,ey,enemyDir,enemyZoom);
+    if(cmf>=TOTALCHAR&&enemyMotion>=0&&enemyMotion<cmf_m_cnt[cmf]){
+        const auto* mb=cmfMotionImgSize[cmf]+enemyMotion*4;
+        enemyBodyX=enemyX+(enemyDir==LEFT?-1:1)*(int)((mb[0]+mb[2]*.5f)*enemyZoom);
+        enemyBodyY=ey-(int)((mb[1]+mb[3]*.5f)*enemyZoom);
+    }else{enemyBodyX=enemyX;enemyBodyY=ey+(int)(40*s);}
+    enemyBodyKnown=true;
     for(int i=0;i<(int)run.summons.size()&&i<3;++i) {
         const Shot& summoned=run.summons[i];
         int crew=summoned.block.crew;
@@ -1249,7 +1283,7 @@ void drawWorld(const Layout& l,bool combat) {
 
 }
 void close() {
-    siegeActive=false;
+    siegeActive=false;siegeHullStage=-1;
     if(run.attacking) {message="공격 연출이 끝난 뒤 나갈 수 있습니다.";return;}
     save();active=false;option.gameMode=(unsigned char)oldMode;
     picked=-1;finger=-1;systemKey=0;
@@ -1292,7 +1326,7 @@ void tick(float dt) {
     if(spinFlying()){
         ++spinFlightFrame;
         for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_POWERUP);
-        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();}
+        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();if(siegeActive)Siege::afterMySpin();}   //공성전: 돌리기 한 번 = 턴 하나
         return;
     }
     if(animation>0&&!run.attacking){
@@ -1347,7 +1381,7 @@ void tick(float dt) {
     if(run.lives>previousLives)combatNumbers.push_back({"+"+std::to_string(run.lives-previousLives),DX*.66f,(float)(layout().ground+68*DX/640.f),0x8DFFA2});
     run.setShape(castleShape(run.stage));
     if(hearts)GetItem(ITEM_HEART,false,false,false,hearts,false);
-    if(siegeActive){Siege::afterPlayerAttack(killed);return;}   //공성전: 웨이브가 아니라 상대 턴
+    if(siegeActive){Siege::afterAttack(killed);return;}   //공성전: 웨이브가 아니라 상대 턴
     if(killed) {
         long long gold=run.reward;run.reward=0;
         GetItem(ITEM_GOLD,false,false,false,gold,false);
@@ -1527,27 +1561,76 @@ void arrivalReviewStep(const Layout& l) {
     }
 }
 void reviewStep(const Layout& l) {
+    if(review&&std::getenv("CS_MERGE_COVER_REVIEW")){
+        static int phase=0,stage=0,hold=0;static unsigned captures=0;
+        if(phase==0){
+            if(entryElapsed>.3f&&!(captures&1)){captures|=1;reviewCapture("cover-01-panic");}
+            else if(entryElapsed>.85f&&!(captures&2)){captures|=2;reviewCapture("cover-02-closing");}
+            else if(entryElapsed>1.21f&&!(captures&4)){captures|=4;
+                reviewTrace(MergeCastleTransition::CoverProgress(entryElapsed)==1&&entryElapsed<MergeCastleTransition::TileLaunch(0,16)?"PASS cover closes before any tile launches":"FAIL cover order");
+                reviewCapture("cover-03-closed-before-tiles");}
+            else if(!entering()){phase=1;introElapsed=-1;run.board.clear();animation=0;}
+            return;
+        }
+        if(phase==1){
+            run.stage=stage;run.setShape(castleShape(stage));const auto test=layout();
+            int count=0;for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x)count+=run.shape.contains(x,y);
+            if(count!=16+stage*2||test.cell!=(int)(64*test.scale)||test.cellH!=test.cell||test.board.y>test.ground-84*test.scale||test.board.y-test.board.h<test.slot.y+12*test.scale){reviewTrace("FAIL fixed tile size, growth or health bar clearance");phase=3;return;}
+            if(++hold<4)return;hold=0;
+            char name[60];std::snprintf(name,sizeof(name),"cover-castle-%02d",stage+1);reviewCapture(name);
+            if(++stage==10){reviewTrace("PASS all ten castles add two cells and stay below health bars");phase=2;hold=0;Siege::begin();Siege::phase=0;introElapsed=-1;}
+            return;
+        }
+        if(phase==2){
+            if(++hold==4){Siege::swapSides();introElapsed=-1;}
+            if(hold==8){const auto test=layout();reviewTrace(test.board.y<=test.ground-84*test.scale?"PASS maximum PVP opponent board stays below health bars":"FAIL PVP board overlap");reviewCapture("cover-pvp-opponent");}
+            if(hold>=48){
+                bool stable=true;for(int t=0;t<64;++t){const int saved=ticks;ticks=t;
+                    const int expected=GetHeroLoopMotion(DIANA,HEROLOOP_NEUTRAL,(t/8%4)*4);
+                    stable=stable&&heroNeutralMotion(hero)==expected;ticks=saved;}
+                reviewTrace(stable?"PASS Diana neutral holds authored poses without jitter frames":"FAIL Diana neutral timing");
+                reviewTrace("DONE cover review");phase=3;
+            }
+        }
+        return;
+    }
     //---- 공성전 디버그 리뷰 ----
     //
-    //돌리기 세 번 → 공격 → 상대 턴 한 바퀴를 실제 입력으로 돌리고 세 장을 남긴다.
+    //내 시작 뽑기 → 상대 시작 뽑기 → 돌리기 세 번 → 공격 → 상대 턴(룰렛·끌기·
+    //공격을 손으로) 한 바퀴를 실제 입력으로 돌리고 장면마다 남긴다.
     if(review&&std::getenv("CS_MERGE_SIEGE_REVIEW")){
-        static int t=0,stage=0;static long long hpBefore=0,livesBefore=0;
+        static int t=0,stage=0;static long long hpBefore=0,poolBefore=0;static size_t foeBlocks=0;
+        static bool reelShot=false,dragShot=false,attackShot=false,introShot=false;
         if(stage>=9)return;
-        if(introActive()||entering()||spinFlying()||deckArriving())return;
-        const bool ready=animation==0&&!run.attacking&&!Siege::busy();
         ++t;
-        if(stage==0&&ready&&t>10){reviewTrace(siegeActive&&!Siege::foe.board.empty()?"PASS siege starts with an opponent board":"FAIL siege start");reviewCapture("siege-01-start");stage=1;t=0;}
-        else if(stage>=1&&stage<=3&&ready&&t>20){reviewTap(l.spin);++stage;t=0;}
-        else if(stage==4&&ready&&t>20){hpBefore=run.enemyHp;livesBefore=run.lives;reviewTap(l.attack);stage=5;t=0;}
-        else if(stage==5&&Siege::busy()&&Siege::timer==40){reviewCapture("siege-02-foe-turn");stage=6;t=0;}
-        else if(stage==6&&ready&&t>5){
-            reviewTrace(run.enemyHp<hpBefore?"PASS siege player attack damages the opponent castle":"FAIL siege player damage");
-            reviewTrace(Siege::foeDamage>0?"PASS siege opponent attacks from its own board":"FAIL siege opponent attack");
-            reviewTrace(run.lives<livesBefore?"PASS siege opponent damage reaches the hero":"FAIL siege damage to hero");
-            reviewCapture("siege-03-after-turn");stage=7;t=0;
+        if(entering()||spinFlying()||deckArriving())return;
+        if(stage==0){
+            if(!introShot&&Siege::phase==3&&introActive()&&introElapsed>1.5f){introShot=true;reviewCapture("siege-00-foe-intro");}
+            if(Siege::phase==0&&!introActive()&&t>10){reviewTrace(siegeActive&&!Siege::foe.board.empty()?"PASS siege starts with an opponent board":"FAIL siege start");reviewCapture("siege-01-start");stage=1;t=0;}
+            return;
         }
-        else if(stage==7&&t>8){Siege::expanded=true;stage=8;t=0;}
-        else if(stage==8&&t>3){reviewCapture("siege-04-expanded");reviewTrace("DONE siege review");Siege::expanded=false;stage=9;}
+        const bool ready=animation==0&&!run.attacking&&Siege::phase==0&&!introActive();
+        //상대 턴은 내 돌리기마다 온다(버튼 한 번 = 턴 하나). 어느 단계든 상대 턴 장면을 남긴다.
+        if(Siege::phase==1){
+            if(!reelShot&&Siege::step==Siege::Spinning&&animation>REEL_SPIN_FRAMES/2){reelShot=true;reviewCapture("siege-02-foe-reel");}
+            if(!dragShot&&Siege::step==Siege::Dragging&&Siege::dragFrame==24){dragShot=true;reviewCapture("siege-03-foe-drag");}
+            if(!attackShot&&Siege::step==Siege::Attacking&&run.attacking&&action.index>=0){attackShot=true;reviewCapture("siege-04-foe-attack");}
+        }
+        if(stage>=1&&stage<=3){if(ready&&t>20){reviewTap(l.spin);++stage;t=0;}return;}
+        if(stage==4){if(ready&&t>20){hpBefore=run.enemyHp;poolBefore=run.lives;foeBlocks=Siege::foe.board.size();reviewTap(l.attack);stage=5;t=0;}return;}
+        if(stage==5){
+            if(Siege::phase==0&&!run.attacking&&(Siege::foeDamage>0||t>3000)){
+                reviewTrace(run.enemyHp<hpBefore?"PASS siege player attack damages the opponent castle":"FAIL siege player damage");
+                reviewTrace(reelShot?"PASS siege opponent spins the reels on screen":"FAIL siege opponent reel");
+                reviewTrace(dragShot?"PASS siege opponent drags a merge by hand":"FAIL siege opponent drag");
+                reviewTrace(Siege::foeDamage>0&&run.lives<poolBefore?"PASS siege opponent attack reaches my castle":"FAIL siege opponent damage");
+                reviewTrace(Siege::foe.board.size()>=3?"PASS siege opponent board persists":"FAIL siege opponent board");
+                stage=6;t=0;
+            }
+            return;
+        }
+        if(stage==6&&t>8){Siege::expanded=true;stage=7;t=0;return;}
+        if(stage==7&&t>3){reviewCapture("siege-05-expanded");reviewTrace("DONE siege review");Siege::expanded=false;stage=9;}
         return;
     }
     if(review&&std::getenv("CS_MERGE_COSTUME_REVIEW")){
@@ -1606,7 +1689,7 @@ void reviewStep(const Layout& l) {
         static bool checked=false;
         if(!checked){
             checked=true;const Layout fixed=layout();const float s=DX/640.f;const int lift=(int)castleSceneLift();
-            const bool aligned=fixed.board.y==(int)(305*s)+fixed.cellH*run.shape.height+lift&&
+            const bool aligned=fixed.board.y==(int)(293*s)+fixed.cellH*run.shape.height+lift&&
                 fixed.slot.y==(int)(280*s)+lift&&fixed.lever.y==(int)(277*s)+lift&&fixed.heart.y==(int)(156*s)+lift&&
                 fixed.spin.y==(int)(12*s)+(int)(56*1.2f*s)&&fixed.attack.y==fixed.spin.y;
             const float center=((OriginalCastle::H-83)*OriginalCastle::zoom()+OriginalCastle::lift()+96*s+castleSceneLift())*.5f;
@@ -1870,10 +1953,10 @@ void reviewStep(const Layout& l) {
             Shape shape=castleShape(c);int count=0;
             for(int y=0;y<shape.height;++y)for(int x=0;x<shape.width;++x)count+=shape.contains(x,y);
             Run check=run;
-            growth=growth&&shape.valid()&&count==castleGridCellCnt[c]&&count==shape.width*shape.height&&count>=previous&&check.setShape(shape)&&check.board.size()==3;
+            growth=growth&&shape.valid()&&count==16+2*c&&count>=previous&&check.setShape(shape)&&check.board.size()==3;
             previous=count;
         }
-        reviewTrace(growth&&previous==48?"PASS castle grids grow from 24 to 48 playable cells":"FAIL castle grid growth");
+        reviewTrace(growth&&previous==34?"PASS castle grids grow from 16 to 34 playable cells":"FAIL castle grid growth");
     }
     const int t=ticks-reviewCombatTick;
     if(t==9)MergeRouletteSetHeartCapacity(5);
@@ -1974,7 +2057,7 @@ void reviewStep(const Layout& l) {
     }
     if(a==5) {run.stage=4;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a==6){reviewLayout(l,"10-castle5-nine-columns");reviewCapture("10-castle5-nine-columns");
-        reviewTrace(l.cell==64&&l.cellH==64&&l.board.w==576?"PASS nine-column castle retains exact 64px cells":"FAIL nine-column cell size");}
+        reviewTrace(l.cell==64&&l.cellH==64&&l.board.w<=576?"PASS expanded castle grid retains fixed 64px cells":"FAIL expanded grid size");}
     if(a==10) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a>=12&&!reviewCapturePending&&!reviewFinalCapture) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
@@ -2076,11 +2159,18 @@ bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height)
 void MergeRouletteSetHeartCapacity(int capacity) {(void)capacity;heartCapacity=10;heartDisplay=(int)std::min((long long)heartCapacity,robin.heart);}
 void MergeRouletteBegin(bool resume) {
     if(active)return;
-    siegeActive=false;
+    siegeActive=false;siegeHullStage=-1;
     review=std::getenv("CS_MERGE_REVIEW")!=nullptr;
     oldMode=option.gameMode;option.gameMode=TURNRPG;
     configure();
-    for(int g=0;g<GearCount;++g){baseCostume[g]=hero.equip[costumeSlots[g]];costumeLevels[g]=0;}
+    //---- 전투에 들어가면 장비를 벗는다 ----
+    //
+    //전에는 로비에서 끼고 온 장비를 바탕으로 두고 판의 블록이 그 위에 덧입혀졌다.
+    //그러면 판이 비어도 완전무장이라 "판을 채워서 입는다" 가 안 보였다. 바탕은
+    //맨몸이고, 블록이 앉는 부위부터 하나씩 입는다. 수치(stats)는 끼고 온 장비
+    //그대로다 - 벗는 것은 그림뿐이다.
+    for(int g=0;g<GearCount;++g){std::memset(&baseCostume[g],0,sizeof(ITEM));baseCostume[g].type=EMPTY;costumeLevels[g]=0;}
+    for(int g=0;g<GearCount;++g){hero.equip[costumeSlots[g]]=baseCostume[g];hero.equipImg[costumeSlots[g]]=0;}
     costumeEffectTicks=0;attackWeaponLevel=0;
     run=Run();run.roster=&roster;run.rng=(unsigned)MC_knlCurrentTimeStamp()|1;
     run.selected=pool.front();run.stage=std::max(0,(int)robin.castle);
@@ -2100,7 +2190,7 @@ void MergeRouletteBegin(bool resume) {
     if(migrateVitals&&run.attacking)run.effects.protect=run.forecast(stats).protect;
     run.setShape(castleShape(run.stage));
     bool starting=run.choosing&&run.start(pool,treeWeights,review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW"));
-    entryElapsed=0.f;entryCaptures=0;
+    entryElapsed=0.f;entryCaptures=0;panicSeed=run.rng;
     introElapsed=starting?0.f:-1.f;introCaptures=0;reviewCombatTick=-1;
     if(!starting)updateHeroCostume(false);
     reviewCapturePending=reviewFinalCapture=false;
@@ -2193,7 +2283,7 @@ void MergeRouletteDraw() {
         if(!reviewCapturePending&&++hold>5&&sample<2){reviewCapture(sample==0?"original-uniform-reference":"original-live-lobby");++sample;hold=0;if(sample==2){
             bool uniform=true;for(int c=1;c<10;++c){run.stage=c;run.setShape(castleShape(c));Layout test=layout();const auto m=castleMap(test,c);
                 const float z=(m.dx[3]-m.dx[0])/(m.sx[3]-m.sx[0]);for(int i=0;i<3;++i)uniform=uniform&&std::abs((m.dy[i+1]-m.dy[i])/(m.sy[i]-m.sy[i+1])-z)<.00001f;
-                uniform=uniform&&test.cell==64&&test.cellH==64;}
+                uniform=uniform&&test.cell>0&&test.cell<=64&&test.cellH==test.cell;}
             run.stage=0;run.setShape(castleShape(0));reviewTrace(uniform?"PASS all ten castles preserve uniform art scale and 64px cells":"FAIL castle aspect ratio");reviewTrace("DONE original reference review");}}
         return;
     }
@@ -2223,7 +2313,7 @@ void MergeRouletteDraw() {
         l.spin.y-=controlDrop;l.attack.y-=controlDrop;
     }
     const int hx=(int)(DX*.57f),ex=(int)(DX*.85f),ey=l.ground;
-    drawWaveHeader(l);
+    if(siegeActive)Siege::drawHeader(l);else drawWaveHeader(l);
     if(run.attacking) {
         const char* phase=enemyTurn.endShown?"턴 종료":enemyTurn.started?"적 반격":
             action.index>=0&&action.bulletIcon>=0?(action.time.elapsed<action.time.release?"동료 · 총탄 생성":"동료 · 총탄 발사"):
@@ -2244,6 +2334,7 @@ void MergeRouletteDraw() {
     //방어는 갑옷 블록이 주는 보호 횟수다. 공격 중이면 남은 몫을, 배치
     //중이면 "지금 공격하면 받을" 몫을 보여 준다.
     const long long guard=currentGuard();
+    if(siegeActive&&Siege::swapped)std::swap(allyPlate,enemyPlate);   //맞바꾼 동안 패도 자리를 바꾼다
     unitPlate(allyPlate,run.lives,run.maxLives,guard,0x37433B,0x406D39,allyFlash>0,guardDisplay.value,std::max(1LL,run.baseArmor+run.forecast(stats).protect),heroHealthDisplay.value);
     unitPlate(enemyPlate,run.enemyHp,run.enemyMax,0,0x493444,0xAA343E,flash!=0,-1,1,enemyHealthDisplay.value);
     button(l.exit,"나가기",nullptr,0x25304A,!run.attacking);
@@ -2350,8 +2441,9 @@ void MergeRouletteDraw() {
             const int startX=flying?action.bulletX:action.emitterX,startY=flying?action.bulletY:action.emitterY;
             const float nativeZoom=(CREWBULLETZOOM+.25f*CREWBULLETZOOM*(action.bulletIcon%3))*1.5f;
             const float zoom=std::max(1.2f,nativeZoom)*s*(flying?1.f:appearance);
-            DrawCrewBulletAni(action.bulletIcon,(int)(startX+(ex-startX)*t),
-                (int)(startY+(ey+40*s-startY)*t),zoom,
+            const int hitX=enemyBodyKnown?enemyBodyX:ex,hitY=enemyBodyKnown?enemyBodyY:ey+(int)(40*s);
+            DrawCrewBulletAni(action.bulletIcon,(int)(startX+(hitX-startX)*t),
+                (int)(startY+(hitY-startY)*t),zoom,
                 GetCrewBulletAni(action.bulletIcon),action.time.elapsed-action.time.release,RIGHT);
         }
         if(!action.heroMotion.empty()&&action.skill>=0&&action.time.elapsed>=action.heroStart) {
@@ -2484,10 +2576,10 @@ void MergeRouletteDraw() {
     if(messageTime<=0&&!run.choosing&&!message.empty()&&(message.find("없")!=std::string::npos||message.find("부족")!=std::string::npos))
         label(message.c_str(),DX/2,DY-(int)(45*s),0.48f);
     drawSpinLanding(l);
-    if(siegeActive)Siege::drawExpanded(l);   //공성전: 펼친 상대 판은 내 블록 위에
+    if(siegeActive){Siege::drawExpanded(l);Siege::drawHand(l);}   //공성전: 펼친 상대 판과 상대의 손은 내 블록 위에
     if(!entering())drawIntro(l);
-    if(flash>0)DrawEffect(1000+std::min(9,(18-flash)/2),ex,ey+(int)(40*s),RIGHT,0,.65f*s);
-    if(allyFlash>0)DrawEffect(1000+std::min(9,(20-allyFlash)/2),(int)(DX*.66f),ey+(int)(40*s),LEFT,0,.65f*s);
+    if(flash>0)DrawEffect(1000+std::min(9,(18-flash)/2),enemyBodyKnown?enemyBodyX:ex,enemyBodyKnown?enemyBodyY:ey+(int)(40*s),RIGHT,0,.65f*s);
+    if(allyFlash>0)DrawEffect(1000+std::min(9,(20-allyFlash)/2),allyBodyKnown?allyBodyX:(int)(DX*.66f),allyBodyKnown?allyBodyY:ey+(int)(40*s),LEFT,0,.65f*s);
     drawCombatNumbers();
     if(!holdReview)reviewStep(l);
 }
@@ -2539,6 +2631,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         if(pickedTray&&std::abs(x-downX)+std::abs(y-downY)<10*l.scale)ok=run.autoPlace(picked);
         else ok=run.drop(pickedTray,picked,(x-l.board.x)/l.cell,(l.board.y-y)/l.cellH);
         if(ok)observeDeckMerge();
+        if(ok&&siegeActive&&pickedTray)Siege::afterMySpin();   //트레이를 손으로 다 놓아도 턴이 넘어간다
         //---- 왜 안 되는지까지 적는다 ----
         //
         //"배치/합성할 수 없습니다" 만으로는 자리가 없어서인지, 다른

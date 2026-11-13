@@ -5462,7 +5462,7 @@ void EnemySequenceDraw(void)
 
 				if (ao[PLAYER].equip[EQUIP_ARMOR].type != EMPTY) {
 					DrawIcon(GetItemIcon(ao[PLAYER].equip[EQUIP_ARMOR].type, ao[PLAYER].equip[EQUIP_ARMOR].detail, ao[PLAYER].equip[EQUIP_ARMOR].grade), xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * ITEMICONSIZE / 2, iconZoom, false, false, false, true);
-					DrawNum(armorValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, MINUS, true, iconZoom * 3 / 4, false);
+					DrawImageNum(armorValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, MINUS, true, iconZoom * 3 / 4, false);
 					DrawImage(8 * _2X, 11 * _2X, 216 * _2X, 141 * _2X, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom + GetNumDx(armorValue, PLUS, NUM_FONT_LARGE, false, true, iconZoom * 3 / 4, false) + (float)(2 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + (float)iconZoom * (ITEMICONSIZE - 5 * _2X) / 2, false, false, false, false, false, iconZoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				}
 
@@ -5479,7 +5479,7 @@ void EnemySequenceDraw(void)
 
 				if (ao[PLAYER].equip[EQUIP_ARMOR].type != EMPTY) {
 					DrawIcon(GetItemIcon(ao[PLAYER].equip[EQUIP_ARMOR].type, ao[PLAYER].equip[EQUIP_ARMOR].detail, ao[PLAYER].equip[EQUIP_ARMOR].grade), xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * ITEMICONSIZE / 2, iconZoom, false, false, false, true);
-					DrawNum(armorValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, MINUS, true, iconZoom * 3 / 4, false);
+					DrawImageNum(armorValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, MINUS, true, iconZoom * 3 / 4, false);
 					DrawImage(8 * _2X, 11 * _2X, 216 * _2X, 141 * _2X, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom + GetNumDx(armorValue, MINUS, NUM_FONT_LARGE, false, true, iconZoom * 3 / 4, false) + (float)(2 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + (float)iconZoom * (ITEMICONSIZE - 5 * _2X) / 2, false, false, false, false, false, iconZoom, sprite[EFFECT_IMG], EFFECT_IMG);
 				}
 			}
@@ -5913,7 +5913,7 @@ void RaidSequenceDraw(void)
 
 			if (ao[PLAYER].equip[EQUIP_BOOTS].type != EMPTY) {
 				DrawIcon(GetItemIcon(ao[PLAYER].equip[EQUIP_BOOTS].type, ao[PLAYER].equip[EQUIP_BOOTS].detail, ao[PLAYER].equip[EQUIP_BOOTS].grade), xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * ITEMICONSIZE / 2, iconZoom, false, false, false, true);
-				DrawNum(bootsValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, PLUS, true, iconZoom * 3 / 4, true);
+				DrawImageNum(bootsValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, PLUS, true, iconZoom * 3 / 4, true);
 				DrawImage(8 * _2X, 11 * _2X, 216 * _2X, 141 * _2X, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom + GetNumDx(bootsValue, PLUS, NUM_FONT_LARGE, false, true, iconZoom * 3 / 4, true) + (float)(2 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + (float)iconZoom * (ITEMICONSIZE - 5 * _2X) / 2, false, false, false, false, false, iconZoom, sprite[EFFECT_IMG], EFFECT_IMG);
 			}
 
@@ -5930,7 +5930,7 @@ void RaidSequenceDraw(void)
 
 			if (ao[PLAYER].equip[EQUIP_BOOTS].type != EMPTY) {
 				DrawIcon(GetItemIcon(ao[PLAYER].equip[EQUIP_BOOTS].type, ao[PLAYER].equip[EQUIP_BOOTS].detail, ao[PLAYER].equip[EQUIP_BOOTS].grade), xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * ITEMICONSIZE / 2, iconZoom, false, false, false, true);
-				DrawNum(bootsValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, PLUS, true, iconZoom * 3 / 4, true);
+				DrawImageNum(bootsValue, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + iconZoom * (ITEMICONSIZE - 2 * _2X) / 2, NUM_FONT_LARGE, LEFT, false, PLUS, true, iconZoom * 3 / 4, true);
 				DrawImage(8 * _2X, 11 * _2X, 216 * _2X, 141 * _2X, xOffset + bar[BAR_COIN].x + EQUIPICON_X - width / 2 + (float)ITEMICONSIZE * iconZoom + (float)(4 * _2X) * iconZoom + GetNumDx(bootsValue, PLUS, NUM_FONT_LARGE, false, true, iconZoom * 3 / 4, true) + (float)(2 * _2X) * iconZoom, bar[BAR_COIN].y + EQUIPICON_Y + (float)iconZoom * (ITEMICONSIZE - 5 * _2X) / 2, false, false, false, false, false, iconZoom, sprite[EFFECT_IMG], EFFECT_IMG);
 			}
 		}

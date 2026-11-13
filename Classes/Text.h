@@ -4043,6 +4043,7 @@ const char* const textId[] = {
 	"merge_castle_original/reference",
 	"merge_castle_original/wheel",
 	"dot",//MERGE_SOLID_RECTS_IMG: separate polygon sprite pool, shared white texture.
+	"merge_castle_rebuild/front-cover-01-v1",
 
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN
