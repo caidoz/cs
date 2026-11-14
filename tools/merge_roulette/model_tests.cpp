@@ -15,11 +15,13 @@ int main(int argc,char**) {
     Shape previous=BattleShape(0);
     for(int stage=0;stage<10;++stage){
         const Shape shape=BattleShape(stage);assert(shape.valid());int cells=0;
+        // Boards grow outward from the center, so compare cells in centered coordinates.
+        const int prevOff=(10-previous.width)/2,off=(10-shape.width)/2;
         for(int y=0;y<Height;++y)for(int x=0;x<Width;++x){
             cells+=shape.contains(x,y);
-            if(stage&&previous.contains(x,y))assert(shape.contains(x,y));
+            if(stage&&previous.contains(x,y))assert(shape.contains(x+prevOff-off,y));
         }
-        assert(cells==16+2*stage&&shape.width<=9&&shape.height==4);
+        assert(cells==16+2*stage&&shape.width<=10&&shape.height==4);
         previous=shape;
     }
     //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛

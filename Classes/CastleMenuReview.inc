@@ -21,6 +21,32 @@ static void CastleMenuReviewStep()
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
     if(MenuRenewalReviewStep(path))return;
+    if(getenv("CS_SHARED_LOBBY_NAV_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        if(tick==30){CastleReviewClick(TOUCH_FUNC_POPUP_CREWLIST);PlayKey(PLAYER);systemKey=0;}
+        if(tick==20||tick==50||tick==90){
+            const int commands[]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
+            const int margin=Max(1,(int)(8*DX/640.f)),width=DX-2*margin;
+            bool correct=true;
+            for(int tab=0;tab<5;++tab){int count=0;
+                for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==commands[tab]&&touchRect[i][1]<=MergeRouletteBottomNavHeight()){
+                    ++count;correct=correct&&touchRect[i][0]==margin+width*tab/5&&touchRect[i][2]==width*(tab+1)/5-width*tab/5;
+                }
+                correct=correct&&count==1;
+            }
+            if(tick==50){
+                int backButtons=0;for(int i=0;i<touchIndex;++i)backButtons+=touchRect[i][4]==TOUCH_FUNC_POPUP_CLOSE;
+                correct=correct&&popUpCnt>0&&popUp[popUpCnt-1].type==POPUPTYPE_CREWLIST&&backButtons==1;
+            }
+            CastleReviewTrace(correct?"PASS one shared full-width navigation and matching touch rectangles":"FAIL duplicate or mismatched navigation");
+            pending=true;const char* name=tick==20?"nav-main.png":tick==50?"nav-companions.png":"nav-return.png";
+            cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS nav capture":"FAIL nav capture");},std::string(path)+name);
+        }
+        if(tick==70){CastleReviewClick(TOUCH_FUNC_LOBBY_ADVENTURE);PlayKey(PLAYER);systemKey=0;}
+        if(tick==100)CastleReviewTrace("DONE shared navigation review");
+        return;
+    }
     if(getenv("CS_SHOP_CURRENCY_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         if(tick==1){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();}
@@ -32,6 +58,16 @@ static void CastleMenuReviewStep()
             cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS currency capture":"FAIL currency capture");},std::string(path)+name);
         }
         if(tick==90){scY[MENU_SHOP]=scT[MENU_SHOP];scDir=SCROLL_NOTHING;}
+        if(tick==85){robin.coin=10;robin.gold=30;}
+        if(tick==100){CastleReviewClick(TOUCH_FUNC_SHOP_GOLD);}
+        if(tick==105){
+            CastleReviewTrace(robin.coin==0&&robin.gold==1030?"PASS gold purchase spends gems and grants exact gold":"FAIL gold exchange balances");
+            ShopCatalogTouch(TOUCH_FUNC_SHOP_GOLD);
+            CastleReviewTrace(robin.coin==0&&robin.gold==1030?"PASS insufficient gems never grant gold":"FAIL free gold exchange");
+            bool noEnergy=GetStageAdmissionHeart(0)==0&&GetStageAdmissionHeart(100)==0;
+            for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==TOUCH_FUNC_HEARTAMOUNT)noEnergy=false;
+            CastleReviewTrace(noEnergy?"PASS no lobby energy offer or stage admission cost":"FAIL energy remains");
+        }
         if(tick==130)CastleReviewTrace("DONE currency review");
         return;
     }
@@ -235,6 +271,7 @@ static void CastleMenuReviewStep()
         static int tick=0,previous=0;static bool pending=false;if(pending)return;++tick;
         static auto saved=robin.castleProgress;
         if(tick==20){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();}
+        if(tick==25)CastleReviewClick(TOUCH_FUNC_DEBUG_TOGGLE);
         if(tick==30){previous=gMobileCastleVisual;CastleReviewClick(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);saved=robin.castleProgress;}
         if(tick>=40&&tick<340){
             const int sample=(tick-40)/30,step=(tick-40)%30;

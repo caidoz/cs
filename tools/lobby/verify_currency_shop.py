@@ -16,7 +16,7 @@ for height in (850,1408):
     startup=subprocess.STARTUPINFO()
     startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow=0
-    exe=ROOT/'proj.win32/Debug.win32/cs.exe'
+    exe=ROOT/'proj.win32/Debug.win32/cs_bars.exe'
     with (dest/'stdout.log').open('w') as log:
         p=subprocess.Popen([str(exe)],cwd=ROOT/'Resources',env=env,stdout=log,stderr=subprocess.STDOUT,startupinfo=startup)
         try:
@@ -26,6 +26,8 @@ for height in (850,1408):
                 if 'FAIL' in text:raise RuntimeError(text)
                 if 'DONE currency review' in text:
                     assert text.count('PASS currency capture')==2
+                    assert 'PASS gold purchase spends gems and grants exact gold' in text
+                    assert 'PASS insufficient gems never grant gold' in text
                     print(f'PASS 640x{height}: twelve products, loaded art, disabled unavailable sales, top/bottom captures',flush=True)
                     break
                 if p.poll() is not None:raise RuntimeError('preview exited')

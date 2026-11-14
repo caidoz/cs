@@ -1565,43 +1565,7 @@ void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
 	//누르면 편성표에서 고른 자리(menuX)에 이 동료가 들어간다.
 	// - 레벨 0은 아직 안 뽑은 동료라 넣을 수 없다.
 	// - 이미 편성돼 있으면 "편성중"으로 잠근다.
-	{
-		float ebL = (float)CD_CARD_X + (cardW - (float)CD_EQUIP_W) / 2;
-
-		bool owned = (crewLv > 0);
-		bool inSlot = IsCrewInSlot(crewType);
-		bool canEquip = (owned && inSlot == false);
-
-		sCrewEquipBtnX = Loc(ebL);
-		sCrewEquipBtnY = LocY((float)CD_EQUIP_Y);
-		sCrewEquipBtnW = (float)CD_EQUIP_W * sCdU;
-		sCrewEquipBtnH = (float)CD_EQUIP_H * sCdU;
-
-		if (canEquip)
-			SetRectPoint(sCrewEquipBtnX, sCrewEquipBtnY,
-				sCrewEquipBtnW, sCrewEquipBtnH,
-				TOUCH_FUNC_EQUIP_INVENTORY + GetInvenIdx(ITEM_CREW, crewDetail, it->grade));
-
-		//못 누르는 버튼은 판째로 회색이 된다.
-		//
-		//전에는 글자만 흐리게 했다. 그러면 파란 판이 그대로 밝아서 눌러도
-		//될 것처럼 보이고, 글자만 흐린 것은 "글자가 안 읽힌다"로 읽힌다.
-		//판까지 톤을 내려야 "지금은 못 쓴다"가 한눈에 들어온다.
-		if (canEquip == false)
-			grayScale = CD_DISABLE_GREY;
-
-		DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
-			sCrewEquipBtnX, sCrewEquipBtnY,
-			sCrewEquipBtnW, sCrewEquipBtnH, sCdU);
-
-		//장비 상세의 장착 버튼과 같은 크기다.
-		CdTextId(inSlot ? TEXT_CREW_EQUIPPED : TEXT_EQUIP,
-			ebL + (float)CD_EQUIP_W / 2,
-			(float)CD_EQUIP_Y + (float)CD_EQUIP_H * 0.30f, 1.7f, CENTER,
-			canEquip ? CD_PAPER : COLOR_GREY);
-
-		grayScale = 0;
-	}
+	sCrewEquipBtnW = sCrewEquipBtnH = 0;
 
 	//----------------------------------------------------------------------
 	// 슬롯 등장 효능
@@ -5951,160 +5915,22 @@ int GetCrewInventoryIdx(int type)
 // 최종 그리기 함수
 void CrewMenuDraw(int x, int y, float zoom)
 {
-	int i, j;
-	float OUTTHICK = (float)5 * zoom;
-	float INTTHICK = (float)5 * zoom;
-	float WINX = (float)DX * zoom;
-	// Keep the persistent lobby navigation completely outside this window.
-	float WINY = (float)(DY - GNBHEIGHT - BOTTOMMENUHEIGHT) * zoom;
-	int itemType, itemDetail, itemGrade, itemLv, itemStar;
-	long itemCnt;
-
-	//SetAlpha(24);
-	MemRect(x, y, WINX, WINY, 0xD8D6FB);
-	//SetAlpha(32);
-
-	
-	// 1. 배경 및 큰 UI
-	for (i = 0; i < 2; i++)
-		DrawImage(crewMenuUiData[i * MENUUIDATACNT + 0], crewMenuUiData[i * MENUUIDATACNT + 1], crewMenuUiData[i * MENUUIDATACNT + 2], crewMenuUiData[i * MENUUIDATACNT + 3], x + (float)crewMenuUiData[i * MENUUIDATACNT + 4] * zoom, y - (float)(crewMenuUiData[i * MENUUIDATACNT + 5]) * zoom, false, false, false, false, false, zoom, sprite[crewMenuUiData[i * MENUUIDATACNT + 6]], crewMenuUiData[i * MENUUIDATACNT + 6]);
-
-	CenterText(TEXT_BORDERGUARD, x + (float)160 * _2X * zoom, y - (float)40 * zoom, 2.0f * zoom);
-	CenterText(TEXT_CREW_LISTEDIT, x + (float)160 * _2X * zoom, y - (float)90 * zoom, 1.1f * zoom);
-	CenterText(TEXT_CREW_CURRENTLIST, x + (float)160 * _2X * zoom, y - (float)138 * zoom, 1.0f * zoom);
-	
-	//성과 맥스 별
-	SetColor(COLOR_BROWN);
-	for (i = 0; i < 4; i++) {
-		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(500) * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(12) * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.1f * zoom, sprite[MAP_DIORAMA_IMG + CASTLE_ADELINE], MAP_DIORAMA_IMG + CASTLE_ADELINE);
-	}
-	SetColor(false);
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(500) * zoom, y - (float)(12) * zoom, false, false, false, false, false, 0.1f * zoom, sprite[MAP_DIORAMA_IMG + CASTLE_ADELINE], MAP_DIORAMA_IMG + CASTLE_ADELINE);
-
-	
-	DrawImageScale(176, 40, 1, 679, x + (float)(232) * zoom, y - (float)120 * zoom, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	CenterText(TEXT_CREW_CURRENTLIST, x + (float)320 * zoom, y - (float)130 * zoom, zoom);
-
-	int curTeamStar = 0;
-	int crewInventoryIdx;
-	for (i = 0; i < MAXCREW; i++) {
-		if (robin.slotCrew[i] > -1) {
-			crewInventoryIdx = GetCrewInventoryIdx(robin.slotCrew[i]);
-			itemType = ITEM_CREW;
-			itemDetail = robin.inven[crewInventoryIdx].detail;
-			itemGrade = robin.inven[crewInventoryIdx].grade;
-			curTeamStar += GetItemStar(itemType, itemDetail, itemGrade);
-		}
-	}
-
-	DrawImageScale(176, 40, 1, 679, x + (float)(480) * zoom, y - (float)120 * zoom, false, false, false, false, false, 0.8f * zoom, 0.95f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	DrawIcon(ICON_STAR, x + (float)(472) * zoom, y - (float)120 * zoom, 1.0f * zoom, COLOR_WHITE, false, false, 1 * _2X);
-	memset(&tempStr, 0, sizeof(tempStr));
-	sprintf(tempStr, "%d/%d", curTeamStar, castleStarLimit[robin.castle]);
-	CenterTextStr(tempStr, x + (float)568 * zoom, y - (float)128 * zoom, 1.0f * zoom);
-
-	//슬롯 6개짜리 이미지를 그려준다.
-	
-	DrawImage(1024, 220, 0, 217,
-		x + WINX / 2 - (float)1024 / 2 * 0.61f * zoom, y - (float)168 * zoom,
-		false, false, false, false, false,
-		0.61f * zoom, sprite[SLOT_IMG], SLOT_IMG);
-
-	//현재 선택되어 있는 캐릭터 6개
-	for (i = 0; i < MAXCREW; i++) {
-		int slotX = x + (float)(16 + 102 * (i % MAXCREW)) * zoom;
-		int slotY = y - (float)(168 + 180 * (i / MAXCREW)) * zoom;
-
-		memset(&tempStr, 0, sizeof(tempStr));
-
-		if (robin.slotCrew[i] == -1) {
-			
-			float emphasisScale = (0.8f + sinf(frame * 0.05f) * 0.05f) * zoom;
-
-			DrawPlusMark(
-				slotX + (float)52 * zoom - (float)32 * emphasisScale,
-				slotY - (float)72 * zoom + (float)32 * emphasisScale,
-				emphasisScale);
-		}
-		else {
-			itemType = ITEM_CREW;
-			itemDetail = GetCrewIdxFromType(robin.slotCrew[i]);
-			itemGrade = GRADE_NORMAL;
-			itemLv = robin.inven[GetInvenIdx(itemType, itemDetail, itemGrade)].lv;
-			itemStar = GetItemStar(itemType, itemDetail, itemGrade);
-
-			//튜토리얼: 방금 편성한 동료는 위에서 뛰어 내려앉는다. 성 위 등장 연출과 결을 맞춘 것이다.
-			float dropY = 0.0f;
-
-			if (tutorialCrewStep == TUTORIAL_CREWSTEP_SLOTSHOW && i == TUTORIAL_CREW_SLOT)
-				dropY = GetTutorialCrewDropOffset(tutorialCrewStepFrame, zoom);
-
-			int crewCmf = enemyData[crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE] * ENEMYDATASIZE + ENEMYDATA_CMF];
-			int crewType = crewData[itemDetail * CREWDATASIZE + CREWDATA_TYPE];
-			DrawCmfDetailShadow(crewCmf, crewPos[crewType * 5 + 0] + (menuX == i ? (frame / 4 / MOTIONDIV) % crewPos[crewType * 5 + 1] : 0),
-				slotX + (float)52 * zoom,
-				slotY - (float)88 * zoom + dropY,
-				RIGHT, enemyZoom[crewType] * 1.3f * zoom);
-			DrawStar(ICON_STAR, slotX + (float)52 * zoom, slotY - (float)102 * zoom, itemStar, itemStar, itemStar, CENTER, false, 0.6f * zoom);
-		}
-
-		if (menuX == i) {
-			MemRectFrameThick(
-				slotX,
-				slotY,
-				(float)CARDSIZE_X * 0.45f * zoom,
-				(float)CARDSIZE_Y * 0.4f * zoom,
-				itemColor[frame / 2 % 6],
-				1 * _2X);
-		}
-		else {
-			SetRectPoint(
-				slotX,
-				slotY,
-				(float)CARDSIZE_X * 0.45f * zoom,
-				(float)CARDSIZE_Y * 0.4f * zoom,
-				TOUCH_FUNC_MENUX_1 + i
-			);
-		}
-
-		//튜토리얼 1단: 동료를 넣을 자리를 먼저 고르게 한다.
-		//사각형은 바로 위 SetRectPoint()에 넘긴 것과 같은 값이라 스팟과 터치영역이 겹친다.
-		if (GetTutorialCrewSlotTouchFunc() == TOUCH_FUNC_MENUX_1 + i) {
-			float rw = (float)CARDSIZE_X * 0.45f * zoom;
-			float rh = (float)CARDSIZE_Y * 0.4f * zoom;
-			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
-
-			//DrawHand()에 넘기는 좌표가 손 그림의 좌상단이라 자기 크기만큼 물려야 손끝이 중앙에 온다.
-			float handZoom = 2.0f;
-			float handW = (float)imgArray[IMG_HAND1 * 4 + 2] * handZoom;
-			float handH = (float)imgArray[IMG_HAND1 * 4 + 3] * handZoom;
-
-			DrawHand(slotX + rw / 2 - handW, slotY - rh / 2 + handH, robin.playtime / MOTIONDIV, handZoom);
-
-			//슬롯은 가로로 붙어 있어 옆 슬롯까지 밝아지지 않도록 폭 기준으로 반경을 잡는다.
-			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
-				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
-		}
-
-		//튜토리얼 4단: 편성된 자리를 밝혀서 어디에 들어갔는지 보여준다. 손은 띄우지 않는다.
-		//누를 것이 없고 잠깐 보여주기만 하는 구간이라 손이 있으면 오히려 눌러야 하는 줄 안다.
-		if (tutorialCrewStep == TUTORIAL_CREWSTEP_SLOTSHOW && i == TUTORIAL_CREW_SLOT) {
-			float rw = (float)CARDSIZE_X * 0.45f * zoom;
-			float rh = (float)CARDSIZE_Y * 0.4f * zoom;
-			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
-
-			SetSpotlight(slotX + rw / 2, slotY - rh / 2,
-				rw * 0.55f * pulse, rw * 1.00f * pulse, 0.25f);
-		}
-	}
-	
-
-
-	//SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-	//SetAlpha(32);
-
-	// 2. 크루 리스트
-	SetSectionClip(0, y - (float)320 * zoom, DX, WINY - (float)340 * zoom, false);
+ if(drawHandle==MD_LOBBY)y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
+ int i,j;
+ const float WINX=DX*zoom;
+ const float WINY=Max(1.f,(float)y-Max(BOTTOMMENUHEIGHT,MergeRouletteBottomNavHeight()));
+ int itemType,itemDetail,itemGrade,itemLv,itemStar;long itemCnt;
+ MemRect(x,y,(int)WINX,y,0x16313B);
+ DrawMenuReferencePanel(x,y,(int)WINX,(int)WINY,0,0x16313B,0x49777A);
+ DrawMenuReferencePanel(x,y,(int)WINX,(int)(58*zoom),0,0x10383D,0x49777A);
+ SetFontColor(COLOR_WHITE);CenterTextStrSolid("동료",x+WINX/2,y-16*zoom,1.25f*zoom);
+ DrawMenuBackButton(x+12,y-4,TOUCH_FUNC_POPUP_CLOSE);
+ if(menuDepth==0&&GetTutorialCrewCloseTouchFunc()){
+  const float pulse=1.f+sinf(frame*.1f)*.06f;
+  SetSpotlight(x+54,y-28,28*pulse,48*pulse,.25f);
+  DrawHand(x+54-imgArray[IMG_HAND1*4+2]*2,y-28+imgArray[IMG_HAND1*4+3]*2,robin.playtime/MOTIONDIV,2.f);
+ }
+ SetSectionClip(0,y-72*zoom,DX,WINY-92*zoom,false);
 
 	curHero = ROBIN;
 
@@ -6125,7 +5951,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 		int row = i / INVENTORY_COL_CNT;
 
 		int cardX = x + (float)(INVENTORY_X + INVENTORY_GAP_X * col) * zoom;
-		int cardY = y - (float)(320 + (CREW_GAP_Y) * row - scY[MENU_CREW]) * zoom;
+		int cardY = y - (float)(72 + (CREW_GAP_Y) * row - scY[MENU_CREW]) * zoom;
 
 		itemType = robin.inven[itemInvenIdxList[i]].type;
 		itemDetail = robin.inven[itemInvenIdxList[i]].detail;
@@ -6181,20 +6007,18 @@ void CrewMenuDraw(int x, int y, float zoom)
 		}
 	}
 
-	int scrollH = WINY - (float)340 * zoom;
+	int scrollH = WINY - (float)92 * zoom;
 
 	DrawScroll(
 		x + (float)612 * zoom,
-		y - (float)320 * zoom,
+		y - (float)72 * zoom,
 		scrollH,
 		MENU_CREW);
 
 	UnSectionClip(false);
 
 	//최외각 테두리
-	MemRectFrameThick(x, y, WINX, WINY, 0x2C2578, (float)OUTTHICK * zoom);
-	//그안에 테두리
-	MemRectFrameThick(x + OUTTHICK, y - OUTTHICK, WINX - 2 * OUTTHICK, WINY - 2 * OUTTHICK, 0x7653D3, INTTHICK);
+ MemRectFrame(x,y,(int)WINX,(int)WINY,0x49777A);
 
 	switch (menuDepth) {
 	case 1:
@@ -6393,10 +6217,7 @@ void DrawItemCard(
 
 	invenIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
 
-	if(PixelEquipmentUi()) {
-		const int colors[]={0x638A9B,0x59AF8A,0x5C9EDB,0xAE7BC5,0xDBAC54,0xE97878};
-		DrawPixelPanel(x,y,(int)(240*zoom),(int)(332*zoom),0x142E43,colors[Max(0,Min(5,itemStar-1))]);
-	} else {
+	{
 	DrawImageScale(
 		198,
 		288,
@@ -7115,7 +6936,12 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 
 	//바탕은 단색. 등급이 높을수록 아주 조금만 밝다.
 	static const int tileFill[]={0x13383E,0x243E40,0x343147,0x4B354C,0x51422C,0x51422C};
-	DrawMenuReferencePanel(x,y,w,h,0,tileFill[Min(5,grade)],wearer>=0?0xF2C17D:col);
+ const int star=Max(1,Min(6,GetItemStar(it->type,it->detail,it->grade)));
+ const int* f=&equipBgData[(star-1)*6];
+ DrawImageScale(f[0],f[1],f[2],f[3],x,y,false,false,false,false,false,
+  w/(float)f[0],h/(float)f[1],sprite[CARD_IMG],CARD_IMG);
+ DrawStar(ICON_STAR,x+w/2,y-18,star,star,star,CENTER,false,.55f);
+
 
 	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
 	//"지금 끼고 있는 것"이 제일 먼저 보여야 한다.
@@ -7971,8 +7797,18 @@ static int ShopBannerProduct(int banner)
 	}
 }
 
+static void DrawShopGemBundle(int tier,int x,int top,int size){
+ if(tier<0||tier>=6||size<=0)return;
+ const int img=SHOP_GEM_BUNDLE_FIRST_IMG+tier;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+ const float z=Min(size/dim.width,size/dim.height);
+ DrawImageScale((int)dim.width,(int)dim.height,0,0,x+(int)((size-dim.width*z)/2),top-(int)((size-dim.height*z)/2),false,0,0,0,0,z,z,sprite[img],img);
+}
 static const char* ShopProductName(int product)
 {
+	static const char* gemName[]={"보석 1,000","보석 2,200","보석 6,000","보석 25,000","보석 65,000","보석 140,000"};
+	if(product>=IAP_COIN_01&&product<=IAP_COIN_06)return gemName[product-IAP_COIN_01];
 	static const char* rainbowName[6] = {
 		"레인보우 코인 60", "레인보우 코인 180", "레인보우 코인 600",
 		"레인보우 코인 1,500", "레인보우 코인 3,500", "레인보우 코인 8,000"
@@ -8051,9 +7887,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	}
 	else if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
-		DrawImage(448, 448, 32, 0, Loc(artX), LocY(artY),
-			false, false, false, false, false, artSize / 448.0f * sCdU,
-			sprite[COIN_0_IMG + variant], COIN_0_IMG + variant);
+		DrawShopGemBundle(variant,Loc(artX),LocY(artY),(int)(artSize*sCdU));
 	}
 	else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
 		int variant = product - IAP_HEART_01;
@@ -8185,7 +8019,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON, (int)Loc(310.0f), (int)LocY(935.0f),
 				64.0f * sCdU / ITEMICONSIZE, false, false, false, true);
 		}
-		if(product>=IAP_COIN_01&&product<=IAP_COIN_06)DrawGoldAmount(amount,(int)Loc(CD_DESIGNW/2.0f),(int)LocY(945.0f),(int)(700*sCdU));
+		if(product>=IAP_COIN_01&&product<=IAP_COIN_06){char value[80];sprintf(value,"보석 %lld",amount);CdText(value,CD_DESIGNW/2.0f,945.0f,2.0f,CENTER,COLOR_WHITE);}
 		else if (amount) {
 			sprintf(tempStr, "%lld", amount);
 			CdText(tempStr, 435.0f, 955.0f, 2.15f, LEFT, COLOR_WHITE);
@@ -8340,7 +8174,7 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 		cardColor = 0x272B4B;
 	const int artImg=product>=IAP_HEART_01&&product<=IAP_HEART_06?HEART_0_IMG+product-IAP_HEART_01:
 		product>=IAP_CASH_01&&product<=IAP_CASH_06?SHOP_CASH_PILES_IMG:
-		product>=IAP_COIN_01&&product<=IAP_COIN_06?COIN_0_IMG+product-IAP_COIN_01:SHOP_PASS_ART_IMG;
+		product>=IAP_COIN_01&&product<=IAP_COIN_06?SHOP_GEM_BUNDLE_FIRST_IMG+product-IAP_COIN_01:SHOP_PASS_ART_IMG;
 	if(!sprite[artImg])LoadImg(artImg);
 	DrawMenuReferencePanel((int)x,(int)y,(int)w,(int)h,0,cardColor,0xD9B775);
 
@@ -8349,10 +8183,7 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 
 	if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
-		//생성 원화 가장자리의 다음 상품 조각을 제외한 중앙 안전영역만 쓴다.
-		DrawImage(448, 448, 32, 0, artX, artY,
-			false, false, false, false, false, artSize / 448.0f,
-			sprite[COIN_0_IMG + variant], COIN_0_IMG + variant);
+		DrawShopGemBundle(variant,(int)artX,(int)artY,(int)artSize);
 	}
 	else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
 		int variant = product - IAP_HEART_01;

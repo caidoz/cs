@@ -38,9 +38,8 @@ static void DrawLobbyReferenceFooter(){
  const float press=GetButtonScale(TOUCH_FUNC_GOTOBATTLE,ctaX,top,ctaW,h);
  const int dw=(int)(ctaW*press),dh=(int)(h*press);
  DrawMenuReferencePanel(ctaX+(ctaW-dw)/2,top+(dh-h)/2,dw,dh,2,0x16613C,0xF2CE8C);
- const long long admission=GetStageAdmissionHeart(robin.stage);snprintf(text,sizeof(text),"%lld 모험 시작",admission);
+ snprintf(text,sizeof(text),"모험 시작");
  const float tz=1.12f*press;const int icon=32,row=(int)StringWidth(text,tz)+icon+10,rx=ctaX+(ctaW-row)/2;
- DrawImage(128,128,0,0,rx,top-20,false,false,false,false,false,icon/128.f,sprite[LOBBY_ENERGY_IMG],LOBBY_ENERGY_IMG);
- SetFontColor(robin.heart>=admission?0xFFF0CD:COLOR_GREY);DrawTextStrSystem(text,rx+icon+10,top-23,tz,LEFT,false);
+ SetFontColor(0xFFF0CD);DrawTextStrSystem(text,ctaX+ctaW/2,top-23,tz,CENTER,false);
  SetRectPoint(ctaX,top,ctaW,h,TOUCH_FUNC_GOTOBATTLE);
 }

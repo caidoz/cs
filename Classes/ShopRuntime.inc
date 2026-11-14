@@ -42,7 +42,21 @@ const char* CandidateName(const Candidate& c) {
 //같은 상품이 두 탭에 나온다(옛 추천/보급품이 그랬다).
 bool IsCurrencyProduct(int product) {
  return (product>=IAP_HEART_01&&product<=IAP_HEART_06)
+     || (product>=IAP_COIN_01&&product<=IAP_COIN_06)
      || (product>=IAP_CASH_01 &&product<=IAP_CASH_06);
+}
+void GoldCard(int tier,int x,int y,int w,int h){
+ DrawMenuReferencePanel(x,y,w,h,0,0x142E43,0xD9B775);
+ char text[80];sprintf(text,"골드 %lld",ShopGold::Amount(tier));Label(text,x+w/2,y-14,w-12,.85f);
+ const int img=COIN_0_IMG+tier;if(!sprite[img])LoadImg(img);
+ const int size=Min(w-24,h-96);
+ if(sprite[img])DrawImage(448,448,32,0,x+(w-size)/2,y-44,false,0,0,0,0,size/448.f,sprite[img],img);
+ const bool can=robin.coin>=ShopGold::Price(tier)&&robin.gold<=GOLD_MAX-ShopGold::Amount(tier)&&!IapIsBusy();
+ const int by=y-h+40;
+ DrawMenuReferencePanel(x+6,by,w-12,34,0,can?0x208C46:0x555555,can?0xEAC58A:0xA9A9A9);
+ DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,x+w/2-46,by-4,26.f/ITEMICONSIZE,false,false,false,true);
+ DrawImageNum(ShopGold::Price(tier),x+w/2-10,by-7,NUM_FONT_NORMAL,LEFT,0,0,true,.8f,false);
+ if(can)SetRectPoint(x+6,by,w-12,34,TOUCH_FUNC_SHOP_GOLD+tier);
 }
 void SupplyCard(int kind,int x,int y,int w,int h) {
  const auto product=ShopCatalog::Supply(kind,hero);
@@ -142,18 +156,17 @@ void Draw(float x,float y,float w,float h,float zoom) {
  } else {
   //---- 재화 ----
   //
-  //골드는 안 판다. 판에서 벌어 상자와 성에 쓰는 순환 재화이지 사고파는
-  //물건이 아니다. 팔기 시작하면 성장 곡선을 돈으로 건너뛴다.
+  // Premium gems use the existing coin-product grants; gold is exchanged for gems.
   int shown=0;
-  DrawMenuPlaque("하트",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  DrawMenuPlaque("보석",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
   const int columns=3,cardW=(inner-16)/columns,cardH=202,pitch=cardH+10;
-  for(int i=IAP_HEART_01;i<=IAP_HEART_06;++i) {
+  for(int i=IAP_COIN_01;i<=IAP_COIN_06;++i) {
    ShopCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH,1);++shown;++currencyCardsDrawn;
   }
   cy-=((shown+columns-1)/columns)*pitch+14;shown=0;
-  DrawMenuPlaque("캐시",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
-  for(int i=IAP_CASH_01;i<=IAP_CASH_06;++i) {
-   ShopCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH,1);++shown;++currencyCardsDrawn;
+  DrawMenuPlaque("골드 · 보석으로 구매",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  for(int i=0;i<6;++i) {
+   GoldCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH);++shown;++currencyCardsDrawn;
   }
   cy-=((shown+columns-1)/columns)*pitch;
  }
@@ -175,14 +188,25 @@ void Draw(float x,float y,float w,float h,float zoom) {
 
 bool ShopCurrencyReviewChecks(){
  if(ShopSpec::tab!=ShopCatalog::Currency||ShopSpec::currencyCardsDrawn!=12)return false;
- for(int i=0;i<6;++i)if(!sprite[HEART_0_IMG+i])return false;
- if(!sprite[SHOP_CASH_PILES_IMG])return false;
+ for(int i=0;i<6;++i)if(!sprite[COIN_0_IMG+i])return false;
+ for(int i=0;i<6;++i)if(!sprite[SHOP_GEM_BUNDLE_FIRST_IMG+i])return false;
  for(int i=0;i<touchIndex;++i){const int p=touchRect[i][4]-TOUCH_FUNC_SHOP_IAP;
   if(p>=0&&p<TOTALIAPPRODUCT&&!IapCanPurchase(p))return false;}
  return true;
 }
 bool ShopCatalogTouch(int command) {
  using namespace ShopSpec;
+ if(command>=TOUCH_FUNC_SHOP_GOLD&&command<=TOUCH_FUNC_SHOP_GOLD_END){
+  const int tier=command-TOUCH_FUNC_SHOP_GOLD;
+  const auto now=std::chrono::steady_clock::now();
+  if(purchasing||IapIsBusy()||IsStageRealtime()||StageRunPersistentEquipment(0)||std::chrono::duration_cast<std::chrono::milliseconds>(now-lastPurchaseTime).count()<500)return true;
+  long long gems=robin.coin,gold=robin.gold;
+  if(ShopGold::Buy(tier,gems,gold,GOLD_MAX)){
+   robin.coin=gems;robin.gold=gold;lastPurchaseTime=now;SaveGame();PlayMusic(M_COIN);
+   message="골드 구매 완료";
+  }else message=robin.coin<ShopGold::Price(tier)?"보석이 부족합니다":"골드 보유 한도에 도달했습니다";
+  resultUntil=frame+FPS*3;return true;
+ }
  if(command>=TOUCH_FUNC_SHOP_MAIN_TAB&&command<TOUCH_FUNC_SHOP_MAIN_TAB+3) {
   tab=command-TOUCH_FUNC_SHOP_MAIN_TAB;detail=-1;resultOpen=false;granted.clear();message.clear();
   if(tab==ShopCatalog::Gear)hero=Max(0,Min(TOTALCHAR-1,(int)curHero));

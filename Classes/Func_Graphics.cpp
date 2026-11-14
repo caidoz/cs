@@ -2,6 +2,7 @@
 #include "Func.h"
 #include "Text.h"
 #include "GoldAmountFormat.h"
+#include "NativeGearIcons.h"
 // Castle room/facade overlays share the registered body silhouette.
 #include "Data.h"
 #include "Data/SwordSprites.h"
@@ -112,21 +113,22 @@ bool AllRegionBackgroundReviewAt(int sample){
 void StageBgDebugDrawButton(void)
 {
  if(drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY && !getenv("CS_DEBUG_CONTROLS"))return;
- const int y=DY-30*_2X,h=16*_2X;
- DrawUiButton(4*_2X,y,44*_2X,h,sDebugControlsOpen?"디버그 닫기":"디버그",TOUCH_FUNC_DEBUG_TOGGLE,sDebugControlsOpen);
+ //손가락으로 누르는 크기다. 높이 24단위(48px) 아래로 내려가면 터치가 자주 빗나간다.
+ const int y=DY-30*_2X,h=24*_2X;
+ DrawUiButton(4*_2X,y,48*_2X,h,sDebugControlsOpen?"디버그 닫기":"디버그",TOUCH_FUNC_DEBUG_TOGGLE,sDebugControlsOpen);
  if(!sDebugControlsOpen)return;
  LobbyCastleDebugDraw();
- DrawUiButton(50*_2X,y,42*_2X,h,"PVP",TOUCH_FUNC_PVP_TEST);
- DrawUiButton(94*_2X,y,48*_2X,h,"최대 강화",TOUCH_FUNC_DEBUG_MAXSTATUS);
- DrawUiButton(144*_2X,y,42*_2X,h,"적 공격",TOUCH_FUNC_DEBUG_ENEMYATTACK);
+ DrawUiButton(56*_2X,y,44*_2X,h,"PVP",TOUCH_FUNC_PVP_TEST);
+ DrawUiButton(104*_2X,y,54*_2X,h,"최대 강화",TOUCH_FUNC_DEBUG_MAXSTATUS);
+ DrawUiButton(162*_2X,y,48*_2X,h,"적 공격",TOUCH_FUNC_DEBUG_ENEMYATTACK);
 	char str[32];
 
 	//왼쪽 위. 오른쪽 같은 높이에는 제목 화면의 이어하기 카드가 있어서,
 	//마지막에 등록되는 이 버튼이 그 터치를 가로챈다. 왼쪽 그 자리는 버전
 	//글자뿐이라 눌릴 것이 없다.
-	const int w = 84 * _2X;
+	const int w = 96 * _2X;
 	const int x = 4 * _2X;
-	const int backgroundY = y-h-2*_2X;
+	const int backgroundY = y-h-3*_2X;
 	const int pick = StageBg::DebugRegionPick();
 
 	if (pick >= 0)
@@ -1277,7 +1279,9 @@ bool DrawGloveInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 
 	const float imgW = 64.0f;
 	const float imgH = 64.0f;
-	const float zoom = Min((float)w / imgW, (float)h / imgH);
+	// Native gloves have a narrower silhouette than the neighboring atlas equipment.
+	// Apply the same centered optical correction in reels, grids, and inventory icons.
+	const float zoom = Min((float)w / imgW, (float)h / imgH) * 1.12f;
 	DrawImage((int)imgW, (int)imgH, 0, 0,
 		x + (int)((w - imgW * zoom) / 2.0f), y - (int)((h - imgH * zoom) / 2.0f),
 		false, 0, 0, 0, alpha, zoom, sprite[img], img);
@@ -5985,6 +5989,18 @@ void DrawXMark(int x, int y, float zoom)
 // Item Showing
 void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shadow, float thickness)
 {
+	if(NativeGearIcons::IsGlove(idx)){
+		const int type=ITEM_GUNTLET+NativeGearIcons::Hero(idx),detail=NativeGearIcons::Tier(idx);
+		if(shadow)ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,x+(ITEMICONSIZE/2-12*_2X)*zoom,y+(-ITEMICONSIZE+10*_2X)*zoom,SHADOW_IMG,zoom);
+		const int color=baseColor;
+		if(solid){
+			SetColor(ani?itemColor[frame/2%6]:solid);
+			for(int i=0;i<4;++i)DrawGloveInBox(type,detail,x+solidPosition[i*2]*thickness*zoom,y+solidPosition[i*2+1]*thickness*zoom,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
+			SetColor(color);
+		}
+		DrawGloveInBox(type,detail,x,y,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
+		return;
+	}
 	int i;
 	int beforeColor = baseColor;
 	int enemyIdx = idx - ICON_SUMMON;
@@ -6488,7 +6504,8 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 		SetAlpha(16);
 		MemRect(x, y, (float)16 * _2X * zoom, (float)16 * _2X * zoom, 0x000000);
 		SetAlpha(32);
-		if ((type & 0xFF80) == 0x8000) {
+		if(NativeGearIcons::IsGlove(type))DrawIcon(type,x+4*_2X*zoom,y+4*_2X*zoom,zoom*20.f/ITEMICONSIZE,false,false,false,true);
+		else if ((type & 0xFF80) == 0x8000) {
 			int local = type & 0x7F;
 			DrawImage(32, 32, 1 + (local & 0x07) * 33, 398 + (local >> 3) * 33,
 				x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom,
@@ -6500,6 +6517,10 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 	}
 	else if (it->type == ITEM_SKILL) {
 		DrawSkillIcon(it->detail, x, y, zoom);
+	}
+	else if(it->type>=ITEM_GUNTLET&&it->type<=ITEM_GLOVE){
+		// Saved items may still carry their old ring/bracelet atlas identity.
+		DrawIcon(GetItemIcon(it->type,it->detail,it->grade),x,y,zoom,false,false,false,true);
 	}
 	else if ((it->icon & 0xFF80) == 0x8000) {
 		int local = it->icon & 0x7F;

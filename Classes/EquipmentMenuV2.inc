@@ -117,15 +117,15 @@ static void EquipmentMenuV2Draw()
    (robin.inven[items[j]].grade==robin.inven[key].grade && robin.inven[items[j]].value<robin.inven[key].value))){items[j+1]=items[j];--j;}
   items[j+1]=key;
  }
- const int cols=6, pitch=(DX-32)/cols, cell=pitch-8, listBottom=90, height=Max(1,listTop-listBottom);
- scT[MENU_COLLECTIONS]=Max(0,((count+cols-1)/cols)*pitch-height);
+ const int cols=4, pitch=INVENTORY_GAP_X, cell=(int)(240*CARDDEFAULTZOOM), rowPitch=CREW_GAP_Y, cardHeight=(int)(332*CARDDEFAULTZOOM), listBottom=90, height=Max(1,listTop-listBottom);
+ scT[MENU_COLLECTIONS]=Max(0,((count+cols-1)/cols)*rowPitch-height);
  scY[MENU_COLLECTIONS]=Min(scT[MENU_COLLECTIONS],Max(0,scY[MENU_COLLECTIONS]));
  SetSectionClip(16,listTop,DX-32,height,false);
  for(int i=0;i<count;++i){
-  int sx=16+(i%cols)*pitch,sy=listTop-(i/cols)*pitch+scY[MENU_COLLECTIONS];
-  if(sy<listBottom || sy-cell>listTop) continue;
-  DrawInvenSlot(items[i],sx,sy,cell,cell,Min(1.30f,(cell-22)/(float)ITEMICONSIZE));
-  if(menuDepth==0) SetRectPoint(sx,Min(listTop,sy),cell,Min(sy, listTop)-Max(listBottom,sy-cell),TOUCH_FUNC_ITEMDETAIL+items[i]);
+  int sx=16+(i%cols)*pitch,sy=listTop-(i/cols)*rowPitch+scY[MENU_COLLECTIONS];
+  if(sy<listBottom || sy-cardHeight>listTop) continue;
+  DrawInvenSlot(items[i],sx,sy,cell,cardHeight,1.3f);
+  if(menuDepth==0) SetRectPoint(sx,Min(listTop,sy),cell,Min(sy, listTop)-Max(listBottom,sy-cardHeight),TOUCH_FUNC_ITEMDETAIL+items[i]);
   if(GetTutorialEquipCardTouchFunc()==TOUCH_FUNC_ITEMDETAIL+items[i]){
    DrawHand(sx,sy,robin.playtime/MOTIONDIV,1.5f);
    SetSpotlight(sx+cell/2,sy-cell/2,cell*0.6f,cell,0.25f);

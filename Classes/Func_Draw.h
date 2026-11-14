@@ -84,6 +84,9 @@ float CastlePartsFloatOffset(int level);
 void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
 bool LobbyCastleDebugCommand(int command);
+bool LobbyCastleDebugActive(void);
+int LobbyCastleDebugCastle(void);
+bool LobbyCastleDebugInterior(void);
 void LobbyCastleDebugDraw(void);
 int LobbyCastleDebugPopulation(void);
 void LobbyCastleDebugCrowdDraw(void);
@@ -235,7 +238,7 @@ void StageRunGridClear(void);
 bool LoadoutRequiredWeaponReady(void);
 bool LoadoutVisualWeapon(ITEM* out);
 void LoadoutDiag(const char* tag, int a, int c, int d, int e);
-void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha);
+void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha, bool backing = true);
 //룰렛 판의 장비 블록이 차지하는 칸(가방과 같은 GridGearPart). 비어 있으면 1×1.
 void MergeBoardGearShape(const ITEM* it, int* w, int* h);
 void LoadoutDefaultReset(void);

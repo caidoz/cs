@@ -3,6 +3,7 @@
 #include "Func.h"
 #include "Text.h"
 #include "Data/CastleFacilities.h"
+#include "NativeGearIcons.h"
 
 long long GetStageAdmissionFee(void)
 {
@@ -28,12 +29,8 @@ long long GetStageAdmissionFee(void)
 
 long long GetStageAdmissionHeart(int stage)
 {
-	long long betHeart;// = GetCharPrice(ROBIN);
-
-	//TEST
-	betHeart = 10 + stage;
-
-	return betHeart;
+	// Energy admission was removed. Roulette hearts remain a separate run resource.
+	return 0;
 }
 
 ITEM* GetItemPtr(int idx)
@@ -2136,6 +2133,7 @@ int GetItemName(int type, int detail, int grade)
 
 int GetItemIcon(int type, int detail, int grade)
 {
+	if(type>=ITEM_GUNTLET&&type<=ITEM_GLOVE)return NativeGearIcons::Glove(type-ITEM_GUNTLET,detail);
 	if (type == ITEM_RECIPE)
 		return 24;
 

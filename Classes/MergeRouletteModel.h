@@ -31,15 +31,32 @@ struct Shape {
     bool contains(int x,int y) const {return x>=0&&y>=0&&x<width&&y<height&&(rows[y]&(1u<<x));}
 };
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
+//---- 성마다 판의 모양 ----
+//
+//높이는 늘 4줄. 1성은 4×4 의 16칸이고, 성이 하나 오를 때마다 2칸을
+//**맨 아랫줄부터 한 줄씩 양옆으로 한 칸씩** 넓힌다. 아랫줄이 먼저 넓어지고
+//그 위 줄이 따라 넓어져 네 줄이 다 같은 폭이 되면, 다시 아랫줄부터 넓힌다.
+//성이 위로 갈수록 좁아지는 꼴이라 어느 성이든 좌우가 같고 밑이 넓다.
+//  1성 16: 4·4·4·4     3성 20: 4·4·6·6     5성 24: 6·6·6·6
+//  2성 18: 4·4·4·6     4성 22: 4·6·6·6     9성 32: 8·8·8·8   10성 34: 8·8·8·10
+//(위에서 아래 순. 10성의 아랫줄 10칸은 칸을 52 로 줄여 성벽 안에 넣는다 - layout.)
+//앞 성의 칸은 뒤 성에도 전부 남아 있고(가운데 기준), 폭은 가장 넓은 줄이다.
 inline Shape BattleShape(int stage) {
-    Shape out;out.width=4;out.height=4;
+    Shape out;
     for(auto& row:out.rows)row=0;
-    for(int y=0;y<4;++y)out.rows[y]=15;
-    const int extra=2*std::max(0,std::min(9,stage));
-    // Add adjacent pairs, preserving every previously unlocked cell.
-    // Grow horizontally rather than pushing the fixed-size board into the deck.
-    for(int i=0;i<extra;++i){const int x=4+i/4,y=i%4;
-        out.rows[y]|=1u<<x;out.width=std::max(out.width,x+1);}
+    const int st=std::max(0,std::min(9,stage));
+    int widths[4];
+    for(int y=0;y<4;++y){
+        const int fromBottom=3-y;                       //아랫줄이 0
+        const int count=st>fromBottom?(st-fromBottom+3)/4:0;   //이 줄이 넓어진 횟수
+        widths[y]=4+2*count;
+    }
+    const int width=widths[3];
+    out.width=width;out.height=4;
+    for(int y=0;y<4;++y){
+        const int left=(width-widths[y])/2;
+        out.rows[y]=((1u<<widths[y])-1u)<<left;
+    }
     return out;
 }
 struct Block {
@@ -99,6 +116,10 @@ struct Run {
     long long lives=5, maxLives=5;
     bool realVitals=false;
     long long baseArmor=0,enemyAttack=1;
+    //상대의 방어막. 공성전에서 맞는 쪽(성주 또는 나)의 갑옷 블록 몫이다. 피해가
+    //여기부터 깎이고, 바닥나면 체력으로 간다. 일반 웨이브의 몬스터는 0 이라 그대로.
+    //세이브에는 넣지 않는다 - 공성전 상태는 어차피 세션 안에서만 산다.
+    long long enemyGuard=0,enemyGuardMax=0;
     void setVitals(long long hp,long long armor) {
         hp=std::max(1LL,std::min(1000000000000000LL,hp));
         const long double ratio=lives/(long double)std::max(1LL,maxLives);
@@ -161,6 +182,17 @@ struct Run {
     bool setShape(const Shape& wanted) {
         if(!wanted.valid()||attacking)return false;
         Run next=*this;next.shape=wanted;
+        //판은 가운데서 좌우로 자란다(BattleShape). 폭이 바뀌면 블록을 그 차이의
+        //반만큼 옮겨야 같은 자리에 남는다. 다 들어가면 그대로 쓰고, 아니면 아래의
+        //되놓기로 간다.
+        const int dx=(wanted.width-shape.width)/2;
+        if(dx!=0) {
+            Run shifted=next;
+            for(Block& b:shifted.board)b.x+=dx;
+            bool ok=true;
+            for(int i=0;i<(int)shifted.board.size()&&ok;++i)if(!shifted.fits(shifted.board[i],i))ok=false;
+            if(ok){*this=shifted;return true;}
+        }
         bool fitsAll=true;
         for(int i=0;i<(int)board.size();++i)if(!next.fits(board[i],i))fitsAll=false;
         if(!fitsAll) {
@@ -500,11 +532,29 @@ struct Run {
         for(const Block& b:ordered()) shots.push_back(evaluate(b,st,effects));
         attacking=true; return true;
     }
+    //---- 성의 대포 ----
+    //
+    //판 밖에서 쏘는 한 발. 블록이 아니라 성의 것이라 shots 에는 계열 없는
+    //블록(family -1)으로 선다. 공격과 같은 교환이다 - 반격을 받고 finish 로 끝난다.
+    //판이 비어 있어도 쏠 수 있다. 공성 무기라 상대 방어막에는 두 배로 들어간다(step).
+    bool fireCannon(long long damage) {
+        if(choosing || attacking || lost || damage<=0) return false;
+        shots.clear(); nextShot=0; effects=Effects(); damageDone=0;counterResolved=false;
+        Shot s;s.block.family=-1;s.block.level=0;s.damage=damage;shots.push_back(s);
+        attacking=true; return true;
+    }
     // One block at a time, in board order, so the adapter can animate every shot.
     bool step() {
         if(!attacking || nextShot>=(int)shots.size()) return false;
         Shot s=shots[nextShot++];
-        damageDone+=s.damage; enemyHp=std::max(0LL,enemyHp-s.damage);
+        damageDone+=s.damage;
+        long long dmg=s.damage;
+        if(s.block.family<0) {   //대포: 방어막은 두 배로 깎고, 남은 몫만 체력으로
+            const long long guardHit=std::min(enemyGuard,dmg*2);
+            enemyGuard-=guardHit; dmg-=guardHit/2;
+        }
+        const long long absorbed=std::min(enemyGuard,dmg);
+        enemyGuard-=absorbed; enemyHp=std::max(0LL,enemyHp-(dmg-absorbed));
         if(s.summonTurns>0) summons.push_back(s);
         return true;
     }

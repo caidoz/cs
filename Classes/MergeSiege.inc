@@ -97,6 +97,13 @@ void reset(){
     foe=Run();phase=0;swapped=false;timer=turnNo=spinsDone=0;foeDamage=0;step=Idle;actedThisTurn=false;
     dragFrom=-1;dragFrame=0;handVisible=expanded=false;
 }
+//한 런의 방어막: 기본 방어 + 판 위 갑옷 블록 몫. 맞는 쪽이 턴 시작 때 치는 쪽의
+//run.enemyGuard 로 건너간다(step 이 피해를 여기서 먼저 깎는다).
+long long guardOf(const Run& r,const Stats& st){
+    long long guard=r.baseArmor;
+    for(const Block& b:r.board)if(DefensiveGear(b.family))guard+=r.armorOf(b,st);
+    return guard;
+}
 void begin(){
     siegeActive=false;siegeHullStage=-1;
     MergeRouletteBegin(false);
@@ -112,11 +119,15 @@ void begin(){
     foe.stage=castle;foe.setShape(castleShape(castle));
     refRows=std::max(run.shape.height,foe.shape.height);
     foe.start(pool,treeWeights);
-    //양쪽 성의 체력 통. 그 성 몬스터 한 마리의 세 배 - 공격 서너 번이 오간다.
+    //체력은 양쪽이 제 것을 쓴다. 나는 히어로의 실제 체력·방어(MergeRouletteBegin 의
+    //setVitals 그대로), 성주는 그 성 몬스터 한 마리의 세 배 - 공격 서너 번이 오간다.
+    //성주의 기본 방어는 그 체력의 5%. 판 위 갑옷 블록 몫은 guardOf 가 따로 더한다.
     //내 체력(run.lives)이 내 성, run.enemyHp 가 상대 성. 맞바꾸면 반대가 된다.
-    const long long pool=hpFor(castle,0)*3;
-    run.lives=run.maxLives=pool;run.enemyHp=run.enemyMax=pool;run.enemyAttack=0;
-    foe.lives=foe.maxLives=pool;foe.enemyHp=foe.enemyMax=pool;foe.enemyAttack=0;
+    const long long pool=hpFor(castle,0)*3,foeArmor=pool/20;
+    foeStats.heroHealth=pool;foeStats.heroArmor=foeArmor;
+    run.enemyHp=run.enemyMax=pool;run.enemyAttack=0;
+    foe.setVitals(pool,foeArmor);foe.lives=pool;foe.enemyHp=foe.enemyMax=run.maxLives;foe.enemyAttack=0;
+    run.enemyGuard=run.enemyGuardMax=guardOf(foe,foeStats);
     heroHealthDisplay=MergeCombat::AnimatedValue();heroHealthDisplay.set(run.lives);heroHealthDisplay.advance(1);
     enemyHealthDisplay=MergeCombat::AnimatedValue();enemyHealthDisplay.set(run.enemyHp);enemyHealthDisplay.advance(1);
     turnNo=1;phase=4;   //내 시작 뽑기가 끝나면 상대 것을 보여 준다
@@ -138,7 +149,9 @@ void handTo(const Box& b){handVisible=true;handX=b.x+b.w*.5f;handY=b.y-b.h*.5f;}
 //넘어간다. 합성(끌기)은 공짜라 제 턴 안에서 얼마든지 한다.
 void startFoeTurn(){
     foe.lives=run.enemyHp;   //상대 성 체력을 상대 런에도 맞춰 둔다
+    const long long myGuard=guardOf(run,stats);
     swapSides();phase=1;step=Idle;actedThisTurn=false;timer=0;run.spins=std::max(1,run.spins);
+    run.enemyGuard=run.enemyGuardMax=myGuard;   //이제 치는 쪽은 상대, 맞는 쪽은 나
     message="상대 턴";messageTime=2;
 }
 //상대 턴이 끝났다(공격했으면 damage, 돌렸으면 0). 내 성 체력은 (맞바꾼) run.enemyHp 에 있다.
@@ -147,6 +160,7 @@ void endFoeTurn(long long damage){
     const long long myPool=run.enemyHp;
     swapSides();
     run.lives=myPool;phase=0;++turnNo;step=Idle;handVisible=false;
+    run.enemyGuard=run.enemyGuardMax=guardOf(foe,foeStats);   //상대가 제 턴에 갑옷을 바꿨을 수 있다
     heroHealthDisplay=MergeCombat::AnimatedValue();heroHealthDisplay.set(run.lives);heroHealthDisplay.advance(1);
     if(run.lives<=0){run.lives=0;run.lost=true;message="성에서 밀려났습니다";}
     else{char text[96];std::snprintf(text,sizeof(text),damage>0?"%d턴 · 상대 공격 %lld · 내 차례":"%d턴 · 상대가 돌렸다 · 내 차례",turnNo,damage);message=text;}
@@ -190,7 +204,7 @@ bool advance(){
             step=Dragging;
         }
         else if(actedThisTurn){endFoeTurn(0);}
-        else if(spinsDone<aiSpins&&run.canSpin()){handTo(l.lever);timer=0;step=Pulling;}
+        else if(spinsDone<aiSpins&&run.canSpin()){handTo(l.spin);timer=0;step=Pulling;}
         else if(!run.board.empty()){handTo(l.attack);timer=0;step=Pressing;}
         else {endFoeTurn(0);}   //칠 것도 돌릴 자리도 없다 - 턴을 넘긴다
         return false;}
@@ -259,8 +273,8 @@ void drawFoeBoard(const Layout& l){
     const float s=l.scale;
     const int cell=std::max(5,(int)(l.cell*.22f));
     const int bw=cell*foe.shape.width,bh=cell*foe.shape.height;
-    const int plateH=(int)(70*s);
-    const int bx=DX-bw-(int)(8*s),by=l.ground-(int)(4*s)+plateH+(int)(20*s)+bh;
+    const int plateH=(int)(96*s);   //유닛 패와 같은 높이(세 단)
+    const int bx=DX-bw-(int)(8*s),by=l.ground-(int)(12*s)+plateH+(int)(20*s)+bh;
     panelBox={bx-(int)(5*s),by+(int)(5*s),bw+(int)(10*s),bh+(int)(26*s)};
     SetAlpha(26);
     panel(panelBox,0x1E2433,0x61718C);

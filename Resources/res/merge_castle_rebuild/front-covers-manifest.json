@@ -1,0 +1,142 @@
+[
+  {
+    "castle": 1,
+    "file": "front-cover-01-v1.png",
+    "canvas": [
+      1635,
+      962
+    ],
+    "bounds": [
+      79,
+      92,
+      1477,
+      783
+    ]
+  },
+  {
+    "castle": 2,
+    "file": "front-cover-02-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      28,
+      30,
+      1669,
+      838
+    ]
+  },
+  {
+    "castle": 3,
+    "file": "front-cover-03-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      36,
+      34,
+      1655,
+      839
+    ]
+  },
+  {
+    "castle": 4,
+    "file": "front-cover-04-v1.png",
+    "canvas": [
+      1728,
+      910
+    ],
+    "bounds": [
+      38,
+      40,
+      1658,
+      826
+    ]
+  },
+  {
+    "castle": 5,
+    "file": "front-cover-05-v1.png",
+    "canvas": [
+      1725,
+      912
+    ],
+    "bounds": [
+      23,
+      35,
+      1677,
+      836
+    ]
+  },
+  {
+    "castle": 6,
+    "file": "front-cover-06-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      42,
+      42,
+      1642,
+      826
+    ]
+  },
+  {
+    "castle": 7,
+    "file": "front-cover-07-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      29,
+      32,
+      1674,
+      846
+    ]
+  },
+  {
+    "castle": 8,
+    "file": "front-cover-08-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      36,
+      35,
+      1653,
+      825
+    ]
+  },
+  {
+    "castle": 9,
+    "file": "front-cover-09-v1.png",
+    "canvas": [
+      1726,
+      911
+    ],
+    "bounds": [
+      33,
+      49,
+      1652,
+      828
+    ]
+  },
+  {
+    "castle": 10,
+    "file": "front-cover-10-v1.png",
+    "canvas": [
+      1635,
+      962
+    ],
+    "bounds": [
+      30,
+      69,
+      1565,
+      791
+    ]
+  }
+]

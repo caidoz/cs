@@ -1073,7 +1073,7 @@ bool Core::init()
 	return true;
 }
 
-#include "CastleMenuReview.inc" // Full-height warehouse and native menu/layer/stat/audio/capture review.
+#include "CastleMenuReview.inc" // Currency exchange, energy-free admission and shared menu review.
 
 //======================================================================
 // 힙 탐침 (임시)

@@ -57,6 +57,7 @@ static float CastleCompanionFootOffset(int type,float zoom);
 #ifdef GAMEDEBUG
 // All ten cannons share the lower command platform and commander-relative placement.
 #include "CastleModularDebug.h"
+// Shared debug state supplies cosmetic previews to the current lobby renderer.
 #include "LobbyCastleDebug.inc"
 #include "StageBackground.h"
 float StageCastleGroundingPx(void) { return StageBg::kCastleGroundingPx; }
@@ -5498,7 +5499,7 @@ void MergeBoardGearShape(const ITEM* it, int* w, int* h)
 	if (h) *h = ch;
 }
 
-void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha)
+void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha, bool backing)
 {
 	if (!it || it->type == EMPTY)
 		return;
@@ -5519,6 +5520,9 @@ void MergeBoardDrawGear(const ITEM* it, int x, int y, int w, int h, int alpha)
 	if (part.w != part.h && (w > h) != (part.w > part.h))
 		part = GridPartRotated(part);
 
+ // The combat board already owns a star-level pad. Render only the item there,
+ // without a second inventory plate or an inventory grade-colored border.
+ if(!backing){GridTestDrawCard(&part,x,y,w,h,alpha,false,false);return;}
 	GridDrawShapedCard(&part, x, y, w, h, alpha, false);
 }
 
@@ -10758,30 +10762,8 @@ static void LobbyZoomButtonsDraw(void)
 }
 #endif
 
-static int LobbyBottomNavActive(void)
-{
-	if (gLobbyCastleMenuOpen) return 4;
-	if (popUpCnt <= 0) return 2;
-
-	switch (popUp[popUpCnt - 1].type) {
-	case POPUPTYPE_SHOPINFO:
-	case POPUPTYPE_EVENTSHOP:
-		return 0;
-	case POPUPTYPE_COLLECTIONS:
-		return 1;
-	case POPUPTYPE_CREWLIST:
-	case POPUPTYPE_CREWUPGRADE:
-		return 3;
-	case POPUPTYPE_CASTLEMENU:
-		return 4;
-	default:
-		return 2;
-	}
-}
-
-
 #include "MenuRenewalDungeon.inc" // Modal options draw and dismiss above the dungeon page.
- #include "LobbyReferenceUi.inc"
+ #include "LobbyReferenceUi.inc" // Energy-free lobby admission and shared resource header.
 static void LobbyBottomNavDraw(void)
 {
 	//---- 출정 준비 중에는 쉰다 ----
@@ -10817,62 +10799,7 @@ static void LobbyBottomNavDraw(void)
 			return;
 	}
 
-	const int navImgs[] = { LOBBY_NAV_SHOP_IMG, LOBBY_NAV_EQUIP_IMG,
-		LOBBY_NAV_ADVENTURE_IMG, LOBBY_NAV_CASTLE_IMG, LOBBY_NAV_CASTLE_IMG };
-	const int actions[] = { TOUCH_FUNC_SHOP, TOUCH_FUNC_COLLECTIONS,
-		TOUCH_FUNC_LOBBY_ADVENTURE, TOUCH_FUNC_POPUP_CREWLIST, TOUCH_FUNC_POPUP_CASTLEMENU };
-	const int active = gRenewDungeon?4:LobbyBottomNavActive();
-	const float activeShare = 0.25f;
-	const float normalShare = (1.0f - activeShare) / 4.0f;
-	// Visible artwork bounds in the 128px source images, excluding transparent margins.
-	const int artwork[5][4]={{7,11,110,106},{8,7,112,114},{16,19,106,98},{9,8,111,110},{8,6,112,115}};
-	const float artworkHeight=Min((float)BOTTOMMENUHEIGHT-16,DX*normalShare-14);
-
-	// This pass is intentionally after all popup windows.  The main navigation
-	// remains visible and its hit areas are registered last.
-	MemRect(0, BOTTOMMENUHEIGHT + 4 * _2X, DX, BOTTOMMENUHEIGHT + 4 * _2X, 0x0D1728);
-	DrawMenuReferencePanel(0,BOTTOMMENUHEIGHT+6,DX,BOTTOMMENUHEIGHT+6,1,0x10343B,0xDDB77D);
-
-	int left = 0;
-	for (int i = 0; i < 5; ++i) {
-		const float share = i == active ? activeShare : normalShare;
-		const int right = i == 4 ? DX : left + (int)(DX * share + 0.5f);
-		const int cx = (left + right) / 2;
-		const bool isLocked = false;
-		const bool selected = (i == active);
-		const int top = BOTTOMMENUHEIGHT;
-		DrawMenuReferencePanel(left+7,top+(selected?4:-4),right-left-14,BOTTOMMENUHEIGHT-12,selected?1:0,selected?0x225E61:0x102638,selected?0xF2C17D:0x6C969A);
-
-		if (left > 0)
-			MemRect(left, BOTTOMMENUHEIGHT - 3 * _2X, 1, BOTTOMMENUHEIGHT - 6 * _2X, 0x315174);
-
-		// With labels removed, almost the complete bar height can be used.  This
-		// makes the icons about 50 percent larger than the former layout.
-		const float iconSize = artworkHeight*(i==3?1.08f:1.f);
-		const float press = isLocked ? 1.0f : GetButtonScale(actions[i], left, top, right - left, top);
-		const float size = iconSize * press;
-		const int savedIconColor=baseColor,savedIconGray=grayScale;
-		const int* art=artwork[i];const float zoom=size/art[3],artWidth=art[2]*zoom;
-		grayScale=false;SetColor(0);
-		DrawImage(art[2],art[3],art[0],art[1],cx-(int)(artWidth/2),top-(int)((BOTTOMMENUHEIGHT-size)/2)-3,
-			false,false,false,false,false,zoom,sprite[navImgs[i]],navImgs[i]);
-
-		if (isLocked) {
-			grayScale = savedIconGray;
-			SetColor(savedIconColor);
-
-			// 5번째 메뉴(던전) 잠금 아이콘 오버레이 (ICON_EVENT_LOCK)
-			const float lockZoom = Min(0.8f, (iconSize * 0.30f) / (float)ITEMICONSIZE);
-			const int lockW = (int)(ITEMICONSIZE * lockZoom);
-			const int lockX = cx + (int)(size/2) - lockW;
-			const int lockY = top - BOTTOMMENUHEIGHT + lockW + 5*_2X;
-			DrawIcon(ICON_EVENT_LOCK, lockX, lockY, lockZoom, false, false, false, true);
-		}
-		grayScale=savedIconGray;SetColor(savedIconColor);
-
-		SetRectPoint(left, top, right - left, top, actions[i]);
-		left = right;
-	}
+	MergeRouletteBottomNavDraw();
 }
 
 //성 안의 히어로와 동료를 그린다. 로비와 전투가 같이 쓴다.
@@ -17407,6 +17334,8 @@ void DrawPopUp(int idx)
 		&& p->type != POPUPTYPE_SHOPINFO
 		&& p->type != POPUPTYPE_EVENTSHOP
 		&& p->type != POPUPTYPE_COLLECTIONS
+		&& p->type != POPUPTYPE_CREWLIST
+		&& p->type != POPUPTYPE_CREWUPGRADE
 		//멸망전 입장창도 제 오른쪽 위에 닫기 버튼을 달고 있다.
 		&& p->type != POPUPTYPE_BOSSRAID)) {
 		float xMarkZoom = 1.0f;

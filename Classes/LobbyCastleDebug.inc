@@ -12,16 +12,32 @@ static void Close(){
  for(int c=0;c<10;++c)CastleParts::roomInteriorOpen[c]=interiors[c];
 }
 }
+//디버그로 고른 성은 로비에서만이 아니라 합성 전투에도 그대로 들고 간다.
+//MergeRouletteBegin 이 run.stage 를 이 성으로 잡고, 전투 중(MD_PLAY) 성 그림과
+//파츠 단계(CastleVisualPartLevel)도 여기 값을 본다. 세이브는 건드리지 않는다.
+bool MergeRouletteActive();
+static bool LobbyCastleDebugScreen(){return drawHandle==MD_LOBBY || MergeRouletteActive();}
+bool LobbyCastleDebugActive(){
+#ifdef GAMEDEBUG
+ return LobbyCastleDebugScreen() && LobbyCastleDebug::open;
+#else
+ return false;
+#endif
+}
 int LobbyCastleDebugLevel(int castle,int part){
 #ifdef GAMEDEBUG
- if(drawHandle==MD_LOBBY && LobbyCastleDebug::open && castle>=0&&castle<10&&part>=0&&part<5)
+ if(LobbyCastleDebugScreen() && LobbyCastleDebug::open && castle>=0&&castle<10&&part>=0&&part<5)
   return LobbyCastleDebug::levels[castle][part];
 #endif
  return -1;
 }
+int LobbyCastleDebugCastle(){return LobbyCastleDebugActive()?Max(0,Min(9,gMobileCastleVisual)):-1;}
+bool LobbyCastleDebugInterior(){
+ const int c=LobbyCastleDebugCastle();return c<0 || CastleParts::roomInteriorOpen[c];
+}
 int LobbyCastleDebugFacilityLevel(int castle,int room){
 #ifdef GAMEDEBUG
- if(drawHandle==MD_LOBBY && LobbyCastleDebug::open && castle>=0&&castle<10&&room>=0&&room<CastleFacilities::Counts[castle])
+ if(LobbyCastleDebugScreen() && LobbyCastleDebug::open && castle>=0&&castle<10&&room>=0&&room<CastleFacilities::Counts[castle])
   return LobbyCastleDebug::rooms[castle][room];
 #endif
  return -1;
@@ -29,8 +45,8 @@ int LobbyCastleDebugFacilityLevel(int castle,int room){
 bool LobbyCastleDebugHit(float x,float y){
 #ifdef GAMEDEBUG
  const int u=Max(1,(int)_2X);
- if(y<=DY-30*u && y>=DY-46*u && x>=190*u&&x<=256*u)return true;
- if(LobbyCastleDebug::open && !LobbyCastleDebug::compact && x>=DX-136*u && y<=DY-66*u && y>=DY-66*u-(248*u))return true;
+ if(y<=DY-30*u && y>=DY-54*u && x>=214*u&&x<=288*u)return true;
+ if(LobbyCastleDebug::open && !LobbyCastleDebug::compact && x>=DX-160*u && y<=DY-66*u && y>=DY-66*u-(366*u))return true;
 #endif
  return false;
 }
@@ -81,10 +97,11 @@ void LobbyCastleDebugDraw(){
  using namespace LobbyCastleDebug;
  if(drawHandle!=MD_LOBBY){if(open)Close();return;}
  LobbyArtilleryDebugDraw();
- const int u=Max(1,(int)_2X),h=16*u,gap=2*u;
- DrawUiButton(190*u,DY-30*u,66*u,h,open?(compact?"테스트 펼치기":"성 테스트 닫기"):"성 테스트",TOUCH_FUNC_LOBBY_CASTLE_DEBUG,open);
+ //손가락 크기 - 상단 디버그 줄(StageBgDebugDrawButton)과 같은 높이 24단위.
+ const int u=Max(1,(int)_2X),h=24*u,gap=3*u;
+ DrawUiButton(214*u,DY-30*u,74*u,h,open?(compact?"테스트 펼치기":"성 테스트 닫기"):"성 테스트",TOUCH_FUNC_LOBBY_CASTLE_DEBUG,open);
  if(!open||compact)return;
- const int c=Max(0,Min(9,gMobileCastleVisual)),w=126*u,x=DX-w-4*u;
+ const int c=Max(0,Min(9,gMobileCastleVisual)),w=150*u,x=DX-w-4*u;
  int y=DY-70*u;const int panelH=13*(h+gap)+14*u;
  SetAlpha(29);MemRect(x-3*u,y+4*u,w+6*u,panelH,0x102333);SetAlpha(32);
  MemRectFrame(x-3*u,y+4*u,w+6*u,panelH,0xB99343);

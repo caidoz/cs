@@ -4044,6 +4044,23 @@ const char* const textId[] = {
 	"merge_castle_original/wheel",
 	"dot",//MERGE_SOLID_RECTS_IMG: separate polygon sprite pool, shared white texture.
 	"merge_castle_rebuild/front-cover-01-v1",
+	"merge_castle_rebuild/front-cover-10-v1",
+	"merge_castle_rebuild/front-cover-02-v1",
+	"merge_castle_rebuild/front-cover-03-v1",
+	"merge_castle_rebuild/front-cover-04-v1",
+	"merge_castle_rebuild/front-cover-05-v1",
+	"merge_castle_rebuild/front-cover-06-v1",
+	"merge_castle_rebuild/front-cover-07-v1",
+	"merge_castle_rebuild/front-cover-08-v1",
+	"merge_castle_rebuild/front-cover-09-v1",
+	"shop_gems_v1/tier-01",
+	"shop_gems_v1/tier-02",
+	"shop_gems_v1/tier-03",
+	"shop_gems_v1/tier-04",
+	"shop_gems_v1/tier-05",
+	"shop_gems_v1/tier-06",
+	"turret_attack_v1/missile",
+	"turret_attack_v1/laser",
 
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN

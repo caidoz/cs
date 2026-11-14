@@ -60,13 +60,11 @@ void LobbyResourceBarsDraw(int y)
 	const int left = xOffset + gap;
 	const int usable = DX - 36 * _2X - gap * 5;
 	const int levelW = (int)(usable * 0.15f);
-	const int moneyW = (int)(usable * 0.28f);
-	const int energyW = usable - levelW - moneyW * 2;
+	const int moneyW = (usable - levelW) / 2;
 	const int goldX = left + levelW + gap;
 	const int coinX = goldX + moneyW + gap;
-	const int energyX = coinX + moneyW + gap;
 	const int h = LOBBY_BAR_H;
-	DrawMenuReferencePanel(left,y,energyX+energyW-left,h,1,0x10383D,0xF1C47E);
+	DrawMenuReferencePanel(left,y,coinX+moneyW-left,h,1,0x10383D,0xF1C47E);
 	const int iconSize = 17 * _2X;
 	const int iconTop = y - (h - iconSize) / 2;	//칸 안에서 세로 한가운데
 
@@ -113,35 +111,6 @@ void LobbyResourceBarsDraw(int y)
 		LobbyResourcePlus(x, y, moneyW, func);
 	}
 
-	//---- 에너지 ----
-	//
-	//골드 · 무지개와 같은 차림이다. "보유 / 소모" 두 줄로 적던 것을
-	//"지금 / 상한" 한 줄로 바꿨다. 쓸 양은 들어가는 자리에서 다시 묻고,
-	//여기서 알고 싶은 것은 "얼마나 남았나" 하나다.
-	LobbyResourceFrame(energyX, y, energyW, BARCOLOR_GREEN);
-	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, iconTop,
-		false, false, false, false, false, iconSize / 128.0f,
-		sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
-
-	{
-		const int plusRoom = 19 * _2X + 4 * _2X;
-		const int textX = energyX + iconSize + 5 * _2X;
-		const int textW = energyW - iconSize - 9 * _2X - plusRoom;
-		const long long now = robin.heart;
-		const long long full = Max(1, GetInitHeart());
-		char label[64];
-
-		sprintf(label, "%lld/%lld", now, full);
-
-		//가득 찬 뒤에는 더 안 차오른다. 그 사실이 색으로 먼저 읽히게 한다.
-		SetFontColor(now >= full ? COLOR_REALYELLOW : COLOR_WHITE);
-		CenterTextStrSolid(label, textX + textW / 2,
-			y - (int)((h - FONT_HEIGHT * 0.72f) / 2),
-			Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
-		SetFontColor(COLOR_WHITE);
-	}
-
-	LobbyResourcePlus(energyX, y, energyW, TOUCH_FUNC_HEARTAMOUNT);
 }
 
 void DrawBarIcon(int type, int x, int y, float zoom)

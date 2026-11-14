@@ -4,6 +4,16 @@
 #include <cstring>
 #include <iostream>
 int main() {
+ for(int tier=0;tier<6;++tier){
+  long long gems=ShopGold::Price(tier),gold=7;
+  assert(ShopGold::Buy(tier,gems,gold,1000000));
+  assert(gems==0&&gold==7+ShopGold::Amount(tier));
+  const auto before=gold;
+  assert(!ShopGold::Buy(tier,gems,gold,1000000)&&gold==before&&gems==0);
+  gems=ShopGold::Price(tier);gold=1000000-ShopGold::Amount(tier)+1;
+  assert(!ShopGold::Buy(tier,gems,gold,1000000)&&gems==ShopGold::Price(tier));
+ }
+ {long long gems=100,gold=0;assert(!ShopGold::Buy(-1,gems,gold,1000000));assert(!ShopGold::Buy(6,gems,gold,1000000));assert(gems==100&&gold==0);}
  const long long prices[]={100,500,30,100,300,1000};
  for(int tier=0;tier<6;++tier){
   assert(ShopTreasure::Price(tier)==prices[tier]);

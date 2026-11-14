@@ -1839,8 +1839,10 @@ void PlayKey(int obj)
 			battleStartFrame = BATTLESTARTFRAME;
 			touchDisable = true;
 
-			GetItem(ITEM_HEART, false, false, false, -admission, false);
-			AddBar(&bar[BAR_HEART], -admission, BARFRAME);
+			if(admission>0){
+				GetItem(ITEM_HEART, false, false, false, -admission, false);
+				AddBar(&bar[BAR_HEART], -admission, BARFRAME);
+			}
 
 			SaveGame();
 

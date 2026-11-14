@@ -1,0 +1,36 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "prompts": [
+    {
+      "tier": 1,
+      "asset": "Resources/res/shop_gems_v1/tier-01.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 1: a compact small handful of THREE cyan blue faceted diamonds in a little overlapping cluster. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    },
+    {
+      "tier": 2,
+      "asset": "Resources/res/shop_gems_v1/tier-02.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 2: a larger overlapping pile of EIGHT cyan blue faceted diamonds, visibly more abundant than a handful. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    },
+    {
+      "tier": 3,
+      "asset": "Resources/res/shop_gems_v1/tier-03.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 3: an open small dark teal velvet pouch overflowing with TWENTY cyan blue faceted diamonds and several loose diamonds around its base. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    },
+    {
+      "tier": 4,
+      "asset": "Resources/res/shop_gems_v1/tier-04.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 4: a sturdy small gold-banded wooden bucket heaped high with FIFTY cyan blue faceted diamonds, a few diamonds spilling at its base. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    },
+    {
+      "tier": 5,
+      "asset": "Resources/res/shop_gems_v1/tier-05.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 5: an open ornate gold-and-dark-teal treasure chest overflowing with a mound of ONE HUNDRED cyan blue faceted diamonds, loose diamonds piled around its base. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    },
+    {
+      "tier": 6,
+      "asset": "Resources/res/shop_gems_v1/tier-06.png",
+      "prompt": "Use case: stylized-concept. Asset type: standalone premium gem purchase icon for the pixel fantasy mobile game Castle Survivor. Tier 6: a magnificent large open gold-and-dark-teal royal treasure chest with a towering lavish mound of HUNDREDS of cyan blue faceted diamonds, heaps spilling around its base. The most abundant premium gem bundle. Match the game's gold-pile shop artwork: polished chunky pixel-art rendering, crisp stepped edges, rich saturated turquoise/cyan gems, deep blue facet shadows and bright ice-white highlights, warm thick gold metal on any container, readable at 100px. Three-quarter front view, centered compact silhouette, evenly lit from upper left. TRUE TRANSPARENT RGBA BACKGROUND, clean cutout with no rectangle, no floor, no ambient backdrop, no checkerboard, no text, no numbers, no UI card, no labels, no border, no watermarks, no red hearts, no rainbow coins. All content inside central 85 percent of a square canvas with comfortable padding. Entire object visible, not cropped."
+    }
+  ]
+}
