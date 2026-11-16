@@ -16,7 +16,7 @@ int main(){
             int cores=0,weapons=0;for(int i=0;i<l.count;++i){cores+=l.role[i]==MonsterParts::Core;weapons+=l.role[i]==MonsterParts::Attack;}
             assert(cores==1&&weapons==l.weaponCount&&weapons>=1&&weapons<=3);
             if(weaponCount)assert(weaponCount==weapons);weaponCount=weapons;
-            assert(MonsterParts::defensePct(l)<=20&&MonsterParts::attackBonusPct(l)<=40);
+            assert(MonsterParts::defensePct(l)<=12&&MonsterParts::attackBonusPct(l)<=18);
             for(long long base:{0LL,1LL,1007LL,1000000000000000LL}){
                 long long total=0;
                 for(int weapon=0;weapon<weapons;++weapon){
@@ -35,7 +35,7 @@ int main(){
     }
     for(int npc:{4,10,14,21}){
         Run r=fixture(npc);const auto hp=r.enemyHp,lives=r.lives,guard=r.guard,heal=r.monsterHealing();
-        assert(heal>0&&heal<=r.enemyMax*3/100&&r.counterHit()>0);
+        assert(heal>0&&heal<=r.enemyMax*150/10000&&r.counterHit()>0);
         assert(r.counterattack()&&r.enemyHp==hp+heal&&(r.lives<lives||r.guard<guard)&&r.monsterActionTurn==1);
         assert(!r.counterattack()&&r.enemyHp==hp+heal);
         Run resumed;assert(resumed.decode(r.encode())&&resumed.counterResolved);resumed.finish();assert(resumed.enemyHp==hp+heal);
@@ -43,6 +43,9 @@ int main(){
         r=fixture(npc);r.skipTurns=1;r.finish();assert(r.enemyHp==6000&&r.monsterActionTurn==0);
         r=fixture(npc);r.enemyHp=0;r.finish();assert(r.wave==1&&r.enemyHp==0&&r.monsterActionTurn==0);
         assert(resumed.decode(r.encode()));resumed.configureMonster(npc);assert(resumed.monsterActionTurn==0);
+        r=fixture(npc);r.monsterActionTurn=12;assert(r.monsterHealing()==0);
+        assert(resumed.decode(r.encode())&&resumed.monsterActionTurn==12&&resumed.monsterHealing()==0);
+        assert(resumed.counterattack()&&resumed.enemyHp==6000);
     }
     Run boar=fixture(12);const auto loadout=boar.monsterLoadout();assert(loadout.weaponCount==2);
     assert(MonsterParts::action(12,0).nativePattern==1&&MonsterParts::action(12,1).nativePattern==0);

@@ -1,4 +1,4 @@
-//
+﻿//
 //  Text.h
 //  100
 //
@@ -4016,16 +4016,16 @@ const char* const textId[] = {
 	"merge_castle_rebuild/parts-08",
 	"merge_castle_rebuild/parts-09",
 	"merge_castle_rebuild/parts-10",
-	"merge_castle_rebuild/rooms-01",
-	"merge_castle_rebuild/rooms-02",
-	"merge_castle_rebuild/rooms-03",
-	"merge_castle_rebuild/rooms-04",
-	"merge_castle_rebuild/rooms-05",
-	"merge_castle_rebuild/rooms-06",
-	"merge_castle_rebuild/rooms-07",
-	"merge_castle_rebuild/rooms-08",
-	"merge_castle_rebuild/rooms-09",
-	"merge_castle_rebuild/rooms-10",
+	"castle_four_rooms_v5/rooms-01",
+	"castle_four_rooms_v5/rooms-02",
+	"castle_four_rooms_v5/rooms-03",
+	"castle_four_rooms_v5/rooms-04",
+	"castle_four_rooms_v5/rooms-05",
+	"castle_four_rooms_v5/rooms-06",
+	"castle_four_rooms_v5/rooms-07",
+	"castle_four_rooms_v5/rooms-08",
+	"castle_four_rooms_v5/rooms-09",
+	"castle_four_rooms_v5/rooms-10",
 	"merge_castle_rebuild/ui-start",
 	"merge_castle_rebuild/ui-continue",
 	"merge_castle_rebuild/ui-manage",

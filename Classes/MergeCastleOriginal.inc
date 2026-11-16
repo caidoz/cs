@@ -4,9 +4,10 @@ namespace OriginalCastle {
 using Poly=std::vector<cocos2d::Vec2>;
 struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
-float zoom(){return DX/W*1.04f;}
-float left(){return (DX-W*zoom())*.5f;}
-float lift(){return 34*DX/640.f+castleSceneLift();}
+float previewScale=0,previewLeft=0,previewLift=0;
+float zoom(){return previewScale>0?previewScale:DX/W*1.04f;}
+float left(){return previewScale>0?previewLeft:(DX-W*zoom())*.5f;}
+float lift(){return previewScale>0?previewLift:34*DX/640.f+castleSceneLift();}
 // Late castles have narrower painted silhouettes inside the shared canvas.
 // Register visible widths (1000, 1010, 1020 native pixels), not PNG padding.
 int widthStage(){return siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));}
@@ -28,7 +29,7 @@ std::vector<Poly> outline(){return {
  {{63,430},{1030,430},{1030,947},{1044,970},{1044,1027},{1029,1027},{1029,1105},{1041,1120},{1041,1166},{1027,1178},{1027,1335},{65,1335},{65,1178},{54,1165},{54,1118},{65,1106},{65,1027},{52,1025},{52,972},{64,958}}
  ,{{245,83},{250,83},{257,96},{261,102},{269,106},{276,113},{279,122},{276,131},{269,137},{264,143},{262,151},{235,151},{232,143},{222,138},{217,131},{216,120},{220,112},{230,106},{235,99},{239,91}}
  };}
-std::vector<Poly> rooms(){return {rect(196,569,222,160),rect(441,569,215,160),rect(681,569,221,160),rect(196,795,319,180),rect(550,795,352,180)};}
+std::vector<Poly> rooms(){return {rect(196,795,319,180),rect(196,548,319,181),rect(550,795,352,180),rect(550,548,352,181)};}
 std::vector<Poly> patches(){return {rect(337,244,124,133),rect(485,238,100,134),rect(608,231,125,143)};}
 std::vector<Poly> oldCannon(){return {{{348,281},{406,255},{436,252},{449,259},{452,286},{437,298},{382,307},{354,300}},{{345,296},{401,296},{417,310},{414,341},{451,344},{453,370},{340,370},{340,350},{359,341},{368,323},{349,316}}};}
 Poly start(){return {{294,1090},{315,1063},{516,1063},{514,1047},{539,1057},{548,1037},{558,1057},{583,1047},{577,1063},{779,1063},{800,1085},{800,1165},{778,1187},{316,1187},{294,1165}};}
@@ -98,7 +99,10 @@ void draw(int kind,float drop=0,float angle=0,float overrideZoom=0,float originX
  if(getSpriteIdx==totalRenderCnt){renderSprite[getSpriteIdx]=cocos2d::Sprite::createWithTexture(sprite[img]->getTexture());renderSprite[getSpriteIdx]->retain();renderSpriteIndex[getSpriteIdx]=getSpriteTexture;
   if(sameRenderSpriteCur[img]<3000)sameRenderSpriteArr[img][sameRenderSpriteCur[img]]=totalRenderCnt;
   ++sameRenderSpriteMax[img];++sameRenderSpriteCur[img];++totalRenderCnt;}
- auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());sp->setPolygonInfo(meshes[kind].info);sp->setContentSize({W,H});
+ auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());sp->setPolygonInfo(meshes[kind].info);
+ // Polygon vertices already carry the geometry. Set the logical canvas only;
+ // Sprite's stretching setter warns and rebuilds polygon state every frame.
+ sp->Node::setContentSize({W,H});
  const float z=overrideZoom>0?overrideZoom:zoom();
  if(overrideZoom<=0&&kind!=5){originY+=lift();originX+=left();}
  sp->setAnchorPoint({0,0});sp->setPosition({originX,originY-drop});sp->setScale(z);sp->setRotation(0);sp->setFlippedX(false);sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity((int)(m_lgrpAlpha*255/32));

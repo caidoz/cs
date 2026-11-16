@@ -41,17 +41,26 @@ inline const char* roleName(Role role){
     static const char* names[]={u8"핵",u8"공격",u8"피해 보강",u8"방어 보강",u8"회복 보강"};
     return role>=Core&&role<RoleCount?names[role]:u8"부위";
 }
-inline int defensePct(const Loadout& l){return std::min(20,l.weight[Guard]*2);}
-inline int attackBonusPct(const Loadout& l){return std::min(40,l.weight[Support]);}
-inline int piercePct(const Loadout& l,const ActionDef& a){return a.kind==Rush?10+std::min(20,l.weight[Support]*2):0;}
+// Saturating passives keep nine-block opponents inside the existing wave budget.
+inline int defensePct(const Loadout& l){return std::min(12,l.weight[Guard]);}
+inline int attackBonusPct(const Loadout& l){return std::min(18,l.weight[Support]);}
+inline int piercePct(const Loadout& l,const ActionDef& a){return a.kind==Rush?5+std::min(10,l.weight[Support]/2):0;}
+inline int turnPowerPct(const Loadout& l){
+    if(l.species<0)return 100;
+    int power=0;for(int i=0;i<l.weaponCount;++i)power+=Species[l.species].actions[i].powerPct;
+    // Native motion power determines each weapon's share; only a small premium
+    // enters the total budget. Tank/regeneration identities trade away offense.
+    return 100+std::min(10,std::max(0,power/l.weaponCount-100)/5)
+        +attackBonusPct(l)-defensePct(l)/2-(l.weight[Recovery]>0?6:0);
+}
 inline long long incomingDamage(long long damage,const Loadout& l){return damage<=0?0:std::max(1LL,damage*(100-defensePct(l))/100);}
 inline long long weaponDamage(long long base,const Loadout& l,int weapon){
     if(l.species<0||weapon<0||weapon>=l.weaponCount)return 0;
     const auto& s=Species[l.species];
-    // The existing per-turn budget is divided across weapons before action and
-    // passive modifiers. More weapons do not multiply the whole turn's budget.
-    const long long share=std::max(0LL,base)/l.weaponCount+(weapon==0?std::max(0LL,base)%l.weaponCount:0);
-    return share*s.actions[weapon].powerPct/100*(100+attackBonusPct(l))/100;
+    int power=0;for(int i=0;i<l.weaponCount;++i)power+=s.actions[i].powerPct;
+    const long long budget=std::max(0LL,base)*turnPowerPct(l)/100;
+    long long rounded=0;for(int i=0;i<l.weaponCount;++i)rounded+=budget*s.actions[i].powerPct/power;
+    return budget*s.actions[weapon].powerPct/power+(weapon==0?budget-rounded:0);
 }
 inline long long attackDamage(long long base,const Loadout& l){
     long long total=0;for(int i=0;i<l.weaponCount;++i)total+=weaponDamage(base,l,i);return total;
@@ -65,14 +74,13 @@ inline long long absorbed(long long base,const Loadout& l,long long guard){
     }
     return total;
 }
-inline long long healing(long long hp,long long maximum,const Loadout& l){
+inline long long healing(long long hp,long long maximum,const Loadout& l,int completedTurns=0){
     if(l.weight[Recovery]<=0||hp<=0||hp>=maximum)return 0;
-    const int pct=1+std::min(2,l.weight[Recovery]/4); // passive regeneration, capped at 3% per turn
-    return std::min(maximum-hp,std::max(1LL,maximum*pct/100));
-}
-inline long long share(long long total,const Loadout& l,int slot){
-    if(slot<0||slot>=l.count||l.role[slot]!=Attack||l.weaponCount<=0)return 0;
-    for(int i=0;i<l.weaponCount;++i)if(l.weapon[i]==slot)return total/l.weaponCount+(i==0?total%l.weaponCount:0);
-    return 0;
+    // 0.55..1.50%, full for seven bundles, exhausted after twelve. This caps
+    // lifetime regeneration and prevents an endless fight against weak builds.
+    const int remaining=std::max(0,std::min(6,12-completedTurns));
+    if(!remaining)return 0;
+    const int basisPoints=(50+std::min(100,l.weight[Recovery]*5))*remaining/6;
+    return std::min(maximum-hp,std::max(1LL,maximum*basisPoints/10000));
 }
 }

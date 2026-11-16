@@ -31,6 +31,7 @@ void BattleMobileCastleUpdate(float delta);
 void StageBgUpdate(float delta);
 void StageBgDebugDrawButton(void);
 void StageBgDebugNextRegion(void);
+void StageBgDebugNextBackdrop(void);
 void StageRtToggleAuto(void);
 void StageRtSetAuto(bool on);
 bool StageRtAutoOn(void);
@@ -119,6 +120,7 @@ bool IsBossRaidWaitingForControl(void);
 bool IsBossRaidCrewActing(int crewSlot);
 
 void DebugControlsToggle(void);
+bool DebugControlsOpen(void);
 void SceneBackgroundReviewAt(int sample);
 bool AllRegionBackgroundReviewAt(int sample);
 void SetStageFarScroll(float span,float phase);

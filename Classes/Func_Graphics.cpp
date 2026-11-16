@@ -96,9 +96,27 @@ void StageBgDebugNextRegion(void)
 {
 	StageBg::DebugNextRegion();
 }
+void StageBgDebugNextBackdrop(void){
+ StageBg::s_regionPick=(StageBg::CurRegion()+1)%STAGEBG_REGION_CNT;
+ StageBg::s_region=StageBg::s_regionPick;
+}
 
 static bool sDebugControlsOpen=false;
-void DebugControlsToggle(void){sDebugControlsOpen=!sDebugControlsOpen;}
+void DebugControlsToggle(void){
+ sDebugControlsOpen=!sDebugControlsOpen;
+ if(!sDebugControlsOpen)LobbyCastleDebugEnd();
+ else if(drawHandle==MD_LOBBY){
+  if(!LobbyCastleDebugActive())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);
+  LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_HIDE);
+ }
+}
+bool DebugControlsOpen(void){
+#ifdef GAMEDEBUG
+ return sDebugControlsOpen;
+#else
+ return false;
+#endif
+}
 void SceneBackgroundReviewAt(int sample){
  if(!getenv("CS_CASTLE_REVIEW_PATH"))return;
  StageBg::s_regionPick=0;
@@ -125,6 +143,7 @@ void StageBgDebugDrawButton(void)
  DrawUiButton(56*_2X,y,44*_2X,h,"PVP",TOUCH_FUNC_PVP_TEST);
  DrawUiButton(104*_2X,y,54*_2X,h,"최대 강화",TOUCH_FUNC_DEBUG_MAXSTATUS);
  DrawUiButton(162*_2X,y,48*_2X,h,"적 공격",TOUCH_FUNC_DEBUG_ENEMYATTACK);
+ if(drawHandle==MD_LOBBY)return; // Backgrounds are selected by tapping the backdrop.
 	char str[32];
 
 	//왼쪽 위. 오른쪽 같은 높이에는 제목 화면의 이어하기 카드가 있어서,

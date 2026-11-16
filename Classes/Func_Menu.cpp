@@ -3,6 +3,8 @@
 #include "Func.h"
 #include "Text.h"
 #include "Config/ShopConfig.h"
+#include "Data/MergeTreeData.h"
+#include "BoardModel.h"
 
 static bool PixelEquipmentUi()
 {
@@ -1516,238 +1518,7 @@ void BossRaidDetailDraw(void)
 	CdDrawTitleStr("멸망전", TOUCH_FUNC_POPUP_CLOSE);
 }
 
-void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH)
-{
-	int i;
-
-	int crewDetail = it->detail;
-	int crewType = crewData[crewDetail * CREWDATASIZE + CREWDATA_TYPE];
-	int crewCmf = enemyData[crewType * ENEMYDATASIZE + ENEMYDATA_CMF];
-	int crewLv = it->lv;
-
-	//----------------------------------------------------------------------
-	// 판을 놓을 자리 정하기
-	//
-	// 팝업이므로 메뉴 창이 아니라 화면 전체를 기준으로 가운데에 놓는다.
-	// 가로/세로 중 더 빡빡한 쪽에 맞춰 통째로 줄인다. 배율이 하나라 그림이
-	// 안 찌그러진다.
-	//----------------------------------------------------------------------
-	CdBeginBoard();
-
-	//팝업 본체 + 타이틀 + 닫기. 장비 상세와 같은 틀을 쓴다.
-	CdDrawFrame(TEXT_CREW_DETAIL_TITLE);
-
-	//----------------------------------------------------------------------
-	// 카드 + 장착
-	//----------------------------------------------------------------------
-	//카드 원본은 242x340이다. 정한 높이에 맞춰 배율을 잡는다.
-	float cardZoom = (float)CD_CARD_H / 340.0f;
-	float cardW = 242.0f * cardZoom;
-
-	DrawItemCard(
-		ITEM_CREW,
-		crewDetail,
-		it->grade,
-		crewLv,
-		it->count,
-		false,
-		Loc((float)CD_CARD_X),
-		LocY((float)CD_CARD_Y),
-		false,
-		cardZoom * sCdU,
-		true,
-		false,
-		false,
-		false,
-		0);
-
-	//장착 버튼.
-	//누르면 편성표에서 고른 자리(menuX)에 이 동료가 들어간다.
-	// - 레벨 0은 아직 안 뽑은 동료라 넣을 수 없다.
-	// - 이미 편성돼 있으면 "편성중"으로 잠근다.
-	sCrewEquipBtnW = sCrewEquipBtnH = 0;
-
-	//----------------------------------------------------------------------
-	// 슬롯 등장 효능
-	//
-	// 몇 명이 떴을 때 무엇이 나오는지만 보여준다. 무슨 효과인지는 아래
-	// 스킬 칸에서 글로 읽는다.
-	//----------------------------------------------------------------------
-	DrawPanel((float)CD_SLOT_X, (float)CD_SLOT_Y, (float)CD_SLOT_W, (float)CD_SLOT_H);
-	//구획 제목은 셋 다 장비 상세의 "강화하기" 리본과 같은 크기로 맞춘다.
-	DrawCdRibbon(TEXT_CREW_SLOTEFFECT,
-		(float)CD_SLOT_X + (float)CD_SLOT_W / 2, (float)CD_SLOT_Y - 38.0f,
-		(float)CD_SLOT_W * 0.86f, 76.0f, 1.95f, -8.0f);
-
-	{
-		float rowTop = (float)CD_SLOT_Y + 62.0f - CD_SLOT_ROW_UP;
-		float rowH = ((float)CD_SLOT_H - 74.0f) / 3.0f + CD_SLOT_ROW_GAP;
-		float reelW = (float)CD_SLOT_W * 0.54f;	//룰렛. 이 칸의 주인공이라 크게
-		float iconBox = (float)CD_ICON;
-
-		float reelL = (float)CD_SLOT_X + 18.0f;
-		float iconL = (float)CD_SLOT_X + (float)CD_SLOT_W - iconBox - 18.0f;
-		float arrowW = iconBox * 0.40f * CD_SLOT_ARROW_ZOOM;
-		float arrowL = (reelL + reelW + iconL - arrowW) / 2 - CD_SLOT_ARROW_LEFT;
-
-		for (i = 0; i < 3; i++) {
-			int skillIdx = crewData[crewDetail * CREWDATASIZE + CREWDATA_SKILL1 + i];
-			float ry = rowTop + rowH * i;
-
-			//i+1명이 뜬 룰렛. 전투에서 보는 것과 같은 판을 그대로 쓴다.
-			DrawCrewSlotReel(crewCmf, crewType, i + 1,
-				reelL, ry + rowH * 0.10f, reelW);
-
-			//화살표. 룰렛과 아이콘 사이가 좁아서 아주 조금만 오간다.
-			//장비 상세의 화살표와 같은 삼각파를 쓰되 폭만 줄였다.
-			float sway = (float)(Abs(16 - (frame / 2) % 32) - 8) * 0.6f;
-
-			DrawWinFlat(WP_ARROW_X, WP_ARROW_Y, WP_ARROW_W, WP_ARROW_H,
-				Loc(arrowL + sway),
-				LocY(ry + (rowH - arrowW * (float)WP_ARROW_H / (float)WP_ARROW_W) / 2
-					+ CD_SLOT_ARROW_DOWN),
-				arrowW / (float)WP_ARROW_W * sCdU);
-
-			//무엇이 나오는지
-			DrawCrewSkillIconFramed(skillIdx, iconL - CD_SLOT_ICON_LEFT,
-				ry + (rowH - iconBox) / 2 + CD_SLOT_ICON_DOWN, iconBox);
-		}
-
-		//---- 보스전 쿨타임 ----
-		//
-		//보스전은 턴이 없어 동료마다 제 시계로 돈다. 그 시계가 이 동료의
-		//특성이라 여기 같이 보여준다.
-		//
-		//값은 crew.tsv 의 boss_cool 열에서 온다. 프레임이라 초로 바꿔 적는다.
-		//세 줄이 끝나는 자리(rowTop + rowH * 3) 아래 남은 여백에 놓는다.
-		{
-			const int cool = crewData[crewDetail * CREWDATASIZE
-				+ CREWDATA_BOSSCOOL];
-			const float coolY = rowTop + rowH * 3.0f + 4.0f;
-			char coolText[32];
-
-			CdBody("보스전 쿨타임", reelL, coolY, 1.30f, LEFT, CD_INK);
-
-			sprintf(coolText, "%.1f초", (float)cool / (float)FPS);
-			CdBody(coolText, (float)CD_SLOT_X + (float)CD_SLOT_W - 18.0f,
-				coolY, 1.30f, RIGHT, CD_INK);
-		}
-	}
-
-	//----------------------------------------------------------------------
-	// 스킬 + 강화하기
-	//
-	// 스킬마다 [지금 효능] -> [올린 뒤 효능] 을 나란히 놓는다. 무엇이
-	// 좋아지는지 보려고 두 칸을 오갈 필요가 없다.
-	//
-	// 스킬 "이름"은 뺐다. 이름은 아이콘만 봐도 아는 것이었고, 그 자리를
-	// 효능 설명이 가져가야 소환수 이름 같은 긴 글도 들어간다.
-	//----------------------------------------------------------------------
-	DrawPanel((float)CD_SKILL_X, (float)CD_SKILL_Y, (float)CD_SKILL_W, (float)CD_SKILL_H);
-	DrawCdRibbon(TEXT_SKILL, (float)CD_SKILL_X + 150.0f,
-		(float)CD_SKILL_Y - 38.0f, 280.0f, 76.0f, 1.95f, -8.0f);
-
-	{
-		bool canUp = CanCrewLevelUp(it);
-		bool maxLv = (crewLv >= GetCrewMaxLevel());
-
-		//Lv1/Lv2 머리글과 세 줄을 리본 바로 밑까지 끌어올린다. 판을 가로로
-		//가득 채우려면 세로가 납작해져야 하는데, 가장 많이 남는 여백이
-		//여기였다.
-		float hdrY = (float)CD_SKILL_Y + 34.0f;
-		float rowTop = (float)CD_SKILL_Y + 76.0f;
-		float rowsH = (float)CD_COST_Y - 20.0f - rowTop;
-		float rowH = rowsH / 3.0f;
-
-		float iconBox = (float)CD_ICON;
-		float iconL = (float)CD_SKILL_X + 20.0f;
-
-		float curL = iconL + iconBox + 24.0f;
-		float arrowX = (float)CD_SKILL_X + (float)CD_SKILL_W * 0.55f;
-		float nextL = arrowX + 70.0f;
-		float nextW = (float)CD_SKILL_X + (float)CD_SKILL_W - nextL - 20.0f;
-
-		//왼쪽 글 폭을 오른쪽과 같게 둔다.
-		//
-		//전에는 왼쪽만 300 이라 같은 이름이 왼쪽에서는 접히고 오른쪽에서는
-		//안 접혔다. 그러면 같은 줄인데 글자가 서로 다른 높이에서 시작해
-		//두 칸을 나란히 읽을 수가 없다.
-		float curW = nextW;
-
-		//머리글. 어느 쪽이 지금이고 어느 쪽이 올린 뒤인지 한 번만 적는다.
-		memset(&tempStr, 0, sizeof(tempStr));
-		sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), crewLv);
-		CdBody(tempStr, curL + curW / 2, hdrY, 1.7f, CENTER, CD_INK);
-
-		if (maxLv == false) {
-			memset(&tempStr, 0, sizeof(tempStr));
-			sprintf(tempStr, "%s %d", TEXTPTR(TEXT_ALPHA_LV), crewLv + 1);
-			CdBody(tempStr, nextL + nextW / 2, hdrY, 1.7f, CENTER, CD_INK);
-		}
-		else {
-			CdBodyId(TEXT_CREW_MAXLEVEL, nextL + nextW / 2, hdrY,
-				1.5f, CENTER, COLOR_GREY);
-		}
-
-		for (i = 0; i < 3; i++) {
-			int skillIdx = crewData[crewDetail * CREWDATASIZE + CREWDATA_SKILL1 + i];
-			float ry = rowTop + rowH * i;
-
-			char nameBuf[128];
-			char valBuf[128];
-
-			DrawCrewSkillIconFramed(skillIdx, iconL,
-				ry + (rowH - iconBox) / 2 - CD_SKILL_ICON_UP, iconBox);
-
-			//이름은 위에 한 줄, 수치는 그 밑에 한 줄이다.
-			//지금 효능은 베이지 판 위라 짙은 글씨로 쓴다.
-			SetCrewSkillDesc(skillIdx, crewDetail, crewLv);
-			SplitCrewSkillDesc(skillIdx, i, nameBuf, valBuf);
-
-			CdOneLine(nameBuf, curL, ry + rowH * 0.14f, curW, 1.9f, CD_INK);
-
-			SetFontColor(CD_INK);
-			LineTextStrSolid(valBuf,
-				Loc(curL), LocY(ry + rowH * 0.52f),
-				curW * sCdU, 0, 1, 1.9f * sCdU);
-
-			//올린 뒤 효능. 오르는 쪽이라 짙은 초록이다.
-			if (maxLv == false) {
-				SetCrewSkillDesc(skillIdx, crewDetail, crewLv + 1);
-				SplitCrewSkillDesc(skillIdx, i, nameBuf, valBuf);
-
-				CdOneLine(nameBuf, nextL, ry + rowH * 0.14f, nextW, 1.9f, CD_UP);
-
-				SetFontColor(CD_UP);
-				LineTextStrSolid(valBuf,
-					Loc(nextL), LocY(ry + rowH * 0.52f),
-					nextW * sCdU, 0, 1, 1.9f * sCdU);
-			}
-
-			SetFontColor(COLOR_WHITE);
-		}
-
-		//화살표. 세 줄 한가운데에 하나만 둔다.
-		if (maxLv == false) {
-			float aw = (float)WP_ARROW_W * 0.55f;
-			float ah = (float)WP_ARROW_H * 0.55f;
-			float sway = (float)(Abs(16 - (frame / 2) % 32) - 8) * 1.4f;
-
-			DrawWinFlat(WP_ARROW_X, WP_ARROW_Y, WP_ARROW_W, WP_ARROW_H,
-				Loc(arrowX - aw / 2 + sway), LocY(rowTop + (rowsH - ah) / 2),
-				0.55f * sCdU);
-		}
-
-		//---- 드는 값과 버튼 ----
-		if (maxLv == false)
-			DrawCdCost(GetCrewUpgradeCost(it, 0), (long long)it->count,
-				GetCrewUpgradeCost(it, 1), canUp, TOUCH_FUNC_CREW_LEVELUP);
-		else
-			CdBodyId(TEXT_CREW_MAXLEVEL, (float)CD_DESIGNW / 2,
-				CdMidY((float)CD_COST_Y, (float)CD_COST_H, 1.8f),
-				1.8f, CENTER, COLOR_GREY);
-	}
-}
+#include "CrewDetailTurn.inc"
 
 //==========================================================================
 // 장비 상세보기 (팝업)
@@ -5952,6 +5723,9 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 		int cardX = x + (float)(INVENTORY_X + INVENTORY_GAP_X * col) * zoom;
 		int cardY = y - (float)(72 + (CREW_GAP_Y) * row - scY[MENU_CREW]) * zoom;
+		// Keep the complete list for scrolling, but do not build offscreen cards.
+		const float cardHeight=400*CARDDEFAULTZOOM*zoom;
+		if(cardY+32*zoom<clipY2||cardY-cardHeight>clipY+32*zoom)continue;
 
 		itemType = robin.inven[itemInvenIdxList[i]].type;
 		itemDetail = robin.inven[itemInvenIdxList[i]].detail;
@@ -6074,7 +5848,10 @@ void CrewMenuDraw(int x, int y, float zoom)
 		//잘려 나간 것처럼 보인다.
 		break;
 	}
-	BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
+	//옛 금화 바. 로비 페이지에서는 새 자원 띠(LobbyResourceBarsDraw)가 위에 깔리는데, 이 바가
+	//그 밑으로 12픽셀 삐져나와 노란 혀처럼 보였다. 로비에서는 그리지 않는다.
+	if (drawHandle != MD_LOBBY)
+		BarDraw(&bar[BAR_GOLD], bar[BAR_GOLD].zoom);
 
 }
 
@@ -7955,14 +7732,16 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 			DrawItemCardBack(1, (int)Loc(ROW_CX - cardW / 2),
 				(int)LocY(ROW_CY - cardH / 2), cardZ * sCdU, 1);
 		}
-		sprintf(tempStr, "카드 %d~%d장", box.minCard, box.maxCard);
+		CdBody("하트 확정 · 골드 확률 · 나머지 동료/장비",545,600,1.4f,CENTER,CD_INK);
+		sprintf(tempStr, "총 보상 %d~%d개", box.minCard, box.maxCard);
 		CdText(tempStr, ROW_TX, ROW_CY + ROW_TDY, ROW_TZ, LEFT, COLOR_WHITE);
 
 		//하트
 		DrawIcon(ICON_HEART, Loc(ROW_CX - ICON_H / 2),
 			LocY(ROW_CY + ROW_GAP - ICON_H / 2), ICON_Z * sCdU,
 			false, false, true, 1);
-		sprintf(tempStr, "%d~%d", box.heartMin, box.heartMax);
+		if(box.heartMin==box.heartMax)sprintf(tempStr,"하트 %d개 확정",box.heartMin);
+		else sprintf(tempStr, "하트 %d~%d개 확정", box.heartMin, box.heartMax);
 		CdText(tempStr, ROW_TX, ROW_CY + ROW_GAP + ROW_TDY, ROW_TZ, LEFT,
 			COLOR_WHITE);
 
@@ -8183,7 +7962,12 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 
 	if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
 		int variant = product - IAP_COIN_01;
-		DrawShopGemBundle(variant,(int)artX,(int)artY,(int)artSize);
+		// Gem bundles fill the space between the quantity and purchase button.
+		// The shared art size reserves an extra text row which these cards lack.
+		const float gemSpace = h - 82.0f * zoom;
+		const float gemSize = Min(w - 24.0f * zoom, gemSpace);
+		DrawShopGemBundle(variant,(int)(x+(w-gemSize)/2),
+			(int)(artY-(gemSpace-gemSize)/2),(int)gemSize);
 	}
 	else if (product >= IAP_HEART_01 && product <= IAP_HEART_06) {
 		int variant = product - IAP_HEART_01;
@@ -8233,30 +8017,47 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 //(GetBoxPrice). 사는 길도 다르다 - AVK_SHOP_BUYBOX 로 간다.
 static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 {
+ if(x+w<clipX-8||x>clipX2+8||y<clipY2-8||y-h>clipY+8)return;
  const int detail=BOX_PAID0+i;const long long price=GetBoxPrice(detail,GRADE_NORMAL);
  const bool can=price>=0&&(ShopTreasure::UsesGems(i)?robin.coin:robin.gold)>=price;
  DrawMenuReferencePanel((int)x,(int)y,(int)w,(int)h,0,0x19474A,0xEAC58A);
  SetFontColor(0xFFF0CD);CenterText(TEXT_ITEMNAME_BOX+detail,x+w/2,y-12,1.05f);
  const int chest=BOX0_IMG+detail-BOX_CASTLE0;if(!sprite[chest])LoadImg(chest);
- const float art=Min(w*.44f,h-82.f),z=art/512.f;
+ const float art=Min(w*.30f,96.f),z=art/512.f;
  const int saved=baseColor;SetColor(0);
  DrawImageScale(510,512,0,0,x+8,y-36,false,0,0,0,0,z,z,sprite[chest],chest);SetColor(saved);
- // Reward categories, rather than one specific weapon or companion.
- const int px=(int)(x+art+12),colW=Max(36,(int)((w-art-20)/2)),cell=Min(34,colW-10),py=(int)(y-54);
- const char* rewardNames[]={"골드","하트","랜덤 장비","랜덤 동료"};
- for(int n=0;n<4;++n){
-  const int cx=px+(n%2)*colW+colW/2,ty=py-(n/2)*50,tx=cx-cell/2;
-  DrawMenuReferencePanel(tx,ty,cell,cell,0,n==3?0x382E52:0x12383D,0x86ADAD);
-  if(n<2)DrawIcon(n==0?GetItemIcon(ITEM_GOLD,0,0):ICON_HEART,tx+4,ty-4,(cell-8)/(float)ITEMICONSIZE,false,false,false,true);
-  else {SetFontColor(0xFFF0CD);CenterTextStrSolid("?",cx,ty-4,.9f);}
-  SetFontColor(0xFFF0CD);CenterTextStrSolid(rewardNames[n],cx,ty-cell-2,Min(.48f,(colW-2)/Max(1.f,StringWidth(rewardNames[n],1.f))));
+ const REWARD_BOX_DATA& box=rewardBoxData[GetRewardBoxIndex(detail)];
+ const float tx=x+art+18,tw=w-art-30;
+ const auto info=[&](const char* text,float top,int color,float size=.64f){
+  SetFontColor(color);DrawTextStrSystem(text,tx,top,Min(size,tw/Max(1.f,StringWidth(text,1.f))),LEFT,true);
+ };
+ char text[160];
+ sprintf(text,"총 보상 %d~%d개",box.minCard,box.maxCard);info(text,y-43,0xFFF0CD,.78f);
+ info("하트·골드 포함 수량",y-69,0x9FC6C6,.56f);
+ info("나머지는 매번 랜덤",y-99,0xFFF0CD);
+ int crewMin=0,crewMax=0,equipMin=0,equipMax=0;
+ for(int g=0;g<BOX_GRADE_COUNT;++g){
+  if(box.crewGradeRate[g]>0){if(!crewMin)crewMin=g+1;crewMax=g+1;}
+  if(box.equipGradeRate[g]>0){if(!equipMin)equipMin=g+1;equipMax=g+1;}
  }
+ const int rate=Max(1,box.crewRate+box.equipRate);
+ sprintf(text,"동료 ★%d~%d · %.0f%%",crewMin,crewMax,box.crewRate*100.f/rate);info(text,y-125,0x8FE0BA);
+ sprintf(text,"장비 ★%d~%d · %.0f%%",equipMin,equipMax,box.equipRate*100.f/rate);info(text,y-151,0x8FE0BA);
+ // Paid-box caps are also applied by ShopSpec::BuyBox before granting.
+ const int heartMin=ShopTreasure::HeartReward(i,box.heartMin),heartMax=ShopTreasure::HeartReward(i,box.heartMax);
+ const int goldMin=ShopTreasure::GoldReward(i,box.goldMin),goldMax=ShopTreasure::GoldReward(i,box.goldMax);
+ const auto full=[&](const char* value,float top,int color){SetFontColor(color);DrawTextStrSystem(value,x+14,top,Min(.64f,(w-28)/Max(1.f,StringWidth(value,1.f))),LEFT,true);};
+ if(heartMin==heartMax)sprintf(text,"확정 · 하트 %d",heartMin);else sprintf(text,"확정 · 하트 %d~%d",heartMin,heartMax);
+ full(text,y-183,0xFFF0CD);
+ if(goldMin==goldMax)sprintf(text,"%d%% 확률 · 골드 %d",box.goldRate,goldMin);else sprintf(text,"%d%% 확률 · 골드 %d~%d",box.goldRate,goldMin,goldMax);
+ full(text,y-209,0xFFF0CD);
+ sprintf(text,"럭키 %d%% · 보상 +1개 / 1개 승급",box.luckyRate);full(text,y-235,0x9FC6C6);
  const int bh=42,by=(int)(y-h+bh+10),priceW=(int)(w*.55f)-14,buyX=(int)(x+w*.55f),buyW=(int)(w*.45f)-12;
  DrawMenuReferencePanel((int)x+12,by,priceW,bh,0,0x0D3037,0xDDB77D);
  DrawTreasurePrice(detail,(int)x+12+priceW/2,by-7,priceW-8);
- DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x208C46:0x555555,can?0xEAC58A:0xA9A9A9);
- SetFontColor(can?COLOR_WHITE:0xD0D0D0);CenterTextStrSolid("구매",buyX+buyW/2,by-10,.95f);
- if(can)SetRectPoint(buyX,by,buyW,bh,TOUCH_FUNC_SHOP_BUYBOX1+i);
+ DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x208C46:0x164A5B,can?0xEAC58A:0x86ADAD);
+ SetFontColor(COLOR_WHITE);CenterTextStrSolid(can?"구성·구매":"구성 보기",buyX+buyW/2,by-10,.78f);
+ SetRectPoint(buyX,by,buyW,bh,TOUCH_FUNC_SHOP_BUYBOX1+i);
 }
 
 //이전 탭 방식. 필요하면 비교할 수 있도록 소스만 남겨 둔다.

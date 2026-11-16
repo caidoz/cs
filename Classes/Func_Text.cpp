@@ -7,6 +7,7 @@
 namespace {
 std::unordered_map<std::string,int> firstFontLabel;
 int indexedFontLabels=0;
+std::vector<std::vector<int>> lastGlyphColors;
 }
 
 // Text Handling
@@ -122,7 +123,7 @@ float SubstringWidth(const char* str, int offset, int length, float zoom)
 void ResetLabel()
 {
 	int i;
-    firstFontLabel.clear();indexedFontLabels=0;
+    firstFontLabel.clear();indexedFontLabels=0;lastGlyphColors.clear();
 
 	for (i = 0; i < curFontLabelCnt; i++) {
 		curScene->removeChild(fontLabel[i]);
@@ -302,7 +303,8 @@ void LoadFontLabelFromText(const char* str)
 		curFontLabelCnt++;
 	}
 
-	fontLabel[getFontLabelIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
+	const int opacity=(int)(m_lgrpAlpha * EMPTY / 32);
+	if(fontLabel[getFontLabelIdx]->getOpacity()!=opacity)fontLabel[getFontLabelIdx]->setOpacity(opacity);
 	fontLabel[getFontLabelIdx]->setRotation(0);
 }
 
@@ -357,7 +359,9 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 		src->setAnchorPoint(Vec2(1.0f, 1.0f));
 		break;
 	}
-	src->setColor(Color3B((fontColor >> 16) & 0xFF, (fontColor >> 8) & 0xFF, fontColor & 0xFF));
+	const Color3B textColor((fontColor >> 16) & 0xFF, (fontColor >> 8) & 0xFF, fontColor & 0xFF);
+	const bool parentColorChanged=src->getColor()!=textColor;
+	if(parentColorChanged)src->setColor(textColor);
 	src->setScale(zoom * 1.0f, zoom * 1.0f);
 	//src->setScale(zoom * 1.0f, zoom * 1.0f);
 	src->setPosition(Vec2(x, y));
@@ -368,6 +372,7 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	//	src->setGLProgram(GLProgramCache::getInstance()->getGLProgram("grayscale"));
 
 
+	const int outlineBefore=src->getTTFConfig().outlineSize;
 	if (bold)
 		src->enableOutline(Color4B::BLACK, 1.8f);
 	else
@@ -375,7 +380,14 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 
 	//bmFontColor[]는 바이트 첨자, getLetter()는 글자 첨자다.
 	//글자 단위로 전진하면서 둘을 맞춘다.
-	for (i = 0; i < length; i += len) {
+	// Pooled labels retain their glyph colors. Do not traverse and dirty every
+	// letter of unchanged captions on every frame; inline color changes still
+	// compare the exact per-byte color sequence and run the original update.
+	if(lastGlyphColors.size()<=(size_t)getFontLabelIdx)lastGlyphColors.resize(getFontLabelIdx+1);
+	auto& previousColors=lastGlyphColors[getFontLabelIdx];
+	const bool colorsChanged=parentColorChanged||outlineBefore!=src->getTTFConfig().outlineSize||previousColors.size()!=(size_t)length
+		||!std::equal(previousColors.begin(),previousColors.end(),bmFontColor);
+	for (i = 0; colorsChanged && i < length; i += len) {
 		cocos2d::Sprite* letter;
 
 		len = CharByteLen(labelStr + i);
@@ -393,6 +405,7 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 
 		offset++;
 	}
+	if(colorsChanged)previousColors.assign(bmFontColor,bmFontColor+length);
 
 	//AfterSpriting() �� ���� �Ծ�: ���� Ÿ���� ���� ������ �� Ÿ�ٿ� �ٷ� ����ϰ�,
 	//������ ���� ���̴� ���Ž� ��θ� ����.

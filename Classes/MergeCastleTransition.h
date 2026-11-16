@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <algorithm>
 #include <cmath>
 // Each fixed-size tile travels independently from the reel center.
@@ -18,8 +18,8 @@ inline float TileProgress(float t,int index,int count){return std::max(0.f,std::
 inline float TileLand(int index,int count){return TileLaunch(index,count)+TileTravel;}
 struct Crop {int x,y,w,h;};
 inline Crop RoomFrame(int room,int level,int width,int height) {
- room=std::max(0,std::min(4,room));level=std::max(0,std::min(5,level));
- const int x=width*room/5,y=height*level/6;
- return {x,y,width*(room+1)/5-x,height*(level+1)/6-y};
+ room=std::max(0,std::min(3,room));level=std::max(0,std::min(5,level));
+ const int x=width*room/4,y=height*level/6;
+ return {x,y,width*(room+1)/4-x,height*(level+1)/6-y};
 }
 }

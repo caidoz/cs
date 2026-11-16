@@ -1,45 +1,38 @@
-// Keep the castle's authored interior material behind subdued facility furnishings.
-// Apply at the shared atlas renderer so lobby and upgrade previews agree.
+﻿// Four-room art already contains its own walls and a free foreground lane.
+// A fixed shader keeps native previews and the live interior at the same tone.
 static void ApplyCastleFacilityTone(cocos2d::Sprite* target,int image){
  if(image<MERGE_REBUILD_ROOMS_IMG||image>=MERGE_REBUILD_ROOMS_IMG+10)return;
- const auto rect=target->getTextureRect();
- auto* atlas=target->getTexture();
- const int room=std::max(0,std::min(4,(int)(rect.origin.x*5/atlas->getContentSizeInPixels().width)));
- const int baseImage=CASTLE_MIST_FIRST_IMG+(image-MERGE_REBUILD_ROOMS_IMG)*9+room+1;
- if(!sprite[baseImage])LoadImg(baseImage);
- if(!sprite[baseImage])return;
- static cocos2d::GLProgram* program=nullptr;
- if(!program){
+ static cocos2d::GLProgram* program=nullptr;static bool attempted=false;
+ if(!attempted){attempted=true;
   const char* fragment=R"(
 #ifdef GL_ES
-precision highp float;
+precision mediump float;
 #endif
 varying vec4 v_fragmentColor;
 varying vec2 v_texCoord;
-uniform vec4 uCrop;
-uniform sampler2D uRoomBase;
-uniform vec2 uBaseMax;
+uniform float uShade;
+uniform vec2 uLogicalGrid;
 void main(){
- vec2 local=clamp((v_texCoord-uCrop.xy)/uCrop.zw,0.0,1.0);
- vec4 base=texture2D(uRoomBase,local*uBaseMax);
- vec4 facility=texture2D(CC_Texture0,v_texCoord);
- vec3 rgb=facility.rgb/max(facility.a,.0001);
- float light=dot(rgb,vec3(.299,.587,.114));
- rgb=mix(vec3(light),rgb,.38)*.58;
- // Original walls and windows remain visible; equipment occupies the lower room.
- float furnishings=smoothstep(.35,.68,local.y);
- vec4 toned=vec4(rgb*facility.a,facility.a);
- gl_FragColor=mix(base,toned,furnishings)*v_fragmentColor;
+ // Room sprites use a 128x64 logical pixel grid, close to the CMF artwork.
+ // This keeps tiny painted texture details from reading sharper than actors.
+ vec2 uv=(floor(v_texCoord*uLogicalGrid)+.5)/uLogicalGrid;
+ vec4 p=texture2D(CC_Texture0,uv);
+ float light=dot(p.rgb,vec3(.299,.587,.114));
+ p.rgb=mix(vec3(light),p.rgb,.84)*uShade;
+ gl_FragColor=p*v_fragmentColor;
 })";
   program=cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert,fragment);
-  if(!program)return;
-  program->retain();
+  if(program)program->retain();
  }
- auto* base=sprite[baseImage]->getTexture();
- auto* state=cocos2d::GLProgramState::create(program);
- state->setUniformVec4("uCrop",cocos2d::Vec4(rect.origin.x/atlas->getPixelsWide(),rect.origin.y/atlas->getPixelsHigh(),rect.size.width/atlas->getPixelsWide(),rect.size.height/atlas->getPixelsHigh()));
- state->setUniformTexture("uRoomBase",base);
- state->setUniformVec2("uBaseMax",cocos2d::Vec2(base->getMaxS(),base->getMaxT()));
- target->setGLProgramState(state);
- target->setBlendFunc(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);
+ if(program){
+  static cocos2d::GLProgramState* states[10]={};
+  static const float shade[10]={.92f,.70f,.85f,.92f,.92f,.92f,.92f,.80f,.92f,.90f};
+  const int c=image-MERGE_REBUILD_ROOMS_IMG;
+  if(!states[c]){
+   states[c]=cocos2d::GLProgramState::create(program);states[c]->retain();states[c]->setUniformFloat("uShade",shade[c]);
+   auto* texture=target->getTexture();const auto size=texture->getContentSizeInPixels();
+   states[c]->setUniformVec2("uLogicalGrid",cocos2d::Vec2(texture->getPixelsWide()*512.f/size.width,texture->getPixelsHigh()*384.f/size.height));
+  }
+  target->setGLProgramState(states[c]);
+ }
 }

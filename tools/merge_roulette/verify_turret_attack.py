@@ -1,11 +1,15 @@
 """Exercise all ten artillery themes using real rendering and damage timelines."""
 import os
+import argparse
 from pathlib import Path
 import subprocess
 import time
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs_bars.exe')
+options=parser.parse_args()
 for height in (850, 1408):
     dest = ROOT / 'output/turret-attack-review' / str(height)
     dest.mkdir(parents=True, exist_ok=True)
@@ -18,7 +22,7 @@ for height in (850, 1408):
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
     with (dest / 'stdout.log').open('w') as log:
-        process = subprocess.Popen([str(ROOT / 'proj.win32/Debug.win32/cs_bars.exe')],
+        process = subprocess.Popen([str(ROOT / 'proj.win32/Debug.win32'/options.exe)],
                                    cwd=ROOT / 'Resources', env=env, startupinfo=startup,
                                    stdout=log, stderr=log)
         try:
@@ -45,4 +49,6 @@ for height in (850, 1408):
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.wait(timeout=5)
+            try:process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill();process.wait(timeout=10)

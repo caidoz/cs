@@ -193,7 +193,7 @@ namespace MonsterBoard{int hitCount();void ensure();}
 long long wornGuard() {
     long long guard=0;
     for(int slot:{EQUIP_HELM,EQUIP_ARMOR}) if(wornEquip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(&wornEquip[slot],std::max(1,(int)wornEquip[slot].lv)));
-    return std::min(guard,1000000000000000LL);
+    return std::min(guard*(100+CastleTeamBonus(2))/100,1000000000000000LL);
 }
 void refreshHeroVitals() {
     if(holdVitals)return;
@@ -717,25 +717,11 @@ void reelIcon(int x,int y,int size) {
     DrawImageScale(frame.w,frame.h,frame.x,frame.y,px,py,false,0,0,0,0,z,z,sprite[img],img);
 }
 void cannonIcon(int x,int y,int size) {
-    const int c=std::max(0,std::min(9,siegeActive?(int)robin.castle:run.stage)),lv=std::max(0,std::min(5,CastleVisualPartLevel(c,3)));
-    const int img=CASTLE_MIST_TURRET_FIRST_IMG+c;
-    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
-    const auto sizePx=sprite[img]->getTexture()->getContentSizeInPixels();
-    const MountedCannons::Frame frame={0,0,(int)sizePx.width,(int)sizePx.height,0,0};
-    if(!sprite[img])LoadImg(img);if(sprite[img])sprite[img]->getTexture()->setAliasTexParameters();
-    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
-    // Button art is wider and taller than the inventory thumbnail, with extra
-    // vertical volume so long, thin barrels remain legible beside the swords.
-    const int w=(int)(size*1.23f),h=(int)(size*1.05f);
-    const int px=x-(w-size)/2,py=y+(h-size)/2;
-    const float zx=w/(float)frame.w,zy=h/(float)frame.h;
-    const int t=std::max(1,(int)(DX/640.f*2.f));
-    const int keep=baseColor;SetColor(0x070C20);
-    for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)if(dx||dy)
-        DrawImageScale(frame.w,frame.h,frame.x,frame.y,px+dx*t,py+dy*t,false,0,0,0,0,zx,zy,sprite[img],img);
-    SetColor(keep);
-    DrawImageScale(frame.w,frame.h,frame.x,frame.y,px,py,false,0,0,0,0,zx,zy,sprite[img],img);
+ const int c=std::max(0,std::min(9,siegeActive?(int)robin.castle:run.stage));
+ const int lv=std::max(0,std::min(5,CastleVisualPartLevel(c,3)));
+ DrawInventoryCannonIcon(c,lv,x-size/10,y+size/12,size*12/10,size*11/10);
 }
+
 enum ChoiceKind { ChoiceSpin=0, ChoiceAttack=1, ChoiceCannon=2 };
 //색을 회색으로(밝기만 남긴다). 단추의 바탕·테두리는 그림이 아니라 네모 조각이라 grayScale
 //플래그가 안 먹는다 - 색을 직접 바꾼다.
@@ -764,9 +750,10 @@ void choice(const Box& b,int kind,bool enabled) {
 //대포 한 발의 값. 히어로 무기값 × 성 대포 단계 계수. 5단이 ★1 검 블록 두어 개 몫이라
 //보조 화력(CLAUDE.md §5 지분 20%) 안에 든다. 공성전은 내 성의 대포다.
 long long cannonShell() {
-    static const float coef[6]={.5f,.8f,1.1f,1.5f,2.f,2.5f};
+    
     const int c=std::max(0,std::min(9,siegeActive?(int)robin.castle:run.stage)),lv=std::max(0,std::min(5,CastleVisualPartLevel(c,3)));
-    return std::max(1LL,(long long)(stats.weapon*coef[lv]));
+    const long long base=stats.weapon*100/(100+CastleTeamBonus(0));
+    return std::max(1LL,base*CastleMenuModel::CannonTurnPercent(lv)/100);
 }
 void button(const Box& b,const char* title,const char* sub,int color,bool enabled=true) {
     float s=DX/640.0f;
@@ -782,6 +769,10 @@ void button(const Box& b,const char* title,const char* sub,int color,bool enable
         } else label(sub,tx,b.y-b.h*.76f,.5f,enabled?0xE4D6BD:0x89909E);
     }
 }
+void reviewCapture(const char* name);
+//공용 보상창(RewardPopup.inc). 단추만 합성 전투의 금테 단추로 그린다.
+#include "RewardPopup.inc"
+void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true);}
 void save() {
     if(siegeActive)return;   //공성전은 디버그라 이어하기 저장을 남기지 않는다
     if(review)return;
@@ -2089,6 +2080,16 @@ void tick(float dt) {
         return;
     }
     if(waveTransition.active()){
+        if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames){
+            if(review){   //리뷰는 첫 보상창만 한 장 남기고 저절로 닫는다
+                static bool captured=false;
+                static bool shot=false;
+                if(!captured&&RewardPopup::ticks()>=58){captured=true;reviewCapture("kill-reward");}   //카드가 다 선 뒤
+                if(captured&&!shot&&!reviewCapturePending)shot=true;   //찍힌 것을 보고 닫는다
+                if(shot?RewardPopup::ticks()>12:(captured&&!reviewCapturePending))RewardPopup::closeNow();
+            }
+            return;
+        }
         castleScrollSeconds+=dt*waveTransition.speed();
         waveTransition.advance();
         if(!waveTransition.active()){message.clear();enemyBodyKnown=false;}
@@ -2204,13 +2205,26 @@ void tick(float dt) {
         long long gold=run.reward;run.reward=0;
         GetItem(ITEM_GOLD,false,false,false,gold,false);
         message=overkill>0?"오버킬! 다음 웨이브":"처치! 다음 웨이브";
-        if(run.wave==0) {
+        //보상창: 골드·하트·(성 클리어면) 장비를 카드로. "다음" 을 눌러야 다음 몬스터가 온다.
+        std::vector<RewardPopup::Entry> rewards;
+        {RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=gold;rewards.push_back(g);}
+        if(hearts>0){RewardPopup::Entry h;h.type=ITEM_HEART;h.count=hearts;rewards.push_back(h);}
+        const bool stageClear=run.wave==0;
+        if(stageClear) {
             message="성 클리어! 장비 획득 · 다음 성으로";
             if(!review) {
                 int type=ITEM_SWORD+hero.type,lv=std::max(1,std::min(GetEquipMaxLevel(),run.stage+1));
                 int detail=MakeItemDetail(type,lv),grade=MakeItemGrade(type,lv,detail);
                 GetItem(type,lv,detail,grade,1,0);
+                RewardPopup::Entry it;it.type=type;it.detail=detail;it.grade=grade;it.lv=lv;it.count=1;rewards.push_back(it);
             }
+        }
+        {
+            char heading[160];
+            const char* name=defeatedNpc>=0&&defeatedNpc<gTotalEnemy?textId[TEXT_MONSTERNAME_START+defeatedNpc]:u8"몬스터";
+            std::snprintf(heading,sizeof(heading),u8"%s %s",overkill>0?u8"오버킬!":u8"처치!",name);
+            RewardPopup::drawButton=rewardButton;
+            RewardPopup::show(heading,rewards,stageClear?u8"다음 성으로":u8"다음");
         }
         run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);
         if(run.realVitals)run.enemyAttack=waveAttack(run.stage,run.wave);
@@ -2501,7 +2515,11 @@ void reviewStep(const Layout& l) {
         if(++mistReviewHold<(mistReviewSample==0?120:12))return;
         const int c=mistReviewSample<20?mistReviewSample/2:(mistReviewSample-20)%10;const bool battle=mistReviewSample>=20||mistReviewSample%2;
         bool valid=sprite[MistCastle::image(c,0)]!=nullptr;
-        for(int part=1;part<=7;++part)valid=valid&&sprite[MistCastle::image(c,part)]!=nullptr;
+        // Interiors now use the independently upgraded facility atlas, rather
+        // than the five unused room images from the original hull partition.
+        for(int part=6;part<=7;++part)valid=valid&&sprite[MistCastle::image(c,part)]!=nullptr;
+        if(!battle)for(int room=0;room<4;++room)valid=valid&&MistCastle::facilityImages[room]==MERGE_REBUILD_ROOMS_IMG+c
+            &&MistCastle::facilityLevels[room]==castleRoomLevel(c,room);
         if(battle){
             const Box hullBounds=OriginalCastle::box(64,430,976,610);
             valid=valid&&drawnFrontCover==MistCastle::image(c,8)
@@ -2554,19 +2572,23 @@ void reviewStep(const Layout& l) {
     }
     if(review&&std::getenv("CS_MERGE_TURRET_REVIEW")){
         static int castle=0,phase=0;static bool done=false,launchCaptured=false;
+        static long long expectedHp=1000000;
         if(done)return;
         if(phase==0){
             if(entering())return;
+            robin.castleProgress.parts[castle][3]=5;
             introElapsed=-1;animation=0;entryElapsed=MergeCastleTransition::Duration;
             run.stage=castle;run.wave=1;run.board.clear();run.tray.clear();run.choosing=false;run.attacking=false;run.lost=false;
             run.enemyHp=run.enemyMax=1000000;run.enemyGuard=0;run.shots.clear();run.nextShot=0;
             enemyTurn=EnemyTurn();action=CombatAction();turretFire.age=-1;combatNumbers.clear();flash=0;
+            MonsterBoard::ensure();
             if(!run.fireCannon(123)){reviewTrace("FAIL turret fixture");done=true;return;}
+            expectedHp=1000000-(run.monsterNpc>=0?MonsterParts::incomingDamage(123,run.monsterLoadout()):123);
             beginCombatAction();launchCaptured=false;phase=1;return;
         }
         if(action.index<0)return;
         const int age=action.time.elapsed;
-        if(run.nextShot!=(action.time.applied?1:0)||run.enemyHp!=(action.time.applied?999877:1000000)){
+        if(run.nextShot!=(action.time.applied?1:0)||run.enemyHp!=(action.time.applied?expectedHp:1000000)){
             reviewTrace("FAIL turret damage timing or duplicate impact");done=true;return;
         }
         char name[96];
@@ -3326,20 +3348,67 @@ int MergeCrewOwnerHero(int crew) {return MergeTrees::OwnerHero(crew);}
 bool MergeCrewAvailable(int crew) {const int h=MergeTrees::OwnerHero(crew);return h<0||IsGetHero(h);}
 bool MergeRouletteActive() {return active;}
 void MergeRouletteBeginSiege() {Siege::begin();}
-bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height){
-    if(castle!=0)return false;
+static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height){
     const float z=std::min(width/OriginalCastle::W,height/OriginalCastle::H);
-    const float ox=x+(width-OriginalCastle::W*z)*.5f,oy=top-height;
-    const int img=MERGE_REBUILD_ROOMS_IMG;if(!sprite[img])LoadImg(img);
-    if(sprite[img]){
-        const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const auto holes=OriginalCastle::rooms();
-        for(int i=0;i<5;++i){const auto& p=holes[i];float w=(p[1].x-p[0].x)*z,h=(p[2].y-p[0].y)*z;
-            const auto f=MergeCastleTransition::RoomFrame(i,robin.castleProgress.rooms[0][i],(int)size.width,(int)size.height);
-            const float rz=std::max(w/f.w,h/f.h);int sw=std::min(f.w,(int)(w/rz)),sh=std::min(f.h,(int)(h/rz));
-            DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,(int)(ox+p[0].x*z),(int)(oy+(OriginalCastle::H-p[0].y)*z),false,0,0,0,0,rz,rz,sprite[img],img);
-        }
+    const int saved=siegeHullStage;siegeHullStage=castle;
+    OriginalCastle::previewScale=z;OriginalCastle::previewLeft=x+(width-OriginalCastle::W*z)*.5f;
+    OriginalCastle::previewLift=top-height;
+    MistCastle::hull(castle,false,0,false);
+    const auto& gun=MountedCannons::Get(castle,CastleVisualPartLevel(castle,3));
+    const Box b=OriginalCastle::box(300,210,230,145);
+    const float fit=std::min(b.w/(float)gun.w,b.h/(float)gun.h);
+    const int img=CANNON_UPGRADE_ATLAS_IMG;if(!sprite[img])LoadImg(img);
+    if(sprite[img])DrawImageScale(gun.w,gun.h,gun.x,gun.y,b.x,b.y,false,0,0,0,0,fit,fit,sprite[img],img);
+    OriginalCastle::previewScale=0;siegeHullStage=saved;
+    return true;
+}
+bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height){
+    if(castle<0||castle>=10)return false;
+    if(width<=0||height<=0||x+width<=clipX||x>=clipX2||top<=clipY2||top-height>=clipY)return true;
+    // Review-only comparison uses the exact previous drawing path.
+    if(std::getenv("CS_CASTLE_PREVIEW_UNCACHED"))return DrawOriginalCastlePreview(castle,x,top,width,height);
+    struct PreviewCache {
+        int width=0,height=0,levels=-1,castle=-1;
+        cocos2d::RenderTexture* target=nullptr;
+    };
+    // The menu has a large preview and two thumbnail sizes. Bound retained GPU
+    // storage even if the window is resized repeatedly.
+    static PreviewCache cache[12];static int next=0;
+    PreviewCache* entry=nullptr;
+    for(auto& candidate:cache)if(candidate.width==width&&candidate.height==height&&candidate.castle==castle){entry=&candidate;break;}
+    if(!entry){
+        entry=&cache[next++%12];
+        if(entry->target)entry->target->release();
+        *entry=PreviewCache();entry->width=width;entry->height=height;entry->castle=castle;
+        entry->target=cocos2d::RenderTexture::create(width,height);
+        if(!entry->target){entry->width=entry->height=0;return DrawOriginalCastlePreview(castle,x,top,width,height);}
+        entry->target->retain();
+        entry->target->getSprite()->getTexture()->setAliasTexParameters();
     }
-    for(int kind:{0,1,2,3,4,6,7,8})OriginalCastle::draw(kind,0,0,z,ox,oy);
+    int levels=castle;for(int room=0;room<4;++room)levels=levels*6+std::min(5,castleRoomLevel(castle,room));levels=levels*6+CastleVisualPartLevel(castle,3);
+    if(entry->levels!=levels){
+        const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2,alpha=m_lgrpAlpha;
+        PushRenderTarget(entry->target,nullptr,true);
+        SetSectionClip(0,height,width,height,true);SetAlpha(ALPHA_MAX);
+        DrawOriginalCastlePreview(castle,0,height,width,height);
+        PopRenderTarget();clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;SetAlpha(alpha);
+        entry->levels=levels;
+    }
+    // Cached sprites still respect the scrolling body's clip, including partial
+    // visibility. RenderTexture's texture is upside down relative to source art.
+    const int left=std::max(x,clipX),right=std::min(x+width,clipX2);
+    const int upper=std::min(top,clipY),lower=std::max(top-height,clipY2);
+    // Each visit needs a distinct command: the same 64px preview occurs twice
+    // in the part tab. Sharing a Sprite would overwrite its queued draw.
+    static std::vector<cocos2d::Sprite*> images;static int imageFrame=-1,imageSlot=0;
+    if(imageFrame!=frame){imageFrame=frame;imageSlot=0;}
+    if(imageSlot>=(int)images.size()){
+        auto* image=cocos2d::Sprite::createWithTexture(entry->target->getSprite()->getTexture());image->retain();images.push_back(image);
+    }
+    auto* image=images[imageSlot++];image->setTexture(entry->target->getSprite()->getTexture());image->setFlippedY(true);
+    image->setTextureRect(cocos2d::Rect(left-x,lower-(top-height),right-left,upper-lower));
+    image->setAnchorPoint({0,1});image->setPosition({(float)left,(float)upper});
+    image->setOpacity((int)(m_lgrpAlpha*255/32));image->visit();
     return true;
 }
 void MergeRouletteSetHeartCapacity(int capacity) {(void)capacity;heartCapacity=10;heartDisplay=(int)std::min((long long)heartCapacity,robin.heart);}
@@ -3706,14 +3775,20 @@ void MergeRouletteDraw() {
     }
     if(review&&std::getenv("CS_FACILITY_ROOMS_REVIEW")){
         static int sample=0,hold=0;
+        static bool walkersReady=false;
+        if(!walkersReady&&std::getenv("CS_FOUR_ROOM_WALKERS_REVIEW")){
+            Roster shown;for(int c=0;c<12;++c)shown.add(MergeTrees::Role(c),MergeTrees::Star(c),c);
+            roster=shown;walkersReady=true;
+        }
         if(sample>=70)return;
         const int c=sample<60?sample/6:sample-60,level=sample<60?sample%6:0;
         const auto saved=robin.castleProgress;const int previousStage=run.stage;
         run.stage=c;run.setShape(castleShape(c));
-        for(int i=0;i<5;++i)robin.castleProgress.rooms[c][i]=(unsigned char)(sample<60?level:i);
+        for(int i=0;i<4;++i)robin.castleProgress.rooms[c][i]=(unsigned char)(sample<60?level:i);
+        robin.castleProgress.parts[c][3]=(unsigned char)(sample<60?level:5);
         const Layout test=layout();drawWorld(test,false);drawLobbyControls(test);
         bool valid=true;
-        for(int i=0;i<5;++i){
+        for(int i=0;i<4;++i){
             valid=valid&&MistCastle::facilityLevels[i]==(sample<60?level:i)&&MistCastle::facilityImages[i]==MERGE_REBUILD_ROOMS_IMG+c;
             const auto p=OriginalCastle::rooms()[i];
             const int x=(int)p[0].x,y=(int)p[0].y,w=(int)(p[1].x-p[0].x),h=(int)(p[2].y-p[0].y);
@@ -3722,7 +3797,7 @@ void MergeRouletteDraw() {
         }
         robin.castleProgress=saved;run.stage=previousStage;
         if(!reviewCapturePending&&++hold>5){
-            reviewTrace(valid?"PASS five themed rooms use independent saved levels and joined edges":"FAIL facility artwork or registration");
+            reviewTrace(valid?"PASS four themed rooms use independent saved levels and joined edges":"FAIL facility artwork or registration");
             char name[48];std::snprintf(name,sizeof(name),"facility-c%02d-%s%d",c+1,sample<60?"level-":"independent-",level);reviewCapture(name);
             hold=0;if(++sample==70)reviewTrace("DONE facility rooms review");
         }
@@ -4044,6 +4119,7 @@ void MergeRouletteDraw() {
     drawSpinLanding(l);
     if(siegeActive){Siege::drawExpanded(l);Siege::drawHand(l);}   //공성전: 펼친 상대 판과 상대의 손은 내 블록 위에
     else MonsterBoard::drawExpanded(l);   //몬스터의 판도 같은 자리에 펼친다
+    if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames)RewardPopup::draw();
     if(!entering())drawIntro(l);
     if(flash>0){impactDrawOrder=++objectDrawOrder;drawImpactSequence(impactFirst,impactCount,18-flash,18,enemyBodyKnown?enemyBodyX:ex,enemyBodyKnown?enemyBodyY:ey+(int)(40*s),RIGHT,.65f*s);}
     if(allyFlash>0)drawImpactSequence(HIT_ITEM_SMALL0,5,20-allyFlash,20,allyBodyKnown?allyBodyX:(int)(DX*.66f),allyBodyKnown?allyBodyY:ey+(int)(40*s),LEFT,.65f*s);
@@ -4052,7 +4128,9 @@ void MergeRouletteDraw() {
 }
 
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
+    static int debugFinger=-1;
     if(!active) {
+        if(phase!=0&&debugFinger==id){if(phase==2||phase==3)debugFinger=-1;return true;}
         if(phase==0&&drawHandle==MD_LOBBY&&popUpCnt==0&&!LoadoutOpen()) {
             float s=DX/640.0f;
             Layout l=layout();Box b=lobbyStart(l);
@@ -4060,11 +4138,16 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             if(lobbyPvp(l).has(x,y)) {Siege::begin();return true;}
             Box keep=lobbyContinue(l);
             if(keep.has(x,y)&&robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero) {MergeRouletteBegin(true);return true;}
-            for(int i=0;i<5;++i)if(roomBox(l,i).has(x,y)){
+            if(lobbyDebugTouch(l,x,y)){debugFinger=id;return true;}
+            for(int i=0;i<4;++i)if(roomBox(l,i).has(x,y)){
                 CastleMenuFocusFacility(i);systemKey=AVK_POPUP_CASTLEMENU;return true;
             }
         }
         return false;
+    }
+    if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames){   //보상창: 단추만 받는다
+        if(phase==0)RewardPopup::touch(x,y);
+        picked=finger=-1;return true;
     }
     if(entering()||introActive()||spinFlying()||deckArriving()||waveTransition.active()) {picked=finger=-1;return true;}
     if(phase==3) {if(finger==id){picked=-1;finger=-1;}return true;}
@@ -4202,3 +4285,21 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     return true;
 }
 #pragma pack(pop)
+bool MergeRouletteDebugTouchReview(){
+ if(!getenv("CS_CASTLE_FREE_PREVIEW_REVIEW"))return false;
+ const auto saved=robin.castleProgress;const auto gold=robin.gold;bool ok=true;
+ const auto check=[&](bool pass,int c,int part){if(!pass){std::ofstream f(std::string(getenv("CS_CASTLE_REVIEW_PATH"))+"phases.log",std::ios::app);f<<"DETAIL touch castle="<<c<<" part="<<part<<"\n";}ok=ok&&pass;};
+ const auto tap=[](const Box& b){const float x=b.x+b.w*.5f,y=b.y-b.h*.5f;const bool hit=MergeRouletteTouch(0,998,x,y);MergeRouletteTouch(2,998,x,y);return hit;};
+ for(int c=0;c<10;++c){
+  gMobileCastleVisual=run.stage=c;Layout l=layout();
+  for(int r=0;r<4;++r){const int before=LobbyCastleDebugFacilityLevel(c,r);
+   check(tap(roomBox(l,r))&&LobbyCastleDebugFacilityLevel(c,r)==(before+1)%6,c,r);
+  }
+  const int cannon=CastleVisualPartLevel(c,3);
+  check(tap(castleCannonBox(l))&&CastleVisualPartLevel(c,3)==(cannon+1)%6,c,4);
+  check(tap(OriginalCastle::box(95,740,12,12))&&LobbyCastleDebugCastle()==(c+1)%10,c,5);
+ }
+ const int before=LobbyCastleDebugCastle();
+ ok=MergeRouletteTouch(0,998,1,DY*.5f)&&LobbyCastleDebugCastle()==before&&ok;
+ return ok&&robin.gold==gold&&memcmp(&saved,&robin.castleProgress,sizeof(saved))==0;
+}

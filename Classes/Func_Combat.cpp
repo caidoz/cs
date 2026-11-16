@@ -515,7 +515,7 @@ void RefreshStat_Sub(OBJECT* pObj)
 	//---- 성 파츠: 동료 ----
 	{
 		const int obj=GetObjFromPtr(pObj);
-		if(obj==PLAYER || (obj>=CREW && obj<CREW+MAXCREW)) {
+		if(obj==PLAYER) {
 			pObj->ps[PS_DMG]+=pObj->ps[PS_DMG]*CastleTeamBonus(0)/100;
 			pObj->ps[PS_HP]+=pObj->ps[PS_HP]*CastleTeamBonus(1)/100;
 			pObj->ps[PS_ARMOR]+=pObj->ps[PS_ARMOR]*CastleTeamBonus(2)/100;

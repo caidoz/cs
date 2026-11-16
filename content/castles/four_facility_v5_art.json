@@ -1,0 +1,262 @@
+{
+  "revision": 5,
+  "logicalRoomPixels": [
+    128,
+    64
+  ],
+  "clearForeground": 0.3,
+  "upgradeAnchors": [
+    0,
+    2,
+    5
+  ],
+  "requirements": [
+    "Different silhouettes within a castle, different compositions between castles",
+    "Match science and control installations to the live turret technology",
+    "Health facilities include gyms, pools, baths and bioenergy recovery, not repeated bedrooms",
+    "Late castles become very ornate, luxurious and powerful with subdued colors",
+    "Small varied objects, coherent installations, chunky CMF-compatible pixel art"
+  ],
+  "castles": [
+    {
+      "id": "10",
+      "palette": "The final, most powerful and luxurious SUN ROYAL PALACE: shadowed rare marble, dark imperial wood, deep muted purple, exquisite antique-gold filigree and sparse jewels integrated with sophisticated SOLAR LASER and force-field technology. Magnificent craftsmanship and high technology, NOT bright gold wash or fluorescent walls.",
+      "names": [
+        "왕실 과수·메추리 온실",
+        "태양 레이저·병기 제어실",
+        "왕실 수영·스파 센터",
+        "태양 방호막 제어실"
+      ],
+      "attack": [
+        "one fine optical instrument and a simple solar lens test desk",
+        "a complete royal solar laser alignment/ordnance research workstation",
+        "an immensely prestigious IMPERIAL SOLAR LASER FIRE-CONTROL & RESEARCH center with a spectacular compact concentric focusing array, rare-material emitter prototype and exquisitely integrated cybernetic command consoles"
+      ],
+      "health": [
+        "a fine small marble bathing basin and conditioning rail",
+        "an elegant royal hydrotherapy pool and refined exercise/wellness devices",
+        "the ultimate IMPERIAL SWIMMING AND WELLNESS SUITE with a magnificent finely carved marble rear pool, miniature fountain and water-control systems, premium conditioning equipment and tasteful velvet lounge seating, NO BEDROOM"
+      ],
+      "defense": [
+        "one elite shield and simple sensor pedestal",
+        "a proper royal force-field generator test bench and rare armor case",
+        "a formidable IMPERIAL SOLAR FORCE-FIELD CONTROL center with a clearly shaped miniature shielding array, precision protection diagnostics, coordinated guard/shield models and exquisitely carved dark control cabinets"
+      ],
+      "food": [
+        "a few royal citrus planters and a modest quail enclosure",
+        "a proper palace orangerie with controlled fruit and herb cultivation",
+        "a magnificent imperial productive conservatory with miniature citrus/grape cultivation, carved marble water circuits, refined quail nesting niches and exquisitely crafted growth pavilions"
+      ]
+    },
+    {
+      "id": "02",
+      "palette": "Shadowed ochre sandstone, aged brass and muted teal; a desert fortress with heat/chemical artillery support, modest science mixed with traditional irrigation.",
+      "names": [
+        "염소·대추 관개 재배실",
+        "화약·포탄 연금 연구실",
+        "사막 약초 수치료실",
+        "사암 장갑·폭압 시험실"
+      ],
+      "attack": [
+        "one powder-mixing bowl and crude shell jig",
+        "a real alchemical propellant and shell-testing bench",
+        "an integrated chemical artillery research laboratory with pressure vessels, a compact shell prototype cradle and fine control instruments"
+      ],
+      "health": [
+        "a simple clay footbath and coarse sitting mat",
+        "a proper copper herbal bathing alcove with padded relaxation seat",
+        "a luxurious oasis hydrotherapy suite with a real small tiled rear pool, fine water treatment fittings and shaded tea seating, NO BED"
+      ],
+      "food": [
+        "rough irrigated clay pots and one goat under a simple shade",
+        "a proper small dairy stall with a well-fed date-plant irrigation system",
+        "a vaulted desert conservatory with engineered clay-water channels, fine enclosed goat stall and thriving miniature date plants"
+      ],
+      "defense": [
+        "stacked stone samples and a crude shield",
+        "a layered-bronze impact test bench",
+        "a complete miniature fortification-and-armor strength laboratory with suspended weight rig and precision arch models"
+      ]
+    },
+    {
+      "id": "04",
+      "palette": "Dark jade maritime stone, worn ship timber, patinated brass and muted teal; a naval fortress equipped with a rotary rapid-fire cannon, real cybernetic fire-control technology.",
+      "names": [
+        "어류·해조 순환 양식장",
+        "함포 탄도·연사 제어실",
+        "해수 수영·수치료실",
+        "해양 방호·압력 시험실"
+      ],
+      "attack": [
+        "a crude barrel-calibration bench and small nautical chart",
+        "a real multi-barrel gun assembly and ballistic test bench with firing instruments",
+        "an advanced naval RAPID-FIRE/GATLING FIRE-CONTROL laboratory with a compact rotating barrel prototype, computer screens, targeting optics and finely integrated control cabinets"
+      ],
+      "health": [
+        "a simple seawater soaking tub and towels",
+        "a proper rear seawater pool with a small physical-training device",
+        "a refined maritime thalassotherapy and swimming suite with jade pool, precision seawater circulation equipment and compact conditioning instruments, NO BED"
+      ],
+      "food": [
+        "one fish barrel and simple edible seaweed trough",
+        "a recognizable jade fish pond with linked water filters",
+        "a beautifully engineered miniature aquaculture conservatory of linked glass fish tanks, aquatic growing beds and patinated brass pumps"
+      ],
+      "defense": [
+        "a rope and buoy-making corner",
+        "a proper diving-harness and scale-armor workbench",
+        "an advanced marine-pressure protection laboratory with miniature dive-bell section, elegant armor-testing frame and fine ropework cabinetry"
+      ]
+    },
+    {
+      "id": "05",
+      "palette": "Charcoal industrial steel, aged dark copper pipes, subdued amber and grey-blue instruments; formidable heavy-shell artillery engineering.",
+      "names": [
+        "기계식 재배·부화실",
+        "중포탄·동력 병기 시험실",
+        "증기 재활·체력단련실",
+        "중장갑 압력 시험실"
+      ],
+      "attack": [
+        "one crude hand-piston and shell repair bench",
+        "a powered heavy-shell prototype bench with calibration gauges",
+        "a complete formidable HEAVY CANNON engineering and pressure-test laboratory with miniature shell cradle, refined pistons and cybernetic diagnostics"
+      ],
+      "health": [
+        "a basic warm-water bucket and exercise rail",
+        "a real steam-therapy tub and physical rehabilitation exercise bench",
+        "a premium steam hydrotherapy and conditioning center with a compact copper hot pool, elegant physical-training machines, quiet diagnostic controls and towels, NO BED"
+      ],
+      "food": [
+        "small vegetable pots under a pipe and a basic chick incubator",
+        "a proper steam greenhouse with controlled irrigation",
+        "a formidable miniature automated growing factory under a stepped iron-and-glass frame with live crops, refined incubators and precise moisture machinery"
+      ],
+      "defense": [
+        "a simple iron-plate repair rack",
+        "a hydraulic armor press and test bench",
+        "a complete heavily engineered armor-strength testing chamber with compact pressure frame and immaculate elite steel material cabinetry"
+      ]
+    },
+    {
+      "id": "06",
+      "palette": "Dark teal engineering masonry, brushed dark copper and muted cyan indicators, sophisticated crystal-projectile energy machinery; science fiction retrofitted into a medieval engineering castle.",
+      "names": [
+        "수경 재배·벌꿀 온실",
+        "수정 에너지·탄환 연구실",
+        "수경 훈련·회복 시설",
+        "자기장 방어 연구실"
+      ],
+      "attack": [
+        "a rough crystal projectile on a simple measuring bench",
+        "a proper crystal-energy containment and projectile-calibration test stand",
+        "a sophisticated CRYSTAL ENERGY PROJECTILE research center with a clearly shaped miniature containment reactor, articulated precision instruments and cybernetic launch-calibration screens"
+      ],
+      "health": [
+        "a small training mat and simple wash tub",
+        "a compact exercise/health-monitor station and therapeutic pool",
+        "an advanced hydrotherapy fitness facility with a beautiful small teal pool, finely made compact exercise devices and robotic water/health diagnostics, NO BED"
+      ],
+      "food": [
+        "a few herb pots and a small honeybee box",
+        "a tiered hydroponic rack and a glass hive cabinet",
+        "a sophisticated integrated hydroponic/honey conservatory with fine glass growth towers, elegant copper water circuits and tiny living plants/bees"
+      ],
+      "defense": [
+        "a single crude coil and shield sample",
+        "a paired magnetic shield-testing bench",
+        "an imposing but miniature nested-coil protective field research installation with elegant instrument console and a shield test core, no giant glow"
+      ]
+    },
+    {
+      "id": "07",
+      "palette": "Late prestigious dark crimson phoenix stone, fine black lacquer and subdued antique gold, visibly advanced CRYOGENIC LASER science; tiny muted cool-blue instruments against warm dark architecture.",
+      "names": [
+        "봉황 차밭·메추리 재배실",
+        "냉기 레이저 집속 연구실",
+        "봉황 온천·재활 시설",
+        "광학 방호·판갑 연구실"
+      ],
+      "attack": [
+        "a simple lens stand and coolant vessel",
+        "a real laser optic/alignment test bench with a compact cooling system",
+        "a magnificent but compact CRYOGENIC LASER FOCUSING laboratory with a recognizably shaped optical ring/beam test tube, precise cooling conduits and cybernetic instrument panels"
+      ],
+      "health": [
+        "a stone footbath and small stretching rail",
+        "a proper red-stone hot spring and private exercise space",
+        "a luxurious phoenix onsen and physical-recovery pavilion with a carved stone rear hot pool, premium bathing niches, compact exercise apparatus and fine lacquer screens, NO BED"
+      ],
+      "defense": [
+        "a crude reflective armor sample and tongs",
+        "an organized reflective plate/laser-protection test bench",
+        "an elite optical protection and lamellar materials laboratory with small beam-reflection test frame, layered rare armor samples and restrained phoenix control instruments"
+      ],
+      "food": [
+        "a few terraced greens and a quail box",
+        "a proper irrigated tea garden and carefully built quail coop",
+        "a finely carved phoenix conservatory pavilion containing miniature productive tea terraces, water control and exquisite quail nesting compartments"
+      ]
+    },
+    {
+      "id": "08",
+      "palette": "Very prestigious shadowed swan palace, pearl-grey carved stone, slate-blue textiles and restrained silver inlay, advanced ELECTROMAGNETIC/MAGNETIC-ORB artillery science.",
+      "names": [
+        "백조 연못·연근 재배실",
+        "자기장·탄도 연구실",
+        "백조 수영·재활 센터",
+        "자기 차폐·성벽 연구실"
+      ],
+      "attack": [
+        "one simple magnetic coil and an iron sphere test bench",
+        "a proper paired-coil magnetic projectile/trajectory test station",
+        "a prestigious integrated ELECTROMAGNETIC ORB FIRE-CONTROL laboratory with a clearly shaped compact ring accelerator, suspended small sphere, fine cybernetic instruments and scholarly cabinetry"
+      ],
+      "health": [
+        "a small stone wash pool and exercise stool",
+        "a refined indoor swimming pool and physical therapy equipment",
+        "an exquisite swan-palace wellness and swimming center with an ornate but compact silver-trim rear pool, sophisticated hydrotherapy/conditioning systems and elegant lounge seating, NO BED"
+      ],
+      "defense": [
+        "rough shielding material samples on a plain bench",
+        "a proper architectural strength model and magnetic-shield test station",
+        "an elite electromagnetic protection and fortification laboratory with a compact protective field frame, detailed tiny bastion model and precise silver-inlaid control systems"
+      ],
+      "food": [
+        "a duck tub and a few edible lotus roots",
+        "a proper lotus-and-watercress duck pond",
+        "a refined swan water-garden production court with miniature carved-stone pond galleries, living ducks, lotus cultivation and precision water control"
+      ]
+    },
+    {
+      "id": "09",
+      "palette": "Extremely powerful near-black violet crystal castle, rare dark silver, restrained amethyst highlights and advanced ARCANE LASER / CYBERNETIC BIOENERGY technology, not a plain magic bedroom.",
+      "names": [
+        "비전 버섯·마법 작물원",
+        "비전 광학·집속 연구실",
+        "생체 에너지 회복실",
+        "수정 결계 제어실"
+      ],
+      "attack": [
+        "one crude focusing crystal and small optic stand",
+        "a true laser focusing/beam-containment research bench with cybernetic controls",
+        "a formidable ARCANE LASER research chamber with a clearly defined miniature optical containment array, precision emitter test core and sophisticated holographic/cybernetic control panels"
+      ],
+      "health": [
+        "a simple herb-infused soaking basin and small bioenergy crystal",
+        "a proper vertical rejuvenation/diagnostic chamber beside a small therapeutic water pool",
+        "an advanced BIOENERGY REGENERATION center with a compact VERTICAL glass treatment chamber, refined shallow rejuvenation pool, tiny living healing plants and sophisticated medical control consoles, NO BED OR HORIZONTAL SLEEP POD"
+      ],
+      "defense": [
+        "one crude ward crystal and protective glass sample",
+        "a true paired-crystal barrier engineering stand with controls",
+        "a flawless advanced CRYSTAL SHIELD CONTROL laboratory with a distinctive miniature geometric protective-dome apparatus, rare tuning columns and elegant cybernetic barrier-control panels"
+      ],
+      "food": [
+        "a couple mushroom beds and a small crop-tending rabbit",
+        "suspended edible growth planters with rune irrigation",
+        "an elaborate rare-crystal productive conservatory with structured miniature crop terraces, floating root jars and exquisite controlled-growth cabinetry"
+      ]
+    }
+  ]
+}

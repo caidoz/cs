@@ -91,16 +91,24 @@ TurretAttack::Point cannonMuzzle(const Layout& l,int c,bool mirror,int age=-1,in
 }
 void drawCastleCannon(const Layout& l,int c,bool mirror){
  const bool firing=turretFire.running()&&turretFire.castle==c;
- const int img=c==0&&firing&&turretFire.age>=turretFire.release?CASTLE_MIST_EMPTY_ARM_IMG:CASTLE_MIST_TURRET_FIRST_IMG+c;
+ const int level=CastleVisualPartLevel(c,3);
+ const bool graded=c>0&&level>0;
+ const int img=graded?CANNON_UPGRADE_ATLAS_IMG:(c==0&&firing&&turretFire.age>=turretFire.release?CASTLE_MIST_EMPTY_ARM_IMG:CASTLE_MIST_TURRET_FIRST_IMG+c);
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+ const auto grade=MountedCannons::Get(c,level);
  Box b=castleCannonBox(l);if(mirror)b.x=DX-b.x-b.w;
  if(c==0){
+  if(level>0){const int plate=CANNON_UPGRADE_ATLAS_IMG;const int sh=Max(1,grade.h/4);
+   Box foot={b.x+(int)(b.w*.45f),b.y-(int)(b.h*.70f),(int)(b.w*.65f),(int)(b.h*.30f)};
+   if(!sprite[plate])LoadImg(plate);
+   if(sprite[plate])DrawImageScale(grade.w,sh,grade.x,grade.y+grade.h-sh,foot.x,foot.y,mirror,0,0,0,0,foot.w/(float)grade.w,foot.h/(float)sh,sprite[plate],plate);}
   turretPart(img,0,0,(int)dim.width,(int)dim.height,b,
    catapultAngle(firing?turretFire.age:-1,firing?turretFire.release:18)*(mirror?-1:1),mirror?.15f:.85f,.78f,mirror);
  }else{
   if(firing)b.x+=(int)((mirror?1:-1)*8*l.scale*turretFire.recoil());
-  turretPart(img,0,0,(int)dim.width,(int)dim.height,b,0,.5f,.5f,mirror);
+  if(graded)DrawImageScale(grade.w,grade.h,grade.x,grade.y,b.x,b.y,mirror,0,0,0,0,b.w/(float)grade.w,b.h/(float)grade.h,sprite[img],img);
+  else turretPart(img,0,0,(int)dim.width,(int)dim.height,b,0,.5f,.5f,mirror);
   if(c==3&&firing){
    // Project the rotating front plate onto the gun's narrow elliptical face.
    // The housing stays seated; only the six barrel mouths orbit the hub.
@@ -155,6 +163,30 @@ Box roomBox(const Layout& l,int room){
  const auto p=OriginalCastle::rooms()[room];
  return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));
 }
+Box lobbyBottomNav();
+bool lobbyDebugTouch(const Layout& l,float x,float y){
+ if(!DebugControlsOpen() || !LobbyCastleDebugActive())return false;
+ // Keep the dock, HUD, debug toolbar and ordinary lobby buttons accessible.
+ if(y>=DY-28*_2X || (x<=288*_2X&&y<=DY-30*_2X&&y>=DY-54*_2X)
+    ||LobbyCastleDebugHit(x,y)||lobbyBottomNav().has(x,y)||lobbyManage(l).has(x,y))return false;
+ const int c=LobbyCastleDebugCastle();
+ for(int room=0;room<4;++room)if(roomBox(l,room).has(x,y)){LobbyCastleDebugCycle(c,room);return true;}
+ if(castleCannonBox(l).has(x,y)){LobbyCastleDebugCycle(c,-1);return true;}
+ const float nativeY=OriginalCastle::H-(y-OriginalCastle::lift())/OriginalCastle::zoom();
+ bool body=false;
+ for(auto span:OriginalCastle::spans(OriginalCastle::outline(),nativeY)){
+  const Box b=OriginalCastle::box((int)span.a,(int)nativeY,(int)(span.b-span.a)+1,1);
+  if(x>=b.x&&x<=b.x+b.w){body=true;break;}
+ }
+ for(int wheel=0;wheel<2;++wheel){
+  const Box b=OriginalCastle::box(wheel?867:27,1204,198,198);
+  const float dx=(x-b.x-b.w*.5f)/(b.w*.5f),dy=(y-b.y+b.h*.5f)/(b.h*.5f);
+  body=body||dx*dx+dy*dy<=1.f;
+ }
+ if(body){LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_NEXT);run.stage=LobbyCastleDebugCastle();}
+ else StageBgDebugNextBackdrop();
+ return true;
+}
 //---- 방 안의 식솔 ----
 //
 //[왜 전부인가]
@@ -190,7 +222,7 @@ void drawRoomResidents(const Layout& l){
  if(n==0&&active)return;
  if(n==0){
   //아직 한 명도 없다. 예전처럼 역할 대표를 한 방에 하나씩 세워 둔다.
-  for(int i=0;i<5;++i){
+  for(int i=0;i<4;++i){
    const Box b=roomBox(l,i);const int h=(int)(.84f*std::min(72*l.scale,b.h*.84f)),w=(int)(h*.85f);
    SetSectionClip(b.x,b.y,b.w,b.h,false);
    icon(i%Roles,{b.x+(int)(b.w*.70f)-w/2,b.y-b.h+(int)(9*l.scale)+h,w,h},1.f,false,1,-1);
@@ -198,10 +230,10 @@ void drawRoomResidents(const Layout& l){
   }
   return;
  }
- for(int i=0;i<5;++i){
+ for(int i=0;i<4;++i){
   const Box b=roomBox(l,i);
   int mine[64],cnt=0;
-  for(int k=i;k<n;k+=5)mine[cnt++]=crews[k];
+  for(int k=i;k<n;k+=4)mine[cnt++]=crews[k];
   if(cnt==0)continue;
 
   //---- 크기부터 지킨다 ----
@@ -354,6 +386,6 @@ void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  if(interactive){
   button(lobbyPvp(l),"PVP 디버그","공성전",0x6B2D3F);
   SetRectPoint(manage.x,manage.y,manage.w,manage.h,TOUCH_FUNC_POPUP_CASTLEMENU);
-  for(int i=0;i<5;++i){const Box b=roomBox(l,i);SetRectPoint(b.x,b.y,b.w,b.h,TOUCH_FUNC_POPUP_CASTLEMENU);}
+  for(int i=0;i<4;++i){const Box b=roomBox(l,i);SetRectPoint(b.x,b.y,b.w,b.h,TOUCH_FUNC_POPUP_CASTLEMENU);}
  }
 }

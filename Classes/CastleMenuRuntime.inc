@@ -71,13 +71,22 @@ int CastleTeamBonus(int kind) {
 }
 static int castlePendingFacility=-1;
 static bool gCastleFacilityTab=true;
-void CastleMenuFocusFacility(int room){castlePendingFacility=Max(0,Min(4,room));}
+void CastleMenuFocusFacility(int room){castlePendingFacility=Max(0,Min(3,room));}
 void CastleMenuOpen() { CastleProgressEnsure();
+    if(DebugControlsOpen()&&!LobbyCastleDebugActive())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);
+    if(DebugControlsOpen())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_HIDE);
     if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
-    castleBrowse=robin.castle; castlePage=castleModal=castleCategory=castleRow=0; castleMessage=""; castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
+    castleBrowse=robin.castle;castlePage=castleModal=castleCategory=0;castleRow=3;castleMessage="";castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
     if(castlePendingFacility>=0){gCastleFacilityTab=true;scY[MENU_CASTLE]=Min(400,Max(280,DY*28/100))+300+castlePendingFacility*144;castlePendingFacility=-1;}
 }
 bool CastleMenuCommand(int func) {
+    if(DebugControlsOpen() && LobbyCastleDebugActive()){
+        const bool room=func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE&&func<TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+4;
+        if(room || func==TOUCH_FUNC_CASTLE_NEW_UPGRADE){
+            castleModal=0;LobbyCastleDebugCycle(castleBrowse,room?func-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE:-1);return true;
+        }
+        if(func==TOUCH_FUNC_CASTLE_NEW_CONFIRM){castleModal=0;return true;}
+    }
     if(func>=TOUCH_FUNC_CASTLE_BROWSE_PICK && func<TOUCH_FUNC_CASTLE_BROWSE_PICK_END){
         if(!castleModal){castleBrowse=func-TOUCH_FUNC_CASTLE_BROWSE_PICK;scY[MENU_CASTLE]=0;scAccelY=0;}return true;
     }
@@ -93,6 +102,7 @@ bool CastleMenuCommand(int func) {
             castleUpgradePrice=CastleMenuModel::UpgradeCost(c,lv,true);castleModal=2;
         }return true;
     }
+    if(func>=TOUCH_FUNC_CASTLE_NEW_ROW&&func<TOUCH_FUNC_CASTLE_NEW_ROW_END&&func!=TOUCH_FUNC_CASTLE_NEW_ROW+3)return true;
     if(func<TOUCH_FUNC_CASTLE_NEW_PREV||func>=TOUCH_FUNC_CASTLE_NEW_ROW_END) return false;
     CastleProgressEnsure(); auto& p=robin.castleProgress; int c=castleBrowse;
     const long long oldGoldPerHour=CastleIncomePerHour();

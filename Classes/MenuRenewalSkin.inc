@@ -1,7 +1,7 @@
 ﻿// Lightweight UI skin. One pooled quad per panel; no bitmap mockups in the UI.
 #include "Data/CastleRoomUpgrades.h"
 static int sReferencePanel=0;
-static bool DrawRenewalPanel(int x,int y,int w,int h,int fill,int edge){
+static bool DrawRenewalPanelRaw(int x,int y,int w,int h,int fill,int edge){
  static cocos2d::GLProgram* program=nullptr;
  static std::vector<cocos2d::GLProgramState*> states;
  if(!program){
@@ -71,6 +71,50 @@ void main(){
  state->setUniformFloat("uRadius",w>=DX-8&&h>200?0.f:(float)Min(16,Min(w,h)/4));
  target->setGLProgramState(state);target->setBlendFunc(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);
  AfterSpriting(target);return true;
+}
+
+// Static menu surfaces share a bounded raster cache. Dynamic labels, prices,
+// characters and hit regions are still drawn/registered every frame.
+static bool DrawRenewalPanel(int x,int y,int w,int h,int fill,int edge){
+ if(IsOffscreenTarget()||!LobbySectionOwnsPopups())return DrawRenewalPanelRaw(x,y,w,h,fill,edge);
+ if(w<2||h<2||x+w<=clipX||x>=clipX2||y<=clipY2||y-h>=clipY)return true;
+ struct Entry {int w=0,h=0,fill=0,edge=0,style=0,used=-1;cocos2d::RenderTexture* target=nullptr;};
+ static Entry entries[64];static size_t bytes=0;
+ static std::vector<cocos2d::Sprite*> images;static int imageFrame=-1,slot=0;
+ Entry* found=nullptr;
+ for(auto& e:entries)if(e.target&&e.w==w&&e.h==h&&e.fill==fill&&e.edge==edge&&e.style==sReferencePanel){found=&e;break;}
+ const size_t needed=(size_t)w*h*4,limit=8*1024*1024;
+ if(!found){
+  if(needed>limit)return DrawRenewalPanelRaw(x,y,w,h,fill,edge);
+  while(bytes+needed>limit){
+   Entry* oldest=nullptr;for(auto& e:entries)if(e.target&&e.used!=frame&&(!oldest||e.used<oldest->used))oldest=&e;
+   if(!oldest)return DrawRenewalPanelRaw(x,y,w,h,fill,edge);
+   bytes-=(size_t)oldest->w*oldest->h*4;oldest->target->release();*oldest=Entry();
+  }
+  for(auto& e:entries)if(!e.target){found=&e;break;}
+  if(!found){
+   for(auto& e:entries)if(e.used!=frame&&(!found||e.used<found->used))found=&e;
+   if(!found)return DrawRenewalPanelRaw(x,y,w,h,fill,edge);
+   bytes-=(size_t)found->w*found->h*4;found->target->release();*found=Entry();
+  }
+  found->target=cocos2d::RenderTexture::create(w,h);
+  if(!found->target)return DrawRenewalPanelRaw(x,y,w,h,fill,edge);
+  found->target->retain();found->w=w;found->h=h;found->fill=fill;found->edge=edge;found->style=sReferencePanel;bytes+=needed;
+  const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2,alpha=m_lgrpAlpha;
+  PushRenderTarget(found->target,nullptr,true);SetSectionClip(0,h,w,h,true);SetAlpha(ALPHA_MAX);
+  const bool ok=DrawRenewalPanelRaw(0,h,w,h,fill,edge);
+  PopRenderTarget();clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;SetAlpha(alpha);
+  if(!ok){bytes-=needed;found->target->release();*found=Entry();return false;}
+ }
+ found->used=frame;
+ if(imageFrame!=frame){imageFrame=frame;slot=0;}
+ if(slot>=(int)images.size()){
+  auto* image=cocos2d::Sprite::createWithTexture(found->target->getSprite()->getTexture());image->retain();images.push_back(image);
+ }
+ auto* image=images[slot++];image->setTexture(found->target->getSprite()->getTexture());image->setFlippedY(true);
+ const int left=Max(x,clipX),right=Min(x+w,clipX2),top=Min(y,clipY),bottom=Max(y-h,clipY2);
+ image->setTextureRect(cocos2d::Rect(left-x,bottom-(y-h),right-left,top-bottom));image->setAnchorPoint({0,1});
+ image->setPosition({(float)left,(float)top});image->setOpacity(m_lgrpAlpha*255/32);image->visit();return true;
 }
 
 void DrawMenuReferencePanel(int x,int top,int w,int h,int kind,int fill,int edge){

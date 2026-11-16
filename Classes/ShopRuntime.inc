@@ -139,7 +139,7 @@ void Draw(float x,float y,float w,float h,float zoom) {
 
   //---- 종합 상자 ----
   DrawMenuPlaque("보물상자",(int)x+inner/5,cy,inner*3/5,54,1.05f);cy-=68;
-  const int cardH=Max(190,Min(224,(int)(cw*.73f))),pitch=cardH+10;
+  const int cardH=312,pitch=cardH+10;
   for(int k=0;k<6;++k)ShopBoxCard(k,x+pad+(k%2)*(cw+8),cy-(k/2)*pitch,cw,cardH,1);
   cy-=pitch*3;
  } else if(tab==ShopCatalog::Packages) {

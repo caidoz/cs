@@ -1,10 +1,14 @@
 """Capture the populated currency catalog and verify offline purchase guards."""
 import os
+import argparse
 import subprocess
 import time
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs_bars.exe')
+args=parser.parse_args()
 for height in (850,1408):
     dest=ROOT/'output/currency-shop'/str(height)
     dest.mkdir(parents=True,exist_ok=True)
@@ -16,7 +20,7 @@ for height in (850,1408):
     startup=subprocess.STARTUPINFO()
     startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow=0
-    exe=ROOT/'proj.win32/Debug.win32/cs_bars.exe'
+    exe=ROOT/'proj.win32/Debug.win32'/args.exe
     with (dest/'stdout.log').open('w') as log:
         p=subprocess.Popen([str(exe)],cwd=ROOT/'Resources',env=env,stdout=log,stderr=subprocess.STDOUT,startupinfo=startup)
         try:
@@ -35,4 +39,7 @@ for height in (850,1408):
             else:raise RuntimeError('currency review timeout')
         finally:
             if p.poll() is None:p.terminate()
-            p.wait(timeout=5)
+            try:p.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                p.kill()
+                p.wait(timeout=10)

@@ -16,10 +16,67 @@ static void CastleReviewClick(int command) {
     CastleReviewTrace("FAIL touch area missing");
 }
 #include "MenuRenewalReview.inc"
+#include "LobbyMenusPerfReview.inc"
+#include "CastleFourFacilityReview.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(CastleFourFacilityReview(path))return;
+    if(getenv("CS_BOX_INFO_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);robin.gold=110;robin.coin=0;}
+        if(tick==20){touchFunc(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==80)scY[MENU_SHOP]=scT[MENU_SHOP];
+        if(tick==120)scY[MENU_SHOP]=0;
+        if(tick==135){CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1+1);PlayKey(PLAYER);systemKey=0;}
+        const char* shot=tick==60?"boxes-top.png":tick==100?"boxes-bottom.png":tick==160?"box-detail.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+shot);}
+        if(tick==170)CastleReviewTrace("DONE box info review");
+        return;
+    }
+    if(getenv("CS_CREW_DETAIL_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);ITEM item={};item.type=ITEM_CREW;item.detail=0;item.lv=1;item.count=1;item.id=710000;robin.inven[100]=item;}
+        if(tick==20){touchFunc(TOUCH_FUNC_POPUP_CREWLIST);PlayKey(PLAYER);systemKey=0;}
+        if(tick==35){menuItem=100;menuDepth=1;}
+        if(tick==70){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"DONE crew detail capture":"FAIL capture");},std::string(path)+"crew-detail.png");}
+        return;
+    }
+    if(LobbyMenusPerfReview(path))return;
+    if(getenv("CS_CASTLE_SCROLL_PERF_REVIEW")){
+        static int tick=0;static bool pending=false;static double seconds=0,vertices=0,batches=0;
+        if(pending)return;++tick;
+        if(tick==1){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        if(tick==20){systemKey=AVK_POPUP_CASTLEMENU;PlayKey(PLAYER);systemKey=0;CastleMenuModuleReviewSet(0,0);CastleMenuCommand(TOUCH_FUNC_RENEW_CASTLE_FACILITIES);}
+        if(tick>=60&&tick<180){
+            auto* director=cocos2d::Director::getInstance();seconds+=director->getDeltaTime();
+            vertices+=director->getRenderer()->getDrawnVertices();batches+=director->getRenderer()->getDrawnBatches();
+        }
+        if(tick==180){char text[200];snprintf(text,sizeof(text),"PROFILE frame_ms=%.3f vertices=%.0f batches=%.0f",seconds*1000/120,vertices/120,batches/120);CastleReviewTrace(text);}
+        const char* shot=nullptr;
+        if(tick==190)shot="top.png";
+        if(tick==210){
+            const int start=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-80;
+            scY[MENU_CASTLE]=0;scDir=SCROLL_NOTHING;
+            CastleMenuFinalDrag(120,start,120,start+120,start);
+            const bool up=scY[MENU_CASTLE]==120;
+            CastleMenuFinalDrag(120,start,120,start+60,start+120);
+            const bool down=scY[MENU_CASTLE]==60;
+            CastleMenuFinalDrag(120,start,120,start-5000,start+60);
+            const bool clampTop=scY[MENU_CASTLE]==0;
+            CastleMenuFinalDrag(120,start,120,start+5000,start);
+            const bool clampBottom=scY[MENU_CASTLE]==scT[MENU_CASTLE]&&scY[MENU_CASTLE]>0;
+            CastleReviewTrace(up&&down&&clampTop&&clampBottom?"PASS finger direction and both scroll bounds":"FAIL finger direction or bounds");
+            scY[MENU_CASTLE]=120;scDir=SCROLL_NOTHING;shot="partial.png";
+        }
+        if(tick==230){scY[MENU_CASTLE]=scT[MENU_CASTLE];shot="bottom.png";}
+        if(tick==250){scY[MENU_CASTLE]=0;robin.castleProgress.rooms[0][0]=5;shot="room-upgraded.png";}
+        if(tick==270){CastleMenuCommand(TOUCH_FUNC_RENEW_CASTLE_PARTS);scY[MENU_CASTLE]=0;shot="parts.png";}
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS capture":"FAIL capture");},std::string(path)+shot);}
+        if(tick==290)CastleReviewTrace("DONE castle scroll performance review");
+        return;
+    }
     if(MenuRenewalReviewStep(path))return;
     if(getenv("CS_SHARED_LOBBY_NAV_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
@@ -176,20 +233,21 @@ static void CastleMenuReviewStep()
         if(tick==20){robin.demoSeen[DEMO_TUTORIAL_END]=true;GotoLobby();while(popUpCnt>0)ClosePopUp();}
         if(tick==30)CastleReviewTrace(CastleProductionReview()?"PASS production resources upgrades recovery collection and clock rebasing":"FAIL production economy");
         if(tick==40){
-            robin.castleProgress.owned=1023u;robin.gold=1000000;
+            robin.castleProgress.version=2;robin.castleProgress.owned=1023u;robin.gold=1000000;
+            for(int c=0;c<10;++c)for(int i=0;i<4;++i)robin.castleProgress.rooms[c][i]=0;
             systemKey=AVK_POPUP_CASTLEMENU;PlayKey(PLAYER);systemKey=0;CastleMenuModuleReviewSet(9,0);
         }
         if(tick==50){scY[MENU_CASTLE]=scT[MENU_CASTLE];scDir=SCROLL_NOTHING;}
         if(tick==65){
             pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS economy capture":"FAIL economy capture");},std::string(path)+"economy.png");
         }
-        if(tick==70)CastleReviewClick(TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+4);
+        if(tick==70)CastleReviewClick(TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+0);
         if(tick==80){
             pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS economy capture":"FAIL economy capture");},std::string(path)+"confirm.png");
         }
-        if(tick==85){expectedGold=robin.gold-2400+CastleIncomeNow();CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_CONFIRM);CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);}
+        if(tick==85){expectedGold=robin.gold-240+CastleIncomeNow();CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_CONFIRM);CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);}
         if(tick==90){
-            CastleReviewTrace(robin.castleProgress.rooms[9][4]==1&&robin.gold==expectedGold?"PASS economy upgrade charges once":"FAIL economy upgrade charge");
+            CastleReviewTrace(robin.castleProgress.rooms[9][0]==1&&robin.castleProgress.rooms[0][0]==1&&robin.gold==expectedGold?"PASS economy upgrade charges once":"FAIL economy upgrade charge");
             CastleReviewTrace("PASS facility economy complete");
         }
         return;
@@ -451,7 +509,7 @@ static void CastleMenuReviewStep()
         }
         if(tick==50){
             int start=DY-GNBHEIGHT-100;
-            CastleMenuFinalDrag(100,start,100,start-5000,start);upgradeScroll=scY[MENU_CASTLE];
+            CastleMenuFinalDrag(100,start,100,start+5000,start);upgradeScroll=scY[MENU_CASTLE];
             CastleReviewTrace(scY[MENU_CASTLE]==scT[MENU_CASTLE]?"PASS full body scroll bottom":"FAIL body scroll bottom");scDir=SCROLL_NOTHING;
         }
         if(tick==63){

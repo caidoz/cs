@@ -1,11 +1,15 @@
 """Capture the ten live castle skins and all fifteen regional backgrounds."""
 from pathlib import Path
+import argparse
 import os
 import subprocess
 import time
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs_bars.exe')
+args=parser.parse_args()
 for stage in range(1,11):
     folder = ROOT / f'Resources/res/castle_mist_v2/{stage:02}'
     for path in folder.glob('*.png'):
@@ -28,7 +32,7 @@ for height in (850,1408):
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
     with (dest/'stdout.log').open('w') as log:
-        process = subprocess.Popen([str(ROOT/'proj.win32/Debug.win32/cs_bars.exe')],
+        process = subprocess.Popen([str(ROOT/'proj.win32/Debug.win32'/args.exe)],
             cwd=ROOT/'Resources',env=env,startupinfo=startup,stdout=log,stderr=log)
         try:
             end = time.monotonic()+180

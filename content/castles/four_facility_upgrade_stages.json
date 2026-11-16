@@ -1,0 +1,218 @@
+{
+  "revision": 4,
+  "principle": "Each upgrade changes the core installation silhouette, not merely material or prop count. Keep individual objects small, the front walking lane open, and later castles more ornate and powerful with subdued colors.",
+  "anchorLevels": [
+    0,
+    2,
+    5
+  ],
+  "castles": [
+    {
+      "id": "02",
+      "food": [
+        "rough irrigated clay pots and one goat under a simple shade",
+        "a proper small dairy stall with a well-fed date-plant irrigation system",
+        "a vaulted desert conservatory with engineered clay-water channels, fine enclosed goat stall and thriving miniature date plants"
+      ],
+      "attack": [
+        "one mineral crushing bowl and a tiny powder table",
+        "a real alembic-and-balance alchemy bench",
+        "an integrated pressure-distillation explosives research laboratory under an ornate instrument arch"
+      ],
+      "health": [
+        "a coarse sleeping cot and foot-wash bowl",
+        "an elegant canopied rest alcove with an herbal copper bath",
+        "a luxurious oasis boutique suite with draped canopy, refined copper bath niche and tiny tea furnishings"
+      ],
+      "defense": [
+        "stacked stone samples and a crude shield",
+        "a layered-bronze impact test bench",
+        "a complete miniature fortification-and-armor strength laboratory with suspended weight rig and precision arch models"
+      ]
+    },
+    {
+      "id": "03",
+      "food": [
+        "a small rough cow stall and a couple growing wheat troughs",
+        "an organized dairy workroom and irrigated growing beds",
+        "a refined knightly dairy conservatory with carved limestone niches, miniature milking equipment and thriving compact wheat garden"
+      ],
+      "attack": [
+        "one straw practice dummy and rough blade stand",
+        "a pivoting fencing dummy and trajectory experiment bench",
+        "a precision articulated combat-training and weapon research apparatus under a silver measurement frame"
+      ],
+      "health": [
+        "a plain knight's sleeping bunk",
+        "a private comfortable carved bed alcove",
+        "a champion's luxurious knightly hotel suite with carved canopy, fine navy linen and small bathing screen"
+      ],
+      "defense": [
+        "a dented armor repair corner",
+        "a complete heraldic armor maintenance station",
+        "an elite protection-testing alcove with a single exquisite armor specimen, precision shield testing apparatus and fine steel tool cabinets"
+      ]
+    },
+    {
+      "id": "04",
+      "food": [
+        "one fish barrel and simple edible seaweed trough",
+        "a recognizable jade fish pond with linked water filters",
+        "a beautifully engineered miniature aquaculture conservatory of linked glass fish tanks, aquatic growing beds and patinated brass pumps"
+      ],
+      "attack": [
+        "a tiny chart desk and rolled maps",
+        "a real sextant-and-ballistics research table with model cannon",
+        "an integrated naval fire-control observatory with a refined telescope, inlaid chart table and precision miniature ship/cannon instruments"
+      ],
+      "health": [
+        "a rough ship's berth",
+        "a private hammock and herbal seawater bathing alcove",
+        "a luxurious captain's hotel cabin with carved porthole surround, silk suspended berth and discreet seawater spa"
+      ],
+      "defense": [
+        "a rope and buoy-making corner",
+        "a proper diving-harness and scale-armor workbench",
+        "an advanced marine-pressure protection laboratory with miniature dive-bell section, elegant armor-testing frame and fine ropework cabinetry"
+      ]
+    },
+    {
+      "id": "05",
+      "food": [
+        "small vegetable pots under a pipe and a basic chick incubator",
+        "a proper steam greenhouse with controlled irrigation",
+        "a formidable miniature automated growing factory under a stepped iron-and-glass frame with live crops, refined incubators and precise moisture machinery"
+      ],
+      "attack": [
+        "a crude hand-piston test bench",
+        "a powered cannon-section instrument bench",
+        "an integrated precision weapons test cell with compact piston machinery, calibrated weapon cradle and refined pressure instruments"
+      ],
+      "health": [
+        "a plain narrow recovery cot",
+        "a padded steam-therapy recliner",
+        "a premium steampunk hotel/spa recovery suite with a cozy brass-framed treatment couch, fine textiles and elegantly enclosed therapy fittings"
+      ],
+      "defense": [
+        "a simple iron-plate repair rack",
+        "a hydraulic armor press and test bench",
+        "a complete heavily engineered armor-strength testing chamber with compact pressure frame and immaculate elite steel material cabinetry"
+      ]
+    },
+    {
+      "id": "06",
+      "food": [
+        "a few herb pots and a small honeybee box",
+        "a tiered hydroponic rack and a glass hive cabinet",
+        "a sophisticated integrated hydroponic/honey conservatory with fine glass growth towers, elegant copper water circuits and tiny living plants/bees"
+      ],
+      "attack": [
+        "a simple gear assembly table",
+        "an articulated automaton-arm research bench",
+        "a complete miniature precision automaton under an elaborate optical calibration frame, integrated dark cabinets and refined clockwork instruments"
+      ],
+      "health": [
+        "a plain resting bench with blanket",
+        "a comfortable private recliner and automatic tea station",
+        "an elite engineering boutique spa room with luxurious sculpted chaise, draped privacy canopy and finely crafted automatic herbal apothecary"
+      ],
+      "defense": [
+        "a single crude coil and shield sample",
+        "a paired magnetic shield-testing bench",
+        "an imposing but miniature nested-coil protective field research installation with elegant instrument console and a shield test core, no giant glow"
+      ]
+    },
+    {
+      "id": "07",
+      "food": [
+        "a few terraced greens and a quail box",
+        "a proper irrigated tea garden and carefully built quail coop",
+        "a finely carved phoenix conservatory pavilion containing miniature productive tea terraces, water control and exquisite quail nesting compartments"
+      ],
+      "attack": [
+        "a small side kiln and simple quench trough",
+        "a proper blade heat-treatment testing frame",
+        "a master-quality precision thermal blade laboratory with refined quenching chamber, lacquered instrument cabinets and restrained phoenix metalwork"
+      ],
+      "health": [
+        "a straw resting mat and stone footbath",
+        "a recognizable red-stone herbal hot spring room",
+        "a magnificent intimate phoenix onsen suite with carved privacy pavilion, small stone bath, luxurious daybed and fine bathing niches"
+      ],
+      "defense": [
+        "loose lamellar materials and a crude sewing frame",
+        "a proper lacquered armor weaving/testing station",
+        "an elite phoenix protection laboratory with beautifully crafted lamellar specimen niches, precision impact instruments and refined lacquered cabinetry"
+      ]
+    },
+    {
+      "id": "08",
+      "food": [
+        "a duck tub and a few edible lotus roots",
+        "a proper lotus-and-watercress duck pond",
+        "a refined swan water-garden production court with miniature carved-stone pond galleries, living ducks, lotus cultivation and precision water control"
+      ],
+      "attack": [
+        "a plain maps-and-abacus table",
+        "a scholarly siege-model research workstation",
+        "a magnificent academic tactical science chamber with miniature platinum armillary/computing apparatus, detailed siege models and integrated scholarly cabinetry"
+      ],
+      "health": [
+        "a plain long sleeping bench",
+        "a private reading chaise and comfortable bed alcove",
+        "an exquisite swan-palace hotel reading salon with elegantly canopied daybed, fine blue silk, silver-carved furniture and intimate tea alcoves"
+      ],
+      "defense": [
+        "stone specimens and a rough mallet bench",
+        "a bastion-model drafting and load-testing table",
+        "a complete structural fortification research chamber with a tiny precise castle-wall section under an elaborate measuring frame and refined materials library"
+      ]
+    },
+    {
+      "id": "09",
+      "food": [
+        "a couple mushroom beds and a small crop-tending rabbit",
+        "suspended edible growth planters with rune irrigation",
+        "an elaborate rare-crystal productive conservatory with structured miniature crop terraces, floating root jars and exquisite controlled-growth cabinetry"
+      ],
+      "attack": [
+        "one crude rune stone and a tiny desk",
+        "a floating-crystal test stand with precise rune instruments",
+        "a formidable arcane binding research chamber with a clearly framed geometric crystal core, refined control panels and rare dark-metal instrument cabinetry"
+      ],
+      "health": [
+        "a plain hanging sleeping pallet",
+        "a fine silk floating bed with privacy curtains",
+        "a sumptuous celestial hotel chamber with architectural star canopy framing a small luxurious floating bed, plush crescent chaise and exquisite personal niches"
+      ],
+      "defense": [
+        "a crude ward stone",
+        "a paired-crystal barrier experiment bench",
+        "a flawless miniature protective-dome research installation surrounded by rare faceted tuning columns, intricate etched glass wards and precise dark control cabinetry"
+      ]
+    },
+    {
+      "id": "10",
+      "food": [
+        "a few royal citrus planters and a modest quail enclosure",
+        "a proper palace orangerie with controlled fruit and herb cultivation",
+        "a magnificent imperial productive conservatory with miniature citrus/grape cultivation, carved marble water circuits, refined quail nesting niches and exquisitely crafted growth pavilions"
+      ],
+      "attack": [
+        "one fine map desk and basic weapon model",
+        "a complete royal ordnance/tactical research station",
+        "an immensely prestigious imperial war-command laboratory with a faceted inlaid strategy table, tiny articulated siege prototypes and jeweled precision control instruments in integrated dark cabinets"
+      ],
+      "health": [
+        "a fine but simple guest bed without canopy",
+        "an elegant royal private guest suite with restrained canopy",
+        "the ultimate imperial boutique hotel suite with a spectacular architectural sun-canopy silhouette framing a compact sumptuous velvet bed, miniature plush chaise, refined bath screen and exquisite tea/flower cabinetry"
+      ],
+      "defense": [
+        "one elite guard armor stand",
+        "an organized royal protection display-and-test room",
+        "a formidable sun-ward defense control laboratory with coordinated elite shield test frames, miniature formation models, rare armor specimen niches and an exquisitely carved control console"
+      ]
+    }
+  ]
+}

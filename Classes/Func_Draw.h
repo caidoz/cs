@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define OPENING_SCENE_COUNT 5
+bool LobbySectionOwnsPopups();
 #define OPENING_TEXT_PER_SCENE 3
 #define OPENING_TOTAL_TEXT (OPENING_SCENE_COUNT * OPENING_TEXT_PER_SCENE)
 
@@ -85,6 +86,8 @@ void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
 bool LobbyCastleDebugCommand(int command);
 bool LobbyCastleDebugActive(void);
+bool LobbyCastleDebugCycle(int castle,int room);
+void LobbyCastleDebugEnd(void);
 int LobbyCastleDebugCastle(void);
 bool LobbyCastleDebugInterior(void);
 void LobbyCastleDebugDraw(void);

@@ -4,6 +4,7 @@ static void RebuildCut(int img,const MergeCastleArt::Rect& f,int x,int y,float z
  DrawImageScale(f.w,f.h,f.x,f.y,x,y,false,0,0,0,0,z,z,sprite[img],img);
 }
 static void RebuildPreview(int c,int x,int top,int width,int height){
+ if(x+width<=clipX||x>=clipX2||top<=clipY2||top-height>=clipY)return;
  if(MergeRouletteOriginalPreview(c,x,top,width,height))return;
  const auto& frame=MergeCastleArt::Chassis[c];
  const float z=Min(width/(float)frame.w,height/(float)frame.h);

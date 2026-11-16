@@ -12394,9 +12394,33 @@ void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
 	}
 }
 
+bool LobbySectionOwnsPopups()
+{
+	if(drawHandle!=MD_LOBBY||LoadoutOpen()||getenv("CS_LOBBY_MENUS_UNOPTIMIZED")||getenv("CS_CASTLE_PREVIEW_UNCACHED"))return false;
+	if(gRenewDungeon)return true;
+	if(popUpCnt<1)return false;
+	const int root=popUp[0].type;
+	return root==POPUPTYPE_CASTLEMENU||root==POPUPTYPE_SHOPINFO||root==POPUPTYPE_EVENTSHOP
+		||root==POPUPTYPE_COLLECTIONS||root==POPUPTYPE_CREWLIST;
+}
 void LobbyDraw(void)
 {
 	if(!gRenewDungeon && MergeRouletteLobbySceneDraw())return;
+	// Bottom-navigation pages cover the lobby world. Compose their complete
+	// popup stack here, once, including settings/confirmations above the page.
+	if(LobbySectionOwnsPopups()) {
+		ResetRectPoint();SetAlpha(ALPHA_MAX);SetColor(0);grayScale=0;
+		MemRect(0,DY,DX,DY,0x0C1C2C);
+		gLobbyCastleMenuOpen=false;
+		if(gRenewDungeon)MenuRenewalDungeonDraw(true);
+		for(int p=0;p<popUpCnt;++p){
+			if(p>0||gRenewDungeon){ScreenDarken(SCREENDARKEN);ResetRectPoint();}
+			DrawPopUp(p);
+		}
+		LobbyResourceBarsDraw(DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+		GNBDraw(0,DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+		LobbyBottomNavDraw();++frame;return;
+	}
 	char str[96];
 	ResetRectPoint();
 	LobbyCastlePrepare();

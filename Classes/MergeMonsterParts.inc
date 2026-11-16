@@ -112,7 +112,10 @@ void detail(char* text,size_t size){
     const auto role=effectiveRole(p);
     if(role==MonsterParts::Core)std::snprintf(text,size,u8"%s · 핵 · 몬스터 체력 %lld",d.name,run.enemyMax);
     else if(role==MonsterParts::Guard)std::snprintf(text,size,u8"%s · 방어 보강 · 전체 피해 경감 %d%%",d.name,MonsterParts::defensePct(l));
-    else if(role==MonsterParts::Recovery)std::snprintf(text,size,u8"%s · 회복 보강 · 공격 후 재생 +%lld",d.name,attacking()?enemyTurn.healing:run.monsterHealing());
+    else if(role==MonsterParts::Recovery){
+        if(run.monsterActionTurn>=12)std::snprintf(text,size,u8"%s · 회복 보강 · 재생 소진",d.name);
+        else std::snprintf(text,size,u8"%s · 공격 후 재생 +%lld · 잔여 %d회",d.name,attacking()?enemyTurn.healing:run.monsterHealing(),12-run.monsterActionTurn);
+    }
     else if(role==MonsterParts::Support)std::snprintf(text,size,u8"%s 보강 · 전체 공격 피해 +%d%%",d.name,MonsterParts::attackBonusPct(l));
     else{int weapon=0;while(weapon<l.weaponCount&&l.weapon[weapon]!=p.slot)++weapon;
         const long long damage=attacking()&&weapon<(int)enemyTurn.rawShares.size()?enemyTurn.rawShares[weapon]:run.monsterWeaponDamage(weapon);

@@ -14,3 +14,4 @@ bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height)
 void MergeRouletteDraw();
 // phase: 0 begin, 1 drag, 2 release, 3 cancel. Consumes only its own mode.
 bool MergeRouletteTouch(int phase,int id,float x,float y);
+bool MergeRouletteDebugTouchReview();

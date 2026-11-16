@@ -10,8 +10,8 @@ bool MenuRenewalCommand(int command){
  if(command==TOUCH_FUNC_SHOP||command==TOUCH_FUNC_COLLECTIONS||command==TOUCH_FUNC_LOBBY_CASTLE||command==TOUCH_FUNC_LOBBY_ADVENTURE)gRenewDungeon=false;
  return false;
 }
-static void MenuRenewalDungeonDraw(){
- if(!gRenewDungeon||popUpCnt>0)return; // Settings/alerts stay above this page.
+static void MenuRenewalDungeonDraw(bool behindModal=false){
+ if(!gRenewDungeon||(!behindModal&&popUpCnt>0))return; // Settings/alerts stay above this page.
  ResetRectPoint();const int top=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;
  const int bottom=BOTTOMMENUHEIGHT+12,available=top-bottom;
  DrawPixelPanel(0,top,DX,available,0x0D3038,0xC5A269);

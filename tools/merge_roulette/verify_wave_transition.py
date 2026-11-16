@@ -1,4 +1,4 @@
-"""Exercise real kills, actor layering, castle travel, and incoming enemies."""
+﻿"""Exercise real kills, actor layering, castle travel, and incoming enemies."""
 import importlib.util
 from pathlib import Path
 
@@ -10,7 +10,7 @@ runtime.EXE = ROOT / 'proj.win32/Debug.win32/cs_wave_transition.exe'
 
 for height in (850, 1408):
     folder = f'wave-transition-{height}'
-    runtime.run(height, {'CS_WAVE_TRANSITION_REVIEW': '1'}, folder, 'DONE wave transition review', 13)
+    runtime.run(height, {'CS_WAVE_TRANSITION_REVIEW': '1'}, folder, 'DONE wave transition review', 14)
     checks = (ROOT / 'output/item-series/runtime' / folder / 'checks.log').read_text()
     assert 'PASS monster then allied character and sword then impact effect' in checks
     assert checks.count('PASS defeat travel incoming settle input lock and preserved board') == 3

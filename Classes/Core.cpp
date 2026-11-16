@@ -520,9 +520,7 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
-	if (MergeRouletteActive()) {
-		auto p=touch->getLocation(); MergeRouletteTouch(2,touch->getID(),p.x,p.y); return;
-	}
+	{auto p=touch->getLocation();if(MergeRouletteTouch(2,touch->getID(),p.x,p.y))return;}
 	rapidSwipe = false;
 
 	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
@@ -631,7 +629,7 @@ void Core::onTouchEnded(Touch* touch, Event *unused_event)
 						if(curEquipTab!=EQUIPTAB_GEAR) scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
 						break;
 					case MENU_CASTLE:
-						scT[curMenu] = GetScrollDy(curMenu) - DY + GNBHEIGHT + BOTTOMMENUHEIGHT + 500;
+						// The castle body owns its measured scroll range, including facilities.
 						break;
 					}
 					switch (curMenu) {
@@ -2228,11 +2226,11 @@ void PaintClet(int x, int y, int w, int h)
 		// darken that bar, erase its hit areas, and draw the same window twice.
 		// These section renderers also own their menuDepth detail modal. Drawing
 		// it here again doubled the entire equipment screen and its hit setup.
-		const bool lobbySection = drawHandle == MD_LOBBY && popUpCnt == 1
+		const bool lobbySection = LobbySectionOwnsPopups() || (drawHandle == MD_LOBBY && popUpCnt == 1
 			&& (topPopupType == POPUPTYPE_SHOPINFO
 				|| topPopupType == POPUPTYPE_COLLECTIONS
 				|| topPopupType == POPUPTYPE_CREWLIST
-				|| topPopupType == POPUPTYPE_CASTLEMENU);
+				|| topPopupType == POPUPTYPE_CASTLEMENU));
 
 		if (!lobbySection) {
 			ScreenDarken(SCREENDARKEN);

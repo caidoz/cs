@@ -23,20 +23,24 @@ static void ApplyAuthoredCastleTone(cocos2d::Sprite* target,int image,int source
  }
  else if(image==CANNON_UPGRADE_ATLAS_IMG)castle=Max(0,Min(9,sourceY/256));
  static cocos2d::GLProgram* program=nullptr;
+ static bool attempted=false;
+ static std::vector<cocos2d::GLProgramState*> states;
  if(!program){
+  if(attempted)return;attempted=true;
   const char* fragment=R"(
 #ifdef GL_ES
 precision mediump float;
 #endif
 varying vec4 v_fragmentColor;
 varying vec2 v_texCoord;
-uniform sampler2D CC_Texture0;
+// CC_Texture0 is injected by GLProgram on both desktop GL and GLES.
 uniform vec4 uRegion;
 uniform vec4 uLevels;
 uniform float uClock;
 uniform float uBody;
 uniform float uInteriorGrade;
 uniform float uSoft;
+uniform float uCannon;
 void main(){
  vec4 sampleColor=texture2D(CC_Texture0,v_texCoord);
  float alpha=sampleColor.a;
@@ -60,15 +64,20 @@ void main(){
  // Royal detailing follows the existing gold inlay; never extends the silhouette.
  float sweep=pow(max(0.0,sin(local.x*13.0-local.y*8.0-uClock*1.4)),18.0);
  color+=uLevels.w*gold*(.015+.035*sweep)*vec3(1.0,.82,.36);
+ if(uCannon>.5){float l=dot(color,vec3(.299,.587,.114));color=mix(vec3(l),color,.76)*.82;}
  gl_FragColor=vec4(clamp(color,0.0,1.0)*alpha,alpha)*v_fragmentColor;
 })";
   program=cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert,fragment);
   if(!program)return;program->retain();
  }
- auto* state=cocos2d::GLProgramState::create(program);
+ // Each pooled draw sprite keeps its own uniforms, reused on later frames.
+ if(states.size()<=(size_t)getSpriteIdx)states.resize(getSpriteIdx+1,nullptr);
+ auto*& state=states[getSpriteIdx];
+ if(!state){state=cocos2d::GLProgramState::create(program);state->retain();}
  const auto size=target->getTexture()->getContentSize();
  const bool soft=image>=CASTLE_SOFT_FIRST_IMG && image<=CASTLE_SOFT_WHEELS_IMG;
  state->setUniformFloat("uSoft",soft?1.0f:0.0f);
+ state->setUniformFloat("uCannon",image==CANNON_UPGRADE_ATLAS_IMG?1.0f:0.0f);
  cocos2d::Vec4 region(0,0,1,1),levels(0,0,0,castle==9?1.0f:0.0f);
  if(castle>=0&&castle<10){
   const auto& rig=IndividualCastleV4::Rigs[castle];

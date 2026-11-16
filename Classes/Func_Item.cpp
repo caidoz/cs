@@ -1732,8 +1732,8 @@ bool CastleProductionReview(){
    const long long rate=CastleIncomePerHour();const int interval=CastleEnergyRecoverySeconds();
    const int attack=CastleMenuModel::Attack(robin.castleProgress,c);
    robin.castleProgress.rooms[c][i]=5;
-   ok=ok&&(CastleFacilities::Food(c,i)?CastleEnergyRecoverySeconds()<interval&&CastleIncomePerHour()==rate:
-    CastleIncomePerHour()>rate&&CastleEnergyRecoverySeconds()==interval);
+   ok=ok&&CastleEnergyRecoverySeconds()==interval;
+   ok=ok&&(CastleFacilities::Food(c,i)?CastleIncomePerHour()>rate:CastleIncomePerHour()==rate);
    ok=ok&&(CastleFacilities::Armory(c,i)?CastleMenuModel::Attack(robin.castleProgress,c)>attack:CastleMenuModel::Attack(robin.castleProgress,c)>=attack);
    robin.castleProgress.rooms[c][i]=0;
   }
@@ -1783,7 +1783,7 @@ void CastleProductionRebase(long long oldGoldPerHour,int oldEnergySeconds,long l
 //금고 상한. 생산 시설이 올린다.
 long long CastleIncomeCap(void)
 {
-	return (long long)INCOME_CAP_BASE * (100 + CastleBonusOf(CPE_INCOME_CAP_PCT)) / 100;
+	return (long long)INCOME_CAP_BASE * (100 + CastleBonusOf(CPE_INCOME_CAP_PCT)) / 100 * (100+CastleFacilities::StorageBonus(robin.castleProgress,robin.castle))/100;
 }
 
 //지금 금고에 쌓여 있는 양. 마지막으로 걷은 뒤 흐른 시간으로 센다.

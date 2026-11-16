@@ -181,7 +181,7 @@ struct Run {
     }
     MonsterParts::Loadout monsterLoadout() const {return MonsterParts::loadout(monsterNpc,wave);}
     const MonsterParts::ActionDef& monsterAction() const {return MonsterParts::action(monsterNpc,0);}
-    long long monsterHealing() const {return MonsterParts::healing(enemyHp,enemyMax,monsterLoadout());}
+    long long monsterHealing() const {return MonsterParts::healing(enemyHp,enemyMax,monsterLoadout(),monsterActionTurn);}
     long long monsterWeaponDamage(int weapon) const {
         const auto l=monsterLoadout();const long long base=enemyAttack*(BossTier(wave)?2:1);
         const long long value=MonsterParts::weaponDamage(base,l,weapon);

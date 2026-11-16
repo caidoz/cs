@@ -1,0 +1,122 @@
+[
+  {
+    "castle": 1,
+    "file": "rooms-01.png",
+    "generated_source": "exec-4972b5e7-bddb-4211-8ef6-e6d69fdd4f15.png",
+    "sha256": "b5d60b45a2fed28bc27155ee3b1885b578326fa76444b4b6b97bd06dbe8e5b5f",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 2,
+    "file": "rooms-02.png",
+    "generated_source": "exec-17cf66fd-8cc2-4b7a-9216-c89269ed7b36.png",
+    "sha256": "d576ef4947de02b073d0fbd12de862a45389404e7cc43cd93708d10ad45d3aa0",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 3,
+    "file": "rooms-03.png",
+    "generated_source": "exec-074b5103-0a7f-4eb0-b458-e9a3e526ac38.png",
+    "sha256": "696f222db706552811bd52a2fcb0b3cdfc37b83eebf5e535158527b2bcd6c335",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 4,
+    "file": "rooms-04.png",
+    "generated_source": "exec-d112f0e8-f2ed-4353-8075-a8f38b698352.png",
+    "sha256": "f72c75d8c2f2452014ab809ef4e896eb6d2d8fa0611d6433ba86eeacf61864c1",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 5,
+    "file": "rooms-05.png",
+    "generated_source": "exec-fc38bb7b-b89d-4893-966e-38c56dff7aca.png",
+    "sha256": "cabe3d6e340f1977959bf093fd9911f3e162838a5a2ba1c124efe1f090a78b41",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 6,
+    "file": "rooms-06.png",
+    "generated_source": "exec-dd9c3a6b-b8f2-4177-8d98-6d61d4536e54.png",
+    "sha256": "626f10d4942b11bb567eff07a19aeaa736930571521cc3d0ce75259fba8eb196",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 7,
+    "file": "rooms-07.png",
+    "generated_source": "exec-0f38918d-5d53-41e0-821d-e0fee72b0a9e.png",
+    "sha256": "1e60f0c6b42da34b37431e7a22c57a50089ceaf08921047938f6a6afed2a03f7",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 8,
+    "file": "rooms-08.png",
+    "generated_source": "exec-e33200c3-123f-4377-8de1-a6a62aee7830.png",
+    "sha256": "a890a5634fc1fcf8c11f07160d5fda31384f7afb241c307aebde716daebb134a",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 9,
+    "file": "rooms-09.png",
+    "generated_source": "exec-0f46419b-eaff-4c51-a0a6-0d9153639be4.png",
+    "sha256": "b4f3708aa5fa1491cf8409aafe46c53085c3b0e7147cc8cdeaafc9a6319fa554",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  },
+  {
+    "castle": 10,
+    "file": "rooms-10.png",
+    "generated_source": "exec-7c83bb91-0909-45f1-9084-7c9f385a98b8.png",
+    "sha256": "61ff12c21b081dbb9dff7f6e12e1ffb5babe470d7201d281d85b5b336f8b4fb9",
+    "columns": 4,
+    "rows": 6,
+    "logical_room_pixels": [
+      128,
+      64
+    ]
+  }
+]

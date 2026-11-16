@@ -50,6 +50,17 @@ bool LobbyCastleDebugHit(float x,float y){
 #endif
  return false;
 }
+bool LobbyCastleDebugCycle(int castle,int room){
+#ifdef GAMEDEBUG
+ if(!LobbyCastleDebugActive() || castle<0 || castle>=10 || room< -1 || room>=4)return false;
+ if(room<0)LobbyCastleDebug::levels[castle][3]=(LobbyCastleDebug::levels[castle][3]+1)%6;
+ else LobbyCastleDebug::rooms[castle][room]=(LobbyCastleDebug::rooms[castle][room]+1)%6;
+ return true;
+#else
+ return false;
+#endif
+}
+void LobbyCastleDebugEnd(){if(LobbyCastleDebug::open)LobbyCastleDebug::Close();}
 bool LobbyCastleDebugCommand(int command){
 #ifdef GAMEDEBUG
  using namespace LobbyCastleDebug;

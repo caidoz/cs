@@ -8,11 +8,37 @@
 
 ## 🛠️ 1. 프로젝트 개요 및 빌드 환경 (Project & Tech Stack)
 
+### 성 시설 최종 개편: 방 4개 + 독립 포탑 (2026-11-16)
+
+- 디버그 ON은 로비의 임시 외형 미리보기를 자동으로 켠다. 방 4개/포탑을 직접 누르면 해당 부위만 Lv.0~5 순환, 나머지 성 몸체는 다음 성(10→1), 배경은 다음 지역으로 순환한다. 메뉴·전투 시작·하단 메뉴는 유지한다. OFF 시 저장된 외형으로 복귀한다. 성 메뉴도 디버그 중에는 무료 `단계 변경`을 사용하며 골드/저장 레벨을 변경하지 않는다. 일반 모드는 기존 유료 강화다. `tools/castles/verify_debug_preview.py`로 850/1408 화면과 10개 성의 직접 터치, 6단계 순환 및 저장 불변을 확인한다.
+- 현재 기준 기획은 `content/castles/four_facilities.json`이다. 실내 기능은 생산/공격/활력(최대 체력)/방어 네 가지이며, 위층은 공격·방어, 아래층은 생산·활력이다. 아래의 과거 5개 방/NPC 배치 자료는 레거시 렌더러용이며 현재 배치는 `OriginalCastle::rooms()`를 따른다.
+- 최종 아트는 `Resources/res/castle_four_rooms_v5/rooms-01..10.png`: 성마다 4열(생산/공격/활력/방어) × 6행(Lv.0~5), 총 240개 상태다. `generation.json`에 생성 원본 파일명과 SHA-256을 보존했다. 중간 시안은 최종 리소스가 아니다.
+- 사용자의 시각 요구: 같은 성 안에서도 강화에 따라 **핵심 설비와 실루엣이 교체**되어야 한다. 물건 수나 밝기만 늘리지 않는다. 성 사이에도 구성과 활동이 달라야 한다. 농장에는 동물·작물·양식 시설이 실제로 보이며, 활력 시설은 여관/단련/증기 치료/온천/수영/생체 회복으로 나눈다. 미사일·레이저 성에는 해당 기술의 제어·연구·냉각 설비가 들어간다. 후반 성은 훨씬 화려하고 고급스럽고 강력해 보이되 큰 색면과 조명은 톤을 낮춘다.
+- `CastleFacilityTone.inc`은 실내를 CMF와 비슷한 128×64 논리 픽셀 단위로 샘플링하고 성별로 명도·채도를 보정한다. 작은 가구와 도구를 뒤쪽에 모으고 앞쪽 바닥은 동료 이동 공간으로 남긴다. 현재 로비는 4개 방에서 실제 보유 동료를 계속 걷게 한다.
+- 포탑은 성별 Lv.0~5다. 기존 60단계 포탑 아트를 실제 포탑/버튼/메뉴에서 사용하고, 투석기의 움직이는 팔은 유지하면서 받침을 강화한다. 첨탑은 별도 강화 항목 없이 포탑과 함께 연결부·지지대만 보강한다. 고유 실루엣과 높이는 유지한다. 현재 턴 전투의 포 이름은 `CastleFacilities::TurretNames`이며 `TurretAttackPresentation.h`의 실제 발사 유형에 맞춘다(레거시 실시간 전투 프로필 이름과 구분).
+- `CastleMenuModel::Progress.version=2`: 저장 배열 크기(10×5)는 유지한다. 방 네 곳은 모든 성에 공통인 영구 강화로 동기화하며, 마이그레이션은 보유 성의 기존 강화 중 높은 단계를 유지한다. 포탑인 `parts[c][3]`은 성마다 유지한다. 다섯 번째 과거 방 슬롯은 호환성을 위해 남긴다.
+- 방 강화는 레벨당 히어로 공격력 4%, 최대 체력 6%, 방어력 4%, 골드 생산 25%/저장 50%다. 에너지 회복이나 동료 공격 횟수를 늘리지 않는다. 기존 가방/배치 칸 증가와는 분리한다. 턴 포격 계수는 50/80/110/150/200/250%이며 히어로 공격 시설 보너스를 다시 증폭하지 않는다.
+- 메뉴는 `CastleFourFacilityMenu.inc`의 5개 시설 목록이다. `MergeRouletteOriginalPreview`가 10개 성 모두 실제 메시와 방 그림으로 미리보기를 만들며, 성·크기·방/포탑 레벨을 키로 캐시한다. `MergeCastleLobbyRebuild.inc`의 로비 방 터치 영역도 반드시 4개만 등록한다.
+- 검증: `tools/castles/test_four_facilities.cpp`, `test_castle_menu.cpp`, `test_facility_levels.cpp`; `verify_facility_rooms.py --exe cs.four-rooms-review.exe`; `verify_four_facility_menu.py`; `tools/merge_roulette/verify_turret_attack.py --exe cs.four-rooms-review.exe`; `tools/art/verify_mist_resources.py --exe cs.four-rooms-review.exe`; `verify_facility_economy.ps1`.
+- 시각 비교 페이지: `python tools/castles/build_four_facility_gallery.py` → `output/castle-four-room-design/index.html`. 빌드 중간 파일은 `PreviewIntDir=Debug.four-rooms/`로 분리하고 검증 실행 파일은 `cs.four-rooms-review.exe`를 사용한다.
+
+### 성 메뉴 성능과 스크롤 수정 (2026-11-16)
+
+- 방 이름판 제거: `MergeCastleMist.inc`의 `signs[10][5]`에 원본 외형에 남아 있던 50개 빈 이름판의 실제 영역을 기록했다. 성 외형 메시에서 판·테두리를 제외하고 주변 실내 그림자 색으로 연결한다. 이전 나무 무늬 덮개는 제거했다. 로비/전투/좌우 반전이 같은 메시를 사용한다. `tools/art/verify_mist_resources.py --exe cs.no-room-signs-review.exe`로 두 해상도의 10개 성과 15개 배경을 확인한다.
+
+- 공통 하단 메뉴 성능: `LobbySectionOwnsPopups()`가 상점·장비·동료·성·던전과 그 위 모달을 한 번만 합성하고 가려진 로비를 생략한다. `Core.cpp`는 이 경로가 소유한 팝업을 다시 그리지 않는다. 던전 설정 창도 부모 페이지를 유지한다.
+- `AuthoredCastleTone.inc`의 `CC_Texture0`는 Cocos가 선언하므로 중복 선언하지 않는다. 컴파일 실패 반복을 막고 드로우 슬롯별 셰이더 상태를 재사용한다. `MergeCastleOriginal.inc`의 메시 캔버스 크기는 Node 경로로 설정해 매 프레임 폴리곤 재설정 경고를 막는다.
+- `MenuRenewalSkin.inc`은 정적 메뉴 패널을 8MiB 예산 안에서 캐시한다. 가격·문자·터치·캐릭터는 계속 갱신한다. `Func_Text.cpp`는 라벨별 글자 색 배열이 같으면 글자별 갱신을 생략하고 `ResetLabel()`에서 캐시를 지운다. 화면 밖 동료·보물상자 카드도 조립하지 않는다.
+- 전후 측정 및 부모 메뉴/설정 입력 검증: `tools/lobby/verify_menus_perf.py`, 결과 `output/lobby-menus/verification.json`. 비교용 이전 실행 파일은 수정 전 `cs.lobby-menus-before.exe`로 보존했다. 검증 빌드는 `PreviewIntDir=Debug.lobby-menus/`로 분리한다.
+
+- 성 메뉴 성능·스크롤 수정: `LobbyDraw`는 단독 성 메뉴가 화면을 덮으면 뒤의 로비 성/동료를 그리지 않는다. `CastleFinal::Panel`은 최대 32개 스타일을 캐시하고 원본 성 미리보기는 크기·시설 레벨별로 캐시한다. 한 프레임에 같은 그림을 여러 번 표시할 때 Sprite 명령은 각각 사용한다. 스크롤은 `y - previousY`이며 터치 종료 때 레거시 범위로 덮어쓰지 않는다. `tools/castles/verify_scroll_perf.py`로 두 화면 크기에서 성능·양방향 스크롤·클리핑·시설 변경을 검증한다.
+
 ### 몬스터 부위와 행동 전투 인수인계 (2026-11-16)
 
 - [몬스터 부위 인벤토리와 공격 및 보강 기획](docs/MONSTER_PARTS_COMBAT_DESIGN.md)을 먼저 읽는다. 기본 51종 및 색상 변종 포함 357개체의 부위 역할과 공격 구성을 수록한다.
 - 몬스터는 한 턴에 공격 파츠 1~3개가 각각 한 번씩 공격한다. 멧돼지는 엄니와 대시를 한 묶음으로 수행한다. 추가 블록은 피해·방어·회복을 수동 보강하며 별도 행동을 만들지 않는다. 회복형은 공격 묶음 정산 시 재생한다.
 - 조정 원본은 `content/monster_parts/behaviors.json`, 전투식은 `Classes/MonsterPartsModel.h`, 판 표시는 `Classes/MergeMonsterParts.inc`다. 생성된 `MonsterPartsData.h`와 부위 아틀라스를 직접 고치지 않는다.
+- 파츠 밸런스는 기존 웨이브 피해 예산을 기준으로 정규화한다. 피해 보강 18%, 방어 경감 12%, 돌진 관통 15% 상한. 방어·회복형은 공격력을 절충한다. 재생은 0.55~1.50%에서 장기전 중 소진된다. `tools/monster_parts/test_balance.cmd`와 기획서의 최신 식을 함께 확인한다.
 - 저장 버전은 12이며 공격 묶음 정산과 룰렛 반격 턴을 보존한다. 부위 파괴와 본체 탈락은 후속 범위다. 기존 PVP 공성전은 별도 전투를 유지한다.
 
 ### 성 실내 NPC 배치 인수인계 (2026-11-04)
