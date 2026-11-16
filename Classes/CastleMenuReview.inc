@@ -18,10 +18,12 @@ static void CastleReviewClick(int command) {
 #include "MenuRenewalReview.inc"
 #include "LobbyMenusPerfReview.inc"
 #include "CastleFourFacilityReview.inc"
+#include "CastleUpgradeBlockReview.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(CastleUpgradeBlockReview(path))return;
     if(CastleFourFacilityReview(path))return;
     if(getenv("CS_BOX_INFO_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;

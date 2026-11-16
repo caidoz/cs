@@ -755,12 +755,12 @@ long long cannonShell() {
     const long long base=stats.weapon*100/(100+CastleTeamBonus(0));
     return std::max(1LL,base*CastleMenuModel::CannonTurnPercent(lv)/100);
 }
-void button(const Box& b,const char* title,const char* sub,int color,bool enabled=true) {
+void button(const Box& b,const char* title,const char* sub,int color,bool enabled=true,float titleLift=0) {
     float s=DX/640.0f;
     if(b.h>50*s)mergeGoldFrame(b,enabled?color:0x252D3C,enabled?blend(color,0x050A20,.45f):0x1C2534,enabled);
     else panel(b,enabled?color:0x252D3C,enabled?0xD7AE66:0x4C5565);
     int tx=b.x+b.w/2;
-    label(title,tx,b.y-b.h*(sub?.32f:.5f),b.h>50*s?.91f:.64f,enabled?0xFFF2D8:0x89909E);
+    label(title,tx,b.y-b.h*(sub?.32f:.5f)+b.h*titleLift,b.h>50*s?.91f:.64f,enabled?0xFFF2D8:0x89909E);   //y 는 위로 +
     if(sub) {
         bool cost=std::strncmp(sub,"하트 -1",7)==0;
         if(cost) {
@@ -772,7 +772,8 @@ void button(const Box& b,const char* title,const char* sub,int color,bool enable
 void reviewCapture(const char* name);
 //공용 보상창(RewardPopup.inc). 단추만 합성 전투의 금테 단추로 그린다.
 #include "RewardPopup.inc"
-void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true);}
+//보상창 단추의 큰 글자(.91)는 글꼴 여백 탓에 가운데보다 아래로 처져 보여서 높이의 14% 만큼 올린다.
+void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true,.14f);}
 void save() {
     if(siegeActive)return;   //공성전은 디버그라 이어하기 저장을 남기지 않는다
     if(review)return;
@@ -1782,18 +1783,55 @@ void drawWorld(const Layout& l,bool combat) {
     if(defeated){
         enemyMotion=defeatedMotion;SetAlpha((int)(32*waveTransition.defeatAlpha()));
         monsterY-=(int)((1-waveTransition.defeatAlpha())*12*s);
-    }else if(waveTransition.active()&&waveTransition.incomingVisible()){
-        const auto* bounds=cmfMotionImgSize[cmf]+crewPos[npc*5]*4;
-        const float offscreen=DX+(std::abs((int)bounds[0])+bounds[2])*enemyZoom;
-        enemyX=(int)waveTransition.incomingX(offscreen,(float)ex);
-        int walkFrames=0;const signed short* walk=nullptr;
-        if(waveTransition.arrival()<1&&CrewWalkMotion(cmf,npc,walkFrames,walk)&&walkFrames>0)
-            enemyMotion=walk[(waveTransition.age-MergeCombat::WaveTransition::EnterStart)%walkFrames];
-        SetAlpha((int)(32*std::min(1.f,waveTransition.arrival()*4)));
+    }
+    //다음 적은 제자리(ex)에서 마왕의 심장 아래로 솟아오른다 - 옛 실시간 판의 소환 연출(REGENMOVE/REGENDRAW,
+    //Func_Graphics 의 "생성 그리기")을 턴 전투 길이(EnterFrames)에 맞춰 옮긴 것이다. 걸어 들어오던
+    //incomingX 경로는 쓰지 않는다. 심장 그림은 몬스터 다음에 제출해 몸 위에 겹친다.
+    MergeCombat::SummonPose summon;
+    float drawZoom=enemyZoom;
+    if(!defeated&&waveTransition.active()&&waveTransition.incomingVisible()){
+        enemyX=ex;
+        summon=MergeCombat::summonPose(waveTransition.age-MergeCombat::WaveTransition::EnterStart,MergeCombat::WaveTransition::EnterFrames);
+        if(!summon.landed){
+            //이 그리기 공간은 y 가 위로 자란다(ey=680 이 850 화면의 위쪽 170). 점프는 더하기다. 높이는 화면 배율만
+            //따른다 - 몬스터 배율(1.35 안팎)까지 곱하면 화면 밖으로 튄다.
+            monsterY=ey+(int)(summon.lift*s);
+            drawZoom=enemyZoom*summon.zoomMul;
+            if(summon.flipped)enemyDir=RIGHT;
+            SetAlpha(summon.alpha);   //옛 RegenDraw 의 검은 SetBlend 는 색 0 이라 실제로는 걸리지 않았다. 투명도만 올린다.
+        }
     }
     renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;
     monsterDrawn=showMonster;
-    if(showMonster){monsterDrawOrder=++objectDrawOrder;DrawCmfDetailShadow(cmf,enemyMotion,enemyX,monsterY,enemyDir,enemyZoom);}
+    if(showMonster){
+        monsterDrawOrder=++objectDrawOrder;
+        if(summon.landed)DrawCmfDetailShadow(cmf,enemyMotion,enemyX,monsterY,enemyDir,drawZoom);
+        else{
+            //그림자는 바닥에 두고 몸만 띄운다. DrawCmfDetailShadow 는 발 자리에 그림자를 붙여서 같이 떠 버린다.
+            if(IsBigCmf(cmf))ShadowImage(40*_2X,16*_2X,26*_2X,1*_2X,enemyX-(int)(20*_2X*enemyZoom),ey+(int)(8*_2X*enemyZoom),SHADOW_IMG,enemyZoom);
+            else ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,enemyX-(int)(12*_2X*enemyZoom),ey+(int)(8*_2X*enemyZoom),SHADOW_IMG,enemyZoom);
+            DrawCmfDetail(cmf,enemyMotion,enemyX,monsterY,enemyDir,drawZoom,false,false);
+            SetAlpha(32);
+            //머리 위 마왕의 심장. 몬스터 배율 그대로면 몸을 덮을 만큼 커서 SUMMONHEARTZOOM 으로 줄인다(옛 판과 같다).
+            //서 있을 때의 머리 꼭대기보다 점프 높이만큼 더 위에 띄운다 - 몬스터는 그 아래에서 솟아올라 착지한다.
+            if(cmfLoaded[CMF_NPC_HEART]!=CMF_NPC_HEART)CmfRead(CMF_NPC_HEART,CMF_NPC_HEART);
+            const float heartZoom=enemyZoom*SUMMONHEARTZOOM;
+            int headY=ey+(int)(120*s);
+            if(cmf>=TOTALCHAR&&enemyMotion>=0&&enemyMotion<cmf_m_cnt[cmf]){
+                const auto* mb=cmfMotionImgSize[cmf]+enemyMotion*4;
+                //표의 세로 오프셋은 그림 좌표(아래로 +)라 머리 꼭대기는 발 앵커에서 -mb[1]*zoom 만큼 위다(y 는 위로 +).
+                const int top=ey-(int)(mb[1]*enemyZoom);
+                if(top>ey&&top<ey+400*s)headY=top;
+            }
+            //심장 그림(64x64)은 조각 좌표가 -64..0 이라 몬스터의 발처럼 앵커가 아래끝이다. 앵커를 머리 꼭대기 조금 위에
+            //두면 심장은 그 위에 서고, 뒤따르는 불꽃(SPARK) 조각들은 앵커 아래로 180 가까이 뻗어 몬스터 몸으로
+            //번개가 내리꽂히는 모양이 된다 - 그게 옛 소환 연출이다.
+            const int heartMotion=summonMotion[summon.heartMotion];
+            //심장은 점프 꼭대기(lift 64)보다 위에 둔다. 솟아오르는 몬스터가 심장을 뚫고 지나가지 않고, 번개만 몸에 닿는다.
+            const int heartY=headY+(int)(72*s);
+            DrawCmfDetail(CMF_NPC_HEART,heartMotion,enemyX,heartY,LEFT,heartZoom,false,false);
+        }
+    }
     SetAlpha(32);
     if(cmf>=TOTALCHAR&&enemyMotion>=0&&enemyMotion<cmf_m_cnt[cmf]){
         const auto* mb=cmfMotionImgSize[cmf]+enemyMotion*4;
@@ -2092,6 +2130,8 @@ void tick(float dt) {
         }
         castleScrollSeconds+=dt*waveTransition.speed();
         waveTransition.advance();
+        //심장이 뜨는 순간의 소환음(옛 RegenMove 와 같은 소리).
+        if(waveTransition.age==MergeCombat::WaveTransition::EnterStart)EffectSound(M_ENEMYDEAD);
         if(!waveTransition.active()){message.clear();enemyBodyKnown=false;}
         return;
     }
@@ -2477,21 +2517,22 @@ void waveTransitionReviewStep(const Layout& l){
     }
     if(waveTransition.active()){
         const auto& t=waveTransition;
-        int bit=t.defeatedVisible()?1:t.travelling()?2:t.arrival()<1?4:8;
+        //소환 구간은 둘로 나눠 본다: 심장 아래로 솟는 중(4)과 착지 직전(16).
+        int bit=t.defeatedVisible()?1:t.travelling()?2:t.arrival()<.6f?4:t.arrival()<1?16:8;
         if(t.travelling()&&(monsterDrawn||enemyBodyKnown)){reviewTrace("FAIL next enemy visible during castle travel");done=true;return;}
         const long long heart=robin.heart;const int spins=run.spins;
         reviewTap(l.attack);reviewTap(l.spin);
         if(run.attacking||robin.heart!=heart||run.spins!=spins||(int)run.board.size()!=boardCount){reviewTrace("FAIL transition accepted input or changed board");done=true;return;}
         // Capture the middle of each visible phase, not just its first frame.
-        const bool capture=(bit==1&&t.age>=8)||(bit==2&&t.age>=60)||(bit==4&&t.arrival()>=.7f)||(bit==8);
+        const bool capture=(bit==1&&t.age>=8)||(bit==2&&t.age>=60)||(bit==4&&t.arrival()>=.4f)||(bit==16&&t.arrival()>=.85f)||(bit==8);
         if(capture&&!(mask&bit)){
-            char name[48];std::snprintf(name,sizeof(name),"wave-%d-%s",sample,bit==1?"defeat":bit==2?"travel":bit==4?"incoming":"settled");
+            char name[48];std::snprintf(name,sizeof(name),"wave-%d-%s",sample,bit==1?"defeat":bit==2?"travel":bit==4?"summon-rise":bit==16?"summon-land":"settled");
             reviewCapture(name);mask|=bit;
         }
         phase=2;return;
     }
     if(phase==2){
-        if(mask!=15||run.stage!=expectedStage||run.wave!=expectedWave||!layerSeen||castleScrollSeconds<=travelStart){
+        if(mask!=31||run.stage!=expectedStage||run.wave!=expectedWave||!layerSeen||castleScrollSeconds<=travelStart){
             reviewTrace("FAIL wave phases, progression or castle movement");done=true;return;
         }
         stopTravel=castleScrollSeconds;phase=3;return;

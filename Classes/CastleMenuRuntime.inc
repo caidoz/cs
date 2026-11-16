@@ -2,16 +2,13 @@
 #include "CastleArtilleryModel.h"
 #include "Data/CastleFacilities.h"
 #include "Data/InventoryCannonSprites.h"
+#include "Data/CastleUpgradeBlocks.h"
 namespace {
 int castleBrowse=0,castlePage=0,castleCategory=0,castleRow=0,castleModal=0;
 bool castleUpgradeIsRoom=false;
 int castleUpgradeCastle=0,castleUpgradePart=0,castleUpgradeLevel=0,castleUpgradePrice=0;
 int castleMessageUntil=0; float castlePanY=0;
 const char* castleMessage="";
-const char* const castlePartNames[]={"첨탑","외부장갑","실내","대포","바퀴"};
-const char* const castleRoomNames[]={"창고","무기고","병영","공방","지휘실"};
-const char* const castleRoomEffects[]={"아이템 적재 한도 +4개 / 단계","장비 배치 한도 +1칸 / 단계","아군 전체 체력 +2% / 단계","아군 전체 방어력 +2% / 단계","아군 전체 공격력 +2% / 단계"};
-const char* const castlePartEffects[]={"아군 전체 공격력 +1% / 단계","아군 전체 방어력 +2% / 단계","아군 전체 체력 +2% / 단계","포 피해 +10%, 쿨타임 -3%, 공격력 +1% / 단계","아군 전체 능력치 +1% / 단계"};
 int CastleInventoryUsed() { int n=0; for(int i=0;i<TOTALINVENTORY;++i) if(robin.inven[i].type!=EMPTY&&robin.inven[i].count>0) ++n; return n; }
 long long CastleProjectedStat(const CastleMenuModel::Progress& p,int c,int stat) {
     const int kind=stat==PS_DMG?0:stat==PS_HP?1:2;
@@ -77,7 +74,7 @@ void CastleMenuOpen() { CastleProgressEnsure();
     if(DebugControlsOpen())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_HIDE);
     if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
     castleBrowse=robin.castle;castlePage=castleModal=castleCategory=0;castleRow=3;castleMessage="";castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
-    if(castlePendingFacility>=0){gCastleFacilityTab=true;scY[MENU_CASTLE]=Min(400,Max(280,DY*28/100))+300+castlePendingFacility*144;castlePendingFacility=-1;}
+    if(castlePendingFacility>=0){gCastleFacilityTab=true;scY[MENU_CASTLE]=CastleUpgradeBlocks::PreviewHeight(DY)+60+(castlePendingFacility<2?CastleUpgradeBlocks::CardHeight(DY)+12:0);castlePendingFacility=-1;}
 }
 bool CastleMenuCommand(int func) {
     if(DebugControlsOpen() && LobbyCastleDebugActive()){

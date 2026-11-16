@@ -115,6 +115,35 @@ struct WaveTransition {
         return offscreen+(home-offscreen)*ease;
     }
 };
+// 다음 적 등장: 오른쪽 화면 밖에서 걸어 들어오지 않고, 옛 실시간 판의 소환(REGENMOVE/REGENDRAW)처럼
+// 제자리에서 마왕의 심장 아래로 솟아오른다. 투명하던 몸이 또렷해지며 위로 튀어 오르고(zoom 이 부풀었다가
+// 착지하며 살짝 줄어든다), 좌우를 빠르게 뒤집다가 착지하며 히어로 쪽을 본다. 머리 위 심장은
+// summonMotion(심장 3장 -> 불꽃 8장)을 등장 길이에 맞춰 한 번 돈다.
+struct SummonPose {
+    float lift=0;        // 발이 바닥에서 떠오른 높이(640 폭 기준 픽셀, 화면 배율 s 를 곱해 쓴다)
+    float zoomMul=1;     // 몬스터 배율에 곱하는 값
+    int alpha=32;        // 0~32
+    bool flipped=false;  // true 면 기본 방향의 반대를 본다
+    int heartMotion=0;   // summonMotion 첨자(0~29)
+    bool landed=true;
+};
+inline SummonPose summonPose(int frame,int frames) {
+    SummonPose p;
+    if(frames<=0||frame>=frames)return p;
+    const float t=std::max(0.f,std::min(1.f,frame/(float)std::max(1,frames-1)));
+    const float jump=std::max(0.f,std::min(1.f,std::sin(3.14159265f*t)));
+    float bounce=0;
+    if(t>.75f){const float tb=std::min(1.f,(t-.75f)/.25f);bounce=std::sin(3.14159265f*tb)*(1-tb);}
+    p.lift=64.f*std::pow(jump,.5f)-14.f*bounce;              // 32*_2X 점프, 7*_2X 착지 바운스
+    const float zDown=t>.82f?std::min(1.f,std::pow((t-.82f)/.18f,.7f)):0.f;
+    p.zoomMul=std::max(1.f,1+.35f*std::pow(jump,.3f)-.18f*zDown);
+    p.alpha=std::max(1,std::min(32,(int)(32*std::min(1.f,t*1.6f))));
+    const int flip=frame<frames/4?(frame/2)%2:frame<frames/2?frame%2:(frame/2)%2;
+    p.flipped=flip!=0;
+    p.heartMotion=std::min(29,frame*30/frames);
+    p.landed=false;
+    return p;
+}
 struct EnemyPhases {
     int approach=0,attack=30,recovery=12,returnFrames=0;
     void begin(int walkFrames,int attackFrames,int backFrames=-1,int restFrames=12){

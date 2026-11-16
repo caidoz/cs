@@ -1,10 +1,14 @@
 """Exercise free stage previews and direct castle touches in the native game."""
 from pathlib import Path
+import argparse
 import os
 import subprocess
 import time
 
 root = Path(__file__).resolve().parents[2]
+parser = argparse.ArgumentParser()
+parser.add_argument('--exe', default='cs.free-preview.exe')
+args = parser.parse_args()
 for height in (850, 1408):
     out = root / f'output/free-preview-review/{height}'
     out.mkdir(parents=True, exist_ok=True)
@@ -17,7 +21,7 @@ for height in (850, 1408):
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
     with (out / 'stdout.log').open('w') as log:
-        process = subprocess.Popen([str(root / 'proj.win32/Debug.win32/cs.free-preview.exe')],
+        process = subprocess.Popen([str(root / 'proj.win32/Debug.win32' / args.exe)],
                                    cwd=root / 'Resources', env=env, startupinfo=startup,
                                    stdout=log, stderr=log)
         try:

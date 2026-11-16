@@ -11,6 +11,7 @@
 #include "Data/CastleUpgradeCosmetics.h"
 #include "Data/HybridSd3d.h"
 #include "Data/HybridCastleFleet.h"
+#include "Data/CastleUpgradeBlocks.h"
 namespace CastleFinal {
 static const int Order[5]={0,3,1,2,4};
 static void GoldPair(long long needed,long long owned,int left,int top,int width){
@@ -21,9 +22,10 @@ static void GoldPair(long long needed,long long owned,int left,int top,int width
 }
 static int HeaderTop(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int BodyTop(){return HeaderTop()-54;}
-static int PreviewHeight(){return Min(400,Max(280,DY*28/100));}
-static int ContentHeight(){return PreviewHeight()+82+18+36+34+34+38+60+5*172+20;}
-static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-HOMEBAR_HEIGHT-16));}
+static int BodyBottom(){return Max(HOMEBAR_HEIGHT+16,MergeRouletteBottomNavHeight()+12);}
+static int PreviewHeight(){return CastleUpgradeBlocks::PreviewHeight(DY);}
+static int ContentHeight(){return CastleUpgradeBlocks::ContentHeight(DY);}
+static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-BodyBottom()));}
 static int panelDrawSlot=0;
 // The rounded panel shader is expensive on large overlapping menu surfaces.
 // Rasterize each static style once; scrolling changes only its clipped quad.
@@ -86,7 +88,7 @@ bool CastleMenuFinalDrag(int startX,int startY,int x,int y,int previousY){
  if(curMenu!=MENU_CASTLE || !popUpCnt || popUp[popUpCnt-1].type!=POPUPTYPE_CASTLEMENU || castleModal || gTouchRectLocked) return false;
  if(Abs(startX-x)<8 && Abs(startY-y)<8 && scDir==SCROLL_NOTHING) return true;
  scDir=SCROLL_VERTICAL;isTouchKey=TOUCH_DRAG;scAccelY=0;
- if(startY<=CastleFinal::BodyTop() && startY>=HOMEBAR_HEIGHT+16)
+ if(startY<=CastleFinal::BodyTop() && startY>=CastleFinal::BodyBottom())
   scY[MENU_CASTLE]=Min(CastleFinal::ScrollMax(),Max(0,scY[MENU_CASTLE]+y-previousY));
  return true;
 }
@@ -109,6 +111,10 @@ static void Text(const char* s,int x,int y,int width,float z=.7f,int color=COLOR
 static bool SaveConflict(){return NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT;}
 }
 #include "CastleFourFacilityMenu.inc"
+
+bool CastleMenuBlockPending(int room){
+ return castleModal==2&&castleUpgradeIsRoom==(room>=0)&&castleUpgradePart==(room<0?3:room);
+}
 
 bool CastleMenuFinalReviewChecks(){
  const auto saved=robin.castleProgress;const long long gold=robin.gold,coin=robin.coin;
