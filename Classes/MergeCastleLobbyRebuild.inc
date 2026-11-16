@@ -1,5 +1,8 @@
-﻿// Facilities remain independently upgradeable behind the chassis' alpha holes.
+﻿int castleRoomLevel(int c,int room);
+int castleMaterial(int c);
+// Facilities remain independently upgradeable behind the chassis' alpha holes.
 #include "MergeCastleOriginal.inc"
+#include "MergeCastleMist.inc"
 float entryElapsed=-1.f;
 unsigned panicSeed=0;
 int drawnFrontCover=-1;
@@ -28,11 +31,21 @@ Box interiorBox(const Layout& l){
 Box castleCannonBox(const Layout& l){
  const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));const float s=l.scale;
  const int lv=CastleVisualPartLevel(c,3);
- // Growth favors the bore, not barrel length. Even castle 10 at +5 remains
- // inside the same 140px mounting zone, leaving the actors' deck clear.
- const float width=(110.f+c+4.f*lv)*s;
- const float height=(78.f+4.f*c+10.f*lv)*s;
- return {(int)(190*s),(int)(l.ground+24*s+height),(int)width,(int)height};
+ // Stage five rear flange is inset into the tower socket, not its outer rim.
+ // Native hull coordinates: pivot centre for the catapult, rear collar for guns.
+ // Follow the actual opening rather than an unrelated height above the deck.
+ static const int mounts[10][2]={{286,256},{320,289},{342,278},{364,272},{336,272},
+                               {350,270},{330,278},{380,282},{418,266},{352,294}};
+ const Box mount=OriginalCastle::box(mounts[c][0],mounts[c][1],0,0);
+ float width=(c==0?140.f+2.f*lv:94.f+5.f*c+2.f*lv)*s;
+ float height=(c==0?90.f+2.f*lv:52.f+4.f*c+3.f*lv)*s;
+ // The catapult is mounted by its pivot, not by a gun's rear flange.
+ if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+80*s+height*.22f),(int)width,(int)height};
+ const float fit=std::min(1.f,std::max(.1f,(mount.y-l.ground-3*s)/(height*.5f)));
+ width*=fit;height*=fit;
+ // Rear collar is seated in the tower socket; only the barrel protrudes.
+ return {(int)(mount.x-width*(c==0?.85f:.12f)),
+         (int)(mount.y+height*(c==0?.22f:.5f)),(int)width,(int)height};
 }
 // Draw only the articulated turret; the mounting strip and castle stay fixed.
 void turretPart(int img,int sx,int sy,int sw,int sh,const Box& b,float angle=0,float ax=.5f,float ay=.5f,bool flip=false){
@@ -51,41 +64,65 @@ void turretPart(int img,int sx,int sy,int sw,int sh,const Box& b,float angle=0,f
  AfterSpriting(sp);
 }
 float catapultAngle(int age,int release){
- if(age<0)return 0;
- if(age<release-5)return -12.f*std::sin(age/(float)(release-5)*1.5707963f);
- if(age<release+3)return -12.f+60.f*(age-release+5)/8.f;
- return 48.f*std::max(0.f,1.f-(age-release-3)/20.f);
+ const float rest=0.f;
+ if(age<0)return rest;
+ if(age<release-5)return rest-8.f*std::sin(age/(float)std::max(1,release-5)*1.5707963f);
+ if(age<release+3)return rest-8.f+113.f*(age-release+5)/8.f;
+ return rest+105.f*std::max(0.f,1.f-(age-release-3)/20.f);
 }
-TurretAttack::Point cannonMuzzle(const Layout& l,int c,bool mirror,int age=-1){
- const auto& f=MountedCannons::Get(c,CastleVisualPartLevel(c,3));const Box b=castleCannonBox(l);
- float x=b.x+b.w*f.mx/(float)f.w,y=b.y-b.h*f.my/(float)f.h;
- if(c==0&&age>=0){
-  const float px=b.x+b.w*.55f,py=b.y-b.h*.40f;
+TurretAttack::Point cannonMuzzle(const Layout& l,int c,bool mirror,int age=-1,int barrel=1){
+ const Box b=castleCannonBox(l);
+ float x=b.x+b.w*(c==0?.16f:.92f),y=b.y-b.h*(c==0?.70f:.5f);
+ if(c==2){
+  static const float portY[3]={.20f,.50f,.80f};
+  x=b.x+b.w*.98f;y=b.y-b.h*portY[std::max(0,std::min(2,barrel))];
+ }
+ if(c==3){
+  const float a=std::max(0,age)*.32f+barrel*1.04719755f;
+  x=b.x+b.w*(.885f+.065f*std::cos(a));
+  y=b.y-b.h*(.50f+.23f*std::sin(a));
+ }
+ if(c==0){
+  const float px=b.x+b.w*.85f,py=b.y-b.h*.22f;
   const float a=-catapultAngle(age,turretFire.release)*.0174532925f,dx=x-px,dy=y-py;
   x=px+dx*std::cos(a)-dy*std::sin(a);y=py+dx*std::sin(a)+dy*std::cos(a);
  }
  return {mirror?DX-x:x,y};
 }
 void drawCastleCannon(const Layout& l,int c,bool mirror){
- const auto& f=MountedCannons::Get(c,CastleVisualPartLevel(c,3));
- Box b=castleCannonBox(l);if(mirror)b.x=DX-b.x-b.w;
- const int strip=std::max(1,(int)(f.h*.18f)),rim=std::max(1,(int)(6*l.scale));
- artCutFlip(CANNON_UPGRADE_ATLAS_IMG,{f.x,f.y+f.h-strip,f.w,strip},
-  {b.x-rim,b.y-b.h+(int)(5*l.scale),b.w+2*rim,(int)(42*l.scale)},mirror);
  const bool firing=turretFire.running()&&turretFire.castle==c;
- if(!firing){artCutFlip(CANNON_UPGRADE_ATLAS_IMG,{f.x,f.y,f.w,f.h},b,mirror);return;}
- // Base never recoils. Upper assembly snaps back once for each fired round.
- const int bodyH=f.h-strip,bodyPixels=(int)(b.h*bodyH/(float)f.h);
- Box body={b.x,b.y,b.w,bodyPixels};
- artCutFlip(CANNON_UPGRADE_ATLAS_IMG,{f.x,f.y+bodyH,f.w,strip},
-  {b.x,b.y-bodyPixels,b.w,b.h-bodyPixels},mirror);
+ const int img=c==0&&firing&&turretFire.age>=turretFire.release?CASTLE_MIST_EMPTY_ARM_IMG:CASTLE_MIST_TURRET_FIRST_IMG+c;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+ Box b=castleCannonBox(l);if(mirror)b.x=DX-b.x-b.w;
  if(c==0){
-  turretPart(CANNON_UPGRADE_ATLAS_IMG,f.x,f.y,f.w,bodyH,body,
-   catapultAngle(turretFire.age,turretFire.release)*(mirror?-1:1),mirror?.45f:.55f,1.f-.40f*f.h/bodyH,mirror);
+  turretPart(img,0,0,(int)dim.width,(int)dim.height,b,
+   catapultAngle(firing?turretFire.age:-1,firing?turretFire.release:18)*(mirror?-1:1),mirror?.15f:.85f,.78f,mirror);
  }else{
-  body.x+=(int)((mirror?1:-1)*8*l.scale*turretFire.recoil());
-  body.h-=std::max(0,(int)(3*l.scale*turretFire.recoil()));
-  turretPart(CANNON_UPGRADE_ATLAS_IMG,f.x,f.y,f.w,bodyH,body,0,.5f,.5f,mirror);
+  if(firing)b.x+=(int)((mirror?1:-1)*8*l.scale*turretFire.recoil());
+  turretPart(img,0,0,(int)dim.width,(int)dim.height,b,0,.5f,.5f,mirror);
+  if(c==3&&firing){
+   // Project the rotating front plate onto the gun's narrow elliptical face.
+   // The housing stays seated; only the six barrel mouths orbit the hub.
+   const float cx=b.x+b.w*(mirror?.115f:.885f),cy=b.y-b.h*.50f;
+   auto ellipse=[&](float x,float y,float rx,float ry,int color){
+    const int radius=std::max(1,(int)std::ceil(ry));
+    for(int row=-radius;row<=radius;++row){
+     const float q=row/(float)radius;
+     const int half=std::max(1,(int)(rx*std::sqrt(std::max(0.f,1-q*q))));
+     mergeRect((int)x-half,(int)y+row,half*2,1,color);
+    }
+   };
+   ellipse(cx,cy,b.w*.097f,b.h*.36f,0xA87C43);
+   ellipse(cx,cy,b.w*.084f,b.h*.33f,0x493B27);
+   for(int port=0;port<6;++port){
+    const float a=turretFire.age*.32f+port*1.04719755f;
+    const float x=cx+(mirror?-1:1)*b.w*.065f*std::cos(a),y=cy-b.h*.23f*std::sin(a);
+    ellipse(x,y,b.w*.029f,b.h*.10f,0xBD955A);
+    ellipse(x,y,b.w*.021f,b.h*.073f,0x171E1C);
+   }
+   ellipse(cx,cy,b.w*.024f,b.h*.08f,0xC39B60);
+  }
  }
 }
 Box lobbyStart(const Layout& l){return OriginalCastle::box(294,1037,506,150);}
@@ -115,11 +152,8 @@ CastleMap castleMap(const Layout& l,int c){
          {(float)bounds.y,bounds.y-(top-f.y)*zy,bounds.y-(bottom-f.y)*zy,(float)(bounds.y-bounds.h)}};
 }
 Box roomBox(const Layout& l,int room){
- if((siegeHullStage>=0?siegeHullStage:run.stage)==0){const auto p=OriginalCastle::rooms()[room];return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}
- const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));const auto m=castleMap(l,c);const auto& f=MergeCastleArt::Holes[c][room];
- int x=(int)std::floor(m.x(f.x)),right=(int)std::ceil(m.x(f.x+f.w));
- int top=(int)std::ceil(m.y(f.y)),bottom=(int)std::floor(m.y(f.y+f.h));
- return {x,top,right-x,top-bottom};
+ const auto p=OriginalCastle::rooms()[room];
+ return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));
 }
 //---- 방 안의 식솔 ----
 //
@@ -157,7 +191,7 @@ void drawRoomResidents(const Layout& l){
  if(n==0){
   //아직 한 명도 없다. 예전처럼 역할 대표를 한 방에 하나씩 세워 둔다.
   for(int i=0;i<5;++i){
-   const Box b=roomBox(l,i);const int h=(int)std::min(72*l.scale,b.h*.84f),w=(int)(h*.85f);
+   const Box b=roomBox(l,i);const int h=(int)(.84f*std::min(72*l.scale,b.h*.84f)),w=(int)(h*.85f);
    SetSectionClip(b.x,b.y,b.w,b.h,false);
    icon(i%Roles,{b.x+(int)(b.w*.70f)-w/2,b.y-b.h+(int)(9*l.scale)+h,w,h},1.f,false,1,-1);
    UnSectionClip(false);
@@ -178,7 +212,8 @@ void drawRoomResidents(const Layout& l){
   //알아볼 수 있는 크기가 먼저다. 한 줄에 다 못 서면 **뒷줄을 만든다** -
   //뒷줄은 조금 위에, 조금 작게 서서 방이 깊어 보인다(최대 3줄).
   //그래도 넘치면 간격만 좁혀 어깨를 겹친다.
-  const int h0=(int)std::min(72*l.scale,b.h*.84f);
+  //.70 → .84: 방 안 사람을 20% 키운다(2026-11-16). 뒷줄은 그대로 12% 씩 줄어든다.
+  const int h0=(int)(.84f*std::min(72*l.scale,b.h*.84f));
   const int span=std::max(1,(int)(b.w*.84f));
   const int left=b.x+(b.w-span)/2;
   const int floorY=b.y-b.h+(int)(9*l.scale);
@@ -192,7 +227,7 @@ void drawRoomResidents(const Layout& l){
    int first=cnt*r/ranks,last=cnt*(r+1)/ranks,mates=last-first;
    if(mates<=0)continue;
    const float shrink=1.f-r*.12f;
-   const int h=std::max((int)(28*l.scale),(int)(h0*shrink));
+   const int h=std::max((int)(28*.84f*l.scale),(int)(h0*shrink));
    const int w=std::max(1,(int)(h*.85f));
    const int lift=(int)(r*h0*.22f);
    for(int k=0;k<mates;++k){
@@ -224,110 +259,57 @@ void drawRoomResidents(const Layout& l){
  }
 }
 Box battleFrontOuter(const Layout& l,int c){
- Box b=OriginalCastle::box(48,430,1000,610);
+ Box b=OriginalCastle::box(96,430,912,875);
  if(siegeActive)b.x=DX-b.x-b.w;
  return b;
 }
 int drawnFrontRimParts=0;
 void measureFrontInner(const Layout& l,int c){
- if(c==0){drawnFrontInnerBounds=OriginalCastle::box(196,569,706,406);return;}
- const auto m=castleMap(l,c);int left=2000,right=0,top=2000,bottom=0;
- for(const auto& h:MergeCastleArt::Holes[c]){left=std::min(left,h.x);right=std::max(right,h.x+h.w);top=std::min(top,h.y);bottom=std::max(bottom,h.y+h.h);}
- const int x=(int)std::floor(m.x(left)),r=(int)std::ceil(m.x(right));
- const int y=(int)std::ceil(m.y(top)),floor=(int)std::floor(m.y(bottom));
- drawnFrontInnerBounds={siegeActive?DX-r:x,y,r-x,y-floor};
+ drawnFrontInnerBounds=OriginalCastle::box(196,569,706,406);
+ if(siegeActive)drawnFrontInnerBounds.x=DX-drawnFrontInnerBounds.x-drawnFrontInnerBounds.w;
 }
 void drawBattleCover(const Layout& l){
  drawnFrontCover=-1;drawnFrontRimParts=0;
  const float progress=entryElapsed<0?1.f:MergeCastleTransition::CoverProgress(entryElapsed);
  if(progress<=0)return;
  const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
- const int img=MergeCastleFronts::Image(c);
- if(!sprite[img])LoadImg(img);
- if(!sprite[img])return;
- const Box outer=battleFrontOuter(l,c);const auto& source=MergeCastleFronts::Frames[c];
- drawnFrontCover=img;drawnFrontCoverBounds=outer;
+ const Box outer=battleFrontOuter(l,c);drawnFrontCover=MistCastle::image(c,8);drawnFrontCoverBounds=outer;
+ Box moving=OriginalCastle::box(96,430,912,875);moving.y+=(int)((1-progress)*moving.h);
  SetSectionClip(outer.x,outer.y,outer.w,outer.h,false);
- const bool reference=review&&std::getenv("CS_MERGE_FRONT_REFERENCE");
- if(!reference){
-  // The facade's alpha silhouette has gaps between its projecting beams.
-  // A closed wall needs an opaque substrate after the room mesh is hidden.
-  const int inset=std::max(1,(int)(20*l.scale));
-  const int top=outer.y+(int)((1-progress)*outer.h);
-  MemRect(outer.x+inset,top,outer.w-2*inset,outer.h,castleMaterial(c));
-  DrawImageScale(source.w,source.h,source.x,source.y,outer.x,outer.y+(int)((1-progress)*outer.h),siegeActive,0,0,0,0,
-      outer.w/(float)source.w,outer.h/(float)source.h,sprite[img],img);
- }
- UnSectionClip(false);
- measureFrontInner(l,c);
+ MistCastle::part(c,8,moving,siegeActive);
+ UnSectionClip(false);measureFrontInner(l,c);
+}
+void drawDeckSurface(const Layout& l,int c,bool mirror){
+ const int img=BATTLE_DECK_SURFACE_IMG;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ sprite[img]->getTexture()->setAliasTexParameters();
+ const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+ const int row=(int)dim.height/10;
+ const Box span=OriginalCastle::box(380,0,c==8?610:650,0);
+ // Leave visible floor both behind and in front of the characters' feet
+ // (ground + 8), including the green/brass fourth castle.
+ // The sixth castle's high stone fascia needs a deeper top plane to read
+ // as a platform rather than another horizontal wall trim.
+ const float depth=c==8?58.f:c>=5?52.f:42.f;
+ // The deck's front edge seats into the same registered cap as the hull.
+ // Its transparent bevel must overlap that cap, never hover above it.
+ const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(2*l.scale));
+ const int height=std::max(1,(int)(depth*l.scale));
+ const Box plane={span.x,front+height,span.w,height};
+ DrawImageScale((int)dim.width,row,0,c*row,mirror?DX-plane.x-plane.w:plane.x,plane.y,
+  mirror,0,0,0,0,plane.w/dim.width,plane.h/(float)row,sprite[img],img);
 }
 void drawCastleHull(const Layout& l,bool combat){
- const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));const auto map=castleMap(l,c);const float s=l.scale;
+ const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
  const bool debugClosed=!combat&&LobbyCastleDebugActive()&&!LobbyCastleDebugInterior();
  const bool closed=(debugClosed||(combat&&active&&(entryElapsed<0||entryElapsed>=MergeCastleTransition::CoverEnd)))&&!(review&&std::getenv("CS_MERGE_FRONT_REFERENCE"));
- if(c==0){
-  const int img=MERGE_REBUILD_ROOMS_IMG;if(!sprite[img])LoadImg(img);
-  if(sprite[img]&&!closed)for(int i=0;i<5;++i){
-   Box b=roomBox(l,i);const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
-   const auto f=MergeCastleTransition::RoomFrame(i,castleRoomLevel(0,i),(int)size.width,(int)size.height);
-   const float z=std::max(b.w/(float)f.w,b.h/(float)f.h);const int sw=std::min(f.w,(int)std::ceil(b.w/z)),sh=std::min(f.h,(int)std::ceil(b.h/z));
-   SetSectionClip(b.x,b.y,b.w,b.h,false);
-   DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,false,0,0,0,0,z,z,sprite[img],img);UnSectionClip(false);
-  }
-  OriginalCastle::draw(10);OriginalCastle::draw(11);OriginalCastle::draw(12);
-  OriginalCastle::wood(65,1204,160,131);OriginalCastle::wood(867,1202,162,133);
-  OriginalCastle::draw(closed?14:0);OriginalCastle::draw(1);
-  const float wheelAngle=castleWheelAngle(99*OriginalCastle::zoom());
-  OriginalCastle::wheel(0,wheelAngle);OriginalCastle::wheel(1,wheelAngle);
-  drawCastleCannon(l,c,false);
-  const int xx[5]={270,505,748,300,660},yy[5]={535,535,535,756,756},ww[5]={94,100,96,106,110};
-  const char* titles[5]={"식량 재배","장비 공방","식음료","도서·문화","특화 시설"};
-  if(!active||entryElapsed<MergeCastleTransition::CoverEnd)for(int i=0;i<5;++i){Box t=OriginalCastle::box(xx[i]+5,yy[i]+5,ww[i]-10,22);MemRect(t.x,t.y,t.w,t.h,0xD9AF70);label(titles[i],t.x+t.w/2,t.y,.42f,0x23190E);}
-  if(!closed)drawRoomResidents(l);
-  if(debugClosed)drawBattleCover(l);
-  return;
- }
- //---- 공성전: 적의 성은 거울로 선다 ----
- //
- //쳐들어간 성이라 방향이 반대다. 포탑·대포가 오른쪽으로 가고 성주가 거기
- //선다. 방 그림·차체·대포를 x 축으로 뒤집어 그린다. 바퀴는 좌우 대칭이라
- //그대로. 판(칸·블록)은 내 퍼즐이므로 뒤집지 않는다.
  const bool mirror=siegeActive;
- int img=MERGE_REBUILD_ROOMS_IMG+c;if(!sprite[img])LoadImg(img);
- if(sprite[img]&&!closed){
-  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
-  for(int i=0;i<5;++i){
-   const int lv=castleRoomLevel(c,i);
-   const auto f=MergeCastleTransition::RoomFrame(i,lv,(int)size.width,(int)size.height);
-   Box b=roomBox(l,i);b.x-=2;b.y+=2;b.w+=4;b.h+=4;
-   if(mirror)b.x=DX-b.x-b.w;
-   const float z=std::max(b.w/(float)f.w,b.h/(float)f.h);
-   const int sw=std::min(f.w,(int)std::ceil(b.w/z)),sh=std::min(f.h,(int)std::ceil(b.h/z));
-   SetSectionClip(b.x,b.y,b.w,b.h,false);
-   DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,b.x,b.y,mirror,0,0,0,0,z,z,sprite[img],img);
-   UnSectionClip(false);
-  }
- }
- const auto& chassis=MergeCastleArt::Chassis[c];
- const int chassisImg=MERGE_REBUILD_CHASSIS_IMG+c;if(!sprite[chassisImg])LoadImg(chassisImg);
- const float chassisZoom=(map.dx[3]-map.dx[0])/chassis.w;
- const float chassisZoomY=(map.dy[0]-map.dy[3])/chassis.h;
- const auto chassisDraw=[&](){if(sprite[chassisImg])DrawImageScale(chassis.w,chassis.h,chassis.x,chassis.y,(int)(mirror?DX-map.dx[3]:map.dx[0]),(int)map.dy[0],mirror,0,0,0,0,chassisZoom,chassisZoomY,sprite[chassisImg],chassisImg);};
- if(closed){
-  const Box covered=battleFrontOuter(l,c);
-  SetSectionClip(0,DY,DX,std::max(0,DY-covered.y),false);chassisDraw();UnSectionClip(false);
-  const int under=covered.y-covered.h;
-  if(under>0){SetSectionClip(0,under,DX,under,false);chassisDraw();UnSectionClip(false);}
- }else chassisDraw();
- const int wheelLv=CastleVisualPartLevel(c,4);
- const auto& wheel=MergeCastleArt::Parts[c][1][wheelLv];const int partImg=MERGE_REBUILD_PARTS_IMG+c;
- if(!sprite[partImg])LoadImg(partImg);
- if(sprite[partImg])for(int i=0;i<2;++i){
-  const int cx=(int)(i?DX-65*s:65*s),cy=(int)(139*s+castleSceneLift());
-  RotateImage(wheel.w,wheel.h,wheel.x,wheel.y,cx,cy,false,castleWheelAngle(43*s),0,0,86*s/std::max(wheel.w,wheel.h),cocos2d::Vec2(.5f,.5f),sprite[partImg],partImg);
- }
+ MistCastle::hull(c,closed,castleWheelAngle(92*OriginalCastle::zoom()),mirror,!combat);
+ drawDeckSurface(l,c,mirror);
  drawCastleCannon(l,c,mirror);
- if(!closed)drawRoomResidents(l);
+ if(!closed){
+  drawRoomResidents(l);
+ }
  if(debugClosed)drawBattleCover(l);
 }
 Box lobbyBottomNav(){

@@ -25,6 +25,7 @@
 // 묶고, 화면 위쪽이 비지 않을 만큼만 키운다. 넘치는 폭은 어차피 흐른다.
 
 #include <cmath>
+#include "StageRailCycles.h"
 
 namespace StageBg {
 
@@ -181,9 +182,9 @@ inline const Region& Cur(void) {
 }
 
 inline int Img(int slot) {
-	// Keep the original pixel bosses and their animation frames untouched.
-	// The approved first region receives independently scrolling SD 3D layers.
-	if(s_region==0 && slot<3) return HYBRID_FAR_IMG+slot;
+	if(slot<3)return STAGE_MIST_FIRST_IMG+Max(0,Min(s_region,STAGEBG_REGION_CNT-1))*3+slot;
+	// New scenery embeds distant creatures as atmospheric terrain silhouettes.
+	// Foreground combat enemies use their independent character resources.
 	return STAGEBG_FIRST_IMG +
 	       Max(0, Min(s_region, STAGEBG_REGION_CNT - 1)) * STAGEBG_PER_REGION + slot;
 }
@@ -332,16 +333,19 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 
 	const auto sz = sprite[img]->getContentSize();
 	if (sz.width < 1.0f) return;
-	if(designTopY==0.0f || s_region>0 || img==HYBRID_RAIL_IMG)
+	if(img>=STAGE_MIST_FIRST_IMG && img<=STAGE_MIST_LAST_IMG)
+		sprite[img]->getTexture()->setAliasTexParameters();
+	else if(designTopY==0.0f || s_region>0 || img==HYBRID_RAIL_IMG)
 		sprite[img]->getTexture()->setAntiAliasTexParameters();
 
 	// Cover tall displays uniformly: never expose a hard image bottom above the rail.
 	const float coverage = (designTopY==0.0f) ? Max(1.0f,(float)DY/(kSkyH*Scale())) : 1.0f;
 	const float s     = LayerScale(cam, d)*coverage;
 	const float tileW = designW * s;
- const bool natural=(designTopY==0.0f);
- const bool blended=(img==Img(SlotFar) || (s_region>0 && img==Img(SlotRail)));
- const float step=tileW*(blended?.90f:1.0f);
+ const bool authored=img>=STAGE_MIST_FIRST_IMG && img<=STAGE_MIST_LAST_IMG;
+ const bool natural=(designTopY==0.0f)&&!authored;
+ const bool blended=authored || img==Img(SlotFar) || img==Img(SlotRail);
+ const float step=tileW*(blended&&!authored?.90f:1.0f);
 	const float zoom  = tileW / sz.width;
 	//흘러간 거리에서 카메라가 민 만큼을 뺀다. 미는 쪽과 흐르는 쪽이 같은
 	//축이라 한 값으로 합쳐 놓아야 타일 이음매가 어긋나지 않는다.
@@ -358,12 +362,19 @@ inline void Layer(int img, float designW, float designTopY, float speed,
   top+=(int)std::lround(railTop[s_region]*zoom-kRailH*.0635f*s);
  }
 
+ float verticalZoom=zoom;
+ if(authored && img==Img(SlotRail)){
+  const auto& cycle=StageRailArt::Cycles[Max(0,Min(14,s_region))];
+  // The rail surface remains fixed; only the supports extend behind the controls.
+  verticalZoom=Max(zoom,(LayerGround(cam,d)-72.f*DX/640.f)/Max(1,cycle[3]-cycle[2]));
+  top=LayerGround(cam,d)+(int)std::lround(cycle[2]*verticalZoom);
+ }
  if(blended){
   const float center=coverage>1.0f?(tileW-DX)*.5f:0.0f;
   SetStageFarScroll(DX/tileW,(dist+center)/tileW);
   // A single opaque quad has no screen-space tile edge to flash or band.
   DrawImageScale((int)sz.width,(int)sz.height,0,0,0,top,false,0,0,0,0,
-   DX/sz.width,zoom,sprite[img],img);
+   DX/sz.width,verticalZoom,sprite[img],img);
   return;
  }
 
@@ -380,6 +391,9 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 //보스는 원경에 붙어 있다. 한 마리뿐이라 반복하지 않고, 원경 타일 중
 //뒤집히지 않은 것 위에만 얹는다. 뒤집힌 타일에 얹으면 얼굴이 돌아간다.
 inline void Boss(const Camera& cam) {
+	// The new far resources already contain the region's distant landmark.
+	// Drawing an old full-color boss over them would mix two scenery styles.
+	if(Img(SlotFar)>=STAGE_MIST_FIRST_IMG&&Img(SlotFar)<=STAGE_MIST_LAST_IMG)return;
 	const Region& r = Cur();
 	//보스는 원경에 붙어 있다. 원경과 같은 배율 · 같은 깊이로 움직여야
 	//붙어 있는 것으로 보인다.

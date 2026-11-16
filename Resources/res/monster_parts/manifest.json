@@ -1,0 +1,7 @@
+{
+  "icons": 1295,
+  "atlases": 2,
+  "filter": "nearest",
+  "source": "CMF PNG + reviewed crop/mask",
+  "behaviors": "content/monster_parts/behaviors.json"
+}

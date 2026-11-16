@@ -5,6 +5,7 @@
 #include "Func.h"
 #include "Text.h"
 #include "Data/SwordSprites.h"
+#include "GridItemCatalog.h"
 #include "Data/AllyBalanceData.h"
 //검이 쓰는 칸. SwordSprites.h 는 도구가 통째로 덮어쓰므로 거기 두면
 //다시 뽑을 때마다 사라진다(실제로 두 번 사라졌다).
@@ -1970,8 +1971,8 @@ static int GridPartCellCount(const GridPart* p)
 static void GridWeaponShape(GridPart* p)
 {
  const int detail=Max(0,Min(34,p->detail));
- p->w=(p->type==ITEM_BOOMERANG && detail>=10)?2:1;
- p->h=p->type==ITEM_BOOMERANG?2:detail<10?2:detail<25?3:4;p->cells=0;
+ p->w=GridItems::WeaponColumns(p->type,detail);
+ p->h=GridItems::WeaponRows(p->type,detail);p->cells=0;
 }
 
 //---- 상점 표를 지금 히어로의 줄로 바꾼다 ----
@@ -3575,6 +3576,12 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 		return;
 	}
 
+    // Grid-only silhouettes preserve the equipment footprint and orientation.
+    if(p->type>=ITEM_SWORD && p->type<=ITEM_BOOTS){
+        const int pad=Max(1,_2X);
+        if(DrawGridItemInBox(p->type,p->detail,x+pad,y-pad,w-2*pad,h-2*pad,alpha,p->rot))return;
+    }
+
 	if (p->type == ITEM_SWORD || p->type == ITEM_GUN || p->type == ITEM_BOOMERANG) {
 		const int base = p->type == ITEM_SWORD ? COSTUME_WEAPON_ROBIN_IMG :
 			(p->type == ITEM_GUN ? COSTUME_WEAPON_DIANA_IMG : COSTUME_WEAPON_MAXX_IMG);
@@ -3589,12 +3596,22 @@ static void GridTestDrawCard(const GridPart* p, int x, int y, int w, int h, int 
 			const int ih = (int)sprite[img]->getContentSize().height;
 			if (iw > 0 && ih > 0) {
 				const int pad=Max(1,_2X);
-                const float targetW=(float)Max(1,w-2*pad),targetH=(float)Max(1,h-2*pad);
-                // Compact grid art fills the new strip; originals still serve combat.
-                const float zoomX=(p->rot?targetH:targetW)/iw;
-                const float zoomY=(p->rot?targetW:targetH)/ih;
-                DrawImageScale(iw,ih,0,0,x+pad,y-pad,false,p->rot?90:0,0,0,
-                    alpha,zoomX,zoomY,sprite[img],img);
+				const float targetW=(float)Max(1,w-2*pad),targetH=(float)Max(1,h-2*pad);
+				//---- 비율은 지킨다 ----
+				//
+				//전에는 가로·세로를 따로 늘여 칸을 꽉 채웠다. 검 그림의 타일 비율
+				//(SwordSprites.h: 1×2 · 2×2 · 1×3 · 2×3)과 칸 모양(GridWeaponShape:
+				//번호대별 1×2 · 1×3 · 1×4)이 다른 검은 눌리거나 늘어났다 - 1×3 짜리
+				//그림이 1×2 칸에 들어가면 짧고 뚱뚱한 검이 된다.
+				//
+				//한 배율로 맞춰 칸 가운데에 둔다. 비율이 같은 검은 전과 똑같고,
+				//다른 검은 남는 자리가 비는 대신 모양이 산다.
+				const float fitW=p->rot?targetH:targetW,fitH=p->rot?targetW:targetH;
+				const float zoom=Min(fitW/iw,fitH/ih);
+				const float drawnW=p->rot?ih*zoom:iw*zoom,drawnH=p->rot?iw*zoom:ih*zoom;
+				const int dx=x+pad+(int)((targetW-drawnW)*.5f),dy=y-pad-(int)((targetH-drawnH)*.5f);
+				DrawImageScale(iw,ih,0,0,dx,dy,false,p->rot?90:0,0,0,
+					alpha,zoom,zoom,sprite[img],img);
 				return;
 			}
 		}
@@ -7313,6 +7330,8 @@ void CrewGrantEnsure(void)
 	for (int c = 0; c < gTotalCrew; ++c) {
 		if (!LoadoutCrewReal(c))
 			continue;
+		//고유 동료: 주인 히어로를 얻기 전에는 창고에도 주지 않는다. 이미 있는 것은 두고 손보기만 한다.
+		const bool available = MergeCrewAvailable(c);
 
 		int at = -1, empty = -1;
 		for (int i = 0; i < TOTALINVENTORY; ++i) {
@@ -7331,7 +7350,7 @@ void CrewGrantEnsure(void)
 			continue;
 		}
 
-		if (empty < 0)
+		if (empty < 0 || !available)
 			continue;
 
 		ITEM& it = robin.inven[empty];
@@ -10700,7 +10719,7 @@ static StageBg::Camera LobbyCamera(void)
 float DrawCastleLobbyBackground(int wheelGroundY)
 {
 	LobbyCastlePrepare();
-	auto camera=LobbyCamera();
+	auto camera=StageBg::FixedCam(wheelGroundY);
 	// Keep the existing region, art, parallax and camera zoom/pan. The resized
 	// room chassis has its own axle; its wheels must still contact the rail.
 	camera.groundY=wheelGroundY;

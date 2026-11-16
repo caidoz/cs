@@ -246,6 +246,7 @@ bool advance(){
 }
 //상대 판 터치: 작은 판을 누르면 펼치고, 펼친 상태에서는 아무 데나 누르면 닫는다.
 bool tapPanel(float x,float y){
+    if(topBoardPanel())return false;   //붙박이 판은 늘 보이니 펼칠 것이 없다
     if(expanded){expanded=false;return true;}
     if(panelBox.has(x,y)){expanded=true;return true;}
     return false;
@@ -258,7 +259,10 @@ void drawFoe(const Layout& l,int ex,int ey){
     //DrawPlayer 의 dirF 는 몸만 돌리고 무기 그림은 객체의 dirX/dirF 를 본다 - 둘 다 맞춘다.
     foeHero.dirX=foeHero.dirF=swapped?RIGHT:LEFT;
     //다이애나의 쉬는 동작은 16장이 매 틱 바뀌어 떨려 보인다. 반 속도로 돌린다.
-    DrawPlayer(&foeHero,heroNeutralMotion(foeHero,2),ex,ey,swapped?RIGHT:LEFT,z,0,false,true);
+    const int motion=heroNeutralMotion(foeHero,2),direction=swapped?RIGHT:LEFT;
+    DrawPlayer(&foeHero,motion,ex,ey,direction,z,0,false,true);
+    const auto body=heroTorsoPoint(foeHero,motion,ex,ey,direction,z);
+    enemyBodyX=(int)body.x;enemyBodyY=(int)body.y;enemyBodyKnown=true;
     label(swapped?"내 히어로":"성주 디아나",ex,ey+(int)(14*s),.42f,0xFFD0D0);
 }
 void drawBoardAt(const Run& r,int bx,int by,int cell){
@@ -271,10 +275,22 @@ void drawBoardAt(const Run& r,int bx,int by,int cell){
 }
 void drawFoeBoard(const Layout& l){
     const float s=l.scale;
+    if(topBoardPanel()){
+        //긴 화면: 머리글 아래 하늘에 붙박이로. 터치로 펼칠 것 없이 늘 보인다.
+        const int cell=topPanelCell();
+        const int bw=cell*foe.shape.width,bh=cell*foe.shape.height;
+        const int bx=(DX-bw)/2,by=topPanelTop()-(int)(48*s);   //공성전 머리글 아래
+        panelBox={bx-(int)(8*s),by+(int)(8*s),bw+(int)(16*s),bh+(int)(34*s)};
+        SetAlpha(28);panel(panelBox,0x1E2433,0x61718C);SetAlpha(32);
+        drawBoardAt(foe,bx,by,cell);
+        char text[96];std::snprintf(text,sizeof(text),"%s · 예상 피해 %lld",swapped?"내 판":"디아나의 판",(long long)foe.preview(swapped?stats:foeStats));
+        label(text,bx+bw/2,by-bh-(int)(4*s),.44f,0xFFE6C0);
+        return;
+    }
     const int cell=std::max(5,(int)(l.cell*.22f));
     const int bw=cell*foe.shape.width,bh=cell*foe.shape.height;
-    const int plateH=(int)(96*s);   //유닛 패와 같은 높이(세 단)
-    const int bx=DX-bw-(int)(8*s),by=l.ground-(int)(12*s)+plateH+(int)(20*s)+bh;
+    const int plateH=l.plateH;   //유닛 패와 같은 높이(세 단)
+    const int bx=DX-bw-(int)(8*s),by=l.ground-l.plateDrop+plateH+(int)(20*s)+bh;
     panelBox={bx-(int)(5*s),by+(int)(5*s),bw+(int)(10*s),bh+(int)(26*s)};
     SetAlpha(26);
     panel(panelBox,0x1E2433,0x61718C);
@@ -284,7 +300,7 @@ void drawFoeBoard(const Layout& l){
 }
 //펼친 판: 내 판 위에 같은 칸 크기로. 내 블록이 그려진 뒤에 불러야 덮인다(MergeRouletteDraw 끝).
 void drawExpanded(const Layout& l){
-    if(!expanded)return;
+    if(!expanded||topBoardPanel())return;
     const float s=l.scale;
     const int big=l.cell,gw=big*foe.shape.width,gh=big*foe.shape.height;
     const int gx=(DX-gw)/2,gy=l.board.y-(l.board.h-gh)/2;

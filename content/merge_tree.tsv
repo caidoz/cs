@@ -1,68 +1,69 @@
 #룰렛 × 합성 전투 — 64명의 역할 · ★ · 특성. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx
 #합성 6단 = ★. 같은 역할 ★n 둘을 합치면 그 역할의 ★n+1 중 하나가 무작위로 나온다. build_tree_data.py 가 MergeTreeData.h 로 굽는다.
-#role: 0 지휘 · 1 포격 · 2 지원 · 3 공격 (Def/BoardDef.h CrewRole). trait: 표식·고무·강타·연타·빙결·지속.
-crew	role	role_name	star	title	action	trait
-0	1	포격	1	새총 꼬마	Volley	연타
-1	2	지원	1	용기 꼬마	Shield	빙결
-2	2	지원	1	약초 할머니	Heal	빙결
-3	0	지휘	1	원로 촌장	Inspire	고무
-4	1	포격	1	성벽 파수꾼	Expose	표식
-5	3	공격	1	침술 낭자	Bleed	지속
-6	3	공격	1	열혈 일꾼	Strike	강타
-7	0	지휘	1	마을 살림꾼	Supply	고무
-8	1	포격	2	파도 어인	Shield	빙결
-9	1	포격	2	삼지창 수병	Strike	강타
-10	3	공격	2	연타 격투가	Strike	강타
-11	0	지휘	2	신속 배달부	Supply	고무
-12	1	포격	2	올가미 선원	Chill	빙결
-13	2	지원	2	길잡이 탐험가	Cleanse	빙결
-14	2	지원	2	새싹 치유사	Repair	빙결
-15	3	공격	2	서리 궁수	Chill	빙결
-16	2	지원	2	부품 보급상	Repair	빙결
-17	3	공격	2	질풍 검객	Strike	강타
-18	0	지휘	2	기도의 현자	Shield	빙결
-19	0	지휘	2	철벽 근위대장	Fortify	빙결
-20	1	포격	3	파수 부엉이	Expose	표식
-21	2	지원	3	정돈 메이드	Cleanse	빙결
-22	3	공격	3	행운의 바니걸	Volley	연타
-23	2	지원	3	지도 제작자	Supply	고무
-24	0	지휘	3	학당 교사	Inspire	고무
-25	1	포격	3	물방울 꼬마	Chill	빙결
-26	1	포격	3	화약통 해적	Burn	지속
-27	1	포격	3	약탈 해적	Leech	지속
-28	0	지휘	3	고목 룬 장로	Fortify	빙결
-29	3	공격	3	맹독 사냥꾼	Poison	지속
-30	2	지원	3	왕실 정원사	Repair	빙결
-31	3	공격	3	박자의 무희	Inspire	고무
-32	0	지휘	3	계약 남작	Shield	빙결
-33	0	지휘	3	기록 학자	Expose	표식
-34	2	지원	3	무역 거상	Supply	고무
-35	2	지원	4	성채 대식가	Heal	빙결
-36	2	지원	4	수석 대장장이	Smith	고무
-37	0	지휘	4	왕실 공주	Inspire	고무
-38	2	지원	4	충직한 수호견	Fortify	빙결
-39	3	공격	4	결투 중기사	Strike	강타
-40	3	공격	4	가마솥 마녀	Poison	지속
-41	2	지원	4	비스트로 셰프	Repair	빙결
-42	0	지휘	4	궁정 재상	Supply	고무
-43	1	포격	5	전설의 강태공	Strike	강타
-44	0	지휘	5	맹수 군주	Fortify	빙결
-45	2	지원	4	빛의 성직자	Cleric	빙결
-46	0	지휘	4	원로 참모	Expose	표식
-47	1	포격	4	발경의 달인	Strike	강타
-48	3	공격	4	그림자 암살자	Bleed	지속
-49	3	공격	4	전격술사	Shock	지속
-50	0	지휘	4	진격의 사령관	Inspire	고무
-51	1	포격	4	한기의 원령	Chill	빙결
-52	1	포격	4	유령 집사	Leech	지속
-53	1	포격	4	잔류 전류령	Discharge	지속
-54	3	공격	5	빙정의 창술사	Chill	빙결
-55	0	지휘	4	친선 대사	Supply	고무
-56	2	지원	5	왕실 대요리장	Heal	빙결
-57	1	포격	5	기함 함포선장	Captain	고무
-58	3	공격	5	성염의 기사단장	Burn	지속
-59	0	지휘	5	심판 백작	Expose	표식
-60	2	지원	5	결계 대마도사	Shield	빙결
-61	3	공격	6	무영의 검성	Strike	강타
-62	2	지원	6	광휘의 성녀	Repair	빙결
-63	0	지휘	6	위엄의 국왕	Inspire	고무
+#role: 0 지휘 · 1 포격 · 2 지원 · 3 공격 (Def/BoardDef.h CrewRole). trait: 표식·고무·강타·연타·빙결·지속. 특성은 히어로마다 준비·타격·교환이 섞이게 명시 배정(build_merge_tree_xlsx.py TRAIT).
+#hero: 고유 동료의 주인 0 로빈 · 1 디아나 · 2 맥스. 그 히어로의 룰렛에만 나오고, 그 히어로를 얻기 전엔 뽑기에도 안 나온다.
+crew	role	role_name	star	title	action	trait	hero	hero_name
+0	1	포격	1	새총 꼬마	Volley	연타	2	맥스
+1	2	지원	1	용기 꼬마	Shield	연타	1	디아나
+2	2	지원	1	약초 할머니	Heal	고무	2	맥스
+3	0	지휘	1	원로 촌장	Inspire	고무	0	로빈
+4	1	포격	1	성벽 파수꾼	Expose	연타	1	디아나
+5	3	공격	1	침술 낭자	Bleed	강타	2	맥스
+6	3	공격	1	열혈 일꾼	Strike	강타	0	로빈
+7	0	지휘	1	마을 살림꾼	Supply	고무	1	디아나
+8	1	포격	2	파도 어인	Shield	빙결	2	맥스
+9	1	포격	2	삼지창 수병	Strike	강타	1	디아나
+10	3	공격	2	연타 격투가	Strike	연타	0	로빈
+11	0	지휘	2	신속 배달부	Supply	표식	0	로빈
+12	1	포격	2	올가미 선원	Chill	빙결	1	디아나
+13	2	지원	2	길잡이 탐험가	Cleanse	표식	1	디아나
+14	2	지원	2	새싹 치유사	Repair	표식	2	맥스
+15	3	공격	2	서리 궁수	Chill	빙결	2	맥스
+16	2	지원	2	부품 보급상	Repair	고무	2	맥스
+17	3	공격	2	질풍 검객	Strike	강타	0	로빈
+18	0	지휘	2	기도의 현자	Shield	빙결	1	디아나
+19	0	지휘	2	철벽 근위대장	Fortify	빙결	0	로빈
+20	1	포격	3	파수 부엉이	Expose	표식	1	디아나
+21	2	지원	3	정돈 메이드	Cleanse	빙결	1	디아나
+22	3	공격	3	행운의 바니걸	Volley	연타	0	로빈
+23	2	지원	3	지도 제작자	Supply	표식	1	디아나
+24	0	지휘	3	학당 교사	Inspire	고무	1	디아나
+25	1	포격	3	물방울 꼬마	Chill	연타	2	맥스
+26	1	포격	3	화약통 해적	Burn	지속	1	디아나
+27	1	포격	3	약탈 해적	Leech	지속	2	맥스
+28	0	지휘	3	고목 룬 장로	Fortify	표식	1	디아나
+29	3	공격	3	맹독 사냥꾼	Poison	지속	2	맥스
+30	2	지원	3	왕실 정원사	Repair	지속	2	맥스
+31	3	공격	3	박자의 무희	Inspire	고무	2	맥스
+32	0	지휘	3	계약 남작	Shield	빙결	0	로빈
+33	0	지휘	3	기록 학자	Expose	표식	0	로빈
+34	2	지원	3	무역 거상	Supply	표식	2	맥스
+35	2	지원	4	성채 대식가	Heal	강타	2	맥스
+36	2	지원	4	수석 대장장이	Smith	고무	2	맥스
+37	0	지휘	4	왕실 공주	Inspire	고무	0	로빈
+38	2	지원	4	충직한 수호견	Fortify	빙결	1	디아나
+39	3	공격	4	결투 중기사	Strike	강타	0	로빈
+40	3	공격	4	가마솥 마녀	Poison	지속	2	맥스
+41	2	지원	4	비스트로 셰프	Repair	빙결	2	맥스
+42	0	지휘	4	궁정 재상	Supply	연타	0	로빈
+43	1	포격	5	전설의 강태공	Strike	강타	2	맥스
+44	0	지휘	5	맹수 군주	Fortify	강타	1	디아나
+45	2	지원	4	빛의 성직자	Cleric	강타	1	디아나
+46	0	지휘	4	원로 참모	Expose	표식	1	디아나
+47	1	포격	4	발경의 달인	Strike	강타	2	맥스
+48	3	공격	4	그림자 암살자	Bleed	지속	0	로빈
+49	3	공격	4	전격술사	Shock	연타	2	맥스
+50	0	지휘	4	진격의 사령관	Inspire	연타	0	로빈
+51	1	포격	4	한기의 원령	Chill	빙결	1	디아나
+52	1	포격	4	유령 집사	Leech	지속	2	맥스
+53	1	포격	4	잔류 전류령	Discharge	연타	1	디아나
+54	3	공격	5	빙정의 창술사	Chill	빙결	2	맥스
+55	0	지휘	4	친선 대사	Supply	연타	1	디아나
+56	2	지원	5	왕실 대요리장	Heal	고무	2	맥스
+57	1	포격	5	기함 함포선장	Captain	연타	1	디아나
+58	3	공격	5	성염의 기사단장	Burn	지속	0	로빈
+59	0	지휘	5	심판 백작	Expose	표식	0	로빈
+60	2	지원	5	결계 대마도사	Shield	빙결	1	디아나
+61	3	공격	6	무영의 검성	Strike	강타	0	로빈
+62	2	지원	6	광휘의 성녀	Repair	고무	1	디아나
+63	0	지휘	6	위엄의 국왕	Inspire	고무	0	로빈

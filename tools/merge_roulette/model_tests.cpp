@@ -19,10 +19,27 @@ int main(int argc,char**) {
         const int prevOff=(10-previous.width)/2,off=(10-shape.width)/2;
         for(int y=0;y<Height;++y)for(int x=0;x<Width;++x){
             cells+=shape.contains(x,y);
-            if(stage&&previous.contains(x,y))assert(shape.contains(x+prevOff-off,y));
+            if(stage&&previous.contains(x,y))assert(shape.contains(x+prevOff-off,y+shape.height-previous.height));
         }
-        assert(cells==16+2*stage&&shape.width<=10&&shape.height==4);
+        assert(cells==16+2*stage&&shape.width<=8&&shape.height==(stage==9?5:4));
         previous=shape;
+    }
+    {
+        const Shape last=BattleShape(9);
+        assert(last.width==8&&last.height==5&&last.rows[0]==0x18);
+        Run moved;moved.shape=BattleShape(8);
+        moved.board={block(Sword,1,0,0),block(Sword,1,7,3)};
+        assert(moved.setShape(last));
+        assert(moved.board[0].x==0&&moved.board[0].y==1&&moved.board[1].y==4);
+        // Legacy 10-wide saves migrate without dropping any of their 34 blocks.
+        Run legacy;legacy.shape.width=10;legacy.shape.height=4;
+        for(auto& row:legacy.shape.rows)row=0;
+        legacy.shape.rows[0]=legacy.shape.rows[1]=legacy.shape.rows[2]=0x1FE;
+        legacy.shape.rows[3]=0x3FF;
+        for(int y=0;y<4;++y)for(int x=0;x<10;++x)if(legacy.shape.contains(x,y))legacy.board.push_back(block(Sword,1,x,y));
+        assert(legacy.board.size()==34&&legacy.setShape(last)&&legacy.board.size()==34);
+        for(int i=0;i<34;++i)assert(legacy.fits(legacy.board[i],i));
+        Run restored;assert(restored.decode(legacy.encode()));assert(restored.shape.rows[0]==0x18&&restored.board.size()==34);
     }
     //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛
     //표(★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2)를 손으로 넣어
@@ -30,6 +47,20 @@ int main(int argc,char**) {
     {static const int w[]={0,1,2,3,2,5,3},h[]={0,1,1,1,2,1,2};
      for(int g=0;g<GearCount;++g)for(int lv=1;lv<=MaxLevel;++lv)MergeBoard::SetGearShape(g,lv,w[lv],h[lv]);}
     const Roster roster=fullRoster();
+    {
+        Run full;full.roster=&roster;full.choosing=false;full.shape=BattleShape(0);
+        full.families[0]=0;full.families[1]=Sword;full.families[2]=Armor;
+        for(int y=0;y<4;++y)for(int x=0;x<4;++x)full.board.push_back(block(Armor,1,x,y));
+        assert(full.freeCells()==0&&full.canSpin()&&full.spin()&&full.tray.size()==3);
+        const auto pending=full.encode();assert(!full.spin()&&full.encode()==pending);
+        assert(full.discard(true,0)&&full.tray.size()==2&&!full.canSpin());
+        assert(!full.discard(true,99));
+        while(!full.tray.empty())assert(full.discard(true,0));
+        assert(full.canSpin()&&full.freeCells()==0);
+        full.board.push_back(full.board[0]);assert(!full.canSpin());full.board.pop_back();
+        assert(full.discard(false,0)&&full.freeCells()==1&&full.canSpin());
+        Run restored;restored.roster=&roster;assert(restored.decode(full.encode()));assert(restored.board.size()==15);
+    }
     Stats st;
     {
         // All six costume families can start, spin, merge and survive a save roundtrip.
@@ -55,7 +86,7 @@ int main(int argc,char**) {
         }
         Run old;old.choosing=false;old.families[0]=Boots;
         old.board={block(Boots,1,0,0)};
-        std::string legacy=old.encode();legacy.replace(4,2,"7");for(int i=0;i<4;++i)legacy.erase(legacy.find_last_of(' '));
+        std::string legacy=old.encode();legacy.replace(4,2,"7");for(int i=0;i<10;++i)legacy.erase(legacy.find_last_of(' ')); // v8-v12 suffix fields
         Run upgraded;assert(upgraded.decode(legacy)&&upgraded.board[0].family==Boots);
         std::cout<<"PASS six costume equipment families, opening identities and v7 migration\n";
     }
@@ -68,7 +99,8 @@ int main(int argc,char**) {
             if(x>1||y>1)r.board.push_back(block(Armor,1,x,y));
         assert(r.freeCells()==0&&r.drop(false,0,2.03f,.5f));
         assert(r.freeCells()==2&&r.board[r.at(1,0)].level==2&&MergeTrees::Star(r.board[r.at(1,0)].crew)==2);
-        const auto unchanged=r.encode();assert(!r.drop(false,r.at(1,0),3.5f,.5f)&&r.encode()==unchanged);
+        //못 합치는 자리(갑옷 위)에 떨어뜨리면 겹쳐 놓인다 - 판은 풀기 전까지 미해결이다. 자동 배치는 겹치지 않는다.
+        {Run o=r;assert(o.drop(false,o.at(1,0),3.5f,.5f)&&!o.boardResolved()&&o.lastFail==std::string("family"));}
         // 장비 ★1 + ★1 → ★2 는 2칸. 꽉 찬 판이어도 재료 둘이 비켜 준 두 칸에 들어간다(mergedPreview 가 판 전체를 훑는다)
         Run g;g.choosing=false;g.families[0]=Sword;
         for(int y=0;y<g.shape.height;++y)for(int x=0;x<g.shape.width;++x)g.board.push_back(block(Sword,1,x,y));
@@ -107,6 +139,32 @@ int main(int argc,char**) {
         assert(MergeTrees::Role(42)==0&&MergeTrees::Star(42)==4&&MergeTrees::Star(63)==6&&MergeTrees::Role(57)==1);
         assert(MergeTrees::GearDetail(Sword,20,3)==32&&MergeTrees::GearDetail(Sword,30,6)==34);
         assert(MergeTrees::GearDetail(Armor,2,6)==7&&MergeTrees::GearDetail(Boots,3,6)==7);
+        // 고유 동료: 역할마다 두 히어로가 나눠 갖고, 히어로가 가진 역할은 ★1 부터 끊김 없이 올라간다.
+        int per[3]={};for(int c=0;c<64;++c){const int h=MergeTrees::OwnerHero(c);assert(h>=0&&h<3);++per[h];}
+        assert(per[0]==18&&per[1]==23&&per[2]==23&&MergeTrees::OwnerHero(64)==-1);
+        for(int h=0;h<3;++h)for(int r=0;r<Roles;++r){
+            const int top=MergeTrees::MaxStar(r);int last=0;
+            for(int sr=1;sr<=6;++sr)if(MergeTrees::OwnedCrewAt(h,r,sr,0)>=0){assert(sr==last+1);last=sr;}
+            assert(last==0||last>=top-1);   // 역할을 가졌으면 ★1 이 있고 꼭대기 바로 아래까지 닿는다
+            if(last)assert(MergeTrees::OwnedCrewAt(h,r,1,0)>=0);
+        }
+        assert(MergeTrees::OwnerHero(63)==0&&MergeTrees::OwnerHero(57)==1&&MergeTrees::OwnerHero(61)==0&&MergeTrees::OwnerHero(62)==1);
+        assert(MergeTrees::OwnedCrewAt(1,1,1,0)==4&&MergeTrees::OwnedCrewAt(-1,0,1,0)==MergeTrees::CrewAt(0,1,0));
+        // 특성: 히어로마다 준비(표식·고무)·타격(강타·연타)·교환(빙결·지속)이 섞인다. 한쪽으로 몰린 히어로가 없다.
+        int kind[3][3]={};
+        for(int c=0;c<64;++c){const int t=MergeTrees::Trait(c);assert(t>=0&&t<6);++kind[MergeTrees::OwnerHero(c)][t/2];}
+        for(int h=0;h<3;++h)for(int k=0;k<3;++k)assert(kind[h][k]>=4);
+        assert(kind[0][1]==8&&kind[1][0]==8&&kind[2][2]==9);
+        assert(MergeTrees::Trait(0)==Volley&&MergeTrees::Trait(63)==Inspire&&MergeTrees::Trait(61)==Strike&&MergeTrees::Trait(54)==Chill);
+        // 연타는 적이 하나인 이 전투에서 탄 수가 배수가 된다: ★3 까지 강타 아래, ★4 같고, ★5 부터 위.
+        assert(MergeBoard::VolleyPct(1)<MergeBoard::StrikePct(1)&&MergeBoard::VolleyPct(4)==MergeBoard::StrikePct(4)&&MergeBoard::VolleyPct(5)>MergeBoard::StrikePct(5));
+        {
+            Run v;v.roster=&roster;v.choosing=false;Stats vs;
+            vs.crew[0].power=100;vs.crew[0].trait=Volley;vs.crew[6].power=100;vs.crew[6].trait=Strike;
+            Effects e;Block a=block(1,1,0,0,0),b=block(3,1,1,0,6);
+            assert(v.evaluate(a,vs,e).damage==100&&v.evaluate(b,vs,e).damage==130);
+            a.level=b.level=5;assert(v.evaluate(a,vs,e).damage==100*16*250/100&&v.evaluate(b,vs,e).damage==100*16*225/100);
+        }
     }
     {
         // 합성: 같은 역할·같은 ★ 이면 동료가 달라도 합쳐지고, 결과는 그 역할의 ★+1 중 하나.
@@ -117,7 +175,8 @@ int main(int argc,char**) {
         assert(MergeTrees::Role(r.board[0].crew)==0&&MergeTrees::Star(r.board[0].crew)==2);
         // 다른 역할끼리는 안 된다
         r.board.push_back(block(1,2,0,0));
-        auto before=r.encode();assert(!r.place(false,1,5,4));assert(r.encode()==before);
+        auto before=r.encode();assert(!r.place(false,1,5,4,false));assert(r.encode()==before);   //빈 자리에만 놓으라면 거부
+        {Run o=r;assert(o.place(false,1,5,4)&&!o.boardResolved()&&o.board.size()==2);}           //손으로는 겹쳐 놓인다
         // ★ 사다리를 끝까지: 지휘는 ★6 국왕(63)까지, 포격은 ★5 에서 멈춘다
         for(int lv=2;lv<6;++lv) {
             Run s;s.roster=&roster;s.choosing=false;s.families[0]=0;s.families[1]=1;s.families[2]=Sword;
@@ -129,7 +188,7 @@ int main(int argc,char**) {
         king.board={block(0,6,0,0),block(0,6,3,0)};assert(!king.mergeable(king.board[0],king.board[1]));
         Run art;art.roster=&roster;art.choosing=false;art.families[0]=1;
         art.board={block(1,5,0,0),block(1,5,3,0)};
-        before=art.encode();assert(!art.mergeable(art.board[0],art.board[1])&&!art.place(false,0,3,0)&&art.encode()==before);
+        before=art.encode();assert(!art.mergeable(art.board[0],art.board[1])&&!art.place(false,0,3,0,false)&&art.encode()==before);
         // 장비는 로스터 없이도 6단까지
         Run gear;gear.choosing=false;gear.families[0]=Sword;
         gear.board={block(Sword,5,0,0),block(Sword,5,0,1)};   // 5×1 둘은 두 줄에 선다
@@ -199,7 +258,32 @@ int main(int argc,char**) {
         Run copy;copy.roster=&roster;assert(copy.decode(r.encode()));assert(copy.encode()==r.encode()&&copy.board[0].crew==63);
         auto original=copy.encode();
         assert(!copy.decode("MR3 5 1 0"));assert(!copy.decode("MR3 1 junk"));assert(copy.encode()==original);
-        Run overlap=r;overlap.board.push_back(block(0,1,0,0,3));assert(!copy.decode(overlap.encode()));
+        //겹친 판도 저장된다 - 다만 풀기 전엔 돌리기·공격이 안 된다.
+        Run overlap=r;overlap.board.push_back(block(0,1,0,0,3));assert(copy.decode(overlap.encode())&&!copy.boardResolved()&&!copy.canSpin());
+        {
+            //겹쳐 놓기: 다른 종류 위에 놓으면 포개진다. 옮겨 풀면 단추가 돌아온다. 톡 치면 돌아간다.
+            Run o;o.roster=&roster;o.choosing=false;o.families[0]=0;o.families[1]=Sword;o.families[2]=Armor;o.enemyHp=o.enemyMax=100;
+            o.board={block(Sword,2,0,0),block(0,1,3,0,3)};assert(o.boardResolved()&&Wide(o.board[0])==2&&Tall(o.board[0])==1);
+            assert(o.place(false,1,0,0)&&o.board.size()==2&&!o.boardResolved()&&o.lastFail==std::string("family"));
+            Stats os;assert(!o.canSpin());   //겹친 채로는 돌리기가 안 된다(공격·대포 단추는 화면이 막는다)
+            assert(o.place(false,1,3,0)&&o.boardResolved()&&o.attack(os));
+            Run t=o;t.attacking=false;t.shots.clear();
+            //돌리거나 옮긴 것은 맨 뒤(맨 위)로 간다 - 번호가 아니라 종류로 찾는다.
+            const auto idx=[](const Run& r,int family){for(int i=0;i<(int)r.board.size();++i)if(r.board[i].family==family)return i;return -1;};
+            assert(t.rotate(idx(t,Sword))&&idx(t,Sword)==(int)t.board.size()-1);
+            {const Block& sw=t.board[idx(t,Sword)];assert(sw.rot&&Wide(sw)==1&&Tall(sw)==2&&t.boardResolved());}
+            assert(t.rotate(idx(t,Sword))&&!t.board[idx(t,Sword)].rot);
+            assert(t.rotate(idx(t,0))&&t.board[idx(t,0)].rot&&Wide(t.board[idx(t,0)])==2);   //동료(1×2)도 눕는다
+            {Run sq=t;sq.board.push_back(block(Armor,1,2,2));assert(!sq.rotate((int)sq.board.size()-1));}   //한 칸짜리는 돌릴 것이 없다
+            t.board[idx(t,Sword)].x=t.shape.width-2;assert(t.rotate(idx(t,Sword))&&t.board[idx(t,Sword)].rot&&t.fits(t.board[idx(t,Sword)],idx(t,Sword),-1,true));   //오른끝에서도 판 안에 남는다
+            assert(t.rotate(idx(t,Sword))&&!t.board[idx(t,Sword)].rot&&t.board[idx(t,Sword)].x<=t.shape.width-2);
+            //겹쳐 놓은 것이 맨 위다: 뒤 번호가 위에 그려지고, 그 칸을 집으면(at) 위의 것이 잡힌다.
+            {Run top=o;top.attacking=false;top.shots.clear();assert(top.place(false,idx(top,0),0,0)&&idx(top,0)==(int)top.board.size()-1&&top.at(0,0)==idx(top,0));}
+            Run full=o;full.attacking=false;full.shots.clear();for(int y=0;y<full.shape.height;++y)for(int x=0;x<full.shape.width;++x)if(full.shape.contains(x,y)&&full.at(x,y)<0)full.board.push_back(block(Armor,1,x,y));
+            assert(full.boardResolved()&&full.freeCells()==0);
+            full.tray={block(0,1,-1,-1,7)};assert(!full.autoPlace(0)&&full.tray.size()==1);   //자동 배치는 겹치지 않는다
+            assert(full.drop(true,0,.5f,.5f)&&full.tray.empty()&&!full.boardResolved());        //손으로는 겹쳐 놓인다
+        }
         overlap=r;overlap.board[0].level=99;assert(!copy.decode(overlap.encode()));
         overlap=r;overlap.board[0].crew=-1;assert(!copy.decode(overlap.encode()));     // 역할 블록은 동료가 있어야
         overlap=r;overlap.board[1].crew=3;assert(!copy.decode(overlap.encode()));      // 장비 블록은 없어야
@@ -216,7 +300,7 @@ int main(int argc,char**) {
         for(int n=0;n<5000;++n) {
             if(r.tray.empty()) {r.spins=10;r.spin();}
             int x=r.random(8)-1,y=r.random(8)-1;auto old=r.encode();
-            bool ok=r.place(true,0,x,y);if(!ok)assert(r.encode()==old);
+            bool ok=r.place(true,0,x,y,false);if(!ok)assert(r.encode()==old);   //빈 자리에만(겹침 없이) - 기하 보존을 본다
             for(int i=0;i<(int)r.board.size();++i) {assert(r.fits(r.board[i],i));assert(Run::crewOk(r.board[i]));
                 if(r.board[i].family<Roles)assert(MergeTrees::Star(r.board[i].crew)==r.board[i].level&&MergeTrees::Role(r.board[i].crew)==r.board[i].family);}
             Run restored;restored.roster=&roster;assert(restored.decode(r.encode()));

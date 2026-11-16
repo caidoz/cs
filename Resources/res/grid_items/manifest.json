@@ -1,0 +1,5428 @@
+{
+  "entries": [
+    {
+      "id": 0,
+      "type": 0,
+      "detail": 0,
+      "group": "sword",
+      "cell": 0,
+      "source": "Resources/res/w0_1.png",
+      "size": [
+        32,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        28,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid0.png",
+      "output_size": [
+        128,
+        256
+      ],
+      "source_sha256": "9bc48f7122b1972557197fa2355f41051e5052b07452d284618e1acb0fac0b06"
+    },
+    {
+      "id": 1,
+      "type": 0,
+      "detail": 1,
+      "group": "sword",
+      "cell": 1,
+      "source": "Resources/res/w0_2.png",
+      "size": [
+        32,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid1.png",
+      "output_size": [
+        128,
+        256
+      ],
+      "source_sha256": "14ca0b01ba128c95e33970004d656b338d5d816d8eb0074a1cbe92aff3797368"
+    },
+    {
+      "id": 2,
+      "type": 0,
+      "detail": 2,
+      "group": "sword",
+      "cell": 2,
+      "source": "Resources/res/w0_3.png",
+      "size": [
+        32,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid2.png",
+      "output_size": [
+        128,
+        256
+      ],
+      "source_sha256": "e0d647ed580af06e63f388de70c7169dd450927818015b7f51a3190ac15a8ff4"
+    },
+    {
+      "id": 3,
+      "type": 0,
+      "detail": 3,
+      "group": "sword",
+      "cell": 3,
+      "source": "Resources/res/w0_4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid3.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "490526d18c72db0a4a291e1afe9af7854b38bb39ab056e838710e2011a2788f1"
+    },
+    {
+      "id": 4,
+      "type": 0,
+      "detail": 4,
+      "group": "sword",
+      "cell": 4,
+      "source": "Resources/res/w0_5.png",
+      "size": [
+        32,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        30,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid4.png",
+      "output_size": [
+        128,
+        384
+      ],
+      "source_sha256": "2c9e26498023fed248c13330d8eadcad06e97fdd33a296019c8535feda569f61"
+    },
+    {
+      "id": 5,
+      "type": 0,
+      "detail": 5,
+      "group": "sword",
+      "cell": 5,
+      "source": "Resources/res/w0_6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid5.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "d295853c1bc29a7541ffee994450ec9589152b9adbea619dc2cc027fa4060ee0"
+    },
+    {
+      "id": 6,
+      "type": 0,
+      "detail": 6,
+      "group": "sword",
+      "cell": 6,
+      "source": "Resources/res/w0_7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid6.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "5439d7888d7ccb532bc59d6d5130ea0fa9db40ce1920560628525eddde987df5"
+    },
+    {
+      "id": 7,
+      "type": 0,
+      "detail": 7,
+      "group": "sword",
+      "cell": 7,
+      "source": "Resources/res/w0_8.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid7.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "37ee4ab9aee545996578437e8cb88196bb804014fe02a31e285c5b8c3b48635f"
+    },
+    {
+      "id": 8,
+      "type": 0,
+      "detail": 8,
+      "group": "sword",
+      "cell": 8,
+      "source": "Resources/res/w0_9.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid8.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "fd8a1fa46834838a7658c010dac6e6191c4ce28bd622d8005e8fa1cb6aea2a20"
+    },
+    {
+      "id": 9,
+      "type": 0,
+      "detail": 9,
+      "group": "sword",
+      "cell": 9,
+      "source": "Resources/res/w0_10.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid9.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "c69306f11caf7143dc6487383b9db6c0f70f7e2a2b98e454958a6f9da1effac1"
+    },
+    {
+      "id": 10,
+      "type": 0,
+      "detail": 10,
+      "group": "sword",
+      "cell": 10,
+      "source": "Resources/res/w0_11.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid10.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "795b047d0bbac335af6c18183bb410841241c77df021b0d8cc79cf3d3a58206a"
+    },
+    {
+      "id": 11,
+      "type": 0,
+      "detail": 11,
+      "group": "sword",
+      "cell": 11,
+      "source": "Resources/res/w0_12.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid11.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "3c83de087f0fb93f16289ab0f43fbc1cc825434109e9025ee0a639aa3cd4e468"
+    },
+    {
+      "id": 12,
+      "type": 0,
+      "detail": 12,
+      "group": "sword",
+      "cell": 12,
+      "source": "Resources/res/w0_13.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid12.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "fb41a25f6cdf05ce3a25a3ac1aabeeaa1a5622910e7a4ec20701d80e56f2a63c"
+    },
+    {
+      "id": 13,
+      "type": 0,
+      "detail": 13,
+      "group": "sword",
+      "cell": 13,
+      "source": "Resources/res/w0_14.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid13.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "98a82cca3cc58862041ea8f4995f7006cb8d9cc79f94e5a7bd5d89fa4dfbe507"
+    },
+    {
+      "id": 14,
+      "type": 0,
+      "detail": 14,
+      "group": "sword",
+      "cell": 14,
+      "source": "Resources/res/w0_15.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid14.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "594368e6f6de160c4e674bef75377c61576bfae9e4c838349eabdc102d4df812"
+    },
+    {
+      "id": 15,
+      "type": 0,
+      "detail": 15,
+      "group": "sword",
+      "cell": 15,
+      "source": "Resources/res/w0_16.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid15.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "5cef033c0924321da56853cb2436ff8d8b8f82be0d484dca3df4c88b80c45682"
+    },
+    {
+      "id": 16,
+      "type": 0,
+      "detail": 16,
+      "group": "sword",
+      "cell": 16,
+      "source": "Resources/res/w0_17.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid16.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "af1f680c4ed524cc6240d7534e6c4a77ffced924c03f3f4eb415396d56ba8e6f"
+    },
+    {
+      "id": 17,
+      "type": 0,
+      "detail": 17,
+      "group": "sword",
+      "cell": 17,
+      "source": "Resources/res/w0_18.png",
+      "size": [
+        32,
+        128
+      ],
+      "bbox": [
+        1,
+        1,
+        31,
+        127
+      ],
+      "file": "Resources/res/grid_items/grid17.png",
+      "output_size": [
+        128,
+        512
+      ],
+      "source_sha256": "47e8e8f5394eccbe93eccb56a5bdf52a2839474e5e7f9ba946ef6a66e44d95db"
+    },
+    {
+      "id": 18,
+      "type": 0,
+      "detail": 18,
+      "group": "sword",
+      "cell": 18,
+      "source": "Resources/res/w0_19.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        10,
+        2,
+        53,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid18.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "0f21c979a154cfc697f7ce8491f356531a785b92c4ed4e17727dabfd81e9a1ca"
+    },
+    {
+      "id": 19,
+      "type": 0,
+      "detail": 19,
+      "group": "sword",
+      "cell": 19,
+      "source": "Resources/res/w0_20.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid19.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "f41eb8171b6832e792e38717d09ba910425d0a6a571077bd947e6815cdd464a7"
+    },
+    {
+      "id": 20,
+      "type": 0,
+      "detail": 20,
+      "group": "sword",
+      "cell": 20,
+      "source": "Resources/res/w0_21.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        8,
+        1,
+        86,
+        95
+      ],
+      "file": "Resources/res/grid_items/grid20.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "52e53587e8ab4a393bfb825b249ad8cf49e480b2cb3ffefccd87ff147d3147bd"
+    },
+    {
+      "id": 21,
+      "type": 0,
+      "detail": 21,
+      "group": "sword",
+      "cell": 21,
+      "source": "Resources/res/w0_22.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        7,
+        2,
+        56,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid21.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "248485ab893b7e7536d395fa0c2f58b0863257de6b9e851afbc35a65688de3c7"
+    },
+    {
+      "id": 22,
+      "type": 0,
+      "detail": 22,
+      "group": "sword",
+      "cell": 22,
+      "source": "Resources/res/w0_23.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        7,
+        2,
+        56,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid22.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "b2ef60efb3e0ba6deadd8ea3b58d932b03d1c20975e9337d0e598a6bd624d665"
+    },
+    {
+      "id": 23,
+      "type": 0,
+      "detail": 23,
+      "group": "sword",
+      "cell": 23,
+      "source": "Resources/res/w0_24.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid23.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "be5bb24bd9df8b4ae26c9cf5995411f05b9b14e2ead7b8a4d49858d6f804dc3b"
+    },
+    {
+      "id": 24,
+      "type": 0,
+      "detail": 24,
+      "group": "sword",
+      "cell": 24,
+      "source": "Resources/res/w0_25.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid24.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "235ba510924f4743842cc4514c5fc8f3a037ebcd0e2cf514cb8c524625c0198a"
+    },
+    {
+      "id": 25,
+      "type": 0,
+      "detail": 25,
+      "group": "sword",
+      "cell": 25,
+      "source": "Resources/res/w0_26.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        6,
+        62,
+        121
+      ],
+      "file": "Resources/res/grid_items/grid25.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "71bbabaf4ab2e5aad1c400d082db10727401c7e0cc03a7dfe114b1e643bd6201"
+    },
+    {
+      "id": 26,
+      "type": 0,
+      "detail": 26,
+      "group": "sword",
+      "cell": 26,
+      "source": "Resources/res/w0_27.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid26.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "d65a0d3df551c8ac289cf6c3ae6a9a4270932698bdd017fac974d4d8f315974f"
+    },
+    {
+      "id": 27,
+      "type": 0,
+      "detail": 27,
+      "group": "sword",
+      "cell": 27,
+      "source": "Resources/res/w0_28.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid27.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "699f7bba4290b8e8bab31050596b3fffd029bf7627900f5b152d627be26695bc"
+    },
+    {
+      "id": 28,
+      "type": 0,
+      "detail": 28,
+      "group": "sword",
+      "cell": 28,
+      "source": "Resources/res/w0_29.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid28.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "33e18637c261abee8c42ed1d672e0cca44ab5335463856a1d1b69d39ca934883"
+    },
+    {
+      "id": 29,
+      "type": 0,
+      "detail": 29,
+      "group": "sword",
+      "cell": 29,
+      "source": "Resources/res/w0_30.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid29.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "1aa31765db5512c6baab597936bc1c0b0e37f8cf6182d3916a3acae02a87ad48"
+    },
+    {
+      "id": 30,
+      "type": 0,
+      "detail": 30,
+      "group": "sword",
+      "cell": 30,
+      "source": "Resources/res/w0_31.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid30.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "83ba6564e626f2ff6a740bb1b7fcb935f449fa4cacfaa85b89be751d2f04aadb"
+    },
+    {
+      "id": 31,
+      "type": 0,
+      "detail": 31,
+      "group": "sword",
+      "cell": 31,
+      "source": "Resources/res/w0_32.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        13,
+        2,
+        63,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid31.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "ca640ed733e822f32b877283ba6f7099625f900caf9ad58bf72f4c1b77b6aa11"
+    },
+    {
+      "id": 32,
+      "type": 0,
+      "detail": 32,
+      "group": "sword",
+      "cell": 32,
+      "source": "Resources/res/w0_33.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid32.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "014a26bc9cb31f4f4332f4847c9b2d95c5eb79442caadc24cb2f40dfe562395f"
+    },
+    {
+      "id": 33,
+      "type": 0,
+      "detail": 33,
+      "group": "sword",
+      "cell": 33,
+      "source": "Resources/res/w0_34.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid33.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "e683f30b7cd2bd0662b770f7f07f71ddb1d8f1566daa9a59f2229b6b08012a6a"
+    },
+    {
+      "id": 34,
+      "type": 0,
+      "detail": 34,
+      "group": "sword",
+      "cell": 34,
+      "source": "Resources/res/w0_35.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        4,
+        2,
+        59,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid34.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "bc7285eb53aaa535b836aa1fa44c5b92ff01a38d0fd4a53740ad9419132b91b0"
+    },
+    {
+      "id": 35,
+      "type": 1,
+      "detail": 0,
+      "group": "gun",
+      "cell": 0,
+      "source": "Resources/res/inventory_gun/1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid35.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "aa075f5812ee63d8e806fd195cabd62224d284690c2b45d9f4d3663f7ba554bc"
+    },
+    {
+      "id": 36,
+      "type": 1,
+      "detail": 1,
+      "group": "gun",
+      "cell": 1,
+      "source": "Resources/res/inventory_gun/2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid36.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "efb4d18a469b03cb5e116e41b2019e0c1217b983085667df577c6b870a6f45e6"
+    },
+    {
+      "id": 37,
+      "type": 1,
+      "detail": 2,
+      "group": "gun",
+      "cell": 2,
+      "source": "Resources/res/inventory_gun/3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid37.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "cc8553a9e479c101b70e640593a6fcb800ae266b487ce859d99c3ad7123b311d"
+    },
+    {
+      "id": 38,
+      "type": 1,
+      "detail": 3,
+      "group": "gun",
+      "cell": 3,
+      "source": "Resources/res/inventory_gun/4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid38.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "640293b2fc198a384ffc21d360e1ecbeb03e731476cbdfab3c071cadfff31b6a"
+    },
+    {
+      "id": 39,
+      "type": 1,
+      "detail": 4,
+      "group": "gun",
+      "cell": 4,
+      "source": "Resources/res/inventory_gun/5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid39.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "3b5ef2cce5e298de9b2dd748b3c2c0a303db7a9418ac0abc12e1123e90cf56de"
+    },
+    {
+      "id": 40,
+      "type": 1,
+      "detail": 5,
+      "group": "gun",
+      "cell": 5,
+      "source": "Resources/res/inventory_gun/6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid40.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "f371afcf6d944951fc3bde387df9b8ca4cc3c4845be26f70bc716ae6dc07ada9"
+    },
+    {
+      "id": 41,
+      "type": 1,
+      "detail": 6,
+      "group": "gun",
+      "cell": 6,
+      "source": "Resources/res/inventory_gun/7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid41.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "aa31224671f6b5b00063b5d1d6dd7e619966d184dd7cc3a0d28afd22c0457818"
+    },
+    {
+      "id": 42,
+      "type": 1,
+      "detail": 7,
+      "group": "gun",
+      "cell": 7,
+      "source": "Resources/res/inventory_gun/8.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid42.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8e5498f5bbfb8f6304fe9b63f955fbd239e818c787418e7dfb22feea6abd2abd"
+    },
+    {
+      "id": 43,
+      "type": 1,
+      "detail": 8,
+      "group": "gun",
+      "cell": 8,
+      "source": "Resources/res/inventory_gun/9.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid43.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "f68ecf84bce2d70b5131682d9d69bfd542042585d4905116900a076a0090dc89"
+    },
+    {
+      "id": 44,
+      "type": 1,
+      "detail": 9,
+      "group": "gun",
+      "cell": 9,
+      "source": "Resources/res/inventory_gun/10.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        12,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid44.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "bb505be26d8bb103d92e5c7394d42e5e5f14c8e26a391ec40e1f973353f0beb2"
+    },
+    {
+      "id": 45,
+      "type": 1,
+      "detail": 10,
+      "group": "gun",
+      "cell": 10,
+      "source": "Resources/res/inventory_gun/11.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        8,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid45.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "0c57d9e22d0849cdcc0947bfdc27ba7a89cbf47282a8432919932e1716bc3753"
+    },
+    {
+      "id": 46,
+      "type": 1,
+      "detail": 11,
+      "group": "gun",
+      "cell": 11,
+      "source": "Resources/res/inventory_gun/12.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid46.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "69e2770d014223f4a607712a1f7963170600686f2941caad4869c16fca443a0d"
+    },
+    {
+      "id": 47,
+      "type": 1,
+      "detail": 12,
+      "group": "gun",
+      "cell": 12,
+      "source": "Resources/res/inventory_gun/13.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid47.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "5442de61dac51f1b5660049ece02cb05589bfb2d79553f0b390119609a1d4692"
+    },
+    {
+      "id": 48,
+      "type": 1,
+      "detail": 13,
+      "group": "gun",
+      "cell": 13,
+      "source": "Resources/res/inventory_gun/14.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid48.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "3430441668bbb21b80cd408f4836795e9cbc4de9b66914a8be3c4fa18b4497a2"
+    },
+    {
+      "id": 49,
+      "type": 1,
+      "detail": 14,
+      "group": "gun",
+      "cell": 14,
+      "source": "Resources/res/inventory_gun/15.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid49.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "794303f2423469fce045f802e09bbb3a3ceac6a02c0862218246d049b4d25f92"
+    },
+    {
+      "id": 50,
+      "type": 1,
+      "detail": 15,
+      "group": "gun",
+      "cell": 15,
+      "source": "Resources/res/inventory_gun/16.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid50.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "2c9d8ff1a8d1869425890dffb3af9b85b2d7831867aa7d869c5f08b51520c15d"
+    },
+    {
+      "id": 51,
+      "type": 1,
+      "detail": 16,
+      "group": "gun",
+      "cell": 16,
+      "source": "Resources/res/inventory_gun/17.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid51.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "1f15383865c1eeb348d2daf24a50de804ca909c37e01ce0515505ebdde2236e5"
+    },
+    {
+      "id": 52,
+      "type": 1,
+      "detail": 17,
+      "group": "gun",
+      "cell": 17,
+      "source": "Resources/res/inventory_gun/18.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid52.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "1e600ddddb0a8b46a5d9dc04bcc61ae31ad0135833709b761978eff77dfaecc3"
+    },
+    {
+      "id": 53,
+      "type": 1,
+      "detail": 18,
+      "group": "gun",
+      "cell": 18,
+      "source": "Resources/res/inventory_gun/19.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid53.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "34c5bde6c2cae874dbb64fedf1d9442d615a908c7eebd4e12cc42dc8d67ddc10"
+    },
+    {
+      "id": 54,
+      "type": 1,
+      "detail": 19,
+      "group": "gun",
+      "cell": 19,
+      "source": "Resources/res/inventory_gun/20.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid54.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "24da2ed88a1b0b4dfb47fa7ba6c73f5b761f49edc9fcad627b6c94452f008a73"
+    },
+    {
+      "id": 55,
+      "type": 1,
+      "detail": 20,
+      "group": "gun",
+      "cell": 20,
+      "source": "Resources/res/inventory_gun/21.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid55.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "a52d15855ced076427782d05ff2e07899a5075d57ce1f77359864bde91d81c9f"
+    },
+    {
+      "id": 56,
+      "type": 1,
+      "detail": 21,
+      "group": "gun",
+      "cell": 21,
+      "source": "Resources/res/inventory_gun/22.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid56.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "3699ac266db3b8d1ea25146cd33c1ae1884cb2e91d47cc969d474318681c7310"
+    },
+    {
+      "id": 57,
+      "type": 1,
+      "detail": 22,
+      "group": "gun",
+      "cell": 22,
+      "source": "Resources/res/inventory_gun/23.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid57.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "febeff0b70a9a481ee4d71852b47fe9c99bf76dfcb9aa880f4f9e7dc62e1e970"
+    },
+    {
+      "id": 58,
+      "type": 1,
+      "detail": 23,
+      "group": "gun",
+      "cell": 23,
+      "source": "Resources/res/inventory_gun/24.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid58.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "5abc107271a075adb3cc151793318da0ab0ec2698bcda845c10e8b7ad7010e9d"
+    },
+    {
+      "id": 59,
+      "type": 1,
+      "detail": 24,
+      "group": "gun",
+      "cell": 24,
+      "source": "Resources/res/inventory_gun/25.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid59.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "417f1fe320f6dc51d44195d9a3f3ca071a30df994e1a6d849b592f4153e0d17e"
+    },
+    {
+      "id": 60,
+      "type": 1,
+      "detail": 25,
+      "group": "gun",
+      "cell": 25,
+      "source": "Resources/res/inventory_gun/26.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid60.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "ad2d85512e3c35197f4d6856bd9af6675f2673822afece84df1b35a14f2a5e09"
+    },
+    {
+      "id": 61,
+      "type": 1,
+      "detail": 26,
+      "group": "gun",
+      "cell": 26,
+      "source": "Resources/res/inventory_gun/27.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid61.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "5a001d171530441b1714648bc5c6eb1b0826642e9a36b1953f8e1e6dd122b486"
+    },
+    {
+      "id": 62,
+      "type": 1,
+      "detail": 27,
+      "group": "gun",
+      "cell": 27,
+      "source": "Resources/res/inventory_gun/28.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid62.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "20aa6af12d871614d35c7f1a753d33f6e7937b208690e369e5ec2de5399d50a8"
+    },
+    {
+      "id": 63,
+      "type": 1,
+      "detail": 28,
+      "group": "gun",
+      "cell": 28,
+      "source": "Resources/res/inventory_gun/29.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid63.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "23f0deb217b368cc67d975f32a3cd8edb931573ee983be64a9fecec2ae9af55e"
+    },
+    {
+      "id": 64,
+      "type": 1,
+      "detail": 29,
+      "group": "gun",
+      "cell": 29,
+      "source": "Resources/res/inventory_gun/30.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid64.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "127de98c33d9e5fcf8f056d2fa1eeb19117939d28ad09e82af12e83202b4ecab"
+    },
+    {
+      "id": 65,
+      "type": 1,
+      "detail": 30,
+      "group": "gun",
+      "cell": 30,
+      "source": "Resources/res/inventory_gun/31.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid65.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "c805b32ef4aa318e24add65fb1e1ebf66e4d70f4e7bb9dea0d225d5d8bbe2b39"
+    },
+    {
+      "id": 66,
+      "type": 1,
+      "detail": 31,
+      "group": "gun",
+      "cell": 31,
+      "source": "Resources/res/inventory_gun/32.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid66.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "304ea12f4e56038f03a58b99c27f05083a08d2d63e78ef43d6a4ff4d01ace076"
+    },
+    {
+      "id": 67,
+      "type": 1,
+      "detail": 32,
+      "group": "gun",
+      "cell": 32,
+      "source": "Resources/res/inventory_gun/33.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid67.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "187e70c76b17b472f11010550577d229ff0b165b410d56045c9ebf3c066064cd"
+    },
+    {
+      "id": 68,
+      "type": 1,
+      "detail": 33,
+      "group": "gun",
+      "cell": 33,
+      "source": "Resources/res/inventory_gun/34.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid68.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "5cdd831aa8d6f95f2ef7e572bfb6ddf297548e1e8de10ade8beeeb22e6b52362"
+    },
+    {
+      "id": 69,
+      "type": 1,
+      "detail": 34,
+      "group": "gun",
+      "cell": 34,
+      "source": "Resources/res/inventory_gun/35.png",
+      "size": [
+        64,
+        128
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        126
+      ],
+      "file": "Resources/res/grid_items/grid69.png",
+      "output_size": [
+        256,
+        512
+      ],
+      "source_sha256": "0101bca54f911a8b11f80841234fdd2b8351b35f3bcd5b02392a2906c6d41c49"
+    },
+    {
+      "id": 70,
+      "type": 2,
+      "detail": 0,
+      "group": "boomerang",
+      "cell": 0,
+      "source": "Resources/res/inventory_boomerang/1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid70.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "7edd100de1b77254228724ce3c0354c16fcbeab679503601d0d8a3f3b029b642"
+    },
+    {
+      "id": 71,
+      "type": 2,
+      "detail": 1,
+      "group": "boomerang",
+      "cell": 1,
+      "source": "Resources/res/inventory_boomerang/2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid71.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "0dacd664bcc6a9612b699d8232bc2c279f04f82f3350e7d30d4697bda9c3c123"
+    },
+    {
+      "id": 72,
+      "type": 2,
+      "detail": 2,
+      "group": "boomerang",
+      "cell": 2,
+      "source": "Resources/res/inventory_boomerang/3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid72.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8fb53652fd3e9c6251497bdd1a7059e57eff48587c21b0a57fcd067d0b7a7010"
+    },
+    {
+      "id": 73,
+      "type": 2,
+      "detail": 3,
+      "group": "boomerang",
+      "cell": 3,
+      "source": "Resources/res/inventory_boomerang/4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid73.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "a8b81b5ad70916f7f88448831727f78a9cfe37bc52422dd1d420adb38c74e881"
+    },
+    {
+      "id": 74,
+      "type": 2,
+      "detail": 4,
+      "group": "boomerang",
+      "cell": 4,
+      "source": "Resources/res/inventory_boomerang/5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid74.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "dd52b77a6c43f607c557b6c261ee39639759b279a41212c18e2c1b0ce75c72b4"
+    },
+    {
+      "id": 75,
+      "type": 2,
+      "detail": 5,
+      "group": "boomerang",
+      "cell": 5,
+      "source": "Resources/res/inventory_boomerang/6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid75.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "108ddc103f090d22746f7f90e098b071892af790b3018dcd93261b5e709afcc6"
+    },
+    {
+      "id": 76,
+      "type": 2,
+      "detail": 6,
+      "group": "boomerang",
+      "cell": 6,
+      "source": "Resources/res/inventory_boomerang/7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid76.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "7a5f58d51cf6be1b78aa349ea4a30fea4e5617e9dfd0385bdd5f4c0382a8c9a1"
+    },
+    {
+      "id": 77,
+      "type": 2,
+      "detail": 7,
+      "group": "boomerang",
+      "cell": 7,
+      "source": "Resources/res/inventory_boomerang/8.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid77.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "e134b4dbdb8e37613d8a41495ff6d85da67da0b598eee68376c2e5f9ef9b43be"
+    },
+    {
+      "id": 78,
+      "type": 2,
+      "detail": 8,
+      "group": "boomerang",
+      "cell": 8,
+      "source": "Resources/res/inventory_boomerang/9.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid78.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "7117ed82839c9276938c9964d799b3bb090723c701f3d29506715378dea7f10a"
+    },
+    {
+      "id": 79,
+      "type": 2,
+      "detail": 9,
+      "group": "boomerang",
+      "cell": 9,
+      "source": "Resources/res/inventory_boomerang/10.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid79.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "cf71a005121651bc2943875ae8b4d41d5e1bbf23653c5ca1cffdeddbfb4aeac0"
+    },
+    {
+      "id": 80,
+      "type": 2,
+      "detail": 10,
+      "group": "boomerang",
+      "cell": 10,
+      "source": "Resources/res/inventory_boomerang/11.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid80.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "a0cbd6999894ac3ad16f53df2cc3d568cb41f561d2964f475f9a4285b3288c14"
+    },
+    {
+      "id": 81,
+      "type": 2,
+      "detail": 11,
+      "group": "boomerang",
+      "cell": 11,
+      "source": "Resources/res/inventory_boomerang/12.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid81.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "4b07c5852f2cd71b38e6582fd72fe91ecfbd01b5cf3861957b74ef346d43cb26"
+    },
+    {
+      "id": 82,
+      "type": 2,
+      "detail": 12,
+      "group": "boomerang",
+      "cell": 12,
+      "source": "Resources/res/inventory_boomerang/13.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        18,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid82.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "77d6e9720fcdff74ea97714113d0598559bf0f331691b38e16866cec326bf3cc"
+    },
+    {
+      "id": 83,
+      "type": 2,
+      "detail": 13,
+      "group": "boomerang",
+      "cell": 13,
+      "source": "Resources/res/inventory_boomerang/14.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid83.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "79d13eae3a729af9e00f63859515376e848a2ace391a70dce5cb6bd053b79861"
+    },
+    {
+      "id": 84,
+      "type": 2,
+      "detail": 14,
+      "group": "boomerang",
+      "cell": 14,
+      "source": "Resources/res/inventory_boomerang/15.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid84.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "6c14cee3baaffb969a55b3aacf6a28e4f959b13a566536b99ff30f48c03213e4"
+    },
+    {
+      "id": 85,
+      "type": 2,
+      "detail": 15,
+      "group": "boomerang",
+      "cell": 15,
+      "source": "Resources/res/inventory_boomerang/16.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        16,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid85.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "ebc0d00ff3986acc4f0d9912afa4848f5c552754f4df278245bba833eb989806"
+    },
+    {
+      "id": 86,
+      "type": 2,
+      "detail": 16,
+      "group": "boomerang",
+      "cell": 16,
+      "source": "Resources/res/inventory_boomerang/17.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid86.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "e374748524203baf9a7eafe8abe183da9983871ea23d55dff44c587e5d3b7ba9"
+    },
+    {
+      "id": 87,
+      "type": 2,
+      "detail": 17,
+      "group": "boomerang",
+      "cell": 17,
+      "source": "Resources/res/inventory_boomerang/18.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid87.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "3bde5172ea625d2d87119e0957081f8d22d745e35a5fff9d457b638ec68d1531"
+    },
+    {
+      "id": 88,
+      "type": 2,
+      "detail": 18,
+      "group": "boomerang",
+      "cell": 18,
+      "source": "Resources/res/inventory_boomerang/19.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid88.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "56ccf261faa757ca571d0770268002ae5b29dc6a9bc97b0ea9dd8c223ae718db"
+    },
+    {
+      "id": 89,
+      "type": 2,
+      "detail": 19,
+      "group": "boomerang",
+      "cell": 19,
+      "source": "Resources/res/inventory_boomerang/20.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid89.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "c3a19b5fdab21f58ca82329cca41f206a2684a37eff34c717ca79da7a9662c5d"
+    },
+    {
+      "id": 90,
+      "type": 2,
+      "detail": 20,
+      "group": "boomerang",
+      "cell": 20,
+      "source": "Resources/res/inventory_boomerang/21.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid90.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "e0de04ee82827d987544ae2960533e021d52eae5dac65c8c8bfefd6535d481b6"
+    },
+    {
+      "id": 91,
+      "type": 2,
+      "detail": 21,
+      "group": "boomerang",
+      "cell": 21,
+      "source": "Resources/res/inventory_boomerang/22.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid91.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "0e4a828325f04bd93d1bde616b990443a67d8eac39091598b42622dba049ef47"
+    },
+    {
+      "id": 92,
+      "type": 2,
+      "detail": 22,
+      "group": "boomerang",
+      "cell": 22,
+      "source": "Resources/res/inventory_boomerang/23.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid92.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "6e7da360be88eb97c679a308523f86c0b572c2dba03a71c7771241dc4411340c"
+    },
+    {
+      "id": 93,
+      "type": 2,
+      "detail": 23,
+      "group": "boomerang",
+      "cell": 23,
+      "source": "Resources/res/inventory_boomerang/24.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid93.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "60fddc30d46fc61c21893e93fd6c32a67b5592ce8335835251092798d49b6d83"
+    },
+    {
+      "id": 94,
+      "type": 2,
+      "detail": 24,
+      "group": "boomerang",
+      "cell": 24,
+      "source": "Resources/res/inventory_boomerang/25.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid94.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "6c5ea0edf87bac6cb4233ae2d92c00b776c81166be7c3c375cf52dd6a577cf48"
+    },
+    {
+      "id": 95,
+      "type": 2,
+      "detail": 25,
+      "group": "boomerang",
+      "cell": 25,
+      "source": "Resources/res/inventory_boomerang/26.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid95.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "2e81497a6897c0083401f191a9b8d3bc5a140aead98dea66d268b6312d19e218"
+    },
+    {
+      "id": 96,
+      "type": 2,
+      "detail": 26,
+      "group": "boomerang",
+      "cell": 26,
+      "source": "Resources/res/inventory_boomerang/27.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid96.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "8e87fdb6c9f21486ad7b0dbcc7c575338f540fc3c4e1a6483d591e33ed915667"
+    },
+    {
+      "id": 97,
+      "type": 2,
+      "detail": 27,
+      "group": "boomerang",
+      "cell": 27,
+      "source": "Resources/res/inventory_boomerang/28.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid97.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "ffccba145609df02e6d453146ab045985917a4669b7eb4211ea866b40db03b6d"
+    },
+    {
+      "id": 98,
+      "type": 2,
+      "detail": 28,
+      "group": "boomerang",
+      "cell": 28,
+      "source": "Resources/res/inventory_boomerang/29.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid98.png",
+      "output_size": [
+        256,
+        384
+      ],
+      "source_sha256": "3f83752ff507b528b60855d70025c3c1ba1f16b9fa4f1f599f6b4bd6f088baec"
+    },
+    {
+      "id": 99,
+      "type": 2,
+      "detail": 29,
+      "group": "boomerang",
+      "cell": 29,
+      "source": "Resources/res/inventory_boomerang/30.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid99.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "40b2e25760193d7eefd539f20382cdce33beba0d4db4448f4b835cf537f6f840"
+    },
+    {
+      "id": 100,
+      "type": 2,
+      "detail": 30,
+      "group": "boomerang",
+      "cell": 30,
+      "source": "Resources/res/inventory_boomerang/31.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid100.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "5b6df1ff5c70cd8776255de46ce5212f0435713bbdd37db692ec3ed0610f1f6c"
+    },
+    {
+      "id": 101,
+      "type": 2,
+      "detail": 31,
+      "group": "boomerang",
+      "cell": 31,
+      "source": "Resources/res/inventory_boomerang/32.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid101.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "7304c21679e43afa0a01aa8496576c96ca66e51d09a679adf6231ab73f1d1118"
+    },
+    {
+      "id": 102,
+      "type": 2,
+      "detail": 32,
+      "group": "boomerang",
+      "cell": 32,
+      "source": "Resources/res/inventory_boomerang/33.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid102.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "8f5c73a224acf8a6d5f909d4321cdf0c6d84c3324e86ee2afe78d2f2553528ff"
+    },
+    {
+      "id": 103,
+      "type": 2,
+      "detail": 33,
+      "group": "boomerang",
+      "cell": 33,
+      "source": "Resources/res/inventory_boomerang/34.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid103.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "4695d909b63a472e64ccc4ac245f9332e1c4838a0745cb70963b8c330a9ee932"
+    },
+    {
+      "id": 104,
+      "type": 2,
+      "detail": 34,
+      "group": "boomerang",
+      "cell": 34,
+      "source": "Resources/res/inventory_boomerang/35.png",
+      "size": [
+        96,
+        96
+      ],
+      "bbox": [
+        2,
+        2,
+        94,
+        94
+      ],
+      "file": "Resources/res/grid_items/grid104.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_sha256": "0051419b530a99df191a59019a5f4b8d770881cfc0aaa1116c7c53e2ed1f3d75"
+    },
+    {
+      "id": 105,
+      "type": 3,
+      "detail": 0,
+      "group": "helm",
+      "cell": 0,
+      "source": "Resources/res/inventory_helm/robin_1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        18,
+        8,
+        108,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid105.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "04bc00ea6528982761d964aa46f3640a37802c8812a8e0bb75326618d6d8ca2f"
+    },
+    {
+      "id": 106,
+      "type": 3,
+      "detail": 1,
+      "group": "helm",
+      "cell": 1,
+      "source": "Resources/res/inventory_helm/robin_2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        20,
+        8,
+        106,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid106.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "f831051916f4feb3289024d08eac3f6d32b8916247542cfa87764dd1921adfd9"
+    },
+    {
+      "id": 107,
+      "type": 3,
+      "detail": 2,
+      "group": "helm",
+      "cell": 2,
+      "source": "Resources/res/inventory_helm/robin_3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        14,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid107.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "dec0df2924b3def15d79b47d71e9f6d813cd3027df1562cc517e25a6fa4f8436"
+    },
+    {
+      "id": 108,
+      "type": 3,
+      "detail": 3,
+      "group": "helm",
+      "cell": 3,
+      "source": "Resources/res/inventory_helm/robin_4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid108.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "158655d2e7827d47eece874d573c1a890a70d49b4c4dd3e4d1fb7d532f612214"
+    },
+    {
+      "id": 109,
+      "type": 3,
+      "detail": 4,
+      "group": "helm",
+      "cell": 4,
+      "source": "Resources/res/inventory_helm/robin_5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        26,
+        8,
+        102,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid109.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "4d796751eec8922e22d9425217556c8e7f2c03c692dbd1f1d3e2523fbd2247b5"
+    },
+    {
+      "id": 110,
+      "type": 3,
+      "detail": 5,
+      "group": "helm",
+      "cell": 5,
+      "source": "Resources/res/inventory_helm/robin_6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        14,
+        8,
+        112,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid110.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "3f64904234af63788758bca2b755a558dd0f96271f12b74b868633abaa7faf5c"
+    },
+    {
+      "id": 111,
+      "type": 3,
+      "detail": 6,
+      "group": "helm",
+      "cell": 6,
+      "source": "Resources/res/inventory_helm/robin_7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        16,
+        8,
+        110,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid111.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "cef5364197ca19010f202ef903a9e5a1a13491b2f5c96c60a9770abdb7f4762e"
+    },
+    {
+      "id": 112,
+      "type": 3,
+      "detail": 7,
+      "group": "helm",
+      "cell": 7,
+      "source": "Resources/res/inventory_helm/robin_8.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid112.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "45fbfbd2443572ff2518385b021a5bcc2ab6d230a7bcd64b74a978551fb20f5a"
+    },
+    {
+      "id": 113,
+      "type": 4,
+      "detail": 0,
+      "group": "helm",
+      "cell": 8,
+      "source": "Resources/res/inventory_helm/diana_1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        18,
+        120,
+        108
+      ],
+      "file": "Resources/res/grid_items/grid113.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "31141551ad45d1ed586693b3c21bd9ef0f50b210607c3f1b43794aac5f86a9de"
+    },
+    {
+      "id": 114,
+      "type": 4,
+      "detail": 1,
+      "group": "helm",
+      "cell": 9,
+      "source": "Resources/res/inventory_helm/diana_2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid114.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "5d68f141784a34dd203a56e83f9acd2cff7605df6ffc664d1989093bc65e02ea"
+    },
+    {
+      "id": 115,
+      "type": 4,
+      "detail": 2,
+      "group": "helm",
+      "cell": 10,
+      "source": "Resources/res/inventory_helm/diana_3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        20,
+        120,
+        108
+      ],
+      "file": "Resources/res/grid_items/grid115.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "72c0f1fd7c842b5b24d7fd9e857f98ef1e05ae5e3bc0e1c9209a7744735df104"
+    },
+    {
+      "id": 116,
+      "type": 4,
+      "detail": 3,
+      "group": "helm",
+      "cell": 11,
+      "source": "Resources/res/inventory_helm/diana_4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        18,
+        120,
+        108
+      ],
+      "file": "Resources/res/grid_items/grid116.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "507fd3b9e6a81df745a178ae5592fd04f30c022274e4d794318182ddbde9223a"
+    },
+    {
+      "id": 117,
+      "type": 4,
+      "detail": 4,
+      "group": "helm",
+      "cell": 12,
+      "source": "Resources/res/inventory_helm/diana_5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        22,
+        120,
+        106
+      ],
+      "file": "Resources/res/grid_items/grid117.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "dcb7cd2a328a49af7543e3037c9ae7f39e111c2b7ed469df24c623942865a5c3"
+    },
+    {
+      "id": 118,
+      "type": 4,
+      "detail": 5,
+      "group": "helm",
+      "cell": 13,
+      "source": "Resources/res/inventory_helm/diana_6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        18,
+        8,
+        110,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid118.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "482f706489ae897404438ce0212e02aa96b37ef1fc0e2fa5d98bb15ad2d861a5"
+    },
+    {
+      "id": 119,
+      "type": 4,
+      "detail": 6,
+      "group": "helm",
+      "cell": 14,
+      "source": "Resources/res/inventory_helm/diana_7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid119.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "dce5e3506b39b58beb2249d97f047d3510a4de4e4975b74a099c93ad59f71599"
+    },
+    {
+      "id": 120,
+      "type": 4,
+      "detail": 7,
+      "group": "helm",
+      "cell": 15,
+      "source": "Resources/res/inventory_helm/diana_8.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        16,
+        8,
+        110,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid120.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "16f85b25748ed989c243261ee4e79fb2666ed66b6fffcc3b9da8efb60f9aa6d6"
+    },
+    {
+      "id": 121,
+      "type": 5,
+      "detail": 0,
+      "group": "helm",
+      "cell": 16,
+      "source": "Resources/res/inventory_helm/maxx_1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid121.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "1ec2f42aef9a8d885c1b78414c6573ff8d1f0f9927aad6673152e47033817fc3"
+    },
+    {
+      "id": 122,
+      "type": 5,
+      "detail": 1,
+      "group": "helm",
+      "cell": 17,
+      "source": "Resources/res/inventory_helm/maxx_2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        10,
+        120,
+        116
+      ],
+      "file": "Resources/res/grid_items/grid122.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "869b444c44057de186ee1c7c67f964e91c643406f2bbef3a6d5573e43581e6ac"
+    },
+    {
+      "id": 123,
+      "type": 5,
+      "detail": 2,
+      "group": "helm",
+      "cell": 18,
+      "source": "Resources/res/inventory_helm/maxx_3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid123.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "9150e8e0ae3663d8418626c6b611893b19150e535bf1b0e82d9b461556e7b264"
+    },
+    {
+      "id": 124,
+      "type": 5,
+      "detail": 3,
+      "group": "helm",
+      "cell": 19,
+      "source": "Resources/res/inventory_helm/maxx_4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        12,
+        120,
+        116
+      ],
+      "file": "Resources/res/grid_items/grid124.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "a2c53ca74c1c349e7d6c895720e9306f61b6092d911a90e7adb408b1a857b93f"
+    },
+    {
+      "id": 125,
+      "type": 5,
+      "detail": 4,
+      "group": "helm",
+      "cell": 20,
+      "source": "Resources/res/inventory_helm/maxx_5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        16,
+        120,
+        110
+      ],
+      "file": "Resources/res/grid_items/grid125.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "7ad3c94d630a1ca7acf6cb5752989257f06b7782e304d79b7007c9ab5efdb096"
+    },
+    {
+      "id": 126,
+      "type": 5,
+      "detail": 5,
+      "group": "helm",
+      "cell": 21,
+      "source": "Resources/res/inventory_helm/maxx_6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        10,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid126.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "e780e99f1704a389204c334a43161db4d96db0dc62ac9c45e9b344182a0d7a76"
+    },
+    {
+      "id": 127,
+      "type": 5,
+      "detail": 6,
+      "group": "helm",
+      "cell": 22,
+      "source": "Resources/res/inventory_helm/maxx_7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        20,
+        120,
+        108
+      ],
+      "file": "Resources/res/grid_items/grid127.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "d0338e4600e67d7aab253751a93c713fc76f80b9fdde7132bdb820830dbcf0fd"
+    },
+    {
+      "id": 128,
+      "type": 5,
+      "detail": 7,
+      "group": "helm",
+      "cell": 23,
+      "source": "Resources/res/inventory_helm/maxx_8.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        10,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid128.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "c372deb7001e38b0821ffbb44ed48472c8e517fff1be02a3644f3d02af57e5ab"
+    },
+    {
+      "id": 129,
+      "type": 6,
+      "detail": 0,
+      "group": "armor",
+      "cell": 0,
+      "source": "Resources/res/item_armor_robin0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid129.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "cc1c6bb654102c443e0f7e052a2e3dceb413441842850c8ab609892d7005a07e",
+      "design_source": "output/square-gear/before/item264.png"
+    },
+    {
+      "id": 130,
+      "type": 6,
+      "detail": 1,
+      "group": "armor",
+      "cell": 1,
+      "source": "Resources/res/item_armor_robin1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid130.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "6a95935c2fb4aa66020d71a460489fc3f4be53747c408835883a2ab025114fb1",
+      "design_source": "output/square-gear/before/item265.png"
+    },
+    {
+      "id": 131,
+      "type": 6,
+      "detail": 2,
+      "group": "armor",
+      "cell": 2,
+      "source": "Resources/res/item_armor_robin2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid131.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "800bdc5270000bd806b9414db620b3b844a8c4018882af54629a2b9d41fe94d7",
+      "design_source": "output/square-gear/before/item266.png"
+    },
+    {
+      "id": 132,
+      "type": 6,
+      "detail": 3,
+      "group": "armor",
+      "cell": 3,
+      "source": "Resources/res/item_armor_robin3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid132.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "9f219044dfee509066a3cb4d281fab75e28760fb942f2232c017c8d6a315eb7b",
+      "design_source": "output/square-gear/before/item267.png"
+    },
+    {
+      "id": 133,
+      "type": 6,
+      "detail": 4,
+      "group": "armor",
+      "cell": 4,
+      "source": "Resources/res/item_armor_robin4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid133.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8f9dec17aaa4ca711bde40893ec8c104c55c70933510d1882b2f361fa7aedb90",
+      "design_source": "output/square-gear/before/item268.png"
+    },
+    {
+      "id": 134,
+      "type": 6,
+      "detail": 5,
+      "group": "armor",
+      "cell": 5,
+      "source": "Resources/res/item_armor_robin5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid134.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "a77ebe59aacd757f1d0e864467487b93246c1977397b07f9c90e54bece0319ff",
+      "design_source": "output/square-gear/before/item269.png"
+    },
+    {
+      "id": 135,
+      "type": 6,
+      "detail": 6,
+      "group": "armor",
+      "cell": 6,
+      "source": "Resources/res/item_armor_robin6.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        62,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid135.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "9a0d6848663dc89516e2a68098a0232dabb8779f38c647f2c369778e8311550b",
+      "design_source": "output/square-gear/before/item270.png"
+    },
+    {
+      "id": 136,
+      "type": 6,
+      "detail": 7,
+      "group": "armor",
+      "cell": 7,
+      "source": "Resources/res/item_armor_robin7.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        60,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid136.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "46e782d837ca3b9975c8eec7f1673c20735ce697a57c69865591a817d30d3310",
+      "design_source": "output/square-gear/before/item271.png"
+    },
+    {
+      "id": 137,
+      "type": 7,
+      "detail": 0,
+      "group": "armor",
+      "cell": 8,
+      "source": "Resources/res/item_vest_diana0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid137.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "45fd7f0036203950eb0884a9eadcd5747f3f8df8b4bc6e4f8674460a16dd49b3",
+      "design_source": "output/square-gear/before/item272.png"
+    },
+    {
+      "id": 138,
+      "type": 7,
+      "detail": 1,
+      "group": "armor",
+      "cell": 9,
+      "source": "Resources/res/item_vest_diana1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid138.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "e194e639bac8300a5ad1d63dc7372556c0c01823b033ecd41f2951a2a556b080",
+      "design_source": "output/square-gear/before/item273.png"
+    },
+    {
+      "id": 139,
+      "type": 7,
+      "detail": 2,
+      "group": "armor",
+      "cell": 10,
+      "source": "Resources/res/item_vest_diana2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid139.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "c07687a7e4839e89ba19fb7a4f616473977b897ac7a94d5490b91c8cf942396a",
+      "design_source": "output/square-gear/before/item274.png"
+    },
+    {
+      "id": 140,
+      "type": 7,
+      "detail": 3,
+      "group": "armor",
+      "cell": 11,
+      "source": "Resources/res/item_vest_diana3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid140.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "c8450558b653da3486604007106391371b4538d8e24df0fd4e442e7dd371ec42",
+      "design_source": "output/square-gear/before/item275.png"
+    },
+    {
+      "id": 141,
+      "type": 7,
+      "detail": 4,
+      "group": "armor",
+      "cell": 12,
+      "source": "Resources/res/item_vest_diana4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid141.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "875ea283936925333341c150f9aa7f9c5abf4651e594bc62c6ad63fb9cbd9f95",
+      "design_source": "output/square-gear/before/item276.png"
+    },
+    {
+      "id": 142,
+      "type": 7,
+      "detail": 5,
+      "group": "armor",
+      "cell": 13,
+      "source": "Resources/res/item_vest_diana5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid142.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "57ff3850caff3062ce9d7ab53e4b26f8b30f255df8603b9eda39159c7b48b4b2",
+      "design_source": "output/square-gear/before/item277.png"
+    },
+    {
+      "id": 143,
+      "type": 7,
+      "detail": 6,
+      "group": "armor",
+      "cell": 14,
+      "source": "Resources/res/item_vest_diana6.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        62,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid143.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8e2a93c658094fac404bd1ee6646990de243299eed1282da6d0d974e8b8f9fac",
+      "design_source": "output/square-gear/before/item278.png"
+    },
+    {
+      "id": 144,
+      "type": 7,
+      "detail": 7,
+      "group": "armor",
+      "cell": 15,
+      "source": "Resources/res/item_vest_diana7.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        62,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid144.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "538289eb789f39914ab3d2befcbcc88fc05fa17bd5a3d15aa2a3cca46cf61185",
+      "design_source": "output/square-gear/before/item279.png"
+    },
+    {
+      "id": 145,
+      "type": 8,
+      "detail": 0,
+      "group": "armor",
+      "cell": 16,
+      "source": "Resources/res/item_coat_maxx0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid145.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "59245c2eb351d1fdb5fa95818bd1433c6a0cac60ec9666b445d251e4ca1f5e69",
+      "design_source": "output/square-gear/before/item280.png"
+    },
+    {
+      "id": 146,
+      "type": 8,
+      "detail": 1,
+      "group": "armor",
+      "cell": 17,
+      "source": "Resources/res/item_coat_maxx1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid146.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8dd898f73132aecbbc1e9e93409e1c281e80b79af39ac596bd3660c260d46cf8",
+      "design_source": "output/square-gear/before/item281.png"
+    },
+    {
+      "id": 147,
+      "type": 8,
+      "detail": 2,
+      "group": "armor",
+      "cell": 18,
+      "source": "Resources/res/item_coat_maxx2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid147.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "7cda1af12080fc0b04fbd085af527a94a55ad4a1f4a50bbf2d4f77230339ea7c",
+      "design_source": "output/square-gear/before/item282.png"
+    },
+    {
+      "id": 148,
+      "type": 8,
+      "detail": 3,
+      "group": "armor",
+      "cell": 19,
+      "source": "Resources/res/item_coat_maxx3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid148.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "89ae2bec10651d5acebd337165a21772d855b3124927eb8f7044654ebc3d63fe",
+      "design_source": "output/square-gear/before/item283.png"
+    },
+    {
+      "id": 149,
+      "type": 8,
+      "detail": 4,
+      "group": "armor",
+      "cell": 20,
+      "source": "Resources/res/item_coat_maxx4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid149.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "4ebf61c369a2141a6ddf229b2e03b75d7ddd1381451f8b633e4276cb910c1afa",
+      "design_source": "output/square-gear/before/item284.png"
+    },
+    {
+      "id": 150,
+      "type": 8,
+      "detail": 5,
+      "group": "armor",
+      "cell": 21,
+      "source": "Resources/res/item_coat_maxx5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid150.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "67f7f410a1f0280cf656090a6f0461cf63f69d35c3d941754ac6c6ca335fa791",
+      "design_source": "output/square-gear/before/item285.png"
+    },
+    {
+      "id": 151,
+      "type": 8,
+      "detail": 6,
+      "group": "armor",
+      "cell": 22,
+      "source": "Resources/res/item_coat_maxx6.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        62,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid151.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "70426d6dc56e65a25737afdc84f7e4c78d0a79701fb7a195e7619f36998ae46b",
+      "design_source": "output/square-gear/before/item286.png"
+    },
+    {
+      "id": 152,
+      "type": 8,
+      "detail": 7,
+      "group": "armor",
+      "cell": 23,
+      "source": "Resources/res/item_coat_maxx7.png",
+      "size": [
+        64,
+        96
+      ],
+      "bbox": [
+        2,
+        4,
+        62,
+        92
+      ],
+      "file": "Resources/res/grid_items/grid152.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "6f3927e5ec08dd3bcf4e6ca626de48e41ac2e83d57077b89eff6240615ba49bb",
+      "design_source": "output/square-gear/before/item287.png"
+    },
+    {
+      "id": 153,
+      "type": 9,
+      "detail": 0,
+      "group": "gloves",
+      "cell": 0,
+      "source": "Resources/res/item_glove_robin0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        56,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid153.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "016e2ae12ca88c77655dd5712b74a2fdc62444945f6d93811121c3d5e945a98f"
+    },
+    {
+      "id": 154,
+      "type": 9,
+      "detail": 1,
+      "group": "gloves",
+      "cell": 1,
+      "source": "Resources/res/item_glove_robin1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid154.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "cbf54558b6cf937bcbc13ff5f4f343152f2d0413137c793c65af1156cee5e0f3"
+    },
+    {
+      "id": 155,
+      "type": 9,
+      "detail": 2,
+      "group": "gloves",
+      "cell": 2,
+      "source": "Resources/res/item_glove_robin2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid155.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "711c08b26ece4bf4e9ea356afc996fa119172c45b0216b8273a97c8cd2274dfd"
+    },
+    {
+      "id": 156,
+      "type": 9,
+      "detail": 3,
+      "group": "gloves",
+      "cell": 3,
+      "source": "Resources/res/item_glove_robin3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        56,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid156.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "686d4a8a0f5e2d2535f889303f129331b7c30e00a6b4baa1206c7c9c83d11ee4"
+    },
+    {
+      "id": 157,
+      "type": 9,
+      "detail": 4,
+      "group": "gloves",
+      "cell": 4,
+      "source": "Resources/res/item_glove_robin4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid157.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "b46cd4c023cdf72707254a76d8aab082cb2071394b9e20800b621131ad8abc06"
+    },
+    {
+      "id": 158,
+      "type": 9,
+      "detail": 5,
+      "group": "gloves",
+      "cell": 5,
+      "source": "Resources/res/item_glove_robin5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid158.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "c2dc703e85acc2f8182683c938e3298ca5047d5825b75553df6b8b1df680b4d4"
+    },
+    {
+      "id": 159,
+      "type": 9,
+      "detail": 6,
+      "group": "gloves",
+      "cell": 6,
+      "source": "Resources/res/item_glove_robin6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid159.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "76ec0f35e1e72774c1ffb130beeed702138dd5a26ab2b5cca2339baef33f4964"
+    },
+    {
+      "id": 160,
+      "type": 9,
+      "detail": 7,
+      "group": "gloves",
+      "cell": 7,
+      "source": "Resources/res/item_glove_robin7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid160.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "26f18f08bfa9c4b407b4796b360e4ef1d286db0b7048112d2c67ff0150fc7433"
+    },
+    {
+      "id": 161,
+      "type": 10,
+      "detail": 0,
+      "group": "gloves",
+      "cell": 8,
+      "source": "Resources/res/item_glove_diana0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid161.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "78f888b2e59ef3e32968b28e960f53ab159e0904500c364f07a3e9cb6a144a00"
+    },
+    {
+      "id": 162,
+      "type": 10,
+      "detail": 1,
+      "group": "gloves",
+      "cell": 9,
+      "source": "Resources/res/item_glove_diana1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid162.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "f9d644ef8a3c7d24f6998437c5acf91618292f2435da84f4364c3f1768ad2c21"
+    },
+    {
+      "id": 163,
+      "type": 10,
+      "detail": 2,
+      "group": "gloves",
+      "cell": 10,
+      "source": "Resources/res/item_glove_diana2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid163.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "f08ed5c0c6516a415bc99a644399ece6c3136db695500765dc415156b1a6f301"
+    },
+    {
+      "id": 164,
+      "type": 10,
+      "detail": 3,
+      "group": "gloves",
+      "cell": 11,
+      "source": "Resources/res/item_glove_diana3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid164.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "7fa119644fc39d15539690a768fe71d9a4579f4d3e0b5267505897e14e896d17"
+    },
+    {
+      "id": 165,
+      "type": 10,
+      "detail": 4,
+      "group": "gloves",
+      "cell": 12,
+      "source": "Resources/res/item_glove_diana4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid165.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "41ac2b4ed5452804426df580b833a7331b3443f6ef45d3be19d69f2b5ee8a91b"
+    },
+    {
+      "id": 166,
+      "type": 10,
+      "detail": 5,
+      "group": "gloves",
+      "cell": 13,
+      "source": "Resources/res/item_glove_diana5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid166.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8e59b17fd3e067936216742fb158cc25a3f86a6c06d4ef55afcd317584e25b8d"
+    },
+    {
+      "id": 167,
+      "type": 10,
+      "detail": 6,
+      "group": "gloves",
+      "cell": 14,
+      "source": "Resources/res/item_glove_diana6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid167.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "69380accb8d3de998a759e6664e626bfd4cf6af842cf9a7639d2e95a82122702"
+    },
+    {
+      "id": 168,
+      "type": 10,
+      "detail": 7,
+      "group": "gloves",
+      "cell": 15,
+      "source": "Resources/res/item_glove_diana7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid168.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "0eca8be716271ac91f74c426722ad9f55aa2218793de5a3ea08b205e29c0bb00"
+    },
+    {
+      "id": 169,
+      "type": 11,
+      "detail": 0,
+      "group": "gloves",
+      "cell": 16,
+      "source": "Resources/res/item_glove_maxx0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid169.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "c1b2a5a116fd6e2f9a9299b06c1b12695cd1f10040cad2fb73d384050d4b8d74"
+    },
+    {
+      "id": 170,
+      "type": 11,
+      "detail": 1,
+      "group": "gloves",
+      "cell": 17,
+      "source": "Resources/res/item_glove_maxx1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid170.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "4f381630639f606616f4adeeff751297ab3544801c57b0e1ef5c3456a71244a7"
+    },
+    {
+      "id": 171,
+      "type": 11,
+      "detail": 2,
+      "group": "gloves",
+      "cell": 18,
+      "source": "Resources/res/item_glove_maxx2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid171.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "75d4f7e96b6fb97084cf9968f42937e371f48b88e6f3cf88537df50f24e00f9e"
+    },
+    {
+      "id": 172,
+      "type": 11,
+      "detail": 3,
+      "group": "gloves",
+      "cell": 19,
+      "source": "Resources/res/item_glove_maxx3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        56,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid172.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "be0ade1fe787ba7d8676a5286aca9176829d9159e44ec1b77773dafae19f5379"
+    },
+    {
+      "id": 173,
+      "type": 11,
+      "detail": 4,
+      "group": "gloves",
+      "cell": 20,
+      "source": "Resources/res/item_glove_maxx4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        56,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid173.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "08a23997da02e4782f57ce0f2a39e89ca6e965c64871c2e83c4eb84c9d1cdc0e"
+    },
+    {
+      "id": 174,
+      "type": 11,
+      "detail": 5,
+      "group": "gloves",
+      "cell": 21,
+      "source": "Resources/res/item_glove_maxx5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid174.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "309d68538e8c1ebbe5444b9164fa96c1317224cd077f8e9503439cd2ab23754e"
+    },
+    {
+      "id": 175,
+      "type": 11,
+      "detail": 6,
+      "group": "gloves",
+      "cell": 22,
+      "source": "Resources/res/item_glove_maxx6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid175.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "fd453b7039f977ecc213ba101bc2465d504c1146f15a503130ecdcdb7983d70c"
+    },
+    {
+      "id": 176,
+      "type": 11,
+      "detail": 7,
+      "group": "gloves",
+      "cell": 23,
+      "source": "Resources/res/item_glove_maxx7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        6,
+        2,
+        58,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid176.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "474972b5aedbbfec81dc6e3d386c6dcf75264abecece22d9f0c019c48f07cfd2"
+    },
+    {
+      "id": 177,
+      "type": 12,
+      "detail": 0,
+      "group": "pants",
+      "cell": 0,
+      "source": "Resources/res/item_pants_robin0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid177.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "6a9bfd1831bf5281baba85cd967cd340be7f7d7fe19f44fb2d43dbe549ae7b68"
+    },
+    {
+      "id": 178,
+      "type": 12,
+      "detail": 1,
+      "group": "pants",
+      "cell": 1,
+      "source": "Resources/res/item_pants_robin1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid178.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "abad387b7604689c70d97f97165d27c2bc7530c531e7f31624d543c57a0af0f5"
+    },
+    {
+      "id": 179,
+      "type": 12,
+      "detail": 2,
+      "group": "pants",
+      "cell": 2,
+      "source": "Resources/res/item_pants_robin2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid179.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "b0d27706371f89724eea271fac606515df96b5649ed43135d3f1a77cef65caab"
+    },
+    {
+      "id": 180,
+      "type": 12,
+      "detail": 3,
+      "group": "pants",
+      "cell": 3,
+      "source": "Resources/res/item_pants_robin3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid180.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "8019cbfc49831e21e7398f624e462b83ab181fe3f4ebf81539204102280df4e9"
+    },
+    {
+      "id": 181,
+      "type": 12,
+      "detail": 4,
+      "group": "pants",
+      "cell": 4,
+      "source": "Resources/res/item_pants_robin4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid181.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "d83e29c4999d378d1458fceebbfb277e3670731094ba6cafb0ac5af5b59d6d78"
+    },
+    {
+      "id": 182,
+      "type": 12,
+      "detail": 5,
+      "group": "pants",
+      "cell": 5,
+      "source": "Resources/res/item_pants_robin5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid182.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "16bfc1c570078c26710efc308b63bd8dda654d2174b42227ad1485186ad59171"
+    },
+    {
+      "id": 183,
+      "type": 12,
+      "detail": 6,
+      "group": "pants",
+      "cell": 6,
+      "source": "Resources/res/item_pants_robin6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid183.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "eadac59af660c4e61e9da54656968ca94534c23606b2e1708affbdd6dc108bc8"
+    },
+    {
+      "id": 184,
+      "type": 12,
+      "detail": 7,
+      "group": "pants",
+      "cell": 7,
+      "source": "Resources/res/item_pants_robin7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid184.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "3edbe80ecb1e2fbe31b1b28a9b6b0ef85eff05513f85ca4e6fabd41d41c6b14a"
+    },
+    {
+      "id": 185,
+      "type": 13,
+      "detail": 0,
+      "group": "pants",
+      "cell": 8,
+      "source": "Resources/res/item_pants_diana0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid185.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "09e6ec3ee3224f0881898fe9986a69a93a1a7c22c2a93b08dc037b0118fd8398"
+    },
+    {
+      "id": 186,
+      "type": 13,
+      "detail": 1,
+      "group": "pants",
+      "cell": 9,
+      "source": "Resources/res/item_pants_diana1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid186.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "a1c66861906ef5ef21a814c17f72b4b1bfab42db99fb4c1d7442b855beef3261"
+    },
+    {
+      "id": 187,
+      "type": 13,
+      "detail": 2,
+      "group": "pants",
+      "cell": 10,
+      "source": "Resources/res/item_pants_diana2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        4,
+        60,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid187.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "2c57eab154a9747b2c7d8b55f4d73ecd8d1832a08b691f3285e555de07f54619"
+    },
+    {
+      "id": 188,
+      "type": 13,
+      "detail": 3,
+      "group": "pants",
+      "cell": 11,
+      "source": "Resources/res/item_pants_diana3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid188.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "85bde3016a3c68bedb3e6572924766ed0dbd42614181bf14d3d2c66ace632648"
+    },
+    {
+      "id": 189,
+      "type": 13,
+      "detail": 4,
+      "group": "pants",
+      "cell": 12,
+      "source": "Resources/res/item_pants_diana4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid189.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "5b3963e27423d1696508b7eaf375e458e45c01dbd7aff867a4f720bc161091e1"
+    },
+    {
+      "id": 190,
+      "type": 13,
+      "detail": 5,
+      "group": "pants",
+      "cell": 13,
+      "source": "Resources/res/item_pants_diana5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid190.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "09684c21422538f7dfd87694e5db91b1378a4a1deb14574ca93a23136b3047ca"
+    },
+    {
+      "id": 191,
+      "type": 13,
+      "detail": 6,
+      "group": "pants",
+      "cell": 14,
+      "source": "Resources/res/item_pants_diana6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid191.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "607f27dc435704c45277c783a5f77bb95e3b7e6b58a39dc4e415c07b7e92947b"
+    },
+    {
+      "id": 192,
+      "type": 13,
+      "detail": 7,
+      "group": "pants",
+      "cell": 15,
+      "source": "Resources/res/item_pants_diana7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        60
+      ],
+      "file": "Resources/res/grid_items/grid192.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "755779848d80515cecbbd74b9b90edc210210d9bdeb72f30aad2d360ba5558d5"
+    },
+    {
+      "id": 193,
+      "type": 14,
+      "detail": 0,
+      "group": "pants",
+      "cell": 16,
+      "source": "Resources/res/item_pants_maxx0.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        4,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid193.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "af900401535fc9aa6c59cd14d3f11a4ffe13db94c8d3b6a78362b1adffa934c9"
+    },
+    {
+      "id": 194,
+      "type": 14,
+      "detail": 1,
+      "group": "pants",
+      "cell": 17,
+      "source": "Resources/res/item_pants_maxx1.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid194.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "02bb1f9f304edb69c48b5e85c109c0ef7cd3ec9b74d0964ab55e048d02b79eac"
+    },
+    {
+      "id": 195,
+      "type": 14,
+      "detail": 2,
+      "group": "pants",
+      "cell": 18,
+      "source": "Resources/res/item_pants_maxx2.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid195.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "e8366f2812c4deaa4bf97e3aa92d806cb215185c561d4fca18ca6f9dedf4694f"
+    },
+    {
+      "id": 196,
+      "type": 14,
+      "detail": 3,
+      "group": "pants",
+      "cell": 19,
+      "source": "Resources/res/item_pants_maxx3.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid196.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "a7b70155f42c05673b26d7853a8f4c76d1c2d9b2f3e73835b87fb96c471e7298"
+    },
+    {
+      "id": 197,
+      "type": 14,
+      "detail": 4,
+      "group": "pants",
+      "cell": 20,
+      "source": "Resources/res/item_pants_maxx4.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid197.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "24b007711017f135a5fc45929d4e2759ccb11632a97df287f8bd1f72e753ea9b"
+    },
+    {
+      "id": 198,
+      "type": 14,
+      "detail": 5,
+      "group": "pants",
+      "cell": 21,
+      "source": "Resources/res/item_pants_maxx5.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid198.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "0a5d71a32541a1382117b88ec39ebc0efde68fcfa1e04a90904626608c91c159"
+    },
+    {
+      "id": 199,
+      "type": 14,
+      "detail": 6,
+      "group": "pants",
+      "cell": 22,
+      "source": "Resources/res/item_pants_maxx6.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        60,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid199.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "d681db3608b738d6a0bb054f7b2163cb52cdce53d798583343e2392c199df444"
+    },
+    {
+      "id": 200,
+      "type": 14,
+      "detail": 7,
+      "group": "pants",
+      "cell": 23,
+      "source": "Resources/res/item_pants_maxx7.png",
+      "size": [
+        64,
+        64
+      ],
+      "bbox": [
+        2,
+        2,
+        62,
+        62
+      ],
+      "file": "Resources/res/grid_items/grid200.png",
+      "output_size": [
+        256,
+        256
+      ],
+      "source_sha256": "6de8d0fd69ba33111d34a7a1c4e5549283390fb2600bdc6d15285204f78ec20e"
+    },
+    {
+      "id": 201,
+      "type": 15,
+      "detail": 0,
+      "group": "boots",
+      "cell": 0,
+      "source": "Resources/res/item_boots_robin0.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid201.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "dd806318a9bb87f0810826aa95d1371708b938c50a9a14a22806eec27ebf17be"
+    },
+    {
+      "id": 202,
+      "type": 15,
+      "detail": 1,
+      "group": "boots",
+      "cell": 1,
+      "source": "Resources/res/item_boots_robin1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid202.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "c840e9190bc1bdcbec9c287e21172cd28ed2824bcb89ba2647b7fafd480eedc9"
+    },
+    {
+      "id": 203,
+      "type": 15,
+      "detail": 2,
+      "group": "boots",
+      "cell": 2,
+      "source": "Resources/res/item_boots_robin2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid203.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "80d37337d163dd1d1c99a2b01f0cad3a47d269bd7d36b723fe1705f5d38b983f"
+    },
+    {
+      "id": 204,
+      "type": 15,
+      "detail": 3,
+      "group": "boots",
+      "cell": 3,
+      "source": "Resources/res/item_boots_robin3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid204.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "08afe1297b10464750b2de9c9a011f31ee2eff08a8d03e96fb2bceb1873afa55"
+    },
+    {
+      "id": 205,
+      "type": 15,
+      "detail": 4,
+      "group": "boots",
+      "cell": 4,
+      "source": "Resources/res/item_boots_robin4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid205.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "112896cd94de8f735be86821c0008243732d27fa1f434b326d14d8220fc862e2"
+    },
+    {
+      "id": 206,
+      "type": 15,
+      "detail": 5,
+      "group": "boots",
+      "cell": 5,
+      "source": "Resources/res/item_boots_robin5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid206.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "8050f660ed954ed3c6c8b3fe1fda7fa26027fc8e1d0be2fe9d5de97bb37b13cb"
+    },
+    {
+      "id": 207,
+      "type": 15,
+      "detail": 6,
+      "group": "boots",
+      "cell": 6,
+      "source": "Resources/res/item_boots_robin6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid207.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "bf1121801c2502de7dda56b68f3acd79251639dd7902ea3037f14270e42daac3"
+    },
+    {
+      "id": 208,
+      "type": 15,
+      "detail": 7,
+      "group": "boots",
+      "cell": 7,
+      "source": "Resources/res/item_boots_robin7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid208.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "75b8ef84ac2567477a36c380bcbb820c946ce2f724f211f9d0a00ffcc484406d"
+    },
+    {
+      "id": 209,
+      "type": 16,
+      "detail": 0,
+      "group": "boots",
+      "cell": 8,
+      "source": "Resources/res/item_boots_diana0.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid209.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "4605ea8b6f2908a86658abcf349e96ae4be75c37c115dc163ee55592c16b245d"
+    },
+    {
+      "id": 210,
+      "type": 16,
+      "detail": 1,
+      "group": "boots",
+      "cell": 9,
+      "source": "Resources/res/item_boots_diana1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid210.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "12f61548b9fb4bdb197d6d3d332176c1a114d8913ed231c2a3be822ba56d68da"
+    },
+    {
+      "id": 211,
+      "type": 16,
+      "detail": 2,
+      "group": "boots",
+      "cell": 10,
+      "source": "Resources/res/item_boots_diana2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid211.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "041962aa82da4da2a74efe038bce480fa251b179fa6f998522a10322654576f9"
+    },
+    {
+      "id": 212,
+      "type": 16,
+      "detail": 3,
+      "group": "boots",
+      "cell": 11,
+      "source": "Resources/res/item_boots_diana3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        14,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid212.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "ec06317118fc3827348e50654b1bc8b1aae37fea375f9134336dcabc26ada520"
+    },
+    {
+      "id": 213,
+      "type": 16,
+      "detail": 4,
+      "group": "boots",
+      "cell": 12,
+      "source": "Resources/res/item_boots_diana4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        116,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid213.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "40c5df13eba2497324ef4a288b90645681587a978ebde64378cd075684533c2d"
+    },
+    {
+      "id": 214,
+      "type": 16,
+      "detail": 5,
+      "group": "boots",
+      "cell": 13,
+      "source": "Resources/res/item_boots_diana5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        12,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid214.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "154bee8297051b76e8d4ef392108f50eac1425ad162464bfb7f5901c4c6cdcdb"
+    },
+    {
+      "id": 215,
+      "type": 16,
+      "detail": 6,
+      "group": "boots",
+      "cell": 14,
+      "source": "Resources/res/item_boots_diana6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid215.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "9ec2024452b75d0bc93bfc3ebd47fceddbaa1fe8af0304216f7f27a6ebd1f437"
+    },
+    {
+      "id": 216,
+      "type": 16,
+      "detail": 7,
+      "group": "boots",
+      "cell": 15,
+      "source": "Resources/res/item_boots_diana7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        14,
+        8,
+        114,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid216.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "638ebaeb24f7677fe2e50c98925b8bb444fb426cc978c0208428fe1e0d1c4cef"
+    },
+    {
+      "id": 217,
+      "type": 17,
+      "detail": 0,
+      "group": "boots",
+      "cell": 16,
+      "source": "Resources/res/item_boots_maxx0.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        120,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid217.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "76a355e2061c4915da43e13db6574e3d696c7742d02ccd048f4f3436ef768491"
+    },
+    {
+      "id": 218,
+      "type": 17,
+      "detail": 1,
+      "group": "boots",
+      "cell": 17,
+      "source": "Resources/res/item_boots_maxx1.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid218.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "149484e6fb25627798b94691cc578ef06bb4856dc5930ab8b7210554f70b209e"
+    },
+    {
+      "id": 219,
+      "type": 17,
+      "detail": 2,
+      "group": "boots",
+      "cell": 18,
+      "source": "Resources/res/item_boots_maxx2.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid219.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "51cf8830d50bb025d65b63362513be15d0d24fae62622f513c7b6287856c1ae9"
+    },
+    {
+      "id": 220,
+      "type": 17,
+      "detail": 3,
+      "group": "boots",
+      "cell": 19,
+      "source": "Resources/res/item_boots_maxx3.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid220.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "e09fe6f65e5771b045ead8a69a3b7bbbcf7012f0fa1ba6b7ae88b687251d43e1"
+    },
+    {
+      "id": 221,
+      "type": 17,
+      "detail": 4,
+      "group": "boots",
+      "cell": 20,
+      "source": "Resources/res/item_boots_maxx4.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        14,
+        8,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid221.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "9b3de4ba30ae43e6121cf1d40b8bbe9f0cfd2114a3aa43151b00b6632ea36297"
+    },
+    {
+      "id": 222,
+      "type": 17,
+      "detail": 5,
+      "group": "boots",
+      "cell": 21,
+      "source": "Resources/res/item_boots_maxx5.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        10,
+        120,
+        118
+      ],
+      "file": "Resources/res/grid_items/grid222.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "6732b1dafffd1371f7f541b82397712ce903cf41bdd094d8f14fec1a3cd100d8"
+    },
+    {
+      "id": 223,
+      "type": 17,
+      "detail": 6,
+      "group": "boots",
+      "cell": 22,
+      "source": "Resources/res/item_boots_maxx6.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        8,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid223.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "088cd113f49264a70201c6fb5ce76cb99d643fc1522b294f2dcd0b1da2df466d"
+    },
+    {
+      "id": 224,
+      "type": 17,
+      "detail": 7,
+      "group": "boots",
+      "cell": 23,
+      "source": "Resources/res/item_boots_maxx7.png",
+      "size": [
+        128,
+        128
+      ],
+      "bbox": [
+        10,
+        8,
+        118,
+        120
+      ],
+      "file": "Resources/res/grid_items/grid224.png",
+      "output_size": [
+        512,
+        512
+      ],
+      "source_sha256": "f7656390a71b72990d2667a7feb8af0015872baca28bd1f2c603098c5b28e514"
+    }
+  ]
+}

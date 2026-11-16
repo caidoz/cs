@@ -48,7 +48,17 @@ TRAIT6 = {'Expose':'표식', 'Inspire':'고무', 'Supply':'고무', 'Smith':'고
           'Chill':'빙결', 'Shield':'빙결', 'Fortify':'빙결', 'Heal':'빙결', 'Repair':'빙결', 'Cleanse':'빙결', 'Cleric':'빙결',
           'Burn':'지속', 'Poison':'지속', 'Bleed':'지속', 'Shock':'지속', 'Discharge':'지속', 'Leech':'지속'}
 ROLE = [ROLE_INDEX[c] for c in ROLE_CODE]
-assert len(ROLE) == 64 and len(STAR) == 64 and len(ACTION) == 64 and len(TITLE) == 64
+# 특성 6종의 배정표 (2026-11-15). 처음엔 Action 을 TRAIT6 로 접었는데 Heal·Repair·Shield 가 전부 빙결로 접혀
+# 디아나 12·맥스 11 이 빙결이었다. 지금은 히어로마다 준비(표식·고무)·타격(강타·연타)·교환(빙결·지속)이
+# 비슷하게 섞이도록 한 명씩 정했다 — 로빈 6·8·4, 디아나 8·8·7, 맥스 7·7·9. 한 역할의 사다리 안에서도 ★마다 갈린다.
+TRAIT = ['연타', '연타', '고무', '고무', '연타', '강타', '강타', '고무', '빙결', '강타', '연타', '표식', '빙결', '표식', '표식', '빙결', '고무', '강타', '빙결', '빙결', '표식', '빙결', '연타', '표식', '고무', '연타', '지속', '지속', '표식', '지속', '지속', '고무', '빙결', '표식', '표식', '강타', '고무', '고무', '빙결', '강타', '지속', '빙결', '연타', '강타', '강타', '강타', '표식', '강타', '지속', '연타', '연타', '빙결', '지속', '연타', '빙결', '연타', '고무', '연타', '지속', '표식', '빙결', '강타', '고무', '고무']
+# 고유 동료: 0 로빈 · 1 디아나 · 2 맥스. 역할마다 두 히어로가 나눠 갖는다 — ★1 이 역할마다 둘뿐이라
+# 셋이 나누면 한 명은 그 역할을 시작조차 못 한다(Run::start 는 ★1 이 있는 역할만 돌린다).
+#   지휘(17) 로빈 10 · 디아나 7 | 포격(15) 디아나 8 · 맥스 7 | 지원(17) 디아나 8 · 맥스 9 | 공격(15) 로빈 8 · 맥스 7
+#   → 로빈 18 · 디아나 23 · 맥스 23. 한 역할 안에서는 ★ 사다리가 끊기지 않게 ★마다 갈라 준다.
+HERO = [2,1,2,0,1,2,0,1,2,1,0,0,1,1,2,2,2,0,1,0,1,1,0,1,1,2,1,2,1,2,2,2,0,0,2,2,2,0,1,0,2,2,0,2,1,1,1,2,0,2,0,1,2,1,2,1,2,1,0,0,1,0,1,0]
+HERO_NAME = ['로빈', '디아나', '맥스']
+assert len(ROLE) == 64 and len(STAR) == 64 and len(ACTION) == 64 and len(TITLE) == 64 and len(HERO) == 64 and len(TRAIT) == 64
 
 def ladder(role):
     """★1..★6 마다 그 역할의 동료 번호."""
@@ -131,7 +141,7 @@ def put_icon(ws, row, col, pil):
 
 def crew_label(i):
     tail = f" · {CATALOG[i]['skill3_kind']}" if STAR[i] >= 5 else ''
-    return f"{TITLE[i]}\n{CATALOG[i]['name']}\n{TRAIT6[ACTION[i]]}{tail}"
+    return f"{TITLE[i]}\n{CATALOG[i]['name']}\n{TRAIT[i]}{tail}"
 
 wb = Workbook()
 
@@ -203,7 +213,7 @@ header(ws, 1, ['번호', '얼굴', '칭호', '이름', '★', '역할', '원본 
 for i in range(64):
     r = i + 2
     put(ws, r, 1, i); put_icon(ws, r, 2, crew_icon(i)); put(ws, r, 3, TITLE[i]); put(ws, r, 4, CATALOG[i]['name'])
-    put(ws, r, 5, STAR[i], fill=LV_FILL[STAR[i]]); put(ws, r, 6, ROLE_NAME[ROLE[i]]); put(ws, r, 7, ACTION[i]); put(ws, r, 8, TRAIT6[ACTION[i]])
+    put(ws, r, 5, STAR[i], fill=LV_FILL[STAR[i]]); put(ws, r, 6, ROLE_NAME[ROLE[i]]); put(ws, r, 7, ACTION[i]); put(ws, r, 8, TRAIT[i])
     nxt = ladder(ROLE[i]).get(STAR[i] + 1, [])
     put(ws, r, 9, ' / '.join(TITLE[j] for j in nxt) if nxt else '끝 (더 못 합침)')
     put(ws, r, 10, 'SKILL1 일반탄' if STAR[i] <= 2 else 'SKILL2 일반탄' if STAR[i] <= 4 else f"SKILL3 {CATALOG[i]['skill3_kind']}")
@@ -267,9 +277,10 @@ with open(OUT_TSV, 'w', encoding='utf-8', newline='\n') as f:
     f.write('#룰렛 × 합성 전투 — 64명의 역할 · ★ · 특성. tools/board/build_merge_tree_xlsx.py 가 쓴다. 사람용은 docs/합성_테크트리.xlsx\n')
     f.write('#합성 6단 = ★. 같은 역할 ★n 둘을 합치면 그 역할의 ★n+1 중 하나가 무작위로 나온다. build_tree_data.py 가 MergeTreeData.h 로 굽는다.\n')
     f.write('#role: 0 지휘 · 1 포격 · 2 지원 · 3 공격 (Def/BoardDef.h CrewRole). trait: 표식·고무·강타·연타·빙결·지속.\n')
-    f.write('crew\trole\trole_name\tstar\ttitle\taction\ttrait\n')
+    f.write('#hero: 고유 동료의 주인 0 로빈 · 1 디아나 · 2 맥스. 그 히어로의 룰렛에만 나오고, 그 히어로를 얻기 전엔 뽑기에도 안 나온다.\n')
+    f.write('crew\trole\trole_name\tstar\ttitle\taction\ttrait\thero\thero_name\n')
     for i in range(64):
-        f.write(f'{i}\t{ROLE[i]}\t{ROLE_NAME[ROLE[i]]}\t{STAR[i]}\t{TITLE[i]}\t{ACTION[i]}\t{TRAIT6[ACTION[i]]}\n')
+        f.write(f'{i}\t{ROLE[i]}\t{ROLE_NAME[ROLE[i]]}\t{STAR[i]}\t{TITLE[i]}\t{ACTION[i]}\t{TRAIT[i]}\t{HERO[i]}\t{HERO_NAME[HERO[i]]}\n')
 
 # 무결성: 역할 × ★ 분배가 CLAUDE.md 표와 같은가
 expected = {0: [2, 3, 4, 5, 2, 1], 1: [2, 3, 4, 4, 2, 0], 2: [2, 3, 4, 5, 2, 1], 3: [2, 3, 3, 4, 2, 1]}

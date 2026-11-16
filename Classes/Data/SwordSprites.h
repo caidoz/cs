@@ -43,45 +43,44 @@ struct SwordSpriteInfo {
     int cols, rows, width, height;
     float pivotX, pivotY;
     unsigned short cells; // bottom row first; 0 means full rectangle
-    float handScale; // compensates for inventory remodelling in hero poses
 };
 static const SwordSpriteInfo kSwordSprites[36] = {
-    {0, 0, 0, 0, 0, 0, 0, 1.0f},
-    {swordTileSize[0], swordTileSize[1], 32, 64, 15.5f, 56.5f, 0, 1.000f}, // w0_1
-    {swordTileSize[2], swordTileSize[3], 32, 64, 15.5f, 56.5f, 0, 1.000f}, // w0_2
-    {swordTileSize[4], swordTileSize[5], 32, 64, 15.5f, 56.5f, 0, 1.000f}, // w0_3
-    {swordTileSize[6], swordTileSize[7], 64, 64, 31.5f, 56.5f, 0, 1.000f}, // w0_4
-    {swordTileSize[8], swordTileSize[9], 32, 96, 15.5f, 88.5f, 0, 0.667f}, // w0_5
-    {swordTileSize[10], swordTileSize[11], 64, 64, 31.5f, 56.5f, 0, 1.400f}, // w0_6
-    {swordTileSize[12], swordTileSize[13], 64, 64, 31.5f, 56.5f, 0, 1.400f}, // w0_7
-    {swordTileSize[14], swordTileSize[15], 64, 64, 31.5f, 56.5f, 0, 1.400f}, // w0_8
-    {swordTileSize[16], swordTileSize[17], 64, 64, 30.5f, 56.5f, 0, 1.400f}, // w0_9
-    {swordTileSize[18], swordTileSize[19], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_10
-    {swordTileSize[20], swordTileSize[21], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_11
-    {swordTileSize[22], swordTileSize[23], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_12
-    {swordTileSize[24], swordTileSize[25], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_13
-    {swordTileSize[26], swordTileSize[27], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_14
-    {swordTileSize[28], swordTileSize[29], 64, 96, 31.5f, 88.5f, 819, 1.000f}, // w0_15
-    {swordTileSize[30], swordTileSize[31], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_16
-    {swordTileSize[32], swordTileSize[33], 64, 96, 31.5f, 88.5f, 0, 1.000f}, // w0_17
-    {swordTileSize[34], swordTileSize[35], 32, 128, 15.5f, 120.5f, 0, 1.000f}, // w0_18
-    {swordTileSize[36], swordTileSize[37], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_19
-    {swordTileSize[38], swordTileSize[39], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_20
-    {swordTileSize[40], swordTileSize[41], 96, 96, 47.5f, 88.5f, 1906, 1.000f}, // w0_21
-    {swordTileSize[42], swordTileSize[43], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_22
-    {swordTileSize[44], swordTileSize[45], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_23
-    {swordTileSize[46], swordTileSize[47], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_24
-    {swordTileSize[48], swordTileSize[49], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_25
-    {swordTileSize[50], swordTileSize[51], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_26
-    {swordTileSize[52], swordTileSize[53], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_27
-    {swordTileSize[54], swordTileSize[55], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_28
-    {swordTileSize[56], swordTileSize[57], 64, 96, 31.5f, 88.5f, 0, 1.333f}, // w0_29
-    {swordTileSize[58], swordTileSize[59], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_30
-    {swordTileSize[60], swordTileSize[61], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_31
-    {swordTileSize[62], swordTileSize[63], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_32
-    {swordTileSize[64], swordTileSize[65], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_33
-    {swordTileSize[66], swordTileSize[67], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_34
-    {swordTileSize[68], swordTileSize[69], 64, 128, 31.5f, 120.5f, 0, 1.000f}, // w0_35
+    {0, 0, 0, 0, 0, 0, 0},
+    {swordTileSize[0], swordTileSize[1], 32, 64, 15.5f, 56.5f, 0}, // w0_1
+    {swordTileSize[2], swordTileSize[3], 32, 64, 15.5f, 56.5f, 0}, // w0_2
+    {swordTileSize[4], swordTileSize[5], 32, 64, 15.5f, 56.5f, 0}, // w0_3
+    {swordTileSize[6], swordTileSize[7], 64, 64, 31.5f, 56.5f, 0}, // w0_4
+    {swordTileSize[8], swordTileSize[9], 32, 96, 15.5f, 88.5f, 0}, // w0_5
+    {swordTileSize[10], swordTileSize[11], 64, 64, 31.5f, 56.5f, 0}, // w0_6
+    {swordTileSize[12], swordTileSize[13], 64, 64, 31.5f, 56.5f, 0}, // w0_7
+    {swordTileSize[14], swordTileSize[15], 64, 64, 31.5f, 56.5f, 0}, // w0_8
+    {swordTileSize[16], swordTileSize[17], 64, 64, 30.5f, 56.5f, 0}, // w0_9
+    {swordTileSize[18], swordTileSize[19], 64, 96, 31.5f, 88.5f, 0}, // w0_10
+    {swordTileSize[20], swordTileSize[21], 64, 96, 31.5f, 88.5f, 0}, // w0_11
+    {swordTileSize[22], swordTileSize[23], 64, 96, 31.5f, 88.5f, 0}, // w0_12
+    {swordTileSize[24], swordTileSize[25], 64, 96, 31.5f, 88.5f, 0}, // w0_13
+    {swordTileSize[26], swordTileSize[27], 64, 96, 31.5f, 88.5f, 0}, // w0_14
+    {swordTileSize[28], swordTileSize[29], 64, 96, 31.5f, 88.5f, 819}, // w0_15
+    {swordTileSize[30], swordTileSize[31], 64, 96, 31.5f, 88.5f, 0}, // w0_16
+    {swordTileSize[32], swordTileSize[33], 64, 96, 31.5f, 88.5f, 0}, // w0_17
+    {swordTileSize[34], swordTileSize[35], 32, 128, 15.5f, 120.5f, 0}, // w0_18
+    {swordTileSize[36], swordTileSize[37], 64, 96, 31.5f, 88.5f, 0}, // w0_19
+    {swordTileSize[38], swordTileSize[39], 64, 96, 31.5f, 88.5f, 0}, // w0_20
+    {swordTileSize[40], swordTileSize[41], 96, 96, 47.5f, 88.5f, 1906}, // w0_21
+    {swordTileSize[42], swordTileSize[43], 64, 96, 31.5f, 88.5f, 0}, // w0_22
+    {swordTileSize[44], swordTileSize[45], 64, 96, 31.5f, 88.5f, 0}, // w0_23
+    {swordTileSize[46], swordTileSize[47], 64, 96, 31.5f, 88.5f, 0}, // w0_24
+    {swordTileSize[48], swordTileSize[49], 64, 96, 31.5f, 88.5f, 0}, // w0_25
+    {swordTileSize[50], swordTileSize[51], 64, 128, 31.5f, 120.5f, 0}, // w0_26
+    {swordTileSize[52], swordTileSize[53], 64, 96, 31.5f, 88.5f, 0}, // w0_27
+    {swordTileSize[54], swordTileSize[55], 64, 96, 31.5f, 88.5f, 0}, // w0_28
+    {swordTileSize[56], swordTileSize[57], 64, 96, 31.5f, 88.5f, 0}, // w0_29
+    {swordTileSize[58], swordTileSize[59], 64, 128, 31.5f, 120.5f, 0}, // w0_30
+    {swordTileSize[60], swordTileSize[61], 64, 128, 31.5f, 120.5f, 0}, // w0_31
+    {swordTileSize[62], swordTileSize[63], 64, 128, 31.5f, 120.5f, 0}, // w0_32
+    {swordTileSize[64], swordTileSize[65], 64, 128, 31.5f, 120.5f, 0}, // w0_33
+    {swordTileSize[66], swordTileSize[67], 64, 128, 31.5f, 120.5f, 0}, // w0_34
+    {swordTileSize[68], swordTileSize[69], 64, 128, 31.5f, 120.5f, 0}, // w0_35
 };
 inline const SwordSpriteInfo* GetSwordSpriteInfo(int detail) {
     return detail >= 0 && detail < 35 ? &kSwordSprites[detail + 1] : 0;

@@ -51,7 +51,7 @@ class SwordTests(unittest.TestCase):
                         if occupied:self.assertGreater(count,0)
                         else:self.assertEqual(count,0)
                 self.assertTrue(0<=s['pivotX']<dst.width and 0<=s['pivotY']<dst.height)
-                self.assertGreater(s['handScale'],0)
+                self.assertNotIn('handScale',s)
         self.assertEqual({s['shape'] for s in rows},{'1x2','1x3','1x4','Ttree','2x2','2x3','2x4'})
         tree = rows[20]
         self.assertEqual((tree['cols'], tree['rows'], tree['cells']), (3, 3, 0x772))

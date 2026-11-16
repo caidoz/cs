@@ -159,14 +159,9 @@ try {
         $out.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
         $out.Dispose()
 
-        $baselineHeight = if ($n -le 5) { 64 } elseif ($n -le 18) { 96 } else { 128 }
-        $handScale = [Math]::Min(1.4, $baselineHeight / [double]$height)
-        if ($n -eq 18 -or $n -eq 21 -or $n -eq 26) { $handScale = 1.0 }
-        $handScaleText = $handScale.ToString('0.000', [cultureinfo]::InvariantCulture)
         $records.Add([pscustomobject]@{
             id = $n; shape = $shape; cols = $cols; rows = $rows; cells = $cells
             width = $width; height = $height; pivotX = $pivotX; pivotY = $pivotY
-            handScale = $handScale
         })
         $header.Add("    $cols, $rows, //w0_$n")
     }
@@ -175,16 +170,14 @@ try {
     $header.Add('    int cols, rows, width, height;')
     $header.Add('    float pivotX, pivotY;')
     $header.Add('    unsigned short cells; // bottom row first; 0 means full rectangle')
-    $header.Add('    float handScale; // compensates for inventory remodelling in hero poses')
     $header.Add('};')
     $header.Add('static const SwordSpriteInfo kSwordSprites[36] = {')
-    $header.Add('    {0, 0, 0, 0, 0, 0, 0, 1.0f},')
+    $header.Add('    {0, 0, 0, 0, 0, 0, 0},')
     foreach ($record in $records) {
         $at = ($record.id - 1) * 2
-        $scale = $record.handScale.ToString('0.000', [cultureinfo]::InvariantCulture)
         $px = $record.pivotX.ToString('0.0', [cultureinfo]::InvariantCulture)
         $py = $record.pivotY.ToString('0.0', [cultureinfo]::InvariantCulture)
-        $header.Add("    {swordTileSize[$at], swordTileSize[$($at+1)], $($record.width), $($record.height), ${px}f, ${py}f, $($record.cells), ${scale}f}, // w0_$($record.id)")
+        $header.Add("    {swordTileSize[$at], swordTileSize[$($at+1)], $($record.width), $($record.height), ${px}f, ${py}f, $($record.cells)}, // w0_$($record.id)")
     }
     $header.Add('};')
     $header.Add('inline const SwordSpriteInfo* GetSwordSpriteInfo(int detail) {')

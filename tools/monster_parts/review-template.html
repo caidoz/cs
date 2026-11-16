@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>몬스터 부위 인벤토리 — 전체 검토</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,'Malgun Gothic',sans-serif;background:#151923;color:#e6e0d6}body{margin:0;padding:24px;max-width:1700px;margin:auto}h1{font-size:28px;color:#ead4a6}p{line-height:1.7;max-width:1150px;color:#b9c3d1}header{padding-bottom:12px}button,input,select{font:inherit;background:#272c3b;border:1px solid #626272;border-radius:5px;color:white;padding:9px}label{display:inline-flex;gap:8px;align-items:center;margin:5px}nav{position:sticky;top:0;background:#151923f5;padding:10px 0;z-index:2;border-bottom:1px solid #49505e}#cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(390px,1fr));gap:18px;margin-top:20px}article{background:#1d2230;border:1px solid #49505e;padding:16px;border-radius:6px}h2{font-size:20px;margin:0 0 6px}small{color:#a6adbd}.board{display:grid;grid-template-columns:repeat(6,52px);grid-template-rows:repeat(4,52px);position:relative;width:312px;height:208px;margin:16px auto;background:repeating-linear-gradient(90deg,transparent 0 51px,#4c4855 51px 52px),repeating-linear-gradient(0deg,transparent 0 51px,#4c4855 51px 52px),#181a24;border:1px solid #615966}.block{display:flex;align-items:center;justify-content:center;position:relative;border:1px solid #a6636d;margin:2px;background:#4d2531;padding:5px 4px 16px;min-width:0;min-height:0}.block.core{background:#653441}.block.guard{background:#352f45}.block img{max-width:100%;max-height:100%;object-fit:contain;image-rendering:pixelated}.stars{position:absolute;bottom:1px;left:3px;font-size:11px;color:#f1c864;letter-spacing:-1px}.parts{display:flex;flex-wrap:wrap;gap:9px}.part{width:80px;display:flex;flex-direction:column;align-items:center;text-align:center;font-size:12px;gap:4px}.part img{width:64px;height:64px;object-fit:contain;image-rendering:pixelated}.source{color:#9fc3e7;font-size:12px}.info{min-height:42px;font-size:13px;color:#ead4a6;border-top:1px solid #454657;margin-top:12px;padding-top:8px}a{color:#a9c9ed}details{margin:12px 0;color:#b9c3d1}footer{margin-top:24px}#count{color:#ead4a6;margin-left:10px}@media(max-width:500px){body{padding:12px}#cards{grid-template-columns:1fr}h1{font-size:23px}}
+</style>
+<header><h1>몬스터 부위 인벤토리 · 전체 검토</h1>
+<p>기본 51종 · 색상 변종 포함 357개체. 실제 CMF 좌표와 해당 개체의 PNG에서 추출했습니다. 색상·픽셀을 유지하며, 부위가 붙은 곳은 원본 내부를 추가 크롭하거나 마스크로 분리했습니다. 새로 생성한 그림은 없습니다.</p>
+<p>아리만 블랙은 원본 시트 배치가 달라 선택한 두 부위의 추출 좌표를 별도로 지정했습니다. 모든 선택 아이콘의 추출 영역은 시트 경계 안에 있습니다.</p>
+<details><summary>강화 규칙과 시안의 범위</summary><p>몬스터별 부위 종류와 핵 하나는 고정입니다. 일반은 기본 부위를 모두 포함해 최소 4블록, 정예는 6블록, 강적은 9블록입니다. 추가 블록은 핵을 제외한 기존 부위의 투자량을 뜻합니다. 실제 신체에 팔이나 머리가 늘어나는 설정은 아닙니다. 이 검토에서는 추가 부위를 순환 배치했으며, 전투 적용 때 공격형·방어형의 투자 비중을 구분할 수 있습니다. 블록 수가 상한에 도달하면 ★로 강화합니다. ★ 1/2/4는 비교용이며 현재 웨이브 수치에 연결되어 있지 않습니다.</p><p>색상 변종은 부위 구성을 공유하고 각자의 원본 색상을 사용합니다. 선택 아이콘은 실제 시트와 픽셀 단위로 비교했습니다. 모든 강화 판의 영역·겹침과 핵이 하나인지 검증합니다. 일부 시트의 비선택 원본 조각에는 경계 초과가 있어 <a href="validation.json">검증 기록</a>에 남겼습니다. 전투 수치·게임 화면은 아직 변경하지 않았습니다.</p></details>
+<p>전체 시트: <a href="inventory-review-1.jpg">1</a> · <a href="inventory-review-2.jpg">2</a> · <a href="inventory-review-3.jpg">3</a> · <a href="inventory-review-4.jpg">4</a> · <a href="inventory-review-5.jpg">5</a> · <a href="inventory-review-6.jpg">6</a> / <a href="strength-comparison.jpg">멧돼지 강화 비교</a></p>
+</header>
+<nav><label>몬스터 검색 <input id="search" placeholder="이름 또는 CMF 번호" type="search"></label>
+<label>강화 단계 <select id="tier"><option value="normal">일반</option><option value="elite">정예</option><option value="boss">강적</option></select></label>
+<label><input id="variants" type="checkbox">색상 변종 포함</label><span id="count" role="status"></span></nav>
+<main id="cards"></main>
+<footer>출처·부위·크롭 좌표·강화별 배치: <a href="catalogue.json">catalogue.json</a> / 전체 원본 조각 좌표: <a href="sources.json">sources.json</a></footer>
+<script>
+const data=__CATALOGUE__;
+const $=id=>document.getElementById(id),roles={core:'핵',attack:'공격 부위',guard:'방어 부위'};
+const methodName=p=>({direct:'직접 추출',crop:'추가 크롭','masked-crop':'마스크 추출',override:'좌표 보정'})[p.method];
+function render(){const query=$('search').value.trim().toLowerCase(),tier=$('tier').value,variants=$('variants').checked;
+const filtered=data.filter(r=>(variants||r.id<54)&&(!query||r.name.toLowerCase().includes(query)||('c'+r.cmf).includes(query)||r.enum.toLowerCase().includes(query)));
+$('count').textContent=`${filtered.length}개체`;$('cards').replaceChildren();
+for(const r of filtered){const card=document.createElement('article');const h=document.createElement('h2');h.textContent=r.name;card.append(h);
+const meta=document.createElement('small');meta.textContent=`c${r.cmf} · ${r.icons.length}종 부위 · ${r.tiers[tier].blocks.length}블록 · ${r.tiers[tier].label}`;card.append(meta);
+const grid=document.createElement('div');grid.className='board';const info=document.createElement('div');info.className='info';info.textContent='블록을 누르면 부위와 추출 출처를 표시합니다.';
+for(const b of r.tiers[tier].blocks){const p=r.icons[b.icon],el=document.createElement('button');el.className='block '+p.role;el.style.gridColumn=`${b.x+1} / span ${b.w}`;el.style.gridRow=`${b.y+1} / span ${b.h}`;el.title=`${p.name} · ${roles[p.role]}`;el.setAttribute('aria-label',el.title);
+const img=document.createElement('img');img.src=p.asset;img.alt=p.name;img.loading='lazy';el.append(img);const stars=document.createElement('span');stars.className='stars';stars.textContent='★'.repeat(r.tiers[tier].stars);el.append(stars);
+el.onclick=()=>info.textContent=`${p.name} / ${roles[p.role]} / CMF #${p.part} / ${methodName(p)} / ${b.w}×${b.h}칸`;grid.append(el)}card.append(grid);
+const parts=document.createElement('div');parts.className='parts';for(const p of r.icons){const el=document.createElement('div');el.className='part';const a=document.createElement('a');a.href=p.asset;const img=document.createElement('img');img.src=p.asset;img.alt=p.name;img.loading='lazy';a.append(img);el.append(a);const name=document.createElement('span');name.textContent=p.name;el.append(name);const source=document.createElement('small');source.textContent=`#${p.part} ${methodName(p)}`;el.append(source);parts.append(el)}card.append(parts,info);
+const source=document.createElement('a');source.className='source';source.href=`c${r.cmf}/source-parts.png`;source.textContent='이 몬스터의 모든 원본 조각 보기';card.append(source);$('cards').append(card)}}
+for(const id of ['search','tier','variants'])$(id).addEventListener('input',render);render();
+</script></html>

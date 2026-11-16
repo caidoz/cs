@@ -1,8 +1,11 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Func.h"
 #include "Text.h"
 #include "GoldAmountFormat.h"
 #include "NativeGearIcons.h"
+#include "ItemSeriesCatalog.h"
+#include "GridItemCatalog.h"
+#include "ItemSeriesArt.h"
 // Castle room/facade overlays share the registered body silhouette.
 #include "Data.h"
 #include "Data/SwordSprites.h"
@@ -16,11 +19,12 @@
 #include "AuthoredCastleTone.inc"
 #include "StageBackgroundSeam.inc"
 #include "CastleRoomUpgradeBlend.inc"
+#include "CastleFacilityTone.inc"
 static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
  const bool regional=index>=STAGEBG_FIRST_IMG && index<STAGEBG_FIRST_IMG+STAGEBG_PER_REGION*STAGEBG_REGION_CNT && (index-STAGEBG_FIRST_IMG)%STAGEBG_PER_REGION<3;
  const bool smooth=index==MENU_RENEWAL_ROOM_IMG||index==MENU_RENEWAL_DUNGEON_IMG||regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
    (index>=LOBBY_NAV_SHOP_IMG && index<=LOBBY_NAV_DUNGEON_IMG);
- if(smooth)s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
+ if(smooth || index==TURRET_IRONBALL_IMG || (index>=ITEM_SERIES_FIRST_IMG&&index<=GRID_ITEM_LAST_IMG))s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
 }
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
@@ -932,6 +936,9 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
+		if(idx>=MONSTER_PARTS_FIRST_IMG&&idx<=MONSTER_PARTS_LAST_IMG)return "res/monster_parts/atlas-"+std::to_string(idx-MONSTER_PARTS_FIRST_IMG)+".png";
+		if(idx>=GRID_ITEM_FIRST_IMG && idx<=GRID_ITEM_LAST_IMG) return "res/grid_items/grid"+std::to_string(idx-GRID_ITEM_FIRST_IMG)+".png";
+		if(idx>=ITEM_SERIES_FIRST_IMG && idx<=ITEM_SERIES_LAST_IMG) return "res/items/item"+std::to_string(idx-ITEM_SERIES_FIRST_IMG)+".png";
 		if(idx==TITLE_IMG) return "res/hybrid_sd3d/title-scene.png";
 		if (idx == CASTLE_ARTILLERY_IMG) {
 			fileName = "res/castle_artillery/attacks.png";
@@ -1045,8 +1052,15 @@ void DrawArray(int index, int x, int y, float zoom)
 	DrawImage(w, h, xs, ys, x, y, false, false, false, false, false, zoom, sprite[res], res);
 }
 
-void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite* src, int srcIdx)
+static void RotateImageAxes(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite* src, int srcIdx, float axisX, float axisY)
 {
+    const int series=ItemSeries::FromAtlas(srcIdx-ITEM_IMG,w,h,xs,ys);
+    if(series>=0 && ItemSeries::Artwork[series].active){
+        const int image=ITEM_SERIES_FIRST_IMG+series;
+        if(!sprite[image])LoadImg(image);
+        if(sprite[image]){src=sprite[image];srcIdx=image;w=h=ItemSeries::Size;xs=ys=0;zoom=ItemSeries::Zoom(zoom);}
+    }
+
 	if (!src || w <= 0 || h <= 0 || zoom <= 0) return;
 	int tempAlpha = m_lgrpAlpha;
 
@@ -1096,7 +1110,8 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	}
 	renderSprite[getSpriteIdx]->setOpacity((int)(m_lgrpAlpha * EMPTY / 32));
 	renderSprite[getSpriteIdx]->setFlippedX(flipX);
-	renderSprite[getSpriteIdx]->setScale(zoom);
+	renderSprite[getSpriteIdx]->setScaleX(zoom*axisX);
+	renderSprite[getSpriteIdx]->setScaleY(zoom*axisY);
 	renderSprite[getSpriteIdx]->setAnchorPoint(anchorPoint);
 	renderSprite[getSpriteIdx]->setRotation(rotation);
 
@@ -1113,60 +1128,95 @@ void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float r
 	else if (!grayScale)
 		renderSprite[getSpriteIdx]->setGLProgram(GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
 
-	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);}
+	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);ApplyCastleFacilityTone(renderSprite[getSpriteIdx],srcIdx);}
 	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
+}
+
+void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite* src, int srcIdx){
+    RotateImageAxes(w,h,xs,ys,x,y,flipX,rotation,effect,alpha,zoom,anchorPoint,src,srcIdx,1.f,1.f);
 }
 
 void DrawSwordAtHand(int detail, float x, float y, float rotation, bool flipX, float zoom, int alpha, int effect)
 {
 	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
 	if (!info || zoom <= 0 || alpha <= 0) return;
-	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return;
-	const float anchorX = info->pivotX / info->width;
-	RotateImage(info->width, info->height, 0, 0, (int)x, (int)y,
-		flipX, rotation, effect, alpha, zoom * info->handScale,
-		Vec2(flipX ? 1.0f - anchorX : anchorX, 1.0f - info->pivotY / info->height), sprite[img], img);
+    // Share the inventory texture and its logical cell canvas. No held-only art,
+    // per-detail zoom correction, or extra aspect-ratio adjustment is involved.
+    const int img=GRID_ITEM_FIRST_IMG+GridItems::FromItem(ITEM_SWORD,detail);
+    if(!sprite[img])LoadImg(img);
+    if(!sprite[img])return;
+    const auto size=sprite[img]->getContentSize();
+    if(size.width<=0||size.height<=0)return;
+    const float width=GridItems::WeaponCellSize*GridItems::WeaponColumns(ITEM_SWORD,detail);
+    const float height=GridItems::WeaponCellSize*GridItems::WeaponRows(ITEM_SWORD,detail);
+    const float anchorX=info->pivotX/info->width,anchorY=info->pivotY/info->height;
+    RotateImageAxes((int)size.width,(int)size.height,0,0,(int)x,(int)y,
+        flipX,rotation,effect,alpha,zoom,
+        Vec2(flipX?1.f-anchorX:anchorX,1.f-anchorY),sprite[img],img,
+        width/size.width,height/size.height);
 }
 
 //---- 눕힌 검을 칸에 맞춰 그린다 ----
 //
 //가방 안에서 90도 돌려 놓은 검이다. 칼끝이 오른쪽을 본다. 돌리면 가로와
 //세로가 바뀌므로 그 모양으로 칸에 맞춘다. 칸 한가운데를 중심으로 돌린다.
-bool DrawSwordInBoxRot(int detail, int x, int y, int w, int h, int alpha)
-{
-	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
-	if (!info || w <= 0 || h <= 0) return false;
-	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return false;
-	if (alpha <= 0) return true;
-	const float zoom = Min((float)w / info->height, (float)h / info->width);
-	RotateImage(info->width, info->height, 0, 0, x + w / 2, y - h / 2,
-		false, 90.0f, 0, alpha, zoom, Vec2(0.5f, 0.5f), sprite[img], img);
-	return true;
+// 256px art retains the old logical 32px icon size at existing call sites.
+bool DrawItemSeriesInBox(int icon,int x,int y,int w,int h,int alpha,bool rotate) {
+    const int id=ItemSeries::FromIcon(icon);
+    if(id<0 || !ItemSeries::Artwork[id].active || w<=0 || h<=0)return false;
+    const int img=ITEM_SERIES_FIRST_IMG+id;
+    if(!sprite[img])LoadImg(img);
+    if(!sprite[img])return false;
+    if(alpha<=0)return true;
+    const auto& a=ItemSeries::Artwork[id];
+    if(a.w<=0 || a.h<=0)return false;
+    const float z=Min(w/(float)(rotate?a.h:a.w),h/(float)(rotate?a.w:a.h));
+    if(rotate)RotateImage(a.w,a.h,a.x,a.y,x+w/2,y-h/2,false,90,0,alpha,z,Vec2(.5f,.5f),sprite[img],img);
+    else DrawImage(a.w,a.h,a.x,a.y,x+(int)((w-a.w*z)*.5f),y-(int)((h-a.h*z)*.5f),false,0,0,0,alpha,z,sprite[img],img);
+    return true;
 }
 
-bool DrawSwordInBox(int detail, int x, int y, int w, int h, int alpha)
+bool DrawGridItemInBox(int type,int detail,int x,int y,int w,int h,int alpha,bool rotate) {
+    const int id=GridItems::FromItem(type,detail);
+    if(id<0 || w<=0 || h<=0)return false;
+    // Grid and icon textures are separate assets with matching item designs.
+    const int img=GRID_ITEM_FIRST_IMG+id;
+    if(!sprite[img])LoadImg(img);
+    if(!sprite[img])return false;
+    if(alpha<=0)return true;
+    const auto size=sprite[img]->getContentSize();
+    if(size.width<=0 || size.height<=0)return false;
+    // Weapon artwork occupies its declared cells, even when its legacy source
+    // canvas is square. Never let the narrow column shrink a two-cell blade.
+    if(type>=ITEM_SWORD&&type<=ITEM_BOOMERANG){
+        const float zx=(rotate?h:w)/size.width,zy=(rotate?w:h)/size.height;
+        if(rotate){
+            RotateImageAxes((int)size.width,(int)size.height,0,0,x+w/2,y-h/2,false,90,0,alpha,1.f,Vec2(.5f,.5f),sprite[img],img,zx,zy);
+        }else DrawImageScale((int)size.width,(int)size.height,0,0,x,y,false,0,0,0,alpha,zx,zy,sprite[img],img);
+        return true;
+    }
+    const float z=Min(w/(rotate?size.height:size.width),h/(rotate?size.width:size.height));
+    if(rotate)RotateImage((int)size.width,(int)size.height,0,0,x+w/2,y-h/2,false,90,0,alpha,z,Vec2(.5f,.5f),sprite[img],img);
+    else DrawImage((int)size.width,(int)size.height,0,0,x+(int)((w-size.width*z)*.5f),y-(int)((h-size.height*z)*.5f),false,0,0,0,alpha,z,sprite[img],img);
+    return true;
+}
+
+bool DrawSwordInBoxRot(int detail,int x,int y,int w,int h,int alpha)
 {
-	const SwordSpriteInfo* info = GetSwordSpriteInfo(detail);
-	if (!info || w <= 0 || h <= 0) return false;
-	const int img = COSTUME_WEAPON_ROBIN_IMG + detail + 1;
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return false;
-	if (alpha <= 0) return true;
-	const float zoom = Min((float)w / info->width, (float)h / info->height);
-	DrawImage(info->width, info->height, 0, 0,
-		x + (w - info->width * zoom) / 2, y - (h - info->height * zoom) / 2,
-		false, 0, 0, 0, alpha, zoom, sprite[img], img);
-	return true;
+    return DrawGridItemInBox(ITEM_SWORD,detail,x,y,w,h,alpha,true);
+}
+
+bool DrawSwordInBox(int detail,int x,int y,int w,int h,int alpha)
+{
+    return DrawGridItemInBox(ITEM_SWORD,detail,x,y,w,h,alpha,false);
 }
 
 bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 {
+	if(type<ITEM_GREAVES || type>ITEM_BOOTS)return false;
+	if(DrawGridItemInBox(type,Max(0,Min(detail,7)),x,y,w,h,alpha,false))return true;
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	if (type == ITEM_GREAVES) {
@@ -1198,6 +1248,8 @@ bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 
 bool DrawBootsInBoxRot(int type, int detail, int x, int y, int w, int h, int alpha)
 {
+	if(type<ITEM_GREAVES || type>ITEM_BOOTS)return false;
+	if(DrawGridItemInBox(type,Max(0,Min(detail,7)),x,y,w,h,alpha,true))return true;
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	if (type == ITEM_GREAVES) {
@@ -1228,6 +1280,8 @@ bool DrawBootsInBoxRot(int type, int detail, int x, int y, int w, int h, int alp
 
 bool DrawPantsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 {
+	if(type<ITEM_KILT || type>ITEM_PANTS)return false;
+	if(DrawGridItemInBox(type,Max(0,Min(detail,7)),x,y,w,h,alpha,false))return true;
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	if (type == ITEM_KILT) {
@@ -1258,6 +1312,8 @@ bool DrawPantsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 
 bool DrawGloveInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 {
+	if(type<ITEM_GUNTLET || type>ITEM_GLOVE)return false;
+	if(DrawGridItemInBox(type,Max(0,Min(detail,7)),x,y,w,h,alpha,false))return true;
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	if (type == ITEM_GUNTLET) {
@@ -1290,6 +1346,8 @@ bool DrawGloveInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 
 bool DrawArmorInBox(int type, int detail, int x, int y, int w, int h, int alpha)
 {
+	if(type<ITEM_ARMOR || type>ITEM_COAT)return false;
+	if(DrawGridItemInBox(type,Max(0,Min(detail,7)),x,y,w,h,alpha,false))return true;
 	int img = -1;
 	const int d = Max(0, Min(detail, 7));
 	const float imgW = 64.0f;
@@ -1337,6 +1395,13 @@ void DrawImage(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRo
 
 void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int cmfRotation, float rotation, int effect, int alpha, float zoomX, float zoomY, cocos2d::Sprite* src, int srcIdx)
 {
+    const int series=ItemSeries::FromAtlas(srcIdx-ITEM_IMG,w,h,xs,ys);
+    if(series>=0 && ItemSeries::Artwork[series].active){
+        const int image=ITEM_SERIES_FIRST_IMG+series;
+        if(!sprite[image])LoadImg(image);
+        if(sprite[image]){src=sprite[image];srcIdx=image;w=h=ItemSeries::Size;xs=ys=0;zoomX=ItemSeries::Zoom(zoomX);zoomY=ItemSeries::Zoom(zoomY);}
+    }
+
 	if (!src)
 		return;
 	if (zoomX <= 0.0f || zoomY <= 0.0f)
@@ -1688,7 +1753,7 @@ void DrawImageScale(int w, int h, int xs, int ys, int x, int y, bool flipX, int 
 		);
 	}
 
-	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);}
+	if(!effect){ApplyAuthoredCastleTone(renderSprite[getSpriteIdx],srcIdx,ys,xs);ApplyStageBackgroundSeam(renderSprite[getSpriteIdx],srcIdx);ApplyCastleRoomUpgradeBlend(renderSprite[getSpriteIdx],srcIdx);ApplyCastleFacilityTone(renderSprite[getSpriteIdx],srcIdx);}
 	AfterSpriting(renderSprite[getSpriteIdx]);
 
 	SetAlpha(tempAlpha);
@@ -1698,7 +1763,7 @@ void ShadowImage(int w, int h, int xs, int ys, int x, int y, int res, float magn
 {
 	cocos2d::Sprite* src;
 
-	if (m_lgrpAlpha == 0)
+	if (m_lgrpAlpha == 0 || magnify <= 0 || w <= 0 || h <= 0)
 		return;
 
 	//x += offX;
@@ -1709,25 +1774,30 @@ void ShadowImage(int w, int h, int xs, int ys, int x, int y, int res, float magn
 		HitZoomPoint(&x, &y);
 		magnify *= hitZoom;
 	}
+	float drawX=(float)x,drawY=(float)y;
+	float sourceX=(float)xs,sourceY=(float)ys,sourceW=(float)w,sourceH=(float)h;
 #ifdef CLIPPING
-	if (x < clipX) { xs -= (x - clipX) / magnify; w -= (clipX - x) / magnify; x = clipX; }
-	if (x + w > clipX2) { w = (clipX2 - x) / magnify; }
-	if (y > clipY) { ys += (y - clipY) / magnify; h -= (y - clipY) / magnify; y = clipY; }
-	if (y - h < clipY2) { h = (y - clipY2) / magnify; }
-	if (w <= 0 || h <= 0)
-		return;
+	// Intersect in screen pixels, then convert the clipped edges to source pixels.
+	// Comparing unscaled w/h sampled beyond the shadow cell on small reel symbols.
+	const float left=Max(drawX,(float)clipX),right=Min(drawX+w*magnify,(float)clipX2);
+	const float top=Min(drawY,(float)clipY),bottom=Max(drawY-h*magnify,(float)clipY2);
+	if(right<=left || top<=bottom)return;
+	sourceX+=(left-drawX)/magnify;sourceY+=(drawY-top)/magnify;
+	sourceW=(right-left)/magnify;sourceH=(top-bottom)/magnify;
+	drawX=left;drawY=top;
 #endif
 
 	if (!sprite[res])
 		LoadImg(res);
+	if (!sprite[res])return;
 
 	LoadSpriteFromTexture(res);
 	src = renderSprite[getSpriteIdx];
 
 	src->setBlendFunc(BLEND_SHADOW);
 	src->setScale(magnify);
-	src->setTextureRect(Rect(xs, ys, w, h));
-	src->setPosition(Vec2(x, y));
+	src->setTextureRect(Rect(sourceX, sourceY, sourceW, sourceH));
+	src->setPosition(Vec2(drawX, drawY));
 	if (baseColor)//if (baseColor != 0x000000 && !baseColor)
 	{
 		if (baseColor == 0xFFFFFF)
@@ -5995,10 +6065,10 @@ void DrawIcon(int idx, int x, int y, float zoom, int solid, bool ani, bool shado
 		const int color=baseColor;
 		if(solid){
 			SetColor(ani?itemColor[frame/2%6]:solid);
-			for(int i=0;i<4;++i)DrawGloveInBox(type,detail,x+solidPosition[i*2]*thickness*zoom,y+solidPosition[i*2+1]*thickness*zoom,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
+			for(int i=0;i<4;++i)DrawItemSeriesInBox(idx,x+solidPosition[i*2]*thickness*zoom,y+solidPosition[i*2+1]*thickness*zoom,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
 			SetColor(color);
 		}
-		DrawGloveInBox(type,detail,x,y,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
+		DrawItemSeriesInBox(idx,x,y,ITEMICONSIZE*zoom,ITEMICONSIZE*zoom,m_lgrpAlpha);
 		return;
 	}
 	int i;
@@ -6504,16 +6574,7 @@ void DrawItemIcon(ITEM* it, OBJECT* pObj, int x, int y, float zoom)
 		SetAlpha(16);
 		MemRect(x, y, (float)16 * _2X * zoom, (float)16 * _2X * zoom, 0x000000);
 		SetAlpha(32);
-		if(NativeGearIcons::IsGlove(type))DrawIcon(type,x+4*_2X*zoom,y+4*_2X*zoom,zoom*20.f/ITEMICONSIZE,false,false,false,true);
-		else if ((type & 0xFF80) == 0x8000) {
-			int local = type & 0x7F;
-			DrawImage(32, 32, 1 + (local & 0x07) * 33, 398 + (local >> 3) * 33,
-				x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom,
-				false, false, false, false, false, zoom * (20.0f / 32.0f),
-				sprite[ITEM_IMG + 7], ITEM_IMG + 7);
-		}
-		else
-			DrawImage(10 * _2X, 10 * _2X, 1 + (16 * _2X + 1) * (type & 0x07), 1 + (16 * _2X + 1) * ((type & 0x3F) >> 3), x + (float)4 * _2X * zoom, y + (float)4 * _2X * zoom, false, false, false, false, false, zoom, sprite[ITEM_IMG + (type >> 6)], ITEM_IMG + (type >> 6));
+        DrawIcon(type,x+4*_2X*zoom,y+4*_2X*zoom,zoom*20.f/ITEMICONSIZE,false,false,false,true);
 	}
 	else if (it->type == ITEM_SKILL) {
 		DrawSkillIcon(it->detail, x, y, zoom);

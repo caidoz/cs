@@ -4,9 +4,23 @@ namespace OriginalCastle {
 using Poly=std::vector<cocos2d::Vec2>;
 struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
-float zoom(){return DX/W;}
-float lift(){return 40*DX/640.f+castleSceneLift();}
-Box box(int x,int y,int w,int h,float drop=0){float z=zoom();return {(int)(x*z),(int)((H-y)*z+lift()-drop),(int)(w*z),(int)(h*z)};}
+float zoom(){return DX/W*1.04f;}
+float left(){return (DX-W*zoom())*.5f;}
+float lift(){return 34*DX/640.f+castleSceneLift();}
+// Late castles have narrower painted silhouettes inside the shared canvas.
+// Register visible widths (1000, 1010, 1020 native pixels), not PNG padding.
+int widthStage(){return siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));}
+float widthGain(){const int c=widthStage();return c==7?1000.f/934.f:c==8?1010.f/885.f:c==9?1020.f/954.f:1.f;}
+float nativeX(float x){const int c=widthStage();const float centre=c==7?563.f:c==8?558.5f:c==9?549.f:W*.5f;return c>=7?W*.5f+(x-centre)*widthGain():x;}
+Box box(int x,int y,int w,int h,float drop=0){
+ const float z=zoom();
+ // Snap shared endpoints, rather than rounding a position and width separately.
+ const int leftEdge=(int)std::floor(left()+nativeX((float)x)*z);
+ const int rightEdge=(int)std::floor(left()+nativeX((float)(x+w))*z);
+ const int topEdge=(int)std::floor((H-y)*z+lift()-drop);
+ const int bottomEdge=(int)std::floor((H-y-h)*z+lift()-drop);
+ return {leftEdge,topEdge,rightEdge-leftEdge,topEdge-bottomEdge};
+}
 Poly rect(float x,float y,float w,float h){return {{x,y},{x+w,y},{x+w,y+h},{x,y+h}};}
 Poly circle(float x,float y,float r){Poly p;for(int i=0;i<64;++i){float a=i*6.2831853f/64;p.push_back({x+std::cos(a)*r,y+std::sin(a)*r});}return p;}
 std::vector<Poly> outline(){return {
@@ -86,7 +100,7 @@ void draw(int kind,float drop=0,float angle=0,float overrideZoom=0,float originX
   ++sameRenderSpriteMax[img];++sameRenderSpriteCur[img];++totalRenderCnt;}
  auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());sp->setPolygonInfo(meshes[kind].info);sp->setContentSize({W,H});
  const float z=overrideZoom>0?overrideZoom:zoom();
- if(overrideZoom<=0&&kind!=5)originY+=lift();
+ if(overrideZoom<=0&&kind!=5){originY+=lift();originX+=left();}
  sp->setAnchorPoint({0,0});sp->setPosition({originX,originY-drop});sp->setScale(z);sp->setRotation(0);sp->setFlippedX(false);sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity((int)(m_lgrpAlpha*255/32));
  sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
  if(kind==5){auto* program=navProgram(selectedNav);if(program)sp->setGLProgram(program);}
@@ -99,5 +113,20 @@ void wheel(int side,float angle){
  const int img=MERGE_ORIGINAL_WHEEL_IMG;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
  RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(96*DX/640.f+99*z+castleSceneLift()),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
+}
+// Pixel castle parts share the existing castle coordinate system; UI remains original.
+void pixelPart(int part,int x,int y,int w,int h,float drop=0){
+ const int img=CASTLE_PIXEL_FIRST_IMG+part;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ auto* texture=sprite[img]->getTexture();texture->setAliasTexParameters();
+ const auto size=texture->getContentSizeInPixels();const Box b=box(x,y,w,h,drop);
+ DrawImageScale((int)size.width,(int)size.height,0,0,b.x,b.y,false,0,0,0,0,b.w/size.width,b.h/size.height,sprite[img],img);
+}
+void pixelHull(bool closed,float angle){
+ if(!closed){const auto rr=rooms();for(int i=0;i<5;++i){const auto& p=rr[i];pixelPart(i+1,(int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}}
+ pixelPart(0,0,0,1089,1445);
+ for(int side=0;side<2;++side){const int img=CASTLE_PIXEL_FIRST_IMG+6+side;if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
+  sprite[img]->getTexture()->setAliasTexParameters();const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
+  RotateImage((int)sz.width,(int)sz.height,0,0,(int)((side?962:134)*z),(int)((H-1268)*z+lift()),false,angle,0,0,184*z/sz.width,cocos2d::Vec2(.5f,.5f),sprite[img],img);
+ }
 }
 }

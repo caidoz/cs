@@ -13,10 +13,11 @@
 #include <sstream>
 #include <string>
 #include "BoardModel.h"
+#include "MonsterPartsModel.h"
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=10 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=12 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -31,20 +32,13 @@ struct Shape {
     bool contains(int x,int y) const {return x>=0&&y>=0&&x<width&&y<height&&(rows[y]&(1u<<x));}
 };
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
-//---- 성마다 판의 모양 ----
-//
-//높이는 늘 4줄. 1성은 4×4 의 16칸이고, 성이 하나 오를 때마다 2칸을
-//**맨 아랫줄부터 한 줄씩 양옆으로 한 칸씩** 넓힌다. 아랫줄이 먼저 넓어지고
-//그 위 줄이 따라 넓어져 네 줄이 다 같은 폭이 되면, 다시 아랫줄부터 넓힌다.
-//성이 위로 갈수록 좁아지는 꼴이라 어느 성이든 좌우가 같고 밑이 넓다.
-//  1성 16: 4·4·4·4     3성 20: 4·4·6·6     5성 24: 6·6·6·6
-//  2성 18: 4·4·4·6     4성 22: 4·6·6·6     9성 32: 8·8·8·8   10성 34: 8·8·8·10
-//(위에서 아래 순. 10성의 아랫줄 10칸은 칸을 52 로 줄여 성벽 안에 넣는다 - layout.)
-//앞 성의 칸은 뒤 성에도 전부 남아 있고(가운데 기준), 폭은 가장 넓은 줄이다.
+// Fixed 80-unit tiles. Stages 1-9 grow from 4x4 to 8x4.
+// Stage 10 adds two centered cells ABOVE the 8x4 board (34 total), never a 10-wide row.
 inline Shape BattleShape(int stage) {
     Shape out;
     for(auto& row:out.rows)row=0;
     const int st=std::max(0,std::min(9,stage));
+    if(st==9){out.width=8;out.height=5;out.rows[0]=0x18;for(int y=1;y<5;++y)out.rows[y]=0xFF;return out;}
     int widths[4];
     for(int y=0;y<4;++y){
         const int fromBottom=3-y;                       //아랫줄이 0
@@ -103,7 +97,8 @@ struct Roster {
 struct Shot { Block block; long long damage=0; int summonTurns=0; };
 struct Effects {
     int expose=0, inspire=1, skip=0;
-    long long protect=0;
+    long long protect=0;   //이번 턴 판 위 방어구가 주는 방어막 최대치의 몫
+    long long charge=0;    //그 방어구들이 한 턴에 채우는 양(갑옷 30% · 투구·하체 25%)
     bool half=false;
     long long dot=0;
     int dotTurns=0;
@@ -120,11 +115,41 @@ struct Run {
     //여기부터 깎이고, 바닥나면 체력으로 간다. 일반 웨이브의 몬스터는 0 이라 그대로.
     //세이브에는 넣지 않는다 - 공성전 상태는 어차피 세션 안에서만 산다.
     long long enemyGuard=0,enemyGuardMax=0;
+    //---- 내 방어막 통 ----
+    //
+    //본편의 2단 게이지를 턴으로 옮긴 것이다. 반격은 방어막부터 깎고, 바닥나면 체력으로 간다.
+    //최대치(guardMax) = 히어로 PS_ARMOR + 판 위 갑옷·투구·하체 블록 값. 새 방어구가 서면 그
+    //몫만큼 바로 찬다(새 갑옷은 멀쩡한 갑옷이다). 깎인 뒤에는 턴이 돌 때 방어구가 다시 채운다 -
+    //한 번에 다 차지 않는다. 본편은 갑옷이 3.5초, 투구·하체가 4초마다 제 값만큼 펄스 충전하고
+    //몬스터는 1초마다(enemy.tsv ap_cnt 60f) 치므로, 한 턴 = 한 번 맞는 사이에 갑옷은 값의 약 30%,
+    //투구·하체는 25% 를 채운다(Effects::charge). 그래서 ★1 갑옷(23)이 1성 반격(12~42)을
+    //첫 한두 번은 다 받아 주되 그 뒤로는 턴마다 7 만 막는다. 스테이지를 넘기면 체력과 함께 다 찬다.
+    static const int ArmorChargePct=30,OtherChargePct=25;
+    long long guard=0,guardMax=0;
+    static int chargePctOf(int family) {return family==Armor?ArmorChargePct:OtherChargePct;}
     void setVitals(long long hp,long long armor) {
         hp=std::max(1LL,std::min(1000000000000000LL,hp));
         const long double ratio=lives/(long double)std::max(1LL,maxLives);
         lives=lives>0?std::max(1LL,(long long)std::llround(hp*ratio)):0;
+        const long long before=baseArmor;
         maxLives=hp;baseArmor=std::max(0LL,std::min(1000000000000000LL,armor));realVitals=true;
+        //실제 장착 방어구가 바뀐 몫은 바로 반영한다(늘면 그만큼 차고, 줄면 통이 준다).
+        guardMax=std::max(0LL,guardMax+baseArmor-before);
+        guard=std::max(0LL,std::min(guardMax,guard+baseArmor-before));
+    }
+    //이번 턴의 방어구(effects.protect)로 통의 최대치를 맞춘다. 공격·대포·턴 넘기기가 모은 뒤 부른다.
+    void settleGuard() {
+        if(!realVitals)return;
+        const long long newMax=std::max(0LL,std::min(1000000000000000LL,baseArmor+effects.protect));
+        if(newMax>guardMax)guard+=newMax-guardMax;   //새로 선 방어구는 찬 채로 온다
+        guardMax=newMax;guard=std::max(0LL,std::min(guard,guardMax));
+    }
+    //턴이 돌 때 방어구가 채운다. 실제 장착분은 갑옷 비율로 센다.
+    void chargeGuard() {
+        if(!realVitals||guardMax<=0||guard>=guardMax)return;
+        long long charge=baseArmor*ArmorChargePct/100+effects.charge;
+        if(charge<1)charge=1;
+        guard=std::min(guardMax,guard+charge);
     }
     long long armorOf(const Block& block,const Stats& st) const {
         if(!DefensiveGear(block.family))return 0;
@@ -148,7 +173,33 @@ struct Run {
     const char* lastFail="";
     int wave=0, stage=0, skipTurns=0, dotTurns=0, nextShot=0;
     long long enemyHp=330, enemyMax=330, dot=0, reward=0, damageDone=0;
+    int monsterNpc=-1,monsterActionTurn=0,monsterStage=-1,monsterWave=-1;
+    void configureMonster(int npc) {
+        if(!MonsterParts::enemy(npc))npc=-1;
+        if(monsterNpc!=npc||monsterStage!=stage||monsterWave!=wave)monsterActionTurn=0;
+        monsterNpc=npc;monsterStage=stage;monsterWave=wave;
+    }
+    MonsterParts::Loadout monsterLoadout() const {return MonsterParts::loadout(monsterNpc,wave);}
+    const MonsterParts::ActionDef& monsterAction() const {return MonsterParts::action(monsterNpc,0);}
+    long long monsterHealing() const {return MonsterParts::healing(enemyHp,enemyMax,monsterLoadout());}
+    long long monsterWeaponDamage(int weapon) const {
+        const auto l=monsterLoadout();const long long base=enemyAttack*(BossTier(wave)?2:1);
+        const long long value=MonsterParts::weaponDamage(base,l,weapon);
+        if(!effects.half)return value;
+        long long rounded=0;for(int i=0;i<l.weaponCount;++i)rounded+=MonsterParts::weaponDamage(base,l,i)/2;
+        return value/2+(weapon==0?(MonsterParts::attackDamage(base,l)+1)/2-rounded:0);
+    }
+    long long monsterAbsorption() const {
+        if(monsterNpc<0)return std::min(guard,counterHit());
+        const auto l=monsterLoadout();long long available=guard,total=0;
+        for(int i=0;i<l.weaponCount;++i){const long long hit=monsterWeaponDamage(i);
+            const long long amount=std::min(available,hit-hit*MonsterParts::piercePct(l,MonsterParts::action(monsterNpc,i))/100);
+            available-=amount;total+=amount;
+        }return total;
+    }
     bool choosing=true, attacking=false, lost=false, drafted=false, counterResolved=false;
+    //공격 없이 턴만 넘기는 중(돌리기). 적의 반격만 받고 finish 가 가볍게 끝낸다. 세이브에는 안 넣는다.
+    bool passing=false;
     std::vector<Block> board, tray;
     std::vector<Shot> shots, summons;
     Effects effects;
@@ -167,10 +218,16 @@ struct Run {
         if(family>=Roles)return true;
         return roster&&roster->has(family,level+1);
     }
-    bool fits(const Block& b,int ignore=-1,int ignore2=-1) const {
+    //판 안에 들어가고(allowOverlap 이면 여기까지) 다른 블록과 겹치지 않는가.
+    //
+    //겹쳐 놓는 것은 허용한다 - 출정 준비의 가방과 같다. 자리를 만들려고 잠깐 포개 두고
+    //돌리고 옮기는 것이 배치다. 다만 겹친 채로는(boardResolved 가 거짓) 돌리기(canSpin)가 안 되고,
+    //화면은 공격·대포 단추도 막는다(Func_MergeRoulette). 저장도 겹친 채로 된다 - 이어서 풀면 된다.
+    bool fits(const Block& b,int ignore=-1,int ignore2=-1,bool allowOverlap=false) const {
         if(b.family<0 || b.family>=FamilyCount || b.level<1 || b.level>MaxLevel
            || b.x<0 || b.y<0 || b.x+Wide(b)>shape.width || b.y+Tall(b)>shape.height) return false;
         for(int y=b.y;y<b.y+Tall(b);++y)for(int x=b.x;x<b.x+Wide(b);++x)if(!shape.contains(x,y))return false;
+        if(allowOverlap)return true;
         for(int i=0;i<(int)board.size();++i) {
             if(i==ignore||i==ignore2)continue;
             const Block& a=board[i];
@@ -185,10 +242,10 @@ struct Run {
         //판은 가운데서 좌우로 자란다(BattleShape). 폭이 바뀌면 블록을 그 차이의
         //반만큼 옮겨야 같은 자리에 남는다. 다 들어가면 그대로 쓰고, 아니면 아래의
         //되놓기로 간다.
-        const int dx=(wanted.width-shape.width)/2;
-        if(dx!=0) {
+        const int dx=(wanted.width-shape.width)/2,dy=wanted.height-shape.height;
+        if(dx!=0||dy!=0) {
             Run shifted=next;
-            for(Block& b:shifted.board)b.x+=dx;
+            for(Block& b:shifted.board){b.x+=dx;b.y+=dy;}
             bool ok=true;
             for(int i=0;i<(int)shifted.board.size()&&ok;++i)if(!shifted.fits(shifted.board[i],i))ok=false;
             if(ok){*this=shifted;return true;}
@@ -207,8 +264,9 @@ struct Run {
         }
         *this=next;return true;
     }
+    //그 칸의 블록. 겹쳐 있으면 맨 위(뒤 번호)를 준다 - 보이는 것이 집히고, 보이는 것 위에 합쳐진다.
     int at(int x,int y) const {
-        for(int i=0;i<(int)board.size();++i) {
+        for(int i=(int)board.size()-1;i>=0;--i) {
             const Block& b=board[i];
             if(x>=b.x && y>=b.y && x<b.x+Wide(b) && y<b.y+Tall(b)) return i;
         }
@@ -269,7 +327,9 @@ struct Run {
         return true;
     }
     // Validate first: a failed merge/move never loses or changes either block.
-    bool place(bool fromTray,int index,int x,int y) {
+    //놓는다. 같은 종류·같은 단계 위에 놓으면 합치고, 못 합치는 자리면 겹쳐서라도 놓는다
+    //(allowOverlap). 자동 배치(autoPlace)만 빈 자리에만 놓는다.
+    bool place(bool fromTray,int index,int x,int y,bool allowOverlap=true) {
         if(choosing || attacking || lost) return false;
         std::vector<Block>& source=fromTray?tray:board;
         if(index<0 || index>=(int)source.size()) return false;
@@ -279,36 +339,62 @@ struct Run {
         if(target>=0) {
             Block combined;
             const Block& t=board[target];
+            bool merged=false;
+            if(t.family!=moving.family) lastFail="family";
+            else if(t.level!=moving.level) lastFail="level";
+            else if(!canGrow(t.family,t.level)) lastFail="grow";
+            else if(!mergedPreview(target,moving,fromTray?-1:index,combined)) lastFail="room";
+            else if(combined.family<Roles&&(combined.crew=pickCrew(combined.family,combined.level))<0) lastFail="crew";
+            else merged=true;
+            if(merged) {
+                lastFail="";
+                mergeInputs[0]=moving;mergeInputs[1]=t;mergeResult=combined;
+                board[target]=combined;
+                source.erase(source.begin()+index);
 
-            if(t.family!=moving.family) {lastFail="family";return false;}
-            if(t.level!=moving.level) {lastFail="level";return false;}
-            if(!canGrow(t.family,t.level)) {lastFail="grow";return false;}
-            if(!mergedPreview(target,moving,fromTray?-1:index,combined)) {lastFail="room";return false;}
-            if(combined.family<Roles) {
-                combined.crew=pickCrew(combined.family,combined.level);
-                if(combined.crew<0) {lastFail="crew";return false;}
+                //연출이 걸릴 자리를 남긴다(그리는 쪽이 읽는다).
+                mergeX=combined.x;mergeY=combined.y;
+                mergeW=Wide(combined);mergeH=Tall(combined);
+                mergeLevel=combined.level;++mergeSeq;
+                return true;
             }
-            lastFail="";
-            mergeInputs[0]=moving;mergeInputs[1]=t;mergeResult=combined;
-            board[target]=combined;
-            source.erase(source.begin()+index);
-
-            //연출이 걸릴 자리를 남긴다(그리는 쪽이 읽는다).
-            mergeX=combined.x;mergeY=combined.y;
-            mergeW=Wide(combined);mergeH=Tall(combined);
-            mergeLevel=combined.level;++mergeSeq;
-        } else {
-            if(!fits(moving,fromTray?-1:index)) return false;
-            if(fromTray) { board.push_back(moving); tray.erase(tray.begin()+index); }
-            else board[index]=moving;
+            if(!allowOverlap) return false;
+            //못 합치면 겹쳐 놓는다 - 까닭은 남겨 두되(lastFail) 놓는 것은 된다.
         }
+        if(!fits(moving,fromTray?-1:index,-1,allowOverlap)) {lastFail="spot";return false;}
+        if(target<0)lastFail="";
+        //방금 놓은 것이 맨 위다 - 판은 번호 순서로 그려지므로 맨 뒤로 보낸다(겹쳤을 때 보이는 쪽).
+        if(fromTray) { board.push_back(moving); tray.erase(tray.begin()+index); }
+        else { board.erase(board.begin()+index); board.push_back(moving); }
         return true;
+    }
+    //톡 치면 돌린다(가로·세로 바꿈). 판 밖으로 나가면 안쪽으로 당겨 넣고, 겹치는 것은 둔다.
+    bool rotate(int index) {
+        if(choosing || attacking || lost || index<0 || index>=(int)board.size()) return false;
+        Block b=board[index];
+        if(Wide(b)==Tall(b)) return false;
+        b.rot=!b.rot;
+        b.x=std::min(b.x,shape.width-Wide(b));b.y=std::min(b.y,shape.height-Tall(b));
+        if(b.x<0||b.y<0) return false;
+        //모양(사다리꼴)에 안 들어가면 가까운 자리를 찾는다. 겹침은 허용.
+        if(!fits(b,index,-1,true)) {
+            int bestX=-1,bestY=-1,bestScore=0;
+            for(int y=0;y<shape.height;++y)for(int x=0;x<shape.width;++x) {
+                Block cand=b;cand.x=x;cand.y=y;
+                if(!fits(cand,index,-1,true))continue;
+                const int dx=x-b.x,dy=y-b.y,score=dx*dx+dy*dy;
+                if(bestX<0||score<bestScore){bestScore=score;bestX=x;bestY=y;}
+            }
+            if(bestX<0) return false;
+            b.x=bestX;b.y=bestY;
+        }
+        board.erase(board.begin()+index);board.push_back(b);return true;   //돌린 것도 맨 위로
     }
     bool autoPlace(int index) {
         if(index<0 || index>=(int)tray.size()) return false;
         // Reel rewards are separate pieces. Only a deliberate drag may merge.
         for(int y=0;y<shape.height;++y) for(int x=0;x<shape.width;++x)
-            if(at(x,y)<0 && place(true,index,x,y)) return true;
+            if(at(x,y)<0 && place(true,index,x,y,false)) return true;
         return false;
     }
     bool drop(bool fromTray,int index,float centerX,float centerY){
@@ -371,20 +457,35 @@ struct Run {
         lastFail="full";
         return false;
     }
+    //시작 계열 셋을 고른다. 역할(동료)부터 채우고, 남는 자리에 검, 그다음 장비.
+    //
+    //전에는 역할과 장비를 한 주머니에서 뽑았는데 장비 가중치가 4 라 세 자리가 전부 장비로
+    //잡히는 판이 절반이 넘었다 - 릴을 아무리 돌려도 동료가 안 나왔다(spin 은 families 의
+    //역할에서만 동료를 뽑는다). 장비는 어차피 여섯 부위 전부에서 나오므로(spin) 시작 계열이
+    //정할 것은 "어느 역할의 동료가 나오는가" 뿐이다. 그래서 역할 둘 + 검이 기본이다.
     void choose(const std::vector<int>& pool,const int* weights=nullptr) {
         drafted=true;
         families[0]=selected;
-        std::vector<int> remaining;
-        for(int f:pool) if(f!=selected && std::find(remaining.begin(),remaining.end(),f)==remaining.end()) remaining.push_back(f);
-        for(int i=1;i<3;++i) {
-            if(remaining.empty()) { families[i]=i==1?Armor:Boots; continue; }
-            unsigned total=0;for(int f:remaining)total+=weights?(unsigned)std::max(0,weights[f]):1;
+        std::vector<int> roles,gears;
+        for(int f:pool) if(f!=selected) {
+            std::vector<int>& bag=f<Roles?roles:gears;
+            if(std::find(bag.begin(),bag.end(),f)==bag.end()) bag.push_back(f);
+        }
+        const auto draw=[&](std::vector<int>& bag)->int{
+            unsigned total=0;for(int f:bag)total+=weights?(unsigned)std::max(0,weights[f]):1;
             unsigned pick=random(total);int j=0;
-            if(total)for(;j+1<(int)remaining.size();++j) {
-                unsigned weight=weights?(unsigned)std::max(0,weights[remaining[j]]):1;
+            if(total)for(;j+1<(int)bag.size();++j) {
+                unsigned weight=weights?(unsigned)std::max(0,weights[bag[j]]):1;
                 if(pick<weight)break;pick-=weight;
             }
-            families[i]=remaining[j];remaining.erase(remaining.begin()+j);
+            const int f=bag[j];bag.erase(bag.begin()+j);return f;
+        };
+        for(int i=1;i<3;++i) {
+            const auto sword=std::find(gears.begin(),gears.end(),(int)Sword);
+            if(!roles.empty()) families[i]=draw(roles);
+            else if(sword!=gears.end()) {families[i]=Sword;gears.erase(sword);}
+            else if(!gears.empty()) families[i]=draw(gears);
+            else families[i]=i==1?Armor:Boots;
         }
     }
     Block starter(int family) {
@@ -403,11 +504,20 @@ struct Run {
         if(unique.size()<3||std::find(unique.begin(),unique.end(),Sword)==unique.end())return false;
         Run next=*this;
         if(fixedFirst) {if(std::find(unique.begin(),unique.end(),next.selected)==unique.end())return false;}
-        else next.selected=unique[next.random((unsigned)unique.size())];
+        else {
+            //첫 릴도 역할부터 - 시작 계열은 동료의 역할을 정하는 자리다(choose 참고).
+            std::vector<int> firsts;for(int f:unique)if(f<Roles)firsts.push_back(f);
+            if(firsts.empty())firsts=unique;
+            next.selected=firsts[next.random((unsigned)firsts.size())];
+        }
         if(!keepDraft||!next.drafted)next.choose(unique,weights);
         else for(int f:next.families)if(std::find(unique.begin(),unique.end(),f)==unique.end())return false;
         // Keep the selected first reel, but always start with an attack weapon.
-        if(std::find(next.families,next.families+3,Sword)==next.families+3)next.families[2]=Sword;
+        // 검이 없으면 역할이 아닌 자리(장비)를 먼저 내주고, 그런 자리가 없으면 셋째 자리다.
+        if(std::find(next.families,next.families+3,Sword)==next.families+3) {
+            int slot=2;for(int i=1;i<3;++i)if(next.families[i]>=Roles){slot=i;break;}
+            next.families[slot]=Sword;
+        }
         next.choosing=false;
         for(int f:next.families) next.tray.push_back(next.starter(f));
         while(!next.tray.empty())if(!next.autoPlace(0))return false;
@@ -418,7 +528,17 @@ struct Run {
         for(int y=0;y<shape.height;++y)for(int x=0;x<shape.width;++x)if(shape.contains(x,y)&&at(x,y)<0)++count;
         return count;
     }
-    bool canSpin() const { return !choosing && !attacking && !lost && spins>0 && tray.empty() && freeCells()>=3; }
+    bool boardResolved() const {
+        for(int i=0;i<(int)board.size();++i)if(!fits(board[i],i))return false;
+        return true;
+    }
+    bool discard(bool fromTray,int index){
+        if(choosing||attacking||lost)return false;
+        auto& source=fromTray?tray:board;
+        if(index<0||index>=(int)source.size())return false;
+        source.erase(source.begin()+index);return true;
+    }
+    bool canSpin() const { return !choosing && !attacking && !lost && spins>0 && tray.empty() && boardResolved(); }
     bool spin() {
         if(!canSpin()) return false;
         --spins;
@@ -467,9 +587,10 @@ struct Run {
     Shot evaluate(const Block& b,const Stats& st,Effects& e) const {
         Shot s; s.block=b;
         int lv=b.level;
-        if(b.family==Boots) return s;
+        if(b.family==Boots||b.family==Gloves) return s;
         if(DefensiveGear(b.family)) {
-            e.protect+=armorOf(b,st);e.skip+=MergeBoard::ArmorSkipTurns(lv);
+            const long long value=armorOf(b,st);
+            e.protect+=value;e.charge+=value*chargePctOf(b.family)/100;e.skip+=MergeBoard::ArmorSkipTurns(lv);
             if(lv==2)e.half=true;
             return s;
         }
@@ -479,6 +600,7 @@ struct Run {
             raw=c.power*MergeBoard::CrewMul(lv);trait=c.trait;summon=c.summon;
             if(trait==Chill) {e.skip+=MergeBoard::ChillSkipTurns(lv);if(lv<=2)e.half=true;}
             if(trait==Strike)raw+=raw*MergeBoard::StrikePct(lv)/100;
+            if(trait==Volley)raw+=raw*MergeBoard::VolleyPct(lv)/100;   //적이 하나라 탄이 전부 한 놈에게
         } else raw=st.weapon*MergeBoard::GearMulOf(b.family-Sword,lv);   // 칸이 느는 단만 ×3, 그대로인 단은 ×2
         s.damage=raw*(100+e.expose)/100*e.inspire;e.inspire=1;
         if(b.family<Roles) {
@@ -529,8 +651,8 @@ struct Run {
         if(dotTurns>0) { enemyHp=std::max(0LL,enemyHp-dot); --dotTurns; }
         for(auto& s:summons) { enemyHp=std::max(0LL,enemyHp-s.damage); --s.summonTurns; }
         summons.erase(std::remove_if(summons.begin(),summons.end(),[](const Shot& s){return s.summonTurns<=0;}),summons.end());
-        for(const Block& b:ordered()) shots.push_back(evaluate(b,st,effects));
-        attacking=true; return true;
+        for(const Block& b:ordered())if(b.family!=Gloves)shots.push_back(evaluate(b,st,effects));
+        attacking=true; settleGuard(); return true;
     }
     //---- 성의 대포 ----
     //
@@ -541,7 +663,27 @@ struct Run {
         if(choosing || attacking || lost || damage<=0) return false;
         shots.clear(); nextShot=0; effects=Effects(); damageDone=0;counterResolved=false;
         Shot s;s.block.family=-1;s.block.level=0;s.damage=damage;shots.push_back(s);
-        attacking=true; return true;
+        attacking=true; settleGuard(); return true;
+    }
+    //판의 갑옷·투구·바지가 주는 보호를 effects 에 모은다. 공격 때는 evaluate 가 차례로
+    //모으지만, 대포만 쏘거나 돌리기로 턴을 넘길 때도 반격은 오므로 따로 모아야 한다.
+    void gatherDefense(const Stats& st) {
+        effects=Effects();
+        for(const Block& b:ordered()) if(DefensiveGear(b.family)) evaluate(b,st,effects);
+    }
+    bool fireCannon(const Stats& st,long long damage) {
+        if(!fireCannon(damage)) return false;
+        gatherDefense(st); settleGuard(); return true;
+    }
+    //---- 턴 넘기기 ----
+    //
+    //돌리기도 한 턴이다. 공격 없이 적의 반격만 받는다. 공격과 같은 길(attacking →
+    //shouldCounterattack → finish)을 타되, finish 는 보상·돌리기 횟수 초기화를 하지 않는다.
+    bool passTurn(const Stats& st) {
+        if(choosing || attacking || lost) return false;
+        shots.clear(); nextShot=0; damageDone=0; counterResolved=false;
+        gatherDefense(st); settleGuard();
+        attacking=true; passing=true; return true;
     }
     // One block at a time, in board order, so the adapter can animate every shot.
     bool step() {
@@ -549,6 +691,7 @@ struct Run {
         Shot s=shots[nextShot++];
         damageDone+=s.damage;
         long long dmg=s.damage;
+        if(monsterNpc>=0)dmg=MonsterParts::incomingDamage(dmg,monsterLoadout());
         if(s.block.family<0) {   //대포: 방어막은 두 배로 깎고, 남은 몫만 체력으로
             const long long guardHit=std::min(enemyGuard,dmg*2);
             enemyGuard-=guardHit; dmg-=guardHit/2;
@@ -561,19 +704,46 @@ struct Run {
     bool shouldCounterattack() const {
         return attacking&&nextShot==(int)shots.size()&&enemyHp>0&&!counterResolved&&skipTurns+effects.skip<=0;
     }
-    long long counterDamage() const {
+    //---- 반격이 얼마나 들어오는가 ----
+    //
+    //실제 수치(realVitals)에서는 방어막 통(guard)이 먼저 받고 남은 것이 체력으로 간다 -
+    //본편 3-2 와 같은 규칙이다. 옛 다섯 목숨 모드는 "보호 1 = 한 방" 그대로.
+    long long counterHit() const {
         if(enemyHp<=0||skipTurns+effects.skip>0)return 0;
         long long hit=enemyAttack*(BossTier(wave)?2:1);
+        if(monsterNpc>=0)hit=MonsterParts::attackDamage(hit,monsterLoadout());
         if(effects.half)hit=(hit+1)/2;
+        return hit;
+    }
+    long long counterDamage() const {
+        const long long hit=counterHit();
+        if(realVitals)return std::max(0LL,hit-monsterAbsorption());
         return std::max(0LL,hit-baseArmor-effects.protect);
+    }
+    //반격을 실제로 받는다: 통을 깎고 남은 것이 체력을 깎는다.
+    void takeCounter() {
+        const long long hit=counterHit();
+        if(realVitals){const long long absorbed=monsterAbsorption();guard-=absorbed;lives=std::max(0LL,lives-(hit-absorbed));}
+        else lives=std::max(0LL,lives-counterDamage());
+        if(monsterNpc>=0){enemyHp+=monsterHealing();++monsterActionTurn;}
     }
     bool counterattack() {
         if(!shouldCounterattack())return false;
-        lives=std::max(0LL,lives-counterDamage());counterResolved=true;
+        takeCounter();counterResolved=true;
         return true;
     }
     int finish() {
         if(!attacking || nextShot<(int)shots.size()) return 0;
+        if(passing) {
+            //턴만 넘긴 것: 반격만 정산한다. 돌리기 횟수·보상·지속 피해는 그대로.
+            if(enemyHp>0) {
+                if(skipTurns>0) --skipTurns;
+                else if(!counterResolved) takeCounter();
+            }
+            chargeGuard();
+            shots.clear();attacking=false;nextShot=0;counterResolved=false;passing=false;
+            lost=lives==0; return 0;
+        }
         // Resolve equipment effects only once, after the presentation completes.
         int hearts=0, extraSpins=0;
         for(const Shot& s:shots) if(s.block.family==Boots) {
@@ -583,10 +753,13 @@ struct Run {
         skipTurns=std::min(100,skipTurns+effects.skip);
         if(enemyHp>0) {
             if(skipTurns>0) --skipTurns;
-            else if(!counterResolved)lives=std::max(0LL,lives-counterDamage());
+            else if(!counterResolved)takeCounter();
+            chargeGuard();
         } else {
             reward+=10LL*(stage+1)*(BossTier(wave)?10:1);
-            if(++wave==WavesPerStage) {wave=0;++stage;lives=maxLives;}
+            if(++wave==WavesPerStage) {wave=0;++stage;lives=maxLives;guard=guardMax;}   //성을 넘기면 방어막도 다 찬다
+            else chargeGuard();
+            monsterActionTurn=0;monsterStage=stage;monsterWave=wave;
             dot=0;dotTurns=skipTurns=0;summons.clear();
         }
         shots.clear();attacking=false;nextShot=0;counterResolved=false;
@@ -612,6 +785,8 @@ struct Run {
          <<' '<<effects.half<<' '<<effects.dot<<' '<<effects.dotTurns<<' '<<shots.size();
         for(const Shot& s:shots)o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.block.x<<' '<<s.block.y<<' '<<s.damage<<' '<<s.summonTurns;
         o<<' '<<counterResolved<<' '<<realVitals<<' '<<baseArmor<<' '<<enemyAttack;
+        o<<' '<<guard<<' '<<guardMax<<' '<<effects.charge;   //v11: 방어막 통
+        o<<' '<<monsterNpc<<' '<<monsterActionTurn<<' '<<passing; //v12: action cycle and spin counter turns
         return o.str();
     }
     static bool crewOk(const Block& b) {
@@ -620,7 +795,7 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=9&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -638,7 +813,7 @@ struct Run {
                 Block b;int rot=0;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y>>rot)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;b.rot=rot!=0;
                 //장비는 여섯 부위 어느 것이든 판에 설 수 있다. 역할 블록만 시작 슬롯의 역할이어야 한다.
                 if(b.family<Roles&&std::find(r.families,r.families+3,b.family)==r.families+3) return false;
-                if(!list) {if(!r.fits(b)) return false;r.board.push_back(b);}
+                if(!list) {if(!r.fits(b,-1,-1,true)) return false;r.board.push_back(b);}   //겹친 채로도 저장된다
                 else {if(b.x!=-1||b.y!=-1) return false;r.tray.push_back(b);}
             }
         }
@@ -658,6 +833,8 @@ struct Run {
            ||r.effects.protect<0||r.effects.protect>(version>=10?Cells*1000000000000000LL:Cells*2LL)||r.effects.dot<0||r.effects.dot>1000000000000000LL
            ||r.effects.dotTurns<0||r.effects.dotTurns>4)return false;
         auto sorted=r.ordered();
+        // Accept both old saves containing glove turns and new passive-only gloves.
+        if(count!=(int)sorted.size())sorted.erase(std::remove_if(sorted.begin(),sorted.end(),[](const Block& b){return b.family==Gloves;}),sorted.end());
         for(int i=0;i<count;++i) {
             Shot s;if(!(in>>s.block.family>>s.block.level>>s.block.crew>>s.block.x>>s.block.y>>s.damage>>s.summonTurns)
                 ||s.damage<0||s.damage>1000000000000000LL||s.summonTurns<0||s.summonTurns>3)return false;
@@ -666,15 +843,33 @@ struct Run {
             if(s.block.family!=b.family||s.block.level!=b.level||s.block.crew!=b.crew||s.block.x!=b.x||s.block.y!=b.y)return false;
             r.shots.push_back(s);
         }
-        if(r.attacking?(count!=(int)r.board.size()||count==0||r.choosing||r.lost):(count!=0||r.nextShot!=0))return false;
+        if(r.attacking?((count!=(int)sorted.size()&&!(version>=12&&count==0))||r.choosing||r.lost):(count!=0||r.nextShot!=0))return false;
         if(version>=9&&!(in>>r.counterResolved))return false;
         if(version>=10) {
             if(!(in>>r.realVitals>>r.baseArmor>>r.enemyAttack)||r.baseArmor<0||r.baseArmor>1000000000000000LL||r.enemyAttack<1||r.enemyAttack>1000000000000000LL)return false;
             if(!r.realVitals&&(r.maxLives>20||r.baseArmor!=0||r.enemyAttack!=1))return false;
         }
+        if(version>=11) {
+            if(!(in>>r.guard>>r.guardMax>>r.effects.charge)||r.guardMax<0||r.guardMax>2000000000000000LL||r.guard<0||r.guard>r.guardMax
+               ||r.effects.charge<0||r.effects.charge>r.effects.protect)return false;
+            if(!r.realVitals&&(r.guard!=0||r.guardMax!=0||r.effects.charge!=0))return false;
+        } else if(r.realVitals) {
+            //v10 까지는 방어를 한 방에서 뺐다. 이어 하는 판은 통을 찬 채로 시작한다.
+            r.guardMax=r.baseArmor+r.effects.protect;r.guard=r.guardMax;
+        }
+        if(version>=12){
+            if(!(in>>r.monsterNpc>>r.monsterActionTurn>>r.passing)||r.monsterActionTurn<0||r.monsterActionTurn>1000000
+               ||(r.monsterNpc!=-1&&!MonsterParts::enemy(r.monsterNpc)))return false;
+            r.monsterStage=r.stage;r.monsterWave=r.wave;
+            if(r.passing?(!r.attacking||count!=0||r.nextShot!=0):(r.attacking&&count!=(int)sorted.size()))return false;
+        }
         if(r.counterResolved&&(!r.attacking||r.nextShot!=count||r.enemyHp<=0))return false;
         in>>std::ws;if(!in.eof()) return false;
         if((r.lives==0)!=r.lost&&!(r.attacking&&r.counterResolved&&r.lives==0&&!r.lost)) return false;
+        int passiveBefore=0;
+        for(int i=0;i<r.nextShot;++i)if(r.shots[i].block.family==Gloves)++passiveBefore;
+        r.shots.erase(std::remove_if(r.shots.begin(),r.shots.end(),[](const Shot& shot){return shot.block.family==Gloves;}),r.shots.end());
+        r.nextShot-=passiveBefore;
         *this=r;return true;
     }
 };

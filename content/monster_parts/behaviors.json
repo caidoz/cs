@@ -1,0 +1,2134 @@
+{
+  "version": 2,
+  "profiles": [
+    {
+      "base_cmf": 3,
+      "name": "가시껍질달팽이",
+      "parts": [
+        {
+          "name": "가시 껍질",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "더듬이·머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "앞몸통",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리 몸통",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "더듬이·머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "꼬리 몸통 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 4,
+      "name": "늪의 주인",
+      "parts": [
+        {
+          "name": "나무 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "얼굴",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "왼팔 가지",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "오른팔 가지",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "잎 무리",
+          "role": "recovery",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "얼굴 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "왼팔 가지 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "오른팔 가지 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": true
+    },
+    {
+      "base_cmf": 6,
+      "name": "아이볼",
+      "parts": [
+        {
+          "name": "눈알",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "날개",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "날개 끝",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "눈동자",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "날개 할퀴기",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 7,
+      "name": "칠흑의 기사",
+      "parts": [
+        {
+          "name": "흉갑",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "투구",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "팔",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "팔 휘두르기",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 10,
+      "name": "사하긴병사",
+      "parts": [
+        {
+          "name": "비늘 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·이빨",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "갈퀴손",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리지느러미",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·이빨 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "갈퀴손 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 9,
+      "name": "맹독해파리",
+      "parts": [
+        {
+          "name": "갓",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "촉수 다발",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "짧은 촉수",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "촉수 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 32,
+      "name": "타락한 기사",
+      "parts": [
+        {
+          "name": "흉갑",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "투구",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "갑주 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 33,
+      "name": "슬라임",
+      "parts": [
+        {
+          "name": "젤 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "젤 돌기",
+          "role": "recovery",
+          "width": 2,
+          "height": 1
+        },
+        {
+          "name": "젤 밑단",
+          "role": "attack",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "점액 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": true
+    },
+    {
+      "base_cmf": 12,
+      "name": "평원의 도적",
+      "parts": [
+        {
+          "name": "몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 13,
+      "name": "거친발멧돼지",
+      "parts": [
+        {
+          "name": "가시 가죽",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "엄니·주둥이",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발굽",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "엄니 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "대시 공격",
+          "kind": "rush",
+          "native_pattern": 0,
+          "power_pct": 150,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 15,
+      "name": "분노의 정령",
+      "parts": [
+        {
+          "name": "불꽃 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "불꽃 끝",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "화염 밑단",
+          "role": "guard",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "불꽃 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 16,
+      "name": "마성의 불새",
+      "parts": [
+        {
+          "name": "불새 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "불꽃 날개",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "불꽃 꼬리",
+          "role": "recovery",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "부리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": true
+    },
+    {
+      "base_cmf": 19,
+      "name": "결빙의 석상",
+      "parts": [
+        {
+          "name": "석상 얼굴",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "얼음 이마",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "얼음 턱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "얼음 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 18,
+      "name": "스노우맨",
+      "parts": [
+        {
+          "name": "눈 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "얼음 주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "작은 주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "얼음 주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "작은 주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 20,
+      "name": "아이스마스크",
+      "parts": [
+        {
+          "name": "얼음 얼굴",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "얼음 왕관",
+          "role": "attack",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "얼음 파편",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 22,
+      "name": "스파크",
+      "parts": [
+        {
+          "name": "빛 핵",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "번개 가시",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "빛 파편",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "섬광 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 24,
+      "name": "다크미스트",
+      "parts": [
+        {
+          "name": "안개 핵",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "번개 고리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "핵 장식",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "안개 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 23,
+      "name": "스파크플랜트",
+      "parts": [
+        {
+          "name": "발광 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "왼 지지부",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "오른 지지부",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "빛줄기",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 35,
+      "name": "라이트스피릿",
+      "parts": [
+        {
+          "name": "정령 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "빛 날개",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "반대 날개",
+          "role": "guard",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "별빛",
+          "role": "recovery",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "빛날개 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": true
+    },
+    {
+      "base_cmf": 36,
+      "name": "딜루전소울",
+      "parts": [
+        {
+          "name": "문양 구체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "금빛 중심 문양",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "하부 빛 고리",
+          "role": "support",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "문양 파동",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 27,
+      "name": "스트라이더",
+      "parts": [
+        {
+          "name": "등껍질",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "앞다리",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "뒷다리",
+          "role": "guard",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "관절",
+          "role": "guard",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "앞다리 찌르기",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 26,
+      "name": "주인잃은 골렘",
+      "parts": [
+        {
+          "name": "바위 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "바위 머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "바위 주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "바위 발",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "바위 머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "바위 주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 39,
+      "name": "그레이트아머",
+      "parts": [
+        {
+          "name": "흉갑",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "투구",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "철갑 주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "어깨 갑주",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "철갑 주먹",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 38,
+      "name": "우로보로스",
+      "parts": [
+        {
+          "name": "용머리",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "몸통 마디",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "용머리 타격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 41,
+      "name": "탐욕의 살육자",
+      "parts": [
+        {
+          "name": "비늘 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·이빨",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발톱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·이빨 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "발톱 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 42,
+      "name": "드래곤좀비",
+      "parts": [
+        {
+          "name": "늑골",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "턱뼈",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리뼈",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발톱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "턱뼈 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "꼬리뼈 강타",
+          "kind": "strike",
+          "native_pattern": 2,
+          "power_pct": 125,
+          "hits": 1
+        },
+        {
+          "name": "발톱 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 30,
+      "name": "떠도는 영혼",
+      "parts": [
+        {
+          "name": "영혼 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "영혼 손",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "붉은 눈",
+          "role": "guard",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "영혼 손길",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 29,
+      "name": "무혼의 기사",
+      "parts": [
+        {
+          "name": "갑주 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "호박 머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "호박 머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 44,
+      "name": "어둠의 마도사",
+      "parts": [
+        {
+          "name": "마도 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "얼굴·뿔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "팔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "어깨 천",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "얼굴·뿔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "팔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 45,
+      "name": "공허한 갑주",
+      "parts": [
+        {
+          "name": "갑주 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "투구",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "철갑 주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "어깨 갑주",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "철갑 주먹",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 46,
+      "name": "안드로볼",
+      "parts": [
+        {
+          "name": "기계 구체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "전면 장갑",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "외곽 장갑",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        }
+      ],
+      "actions": [
+        {
+          "name": "구체 충돌",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 47,
+      "name": "메탈가우스",
+      "parts": [
+        {
+          "name": "기계 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "하부 장갑",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "측면 장갑",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "기계 손",
+          "role": "attack",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "기계 주먹",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 5,
+      "name": "토드뮤턴트",
+      "parts": [
+        {
+          "name": "돌기 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·이빨",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "앞발",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "뒷다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·이빨 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "앞발 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 8,
+      "name": "아르곤",
+      "parts": [
+        {
+          "name": "갑각 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "가시",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "반대 가시",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "가시 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "반대 가시 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 11,
+      "name": "카툼",
+      "parts": [
+        {
+          "name": "비늘 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·이빨",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "갈퀴손",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리지느러미",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·이빨 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "갈퀴손 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 14,
+      "name": "고대의 수호자",
+      "parts": [
+        {
+          "name": "바위 흉부",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 17,
+      "name": "이프리트",
+      "parts": [
+        {
+          "name": "화염 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·뿔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "화염 흉갑",
+          "role": "guard",
+          "width": 2,
+          "height": 1
+        },
+        {
+          "name": "불꽃 끝",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·뿔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "불꽃 끝 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 21,
+      "name": "프로스트",
+      "parts": [
+        {
+          "name": "얼음 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·엄니",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "얼음 가시",
+          "role": "support",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "앞발",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "엄니 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 25,
+      "name": "라이오너",
+      "parts": [
+        {
+          "name": "기계 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "기계 관절",
+          "role": "attack",
+          "width": 2,
+          "height": 1
+        },
+        {
+          "name": "연결 마디",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "마력 구체",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "기계 관절 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "마력 구체 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 37,
+      "name": "호루스",
+      "parts": [
+        {
+          "name": "흉갑",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "깃털 날개",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "팔",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "깃털 날개 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "팔 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 34,
+      "name": "마도합성수",
+      "parts": [
+        {
+          "name": "갈기 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "용머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "새머리",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발톱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "용머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "발톱 공격",
+          "kind": "strike",
+          "native_pattern": 2,
+          "power_pct": 125,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 28,
+      "name": "고대의 방주",
+      "parts": [
+        {
+          "name": "방주 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "용머리 선수",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "선체 장갑",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "상부 장갑",
+          "role": "guard",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "선수 충돌",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 40,
+      "name": "아리만",
+      "parts": [
+        {
+          "name": "외피",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "포구",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "금빛 촉수",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "하부 외피",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "포구 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "금빛 촉수 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 43,
+      "name": "티어맷",
+      "parts": [
+        {
+          "name": "비늘 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·뿔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발톱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "꼬리",
+          "role": "support",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·뿔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "발톱 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 31,
+      "name": "죽음의 신",
+      "parts": [
+        {
+          "name": "영혼 흉부",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "해골 머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "팔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "어둠의 외피",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "해골 머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "팔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 48,
+      "name": "데브리온",
+      "parts": [
+        {
+          "name": "핵 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "집게팔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "갑각 마디",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "집게 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 49,
+      "name": "엘케인맨티스",
+      "parts": [
+        {
+          "name": "갑각 몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리·턱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "낫팔",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "발톱",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리·턱 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "낫팔 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "발톱 공격",
+          "kind": "strike",
+          "native_pattern": 2,
+          "power_pct": 125,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 50,
+      "name": "테트라쉐도우",
+      "parts": [
+        {
+          "name": "그림자 몸체",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "송곳니 머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "뿌리 발톱",
+          "role": "attack",
+          "width": 2,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "송곳니 머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "뿌리 발톱 공격",
+          "kind": "strike",
+          "native_pattern": 1,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 51,
+      "name": "다크나이트",
+      "parts": [
+        {
+          "name": "흉갑",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "투구",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "철갑 주먹",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 109,
+      "name": "라베스",
+      "parts": [
+        {
+          "name": "몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "손",
+          "role": "attack",
+          "width": 1,
+          "height": 2
+        },
+        {
+          "name": "팔",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "손 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    },
+    {
+      "base_cmf": 110,
+      "name": "엘케인",
+      "parts": [
+        {
+          "name": "몸통",
+          "role": "core",
+          "width": 2,
+          "height": 2
+        },
+        {
+          "name": "머리",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "주먹",
+          "role": "attack",
+          "width": 1,
+          "height": 1
+        },
+        {
+          "name": "다리",
+          "role": "guard",
+          "width": 1,
+          "height": 1
+        }
+      ],
+      "actions": [
+        {
+          "name": "머리 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        },
+        {
+          "name": "주먹 공격",
+          "kind": "strike",
+          "native_pattern": 0,
+          "power_pct": 100,
+          "hits": 1
+        }
+      ],
+      "passive_regeneration": false
+    }
+  ]
+}

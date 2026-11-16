@@ -8,6 +8,13 @@
 
 ## 🛠️ 1. 프로젝트 개요 및 빌드 환경 (Project & Tech Stack)
 
+### 몬스터 부위와 행동 전투 인수인계 (2026-11-16)
+
+- [몬스터 부위 인벤토리와 공격 및 보강 기획](docs/MONSTER_PARTS_COMBAT_DESIGN.md)을 먼저 읽는다. 기본 51종 및 색상 변종 포함 357개체의 부위 역할과 공격 구성을 수록한다.
+- 몬스터는 한 턴에 공격 파츠 1~3개가 각각 한 번씩 공격한다. 멧돼지는 엄니와 대시를 한 묶음으로 수행한다. 추가 블록은 피해·방어·회복을 수동 보강하며 별도 행동을 만들지 않는다. 회복형은 공격 묶음 정산 시 재생한다.
+- 조정 원본은 `content/monster_parts/behaviors.json`, 전투식은 `Classes/MonsterPartsModel.h`, 판 표시는 `Classes/MergeMonsterParts.inc`다. 생성된 `MonsterPartsData.h`와 부위 아틀라스를 직접 고치지 않는다.
+- 저장 버전은 12이며 공격 묶음 정산과 룰렛 반격 턴을 보존한다. 부위 파괴와 본체 탈락은 후속 범위다. 기존 PVP 공성전은 별도 전투를 유지한다.
+
 ### 성 실내 NPC 배치 인수인계 (2026-11-04)
 
 - [배치 좌표·연결 방법](docs/CASTLE_NPC_PLACEMENT_HANDOFF.md)을 먼저 읽는다.

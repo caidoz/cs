@@ -1,4 +1,4 @@
-#include "../../Classes/CastleMenuModel.h"
+﻿#include "../../Classes/CastleMenuModel.h"
 #include "../../Classes/CastleTutorialModel.h"
 #include "../../Classes/CastleArtilleryModel.h"
 #include "../../Classes/Data/CastleRoomUpgrades.h"
@@ -49,14 +49,18 @@ int main() {
         Progress facilities={};facilities.version=1;facilities.owned=1023u;
         const int baseAttack=Attack(facilities,c);
         for(int room=0;room<CastleFacilities::Counts[c];++room){
-            assert(CastleNpcPlacement::Counts[c]==CastleFacilities::Counts[c]);
-            const auto& area=CastleNpcPlacement::Areas[c][room];
-            for(int i=0;i<area.recommended;++i){
-                assert(CastleNpcPlacement::ContainsFoot(area,CastleNpcPlacement::SlotX(area,i,area.recommended),area.foot));
-                if(i>0)assert(CastleNpcPlacement::SlotX(area,i,area.recommended)-CastleNpcPlacement::SlotX(area,i-1,area.recommended)+.000001f>=area.maxWidth);
+            // The legacy NPC atlas has fewer sectors on early castles. Live
+            // facilities now occupy five fixed apertures, independently of it.
+            assert(CastleFacilities::Counts[c]==5);
+            if(room<CastleNpcPlacement::Counts[c]){
+                const auto& area=CastleNpcPlacement::Areas[c][room];
+                for(int i=0;i<area.recommended;++i){
+                    assert(CastleNpcPlacement::ContainsFoot(area,CastleNpcPlacement::SlotX(area,i,area.recommended),area.foot));
+                    if(i>0)assert(CastleNpcPlacement::SlotX(area,i,area.recommended)-CastleNpcPlacement::SlotX(area,i-1,area.recommended)+.000001f>=area.maxWidth);
+                }
+                assert(!CastleNpcPlacement::ContainsFoot(area,area.left-.01f,area.foot));
+                assert(!CastleNpcPlacement::ContainsFoot(area,area.left,area.foot+.01f));
             }
-            assert(!CastleNpcPlacement::ContainsFoot(area,area.left-.01f,area.foot));
-            assert(!CastleNpcPlacement::ContainsFoot(area,area.left,area.foot+.01f));
             assert(CastleFacilities::Food(c,room)==(room==0));
             for(int lv=0;lv<=5;++lv){
                 auto crop=CastleRoomUpgrades::Frame(c,room,lv,1536,2048);
@@ -100,7 +104,10 @@ int main() {
     const int attackBeforeArmory=Attack(p,3);
     assert(Upgrade(p,3,1,true,gold)&&Equipment(p,3,30)==equipment+1&&Attack(p,3)>attackBeforeArmory);
     assert(Upgrade(p,3,2,true,gold)&&Health(p,3)==2);
-    paid=gold;assert(!Upgrade(p,3,3,true,gold)&&!Upgrade(p,3,4,true,gold)&&gold==paid);
+    paid=gold;
+    assert(Upgrade(p,3,3,true,gold)&&Upgrade(p,3,4,true,gold));
+    assert(p.rooms[3][3]==1&&p.rooms[3][4]==1&&gold==paid-2*UpgradeCost(3,0,true));
+    paid=gold;assert(!Upgrade(p,3,5,true,gold)&&gold==paid);
     auto late=p;EnableAllCastles(late);
     assert(Upgrade(late,9,3,true,gold)&&Defense(late,9)==2);
     const int attackBeforeRoyal=Attack(late,9);

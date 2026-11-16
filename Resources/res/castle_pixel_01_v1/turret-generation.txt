@@ -1,0 +1,5 @@
+Mode: built-in image_gen edit, transparent background
+Source: Resources/res/castle_cannon_v2/atlas.png
+Packing: tools/art/partition_pixel_turrets.py
+
+Edit this turret sprite atlas into crisp coarse hand drawn pixel art matching a muted walnut wooden pixel castle. Preserve the exact 6-column by 10-row layout, the identity and silhouette of every turret, the progression left to right, the muzzle positions and transparent padding. Do not add, omit, reorder or overlap any turret. Flat stepped 3-shade color ramps, visible square pixel clusters, dark outline, subdued walnut wood, ochre brass and matte gray steel, reduce saturation and glare markedly. No soft gradients, no polished 3D highlights. The top row MUST stay stone catapults with a stone in the scoop, not guns. Retain all distinct missile and laser types below. Transparent background, no text. Whole sheet visible, original aspect ratio.

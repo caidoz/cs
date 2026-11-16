@@ -1,8 +1,32 @@
-#include "../../Classes/MergeCombatPresentation.h"
+﻿#include "../../Classes/MergeCombatPresentation.h"
 #include "../../Classes/MergeCastleTransition.h"
 #include <cassert>
 #include <iostream>
 int main() {
+    MergeCombat::WaveTransition travel;assert(!travel.active()&&travel.incomingVisible());
+    travel.begin();assert(travel.defeatedVisible()&&!travel.incomingVisible());
+    float distance=0,lastX=1000;
+    for(int age=0;age<MergeCombat::WaveTransition::Duration;++age){
+        assert(travel.active());distance+=travel.speed()/60;
+        if(travel.travelling())assert(!travel.defeatedVisible()&&!travel.incomingVisible());
+        if(travel.incomingVisible()){
+            const float x=travel.incomingX(1000,544);assert(x<=lastX&&x>=544);lastX=x;
+        }
+        travel.advance();
+    }
+    assert(!travel.active()&&lastX==544&&distance>3&&travel.speed()==0);
+    MergeCombat::WeaponSwap swap;swap.begin();
+    int attachments=0;
+    for(int t=1;t<=MergeCombat::WeaponSwap::Duration;++t){
+        swap.advance();attachments+=swap.attachNow();
+        if(t<36)assert(swap.orbit()<1&&swap.snap()==0);
+        if(t==36)assert(swap.orbit()==1&&swap.snap()==0);
+        if(t==46)assert(swap.snap()==1&&swap.running());
+    }
+    assert(attachments==1&&!swap.running());
+    MergeCombat::DamagePause pause;pause.begin();
+    for(int t=1;t<84;++t){pause.advance();assert(pause.waiting());}
+    pause.advance();assert(!pause.waiting());
     using namespace MergeCastleTransition;
     assert(CoverProgress(PanicEnd)==0&&CoverProgress(CoverEnd)==1);
     for(int count:{16,18,34})for(int i=0;i<count;++i){
@@ -11,8 +35,27 @@ int main() {
     }
     MergeCombat::EnemyPhases enemy;enemy.begin(24,40);
     assert(enemy.walkingIn(0)&&enemy.walkingIn(23)&&!enemy.walkingIn(24));
-    assert(enemy.impact()==44&&enemy.returnStart()==76&&enemy.end()==100);
-    assert(!enemy.walkingBack(enemy.impact())&&enemy.walkingBack(76));
+    assert(enemy.impact()==44&&enemy.returnStart()==64&&enemy.end()==100);
+    assert(!enemy.walkingBack(enemy.impact())&&enemy.walkingBack(64));
+    // Range is data, not a melee/ranged cutoff. All values use the actor's zoom.
+    assert(MergeCombat::enemyAttackPosition(544,390,32,1.35f,true)>433.19f);
+    assert(MergeCombat::enemyAttackPosition(544,390,32,1.35f,true)<433.21f);
+    assert(MergeCombat::enemyAttackPosition(544,390,128,1.35f,true)==544);
+    assert(MergeCombat::enemyAttackPosition(544,390,8,1.35f,false)==544);
+    assert(MergeCombat::enemyAttackPosition(1088,780,32,2.7f,true)>866.39f);
+    // Sparse pattern slots and status 0 must stay valid, in table order.
+    const signed short patterns[20]={0,60, 1,2,3,0,1,32, 0,0,0,0,0,0, 0,4,5,0,2,128};
+    assert(MergeCombat::enemyPattern(patterns,0).index==0);
+    assert(MergeCombat::enemyPattern(patterns,1).index==2);
+    assert(MergeCombat::enemyPattern(patterns,2).index==0);
+    assert(MergeCombat::enemyPattern(patterns,1).range==128);
+    assert(MergeCombat::enemyPattern(patterns,1).approach==0);
+    assert(MergeCombat::enemyPattern(patterns,1,1).index==0);
+    assert(MergeCombat::enemyPattern(patterns,0,4).index==2);
+    assert(MergeCombat::enemyPattern(patterns,0,0).index==-1);
+    enemy.begin(0,40,18,9);
+    assert(enemy.returnStart()==40&&enemy.recoveryStart()==58&&enemy.end()==67);
+    assert(enemy.walkingBack(40)&&enemy.walkingBack(57)&&!enemy.walkingBack(58));
     const std::vector<float> steps={0,0,4,4,8};
     assert(MergeCombat::walkProgress(steps,0)==0&&MergeCombat::walkProgress(steps,.25f)==0);
     assert(MergeCombat::walkProgress(steps,.5f)==.5f&&MergeCombat::walkProgress(steps,1)==1);

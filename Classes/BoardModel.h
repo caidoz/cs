@@ -64,6 +64,9 @@ inline int InspireMul(int level) { static const int m[BLOCK_LV_MAX + 1] = { 1, 2
 //강타: 자기 피해 +30/50/75/100/125/150 %
 inline int StrikePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 30, 50, 75, 100, 125, 150 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
 //연타: 탄 수. 단일 적에는 피해 합이 같고, 적이 n 마리면 n 마리 전부 맞는다
+//연타(합성 전투용): 적이 하나라 탄이 한 놈에게 다 간다. 탄 수 2·3·4·6·8·10 → +0/25/50/100/150/200 %.
+//★3 까지는 강타(+30/50/75)보다 약하고 ★4 에서 같고(+100) ★5 부터 넘는다 — 낮을 땐 재료, 키우면 주포.
+inline int VolleyPct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 0, 25, 50, 100, 150, 200 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }
 inline int VolleyHits(int level) { static const int h[BLOCK_LV_MAX + 1] = { 0, 2, 3, 4, 6, 8, 10 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : h[level]; }
 //빙결: Lv3·4 적 턴 1회, Lv5·6 2회 삭제. Lv1·2 는 적 공격 절반(플래그)
 inline int ChillSkipTurns(int level) { return level >= 5 ? 2 : level >= 3 ? 1 : 0; }

@@ -6,7 +6,7 @@
 
 int main() {
     using namespace TurretAttack;
-    assert(kind(0)==Stone && kind(2)==Missiles && kind(3)==Rapid);
+    assert(kind(0)==Stone && kind(2)==Missiles && kind(3)==Rapid && kind(4)==Shell && kind(7)==Magnetic);
     for(int castle=0;castle<10;++castle) {
         Sequence shot;shot.begin(castle,5);
         MergeCombat::Timeline time;
@@ -17,11 +17,17 @@ int main() {
             assert(time.applied==(time.elapsed>=shot.impact()));
         }
         assert(hits==1 && time.end==shot.end());
-        assert(shot.count==(castle==2?3:castle==3?6:1));
+        assert(shot.count==(castle==2?3:castle==3?12:1));
         for(int i=0;i<shot.count;++i)assert(shot.launch(i)+shot.flight<=time.impact);
     }
+    Sequence rapid;rapid.begin(3,0);
+    assert(rapid.launch(10)-rapid.launch(0)==25); // Ten intervals instead of the old five.
+    for(int i=1;i<rapid.count;++i) {
+        const int gap=rapid.launch(i)-rapid.launch(i-1);
+        assert(gap==2||gap==3);
+    }
     Point from{50,100},to{500,110};
-    for(Kind type:{Stone,Shell,Missiles,Rapid}) {
+    for(Kind type:{Stone,Shell,Missiles,Rapid,Magnetic}) {
         Point start=position(type,0,from,to,0,1),end=position(type,1,from,to,0,1);
         assert(start.x==from.x&&start.y==from.y&&end.x==to.x&&end.y==to.y);
         auto midpoint=position(type,.5f,from,to,0,1);

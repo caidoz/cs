@@ -7,6 +7,11 @@
 #include "Func_MergeRoulette.h"
 #include "MergeRouletteModel.h"
 #include "NativeGearIcons.h"
+#include "ItemSeriesCatalog.h"
+#include "GridItemCatalog.h"
+#include "Data/SwordSprites.h"
+#include "ItemSeriesArt.h"
+#include "SquareGearIcons.h"
 #include "MergeCombatPresentation.h"
 #include "TurretAttackPresentation.h"
 #include "MergeRenderProfile.h"
@@ -34,6 +39,10 @@ Run run;
 Stats stats;
 MergeCombat::AnimatedValue guardDisplay,heroHealthDisplay,enemyHealthDisplay;
 MergeCombat::AnimatedValue attackDisplay;
+MergeCombat::WaveTransition waveTransition;
+int defeatedNpc=-1,defeatedMotion=0;
+int objectDrawOrder=0,monsterDrawOrder=0,allyDrawOrder=0,impactDrawOrder=0;
+bool monsterDrawn=false;
 bool attackDisplayKnown=false;
 long long attackGain=0;
 float attackGainTime=0;
@@ -60,7 +69,33 @@ bool siegeActive=false;   //공성전(PVP 디버그) 중. MergeSiege.inc
 int siegeHullStage=-1;    //공성전: 그릴 성(상대의 성). -1 이면 run.stage
 namespace Siege{extern bool swapped;extern int castle,refRows,region;}
 //성(안쪽 구성요소 전부)과 레일이 같이 쓰는 들어올림. 포대가 보이도록 8픽셀 내려 둔다.
-float castleSceneLift(){return MergeCombat::lobbyCastleLift((float)DX,(float)DY)-8.f*DX/640.f;}
+//---- 상대 판(몬스터·공성전)을 어디에 두나 ----
+//
+//1:1.9 보다 길면 머리글 아래 하늘이 비므로 거기에 붙박이로 깐다(터치로 펼칠 것 없이 늘 보인다).
+//그보다 짧으면 오른쪽 위 작은 단추로 두고 터치하면 펼친다. 붙박이 판은 **내 판과 같은 80칸**이라
+//(판 규격은 히어로와 같아야 한다) 성 지붕과 겹친다 - 그만큼 성을 덜 올린다(castleSceneLift).
+//네 줄 판 320 + 머리글 78 + 이름 줄·틈 46 = 444 가 성 지붕 위에 들어가려면 1:2.0 은 되어야 한다.
+bool topBoardPanel(){return DY>=DX*2.0f;}
+int topPanelCell(){return std::max(8,(int)(80*DX/640.f));}
+int topPanelTop(){return DY-(int)(78*DX/640.f);}   //머리글 바로 아래
+//붙박이 판 밑변(GL) - 성 지붕(원본 y=83)이 이 아래로 와야 한다. 머리글(78) + 줄×칸 + 이름 줄(34) + 틈(12).
+float topPanelCeiling(int rows){const float s=DX/640.f;return topPanelTop()-rows*topPanelCell()-46*s;}
+float castleSceneLift(){
+    const float s=DX/640.f;
+    // Reveal a strip of track above the fixed navigation on short screens.
+    // Fade the correction out by 1:1.6; taller layouts keep their placement.
+    //로비와 전투가 같은 자리다. 기준값에서 25 내린 값 - 1:1.33 에서 전투의 하트 바가 하단 세 단추
+    //바로 위(6픽셀)에 앉고, 로비의 성도 같은 높이에 선다(바퀴 아랫단은 하단 메뉴가 덮는다).
+    const float base=MergeCombat::lobbyCastleLift((float)DX,(float)DY)-25.f*s;
+    //전투 중 붙박이 판(긴 화면)이 성 지붕과 겹치면 그만큼 덜 올린다. 로비는 그대로.
+    if(active&&topBoardPanel()){
+        const int rows=std::max(4,(int)run.shape.height);
+        const float roofBase=(1445.f-83.f)*(DX/1089.f*1.04f)+34*s;   //OriginalCastle::box(0,83) 의 윗변, 올림 0 일 때
+        //짧은 화면의 기준(-25)보다 더 내리지는 않는다 - 그 밑은 하단 단추 자리다.
+        return std::max(-25.f*s,std::min(base,topPanelCeiling(rows)-roofBase));
+    }
+    return base;
+}
 int oldMode=ACTIONRPG, ticks=0, animation=0, picked=-1, finger=-1;
 float gearAngle=0.f,gearStartAngle=0.f;
 float reviewAttackGear=0.f;
@@ -86,6 +121,14 @@ int costumeLevels[GearCount]={};
 ITEM wornEquip[TOTALEQUIP];
 int costumeEffectTicks=0;
 int attackWeaponLevel=0;
+MergeCombat::WeaponSwap weaponSwap;
+MergeCombat::DamagePause damagePause;
+ITEM incomingWeapon;
+bool requestWeaponSwap(const ITEM& target){
+    const ITEM& old=hero.equip[EQUIP_WEAPON];
+    if(old.type==target.type&&old.detail==target.detail&&old.grade==target.grade)return false;
+    incomingWeapon=target;weaponSwap.begin();return true;
+}
 void showAttackWeapon(int level) {
     attackWeaponLevel=level;
     const int shown=level?level:costumeLevels[0];
@@ -137,18 +180,40 @@ bool gridBlockLanded(int index) {
 //
 //공성전 상대 턴(gearTableOverride)은 성주의 몸이라 건드리지 않는다 - 성주의
 //체력은 Siege::begin 이 따로 정한다.
+//리뷰 픽스처가 체력을 손으로 박아 둘 때는 입은 장비로 다시 세지 않는다.
+bool holdVitals=false;
+long long heroHpHold=-1;   //반격을 여러 타로 나눠 띄우는 동안 체력 바가 한 번에 떨어지지 않게 잡아 둔다
+namespace MonsterBoard{int hitCount();void ensure();}
+//---- 방어막 통의 바닥: 실제로 낀 투구·갑옷의 장비 값 ----
+//
+//PS_ARMOR 는 쓰지 않는다. 거기엔 STR×3 + AGI 가 들어 있어 레벨이 오르면 체력(158)보다 훨씬 큰
+//수(949)가 된다 - 본편에서는 레벨 차 방어 감소에 쓰는 수라 체력과 단위가 다르다. 여기서는 판 위
+//갑옷 블록과 같은 단위(GetEquipPower)로 낀 투구·갑옷만 센다. 하체는 체력(PS_HPEQUIP)으로 간다.
+//판의 갑옷 블록이 코스튬으로 입혀져도(updateHeroCostume) 여기엔 안 들어간다 - 로비에서 끼고 온 것(wornEquip)만.
+long long wornGuard() {
+    long long guard=0;
+    for(int slot:{EQUIP_HELM,EQUIP_ARMOR}) if(wornEquip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(&wornEquip[slot],std::max(1,(int)wornEquip[slot].lv)));
+    return std::min(guard,1000000000000000LL);
+}
 void refreshHeroVitals() {
-    if(gearTableOverride)return;
+    if(holdVitals)return;
     OBJECT probe=hero;
-    for(int g=0;g<GearCount;++g){const int slot=costumeSlots[g];if(probe.equip[slot].type==EMPTY)probe.equip[slot]=wornEquip[slot];}
+    for(int g=0;g<GearCount;++g){
+        const int slot=costumeSlots[g];
+        if(!gearTableOverride&&probe.equip[slot].type==EMPTY)probe.equip[slot]=wornEquip[slot];
+        //갑옷·투구 블록은 판 위에서 보호(protect)로 이미 센다. 코스튬으로 갈아입힌 것까지 PS_ARMOR 에
+        //넣으면 같은 블록이 두 번 더해진다(★1 갑옷 21 이 42 로 보였다). 방어 부위는 실제로 낀 것만.
+        if(DefensiveGear(Sword+g))probe.equip[slot]=wornEquip[slot];
+    }
     static OBJECT savedPlayer;
     savedPlayer=ao[PLAYER];const int savedArmor=extraArmor;
     ao[PLAYER]=probe;RefreshStat(&ao[PLAYER]);probe=ao[PLAYER];
     ao[PLAYER]=savedPlayer;extraArmor=savedArmor;
     std::memcpy(hero.ps,probe.ps,sizeof(hero.ps));
-    const long long hp=std::max(1LL,probe.ps[PS_HP]),armor=std::max(0LL,probe.ps[PS_ARMOR]);
-    ITEM* weaponItem=&probe.equip[EQUIP_WEAPON];
-    const long long weapon=weaponItem->type==EMPTY?stats.weapon:std::max(20LL,std::min(GetEquipPower(weaponItem,weaponItem->lv),100000000LL));
+    const long long hp=std::max(1LL,probe.ps[PS_HP]),armor=wornGuard();
+    // Native attack includes the strongest worn glove; gloves have no independent turn.
+    const long long weapon=std::max(1LL,std::min(probe.ps[PS_DMG],100000000LL));
+    if(gearTableOverride){stats.weapon=weapon;return;}
     if(hp==stats.heroHealth&&armor==stats.heroArmor&&weapon==stats.weapon)return;
     stats.heroHealth=hp;stats.heroArmor=armor;stats.weapon=weapon;
     run.setVitals(hp,armor);
@@ -168,8 +233,11 @@ void updateHeroCostume(bool animate=true) {
     for(int g=0;g<GearCount;++g)if(best[g]!=costumeLevels[g]){
         upgraded=upgraded||best[g]>costumeLevels[g];changed=true;
         costumeLevels[g]=best[g];
-        if(g!=0||!attackWeaponLevel)
-            hero.equip[costumeSlots[g]]=best[g]?table[g*MaxLevel+best[g]-1]:baseCostume[g];
+        if(g!=0||!attackWeaponLevel){
+            const ITEM target=best[g]?table[g*MaxLevel+best[g]-1]:baseCostume[g];
+            if(g!=0||!animate)hero.equip[costumeSlots[g]]=target;
+            else requestWeaponSwap(target);
+        }
     }
     if(upgraded&&animate)costumeEffectTicks=30;
     if(changed)refreshHeroVitals();
@@ -194,6 +262,7 @@ void updateDeckReveal(int steps=1) {
 }
 int reviewCombatTick=-1,introCaptures=0,entryCaptures=0;
 bool reviewCapturePending=false,reviewFinalCapture=false,reviewDone=false;
+int mistReviewSample=0,mistReviewHold=0;
 std::vector<std::string> reviewCaptureQueue;
 constexpr float IntroDuration=3.8f;
 bool introActive() {return introElapsed>=0&&introElapsed<IntroDuration;}
@@ -221,18 +290,19 @@ struct Layout {
     float scale;
     int cell, cellH, ground, arenaBottom;
     Box board, slot, lever, heart, spin, attack, cannon, exit, left, right, reroll, confirm;
+    int plateH=0, plateDrop=0;   //유닛 패 높이와 데크 선에서 내려오는 거리. 판은 패 밑 ~ 릴 위 사이에 선다
 };
 Layout layout() {
     Layout l; l.scale=DX/640.0f;
     const float s=l.scale;
     // Everything below the scenery is anchored to the 640 x 850 baseline.
     // The castle contents share one responsive lift; bottom action buttons stay anchored.
-    //하단은 3지선다 - 룰렛 · 공격 · 대포. 같은 폭으로 나란히.
+    //하단은 3지선다 - 왼쪽 대포 · 가운데 공격 · 오른쪽 룰렛. 같은 폭으로 나란히.
     int margin=(int)(26*s),gap=(int)(10*s),bottom=(int)(12*s),bh=(int)(56*1.2f*s);
     const int bw3=(DX-margin*2-gap*2)/3;
-    l.spin={margin,bottom+bh,bw3,bh};
+    l.cannon={margin,bottom+bh,bw3,bh};
     l.attack={margin+bw3+gap,bottom+bh,bw3,bh};
-    l.cannon={margin+(bw3+gap)*2,bottom+bh,bw3,bh};
+    l.spin={margin+(bw3+gap)*2,bottom+bh,bw3,bh};
     if(siegeActive){
         const int left=(DX-(2*bw3+gap))/2;
         l.spin.x=left;l.attack.x=left+bw3+gap;
@@ -246,15 +316,17 @@ Layout layout() {
     l.slot={(DX-(int)(348*s))/2,(int)(280*s),(int)(348*s),(int)(116*s)};
     //레버는 없앴다(돌리기는 하단 룰렛 단추뿐). 자리만 남겨 두고 크기 0 - 어디를 눌러도 맞지 않는다.
     l.lever={l.slot.x+l.slot.w,l.slot.y,0,0};
-    const int layoutRows=siegeActive?std::max(run.shape.height,Siege::refRows):run.shape.height;
-    //칸은 64. 판은 늘 네 줄이고 폭만 넓어지므로, 성벽 안(DX-112)에 안 들어가는
-    //넓은 줄(10성의 10칸)만 칸을 줄인다. 데크를 들어 올리면 포탑과 히어로가 화면 위로 솟는다.
-    l.cell=std::max(1,std::min((int)(64*s),(int)((DX-112*s)/std::max(1,run.shape.width))));l.cellH=l.cell;
-    //판은 릴 바로 위(285)에 앉고, 데크는 판 위에 세 단짜리 패(96, 데크에서 12 내려 붙음)가 겹치지 않을 만큼만 올라간다.
-    const int groundBase=std::max((int)(1077*DX/1089.f)+(int)(40*s),
-        (int)(285*s)+layoutRows*l.cellH+(int)(120*s));
-    int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
-    l.board={(DX-bw)/2,(int)(285*s)+bhGrid,bw,bhGrid};
+    // Fixed resource scale: an 80-unit square never shrinks for rows or columns.
+    // The top pair on castle ten occupies the gap between the health plates.
+    l.plateH=(int)(84*s);l.plateDrop=(int)(8*s);
+    const int groundBase=(int)(1076*DX/1089.f*1.04f)+(int)(40*s);
+    l.cell=(int)(80*s);l.cellH=l.cell;
+    const int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
+    //판은 릴 위(280)와 패 밑 사이의 가운데. 1:1.33 에서 네 줄 80칸(320)이 위아래 2~3픽셀을 남기고
+    //들어가는데, 바닥을 286 에 못 박으면 윗변이 패 밑을 1픽셀 넘는다. 윗변을 패 밑으로 막는다.
+    const int slotTop=(int)(280*s),platesBottom=groundBase-l.plateDrop-l.plateH,space=platesBottom-slotTop;
+    const int boardBottom=std::min(slotTop+std::max(0,(space-bhGrid)/2),platesBottom-bhGrid);
+    l.board={(DX-bw)/2,boardBottom+bhGrid,bw,bhGrid};
     //---- 공성전: 성의 크기는 내 판 기준으로 못 박는다 ----
     //
     //데크 높이(ground)가 판 높이에서 나오고 성은 그 높이로 커진다. 상대 턴에
@@ -266,7 +338,7 @@ Layout layout() {
     const int lift=(int)castleSceneLift();
     l.board.y+=lift;l.arenaBottom+=lift;l.ground+=lift;
     l.slot.y+=lift;l.lever.y+=lift;l.heart.y+=lift;
-    l.exit={DX-(int)(76*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};
+    l.exit={(int)(10*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};   //왼쪽 위. 오른쪽 위는 몬스터 판 자리
     l.left={(int)(48*s),l.slot.y,(int)(36*s),l.slot.h};
     l.right={DX-(int)(84*s),l.slot.y,(int)(36*s),l.slot.h};
     l.reroll=l.spin;l.confirm=l.attack;
@@ -359,7 +431,8 @@ void mergeGoldFrame(Box b,int topColor,int bottomColor,bool enabled=true) {
     }
     mergeRect(b.x+14*p,b.y-3*p,b.w-28*p,p,enabled?0xFFF6B8:0xC1C8D0);
 }
-void heart(int x,int y,int size,bool filled) {
+int grayOf(int c);
+void heart(int x,int y,int size,bool filled,bool gray=false) {
     SolidRects batch;
     static const char* mask[]={
         "00111100111100","01111111111110","11111111111111","11111111111111",
@@ -370,7 +443,8 @@ void heart(int x,int y,int size,bool filled) {
         auto colorAt=[&](int col) {
             if(col>=14||mask[row][col]!='1')return -1;
             bool edge=col==0||col==13||row==0||row==11||mask[row][col-1]=='0'||mask[row][col+1]=='0'||(row<11&&mask[row+1][col]=='0');
-            return edge?(filled?0x7D1527:0x8A8790):filled?blend(0xFF4B55,0xD71D2D,row/12.f):0x444754;
+            const int c=edge?(filled?0x7D1527:0x8A8790):filled?blend(0xFF4B55,0xD71D2D,row/12.f):0x444754;
+            return gray?grayOf(c):c;
         };
         for(int col=0;col<14;) {
             int color=colorAt(col),end=col+1;
@@ -379,7 +453,7 @@ void heart(int x,int y,int size,bool filled) {
             col=end;
         }
     }
-    if(filled) {mergeRect(x+(int)(3*p),y-(int)(2*p),(int)(3*p),(int)(2*p),0xFFF0DC);mergeRect(x+(int)(2*p),y-(int)(4*p),(int)(2*p),(int)p,0xFFA6A2);}
+    if(filled) {mergeRect(x+(int)(3*p),y-(int)(2*p),(int)(3*p),(int)(2*p),gray?grayOf(0xFFF0DC):0xFFF0DC);mergeRect(x+(int)(2*p),y-(int)(4*p),(int)(2*p),(int)p,gray?grayOf(0xFFA6A2):0xFFA6A2);}
 }
 void pixelStroke(int x,int y,int ax,int ay,int bx,int by,int width,int color,float p) {
     SolidRects batch;
@@ -508,23 +582,40 @@ void unitPlate(const Box& plate,long long hp,long long max,long long guard,
     label("/",(int)(numberX+leftWidth+4*s),hpY-(int)((barH-15*s)*.5f),.62f,hot?0xFFB060:0xFFFFFF);
     outlinedNum(max,(int)(numberX+leftWidth+8*s),numberY,LEFT,hpZoom);
 }
-long long currentGuard() {
+//판 위 방어구가 지금 주는 최대치. 공격 중에는 이미 쏜 블록까지만(바가 차례로 차 보이게).
+long long currentGuardMax() {
+    long long guard=run.baseArmor;
     if(!run.attacking) {
-        long long guard=run.baseArmor;
         for(int i=0;i<(int)run.board.size();++i)
             if(gridBlockLanded(i)&&DefensiveGear(run.board[i].family))guard+=run.armorOf(run.board[i],stats);
         return guard;
     }
-    long long guard=run.baseArmor;
     for(int i=0;i<run.nextShot&&i<(int)run.shots.size();++i)
         if(DefensiveGear(run.shots[i].block.family))guard+=run.armorOf(run.shots[i].block,stats);
     return guard;
 }
+//방어막 통의 현재값. 모델은 공격·턴 넘기기 때 새 방어구를 통에 넣으므로(settleGuard), 그 전에
+//막 선 블록은 여기서 찬 채로 더해 보인다 - 모델이 곧 그렇게 셈한다.
+long long currentGuard() {
+    if(!run.realVitals)return currentGuardMax();
+    const long long liveMax=currentGuardMax();
+    return std::max(0LL,std::min(liveMax,run.guard+std::max(0LL,liveMax-run.guardMax)));
+}
 void floatingDamage(long long damage,bool enemy) {
     if(damage<=0)return;
+    damagePause.begin();
     const float s=DX/640.f;
     const int x=enemy?(enemyBodyKnown?enemyBodyX:(int)(DX*.85f)):(allyBodyKnown?allyBodyX:(int)(DX*.66f));
     combatNumbers.push_back({"-"+std::to_string(damage),(float)x,(float)(layout().ground+68*s),enemy?0xFFE19A:0xFF9E91});
+}
+//방어막이 받아 낸 몫. 체력 숫자 조금 위, 방어막 색. 무적이나 "BLOCK" 은 없다 -
+//막힌 것은 전부 방어막이 받은 것이고 그 수가 보인다.
+void floatingAbsorbed(long long absorbed) {
+    if(absorbed<=0)return;
+    damagePause.begin();
+    const float s=DX/640.f;
+    const int x=allyBodyKnown?allyBodyX:(int)(DX*.66f);
+    combatNumbers.push_back({"-"+std::to_string(absorbed),(float)(x-18*s),(float)(layout().ground+96*s),0x9ED6FF});
 }
 void updateGuardDisplay(float dt) {
     const long long power=std::max(0LL,hero.ps[PS_DMG]);
@@ -535,10 +626,11 @@ void updateGuardDisplay(float dt) {
         attackDisplay.advance(dt);
     }
     attackGainTime=std::max(0.f,attackGainTime-dt);
+    //방어막이 차면 뜨는 숫자(새 방어구가 선 몫, 턴이 돌며 채운 몫).
     const long long gained=guardDisplay.set(currentGuard());
     if(gained>0)combatNumbers.push_back({std::string("+")+std::to_string(gained),DX*.25f,(float)(layout().ground+18*DX/640.f),0xFFE795,0,true});
     guardDisplay.advance(dt);
-    heroHealthDisplay.set(run.lives);heroHealthDisplay.advance(dt);
+    heroHealthDisplay.set(heroHpHold>=0?std::max(run.lives,heroHpHold):run.lives);heroHealthDisplay.advance(dt);
     enemyHealthDisplay.set(run.enemyHp);enemyHealthDisplay.advance(dt);
 }
 void imageNumber(long long value,int x,int y,float zoom,bool sign=false) {
@@ -556,10 +648,10 @@ void imageNumber(long long value,int x,int y,float zoom,bool sign=false) {
 void drawCombatNumbers() {
     const float s=DX/640.f;
     for(const auto& number:combatNumbers) {
-        const float life=number.age/72.f;
+        const float life=number.age/(float)MergeCombat::DamageNumberFrames;
         const float rise=(number.defense?25.f:38.f)*life*s;
         const float pop=number.age<8?1.2f-number.age*.025f:1.f;
-        SetAlpha(number.age>48?std::max(0,32*(72-number.age)/24):32);
+        SetAlpha(number.age>48?std::max(0,32*(MergeCombat::DamageNumberFrames-number.age)/24):32);
         const float zoom=(number.defense?.90f:1.18f)*pop*s;
         const long long value=std::stoll(number.text);
         const float width=GetNumDx(value,false,NUM_FONT_LARGE,0,false,zoom,false)+24*zoom;
@@ -576,7 +668,7 @@ void drawCombatNumbers() {
 //판에서 장비나 동료를 집으면 그것이 무엇이고 얼마나 치는지, 무엇과 합쳐지는지를
 //릴 자리에 적어 준다. 손가락이 판을 가리는 동안이라 릴이 가려져도 상관없다.
 const char* traitName(int trait) {
-    static const char* names[6]={u8"표식",u8"고무",u8"강타",u8"연사",u8"둔화",u8"화상"};
+    static const char* names[6]={u8"표식",u8"고무",u8"강타",u8"연타",u8"빙결",u8"지속"};
     return trait>=0&&trait<6?names[trait]:"";
 }
 const char* treeName(int f);
@@ -593,7 +685,13 @@ void drawHeldHelp(const Block& b,const Layout& l) {
         std::snprintf(line,sizeof(line),u8"한 방 %lld · 특성 %s%s",(long long)shot.damage,traitName((int)stats.crew[b.crew].trait),lv>=5?u8" · 궁극기/소환":"");
     } else if(b.family>=Roles) {
         const int g=b.family-Sword;
-        if(DefensiveGear(b.family))std::snprintf(line,sizeof(line),u8"방어막 +%lld%s",(long long)run.armorOf(b,stats),lv==2?u8" · 반격 반감":"");
+        if(DefensiveGear(b.family)){
+            const long long add=run.armorOf(b,stats),now=currentGuard();
+            if(run.realVitals)std::snprintf(line,sizeof(line),u8"방어막 +%lld · 턴마다 +%lld 충전%s",add,std::max(1LL,add*Run::chargePctOf(b.family)/100),lv==2?u8" · 반격 반감":"");
+            else std::snprintf(line,sizeof(line),u8"방어막 +%lld%s",add,lv==2?u8" · 반격 반감":"");
+            (void)now;
+        }
+        else if(b.family==Gloves)std::snprintf(line,sizeof(line),u8"\uacf5\uaca9\ub825 \uc99d\uac00 \u00b7 \uc9c1\uc811 \uacf5\uaca9 \uc5c6\uc74c");
         else if(b.family==Boots)std::snprintf(line,sizeof(line),u8"공격 뒤 하트 +%d · 돌리기 +%d",MergeBoard::NeckHearts(lv),MergeBoard::NeckSpins(lv));
         else std::snprintf(line,sizeof(line),u8"피해 %lld (무기값 ×%d)",(long long)shot.damage,MergeBoard::GearMulOf(g,lv));
         std::snprintf(title,sizeof(title),u8"%s ★%d · %d×%d칸",treeName(b.family),lv,Wide(b),Tall(b));
@@ -604,42 +702,54 @@ void drawHeldHelp(const Block& b,const Layout& l) {
     label(line,DX/2,help.y-(int)(30*s),.52f,0xF2F2F2);
     label(hint,DX/2,help.y-(int)(52*s),.46f,0xBFD3E8);
 }
-//---- 룰렛 단추의 정사각 릴 아이콘 ----
-//
-//릴 창 셋이 든 네모 상자. 다른 단추의 아이콘처럼 먼저 어두운 테두리를 한 칸
-//두껍게 깔고 그 위에 색을 올린다(actionIcon 과 같은 두 번 그리기).
+// Reuse the roulette housing's gold gear for the spin action.
 void reelIcon(int x,int y,int size) {
-    SolidRects batch;
-    const float p=size/24.f;
-    auto on=[](int r,int c,int& color){
-        const bool frame=r>=1&&r<=22&&c>=1&&c<=22&&(r==1||r==22||c==1||c==22);
-        const bool bar=(c==8||c==15)&&r>=1&&r<=22;
-        const bool sym=r>=9&&r<=14&&((c>=3&&c<=6)||(c>=10&&c<=13)||(c>=17&&c<=20));
-        color=frame||bar?0xF6CE68:sym?0xFF6E5A:0;
-        return frame||bar||sym;
-    };
-    for(int pass=0;pass<2;++pass)for(int r=0;r<24;++r)for(int c=0;c<24;++c){
-        int color=0;if(!on(r,c,color))continue;
-        const int pad=pass?0:1;
-        mergeRect(x+(int)((c-pad)*p),y-(int)((r-pad)*p),std::max(1,(int)std::ceil((1+2*pad)*p)),std::max(1,(int)std::ceil((1+2*pad)*p)),pass?color:0x070C20);
-    }
+    const int img=MERGE_REBUILD_UI_IMG+MergeCastleArt::Gear;
+    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+    const auto& frame=MergeCastleArt::UiFrames[MergeCastleArt::Gear];
+    const float z=Min(size/(float)frame.w,size/(float)frame.h);
+    const int px=x+(size-frame.w*z)/2,py=y-(size-frame.h*z)/2;
+    const int t=std::max(1,(int)(2*DX/640.f)),keep=baseColor;
+    SetColor(0x070C20);
+    for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)if(dx||dy)
+        DrawImageScale(frame.w,frame.h,frame.x,frame.y,px+dx*t,py+dy*t,false,0,0,0,0,z,z,sprite[img],img);
+    SetColor(keep);
+    DrawImageScale(frame.w,frame.h,frame.x,frame.y,px,py,false,0,0,0,0,z,z,sprite[img],img);
 }
-//---- 대포 단추의 아이콘: 지금 성의 대포를 테두리 넣어 ----
 void cannonIcon(int x,int y,int size) {
     const int c=std::max(0,std::min(9,siegeActive?(int)robin.castle:run.stage)),lv=std::max(0,std::min(5,CastleVisualPartLevel(c,3)));
-    const int t=std::max(1,(int)(DX/640.f*1.5f));
+    const int img=CASTLE_MIST_TURRET_FIRST_IMG+c;
+    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+    const auto sizePx=sprite[img]->getTexture()->getContentSizeInPixels();
+    const MountedCannons::Frame frame={0,0,(int)sizePx.width,(int)sizePx.height,0,0};
+    if(!sprite[img])LoadImg(img);if(sprite[img])sprite[img]->getTexture()->setAliasTexParameters();
+    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+    // Button art is wider and taller than the inventory thumbnail, with extra
+    // vertical volume so long, thin barrels remain legible beside the swords.
+    const int w=(int)(size*1.23f),h=(int)(size*1.05f);
+    const int px=x-(w-size)/2,py=y+(h-size)/2;
+    const float zx=w/(float)frame.w,zy=h/(float)frame.h;
+    const int t=std::max(1,(int)(DX/640.f*2.f));
     const int keep=baseColor;SetColor(0x070C20);
-    const int dx[4]={-t,t,0,0},dy[4]={0,0,-t,t};
-    for(int i=0;i<4;++i)DrawInventoryCannonIcon(c,lv,x+dx[i],y+dy[i],size,size);
+    for(int dx=-1;dx<=1;++dx)for(int dy=-1;dy<=1;++dy)if(dx||dy)
+        DrawImageScale(frame.w,frame.h,frame.x,frame.y,px+dx*t,py+dy*t,false,0,0,0,0,zx,zy,sprite[img],img);
     SetColor(keep);
-    DrawInventoryCannonIcon(c,lv,x,y,size,size);
+    DrawImageScale(frame.w,frame.h,frame.x,frame.y,px,py,false,0,0,0,0,zx,zy,sprite[img],img);
 }
 enum ChoiceKind { ChoiceSpin=0, ChoiceAttack=1, ChoiceCannon=2 };
+//색을 회색으로(밝기만 남긴다). 단추의 바탕·테두리는 그림이 아니라 네모 조각이라 grayScale
+//플래그가 안 먹는다 - 색을 직접 바꾼다.
+int grayOf(int c) {
+    const int l=(((c>>16)&255)*30+((c>>8)&255)*59+(c&255)*11)/100;
+    return (l<<16)|(l<<8)|l;
+}
 void choice(const Box& b,int kind,bool enabled) {
     const float s=DX/640.f;
     SetAlpha(32);grayScale=0;SetColor(0);
     static const int top[3]={0x1369D9,0xEC4A13,0x8A6A1E},bottom[3]={0x073B8D,0x8D1607,0x4A3708};
-    mergeGoldFrame(b,top[kind],bottom[kind],enabled);
+    //못 쓰는 단추는 통째로 회색이다 - 테두리·바탕·아이콘·하트·숫자 전부. 아이콘만 바래면
+    //"눌리는데 왜 안 되지" 가 된다.
+    mergeGoldFrame(b,enabled?top[kind]:grayOf(top[kind]),enabled?bottom[kind]:grayOf(bottom[kind]),enabled);
     const float center=b.y-b.h*.5f;
     grayScale=enabled?0:32;
     //아이콘 · 하트 · -1 을 단추 폭에 비례해 놓는다(세 단추가 같은 폭이라 같은 자리).
@@ -647,9 +757,9 @@ void choice(const Box& b,int kind,bool enabled) {
     if(kind==ChoiceAttack)DrawIcon(ICON_EVENT_2SWORD,iconX,(int)(center+23*s),46*s/ITEMICONSIZE,0x070C20,false,false,1.5f);
     else if(kind==ChoiceSpin)reelIcon(iconX,iconY,iconSize);
     else cannonIcon(iconX,iconY,iconSize);
-    grayScale=0;
-    heart(b.x+(int)(b.w*.56f),(int)(center+15*s),(int)(29*1.2f*s),true);
+    heart(b.x+(int)(b.w*.56f),(int)(center+15*s),(int)(29*1.2f*s),true,!enabled);
     imageNumber(-1,b.x+(int)(b.w*.86f),(int)(center+10*s),.55f*s,true);
+    grayScale=0;
 }
 //대포 한 발의 값. 히어로 무기값 × 성 대포 단계 계수. 5단이 ★1 검 블록 두어 개 몫이라
 //보조 화력(CLAUDE.md §5 지분 20%) 안에 든다. 공성전은 내 성의 대포다.
@@ -709,7 +819,10 @@ void configure() {
         }
     }
     if(review)for(int i=0;i<64;++i){owned[i]=true;crewLevels[i]=1;}
-    for(int c=0;c<64;++c)if(owned[c])roster.add(MergeTrees::Role(c),MergeTrees::Star(c),c);
+    //고유 동료: 지금 히어로의 몫만 사다리에 선다. 다른 히어로의 동료는 창고에 있어도 릴에 안 나온다.
+    //리뷰 픽스처는 64명 전원을 전제로 짜여 있어 거르지 않는다.
+    const int who=std::max(0,std::min(2,curHero));
+    for(int c=0;c<64;++c)if(owned[c]&&(review||MergeTrees::OwnerHero(c)==who))roster.add(MergeTrees::Role(c),MergeTrees::Star(c),c);
     for(int r=0;r<Roles;++r)if(roster.has(r,1))pool.push_back(r);
     for(int f=Sword;f<FamilyCount;++f)pool.push_back(f);
     hero=ao[PLAYER];hero.type=std::max(0,std::min(2,curHero));
@@ -758,7 +871,7 @@ void configure() {
     }
     long long weapon=std::max(20LL,std::min(GetEquipPower(&hero.equip[EQUIP_WEAPON],hero.equip[EQUIP_WEAPON].lv),100000000LL));
     stats=Stats();stats.weapon=weapon;stats.realVitals=true;
-    stats.heroHealth=std::max(1LL,hero.ps[PS_HP]);stats.heroArmor=std::max(0LL,hero.ps[PS_ARMOR]);
+    stats.heroHealth=std::max(1LL,hero.ps[PS_HP]);stats.heroArmor=wornGuard();
     for(int g=0;g<GearCount;++g)for(int level=0;level<MaxLevel;++level)
         if(DefensiveGear(Sword+g))stats.armor[g][level]=std::max(0LL,std::min(1000000000000000LL,GetEquipPower(&treeEquipment[g][level],treeEquipment[g][level].lv)));
     for(int f=0;f<FamilyCount;++f)treeWeights[f]=f<Roles?MergeTrees::RoleWeight[f]:4;
@@ -783,12 +896,14 @@ bool pay() {
     observedHearts=robin.heart;heartBlink=.72f;
     return true;
 }
-void iconGround(const Box& box,int width,int lift=0) {
+void iconGround(const Box& box,int width,int lift=0,bool keepInside=false) {
     int p=std::max(1,(int)(DX/640.f)),cx=box.x+box.w/2;
     const int w=std::max(p,std::min(box.w-4*p,width));
     const float z=w/(float)(24*_2X);
+    const int halfHeight=(int)std::ceil(8*_2X*z);
+    const int baseline=keepInside?std::max(5*p+lift,halfHeight+2*p):5*p+lift;
     ShadowImage(24*_2X,16*_2X,1*_2X,1*_2X,cx-w/2,
-        box.y-box.h+5*p+lift+(int)(8*_2X*z),SHADOW_IMG,z);
+        box.y-box.h+baseline+(int)(8*_2X*z),SHADOW_IMG,z);
 }
 //---- 걸을 수 있는 사람인가 ----
 //
@@ -826,7 +941,8 @@ int crewIdleMotion(int crew,int step) {
 //icon() 의 동료 가지를 떼어낸 것이다. 로비의 방 주민은 걸어 다녀야 해서
 //모션 번호(crewWalkMotion)와 보는 쪽을 밖에서 받는다. motion<0 이면
 //쉬는 자세 첫 장 - 릴과 판, 그리고 걷는 그림이 없는 주민이 그렇다.
-void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,int dir) {
+float gridCrewZoomSeen[64]={};
+void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,int dir,float fixedZoom=-1.f) {
     if(crew<0||crew>=64)return;
     int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
     int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
@@ -836,18 +952,26 @@ void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,in
     if(motion<0||motion>=cmf_m_cnt[cmf])motion=crewPos[npc*5];
     const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
     int p=std::max(1,(int)(DX/640.f));
-    float z=std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
+    float z=fixedZoom>=0?fixedZoom:std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
     iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
     DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2),dir,z,0,true);
 }
 void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1,int footLift=0) {
     if(family<0||family>=FamilyCount)return;
+    if(atlas)fraction*=1.10f; // Fill reel windows more; board artwork keeps its scale.
     SetColor(0);grayScale=0;
     if(family<Sword) {
         // 블록이 든 동료. 없으면(릴 회전·계열 카드) 그 역할·★ 의 대표 — 보유분 먼저, 없으면 표의 첫 사람.
         if(crew<0)crew=roster.first(family,std::max(1,std::min((int)MaxLevel,level)));
+        if(crew<0)crew=MergeTrees::OwnedCrewAt(std::max(0,std::min(2,curHero)),family,std::max(1,std::min((int)MaxLevel,level)),0);
         if(crew<0)crew=MergeTrees::CrewAt(family,std::max(1,std::min((int)MaxLevel,level)),0);
-        crewArt(crew,box,fraction,footLift,-1,RIGHT);
+        Box placement=box;
+        if(atlas)placement.y+=std::max(1,(int)(6*DX/640.f));
+                // Every grid companion uses one native sprite zoom. Bounds only
+        // position its feet; neither character size nor tile shape changes zoom.
+        const float gridZoom=1.5f*(DX/640.f);
+        if(!atlas&&crew>=0&&crew<64)gridCrewZoomSeen[crew]=gridZoom;
+        crewArt(crew,placement,fraction,footLift,-1,RIGHT,atlas?-1.f:gridZoom);
     } else {
         //공성전의 상대 판은 상대 히어로 라인의 장비로 그린다(gearTableOverride, MergeSiege.inc).
         const int lvAt=std::max(0,std::min(MaxLevel-1,level-1));
@@ -866,14 +990,14 @@ void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int le
             const int w=std::max(1,(int)((box.w-pad*2)*fraction));
             const int h=std::max(1,(int)((box.h-pad*2-footLift)*fraction));
 
-            iconGround(box,w*3/4,footLift);
+            iconGround(box,w*3/4,footLift,true);
             MergeBoardDrawGear(&item,box.x+(box.w-w)/2,
                 box.y-(box.h-h)/2-footLift,w,h,ALPHA_MAX,false);
         } else {
             const int size=(int)(std::min(box.w-2,box.h-7)*fraction);
             const int x=box.x+(box.w-size)/2,y=box.y-(box.h-size)/2;
             // Resolve live item data so old saved atlas IDs cannot replace gloves
-            // with bracelets; the global icon renderer shares the board artwork.
+            // with bracelets. Reels use icons; the board uses grid artwork.
             DrawIcon(GetItemIcon(item.type,item.detail,item.grade),x,y,size/(float)ITEMICONSIZE,false,false,false,true);
         }
     }
@@ -907,10 +1031,44 @@ void drawBlock(const Block& b,const Box& box,bool ghost=false) {
     SetAlpha(ghost?16:32);padArt(lv+1,box);SetAlpha(32);
     Box artwork=inset(box,std::max(1,(int)(2*DX/640.f)));
     if(b.family<Roles)artwork.y+=(int)(12*DX/640.f);
+    else artwork.y+=std::max(1,(int)(6*DX/640.f));
     icon(b.family,artwork,b.family<Roles?.90f:1.05f,false,b.level,b.crew,b.family<Roles?(int)(6*DX/640.f):0);
 }
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
+}
+int trashSwallowTicks=0;
+float trashOpenness=0;
+Box rouletteTrash(const Layout& l){return {(int)(DX-84*l.scale),l.slot.y-(int)(12*l.scale),(int)(68*l.scale),(int)(76*l.scale)};}
+bool nearRouletteTrash(const Layout& l,float x,float y){
+    Box b=rouletteTrash(l);const int pad=(int)(16*l.scale);
+    return x>=b.x-pad&&x<=b.x+b.w+pad&&y<=b.y+pad&&y>=b.y-b.h-pad;
+}
+void drawRouletteTrash(const Layout& l){
+    const Box b=rouletteTrash(l);
+    const bool hover=picked>=0&&nearRouletteTrash(l,pointerX,pointerY);
+    const float target=hover||trashSwallowTicks>8?1.f:0.f;
+    const float step=std::min(.25f,cocos2d::Director::getInstance()->getDeltaTime()*9);
+    trashOpenness+=std::max(-step,std::min(step,target-trashOpenness));
+    const int img=ROULETTE_TRASH_OBJECT_IMG;
+    if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+    sprite[img]->getTexture()->setAntiAliasTexParameters();
+    const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+    const int sw=(int)dim.width/2,sh=(int)dim.height,alpha=m_lgrpAlpha;
+    const float pulse=trashSwallowTicks>0?1+.10f*std::sin(trashSwallowTicks/18.f*3.14159265f):1.f;
+    Box art={b.x-(int)((pulse-1)*b.w/2),b.y+(int)((pulse-1)*b.h), (int)(b.w*pulse),(int)(b.h*pulse)};
+    //외곽선. 아이콘과 같은 방법 - 그림을 한 색으로 네 방향 한 픽셀씩 밀어 찍고 그 위에 본그림.
+    //통 그림만 두면 성 벽에 묻혀 어디가 버리는 자리인지 안 읽힌다.
+    {
+        const int t=std::max(1,(int)(1.5f*l.scale));static const int d[8]={-1,0,1,0,0,-1,0,1};
+        const int sxSheet=trashOpenness<.5f?0:sw;
+        SetColor(hover?0xFFC966:0x070C20);
+        for(int i=0;i<4;++i)DrawImageScale(sw,sh,sxSheet,0,art.x+d[i*2]*t,art.y+d[i*2+1]*t,false,0,0,0,0,art.w/(float)sw,art.h/(float)sh,sprite[img],img);
+        SetColor(0);
+    }
+    if(trashOpenness<1){SetAlpha((int)(alpha*(1-trashOpenness)));DrawImageScale(sw,sh,0,0,art.x,art.y,false,0,0,0,0,art.w/(float)sw,art.h/(float)sh,sprite[img],img);}
+    if(trashOpenness>0){SetAlpha((int)(alpha*trashOpenness));DrawImageScale(sw,sh,sw,0,art.x,art.y,false,0,0,0,0,art.w/(float)sw,art.h/(float)sh,sprite[img],img);}
+    SetAlpha(alpha);
 }
 bool beginSpinLanding(){
     spinLandingPlan=run;spinDrops.clear();
@@ -918,7 +1076,7 @@ bool beginSpinLanding(){
     for(const auto& item:source){
         const auto before=spinLandingPlan.board;
         if(!spinLandingPlan.autoPlace(0)){
-            spinDrops.clear();message="결과를 놓을 공간이 부족합니다. 칸을 비워주세요.";messageTime=3;return false;
+            spinDrops.clear();message=u8"\uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc624\ub978\ucabd \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return false;
         }
         Block target=spinLandingPlan.board.back();
         if(before.size()==spinLandingPlan.board.size())for(int i=0;i<(int)before.size();++i){
@@ -973,7 +1131,7 @@ void drawIntro(const Layout& l) {
         float stop=1.2f+i*.24f;
         Box reel=slotWindow(slot,i);
         SetSectionClip(reel.x,reel.y,reel.w,reel.h,false);
-        int pitch=(int)(108*s),centerY=reel.y-reel.h/2;
+        int pitch=(int)(108*s);
         if(t<stop) {
             float distance=t-.375f*t*t/stop;
             int offset=(int)std::fmod(distance*(560+70*i)*s,(float)pitch);
@@ -981,14 +1139,15 @@ void drawIntro(const Layout& l) {
             for(int j=-2;j<=2;++j) {
                 int f=pool[(index+j+2+i*7)%pool.size()];
                 SetSectionClip(reel.x,reel.y,reel.w,reel.h,false);
-                icon(f,{reel.x,centerY+pitch/2+j*pitch-offset,reel.w,pitch},.91f,true);
+                Box symbol=reel;symbol.y+=j*pitch-offset;
+                icon(f,symbol,.91f,true);
             }
         } else {
             //릴이 든 사람은 트레이에 떨어질 그 사람이다. 전에는 board[i]
             //의 동료를 가져왔는데, 그 칸은 이 릴과 아무 상관이 없다 -
             //서는 순간 엉뚱한 사람으로 갈렸다.
             reelResultDrawn[i]=true;
-            icon(run.families[i],{reel.x,centerY+pitch/2,reel.w,pitch},.94f,true,1,
+            icon(run.families[i],reel,.94f,true,1,
                 i<(int)run.board.size()?run.board[i].crew:-1);
         }
         UnSectionClip(false);
@@ -1032,18 +1191,79 @@ int shotFromX=0,shotFromY=0,deckResidentCount=0;
 //스테이지 전투와 같은 표를 본다(enemyAttackPattern 의 THERE = 원거리
 //자세). 자세가 없는 동료는 -1 - 그 자리에서 쉬는 자세로 둔다.
 int combatRegion() {
+    if(review&&std::getenv("CS_MIST_RESOURCE_REVIEW")&&mistReviewSample>=20)return std::min(14,mistReviewSample-20);
     //공성전은 상대의 성이 무대라 원경도 상대가 가는 지역이다.
     if(siegeActive&&Siege::region>=0)return Siege::region;
     const int stage=siegeActive?Siege::castle:run.stage;
     return StageBg::DebugRegionPick()>=0?StageBg::DebugRegionPick():(stage/STAGE_PER_CYCLE)%STAGEBG_REGION_CNT;
 }
+//---- 지역별 적 배치 (15웨이브) ----
+//
+//한 성은 15웨이브다. 1~4 · 6~9 · 11~14 가 잡몹, 5 · 10 · 15 가 보스. 잡몹은
+//지역의 네 종류를 앞에서부터 둘씩 차례로 내보내고(1·2 → A, 3·4 → B, 6·7 → B,
+//8·9 → C, 11·12 → C, 13·14 → D), 보스는 지역의 소·중·대 보스다.
+//지역은 열 성마다 바뀌므로(STAGE_PER_CYCLE) 같은 지역 안에서는 1~4성 기본색,
+//5~8성 레드, 9~10성 블루로 색을 갈아 열 성이 같은 얼굴로 보이지 않게 한다.
+//종류는 그림과 덩치만 정한다 - 체력·공격은 waveHp / waveAttack 이 정한다.
+struct RegionRoster { short normal[4]; short boss[3]; };
+static const RegionRoster kRegionRoster[STAGEBG_REGION_CNT]={
+    {{ENEMY_SNAIL,ENEMY_SLIME,ENEMY_JELLYFISH,ENEMY_LARVA},{ENEMY_ONEEYE,ENEMY_TREE,ENEMY_FROG}},              //늪지대
+    {{ENEMY_SLING,ENEMY_BOAR,ENEMY_SPIDER,ENEMY_LARVA},{ENEMY_GOLEM,ENEMY_SALAMANDER,ENEMY_DARKDRAGON}},       //금단의 계곡 (웜)
+    {{ENEMY_LIZARD,ENEMY_JELLYFISH,ENEMY_FROG,ENEMY_GHOST},{ENEMY_SPACE1,ENEMY_FOGRA,ENEMY_BAHAMUT}},         //아틀란티스
+    {{ENEMY_SLIME,ENEMY_SPIDER,ENEMY_SKELETON,ENEMY_LARVA},{ENEMY_GOLEM,ENEMY_KIMERA,ENEMY_MACHINE}},         //지하수로 (가시 갑주 짐승)
+    {{ENEMY_SLING,ENEMY_BOAR,ENEMY_KNIGHT,ENEMY_SKELETON},{ENEMY_CASTLE2,ENEMY_DARKGIANT,ENEMY_GIANT}},       //아델라인 평원 (갑주 거인)
+    {{ENEMY_FLAME,ENEMY_SALAMANDER,ENEMY_BOAR,ENEMY_SLING},{ENEMY_PHOENIX,ENEMY_DRAGON1,ENEMY_IFRIT}},        //화염지대 (화염 정령)
+    {{ENEMY_SNOWMAN,ENEMY_SLIME,ENEMY_JELLYFISH,ENEMY_GHOST},{ENEMY_ICESUN,ENEMY_FACE,ENEMY_MAMMOTH}},        //얼음지대 (얼음 갑각)
+    {{ENEMY_LIGHTNING,ENEMY_THUNDER,ENEMY_CRYSTAL,ENEMY_SPACE1},{ENEMY_SPACE2,ENEMY_KIMERA,ENEMY_MACHINE}},   //번개지대
+    {{ENEMY_FAIRY,ENEMY_CIRCLE,ENEMY_CRYSTAL,ENEMY_LIGHTNING},{ENEMY_SPACE1,ENEMY_ANGEL,ENEMY_GIANT}},         //빛의지대 (금빛 수호자)
+    {{ENEMY_SPIDER,ENEMY_BOAR,ENEMY_SLING,ENEMY_SKELETON},{ENEMY_DARKGIANT,ENEMY_CASTLE2,ENEMY_GOLEM}},       //골렘협곡
+    {{ENEMY_THUNDER,ENEMY_GHOST,ENEMY_SKELETON,ENEMY_CIRCLE},{ENEMY_CASTLE1,ENEMY_PUMPKIN,ENEMY_KIMERA}},     //어둠의 협곡 (어둠 괴수)
+    {{ENEMY_SALAMANDER,ENEMY_PHOENIX,ENEMY_BOAR,ENEMY_SPIDER},{ENEMY_DRAGON1,ENEMY_DRAGON2,ENEMY_BAHAMUT}},   //드래곤 협곡
+    {{ENEMY_GHOST,ENEMY_PUMPKIN,ENEMY_SKELETON,ENEMY_KNIGHT},{ENEMY_CASTLE1,ENEMY_DRAGON2,ENEMY_DEATH}},      //망자의 도시 (사신)
+    {{ENEMY_SKELETON,ENEMY_KNIGHT,ENEMY_CASTLE2,ENEMY_CASTLE1},{ENEMY_CASTLE_BOSS1,ENEMY_CASTLE_BOSS2,ENEMY_CASTLE_BOSS4}}, //마왕성
+    {{ENEMY_SPACE1,ENEMY_CIRCLE,ENEMY_FAIRY,ENEMY_CRYSTAL},{ENEMY_SPACE2,ENEMY_ANGEL,ENEMY_BAHAMUT}},          //우주 (보이드 레비아탄)
+};
+//시험용: 첫 웨이브부터 그 지역의 최종 보스를 내보낸다. 보스 그림·덩치·배치를 바로 보려고.
+//끄려면 false. 체력과 공격은 1웨이브 값 그대로다(waveHp 는 건드리지 않는다).
+bool debugFirstBoss=true;
+bool combatEnemyIsBoss(){return BossTier(run.wave)>0||(debugFirstBoss&&run.wave==0);}
+int reviewEnemyNpc=-1;
 int combatEnemyNpc() {
-    const int boss=BossTier(run.wave);
-    return boss==3?ENEMY_CASTLE_BOSS4:boss==2?ENEMY_CASTLE_BOSS2:boss==1?ENEMY_CASTLE_BOSS1:ENEMY_KNIGHT+run.wave%2;
+    if(review&&reviewEnemyNpc>=0)return reviewEnemyNpc;
+    const int region=std::max(0,std::min(STAGEBG_REGION_CNT-1,combatRegion()));
+    const RegionRoster& r=kRegionRoster[region];
+    const int w=std::max(0,std::min(WavesPerStage-1,run.wave));
+    const int boss=debugFirstBoss&&w==0?3:BossTier(w);
+    int type;
+    if(boss)type=r.boss[boss-1];
+    else{const int slot=w<4?w/2:w<9?1+(w-5)/2:2+(w-10)/2;type=r.normal[std::max(0,std::min(3,slot))];}
+    //색 변형: 같은 번호가 레드 +51, 블루 +102 다(enemy.tsv).
+    const int variant=std::max(0,std::min(2,(run.stage%STAGE_PER_CYCLE)/4));
+    const int colored=type+variant*51;
+    return colored<gTotalEnemy?colored:type;
+}
+//---- 웨이브마다의 체력과 공격 ----
+//
+//성의 기준 체력(hpFor(stage,0) = 330 × 1.17^성)에 웨이브 배율을 곱한다.
+//  잡몹: 1웨이브 50% → 14웨이브 180% (한 웨이브에 10%p). 판은 성 안에서 이어지므로
+//        합성이 쌓이는 속도(한 번 돌리면 ★1 셋, 둘을 포개면 ×2~3)와 같은 기울기다.
+//  보스: 그 자리 잡몹의 소 ×2 · 중 ×2.5 · 대 ×3. 룰렛 두세 번 더 돌리고 두세 번
+//        치면 넘어가는 크기다. 옛 ×5/×10/×100 은 실시간 전투의 수치라 턴제엔 맞지 않는다.
+//공격은 그 웨이브 잡몹 체력의 1/14 - 보스는 counterDamage 가 다시 두 배로 친다.
+//1성 기준 잡몹 165 → 594, 보스 594 · 1,155 · 1,881, 공격 12 → 42(최종 보스 반격 84).
+long long waveHp(int stage,int wave) {
+    const int w=std::max(0,std::min(WavesPerStage-1,wave)),boss=BossTier(w);
+    const long long base=hpFor(stage,0),pct=50+10*w,mul=boss==3?300:boss==2?250:boss==1?200:100;
+    return std::max(1LL,base*pct/100*mul/100);
+}
+long long waveAttack(int stage,int wave) {
+    const int w=std::max(0,std::min(WavesPerStage-1,wave));
+    return std::max(1LL,hpFor(stage,0)*(50+10*w)/100/14);
 }
 void drawWaveHeader(const Layout& l) {
     const float s=l.scale;
-    const Box header={DX/2-(int)(205*s),DY-(int)(7*s),(int)(410*s),(int)(80*s)};
+    //제목 한 줄과 웨이브 점 한 줄뿐이다. 아래 설명 글은 뺐고 높이도 그만큼(80 → 58) 줄였다.
+    const Box header={DX/2-(int)(205*s),DY-(int)(7*s),(int)(410*s),(int)(58*s)};
     panel(header,0x142B38,0x9E925D);
     char text[128];
     std::snprintf(text,sizeof(text),"%s · 스테이지 %d",StageBg::RegionName(combatRegion()),run.stage%STAGE_PER_CYCLE+1);
@@ -1057,47 +1277,67 @@ void drawWaveHeader(const Layout& l) {
         bevel(inset(node,std::max(1,(int)(2*s))),current?0xBB771A:cleared?0x286B49:BossTier(i)==3?0x78313E:boss?0x49355E:0x233844,std::max(1,(int)(2*s)));
         if(boss){std::snprintf(text,sizeof(text),"%d",i+1);DrawImageNum(i+1,cx,top,NUM_FONT_SMALL,CENTER,0,false,false,.58f*s,false);}
     }
-    std::snprintf(text,sizeof(text),"%d / 15 · 5·10 보스 · 15 최종 보스",run.wave+1);
-    label(text,DX/2,header.y-(int)(59*s),.44f,0xEAD6A3);
 }
 struct EnemyTurn {
     bool started=false,complete=false,endShown=false;
     int endFrames=0;
     long long damage=0;
-    std::vector<int> motion;
-    std::vector<int> walk;
-    std::vector<float> walkDistance;
+    long long rawDamage=0,healing=0;
+    const MonsterParts::ActionDef* definition=nullptr;
+    std::vector<const MonsterParts::ActionDef*> weaponActions;
+    std::vector<int> weaponStarts;
+    std::vector<long long> rawShares;
+    std::vector<int> motion;   //공격 동작(패턴의 1열)
+    std::vector<int> walk;     //다가가는 동작(패턴의 0열). 비어 있으면 제자리에서 친다(원거리)
+    std::vector<int> back;     //돌아오는 동작(패턴의 2열). 비어 있으면 walk 를 거꾸로 쓴다
+    std::vector<float> walkDistance,backDistance;
+    std::vector<int> rest;
+    MergeCombat::EnemyPattern pattern;
+    float homeX=0,attackX=0;
+    bool moves=false,prepares=false;
     MergeCombat::EnemyPhases phases;
     MergeCombat::Timeline time;
+    // Authored action hits: 공격 동작을 hits 번 되풀이하고 impacts[k] 프레임에 k 번째 몫을 띄운다.
+    //모델은 첫 타에 한 번만 깎는다(counterattack). 나머지는 보여 주는 몫이다.
+    int hits=1,hitsShown=0;std::vector<int> impacts;std::vector<long long> shares,absorbedShares;
+    long long hpBefore=0;
 } enemyTurn;
 int renderedEnemyX=0,renderedEnemyMotion=0,renderedEnemyDir=LEFT;
 bool renderedEnemyWalking=false;
 int allyFlash=0;
-void beginEnemyTurn() {
-    enemyTurn.started=true;enemyTurn.damage=run.counterDamage();
-    const int npc=combatEnemyNpc(),cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-    if(cmf>=0&&cmf<MAXCMF) {
-        if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-        int frames=0;const signed short* walk=nullptr;
-        if(CrewWalkMotion(cmf,npc,frames,walk)){
-            enemyTurn.walkDistance.push_back(0);
-            const auto* state=cmf_status_data[cmf][1];
-            for(int i=0;i<frames;++i){
-                enemyTurn.walk.push_back(walk[i]);
-                enemyTurn.walkDistance.push_back(enemyTurn.walkDistance.back()+std::abs((int)state[2+frames+i]));
-            }
-        }
-        int status=enemyAttackPattern[npc*ATTACKPATTERNTOTALDATASIZE+2+THERE];
-        if(status<=0)status=enemyAttackPattern[npc*ATTACKPATTERNTOTALDATASIZE+2+HERE];
-        if(status>0&&status<MAXSTATUS) {
-            const short* st=cmf_status_data[cmf][status];
-            if(st&&st[0]>0)for(int i=0;i<st[0];++i)
-                if(st[2+i]>=0&&st[2+i]<cmf_m_cnt[cmf])enemyTurn.motion.push_back(st[2+i]);
-        }
-    }
-    enemyTurn.phases.begin(enemyTurn.walk.empty()?0:std::max(12,std::min(30,(int)enemyTurn.walk.size())),(int)enemyTurn.motion.size());
-    enemyTurn.time.begin(enemyTurn.phases.end(),enemyTurn.phases.impact(),0,1);
+// Legacy pattern columns: approach, attack, return, rest, hit count, attack range.
+// Resolve all phases from the table and stop at range * actor zoom, as ENEMYMOVETURN did.
+int enemyPatternTurn=0,enemyPatternNpc=-1,enemyPatternStage=-1,enemyPatternWave=-1;
+int monsterHeroX(const Layout& l){return std::max((int)(235*l.scale)+(int)(30*l.scale),(int)(DX*.66f))-(int)(32*l.scale);}
+float monsterZoom(const Layout& l,int npc,int cmf){
+    const auto* bounds=cmfMotionImgSize[cmf]+crewPos[npc*5]*4;
+    const int y=l.ground+(int)(8*l.scale);
+    return std::min(1.35f*l.scale,std::max(.3f*l.scale,(DY-y-8*l.scale)/std::max(1,(int)bounds[3])));
 }
+static void statusFrames(int cmf,int status,std::vector<int>& out,std::vector<float>* distance){
+    if(status<0||status>=MAXSTATUS)return; // status 0 is a valid authored neutral state.
+    const signed short* st=cmf_status_data[cmf][status];
+    if(!st||st[0]<=0)return;
+    const int frames=st[0];
+    if(distance)distance->push_back(0);
+    for(int i=0;i<frames;++i){
+        if(st[2+i]<0||st[2+i]>=cmf_m_cnt[cmf])continue;
+        out.push_back(st[2+i]);
+        if(distance)distance->push_back(distance->back()+std::abs((int)st[2+frames+i]));
+    }
+}
+MergeCombat::EnemyPattern nativeEnemyPattern(int npc,int cmf,int turn){
+    const auto* row=enemyAttackPattern+npc*ATTACKPATTERNTOTALDATASIZE;
+    int validMask=0;
+    for(int i=0;i<3;++i){
+        std::vector<int> motion;statusFrames(cmf,row[2+i*ATTACKPATTERNDATASIZE+1],motion,nullptr);
+        if(!motion.empty())validMask|=1<<i;
+    }
+    // Some legacy colour variants reference states that their shared CMF does not
+    // contain (e.g. MACHINE_RED's centre laser). Only schedule playable patterns.
+    return MergeCombat::enemyPattern(row,turn,validMask);
+}
+#include "MergeMonsterAttack.inc"
 int heroNeutralMotion(OBJECT& who,int div=1) {
     // Diana's interpolated in-between poses jitter the gun and hands. Keep the
     // authored neutral key poses with a steady eight-tick hold on both PVP sides.
@@ -1164,7 +1404,8 @@ void beginCombatAction() {
         animation=action.time.end;
         return;
     }
-    // The attacking sword owns the weapon appearance throughout its full motion.
+    // Prepare the native attack in the target costume, but display it only at attachment.
+    const ITEM previousWeapon=hero.equip[EQUIP_WEAPON];
     if(block.family==Sword)showAttackWeapon(block.level);
     action.skill=actionSkill(block);action.kind=action.skill>=0?SkillKind(action.skill):-1;
     if(block.family<Roles&&block.crew>=0&&block.crew<64) {
@@ -1188,7 +1429,7 @@ void beginCombatAction() {
         action.crewFrames=std::max(24,(int)action.crewMotion.size());
     }
     const bool heroRequest=action.kind==HEROSKILL||action.kind==SUMMONHERO;
-    const bool gearAttack=block.family>=Roles&&!DefensiveGear(block.family)&&block.family!=Boots;
+    const bool gearAttack=block.family==Sword;
     int release=std::max(1,action.crewFrames/2),motionEnd=action.crewFrames,flight=0;
     if(heroRequest||gearAttack) {
         action.heroStart=action.crewFrames;
@@ -1202,6 +1443,11 @@ void beginCombatAction() {
         flight=action.bulletIcon>=0?36:0;
     } else motionEnd=release=30;
     action.time.begin(motionEnd,release,flight);
+    if(gearAttack){
+        const ITEM target=hero.equip[EQUIP_WEAPON];
+        hero.equip[EQUIP_WEAPON]=previousWeapon;
+        requestWeaponSwap(target);
+    }
     animation=action.time.end;
 }
 int crewAttackMotion(int npc,int cmf,float) {
@@ -1218,43 +1464,171 @@ void drawDeckShadow(int cmf,int x,int y,float zoom) {
 }
 namespace Siege{void drawFoe(const Layout& l,int ex,int ey);}
 // All artillery uses its private textures and mirrored launch/flight/impact sequences.
+void drawImpactSequence(int first,int count,int age,int duration,int x,int y,int direction,float scale){
+ if(age<0||age>=duration)return;
+ const int pose=std::min(count-1,age*count/std::max(1,duration));
+ DrawEffect(1000+first+pose,x,y,direction,0,scale);
+}
+int impactFirst=HIT_ITEM_SMALL0,impactCount=5;
 void drawTurretAttack(const Layout& l,int targetX,int targetY){
  if(!turretFire.running()||!action.emitterReady)return;
  const float scale=l.scale;
  const TurretAttack::Point from={(float)action.emitterX,(float)action.emitterY},to={(float)targetX,(float)targetY};
  const int age=turretFire.age;
- if(turretFire.type==TurretAttack::Laser){
-  const int charge=turretFire.release;
+ if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic){
+  const int charge=turretFire.release,alpha=m_lgrpAlpha;
+  // The red, silver, violet and gold castles each color their own hot aura.
+  static const int tones[4]={0xFF682B,0x69CDFF,0xB85AFF,0xFFD363};
+  const int tone=tones[std::max(0,std::min(3,turretFire.castle-6))];
+  auto glow=[&](float x,float y,float radius,int color,int opacity){
+   SetAlpha(opacity);
+   const int r=std::max(1,(int)radius);
+   for(int row=-r;row<=r;++row){
+    const float q=row/(float)r;
+    const int half=std::max(1,(int)(r*std::sqrt(std::max(0.f,1-q*q))));
+    mergeRect((int)x-half,(int)y+row,half*2,1,color);
+   }
+   SetAlpha(alpha);
+  };
+  auto electricLine=[&](float x1,float y1,float x2,float y2,float width,int color,int opacity){
+   const int img=TURRET_FLAME_LASER_IMG;
+   if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+   const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+   const float dx=x2-x1,dy=y2-y1,len=std::sqrt(dx*dx+dy*dy);
+   SetAlpha(opacity);
+   turretPart(img,0,(int)(dim.height*3/8),(int)dim.width,(int)dim.height/4,
+    {(int)((x1+x2-len)*.5f),(int)((y1+y2+width)*.5f),std::max(1,(int)std::ceil(len)),std::max(1,(int)width)},-std::atan2(dy,dx)*57.2957795f);
+   renderSprite[getSpriteIdx]->setColor(cocos2d::Color3B((color>>16)&255,(color>>8)&255,color&255));
+   SetAlpha(alpha);
+  };
   if(age<charge){
-   const int radius=(int)((3+12*age/(float)charge)*scale);
-   mergeRect((int)from.x-radius,(int)from.y+radius,radius*2,radius*2,0x159AE8);
-   mergeRect((int)from.x-radius/2,(int)from.y+radius/2,radius,radius,0xD7FFFF);
+   const float t=age/(float)charge,r=(4+18*t)*scale;
+   glow(from.x,from.y,r*1.55f,tone,alpha/5);
+   glow(from.x,from.y,r,tone,alpha*3/4);
+   glow(from.x,from.y,r*.48f,0xFFF8E4,alpha);
+   for(int i=0;i<8;++i){
+    const float phase=std::fmod(age*.09f+i*.125f,1.f);
+    const float a=i*.78539816f+age*.06f;
+    const float distance=(26+(1-phase)*32)*scale;
+    glow(from.x+std::cos(a)*distance,from.y+std::sin(a)*distance,(1+phase*2)*scale,tone,alpha*(.4f+phase*.6f));
+   }
+   if(turretFire.castle==8){
+    for(int arc=0;arc<5;++arc){
+     const float a=arc*1.256637f+age*.17f;
+     const float outer=(36-8*t)*scale,inner=(12+8*t)*scale;
+     const float x=from.x+std::cos(a)*outer,y=from.y+std::sin(a)*outer;
+     const float mx=from.x+std::cos(a+.24f)*inner,my=from.y+std::sin(a+.24f)*inner;
+     electricLine(x,y,mx,my,3*scale,0xD5A2FF,alpha);
+     electricLine(mx,my,from.x,from.y,2*scale,0xF9EEFF,alpha);
+    }
+   }
    return;
   }
-  // c27's broad beam is followed by its narrow, fading beam, anchored at the muzzle.
-  const bool wide=age<turretFire.impact()+3;
-  const int sw=128,sh=wide?36:16,sy=wide?146:206;
+  if(turretFire.type==TurretAttack::Laser){
+  const int img=TURRET_FLAME_LASER_IMG;
+  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+  sprite[img]->getTexture()->setAntiAliasTexParameters();
   const float dx=to.x-from.x,dy=to.y-from.y,length=std::sqrt(dx*dx+dy*dy);
-  const float angle=-std::atan2(dy,dx)*57.2957795f,thickness=(wide?23.f:11.f)*scale;
-  const float z=thickness/sh,step=sw*z;
-  for(float at=0;at<length;at+=step){
-   const float n=std::min(step,length-at),x=from.x+dx*(at+n*.5f)/std::max(1.f,length),y=from.y+dy*(at+n*.5f)/std::max(1.f,length);
-   turretPart(TURRET_LASER_IMG,0,sy,(int)std::ceil(n/z),sh,{(int)(x-n*.5f),(int)(y+thickness*.5f),(int)std::ceil(n),(int)thickness},angle);
+  const float angle=-std::atan2(dy,dx)*57.2957795f;
+  const float fade=age<=turretFire.impact()?1.f:std::max(0.f,1-(age-turretFire.impact())/14.f);
+  const float thickness=((turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale;
+  auto beam=[&](float height,int color,int opacity){
+   SetAlpha(opacity);
+   turretPart(img,0,(int)dim.height/4,(int)dim.width,(int)dim.height/2,
+    {(int)((from.x+to.x-length)*.5f),(int)((from.y+to.y+height)*.5f),(int)std::ceil(length),(int)height},angle);
+   renderSprite[getSpriteIdx]->setColor(cocos2d::Color3B((color>>16)&255,(color>>8)&255,color&255));
+   SetAlpha(alpha);
+  };
+  if(turretFire.castle==9){
+   beam(thickness*1.6f,tone,(int)(alpha*.22f*fade));
+   electricLine(from.x,from.y,to.x,to.y,20*scale,0xFFD56A,(int)(alpha*fade));
+   electricLine(from.x,from.y,to.x,to.y,9*scale,0xFFFFEE,(int)(alpha*fade));
+   const float nx=-dy/std::max(1.f,length),ny=dx/std::max(1.f,length);
+   for(int side=-1;side<=1;side+=2){
+    float px=from.x,py=from.y;
+    for(int segment=1;segment<=24;++segment){
+     const float t=segment/24.f;
+     const float wave=segment==24?0.f:side*std::sin(t*12.56637f-age*.4f)*18*scale;
+     const float x=from.x+dx*t+nx*wave,y=from.y+dy*t+ny*wave;
+     electricLine(px,py,x,y,5*scale,0xFFB93E,(int)(alpha*fade));
+     electricLine(px,py,x,y,2*scale,0xFFF4BE,(int)(alpha*fade));
+     px=x;py=y;
+    }
+   }
+   for(int pulse=0;pulse<3;++pulse){
+    const float t=std::fmod((age-charge)*.09f+pulse/3.f,1.f),end=std::min(1.f,t+.13f);
+    electricLine(from.x+dx*t,from.y+dy*t,from.x+dx*end,from.y+dy*end,36*scale,0xFFDC78,(int)(alpha*.8f*fade));
+    electricLine(from.x+dx*t,from.y+dy*t,from.x+dx*end,from.y+dy*end,18*scale,0xFFFFEF,(int)(alpha*fade));
+   }
+  }else{
+   beam(thickness*1.45f,tone,(int)(alpha*.24f*fade));
+   beam(thickness,tone,(int)(alpha*fade));
+   beam(thickness*.36f,0xFFF9E8,(int)(alpha*fade));
   }
+  if(turretFire.castle==8){
+   // Two changing, jagged discharges wrap the beam; small branches flicker out.
+   const float nx=-dy/std::max(1.f,length),ny=dx/std::max(1.f,length);
+   for(int side=-1;side<=1;side+=2){
+    float px=from.x,py=from.y;
+    for(int segment=1;segment<=12;++segment){
+     const float t=segment/12.f;
+     const float wave=segment==12?0.f:side*(15+9*std::sin(segment*2.3f+(age/2)*1.7f))*scale;
+     const float x=from.x+dx*t+nx*wave,y=from.y+dy*t+ny*wave;
+     electricLine(px,py,x,y,7*scale,0x9B39FF,(int)(alpha*.55f*fade));
+     electricLine(px,py,x,y,2.5f*scale,0xF0D6FF,(int)(alpha*fade));
+     if(segment%3==0&&segment<12){
+      const float bx=x+nx*side*14*scale+dx/std::max(1.f,length)*8*scale;
+      const float by=y+ny*side*14*scale+dy/std::max(1.f,length)*8*scale;
+      electricLine(x,y,bx,by,2*scale,0xDDACFF,(int)(alpha*fade));
+     }
+     px=x;py=y;
+    }
+   }
+  }
+  glow(from.x,from.y,(turretFire.castle==8?34:27)*scale,tone,(int)(alpha*.7f*fade));
+  glow(from.x,from.y,12*scale,0xFFF9E8,(int)(alpha*fade));
+  glow(to.x,to.y,(19+3*std::sin(age))*scale,tone,(int)(alpha*.7f*fade));
+  glow(to.x,to.y,9*scale,0xFFF9E8,(int)(alpha*fade));
   return;
+  }
  }
+ const auto pathType=turretFire.castle==2?TurretAttack::Shell:turretFire.type;
  for(int i=0;i<turretFire.count;++i){
   const int elapsed=age-turretFire.launch(i);
   if(elapsed<0)continue;
   if(elapsed>=turretFire.flight){
    const int impactAge=elapsed-turretFire.flight;
-   if(impactAge<12)DrawEffect(1000+std::min(9,impactAge/2),targetX,targetY,RIGHT,0,.7f*scale);
+   if(turretFire.castle==5||turretFire.type==TurretAttack::Magnetic){
+    if(impactAge<14){
+     const int img=turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:TURRET_CRYSTAL_ORB_IMG;
+     if(!sprite[img])LoadImg(img);
+     if(sprite[img]){
+      const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+      const int alpha=m_lgrpAlpha,size=(int)((turretFire.type==TurretAttack::Magnetic?72+impactAge*6:38+impactAge*3)*scale);
+      SetAlpha(alpha*(14-impactAge)/14);
+      turretPart(img,0,0,(int)dim.width,(int)dim.height,{targetX-size/2,targetY+size/2,size,size},impactAge*12.f);
+      for(int spark=0;spark<6;++spark){
+       const float a=spark*1.04719755f+impactAge*.06f;
+       const int x=targetX+(int)(std::cos(a)*(10+impactAge*3)*scale);
+       const int y=targetY+(int)(std::sin(a)*(10+impactAge*3)*scale);
+       const int n=std::max(1,(int)((4-impactAge*.2f)*scale));
+       mergeRect(x-n,y+n,n*2,n*2,turretFire.type==TurretAttack::Magnetic?(spark%2?0xDDF8FF:0x69CFFF):(spark%2?0xA7FFF0:0x39DCCB));
+      }
+      SetAlpha(alpha);
+     }
+    }
+    continue;
+   }
+   drawImpactSequence(HIT_DIANA_MEDIUM1,7,impactAge,14,targetX,targetY,RIGHT,
+    (turretFire.type==TurretAttack::Rapid?.22f:turretFire.type==TurretAttack::Missiles?.7f:1.25f)*scale);
    continue;
   }
   const float t=elapsed/(float)turretFire.flight;
-  auto start=from;if(turretFire.type==TurretAttack::Missiles)start.y+=(i%3-1)*7*scale;
-  const auto point=TurretAttack::position(turretFire.type,t,start,to,i,scale);
-  const auto next=TurretAttack::position(turretFire.type,std::min(1.f,t+.02f),start,to,i,scale);
+  auto start=from;
+  if(turretFire.castle==2||turretFire.type==TurretAttack::Rapid)start=cannonMuzzle(l,turretFire.castle,siegeActive&&Siege::swapped,turretFire.launch(i),i);
+  const auto point=TurretAttack::position(pathType,t,start,to,i,scale);
+  const auto next=TurretAttack::position(pathType,std::min(1.f,t+.02f),start,to,i,scale);
   const float angle=-std::atan2(next.y-point.y,next.x-point.x)*57.2957795f;
   if(turretFire.type==TurretAttack::Missiles){
    // Copy of Diana's own missile sprite sheet, under a separate resource identity.
@@ -1265,39 +1639,95 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
    const auto* source=cmd_i_offset[DIANA]+part*4;
    const float z=32*scale/std::max(1,(int)std::max(source[2],source[3]));
    for(int trail=3;trail>=1;--trail){
-    const auto p=TurretAttack::position(turretFire.type,std::max(0.f,t-trail*.025f),start,to,i,scale);
+    const auto p=TurretAttack::position(pathType,std::max(0.f,t-trail*.025f),start,to,i,scale);
     const int size=std::max(1,(int)((5-trail)*scale));
     mergeRect((int)p.x-size,(int)p.y+size,size*2,size*2,trail==1?0xFFF2B0:0xF78C35);
    }
-   turretPart(TURRET_MISSILE_IMG,source[0],source[1],source[2],source[3],
+   if(turretFire.castle==2){
+    const int missile=TURRET_TRIPLE_MISSILE_IMG;
+    if(!sprite[missile])LoadImg(missile);
+    if(sprite[missile]){
+     const auto dim=sprite[missile]->getTexture()->getContentSizeInPixels();
+     sprite[missile]->getTexture()->setAntiAliasTexParameters();
+     const int width=(int)(42*scale),height=(int)(width*dim.height/dim.width);
+     turretPart(missile,0,0,(int)dim.width,(int)dim.height,
+      {(int)point.x-width/2,(int)point.y+height/2,width,height},angle);
+    }
+   }else turretPart(TURRET_MISSILE_IMG,source[0],source[1],source[2],source[3],
     {(int)(point.x-source[2]*z/2),(int)(point.y+source[3]*z/2),(int)(source[2]*z),(int)(source[3]*z)},angle+90);
   }else{
-   // A visible stone for the catapult; steel rounds for the conventional guns.
-   const bool stone=turretFire.type==TurretAttack::Stone;
-   const int unit=std::max(1,(int)(scale*(stone?3.f:2.f)));
-   for(int row=0;row<8;++row){
-    const int inset=(row==0||row==7)?2:(row==1||row==6)?1:0;
-    mergeRect((int)point.x-(4-inset)*unit,(int)point.y+(4-row)*unit,(8-inset*2)*unit,unit,
-     row<2?0xD2D6D9:row<5?0x8C9099:0x505464);
+   const int img=turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:turretFire.castle==5?TURRET_CRYSTAL_ORB_IMG:turretFire.castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG;
+   if(!sprite[img])LoadImg(img);
+   if(sprite[img]){
+    const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+    sprite[img]->getTexture()->setAntiAliasTexParameters();
+    const bool rapid=turretFire.type==TurretAttack::Rapid;
+    const int diameter=std::max(1,(int)((turretFire.type==TurretAttack::Magnetic?72.f:rapid?13.f:turretFire.castle==4?46.f:turretFire.type==TurretAttack::Stone?44.f:38.f)*scale));
+    const int bulletHeight=std::max(2,(int)(4*scale));
+    const float spinDirection=to.x>=from.x?1.f:-1.f;
+    const float spin=elapsed*(turretFire.type==TurretAttack::Magnetic?7.f:18.f)*spinDirection;
+    const int alpha=m_lgrpAlpha;
+    for(int trail=rapid?0:3;trail>=1;--trail){
+     const auto p=TurretAttack::position(turretFire.type,std::max(0.f,t-trail*.035f),start,to,i,scale);
+     const int size=(int)(diameter*(.72f-trail*.09f));
+     SetAlpha(alpha*(4-trail)/12);
+     turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)p.x-size/2,(int)p.y+size/2,size,size},spin-trail*18.f*spinDirection);
+    }
+    SetAlpha(alpha);
+    if(turretFire.castle==5||turretFire.type==TurretAttack::Magnetic){
+     const int glow=(int)(diameter*(1.20f+.10f*std::sin(elapsed*.6f)));
+     SetAlpha(alpha/3);
+     turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)point.x-glow/2,(int)point.y+glow/2,glow,glow},-spin*.5f);
+     SetAlpha(alpha);
+    }
+    turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)point.x-diameter/2,(int)point.y+(rapid?bulletHeight:diameter)/2,diameter,rapid?bulletHeight:diameter},rapid?angle:spin);
    }
-   if(stone){mergeRect((int)point.x-2*unit,(int)point.y+2*unit,2*unit,unit,0x626570);}
   }
-  if(elapsed<5&&turretFire.type!=TurretAttack::Stone){
-   const int size=(int)((9-elapsed)*scale);
-   mergeRect((int)start.x-size,(int)start.y+size,size*2,size*2,0xFFD36A);
+  if(elapsed<(turretFire.type==TurretAttack::Rapid?2:8)&&turretFire.type!=TurretAttack::Stone&&turretFire.castle!=5&&turretFire.type!=TurretAttack::Magnetic){
+   drawImpactSequence(HIT_DIANA_SMALL1,7,elapsed,10,(int)start.x,(int)(start.y-(turretFire.type==TurretAttack::Rapid?5:18)*scale),RIGHT,(turretFire.type==TurretAttack::Rapid?.22f:.65f)*scale);
   }
  }
 }
+TurretAttack::Point heroTorsoPoint(const OBJECT& who,int motion,int x,int y,int dir,float zoom){
+ const int cmf=who.cmf;
+ TurretAttack::Point result={(float)x,y+32*zoom};
+ if(cmf<ROBIN||cmf>MAXX||motion<0||motion>=cmf_m_cnt[cmf]||!cmd_m_cnt[cmf])return result;
+ const int first=cmf==ROBIN?IMG_C0_62:cmf==DIANA?IMG_C1_45:IMG_C2_44;
+ const int end=cmf==ROBIN?IMG_C0_65:cmf==DIANA?IMG_C1_48:IMG_C2_47;
+ const int start=cmd_m_cnt[cmf][motion*2],count=cmd_m_cnt[cmf][motion*2+1];
+ for(int i=0;i<count;++i){
+  const auto* part=cmd_m_img[cmf]+(start+i)*4;
+  if(part[0]<first||part[0]>=end)continue;
+  const auto* rect=cmd_i_offset[cmf]+part[0]*4;
+  const int kind=part[3];const float magnify=((kind>>6)+1)*zoom;
+  const float width=((kind&6)==2||(kind&6)==6)?rect[3]:rect[2];
+  const float height=((kind&6)==2||(kind&6)==6)?rect[2]:rect[3];
+  const float localX=part[1]*zoom+width*magnify*.5f;
+  result.x=x+(dir==LEFT?localX:-localX);
+  result.y=y-part[2]*zoom-height*magnify*.5f;
+  break;
+ }
+ return result;
+}
 void drawWorld(const Layout& l,bool combat) {
     const float s=l.scale;
+    objectDrawOrder=monsterDrawOrder=allyDrawOrder=impactDrawOrder=0;monsterDrawn=false;
+    enemyBodyKnown=false;
     deckResidentCount=0;
     deckMergeGhostsDrawn=0;
     SetAlpha(32);SetColor(0);grayScale=0;
-    castleScrollSeconds+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()))*.25f;
+    if(!combat)castleScrollSeconds+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()))*.25f;
     {StageBg::Borrow scroll(combatRegion(),castleScrollSeconds);
-        castleWheelTravel=DrawCastleLobbyBackground((int)(104*s+castleSceneLift()));}
+        const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
+        const auto& wheels=MistCastle::wheelAnchors[c];
+        const int contact=std::max(wheels[0][1]+wheels[0][2],wheels[1][1]+wheels[1][2]);
+        castleWheelTravel=DrawCastleLobbyBackground((int)((OriginalCastle::H-contact)*OriginalCastle::zoom()+OriginalCastle::lift()+9*s));}
     drawCastleHull(l,combat);
-    if(combat)drawBattleCover(l); // Full exterior closure reaches the chassis below the hidden body and labels.
+    if(combat){
+        drawBattleCover(l);
+        const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
+        MistCastle::wheels(c,castleWheelAngle(92*OriginalCastle::zoom()),siegeActive);
+    }
     //---- 데크의 줄 ----
     //
     //전에는 히어로가 DX*0.57 에 서고 동료가 그 왼쪽으로 늘어섰다. 대포가
@@ -1306,18 +1736,83 @@ void drawWorld(const Layout& l,bool combat) {
     //이제 대포 앞(오른쪽)부터가 사람 자리다. 히어로가 맨 앞에 서고 동료가
     //그 뒤로 붙되, 마지막 사람이 포신을 넘지 않도록 간격만 좁힌다.
     const Box gun=castleCannonBox(l);
-    const int deckBack=gun.x+gun.w+(int)(12*s);      //대포 바로 앞
+    const int deckBack=(int)(235*s);      //대포 바로 앞
     //공성전: 성이 거울로 서고 성주가 오른쪽에 있으므로 내 히어로는 왼쪽에서 올라탄다.
     //둘은 데크 가운데서 마주 선다(내 쪽 24%, 상대 42%). 상대 턴에 런을 맞바꾸면
     //hero 가 성주이므로 자리와 방향도 같이 바뀐다.
     const bool sidesSwapped=siegeActive&&Siege::swapped;
     const int allyX=(int)(DX*.24f),foeX=(int)(DX*.42f);
-    const int hx=siegeActive?(sidesSwapped?foeX:allyX):std::max(deckBack+(int)(30*s),(int)(DX*.66f));
+    const int hx=siegeActive?(sidesSwapped?foeX:allyX):monsterHeroX(l);
     const int heroDir=sidesSwapped?LEFT:RIGHT;
-    const int hy=l.ground,ex=siegeActive?(sidesSwapped?allyX:foeX):(int)(DX*.85f),ey=l.ground;
+    const int hy=l.ground+(int)(8*s),ex=siegeActive?(sidesSwapped?allyX:foeX):(int)(DX*.85f),ey=l.ground+(int)(8*s);
     const float deckY=(float)hy;
     allyBodyX=hx;allyBodyY=hy+(int)(40*s);allyBodyKnown=true;   //히어로 그림은 x 가 몸통 가운데다
     SetSectionClip(0,DY,DX,DY-l.board.y,false);
+    // Submit all monsters before allies, so weapons and allied effects stay in front.
+    if(combat&&siegeActive){Siege::drawFoe(l,ex,ey);}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
+    else if(combat) {
+    int npc=waveTransition.defeatedVisible()?defeatedNpc:combatEnemyNpc();
+    int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+    //보스도 잡몹과 같은 배율로 선다. 보스 그림은 원래 크게 그려져 있어서 0.65 로 줄이면
+    //잡몹보다 작아 보였다. 화면 위(데크 위 여백)에 안 들어갈 때만 거기 맞춰 줄인다.
+    const float enemyZoom=monsterZoom(l,npc,cmf);
+    const bool striking=enemyTurn.started&&!enemyTurn.complete;
+    const int idleFrames=std::max(1,(int)crewPos[npc*5+1]);
+    const int idle=crewPos[npc*5]+(ticks/6)%idleFrames;
+    int enemyMotion=idle,enemyX=ex,enemyDir=LEFT;
+    renderedEnemyWalking=false;
+    if(striking){
+        const auto& phases=enemyTurn.phases;const int elapsed=enemyTurn.time.elapsed;
+        const float target=enemyTurn.attackX;
+        enemyX=(int)target;
+        const bool inbound=phases.walkingIn(elapsed),outbound=phases.walkingBack(elapsed);
+        if(inbound||outbound){
+            const int duration=inbound?phases.approach:phases.returnFrames;
+            const float progress=std::min(1.f,(elapsed-(outbound?phases.returnStart():0))/(float)std::max(1,duration));
+            const auto& poses=outbound&&!enemyTurn.back.empty()?enemyTurn.back:enemyTurn.walk;
+            if(!poses.empty())enemyMotion=poses[std::min((int)poses.size()-1,(int)(progress*poses.size()))];
+            const auto& distance=outbound&&!enemyTurn.backDistance.empty()&&enemyTurn.backDistance.back()>0?enemyTurn.backDistance:enemyTurn.walkDistance;
+            const float movement=MergeCombat::walkProgress(distance,progress);
+            if(enemyTurn.moves)enemyX=(int)(outbound?target+(ex-target)*movement:ex-(ex-target)*movement);
+            enemyDir=outbound&&enemyTurn.moves?RIGHT:LEFT;renderedEnemyWalking=enemyTurn.moves;
+        }else if(elapsed>=phases.recoveryStart()){
+            enemyX=ex;
+            if(!enemyTurn.rest.empty())enemyMotion=enemyTurn.rest[std::min((int)enemyTurn.rest.size()-1,elapsed-phases.recoveryStart())];
+        }else if(!enemyTurn.motion.empty()){
+            const int index=std::max(0,std::min((int)enemyTurn.motion.size()-1,elapsed-phases.approach));
+            enemyMotion=enemyTurn.motion[index];
+        }
+    }
+    renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;renderedEnemyDir=enemyDir;
+    int monsterY=ey;
+    const bool defeated=waveTransition.defeatedVisible();
+    const bool showMonster=defeated||waveTransition.incomingVisible();
+    if(defeated){
+        enemyMotion=defeatedMotion;SetAlpha((int)(32*waveTransition.defeatAlpha()));
+        monsterY-=(int)((1-waveTransition.defeatAlpha())*12*s);
+    }else if(waveTransition.active()&&waveTransition.incomingVisible()){
+        const auto* bounds=cmfMotionImgSize[cmf]+crewPos[npc*5]*4;
+        const float offscreen=DX+(std::abs((int)bounds[0])+bounds[2])*enemyZoom;
+        enemyX=(int)waveTransition.incomingX(offscreen,(float)ex);
+        int walkFrames=0;const signed short* walk=nullptr;
+        if(waveTransition.arrival()<1&&CrewWalkMotion(cmf,npc,walkFrames,walk)&&walkFrames>0)
+            enemyMotion=walk[(waveTransition.age-MergeCombat::WaveTransition::EnterStart)%walkFrames];
+        SetAlpha((int)(32*std::min(1.f,waveTransition.arrival()*4)));
+    }
+    renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;
+    monsterDrawn=showMonster;
+    if(showMonster){monsterDrawOrder=++objectDrawOrder;DrawCmfDetailShadow(cmf,enemyMotion,enemyX,monsterY,enemyDir,enemyZoom);}
+    SetAlpha(32);
+    if(cmf>=TOTALCHAR&&enemyMotion>=0&&enemyMotion<cmf_m_cnt[cmf]){
+        const auto* mb=cmfMotionImgSize[cmf]+enemyMotion*4;
+        enemyBodyX=enemyX+(enemyDir==LEFT?-1:1)*(int)((mb[0]+mb[2]*.5f)*enemyZoom);
+        enemyBodyY=ey-(int)((mb[1]+mb[3]*.5f)*enemyZoom);
+        //경계값이 그림 틀 밖을 가리키면(큰 보스의 표가 다른 단위일 때) 발 위 40 으로 되돌린다.
+        if(enemyBodyX<enemyX-220*s||enemyBodyX>enemyX+60*s||enemyBodyY<ey||enemyBodyY>ey+260*s){enemyBodyX=enemyX-(int)(30*s);enemyBodyY=ey+(int)(40*s);}
+    }else{enemyBodyX=enemyX;enemyBodyY=ey+(int)(40*s);}
+    enemyBodyKnown=showMonster;
+    }
     //히어로는 판의 주인이다. 데크에서 한눈에 찾아야 하므로 동료보다 크다(1.5배).
     float heroZoom=std::max(.35f*s,std::min(.82f*s,(DY-hy-8*s)/80.f))*1.5f;
 
@@ -1330,10 +1825,15 @@ void drawWorld(const Layout& l,bool combat) {
     const float fireT=firing?std::min(1.f,action.time.elapsed/(float)std::max(1,action.crewFrames)):0.f;
     const int lunge=firing?(int)(MergeCombat::actorStep(action.time.elapsed,action.time.end)*s):0;
     const int heroFrame=firing?action.time.elapsed-action.heroStart:-1;
-    const bool heroSwing=firing&&!action.heroMotion.empty()&&heroFrame>=0&&heroFrame<(int)action.heroMotion.size()*MOTIONDIV;
+    const bool heroSwing=firing&&!weaponSwap.running()&&!action.heroMotion.empty()&&heroFrame>=0&&heroFrame<(int)action.heroMotion.size()*MOTIONDIV;
     const int heroX=hx+(heroSwing?(int)(std::sin(heroFrame/(float)std::max(1,(int)action.heroMotion.size()*MOTIONDIV)*3.14159265f)*18*s):0);
     OBJECT* actingHero=heroSwing?&action.caster:&hero;
     const int heroMotion=heroSwing?action.heroMotion[std::min((int)action.heroMotion.size()-1,heroFrame/MOTIONDIV)]:heroNeutralMotion(hero);
+    {//몸통 점이 스프라이트 상자를 벗어나면(부위 표의 좌표가 다른 틀일 때) 발 위 36 으로 되돌린다 -
+     //안 그러면 피격 효과와 피해 숫자가 첨탑 쪽 엉뚱한 자리에 뜬다.
+     auto body=heroTorsoPoint(*actingHero,heroMotion,heroX,hy,heroDir,heroZoom);
+     if(std::abs(body.x-heroX)>48*heroZoom||body.y<hy||body.y>hy+140*heroZoom){body.x=(float)heroX;body.y=hy+36*heroZoom;}
+     allyBodyX=(int)body.x;allyBodyY=(int)body.y;allyBodyKnown=true;}
     const int costumeFrame=(30-costumeEffectTicks)/3;
     //---- 로비의 데크에는 히어로만 선다 ----
     //
@@ -1361,11 +1861,36 @@ void drawWorld(const Layout& l,bool combat) {
     if(combat&&costumeEffectTicks>0)
         DrawPlayer(actingHero,2000+LEVELUP_BACK0+costumeFrame,heroX,hy,heroDir,heroZoom,0,false,false);
     if(allyFlash>0)SetColor(0xFF9B8A);
+    allyDrawOrder=++objectDrawOrder;
     DrawPlayer(actingHero,heroMotion,heroX,hy,heroDir,heroZoom,0,false,true);
     SetColor(0);
     if(combat&&costumeEffectTicks>0)
         DrawPlayer(actingHero,2000+LEVELUP_FRONT0+costumeFrame,heroX,hy,heroDir,heroZoom,0,false,false);
-    if(allyFlash>0&&enemyTurn.damage==0)label("BLOCK",heroX,hy+(int)(110*s),.7f,0xFFE69E);
+    if(combat&&weaponSwap.running()){
+        const int id=ItemSeries::FromIcon(GetItemIcon(incomingWeapon.type,incomingWeapon.detail,incomingWeapon.grade));
+        if(id>=0){
+            const int img=ITEM_SERIES_FIRST_IMG+id;
+            if(!sprite[img])LoadImg(img);
+            if(sprite[img]){
+                const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
+                const float turn=weaponSwap.orbit(),a=turn*6.2831853f;
+                const float snap=weaponSwap.snap(),ease=1-std::pow(1-snap,3.f);
+                const float top=std::min(hy+84*heroZoom,DY-110*s);
+                const float orbitX=heroX+std::sin(a)*28*s,orbitY=top+std::cos(a)*10*s;
+                const float handX=heroX+(heroDir==LEFT?-18:18)*s,handY=hy+35*heroZoom;
+                const float x=orbitX+(handX-orbitX)*ease,y=orbitY+(handY-orbitY)*ease;
+                const int size=(int)((52-12*ease)*s);
+                if(weaponSwap.age<MergeCombat::WeaponSwap::AttachFrame){
+                    turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)x-size/2,(int)y+size/2,size,size},turn*360.f*(heroDir==LEFT?-1:1));
+                }else{
+                    const int pulse=(int)((18+3*(weaponSwap.age-MergeCombat::WeaponSwap::AttachFrame))*s);
+                    SetAlpha(32*(MergeCombat::WeaponSwap::Duration-weaponSwap.age)/8);
+                    MemRectFrameThick((int)handX-pulse/2,(int)handY+pulse/2,pulse,pulse,0xFFEBA6,std::max(1,(int)(2*s)));
+                    SetAlpha(32);
+                }
+            }
+        }
+    }
     shotFromX=heroX+(int)(18*s);shotFromY=hy+(int)(35*s);
     //---- 판에 선 동료가 전투 화면에도 선다 ----
     //
@@ -1377,7 +1902,7 @@ void drawWorld(const Layout& l,bool combat) {
     //★ 가 올라도 사람은 하나다.
     {
         int seen[64],shown=0;
-        const float crewRight=hx-60*s,crewLeft=std::min((float)deckBack,DX*.44f);
+        const float crewRight=hx-MergeCombat::DeckGap*s,crewLeft=std::min((float)deckBack,DX*.44f);   //첫 동료는 히어로 뒤 DeckGap, 그 뒤로 같은 간격
         if(combat&&deckMerge.time.running()) {
             int future[64],count=0,resultIndex=0;
             for(const auto& b:run.board)if(b.family<Roles&&b.crew>=0&&b.crew<64){
@@ -1475,42 +2000,7 @@ void drawWorld(const Layout& l,bool combat) {
             SetAlpha(32);
         }
     }
-    if(combat&&siegeActive){Siege::drawFoe(l,ex,ey);enemyBodyX=ex;enemyBodyY=ey+(int)(40*s);enemyBodyKnown=true;}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
-    else if(combat) {
-    int npc=combatEnemyNpc();
-    int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
-    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
-    const auto* enemyBounds=cmfMotionImgSize[cmf]+crewPos[npc*5]*4;
-    const float enemyZoom=std::min((BossTier(run.wave)?0.65f:1.35f)*s,std::max(.3f*s,(DY-ey-8*s)/std::max(1,(int)enemyBounds[3])));
-    const bool striking=enemyTurn.started&&!enemyTurn.complete;
-    const int idleFrames=std::max(1,(int)crewPos[npc*5+1]);
-    const int idle=crewPos[npc*5]+(ticks/6)%idleFrames;
-    int enemyMotion=idle,enemyX=ex,enemyDir=LEFT;
-    renderedEnemyWalking=false;
-    if(striking){
-        const auto& phases=enemyTurn.phases;const int elapsed=enemyTurn.time.elapsed,target=hx+(int)(20*s);
-        if(phases.approach>0)enemyX=target;
-        const bool inbound=phases.walkingIn(elapsed),outbound=phases.walkingBack(elapsed);
-        if((inbound||outbound)&&!enemyTurn.walk.empty()){
-            const float progress=std::min(1.f,(elapsed-(outbound?phases.returnStart():0))/(float)phases.approach);
-            const int index=std::min((int)enemyTurn.walk.size()-1,(int)(progress*enemyTurn.walk.size()));
-            enemyMotion=enemyTurn.walk[index];
-            const float movement=MergeCombat::walkProgress(enemyTurn.walkDistance,progress);
-            enemyX=(int)(outbound?target+(ex-target)*movement:ex-(ex-target)*movement);
-            enemyDir=outbound?RIGHT:LEFT;renderedEnemyWalking=true;
-        }else if(!enemyTurn.motion.empty()){
-            const int index=std::max(0,std::min((int)enemyTurn.motion.size()-1,elapsed-phases.approach));
-            enemyMotion=enemyTurn.motion[index];
-        }
-    }
-    renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;renderedEnemyDir=enemyDir;
-    DrawCmfDetailShadow(cmf,enemyMotion,enemyX,ey,enemyDir,enemyZoom);
-    if(cmf>=TOTALCHAR&&enemyMotion>=0&&enemyMotion<cmf_m_cnt[cmf]){
-        const auto* mb=cmfMotionImgSize[cmf]+enemyMotion*4;
-        enemyBodyX=enemyX+(enemyDir==LEFT?-1:1)*(int)((mb[0]+mb[2]*.5f)*enemyZoom);
-        enemyBodyY=ey-(int)((mb[1]+mb[3]*.5f)*enemyZoom);
-    }else{enemyBodyX=enemyX;enemyBodyY=ey+(int)(40*s);}
-    enemyBodyKnown=true;
+    if(combat&&!siegeActive) {
     for(int i=0;i<(int)run.summons.size()&&i<3;++i) {
         const Shot& summoned=run.summons[i];
         int crew=summoned.block.crew;
@@ -1534,6 +2024,7 @@ void drawWorld(const Layout& l,bool combat) {
 
 }
 void close() {
+    if(waveTransition.active())return;
     siegeActive=false;siegeHullStage=-1;
     if(run.attacking) {message="공격 연출이 끝난 뒤 나갈 수 있습니다.";return;}
     save();active=false;option.gameMode=(unsigned char)oldMode;
@@ -1543,11 +2034,34 @@ void close() {
     drawHandle=MD_LOBBY;mustRefresh=true;
 }
 #include "MergeSiege.inc"
+#include "MergeMonsterParts.inc"
+//---- 돌리기도 한 턴 ----
+//
+//포를 쏘든, 돌리든, 공격하든 한 번 행동하면 적이 한 번 때린다. 공격과 대포는
+//attack/fireCannon 이 그 길을 타고, 돌리기는 결과가 판에 다 앉은 순간(자동 착지 끝,
+//또는 트레이를 손으로 다 놓음)에 여기서 턴을 넘긴다. 공성전은 상대 턴으로 간다.
+//겹친 채로 트레이를 비우면 턴을 바로 넘기지 않는다. 겹침을 푼 순간 넘긴다.
+bool pendingPass=false;
+void endSpinTurn() {
+    if(siegeActive){Siege::afterMySpin();return;}
+    if(!run.tray.empty()||run.attacking||run.lost||run.choosing||waveTransition.active())return;
+    if(!run.boardResolved()){pendingPass=true;return;}
+    pendingPass=false;
+    if(run.passTurn(stats)){action=CombatAction();enemyTurn=EnemyTurn();animation=0;save();}
+}
+static const char* OverlapMessage=u8"겹쳐 놓았습니다. 겹침을 풀어야 룰렛·공격·대포를 쓸 수 있습니다.";
 void tick(float dt) {
+    if(siegeActive)run.configureMonster(-1);else MonsterBoard::ensure();
     if(costumeEffectTicks>0)--costumeEffectTicks;
+    if(trashSwallowTicks>0)--trashSwallowTicks;
+    weaponSwap.advance();damagePause.advance();
+    if(weaponSwap.attachNow()){
+        hero.equip[EQUIP_WEAPON]=incomingWeapon;
+        refreshHeroVitals();PlayMusic(M_POWERUP);
+    }
     ++ticks;++frame;if(flash>0)--flash;if(allyFlash>0)--allyFlash;
     for(auto& number:combatNumbers)++number.age;
-    combatNumbers.erase(std::remove_if(combatNumbers.begin(),combatNumbers.end(),[](const CombatNumber& n){return n.age>=72;}),combatNumbers.end());
+    combatNumbers.erase(std::remove_if(combatNumbers.begin(),combatNumbers.end(),[](const CombatNumber& n){return n.age>=MergeCombat::DamageNumberFrames;}),combatNumbers.end());
     heartBlink=std::max(0.f,heartBlink-dt);messageTime=std::max(0.f,messageTime-dt);
     if(siegeActive&&Siege::advance())return;   //상대 턴 연출이 프레임을 쓴다
     if(robin.heart!=observedHearts) {
@@ -1574,10 +2088,16 @@ void tick(float dt) {
         }
         return;
     }
+    if(waveTransition.active()){
+        castleScrollSeconds+=dt*waveTransition.speed();
+        waveTransition.advance();
+        if(!waveTransition.active()){message.clear();enemyBodyKnown=false;}
+        return;
+    }
     if(spinFlying()){
         ++spinFlightFrame;
         for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_POWERUP);
-        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();if(siegeActive)Siege::afterMySpin();}   //공성전: 돌리기 한 번 = 턴 하나
+        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();endSpinTurn();}   //돌리기 한 번 = 턴 하나. 결과가 앉으면 적이 때린다
         return;
     }
     if(animation>0&&!run.attacking){
@@ -1590,6 +2110,7 @@ void tick(float dt) {
         if(animation>0&&--animation==0){beginSpinLanding();save();}
         return;
     }
+    if(weaponSwap.running())return;
     if(action.index>=0) {
         const int before=action.time.elapsed;
         const bool impact=action.time.advance();
@@ -1606,29 +2127,74 @@ void tick(float dt) {
         if(impact){
             const long long beforeHp=run.enemyHp;run.step();
             floatingDamage(beforeHp-run.enemyHp,true);
-            flash=18;PlayMusic(M_SWORDHIT);save();
+            // A complete authored sequence; never advance across unrelated hit types.
+            if(run.shots[action.index].block.family<0)flash=0;
+            else{
+                impactFirst=HIT_ITEM_SMALL0;impactCount=5;
+                if(!action.heroMotion.empty()){
+                    impactFirst=action.caster.type==ROBIN?HIT_ROBIN_SMALL1:action.caster.type==DIANA?HIT_DIANA_SMALL1:HIT_MAXX_SMALL1;
+                    impactCount=action.caster.type==ROBIN?3:action.caster.type==DIANA?7:4;
+                }
+                flash=18;
+            }
+            PlayMusic(M_SWORDHIT);save();
         }
         animation=std::max(0,action.time.end-action.time.elapsed);
         if(!action.time.finished())return;
         action.index=-1;turretFire.age=-1;
         return;
     }
+    if(damagePause.waiting()&&!enemyTurn.started)return;
     if(run.nextShot<(int)run.shots.size()) {beginCombatAction();return;}
-    if(attackWeaponLevel)showAttackWeapon(0);
+    if(attackWeaponLevel){
+        const ITEM old=hero.equip[EQUIP_WEAPON];showAttackWeapon(0);
+        const ITEM target=hero.equip[EQUIP_WEAPON];hero.equip[EQUIP_WEAPON]=old;
+        if(requestWeaponSwap(target))return;
+    }
     if(!enemyTurn.started&&run.shouldCounterattack()&&!siegeActive){beginEnemyTurn();return;}
     if(enemyTurn.started&&!enemyTurn.complete) {
         if(enemyTurn.time.advance()){
-            const long long beforeHp=run.lives;run.counterattack();floatingDamage(beforeHp-run.lives,false);
-            allyFlash=20;PlayMusic(M_SWORDHIT);save();
+            //첫 타: 모델이 반격을 전부 깎는다. 깎인 양을 조각 수로 나눠 타마다 띄운다.
+            const long long beforeHp=run.lives,beforeEnemyHp=run.enemyHp,guardBefore=run.guard;run.counterattack();
+            const long long total=beforeHp-run.lives,absorbed=std::max(0LL,guardBefore-run.guard);
+            enemyTurn.healing=std::max(0LL,run.enemyHp-beforeEnemyHp);
+            enemyTurn.hpBefore=beforeHp;enemyTurn.shares.assign(enemyTurn.hits,0);
+            //방어막이 받은 몫도 타마다 나눠 보인다. 무적 시간은 없다 - 0 이 뜨면 전부 방어막이 받은 것이다.
+            enemyTurn.absorbedShares.assign(enemyTurn.hits,0);
+            long long remaining=total,shield=guardBefore,blockedRemaining=absorbed;
+            const auto loadout=run.monsterLoadout();
+            for(int i=0;i<enemyTurn.hits;++i){
+                const long long raw=i<(int)enemyTurn.rawShares.size()?enemyTurn.rawShares[i]:0;
+                const int pierce=MonsterParts::piercePct(loadout,MonsterParts::action(run.monsterNpc,i));
+                const long long blocked=run.realVitals?std::min(shield,raw-raw*pierce/100):0;
+                enemyTurn.absorbedShares[i]=std::min(blockedRemaining,blocked);
+                blockedRemaining-=enemyTurn.absorbedShares[i];shield-=blocked;
+                enemyTurn.shares[i]=std::min(remaining,std::max(0LL,raw-blocked));remaining-=enemyTurn.shares[i];
+            }
+            enemyTurn.shares[0]+=remaining;enemyTurn.absorbedShares[0]+=blockedRemaining;
+            if(enemyTurn.hits>1)heroHpHold=beforeHp-enemyTurn.shares[0];
+            floatingAbsorbed(enemyTurn.absorbedShares[0]);floatingDamage(enemyTurn.shares[0],false);allyFlash=20;PlayMusic(M_SWORDHIT);
+            enemyTurn.hitsShown=1;save();
+        }else if(enemyTurn.hitsShown>0&&enemyTurn.hitsShown<enemyTurn.hits&&enemyTurn.time.elapsed>=enemyTurn.impacts[enemyTurn.hitsShown]){
+            const int k=enemyTurn.hitsShown++;
+            long long shown=0;for(int i=0;i<=k;++i)shown+=enemyTurn.shares[i];
+            heroHpHold=k+1<enemyTurn.hits?enemyTurn.hpBefore-shown:-1;
+            if(k<(int)enemyTurn.absorbedShares.size())floatingAbsorbed(enemyTurn.absorbedShares[k]);
+            floatingDamage(enemyTurn.shares[k],false);allyFlash=20;PlayMusic(M_SWORDHIT);
         }
-        if(enemyTurn.time.finished())enemyTurn.complete=true;
+        if(enemyTurn.time.finished()){
+            enemyTurn.complete=true;heroHpHold=-1;
+            if(enemyTurn.healing>0){combatNumbers.push_back({"+"+std::to_string(enemyTurn.healing),DX*.85f,(float)(layout().ground+68*DX/640.f),0x8DFFA2});PlayMusic(M_POWERUP);}
+        }
         return;
     }
+    if(damagePause.waiting())return;
     if(!enemyTurn.endShown){enemyTurn.endShown=true;enemyTurn.endFrames=30;return;}
     if(enemyTurn.endFrames>0){--enemyTurn.endFrames;return;}
     bool killed=run.enemyHp==0;
     long long overkill=std::max(0LL,run.damageDone-run.enemyMax);
     const long long previousLives=run.lives;
+    if(killed&&!siegeActive){defeatedNpc=combatEnemyNpc();defeatedMotion=renderedEnemyMotion;}
     int hearts=run.finish();enemyTurn=EnemyTurn();
     if(run.lives>previousLives)combatNumbers.push_back({"+"+std::to_string(run.lives-previousLives),DX*.66f,(float)(layout().ground+68*DX/640.f),0x8DFFA2});
     run.setShape(castleShape(run.stage));
@@ -1646,8 +2212,10 @@ void tick(float dt) {
                 GetItem(type,lv,detail,grade,1,0);
             }
         }
-        run.enemyHp=run.enemyMax=hpFor(run.stage,run.wave);
-        if(run.realVitals)run.enemyAttack=std::max(1LL,hpFor(run.stage,0)/12);
+        run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);
+        if(run.realVitals)run.enemyAttack=waveAttack(run.stage,run.wave);
+        waveTransition.begin();picked=finger=-1;
+        flash=allyFlash=0;enemyBodyKnown=false;
     } else message=run.lost?"목숨을 모두 사용했습니다":"턴 종료 · 다음 공격을 준비하세요.";
     save();
 }
@@ -1692,7 +2260,8 @@ void turnReviewStep(const Layout& l) {
         }
         if(crew<0){reviewTrace("FAIL animated crew fixture");finished=true;return;}
         run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
-        run.lives=run.maxLives=5;run.enemyHp=100000;run.enemyMax=200000;
+        debugFirstBoss=false;
+        run.lives=run.maxLives=5;run.enemyHp=100000;run.enemyMax=200000;holdVitals=true;
         run.families[0]=MergeTrees::Role(crew);run.families[1]=Sword;run.families[2]=Armor;
         Block b;b.family=MergeTrees::Role(crew);b.crew=crew;b.level=MergeTrees::Star(crew);b.x=b.y=0;
         Block sword;sword.family=Sword;sword.x=2;sword.y=0;run.board={b,sword};
@@ -1720,7 +2289,9 @@ void turnReviewStep(const Layout& l) {
                 const int elapsed=enemyTurn.time.elapsed;
                 const bool walkingIn=enemyTurn.phases.walkingIn(elapsed),walkingBack=enemyTurn.phases.walkingBack(elapsed);
                 if(walkingIn||walkingBack){
-                    if(!renderedEnemyWalking||std::find(enemyTurn.walk.begin(),enemyTurn.walk.end(),renderedEnemyMotion)==enemyTurn.walk.end()){
+                    const bool authored=std::find(enemyTurn.walk.begin(),enemyTurn.walk.end(),renderedEnemyMotion)!=enemyTurn.walk.end()
+                        ||std::find(enemyTurn.back.begin(),enemyTurn.back.end(),renderedEnemyMotion)!=enemyTurn.back.end();
+                    if(!renderedEnemyWalking||!authored){
                         reviewTrace("FAIL enemy slides without authored walking pose");finished=true;return;
                     }
                     if(std::find(walkingPoses.begin(),walkingPoses.end(),renderedEnemyMotion)==walkingPoses.end())walkingPoses.push_back(renderedEnemyMotion);
@@ -1731,7 +2302,7 @@ void turnReviewStep(const Layout& l) {
                     }
                     previousWalkingX=renderedEnemyX;
                 }else if(elapsed>=enemyTurn.phases.approach&&elapsed<enemyTurn.phases.returnStart()){
-                    const int target=(int)(DX*.66f)+(int)(20*l.scale);
+                    const int target=(int)enemyTurn.attackX;
                     if(renderedEnemyWalking||std::abs(renderedEnemyX-target)>1){reviewTrace("FAIL enemy moves during attack motion");finished=true;return;}
                 }
             }
@@ -1756,11 +2327,11 @@ void turnReviewStep(const Layout& l) {
     if(phase==4) {
         if(bossSample<3) {
             run.wave=4+bossSample*5;
-            run.enemyHp=run.enemyMax=hpFor(run.stage,run.wave);
-        if(run.realVitals)run.enemyAttack=std::max(1LL,hpFor(run.stage,0)/12);
+            run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);
+            if(run.realVitals)run.enemyAttack=waveAttack(run.stage,run.wave);
             ++bossSample;phase=5;return;
         }
-        reviewTrace(BossTier(4)==1&&BossTier(9)==2&&BossTier(14)==3&&hpFor(0,14)>hpFor(0,9)&&hpFor(0,9)>hpFor(0,4)?"PASS real bosses at waves 5 10 15 with increasing health":"FAIL boss progression");
+        reviewTrace(BossTier(4)==1&&BossTier(9)==2&&BossTier(14)==3&&waveHp(0,14)>waveHp(0,9)&&waveHp(0,9)>waveHp(0,4)?"PASS real bosses at waves 5 10 15 with increasing health":"FAIL boss progression");
         reviewTrace("DONE merge turn review");finished=true;return;
     }
 }
@@ -1812,13 +2383,150 @@ void arrivalReviewStep(const Layout& l) {
         reviewCapture("arrival-07-spin-ready");reviewTrace("DONE merge arrival review");done=true;
     }
 }
+// Exercise the actual counterattack builder and renderer for every roster/colour/pattern.
+void enemyPatternReviewStep(const Layout& l){
+    static std::vector<int> npcs;
+    static int sample=0,patternTurn=0,probe=-1,checked=0,moving=0,stationary=0;
+    static bool done=false;
+    if(done)return;
+    if(npcs.empty()){
+        for(const auto& roster:kRegionRoster)for(int variant=0;variant<3;++variant){
+            for(int slot=0;slot<7;++slot){
+                const int npc=(slot<4?roster.normal[slot]:roster.boss[slot-4])+variant*51;
+                if(npc<gTotalEnemy&&std::find(npcs.begin(),npcs.end(),npc)==npcs.end())npcs.push_back(npc);
+            }
+        }
+        run.attacking=false;run.choosing=false;holdVitals=true;
+        entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;spinFlightFrame=-1;
+    }
+    if(probe>=0){
+        const int cmf=enemyData[reviewEnemyNpc*ENEMYDATASIZE+ENEMYDATA_CMF];
+        const bool atAttack=probe==2,atRest=probe==4;
+        if((atAttack&&std::abs(renderedEnemyX-enemyTurn.attackX)>1)
+            ||(atRest&&std::abs(renderedEnemyX-enemyTurn.homeX)>1)
+            ||(!enemyTurn.moves&&std::abs(renderedEnemyX-enemyTurn.homeX)>1)
+            ||(atAttack&&std::find(enemyTurn.motion.begin(),enemyTurn.motion.end(),renderedEnemyMotion)==enemyTurn.motion.end())
+            ||(atRest&&!enemyTurn.rest.empty()&&std::find(enemyTurn.rest.begin(),enemyTurn.rest.end(),renderedEnemyMotion)==enemyTurn.rest.end())){
+            char msg[160];std::snprintf(msg,sizeof(msg),"FAIL enemy pattern npc=%d pattern=%d probe=%d x=%d target=%.1f cmf=%d",reviewEnemyNpc,enemyTurn.pattern.index,probe,renderedEnemyX,enemyTurn.attackX,cmf);
+            reviewTrace(msg);done=true;return;
+        }
+        if(++probe>=5){++checked;enemyTurn.moves?++moving:++stationary;++patternTurn;probe=-1;}
+    }
+    if(probe<0){
+        while(sample<(int)npcs.size()){
+            reviewEnemyNpc=npcs[sample];
+            const int cmf=enemyData[reviewEnemyNpc*ENEMYDATASIZE+ENEMYDATA_CMF];
+            if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+            const auto selected=nativeEnemyPattern(reviewEnemyNpc,cmf,patternTurn);
+            if(selected.index<0){reviewTrace("FAIL roster enemy has no playable pattern");done=true;return;}
+            if(patternTurn>0&&selected.index==nativeEnemyPattern(reviewEnemyNpc,cmf,0).index){++sample;patternTurn=0;continue;}
+            beginEnemyTurn();
+            if(enemyTurn.pattern.index!=selected.index){reviewTrace("FAIL enemy pattern order or encounter reset");done=true;return;}
+            if(enemyTurn.motion.empty()){char msg[160];std::snprintf(msg,sizeof(msg),"FAIL roster enemy has no attack motion npc=%d pattern=%d status=%d cmf=%d",reviewEnemyNpc,enemyTurn.pattern.index,enemyTurn.pattern.attack,enemyData[reviewEnemyNpc*ENEMYDATASIZE+ENEMYDATA_CMF]);reviewTrace(msg);done=true;return;}
+            probe=0;break;
+        }
+        if(sample>=(int)npcs.size()){
+            char msg[160];std::snprintf(msg,sizeof(msg),"PASS %d roster monsters, %d patterns, %d moving and %d stationary attacks at native range",(int)npcs.size(),checked,moving,stationary);
+            reviewTrace(msg);reviewTrace("DONE enemy pattern review");done=true;return;
+        }
+    }
+    const auto& p=enemyTurn.phases;
+    const int times[5]={0,p.approach/2,p.approach,p.returnStart(),p.recoveryStart()};
+    enemyTurn.time.elapsed=times[probe];
+}
+void waveTransitionReviewStep(const Layout& l){
+    static int sample=0,phase=0,mask=0,expectedStage=0,expectedWave=0;
+    static int boardCount=0;static float travelStart=0,stopTravel=0;
+    static bool done=false,layerSeen=false;
+    if(done)return;
+    if(phase==0){
+        run=Run();run.roster=&roster;run.choosing=false;run.stage=0;run.wave=sample==0?0:sample==1?3:14;
+        run.lives=run.maxLives=5;run.enemyHp=run.enemyMax=1;holdVitals=true;debugFirstBoss=false;
+        run.families[0]=Sword;run.families[1]=Armor;run.families[2]=Boots;
+        run.setShape(castleShape(0));Block sword;sword.family=Sword;sword.level=1;run.board={sword};
+        boardCount=(int)run.board.size();expectedStage=sample==2?1:0;expectedWave=sample==0?1:sample==1?4:0;
+        action=CombatAction();enemyTurn=EnemyTurn();waveTransition=MergeCombat::WaveTransition();
+        weaponSwap=MergeCombat::WeaponSwap();damagePause=MergeCombat::DamagePause();attackWeaponLevel=0;
+        entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;spinFlightFrame=-1;animation=0;
+        updateHeroCostume(false);phase=1;mask=0;travelStart=castleScrollSeconds;
+        if(!run.attack(stats)){reviewTrace("FAIL wave fixture could not attack");done=true;}
+        return;
+    }
+    if(monsterDrawn&&!(monsterDrawOrder>0&&allyDrawOrder>monsterDrawOrder)){
+        reviewTrace("FAIL monster rendered over allied character");done=true;return;
+    }
+    if(flash>0&&impactDrawOrder>0){
+        if(!(impactDrawOrder>allyDrawOrder&&allyDrawOrder>monsterDrawOrder)){
+            reviewTrace("FAIL impact effect drawn under actor");done=true;return;
+        }
+        if(!layerSeen){reviewTrace("PASS monster then allied character and sword then impact effect");reviewCapture("wave-layer-order");layerSeen=true;}
+    }
+    if(waveTransition.active()){
+        const auto& t=waveTransition;
+        int bit=t.defeatedVisible()?1:t.travelling()?2:t.arrival()<1?4:8;
+        if(t.travelling()&&(monsterDrawn||enemyBodyKnown)){reviewTrace("FAIL next enemy visible during castle travel");done=true;return;}
+        const long long heart=robin.heart;const int spins=run.spins;
+        reviewTap(l.attack);reviewTap(l.spin);
+        if(run.attacking||robin.heart!=heart||run.spins!=spins||(int)run.board.size()!=boardCount){reviewTrace("FAIL transition accepted input or changed board");done=true;return;}
+        // Capture the middle of each visible phase, not just its first frame.
+        const bool capture=(bit==1&&t.age>=8)||(bit==2&&t.age>=60)||(bit==4&&t.arrival()>=.7f)||(bit==8);
+        if(capture&&!(mask&bit)){
+            char name[48];std::snprintf(name,sizeof(name),"wave-%d-%s",sample,bit==1?"defeat":bit==2?"travel":bit==4?"incoming":"settled");
+            reviewCapture(name);mask|=bit;
+        }
+        phase=2;return;
+    }
+    if(phase==2){
+        if(mask!=15||run.stage!=expectedStage||run.wave!=expectedWave||!layerSeen||castleScrollSeconds<=travelStart){
+            reviewTrace("FAIL wave phases, progression or castle movement");done=true;return;
+        }
+        stopTravel=castleScrollSeconds;phase=3;return;
+    }
+    if(phase==3){
+        if(castleScrollSeconds!=stopTravel||!monsterDrawn||renderedEnemyX!=(int)(DX*.85f)){
+            reviewTrace("FAIL castle or enemy did not stop before controls unlock");done=true;return;
+        }
+        reviewTrace("PASS defeat travel incoming settle input lock and preserved board");
+        if(++sample==3){reviewTrace("DONE wave transition review");done=true;return;}
+        phase=0;
+    }
+}
+#include "MergeMonsterPartsReview.inc"
 void reviewStep(const Layout& l) {
+    if(review&&std::getenv("CS_MONSTER_PARTS_REVIEW")){monsterPartsReviewStep();return;}
+    if(review&&std::getenv("CS_WAVE_TRANSITION_REVIEW")){waveTransitionReviewStep(l);return;}
+    if(review&&std::getenv("CS_MERGE_ENEMY_PATTERN_REVIEW")){enemyPatternReviewStep(l);return;}
+    if(review&&std::getenv("CS_MIST_RESOURCE_REVIEW")){
+        if(mistReviewSample>=35||reviewCapturePending)return;
+        if(++mistReviewHold<(mistReviewSample==0?120:12))return;
+        const int c=mistReviewSample<20?mistReviewSample/2:(mistReviewSample-20)%10;const bool battle=mistReviewSample>=20||mistReviewSample%2;
+        bool valid=sprite[MistCastle::image(c,0)]!=nullptr;
+        for(int part=1;part<=7;++part)valid=valid&&sprite[MistCastle::image(c,part)]!=nullptr;
+        if(battle){
+            const Box hullBounds=OriginalCastle::box(64,430,976,610);
+            valid=valid&&drawnFrontCover==MistCastle::image(c,8)
+                &&drawnFrontCoverBounds.x>=hullBounds.x
+                &&drawnFrontCoverBounds.x+drawnFrontCoverBounds.w<=hullBounds.x+hullBounds.w
+                &&l.cell==(int)(80*l.scale)&&l.cellH==l.cell
+                &&l.board.w==run.shape.width*l.cell
+                &&l.board.h==run.shape.height*l.cellH
+                &&l.board.x>=0&&l.board.x+l.board.w<=DX;
+        }
+        const Box mount=castleCannonBox(l);
+        valid=valid&&mount.y-mount.h>l.ground&&mount.x+mount.w<DX*.65f;
+        reviewTrace(valid?"PASS mist resource parts, opaque closure and elevated tower socket":"FAIL mist resource registration");
+        char name[80];if(mistReviewSample>=20)std::snprintf(name,sizeof(name),"background-%02d",mistReviewSample-19);else std::snprintf(name,sizeof(name),"castle-%02d-%s",c+1,battle?"battle":"interior");reviewCapture(name);
+        mistReviewHold=0;if(++mistReviewSample==35)reviewTrace("DONE mist resource review");
+        return;
+    }
     if(review&&std::getenv("CS_MERGE_ATTACK_STAT_REVIEW")){
         static int phase=0,hold=0;static long long before=0;
         if(phase==0){
             if(entering())return;
+            cocos2d::Director::getInstance()->setDisplayStats(false); // Keep the reviewed lever unobscured by the diagnostic HUD.
             introElapsed=-1;animation=0;run.board.clear();run.tray.clear();message.clear();messageTime=0;
             for(int i=0;i<2;++i){Block b;b.family=Gloves;b.level=1;b.x=i;b.y=0;run.board.push_back(b);}
+            {Block sword;sword.family=Sword;sword.level=2;sword.x=2;sword.y=0;run.board.push_back(sword);}
             updateHeroCostume(false);attackDisplayKnown=false;attackGainTime=0;phase=1;return;
         }
         if(phase==1&&++hold>=5){
@@ -1830,7 +2538,17 @@ void reviewStep(const Layout& l) {
             const long long after=hero.ps[PS_DMG];
             reviewTrace(after>before&&attackDisplay.target==after?"PASS glove merge raises actual hero attack and status target":"FAIL attack stat did not increase");
             reviewTrace(attackGainTime>0&&attackGain==after-before&&attackDisplay.value>before&&attackDisplay.value<after?"PASS exact attack gain and animated status value":"FAIL attack gain presentation");
-            reviewCapture("glove-merge-attack-gain");reviewTrace("DONE attack stat review");phase=3;
+            reviewCapture("glove-merge-attack-gain");phase=3;hold=0;
+        }
+        if(phase==3&&++hold>=45){
+            Run probe=run;probe.choosing=false;probe.attacking=false;probe.lost=false;
+            const bool started=probe.attack(stats);
+            bool passive=started&&probe.shots.size()==1&&probe.shots[0].block.family==Sword;
+            for(const auto& shot:probe.shots)passive=passive&&shot.block.family!=Gloves;
+            reviewTrace(passive&&stats.weapon==std::max(1LL,std::min(hero.ps[PS_DMG],100000000LL))?
+                "PASS gloves are passive and sword uses the actual increased attack stat":"FAIL passive glove attack stat");
+            reviewTrace(sprite[MERGE_REBUILD_UI_IMG+MergeCastleArt::Gear]?"PASS gold gear spin icon loaded":"FAIL spin icon asset");
+            reviewCapture("glove-passive-sword-lever-ready");reviewTrace("DONE attack stat review");phase=4;
         }
         return;
     }
@@ -1858,9 +2576,15 @@ void reviewStep(const Layout& l) {
         if(phase==1&&age>=turretFire.release-3){
             std::snprintf(name,sizeof(name),"turret-%02d-prepare",castle+1);reviewCapture(name);phase=2;
         }else if(phase==2&&age>=turretFire.release+(turretFire.type==TurretAttack::Laser?5:turretFire.flight/2)){
-            const bool resources=turretFire.type==TurretAttack::Missiles?sprite[TURRET_MISSILE_IMG]!=nullptr:turretFire.type==TurretAttack::Laser?sprite[TURRET_LASER_IMG]!=nullptr:true;
-            const bool valid=resources&&action.bulletIcon<0&&action.emitterReady&&turretFire.count==(castle==2?3:castle==3?6:1);
+            const bool resources=turretFire.type==TurretAttack::Missiles?sprite[castle==2?TURRET_TRIPLE_MISSILE_IMG:TURRET_MISSILE_IMG]!=nullptr:turretFire.type==TurretAttack::Laser?sprite[TURRET_FLAME_LASER_IMG]!=nullptr:sprite[castle==7?TURRET_MAGNETIC_ORB_IMG:castle==5?TURRET_CRYSTAL_ORB_IMG:castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG]!=nullptr;
+            const bool valid=resources&&action.bulletIcon<0&&action.emitterReady&&turretFire.count==(castle==2?3:castle==3?12:1);
             reviewTrace(valid?"PASS turret native type muzzle and burst":"FAIL turret type or burst");
+            if(castle==2){
+                const auto top=cannonMuzzle(l,2,false,-1,0),middle=cannonMuzzle(l,2,false,-1,1),bottom=cannonMuzzle(l,2,false,-1,2);
+                const auto mirror=cannonMuzzle(l,2,true,-1,0);
+                reviewTrace(top.y>middle.y&&middle.y>bottom.y&&top.x==middle.x&&middle.x==bottom.x&&
+                    std::abs(mirror.x+top.x-DX)<.01f?"PASS three missiles have separate registered barrel origins and mirrored ports":"FAIL triple barrel origins");
+            }
             std::snprintf(name,sizeof(name),"turret-%02d-flight",castle+1);reviewCapture(name);phase=3;
         }else if(phase==3&&action.time.applied){
             reviewTrace("PASS turret damage commits exactly once after final projectile arrival");
@@ -1868,6 +2592,28 @@ void reviewStep(const Layout& l) {
         }else if(phase==4&&age>=action.time.end-1){
             if(++castle==10){reviewTrace("DONE turret attack review");done=true;return;}
             phase=0;
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_REEL_ARMOR_MATCH_REVIEW")){
+        static int phase=0,hold=0;
+        if(phase==0){
+            if(entering())return;
+            introElapsed=-1;animation=0;run.board.clear();run.tray.clear();message.clear();messageTime=0;
+            for(int i=0;i<3;++i){
+                Block b;b.family=i==0?1:i==1?Armor:Sword;b.level=1;b.x=i;b.y=0;
+                b.crew=i==0?MergeTrees::CrewAt(1,1,0):-1;
+                run.board.push_back(b);reelSymbols[i]=b;
+            }
+            hasReelSymbols=true;phase=1;return;
+        }
+        if(phase==1&&++hold>=6){
+            const ITEM& item=treeEquipment[Armor-Sword][0];
+            const int expected=ITEM_SERIES_FIRST_IMG+ItemSeries::FromIcon(GetItemIcon(item.type,item.detail,item.grade));
+            const int grid=GRID_ITEM_FIRST_IMG+GridItems::FromItem(item.type,item.detail);
+            const bool matching=sprite[expected]!=nullptr&&sprite[grid]!=nullptr&&expected!=grid;
+            reviewTrace(matching?"PASS armor reel and board use separate textures with matching designs":"FAIL armor identity");
+            reviewCapture("armor-and-stopped-crew");reviewTrace("DONE reel armor match review");phase=2;
         }
         return;
     }
@@ -1910,22 +2656,22 @@ void reviewStep(const Layout& l) {
         if(phase==1){
             run.stage=stage;run.setShape(castleShape(stage));const auto test=layout();
             int count=0;for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x)count+=run.shape.contains(x,y);
-            if(count!=16+stage*2||test.cell!=std::min((int)(64*test.scale),(int)((DX-112*test.scale)/std::max(1,run.shape.width)))||test.cellH!=test.cell||test.board.y>test.ground-120*test.scale||test.board.y-test.board.h<test.slot.y+4*test.scale){reviewTrace("FAIL fixed tile size, growth or health bar clearance");phase=3;return;}
+            if(count!=16+stage*2||test.cell<=0||test.cell!=(int)(80*test.scale)||test.cellH!=test.cell||(stage<9&&test.board.y-test.cellH>test.ground-test.plateDrop-test.plateH)||test.board.y-test.board.h<test.slot.y){reviewTrace("FAIL fixed tile size, growth or health bar clearance");phase=3;return;}
             if(++hold<4)return;hold=0;
-            const Box commonFront=OriginalCastle::box(48,430,1000,610);
+            const Box commonFront=OriginalCastle::box(96,430,912,875);
             if(drawnFrontCoverBounds.x!=commonFront.x||drawnFrontCoverBounds.y!=commonFront.y||drawnFrontCoverBounds.w!=commonFront.w||drawnFrontCoverBounds.h!=commonFront.h){reviewTrace("FAIL castle exterior dimensions differ by stage");phase=3;return;}
             const auto savedCannon=robin.castleProgress.parts[stage][3];int previousWidth=0,previousHeight=0;
             bool grows=true;
             for(int level=0;level<6;++level){
                 robin.castleProgress.parts[stage][3]=(unsigned char)level;
                 const Box gun=castleCannonBox(test);
-                grows=grows&&gun.w>previousWidth&&gun.h>previousHeight&&gun.x==(int)(190*test.scale)&&std::abs(gun.y-gun.h-test.ground-24*test.scale)<=1&&gun.x+gun.w<=330*test.scale;
-                grows=grows&&gun.h==(int)((78+4*stage+10*level)*test.scale);
+                grows=grows&&gun.w>previousWidth&&gun.h>previousHeight&&gun.y-gun.h>test.ground&&gun.x+gun.w<=DX*.65f;
+                grows=grows&&gun.h==(int)((stage==0?90.f+2.f*level:52.f+4.f*stage+3.f*level)*test.scale);
                 previousWidth=gun.w;previousHeight=gun.h;
             }
             robin.castleProgress.parts[stage][3]=savedCannon;
             if(!grows){reviewTrace("FAIL cannon upgrade growth or deck anchor");phase=3;return;}
-            if(drawnFrontCover!=MergeCastleFronts::Image(stage)||drawnFrontRimParts!=0){reviewTrace("FAIL full exterior front or border occlusion missing");phase=3;return;}
+            if(drawnFrontCover!=MistCastle::image(stage,8)||drawnFrontRimParts!=0){reviewTrace("FAIL full exterior front or border occlusion missing");phase=3;return;}
             const auto& o=drawnFrontCoverBounds;const auto& in=drawnFrontInnerBounds;
             char joins[200];std::snprintf(joins,sizeof(joins),"front-join castle=%d outer=%d,%d,%d,%d inner=%d,%d,%d,%d",stage+1,o.x,o.y,o.w,o.h,in.x,in.y,in.w,in.h);reviewTrace(joins);
             char name[60];std::snprintf(name,sizeof(name),"cover-castle-%02d",stage+1);reviewCapture(name);
@@ -1937,12 +2683,12 @@ void reviewStep(const Layout& l) {
         if(phase==2){
             static Box playerCover={0,0,0,0};
             if(hold==2){playerCover=drawnFrontCoverBounds;
-                reviewTrace(drawnFrontCover==MERGE_GOLD_FRONT_COVER_IMG?"PASS PVP uses dedicated gold front instead of cropped tower":"FAIL PVP facade source");
+                reviewTrace(drawnFrontCover==MistCastle::image(Siege::castle,8)?"PASS PVP uses dedicated gold front instead of cropped tower":"FAIL PVP facade source");
                 reviewCapture("cover-pvp-player");}
             if(++hold==4){Siege::swapSides();introElapsed=-1;}
             if(hold==8){const auto test=layout();reviewTrace(test.board.y<=test.ground-84*test.scale?"PASS maximum PVP opponent board stays below health bars":"FAIL PVP board overlap");
                 const auto& cover=drawnFrontCoverBounds;
-                reviewTrace(drawnFrontCover==MERGE_GOLD_FRONT_COVER_IMG&&cover.x==playerCover.x&&cover.y==playerCover.y&&cover.w==playerCover.w&&cover.h==playerCover.h?
+                reviewTrace(drawnFrontCover==MistCastle::image(Siege::castle,8)&&cover.x==playerCover.x&&cover.y==playerCover.y&&cover.w==playerCover.w&&cover.h==playerCover.h?
                     "PASS gold front stays registered to outer hull across PVP turns":"FAIL PVP facade moved");
                 reviewCapture("cover-pvp-opponent");}
             if(hold>=48){
@@ -2006,20 +2752,78 @@ void reviewStep(const Layout& l) {
         if(stage==7&&t>3){reviewCapture("siege-05-expanded");reviewTrace("DONE siege review");Siege::expanded=false;stage=9;}
         return;
     }
+    if(review&&std::getenv("CS_ROULETTE_TRASH_REVIEW")){
+        static int phase=0,hold=0,discarded=0;static long long paid=0;
+        if(phase==3)return;
+        if(phase==0){
+            run=Run();run.roster=&roster;run.choosing=false;run.shape=castleShape(0);
+            run.families[0]=0;run.families[1]=Sword;run.families[2]=Armor;
+            for(int y=0;y<4;++y)for(int x=0;x<4;++x){Block b;b.family=Armor;b.x=x;b.y=y;b.level=1;run.board.push_back(b);}
+            introElapsed=-1;entryElapsed=-1;animation=0;robin.heart=20;observedHearts=20;
+            updateHeroCostume(false);action=CombatAction();enemyTurn=EnemyTurn();
+            reviewTap(layout().spin);paid=robin.heart;
+            reviewTrace(paid==19&&animation>0&&run.tray.size()==3?"PASS full grid can spin for one heart":"FAIL full grid spin");
+            phase=1;return;
+        }
+        if(phase==1){
+            if(animation>0||spinFlying())return;
+            if(run.tray.size()!=3||run.board.size()!=16){reviewTrace("FAIL blocked results were lost or overlapped board");phase=3;return;}
+            const int spins=run.spins;reviewTap(layout().spin);
+            reviewTrace(robin.heart==paid&&run.spins==spins?"PASS unresolved results block repeated spins without charge":"FAIL unresolved reroll charged");
+            reviewCapture("trash-01-full-grid-pending");phase=2;hold=0;return;
+        }
+        if(++hold<8)return;hold=0;
+        if(!run.tray.empty()){
+            const Layout test=layout();const Box source=slotWindow(test.slot,0),bin=rouletteTrash(test);
+            const int before=(int)run.tray.size();
+            static bool dragging=false;
+            if(!dragging){
+                MergeRouletteTouch(0,997,source.x+source.w/2,source.y-source.h/2);
+                MergeRouletteTouch(1,997,bin.x+bin.w/2,bin.y-bin.h/2);
+                dragging=true;return;
+            }
+            reviewTrace(trashOpenness>.5f?"PASS trash opens its mouth near dragged item":"FAIL trash mouth proximity");
+            MergeRouletteTouch(2,997,bin.x+bin.w/2,bin.y-bin.h/2);dragging=false;
+            ++discarded;
+            reviewTrace(run.tray.size()==before-1&&run.board.size()==16&&robin.heart==paid?"PASS drag result to trash removes exactly one with no extra charge":"FAIL trash drop");
+            if(discarded==1)reviewCapture("trash-02-discard-one");
+        }
+        if(run.tray.empty()){
+            reviewTrace(discarded==3&&run.attacking?"PASS resolving final result starts the normal enemy turn":"FAIL pending turn completion");
+            reviewCapture("trash-03-all-resolved");reviewTrace("DONE roulette trash review");phase=3;
+        }
+        return;
+    }
     if(review&&std::getenv("CS_MERGE_COSTUME_REVIEW")){
         static int phase=0,weaponMask=0;if(phase==2)return;
         if(phase==1){
+            static unsigned swapCaptures=0;
+            static int pausedShot=-1;
+            if(damagePause.remaining==MergeCombat::DamageNumberFrames+MergeCombat::DamageBreathFrames)pausedShot=run.nextShot;
+            if(damagePause.waiting()&&pausedShot>=0&&run.nextShot!=pausedShot){reviewTrace("FAIL next action advanced before damage feedback ended");phase=2;return;}
+            if(action.index>=0&&weaponSwap.running()){
+                if(action.time.elapsed!=0){reviewTrace("FAIL attack started before weapon attached and settled");phase=2;return;}
+                const int ages[3]={18,40,48};
+                const char* names[3]={"weapon-01-overhead-orbit","weapon-02-snap-to-hand","weapon-03-costume-attached"};
+                for(int i=0;i<3;++i)if(!(swapCaptures&(1u<<i))&&weaponSwap.age>=ages[i]){swapCaptures|=1u<<i;reviewCapture(names[i]);}
+            }
             if(action.index>=0&&run.shots[action.index].block.family==Sword){
                 const int level=run.shots[action.index].block.level;
                 const ITEM& expected=treeEquipment[0][level-1];
-                if(hero.equip[EQUIP_WEAPON].detail!=expected.detail||action.caster.equip[EQUIP_WEAPON].detail!=expected.detail||costumeEffectTicks!=0){
+                if((!weaponSwap.running()&&hero.equip[EQUIP_WEAPON].detail!=expected.detail)||action.caster.equip[EQUIP_WEAPON].detail!=expected.detail||costumeEffectTicks!=0){
                     reviewTrace("FAIL attacking sword costume or unwanted level up");phase=2;return;
+                }
+                static bool crystalCaptured=false;
+                if(level==2&&weaponSwap.age>=MergeCombat::WeaponSwap::AttachFrame&&!crystalCaptured){
+                    crystalCaptured=true;reviewCapture("weapon-04-two-cell-crystal-blade");
                 }
                 weaponMask|=1<<level;
             }
             if(enemyTurn.started){
-                reviewTrace(weaponMask==((1<<1)|(1<<3))&&attackWeaponLevel==0&&hero.equip[EQUIP_WEAPON].detail==treeEquipment[0][2].detail&&costumeEffectTicks==0?
+                reviewTrace(weaponMask==((1<<1)|(1<<2)|(1<<3))&&attackWeaponLevel==0&&hero.equip[EQUIP_WEAPON].detail==treeEquipment[0][2].detail&&costumeEffectTicks==0?
                     "PASS each sword attacks in its own costume and best weapon returns before enemy turn without level up":"FAIL attack weapon restoration");
+                reviewTrace(swapCaptures==7?"PASS overhead orbit snap attachment and attack ordering":"FAIL missing weapon swap phases");
+                reviewTrace(!damagePause.waiting()?"PASS damage number fade and extra breath precede next turn":"FAIL turn entered during damage feedback");
                 reviewCapture("costume-weapon-level-up");reviewTrace("DONE costume review");phase=2;
             }
             return;
@@ -2032,7 +2836,7 @@ void reviewStep(const Layout& l) {
         }
         updateHeroCostume();bool best=true;
         for(int g=0;g<GearCount;++g){
-            const ITEM& actual=hero.equip[costumeSlots[g]];
+            const ITEM& actual=g==0&&weaponSwap.running()?incomingWeapon:hero.equip[costumeSlots[g]];
             const ITEM& expected=treeEquipment[g][3];
             best=best&&costumeLevels[g]==4&&actual.type==expected.type&&actual.detail==expected.detail;
         }
@@ -2053,7 +2857,9 @@ void reviewStep(const Layout& l) {
         reviewTrace(costumeEffectTicks==0?"PASS weaker roulette weapon does not trigger level up":"FAIL weaker weapon level up");
         weapon.level=3;run.board.push_back(weapon);updateHeroCostume();
         reviewTrace(costumeEffectTicks==0?"PASS equal roulette weapon does not trigger level up":"FAIL equal weapon level up");
-        run.board.pop_back();run.enemyHp=run.enemyMax=1000000000LL;
+        run.board.pop_back();
+        weapon.level=2;weapon.x=2;weapon.y=0;run.board.push_back(weapon);
+        run.enemyHp=run.enemyMax=1000000000LL;
         run.setVitals(stats.heroHealth,stats.heroArmor);run.attack(stats);
         action=CombatAction();enemyTurn=EnemyTurn();animation=0;
         return;
@@ -2062,11 +2868,16 @@ void reviewStep(const Layout& l) {
         static bool checked=false;
         if(!checked){
             checked=true;const Layout fixed=layout();const float s=DX/640.f;const int lift=(int)castleSceneLift();
-            const bool aligned=fixed.board.y==(int)(285*s)+fixed.cellH*run.shape.height+lift&&
+            const bool aligned=fixed.board.y-fixed.board.h>=fixed.slot.y&&fixed.board.y-(run.shape.height>4?fixed.cellH:0)<=fixed.ground-fixed.plateDrop-fixed.plateH+(int)(2*s)&&
                 fixed.slot.y==(int)(280*s)+lift&&fixed.heart.y==(int)(156*s)+lift&&
                 fixed.spin.y==(int)(12*s)+(int)(56*1.2f*s)&&fixed.attack.y==fixed.spin.y;
-            const float center=((OriginalCastle::H-83)*OriginalCastle::zoom()+OriginalCastle::lift()+96*s+castleSceneLift())*.5f;
-            const bool centered=std::abs(DY-DX*2.2f)>1.f||std::abs(center+4.f*s-DY*.5f)<1.f;   //성을 8 내려 두었으므로 중심은 4 아래
+            //가운데 맞춤은 lobbyCastleLift 가 책임진다(2.2 비율에서 성 중심 = 화면 가운데). 장면 들어올림이
+            //그 값에서 포대용 8 만 뺀 것인지만 본다 - 성 중심을 여기서 다시 유도하면 상수가 어긋날 때마다 깨진다.
+            //긴 화면은 붙박이 몬스터 판이 성 지붕 위에 들어가도록 덜 올린 값이 기대값이다(castleSceneLift).
+            const float wanted=std::max(-25.f*s,std::min(MergeCombat::lobbyCastleLift((float)DX,(float)DY)-25.f*s,topPanelCeiling(std::max(4,(int)run.shape.height))-((1445.f-83.f)*(DX/1089.f*1.04f)+34*s)));
+            const bool centered=std::abs(DY-DX*2.2f)>1.f||std::abs(castleSceneLift()-wanted)<1.f;
+            if(!(aligned&&centered)){char why[300];std::snprintf(why,sizeof(why),"layout board %d-%d slot %d/%d heart %d/%d spin %d/%d attack %d ground %d plate %d+%d cell %d lift %d DY %d",
+                fixed.board.y,fixed.board.y-fixed.board.h,fixed.slot.y,(int)(280*s)+lift,fixed.heart.y,(int)(156*s)+lift,fixed.spin.y,(int)(12*s)+(int)(56*1.2f*s),fixed.attack.y,fixed.ground,fixed.plateDrop,fixed.plateH,fixed.cell,lift,DY);reviewTrace(why);}
             reviewTrace(aligned&&centered?"PASS gameplay shares centered castle lift while bottom actions stay fixed":"FAIL gameplay responsive layout");
         }
     }
@@ -2129,7 +2940,7 @@ void reviewStep(const Layout& l) {
             Block armor;armor.family=Armor;run.tray.push_back(armor);run.autoPlace(0);
             entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
             for(auto& reveal:deckReveal)reveal=MergeCombat::ResidentReveal();
-            reviewTrace(run.maxLives==hero.ps[PS_HP]&&run.baseArmor==hero.ps[PS_ARMOR]&&run.maxLives>20?
+            reviewTrace(run.maxLives==hero.ps[PS_HP]&&run.baseArmor==wornGuard()&&run.maxLives>20?
                 "PASS native hero HP and armor match actual stats":"FAIL native hero stats");
             reviewTrace(heartCapacity==10?"PASS ten enlarged resource hearts":"FAIL heart count");
             char native[128];std::snprintf(native,sizeof(native),"native HP=%lld armor=%lld block armor=%lld",run.maxLives,run.baseArmor,run.forecast(stats).protect);reviewTrace(native);
@@ -2140,8 +2951,9 @@ void reviewStep(const Layout& l) {
             reviewCapture("vitals-02-native-bars-ten-hearts");phase=3;return;
         }
         if(phase==3){
+            //첫 공격 때 갑옷 블록이 통에 찬 채로 들어오므로, 반격 = 통 전부 + 체력의 1/8 이면 체력이 그만큼 깎인다.
             run.enemyAttack=run.baseArmor+run.forecast(stats).protect+std::max(1LL,run.maxLives/8);
-            before=run.lives;expected=run.enemyAttack-run.baseArmor-run.forecast(stats).protect;
+            before=run.lives;expected=std::max(1LL,run.maxLives/8);
             reviewTap(l.attack);phase=4;return;
         }
         if(phase==4&&enemyTurn.started&&enemyTurn.time.applied){
@@ -2200,7 +3012,7 @@ void reviewStep(const Layout& l) {
         if(done)return;
         if(phase==0) {
             run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
-            run.lives=2;run.maxLives=5;run.enemyHp=100000;run.enemyMax=200000;
+            run.lives=2;run.maxLives=5;run.enemyHp=100000;run.enemyMax=200000;holdVitals=true;
             Block a;a.family=0;a.crew=roster.first(0,1);a.x=0;a.y=0;
             Block b=a;b.x=2;run.board={a,b};
             const bool merged=run.place(false,0,2,0);
@@ -2214,12 +3026,14 @@ void reviewStep(const Layout& l) {
                 if(c!=mergedCrew&&(kind==HEROSKILL||kind==SUMMONHERO)&&caller<0)caller=c;
             }
             reviewTrace(bullet>=0&&caller>=0?"PASS native bullet and hero request fixtures":"FAIL native skill fixtures");
-            int x=0;
+            //겹치지 않는 빈 자리에 세운다 - 겹친 판으로는 공격이 안 나간다(boardResolved).
+            const auto seat=[&](Block block){
+                for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x){block.x=x;block.y=y;if(run.fits(block)){run.board.push_back(block);return;}}
+            };
             for(int c:{bullet,caller})if(c>=0) {
-                Block block;block.family=MergeTrees::Role(c);block.level=MergeTrees::Star(c);block.crew=c;block.x=x;block.y=0;
-                run.board.push_back(block);x=4;
+                Block block;block.family=MergeTrees::Role(c);block.level=MergeTrees::Star(c);block.crew=c;seat(block);
             }
-            Block armor;armor.family=Armor;armor.x=1;armor.y=2;run.board.push_back(armor);
+            Block armor;armor.family=Armor;seat(armor);
             expectedCrew=3;entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;
             animation=0;action=CombatAction();spinFlightFrame=-1;phase=1;return;
         }
@@ -2427,7 +3241,7 @@ void reviewStep(const Layout& l) {
     }
     if(a==5) {run.stage=4;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a==6){reviewLayout(l,"10-castle5-nine-columns");reviewCapture("10-castle5-nine-columns");
-        reviewTrace(l.cell==64&&l.cellH==64&&l.board.w<=576?"PASS expanded castle grid retains fixed 64px cells":"FAIL expanded grid size");}
+        reviewTrace(l.cell==(int)(80*l.scale)&&l.cellH==l.cell&&l.board.w==6*l.cell?"PASS expanded castle grid retains fixed 80px cells":"FAIL expanded grid size");}
     if(a==10) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a>=12&&!reviewCapturePending&&!reviewFinalCapture) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
@@ -2508,6 +3322,8 @@ void reviewStep(const Layout& l) {
 }
 }
 
+int MergeCrewOwnerHero(int crew) {return MergeTrees::OwnerHero(crew);}
+bool MergeCrewAvailable(int crew) {const int h=MergeTrees::OwnerHero(crew);return h<0||IsGetHero(h);}
 bool MergeRouletteActive() {return active;}
 void MergeRouletteBeginSiege() {Siege::begin();}
 bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height){
@@ -2529,7 +3345,7 @@ bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height)
 void MergeRouletteSetHeartCapacity(int capacity) {(void)capacity;heartCapacity=10;heartDisplay=(int)std::min((long long)heartCapacity,robin.heart);}
 void MergeRouletteBegin(bool resume) {
     if(active)return;
-    siegeActive=false;siegeHullStage=-1;
+    siegeActive=false;siegeHullStage=-1;waveTransition=MergeCombat::WaveTransition();
     review=std::getenv("CS_MERGE_REVIEW")!=nullptr;
     oldMode=option.gameMode;option.gameMode=TURNRPG;
     configure();
@@ -2541,12 +3357,12 @@ void MergeRouletteBegin(bool resume) {
     //그대로다 - 벗는 것은 그림뿐이다.
     for(int g=0;g<GearCount;++g){std::memset(&baseCostume[g],0,sizeof(ITEM));baseCostume[g].type=EMPTY;costumeLevels[g]=0;}
     for(int g=0;g<GearCount;++g){hero.equip[costumeSlots[g]]=baseCostume[g];hero.equipImg[costumeSlots[g]]=0;}
-    costumeEffectTicks=0;attackWeaponLevel=0;
+    costumeEffectTicks=0;attackWeaponLevel=0;weaponSwap=MergeCombat::WeaponSwap();damagePause=MergeCombat::DamagePause();
     //디버그로 성을 바꿔 두었으면 그 성으로 들어간다(칸 수·적 체력·대포 단계 전부).
     const int debugCastle=LobbyCastleDebugCastle();
     run=Run();run.roster=&roster;run.rng=(unsigned)MC_knlCurrentTimeStamp()|1;
     run.selected=pool.front();run.stage=std::max(0,std::min(9,debugCastle>=0?debugCastle:(int)robin.castle));
-    run.enemyHp=run.enemyMax=hpFor(run.stage,0);
+    run.enemyHp=run.enemyMax=waveHp(run.stage,0);
 
     if(resume) {
         Run restored;restored.roster=&roster;
@@ -2555,12 +3371,21 @@ void MergeRouletteBegin(bool resume) {
             bool owned=true;for(int f:restored.families)if(std::find(pool.begin(),pool.end(),f)==pool.end())owned=false;
             if(owned)run=restored;
         }
-        if(debugCastle>=0&&run.stage!=debugCastle){run.stage=debugCastle;run.wave=0;run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
+        //이어 하는 판의 시작 계열이 전부 장비면(옛 뽑기 - 장비 가중치 4) 릴에서 동료가 영영 안 나온다.
+        //검은 두고 다른 장비 자리에 이 히어로의 역할을 채운다. 판 위 블록은 그대로다.
+        {
+            bool hasRole=false;for(int f:run.families)if(f<Roles)hasRole=true;
+            if(!hasRole){
+                std::vector<int> roles;for(int f:pool)if(f<Roles)roles.push_back(f);
+                for(int i=0;i<3&&!roles.empty();++i)if(run.families[i]>=Roles&&run.families[i]!=Sword){run.families[i]=roles.front();roles.erase(roles.begin());}
+            }
+        }
+        if(debugCastle>=0&&run.stage!=debugCastle){run.stage=debugCastle;run.wave=0;run.enemyHp=run.enemyMax=waveHp(run.stage,0);}
     } else if(review) {robin.heart=20;run.rng=12345;}
     const bool migrateVitals=!run.realVitals;
     run.setVitals(stats.heroHealth,stats.heroArmor);
-    run.enemyAttack=std::max(1LL,hpFor(run.stage,0)/12);
-    if(migrateVitals&&run.attacking)run.effects.protect=run.forecast(stats).protect;
+    run.enemyAttack=waveAttack(run.stage,run.wave);
+    if(migrateVitals&&run.attacking){const Effects f=run.forecast(stats);run.effects.protect=f.protect;run.effects.charge=f.charge;run.settleGuard();}
     run.setShape(castleShape(run.stage));
     bool starting=run.choosing&&run.start(pool,treeWeights,review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW"));
     entryElapsed=0.f;entryCaptures=0;panicSeed=run.rng;
@@ -2570,6 +3395,7 @@ void MergeRouletteBegin(bool resume) {
     simulationRemainder=0;gradeAccents.clear();shownGrades.clear();
     deckMerge=DeckMergePresentation();deckMergeSeen=run.mergeSeq;
     std::fill(deckCrewPositionKnown,deckCrewPositionKnown+64,false);
+    enemyPatternNpc=enemyPatternStage=enemyPatternWave=-1;enemyPatternTurn=0;
     ticks=animation=0;action=CombatAction();enemyTurn=EnemyTurn();allyFlash=0;guardDisplay=MergeCombat::AnimatedValue();
     attackDisplayKnown=false;attackGain=0;attackGainTime=0;
     heroHealthDisplay=MergeCombat::AnimatedValue();heroHealthDisplay.set(run.lives);heroHealthDisplay.advance(1);
@@ -2621,12 +3447,11 @@ void MergeRouletteDraw() {
         if(samples>=90){
             reviewTrace(poses.size()>1&&ticks>firstTick+30?"PASS actual lobby path advances native hero neutral motion":"FAIL frozen lobby hero motion");
             const float s=DX/640.f,lift=castleSceneLift();
-            const float center=((OriginalCastle::H-83)*OriginalCastle::zoom()+OriginalCastle::lift()+96*s+lift)*.5f;
             const Box nav=OriginalCastle::box(76,1275,941,163,OriginalCastle::lift());
-            const bool centered=std::abs(DY-DX*2.2f)>1.f||std::abs(center+4.f*s-DY*.5f)<1.f;   //성을 8 내려 두었으므로 중심은 4 아래
+            const bool centered=std::abs(DY-DX*2.2f)>1.f||std::abs(lift-(MergeCombat::lobbyCastleLift((float)DX,(float)DY)-25.f*s))<1.f;
             reviewTrace(centered&&nav.y==(int)((OriginalCastle::H-1275)*OriginalCastle::zoom())?
                 "PASS responsive castle and rail lift with fixed bottom navigation":"FAIL responsive lobby layout");
-            char metrics[160];std::snprintf(metrics,sizeof(metrics),"layout height=%d lift=%.2f castleCenter=%.2f rail=%.2f navTop=%d",DY,lift,center,104*s+lift,nav.y);reviewTrace(metrics);
+            char metrics[160];std::snprintf(metrics,sizeof(metrics),"layout height=%d lift=%.2f rail=%.2f navTop=%d",DY,lift,104*s+lift,nav.y);reviewTrace(metrics);
             const Box start=lobbyStart(layout());
             active=false;drawHandle=MD_LOBBY;
             MergeRouletteTouch(0,999,start.x+start.w*.5f,start.y-start.h*.5f);
@@ -2653,6 +3478,221 @@ void MergeRouletteDraw() {
         for(auto& accent:gradeAccents)accent.age+=steps;
     }
     ResetRectPoint();mustRefresh=true;profile.stamp(0);
+    if(review&&std::getenv("CS_REEL_SHADOW_REVIEW")){
+        static int page=0,hold=0;
+        if(page>=6)return;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        SetAlpha(32);SetColor(0);grayScale=0;
+        MemRect(0,DY,DX,DY,0x243436);
+        bool valid=true;
+        if(page<3){
+            const float scale=page==0?.5f:page==1?1.f:2.f;
+            label("Shadow clipping / small, native, enlarged",DX/2,DY-20,.6f,0xE9D7B5);
+            for(int edge=0;edge<9;++edge){
+                const int x=25+(edge%3)*205,y=DY-70-(edge/3)*220;
+                const int width=150,height=130,sw=24*_2X,sh=16*_2X;
+                MemRect(x,y,width,height,0xE0CFB1);
+                SetSectionClip(x,y,width,height,false);
+                const int dx=(int)(edge%3==0?x-sw*scale/2:edge%3==1?x+width/2-sw*scale/2:x+width-sw*scale/2);
+                const int dy=(int)(edge/3==0?y+sh*scale/2:edge/3==1?y-height/2+sh*scale/2:y-height+sh*scale/2);
+                ShadowImage(sw,sh,_2X,_2X,dx,dy,SHADOW_IMG,scale);
+                const auto rect=renderSprite[getSpriteIdx]->getTextureRect();
+                const auto bounds=renderSprite[getSpriteIdx]->getBoundingBox();
+                valid=valid&&getSpriteTexture==SHADOW_IMG&&rect.origin.x>=_2X-.01f&&rect.origin.y>=_2X-.01f&&
+                    rect.getMaxX()<=_2X+sw+.01f&&rect.getMaxY()<=_2X+sh+.01f&&
+                    bounds.getMinX()>=x-.01f&&bounds.getMaxX()<=x+width+.01f&&
+                    bounds.getMinY()>=y-height-.01f&&bounds.getMaxY()<=y+.01f;
+                const int before=curRenderCnt;
+                ShadowImage(sw,sh,_2X,_2X,x,y+height,SHADOW_IMG,scale);
+                ShadowImage(sw,sh,_2X,_2X,x,y,SHADOW_IMG,0);
+                valid=valid&&before==curRenderCnt;
+                UnSectionClip(false);
+            }
+        }else{
+            const Layout l=layout();drawWorld(l,false);drawSlotFrame(l.slot);
+            for(int i=0;i<3;++i){
+                const Box window=slotWindow(l.slot,i);
+                SetSectionClip(window.x,window.y,window.w,window.h,false);
+                for(int j=-1;j<=1;++j){
+                    Box symbol=window;symbol.y+=j*window.h+(page-4)*window.h*2/3;
+                    icon(i%Roles,symbol,1.f,true);
+                }
+                UnSectionClip(false);
+            }
+            slotRim(l.slot);
+        }
+        if(!holdReview&&++hold>8){
+            reviewTrace(valid?"PASS scaled shadow source bounds, clip edges and offscreen rejection":"FAIL shadow clipping");
+            char name[32];std::snprintf(name,sizeof(name),"reel-shadow-%02d",page+1);reviewCapture(name);
+            hold=0;if(++page==6)reviewTrace("DONE reel shadow review");
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_SQUARE_GEAR_REVIEW")){
+        static int page=0,hold=0;
+        if(page>=8)return;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        SetAlpha(32);SetColor(0);grayScale=0;MemRect(0,DY,DX,DY,0x243438);
+        label("Grid / independently painted icon",DX/2,DY-18,.6f,0xE9D7B5);
+        bool valid=true;
+        for(int cell=0;cell<16;++cell){
+            const int id=page*16+cell;if(id>=120)break;
+            const int type=3+id/8,detail=id%8,x=8+(cell%4)*158,y=DY-56-(cell/4)*180;
+            const int grid=GRID_ITEM_FIRST_IMG+GridItems::FromItem(type,detail);
+            valid=DrawGridItemInBox(type,detail,x,y,68,68,32,false)&&valid;
+            valid=valid&&getSpriteTexture==grid;
+            const int icon=GetItemIcon(type,detail,GRADE_NORMAL),series=ItemSeries::FromIcon(icon);
+            valid=valid&&series==SquareGear::Icons[id];
+            DrawIcon(icon,x+78,y,2.125f,0,false,false,1.f);
+            const int texture=ITEM_SERIES_FIRST_IMG+series;
+            valid=valid&&getSpriteTexture==texture&&texture!=grid&&sprite[texture]!=sprite[grid];
+            char text[48];std::snprintf(text,sizeof(text),"%d:%d / item%d",type,detail,series);
+            label(text,x+74,y-94,.34f,0xE5D4BA);
+        }
+        if(!holdReview&&++hold>6){
+            reviewTrace(valid?"PASS separate grid/icon textures and live item identity mapping":"FAIL square gear identity");
+            char name[32];std::snprintf(name,sizeof(name),"square-gear-%02d",page+1);reviewCapture(name);
+            hold=0;if(++page==8)reviewTrace("DONE square gear review");
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_GRID_CREW_SCALE_REVIEW")){
+        static int page=0,hold=0;
+        if(page>=4)return;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        const float s=DX/640.f;
+        label("GRID COMPANIONS - FIXED ZOOM 1.50",DX/2,DY-(int)(20*s),.65f,0xFFE6AC);
+        for(int slot=0;slot<16;++slot){
+            const int crew=page*16+slot,col=slot%4,row=slot/4;
+            Block b;b.family=MergeTrees::Role(crew);b.level=MergeTrees::Star(crew);b.crew=crew;
+            const Box cell={(int)((col*160+40)*s),(int)(DY-(80+row*170)*s),(int)(80*s),(int)(160*s)};
+            drawBlock(b,cell);
+            char text[40];std::snprintf(text,sizeof(text),"%02d   zoom %.2f",crew,gridCrewZoomSeen[crew]);
+            label(text,cell.x+cell.w/2,cell.y+(int)(18*s),.44f,0xFFFFFF);
+        }
+        if(!reviewCapturePending&&++hold>8){
+            bool equal=true;for(int c=page*16;c<(page+1)*16;++c)equal=equal&&std::abs(gridCrewZoomSeen[c]-1.5f*s)<.00001f;
+            reviewTrace(equal?"PASS sixteen grid companions use identical native zoom":"FAIL grid companion zoom varies");
+            char name[40];std::snprintf(name,sizeof(name),"grid-crew-scale-%02d",page+1);reviewCapture(name);
+            hold=0;if(++page==4)reviewTrace("DONE grid crew scale review");
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_SHARED_SWORD_REVIEW")){
+        static int page=0,hold=0;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        if(page>=7)return;
+        SetAlpha(32);SetColor(0);grayScale=0;
+        MemRect(0,DY,DX,DY,0x263538);
+        label("Inventory / held / held mirrored - same texture and canvas",DX/2,DY-20,.5f,0xFFFFFF);
+        bool valid=true;
+        for(int row=0;row<5;++row){
+            const int detail=page*5+row,img=GRID_ITEM_FIRST_IMG+detail;
+            const auto* info=GetSwordSpriteInfo(detail);
+            const int w=GridItems::WeaponCellSize*GridItems::WeaponColumns(ITEM_SWORD,detail);
+            const int h=GridItems::WeaponCellSize*GridItems::WeaponRows(ITEM_SWORD,detail);
+            const int y=DY-70-row*145;
+            valid=DrawGridItemInBox(ITEM_SWORD,detail,100,y,w,h,32,false)&&valid;
+            valid=valid&&getSpriteTexture==img;
+            const float gripX=info->pivotX/info->width,gripY=info->pivotY/info->height;
+            DrawSwordAtHand(detail,280+w*gripX,y-h*gripY,0,false,1,32,0);
+            valid=valid&&getSpriteTexture==img;
+            DrawSwordAtHand(detail,440+w*(1-gripX),y-h*gripY,0,true,1,32,0);
+            valid=valid&&getSpriteTexture==img;
+            char text[24];std::snprintf(text,sizeof(text),"Sword %02d",detail+1);
+            label(text,45,y-12,.4f,0xFFFFFF);
+        }
+        if(!holdReview&&++hold>8){
+            reviewTrace(valid?"PASS inventory and held swords share grid textures":"FAIL separate sword texture");
+            char name[40];std::snprintf(name,sizeof(name),"shared-sword-%02d",page+1);reviewCapture(name);
+            hold=0;if(++page==7)reviewTrace("DONE shared sword review");
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_GRID_ITEM_REVIEW")){
+        static int page=0,hold=0;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        if(page>=8)return;
+        SetAlpha(32);SetColor(0);grayScale=0;
+        MemRect(0,DY,DX,DY,0x263538);
+        label("Grid equipment / upright and rotated",DX/2,DY-16,.6f,0xE9D7B5);
+        bool valid=true;
+        for(int cell=0;cell<32;++cell){
+            const int id=page*32+cell;if(id>=GridItems::Count)break;
+            const int type=GridItems::Type(id),detail=GridItems::Detail(id);
+            ITEM item={};item.type=type;item.detail=detail;item.grade=GRADE_NORMAL;
+            const int x=8+(cell%4)*158,y=DY-48-(cell/4)*96;
+            int cw=1,ch=1;MergeBoardGearShape(&item,&cw,&ch);
+            const float fit=std::min(64.f/cw,72.f/ch);
+            MergeBoardDrawGear(&item,x,y,(int)(cw*fit),(int)(ch*fit),32,false);
+            const int img=GRID_ITEM_FIRST_IMG+id;
+            valid=valid&&sprite[img]&&getSpriteTexture==img;
+            valid=DrawGridItemInBox(type,detail,x+70,y-12,78,45,24,true)&&valid;
+            valid=valid&&getSpriteTexture==img;
+            char text[40];std::snprintf(text,sizeof(text),"grid%d / %d:%d",id,type,detail);
+            label(text,x+74,y-80,.34f,0xE5D4BA);
+        }
+        if(!holdReview&&++hold>8){
+            char msg[100];std::snprintf(msg,sizeof(msg),"%s grid artwork page %d: actual board routes and rotation",valid?"PASS":"FAIL",page+1);reviewTrace(msg);
+            char name[32];std::snprintf(name,sizeof(name),"grid-%02d",page+1);reviewCapture(name);
+            hold=0;if(++page==8)reviewTrace("DONE grid item review");
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_ITEM_SERIES_REVIEW")){
+        static int page=0,hold=0;static bool checked=false;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        if(page>=10)return;
+        SetAlpha(32);SetColor(0);grayScale=0;
+        MemRect(0,DY,DX,DY,0x18272B);
+        char title[80];std::snprintf(title,sizeof(title),"256px item series / page %d",page+1);
+        label(title,DX/2,DY-16,.65f,0xE9D7B5);
+        bool valid=true;int count=0;
+        for(int cell=0;cell<64;++cell){
+            const int id=page*64+cell;if(id>=ItemSeries::Count)break;
+            if(!ItemSeries::Artwork[id].active)continue;
+            const int icon=id<512?id:id<584?0x8000+id-512:0x8100+id-584;
+            const int x=8+(cell%8)*78,y=DY-50-(cell/8)*94;
+            DrawIcon(icon,x,y,2.f,0,false,false,1.f);
+            const int img=ITEM_SERIES_FIRST_IMG+id;
+            valid=valid&&sprite[img]&&getSpriteTexture==img;
+            if(sprite[img]){const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();valid=valid&&sz.width==256&&sz.height==256;}
+            if(cell%8==0){
+                DrawItemSeriesInBox(icon,x+54,y-40,22,22,16,true);
+                const int color=baseColor;
+                DrawIcon(icon,x+56,y,0.5f,0xD7B878,true,false,1.f);
+                valid=valid&&baseColor==color;
+            }
+            char name[24];std::snprintf(name,sizeof(name),"item%d",id);
+            label(name,x+32,y-69,.38f,0xE5D4BA);++count;
+        }
+        if(!holdReview&&++hold>8){
+            if(!checked){char msg[100];std::snprintf(msg,sizeof(msg),"%s item series page %d / %d textures, dimensions and render routes",valid?"PASS":"FAIL",page+1,count);reviewTrace(msg);checked=true;}
+            char name[32];std::snprintf(name,sizeof(name),"items-%02d",page+1);reviewCapture(name);
+            hold=0;checked=false;if(++page==10)reviewTrace("DONE item series review");
+        }
+        return;
+    }
+
+    if(review&&std::getenv("CS_MIST_RESOURCE_REVIEW")){
+        if(mistReviewSample>=35)return;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        castleScrollSeconds=mistReviewSample*23.5f; // Inspect different repeat boundaries in live captures.
+        run.stage=mistReviewSample<20?mistReviewSample/2:(mistReviewSample-20)%10;run.setShape(castleShape(run.stage));
+        run.attacking=false;run.choosing=false;introElapsed=-1;entryElapsed=-1;animation=0;
+        const Layout fixedGrid=layout();
+        if(fixedGrid.cell!=(int)(80*fixedGrid.scale)||fixedGrid.cellH!=fixedGrid.cell||run.shape.width>8||
+           (run.stage==9&&(run.shape.height!=5||run.shape.rows[0]!=0x18))){reviewTrace("FAIL fixed 80-unit grid or top-pair shape");return;}
+        if(mistReviewSample<20&&mistReviewSample%2==0){const Layout test=layout();drawWorld(test,false);drawLobbyControls(test);if(!holdReview)reviewStep(test);return;}
+    }
+    if(review&&std::getenv("CS_PIXEL_CASTLE_REVIEW")){
+        static int sample=0,hold=0;
+        cocos2d::Director::getInstance()->setDisplayStats(false);
+        run.stage=0;run.setShape(castleShape(0));entryElapsed=-1;
+        Layout l=layout();drawWorld(l,false);drawLobbyControls(l);
+        if(!reviewCapturePending&&++hold>8&&sample==0){reviewCapture("pixel-castle-lobby");++sample;reviewTrace("DONE pixel castle review");}
+        return;
+    }
     if(review&&std::getenv("CS_MERGE_ORIGINAL_REVIEW")){
         static int sample=0,hold=0;run.stage=0;run.setShape(castleShape(0));
         if(sample==0)OriginalCastle::draw(9);
@@ -2660,8 +3700,32 @@ void MergeRouletteDraw() {
         if(!reviewCapturePending&&++hold>5&&sample<2){reviewCapture(sample==0?"original-uniform-reference":"original-live-lobby");++sample;hold=0;if(sample==2){
             bool uniform=true;for(int c=1;c<10;++c){run.stage=c;run.setShape(castleShape(c));Layout test=layout();const auto m=castleMap(test,c);
                 const float z=(m.dx[3]-m.dx[0])/(m.sx[3]-m.sx[0]);for(int i=0;i<3;++i)uniform=uniform&&std::abs((m.dy[i+1]-m.dy[i])/(m.sy[i]-m.sy[i+1])-z)<.00001f;
-                uniform=uniform&&test.cell>0&&test.cell<=64&&test.cellH==test.cell;}
-            run.stage=0;run.setShape(castleShape(0));reviewTrace(uniform?"PASS all ten castles preserve uniform art scale and 64px cells":"FAIL castle aspect ratio");reviewTrace("DONE original reference review");}}
+                uniform=uniform&&test.cell==(int)(80*test.scale)&&test.cellH==test.cell;}
+            run.stage=0;run.setShape(castleShape(0));reviewTrace(uniform?"PASS all ten castles preserve uniform art scale and fixed 80px cells":"FAIL castle aspect ratio");reviewTrace("DONE original reference review");}}
+        return;
+    }
+    if(review&&std::getenv("CS_FACILITY_ROOMS_REVIEW")){
+        static int sample=0,hold=0;
+        if(sample>=70)return;
+        const int c=sample<60?sample/6:sample-60,level=sample<60?sample%6:0;
+        const auto saved=robin.castleProgress;const int previousStage=run.stage;
+        run.stage=c;run.setShape(castleShape(c));
+        for(int i=0;i<5;++i)robin.castleProgress.rooms[c][i]=(unsigned char)(sample<60?level:i);
+        const Layout test=layout();drawWorld(test,false);drawLobbyControls(test);
+        bool valid=true;
+        for(int i=0;i<5;++i){
+            valid=valid&&MistCastle::facilityLevels[i]==(sample<60?level:i)&&MistCastle::facilityImages[i]==MERGE_REBUILD_ROOMS_IMG+c;
+            const auto p=OriginalCastle::rooms()[i];
+            const int x=(int)p[0].x,y=(int)p[0].y,w=(int)(p[1].x-p[0].x),h=(int)(p[2].y-p[0].y);
+            const Box b=OriginalCastle::box(x,y,w,h),right=OriginalCastle::box(x+w,y,10,h),lower=OriginalCastle::box(x,y+h,w,10);
+            valid=valid&&b.x+b.w==right.x&&b.y-b.h==lower.y;
+        }
+        robin.castleProgress=saved;run.stage=previousStage;
+        if(!reviewCapturePending&&++hold>5){
+            reviewTrace(valid?"PASS five themed rooms use independent saved levels and joined edges":"FAIL facility artwork or registration");
+            char name[48];std::snprintf(name,sizeof(name),"facility-c%02d-%s%d",c+1,sample<60?"level-":"independent-",level);reviewCapture(name);
+            hold=0;if(++sample==70)reviewTrace("DONE facility rooms review");
+        }
         return;
     }
     if(review&&std::getenv("CS_MERGE_ROOM_REVIEW")) {
@@ -2692,12 +3756,16 @@ void MergeRouletteDraw() {
     const int hx=(int)(DX*.57f),ex=(int)(DX*.85f),ey=l.ground;
     if(siegeActive)Siege::drawHeader(l);else drawWaveHeader(l);
     if(run.attacking) {
-        const char* phase=action.index>=0&&run.shots[action.index].block.family<0?(turretFire.type==TurretAttack::Laser?(action.time.elapsed<action.time.release?u8"\ub808\uc774\uc800 \u00b7 \ucda9\uc804":u8"\ub808\uc774\uc800 \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Missiles?u8"\uc720\ub3c4\ubbf8\uc0ac\uc77c \u00b7 \ubc1c\uc0ac":turretFire.type==TurretAttack::Stone?u8"\ud22c\uc11d \u00b7 \ubc1c\uc0ac":u8"\ud3ec\uaca9"):enemyTurn.endShown?"턴 종료":enemyTurn.started?"적 반격":
+        const char* phase=action.index>=0&&run.shots[action.index].block.family<0?(turretFire.type==TurretAttack::Magnetic?(action.time.elapsed<action.time.release?u8"\uc911\uc790\uae30\ud30c \u00b7 \ucda9\uc804":u8"\uc911\uc790\uae30\ud30c \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Laser?(action.time.elapsed<action.time.release?u8"\ub808\uc774\uc800 \u00b7 \ucda9\uc804":u8"\ub808\uc774\uc800 \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Missiles?u8"\uc720\ub3c4\ubbf8\uc0ac\uc77c \u00b7 \ubc1c\uc0ac":turretFire.type==TurretAttack::Stone?u8"\ud22c\uc11d \u00b7 \ubc1c\uc0ac":u8"\ud3ec\uaca9"):enemyTurn.endShown?"턴 종료":enemyTurn.started?"적 반격":run.passing?"턴 넘김 · 적의 차례":
             action.index>=0&&action.bulletIcon>=0?(action.time.elapsed<action.time.release?"동료 · 총탄 생성":"동료 · 총탄 발사"):
             action.index>=0&&action.skill>=0&&!action.heroMotion.empty()?"동료 · 히어로 스킬 요청":"아군 공격";
         const Box actionLabel={DX/2-(int)(82*s),l.ground-(int)(3*s),(int)(164*s),(int)(25*s)};
         panel(actionLabel,0x182735,0xB99850);
         label(phase,DX/2,actionLabel.y-(int)(5*s),.53f,0xFFE2A2);
+    }
+    if(waveTransition.active()){
+        const char* text=waveTransition.defeatedVisible()?u8"\ucc98\uce58!":waveTransition.travelling()?u8"\ub2e4\uc74c \uc801\uc744 \ud5a5\ud574 \uc774\ub3d9 \uc911":combatEnemyIsBoss()?u8"\ubcf4\uc2a4 \ub4f1\uc7a5":u8"\ubaac\uc2a4\ud130 \ub4f1\uc7a5";
+        label(text,DX/2,l.ground+(int)(105*s),.65f,0xFFE2A2);
     }
     // Readable unit plates directly beneath the battle, separate from the board title.
     //---- 패의 자리 ----
@@ -2705,28 +3773,29 @@ void MergeRouletteDraw() {
     //히어로 발밑에 붙어 다니면 사람과 숫자가 서로를 가린다. 화면을 성
     //가운데로 반 가른 뒤, 왼쪽 절반의 절반을 아군이, 오른쪽 절반의
     //절반을 적이 쓴다 - 둘이 같은 폭으로 마주 본다.
-    const int plateW=DX/4,plateH=(int)(96*s);   //방어 · 체력 · 공격 세 단
-    Box allyPlate={DX/4-plateW/2,l.ground-(int)(12*s),plateW,plateH};   //데크 선에서 12 아래. 포대가 보이게 패를 내렸다.
-    Box enemyPlate={DX*3/4-plateW/2,l.ground-(int)(12*s),plateW,plateH};
+    const int plateW=DX/4,plateH=l.plateH;   //방어 · 체력 · 공격 세 단. 높이·자리는 layout 이 정한다
+    Box allyPlate={DX/4-plateW/2,l.ground-l.plateDrop,plateW,plateH};
+    Box enemyPlate={DX*3/4-plateW/2,l.ground-l.plateDrop,plateW,plateH};
     //방어는 갑옷 블록이 주는 보호 횟수다. 공격 중이면 남은 몫을, 배치
     //중이면 "지금 공격하면 받을" 몫을 보여 준다.
     const long long guard=currentGuard();
     if(siegeActive&&Siege::swapped)std::swap(allyPlate,enemyPlate);   //맞바꾼 동안 패도 자리를 바꾼다
     const long long attackPower=attackDisplayKnown?(long long)std::llround(attackDisplay.value):std::max(0LL,hero.ps[PS_DMG]);
     //적의 공격: 일반 웨이브는 반격값(보스는 두 배), 공성전은 상대 판이 지금 때릴 예상치.
-    const long long enemyAttack=siegeActive?Siege::foe.preview(Siege::foeStats):run.enemyAttack*(BossTier(run.wave)?2:1);
-    unitPlate(allyPlate,run.lives,run.maxLives,guard,0x37433B,0x406D39,allyFlash>0,guardDisplay.value,std::max(1LL,run.baseArmor+run.forecast(stats).protect),heroHealthDisplay.value,
+    const long long enemyAttack=siegeActive?Siege::foe.preview(Siege::foeStats):MonsterBoard::counterPreview();
+    //아군 방어 줄: 방어막 통의 현재값 / 최대치(판 위 방어구 + 실제 장착분).
+    unitPlate(allyPlate,run.lives,run.maxLives,guard,0x37433B,0x406D39,allyFlash>0,guardDisplay.value,std::max(1LL,currentGuardMax()),heroHealthDisplay.value,
         std::max(0LL,hero.ps[PS_DMG]),(double)attackPower,attackGainTime>0);
-    unitPlate(enemyPlate,run.enemyHp,run.enemyMax,run.enemyGuard,0x493444,0xAA343E,flash!=0,-1,std::max(1LL,run.enemyGuardMax),enemyHealthDisplay.value,
+    if(!waveTransition.active()||waveTransition.incomingVisible())unitPlate(enemyPlate,run.enemyHp,run.enemyMax,run.enemyGuard,0x493444,0xAA343E,flash!=0,-1,std::max(1LL,run.enemyGuardMax),enemyHealthDisplay.value,
         std::max(0LL,enemyAttack),-1,false);
     if(attackGainTime>0&&attackGain>0){
         const float rise=(1.5f-attackGainTime)*18*s;
         SetColor(0xFFE18A);imageNumber(attackGain,allyPlate.x+allyPlate.w/2,allyPlate.y+(int)(20*s+rise),.85f*s,true);SetColor(0);
     }
     button(l.exit,"나가기",nullptr,0x25304A,!run.attacking);
-    if(siegeActive)Siege::drawHud(l);
+    if(siegeActive)Siege::drawHud(l);else MonsterBoard::drawPanel(l);
     profile.stamp(2);
-    // No backing board: individual 64px tiles cover the rooms themselves.
+    // No backing board: individual fixed 80px tiles cover the rooms themselves.
     for(int row=0;row<run.shape.height;++row)for(int col=0;col<run.shape.width;++col)
         if(run.shape.contains(col,row)){
             Box tile={l.board.x+col*l.cell,l.board.y-row*l.cellH,l.cell,l.cellH};
@@ -2751,6 +3820,12 @@ void MergeRouletteDraw() {
         if(introActive()&&i<3)continue;
         if(picked==i&&!pickedTray)continue;
         drawBlock(run.board[i],blockBox(run.board[i],l));
+    }
+    //겹친 블록은 붉은 테로 알린다 - 이걸 풀어야 단추가 돌아온다.
+    for(int i=0;i<(int)run.board.size();++i) {
+        if((picked==i&&!pickedTray)||run.fits(run.board[i],i))continue;
+        const Box box=blockBox(run.board[i],l);
+        MemRectFrameThick(box.x,box.y,box.w,box.h,((ticks/8)&1)?0xFF5A4A:0xC82E24,std::max(1,(int)(3*s)));
     }
     const auto sameGrade=[](const Block& a,const Block& b){return a.family==b.family&&a.level==b.level&&a.crew==b.crew&&a.x==b.x&&a.y==b.y;};
     std::vector<Block> visibleGrades;
@@ -2847,9 +3922,10 @@ void MergeRouletteDraw() {
         Box window=slotWindow(l.slot,i);
         bool held=!run.tray.empty()&&i<(int)run.tray.size();
         // Keep the stopped result in its reel while a copy flies to the board.
-        const Block symbol=hasReelSymbols?reelSymbols[i]:Block();
-        int f=hasReelSymbols?symbol.family:held?run.tray[i].family:run.families[i];
-        int lv=hasReelSymbols?symbol.level:held?run.tray[i].level:1,crew=hasReelSymbols?symbol.crew:held?run.tray[i].crew:-1;
+        const bool pending=!run.tray.empty()&&animation==0&&!spinFlying();
+        const Block symbol=pending?(held?run.tray[i]:Block()):hasReelSymbols?reelSymbols[i]:Block();
+        int f=pending?symbol.family:hasReelSymbols?symbol.family:held?run.tray[i].family:run.families[i];
+        int lv=pending?(held?symbol.level:1):hasReelSymbols?symbol.level:held?run.tray[i].level:1,crew=pending?symbol.crew:hasReelSymbols?symbol.crew:held?run.tray[i].crew:-1;
         const float phase=std::min(1.f,(REEL_SPIN_FRAMES-animation)/(float)reelStopFrame(i));
         if(animation>0&&!run.attacking&&phase<1.f){
             //---- 돌다가 선다 ----
@@ -2920,29 +3996,33 @@ void MergeRouletteDraw() {
     if(run.lost) {
         button(l.spin,"다시 도전","새 런 시작",0x24578D);button(l.attack,"로비로",nullptr,0x975028);
     } else {
-        bool ready=!entering()&&!introActive()&&!spinFlying()&&!deckArriving()&&!run.attacking&&animation==0;
+        bool ready=!entering()&&!introActive()&&!spinFlying()&&!deckArriving()&&!waveTransition.active()&&!run.attacking&&animation==0;
         choice(l.spin,ChoiceSpin,ready&&run.canSpin()&&robin.heart>0);
-        choice(l.attack,ChoiceAttack,ready&&!run.board.empty()&&robin.heart>0);
-        if(!siegeActive)choice(l.cannon,ChoiceCannon,ready&&robin.heart>0);
+        choice(l.attack,ChoiceAttack,ready&&!run.board.empty()&&robin.heart>0&&run.boardResolved());
+        if(!siegeActive)choice(l.cannon,ChoiceCannon,ready&&robin.heart>0&&run.boardResolved());
         if(ready&&!run.board.empty()&&predicted>=run.enemyHp)
             MemRectFrameThick(l.attack.x,l.attack.y,l.attack.w,l.attack.h,0xFFE36A,std::max(1,(int)(3*s)));
         // Spin budget is a rule hint, not a slot-machine counter.
         if(run.spins==0&&run.tray.empty())label("이번 적립 종료 · 공격하세요",DX/2,DY-(int)(45*s),0.46f,0xFFD26A);
     }
+    drawRouletteTrash(l);
     if(picked>=0) {
         auto& src=pickedTray?run.tray:run.board;
         if(picked<(int)src.size()) {
             Block b=src[picked];int x=(int)((pointerX-l.board.x)/l.cell)-pickCellX;
             int y=(int)((l.board.y-pointerY)/l.cellH)-pickCellY;
             b.x=x;b.y=y;Box box=blockBox(b,l);
-            bool valid=run.fits(b,pickedTray?-1:picked);
+            //판 안이면 놓인다. 깨끗한 자리는 초록, 겹치는 자리는 주황(놓이긴 하되 풀어야 한다).
+            bool valid=run.fits(b,pickedTray?-1:picked,-1,true),clean=run.fits(b,pickedTray?-1:picked);
             int target=run.at(x,y);
             if(target>=0&&!(target==picked&&!pickedTray)) {
                 Block merged;
-                if(run.mergedPreview(target,b,pickedTray?-1:picked,merged)){valid=true;box=blockBox(merged,l);}
-                else valid=false;
+                if(run.mergeable(run.board[target],b)&&run.mergedPreview(target,b,pickedTray?-1:picked,merged)){valid=clean=true;box=blockBox(merged,l);}
             }
-            MemRectFrameThick(box.x,box.y,box.w,box.h,valid?0x58DB9C:0xF35B63,(int)(3*s));
+            // Only show a placement cue on actual board cells.
+            // Invalid/off-board drags never create a ghost grid beside the castle.
+            if(valid&&!nearRouletteTrash(l,pointerX,pointerY))
+                MemRectFrameThick(box.x,box.y,box.w,box.h,clean?0x58DB9C:0xFF9A3C,(int)(3*s));
             //---- 손에 든 것도 판에 놓인 그대로 ----
             //
             //한 칸짜리로 줄여 들면 집는 순간 물건이 바뀐 것처럼 보인다.
@@ -2951,22 +4031,22 @@ void MergeRouletteDraw() {
                 (int)pointerY+pickCellY*l.cellH+l.cellH/2,
                 Wide(b)*l.cell,Tall(b)*l.cellH};
             drawBlock(b,held);
-            drawHeldHelp(src[picked],l);
+            if(!nearRouletteTrash(l,pointerX,pointerY))drawHeldHelp(src[picked],l);
         }
     }
     if(messageTime>0&&!message.empty()) {
         Box toast={(int)(90*s),l.arenaBottom+(int)(53*s),(int)(460*s),(int)(48*s)};
         panel(toast,0x352332,0xDD957B);
         label(message.c_str(),DX/2,toast.y-(int)(6*s),.59f,0xFFE6C0);
-        if(run.freeCells()<3)label("같은 블록을 합쳐 칸을 확보하세요",DX/2,toast.y-(int)(28*s),.49f);
     }
     if(messageTime<=0&&!run.choosing&&!message.empty()&&(message.find("없")!=std::string::npos||message.find("부족")!=std::string::npos))
         label(message.c_str(),DX/2,DY-(int)(45*s),0.48f);
     drawSpinLanding(l);
     if(siegeActive){Siege::drawExpanded(l);Siege::drawHand(l);}   //공성전: 펼친 상대 판과 상대의 손은 내 블록 위에
+    else MonsterBoard::drawExpanded(l);   //몬스터의 판도 같은 자리에 펼친다
     if(!entering())drawIntro(l);
-    if(flash>0)DrawEffect(1000+std::min(9,(18-flash)/2),enemyBodyKnown?enemyBodyX:ex,enemyBodyKnown?enemyBodyY:ey+(int)(40*s),RIGHT,0,.65f*s);
-    if(allyFlash>0)DrawEffect(1000+std::min(9,(20-allyFlash)/2),allyBodyKnown?allyBodyX:(int)(DX*.66f),allyBodyKnown?allyBodyY:ey+(int)(40*s),LEFT,0,.65f*s);
+    if(flash>0){impactDrawOrder=++objectDrawOrder;drawImpactSequence(impactFirst,impactCount,18-flash,18,enemyBodyKnown?enemyBodyX:ex,enemyBodyKnown?enemyBodyY:ey+(int)(40*s),RIGHT,.65f*s);}
+    if(allyFlash>0)drawImpactSequence(HIT_ITEM_SMALL0,5,20-allyFlash,20,allyBodyKnown?allyBodyX:(int)(DX*.66f),allyBodyKnown?allyBodyY:ey+(int)(40*s),LEFT,.65f*s);
     drawCombatNumbers();
     if(!holdReview)reviewStep(l);
 }
@@ -2986,7 +4066,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         }
         return false;
     }
-    if(entering()||introActive()||spinFlying()||deckArriving()) {picked=finger=-1;return true;}
+    if(entering()||introActive()||spinFlying()||deckArriving()||waveTransition.active()) {picked=finger=-1;return true;}
     if(phase==3) {if(finger==id){picked=-1;finger=-1;}return true;}
     if(phase==0) {
         if(finger>=0)return true;
@@ -2995,6 +4075,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             return true;
         }
         if(siegeActive&&Siege::tapPanel(x,y))return true;   //상대 판 터치 = 크게/닫기
+        if(!siegeActive&&MonsterBoard::tapPanel(x,y))return true;   //몬스터 판 터치 = 크게/닫기
         finger=id;downX=pointerX=x;downY=pointerY=y;picked=-1;
         if(!run.choosing&&!run.attacking&&!run.lost&&animation==0) {
             Layout l=layout();
@@ -3015,16 +4096,29 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     Layout l=layout();finger=-1;
     if(picked>=0) {
         bool ok=false;
-        if(pickedTray&&std::abs(x-downX)+std::abs(y-downY)<10*l.scale)ok=run.autoPlace(picked);
+        if(nearRouletteTrash(l,x,y)){
+            const bool fromTray=pickedTray;
+            if(run.discard(fromTray,picked)){
+                picked=-1;trashSwallowTicks=18;message="";save();PlayMusic(M_BUTTON);
+                if(fromTray)endSpinTurn();
+                return true;
+            }
+        }
+        const bool tap=std::abs(x-downX)+std::abs(y-downY)<10*l.scale;
+        bool rotated=false;
+        if(pickedTray&&tap)ok=run.autoPlace(picked);
+        else if(!pickedTray&&tap){ok=rotated=run.rotate(picked);if(!ok)run.lastFail="spot";}   //판의 것을 톡 치면 돌린다
         else ok=run.drop(pickedTray,picked,(x-l.board.x)/l.cell,(l.board.y-y)/l.cellH);
         if(ok)observeDeckMerge();
-        if(ok&&siegeActive&&pickedTray)Siege::afterMySpin();   //트레이를 손으로 다 놓아도 턴이 넘어간다
+        if(ok&&pickedTray)endSpinTurn();   //트레이를 손으로 다 놓아도 턴이 넘어간다
+        if(ok&&!pickedTray&&pendingPass)endSpinTurn();   //겹침을 풀었으면 미뤄 둔 턴을 넘긴다
+        const bool overlapped=ok&&!run.boardResolved();
         //---- 왜 안 되는지까지 적는다 ----
         //
         //"배치/합성할 수 없습니다" 만으로는 자리가 없어서인지, 다른
         //물건이라서인지, 더 올라갈 데가 없어서인지를 알 수가 없다.
         //모델이 어디서 걸렸는지 남겨 둔다(run.lastFail).
-        if(ok) message="";
+        if(ok) message=overlapped?OverlapMessage:"";
         else {
             const char* why=run.lastFail;
             const char* text=
@@ -3071,8 +4165,8 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
                 }
             }
         }
-        if(!ok)messageTime=3;
-        if(ok)PlayMusic(M_POWERUP);
+        if(!ok||overlapped)messageTime=3;
+        if(ok)PlayMusic(rotated?M_BUTTON:M_POWERUP);
         picked=-1;
         if(ok&&!run.tray.empty())beginSpinLanding();
         save();return true;
@@ -3086,22 +4180,24 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         return true;
     }
     if(l.spin.has(x,y)&&l.spin.has(downX,downY)) {
-        if(run.freeCells()<3) {message="빈칸이 3칸 이상 필요합니다.";messageTime=3;PlayMusic(M_ERROR);return true;}
-        if(!run.canSpin()){message="릴의 블록을 모두 놓거나 지금 공격하세요.";messageTime=3;return true;}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
+        if(!run.canSpin()){message=u8"\uc774\uc804 \uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return true;}
         if(pay()){run.spin();rememberReelSymbols();gearStartAngle=gearAngle;animation=REEL_SPIN_FRAMES;message="";save();}
     } else if(l.attack.has(x,y)&&l.attack.has(downX,downY)) {
         //"지금 공격" 은 막지 않는다. 아직 못 놓은 결과가 있으면 들어가는 것은 앉히고,
         //자리 없는 것은 두고 나간다. 칸이 비어 있어도 모양이 안 맞으면 못 놓는 일이 있다.
         if(!run.tray.empty()){
             while(!run.tray.empty()&&run.autoPlace(0)){}
-            if(!run.tray.empty()){run.tray.clear();message="자리 없는 결과는 두고 출격!";messageTime=2;}
+            if(!run.tray.empty()){message=u8"\ub0a8\uc740 \uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;save();return true;}
             picked=-1;pickedTray=false;
         }
         if(run.board.empty()){message="인벤토리가 비어 있습니다.";return true;}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
         if(pay()){run.attack(stats);action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="출격!";save();}
     } else if(!siegeActive&&l.cannon.has(x,y)&&l.cannon.has(downX,downY)) {
         //성의 대포. 판이 비어 있어도 쏜다 - 블록이 없을 때의 마지막 수단이기도 하다.
-        if(pay()){run.fireCannon(cannonShell());action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="포격!";save();}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
+        if(pay()){run.fireCannon(stats,cannonShell());action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="포격!";save();}
     }
     return true;
 }

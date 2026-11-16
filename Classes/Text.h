@@ -1,4 +1,4 @@
-﻿//
+//
 //  Text.h
 //  100
 //
@@ -4061,6 +4061,33 @@ const char* const textId[] = {
 	"shop_gems_v1/tier-06",
 	"turret_attack_v1/missile",
 	"turret_attack_v1/laser",
+	"battle_ui_v1/plump-lever",
+	"castle_pixel_01_v1/hull",
+	"castle_pixel_01_v1/room-1",
+	"castle_pixel_01_v1/room-2",
+	"castle_pixel_01_v1/room-3",
+	"castle_pixel_01_v1/room-4",
+	"castle_pixel_01_v1/room-5",
+	"castle_pixel_01_v1/wheel-1",
+	"castle_pixel_01_v1/wheel-2",
+	"castle_pixel_01_v1/cover",
+	"castle_pixel_01_v1/turret-atlas",
+#include "CastleMistNames.inc"
+#include "CastleMistTurretNames.inc"
+	"castle_mist_v2/01/turret-empty",
+#include "StageMistNames.inc"
+#include "ItemSeriesNames.inc"
+#include "GridItemNames.inc"
+	"turret_attack/ironball",
+	"castle_mist_v2/deck-surfaces",
+	"turret_attack/triple-missile",
+	"turret_attack/heavy-shell",
+	"turret_attack/crystal-orb",
+	"turret_attack/flame-laser",
+	"turret_attack/magnetic-orb",
+	"roulette/trash-object",
+	"monster_parts/atlas-0",
+	"monster_parts/atlas-1",
 
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN

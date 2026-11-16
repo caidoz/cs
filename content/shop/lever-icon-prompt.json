@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "asset": "Resources/res/battle_ui_v1/plump-lever.png",
+  "transparent_background": true,
+  "prompt": "Use case: game UI asset. One standalone chunky slot-machine LEVER icon for the fantasy pixel-art mobile game Castle Survivor. A very plump glossy ruby-red spherical knob on top of a short thick polished gold lever shaft tilted slightly right, mounted in a compact heavy golden pivot housing with two bolts and a tiny dark slot. The red ball should be oversized and occupy almost half the icon, with a bold bright highlight. Thick sturdy proportions, appealing toy-like silhouette, polished chunky pixel-art, crisp stepped pixel edges, gold and amber metal highlights, deep warm brown shadows, bold dark outline, readable at 44 pixels. Three-quarter front view. Only the lever assembly, NO slot-machine body, NO reels, NO roulette wheel, NO text, NO letters, NO numbers, NO button frame. Square canvas, centered and filling 85 percent with safe padding. TRUE transparent RGBA background, clean cutout, no floor, no scenery, no checkerboard, no background."
+}

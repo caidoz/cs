@@ -271,6 +271,13 @@ static int GetRandomBoxDetailByStar(
 			continue;
 		}
 
+		//고유 동료: 주인 히어로를 아직 못 얻었으면 뽑히지 않는다.
+		if (itemType == ITEM_CREW &&
+			!MergeCrewAvailable(detailType))
+		{
+			continue;
+		}
+
 		if (candidateCount >= 256)
 		{
 			break;
@@ -1179,6 +1186,12 @@ static int FindUnownedBoxDetailByStar(
 			itemType,
 			detail,
 			itemGrade) != targetStar)
+		{
+			continue;
+		}
+
+		if (itemType == ITEM_CREW &&
+			!MergeCrewAvailable(detail))
 		{
 			continue;
 		}

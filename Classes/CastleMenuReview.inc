@@ -435,6 +435,7 @@ static void CastleMenuReviewStep()
         if(capturePending)return;
         static int tick=0,upgradeScroll=0;static long long purchaseGold=0;++tick;
         if(tick==1){
+            CastleMenuCommand(TOUCH_FUNC_RENEW_CASTLE_PARTS); // Select this scenario's tab explicitly.
             robin.demoSeen[DEMO_TUTORIAL_END]=true;robin.castle=0;
             robin.castleProgress=CastleMenuModel::Progress();robin.castleProgress.version=1;robin.castleProgress.owned=1;
             robin.gold=1000000;robin.coin=1234;GotoLobby();while(popUpCnt>0)ClosePopUp();

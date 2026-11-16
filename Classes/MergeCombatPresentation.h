@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <algorithm>
 #include <vector>
 
@@ -9,7 +9,23 @@ inline float lobbyCastleLift(float width,float height) {
     const float center=((1445.f-83.f)*width/1089.f+40.f*scale+96.f*scale)*.5f;
     return std::max(0.f,(height-baseline)/(target-baseline))*(target*.5f-center);
 }
-enum { BulletSpawnFrames=30, BulletGrowthFrames=12 };
+enum { BulletSpawnFrames=30, BulletGrowthFrames=12, DamageNumberFrames=72, DamageBreathFrames=12 };
+struct WeaponSwap {
+    enum { OrbitFrames=36, AttachFrame=46, Duration=54 };
+    int age=-1;
+    void begin(){age=0;}
+    void advance(){if(running())++age;}
+    bool running() const {return age>=0&&age<Duration;}
+    bool attachNow() const {return age==AttachFrame;}
+    float orbit() const {return std::max(0.f,std::min(1.f,age/(float)OrbitFrames));}
+    float snap() const {return std::max(0.f,std::min(1.f,(age-OrbitFrames)/(float)(AttachFrame-OrbitFrames)));}
+};
+struct DamagePause {
+    int remaining=0;
+    void begin(){remaining=DamageNumberFrames+DamageBreathFrames;}
+    void advance(){if(remaining>0)--remaining;}
+    bool waiting() const{return remaining>0;}
+};
 struct ResidentReveal {
     enum { Duration=42 };
     int age=-1;
@@ -55,14 +71,62 @@ inline float bulletAppearance(int elapsed,int release) {
 inline float actorStep(int elapsed,int end) {
     return 12.f*std::max(0.f,std::min(1.f,std::min(elapsed/10.f,(end-elapsed)/12.f)));
 }
+// The legacy table stores [idle, cooldown, (approach, attack, return, rest, hits, range) x 3].
+struct EnemyPattern {
+    int index=-1,approach=0,attack=0,back=0,rest=0,hits=1,range=0;
+};
+inline EnemyPattern enemyPattern(const signed short* row,int turn,int validMask=7) {
+    int available[3],count=0;
+    for(int i=0;i<3;++i)if((validMask&(1<<i))&&row[2+i*6+4]>0&&row[2+i*6+5]>0)available[count++]=i;
+    EnemyPattern result;
+    if(!count)return result;
+    result.index=available[std::max(0,turn)%count];
+    const signed short* p=row+2+result.index*6;
+    result.approach=p[0];result.attack=p[1];result.back=p[2];result.rest=p[3];
+    result.hits=p[4];result.range=p[5];
+    return result;
+}
+inline float enemyAttackPosition(float home,float target,int range,float zoom,bool canMove) {
+    // Same origin-to-origin distance and zoom as ENEMYMOVETURN. Never move closer
+    // when already in range; stationary approach states stay at their home position.
+    return canMove?std::min(home,target+std::max(0,range)*zoom):home;
+}
+// Defeat, travel with an empty deck, incoming monster, then a short ready hold.
+struct WaveTransition {
+    enum { DefeatFrames=24, TravelFrames=96, EnterFrames=48, SettleFrames=18,
+           EnterStart=DefeatFrames+TravelFrames, SettleStart=EnterStart+EnterFrames,
+           Duration=SettleStart+SettleFrames };
+    int age=-1;
+    void begin(){age=0;}
+    void advance(){if(active())++age;}
+    bool active() const{return age>=0&&age<Duration;}
+    bool defeatedVisible() const{return active()&&age<DefeatFrames;}
+    bool incomingVisible() const{return !active()||age>=EnterStart;}
+    bool travelling() const{return active()&&age>=DefeatFrames&&age<EnterStart;}
+    float arrival() const{return std::max(0.f,std::min(1.f,(age-EnterStart)/(float)EnterFrames));}
+    float defeatAlpha() const{return std::max(0.f,1.f-age/(float)DefeatFrames);}
+    float speed() const{
+        if(travelling())return 3.f*std::min(1.f,(age-DefeatFrames)/18.f);
+        if(active()&&age>=EnterStart&&age<SettleStart)return 3.f*(1.f-arrival());
+        return 0;
+    }
+    float incomingX(float offscreen,float home) const{
+        const float t=arrival(),ease=1-(1-t)*(1-t);
+        return offscreen+(home-offscreen)*ease;
+    }
+};
 struct EnemyPhases {
-    int approach=0,attack=30,recovery=12;
-    void begin(int walkFrames,int attackFrames){approach=std::max(0,walkFrames);attack=std::max(30,attackFrames);}
-    int returnStart() const {return approach+attack+recovery;}
-    int end() const {return returnStart()+approach;}
+    int approach=0,attack=30,recovery=12,returnFrames=0;
+    void begin(int walkFrames,int attackFrames,int backFrames=-1,int restFrames=12){
+        approach=std::max(0,walkFrames);attack=std::max(30,attackFrames);
+        returnFrames=backFrames<0?approach:std::max(0,backFrames);recovery=std::max(0,restFrames);
+    }
+    int returnStart() const {return approach+attack;}
+    int recoveryStart() const {return returnStart()+returnFrames;}
+    int end() const {return recoveryStart()+recovery;}
     int impact() const {return approach+attack/2;}
-    bool walkingIn(int elapsed) const {return elapsed<approach;}
-    bool walkingBack(int elapsed) const {return approach>0&&elapsed>=returnStart();}
+    bool walkingIn(int elapsed) const {return elapsed>=0&&elapsed<approach;}
+    bool walkingBack(int elapsed) const {return elapsed>=returnStart()&&elapsed<recoveryStart();}
 };
 inline float walkProgress(const std::vector<float>& distance,float phase){
     if(distance.size()<2||distance.back()<=0)return 0;
@@ -89,8 +153,11 @@ struct Timeline {
     bool finished() const {return elapsed>=end;}
 };
 struct DeckPosition {float x,y;};
+// 데크의 줄 간격. 히어로 뒤 첫 동료까지의 거리(DeckGap)가 동료 사이 간격의 기준이다 -
+// 둘이 같아야 "히어로 - 동료 - 동료" 가 한 줄로 고르게 선다. 자리가 모자라면 그만큼 좁힌다.
+constexpr float DeckGap=52.f;
 inline DeckPosition position(int index,int count,float right,float ground,float scale,float availableWidth) {
-    const float step=std::min(84.f*scale,std::max(0.f,availableWidth)/std::max(1,count-1));
+    const float step=std::min(DeckGap*scale,std::max(0.f,availableWidth)/std::max(1,count-1));
     return {right-index*step,ground};
 }
 }
