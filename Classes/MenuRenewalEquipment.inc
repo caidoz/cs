@@ -85,8 +85,10 @@ static void RenewalStatsDraw(){
   const int x=16+(i%2)*(width+12),y=start-(i/2)*row+scY[MENU_COLLECTIONS];
   DrawPixelPanel(x,y,width,row-8,0x152D37,0x65827F);
   SetFontColor(0xAEC4B9);DrawTextStrSystem(names[i],x+12,y-12,.62f,LEFT,false);
-  const long long value=hero->ps[ids[i]]+(ids[i]==PS_CRITICAL?DEFAULTCRITICAL:0);
-  sprintf(line,"%lld%s",value,i==3||i==4||i>=10?"%":"");
+  const long long value=ids[i]==PS_ARMOR?MergeRouletteHeroShield(hero):hero->ps[ids[i]]+(ids[i]==PS_CRITICAL?DEFAULTCRITICAL:0);
+  //방어력 = 방어막 통(체력과 같은 크기). 뒤의 +n 은 낀 방어구가 턴마다 채우는 양.
+  if(ids[i]==PS_ARMOR)sprintf(line,"%lld (+%lld/턴)",value,MergeRouletteHeroShieldRecovery(hero));
+  else sprintf(line,"%lld%s",value,i==3||i==4||i>=10?"%":"");
   SetFontColor(0xF2E7CB);DrawTextStrSystem(line,x+width-12,y-12,.78f,RIGHT,false);
  }
  int y=start-6*row-12+scY[MENU_COLLECTIONS];

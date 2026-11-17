@@ -63,13 +63,27 @@ static void EquipmentMenuV2Draw()
  using namespace EquipmentV2;
  const int top=Top(), preview=PreviewHeight(), listTop=ListTop();
  OBJECT* hero=&ao[PLAYER];
+ //칸(equip)과 몸(equipImg)·능력치(ps)는 한 물건에서 나와야 한다. 어딘가에서 equip 만 바꾸고
+ //RefreshStat 을 안 불렀으면 여기서 맞춘다 - 칸은 비었는데 투구를 쓰고 있거나, 검을 들고도
+ //공격 0 으로 보이는 것이 그 흔적이다.
+ {
+  bool stale=false;
+  for(int i=0;i<TOTALEQUIP&&!stale;++i){
+   const ITEM& it=hero->equip[i];
+   const bool worn=it.type!=EMPTY && it.type>=0 && it.type<=ITEM_RING && itemEquipSlot[it.type]==i && EquipCheck(hero,const_cast<ITEM*>(&it));
+   const unsigned char expected=worn?(unsigned char)(it.detail+1):0;
+   stale=hero->equipImg[i]!=expected;
+  }
+  if(!stale && hero->equip[EQUIP_WEAPON].type!=EMPTY && EquipCheck(hero,&hero->equip[EQUIP_WEAPON]) && hero->ps[PS_DMG]<=0) stale=true;
+  if(stale) RefreshStat(hero);
+ }
  DrawPixelPanel(0,top,DX,top,0x0C1C2C,0x43859B);
  SetFontColor(COLOR_WHITE);
  DrawMenuReferencePanel(0,top,DX,54,0,0x10383D,0x49777A);
  CenterTextStrSolid("장비",DX/2,top-12,1.15f);
  DrawMenuBackButton(12,top-4,TOUCH_FUNC_POPUP_CLOSE);
  HeroStrip();
- const int bodyTop=top-140, slot=60, center=DX/2;
+ const int bodyTop=top-140, slot=72, center=DX/2;
  DrawMenuRoomBackdrop(0,bodyTop,DX,preview-114);
  SetAlpha(7);MemRect(0,bodyTop,DX,preview-114,0x092B30);SetAlpha(32);
  MemRectRound(center-102,top-preview+60,204,38,0x6B492E,18);
@@ -77,15 +91,16 @@ static void EquipmentMenuV2Draw()
  // DrawPlayer resolves the selected hero's actual equipped costume parts.
  DrawPlayer(hero,frame/8%4,center,top-preview+44,RIGHT,1.9f,false,false,true);
  for(int i=0;i<EQUIP_NECK;++i){
-  int sx=i<3?60:DX-120, sy=bodyTop-12-(i%3)*((preview-156)/3);
-  DrawMenuReferencePanel(sx,sy,slot,slot,0,menuX==i?0x205363:0x102638,menuX==i?0xEDBB58:0x43859B);
+  int sx=i<3?60:DX-60-slot, sy=bodyTop-12-(i%3)*((preview-156)/3);
   const ITEM& it=hero->equip[i];
   const bool valid=it.type>=0 && it.type<=ITEM_RING && itemEquipSlot[it.type]==i && EquipCheck(hero,const_cast<ITEM*>(&it));
+  const int border=valid?InvenCardBorderColor(it):menuX==i?0xEDBB58:0x43859B;
+  DrawMenuReferencePanel(sx,sy,slot,slot,0,menuX==i?0x205363:0x102638,border);
   if(valid){
-   float z=0.85f;
+   float z=1.0f;
    DrawIcon(GetItemIcon(it.type,it.detail,it.grade),sx+slot/2-ITEMICONSIZE*z/2,sy-slot/2+ITEMICONSIZE*z/2,z,false,false,false,true);
   } else {
-   SetFontColor(0x88AABB); CenterTextStrSolid("+",sx+slot/2,sy-22,0.9f);
+   SetFontColor(0x88AABB); CenterTextStrSolid("+",sx+slot/2,sy-slot/2+9,0.9f);
   }
   if(menuDepth==0){
    int idx=valid?GetInvenIdx(it.type,it.detail,it.grade):-1;
@@ -102,7 +117,8 @@ static void EquipmentMenuV2Draw()
  sprintf(line,"전투력 %lld",GetCombatPower(hero));
  CenterTextStrSolid(line,center,top-preview-8,1.18f);
  SetFontColor(0xBCD6DF);
- sprintf(line,"공격 %lld   방어 %lld   체력 %lld",hero->ps[PS_DMG],hero->ps[PS_ARMOR],hero->ps[PS_HP]);
+ //방어 = 합성 전투의 방어막 통(체력과 같은 크기). 옛 PS_ARMOR 는 힘×3+민첩이라 체력 60 에 880 이 찍혔다.
+ sprintf(line,"공격 %lld   방어 %lld   체력 %lld",hero->ps[PS_DMG],MergeRouletteHeroShield(hero),hero->ps[PS_HP]);
  CenterTextStrSolid(line,center,top-preview-36,0.65f);
  sprintf(line,"치명타 %lld%%   치명타 피해 +%lld%%",DEFAULTCRITICAL+hero->ps[PS_CRITICAL],hero->ps[PS_CRITDMG]);
  CenterTextStrSolid(line,center,top-preview-52,0.58f);
@@ -117,7 +133,8 @@ static void EquipmentMenuV2Draw()
    (robin.inven[items[j]].grade==robin.inven[key].grade && robin.inven[items[j]].value<robin.inven[key].value))){items[j+1]=items[j];--j;}
   items[j+1]=key;
  }
- const int cols=4, pitch=INVENTORY_GAP_X, cell=(int)(240*CARDDEFAULTZOOM), rowPitch=CREW_GAP_Y, cardHeight=(int)(332*CARDDEFAULTZOOM), listBottom=90, height=Max(1,listTop-listBottom);
+ const int cols=6, gap=8, cell=(DX-32-(cols-1)*gap)/cols, pitch=cell+gap,
+  cardHeight=(int)(332.f*cell/240),rowPitch=cardHeight+12,listBottom=90,height=Max(1,listTop-listBottom);
  scT[MENU_COLLECTIONS]=Max(0,((count+cols-1)/cols)*rowPitch-height);
  scY[MENU_COLLECTIONS]=Min(scT[MENU_COLLECTIONS],Max(0,scY[MENU_COLLECTIONS]));
  SetSectionClip(16,listTop,DX-32,height,false);
@@ -154,6 +171,15 @@ bool EquipmentMenuV2ReviewChecks()
  ok=ok && scY[MENU_COLLECTIONS]==300;
  scY[MENU_COLLECTIONS]=oldY;scT[MENU_COLLECTIONS]=oldT;scDir=oldDir;isTouchKey=oldTouch;
  return ok;
+}
+
+bool EquipmentMenuV2ReviewCards()
+{
+ int row=0;
+ for(int i=0;i<touchIndex;++i)if(touchRect[i][4]>=TOUCH_FUNC_ITEMDETAIL&&
+  touchRect[i][4]<TOUCH_FUNC_ITEMDETAIL+TOTALINVENTORY&&
+  touchRect[i][1]==EquipmentV2::ListTop()&&touchRect[i][2]<DX/6)++row;
+ return row==6&&sprite[CARDBG_IMG]!=nullptr;
 }
 
 bool EquipmentMenuV2ReviewEquipping()

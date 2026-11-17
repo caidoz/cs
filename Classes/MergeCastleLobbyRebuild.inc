@@ -325,7 +325,7 @@ void drawDeckSurface(const Layout& l,int c,bool mirror){
  const float depth=c==8?58.f:c>=5?52.f:42.f;
  // The deck's front edge seats into the same registered cap as the hull.
  // Its transparent bevel must overlap that cap, never hover above it.
- const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(8*l.scale));
+ const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale));
  const int height=std::max(1,(int)(depth*l.scale));
  const Box plane={span.x,front+height,span.w,height};
  DrawImageScale((int)dim.width,row,0,c*row,mirror?DX-plane.x-plane.w:plane.x,plane.y,

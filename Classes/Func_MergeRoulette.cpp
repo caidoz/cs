@@ -190,9 +190,10 @@ namespace MonsterBoard{int hitCount();void ensure();}
 //수(949)가 된다 - 본편에서는 레벨 차 방어 감소에 쓰는 수라 체력과 단위가 다르다. 여기서는 판 위
 //갑옷 블록과 같은 단위(GetEquipPower)로 낀 투구·갑옷만 센다. 하체는 체력(PS_HPEQUIP)으로 간다.
 //판의 갑옷 블록이 코스튬으로 입혀져도(updateHeroCostume) 여기엔 안 들어간다 - 로비에서 끼고 온 것(wornEquip)만.
+//실제로 낀 방어구(투구·갑옷·하체·발)의 장비 값 합. 통의 크기가 아니라 **턴마다 통을 채우는 양**이다.
 long long wornGuard() {
     long long guard=0;
-    for(int slot:{EQUIP_HELM,EQUIP_ARMOR}) if(wornEquip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(&wornEquip[slot],std::max(1,(int)wornEquip[slot].lv)));
+    for(int slot:{EQUIP_HELM,EQUIP_ARMOR,EQUIP_PANTS,EQUIP_BOOTS}) if(wornEquip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(&wornEquip[slot],std::max(1,(int)wornEquip[slot].lv)));
     return std::min(guard*(100+CastleTeamBonus(2))/100,1000000000000000LL);
 }
 void refreshHeroVitals() {
@@ -569,21 +570,30 @@ void unitPlate(const Box& plate,long long hp,long long max,long long guard,
         mergeRect(barX,guardY,width,std::max(1,(int)(2*s)),0xFFF0A0);
     }
 
-    const float guardZoom=std::min(.65f*s,(barW-4*s)/std::max(1.f,GetNumDx(guard,false,NUM_FONT_NORMAL,0,false,1.f,false)));
-    outlinedNum(guard,barX+barW/2,guardY-(int)((barH-24*guardZoom)*.5f),CENTER,guardZoom);
+    //"현재/최대" 한 줄. 체력과 방어막이 같은 모양이라 통의 크기가 한눈에 읽힌다.
+    auto pair=[&](long long cur,long long cap,int rowY){
+        const float digits=GetNumDx(cur,false,NUM_FONT_NORMAL,0,false,1.f,false)+GetNumDx(cap,false,NUM_FONT_NORMAL,0,false,1.f,false);
+        const float zoom=std::min(.65f*s,(barW-12*s)/std::max(1.f,digits));
+        const float leftWidth=GetNumDx(cur,false,NUM_FONT_NORMAL,0,false,zoom,false),rightWidth=GetNumDx(cap,false,NUM_FONT_NORMAL,0,false,zoom,false);
+        const int numberY=rowY-(int)((barH-24*zoom)*.5f),numberX=(int)(barX+(barW-leftWidth-rightWidth-8*s)*.5f);
+        outlinedNum(cur,numberX,numberY,LEFT,zoom);
+        label("/",(int)(numberX+leftWidth+4*s),rowY-(int)((barH-15*s)*.5f),.62f,hot?0xFFB060:0xFFFFFF);
+        outlinedNum(cap,(int)(numberX+leftWidth+8*s),numberY,LEFT,zoom);
+    };
+    if(guardCapacity>1)pair(guard,guardCapacity,guardY);
+    else {
+        const float guardZoom=std::min(.65f*s,(barW-4*s)/std::max(1.f,GetNumDx(guard,false,NUM_FONT_NORMAL,0,false,1.f,false)));
+        outlinedNum(guard,barX+barW/2,guardY-(int)((barH-24*guardZoom)*.5f),CENTER,guardZoom);
+    }
     mergeRect(barX,hpY,barW,barH,barBg);
     const double ratio=max>0?std::max(0.,std::min(1.,(animatedHp>=0?animatedHp:hp)/(double)max)):0.;
     if(ratio>0)mergeRect(barX,hpY,std::max(1,(int)(barW*ratio)),barH,barFg);
-    const float digits=GetNumDx(hp,false,NUM_FONT_NORMAL,0,false,1.f,false)+GetNumDx(max,false,NUM_FONT_NORMAL,0,false,1.f,false);
-    const float hpZoom=std::min(.65f*s,(barW-12*s)/std::max(1.f,digits));
-    const float leftWidth=GetNumDx(hp,false,NUM_FONT_NORMAL,0,false,hpZoom,false),rightWidth=GetNumDx(max,false,NUM_FONT_NORMAL,0,false,hpZoom,false);
-    const int numberY=hpY-(int)((barH-24*hpZoom)*.5f),numberX=(int)(barX+(barW-leftWidth-rightWidth-8*s)*.5f);
-    outlinedNum(hp,numberX,numberY,LEFT,hpZoom);
-    label("/",(int)(numberX+leftWidth+4*s),hpY-(int)((barH-15*s)*.5f),.62f,hot?0xFFB060:0xFFFFFF);
-    outlinedNum(max,(int)(numberX+leftWidth+8*s),numberY,LEFT,hpZoom);
+    pair(hp,max,hpY);
 }
-//판 위 방어구가 지금 주는 최대치. 공격 중에는 이미 쏜 블록까지만(바가 차례로 차 보이게).
+//방어막 통의 최대치. 실제 수치에서는 히어로 몫(체력×ShieldPct) 하나다. 옛 다섯 목숨 모드는 낀 방어구 +
+//판 위 방어구 블록 수(보호 1 = 한 방)를 그대로 보여 준다.
 long long currentGuardMax() {
+    if(run.realVitals)return std::max(1LL,run.guardMax);
     long long guard=run.baseArmor;
     if(!run.attacking) {
         for(int i=0;i<(int)run.board.size();++i)
@@ -594,12 +604,10 @@ long long currentGuardMax() {
         if(DefensiveGear(run.shots[i].block.family))guard+=run.armorOf(run.shots[i].block,stats);
     return guard;
 }
-//방어막 통의 현재값. 모델은 공격·턴 넘기기 때 새 방어구를 통에 넣으므로(settleGuard), 그 전에
-//막 선 블록은 여기서 찬 채로 더해 보인다 - 모델이 곧 그렇게 셈한다.
+//방어막 통의 현재값. 피해 숫자가 그대로 깎이고, 턴이 돌 때 장비(낀 방어구 + 방어구 블록)가 채운다.
 long long currentGuard() {
     if(!run.realVitals)return currentGuardMax();
-    const long long liveMax=currentGuardMax();
-    return std::max(0LL,std::min(liveMax,run.guard+std::max(0LL,liveMax-run.guardMax)));
+    return std::max(0LL,std::min(run.guardMax,run.guard));
 }
 void floatingDamage(long long damage,bool enemy) {
     if(damage<=0)return;
@@ -686,10 +694,9 @@ void drawHeldHelp(const Block& b,const Layout& l) {
     } else if(b.family>=Roles) {
         const int g=b.family-Sword;
         if(DefensiveGear(b.family)){
-            const long long add=run.armorOf(b,stats),now=currentGuard();
-            if(run.realVitals)std::snprintf(line,sizeof(line),u8"방어막 +%lld · 턴마다 +%lld 충전%s",add,std::max(1LL,add*Run::chargePctOf(b.family)/100),lv==2?u8" · 반격 반감":"");
+            const long long add=run.armorOf(b,stats);
+            if(run.realVitals)std::snprintf(line,sizeof(line),u8"방어막 턴마다 +%lld 회복 (통 %lld/%lld)%s",add,currentGuard(),currentGuardMax(),lv==2?u8" · 반격 반감":"");
             else std::snprintf(line,sizeof(line),u8"방어막 +%lld%s",add,lv==2?u8" · 반격 반감":"");
-            (void)now;
         }
         else if(b.family==Gloves)std::snprintf(line,sizeof(line),u8"\uacf5\uaca9\ub825 \uc99d\uac00 \u00b7 \uc9c1\uc811 \uacf5\uaca9 \uc5c6\uc74c");
         else if(b.family==Boots)std::snprintf(line,sizeof(line),u8"공격 뒤 하트 +%d · 돌리기 +%d",MergeBoard::NeckHearts(lv),MergeBoard::NeckSpins(lv));
@@ -772,8 +779,8 @@ void button(const Box& b,const char* title,const char* sub,int color,bool enable
 void reviewCapture(const char* name);
 //공용 보상창(RewardPopup.inc). 단추만 합성 전투의 금테 단추로 그린다.
 #include "RewardPopup.inc"
-//보상창 단추의 큰 글자(.91)는 글꼴 여백 탓에 가운데보다 아래로 처져 보여서 높이의 14% 만큼 올린다.
-void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true,.14f);}
+// Raise reward-button text above the font's low visual baseline.
+void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true,.24f);}
 void save() {
     if(siegeActive)return;   //공성전은 디버그라 이어하기 저장을 남기지 않는다
     if(review)return;
@@ -2119,7 +2126,7 @@ void tick(float dt) {
     }
     if(waveTransition.active()){
         if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames){
-            if(review){   //리뷰는 첫 보상창만 한 장 남기고 저절로 닫는다
+            if(review&&!std::getenv("CS_REWARD_REVEAL_REVIEW")){   //리뷰는 첫 보상창만 한 장 남기고 저절로 닫는다
                 static bool captured=false;
                 static bool shot=false;
                 if(!captured&&RewardPopup::ticks()>=58){captured=true;reviewCapture("kill-reward");}   //카드가 다 선 뒤
@@ -2260,11 +2267,8 @@ void tick(float dt) {
             }
         }
         {
-            char heading[160];
-            const char* name=defeatedNpc>=0&&defeatedNpc<gTotalEnemy?textId[TEXT_MONSTERNAME_START+defeatedNpc]:u8"몬스터";
-            std::snprintf(heading,sizeof(heading),u8"%s %s",overkill>0?u8"오버킬!":u8"처치!",name);
             RewardPopup::drawButton=rewardButton;
-            RewardPopup::show(heading,rewards,stageClear?u8"다음 성으로":u8"다음");
+            RewardPopup::show(u8"보상",rewards,stageClear?u8"다음 성으로":u8"다음");
         }
         run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);
         if(run.realVitals)run.enemyAttack=waveAttack(run.stage,run.wave);
@@ -2547,7 +2551,9 @@ void waveTransitionReviewStep(const Layout& l){
     }
 }
 #include "MergeMonsterPartsReview.inc"
+#include "RewardRevealReview.inc"
 void reviewStep(const Layout& l) {
+    if(rewardRevealReview())return;
     if(review&&std::getenv("CS_MONSTER_PARTS_REVIEW")){monsterPartsReviewStep();return;}
     if(review&&std::getenv("CS_WAVE_TRANSITION_REVIEW")){waveTransitionReviewStep(l);return;}
     if(review&&std::getenv("CS_MERGE_ENEMY_PATTERN_REVIEW")){enemyPatternReviewStep(l);return;}
@@ -3014,8 +3020,8 @@ void reviewStep(const Layout& l) {
             reviewCapture("vitals-02-native-bars-ten-hearts");phase=3;return;
         }
         if(phase==3){
-            //첫 공격 때 갑옷 블록이 통에 찬 채로 들어오므로, 반격 = 통 전부 + 체력의 1/8 이면 체력이 그만큼 깎인다.
-            run.enemyAttack=run.baseArmor+run.forecast(stats).protect+std::max(1LL,run.maxLives/8);
+            //통(체력×ShieldPct)이 찬 채로 시작하므로, 반격 = 통 전부 + 체력의 1/8 이면 체력이 그만큼 깎인다.
+            run.enemyAttack=run.guardMax+std::max(1LL,run.maxLives/8);
             before=run.lives;expected=std::max(1LL,run.maxLives/8);
             reviewTap(l.attack);phase=4;return;
         }
@@ -3388,6 +3394,13 @@ void reviewStep(const Layout& l) {
 int MergeCrewOwnerHero(int crew) {return MergeTrees::OwnerHero(crew);}
 bool MergeCrewAvailable(int crew) {const int h=MergeTrees::OwnerHero(crew);return h<0||IsGetHero(h);}
 bool MergeRouletteActive() {return active;}
+long long MergeRouletteHeroShield(const OBJECT* h) {return h?Run::shieldFor(std::max(1LL,(long long)h->ps[PS_HP])):0;}
+long long MergeRouletteHeroShieldRecovery(const OBJECT* h) {
+    if(!h)return 0;
+    long long guard=0;
+    for(int slot:{EQUIP_HELM,EQUIP_ARMOR,EQUIP_PANTS,EQUIP_BOOTS}) if(h->equip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(const_cast<ITEM*>(&h->equip[slot]),std::max(1,(int)h->equip[slot].lv)));
+    return std::min(guard*(100+CastleTeamBonus(2))/100,1000000000000000LL);
+}
 void MergeRouletteBeginSiege() {Siege::begin();}
 static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height){
     const float z=std::min(width/OriginalCastle::W,height/OriginalCastle::H);
@@ -3899,7 +3912,7 @@ void MergeRouletteDraw() {
     const long long attackPower=attackDisplayKnown?(long long)std::llround(attackDisplay.value):std::max(0LL,hero.ps[PS_DMG]);
     //적의 공격: 일반 웨이브는 반격값(보스는 두 배), 공성전은 상대 판이 지금 때릴 예상치.
     const long long enemyAttack=siegeActive?Siege::foe.preview(Siege::foeStats):MonsterBoard::counterPreview();
-    //아군 방어 줄: 방어막 통의 현재값 / 최대치(판 위 방어구 + 실제 장착분).
+    //아군 방어 줄: 방어막 통의 현재값 / 최대치(체력×ShieldPct). 장비는 통을 채울 뿐 최대치를 바꾸지 않는다.
     unitPlate(allyPlate,run.lives,run.maxLives,guard,0x37433B,0x406D39,allyFlash>0,guardDisplay.value,std::max(1LL,currentGuardMax()),heroHealthDisplay.value,
         std::max(0LL,hero.ps[PS_DMG]),(double)attackPower,attackGainTime>0);
     if(!waveTransition.active()||waveTransition.incomingVisible())unitPlate(enemyPlate,run.enemyHp,run.enemyMax,run.enemyGuard,0x493444,0xAA343E,flash!=0,-1,std::max(1LL,run.enemyGuardMax),enemyHealthDisplay.value,
@@ -4187,7 +4200,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         return false;
     }
     if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames){   //보상창: 단추만 받는다
-        if(phase==0)RewardPopup::touch(x,y);
+        RewardPopup::touch(x,y,phase,id);
         picked=finger=-1;return true;
     }
     if(entering()||introActive()||spinFlying()||deckArriving()||waveTransition.active()) {picked=finger=-1;return true;}

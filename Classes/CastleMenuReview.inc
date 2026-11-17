@@ -601,9 +601,18 @@ static void CastleMenuReviewStep()
             while(popUpCnt>0) ClosePopUp();
             ITEM& item=robin.inven[0];memset(&item,0,sizeof(item));
             item.type=ITEM_SWORD;item.detail=0;item.lv=1;item.count=10;item.id=100000;item.value=100;
+            if(getenv("CS_EQUIPMENT_CARDS_REVIEW")){
+                for(int i=1;i<25;++i){ITEM copy=item;copy.count=1;copy.id=100000+i;
+                    const int desired=(i%6)+1;
+                    for(int d=0;d<itemStartCnt[ITEM_SWORD+1]-itemStartCnt[ITEM_SWORD];++d)
+                        if(GetItemStar(ITEM_SWORD,d,0)==desired){copy.detail=d;break;}
+                    robin.inven[i]=copy;
+                }
+            }
             for(int h=0;h<TOTALCHAR;++h){
                 for(int e=0;e<TOTALEQUIP;++e) robin.charData[h].equip[e].type=EMPTY;
                 ITEM starter=item;starter.type=ITEM_SWORD+h;starter.value=19;starter.id=110000+h;
+                if(h==ROBIN&&getenv("CS_EQUIPMENT_CARDS_REVIEW"))starter=robin.inven[4];
                 robin.charData[h].equip[EQUIP_WEAPON]=starter;
                 // This isolated fixture exercises every unlocked hero tab.
                 robin.lv=Max(robin.lv,getHeroLv[h]);
@@ -612,6 +621,10 @@ static void CastleMenuReviewStep()
         }
         if(tick==20) {CastleReviewClick(TOUCH_FUNC_COLLECTIONS);PlayKey(PLAYER);systemKey=0;curEquipTab=EQUIPTAB_GEAR;}
         if(tick==90) {
+            if(getenv("CS_EQUIPMENT_CARDS_REVIEW")){
+                extern bool EquipmentMenuV2ReviewCards();
+                CastleReviewTrace(EquipmentMenuV2ReviewCards()?"PASS six separate equipment cards and native backgrounds":"FAIL equipment card columns or backgrounds");
+            }
             CastleReviewTrace(popUpCnt>0 && popUp[popUpCnt-1].type==POPUPTYPE_COLLECTIONS
                 ?"PASS equipment opens":"FAIL equipment navigation");
             cocos2d::utils::captureScreen([](bool ok,const std::string&) {

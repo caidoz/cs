@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 namespace MergeCombat {
 inline float lobbyCastleLift(float width,float height) {
@@ -134,9 +135,9 @@ inline SummonPose summonPose(int frame,int frames) {
     const float jump=std::max(0.f,std::min(1.f,std::sin(3.14159265f*t)));
     float bounce=0;
     if(t>.75f){const float tb=std::min(1.f,(t-.75f)/.25f);bounce=std::sin(3.14159265f*tb)*(1-tb);}
-    p.lift=64.f*std::pow(jump,.5f)-14.f*bounce;              // 32*_2X 점프, 7*_2X 착지 바운스
-    const float zDown=t>.82f?std::min(1.f,std::pow((t-.82f)/.18f,.7f)):0.f;
-    p.zoomMul=std::max(1.f,1+.35f*std::pow(jump,.3f)-.18f*zDown);
+    p.lift=(float)(64.f*std::pow(jump,.5f)-14.f*bounce);              // 32*_2X 점프, 7*_2X 착지 바운스
+    const float zDown=t>.82f?std::min(1.f,(float)std::pow((t-.82f)/.18f,.7f)):0.f;
+    p.zoomMul=std::max(1.f,(float)(1+.35f*std::pow(jump,.3f)-.18f*zDown));
     p.alpha=std::max(1,std::min(32,(int)(32*std::min(1.f,t*1.6f))));
     const int flip=frame<frames/4?(frame/2)%2:frame<frames/2?frame%2:(frame/2)%2;
     p.flipped=flip!=0;

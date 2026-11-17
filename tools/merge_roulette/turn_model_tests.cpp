@@ -82,28 +82,42 @@ int main() {
     // Native HP and armor use the same units in bars, equipment, and actual hits.
     Run native=armed();native.lives=3;native.setVitals(1800,120);native.enemyAttack=600;
     assert(native.lives==1080&&native.maxLives==1800&&native.baseArmor==120);
+    // 방어막 통 = 체력 × ShieldPct(100%) 하나. 낀 방어구(120)는 통을 키우지 않는다.
+    assert(native.guardMax==1800&&native.guard==1800&&Run::shieldFor(1800)==1800);
     Stats equipped;equipped.realVitals=true;equipped.armor[Armor-Sword][0]=240;
     Block defense;defense.family=Armor;defense.x=1;defense.y=0;native.board.push_back(defense);
-    assert(native.attack(equipped)&&native.effects.protect==240);
+    assert(native.attack(equipped)&&native.effects.protect==240&&native.effects.charge==240);
     while(native.step()){}
-    // 방어막 통: 실제 장착 120 + 갑옷 블록 240 = 360 이 찬 채로 600 을 받는다 → 통 0, 체력 -240.
-    assert(native.guard==360&&native.guardMax==360&&native.effects.charge==72);
-    assert(native.counterDamage()==240&&native.counterattack()&&native.lives==840&&native.guard==0);
+    // 반격 600 은 통에서 그대로 빠진다(1800 → 1200). 체력은 그대로.
+    assert(native.guard==1800&&native.guardMax==1800&&native.guardRecovery()==360);
+    assert(native.counterDamage()==0&&native.counterattack()&&native.lives==1080&&native.guard==1200);
     Run nativeResume;assert(nativeResume.decode(native.encode())&&nativeResume.encode()==native.encode());
     assert(nativeResume.baseArmor==120&&nativeResume.enemyAttack==600&&!nativeResume.counterattack());
-    // 턴이 돌면 방어구가 채운다: 장착분 120 의 30% = 36 + 갑옷 블록 240 의 30% = 72 → 108. 다 차지 않는다.
-    nativeResume.finish();assert(nativeResume.lives==840&&nativeResume.guard==108&&nativeResume.guardMax==360);
+    // 턴이 돌면 장비가 채운다: 낀 방어구 120 + 갑옷 블록 240 = 360 → 1560. 최대치는 그대로 1800.
+    nativeResume.finish();assert(nativeResume.lives==1080&&nativeResume.guard==1560&&nativeResume.guardMax==1800);
     {
-        //두 번째 턴: 통 108 로 300 을 받으면 체력은 192 만 깎인다. 그 뒤 또 108 이 찬다.
+        //두 번째 턴: 300 을 받으면 1260, 다시 360 이 차서 1620.
         Run again=nativeResume;again.enemyAttack=300;assert(again.attack(equipped));while(again.step()){}
-        assert(again.guard==108&&again.counterDamage()==192&&again.counterattack()&&again.lives==840-192&&again.guard==0);
-        again.finish();assert(again.guard==108);
-        //방어구가 없으면 통도 없다: 장착분만 36 씩.
-        Run bare=armed();bare.setVitals(1800,120);bare.enemyAttack=500;assert(bare.guard==120);
+        assert(again.guard==1560&&again.counterDamage()==0&&again.counterattack()&&again.lives==1080&&again.guard==1260);
+        again.finish();assert(again.guard==1620);
+        //방어구 블록이 없어도 통은 체력 몫 그대로다. 채우는 것은 낀 방어구 120 뿐.
+        Run bare=armed();bare.setVitals(1800,120);bare.enemyAttack=500;assert(bare.guard==1800);
         assert(bare.attack(stats));while(bare.step()){}
-        assert(bare.counterattack()&&bare.lives==bare.maxLives-380&&bare.guard==0);bare.finish();assert(bare.guard==36);
+        assert(bare.counterattack()&&bare.lives==bare.maxLives&&bare.guard==1300);bare.finish();assert(bare.guard==1420);
+        //통을 넘기는 한 방: 2200 이면 1800 은 통이, 400 은 체력이 받는다. 그 뒤 120 이 찬다.
+        Run heavy=armed();heavy.setVitals(1800,120);heavy.enemyAttack=2200;
+        assert(heavy.attack(stats));while(heavy.step()){}
+        assert(heavy.counterDamage()==400&&heavy.counterattack()&&heavy.lives==1400&&heavy.guard==0);heavy.finish();assert(heavy.guard==120);
+        //장비가 하나도 없으면 회복도 없다(최소 1 보정 없음).
+        Run naked=armed();naked.setVitals(1800,0);naked.enemyAttack=100;
+        assert(naked.attack(stats));while(naked.step()){}
+        assert(naked.counterattack()&&naked.guard==1700);naked.finish();assert(naked.guard==1700&&naked.guardRecovery()==0);
+        //v12 세이브(최대치 = 장비 합)는 체력 비례 통으로 바꿔 찬 채로 잇는다.
+        std::string twelve=again.encode();twelve.replace(4,2,"12");
+        Run migrated;assert(migrated.decode(twelve)&&migrated.guardMax==1800&&migrated.guard==1800&&migrated.effects.charge==migrated.effects.protect);
     }
-    nativeResume.setVitals(3600,180);assert(nativeResume.lives==1680&&nativeResume.baseArmor==180&&nativeResume.guardMax==420&&nativeResume.guard==168);
+    // 체력이 바뀌면 통도 비례해서 다시 잰다(1560/1800 → 3120/3600). 낀 방어구는 회복량만 바꾼다.
+    nativeResume.setVitals(3600,180);assert(nativeResume.lives==2160&&nativeResume.baseArmor==180&&nativeResume.guardMax==3600&&nativeResume.guard==3120);
     Run legacyNine=armed();legacyNine.lives=2;
     std::string nine=legacyNine.encode();nine.replace(4,2,"9");
     for(int i=0;i<9;++i)nine.erase(nine.find_last_of(' '));
@@ -111,7 +125,7 @@ int main() {
     resumed.setVitals(1500,75);assert(resumed.lives==600&&resumed.maxLives==1500&&resumed.baseArmor==75);
     nativeResume.wave=14;nativeResume.enemyHp=1;
     assert(nativeResume.attack(equipped));while(nativeResume.step()){}
-    nativeResume.finish();assert(nativeResume.stage==1&&nativeResume.lives==nativeResume.maxLives&&nativeResume.guard==nativeResume.guardMax&&nativeResume.guardMax==420);
-    std::cout<<"PASS native HP/armor, fractional v9 migration, equipment mitigation, v10 resume, and stage recovery\n";
+    nativeResume.finish();assert(nativeResume.stage==1&&nativeResume.lives==nativeResume.maxLives&&nativeResume.guard==nativeResume.guardMax&&nativeResume.guardMax==3600);
+    std::cout<<"PASS native HP/armor, HP-sized shield pool refilled by gear, v12 migration, v10 resume, and stage recovery\n";
     std::cout<<"PASS 15 waves, bosses 5/10/15, counterattack after allies, one hit across resume, block/stun/death and v8 migration\n";
 }

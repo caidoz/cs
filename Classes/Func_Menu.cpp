@@ -6105,7 +6105,8 @@ void DrawItemCard(
 			CenterTextStr(tempStr, x + (float)(120) * zoom, y - (float)(268) * zoom, 1.3f * zoom);
 
 		}
-		else {
+		else if (itemType != ITEM_GOLD) {
+			// Gold is a currency reward, not an upgradeable inventory card.
 			//SetAlpha(24);
 			//SetAlpha(32);
 			//memset(&tempStr, 0, sizeof(tempStr));
@@ -6703,6 +6704,11 @@ static int InvenEquippedBy(int invenIdx)
 	return -1;
 }
 
+static int InvenCardBorderColor(const ITEM& item)
+{
+ static const int colors[6]={0xC4CCDB,0xA3D739,0x39B9F3,0xBE6ADB,0xFFC341,0xFFB342};
+ return colors[Max(1,Min(6,GetItemStar(item.type,item.detail,item.grade)))-1];
+}
 static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 {
 	const ITEM* it = &robin.inven[invenIdx];
@@ -6715,18 +6721,25 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	static const int tileFill[]={0x13383E,0x243E40,0x343147,0x4B354C,0x51422C,0x51422C};
  const int star=Max(1,Min(6,GetItemStar(it->type,it->detail,it->grade)));
  const int* f=&equipBgData[(star-1)*6];
+ // The frame texture is transparent: submit the native card illustration first.
+ if(!sprite[CARDBG_IMG])LoadImg(CARDBG_IMG);
+ const int bg=crewData[it->detail*CREWDATASIZE+CREWDATA_CARDBG];
+ DrawImageScale(198,288,198*(bg%5),288*(bg/5),x+w*18/240,y-h*22/332,
+  false,false,false,false,false,w*1.02f/240.f,h/332.f,sprite[CARDBG_IMG],CARDBG_IMG);
  DrawImageScale(f[0],f[1],f[2],f[3],x,y,false,false,false,false,false,
   w/(float)f[0],h/(float)f[1],sprite[CARD_IMG],CARD_IMG);
- DrawStar(ICON_STAR,x+w/2,y-18,star,star,star,CENTER,false,.55f);
+ DrawStar(ICON_STAR,x+w/2,y-12,star,star,star,CENTER,false,Min(.55f,w/240.f));
 
 
 	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
 	//"지금 끼고 있는 것"이 제일 먼저 보여야 한다.
 	// Selected/equipped items use the same rounded frame as the other menus.
 
+ const bool weapon=it->type>=ITEM_SWORD&&it->type<=ITEM_BOOMERANG;
+ const float iconZoom=Min(zoom*(weapon?1.3f:1.f),Min(w*.76f,h*.65f)/ITEMICONSIZE);
 	DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
-		x + w / 2 - ITEMICONSIZE * zoom / 2, y - h / 2 + ITEMICONSIZE * zoom / 2,
-		1.0f * zoom, false, false, false, true);
+		x + w / 2 - ITEMICONSIZE * iconZoom / 2, y - h / 2 + ITEMICONSIZE * iconZoom / 2,
+		iconZoom, false, false, weapon, true);
 
 	//강화 레벨. 장비는 cooldown 칸에 들어간다(ITEM 주석 참고).
 	if (it->cooldown > 0) {

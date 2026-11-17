@@ -1584,6 +1584,8 @@ int MergeItems(bool doMerge)
 			//칸이 맞는 자리에만 넣는다. 셋 중 둘이 서로 다른 히어로의 같은
 			//부위였다면 둘 다 새 것을 낀다 - 물건은 하나지만 창고의 한 점을
 			//여럿이 쓰는 것은 원래 이 게임의 규칙이다(같은 id 로 비교한다).
+			bool refreshed[TOTALPLAYER] = {};
+
 			for (int h = 0; h < TOTALPLAYER; h++)
 				for (int e = 0; e < TOTALEQUIP; e++) {
 					if (!wornAt[h][e])
@@ -1591,7 +1593,15 @@ int MergeItems(bool doMerge)
 
 					robin.charData[h].equip[e] = *head;
 					ao[h].equip[e] = *head;
+					refreshed[h] = true;
 				}
+
+			//끼고 있던 자리에 새 물건을 넣었으면 능력치와 코스튬 그림(equipImg)을
+			//바로 다시 센다. 전에는 안 셌다 - 장비 창의 칸은 새 물건인데 몸은
+			//옛 물건을 입고 있었고, 공격력도 옛 값(또는 0)으로 남았다.
+			for (int h = 0; h < TOTALPLAYER; h++)
+				if (refreshed[h] && ao[h].type >= ROBIN && ao[h].type < TOTALCHAR)
+					RefreshStat(&ao[h]);
 
 			again = true;
 			break;

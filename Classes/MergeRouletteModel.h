@@ -17,7 +17,7 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=12 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=13 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -97,8 +97,8 @@ struct Roster {
 struct Shot { Block block; long long damage=0; int summonTurns=0; };
 struct Effects {
     int expose=0, inspire=1, skip=0;
-    long long protect=0;   //이번 턴 판 위 방어구가 주는 방어막 최대치의 몫
-    long long charge=0;    //그 방어구들이 한 턴에 채우는 양(갑옷 30% · 투구·하체 25%)
+    long long protect=0;   //이번 턴 판 위 방어구 블록 값의 합(표시·옛 목숨 모드용)
+    long long charge=0;    //그 방어구들이 한 턴에 방어막을 채우는 양(= 블록 값 그대로)
     bool half=false;
     long long dot=0;
     int dotTurns=0;
@@ -117,39 +117,39 @@ struct Run {
     long long enemyGuard=0,enemyGuardMax=0;
     //---- 내 방어막 통 ----
     //
-    //본편의 2단 게이지를 턴으로 옮긴 것이다. 반격은 방어막부터 깎고, 바닥나면 체력으로 간다.
-    //최대치(guardMax) = 히어로 PS_ARMOR + 판 위 갑옷·투구·하체 블록 값. 새 방어구가 서면 그
-    //몫만큼 바로 찬다(새 갑옷은 멀쩡한 갑옷이다). 깎인 뒤에는 턴이 돌 때 방어구가 다시 채운다 -
-    //한 번에 다 차지 않는다. 본편은 갑옷이 3.5초, 투구·하체가 4초마다 제 값만큼 펄스 충전하고
-    //몬스터는 1초마다(enemy.tsv ap_cnt 60f) 치므로, 한 턴 = 한 번 맞는 사이에 갑옷은 값의 약 30%,
-    //투구·하체는 25% 를 채운다(Effects::charge). 그래서 ★1 갑옷(23)이 1성 반격(12~42)을
-    //첫 한두 번은 다 받아 주되 그 뒤로는 턴마다 7 만 막는다. 스테이지를 넘기면 체력과 함께 다 찬다.
-    static const int ArmorChargePct=30,OtherChargePct=25;
+    //(2026-11-17 개편) 방어막은 피해 숫자를 그대로 받는 통이다. 적이 50 을 치면 통이 50 줄고,
+    //통이 바닥나면 남은 피해가 체력으로 간다. 통의 최대치는 히어로 몫 하나다:
+    //  guardMax = 최대 체력 × ShieldPct% (100% - 방어막은 체력과 같은 크기. 체력 60 이면 방어막 60).
+    //장비는 통을 키우지 않고 **채운다**. 턴이 돌 때마다
+    //  회복 = 실제로 낀 투구·갑옷·하체·발의 장비 값(baseArmor) + 판 위 갑옷·투구·하체 블록 값(Effects::charge)
+    //만큼 다시 찬다. 장비가 없으면 회복도 없다(최소 1 같은 보정은 두지 않는다). 좋은 장비 = 턴마다
+    //많이 차는 통. ★1 갑옷 블록(23)은 1성 1웨이브 반격(12)을 영구히 지우고, 14웨이브(42)에서는 턴당
+    //19 씩만 새게 해 통 60 이 세 턴을 버틴다. 최종 보스(84)는 통을 비우고 체력 24 를 깎는다. 스테이지를
+    //넘기면 다 찬다. 방어가 체력보다 커지지 않는다 - 둘이 같은 크기여야 "체력 두 통" 으로 읽힌다.
+    static const int ShieldPct=100;
+    static long long shieldFor(long long hp) {return std::max(0LL,std::min(2000000000000000LL,hp*ShieldPct/100));}
     long long guard=0,guardMax=0;
-    static int chargePctOf(int family) {return family==Armor?ArmorChargePct:OtherChargePct;}
     void setVitals(long long hp,long long armor) {
         hp=std::max(1LL,std::min(1000000000000000LL,hp));
         const long double ratio=lives/(long double)std::max(1LL,maxLives);
         lives=lives>0?std::max(1LL,(long long)std::llround(hp*ratio)):0;
-        const long long before=baseArmor;
+        //통은 체력에 비례한다. 체력이 바뀌면(장비·레벨) 남은 비율을 지켜 다시 잰다. 처음 들어오면 가득.
+        const long double guardRatio=guardMax>0?guard/(long double)guardMax:1.0L;
         maxLives=hp;baseArmor=std::max(0LL,std::min(1000000000000000LL,armor));realVitals=true;
-        //실제 장착 방어구가 바뀐 몫은 바로 반영한다(늘면 그만큼 차고, 줄면 통이 준다).
-        guardMax=std::max(0LL,guardMax+baseArmor-before);
-        guard=std::max(0LL,std::min(guardMax,guard+baseArmor-before));
+        guardMax=shieldFor(hp);
+        guard=std::max(0LL,std::min(guardMax,(long long)std::llround(guardMax*guardRatio)));
     }
-    //이번 턴의 방어구(effects.protect)로 통의 최대치를 맞춘다. 공격·대포·턴 넘기기가 모은 뒤 부른다.
+    //통의 최대치는 히어로 몫뿐이다. 방어구 블록은 최대치를 바꾸지 않는다 - 공격·대포·턴 넘기기가 모은 뒤
+    //불러 범위만 지킨다(옛 판에서는 여기서 블록 값을 최대치에 더했다).
     void settleGuard() {
         if(!realVitals)return;
-        const long long newMax=std::max(0LL,std::min(1000000000000000LL,baseArmor+effects.protect));
-        if(newMax>guardMax)guard+=newMax-guardMax;   //새로 선 방어구는 찬 채로 온다
-        guardMax=newMax;guard=std::max(0LL,std::min(guard,guardMax));
+        guardMax=shieldFor(maxLives);guard=std::max(0LL,std::min(guard,guardMax));
     }
-    //턴이 돌 때 방어구가 채운다. 실제 장착분은 갑옷 비율로 센다.
+    //턴이 돌 때 장비가 채운다: 낀 방어구 값 + 판 위 방어구 블록 값. 장비가 없으면 0.
+    long long guardRecovery() const {return std::max(0LL,std::min(1000000000000000LL,baseArmor+effects.charge));}
     void chargeGuard() {
         if(!realVitals||guardMax<=0||guard>=guardMax)return;
-        long long charge=baseArmor*ArmorChargePct/100+effects.charge;
-        if(charge<1)charge=1;
-        guard=std::min(guardMax,guard+charge);
+        guard=std::min(guardMax,guard+guardRecovery());
     }
     long long armorOf(const Block& block,const Stats& st) const {
         if(!DefensiveGear(block.family))return 0;
@@ -590,7 +590,8 @@ struct Run {
         if(b.family==Boots||b.family==Gloves) return s;
         if(DefensiveGear(b.family)) {
             const long long value=armorOf(b,st);
-            e.protect+=value;e.charge+=value*chargePctOf(b.family)/100;e.skip+=MergeBoard::ArmorSkipTurns(lv);
+            e.protect+=value;e.skip+=MergeBoard::ArmorSkipTurns(lv);
+            if(st.realVitals)e.charge+=value;   //블록 값이 곧 턴당 회복량. 옛 목숨 모드는 통이 없다(세이브 검사와 맞춘다)
             if(lv==2)e.half=true;
             return s;
         }
@@ -785,7 +786,7 @@ struct Run {
          <<' '<<effects.half<<' '<<effects.dot<<' '<<effects.dotTurns<<' '<<shots.size();
         for(const Shot& s:shots)o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.block.x<<' '<<s.block.y<<' '<<s.damage<<' '<<s.summonTurns;
         o<<' '<<counterResolved<<' '<<realVitals<<' '<<baseArmor<<' '<<enemyAttack;
-        o<<' '<<guard<<' '<<guardMax<<' '<<effects.charge;   //v11: 방어막 통
+        o<<' '<<guard<<' '<<guardMax<<' '<<effects.charge;   //v11: 방어막 통 (v13: 최대치 = 체력×ShieldPct, 장비는 회복)
         o<<' '<<monsterNpc<<' '<<monsterActionTurn<<' '<<passing; //v12: action cycle and spin counter turns
         return o.str();
     }
@@ -795,7 +796,7 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -856,6 +857,10 @@ struct Run {
         } else if(r.realVitals) {
             //v10 까지는 방어를 한 방에서 뺐다. 이어 하는 판은 통을 찬 채로 시작한다.
             r.guardMax=r.baseArmor+r.effects.protect;r.guard=r.guardMax;
+        }
+        if(version<13&&r.realVitals) {
+            //v12 까지는 최대치가 장비 합이었다. 체력 비례 통으로 바꿔 찬 채로 잇는다. 블록 회복량도 100% 로.
+            r.guardMax=shieldFor(r.maxLives);r.guard=r.guardMax;r.effects.charge=r.effects.protect;
         }
         if(version>=12){
             if(!(in>>r.monsterNpc>>r.monsterActionTurn>>r.passing)||r.monsterActionTurn<0||r.monsterActionTurn>1000000

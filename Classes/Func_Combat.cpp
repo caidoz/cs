@@ -693,6 +693,10 @@ void RefreshSkill(OBJECT* pObj)
 	//소지아이템에 따라서 기본 공격력 결정
 
 	if (pObj->equip[EQUIP_WEAPON].type != EMPTY) {
+		//값이 0 인 무기는 만들다 만 물건이다(옛 합성·복사 경로). 표에서 제 값을 되찾아 준다 -
+		//검을 들고 공격 0 은 있을 수 없다.
+		if (pObj->equip[EQUIP_WEAPON].value <= 0 && pObj->equip[EQUIP_WEAPON].type < ITEM_NECK)
+			pObj->equip[EQUIP_WEAPON].value = MakeItemValue(pObj->equip[EQUIP_WEAPON].type, pObj->equip[EQUIP_WEAPON].detail, pObj->equip[EQUIP_WEAPON].grade, Max(1, (int)pObj->equip[EQUIP_WEAPON].lv));
 		pObj->ps[PS_WEAPONDMG] = pObj->equip[EQUIP_WEAPON].value;
 
 		//무기강화레벨을 적용한다.

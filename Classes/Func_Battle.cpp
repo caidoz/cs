@@ -1355,6 +1355,10 @@ void StageRunEquipmentEnd(void) {
  }
  const int who=Max(0,Min(TOTALPLAYER-1,PlayerHeroType()));
  memcpy(ao[PLAYER].equip,stagePersistentEquipment[who],sizeof(stagePersistentEquipment[who]));
+ //장비를 되돌렸으면 능력치·코스튬 그림도 그 장비로 다시 센다. 안 그러면 로비에서
+ //칸과 몸이 어긋나고 공격력이 판에서 쓰던 값으로 남는다.
+ for(int i=0;i<TOTALPLAYER;++i) if(ao[i].type>=ROBIN && ao[i].type<TOTALCHAR) RefreshStat(&ao[i]);
+ if(ao[PLAYER].type>=ROBIN && ao[PLAYER].type<TOTALCHAR) RefreshStat(&ao[PLAYER]);
  stageRunEquipmentActive=false;StageRunGridClear();
  stageBoomerang=StageBoomerangModel::Runtime();stageBoomerangTarget=-1;
  memset(stageRunCrew,0,sizeof(stageRunCrew));
