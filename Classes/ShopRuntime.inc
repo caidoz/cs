@@ -126,14 +126,14 @@ void Draw(float x,float y,float w,float h,float zoom) {
 
   DrawMenuRoomBackdrop((int)x,cy,(int)w,112,0,0);
   const int merchant=MENU_REFERENCE_SHOPKEEPER_IMG;if(!sprite[merchant])LoadImg(merchant);
-  if(sprite[merchant])DrawImageScale(748,1135,235,36,(int)x+(int)w/5,cy-3,false,0,0,0,0,108.f/1135.f,108.f/1135.f,sprite[merchant],merchant);
+  if(sprite[merchant])DrawMenuBackdropCrop(sprite[merchant]->getTexture(),235,36,748,1135,(int)x+(int)w/5,cy-3,71,108);
   // Reuse the lower counter pixels over the merchant so she stands behind it.
   if(sprite[MENU_RENEWAL_ROOM_IMG]){
    const auto sz=sprite[MENU_RENEWAL_ROOM_IMG]->getContentSize();const int strip=(int)sz.height/3;
    const float cover=Max(w/sz.width,112.f/strip);const int sw=(int)(w/cover),sh=(int)(112/cover),cut=(int)(54/cover);
    const int sx=((int)sz.width-sw)/2,sy=strip*2+(strip-sh)/2;
-   DrawImageScale(sw,sh-cut,sx,sy+cut,(int)x,cy-54,false,0,0,0,0,w/sw,58.f/(sh-cut),sprite[MENU_RENEWAL_ROOM_IMG],MENU_RENEWAL_ROOM_IMG);
-   SetAlpha(4);MemRect((int)x,cy-54,(int)w,58,0x092B30);SetAlpha(32);
+   DrawMenuBackdropCrop(sprite[MENU_RENEWAL_ROOM_IMG]->getTexture(),sx,sy+cut,sw,sh-cut,(int)x+12,cy-54,(int)w-24,58);
+   SetAlpha(4);MemRect((int)x+12,cy-54,(int)w-24,58,0x092B30);SetAlpha(32);
   }
   cy-=88;
 

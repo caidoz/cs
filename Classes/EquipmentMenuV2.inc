@@ -84,8 +84,8 @@ static void EquipmentMenuV2Draw()
  DrawMenuBackButton(12,top-4,TOUCH_FUNC_POPUP_CLOSE);
  HeroStrip();
  const int bodyTop=top-140, slot=72, center=DX/2;
- DrawMenuRoomBackdrop(0,bodyTop,DX,preview-114);
- SetAlpha(7);MemRect(0,bodyTop,DX,preview-114,0x092B30);SetAlpha(32);
+ DrawHeroCastleBackdrop(12,bodyTop,DX-24,preview-114,Max(0,Min(9,(int)robin.castle)));
+ SetAlpha(7);MemRect(12,bodyTop,DX-24,preview-114,0x092B30);SetAlpha(32);
  MemRectRound(center-102,top-preview+60,204,38,0x6B492E,18);
  MemRectRound(center-102,top-preview+64,204,24,0xB88B56,12);
  // DrawPlayer resolves the selected hero's actual equipped costume parts.

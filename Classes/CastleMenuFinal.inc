@@ -22,7 +22,7 @@ static void GoldPair(long long needed,long long owned,int left,int top,int width
 }
 static int HeaderTop(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int BodyTop(){return HeaderTop()-54;}
-static int BodyBottom(){return Max(HOMEBAR_HEIGHT+16,MergeRouletteBottomNavHeight()+12);}
+static int BodyBottom(){return 16;}
 static int PreviewHeight(){return CastleUpgradeBlocks::PreviewHeight(DY);}
 static int ContentHeight(){return CastleUpgradeBlocks::ContentHeight(DY);}
 static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-BodyBottom()));}

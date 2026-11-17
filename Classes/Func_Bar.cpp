@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -24,93 +24,82 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 
 }
 
-//---- 자원 칸 하나의 테두리 ----
-//
-//그림판의 444x129 칸을 가로는 폭에 맞춰, 세로는 LOBBY_BAR_H 에 맞춰 늘인다.
-//세로 배율을 따로 박아 두면 높이를 바꿀 때 테두리만 남고 안쪽 띠가 어긋난다.
+// Use the existing resource frame with an independent width; icons and type
+// stay at their normal height when the lobby makes room for energy.
 static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
 {
-	// The resource strip has one shared outline; separators belong inside it.
-	if(x>8)MemRect(x,y-12,1,LOBBY_BAR_H-24,0xAC9771);
-}
-
-//---- 칸 오른쪽 끝의 + 단추 ----
-//
-//골드 · 무지개 · 에너지가 같은 자리에 같은 크기로 단다. 세 칸이 같은
-//차림이어야 "눌러서 더 얻는 곳"으로 한눈에 읽힌다.
-static void LobbyResourcePlus(int x, int y, int w, int func)
-{
-	const int size = 15 * _2X;
-	const int px = x + w - size - 4 * _2X;
-	const int py = y - (LOBBY_BAR_H - size) / 2;
-	const float press = GetButtonScale(func, px, py, size, size);
-	const float drawn = size * press;
-
-	DrawMenuReferencePanel(px,py,size,size,0,0x10383D,0xD7B783);
-	const int p=Max(1,_2X),cx=px+size/2,cy=py-size/2;
-	MemRect(cx-4*p,cy+p,8*p,2*p,0xF4F0DB);
-	MemRect(cx-p,cy+4*p,2*p,8*p,0xF4F0DB);
-	SetRectPoint(px, py, size, size, func);
+	const float zx = w / 444.0f;
+	const float zy = LOBBY_BAR_H / 129.0f;
+	DrawImageScale(444, 129, 302, 1, x, y, false, false, false, false, false,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+	DrawImageScale(411 * percent, 94, 318, 132 + 95 * color,
+		x + 16 * zx, y - 16 * zy, false, false, false, false, false,
+		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
 }
 
 void LobbyResourceBarsDraw(int y)
 {
-	MemRect(0,y,DX,LOBBY_BAR_H+3*_2X,0x091D2B);
 	const int gap = 2 * _2X;
 	const int left = xOffset + gap;
 	const int usable = DX - 36 * _2X - gap * 5;
 	const int levelW = (int)(usable * 0.15f);
-	const int moneyW = (usable - levelW) / 2;
+	const int moneyW = (int)(usable * 0.28f);
+	const int energyW = usable - levelW - moneyW * 2;
 	const int goldX = left + levelW + gap;
 	const int coinX = goldX + moneyW + gap;
-	const int h = LOBBY_BAR_H;
-	DrawMenuReferencePanel(left,y,coinX+moneyW-left,h,1,0x10383D,0xF1C47E);
-	const int iconSize = 17 * _2X;
-	const int iconTop = y - (h - iconSize) / 2;	//칸 안에서 세로 한가운데
-
-	//글자도 칸의 한가운데에 놓는다. y 는 윗변이므로 글자 높이의 절반만큼
-	//내린다 - 버튼 글자(DrawTouchLargeButton)와 같은 식이다.
-	const float numZoom = 0.8f;
-	const int numTop = y - (int)((h - FONT_HEIGHT * numZoom) / 2);
-
+	const int energyX = coinX + moneyW + gap;
+	const int h = GOLDBARHEIGHT;
 	const float progress = Max(0.0f, Min(1.0f,
 		(float)(ao[PLAYER].exps - NextExp(robin.lv - 1)) /
 		Max(1.0f, (float)(NextExp(robin.lv) - NextExp(robin.lv - 1)))));
 	LobbyResourceFrame(left, y, levelW, BARCOLOR_PURPLE, progress);
-	DrawStarNum(ICON_CROWN, robin.lv + 1, left + 4 * _2X, iconTop, 1.0f);
+	DrawIcon(ICON_CROWN,left+4*_2X,y-6*_2X,.9f,COLOR_BROWN,false,false,1);
+	char level[16];snprintf(level,sizeof(level),"%d",robin.lv+1);
+	SetFontColor(0x493529);DrawTextStrSystem(level,left+levelW-6*_2X,y-10*_2X,.8f,RIGHT,false);
 	SetRectPoint(left, y, levelW, h, TOUCH_FUNC_POPUP_LVUPREWARD);
 
 	for (int i = 0; i < 2; ++i) {
 		const int x = i == 0 ? goldX : coinX;
 		const int func = i == 0 ? TOUCH_FUNC_GOTO_GOLD_IAP : TOUCH_FUNC_GOTO_RAINBOW_IAP;
 		LobbyResourceFrame(x, y, moneyW, i == 0 ? BARCOLOR_YELLOW : BARCOLOR_PURPLE);
-		if (i == 0){
-			DrawGoldAmount(robin.gold,x+4*_2X,y-(h-28)/2,moneyW-27*_2X,LEFT);
-		}else{
-			//---- 캐시는 다이아다 ----
-			//
-			//여기서만 그림 장(ITEM_IMG+7)의 한 칸을 좌표로 찍고 있었다.
-			//아이콘 표(currencyIcon)를 안 거치니 그쪽을 고쳐도 상단 바는
-			//옛 코인 그림 그대로였다.
-			//
-			//표와 같은 그림을 쓰도록 DrawIcon 으로 돌린다 - 아이콘을 다시
-			//바꿀 일이 생겨도 고칠 데가 한 곳이다.
-			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON, x + 4 * _2X, iconTop,
-				(float)iconSize / ITEMICONSIZE, false, false, false, true);
-
-		//---- 숫자는 흰색 ----
-		//
-		//바로 위 DrawIcon 이 글자색을 갈색으로 두고 나온다. 그대로 두면
-		//어두운 띠 위의 어두운 글자가 되어 회색으로 죽어 보인다.
+		if (i == 0)
+			DrawIcon(ICON_GOLD, x + 4 * _2X, y - 7 * _2X, 0.9f,
+				COLOR_BROWN, false, false, 1);
+		else
+			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,x+4*_2X,y-7*_2X,0.9f,false,false,false,true);
+		const int plusSize = 15 * _2X;
+		const int plusX = x + moneyW - plusSize - 4 * _2X;
+		const int plusY = y - (h - plusSize) / 2;
 		SetFontColor(COLOR_WHITE);
-		DrawBigNumTTF(robin.coin,
-			x + moneyW - 19 * _2X - 4 * _2X - 2 * _2X,
-			numTop, NUM_FONT_NORMAL, RIGHT, false, false,
-			moneyW - 42 * _2X, true, numZoom, true);
-		}
-		LobbyResourcePlus(x, y, moneyW, func);
+		if(i==0&&robin.gold>=1000000){
+			char amount[40];const long long whole=robin.gold/1000000,tenth=robin.gold%1000000/100000;
+			if(tenth)snprintf(amount,sizeof(amount),"%lld.%lldM",whole,tenth);
+			else snprintf(amount,sizeof(amount),"%lldM",whole);
+			DrawTextStrSystem(amount,plusX-2*_2X,y-10*_2X,Min(.8f,(moneyW-42*_2X)/Max(1.f,StringWidth(amount,1.f))),RIGHT,false);
+		}else DrawBigNumTTF(i == 0 ? robin.gold : robin.coin, plusX - 2 * _2X,
+			y - 10 * _2X, NUM_FONT_NORMAL, RIGHT, false, false,
+			moneyW - 42 * _2X, true, 0.8f, true);
+		const float press = GetButtonScale(func, plusX, plusY, plusSize, plusSize);
+		const float size = plusSize * press;
+		DrawImage(64, 64, 521, 640, plusX + (plusSize - size) / 2,
+			plusY - (plusSize - size) / 2, false, false, false, false, false,
+			size / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
+		SetRectPoint(plusX, plusY, plusSize, plusSize, func);
 	}
 
+	LobbyResourceFrame(energyX, y, energyW, BARCOLOR_GREEN);
+	const int iconSize = 17 * _2X;
+	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, y - (h - iconSize) / 2,
+		false, false, false, false, false, iconSize / 128.0f,
+		sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
+	const int textX = energyX + iconSize + 5 * _2X;
+	const int textW = energyW - iconSize - 9 * _2X;
+	char label[64];
+	sprintf(label, "%lld/%d", robin.heart,GetInitHeart());
+	SetFontColor(COLOR_WHITE);
+	CenterTextStrSolid(label, textX + textW / 2, y - 10 * _2X,
+		Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
+	SetFontColor(COLOR_WHITE);
 }
 
 void DrawBarIcon(int type, int x, int y, float zoom)

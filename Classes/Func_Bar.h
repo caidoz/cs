@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Core.h"
 
 #ifndef _FUNC_BAR_H_

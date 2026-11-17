@@ -1,4 +1,5 @@
 ﻿#include "../../Classes/MergeRouletteModel.h"
+#include "../../Classes/MergeExpeditionModel.h"
 #include <cassert>
 #include <iostream>
 using namespace MergeRoulette;
@@ -127,5 +128,16 @@ int main() {
     assert(nativeResume.attack(equipped));while(nativeResume.step()){}
     nativeResume.finish();assert(nativeResume.stage==1&&nativeResume.lives==nativeResume.maxLives&&nativeResume.guard==nativeResume.guardMax&&nativeResume.guardMax==3600);
     std::cout<<"PASS native HP/armor, HP-sized shield pool refilled by gear, v12 migration, v10 resume, and stage recovery\n";
+    // 원정 고정표: 전투력이 오를수록 골드·카드·장비 레벨이 내려가지 않고, 10개 미만이면 못 간다.
+    {
+        using namespace MergeExpedition;
+        assert(Cost==10&&!affordable(9)&&affordable(10));
+        assert(tierFor(0)==0&&tierFor(3999)==0&&tierFor(4000)==1&&tierFor(4027)==1&&tierFor(1000000000)==Tiers-1);
+        for(int i=1;i<Tiers;++i){
+            assert(Table[i].power>Table[i-1].power&&Table[i].gold>=Table[i-1].gold&&Table[i].cards>=Table[i-1].cards&&Table[i].gearLevel>=Table[i-1].gearLevel);
+            assert(rowFor(Table[i].power).gold==Table[i].gold&&rowFor(Table[i].power-1).gold==Table[i-1].gold);
+        }
+        std::cout<<"PASS expedition fixed table by combat power\n";
+    }
     std::cout<<"PASS 15 waves, bosses 5/10/15, counterattack after allies, one hit across resume, block/stun/death and v8 migration\n";
 }

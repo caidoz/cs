@@ -1,10 +1,14 @@
 """Run native block hit tests, confirmations and actual effect bindings."""
 from pathlib import Path
+import argparse
 import os
 import subprocess
 import time
 
 root = Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs.castle-blocks.exe')
+args=parser.parse_args()
 for height in (850, 1408):
     out = root / f'output/castle-upgrade-blocks/{height}'
     out.mkdir(parents=True, exist_ok=True)
@@ -17,7 +21,7 @@ for height in (850, 1408):
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
     with (out / 'stdout.log').open('w') as log:
-        process = subprocess.Popen([str(root / 'proj.win32/Debug.win32/cs.castle-blocks.exe')],
+        process = subprocess.Popen([str(root / 'proj.win32/Debug.win32' / args.exe)],
                                    cwd=root / 'Resources', env=env, startupinfo=startup,
                                    stdout=log, stderr=log)
         try:

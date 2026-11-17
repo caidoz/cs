@@ -1,10 +1,14 @@
 """Check native six-column cards, equipped slots and existing equipment actions."""
 import os
+import argparse
 from pathlib import Path
 import subprocess
 import time
 
 root=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs.equipment-cards.exe')
+args=parser.parse_args()
 for height in (850,1408):
     out=root/f'output/equipment-cards-{height}'
     out.mkdir(parents=True,exist_ok=True)
@@ -16,7 +20,7 @@ for height in (850,1408):
     startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow=0
     with (out/'stdout.log').open('w') as log:
-        process=subprocess.Popen([str(root/'proj.win32/Debug.win32/cs.equipment-cards.exe')],
+        process=subprocess.Popen([str(root/'proj.win32/Debug.win32'/args.exe)],
                                  cwd=root/'Resources',env=env,startupinfo=startup,stdout=log,stderr=log)
         try:
             deadline=time.monotonic()+60

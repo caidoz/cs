@@ -198,7 +198,6 @@ void DrawHandAtTarget(int x, int y, int frame, float zoom);
 void DrawMenuBackButton(int x,int top,int command);
 void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size=1.f);
 void DrawMenuReferencePanel(int x,int top,int w,int h,int kind=0,int fill=0x10383D,int edge=0xF1C47E);
-void DrawMenuGear(int x,int top,int size);
 void DrawScroll(int x, int y, int h, int type);
 void YesNoDraw(int, int);
 void DrawEmptyBox(int, int, int, int);

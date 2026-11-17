@@ -9,15 +9,17 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser()
 parser.add_argument('--exe',default='cs_bars.exe')
+parser.add_argument('--level',type=int,choices=range(6))
 options=parser.parse_args()
 for height in (850, 1408):
-    dest = ROOT / 'output/turret-attack-review' / str(height)
+    dest = ROOT / ('output/turret-attack-review' if options.level is None else f'output/turret-upgrade-fx/lv-{options.level}') / str(height)
     dest.mkdir(parents=True, exist_ok=True)
     trace = dest / 'checks.log'
     trace.unlink(missing_ok=True)
     env = os.environ.copy()
     env.update(CS_MERGE_REVIEW='1', CS_MERGE_TURRET_REVIEW='1',
                CS_MERGE_REVIEW_HEIGHT=str(height), CS_MERGE_REVIEW_PATH=dest.as_posix() + '/')
+    if options.level is not None:env['CS_TURRET_REVIEW_LEVEL']=str(options.level)
     startup = subprocess.STARTUPINFO()
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0

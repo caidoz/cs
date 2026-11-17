@@ -7,6 +7,14 @@
 int main() {
     using namespace TurretAttack;
     assert(kind(0)==Stone && kind(2)==Missiles && kind(3)==Rapid && kind(4)==Shell && kind(7)==Magnetic);
+    assert(UpgradeVisual(-1).motes==0&&UpgradeVisual(99).level==5);
+    for(int lv=0;lv<=5;++lv){
+        UpgradeVisual look(lv);
+        assert(look.motes>=0&&look.motes<=3&&look.beamScale>=1&&look.beamScale<=1.061f);
+        if(lv)assert(look.motes>=UpgradeVisual(lv-1).motes&&look.beamScale>UpgradeVisual(lv-1).beamScale);
+        for(int c=0;c<10;++c){Sequence base,up;base.begin(c,0);up.begin(c,lv);
+            assert(base.count==up.count&&base.release==up.release&&base.impact()==up.impact()&&base.end()==up.end());}
+    }
     for(int castle=0;castle<10;++castle) {
         Sequence shot;shot.begin(castle,5);
         MergeCombat::Timeline time;

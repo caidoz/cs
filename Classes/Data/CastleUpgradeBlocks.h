@@ -8,8 +8,8 @@ static const Block Items[5]={
  {"성 생산력 향상",0},{"대포 공격력 증가",-1}
 };
 enum { Gap=12, TouchHeight=48 };
-inline int CardHeight(int height){return height<1000?128:176;}
-inline int TurretHeight(int height){return height<1000?120:152;}
-inline int PreviewHeight(int height){return height<1000?140:220;}
-inline int ContentHeight(int height){return PreviewHeight(height)+12+48+2*(CardHeight(height)+Gap)+TurretHeight(height)+10;}
+inline int CardHeight(int){return 232;}
+inline int TurretHeight(int){return 232;}
+inline int PreviewHeight(int height){return height*65/100;}
+inline int ContentHeight(int height){return PreviewHeight(height)+12+60+5*(CardHeight(height)+Gap)+16;}
 }

@@ -74,7 +74,10 @@ void CastleMenuOpen() { CastleProgressEnsure();
     if(DebugControlsOpen())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_HIDE);
     if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
     castleBrowse=robin.castle;castlePage=castleModal=castleCategory=0;castleRow=3;castleMessage="";castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
-    if(castlePendingFacility>=0){gCastleFacilityTab=true;scY[MENU_CASTLE]=CastleUpgradeBlocks::PreviewHeight(DY)+60+(castlePendingFacility<2?CastleUpgradeBlocks::CardHeight(DY)+12:0);castlePendingFacility=-1;}
+    if(castlePendingFacility>=0){
+        const int row=castlePendingFacility==2?0:castlePendingFacility==3?1:castlePendingFacility==1?2:3;
+        gCastleFacilityTab=true;scY[MENU_CASTLE]=CastleUpgradeBlocks::PreviewHeight(DY)+72+row*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap);castlePendingFacility=-1;
+    }
 }
 bool CastleMenuCommand(int func) {
     if(DebugControlsOpen() && LobbyCastleDebugActive()){

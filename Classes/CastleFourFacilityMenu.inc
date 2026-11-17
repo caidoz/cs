@@ -1,4 +1,4 @@
-﻿// Block upgrade screen, using existing six-stage room and cannon resources.
+// Block upgrade screen, using existing six-stage room and cannon resources.
 namespace CastleFinal {
 static void UpgradeAction(const char* text,int x,int top,int width,int command,bool enabled){
  const int h=CastleUpgradeBlocks::TouchHeight;
@@ -20,37 +20,38 @@ static void BlockEffect(char* out,size_t size,int c,int room,int level){
 }
 static void UpgradeBlock(int c,int index,int x,int top,int width,bool preview){
  const auto& item=CastleUpgradeBlocks::Items[index];const int room=item.room;
- const bool turret=room<0;const int h=turret?CastleUpgradeBlocks::TurretHeight(DY):CastleUpgradeBlocks::CardHeight(DY);
- const bool compact=DY<1000;
+ const bool turret=room<0;const int h=CastleUpgradeBlocks::CardHeight(DY);
  const int level=BlockLevel(c,room,preview),next=preview?(level+1)%6:Min(5,level+1);
  const int command=turret?TOUCH_FUNC_CASTLE_NEW_UPGRADE:TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+room;
  const bool owned=CastleMenuModel::Owned(robin.castleProgress,c);
  const int price=CastleMenuModel::UpgradeCost(c,level,!turret);
  const bool ready=owned&&level<5&&robin.gold>=price&&!SaveConflict();
- Panel(x,top,width,h,0x1B344A,0x709BB2);
- char s[160],current[64],after[64];
- Text(item.title,x+12,top-10,width-92,compact?.72f:.82f,0xFFE5A0);
- snprintf(s,sizeof(s),"Lv.%d / 5",level);Text(s,x+width-82,top-12,72,.62f);
- if(turret)DrawInventoryCannonIcon(c,level,x+12,top-30,92,compact?76:90);
- else {
-  const int icons[4]={ICON_EVENT_HEART,ICON_SHIELD,ICON_EVENT_SWORD,ICON_GOLDBAG};
-  // These are the existing native pixel icons, rather than scaled room thumbnails.
-  DrawIcon(icons[index],x+18,top-(compact?28:42),(compact?44.f:64.f)/ITEMICONSIZE,0,false,false,1);
+ Panel(x,top,width,h,0x142E43,0x43859B);
+ const char* name=turret?CastleFacilities::TurretNames[c]:CastleFacilities::Rooms[c][room].name;
+ Text(name,x+16,top-12,width-32,Min(.8f,(width-32)/Max(1.f,StringWidth(name,1.f))),0xFFE5A0);
+ char s[180],a[64],b[64];const int half=width/2,vw=half-38;
+ snprintf(s,sizeof(s),"현재 Lv.%d",level);CastleLabel(s,x+half/2,top-36,vw,.65f);
+ snprintf(s,sizeof(s),level>=5&&!preview?"최대 단계 Lv.%d":"강화 후 Lv.%d",next);CastleLabel(s,x+half+half/2,top-36,vw,.65f);
+ if(turret){
+  DrawInventoryCannonIcon(c,level,x+16,top-62,vw,86);
+  DrawInventoryCannonIcon(c,next,x+half+22,top-62,vw,86);
+ }else{
+  FacilityPreview(c,room,level,x+16,top-62,vw,86);
+  FacilityPreview(c,room,next,x+half+22,top-62,vw,86);
  }
- BlockEffect(current,sizeof(current),c,room,level);BlockEffect(after,sizeof(after),c,room,next);
- const int tx=x+108,tw=width-120;
- snprintf(s,sizeof(s),"현재 %s",current);Text(s,tx,top-(compact?32:46),tw,compact?.60f:.66f);
- snprintf(s,sizeof(s),level>=5&&!preview?"최대 단계":"다음 %s",after);Text(s,tx,top-(compact?54:78),tw,compact?.64f:.72f,0x82DAC4);
- const int bx=turret?x+width/2:x+12,bw=turret?width/2-12:width-24;
+ CastleLabel(">",x+half,top-96,28,.95f);
+ BlockEffect(a,sizeof(a),c,room,level);BlockEffect(b,sizeof(b),c,room,next);
+ snprintf(s,sizeof(s),"기능: %s · %s > %s",item.title,a,b);Text(s,x+16,top-158,width-32,.61f,0x82DAC4);
  if(preview)snprintf(s,sizeof(s),"무료 단계 비교 · %d > %d",level,next);
  else if(level>=5)snprintf(s,sizeof(s),"MAX · 강화 완료");
  else if(!owned)snprintf(s,sizeof(s),"미보유 성");
  else snprintf(s,sizeof(s),"강화 · %d 골드",price);
- // Entire block and its button have the same action.
  if(preview||ready)SetRectPoint(x,top,width,h,command);
- UpgradeAction(s,bx,top-h+56,bw,command,preview||ready);
+ UpgradeAction(s,x+half,top-h+56,half-16,command,preview||ready);
+ Text(turret?"이 성의 포대 강화":"모든 성에서 방 단계 유지",x+16,top-h+40,half-32,.57f);
  if(turret)castleRow=3;
 }
+
 }
 void CastleMenuNewDraw(){
  using namespace CastleFinal;panelDrawSlot=0;
@@ -62,20 +63,17 @@ void CastleMenuNewDraw(){
  ResetRectPoint();SetAlpha(ALPHA_MAX);Panel(0,top,DX,top,0x0C1C2C,0x43859B);
  SetSectionClip(0,body,DX,body-bottom,false);
  const int ph=PreviewHeight();Panel(left,y,width,ph,0x142E43,0x43859B);
- RebuildPreview(c,left+8,y-6,width*54/100,ph-12);
- const int ix=left+width*55/100,iw=width*45/100-12;
- CastleLabel(CastleFacilities::Themes[c],ix+iw/2,y-18,iw,.78f);
- CastleLabel(preview?"DEBUG · 무료 단계 비교":"방 4개 · 대포 1기",ix+iw/2,y-50,iw,.6f);
- Button(robin.castle==c?"현재 출정 성":"출정 성 선택",ix,y-ph+56,iw,48,TOUCH_FUNC_CASTLE_NEW_SELECT,owned&&robin.castle!=c);
+ DrawCastleMenuBackdrop(left+4,y-4,width-8,ph-8,c);
+ SetAlpha(10);MemRect(left+4,y-4,width-8,ph-8,0x071527);SetAlpha(32);
+ RebuildPreview(c,left+12,y-42,width-24,ph-96);
+ CastleLabel(CastleFacilities::Themes[c],DX/2,y-14,width-32,.85f);
+ Button(robin.castle==c?"현재 출정 성":"출정 성 선택",DX/2-100,y-ph+56,200,48,TOUCH_FUNC_CASTLE_NEW_SELECT,owned&&robin.castle!=c);
  y-=ph+12;
- Panel(left,y,width,44,0x142E43,0x43859B);
+ Panel(left,y,width,48,0x142E43,0x43859B);
  snprintf(s,sizeof(s),"출정 성 생산 %lld/시간",CastleIncomePerHour());Text(s,left+12,y-13,width/2,.64f,0x82DAC4);
  snprintf(s,sizeof(s),"%lld 골드 수금",CastleIncomeNow());
- Button(s,left+width/2,y,width/2,48,TOUCH_FUNC_CASTLE_INCOME,CastleIncomeNow()>0&&!SaveConflict());y-=48;
- const int cw=(width-CastleUpgradeBlocks::Gap)/2;
- for(int i=0;i<4;++i)UpgradeBlock(c,i,left+(i%2)*(cw+CastleUpgradeBlocks::Gap),y-(i/2)*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap),cw,preview);
- y-=2*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap);
- UpgradeBlock(c,4,left,y,width,preview);
+ Button(s,left+width/2,y,width/2,48,TOUCH_FUNC_CASTLE_INCOME,CastleIncomeNow()>0&&!SaveConflict());y-=60;
+ for(int i=0;i<5;++i)UpgradeBlock(c,i,left,y-i*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap),width,preview);
  if(scT[MENU_CASTLE]>0){
   const int track=body-bottom,thumb=Max(36,track*track/ContentHeight());
   MemRect(DX-8,body,4,track,0x142E43);
@@ -86,7 +84,6 @@ void CastleMenuNewDraw(){
  CastleLabel(s,DX/2-20,top-15,width-240,.85f);DrawMenuBackButton(12,top-4,TOUCH_FUNC_POPUP_CLOSE);
  Button("<",DX-120,top-3,52,48,TOUCH_FUNC_CASTLE_NEW_PREV,c>0);
  Button(">",DX-62,top-3,52,48,TOUCH_FUNC_CASTLE_NEW_NEXT,c<9);
- MergeRouletteBottomNavDraw();
  if(castleModal){
   ResetRectPoint();SetAlpha(24);MemRect(0,top,DX,top,COLOR_BLACK);SetAlpha(ALPHA_MAX);
   const bool upgrade=castleModal==2;const int mt=Min(top-12,bottom+360);
@@ -94,7 +91,7 @@ void CastleMenuNewDraw(){
   CastleLabel(upgrade?"시설 강화":"성 구매 확인",DX/2,mt-16,DX-80,.95f);
   const int room=castleUpgradeIsRoom?castleUpgradePart:-1;
   const char* title=CastleFacilities::Themes[c];
-  if(upgrade)for(const auto& item:CastleUpgradeBlocks::Items)if(item.room==room)title=item.title;
+  if(upgrade)title=room<0?CastleFacilities::TurretNames[c]:CastleFacilities::Rooms[c][room].name;
   snprintf(s,sizeof(s),upgrade?"%s · Lv.%d > Lv.%d":"%s",title,castleUpgradeLevel,castleUpgradeLevel+1);
   CastleLabel(s,DX/2,mt-58,DX-80,.8f);
   if(upgrade){

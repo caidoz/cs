@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #pragma pack(push, 8)
 #include "Data.h"
 #include "Func.h"
@@ -13,6 +13,7 @@
 #include "ItemSeriesArt.h"
 #include "SquareGearIcons.h"
 #include "MergeCombatPresentation.h"
+#include "MergeExpeditionModel.h"
 #include "TurretAttackPresentation.h"
 #include "MergeRenderProfile.h"
 #include "StageBackground.h"
@@ -781,6 +782,34 @@ void reviewCapture(const char* name);
 #include "RewardPopup.inc"
 // Raise reward-button text above the font's low visual baseline.
 void rewardButton(int x,int y,int w,int h,const char* text){button({x,y,w,h},text,nullptr,0x1F5A3A,true,.24f);}
+//---- 원정 ----
+//
+//번개 10개를 내고 전투 없이 바로 정산한다. 보상은 히어로 전투력 구간의 고정표
+//(MergeExpeditionModel.h)에서 골드와 이 히어로 라인의 장비 카드(treeEquipment 의 종류,
+//성 클리어 보상과 같은 MakeItemDetail/Grade)로 나와 공용 보상창에 선다.
+bool runExpedition() {
+    if(RewardPopup::open())return false;
+    if(!MergeExpedition::affordable(robin.heart)){message=u8"번개가 모자랍니다 (원정은 10개)";messageTime=3;PlayMusic(M_ERROR);return false;}
+    const long long power=std::max(0LL,GetCombatPower(&ao[PLAYER]));
+    const MergeExpedition::Row& row=MergeExpedition::rowFor(power);
+    robin.heart-=MergeExpedition::Cost;
+    std::vector<RewardPopup::Entry> rewards;
+    GetItem(ITEM_GOLD,false,false,false,row.gold,false);
+    {RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=row.gold;rewards.push_back(g);}
+    for(int i=0;i<row.cards;++i){
+        const int type=treeEquipment[Random(GearCount)][0].type;
+        if(type==EMPTY)continue;
+        const int lv=std::max(1,std::min(GetEquipMaxLevel(),row.gearLevel));
+        const int detail=MakeItemDetail(type,lv),grade=MakeItemGrade(type,lv,detail);
+        GetItem(type,lv,detail,grade,1,0);
+        RewardPopup::Entry it;it.type=type;it.detail=detail;it.grade=grade;it.lv=lv;it.count=1;rewards.push_back(it);
+    }
+    RewardPopup::drawButton=rewardButton;
+    RewardPopup::show(u8"원정 보상",rewards,u8"확인");
+    PlayMusic(M_CARDSPLIT);
+    SaveGame();
+    return true;
+}
 void save() {
     if(siegeActive)return;   //공성전은 디버그라 이어하기 저장을 남기지 않는다
     if(review)return;
@@ -1469,11 +1498,33 @@ void drawImpactSequence(int first,int count,int age,int duration,int x,int y,int
  DrawEffect(1000+first+pose,x,y,direction,0,scale);
 }
 int impactFirst=HIT_ITEM_SMALL0,impactCount=5;
+// Tiny, deterministic upgrade sparks. No new projectiles or damage events.
+void drawTurretUpgradeSparks(TurretAttack::Point point,TurretAttack::Point behind,int seed,float scale,bool radial=false,int limit=0){
+ const TurretAttack::UpgradeVisual look(turretFire.grade);if(!look.motes)return;
+ static const int colors[10]={0xDDBB78,0xFFA75A,0xFFCA74,0xFFE4A3,0xFFAE57,0x66E8DC,0xFF8D58,0x88D7FF,0xC995FF,0xFFE49A};
+ const int color=colors[std::max(0,std::min(9,turretFire.castle))],alpha=m_lgrpAlpha;
+ const float dx=point.x-behind.x,dy=point.y-behind.y,length=std::max(1.f,std::sqrt(dx*dx+dy*dy));
+ for(int k=0;k<(limit?std::min(limit,look.motes):look.motes);++k){
+  const float t=std::fmod(turretFire.age*.075f+k*.31f+seed*.17f,1.f);
+  float x,y;
+  if(radial){const float angle=k*2.0943951f+seed*.47f+t*1.3f,r=(8+12*t)*scale;
+   x=point.x+std::cos(angle)*r;y=point.y+std::sin(angle)*r;
+  }else{
+   const float tail=(5+17*t)*scale,side=std::sin(t*6.2831853f+seed)*(2+look.level*.3f)*scale;
+   x=point.x-dx/length*tail-dy/length*side;y=point.y-dy/length*tail+dx/length*side;
+  }
+  const int size=std::max(1,(int)((look.level>=4?2.f:1.f)*scale));
+  SetAlpha((int)(alpha*(.25f+.45f*(1-t))));mergeRect((int)x-size,(int)y+size,size*2,size*2,color);
+  if(look.level>=3&&k==0){SetAlpha(alpha/2);mergeRect((int)x-3*size,(int)y,6*size,1,0xFFF4DB);mergeRect((int)x,(int)y+3*size,1,6*size,0xFFF4DB);}
+ }
+ SetAlpha(alpha);
+}
 void drawTurretAttack(const Layout& l,int targetX,int targetY){
  if(!turretFire.running()||!action.emitterReady)return;
  const float scale=l.scale;
  const TurretAttack::Point from={(float)action.emitterX,(float)action.emitterY},to={(float)targetX,(float)targetY};
  const int age=turretFire.age;
+ const TurretAttack::UpgradeVisual upgrade(turretFire.grade);
  if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic){
   const int charge=turretFire.release,alpha=m_lgrpAlpha;
   // The red, silver, violet and gold castles each color their own hot aura.
@@ -1521,6 +1572,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
      electricLine(mx,my,from.x,from.y,2*scale,0xF9EEFF,alpha);
     }
    }
+   drawTurretUpgradeSparks(from,{from.x,from.y-1},0,scale,true);
    return;
   }
   if(turretFire.type==TurretAttack::Laser){
@@ -1531,7 +1583,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   const float dx=to.x-from.x,dy=to.y-from.y,length=std::sqrt(dx*dx+dy*dy);
   const float angle=-std::atan2(dy,dx)*57.2957795f;
   const float fade=age<=turretFire.impact()?1.f:std::max(0.f,1-(age-turretFire.impact())/14.f);
-  const float thickness=((turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale;
+  const float thickness=((turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale*upgrade.beamScale;
   auto beam=[&](float height,int color,int opacity){
    SetAlpha(opacity);
    turretPart(img,0,(int)dim.height/4,(int)dim.width,(int)dim.height/2,
@@ -1589,6 +1641,10 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   glow(from.x,from.y,12*scale,0xFFF9E8,(int)(alpha*fade));
   glow(to.x,to.y,(19+3*std::sin(age))*scale,tone,(int)(alpha*.7f*fade));
   glow(to.x,to.y,9*scale,0xFFF9E8,(int)(alpha*fade));
+  for(int spark=0;spark<upgrade.motes;++spark){
+   const float t=std::fmod((age-charge)*.035f+spark/(float)std::max(1,upgrade.motes),1.f);
+   drawTurretUpgradeSparks({from.x+dx*t,from.y+dy*t},{from.x+dx*(t-.01f),from.y+dy*(t-.01f)},spark,scale,false,1);
+  }
   return;
   }
  }
@@ -1598,6 +1654,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   if(elapsed<0)continue;
   if(elapsed>=turretFire.flight){
    const int impactAge=elapsed-turretFire.flight;
+   if(impactAge<10&&(turretFire.type!=TurretAttack::Rapid||i%3==0))drawTurretUpgradeSparks(to,from,i,scale,true);
    if(turretFire.castle==5||turretFire.type==TurretAttack::Magnetic){
     if(impactAge<14){
      const int img=turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:TURRET_CRYSTAL_ORB_IMG;
@@ -1629,6 +1686,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   const auto point=TurretAttack::position(pathType,t,start,to,i,scale);
   const auto next=TurretAttack::position(pathType,std::min(1.f,t+.02f),start,to,i,scale);
   const float angle=-std::atan2(next.y-point.y,next.x-point.x)*57.2957795f;
+  if(turretFire.type!=TurretAttack::Rapid||i%3==0)drawTurretUpgradeSparks(point,TurretAttack::position(pathType,std::max(0.f,t-.04f),start,to,i,scale),i,scale);
   if(turretFire.type==TurretAttack::Missiles){
    // Copy of Diana's own missile sprite sheet, under a separate resource identity.
    if(cmfLoaded[DIANA]!=DIANA)CmfRead(DIANA,DIANA);
@@ -2623,7 +2681,7 @@ void reviewStep(const Layout& l) {
         if(done)return;
         if(phase==0){
             if(entering())return;
-            robin.castleProgress.parts[castle][3]=5;
+            robin.castleProgress.parts[castle][3]=std::getenv("CS_TURRET_REVIEW_LEVEL")?std::max(0,std::min(5,std::atoi(std::getenv("CS_TURRET_REVIEW_LEVEL")))):5;
             introElapsed=-1;animation=0;entryElapsed=MergeCastleTransition::Duration;
             run.stage=castle;run.wave=1;run.board.clear();run.tray.clear();run.choosing=false;run.attacking=false;run.lost=false;
             run.enemyHp=run.enemyMax=1000000;run.enemyGuard=0;run.shots.clear();run.nextShot=0;
@@ -3403,10 +3461,10 @@ long long MergeRouletteHeroShieldRecovery(const OBJECT* h) {
 }
 void MergeRouletteBeginSiege() {Siege::begin();}
 static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height){
-    const float z=std::min(width/OriginalCastle::W,height/OriginalCastle::H);
+    const float z=std::min(width/1010.f,height/1270.f);
     const int saved=siegeHullStage;siegeHullStage=castle;
-    OriginalCastle::previewScale=z;OriginalCastle::previewLeft=x+(width-OriginalCastle::W*z)*.5f;
-    OriginalCastle::previewLift=top-height;
+    OriginalCastle::previewScale=z;OriginalCastle::previewLeft=x+(width-1010*z)*.5f-40*z;
+    OriginalCastle::previewLift=top-(OriginalCastle::H-70)*z;
     MistCastle::hull(castle,false,0,false);
     const auto& gun=MountedCannons::Get(castle,CastleVisualPartLevel(castle,3));
     const Box b=OriginalCastle::box(300,210,230,145);
@@ -3553,11 +3611,18 @@ bool MergeRouletteLobbySceneDraw() {
     }
     ResetRectPoint();SetAlpha(32);SetColor(0);grayScale=0;
     Layout l=layout();drawWorld(l,false);drawLobbyControls(l,0,true);
+    // Original resource strip: level, gold, diamonds and lightning energy.
+    LobbyResourceBarsDraw(DY-(int)(2*l.scale));
+    GNBDraw(0,DY-(int)(2*l.scale));
+    //원정 보상창은 로비 위에 덮인다. 떠 있는 동안 로비의 터치 영역은 지운다.
+    if(RewardPopup::open()){ResetRectPoint();RewardPopup::draw();}
     mustRefresh=true;++frame;return true;
 }
 void MergeRouletteLobbyDraw() {}
+#include "OriginalTopbarReview.inc"
 void MergeRouletteDraw() {
     MergeRenderProfile::Frame profile;
+    if(reviewOriginalTopbar())return;
     if(review&&std::getenv("CS_MERGE_LOBBY_IDLE_REVIEW")){
             static int samples=0,firstTick=0;static std::vector<int> poses;static bool second=false,done=false;
         if(samples==0){run.board.clear();firstTick=ticks;}
@@ -3567,7 +3632,16 @@ void MergeRouletteDraw() {
         if(std::find(poses.begin(),poses.end(),pose)==poses.end())poses.push_back(pose);
         if(samples++==0)reviewCapture("lobby-idle-01");
         else if(!second&&poses.size()>1){second=true;reviewCapture("lobby-idle-02");}
-        if(samples>=90){
+        if(samples==90){
+            //원정: 번개 20 → 10, 골드가 늘고 보상창이 로비 위에 뜬다. 한 장 찍고 30틀 뒤에 닫는다.
+            robin.heart=20;const long long gold=robin.gold;
+            const bool ok=runExpedition()&&RewardPopup::open()&&robin.heart==10&&robin.gold>gold&&!runExpedition();
+            reviewTrace(ok?"PASS expedition spends ten hearts and opens the reward popup":"FAIL expedition");return;
+        }
+        if(samples==104){reviewCapture("lobby-expedition-01");return;}   //카드가 선 뒤의 한 장
+        if(samples>90&&samples<120)return;
+        if(samples>=120){
+            RewardPopup::closeNow();
             reviewTrace(poses.size()>1&&ticks>firstTick+30?"PASS actual lobby path advances native hero neutral motion":"FAIL frozen lobby hero motion");
             const float s=DX/640.f,lift=castleSceneLift();
             const Box nav=OriginalCastle::box(76,1275,941,163,OriginalCastle::lift());
@@ -4184,14 +4258,15 @@ void MergeRouletteDraw() {
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
     static int debugFinger=-1;
     if(!active) {
+        if(RewardPopup::open()&&drawHandle==MD_LOBBY){RewardPopup::touch(x,y,phase,id);return true;}   //원정 보상창
         if(phase!=0&&debugFinger==id){if(phase==2||phase==3)debugFinger=-1;return true;}
         if(phase==0&&drawHandle==MD_LOBBY&&popUpCnt==0&&!LoadoutOpen()) {
             float s=DX/640.0f;
             Layout l=layout();Box b=lobbyStart(l);
-            if(b.has(x,y)) {MergeRouletteBegin();return true;}
+            if(lobbyExpedition(l).has(x,y)){runExpedition();return true;}
+            //"이어서" 단추는 뺐다. 이 히어로의 저장된 판이 있으면 전투 시작이 그 판을 이어 간다.
+            if(b.has(x,y)) {MergeRouletteBegin(robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero);return true;}
             if(lobbyPvp(l).has(x,y)) {Siege::begin();return true;}
-            Box keep=lobbyContinue(l);
-            if(keep.has(x,y)&&robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero) {MergeRouletteBegin(true);return true;}
             if(lobbyDebugTouch(l,x,y)){debugFinger=id;return true;}
             for(int i=0;i<4;++i)if(roomBox(l,i).has(x,y)){
                 CastleMenuFocusFacility(i);systemKey=AVK_POPUP_CASTLEMENU;return true;

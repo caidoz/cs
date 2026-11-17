@@ -1,4 +1,4 @@
-﻿// Lightweight UI skin. One pooled quad per panel; no bitmap mockups in the UI.
+// Lightweight UI skin. One pooled quad per panel; no bitmap mockups in the UI.
 #include "Data/CastleRoomUpgrades.h"
 static int sReferencePanel=0;
 static bool DrawRenewalPanelRaw(int x,int y,int w,int h,int fill,int edge){
@@ -122,34 +122,10 @@ void DrawMenuReferencePanel(int x,int top,int w,int h,int kind,int fill,int edge
  DrawPixelPanel(x,top,w,h,fill,edge);sReferencePanel=previous;
 }
 
-void DrawMenuGear(int x,int top,int size){
- static cocos2d::GLProgram* program=nullptr;
- if(!program){
-  const char* fragment=R"(
-#ifdef GL_ES
-precision mediump float;
-#endif
-varying vec2 v_texCoord;
-uniform vec2 uExtent;
-void main(){
- vec2 p=(v_texCoord/uExtent-.5)*2.0;
- float angle=atan(p.y,p.x),r=.72+.17*step(.28,cos(angle*8.0));
- float d=max(length(p)-r,.29-length(p));
- float a=1.0-smoothstep(-.025,.025,d);
- vec3 c=vec3(.96,.90,.76)*(.91+.10*(1.0-p.y));
- gl_FragColor=vec4(c*a,a);
-})";
-  program=cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert,fragment);if(!program)return;program->retain();
- }
- LoadSpriteFromTexture(MEMRECT_IMG);auto* target=renderSprite[getSpriteIdx];
- target->setPosition(cocos2d::Vec2(x,top));target->setTextureRect(cocos2d::Rect(0,0,size,size));
- auto* state=cocos2d::GLProgramState::getOrCreateWithGLProgram(program);auto* tex=target->getTexture();
- state->setUniformVec2("uExtent",cocos2d::Vec2(size/(float)tex->getPixelsWide(),size/(float)tex->getPixelsHigh()));
- target->setGLProgramState(state);target->setBlendFunc(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);AfterSpriting(target);
-}
-
+void DrawMenuBackdropCrop(cocos2d::Texture2D*,int,int,int,int,int,int,int,int);
 void DrawMenuRoomBackdrop(int x,int top,int w,int h,int castle,int room){
  if(w<=0||h<=0)return;
+ if(x<=0&&x+w>=DX){x=12;w=DX-24;}
  const int img=MENU_RENEWAL_ROOM_IMG;
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
@@ -159,7 +135,7 @@ void DrawMenuRoomBackdrop(int x,int top,int w,int h,int castle,int room){
  const int sx=((int)size.width-sw)/2,sy=strip*stripH+(stripH-sh)/2;
  const int color=baseColor,alpha=m_lgrpAlpha;
  SetColor(0);
- DrawImageScale(sw,sh,sx,sy,x,top,false,0,0,0,0,w/(float)sw,h/(float)sh,sprite[img],img);
+ DrawMenuBackdropCrop(sprite[img]->getTexture(),sx,sy,sw,sh,x,top,w,h);
  SetColor(color);SetAlpha(4);MemRect(x,top,w,h,0x092B30);SetAlpha(alpha);
 }
 
@@ -178,4 +154,46 @@ void DrawMenuBackButton(int x,int top,int command){
  SetFontColor(0xFFF0CD);
  CenterTextStrSolid(u8"\u2039",x+42,top-5,1.6f);
  SetRectPoint(x,top,84,48,command);
+}
+// Rectangular, source-cropped background quads never bleed across window chrome.
+void DrawMenuBackdropCrop(cocos2d::Texture2D* texture,int sx,int sy,int sw,int sh,int x,int top,int w,int h){
+ if(!texture||w<=0||h<=0||sw<=0||sh<=0)return;
+ const int left=Max(x,clipX),right=Min(x+w,clipX2),upper=Min(top,clipY),lower=Max(top-h,clipY2);
+ if(left>=right||upper<=lower)return;
+ static std::vector<cocos2d::Sprite*> quads;static int stamp=-1,slot=0;
+ if(stamp!=frame){stamp=frame;slot=0;}
+ if(slot>=(int)quads.size()){auto* q=cocos2d::Sprite::createWithTexture(texture);q->retain();quads.push_back(q);}
+ auto* q=quads[slot++];q->setTexture(texture);q->setFlippedY(false);
+ const float zx=sw/(float)w,zy=sh/(float)h;
+ q->setTextureRect(cocos2d::Rect(sx+(left-x)*zx,sy+(top-upper)*zy,(right-left)*zx,(upper-lower)*zy));
+ q->setAnchorPoint({0,1});q->setPosition({(float)left,(float)upper});q->setScaleX(1/zx);q->setScaleY(1/zy);
+ q->setOpacity(m_lgrpAlpha*255/32);q->visit();
+}
+void DrawCastleMenuBackdrop(int x,int top,int w,int h,int castle){
+ // Reuse the ten existing native pixel room atlases; no new detailed art.
+ castle=Max(0,Min(9,castle));const int img=MERGE_REBUILD_ROOMS_IMG+castle;
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ auto* texture=sprite[img]->getTexture();texture->setAliasTexParameters();
+ const auto size=texture->getContentSizeInPixels();const int tw=(int)size.width/4,th=(int)size.height/6;
+ const float scale=Max(w/(float)tw,h/(float)th);
+ const int sw=Min(tw,(int)(w/scale)),sh=Min(th,(int)(h/scale));
+ DrawMenuBackdropCrop(texture,2*tw+(tw-sw)/2,(th-sh)/2,sw,sh,x,top,w,h);
+}
+
+// Match the original armory's painted style and detail density at every tier.
+void DrawHeroCastleBackdrop(int x,int top,int w,int h,int castle){
+ castle=Max(0,Min(9,castle));
+ // The first castle is the user's exact original armory reference.
+ if(castle==0){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
+ static cocos2d::Texture2D* atlas=nullptr;
+ if(!atlas){
+  const auto path=cocos2d::FileUtils::getInstance()->fullPathForFilename("res/menu_renewal/hero-castle-backgrounds-v2.png");
+  if(!path.empty())atlas=cocos2d::Director::getInstance()->getTextureCache()->addImage(path);
+ }
+ if(!atlas){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
+ atlas->setAntiAliasTexParameters();
+ const auto size=atlas->getContentSizeInPixels();const int tw=(int)size.width/2,th=(int)size.height/5;
+ castle=Max(0,Min(9,castle));const float scale=Max(w/(float)tw,h/(float)th);
+ const int sw=Min(tw,(int)(w/scale)),sh=Min(th,(int)(h/scale));
+ DrawMenuBackdropCrop(atlas,(castle%2)*tw+(tw-sw)/2,(castle/2)*th+(th-sh)/2,sw,sh,x,top,w,h);
 }

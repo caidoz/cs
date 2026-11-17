@@ -5,6 +5,9 @@
 #include "Config/ShopConfig.h"
 #include "Data/MergeTreeData.h"
 #include "BoardModel.h"
+void DrawCastleMenuBackdrop(int,int,int,int,int);
+void DrawHeroCastleBackdrop(int,int,int,int,int);
+void DrawMenuBackdropCrop(cocos2d::Texture2D*,int,int,int,int,int,int,int,int);
 
 static bool PixelEquipmentUi()
 {
@@ -5689,7 +5692,7 @@ void CrewMenuDraw(int x, int y, float zoom)
  if(drawHandle==MD_LOBBY)y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
  int i,j;
  const float WINX=DX*zoom;
- const float WINY=Max(1.f,(float)y-Max(BOTTOMMENUHEIGHT,MergeRouletteBottomNavHeight()));
+ const float WINY=Max(1.f,(float)y-12);
  int itemType,itemDetail,itemGrade,itemLv,itemStar;long itemCnt;
  MemRect(x,y,(int)WINX,y,0x16313B);
  DrawMenuReferencePanel(x,y,(int)WINX,(int)WINY,0,0x16313B,0x49777A);
@@ -6724,8 +6727,8 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
  // The frame texture is transparent: submit the native card illustration first.
  if(!sprite[CARDBG_IMG])LoadImg(CARDBG_IMG);
  const int bg=crewData[it->detail*CREWDATASIZE+CREWDATA_CARDBG];
- DrawImageScale(198,288,198*(bg%5),288*(bg/5),x+w*18/240,y-h*22/332,
-  false,false,false,false,false,w*1.02f/240.f,h/332.f,sprite[CARDBG_IMG],CARDBG_IMG);
+ DrawMenuBackdropCrop(sprite[CARDBG_IMG]->getTexture(),198*(bg%5),288*(bg/5),198,288,
+  x+w*18/240,y-h*22/332,(int)(198*w*1.02f/240.f),(int)(288*h/332.f));
  DrawImageScale(f[0],f[1],f[2],f[3],x,y,false,false,false,false,false,
   w/(float)f[0],h/(float)f[1],sprite[CARD_IMG],CARD_IMG);
  DrawStar(ICON_STAR,x+w/2,y-12,star,star,star,CENTER,false,Min(.55f,w/240.f));

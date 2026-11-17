@@ -4,6 +4,11 @@
 
 namespace TurretAttack {
 enum Kind { Stone, Shell, Missiles, Rapid, Laser, Magnetic };
+struct UpgradeVisual {
+    int level,motes;
+    float beamScale;
+    explicit UpgradeVisual(int grade):level(std::max(0,std::min(5,grade))),motes(level?1+(level-1)/2:0),beamScale(1.f+level*.012f){}
+};
 inline Kind kind(int castle) {
     static const Kind types[10]={Stone,Shell,Missiles,Rapid,Shell,Shell,Laser,Magnetic,Laser,Laser};
     return types[std::max(0,std::min(9,castle))];
@@ -12,7 +17,7 @@ struct Sequence {
     Kind type=Stone;
     int castle=0,grade=0,age=-1,count=1,release=18,flight=40,spacing=8;
     void begin(int c,int g) {
-        castle=c;grade=g;type=kind(c);age=0;
+        castle=c;grade=std::max(0,std::min(5,g));type=kind(c);age=0;
         count=type==Missiles?(c==2?3:1):type==Rapid?12:1;
         release=(type==Laser||type==Magnetic)?26:18;
         flight=type==Magnetic?22:type==Laser?12:type==Missiles?42:type==Stone?42:28;

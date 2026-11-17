@@ -1,0 +1,15 @@
+Use case: stylized-concept.
+PRODUCTION SPRITE ATLAS containing exactly TEN SIMPLE LOW-DETAIL background paintings for a tiny mobile pixel RPG equipment screen. This is BACKGROUND ART ONLY: no cards, no UI, no characters, no typography. Layout is an EXACT REGULAR GRID OF TWO COLUMNS AND FIVE ROWS, panels touching with no gutters and no outer margins. Overall portrait 4:5 aspect ratio; every individual panel is a wide 2:1 room.
+CRITICAL ART DIRECTION: extremely SIMPLE, chunky, clean low-resolution pixel art, as if EACH ROOM WERE ONLY 160x80 PIXELS scaled with nearest neighbor. Broad flat color masses, about 10-14 colors per scene, low contrast, sparse readable shapes, no tiny details. Nothing like a detailed pixel illustration. NO texture noise, no individual brick pattern, no ornate carvings, no thin trim, no complex shelves, no scattered objects. Large smooth wall shapes, one large window or arch, plain floor with only 3-4 broad plank or tile divisions. Only ONE OR TWO large simple props at the far edges, at most. CENTRAL 65% of every panel is quiet empty wall and EMPTY standing floor for a hero to be added later. Background is subordinate, dim and muted, softly separated planes; silhouettes readable at 160px wide. Uniform frontal side-on camera, floor occupies bottom 25%, quiet center. Not realistic, not isometric, not detailed. The goal is an uncomplicated game backdrop behind a colorful pixel character and six item slots.
+Scenes ordered LEFT TO RIGHT, TOP TO BOTTOM, all ten visibly distinct architecture:
+1 humble wood castle: muted warm brown wall, single rounded pale blue window on left, one crate far right;
+2 sandstone desert castle: flat ochre plaster wall, one broad arch with sandy sky, one clay jar at edge;
+3 knight castle: pale cool stone wall as 4 huge slabs, simple blue banner at one edge, broad blue window;
+4 jade harbor castle: muted green timber, circular pale sea window, one simple barrel;
+5 steel factory castle: flat dark gray sheet-metal panels, one big orange furnace opening at edge, minimal broad pipe;
+6 teal engineering castle: plain blue gray wall, one simple large cyan crystal at far edge, no complex machinery;
+7 phoenix castle: muted red wood wall, one broad cream circular window, one simple red hanging banner;
+8 swan academy castle: flat ivory wall, one arched blue window, a single low stack of three large books at far edge;
+9 arcane crystal castle: flat muted violet wall, large purple arch silhouette, one large softly glowing gem at side;
+10 solar royal castle: flat warm cream wall, broad golden sun-shaped window, one simple gold column at edge.
+No ceiling clutter. No furniture in the middle. No throne, beds, weapons, coins, hero or inventory. No starburst, bloom, ornate decoration. STRICTLY low-detail large pixel shapes, consistent simple game style. Ten full-bleed background panels only.

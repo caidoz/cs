@@ -1,4 +1,4 @@
-﻿#include "Core.h"
+#include "Core.h"
 #include "Data.h"
 #include "Data/CmfData.h"
 #include "Data/CmfBlob.h"
@@ -10807,7 +10807,7 @@ static void LobbyBottomNavDraw(void)
 	if (popUpCnt > 0) {
 		const int topType = popUp[popUpCnt - 1].type;
 		// The shop covers the dock, including its touch rectangles.
-		if(topType==POPUPTYPE_SHOPINFO || topType==POPUPTYPE_EVENTSHOP || topType==POPUPTYPE_COLLECTIONS || topType==POPUPTYPE_CASTLEMENU) return;
+		if(topType==POPUPTYPE_SHOPINFO || topType==POPUPTYPE_EVENTSHOP || topType==POPUPTYPE_COLLECTIONS || topType==POPUPTYPE_CASTLEMENU || topType==POPUPTYPE_CREWLIST || topType==POPUPTYPE_CREWUPGRADE) return;
 		const bool isLobbySection = (topType == POPUPTYPE_SHOPINFO
 			|| topType == POPUPTYPE_EVENTSHOP
 			|| topType == POPUPTYPE_COLLECTIONS
@@ -16026,10 +16026,7 @@ void GNBDraw(int x, int y)
 		const int gearW = (int)(140.0f * gearZoom);
 		const int gearH = (int)(145.0f * gearZoom);
 
-		if(drawHandle==MD_LOBBY){
-		 DrawMenuReferencePanel(x+DX-54,y,50,LOBBY_BAR_H,1,0x10383D,0xE7C58C);
-		 DrawMenuGear(x+DX-46,y-7,34);
-		}else DrawImage(140, 145, 1, 1,
+		DrawImage(140, 145, 1, 1,
 			x + DX - 36 * _2X / 2 - gearW / 2,
 			y - (LOBBY_BAR_H - gearH) / 2,
 			false, false, false, false, false, gearZoom,
