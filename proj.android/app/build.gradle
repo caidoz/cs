@@ -2,8 +2,36 @@ import org.gradle.internal.os.OperatingSystem
 
 apply plugin: 'com.android.application'
 
+// 업로드 키. 저장소 밖 파일에서만 읽는다. 없으면 release 는 서명 없이 만든다.
+//   %USERPROFILE%\.android-keys\cs-upload.properties
+//   RELEASE_STORE_FILE=C:/Users/.../cs-upload.jks
+//   RELEASE_STORE_PASSWORD=...  RELEASE_KEY_ALIAS=...  RELEASE_KEY_PASSWORD=...
+def uploadKeyProps = new Properties()
+def uploadKeyFile = new File(System.getProperty("user.home"), ".android-keys/cs-upload.properties")
+if (uploadKeyFile.exists()) {
+    uploadKeyFile.withInputStream { uploadKeyProps.load(it) }
+}
+def hasUploadKey = uploadKeyProps.containsKey("RELEASE_STORE_FILE") || project.hasProperty("RELEASE_STORE_FILE")
+def keyProp = { String name -> project.hasProperty(name) ? project.property(name) : uploadKeyProps.getProperty(name) }
+
 android {
+    namespace "kr.bigpixel.cs"
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
+    ndkVersion PROP_NDK_VERSION
+
+    // Resources 전체는 설치 시점 에셋 팩(:assets_base)으로 나간다. 기본 모듈에는 담지 않는다.
+    assetPacks = [":assets_base"]
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging false
+        }
+    }
 
     defaultConfig {
         applicationId "kr.bigpixel.cs"
@@ -50,7 +78,6 @@ android {
         java.srcDir "src"
         res.srcDir "res"
         manifest.srcFile "AndroidManifest.xml"
-        assets.srcDir "../../Resources"
     }
 
     externalNativeBuild {
@@ -69,11 +96,11 @@ android {
     signingConfigs {
 
        release {
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                storeFile file(RELEASE_STORE_FILE)
-                storePassword RELEASE_STORE_PASSWORD
-                keyAlias RELEASE_KEY_ALIAS
-                keyPassword RELEASE_KEY_PASSWORD
+            if (hasUploadKey) {
+                storeFile file(keyProp("RELEASE_STORE_FILE"))
+                storePassword keyProp("RELEASE_STORE_PASSWORD")
+                keyAlias keyProp("RELEASE_KEY_ALIAS")
+                keyPassword keyProp("RELEASE_KEY_PASSWORD")
             }
         }
     }
@@ -86,7 +113,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
+            if (hasUploadKey) {
                 signingConfig signingConfigs.release
             }
 
@@ -106,19 +133,6 @@ android {
                     arguments 'NDK_DEBUG=1'
                 }
             }
-        }
-    }
-}
-
-android.applicationVariants.all { variant ->
-    // delete previous files first
-    delete "${buildDir}/intermediates/assets/${variant.dirName}"
-
-    variant.mergeAssets.doLast {
-        copy {
-            from "${buildDir}/../../../Resources"
-            into "${buildDir}/intermediates/assets/${variant.dirName}"
-            exclude "**/*.gz"
         }
     }
 }

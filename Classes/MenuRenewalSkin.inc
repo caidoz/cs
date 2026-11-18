@@ -180,20 +180,20 @@ void DrawCastleMenuBackdrop(int x,int top,int w,int h,int castle){
  DrawMenuBackdropCrop(texture,2*tw+(tw-sw)/2,(th-sh)/2,sw,sh,x,top,w,h);
 }
 
-// Match the original armory's painted style and detail density at every tier.
+// Every castle has its own fitting room, including the painted circular dais.
 void DrawHeroCastleBackdrop(int x,int top,int w,int h,int castle){
  castle=Max(0,Min(9,castle));
- // The first castle is the user's exact original armory reference.
- if(castle==0){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
- static cocos2d::Texture2D* atlas=nullptr;
- if(!atlas){
-  const auto path=cocos2d::FileUtils::getInstance()->fullPathForFilename("res/menu_renewal/hero-castle-backgrounds-v2.png");
-  if(!path.empty())atlas=cocos2d::Director::getInstance()->getTextureCache()->addImage(path);
+ static cocos2d::Texture2D* rooms[10]={};
+ if(!rooms[castle]){
+  char name[128];snprintf(name,sizeof(name),"res/menu_renewal/dressing-v3/castle-%02d.png",castle+1);
+  const auto path=cocos2d::FileUtils::getInstance()->fullPathForFilename(name);
+  if(!path.empty())rooms[castle]=cocos2d::Director::getInstance()->getTextureCache()->addImage(path);
  }
- if(!atlas){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
- atlas->setAntiAliasTexParameters();
- const auto size=atlas->getContentSizeInPixels();const int tw=(int)size.width/2,th=(int)size.height/5;
- castle=Max(0,Min(9,castle));const float scale=Max(w/(float)tw,h/(float)th);
+ auto* room=rooms[castle];
+ if(!room){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
+ room->setAntiAliasTexParameters();
+ const auto size=room->getContentSizeInPixels();const int tw=(int)size.width,th=(int)size.height;
+ const float scale=Max(w/(float)tw,h/(float)th);
  const int sw=Min(tw,(int)(w/scale)),sh=Min(th,(int)(h/scale));
- DrawMenuBackdropCrop(atlas,(castle%2)*tw+(tw-sw)/2,(castle/2)*th+(th-sh)/2,sw,sh,x,top,w,h);
+ DrawMenuBackdropCrop(room,(tw-sw)/2,(th-sh)/2,sw,sh,x,top,w,h);
 }

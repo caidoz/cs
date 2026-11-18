@@ -76,7 +76,7 @@
 #define HEART_REGEN_BASE          1
 
 //디버그 빌드의 에너지 상한
-#define HEART_TEST_MAX            100
+#define HEART_TEST_MAX            99
 
 //방 안 사람의 화면 키(640 기준 픽셀)
 #define CASTLE_ROOM_CREW_SCREEN_H 35.0f

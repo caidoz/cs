@@ -10,8 +10,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := MyGame_shared
-LOCAL_MODULE_FILENAME := libMyGame
+# AGP 8 은 make 타깃 이름으로 LOCAL_MODULE 을 쓴다. 파일명 별칭(LOCAL_MODULE_FILENAME)을 두면 "No rule to make target" 이 난다.
+LOCAL_MODULE := MyGame
 
 LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/AppDelegate.cpp \
@@ -70,6 +70,8 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_System.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Text.cpp \
                    $(LOCAL_PATH)/../../../Classes/Func_Utility.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Func_Gacha.cpp \
+                   $(LOCAL_PATH)/../../../Classes/Func_Iap.cpp \
                    $(LOCAL_PATH)/../../../Classes/NativeInterface.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes

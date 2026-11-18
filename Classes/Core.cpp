@@ -1435,22 +1435,21 @@ void PaintClet(int x, int y, int w, int h)
 		if (scAccelY == 0) {
 			scRecoveryFrameY = 1;
 
-			// ★ 이 시점의 scY[curMenu] 기준으로 가장 가까운 성 index 계산
-			int divisor = GetScrollDy(curMenu) / (gTotalCastle + 1);
-
-			// 현재 위치가 몇 번째 성 사이쯤인지 (실수 인덱스)
-			float fIndex = -(float)scY[curMenu] / (float)divisor;
-
-			// 가장 가까운 성 인덱스 = 반올림
-			nearestIndex = (int)floorf(fIndex + 0.5f);
-
-			// 성 개수에 맞게 클램프 (0 ~ maxCastleIndex)
-			int maxCastleIndex = scT[curMenu] / divisor;   // scT[curMenu]가 전체 높이라고 가정
-			if (nearestIndex < 0) nearestIndex = 0;
-			if (nearestIndex > maxCastleIndex) nearestIndex = maxCastleIndex;
-
-			// ★ 스냅 타겟 Y 고정
-			snapTargetY[curMenu] = -nearestIndex * divisor;
+			// Only the reverse-scrolling castle list snaps to castle-sized pages.
+			// Other menus own their scroll ranges and may report zero content height.
+			if (curMenu == MENU_PLAY) {
+				const int pages = gTotalCastle + 1;
+				const int divisor = pages > 0 ? GetScrollDy(curMenu) / pages : 0;
+				if (divisor > 0) {
+					const float fIndex = -(float)scY[curMenu] / (float)divisor;
+					const int maxCastleIndex = Max(0, scT[curMenu] / divisor);
+					nearestIndex = Max(0, Min(maxCastleIndex, (int)floorf(fIndex + 0.5f)));
+					snapTargetY[curMenu] = -nearestIndex * divisor;
+				} else {
+					nearestIndex = 0;
+					snapTargetY[curMenu] = 0;
+				}
+			}
 		}
 	}
 

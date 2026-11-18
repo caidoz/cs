@@ -1389,8 +1389,9 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_GOTO_GOLD_IAP:
+		case AVK_GOTO_ENERGY_IAP:
 		case AVK_GOTO_RAINBOW_IAP:
-			ShopJumpToIapSection(systemKey == AVK_GOTO_GOLD_IAP ? SHOPSEC_GOLD : SHOPSEC_CASH);
+			ShopJumpToIapSection(systemKey == AVK_GOTO_ENERGY_IAP ? SHOPSEC_HEART : systemKey == AVK_GOTO_GOLD_IAP ? SHOPSEC_GOLD : SHOPSEC_CASH);
 			curMenuBack = curMenu;
 			curMenu = MENU_SHOP;
 			menuDepth = 0;
@@ -3949,6 +3950,9 @@ void touchFunc(int func)
 			break;
 		case TOUCH_FUNC_GOTO_GOLD_IAP:
 			systemKey = AVK_GOTO_GOLD_IAP;
+			break;
+		case TOUCH_FUNC_GOTO_ENERGY_IAP:
+			systemKey = AVK_GOTO_ENERGY_IAP;
 			break;
 		case TOUCH_FUNC_GOTO_RAINBOW_IAP:
 			systemKey = AVK_GOTO_RAINBOW_IAP;

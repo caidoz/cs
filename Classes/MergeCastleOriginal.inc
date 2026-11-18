@@ -5,14 +5,12 @@ using Poly=std::vector<cocos2d::Vec2>;
 struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
 float previewScale=0,previewLeft=0,previewLift=0;
-float zoom(){return previewScale>0?previewScale:DX/W*1.04f;}
-float left(){return previewScale>0?previewLeft:(DX-W*zoom())*.5f;}
-float lift(){return previewScale>0?previewLift:34*DX/640.f+castleSceneLift();}
-// Late castles have narrower painted silhouettes inside the shared canvas.
-// Register visible widths (1000, 1010, 1020 native pixels), not PNG padding.
 int widthStage(){return siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));}
-float widthGain(){const int c=widthStage();return c==7?1000.f/934.f:c==8?1010.f/885.f:c==9?1020.f/954.f:1.f;}
-float nativeX(float x){const int c=widthStage();const float centre=c==7?563.f:c==8?558.5f:c==9?549.f:W*.5f;return c>=7?W*.5f+(x-centre)*widthGain():x;}
+float zoom(){return previewScale>0?previewScale*966.f/CastleArtGeometry::width(widthStage()):CastleArtGeometry::scale(DX,widthStage());}
+float left(){const float center=previewScale>0?previewLeft+W*previewScale*.5f:DX*.5f;return center-CastleArtGeometry::center(widthStage())*zoom();}
+float lift(){return previewScale>0?previewLift:34*DX/640.f+castleSceneLift()+castleArtOffset(widthStage());}
+// Coordinates, rooms, wheels and hull share one uniform transform.
+float nativeX(float x){return x;}
 Box box(int x,int y,int w,int h,float drop=0){
  const float z=zoom();
  // Snap shared endpoints, rather than rounding a position and width separately.

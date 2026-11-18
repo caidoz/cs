@@ -5591,7 +5591,7 @@ int GetInitHeart(void)
 	init = Max(init, HEART_TEST_MAX);
 #endif
 
-	return init;
+	return Min(99,init);
 }
 
 //시간이 지날 때 차오르는 양. 10분마다 1개(HEART_REGEN_BASE)씩 회복된다.

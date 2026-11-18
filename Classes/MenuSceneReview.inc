@@ -1,11 +1,36 @@
 static bool MenuSceneReview(const char* path){
+ if(getenv("CS_SCROLL_CRASH_REVIEW")){
+  static int step=0;++step;
+  if(step==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+  const int menus[]={MENU_CASTLE,MENU_COLLECTIONS,MENU_CREW,MENU_SHOP,MENU_PLAY};
+  if(step>=20&&step<120&&(step-20)%20==0){
+   curMenu=menus[(step-20)/20];scY[curMenu]=0;scT[curMenu]=1000;
+   // One tick of residual inertia reproduces the original zero-divisor crash.
+   scAccelY=1;scRecoveryFrameY=0;
+  }
+  if(step>=25&&step<125&&(step-25)%20==0){
+   CastleReviewTrace(scAccelY==0?"PASS scroll inertia settled without exception":"FAIL scroll inertia did not settle");
+  }
+  if(step==130)CastleReviewTrace("DONE scroll crash review");
+  return true;
+ }
  if(getenv("CS_HERO_BACKGROUND_REVIEW")){
+  const bool debug=getenv("CS_HERO_BACKGROUND_DEBUG_REVIEW")!=nullptr;
   static int step=0;static bool waiting=false;if(waiting)return true;++step;
   cocos2d::Director::getInstance()->setDisplayStats(false);
-  if(step==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+  if(step==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);
+   robin.castle=0;gMobileCastleVisual=0;
+   if(debug&&!LobbyCastleDebugActive())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);
+  }
   if(step==20){touchFunc(TOUCH_FUNC_COLLECTIONS);PlayKey(PLAYER);systemKey=0;curEquipTab=EQUIPTAB_GEAR;}
-  if(step>=30&&step<180&&(step-30)%15==0){robin.castle=(step-30)/15;gMobileCastleVisual=robin.castle;}
+  if(step>=30&&step<180&&(step-30)%15==0){
+   const int target=(step-30)/15;
+   if(debug){for(int n=0;n<10&&LobbyCastleDebugCastle()!=target;++n)LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_NEXT);}
+   else{robin.castle=target;gMobileCastleVisual=target;}
+  }
   if(step>=40&&step<190&&(step-40)%15==0){
+   extern int EquipmentMenuV2VisibleCastle();const int target=(step-40)/15;
+   CastleReviewTrace(EquipmentMenuV2VisibleCastle()==target&&(!debug||robin.castle==0)?"PASS hero background follows displayed castle without changing saved selection":"FAIL displayed castle background mismatch");
    char file[64];snprintf(file,sizeof(file),"hero-castle-%02d.png",(step-40)/15+1);waiting=true;
    cocos2d::utils::captureScreen([](bool ok,const std::string&){waiting=false;CastleReviewTrace(ok?"PASS hero background capture":"FAIL hero background capture");},std::string(path)+file);
   }

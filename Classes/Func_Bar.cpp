@@ -28,78 +28,91 @@ static void DrawBottomMenuCell(int cell, int x, int y, float zoom)
 // stay at their normal height when the lobby makes room for energy.
 static void LobbyResourceFrame(int x, int y, int w, int color, float percent = 1.0f)
 {
-	const float zx = w / 444.0f;
 	const float zy = LOBBY_BAR_H / 129.0f;
-	DrawImageScale(444, 129, 302, 1, x, y, false, false, false, false, false,
-		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	DrawImageScale(411 * percent, 94, 318, 132 + 95 * color,
-		x + 16 * zx, y - 16 * zy, false, false, false, false, false,
-		zx, zy, sprite[UI_NEW_IMG], UI_NEW_IMG);
+ // Fixed-radius ends give every bar exactly the same visible height/curvature.
+ const auto strip=[&](int sx,int sy,int sw,int sh,int cap,int dx,int top,int width){
+  if(width<=0)return;
+  const float edge=Min(cap*zy,width*.5f);
+  DrawImageScale(cap,sh,sx,sy,dx,top,false,0,0,0,0,edge/cap,zy,sprite[UI_NEW_IMG],UI_NEW_IMG);
+  DrawImageScale(sw-2*cap,sh,sx+cap,sy,dx+edge,top,false,0,0,0,0,Max(.001f,(width-2*edge)/(sw-2*cap)),zy,sprite[UI_NEW_IMG],UI_NEW_IMG);
+  DrawImageScale(cap,sh,sx+sw-cap,sy,dx+width-edge,top,false,0,0,0,0,edge/cap,zy,sprite[UI_NEW_IMG],UI_NEW_IMG);
+ };
+ strip(302,1,444,129,64,x,y,w);
+ strip(318,132+95*color,411,94,47,x+(int)(16*zy),y-(int)(16*zy),(int)((w-32*zy)*percent));
 }
 
+// Center actual label bounds vertically; preserve font height for long amounts.
+static void LobbyResourceNumber(int slot,const char* value,int left,int right,int centerY,float pixels){
+ static cocos2d::Label* labels[4]={};
+ auto*& label=labels[slot];
+ if(!label){label=cocos2d::Label::createWithTTF("0","fonts/Pretendard-Bold.otf",pixels);label->retain();}
+ auto config=label->getTTFConfig();
+ if(config.fontSize!=pixels){config.fontSize=pixels;label->setTTFConfig(config);}
+ label->setString(value);
+ const bool rightAligned=slot==1||slot==2;
+ label->setAnchorPoint({rightAligned?1.f:.5f,.5f});
+ label->setColor(cocos2d::Color3B::WHITE);label->enableOutline(cocos2d::Color4B(64,37,22,255),1.5f);
+ // Keep character proportions at 100%; reduce font size uniformly if necessary.
+ const float fit=Min(1.f,(right-left)/Max(1.f,label->getContentSize().width));
+ if(slot!=3&&fit<1){config=label->getTTFConfig();config.fontSize=pixels*fit;label->setTTFConfig(config);}
+ label->setScale(1);label->setPosition({rightAligned?(float)right:(left+right)*.5f,(float)centerY});
+ label->setOpacity(m_lgrpAlpha*255/32);static_cast<cocos2d::Node*>(label)->visit();
+}
+static void LobbyResourceAdd(int x,int y,int size,int command){
+ const float press=GetButtonScale(command,x,y,size,size),draw=size*press;
+ DrawImage(64,64,521,640,x+(size-draw)/2,y-(size-draw)/2,false,false,false,false,false,
+  draw/64.f,sprite[UI_NEW_IMG],UI_NEW_IMG);
+ SetRectPoint(x,y,size,size,command);
+}
 void LobbyResourceBarsDraw(int y)
 {
-	const int gap = 2 * _2X;
-	const int left = xOffset + gap;
-	const int usable = DX - 36 * _2X - gap * 5;
-	const int levelW = (int)(usable * 0.15f);
-	const int moneyW = (int)(usable * 0.28f);
-	const int energyW = usable - levelW - moneyW * 2;
-	const int goldX = left + levelW + gap;
-	const int coinX = goldX + moneyW + gap;
-	const int energyX = coinX + moneyW + gap;
-	const int h = GOLDBARHEIGHT;
-	const float progress = Max(0.0f, Min(1.0f,
-		(float)(ao[PLAYER].exps - NextExp(robin.lv - 1)) /
-		Max(1.0f, (float)(NextExp(robin.lv) - NextExp(robin.lv - 1)))));
-	LobbyResourceFrame(left, y, levelW, BARCOLOR_PURPLE, progress);
-	DrawIcon(ICON_CROWN,left+4*_2X,y-6*_2X,.9f,COLOR_BROWN,false,false,1);
-	char level[16];snprintf(level,sizeof(level),"%d",robin.lv+1);
-	SetFontColor(0x493529);DrawTextStrSystem(level,left+levelW-6*_2X,y-10*_2X,.8f,RIGHT,false);
-	SetRectPoint(left, y, levelW, h, TOUCH_FUNC_POPUP_LVUPREWARD);
-
-	for (int i = 0; i < 2; ++i) {
-		const int x = i == 0 ? goldX : coinX;
-		const int func = i == 0 ? TOUCH_FUNC_GOTO_GOLD_IAP : TOUCH_FUNC_GOTO_RAINBOW_IAP;
-		LobbyResourceFrame(x, y, moneyW, i == 0 ? BARCOLOR_YELLOW : BARCOLOR_PURPLE);
-		if (i == 0)
-			DrawIcon(ICON_GOLD, x + 4 * _2X, y - 7 * _2X, 0.9f,
-				COLOR_BROWN, false, false, 1);
-		else
-			DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,x+4*_2X,y-7*_2X,0.9f,false,false,false,true);
-		const int plusSize = 15 * _2X;
-		const int plusX = x + moneyW - plusSize - 4 * _2X;
-		const int plusY = y - (h - plusSize) / 2;
-		SetFontColor(COLOR_WHITE);
-		if(i==0&&robin.gold>=1000000){
-			char amount[40];const long long whole=robin.gold/1000000,tenth=robin.gold%1000000/100000;
-			if(tenth)snprintf(amount,sizeof(amount),"%lld.%lldM",whole,tenth);
-			else snprintf(amount,sizeof(amount),"%lldM",whole);
-			DrawTextStrSystem(amount,plusX-2*_2X,y-10*_2X,Min(.8f,(moneyW-42*_2X)/Max(1.f,StringWidth(amount,1.f))),RIGHT,false);
-		}else DrawBigNumTTF(i == 0 ? robin.gold : robin.coin, plusX - 2 * _2X,
-			y - 10 * _2X, NUM_FONT_NORMAL, RIGHT, false, false,
-			moneyW - 42 * _2X, true, 0.8f, true);
-		const float press = GetButtonScale(func, plusX, plusY, plusSize, plusSize);
-		const float size = plusSize * press;
-		DrawImage(64, 64, 521, 640, plusX + (plusSize - size) / 2,
-			plusY - (plusSize - size) / 2, false, false, false, false, false,
-			size / 64.0f, sprite[UI_NEW_IMG], UI_NEW_IMG);
-		SetRectPoint(plusX, plusY, plusSize, plusSize, func);
-	}
-
-	LobbyResourceFrame(energyX, y, energyW, BARCOLOR_GREEN);
-	const int iconSize = 17 * _2X;
-	DrawImage(128, 128, 0, 0, energyX + 3 * _2X, y - (h - iconSize) / 2,
-		false, false, false, false, false, iconSize / 128.0f,
-		sprite[LOBBY_ENERGY_IMG], LOBBY_ENERGY_IMG);
-	const int textX = energyX + iconSize + 5 * _2X;
-	const int textW = energyW - iconSize - 9 * _2X;
-	char label[64];
-	sprintf(label, "%lld/%d", robin.heart,GetInitHeart());
-	SetFontColor(COLOR_WHITE);
-	CenterTextStrSolid(label, textX + textW / 2, y - 10 * _2X,
-		Min(0.72f, textW / Max(1.0f, StringWidth(label, 1.0f))));
-	SetFontColor(COLOR_WHITE);
+ const int gap=2*_2X,left=xOffset+gap,usable=DX-36*_2X-gap*5;
+ const int levelW=(int)(usable*.15f),moneyW=(int)(usable*.28f);
+ const int goldW=moneyW+32,cashW=moneyW-16,energyW=usable-levelW-moneyW*2-32;
+ const int goldX=left+levelW+gap,cashX=goldX+goldW+gap,energyX=cashX+cashW+gap;
+ const int h=LOBBY_BAR_H,cy=y-h/2,plusSize=26,iconSize=(int)(ITEMICONSIZE*.99f);
+ const float iconZoom=.99f;
+ const float progress=Max(0.f,Min(1.f,(float)(ao[PLAYER].exps-NextExp(robin.lv-1))/Max(1.f,(float)(NextExp(robin.lv)-NextExp(robin.lv-1)))));
+ LobbyResourceFrame(left,y,levelW,BARCOLOR_PURPLE,progress);
+ DrawIcon(ICON_CROWN,left+4,cy+iconSize/2+4,iconZoom,COLOR_BROWN,false,false,1);
+ char value[64];snprintf(value,sizeof(value),"%d",robin.lv+1);
+ LobbyResourceNumber(0,value,left+iconSize+5,left+levelW-6,cy,(FONT_HEIGHT+_2X)*.8f+2);
+ SetRectPoint(left,y,levelW,h,TOUCH_FUNC_POPUP_LVUPREWARD);
+ for(int i=0;i<2;++i){
+  const int x=i?cashX:goldX,w=i?cashW:goldW;
+  const int command=i?TOUCH_FUNC_GOTO_RAINBOW_IAP:TOUCH_FUNC_GOTO_GOLD_IAP;
+  LobbyResourceFrame(x,y,w,i?BARCOLOR_PURPLE:BARCOLOR_YELLOW);
+  const int currencySize=(int)(iconSize*1.1f);
+  if(i)DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,x+6,cy+currencySize/2,iconZoom*1.1f,COLOR_BROWN,false,false,1.2f);
+  else {
+   // Original smooth yellow coin from i6, bypass newer item-series overrides.
+   if(!sprite[ITEM_IMG+6])LoadImg(ITEM_IMG+6);
+   static cocos2d::Sprite* coins[5]={};
+   const int offsets[5][2]={{-1,0},{1,0},{0,-1},{0,1},{0,0}};
+   for(int k=0;k<5;++k){auto*& coin=coins[k];
+    if(!coin){coin=cocos2d::Sprite::createWithTexture(sprite[ITEM_IMG+6]->getTexture(),cocos2d::Rect(1,1,32,32));coin->retain();}
+    coin->setAnchorPoint({0,.5f});coin->setPosition({(float)x+6+offsets[k][0],(float)cy+offsets[k][1]});
+    coin->setColor(k==4?cocos2d::Color3B::WHITE:cocos2d::Color3B(73,41,19));
+    coin->setScale(currencySize/32.f);coin->setOpacity(m_lgrpAlpha*255/32);coin->visit();
+   }
+  }
+  const int px=x+w-plusSize-6,py=cy+plusSize/2;
+  if(!i&&robin.gold>=1000000){
+   const long long whole=robin.gold/1000000,tenth=robin.gold%1000000/100000;
+   if(tenth)snprintf(value,sizeof(value),"%lld.%lldM",whole,tenth);
+   else snprintf(value,sizeof(value),"%lldM",whole);
+  }else snprintf(value,sizeof(value),"%lld",i?robin.coin:robin.gold);
+  LobbyResourceNumber(i+1,value,x+currencySize+10,px-4,cy,(FONT_HEIGHT+_2X)*.8f+2);
+  LobbyResourceAdd(px,py,plusSize,command);
+ }
+ LobbyResourceFrame(energyX,y,energyW,BARCOLOR_GREEN);
+ const int bolt=(int)(17*_2X*1.1f),px=energyX+energyW-plusSize-6;
+ DrawImage(128,128,0,0,energyX+4,cy+bolt/2,false,false,false,false,false,
+  bolt/128.f,sprite[LOBBY_ENERGY_IMG],LOBBY_ENERGY_IMG);
+ snprintf(value,sizeof(value),"%lld/%d",Min(99LL,Max(0LL,robin.heart)),GetInitHeart());
+ LobbyResourceNumber(3,value,energyX+bolt+6,px-4,cy,(FONT_HEIGHT+_2X)*.72f+2);
+ LobbyResourceAdd(px,cy+plusSize/2,plusSize,TOUCH_FUNC_GOTO_ENERGY_IAP);
+ SetFontColor(COLOR_WHITE);
 }
 
 void DrawBarIcon(int type, int x, int y, float zoom)

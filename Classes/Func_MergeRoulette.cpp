@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #pragma pack(push, 8)
 #include "Data.h"
 #include "Func.h"
@@ -15,6 +15,7 @@
 #include "MergeCombatPresentation.h"
 #include "MergeExpeditionModel.h"
 #include "TurretAttackPresentation.h"
+#include "CastleArtGeometry.h"
 #include "MergeRenderProfile.h"
 #include "StageBackground.h"
 #include "Data/AllyBalanceData.h"
@@ -91,11 +92,18 @@ float castleSceneLift(){
     //전투 중 붙박이 판(긴 화면)이 성 지붕과 겹치면 그만큼 덜 올린다. 로비는 그대로.
     if(active&&topBoardPanel()){
         const int rows=std::max(4,(int)run.shape.height);
-        const float roofBase=(1445.f-83.f)*(DX/1089.f*1.04f)+34*s;   //OriginalCastle::box(0,83) 의 윗변, 올림 0 일 때
+        const int c=siegeHullStage>=0?siegeHullStage:run.stage;
+        const float roofBase=(1445.f-83.f)*CastleArtGeometry::scale(DX,c)+34*s;
         //짧은 화면의 기준(-25)보다 더 내리지는 않는다 - 그 밑은 하단 단추 자리다.
         return std::max(-25.f*s,std::min(base,topPanelCeiling(rows)-roofBase));
     }
     return base;
+}
+float castleArtOffset(int c){
+    // Keep the roof residents below the header; translate, never squash tall art.
+    const float s=DX/640.f;
+    const float feet=1076*CastleArtGeometry::scale(DX,c)+40*s+castleSceneLift();
+    return std::min(0.f,DY-160*s-feet);
 }
 int oldMode=ACTIONRPG, ticks=0, animation=0, picked=-1, finger=-1;
 float gearAngle=0.f,gearStartAngle=0.f;
@@ -321,7 +329,8 @@ Layout layout() {
     // Fixed resource scale: an 80-unit square never shrinks for rows or columns.
     // The top pair on castle ten occupies the gap between the health plates.
     l.plateH=(int)(84*s);l.plateDrop=(int)(8*s);
-    const int groundBase=(int)(1076*DX/1089.f*1.04f)+(int)(40*s);
+    const int hull=siegeHullStage>=0?siegeHullStage:run.stage;
+    const int groundBase=(int)(1076*CastleArtGeometry::scale(DX,hull))+(int)(40*s);
     l.cell=(int)(80*s);l.cellH=l.cell;
     const int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
     //판은 릴 위(280)와 패 밑 사이의 가운데. 1:1.33 에서 네 줄 80칸(320)이 위아래 2~3픽셀을 남기고
@@ -337,7 +346,7 @@ Layout layout() {
     const int refBottom=(int)(561*s);
     l.arenaBottom=refBottom+(int)(76*s);
     l.ground=groundBase;
-    const int lift=(int)castleSceneLift();
+    const int lift=(int)(castleSceneLift()+castleArtOffset(hull));
     l.board.y+=lift;l.arenaBottom+=lift;l.ground+=lift;
     l.slot.y+=lift;l.lever.y+=lift;l.heart.y+=lift;
     l.exit={(int)(10*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};   //왼쪽 위. 오른쪽 위는 몬스터 판 자리
@@ -1067,7 +1076,7 @@ Box blockBox(const Block& b,const Layout& l) {
 }
 int trashSwallowTicks=0;
 float trashOpenness=0;
-Box rouletteTrash(const Layout& l){return {(int)(DX-84*l.scale),l.slot.y-(int)(12*l.scale),(int)(68*l.scale),(int)(76*l.scale)};}
+Box rouletteTrash(const Layout& l){return {(int)(DX-92*l.scale),l.slot.y-(int)(12*l.scale),(int)(76*l.scale),(int)(80*l.scale)};}
 bool nearRouletteTrash(const Layout& l,float x,float y){
     Box b=rouletteTrash(l);const int pad=(int)(16*l.scale);
     return x>=b.x-pad&&x<=b.x+b.w+pad&&y<=b.y+pad&&y>=b.y-b.h-pad;
@@ -1080,7 +1089,7 @@ void drawRouletteTrash(const Layout& l){
     trashOpenness+=std::max(-step,std::min(step,target-trashOpenness));
     const int img=ROULETTE_TRASH_OBJECT_IMG;
     if(!sprite[img])LoadImg(img);if(!sprite[img])return;
-    sprite[img]->getTexture()->setAntiAliasTexParameters();
+    sprite[img]->getTexture()->setAliasTexParameters();
     const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
     const int sw=(int)dim.width/2,sh=(int)dim.height,alpha=m_lgrpAlpha;
     const float pulse=trashSwallowTicks>0?1+.10f*std::sin(trashSwallowTicks/18.f*3.14159265f):1.f;
@@ -1097,6 +1106,7 @@ void drawRouletteTrash(const Layout& l){
     if(trashOpenness<1){SetAlpha((int)(alpha*(1-trashOpenness)));DrawImageScale(sw,sh,0,0,art.x,art.y,false,0,0,0,0,art.w/(float)sw,art.h/(float)sh,sprite[img],img);}
     if(trashOpenness>0){SetAlpha((int)(alpha*trashOpenness));DrawImageScale(sw,sh,sw,0,art.x,art.y,false,0,0,0,0,art.w/(float)sw,art.h/(float)sh,sprite[img],img);}
     SetAlpha(alpha);
+    label(u8"버리기",b.x+b.w/2,b.y+(int)(17*l.scale),.48f,hover?0xFFD579:0xFFF0CE);
 }
 bool beginSpinLanding(){
     spinLandingPlan=run;spinDrops.clear();
@@ -1528,7 +1538,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
  if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic){
   const int charge=turretFire.release,alpha=m_lgrpAlpha;
   // The red, silver, violet and gold castles each color their own hot aura.
-  static const int tones[4]={0xFF682B,0x69CDFF,0xB85AFF,0xFFD363};
+  static const int tones[4]={0xEF281D,0x69CDFF,0xB85AFF,0xFFD363};
   const int tone=tones[std::max(0,std::min(3,turretFire.castle-6))];
   auto glow=[&](float x,float y,float radius,int color,int opacity){
    SetAlpha(opacity);
@@ -1547,15 +1557,23 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
    const float dx=x2-x1,dy=y2-y1,len=std::sqrt(dx*dx+dy*dy);
    SetAlpha(opacity);
    turretPart(img,0,(int)(dim.height*3/8),(int)dim.width,(int)dim.height/4,
-    {(int)((x1+x2-len)*.5f),(int)((y1+y2+width)*.5f),std::max(1,(int)std::ceil(len)),std::max(1,(int)width)},-std::atan2(dy,dx)*57.2957795f);
-   renderSprite[getSpriteIdx]->setColor(cocos2d::Color3B((color>>16)&255,(color>>8)&255,color&255));
+    {(int)((x1+x2-len)*.5f),(int)((y1+y2+width)*.5f),std::max(1,(int)std::ceil(len)),std::max(1,(int)width)},-std::atan2(dy,dx)*57.2957795f,.5f,.5f,false,color,true);
    SetAlpha(alpha);
   };
   if(age<charge){
-   const float t=age/(float)charge,r=(4+18*t)*scale;
-   glow(from.x,from.y,r*1.55f,tone,alpha/5);
+   const float t=age/(float)charge,r=(6+25*t*t)*scale;
+   glow(from.x,from.y,r*1.8f,tone,alpha/3);
    glow(from.x,from.y,r,tone,alpha*3/4);
-   glow(from.x,from.y,r*.48f,0xFFF8E4,alpha);
+   glow(from.x,from.y,r*.32f,0xFFF8E4,alpha);
+   // Visible inward streaks converge on the muzzle before the beam releases.
+   for(int ray=0;ray<6;++ray){
+    const float phase=std::fmod(age*.065f+ray/6.f,1.f);
+    const float a=ray*1.04719755f+age*.025f;
+    const float outer=(r/scale+12+(1-phase)*35)*scale;
+    const float inner=std::max(r,outer-(9+9*phase)*scale);
+    electricLine(from.x+std::cos(a)*outer,from.y+std::sin(a)*outer,
+     from.x+std::cos(a)*inner,from.y+std::sin(a)*inner,5*scale,tone,(int)(alpha*(.45f+.55f*phase)));
+   }
    for(int i=0;i<8;++i){
     const float phase=std::fmod(age*.09f+i*.125f,1.f);
     const float a=i*.78539816f+age*.06f;
@@ -1583,12 +1601,11 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   const float dx=to.x-from.x,dy=to.y-from.y,length=std::sqrt(dx*dx+dy*dy);
   const float angle=-std::atan2(dy,dx)*57.2957795f;
   const float fade=age<=turretFire.impact()?1.f:std::max(0.f,1-(age-turretFire.impact())/14.f);
-  const float thickness=((turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale*upgrade.beamScale;
+  const float thickness=((turretFire.castle==6?96:turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale*upgrade.beamScale;
   auto beam=[&](float height,int color,int opacity){
    SetAlpha(opacity);
    turretPart(img,0,(int)dim.height/4,(int)dim.width,(int)dim.height/2,
-    {(int)((from.x+to.x-length)*.5f),(int)((from.y+to.y+height)*.5f),(int)std::ceil(length),(int)height},angle);
-   renderSprite[getSpriteIdx]->setColor(cocos2d::Color3B((color>>16)&255,(color>>8)&255,color&255));
+    {(int)((from.x+to.x-length)*.5f),(int)((from.y+to.y+height)*.5f),(int)std::ceil(length),(int)height},angle,.5f,.5f,false,color,true);
    SetAlpha(alpha);
   };
   if(turretFire.castle==9){
@@ -1615,7 +1632,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   }else{
    beam(thickness*1.45f,tone,(int)(alpha*.24f*fade));
    beam(thickness,tone,(int)(alpha*fade));
-   beam(thickness*.36f,0xFFF9E8,(int)(alpha*fade));
+   beam(thickness*(turretFire.castle==6?.16f:.36f),turretFire.castle==6?0xFFBE86:0xFFF9E8,(int)(alpha*fade));
   }
   if(turretFire.castle==8){
    // Two changing, jagged discharges wrap the beam; small branches flicker out.
@@ -3461,10 +3478,10 @@ long long MergeRouletteHeroShieldRecovery(const OBJECT* h) {
 }
 void MergeRouletteBeginSiege() {Siege::begin();}
 static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height){
-    const float z=std::min(width/1010.f,height/1270.f);
+    const float z=std::min(width/966.f,height/1350.f);
     const int saved=siegeHullStage;siegeHullStage=castle;
-    OriginalCastle::previewScale=z;OriginalCastle::previewLeft=x+(width-1010*z)*.5f-40*z;
-    OriginalCastle::previewLift=top-(OriginalCastle::H-70)*z;
+    OriginalCastle::previewScale=z;OriginalCastle::previewLeft=x+width*.5f-OriginalCastle::W*z*.5f;
+    OriginalCastle::previewLift=top-(OriginalCastle::H-70)*OriginalCastle::zoom();
     MistCastle::hull(castle,false,0,false);
     const auto& gun=MountedCannons::Get(castle,CastleVisualPartLevel(castle,3));
     const Box b=OriginalCastle::box(300,210,230,145);
@@ -4264,8 +4281,8 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             float s=DX/640.0f;
             Layout l=layout();Box b=lobbyStart(l);
             if(lobbyExpedition(l).has(x,y)){runExpedition();return true;}
-            //"이어서" 단추는 뺐다. 이 히어로의 저장된 판이 있으면 전투 시작이 그 판을 이어 간다.
-            if(b.has(x,y)) {MergeRouletteBegin(robin.mergeRouletteRun[0]&&robin.mergeRouletteHero==curHero);return true;}
+            //전투 시작은 언제나 새 판이다. 저장된 판을 이어 가는 길("이어서")은 없앴다.
+            if(b.has(x,y)) {MergeRouletteBegin();return true;}
             if(lobbyPvp(l).has(x,y)) {Siege::begin();return true;}
             if(lobbyDebugTouch(l,x,y)){debugFinger=id;return true;}
             for(int i=0;i<4;++i)if(roomBox(l,i).has(x,y)){

@@ -1,0 +1,10 @@
+Castle rendering rules, requested 2026-11-18:
+- All ten castle hulls have the same visible width: 600 pixels at a 640-pixel viewport.
+- Measure the opaque hull silhouette, not the padded PNG canvas.
+- Preserve source aspect ratio using one scale for both axes. Height may differ.
+- Position tall castles by translation; never compress them to fit the viewport.
+- Rooms, wheels and mounted parts follow the same castle coordinate transform.
+- Crop room/cover/support images to fill apertures; never stretch their pixels.
+- Keep the deck's original aspect ratio and match its material to the castle.
+- Independent X/Y scaling is permitted only for window/button frames and transient animation effects.
+- Regression: tools/castles/verify_proportions.py captures all ten at 850 and 1408 heights.

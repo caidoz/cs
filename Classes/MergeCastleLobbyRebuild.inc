@@ -39,6 +39,15 @@ Box castleCannonBox(const Layout& l){
  const Box mount=OriginalCastle::box(mounts[c][0],mounts[c][1],0,0);
  float width=(c==0?140.f+2.f*lv:94.f+5.f*c+2.f*lv)*s;
  float height=(c==0?90.f+2.f*lv:52.f+4.f*c+3.f*lv)*s;
+ // A turret's upgrade art keeps its own proportions inside the mounting area.
+ const auto art=MountedCannons::Get(c,lv);
+ const int source=c>0&&lv>0?CANNON_UPGRADE_ATLAS_IMG:CASTLE_MIST_TURRET_FIRST_IMG+c;
+ if(!sprite[source])LoadImg(source);
+ if(sprite[source]){
+  const auto size=sprite[source]->getTexture()->getContentSizeInPixels();
+  const float sw=c>0&&lv>0?(float)art.w:size.width,sh=c>0&&lv>0?(float)art.h:size.height;
+  const float z=std::min(width/sw,height/sh);width=sw*z;height=sh*z;
+ }
  // The catapult is mounted by its pivot, not by a gun's rear flange.
  if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+80*s+height*.22f),(int)width,(int)height};
  const float fit=std::min(1.f,std::max(.1f,(mount.y-l.ground-3*s)/(height*.5f)));
@@ -48,7 +57,7 @@ Box castleCannonBox(const Layout& l){
          (int)(mount.y+height*(c==0?.22f:.5f)),(int)width,(int)height};
 }
 // Draw only the articulated turret; the mounting strip and castle stay fixed.
-void turretPart(int img,int sx,int sy,int sw,int sh,const Box& b,float angle=0,float ax=.5f,float ay=.5f,bool flip=false){
+void turretPart(int img,int sx,int sy,int sw,int sh,const Box& b,float angle=0,float ax=.5f,float ay=.5f,bool flip=false,int color=0xFFFFFF,bool animatedBeam=false){
  if(!sprite[img])LoadImg(img);if(!sprite[img]||sw<=0||sh<=0)return;
  GetSpriteIndex(img);
  if(getSpriteIdx==totalRenderCnt){
@@ -58,9 +67,11 @@ void turretPart(int img,int sx,int sy,int sw,int sh,const Box& b,float angle=0,f
  }
  auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());
  sp->setTextureRect(cocos2d::Rect(sx,sy,sw,sh));sp->setAnchorPoint({ax,ay});
- sp->setPosition({b.x+b.w*ax,b.y-b.h*(1-ay)});sp->setScaleX(b.w/(float)sw);sp->setScaleY(b.h/(float)sh);
+ sp->setPosition({b.x+b.w*ax,b.y-b.h*(1-ay)});sp->setScale(std::min(b.w/(float)sw,b.h/(float)sh));
+ if(animatedBeam){sp->setScaleX(b.w/(float)sw);sp->setScaleY(b.h/(float)sh);}
  sp->setRotation(angle);sp->setFlippedX(flip);sp->setFlippedY(false);sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
  sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+ sp->setColor(cocos2d::Color3B((color>>16)&255,(color>>8)&255,color&255));
  AfterSpriting(sp);
 }
 float catapultAngle(int age,int release){
@@ -102,12 +113,12 @@ void drawCastleCannon(const Layout& l,int c,bool mirror){
   if(level>0){const int plate=CANNON_UPGRADE_ATLAS_IMG;const int sh=Max(1,grade.h/4);
    Box foot={b.x+(int)(b.w*.45f),b.y-(int)(b.h*.70f),(int)(b.w*.65f),(int)(b.h*.30f)};
    if(!sprite[plate])LoadImg(plate);
-   if(sprite[plate])DrawImageScale(grade.w,sh,grade.x,grade.y+grade.h-sh,foot.x,foot.y,mirror,0,0,0,0,foot.w/(float)grade.w,foot.h/(float)sh,sprite[plate],plate);}
+   if(sprite[plate])MistCastle::crop(plate,grade.x,grade.y+grade.h-sh,grade.w,sh,foot,mirror);}
   turretPart(img,0,0,(int)dim.width,(int)dim.height,b,
    catapultAngle(firing?turretFire.age:-1,firing?turretFire.release:18)*(mirror?-1:1),mirror?.15f:.85f,.78f,mirror);
  }else{
   if(firing)b.x+=(int)((mirror?1:-1)*8*l.scale*turretFire.recoil());
-  if(graded)DrawImageScale(grade.w,grade.h,grade.x,grade.y,b.x,b.y,mirror,0,0,0,0,b.w/(float)grade.w,b.h/(float)grade.h,sprite[img],img);
+  if(graded)turretPart(img,grade.x,grade.y,grade.w,grade.h,b,0,.5f,.5f,mirror);
   else turretPart(img,0,0,(int)dim.width,(int)dim.height,b,0,.5f,.5f,mirror);
   if(c==3&&firing){
    // Project the rotating front plate onto the gun's narrow elliptical face.
@@ -319,19 +330,19 @@ void drawDeckSurface(const Layout& l,int c,bool mirror){
  sprite[img]->getTexture()->setAliasTexParameters();
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
  const int row=(int)dim.height/10;
- const Box span=OriginalCastle::box(380,0,c==8?610:650,0);
+ const Box span=OriginalCastle::box(380,0,CastleArtGeometry::DeckRight[c]-380,0);
  // Leave visible floor both behind and in front of the characters' feet
  // (ground + 8), including the green/brass fourth castle.
  // The sixth castle's high stone fascia needs a deeper top plane to read
  // as a platform rather than another horizontal wall trim.
- const float depth=c==8?58.f:c>=5?52.f:42.f;
  // The deck's front edge seats into the same registered cap as the hull.
  // Its transparent bevel must overlap that cap, never hover above it.
  const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale));
- const int height=std::max(1,(int)(depth*l.scale));
+ const float z=span.w/dim.width;
+ const int height=std::max(1,(int)(row*z));
  const Box plane={span.x,front+height,span.w,height};
- DrawImageScale((int)dim.width,row,0,c*row,mirror?DX-plane.x-plane.w:plane.x,plane.y,
-  mirror,0,0,0,0,plane.w/dim.width,plane.h/(float)row,sprite[img],img);
+ const int material=c==7?5:c; // Ivory/gold palace uses ivory/gold stone, not silver steel.
+ MistCastle::crop(img,0,material*row,dim.width,row,plane,mirror);
 }
 void drawCastleHull(const Layout& l,bool combat){
  const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
@@ -413,7 +424,7 @@ void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  // All lobby buttons share the original canvas transform and aspect ratio.
  // "성 관리"(3) 와 "이어서"(4) 단추는 뺐다. 그 자리를 따로 메우지 않는다 - 로비의 성 몸체(픽셀 외장)는
  // 그 밑이 널빤지로 꽉 차 있어서, 메우려고 깐 나무 띠가 오히려 판때기처럼 도드라졌다.
- // 성 관리는 하단 메뉴의 성 탭과 방 터치로, 이어 하기는 전투 시작이 알아서 한다.
+ // 성 관리는 하단 메뉴의 성 탭과 방 터치로 간다. 전투 시작은 언제나 새 판이다.
  OriginalCastle::draw(2,(float)drop);
  drawLobbyBottomNav((float)drop,interactive);
  drawLobbyEnergy(l,(float)drop);

@@ -4085,7 +4085,7 @@ const char* const textId[] = {
 	"turret_attack/crystal-orb",
 	"turret_attack/flame-laser",
 	"turret_attack/magnetic-orb",
-	"roulette/trash-object",
+	"roulette/mimic-discard-v1",
 	"monster_parts/atlas-0",
 	"monster_parts/atlas-1",
 

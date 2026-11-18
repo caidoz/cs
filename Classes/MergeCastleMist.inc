@@ -2,6 +2,23 @@
 namespace MistCastle {
 #include "CastleMistWheels.inc"
 int image(int castle,int part){return CASTLE_MIST_FIRST_IMG+std::max(0,std::min(9,castle))*9+part;}
+// Fill a destination by cropping source edges, never by changing its aspect.
+void crop(int img,float sx,float sy,float sw,float sh,const Box& b,bool mirror=false,bool floor=false){
+ if(!sprite[img])LoadImg(img);if(!sprite[img]||sw<=0||sh<=0||b.w<=0||b.h<=0)return;
+ const float z=std::max(b.w/sw,b.h/sh),cw=b.w/z,ch=b.h/z;
+ GetSpriteIndex(img);
+ if(getSpriteIdx==totalRenderCnt){
+  renderSprite[getSpriteIdx]=cocos2d::Sprite::createWithTexture(sprite[img]->getTexture());renderSprite[getSpriteIdx]->retain();renderSpriteIndex[getSpriteIdx]=getSpriteTexture;
+  if(sameRenderSpriteCur[img]<3000)sameRenderSpriteArr[img][sameRenderSpriteCur[img]]=totalRenderCnt;
+  ++sameRenderSpriteMax[img];++sameRenderSpriteCur[img];++totalRenderCnt;
+ }
+ auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());
+ sp->setTextureRect(cocos2d::Rect(sx+(sw-cw)/2,sy+(floor?sh-ch:(sh-ch)/2),cw,ch));
+ sp->setAnchorPoint({0,1});sp->setPosition({(float)(mirror?DX-b.x-b.w:b.x),(float)b.y});
+ sp->setScale(z);sp->setRotation(0);sp->setFlippedX(mirror);sp->setFlippedY(false);
+ sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
+ sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));AfterSpriting(sp);
+}
 // The blank plaques are baked into each hull, not text labels. Exclude the
 // complete plaque and its rim; the existing interior shadow remains behind it.
 struct SignRect {int x,y,w,h;};
@@ -61,7 +78,9 @@ void hullWithoutSigns(int castle,int img,const Box& b,bool mirror){
  }
  auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());sp->setPolygonInfo(mesh.info);sp->Node::setContentSize({1089,1445});
  sp->setAnchorPoint({0,0});sp->setPosition({(float)(mirror?DX-b.x:b.x),(float)(b.y-b.h)});
- sp->setScaleX((mirror?-1.f:1.f)*b.w/1089.f);sp->setScaleY(b.h/1445.f);sp->setRotation(0);sp->setFlippedX(false);sp->setFlippedY(false);
+ const float z=OriginalCastle::zoom();
+ sp->setPosition({mirror?DX-OriginalCastle::left():OriginalCastle::left(),OriginalCastle::lift()});
+ sp->setScaleX((mirror?-1.f:1.f)*z);sp->setScaleY(z);sp->setRotation(0);sp->setFlippedX(false);sp->setFlippedY(false);
  sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
  sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));AfterSpriting(sp);
 }
@@ -69,7 +88,7 @@ void part(int castle,int part,const Box& b,bool mirror=false){
  const int img=image(castle,part);if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  auto* tex=sprite[img]->getTexture();tex->setAliasTexParameters();const auto sz=tex->getContentSizeInPixels();
  if(part==0){hullWithoutSigns(castle,img,b,mirror);return;}
- DrawImageScale((int)sz.width,(int)sz.height,0,0,mirror?DX-b.x-b.w:b.x,b.y,mirror,0,0,0,0,b.w/sz.width,b.h/sz.height,sprite[img],img);
+ crop(img,0,0,sz.width,sz.height,b,mirror);
 }
 void wheels(int castle,float angle,bool mirror){
  for(int side=0;side<2;++side){const int img=image(castle,6+side);if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
@@ -88,11 +107,7 @@ void facility(int castle,int room,const Box& b,bool mirror){
  const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
  const auto f=MergeCastleTransition::RoomFrame(room,level,(int)size.width,(int)size.height);
  // Preserve furniture proportions, anchor the floor, and cover the entire hole.
- const float z=std::max(b.w/(float)f.w,b.h/(float)f.h);
- const int sw=std::max(1,std::min(f.w,(int)std::ceil(b.w/z)));
- const int sh=std::max(1,std::min(f.h,(int)std::ceil(b.h/z)));
- DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+f.h-sh,mirror?DX-b.x-b.w:b.x,b.y,
-  mirror,0,0,0,0,b.w/(float)sw,b.h/(float)sh,sprite[img],img);
+ crop(img,f.x,f.y,f.w,f.h,b,mirror,true);
  facilityLevels[room]=level;facilityImages[room]=img;
 }
 void hull(int castle,bool closed,float angle,bool mirror,bool drawWheels=true){
@@ -102,7 +117,7 @@ void hull(int castle,bool closed,float angle,bool mirror,bool drawWheels=true){
  // Opaque backing lives strictly inside the chassis. Tiny alpha/rounding
  // seams expose interior shadow instead of the distant scenery.
  const int shadow=(castleMaterial(castle)&0xFCFCFC)>>2;
- for(const Box b:{OriginalCastle::box(96,430,912,570),OriginalCastle::box(380,369,650,61)})
+ for(const Box b:{OriginalCastle::box(196,520,706,480)})
   MemRect(mirror?DX-b.x-b.w:b.x,b.y,b.w,b.h,shadow);
  for(int i=0;i<5;++i){facilityLevels[i]=-1;facilityImages[i]=-1;}
  if(!closed){const auto rr=OriginalCastle::rooms();const int bleed=std::max(1,DX/640)*2;for(int i=0;i<4;++i){const auto& p=rr[i];
@@ -116,7 +131,7 @@ void hull(int castle,bool closed,float angle,bool mirror,bool drawWheels=true){
  const int hullImg=image(castle,0);
  const auto support=[&](int sx,int sy,int sw,int sh,int dx,int dy,int dw,int dh){
   const Box b=OriginalCastle::box(dx,dy,dw,dh);
-  DrawImageScale(sw,sh,sx,sy,mirror?DX-b.x-b.w:b.x,b.y,mirror,0,0,0,0,b.w/(float)sw,b.h/(float)sh,sprite[hullImg],hullImg);
+  crop(hullImg,sx,sy,sw,sh,b,mirror);
  };
  support(196,729,706,25,196,520,706,28);
  support(515,795,35,180,515,548,35,181);

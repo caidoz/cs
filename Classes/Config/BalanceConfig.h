@@ -132,7 +132,7 @@
 //
 //이 값 하나만 바꾸면 테두리 · 안쪽 띠 · 아이콘 · 글자가 모두 따라온다
 //(Func_Bar.cpp 의 LobbyResourceBarsDraw).
-#define LOBBY_BAR_H				GOLDBARHEIGHT
+#define LOBBY_BAR_H				(GOLDBARHEIGHT - 16)
 
 //---- 가질 수 있는 골드의 끝 ----
 //

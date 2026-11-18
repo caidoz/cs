@@ -1,0 +1,35 @@
+// Resources/ 전체를 담는 설치 시점 에셋 팩.
+//
+// 기본 모듈은 Play 에서 200MB 가 상한이라 1.3GB 짜리 Resources 를 담을 수 없다.
+// install-time 팩은 설치와 함께 내려오고 AssetManager 에 그대로 합쳐지므로
+// cocos2d-x FileUtils 는 예전처럼 "res/..." 경로를 그대로 읽는다.
+//
+// src/main/assets 는 빌드 때 Resources 에서 동기화한 복사본이다. 저장소에 넣지 않는다.
+apply plugin: 'com.android.asset-pack'
+
+assetPack {
+    packName = "assets_base"
+    dynamicDelivery {
+        deliveryType = "install-time"
+    }
+}
+
+def syncResources = tasks.register("syncResourcesToAssets", Sync) {
+    from(rootProject.file("../Resources")) {
+        exclude "**/*.gz"
+        exclude "**/*.json"
+        exclude "**/*.md"
+        exclude "**/*.txt"
+        exclude "**/*.py"
+        exclude "**/*.psd"
+        exclude "**/*.zip"
+        exclude "**/.DS_Store", "**/Thumbs.db", "**/desktop.ini"
+    }
+    into(project.file("src/main/assets"))
+}
+
+tasks.configureEach { t ->
+    if (t.name != "syncResourcesToAssets" && t.name != "clean") {
+        t.dependsOn(syncResources)
+    }
+}

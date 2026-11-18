@@ -5,6 +5,7 @@ static int Top(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int PreviewHeight(){return Min(420,Max(250,(Top()-16)/2));}
 static int ListTop(){return Top()-PreviewHeight()-96;}
 static int HeroY(){return Top()-58;}
+static int DisplayCastle(){const int preview=LobbyCastleDebugCastle();return Max(0,Min(9,preview>=0?preview:(int)robin.castle));}
 static int HeroMax(int count){return Max(0,count*184-(DX-32));}
 //---- 깨운 히어로만 센다 ----
 //
@@ -40,6 +41,8 @@ static void HeroStrip(){
  UnSectionClip(false);
 }
 }
+
+int EquipmentMenuV2VisibleCastle(){return EquipmentV2::DisplayCastle();}
 
 bool EquipmentMenuV2Drag(int startX,int startY,int x,int y,int previousX,int previousY)
 {
@@ -84,12 +87,15 @@ static void EquipmentMenuV2Draw()
  DrawMenuBackButton(12,top-4,TOUCH_FUNC_POPUP_CLOSE);
  HeroStrip();
  const int bodyTop=top-140, slot=72, center=DX/2;
- DrawHeroCastleBackdrop(12,bodyTop,DX-24,preview-114,Max(0,Min(9,(int)robin.castle)));
+ DrawHeroCastleBackdrop(12,bodyTop,DX-24,preview-114,DisplayCastle());
  SetAlpha(7);MemRect(12,bodyTop,DX-24,preview-114,0x092B30);SetAlpha(32);
- MemRectRound(center-102,top-preview+60,204,38,0x6B492E,18);
- MemRectRound(center-102,top-preview+64,204,24,0xB88B56,12);
+ // The circular fitting platform is part of the room painting. Keep the feet
+ // at its top surface when a short viewport crops the 2:1 illustration.
+ const int roomH=preview-114;
+ const float roomScale=Max((DX-24)/2.f,(float)roomH);
+ const int heroFeet=bodyTop-roomH/2-(int)(.26f*roomScale);
  // DrawPlayer resolves the selected hero's actual equipped costume parts.
- DrawPlayer(hero,frame/8%4,center,top-preview+44,RIGHT,1.9f,false,false,true);
+ DrawPlayer(hero,frame/8%4,center,heroFeet,RIGHT,1.9f,false,false,true);
  for(int i=0;i<EQUIP_NECK;++i){
   int sx=i<3?60:DX-60-slot, sy=bodyTop-12-(i%3)*((preview-156)/3);
   const ITEM& it=hero->equip[i];
