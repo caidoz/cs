@@ -80,3 +80,7 @@ tools/content/cf.env
 
 # Reproducible lossless encoder intermediates; approved masters stay in production.
 asset_library/work/runtime-encoding/cache/
+
+# asset_library: production(승격 원본)만 추적한다. reference 보관본과 work 중간물은 2GB 가 넘어 저장소 밖에 둔다 (2026-11-20).
+asset_library/reference/
+asset_library/work/
