@@ -3,7 +3,7 @@ param([string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path)
 # Keep each gun in one piece. The inventory mask follows the actual opaque
 # pixels; changing its silhouette to satisfy a fixed cell count broke the art.
 Add-Type -AssemblyName System.Drawing
-$outDir = Join-Path $Root 'Resources\res\inventory_gun'
+$outDir = Join-Path $Root 'asset_library/reference/Resources\res\inventory_gun'
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 $records = [System.Collections.Generic.List[object]]::new()
 
@@ -60,7 +60,7 @@ for ($n = 1; $n -le 35; $n++) {
         $records.Add([pscustomobject]@{id=$n;cols=2;rows=3;cells=0x333})
         continue
     }
-    $source = [System.Drawing.Bitmap]::new((Join-Path $Root "Resources\res\w1_$n.png"))
+    $source = [System.Drawing.Bitmap]::new((Join-Path $Root "asset_library/reference/Resources\res\w1_$n.png"))
     try {
         # These source files contain detached fragments from the source sheet.
         if ($n -in @(4,7,10)) { Keep-LargestComponent $source }

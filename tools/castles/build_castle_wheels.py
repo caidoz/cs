@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image
 
 SOURCE = Path(r"C:/Users/polyp/.codex/generated_images/01a0ad19-e9c6-79c3-9634-d83b8c4e5d36/exec-fc47a3cb-0bf1-44ab-b8f3-761257b91698.png")
-OUT = Path("Resources/res")
+OUT = Path("asset_library/reference/Resources/res")
 PREVIEW = Path("output/castles/wheels/castle_wheels_preview.png")
 
 sheet = Image.open(SOURCE).convert("RGBA")

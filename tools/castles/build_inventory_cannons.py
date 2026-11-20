@@ -6,8 +6,8 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'content/castles/inventory_cannon'
-OUT = ROOT / 'Resources/res/inventory_cannon'
-PARTS = ROOT / 'Resources/res/castle_cannon_v2'
+OUT = ROOT / 'asset_library/reference/Resources/res/inventory_cannon'
+PARTS = ROOT / 'asset_library/reference/Resources/res/castle_cannon_v2'
 THEMES=['stone_catapult','flamethrower','rocket_battery','gatling','guided_missiles',
         'heavy_siege','ice_crystal','laser','tesla','gravity']
 MUZZLES=[(.20,.10),(.96,.43),(.92,.28),(.98,.36),(.96,.18),

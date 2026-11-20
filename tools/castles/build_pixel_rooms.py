@@ -9,7 +9,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "content/castles/pixel_rooms"
-RUNTIME = ROOT / "Resources/res"
+RUNTIME = ROOT / "asset_library/reference/Resources/res"
 
 
 def build():

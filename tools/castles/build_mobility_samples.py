@@ -5,7 +5,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "content/castles/mobility_samples"
-RUNTIME = ROOT / "Resources/res/castle_mobility"
+RUNTIME = ROOT / "asset_library/reference/Resources/res/castle_mobility"
 
 BASE_SHEET = Path(r"C:\Users\polyp\.codex\generated_images\01a0de43-6120-72f2-9314-8e5fb074b287\exec-e5a11879-3c18-4766-a3ab-8129a47a5b51.png")
 WHEEL_SHEET = Path(r"C:\Users\polyp\.codex\generated_images\01a0de43-6120-72f2-9314-8e5fb074b287\exec-f662a797-486b-43d2-9aa0-1ada2852cf08.png")

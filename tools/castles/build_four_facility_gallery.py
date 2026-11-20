@@ -28,7 +28,7 @@ themes.forEach((c,i)=>{let b=document.createElement('button');b.textContent=`성
 function render(){const c=themes[castle],lv=+slider.value;
  document.getElementById('selected').textContent=`성 ${c.id}`;document.getElementById('lv').textContent=`Lv.${lv} / 5`;
  [...nav.children].forEach((b,i)=>b.setAttribute('aria-current',i===castle));
- const path=`../../Resources/res/castle_four_rooms_v5/rooms-${c.id}.png`;
+ const path=`../../asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-${c.id}.png`;
  document.getElementById('rooms').replaceChildren();
  [1,3,0,2].forEach(i=>{let box=document.createElement('section');box.className='room';let art=document.createElement('canvas');art.className='art';art.width=128;art.height=64;art.style.width='100%';art.style.display='block';let image=new Image();image.onload=()=>{let ctx=art.getContext('2d');ctx.imageSmoothingEnabled=false;const shade=[.92,.70,.85,.92,.92,.92,.92,.80,.92,.90][castle];ctx.filter=`saturate(.84) brightness(${shade})`;ctx.drawImage(image,image.width*i/4,image.height*lv/6,image.width/4,image.height/6,0,0,128,64)};image.src=path;let label=document.createElement('p');label.textContent=`${c.names[i]} · ${roles[i]}`;box.append(art,label);document.getElementById('rooms').append(box)});
  document.getElementById('base').src=`../item-series/runtime/facility-rooms-850/facility-c${c.id}-level-0.png`;

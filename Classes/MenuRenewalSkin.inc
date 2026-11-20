@@ -114,7 +114,7 @@ static bool DrawRenewalPanel(int x,int y,int w,int h,int fill,int edge){
  auto* image=images[slot++];image->setTexture(found->target->getSprite()->getTexture());image->setFlippedY(true);
  const int left=Max(x,clipX),right=Min(x+w,clipX2),top=Min(y,clipY),bottom=Max(y-h,clipY2);
  image->setTextureRect(cocos2d::Rect(left-x,bottom-(y-h),right-left,top-bottom));image->setAnchorPoint({0,1});
- image->setPosition({(float)left,(float)top});image->setOpacity(m_lgrpAlpha*255/32);image->visit();return true;
+ image->setPosition({(float)left,(float)top});image->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(image->getTexture());image->visit();return true;
 }
 
 void DrawMenuReferencePanel(int x,int top,int w,int h,int kind,int fill,int edge){
@@ -167,7 +167,7 @@ void DrawMenuBackdropCrop(cocos2d::Texture2D* texture,int sx,int sy,int sw,int s
  const float zx=sw/(float)w,zy=sh/(float)h;
  q->setTextureRect(cocos2d::Rect(sx+(left-x)*zx,sy+(top-upper)*zy,(right-left)*zx,(upper-lower)*zy));
  q->setAnchorPoint({0,1});q->setPosition({(float)left,(float)upper});q->setScaleX(1/zx);q->setScaleY(1/zy);
- q->setOpacity(m_lgrpAlpha*255/32);q->visit();
+ q->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(texture);q->visit();
 }
 void DrawCastleMenuBackdrop(int x,int top,int w,int h,int castle){
  // Reuse the ten existing native pixel room atlases; no new detailed art.
@@ -185,7 +185,7 @@ void DrawHeroCastleBackdrop(int x,int top,int w,int h,int castle){
  castle=Max(0,Min(9,castle));
  static cocos2d::Texture2D* rooms[10]={};
  if(!rooms[castle]){
-  char name[128];snprintf(name,sizeof(name),"res/menu_renewal/dressing-v3/castle-%02d.png",castle+1);
+  char name[128];snprintf(name,sizeof(name),"res/menu_renewal-dressing-v3-castle-%02d.png",castle+1);
   const auto path=cocos2d::FileUtils::getInstance()->fullPathForFilename(name);
   if(!path.empty())rooms[castle]=cocos2d::Director::getInstance()->getTextureCache()->addImage(path);
  }

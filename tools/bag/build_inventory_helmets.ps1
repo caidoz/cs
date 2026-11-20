@@ -1,6 +1,6 @@
 param(
     [string]$SourceDir = (Join-Path $PSScriptRoot 'helmet_sheets'),
-    [string]$OutputDir = (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..\..')) 'Resources\res\inventory_helm')
+    [string]$OutputDir = (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..\..')) 'asset_library/reference/Resources\res\inventory_helm')
 )
 
 Add-Type -AssemblyName System.Drawing

@@ -12,7 +12,7 @@ public static class CastleShellBuilder {
  public static void Build(string sheet,string output,string stem,int outW,int outH){using(var src=new Bitmap(sheet)){int cw=src.Width/3,ch=src.Height/2;for(int i=0;i<6;i++){int col=i%3,row=i/3;var cell=new Rectangle(col*cw,row*ch,col==2?src.Width-col*cw:cw,row==1?src.Height-row*ch:ch);var crop=Bounds(src,cell);using(var dst=new Bitmap(outW,outH,PixelFormat.Format32bppArgb))using(var g=Graphics.FromImage(dst)){g.Clear(Color.Transparent);g.CompositingMode=CompositingMode.SourceCopy;g.InterpolationMode=InterpolationMode.HighQualityBicubic;g.PixelOffsetMode=PixelOffsetMode.HighQuality;g.DrawImage(src,new Rectangle(0,0,outW,outH),crop,GraphicsUnit.Pixel);dst.Save(System.IO.Path.Combine(output,string.Format(stem,i)),ImageFormat.Png);}}}}
 }
 '@
-$out=Join-Path $PSScriptRoot "..\..\Resources\res\castle_exterior"
+$out=Join-Path $PSScriptRoot "..\..\asset_library/reference/Resources\res\castle_exterior"
 New-Item -ItemType Directory -Force -Path $out|Out-Null
 [CastleShellBuilder]::Build($WallSheet,$out,"castle_01_wall_stage_{0}.png",512,128)
 [CastleShellBuilder]::Build($RoofSheet,$out,"castle_01_roof_stage_{0}.png",512,192)

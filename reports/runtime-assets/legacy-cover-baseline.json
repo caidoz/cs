@@ -1,0 +1,6 @@
+{
+  "full_asset_catalog_files": 3923,
+  "same_failure_with_all_original_assets": true,
+  "failure": "cannon upgrade growth or deck anchor",
+  "cause": "Review lines 2812-2813 require old stretched cannon height; production now fits source aspect ratio. No images were missing in either run."
+}

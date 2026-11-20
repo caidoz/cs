@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
-DEST=ROOT/'Resources/res/stage_mist_v3'
+DEST=ROOT/'asset_library/reference/Resources/res/stage_mist_v3'
 manifest=[]
 for region in range(1,16):
     for layer in ('far','mid','rail'):

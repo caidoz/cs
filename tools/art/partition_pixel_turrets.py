@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 import re
 root=Path(__file__).resolve().parents[2]
-dest=root/'Resources/res/castle_pixel_01_v1'
+dest=root/'asset_library/reference/Resources/res/castle_pixel_01_v1'
 source=Image.open(dest/'turret-source.png').convert('RGBA')
 header=(root/'Classes/Data/MountedCannonSprites.h').read_text()
 frames=re.findall(r'\{(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\}',header.split('frames[60]=')[1])[:60]

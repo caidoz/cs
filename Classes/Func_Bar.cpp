@@ -93,7 +93,7 @@ void LobbyResourceBarsDraw(int y)
     if(!coin){coin=cocos2d::Sprite::createWithTexture(sprite[ITEM_IMG+6]->getTexture(),cocos2d::Rect(1,1,32,32));coin->retain();}
     coin->setAnchorPoint({0,.5f});coin->setPosition({(float)x+6+offsets[k][0],(float)cy+offsets[k][1]});
     coin->setColor(k==4?cocos2d::Color3B::WHITE:cocos2d::Color3B(73,41,19));
-    coin->setScale(currencySize/32.f);coin->setOpacity(m_lgrpAlpha*255/32);coin->visit();
+    coin->setScale(currencySize/32.f);coin->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(coin->getTexture());coin->visit();
    }
   }
   const int px=x+w-plusSize-6,py=cy+plusSize/2;
@@ -110,7 +110,7 @@ void LobbyResourceBarsDraw(int y)
  DrawImage(128,128,0,0,energyX+4,cy+bolt/2,false,false,false,false,false,
   bolt/128.f,sprite[LOBBY_ENERGY_IMG],LOBBY_ENERGY_IMG);
  snprintf(value,sizeof(value),"%lld/%d",Min(99LL,Max(0LL,robin.heart)),GetInitHeart());
- LobbyResourceNumber(3,value,energyX+bolt+6,px-4,cy,(FONT_HEIGHT+_2X)*.72f+2);
+ LobbyResourceNumber(3,value,energyX+bolt+6,px-4,cy+2,(FONT_HEIGHT+_2X)*.72f+2);
  LobbyResourceAdd(px,cy+plusSize/2,plusSize,TOUCH_FUNC_GOTO_ENERGY_IAP);
  SetFontColor(COLOR_WHITE);
 }

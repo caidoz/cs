@@ -52,7 +52,7 @@ def mask_of(detail, w, h):
     # pixels must not turn its right-hand tiles into clipping holes.
     if detail == 14:
         return 0, w * h, ["O" * w for _ in range(h)]
-    p = os.path.join(ROOT, "Resources", "res", "w0_%d.png" % (detail + 1))
+    p = os.path.join(ROOT, "asset_library/reference/Resources", "res", "w0_%d.png" % (detail + 1))
     a = np.array(Image.open(p).convert("RGBA"))
     m = a[:, :, 3] > 16
 

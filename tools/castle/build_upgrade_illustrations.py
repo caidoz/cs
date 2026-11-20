@@ -9,7 +9,7 @@ SOURCE = Path(
     r"C:\Users\polyp\.codex\generated_images\01a0ad19-e9c6-79c3-9634-d83b8c4e5d36"
     r"\exec-4c796794-172d-4cd0-928d-d1363f5d5daa.png"
 )
-OUTPUT = ROOT / "Resources" / "res"
+OUTPUT = ROOT / "asset_library/reference/Resources" / "res"
 
 
 def main() -> None:

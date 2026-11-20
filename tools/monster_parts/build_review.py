@@ -51,7 +51,7 @@ def main():
             source=parts[i]
             override=SOURCE_OVERRIDES.get((r['cmf'],i))
             sx,sy,sw,sh=override or source['rect']
-            sheet=Image.open(ROOT/f"Resources/res/c{r['cmf']}.png").convert('RGBA')
+            sheet=Image.open(ROOT/f"asset_library/reference/Resources/res/c{r['cmf']}.png").convert('RGBA')
             if override:
                 assert sx+sw<=sheet.width and sy+sh<=sheet.height
                 original=sheet.crop((sx,sy,sx+sw,sy+sh))

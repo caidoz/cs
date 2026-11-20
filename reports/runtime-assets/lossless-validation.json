@@ -1,0 +1,10 @@
+{
+  "exact_rgba_images": 2343,
+  "exact_dimensions_images": 2343,
+  "preserved_alpha_semantics": true,
+  "audit_logs": 10,
+  "distinct_requested_images": 1136,
+  "missing_images": [],
+  "validated_bundled_manifest_entries": 2416,
+  "native_pixel_identical_background_crops": 20
+}

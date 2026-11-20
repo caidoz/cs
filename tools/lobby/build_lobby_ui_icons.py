@@ -9,7 +9,7 @@ SOURCE = Path(
     r"C:\Users\polyp\.codex\generated_images\01a0ad19-e9c6-79c3-9634-d83b8c4e5d36"
     r"\exec-ce1d29df-1f92-4e2f-8ad5-db961bd2c45e.png"
 )
-OUTPUT = ROOT / "Resources" / "res"
+OUTPUT = ROOT / "asset_library/reference/Resources" / "res"
 NAMES = (
     "lobby_nav_shop", "lobby_nav_equip", "lobby_nav_adventure", "lobby_nav_castle",
     "lobby_nav_dungeon", "lobby_energy", "lobby_day", "lobby_night",

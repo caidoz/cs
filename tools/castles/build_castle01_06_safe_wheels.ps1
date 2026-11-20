@@ -2,7 +2,7 @@ $ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.Drawing
 $root=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $source=Join-Path $root 'tools/castles/concepts'
-$output=Join-Path $root 'Resources/res/castle_mobility'
+$output=Join-Path $root 'asset_library/reference/Resources/res/castle_mobility'
 foreach($castle in 1,6) {
     foreach($stage in 0..5) {
         $name=('castle_{0:00}_wheel_stage_{1}.png' -f $castle,$stage)

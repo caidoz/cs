@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--exe', default='cs.four-rooms-review.exe')
 options = parser.parse_args()
 for castle in range(1, 11):
-    with Image.open(ROOT / f'Resources/res/castle_four_rooms_v5/rooms-{castle:02d}.png') as image:
+    with Image.open(ROOT / f'Resources/res/castle_four_rooms_v5-rooms-{castle:02d}.png') as image:
         frames = []
         for room in range(4):
             levels = []

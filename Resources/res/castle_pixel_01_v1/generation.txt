@@ -1,4 +1,0 @@
-Mode: built-in image_gen edit, transparent background
-Input: output/castle-pixel-paint-study/castle-01-pixel-shading-v1.png
-
-Edit this exact isolated castle asset. Keep pixel grid, architecture, geometry, layout, proportions, wheels, rooms and all decorations exactly as shown. Tone down only the palette: reduce orange/gold saturation by about 30%, brightness of timber and gold by about 20%, remove white/yellow glare, use muted walnut timber, ochre metal trim and subdued violet. Room interiors should be darker than the characters that will be drawn later. Maintain readable crisp pixel art shading with hard shade steps and transparent background. Remove ONLY the small cannon at the upper left deck (it is drawn separately by the game); restore the wood deck behind it. Keep everything else in the same position. No people, UI, words or new objects. One portrait isolated asset, actual alpha transparency.

@@ -1,10 +1,12 @@
 """Capture the native turn-based companion detail at both supported review sizes."""
 from pathlib import Path
 import os
+import argparse
 import subprocess
 import time
 
 root=Path(__file__).resolve().parents[2]
+parser=argparse.ArgumentParser();parser.add_argument('--exe',default='cs.crew-detail.exe');args=parser.parse_args()
 for height in (850,1408):
     out=root/f'output/crew-detail/{height}'
     out.mkdir(parents=True,exist_ok=True)
@@ -15,7 +17,7 @@ for height in (850,1408):
     startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow=0
     with (out/'run.log').open('w') as log:
-        process=subprocess.Popen([str(root/'proj.win32/Debug.win32/cs.crew-detail.exe')],cwd=root/'Resources',env=env,startupinfo=startup,stdout=log,stderr=log)
+        process=subprocess.Popen([str(root/'proj.win32/Debug.win32'/args.exe)],cwd=root/'Resources',env=env,startupinfo=startup,stdout=log,stderr=log)
         try:
             deadline=time.monotonic()+40
             while time.monotonic()<deadline:

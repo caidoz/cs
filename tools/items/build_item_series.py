@@ -8,7 +8,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 WORK = ROOT / 'output/item-series'
-DEST = ROOT / 'Resources/res/items'
+DEST = ROOT / 'asset_library/reference/Resources/res/items'
 
 
 def original(entry):

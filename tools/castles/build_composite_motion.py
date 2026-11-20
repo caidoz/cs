@@ -3,8 +3,8 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
-RES = ROOT / "Resources" / "res"
-REVIEW = ROOT / "Resources" / "concept" / "castle_20_composite_motion.png"
+RES = ROOT / "asset_library/reference/Resources" / "res"
+REVIEW = ROOT / "asset_library/reference/Resources" / "concept" / "castle_20_composite_motion.png"
 
 # kind, source part, count, horizontal attachment points, displayed part width
 LAYOUT = [

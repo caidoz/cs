@@ -4,7 +4,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 GEN = Path(r"C:\Users\polyp\.codex\generated_images\01a0ad19-e9c6-79c3-9634-d83b8c4e5d36")
-OUT = ROOT / "Resources" / "res"
+OUT = ROOT / "asset_library/reference/Resources" / "res"
 
 SHEETS = [
     "exec-852d3c80-9053-4f97-bcef-d4d3fcf95dac.png",

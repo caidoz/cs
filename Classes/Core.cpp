@@ -108,6 +108,7 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 	int i;
 	auto touchPoint = touch->getLocation();
 	if (MergeRouletteTouch(0, touch->getID(), touchPoint.x, touchPoint.y)) return true;
+	if (EquipDetailStatsTouch(0, touch->getID(), touchPoint.x, touchPoint.y)) return true;
 	//log("onTouchBegan id = %d, x = %f, y = %f", touch->getID(), touchPoint.x, touchPoint.y);
 
 	//로비 성 카메라. 두 번째 손가락이면 핀치라 일반 터치로 넘기지 않는다.
@@ -180,6 +181,7 @@ void Core::onTouchMoved(Touch* touch, Event* unused_event)
 
 	auto touchPoint = touch->getLocation();
 	if (MergeRouletteTouch(1, touch->getID(), touchPoint.x, touchPoint.y)) return;
+	if (EquipDetailStatsTouch(1, touch->getID(), touchPoint.x, touchPoint.y)) return;
 
 	//로비 성 카메라. 핀치 중이면 여기서 끝낸다.
 	if (drawHandle == MD_LOBBY
@@ -434,6 +436,7 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 {
 	auto touchPoint = touch->getLocation();
 	if (MergeRouletteTouch(3, touch->getID(), touchPoint.x, touchPoint.y)) return;
+	if (EquipDetailStatsTouch(3, touch->getID(), touchPoint.x, touchPoint.y)) return;
 	rapidSwipe = false;
 
 	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
@@ -521,6 +524,7 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 void Core::onTouchEnded(Touch* touch, Event *unused_event)
 {
 	{auto p=touch->getLocation();if(MergeRouletteTouch(2,touch->getID(),p.x,p.y))return;}
+	{auto p=touch->getLocation();if(EquipDetailStatsTouch(2,touch->getID(),p.x,p.y))return;}
 	rapidSwipe = false;
 
 	//두 번째 손가락을 뗀 것이면 일반 터치의 뗌으로 치지 않는다.
@@ -879,12 +883,6 @@ bool Core::init()
 	LoadImg(INVENTORY_CANNON_ATLAS_IMG);
 	LoadTexture(INVENTORY_CANNON_ATLAS_IMG);
 	// Map icons are beyond the legacy boot-loading range. Populate both caches.
-	static_assert(CASTLE_MAP_ICON_LAST_IMG-CASTLE_MAP_ICON_FIRST_IMG+1==10,"Ten castle map icons required");
-	for (i=CASTLE_MAP_ICON_FIRST_IMG;i<=CASTLE_MAP_ICON_LAST_IMG;++i) {
-		LoadImg(i);
-		LoadTexture(i);
-		if(texture[i]) texture[i]->setAntiAliasTexParameters();
-	}
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
@@ -1201,7 +1199,7 @@ void Core::Run(float delta) {
 	//그 전에 도착하면 빈 판을 덮게 된다.
 	if (netBooted)
 		IapUpdate();
-	if (netBooted && !getenv("CS_CURRENT_CANNON_ICON_REVIEW") && !getenv("CS_PVP_ICON_ENTRANCE_REVIEW") && !getenv("CS_COMPACT_EQUIPMENT_REVIEW") && !getenv("CS_HERO_ALLIES_AUDIT")) CastleMenuReviewStep();
+	if (netBooted && !getenv("CS_CURRENT_CANNON_ICON_REVIEW") && !getenv("CS_COMPACT_EQUIPMENT_REVIEW") && !getenv("CS_HERO_ALLIES_AUDIT")) CastleMenuReviewStep();
 
 
 	//콘텐츠 갱신을 한 칸 굴린다. 네트워크는 HttpClient 가 자기 실에서 하므로
@@ -1611,7 +1609,7 @@ void PaintClet(int x, int y, int w, int h)
 
 	// Asset-only review uses loaded textures without requiring login/terms or
 	// changing player progress. Draw after the previous frame has been cleared.
-	if(getenv("CS_CASTLE_REVIEW_PATH") && (getenv("CS_CURRENT_CANNON_ICON_REVIEW") || getenv("CS_PVP_ICON_ENTRANCE_REVIEW") || getenv("CS_COMPACT_EQUIPMENT_REVIEW") || getenv("CS_HERO_ALLIES_AUDIT"))
+	if(getenv("CS_CASTLE_REVIEW_PATH") && (getenv("CS_CURRENT_CANNON_ICON_REVIEW") || getenv("CS_COMPACT_EQUIPMENT_REVIEW") || getenv("CS_HERO_ALLIES_AUDIT"))
 		&& (drawHandle==MD_TITLE || netBooted)) {
 		CastleMenuReviewStep();
 		return;

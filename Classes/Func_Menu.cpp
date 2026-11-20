@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Core.h"
+#include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Text.h"
 #include "Config/ShopConfig.h"
@@ -1595,52 +1596,11 @@ static void DrawEquipPreview(float px, float py, float pw, float ph)
 	}
 }
 
+#include "EquipmentDetailStats.h"
+
 void EquipDetailDraw(ITEM* it)
 {
-	if(drawHandle==MD_LOBBY && !IsTutorialPlaying()){
-	 SetItemString_Gem(it);
-	 int optionCount=0;for(int n=0;n<12;++n)if(it->option[n][0]!=EMPTYINT&&optionStr[n][0])++optionCount;
-	 const int screenTop=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;
-	 const int dialogH=Min(Max(600,540+optionCount*30),screenTop-12),top=screenTop-Max(0,(screenTop-dialogH)/2);
-	 const int art=Min(230,Max(150,(dialogH-300)/3));
-	 DrawPixelPanel(8,top,DX-16,dialogH,0x12383E,0xC5A269);
-	 DrawMenuRoomBackdrop(12,top-56,DX-24,art);
-	 DrawMenuPlaque("장비 상세",8,top,DX-16,56,1.1f);
-	 DrawUiButton(DX-62,top-6,44,44,"X",TOUCH_FUNC_CLOSEALERT);
-	 const int foot=top-56-art+18;
-	 DrawPixelPanel(DX/2-88,foot+32,176,32,0x8B623C,0xDEBB86);
-	 const float iz=Min(2.8f,(art-42)/(float)ITEMICONSIZE);
-	 DrawIcon(GetItemIcon(it->type,it->detail,it->grade),DX/2-ITEMICONSIZE*iz/2,foot+ITEMICONSIZE*iz+18,iz,false,false,false,true);
-	 char line[240];int y=foot-16;
-	 SetFontColor(0xFFF0C9);
-	 const char* name=textId[GetItemName(it->type,it->detail,it->grade)+TEXT_ITEMNAME_START];
-	 CenterTextStrSolid(name,DX/2,y,Min(1.f,(DX-64)/Max(1.f,StringWidth(name,1.f))));y-=44;
-	 const ITEM& worn=ao[PLAYER].equip[itemEquipSlot[it->type]];
-	 const bool equipped=worn.type==it->type&&worn.detail==it->detail&&worn.grade==it->grade;
-	 const int cw=(DX-60)/2;
-	 for(int n=0;n<2;++n){
-	  const int x=24+n*(cw+12);DrawPixelPanel(x,y,cw,108,n?0x17653E:0x12383E,0xC5A269);
-	  SetFontColor(0xFFF0C9);CenterTextStrSolid(n?"선택 장비":"현재 장착 장비",x+cw/2,y-14,.82f);
-	  const long long power=n?GetEquipPower(it,it->lv):worn.type==EMPTY?0:GetEquipPower(const_cast<ITEM*>(&worn),worn.lv);
-	  sprintf(line,"장비 능력 %lld",power);CenterTextStrSolid(line,x+cw/2,y-60,.85f);
-	 }y-=126;
-	 SetItemString_Gem(it);
-	 const int footer=top-dialogH+76,space=Max(1,y-footer-56),lh=Max(18,Min(34,space/Max(1,optionCount)));int shown=0;
-	 for(int n=0;n<12;++n)if(it->option[n][0]!=EMPTYINT&&optionStr[n][0]){
-	  SetFontColor(0xE8DCB9);DrawTextStrSystem(optionStr[n],32,y,Min(.74f,(DX-64)/Max(1.f,StringWidth(optionStr[n],1.f))),LEFT,false);y-=lh;++shown;
-	 }
-	 //재료로 쓸 수 있는 것만 센다. 착용 중이거나 잠긴 것을 같이 세면
- //"3 / 3" 이라 적어 놓고 눌러도 아무 일이 없다(ItemMergeUsable).
- int same=0;for(int n=0;n<TOTALINVENTORY;++n){const ITEM* o=&robin.inven[n];
-  if(o->type==it->type&&o->detail==it->detail&&o->grade==it->grade&&ItemMergeUsable(o))++same;}
-	 sprintf(line,"같은 장비 %d / %d · 합성은 장비 목록에서",same,ITEM_MERGE_COUNT);
-	 SetFontColor(0xD8C494);CenterTextStrSolid(line,DX/2,Max(footer+38,y-8),.66f);
-	 const int idx=GetInvenIdx(it->type,it->detail,it->grade);
-	 sEquipBtnX=24;sEquipBtnY=footer;sEquipBtnW=(DX-60)/2;sEquipBtnH=48;
-	 DrawUiButton(24,footer,(DX-60)/2,48,equipped?"장착 중":"장착",TOUCH_FUNC_EQUIP_INVENTORY+idx,true,!equipped&&idx>=0);
-	 DrawUiButton(DX/2+6,footer,(DX-60)/2,48,it->locked?"잠금 해제":"잠금",TOUCH_FUNC_ITEM_LOCK,it->locked);
-	 return;
-	}
+	if(drawHandle==MD_LOBBY && !IsTutorialPlaying()){DrawLobbyEquipmentDetail(it);return;}
 	int itemType = it->type;
 	int itemDetail = it->detail;
 	int itemGrade = it->grade;
@@ -3354,9 +3314,8 @@ void OptionLanguageDraw(int x, int y, float zoom)
 		//고른 줄은 이름을 위로 올리고 체크를 그 아래에 놓아 두 단으로 만든다.
 		//한 줄에 나란히 두면 이름이 길 때 체크가 글자를 덮는다.
 		//
-		//글자도 다르게 그린다. 고른 줄은 파란 바탕이라 테두리 있는 흰 글자가
-		//또렷하고, 안 고른 줄은 크림 바탕이라 테두리를 빼야 회색이 회색으로
-		//보인다. 테두리를 두르면 검은 테가 글자를 덮어 까맣게만 보인다.
+		// Both row styles have dark backgrounds; keep every language readable.
+		// The selected row remains distinct through its border and check mark.
 		if (on) {
 			float ch = rowH * 0.38f;
 			float csc = ch / (float)OPT_CHECK_H;
@@ -3370,9 +3329,9 @@ void OptionLanguageDraw(int x, int y, float zoom)
 				textL, by - rowH * 0.54f, csc);
 		}
 		else {
-			SetFontColor(COLOR_BROWN);
-			DrawTextStrSystem(optionLangName[i], textL,
-				by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz, LEFT, false);
+			SetFontColor(0xE4EDF2);
+			DrawTextStr(optionLangName[i], textL,
+				by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz);
 			SetFontColor(COLOR_WHITE);
 		}
 
@@ -3891,11 +3850,8 @@ static void SocialUserRow(int dataIdx, int rank, float x, float y, float w,
 	DrawTextStrSystem(socialFriendName[idx], x + 90.0f * zoom,
 		y - 59.0f * zoom, 0.98f * zoom, LEFT, false);
 
-	int castleImg = MAP_DIORAMA_IMG + castleOrder[Min(idx, Max(0, gTotalCastle - 1))];
-	const float castleZoom = 86.4f * zoom / (float)DIORAMASIZE_X;
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0,
-		x + w - 354.0f * zoom, y - 18.0f * zoom,
-		false, false, false, false, false, castleZoom, sprite[castleImg], castleImg);
+	MergeRouletteOriginalPreview(Min(9,Min(idx,Max(0,gTotalCastle-1))),
+		x+w-354.0f*zoom,y-18.0f*zoom,86.4f*zoom,60.0f*zoom);
 	for (int j = 0; j < 6; j++)
 	{
 		int crewType = crewData[j * CREWDATASIZE + CREWDATA_TYPE];
@@ -4577,7 +4533,7 @@ void NewCollectionDraw(int x, int y, float zoom)
 	for (i = 0; i < DX / 128 * _2X + 1; i++)
 		DrawImage(128 * _2X, 208 * _2X, 0 * _2X, 0 * _2X, x + (float)(i * 128 * _2X) * zoom, y + (float)(-288 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_BG_IMG + MAPTYPE_SPACE], MAP_BG_IMG + MAPTYPE_SPACE);
 
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x + (float)(DX / 2 - DIORAMASIZE_X / 2) * zoom, y + (float)(-288 * _2X) * zoom, false, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE], MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE);
+	MergeRouletteHousePreview(HOUSE_DEVILCASTLE,x+(DX/2-DIORAMASIZE_X/2)*zoom,y-288*_2X*zoom,DIORAMASIZE_X*zoom,DIORAMASIZE_Y*zoom);
 
 	effect.color2 = COLOR_BLACK;
 
@@ -4671,7 +4627,7 @@ void NewCardDraw(void)
 	for (i = 0; i < DX / 128 * _2X + 1; i++)
 		DrawImage(128 * _2X, 208 * _2X, 0 * _2X, 0 * _2X, xOffset + i * 128 * _2X, STATUSWIN_Y + 208 * _2X / 2, false, false, false, false, false, 1.0f, sprite[MAP_BG_IMG + MAPTYPE_SPACE], MAP_BG_IMG + MAPTYPE_SPACE);
 
-	DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, xOffset + DX / 2 - DIORAMASIZE_X / 2, STATUSWIN_Y + DIORAMASIZE_Y / 2, false, false, false, false, false, 1.0f, sprite[MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE], MAP_DIORAMA_IMG + HOUSE_DEVILCASTLE);
+	MergeRouletteHousePreview(HOUSE_DEVILCASTLE,xOffset+DX/2-DIORAMASIZE_X/2,STATUSWIN_Y+DIORAMASIZE_Y/2,DIORAMASIZE_X,DIORAMASIZE_Y);
 
 	if (newItemType[curNewItemIdx] == ITEM_CREW) {
 		curStar = maxStar = crewData[newItemDetail[curNewItemIdx] * CREWDATASIZE + CREWDATASIZE - 1] + 1;
@@ -8034,46 +7990,28 @@ static void ShopCard(int product, float x, float y, float w, float h, float zoom
 static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 {
  if(x+w<clipX-8||x>clipX2+8||y<clipY2-8||y-h>clipY+8)return;
- const int detail=BOX_PAID0+i;const long long price=GetBoxPrice(detail,GRADE_NORMAL);
- const bool can=price>=0&&(ShopTreasure::UsesGems(i)?robin.coin:robin.gold)>=price;
+ const int detail=BOX_PAID0+i;
  DrawMenuReferencePanel((int)x,(int)y,(int)w,(int)h,0,0x19474A,0xEAC58A);
  SetFontColor(0xFFF0CD);CenterText(TEXT_ITEMNAME_BOX+detail,x+w/2,y-12,1.05f);
  const int chest=BOX0_IMG+detail-BOX_CASTLE0;if(!sprite[chest])LoadImg(chest);
- const float art=Min(w*.30f,96.f),z=art/512.f;
+ const float art=Min(w*.43f,124.f),z=art/512.f;
  const int saved=baseColor;SetColor(0);
- DrawImageScale(510,512,0,0,x+8,y-36,false,0,0,0,0,z,z,sprite[chest],chest);SetColor(saved);
- const REWARD_BOX_DATA& box=rewardBoxData[GetRewardBoxIndex(detail)];
- const float tx=x+art+18,tw=w-art-30;
- const auto info=[&](const char* text,float top,int color,float size=.64f){
-  SetFontColor(color);DrawTextStrSystem(text,tx,top,Min(size,tw/Max(1.f,StringWidth(text,1.f))),LEFT,true);
- };
- char text[160];
- sprintf(text,"총 보상 %d~%d개",box.minCard,box.maxCard);info(text,y-43,0xFFF0CD,.78f);
- info("하트·골드 포함 수량",y-69,0x9FC6C6,.56f);
- info("나머지는 매번 랜덤",y-99,0xFFF0CD);
- int crewMin=0,crewMax=0,equipMin=0,equipMax=0;
- for(int g=0;g<BOX_GRADE_COUNT;++g){
-  if(box.crewGradeRate[g]>0){if(!crewMin)crewMin=g+1;crewMax=g+1;}
-  if(box.equipGradeRate[g]>0){if(!equipMin)equipMin=g+1;equipMax=g+1;}
- }
- const int rate=Max(1,box.crewRate+box.equipRate);
- sprintf(text,"동료 ★%d~%d · %.0f%%",crewMin,crewMax,box.crewRate*100.f/rate);info(text,y-125,0x8FE0BA);
- sprintf(text,"장비 ★%d~%d · %.0f%%",equipMin,equipMax,box.equipRate*100.f/rate);info(text,y-151,0x8FE0BA);
- // Paid-box caps are also applied by ShopSpec::BuyBox before granting.
- const int heartMin=ShopTreasure::HeartReward(i,box.heartMin),heartMax=ShopTreasure::HeartReward(i,box.heartMax);
- const int goldMin=ShopTreasure::GoldReward(i,box.goldMin),goldMax=ShopTreasure::GoldReward(i,box.goldMax);
- const auto full=[&](const char* value,float top,int color){SetFontColor(color);DrawTextStrSystem(value,x+14,top,Min(.64f,(w-28)/Max(1.f,StringWidth(value,1.f))),LEFT,true);};
- if(heartMin==heartMax)sprintf(text,"확정 · 하트 %d",heartMin);else sprintf(text,"확정 · 하트 %d~%d",heartMin,heartMax);
- full(text,y-183,0xFFF0CD);
- if(goldMin==goldMax)sprintf(text,"%d%% 확률 · 골드 %d",box.goldRate,goldMin);else sprintf(text,"%d%% 확률 · 골드 %d~%d",box.goldRate,goldMin,goldMax);
- full(text,y-209,0xFFF0CD);
- sprintf(text,"럭키 %d%% · 보상 +1개 / 1개 승급",box.luckyRate);full(text,y-235,0x9FC6C6);
- const int bh=42,by=(int)(y-h+bh+10),priceW=(int)(w*.55f)-14,buyX=(int)(x+w*.55f),buyW=(int)(w*.45f)-12;
- DrawMenuReferencePanel((int)x+12,by,priceW,bh,0,0x0D3037,0xDDB77D);
- DrawTreasurePrice(detail,(int)x+12+priceW/2,by-7,priceW-8);
- DrawMenuReferencePanel(buyX,by,buyW,bh,0,can?0x208C46:0x164A5B,can?0xEAC58A:0x86ADAD);
- SetFontColor(COLOR_WHITE);CenterTextStrSolid(can?"구성·구매":"구성 보기",buyX+buyW/2,by-10,.78f);
- SetRectPoint(buyX,by,buyW,bh,TOUCH_FUNC_SHOP_BUYBOX1+i);
+ DrawImage(510,512,0,0,x+(w-art)/2,y-42,false,0,0,0,0,z,sprite[chest],chest);SetColor(saved);
+ // Show the reward categories at a glance. Quantities and odds live in detail.
+ const int icons[]={0,GetItemIcon(ITEM_SWORD,0,GRADE_NORMAL),ICON_HEART,ICON_GOLD};
+ const float iconSize=40,step=(w-32)/4;
+ const int crewType=crewData[CREWDATA_TYPE],crewCmf=enemyData[crewType*ENEMYDATASIZE+ENEMYDATA_CMF];
+ DrawCmfDetailShadow(crewCmf,crewPos[crewType*5],x+16+step/2,y-212,RIGHT,enemyZoom[crewType]*.65f);
+ for(int k=1;k<4;++k)DrawIcon(icons[k],x+16+step*k+(step-iconSize)/2,y-172,
+  iconSize/ITEMICONSIZE,false,false,false,true);
+ SetFontColor(0xD7ECE8);CenterTextStrSolid("동료 · 장비 · 하트 · 골드",x+w/2,y-218,.60f);
+ const int by=(int)(y-h+46),priceW=(int)(w*.52f)-12,infoX=(int)(x+w*.52f),infoW=(int)(w*.48f)-12;
+ DrawMenuReferencePanel((int)x+10,by,priceW,36,0,0x0D3037,0xDDB77D);
+ DrawTreasurePrice(detail,(int)x+10+priceW/2,by-5,priceW-8);
+ DrawMenuReferencePanel(infoX,by,infoW,36,0,0x164A5B,0x86ADAD);
+ SetFontColor(COLOR_WHITE);CenterTextStrSolid("상세 보기",infoX+infoW/2,by-8,.75f);
+ // Every product opens details, including when the balance is insufficient.
+ SetRectPoint(x,y,w,h,TOUCH_FUNC_SHOP_BUYBOX1+i);
 }
 
 //이전 탭 방식. 필요하면 비교할 수 있도록 소스만 남겨 둔다.

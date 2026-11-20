@@ -33,7 +33,7 @@ public static class CastleHeavyCannonBake {
         }
     }
     public static void Run(string root) {
-        string dir=Path.Combine(root,"Resources","res","castle_exterior");
+        string dir=Path.Combine(root,"asset_library/reference/Resources","res","castle_exterior");
         string concepts=Path.Combine(root,"tools","castles","concepts");
         int[] gunStart={0,0,103,103,100,99,88,102,101,104,67};
         for(int castle=2;castle<=10;castle++) for(int stage=0;stage<6;stage++) {

@@ -156,7 +156,7 @@ public static class CastleExteriorFinal {
 '@
 
 $root = $PSScriptRoot
-$out = Join-Path $root '..\..\Resources\res\castle_exterior'
+$out = Join-Path $root '..\..\asset_library/reference/Resources\res\castle_exterior'
 for ($castle=1; $castle -le 10; ++$castle) {
     $id = '{0:d2}' -f $castle
     [CastleExteriorFinal]::Build(

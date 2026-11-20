@@ -124,6 +124,6 @@ public static class Castle01CombatBake {
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 [Castle01CombatBake]::Run(
     (Join-Path $root 'tools/castles/concepts/castle_01_battle_deck_50_percent_taller.png'),
-    (Join-Path $root 'Resources/res'),
+    (Join-Path $root 'asset_library/reference/Resources/res'),
     (Join-Path $root 'tools/castles/source_shells/castle_01_full.png'))
 Write-Host 'Built 6 stages of castle-1 roof 736x256, wall 736x128, deck 736x144, cannon 160x128, wheel 128x128.'

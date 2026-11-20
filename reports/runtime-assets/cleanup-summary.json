@@ -1,0 +1,31 @@
+{
+  "before_image_files": 2343,
+  "after_image_files": 1634,
+  "removed_runtime_images": 709,
+  "before_image_bytes": 375638326,
+  "after_image_bytes": 204991318,
+  "after_image_MiB": 195.4949550628662,
+  "res_subdirectories": 0,
+  "image_budget_bytes": 209715200,
+  "current_pvp": "Single enemy-castle siege in Classes/MergeSiege.inc. Obsolete two-castle duel and VS universe entrance deleted.",
+  "preserved_masters": "asset_library, excluded from all build packaging",
+  "validation": {
+    "asset_tests": 15,
+    "native_build": "passed",
+    "android_release_bundle": "passed",
+    "aab_exact_catalog": "passed",
+    "entry_choice_850_1408": "passed",
+    "all_225_gear_variants": "passed",
+    "current_siege_controls": "passed: single enemy castle, two centered controls, no separate cannon input",
+    "full_siege_ai_damage_review": "Failed damage assertions on both sides; intro, reel and merge captures passed. No changes made to live siege combat logic.",
+    "old_cover_review": "Failed its cannon growth/dimension assertion; the current cannon renderer and combat logic were not changed by this cleanup."
+  },
+  "resources_total_MiB": 231.80150890350342,
+  "aab": {
+    "aab_bytes": 249759404,
+    "asset_files": 1713,
+    "asset_bytes": 243061499,
+    "compressed_asset_bytes": 237930608,
+    "validated_manifest_entries": 1707
+  }
+}

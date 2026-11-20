@@ -39,9 +39,17 @@ add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 set(GAME_SOURCE)
 set(GAME_HEADER)
 
-set(GAME_RES_FOLDER
-    "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
-    )
+if(WIN32 AND EXISTS "$ENV{LOCALAPPDATA}/Python/bin/python.exe")
+    set(PYTHON_EXECUTABLE "$ENV{LOCALAPPDATA}/Python/bin/python.exe")
+endif()
+find_package(PythonInterp 3 REQUIRED)
+set(GAME_RES_FOLDER "${CMAKE_BINARY_DIR}/approved-runtime-assets")
+execute_process(COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/assets/runtime_assets.py"
+    stage --output "${GAME_RES_FOLDER}" --prune RESULT_VARIABLE ASSET_STAGE_RESULT)
+if(NOT ASSET_STAGE_RESULT EQUAL 0)
+    message(FATAL_ERROR "Approved runtime asset staging failed")
+endif()
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/content/runtime-assets.json")
 if(APPLE OR WINDOWS)
     cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
@@ -131,6 +139,10 @@ target_include_directories(${APP_NAME}
 )
 
 # mark app resources
+add_custom_target(approved_runtime_assets
+    COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/assets/runtime_assets.py"
+        stage --output "${GAME_RES_FOLDER}" --prune)
+add_dependencies(${APP_NAME} approved_runtime_assets)
 setup_cocos_app_config(${APP_NAME})
 if(APPLE)
     set_target_properties(${APP_NAME} PROPERTIES RESOURCE "${APP_UI_RES}")

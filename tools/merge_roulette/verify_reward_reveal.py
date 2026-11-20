@@ -1,12 +1,16 @@
 """Capture native fixed-size rewards, 1/3/12/30 entries and six star tiers."""
 import importlib.util
+import argparse
 from pathlib import Path
 
 root=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('runtime',root/'tools/items/verify_runtime.py')
 runtime=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runtime)
-runtime.EXE=root/'proj.win32/Debug.win32/cs.reward-reveal.exe'
+parser=argparse.ArgumentParser()
+parser.add_argument('--exe',default='cs.reward-reveal.exe')
+args=parser.parse_args()
+runtime.EXE=root/'proj.win32/Debug.win32'/args.exe
 for height in (850,1408):
     folder=f'reward-reveal-{height}'
     runtime.run(height,{'CS_REWARD_REVEAL_REVIEW':'1'},folder,'DONE reward reveal review',13 if height==850 else 12)

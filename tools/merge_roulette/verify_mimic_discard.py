@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 
 root=Path(__file__).resolve().parents[2]
-with Image.open(root/'Resources/res/roulette/mimic-discard-v1.png') as im:
+with Image.open(root/'Resources/res/roulette-mimic-discard-v1.png') as im:
     assert im.mode=='RGBA' and im.getchannel('A').getextrema()==(0,255)
     w,h=im.width//2,im.height
     closed=im.crop((0,0,w,h));opened=im.crop((w,0,2*w,h))

@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 import json
 
 ROOT = Path(__file__).resolve().parents[2]
-DEST = ROOT / 'Resources/res/castle_pixel_01_v1'
+DEST = ROOT / 'asset_library/reference/Resources/res/castle_pixel_01_v1'
 DEST.mkdir(parents=True, exist_ok=True)
 source = Image.open(DEST / 'source.png').convert('RGBA')
 canvas = Image.new('RGBA', (1089, 1445))

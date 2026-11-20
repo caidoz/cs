@@ -1,5 +1,7 @@
 ﻿#include "../../Classes/MergeRouletteModel.h"
 #include "../../Classes/Data/MergeTreeData.h"
+#include "../../Classes/MergeOwnedGearPolicy.h"
+#include "legacy_snapshot.h"
 #include <cassert>
 #include <iostream>
 using namespace MergeRoulette;
@@ -12,6 +14,20 @@ Roster fullRoster() {
     Roster ro;for(int c=0;c<64;++c)assert(ro.add(MergeTrees::Role(c),MergeTrees::Star(c),c));return ro;
 }
 int main(int argc,char**) {
+    {
+        int counts[7]={};for(unsigned roll=0;roll<10000;++roll)++counts[MergeOwnedGear::starForRoll(roll)];
+        assert(counts[0]==8900);for(int star=1;star<=6;++star)assert(counts[star]==MergeOwnedGear::Rate[star-1]);
+        Run r;r.choosing=false;Block b=block(Sword,3,0,0);b.ownedId=123456;b.ownedPower=500;b.ownedDetail=12;b.ownedW=1;b.ownedH=2;
+        r.board={b};Run restored;assert(restored.decode(r.encode())&&restored.encode()==r.encode());
+        Stats st;st.weapon=20;Effects effects;
+        assert(r.evaluate(b,st,effects).damage>0);
+        r.enemyHp=r.enemyMax=1000000;assert(r.attack(st));
+        assert(restored.decode(r.encode())&&restored.shots[0].block.ownedId==b.ownedId&&restored.encode()==r.encode());
+        r.attacking=false;r.shots.clear();r.nextShot=0;
+        r.board.push_back(block(Sword,3,2,0));Block merged;
+        assert(r.mergedPreview(1,b,0,merged)&&merged.ownedId==b.ownedId&&merged.level==4);
+        std::cout<<"PASS owned gear exact grade rates, source identity, footprint, merge and attack save roundtrip\n";
+    }
     Shape previous=BattleShape(0);
     for(int stage=0;stage<10;++stage){
         const Shape shape=BattleShape(stage);assert(shape.valid());int cells=0;
@@ -86,7 +102,8 @@ int main(int argc,char**) {
         }
         Run old;old.choosing=false;old.families[0]=Boots;
         old.board={block(Boots,1,0,0)};
-        std::string legacy=old.encode();legacy.replace(4,2,"7");for(int i=0;i<10;++i)legacy.erase(legacy.find_last_of(' ')); // v8-v12 suffix fields
+        std::string legacy=legacySnapshotV13(old);Run v13;assert(v13.decode(legacy));
+        legacy.replace(4,2,"7");for(int i=0;i<10;++i)legacy.erase(legacy.find_last_of(' ')); // v8-v12 suffix fields
         Run upgraded;assert(upgraded.decode(legacy)&&upgraded.board[0].family==Boots);
         std::cout<<"PASS six costume equipment families, opening identities and v7 migration\n";
     }

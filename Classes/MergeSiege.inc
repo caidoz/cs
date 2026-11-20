@@ -13,7 +13,7 @@
 // 흐름
 //   시작: 내 시작 뽑기(intro) → 상대 시작 뽑기(intro, 맞바꾼 상태) → 내 차례
 //   내 차례: 평소 그대로. 내 공격은 run.enemyHp(상대 성 체력)를 깎는다.
-//   상대 턴: aiSpins 번 돌려 착지, 합칠 수 있는 짝을 손으로 끌어 합치고, 공격.
+//   상대 턴: 합성 후 룰렛·전투·포탑 중 하나를 선택하고 실행한다.
 //           상대 공격은 (맞바꾼 상태의) run.enemyHp = 내 성 체력을 깎는다.
 //   끝: 상대 성 0 = 승리. 내 성 0 = 패배 화면.
 //
@@ -39,6 +39,18 @@ bool actedThisTurn=false;   //이번 턴에 하단 버튼을 한 번 눌렀는�
 long long foeDamage=0;
 enum Step{Idle,Pulling,Spinning,Dragging,Pressing,Attacking};
 Step step=Idle;
+ChoiceKind selectedAction=ChoiceSpin;
+// Finish a vulnerable target first; otherwise mix growth with the stronger attack.
+ChoiceKind chooseAction(long long attack,long long shell,long long hp,long long guard,bool canAttack,bool canSpin,unsigned roll){
+    const long long cannonDamage=std::max(0LL,shell-guard/2);
+    const long long attackDamage=canAttack?std::max(0LL,attack-guard):0;
+    if(cannonDamage>=hp&&hp>0)return ChoiceCannon;
+    if(attackDamage>=hp&&hp>0)return ChoiceAttack;
+    if(canSpin&&roll<45)return ChoiceSpin;
+    if(!canAttack)return ChoiceCannon;
+    const bool cannonStronger=cannonDamage>=attackDamage;
+    return roll%100<(cannonStronger?75u:25u)?ChoiceCannon:ChoiceAttack;
+}
 //끌기 연출
 int dragFrom=-1,dragTx=0,dragTy=0,dragFrame=0;
 float dragX0=0,dragY0=0,dragX1=0,dragY1=0;
@@ -204,9 +216,12 @@ bool advance(){
             step=Dragging;
         }
         else if(actedThisTurn){endFoeTurn(0);}
-        else if(spinsDone<aiSpins&&run.canSpin()){handTo(l.spin);timer=0;step=Pulling;}
-        else if(!run.board.empty()){handTo(l.attack);timer=0;step=Pressing;}
-        else {endFoeTurn(0);}   //칠 것도 돌릴 자리도 없다 - 턴을 넘긴다
+        else {
+            selectedAction=chooseAction(run.preview(stats),cannonShell(),run.enemyHp,run.enemyGuard,
+                !run.board.empty()&&run.boardResolved(),run.canSpin(),run.random(100));
+            handTo(selectedAction==ChoiceSpin?l.spin:selectedAction==ChoiceCannon?l.cannon:l.attack);
+            timer=0;step=selectedAction==ChoiceSpin?Pulling:Pressing;
+        }
         return false;}
     case Pulling:
         if(timer>=18){
@@ -235,7 +250,8 @@ bool advance(){
     case Pressing:
         if(timer>=18){
             handVisible=false;
-            if(run.attack(stats)){actedThisTurn=true;animation=1;message="상대 공격!";messageTime=2;step=Attacking;}
+            const bool fired=selectedAction==ChoiceCannon?run.fireCannon(stats,cannonShell()):run.attack(stats);
+            if(fired){actedThisTurn=true;action=CombatAction();enemyTurn=EnemyTurn();animation=1;message=selectedAction==ChoiceCannon?"상대 포격!":"상대 공격!";messageTime=2;step=Attacking;}
             else endFoeTurn(0);
         }
         return false;
@@ -303,7 +319,7 @@ void drawExpanded(const Layout& l){
     if(!expanded||topBoardPanel())return;
     const float s=l.scale;
     const int big=l.cell,gw=big*foe.shape.width,gh=big*foe.shape.height;
-    const int gx=(DX-gw)/2,gy=l.board.y-(l.board.h-gh)/2;
+    const int gx=(DX-gw)/2,gy=std::max(l.board.y-(l.board.h-gh)/2,l.slot.y+(int)(60*s)+gh);
     SetAlpha(30);MemRect(0,0,DX,DY,0x000000);SetAlpha(32);
     panel({gx-(int)(10*s),gy+(int)(10*s),gw+(int)(20*s),gh+(int)(52*s)},0x1E2433,0xFFC966);
     char text[96];std::snprintf(text,sizeof(text),"%s · %d칸 · 예상 피해 %lld",swapped?"내 판":"디아나의 판",foe.shape.width*foe.shape.height,(long long)foe.preview(swapped?stats:foeStats));
@@ -325,8 +341,8 @@ void drawHud(const Layout& l){
     char text[96];
     const Box banner={DX/2-(int)(130*s),l.ground-(int)(3*s),(int)(260*s),(int)(28*s)};
     if(phase==1){
-        const char* what=step==Pulling||step==Spinning?"상대 턴 · 룰렛":step==Dragging?"상대 턴 · 합성":step==Pressing||step==Attacking?"상대 턴 · 공격":"상대 턴";
-        char line[96];std::snprintf(line,sizeof(line),"%s · 돌린 횟수 %d/%d",what,spinsDone,aiSpins);
+        const char* what=step==Pulling||step==Spinning?"상대 턴 · 룰렛":step==Dragging?"상대 턴 · 합성":step==Pressing||step==Attacking?(selectedAction==ChoiceCannon?"상대 턴 · 포탑":"상대 턴 · 전투"):"상대 턴 · 행동 선택";
+        char line[96];std::snprintf(line,sizeof(line),"%s",what);
         panel(banner,0x3A1F28,0xFFC966);label(line,DX/2,banner.y-(int)(6*s),.55f,0xFFE2A2);
     }else if(phase==3){
         panel(banner,0x3A1F28,0xFFC966);label("상대의 시작 뽑기",DX/2,banner.y-(int)(6*s),.55f,0xFFE2A2);

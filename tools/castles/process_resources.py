@@ -10,7 +10,7 @@ BACKUP = OUT / 'originals'
 HEIGHTS = [139, 212, 254, 293, 317, 350, 423, 431, 460, 528]
 
 def process(n):
-    path = ROOT / f'Resources/res/castle{n}.png'
+    path = ROOT / f'asset_library/reference/Resources/res/castle{n}.png'
     backup = BACKUP / path.name
     if not backup.exists(): shutil.copy2(path, backup)
     im = Image.open(backup).convert('RGBA')

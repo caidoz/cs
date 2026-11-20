@@ -1,0 +1,106 @@
+{
+  "native_background_crops": 20,
+  "all_pixel_identical": true,
+  "captures": [
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-01.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-02.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-03.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-04.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-05.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-06.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-07.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-08.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-09.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-850\\hero-castle-10.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-01.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-02.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-03.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-04.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-05.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-06.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-07.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-08.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-09.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    },
+    {
+      "capture": "hero-backgrounds-debug-1408\\hero-castle-10.png",
+      "mean_abs_difference": 0.0,
+      "max_channel_difference": 0
+    }
+  ]
+}

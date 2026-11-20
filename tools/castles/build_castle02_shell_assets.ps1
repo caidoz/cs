@@ -7,5 +7,5 @@ public static class Castle02ShellBuilder {
  public static void Run(string p,string o){using(var s=new Bitmap(p)){int cw=s.Width/6,ch=s.Height/2;for(int row=0;row<2;row++)for(int i=0;i<6;i++){var c=new Rectangle(i*cw,row*ch,i==5?s.Width-i*cw:cw,row==1?s.Height-row*ch:ch);var q=B(s,c);int w=512,h=row==0?128:192;string part=row==0?"wall":"roof";using(var d=new Bitmap(w,h,PixelFormat.Format32bppArgb))using(var g=Graphics.FromImage(d)){g.Clear(Color.Transparent);g.CompositingMode=CompositingMode.SourceCopy;g.InterpolationMode=InterpolationMode.HighQualityBicubic;g.DrawImage(s,new Rectangle(0,0,w,h),q,GraphicsUnit.Pixel);d.Save(System.IO.Path.Combine(o,string.Format("castle_02_{0}_stage_{1}.png",part,i)),ImageFormat.Png);}}}}
 }
 '@
-$out=Join-Path $PSScriptRoot "..\..\Resources\res\castle_exterior";New-Item -ItemType Directory -Force $out|Out-Null
+$out=Join-Path $PSScriptRoot "..\..\asset_library/reference/Resources\res\castle_exterior";New-Item -ItemType Directory -Force $out|Out-Null
 [Castle02ShellBuilder]::Run($Sheet,$out)

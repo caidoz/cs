@@ -1,0 +1,305 @@
+{
+  "aab_bytes": 1133727035,
+  "groups": [
+    {
+      "group": "res (root files)",
+      "files": 1113,
+      "uncompressed_bytes": 176704465,
+      "compressed_bytes": 176137684
+    },
+    {
+      "group": "res/castle_exterior",
+      "files": 554,
+      "uncompressed_bytes": 118775046,
+      "compressed_bytes": 118481781
+    },
+    {
+      "group": "res/merge_castle_rebuild",
+      "files": 42,
+      "uncompressed_bytes": 86406533,
+      "compressed_bytes": 83195813
+    },
+    {
+      "group": "res/hybrid_sd3d",
+      "files": 37,
+      "uncompressed_bytes": 77697135,
+      "compressed_bytes": 76564420
+    },
+    {
+      "group": "res/stage_sd3d_v2",
+      "files": 42,
+      "uncompressed_bytes": 72300742,
+      "compressed_bytes": 69335779
+    },
+    {
+      "group": "res/items",
+      "files": 608,
+      "uncompressed_bytes": 52727725,
+      "compressed_bytes": 52695444
+    },
+    {
+      "group": "res/castle_mist_v2",
+      "files": 102,
+      "uncompressed_bytes": 44307159,
+      "compressed_bytes": 44273107
+    },
+    {
+      "group": "res/castle_room_integrated_v4",
+      "files": 16,
+      "uncompressed_bytes": 38953134,
+      "compressed_bytes": 38579714
+    },
+    {
+      "group": "res/stage_mist_v3",
+      "files": 45,
+      "uncompressed_bytes": 38256553,
+      "compressed_bytes": 38157401
+    },
+    {
+      "group": "res/merge_castle_rooms",
+      "files": 11,
+      "uncompressed_bytes": 34024734,
+      "compressed_bytes": 33697831
+    },
+    {
+      "group": "res/grid_items",
+      "files": 225,
+      "uncompressed_bytes": 31453959,
+      "compressed_bytes": 31392900
+    },
+    {
+      "group": "sounds (root files)",
+      "files": 72,
+      "uncompressed_bytes": 32023022,
+      "compressed_bytes": 31156548
+    },
+    {
+      "group": "res/castle_interiors_v3",
+      "files": 12,
+      "uncompressed_bytes": 30071513,
+      "compressed_bytes": 29689841
+    },
+    {
+      "group": "res/castle_four_rooms_v5",
+      "files": 10,
+      "uncompressed_bytes": 29067787,
+      "compressed_bytes": 28700340
+    },
+    {
+      "group": "res/menu_renewal",
+      "files": 13,
+      "uncompressed_bytes": 27556907,
+      "compressed_bytes": 26719082
+    },
+    {
+      "group": "res/castle_upgrades_v1",
+      "files": 10,
+      "uncompressed_bytes": 25543084,
+      "compressed_bytes": 25419230
+    },
+    {
+      "group": "res/castle_soft_sectors_v1",
+      "files": 12,
+      "uncompressed_bytes": 24371147,
+      "compressed_bytes": 23920507
+    },
+    {
+      "group": "res/castle_cannon_v2",
+      "files": 11,
+      "uncompressed_bytes": 23419318,
+      "compressed_bytes": 23384413
+    },
+    {
+      "group": "res/castle_functional_sectors_v2",
+      "files": 10,
+      "uncompressed_bytes": 19429744,
+      "compressed_bytes": 19063586
+    },
+    {
+      "group": "res/castle_individual_v4",
+      "files": 50,
+      "uncompressed_bytes": 17245375,
+      "compressed_bytes": 16777432
+    },
+    {
+      "group": "res/castle_mobility",
+      "files": 173,
+      "uncompressed_bytes": 16464101,
+      "compressed_bytes": 16450564
+    },
+    {
+      "group": "[non-assets]",
+      "files": 23,
+      "uncompressed_bytes": 38221614,
+      "compressed_bytes": 11612703
+    },
+    {
+      "group": "res/castle_sd_tenth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 9740253,
+      "compressed_bytes": 9686122
+    },
+    {
+      "group": "res/castle_sd_seventh_legacy",
+      "files": 54,
+      "uncompressed_bytes": 8872613,
+      "compressed_bytes": 8832327
+    },
+    {
+      "group": "res/castle_sd_eighth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 8806197,
+      "compressed_bytes": 8764756
+    },
+    {
+      "group": "res/castle_map_icons",
+      "files": 10,
+      "uncompressed_bytes": 8715278,
+      "compressed_bytes": 8683540
+    },
+    {
+      "group": "res/castle_sd_ninth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 8333077,
+      "compressed_bytes": 8282669
+    },
+    {
+      "group": "res/castle_sd_fifth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 8257097,
+      "compressed_bytes": 8227227
+    },
+    {
+      "group": "res/castle_crew_decks",
+      "files": 10,
+      "uncompressed_bytes": 8737699,
+      "compressed_bytes": 8143647
+    },
+    {
+      "group": "res/castle_sd_sixth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 7840994,
+      "compressed_bytes": 7804883
+    },
+    {
+      "group": "res/castle_sd_fourth_legacy",
+      "files": 54,
+      "uncompressed_bytes": 7483689,
+      "compressed_bytes": 7451609
+    },
+    {
+      "group": "res/merge_castle_original",
+      "files": 3,
+      "uncompressed_bytes": 6511836,
+      "compressed_bytes": 6393307
+    },
+    {
+      "group": "res/shop_gems_v1",
+      "files": 6,
+      "uncompressed_bytes": 6788710,
+      "compressed_bytes": 6264742
+    },
+    {
+      "group": "res/castle_sd_third_legacy",
+      "files": 54,
+      "uncompressed_bytes": 5517154,
+      "compressed_bytes": 5487818
+    },
+    {
+      "group": "res/castle_pixel_01_v1",
+      "files": 10,
+      "uncompressed_bytes": 5619390,
+      "compressed_bytes": 5278044
+    },
+    {
+      "group": "res/castle_sd_legacy",
+      "files": 54,
+      "uncompressed_bytes": 5286227,
+      "compressed_bytes": 5272620
+    },
+    {
+      "group": "res/castle_sd_second_legacy",
+      "files": 54,
+      "uncompressed_bytes": 5163508,
+      "compressed_bytes": 5138557
+    },
+    {
+      "group": "res/monster_parts",
+      "files": 2,
+      "uncompressed_bytes": 1934085,
+      "compressed_bytes": 1907504
+    },
+    {
+      "group": "fonts (root files)",
+      "files": 5,
+      "uncompressed_bytes": 3443520,
+      "compressed_bytes": 1551706
+    },
+    {
+      "group": "res/roulette",
+      "files": 1,
+      "uncompressed_bytes": 1346477,
+      "compressed_bytes": 1228379
+    },
+    {
+      "group": "res/inventory_cannon",
+      "files": 61,
+      "uncompressed_bytes": 1033663,
+      "compressed_bytes": 1033403
+    },
+    {
+      "group": "res/battle_ui_v1",
+      "files": 1,
+      "uncompressed_bytes": 806421,
+      "compressed_bytes": 662003
+    },
+    {
+      "group": "res/turret_attack",
+      "files": 6,
+      "uncompressed_bytes": 569387,
+      "compressed_bytes": 568974
+    },
+    {
+      "group": "data (root files)",
+      "files": 1,
+      "uncompressed_bytes": 2530004,
+      "compressed_bytes": 382801
+    },
+    {
+      "group": "res/castle_artillery",
+      "files": 1,
+      "uncompressed_bytes": 343507,
+      "compressed_bytes": 313720
+    },
+    {
+      "group": "res/inventory_gun",
+      "files": 37,
+      "uncompressed_bytes": 83788,
+      "compressed_bytes": 83964
+    },
+    {
+      "group": "res/inventory_helm",
+      "files": 24,
+      "uncompressed_bytes": 70387,
+      "compressed_bytes": 69427
+    },
+    {
+      "group": "res/inventory_boomerang",
+      "files": 35,
+      "uncompressed_bytes": 53033,
+      "compressed_bytes": 53208
+    },
+    {
+      "group": "manifest.tsv (root files)",
+      "files": 1,
+      "uncompressed_bytes": 68471,
+      "compressed_bytes": 25959
+    },
+    {
+      "group": "res/turret_attack_v1",
+      "files": 2,
+      "uncompressed_bytes": 13295,
+      "compressed_bytes": 13075
+    }
+  ]
+}

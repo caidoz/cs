@@ -38,6 +38,6 @@ public static class BalconyBuilder {
 }
 '@
 
-$out = Join-Path $PSScriptRoot "..\..\Resources\res\castle_exterior"
+$out = Join-Path $PSScriptRoot "..\..\asset_library/reference/Resources\res\castle_exterior"
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 [BalconyBuilder]::Build($Sheet,$out)

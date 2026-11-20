@@ -20,7 +20,7 @@ static void MenuRenewalDungeonDraw(bool behindModal=false){
  if(sprite[scene]){const auto sz=sprite[scene]->getContentSize();
   const float z=Max(DX/sz.width,artH/sz.height);const int sw=Min((int)sz.width,(int)(DX/z)),sh=Min((int)sz.height,(int)(artH/z));
   DrawImageScale(sw,sh,(sz.width-sw)/2,(sz.height-sh)/2,0,artTop,false,0,0,0,0,DX/(float)sw,artH/(float)sh,sprite[scene],scene);}
- CastlePartsDrawMenuPreview(robin.castle+1,8,artTop-artH/3,DX*38/100,artH*58/100);
+ MergeRouletteOriginalPreview(robin.castle,8,artTop-artH/3,DX*38/100,artH*58/100);
  DrawPlayer(&ao[PLAYER],0,DX*45/100,artTop-artH*75/100,RIGHT,1.35f,false,false,true);
  DrawIcon(ICON_EVENT_LOCK,DX*69/100,artTop-artH*48/100,1.4f,false,false,false,true);
  int y=artTop-artH-12;

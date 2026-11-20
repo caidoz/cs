@@ -10,7 +10,7 @@ wheels_only = "--wheels-only" in sys.argv
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-DEST = ROOT / 'Resources/res/castle_mist_v2'
+DEST = ROOT / 'asset_library/reference/Resources/res/castle_mist_v2'
 ROOMS = [(196,569,222,160),(441,569,215,160),(681,569,221,160),
          (196,795,319,180),(550,795,352,180)]
 LANDMARKS = [(.318,.390,.545,.715),(.285,.390,.550,.715),

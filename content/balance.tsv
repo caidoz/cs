@@ -18,10 +18,10 @@ GEAR_UNIT_MAX	40	크기값 상한
 STAGE_FOE_ARMOR_BASE	60	적 방어막 바닥값
 STAGE_FOE_ARMOR_PER	3	적 방어 스탯 1 당 방어막
 STAGE_ARMOR_SOFT	400	방어구가 이만큼 쌓이면 피해가 절반
-HEART_MAX_BASE	20	에너지 상한의 바닥
-HEART_MAX_PER_CASTLE	1	성 한 단계마다 에너지 상한
+HEART_MAX_BASE	35	에너지 상한의 바닥
+HEART_MAX_PER_CASTLE	5	성 한 단계마다 에너지 상한
 HEART_REGEN_BASE	1	주기마다 차는 에너지
-HEART_TEST_MAX	99	디버그 빌드의 에너지 상한
+HEART_TEST_MAX	0	디버그 빌드의 에너지 상한
 CASTLE_ROOM_CREW_SCREEN_H	35.0f	방 안 사람의 화면 키(640 기준 픽셀)
 CASTLE_ROOM_CREW_FILL_H	0.82f	방 높이 중 사람 키(%)
 CASTLE_ROOM_CREW_FILL_W	0.86f	방 폭 중 사람들이 쓰는 몫(%)

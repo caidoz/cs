@@ -20,7 +20,7 @@ from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 
 ROOT = Path(__file__).resolve().parents[2]
-RES = ROOT / 'Resources/res'
+RES = ROOT / 'asset_library/reference/Resources/res'
 OUT_XLSX = ROOT / 'docs/합성_테크트리.xlsx'
 OUT_TSV = ROOT / 'content/merge_tree.tsv'
 ICON = 56  # 셀에 넣는 그림 크기(px)

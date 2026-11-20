@@ -54,7 +54,7 @@ public static class FlightbaseBuilder {
 }
 '@
 
-$out = Join-Path $PSScriptRoot "..\..\Resources\res\castle_mobility"
+$out = Join-Path $PSScriptRoot "..\..\asset_library/reference/Resources\res\castle_mobility"
 [FlightbaseBuilder]::Build($Castle7Sheet, $out, 7)
 [FlightbaseBuilder]::Build($Castle8Sheet, $out, 8)
 [FlightbaseBuilder]::Build($Castle7Sheet, $out, 9)

@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Drawing
 
 $atlasDir = Join-Path $PSScriptRoot 'source_atlases'
-$outDir = Join-Path $PSScriptRoot '..\..\Resources\res\castle_exterior'
+$outDir = Join-Path $PSScriptRoot '..\..\asset_library/reference/Resources\res\castle_exterior'
 
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
 using System;

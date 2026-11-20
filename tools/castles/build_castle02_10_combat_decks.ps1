@@ -23,8 +23,8 @@ public static class CastleCombatDeckBake {
     }
     public static void Run(string root) {
         string concepts=Path.Combine(root,"tools","castles","concepts");
-        string exterior=Path.Combine(root,"Resources","res","castle_exterior");
-        string mobility=Path.Combine(root,"Resources","res","castle_mobility");
+        string exterior=Path.Combine(root,"asset_library/reference/Resources","res","castle_exterior");
+        string mobility=Path.Combine(root,"asset_library/reference/Resources","res","castle_mobility");
         Directory.CreateDirectory(exterior);
         var names=new System.Text.StringBuilder();
         for(int castle=2;castle<=10;castle++) {

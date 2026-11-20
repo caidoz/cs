@@ -68,7 +68,7 @@ public static class CastleWallPairBake {
     }
     public static void Run(string root) {
         string concepts=Path.Combine(root,"tools","castles","concepts");
-        string output=Path.Combine(root,"Resources","res","castle_exterior");
+        string output=Path.Combine(root,"asset_library/reference/Resources","res","castle_exterior");
         for(int castle=2;castle<=10;castle++) {
             int wallH=castle*128;
             int leftW=140+12*castle;

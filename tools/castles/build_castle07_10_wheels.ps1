@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$outDir = Join-Path $root 'Resources/res/castle_mobility'
+$outDir = Join-Path $root 'asset_library/reference/Resources/res/castle_mobility'
 foreach ($castle in 7..10) {
     $number = '{0:D2}' -f $castle
     $sheetPath = Join-Path $PSScriptRoot "concepts/castle_${number}_wheel_sheet.png"

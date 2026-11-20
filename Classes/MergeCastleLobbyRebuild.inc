@@ -148,7 +148,6 @@ Box lobbyStart(const Layout& l){return OriginalCastle::box(294,1037,506,150);}
 Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
 //원정 단추: 옛 "이어서" 줄의 오른쪽. 왼쪽은 행동력 게이지다.
-Box lobbyExpedition(const Layout& l,float drop=0){return OriginalCastle::box(572,1196,228,52,drop);}
 //PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
 Box lobbyPvp(const Layout& l){const float s=l.scale;return {(int)(DX-152*s),(int)(118*s),(int)(144*s),(int)(32*s)};}
 struct CastleMap {
@@ -389,35 +388,6 @@ void drawLobbyBottomNav(float drop=0.f,bool interactive=true){
   if(interactive)SetRectPoint(nav.x+nav.w*i/5,nav.y,nav.w*(i+1)/5-nav.w*i/5,nav.h,actions[i]);
  }
 }
-//---- 전투 시작 아래의 행동력(하트) 게이지 ----
-//
-//전투는 룰렛 한 번에 하트 하나를 쓴다. 시작 단추를 누르기 전에 지금 몇 개가 있고,
-//다음 하나가 언제 차는지를 여기서 본다. 옛 "이어서" 단추 자리(나무로 메운 곳)에
-//시작 단추 폭으로 깐다. 저장된 판이 있으면 시작 단추가 알아서 이어 간다.
-void drawLobbyEnergy(const Layout& l,float drop){
- const float s=l.scale;
- const Box g=OriginalCastle::box(294,1196,266,52,drop);   //오른쪽은 원정 단추
- const int max=std::max(1,GetInitHeart());
- const long long heart=std::max(0LL,std::min((long long)max,robin.heart));
- const int pad=(int)(6*s),icon=std::max(14,(int)(20*s)),midY=g.y-g.h/2;
- const int iconX=g.x+pad,barX=iconX+icon+pad,barH=std::max(3,(int)(7*s));
- const int textW=(int)(104*s),barW=std::max(8,g.w-(barX-g.x)-textW-pad*2);
- mergeRect(g.x,g.y,g.w,g.h,0x1A1410);
- mergeRect(g.x,g.y,g.w,std::max(1,(int)(1*s)),0x5E4A2E);
- mergeRect(g.x,g.y-g.h+std::max(1,(int)(1*s)),g.w,std::max(1,(int)(1*s)),0x5E4A2E);
- DrawIcon(GetItemIcon(ITEM_HEART,0,GRADE_NORMAL),iconX,midY+icon/2,(float)icon/ITEMICONSIZE,false,false,false,true);
- mergeRect(barX,midY+barH/2,barW,barH,0x202938);
- const int fill=(int)((long long)barW*heart/max);
- if(fill>0){mergeRect(barX,midY+barH/2,fill,barH,0x5FC9F5);mergeRect(barX,midY+barH/2,fill,std::max(1,(int)(1*s)),0xD8F4FF);}
- char text[48];
- if(heart>=max)std::snprintf(text,sizeof(text),"%lld / %d",heart,max);
- else{
-  long remain=(long)CastleEnergyRecoverySeconds()-(long)(currentTimeStamp-robin.heartTimeStamp);
-  if(remain<0)remain=0;
-  std::snprintf(text,sizeof(text),"%lld/%d  +%ld:%02ld",heart,max,remain/60,remain%60);
- }
- label(text,barX+barW+pad+textW/2,midY+(int)(4*s),.46f,heart>0?0xF4E8CC:0xFF9A7A);
-}
 void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  const int drop=(int)(280*l.scale*exit);Box start=lobbyStart(l);
  start.y-=drop;
@@ -427,9 +397,6 @@ void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  // 성 관리는 하단 메뉴의 성 탭과 방 터치로 간다. 전투 시작은 언제나 새 판이다.
  OriginalCastle::draw(2,(float)drop);
  drawLobbyBottomNav((float)drop,interactive);
- drawLobbyEnergy(l,(float)drop);
- //원정: 번개 10개를 한 번에 쓰고 전투 없이 바로 정산한다(MergeExpeditionModel.h 의 고정표).
- button(lobbyExpedition(l,(float)drop),u8"원정",u8"번개 10",0x5A3A1E,MergeExpedition::affordable(robin.heart));
  if(interactive){
   button(lobbyPvp(l),"PVP 디버그","공성전",0x6B2D3F);
   for(int i=0;i<4;++i){const Box b=roomBox(l,i);SetRectPoint(b.x,b.y,b.w,b.h,TOUCH_FUNC_POPUP_CASTLEMENU);}

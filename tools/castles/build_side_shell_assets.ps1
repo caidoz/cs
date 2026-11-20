@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-$assetDir = Join-Path $PSScriptRoot '..\..\Resources\res\castle_exterior'
+$assetDir = Join-Path $PSScriptRoot '..\..\asset_library/reference/Resources\res\castle_exterior'
 $files = Get-ChildItem -LiteralPath $assetDir -Filter 'castle_??_wall_stage_?.png'
 
 foreach ($file in $files) {

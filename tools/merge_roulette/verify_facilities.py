@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[2]
 DEST=ROOT/'output/merge-roulette/facilities'
 DEST.mkdir(parents=True,exist_ok=True)
 for c in range(1,11):
-    im=Image.open(ROOT/f'Resources/res/merge_castle_rebuild/rooms-{c:02}.png').convert('RGB')
+    im=Image.open(ROOT/f'Resources/res/merge_castle_rebuild-rooms-{c:02}.png').convert('RGB')
     w,h=im.size
     for r in range(5):
         hashes=[hashlib.sha256(im.crop((w*r//5,h*lv//6,w*(r+1)//5,h*(lv+1)//6)).tobytes()).digest() for lv in range(6)]

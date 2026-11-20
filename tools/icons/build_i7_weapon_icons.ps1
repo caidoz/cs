@@ -4,7 +4,7 @@ param(
 
 Add-Type -AssemblyName System.Drawing
 
-$res = Join-Path $Root "Resources\res"
+$res = Join-Path $Root "asset_library/reference/Resources\res"
 $atlasPath = Join-Path $res "i7.png"
 $cell = 32
 $gap = 1

@@ -3263,8 +3263,7 @@ void Play(void)
 		//그래서 멈춘 동안에는 이 게이트를 지나가게 한다. 누가 서고 누가
 		//움직이는지는 MoveObj 안의 게이트 하나가 정한다. 판단하는 자리를
 		//둘로 나누면 서로 어긋난다.
-		const bool skillFreeze = GetBossRaidSkillFreezeOwner() >= 0
-			|| GetPvpSkillFreezeObj() >= 0;
+		const bool skillFreeze = GetBossRaidSkillFreezeOwner() >= 0;
 
 		if (skillFreeze || (!attackDelay && !(hitStopFrame & 1))) {
 			//쿨타임은 멈춘 동안 안 돈다. 눈에 안 보이는 값이라도 정지 중에
@@ -3391,12 +3390,7 @@ void Play(void)
 	worldDrawing = false;
 
 	// PVP의 진행/UI만 별도이며, 월드와 캐릭터는 위의 공용 OBJECT 렌더러가 그린다.
-	if (drawHandle == MD_PVP) {
-		PvpTestDraw();
-		// 일반 플레이용 StatusDraw/웨이브/룰렛/하단 4메뉴는 PVP 화면에
-		// 들어오면 안 된다. PVP 오버레이가 GNB와 단일 공격 버튼을 책임진다.
-		return;
-	}
+
 
 	grayScale = 0;
 
@@ -3419,11 +3413,10 @@ void Play(void)
 
 		//게임버튼
 
-		if (!gPvpCosmicTransition)
 			StatusDraw(xOffset, 0, 1.0f);
 
 		//보스레이드는 단일 제한시간 전투라 일반 웨이브/페이즈 안내를 쓰지 않는다.
-		if (drawHandle != MD_BOSSRAID && !gPvpCosmicTransition) {
+		if (drawHandle != MD_BOSSRAID) {
 			DrawWaveAnnouncement();
 			DrawTurnPhaseAnnouncement();
 		}
@@ -3554,8 +3547,6 @@ void Play(void)
 		WaveBadgeDrawBeforeBars();
 
 		for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
-			if (gPvpCosmicTransition && i != BAR_ROULETTE)
-				continue;
 			if (!IsBossRaidVisibleBar(i))
 				continue;
 			if (bar[i].active == true && bar[i].front == false) {
@@ -3747,8 +3738,7 @@ void Play(void)
 		case MD_PLAY://여기서는 몬스터와의 전투
 			// 보스 난입 중에도 설정 버튼은 고정하고, 상점만 GNBDraw 안에서
 			// 왼쪽으로 미끄러져 나가게 한다.
-			if (!gPvpCosmicTransition)
-				GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
+					GNBDraw(xOffset, DY - (GNBHEIGHT - GNB_INIT_HEIGHT));
 
 			if (curMenu == MENU_PLAY && JoyStickPressPossible() == true)
 				EventScheduler();
@@ -3802,8 +3792,6 @@ void Play(void)
 	}
 
 	for (i = BAR_GOLD; i < TOTAL_BAR; i++) {
-		if (gPvpCosmicTransition && i != BAR_ROULETTE)
-			continue;
 		if (!IsBossRaidVisibleBar(i))
 			continue;
 		if (bar[i].active == true && bar[i].front == true) {

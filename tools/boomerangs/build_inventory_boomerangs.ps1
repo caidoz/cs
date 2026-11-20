@@ -2,7 +2,7 @@ param([string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path)
 
 # Inventory-only silhouettes; original w2_N combat art is untouched.
 Add-Type -AssemblyName System.Drawing
-$outDir = Join-Path $Root 'Resources\res\inventory_boomerang'
+$outDir = Join-Path $Root 'asset_library/reference/Resources\res\inventory_boomerang'
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 $records = [System.Collections.Generic.List[object]]::new()
 
@@ -10,7 +10,7 @@ for ($n = 1; $n -le 35; $n++) {
     $cols = if ($n -ge 30) { 3 } else { 2 }
     $rows = if ($n -le 10) { 2 } else { 3 }
     $sourcePath = if ($n -le 10) { Join-Path $PSScriptRoot "redrawn\$n.png" }
-                  else { Join-Path $Root "Resources\res\w2_$n.png" }
+                  else { Join-Path $Root "asset_library/reference/Resources\res\w2_$n.png" }
     $source = [System.Drawing.Bitmap]::new($sourcePath)
     $target = [System.Drawing.Bitmap]::new(($cols * 32), ($rows * 32), [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
     $g = [System.Drawing.Graphics]::FromImage($target)
@@ -61,5 +61,5 @@ foreach ($record in $records) {
 }
 $header.Add('};')
 [System.IO.File]::WriteAllLines((Join-Path $Root 'Classes\Data\InventoryBoomerangShapes.h'), $header, [System.Text.UTF8Encoding]::new($false))
-$records | ConvertTo-Json -Depth 2 | Set-Content -LiteralPath (Join-Path $Root 'Resources\res\inventory_boomerang\manifest.json') -Encoding UTF8
+$records | ConvertTo-Json -Depth 2 | Set-Content -LiteralPath (Join-Path $Root 'asset_library/reference/Resources\res\inventory_boomerang\manifest.json') -Encoding UTF8
 Write-Output 'Built 35 inventory-only boomerang sprites'

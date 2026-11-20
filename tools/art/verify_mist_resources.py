@@ -11,15 +11,16 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--exe',default='cs_bars.exe')
 args=parser.parse_args()
 for stage in range(1,11):
-    folder = ROOT / f'Resources/res/castle_mist_v2/{stage:02}'
-    for path in folder.glob('*.png'):
+    folder = ROOT / 'Resources/res'
+    paths = list(folder.glob(f'castle_mist_v2-{stage:02}-*.png'))
+    for path in paths:
         with Image.open(path) as image:
             image.verify()
-    assert len(list(folder.glob('*.png'))) == (11 if stage==1 else 10)
-    with Image.open(folder/'cover.png') as image:
+    assert len(paths) == (6 if stage==1 else 5)
+    with Image.open(folder/f'castle_mist_v2-{stage:02}-cover.png') as image:
         assert image.size == (1000,610)
         assert image.convert('RGBA').getchannel('A').getextrema() == (255,255)
-print('PASS 101 assets and ten fully opaque wall panels', flush=True)
+print('PASS 51 used castle assets and ten fully opaque wall panels', flush=True)
 for height in (850,1408):
     dest = ROOT / 'output/mist-live-review' / str(height)
     dest.mkdir(parents=True,exist_ok=True)

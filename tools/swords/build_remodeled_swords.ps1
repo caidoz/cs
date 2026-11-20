@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Drawing
 $atlasPath = Join-Path $Root 'content\equipment\pixel_art\robin_sword_atlas.png'
 $atlas = [System.Drawing.Bitmap]::new($atlasPath)
 $originalTree = [System.Drawing.Bitmap]::new((Join-Path $Root 'content\swords\remodel\tree21-original.png'))
-$res = Join-Path $Root 'Resources\res'
+$res = Join-Path $Root 'asset_library/reference/Resources\res'
 $headerPath = Join-Path $Root 'Classes\Data\SwordSprites.h'
 $manifestPath = Join-Path $Root 'content\swords\remodel\manifest.json'
 $rowEdges = @(0, 280, 560, 850, 1172, 1516)

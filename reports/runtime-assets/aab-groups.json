@@ -1,0 +1,27 @@
+{
+  "res (root files)": {
+    "files": 1634,
+    "bytes": 204991318,
+    "compressed_bytes": 204809990
+  },
+  "sounds (root files)": {
+    "files": 72,
+    "bytes": 32023022,
+    "compressed_bytes": 31156548
+  },
+  "fonts (root files)": {
+    "files": 5,
+    "bytes": 3443520,
+    "compressed_bytes": 1551706
+  },
+  "data (root files)": {
+    "files": 1,
+    "bytes": 2530004,
+    "compressed_bytes": 382801
+  },
+  "manifest.tsv (root files)": {
+    "files": 1,
+    "bytes": 73635,
+    "compressed_bytes": 29563
+  }
+}

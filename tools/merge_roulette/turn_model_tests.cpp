@@ -1,5 +1,6 @@
 ﻿#include "../../Classes/MergeRouletteModel.h"
 #include "../../Classes/MergeExpeditionModel.h"
+#include "legacy_snapshot.h"
 #include <cassert>
 #include <iostream>
 using namespace MergeRoulette;
@@ -78,7 +79,7 @@ int main() {
     Run lethal=armed();lethal.lives=1;assert(lethal.attack(stats));while(lethal.step()){}
     assert(lethal.counterattack()&&lethal.lives==0);
     Run resumed;assert(resumed.decode(lethal.encode()));resumed.finish();assert(resumed.lost);
-    Run old=armed();std::string legacy=old.encode();legacy.replace(4,2,"8");for(int i=0;i<10;++i)legacy.erase(legacy.find_last_of(' '));
+    Run old=armed();std::string legacy=legacySnapshotV13(old);legacy.replace(4,2,"8");for(int i=0;i<10;++i)legacy.erase(legacy.find_last_of(' '));
     assert(resumed.decode(legacy)&&!resumed.counterResolved);
     // Native HP and armor use the same units in bars, equipment, and actual hits.
     Run native=armed();native.lives=3;native.setVitals(1800,120);native.enemyAttack=600;
@@ -114,13 +115,13 @@ int main() {
         assert(naked.attack(stats));while(naked.step()){}
         assert(naked.counterattack()&&naked.guard==1700);naked.finish();assert(naked.guard==1700&&naked.guardRecovery()==0);
         //v12 세이브(최대치 = 장비 합)는 체력 비례 통으로 바꿔 찬 채로 잇는다.
-        std::string twelve=again.encode();twelve.replace(4,2,"12");
+        std::string twelve=legacySnapshotV13(again);twelve.replace(4,2,"12");
         Run migrated;assert(migrated.decode(twelve)&&migrated.guardMax==1800&&migrated.guard==1800&&migrated.effects.charge==migrated.effects.protect);
     }
     // 체력이 바뀌면 통도 비례해서 다시 잰다(1560/1800 → 3120/3600). 낀 방어구는 회복량만 바꾼다.
     nativeResume.setVitals(3600,180);assert(nativeResume.lives==2160&&nativeResume.baseArmor==180&&nativeResume.guardMax==3600&&nativeResume.guard==3120);
     Run legacyNine=armed();legacyNine.lives=2;
-    std::string nine=legacyNine.encode();nine.replace(4,2,"9");
+    std::string nine=legacySnapshotV13(legacyNine);nine.replace(4,2,"9");
     for(int i=0;i<9;++i)nine.erase(nine.find_last_of(' '));
     assert(resumed.decode(nine)&&!resumed.realVitals&&resumed.lives==2);
     resumed.setVitals(1500,75);assert(resumed.lives==600&&resumed.maxLives==1500&&resumed.baseArmor==75);
@@ -131,7 +132,7 @@ int main() {
     // 원정 고정표: 전투력이 오를수록 골드·카드·장비 레벨이 내려가지 않고, 10개 미만이면 못 간다.
     {
         using namespace MergeExpedition;
-        assert(Cost==10&&!affordable(9)&&affordable(10));
+        assert(Cost==5&&!affordable(4)&&affordable(5));
         assert(tierFor(0)==0&&tierFor(3999)==0&&tierFor(4000)==1&&tierFor(4027)==1&&tierFor(1000000000)==Tiers-1);
         for(int i=1;i<Tiers;++i){
             assert(Table[i].power>Table[i-1].power&&Table[i].gold>=Table[i-1].gold&&Table[i].cards>=Table[i-1].cards&&Table[i].gearLevel>=Table[i-1].gearLevel);

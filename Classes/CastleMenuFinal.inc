@@ -53,7 +53,7 @@ static void Panel(int x,int top,int w,int h,int fill,int edge){
  auto* image=images[panelDrawSlot++];image->setTexture(entry->target->getSprite()->getTexture());
  const int left=Max(x,clipX),right=Min(x+w,clipX2),upper=Min(top,clipY),lower=Max(top-h,clipY2);
  image->setTextureRect(cocos2d::Rect(left-x,lower-(top-h),right-left,upper-lower));image->setFlippedY(true);
- image->setAnchorPoint({0,1});image->setPosition({(float)left,(float)upper});image->setOpacity(m_lgrpAlpha*255/32);image->visit();
+ image->setAnchorPoint({0,1});image->setPosition({(float)left,(float)upper});image->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(image->getTexture());image->visit();
 }
 static void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false){
  Panel(x,y,w,h,selected?0x467B55:enabled?0x205363:0x182A38,enabled?0xEDBB58:0x3D5262);

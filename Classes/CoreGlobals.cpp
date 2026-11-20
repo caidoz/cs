@@ -1428,8 +1428,6 @@ bool gDemoForceRoulette = false;
 bool gCombatStatusTest = false;
 bool gRouletteResultValid = false;
 bool gRoulettePvpResult = false;
-bool gPvpCosmicTransition = false;
-float gPvpCosmicBaseZoom = 1.0f;
 bool gDemoSkillFrameStepActive = false;
 int gDemoSkillFrameStepPermit = 0;
 

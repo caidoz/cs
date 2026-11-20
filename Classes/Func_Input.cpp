@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
@@ -925,8 +926,14 @@ void PlayKey(int obj)
 			}
 			break;
 		default:
-			EquipItem(&ao[PLAYER], &robin.inven[systemKey - AVK_EQUIP_INVENTORY]);
-			SetPlayerHero(curHero);
+			{
+				const auto selectedId=robin.inven[systemKey-AVK_EQUIP_INVENTORY].id;
+				EquipItem(&ao[PLAYER], &robin.inven[systemKey-AVK_EQUIP_INVENTORY]);
+				SetPlayerHero(curHero);
+				// Equipping compacts/sorts inventory. Keep this exact instance open.
+				if(menuDepth==1)for(int i=0;i<TOTALINVENTORY;++i)
+					if(robin.inven[i].type!=EMPTY&&robin.inven[i].id==selectedId){menuItem=i;break;}
+			}
 
 			//튜토리얼: 장착했으면 리스트로 돌아가 갑옷 자리에 들어간 것을 보여준다.
 			//상세보기에 머물러 있으면 슬롯이 화면에 없어서 보여줄 것이 없다.
@@ -3334,29 +3341,8 @@ void touchFunc(int func)
 			systemKey = 0;
 			break;
 		case TOUCH_FUNC_PVP_TEST:
-			//---- 가방은 매칭 뒤에 짠다 ----
-			//
-			//출정 준비를 여기서 먼저 열어 봤는데, 그때는 누구와 붙는지를
-			//아직 모른다. 상대 성과 편성을 보고 나서 고르는 것이 맞으므로
-			//격돌의 세팅 차례(PvpCastleClashDraw 의 1)에서 연다.
-			StartPvpTest();
-			systemKey = 0;
-			break;
-		case TOUCH_FUNC_PVP_TEST_GO:
-			StartPvpTestBattle();
-			systemKey = 0;
-			break;
-		case TOUCH_FUNC_PVP_TEST_BACK:
-			ExitPvpTest();
-			systemKey = 0;
-			break;
-		case TOUCH_FUNC_PVP_DEBUG_NEXT:
-			PvpClashAdvanceNext();
-			systemKey = 0;
-			break;
-		case TOUCH_FUNC_PVP_DEBUG_AUTO:
-			PvpClashToggleAuto();
-			systemKey = 0;
+			MergeRouletteBeginSiege();
+			systemKey=0;
 			break;
 		case TOUCH_FUNC_STARSHOP://상점
 			systemKey = AVK_STARSHOP;

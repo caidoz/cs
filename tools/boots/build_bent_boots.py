@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(__file__).resolve().parent / "bent_source"
-OUTPUT = ROOT / "Resources" / "res"
+OUTPUT = ROOT / "asset_library/reference/Resources" / "res"
 
 # Some adjacent boots in the edited reference sheets touch at a few pixels.
 # These boundaries were inspected against all three source sheets.

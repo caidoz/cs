@@ -7,7 +7,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 WORK = ROOT / 'output/grid-items'
-DEST = ROOT / 'Resources/res/grid_items'
+DEST = ROOT / 'asset_library/reference/Resources/res/grid_items'
 
 def boundaries(sheet, count, axis):
     """Find transparent gutters near expected cell edges, not through blade tips."""
@@ -79,7 +79,7 @@ def build():
         target.alpha_composite(tile,(x0+(x1-x0-tile.width)//2,y0+(y1-y0-tile.height)//2))
         filename=f'grid{e["id"]}.png'
         target.save(DEST/filename)
-        e['file']=f'Resources/res/grid_items/{filename}'
+        e['file']=f'asset_library/reference/Resources/res/grid_items/{filename}'
         e['output_size']=[width,height]
         e['source_sha256']=hashlib.sha256((ROOT/e['source']).read_bytes()).hexdigest()
     (DEST/'manifest.json').write_text(json.dumps(dict(entries=entries),indent=2))

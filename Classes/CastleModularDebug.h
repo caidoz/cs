@@ -852,7 +852,10 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  if(!IndividualArtEnabled()) return false;
  const auto& r=IndividualCastleV4::Rigs[castle];
  const int img=CASTLE_INDIVIDUAL_V4_FIRST_IMG+castle*IndividualCastleV4::Stride;
- for(int i=0;i<=r.wheelCount;++i) { if(!sprite[img+i]) { LoadImg(img+i); LoadTexture(img+i); if(sprite[img+i]) sprite[img+i]->getTexture()->setAntiAliasTexParameters(); } if(!sprite[img+i]) { missingAsset=true; return false; } }
+ const bool soft=SoftCastle::Enabled();
+ // The integrated renderer uses rig coordinates, never these predecessor
+ // body/wheel textures. Only an explicit archived-art review may load them.
+ if(!soft)for(int i=0;i<=r.wheelCount;++i) { if(!sprite[img+i]) { LoadImg(img+i); LoadTexture(img+i); if(sprite[img+i]) sprite[img+i]->getTexture()->setAntiAliasTexParameters(); } if(!sprite[img+i]) { missingAsset=true; return false; } }
  const bool world=!gFreePlace && (drawHandle==MD_PLAY || (drawHandle==MD_LOBBY && popUpCnt==0));
  const float unit=world?DX/640.0f*r.width/r.w*CastlePartsViewZoom():1056.0f*(r.width/342.0f)/r.w*scale;
  const float ground=bottom-252*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale+StageCastleGroundingPx()-kStarterRailOverlapPx;
@@ -863,9 +866,8 @@ static bool DrawIndividualCastle(int castle,float left,float bottom,float scale)
  // The approved image already contains the outdoor ledge and compact chassis.
  // Render it intact; never split/raise the upper body or add another deck.
  const int baseImg=CASTLE_UNARMED_FIRST_IMG+castle;
- if(!sprite[baseImg]) LoadImg(baseImg);
- if(!sprite[baseImg]) { missingAsset=true; return false; }
- const bool soft=SoftCastle::Enabled();
+ if(!soft&&!sprite[baseImg]) LoadImg(baseImg);
+ if(!soft&&!sprite[baseImg]) { missingAsset=true; return false; }
  const bool softOpen=soft && (menuFacilityPreview || (world && !active && popUpCnt==0 && roomInteriorOpen[castle]));
  const int softImg=FacilityImage(castle,0);
  SoftCastle::Crop softCrop=SoftCastle::Bodies[castle][0];

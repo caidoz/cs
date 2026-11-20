@@ -1,4 +1,17 @@
 static bool MenuSceneReview(const char* path){
+ if(getenv("CS_RESOURCE_MENUS_REVIEW")){
+  static int tick=0;static bool pending=false;if(pending)return true;++tick;
+  const auto close=[](){while(popUpCnt>0)ClosePopUp();};
+  const auto open=[](int command){touchFunc(command);PlayKey(PLAYER);systemKey=0;};
+  if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();close();LoadoutSetOpen(false);}
+  if(tick==20)open(TOUCH_FUNC_LOBBY_DUNGEON);
+  if(tick==60){open(TOUCH_FUNC_RENEW_DUNGEON_CLOSE);close();open(TOUCH_FUNC_SETTING);}
+  if(tick==100)open(TOUCH_FUNC_OPTION_LANGUAGE);
+  const char* name=tick==45?"dungeon.png":tick==85?"settings.png":tick==125?"language.png":nullptr;
+  if(name){pending=true;auto* target=gScreenBuffer;target->saveToFile(std::string(path)+name,cocos2d::Image::Format::PNG,true,[&](cocos2d::RenderTexture*,const std::string&){pending=false;CastleReviewTrace("PASS resource menu capture");});}
+  if(tick==145)CastleReviewTrace("DONE resource menus review");
+  return true;
+ }
  if(getenv("CS_SCROLL_CRASH_REVIEW")){
   static int step=0;++step;
   if(step==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}

@@ -67,16 +67,16 @@
 #define STAGE_ARMOR_SOFT          400
 
 //에너지 상한의 바닥
-#define HEART_MAX_BASE            20
+#define HEART_MAX_BASE            35
 
 //성 한 단계마다 에너지 상한
-#define HEART_MAX_PER_CASTLE      1
+#define HEART_MAX_PER_CASTLE      5
 
 //주기마다 차는 에너지
 #define HEART_REGEN_BASE          1
 
 //디버그 빌드의 에너지 상한
-#define HEART_TEST_MAX            99
+#define HEART_TEST_MAX            0
 
 //방 안 사람의 화면 키(640 기준 픽셀)
 #define CASTLE_ROOM_CREW_SCREEN_H 35.0f

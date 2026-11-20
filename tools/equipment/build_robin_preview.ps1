@@ -4,7 +4,7 @@ param(
 )
 
 Add-Type -AssemblyName System.Drawing
-$res=Join-Path $Root 'Resources\res'
+$res=Join-Path $Root 'asset_library/reference/Resources\res'
 $destination=Join-Path $Root "content\equipment\pixel_art\$Hero\final-preview.png"
 $armor=@{robin='armor';diana='vest';maxx='coat'}
 $preview=[System.Drawing.Bitmap]::new(1024,640,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb)

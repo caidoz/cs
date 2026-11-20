@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageEnhance
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "content/castles/modular_v2/source"
 OUT = ROOT / "content/castles/modular_v4/rooms"
-RUNTIME = ROOT / "Resources/res/castle_rooms"
+RUNTIME = ROOT / "asset_library/reference/Resources/res/castle_rooms"
 NAME_INCLUDE = ROOT / "Classes/CastleRoomV4Names.inc"
 CATALOG = ROOT / "content/castles/modular_v4/room_catalog.png"
 STACKS = ROOT / "content/castles/modular_v4/room_stack_contract.png"

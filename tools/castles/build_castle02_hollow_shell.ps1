@@ -2,7 +2,7 @@ Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $sourcePath = Join-Path $root 'tools/castles/source_shells/castle_02_full.png'
-$outDir = Join-Path $root 'Resources/res/castle_exterior'
+$outDir = Join-Path $root 'asset_library/reference/Resources/res/castle_exterior'
 if (!(Test-Path -LiteralPath $sourcePath)) { throw "Missing source: $sourcePath" }
 
 $source = [Drawing.Bitmap]::FromFile($sourcePath)
@@ -49,15 +49,15 @@ try {
     $g.Clear([Drawing.Color]::FromArgb(25, 42, 47))
     for ($floor = 0; $floor -lt 2; ++$floor) {
         $roomStage = if ($floor -eq 1) { 0 } else { 5 }
-        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
+        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('asset_library/reference/Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
         try { $g.DrawImageUnscaled($room, 124, 220 + (1 - $floor) * 128) }
         finally { $room.Dispose() }
     }
     $shell = [Drawing.Bitmap]::FromFile((Join-Path $outDir 'castle_02_hollow_stage_0.png'))
     try { $g.DrawImageUnscaled($shell, 60, 0) } finally { $shell.Dispose() }
-    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_02_base_stage_0.png'))
+    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_02_base_stage_0.png'))
     try { $g.DrawImageUnscaled($base, 124, 476) } finally { $base.Dispose() }
-    $wheel = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_02_wheel_stage_0.png'))
+    $wheel = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_02_wheel_stage_0.png'))
     try {
         $g.DrawImage($wheel, (New-Object Drawing.Rectangle 195, 537, 114, 114))
         $g.DrawImage($wheel, (New-Object Drawing.Rectangle 451, 537, 114, 114))

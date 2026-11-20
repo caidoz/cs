@@ -5,7 +5,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 ROOT = Path(__file__).resolve().parents[2]
 GEN = Path(r"C:\Users\polyp\.codex\generated_images\01a0de43-6120-72f2-9314-8e5fb074b287")
 SOURCE = ROOT / "content/castles/mobility_all"
-RUNTIME = ROOT / "Resources/res/castle_mobility"
+RUNTIME = ROOT / "asset_library/reference/Resources/res/castle_mobility"
 NAMES = ROOT / "Classes/CastleMobilityNames.inc"
 
 BASE_SHEETS = (

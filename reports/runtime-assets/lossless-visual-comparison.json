@@ -1,0 +1,592 @@
+[
+  {
+    "capture": "menu-scenes-1408\\equipment-castle-10.png",
+    "mean_abs_difference": 11.38999356356534,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "menu-scenes-1408\\equipment-castle-01.png",
+    "mean_abs_difference": 10.924640447443181,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-06.png",
+    "mean_abs_difference": 6.37987578420928,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-08.png",
+    "mean_abs_difference": 6.366781708688447,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-10.png",
+    "mean_abs_difference": 6.365907981178977,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-09.png",
+    "mean_abs_difference": 6.318729285037879,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-04.png",
+    "mean_abs_difference": 6.316455817945076,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-03.png",
+    "mean_abs_difference": 6.306815592447916,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-07.png",
+    "mean_abs_difference": 6.292845569957386,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-02.png",
+    "mean_abs_difference": 5.976967551491477,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-01.png",
+    "mean_abs_difference": 5.965679006865531,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-1408\\hero-castle-05.png",
+    "mean_abs_difference": 5.965241773200758,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-08.png",
+    "mean_abs_difference": 5.6100490196078425,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-09.png",
+    "mean_abs_difference": 5.530973651960784,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-10.png",
+    "mean_abs_difference": 5.521325367647059,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-02.png",
+    "mean_abs_difference": 4.967210784313726,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-06.png",
+    "mean_abs_difference": 4.94659987745098,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-01.png",
+    "mean_abs_difference": 4.946011029411765,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-04.png",
+    "mean_abs_difference": 4.945767769607843,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-05.png",
+    "mean_abs_difference": 4.945505514705882,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-03.png",
+    "mean_abs_difference": 4.945215686274509,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "hero-backgrounds-debug-850\\hero-castle-07.png",
+    "mean_abs_difference": 4.944497549019608,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "menu-scenes-850\\equipment-castle-10.png",
+    "mean_abs_difference": 3.6946470588235294,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "menu-scenes-850\\equipment-castle-01.png",
+    "mean_abs_difference": 3.6743174019607845,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "equipment-cards-1408\\equipment-detail.png",
+    "mean_abs_difference": 2.807597582267993,
+    "max_channel_difference": 68
+  },
+  {
+    "capture": "menu-scenes-850\\castle.png",
+    "mean_abs_difference": 1.8611685049019606,
+    "max_channel_difference": 9
+  },
+  {
+    "capture": "menu-scenes-850\\castle-02.png",
+    "mean_abs_difference": 1.8538750000000002,
+    "max_channel_difference": 9
+  },
+  {
+    "capture": "menu-scenes-1408\\castle-02.png",
+    "mean_abs_difference": 1.6099010120738637,
+    "max_channel_difference": 227
+  },
+  {
+    "capture": "equipment-cards-850\\equipment-detail.png",
+    "mean_abs_difference": 1.5671439950980393,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "equipment-cards-850\\equipment.png",
+    "mean_abs_difference": 1.3236219362745099,
+    "max_channel_difference": 9
+  },
+  {
+    "capture": "menu-scenes-1408\\castle.png",
+    "mean_abs_difference": 1.0114231918797347,
+    "max_channel_difference": 9
+  },
+  {
+    "capture": "equipment-cards-1408\\equipment.png",
+    "mean_abs_difference": 0.9320815577651516,
+    "max_channel_difference": 255
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-06-battle.png",
+    "mean_abs_difference": 0.6125018495501894,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-10-battle.png",
+    "mean_abs_difference": 0.5851643880208334,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-10.png",
+    "mean_abs_difference": 0.5804495146780303,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-06.png",
+    "mean_abs_difference": 0.568222138375947,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-12.png",
+    "mean_abs_difference": 0.564846709280303,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-02.png",
+    "mean_abs_difference": 0.5527155095880681,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-02-battle.png",
+    "mean_abs_difference": 0.5403279622395833,
+    "max_channel_difference": 16
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-03-battle.png",
+    "mean_abs_difference": 0.49952096650094696,
+    "max_channel_difference": 236
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-07.png",
+    "mean_abs_difference": 0.49888916015625,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-07-battle.png",
+    "mean_abs_difference": 0.48956964666193187,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-13.png",
+    "mean_abs_difference": 0.46376213304924246,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-03.png",
+    "mean_abs_difference": 0.45644198330965907,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-04-battle.png",
+    "mean_abs_difference": 0.43362889145359845,
+    "max_channel_difference": 253
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-04-battle.png",
+    "mean_abs_difference": 0.4167886029411765,
+    "max_channel_difference": 254
+  },
+  {
+    "capture": "equipment-cards-850\\equipment-stat.png",
+    "mean_abs_difference": 0.4096188725490196,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-06-battle.png",
+    "mean_abs_difference": 0.4077892156862745,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-03-battle.png",
+    "mean_abs_difference": 0.4064234068627451,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-05-battle.png",
+    "mean_abs_difference": 0.4057922794117647,
+    "max_channel_difference": 250
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-08-battle.png",
+    "mean_abs_difference": 0.4024158824573864,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-08.png",
+    "mean_abs_difference": 0.4005833481297348,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "menu-scenes-850\\shop.png",
+    "mean_abs_difference": 0.3901887254901961,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-04.png",
+    "mean_abs_difference": 0.38477487275094696,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-14.png",
+    "mean_abs_difference": 0.37464673591382575,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-05-battle.png",
+    "mean_abs_difference": 0.35025486801609845,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-09.png",
+    "mean_abs_difference": 0.3236416903409091,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-09-battle.png",
+    "mean_abs_difference": 0.3220666133996212,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-05.png",
+    "mean_abs_difference": 0.3123446377840909,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-15.png",
+    "mean_abs_difference": 0.3003769383285985,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "equipment-cards-1408\\equipment-stat.png",
+    "mean_abs_difference": 0.24728375059185606,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "menu-scenes-1408\\shop-scroll.png",
+    "mean_abs_difference": 0.23559940222537878,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "menu-scenes-1408\\shop.png",
+    "mean_abs_difference": 0.23559940222537878,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-01.png",
+    "mean_abs_difference": 0.2271872780539773,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\background-11.png",
+    "mean_abs_difference": 0.21776123046874998,
+    "max_channel_difference": 248
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-01-battle.png",
+    "mean_abs_difference": 0.20710042317708333,
+    "max_channel_difference": 16
+  },
+  {
+    "capture": "mist-live-review\\850\\background-10.png",
+    "mean_abs_difference": 0.19428308823529414,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-10-battle.png",
+    "mean_abs_difference": 0.1941813725490196,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-06.png",
+    "mean_abs_difference": 0.18661335784313726,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-07.png",
+    "mean_abs_difference": 0.17649877450980392,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-07-battle.png",
+    "mean_abs_difference": 0.1762438725490196,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-02.png",
+    "mean_abs_difference": 0.1697230392156863,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-08-battle.png",
+    "mean_abs_difference": 0.16898039215686275,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-12.png",
+    "mean_abs_difference": 0.16687683823529412,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-08.png",
+    "mean_abs_difference": 0.16523223039215687,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-03.png",
+    "mean_abs_difference": 0.1571654411764706,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-09.png",
+    "mean_abs_difference": 0.15714767156862744,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-13.png",
+    "mean_abs_difference": 0.15674509803921569,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-09-battle.png",
+    "mean_abs_difference": 0.15674264705882354,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-14.png",
+    "mean_abs_difference": 0.15022732843137254,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-04.png",
+    "mean_abs_difference": 0.1466280637254902,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-05.png",
+    "mean_abs_difference": 0.14176960784313727,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-15.png",
+    "mean_abs_difference": 0.14119730392156862,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-11.png",
+    "mean_abs_difference": 0.11954227941176471,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\background-01.png",
+    "mean_abs_difference": 0.11701164215686273,
+    "max_channel_difference": 249
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-02-battle.png",
+    "mean_abs_difference": 0.11678063725490195,
+    "max_channel_difference": 23
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-02-interior.png",
+    "mean_abs_difference": 0.0842984068627451,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-09-interior.png",
+    "mean_abs_difference": 0.08006985294117647,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-01-battle.png",
+    "mean_abs_difference": 0.06558149509803922,
+    "max_channel_difference": 23
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-06-interior.png",
+    "mean_abs_difference": 0.06202941176470588,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-08-interior.png",
+    "mean_abs_difference": 0.060054894649621215,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-02-interior.png",
+    "mean_abs_difference": 0.05914047703598485,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-03-interior.png",
+    "mean_abs_difference": 0.04828860294117646,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-01-interior.png",
+    "mean_abs_difference": 0.04714133522727273,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-06-interior.png",
+    "mean_abs_difference": 0.046993741122159094,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-09-interior.png",
+    "mean_abs_difference": 0.04402854225852273,
+    "max_channel_difference": 217
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-10-interior.png",
+    "mean_abs_difference": 0.0422119140625,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-03-interior.png",
+    "mean_abs_difference": 0.04196000532670455,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "menu-scenes-850\\shop-scroll.png",
+    "mean_abs_difference": 0.04177941176470588,
+    "max_channel_difference": 6
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-01-interior.png",
+    "mean_abs_difference": 0.03675857843137255,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-07-interior.png",
+    "mean_abs_difference": 0.031332720588235295,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-05-interior.png",
+    "mean_abs_difference": 0.023619495738636365,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-04-interior.png",
+    "mean_abs_difference": 0.021213970762310606,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-10-interior.png",
+    "mean_abs_difference": 0.01992156862745098,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-04-interior.png",
+    "mean_abs_difference": 0.014416053921568627,
+    "max_channel_difference": 208
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-08-interior.png",
+    "mean_abs_difference": 0.01353125,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\1408\\castle-07-interior.png",
+    "mean_abs_difference": 0.009800026633522727,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "mist-live-review\\850\\castle-05-interior.png",
+    "mean_abs_difference": 0.007746323529411764,
+    "max_channel_difference": 218
+  },
+  {
+    "capture": "equipment-cards-850\\equipment-codex.png",
+    "mean_abs_difference": 0.006036151960784313,
+    "max_channel_difference": 230
+  },
+  {
+    "capture": "equipment-cards-1408\\equipment-codex.png",
+    "mean_abs_difference": 0.004456676136363636,
+    "max_channel_difference": 230
+  },
+  {
+    "capture": "menu-scenes-850\\crew.png",
+    "mean_abs_difference": 0.0007536764705882354,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-850\\crew-scroll.png",
+    "mean_abs_difference": 0.0006813725490196078,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-1408\\crew-scroll.png",
+    "mean_abs_difference": 0.0006591796874999999,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-1408\\crew.png",
+    "mean_abs_difference": 0.0006528912168560606,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-850\\castle-turret.png",
+    "mean_abs_difference": 0.00028308823529411766,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-850\\castle-rooms.png",
+    "mean_abs_difference": 0.00020159313725490194,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-1408\\castle-rooms.png",
+    "mean_abs_difference": 0.0001712683475378788,
+    "max_channel_difference": 2
+  },
+  {
+    "capture": "menu-scenes-1408\\castle-turret.png",
+    "mean_abs_difference": 0.0001712683475378788,
+    "max_channel_difference": 2
+  }
+]

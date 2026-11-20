@@ -94,7 +94,7 @@ public static class InventoryPixelArt {
 }
 '@
 
-$res = Join-Path $Root 'Resources\res'
+$res = Join-Path $Root 'asset_library/reference/Resources\res'
 $originals = Join-Path $Root 'content\equipment\pixel_art\originals'
 $heroSources = @(
     (Join-Path $Root 'content\equipment\pixel_art\robin\native_sources'),

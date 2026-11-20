@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
-$res = Join-Path $root 'Resources/res'
+$res = Join-Path $root 'asset_library/reference/Resources/res'
 $out = Join-Path $PSScriptRoot 'castle_01_full_upgrade_sheet.png'
 $panelW = 850; $panelH = 650
 $sheet = New-Object Drawing.Bitmap ($panelW * 3), ($panelH * 2), ([Drawing.Imaging.PixelFormat]::Format32bppArgb)

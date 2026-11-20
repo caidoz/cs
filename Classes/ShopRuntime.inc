@@ -106,7 +106,7 @@ void Draw(float x,float y,float w,float h,float zoom) {
  const int top=(int)y,head=58,tabH=46,pad=18;
  //장비 탭만 히어로 줄을 따로 고른다. 그만큼 본문이 내려온다.
  const int bodyTop=top-head-tabH-12,bottom=12;
- const char* tabs[]={"장비","패키지","재화"};
+ const char* tabs[]={"보물상자","패키지","재화"};
  for(int i=0;i<ShopCatalog::TabCount;++i)Button(tabs[i],(int)x+pad+i*((int)w-2*pad)/ShopCatalog::TabCount,top-head,
   ((int)w-2*pad)/ShopCatalog::TabCount-4,tabH,TOUCH_FUNC_SHOP_MAIN_TAB+i,true,tab==i);
 
@@ -139,7 +139,7 @@ void Draw(float x,float y,float w,float h,float zoom) {
 
   //---- 종합 상자 ----
   DrawMenuPlaque("보물상자",(int)x+inner/5,cy,inner*3/5,54,1.05f);cy-=68;
-  const int cardH=312,pitch=cardH+10;
+  const int cardH=290,pitch=cardH+10;
   for(int k=0;k<6;++k)ShopBoxCard(k,x+pad+(k%2)*(cw+8),cy-(k/2)*pitch,cw,cardH,1);
   cy-=pitch*3;
  } else if(tab==ShopCatalog::Packages) {
@@ -238,7 +238,7 @@ bool ShopPurchaseExistingBox(int boxDetail) {
  using namespace ShopSpec;
  const long long cost=GetBoxPrice(boxDetail,GRADE_NORMAL);
  const bool gems=ShopTreasure::UsesGems(boxDetail-BOX_PAID0);
- const auto fail=[&](const char* why){message=why;resultUntil=frame+FPS*5;return false;};
+ const auto fail=[&](const char* why){message=why;resultUntil=frame+FPS*5;CCLOG("shop purchase rejected: %s",why);return false;};
  const auto now=std::chrono::steady_clock::now();
  if(purchasing||std::chrono::duration_cast<std::chrono::milliseconds>(now-lastPurchaseTime).count()<500||IapIsBusy()||IsStageRealtime()||StageRunPersistentEquipment(0))return fail("다른 구매 또는 탐험이 진행 중입니다");
  if(boxDetail<BOX_PAID0||boxDetail>BOX_PAID5||cost<0)return fail("판매하지 않는 상품입니다");

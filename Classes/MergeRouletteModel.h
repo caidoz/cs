@@ -17,7 +17,7 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=13 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=14 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -58,6 +58,8 @@ struct Block {
     //눕혔는가. 장비는 ★5 가 5x1 이라 세로로 눕혀야 들어가는 자리가 많다.
     //동료는 1x1 이라 눕히나 마나 같다.
     bool rot=false;
+    long long ownedId=0,ownedPower=0;
+    int ownedDetail=-1,ownedGrade=0,ownedW=0,ownedH=0;
     bool placed() const { return x>=0 && y>=0; }
 };
 // 동료 블록은 ★ 에 상관없이 1×2. 장비 블록의 칸 모양은 그림이 정한다 -
@@ -67,8 +69,8 @@ inline int Wide(int family,int level) { return family<Roles?MergeBoard::BlockWOf
 inline int Tall(int family,int level) { return family<Roles?MergeBoard::BlockHOf(LINEAGE_CREW,level):MergeBoard::GearH(family-Sword,level); }
 //눕힌 블록은 가로세로가 바뀐다. 크기를 묻는 곳이 전부 이 둘을 거치므로
 //여기 두 줄이면 판정·그리기·저장이 같이 따라온다.
-inline int Wide(const Block& b) { return b.rot?Tall(b.family,b.level):Wide(b.family,b.level); }
-inline int Tall(const Block& b) { return b.rot?Wide(b.family,b.level):Tall(b.family,b.level); }
+inline int Wide(const Block& b) { const int w=b.ownedId?b.ownedW:Wide(b.family,b.level),h=b.ownedId?b.ownedH:Tall(b.family,b.level);return b.rot?h:w; }
+inline int Tall(const Block& b) { const int w=b.ownedId?b.ownedW:Wide(b.family,b.level),h=b.ownedId?b.ownedH:Tall(b.family,b.level);return b.rot?w:h; }
 // 동료마다 한 방의 세기와 특성. 레벨(=★)은 블록이 들고 있으므로 여기엔 없다.
 struct CrewStats {
     long long power=20;
@@ -153,7 +155,8 @@ struct Run {
     }
     long long armorOf(const Block& block,const Stats& st) const {
         if(!DefensiveGear(block.family))return 0;
-        return st.realVitals?st.armor[block.family-Sword][std::max(0,std::min(MaxLevel-1,block.level-1))]:MergeBoard::ArmorGuards(block.level);
+        const long long normal=st.realVitals?st.armor[block.family-Sword][std::max(0,std::min(MaxLevel-1,block.level-1))]:MergeBoard::ArmorGuards(block.level);
+        return block.ownedId?std::max(normal,block.ownedPower*MergeBoard::GearMulOf(block.family-Sword,block.level)):normal;
     }
 
     //---- 막 합쳐진 자리 ----
@@ -281,7 +284,9 @@ struct Run {
         if(target<0||target>=(int)board.size())return false;
         const Block& t=board[target];
         if(!mergeable(t,moving))return false;
-        out=t;++out.level;
+        out=t;
+        if(moving.ownedId&&moving.ownedPower>out.ownedPower){out=moving;out.x=t.x;out.y=t.y;out.rot=t.rot;}
+        ++out.level;
         // Same edge-inward placement policy as the existing BoardModel.
         out.x=std::min(out.x,shape.width-Wide(out));
         out.y=std::min(out.y,shape.height-Tall(out));
@@ -602,7 +607,7 @@ struct Run {
             if(trait==Chill) {e.skip+=MergeBoard::ChillSkipTurns(lv);if(lv<=2)e.half=true;}
             if(trait==Strike)raw+=raw*MergeBoard::StrikePct(lv)/100;
             if(trait==Volley)raw+=raw*MergeBoard::VolleyPct(lv)/100;   //적이 하나라 탄이 전부 한 놈에게
-        } else raw=st.weapon*MergeBoard::GearMulOf(b.family-Sword,lv);   // 칸이 느는 단만 ×3, 그대로인 단은 ×2
+        } else raw=std::max(st.weapon,b.ownedPower)*MergeBoard::GearMulOf(b.family-Sword,lv);
         s.damage=raw*(100+e.expose)/100*e.inspire;e.inspire=1;
         if(b.family<Roles) {
             if(trait==Expose) e.expose+=MergeBoard::ExposePct(lv);
@@ -777,7 +782,8 @@ struct Run {
         for(int f:families) o<<' '<<f;
         o<<' '<<shape.width<<' '<<shape.height;for(unsigned row:shape.rows)o<<' '<<row;
         for(const auto* list:{&board,&tray}) {
-            o<<' '<<list->size(); for(const auto& b:*list) o<<' '<<b.family<<' '<<b.level<<' '<<b.crew<<' '<<b.x<<' '<<b.y<<' '<<(b.rot?1:0);
+            o<<' '<<list->size(); for(const auto& b:*list) o<<' '<<b.family<<' '<<b.level<<' '<<b.crew<<' '<<b.x<<' '<<b.y<<' '<<(b.rot?1:0)
+                <<' '<<b.ownedId<<' '<<b.ownedPower<<' '<<b.ownedDetail<<' '<<b.ownedGrade<<' '<<b.ownedW<<' '<<b.ownedH;
         }
         o<<' '<<summons.size();
         for(const auto& s:summons) o<<' '<<s.block.family<<' '<<s.block.level<<' '<<s.block.crew<<' '<<s.damage<<' '<<s.summonTurns;
@@ -796,7 +802,7 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=13&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -812,6 +818,12 @@ struct Run {
             int count;if(!(in>>count)||count<0||count>(list?3:Cells)) return false;
             for(int i=0;i<count;++i) {
                 Block b;int rot=0;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y>>rot)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;b.rot=rot!=0;
+                if(version>=14){
+                    if(!(in>>b.ownedId>>b.ownedPower>>b.ownedDetail>>b.ownedGrade>>b.ownedW>>b.ownedH))return false;
+                    if(b.ownedId<0||b.ownedPower<0||b.ownedPower>100000000LL)return false;
+                    if(!b.ownedId&&(b.ownedPower||b.ownedDetail!=-1||b.ownedGrade||b.ownedW||b.ownedH))return false;
+                    if(b.ownedId&&(b.family<Roles||b.ownedDetail<0||b.ownedDetail>(b.family==Sword?34:7)||b.ownedGrade<0||b.ownedGrade>5||b.ownedW<1||b.ownedW>8||b.ownedH<1||b.ownedH>8))return false;
+                }
                 //장비는 여섯 부위 어느 것이든 판에 설 수 있다. 역할 블록만 시작 슬롯의 역할이어야 한다.
                 if(b.family<Roles&&std::find(r.families,r.families+3,b.family)==r.families+3) return false;
                 if(!list) {if(!r.fits(b,-1,-1,true)) return false;r.board.push_back(b);}   //겹친 채로도 저장된다
@@ -842,7 +854,7 @@ struct Run {
             if(i>=(int)sorted.size())return false;
             const Block& b=sorted[i];
             if(s.block.family!=b.family||s.block.level!=b.level||s.block.crew!=b.crew||s.block.x!=b.x||s.block.y!=b.y)return false;
-            r.shots.push_back(s);
+            s.block=b;r.shots.push_back(s);
         }
         if(r.attacking?((count!=(int)sorted.size()&&!(version>=12&&count==0))||r.choosing||r.lost):(count!=0||r.nextShot!=0))return false;
         if(version>=9&&!(in>>r.counterResolved))return false;

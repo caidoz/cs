@@ -13,7 +13,7 @@ parser.add_argument('--debug',action='store_true')
 args=parser.parse_args()
 tiles=[]
 for i in range(1,11):
-    with Image.open(root/f'Resources/res/menu_renewal/dressing-v3/castle-{i:02d}.png') as im:
+    with Image.open(root/f'Resources/res/menu_renewal-dressing-v3-castle-{i:02d}.png') as im:
         assert 1.9 < im.width/im.height < 2.1
         tiles.append(im.tobytes())
 assert len(set(tiles))==10

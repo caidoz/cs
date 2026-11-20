@@ -12,6 +12,6 @@ public static class ExteriorBatch {
  public static void Balcony(string path,string output){using(var s=new Bitmap(path)){int cw=s.Width/6;for(int i=0;i<6;i++){var c=new Rectangle(i*cw,0,i==5?s.Width-i*cw:cw,s.Height);Save(s,c,System.IO.Path.Combine(output,string.Format("castle_02_balcony_stage_{0}.png",i)),192,128);}}}
 }
 '@
-$out=Join-Path $PSScriptRoot "..\..\Resources\res\castle_exterior";New-Item -ItemType Directory -Force $out|Out-Null
+$out=Join-Path $PSScriptRoot "..\..\asset_library/reference/Resources\res\castle_exterior";New-Item -ItemType Directory -Force $out|Out-Null
 [ExteriorBatch]::Balcony((Join-Path $root 'exec-414ee4e0-0101-41ba-9e71-f0f440a6e27a.png'),$out)
 foreach($castle in 3..10){[ExteriorBatch]::Grid((Join-Path $root $sheets[$castle]),$out,$castle)}

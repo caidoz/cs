@@ -3,9 +3,11 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import argparse
 
 ROOT = Path(__file__).resolve().parents[2]
-EXE = ROOT / 'proj.win32/Debug.win32/cs_bars.exe'
+parser=argparse.ArgumentParser();parser.add_argument('--exe',default='cs_bars.exe');args=parser.parse_args()
+EXE = ROOT / 'proj.win32/Debug.win32' / args.exe
 for height in (850, 1408):
     dest = ROOT / 'output/merge-costume-review' / str(height)
     dest.mkdir(parents=True, exist_ok=True)

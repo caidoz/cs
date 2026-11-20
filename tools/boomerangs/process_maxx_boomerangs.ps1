@@ -53,7 +53,7 @@ public static class MaxxBoomerangImageProcessor
 }
 '@
 
-$resourceDir=Join-Path $ProjectRoot 'Resources\res'
+$resourceDir=Join-Path $ProjectRoot 'asset_library/reference/Resources\res'
 $workDir=Join-Path $ProjectRoot 'output\maxx-boomerangs'
 $rawDir=Join-Path $workDir 'raw'
 $originalDir=Join-Path $workDir 'originals'

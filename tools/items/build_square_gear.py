@@ -11,13 +11,13 @@ def build():
     records=json.loads((WORK/'catalog.json').read_text())['entries']
     sheets={name:Image.open(WORK/f'generated/{name}.png').convert('RGBA') for name in ['helm','armor','gloves','pants','boots']}
     cuts={name:(boundaries(im,8,0),boundaries(im,3,1)) for name,im in sheets.items()}
-    manifest_path=ROOT/'Resources/res/items/manifest.json'
+    manifest_path=ROOT/'asset_library/reference/Resources/res/items/manifest.json'
     manifest=json.loads(manifest_path.read_text());old={e['id']:e for e in manifest['entries']}
-    grid_manifest_path=ROOT/'Resources/res/grid_items/manifest.json'
+    grid_manifest_path=ROOT/'asset_library/reference/Resources/res/grid_items/manifest.json'
     grid_manifest=json.loads(grid_manifest_path.read_text());grids={e['id']:e for e in grid_manifest['entries']}
     (WORK/'before').mkdir(exist_ok=True)
     for e in records:
-        dest=ROOT/f'Resources/res/items/item{e["item"]}.png'
+        dest=ROOT/f'asset_library/reference/Resources/res/items/item{e["item"]}.png'
         backup=WORK/f'before/item{e["item"]}.png'
         if not backup.exists():shutil.copyfile(dest,backup)
         # Armor was temporarily linked to icon art; bake that design into its own
@@ -27,7 +27,7 @@ def build():
             bounds=canonical.getchannel('A').point(lambda a:255 if a>32 else 0).getbbox()
             canonical=canonical.crop(bounds);canonical.thumbnail((224,224),Image.Resampling.LANCZOS)
             grid=Image.new('RGBA',(256,256));grid.alpha_composite(canonical,((256-canonical.width)//2,(256-canonical.height)//2))
-            grid_path=ROOT/f'Resources/res/grid_items/grid{e["grid"]}.png';grid.save(grid_path)
+            grid_path=ROOT/f'asset_library/reference/Resources/res/grid_items/grid{e["grid"]}.png';grid.save(grid_path)
             grids[e['grid']]['output_size']=[256,256]
             grids[e['grid']]['design_source']=backup.relative_to(ROOT).as_posix()
         xs,ys=cuts[e['group']];col,row=e['cell']%8,e['cell']//8
@@ -39,7 +39,7 @@ def build():
         icon=Image.new('RGBA',(256,256));icon.alpha_composite(tile,((256-tile.width)//2,(256-tile.height)//2));icon.save(dest)
         bounds=list(icon.getchannel('A').point(lambda a:255 if a>24 else 0).getbbox())
         old[e['item']]['bounds']=bounds;old[e['item']]['rendered_from']=f'output/square-gear/generated/{e["group"]}.png'
-        e['icon_file']=dest.relative_to(ROOT).as_posix();e['grid_file']=f'Resources/res/grid_items/grid{e["grid"]}.png'
+        e['icon_file']=dest.relative_to(ROOT).as_posix();e['grid_file']=f'asset_library/reference/Resources/res/grid_items/grid{e["grid"]}.png'
         assert (ROOT/e['grid_file']).resolve()!=dest.resolve()
         assert hashlib.sha256(dest.read_bytes()).digest()!=hashlib.sha256((ROOT/e['grid_file']).read_bytes()).digest()
     manifest_path.write_text(json.dumps(manifest,indent=2))

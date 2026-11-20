@@ -2,7 +2,7 @@ Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $sourcePath = Join-Path $root 'tools/castles/source_shells/castle_03_full.png'
-$outDir = Join-Path $root 'Resources/res/castle_exterior'
+$outDir = Join-Path $root 'asset_library/reference/Resources/res/castle_exterior'
 if (!(Test-Path -LiteralPath $sourcePath)) { throw "Missing source: $sourcePath" }
 
 $source = [Drawing.Bitmap]::FromFile($sourcePath)
@@ -60,17 +60,17 @@ $preview = New-Object Drawing.Bitmap 936, 790, ([Drawing.Imaging.PixelFormat]::F
 $g = [Drawing.Graphics]::FromImage($preview)
 try {
     $g.Clear([Drawing.Color]::FromArgb(25, 42, 47))
-    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_03_base_stage_0.png'))
+    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_03_base_stage_0.png'))
     try { $g.DrawImageUnscaled($base, 164, 581) } finally { $base.Dispose() }
     for ($floor = 0; $floor -lt 3; ++$floor) {
         $roomStage = if ($floor -eq 2) { 0 } else { 5 }
-        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
+        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('asset_library/reference/Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
         try { $g.DrawImageUnscaled($room, 164, 197 + (2 - $floor) * 128) }
         finally { $room.Dispose() }
     }
     $shell = [Drawing.Bitmap]::FromFile((Join-Path $outDir 'castle_03_hollow_stage_0.png'))
     try { $g.DrawImageUnscaled($shell, 100, 0) } finally { $shell.Dispose() }
-    $wheel = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_03_wheel_stage_0.png'))
+    $wheel = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_03_wheel_stage_0.png'))
     try {
         $g.DrawImage($wheel, (New-Object Drawing.Rectangle 235, 642, 114, 114))
         $g.DrawImage($wheel, (New-Object Drawing.Rectangle 491, 642, 114, 114))

@@ -1,4 +1,5 @@
 #include "Core.h"
+#include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Text.h"
 #include "GoldAmountFormat.h"
@@ -6,6 +7,10 @@
 #include "ItemSeriesCatalog.h"
 #include "GridItemCatalog.h"
 #include "ItemSeriesArt.h"
+#include "ApprovedRuntimeImages.h"
+#include <unordered_map>
+#include <unordered_set>
+#include <sstream>
 // Castle room/facade overlays share the registered body silhouette.
 #include "Data.h"
 #include "Data/SwordSprites.h"
@@ -803,6 +808,51 @@ void HitZoomUpdate(void)
 	}
 }
 
+// Optional review trace stays outside bundled Resources (the caller supplies
+// an absolute output path). Record successful loads as well as missing art so
+// resource pruning can be checked against actual renderer requests.
+static std::unordered_map<unsigned int,std::string> auditTextureNames;
+static std::unordered_set<unsigned long long> auditTextureEdges;
+static void RegisterAuditTexture(const std::string& name,cocos2d::Texture2D* tex){
+ if(!tex||!getenv("CS_ASSET_DRAW_AUDIT"))return;
+ static bool started=false;
+ if(!started){FILE* file=fopen(getenv("CS_ASSET_DRAW_AUDIT"),"ab");if(file){fprintf(file,"BEGIN\n");fclose(file);}started=true;}
+ auditTextureNames[tex->getName()]=name;
+}
+void AuditDrawnTexture(cocos2d::Texture2D* tex){
+ const char* path=getenv("CS_ASSET_DRAW_AUDIT");if(!path||!*path||!tex)return;
+ const unsigned int source=tex->getName();
+ const unsigned int dest=gRenderTarget?gRenderTarget->getSprite()->getTexture()->getName():0;
+ const unsigned long long edge=((unsigned long long)dest<<32)|source;
+ if(!auditTextureEdges.insert(edge).second)return;
+ if(!auditTextureNames.count(source)){
+  std::istringstream lines(cocos2d::Director::getInstance()->getTextureCache()->getCachedTextureInfo());std::string line;
+  while(std::getline(lines,line)){
+   const auto end=line.find('"',1),id=line.find(" id=");
+   if(line.empty()||line[0]!='"'||end==std::string::npos||id==std::string::npos)continue;
+   if((unsigned int)strtoul(line.c_str()+id+4,nullptr,10)==source){
+    std::string name=line.substr(1,end-1);std::replace(name.begin(),name.end(),'\\','/');
+    const auto res=name.rfind("/res/");if(res!=std::string::npos)name=name.substr(res+1);
+    auditTextureNames[source]=name;break;
+   }
+  }
+ }
+ FILE* file=fopen(path,"ab");if(!file)return;
+ auto name=auditTextureNames.find(source);
+ if(name!=auditTextureNames.end())fprintf(file,"NAME\t%u\t%s\n",source,name->second.c_str());
+ fprintf(file,"EDGE\t%u\t%u\n",dest,source);fclose(file);
+}
+static void AuditRuntimeImage(const std::string& name, bool loaded)
+{
+	const char* path = getenv("CS_ASSET_AUDIT");
+	if (!path || !*path) return;
+	FILE* audit = fopen(path, "ab");
+	if (audit) {
+		fprintf(audit, "%s\t%s\n", loaded ? "OK" : "MISSING", name.c_str());
+		fclose(audit);
+	}
+}
+
 void LoadImg(int index)
 {
 	std::string fileName;
@@ -812,7 +862,10 @@ void LoadImg(int index)
 	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
+		if (!RuntimeImageApproved(fileName)) return;
 		sprite[index] = Sprite::create(fileName);
+		if(sprite[index])RegisterAuditTexture(fileName,sprite[index]->getTexture());
+		AuditRuntimeImage(fileName, sprite[index] != nullptr);
 		if (!sprite[index]) {
 			cocos2d::log("LoadImg failed: index=%d, file=%s, resolved=%s", index,
 				fileName.c_str(), FileUtils::getInstance()->fullPathForFilename(fileName).c_str());
@@ -831,7 +884,10 @@ void LoadTexture(int index)
 	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
+		if (!RuntimeImageApproved(fileName)) return;
 		texture[index] = Director::getInstance()->getTextureCache()->addImage(fileName);
+		RegisterAuditTexture(fileName,texture[index]);
+		AuditRuntimeImage(fileName, texture[index] != nullptr);
 
 		//그림 파일이 없으면 여기서 널이 온다. 그냥 두면 바로 아래 retain 에서
 		//부팅이 통째로 죽는다. 그림 한 장이 빠졌다고 게임이 안 뜨면 안 된다.
@@ -883,6 +939,7 @@ void LoadSpriteFromTexture(int textureIdx)
 //드로우 콜마다 렌더타겟을 바인딩하거나 renderer->render() 로 플러시하지 않는다.
 //gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
 void AfterSpriting(cocos2d::Sprite* src) {
+	AuditDrawnTexture(src->getTexture());
 
 	if (gRenderTarget)
 		src->visit();
@@ -955,27 +1012,27 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
-		if(idx>=MONSTER_PARTS_FIRST_IMG&&idx<=MONSTER_PARTS_LAST_IMG)return "res/monster_parts/atlas-"+std::to_string(idx-MONSTER_PARTS_FIRST_IMG)+".png";
-		if(idx>=GRID_ITEM_FIRST_IMG && idx<=GRID_ITEM_LAST_IMG) return "res/grid_items/grid"+std::to_string(idx-GRID_ITEM_FIRST_IMG)+".png";
-		if(idx>=ITEM_SERIES_FIRST_IMG && idx<=ITEM_SERIES_LAST_IMG) return "res/items/item"+std::to_string(idx-ITEM_SERIES_FIRST_IMG)+".png";
-		if(idx==TITLE_IMG) return "res/hybrid_sd3d/title-scene.png";
+		if(idx>=MONSTER_PARTS_FIRST_IMG&&idx<=MONSTER_PARTS_LAST_IMG)return "res/monster_parts-atlas-"+std::to_string(idx-MONSTER_PARTS_FIRST_IMG)+".png";
+		if(idx>=GRID_ITEM_FIRST_IMG && idx<=GRID_ITEM_LAST_IMG) return "res/grid_items-grid"+std::to_string(idx-GRID_ITEM_FIRST_IMG)+".png";
+		if(idx>=ITEM_SERIES_FIRST_IMG && idx<=ITEM_SERIES_LAST_IMG) return "res/items-item"+std::to_string(idx-ITEM_SERIES_FIRST_IMG)+".png";
+		if(idx==TITLE_IMG) return "res/hybrid_sd3d-title-scene.png";
 		if (idx == CASTLE_ARTILLERY_IMG) {
-			fileName = "res/castle_artillery/attacks.png";
+			fileName = "res/castle_artillery-attacks.png";
 			break;
 		}
 		if (idx >= INVENTORY_HELM_ROBIN_FIRST_IMG && idx <= INVENTORY_HELM_LAST_IMG) {
 			const int hero = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) / 8;
 			const int item = (idx - INVENTORY_HELM_ROBIN_FIRST_IMG) % 8 + 1;
 			const char* names[] = { "robin", "diana", "maxx" };
-			fileName = "res/inventory_helm/" + std::string(names[hero]) + "_" + std::to_string(item) + ".png";
+			fileName = "res/inventory_helm-" + std::string(names[hero]) + "_" + std::to_string(item) + ".png";
 			break;
 		}
 		if (idx >= INVENTORY_GUN_FIRST_IMG && idx <= INVENTORY_GUN_LAST_IMG) {
-			fileName = "res/inventory_gun/" + std::to_string(idx - INVENTORY_GUN_FIRST_IMG + 1) + ".png";
+			fileName = "res/inventory_gun-" + std::to_string(idx - INVENTORY_GUN_FIRST_IMG + 1) + ".png";
 			break;
 		}
 		if (idx >= INVENTORY_BOOMERANG_FIRST_IMG && idx <= INVENTORY_BOOMERANG_LAST_IMG) {
-			fileName = "res/inventory_boomerang/" + std::to_string(idx - INVENTORY_BOOMERANG_FIRST_IMG + 1) + ".png";
+			fileName = "res/inventory_boomerang-" + std::to_string(idx - INVENTORY_BOOMERANG_FIRST_IMG + 1) + ".png";
 			break;
 		}
 		temp = TEXT_IMGNAME_START + idx;
@@ -1032,7 +1089,8 @@ void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture* cvtDest)
 		if (gRenderTarget) {
 			//RenderTexture �� 3���� visit �����ε尡 0���� Node::visit() �� �����Ƿ�
 			//Node* �� �޾Ƽ� ȣ���Ѵ�. ���ο��� RenderTexture �� �������̵��?���� ����ġ�ȴ�.
-			cocos2d::Node* node = cvtDest;
+		AuditDrawnTexture(cvtDest->getSprite()->getTexture());
+		cocos2d::Node* node = cvtDest;
 			node->visit();
 		}
 		else
@@ -2084,6 +2142,7 @@ void EndScreenBuffer(void)
 	gRenderLayer = nullptr;
 
 	ApplySpotlight();
+	AuditDrawnTexture(gScreenBuffer->getSprite()->getTexture());
 
 	//���� ���� ȭ����۴�?�� ������ ���ŵǹǷ� ������ ���� �ʿ䰡 ����.
 	if (gScreenBuffer->getParent() == nullptr)
@@ -2744,7 +2803,7 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		return;
 	}
 	else {
-		DrawImage(DIORAMASIZE_X, DIORAMASIZE_Y, 0, 0, x, y, drawHandle == MD_PVP, false, false, false, false, zoom, sprite[MAP_DIORAMA_IMG + type], MAP_DIORAMA_IMG + type);
+		MergeRouletteHousePreview(type,x,y,DIORAMASIZE_X*zoom,DIORAMASIZE_Y*zoom);
 	}
 
 	// PVP는 상대 성 디오라마 자체가 전장 배경이다. 아래의 일반 방 타일/버퍼를
@@ -2868,13 +2927,12 @@ void DrawDiorama(int x, int y, int type, float zoom)
 		}
 		worldScaled = true;
 	}
-	else if (drawHandle == MD_PVP || gPvpCosmicTransition) {
+	else if (drawHandle == MD_PVP) {
 		//PVP 진입에서는 디오라마만 작아지는 것이 아니라 그 위에 선 히어로,
 		//동료, 상자도 같은 로컬 좌표계에서 함께 작아져야 한다. 일반 오브젝트
 		//렌더러는 크기에는 dioramaZoom을 곱하지만 위치는 화면 좌표 그대로 쓰므로,
 		//그리는 동안만 현재 전투 줌에 대한 비율로 위치를 변환한다.
-		const float targetZoom = gPvpCosmicTransition
-			? gPvpCosmicBaseZoom : DIORAMAZOOM_BATTLE + dioramaZoomGap;
+		const float targetZoom = DIORAMAZOOM_BATTLE + dioramaZoomGap;
 		const float pvpWorldScale = targetZoom > 0.001f
 			? dioramaZoom / targetZoom : 1.0f;
 
@@ -5577,7 +5635,7 @@ int GetMaxShield(void)
 //
 //하트 패스가 켜져 있으면 더 준다. 상한이 늘면 자리를 비우러 자주 들어올
 //필요가 줄고 한 번에 오래 놀 수 있다. 그것이 그 상품이 파는 것이다.
-//하트(스태미나) 상한. 기본 HEART_MAX_BASE(20)에 성 단계(0~9)마다 +1씩 는다.
+//에너지 상한. 기본 35에 성 단계(0~9)마다 5씩 는다.
 int GetInitHeart(void)
 {
 	int init = HEART_MAX_BASE + Max(0, Min((int)robin.castle, 9)) * HEART_MAX_PER_CASTLE;

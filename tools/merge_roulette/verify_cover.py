@@ -6,12 +6,13 @@ import time
 import argparse
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--exe', default='cs_bars.exe')
 parser.add_argument('--reference', action='store_true')
 parser.add_argument('--max-cannon', action='store_true')
 args = parser.parse_args()
 
 ROOT = Path(__file__).resolve().parents[2]
-EXE = ROOT / 'proj.win32/Debug.win32/cs_bars.exe'
+EXE = ROOT / 'proj.win32/Debug.win32' / args.exe
 for height in (850, 1408):
     dest = ROOT / ('output/merge-cannon-max-review' if args.max_cannon else 'output/merge-cover-reference' if args.reference else 'output/merge-cover-review') / str(height)
     dest.mkdir(parents=True, exist_ok=True)

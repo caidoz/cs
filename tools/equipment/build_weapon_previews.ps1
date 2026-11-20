@@ -1,7 +1,7 @@
 param([string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path)
 
 Add-Type -AssemblyName System.Drawing
-$res=Join-Path $Root 'Resources\res'
+$res=Join-Path $Root 'asset_library/reference/Resources\res'
 $base=Join-Path $Root 'content\equipment\pixel_art'
 foreach($weapon in @('gun','boomerang')) {
     $canvas=[System.Drawing.Bitmap]::new(896,640,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb)

@@ -809,7 +809,7 @@ void MoveObj(OBJECT* pObj)
 	{
 		const int raidOwner = GetBossRaidSkillFreezeOwner();
 		const int freezeObj = raidOwner >= 0
-			? CREW + raidOwner : GetPvpSkillFreezeObj();
+			? CREW + raidOwner : -1;
 
 		//치는 개체의 부속칸(총알)도 같이 움직여야 한다. 적 칸의 개체는
 		//제 뒤 MAXENEMYOBJ - 1 칸을 총알 자리로 쓴다.

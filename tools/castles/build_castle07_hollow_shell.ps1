@@ -1,7 +1,7 @@
 Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$outDir = Join-Path $root 'Resources/res/castle_exterior'
+$outDir = Join-Path $root 'asset_library/reference/Resources/res/castle_exterior'
 $upperH = 320
 $floors = 7
 $height = $upperH + 128 * $floors
@@ -48,7 +48,7 @@ try {
         } finally { $g.Dispose() }
         try {
             foreach ($stage in 0..5) {
-                $path = Join-Path $root ('Resources/res/{0}/castle_07_{1}_stage_{2}.png' -f $def.Dir, $def.Name, $stage)
+                $path = Join-Path $root ('asset_library/reference/Resources/res/{0}/castle_07_{1}_stage_{2}.png' -f $def.Dir, $def.Name, $stage)
                 $out.Save($path, [Drawing.Imaging.ImageFormat]::Png)
             }
         } finally { $out.Dispose() }
@@ -68,7 +68,7 @@ try {
             0, 80, 2172, 544, [Drawing.GraphicsUnit]::Pixel)
     } finally { $g.Dispose() }
     try {
-        $exhaust.Save((Join-Path $root 'Resources/res/castle_mobility/castle_07_exhaust.png'),
+        $exhaust.Save((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_07_exhaust.png'),
             [Drawing.Imaging.ImageFormat]::Png)
     } finally { $exhaust.Dispose() }
 } finally { $exhaustSource.Dispose() }
@@ -92,15 +92,15 @@ try {
     $g.Clear([Drawing.Color]::FromArgb(25, 42, 47))
     for ($floor = 0; $floor -lt $floors; ++$floor) {
         $roomStage = if ($floor -eq ($floors - 1)) { 0 } else { 5 }
-        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
+        $room = [Drawing.Bitmap]::FromFile((Join-Path $root ('asset_library/reference/Resources/res/castle_room_{0:d2}_{1}.png' -f ($floor + 1), $roomStage)))
         try { $g.DrawImageUnscaled($room, 164, $upperH + ($floors - 1 - $floor) * 128) }
         finally { $room.Dispose() }
     }
     $shell = [Drawing.Bitmap]::FromFile((Join-Path $outDir 'castle_07_hollow_stage_0.png'))
     try { $g.DrawImageUnscaled($shell, 100, 0) } finally { $shell.Dispose() }
-    $exhaust = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_07_exhaust.png'))
+    $exhaust = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_07_exhaust.png'))
     try { $g.DrawImageUnscaled($exhaust, 164, $height + 94) } finally { $exhaust.Dispose() }
-    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'Resources/res/castle_mobility/castle_07_flightbase_stage_0.png'))
+    $base = [Drawing.Bitmap]::FromFile((Join-Path $root 'asset_library/reference/Resources/res/castle_mobility/castle_07_flightbase_stage_0.png'))
     try { $g.DrawImageUnscaled($base, 164, $height) } finally { $base.Dispose() }
     $balcony = [Drawing.Bitmap]::FromFile((Join-Path $outDir 'castle_07_balcony_stage_0.png'))
     try { $g.DrawImageUnscaled($balcony, 644, $height - 128) } finally { $balcony.Dispose() }

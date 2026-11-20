@@ -4865,6 +4865,8 @@ void LoadGame(void)
 	//for (i = 0; i < TOTALINVENTORY; i++)
 	//	memcpy(&robin.inven[i], saveMem + i * sizeof(ITEM), sizeof(ITEM));
 	memcpy((char*)&robin, saveMem, sizeof(ROBINDATA));
+	// The former debug capacity was 99; normalize legacy energy to the castle cap.
+	robin.heart=Min((long long)GetInitHeart(),Max(0LL,robin.heart));
 
 	//crewCnt는 ROBINDATA에 들어가지 않는 순수 전역이라 세이브에서 복원되지 않는다.
 	//NewGame()에서만 세팅하면, 세이브가 생긴 뒤(튜토리얼 중에도 SaveGame()이 수시로 호출된다)
@@ -4881,6 +4883,7 @@ void LoadGame(void)
 void LoadGameAfterNet(void)
 {
 	CastleProgressEnsure();
+	robin.heart=Min((long long)GetInitHeart(),Max(0LL,robin.heart));
 	CrewGrantEnsure();
 	GearGrantEnsure();
 	gMobileCastleVisual=CastleMenuModel::Clamp(robin.castle);

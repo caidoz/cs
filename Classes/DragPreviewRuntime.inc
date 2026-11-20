@@ -405,7 +405,7 @@ static void DragInfoLoadoutDraw() {
  const int used=LoadoutUsed(),next=invalid||inspecting?used:removing?used-cost:LoadoutFind(inv)>=0?used:used+cost;
  bool hasWeapon=false;for(const auto& p:after) if(p.type==curHero) hasWeapon=true;
  sprintf(footer,"보급력 %d/%d → %d/%d%s",used,LoadoutPoint(),next,LoadoutPoint(),removing&&!hasWeapon?" · 기본 무기 없음: 출정 불가":"");
- DragInfoDraw(before,after,held,invalid,removing,gLoadoutForPvp,footer,gLoadoutGridX,gLoadoutGridY,gLoadoutCell);
+ DragInfoDraw(before,after,held,invalid,removing,false,footer,gLoadoutGridX,gLoadoutGridY,gLoadoutCell);
 }
 static void DragInfoBattleDraw() {
  if(!gGridDragOn) return;

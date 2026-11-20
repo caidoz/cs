@@ -72,7 +72,7 @@ public static class DianaGunImageProcessor
 }
 '@
 
-$resourceDir = Join-Path $ProjectRoot 'Resources\res'
+$resourceDir = Join-Path $ProjectRoot 'asset_library/reference/Resources\res'
 $workDir = Join-Path $ProjectRoot 'output\diana-guns'
 $rawDir = Join-Path $workDir 'raw'
 $originalDir = Join-Path $workDir 'originals'

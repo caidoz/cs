@@ -1,35 +1,33 @@
-// Resources/ 전체를 담는 설치 시점 에셋 팩.
-//
-// 기본 모듈은 Play 에서 200MB 가 상한이라 1.3GB 짜리 Resources 를 담을 수 없다.
-// install-time 팩은 설치와 함께 내려오고 AssetManager 에 그대로 합쳐지므로
-// cocos2d-x FileUtils 는 예전처럼 "res/..." 경로를 그대로 읽는다.
-//
-// src/main/assets 는 빌드 때 Resources 에서 동기화한 복사본이다. 저장소에 넣지 않는다.
+// Only explicitly approved runtime assets enter this install-time asset pack.
 apply plugin: 'com.android.asset-pack'
-
 assetPack {
     packName = "assets_base"
-    dynamicDelivery {
-        deliveryType = "install-time"
-    }
+    dynamicDelivery { deliveryType = "install-time" }
 }
-
+def repo = rootProject.file("..")
+def catalogFile = new File(repo, "content/runtime-assets.json")
+def catalog = new groovy.json.JsonSlurper().parse(catalogFile)
+def staged = layout.buildDirectory.dir("approved-runtime-assets")
+def windowsPython = new File(System.getenv('LOCALAPPDATA') ?: '', 'Python/bin/python.exe')
+def python = project.findProperty('assetPython') ?: (windowsPython.exists() ? windowsPython.absolutePath : 'python3')
+def stageRuntimeAssets = tasks.register("stageRuntimeAssets", Exec) {
+    inputs.file(catalogFile)
+    inputs.file(new File(repo, "tools/assets/runtime_assets.py"))
+    inputs.file(new File(repo, "Resources/manifest.tsv"))
+    inputs.files(catalog.assets.collect { new File(repo, it.source) })
+    inputs.files(catalog.assets.findAll { it.original_source }.collect { new File(repo, it.original_source) })
+    outputs.dir(staged)
+    workingDir repo
+    commandLine python, new File(repo, "tools/assets/runtime_assets.py").absolutePath,
+            "stage", "--output", staged.get().asFile.absolutePath, "--prune"
+}
 def syncResources = tasks.register("syncResourcesToAssets", Sync) {
-    from(rootProject.file("../Resources")) {
-        exclude "**/*.gz"
-        exclude "**/*.json"
-        exclude "**/*.md"
-        exclude "**/*.txt"
-        exclude "**/*.py"
-        exclude "**/*.psd"
-        exclude "**/*.zip"
-        exclude "**/.DS_Store", "**/Thumbs.db", "**/desktop.ini"
-    }
+    dependsOn(stageRuntimeAssets)
+    from(staged) { exclude ".runtime-assets-state.json" }
     into(project.file("src/main/assets"))
 }
-
 tasks.configureEach { t ->
-    if (t.name != "syncResourcesToAssets" && t.name != "clean") {
+    if (!(t.name in ["stageRuntimeAssets", "syncResourcesToAssets", "clean"])) {
         t.dependsOn(syncResources)
     }
 }

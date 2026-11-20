@@ -59,7 +59,7 @@ public static class CastleCommandBake {
     }
     public static void Run(string root) {
         string concepts=Path.Combine(root,"tools","castles","concepts");
-        string exterior=Path.Combine(root,"Resources","res","castle_exterior");
+        string exterior=Path.Combine(root,"asset_library/reference/Resources","res","castle_exterior");
         for(int castle=2;castle<=10;castle++) {
             string sheetPath=Path.Combine(concepts,
                 String.Format("castle_{0:00}_command_sheet.png",castle));

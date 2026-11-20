@@ -23,7 +23,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 
-RES = Path(__file__).resolve().parents[2] / "Resources" / "res"
+RES = Path(__file__).resolve().parents[2] / "asset_library/reference/Resources" / "res"
 H = 128
 W = 512
 

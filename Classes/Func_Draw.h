@@ -269,7 +269,6 @@ bool CastleUniformReviewCheck(void);
 bool CastleIndividualReviewCheck(int operation);
 bool CastleInteriorSyncReviewCheck(int operation);
 bool CastleRoomToggleTap(float startX,float startY,float endX,float endY);
-bool PvpCastleDebugReviewCheck();
 bool NinthSdUpgradeReviewCheck(void);
 bool EighthSdUpgradeReviewCheck(void);
 bool SeventhSdUpgradeReviewCheck(void);
@@ -345,34 +344,11 @@ bool GridTestIsOpen(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
 void BattleMinimapDraw(int x, int y, float zoom);
-//---- PVP 진입 ----
-//
-//withUniverse 가 true 면 우주맵에서 상대를 찾는 화면부터 보여준다. 룰렛
-//당첨으로 들어올 때는 그 화면을 룰렛이 이미 보여줬으므로 false 다.
-void StartPvpTest(bool withUniverse = true);
-
-//출정 준비를 PVP 용으로 연다. [세팅 완료] 를 누르면 판이 아니라 격돌로
-//들어간다.
-void LoadoutOpenForPvp(void);
-
-//---- PVP 열 단계 ----
-//
-//pvpStageFighting 은 지금 붙고 있는 단계(1~PVP_STAGE_CNT), pvpFoeCastleLevel
-//은 상대 성 단계다. VS 화면도 이 둘을 읽는다.
-extern int pvpStageFighting;
-extern int pvpFoeCastleLevel;
-extern int pvpFoeProfileImg;
+// PVP stage progression data; live siege rendering is in MergeSiege.inc.
 int PvpMyPower(void);
 int PvpStageNow(void);
 bool PvpStageOpponent(int stage, HOUSE* out);
 void PvpStageClear(int stage);
-void StartPvpTestBattle(void);
-bool IsPvpCrewActing(int crewSlot);
-int GetPvpSkillFreezeObj(void);
-void PvpFinishCrewSkill(OBJECT* pObj);
-void ExitPvpTest(void);
-void PvpTestDraw(void);
-void PvpTransitionCloudDraw(int transitionFrame);
 void ActiveHelpDraw();
 void LogDraw(LOG *);
 void KeepLogFromDarken(LOG *);
@@ -403,9 +379,6 @@ void WaveBadgeDrawBeforeBars(void);
 
 void LobbyCastleMenuCommand(int func);
 
-void PvpClashAdvanceNext(void);
-void PvpClashToggleAuto(void);
-bool PvpClashIsAuto(void);
 
 void LoadoutInspect(int catalog);
 int GridEquippedWeaponHaste(void);

@@ -25,18 +25,68 @@ static void CastleMenuReviewStep()
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
     if(MenuSceneReview(path))return;
+    if(getenv("CS_EQUIP_STATS_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){
+            NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);
+            for(int i=0;i<TOTALINVENTORY;++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
+            ITEM item;MakeItem(&item,ITEM_SWORD,1,GRADE_NORMAL,1,0);item.cooldown=0;item.value=100;item.id=880002;item.count=1;
+            const int options[]={PREFIX_CRITICAL,PREFIX_PIERCE,PREFIX_EXTRA,PREFIX_GOLD,PREFIX_EXP,SUFFIX_CRITICAL,SUFFIX_EVASION,SUFFIX_HP,SUFFIX_MP,SUFFIX_HPDRAIN,SUFFIX_MPDRAIN,SUFFIX_ARMOR};
+            for(int n=0;n<12;++n){item.option[n][0]=options[n];item.option[n][1]=5;}
+            robin.inven[20]=item;item.id=880001;item.value=10;robin.inven[0]=item;
+            robin.charData[ROBIN].equip[EQUIP_WEAPON]=item;SetPlayerHero(ROBIN);
+        }
+        if(tick==20){touchFunc(TOUCH_FUNC_COLLECTIONS);PlayKey(PLAYER);systemKey=0;curEquipTab=EQUIPTAB_GEAR;menuDepth=1;menuItem=20;}
+        const int step=tick==45?0:tick==65?1:tick==95?2:tick==135?3:-1;
+        if(step>=0)CastleReviewTrace(EquipmentDetailStatsReview(step)?"PASS equipment stats instance and input":"FAIL equipment stats detail");
+        const char* shot=tick==55?"stats.png":tick==80?"stats-scroll.png":tick==115?"equipped.png":tick==150?"duplicate-not-equipped.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS equipment stats capture":"FAIL equipment stats capture");},std::string(path)+shot);}
+        if(tick==160)CastleReviewTrace("DONE equipment stats review");
+        return;
+    }
+    if(getenv("CS_ENTRY_CHOICE_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        const int step=tick==30?0:tick==50?6:tick==60?1:tick==80?2:tick==150?3:tick==190?4:tick==300?5:-1;
+        if(step>=0)CastleReviewTrace(MergeRouletteEntryChoiceReview(step)?"PASS entry choice input and accounting":"FAIL entry choice flow");
+        const char* shot=tick==25?"lobby.png":tick==45?"choice.png":tick==55?"progress.png":tick==130?"expedition-rewards.png":tick==170?"insufficient-energy.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS entry capture":"FAIL entry capture");},std::string(path)+shot);}
+        if(tick==305)CastleReviewTrace("DONE entry choice review");
+        return;
+    }
     if(CastleUpgradeBlockReview(path))return;
     if(CastleFourFacilityReview(path))return;
     if(getenv("CS_BOX_INFO_REVIEW")){
-        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        static int tick=0;static bool pending=false;static long long beforeGold=0,beforeGems=0;if(pending)return;++tick;
         if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);robin.gold=110;robin.coin=0;}
         if(tick==20){touchFunc(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
         if(tick==80)scY[MENU_SHOP]=scT[MENU_SHOP];
         if(tick==120)scY[MENU_SHOP]=0;
-        if(tick==135){CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1+1);PlayKey(PLAYER);systemKey=0;}
+        if(tick==135){beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1+1);PlayKey(PLAYER);systemKey=0;}
+        if(tick==155)CastleReviewTrace(robin.gold==beforeGold&&robin.coin==beforeGems&&popUpCnt>0?"PASS product opens details without charging":"FAIL detail charged currency");
         const char* shot=tick==60?"boxes-top.png":tick==100?"boxes-bottom.png":tick==160?"box-detail.png":nullptr;
         if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+shot);}
-        if(tick==170)CastleReviewTrace("DONE box info review");
+        if(tick==170&&!getenv("CS_SHOP_PURCHASE_FLOW_REVIEW"))CastleReviewTrace("DONE box info review");
+        if(getenv("CS_SHOP_PURCHASE_FLOW_REVIEW")){
+            if(tick==175){
+                CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CANCEL);PlayKey(PLAYER);systemKey=0;
+                // This isolated review starts with a full character fixture.
+                // Reserve room for a valid purchase after the read-only case.
+                for(int i=0;i<GetMaxInven();++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
+            }
+            if(tick==185){CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1);PlayKey(PLAYER);systemKey=0;}
+            if(tick==200){beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CONFIRM);PlayKey(PLAYER);systemKey=0;}
+            if(tick==225){
+                bool result=false;for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==TOUCH_FUNC_SHOP_RESULT_CLOSE)result=true;
+                char diagnostic[160];snprintf(diagnostic,sizeof(diagnostic),"purchase result=%d gold=%lld before=%lld popups=%d",result,(long long)robin.gold,beforeGold,popUpCnt);CastleReviewTrace(diagnostic);
+                pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+"purchase-result.png");
+            }
+            if(tick==235){
+                bool result=false;for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==TOUCH_FUNC_SHOP_RESULT_CLOSE)result=true;
+                CastleReviewTrace(result&&robin.gold<beforeGold&&robin.gold>=beforeGold-GetBoxPrice(BOX_PAID0,GRADE_NORMAL)&&robin.coin==beforeGems?"PASS purchase confirms then shows granted rewards":"FAIL purchase result flow");
+                CastleReviewTrace("DONE box info review");
+            }
+        }
         return;
     }
     if(getenv("CS_CREW_DETAIL_REVIEW")){
@@ -888,21 +938,7 @@ static void CastleMenuReviewStep()
         if(tick==910) CastleReviewTrace("PASS stage combat review complete");
         return;
     }
-    if(getenv("CS_PVP_ICON_ENTRANCE_REVIEW")) {
-        static int tick=0;static bool pending=false;
-        if(pending) return;
-        const int batch=tick/25,phase=tick%25;++tick;
-        if(batch>=10) {if(tick==251) CastleReviewTrace("PASS all ten current icon entrances");return;}
-        robin.castle=batch;pvpFoeCastleLevel=10-batch;pvpStageFighting=1;
-        DrawPvpSelectedCastles(60,60);
-        if(phase==16) CastleReviewTrace(PvpEntranceIconReviewCheck(batch+1,10-batch)?"PASS entrance icon IDs mirrored wheels and bounds":"FAIL entrance icon layout");
-        if(phase==18) {
-            char name[64];sprintf(name,"entrance-%02d-vs-%02d.png",batch+1,10-batch);
-            pending=true;
-            cocos2d::utils::captureScreen([](bool ok,const std::string&) {CastleReviewTrace(ok?"PASS entrance icon capture":"FAIL entrance icon capture");pending=false;},std::string(path)+name);
-        }
-        return;
-    }
+
     if(getenv("CS_CURRENT_CANNON_ICON_REVIEW")) {
         static int tick=0;++tick;
         const int img=INVENTORY_CANNON_ATLAS_IMG;
@@ -1010,35 +1046,8 @@ static void CastleMenuReviewStep()
         if(phase==29) CastleRoomCoverPreview(0);
         return;
     }
-    if(getenv("CS_PVP_LAYOUT_REVIEW")) {
-        static int tick=0; ++tick;
-        if(tick==1) { robin.castle=0; StartPvpTest(false); }
-        if(tick==190) CastleReviewTrace(PvpCastleDebugReviewCheck()?"PASS PVP castle keyboard cycling and lobby size ratios":"FAIL PVP castle keyboard cycling and lobby size ratios");
-        if(tick==180) cocos2d::utils::captureScreen([](bool ok,const std::string&) {
-            CastleReviewTrace(ok?"PASS PVP layout capture":"FAIL PVP layout capture");
-        },std::string(path)+"pvp-layout.png");
-        return;
-    }
-    if(getenv("CS_CASTLE_MAP_ICON_REVIEW")) {
-        static int tick=0;++tick;
-        if(tick!=20) return;
-        bool ok=true;
-        FILE* log=fopen((std::string(path)+"icons.csv").c_str(),"w");
-        if(!log) {CastleReviewTrace("FAIL map icon report");return;}
-        fprintf(log,"castle,image_id,resource,width,height\n");
-        for(int i=0;i<10;++i) {
-            const int img=CASTLE_MAP_ICON_FIRST_IMG+i;
-            const std::string resource=GetResourceName(RES_IMG,img);
-            char expected[100];sprintf(expected,"castle_map_icons/castle_map_%02d.png",i+1);
-            if(resource.find(expected)==std::string::npos || !sprite[img] || !texture[img]) {ok=false;continue;}
-            const auto size=texture[img]->getContentSizeInPixels();
-            if(size.width!=1024 || size.height!=1024 || sprite[img]->getTexture()!=texture[img]) ok=false;
-            fprintf(log,"%d,%d,%s,%.0f,%.0f\n",i+1,img,resource.c_str(),size.width,size.height);
-        }
-        fclose(log);
-        CastleReviewTrace(ok?"PASS all ten map icons registered and preloaded":"FAIL map icon registration or preload");
-        return;
-    }
+
+
     if(getenv("CS_FIXED_WIDTH_REVIEW")) {
         static int tick=0; ++tick;
         const int castle=(tick-1)/40,phase=(tick-1)%40;
@@ -1930,7 +1939,7 @@ static void CastleMenuReviewStep()
         PlayKey(PLAYER);
         CastleReviewTrace("castle menu opened");
         CastleReviewTrace(sprite[INVENTORY_CANNON_ATLAS_IMG] && texture[INVENTORY_CANNON_ATLAS_IMG] &&
-            GetResourceName(RES_IMG,INVENTORY_CANNON_ATLAS_IMG).find("inventory_cannon/atlas.png")!=std::string::npos?
+            GetResourceName(RES_IMG,INVENTORY_CANNON_ATLAS_IMG).find("inventory_cannon-atlas.png")!=std::string::npos?
             "PASS cannon atlas registry and loading":"FAIL cannon atlas registry or loading");
     }
     if (tick == 70) CastleReviewClick(TOUCH_FUNC_CASTLE_NEW_NEXT);

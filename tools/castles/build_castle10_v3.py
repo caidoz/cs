@@ -4,7 +4,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
 MASTER = ROOT / "content/castles/modular_v3/castle_10_master.png"
-OUT = ROOT / "Resources/res/castle_parts"
+OUT = ROOT / "asset_library/reference/Resources/res/castle_parts"
 PREVIEW = ROOT / "content/castles/modular_v3/castle_10_preview.png"
 SIZE = (1024, 1536)
 

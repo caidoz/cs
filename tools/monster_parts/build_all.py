@@ -62,7 +62,7 @@ def main():
     records=[]
     for bi,row in enumerate(bases):
         cmf=enums[row['cmf']]
-        sheet=Image.open(ROOT/f'Resources/res/c{cmf}.png').convert('RGBA')
+        sheet=Image.open(ROOT/f'asset_library/reference/Resources/res/c{cmf}.png').convert('RGBA')
         thumb=fit(sheet,(226,150))
         x=(bi%6)*240;y=(bi//6)*200
         atlas.alpha_composite(thumb,(x+(240-thumb.width)//2,y+32))
@@ -71,7 +71,7 @@ def main():
     for row in enemies:
         cmf=enums[row['cmf']]
         base=next(enums[b['cmf']] for b in bases if arrays['cmfOffSlot'][enums[b['cmf']]]==arrays['cmfOffSlot'][cmf])
-        sheet_path=ROOT/f'Resources/res/c{cmf}.png'
+        sheet_path=ROOT/f'asset_library/reference/Resources/res/c{cmf}.png'
         if not sheet_path.exists(): raise RuntimeError(f'Missing sheet {cmf}')
         sheet=Image.open(sheet_path).convert('RGBA')
         total=int(re.search(r'TOTALC\d+OFF\s*=\s*(\d+)',(ROOT/f'Classes/Cmf/c{base}.h').read_text(encoding='utf-8-sig'))[1])

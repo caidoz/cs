@@ -2,7 +2,7 @@ Add-Type -AssemblyName System.Drawing
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $sourcePath = Join-Path $root 'tools/castles/source_shells/castle_01_full.png'
-$outDir = Join-Path $root 'Resources/res/castle_mobility'
+$outDir = Join-Path $root 'asset_library/reference/Resources/res/castle_mobility'
 $source = [Drawing.Bitmap]::FromFile($sourcePath)
 try {
     # The left wheel is seen face-on. Keep the outer iron rim and spokes,

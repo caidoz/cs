@@ -8,7 +8,7 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
 
 def validate():
-    entries=json.loads((ROOT/'Resources/res/grid_items/manifest.json').read_text())['entries']
+    entries=json.loads((ROOT/'Resources/res/grid_items-manifest.json').read_text())['entries']
     assert len(entries)==225
     for e in entries:
         assert hashlib.sha256((ROOT/e['source']).read_bytes()).hexdigest()==e['source_sha256'], e['source']

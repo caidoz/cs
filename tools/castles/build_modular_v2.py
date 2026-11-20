@@ -11,7 +11,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "content" / "castles" / "modular_v2" / "source"
-OUTPUT = ROOT / "Resources" / "res" / "castle_parts"
+OUTPUT = ROOT / "asset_library/reference/Resources" / "res" / "castle_parts"
 PREVIEW = ROOT / "content" / "castles" / "modular_v2" / "preview.png"
 HOVER_SOURCE = ROOT / "content" / "castles" / "modular_v2" / "hover_mobility.png"
 NAME_INCLUDE = ROOT / "Classes" / "CastleModularNames.inc"

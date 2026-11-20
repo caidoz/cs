@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""성 단계별 가방 테두리를 그린다. Resources/res/grid0 ~ grid9.
+"""성 단계별 가방 테두리를 그린다. asset_library/reference/Resources/res/grid0 ~ grid9.
 
     python tools/bag/build_frames.py
 
@@ -29,7 +29,7 @@ from PIL import Image, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "Classes", "Data", "CastleData.cpp")
 #res 폴더에 평평하게 넣는다. 성 번호와 짝이라 grid0 이 1 단계다.
-OUT = os.path.join(ROOT, "Resources", "res")
+OUT = os.path.join(ROOT, "asset_library/reference/Resources", "res")
 SHEET = os.path.join(ROOT, "output", "bag_frames")
 
 CELL = 64          # 칸 한 변
