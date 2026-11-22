@@ -354,18 +354,17 @@ Layout layout() {
     l.slot={(DX-(int)(348*s))/2,(int)(280*s),(int)(348*s),(int)(116*s)};
     //레버는 없앴다(돌리기는 하단 룰렛 단추뿐). 자리만 남겨 두고 크기 0 - 어디를 눌러도 맞지 않는다.
     l.lever={l.slot.x+l.slot.w,l.slot.y,0,0};
-    // Fixed resource scale: an 80-unit square never shrinks for rows or columns.
+    // Fixed 64-unit cells leave more room for rooftop combat.
     // The top pair on castle ten occupies the gap between the health plates.
     l.plateH=(int)(84*s);l.plateDrop=(int)(8*s);
     const int hull=siegeHullStage>=0?siegeHullStage:run.stage;
     const int groundBase=(int)(1076*CastleArtGeometry::scale(DX,hull))+(int)(40*s);
-    l.cell=(int)(80*s);l.cellH=l.cell;
+    l.cell=(int)(64*s);l.cellH=l.cell;
     const int bw=l.cell*run.shape.width,bhGrid=l.cellH*run.shape.height;
-    //판은 릴 위(280)와 패 밑 사이의 가운데. 1:1.33 에서 네 줄 80칸(320)이 위아래 2~3픽셀을 남기고
-    //들어가는데, 바닥을 286 에 못 박으면 윗변이 패 밑을 1픽셀 넘는다. 윗변을 패 밑으로 막는다.
-    const int slotTop=(int)(280*s),platesBottom=groundBase-l.plateDrop-l.plateH,space=platesBottom-slotTop;
+    // Anchor the compact grid above the unchanged roulette.
+    const int slotTop=(int)(280*s);
     // Extra rows grow upward; the roulette remains outside the board.
-    const int boardBottom=std::max(slotTop+(int)(8*s),std::min(slotTop+std::max(0,(space-bhGrid)/2),platesBottom-bhGrid));
+    const int boardBottom=slotTop+(int)(8*s);
     l.board={(DX-bw)/2,boardBottom+bhGrid,bw,bhGrid};
     //---- 공성전: 성의 크기는 내 판 기준으로 못 박는다 ----
     //
@@ -374,7 +373,7 @@ Layout layout() {
     //큰 판은 성 밖으로 삐져나가도 그대로 둔다. 성 번호도 무대의 성으로 본다.
     const int refBottom=(int)(561*s);
     l.arenaBottom=refBottom+(int)(76*s);
-    l.ground=groundBase;
+    l.ground=groundBase-(int)(64*s);
     const int lift=(int)(castleSceneLift()+castleArtOffset(hull));
     l.board.y+=lift;l.arenaBottom+=lift;l.ground+=lift;
     l.slot.y+=lift;l.lever.y+=lift;l.heart.y+=lift;
@@ -2912,7 +2911,7 @@ void reviewStep(const Layout& l) {
             valid=valid&&drawnFrontCover==MistCastle::image(c,8)
                 &&drawnFrontCoverBounds.x>=hullBounds.x
                 &&drawnFrontCoverBounds.x+drawnFrontCoverBounds.w<=hullBounds.x+hullBounds.w
-                &&l.cell==(int)(80*l.scale)&&l.cellH==l.cell
+                &&l.cell==(int)(64*l.scale)&&l.cellH==l.cell
                 &&l.board.w==run.shape.width*l.cell
                 &&l.board.h==run.shape.height*l.cellH
                 &&l.board.x>=0&&l.board.x+l.board.w<=DX;
@@ -3158,7 +3157,7 @@ void reviewStep(const Layout& l) {
             if(hold<4)return;
             const Layout board=layout();
             const bool clear=board.board.y-board.board.h>=board.slot.y+(int)(8*board.scale);
-            reviewTrace(clear&&board.cell==(int)(80*board.scale)?"PASS board clears roulette at original cell size":"FAIL large board clearance");
+            reviewTrace(clear&&board.cell==(int)(64*board.scale)?"PASS board clears roulette at original cell size":"FAIL large board clearance");
             reviewCapture(sample==0?"board-four-rows":sample==1?"board-five-rows":"board-six-rows");
             hold=0;if(++sample==3)reviewTrace("DONE large board review");
             return;
@@ -3697,7 +3696,7 @@ void reviewStep(const Layout& l) {
     }
     if(a==5) {run.stage=4;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a==6){reviewLayout(l,"10-castle5-nine-columns");reviewCapture("10-castle5-nine-columns");
-        reviewTrace(l.cell==(int)(80*l.scale)&&l.cellH==l.cell&&l.board.w==6*l.cell?"PASS expanded castle grid retains fixed 80px cells":"FAIL expanded grid size");}
+        reviewTrace(l.cell==(int)(64*l.scale)&&l.cellH==l.cell&&l.board.w==6*l.cell?"PASS expanded castle grid retains fixed 64px cells":"FAIL expanded grid size");}
     if(a==10) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a>=12&&!reviewCapturePending&&!reviewFinalCapture) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
@@ -4286,7 +4285,7 @@ void MergeRouletteDraw() {
         if(!reviewCapturePending&&++hold>5&&sample<2){reviewCapture(sample==0?"original-uniform-reference":"original-live-lobby");++sample;hold=0;if(sample==2){
             bool uniform=true;for(int c=1;c<10;++c){run.stage=c;run.setShape(castleShape(c));Layout test=layout();const auto m=castleMap(test,c);
                 const float z=(m.dx[3]-m.dx[0])/(m.sx[3]-m.sx[0]);for(int i=0;i<3;++i)uniform=uniform&&std::abs((m.dy[i+1]-m.dy[i])/(m.sy[i]-m.sy[i+1])-z)<.00001f;
-                uniform=uniform&&test.cell==(int)(80*test.scale)&&test.cellH==test.cell;}
+                uniform=uniform&&test.cell==(int)(64*test.scale)&&test.cellH==test.cell;}
             run.stage=0;run.setShape(castleShape(0));reviewTrace(uniform?"PASS all ten castles preserve uniform art scale and fixed 80px cells":"FAIL castle aspect ratio");reviewTrace("DONE original reference review");}}
         return;
     }

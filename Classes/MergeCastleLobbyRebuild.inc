@@ -49,7 +49,7 @@ Box castleCannonBox(const Layout& l){
   const float z=std::min(width/sw,height/sh);width=sw*z;height=sh*z;
  }
  // The catapult is mounted by its pivot, not by a gun's rear flange.
- if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+80*s+height*.22f),(int)width,(int)height};
+ if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+(active?144:80)*s+height*.22f),(int)width,(int)height};
  const float fit=std::min(1.f,std::max(.1f,(mount.y-l.ground-3*s)/(height*.5f)));
  width*=fit;height*=fit;
  // Rear collar is seated in the tower socket; only the barrel protrudes.
@@ -329,19 +329,29 @@ void drawDeckSurface(const Layout& l,int c,bool mirror){
  sprite[img]->getTexture()->setAliasTexParameters();
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
  const int row=(int)dim.height/10;
- const Box span=OriginalCastle::box(380,0,CastleArtGeometry::DeckRight[c]-380,0);
+ const int deckLeft=active?CastleArtGeometry::Bounds[c][0]:380;
+ const Box span=OriginalCastle::box(deckLeft,0,CastleArtGeometry::DeckRight[c]-deckLeft,0);
  // Leave visible floor both behind and in front of the characters' feet
  // (ground + 8), including the green/brass fourth castle.
  // The sixth castle's high stone fascia needs a deeper top plane to read
  // as a platform rather than another horizontal wall trim.
  // The deck's front edge seats into the same registered cap as the hull.
  // Its transparent bevel must overlap that cap, never hover above it.
- const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale));
+ const bool battle=active;
+ const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale))-(battle?(int)(64*l.scale):0);
  const float z=span.w/dim.width;
- const int height=std::max(1,(int)(row*z));
+ const int height=battle?(int)(80*l.scale):std::max(1,(int)(row*z));
  const Box plane={span.x,front+height,span.w,height};
  const int material=c==7?5:c; // Ivory/gold palace uses ivory/gold stone, not silver steel.
- MistCastle::crop(img,0,material*row,dim.width,row,plane,mirror);
+ if(!battle){MistCastle::crop(img,0,material*row,dim.width,row,plane,mirror);return;}
+ // Repeat native floor strips at uniform scale; never stretch the artwork.
+ const int strip=std::max(1,(int)(32*span.w/(dim.width-96)));
+ SetSectionClip(plane.x,plane.y,plane.w,plane.h,false);
+ for(int y=plane.y;y>front;y-=strip)
+  MistCastle::crop(img,48,material*row+12,dim.width-96,32,{plane.x,y,plane.w,strip},mirror);
+ UnSectionClip(false);
+ const int rim=std::max(1,(int)(row*z));
+ MistCastle::crop(img,0,material*row,dim.width,row,{span.x,front+rim,span.w,rim},mirror);
 }
 void drawCastleHull(const Layout& l,bool combat){
  const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
