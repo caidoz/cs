@@ -14,6 +14,23 @@ int main() {
     for(int gear=0;gear<GearCount;++gear)for(int lv=1;lv<=MaxLevel;++lv)
         MergeBoard::SetGearShape(gear,lv,widths[lv],heights[lv]);
     Stats stats;
+    {
+        Run r=armed();r.enemyHp=r.enemyMax=1;
+        Block b=r.board[0];b.x=2;r.board.push_back(b);b.x=4;r.board.push_back(b);
+        assert(r.attack(stats)&&r.shots.size()==3);
+        for(auto& shot:r.shots)shot.damage=10;
+        assert(r.step()&&r.enemyHp==0&&r.nextShot==1);
+        assert(!r.step()&&!r.shouldCounterattack());
+        Run resumed;assert(resumed.decode(r.encode()));
+        for(Run* q:{&r,&resumed}){
+            q->finish();assert(!q->attacking&&q->wave==1&&q->reward==10&&q->shots.empty());
+            q->finish();assert(q->wave==1&&q->reward==10);
+        }
+        Run dot=armed();dot.attacking=true;dot.passing=true;dot.enemyHp=0;
+        dot.finish();assert(dot.wave==1&&dot.reward==10&&!dot.passing);
+        std::cout<<"PASS lethal first hit cancels remaining attacks, rewards once across resume, and resolves lethal pass\n";
+    }
+
     // Gloves contribute through the native attack stat, never a separate attack turn.
     {
         Run r=armed();Block glove;glove.family=Gloves;glove.x=2;glove.y=0;r.board.push_back(glove);

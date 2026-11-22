@@ -3,6 +3,13 @@ int castleMaterial(int c);
 // Facilities remain independently upgradeable behind the chassis' alpha holes.
 #include "MergeCastleOriginal.inc"
 #include "MergeCastleMist.inc"
+float battleRailLift(){
+ const float s=DX/640.f;
+ const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
+ const auto& wheels=MistCastle::wheelAnchors[c];
+ const int contact=std::max(wheels[0][1]+wheels[0][2],wheels[1][1]+wheels[1][2]);
+ return 8*s+std::max(0.f,(DY-850*s)*.5f)-(1445-contact)*CastleArtGeometry::scale(DX,c)-34*s;
+}
 float entryElapsed=-1.f;
 unsigned panicSeed=0;
 int drawnFrontCover=-1;
@@ -49,7 +56,7 @@ Box castleCannonBox(const Layout& l){
   const float z=std::min(width/sw,height/sh);width=sw*z;height=sh*z;
  }
  // The catapult is mounted by its pivot, not by a gun's rear flange.
- if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+(active?144:80)*s+height*.22f),(int)width,(int)height};
+ if(c==0)return {(int)(168*s-width*.85f),(int)(l.ground+80*s+height*.22f),(int)width,(int)height};
  const float fit=std::min(1.f,std::max(.1f,(mount.y-l.ground-3*s)/(height*.5f)));
  width*=fit;height*=fit;
  // Rear collar is seated in the tower socket; only the barrel protrudes.
@@ -149,7 +156,7 @@ Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
 //원정 단추: 옛 "이어서" 줄의 오른쪽. 왼쪽은 행동력 게이지다.
 //PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
-Box lobbyPvp(const Layout& l){const float s=l.scale;return {(int)(DX-152*s),(int)(118*s),(int)(144*s),(int)(32*s)};}
+Box lobbyPvp(const Layout& l){const float s=l.scale;return {(int)(DX-152*s),(int)(184*s),(int)(144*s),(int)(48*s)};}
 struct CastleMap {
  float sx[4],sy[4],dx[4],dy[4];
  float x(float p) const {int k=p<sx[1]?0:p<sx[2]?1:2;return dx[k]+(p-sx[k])*(dx[k+1]-dx[k])/(sx[k+1]-sx[k]);}
@@ -329,29 +336,27 @@ void drawDeckSurface(const Layout& l,int c,bool mirror){
  sprite[img]->getTexture()->setAliasTexParameters();
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
  const int row=(int)dim.height/10;
- const int deckLeft=active?CastleArtGeometry::Bounds[c][0]:380;
- const Box span=OriginalCastle::box(deckLeft,0,CastleArtGeometry::DeckRight[c]-deckLeft,0);
+ const Box span=OriginalCastle::box(380,0,CastleArtGeometry::DeckRight[c]-380,0);
  // Leave visible floor both behind and in front of the characters' feet
  // (ground + 8), including the green/brass fourth castle.
  // The sixth castle's high stone fascia needs a deeper top plane to read
  // as a platform rather than another horizontal wall trim.
  // The deck's front edge seats into the same registered cap as the hull.
  // Its transparent bevel must overlap that cap, never hover above it.
- const bool battle=active;
- const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale))-(battle?(int)(64*l.scale):0);
+ const int front=OriginalCastle::box(380,369,0,0).y-std::max(1,(int)(14*l.scale));
  const float z=span.w/dim.width;
- const int height=battle?(int)(80*l.scale):std::max(1,(int)(row*z));
+ const int height=std::max(1,(int)(row*z));
  const Box plane={span.x,front+height,span.w,height};
  const int material=c==7?5:c; // Ivory/gold palace uses ivory/gold stone, not silver steel.
- if(!battle){MistCastle::crop(img,0,material*row,dim.width,row,plane,mirror);return;}
- // Repeat native floor strips at uniform scale; never stretch the artwork.
- const int strip=std::max(1,(int)(32*span.w/(dim.width-96)));
- SetSectionClip(plane.x,plane.y,plane.w,plane.h,false);
- for(int y=plane.y;y>front;y-=strip)
-  MistCastle::crop(img,48,material*row+12,dim.width-96,32,{plane.x,y,plane.w,strip},mirror);
- UnSectionClip(false);
- const int rim=std::max(1,(int)(row*z));
- MistCastle::crop(img,0,material*row,dim.width,row,{span.x,front+rim,span.w,rim},mirror);
+ if(active){
+  // Add floor behind the existing rim, at uniform source scale.
+  const int extra=std::max(1,(int)(16*l.scale)),strip=std::max(1,(int)(32*z));
+  SetSectionClip(span.x,plane.y+extra,span.w,extra,false);
+  for(int y=plane.y+extra;y>plane.y;y-=strip)
+   MistCastle::crop(img,0,material*row+12,dim.width,32,{span.x,y,span.w,strip},mirror);
+  UnSectionClip(false);
+ }
+ MistCastle::crop(img,0,material*row,dim.width,row,plane,mirror);
 }
 void drawCastleHull(const Layout& l,bool combat){
  const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
@@ -408,7 +413,7 @@ void drawLobbyControls(const Layout& l,float exit=0.f,bool interactive=false){
  OriginalCastle::draw(2,(float)drop);
  drawLobbyBottomNav((float)drop,interactive);
  if(interactive){
-  button(lobbyPvp(l),"PVP 디버그","공성전",0x6B2D3F);
+  button(lobbyPvp(l),"PVP",nullptr,0x6B2D3F);
   for(int i=0;i<4;++i){const Box b=roomBox(l,i);SetRectPoint(b.x,b.y,b.w,b.h,TOUCH_FUNC_POPUP_CASTLEMENU);}
  }
 }

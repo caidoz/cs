@@ -56,10 +56,8 @@ static void Panel(int x,int top,int w,int h,int fill,int edge){
  image->setAnchorPoint({0,1});image->setPosition({(float)left,(float)upper});image->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(image->getTexture());image->visit();
 }
 static void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false){
- Panel(x,y,w,h,selected?0x467B55:enabled?0x205363:0x182A38,enabled?0xEDBB58:0x3D5262);
- SetFontColor(enabled?0xFFE5A0:0x84949C);
- CenterTextStrSolid(text,x+w/2,y-h/2+8,Min(.7f,(w-12)/Max(1.0f,StringWidth(text,1))));
- if(enabled) SetRectPoint(x,y,w,h,command);
+ UiButtonStyle style;style.fill=selected?0x246873:0x17444A;
+ DrawUiButton(x,y,w,h,text,command,selected,enabled,style);
 }
 static void FacilityIcon(int c,int room,int lv,int x,int top,int size){
  const int img=MERGE_REBUILD_ROOMS_IMG+c;

@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Text.h"
@@ -5727,248 +5727,36 @@ float DrawGoldAmount(long long amount,int x,int top,int maxWidth,int align,float
 }
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount)
 {
-	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
-	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
-	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
-	{
-		float press = GetButtonPressScale(x, y, w, h);
-
-		if (press != 1.0f) {
-			x -= (int)((float)w * (press - 1.0f) / 2);
-			y += (int)((float)h * (press - 1.0f) / 2);
-			w = (int)((float)w * press);
-			h = (int)((float)h * press);
-			zoom *= press;
-		}
-	}
-
-	int curGray = grayScale;
-	float BUYBUTTONZOOM = 1.2f;
-	int numFont = NUM_FONT_NORMAL;
-	float width = GetBigNumDxTTF(amount, sign, numFont, false, true, w - (float)(ITEMICONSIZE + 6 * _2X) * zoom, BUYBUTTONZOOM * zoom, false) + (float)(ITEMICONSIZE + 6 * _2X) * zoom;
-	int tempAlpha = m_lgrpAlpha;
-	int i;
-
-	/*
-	//����
-	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	for (i = 0; i < (float)(w - (float)32 * _2X * zoom) / (float)(8 * _2X * zoom) + 1; i++)
-		DrawImage(8 * _2X + 1, BUYBUTTON_Y, 33, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x + (float)(16 * _2X + 8 * _2X * i) * zoom - 1, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	//������
-	DrawImage(16 * _2X, BUYBUTTON_Y, 137, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x + w - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-	*/
-	grayScale = curGray;
-
-	DrawImageScale(176, 40, 1, 679, x, y, false, false, false, false, false, 1.0f * zoom, 1.0f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	if(currency==CURRENCY_GOLD && amount>0){
-	 if(discount>0){
-	  const float width=DrawGoldAmount(amount,x+w/2,y-2,w-12,CENTER,.65f);
-	  MemRect((int)(x+w/2-width/2),y-10,(int)width,2,0xE67B72);
-	  DrawGoldAmount(amount-(long long)(amount*discount/100),x+w/2,y-23,w-12,CENTER,.65f);
-	 }else DrawGoldAmount(amount,x+w/2,y-(h-28)/2,w-12);
-	 return;
-	}
-
-	//무료
-	if (amount == 0) {
-		CenterText(TEXT_FREE, x + (float)w / 2, y - (float)8 * _2X * zoom, BUYBUTTONZOOM * zoom);
-	}
-	else {
-		DrawIcon(currencyIcon[currency] == ICON_GOLD ? currencyIcon[currency] + frame % GOLDICONFRAME : currencyIcon[currency], x + w / 2 - width / 2 + (float)1 * _2X * zoom, y - (float)7 * _2X * zoom, zoom, COLOR_BROWN, false, false, true);
-
-		if (discount > 0) {
-			MemRect(x + w / 2 - width / 2 + (float)(ITEMICONSIZE + 2 * _2X) * zoom, y - (float)(9 * _2X) * zoom - (float)4 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), GetBigNumDx(amount, sign, numFont, false, true, w - (ITEMICONSIZE * zoom + 4 * _2X * zoom), zoom, true) + (float)8 * _2X * zoom, (float)4 * _2X * zoom, COLOR_REALRED);
-		}
-#ifdef NUMTTF
-		DrawBigNumTTF(amount, x + w / 2 - width / 2 + (float)(ITEMICONSIZE + 2 * _2X) * zoom, y - (float)8 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), numFont, LEFT, 0, sign, width - (float)(ITEMICONSIZE + 2 * _2X) * zoom, true, BUYBUTTONZOOM * zoom, false);
-#else
-		DrawBigNum(amount, x + w / 2 - width / 2 + (float)(ITEMICONSIZE + 4 * _2X) * zoom, y - (float)8 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), numFont, LEFT, 0, sign, width - (float)(ITEMICONSIZE + 2 * _2X) * zoom, true, BUYBUTTONZOOM * zoom, false);
-#endif
-		if (discount > 0) {
-			SetAlpha(Max(0, tempAlpha - 12));
-			MemRect(x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom, y - (float)(9 * _2X) * zoom - (float)4 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), GetBigNumDx(amount, sign, numFont, false, true, w - (ITEMICONSIZE * zoom + 4 * _2X * zoom), zoom, true) + (float)8 * _2X * zoom, (float)4 * _2X * zoom, COLOR_REALRED);
-			SetAlpha(tempAlpha);
-
-			amount -= (float)amount * discount / 100;
-#ifdef NUMTTF
-			DrawBigNumTTF(amount, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + 2 * _2X * zoom, y - (float)(8 * _2X) * zoom + (float)12 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), numFont, LEFT, 0, sign, w - (float)(ITEMICONSIZE + 8 * _2X + 4 * _2X) * zoom, true, BUYBUTTONZOOM * zoom, false);
-#else
-			DrawBigNum(amount, x + w / 2 - width / 2 + (float)ITEMICONSIZE * zoom + 3 * _2X * zoom, y - (float)(8 * _2X) * zoom + (float)12 * _2X * zoom + (discount > 0 ? -(float)6 * _2X * zoom : 0), numFont, LEFT, 0, sign, w - (float)(ITEMICONSIZE + 8 * _2X + 4 * _2X) * zoom, true, BUYBUTTONZOOM * zoom, false);
-#endif
-		}
-	}
+ char caption[96];const long long finalAmount=amount-(long long)(amount*discount/100);
+ if(amount==0)DrawUiButton(x,y,w,h,TEXTPTR(TEXT_FREE),0);
+ else{
+  if(discount>0)snprintf(caption,sizeof(caption),"%lld\n%lld (-%.0f%%)",amount,finalAmount,discount);
+  else snprintf(caption,sizeof(caption),"%lld",finalAmount);
+  DrawUiButtonIcon(x,y,w,h,currencyIcon[currency],caption,0);
+ }
 }
 
 void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, bool ani, int textIdx)
 {
-	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
-	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
-	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
-	{
-		float press = GetButtonPressScale(x, y, w, h);
-
-		if (press != 1.0f) {
-			x -= (int)((float)w * (press - 1.0f) / 2);
-			y += (int)((float)h * (press - 1.0f) / 2);
-			w = (int)((float)w * press);
-			h = (int)((float)h * press);
-			zoom *= press;
-		}
-	}
-
-	int curGray = grayScale;
-	int frameColor;
-
-	if (gray > grayScale)
-		grayScale = gray;
-
-	if (grayScale == 32)
-		frameColor = FRAME_GREY;
-	else {
-		frameColor = (ani == true ? FRAME_GREEN + (frame % 4) : FRAME_GREEN);
-	}
-
-	DrawFrame(x, y, w, h, frameColor);
-
-	grayScale = curGray;
-
-	if (textIdx > 0)
-		CenterText(textIdx, x + w / 2, y - (float)(8 * _2X) * zoom, zoom);
+ DrawUiButton(x,y,w,h,textIdx>0?TEXTPTR(textIdx):"",0,false,gray<32);
 }
 
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 {
-	//눌린 동안 한가운데를 붙잡고 줄었다가, 떼면 튀어오른다.
-	//인자를 여기서 한 번 보정하면 아래 그리기 전체가 같이 따라간다.
-	//터치영역은 부르는 쪽이 원래 값으로 등록하므로 영향이 없다.
-	{
-		float press = GetButtonPressScale(x, y, w, h);
-
-		if (press != 1.0f) {
-			x -= (int)((float)w * (press - 1.0f) / 2);
-			y += (int)((float)h * (press - 1.0f) / 2);
-			w = (int)((float)w * press);
-			h = (int)((float)h * press);
-			zoom *= press;
-		}
-	}
-
-	int gray = 32;
-	int curGray = grayScale;
-	int i;
-
-	if (gray > grayScale)
-		grayScale = gray;
-
-	//����
-	DrawImage(16 * _2X, BUYBUTTON_Y, 1, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	for (i = 0; i < (float)(w - (float)32 * _2X * zoom) / (float)(8 * _2X * zoom) + 1; i++)
-		DrawImage(8 * _2X + 1, BUYBUTTON_Y, 33, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x + (float)(16 * _2X + 8 * _2X * i) * zoom - 1, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	//������
-	DrawImage(16 * _2X, BUYBUTTON_Y, 137, 1 + (gray == false ? FRAME_GREEN - FRAME_GREEN : FRAME_GREY - FRAME_GREEN) * 63, x + w - (float)(16 * _2X) * zoom, y, false, false, false, false, false, zoom, sprite[BUTTON_IMG], BUTTON_IMG);
-
-	grayScale = curGray;
-
-	DrawGoldAlpha(x + w / 2, y - (float)(h - FONT_HEIGHT * 0.7f) / 2 * zoom, alphaIdx, FONT_GOLD_LARGE, zoom * 0.7f, CENTER, false, false);
+ DrawUiButton(x,y,w,h,"MAX",0,false,false);
 }
 
 void DrawTouchButton(int x, int y, const char* text, int func)
 {
-	float w = StringWidth(text, 1) + 4 * _2X;
-	float h = 20 * _2X;
-	float press = GetButtonScale(func, x, y, w, h);
-
-	//한가운데를 붙잡고 배율만 준다. 터치영역은 원래 크기 그대로 둔다.
-	float gapX = w * (press - 1.0f) / 2;
-	float gapY = h * (press - 1.0f) / 2;
-
-	DrawFrame(x - gapX, y + gapY, w * press, h * press, FRAME_CHOICEBUTTON);
-	SetRectPoint(x, y, w, h, func);
-
-	SetFontColor(COLOR_BROWN);
-	CenterTextStrSolid(text, x + w / 2, y + gapY - 3 * _2X * press, 1.0f * press);
-	SetFontColor(COLOR_WHITE);
+ DrawUiButton(x,y,(int)StringWidth(text,UiMinimumTextZoom())+24,(int)(48*DX/640.f),text,func);
 }
 
 
 //버튼 안쪽 여백. 글자가 테두리에 닿으면 눌린 것처럼 보인다.
-#define UIBTN_PAD		(6 * _2X)
-//글자를 이보다 크게는 키우지 않는다. 짧은 글자가 혼자 커지면 줄이 안 맞는다.
-#define UIBTN_MAXZOOM	0.62f
-
-//그림 버튼 한 칸의 진짜 크기.
-//
-//button.png 은 170 x 253 이고 색마다 63 씩 내려가며 넉 줄이 들어 있다.
-//테두리 한 줄을 빼면 한 칸은 168 x 62 다 - BUYBUTTON_X / BUYBUTTON_Y 가
-//그 값이다. 그런데 부르는 쪽 대부분이 192 를 넘기고 있었다. 텍스처가
-//170 밖에 없으니 실제로는 168 만 그려지고, 가운데만 192 로 재서 그림이
-//왼쪽으로 치우치고 글자는 그 위에서 또 오른쪽으로 밀렸다.
-#define LARGEBTN_W		168.0f
-#define LARGEBTN_H		62.0f
-//그림 버튼은 네모 칩보다 크므로 글자도 그만큼 키운다. 배율에 곱해 쓴다 -
-//작게 그린 버튼에 큰 글자가 들어가면 안 된다.
-#define LARGEBTN_MAXZOOM	1.2f
-
 void DrawTouchLargeButton(int x, int y, int w, int h, const char* text, int func, int color, float zoom)
 {
-	//누르면 들어가고 떼면 튀어오른다. 배율만 곱하고 한가운데를 붙잡아
-	//제자리에서 커졌다 작아지게 한다. 터치영역은 배율과 무관하게
-	//원래 자리에 그대로 둔다 - 눌린 동안 영역이 줄면 손가락이 밖으로
-	//나간 것으로 처리되어 스스로 취소된다.
-	//이 함수는 func 0을 "터치영역 없음"으로 쓴다(아래 if (func) 참고).
-	//TOUCH_FUNC_OPENING이 0이라 그냥 물어보면 오프닝 탭에 같이 반응한다.
-	float press = func
-		? GetButtonScale(func, x, y, (float)w * zoom, (float)h * zoom)
-		: 1.0f;
-	float drawZoom = zoom * press;
-
-	float gapX = (float)w * zoom * (press - 1.0f) / 2;
-	float gapY = (float)h * zoom * (press - 1.0f) / 2;
-
-	//부르는 쪽이 잡아 둔 자리(w x h)가 그림보다 넓으면 그 안의 한가운데에
-	//놓는다. 왼쪽에 붙여 그리면, 부르는 쪽은 w 로 화면 가운데를 맞췄는데
-	//정작 눈에 보이는 버튼은 왼쪽으로 치우쳐 보인다 - 출정 버튼이 그랬다.
-	const float boxW = (float)w * drawZoom;
-	const float boxH = (float)h * drawZoom;
-	const float padX = (boxW - LARGEBTN_W * drawZoom) / 2;
-
-	if(!DrawSd3dPanel((int)(x-gapX),(int)(y+gapY),(int)boxW,(int)boxH,
-		color==FRAME_GREEN?2:color==FRAME_RED?4:1))
-	DrawImage((int)LARGEBTN_W, (int)LARGEBTN_H, 1, 1 + (color - FRAME_GREEN) * 63,
-		x - gapX + padX, y + gapY, false, false, false, false, false, drawZoom,
-		sprite[BUTTON_IMG], BUTTON_IMG);
-
-	//글자는 그 자리의 한가운데다. CenterTextStr 가 x 를 가운데로 보고
-	//스스로 좌우를 맞추므로, 여기서는 가운데 좌표만 주면 된다.
-	//
-	//Solid 가 아니라 CenterTextStr 다 - 이름과 달리 Solid 는 "테두리 없음"
-	//이라(Func_Text.cpp 의 DrawTextStrSystem 마지막 인자), 그림 버튼 위에
-	//얹으면 글자가 배경색에 묻힌다.
-	//
-	//크기도 여기서 정한다. 전에는 배율이 그림에 안 매여 있어서, 부르는
-	//쪽마다 ""을 넘기고 글자를 따로 찍는 일이 생겼다 - 그러면 또 어긋난다.
-	if (text && text[0]) {
-		const float room = boxW - UIBTN_PAD * 2;
-		const float full = StringWidth(text, 1.0f);
-		const float cap = LARGEBTN_MAXZOOM * drawZoom;
-		float tz = (full > 0.0f) ? room / full : cap;
-
-		if (tz > cap)
-			tz = cap;
-
-		CenterTextStr(text,
-			(int)(x - gapX + boxW / 2),
-			(int)(y + gapY - (boxH - FONT_HEIGHT * tz) / 2),
-			tz);
-	}
-
-	if (func)
-		SetRectPoint(x, y, (float)w * zoom, (float)h * zoom, func);
-
+ UiButtonStyle style;style.fill=color==FRAME_GREEN?0x14633F:0x17444A;
+ DrawUiButton(x,y,(int)(w*zoom),(int)(h*zoom),text,func,false,true,style);
 }
 
 //======================================================================
@@ -6037,96 +5825,7 @@ bool DrawSd3dPanel(int x,int y,int w,int h,int style)
 	return true;
 }
 
-void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
-	bool on, bool enabled)
-{
-	//켜짐 / 꺼짐 / 못 누름. 색이 셋이어야 "지금 이것" 과 "누를 수 있음" 이
-	//따로 읽힌다.
-	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
-	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
-
-	if(drawHandle==MD_LOBBY||drawHandle==MD_PVP||drawHandle==MD_TITLE) DrawPixelPanel(x,y,w,h,on?0x467B55:enabled?0x152D37:0x1B2A30,on?0xC5A269:enabled?0x65827F:0x435052);
-	else {
-	SetAlpha(on ? 30 : enabled ? 14 : 8);
-	MemRect(x, y, w, h, fill);
-	SetAlpha(ALPHA_MAX);
-	MemRectFrame(x, y, w, h, line);
-	}
-
-	if (text && text[0]) {
-		//글자 폭이 버튼 안에 들어가는 가장 큰 배율. 1.0 으로 한 번 재서
-		//나눈다 - 폭은 배율에 비례한다.
-		const float room = (float)(w - UIBTN_PAD * 2);
-		const float full = StringWidth(text, 1.0f);
-		float zoom = (full > 0.0f) ? room / full : UIBTN_MAXZOOM;
-
-		if (zoom > UIBTN_MAXZOOM)
-			zoom = UIBTN_MAXZOOM;
-
-		SetFontColor(on ? 0xF2E7CB : enabled ? 0xE2DCCA : 0x81918F);
-
-		//세로 한가운데. y 는 윗변이라 글자 높이의 절반만큼 내린다.
-		CenterTextStrSolid(text, x + w / 2,
-			(int)((float)y - ((float)h - FONT_HEIGHT * zoom) / 2), zoom);
-	}
-
-	//못 누르는 버튼에 터치영역을 걸어 두면 눌리는 손맛만 나고 아무 일도
-	//안 일어난다.
-	if (func && enabled)
-		SetRectPoint(x, y, w, h, func);
-}
-
-//이름표에 든 글자로 그린다. 같은 글자를 여러 곳에서 쓸 때 문자열을
-//흩뿌리지 않는다.
-void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
-	bool on, bool enabled)
-{
-	DrawUiButton(x, y, w, h, TEXTPTR(textIdx), func, on, enabled);
-}
-
-//---- 아이콘이 붙는 버튼 ----
-//
-//아이콘을 왼쪽에, 글자를 그 오른쪽에 둔다. 글자만 있는 버튼과 같은 자리
-//계산을 쓰되 글자가 쓸 폭만 줄여 준다 - 둘을 따로 그리면 또 가운데가
-//어긋난다.
-//
-//글자를 비우면 아이콘만 한가운데에 놓는다.
-void DrawUiButtonIcon(int x, int y, int w, int h, int icon, const char* text,
-	int func, bool on, bool enabled)
-{
-	const int fill = on ? 0x6A521A : enabled ? 0x1A1A24 : 0x14141A;
-	const int line = on ? 0xFFD700 : enabled ? 0x44485A : 0x2A2C36;
-
-	SetAlpha(on ? 30 : enabled ? 14 : 8);
-	MemRect(x, y, w, h, fill);
-	SetAlpha(ALPHA_MAX);
-	MemRectFrame(x, y, w, h, line);
-
-	//아이콘은 버튼 높이에 맞춘다. 글자가 없으면 한가운데, 있으면 왼쪽.
-	const float iz = (float)(h - UIBTN_PAD) / (float)ITEMICONSIZE;
-	const int iw = (int)(ITEMICONSIZE * iz);
-	const bool hasText = (text && text[0]);
-	const int ix = hasText ? x + UIBTN_PAD / 2 : x + (w - iw) / 2;
-
-	DrawIcon(icon, ix, y - (h - iw) / 2, iz, false, false, false, true);
-
-	if (hasText) {
-		//아이콘이 먹은 만큼 글자가 쓸 폭이 준다.
-		const float room = (float)(w - iw - UIBTN_PAD * 2);
-		const float full = StringWidth(text, 1.0f);
-		float zoom = (full > 0.0f) ? room / full : UIBTN_MAXZOOM;
-
-		if (zoom > UIBTN_MAXZOOM)
-			zoom = UIBTN_MAXZOOM;
-
-		SetFontColor(on ? COLOR_WHITE : enabled ? COLOR_GREY : COLOR_DARKGREY);
-		CenterTextStrSolid(text, x + iw / 2 + w / 2,
-			(int)((float)y - ((float)h - FONT_HEIGHT * zoom) / 2), zoom);
-	}
-
-	if (func && enabled)
-		SetRectPoint(x, y, w, h, func);
-}
+#include "UiButtonControls.inc"
 
 void DrawAlarmMark(int x, int y, int count, float zoom)
 {

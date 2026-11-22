@@ -81,23 +81,12 @@ void drawBoardAt(int bx,int by,int cell){
     for(int row=0;row<shape.height;++row)for(int col=0;col<shape.width;++col)
         if(shape.contains(col,row))padArt((row+col)%2,{bx+col*cell,by-row*cell,cell,cell});
     for(int i=0;i<(int)parts.size();++i){
-        const Part& p=parts[i];const bool lit=attacking()&&contributes(p);
-        if(attacking()&&!lit)SetAlpha(22);
+        const Part& p=parts[i];const bool lit=false;
         const Box box={bx+p.cx*cell,by-p.cy*cell,p.cw*cell,p.ch*cell};drawPartBlock(p,box);SetAlpha(32);
-        if(lit||selected==i)MemRectFrameThick(box.x,box.y,box.w,box.h,lit?0xFFE066:0xFFFFFF,std::max(2,cell/18));
+        if(lit)MemRectFrameThick(box.x,box.y,box.w,box.h,lit?0xFFE066:0xFFFFFF,std::max(2,cell/18));
     }
 }
-bool tapPanel(float x,float y){
-    if(siegeActive)return false;
-    if(topBoardPanel()||expanded){
-        for(int i=0;i<(int)parts.size();++i){const auto& p=parts[i];
-            if(Box{boardX+p.cx*boardCell,boardY-p.cy*boardCell,p.cw*boardCell,p.ch*boardCell}.has(x,y)){selected=i;return true;}
-        }
-    }
-    if(topBoardPanel())return false;
-    if(expanded){expanded=false;selected=-1;return true;}
-    if(panelBox.has(x,y)){expanded=true;return true;}return false;
-}
+bool tapPanel(float,float){return false;}
 long long counterPreview(){return attacking()?enemyTurn.rawDamage:run.counterHit();}
 void summary(char* text,size_t size){
     const auto& a=shownAction();const auto l=run.monsterLoadout();
@@ -137,14 +126,5 @@ void drawPanel(const Layout& l){
     SetAlpha(26);panel(panelBox,0x2A1E24,0x8C6170);SetAlpha(32);drawBoardAt(bx,by,cell);
     label(shownAction().name,bx+bw/2,by-bh-(int)(3*s),.36f,0xFFD6C0);
 }
-void drawExpanded(const Layout& l){
-    if(siegeActive||topBoardPanel())return;const bool live=attacking();if(!expanded&&!live)return;
-    ensure();const float s=l.scale;const int cell=l.cell,gw=cell*shape.width,gh=cell*shape.height;
-    const int gx=(DX-gw)/2,gy=l.board.y-(l.board.h-gh)/2;
-    SetAlpha(live?14:30);MemRect(0,0,DX,DY,0x000000);SetAlpha(32);
-    panel({gx-(int)(10*s),gy+(int)(10*s),gw+(int)(20*s),gh+(int)(66*s)},0x2A1E24,0xFFB08A);
-    char text[192];summary(text,sizeof(text));label(text,DX/2,gy-gh-(int)(8*s),.43f,0xFFE6C0);
-    detail(text,sizeof(text));label(text,DX/2,gy-gh-(int)(29*s),.33f,0xC9D3E8);
-    drawBoardAt(gx,gy,cell);if(!live)label(u8"부위 터치: 역할 확인 · 바깥 터치: 닫기",DX/2,gy+(int)(28*s),.36f,0xC9D3E8);
-}
+void drawExpanded(const Layout&){}
 }

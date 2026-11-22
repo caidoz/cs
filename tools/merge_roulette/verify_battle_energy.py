@@ -13,9 +13,10 @@ runtime.EXE = runtime.ROOT / 'proj.win32/Debug.win32' / args.exe
 for height in (850, 1408):
     folder = f'battle-lightning-{height}'
     runtime.run(height, {'CS_BATTLE_ENERGY_REVIEW': '1'}, folder,
-                'DONE battle lightning review', 4)
+                'DONE battle lightning review', 6)
     log = (runtime.ROOT / 'output/item-series/runtime' / folder / 'checks.log').read_text()
     for check in ('spin spends one local lightning', 'attack spends one local lightning',
                   'cannon spends one local lightning', 'rejected and empty actions',
-                  'kill refills five local lightning'):
+                  'kill refills five local lightning', 'lethal impact immediately cancels remaining attacks',
+                  'lightning refill starts with incoming monster', 'lightning fills sequentially to five'):
         assert 'PASS ' + check in log, log

@@ -150,10 +150,7 @@ void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size){
 
 // Shared menu navigation: one large, left-aligned back action.
 void DrawMenuBackButton(int x,int top,int command){
- DrawMenuReferencePanel(x,top,84,48,0,0x17444A,0xEAC58A);
- SetFontColor(0xFFF0CD);
- CenterTextStrSolid(u8"\u2039",x+42,top-5,1.6f);
- SetRectPoint(x,top,84,48,command);
+ DrawUiButton(x,top,84,48,u8"\u2039",command);
 }
 // Rectangular, source-cropped background quads never bleed across window chrome.
 void DrawMenuBackdropCrop(cocos2d::Texture2D* texture,int sx,int sy,int sw,int sh,int x,int top,int w,int h){

@@ -1,14 +1,12 @@
-// Title controls are separate from artwork and survive InitMenu during bootstrap.
+﻿// Title controls are separate from artwork and survive InitMenu during bootstrap.
 namespace TitleLogin {
 static bool requested=false;
 static bool resetPending=false;
 static int ticks=0;
 static bool ready=false;
 static void Button(int x,int y,int w,int h,const char* label,int command,bool enabled){
- DrawPixelPanel(x,y,w,h,enabled?0x29483E:0x202C3A,enabled?0xC7AA69:0x688794);
- SetFontColor(enabled?0xFFF1C2:0xA9B6BE);
- CenterTextStrSolid(label,x+w/2,y-h/2+10,.86f);
- if(enabled)SetRectPoint(x,y,w,h,command);
+ UiButtonStyle style;style.fill=0x29483E;
+ DrawUiButton(x,y,w,h,label,command,false,enabled,style);
 }
 static void Draw(){
  ResetRectPoint();

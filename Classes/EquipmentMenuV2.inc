@@ -3,7 +3,7 @@ namespace EquipmentV2 {
 static int heroOffset=0;
 static int Top(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int PreviewHeight(){return Min(420,Max(250,(Top()-16)/2));}
-static int ListTop(){return Top()-PreviewHeight()-96;}
+static int ListTop(){return Top()-PreviewHeight()-124;}
 static int HeroY(){return Top()-58;}
 static int DisplayCastle(){const int preview=LobbyCastleDebugCastle();return Max(0,Min(9,preview>=0?preview:(int)robin.castle));}
 static int HeroMax(int count){return Max(0,count*184-(DX-32));}
@@ -117,7 +117,7 @@ static void EquipmentMenuV2Draw()
    SetSpotlight(sx+slot/2,sy-slot/2,slot*0.6f,slot,0.25f);
   }
  }
- DrawMenuReferencePanel(DX/4,top-preview+6,DX/2,88,1,0x123D43,0xF1C47E);
+ DrawMenuReferencePanel(24,top-preview+6,DX-48,116,1,0x123D43,0xF1C47E);
  char line[180];
  SetFontColor(0xF2CA64);
  sprintf(line,"전투력 %lld",GetCombatPower(hero));
@@ -125,9 +125,9 @@ static void EquipmentMenuV2Draw()
  SetFontColor(0xBCD6DF);
  //방어 = 합성 전투의 방어막 통(체력과 같은 크기). 옛 PS_ARMOR 는 힘×3+민첩이라 체력 60 에 880 이 찍혔다.
  sprintf(line,"공격 %lld   방어 %lld   체력 %lld",hero->ps[PS_DMG],MergeRouletteHeroShield(hero),hero->ps[PS_HP]);
- CenterTextStrSolid(line,center,top-preview-36,0.65f);
+ CenterTextStrSolid(line,center,top-preview-38,1.f);
  sprintf(line,"치명타 %lld%%   치명타 피해 +%lld%%",DEFAULTCRITICAL+hero->ps[PS_CRITICAL],hero->ps[PS_CRITDMG]);
- CenterTextStrSolid(line,center,top-preview-52,0.58f);
+ CenterTextStrSolid(line,center,top-preview-68,1.f);
  MenuButton(24,72,(DX-60)/2,56,"일괄 합성",BUTTON_COLOR_BLUE,true,TOUCH_FUNC_EQUIPTAB_MERGE,0.95f);
  MenuButton(DX/2+6,72,(DX-60)/2,56,"판매",BUTTON_COLOR_BROWN,true,TOUCH_FUNC_EQUIPTAB_SELL,0.95f);
  std::vector<int> items(GetMaxInven());int count=0;

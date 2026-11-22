@@ -697,7 +697,7 @@ struct Run {
     }
     // One block at a time, in board order, so the adapter can animate every shot.
     bool step() {
-        if(!attacking || nextShot>=(int)shots.size()) return false;
+        if(!attacking || enemyHp<=0 || nextShot>=(int)shots.size()) return false;
         Shot s=shots[nextShot++];
         damageDone+=s.damage;
         long long dmg=s.damage;
@@ -743,8 +743,8 @@ struct Run {
         return true;
     }
     int finish() {
-        if(!attacking || nextShot<(int)shots.size()) return 0;
-        if(passing) {
+        if(!attacking || (enemyHp>0 && nextShot<(int)shots.size())) return 0;
+        if(passing && enemyHp>0) {
             //턴만 넘긴 것: 반격만 정산한다. 돌리기 횟수·보상·지속 피해는 그대로.
             if(enemyHp>0) {
                 if(skipTurns>0) --skipTurns;
@@ -772,7 +772,7 @@ struct Run {
             monsterActionTurn=0;monsterStage=stage;monsterWave=wave;
             dot=0;dotTurns=skipTurns=0;summons.clear();
         }
-        shots.clear();attacking=false;nextShot=0;counterResolved=false;
+        shots.clear();attacking=false;nextShot=0;counterResolved=false;passing=false;
         spins=std::min(100,SpinLimit+extraSpins); lost=lives==0;
         return hearts;
     }

@@ -17,9 +17,8 @@ void Label(const char* text,int x,int y,int width,float size=.75f,int color=COLO
  SetFontColor(color);CenterTextStrSolid(text,x,y,Min(size,width/Max(1.0f,StringWidth(text,1))));
 }
 void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false) {
- DrawPixelPanel(x,y,w,h,selected?0x17653E:0x102638,selected?0xEDBB58:0x43859B);
- Label(text,x+w/2,y-(h-(int)(FONT_HEIGHT*.75f))/2,w-12,.75f,enabled?COLOR_WHITE:0x8AA0AC);
- if(command&&enabled)SetRectPoint(x,y,w,h,command);
+ UiButtonStyle style;style.fill=selected?0x17653E:0x17444A;
+ DrawUiButton(x,y,w,h,text,command,selected,enabled,style);
 }
 std::vector<Candidate> Pool(int kind,int who) {
  std::vector<Candidate> out;
@@ -53,10 +52,9 @@ void GoldCard(int tier,int x,int y,int w,int h){
  if(sprite[img])DrawImage(448,448,32,0,x+(w-size)/2,y-44,false,0,0,0,0,size/448.f,sprite[img],img);
  const bool can=robin.coin>=ShopGold::Price(tier)&&robin.gold<=GOLD_MAX-ShopGold::Amount(tier)&&!IapIsBusy();
  const int by=y-h+40;
- DrawMenuReferencePanel(x+6,by,w-12,34,0,can?0x208C46:0x555555,can?0xEAC58A:0xA9A9A9);
- DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,x+w/2-46,by-4,26.f/ITEMICONSIZE,false,false,false,true);
- DrawImageNum(ShopGold::Price(tier),x+w/2-10,by-7,NUM_FONT_NORMAL,LEFT,0,0,true,.8f,false);
- if(can)SetRectPoint(x+6,by,w-12,34,TOUCH_FUNC_SHOP_GOLD+tier);
+ snprintf(text,sizeof(text),"%lld",(long long)ShopGold::Price(tier));
+ UiButtonStyle buyStyle;buyStyle.fill=0x208C46;
+ DrawUiButtonIcon(x+6,by,w-12,48,ITEM_PREMIUM_DIAMOND_ICON,text,TOUCH_FUNC_SHOP_GOLD+tier,false,can,buyStyle);
 }
 void SupplyCard(int kind,int x,int y,int w,int h) {
  const auto product=ShopCatalog::Supply(kind,hero);

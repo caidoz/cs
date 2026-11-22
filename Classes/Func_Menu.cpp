@@ -3265,78 +3265,15 @@ static void DrawOptionSubWindow(const char* title, int badgeX, float x, float y,
 //언어 설정. 국기 + 그 언어로 쓴 이름을 2열로 늘어놓는다.
 void OptionLanguageDraw(int x, int y, float zoom)
 {
-	const float w = (float)POPUPWINDOWSIZE_X * zoom;
-	const float h = (float)POPUPWINDOWSIZE_Y * zoom;
-	const float s = w / (float)OPT_WIN_W;
-
-	float panelL, panelTop, panelW, panelH;
-	float colW, rowH, gapX, gapY;
-	int i;
-
-	DrawOptionSubWindow("언어 설정", OPT_BADGE_GLOBE, x, y, w, h, &panelL, &panelTop, &panelW, &panelH);
-
-	gapX = 8.0f * zoom;
-	gapY = 6.0f * zoom;
-
-	colW = (panelW - 24.0f * zoom - gapX) / 2;
-	rowH = (panelH - 24.0f * zoom - gapY * 5) / 6;
-
-	for (i = 0; i < TOTALLANGUAGE; i++) {
-		float bx = panelL + 12.0f * zoom + (colW + gapX) * (i % 2);
-		float by = panelTop - 12.0f * zoom - (rowH + gapY) * (i / 2);
-		bool on = (option.language == i);
-
-		float flagH = rowH * 0.62f;
-		float flagSc = flagH / (float)OPT_FLAG_H;
-		float flagW = (float)OPT_FLAG_W * flagSc;
-		float tz = OPTIONTEXTZOOM;
-		float textL = bx + rowH * 0.16f + flagW + rowH * 0.18f;
-		float maxW = bx + colW - rowH * 0.5f - textL;
-		float tw;
-
-		if (on)
-			DrawOptionPart9(OPT_SELROW_X, OPT_SELROW_Y, OPT_SELROW_W, OPT_SELROW_H, OPT_SELROW_EDGE,
-				bx, by, colW, rowH, s * 0.5f);
-		else
-			DrawOptionPart9(OPT_LISTROW_X, OPT_LISTROW_Y, OPT_LISTROW_W, OPT_LISTROW_H, OPT_LISTROW_EDGE,
-				bx, by, colW, rowH, s * 0.5f);
-
-		DrawOptionPart(optionLangFlagX[i], i < 6 ? OPT_FLAGROW0 : OPT_FLAGROW1,
-			OPT_FLAG_W, OPT_FLAG_H,
-			bx + rowH * 0.16f, by - (rowH - flagH) / 2, flagSc);
-
-		//이름이 칸을 넘치면 그만큼 줄인다. Bahasa Indonesia가 제일 길다.
-		tw = StringWidth(optionLangName[i], tz);
-
-		if (tw > maxW && tw > 0)
-			tz *= maxW / tw;
-
-		//고른 줄은 이름을 위로 올리고 체크를 그 아래에 놓아 두 단으로 만든다.
-		//한 줄에 나란히 두면 이름이 길 때 체크가 글자를 덮는다.
-		//
-		// Both row styles have dark backgrounds; keep every language readable.
-		// The selected row remains distinct through its border and check mark.
-		if (on) {
-			float ch = rowH * 0.38f;
-			float csc = ch / (float)OPT_CHECK_H;
-
-			SetFontColor(COLOR_WHITE);
-			DrawTextStr(optionLangName[i], textL,
-				by - rowH * 0.30f + (float)FONT_HEIGHT * tz / 2, tz);
-			SetFontColor(COLOR_WHITE);
-
-			DrawOptionPart(OPT_CHECK_X, OPT_CHECK_Y, OPT_CHECK_W, OPT_CHECK_H,
-				textL, by - rowH * 0.54f, csc);
-		}
-		else {
-			SetFontColor(0xE4EDF2);
-			DrawTextStr(optionLangName[i], textL,
-				by - rowH / 2 + (float)FONT_HEIGHT * tz / 2, tz);
-			SetFontColor(COLOR_WHITE);
-		}
-
-		SetRectPoint(bx, by, colW, rowH, TOUCH_FUNC_OPTION_LANGUAGE_SELECT + i);
-	}
+ const float w=POPUPWINDOWSIZE_X*zoom,h=POPUPWINDOWSIZE_Y*zoom;
+ float left,top,width,height;DrawOptionSubWindow(u8"\uC5B8\uC5B4 \uC124\uC815",OPT_BADGE_GLOBE,x,y,w,h,&left,&top,&width,&height);
+ const float gap=8*zoom,cw=(width-24*zoom-gap)/2,rh=(height-24*zoom-5*gap)/6;
+ static int selectedFlag=0;
+ for(int i=0;i<TOTALLANGUAGE;++i){
+  selectedFlag=i;UiButtonStyle style;style.fill=option.language==i?0x246166:0x243B48;
+  style.icon=[](int ix,int iy,int size){DrawOptionPart(optionLangFlagX[selectedFlag],selectedFlag<6?OPT_FLAGROW0:OPT_FLAGROW1,OPT_FLAG_W,OPT_FLAG_H,ix,iy,size/(float)OPT_FLAG_W);};
+  DrawUiButtonIcon(left+12*zoom+(cw+gap)*(i%2),top-12*zoom-(rh+gap)*(i/2),cw,rh,0,optionLangName[i],TOUCH_FUNC_OPTION_LANGUAGE_SELECT+i,option.language==i,true,style);
+ }
 }
 
 //알림 설정. 전체 스위치 하나와 종류별 스위치들.
@@ -5816,6 +5753,12 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani, float zoomX, float zoomY)
 {
+    if(text>0){
+        const int w=(int)(buttonImgData[color*5]*zoomX),h=(int)(buttonImgData[color*5+1]*zoomY);
+        if(icon>0)DrawUiButtonIcon(x,y,w,h,icon,TEXTPTR(text),0);
+        else DrawUiButton(x,y,w,h,TEXTPTR(text),0);
+        return;
+    }
 	float zoom = zoomY;
 	//패널 그리기
 	if(PixelEquipmentUi()) DrawPixelPanel(x,y,(int)(buttonImgData[color*5]*zoomX),(int)(buttonImgData[color*5+1]*zoomY),
@@ -6174,32 +6117,8 @@ void DrawItemCard(
 static void MenuButton(int x, int y, int w, int h, const char* label,
 	int color, bool enabled, int func, float textZoom = 0.62f)
 {
-	const float press = func && enabled
-		? GetButtonScale(func, x, y, w, h) : 1.0f;
-	const float zx = (float)w / (float)buttonImgData[0] * press;
-	const float zy = (float)h / (float)buttonImgData[1] * press;
-	const float gapX = (float)w * (press - 1.0f) / 2;
-	const float gapY = (float)h * (press - 1.0f) / 2;
-
-	if(PixelEquipmentUi()) DrawPixelPanel(x,y,w,h,color==BUTTON_COLOR_BLUE||color==BUTTON_COLOR_PURPLE?0x467B55:0x152D37,
-		color==BUTTON_COLOR_BLUE||color==BUTTON_COLOR_PURPLE?0xC5A269:0x65827F);
-	else DrawButton(x - gapX, y + gapY, enabled ? color : BUTTON_COLOR_WHITE,
-		0, 0, 0, false, zx, zy);
-
-	//---- 글자를 버튼 한가운데에 ----
-	//
-	//글자 함수의 CENTER 는 가로만 가운데다. DrawTextStrSystem 이 앵커를
-	//(0.5, 1.0) 으로 잡으므로 넘기는 y 는 글자의 윗변이다. 세로 가운데에
-	//놓으려면 글자 높이를 재서 직접 내려 잡아야 한다 - 눈대중으로 몇
-	//픽셀 빼 두면 배율이나 버튼 높이가 바뀌는 순간 어긋난다.
-	const float textH = (float)FONT_HEIGHT * textZoom;
-
-	SetFontColor(enabled ? COLOR_WHITE : COLOR_GREY);
-	CenterTextStrSolid(label, x + w / 2,
-		(int)((float)y - ((float)h - textH) / 2), textZoom);
-
-	if (func && enabled)
-		SetRectPoint(x, y, w, h, func);
+ UiButtonStyle style;style.fill=(color==BUTTON_COLOR_BLUE||color==BUTTON_COLOR_PURPLE)?0x14633F:0x17444A;
+ style.zoom=std::max(1.f,textZoom);DrawUiButton(x,y,w,h,label,func,false,enabled,style);
 }
 
 //======================================================================
@@ -7621,9 +7540,7 @@ static void TreasurePurchaseDraw(int detail){
  const float z=220*s/512.f;
  if(sprite[img])DrawImageScale(496,512,0,0,DX/2-248*z,top+(int)(216*s),false,0,0,0,0,z,z,sprite[img],img);
  text(names[tier],DX/2,y(21),.97f);
- DrawMenuReferencePanel(x+w-(int)(43*s),y(10),(int)(32*s),(int)(32*s),0,0x164A5B,0x8DADAD);
- text("X",x+w-(int)(27*s),y(16),.70f);
- SetRectPoint(x+w-(int)(43*s),y(10),(int)(32*s),(int)(32*s),TOUCH_FUNC_SHOP_IAP_CANCEL);
+ DrawUiButton(x+w-(int)(52*s),y(8),(int)(44*s),(int)(44*s),"X",TOUCH_FUNC_SHOP_IAP_CANCEL);
  // Show both possible card families together, rather than a single generic card.
  DrawMenuReferencePanel(x+(int)(16*s),y(62),w-(int)(32*s),(int)(82*s),0,0x205C60,0xD9B775);
  for(int k=0;k<2;++k){
@@ -7646,14 +7563,12 @@ static void TreasurePurchaseDraw(int detail){
  snprintf(value,sizeof(value),"%d~%d",loot.goldMin,loot.goldMax);
  text(value,right+(int)(147*s),y(170),tier>=4?.69f:.82f);
  snprintf(value,sizeof(value),u8"%d%% 확률",loot.goldRate);text(value,right+(int)(147*s),y(204),.52f,0xC4DDD7);
- DrawMenuReferencePanel(x+(int)(100*s),y(247),w-(int)(200*s),(int)(35*s),0,0x1C5258,0x91B4AE);
- text(u8"상세 확률표",DX/2,y(254),.66f);
- SetRectPoint(x+(int)(100*s),y(247),w-(int)(200*s),(int)(35*s),TOUCH_FUNC_SHOP_GACHA_RATES);
+ DrawUiButton(x+(int)(100*s),y(247),w-(int)(200*s),(int)(48*s),u8"\uC0C1\uC138 \uD655\uB960\uD45C",TOUCH_FUNC_SHOP_GACHA_RATES);
  const bool canBuy=!IapIsBusy()&&(ShopTreasure::UsesGems(tier)?robin.coin:robin.gold)>=GetBoxPrice(detail,GRADE_NORMAL);
  const int bx=x+(int)(148*s),bw=w-(int)(296*s),by=y(300),bh=(int)(55*s);
- DrawMenuReferencePanel(bx,by,bw,bh,0,canBuy?0x168044:0x37474B,canBuy?0xF4CB71:0x8B9790);
- DrawTreasurePrice(detail,DX/2,by-(int)(12*s),bw-(int)(24*s));
- if(canBuy)SetRectPoint(bx,by,bw,bh,TOUCH_FUNC_SHOP_IAP_CONFIRM);
+ char priceText[32];snprintf(priceText,sizeof(priceText),"%lld",GetBoxPrice(detail,GRADE_NORMAL));
+ UiButtonStyle buyStyle;buyStyle.fill=0x168044;
+ DrawUiButtonIcon(bx,by,bw,bh,ShopTreasure::UsesGems(tier)?ITEM_PREMIUM_DIAMOND_ICON:ICON_GOLD,priceText,TOUCH_FUNC_SHOP_IAP_CONFIRM,false,canBuy,buyStyle);
 }
 void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 {
@@ -7792,15 +7707,8 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	float buttonH = (float)CD_BTN_H;
 	bool canBuy = !IapIsBusy();
 	if(isBox)canBuy=canBuy&&(ShopTreasure::UsesGems(detail-BOX_PAID0)?robin.coin:robin.gold)>=GetBoxPrice(detail,GRADE_NORMAL);
-	if (canBuy)
-		SetRectPoint(Loc(buttonX), LocY(buttonY), buttonW * sCdU,
-			buttonH * sCdU, TOUCH_FUNC_SHOP_IAP_CONFIRM);
-	DrawWin3(WP_YELLOW_X, WP_YELLOW_Y, WP_YELLOW_W, WP_YELLOW_H,
-		WP_YELLOW_CAP, Loc(buttonX), LocY(buttonY),
-		buttonW * sCdU, buttonH * sCdU, sCdU);
-	CdText("구매하기", (float)CD_DESIGNW / 2,
-		buttonY + buttonH * 0.28f, 2.04f, CENTER,
-		canBuy ? COLOR_WHITE : COLOR_GREY);
+ UiButtonStyle buyStyle;buyStyle.fill=0x168044;
+ DrawUiButton(Loc(buttonX),LocY(buttonY),buttonW*sCdU,buttonH*sCdU,u8"\uAD6C\uB9E4\uD558\uAE30",TOUCH_FUNC_SHOP_IAP_CONFIRM,false,canBuy,buyStyle);
 }
 
 void GachaRatesDraw(int boxDetail){
@@ -7981,8 +7889,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
  const int by=(int)(y-h+46),priceW=(int)(w*.52f)-12,infoX=(int)(x+w*.52f),infoW=(int)(w*.48f)-12;
  DrawMenuReferencePanel((int)x+10,by,priceW,36,0,0x0D3037,0xDDB77D);
  DrawTreasurePrice(detail,(int)x+10+priceW/2,by-5,priceW-8);
- DrawMenuReferencePanel(infoX,by,infoW,36,0,0x164A5B,0x86ADAD);
- SetFontColor(COLOR_WHITE);CenterTextStrSolid("상세 보기",infoX+infoW/2,by-8,.75f);
+ DrawUiButton(infoX,by,infoW,44,u8"\uC0C1\uC138 \uBCF4\uAE30",0);
  // Every product opens details, including when the balance is insufficient.
  SetRectPoint(x,y,w,h,TOUCH_FUNC_SHOP_BUYBOX1+i);
 }

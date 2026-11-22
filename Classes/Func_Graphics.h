@@ -148,14 +148,32 @@ void DrawTouchLargeButton(int, int, int, int, const char*, int, int, float zoom)
 //
 //    on       지금 고른 것인가 (금빛)
 //    enabled  누를 수 있는가 (false 면 터치영역도 안 잡는다)
+// Two button types share typography, measured centering and touch bounds.
+// Reference minimum: the resume popup's title at zoom 1 on a 640px canvas.
+#pragma pack(push, 4)
+struct UiButtonStyle {
+ int fill=0x17444A,edge=0xEAC58A,text=0xFFF0CD;
+ float zoom=1.f;
+ int stacked=0;
+ int iconSize=32;
+ void (*frame)(int,int,int,int,bool,int)=nullptr;
+ void (*icon)(int,int,int)=nullptr;
+};
+#pragma pack(pop)
+static_assert(sizeof(UiButtonStyle)==24+2*sizeof(void*),"UI button style must have identical layout in every translation unit");
+float UiMinimumTextZoom();
+float UiTextLineHeight(float zoom);
+void DrawUiTextBox(const char* text,int x,int top,int w,int h,int color,float zoom=1.f);
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on = false, bool enabled = true);
+void DrawUiButton(int x,int y,int w,int h,const char* text,int func,bool on,bool enabled,const UiButtonStyle& style);
 void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
 	bool on = false, bool enabled = true);
 
 //아이콘이 왼쪽에 붙는 같은 버튼. 글자를 비우면 아이콘만 한가운데에 놓는다.
 void DrawUiButtonIcon(int x, int y, int w, int h, int icon, const char* text,
 	int func, bool on = false, bool enabled = true);
+void DrawUiButtonIcon(int x,int y,int w,int h,int icon,const char* text,int func,bool on,bool enabled,const UiButtonStyle& style);
 void DrawAlarmMark(int x, int y, int count, float zoom);
 void DrawPlusMark(int x, int y, float zoom);
 void DrawXMark(int x, int y, float zoom);

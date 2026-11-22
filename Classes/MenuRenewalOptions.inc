@@ -1,4 +1,4 @@
-static void RenewalOptionsDraw(){
+﻿static void RenewalOptionsDraw(){
  ResetRectPoint();const int top=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;
  DrawPixelPanel(0,top,DX,top,0x152D37,0x65827F);
  DrawMenuRoomBackdrop(0,top-58,DX,top-58,1,0);
@@ -24,10 +24,7 @@ static void RenewalOptionsDraw(){
  const int actions[]={TOUCH_FUNC_OPTION_HELP,TOUCH_FUNC_OPTION_POLICY,TOUCH_FUNC_OPTION_PRIVACY,TOUCH_FUNC_OPTION_RATES};
  DrawMenuPlaque("고객 지원",DX/4,y-4,DX/2,38,.74f);y-=54;
  for(int i=0;i<4;++i){
-  DrawPixelPanel(24,y,DX-48,row-8,0x12383E,0xC5A269);
-  SetFontColor(0xFFF0C9);DrawTextStrSystem(links[i],48,y-(row-8)/2+10,.87f,LEFT,false);
-  DrawTextStrSystem(">",DX-54,y-(row-8)/2+10,.9f,RIGHT,false);
-  SetRectPoint(24,y,DX-48,row-8,actions[i]);y-=row;
+  DrawUiButton(24,y,DX-48,row-8,links[i],actions[i]);y-=row;
  }
  SetFontColor(0xE1D0AD);DrawTextStrSystem(textId[TEXT_VERSION],DX/2,Max(24,y-16),.7f,CENTER,false);
 }

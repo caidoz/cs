@@ -1,14 +1,8 @@
 ﻿// Block upgrade screen, using existing six-stage room and cannon resources.
 namespace CastleFinal {
 static void UpgradeAction(const char* text,int x,int top,int width,int command,bool enabled){
- const int h=CastleUpgradeBlocks::TouchHeight;
- // Use the approved blue/gold action treatment; the global equipment-button
- // skin otherwise overrides BUTTON_COLOR_BLUE with a dark green panel.
- Panel(x,top,width,h,enabled?0x164EAD:0x19303F,enabled?0xEDBB58:0x607D8C);
- if(enabled){MemRect(x+8,top-5,width-16,2,0x75AEED);MemRect(x+8,top-h+7,width-16,2,0x103574);}
- SetFontColor(enabled?COLOR_WHITE:COLOR_GREY);
- CenterTextStrSolid(text,x+width/2,top-(h-FONT_HEIGHT*.68f)/2,.68f);
- if(enabled)SetRectPoint(x,top,width,h,command);
+ UiButtonStyle style;style.fill=0x164EAD;
+ DrawUiButton(x,top,width,CastleUpgradeBlocks::TouchHeight,text,command,false,enabled,style);
 }
 static int BlockLevel(int c,int room,bool preview){
  return preview?(room<0?CastleVisualPartLevel(c,3):LobbyCastleDebugFacilityLevel(c,room)):

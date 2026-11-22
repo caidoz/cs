@@ -1,8 +1,8 @@
-// Native visual fixtures only; rewards are not granted to inventory.
+﻿// Native visual fixtures only; rewards are not granted to inventory.
 bool rewardRevealReview(){
  const char* demoCount=std::getenv("CS_REWARD_REVEAL_DEMO");
  if(!review||(!std::getenv("CS_REWARD_REVEAL_REVIEW")&&!demoCount))return false;
- static int sample=0,phase=0;static bool capturedRibbon=false,capturedDeal=false,skipped=false;
+ static int sample=0,phase=0;static bool capturedRibbon=false,capturedDeal=false,skipped=false,capturedDrop=false,capturedOpen=false;
  if(sample>=4)return true;
  if(reviewCapturePending)return true;
  const int counts[4]={1,3,12,30};const int n=demoCount?std::max(1,std::min(30,std::atoi(demoCount))):counts[sample];
@@ -24,12 +24,12 @@ bool rewardRevealReview(){
     if(found)mixed[wanted-1]=true;
    }rewards.push_back(e);
   }
-  RewardPopup::drawButton=rewardButton;RewardPopup::show(u8"보상",rewards,u8"확인");
+  RewardPopup::drawButton=rewardButton;RewardPopup::show(u8"보상",rewards,u8"확인",DX*.85f,layout().ground+40*DX/640.f);
   if(n==30){bool all=true;for(bool present:mixed)all=all&&present;reviewTrace(all?"PASS sample mixes all six native star tiers":"FAIL missing star tiers");}
   RewardReveal::Layout l(DX,DY,n),one(DX,DY,1);
   reviewTrace(l.zoom==one.zoom&&l.w==one.w&&l.h==one.h?"PASS fixed card size independent of count":"FAIL count-dependent scale");
   if(n==30)reviewTrace((DY>1000?l.maximum==0:l.maximum>0)?"PASS height-dependent scrolling":"FAIL responsive scrolling");
-  capturedRibbon=capturedDeal=skipped=false;phase=1;return true;
+  capturedRibbon=capturedDeal=skipped=capturedDrop=capturedOpen=false;phase=1;return true;
  }
  if(demoCount){
   // Interactive preview: leave reveal/skip/scroll/confirm to the user.
@@ -39,12 +39,17 @@ bool rewardRevealReview(){
   return true;
  }
  if(phase==1){
-  if(!capturedRibbon&&RewardPopup::ticks()>=10){capturedRibbon=true;capture("ribbon");return true;}
-  if(!capturedDeal&&RewardPopup::ticks()>=45){capturedDeal=true;capture("dealing");return true;}
-  if(n==3&&!skipped&&RewardPopup::ticks()>=50){
+  if(n==1&&!capturedDrop&&RewardPopup::ticks()>=12){capturedDrop=true;capture("chest-drop");return true;}
+  if(n==1&&!capturedOpen&&RewardPopup::ticks()>=RewardPopup::OpenFrame+4){
+   capturedOpen=true;capture("chest-open");
+   reviewTrace(RewardPopup::sourceX==DX*.85f&&RewardPopup::ticks()<RewardPopup::CardStart?"PASS chest launches from enemy and opens before cards":"FAIL chest reveal order");return true;
+  }
+  if(!capturedRibbon&&RewardPopup::ticks()>=RewardPopup::summaryStart()+10){capturedRibbon=true;capture("ribbon");return true;}
+  if(!capturedDeal&&RewardPopup::ticks()>=RewardPopup::CardStart+15){capturedDeal=true;capture("dealing");return true;}
+  if(n==3&&!skipped&&RewardPopup::ticks()>=RewardPopup::CardStart+40){
    skipped=true;const int x=RewardPopup::bx+RewardPopup::bw/2,y=RewardPopup::by-RewardPopup::bh/2;
    RewardPopup::touch(x,y,0,93);RewardPopup::touch(x,y,2,93);
-   reviewTrace(RewardPopup::open()&&RewardPopup::ready()?"PASS skip reveals without dismissing rewards":"FAIL reveal skip");
+   reviewTrace(RewardPopup::open()&&RewardPopup::ready()?"PASS skip reveals without dismissing rewards":"FAIL reveal skip");return true;
   }
   if(!RewardPopup::ready())return true;
   capture("complete");phase=2;return true;

@@ -311,6 +311,9 @@ void LoadFontLabelFromText(const char* str)
 
 float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bool bold)
 {
+	// UI minimum matches the resume title; never squeeze glyphs below it.
+	zoom = Max(zoom, UiMinimumTextZoom());
+
 	int i, len;
 	int length;
 	int offset = 0;

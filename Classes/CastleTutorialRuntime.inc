@@ -14,8 +14,7 @@ static int Target(){switch(gCastleTutorialStep){
  case CastleTutorial::Growth:return TOUCH_FUNC_LOBBY_CASTLE;
  default:return -1;}}
 static void Button(const char* text,int x,int y,int w,int command){
- DrawPixelPanel(x,y,w,32,0x205363,0xD9B65E);SetFontColor(0xFFE6AC);
- CenterTextStrSolid(text,x+w/2,y-9,.58f);SetRectPoint(x,y,w,32,command);
+ DrawUiButton(x,y,w,48,text,command);
 }
 
 // One full-screen quad; circular holes are feathered in the fragment shader.

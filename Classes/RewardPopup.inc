@@ -5,9 +5,10 @@
 #include "RewardRevealLayout.h"
 namespace RewardPopup {
 struct Entry { int type=0,detail=0,grade=0,lv=1; long long count=1; };
-enum { PanelFrames=12, CardStart=20, CardStep=6, SlideFrames=12, FlipInterval=3, BackFrames=7 };
+enum { PanelFrames=12, DropFrames=38, OpenFrame=60, CardStart=78, CardStep=6, SlideFrames=12, FlipInterval=3, BackFrames=7 };
 static bool opened=false;
 static int age=0;
+static float sourceX=0,sourceY=0;
 struct CardCache {cocos2d::RenderTexture* target=nullptr; cocos2d::Sprite* image=nullptr;};
 static std::vector<CardCache> cards;
 inline void clearCards(){for(auto& c:cards){if(c.image)c.image->release();if(c.target)c.target->release();}cards.clear();}
@@ -25,10 +26,12 @@ inline int ticks(){return age;}
 inline float easeOut(float t){t=std::max(0.f,std::min(1.f,t));return 1-(1-t)*(1-t)*(1-t);}
 inline int tier(const Entry& e){return e.type==ITEM_GOLD||e.type==ITEM_HEART?0:GetItemStar(e.type,e.detail,e.grade);}
 inline int cardFlipEnd(int i){return starts[i]+SlideFrames+FlipInterval*BackFrames;}
-inline int endFrame(){return entries.empty()?CardStart:cardFlipEnd((int)entries.size()-1)+12;}
+inline int summaryStart(){return entries.empty()?CardStart:cardFlipEnd((int)entries.size()-1)+12;}
+inline int endFrame(){return summaryStart()+26;}
 inline bool ready(){return opened&&age>=endFrame();}
-inline void show(const char*,const std::vector<Entry>& list,const char* button){
+inline void show(const char*,const std::vector<Entry>& list,const char* button,float originX=-1,float originY=-1){
  clearCards();cards.resize(list.size());opened=true;age=0;title=u8"보상";buttonText=button?button:u8"확인";
+ sourceX=originX>=0?originX:DX*.5f;sourceY=originY>=0?originY:DY*.72f;bx=by=bw=bh=0;
  entries=list;revealed.assign(entries.size(),false);starts.clear();
  int start=CardStart;
  for(const auto& e:entries){starts.push_back(start);start+=CardStep+(tier(e)>=5?10:0);}
@@ -107,7 +110,8 @@ inline void draw(){
   const auto& e=entries[i];const float slide=easeOut(elapsed/(float)SlideFrames);
   const float destX=l.left(i,(int)entries.size(),DX),destY=l.rowTop(i,scroll);
   const float x=DX*.5f-l.w*.5f+(destX-(DX*.5f-l.w*.5f))*slide;
-  const float y=l.top+(destY-l.top)*slide;
+  const float launch=246*s;
+  const float y=launch+(destY-launch)*slide+std::sin(slide*3.14159265f)*24*s;
   int back=1;if(elapsed>=SlideFrames){int f=1+(elapsed-SlideFrames)/FlipInterval;back=f<=BackFrames?f:0;}
   if(y<l.bottom||y-l.h>l.top)continue;
   // No count-dependent zoom and no pop scaling: only native flip frames move.
@@ -120,22 +124,47 @@ inline void draw(){
   }
  }
  UnSectionClip(false);
- // Ribbon expands horizontally, preserving its native height and original art.
- const float reveal=easeOut((age-3)/16.f),rw=420*s*reveal,rh=91*s;
- if(rw>1)DrawImageScale(510,111,512,0,(int)(DX*.5f-rw*.5f),(int)(DY-28*s),false,false,false,false,false,rw/510.f,rh/111.f,sprite[WIN_IMG],WIN_IMG);
- if(reveal>.65f){SetFontColor(0xFFFFFF);CenterTextStrSolid(u8"보상",DX/2,(int)(DY-55*s),.95f*s);}
- // Orange ends and a white central band overlap the ribbon's lower edge.
- const int barY=(int)(DY-113*s),barLeft=(int)(28*s),barWidth=DX-2*barLeft;
- SetAlpha((int)(32*reveal));
- for(int i=0;i<24;++i){const float p=1-std::abs((i+.5f)/12.f-1);const int g=(int)(136+119*p),b=(int)(40+215*p);
-  const int x=barLeft+barWidth*i/24,w=barWidth*(i+1)/24-barWidth*i/24;
-  MemRect(x,barY,w,std::max(2,(int)(4*s)),(255<<16)|(g<<8)|b);
+ // The chest is presentation only: rewards were committed by the caller.
+ const int summaryAge=age-summaryStart();
+ if(summaryAge<18){
+  const float t=std::min(1.f,age/(float)DropFrames),q=t*t*(3-2*t);
+  const float cx=sourceX+(DX*.5f-sourceX)*q;
+  float base=sourceY+(134*s-sourceY)*q+std::sin(t*3.14159265f)*52*s;
+  if(age>=DropFrames&&age<DropFrames+14)base+=std::sin((age-DropFrames)/14.f*3.14159265f)*7*s;
+  const float size=(30+82*easeOut(t))*s;
+  const int img=BOX0_IMG+BOX_PAID0-BOX_CASTLE0;if(!sprite[img])LoadImg(img);
+  if(age==DropFrames)PlayMusic(M_BUTTON);
+  if(age==OpenFrame)PlayMusic(M_CARDSPLIT);
+  SetAlpha(summaryAge<0?32:std::max(0,32-summaryAge*32/18));
+  if(sprite[img])DrawImageScale(512,512,age>=OpenFrame?512:0,0,(int)(cx-size*.5f),(int)(base+size),false,0,0,0,0,size/512.f,size/512.f,sprite[img],img);
+  SetAlpha(32);
  }
- MemRect(barLeft,barY,barWidth,1,0xFFFFFF);SetAlpha(32);
+ // Final summary header: reveal native ribbon art through a centered clip.
+ if(summaryAge>=0){
+  const float reveal=easeOut(summaryAge/22.f),rw=420*s,rh=91*s;
+  const int visibleWidth=(int)(rw*reveal);
+  if(visibleWidth>0){
+   SetSectionClip((DX-visibleWidth)/2,(int)(DY-28*s),visibleWidth,(int)rh,false);
+   DrawImageScale(510,111,512,0,(int)(DX*.5f-rw*.5f),(int)(DY-28*s),false,0,0,0,0,rw/510.f,rw/510.f,sprite[WIN_IMG],WIN_IMG);
+   UnSectionClip(false);
+  }
+  SetAlpha((int)(32*easeOut((summaryAge-10)/10.f)));
+  DrawUiTextBox(u8"\uBCF4\uC0C1",(int)(DX*.5f-150*s),(int)(DY-44*s),(int)(300*s),(int)(48*s),0xFFFFFF);
+  SetAlpha(32);
+  const float line=easeOut((summaryAge-8)/18.f);
+  const int barWidth=(int)((DX-56*s)*line),barLeft=(DX-barWidth)/2,barY=(int)(DY-113*s),barH=std::max(2,(int)(4*s));
+  for(int i=0;i<24&&barWidth>0;++i){
+   const float p=1-std::abs((i+.5f)/12.f-1);const int g=(int)(136+119*p),blue=(int)(40+215*p);
+   const int x=barLeft+barWidth*i/24,w=barWidth*(i+1)/24-barWidth*i/24;
+   MemRect(x,barY,w,barH,(255<<16)|(g<<8)|blue);
+  }
+  if(barWidth>0)MemRect(barLeft,barY-1,barWidth,1,0xFFFFFF);
+ }
  if(l.maximum>0){const int track=(int)l.view,thumb=std::max(24,(int)(l.view*l.view/l.content));
   SetAlpha(18);MemRect(DX-(int)(10*s),(int)l.top,3,track,0x33465B);
   MemRect(DX-(int)(10*s),(int)(l.top-scroll/l.maximum*(track-thumb)),3,thumb,0xFFE2A1);SetAlpha(32);
  }
+ if(age<CardStart)return;
  char counter[48];snprintf(counter,sizeof(counter),"%d / %d",visible,(int)entries.size());
  SetFontColor(0xD3E0ED);CenterTextStrSolid(counter,DX/2,(int)(94*s),.58f*s);
  bw=(int)(240*s);bh=(int)(52*s);bx=(DX-bw)/2;by=(int)(70*s);

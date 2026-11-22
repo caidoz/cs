@@ -25,6 +25,22 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_UI_TYPE_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        const auto click=[](int command){CastleReviewClick(command);PlayKey(PLAYER);systemKey=0;};
+        if(tick==1){NewGame();GotoLobby();while(popUpCnt>0)ClosePopUp();}
+        if(tick==12)click(TOUCH_FUNC_SETTING);
+        if(tick==30)click(TOUCH_FUNC_OPTION_LANGUAGE);
+        if(tick==52){
+            bool all=true;for(int i=0;i<TOTALLANGUAGE;++i){bool found=false;for(int n=0;n<touchIndex;++n)found|=touchRect[n][4]==TOUCH_FUNC_OPTION_LANGUAGE_SELECT+i;all&=found;}
+            CastleReviewTrace(all?"PASS all language buttons retain touch targets":"FAIL language touch targets");
+            click(TOUCH_FUNC_OPTION_LANGUAGE_SELECT+1);
+        }
+        if(tick==62){CastleReviewTrace(option.language==1?"PASS language selection uses shared buttons":"FAIL language selection");CastleReviewTrace("DONE UI type review");}
+        const char* shot=tick==24?"settings.png":tick==46?"languages.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS UI type capture":"FAIL UI type capture");},std::string(path)+shot);}
+        return;
+    }
     if(MenuSceneReview(path))return;
     if(getenv("CS_EQUIP_STATS_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;

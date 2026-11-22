@@ -35,7 +35,7 @@ static long long lastGold=0; static int lastGear=0,lastCrew=0;
 //가운데에 있어 이 구석은 하늘이다. 왼쪽 위는 로비 디버그 단추가 쓴다.
 //자원 띠(y >= DY-LOBBY_BAR_H) 안에는 두지 않는다 - 원본 상단 띠 검증이 그 줄에
 //수거 단추가 없기를 본다.
-inline Box box(){const float s=DX/640.f;const int size=(int)(70*s);return {DX-(int)(10*s)-size,DY-GNB_GEAR_TOUCHH-(int)(6*s),size,size};}
+inline Box box(){const float s=DX/640.f;const int w=(int)(116*s),h=(int)(92*s);return {DX-(int)(10*s)-w,DY-GNB_GEAR_TOUCHH-(int)(6*s),w,h};}
 inline int barTop(){return DY-(int)(2*DX/640.f);}   //MergeRouletteLobbySceneDraw 가 자원 띠를 그리는 y
 inline bool busy(){return age>=0;}
 inline float ease(float t){t=std::max(0.f,std::min(1.f,t));return t<.5f?4*t*t*t:1-std::pow(-2*t+2,3.f)/2;}
@@ -112,23 +112,15 @@ inline void drawButton(){
  if(LoadoutOpen())return;
  const Box b=box();const float s=DX/640.f;const Plan p=plan();
  const bool ready=p.gold>0&&!busy();
- const float press=pressed&&ready?.92f:1.f;
- Box d=b;d.w=(int)(b.w*press);d.h=(int)(b.h*press);d.x=b.x+(b.w-d.w)/2;d.y=b.y-(b.h-d.h)/2;
- mergeGoldFrame(d,ready?0x7A4E18:0x2A3140,ready?0x3B2408:0x1C2330,ready);
- //채움 게이지 - 왼쪽 세로 띠. 가득 차면 금색.
+ const Box d=b;
+ UiButtonStyle style;style.fill=0x7A4E18;style.frame=mergeButtonFrame;style.stacked=true;
+ char amount[32];std::snprintf(amount,sizeof(amount),"%lld",p.gold);
+ grayScale=ready?0:32;
+ DrawUiButtonIcon(d.x,d.y,d.w,d.h,ICON_GOLDBAG,amount,0,false,ready,style);grayScale=0;
  const int gw=std::max(3,(int)(6*s)),gh=d.h-(int)(16*s),gx=d.x+(int)(7*s),gy=d.y-(int)(8*s);
  MemRect(gx,gy,gw,gh,0x1A1410);
  const int fill=gh*p.percent/100;
  if(fill>0)MemRect(gx,gy-(gh-fill),gw,fill,p.percent>=100?0xFFE27A:0x6FD28A);
- //금화 주머니
- const float iz=(d.w*.58f)/ITEMICONSIZE;
- const int ix=(int)(d.x+d.w*.5f-ITEMICONSIZE*iz*.5f+3*s),iy=d.y-(int)(d.h*.1f);
- if(!ready)SetAlpha(18);
- DrawIcon(ICON_GOLDBAG,ix,iy,iz,0,false,false,1);
- SetAlpha(32);
- //쌓인 골드
- char amount[32];std::snprintf(amount,sizeof(amount),"%lld",p.gold);
- label(amount,d.x+d.w/2+(int)(3*s),d.y-d.h+(int)(14*s),.46f,ready?0xFFF0C8:0x8A8F9A);
  //가득 찼으면 테두리가 숨 쉰다 - "지금 걷어라".
  if(p.percent>=100&&!busy()){
   ++pulse;const float k=.5f+.5f*std::sin(pulse*.18f);

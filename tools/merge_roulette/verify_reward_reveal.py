@@ -13,8 +13,9 @@ args=parser.parse_args()
 runtime.EXE=root/'proj.win32/Debug.win32'/args.exe
 for height in (850,1408):
     folder=f'reward-reveal-{height}'
-    runtime.run(height,{'CS_REWARD_REVEAL_REVIEW':'1'},folder,'DONE reward reveal review',13 if height==850 else 12)
+    runtime.run(height,{'CS_REWARD_REVEAL_REVIEW':'1'},folder,'DONE reward reveal review',15 if height==850 else 14)
     log=(root/'output/item-series/runtime'/folder/'checks.log').read_text()
+    assert 'PASS chest launches from enemy and opens before cards' in log,log
     assert log.count('PASS fixed card size independent of count')==4,log
     assert log.count('PASS confirm closes revealed rewards')==4,log
     assert 'PASS sample mixes all six native star tiers' in log,log
